@@ -302,7 +302,7 @@ export default class RateEndTable extends React.Component {
                     initialValue: editEnd.gradients[vc.index] || '',
                     onChange: ev => this.handleGradientChange(idx, ev.target.value),
                     rules: [{ required: true, message: '梯度费率必填',
-                    type: 'number', transform: v => Number(v) }],
+                      type: 'number', transform: v => Number(v) }],
                   })(<Input />)}
                 </FormItem>
               ))

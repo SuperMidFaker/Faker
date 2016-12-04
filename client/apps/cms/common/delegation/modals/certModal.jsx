@@ -135,5 +135,6 @@ export default class CertModal extends Component {
           onRowUpdated={this.handleRowUpdated}
         />
       </Modal>
-  ); }
+    );
+  }
 }

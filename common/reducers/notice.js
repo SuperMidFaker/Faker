@@ -39,7 +39,7 @@ export default function reducer(state = initialState, action) {
         dataArray.push({ ...action.data.notice, key: action.result.data.id, created_date: action.result.data.createdDate });
       }
       return { ...state, notices: { ...state.notices, totalCount: state.notices.totalCount + 1,
-      data: dataArray || state.notices.data }, formData: {}, editIndex: -1 };
+        data: dataArray || state.notices.data }, formData: {}, editIndex: -1 };
     }
     case actionTypes.NTC_UPDATE_SUCCEED: {
       const dataArray = [...state.notices.data];

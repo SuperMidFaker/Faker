@@ -104,5 +104,6 @@ export default class AdvanceChargeModal extends Component {
           onRowUpdated={this.handleRowUpdated}
         />
       </Modal>
-  ); }
+    );
+  }
 }

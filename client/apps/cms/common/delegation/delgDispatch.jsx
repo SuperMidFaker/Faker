@@ -30,7 +30,7 @@ function ButtonSelect(props) {
   }
   return (
     <div>{button}</div>
-   );
+  );
 }
 ButtonSelect.PropTypes = {
   saved: PropTypes.bool.isRequired,
@@ -174,6 +174,6 @@ export default class DelgDispatch extends Component {
           </div>
         </div>
       </div>
-      );
+    );
   }
 }

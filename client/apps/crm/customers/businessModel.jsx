@@ -17,7 +17,7 @@ const Option = Select.Option;
     businessModels: state.crmCustomers.businessModels,
     businessModelsLoaded: state.crmCustomers.businessModelsLoaded,
   }), { loadBusinessModels, addModel, deleteModel, addModelNode, deleteModelNode,
-  deleteBusinessModel, addBusinessModel, updateBusinessModel }
+    deleteBusinessModel, addBusinessModel, updateBusinessModel }
 )
 
 export default class BusinessModel extends React.Component {

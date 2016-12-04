@@ -126,7 +126,7 @@ export default class DispatchDock extends Component {
             >
               <span>{charge.total_charge.toFixed(2)}</span>
             </Popover>
-            );
+          );
         } else {
           return '';
         }
@@ -590,7 +590,7 @@ export default class DispatchDock extends Component {
         target,
         visible: false,
       },
-    });
+      });
     }, 200);
   }
   handleNewCarrierClick = () => {

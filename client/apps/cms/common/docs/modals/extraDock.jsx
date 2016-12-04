@@ -51,6 +51,6 @@ export default class ExtraDock extends Component {
           </div>
         </div>
       </div>
-      );
+    );
   }
 }

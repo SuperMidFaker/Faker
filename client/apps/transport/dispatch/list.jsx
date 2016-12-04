@@ -311,14 +311,14 @@ export default class DispatchList extends React.Component {
                   <i className="zmdi zmdi-circle mdc-text-green" />
                   {spSpan}
                 </span>
-          );
+              );
             } else if (record.sp_tenant_id === -1) {
               return (
                 <span>
                   <i className="zmdi zmdi-circle mdc-text-grey" />
                   {spSpan}
                 </span>
-          );
+              );
             } else {
               return spSpan;
             }
@@ -731,17 +731,17 @@ export default class DispatchList extends React.Component {
           avatar,
           loginName,
           list: JSON.stringify([{ dispId: shipmt.key,
-          shipmtNo: shipmt.shipmt_no,
-          sp_tenant_id: shipmt.sp_tenant_id,
-          sr_name: shipmt.sr_name,
-          status: shipmt.status,
-          consigner_province: shipmt.consigner_province,
-          consigner_city: shipmt.consigner_city,
-          consigner_district: shipmt.consigner_district,
-          consignee_province: shipmt.consignee_province,
-          consignee_city: shipmt.consignee_city,
-          consignee_district: shipmt.consignee_district,
-          parentId: shipmt.parent_id }]),
+            shipmtNo: shipmt.shipmt_no,
+            sp_tenant_id: shipmt.sp_tenant_id,
+            sr_name: shipmt.sr_name,
+            status: shipmt.status,
+            consigner_province: shipmt.consigner_province,
+            consigner_city: shipmt.consigner_city,
+            consigner_district: shipmt.consigner_district,
+            consignee_province: shipmt.consignee_province,
+            consignee_city: shipmt.consignee_city,
+            consignee_district: shipmt.consignee_district,
+            parentId: shipmt.parent_id }]),
         }).then((result) => {
           if (result.error) {
             message.error(result.error.message, 5);

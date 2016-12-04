@@ -386,7 +386,7 @@ export default class ChargePanel extends React.Component {
                   <TabPane tab={item.shipmt_no} key={item.shipmt_no}>
                     {this.renderTransportFees(item)}
                   </TabPane>
-                  );
+                );
               })}
             </Tabs>
           </div>
@@ -426,7 +426,7 @@ export default class ChargePanel extends React.Component {
                 <TabPane tab={item.shipmt_no} key={item.shipmt_no}>
                   {this.renderTransportFees(item)}
                 </TabPane>
-                );
+              );
             })}
           </Tabs>
         </div>

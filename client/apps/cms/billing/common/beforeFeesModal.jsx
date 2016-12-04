@@ -71,7 +71,8 @@ export default class BeforeFeesModal extends React.Component {
           });
           this.setState({ dataSource: exps });
         }
-      }); }
+      });
+    }
   }
 
   msg = (key, values) => formatMsg(this.props.intl, key, values)

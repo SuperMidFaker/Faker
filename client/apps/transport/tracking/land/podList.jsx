@@ -45,7 +45,7 @@ function fetchData({ state, dispatch, params, cookie }) {
     loaded: state.trackingLandPod.loaded,
   }),
   { loadPodTable, loadShipmtDetail, showAuditModal, resubmitPod, showPodModal,
-  sendMessage })
+    sendMessage })
 export default class LandStatusList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,

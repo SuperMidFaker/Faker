@@ -38,7 +38,7 @@ export default function reducer(state = initialState, action) {
         whDataArray.push({ ...action.data.warehouse, key: action.result.data.id });
       }
       return { ...state, whlist: { ...state.whlist, totalCount: state.whlist.totalCount + 1,
-      data: whDataArray || state.whlist.data }, formData: {}, editIndex: -1 };
+        data: whDataArray || state.whlist.data }, formData: {}, editIndex: -1 };
     }
     case actionTypes.WH_UPDATE_SUCCEED: {
       const whDataArray = [...state.whlist.data];

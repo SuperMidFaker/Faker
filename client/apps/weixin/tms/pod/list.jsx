@@ -67,7 +67,7 @@ export default class List extends React.Component {
                     {moment(item.deliver_act_date).format('YYYY-MM-DD HH:mm')}
                   </CellFooter>
                 </Cell>
-                );
+              );
             })}
           </Cells>
           <CellsTitle>已提交回单</CellsTitle>
@@ -82,7 +82,7 @@ export default class List extends React.Component {
                     <Icon value="success_no_circle" />
                   </CellFooter>
                 </Cell>
-                );
+              );
             })}
           </Cells>
         </section>

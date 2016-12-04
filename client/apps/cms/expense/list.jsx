@@ -81,7 +81,8 @@ export default class ExpenseList extends Component {
     {
       title: this.msg('delgNo'),
       dataIndex: 'delg_no',
-      width: 150,
+      width: 120,
+      fixed: 'left',
       render: (o) => {
         return (
           <a onClick={() => this.handlePreview(o)}>
@@ -91,21 +92,21 @@ export default class ExpenseList extends Component {
     }, {
       title: this.msg('custName'),
       dataIndex: 'send_name',
-      render: o => <TrimSpan text={o} maxLen={20} />,
+      render: o => <TrimSpan text={o} maxLen={14} />,
     }, {
       title: this.msg('invoiceNo'),
       dataIndex: 'invoice_no',
-      width: 200,
+      width: 180,
     }, {
       title: this.msg('bLNo'),
       dataIndex: 'bl_wb_no',
-      width: 240,
+      width: 220,
     }, {
       title: this.msg('revenue'),
       children: [
         {
           title: this.msg('allBill'),
-          width: 100,
+          width: 80,
           dataIndex: 'all_bill',
           key: 'all_bill',
           render: (o) => {
@@ -117,7 +118,7 @@ export default class ExpenseList extends Component {
           title: this.msg('serviceRevenue'),
           dataIndex: 'serv_bill',
           key: 'serv_bill',
-          width: 200,
+          width: 80,
           render: (o) => {
             if (o) {
               return o.toFixed(2);
@@ -127,7 +128,7 @@ export default class ExpenseList extends Component {
           title: this.msg('cushBill'),
           dataIndex: 'cush_bill',
           key: 'cush_bill',
-          width: 200,
+          width: 80,
           render: (o, row) => {
             if (o) {
               const labelElem = (
@@ -147,7 +148,7 @@ export default class ExpenseList extends Component {
         {
           title: this.msg('allCost'),
           dataIndex: 'all_cost',
-          width: 100,
+          width: 80,
           render: (o) => {
             if (o) {
               return (<span className="mdc-text-warning"><b>{o.toFixed(2)}</b></span>);
@@ -157,7 +158,7 @@ export default class ExpenseList extends Component {
           title: this.msg('servCost'),
           dataIndex: 'serv_cost',
           key: 'serv_cost',
-          width: 200,
+          width: 80,
           render: (o) => {
             if (o) {
               return o.toFixed(2);
@@ -167,7 +168,7 @@ export default class ExpenseList extends Component {
           title: this.msg('cushCost'),
           dataIndex: 'cush_cost',
           key: 'cush_cost',
-          width: 200,
+          width: 80,
           render: (o, row) => {
             if (o) {
               const labelElem = (
@@ -363,7 +364,7 @@ export default class ExpenseList extends Component {
             </div>
             <div className="panel-body table-panel group-header">
               <Table columns={this.columns} dataSource={this.dataSource} loading={expslist.loading}
-                bordered scroll={{ x: 2000 }}
+                bordered scroll={{ x: 1400 }}
               />
             </div>
           </div>

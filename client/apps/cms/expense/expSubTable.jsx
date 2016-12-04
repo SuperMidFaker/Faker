@@ -103,5 +103,6 @@ export default class ExpSubTable extends Component {
           pagination={false} size="middle" scroll={{ y: 200 }} loading={expFees.loading}
         /> }
       </div>
-  ); }
+    );
+  }
 }

@@ -11,6 +11,6 @@ export default class OrganizationWrapper extends React.Component {
           {this.props.children}
         </div>
       </div>
-      );
+    );
   }
 }

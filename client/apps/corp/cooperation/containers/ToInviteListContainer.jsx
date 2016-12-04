@@ -63,7 +63,7 @@ export default class ToInviteList extends Component {
     render(_, record) {
       return (
         <span>{moment(record.created_date).format('YYYY/MM/DD HH:mm')}</span>
-        );
+      );
     },
   }, {
     title: '操作',
@@ -85,13 +85,13 @@ export default class ToInviteList extends Component {
             <PrivilegeCover module="corp" feature="partners" action="edit">
               <a onClick={() => this.handleShowInviteModal(inviteeInfo)}>申请开通</a>
             </PrivilegeCover>
-            );
+          );
         } else {
           return (
             <PrivilegeCover module="corp" feature="partners" action="edit">
               <a onClick={() => this.props.inviteOnlinePartner({ tenantId, inviteeInfo })}>邀请加入</a>
             </PrivilegeCover>
-            );
+          );
         }
       } else if (record.invited === 2) {
         return '已申请';

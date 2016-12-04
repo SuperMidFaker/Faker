@@ -89,7 +89,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_TRANSHIPMT_SUCCEED:
       return { ...state, loading: false,
         loaded: true, shipmentlist: action.result.data,
-    };
+      };
     case actionTypes.SHOW_VEHICLE_MODAL:
       return { ...state,
         vehicleModal: { visible: true, ...action.data },

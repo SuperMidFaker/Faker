@@ -3,19 +3,19 @@ import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/transport/dispatch/',
   ['LOAD_APTSHIPMENT', 'LOAD_APTSHIPMENT_FAIL', 'LOAD_APTSHIPMENT_SUCCEED',
-   'LOAD_LSPS', 'LOAD_LSPS_FAIL', 'LOAD_LSPS_SUCCEED',
-   'LOAD_VEHICLES', 'LOAD_VEHICLES_FAIL', 'LOAD_VEHICLES_SUCCEED',
-   'DO_DISPATCH', 'DO_DISPATCH_FAIL', 'DO_DISPATCH_SUCCEED',
-   'DO_SEND', 'DO_SEND_FAIL', 'DO_SEND_SUCCEED',
-   'DO_DISPATCH_SEND', 'DO_DISPATCH_SEND_FAIL', 'DO_DISPATCH_SEND_SUCCEED',
-   'DO_RETURN', 'DO_RETURN_FAIL', 'DO_RETURN_SUCCEED',
-   'LOAD_SEGMENT_RQ', 'LOAD_SEGMENT_RQ_FAIL', 'LOAD_SEGMENT_RQ_SUCCEED',
-   'SEGMENT', 'SEGMENT_SUCCEED', 'SEGMENT_FAIL',
-   'LOAD_EXPANDLIST', 'LOAD_EXPANDLIST_FAIL', 'LOAD_EXPANDLIST_SUCCEED',
-   'SEGMENT_CANCEL', 'SEGMENT_CANCEL_SUCCEED', 'SEGMENT_CANCEL_FAIL',
-   'GROUPED_LIST', 'GROUPED_LIST_SUCCEED', 'GROUPED_LIST_FAIL',
-   'WITHDRAW', 'WITHDRAW_FAIL', 'WITHDRAW_SUCCEED',
-   'REMOVE_GROUPEDSUB', 'CHANGE_DOCK_STATUS']);
+    'LOAD_LSPS', 'LOAD_LSPS_FAIL', 'LOAD_LSPS_SUCCEED',
+    'LOAD_VEHICLES', 'LOAD_VEHICLES_FAIL', 'LOAD_VEHICLES_SUCCEED',
+    'DO_DISPATCH', 'DO_DISPATCH_FAIL', 'DO_DISPATCH_SUCCEED',
+    'DO_SEND', 'DO_SEND_FAIL', 'DO_SEND_SUCCEED',
+    'DO_DISPATCH_SEND', 'DO_DISPATCH_SEND_FAIL', 'DO_DISPATCH_SEND_SUCCEED',
+    'DO_RETURN', 'DO_RETURN_FAIL', 'DO_RETURN_SUCCEED',
+    'LOAD_SEGMENT_RQ', 'LOAD_SEGMENT_RQ_FAIL', 'LOAD_SEGMENT_RQ_SUCCEED',
+    'SEGMENT', 'SEGMENT_SUCCEED', 'SEGMENT_FAIL',
+    'LOAD_EXPANDLIST', 'LOAD_EXPANDLIST_FAIL', 'LOAD_EXPANDLIST_SUCCEED',
+    'SEGMENT_CANCEL', 'SEGMENT_CANCEL_SUCCEED', 'SEGMENT_CANCEL_FAIL',
+    'GROUPED_LIST', 'GROUPED_LIST_SUCCEED', 'GROUPED_LIST_FAIL',
+    'WITHDRAW', 'WITHDRAW_FAIL', 'WITHDRAW_SUCCEED',
+    'REMOVE_GROUPEDSUB', 'CHANGE_DOCK_STATUS']);
 
 const initialState = {
   loaded: true,
@@ -90,10 +90,10 @@ export default function reducer(state = initialState, action) {
       return { ...state, dispatched: true, loaded: false };
     case actionTypes.LOAD_SEGMENT_RQ_SUCCEED:
       return { ...state, nodeLocations: action.result.data.nodeLocations,
-      transitModes: action.result.data.transitModes,
-      vehicleLengths: action.result.data.vehicleLengths,
-      vehicleTypes: action.result.data.vehicleTypes,
-    };
+        transitModes: action.result.data.transitModes,
+        vehicleLengths: action.result.data.vehicleLengths,
+        vehicleTypes: action.result.data.vehicleTypes,
+      };
     case actionTypes.SEGMENT_SUCCEED:
       return { ...state, segmented: true };
     case actionTypes.LOAD_EXPANDLIST_SUCCEED: {

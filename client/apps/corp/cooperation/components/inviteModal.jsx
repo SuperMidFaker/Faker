@@ -63,5 +63,6 @@ export default class InviteModal extends Component {
           <Input value={email} onChange={e => this.setState({ email: e.target.value })} />
         </FormItem>
       </Modal>
-  ); }
+    );
+  }
 }

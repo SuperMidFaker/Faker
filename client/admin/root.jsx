@@ -36,6 +36,6 @@ export default class Root extends React.Component {
       >
         {this.props.children}
       </IntlProvider>
-      );
+    );
   }
 }

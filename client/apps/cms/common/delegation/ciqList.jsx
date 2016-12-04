@@ -93,7 +93,7 @@ export default class CiqList extends Component {
     dataIndex: 'bl_wb_no',
   }, {
     title: this.msg('ciqType'),
-    width: 90,
+    width: 100,
     dataIndex: 'ciq_type',
     render: (o) => {
       if (o === 'NL') {

@@ -139,7 +139,7 @@ export default function reducer(state = initialState, action) {
           && action.result.data.ratesSourceList.data[0]._id,
         ratesEndList: { ...state.ratesEndList,
           ...action.result.data.ratesEndList },
-          fees: action.result.data.tariff.fees,
+        fees: action.result.data.tariff.fees,
       };
     }
     case actionTypes.LOAD_PARTNERS_SUCCEED:

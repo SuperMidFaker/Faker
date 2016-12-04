@@ -32,19 +32,19 @@ export class FormLocalSearchSelect extends React.Component {
           required={required}
         >
           {getFieldDecorator(field, { rules, initialValue: formData && formData[field],
-          ...fieldProps })(<Select
-            disabled={disabled}
-            showSearch={!!searchKeyFn}
-            showArrow
-            optionFilterProp={searchKeyFn ? 'search' : undefined}
-          >
-            {
+            ...fieldProps })(<Select
+              disabled={disabled}
+              showSearch={!!searchKeyFn}
+              showArrow
+              optionFilterProp={searchKeyFn ? 'search' : undefined}
+            >
+              {
               options.map(opt => (
                 <Option key={opt.value} search={searchKeyFn ? searchKeyFn(opt) : undefined}>
                   {opt.text}
                 </Option>))
             }
-          </Select>)}
+            </Select>)}
         </FormItem>
       </Col>
     );
@@ -84,11 +84,11 @@ export class FormRemoteSearchSelect extends React.Component {
           required={required}
         >
           {getFieldDecorator(field, { rules, initialValue: formData && formData[field],
-          ...fieldProps })(<Select disabled={disabled} showSearch onSearch={this.handleSearch}>
-            {
+            ...fieldProps })(<Select disabled={disabled} showSearch onSearch={this.handleSearch}>
+              {
               options.map(opt => <Option key={opt.value}>{opt.text}</Option>)
             }
-          </Select>)}
+            </Select>)}
         </FormItem>
       </Col>
     );

@@ -376,6 +376,6 @@ export default class AgreementForm extends React.Component {
           </Form>
         </div>
       </div>
-      );
+    );
   }
 }

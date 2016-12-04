@@ -159,5 +159,6 @@ export default class SubdelgTable extends Component {
         />
         <DeclnoFillModal reload={this.handleTableLoad} reloadDelgs={reloadDelgs} />
       </div>
-  ); }
+    );
+  }
 }

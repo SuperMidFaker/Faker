@@ -89,5 +89,6 @@ export default class MarkModal extends Component {
       <Modal visible={showMarkModal} title={this.msg('markState')} onCancel={this.handleCancel} onOk={this.handleSave}>
         <Table columns={this.columns} dataSource={data} pagination={false} scroll={{ y: 200 }} />
       </Modal>
-  ); }
+    );
+  }
 }

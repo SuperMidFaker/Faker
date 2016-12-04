@@ -51,14 +51,14 @@ export default class AutoCompletionSelectItem extends React.Component {
         wrapperCol={{ span: 24 - colSpan }} help={getFieldError(field)}
       >
         {getFieldDecorator(field, { onChange, rules, initialValue: initialValue || '',
-        getValueFromEvent })(<Select
-          combobox
-          filterOption={this.getComboFilter}
-          placeholder={placeholder}
-          onSelect={this.handleComboSelect}
-          allowClear={allowClear}
-        >
-          {
+          getValueFromEvent })(<Select
+            combobox
+            filterOption={this.getComboFilter}
+            placeholder={placeholder}
+            onSelect={this.handleComboSelect}
+            allowClear={allowClear}
+          >
+            {
           optionData.map(
               od =>
                 <Option datalink={od} value={od[optionValue]} key={od[optionKey]}>
@@ -66,7 +66,7 @@ export default class AutoCompletionSelectItem extends React.Component {
                 </Option>
               )
         }
-        </Select>)}
+          </Select>)}
       </FormItem>);
   }
 }

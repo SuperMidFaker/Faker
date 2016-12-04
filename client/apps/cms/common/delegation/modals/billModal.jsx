@@ -74,5 +74,6 @@ export default class BillModal extends Component {
         </Row>
         {billPros}
       </Modal>
-  ); }
+    );
+  }
 }

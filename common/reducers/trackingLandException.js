@@ -53,7 +53,7 @@ export default function reducer(state = initialState, action) {
       return { ...state, loading: false,
         loaded: true, shipmentlist: action.result.data,
         filters: JSON.parse(action.params.filters),
-    };
+      };
     case actionTypes.CHANGE_FILTER: {
       const filters = state.filters.filter(flt => flt.name !== action.data.field);
       if (action.data.value !== '' && action.data.value !== null && action.data.value !== undefined) {

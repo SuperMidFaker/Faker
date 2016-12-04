@@ -122,5 +122,6 @@ export default class InputModal extends Component {
           onRowUpdated={this.handleRowUpdated}
         />
       </Modal>
-  ); }
+    );
+  }
 }

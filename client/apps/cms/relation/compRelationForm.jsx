@@ -102,23 +102,23 @@ class CompRelationForm extends Component {
             <Col lg={12} >
               <FormItem label={this.msg('relation_type')} labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} required="required">
                 {getFieldDecorator('relation_type', { initialValue: formData.relation_type,
-              rules: [{
-                required: true,
-                message: this.msg('relation_type_placeholder'),
-                type: 'string',
-                whitespace: true,
-              }],
-            })(<Select
-              key="relation_type"
-              placeholder={this.msg('relation_type_placeholder')}
-              defaultValue={formData.relation_type}
-            >
-              {
+                  rules: [{
+                    required: true,
+                    message: this.msg('relation_type_placeholder'),
+                    type: 'string',
+                    whitespace: true,
+                  }],
+                })(<Select
+                  key="relation_type"
+                  placeholder={this.msg('relation_type_placeholder')}
+                  defaultValue={formData.relation_type}
+                >
+                  {
                   RELATION_TYPES.map((item) => {
                     return (<Option value={item.key}>{item.value}</Option>);
                   })
                 }
-            </Select>)}
+                </Select>)}
               </FormItem>
             </Col>
           </Row>
@@ -126,23 +126,23 @@ class CompRelationForm extends Component {
             <Col lg={12} >
               <FormItem label={this.msg('i_e_type')} labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} required="required">
                 {getFieldDecorator('i_e_type', { initialValue: formData.i_e_type,
-              rules: [{
-                required: true,
-                message: this.msg('i_e_type_placeholder'),
-                type: 'string',
-                whitespace: true,
-              }],
-            })(<Select
-              key="i_e_type"
-              placeholder={this.msg('i_e_type_placeholder')}
-              defaultValue={formData.i_e_type}
-            >
-              {
+                  rules: [{
+                    required: true,
+                    message: this.msg('i_e_type_placeholder'),
+                    type: 'string',
+                    whitespace: true,
+                  }],
+                })(<Select
+                  key="i_e_type"
+                  placeholder={this.msg('i_e_type_placeholder')}
+                  defaultValue={formData.i_e_type}
+                >
+                  {
                   I_E_TYPES.map((item) => {
                     return (<Option value={item.key}>{item.value}</Option>);
                   })
                 }
-            </Select>)}
+                </Select>)}
               </FormItem>
             </Col>
           </Row>

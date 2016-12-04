@@ -21,7 +21,7 @@ const RangePicker = DatePicker.RangePicker;
 function fetchData({ state, dispatch, cookie }) {
   const { startDate, endDate } = state.shipment.statistics;
   const promises = [dispatch(loadShipmentStatistics(cookie, state.account.tenantId, startDate, endDate)),
-  dispatch(loadFormRequire(cookie, state.account.tenantId))];
+    dispatch(loadFormRequire(cookie, state.account.tenantId))];
   return Promise.all(promises);
 }
 @connectFetch()(fetchData)
