@@ -52,7 +52,7 @@ export default class EntryBillForm extends React.Component {
     if (
       nextProps.entries && nextProps.entries.length !== 0 &&
       nextProps.entries !== this.props.entries &&
-      nextProps.entries[0].head.agent_code !== ''
+      nextProps.entries[0].head.agent_code
     ) {
       this.setState({
         activeKey: `entry${nextProps.entries.length - 1}`,
