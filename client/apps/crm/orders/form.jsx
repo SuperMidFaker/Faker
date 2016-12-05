@@ -34,44 +34,29 @@ export default class OrderForm extends Component {
   }
 
   msg = key => formatMsg(this.props.intl, key)
-
-  render() {
+  renderSteps = (shipmtOrderMode) => {
     const { operation, formData } = this.props;
-    let current = 2;
-    if (formData.shipmt_order_mode === 0) {
-      current = 1;
-    } else if (formData.shipmt_order_mode === 1) {
-      current = 1;
+    const steps = [(<Step key={0} title="基础信息" status="process" description={<BasicForm operation={operation} />} />)];
+    for (let i = 0; i < shipmtOrderMode.length; i++) {
+      const mode = shipmtOrderMode[i];
+      if (mode === 'clearance') {
+        steps.push(<Step key={i + 1} title="清关" status="process" description={<ClearanceForm formData={formData.subOrders[i]} index={i} operation={operation} />} />);
+      } else if (mode === 'transport') {
+        steps.push(<Step key={i + 1} title="运输" status="process" description={<TransportForm formData={formData.subOrders[i]} index={i} operation={operation} />} />);
+      }
     }
-    if (formData.shipmt_order_mode === 0) {
-      return (
-        <Form horizontal>
-          <Steps direction="vertical" current={current}>
-            <Step title="基础信息" status="process" description={<BasicForm operation={operation} />} />
-            <Step title="清关" status="process" description={<ClearanceForm operation={operation} />} />
-          </Steps>
-        </Form>
-      );
-    } else if (formData.shipmt_order_mode === 1) {
-      return (
-        <Form horizontal>
-          <Steps direction="vertical" current={current}>
-            <Step title="基础信息" status="process" description={<BasicForm operation={operation} />} />
-            <Step title="运输" status="process" description={<TransportForm operation={operation} />} />
-          </Steps>
-        </Form>
-      );
-    } else if (formData.shipmt_order_mode === 2) {
-      return (
-        <Form horizontal>
-          <Steps direction="vertical" current={current}>
-            <Step title="基础信息" status="process" description={<BasicForm operation={operation} />} />
-            <Step title="清关" status="process" description={<ClearanceForm operation={operation} />} />
-            <Step title="运输" status="process" description={<TransportForm operation={operation} />} />
-          </Steps>
-        </Form>
-      );
-    }
-    return null;
+    return steps;
+  }
+  render() {
+    const { formData } = this.props;
+    const shipmtOrderMode = formData.shipmt_order_mode === '' ? [] : formData.shipmt_order_mode.split(',');
+    const current = shipmtOrderMode.length > 0 ? shipmtOrderMode.length : 0;
+    return (
+      <Form horizontal>
+        <Steps direction="vertical" current={current}>
+          {this.renderSteps(shipmtOrderMode)}
+        </Steps>
+      </Form>
+    );
   }
 }

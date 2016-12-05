@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Form, Row, Col, Card, Input, Select, Radio } from 'antd';
+import { Form, Row, Col, Card, Input, Select } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { GOODSTYPES, TRANS_MODE } from 'common/constants';
 import { setClientForm } from 'common/reducers/crmOrders';
@@ -11,8 +11,6 @@ import { format } from 'client/common/i18n/helpers';
 const formatMsg = format(messages);
 const FormItem = Form.Item;
 const Option = Select.Option;
-const RadioButton = Radio.Button;
-const RadioGroup = Radio.Group;
 
 @injectIntl
 @connect(
@@ -38,7 +36,7 @@ export default class BasicForm extends Component {
     formRequires: PropTypes.object.isRequired,
     setClientForm: PropTypes.func.isRequired,
     loadBusinessModels: PropTypes.func.isRequired,
-    businessModels: PropTypes.object.isRequired,
+    businessModels: PropTypes.array.isRequired,
   }
   msg = key => formatMsg(this.props.intl, key)
   handleClientChange = (value) => {
@@ -46,11 +44,12 @@ export default class BasicForm extends Component {
     const { tenantId } = this.props;
     const client = this.props.formRequires.clients.find(cl => cl.partner_id === selPartnerId);
     if (client) {
-      this.props.setClientForm({
+      this.props.setClientForm(-1, {
         customer_name: client.name,
         customer_tenant_id: client.tid,
         customer_partner_id: selPartnerId,
         customer_partner_code: client.partner_code,
+        shipmt_order_mode: '',
       });
       this.props.loadBusinessModels({
         partnerId: selPartnerId,
@@ -67,10 +66,7 @@ export default class BasicForm extends Component {
       if (item === 'transport') {
         subOrders.push({
           _mode: item,
-          trs_mode_id: -1,
-          trs_mode_code: '',
-          trs_mode: '',
-          shipments: [{
+          transports: [{
             consigner_name: '',
             consigner_province: '',
             consigner_city: '',
@@ -93,26 +89,30 @@ export default class BasicForm extends Component {
             consignee_mobile: '',
             pack_count: 1,
             gross_wt: 0,
+
+            trs_mode_id: -1,
+            trs_mode_code: '',
+            trs_mode: '',
           }],
         });
       } else if (item === 'clearance') {
         subOrders.push({
           _mode: item,
-          ccb_need_exchange: 0,
           files: [],
-          delegations: [{
+          delgBills: [{
             decl_way_code: '',
             manual_no: '',
             pack_count: 1,
             gross_wt: 0,
+            ccb_need_exchange: 0,
           }],
         });
       }
     });
-    this.props.setClientForm({ model: businessModel.model, subOrders });
+    this.props.setClientForm(-1, { shipmt_order_mode: businessModel.model, subOrders });
   }
   handleChange = (key, value) => {
-    this.props.setClientForm({ [key]: value });
+    this.props.setClientForm(-1, { [key]: value });
   }
   changeModelForm = (model) => {
     return model.replace(/transport/g, '运输').replace(/clearance/g, '清关');
@@ -128,15 +128,6 @@ export default class BasicForm extends Component {
       <Card bodyStyle={{ padding: 16 }}>
         <Row>
           <Col sm={8}>
-            <FormItem label="业务类型" {...formItemLayout} required="true">
-              <RadioGroup value={formData.shipmt_order_mode} onChange={e => this.handleChange('shipmt_order_mode', e.target.value)}>
-                <RadioButton value={0}>清关</RadioButton>
-                <RadioButton value={1}>运输</RadioButton>
-                <RadioButton value={2}>清关运输</RadioButton>
-              </RadioGroup>
-            </FormItem>
-          </Col>
-          <Col sm={8}>
             <FormItem label="客户名称" {...formItemLayout} required="true">
               <Select showSearch optionFilterProp="children"
                 value={formData.customer_name}
@@ -149,9 +140,9 @@ export default class BasicForm extends Component {
             </FormItem>
           </Col>
           <Col sm={8}>
-            <FormItem label="业务规则" {...formItemLayout} required="true">
+            <FormItem label="业务类型" {...formItemLayout} required="true">
               <Select showSearch optionFilterProp="children"
-                value={this.changeModelForm(formData.model)}
+                value={this.changeModelForm(formData.shipmt_order_mode)}
                 onChange={value => this.handleBusinessModelChange(value)}
               >
                 {businessModels.map(data => (

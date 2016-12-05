@@ -50,8 +50,6 @@ export default class Create extends Component {
       message.error('请选择运输方式');
     } else if (formData.cust_shipmt_goods_type === null) {
       message.error('请选择货物类型');
-    } else if ((formData.shipmt_order_mode === 1 || formData.shipmt_order_mode === 2) && formData.transports[0].trs_mode_code === '') {
-      message.error('请选择运输模式');
     } else {
       this.props.submitOrder({ formData, tenantId, loginId, username, tenantName }).then((result) => {
         if (result.error) {

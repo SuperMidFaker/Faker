@@ -13,8 +13,7 @@ const Option = Select.Option;
 
 @injectIntl
 @connect(
-  state => ({
-    formData: state.crmOrders.formData,
+  () => ({
 
   }),
   { setClientForm }
@@ -23,6 +22,7 @@ const Option = Select.Option;
 export default class ClearanceForm extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
+    index: PropTypes.number.isRequired,
     operation: PropTypes.oneOf(['view', 'edit', 'create']),
     formData: PropTypes.object.isRequired,
     setClientForm: PropTypes.func.isRequired,
@@ -32,13 +32,23 @@ export default class ClearanceForm extends Component {
   }
 
   msg = key => formatMsg(this.props.intl, key)
-
+  handleSetClientForm = (data) => {
+    const { index, formData } = this.props;
+    const newData = { ...formData, ...data };
+    this.props.setClientForm(index, newData);
+  }
   handleUploadFiles = (fileList) => {
-    this.props.setClientForm({ files: fileList });
+    this.handleSetClientForm({ files: fileList });
   }
   handleClientChange = (value) => {
     const ccbNeedExchange = value ? 1 : 0;
-    this.props.setClientForm({ ccb_need_exchange: ccbNeedExchange });
+    const delgBills = this.props.formData.delgBills.map((item) => {
+      return {
+        ...item,
+        ccb_need_exchange: ccbNeedExchange,
+      };
+    });
+    this.handleSetClientForm({ delgBills });
     return value;
   }
   handleAddRow = () => {
@@ -47,20 +57,21 @@ export default class ClearanceForm extends Component {
       manual_no: '',
       pack_count: 1,
       gross_wt: 0,
+      ccb_need_exchange: 0,
     };
     const delgBills = [...this.props.formData.delgBills];
     delgBills.push(delgBill);
-    this.props.setClientForm({ delgBills });
+    this.handleSetClientForm({ delgBills });
   }
   handleRemoveRow(k) {
     const delgBills = [...this.props.formData.delgBills];
     delgBills.splice(k, 1);
-    this.props.setClientForm({ delgBills });
+    this.handleSetClientForm({ delgBills });
   }
   handleChange = (k, key, value) => {
     const delgBills = [...this.props.formData.delgBills];
     delgBills[k][key] = value;
-    this.props.setClientForm({ delgBills });
+    this.handleSetClientForm({ delgBills });
   }
   render() {
     const { formData } = this.props;
@@ -113,7 +124,7 @@ export default class ClearanceForm extends Component {
         <Row>
           <Col sm={8}>
             <FormItem label="是否需要换单" {...formItemLayout}>
-              <Switch onChange={this.handleClientChange} checked={formData.ccb_need_exchange === 1} />
+              <Switch onChange={this.handleClientChange} checked={formData.delgBills[0].ccb_need_exchange} />
             </FormItem>
           </Col>
         </Row>

@@ -37,9 +37,8 @@ const initialState = {
     },
   },
   formData: {
-    model: '',
     shipmt_order_no: '',
-    shipmt_order_mode: 2,
+    shipmt_order_mode: '',
     customer_name: '',
     customer_tenant_id: -1,
     customer_partner_id: -1,
@@ -56,42 +55,7 @@ const initialState = {
     cust_shipmt_volume: 0,
     cust_shipmt_package: '',
     cust_shipmt_goods_type: null,
-    ccb_need_exchange: 0,
     remark: '',
-    transports: [{
-      trs_mode_id: -1,
-      trs_mode_code: '',
-      trs_mode: '',
-      consigner_name: '',
-      consigner_province: '',
-      consigner_city: '',
-      consigner_district: '',
-      consigner_street: '',
-      consigner_region_code: -1,
-      consigner_addr: '',
-      consigner_email: '',
-      consigner_contact: '',
-      consigner_mobile: '',
-      consignee_name: '',
-      consignee_province: '',
-      consignee_city: '',
-      consignee_district: '',
-      consignee_street: '',
-      consignee_region_code: -1,
-      consignee_addr: '',
-      consignee_email: '',
-      consignee_contact: '',
-      consignee_mobile: '',
-      pack_count: 1,
-      gross_wt: 0,
-    }],
-    delgBills: [{
-      decl_way_code: '',
-      manual_no: '',
-      pack_count: 1,
-      gross_wt: 0,
-    }],
-    files: [],
     subOrders: [],
   },
   formRequires: {
@@ -118,12 +82,18 @@ export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.LOAD_FORM_REQUIRES_SUCCEED:
       return { ...state, formRequires: action.result.data };
-    case actionTypes.SET_CLIENT_FORM:
-      if (Object.keys(action.data).length === 0) {
+    case actionTypes.SET_CLIENT_FORM: {
+      const { index, orderInfo } = action.data;
+      if (index === -1) {
+        return { ...state, formData: { ...state.formData, ...orderInfo } };
+      } else if (index === -2) {
         return { ...state, formData: initialState.formData };
       } else {
-        return { ...state, formData: { ...state.formData, ...action.data } };
+        const subOrders = [...state.formData.subOrders];
+        subOrders.splice(index, 1, orderInfo);
+        return { ...state, formData: { ...state.formData, subOrders } };
       }
+    }
     case actionTypes.SUBMIT_ORDER_SUCCEED:
       return { ...state };
     case actionTypes.LOAD_ORDERS:
@@ -228,10 +198,10 @@ export function removeOrder({ tenantId, loginId, username, shipmtOrderNo }) {
   };
 }
 
-export function setClientForm(data) {
+export function setClientForm(index, orderInfo) {
   return {
     type: actionTypes.SET_CLIENT_FORM,
-    data,
+    data: { index, orderInfo },
   };
 }
 

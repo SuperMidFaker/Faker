@@ -80,7 +80,7 @@ export default class ShipmentOrderList extends React.Component {
   }
   msg = key => formatMsg(this.props.intl, key)
   handleCreate = () => {
-    this.props.setClientForm({});
+    this.props.setClientForm(-2, {});
     this.context.router.push('/customer/orders/create');
   }
   handleRemove = (shipmtOrderNo) => {
