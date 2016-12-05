@@ -63,11 +63,11 @@ export default class BusinessModel extends React.Component {
       editIndex: -1,
     });
     const { customer, tenantId } = this.props;
-    const { id: partnerId, partner_tenant_id: partnerTenantId } = customer;
+    const { id: partnerId } = customer;
     if (model.id > 0) {
       this.props.updateBusinessModel(model.id, model.model);
     } else {
-      this.props.addBusinessModel(tenantId, partnerId, partnerTenantId, model.model);
+      this.props.addBusinessModel(tenantId, partnerId, model.model);
     }
   }
   handleDeleteModel = (id, index) => {

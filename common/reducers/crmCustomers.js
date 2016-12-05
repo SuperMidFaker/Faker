@@ -231,7 +231,7 @@ export function deleteBusinessModel(id) {
   };
 }
 
-export function addBusinessModel(tenantId, partnerId, partnerTenantId, model) {
+export function addBusinessModel(tenantId, partnerId, model) {
   return {
     [CLIENT_API]: {
       types: [
@@ -242,7 +242,7 @@ export function addBusinessModel(tenantId, partnerId, partnerTenantId, model) {
       endpoint: 'v1/crm/customer/business/model/add',
       method: 'post',
       data: {
-        tenantId, partnerId, partnerTenantId, model,
+        tenantId, partnerId, model,
       },
     },
   };
