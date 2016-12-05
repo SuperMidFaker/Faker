@@ -110,7 +110,7 @@ export default class ExpenseList extends Component {
           dataIndex: 'all_bill',
           key: 'all_bill',
           render: (o) => {
-            if (o) {
+            if (!isNaN(o)) {
               return (<span className="mdc-text-info"><b>{o.toFixed(2)}</b></span>);
             }
           },
@@ -120,7 +120,7 @@ export default class ExpenseList extends Component {
           key: 'serv_bill',
           width: 80,
           render: (o) => {
-            if (o) {
+            if (!isNaN(o)) {
               return o.toFixed(2);
             }
           },
@@ -130,7 +130,7 @@ export default class ExpenseList extends Component {
           key: 'cush_bill',
           width: 80,
           render: (o, row) => {
-            if (o) {
+            if (!isNaN(o)) {
               const labelElem = (
                 <span>{o.toFixed(2)}<Icon type="edit" /></span>
               );
@@ -150,7 +150,7 @@ export default class ExpenseList extends Component {
           dataIndex: 'all_cost',
           width: 80,
           render: (o) => {
-            if (o) {
+            if (!isNaN(o)) {
               return (<span className="mdc-text-warning"><b>{o.toFixed(2)}</b></span>);
             }
           },
@@ -160,7 +160,7 @@ export default class ExpenseList extends Component {
           key: 'serv_cost',
           width: 80,
           render: (o) => {
-            if (o) {
+            if (!isNaN(o)) {
               return o.toFixed(2);
             }
           },
@@ -170,7 +170,7 @@ export default class ExpenseList extends Component {
           key: 'cush_cost',
           width: 80,
           render: (o, row) => {
-            if (o) {
+            if (!isNaN(o)) {
               const labelElem = (
                 <span>{o.toFixed(2)}<Icon type="edit" /></span>
               );

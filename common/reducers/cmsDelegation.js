@@ -152,7 +152,8 @@ const initialState = {
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.LOAD_ACCEPT:
-      return { ...state, delegationlist: { ...state.delegationlist, loading: true } };
+      return { ...state, delegationlist: { ...state.delegationlist, loading: true },
+        listView: 'delegation', listFilter: JSON.parse(action.params.filter) };
     case actionTypes.LOAD_ACCEPT_SUCCEED: {
       const delgBillsMap = {};
       const delgList = action.result.data;
@@ -160,22 +161,20 @@ export default function reducer(state = initialState, action) {
         delgBillsMap[delg.delg_no] = [];
       });
       return { ...state, delegationlist: { ...state.delegationlist, loading: false,
-        ...delgList }, delgBillsMap, listView: 'delegation',
-        listFilter: JSON.parse(action.params.filter) };
+        ...delgList }, delgBillsMap };
     }
     case actionTypes.LOAD_ACCEPT_FAIL:
       return { ...state, delegationlist: { ...state.delegationlist, loading: false }, delgBillsMap: {} };
     case actionTypes.LOAD_CIQ:
-      return { ...state, ciqlist: { ...state.ciqlist, loading: true } };
+      return { ...state, ciqlist: { ...state.ciqlist, loading: true }, listView: 'ciq',
+        listFilter: JSON.parse(action.params.filter) };
     case actionTypes.LOAD_CIQ_SUCCEED: {
       const ciqBillsMap = {};
       const ciqList = action.result.data;
       ciqList.data.forEach((delg) => {
         ciqBillsMap[delg.delg_no] = [];
       });
-      return { ...state, ciqlist: { ...action.result.data, loading: false }, ciqBillsMap,
-        listView: 'ciq',
-        listFilter: JSON.parse(action.params.filter) };
+      return { ...state, ciqlist: { ...action.result.data, loading: false }, ciqBillsMap };
     }
     case actionTypes.LOAD_CIQ_FAIL:
       return { ...state, ciqlist: { ...state.ciqlist, loading: false }, ciqBillsMap: {} };
