@@ -17,6 +17,12 @@ export default class AttchmentUpload extends Component {
   state = {
     attachments: [],
   }
+  componentWillMount() {
+    this.setState({ attachments: this.props.files });
+    if (this.props.onFileListUpdate) {
+      this.props.onFileListUpdate(this.props.files);
+    }
+  }
   componentWillReceiveProps(nextProps) {
     if (nextProps.files.length !== this.state.attachments.length) {
       this.setState({ attachments: nextProps.files });

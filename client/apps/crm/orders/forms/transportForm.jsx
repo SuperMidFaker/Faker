@@ -19,7 +19,6 @@ const formItemLayout = {
 @injectIntl
 @connect(
   state => ({
-    formData: state.crmOrders.formData,
     formRequires: state.crmOrders.formRequires,
   }),
   { setClientForm }
@@ -28,6 +27,7 @@ const formItemLayout = {
 export default class TransportForm extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
+    index: PropTypes.number.isRequired,
     operation: PropTypes.oneOf(['view', 'edit', 'create']),
     formRequires: PropTypes.object.isRequired,
     formData: PropTypes.object.isRequired,
@@ -38,7 +38,11 @@ export default class TransportForm extends Component {
   }
 
   msg = key => formatMsg(this.props.intl, key)
-
+  handleSetClientForm = (data) => {
+    const { index, formData } = this.props;
+    const newData = { ...formData, ...data };
+    this.props.setClientForm(index, newData);
+  }
   handleAddRow = () => {
     const transport = {
       consigner_name: '',
@@ -82,17 +86,17 @@ export default class TransportForm extends Component {
       transport.trs_bulk_container = transports[lastPos].trs_bulk_container;
     }
     transports.push(transport);
-    this.props.setClientForm({ transports });
+    this.handleSetClientForm({ transports });
   }
   handleRemoveRow(k) {
     const transports = [...this.props.formData.transports];
     transports.splice(k, 1);
-    this.props.setClientForm({ transports });
+    this.handleSetClientForm({ transports });
   }
   handleChange = (k, key, value) => {
     const transports = [...this.props.formData.transports];
     transports[k][key] = value;
-    this.props.setClientForm({ transports });
+    this.handleSetClientForm({ transports });
   }
   handleConsignChange = (k, key, value) => {
     const transports = [...this.props.formData.transports];
@@ -147,7 +151,7 @@ export default class TransportForm extends Component {
         transports[k].consignee_mobile = consign.mobile;
       }
     }
-    this.props.setClientForm({ transports });
+    this.handleSetClientForm({ transports });
   }
   handleRegionValueChange = (k, consignType, region) => {
     const [code, province, city, district, street] = region;
@@ -158,7 +162,7 @@ export default class TransportForm extends Component {
     transports[k][`${consignType}_city`] = city;
     transports[k][`${consignType}_district`] = district;
     transports[k][`${consignType}_street`] = street;
-    this.props.setClientForm({ transports });
+    this.handleSetClientForm({ transports });
   }
   handleTransmodeChange = (value) => {
     const transportMode = this.props.formRequires.transitModes.find(item => item.id === value);
@@ -170,7 +174,7 @@ export default class TransportForm extends Component {
         trs_mode: transportMode.mode_name,
       };
     });
-    this.props.setClientForm({ transports });
+    this.handleSetClientForm({ transports });
   }
   renderConsign = (consignType, consign, index) => {
     const title = consignType === 'consigner' ? '发货方' : '收货方';
