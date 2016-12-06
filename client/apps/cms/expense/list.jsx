@@ -364,7 +364,7 @@ export default class ExpenseList extends Component {
             </div>
             <div className="panel-body table-panel group-header">
               <Table columns={this.columns} dataSource={this.dataSource} loading={expslist.loading}
-                bordered scroll={{ x: 1400 }}
+                bordered scroll={{ x: 1400 }} rowKey="delg_no"
               />
             </div>
           </div>

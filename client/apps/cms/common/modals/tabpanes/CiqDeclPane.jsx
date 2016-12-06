@@ -58,7 +58,7 @@ export default class CiqDeclPane extends React.Component {
       })),
     }),
   }
-  componentWillMount() {
+  componentDidMount() {
     this.props.loadDeclCiqByDelgNo(this.props.delgNo, this.props.tenantId);
   }
   componentWillReceiveProps(nextProps) {

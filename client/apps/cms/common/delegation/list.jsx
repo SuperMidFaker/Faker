@@ -593,7 +593,7 @@ export default class DelegationList extends Component {
               }
               {
                 listView === 'ciq' &&
-                <CiqList ietype={this.props.ietype} />
+                <CiqList ietype={this.props.ietype} showPreviewer={this.handlePreview} />
               }
             </div>
           </div>

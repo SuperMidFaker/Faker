@@ -5,15 +5,13 @@ import { Badge, message, Tag } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { PARTNER_BUSINESSES, CMS_CIQ_STATUS, CIQ_SUP_STATUS } from 'common/constants';
 import { loadCiqTable, loadCertBrokers, setDispStatus, loadDisp, loadDelgDisp,
-  setCiqFinish, loadCMQParams, matchCQuote, showPreviewer, openAcceptModal,
+  setCiqFinish, loadCMQParams, matchCQuote, openAcceptModal,
 } from 'common/reducers/cmsDelegation';
-import { loadDeclCiqByDelgNo } from 'common/reducers/cmsDeclare';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from './message.i18n';
 import TrimSpan from 'client/components/trimSpan';
 import { format } from 'client/common/i18n/helpers';
 import RowUpdater from './rowUpdater';
-import PreviewPanel from '../modals/preview-panel';
 
 const formatMsg = format(messages);
 
@@ -30,8 +28,8 @@ const formatMsg = format(messages);
     cMQParams: state.cmsDelegation.cMQParams,
     delgDispShow: state.cmsDelegation.delgDispShow,
   }),
-  { loadCiqTable, loadCertBrokers, setDispStatus, loadDeclCiqByDelgNo,
-    loadDisp, loadDelgDisp, setCiqFinish, loadCMQParams, matchCQuote, showPreviewer,
+  { loadCiqTable, loadCertBrokers, setDispStatus,
+    loadDisp, loadDelgDisp, setCiqFinish, loadCMQParams, matchCQuote,
     openAcceptModal }
 )
 export default class CiqList extends Component {
@@ -66,9 +64,9 @@ export default class CiqList extends Component {
     title: this.msg('delgNo'),
     dataIndex: 'delg_no',
     width: 120,
-    render: (o, record) => {
+    render: (o) => {
       return (
-        <a onClick={() => this.handlePreview(o, record)}>
+        <a onClick={() => this.handlePreview(o)}>
           {o}
         </a>);
     },
@@ -245,17 +243,11 @@ export default class CiqList extends Component {
     });
   }
   handlePreview = (delgNo) => {
-    this.props.showPreviewer(this.props.tenantId, delgNo);
-    this.props.loadDeclCiqByDelgNo(delgNo, this.props.tenantId);
+    this.props.showPreviewer(delgNo);
   }
   render() {
     const { ciqlist } = this.props;
     this.dataSource.remotes = ciqlist;
-    return (
-      <div>
-        <Table columns={this.columns} dataSource={this.dataSource} loading={ciqlist.loading} />
-        <PreviewPanel ietype={this.props.ietype} />
-      </div>
-    );
+    return <Table columns={this.columns} dataSource={this.dataSource} loading={ciqlist.loading} />;
   }
 }

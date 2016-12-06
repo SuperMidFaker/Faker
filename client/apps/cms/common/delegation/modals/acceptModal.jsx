@@ -25,11 +25,11 @@ export default class DelgAcceptModal extends React.Component {
     visible: PropTypes.bool.isRequired,
     type: PropTypes.oneOf(['delg', 'ciq']),
     tenantId: PropTypes.number.isRequired,
-    delgDispIds: PropTypes.arrayOf(PropTypes.number).isRequired,
+    delgDispIds: PropTypes.arrayOf(PropTypes.number),
     delgOperators: PropTypes.arrayOf(PropTypes.shape({
       lid: PropTypes.number,
       name: PropTypes.string,
-    })).isRequired,
+    })),
     closeAcceptModal: PropTypes.func.isRequired,
     acceptDelg: PropTypes.func.isRequired,
     loadDelgOperators: PropTypes.func.isRequired,
@@ -37,7 +37,7 @@ export default class DelgAcceptModal extends React.Component {
   state = {
     suggestions: [],
   }
-  componentWillMount() {
+  componentDidMount() {
     if (this.props.tenantId) {
       this.props.loadDelgOperators(this.props.tenantId);
     }
