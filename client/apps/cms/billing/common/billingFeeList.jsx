@@ -113,25 +113,28 @@ export default class BillingFeeList extends React.Component {
     }
     this.props.updateBillingFees(tenantId, dispId, 'adjust_charge', charge);
   }
-  handleChangeStatus = (dispId, status) => {
+  handleChangeStatus = (dispIds, status) => {
     const { tenantId } = this.props;
     this.setState({ changed: true });
     let s = 0;
     if (status) s = 1;
     else s = 0;
-    this.props.updateBillingFees(tenantId, dispId, 'billing_status', s);
+    for (let i = 0; i < dispIds.length; i++) {
+      const Id = dispIds[i];
+      this.props.updateBillingFees(tenantId, Id, 'billing_status', s);
+    }
   }
   renderOperation() {
     const { operation } = this.props;
     if (operation === 'check') {
       return (
-        <div className="tools">
+        <div className="top-bar-tools">
           <Button type="primary" onClick={this.handleAccept}>{this.msg('accept')}</Button>
         </div>
       );
     } else if (operation === 'edit') {
       return (
-        <div className="tools">
+        <div className="top-bar-tools">
           <Button type="primary" onClick={this.handleEdit}>{this.msg('save')}</Button>
         </div>
       );
@@ -200,7 +203,7 @@ export default class BillingFeeList extends React.Component {
         if (operation === 'view') {
           return o ? o.toFixed(2) : '';
         }
-        return (<InputNumber size="small" defaultValue={o} step={0.01} onChange={value => this.handleChangeAdjustCharges(record.disp_id, value)} />);
+        return (<InputNumber size="small" defaultValue={o} step={0.01} onChange={value => this.handleChangeAdjustCharges(record.disp_id[0], value)} />);
       },
     }, {
       title: '最终费用',
@@ -232,9 +235,11 @@ export default class BillingFeeList extends React.Component {
     return (
       <div>
         <header className="top-bar">
-          {this.renderOperation()}
           <span>{this.msg(`${operation}Billing`)}</span>
         </header>
+        <div>
+          {this.renderOperation()}
+        </div>
         <div className="main-content">
           <div className="page-body">
             <div className="panel-header">

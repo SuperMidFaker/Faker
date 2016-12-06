@@ -92,7 +92,7 @@ export default class QuotingCreate extends Component {
         </div>
         <div className="main-content">
           <div className="page-body">
-            <Collapse bordered={false} defaultActiveKey={['fees-form', 'fees-table']}>
+            <Collapse accordion bordered={false} defaultActiveKey={['fees-form', 'fees-table']}>
               <Panel header={<span>基础信息</span>} key="fees-form">
                 <FeesForm form={form} action="create" />
               </Panel>

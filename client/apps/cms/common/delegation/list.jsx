@@ -480,7 +480,7 @@ export default class DelegationList extends Component {
         title: this.msg('opColumn'),
         width: 120,
         render: (o, record) => {
-          if (record.status === CMS_DELEGATION_STATUS.unaccepted && record.recv_tenant_id === tenantId) {
+          if (record.status === CMS_DELEGATION_STATUS.unaccepted && record.recv_tenant_id === tenantId && record.source === 1) {
             return (
               <span>
                 <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
@@ -499,6 +499,10 @@ export default class DelegationList extends Component {
                   </Popconfirm>
                 </PrivilegeCover>
               </span>
+            );
+          } else if (record.status === CMS_DELEGATION_STATUS.unaccepted && record.recv_tenant_id === tenantId && record.source !== 1) {
+            return (
+              <RowUpdater onHit={this.handleDelegationAccept} label={this.msg('accepting')} row={record} />
             );
           } else if (record.status === CMS_DELEGATION_STATUS.unaccepted && record.send_tenant_id === tenantId && record.recv_tenant_id !== -1) {
             return (
@@ -589,7 +593,7 @@ export default class DelegationList extends Component {
               }
               {
                 listView === 'ciq' &&
-                <CiqList ietype={this.props.ietype} />
+                <CiqList ietype={this.props.ietype} showPreviewer={this.handlePreview} />
               }
             </div>
           </div>

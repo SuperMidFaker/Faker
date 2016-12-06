@@ -252,18 +252,14 @@ export default(store, cookie) => {
                 <Route path="ciq" component={ExportDecl.Ciqlist} />
               </Route>
             </Route>
-            <Route path="expense">
-              <IndexRedirect to="/clearance/expense/delg" />
-              <Route path="delg" component={CMSExpense.List} />
-              <Route path="declare" component={CMSExpense.DeclList} />
-            </Route>
             <Route path="quote">
               <IndexRoute component={CMSQuote.List} />
               <Route path="create" component={CMSQuote.Create} />
               <Route path="edit/:quoteno" component={CMSQuote.Edit} />
             </Route>
             <Route path="billing">
-              <IndexRedirect to="/clearance/billing/receivable" />
+              <IndexRedirect to="/clearance/billing/expense" />
+              <Route path="expense" component={CMSExpense.List} />
               <Route path="receivable">
                 <IndexRoute component={CMSBilling.ReceivableList} />
                 <Route path="create" component={CMSBilling.CreateReceivableBilling} />

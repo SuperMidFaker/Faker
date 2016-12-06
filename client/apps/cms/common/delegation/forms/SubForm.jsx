@@ -67,12 +67,14 @@ export default class SubForm extends Component {
   }
 
   remove(k) {
-    const keys = this.state.keys.filter((key) => {
-      return key !== k;
-    });
-    const bills = [...this.state.bills];
-    bills[k] = {};
-    this.setState({ bills, keys });
+    if (k !== 0) {
+      const keys = this.state.keys.filter((key) => {
+        return key !== k;
+      });
+      const bills = [...this.state.bills];
+      bills[k] = {};
+      this.setState({ bills, keys });
+    }
   }
 
   render() {

@@ -130,7 +130,6 @@ export default class BodyTable extends React.Component {
       columns.push({
         title: this.msg('copGNo'),
         width: 120,
-        fixed: 'left',
         render: (o, record, index) =>
           <ColumnInput field="cop_g_no" inEdit={index === editIndex} record={record}
             onChange={this.handleEditChange} edit={editBody}
@@ -140,7 +139,6 @@ export default class BodyTable extends React.Component {
     columns.push({
       title: this.msg('emGNo'),
       width: 50,
-      fixed: 'left',
       render: (o, record, index) =>
         <ColumnInput field="em_g_no" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} edit={editBody}
@@ -148,7 +146,6 @@ export default class BodyTable extends React.Component {
     }, {
       title: this.msg('codeT'),
       width: 100,
-      fixed: 'left',
       render: (o, record, index) =>
         <ColumnInput field="code_t" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} edit={editBody}
@@ -156,7 +153,6 @@ export default class BodyTable extends React.Component {
     }, {
       title: this.msg('codeS'),
       width: 60,
-      fixed: 'left',
       render: (o, record, index) =>
         <ColumnInput field="code_s" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} edit={editBody}
@@ -164,7 +160,6 @@ export default class BodyTable extends React.Component {
     }, {
       title: this.msg('gName'),
       width: 200,
-      fixed: 'left',
       render: (o, record, index) =>
         <ColumnInput field="g_name" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} edit={editBody}

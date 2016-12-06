@@ -160,6 +160,9 @@ export default class FeesTable extends Component {
     count: 0,
     dataSource: [],
   };
+  componentWillMount() {
+    this.setState({ dataSource: this.props.quoteData.fees });
+  }
   componentWillReceiveProps(nextProps) {
     if (nextProps.quoteData !== this.props.quoteData) {
       this.setState({ dataSource: nextProps.quoteData.fees });
@@ -279,6 +282,11 @@ export default class FeesTable extends Component {
       } else {
         message.info('保存成功', 5);
       }
+    });
+  }
+  handleCancel = () => {
+    this.setState({
+      editIndex: -1,
     });
   }
   handleMdlFeeDelete = (row, index) => {
@@ -421,7 +429,11 @@ export default class FeesTable extends Component {
           } else if (action === 'edit') {
             if (index === editIndex) {
               return (
-                <RowUpdater onHit={this.handleSave} label={msg('save')} row={record} index={index} />
+                <span>
+                  <RowUpdater onHit={this.handleSave} label={msg('save')} row={record} index={index} />
+                  <span className="ant-divider" />
+                  <RowUpdater onHit={this.handleCancel} label={msg('cancel')} />
+                </span>
               );
             } else if (record.category === 'custom') {
               return (

@@ -92,7 +92,7 @@ export default class BasicForm extends Component {
     if (getFieldValue('trans_mode') === '2' || fieldInits.trans_mode === '2') {
       transModeLabel = {
         label: formatMsg(this.props.intl, 'bLNo'),
-        title: '填报总运单号_分运单号，无分运单的填报总运单号',
+        title: '填报提单号。如有分提单的，填报提单号*分提单号',
       };
       voyageNoLabel = {
         label: formatMsg(this.props.intl, 'voyageNo'),

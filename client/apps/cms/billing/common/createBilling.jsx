@@ -103,12 +103,15 @@ export default class CreateBilling extends React.Component {
     }
     this.props.updateBillingFees(tenantId, Id, 'adjust_charge', charge);
   }
-  handleChangeStatus = (Id, status) => {
+  handleChangeStatus = (Ids, status) => {
     const { tenantId } = this.props;
     let s = 0;
     if (status) s = 1;
     else s = 0;
-    this.props.updateBillingFees(tenantId, Id, 'billing_status', s);
+    for (let i = 0; i < Ids.length; i++) {
+      const Id = Ids[i];
+      this.props.updateBillingFees(tenantId, Id, 'billing_status', s);
+    }
   }
   toggleBeforeFeesModal = () => {
     this.setState({ beforeFeesModalVisible: !this.state.beforeFeesModalVisible });
@@ -172,7 +175,7 @@ export default class CreateBilling extends React.Component {
       dataIndex: 'adjust_charge',
       width: 120,
       render: (o, record) => {
-        return (<InputNumber size="small" defaultValue={o} step={0.01} onChange={value => this.handleChangeAdjustCharges(record.disp_id, value)} />);
+        return (<InputNumber size="small" defaultValue={o} step={0.01} onChange={value => this.handleChangeAdjustCharges(record.disp_id[0], value)} />);
       },
     }, {
       title: this.msg('finalCharge'),
@@ -201,11 +204,11 @@ export default class CreateBilling extends React.Component {
     return (
       <div>
         <header className="top-bar">
-          <div className="tools">
-            <Button type="primary" onClick={this.handleSave}>{this.msg('save')}</Button>
-          </div>
           <span>{this.msg('createBilling')}</span>
         </header>
+        <div className="top-bar-tools">
+          <Button type="primary" onClick={this.handleSave}>{this.msg('save')}</Button>
+        </div>
         <div className="main-content">
           <div className="page-body">
             <div className="panel-header">

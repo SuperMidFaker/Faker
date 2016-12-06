@@ -28,23 +28,9 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
 
 const initialState = {
   expenses: {
-    server_charges: [],
-    cush_charges: [],
-    tot_sercharges: {},
-    supplier: {
-      customs: {
-        provider: '',
-        data: [],
-      },
-      ciq: {
-        provider: '',
-        data: [],
-      },
-      cert: {
-        provider: '',
-        data: [],
-      },
-    },
+    servbill: [],
+    cushbill: [],
+    allcost: [],
   },
   expslist: {
     totalCount: 0,
