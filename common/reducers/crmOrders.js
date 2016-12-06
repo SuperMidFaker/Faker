@@ -49,13 +49,15 @@ const initialState = {
     cust_shipmt_mawb: '',
     cust_shipmt_hawb: '',
     cust_shipmt_bill_lading: '',
+    cust_shipmt_bill_lading_no: '',
     cust_shipmt_vessel_voy: '',
     cust_shipmt_pieces: 0,
     cust_shipmt_weight: 0,
     cust_shipmt_volume: 0,
-    cust_shipmt_package: '',
     cust_shipmt_goods_type: null,
-    remark: '',
+    cust_shipmt_is_container: '',
+
+    containers: [],
     subOrders: [],
   },
   formRequires: {

@@ -6,7 +6,7 @@ import configureStore from 'common/adminReduxStore';
 
 const store = configureStore(window.__INITIAL_STATE__);
 if (__DEV__) {
-  window.Perf = require('react/lib/ReactPerf');
+  window.Perf = require('react-addons-perf');
 }
 const App = appWrapped(require('./routes'));
 ReactDom.render(

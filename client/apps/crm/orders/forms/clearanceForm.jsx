@@ -13,8 +13,8 @@ const Option = Select.Option;
 
 @injectIntl
 @connect(
-  () => ({
-
+  state => ({
+    formRequires: state.crmOrders.formRequires,
   }),
   { setClientForm }
 )
@@ -25,6 +25,7 @@ export default class ClearanceForm extends Component {
     index: PropTypes.number.isRequired,
     operation: PropTypes.oneOf(['view', 'edit', 'create']),
     formData: PropTypes.object.isRequired,
+    formRequires: PropTypes.object.isRequired,
     setClientForm: PropTypes.func.isRequired,
   }
   static contextTypes = {
@@ -40,12 +41,11 @@ export default class ClearanceForm extends Component {
   handleUploadFiles = (fileList) => {
     this.handleSetClientForm({ files: fileList });
   }
-  handleClientChange = (value) => {
-    const ccbNeedExchange = value ? 1 : 0;
+  handleCommonFieldChange = (filed, value) => {
     const delgBills = this.props.formData.delgBills.map((item) => {
       return {
         ...item,
-        ccb_need_exchange: ccbNeedExchange,
+        [filed]: value,
       };
     });
     this.handleSetClientForm({ delgBills });
@@ -54,12 +54,15 @@ export default class ClearanceForm extends Component {
   handleAddRow = () => {
     const delgBill = {
       decl_way_code: '',
-      manual_no: '',
       pack_count: 1,
       gross_wt: 0,
       ccb_need_exchange: 0,
+      remark: '',
+      package: '',
     };
     const delgBills = [...this.props.formData.delgBills];
+    const lastPos = delgBills.length - 1;
+    delgBill.package = delgBills[lastPos].package;
     delgBills.push(delgBill);
     this.handleSetClientForm({ delgBills });
   }
@@ -74,7 +77,7 @@ export default class ClearanceForm extends Component {
     this.handleSetClientForm({ delgBills });
   }
   render() {
-    const { formData } = this.props;
+    const { formData, formRequires } = this.props;
     const formItemLayout = {
       labelCol: { span: 6 },
       wrapperCol: { span: 18 },
@@ -82,18 +85,13 @@ export default class ClearanceForm extends Component {
     const formItems = formData.delgBills.map((item, k) => {
       return (
         <Row key={k} style={{ marginBottom: 8 }}>
-          <Col sm={6}>
+          <Col sm={5}>
             <FormItem label={this.msg('declareWay')} {...formItemLayout}>
               <Select value={item.decl_way_code} onChange={value => this.handleChange(k, 'decl_way_code', value)}>
                 {DECL_I_TYPE.map(dw =>
                   <Option value={dw.key} key={dw.key}>{dw.value}</Option>)
                 }
               </Select>
-            </FormItem>
-          </Col>
-          <Col sm={6}>
-            <FormItem label={this.msg('manualNo')} {...formItemLayout}>
-              <Input value={item.manual_no} onChange={e => this.handleChange(k, 'manual_no', e.target.value)} />
             </FormItem>
           </Col>
           <Col sm={5}>
@@ -110,6 +108,11 @@ export default class ClearanceForm extends Component {
               />
             </FormItem>
           </Col>
+          <Col sm={7}>
+            <FormItem label="备注" {...formItemLayout}>
+              <Input value={item.remark} onChange={e => this.handleChange(k, 'remark', e.target.value)} />
+            </FormItem>
+          </Col>
           <Col span={1} offset={1}>
             {formData.delgBills.length > 1 ?
               <Button type="ghost" shape="circle" onClick={() => this.handleRemoveRow(k)} icon="delete" />
@@ -122,9 +125,18 @@ export default class ClearanceForm extends Component {
     return (
       <Card>
         <Row>
+          <Col sm={5}>
+            <FormItem label="包装方式" {...formItemLayout}>
+              <Select value={formData.delgBills[0].package} onChange={value => this.handleCommonFieldChange('package', value)}>
+                {formRequires.packagings.map(
+                  pk => <Option value={pk.package_code} key={pk.package_code}>{pk.package_name}</Option>
+                )}
+              </Select>
+            </FormItem>
+          </Col>
           <Col sm={8}>
             <FormItem label="是否需要换单" {...formItemLayout}>
-              <Switch onChange={this.handleClientChange} checked={formData.delgBills[0].ccb_need_exchange} />
+              <Switch onChange={value => this.handleCommonFieldChange('ccb_need_exchange', value ? 1 : 0)} checked={formData.delgBills[0].ccb_need_exchange} />
             </FormItem>
           </Col>
         </Row>

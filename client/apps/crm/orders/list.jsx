@@ -17,6 +17,7 @@ import { CRM_ORDER_STATUS, GOODSTYPES, CRM_ORDER_MODE } from 'common/constants';
 import TrimSpan from 'client/components/trimSpan';
 import PreviewPanel from './modals/preview-panel';
 import TrsShipmtNoColumn from '../common/trsShipmtNoColumn';
+import CcbDelgNoColumn from '../common/ccbDelgNoColumn';
 
 const formatMsg = format(messages);
 function fetchData({ state, dispatch }) {
@@ -151,12 +152,15 @@ export default class ShipmentOrderList extends React.Component {
       title: '清关编号',
       dataIndex: 'ccb_delg_no',
       width: 120,
+      render: (o) => {
+        return <CcbDelgNoColumn nos={o} />;
+      },
     }, {
       title: '运输单号',
       dataIndex: 'trs_shipmt_no',
       width: 150,
       render: (o) => {
-        return <TrsShipmtNoColumn trsShipmtNos={o} />;
+        return <TrsShipmtNoColumn nos={o} />;
       },
     }, {
       title: '客户',
