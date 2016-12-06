@@ -93,12 +93,8 @@ export default class Clearance extends React.Component {
         text: formatMsg(intl, 'billing'),
         sublinks: [{
           key: 'tms-4-0',
-          path: '/clearance/expense/delg',
+          path: '/clearance/billing/expense',
           text: formatMsg(intl, 'expense'),
-        }, {
-          key: 'tms-4-1',
-          path: '/clearance/expense/declare',
-          text: formatMsg(intl, 'declExp'),
         }, {
           key: 'tms-4-2',
           path: '/clearance/billing/receivable',

@@ -51,7 +51,7 @@ const messages = defineMessages({
   },
   expense: {
     id: 'cms.module.billing.expense',
-    defaultMessage: '委托费用管理',
+    defaultMessage: '费用管理',
   },
   declExp: {
     id: 'cms.module.billing.declExp',
