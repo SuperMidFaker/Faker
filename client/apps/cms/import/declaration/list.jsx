@@ -9,8 +9,8 @@ function fetchData({ state, dispatch }) {
     ietype: 'import',
     tenantId: state.account.tenantId,
     filter: JSON.stringify({ status: 'all' }),
-    pageSize: state.cmsDelegation.delegationlist.pageSize,
-    currentPage: state.cmsDelegation.delegationlist.current,
+    pageSize: state.cmsDeclare.delgdeclList.pageSize,
+    currentPage: state.cmsDeclare.delgdeclList.current,
   }));
 }
 
