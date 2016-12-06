@@ -80,14 +80,14 @@ export default class AcceptanceEdit extends Component {
   handleSaveAccept = () => {
     this.handleSave({ isAccepted: true });
   }
-  handleUploadedFile = (file) => {
+  handleUploadFiles = (file) => {
     this.setState({
       addedFiles: [...this.state.addedFiles, file],
     });
   }
   handleFileRemove = (file) => {
     const filters = this.state.addedFiles.filter(af => af.uid !== file.uid);
-    if (filters.length !== this.state.addedFiles.length) {
+    if (filters.length !== this.state.addedFiles.length && this.state.addedFiles.length > 0) {
       this.setState({ addedFiles: filters });
     } else {
       this.setState({ removedFiles: [...this.state.removedFiles, file] });
@@ -116,7 +116,7 @@ export default class AcceptanceEdit extends Component {
                   <SubForm form={form} ietype={type} />
                 </Col>
                 <Col sm={6}>
-                  <UploadGroup onFileListUpdate={this.handleUploadFiles} onFileRemove={this.handleFileRemove} />
+                  <UploadGroup onFileUpload={this.handleUploadFiles} onFileRemove={this.handleFileRemove} />
                 </Col>
               </Row>
             </Form>
