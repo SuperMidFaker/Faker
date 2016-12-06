@@ -29,16 +29,16 @@ export default class Container extends React.Component {
     onChange: PropTypes.func.isRequired,
   }
   state = {
-    rows: createRows(10),
+    rows: createRows(5),
   }
   componentWillMount() {
     if (this.props.value.length > 0) {
-      this.setState({ rows: this.props.value.concat(createRows(10)) });
+      this.setState({ rows: this.props.value.concat(createRows(5)) });
     }
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.value.length > 0) {
-      this.setState({ rows: nextProps.value.concat(createRows(10)) });
+      this.setState({ rows: nextProps.value.concat(createRows(5)) });
     }
   }
   msg = (key, values) => formatMsg(this.props.intl, key, values)
@@ -57,7 +57,6 @@ export default class Container extends React.Component {
     const columns = [{
       name: '集装箱类型',
       key: 'container_type',
-      width: 150,
       editor: <DropDownEditor options={CONTAINER_PACKAGE_TYPE.map(item => item.value)} />,
     }, {
       name: '数量',
@@ -70,8 +69,8 @@ export default class Container extends React.Component {
         columns={columns}
         rowGetter={this.rowGetter}
         rowsCount={this.state.rows.length}
-        minHeight={400}
-        minWidth={500}
+        minHeight={300}
+        minWidth={200}
         onRowUpdated={this.handleRowUpdated}
       />
     );

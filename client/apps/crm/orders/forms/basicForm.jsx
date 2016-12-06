@@ -259,9 +259,14 @@ export default class BasicForm extends Component {
           <Col sm={24}>
             {formData.cust_shipmt_is_container === 'FCL' && (
             <FormItem label="箱型箱号" labelCol={{ span: 2 }} wrapperCol={{ span: 22 }}>
-              <Popover placement="rightBottom" title="箱型箱号" content={<Container value={formData.containers} onChange={value => this.handleChange('containers', value)} />}>
+              <Popover
+                placement="rightBottom"
+                title="箱型箱号"
+                trigger="click"
+                content={<Container value={formData.containers} onChange={value => this.handleChange('containers', value)} />}
+              >
                 <span>
-                  <a><Icon type="edit" /></a>
+                  <a><Icon type="edit" style={{ marginRight: 10 }} /></a>
                   {formData.containers.map(item => `${item.container_num} x ${item.container_type}`).join('; ')}
                 </span>
               </Popover>

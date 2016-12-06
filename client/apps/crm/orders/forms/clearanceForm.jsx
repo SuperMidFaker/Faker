@@ -79,8 +79,8 @@ export default class ClearanceForm extends Component {
   render() {
     const { formData, formRequires } = this.props;
     const formItemLayout = {
-      labelCol: { span: 6 },
-      wrapperCol: { span: 18 },
+      labelCol: { span: 7 },
+      wrapperCol: { span: 17 },
     };
     const formItems = formData.delgBills.map((item, k) => {
       return (
