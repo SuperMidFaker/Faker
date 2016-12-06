@@ -62,6 +62,7 @@ export default class AcceptanceCreate extends Component {
             manual_no: formdatas[`manual_no_${i}`],
             pack_count: formdatas[`pack_count_${i}`],
             gross_wt: formdatas[`gross_wt_${i}`],
+            remark: formdatas[`remark_${i}`],
           });
           weight += Number(formdatas[`gross_wt_${i}`]);
           pieces += Number(formdatas[`pack_count_${i}`]);
