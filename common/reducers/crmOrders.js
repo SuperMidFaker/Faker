@@ -23,19 +23,13 @@ const initialState = {
     visible: false,
     tabKey: null,
     order: {},
-    // clearance: {
-    //   delegation: {},
-    //   files: [],
-    //   delegateTracking: {},
-    //   clearanceTracking: [],
-    // },
     clearances: [],
     transports: [],
-    clearanceFees: {
-      server_charges: [],
-      cush_charges: [],
-      tot_sercharges: {},
-    },
+    clearanceFees: [
+      // server_charges: [],
+      // cush_charges: [],
+      // tot_sercharges: {},
+    ],
   },
   formData: {
     shipmt_order_no: '',
@@ -284,7 +278,7 @@ export function loadClearanceDetail({ delgNos, tenantId }) {
   };
 }
 
-export function loadClearanceFees(delgNo) {
+export function loadClearanceFees(delgNos) {
   return {
     [CLIENT_API]: {
       types: [
@@ -292,9 +286,9 @@ export function loadClearanceFees(delgNo) {
         actionTypes.LOAD_CLEARANCE_FEES_SUCCEED,
         actionTypes.LOAD_CLEARANCE_FEES_FAIL,
       ],
-      endpoint: 'v1/cms/expense/paneload',
+      endpoint: 'v1/crm/cms/expenses',
       method: 'get',
-      params: { delgNo },
+      params: { delgNos },
       origin: 'mongo',
     },
   };

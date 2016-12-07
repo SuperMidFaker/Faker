@@ -14,7 +14,7 @@ const TabPane = Tabs.TabPane;
 @connect(
   state => ({
     order: state.crmOrders.previewer.order,
-    delgNo: state.crmOrders.previewer.order.ccb_delg_no,
+    delgNos: state.crmOrders.previewer.order.ccb_delg_no,
     transports: state.crmOrders.previewer.transports,
     clearanceFees: state.crmOrders.previewer.clearanceFees,
   }),
@@ -24,35 +24,35 @@ export default class ChargePanel extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     loadClearanceFees: PropTypes.func.isRequired,
-    delgNo: PropTypes.string.isRequired,
+    delgNos: PropTypes.string.isRequired,
     order: PropTypes.object.isRequired,
     transports: PropTypes.array.isRequired,
-    clearanceFees: PropTypes.object.isRequired,
+    clearanceFees: PropTypes.array.isRequired,
   }
   state = {
     tabKey: '',
   }
   componentWillMount() {
-    const { delgNo, transports, order } = this.props;
-    if (delgNo && delgNo !== this.props.delgNo) {
-      this.props.loadClearanceFees(delgNo);
+    const { delgNos, transports, order, clearanceFees } = this.props;
+    if (delgNos) {
+      this.props.loadClearanceFees(delgNos);
     }
     let tabKey = transports[0] ? transports[0].shipmt_no : '';
-    if (order.shipmt_order_mode === CRM_ORDER_MODE.clearance || order.shipmt_order_mode === CRM_ORDER_MODE.clearanceAndTransport) {
-      tabKey = delgNo;
+    if (order.shipmt_order_mode.indexOf(CRM_ORDER_MODE.clearance) >= 0 && clearanceFees.length > 0) {
+      tabKey = clearanceFees[0].delg_no;
     }
     this.setState({
       tabKey,
     });
   }
   componentWillReceiveProps(nextProps) {
-    const { delgNo, transports, order } = nextProps;
-    if (delgNo && delgNo !== this.props.delgNo) {
-      this.props.loadClearanceFees(delgNo);
+    const { delgNos, transports, order, clearanceFees } = nextProps;
+    if (delgNos && delgNos !== this.props.delgNos) {
+      this.props.loadClearanceFees(delgNos);
     }
     let tabKey = transports[0] ? transports[0].shipmt_no : '';
-    if (order.shipmt_order_mode === CRM_ORDER_MODE.clearance || order.shipmt_order_mode === CRM_ORDER_MODE.clearanceAndTransport) {
-      tabKey = delgNo;
+    if (order.shipmt_order_mode.indexOf(CRM_ORDER_MODE.clearance) >= 0 && clearanceFees.length > 0) {
+      tabKey = clearanceFees[0].delg_no;
     }
     this.setState({
       tabKey,
@@ -132,8 +132,7 @@ export default class ChargePanel extends React.Component {
       });
     }
   }
-  renderClearanceFees = () => {
-    const { clearanceFees } = this.props;
+  renderClearanceFees = (clearanceFee) => {
     const columns = [{
       title: this.msg('feeName'),
       dataIndex: 'fee_name',
@@ -186,11 +185,11 @@ export default class ChargePanel extends React.Component {
       key: 'total_fee',
       width: '60%',
     }];
-    const servDataSource = clearanceFees.server_charges;
-    if (clearanceFees.tot_sercharges && clearanceFees.tot_sercharges.fee_name) {
-      servDataSource.push(clearanceFees.tot_sercharges);
+    const servDataSource = clearanceFee.server_charges;
+    if (clearanceFee.tot_sercharges && clearanceFee.tot_sercharges.fee_name) {
+      servDataSource.push(clearanceFee.tot_sercharges);
     }
-    const cushDataSource = clearanceFees.cush_charges;
+    const cushDataSource = clearanceFee.cush_charges;
     return (
       <div className="pane-content tab-pane">
         <Card title={this.msg('serviceFee')} bodyStyle={{ padding: 8 }}>
@@ -310,20 +309,22 @@ export default class ChargePanel extends React.Component {
     const { intl, order, transports, clearanceFees } = this.props;
     let clearanceFee = 0;
     let transportFee = 0;
-    if (order.shipmt_order_mode === CRM_ORDER_MODE.clearance || order.shipmt_order_mode === CRM_ORDER_MODE.clearanceAndTransport) {
-      const servDataSource = clearanceFees.server_charges;
-      if (clearanceFees.tot_sercharges.fee_name) {
-        servDataSource.push(clearanceFees.tot_sercharges);
-      }
-      const cushDataSource = clearanceFees.cush_charges;
-      servDataSource.forEach((item) => {
-        clearanceFee += item.total_fee;
-      });
-      cushDataSource.forEach((item) => {
-        clearanceFee += item.total_fee;
+    if (order.shipmt_order_mode.indexOf(CRM_ORDER_MODE.clearance) >= 0) {
+      clearanceFees.forEach((fee) => {
+        const servDataSource = fee.server_charges;
+        if (fee.tot_sercharges.fee_name) {
+          servDataSource.push(fee.tot_sercharges);
+        }
+        const cushDataSource = fee.cush_charges;
+        servDataSource.forEach((item) => {
+          clearanceFee += item.total_fee;
+        });
+        cushDataSource.forEach((item) => {
+          clearanceFee += item.total_fee;
+        });
       });
     }
-    if (order.shipmt_order_mode === CRM_ORDER_MODE.transport || order.shipmt_order_mode === CRM_ORDER_MODE.clearanceAndTransport) {
+    if (order.shipmt_order_mode.indexOf(CRM_ORDER_MODE.transport) >= 0) {
       transports.forEach((item) => {
         if (item.fees.advance_charge) {
           transportFee += item.fees.advance_charge;
@@ -341,19 +342,43 @@ export default class ChargePanel extends React.Component {
     }
     const totalFee = clearanceFee + transportFee;
     if (order.shipmt_order_mode === CRM_ORDER_MODE.clearance) {
-      return (
-        <div className="pane-content tab-pane" >
-          <Card bodyStyle={{ padding: 16 }}>
-            <Row>
-              <h5>清关</h5>
-              <div style={{ color: '#2DB7F5', fontSize: '18px' }}>{
-                  intl.formatNumber(clearanceFee.toFixed(2), { style: 'currency', currency: 'cny' })
-                }</div>
-            </Row>
-          </Card>
-          {this.renderClearanceFees()}
-        </div>
-      );
+      if (clearanceFees.length === 1) {
+        return (
+          <div className="pane-content tab-pane" >
+            <Card bodyStyle={{ padding: 16 }}>
+              <Row>
+                <h5>清关</h5>
+                <div style={{ color: '#2DB7F5', fontSize: '18px' }}>{
+                    intl.formatNumber(clearanceFee.toFixed(2), { style: 'currency', currency: 'cny' })
+                  }</div>
+              </Row>
+            </Card>
+            {this.renderClearanceFees(clearanceFees[0])}
+          </div>
+        );
+      } else {
+        return (
+          <div className="pane-content tab-pane" >
+            <Card bodyStyle={{ padding: 16 }}>
+              <Row>
+                <h5>清关</h5>
+                <div style={{ color: '#2DB7F5', fontSize: '18px' }}>{
+                    intl.formatNumber(clearanceFee.toFixed(2), { style: 'currency', currency: 'cny' })
+                  }</div>
+              </Row>
+            </Card>
+            <Tabs activeKey={this.state.tabKey} tabPosition="left" onChange={this.handleChangeTab}>
+              {clearanceFees.map((item) => {
+                return (
+                  <TabPane tab={item.delg_no} key={item.delg_no}>
+                    {this.renderClearanceFees(item)}
+                  </TabPane>
+                );
+              })}
+            </Tabs>
+          </div>
+        );
+      }
     } else if (order.shipmt_order_mode === CRM_ORDER_MODE.transport) {
       if (transports.length === 1) {
         return (
@@ -418,16 +443,19 @@ export default class ChargePanel extends React.Component {
             </Row>
           </Card>
           <Tabs activeKey={this.state.tabKey} tabPosition="left" onChange={this.handleChangeTab}>
-            <TabPane tab={order.ccb_delg_no} key={order.ccb_delg_no}>
-              {this.renderClearanceFees()}
-            </TabPane>
-            {transports.map((item) => {
+            {clearanceFees.map((item) => {
+              return (
+                <TabPane tab={item.delg_no} key={item.delg_no}>
+                  {this.renderClearanceFees(item)}
+                </TabPane>
+              );
+            }).concat(transports.map((item) => {
               return (
                 <TabPane tab={item.shipmt_no} key={item.shipmt_no}>
                   {this.renderTransportFees(item)}
                 </TabPane>
               );
-            })}
+            }))}
           </Tabs>
         </div>
       );
