@@ -99,7 +99,7 @@ export default defineMessages({
   },
   generateEntry: {
     id: 'cms.docs.generate.entry',
-    defaultMessage: '清单生成报关单',
+    defaultMessage: '生成报关单',
   },
   addEntry: {
     id: 'cms.docs.add.entry',
@@ -341,9 +341,9 @@ export default defineMessages({
     id: 'cms.docs.table.save',
     defaultMessage: '保存',
   },
-  import: {
+  importBody: {
     id: 'cms.docs.table.import',
-    defaultMessage: '导入',
+    defaultMessage: '导入清单',
   },
   cancel: {
     id: 'cms.docs.table.cancel',
