@@ -99,7 +99,7 @@ const messages = defineMessages({
   },
   searchPlaceholder: {
     id: 'crm.orders.search.placeholder',
-    defaultMessage: '运单号或客户单号',
+    defaultMessage: '业务编号或客户单号',
   },
   all: {
     id: 'crm.orders.radio.all',

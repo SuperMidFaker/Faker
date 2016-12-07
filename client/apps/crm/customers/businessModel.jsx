@@ -38,6 +38,7 @@ export default class BusinessModel extends React.Component {
   }
   state = {
     editIndex: -1,
+    selectValue: '',
   }
   componentDidMount() {
     this.handleTableLoad();
@@ -98,6 +99,7 @@ export default class BusinessModel extends React.Component {
   }
   handleModelChange = (index, value) => {
     this.props.addModelNode(index, value);
+    this.setState({ selectValue: '' });
   }
   handleDeleteModelNode = (index, position) => {
     this.props.deleteModelNode(index, position);
@@ -123,7 +125,7 @@ export default class BusinessModel extends React.Component {
   }
   render() {
     const { businessModels } = this.props;
-    const { editIndex } = this.state;
+    const { editIndex, selectValue } = this.state;
     const columns = [{
       title: '业务模式',
       dataIndex: 'model',
@@ -137,7 +139,7 @@ export default class BusinessModel extends React.Component {
           return (
             <div>
               <span>{this.renderModel(array, index)}</span>
-              <Select style={{ marginLeft: 15, width: 100 }} onChange={value => this.handleModelChange(index, value)}>
+              <Select value={selectValue} style={{ marginLeft: 15, width: 100 }} onChange={value => this.handleModelChange(index, value)}>
                 <Option value="clearance">清关</Option>
                 <Option value="transport">运输</Option>
               </Select>

@@ -11,7 +11,6 @@ export const CRM_ORDER_STATUS = {
 };
 
 export const CRM_ORDER_MODE = {
-  clearance: 0,
-  transport: 1,
-  clearanceAndTransport: 2,
+  clearance: 'clearance',
+  transport: 'transport',
 };

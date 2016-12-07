@@ -22,7 +22,7 @@ const TabPane = Tabs.TabPane;
     tabKey: state.crmOrders.previewer.tabKey,
     order: state.crmOrders.previewer.order,
     previewer: state.crmOrders.previewer,
-    delgNo: state.crmOrders.previewer.order.ccb_delg_no,
+    delgNos: state.crmOrders.previewer.order.ccb_delg_no || '',
     shipmtNos: state.crmOrders.previewer.order.trs_shipmt_no || '',
   }),
   { hidePreviewer, changePreviewerTab, loadClearanceDetail, loadTransportDetail }
@@ -37,15 +37,15 @@ export default class PreviewPanel extends React.Component {
     changePreviewerTab: PropTypes.func.isRequired,
     order: PropTypes.object.isRequired,
     previewer: PropTypes.object.isRequired,
-    delgNo: PropTypes.string.isRequired,
+    delgNos: PropTypes.string.isRequired,
     shipmtNos: PropTypes.string.isRequired,
     loadClearanceDetail: PropTypes.func.isRequired,
     loadTransportDetail: PropTypes.func.isRequired,
   }
   componentWillMount() {
-    const { tenantId, delgNo, shipmtNos } = this.props;
-    if (delgNo) {
-      this.props.loadClearanceDetail({ tenantId, delgNo });
+    const { tenantId, delgNos, shipmtNos } = this.props;
+    if (delgNos) {
+      this.props.loadClearanceDetail({ tenantId, delgNos });
     }
     if (shipmtNos) {
       this.props.loadTransportDetail({ tenantId, shipmtNos });
@@ -60,9 +60,9 @@ export default class PreviewPanel extends React.Component {
     });
   }
   componentWillReceiveProps(nextProps) {
-    const { tenantId, delgNo, shipmtNos } = nextProps;
-    if (delgNo && delgNo !== this.props.delgNo) {
-      this.props.loadClearanceDetail({ tenantId, delgNo });
+    const { tenantId, delgNos, shipmtNos } = nextProps;
+    if (delgNos && delgNos !== this.props.delgNos) {
+      this.props.loadClearanceDetail({ tenantId, delgNos });
     }
     if (shipmtNos && shipmtNos !== this.props.shipmtNos) {
       this.props.loadTransportDetail({ tenantId, shipmtNos });
@@ -97,14 +97,14 @@ export default class PreviewPanel extends React.Component {
     }
   }
 
-  renderTabs(mode) {
+  renderTabs(mode = '') {
     let tabKey;
     if (this.props.tabKey) {
       tabKey = this.props.tabKey;
-    } else if (mode === CRM_ORDER_MODE.clearance || mode === CRM_ORDER_MODE.clearanceAndTransport) {
-      tabKey = 'clearance';
+    } else if (mode.indexOf(CRM_ORDER_MODE.clearance) >= 0) {
+      tabKey = CRM_ORDER_MODE.clearance;
     } else {
-      tabKey = 'transport';
+      tabKey = CRM_ORDER_MODE.transport;
     }
     if (mode === CRM_ORDER_MODE.clearance) {
       return (

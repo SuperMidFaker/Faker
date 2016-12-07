@@ -23,12 +23,13 @@ const initialState = {
     visible: false,
     tabKey: null,
     order: {},
-    clearance: {
-      delegation: {},
-      files: [],
-      delegateTracking: {},
-      clearanceTracking: [],
-    },
+    // clearance: {
+    //   delegation: {},
+    //   files: [],
+    //   delegateTracking: {},
+    //   clearanceTracking: [],
+    // },
+    clearances: [],
     transports: [],
     clearanceFees: {
       server_charges: [],
@@ -115,7 +116,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_CLEARANCE_DETAIL_SUCCEED: {
       return { ...state, previewer: {
         ...state.previewer,
-        clearance: action.result.data,
+        clearances: action.result.data,
       } };
     }
     case actionTypes.LOAD_CLEARANCE_FEES_SUCCEED:
@@ -268,7 +269,7 @@ export function loadOrderDetail(shipmtOrderNo, tenantId, tabKey = '') {
   };
 }
 
-export function loadClearanceDetail({ delgNo, tenantId }) {
+export function loadClearanceDetail({ delgNos, tenantId }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -276,9 +277,9 @@ export function loadClearanceDetail({ delgNo, tenantId }) {
         actionTypes.LOAD_CLEARANCE_DETAIL_SUCCEED,
         actionTypes.LOAD_CLEARANCE_DETAIL_FAILED,
       ],
-      endpoint: 'v1/cms/delegate/previewer',
+      endpoint: 'v1/crm/delegation/detail',
       method: 'get',
-      params: { delgNo, tenantId },
+      params: { delgNos, tenantId },
     },
   };
 }

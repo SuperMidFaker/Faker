@@ -13,7 +13,7 @@ import messages from './message.i18n';
 import { loadOrders, loadFormRequires, removeOrder, setClientForm, acceptOrder,
 loadOrderDetail, changePreviewerTab, hidePreviewer } from 'common/reducers/crmOrders';
 import moment from 'moment';
-import { CRM_ORDER_STATUS, GOODSTYPES, CRM_ORDER_MODE } from 'common/constants';
+import { CRM_ORDER_STATUS, GOODSTYPES } from 'common/constants';
 import TrimSpan from 'client/components/trimSpan';
 import PreviewPanel from './modals/preview-panel';
 import TrsShipmtNoColumn from '../common/trsShipmtNoColumn';
@@ -207,18 +207,15 @@ export default class ShipmentOrderList extends React.Component {
       dataIndex: 'order_status',
       width: 100,
       render: (o, record) => {
+        const percent = record.finish_num / record.shipmt_order_mode.split(',').length * 100;
         if (o === CRM_ORDER_STATUS.created) {
           return (
             <div>
               创建
-              <Progress percent={25} strokeWidth={5} showInfo={false} />
+              <Progress percent={percent} strokeWidth={5} showInfo={false} />
             </div>
           );
         } else if (o === CRM_ORDER_STATUS.clearancing) {
-          let percent = 50;
-          if (record.shipmt_order_mode === CRM_ORDER_MODE.clearanceAndTransport) {
-            percent = 25;
-          }
           return (
             <div>
               清关
@@ -226,10 +223,6 @@ export default class ShipmentOrderList extends React.Component {
             </div>
           );
         } else if (o === CRM_ORDER_STATUS.transporting) {
-          let percent = 50;
-          if (record.shipmt_order_mode === CRM_ORDER_MODE.clearanceAndTransport) {
-            percent = 75;
-          }
           return (
             <div>
               运输
@@ -240,7 +233,7 @@ export default class ShipmentOrderList extends React.Component {
           return (
             <div>
               完结
-              <Progress percent={100} strokeWidth={5} showInfo={false} />
+              <Progress percent={percent} strokeWidth={5} showInfo={false} />
             </div>
           );
         }

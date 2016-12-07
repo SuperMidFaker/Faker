@@ -1,11 +1,12 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Row, Col, Card } from 'antd';
+import { Row, Col, Card, Tabs } from 'antd';
 import './pane.less';
 import ClearanceStatus from './clearanceStatus';
 
-let FILE = [];
+const TabPane = Tabs.TabPane;
+
 function getColCls(col) {
   if (col) {
     const { span, offset } = col;
@@ -35,13 +36,13 @@ function fileSort(filename) {
   const ext = getExtension(filename);
   const type = ext.toLowerCase();
   if (type === 'doc' || type === 'pages' || type === 'docx') {
-    FILE.push({ type: 'doc', name: filename });
+    return { type: 'doc', name: filename };
   } else if (type === 'xls' || type === 'numbers') {
-    FILE.push({ type: 'xls', name: filename });
+    return { type: 'xls', name: filename };
   } else if (type === 'zip' || type === 'rar') {
-    FILE.push({ type: 'zip', name: filename });
+    return { type: 'zip', name: filename };
   } else {
-    FILE.push({ type: 'pdf', name: filename });
+    return { type: 'pdf', name: filename };
   }
 }
 
@@ -54,30 +55,44 @@ PaneFormItem.propTypes = {
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    delegation: state.crmOrders.previewer.clearance.delegation,
-    files: state.crmOrders.previewer.clearance.files,
-    delegateTracking: state.crmOrders.previewer.clearance.delegateTracking,
+    clearances: state.crmOrders.previewer.clearances,
   }), { }
 )
 export default class ClearancePane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
-    delegation: PropTypes.object.isRequired,
-    files: PropTypes.array.isRequired,
-    delegateTracking: PropTypes.object.isRequired,
+    clearances: PropTypes.array.isRequired,
+  }
+  state = {
+    tabKey: '',
+  }
+  componentWillMount() {
+    const { clearances } = this.props;
+    const tabKey = clearances[0] ? clearances[0].delegation.delg_no : '';
+    this.setState({
+      tabKey,
+    });
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.files.length !== this.props.files.length) {
-      FILE = [];
-      nextProps.files.forEach((fl) => {
-        fileSort(fl.name);
-      });
-    }
+    const { clearances } = nextProps;
+    const tabKey = clearances[0] ? clearances[0].delegation.delg_no : '';
+    this.setState({
+      tabKey,
+    });
   }
-  render() {
-    const { delegation, delegateTracking } = this.props;
+  handleChangeTab = (tabKey) => {
+    this.setState({
+      tabKey,
+    });
+  }
+  renderClearance({ delegation, delegateTracking, files }) {
     let img = '';
+    const FILE = [];
+    files.forEach((fl) => {
+      FILE.push(fileSort(fl.name));
+    });
+
     const filenames = FILE.map((fl, index) => {
       if (fl.type === 'doc') {
         img = 'word.png';
@@ -179,5 +194,30 @@ export default class ClearancePane extends React.Component {
         </Card>
       </div>
     );
+  }
+  render() {
+    const { clearances } = this.props;
+
+    if (clearances.length === 1) {
+      return (
+        <div>
+          {this.renderClearance(clearances[0])}
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          <Tabs activeKey={this.state.tabKey} tabPosition="left" onChange={this.handleChangeTab}>
+            {clearances.map((item) => {
+              return (
+                <TabPane tab={item.delegation.delg_no} key={item.delegation.delg_no}>
+                  {this.renderClearance(item)}
+                </TabPane>
+              );
+            })}
+          </Tabs>
+        </div>
+      );
+    }
   }
 }
