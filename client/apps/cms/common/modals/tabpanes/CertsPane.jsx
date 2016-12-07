@@ -54,7 +54,7 @@ export default class CertsPane extends React.Component {
         if (!isNaN(o)) {
           return (<span>{o.toFixed(2)}</span>);
         }
-      }
+      },
     }, {
       title: '备注',
       dataIndex: 'remark',
