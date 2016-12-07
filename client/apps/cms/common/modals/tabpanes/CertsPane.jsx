@@ -50,6 +50,11 @@ export default class CertsPane extends React.Component {
       dataIndex: 'total_fee',
       key: 'total_fee',
       width: '15%',
+      render: (o) => {
+        if (!isNaN(o)) {
+          return (<span>{o.toFixed(2)}</span>);
+        }
+      }
     }, {
       title: '备注',
       dataIndex: 'remark',
