@@ -63,6 +63,7 @@ export default class ClearanceForm extends Component {
     const delgBills = [...this.props.formData.delgBills];
     const lastPos = delgBills.length - 1;
     delgBill.package = delgBills[lastPos].package;
+    delgBill.ccb_need_exchange = delgBills[lastPos].ccb_need_exchange;
     delgBills.push(delgBill);
     this.handleSetClientForm({ delgBills });
   }
