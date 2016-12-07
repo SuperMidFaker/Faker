@@ -167,10 +167,9 @@ export default class CiqDeclList extends Component {
       showQuickJumper: false,
       pageSize: result.pageSize,
     }),
-    getParams: (pagination, filters) => {
+    getParams: (pagination) => {
       const params = {
         ietype: this.props.ietype,
-        filter: JSON.stringify(filters),
         tenantId: this.props.tenantId,
         pageSize: pagination.pageSize,
         currentPage: pagination.current,
@@ -215,6 +214,18 @@ export default class CiqDeclList extends Component {
     const filters = this.mergeFilters(this.props.listFilter, searchVal);
     this.handleTableLoad(1, filters);
   }
+  mergeFilters(curFilters, value) {
+    const newFilters = {};
+    Object.keys(curFilters).forEach((key) => {
+      if (key !== 'filterNo') {
+        newFilters[key] = curFilters[key];
+      }
+    });
+    if (value !== null && value !== undefined && value !== '') {
+      newFilters.filterNo = value;
+    }
+    return newFilters;
+  }
   render() {
     const { ciqdeclList } = this.props;
     this.dataSource.remotes = ciqdeclList;
@@ -224,7 +235,7 @@ export default class CiqDeclList extends Component {
           <span>{this.props.ietype === 'import' ? this.msg('importCiq') : this.msg('exportCiq')}</span>
         </header>
         <div className="top-bar-tools">
-          <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
+          <SearchBar placeholder={this.msg('ciqSearchPlaceholder')} onInputSearch={this.handleSearch} />
         </div>
         <div className="main-content" key="main">
           <div className="page-body">

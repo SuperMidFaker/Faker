@@ -15,7 +15,7 @@ export default defineMessages({
   },
   searchPlaceholder: {
     id: 'cms.delegation.search.placeholder',
-    defaultMessage: '提运单号/订单号/发票号',
+    defaultMessage: '委托编号/提运单号/订单号/发票号',
   },
   importDeclaration: {
     id: 'cms.delegation.import',

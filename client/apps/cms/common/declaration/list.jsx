@@ -168,6 +168,18 @@ export default class DelgDeclList extends Component {
     const filters = this.mergeFilters(this.props.listFilter, searchVal);
     this.handleTableLoad(1, filters);
   }
+  mergeFilters(curFilters, value) {
+    const newFilters = {};
+    Object.keys(curFilters).forEach((key) => {
+      if (key !== 'filterNo') {
+        newFilters[key] = curFilters[key];
+      }
+    });
+    if (value !== null && value !== undefined && value !== '') {
+      newFilters.filterNo = value;
+    }
+    return newFilters;
+  }
   render() {
     const { delgdeclList } = this.props;
     this.dataSource.remotes = delgdeclList;
