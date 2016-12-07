@@ -382,7 +382,7 @@ export default class BodyTable extends React.Component {
   }
   render() {
     const columns = this.getColumns();
-    return (<Table rowKey={getRowKey} columns={columns} dataSource={this.state.bodies}
+    return (<Table rowKey="id" columns={columns} dataSource={this.state.bodies}
       size="small" scroll={{ x: 2600, y: 300 }} pagination={this.state.pagination}
     />);
   }
