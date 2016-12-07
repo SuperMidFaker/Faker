@@ -206,7 +206,7 @@ export default class BasicForm extends Component {
           </Col>
           <Col sm={8}>
             { formData.cust_shipmt_trans_mode === '2' &&
-            <FormItem label="提货单号" {...formItemLayout}>
+            <FormItem label="海运单号" {...formItemLayout}>
               <Input value={formData.cust_shipmt_bill_lading_no} onChange={e => this.handleChange('cust_shipmt_bill_lading_no', e.target.value)} />
             </FormItem>
           }
