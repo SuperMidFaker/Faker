@@ -1,10 +1,11 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Form, Row, Col, Card, Input, Select } from 'antd';
+import { Form, Row, Col, Card, Input, Select, Popover, Icon } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { GOODSTYPES, TRANS_MODE } from 'common/constants';
 import { setClientForm } from 'common/reducers/crmOrders';
 import { loadBusinessModels } from 'common/reducers/crmCustomers';
+import Container from './container';
 import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
 
@@ -93,6 +94,8 @@ export default class BasicForm extends Component {
             trs_mode_id: -1,
             trs_mode_code: '',
             trs_mode: '',
+            remark: '',
+            package: '',
           }],
         });
       } else if (item === 'clearance') {
@@ -101,10 +104,11 @@ export default class BasicForm extends Component {
           files: [],
           delgBills: [{
             decl_way_code: '',
-            manual_no: '',
             pack_count: 1,
             gross_wt: 0,
             ccb_need_exchange: 0,
+            remark: '',
+            package: '',
           }],
         });
       }
@@ -113,6 +117,9 @@ export default class BasicForm extends Component {
   }
   handleChange = (key, value) => {
     this.props.setClientForm(-1, { [key]: value });
+    if (key === 'cust_shipmt_is_container') {
+      this.props.setClientForm(-1, { containers: [] });
+    }
   }
   changeModelForm = (model) => {
     return model.replace(/transport/g, '运输').replace(/clearance/g, '清关');
@@ -165,6 +172,13 @@ export default class BasicForm extends Component {
               <Input value={formData.cust_invoice_no} onChange={e => this.handleChange('cust_invoice_no', e.target.value)} />
             </FormItem>
           </Col>
+          <Col sm={8}>
+            { formData.cust_shipmt_trans_mode === '2' &&
+              <FormItem label="船名航次号" {...formItemLayout}>
+                <Input value={formData.cust_shipmt_vessel_voy} onChange={e => this.handleChange('cust_shipmt_vessel_voy', e.target.value)} />
+              </FormItem>
+            }
+          </Col>
         </Row>
         <Row>
           <Col sm={8}>
@@ -192,8 +206,8 @@ export default class BasicForm extends Component {
           </Col>
           <Col sm={8}>
             { formData.cust_shipmt_trans_mode === '2' &&
-            <FormItem label="船名航次号" {...formItemLayout}>
-              <Input value={formData.cust_shipmt_vessel_voy} onChange={e => this.handleChange('cust_shipmt_vessel_voy', e.target.value)} />
+            <FormItem label="提货单号" {...formItemLayout}>
+              <Input value={formData.cust_shipmt_bill_lading_no} onChange={e => this.handleChange('cust_shipmt_bill_lading_no', e.target.value)} />
             </FormItem>
           }
             { formData.cust_shipmt_trans_mode === '5' &&
@@ -201,6 +215,23 @@ export default class BasicForm extends Component {
               <Input value={formData.cust_shipmt_hawb} onChange={e => this.handleChange('cust_shipmt_hawb', e.target.value)} />
             </FormItem>
           }
+          </Col>
+        </Row>
+        <Row>
+          <Col sm={8}>
+            <FormItem label="总件数" {...formItemLayout} required="true">
+              <Input value={formData.cust_shipmt_pieces} onChange={e => this.handleChange('cust_shipmt_pieces', e.target.value)} />
+            </FormItem>
+          </Col>
+          <Col sm={8}>
+            <FormItem label="总毛重" {...formItemLayout} required="true">
+              <Input value={formData.cust_shipmt_weight} onChange={e => this.handleChange('cust_shipmt_weight', e.target.value)} />
+            </FormItem>
+          </Col>
+          <Col sm={8}>
+            <FormItem label="总体积" {...formItemLayout}>
+              <Input value={formData.cust_shipmt_volume} onChange={e => this.handleChange('cust_shipmt_volume', e.target.value)} />
+            </FormItem>
           </Col>
         </Row>
         <Row>
@@ -216,37 +247,34 @@ export default class BasicForm extends Component {
             </FormItem>
           </Col>
           <Col sm={8}>
-            <FormItem label="毛重" {...formItemLayout} required="true">
-              <Input value={formData.cust_shipmt_weight} onChange={e => this.handleChange('cust_shipmt_weight', e.target.value)} />
-            </FormItem>
-          </Col>
-          <Col sm={8}>
-            <FormItem label="件数" {...formItemLayout} required="true">
-              <Input value={formData.cust_shipmt_pieces} onChange={e => this.handleChange('cust_shipmt_pieces', e.target.value)} />
-            </FormItem>
-          </Col>
-
-        </Row>
-        <Row>
-          <Col sm={8}>
-            <FormItem label="包装方式" {...formItemLayout}>
-              <Select value={formData.cust_shipmt_package} onChange={value => this.handleChange('cust_shipmt_package', value)}>
-                {formRequires.packagings.map(
-                  pk => <Option value={pk.package_code} key={pk.package_code}>{pk.package_name}</Option>
-                )}
+            <FormItem label="装箱类型" {...formItemLayout} required="true">
+              <Select value={formData.cust_shipmt_is_container} onChange={value => this.handleChange('cust_shipmt_is_container', value)}>
+                <Option value="FCL">整箱</Option>
+                <Option value="LCL">散货</Option>
               </Select>
             </FormItem>
           </Col>
-          <Col sm={8}>
-            <FormItem label="总体积" {...formItemLayout}>
-              <Input value={formData.cust_shipmt_volume} onChange={e => this.handleChange('cust_shipmt_volume', e.target.value)} />
+        </Row>
+        <Row>
+          <Col sm={24}>
+            {formData.cust_shipmt_is_container === 'FCL' && (
+            <FormItem label="箱型箱号" labelCol={{ span: 2 }} wrapperCol={{ span: 22 }}>
+              <Popover
+                placement="rightBottom"
+                title="箱型箱号"
+                trigger="click"
+                content={<Container value={formData.containers} onChange={value => this.handleChange('containers', value)} />}
+              >
+                <span>
+                  <a><Icon type="edit" style={{ marginRight: 10 }} /></a>
+                  {formData.containers.map(item => `${item.container_num} x ${item.container_type}`).join('; ')}
+                </span>
+              </Popover>
             </FormItem>
+          )}
+
           </Col>
-          <Col sm={8}>
-            <FormItem label="备注" {...formItemLayout}>
-              <Input value={formData.remark} onChange={e => this.handleChange('remark', e.target.value)} />
-            </FormItem>
-          </Col>
+
         </Row>
       </Card>
     );

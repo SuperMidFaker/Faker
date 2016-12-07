@@ -16,6 +16,7 @@ import { loadOrderDetail } from 'common/reducers/crmOrders';
 import SearchBar from 'client/components/search-bar';
 import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES, CRM_ORDER_MODE } from 'common/constants';
 import TrsShipmtNoColumn from '../common/trsShipmtNoColumn';
+import CcbDelgNoColumn from '../common/ccbDelgNoColumn';
 
 const formatMsg = format(messages);
 const RangePicker = DatePicker.RangePicker;
@@ -163,6 +164,9 @@ export default class FeesList extends React.Component {
     }, {
       title: '报关委托号',
       dataIndex: 'ccb_delg_no',
+      render: (o) => {
+        return <CcbDelgNoColumn nos={o} />;
+      },
     }, {
       title: '报关服务费',
       key: 'ccbServerCharge',
@@ -182,7 +186,7 @@ export default class FeesList extends React.Component {
       title: '运输单号',
       dataIndex: 'trs_shipmt_no',
       render(o) {
-        return <TrsShipmtNoColumn trsShipmtNos={o} />;
+        return <TrsShipmtNoColumn nos={o} />;
       },
     }, {
       title: '基本运费',

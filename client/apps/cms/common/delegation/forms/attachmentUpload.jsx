@@ -23,6 +23,9 @@ export default class AttchmentUpload extends Component {
   state = {
     attachments: [],
   }
+  componentWillMount() {
+    this.setState({ attachments: this.props.files });
+  }
   componentWillReceiveProps(nextProps) {
     if (nextProps.files.length !== this.state.attachments.length) {
       this.setState({ attachments: nextProps.files });
@@ -32,6 +35,9 @@ export default class AttchmentUpload extends Component {
     }
   }
   handleChange = (info) => {
+    if (info.file.status === 'removed') {
+      return;
+    }
     if (info.file.status === 'uploading') {
       if (this.state.attachments.filter(attach => attach.uid === info.file.uid).length === 0) {
         this.setState({

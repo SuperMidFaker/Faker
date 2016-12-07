@@ -12,8 +12,8 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 
 const formItemLayout = {
-  labelCol: { span: 6 },
-  wrapperCol: { span: 18 },
+  labelCol: { span: 7 },
+  wrapperCol: { span: 17 },
 };
 
 @injectIntl
@@ -67,24 +67,33 @@ export default class TransportForm extends Component {
       consignee_mobile: '',
       pack_count: 1,
       gross_wt: 0,
-      trs_bulk_container: '',
+
+      trs_mode_id: -1,
+      trs_mode_code: '',
+      trs_mode: '',
+      remark: '',
+      package: '',
     };
 
     const transports = [...this.props.formData.transports];
-    if (transports.length > 0) {
-      const lastPos = transports.length - 1;
-      transport.consigner_name = transports[lastPos].consigner_name;
-      transport.consigner_province = transports[lastPos].consigner_province;
-      transport.consigner_city = transports[lastPos].consigner_city;
-      transport.consigner_district = transports[lastPos].consigner_district;
-      transport.consigner_street = transports[lastPos].consigner_street;
-      transport.consigner_region_code = transports[lastPos].consigner_region_code;
-      transport.consigner_addr = transports[lastPos].consigner_addr;
-      transport.consigner_email = transports[lastPos].consigner_email;
-      transport.consigner_contact = transports[lastPos].consigner_contact;
-      transport.consigner_mobile = transports[lastPos].consigner_mobile;
-      transport.trs_bulk_container = transports[lastPos].trs_bulk_container;
-    }
+
+    const lastPos = transports.length - 1;
+    transport.consigner_name = transports[lastPos].consigner_name;
+    transport.consigner_province = transports[lastPos].consigner_province;
+    transport.consigner_city = transports[lastPos].consigner_city;
+    transport.consigner_district = transports[lastPos].consigner_district;
+    transport.consigner_street = transports[lastPos].consigner_street;
+    transport.consigner_region_code = transports[lastPos].consigner_region_code;
+    transport.consigner_addr = transports[lastPos].consigner_addr;
+    transport.consigner_email = transports[lastPos].consigner_email;
+    transport.consigner_contact = transports[lastPos].consigner_contact;
+    transport.consigner_mobile = transports[lastPos].consigner_mobile;
+
+    transport.trs_mode_id = transports[lastPos].trs_mode_id;
+    transport.trs_mode_code = transports[lastPos].trs_mode_code;
+    transport.trs_mode = transports[lastPos].trs_mode;
+    transport.package = transports[lastPos].package;
+
     transports.push(transport);
     this.handleSetClientForm({ transports });
   }
@@ -176,6 +185,15 @@ export default class TransportForm extends Component {
     });
     this.handleSetClientForm({ transports });
   }
+  handleCommonFieldChange = (filed, value) => {
+    const transports = this.props.formData.transports.map((item) => {
+      return {
+        ...item,
+        [filed]: value,
+      };
+    });
+    this.handleSetClientForm({ transports });
+  }
   renderConsign = (consignType, consign, index) => {
     const title = consignType === 'consigner' ? '发货方' : '收货方';
     const consignRegion = [
@@ -224,7 +242,7 @@ export default class TransportForm extends Component {
     const formItems = formData.transports.map((item, k) => {
       return (
         <Row key={k} style={{ marginBottom: 8 }}>
-          <Col sm={6}>
+          <Col sm={5}>
             <FormItem
               label={
                 <ConsignInfo
@@ -243,7 +261,7 @@ export default class TransportForm extends Component {
               </Select>
             </FormItem>
           </Col>
-          <Col sm={6}>
+          <Col sm={5}>
             <FormItem
               label={
                 <ConsignInfo
@@ -262,18 +280,23 @@ export default class TransportForm extends Component {
               </Select>
             </FormItem>
           </Col>
-          <Col sm={5}>
+          <Col sm={4}>
             <FormItem label={this.msg('packageNum')} {...formItemLayout}>
               <InputNumber min={1} style={{ width: '100%' }} value={item.pack_count}
                 onChange={value => this.handleChange(k, 'pack_count', value)}
               />
             </FormItem>
           </Col>
-          <Col sm={5}>
+          <Col sm={4}>
             <FormItem label={this.msg('delgGrossWt')} {...formItemLayout}>
               <Input value={item.gross_wt} addonAfter="千克" type="number"
                 onChange={e => this.handleChange(k, 'gross_wt', e.target.value)}
               />
+            </FormItem>
+          </Col>
+          <Col sm={4}>
+            <FormItem label="备注" {...formItemLayout}>
+              <Input value={item.remark} onChange={e => this.handleChange(k, 'remark', e.target.value)} />
             </FormItem>
           </Col>
           <Col span={1} offset={1}>
@@ -288,11 +311,20 @@ export default class TransportForm extends Component {
     return (
       <Card>
         <Row>
-          <Col sm={6}>
+          <Col sm={5}>
             <FormItem label="运输模式" {...formItemLayout} required="true">
               <Select value={transitMode} onChange={this.handleTransmodeChange}>
                 {formRequires.transitModes.map(
                   tm => <Option value={tm.id} key={`${tm.mode_code}${tm.id}`}>{tm.mode_name}</Option>
+                )}
+              </Select>
+            </FormItem>
+          </Col>
+          <Col sm={5}>
+            <FormItem label="包装方式" {...formItemLayout}>
+              <Select value={formData.transports[0].package} onChange={value => this.handleCommonFieldChange('package', value)}>
+                {formRequires.packagings.map(
+                  pk => <Option value={pk.package_code} key={pk.package_code}>{pk.package_name}</Option>
                 )}
               </Select>
             </FormItem>

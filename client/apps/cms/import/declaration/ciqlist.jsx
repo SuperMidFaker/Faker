@@ -8,8 +8,8 @@ function fetchData({ state, dispatch }) {
   return dispatch(loadCiqDecls({
     ietype: 'import',
     tenantId: state.account.tenantId,
-    pageSize: state.cmsDelegation.delegationlist.pageSize,
-    currentPage: state.cmsDelegation.delegationlist.current,
+    pageSize: state.cmsDeclare.ciqdeclList.pageSize,
+    currentPage: state.cmsDeclare.ciqdeclList.current,
   }));
 }
 

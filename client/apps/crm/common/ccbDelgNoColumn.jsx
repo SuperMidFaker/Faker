@@ -3,7 +3,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Popover } from 'antd';
 
 @injectIntl
-export default class TrsShipmtNoColumn extends React.Component {
+export default class CcbDelgNoColumn extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     nos: PropTypes.string,
@@ -19,7 +19,7 @@ export default class TrsShipmtNoColumn extends React.Component {
         </div>
       );
       return (
-        <Popover content={content} title="运输单号">
+        <Popover content={content} title="清关编号">
           <div>{`${noArray[0]}${noArray.length > 1 ? '...' : ''}`}</div>
         </Popover>
       );

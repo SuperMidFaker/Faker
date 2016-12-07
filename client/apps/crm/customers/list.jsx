@@ -74,7 +74,7 @@ export default class List extends React.Component {
       dataIndex: 'name',
       key: 'name',
       render: (o) => {
-        return (<div style={{ paddingLeft: 30 }}>{o}</div>);
+        return (<div style={{ paddingLeft: 15 }}>{o}</div>);
       },
     }];
     const menu = (

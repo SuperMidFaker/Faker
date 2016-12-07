@@ -145,6 +145,10 @@ export default defineMessages({
     id: 'cms.delegation.delg.grosswt',
     defaultMessage: '毛重',
   },
+  remark: {
+    id: 'cms.delegation.delg.remark',
+    defaultMessage: '备注',
+  },
   ciqType: {
     id: 'cms.delegation.delg.ciq.type',
     defaultMessage: '检验检疫',

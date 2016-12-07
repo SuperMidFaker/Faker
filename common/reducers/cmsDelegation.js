@@ -240,7 +240,8 @@ export default function reducer(state = initialState, action) {
     case actionTypes.NEW_FORM:
       return { ...state, formData: { ...initialState.formData, create_time: new Date() } };
     case actionTypes.LOAD_REQUIRE_SUCCEED:
-      return { ...state, formRequire: action.result.data };
+      return { ...state, formRequire: action.result.data, formData: initialState.formData,
+        delgFiles: initialState.delgFiles, delgBills: initialState.delgBills };
     case actionTypes.CREATE_DELGCCB:
     case actionTypes.EDIT_DELGCCB:
       return { ...state, submitting: true };
