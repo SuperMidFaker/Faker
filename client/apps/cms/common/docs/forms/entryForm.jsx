@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Card, Collapse, Form, Button, message } from 'antd';
+import { Card, Form, Button, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import HeadForm from './headForm';
 import BodyTable from './bodyList';
@@ -35,7 +35,6 @@ BillBody.propTypes = {
   onDel: PropTypes.func.isRequired,
   onEdit: PropTypes.func.isRequired,
 };
-const Panel = Collapse.Panel;
 
 @injectIntl
 @connect(
@@ -104,30 +103,27 @@ export default class EntryForm extends React.Component {
   render() {
     const { ietype, readonly, form, entry, ...actions } = this.props;
     const head = entry.head;
-    const declStats = '申报数量合计: 0 申报总价合计: 0 毛重合计: 0 净重合计: 0 ';
     return (
-      <div className={`panel-body collapse ${readonly ? 'readonly' : ''}`}>
-        <Collapse bordered={false} defaultActiveKey={['entry-head', 'entry-list']}>
-          <Panel header={<span>{this.msg('entryHeader')}</span>} key="entry-head">
-            <Card title={this.props.entry.head.pre_entry_id} extra={!readonly &&
-              <Button type="primary" size="small" onClick={this.handleEntryHeadSave} icon="save">
-                {formatGlobalMsg(this.props.intl, 'save')}
-              </Button>
-            }
-            >
-              <BillHead ietype={ietype} readonly={readonly} form={form} formData={head} />
-            </Card>
-          </Panel>
-          <Panel header={this.msg('entryList')} key="entry-list">
-            <Card title={declStats} bodyStyle={{ padding: 0 }}>
-              <BillBody ietype={ietype} readonly={readonly} data={entry.bodies}
-                onAdd={actions.addNewEntryBody} onDel={actions.delEntryBody}
-                onEdit={actions.editEntryBody} headNo={head.id || this.state.head_id}
-                billSeqNo={head.bill_seq_no}
-              />
-            </Card>
-          </Panel>
-        </Collapse>
+      <div className={`page-body ${readonly ? 'readonly' : ''}`}>
+        <div className="panel-header">
+          {!readonly &&
+            <Button type="primary" size="small" onClick={this.handleEntryHeadSave} icon="save">
+              {formatGlobalMsg(this.props.intl, 'save')}
+            </Button>
+          }
+        </div>
+        <div className="panel-body card-wrapper">
+          <Card bodyStyle={{ padding: 8 }}>
+            <BillHead ietype={ietype} readonly={readonly} form={form} formData={head} />
+          </Card>
+          <Card bodyStyle={{ padding: 0 }}>
+            <BillBody ietype={ietype} readonly={readonly} data={entry.bodies}
+              onAdd={actions.addNewEntryBody} onDel={actions.delEntryBody}
+              onEdit={actions.editEntryBody} headNo={head.id || this.state.head_id}
+              billSeqNo={head.bill_seq_no}
+            />
+          </Card>
+        </div>
       </div>);
   }
 }

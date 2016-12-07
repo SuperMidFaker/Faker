@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Card, Collapse, Form, Button, message } from 'antd';
+import { Card, Form, Button, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import HeadForm from './headForm';
 import BodyTable from './bodyList';
@@ -36,7 +36,6 @@ BillBody.propTypes = {
   onDel: PropTypes.func.isRequired,
   onEdit: PropTypes.func.isRequired,
 };
-const Panel = Collapse.Panel;
 
 @injectIntl
 @connect(
@@ -106,28 +105,37 @@ export default class BillForm extends React.Component {
   }
   render() {
     const { ietype, readonly, form, billHead, billBody, ...actions } = this.props;
-    const billStats = '申报数量合计: 0 申报总价合计: 0 毛重合计: 0 净重合计: 0 ';
     return (
-      <div className={`panel-body collapse ${readonly ? 'readonly' : ''}`}>
-        <Collapse bordered={false} defaultActiveKey={['bill-head', 'bill-list']}>
-          <Panel header={<span>{this.msg('billHeader')}</span>} key="bill-head">
-            <Card title={this.props.billHead.bill_seq_no} bodyStyle={{ padding: 8 }} extra={!readonly &&
-              <Button type="primary" size="small" onClick={this.handleBillSave} icon="save">
-                {formatGlobalMsg(this.props.intl, 'save')}
-              </Button>}
-            >
-              <BillHead ietype={ietype} readonly={readonly} form={form} formData={billHead} />
-            </Card>
-          </Panel>
-          <Panel header={this.msg('billList')} key="bill-list">
-            <Card title={billStats} bodyStyle={{ padding: 0 }} extra={this.billListPanelHeader}>
-              <BillBody ietype={ietype} readonly={readonly} data={billBody} headNo={billHead.bill_seq_no}
-                onAdd={actions.addNewBillBody} onDel={actions.delBillBody} onEdit={actions.editBillBody}
-                billSeqNo={billHead.bill_seq_no}
-              />
-            </Card>
-          </Panel>
-        </Collapse>
+      <div className={`page-body ${readonly ? 'readonly' : ''}`}>
+        <div className="panel-header">
+          {!readonly &&
+          <Button type="primary" onClick={this.handleBillSave} icon="save">
+            {formatGlobalMsg(this.props.intl, 'save')}
+          </Button>}
+          <span />
+          <ExcelUpload endpoint={`${API_ROOTS.default}v1/cms/declare/billbody/import`}
+            formData={{
+              data: JSON.stringify({
+                bill_seq_no: this.props.billHead.bill_seq_no,
+                tenant_id: this.props.tenantId,
+                creater_login_id: this.props.loginId,
+              }),
+            }} onUploaded={this.handleUploaded}
+          >
+            <Button icon="file-excel">{this.msg('importBody')}</Button>
+          </ExcelUpload>
+        </div>
+        <div className="panel-body card-wrapper">
+          <Card bodyStyle={{ padding: 8 }}>
+            <BillHead ietype={ietype} readonly={readonly} form={form} formData={billHead} />
+          </Card>
+          <Card bodyStyle={{ padding: 0 }}>
+            <BillBody ietype={ietype} readonly={readonly} data={billBody} headNo={billHead.bill_seq_no}
+              onAdd={actions.addNewBillBody} onDel={actions.delBillBody} onEdit={actions.editBillBody}
+              billSeqNo={billHead.bill_seq_no}
+            />
+          </Card>
+        </div>
       </div>);
   }
 }

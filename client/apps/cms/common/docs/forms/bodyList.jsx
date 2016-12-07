@@ -8,9 +8,6 @@ import messages from '../message.i18n';
 const formatMsg = format(messages);
 const Option = Select.Option;
 
-function getRowKey(row) {
-  return row.id;
-}
 function ColumnInput(props) {
   const { inEdit, edit, record, field, onChange } = props;
   function handleChange(ev) {
@@ -107,18 +104,28 @@ export default class BodyTable extends React.Component {
       editIndex: -1,
       editBody: {},
       bodies,
+      pagination: {
+        current: 1,
+        total: 0,
+        pageSize: 10,
+        showQuickJumper: true,
+        onChange: this.handlePageChange,
+      },
     };
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.data !== this.props.data && !nextProps.readonly) {
       const bodies = [...nextProps.data];
       bodies.push({ id: '__ops' });
-      this.setState({ bodies });
+      this.setState({
+        bodies,
+        pagination: { ...this.state.pagination, total: bodies.length },
+      });
     }
   }
   getColumns() {
     const { ietype, type, readonly, units, countries, currencies, exemptions } = this.props;
-    const { editIndex, bodies, editBody } = this.state;
+    const { editIndex, bodies, editBody, pagination } = this.state;
     const totalCount = bodies.length;
     const columns = [{
       title: this.msg('seqNumber'),
@@ -196,12 +203,14 @@ export default class BodyTable extends React.Component {
         />,
     }, {
       title: this.msg('unit'),
+      width: 80,
       render: (o, record, index) =>
         <ColumnSelect field="g_unit" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} options={units} edit={editBody}
         />,
     }, {
       title: ietype === 'import' ? this.msg('icountry') : this.msg('ecountry'),
+      width: 120,
       render: (o, record, index) =>
         <ColumnSelect field="orig_dest_country" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} options={countries} edit={editBody}
@@ -220,12 +229,14 @@ export default class BodyTable extends React.Component {
         />,
     }, {
       title: this.msg('currency'),
+      width: 100,
       render: (o, record, index) =>
         <ColumnSelect field="trade_curr" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} options={currencies} edit={editBody}
         />,
     }, {
       title: this.msg('exemptionWay'),
+      width: 100,
       render: (o, record, index) =>
         <ColumnSelect field="duty_mode" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} options={exemptions} edit={editBody}
@@ -247,7 +258,7 @@ export default class BodyTable extends React.Component {
               <RowUpdater onHit={this.handleCancel} label={this.msg('cancel')} />
             </span>
           );
-        } else if (index + 1 === totalCount) {
+        } else if (index + 1 + (pagination.current - 1) * pagination.pageSize === totalCount) {
           return (
             <span>
               <RowUpdater onHit={this.handleEdit} label={this.msg('append')}
@@ -274,6 +285,14 @@ export default class BodyTable extends React.Component {
   }
 
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
+  handlePageChange = (current) => {
+    this.setState({
+      pagination: {
+        ...this.state.pagination,
+        current,
+      },
+    });
+  }
   handleEditChange = (field, value) => {
     this.setState({
       editBody: { ...this.state.editBody, [field]: value },
@@ -291,10 +310,15 @@ export default class BodyTable extends React.Component {
     }
   }
   handleSave = (row, index) => {
-    const { editBody } = this.state;
+    const { editBody, pagination: origPagi } = this.state;
+    const recordIdx = index + (origPagi.current - 1) * origPagi.pageSize;
     // todo validate
     if (!editBody.id) {
-      const body = { ...editBody, list_g_no: index + 1 };
+      let gNO = 1;
+      if (this.state.bodies.length > 1) {
+        gNO += this.state.bodies[this.state.bodies.length - 2].g_no;
+      }
+      const body = { ...editBody, g_no: gNO };
       const { billSeqNo, headNo, loginId } = this.props;
       this.props.onAdd({ billSeqNo, body, headNo, loginId }).then((result) => {
         if (result.error) {
@@ -302,11 +326,16 @@ export default class BodyTable extends React.Component {
         } else {
           body.id = result.data.id;
           const bodies = [...this.state.bodies];
-          bodies.splice(index, 0, body);
+          bodies.splice(recordIdx, 0, body);
+          const pagination = { ...origPagi, total: bodies.length };
+          if (bodies.length > pagination.current * pagination.pageSize) {
+            pagination.current += 1;
+          }
           this.setState({
             editIndex: -1,
             editBody: {},
             bodies,
+            pagination,
           });
         }
       });
@@ -316,7 +345,7 @@ export default class BodyTable extends React.Component {
           message.error(result.error.message);
         } else {
           const bodies = [...this.state.bodies];
-          bodies[index] = editBody;
+          bodies[recordIdx] = editBody;
           this.setState({
             editIndex: -1,
             editBody: {},
@@ -332,9 +361,15 @@ export default class BodyTable extends React.Component {
         message.error(result.error.message);
       } else {
         const bodies = [...this.state.bodies];
-        bodies.splice(index, 1);
+        const recordIdx = index + (this.state.pagination.current - 1) * this.state.pagination.pageSize;
+        bodies.splice(recordIdx, 1);
+        const pagination = { ...this.state.pagination, total: bodies.length };
+        if (pagination.current > 1 && (pagination.current - 1) * pagination.pageSize === pagination.total) {
+          pagination.current -= 1;
+        }
         this.setState({
           bodies,
+          pagination,
         });
       }
     });
@@ -347,8 +382,8 @@ export default class BodyTable extends React.Component {
   }
   render() {
     const columns = this.getColumns();
-    return (<Table rowKey={getRowKey} columns={columns} dataSource={this.state.bodies}
-      size="small" scroll={{ x: 2600 }}
+    return (<Table rowKey="id" columns={columns} dataSource={this.state.bodies}
+      size="small" scroll={{ x: 2600, y: 300 }} pagination={this.state.pagination}
     />);
   }
 }
