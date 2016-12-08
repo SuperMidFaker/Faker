@@ -30,6 +30,26 @@ const messages = defineMessages({
     id: 'cms.expense.inc.expense',
     defaultMessage: '导入费用',
   },
+  eptExp: {
+    id: 'cms.expense.export.expense',
+    defaultMessage: '导出费用',
+  },
+  chooseModel: {
+    id: 'cms.expense.export.chooseModel',
+    defaultMessage: '范围方式',
+  },
+  acptDate: {
+    id: 'cms.expense.export.acptDate',
+    defaultMessage: '接单日期',
+  },
+  cleanDate: {
+    id: 'cms.expense.export.cleanDate',
+    defaultMessage: '海关放行日期',
+  },
+  range: {
+    id: 'cms.expense.export.range',
+    defaultMessage: '费用周期',
+  },
   markState: {
     id: 'cms.expense.mark.statement',
     defaultMessage: '标记结单',
