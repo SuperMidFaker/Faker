@@ -259,7 +259,7 @@ export default class BasicForm extends Component {
         <Row>
           <Col sm={24}>
             { formData.cust_shipmt_trans_mode === '2' && formData.cust_shipmt_is_container === 'FCL' && (
-            <FormItem label="箱型箱号" labelCol={{ span: 5 }} wrapperCol={{ span: 19 }}>
+            <FormItem label="箱型箱号" labelCol={{ span: 2 }} wrapperCol={{ span: 22 }}>
               <Popover
                 placement="rightBottom"
                 title="箱型箱号"
