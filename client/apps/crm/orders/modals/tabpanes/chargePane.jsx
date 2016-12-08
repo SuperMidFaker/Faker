@@ -185,18 +185,14 @@ export default class ChargePanel extends React.Component {
       key: 'total_fee',
       width: '60%',
     }];
-    const servDataSource = clearanceFee.server_charges;
-    if (clearanceFee.tot_sercharges && clearanceFee.tot_sercharges.fee_name) {
-      servDataSource.push(clearanceFee.tot_sercharges);
-    }
-    const cushDataSource = clearanceFee.cush_charges;
+
     return (
       <div className="pane-content tab-pane">
         <Card title={this.msg('serviceFee')} bodyStyle={{ padding: 8 }}>
-          <Table size="small" columns={columns} dataSource={servDataSource} rowKey="id" pagination={false} />
+          <Table size="small" columns={columns} dataSource={clearanceFee.server_charges} rowKey="id" pagination={false} />
         </Card>
         <Card title={this.msg('cushionFee')} bodyStyle={{ padding: 8 }}>
-          <Table size="small" columns={cushColumns} dataSource={cushDataSource} rowKey="id" pagination={false} />
+          <Table size="small" columns={cushColumns} dataSource={clearanceFee.cush_charges} rowKey="id" pagination={false} />
         </Card>
       </div>
     );
@@ -311,15 +307,10 @@ export default class ChargePanel extends React.Component {
     let transportFee = 0;
     if (order.shipmt_order_mode.indexOf(CRM_ORDER_MODE.clearance) >= 0) {
       clearanceFees.forEach((fee) => {
-        const servDataSource = fee.server_charges;
-        if (fee.tot_sercharges.fee_name) {
-          servDataSource.push(fee.tot_sercharges);
-        }
-        const cushDataSource = fee.cush_charges;
-        servDataSource.forEach((item) => {
+        fee.server_charges.forEach((item) => {
           clearanceFee += item.total_fee;
         });
-        cushDataSource.forEach((item) => {
+        fee.cush_charges.forEach((item) => {
           clearanceFee += item.total_fee;
         });
       });
