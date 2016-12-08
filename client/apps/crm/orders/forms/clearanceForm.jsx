@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Form, Row, Col, Card, Input, Button, Select, InputNumber, Switch } from 'antd';
+import { Form, Row, Col, Card, Input, Button, Select, InputNumber } from 'antd';
 import { DECL_I_TYPE } from 'common/constants';
 import { setClientForm } from 'common/reducers/crmOrders';
 import { intlShape, injectIntl } from 'react-intl';
@@ -86,7 +86,7 @@ export default class ClearanceForm extends Component {
     const formItems = formData.delgBills.map((item, k) => {
       return (
         <Row key={k} style={{ marginBottom: 8 }}>
-          <Col sm={5}>
+          <Col sm={4}>
             <FormItem label={this.msg('declareWay')} {...formItemLayout}>
               <Select value={item.decl_way_code} onChange={value => this.handleChange(k, 'decl_way_code', value)}>
                 {DECL_I_TYPE.map(dw =>
@@ -95,21 +95,30 @@ export default class ClearanceForm extends Component {
               </Select>
             </FormItem>
           </Col>
-          <Col sm={5}>
+          <Col sm={4}>
+            <FormItem label="包装方式" {...formItemLayout}>
+              <Select value={item.package} onChange={value => this.handleChange(k, 'package', value)}>
+                {formRequires.packagings.map(
+                  pk => <Option value={pk.package_code} key={pk.package_code}>{pk.package_name}</Option>
+                )}
+              </Select>
+            </FormItem>
+          </Col>
+          <Col sm={4}>
             <FormItem label={this.msg('packageNum')} {...formItemLayout}>
               <InputNumber value={item.pack_count} min={1} max={100000} style={{ width: '100%' }}
                 onChange={value => this.handleChange(k, 'pack_count', value)}
               />
             </FormItem>
           </Col>
-          <Col sm={5}>
+          <Col sm={4}>
             <FormItem label={this.msg('delgGrossWt')} {...formItemLayout}>
               <Input value={item.gross_wt} addonAfter="千克" type="number"
                 onChange={e => this.handleChange(k, 'gross_wt', e.target.value)}
               />
             </FormItem>
           </Col>
-          <Col sm={7}>
+          <Col sm={6}>
             <FormItem label="备注" {...formItemLayout}>
               <Input value={item.remark} onChange={e => this.handleChange(k, 'remark', e.target.value)} />
             </FormItem>
@@ -125,22 +134,6 @@ export default class ClearanceForm extends Component {
     });
     return (
       <Card>
-        <Row>
-          <Col sm={5}>
-            <FormItem label="包装方式" {...formItemLayout}>
-              <Select value={formData.delgBills[0].package} onChange={value => this.handleCommonFieldChange('package', value)}>
-                {formRequires.packagings.map(
-                  pk => <Option value={pk.package_code} key={pk.package_code}>{pk.package_name}</Option>
-                )}
-              </Select>
-            </FormItem>
-          </Col>
-          <Col sm={8}>
-            <FormItem label="是否需要换单" {...formItemLayout}>
-              <Switch onChange={value => this.handleCommonFieldChange('ccb_need_exchange', value ? 1 : 0)} checked={formData.delgBills[0].ccb_need_exchange} />
-            </FormItem>
-          </Col>
-        </Row>
         {formItems}
         <div style={{ marginTop: 8 }}>
           <Button type="dashed" size="large" onClick={this.handleAddRow} icon="plus" style={{ width: '100%' }}>

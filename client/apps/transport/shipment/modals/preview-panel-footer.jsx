@@ -105,7 +105,7 @@ export default class Footer extends React.Component {
     if (e.key === 'shareShipment') {
       this.props.onShowShareShipmentModal();
     } else if (e.key === 'terminateShipment') {
-      this.handleShipmtRevoke(row.disp_id);
+      this.handleShipmtRevoke(row.shipmt_no, row.disp_id);
     } else if (e.key === 'changeActDate') {
       this.handleShowChangeActDateModal(row);
     }
@@ -129,11 +129,8 @@ export default class Footer extends React.Component {
       }
     });
   }
-  handleShipmtRevoke = (dispId) => {
-    this.props.revokeOrReject('revoke', dispId);
-  }
-  handleShipmtReject = (dispId) => {
-    this.props.revokeOrReject('reject', dispId);
+  handleShipmtRevoke = (shipmtNo, dispId) => {
+    this.props.revokeOrReject('revoke', shipmtNo, dispId);
   }
   handleShipmtSend = (shipmt) => {
     let msg = `将【${shipmt.shipmt_no}】运单发送给【${shipmt.sp_name}】？`;
@@ -290,6 +287,7 @@ export default class Footer extends React.Component {
     let menu = (
       <Menu onClick={this.handleMenuClick}>
         <MenuItem key="shareShipment">共享运单</MenuItem>
+        <MenuItem key="terminateShipment">终止运单</MenuItem>
       </Menu>
     );
     let buttons = <div />;
@@ -328,14 +326,6 @@ export default class Footer extends React.Component {
             </Tooltip>
           </PrivilegeCover>
         );
-        if (shipmt.tenant_id === tenantId) {
-          menu = (
-            <Menu onClick={this.handleMenuClick}>
-              <MenuItem key="shareShipment">共享运单</MenuItem>
-              <MenuItem key="terminateShipment">终止运单</MenuItem>
-            </Menu>
-          );
-        }
       }
       return (
         <div className="toolbar">
@@ -387,14 +377,6 @@ export default class Footer extends React.Component {
           );
         }
       }
-      if (row.status <= SHIPMENT_TRACK_STATUS.dispatched && shipmt.tenant_id === tenantId) {
-        menu = (
-          <Menu onClick={this.handleMenuClick}>
-            <MenuItem key="shareShipment">共享运单</MenuItem>
-            <MenuItem key="terminateShipment">终止运单</MenuItem>
-          </Menu>
-        );
-      }
       return (
         <div className="toolbar">
           {buttons}
@@ -417,14 +399,6 @@ export default class Footer extends React.Component {
             </Button>
           </PrivilegeCover>
         );
-        if (shipmt.tenant_id === tenantId) {
-          menu = (
-            <Menu onClick={this.handleMenuClick}>
-              <MenuItem key="shareShipment">共享运单</MenuItem>
-              <MenuItem key="terminateShipment">终止运单</MenuItem>
-            </Menu>
-          );
-        }
       } else if (row.status === SHIPMENT_TRACK_STATUS.accepted) {
         if (row.sp_tenant_id === -1) {
             // 线下客户手动更新
@@ -442,14 +416,6 @@ export default class Footer extends React.Component {
                   催促调度
               </Button>
             </PrivilegeCover>
-          );
-        }
-        if (shipmt.tenant_id === tenantId) {
-          menu = (
-            <Menu onClick={this.handleMenuClick}>
-              <MenuItem key="shareShipment">共享运单</MenuItem>
-              <MenuItem key="terminateShipment">终止运单</MenuItem>
-            </Menu>
           );
         }
       } else if (row.status === SHIPMENT_TRACK_STATUS.dispatched) {
@@ -519,14 +485,6 @@ export default class Footer extends React.Component {
             </PrivilegeCover>
           );
         }
-        if (shipmt.tenant_id === tenantId) {
-          menu = (
-            <Menu onClick={this.handleMenuClick}>
-              <MenuItem key="shareShipment">共享运单</MenuItem>
-              <MenuItem key="terminateShipment">终止运单</MenuItem>
-            </Menu>
-          );
-        }
       } else if (row.status === SHIPMENT_TRACK_STATUS.intransit) {
         if (row.sp_tenant_id === -1) {
           buttons = (
@@ -553,6 +511,7 @@ export default class Footer extends React.Component {
           menu = (
             <Menu onClick={this.handleMenuClick}>
               <MenuItem key="shareShipment">共享运单</MenuItem>
+              <MenuItem key="terminateShipment">终止运单</MenuItem>
               <MenuItem key="changeActDate">纠正节点时间</MenuItem>
             </Menu>
           );
@@ -600,6 +559,7 @@ export default class Footer extends React.Component {
           menu = (
             <Menu onClick={this.handleMenuClick}>
               <MenuItem key="shareShipment">共享运单</MenuItem>
+              <MenuItem key="terminateShipment">终止运单</MenuItem>
               <MenuItem key="changeActDate">纠正节点时间</MenuItem>
             </Menu>
           );
@@ -635,6 +595,7 @@ export default class Footer extends React.Component {
           menu = (
             <Menu onClick={this.handleMenuClick}>
               <MenuItem key="shareShipment">共享运单</MenuItem>
+              <MenuItem key="terminateShipment">终止运单</MenuItem>
               <MenuItem key="changeActDate">纠正节点时间</MenuItem>
             </Menu>
           );
@@ -656,6 +617,7 @@ export default class Footer extends React.Component {
           menu = (
             <Menu onClick={this.handleMenuClick}>
               <MenuItem key="shareShipment">共享运单</MenuItem>
+              <MenuItem key="terminateShipment">终止运单</MenuItem>
               <MenuItem key="changeActDate">纠正节点时间</MenuItem>
             </Menu>
           );
@@ -690,6 +652,7 @@ export default class Footer extends React.Component {
           menu = (
             <Menu onClick={this.handleMenuClick}>
               <MenuItem key="shareShipment">共享运单</MenuItem>
+              <MenuItem key="terminateShipment">终止运单</MenuItem>
               <MenuItem key="changeActDate">纠正节点时间</MenuItem>
             </Menu>
           );

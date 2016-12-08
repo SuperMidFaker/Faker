@@ -283,16 +283,16 @@ export default class AcceptList extends React.Component {
       }
     });
   }
-  handleShipmtRevoke(dispId, ev) {
+  handleShipmtRevoke(shipmtNo, dispId, ev) {
     ev.preventDefault();
     ev.stopPropagation();
-    this.props.revokeOrReject('revoke', dispId);
+    this.props.revokeOrReject('revoke', shipmtNo, dispId);
   }
-  handleShipmtReject(dispId, ev) {
-    ev.preventDefault();
-    ev.stopPropagation();
-    this.props.revokeOrReject('reject', dispId);
-  }
+  // handleShipmtReject(dispId, ev) {
+  //   ev.preventDefault();
+  //   ev.stopPropagation();
+  //   this.props.revokeOrReject('reject', dispId);
+  // }
   handleShipmtDraftDel(shipmtNo, ev) {
     ev.preventDefault();
     ev.stopPropagation();
@@ -363,7 +363,7 @@ export default class AcceptList extends React.Component {
                     {formatGlobalMsg(intl, 'modify')}
                   </NavLink>
                   <span className="ant-divider" />
-                  <a role="button" onClick={ev => this.handleShipmtRevoke(record.key, ev)}>
+                  <a role="button" onClick={ev => this.handleShipmtRevoke(record.shipmt_no, record.key, ev)}>
                     {this.msg('shipmtRevoke')}
                   </a>
                 </span>

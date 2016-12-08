@@ -83,18 +83,15 @@ export default class FeesList extends React.Component {
     }
     if (this.props.fees.loadTimes !== nextProps.fees.loadTimes) {
       const shipmtOrders = [];
-      const delgNos = [];
       nextProps.fees.data.forEach((item) => {
         shipmtOrders.push({
           trs_shipmt_no: item.trs_shipmt_no,
+          ccb_delg_no: item.ccb_delg_no,
           shipmt_order_no: item.shipmt_order_no,
         });
-        if (item.ccb_delg_no) {
-          delgNos.push(item.ccb_delg_no);
-        }
       });
       this.props.loadTransportFees(shipmtOrders);
-      this.props.loadClearanceFees(delgNos);
+      this.props.loadClearanceFees(shipmtOrders);
     }
   }
   onDateChange = (value) => {

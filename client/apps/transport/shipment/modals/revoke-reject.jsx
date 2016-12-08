@@ -14,6 +14,7 @@ const formatMsg = format(messages);
     modalType: state.transportAcceptance.revokejectModal.type,
     visible: state.transportAcceptance.revokejectModal.visible,
     shipmtDispId: state.transportAcceptance.revokejectModal.dispId,
+    shipmtNo: state.transportAcceptance.revokejectModal.shipmtNo,
   }),
   { closeReModal, revokeShipment, rejectShipment }
 )
@@ -22,6 +23,7 @@ export default class RevokejectModal extends React.Component {
     intl: intlShape.isRequired,
     visible: PropTypes.bool.isRequired,
     shipmtDispId: PropTypes.number.isRequired,
+    shipmtNo: PropTypes.number.isRequired,
     modalType: PropTypes.string.isRequired,
     closeReModal: PropTypes.func.isRequired,
     revokeShipment: PropTypes.func.isRequired,
@@ -39,7 +41,7 @@ export default class RevokejectModal extends React.Component {
   }
   handleOk = () => {
     if (this.props.modalType === 'revoke') {
-      this.props.revokeShipment(this.props.shipmtDispId, this.state.reason).then(
+      this.props.revokeShipment(this.props.shipmtNo, this.props.shipmtDispId, this.state.reason).then(
         (result) => {
           if (result.error) {
             message.error(result.error.message, 10);
@@ -48,7 +50,7 @@ export default class RevokejectModal extends React.Component {
           }
         });
     } else {
-      this.props.rejectShipment(this.props.shipmtDispId, this.state.reason).then(
+      this.props.rejectShipment(this.props.shipmtNo, this.props.shipmtDispId, this.state.reason).then(
         (result) => {
           if (result.error) {
             message.error(result.error.message, 10);

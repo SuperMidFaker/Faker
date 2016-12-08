@@ -43,6 +43,7 @@ const initialState = {
   revokejectModal: {
     type: '',
     visible: false,
+    shipmtNo: '',
     dispId: -1,
   },
 };
@@ -86,8 +87,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.REVOKE_OR_REJECT:
       return {
         ...state, revokejectModal: {
-          ...state.revokejectModal, visible: true, dispId: action.data.dispId,
-          type: action.data.type,
+          ...state.revokejectModal, visible: true, ...action.data,
         } };
     case actionTypes.REVOKE_SHIPMT_SUCCEED:
     case actionTypes.REJECT_SHIPMT_SUCCEED:
@@ -251,10 +251,10 @@ export function acceptDispShipment(shipmtDispIds, acptId, acptName, disperId, di
   };
 }
 
-export function revokeOrReject(type, dispId) {
+export function revokeOrReject(type, shipmtNo, dispId) {
   return {
     type: actionTypes.REVOKE_OR_REJECT,
-    data: { type, dispId },
+    data: { type, shipmtNo, dispId },
   };
 }
 
@@ -264,7 +264,7 @@ export function closeReModal() {
   };
 }
 
-export function revokeShipment(shipmtDispId, reason) {
+export function revokeShipment(shipmtNo, shipmtDispId, reason) {
   return {
     [CLIENT_API]: {
       types: [
@@ -274,7 +274,7 @@ export function revokeShipment(shipmtDispId, reason) {
       ],
       method: 'post',
       endpoint: 'v1/transport/shipment/revoke',
-      data: { shipmtDispId, reason },
+      data: { shipmtNo, shipmtDispId, reason },
     },
   };
 }

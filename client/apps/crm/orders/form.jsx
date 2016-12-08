@@ -36,7 +36,7 @@ export default class OrderForm extends Component {
   msg = key => formatMsg(this.props.intl, key)
   renderSteps = (shipmtOrderMode) => {
     const { operation, formData } = this.props;
-    const steps = [(<Step key={0} title="基础信息" status="process" description={<BasicForm operation={operation} />} />)];
+    const steps = [];
     for (let i = 0; i < shipmtOrderMode.length; i++) {
       const mode = shipmtOrderMode[i];
       if (mode === 'clearance') {
@@ -48,11 +48,12 @@ export default class OrderForm extends Component {
     return steps;
   }
   render() {
-    const { formData } = this.props;
+    const { formData, operation } = this.props;
     const shipmtOrderMode = formData.shipmt_order_mode === '' ? [] : formData.shipmt_order_mode.split(',');
     const current = shipmtOrderMode.length > 0 ? shipmtOrderMode.length : 0;
     return (
       <Form horizontal>
+        <BasicForm operation={operation} />
         <Steps direction="vertical" current={current}>
           {this.renderSteps(shipmtOrderMode)}
         </Steps>

@@ -100,21 +100,26 @@ export default function reducer(state = initialState, action) {
         let ccbServerCharge = 0;
         let ccbTotalCharge = 0;
         let totalCharge = 0;
-        const fee = action.result.data.find(item => item.delg_no === fees[i].ccb_delg_no);
-        if (fee && fee.cush_charges.length > 0) {
-          fee.cush_charges.forEach((item) => {
-            if (item.total_fee) {
-              ccbCushCharge += item.total_fee;
+        const fee = action.result.data.find(item => item.ccb_delg_no === fees[i].ccb_delg_no);
+        if (fee && fee.clearanceFees.length > 0) {
+          fee.clearanceFees.forEach((clearanceFee) => {
+            if (clearanceFee.cush_charges.length > 0) {
+              clearanceFee.cush_charges.forEach((item) => {
+                if (item.total_fee) {
+                  ccbCushCharge += item.total_fee;
+                }
+              });
+            }
+            if (clearanceFee.server_charges.length > 0) {
+              clearanceFee.server_charges.forEach((item) => {
+                if (item.total_fee) {
+                  ccbServerCharge += item.total_fee;
+                }
+              });
             }
           });
         }
-        if (fee && fee.server_charges.length > 0) {
-          fee.server_charges.forEach((item) => {
-            if (item.total_fee) {
-              ccbServerCharge += item.total_fee;
-            }
-          });
-        }
+
         ccbTotalCharge = ccbCushCharge + ccbServerCharge;
         totalCharge = ccbTotalCharge;
         if (fees[i].trsTotalCharge) {
@@ -168,7 +173,7 @@ export function loadOrders({ tenantId, pageSize, current, searchValue, filters, 
   };
 }
 
-export function loadClearanceFees(delgNos) {
+export function loadClearanceFees(shipmtOrders) {
   return {
     [CLIENT_API]: {
       types: [
@@ -176,9 +181,9 @@ export function loadClearanceFees(delgNos) {
         actionTypes.LOAD_CLEARANCE_FEES_SUCCEED,
         actionTypes.LOAD_CLEARANCE_FEES_FAIL,
       ],
-      endpoint: 'v1/crm/cms/expenses',
+      endpoint: 'v1/crm/cms/billing/expenses',
       method: 'get',
-      params: { delgNos },
+      params: { shipmtOrders: JSON.stringify(shipmtOrders) },
       origin: 'mongo',
     },
   };
