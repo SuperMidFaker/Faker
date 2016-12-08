@@ -96,7 +96,7 @@ export default class FeesList extends React.Component {
   }
   onDateChange = (value) => {
     this.props.changeFeesFilter('startDate', value[0]);
-    this.props.changeFeesFilter('endDate', value[1])
+    this.props.changeFeesFilter('endDate', value[1]);
     this.handleTableLoad();
   }
   handleSelectionClear = () => {

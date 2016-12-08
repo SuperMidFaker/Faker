@@ -153,19 +153,19 @@ export default class ChargePanel extends React.Component {
       dataIndex: 'cal_fee',
       key: 'cal_fee',
       width: '16.7%',
-      render: (col) => col.toFixed(2),
+      render: col => col.toFixed(2),
     }, {
       title: this.msg('taxFee'),
       dataIndex: 'tax_fee',
       key: 'tax_fee',
       width: '16.7%',
-      render: (col) => col.toFixed(2),
+      render: col => col.toFixed(2),
     }, {
       title: this.msg('totalFee'),
       dataIndex: 'total_fee',
       key: 'total_fee',
       width: '16.7%',
-      render: (col) => col.toFixed(2),
+      render: col => col.toFixed(2),
     }];
     const cushColumns = [{
       title: this.msg('feeName'),
@@ -175,17 +175,17 @@ export default class ChargePanel extends React.Component {
       title: this.msg('feeVal'),
       dataIndex: 'cal_fee',
       key: 'cal_fee',
-      render: (col) => col.toFixed(2),
+      render: col => col.toFixed(2),
     }, {
       title: this.msg('taxFee'),
       dataIndex: 'tax_fee',
       key: 'tax_fee',
-      render: (col) => col.toFixed(2),
+      render: col => col.toFixed(2),
     }, {
       title: this.msg('totalFee'),
       dataIndex: 'total_fee',
       key: 'total_fee',
-      render: (col) => col.toFixed(2),
+      render: col => col.toFixed(2),
     }];
     const totalServFee = {
       fee_name: '合计',
