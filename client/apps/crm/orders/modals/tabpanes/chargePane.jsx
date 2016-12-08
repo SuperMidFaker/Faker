@@ -187,7 +187,7 @@ export default class ChargePanel extends React.Component {
       tax_fee: 0,
       total_fee: 0,
     };
-    clearanceFee.server_charges.forEach(fee => {
+    clearanceFee.server_charges.forEach((fee) => {
       totalServFee.cal_fee += fee.cal_fee;
       totalServFee.tax_fee += fee.tax_fee;
       totalServFee.total_fee += fee.total_fee;
@@ -202,7 +202,7 @@ export default class ChargePanel extends React.Component {
       tax_fee: 0,
       total_fee: 0,
     };
-    clearanceFee.cush_charges.forEach(fee => {
+    clearanceFee.cush_charges.forEach((fee) => {
       totalCushFee.cal_fee += fee.cal_fee;
       totalCushFee.tax_fee += fee.tax_fee;
       totalCushFee.total_fee += fee.total_fee;
