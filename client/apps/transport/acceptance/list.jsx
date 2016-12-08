@@ -96,6 +96,12 @@ export default class AcceptList extends React.Component {
   state = {
     selectedRowKeys: [],
     advancedSearchVisible: false,
+    searchValue: '',
+  }
+  componentWillMount() {
+    const { filters } = this.props;
+    const filter = filters.find(item => item.name === 'name');
+    this.setState({ searchValue: filter ? filter.value : '' });
   }
   dataSource = new Table.DataSource({
     fetcher: params => this.props.loadTable(null, params),
@@ -237,6 +243,7 @@ export default class AcceptList extends React.Component {
   handleSearch = (searchVal) => {
     const filters = this.mergeFilters(this.props.filters, 'name', searchVal);
     this.handleTableLoad(filters, 1);
+    this.setState({ searchValue: searchVal });
   }
   handleAdvancedSearch = (searchVals) => {
     let filters = this.props.filters;
@@ -428,7 +435,7 @@ export default class AcceptList extends React.Component {
           </RadioGroup>
         </header>
         <div className="top-bar-tools">
-          <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
+          <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} value={this.state.searchValue}/>
           <span />
           <a onClick={this.toggleAdvancedSearch}>高级搜索</a>
         </div>

@@ -112,11 +112,12 @@ export default class DispatchList extends React.Component {
     selectedRowKeys: [],
     panelHeader: [],
     advancedSearchVisible: false,
+    searchValue: '',
   }
 
-  componentDidMount() {
-    // 又advancedSearch 触发加载数据，所以暂时注释掉
-    // this.handleStatusChange({ target: { value: 'waiting' } });
+  componentWillMount() {
+    const { filters } = this.props;
+    this.setState({ searchValue: filters.shipmt_no || '' });
   }
   componentWillReceiveProps(nextProps) {
     if (!nextProps.loaded) {
@@ -552,6 +553,7 @@ export default class DispatchList extends React.Component {
   handleSearch = (searchVal) => {
     const filters = this.mergeFilters(this.props.filters, 'shipmt_no', searchVal);
     this.handleTableLoad(filters);
+    this.setState({ searchValue: searchVal });
   }
 
   handleAdvancedSearch = (searchVals) => {
@@ -1049,7 +1051,7 @@ export default class DispatchList extends React.Component {
           </RadioGroup>
         </header>
         <div className="top-bar-tools">
-          <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
+          <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} value={this.state.searchValue}/>
           <span />
           <a onClick={this.toggleAdvancedSearch}>高级搜索</a>
         </div>
