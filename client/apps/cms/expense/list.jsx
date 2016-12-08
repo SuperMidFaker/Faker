@@ -22,6 +22,7 @@ import MarkModal from './modals/markModal';
 import PreviewPanel from '../common/modals/preview-panel';
 import DelgAdvanceExpenseModal from './modals/delgAdvanceExpenseModal';
 import RowUpdater from './rowUpdater';
+import ExpEptModal from './modals/expEptModal';
 
 const formatMsg = format(messages);
 const RadioGroup = Radio.Group;
@@ -70,6 +71,7 @@ export default class ExpenseList extends Component {
   }
   state = {
     expandedKeys: [],
+    expEptVisible: false,
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.saved !== this.props.saved) {
@@ -315,13 +317,15 @@ export default class ExpenseList extends Component {
     return newFilters;
   }
   handleCushInput = () => {
-    this.props.loadCurrencies().then((result) => {
-      if (!result.error) {
-        this.props.openInModal();
-      } else {
-        message.error(result.error.message);
-      }
+
+  }
+  handleExpExport = () => {
+    this.setState({
+      expEptVisible: true,
     });
+  }
+  toggleEptModal = () => {
+    this.setState({ expEptVisible: !this.state.expEptVisible });
   }
   handleMarkStatement = () => {
     this.props.openMarkModal();
@@ -358,6 +362,9 @@ export default class ExpenseList extends Component {
               <Button type="primary" style={{ marginRight: 20 }} onClick={this.handleCushInput}>
                 {this.msg('incExp')}
               </Button>
+              <Button type="primary" style={{ marginRight: 20 }} onClick={this.handleExpExport}>
+                {this.msg('eptExp')}
+              </Button>
               <Button type="default" onClick={this.handleMarkStatement}>
                 {this.msg('markState')}
               </Button>
@@ -373,6 +380,7 @@ export default class ExpenseList extends Component {
         <MarkModal data={unstateData} />
         <PreviewPanel />
         <DelgAdvanceExpenseModal />
+        <ExpEptModal visible={this.state.expEptVisible} toggle={this.toggleEptModal} />
       </QueueAnim>
     );
   }

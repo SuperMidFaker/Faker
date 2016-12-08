@@ -30,6 +30,10 @@ const messages = defineMessages({
     id: 'cms.expense.inc.expense',
     defaultMessage: '导入费用',
   },
+  eptExp: {
+    id: 'cms.expense.export.expense',
+    defaultMessage: '导出费用',
+  },
   markState: {
     id: 'cms.expense.mark.statement',
     defaultMessage: '标记结单',
