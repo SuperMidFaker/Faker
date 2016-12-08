@@ -104,15 +104,15 @@ export default class EntryForm extends React.Component {
     const { ietype, readonly, form, entry, ...actions } = this.props;
     const head = entry.head;
     return (
-      <div className={`page-body ${readonly ? 'readonly' : ''}`}>
+      <div className="page-body">
         <div className="panel-header">
           {!readonly &&
-            <Button type="primary" size="small" onClick={this.handleEntryHeadSave} icon="save">
+            <Button type="primary" onClick={this.handleEntryHeadSave} icon="save">
               {formatGlobalMsg(this.props.intl, 'save')}
             </Button>
           }
         </div>
-        <div className="panel-body card-wrapper">
+        <div className={`panel-body card-wrapper ${readonly ? 'readonly' : ''}`}>
           <Card bodyStyle={{ padding: 8 }}>
             <BillHead ietype={ietype} readonly={readonly} form={form} formData={head} />
           </Card>
