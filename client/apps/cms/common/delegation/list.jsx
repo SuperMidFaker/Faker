@@ -456,7 +456,7 @@ export default class DelegationList extends Component {
   handleCertModalLoad = (row) => {
     this.props.loadRelatedDisp(this.props.tenantId, row.delg_no);
     const params = {};
-    params.id = row.id0;
+    params.id = row.id;
     params.delg_no = row.delg_no;
     if (row.recv_tenant_id === this.props.tenantId) {
       params.recv_tenant_id = row.recv_tenant_id;
