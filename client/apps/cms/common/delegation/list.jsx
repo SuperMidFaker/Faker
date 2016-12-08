@@ -153,12 +153,10 @@ export default class DelegationList extends Component {
     title: this.msg('delgNo'),
     dataIndex: 'delg_no',
     width: 120,
-    render: (o, record) => {
-      return (
-        <a onClick={() => this.handlePreview(o, record)}>
-          {o}
-        </a>);
-    },
+    render: (o, record) => (
+      <a onClick={() => this.handlePreview(o, record)}>
+        {o}
+      </a>),
   }, {
     title: this.msg('delgClient'),
     width: 200,
@@ -427,13 +425,11 @@ export default class DelegationList extends Component {
       }
     });
   }
-  handleSubdelgsList = (record) => {
-    return (
-      <BillSubTable delgNo={record.delg_no} ietype={this.props.ietype}
-        reloadDelgs={this.handleDelgListLoad} delgStatus={record.status}
-      />
-    );
-  }
+  handleSubdelgsList = record => (
+    <BillSubTable delgNo={record.delg_no} ietype={this.props.ietype}
+      reloadDelgs={this.handleDelgListLoad} delgStatus={record.status}
+    />
+    )
   handleExpandedChange = (expandedKeys) => {
     this.setState({ expandedKeys });
   }

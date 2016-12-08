@@ -111,14 +111,12 @@ export default class DispatchDock extends Component {
       width: 120,
       render: (o, record, index) => {
         if (o) {
-          const charge = o.reduce((a, b) => {
-            return {
-              freight_charge: a.freight_charge + b.freight_charge,
-              pickup_charge: a.pickup_charge + b.pickup_charge,
-              deliver_charge: a.deliver_charge + b.deliver_charge,
-              total_charge: a.total_charge + b.total_charge,
-            };
-          });
+          const charge = o.reduce((a, b) => ({
+            freight_charge: a.freight_charge + b.freight_charge,
+            pickup_charge: a.pickup_charge + b.pickup_charge,
+            deliver_charge: a.deliver_charge + b.deliver_charge,
+            total_charge: a.total_charge + b.total_charge,
+          }));
           return (
             <Popover placement="rightBottom" title={`${record.partner_name} 价格明细`} content={
               <ChargeSpecForm charges={o} onChange={this.handleChargeChange} index={index} />
@@ -180,16 +178,12 @@ export default class DispatchDock extends Component {
       title: '已分配',
       dataIndex: 'dispatched',
       width: 20,
-      render: () => {
-        return (<span>否</span>);
-      },
+      render: () => (<span>否</span>),
     }, {
       title: '在途',
       dataIndex: 'driving',
       width: 20,
-      render: () => {
-        return (<span>否</span>);
-      },
+      render: () => (<span>否</span>),
     }, {
       title: this.msg('shipmtOP'),
       width: 50,
@@ -356,9 +350,7 @@ export default class DispatchDock extends Component {
     const { type, target } = this.state.dispatchConfirmModal;
     const { tenantId, loginId, shipmts } = this.props;
     const podType = this.state.podType;
-    const shipmtNos = shipmts.map((s) => {
-      return { shipmtNo: s.shipmt_no, dispId: s.key };
-    });
+    const shipmtNos = shipmts.map(s => ({ shipmtNo: s.shipmt_no, dispId: s.key }));
     if (type === 'tenant') {
       this.props.doDispatch({
         tenantId,
@@ -404,9 +396,7 @@ export default class DispatchDock extends Component {
     const { type, target } = this.state.dispatchConfirmModal;
     const { tenantId, loginId, loginName, shipmts } = this.props;
     const podType = this.state.podType;
-    const shipmtNos = shipmts.map((s) => {
-      return { shipmtNo: s.shipmt_no, dispId: s.key };
-    });
+    const shipmtNos = shipmts.map(s => ({ shipmtNo: s.shipmt_no, dispId: s.key }));
     if (type === 'tenant') {
       this.props.doDispatchAndSend({
         tenantId,

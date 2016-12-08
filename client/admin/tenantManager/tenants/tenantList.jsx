@@ -97,8 +97,8 @@ export default class TenantList extends React.Component {
   render() {
     const { corplist, loading } = this.props;
     const dataSource = new Table.DataSource({
-      fetcher: (params) => { return this.props.loadTenants(null, params); },
-      resolve: (result) => { return result.data; },
+      fetcher: params => this.props.loadTenants(null, params),
+      resolve: result => result.data,
       getPagination: (result, currentResolve) => ({
         total: result.totalCount,
         current: currentResolve(result.totalCount, result.current, result.pageSize),

@@ -257,8 +257,8 @@ export function closePodModal() {
 }
 
 export function saveSubmitPod(userType, shipmtNo, dispId, parentDispId,
-                              submitter, signStatus, signRemark, photos,
-                              loginId, tenantId, tenantName) {
+  submitter, signStatus, signRemark, photos,
+  loginId, tenantId, tenantName) {
   return {
     [CLIENT_API]: {
       types: [

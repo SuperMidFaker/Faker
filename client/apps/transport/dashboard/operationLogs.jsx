@@ -59,9 +59,7 @@ export default class Dashboard extends React.Component {
     const columns = [{
       title: '运单号',
       dataIndex: 'shipmt_no',
-      render: (o, record) => {
-        return (<a onClick={() => this.props.loadShipmtDetail(record.shipmt_no, this.props.tenantId, 'sr', 'logs', record)}>{record.shipmt_no}</a>);
-      },
+      render: (o, record) => (<a onClick={() => this.props.loadShipmtDetail(record.shipmt_no, this.props.tenantId, 'sr', 'logs', record)}>{record.shipmt_no}</a>),
     }, {
       title: this.msg('departurePlace'),
       render: (o, record) => <TrimSpan text={renderConsignLoc(record, 'consigner')} maxLen={8} />,
@@ -72,9 +70,7 @@ export default class Dashboard extends React.Component {
     }, {
       title: this.msg('shipmtActPickupDate'),
       dataIndex: 'pickup_act_date',
-      render: (o, record) => {
-        return o ? (<ActDate actDate={record.pickup_act_date} estDate={record.pickup_est_date} />) : '';
-      },
+      render: (o, record) => o ? (<ActDate actDate={record.pickup_act_date} estDate={record.pickup_est_date} />) : '',
     }, {
       title: this.msg('arrivalPlace'),
       render: (o, record) => <TrimSpan text={renderConsignLoc(record, 'consignee')} maxLen={8} />,
@@ -85,9 +81,7 @@ export default class Dashboard extends React.Component {
     }, {
       title: this.msg('shipmtActDeliveryDate'),
       dataIndex: 'deliver_act_date',
-      render: (o, record) => {
-        return o ? (<ActDate actDate={record.deliver_act_date} estDate={record.deliver_est_date} />) : '';
-      },
+      render: (o, record) => o ? (<ActDate actDate={record.deliver_act_date} estDate={record.deliver_est_date} />) : '',
     }, {
       title: this.msg('shipmtStatus'),
       dataIndex: 'status',

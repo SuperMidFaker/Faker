@@ -81,7 +81,6 @@ export default class ConsignInfo extends React.Component {
     this.props.consignLocations.forEach((cl) => {
       if (cl.name === name) {
         selectConsignLoc = cl;
-        return;
       }
     });
     if (selectConsignLoc) {

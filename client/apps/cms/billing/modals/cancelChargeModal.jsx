@@ -10,11 +10,9 @@ const formatMsg = format(messages);
 
 @injectIntl
 @connect(
-  (state) => {
-    return {
-      tenantId: state.account.tenantId,
-    };
-  },
+  state => ({
+    tenantId: state.account.tenantId,
+  }),
   { changeCancelCharge }
 )
 export default class CancelChargeModal extends React.Component {

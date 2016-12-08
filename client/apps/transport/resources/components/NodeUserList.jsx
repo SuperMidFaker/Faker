@@ -77,9 +77,7 @@ export default class NodeUserList extends Component {
           });
         });
       }
-    }, (messages, m) => {
-      return m;
-    });
+    }, (messages, m) => m);
   }
   handleCancel = () => {
     this.setState({

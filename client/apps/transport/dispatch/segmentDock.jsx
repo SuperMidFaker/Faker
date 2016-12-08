@@ -200,9 +200,7 @@ export default class SegmentDock extends React.Component {
   }
 
   handleSegment= () => {
-    const shipmtNos = this.props.shipmts.map((s) => {
-      return { shipmtNo: s.shipmt_no, dispId: s.key };
-    });
+    const shipmtNos = this.props.shipmts.map(s => ({ shipmtNo: s.shipmt_no, dispId: s.key }));
 
     const { segGroupFirst, segGroupSecond, twoable } = this.state;
     if (!this.validGroup(segGroupFirst)) {

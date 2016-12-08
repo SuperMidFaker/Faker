@@ -16,7 +16,7 @@ export function checkLoginName(loginName, loginId, tenantId) {
 }
 
 export function isLoginNameExist(name, code, loginId, tenantId, callback, message,
-                                 checkerDispatchFn, formatFn) {
+  checkerDispatchFn, formatFn) {
   if (!name) {
     return callback(new Error(formatFn(messages, 'userNameRequired')));
   }

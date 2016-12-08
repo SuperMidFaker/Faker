@@ -153,9 +153,7 @@ export default class AcceptList extends React.Component {
   }, {
     title: this.msg('shipPickupDate'),
     dataIndex: 'pickup_est_date',
-    render: (o, record) => {
-      return o ? moment(record.pickup_est_date).format('YYYY.MM.DD') : '';
-    },
+    render: (o, record) => o ? moment(record.pickup_est_date).format('YYYY.MM.DD') : '',
   }, {
     title: this.msg('shipTransitTime'),
     dataIndex: 'transit_time',
@@ -163,9 +161,7 @@ export default class AcceptList extends React.Component {
   }, {
     title: this.msg('shipDeliveryDate'),
     dataIndex: 'deliver_est_date',
-    render: (o, record) => {
-      return o ? moment(record.deliver_est_date).format('YYYY.MM.DD') : '';
-    },
+    render: (o, record) => o ? moment(record.deliver_est_date).format('YYYY.MM.DD') : '',
   }, {
     title: this.msg('shipConsignor'),
     dataIndex: 'consigner_name',
@@ -396,27 +392,25 @@ export default class AcceptList extends React.Component {
         title: formatContainerMsg(intl, 'opColumn'),
         width: 110,
         fixed: 'right',
-        render: (o, record) => {
-          return (
-            <span>
-              <PrivilegeCover module="transport" feature="shipment" action="edit">
-                <NavLink to={`/transport/shipment/draft/${record.shipmt_no}`}>
-                  {formatGlobalMsg(intl, 'modify')}
-                </NavLink>
-              </PrivilegeCover>
-              <span className="ant-divider" />
-              <PrivilegeCover module="transport" feature="shipment" action="delete">
-                <Popconfirm placement="topRight" title="确定要删除吗？"
-                  onConfirm={ev => this.handleShipmtDraftDel(record.shipmt_no, ev)}
-                >
-                  <a role="button">
-                    {formatGlobalMsg(intl, 'delete')}
-                  </a>
-                </Popconfirm>
-              </PrivilegeCover>
-            </span>
-          );
-        },
+        render: (o, record) => (
+          <span>
+            <PrivilegeCover module="transport" feature="shipment" action="edit">
+              <NavLink to={`/transport/shipment/draft/${record.shipmt_no}`}>
+                {formatGlobalMsg(intl, 'modify')}
+              </NavLink>
+            </PrivilegeCover>
+            <span className="ant-divider" />
+            <PrivilegeCover module="transport" feature="shipment" action="delete">
+              <Popconfirm placement="topRight" title="确定要删除吗？"
+                onConfirm={ev => this.handleShipmtDraftDel(record.shipmt_no, ev)}
+              >
+                <a role="button">
+                  {formatGlobalMsg(intl, 'delete')}
+                </a>
+              </Popconfirm>
+            </PrivilegeCover>
+          </span>
+          ),
       }];
     }
     return (

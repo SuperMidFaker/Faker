@@ -45,9 +45,7 @@ export default class InputModal extends Component {
   state = {
     rows: createRows(100),
   }
-  rowGetter = (rowIdx) => {
-    return this.state.rows[rowIdx];
-  }
+  rowGetter = rowIdx => this.state.rows[rowIdx]
   handleRowUpdated = (e) => {
     const rows = this.state.rows;
     Object.assign(rows[e.rowIdx], e.updated);

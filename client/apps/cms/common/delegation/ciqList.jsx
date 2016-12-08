@@ -64,12 +64,10 @@ export default class CiqList extends Component {
     title: this.msg('delgNo'),
     dataIndex: 'delg_no',
     width: 120,
-    render: (o) => {
-      return (
-        <a onClick={() => this.handlePreview(o)}>
-          {o}
-        </a>);
-    },
+    render: o => (
+      <a onClick={() => this.handlePreview(o)}>
+        {o}
+      </a>),
   }, {
     title: this.msg('delgClient'),
     width: 200,

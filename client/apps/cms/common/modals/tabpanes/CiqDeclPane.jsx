@@ -85,17 +85,13 @@ export default class CiqDeclPane extends React.Component {
     }, {
       title: '品质查验',
       dataIndex: 'ciq_quality_inspect',
-      render: (o) => {
-        return o === 1 ? <Tag color="red">是</Tag>
-          : <Tag>否</Tag>;
-      },
+      render: o => o === 1 ? <Tag color="red">是</Tag>
+          : <Tag>否</Tag>,
     }, {
       title: '动检查验',
       dataIndex: 'ciq_ap_inspect',
-      render: (o) => {
-        return o === 1 ? <Tag color="red">是</Tag>
-          : <Tag>否</Tag>;
-      },
+      render: o => o === 1 ? <Tag color="red">是</Tag>
+          : <Tag>否</Tag>,
     }, {
       title: '处理结果',
       dataIndex: 'ciq_status',

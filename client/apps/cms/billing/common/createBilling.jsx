@@ -174,9 +174,7 @@ export default class CreateBilling extends React.Component {
       title: this.msg('adjustCharge'),
       dataIndex: 'adjust_charge',
       width: 120,
-      render: (o, record) => {
-        return (<InputNumber size="small" defaultValue={o} step={0.01} onChange={value => this.handleChangeAdjustCharges(record.disp_id[0], value)} />);
-      },
+      render: (o, record) => (<InputNumber size="small" defaultValue={o} step={0.01} onChange={value => this.handleChangeAdjustCharges(record.disp_id[0], value)} />),
     }, {
       title: this.msg('finalCharge'),
       width: 120,
@@ -197,9 +195,7 @@ export default class CreateBilling extends React.Component {
       title: this.msg('billingStatus'),
       dataIndex: 'billing_status',
       width: 120,
-      render: (o, record) => {
-        return (<Checkbox defaultChecked={o === 1} onChange={e => this.handleChangeStatus(record.disp_id, e.target.checked)} />);
-      },
+      render: (o, record) => (<Checkbox defaultChecked={o === 1} onChange={e => this.handleChangeStatus(record.disp_id, e.target.checked)} />),
     }];
     return (
       <div>

@@ -15,11 +15,9 @@ const Option = Select.Option;
 
 @injectIntl
 @connect(
-  (state) => {
-    return {
-      tenant_id: state.account.tenantId,
-    };
-  },
+  state => ({
+    tenant_id: state.account.tenantId,
+  }),
   { submitCompRelation })
 
 class CompRelationForm extends Component {
@@ -114,9 +112,7 @@ class CompRelationForm extends Component {
                   defaultValue={formData.relation_type}
                 >
                   {
-                  RELATION_TYPES.map((item) => {
-                    return (<Option value={item.key}>{item.value}</Option>);
-                  })
+                  RELATION_TYPES.map(item => (<Option value={item.key}>{item.value}</Option>))
                 }
                 </Select>)}
               </FormItem>
@@ -138,9 +134,7 @@ class CompRelationForm extends Component {
                   defaultValue={formData.i_e_type}
                 >
                   {
-                  I_E_TYPES.map((item) => {
-                    return (<Option value={item.key}>{item.value}</Option>);
-                  })
+                  I_E_TYPES.map(item => (<Option value={item.key}>{item.value}</Option>))
                 }
                 </Select>)}
               </FormItem>

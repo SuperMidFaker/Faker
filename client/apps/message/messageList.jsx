@@ -133,14 +133,12 @@ export default class MessageList extends React.Component {
         title: msg('time'),
         dataIndex: 'time',
         width: '14%',
-        render: (text, record) => {
-          return this.renderColumnText(record.status, this.getDateDiff(text), record);
-        },
+        render: (text, record) => this.renderColumnText(record.status, this.getDateDiff(text), record),
       },
     ];
     const dataSource = new Table.DataSource({
-      fetcher: (params) => { return this.props.loadMessages(null, params); },
-      resolve: (result) => { return result.data; },
+      fetcher: params => this.props.loadMessages(null, params),
+      resolve: result => result.data,
       getPagination: (result, resolve) => {
         const pagination = {
           total: result.totalCount,

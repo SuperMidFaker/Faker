@@ -397,13 +397,11 @@ export default class ChargePanel extends React.Component {
               </Row>
             </Card>
             <Tabs activeKey={this.state.tabKey} tabPosition="left" onChange={this.handleChangeTab}>
-              {transports.map((item) => {
-                return (
-                  <TabPane tab={item.shipmt_no} key={item.shipmt_no}>
-                    {this.renderTransportFees(item)}
-                  </TabPane>
-                );
-              })}
+              {transports.map(item => (
+                <TabPane tab={item.shipmt_no} key={item.shipmt_no}>
+                  {this.renderTransportFees(item)}
+                </TabPane>
+                ))}
             </Tabs>
           </div>
         );

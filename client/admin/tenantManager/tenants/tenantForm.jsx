@@ -159,7 +159,7 @@ class TenantForm extends React.Component {
               <Row>
                 <Col span="12">
                   <FormItem label="租户应用列表" labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} required>
-                    {getFieldDecorator('tenantAppList', { initialValue: tenantAppValueList.map((item) => { return item.id; }) })(<CheckboxGroup
+                    {getFieldDecorator('tenantAppList', { initialValue: tenantAppValueList.map(item => item.id) })(<CheckboxGroup
                       options={Object.keys(DEFAULT_MODULES).map(mod => ({
                         value: DEFAULT_MODULES[mod].id,
                         label: DEFAULT_MODULES[mod].defaultText,

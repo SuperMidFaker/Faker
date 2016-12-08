@@ -15,10 +15,9 @@ function prefetchState(components, locals) {
   return Promise.all(fproms);
 }
 
-export default (components, store, cookie, location, params) => {
-  return new Promise((resolve) => {
-    const doTransition = () => {
-      fetchDeferredState(components, { state: store.getState(), dispatch: store.dispatch, cookie, location, params })
+export default (components, store, cookie, location, params) => new Promise((resolve) => {
+  const doTransition = () => {
+    fetchDeferredState(components, { state: store.getState(), dispatch: store.dispatch, cookie, location, params })
         .then(resolve)
         .catch((error) => {
           // TODO: there is no error return here for api promise, maybe we need handle failure
@@ -26,13 +25,12 @@ export default (components, store, cookie, location, params) => {
           console.warn('Warning: Error in fetchDataDeferred', error);
           return resolve();
         });
-    };
+  };
 
-    return prefetchState(components, { state: store.getState(), dispatch: store.dispatch, cookie, location, params })
+  return prefetchState(components, { state: store.getState(), dispatch: store.dispatch, cookie, location, params })
       .then(doTransition)
       .catch((error) => {
         console.warn('Warning: Error in fetchData', error);
         return doTransition();
       });
-  });
-};
+});

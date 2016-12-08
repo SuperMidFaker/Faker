@@ -87,14 +87,12 @@ export default class RateEndTable extends React.Component {
     title: '运输时间',
     dataIndex: 'time',
   }]
-  loadEnds = (current) => {
-    return this.props.loadRateEnds({
-      rateId: this.props.rateId,
-      pageSize: this.props.ratesEndList.pageSize,
-      current: current || this.props.ratesEndList.current,
-      filters: this.props.filters,
-    });
-  }
+  loadEnds = current => this.props.loadRateEnds({
+    rateId: this.props.rateId,
+    pageSize: this.props.ratesEndList.pageSize,
+    current: current || this.props.ratesEndList.current,
+    filters: this.props.filters,
+  })
   handleRegionChange = (region) => {
     const [code, province, city, district, street] = region;
     this.setState({
@@ -249,14 +247,12 @@ export default class RateEndTable extends React.Component {
       title: '操作',
       width: 120,
       fixed: 'right',
-      render: (o, record) => {
-        return (
-          <span>
-            <RowClick text="编辑" onHit={this.handleEdit} row={record} />
-            <span className="ant-divider" />
-            <ConfirmDel text="删除" onConfirm={this.handleDel} row={record} />
-          </span>);
-      },
+      render: (o, record) => (
+        <span>
+          <RowClick text="编辑" onHit={this.handleEdit} row={record} />
+          <span className="ant-divider" />
+          <ConfirmDel text="删除" onConfirm={this.handleDel} row={record} />
+        </span>),
     });
     return (
       <div>

@@ -50,9 +50,7 @@ export default class SendInvitation extends Component {
       title: '业务关系',
       dataIndex: 'partnerships',
       key: 'partnerships',
-      render: (o) => {
-        return <PartnershipsColumn partnerships={o} />;
-      },
+      render: o => <PartnershipsColumn partnerships={o} />,
     }, {
       title: '发出时间',
       dataIndex: 'created_date',

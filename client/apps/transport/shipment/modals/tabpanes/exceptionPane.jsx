@@ -99,9 +99,7 @@ export default class ExceptionPane extends React.Component {
     title: this.msg('submitDate'),
     dataIndex: 'submit_date',
     width: '15%',
-    render: (o) => {
-      return moment(o).format('YYYY-MM-DD HH:mm:ss');
-    },
+    render: o => moment(o).format('YYYY-MM-DD HH:mm:ss'),
   }, {
     title: this.msg('submitter'),
     dataIndex: 'submitter',
@@ -110,9 +108,7 @@ export default class ExceptionPane extends React.Component {
     title: this.msg('operation'),
     dataIndex: 'id',
     width: '6%',
-    render: (o, record) => {
-      return (<a onClick={() => this.handleShowDealExcpModal(record)}>处理</a>);
-    },
+    render: (o, record) => (<a onClick={() => this.handleShowDealExcpModal(record)}>处理</a>),
   }]
   handleShowDealExcpModal = (exception) => {
     const { shipmtNo } = this.props;

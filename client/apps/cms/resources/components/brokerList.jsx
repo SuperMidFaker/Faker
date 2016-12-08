@@ -24,17 +24,15 @@ export default class BrokerList extends Component {
     onEditBtnClick: PropTypes.func.isRequired,
   }
 
-  renderEditAndStopOperations = (itemInfo) => {
-    return (
-      <PrivilegeCover module="corp" feature="partners" action="edit">
-        <span>
-          <a onClick={() => this.props.onEditBtnClick(itemInfo)}>修改</a>
-          <span className="ant-divider" />
-          <a onClick={() => this.props.onStopBtnClick(itemInfo.id)}>停用</a>
-        </span>
-      </PrivilegeCover>
-    );
-  }
+  renderEditAndStopOperations = itemInfo => (
+    <PrivilegeCover module="corp" feature="partners" action="edit">
+      <span>
+        <a onClick={() => this.props.onEditBtnClick(itemInfo)}>修改</a>
+        <span className="ant-divider" />
+        <a onClick={() => this.props.onStopBtnClick(itemInfo.id)}>停用</a>
+      </span>
+    </PrivilegeCover>
+    )
 
   renderDeleteAndResumeOperations = (itemInfo) => {
     const { id } = itemInfo;

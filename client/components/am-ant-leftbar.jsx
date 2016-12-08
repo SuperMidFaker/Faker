@@ -105,13 +105,11 @@ export default class AmLeftSidebar extends React.Component {
                   title={<div><i className={`icon  ${link.icon}`} /><span>{link.text}</span></div>}
                 >
                   {
-                    link.sublinks.map((sub) => {
-                      return (<MenuItem key={sub.key}>
-                        <NavLink to={sub.path}>
-                          {sub.text}
-                        </NavLink>
-                      </MenuItem>);
-                    })
+                    link.sublinks.map(sub => (<MenuItem key={sub.key}>
+                      <NavLink to={sub.path}>
+                        {sub.text}
+                      </NavLink>
+                    </MenuItem>))
                   }
                 </SubMenu>
               );

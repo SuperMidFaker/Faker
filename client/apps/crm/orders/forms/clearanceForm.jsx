@@ -42,12 +42,10 @@ export default class ClearanceForm extends Component {
     this.handleSetClientForm({ files: fileList });
   }
   handleCommonFieldChange = (filed, value) => {
-    const delgBills = this.props.formData.delgBills.map((item) => {
-      return {
-        ...item,
-        [filed]: value,
-      };
-    });
+    const delgBills = this.props.formData.delgBills.map(item => ({
+      ...item,
+      [filed]: value,
+    }));
     this.handleSetClientForm({ delgBills });
     return value;
   }
@@ -83,55 +81,52 @@ export default class ClearanceForm extends Component {
       labelCol: { span: 7 },
       wrapperCol: { span: 17 },
     };
-    const formItems = formData.delgBills.map((item, k) => {
-      return (
-        <Row key={k} style={{ marginBottom: 8 }}>
-          <Col sm={4}>
-            <FormItem label={this.msg('declareWay')} {...formItemLayout}>
-              <Select value={item.decl_way_code} onChange={value => this.handleChange(k, 'decl_way_code', value)}>
-                {DECL_I_TYPE.map(dw =>
-                  <Option value={dw.key} key={dw.key}>{dw.value}</Option>)
-                }
-              </Select>
-            </FormItem>
-          </Col>
-          <Col sm={4}>
-            <FormItem label="包装方式" {...formItemLayout}>
-              <Select value={item.package} onChange={value => this.handleChange(k, 'package', value)}>
-                {formRequires.packagings.map(
-                  pk => <Option value={pk.package_code} key={pk.package_code}>{pk.package_name}</Option>
-                )}
-              </Select>
-            </FormItem>
-          </Col>
-          <Col sm={4}>
-            <FormItem label={this.msg('packageNum')} {...formItemLayout}>
-              <InputNumber value={item.pack_count} min={1} max={100000} style={{ width: '100%' }}
-                onChange={value => this.handleChange(k, 'pack_count', value)}
-              />
-            </FormItem>
-          </Col>
-          <Col sm={4}>
-            <FormItem label={this.msg('delgGrossWt')} {...formItemLayout}>
-              <Input value={item.gross_wt} addonAfter="千克" type="number"
-                onChange={e => this.handleChange(k, 'gross_wt', e.target.value)}
-              />
-            </FormItem>
-          </Col>
-          <Col sm={6}>
-            <FormItem label="备注" {...formItemLayout}>
-              <Input value={item.remark} onChange={e => this.handleChange(k, 'remark', e.target.value)} />
-            </FormItem>
-          </Col>
-          <Col span={1} offset={1}>
-            {formData.delgBills.length > 1 ?
-              <Button type="ghost" shape="circle" onClick={() => this.handleRemoveRow(k)} icon="delete" />
-            : null
-          }
-          </Col>
-        </Row>
-      );
-    });
+    const formItems = formData.delgBills.map((item, k) => (
+      <Row key={k} style={{ marginBottom: 8 }}>
+        <Col sm={4}>
+          <FormItem label={this.msg('declareWay')} {...formItemLayout}>
+            <Select value={item.decl_way_code} onChange={value => this.handleChange(k, 'decl_way_code', value)}>
+              {DECL_I_TYPE.map(dw =>
+                <Option value={dw.key} key={dw.key}>{dw.value}</Option>)
+              }
+            </Select>
+          </FormItem>
+        </Col>
+        <Col sm={4}>
+          <FormItem label="包装方式" {...formItemLayout}>
+            <Select value={item.package} onChange={value => this.handleChange(k, 'package', value)}>
+              {formRequires.packagings.map(
+                pk => <Option value={pk.package_code} key={pk.package_code}>{pk.package_name}</Option>
+              )}
+            </Select>
+          </FormItem>
+        </Col>
+        <Col sm={4}>
+          <FormItem label={this.msg('packageNum')} {...formItemLayout}>
+            <InputNumber value={item.pack_count} min={1} max={100000} style={{ width: '100%' }}
+              onChange={value => this.handleChange(k, 'pack_count', value)}
+            />
+          </FormItem>
+        </Col>
+        <Col sm={4}>
+          <FormItem label={this.msg('delgGrossWt')} {...formItemLayout}>
+            <Input value={item.gross_wt} addonAfter="千克" type="number"
+              onChange={e => this.handleChange(k, 'gross_wt', e.target.value)}
+            />
+          </FormItem>
+        </Col>
+        <Col sm={6}>
+          <FormItem label="备注" {...formItemLayout}>
+            <Input value={item.remark} onChange={e => this.handleChange(k, 'remark', e.target.value)} />
+          </FormItem>
+        </Col>
+        <Col span={1} offset={1}>
+          {formData.delgBills.length > 1 ?
+            <Button type="ghost" shape="circle" onClick={() => this.handleRemoveRow(k)} icon="delete" />
+          : null}
+        </Col>
+      </Row>
+      ));
     return (
       <Card>
         {formItems}

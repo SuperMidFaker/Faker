@@ -241,9 +241,7 @@ export default class SurchargeForm extends React.Component {
       {
         title: this.msg('serialNo'),
         width: 60,
-        render: (o, record, index) => {
-          return index + 1;
-        },
+        render: (o, record, index) => index + 1,
       }, {
         title: this.msg('feeName'),
         dataIndex: 'fee_name',

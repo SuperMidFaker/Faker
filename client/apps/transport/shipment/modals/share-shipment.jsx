@@ -14,9 +14,7 @@ const InputGroup = Input.Group;
 
 @injectIntl
 @connect(
-  () => {
-    return {};
-  },
+  () => ({}),
   { sendTrackingDetailSMSMessage }
 )
 export default class ShareShipmentModal extends React.Component {
@@ -117,7 +115,7 @@ export default class ShareShipmentModal extends React.Component {
           });
         }
       },
-      () => { return '电话号码不正确'; }
+      () => '电话号码不正确'
     );
   }
   render() {

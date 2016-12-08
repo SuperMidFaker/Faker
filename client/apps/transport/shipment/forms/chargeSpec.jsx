@@ -42,9 +42,7 @@ export default class ChargeSpecForm extends React.Component {
     }
     onChange(charge, index);
   }
-  rowGetter = (rowIdx) => {
-    return this.props.charges[rowIdx];
-  }
+  rowGetter = rowIdx => this.props.charges[rowIdx]
   handleRowUpdated = (e) => {
     const { index, onChange, charges } = this.props;
     Object.assign(charges[e.rowIdx], e.updated);

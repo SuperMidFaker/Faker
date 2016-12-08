@@ -442,21 +442,19 @@ export default class DispatchList extends React.Component {
     }, {
       title: this.msg('shipmtOP'),
       width: 100,
-      render: (o, record) => {
-        return (
-          <PrivilegeCover module="transport" feature="dispatch" action="create">
-            <span>
-              <a role="button" onClick={ev => this.handleCondDispatchDockShow(record, ev)}>
-                {this.msg('btnTextDispatch')}
-              </a>
-              <span className="ant-divider" />
-              <a role="button" onClick={ev => this.handleCondSegmentDockShow(record, ev)}>
-                {this.msg('btnTextSegment')}
-              </a>
-            </span>
-          </PrivilegeCover>
-        );
-      },
+      render: (o, record) => (
+        <PrivilegeCover module="transport" feature="dispatch" action="create">
+          <span>
+            <a role="button" onClick={ev => this.handleCondDispatchDockShow(record, ev)}>
+              {this.msg('btnTextDispatch')}
+            </a>
+            <span className="ant-divider" />
+            <a role="button" onClick={ev => this.handleCondSegmentDockShow(record, ev)}>
+              {this.msg('btnTextSegment')}
+            </a>
+          </span>
+        </PrivilegeCover>
+        ),
     }];
 
     return cols;
@@ -466,9 +464,7 @@ export default class DispatchList extends React.Component {
     this.setState({ selectedRowKeys: [] });
   }
 
-  msgWrapper = (s) => {
-    return this.msg(s);
-  }
+  msgWrapper = s => this.msg(s)
 
   handleShipmtPreview = (row) => {
     this.props.loadShipmtDetail(row.shipmt_no, this.props.tenantId, 'sp', 'detail', row).then((result) => {

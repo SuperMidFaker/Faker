@@ -30,7 +30,7 @@
     "import/newline-after-import": 0,
     "react/jsx-filename-extension": 0,
     "react/jsx-first-prop-new-line": 0,
-    "import/imports-first": 0,
+    "import/first": 0,
     "import/prefer-default-export": 0,
     "jsx-a11y/href-no-hash": 0,
     "jsx-a11y/no-static-element-interactions": 0,
@@ -45,6 +45,15 @@
     "no-plusplus":0,
     "no-bitwise": 0,
     "class-methods-use-this": 0,
+    "no-confusing-arrow": 0,
+    "no-empty": 0,
+    "comma-dangle": ["error", {
+	"arrays": "always-multiline",
+	"objects": "always-multiline",
+	"imports": "always-multiline",
+	"exports": "always-multiline",
+	"functions": "ignore"
+    }],
     "object-property-newline": 0
   }
 }

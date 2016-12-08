@@ -33,9 +33,7 @@ export default class ClearanceTrackingPane extends React.Component {
       dataIndex: 'process_date',
       key: 'process_date',
       width: '30%',
-      render: (o) => {
-        return `${o ? moment(o).format(timeFormat) : ''}`;
-      },
+      render: o => `${o ? moment(o).format(timeFormat) : ''}`,
     }];
 
     const dataSource = [];
