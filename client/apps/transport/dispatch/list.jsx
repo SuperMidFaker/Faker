@@ -1051,7 +1051,7 @@ export default class DispatchList extends React.Component {
           </RadioGroup>
         </header>
         <div className="top-bar-tools">
-          <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} value={this.state.searchValue}/>
+          <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} value={this.state.searchValue} />
           <span />
           <a onClick={this.toggleAdvancedSearch}>高级搜索</a>
         </div>
