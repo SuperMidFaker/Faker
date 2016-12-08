@@ -106,7 +106,7 @@ export default class BillForm extends React.Component {
   render() {
     const { ietype, readonly, form, billHead, billBody, ...actions } = this.props;
     return (
-      <div className={`page-body ${readonly ? 'readonly' : ''}`}>
+      <div className="page-body">
         <div className="panel-header">
           {!readonly &&
           <Button type="primary" onClick={this.handleBillSave} icon="save">
@@ -125,7 +125,7 @@ export default class BillForm extends React.Component {
             <Button icon="file-excel">{this.msg('importBody')}</Button>
           </ExcelUpload>
         </div>
-        <div className="panel-body card-wrapper">
+        <div className={`panel-body card-wrapper ${readonly ? 'readonly' : ''}`}>
           <Card bodyStyle={{ padding: 8 }}>
             <BillHead ietype={ietype} readonly={readonly} form={form} formData={billHead} />
           </Card>
