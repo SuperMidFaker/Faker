@@ -153,16 +153,19 @@ export default class ChargePanel extends React.Component {
       dataIndex: 'cal_fee',
       key: 'cal_fee',
       width: '16.7%',
+      render: (col) => col.toFixed(2),
     }, {
       title: this.msg('taxFee'),
       dataIndex: 'tax_fee',
       key: 'tax_fee',
       width: '16.7%',
+      render: (col) => col.toFixed(2),
     }, {
       title: this.msg('totalFee'),
       dataIndex: 'total_fee',
       key: 'total_fee',
       width: '16.7%',
+      render: (col) => col.toFixed(2),
     }];
     const cushColumns = [{
       title: this.msg('feeName'),
@@ -172,14 +175,17 @@ export default class ChargePanel extends React.Component {
       title: this.msg('feeVal'),
       dataIndex: 'cal_fee',
       key: 'cal_fee',
+      render: (col) => col.toFixed(2),
     }, {
       title: this.msg('taxFee'),
       dataIndex: 'tax_fee',
       key: 'tax_fee',
+      render: (col) => col.toFixed(2),
     }, {
       title: this.msg('totalFee'),
       dataIndex: 'total_fee',
       key: 'total_fee',
+      render: (col) => col.toFixed(2),
     }];
     const totalServFee = {
       fee_name: '合计',
@@ -192,9 +198,9 @@ export default class ChargePanel extends React.Component {
       totalServFee.tax_fee += fee.tax_fee;
       totalServFee.total_fee += fee.total_fee;
     });
-    totalServFee.cal_fee = totalServFee.cal_fee.toFixed(2);
-    totalServFee.tax_fee = totalServFee.tax_fee.toFixed(2);
-    totalServFee.total_fee = totalServFee.total_fee.toFixed(2);
+    totalServFee.cal_fee = totalServFee.cal_fee;
+    totalServFee.tax_fee = totalServFee.tax_fee;
+    totalServFee.total_fee = totalServFee.total_fee;
 
     const totalCushFee = {
       fee_name: '合计',
@@ -208,9 +214,9 @@ export default class ChargePanel extends React.Component {
       totalCushFee.total_fee += fee.total_fee;
     });
 
-    totalCushFee.cal_fee = totalCushFee.cal_fee.toFixed(2);
-    totalCushFee.tax_fee = totalCushFee.tax_fee.toFixed(2);
-    totalCushFee.total_fee = totalCushFee.total_fee.toFixed(2);
+    totalCushFee.cal_fee = totalCushFee.cal_fee;
+    totalCushFee.tax_fee = totalCushFee.tax_fee;
+    totalCushFee.total_fee = totalCushFee.total_fee;
 
     return (
       <div className="pane-content tab-pane">

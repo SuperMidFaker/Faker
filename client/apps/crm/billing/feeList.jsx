@@ -95,10 +95,9 @@ export default class FeesList extends React.Component {
     }
   }
   onDateChange = (value) => {
-    const promises = [this.props.changeFeesFilter('startDate', value[0]), this.props.changeFeesFilter('endDate', value[1])];
-    Promise.all(promises).then(() => {
-      // this.handleTableLoad();
-    });
+    this.props.changeFeesFilter('startDate', value[0]);
+    this.props.changeFeesFilter('endDate', value[1])
+    this.handleTableLoad();
   }
   handleSelectionClear = () => {
     this.setState({ selectedRowKeys: [] });
@@ -258,7 +257,7 @@ export default class FeesList extends React.Component {
               <Button type="primary" onClick={() => this.props.toggleAdvanceChargeModal(true)} >{this.msg('import')}</Button>
               <Button style={{ marginLeft: 16 }} onClick={this.handleExportExcel}>{this.msg('export')}</Button>
               <div style={{ float: 'right' }}>
-                <RangePicker style={{ width: 200 }} defaultValue={[moment(startDate), moment(endDate)]}
+                <RangePicker style={{ width: 200 }} value={[moment(startDate), moment(endDate)]}
                   onChange={this.onDateChange}
                 />
               </div>

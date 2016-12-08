@@ -138,7 +138,7 @@ export default class BasicForm extends Component {
                 onChange={value => this.handleClientChange(value)}
               >
                 {formRequires.clients.map(data => (
-                  <Option key={data.partner_id} value={data.partner_id}>{data.partner_unique_code ? `${data.partner_unique_code} | ${data.name}` : data.name}</Option>)
+                  <Option key={data.partner_id} value={data.partner_id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>)
                 )}
               </Select>
             </FormItem>

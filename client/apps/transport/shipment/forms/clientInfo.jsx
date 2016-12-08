@@ -53,7 +53,7 @@ export default class ClientInfo extends React.Component {
       key: `${cl.partner_id}/${cl.tid}`,
       value: `${cl.partner_id}`,
       code: cl.partner_code,
-      name: cl.partner_unique_code ? `${cl.partner_unique_code} | ${cl.name}` : cl.name,
+      name: cl.partner_code ? `${cl.partner_code} | ${cl.name}` : cl.name,
     }));
     let content = '';
     if (vertical) {
