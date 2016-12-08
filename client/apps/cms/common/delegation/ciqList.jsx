@@ -246,6 +246,9 @@ export default class CiqList extends Component {
   render() {
     const { ciqlist } = this.props;
     this.dataSource.remotes = ciqlist;
-    return <Table columns={this.columns} dataSource={this.dataSource} loading={ciqlist.loading} />;
+    return (
+      <Table columns={this.columns} dataSource={this.dataSource}
+        loading={ciqlist.loading} rowKey="delg_no"
+      />);
   }
 }
