@@ -79,24 +79,20 @@ export default class RateSourceTable extends React.Component {
   }, {
     title: '操作',
     width: 80,
-    render: (o, record) => {
-      return (
-        <span>
-          <RowClick text="编辑" onHit={this.handleEdit} row={record} />
-          <span className="ant-divider" />
-          <ConfirmDel text="删除" onConfirm={this.handleDel} row={record} />
-        </span>
-      );
-    },
+    render: (o, record) => (
+      <span>
+        <RowClick text="编辑" onHit={this.handleEdit} row={record} />
+        <span className="ant-divider" />
+        <ConfirmDel text="删除" onConfirm={this.handleDel} row={record} />
+      </span>
+      ),
   }]
-  loadSources = (pageSize, current) => {
-    return this.props.loadRatesSources({
-      tariffId: this.props.tariffId,
-      pageSize,
-      currentPage: current,
-      filters: JSON.stringify(this.props.filters),
-    });
-  }
+  loadSources = (pageSize, current) => this.props.loadRatesSources({
+    tariffId: this.props.tariffId,
+    pageSize,
+    currentPage: current,
+    filters: JSON.stringify(this.props.filters),
+  })
   handleEdit = (row, ev) => {
     ev.stopPropagation();
     const { code, province, city, district, street } = row.source;

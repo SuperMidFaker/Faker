@@ -28,7 +28,7 @@ export default class CRMDashboard extends React.Component {
 
   handleRadioChange = (ev) => {
     if (ev.target.value === this.props.listFilter.status) {
-      return;
+
     }
   }
   render() {

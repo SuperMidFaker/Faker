@@ -6,9 +6,7 @@
  */
 import moment from 'moment';
 export function addUniqueKeys(arr) {
-  return arr.map((item, index) => {
-    return { ...item, key: index };
-  });
+  return arr.map((item, index) => ({ ...item, key: index }));
 }
 
 export function createFilename(prefix) {

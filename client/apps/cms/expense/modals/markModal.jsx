@@ -58,11 +58,9 @@ export default class MarkModal extends Component {
       dataIndex: 'delg_no',
     }, {
       title: this.msg('statementEn'),
-      render: (o, record) => {
-        return (
-          <ColumnCheckbox field="status" record={record} onChange={this.handleOnChange} />
-        );
-      },
+      render: (o, record) => (
+        <ColumnCheckbox field="status" record={record} onChange={this.handleOnChange} />
+        ),
     },
   ];
   handleOnChange = (record, field, value) => {

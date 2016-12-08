@@ -174,23 +174,19 @@ export default class TransportForm extends Component {
   }
   handleTransmodeChange = (value) => {
     const transportMode = this.props.formRequires.transitModes.find(item => item.id === value);
-    const transports = this.props.formData.transports.map((item) => {
-      return {
-        ...item,
-        trs_mode_id: transportMode.id,
-        trs_mode_code: transportMode.mode_code,
-        trs_mode: transportMode.mode_name,
-      };
-    });
+    const transports = this.props.formData.transports.map(item => ({
+      ...item,
+      trs_mode_id: transportMode.id,
+      trs_mode_code: transportMode.mode_code,
+      trs_mode: transportMode.mode_name,
+    }));
     this.handleSetClientForm({ transports });
   }
   handleCommonFieldChange = (filed, value) => {
-    const transports = this.props.formData.transports.map((item) => {
-      return {
-        ...item,
-        [filed]: value,
-      };
-    });
+    const transports = this.props.formData.transports.map(item => ({
+      ...item,
+      [filed]: value,
+    }));
     this.handleSetClientForm({ transports });
   }
 

@@ -48,7 +48,6 @@ export function isFormDataLoadedC(wantedKey, state, stateListName) {
   state[stateListName].data.forEach((c) => {
     if (c.key === wantedKey) {
       loaded = true;
-      return;
     }
   });
   return loaded;
@@ -71,7 +70,6 @@ export function assignFormC(wantedKey, state, stateListName, actionTypes) {
   state[stateListName].data.forEach((c, idx) => {
     if (c.key === wantedKey) {
       index = idx;
-      return;
     }
   });
   return {

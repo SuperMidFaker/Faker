@@ -137,9 +137,7 @@ export default class CreateBilling extends React.Component {
     const columns = [{
       title: '运单号',
       dataIndex: 'shipmt_no',
-      render: (o, record) => {
-        return (<a onClick={() => this.props.loadShipmtDetail(record.shipmt_no, this.props.tenantId, 'sr', 'charge', record)}>{record.shipmt_no}</a>);
-      },
+      render: (o, record) => (<a onClick={() => this.props.loadShipmtDetail(record.shipmt_no, this.props.tenantId, 'sr', 'charge', record)}>{record.shipmt_no}</a>),
     }, {
       title: '客户单号',
       dataIndex: 'ref_external_no',
@@ -171,9 +169,7 @@ export default class CreateBilling extends React.Component {
     }, {
       title: '调整金额',
       dataIndex: 'adjust_charge',
-      render: (o, record) => {
-        return (<InputNumber size="small" defaultValue={o} step={0.01} onChange={value => this.handleChangeAdjustCharges(record.id, value)} />);
-      },
+      render: (o, record) => (<InputNumber size="small" defaultValue={o} step={0.01} onChange={value => this.handleChangeAdjustCharges(record.id, value)} />),
     }, {
       title: '最终费用',
       render(o, record) {
@@ -210,15 +206,11 @@ export default class CreateBilling extends React.Component {
     }, {
       title: '实际提货时间',
       dataIndex: 'pickup_act_date',
-      render: (o, record) => {
-        return <ActDate actDate={record.pickup_act_date} estDate={record.pickup_est_date} />;
-      },
+      render: (o, record) => <ActDate actDate={record.pickup_act_date} estDate={record.pickup_est_date} />,
     }, {
       title: '实际交货时间',
       dataIndex: 'deliver_act_date',
-      render: (o, record) => {
-        return <ActDate actDate={record.deliver_act_date} estDate={record.deliver_est_date} />;
-      },
+      render: (o, record) => <ActDate actDate={record.deliver_act_date} estDate={record.deliver_est_date} />,
     }, {
       title: '异常',
       dataIndex: 'excp_count',
@@ -241,9 +233,7 @@ export default class CreateBilling extends React.Component {
     }, {
       title: '是否入账',
       dataIndex: 'status',
-      render: (o, record) => {
-        return (<Checkbox defaultChecked={o === 1} onChange={e => this.handleChangeStatus(record.id, e.target.checked)} />);
-      },
+      render: (o, record) => (<Checkbox defaultChecked={o === 1} onChange={e => this.handleChangeStatus(record.id, e.target.checked)} />),
     }];
     return (
       <div>

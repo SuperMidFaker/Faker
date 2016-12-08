@@ -64,7 +64,7 @@ export default class SCVDashboard extends React.Component {
   }
   handleRadioChange = (ev) => {
     if (ev.target.value === this.props.listFilter.status) {
-      return;
+
     }
   }
   msg = key => formatMsg(this.props.intl, key);

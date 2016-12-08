@@ -149,8 +149,8 @@ export default class Manage extends Component {
       },
     ];
     const dataSource = new Table.DataSource({
-      fetcher: (params) => { return this.props.loadCompRelations(null, params); },
-      resolve: (result) => { return result.rows; },
+      fetcher: params => this.props.loadCompRelations(null, params),
+      resolve: result => result.rows,
       getPagination: (result, resolve) => {
         const pagination = {
           tenantId,

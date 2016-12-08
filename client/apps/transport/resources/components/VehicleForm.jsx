@@ -22,7 +22,7 @@ const formItemLayout = {
 )
 @withPrivilege({
   module: 'transport', feature: 'resources',
-  action: (props) => { return props.mode === 'edit' ? 'edit' : 'create'; },
+  action: props => props.mode === 'edit' ? 'edit' : 'create',
 })
 export default class VehicleForm extends Component {
   componentDidMount() {

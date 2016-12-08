@@ -57,18 +57,16 @@ export default class Dashboard extends React.Component {
     if (arr.length === 0) return '';
     if (arr.length > 30) addonafter = ` 等共 ${arr.length} 单`;
     const newArr = arr.slice(0, 30);
-    return newArr.map((item, index) => {
-      return (
-        <span>
-          <a onClick={() => this.props.loadShipmtDetail(item.shipmt_no, this.props.tenantId, sourceType, 'detail', item)}
-            title={item.shipmt_no}
-          >
-            {item.ref_external_no || item.shipmt_no}
-          </a>
-          {index !== newArr.length - 1 ? '、' : addonafter}
-        </span>
-      );
-    });
+    return newArr.map((item, index) => (
+      <span>
+        <a onClick={() => this.props.loadShipmtDetail(item.shipmt_no, this.props.tenantId, sourceType, 'detail', item)}
+          title={item.shipmt_no}
+        >
+          {item.ref_external_no || item.shipmt_no}
+        </a>
+        {index !== newArr.length - 1 ? '、' : addonafter}
+      </span>
+      ));
   }
   render() {
     const { count, startDate, endDate, todos } = this.props.statistics;
@@ -92,9 +90,7 @@ export default class Dashboard extends React.Component {
       dataIndex: 'operation',
       key: 'operation',
       width: '92%',
-      render: (value) => {
-        return value;
-      },
+      render: value => value,
     }];
     const data = [{
       key: '1',

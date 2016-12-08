@@ -120,9 +120,7 @@ export default class BasicForm extends Component {
       this.props.setClientForm(-1, { containers: [] });
     }
   }
-  changeModelForm = (model) => {
-    return model.replace(/transport/g, '运输').replace(/clearance/g, '清关');
-  }
+  changeModelForm = model => model.replace(/transport/g, '运输').replace(/clearance/g, '清关')
   render() {
     const { formRequires, formData, businessModels } = this.props;
     const formItemLayout = {

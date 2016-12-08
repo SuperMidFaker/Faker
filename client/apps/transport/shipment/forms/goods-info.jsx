@@ -56,7 +56,6 @@ function ColumnSelect(props) {
     options.forEach((opt) => {
       if (opt.value === record[field]) {
         value = opt.name;
-        return;
       }
     });
   }

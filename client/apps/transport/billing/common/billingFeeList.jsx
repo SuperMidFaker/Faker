@@ -167,9 +167,7 @@ export default class BillingFeeList extends React.Component {
       dataIndex: 'shipmt_no',
       fixed: 'left',
       width: 150,
-      render: (o, record) => {
-        return (<a onClick={() => this.props.loadShipmtDetail(record.shipmt_no, this.props.tenantId, 'sr', 'charge', record)}>{record.shipmt_no}</a>);
-      },
+      render: (o, record) => (<a onClick={() => this.props.loadShipmtDetail(record.shipmt_no, this.props.tenantId, 'sr', 'charge', record)}>{record.shipmt_no}</a>),
     }, {
       title: '客户单号',
       dataIndex: 'ref_external_no',
@@ -237,15 +235,11 @@ export default class BillingFeeList extends React.Component {
     }, {
       title: '实际提货时间',
       dataIndex: 'pickup_act_date',
-      render: (o, record) => {
-        return <ActDate actDate={record.pickup_act_date} estDate={record.pickup_est_date} />;
-      },
+      render: (o, record) => <ActDate actDate={record.pickup_act_date} estDate={record.pickup_est_date} />,
     }, {
       title: '实际交货时间',
       dataIndex: 'deliver_act_date',
-      render: (o, record) => {
-        return <ActDate actDate={record.deliver_act_date} estDate={record.deliver_est_date} />;
-      },
+      render: (o, record) => <ActDate actDate={record.deliver_act_date} estDate={record.deliver_est_date} />,
     }, {
       title: '异常',
       dataIndex: 'excp_count',

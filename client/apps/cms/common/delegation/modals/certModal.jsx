@@ -41,9 +41,7 @@ export default class CertModal extends Component {
       this.setState({ rows: certFees });
     }
   }
-  rowGetter = (rowIdx) => {
-    return this.state.rows[rowIdx];
-  }
+  rowGetter = rowIdx => this.state.rows[rowIdx]
   handleRowUpdated = (e) => {
     const rows = this.state.rows;
     if (e.updated.charge_count) {

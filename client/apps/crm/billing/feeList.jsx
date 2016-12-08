@@ -150,9 +150,7 @@ export default class FeesList extends React.Component {
       dataIndex: 'shipmt_no',
       fixed: 'left',
       width: 150,
-      render: (o, record) => {
-        return (<a onClick={() => this.props.loadOrderDetail(record.shipmt_order_no, this.props.tenantId, 'charge')}>{record.shipmt_order_no}</a>);
-      },
+      render: (o, record) => (<a onClick={() => this.props.loadOrderDetail(record.shipmt_order_no, this.props.tenantId, 'charge')}>{record.shipmt_order_no}</a>),
     }, {
       title: '委托客户',
       dataIndex: 'customer_name',
@@ -161,9 +159,7 @@ export default class FeesList extends React.Component {
     }, {
       title: '报关委托号',
       dataIndex: 'ccb_delg_no',
-      render: (o) => {
-        return <CcbDelgNoColumn nos={o} />;
-      },
+      render: o => <CcbDelgNoColumn nos={o} />,
     }, {
       title: '报关服务费',
       key: 'ccbServerCharge',

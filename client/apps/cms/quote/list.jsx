@@ -170,9 +170,7 @@ export default class QuoteList extends Component {
         title: msg('modifiedTime'),
         dataIndex: 'modify_time',
         width: 100,
-        render: (o, record) => {
-          return `${moment(record.modify_time).format('MM.DD HH:mm')}`;
-        },
+        render: (o, record) => `${moment(record.modify_time).format('MM.DD HH:mm')}`,
       }, {
         title: msg('operation'),
         width: 100,

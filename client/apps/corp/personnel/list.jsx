@@ -103,7 +103,6 @@ export default class PersonnelSetting extends React.Component {
               id: br.key,
               parentId: br.parentId,
             };
-            return;
           }
         });
         this.props.switchTenant(tenant);

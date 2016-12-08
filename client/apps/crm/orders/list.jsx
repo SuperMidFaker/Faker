@@ -152,16 +152,12 @@ export default class ShipmentOrderList extends React.Component {
       title: '清关编号',
       dataIndex: 'ccb_delg_no',
       width: 120,
-      render: (o) => {
-        return <CcbDelgNoColumn nos={o} />;
-      },
+      render: o => <CcbDelgNoColumn nos={o} />,
     }, {
       title: '运输单号',
       dataIndex: 'trs_shipmt_no',
       width: 150,
-      render: (o) => {
-        return <TrsShipmtNoColumn nos={o} />;
-      },
+      render: o => <TrsShipmtNoColumn nos={o} />,
     }, {
       title: '客户',
       dataIndex: 'customer_name',

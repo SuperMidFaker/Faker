@@ -68,9 +68,7 @@ export default class PartnerSetupDialog extends React.Component {
         {t.name}
       </Option>);
   }
-  getTenantFilterOption = (input, option) => {
-    return option.props.datalink.name.toLowerCase().indexOf(input.toLowerCase()) !== -1;
-  }
+  getTenantFilterOption = (input, option) => option.props.datalink.name.toLowerCase().indexOf(input.toLowerCase()) !== -1
   handleTenantInputChange = (value, label) => {
     if (label === value) {
       this.setState({

@@ -57,33 +57,29 @@ export default class List extends React.Component {
         <section>
           <CellsTitle>待上传回单</CellsTitle>
           <Cells access>
-            {shipmentlist.data.map((item) => {
-              return (
-                <Cell className="" onClick={() => { this.handleUploadPod(item); }}>
-                  <CellBody>
-                    {item.shipmt_no}
-                  </CellBody>
-                  <CellFooter>
-                    {moment(item.deliver_act_date).format('YYYY-MM-DD HH:mm')}
-                  </CellFooter>
-                </Cell>
-              );
-            })}
+            {shipmentlist.data.map(item => (
+              <Cell className="" onClick={() => { this.handleUploadPod(item); }}>
+                <CellBody>
+                  {item.shipmt_no}
+                </CellBody>
+                <CellFooter>
+                  {moment(item.deliver_act_date).format('YYYY-MM-DD HH:mm')}
+                </CellFooter>
+              </Cell>
+              ))}
           </Cells>
           <CellsTitle>已提交回单</CellsTitle>
           <Cells>
-            {uploadedShipmentlist.data.map((item) => {
-              return (
-                <Cell style={{ color: '#CCCCCC' }}>
-                  <CellBody>
-                    {item.shipmt_no}
-                  </CellBody>
-                  <CellFooter>
-                    <Icon value="success_no_circle" />
-                  </CellFooter>
-                </Cell>
-              );
-            })}
+            {uploadedShipmentlist.data.map(item => (
+              <Cell style={{ color: '#CCCCCC' }}>
+                <CellBody>
+                  {item.shipmt_no}
+                </CellBody>
+                <CellFooter>
+                  <Icon value="success_no_circle" />
+                </CellFooter>
+              </Cell>
+              ))}
           </Cells>
         </section>
       </div>

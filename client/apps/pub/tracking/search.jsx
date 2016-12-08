@@ -59,9 +59,7 @@ export default class TrackingSearch extends React.Component {
       });
     }
   }
-  renderColumn = (o, shipment) => {
-    return (<a href={`/pub/tms/tracking/detail/${shipment.shipmt_no}/${shipment.public_key}`} target="_blank" rel="noopener noreferrer">{o}</a>);
-  }
+  renderColumn = (o, shipment) => (<a href={`/pub/tms/tracking/detail/${shipment.shipmt_no}/${shipment.public_key}`} target="_blank" rel="noopener noreferrer">{o}</a>)
   render() {
     const { logo, name } = this.props;
     const columns = [{

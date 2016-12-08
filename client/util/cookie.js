@@ -21,7 +21,7 @@ const cookie = {
 
   get(name) {
     const re = new RegExp(['(?:^|; )',
-      name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1'),
+      name.replace(/([.$?*|{}()[\]\\/+^])/g, '\\$1'),
       '=([^;]*)',
     ].join(''));
 

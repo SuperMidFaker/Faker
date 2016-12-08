@@ -48,9 +48,7 @@ export default class AdvanceChargeModal extends Component {
     rows: createRows(50),
   }
   msg = (key, values) => formatMsg(this.props.intl, key, values)
-  rowGetter = (rowIdx) => {
-    return this.state.rows[rowIdx];
-  }
+  rowGetter = rowIdx => this.state.rows[rowIdx]
   handleRowUpdated = (e) => {
     const rows = this.state.rows;
     Object.assign(rows[e.rowIdx], e.updated);

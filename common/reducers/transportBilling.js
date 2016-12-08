@@ -152,14 +152,12 @@ export default function reducer(state = initialState, action) {
       return { ...state, fees: { ...state.fees, ...action.result.data }, loading: false };
     case actionTypes.LOAD_FEES_BYCHOOSEMODAL_SUCCEED: {
       const billing = calculateBillingCharges(action.result.data.data);
-      const fees = action.result.data.data.map((item) => {
-        return {
-          ...item,
-          last_updated_tenant_id: action.params.tenantId,
-          last_updated_date: new Date(),
-          updated_field: 'status',
-        };
-      });
+      const fees = action.result.data.data.map(item => ({
+        ...item,
+        last_updated_tenant_id: action.params.tenantId,
+        last_updated_date: new Date(),
+        updated_field: 'status',
+      }));
       return { ...state, billingFees: { data: fees }, billing: { ...state.billing, ...billing } };
     }
     case actionTypes.LOAD_FEES_BYBILLINGID_SUCCEED: {

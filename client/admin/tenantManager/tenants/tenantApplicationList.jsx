@@ -61,8 +61,8 @@ export default class TenantApplicationList extends React.Component {
   render() {
     const { partners, loading } = this.props;
     const dataSource = new Table.DataSource({
-      fetcher: (params) => { return this.props.loadPartners(null, params); },
-      resolve: (result) => { return result.data; },
+      fetcher: params => this.props.loadPartners(null, params),
+      resolve: result => result.data,
       getPagination: (result, currentResolve) => ({
         total: result.totalCount,
         current: currentResolve(result.totalCount, result.current, result.pageSize),
@@ -111,13 +111,11 @@ export default class TenantApplicationList extends React.Component {
     }, {
       title: '操作',
       width: 100,
-      render: (text, record) => {
-        return (
-          <a role="button" onClick={() => this.handleCreateTenant(record)}>
+      render: (text, record) => (
+        <a role="button" onClick={() => this.handleCreateTenant(record)}>
           开通
           </a>
-        );
-      },
+        ),
     }];
     return (
       <div className="main-content">

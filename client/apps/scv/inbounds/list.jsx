@@ -193,51 +193,37 @@ export default class InboundShipmentsList extends React.Component {
     title: this.msg('etd'),
     width: 100,
     dataIndex: 'etd_time',
-    render: (o) => {
-      return o ? moment(o).format('YYYY/MM/DD') : '';
-    },
+    render: o => o ? moment(o).format('YYYY/MM/DD') : '',
   }, {
     title: this.msg('atd'),
     width: 100,
     dataIndex: 'atd_time',
-    render: (o) => {
-      return o ? moment(o).format('YYYY/MM/DD') : '';
-    },
+    render: o => o ? moment(o).format('YYYY/MM/DD') : '',
   }, {
     title: this.msg('eta'),
     width: 100,
     dataIndex: 'eta_time',
-    render: (o) => {
-      return o ? moment(o).format('YYYY/MM/DD') : '';
-    },
+    render: o => o ? moment(o).format('YYYY/MM/DD') : '',
   }, {
     title: this.msg('ata'),
     width: 100,
     dataIndex: 'ata_time',
-    render: (o) => {
-      return o ? moment(o).format('YYYY/MM/DD') : '';
-    },
+    render: o => o ? moment(o).format('YYYY/MM/DD') : '',
   }, {
     title: this.msg('customsCleared'),
     width: 100,
     dataIndex: 'decl_finished_time',
-    render: (o) => {
-      return o ? moment(o).format('YYYY/MM/DD') : '';
-    },
+    render: o => o ? moment(o).format('YYYY/MM/DD') : '',
   }, {
     title: this.msg('etaDelivery'),
     width: 100,
     dataIndex: 'delivery_eta',
-    render: (o) => {
-      return o ? moment(o).format('YYYY/MM/DD') : '';
-    },
+    render: o => o ? moment(o).format('YYYY/MM/DD') : '',
   }, {
     title: this.msg('ataDelivery'),
     width: 100,
     dataIndex: 'delivery_ata',
-    render: (o) => {
-      return o ? moment(o).format('YYYY/MM/DD') : '';
-    },
+    render: o => o ? moment(o).format('YYYY/MM/DD') : '',
   }, {
     title: this.msg('opColumn'),
     width: 100,

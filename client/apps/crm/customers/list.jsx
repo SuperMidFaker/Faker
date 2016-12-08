@@ -73,9 +73,7 @@ export default class List extends React.Component {
     const columns = [{
       dataIndex: 'name',
       key: 'name',
-      render: (o) => {
-        return (<div style={{ paddingLeft: 15 }}>{o}</div>);
-      },
+      render: o => (<div style={{ paddingLeft: 15 }}>{o}</div>),
     }];
     const menu = (
       <Menu onClick={this.handleOptionClick}>

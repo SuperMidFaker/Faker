@@ -208,13 +208,11 @@ export default class ClearancePane extends React.Component {
       return (
         <div>
           <Tabs activeKey={this.state.tabKey} tabPosition="left" onChange={this.handleChangeTab}>
-            {clearances.map((item) => {
-              return (
-                <TabPane tab={item.delegation.delg_no} key={item.delegation.delg_no}>
-                  {this.renderClearance(item)}
-                </TabPane>
-              );
-            })}
+            {clearances.map(item => (
+              <TabPane tab={item.delegation.delg_no} key={item.delegation.delg_no}>
+                {this.renderClearance(item)}
+              </TabPane>
+              ))}
           </Tabs>
         </div>
       );

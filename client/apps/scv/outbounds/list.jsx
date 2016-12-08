@@ -29,7 +29,7 @@ export default class OutboundShipmentsList extends React.Component {
 
   handleRadioChange = (ev) => {
     if (ev.target.value === this.props.listFilter.status) {
-      return;
+
     }
   }
   render() {

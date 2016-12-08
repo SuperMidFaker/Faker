@@ -68,9 +68,7 @@ export default class SubForm extends Component {
 
   remove(k) {
     if (k !== 0) {
-      const keys = this.state.keys.filter((key) => {
-        return key !== k;
-      });
+      const keys = this.state.keys.filter(key => key !== k);
       const bills = [...this.state.bills];
       bills[k] = {};
       this.setState({ bills, keys });
@@ -84,56 +82,54 @@ export default class SubForm extends Component {
     getFieldDecorator('keys', {
       initialValue: this.state.keys,
     });
-    const formItems = this.state.keys.map((k) => {
-      return (
-        <Row key={k} style={{ marginBottom: 8 }}>
-          <Col sm={6}>
-            <FormItem label={this.msg('declareWay')} {...formItemLayout}>
-              {getFieldDecorator(`decl_way_code_${k}`, {
-                rules: [{ required: true, message: '报关类型必选' }],
-                initialValue: bills[k].decl_way_code,
-              })(<Select>
-                {
+    const formItems = this.state.keys.map(k => (
+      <Row key={k} style={{ marginBottom: 8 }}>
+        <Col sm={6}>
+          <FormItem label={this.msg('declareWay')} {...formItemLayout}>
+            {getFieldDecorator(`decl_way_code_${k}`, {
+              rules: [{ required: true, message: '报关类型必选' }],
+              initialValue: bills[k].decl_way_code,
+            })(<Select>
+              {
                 DECL_TYPE.map(dw =>
                   <Option value={dw.key} key={dw.key}>{dw.value}</Option>
                 )
               }
-              </Select>)}
-            </FormItem>
-          </Col>
-          <Col sm={5}>
-            <FormItem label={this.msg('packageNum')} {...formItemLayout}>
-              {getFieldDecorator(`pack_count_${k}`, {
-                initialValue: bills[k].pack_count || 1 })(
-                  <InputNumber min={1} max={100000} style={{ width: '100%' }} />
+            </Select>)}
+          </FormItem>
+        </Col>
+        <Col sm={5}>
+          <FormItem label={this.msg('packageNum')} {...formItemLayout}>
+            {getFieldDecorator(`pack_count_${k}`, {
+              initialValue: bills[k].pack_count || 1 })(
+                <InputNumber min={1} max={100000} style={{ width: '100%' }} />
               )}
-            </FormItem>
-          </Col>
-          <Col sm={5}>
-            <FormItem label={this.msg('delgGrossWt')} {...formItemLayout}>
-              {getFieldDecorator(`gross_wt_${k}`, {
-                initialValue: bills[k].gross_wt,
-              })(<Input addonAfter="千克" type="number" />)}
-            </FormItem>
-          </Col>
-          <Col sm={6}>
-            <FormItem label={this.msg('remark')} {...formItemLayout}>
-              {getFieldDecorator(`remark_${k}`, {
-                initialValue: bills[k].remark,
-              })(<Input />)}
-            </FormItem>
-          </Col>
-          <Col span={1} offset={1}>
-            <Icon
-              className="dynamic-delete-button"
-              type="minus-circle-o"
-              disabled={this.state.keys.length === 1}
-              onClick={() => this.remove(k)}
-            />
-          </Col>
-        </Row>
-      );
-    });
+          </FormItem>
+        </Col>
+        <Col sm={5}>
+          <FormItem label={this.msg('delgGrossWt')} {...formItemLayout}>
+            {getFieldDecorator(`gross_wt_${k}`, {
+              initialValue: bills[k].gross_wt,
+            })(<Input addonAfter="千克" type="number" />)}
+          </FormItem>
+        </Col>
+        <Col sm={6}>
+          <FormItem label={this.msg('remark')} {...formItemLayout}>
+            {getFieldDecorator(`remark_${k}`, {
+              initialValue: bills[k].remark,
+            })(<Input />)}
+          </FormItem>
+        </Col>
+        <Col span={1} offset={1}>
+          <Icon
+            className="dynamic-delete-button"
+            type="minus-circle-o"
+            disabled={this.state.keys.length === 1}
+            onClick={() => this.remove(k)}
+          />
+        </Col>
+      </Row>
+      ));
     return (
       <Card title={this.msg('delgClearance')} bodyStyle={{ padding: 16 }}>
         {formItems}

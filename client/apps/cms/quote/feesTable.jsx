@@ -338,9 +338,7 @@ export default class FeesTable extends Component {
       {
         title: msg('serialNo'),
         width: 50,
-        render: (o, record, index) => {
-          return <span>{index + 1}</span>;
-        },
+        render: (o, record, index) => <span>{index + 1}</span>,
       }, {
         title: msg('feeName'),
         dataIndex: 'fee_name',

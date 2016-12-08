@@ -72,21 +72,19 @@ export default function NodeList(props) {
       title: '操作',
       dataIndex: 'operations',
       key: 'operations',
-      render: (_, record) => {
-        return (
-          <span>
-            <PrivilegeCover module="transport" feature="resources" action="edit">
-              <Link to={`/transport/resources/node/edit/${record.node_id}`}>修改</Link>
-            </PrivilegeCover>
-            <span className="ant-divider" />
-            <PrivilegeCover module="transport" feature="resources" action="delete">
-              <Popconfirm title="确定要删除吗？" onConfirm={() => onDeleteBtnClick(record.node_id)}>
-                <a>删除</a>
-              </Popconfirm>
-            </PrivilegeCover>
-          </span>
-        );
-      },
+      render: (_, record) => (
+        <span>
+          <PrivilegeCover module="transport" feature="resources" action="edit">
+            <Link to={`/transport/resources/node/edit/${record.node_id}`}>修改</Link>
+          </PrivilegeCover>
+          <span className="ant-divider" />
+          <PrivilegeCover module="transport" feature="resources" action="delete">
+            <Popconfirm title="确定要删除吗？" onConfirm={() => onDeleteBtnClick(record.node_id)}>
+              <a>删除</a>
+            </Popconfirm>
+          </PrivilegeCover>
+        </span>
+        ),
     },
   ];
   return (

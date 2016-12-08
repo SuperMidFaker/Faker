@@ -88,13 +88,11 @@ export default function reducer(state = initialState, action) {
       return { ...state, dispIds: action.result.data };
     case actionTypes.LOAD_EXPS_BYDISP_SUCCEED: {
       const billing = calculateBillingCharges(action.result.data);
-      const fees = action.result.data.map((item) => {
-        return {
-          ...item,
-          last_updated_tenant_id: action.data.tenantId,
-          last_updated_date: new Date(),
-        };
-      });
+      const fees = action.result.data.map(item => ({
+        ...item,
+        last_updated_tenant_id: action.data.tenantId,
+        last_updated_date: new Date(),
+      }));
       return { ...state, billingFees: { data: fees }, billing: { ...state.billing, ...billing } };
     }
     case actionTypes.UPDATE_BILLINGFEES: {

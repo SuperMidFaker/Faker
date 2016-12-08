@@ -53,18 +53,14 @@ function goBack(router) {
   { edit, submit, checkLoginName })
 @connectNav({
   depth: 3,
-  text: (props) => {
-    return props.formData.key === null ?
-    formatMsg(props.intl, 'newUser') : props.formData.name;
-  },
+  text: props => props.formData.key === null ?
+    formatMsg(props.intl, 'newUser') : props.formData.name,
   moduleName: 'corp',
   lifecycle: 'componentWillReceiveProps',
 })
 @withPrivilege({
   module: 'corp', feature: 'personnel',
-  action: (props) => {
-    return props.formData.key === null ? 'create' : 'edit';
-  },
+  action: props => props.formData.key === null ? 'create' : 'edit',
 })
 @Form.create()
 export default class CorpEdit extends React.Component {

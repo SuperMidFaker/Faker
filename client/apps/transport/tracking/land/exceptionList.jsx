@@ -141,20 +141,16 @@ export default class LandStatusList extends React.Component {
     dataIndex: 'shipmt_no',
     fixed: 'left',
     width: 150,
-    render: (o, record) => {
-      return <ShipmtnoColumn shipmtNo={record.shipmt_no} publicKey={record.public_key} shipment={record} onClick={this.handleShipmtPreview} />;
-    },
+    render: (o, record) => <ShipmtnoColumn shipmtNo={record.shipmt_no} publicKey={record.public_key} shipment={record} onClick={this.handleShipmtPreview} />,
   }, {
     title: this.msg('exceptionCount'),
     fixed: 'left',
     dataIndex: 'excp_count',
-    render: (o, record) => {
-      return (<ExceptionListPopover
-        shipmtNo={record.shipmt_no}
-        dispId={record.disp_id}
-        excpCount={o}
-      />);
-    },
+    render: (o, record) => (<ExceptionListPopover
+      shipmtNo={record.shipmt_no}
+      dispId={record.disp_id}
+      excpCount={o}
+    />),
   }, {
     title: this.msg('shipmtLastException'),
     fixed: 'left',

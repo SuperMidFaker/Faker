@@ -61,14 +61,12 @@ export default class BeforeFeesModal extends React.Component {
         if (result.error) {
           message.error(result.error.message);
         } else {
-          const exps = result.data.data.map((item) => {
-            return {
-              ...item,
-              last_updated_tenant_id: this.props.tenantId,
-              last_updated_date: new Date(),
-              updated_field: 'billing_status',
-            };
-          });
+          const exps = result.data.data.map(item => ({
+            ...item,
+            last_updated_tenant_id: this.props.tenantId,
+            last_updated_date: new Date(),
+            updated_field: 'billing_status',
+          }));
           this.setState({ dataSource: exps });
         }
       });
@@ -123,9 +121,7 @@ export default class BeforeFeesModal extends React.Component {
       title: this.msg('billingStatus'),
       dataIndex: 'billing_status',
       width: 120,
-      render: (o, record) => {
-        return (<a onClick={() => this.handleAdd(record)}>入帐</a>);
-      },
+      render: (o, record) => (<a onClick={() => this.handleAdd(record)}>入帐</a>),
     }];
     return (
       <Modal visible={this.props.visible} width="85%" title="未入账运单" onOk={this.props.toggle} onCancel={this.props.toggle}>

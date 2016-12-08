@@ -60,14 +60,12 @@ export default class BeforeFeesModal extends React.Component {
       if (result.error) {
         message.error(result.error.message);
       } else {
-        const fees = result.data.data.map((item) => {
-          return {
-            ...item,
-            last_updated_tenant_id: this.props.tenantId,
-            last_updated_date: new Date(),
-            updated_field: 'status',
-          };
-        });
+        const fees = result.data.data.map(item => ({
+          ...item,
+          last_updated_tenant_id: this.props.tenantId,
+          last_updated_date: new Date(),
+          updated_field: 'status',
+        }));
         this.setState({ dataSource: fees });
       }
     });
@@ -84,9 +82,7 @@ export default class BeforeFeesModal extends React.Component {
     const columns = [{
       title: '运单号',
       dataIndex: 'shipmt_no',
-      render: (o, record) => {
-        return (<a onClick={() => this.props.loadShipmtDetail(record.shipmt_no, this.props.tenantId, 'sr', 'charge', record)}>{record.shipmt_no}</a>);
-      },
+      render: (o, record) => (<a onClick={() => this.props.loadShipmtDetail(record.shipmt_no, this.props.tenantId, 'sr', 'charge', record)}>{record.shipmt_no}</a>),
     }, {
       title: '客户单号',
       dataIndex: 'ref_external_no',
@@ -161,15 +157,11 @@ export default class BeforeFeesModal extends React.Component {
     }, {
       title: '实际提货时间',
       dataIndex: 'pickup_act_date',
-      render: (o, record) => {
-        return <ActDate actDate={record.pickup_act_date} estDate={record.pickup_est_date} />;
-      },
+      render: (o, record) => <ActDate actDate={record.pickup_act_date} estDate={record.pickup_est_date} />,
     }, {
       title: '实际交货时间',
       dataIndex: 'deliver_act_date',
-      render: (o, record) => {
-        return <ActDate actDate={record.deliver_act_date} estDate={record.deliver_est_date} />;
-      },
+      render: (o, record) => <ActDate actDate={record.deliver_act_date} estDate={record.deliver_est_date} />,
     }, {
       title: '回单',
       dataIndex: 'pod_status',
@@ -182,9 +174,7 @@ export default class BeforeFeesModal extends React.Component {
     }, {
       title: '操作',
       dataIndex: 'status',
-      render: (o, record) => {
-        return (<a onClick={() => this.handleAdd(record)}>入帐</a>);
-      },
+      render: (o, record) => (<a onClick={() => this.handleAdd(record)}>入帐</a>),
     }];
     return (
       <Modal visible={this.props.visible} width="85%" title="未入账运单" onOk={this.props.toggle} onCancel={this.props.toggle}>

@@ -85,12 +85,10 @@ export default class ExpenseList extends Component {
       dataIndex: 'delg_no',
       width: 120,
       fixed: 'left',
-      render: (o) => {
-        return (
-          <a onClick={() => this.handlePreview(o)}>
-            {o}
-          </a>);
-      },
+      render: o => (
+        <a onClick={() => this.handlePreview(o)}>
+          {o}
+        </a>),
     }, {
       title: this.msg('custName'),
       dataIndex: 'send_name',
@@ -234,16 +232,12 @@ export default class ExpenseList extends Component {
       title: this.msg('statementEn'),
       width: 80,
       dataIndex: 'status',
-      render: (o) => {
-        return EXP_STATUS.filter(st => st.value === o)[0].text;
-      },
+      render: o => EXP_STATUS.filter(st => st.value === o)[0].text,
     }, {
       title: this.msg('lastActT'),
       dataIndex: 'last_act_time',
       width: 120,
-      render: (o) => {
-        return `${moment(o).format('MM.DD HH:mm')}`;
-      },
+      render: o => `${moment(o).format('MM.DD HH:mm')}`,
     },
   ];
   dataSource = new Table.DataSource({
@@ -330,11 +324,9 @@ export default class ExpenseList extends Component {
   handleMarkStatement = () => {
     this.props.openMarkModal();
   }
-  handleSubexpsList = (record) => {
-    return (
-      <ExpSubTable delgNo={record.delg_no} />
-    );
-  }
+  handleSubexpsList = record => (
+    <ExpSubTable delgNo={record.delg_no} />
+    )
   handleExpandedChange = (expandedKeys) => {
     this.setState({ expandedKeys });
   }

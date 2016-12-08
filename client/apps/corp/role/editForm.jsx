@@ -209,22 +209,21 @@ export default class RoleForm extends React.Component {
           </Row>
           <Row gutter={16}>
             {
-            tenantModules.map((tnm) => {
-              return (
-                <Col md={24} lg={12} key={tnm.text}>
-                  <Card title={formatGlobalMsg(intl, tnm.text)}>
-                    <Row style={{ paddingBottom: 10 }}>
-                      <Col span={4} offset={2}>
-                        {formatMsg(intl, 'featureName')}
-                      </Col>
-                      <Col span={2} offset={2}>
-                        {formatMsg(intl, 'allFull')}
-                      </Col>
-                      <Col span={12} offset={2}>
-                        {formatMsg(intl, 'actionName')}
-                      </Col>
-                    </Row>
-                    {
+            tenantModules.map(tnm => (
+              <Col md={24} lg={12} key={tnm.text}>
+                <Card title={formatGlobalMsg(intl, tnm.text)}>
+                  <Row style={{ paddingBottom: 10 }}>
+                    <Col span={4} offset={2}>
+                      {formatMsg(intl, 'featureName')}
+                    </Col>
+                    <Col span={2} offset={2}>
+                      {formatMsg(intl, 'allFull')}
+                    </Col>
+                    <Col span={12} offset={2}>
+                      {formatMsg(intl, 'actionName')}
+                    </Col>
+                  </Row>
+                  {
                       tnm.features.map(feat =>
                         <Row key={feat.text} style={{ paddingBottom: 10 }}>
                           <Col span={4} offset={2}>
@@ -249,10 +248,9 @@ export default class RoleForm extends React.Component {
                         </Row>
                       )
                     }
-                  </Card>
-                </Col>
-              );
-            })
+                </Card>
+              </Col>
+              ))
           }
           </Row>
           <Row>
