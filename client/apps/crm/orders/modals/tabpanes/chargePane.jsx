@@ -150,50 +150,82 @@ export default class ChargePanel extends React.Component {
       width: '16.7%',
     }, {
       title: this.msg('feeVal'),
-      dataIndex: 'sum_fee',
-      key: 'sum_fee',
+      dataIndex: 'cal_fee',
+      key: 'cal_fee',
       width: '16.7%',
     }, {
       title: this.msg('taxFee'),
       dataIndex: 'tax_fee',
       key: 'tax_fee',
       width: '16.7%',
-      render: (o) => {
-        if (o) {
-          return o.toFixed(2);
-        }
-      },
     }, {
       title: this.msg('totalFee'),
       dataIndex: 'total_fee',
       key: 'total_fee',
       width: '16.7%',
-      render: (o) => {
-        if (o) {
-          return o.toFixed(2);
-        }
-      },
     }];
     const cushColumns = [{
       title: this.msg('feeName'),
       dataIndex: 'fee_name',
       key: 'fee_name',
-      width: '40%',
+    }, {
+      title: this.msg('feeVal'),
+      dataIndex: 'cal_fee',
+      key: 'cal_fee',
+    }, {
+      title: this.msg('taxFee'),
+      dataIndex: 'tax_fee',
+      key: 'tax_fee',
     }, {
       title: this.msg('totalFee'),
       dataIndex: 'total_fee',
       key: 'total_fee',
-      width: '60%',
     }];
+    const totalServFee = {
+      fee_name: '合计',
+      cal_fee: 0,
+      tax_fee: 0,
+      total_fee: 0,
+    };
+    clearanceFee.server_charges.forEach(fee => {
+      totalServFee.cal_fee += fee.cal_fee;
+      totalServFee.tax_fee += fee.tax_fee;
+      totalServFee.total_fee += fee.total_fee;
+    });
+    totalServFee.cal_fee = totalServFee.cal_fee.toFixed(2);
+    totalServFee.tax_fee = totalServFee.tax_fee.toFixed(2);
+    totalServFee.total_fee = totalServFee.total_fee.toFixed(2);
+
+    const totalCushFee = {
+      fee_name: '合计',
+      cal_fee: 0,
+      tax_fee: 0,
+      total_fee: 0,
+    };
+    clearanceFee.cush_charges.forEach(fee => {
+      totalCushFee.cal_fee += fee.cal_fee;
+      totalCushFee.tax_fee += fee.tax_fee;
+      totalCushFee.total_fee += fee.total_fee;
+    });
+
+    totalCushFee.cal_fee = totalCushFee.cal_fee.toFixed(2);
+    totalCushFee.tax_fee = totalCushFee.tax_fee.toFixed(2);
+    totalCushFee.total_fee = totalCushFee.total_fee.toFixed(2);
 
     return (
       <div className="pane-content tab-pane">
-        <Card title={this.msg('serviceFee')} bodyStyle={{ padding: 8 }}>
-          <Table size="small" columns={columns} dataSource={clearanceFee.server_charges} rowKey="id" pagination={false} />
-        </Card>
-        <Card title={this.msg('cushionFee')} bodyStyle={{ padding: 8 }}>
-          <Table size="small" columns={cushColumns} dataSource={clearanceFee.cush_charges} rowKey="id" pagination={false} />
-        </Card>
+        <Row>
+          <Col span={14} style={{ paddingLeft: 8, paddingRight: 8 }}>
+            <Card title={this.msg('serviceFee')} bodyStyle={{ padding: 8 }}>
+              <Table size="small" columns={columns} dataSource={clearanceFee.server_charges.concat(totalServFee)} rowKey="_id" pagination={false} />
+            </Card>
+          </Col>
+          <Col span={10} style={{ paddingLeft: 8, paddingRight: 8 }}>
+            <Card title={this.msg('cushionFee')} bodyStyle={{ padding: 8 }}>
+              <Table size="small" columns={cushColumns} dataSource={clearanceFee.cush_charges.concat(totalCushFee)} rowKey="_id" pagination={false} />
+            </Card>
+          </Col>
+        </Row>
       </div>
     );
   }
