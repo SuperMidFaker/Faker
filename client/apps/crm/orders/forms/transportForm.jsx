@@ -262,7 +262,7 @@ export default class TransportForm extends Component {
             </FormItem>
           </Col>
           <Col sm={12}>
-            <FormItem label="提货地址" labelCol={{ span: 3 }} wrapperCol={{ span: 19 }}>
+            <FormItem label="提货地址" labelCol={{ span: 3 }} wrapperCol={{ span: 21 }}>
               <Input value={transport.consigner_addr}
                 onChange={e => this.handleChange(index, 'consigner_addr', e.target.value)}
               />
@@ -315,7 +315,7 @@ export default class TransportForm extends Component {
             </FormItem>
           </Col>
           <Col sm={12}>
-            <FormItem label="送货地址" labelCol={{ span: 3 }} wrapperCol={{ span: 19 }}>
+            <FormItem label="送货地址" labelCol={{ span: 3 }} wrapperCol={{ span: 21 }}>
               <Input value={transport.consignee_addr}
                 onChange={e => this.handleChange(index, 'consignee_addr', e.target.value)}
               />
@@ -347,8 +347,8 @@ export default class TransportForm extends Component {
         </Row>
 
         <Row>
-          <Col span={12}>
-            <FormItem label="备注" labelCol={{ span: 3 }} wrapperCol={{ span: 19 }}>
+          <Col span={18}>
+            <FormItem label="备注" labelCol={{ span: 2 }} wrapperCol={{ span: 22 }}>
               <Input value={transport.remark} onChange={e => this.handleCommonFieldChange('remark', e.target.value)} />
             </FormItem>
           </Col>
