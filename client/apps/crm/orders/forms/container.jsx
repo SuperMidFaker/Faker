@@ -1,24 +1,20 @@
 import React, { PropTypes } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import ReactDataGrid from '@welogix/react-data-grid';
-import { Editors } from '@welogix/react-data-grid/addons';
 import { CONTAINER_PACKAGE_TYPE } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 
 const formatMsg = format(messages);
-const DropDownEditor = Editors.DropDownEditor;
 
-function createRows(numberOfRows) {
-  const _rows = [];
-  for (let i = 0; i < numberOfRows; i++) {
-    _rows.push({
-      id: i,
-      container_type: '',
+function createRows() {
+  return CONTAINER_PACKAGE_TYPE.map((item, index) => {
+    return {
+      id: index,
+      container_type: item.value,
       container_num: 0,
-    });
-  }
-  return _rows;
+    };
+  });
 }
 
 @injectIntl
@@ -29,16 +25,26 @@ export default class Container extends React.Component {
     onChange: PropTypes.func.isRequired,
   }
   state = {
-    rows: createRows(5),
+    rows: createRows(),
   }
   componentWillMount() {
-    if (this.props.value.length > 0) {
-      this.setState({ rows: this.props.value.concat(createRows(5)) });
-    }
+    this.initializeRows(this.props);
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.value.length > 0) {
-      this.setState({ rows: nextProps.value.concat(createRows(5)) });
+    this.initializeRows(nextProps);
+  }
+  initializeRows(props) {
+    if (props.value.length > 0) {
+      const rows = [...this.state.rows];
+      const value = props.value
+      for (let i = 0; i < rows.length; i ++) {
+        for (let j = 0; j < value.length; j ++) {
+          if (rows[i].container_type === value[j].container_type) {
+            rows[i].container_num = value[j].container_num;
+          }
+        }
+      }
+      this.setState({ rows });
     }
   }
   msg = (key, values) => formatMsg(this.props.intl, key, values)
@@ -48,14 +54,14 @@ export default class Container extends React.Component {
     const rows = this.state.rows;
     Object.assign(rows[e.rowIdx], e.updated);
     this.setState({ rows });
-    const value = rows.filter(row => row.container_type !== '').map(item => ({ ...item, container_num: Number(item.container_num) }));
+    const value = rows.filter(row => Number(row.container_num) > 0).map(item => ({ ...item, container_num: Number(item.container_num) }));
     this.props.onChange(value);
   }
   render() {
     const columns = [{
       name: '集装箱类型',
       key: 'container_type',
-      editor: <DropDownEditor options={CONTAINER_PACKAGE_TYPE.map(item => item.value)} />,
+      editable: false,
     }, {
       name: '数量',
       key: 'container_num',
