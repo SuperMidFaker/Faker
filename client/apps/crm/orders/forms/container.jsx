@@ -8,13 +8,11 @@ import messages from '../message.i18n';
 const formatMsg = format(messages);
 
 function createRows() {
-  return CONTAINER_PACKAGE_TYPE.map((item, index) => {
-    return {
-      id: index,
-      container_type: item.value,
-      container_num: 0,
-    };
-  });
+  return CONTAINER_PACKAGE_TYPE.map((item, index) => ({
+    id: index,
+    container_type: item.value,
+    container_num: 0,
+  }));
 }
 
 @injectIntl
@@ -36,9 +34,9 @@ export default class Container extends React.Component {
   initializeRows(props) {
     if (props.value.length > 0) {
       const rows = [...this.state.rows];
-      const value = props.value
-      for (let i = 0; i < rows.length; i ++) {
-        for (let j = 0; j < value.length; j ++) {
+      const value = props.value;
+      for (let i = 0; i < rows.length; i++) {
+        for (let j = 0; j < value.length; j++) {
           if (rows[i].container_type === value[j].container_type) {
             rows[i].container_num = value[j].container_num;
           }
