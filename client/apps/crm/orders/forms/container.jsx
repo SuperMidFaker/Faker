@@ -71,8 +71,8 @@ export default class Container extends React.Component {
         columns={columns}
         rowGetter={this.rowGetter}
         rowsCount={this.state.rows.length}
-        minHeight={300}
-        minWidth={200}
+        minHeight={160}
+        minWidth={210}
         onRowUpdated={this.handleRowUpdated}
       />
     );
