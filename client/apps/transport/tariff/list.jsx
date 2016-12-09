@@ -195,7 +195,7 @@ export default class TariffList extends React.Component {
               <div>
                 <a onClick={() => this.handleChangeStatus(record._id, 0)}>{this.msg('disable')}</a>
                 <span className="ant-divider" />
-                <NavLink to={`/transport/tariff/edit/${record._id}`}>
+                <NavLink to={`/transport/billing/tariff/edit/${record._id}`}>
                   {this.msg('revise')}
                 </NavLink>
               </div>
@@ -270,7 +270,7 @@ export default class TariffList extends React.Component {
           <div className="page-body">
             <div className="panel-header">
               <PrivilegeCover module="transport" feature="tariff" action="create">
-                <NavLink to="/transport/tariff/new">
+                <NavLink to="/transport/billing/tariff/new">
                   <Button type="primary" icon="plus-circle-o">
                     {this.msg('tariffCreate')}
                   </Button>

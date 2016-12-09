@@ -183,7 +183,7 @@ export default class QuoteList extends Component {
                   <div>
                     <a onClick={() => this.handleChangeStatus(record._id, false)}>{msg('disable')}</a>
                     <span className="ant-divider" />
-                    <NavLink to={`/clearance/quote/edit/${record.quote_no}`}>
+                    <NavLink to={`/clearance/billing/quote/edit/${record.quote_no}`}>
                       {msg('modify')}
                     </NavLink>
                   </div>
@@ -214,7 +214,7 @@ export default class QuoteList extends Component {
         <div className="main-content" key="main">
           <div className="page-body">
             <div className="panel-header">
-              <Button type="primary" onClick={() => this.handleNavigationTo('/clearance/quote/create')}>
+              <Button type="primary" onClick={() => this.handleNavigationTo('/clearance/billing/quote/create')}>
                 新建报价
               </Button>
             </div>
