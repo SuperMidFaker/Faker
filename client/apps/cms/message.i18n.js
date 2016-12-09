@@ -9,41 +9,57 @@ const messages = defineMessages({
     id: 'cms.module.import',
     defaultMessage: '进口清关',
   },
+  importAcceptance: {
+    id: 'cms.module.import.acceptance',
+    defaultMessage: '进口业务受理',
+  },
+  importOperation: {
+    id: 'cms.module.import.operation',
+    defaultMessage: '进口业务操作',
+  },
   importDelegation: {
     id: 'cms.module.import.delegation',
-    defaultMessage: '进口委托管理',
+    defaultMessage: '委托管理',
   },
   importCiq: {
     id: 'cms.module.import.ciq',
-    defaultMessage: '进口报检委托',
+    defaultMessage: '报检委托',
   },
   importCustomsDecl: {
     id: 'cms.module.import.decl.customs',
-    defaultMessage: '进口报关管理',
+    defaultMessage: '报关管理',
   },
   importCiqDecl: {
     id: 'cms.module.import.decl.ciq',
-    defaultMessage: '进口报检管理',
+    defaultMessage: '报检管理',
   },
   export: {
     id: 'cms.module.export',
     defaultMessage: '出口清关',
   },
+  exportAcceptance: {
+    id: 'cms.module.export.acceptance',
+    defaultMessage: '出口业务受理',
+  },
+  exportOperation: {
+    id: 'cms.module.export.operation',
+    defaultMessage: '出口业务操作',
+  },
   exportDelegation: {
     id: 'cms.module.export.delegation',
-    defaultMessage: '出口委托管理',
+    defaultMessage: '委托管理',
   },
   exportCiq: {
     id: 'cms.module.export.ciq',
-    defaultMessage: '出口报检委托',
+    defaultMessage: '报检委托',
   },
   exportCustomsDecl: {
     id: 'cms.module.export.decl.customs',
-    defaultMessage: '出口报关管理',
+    defaultMessage: '报关管理',
   },
   exportCiqDecl: {
     id: 'cms.module.export.decl.ciq',
-    defaultMessage: '出口报检管理',
+    defaultMessage: '报检管理',
   },
   billing: {
     id: 'cms.module.billing',

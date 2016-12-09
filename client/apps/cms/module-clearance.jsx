@@ -49,14 +49,17 @@ export default class Clearance extends React.Component {
         text: formatMsg(intl, 'import'),
         sublinks: [{
           key: 'cms-1-0',
+          group: formatMsg(intl, 'importAcceptance'),
           path: '/clearance/import/delegation',
           text: formatMsg(intl, 'importDelegation'),
         }, {
           key: 'cms-1-1',
+          group: formatMsg(intl, 'importOperation'),
           path: '/clearance/import/declare/customs',
           text: formatMsg(intl, 'importCustomsDecl'),
         }, {
           key: 'cms-1-3',
+          group: formatMsg(intl, 'importOperation'),
           path: '/clearance/import/declare/ciq',
           text: formatMsg(intl, 'importCiqDecl'),
         }],
@@ -71,14 +74,17 @@ export default class Clearance extends React.Component {
         text: formatMsg(intl, 'export'),
         sublinks: [{
           key: 'cms-2-0',
+          group: formatMsg(intl, 'exportAcceptance'),
           path: '/clearance/export/delegation',
           text: formatMsg(intl, 'exportDelegation'),
         }, {
           key: 'cms-2-1',
+          group: formatMsg(intl, 'exportOperation'),
           path: '/clearance/export/declare/customs',
           text: formatMsg(intl, 'exportCustomsDecl'),
         }, {
           key: 'cms-2-3',
+          group: formatMsg(intl, 'exportOperation'),
           path: '/clearance/export/declare/ciq',
           text: formatMsg(intl, 'exportCiqDecl'),
         }],

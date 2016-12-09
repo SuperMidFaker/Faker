@@ -369,19 +369,21 @@ export default class ExpenseList extends Component {
         <div className="main-content" key="main">
           <div className="page-body">
             <div className="panel-header">
-              <Button type="primary" style={{ marginRight: 20 }} onClick={this.handleCushInput}>
+              <Button type="primary" icon="upload" onClick={this.handleCushInput}>
                 {this.msg('incExp')}
               </Button>
-              <Button type="primary" style={{ marginRight: 20 }} onClick={this.handleExpExport}>
+              <span />
+              <Button type="primary" icon="download" onClick={this.handleExpExport}>
                 {this.msg('eptExp')}
               </Button>
+              <span />
               <Button type="default" onClick={this.handleMarkStatement}>
                 {this.msg('markState')}
               </Button>
             </div>
             <div className="panel-body table-panel group-header">
               <Table columns={this.columns} dataSource={this.dataSource} loading={expslist.loading}
-                bordered scroll={{ x: 1400 }} rowKey="delg_no"
+                bordered scroll={{ x: 1800 }} rowKey="delg_no"
               />
             </div>
           </div>

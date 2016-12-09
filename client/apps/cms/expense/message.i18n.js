@@ -28,11 +28,11 @@ const messages = defineMessages({
   },
   incExp: {
     id: 'cms.expense.inc.expense',
-    defaultMessage: '导入费用',
+    defaultMessage: '上传费用记录',
   },
   eptExp: {
     id: 'cms.expense.export.expense',
-    defaultMessage: '导出费用',
+    defaultMessage: '下载费用报表',
   },
   chooseModel: {
     id: 'cms.expense.export.chooseModel',
@@ -120,7 +120,7 @@ const messages = defineMessages({
   },
   lastActT: {
     id: 'cms.expense.last.act.time',
-    defaultMessage: '最后更新时间',
+    defaultMessage: '最后计费时间',
   },
   feeName: {
     id: 'cms.expense.modal.fee.name',
