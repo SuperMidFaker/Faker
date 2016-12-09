@@ -6,7 +6,7 @@
   "scripts": {
     "clean": "rm -rf public/dist",
     "debug": "node --debug .",
-    "lint": "eslint --fix --ext .js --ext .jsx client server common webpack",
+    "lint": "eslint --fix --ext .js --ext .jsx client server common",
     "admin-hot": "webpack-dev-server --config webpack/adminDev.js",
     "admin-dev": "nodemon server/sboot.js -- --admin=true --port=3026",
     "hot": "webpack-dev-server --config webpack/dev.js",

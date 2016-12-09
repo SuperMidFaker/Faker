@@ -5,6 +5,7 @@ import './collapseSideLayout.less';
 
 const SubMenu = Menu.SubMenu;
 const MenuItem = Menu.Item;
+const MenuItemGroup = Menu.ItemGroup;
 
 function isInclusivePath(pathTarget, pathSource) {
   let pathA = pathSource;
@@ -33,6 +34,7 @@ export default class CollapseSideLayout extends React.Component {
         key: PropTypes.string.isRequired,
         path: PropTypes.string.isRequired,
         text: PropTypes.string.isRequired,
+        group: PropTypes.string,
       })),
     })).isRequired,
   }
@@ -102,22 +104,56 @@ export default class CollapseSideLayout extends React.Component {
                 if (link.single) {
                   return (<MenuItem key={link.key}>
                     <NavLink to={link.path}>
-                      <i className={`icon  ${link.icon}`} />
+                      <i className={`icon ${link.icon}`} />
                       <span className="nav-text">{link.text}</span>
                     </NavLink>
                   </MenuItem>);
                 } else {
+                  let subMenuItems;
+                  const isGrouped = link.sublinks.filter(sub => sub.group).length === link.sublinks.length;
+                  if (isGrouped) {
+                    const groupLinks = [];
+                    for (let i = 0; i < link.sublinks.length; i++) {
+                      const sublink = link.sublinks[i];
+                      let unfound = true;
+                      for (let j = 0; j < groupLinks.length; j++) {
+                        if (groupLinks[j].group === sublink.group) {
+                          groupLinks[j].links.push(sublink);
+                          unfound = false;
+                          break;
+                        }
+                      }
+                      if (unfound) {
+                        groupLinks.push({
+                          group: sublink.group,
+                          links: [sublink],
+                        });
+                      }
+                    }
+                    subMenuItems = groupLinks.map(gl => (
+                      <MenuItemGroup title={gl.group} key={gl.group}>
+                        {
+                          gl.links.map(gll => (
+                            <MenuItem key={gll.key}>
+                              <NavLink to={gll.path}>
+                                {gll.text}
+                              </NavLink>
+                            </MenuItem>))
+                        }
+                      </MenuItemGroup>
+                    ));
+                  } else {
+                    subMenuItems = link.sublinks.map(sub => (<MenuItem key={sub.key}>
+                      <NavLink to={sub.path}>
+                        {sub.text}
+                      </NavLink>
+                    </MenuItem>));
+                  }
                   return (
                     <SubMenu key={link.key} className={this.state.openedKey[0] === link.key ? 'ant-menu-submenu-selected' : ''}
-                      title={<div><i className={`icon  ${link.icon}`} /><span className="nav-text">{link.text}</span></div>}
+                      title={<div><i className={`icon ${link.icon}`} /><span className="nav-text">{link.text}</span></div>}
                     >
-                      {
-                        link.sublinks.map(sub => (<MenuItem key={sub.key}>
-                          <NavLink to={sub.path}>
-                            {sub.text}
-                          </NavLink>
-                        </MenuItem>))
-                      }
+                      { subMenuItems }
                     </SubMenu>
                   );
                 }
