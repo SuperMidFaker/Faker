@@ -94,6 +94,10 @@ export default class ExpenseList extends Component {
       dataIndex: 'send_name',
       render: o => <TrimSpan text={o} maxLen={14} />,
     }, {
+      title: this.msg('agentName'),
+      dataIndex: 'agent_name',
+      render: o => <TrimSpan text={o} maxLen={14} />,
+    }, {
       title: this.msg('invoiceNo'),
       dataIndex: 'invoice_no',
       width: 180,
@@ -233,6 +237,20 @@ export default class ExpenseList extends Component {
       width: 80,
       dataIndex: 'status',
       render: o => EXP_STATUS.filter(st => st.value === o)[0].text,
+    }, {
+      title: this.msg('acptTime'),
+      dataIndex: 'acpt_time',
+      width: 120,
+      render: o => `${moment(o).format('MM.DD HH:mm')}`,
+    }, {
+      title: this.msg('cleanTime'),
+      dataIndex: 'clean_time',
+      width: 120,
+      render: (o) => {
+        if (o) {
+          return <span>{moment(o).format('MM.DD HH:mm')}</span>;
+        }
+      },
     }, {
       title: this.msg('lastActT'),
       dataIndex: 'last_act_time',

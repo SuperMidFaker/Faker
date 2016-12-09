@@ -62,6 +62,10 @@ const messages = defineMessages({
     id: 'cms.expense.customer.name',
     defaultMessage: '委托方',
   },
+  agentName: {
+    id: 'cms.expense.agent.name',
+    defaultMessage: '报关单位',
+  },
   invoiceNo: {
     id: 'cms.expense.invoice.no',
     defaultMessage: '发票号',
@@ -105,6 +109,14 @@ const messages = defineMessages({
   statementEn: {
     id: 'cms.expense.statementEn',
     defaultMessage: '是否结单',
+  },
+  acptTime: {
+    id: 'cms.expense.accept.time',
+    defaultMessage: '接单时间',
+  },
+  cleanTime: {
+    id: 'cms.expense.clean.time',
+    defaultMessage: '海关放行时间',
   },
   lastActT: {
     id: 'cms.expense.last.act.time',
