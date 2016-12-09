@@ -103,6 +103,10 @@ export default class Clearance extends React.Component {
           key: 'tms-4-3',
           path: '/clearance/billing/payable',
           text: formatMsg(intl, 'billingPayable'),
+        }, {
+          key: 'cms-4-4',
+          path: '/clearance/billing/quote',
+          text: formatMsg(intl, 'quote'),
         }],
       });
     }
@@ -116,10 +120,6 @@ export default class Clearance extends React.Component {
           key: 'cms-6-0',
           path: '/clearance/resources/broker',
           text: formatMsg(intl, 'providers'),
-        }, {
-          key: 'cms-6-1',
-          path: '/clearance/quote',
-          text: formatMsg(intl, 'quote'),
         }],
       });
     }

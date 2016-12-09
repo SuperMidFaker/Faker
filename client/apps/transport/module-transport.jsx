@@ -86,6 +86,10 @@ export default class Transport extends React.Component {
           key: 'tms-4-2',
           path: '/transport/billing/payable',
           text: '应付账单',
+        }, {
+          key: 'tms-4-3',
+          path: '/transport/billing/tariff',
+          text: '价格管理',
         }],
       });
     }
@@ -99,10 +103,6 @@ export default class Transport extends React.Component {
           key: 'tms-5-0',
           path: '/transport/resources/carrier',
           text: '承运商管理',
-        }, {
-          key: 'tms-5-1',
-          path: '/transport/tariff',
-          text: '报价管理',
         }, {
           key: 'tms-5-2',
           path: '/transport/resources/vehicle',

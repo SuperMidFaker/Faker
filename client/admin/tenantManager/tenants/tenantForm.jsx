@@ -88,7 +88,7 @@ class TenantForm extends React.Component {
     return (
       <div className="main-content">
         <div className="tenant-form page-body">
-          <div className="panel-body body-responsive">
+          <div className="panel-body">
             <Form horizontal>
               <Row>
                 <Col span="12">

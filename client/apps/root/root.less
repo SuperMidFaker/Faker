@@ -391,28 +391,16 @@ img {
 .ant-form-item > label {
   padding-right: 10px;
 }
+.ant-table,
+.ant-table-header,
+.ant-table table {
+  border-radius: 0;
+}
+.ant-table-pagination {
+  margin: 16px;
+}
 .full-container {
   height: 100%;
-}
-.table-wrapper {
-  background-color: #fff;
-  padding: 20px 20px 40px;
-}
-.page-panel {
-  background-color: #fff;
-  padding: 20px 20px 40px;
-  min-height: 100%;
-}
-.page-title {
-  margin-bottom: 8px;
-  >h2 {
-    font-size: 20px;
-    font-weight: 300;
-    line-height: 32px;
-  }
-  .tools {
-    float: right;
-  }
 }
 .page-header {
   margin: 0 0 8px;
@@ -487,54 +475,6 @@ img {
     padding: 24px;
   }
 }
-.ant-table,
-.ant-table-header,
-.ant-table table {
-  border-radius: 0;
-}
-.ant-table-pagination {
-  margin: 16px;
-}
-
-.page-footer {
-  height: 50px;
-}
-.panel-container {
-  padding: 16px;
-  background: #fff;
-  box-shadow: 0 1px 3px 0 rgba(0,0,0,.2),0 1px 1px 0 rgba(0,0,0,.14),0 2px 1px -1px rgba(0,0,0,.12);
-  border-radius: 2px;
-  margin-bottom: 16px;
-}
-.main-col {
-  padding: 0 8px 24px 24px;
-}
-.right-side-col {
-  padding: 0 24px 0 8px;
-}
-.body-responsive {
-  overflow-x: auto;
-  min-height: .01%;
-  @media screen and (max-width: 991px) {
-    width: 100%;
-    overflow-y: hidden;
-    -ms-overflow-style: -ms-autohiding-scrollbar;
-    border: 1px solid #ddd;
-    .ant-table td,
-    .ant-table th {
-      white-space: nowrap;
-    }
-    .ant-form-horizontal {
-      padding: 10px;
-      min-width: 1000px;
-    }
-  }
-}
-.horizontal-divider {
-  border-top: 1px solid #f0f0f0;
-  padding-top: 20px;
-}
-
 .panel-header {
   position: relative;
   padding: 8px 16px;
@@ -732,7 +672,6 @@ img {
     }
   }
 }
-
 .statistics-columns {
     width: 100%;
     -ms-flex-pack: distribute;
