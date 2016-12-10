@@ -11,11 +11,11 @@ const messages = defineMessages({
   },
   importAcceptance: {
     id: 'cms.module.import.acceptance',
-    defaultMessage: '进口业务受理',
+    defaultMessage: '进口业务',
   },
   importOperation: {
     id: 'cms.module.import.operation',
-    defaultMessage: '进口业务操作',
+    defaultMessage: '进口操作',
   },
   importDelegation: {
     id: 'cms.module.import.delegation',
@@ -39,11 +39,11 @@ const messages = defineMessages({
   },
   exportAcceptance: {
     id: 'cms.module.export.acceptance',
-    defaultMessage: '出口业务受理',
+    defaultMessage: '出口业务',
   },
   exportOperation: {
     id: 'cms.module.export.operation',
-    defaultMessage: '出口业务操作',
+    defaultMessage: '出口操作',
   },
   exportDelegation: {
     id: 'cms.module.export.delegation',

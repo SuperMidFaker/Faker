@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { message, Icon, Radio, Tag } from 'antd';
+import { Breadcrumb, message, Icon, Radio, Tag } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -186,7 +186,14 @@ export default class DelgDeclList extends Component {
     return (
       <QueueAnim type={['bottom', 'up']}>
         <header className="top-bar" key="header">
-          <span>{this.props.ietype === 'import' ? this.msg('importDeclaration') : this.msg('exportDeclaration')}</span>
+          <Breadcrumb>
+            <Breadcrumb.Item>
+              {this.props.ietype === 'import' ? this.msg('importOperation') : this.msg('exportOperation')}
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              {this.msg('customsDeclaration')}
+            </Breadcrumb.Item>
+          </Breadcrumb>
           <RadioGroup onChange={this.handleRadioChange}>
             <RadioButton value="all">{this.msg('all')}</RadioButton>
             <RadioButton value="declared">{this.msg('filterDeclared')}</RadioButton>

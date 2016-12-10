@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Button, Icon, Radio, message } from 'antd';
+import { Breadcrumb, Button, Icon, Radio, message } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -355,7 +355,11 @@ export default class ExpenseList extends Component {
     return (
       <QueueAnim type={['bottom', 'up']}>
         <header className="top-bar" key="header">
-          <span>{this.msg('expense')}</span>
+          <Breadcrumb>
+            <Breadcrumb.Item>
+              {this.msg('expense')}
+            </Breadcrumb.Item>
+          </Breadcrumb>
           <RadioGroup value={listFilter.status} onChange={this.handleRadioChange}>
             <RadioButton value="all">{this.msg('all')}</RadioButton>
             <RadioButton value="nostatement">{this.msg('nostatement')}</RadioButton>

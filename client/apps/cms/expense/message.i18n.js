@@ -8,7 +8,7 @@ const messages = defineMessages({
   },
   expense: {
     id: 'cms.expense.title',
-    defaultMessage: '费用',
+    defaultMessage: '费用管理',
   },
   all: {
     id: 'cms.expense.all',

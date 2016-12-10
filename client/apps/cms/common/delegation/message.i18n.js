@@ -17,21 +17,17 @@ export default defineMessages({
     id: 'cms.delegation.search.placeholder',
     defaultMessage: '委托编号/提运单号/订单号/发票号',
   },
-  importDeclaration: {
-    id: 'cms.delegation.import',
-    defaultMessage: '进口委托管理',
+  importClearance: {
+    id: 'cms.delegation.import.clearance',
+    defaultMessage: '进口业务',
   },
-  exportDeclaration: {
-    id: 'cms.delegation.export',
-    defaultMessage: '出口委托管理',
+  exportClearance: {
+    id: 'cms.delegation.export.clearance',
+    defaultMessage: '出口业务',
   },
-  importCiq: {
-    id: 'cms.delegation.import.ciq',
-    defaultMessage: '进口报检委托',
-  },
-  exportCiq: {
-    id: 'cms.delegation.export.ciq',
-    defaultMessage: '出口报检委托',
+  delegationManagement: {
+    id: 'cms.delegation.management',
+    defaultMessage: '委托管理',
   },
   all: {
     id: 'cms.delegation.stage.all',
