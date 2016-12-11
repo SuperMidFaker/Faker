@@ -232,7 +232,7 @@ export default class FeesTable extends Component {
         if (result.error) {
           message.error(result.error.message, 10);
         } else {
-          message.info('保存成功', 5);
+          message.success('保存成功', 5);
         }
       });
     } else {
@@ -243,7 +243,7 @@ export default class FeesTable extends Component {
         if (result.error) {
           message.error(result.error.message, 10);
         } else {
-          message.info('保存成功', 5);
+          message.success('保存成功', 5);
         }
       });
     }
@@ -428,7 +428,7 @@ export default class FeesTable extends Component {
             if (index === editIndex) {
               return (
                 <span>
-                  <RowUpdater onHit={this.handleSave} label={msg('save')} row={record} index={index} />
+                  <RowUpdater onHit={this.handleSave} label={msg('confirm')} row={record} index={index} />
                   <span className="ant-divider" />
                   <RowUpdater onHit={this.handleCancel} label={msg('cancel')} />
                 </span>
@@ -458,9 +458,9 @@ export default class FeesTable extends Component {
     ];
     return (
       <Table pagination={false} rowKey={getRowKey} columns={columns} dataSource={dataSource}
-        loading={quoteData.loading} size="middle" scroll={{ y: 500 }} onChange={this.handleTableChange}
+        loading={quoteData.loading} onChange={this.handleTableChange}
         title={() => (action === 'model') && <Button type="primary" size="large" onClick={this.handleModelSave}>{msg('save')}</Button>}
-        footer={() => (action === 'model') && <Button type="primary" onClick={this.handleAddFees}>{msg('addCosts')}</Button>}
+        footer={() => <Button type="primary" onClick={this.handleAddFees}>{msg('addCosts')}</Button>}
       />
     );
   }

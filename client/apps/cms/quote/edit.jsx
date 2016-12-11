@@ -6,12 +6,12 @@ import { format } from 'client/common/i18n/helpers';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import messages from './message.i18n';
 import { loadEditQuote, copyQuote, loadPartners } from 'common/reducers/cmsQuote';
-import { Button, Card, Collapse, message, Form } from 'antd';
+import { Button, Card, Tabs, message, Form } from 'antd';
 import FeesTable from './feesTable';
 import FeesForm from './feesForm';
 import connectFetch from 'client/common/decorators/connect-fetch';
 const formatMsg = format(messages);
-const Panel = Collapse.Panel;
+const TabPane = Tabs.TabPane;
 
 function fetchData({ params, state, dispatch }) {
   const promises = [];
@@ -77,23 +77,28 @@ export default class QuotingEdit extends Component {
     return (
       <div>
         <header className="top-bar">
-          <span>{msg('editQuote')}</span>
+          <span>{this.props.quoteData.quote_no}</span>
         </header>
         <div className="top-bar-tools">
-          <Button type="primary" onClick={this.handleCopy} >{msg('copy')}</Button>
+          <Button type="primary" >{msg('publish')}</Button>
+          <span />
+          <Button type="default" >{msg('trail')}</Button>
+          <span />
+          <Button type="default" onClick={this.handleCopy} >{msg('copy')}</Button>
         </div>
         <div className="main-content">
           <div className="page-body">
-            <Collapse accordion bordered={false} defaultActiveKey={['fees-form', 'fees-table']}>
-              <Panel header={<span>基础信息</span>} key="fees-form">
+            <Tabs defaultActiveKey="fees-table">
+              <TabPane tab="报价费率" key="fees-table">
+                <FeesTable action="edit" editable={false} />
+              </TabPane>
+              <TabPane tab="报价设置" key="fees-form">
                 <FeesForm form={form} action="edit" />
-              </Panel>
-              <Panel header={<span>价格表</span>} key="fees-table">
-                <Card bodyStyle={{ padding: 0 }}>
-                  <FeesTable action="edit" editable={false} />
-                </Card>
-              </Panel>
-            </Collapse>
+              </TabPane>
+              <TabPane tab="修订历史" key="revision-history">
+                报价修订历史记录
+              </TabPane>
+            </Tabs>
           </div>
         </div>
       </div>

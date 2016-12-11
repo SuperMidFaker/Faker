@@ -7,11 +7,11 @@ import withPrivilege from 'client/common/decorators/withPrivilege';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import { createQuote, loadQtModelbyTenantId, loadPartners } from 'common/reducers/cmsQuote';
-import { Button, Card, Collapse, message, Form } from 'antd';
+import { Button, Card, Tabs, message, Form } from 'antd';
 import FeesTable from './feesTable';
 import FeesForm from './feesForm';
 const formatMsg = format(messages);
-const Panel = Collapse.Panel;
+const TabPane = Tabs.TabPane;
 
 function fetchData({ state, dispatch }) {
   const promises = [];
@@ -92,16 +92,14 @@ export default class QuotingCreate extends Component {
         </div>
         <div className="main-content">
           <div className="page-body">
-            <Collapse accordion bordered={false} defaultActiveKey={['fees-form', 'fees-table']}>
-              <Panel header={<span>基础信息</span>} key="fees-form">
+            <Tabs defaultActiveKey="fees-form">
+              <TabPane tab="基础信息" key="fees-form">
                 <FeesForm form={form} action="create" />
-              </Panel>
-              <Panel header={<span>价格表</span>} key="fees-table">
-                <Card bodyStyle={{ padding: 0 }}>
-                  <FeesTable action="create" editable />
-                </Card>
-              </Panel>
-            </Collapse>
+              </TabPane>
+              <TabPane tab="价格表" key="fees-table">
+                <FeesTable action="create" editable />
+              </TabPane>
+            </Tabs>
           </div>
         </div>
       </div>

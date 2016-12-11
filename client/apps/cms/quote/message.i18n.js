@@ -101,6 +101,10 @@ const messages = defineMessages({
     id: 'cms.quote.copy',
     defaultMessage: '复制',
   },
+  confirm: {
+    id: 'cms.quote.confirm',
+    defaultMessage: '确定',
+  },
   cancel: {
     id: 'cms.quote.cancel',
     defaultMessage: '取消',
@@ -123,11 +127,11 @@ const messages = defineMessages({
   },
   invoiceEn: {
     id: 'cms.quote.invoiceEn',
-    defaultMessage: '是否开票',
+    defaultMessage: '是否计税',
   },
   taxRate: {
     id: 'cms.quote.tax.rate',
-    defaultMessage: '开票税率',
+    defaultMessage: '税率',
   },
   status: {
     id: 'cms.quote.status',
@@ -152,6 +156,14 @@ const messages = defineMessages({
   enable: {
     id: 'cms.quote.enable',
     defaultMessage: '启用',
+  },
+  publish: {
+    id: 'cms.quote.publish',
+    defaultMessage: '发布',
+  },
+  trail: {
+    id: 'cms.quote.trail',
+    defaultMessage: '试算',
   },
 });
 export default messages;
