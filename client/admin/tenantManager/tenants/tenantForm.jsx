@@ -46,6 +46,7 @@ class TenantForm extends React.Component {
         const formData = { ...this.props.formData, ...this.props.form.getFieldsValue() };
         formData.tenantAppList = formData.tenantAppList.map(id => ({
           id,
+          index: DEFAULT_MODULES[id].index,
         }));
         if (formData.phone || formData.email) {
           this.props.submitTenant(formData).then((result) => {

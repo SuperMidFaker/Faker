@@ -359,13 +359,14 @@ const appModules = [
 ];
 
 export const DEFAULT_MODULES = {};
-appModules.forEach((mod) => {
+appModules.forEach((mod, index) => {
   DEFAULT_MODULES[mod.id] = {
     id: mod.id,
     cls: mod.id,
     url: `/${mod.id}`,
     text: mod.text,
     defaultText: mod.defaultText,
+    index,
   };
 });
 
