@@ -8,7 +8,6 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'CLOSE_ADVFEE_MODAL',
   'CLOSE_IN_MODAL', 'OPEN_IN_MODAL',
   'CURRENCY_LOAD', 'CURRENCY_LOAD_SUCCEED', 'CURRENCY_LOAD_FAIL',
-  'CUSH_SAVE', 'CUSH_SAVE_SUCCEED', 'CUSH_SAVE_FAIL',
   'LOAD_SUBTABLE', 'LOAD_SUBTABLE_SUCCEED', 'LOAD_SUBTABLE_FAIL',
   'CLOSE_MARK_MODAL', 'OPEN_MARK_MODAL',
   'MARK_SAVE', 'MARK_SAVE_SUCCEED', 'MARK_SAVE_FAIL',
@@ -24,6 +23,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'LOAD_DECLADVPARTIES', 'LOAD_DECLADVPARTIES_SUCCEED', 'LOAD_DECLADVPARTIES_FAIL',
   'COMPUTE_DECLADVFEES', 'COMPUTE_DECLADVFEES_SUCCEED', 'COMPUTE_DECLADVFEES_FAIL',
   'CERT_PANEL_LOAD', 'CERT_PANEL_LOAD_SUCCEED', 'CERT_PANEL_LOAD_FAIL',
+  'LOAD_FILTER_PARTNERS', 'LOAD_FILTER_PARTNERS_SUCCEED', 'LOAD_FILTER_PARTNERS_FAIL',
 ]);
 
 const initialState = {
@@ -82,6 +82,10 @@ const initialState = {
   certPanel: {
     fees: [],
   },
+  partners: {
+    customer: [],
+    supplier: [],
+  },
 };
 
 export default function reducer(state = initialState, action) {
@@ -137,8 +141,6 @@ export default function reducer(state = initialState, action) {
       expFeesMap[action.params.delgNo].loading = false;
       return { ...state, expFeesMap };
     }
-    case actionTypes.CUSH_SAVE_SUCCEED:
-      return { ...state, saved: true };
     case actionTypes.MARK_SAVE_SUCCEED:
       return { ...state, saved: true };
     case actionTypes.EXP_CERT_LOAD_SUCCEED:
@@ -175,9 +177,26 @@ export default function reducer(state = initialState, action) {
       return { ...state, saved: true };
     case actionTypes.CERT_PANEL_LOAD_SUCCEED:
       return { ...state, certPanel: action.result.data };
+    case actionTypes.LOAD_FILTER_PARTNERS_SUCCEED:
+      return { ...state, partners: action.result.data };
     default:
       return state;
   }
+}
+
+export function loadPartnersForFilter(tenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_FILTER_PARTNERS,
+        actionTypes.LOAD_FILTER_PARTNERS_SUCCEED,
+        actionTypes.LOAD_FILTER_PARTNERS_FAIL,
+      ],
+      endpoint: 'v1/expense/filter/partners',
+      method: 'get',
+      params: { tenantId },
+    },
+  };
 }
 
 export function showPreviewer(params) {
@@ -263,7 +282,6 @@ export function loadExpense(params) {
       endpoint: 'v1/cms/expense/load',
       method: 'get',
       params,
-      origin: 'mongo',
     },
   };
 }
@@ -278,22 +296,6 @@ export function loadCurrencies() {
       ],
       endpoint: 'v1/cms/expense/currencies',
       method: 'get',
-    },
-  };
-}
-
-export function saveCushInput(tenantId, params) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.CUSH_SAVE,
-        actionTypes.CUSH_SAVE_SUCCEED,
-        actionTypes.CUSH_SAVE_FAIL,
-      ],
-      endpoint: 'v1/cms/expense/cushion/inputsave',
-      method: 'post',
-      data: { tenantId, params },
-      origin: 'mongo',
     },
   };
 }

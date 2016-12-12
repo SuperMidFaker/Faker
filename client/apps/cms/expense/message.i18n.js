@@ -106,6 +106,10 @@ const messages = defineMessages({
     id: 'cms.expense.all.cost',
     defaultMessage: '成本合计',
   },
+  profit: {
+    id: 'cms.expense.profit',
+    defaultMessage: '盈亏',
+  },
   statementEn: {
     id: 'cms.expense.statementEn',
     defaultMessage: '是否结单',
