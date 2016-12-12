@@ -9,21 +9,21 @@ export default defineMessages({
     id: 'cms.declaration.ciq.search.placeholder',
     defaultMessage: '通关单号/统一编号/委托编号',
   },
-  importDeclaration: {
-    id: 'cms.declaration.import.customs',
-    defaultMessage: '进口报关管理',
+  importOperation: {
+    id: 'cms.declaration.import.operation',
+    defaultMessage: '进口操作',
   },
-  exportDeclaration: {
-    id: 'cms.declaration.export.customs',
-    defaultMessage: '出口报关管理',
+  exportOperation: {
+    id: 'cms.declaration.export.operation',
+    defaultMessage: '出口操作',
   },
-  importCiq: {
-    id: 'cms.declaration.import.ciq',
-    defaultMessage: '进口报检管理',
+  customsDeclaration: {
+    id: 'cms.declaration.customs',
+    defaultMessage: '报关管理',
   },
-  exportCiq: {
-    id: 'cms.declaration.export.ciq',
-    defaultMessage: '出口报检管理',
+  ciqDeclaration: {
+    id: 'cms.declaration.ciq',
+    defaultMessage: '报检管理',
   },
   entryId: {
     id: 'cms.declaration.delg.entryId',

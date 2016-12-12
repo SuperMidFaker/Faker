@@ -49,14 +49,17 @@ export default class Clearance extends React.Component {
         text: formatMsg(intl, 'import'),
         sublinks: [{
           key: 'cms-1-0',
+          group: formatMsg(intl, 'importAcceptance'),
           path: '/clearance/import/delegation',
           text: formatMsg(intl, 'importDelegation'),
         }, {
           key: 'cms-1-1',
+          group: formatMsg(intl, 'importOperation'),
           path: '/clearance/import/declare/customs',
           text: formatMsg(intl, 'importCustomsDecl'),
         }, {
           key: 'cms-1-3',
+          group: formatMsg(intl, 'importOperation'),
           path: '/clearance/import/declare/ciq',
           text: formatMsg(intl, 'importCiqDecl'),
         }],
@@ -71,14 +74,17 @@ export default class Clearance extends React.Component {
         text: formatMsg(intl, 'export'),
         sublinks: [{
           key: 'cms-2-0',
+          group: formatMsg(intl, 'exportAcceptance'),
           path: '/clearance/export/delegation',
           text: formatMsg(intl, 'exportDelegation'),
         }, {
           key: 'cms-2-1',
+          group: formatMsg(intl, 'exportOperation'),
           path: '/clearance/export/declare/customs',
           text: formatMsg(intl, 'exportCustomsDecl'),
         }, {
           key: 'cms-2-3',
+          group: formatMsg(intl, 'exportOperation'),
           path: '/clearance/export/declare/ciq',
           text: formatMsg(intl, 'exportCiqDecl'),
         }],
@@ -93,16 +99,24 @@ export default class Clearance extends React.Component {
         text: formatMsg(intl, 'billing'),
         sublinks: [{
           key: 'tms-4-0',
+          group: formatMsg(intl, 'groupBilling'),
           path: '/clearance/billing/expense',
           text: formatMsg(intl, 'expense'),
         }, {
           key: 'tms-4-2',
+          group: formatMsg(intl, 'groupInvoice'),
           path: '/clearance/billing/receivable',
           text: formatMsg(intl, 'billingReceivable'),
         }, {
           key: 'tms-4-3',
+          group: formatMsg(intl, 'groupInvoice'),
           path: '/clearance/billing/payable',
           text: formatMsg(intl, 'billingPayable'),
+        }, {
+          key: 'cms-4-4',
+          group: formatMsg(intl, 'groupQuote'),
+          path: '/clearance/billing/quote',
+          text: formatMsg(intl, 'quote'),
         }],
       });
     }
@@ -116,10 +130,6 @@ export default class Clearance extends React.Component {
           key: 'cms-6-0',
           path: '/clearance/resources/broker',
           text: formatMsg(intl, 'providers'),
-        }, {
-          key: 'cms-6-1',
-          path: '/clearance/quote',
-          text: formatMsg(intl, 'quote'),
         }],
       });
     }

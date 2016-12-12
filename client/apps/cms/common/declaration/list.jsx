@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { message, Icon, Radio, Tag } from 'antd';
+import { Breadcrumb, message, Icon, Radio, Tag } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -15,6 +15,7 @@ import { format } from 'client/common/i18n/helpers';
 import SearchBar from 'client/components/search-bar';
 import RowUpdater from '../delegation/rowUpdater';
 import DeclnoFillModal from './modals/declNoFill';
+import DeclStatusPopover from './declStatusPopover';
 
 const formatMsg = format(messages);
 const RadioGroup = Radio.Group;
@@ -35,7 +36,6 @@ const RadioButton = Radio.Button;
   depth: 2,
   moduleName: 'clearance',
 })
-
 export default class DelgDeclList extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -103,6 +103,17 @@ export default class DelgDeclList extends Component {
     title: this.msg('clrStatus'),
     width: 150,
     dataIndex: 'note',
+    render: (o, row) => {
+      if (o) {
+        return (
+          <DeclStatusPopover results={row.results} entryId={row.entry_id}>
+            {o}
+          </DeclStatusPopover>
+        );
+      } else {
+        return '--';
+      }
+    },
   }, {
     title: this.msg('customsCheck'),
     width: 80,
@@ -186,7 +197,14 @@ export default class DelgDeclList extends Component {
     return (
       <QueueAnim type={['bottom', 'up']}>
         <header className="top-bar" key="header">
-          <span>{this.props.ietype === 'import' ? this.msg('importDeclaration') : this.msg('exportDeclaration')}</span>
+          <Breadcrumb>
+            <Breadcrumb.Item>
+              {this.props.ietype === 'import' ? this.msg('importOperation') : this.msg('exportOperation')}
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              {this.msg('customsDeclaration')}
+            </Breadcrumb.Item>
+          </Breadcrumb>
           <RadioGroup onChange={this.handleRadioChange}>
             <RadioButton value="all">{this.msg('all')}</RadioButton>
             <RadioButton value="declared">{this.msg('filterDeclared')}</RadioButton>

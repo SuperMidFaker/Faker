@@ -8,7 +8,7 @@ const messages = defineMessages({
   },
   expense: {
     id: 'cms.expense.title',
-    defaultMessage: '费用',
+    defaultMessage: '费用管理',
   },
   all: {
     id: 'cms.expense.all',
@@ -28,11 +28,11 @@ const messages = defineMessages({
   },
   incExp: {
     id: 'cms.expense.inc.expense',
-    defaultMessage: '导入费用',
+    defaultMessage: '上传费用记录',
   },
   eptExp: {
     id: 'cms.expense.export.expense',
-    defaultMessage: '导出费用',
+    defaultMessage: '下载费用报表',
   },
   chooseModel: {
     id: 'cms.expense.export.chooseModel',
@@ -61,6 +61,10 @@ const messages = defineMessages({
   custName: {
     id: 'cms.expense.customer.name',
     defaultMessage: '委托方',
+  },
+  agentName: {
+    id: 'cms.expense.agent.name',
+    defaultMessage: '报关单位',
   },
   invoiceNo: {
     id: 'cms.expense.invoice.no',
@@ -106,9 +110,17 @@ const messages = defineMessages({
     id: 'cms.expense.statementEn',
     defaultMessage: '是否结单',
   },
+  acptTime: {
+    id: 'cms.expense.accept.time',
+    defaultMessage: '接单时间',
+  },
+  cleanTime: {
+    id: 'cms.expense.clean.time',
+    defaultMessage: '海关放行时间',
+  },
   lastActT: {
     id: 'cms.expense.last.act.time',
-    defaultMessage: '最后更新时间',
+    defaultMessage: '最后计费时间',
   },
   feeName: {
     id: 'cms.expense.modal.fee.name',

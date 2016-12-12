@@ -198,11 +198,6 @@ export default(store, cookie) => {
                 <Route path="edit/:node_id" component={TMSResources.NodeFormContainer} />
               </Route>
             </Route>
-            <Route path="tariff">
-              <IndexRoute component={TMSTariff.List} />
-              <Route path="new" component={TMSTariff.CreateNew} />
-              <Route path="edit/:uid" component={TMSTariff.Edit} />
-            </Route>
             <Route path="billing">
               <IndexRedirect to="/transport/billing/receivable" />
               <Route path="receivable">
@@ -220,6 +215,11 @@ export default(store, cookie) => {
                 <Route path="view/:billingId" component={TMSBilling.ViewPayableBilling} />
               </Route>
               <Route path="fee" component={TMSBilling.FeeList} />
+              <Route path="tariff">
+                <IndexRoute component={TMSTariff.List} />
+                <Route path="new" component={TMSTariff.CreateNew} />
+                <Route path="edit/:uid" component={TMSTariff.Edit} />
+              </Route>
             </Route>
           </Route>
           <Route path={DEFAULT_MODULES.clearance.id} component={Clearance}>
@@ -252,11 +252,6 @@ export default(store, cookie) => {
                 <Route path="ciq" component={ExportDecl.Ciqlist} />
               </Route>
             </Route>
-            <Route path="quote">
-              <IndexRoute component={CMSQuote.List} />
-              <Route path="create" component={CMSQuote.Create} />
-              <Route path="edit/:quoteno" component={CMSQuote.Edit} />
-            </Route>
             <Route path="billing">
               <IndexRedirect to="/clearance/billing/expense" />
               <Route path="expense" component={CMSExpense.List} />
@@ -273,6 +268,11 @@ export default(store, cookie) => {
                 <Route path="check/:billingId" component={CMSBilling.CheckPayableBilling} />
                 <Route path="view/:billingId" component={CMSBilling.ViewPayableBilling} />
                 <Route path="edit/:billingId" component={CMSBilling.EditPayableBilling} />
+              </Route>
+              <Route path="quote">
+                <IndexRoute component={CMSQuote.List} />
+                <Route path="create" component={CMSQuote.Create} />
+                <Route path="edit/:quoteno" component={CMSQuote.Edit} />
               </Route>
             </Route>
             <Route path="relation">

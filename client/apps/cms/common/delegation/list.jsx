@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Badge, Radio, Button, Popconfirm, message, Modal, Tag } from 'antd';
+import { Badge, Breadcrumb, Radio, Button, Popconfirm, message, Modal, Tag } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import TrimSpan from 'client/components/trimSpan';
@@ -507,18 +507,18 @@ export default class DelegationList extends Component {
           } else if (record.status === CMS_DELEGATION_STATUS.accepted && record.send_tenant_id === tenantId && record.recv_tenant_id === -1) {
             return (
               <span>
-                <RowUpdater onHit={() => this.handleDelegationCancel(record, 'delg')} label={this.msg('delgRecall')} row={record} />
-                <span className="ant-divider" />
                 <RowUpdater onHit={this.handleDelegationMake} label={this.msg('declareMake')} row={record} />
+                <span className="ant-divider" />
+                <RowUpdater onHit={() => this.handleDelegationCancel(record, 'delg')} label={this.msg('delgRecall')} row={record} />
               </span>
             );
           } else if (record.status === CMS_DELEGATION_STATUS.accepted && record.recv_tenant_id === tenantId) {
             return (
               <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
                 <span>
-                  <RowUpdater onHit={() => this.handleDelegationAssign(record, 'delg')} label={this.msg('delgDistribute')} row={record} />
-                  <span className="ant-divider" />
                   <RowUpdater onHit={this.handleDelegationMake} label={this.msg('declareMake')} row={record} />
+                  <span className="ant-divider" />
+                  <RowUpdater onHit={() => this.handleDelegationAssign(record, 'delg')} label={this.msg('delgDistribute')} row={record} />
                 </span>
               </PrivilegeCover>
             );
@@ -536,7 +536,9 @@ export default class DelegationList extends Component {
             );
           }
         },
-      }, {
+      }
+      /*
+      , {
         title: this.msg('办证'),
         width: 80,
         render: (o, record) => {
@@ -546,13 +548,21 @@ export default class DelegationList extends Component {
             );
           }
         },
-      });
+      }*/
+      );
     }
     // todo expandedRow fixed
     return (
       <QueueAnim type={['bottom', 'up']}>
         <header className="top-bar" key="header">
-          <span>{this.props.ietype === 'import' ? this.msg('importDeclaration') : this.msg('exportDeclaration')}</span>
+          <Breadcrumb>
+            <Breadcrumb.Item>
+              {this.props.ietype === 'import' ? this.msg('importClearance') : this.msg('exportClearance')}
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              {this.msg('delegationManagement')}
+            </Breadcrumb.Item>
+          </Breadcrumb>
           <RadioGroup value={listFilter.status} onChange={this.handleDelegationFilter}>
             <RadioButton value="all">{this.msg('all')}</RadioButton>
             <RadioButton value="accept">{this.msg('accepting')}</RadioButton>

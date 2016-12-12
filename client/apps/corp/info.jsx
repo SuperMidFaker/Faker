@@ -139,7 +139,7 @@ export default class CorpInfo extends React.Component {
     const { country, province, city, district } = this.state;
     const msg = (descriptor, values) => formatMsg(intl, descriptor, values);
     return (
-      <div className="panel-body body-responsive">
+      <div className="panel-body">
         <Form horizontal className="form-edit-content">
           <Row>
             <Col span="12">
@@ -233,7 +233,7 @@ export default class CorpInfo extends React.Component {
     const { formData: { subdomain }, intl } = this.props;
     const msg = descriptor => formatMsg(intl, descriptor);
     return (
-      <div className="panel-body body-responsive">
+      <div className="panel-body">
         <Form horizontal className="form-edit-content">
           <Row>
             <Col span="12">

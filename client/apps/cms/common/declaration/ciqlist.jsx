@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { message, Icon, Switch, Tag } from 'antd';
+import { Breadcrumb, message, Icon, Switch, Tag } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -232,7 +232,14 @@ export default class CiqDeclList extends Component {
     return (
       <QueueAnim type={['bottom', 'up']}>
         <header className="top-bar" key="header">
-          <span>{this.props.ietype === 'import' ? this.msg('importCiq') : this.msg('exportCiq')}</span>
+          <Breadcrumb>
+            <Breadcrumb.Item>
+              {this.props.ietype === 'import' ? this.msg('importOperation') : this.msg('exportOperation')}
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              {this.msg('ciqDeclaration')}
+            </Breadcrumb.Item>
+          </Breadcrumb>
         </header>
         <div className="top-bar-tools">
           <SearchBar placeholder={this.msg('ciqSearchPlaceholder')} onInputSearch={this.handleSearch} />

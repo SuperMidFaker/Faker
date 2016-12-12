@@ -3,7 +3,7 @@ import { defineMessages } from 'react-intl';
 const messages = defineMessages({
   applications: {
     id: 'container.applications',
-    defaultMessage: '应用',
+    defaultMessage: '开通应用',
   },
   activities: {
     id: 'container.activities',
@@ -11,7 +11,7 @@ const messages = defineMessages({
   },
   corp: {
     id: 'container.corp',
-    defaultMessage: '管理',
+    defaultMessage: '管理面板',
   },
 });
 

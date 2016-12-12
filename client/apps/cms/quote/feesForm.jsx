@@ -124,7 +124,7 @@ export default class FeesForm extends Component {
                 rules: [{ required: true, message: '报价类型必选' }],
                 initialValue: fieldInits.tariff_kind,
               })(
-                <Select style={{ width: '100%' }} onSelect={this.handleKindSelect} >
+                <Select style={{ width: '100%' }} onSelect={this.handleKindSelect}>
                   {
                   TARIFF_KINDS.map(qt =>
                     <Option value={qt.value} key={qt.value}>{qt.text}</Option>
@@ -134,24 +134,6 @@ export default class FeesForm extends Component {
               )}
             </FormItem>
           </Col>
-          <Col sm={8} md={12}>
-            <FormItem label={msg('declareWay')} labelCol={{ span: 3 }} wrapperCol={{ span: 21 }}>
-              {getFieldDecorator('decl_way_code', {
-                rules: [{ required: true, message: '报关类型必选', type: 'array' }],
-                initialValue: fieldInits.decl_way_code,
-              })(
-                <Select multiple style={{ width: '100%' }} placeholder="不限" >
-                  {
-                  DECL_TYPE.map(dw =>
-                    <Option value={dw.key} key={dw.key}>{dw.value}</Option>
-                  )
-                }
-                </Select>
-              )}
-            </FormItem>
-          </Col>
-        </Row>
-        <Row>
           <Col sm={8} md={8}>
             <FormItem label={msg('partners')} {...formItemLayout}>
               {getFieldDecorator('partner.name', {
@@ -173,24 +155,6 @@ export default class FeesForm extends Component {
               )}
             </FormItem>
           </Col>
-          <Col sm={8} md={12}>
-            <FormItem label={msg('transMode')} labelCol={{ span: 3 }} wrapperCol={{ span: 21 }} >
-              {getFieldDecorator('trans_mode', {
-                rules: [{ required: true, message: '运输方式必选', type: 'array' }],
-                initialValue: fieldInits.trans_mode,
-              })(
-                <Select multiple style={{ width: '100%' }} placeholder="不限" >
-                  {
-                  TRANS_MODE.map(tr =>
-                    <Option value={tr.value} key={tr.value}>{tr.text}</Option>
-                  )
-                }
-                </Select>
-              )}
-            </FormItem>
-          </Col>
-        </Row>
-        <Row>
           <Col sm={8} md={8}>
             <FormItem label={msg('invoiceType')} {...formItemLayout} >
               {getFieldDecorator('invoice_type', {
@@ -207,11 +171,38 @@ export default class FeesForm extends Component {
               )}
             </FormItem>
           </Col>
-          <Col sm={8} md={12}>
-            <FormItem label={msg('remark')} labelCol={{ span: 3 }} wrapperCol={{ span: 21 }}>
-              {getFieldDecorator('remarks', {
-                initialValue: fieldInits.remarks,
-              })(<Select tags style={{ width: '100%' }} />)}
+        </Row>
+        <Row>
+          <Col sm={8} md={16}>
+            <FormItem label={msg('declareWay')} labelCol={{ span: 3 }} wrapperCol={{ span: 21 }}>
+              {getFieldDecorator('decl_way_code', {
+                rules: [{ required: true, message: '报关类型必选', type: 'array' }],
+                initialValue: fieldInits.decl_way_code,
+              })(
+                <Select multiple style={{ width: '100%' }} placeholder="不限" >
+                  {
+                  DECL_TYPE.map(dw =>
+                    <Option value={dw.key} key={dw.key}>{dw.value}</Option>
+                  )
+                }
+                </Select>
+              )}
+            </FormItem>
+          </Col>
+          <Col sm={8} md={8}>
+            <FormItem label={msg('transMode')} {...formItemLayout} >
+              {getFieldDecorator('trans_mode', {
+                rules: [{ required: true, message: '运输方式必选', type: 'array' }],
+                initialValue: fieldInits.trans_mode,
+              })(
+                <Select multiple style={{ width: '100%' }} placeholder="不限" >
+                  {
+                  TRANS_MODE.map(tr =>
+                    <Option value={tr.value} key={tr.value}>{tr.text}</Option>
+                  )
+                }
+                </Select>
+              )}
             </FormItem>
           </Col>
         </Row>
