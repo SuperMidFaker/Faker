@@ -266,7 +266,7 @@ export default class ExpenseList extends Component {
       }, {
         title: this.msg('invoiceNo'),
         dataIndex: 'invoice_no',
-        width: 180,
+        width: 150,
       }, {
         title: this.msg('bLNo'),
         dataIndex: 'bl_wb_no',
@@ -449,7 +449,7 @@ export default class ExpenseList extends Component {
             </div>
             <div className="panel-body table-panel group-header">
               <Table columns={columns} dataSource={this.dataSource} loading={expslist.loading}
-                bordered scroll={{ x: 1800 }} rowKey="delg_no"
+                bordered scroll={{ x: 1900 }} rowKey="delg_no"
               />
             </div>
           </div>

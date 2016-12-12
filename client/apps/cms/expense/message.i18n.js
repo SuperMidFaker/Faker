@@ -44,7 +44,7 @@ const messages = defineMessages({
   },
   cleanDate: {
     id: 'cms.expense.export.cleanDate',
-    defaultMessage: '海关放行日期',
+    defaultMessage: '放行日期',
   },
   range: {
     id: 'cms.expense.export.range',

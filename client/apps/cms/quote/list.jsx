@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Button, Tag, message } from 'antd';
+import { Button, Radio, Tag, message } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -14,6 +14,8 @@ import messages from './message.i18n';
 import NavLink from 'client/components/nav-link';
 import moment from 'moment';
 const formatMsg = format(messages);
+const RadioGroup = Radio.Group;
+const RadioButton = Radio.Button;
 
 function fetchData({ state, dispatch }) {
   return dispatch(loadQuoteTable(state.account.tenantId));
@@ -210,6 +212,11 @@ export default class QuoteList extends Component {
       <QueueAnim type={['bottom', 'up']}>
         <header className="top-bar" key="header">
           <span>{msg('quoteManage')}</span>
+          <RadioGroup>
+            <RadioButton value="all">{this.msg('filterAll')}</RadioButton>
+            <RadioButton value="selling">{this.msg('filterSelling')}</RadioButton>
+            <RadioButton value="buying">{this.msg('filterBuying')}</RadioButton>
+          </RadioGroup>
         </header>
         <div className="main-content" key="main">
           <div className="page-body">

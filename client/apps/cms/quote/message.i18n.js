@@ -1,13 +1,25 @@
 import { defineMessages } from 'react-intl';
 
 const messages = defineMessages({
-  quoteNo: {
-    id: 'cms.quote.quote_no',
-    defaultMessage: '报价编号',
-  },
   quoteManage: {
     id: 'cms.quote.quote_manage',
     defaultMessage: '报价管理',
+  },
+  filterAll: {
+    id: 'cms.quote.filter.all',
+    defaultMessage: '全部',
+  },
+  filterSelling: {
+    id: 'cms.quote.filter.selling',
+    defaultMessage: '销售价',
+  },
+  filterBuying: {
+    id: 'cms.quote.filter.buying',
+    defaultMessage: '成本价',
+  },
+  quoteNo: {
+    id: 'cms.quote.quote_no',
+    defaultMessage: '报价编号',
   },
   newQuote: {
     id: 'cms.quote.new_quote',

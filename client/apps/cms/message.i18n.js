@@ -71,7 +71,7 @@ const messages = defineMessages({
   },
   groupInvoice: {
     id: 'cms.module.group.invouce',
-    defaultMessage: '账单',
+    defaultMessage: '对账',
   },
   groupQuote: {
     id: 'cms.module.group.quote',

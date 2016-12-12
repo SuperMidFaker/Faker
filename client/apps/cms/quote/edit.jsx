@@ -6,7 +6,7 @@ import { format } from 'client/common/i18n/helpers';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import messages from './message.i18n';
 import { loadEditQuote, copyQuote, loadPartners } from 'common/reducers/cmsQuote';
-import { Button, Card, Tabs, message, Form } from 'antd';
+import { Button, Dropdown, Form, Icon, Menu, Tabs, message } from 'antd';
 import FeesTable from './feesTable';
 import FeesForm from './feesForm';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -74,6 +74,11 @@ export default class QuotingEdit extends Component {
   render() {
     const { form } = this.props;
     const msg = key => formatMsg(this.props.intl, key);
+    const menu = (
+      <Menu>
+        <Menu.Item key="copyQuote">{msg('copy')}</Menu.Item>
+      </Menu>
+    );
     return (
       <div>
         <header className="top-bar">
@@ -84,7 +89,11 @@ export default class QuotingEdit extends Component {
           <span />
           <Button type="default" >{msg('trail')}</Button>
           <span />
-          <Button type="default" onClick={this.handleCopy} >{msg('copy')}</Button>
+          <Dropdown overlay={menu}>
+            <Button type="ghost">
+              <Icon type="ellipsis" />
+            </Button>
+          </Dropdown>
         </div>
         <div className="main-content">
           <div className="page-body">
