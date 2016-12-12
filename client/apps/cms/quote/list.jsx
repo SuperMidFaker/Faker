@@ -213,9 +213,9 @@ export default class QuoteList extends Component {
         <header className="top-bar" key="header">
           <span>{msg('quoteManage')}</span>
           <RadioGroup>
-            <RadioButton value="all">{this.msg('filterAll')}</RadioButton>
-            <RadioButton value="selling">{this.msg('filterSelling')}</RadioButton>
-            <RadioButton value="buying">{this.msg('filterBuying')}</RadioButton>
+            <RadioButton value="all">{msg('filterAll')}</RadioButton>
+            <RadioButton value="selling">{msg('filterSelling')}</RadioButton>
+            <RadioButton value="buying">{msg('filterBuying')}</RadioButton>
           </RadioGroup>
         </header>
         <div className="main-content" key="main">
