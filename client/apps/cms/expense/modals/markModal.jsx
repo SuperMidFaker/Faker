@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Modal, Table, Checkbox, message } from 'antd';
-import { closeMarkModal, saveCushInput, saveMarkstate } from 'common/reducers/cmsExpense';
+import { closeMarkModal, saveMarkstate } from 'common/reducers/cmsExpense';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 
@@ -42,7 +42,7 @@ ColumnCheckbox.propTypes = {
     tenantId: state.account.tenantId,
     showMarkModal: state.cmsExpense.showMarkModal,
   }),
-  { closeMarkModal, saveCushInput, saveMarkstate }
+  { closeMarkModal, saveMarkstate }
 )
 export default class MarkModal extends Component {
   static propTypes = {

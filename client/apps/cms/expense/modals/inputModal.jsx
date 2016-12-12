@@ -1,8 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { Modal, message } from 'antd';
-import { closeInModal, saveCushInput } from 'common/reducers/cmsExpense';
+import { Modal } from 'antd';
+import { closeInModal } from 'common/reducers/cmsExpense';
 import ReactDataGrid from '@welogix/react-data-grid';
 import { Editors } from '@welogix/react-data-grid/addons';
 import { format } from 'client/common/i18n/helpers';
@@ -33,7 +33,7 @@ function createRows(numberOfRows) {
     showInputModal: state.cmsExpense.showInputModal,
     currencies: state.cmsExpense.currencies,
   }),
-  { closeInModal, saveCushInput }
+  { closeInModal }
 )
 export default class InputModal extends Component {
   static propTypes = {
@@ -55,15 +55,6 @@ export default class InputModal extends Component {
     this.props.closeInModal();
   }
   handleSave = () => {
-    const rows = this.state.rows;
-    const params = rows.filter(row => row.delg_no !== '');
-    this.props.saveCushInput(this.props.tenantId, params).then((result) => {
-      if (result.error) {
-        message.error(result.error.message);
-      } else {
-        this.props.closeInModal();
-      }
-    });
   }
   render() {
     const msg = descriptor => formatMsg(this.props.intl, descriptor);
