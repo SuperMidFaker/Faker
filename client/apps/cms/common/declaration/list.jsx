@@ -15,6 +15,7 @@ import { format } from 'client/common/i18n/helpers';
 import SearchBar from 'client/components/search-bar';
 import RowUpdater from '../delegation/rowUpdater';
 import DeclnoFillModal from './modals/declNoFill';
+import DeclStatusPopover from './declStatusPopover';
 
 const formatMsg = format(messages);
 const RadioGroup = Radio.Group;
@@ -35,7 +36,6 @@ const RadioButton = Radio.Button;
   depth: 2,
   moduleName: 'clearance',
 })
-
 export default class DelgDeclList extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -103,6 +103,17 @@ export default class DelgDeclList extends Component {
     title: this.msg('clrStatus'),
     width: 150,
     dataIndex: 'note',
+    render: (o, row) => {
+      if (o) {
+        return (
+          <DeclStatusPopover results={row.results} entryId={row.entry_id}>
+            {o}
+          </DeclStatusPopover>
+        );
+      } else {
+        return '--';
+      }
+    },
   }, {
     title: this.msg('customsCheck'),
     width: 80,
