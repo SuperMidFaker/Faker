@@ -316,8 +316,13 @@ export default(store, cookie) => {
             </Route>
             <Route path="customers" component={CRMCustomers.List} />
             <Route path="billing">
+              <IndexRedirect to="/customer/billing/list" />
               <Route path="fees" component={CRMBilling.FeeList} />
-              <Route path="billings" component={CRMBilling.BillingList} />
+              <Route path="list" component={CRMBilling.List} />
+              <Route path="create" component={CRMBilling.Create} />
+              <Route path="check/:billingId" component={CRMBilling.Check} />
+              <Route path="edit/:billingId" component={CRMBilling.Edit} />
+              <Route path="view/:billingId" component={CRMBilling.View} />
             </Route>
           </Route>
         </Route>

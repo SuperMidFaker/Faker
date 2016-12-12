@@ -19,7 +19,8 @@ const formatMsg = format(messages);
 const RangePicker = DatePicker.RangePicker;
 
 function fetchData({ state, dispatch, cookie }) {
-  const { startDate, endDate } = state.shipment.statistics;
+  const startDate = `${moment(new Date()).format('YYYY-MM-DD')} 00:00:00`;
+  const endDate = `${moment(new Date()).format('YYYY-MM-DD')} 23:59:59`;
   const promises = [dispatch(loadShipmentStatistics(cookie, state.account.tenantId, startDate, endDate)),
     dispatch(loadFormRequire(cookie, state.account.tenantId))];
   return Promise.all(promises);
@@ -72,7 +73,7 @@ export default class Dashboard extends React.Component {
     const { count, startDate, endDate, todos } = this.props.statistics;
     const datePicker = (
       <div>
-        <RangePicker style={{ width: 200 }} defaultValue={[moment(startDate), moment(endDate)]}
+        <RangePicker style={{ width: 200 }} value={[moment(startDate), moment(endDate)]}
           onChange={this.onDateChange}
         />
       </div>);

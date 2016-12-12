@@ -46,7 +46,7 @@ export default class ModuleCRM extends React.Component {
         text: '费用管理',
       }, {
         key: 'tms-3-1',
-        path: '/customer/billing/billings',
+        path: '/customer/billing/list',
         text: '账单管理',
       }],
     });

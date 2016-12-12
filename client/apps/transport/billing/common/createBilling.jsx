@@ -54,8 +54,8 @@ export default class CreateBilling extends React.Component {
     const { beginDate, endDate, chooseModel, partnerId, partnerTenantId } = this.context.location.query;
     this.props.loadFeesByChooseModal({
       type,
-      beginDate: moment(beginDate).format('YYYY-MM-DD 00:00:00'),
-      endDate: moment(endDate).format('YYYY-MM-DD 23:59:59'),
+      beginDate,
+      endDate,
       chooseModel,
       partnerId,
       partnerTenantId,
@@ -78,8 +78,8 @@ export default class CreateBilling extends React.Component {
       const shipmtCount = fees.filter(item => item.status === 1).length;
       const fee = fees[0];
       this.props.createBilling({
-        tenantId, loginId, loginName, name, chooseModel, beginDate: moment(beginDate).format('YYYY-MM-DD 00:00:00'),
-        endDate: moment(endDate).format('YYYY-MM-DD 23:59:59'), freightCharge,
+        tenantId, loginId, loginName, name, chooseModel, beginDate,
+        endDate, freightCharge,
         advanceCharge, excpCharge, adjustCharge, totalCharge, srTenantId: fee.sr_tenant_id, srName: fee.sr_name,
         spTenantId: fee.sp_tenant_id, spName: fee.sp_name, toTenantId: partnerTenantId,
         shipmtCount, fees,

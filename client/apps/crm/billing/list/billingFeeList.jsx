@@ -5,12 +5,12 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
-import { loadFeesByBillingId, updateBillingFees, checkBilling, acceptBilling, editBilling } from 'common/reducers/transportBilling';
+import { loadFeesByBillingId, updateBillingFees, checkBilling, acceptBilling, editBilling } from 'common/reducers/crmBilling';
 import TrimSpan from 'client/components/trimSpan';
-import PreviewPanel from '../../shipment/modals/preview-panel';
-import { loadShipmtDetail } from 'common/reducers/shipment';
-import ExceptionListPopover from '../../tracking/land/modals/exception-list-popover';
-import ActDate from '../../common/actDate';
+import TrsShipmtNoColumn from '../../common/trsShipmtNoColumn';
+import CcbDelgNoColumn from '../../common/ccbDelgNoColumn';
+import PreviewPanel from '../../orders/modals/preview-panel';
+import { loadOrderDetail } from 'common/reducers/crmOrders';
 
 const formatMsg = format(messages);
 
@@ -18,17 +18,20 @@ const formatMsg = format(messages);
 @connect(
   state => ({
     tenantId: state.account.tenantId,
+    tenantName: state.account.tenantName,
     loginId: state.account.loginId,
     loginName: state.account.username,
-    billing: state.transportBilling.billing,
-    billingFees: state.transportBilling.billingFees,
+    billing: state.crmBilling.billing,
+    billingFees: state.crmBilling.billingFees,
+    loading: state.crmBilling.loading,
   }),
-  { loadFeesByBillingId, updateBillingFees, checkBilling, acceptBilling, editBilling, loadShipmtDetail }
+  { loadFeesByBillingId, updateBillingFees, checkBilling, acceptBilling, editBilling, loadOrderDetail }
 )
 export default class BillingFeeList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
+    tenantName: PropTypes.string.isRequired,
     loginId: PropTypes.number.isRequired,
     loginName: PropTypes.string.isRequired,
     billing: PropTypes.object.isRequired,
@@ -38,9 +41,9 @@ export default class BillingFeeList extends React.Component {
     checkBilling: PropTypes.func.isRequired,
     acceptBilling: PropTypes.func.isRequired,
     editBilling: PropTypes.func.isRequired,
-    type: PropTypes.oneOf(['receivable', 'payable']),
     operation: PropTypes.oneOf(['check', 'edit', 'view']),
-    loadShipmtDetail: PropTypes.func.isRequired,
+    loadOrderDetail: PropTypes.func.isRequired,
+    loading: PropTypes.bool.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -50,7 +53,7 @@ export default class BillingFeeList extends React.Component {
   }
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   handleAccept = () => {
-    const { loginId, tenantId, loginName, type, billing } = this.props;
+    const { loginId, tenantId, loginName, billing } = this.props;
     const { id: billingId, adjustCharge, totalCharge } = billing;
     const fees = this.props.billingFees.data;
     const modifyTimes = billing.modifyTimes + 1;
@@ -63,7 +66,7 @@ export default class BillingFeeList extends React.Component {
         if (result.error) {
           message.error(result.error.message);
         } else {
-          this.context.router.push(`/transport/billing/${type}`);
+          this.context.router.push('/customer/billing');
         }
       });
     } else {
@@ -71,13 +74,13 @@ export default class BillingFeeList extends React.Component {
         if (result.error) {
           message.error(result.error.message);
         } else {
-          this.context.router.push(`/transport/billing/${type}`);
+          this.context.router.push('/customer/billing');
         }
       });
     }
   }
   handleEdit = () => {
-    const { loginId, tenantId, loginName, type, billing } = this.props;
+    const { loginId, tenantId, loginName, billing } = this.props;
     const { id: billingId, adjustCharge, totalCharge } = billing;
     const fees = this.props.billingFees.data;
     const shipmtCount = fees.filter(item => item.status === 1).length;
@@ -89,7 +92,7 @@ export default class BillingFeeList extends React.Component {
         if (result.error) {
           message.error(result.error.message);
         } else {
-          this.context.router.push(`/transport/billing/${type}`);
+          this.context.router.push('/customer/billing');
         }
       });
     } else {
@@ -101,29 +104,28 @@ export default class BillingFeeList extends React.Component {
     return (
       <div>
         <span style={{ marginLeft: 10 }}>账单总金额: </span><span style={{ color: '#FF0000' }}>{billing.totalCharge}</span>
-        <span style={{ marginLeft: 10 }}>代垫总金额: </span><span style={{ color: '#FF9933' }}>{billing.advanceCharge}</span>
-        <span style={{ marginLeft: 10 }}>运费总金额: </span><span style={{ color: '#FF9933' }}>{billing.freightCharge}</span>
-        <span style={{ marginLeft: 10 }}>特殊费用总金额: </span><span style={{ color: '#FF9933' }}>{billing.excpCharge}</span>
+        <span style={{ marginLeft: 10 }}>清关总金额: </span><span style={{ color: '#FF9933' }}>{billing.ccbCharge}</span>
+        <span style={{ marginLeft: 10 }}>运输总金额: </span><span style={{ color: '#FF9933' }}>{billing.trsCharge}</span>
         <span style={{ marginLeft: 10 }}>调整总金额: </span><span style={{ color: '#FF9933' }}>{billing.adjustCharge}</span>
       </div>
     );
   }
-  handleChangeAdjustCharges = (feeId, adjustCharges) => {
-    const { tenantId } = this.props;
+  handleChangeAdjustCharges = (orderNo, adjustCharges) => {
+    const { tenantId, tenantName } = this.props;
     this.setState({ changed: true });
     let charge = adjustCharges;
     if (adjustCharges === undefined) {
       charge = 0;
     }
-    this.props.updateBillingFees(tenantId, feeId, 'adjust_charge', charge);
+    this.props.updateBillingFees(tenantId, tenantName, orderNo, 'adjust_charge', charge);
   }
-  handleChangeStatus = (feeId, status) => {
-    const { tenantId } = this.props;
+  handleChangeStatus = (orderNo, status) => {
+    const { tenantId, tenantName } = this.props;
     this.setState({ changed: true });
     let s = 0;
     if (status) s = 1;
     else s = 0;
-    this.props.updateBillingFees(tenantId, feeId, 'status', s);
+    this.props.updateBillingFees(tenantId, tenantName, orderNo, 'status', s);
   }
   renderOperation() {
     const { operation } = this.props;
@@ -143,19 +145,7 @@ export default class BillingFeeList extends React.Component {
     return '';
   }
   render() {
-    const { billing, tenantId, operation, type } = this.props;
-    let partnerName = '';
-    if (tenantId === billing.srTenantId) {
-      partnerName = billing.spName;
-    } else if (tenantId === billing.spTenantId) {
-      partnerName = billing.srName;
-    }
-    let partnerSourceType = '承运商';
-    if (type === 'payable') {
-      partnerSourceType = '承运商';
-    } else if (type === 'receivable') {
-      partnerSourceType = '客户';
-    }
+    const { billing, operation, loading } = this.props;
     const handleLableStyle = {
       marginRight: 30,
       lineHeight: 2,
@@ -164,95 +154,79 @@ export default class BillingFeeList extends React.Component {
     const dataSource = this.props.billingFees.data;
     const columns = [{
       title: '运单号',
-      dataIndex: 'shipmt_no',
-      fixed: 'left',
-      width: 150,
-      render: (o, record) => (<a onClick={() => this.props.loadShipmtDetail(record.shipmt_no, this.props.tenantId, 'sr', 'charge', record)}>{record.shipmt_no}</a>),
+      dataIndex: 'shipmt_order_no',
+      render: o => (<a onClick={() => this.props.loadOrderDetail(o, this.props.tenantId)}>{o}</a>),
     }, {
       title: '客户单号',
-      dataIndex: 'ref_external_no',
+      dataIndex: 'cust_order_no',
       render: o => <TrimSpan text={o} />,
     }, {
-      title: '费率',
-      dataIndex: 'charge_gradient',
+      title: '报关委托号',
+      dataIndex: 'ccb_delg_no',
+      render: o => <CcbDelgNoColumn nos={o} />,
     }, {
-      title: '计费量',
-      dataIndex: 'charg_amount',
+      title: '报关服务费',
+      key: 'ccb_server_charge',
+      dataIndex: 'ccb_server_charge',
+      render: o => o ? o.toFixed(2) : '',
     }, {
-      title: '运费',
-      dataIndex: 'total_charge',
-      render(o) {
-        return o ? o.toFixed(2) : '';
+      title: '报关代垫费用',
+      key: 'ccb_cush_charge',
+      dataIndex: 'ccb_cush_charge',
+      render: o => o ? o.toFixed(2) : '',
+    }, {
+      title: '报关费用合计',
+      key: 'ccbTotalCharge',
+      dataIndex: 'ccbTotalCharge',
+      render: (o, record) => {
+        const charge = record.ccb_server_charge + record.ccb_cush_charge;
+        return charge.toFixed(2);
       },
+    }, {
+      title: '运输单号',
+      dataIndex: 'trs_shipmt_no',
+      render(o) {
+        return <TrsShipmtNoColumn nos={o} />;
+      },
+    }, {
+      title: '基本运费',
+      key: 'trs_freight_charge',
+      dataIndex: 'trs_freight_charge',
+      render: o => o ? o.toFixed(2) : '',
     }, {
       title: '特殊费用',
-      dataIndex: 'excp_charge',
-      render(o) {
-        return o ? o.toFixed(2) : '';
+      key: 'trs_excp_charge',
+      dataIndex: 'trs_excp_charge',
+      render: o => o ? o.toFixed(2) : '',
+    }, {
+      title: '运输代垫费用',
+      key: 'trs_advance_charge',
+      dataIndex: 'trs_advance_charge',
+      render: o => o ? o.toFixed(2) : '',
+    }, {
+      title: '运输费用合计',
+      key: 'trsTotalCharge',
+      dataIndex: 'trsTotalCharge',
+      render: (o, record) => {
+        const charge = record.trs_freight_charge + record.trs_excp_charge + record.trs_advance_charge;
+        return charge.toFixed(2);
       },
     }, {
-      title: '代垫费用',
-      dataIndex: 'advance_charge',
-      render(o) {
-        return o ? o.toFixed(2) : '';
-      },
+      title: '订单总费用',
+      key: 'total_charge',
+      dataIndex: 'total_charge',
+      render: o => o ? o.toFixed(2) : '',
     }, {
       title: '调整金额',
       dataIndex: 'adjust_charge',
-      render: (o, record) => {
-        if (operation === 'view') {
-          return o ? o.toFixed(2) : '';
-        }
-        return (<InputNumber size="small" defaultValue={o} step={0.01} onChange={value => this.handleChangeAdjustCharges(record.id, value)} />);
-      },
+      render: (o, record) => (<InputNumber size="small" value={o} onChange={value => this.handleChangeAdjustCharges(record.shipmt_order_no, value)} />),
     }, {
       title: '最终费用',
-      render(o, record) {
-        let totalCharge = 0;
-        if (record.advance_charge !== null) {
-          totalCharge += record.advance_charge;
-        }
-        if (record.excp_charge !== null) {
-          totalCharge += record.excp_charge;
-        }
-        if (record.adjust_charge !== null) {
-          totalCharge += record.adjust_charge;
-        }
-        if (record.total_charge !== null) {
-          totalCharge += record.total_charge;
-        }
-        return totalCharge.toFixed(2);
+      render: (o, record) => {
+        const charge = record.ccb_server_charge + record.ccb_cush_charge + record.trs_freight_charge +
+        record.trs_excp_charge + record.trs_advance_charge + record.adjust_charge;
+        return charge.toFixed(2);
       },
-    }, {
-      title: '始发地',
-      dataIndex: 'consigner_province',
-    }, {
-      title: '目的地',
-      dataIndex: 'consignee_province',
-    }, {
-      title: '运输模式',
-      dataIndex: 'transport_mode',
-    }, {
-      title: '实际提货时间',
-      dataIndex: 'pickup_act_date',
-      render: (o, record) => <ActDate actDate={record.pickup_act_date} estDate={record.pickup_est_date} />,
-    }, {
-      title: '实际交货时间',
-      dataIndex: 'deliver_act_date',
-      render: (o, record) => <ActDate actDate={record.deliver_act_date} estDate={record.deliver_est_date} />,
-    }, {
-      title: '异常',
-      dataIndex: 'excp_count',
-      render(o, record) {
-        return (<ExceptionListPopover
-          shipmtNo={record.shipmt_no}
-          dispId={record.disp_id}
-          excpCount={o}
-        />);
-      },
-    }, {
-      title: '回单',
-      dataIndex: 'pod_status',
     }, {
       title: '是否入账',
       dataIndex: 'status',
@@ -262,7 +236,7 @@ export default class BillingFeeList extends React.Component {
         if (operation === 'view') {
           return (<Checkbox disabled defaultChecked={o === 1 || o === 2} />);
         }
-        return (<Checkbox defaultChecked={o === 1} onChange={e => this.handleChangeStatus(record.id, e.target.checked)} />);
+        return (<Checkbox defaultChecked={o === 1} onChange={e => this.handleChangeStatus(record.shipmt_order_no, e.target.checked)} />);
       },
     }, {
       title: '更新',
@@ -292,12 +266,11 @@ export default class BillingFeeList extends React.Component {
         <div className="main-content">
           <div className="page-body">
             <div className="panel-header">
-              <span style={handleLableStyle}>{partnerSourceType}: <strong>{partnerName}</strong></span>
+              <span style={handleLableStyle}>客户: <strong>{billing.customerName}</strong></span>
               <span style={handleLableStyle}>{this.msg('range')}: <strong>{moment(billing.beginDate).format('YYYY-MM-DD')} ~ {moment(billing.endDate).format('YYYY-MM-DD')}</strong></span>
-              <span style={handleLableStyle}>{this.msg('chooseModel')}: <strong>{this.msg(billing.chooseModel)}</strong></span>
             </div>
             <div className="panel-body table-panel">
-              <Table dataSource={dataSource} columns={columns} rowKey="id" footer={this.handleTableFooter} scroll={{ x: 2000 }} />
+              <Table dataSource={dataSource} columns={columns} rowKey="id" footer={this.handleTableFooter} scroll={{ x: 2000 }} loading={loading} />
             </div>
           </div>
         </div>

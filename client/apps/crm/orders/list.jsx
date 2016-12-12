@@ -11,7 +11,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import { loadOrders, loadFormRequires, removeOrder, setClientForm, acceptOrder,
-loadOrderDetail, changePreviewerTab, hidePreviewer } from 'common/reducers/crmOrders';
+loadOrderDetail } from 'common/reducers/crmOrders';
 import moment from 'moment';
 import { CRM_ORDER_STATUS, GOODSTYPES } from 'common/constants';
 import TrimSpan from 'client/components/trimSpan';
@@ -48,7 +48,7 @@ function fetchData({ state, dispatch }) {
     orders: state.crmOrders.orders,
     formRequires: state.crmOrders.formRequires,
   }), {
-    loadOrders, removeOrder, setClientForm, acceptOrder, loadOrderDetail, changePreviewerTab, hidePreviewer,
+    loadOrders, removeOrder, setClientForm, acceptOrder, loadOrderDetail,
   }
 )
 @connectNav({
@@ -70,8 +70,6 @@ export default class ShipmentOrderList extends React.Component {
     acceptOrder: PropTypes.func.isRequired,
     formRequires: PropTypes.object.isRequired,
     loadOrderDetail: PropTypes.func.isRequired,
-    changePreviewerTab: PropTypes.func.isRequired,
-    hidePreviewer: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -124,9 +122,6 @@ export default class ShipmentOrderList extends React.Component {
       filters: this.props.orders.filters,
     });
   }
-  handleShowPreviewer = (orderNo) => {
-    this.props.loadOrderDetail(orderNo, this.props.tenantId);
-  }
   render() {
     const { loading, formRequires: { packagings } } = this.props;
     const rowSelection = {
@@ -143,7 +138,7 @@ export default class ShipmentOrderList extends React.Component {
       render: (o, record) => {
         if (record.order_status !== CRM_ORDER_STATUS.created) {
           return (
-            <a onClick={() => this.handleShowPreviewer(o)}>{o}</a>
+            <a onClick={() => this.props.loadOrderDetail(o, this.props.tenantId)}>{o}</a>
           );
         }
         return o;

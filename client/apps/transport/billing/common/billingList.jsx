@@ -8,7 +8,7 @@ import moment from 'moment';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import BillingForm from './billingForm';
-import { loadBillings, updateBilling, sendBilling, changeBillingsFilter, removeBilling, loadPartners } from 'common/reducers/transportBilling';
+import { loadBillings, sendBilling, changeBillingsFilter, removeBilling, loadPartners } from 'common/reducers/transportBilling';
 import { SHIPMENT_BILLING_STATUS, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 import CancelChargeModal from '../modals/cancelChargeModal';
 import TrimSpan from 'client/components/trimSpan';
@@ -27,7 +27,7 @@ const formatMsg = format(messages);
     billings: state.transportBilling.billings,
     loading: state.transportBilling.loading,
   }),
-  { loadBillings, updateBilling, sendBilling, changeBillingsFilter, removeBilling, loadPartners }
+  { loadBillings, sendBilling, changeBillingsFilter, removeBilling, loadPartners }
 )
 
 export default class BillingList extends React.Component {
@@ -37,7 +37,6 @@ export default class BillingList extends React.Component {
     loginId: PropTypes.number.isRequired,
     loginName: PropTypes.string.isRequired,
     loadBillings: PropTypes.func.isRequired,
-    updateBilling: PropTypes.func.isRequired,
     sendBilling: PropTypes.func.isRequired,
     changeBillingsFilter: PropTypes.func.isRequired,
     removeBilling: PropTypes.func.isRequired,

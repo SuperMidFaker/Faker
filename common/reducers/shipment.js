@@ -1,4 +1,3 @@
-import moment from 'moment';
 import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
 import {
@@ -27,8 +26,7 @@ const actionTypes = createActionTypes('@@welogix/transport/shipment/', [
   'CHANGE_PREVIEWER_TAB',
 ]);
 appendFormAcitonTypes('@@welogix/transport/shipment/', actionTypes);
-const startDate = `${moment(new Date()).format('YYYY-MM-DD')} 00:00:00`;
-const endDate = `${moment(new Date()).format('YYYY-MM-DD')} 23:59:59`;
+
 const initialState = {
   formRequire: {
     consignerLocations: [],
@@ -74,8 +72,8 @@ const initialState = {
   },
   statistics: {
     count: [0, 0, 0, 0, 0],
-    startDate,
-    endDate,
+    startDate: null,
+    endDate: null,
     logs: {
       totalCount: 0,
       data: [],
@@ -158,7 +156,14 @@ export default function reducer(state = initialState, action) {
       return { ...state };
     }
     case actionTypes.SHIPMENT_STATISTICS_SUCCEED: {
-      return { ...state, statistics: { ...state.statistics, ...action.result.data } };
+      return { ...state,
+        statistics: {
+          ...state.statistics,
+          ...action.result.data,
+          startDate: action.params.startDate,
+          endDate: action.params.endDate,
+        },
+      };
     }
     case actionTypes.SHIPMENT_SEARCH_SUCCEED: {
       return { ...state, searchResult: action.result.data };

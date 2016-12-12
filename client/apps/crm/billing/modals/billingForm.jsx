@@ -5,7 +5,7 @@ import moment from 'moment';
 import { Form, Input, Select, DatePicker, message, Modal } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
-import { loadPartners } from 'common/reducers/transportBilling';
+import { loadPartners } from 'common/reducers/crmBilling';
 import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 
 const formatMsg = format(messages);
@@ -17,7 +17,7 @@ const RangePicker = DatePicker.RangePicker;
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    partners: state.transportBilling.partners,
+    partners: state.crmBilling.partners,
   }),
   { loadPartners }
 )
@@ -27,7 +27,6 @@ export default class BillingForm extends React.Component {
     intl: intlShape.isRequired,
     visible: PropTypes.bool.isRequired,
     toggle: PropTypes.func.isRequired,
-    type: PropTypes.oneOf(['receivable', 'payable']),
     loadPartners: PropTypes.func.isRequired,
     partners: PropTypes.array.isRequired,
   }
@@ -38,18 +37,13 @@ export default class BillingForm extends React.Component {
     beginDate: new Date().setDate(1),
     endDate: new Date(),
     name: '',
-    chooseModel: '',
     partnerId: -1,
     partnerName: '',
+    partnerCode: '',
   }
   componentWillMount() {
-    let roles = [PARTNER_ROLES.CUS, PARTNER_ROLES.DCUS];
+    const roles = [PARTNER_ROLES.CUS];
     const businessTypes = [PARTNER_BUSINESSE_TYPES.transport];
-    if (this.props.type === 'receivable') {
-      roles = [PARTNER_ROLES.CUS, PARTNER_ROLES.DCUS];
-    } else if (this.props.type === 'payable') {
-      roles = [PARTNER_ROLES.TSUP];
-    }
     this.props.loadPartners(this.props.tenantId, roles, businessTypes);
   }
   msg = (key, values) => formatMsg(this.props.intl, key, values)
@@ -59,21 +53,18 @@ export default class BillingForm extends React.Component {
     if (!fieldsValue.name) {
       message.error(this.msg('namePlaceholder'));
     } else if (fieldsValue.partnerId === undefined) {
-      message.error(this.msg('partnerPlaceholder'));
-    } else if (!fieldsValue.chooseModel) {
-      message.error(this.msg('chooseModelPlaceholder'));
+      message.error(this.msg('customerPlaceholder'));
     } else if (!beginDate || !endDate) {
       message.error(this.msg('rangePlaceholder'));
     } else {
       const partner = this.props.partners.find(item => item.partner_id === fieldsValue.partnerId);
       const partnerName = partner.name;
       const partnerTenantId = partner.tid;
+      const partnerCode = partner.partner_code;
       this.context.router.push({
-        pathname: `/transport/billing/${this.props.type}/create`,
+        pathname: '/customer/billing/create',
         query: {
-          ...fieldsValue, partnerName, partnerTenantId,
-          beginDate: moment(beginDate).format('YYYY-MM-DD 00:00:00'),
-          endDate: moment(endDate).format('YYYY-MM-DD 23:59:59'),
+          ...fieldsValue, partnerName, partnerCode, partnerTenantId, beginDate: moment(beginDate).format('YYYY-MM-DD 00:00:00'), endDate: moment(endDate).format('YYYY-MM-DD 23:59:59'),
         },
       });
     }
@@ -91,13 +82,13 @@ export default class BillingForm extends React.Component {
     const { form: { getFieldDecorator }, partners, visible } = this.props;
     const { beginDate, endDate, name } = this.state;
     return (
-      <Modal visible={visible} title={`${this.msg(this.props.type)}${this.msg('billing')}`}
+      <Modal visible={visible} title={this.msg('billing')}
         onOk={this.handleOk} onCancel={this.handleCancel}
       >
         <Form>
           <FormItem
             id="select"
-            label={this.msg('partner')}
+            label={this.msg('customer')}
             labelCol={{ span: 6 }}
             wrapperCol={{ span: 14 }}
           >
@@ -117,21 +108,6 @@ export default class BillingForm extends React.Component {
                     </Option>)
                   )
                 }
-              </Select>
-            )}
-          </FormItem>
-          <FormItem
-            id="select"
-            label={this.msg('chooseModel')}
-            labelCol={{ span: 6 }}
-            wrapperCol={{ span: 14 }}
-          >
-            {getFieldDecorator('chooseModel')(
-              <Select id="select" size="large">
-                <Option value="pickupEstDate">{this.msg('pickupEstDate')}</Option>
-                <Option value="deliverEstDate">{this.msg('deliverEstDate')}</Option>
-                <Option value="pickupActDate">{this.msg('pickupActDate')}</Option>
-                <Option value="deliverActDate">{this.msg('deliverActDate')}</Option>
               </Select>
             )}
           </FormItem>

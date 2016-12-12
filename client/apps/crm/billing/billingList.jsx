@@ -3,21 +3,32 @@ import { Link } from 'react-router';
 import { Button, message, Popconfirm } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { connect } from 'react-redux';
+import connectFetch from 'client/common/decorators/connect-fetch';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import moment from 'moment';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-// import BillingForm from './billingForm';
-import { loadBillings, updateBilling, sendBilling, changeBillingsFilter, removeBilling, loadPartners } from 'common/reducers/transportBilling';
-import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
+import BillingForm from './modals/billingForm';
+import { loadBillings, updateBilling, sendBilling, changeBillingsFilter, removeBilling, loadPartners } from 'common/reducers/crmBilling';
+import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES, CRM_BILLING_STATUS } from 'common/constants';
 // import CancelChargeModal from './modals/cancelChargeModal';
 import TrimSpan from 'client/components/trimSpan';
 // import { createFilename } from 'client/util/dataTransform';
 import SearchBar from 'client/components/search-bar';
 
 const formatMsg = format(messages);
+function fetchData({ state, dispatch }) {
+  return dispatch(loadBillings({
+    tenantId: state.account.tenantId,
+    pageSize: state.crmBilling.billings.pageSize,
+    current: state.crmBilling.billings.current,
+    searchValue: state.crmBilling.billings.searchValue,
+    filters: state.crmBilling.billings.filters,
+  }));
+}
 
+@connectFetch()(fetchData)
 
 @connectNav({
   depth: 2,
@@ -30,9 +41,8 @@ const formatMsg = format(messages);
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     loginName: state.account.username,
-    billings: state.transportBilling.billings,
-    loading: state.transportBilling.loading,
-    type: '',
+    billings: state.crmBilling.billings,
+    loading: state.crmBilling.loading,
   }),
   { loadBillings, updateBilling, sendBilling, changeBillingsFilter, removeBilling, loadPartners }
 )
@@ -48,9 +58,9 @@ export default class BillingList extends React.Component {
     sendBilling: PropTypes.func.isRequired,
     changeBillingsFilter: PropTypes.func.isRequired,
     removeBilling: PropTypes.func.isRequired,
-    type: PropTypes.string.isRequired,
     loadPartners: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
+    billings: PropTypes.object.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -67,7 +77,7 @@ export default class BillingList extends React.Component {
   }
   componentWillMount() {
     this.props.loadPartners(this.props.tenantId,
-      [PARTNER_ROLES.CUS, PARTNER_ROLES.DCUS],
+      [PARTNER_ROLES.CUS],
       [PARTNER_BUSINESSE_TYPES.clearance, PARTNER_BUSINESSE_TYPES.transport]).then((result) => {
         this.setState({ customers: result.data });
       });
@@ -118,15 +128,14 @@ export default class BillingList extends React.Component {
     this.setState({ selectedRowKeys: [] });
   }
   handleTableLoad = (searchValue) => {
-    const { tenantId, type } = this.props;
-    const { pageSize, currentPage, filters } = this.props.billings;
+    const { tenantId } = this.props;
+    const { pageSize, current, filters } = this.props.billings;
     this.props.loadBillings({
-      type,
       tenantId,
       pageSize,
-      currentPage,
+      current,
       searchValue: searchValue !== undefined ? searchValue : this.props.billings.searchValue,
-      filters: JSON.stringify(filters),
+      filters,
     });
   }
   handleShowCancelChargeModal = (billingId, fromId, totalCharge) => {
@@ -134,8 +143,8 @@ export default class BillingList extends React.Component {
     this.setState({ cancelChargeModalVisible: true });
   }
   handleExportExcel = () => {
-    // const { tenantId, type } = this.props;
-    // window.open(`${API_ROOTS.default}v1/transport/billing/exportBillingsExcel/${createFilename('billings')}.xlsx?tenantId=${tenantId}&type=${type}`);
+    // const { tenantId } = this.props;
+    // window.open(`${API_ROOTS.default}v1/transport/billing/exportBillingsExcel/${createFilename('billings')}.xlsx?tenantId=${tenantId}`);
     // this.handleClose();
   }
   handleSearchInput = (value) => {
@@ -143,26 +152,25 @@ export default class BillingList extends React.Component {
   }
   render() {
     const { customers } = this.state;
-    const { tenantId, type, loading } = this.props;
+    const { tenantId, loading } = this.props;
     const { searchValue } = this.props.billings;
     const dataSource = new Table.DataSource({
       fetcher: params => this.props.loadBillings(params),
       resolve: result => result.data,
       getPagination: (result, resolve) => ({
         total: result.totalCount,
-        current: resolve(result.totalCount, result.currentPage, result.pageSize),
+        current: resolve(result.totalCount, result.current, result.pageSize),
         showSizeChanger: true,
         showQuickJumper: false,
         pageSize: result.pageSize,
       }),
       getParams: (pagination, filters) => {
         const params = {
-          type,
           tenantId,
           pageSize: pagination.pageSize,
-          currentPage: pagination.current,
+          current: pagination.current,
           searchValue,
-          filters: JSON.stringify(filters),
+          filters,
         };
         return params;
       },
@@ -173,7 +181,7 @@ export default class BillingList extends React.Component {
       title: '账单名称',
       dataIndex: 'name',
       render(o, record) {
-        return <Link to={`/transport/billing/${type}/view/${record.id}`}>{o}</Link>;
+        return <Link to={`/customer/billing/view/${record.id}`}>{o}</Link>;
       },
     }, {
       title: '开始日期',
@@ -196,30 +204,30 @@ export default class BillingList extends React.Component {
       filters: customers.map(item => ({ text: item.name, value: item.name })),
     }, {
       title: '清关费用',
-      dataIndex: 'freight_charge',
+      dataIndex: 'ccb_charge',
     }, {
       title: '运输费用',
-      dataIndex: 'advance_charge',
+      dataIndex: 'trs_charge',
     }, {
       title: '调整费用',
-      dataIndex: 'excp_charge',
+      dataIndex: 'adjust_charge',
     }, {
       title: '账单总金额',
-      dataIndex: 'adjust_charge',
+      dataIndex: 'total_charge',
       render(o) {
         return (<span style={{ color: '#FF0000' }}>{o}</span>);
       },
     }, {
       title: '核销金额',
-      dataIndex: 'total_charge',
+      dataIndex: 'cancel_charge',
       render(o) {
         return (<span style={{ color: '#FF9933' }}>{o}</span>);
       },
     }, {
       title: '账单状态',
-      dataIndex: 'cancel_charge',
+      dataIndex: 'status',
       render(o) {
-        return (<span style={{ color: '#FF9933' }}>{o}</span>);
+        return CRM_BILLING_STATUS[o];
       },
     }, {
       title: '操作',
@@ -232,7 +240,7 @@ export default class BillingList extends React.Component {
                 <a>发送</a>
               </Popconfirm>
               <span className="ant-divider" />
-              <Link to={`/transport/billing/${type}/edit/${o}`}>修改</Link>
+              <Link to={`/customer/billing/edit/${o}`}>修改</Link>
               <span className="ant-divider" />
               <Popconfirm title="确定删除？" onConfirm={() => this.handleRemoveBilling(record.id)}>
                 <a>删除</a>
@@ -242,19 +250,19 @@ export default class BillingList extends React.Component {
         } else if (record.status === 2) {
           return (
             <div>
-              <Link to={`/transport/billing/${type}/view/${o}`}>查看</Link>
+              <Link to={`/customer/billing/view/${o}`}>查看</Link>
             </div>
           );
         } else if (record.status === 3) {
           return (
             <div>
-              <Link to={`/transport/billing/${type}/check/${o}`}>{this.msg('checkBilling')}</Link>
+              <Link to={`/customer/billing/check/${o}`}>{this.msg('checkBilling')}</Link>
             </div>
           );
         } else if (record.status === 4) {
           return (
             <div>
-              <Link to={`/transport/billing/${type}/view/${o}`}>查看</Link>
+              <Link to={`/customer/billing/view/${o}`}>查看</Link>
             </div>
           );
         } else if (record.status === 5) {
@@ -266,7 +274,7 @@ export default class BillingList extends React.Component {
         } else if (record.status === 6) {
           return (
             <div>
-              <Link to={`/transport/billing/${type}/view/${o}`}>查看</Link>
+              <Link to={`/customer/billing/view/${o}`}>查看</Link>
             </div>
           );
         }
@@ -282,7 +290,7 @@ export default class BillingList extends React.Component {
     return (
       <div>
         <header className="top-bar">
-          <span>{this.msg(this.props.type)}{this.msg('billing')}</span>
+          <span>{this.msg('billing')}</span>
         </header>
         <div className="top-bar-tools">
           <SearchBar placeholder="输入账单名称搜索" onInputSearch={this.handleSearchInput}
@@ -298,6 +306,7 @@ export default class BillingList extends React.Component {
             <div className="panel-body table-panel">
               <Table rowSelection={rowSelection} dataSource={dataSource} columns={columns} rowKey="id" loading={loading} />
             </div>
+            <BillingForm visible={this.state.billingFormVisible} toggle={this.toggleBillingForm} />
           </div>
         </div>
       </div>

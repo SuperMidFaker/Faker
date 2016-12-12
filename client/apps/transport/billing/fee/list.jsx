@@ -25,13 +25,16 @@ const formatMsg = format(messages);
 const RangePicker = DatePicker.RangePicker;
 
 function fetchData({ state, dispatch }) {
+  const sDate = new Date();
+  sDate.setMonth(sDate.getMonth() - 3);
+  const eDate = new Date();
   return dispatch(loadFees({
     tenantId: state.account.tenantId,
     pageSize: state.transportBilling.fees.pageSize,
     currentPage: state.transportBilling.fees.currentPage,
     searchValue: state.transportBilling.fees.searchValue,
-    startDate: moment(state.transportBilling.fees.startDate).format('YYYY-MM-DD 00:00:00'),
-    endDate: moment(state.transportBilling.fees.endDate).format('YYYY-MM-DD 23:59:59'),
+    startDate: moment(sDate).format('YYYY-MM-DD 00:00:00'),
+    endDate: moment(eDate).format('YYYY-MM-DD 23:59:59'),
     filters: JSON.stringify(state.transportBilling.fees.filters),
   }));
 }
@@ -375,7 +378,7 @@ export default class FeesList extends React.Component {
               <Button type="primary" onClick={() => this.props.toggleAdvanceChargeModal(true)} >{this.msg('importAdvanceCharge')}</Button>
               <Button style={{ marginLeft: 16 }} onClick={this.handleExportExcel}>{this.msg('export')}</Button>
               <div style={{ float: 'right' }}>
-                <RangePicker style={{ width: 200 }} defaultValue={[moment(startDate), moment(endDate)]}
+                <RangePicker style={{ width: 200 }} value={[moment(startDate), moment(endDate)]}
                   onChange={this.onDateChange}
                 />
               </div>

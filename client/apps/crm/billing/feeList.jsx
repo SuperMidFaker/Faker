@@ -22,13 +22,16 @@ const formatMsg = format(messages);
 const RangePicker = DatePicker.RangePicker;
 
 function fetchData({ state, dispatch }) {
+  const sDate = new Date();
+  sDate.setMonth(sDate.getMonth() - 3);
+  const eDate = new Date();
   return dispatch(loadOrders({
     tenantId: state.account.tenantId,
     pageSize: state.crmBilling.fees.pageSize,
     current: state.crmBilling.fees.current,
     searchValue: state.crmBilling.fees.searchValue,
-    startDate: state.crmBilling.fees.startDate,
-    endDate: state.crmBilling.fees.endDate,
+    startDate: sDate,
+    endDate: eDate,
     filters: state.crmBilling.fees.filters,
   }));
 }
@@ -72,7 +75,7 @@ export default class FeesList extends React.Component {
   }
   componentWillMount() {
     this.props.loadPartners(this.props.tenantId,
-      [PARTNER_ROLES.CUS, PARTNER_ROLES.DCUS],
+      [PARTNER_ROLES.CUS],
       [PARTNER_BUSINESSE_TYPES.clearance, PARTNER_BUSINESSE_TYPES.transport]).then((result) => {
         this.setState({ customers: result.data });
       });
@@ -128,14 +131,14 @@ export default class FeesList extends React.Component {
     this.props.changeFeesFilter('searchValue', value);
   }
   renderTransportCharge = (o, record) => {
-    if (record.shipmt_order_mode === CRM_ORDER_MODE.transport || record.shipmt_order_mode === CRM_ORDER_MODE.clearanceAndTransport) {
+    if (record.shipmt_order_mode.indexOf(CRM_ORDER_MODE.transport) >= 0) {
       return o ? o.toFixed(2) : '';
     } else {
       return '';
     }
   }
   renderClearanceCharge = (o, record) => {
-    if (record.shipmt_order_mode === CRM_ORDER_MODE.clearance || record.shipmt_order_mode === CRM_ORDER_MODE.clearanceAndTransport) {
+    if (record.shipmt_order_mode.indexOf(CRM_ORDER_MODE.clearance) >= 0) {
       return o ? o.toFixed(2) : '';
     } else {
       return '';

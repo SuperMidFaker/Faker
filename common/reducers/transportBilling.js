@@ -2,7 +2,6 @@ import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/transport/billing/', [
-  'UPDATE_BILLING',
   'UPDATE_BILLINGFEES',
   'ALTER_BILLINGFEES',
   'CHANGE_FEES_FILTER',
@@ -24,15 +23,12 @@ const actionTypes = createActionTypes('@@welogix/transport/billing/', [
   'IMPORT_ADVANCECHARGE', 'IMPORT_ADVANCECHARGE_SUCCEED', 'IMPORT_ADVANCECHARGE_FAIL',
   'LOAD_SPECIALCHARGES', 'LOAD_SPECIALCHARGES_SUCCEED', 'LOAD_SPECIALCHARGES_FAIL',
 ]);
-const sDate = new Date();
-sDate.setMonth(sDate.getMonth() - 3);
-const eDate = new Date();
 
 const initialState = {
   loading: false,
   fees: {
-    startDate: sDate,
-    endDate: eDate,
+    startDate: null,
+    endDate: null,
     searchValue: '',
     pageSize: 10,
     currentPage: 1,
@@ -119,8 +115,6 @@ function calculateBillingCharges(fees) {
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
-    case actionTypes.UPDATE_BILLING:
-      return { ...state, billing: { ...state.billing, ...action.billing } };
     case actionTypes.UPDATE_BILLINGFEES: {
       const billingFees = state.billingFees.data.map((item) => {
         if (item.id === action.data.feeId) {
@@ -147,9 +141,17 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_FEES:
       return { ...state, loading: true };
     case actionTypes.LOAD_FEES_SUCCEED:
-      return { ...state, fees: { ...state.fees, ...action.result.data }, loading: false };
+      return { ...state,
+        fees: {
+          ...state.fees,
+          ...action.result.data,
+          startDate: new Date(action.params.startDate),
+          endDate: new Date(action.params.endDate),
+        },
+        loading: false,
+      };
     case actionTypes.LOAD_FEES_FAIL:
-      return { ...state, fees: { ...state.fees, ...action.result.data }, loading: false };
+      return { ...state, loading: false };
     case actionTypes.LOAD_FEES_BYCHOOSEMODAL_SUCCEED: {
       const billing = calculateBillingCharges(action.result.data.data);
       const fees = action.result.data.data.map(item => ({
@@ -204,10 +206,6 @@ export default function reducer(state = initialState, action) {
     default:
       return state;
   }
-}
-
-export function updateBilling(billing) {
-  return { type: actionTypes.UPDATE_BILLING, billing };
 }
 
 export function updateBillingFees(tenantId, feeId, field, value) {
