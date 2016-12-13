@@ -143,7 +143,7 @@ export default class FeesList extends React.Component {
       },
       filters: customers.map(item => ({ text: item.partner_code ? `${item.partner_code} | ${item.name}` : item.name, value: item.name })),
     }, {
-      title: '运输费用',
+      title: '运输收入',
       dataIndex: 'p_total_charge',
       render(o) {
         return o ? o.toFixed(2) : '';
