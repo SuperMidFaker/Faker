@@ -141,7 +141,7 @@ export default class FeesList extends React.Component {
       render(o) {
         return <TrimSpan text={o} maxLen={10} />;
       },
-      filters: customers.map(item => ({ text: item.name, value: item.name })),
+      filters: customers.map(item => ({ text: item.partner_code ? `${item.partner_code} | ${item.name}` : item.name, value: item.name })),
     }, {
       title: '运输费用',
       dataIndex: 'p_total_charge',
@@ -203,7 +203,7 @@ export default class FeesList extends React.Component {
       render(o) {
         return <TrimSpan text={o} maxLen={10} />;
       },
-      filters: carriers.map(item => ({ text: item.name, value: item.name })),
+      filters: carriers.map(item => ({ text: item.partner_code ? `${item.partner_code} | ${item.name}` : item.name, value: item.name })),
     }, {
       title: '运输成本',
       dataIndex: 'total_charge',

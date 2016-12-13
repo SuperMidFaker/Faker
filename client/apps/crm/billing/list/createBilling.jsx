@@ -156,7 +156,7 @@ export default class CreateBilling extends React.Component {
       fontSize: 12,
     };
     const dataSource = this.props.billingFees.data;
-    const partnerSourceType = '客户';
+
     const columns = [{
       title: '运单号',
       dataIndex: 'shipmt_order_no',
@@ -246,7 +246,7 @@ export default class CreateBilling extends React.Component {
         <div className="main-content">
           <div className="page-body">
             <div className="panel-header">
-              <span style={handleLableStyle}>{partnerSourceType}: <strong>{partnerName}</strong></span>
+              <span style={handleLableStyle}>客户: <strong>{partnerName}</strong></span>
               <span style={handleLableStyle}>{this.msg('range')}: <strong>{moment(beginDate).format('YYYY-MM-DD')} ~ {moment(endDate).format('YYYY-MM-DD')}</strong></span>
               <Button type="default" className="pull-right" onClick={() => this.props.showBeforeFeesModal(true)}>未入账运单</Button>
             </div>

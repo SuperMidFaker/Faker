@@ -186,8 +186,8 @@ export default class BillingList extends React.Component {
       render(o) {
         return <TrimSpan text={o} maxLen={10} />;
       },
-      filters: type === 'receivable' ? customers.map(item => ({ text: item.name, value: item.name })) :
-        carriers.map(item => ({ text: item.name, value: item.name })),
+      filters: type === 'receivable' ? customers.map(item => ({ text: item.partner_code ? `${item.partner_code} | ${item.name}` : item.name, value: item.name })) :
+        carriers.map(item => ({ text: item.partner_code ? `${item.partner_code} | ${item.name}` : item.name, value: item.name })),
     }, {
       title: '运单数量',
       dataIndex: 'shipmt_count',

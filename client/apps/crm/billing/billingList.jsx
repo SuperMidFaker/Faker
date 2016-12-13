@@ -201,7 +201,10 @@ export default class BillingList extends React.Component {
       render(o) {
         return <TrimSpan text={o} maxLen={10} />;
       },
-      filters: customers.map(item => ({ text: item.name, value: item.name })),
+      filters: customers.map(item => ({ text: item.partner_code ? `${item.partner_code} | ${item.name}` : item.name, value: item.name })),
+    }, {
+      title: '运单数量',
+      dataIndex: 'shipmt_order_count',
     }, {
       title: '清关费用',
       dataIndex: 'ccb_charge',

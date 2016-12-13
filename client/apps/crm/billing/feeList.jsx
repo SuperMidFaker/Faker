@@ -157,7 +157,7 @@ export default class FeesList extends React.Component {
       title: '委托客户',
       dataIndex: 'customer_name',
       render: o => <TrimSpan text={o} />,
-      filters: customers.map(item => ({ text: item.name, value: item.name })),
+      filters: customers.map(item => ({ text: item.partner_code ? `${item.partner_code} | ${item.name}` : item.name, value: item.name })),
     }, {
       title: '报关委托号',
       dataIndex: 'ccb_delg_no',

@@ -340,7 +340,7 @@ export function sendBilling({ tenantId, loginId, loginName, billingId }) {
   };
 }
 
-export function checkBilling({ tenantId, loginId, loginName, billingId, adjustCharge, totalCharge, modifyTimes, shipmtCount, fees }) {
+export function checkBilling({ tenantId, loginId, loginName, billingId, freightCharge, advanceCharge, excpCharge, adjustCharge, totalCharge, modifyTimes, shipmtCount, fees }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -350,12 +350,12 @@ export function checkBilling({ tenantId, loginId, loginName, billingId, adjustCh
       ],
       endpoint: 'v1/transport/checkBilling',
       method: 'post',
-      data: { tenantId, loginId, loginName, billingId, adjustCharge, totalCharge, modifyTimes, shipmtCount, fees },
+      data: { tenantId, loginId, loginName, billingId, freightCharge, advanceCharge, excpCharge, adjustCharge, totalCharge, modifyTimes, shipmtCount, fees },
     },
   };
 }
 
-export function editBilling({ tenantId, loginId, loginName, billingId, adjustCharge, totalCharge, shipmtCount, fees }) {
+export function editBilling({ tenantId, loginId, loginName, billingId, freightCharge, advanceCharge, excpCharge, adjustCharge, totalCharge, shipmtCount, fees }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -365,7 +365,7 @@ export function editBilling({ tenantId, loginId, loginName, billingId, adjustCha
       ],
       endpoint: 'v1/transport/editBilling',
       method: 'post',
-      data: { tenantId, loginId, loginName, billingId, adjustCharge, totalCharge, shipmtCount, fees },
+      data: { tenantId, loginId, loginName, billingId, freightCharge, advanceCharge, excpCharge, adjustCharge, totalCharge, shipmtCount, fees },
     },
   };
 }

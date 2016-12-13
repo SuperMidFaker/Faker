@@ -57,8 +57,7 @@ const initialState = {
     totalCount: 0,
     data: [],
     filters: {
-      sr_name: [],
-      sp_name: [],
+      customer_name: [],
     },
   },
   billing: {
