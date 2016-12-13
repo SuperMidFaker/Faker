@@ -51,13 +51,14 @@ export default class BillingFeeList extends React.Component {
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   handleAccept = () => {
     const { loginId, tenantId, loginName, type, billing } = this.props;
-    const { id: billingId, adjustCharge, totalCharge } = billing;
+    const { id: billingId, freightCharge, advanceCharge, excpCharge, adjustCharge, totalCharge } = billing;
     const fees = this.props.billingFees.data;
     const modifyTimes = billing.modifyTimes + 1;
     const shipmtCount = fees.filter(item => item.status === 1).length;
     if (this.state.changed) {
       this.props.checkBilling({
-        tenantId, loginId, loginName, billingId, adjustCharge, totalCharge,
+        tenantId, loginId, loginName, billingId,
+        freightCharge, advanceCharge, excpCharge, adjustCharge, totalCharge,
         modifyTimes, shipmtCount, fees,
       }).then((result) => {
         if (result.error) {
@@ -78,12 +79,13 @@ export default class BillingFeeList extends React.Component {
   }
   handleEdit = () => {
     const { loginId, tenantId, loginName, type, billing } = this.props;
-    const { id: billingId, adjustCharge, totalCharge } = billing;
+    const { id: billingId, freightCharge, advanceCharge, excpCharge, adjustCharge, totalCharge } = billing;
     const fees = this.props.billingFees.data;
     const shipmtCount = fees.filter(item => item.status === 1).length;
     if (this.state.changed) {
       this.props.editBilling({
-        tenantId, loginId, loginName, billingId, adjustCharge, totalCharge,
+        tenantId, loginId, loginName, billingId,
+        freightCharge, advanceCharge, excpCharge, adjustCharge, totalCharge,
         shipmtCount, fees,
       }).then((result) => {
         if (result.error) {

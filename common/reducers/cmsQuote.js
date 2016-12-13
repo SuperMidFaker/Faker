@@ -35,7 +35,17 @@ const initialState = {
     valid: true,
     fees: [],
   },
-  quotes: [],
+  quotesList: {
+    totalCount: 0,
+    current: 1,
+    pageSize: 10,
+    data: [],
+  },
+  listFilter: {
+    sortField: '',
+    sortOrder: '',
+    status: 'all',
+  },
   quotesLoading: false,
 };
 
@@ -54,9 +64,9 @@ export default function reducer(state = initialState, action) {
     case actionTypes.CREATE_QUOTE:
       return { ...state, quoteData: { ...initialState.quoteData, loading: true } };
     case actionTypes.QUOTES_LOAD:
-      return { ...state, quotesLoading: true };
+      return { ...state, quotesList: { ...state.quotesList, quotesLoading: false }, listFilter: JSON.parse(action.params.filter) };
     case actionTypes.QUOTES_LOAD_SUCCEED:
-      return { ...state, quotes: action.result.data, quotesLoading: false };
+      return { ...state, quotesList: { ...state.quotesList, ...action.result.data, quotesLoading: false } };
     case actionTypes.EDITQUOTE_LOAD:
       return { ...state, quoteData: { ...state.quoteData, loading: true } };
     case actionTypes.EDITQUOTE_LOAD_SUCCEED:
@@ -154,13 +164,13 @@ export function submitQuotes(params) {
   };
 }
 
-export function loadQuoteTable(tenantId) {
+export function loadQuoteTable(params) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.QUOTES_LOAD, actionTypes.QUOTES_LOAD_SUCCEED, actionTypes.QUOTES_LOAD_FAIL],
       endpoint: 'v1/cms/quote/load',
       method: 'get',
-      params: { tenantId },
+      params,
       origin: 'mongo',
     },
   };

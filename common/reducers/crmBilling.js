@@ -32,7 +32,6 @@ const actionTypes = createActionTypes('@@welogix/crm/billing/', [
   'REMOVE_BILLING', 'REMOVE_BILLING_SUCCEED', 'REMOVE_BILLING_FAIL',
   'CANCEL_CHARGE', 'CANCEL_CHARGE_SUCCEED', 'CANCEL_CHARGE_FAIL',
   'IMPORT_ADVANCECHARGE', 'IMPORT_ADVANCECHARGE_SUCCEED', 'IMPORT_ADVANCECHARGE_FAIL',
-  'LOAD_SPECIALCHARGES', 'LOAD_SPECIALCHARGES_SUCCEED', 'LOAD_SPECIALCHARGES_FAIL',
 ]);
 
 const initialState = {
@@ -58,8 +57,7 @@ const initialState = {
     totalCount: 0,
     data: [],
     filters: {
-      sr_name: [],
-      sp_name: [],
+      customer_name: [],
     },
   },
   billing: {
@@ -177,40 +175,38 @@ function calculateClearanceFees(orders, fees) {
 
 function calculateBillingCharges(fees) {
   const billing = {
-    ccbTotalCharge: 0,
-    trsTotalCharge: 0,
+    ccbCharge: 0,
+    trsCharge: 0,
     adjustCharge: 0,
     totalCharge: 0,
   };
   fees.forEach((item) => {
     if (item.ccb_cush_charge) {
-      billing.ccbTotalCharge += item.ccb_cush_charge;
+      billing.ccbCharge += item.ccb_cush_charge;
     }
     if (item.ccb_server_charge) {
-      billing.ccbTotalCharge += item.ccb_server_charge;
+      billing.ccbCharge += item.ccb_server_charge;
     }
     if (item.trs_freight_charge) {
-      billing.trsTotalCharge += item.trs_freight_charge;
+      billing.trsCharge += item.trs_freight_charge;
     }
     if (item.trs_excp_charge) {
-      billing.trsTotalCharge += item.trs_excp_charge;
+      billing.trsCharge += item.trs_excp_charge;
     }
     if (item.trs_advance_charge) {
-      billing.trsTotalCharge += item.trs_advance_charge;
+      billing.trsCharge += item.trs_advance_charge;
     }
 
     if (item.adjust_charge) {
       billing.adjustCharge += item.adjust_charge;
     }
-    if (item.total_charge) {
-      billing.totalCharge += item.total_charge;
-    }
   });
 
-  billing.totalCharge = billing.ccbTotalCharge + billing.trsTotalCharge + billing.adjustCharge;
+  billing.totalCharge = billing.ccbCharge + billing.trsCharge + billing.adjustCharge;
+
   return {
-    ccbTotalCharge: Number(billing.ccbTotalCharge.toFixed(2)),
-    trsTotalCharge: Number(billing.trsTotalCharge.toFixed(2)),
+    ccbCharge: Number(billing.ccbCharge.toFixed(2)),
+    trsCharge: Number(billing.trsCharge.toFixed(2)),
     adjustCharge: Number(billing.adjustCharge.toFixed(2)),
     totalCharge: Number(billing.totalCharge.toFixed(2)),
   };
@@ -527,7 +523,7 @@ export function loadBillings({ tenantId, pageSize, current, searchValue, filters
 }
 
 export function createBilling({ tenantId, loginId, loginName, name, beginDate, endDate,
-    ccbTotalCharge, trsTotalCharge, adjustCharge, totalCharge,
+    ccbCharge, trsCharge, adjustCharge, totalCharge,
     customerTenantId, customerPartnerId, customerName, customerCode,
     shipmtCount, fees }) {
   return {
@@ -541,7 +537,7 @@ export function createBilling({ tenantId, loginId, loginName, name, beginDate, e
       method: 'post',
       data: {
         tenantId, loginId, loginName, name, beginDate, endDate,
-        ccbTotalCharge, trsTotalCharge, adjustCharge, totalCharge,
+        ccbCharge, trsCharge, adjustCharge, totalCharge,
         customerTenantId, customerPartnerId, customerName, customerCode,
         shipmtCount, fees,
       },
@@ -557,14 +553,14 @@ export function sendBilling({ tenantId, loginId, loginName, billingId }) {
         actionTypes.SEND_BILLING_SUCCEED,
         actionTypes.SEND_BILLING_FAIL,
       ],
-      endpoint: 'v1/transport/sendBilling',
+      endpoint: 'v1/crm/billing/send',
       method: 'post',
       data: { tenantId, loginId, loginName, billingId },
     },
   };
 }
 
-export function checkBilling({ tenantId, loginId, loginName, billingId, adjustCharge, totalCharge, modifyTimes, shipmtCount, fees }) {
+export function checkBilling({ tenantId, loginId, loginName, billingId, ccbCharge, trsCharge, adjustCharge, totalCharge, modifyTimes, shipmtCount, fees }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -572,14 +568,14 @@ export function checkBilling({ tenantId, loginId, loginName, billingId, adjustCh
         actionTypes.CHECK_BILLING_SUCCEED,
         actionTypes.CHECK_BILLING_FAIL,
       ],
-      endpoint: 'v1/transport/checkBilling',
+      endpoint: 'v1/crm/billing/check',
       method: 'post',
-      data: { tenantId, loginId, loginName, billingId, adjustCharge, totalCharge, modifyTimes, shipmtCount, fees },
+      data: { tenantId, loginId, loginName, billingId, ccbCharge, trsCharge, adjustCharge, totalCharge, modifyTimes, shipmtCount, fees },
     },
   };
 }
 
-export function editBilling({ tenantId, loginId, loginName, billingId, adjustCharge, totalCharge, shipmtCount, fees }) {
+export function editBilling({ tenantId, loginId, loginName, billingId, ccbCharge, trsCharge, adjustCharge, totalCharge, shipmtCount, fees }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -589,7 +585,7 @@ export function editBilling({ tenantId, loginId, loginName, billingId, adjustCha
       ],
       endpoint: 'v1/crm/billing/edit',
       method: 'post',
-      data: { tenantId, loginId, loginName, billingId, adjustCharge, totalCharge, shipmtCount, fees },
+      data: { tenantId, loginId, loginName, billingId, ccbCharge, trsCharge, adjustCharge, totalCharge, shipmtCount, fees },
     },
   };
 }
@@ -602,7 +598,7 @@ export function acceptBilling({ tenantId, loginId, loginName, billingId }) {
         actionTypes.ACCEPT_BILLING_SUCCEED,
         actionTypes.ACCEPT_BILLING_FAIL,
       ],
-      endpoint: 'v1/transport/acceptBilling',
+      endpoint: 'v1/crm/billing/accept',
       method: 'post',
       data: { tenantId, loginId, loginName, billingId },
     },
@@ -632,7 +628,7 @@ export function changeCancelCharge({ tenantId, loginId, loginName, billingId, ca
         actionTypes.CANCEL_CHARGE_SUCCEED,
         actionTypes.CANCEL_CHARGE_FAIL,
       ],
-      endpoint: 'v1/transport/billing/changeCancelCharge',
+      endpoint: 'v1/crm/billing/changeCancelCharge',
       method: 'post',
       data: { tenantId, loginId, loginName, billingId, cancelCharge },
     },
@@ -650,21 +646,6 @@ export function importAdvanceCharge({ tenantId, loginId, loginName, advances }) 
       endpoint: 'v1/transport/billing/importAdvanceCharge',
       method: 'post',
       data: { tenantId, loginId, loginName, advances },
-    },
-  };
-}
-
-export function loadSpecialCharges(dispId) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.LOAD_SPECIALCHARGES,
-        actionTypes.LOAD_SPECIALCHARGES_SUCCEED,
-        actionTypes.LOAD_SPECIALCHARGES_FAIL,
-      ],
-      endpoint: 'v1/transport/specialCharges',
-      method: 'get',
-      params: { dispId },
     },
   };
 }

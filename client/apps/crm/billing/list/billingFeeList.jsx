@@ -54,13 +54,13 @@ export default class BillingFeeList extends React.Component {
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   handleAccept = () => {
     const { loginId, tenantId, loginName, billing } = this.props;
-    const { id: billingId, adjustCharge, totalCharge } = billing;
+    const { id: billingId, ccbCharge, trsCharge, adjustCharge, totalCharge } = billing;
     const fees = this.props.billingFees.data;
     const modifyTimes = billing.modifyTimes + 1;
     const shipmtCount = fees.filter(item => item.status === 1).length;
     if (this.state.changed) {
       this.props.checkBilling({
-        tenantId, loginId, loginName, billingId, adjustCharge, totalCharge,
+        tenantId, loginId, loginName, billingId, ccbCharge, trsCharge, adjustCharge, totalCharge,
         modifyTimes, shipmtCount, fees,
       }).then((result) => {
         if (result.error) {
@@ -81,12 +81,12 @@ export default class BillingFeeList extends React.Component {
   }
   handleEdit = () => {
     const { loginId, tenantId, loginName, billing } = this.props;
-    const { id: billingId, adjustCharge, totalCharge } = billing;
+    const { id: billingId, ccbCharge, trsCharge, adjustCharge, totalCharge } = billing;
     const fees = this.props.billingFees.data;
     const shipmtCount = fees.filter(item => item.status === 1).length;
     if (this.state.changed) {
       this.props.editBilling({
-        tenantId, loginId, loginName, billingId, adjustCharge, totalCharge,
+        tenantId, loginId, loginName, billingId, ccbCharge, trsCharge, adjustCharge, totalCharge,
         shipmtCount, fees,
       }).then((result) => {
         if (result.error) {
@@ -234,9 +234,9 @@ export default class BillingFeeList extends React.Component {
       width: 80,
       render: (o, record) => {
         if (operation === 'view') {
-          return (<Checkbox disabled defaultChecked={o === 1 || o === 2} />);
+          return (<Checkbox disabled checked={o === 1 || o === 2} />);
         }
-        return (<Checkbox defaultChecked={o === 1} onChange={e => this.handleChangeStatus(record.shipmt_order_no, e.target.checked)} />);
+        return (<Checkbox checked={o === 1} onChange={e => this.handleChangeStatus(record.shipmt_order_no, e.target.checked)} />);
       },
     }, {
       title: '更新',

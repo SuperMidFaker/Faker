@@ -95,7 +95,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.EXP_PANE_LOAD_SUCCEED:
       return { ...state, expenses: { ...state.expenses, ...action.result.data } };
     case actionTypes.EXP_LOAD:
-      return { ...state, expslist: { ...state.expslist, loading: true }, saved: false };
+      return { ...state, expslist: { ...initialState.expslist, loading: true }, saved: false };
     case actionTypes.EXP_LOAD_SUCCEED: {
       const expFeesMap = {};
       const exps = action.result.data;

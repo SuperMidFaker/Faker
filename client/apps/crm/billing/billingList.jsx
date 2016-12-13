@@ -10,9 +10,9 @@ import moment from 'moment';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import BillingForm from './modals/billingForm';
-import { loadBillings, updateBilling, sendBilling, changeBillingsFilter, removeBilling, loadPartners } from 'common/reducers/crmBilling';
+import { loadBillings, sendBilling, changeBillingsFilter, removeBilling, loadPartners } from 'common/reducers/crmBilling';
 import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES, CRM_BILLING_STATUS } from 'common/constants';
-// import CancelChargeModal from './modals/cancelChargeModal';
+import CancelChargeModal from './modals/cancelChargeModal';
 import TrimSpan from 'client/components/trimSpan';
 // import { createFilename } from 'client/util/dataTransform';
 import SearchBar from 'client/components/search-bar';
@@ -44,7 +44,7 @@ function fetchData({ state, dispatch }) {
     billings: state.crmBilling.billings,
     loading: state.crmBilling.loading,
   }),
-  { loadBillings, updateBilling, sendBilling, changeBillingsFilter, removeBilling, loadPartners }
+  { loadBillings, sendBilling, changeBillingsFilter, removeBilling, loadPartners }
 )
 
 export default class BillingList extends React.Component {
@@ -54,7 +54,6 @@ export default class BillingList extends React.Component {
     loginId: PropTypes.number.isRequired,
     loginName: PropTypes.string.isRequired,
     loadBillings: PropTypes.func.isRequired,
-    updateBilling: PropTypes.func.isRequired,
     sendBilling: PropTypes.func.isRequired,
     changeBillingsFilter: PropTypes.func.isRequired,
     removeBilling: PropTypes.func.isRequired,
@@ -201,7 +200,10 @@ export default class BillingList extends React.Component {
       render(o) {
         return <TrimSpan text={o} maxLen={10} />;
       },
-      filters: customers.map(item => ({ text: item.name, value: item.name })),
+      filters: customers.map(item => ({ text: item.partner_code ? `${item.partner_code} | ${item.name}` : item.name, value: item.name })),
+    }, {
+      title: '运单数量',
+      dataIndex: 'shipmt_order_count',
     }, {
       title: '清关费用',
       dataIndex: 'ccb_charge',
@@ -307,6 +309,9 @@ export default class BillingList extends React.Component {
               <Table rowSelection={rowSelection} dataSource={dataSource} columns={columns} rowKey="id" loading={loading} />
             </div>
             <BillingForm visible={this.state.billingFormVisible} toggle={this.toggleBillingForm} />
+            <CancelChargeModal visible={this.state.cancelChargeModalVisible} toggle={this.toggleCancelChargeModal}
+              billingId={this.state.billingId} fromId={this.state.fromId} totalCharge={this.state.totalCharge} handleOk={this.handleTableLoad}
+            />
           </div>
         </div>
       </div>

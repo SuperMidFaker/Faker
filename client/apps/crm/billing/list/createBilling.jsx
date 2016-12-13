@@ -79,7 +79,7 @@ export default class CreateBilling extends React.Component {
 
   handleSave = () => {
     const { loginId, tenantId, tenantName, loginName } = this.props;
-    const { ccbTotalCharge, trsTotalCharge, adjustCharge, totalCharge } = this.props.billing;
+    const { ccbCharge, trsCharge, adjustCharge, totalCharge } = this.props.billing;
     const { beginDate, endDate, partnerName, partnerId, partnerCode, partnerTenantId, name } = this.context.location.query;
     const fees = this.props.billingFees.data.map(item => ({
       ...item,
@@ -95,7 +95,7 @@ export default class CreateBilling extends React.Component {
       this.props.createBilling({
         tenantId, loginId, loginName, name,
         beginDate, endDate,
-        ccbTotalCharge, trsTotalCharge, adjustCharge, totalCharge,
+        ccbCharge, trsCharge, adjustCharge, totalCharge,
         customerTenantId: Number(partnerTenantId), customerPartnerId: Number(partnerId), customerName: partnerName, customerCode: partnerCode,
         shipmtCount, fees,
       }).then((result) => {
@@ -127,8 +127,8 @@ export default class CreateBilling extends React.Component {
     return (
       <div>
         <span style={{ marginLeft: 10 }}>账单总金额: </span><span style={{ color: '#FF0000' }}>{billing.totalCharge}</span>
-        <span style={{ marginLeft: 10 }}>清关总金额: </span><span style={{ color: '#FF9933' }}>{billing.ccbTotalCharge}</span>
-        <span style={{ marginLeft: 10 }}>运输总金额: </span><span style={{ color: '#FF9933' }}>{billing.trsTotalCharge}</span>
+        <span style={{ marginLeft: 10 }}>清关总金额: </span><span style={{ color: '#FF9933' }}>{billing.ccbCharge}</span>
+        <span style={{ marginLeft: 10 }}>运输总金额: </span><span style={{ color: '#FF9933' }}>{billing.trsCharge}</span>
         <span style={{ marginLeft: 10 }}>调整总金额: </span><span style={{ color: '#FF9933' }}>{billing.adjustCharge}</span>
       </div>
     );
@@ -156,7 +156,7 @@ export default class CreateBilling extends React.Component {
       fontSize: 12,
     };
     const dataSource = this.props.billingFees.data;
-    const partnerSourceType = '客户';
+
     const columns = [{
       title: '运单号',
       dataIndex: 'shipmt_order_no',
@@ -246,7 +246,7 @@ export default class CreateBilling extends React.Component {
         <div className="main-content">
           <div className="page-body">
             <div className="panel-header">
-              <span style={handleLableStyle}>{partnerSourceType}: <strong>{partnerName}</strong></span>
+              <span style={handleLableStyle}>客户: <strong>{partnerName}</strong></span>
               <span style={handleLableStyle}>{this.msg('range')}: <strong>{moment(beginDate).format('YYYY-MM-DD')} ~ {moment(endDate).format('YYYY-MM-DD')}</strong></span>
               <Button type="default" className="pull-right" onClick={() => this.props.showBeforeFeesModal(true)}>未入账运单</Button>
             </div>

@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Form, Input, Modal, Select, Upload, Button, message } from 'antd';
+import { Form, Input, Modal, Select, message } from 'antd';
 import { showShipmentAdvanceModal, createAdvance, loadShipmtDispatch } from 'common/reducers/trackingLandStatus';
 import { getTariffByTransportInfo } from 'common/reducers/transportTariff';
 import { format } from 'client/common/i18n/helpers';
@@ -61,17 +61,16 @@ export default class ShipmentAdvanceModal extends React.Component {
   handleOk = () => {
     const { form, shipmtNo, dispId, loginId, tenantId, loginName } = this.props;
     const fieldsValue = form.getFieldsValue();
-    fieldsValue.photos = this.state.photoList.map(ph => ph.url).join(',');
     if (!fieldsValue.type) {
       message.error('请选择垫付类型');
     } else if (fieldsValue.amount === '') {
       message.error('请输入垫付金额');
     } else {
-      const { type, amount, remark, photos } = fieldsValue;
+      const { type, amount, remark } = fieldsValue;
       const advance = this.props.fees.find(item => item.fee_code === type);
       const uploadData = {
         shipmtNo, dispId, name: advance.fee_name, code: type, amount: Number(amount),
-        remark, photos, submitter: loginName, loginId, tenantId,
+        remark, submitter: loginName, loginId, tenantId,
       };
       this.handleCancel();
       this.props.createAdvance(uploadData).then((result) => {
@@ -86,21 +85,9 @@ export default class ShipmentAdvanceModal extends React.Component {
   handleCancel = () => {
     this.props.showShipmentAdvanceModal({ visible: false, shipmtNo: '', dispId: -1, transportModeId: -1, goodsType: -1 });
   }
-  handlePhotoRemove = (file) => {
-    const photoList = [...this.state.photoList];
-    const index = photoList.findIndex(item => item.uid === file.uid);
-    photoList.splice(index, 1);
-    this.setState({ photoList });
-  }
-  handlePhotoUpload = (info) => {
-    const fileList = [...info.fileList];
-    const index = fileList.findIndex(item => item.uid === info.file.uid);
-    fileList[index].url = info.file.response ? info.file.response.data : '';
-    this.setState({ photoList: fileList });
-  }
+
   render() {
     const { form: { getFieldDecorator } } = this.props;
-    const { photoList } = this.state;
     const colSpan = 6;
 
     return (
@@ -111,7 +98,7 @@ export default class ShipmentAdvanceModal extends React.Component {
           <FormItem label="垫付类型" labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }} required >
             {getFieldDecorator('type')(<Select placeholder="请选择垫付类型">
               {
-              this.props.fees.map(item => (<Option value={item.fee_code}>{item.fee_name}</Option>))
+              this.props.fees.filter(item => item.fee_style === 'service').map(item => (<Option value={item.fee_code}>{item.fee_name}</Option>))
             }
             </Select>)}
           </FormItem>
@@ -119,16 +106,6 @@ export default class ShipmentAdvanceModal extends React.Component {
             {getFieldDecorator('amount', {
               initialValue: '',
             })(<Input type="number" placeholder="请输入金额" addonAfter="元" />)}
-          </FormItem>
-          <FormItem label="垫付照片" labelCol={{ span: colSpan }}
-            wrapperCol={{ span: 24 - colSpan }}
-          >
-            <Upload action={`${API_ROOTS.default}v1/upload/img/`} listType="picture"
-              onChange={this.handlePhotoUpload} onRemove={this.handlePhotoRemove} fileList={photoList} withCredentials
-            >
-              <Button icon="upload" type="ghost" />
-              {this.msg('photoSubmit')}
-            </Upload>
           </FormItem>
           <FormItem label="垫付备注" labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }} required >
             {getFieldDecorator('remark', {

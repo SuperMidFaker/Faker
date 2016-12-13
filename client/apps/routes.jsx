@@ -327,6 +327,9 @@ export default(store, cookie) => {
           </Route>
         </Route>
       </Route>
+      <Route path="*">
+        <IndexRedirect to="/login" />
+      </Route>
     </Route>
   );
 };

@@ -108,7 +108,7 @@ const messages = defineMessages({
   },
   profit: {
     id: 'cms.expense.profit',
-    defaultMessage: '盈亏',
+    defaultMessage: '利润',
   },
   statementEn: {
     id: 'cms.expense.statementEn',

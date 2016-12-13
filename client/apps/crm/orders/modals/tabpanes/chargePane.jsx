@@ -269,13 +269,6 @@ export default class ChargePanel extends React.Component {
       title: this.msg('advanceName'),
       dataIndex: 'name',
       width: 80,
-      render: (o, record) => {
-        if (record.photos !== '') {
-          return (<a href={record.photos.split(',')} target="_blank" rel="noopener noreferrer">{o}</a>);
-        } else {
-          return o;
-        }
-      },
     }, {
       title: this.msg('advanceSubmitter'),
       dataIndex: 'submitter',

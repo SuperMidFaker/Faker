@@ -341,7 +341,7 @@ export function changePickDeliverDate({ dispId, shipmtNo, loginName, loginId, te
 }
 
 export function createAdvance({ shipmtNo, dispId, name, code, amount, remark,
-        photos, submitter: loginName, loginId, tenantId }) {
+        submitter, loginId, tenantId }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -352,7 +352,7 @@ export function createAdvance({ shipmtNo, dispId, name, code, amount, remark,
       endpoint: 'v1/transport/tracking/advance',
       method: 'post',
       data: { shipmtNo, dispId, name, code, amount, remark,
-        photos, submitter: loginName, loginId, tenantId },
+        submitter, loginId, tenantId },
     },
   };
 }
