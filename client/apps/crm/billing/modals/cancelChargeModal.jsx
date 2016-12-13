@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Modal, Input } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { changeCancelCharge } from 'common/reducers/transportBilling';
+import { changeCancelCharge } from 'common/reducers/crmBilling';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 

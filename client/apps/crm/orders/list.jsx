@@ -244,7 +244,7 @@ export default class ShipmentOrderList extends React.Component {
         if (record.order_status === 1) {
           return (
             <div>
-              <a onClick={() => this.handleAccept(record.shipmt_order_no)}>接单</a>
+              <a onClick={() => this.handleAccept(record.shipmt_order_no)}>发送</a>
               <span className="ant-divider" />
               <Link to={`/customer/orders/edit?shipmtOrderNo=${record.shipmt_order_no}`}>修改</Link>
               <span className="ant-divider" />
