@@ -18,7 +18,12 @@ const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 
 function fetchData({ state, dispatch }) {
-  return dispatch(loadQuoteTable(state.account.tenantId));
+  return dispatch(loadQuoteTable({
+    tenantId: state.account.tenantId,
+    filter: JSON.stringify({ status: 'all' }),
+    pageSize: state.cmsExpense.expslist.pageSize,
+    currentPage: state.cmsExpense.expslist.current,
+  }));
 }
 
 @connectFetch()(fetchData)
@@ -28,7 +33,8 @@ function fetchData({ state, dispatch }) {
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     loginName: state.account.username,
-    quotes: state.cmsQuote.quotes,
+    quotesList: state.cmsQuote.quotesList,
+    listFilter: state.cmsQuote.listFilter,
   }),
   { loadQuoteTable, updateQuoteStatus, deleteQuote }
 )
@@ -40,17 +46,59 @@ function fetchData({ state, dispatch }) {
 export default class QuoteList extends Component {
   static propTypes = {
     tenantId: PropTypes.number.isRequired,
-    quotes: PropTypes.array.isRequired,
+    quotesList: PropTypes.object.isRequired,
     intl: intlShape.isRequired,
+    listFilter: PropTypes.object.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
+  dataSource = new Table.DataSource({
+    fetcher: params => this.props.loadQuoteTable(params),
+    resolve: result => result.data,
+    getPagination: (result, resolve) => ({
+      total: result.totalCount,
+      current: resolve(result.totalCount, result.current, result.pageSize),
+      showSizeChanger: true,
+      showQuickJumper: false,
+      pageSize: result.pageSize,
+    }),
+    getParams: (pagination, filters, sorter) => {
+      const params = {
+        ietype: this.props.ietype,
+        tenantId: this.props.tenantId,
+        pageSize: pagination.pageSize,
+        currentPage: pagination.current,
+      };
+      const filter = { ...this.props.listFilter, sortField: sorter.field, sortOrder: sorter.order };
+      params.filter = JSON.stringify(filter);
+      return params;
+    },
+    remotes: this.props.quotesList,
+  })
   handleNavigationTo(to, query) {
     this.context.router.push({ pathname: to, query });
   }
-  handleQuoteTableLoad = () => {
-    this.props.loadQuoteTable(this.props.tenantId);
+  handleQuoteTableLoad = (currentPage, filter) => {
+    const { tenantId, listFilter,
+      quotesList: { pageSize, current } } = this.props;
+    this.props.loadQuoteTable({
+      tenantId,
+      filter: JSON.stringify(filter || listFilter),
+      pageSize,
+      currentPage: currentPage || current,
+    }).then((result) => {
+      if (result.error) {
+        message.error(result.error.message);
+      }
+    });
+  }
+  handleRadioChange = (ev) => {
+    if (ev.target.value === this.props.listFilter.status) {
+      return;
+    }
+    const filter = { ...this.props.listFilter, status: ev.target.value };
+    this.handleQuoteTableLoad(1, filter);
   }
   handleChangeStatus = (id, status) => {
     this.props.updateQuoteStatus(
@@ -83,7 +131,8 @@ export default class QuoteList extends Component {
   }
   render() {
     const msg = descriptor => formatMsg(this.props.intl, descriptor);
-    const { quotes } = this.props;
+    const { quotesList, listFilter } = this.props;
+    this.dataSource.remotes = quotesList;
     const DECL_TYPE = DECL_I_TYPE.concat(DECL_E_TYPE);
     const columns = [
       {
@@ -137,19 +186,6 @@ export default class QuoteList extends Component {
           return tags;
         },
       }, {
-        title: msg('remark'),
-        dataIndex: 'remarks',
-        width: 80,
-        render: (o) => {
-          const tags = [];
-          if (o) {
-            o.forEach((d) => {
-              tags.push(<Tag>{d}</Tag>);
-            });
-          }
-          return tags;
-        },
-      }, {
         title: msg('status'),
         dataIndex: 'valid',
         width: 80,
@@ -161,8 +197,8 @@ export default class QuoteList extends Component {
           }
         },
       }, {
-        title: msg('modifiedCount'),
-        dataIndex: 'modify_count',
+        title: msg('version'),
+        dataIndex: 'version',
         width: 80,
       }, {
         title: msg('modifiedBy'),
@@ -212,7 +248,7 @@ export default class QuoteList extends Component {
       <QueueAnim type={['bottom', 'up']}>
         <header className="top-bar" key="header">
           <span>{msg('quoteManage')}</span>
-          <RadioGroup>
+          <RadioGroup value={listFilter.status} onChange={this.handleRadioChange}>
             <RadioButton value="all">{msg('filterAll')}</RadioButton>
             <RadioButton value="selling">{msg('filterSelling')}</RadioButton>
             <RadioButton value="buying">{msg('filterBuying')}</RadioButton>
@@ -226,7 +262,7 @@ export default class QuoteList extends Component {
               </Button>
             </div>
             <div className="panel-body table-panel">
-              <Table columns={columns} dataSource={quotes} scroll={{ x: 1600 }} />
+              <Table columns={columns} dataSource={this.dataSource} scroll={{ x: 1600 }} />
             </div>
           </div>
         </div>

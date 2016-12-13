@@ -89,6 +89,10 @@ const messages = defineMessages({
     id: 'cms.quote.modified_count',
     defaultMessage: '修订次数',
   },
+  version: {
+    id: 'cms.quote.version',
+    defaultMessage: '当前版本',
+  },
   modifiedBy: {
     id: 'cms.quote.modified_by',
     defaultMessage: '最后修订人',
