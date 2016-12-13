@@ -149,13 +149,13 @@ export default class FeesList extends React.Component {
         return o ? o.toFixed(2) : '';
       },
     }, {
-      title: '代垫收款',
+      title: '代垫收入',
       dataIndex: 'p_advance_charge',
       render(o) {
         return o ? o.toFixed(2) : '';
       },
     }, {
-      title: '特殊费用收款',
+      title: '特殊费用收入',
       dataIndex: 'p_excp_charge',
       render(o, record) {
         if (o !== undefined && o !== null) {
@@ -169,7 +169,7 @@ export default class FeesList extends React.Component {
         }
       },
     }, {
-      title: '收款合计',
+      title: '收入合计',
       key: 'pTotalCharge',
       render(o, record) {
         let pTotalCharge = 0;
@@ -211,13 +211,13 @@ export default class FeesList extends React.Component {
         return o ? o.toFixed(2) : '';
       },
     }, {
-      title: '代垫付款',
+      title: '代垫成本',
       dataIndex: 'advance_charge',
       render(o) {
         return o ? o.toFixed(2) : '';
       },
     }, {
-      title: '特殊费用付款',
+      title: '特殊费用成本',
       dataIndex: 'excp_charge',
       render(o, record) {
         if (o !== undefined && o !== null) {
@@ -231,7 +231,7 @@ export default class FeesList extends React.Component {
         }
       },
     }, {
-      title: '付款合计',
+      title: '成本合计',
       key: 'totalCharge',
       render(o, record) {
         let totalCharge = 0;

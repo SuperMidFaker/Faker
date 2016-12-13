@@ -111,7 +111,7 @@ export default class ShipmentAdvanceModal extends React.Component {
           <FormItem label="垫付类型" labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }} required >
             {getFieldDecorator('type')(<Select placeholder="请选择垫付类型">
               {
-              this.props.fees.map(item => (<Option value={item.fee_code}>{item.fee_name}</Option>))
+              this.props.fees.filter(item => item.fee_style === 'service').map(item => (<Option value={item.fee_code}>{item.fee_name}</Option>))
             }
             </Select>)}
           </FormItem>
