@@ -220,7 +220,7 @@ export default class ChargePanel extends React.Component {
         <Card bodyStyle={{ padding: 16 }}>
           <Row>
             <Col span="8">
-              <h5>营收</h5>
+              <h5>收入</h5>
               <div style={{ color: '#2DB7F5', fontSize: '18px' }}>{
                 intl.formatNumber(revenue.toFixed(2), { style: 'currency', currency: 'cny' })
               }</div>
@@ -232,7 +232,7 @@ export default class ChargePanel extends React.Component {
               }</div>
             </Col>
             <Col span="8">
-              <h5>利润</h5>
+              <h5>盈亏</h5>
               <div style={{ color: profitColor, fontSize: '18px' }}>{
                 intl.formatNumber(profit.toFixed(2), { style: 'currency', currency: 'cny' })
               }</div>

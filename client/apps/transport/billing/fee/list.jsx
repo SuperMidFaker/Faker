@@ -260,7 +260,7 @@ export default class FeesList extends React.Component {
         return '';
       },
     }, {
-      title: '利润',
+      title: '盈亏',
       key: 'profit',
       render(_, record) {
         let pTotalCharge = 0;
