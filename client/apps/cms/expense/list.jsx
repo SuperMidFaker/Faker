@@ -115,7 +115,7 @@ export default class ExpenseList extends Component {
         };
         supeFilter.push(obj);
       }
-      supeFilter.push({ text: `${this.props.tenantId} | ${this.props.tenantName}`, value: -1 });
+      // supeFilter.push({ text: `${this.props.tenantId} | ${this.props.tenantName}`, value: null });
       this.setState({ custFilter, supeFilter });
     }
   }
@@ -359,9 +359,11 @@ export default class ExpenseList extends Component {
           const bill = isNaN(record.all_bill) ? 0 : record.all_bill;
           const cost = isNaN(record.all_cost) ? 0 : record.all_cost;
           if (bill < cost) {
-            return (<span style={{ color: 'green' }}>{(cost - bill).toFixed(2)}</span>);
+            return (<span style={{ color: 'red' }}>{-(cost - bill).toFixed(2)}</span>);
+          } else if (bill > cost) {
+            return (<span style={{ color: 'green' }}>{(bill - cost).toFixed(2)}</span>);
           } else {
-            return (<span style={{ color: 'red' }}>{(bill - cost).toFixed(2)}</span>);
+            return (<span>{0}</span>);
           }
         },
       }, {
@@ -382,7 +384,7 @@ export default class ExpenseList extends Component {
         onFilterDropdownVisibleChange: visible => this.setState({ filterAcptVisible: visible }),
         render: o => `${moment(o).format('MM.DD HH:mm')}`,
       }, {
-        title: this.msg('cleanTime'),
+        title: this.msg('cleanDate'),
         dataIndex: 'clean_time',
         width: 120,
         sorter: (a, b) => a.clean_time - b.clean_time,
