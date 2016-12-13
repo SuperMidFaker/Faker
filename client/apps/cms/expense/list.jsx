@@ -264,14 +264,6 @@ export default class ExpenseList extends Component {
         filters: this.state.supeFilter,
         render: o => <TrimSpan text={o} maxLen={14} />,
       }, {
-        title: this.msg('invoiceNo'),
-        dataIndex: 'invoice_no',
-        width: 150,
-      }, {
-        title: this.msg('bLNo'),
-        dataIndex: 'bl_wb_no',
-        width: 220,
-      }, {
         title: this.msg('revenue'),
         children: [
           {
@@ -365,6 +357,14 @@ export default class ExpenseList extends Component {
           }
         },
       }, {
+        title: this.msg('invoiceNo'),
+        dataIndex: 'invoice_no',
+        width: 150,
+      }, {
+        title: this.msg('bLNo'),
+        dataIndex: 'bl_wb_no',
+        width: 220,
+      }, {
         title: this.msg('statementEn'),
         width: 80,
         dataIndex: 'status',
@@ -435,15 +435,15 @@ export default class ExpenseList extends Component {
         <div className="main-content" key="main">
           <div className="page-body">
             <div className="panel-header">
-              <Button type="primary" icon="upload" onClick={this.handleCushInput}>
+              <Button type="default" icon="upload" onClick={this.handleCushInput}>
                 {this.msg('incExp')}
               </Button>
               <span />
-              <Button type="primary" icon="download" onClick={this.handleExpExport}>
+              <Button type="default" icon="download" onClick={this.handleExpExport}>
                 {this.msg('eptExp')}
               </Button>
               <span />
-              <Button type="default" onClick={this.handleMarkStatement}>
+              <Button type="ghost" onClick={this.handleMarkStatement}>
                 {this.msg('markState')}
               </Button>
             </div>

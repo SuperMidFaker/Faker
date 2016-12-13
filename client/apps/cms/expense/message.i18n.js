@@ -120,7 +120,7 @@ const messages = defineMessages({
   },
   cleanTime: {
     id: 'cms.expense.clean.time',
-    defaultMessage: '海关放行时间',
+    defaultMessage: '放行时间',
   },
   lastActT: {
     id: 'cms.expense.last.act.time',
