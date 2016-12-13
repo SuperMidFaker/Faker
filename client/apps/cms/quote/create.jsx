@@ -7,7 +7,7 @@ import withPrivilege from 'client/common/decorators/withPrivilege';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import { createQuote, loadQtModelbyTenantId, loadPartners } from 'common/reducers/cmsQuote';
-import { Button, Card, Tabs, message, Form } from 'antd';
+import { Button, Tabs, message, Form } from 'antd';
 import FeesTable from './feesTable';
 import FeesForm from './feesForm';
 const formatMsg = format(messages);

@@ -164,13 +164,13 @@ export default class FeesList extends React.Component {
       render: o => <CcbDelgNoColumn nos={o} />,
     }, {
       title: '报关服务费',
-      key: 'ccbServerCharge',
-      dataIndex: 'ccbServerCharge',
+      key: 'ccb_server_charge',
+      dataIndex: 'ccb_server_charge',
       render: this.renderClearanceCharge,
     }, {
       title: '报关代垫费用',
-      key: 'ccbCushCharge',
-      dataIndex: 'ccbCushCharge',
+      key: 'ccb_cush_charge',
+      dataIndex: 'ccb_cush_charge',
       render: this.renderClearanceCharge,
     }, {
       title: '报关费用合计',
@@ -185,18 +185,18 @@ export default class FeesList extends React.Component {
       },
     }, {
       title: '基本运费',
-      key: 'trsFreightCharge',
-      dataIndex: 'trsFreightCharge',
+      key: 'trs_freight_charge',
+      dataIndex: 'trs_freight_charge',
       render: this.renderTransportCharge,
     }, {
       title: '特殊费用',
-      key: 'trsExcpCharge',
-      dataIndex: 'trsExcpCharge',
+      key: 'trs_excp_charge',
+      dataIndex: 'trs_excp_charge',
       render: this.renderTransportCharge,
     }, {
       title: '运输代垫费用',
-      key: 'trsAdvanceCharge',
-      dataIndex: 'trsAdvanceCharge',
+      key: 'trs_advance_charge',
+      dataIndex: 'trs_advance_charge',
       render: this.renderTransportCharge,
     }, {
       title: '运输费用合计',
@@ -205,8 +205,8 @@ export default class FeesList extends React.Component {
       render: this.renderTransportCharge,
     }, {
       title: '订单总费用',
-      key: 'totalCharge',
-      dataIndex: 'totalCharge',
+      key: 'total_charge',
+      dataIndex: 'total_charge',
       render(o) {
         return o ? o.toFixed(2) : '';
       },
