@@ -253,3 +253,11 @@ export const SHIPMENT_BILLING_STATUS = {
   5: '接受',
   6: '已核销',
 };
+
+export const TMS_DUTY_TAXTYPE = [
+  { value: 0, text: '供应商增票' },
+  { value: 1, text: '供应商普票' },
+  { value: 2, text: '我方增票' },
+  { value: 3, text: '我方普票' },
+  { value: 4, text: '客户增票' },
+];

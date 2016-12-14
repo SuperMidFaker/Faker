@@ -12,8 +12,9 @@ import { doSend,
          doReturn,
          changeDockStatus,
          withDraw } from 'common/reducers/transportDispatch';
-import { showDateModal, showVehicleModal, showLocModal, showShipmentAdvanceModal, showSpecialChargeModal, showChangeActDateModal }
+import { showDateModal, showVehicleModal, showLocModal, showSpecialChargeModal, showChangeActDateModal }
 from 'common/reducers/trackingLandStatus';
+import { showAdvanceModal } from 'common/reducers/transportBilling';
 import { showCreateExcpModal } from 'common/reducers/trackingLandException';
 import { passAudit, returnAudit, showPodModal } from 'common/reducers/trackingLandPod';
 import ExportPDF from '../../tracking/land/modals/export-pdf';
@@ -50,7 +51,7 @@ const MenuItem = Menu.Item;
     returnAudit,
     withDraw,
     returnShipment,
-    showShipmentAdvanceModal,
+    showAdvanceModal,
     showSpecialChargeModal,
     sendMessage,
     showCreateExcpModal,
@@ -82,7 +83,7 @@ export default class Footer extends React.Component {
     withDraw: PropTypes.func.isRequired,
     hidePreviewer: PropTypes.func.isRequired,
     returnShipment: PropTypes.func.isRequired,
-    showShipmentAdvanceModal: PropTypes.func.isRequired,
+    showAdvanceModal: PropTypes.func.isRequired,
     showSpecialChargeModal: PropTypes.func.isRequired,
     sendMessage: PropTypes.func.isRequired,
     showCreateExcpModal: PropTypes.func.isRequired,
@@ -217,7 +218,7 @@ export default class Footer extends React.Component {
   }
   handleShowShipmentAdvanceModal = (row) => {
     // todo 取parentDisp sr_tenant_id
-    this.props.showShipmentAdvanceModal({ visible: true, dispId: row.parent_id, shipmtNo: row.shipmt_no,
+    this.props.showAdvanceModal({ visible: true, dispId: row.parent_id, shipmtNo: row.shipmt_no,
       transportModeId: row.transport_mode_id, goodsType: row.goods_type,
     });
   }

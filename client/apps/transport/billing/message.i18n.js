@@ -97,8 +97,4 @@ export default defineMessages({
     id: 'transport.billing.fee',
     defaultMessage: '费用',
   },
-  importAdvanceCharge: {
-    id: 'transport.billing.importAdvanceCharge',
-    defaultMessage: '导入垫付费用',
-  },
 });

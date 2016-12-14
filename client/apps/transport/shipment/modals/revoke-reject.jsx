@@ -23,7 +23,7 @@ export default class RevokejectModal extends React.Component {
     intl: intlShape.isRequired,
     visible: PropTypes.bool.isRequired,
     shipmtDispId: PropTypes.number.isRequired,
-    shipmtNo: PropTypes.number.isRequired,
+    shipmtNo: PropTypes.string.isRequired,
     modalType: PropTypes.string.isRequired,
     closeReModal: PropTypes.func.isRequired,
     revokeShipment: PropTypes.func.isRequired,

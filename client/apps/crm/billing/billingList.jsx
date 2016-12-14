@@ -213,11 +213,14 @@ export default class BillingList extends React.Component {
     }, {
       title: '调整费用',
       dataIndex: 'adjust_charge',
+      render(o) {
+        return (<span style={{ color: '#FF0000' }}>{o}</span>);
+      },
     }, {
       title: '账单总金额',
       dataIndex: 'total_charge',
       render(o) {
-        return (<span style={{ color: '#FF0000' }}>{o}</span>);
+        return (<span style={{ color: '#FF9933' }}>{o}</span>);
       },
     }, {
       title: '核销金额',

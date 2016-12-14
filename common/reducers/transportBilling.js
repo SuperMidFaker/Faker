@@ -1,12 +1,12 @@
 import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
+import moment from 'moment';
 
 const actionTypes = createActionTypes('@@welogix/transport/billing/', [
   'UPDATE_BILLINGFEES',
   'ALTER_BILLINGFEES',
   'CHANGE_FEES_FILTER',
   'CHANGE_BILLINGS_FILTER',
-  'TOGGLE_ADVANCECHARGE_MODAL',
   'LOAD_PARTNERS', 'LOAD_PARTNERS_SUCCEED', 'LOAD_PARTNERS_FAIL',
   'LOAD_FEES', 'LOAD_FEES_SUCCEED', 'LOAD_FEES_FAIL',
   'LOAD_FEES_BYCHOOSEMODAL', 'LOAD_FEES_BYCHOOSEMODAL_SUCCEED', 'LOAD_FEES_BYCHOOSEMODAL_FAIL',
@@ -20,8 +20,9 @@ const actionTypes = createActionTypes('@@welogix/transport/billing/', [
   'ACCEPT_BILLING', 'ACCEPT_BILLING_SUCCEED', 'ACCEPT_BILLING_FAIL',
   'REMOVE_BILLING', 'REMOVE_BILLING_SUCCEED', 'REMOVE_BILLING_FAIL',
   'CANCEL_CHARGE', 'CANCEL_CHARGE_SUCCEED', 'CANCEL_CHARGE_FAIL',
-  'IMPORT_ADVANCECHARGE', 'IMPORT_ADVANCECHARGE_SUCCEED', 'IMPORT_ADVANCECHARGE_FAIL',
-  'LOAD_SPECIALCHARGES', 'LOAD_SPECIALCHARGES_SUCCEED', 'LOAD_SPECIALCHARGES_FAIL',
+  'LOAD_SPECIAL_CHARGES', 'LOAD_SPECIAL_CHARGES_SUCCEED', 'LOAD_SPECIAL_CHARGES_FAIL',
+  'CREATE_ADVANCE', 'CREATE_ADVANCE_SUCCEED', 'CREATE_ADVANCE_FAIL',
+  'SHOW_SHIPMENT_ADVANCE_MODAL', 'SHOW_SHIPMENT_ADVANCE_MODAL_SUCCEED', 'SHOW_SHIPMENT_ADVANCE_MODAL_FAIL',
 ]);
 
 const initialState = {
@@ -73,8 +74,13 @@ const initialState = {
     data: [],
   },
   partners: [],
-  advanceChargeModal: {
+  advanceModal: {
     visible: false,
+    dispId: -1,
+    shipmtNo: '',
+    transportModeId: -1,
+    goodsType: -1,
+    advances: [],
   },
 };
 
@@ -200,9 +206,10 @@ export default function reducer(state = initialState, action) {
       const billings = { ...state.billings, searchValue: action.data.value };
       return { ...state, billings };
     }
-    case actionTypes.TOGGLE_ADVANCECHARGE_MODAL: {
-      return { ...state, advanceChargeModal: { visible: action.data.visible } };
-    }
+    case actionTypes.SHOW_SHIPMENT_ADVANCE_MODAL_SUCCEED:
+      return {
+        ...state, advanceModal: { ...action.data, ...action.result.data },
+      };
     default:
       return state;
   }
@@ -241,7 +248,12 @@ export function loadFees({ tenantId, pageSize, currentPage, searchValue, filters
       ],
       endpoint: 'v1/transport/fees',
       method: 'get',
-      params: { tenantId, pageSize, currentPage, searchValue, filters, startDate, endDate },
+      params: {
+        tenantId, pageSize, currentPage, searchValue,
+        filters: JSON.stringify(filters),
+        startDate: moment(startDate).format('YYYY-MM-DD 00:00:00'),
+        endDate: moment(endDate).format('YYYY-MM-DD 23:59:59'),
+      },
     },
   };
 }
@@ -415,17 +427,17 @@ export function changeCancelCharge({ tenantId, loginId, loginName, billingId, ca
   };
 }
 
-export function importAdvanceCharge({ tenantId, loginId, loginName, advances }) {
+export function createAdvances(advances) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.IMPORT_ADVANCECHARGE,
-        actionTypes.IMPORT_ADVANCECHARGE_SUCCEED,
-        actionTypes.IMPORT_ADVANCECHARGE_FAIL,
+        actionTypes.CREATE_ADVANCE,
+        actionTypes.CREATE_ADVANCE_SUCCEED,
+        actionTypes.CREATE_ADVANCE_FAIL,
       ],
-      endpoint: 'v1/transport/billing/importAdvanceCharge',
+      endpoint: 'v1/transport/billing/advances',
       method: 'post',
-      data: { tenantId, loginId, loginName, advances },
+      data: { advances },
     },
   };
 }
@@ -434,9 +446,9 @@ export function loadSpecialCharges(dispId) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.LOAD_SPECIALCHARGES,
-        actionTypes.LOAD_SPECIALCHARGES_SUCCEED,
-        actionTypes.LOAD_SPECIALCHARGES_FAIL,
+        actionTypes.LOAD_SPECIAL_CHARGES,
+        actionTypes.LOAD_SPECIAL_CHARGES_SUCCEED,
+        actionTypes.LOAD_SPECIAL_CHARGES_FAIL,
       ],
       endpoint: 'v1/transport/specialCharges',
       method: 'get',
@@ -453,6 +465,18 @@ export function changeBillingsFilter(key, value) {
   return { type: actionTypes.CHANGE_BILLINGS_FILTER, data: { key, value } };
 }
 
-export function toggleAdvanceChargeModal(visible) {
-  return { type: actionTypes.TOGGLE_ADVANCECHARGE_MODAL, data: { visible } };
+export function showAdvanceModal({ visible, dispId, shipmtNo, transportModeId, goodsType }) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SHOW_SHIPMENT_ADVANCE_MODAL,
+        actionTypes.SHOW_SHIPMENT_ADVANCE_MODAL_SUCCEED,
+        actionTypes.SHOW_SHIPMENT_ADVANCE_MODAL_FAIL,
+      ],
+      endpoint: 'v1/transport/advanceCharges',
+      method: 'get',
+      params: { dispId },
+      data: { visible, dispId, shipmtNo, transportModeId, goodsType },
+    },
+  };
 }

@@ -3,7 +3,7 @@ import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/transport/tracking/land/status/', [
   'SHOW_VEHICLE_MODAL', 'SHOW_DATE_MODAL',
-  'HIDE_VEHICLE_MODAL', 'HIDE_DATE_MODAL', 'SHOW_SHIPMENT_ADVANCE_MODAL',
+  'HIDE_VEHICLE_MODAL', 'HIDE_DATE_MODAL',
   'SHOW_SPECIAL_CHARGE_MODAL',
   'SHOW_CHANGE_ACTDATE_MODAL',
   'SHOW_LOC_MODAL', 'HIDE_LOC_MODAL', 'CHANGE_FILTER',
@@ -15,7 +15,6 @@ const actionTypes = createActionTypes('@@welogix/transport/tracking/land/status/
   'LOAD_TRANSHIPMT', 'LOAD_TRANSHIPMT_FAIL', 'LOAD_TRANSHIPMT_SUCCEED',
   'DELIVER_CONFIRM', 'DELIVER_CONFIRM_SUCCEED', 'DELIVER_CONFIRM_FAIL',
   'CHANGE_ACT_DATE', 'CHANGE_ACT_DATE_SUCCEED', 'CHANGE_ACT_DATE_FAIL',
-  'CREATE_ADVANCE', 'CREATE_ADVANCE_SUCCEED', 'CREATE_ADVANCE_FAIL',
   'LOAD_SHIPMT_DISPATCH', 'LOAD_SHIPMT_DISPATCH_SUCCEED', 'LOAD_SHIPMT_DISPATCH_FAIL',
 ]);
 
@@ -45,13 +44,6 @@ const initialState = {
     visible: false,
     shipments: [],
     type: 'pickup',
-  },
-  shipmentAdvanceModal: {
-    visible: false,
-    dispId: -1,
-    shipmtNo: '',
-    transportModeId: -1,
-    goodsType: -1,
   },
   shipmentSpecialChargeModal: {
     visible: false,
@@ -131,10 +123,6 @@ export default function reducer(state = initialState, action) {
       }
       return { ...state, filters };
     }
-    case actionTypes.SHOW_SHIPMENT_ADVANCE_MODAL:
-      return {
-        ...state, shipmentAdvanceModal: action.data,
-      };
     case actionTypes.SHOW_SPECIAL_CHARGE_MODAL:
       return {
         ...state, shipmentSpecialChargeModal: action.data,
@@ -289,13 +277,6 @@ export function changeStatusFilter(field, value) {
   };
 }
 
-export function showShipmentAdvanceModal({ visible, dispId, shipmtNo, transportModeId, goodsType }) {
-  return {
-    type: actionTypes.SHOW_SHIPMENT_ADVANCE_MODAL,
-    data: { visible, dispId, shipmtNo, transportModeId, goodsType },
-  };
-}
-
 export function showSpecialChargeModal({ visible, dispId, shipmtNo, parentDispId, spTenantId }) {
   return {
     type: actionTypes.SHOW_SPECIAL_CHARGE_MODAL,
@@ -336,23 +317,6 @@ export function changePickDeliverDate({ dispId, shipmtNo, loginName, loginId, te
       endpoint: 'v1/transport/tracking/changePickDeliverDate',
       method: 'post',
       data: { dispId, shipmtNo, loginName, loginId, tenantId, tenantName, pickupActDate, deliverActDate },
-    },
-  };
-}
-
-export function createAdvance({ shipmtNo, dispId, name, code, amount, remark,
-        submitter, loginId, tenantId }) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.CREATE_ADVANCE,
-        actionTypes.CREATE_ADVANCE_SUCCEED,
-        actionTypes.CREATE_ADVANCE_FAIL,
-      ],
-      endpoint: 'v1/transport/tracking/advance',
-      method: 'post',
-      data: { shipmtNo, dispId, name, code, amount, remark,
-        submitter, loginId, tenantId },
     },
   };
 }
