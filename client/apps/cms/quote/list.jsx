@@ -7,11 +7,10 @@ import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import withPrivilege, { PrivilegeCover } from 'client/common/decorators/withPrivilege';
-import { loadQuoteTable, updateQuoteStatus, deleteQuote, openCreateModal } from 'common/reducers/cmsQuote';
+import { loadQuoteTable, updateQuoteStatus, deleteQuote, openCreateModal, createDraftQuote } from 'common/reducers/cmsQuote';
 import { TARIFF_KINDS, TRANS_MODE, DECL_I_TYPE, DECL_E_TYPE } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import NavLink from 'client/components/nav-link';
 import moment from 'moment';
 import CreateQtModal from './modals/createQtModal';
 
@@ -24,7 +23,7 @@ function fetchData({ state, dispatch }) {
     tenantId: state.account.tenantId,
     filter: JSON.stringify({ status: 'all' }),
     pageSize: state.cmsExpense.expslist.pageSize,
-    currentPage: state.cmsExpense.expslist.current,
+    current: state.cmsExpense.expslist.current,
   }));
 }
 
@@ -38,7 +37,7 @@ function fetchData({ state, dispatch }) {
     quotesList: state.cmsQuote.quotesList,
     listFilter: state.cmsQuote.listFilter,
   }),
-  { loadQuoteTable, updateQuoteStatus, deleteQuote, openCreateModal }
+  { loadQuoteTable, updateQuoteStatus, deleteQuote, openCreateModal, createDraftQuote }
 )
 @connectNav({
   depth: 2,
@@ -70,7 +69,7 @@ export default class QuoteList extends Component {
         ietype: this.props.ietype,
         tenantId: this.props.tenantId,
         pageSize: pagination.pageSize,
-        currentPage: pagination.current,
+        current: pagination.current,
       };
       const filter = { ...this.props.listFilter, sortField: sorter.field, sortOrder: sorter.order };
       params.filter = JSON.stringify(filter);
@@ -88,7 +87,7 @@ export default class QuoteList extends Component {
       tenantId,
       filter: JSON.stringify(filter || listFilter),
       pageSize,
-      currentPage: currentPage || current,
+      current: currentPage || current,
     }).then((result) => {
       if (result.error) {
         message.error(result.error.message);
@@ -116,6 +115,22 @@ export default class QuoteList extends Component {
         this.handleQuoteTableLoad();
       }
     });
+  }
+  handleQuoteEdit = (row) => {
+    if (row.status === 'draft') {
+      this.context.router.push(`/clearance/billing/quote/edit/${row.quote_no}/${row.version}`);
+    } else if (row.next_version) {
+      this.context.router.push(`/clearance/billing/quote/edit/${row.quote_no}/${row.next_version}`);
+    } else {
+      const { loginName, loginId } = this.props;
+      this.props.createDraftQuote(row.quote_no, loginName, loginId).then((result) => {
+        if (result.error) {
+          message.error(result.error.message);
+        } else {
+          this.context.router.push(`/clearance/billing/quote/edit/${row.quote_no}/${result.data.version}`);
+        }
+      });
+    }
   }
   handleDeleteQuote = (id) => {
     this.props.deleteQuote(
@@ -152,7 +167,7 @@ export default class QuoteList extends Component {
           }
         },
       }, {
-        title: msg('partners'),
+        title: msg('partnerLabel'),
         width: 240,
         render: (record) => {
           let partnerName = '';
@@ -230,7 +245,7 @@ export default class QuoteList extends Component {
         title: msg('modifiedTime'),
         dataIndex: 'modify_time',
         width: 100,
-        render: (o, record) => `${moment(record.modify_time).format('MM.DD HH:mm')}`,
+        render: o => o && moment(o).format('MM.DD HH:mm'),
       }, {
         title: msg('operation'),
         width: 100,
@@ -243,9 +258,7 @@ export default class QuoteList extends Component {
                   <div>
                     <a onClick={() => this.handleChangeStatus(record._id, false)}>{msg('disable')}</a>
                     <span className="ant-divider" />
-                    <NavLink to={`/clearance/billing/quote/edit/${record.quote_no}`}>
-                      {msg('modify')}
-                    </NavLink>
+                    <a onClick={() => this.handleQuoteEdit(record)}>{msg('modify')}</a>
                   </div>
                 </PrivilegeCover>
               </span>

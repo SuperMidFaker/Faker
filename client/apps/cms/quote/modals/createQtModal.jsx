@@ -84,7 +84,8 @@ export default class CreateQtModal extends React.Component {
         message.error(result.error.message, 10);
       } else {
         this.props.closeCreateModal();
-        this.context.router.push(`/clearance/billing/quote/edit/${this.props.quoteNo}`);
+        const { quoteNo, version } = result.data;
+        this.context.router.push(`/clearance/billing/quote/edit/${quoteNo}/${version}`);
       }
     });
   }
@@ -135,7 +136,7 @@ export default class CreateQtModal extends React.Component {
               </Select>
             )}
           </FormItem>
-          <FormItem label={this.msg('partners')} {...formItemLayout}>
+          <FormItem label={this.msg('partnerLabel')} {...formItemLayout}>
             {getFieldDecorator('partner.name', {
               rules: [{ required: true, message: '必选' }],
               getValueFromEvent: this.handleClientChange,

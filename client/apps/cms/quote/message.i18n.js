@@ -37,9 +37,21 @@ const messages = defineMessages({
     id: 'cms.quote.tariff_kinds',
     defaultMessage: '报价类型',
   },
-  partners: {
+  partnerLabel: {
     id: 'cms.quote.partners',
     defaultMessage: '客户/供应商',
+  },
+  partnerPermission: {
+    id: 'cms.quote.form.partner.permission',
+    defaultMessage: '对方权限',
+  },
+  permissionView: {
+    id: 'cms.quote.form.permission.view',
+    defaultMessage: '查看',
+  },
+  permissionEdit: {
+    id: 'cms.quote.form.permission.edit',
+    defaultMessage: '修订',
   },
   transMode: {
     id: 'cms.quote.trans_mode',
@@ -52,6 +64,14 @@ const messages = defineMessages({
   invoiceType: {
     id: 'cms.quote.invoice_type',
     defaultMessage: '发票类型',
+  },
+  declItemQuantity: {
+    id: 'cms.quote.form.decl.item.quantity',
+    defaultMessage: '报关单品项数',
+  },
+  ciqItemQuantity: {
+    id: 'cms.quote.form.ciq.item.quantity',
+    defaultMessage: '报检单品项数',
   },
   serialNo: {
     id: 'cms.quote.serial_no',

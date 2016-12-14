@@ -283,6 +283,11 @@ export const CMS_DUTY_TAXTYPE = [
   { value: 4, text: '客户增票' },
 ];
 
+export const CMS_QUOTE_PERMISSION = {
+  viewable: 1,
+  editable: 2,
+};
+
 export {
   TENANT_LEVEL,
   TENANT_ASPECT,
