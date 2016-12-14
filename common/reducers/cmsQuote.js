@@ -16,11 +16,11 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'SAVE_QUOTE_MODEL', 'SAVE_QUOTE_MODEL_SUCCEED', 'SAVE_QUOTE_MODEL_FAIL',
   'QUOTE_MODELBY_LOAD', 'QUOTE_MODELBY_LOAD_SUCCEED', 'QUOTE_MODELBY_LOAD_FAIL',
   'QUOTE_STATUS_UPDATE', 'QUOTE_STATUS_UPDATE_SUCCEED', 'QUOTE_STATUS_UPDATE_FAIL',
+  'OPEN_CREATE_MODAL', 'CLOSE_CREATE_MODAL',
 ]);
 
 const initialState = {
   partners: [],
-  clients: [],
   quoteData: {
     quote_no: '',
     tariff_kind: '',
@@ -47,12 +47,18 @@ const initialState = {
     status: 'all',
   },
   quotesLoading: false,
+  visibleCreateModal: false,
+  quoteNo: '',
 };
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
+    case actionTypes.OPEN_CREATE_MODAL:
+      return { ...state, visibleCreateModal: true };
+    case actionTypes.CLOSE_CREATE_MODAL:
+      return { ...state, visibleCreateModal: false };
     case actionTypes.PARTNERS_LOAD_SUCCEED:
-      return { ...state, partners: action.result.data.partners, clients: action.result.data.clients };
+      return { ...state, partners: action.result.data };
     case actionTypes.QUOTE_MODEL_LOAD:
       return { ...state, quoteData: { ...initialState.quoteData, loading: true } };
     case actionTypes.QUOTE_MODEL_LOAD_SUCCEED:
@@ -77,18 +83,31 @@ export default function reducer(state = initialState, action) {
       return { ...state, quoteData: { ...state.quoteData, loading: true } };
     case actionTypes.QUOTE_COPY_SUCCEED:
       return { ...state, quoteData: { ...action.result.data.quoteData, loading: false } };
+    case actionTypes.CREATE_QUOTE_SUCCEED:
+      return { ...state, quoteNo: action.result.data };
     default:
       return state;
   }
 }
 
-export function loadPartners(tenantId) {
+export function openCreateModal() {
+  return {
+    type: actionTypes.OPEN_CREATE_MODAL,
+  };
+}
+export function closeCreateModal() {
+  return {
+    type: actionTypes.CLOSE_CREATE_MODAL,
+  };
+}
+
+export function loadPartners(tenantId, role) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.PARTNERS_LOAD, actionTypes.PARTNERS_LOAD_SUCCEED, actionTypes.PARTNERS_LOAD_FAIL],
       endpoint: 'v1/cms/quote/partners',
       method: 'get',
-      params: { tenantId },
+      params: { tenantId, role },
     },
   };
 }
