@@ -1,6 +1,6 @@
 /* eslint no-undef: 0 */
 import React, { PropTypes } from 'react';
-import { Steps, Card } from 'antd';
+import { Steps } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
@@ -136,9 +136,7 @@ export default class ClearanceStatus extends React.Component {
     }
     const steps = statusDes.map((s, i) => <Step key={i} status={s.status} title={s.title} />);
     return (
-      <Card>
-        <Steps current={statusPos}>{steps}</Steps>
-      </Card>
+      <Steps current={statusPos}>{steps}</Steps>
     );
   }
 }

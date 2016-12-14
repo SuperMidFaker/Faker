@@ -138,55 +138,6 @@ export default class ExpensePane extends React.Component {
               <Table size="small" columns={this.billColumnFields.cushion} dataSource={billCushFees}
                 rowKey="fee_name" pagination={false}
               />
-              <Collapse bordered={false}>
-                <Panel header="计费说明" key="1">
-                  <Row>
-                    <Col span="16">
-                      报价编号
-                    </Col>
-                    <Col span="8">
-                      计费时间
-                    </Col>
-                  </Row>
-                  <Table size="middle" pagination={false}>
-                    <Column
-                      title="运单数量"
-                      dataIndex="shipmtQty"
-                      key="shipmtQty"
-                    />
-                    <Column
-                      title="报关单数量"
-                      dataIndex="shipmtQty"
-                      key="shipmtQty"
-                    />
-                    <Column
-                      title="报关单联数"
-                      dataIndex="shipmtQty"
-                      key="shipmtQty"
-                    />
-                    <Column
-                      title="品名数量"
-                      dataIndex="shipmtQty"
-                      key="shipmtQty"
-                    />
-                    <Column
-                      title="料件数量"
-                      dataIndex="shipmtQty"
-                      key="shipmtQty"
-                    />
-                    <Column
-                      title="货值"
-                      dataIndex="shipmtQty"
-                      key="shipmtQty"
-                    />
-                    <Column
-                      title="办证数量"
-                      dataIndex="shipmtQty"
-                      key="shipmtQty"
-                    />
-                  </Table>
-                </Panel>
-              </Collapse>
             </TabPane>
             <TabPane tab={this.msg('costDetail')} key="cost">
               {
@@ -236,6 +187,48 @@ export default class ExpensePane extends React.Component {
               }
             </TabPane>
           </Tabs>
+          <hr />
+          <Collapse bordered={false}>
+            <Panel header="计费参数" key="params">
+              <Table size="middle" pagination={false}>
+                <Column
+                  title="运单数量"
+                  dataIndex="shipmtQty"
+                  key="shipmtQty"
+                />
+                <Column
+                  title="报关单数量"
+                  dataIndex="shipmtQty"
+                  key="shipmtQty"
+                />
+                <Column
+                  title="报关单联数"
+                  dataIndex="shipmtQty"
+                  key="shipmtQty"
+                />
+                <Column
+                  title="品名数量"
+                  dataIndex="shipmtQty"
+                  key="shipmtQty"
+                />
+                <Column
+                  title="料件数量"
+                  dataIndex="shipmtQty"
+                  key="shipmtQty"
+                />
+                <Column
+                  title="货值"
+                  dataIndex="shipmtQty"
+                  key="shipmtQty"
+                />
+                <Column
+                  title="办证数量"
+                  dataIndex="shipmtQty"
+                  key="shipmtQty"
+                />
+              </Table>
+            </Panel>
+          </Collapse>
         </Card>
       </div>
     );

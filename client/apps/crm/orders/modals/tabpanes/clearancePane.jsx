@@ -117,81 +117,79 @@ export default class ClearancePane extends React.Component {
     return (
       <div className="pane-content tab-pane">
         <ClearanceStatus status={delegateTracking.status} subStatus={delegateTracking.sub_status} />
-        <Card bodyStyle={{ padding: 16 }}>
-          <Row>
-            <Col span="12">
-              <PaneFormItem labelCol={{ span: 3 }} label="委托方"
-                field={delegation.customer_name} fieldCol={{ span: 9 }}
+        <hr />
+        <Row>
+          <Col span="12">
+            <PaneFormItem labelCol={{ span: 3 }} label="委托方"
+              field={delegation.customer_name} fieldCol={{ span: 9 }}
+            />
+          </Col>
+          <Col span="12">
+            <PaneFormItem labelCol={{ span: 3 }} label="申报单位"
+              field={delegateTracking.recv_name} fieldCol={{ span: 9 }}
+            />
+          </Col>
+        </Row>
+        <Row>
+          <Col span="12">
+            <PaneFormItem labelCol={{ span: 3 }} label="提运单号"
+              field={delegation.bl_wb_no} fieldCol={{ span: 9 }}
               />
-            </Col>
-            <Col span="12">
-              <PaneFormItem labelCol={{ span: 3 }} label="申报单位"
-                field={delegateTracking.recv_name} fieldCol={{ span: 9 }}
+          </Col>
+          <Col span="12">
+            <PaneFormItem labelCol={{ span: 3 }} label="运单号"
+              field={delegation.shipping_no} fieldCol={{ span: 9 }}
               />
-            </Col>
-          </Row>
-          <Row>
-            <Col span="12">
-              <PaneFormItem labelCol={{ span: 3 }} label="提运单号"
-                field={delegation.bl_wb_no} fieldCol={{ span: 9 }}
+          </Col>
+        </Row>
+        <Row>
+          <Col span="12">
+            <PaneFormItem labelCol={{ span: 3 }} label="发票号"
+              field={delegation.invoice_no} fieldCol={{ span: 9 }}
               />
-            </Col>
-            <Col span="12">
-              <PaneFormItem labelCol={{ span: 3 }} label="运单号"
-                field={delegation.shipping_no} fieldCol={{ span: 9 }}
+          </Col>
+          <Col span="12">
+            <PaneFormItem labelCol={{ span: 3 }} label="订单号"
+              field={delegation.order_no} fieldCol={{ span: 9 }}
               />
-            </Col>
-          </Row>
-          <Row>
-            <Col span="12">
-              <PaneFormItem labelCol={{ span: 3 }} label="发票号"
-                field={delegation.invoice_no} fieldCol={{ span: 9 }}
+          </Col>
+        </Row>
+        <Row>
+          <Col span="12">
+            <PaneFormItem labelCol={{ span: 3 }} label="船名航次"
+              field={delegation.voyage_no} fieldCol={{ span: 9 }}
               />
-            </Col>
-            <Col span="12">
-              <PaneFormItem labelCol={{ span: 3 }} label="订单号"
-                field={delegation.order_no} fieldCol={{ span: 9 }}
-              />
-            </Col>
-          </Row>
-          <Row>
-            <Col span="12">
-              <PaneFormItem labelCol={{ span: 3 }} label="船名航次"
-                field={delegation.voyage_no} fieldCol={{ span: 9 }}
-              />
-            </Col>
+          </Col>
 
-            <Col span="12">
-              <PaneFormItem labelCol={{ span: 3 }} label="外部编号"
-                field={delegation.ref_external_no}
-                fieldCol={{ span: 9 }}
+          <Col span="12">
+            <PaneFormItem labelCol={{ span: 3 }} label="外部编号"
+              field={delegation.ref_external_no}
+              fieldCol={{ span: 9 }}
               />
-            </Col>
-          </Row>
-          <Row>
-            <Col span="12">
-              <PaneFormItem labelCol={{ span: 3 }} label="总重量"
-                field={delegation.weight ? `${delegation.weight} 千克` : ''} fieldCol={{ span: 9 }}
+          </Col>
+        </Row>
+        <Row>
+          <Col span="12">
+            <PaneFormItem labelCol={{ span: 3 }} label="总重量"
+              field={delegation.weight ? `${delegation.weight} 千克` : ''} fieldCol={{ span: 9 }}
               />
-            </Col>
-            <Col span="12">
-              <PaneFormItem labelCol={{ span: 3 }} label="总件数"
-                field={delegation.pieces ? `${delegation.pieces} 件` : ''} fieldCol={{ span: 9 }}
+          </Col>
+          <Col span="12">
+            <PaneFormItem labelCol={{ span: 3 }} label="总件数"
+              field={delegation.pieces ? `${delegation.pieces} 件` : ''} fieldCol={{ span: 9 }}
               />
-            </Col>
-          </Row>
-          <Row>
-            <Col span="12">
-              <PaneFormItem labelCol={{ span: 3 }} label="备注"
-                field={delegation.remark}
-                fieldCol={{ span: 9 }}
+          </Col>
+        </Row>
+        <Row>
+          <Col span="12">
+            <PaneFormItem labelCol={{ span: 3 }} label="备注"
+              field={delegation.remark}
+              fieldCol={{ span: 9 }}
               />
-            </Col>
-          </Row>
-        </Card>
-        <Card title="附件" bodyStyle={{ padding: 16 }}>
-          {filenames}
-        </Card>
+          </Col>
+        </Row>
+        <hr />
+        {filenames}
       </div>
     );
   }
@@ -200,21 +198,21 @@ export default class ClearancePane extends React.Component {
 
     if (clearances.length === 1) {
       return (
-        <div>
+        <Card bodyStyle={{ padding: 8 }}>
           {this.renderClearance(clearances[0])}
-        </div>
+        </Card>
       );
     } else {
       return (
-        <div>
-          <Tabs activeKey={this.state.tabKey} tabPosition="left" onChange={this.handleChangeTab}>
+        <Card bodyStyle={{ padding: 8 }}>
+          <Tabs activeKey={this.state.tabKey} onChange={this.handleChangeTab}>
             {clearances.map(item => (
               <TabPane tab={item.delegation.delg_no} key={item.delegation.delg_no}>
                 {this.renderClearance(item)}
               </TabPane>
               ))}
           </Tabs>
-        </div>
+        </Card>
       );
     }
   }

@@ -184,9 +184,7 @@ export default class TransportStatus extends React.Component {
     }
     const steps = statusDes.map((s, i) => <Step key={i} status={s.status} title={s.title} />);
     return (
-      <Card>
-        <Steps current={statusPos}>{steps}</Steps>
-      </Card>
+      <Steps current={statusPos}>{steps}</Steps>
     );
   }
 }

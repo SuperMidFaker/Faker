@@ -113,7 +113,7 @@ export default class CiqDeclPane extends React.Component {
     }
     return (
       <div className="pane-content tab-pane">
-        <Card bodyStyle={{ padding: 16 }}>
+        <Card bodyStyle={{ padding: 8 }}>
           <Row>
             <Col span="8">
               <PaneFormItem labelCol={{ span: 3 }} label="报检企业"

@@ -319,16 +319,9 @@ export default class ChargePanel extends React.Component {
 
     return (
       <div className="pane-content tab-pane">
-
-        <Card bodyStyle={{ padding: 0 }}>
-          <Table size="small" columns={revenueColumns} pagination={false} dataSource={revenueds} />
-        </Card>
-        <Card bodyStyle={{ padding: 0 }} title="代垫费用">
-          <Table size="small" columns={advancesColumns} pagination={false} dataSource={advances} />
-        </Card>
-        <Card bodyStyle={{ padding: 0 }} title="特殊费用">
-          <Table size="small" columns={specialChargeColumns} pagination={false} dataSource={specialCharges} />
-        </Card>
+        <Table size="small" columns={revenueColumns} pagination={false} dataSource={revenueds} />
+        <Table size="small" columns={advancesColumns} pagination={false} dataSource={advances} />
+        <Table size="small" columns={specialChargeColumns} pagination={false} dataSource={specialCharges} />
       </div>
     );
   }
@@ -389,13 +382,15 @@ export default class ChargePanel extends React.Component {
                   }</div>
               </Row>
             </Card>
-            <Tabs activeKey={this.state.tabKey} tabPosition="left" onChange={this.handleChangeTab}>
-              {clearanceFees.map(item => (
-                <TabPane tab={item.delg_no} key={item.delg_no}>
-                  {this.renderClearanceFees(item)}
-                </TabPane>
-                ))}
-            </Tabs>
+            <Card bodyStyle={{ padding: 16 }}>
+              <Tabs activeKey={this.state.tabKey} onChange={this.handleChangeTab}>
+                {clearanceFees.map(item => (
+                  <TabPane tab={item.delg_no} key={item.delg_no}>
+                    {this.renderClearanceFees(item)}
+                  </TabPane>
+                  ))}
+              </Tabs>
+            </Card>
           </div>
         );
       }
@@ -425,13 +420,15 @@ export default class ChargePanel extends React.Component {
                   }</div>
               </Row>
             </Card>
-            <Tabs activeKey={this.state.tabKey} tabPosition="left" onChange={this.handleChangeTab}>
-              {transports.map(item => (
-                <TabPane tab={item.shipmt_no} key={item.shipmt_no}>
-                  {this.renderTransportFees(item)}
-                </TabPane>
-                ))}
-            </Tabs>
+            <Card bodyStyle={{ padding: 16 }}>
+              <Tabs activeKey={this.state.tabKey} onChange={this.handleChangeTab}>
+                {transports.map(item => (
+                  <TabPane tab={item.shipmt_no} key={item.shipmt_no}>
+                    {this.renderTransportFees(item)}
+                  </TabPane>
+                  ))}
+              </Tabs>
+            </Card>
           </div>
         );
       }
@@ -460,17 +457,19 @@ export default class ChargePanel extends React.Component {
               </Col>
             </Row>
           </Card>
-          <Tabs activeKey={this.state.tabKey} tabPosition="left" onChange={this.handleChangeTab}>
-            {clearanceFees.map(item => (
-              <TabPane tab={item.delg_no} key={item.delg_no}>
-                {this.renderClearanceFees(item)}
-              </TabPane>
-              )).concat(transports.map(item => (
-                <TabPane tab={item.shipmt_no} key={item.shipmt_no}>
-                  {this.renderTransportFees(item)}
+          <Card bodyStyle={{ padding: 16 }}>
+            <Tabs activeKey={this.state.tabKey} onChange={this.handleChangeTab}>
+              {clearanceFees.map(item => (
+                <TabPane tab={item.delg_no} key={item.delg_no}>
+                  {this.renderClearanceFees(item)}
                 </TabPane>
-              )))}
-          </Tabs>
+                )).concat(transports.map(item => (
+                  <TabPane tab={item.shipmt_no} key={item.shipmt_no}>
+                    {this.renderTransportFees(item)}
+                  </TabPane>
+                )))}
+            </Tabs>
+          </Card>
         </div>
       );
     }

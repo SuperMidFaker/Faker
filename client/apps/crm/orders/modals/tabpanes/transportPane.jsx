@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Col, Table, Collapse, Timeline, Icon, Tabs } from 'antd';
+import { Card, Col, Table, Collapse, Timeline, Icon, Tabs } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import { PRESET_TRANSMODES } from 'common/constants';
 import messages from '../../message.i18n';
@@ -136,7 +136,8 @@ export default class TransportPane extends React.Component {
     return (
       <div className="pane-content tab-pane">
         <TransportStatus status={shipmt.status} />
-        <Collapse defaultActiveKey={['customer', 'trans_schedule', 'trans_mode']}>
+        <hr />
+        <Collapse bordered={false} defaultActiveKey={['customer', 'trans_schedule', 'trans_mode']}>
           <Panel header={clientInfo} key="customer">
             <Col span="12">
               <PaneFormItem labelCol={{ span: 8 }} label={this.msg('client')}
@@ -236,21 +237,21 @@ export default class TransportPane extends React.Component {
     const { transports } = this.props;
     if (transports.length === 1) {
       return (
-        <div>
+        <Card bodyStyle={{ padding: 8 }}>
           {this.renderShipmt(transports[0])}
-        </div>
+        </Card>
       );
     } else {
       return (
-        <div>
-          <Tabs activeKey={this.state.tabKey} tabPosition="left" onChange={this.handleChangeTab}>
+        <Card bodyStyle={{ padding: 8 }}>
+          <Tabs activeKey={this.state.tabKey} onChange={this.handleChangeTab}>
             {transports.map(item => (
               <TabPane tab={item.shipmt_no} key={item.shipmt_no}>
                 {this.renderShipmt(item)}
               </TabPane>
               ))}
           </Tabs>
-        </div>
+        </Card>
       );
     }
   }

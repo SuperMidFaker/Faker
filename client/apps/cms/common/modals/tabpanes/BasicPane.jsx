@@ -122,7 +122,7 @@ export default class BasicPane extends React.Component {
     }
     return (
       <div className="pane-content tab-pane">
-        <Card bodyStyle={{ padding: 16 }}>
+        <Card bodyStyle={{ padding: 8 }}>
           <Row>
             <Col span="8">
               <PaneFormItem labelCol={{ span: 3 }} label="委托方"
@@ -206,7 +206,7 @@ export default class BasicPane extends React.Component {
             </Col>
           </Row>
         </Card>
-        <Card title="附件" bodyStyle={{ padding: 16 }} extra={
+        <Card title="附件" bodyStyle={{ padding: 8 }} extra={
           <Button type="primary" size="small" onClick={this.handleFilesDownload} icon="download">
             下载
           </Button>}

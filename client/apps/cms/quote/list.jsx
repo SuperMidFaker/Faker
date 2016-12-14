@@ -296,7 +296,7 @@ export default class QuoteList extends Component {
         <div className="main-content" key="main">
           <div className="page-body">
             <div className="panel-header">
-              <Button type="primary" onClick={this.handleCreateNew}>
+              <Button type="primary" icon="plus" onClick={this.handleCreateNew}>
                 新建报价
               </Button>
             </div>
