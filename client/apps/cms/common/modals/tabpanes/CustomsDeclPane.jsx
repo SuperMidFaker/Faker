@@ -84,7 +84,11 @@ export default class CustomsDeclPane extends React.Component {
       title: '海关编号',
       dataIndex: 'entry_id',
     }, {
-      title: '申报日期',
+      title: '申报时间',
+      dataIndex: 'process_date',
+      render: o => o && moment(o).format('YYYY.MM.DD HH:mm'),
+    }, {
+      title: '放行时间',
       dataIndex: 'd_date',
       render: o => o && moment(o).format('YYYY.MM.DD HH:mm'),
     }, {
@@ -131,9 +135,10 @@ export default class CustomsDeclPane extends React.Component {
             </Col>
           </Row>
         </Card>
-        {
+        <Card bodyStyle={{ padding: 8 }}>
+          {
           delgBills.length > 0 &&
-          <Tabs defaultActiveKey={delgBills[0].key} tabPosition="left">
+          <Tabs defaultActiveKey={delgBills[0].key}>
             {
               delgBills.map((bill) => {
                 const tableDatas = (bill.children || []).map(decl => ({
@@ -146,36 +151,31 @@ export default class CustomsDeclPane extends React.Component {
                 const declTypes = DECL_I_TYPE.concat(DECL_E_TYPE).filter(dt => dt.key === bill.decl_way_code);
                 return (
                   <TabPane tab={bill.bill_seq_no} key={bill.key} style={{ padding: 8 }}>
-                    <Card bodyStyle={{ padding: 8 }}>
-                      <Row>
-                        <Col span="6">
-                          <PaneFormItem labelCol={{ span: 3 }} label="报关类型"
-                            field={declTypes.length > 0 ? declTypes[0].value : ''} fieldCol={{ span: 9 }}
-                          />
-                        </Col>
-                        <Col span="6">
-                          <PaneFormItem labelCol={{ span: 3 }} label="备案号"
-                            field={bill.manual_no} fieldCol={{ span: 9 }}
-                          />
-                        </Col>
-                        <Col span="6">
-                          <PaneFormItem labelCol={{ span: 3 }} label="件数"
-                            field={bill.pack_count} fieldCol={{ span: 9 }}
-                          />
-                        </Col>
-                        <Col span="6">
-                          <PaneFormItem labelCol={{ span: 3 }} label="毛重"
-                            field={bill.gross_wt} fieldCol={{ span: 9 }}
-                          />
-                        </Col>
-                      </Row>
-                      <Table size="small" columns={columns} pagination={false} dataSource={tableDatas} />
-                    </Card>
+                    <Row>
+                      <Col span="12">
+                        <PaneFormItem labelCol={{ span: 3 }} label="报关类型"
+                          field={declTypes.length > 0 ? declTypes[0].value : ''} fieldCol={{ span: 9 }}
+                        />
+                      </Col>
+                      <Col span="6">
+                        <PaneFormItem labelCol={{ span: 3 }} label="件数"
+                          field={bill.pack_count} fieldCol={{ span: 9 }}
+                        />
+                      </Col>
+                      <Col span="6">
+                        <PaneFormItem labelCol={{ span: 3 }} label="毛重"
+                          field={bill.gross_wt} fieldCol={{ span: 9 }}
+                        />
+                      </Col>
+                    </Row>
+                    <hr />
+                    <Table size="middle" columns={columns} pagination={false} dataSource={tableDatas} />
                   </TabPane>);
               })
             }
           </Tabs>
         }
+        </Card>
       </div>
     );
   }

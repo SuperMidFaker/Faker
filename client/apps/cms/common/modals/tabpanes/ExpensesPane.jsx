@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Card, Row, Col, Table, Tabs } from 'antd';
+import { Card, Row, Col, Collapse, Table, Tabs } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { loadPaneExp } from 'common/reducers/cmsExpense';
@@ -9,6 +9,7 @@ import { loadPaneExp } from 'common/reducers/cmsExpense';
 const formatMsg = format(messages);
 const TabPane = Tabs.TabPane;
 const Column = Table.Column;
+const Panel = Collapse.Panel;
 
 @injectIntl
 @connect(
@@ -128,54 +129,93 @@ export default class ExpensePane extends React.Component {
     });
     return (
       <div className="pane-content tab-pane">
-        <Tabs defaultActiveKey="revenue" tabPosition="left">
-          <TabPane tab={this.msg('revenue')} key="revenue" style={{ padding: 8 }}>
-            <Row gutter={16}>
-              <Col span={14}>
-                <Card title={this.msg('serviceFee')} bodyStyle={{ padding: 8 }}>
-                  <Table size="small" columns={this.billColumnFields.service} dataSource={billServicesFee}
-                    rowKey="fee_name" pagination={false}
-                  />
-                </Card>
-              </Col>
-              <Col span={10}>
-                <Card title={this.msg('cushionFee')} bodyStyle={{ padding: 8 }}>
-                  <Table size="small" columns={this.billColumnFields.cushion} dataSource={billCushFees}
-                    rowKey="fee_name" pagination={false}
-                  />
-                </Card>
-              </Col>
-            </Row>
-          </TabPane>
-          <TabPane tab={this.msg('cost')} key="cost" style={{ padding: 8 }}>
-            {
-              allcost.map((cost) => {
-                let titleLabel;
-                if (cost.vendor === 'cert') {
-                  titleLabel = '鉴定办证';
-                } else {
-                  titleLabel = `供应商: ${cost.vendor}`;
-                }
-                const costData = cost.fees;
-                const totalCost = costData.reduce((res, cfe) => ({
-                  cal_fee: res.cal_fee + parseFloat(cfe.cal_fee),
-                  tax_fee: res.tax_fee + parseFloat(cfe.tax_fee),
-                  total_fee: res.total_fee + parseFloat(cfe.total_fee),
-                }), {
-                  cal_fee: 0,
-                  tax_fee: 0,
-                  total_fee: 0,
-                });
-                costData.push({
-                  fee_name: '合计',
-                  cal_fee: totalCost.cal_fee.toFixed(2),
-                  tax_fee: totalCost.tax_fee.toFixed(2),
-                  total_fee: totalCost.total_fee.toFixed(2),
-                });
-                return (
-                  <Row gutter={16} key={cost.vendor} style={{ marginBottom: 8 }}>
-                    <Card title={titleLabel} bodyStyle={{ padding: 8 }}>
-                      <Table size="small" dataSource={costData} rowKey="fee_name" pagination={false}>
+        <Card bodyStyle={{ padding: 8 }}>
+          <Tabs defaultActiveKey="revenue">
+            <TabPane tab={this.msg('revenueDetail')} key="revenue">
+              <Table size="middle" columns={this.billColumnFields.service} dataSource={billServicesFee}
+                rowKey="fee_name" pagination={false}
+              />
+              <Table size="small" columns={this.billColumnFields.cushion} dataSource={billCushFees}
+                rowKey="fee_name" pagination={false}
+              />
+              <Collapse bordered={false}>
+                <Panel header="计费说明" key="1">
+                  <Row>
+                    <Col span="16">
+                      报价编号
+                    </Col>
+                    <Col span="8">
+                      计费时间
+                    </Col>
+                  </Row>
+                  <Table size="middle" pagination={false}>
+                    <Column
+                      title="运单数量"
+                      dataIndex="shipmtQty"
+                      key="shipmtQty"
+                    />
+                    <Column
+                      title="报关单数量"
+                      dataIndex="shipmtQty"
+                      key="shipmtQty"
+                    />
+                    <Column
+                      title="报关单联数"
+                      dataIndex="shipmtQty"
+                      key="shipmtQty"
+                    />
+                    <Column
+                      title="品名数量"
+                      dataIndex="shipmtQty"
+                      key="shipmtQty"
+                    />
+                    <Column
+                      title="料件数量"
+                      dataIndex="shipmtQty"
+                      key="shipmtQty"
+                    />
+                    <Column
+                      title="货值"
+                      dataIndex="shipmtQty"
+                      key="shipmtQty"
+                    />
+                    <Column
+                      title="办证数量"
+                      dataIndex="shipmtQty"
+                      key="shipmtQty"
+                    />
+                  </Table>
+                </Panel>
+              </Collapse>
+            </TabPane>
+            <TabPane tab={this.msg('costDetail')} key="cost">
+              {
+                allcost.map((cost) => {
+                  let titleLabel;
+                  if (cost.vendor === 'cert') {
+                    titleLabel = '鉴定办证';
+                  } else {
+                    titleLabel = `供应商: ${cost.vendor}`;
+                  }
+                  const costData = cost.fees;
+                  const totalCost = costData.reduce((res, cfe) => ({
+                    cal_fee: res.cal_fee + parseFloat(cfe.cal_fee),
+                    tax_fee: res.tax_fee + parseFloat(cfe.tax_fee),
+                    total_fee: res.total_fee + parseFloat(cfe.total_fee),
+                  }), {
+                    cal_fee: 0,
+                    tax_fee: 0,
+                    total_fee: 0,
+                  });
+                  costData.push({
+                    fee_name: '合计',
+                    cal_fee: totalCost.cal_fee.toFixed(2),
+                    tax_fee: totalCost.tax_fee.toFixed(2),
+                    total_fee: totalCost.total_fee.toFixed(2),
+                  });
+                  return (
+                    <Row gutter={16} key={cost.vendor} style={{ marginBottom: 8 }}>
+                      <Table size="middle" dataSource={costData} rowKey="fee_name" pagination={false}>
                         <Column title={this.msg('feeName')} dataIndex="fee_name" />
                         <Column title="费用类型" dataIndex="fee_style" render={(o) => {
                           if (o === 'service') {
@@ -191,12 +231,12 @@ export default class ExpensePane extends React.Component {
                         <Column title={this.msg('taxFee')} dataIndex="tax_fee" />
                         <Column title="应付金额" dataIndex="total_fee" />
                       </Table>
-                    </Card>
-                  </Row>);
-              })
-            }
-          </TabPane>
-        </Tabs>
+                    </Row>);
+                })
+              }
+            </TabPane>
+          </Tabs>
+        </Card>
       </div>
     );
   }

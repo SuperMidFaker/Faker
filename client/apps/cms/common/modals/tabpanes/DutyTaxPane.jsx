@@ -46,23 +46,27 @@ export default class DutyTaxPane extends React.Component {
       dataIndex: 'fee_name',
       key: 'fee_name',
     }, {
-      title: '关税金额',
+      title: '申报货值',
       dataIndex: 'charge_count',
       key: 'charge_count',
     }, {
-      title: '增值税金额',
+      title: '关税',
       dataIndex: 'charge_count',
       key: 'charge_count',
     }, {
-      title: '消费税金额',
+      title: '增值税',
       dataIndex: 'charge_count',
       key: 'charge_count',
     }, {
-      title: '动检查验',
+      title: '消费税',
       dataIndex: 'charge_count',
       key: 'charge_count',
     }, {
-      title: '处理结果',
+      title: '其他',
+      dataIndex: 'charge_count',
+      key: 'charge_count',
+    }, {
+      title: '税费总金额',
       dataIndex: 'unit_price',
       key: 'unit_price',
     }];

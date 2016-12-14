@@ -10,6 +10,14 @@ const messages = defineMessages({
     id: 'cms.modals.tabpanes.billing.cost',
     defaultMessage: '成本',
   },
+  revenueDetail: {
+    id: 'cms.modals.tabpanes.billing.revenue.detail',
+    defaultMessage: '收入明细',
+  },
+  costDetail: {
+    id: 'cms.modals.tabpanes.billing.cost.detail',
+    defaultMessage: '成本明细',
+  },
   serviceFee: {
     id: 'cms.modals.tabpanes.service.fee',
     defaultMessage: '服务费',

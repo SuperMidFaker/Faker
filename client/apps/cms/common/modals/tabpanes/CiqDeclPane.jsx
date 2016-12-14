@@ -133,7 +133,7 @@ export default class CiqDeclPane extends React.Component {
           </Row>
         </Card>
         <Card bodyStyle={{ padding: 8 }}>
-          <Table size="small" columns={columns} pagination={false} dataSource={ciqdecl.ciqlist} />
+          <Table size="middle" columns={columns} pagination={false} dataSource={ciqdecl.ciqlist} />
         </Card>
       </div>
     );
