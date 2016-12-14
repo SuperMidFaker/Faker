@@ -7,12 +7,14 @@ import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import withPrivilege, { PrivilegeCover } from 'client/common/decorators/withPrivilege';
-import { loadQuoteTable, updateQuoteStatus, deleteQuote } from 'common/reducers/cmsQuote';
+import { loadQuoteTable, updateQuoteStatus, deleteQuote, openCreateModal } from 'common/reducers/cmsQuote';
 import { TARIFF_KINDS, TRANS_MODE, DECL_I_TYPE, DECL_E_TYPE } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import NavLink from 'client/components/nav-link';
 import moment from 'moment';
+import CreateQtModal from './modals/createQtModal';
+
 const formatMsg = format(messages);
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
@@ -36,7 +38,7 @@ function fetchData({ state, dispatch }) {
     quotesList: state.cmsQuote.quotesList,
     listFilter: state.cmsQuote.listFilter,
   }),
-  { loadQuoteTable, updateQuoteStatus, deleteQuote }
+  { loadQuoteTable, updateQuoteStatus, deleteQuote, openCreateModal }
 )
 @connectNav({
   depth: 2,
@@ -129,9 +131,12 @@ export default class QuoteList extends Component {
       }
     });
   }
+  handleCreateNew = () => {
+    this.props.openCreateModal();
+  }
   render() {
     const msg = descriptor => formatMsg(this.props.intl, descriptor);
-    const { quotesList, listFilter } = this.props;
+    const { quotesList, listFilter, tenantId } = this.props;
     this.dataSource.remotes = quotesList;
     const DECL_TYPE = DECL_I_TYPE.concat(DECL_E_TYPE);
     const columns = [
@@ -148,14 +153,31 @@ export default class QuoteList extends Component {
         },
       }, {
         title: msg('partners'),
-        dataIndex: 'partner.name',
         width: 240,
+        render: (record) => {
+          let partnerName = '';
+          if (record.recv_tenant_id === tenantId) {
+            partnerName = record.send_tenant_name;
+          } else if (record.send_tenant_id === tenantId) {
+            partnerName = record.recv_tenant_name;
+          }
+          return partnerName;
+        },
       }, {
         title: msg('tariffKinds'),
-        dataIndex: 'tariff_kind',
         width: 80,
-        render: (o) => {
-          const decl = TARIFF_KINDS.filter(ts => ts.value === o)[0];
+        render: (record) => {
+          let tariffKinds = '';
+          if (!record.send_tenant_id) {
+            tariffKinds = 'salesBase';
+          } else if (!record.recv_tenant_id) {
+            tariffKinds = 'costBase';
+          } else if (record.recv_tenant_id === tenantId) {
+            tariffKinds = 'sales';
+          } else if (record.send_tenant_id === tenantId) {
+            tariffKinds = 'cost';
+          }
+          const decl = TARIFF_KINDS.filter(ts => ts.value === tariffKinds)[0];
           return decl && decl.text;
         },
       }, {
@@ -253,11 +275,15 @@ export default class QuoteList extends Component {
             <RadioButton value="selling">{msg('filterSelling')}</RadioButton>
             <RadioButton value="buying">{msg('filterBuying')}</RadioButton>
           </RadioGroup>
+          <span />
+          <RadioGroup value={listFilter.status} onChange={this.handleRadioChange}>
+            <RadioButton value="draft">{msg('filterDraft')}</RadioButton>
+          </RadioGroup>
         </header>
         <div className="main-content" key="main">
           <div className="page-body">
             <div className="panel-header">
-              <Button type="primary" onClick={() => this.handleNavigationTo('/clearance/billing/quote/create')}>
+              <Button type="primary" onClick={this.handleCreateNew}>
                 新建报价
               </Button>
             </div>
@@ -266,6 +292,7 @@ export default class QuoteList extends Component {
             </div>
           </div>
         </div>
+        <CreateQtModal />
       </QueueAnim>
     );
   }

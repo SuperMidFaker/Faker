@@ -17,6 +17,10 @@ const messages = defineMessages({
     id: 'cms.quote.filter.buying',
     defaultMessage: '成本价',
   },
+  filterDraft: {
+    id: 'cms.quote.filter.draft',
+    defaultMessage: '草稿箱',
+  },
   quoteNo: {
     id: 'cms.quote.quote_no',
     defaultMessage: '报价编号',
