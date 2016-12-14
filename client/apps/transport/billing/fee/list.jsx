@@ -8,7 +8,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
-import { loadFees, changeFeesFilter, loadPartners, toggleAdvanceChargeModal } from 'common/reducers/transportBilling';
+import { loadFees, changeFeesFilter, loadPartners, showAdvanceModal } from 'common/reducers/transportBilling';
 import TrimSpan from 'client/components/trimSpan';
 import { renderConsignLoc } from '../../common/consignLocation';
 import { createFilename } from 'client/util/dataTransform';
@@ -19,23 +19,23 @@ import ActDate from '../../common/actDate';
 import SearchBar from 'client/components/search-bar';
 import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 import SpecialChargePopover from './specialChargePopover';
-import AdvanceChargeModal from '../modals/advanceChargeModal';
+import ShipmentAdvanceModal from '../../tracking/land/modals/shipment-advance-modal';
 
 const formatMsg = format(messages);
 const RangePicker = DatePicker.RangePicker;
 
 function fetchData({ state, dispatch }) {
-  const sDate = new Date();
-  sDate.setMonth(sDate.getMonth() - 3);
-  const eDate = new Date();
+  const startDate = new Date();
+  startDate.setMonth(startDate.getMonth() - 3);
+  const endDate = new Date();
   return dispatch(loadFees({
     tenantId: state.account.tenantId,
     pageSize: state.transportBilling.fees.pageSize,
     currentPage: state.transportBilling.fees.currentPage,
     searchValue: state.transportBilling.fees.searchValue,
-    startDate: moment(sDate).format('YYYY-MM-DD 00:00:00'),
-    endDate: moment(eDate).format('YYYY-MM-DD 23:59:59'),
-    filters: JSON.stringify(state.transportBilling.fees.filters),
+    startDate,
+    endDate,
+    filters: state.transportBilling.fees.filters,
   }));
 }
 
@@ -53,7 +53,7 @@ function fetchData({ state, dispatch }) {
     fees: state.transportBilling.fees,
     loading: state.transportBilling.loading,
   }),
-  { loadFees, loadShipmtDetail, changeFeesFilter, loadPartners, toggleAdvanceChargeModal }
+  { loadFees, loadShipmtDetail, changeFeesFilter, loadPartners, showAdvanceModal }
 )
 
 export default class FeesList extends React.Component {
@@ -68,7 +68,7 @@ export default class FeesList extends React.Component {
     changeFeesFilter: PropTypes.func.isRequired,
     loadPartners: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
-    toggleAdvanceChargeModal: PropTypes.func.isRequired,
+    showAdvanceModal: PropTypes.func.isRequired,
   }
   state = {
     customers: [],
@@ -105,10 +105,10 @@ export default class FeesList extends React.Component {
       tenantId,
       pageSize,
       currentPage,
-      startDate: moment(startDate).format('YYYY-MM-DD 00:00:00'),
-      endDate: moment(endDate).format('YYYY-MM-DD 23:59:59'),
+      startDate,
+      endDate,
       searchValue: searchValue !== undefined ? searchValue : this.props.fees.searchValue,
-      filters: JSON.stringify(filters),
+      filters,
     });
   }
   msg = (key, values) => formatMsg(this.props.intl, key, values)
@@ -121,6 +121,12 @@ export default class FeesList extends React.Component {
   }
   handleSearchInput = (value) => {
     this.props.changeFeesFilter('searchValue', value);
+  }
+  handleShowShipmentAdvanceModal = (row) => {
+    // todo 取parentDisp sr_tenant_id
+    this.props.showAdvanceModal({ visible: true, dispId: row.parent_id, shipmtNo: row.shipmt_no,
+      transportModeId: row.transport_mode_id, goodsType: row.goods_type,
+    });
   }
   render() {
     const { customers, carriers } = this.state;
@@ -151,8 +157,17 @@ export default class FeesList extends React.Component {
     }, {
       title: '代垫收入',
       dataIndex: 'p_advance_charge',
-      render(o) {
-        return o ? o.toFixed(2) : '';
+      render: (o, row) => {
+        if (row.p_sr_name) {
+          return (
+            <a onClick={() => this.handleShowShipmentAdvanceModal(row)}>
+              {o ? o.toFixed(2) : '0.00'}
+              <Icon type="edit" />
+            </a>
+          );
+        } else {
+          return '';
+        }
       },
     }, {
       title: '特殊费用收入',
@@ -375,8 +390,7 @@ export default class FeesList extends React.Component {
         <div className="main-content">
           <div className="page-body">
             <div className="panel-header">
-              <Button type="primary" onClick={() => this.props.toggleAdvanceChargeModal(true)} >{this.msg('importAdvanceCharge')}</Button>
-              <Button style={{ marginLeft: 16 }} onClick={this.handleExportExcel}>{this.msg('export')}</Button>
+              <Button onClick={this.handleExportExcel}>{this.msg('export')}</Button>
               <div style={{ float: 'right' }}>
                 <RangePicker style={{ width: 200 }} value={[moment(startDate), moment(endDate)]}
                   onChange={this.onDateChange}
@@ -389,7 +403,7 @@ export default class FeesList extends React.Component {
           </div>
         </div>
         <PreviewPanel stage="billing" />
-        <AdvanceChargeModal data={[]} onOk={this.handleTableLoad} />
+        <ShipmentAdvanceModal />
       </div>
     );
   }

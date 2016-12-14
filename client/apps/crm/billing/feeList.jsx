@@ -8,7 +8,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import { loadOrders, loadClearanceFees, loadTransportFees, changeFeesFilter, loadPartners, toggleAdvanceChargeModal } from 'common/reducers/crmBilling';
+import { loadOrders, loadClearanceFees, loadTransportFees, changeFeesFilter, loadPartners } from 'common/reducers/crmBilling';
 import TrimSpan from 'client/components/trimSpan';
 // import { createFilename } from 'client/util/dataTransform';
 import PreviewPanel from '../orders/modals/preview-panel';
@@ -50,7 +50,7 @@ function fetchData({ state, dispatch }) {
     fees: state.crmBilling.fees,
     loading: state.crmBilling.loading,
   }),
-  { loadOrders, loadClearanceFees, loadTransportFees, loadOrderDetail, changeFeesFilter, loadPartners, toggleAdvanceChargeModal }
+  { loadOrders, loadClearanceFees, loadTransportFees, loadOrderDetail, changeFeesFilter, loadPartners }
 )
 
 export default class FeesList extends React.Component {
@@ -67,7 +67,6 @@ export default class FeesList extends React.Component {
     loadClearanceFees: PropTypes.func.isRequired,
     loadTransportFees: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
-    toggleAdvanceChargeModal: PropTypes.func.isRequired,
   }
   state = {
     customers: [],
@@ -257,8 +256,7 @@ export default class FeesList extends React.Component {
         <div className="main-content">
           <div className="page-body">
             <div className="panel-header">
-              <Button type="primary" onClick={() => this.props.toggleAdvanceChargeModal(true)} >{this.msg('import')}</Button>
-              <Button style={{ marginLeft: 16 }} onClick={this.handleExportExcel}>{this.msg('export')}</Button>
+              <Button onClick={this.handleExportExcel}>{this.msg('export')}</Button>
               <div style={{ float: 'right' }}>
                 <RangePicker style={{ width: 200 }} value={[moment(startDate), moment(endDate)]}
                   onChange={this.onDateChange}

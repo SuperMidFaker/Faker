@@ -152,6 +152,7 @@ export default class SurchargeForm extends React.Component {
       }
       this.props.surcharge[item][key] = value;
     }
+    this.forceUpdate();
   }
 
   handleFeeNameChange = (index, value) => {
@@ -247,7 +248,7 @@ export default class SurchargeForm extends React.Component {
         dataIndex: 'fee_name',
         render: (o, record, index) => {
           if (index >= 4 && index === editIndex) {
-            return (<Input defaultValue={o} placeholder="自定义费用名称" onChange={e => this.handleFeeNameChange(index, e.target.value)} />);
+            return (<Input value={o} placeholder="自定义费用名称" onChange={e => this.handleFeeNameChange(index, e.target.value)} />);
           } else {
             return o;
           }
@@ -258,7 +259,7 @@ export default class SurchargeForm extends React.Component {
         width: 80,
         render: (o, record, index) => {
           if (index >= 4 && index === editIndex) {
-            return (<Input defaultValue={o} placeholder="自定义费用代码" onChange={e => this.handleFeeCodeChange(index, e.target.value)} />);
+            return (<Input value={o} placeholder="自定义费用代码" onChange={e => this.handleFeeCodeChange(index, e.target.value)} />);
           } else {
             return o;
           }
@@ -270,7 +271,7 @@ export default class SurchargeForm extends React.Component {
         render: (o, record, index) => {
           if (index >= 4 && index === editIndex) {
             return (
-              <Select defaultValue={o} style={{ width: '100%' }} onChange={e => this.handleFeeStyleChange(index, e)} >
+              <Select value={o} style={{ width: '100%' }} onChange={e => this.handleFeeStyleChange(index, e)} >
                 {
                   FEE_STYLE.map((opt, idx) => <Option value={opt.value} key={`${opt.value}${idx}`}>{opt.text}</Option>)
                 }
@@ -287,7 +288,7 @@ export default class SurchargeForm extends React.Component {
         render: (o, record, index) => {
           if (index === editIndex) {
             return (
-              <Select defaultValue={Number(o)} style={{ width: '100%' }} onChange={e => this.handleChargeModeChange(index, e)} >
+              <Select value={Number(o)} style={{ width: '100%' }} onChange={e => this.handleChargeModeChange(index, e)} >
                 <Option value={TAX_MODE.eachwaybill.key}>{TAX_MODE.eachwaybill.value}</Option>
                 <Option value={TAX_MODE.chargeunit.key}>{TAX_MODE.chargeunit.value}</Option>
               </Select>
@@ -303,7 +304,7 @@ export default class SurchargeForm extends React.Component {
         render: (o, record, index) => {
           if (index >= 4) {
             if (index === editIndex) {
-              return (<Input defaultValue={o} placeholder="自定义费用代码" onChange={e => this.handleLotNumChange(index, e.target.value)} />);
+              return (<Input value={o} placeholder="自定义费用代码" onChange={e => this.handleLotNumChange(index, e.target.value)} />);
             } else {
               return o;
             }
@@ -318,7 +319,7 @@ export default class SurchargeForm extends React.Component {
         render: (o, record, index) => {
           if (index >= 4) {
             if (index === editIndex) {
-              return (<Input defaultValue={o} placeholder="自定义费用代码" onChange={e => this.handleFreeNumChange(index, e.target.value)} />);
+              return (<Input value={o} placeholder="自定义费用代码" onChange={e => this.handleFreeNumChange(index, e.target.value)} />);
             } else {
               return o;
             }
@@ -332,7 +333,7 @@ export default class SurchargeForm extends React.Component {
         width: 80,
         render: (o, record, index) => {
           if (index === editIndex) {
-            return (<Input defaultValue={o} placeholder="自定义计费单价" onChange={e => this.handleUnitPriceChange(index, e.target.value)} />);
+            return (<Input value={o} placeholder="自定义计费单价" onChange={e => this.handleUnitPriceChange(index, e.target.value)} />);
           }
           return o;
         },
@@ -342,7 +343,7 @@ export default class SurchargeForm extends React.Component {
         width: 80,
         render: (o, record, index) => {
           if (index >= 4) {
-            return (<Switch size="small" defaultChecked={o} disabled={index !== editIndex} onChange={e => this.handleInvoiceEnChange(index, e)} />);
+            return (<Switch size="small" checked={o} disabled={index !== editIndex} onChange={e => this.handleInvoiceEnChange(index, e)} />);
           } else {
             return '';
           }
@@ -354,9 +355,9 @@ export default class SurchargeForm extends React.Component {
         render: (o, record, index) => {
           if (index >= 4) {
             if (index === editIndex) {
-              return (<Input defaultValue={o} placeholder="自定义费用代码" addonAfter="%" onChange={e => this.handleTaxRateChange(index, e.target.value)} />);
+              return (<Input value={o * 100} placeholder="自定义费用代码" addonAfter="%" onChange={e => this.handleTaxRateChange(index, e.target.value / 100)} />);
             } else {
-              return o;
+              return `${o * 100}%`;
             }
           } else {
             return '';
@@ -368,7 +369,7 @@ export default class SurchargeForm extends React.Component {
         width: 80,
         render: (o, record, index) => {
           if (index >= 4) {
-            return (<Switch size="small" defaultChecked={o} disabled={index !== editIndex} onChange={e => this.handleEnabledChange(index, e)} />);
+            return (<Switch size="small" checked={o} disabled={index !== editIndex} onChange={e => this.handleEnabledChange(index, e)} />);
           } else {
             return '';
           }
