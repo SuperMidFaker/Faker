@@ -23,6 +23,8 @@ const actionTypes = createActionTypes('@@welogix/transport/billing/', [
   'LOAD_SPECIAL_CHARGES', 'LOAD_SPECIAL_CHARGES_SUCCEED', 'LOAD_SPECIAL_CHARGES_FAIL',
   'CREATE_ADVANCE', 'CREATE_ADVANCE_SUCCEED', 'CREATE_ADVANCE_FAIL',
   'SHOW_SHIPMENT_ADVANCE_MODAL', 'SHOW_SHIPMENT_ADVANCE_MODAL_SUCCEED', 'SHOW_SHIPMENT_ADVANCE_MODAL_FAIL',
+  'SHOW_SPECIAL_CHARGE_MODAL',
+  'CREATE_SPECIALCHARGE', 'CREATE_SPECIALCHARGE_FAIL', 'CREATE_SPECIALCHARGE_SUCCEED',
 ]);
 
 const initialState = {
@@ -82,6 +84,14 @@ const initialState = {
     transportModeId: -1,
     goodsType: -1,
     advances: [],
+  },
+  specialChargeModal: {
+    visible: false,
+    dispId: -1,
+    parentDispId: -1,
+    spTenantId: -2,
+    shipmtNo: '',
+    type: -2,
   },
 };
 
@@ -220,6 +230,13 @@ export default function reducer(state = initialState, action) {
       return {
         ...state, loaded: false,
       };
+    case actionTypes.SHOW_SPECIAL_CHARGE_MODAL:
+      return {
+        ...state, specialChargeModal: { ...state.specialChargeModal, ...action.data },
+      };
+    case actionTypes.CREATE_SPECIALCHARGE_SUCCEED: {
+      return { ...state, loaded: false, };
+    }
     default:
       return state;
   }
@@ -493,4 +510,26 @@ export function showAdvanceModal({ visible, dispId, shipmtNo, transportModeId, g
   } else {
     return { type: actionTypes.SHOW_SHIPMENT_ADVANCE_MODAL, data: { visible, dispId, shipmtNo, transportModeId, goodsType } };
   }
+}
+
+export function showSpecialChargeModal({ visible, dispId, shipmtNo, parentDispId, spTenantId, type }) {
+  return {
+    type: actionTypes.SHOW_SPECIAL_CHARGE_MODAL,
+    data: { visible, dispId, shipmtNo, parentDispId, spTenantId, type },
+  };
+}
+
+export function createSpecialCharge({ shipmtNo, dispId, type, remark, submitter, charge, tenantId, loginId }) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.CREATE_SPECIALCHARGE,
+        actionTypes.CREATE_SPECIALCHARGE_SUCCEED,
+        actionTypes.CREATE_SPECIALCHARGE_FAIL,
+      ],
+      endpoint: 'v1/transport/billing/createSpecialCharge',
+      method: 'post',
+      data: { shipmtNo, dispId, type, remark, submitter, charge, tenantId, loginId },
+    },
+  };
 }

@@ -2,8 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Form, message, Input, Modal, Radio } from 'antd';
-import { createSpecialCharge } from 'common/reducers/trackingLandException';
-import { showSpecialChargeModal } from 'common/reducers/trackingLandStatus';
+import { showSpecialChargeModal, createSpecialCharge } from 'common/reducers/transportBilling';
 const FormItem = Form.Item;
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
@@ -14,11 +13,12 @@ const RadioGroup = Radio.Group;
     loginId: state.account.loginId,
     tenantId: state.account.tenantId,
     loginName: state.account.username,
-    visible: state.trackingLandStatus.shipmentSpecialChargeModal.visible,
-    dispId: state.trackingLandStatus.shipmentSpecialChargeModal.dispId,
-    spTenantId: state.trackingLandStatus.shipmentSpecialChargeModal.spTenantId,
-    parentDispId: state.trackingLandStatus.shipmentSpecialChargeModal.parentDispId,
-    shipmtNo: state.trackingLandStatus.shipmentSpecialChargeModal.shipmtNo,
+    visible: state.transportBilling.specialChargeModal.visible,
+    dispId: state.transportBilling.specialChargeModal.dispId,
+    spTenantId: state.transportBilling.specialChargeModal.spTenantId,
+    parentDispId: state.transportBilling.specialChargeModal.parentDispId,
+    shipmtNo: state.transportBilling.specialChargeModal.shipmtNo,
+    type: state.transportBilling.specialChargeModal.type,
   }),
   { createSpecialCharge, showSpecialChargeModal }
 )
@@ -36,7 +36,7 @@ export default class CreateSpecialCharge extends React.Component {
     createSpecialCharge: PropTypes.func.isRequired,
     visible: PropTypes.bool.isRequired,
     showSpecialChargeModal: PropTypes.func.isRequired,
-
+    type: PropTypes.number.isRequired,
   }
   handleOk = () => {
     const { form, dispId, parentDispId, shipmtNo, loginName, loginId, tenantId } = this.props;
@@ -44,7 +44,10 @@ export default class CreateSpecialCharge extends React.Component {
     const fieldsValue = form.getFieldsValue();
     if (fieldsValue && fieldsValue.charge) {
       this.props.form.setFieldsValue({ charge: '', remark: '', type: '1' });
-      const type = Number(fieldsValue.type);
+      let type = this.props.type;
+      if (this.props.type !== -1 && this.props.type !== 1) {
+        type = Number(fieldsValue.type);
+      }
       this.props.createSpecialCharge({
         shipmtNo,
         dispId: type === 1 ? parentDispId : dispId,
@@ -55,10 +58,11 @@ export default class CreateSpecialCharge extends React.Component {
         loginId,
         tenantId,
       }).then((result) => {
+        this.handleCancel();
         if (result.error) {
           message.error(result.error);
         } else {
-          this.handleCancel();
+          
           message.info('添加成功');
         }
       });
@@ -70,21 +74,27 @@ export default class CreateSpecialCharge extends React.Component {
     this.props.showSpecialChargeModal({ visible: false, dispId: -1, shipmtNo: '', parentDispId: -1, spTenantId: -2 });
   }
   render() {
-    const { form: { getFieldDecorator }, spTenantId } = this.props;
+    const { form: { getFieldDecorator }, spTenantId, type } = this.props;
     const colSpan = 6;
     return (
       <Modal title="添加特殊费用" onCancel={this.handleCancel} onOk={this.handleOk}
         visible={this.props.visible} maskClosable={false}
       >
         <Form className="row" style={{ width: '400px' }}>
-          <FormItem label="类型" labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }} required >
-            {getFieldDecorator('type', {
-              initialValue: '1',
-            })(<RadioGroup>
-              <RadioButton value="1">向客户收取</RadioButton>
-              {spTenantId !== 0 && spTenantId !== -1 ? (<RadioButton value="-1">向承运商支付</RadioButton>) : ''}
-            </RadioGroup>)}
-          </FormItem>
+          {
+            type !== -1 && type !== 1 ?
+            (
+              <FormItem label="类型" labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }} required >
+                {getFieldDecorator('type', {
+                  initialValue: '1',
+                })(<RadioGroup>
+                  <RadioButton value="1">向客户收取</RadioButton>
+                  {spTenantId !== 0 && spTenantId !== -1 ? (<RadioButton value="-1">向承运商支付</RadioButton>) : ''}
+                </RadioGroup>)}
+              </FormItem>
+            ) : null
+          }
+          
           <FormItem label="金额" labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }} required >
             {getFieldDecorator('charge', {
               initialValue: '',

@@ -6,7 +6,6 @@ const actionTypes = createActionTypes('@@welogix/transport/tracking/land/excepti
   'LOAD_EXCEPTIONS', 'LOAD_EXCEPTIONS_FAIL', 'LOAD_EXCEPTIONS_SUCCEED',
   'CREATE_EXCEPTION', 'CREATE_EXCEPTION_FAIL', 'CREATE_EXCEPTION_SUCCEED',
   'DEAL_EXCEPTION', 'DEAL_EXCEPTION_FAIL', 'DEAL_EXCEPTION_SUCCEED',
-  'CREATE_SPECIALCHARGE', 'CREATE_SPECIALCHARGE_FAIL', 'CREATE_SPECIALCHARGE_SUCCEED',
   'CHANGE_FILTER', 'SHOW_EXCPMODAL', 'SHOW_DEAL_EXCEPTION_MODAL', 'SHOW_CREATE_EXCEPTION_MODAL',
 ]);
 
@@ -69,9 +68,6 @@ export default function reducer(state = initialState, action) {
     case actionTypes.DEAL_EXCEPTION_SUCCEED: {
       return { ...state };
     }
-    case actionTypes.CREATE_SPECIALCHARGE_SUCCEED: {
-      return { ...state };
-    }
     case actionTypes.SHOW_CREATE_EXCEPTION_MODAL:
       return { ...state, createExcpModal: action.data };
     case actionTypes.SHOW_DEAL_EXCEPTION_MODAL:
@@ -130,21 +126,6 @@ export function createException({ dispId, excpLevel, type, typeName, excpEvent, 
       endpoint: 'v1/transport/tracking/exception',
       method: 'post',
       data: { dispId, excpLevel, type, typeName, excpEvent, submitter },
-    },
-  };
-}
-
-export function createSpecialCharge({ shipmtNo, dispId, type, remark, submitter, charge, tenantId, loginId }) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.CREATE_SPECIALCHARGE,
-        actionTypes.CREATE_SPECIALCHARGE_SUCCEED,
-        actionTypes.CREATE_SPECIALCHARGE_FAIL,
-      ],
-      endpoint: 'v1/transport/billing/createSpecialCharge',
-      method: 'post',
-      data: { shipmtNo, dispId, type, remark, submitter, charge, tenantId, loginId },
     },
   };
 }

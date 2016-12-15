@@ -48,7 +48,7 @@ function getTrackStatusMsg(status, eff) {
     changeShipmentModalVisible: state.shipment.changeShipmentModal.visible,
     createExcpModalVisible: state.trackingLandException.createExcpModal.visible,
     dealExcpModalVisible: state.trackingLandException.dealExcpModal.visible,
-    specialChargeModalVisible: state.trackingLandStatus.shipmentSpecialChargeModal.visible,
+    specialChargeModalVisible: state.transportBilling.specialChargeModal.visible,
     advanceChargeModalvisible: state.transportBilling.advanceModal.visible,
     locModalVisible: state.trackingLandStatus.locModal.visible,
     dateModalVisible: state.trackingLandStatus.dateModal.visible,
