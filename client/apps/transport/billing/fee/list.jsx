@@ -185,8 +185,8 @@ export default class FeesList extends React.Component {
           return (
             <span onClick={() => this.handleShowSpecialChargeModal(row, 1)}>
               <SpecialChargePopover dispId={row.parent_id} shipmtNo={row.shipmt_no}>
-              {o ? o.toFixed(2) : '0.00'}
-              <Icon type="edit" />
+                {o ? o.toFixed(2) : '0.00'}
+                <Icon type="edit" />
               </SpecialChargePopover>
             </span>
           );
@@ -250,8 +250,8 @@ export default class FeesList extends React.Component {
           return (
             <span onClick={() => this.handleShowSpecialChargeModal(row, -1)}>
               <SpecialChargePopover dispId={row.disp_id} shipmtNo={row.shipmt_no}>
-              {o ? o.toFixed(2) : '0.00'}
-              <Icon type="edit" />
+                {o ? o.toFixed(2) : '0.00'}
+                <Icon type="edit" />
               </SpecialChargePopover>
             </span>
           );

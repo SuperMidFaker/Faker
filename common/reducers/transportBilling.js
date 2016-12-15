@@ -235,7 +235,7 @@ export default function reducer(state = initialState, action) {
         ...state, specialChargeModal: { ...state.specialChargeModal, ...action.data },
       };
     case actionTypes.CREATE_SPECIALCHARGE_SUCCEED: {
-      return { ...state, loaded: false, };
+      return { ...state, loaded: false };
     }
     default:
       return state;

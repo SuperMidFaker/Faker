@@ -62,7 +62,6 @@ export default class CreateSpecialCharge extends React.Component {
         if (result.error) {
           message.error(result.error);
         } else {
-          
           message.info('添加成功');
         }
       });
@@ -94,7 +93,7 @@ export default class CreateSpecialCharge extends React.Component {
               </FormItem>
             ) : null
           }
-          
+
           <FormItem label="金额" labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }} required >
             {getFieldDecorator('charge', {
               initialValue: '',
