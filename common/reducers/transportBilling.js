@@ -146,7 +146,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_PARTNERS_SUCCEED:
       return { ...state, partners: action.result.data };
     case actionTypes.LOAD_FEES:
-      return { ...state, loading: true, loaded: true, };
+      return { ...state, loading: true, loaded: true };
     case actionTypes.LOAD_FEES_SUCCEED:
       return { ...state,
         fees: {
@@ -493,5 +493,4 @@ export function showAdvanceModal({ visible, dispId, shipmtNo, transportModeId, g
   } else {
     return { type: actionTypes.SHOW_SHIPMENT_ADVANCE_MODAL, data: { visible, dispId, shipmtNo, transportModeId, goodsType } };
   }
-  
 }
