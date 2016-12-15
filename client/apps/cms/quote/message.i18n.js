@@ -93,21 +93,17 @@ const messages = defineMessages({
     id: 'cms.quote.fee_style',
     defaultMessage: '费用类型',
   },
-  chargeMode: {
-    id: 'cms.quote.charge_mode',
-    defaultMessage: '计费方式',
+  chargeParam: {
+    id: 'cms.quote.charge.param',
+    defaultMessage: '计费参数',
   },
-  lotNum: {
-    id: 'cms.quote.lot_num',
-    defaultMessage: '批次量',
-  },
-  freeNum: {
-    id: 'cms.quote.free_num',
-    defaultMessage: '免计量',
+  formulaFactor: {
+    id: 'cms.quote.formula.factor',
+    defaultMessage: '单价/费率/公式',
   },
   unitPrice: {
-    id: 'cms.quote.unit_quote',
-    defaultMessage: '计费单价',
+    id: 'cms.quote.unit_price',
+    defaultMessage: '单价',
   },
   modifiedCount: {
     id: 'cms.quote.modified_count',
@@ -132,6 +128,14 @@ const messages = defineMessages({
   operation: {
     id: 'cms.quote.operation',
     defaultMessage: '操作',
+  },
+  batchModify: {
+    id: 'cms.quote.batchModify',
+    defaultMessage: '批量修改',
+  },
+  batchSave: {
+    id: 'cms.quote.batchSave',
+    defaultMessage: '全部保存',
   },
   save: {
     id: 'cms.quote.save',
@@ -204,6 +208,34 @@ const messages = defineMessages({
   trail: {
     id: 'cms.quote.trail',
     defaultMessage: '试算',
+  },
+  publishTitle: {
+    id: 'cms.quote.modal.publish.title',
+    defaultMessage: '报价发布',
+  },
+  basementDateType: {
+    id: 'cms.quote.modal.basement.datetype',
+    defaultMessage: '基准日期类型',
+  },
+  basementDate: {
+    id: 'cms.quote.modal.basement.date',
+    defaultMessage: '生效起始时间',
+  },
+  publishRemark: {
+    id: 'cms.quote.modal.publish.remark',
+    defaultMessage: '说明',
+  },
+  publishVersion: {
+    id: 'cms.quote.revision.publish.version',
+    defaultMessage: '版本',
+  },
+  publishDate: {
+    id: 'cms.quote.revision.publish.date',
+    defaultMessage: '发布日期',
+  },
+  publisher: {
+    id: 'cms.quote.revision.publisher',
+    defaultMessage: '发布人',
   },
 });
 export default messages;

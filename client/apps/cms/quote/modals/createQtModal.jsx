@@ -25,7 +25,6 @@ const formItemLayout = {
     visible: state.cmsQuote.visibleCreateModal,
     partners: state.cmsQuote.partners,
     quoteData: state.cmsQuote.quoteData,
-    quoteNo: state.cmsQuote.quoteNo,
   }),
   { closeCreateModal, loadPartners, createQuote }
 )
@@ -37,7 +36,6 @@ export default class CreateQtModal extends React.Component {
     tenantName: PropTypes.string.isRequired,
     visible: PropTypes.bool.isRequired,
     partners: PropTypes.array.isRequired,
-    quoteNo: PropTypes.string.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
