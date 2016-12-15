@@ -65,27 +65,29 @@ export default class ShipmentAdvanceModal extends React.Component {
       if (nextProps.advances.length === 0) {
         for (let i = 0; i < nextProps.fees.length; i++) {
           const fee = nextProps.fees[i];
-          const advance = {
-            id: null,
-            shipmt_no: shipmtNo,
-            disp_id: dispId,
-            name: fee.fee_name,
-            code: fee.fee_code,
-            charge_mode: fee.charge_mode,
-            free_num: fee.free_num,
-            amount: 0,
-            unit_price: fee.unit_price,
-            tax_rate: fee.tax_rate,
-            currency: 'CNY',
-            tax_fee: 0,
-            invoice_en: fee.invoice_en,
-            duty_type: null,
-            remark: '',
-            submitter: loginName,
-            login_id: loginId,
-            tenant_id: tenantId,
-          };
-          advances.push(advance);
+          if (fee.enabled) {
+            const advance = {
+              id: null,
+              shipmt_no: shipmtNo,
+              disp_id: dispId,
+              name: fee.fee_name,
+              code: fee.fee_code,
+              charge_mode: fee.charge_mode,
+              free_num: fee.free_num,
+              amount: 0,
+              unit_price: fee.unit_price,
+              tax_rate: fee.tax_rate,
+              currency: 'CNY',
+              tax_fee: 0,
+              invoice_en: fee.invoice_en ? 1 : 0,
+              duty_type: null,
+              remark: '',
+              submitter: loginName,
+              login_id: loginId,
+              tenant_id: tenantId,
+            };
+            advances.push(advance);
+          }
         }
       }
       this.setState({ advances });
