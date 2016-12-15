@@ -9,6 +9,7 @@ import { Form, Tabs } from 'antd';
 import EditToolbar from './editToolbar';
 import FeesTable from './feesTable';
 import FeesForm from './feesForm';
+import RevisionTable from './revisionTable';
 import connectFetch from 'client/common/decorators/connect-fetch';
 const formatMsg = format(messages);
 const TabPane = Tabs.TabPane;
@@ -30,7 +31,17 @@ export default class QuotingEdit extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
   }
-
+  state = {
+    tabKey: 'fees-table',
+  }
+  handleFormError = () => {
+    this.setState({
+      tabKey: 'fees-form',
+    });
+  }
+  handleTabChange = (key) => {
+    this.setState({ tabKey: key });
+  }
   msg = key => formatMsg(this.props.intl, key);
   render() {
     const { form } = this.props;
@@ -39,10 +50,10 @@ export default class QuotingEdit extends Component {
         <header className="top-bar">
           <span>{this.props.params.quoteno}</span>
         </header>
-        <EditToolbar form={form} action="create" />
+        <EditToolbar form={form} onFormError={this.handleFormError} />
         <div className="main-content">
           <div className="page-body">
-            <Tabs defaultActiveKey="fees-table">
+            <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
               <TabPane tab="报价费率" key="fees-table">
                 <FeesTable action="edit" editable={false} />
               </TabPane>
@@ -50,7 +61,7 @@ export default class QuotingEdit extends Component {
                 <FeesForm form={form} action="edit" />
               </TabPane>
               <TabPane tab="修订历史" key="revision-history">
-                报价修订历史记录
+                <RevisionTable />
               </TabPane>
             </Tabs>
           </div>

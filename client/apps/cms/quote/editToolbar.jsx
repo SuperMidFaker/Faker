@@ -31,7 +31,7 @@ export default class EditToolbar extends Component {
       fees: PropTypes.arrayOf(PropTypes.shape({ fee_name: PropTypes.string.isRequired })),
     }),
     form: PropTypes.object.isRequired,
-    action: PropTypes.oneOf(['create', 'edit']),
+    onFormError: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -56,11 +56,19 @@ export default class EditToolbar extends Component {
             // this.context.router.push('/clearance/billing/quote');
           }
         });
+      } else {
+        this.props.onFormError();
       }
     });
   }
   handlePublish = () => {
-    this.props.openPublishModal();
+    this.props.form.validateFields((errors) => {
+      if (!errors) {
+        this.props.openPublishModal();
+      } else {
+        this.props.onFormError();
+      }
+    });
   }
   handleCopy = () => {
     const quoteData = {
