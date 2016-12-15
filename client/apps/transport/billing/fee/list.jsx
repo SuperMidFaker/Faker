@@ -8,7 +8,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
-import { loadFees, changeFeesFilter, loadPartners, showAdvanceModal } from 'common/reducers/transportBilling';
+import { loadFees, changeFeesFilter, loadPartners, showAdvanceModal, showSpecialChargeModal } from 'common/reducers/transportBilling';
 import TrimSpan from 'client/components/trimSpan';
 import { renderConsignLoc } from '../../common/consignLocation';
 import { createFilename } from 'client/util/dataTransform';
@@ -20,6 +20,7 @@ import SearchBar from 'client/components/search-bar';
 import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 import SpecialChargePopover from './specialChargePopover';
 import ShipmentAdvanceModal from '../../tracking/land/modals/shipment-advance-modal';
+import CreateSpecialCharge from '../../tracking/land/modals/create-specialCharge';
 
 const formatMsg = format(messages);
 const RangePicker = DatePicker.RangePicker;
@@ -52,8 +53,9 @@ function fetchData({ state, dispatch }) {
     loginName: state.account.username,
     fees: state.transportBilling.fees,
     loading: state.transportBilling.loading,
+    loaded: state.transportBilling.loaded,
   }),
-  { loadFees, loadShipmtDetail, changeFeesFilter, loadPartners, showAdvanceModal }
+  { loadFees, loadShipmtDetail, changeFeesFilter, loadPartners, showAdvanceModal, showSpecialChargeModal }
 )
 
 export default class FeesList extends React.Component {
@@ -68,7 +70,9 @@ export default class FeesList extends React.Component {
     changeFeesFilter: PropTypes.func.isRequired,
     loadPartners: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
+    loaded: PropTypes.bool.isRequired,
     showAdvanceModal: PropTypes.func.isRequired,
+    showSpecialChargeModal: PropTypes.func.isRequired,
   }
   state = {
     customers: [],
@@ -84,8 +88,8 @@ export default class FeesList extends React.Component {
     });
   }
   componentWillReceiveProps(nextProps) {
-    if (this.props.fees.searchValue !== nextProps.fees.searchValue) {
-      this.handleTableLoad(nextProps.fees.searchValue);
+    if (!nextProps.loaded) {
+      this.handleTableLoad();
     }
   }
   onDateChange = (value) => {
@@ -97,17 +101,17 @@ export default class FeesList extends React.Component {
   handleSelectionClear = () => {
     this.setState({ selectedRowKeys: [] });
   }
-  handleTableLoad = (searchValue) => {
+  handleTableLoad = () => {
     this.handleSelectionClear();
     const { tenantId } = this.props;
-    const { pageSize, currentPage, filters, startDate, endDate } = this.props.fees;
+    const { pageSize, currentPage, filters, startDate, endDate, searchValue } = this.props.fees;
     this.props.loadFees({
       tenantId,
       pageSize,
       currentPage,
       startDate,
       endDate,
-      searchValue: searchValue !== undefined ? searchValue : this.props.fees.searchValue,
+      searchValue,
       filters,
     });
   }
@@ -128,6 +132,10 @@ export default class FeesList extends React.Component {
       transportModeId: row.transport_mode_id, goodsType: row.goods_type,
     });
   }
+  handleShowSpecialChargeModal = (row, type) => {
+    this.props.showSpecialChargeModal({ visible: true, dispId: row.disp_id, shipmtNo: row.shipmt_no,
+      parentDispId: row.parent_id, spTenantId: row.sp_tenant_id, type });
+  }
   render() {
     const { customers, carriers } = this.state;
     const { loading } = this.props;
@@ -147,7 +155,7 @@ export default class FeesList extends React.Component {
       render(o) {
         return <TrimSpan text={o} maxLen={10} />;
       },
-      filters: customers.map(item => ({ text: item.partner_code ? `${item.partner_code} | ${item.name}` : item.name, value: item.name })),
+      filters: customers.map(item => ({ text: item.partner_code ? `${item.partner_code} | ${item.name}` : item.name, value: item.partner_id })),
     }, {
       title: '运输收入',
       dataIndex: 'p_total_charge',
@@ -172,11 +180,14 @@ export default class FeesList extends React.Component {
     }, {
       title: '特殊费用收入',
       dataIndex: 'p_excp_charge',
-      render(o, record) {
-        if (o !== undefined && o !== null) {
+      render: (o, row) => {
+        if (row.p_sr_name) {
           return (
-            <span>
-              <SpecialChargePopover dispId={record.parent_id} shipmtNo={record.shipmt_no}>{o.toFixed(2)}</SpecialChargePopover>
+            <span onClick={() => this.handleShowSpecialChargeModal(row, 1)}>
+              <SpecialChargePopover dispId={row.parent_id} shipmtNo={row.shipmt_no}>
+                {o ? o.toFixed(2) : '0.00'}
+                <Icon type="edit" />
+              </SpecialChargePopover>
             </span>
           );
         } else {
@@ -218,7 +229,7 @@ export default class FeesList extends React.Component {
       render(o) {
         return <TrimSpan text={o} maxLen={10} />;
       },
-      filters: carriers.map(item => ({ text: item.partner_code ? `${item.partner_code} | ${item.name}` : item.name, value: item.name })),
+      filters: carriers.map(item => ({ text: item.partner_code ? `${item.partner_code} | ${item.name}` : item.name, value: item.partner_id })),
     }, {
       title: '运输成本',
       dataIndex: 'total_charge',
@@ -234,11 +245,14 @@ export default class FeesList extends React.Component {
     }, {
       title: '特殊费用成本',
       dataIndex: 'excp_charge',
-      render(o, record) {
-        if (o !== undefined && o !== null) {
+      render: (o, row) => {
+        if (row.sp_name) {
           return (
-            <span>
-              <SpecialChargePopover dispId={record.disp_id} shipmtNo={record.shipmt_no}>{o.toFixed(2)}</SpecialChargePopover>
+            <span onClick={() => this.handleShowSpecialChargeModal(row, -1)}>
+              <SpecialChargePopover dispId={row.disp_id} shipmtNo={row.shipmt_no}>
+                {o ? o.toFixed(2) : '0.00'}
+                <Icon type="edit" />
+              </SpecialChargePopover>
             </span>
           );
         } else {
@@ -364,7 +378,7 @@ export default class FeesList extends React.Component {
           searchValue,
           startDate: moment(startDate).format('YYYY-MM-DD 00:00:00'),
           endDate: moment(endDate).format('YYYY-MM-DD 23:59:59'),
-          filters: JSON.stringify(filters),
+          filters,
         };
         return params;
       },
@@ -404,6 +418,7 @@ export default class FeesList extends React.Component {
         </div>
         <PreviewPanel stage="billing" />
         <ShipmentAdvanceModal />
+        <CreateSpecialCharge />
       </div>
     );
   }

@@ -80,9 +80,10 @@ export default class CreateBilling extends React.Component {
       this.props.createBilling({
         tenantId, loginId, loginName, name, chooseModel, beginDate,
         endDate, freightCharge,
-        advanceCharge, excpCharge, adjustCharge, totalCharge, srTenantId: fee.sr_tenant_id, srName: fee.sr_name,
-        spTenantId: fee.sp_tenant_id, spName: fee.sp_name, toTenantId: partnerTenantId,
-        shipmtCount, fees,
+        advanceCharge, excpCharge, adjustCharge, totalCharge,
+        srTenantId: fee.sr_tenant_id, srPartnerId: fee.sr_partner_id, srName: fee.sr_name,
+        spTenantId: fee.sp_tenant_id, spPartnerId: fee.sp_partner_id, spName: fee.sp_name,
+        toTenantId: partnerTenantId, shipmtCount, fees,
       }).then((result) => {
         if (result.error) {
           message.error(result.error.message);

@@ -132,6 +132,13 @@ export default class QuoteList extends Component {
       });
     }
   }
+  handleQuoteView = (row) => {
+    if (row.status === 'draft') {
+      this.context.router.push(`/clearance/billing/quote/view/${row.quote_no}/${row.version}`);
+    } else if (row.next_version) {
+      this.context.router.push(`/clearance/billing/quote/view/${row.quote_no}/${row.next_version}`);
+    }
+  }
   handleDeleteQuote = (quoteNo) => {
     this.props.deleteQuote(quoteNo).then((result) => {
       if (result.error) {
@@ -252,33 +259,57 @@ export default class QuoteList extends Component {
         render: o => o && moment(o).format('MM.DD HH:mm'),
       }, {
         title: msg('operation'),
-        width: 100,
+        width: 120,
         fixed: 'right',
         render: (o, record) => {
-          if (record.valid) {
+          let auth = '';
+          if (record.create_tenant_id === tenantId) {
+            auth = 'modify';
+          } else if (record.partner_permission === 2) {
+            auth = 'modify';
+          } else if (record.partner_permission === 1) {
+            auth = 'read';
+          }
+          if (auth === 'modify') {
+            if (record.valid) {
+              return (
+                <span>
+                  <PrivilegeCover module="clearance" feature="quote" action="edit">
+                    <div>
+                      <a onClick={() => this.handleChangeStatus(record._id, false)}>{msg('disable')}</a>
+                      <span className="ant-divider" />
+                      <a onClick={() => this.handleQuoteEdit(record)}>{msg('modify')}</a>
+                      <span className="ant-divider" />
+                      <a onClick={() => this.handleQuoteView(record)}>{msg('view')}</a>
+                    </div>
+                  </PrivilegeCover>
+                </span>
+              );
+            } else {
+              return (
+                <span>
+                  <PrivilegeCover module="clearance" feature="quote" action="edit">
+                    <div>
+                      <a onClick={() => this.handleChangeStatus(record._id, true)}>{msg('enable')}</a>
+                      <span className="ant-divider" />
+                      {
+                        record.status === 'draft' ?
+                          <a onClick={() => this.handleDeleteDraft(record._id, record.quote_no)}>{msg('delete')}</a>
+                        : <a onClick={() => this.handleDeleteQuote(record.quote_no)}>{msg('delete')}</a>
+                      }
+                      <span className="ant-divider" />
+                      <a onClick={() => this.handleQuoteView(record)}>{msg('view')}</a>
+                    </div>
+                  </PrivilegeCover>
+                </span>
+              );
+            }
+          } else if (auth === 'read') {
             return (
               <span>
-                <PrivilegeCover module="clearance" feature="quote" action="edit">
+                <PrivilegeCover module="clearance" feature="quote" action="view">
                   <div>
-                    <a onClick={() => this.handleChangeStatus(record._id, false)}>{msg('disable')}</a>
-                    <span className="ant-divider" />
-                    <a onClick={() => this.handleQuoteEdit(record)}>{msg('modify')}</a>
-                  </div>
-                </PrivilegeCover>
-              </span>
-            );
-          } else {
-            return (
-              <span>
-                <PrivilegeCover module="clearance" feature="quote" action="edit">
-                  <div>
-                    <a onClick={() => this.handleChangeStatus(record._id, true)}>{msg('enable')}</a>
-                    <span className="ant-divider" />
-                    {
-                      record.status === 'draft' ?
-                        <a onClick={() => this.handleDeleteDraft(record._id, record.quote_no)}>{msg('delete')}</a>
-                      : <a onClick={() => this.handleDeleteQuote(record.quote_no)}>{msg('delete')}</a>
-                    }
+                    <a onClick={() => this.handleQuoteView(record)}>{msg('view')}</a>
                   </div>
                 </PrivilegeCover>
               </span>

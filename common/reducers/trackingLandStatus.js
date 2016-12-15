@@ -4,7 +4,6 @@ import { createActionTypes } from 'client/common/redux-actions';
 const actionTypes = createActionTypes('@@welogix/transport/tracking/land/status/', [
   'SHOW_VEHICLE_MODAL', 'SHOW_DATE_MODAL',
   'HIDE_VEHICLE_MODAL', 'HIDE_DATE_MODAL',
-  'SHOW_SPECIAL_CHARGE_MODAL',
   'SHOW_CHANGE_ACTDATE_MODAL',
   'SHOW_LOC_MODAL', 'HIDE_LOC_MODAL', 'CHANGE_FILTER',
   'REPORT_LOC', 'REPORT_LOC_SUCCEED', 'REPORT_LOC_FAIL',
@@ -44,13 +43,6 @@ const initialState = {
     visible: false,
     shipments: [],
     type: 'pickup',
-  },
-  shipmentSpecialChargeModal: {
-    visible: false,
-    dispId: -1,
-    parentDispId: -1,
-    spTenantId: -2,
-    shipmtNo: '',
   },
   changeActDateModal: {
     visible: false,
@@ -123,10 +115,6 @@ export default function reducer(state = initialState, action) {
       }
       return { ...state, filters };
     }
-    case actionTypes.SHOW_SPECIAL_CHARGE_MODAL:
-      return {
-        ...state, shipmentSpecialChargeModal: action.data,
-      };
     case actionTypes.SHOW_CHANGE_ACTDATE_MODAL:
       return {
         ...state, changeActDateModal: { ...state.changeActDateModal, ...action.data },
@@ -274,13 +262,6 @@ export function changeStatusFilter(field, value) {
   return {
     type: actionTypes.CHANGE_FILTER,
     data: { field, value },
-  };
-}
-
-export function showSpecialChargeModal({ visible, dispId, shipmtNo, parentDispId, spTenantId }) {
-  return {
-    type: actionTypes.SHOW_SPECIAL_CHARGE_MODAL,
-    data: { visible, dispId, shipmtNo, parentDispId, spTenantId },
   };
 }
 

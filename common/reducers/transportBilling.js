@@ -23,10 +23,13 @@ const actionTypes = createActionTypes('@@welogix/transport/billing/', [
   'LOAD_SPECIAL_CHARGES', 'LOAD_SPECIAL_CHARGES_SUCCEED', 'LOAD_SPECIAL_CHARGES_FAIL',
   'CREATE_ADVANCE', 'CREATE_ADVANCE_SUCCEED', 'CREATE_ADVANCE_FAIL',
   'SHOW_SHIPMENT_ADVANCE_MODAL', 'SHOW_SHIPMENT_ADVANCE_MODAL_SUCCEED', 'SHOW_SHIPMENT_ADVANCE_MODAL_FAIL',
+  'SHOW_SPECIAL_CHARGE_MODAL',
+  'CREATE_SPECIALCHARGE', 'CREATE_SPECIALCHARGE_FAIL', 'CREATE_SPECIALCHARGE_SUCCEED',
 ]);
 
 const initialState = {
   loading: false,
+  loaded: true,
   fees: {
     startDate: null,
     endDate: null,
@@ -81,6 +84,14 @@ const initialState = {
     transportModeId: -1,
     goodsType: -1,
     advances: [],
+  },
+  specialChargeModal: {
+    visible: false,
+    dispId: -1,
+    parentDispId: -1,
+    spTenantId: -2,
+    shipmtNo: '',
+    type: -2,
   },
 };
 
@@ -145,7 +156,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_PARTNERS_SUCCEED:
       return { ...state, partners: action.result.data };
     case actionTypes.LOAD_FEES:
-      return { ...state, loading: true };
+      return { ...state, loading: true, loaded: true };
     case actionTypes.LOAD_FEES_SUCCEED:
       return { ...state,
         fees: {
@@ -155,6 +166,7 @@ export default function reducer(state = initialState, action) {
           endDate: new Date(action.params.endDate),
         },
         loading: false,
+        loaded: true,
       };
     case actionTypes.LOAD_FEES_FAIL:
       return { ...state, loading: false };
@@ -200,16 +212,31 @@ export default function reducer(state = initialState, action) {
       return { ...state, billingFees: initialState.billingFees };
     case actionTypes.CHANGE_FEES_FILTER: {
       const fees = { ...state.fees, [action.data.key]: action.data.value };
-      return { ...state, fees };
+      return { ...state, fees, loaded: false };
     }
     case actionTypes.CHANGE_BILLINGS_FILTER: {
       const billings = { ...state.billings, searchValue: action.data.value };
       return { ...state, billings };
     }
+    case actionTypes.SHOW_SHIPMENT_ADVANCE_MODAL:
+      return {
+        ...state, advanceModal: { ...initialState.advanceModal, ...action.data },
+      };
     case actionTypes.SHOW_SHIPMENT_ADVANCE_MODAL_SUCCEED:
       return {
         ...state, advanceModal: { ...action.data, ...action.result.data },
       };
+    case actionTypes.CREATE_ADVANCE_SUCCEED:
+      return {
+        ...state, loaded: false,
+      };
+    case actionTypes.SHOW_SPECIAL_CHARGE_MODAL:
+      return {
+        ...state, specialChargeModal: { ...state.specialChargeModal, ...action.data },
+      };
+    case actionTypes.CREATE_SPECIALCHARGE_SUCCEED: {
+      return { ...state, loaded: false };
+    }
     default:
       return state;
   }
@@ -313,13 +340,13 @@ export function loadBillings({ type, tenantId, pageSize, currentPage, searchValu
       ],
       endpoint: 'v1/transport/billings',
       method: 'get',
-      params: { type, tenantId, pageSize, currentPage, searchValue, filters },
+      params: { type, tenantId, pageSize, currentPage, searchValue, filters: JSON.stringify(filters) },
     },
   };
 }
 
 export function createBilling({ tenantId, loginId, loginName, name, chooseModel, beginDate, endDate, freightCharge,
-    advanceCharge, excpCharge, adjustCharge, totalCharge, srTenantId, srName, spTenantId, spName, toTenantId,
+    advanceCharge, excpCharge, adjustCharge, totalCharge, srTenantId, srPartnerId, srName, spTenantId, spPartnerId, spName, toTenantId,
     shipmtCount, fees }) {
   return {
     [CLIENT_API]: {
@@ -331,7 +358,7 @@ export function createBilling({ tenantId, loginId, loginName, name, chooseModel,
       endpoint: 'v1/transport/billing',
       method: 'post',
       data: { tenantId, loginId, loginName, name, chooseModel, beginDate, endDate, freightCharge,
-        advanceCharge, excpCharge, adjustCharge, totalCharge, srTenantId, srName, spTenantId, spName, toTenantId,
+        advanceCharge, excpCharge, adjustCharge, totalCharge, srTenantId, srPartnerId, srName, spTenantId, spPartnerId, spName, toTenantId,
         shipmtCount, fees },
     },
   };
@@ -466,17 +493,43 @@ export function changeBillingsFilter(key, value) {
 }
 
 export function showAdvanceModal({ visible, dispId, shipmtNo, transportModeId, goodsType }) {
+  if (visible) {
+    return {
+      [CLIENT_API]: {
+        types: [
+          actionTypes.SHOW_SHIPMENT_ADVANCE_MODAL,
+          actionTypes.SHOW_SHIPMENT_ADVANCE_MODAL_SUCCEED,
+          actionTypes.SHOW_SHIPMENT_ADVANCE_MODAL_FAIL,
+        ],
+        endpoint: 'v1/transport/advanceCharges',
+        method: 'get',
+        params: { dispId },
+        data: { visible, dispId, shipmtNo, transportModeId, goodsType },
+      },
+    };
+  } else {
+    return { type: actionTypes.SHOW_SHIPMENT_ADVANCE_MODAL, data: { visible, dispId, shipmtNo, transportModeId, goodsType } };
+  }
+}
+
+export function showSpecialChargeModal({ visible, dispId, shipmtNo, parentDispId, spTenantId, type }) {
+  return {
+    type: actionTypes.SHOW_SPECIAL_CHARGE_MODAL,
+    data: { visible, dispId, shipmtNo, parentDispId, spTenantId, type },
+  };
+}
+
+export function createSpecialCharge({ shipmtNo, dispId, type, remark, submitter, charge, tenantId, loginId }) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.SHOW_SHIPMENT_ADVANCE_MODAL,
-        actionTypes.SHOW_SHIPMENT_ADVANCE_MODAL_SUCCEED,
-        actionTypes.SHOW_SHIPMENT_ADVANCE_MODAL_FAIL,
+        actionTypes.CREATE_SPECIALCHARGE,
+        actionTypes.CREATE_SPECIALCHARGE_SUCCEED,
+        actionTypes.CREATE_SPECIALCHARGE_FAIL,
       ],
-      endpoint: 'v1/transport/advanceCharges',
-      method: 'get',
-      params: { dispId },
-      data: { visible, dispId, shipmtNo, transportModeId, goodsType },
+      endpoint: 'v1/transport/billing/createSpecialCharge',
+      method: 'post',
+      data: { shipmtNo, dispId, type, remark, submitter, charge, tenantId, loginId },
     },
   };
 }

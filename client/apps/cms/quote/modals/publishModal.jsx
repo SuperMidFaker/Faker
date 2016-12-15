@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Modal, message, Form, Select, DatePicker } from 'antd';
+import { Alert, Input, Modal, message, Form, Select, DatePicker } from 'antd';
 import { closePublishModal, publishQuote } from 'common/reducers/cmsQuote';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
@@ -47,11 +47,17 @@ export default class CreateQtModal extends React.Component {
           ...this.props.quoteForm.getFieldsValue(),
           ...this.props.form.getFieldsValue(),
         };
+        quoteData.basement_timestamp = quoteData.basement_date.valueOf();
+        quoteData.basement_date = undefined;
         const { loginId, loginName } = this.props;
         const prom = this.props.publishQuote(quoteData, loginName, loginId);
         prom.then((result) => {
           if (result.error) {
-            message.error(result.error.message, 10);
+            if (result.error.message === 'similar quote') {
+              message.error('相同客户或供应商清关运输类型报价已发布', 10);
+            } else {
+              message.error(result.error.message, 10);
+            }
           } else {
             message.info('发布成功', 5);
             this.props.closePublishModal();
@@ -61,32 +67,41 @@ export default class CreateQtModal extends React.Component {
       }
     });
   }
+  disabledBasementDate = current => current && current.valueOf() > Date.now()
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   render() {
     const { form: { getFieldDecorator }, visible } = this.props;
     return (
-      <Modal title={this.msg('publishQuote')} visible={visible}
+      <Modal title={this.msg('publishTitle')} visible={visible}
         onOk={this.handleOk} onCancel={this.handleCancel}
       >
-        <div>
+        <Form horizontal>
+          <Alert message="报价发布后将按设置的生效时间起重新计费" type="info" showIcon />
           <FormItem label={this.msg('basementDateType')} {...formItemLayout}>
-            {getFieldDecorator('tariff_kind', {
-              rules: [{ required: true, message: '时间类型必选', type: 'number' }],
+            {getFieldDecorator('basement_datetype', {
+              rules: [{ required: true, message: '基准时间类型必选' }],
             })(
-              <Select style={{ width: '100%' }} onSelect={this.handleKindSelect}>
-                <Option value={1} key="accept">接单时间</Option>
-                <Option value={2} key="clean">海关放行时间</Option>
+              <Select style={{ width: '100%' }}>
+                <Option value="accept" key="accept1">接单时间</Option>
+                <Option value="clean" key="clean2">海关放行时间</Option>
               </Select>
             )}
           </FormItem>
-          <FormItem label={this.msg('baseDate')} {...formItemLayout}>
-            {getFieldDecorator('partner.name', {
-              rules: [{ required: true, message: '必选', type: 'object' }],
+          <FormItem label={this.msg('basementDate')} {...formItemLayout}>
+            {getFieldDecorator('basement_date', {
+              rules: [{ required: true, message: '基准时间必选', type: 'object' }],
             })(
-              <DatePicker />
+              <DatePicker showTime format="YYYY-MM-DD HH:mm" disabledDate={this.disabledBasementDate} />
             )}
           </FormItem>
-        </div>
+          <FormItem label={this.msg('publishRemark')} {...formItemLayout}>
+            {getFieldDecorator('publish_commit', {
+              rules: [{ required: true, message: '备注必填' }],
+            })(
+              <Input type="textarea" row={3} />
+            )}
+          </FormItem>
+        </Form>
       </Modal>
     );
   }

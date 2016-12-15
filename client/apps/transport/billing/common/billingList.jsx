@@ -119,7 +119,7 @@ export default class BillingList extends React.Component {
       pageSize,
       currentPage,
       searchValue: searchValue !== undefined ? searchValue : this.props.billings.searchValue,
-      filters: JSON.stringify(filters),
+      filters,
     });
   }
   handleShowCancelChargeModal = (billingId, fromId, totalCharge) => {
@@ -155,7 +155,7 @@ export default class BillingList extends React.Component {
           pageSize: pagination.pageSize,
           currentPage: pagination.current,
           searchValue,
-          filters: JSON.stringify(filters),
+          filters,
         };
         return params;
       },
@@ -186,8 +186,8 @@ export default class BillingList extends React.Component {
       render(o) {
         return <TrimSpan text={o} maxLen={10} />;
       },
-      filters: type === 'receivable' ? customers.map(item => ({ text: item.partner_code ? `${item.partner_code} | ${item.name}` : item.name, value: item.name })) :
-        carriers.map(item => ({ text: item.partner_code ? `${item.partner_code} | ${item.name}` : item.name, value: item.name })),
+      filters: type === 'receivable' ? customers.map(item => ({ text: item.partner_code ? `${item.partner_code} | ${item.name}` : item.name, value: item.partner_id })) :
+        carriers.map(item => ({ text: item.partner_code ? `${item.partner_code} | ${item.name}` : item.name, value: item.partner_id })),
     }, {
       title: '运单数量',
       dataIndex: 'shipmt_count',

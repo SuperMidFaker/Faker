@@ -185,6 +185,10 @@ const messages = defineMessages({
     id: 'cms.quote.modify',
     defaultMessage: '修改',
   },
+  view: {
+    id: 'cms.quote.view',
+    defaultMessage: '查看',
+  },
   valid: {
     id: 'cms.quote.valid',
     defaultMessage: '有效',
@@ -208,6 +212,34 @@ const messages = defineMessages({
   trail: {
     id: 'cms.quote.trail',
     defaultMessage: '试算',
+  },
+  publishTitle: {
+    id: 'cms.quote.modal.publish.title',
+    defaultMessage: '报价发布',
+  },
+  basementDateType: {
+    id: 'cms.quote.modal.basement.datetype',
+    defaultMessage: '基准日期类型',
+  },
+  basementDate: {
+    id: 'cms.quote.modal.basement.date',
+    defaultMessage: '生效起始时间',
+  },
+  publishRemark: {
+    id: 'cms.quote.modal.publish.remark',
+    defaultMessage: '说明',
+  },
+  publishVersion: {
+    id: 'cms.quote.revision.publish.version',
+    defaultMessage: '版本',
+  },
+  publishDate: {
+    id: 'cms.quote.revision.publish.date',
+    defaultMessage: '发布日期',
+  },
+  publisher: {
+    id: 'cms.quote.revision.publisher',
+    defaultMessage: '发布人',
   },
 });
 export default messages;

@@ -12,9 +12,9 @@ import { doSend,
          doReturn,
          changeDockStatus,
          withDraw } from 'common/reducers/transportDispatch';
-import { showDateModal, showVehicleModal, showLocModal, showSpecialChargeModal, showChangeActDateModal }
+import { showDateModal, showVehicleModal, showLocModal, showChangeActDateModal }
 from 'common/reducers/trackingLandStatus';
-import { showAdvanceModal } from 'common/reducers/transportBilling';
+import { showAdvanceModal, showSpecialChargeModal } from 'common/reducers/transportBilling';
 import { showCreateExcpModal } from 'common/reducers/trackingLandException';
 import { passAudit, returnAudit, showPodModal } from 'common/reducers/trackingLandPod';
 import ExportPDF from '../../tracking/land/modals/export-pdf';
@@ -224,7 +224,7 @@ export default class Footer extends React.Component {
   }
   handleShowSpecialChargeModal = (row) => {
     this.props.showSpecialChargeModal({ visible: true, dispId: row.disp_id, shipmtNo: row.shipmt_no,
-      parentDispId: row.parent_id, spTenantId: row.sp_tenant_id });
+      parentDispId: row.parent_id, spTenantId: row.sp_tenant_id, type: -2 });
   }
   handleShowChangeActDateModal = (row) => {
     this.props.showChangeActDateModal({ visible: true, dispId: row.disp_id, shipmtNo: row.shipmt_no,
