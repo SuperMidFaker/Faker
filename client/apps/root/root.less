@@ -790,24 +790,27 @@ img {
       z-index: 1;
       background: #EFEFEF;
       padding: 16px;
-      > .ant-tabs-card > .ant-tabs-content {
+      &.with-header-summary {
+        top: 100px;
+      }
+      .ant-tabs-card > .ant-tabs-content {
         margin-top: -16px;
       }
-
-      > .ant-tabs-card > .ant-tabs-content > .ant-tabs-tabpane {
+      .ant-tabs-card > .ant-tabs-content > .ant-tabs-tabpane {
         background: #fff;
         padding: 16px;
       }
-
-      > .ant-tabs-card > .ant-tabs-bar .ant-tabs-tab {
+      .ant-tabs-card > .ant-tabs-bar .ant-tabs-tab {
         border-color: transparent;
       }
-
-      > .ant-tabs-card > .ant-tabs-bar .ant-tabs-tab-active {
+      .ant-tabs-card > .ant-tabs-bar .ant-tabs-tab-active {
         border-color: #fff;
       }
       .ant-tabs-vertical.ant-tabs-left > .ant-tabs-content {
         padding-left: 16px;
+      }
+      .ant-timeline {
+        margin-left: 16px;
       }
     }
     .footer {

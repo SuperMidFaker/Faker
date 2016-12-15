@@ -1,18 +1,20 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Button, Tabs, Badge } from 'antd';
+import { Badge, Button, Card, Col, DatePicker, Form, InputNumber, Radio, Row, Select, Tabs, Timeline } from 'antd';
+import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
+import InfoItem from 'client/components/InfoItem';
 import BasicPane from './tabpanes/BasicPane';
 import CustomsDeclPane from './tabpanes/CustomsDeclPane';
 import CiqDeclPane from './tabpanes/CiqDeclPane';
-import CertsPane from './tabpanes/CertsPane';
 import DutyTaxPane from './tabpanes/DutyTaxPane';
 import ExpensesPane from './tabpanes/ExpensesPane';
-import DelegateTrackingPane from './tabpanes/delegateTrackingPane';
 import { hidePreviewer, setPreviewStatus, setPreviewTabkey } from 'common/reducers/cmsDelegation';
 
 const TabPane = Tabs.TabPane;
+const Option = Select.Option;
+const FormItem = Form.Item;
 
 @injectIntl
 @connect(
@@ -141,11 +143,8 @@ export default class PreviewPanel extends React.Component {
     if (delegation.status === 0) {
       return (
         <Tabs type="card" activeKey={tabKey} onChange={this.handleTabChange}>
-          <TabPane tab="委托" key="basic">
+          <TabPane tab="委托详情" key="basic">
             <BasicPane delegation={delegation} files={files} />
-          </TabPane>
-          <TabPane tab="日志" key="delegateTracking">
-            <DelegateTrackingPane delegateTracking={delegateTracking} />
           </TabPane>
         </Tabs>
       );
@@ -153,27 +152,21 @@ export default class PreviewPanel extends React.Component {
       if (delegation.ciq_type === 'NA') {
         return (
           <Tabs type="card" activeKey={tabKey} onChange={this.handleTabChange}>
-            <TabPane tab="委托" key="basic">
+            <TabPane tab="委托详情" key="basic">
               <BasicPane delegation={delegation} files={files} />
             </TabPane>
             <TabPane tab="报关" key="customsDecl">
               <CustomsDeclPane />
             </TabPane>
-            <TabPane tab="鉴定办证" key="certs">
-              <CertsPane />
-            </TabPane>
-            <TabPane tab="计费" key="expenses">
+            <TabPane tab="费用" key="expenses">
               <ExpensesPane />
-            </TabPane>
-            <TabPane tab="日志" key="delegateTracking">
-              <DelegateTrackingPane delegateTracking={delegateTracking} />
             </TabPane>
           </Tabs>
         );
       }
       return (
         <Tabs type="card" activeKey={tabKey} onChange={this.handleTabChange}>
-          <TabPane tab="委托" key="basic">
+          <TabPane tab="委托详情" key="basic">
             <BasicPane delegation={delegation} files={files} />
           </TabPane>
           <TabPane tab="报关" key="customsDecl">
@@ -182,14 +175,8 @@ export default class PreviewPanel extends React.Component {
           <TabPane tab="报检" key="ciqDecl">
             <CiqDeclPane />
           </TabPane>
-          <TabPane tab="鉴定办证" key="certs">
-            <CertsPane />
-          </TabPane>
-          <TabPane tab="计费" key="expenses">
+          <TabPane tab="费用" key="expenses">
             <ExpensesPane />
-          </TabPane>
-          <TabPane tab="日志" key="delegateTracking">
-            <DelegateTrackingPane delegateTracking={delegateTracking} />
           </TabPane>
         </Tabs>
       );
@@ -197,30 +184,24 @@ export default class PreviewPanel extends React.Component {
       if (delegation.ciq_type === 'NA') {
         return (
           <Tabs type="card" activeKey={tabKey} onChange={this.handleTabChange}>
-            <TabPane tab="委托" key="basic">
+            <TabPane tab="委托详情" key="basic">
               <BasicPane delegation={delegation} files={files} />
             </TabPane>
             <TabPane tab="报关" key="customsDecl">
               <CustomsDeclPane />
             </TabPane>
-            <TabPane tab="鉴定办证" key="certs">
-              <CertsPane />
-            </TabPane>
             <TabPane tab="缴税" key="taxes">
               <DutyTaxPane />
             </TabPane>
-            <TabPane tab="计费" key="expenses">
+            <TabPane tab="费用" key="expenses">
               <ExpensesPane />
-            </TabPane>
-            <TabPane tab="日志" key="delegateTracking">
-              <DelegateTrackingPane delegateTracking={delegateTracking} />
             </TabPane>
           </Tabs>
         );
       }
       return (
         <Tabs type="card" activeKey={tabKey} onChange={this.handleTabChange}>
-          <TabPane tab="委托" key="basic">
+          <TabPane tab="委托详情" key="basic">
             <BasicPane delegation={delegation} files={files} />
           </TabPane>
           <TabPane tab="报关" key="customsDecl">
@@ -229,17 +210,11 @@ export default class PreviewPanel extends React.Component {
           <TabPane tab="报检" key="ciqDecl">
             <CiqDeclPane />
           </TabPane>
-          <TabPane tab="鉴定办证" key="certs">
-            <CertsPane />
-          </TabPane>
           <TabPane tab="缴税" key="taxes">
             <DutyTaxPane />
           </TabPane>
-          <TabPane tab="计费" key="expenses">
+          <TabPane tab="费用" key="expenses">
             <ExpensesPane />
-          </TabPane>
-          <TabPane tab="日志" key="delegateTracking">
-            <DelegateTrackingPane delegateTracking={delegateTracking} />
           </TabPane>
         </Tabs>
       );
@@ -382,9 +357,111 @@ export default class PreviewPanel extends React.Component {
               {this.button()}
             </div>
             {closer}
+            <Row>
+              <Col span="6">
+                <InfoItem labelCol={{ span: 3 }} label="委托方"
+                  field={delegation.customer_name} fieldCol={{ span: 9 }}
+                />
+              </Col>
+              <Col span="6">
+                <InfoItem labelCol={{ span: 3 }} label="提运单号"
+                  field={delegation.bl_wb_no} fieldCol={{ span: 9 }}
+                />
+              </Col>
+              <Col span="6">
+                <InfoItem labelCol={{ span: 3 }} label="操作人"
+                  field={delegation.customer_name} fieldCol={{ span: 9 }}
+                />
+              </Col>
+              <Col span="6">
+                <InfoItem labelCol={{ span: 3 }} label="委托日期" fieldCol={{ span: 9 }}
+                  field={moment(delegateTracking.delg_time).format('YYYY.MM.DD HH:mm')}
+                />
+              </Col>
+            </Row>
           </div>
-          <div className="body">
-            {this.tablePan()}
+          <div className="body with-header-summary">
+            <Row gutter={16}>
+              <Col sm={24} md={14} lg={14}>
+                {this.tablePan()}
+              </Col>
+              <Col sm={24} md={10} lg={10}>
+                <Card bodyStyle={{ padding: 8 }}>
+                  <Tabs defaultActiveKey="certs">
+                    <TabPane tab="办证" key="certs">
+                      <Form horizontal onSubmit={this.handleSubmit}>
+                        <FormItem>
+                          <Select
+                            showSearch
+                            style={{ width: 200, marginRight: 8 }}
+                            placeholder="选择鉴定办证类型"
+                            optionFilterProp="children"
+                          >
+                            <Option value="mech_elec_cert">机电证</Option>
+                            <Option value="zgz">重工证</Option>
+                            <Option value="xkz">许可证</Option>
+                            <Option value="3cjd">3C外目录鉴定</Option>
+                            <Option value="m3csq">免3C申请</Option>
+                            <Option value="nxjd">能效鉴定</Option>
+                            <Option value="mnxsq">免能效申请</Option>
+                            <Option value="xc">消磁</Option>
+                          </Select>
+                        </FormItem>
+                        <FormItem>
+                          <InputNumber min={1} max={99} placeholder="型号数量" />
+                        </FormItem>
+                        <FormItem>
+                          <Button type="primary" style={{ marginRight: 8 }}>确定</Button>
+                          <Button type="ghost">取消</Button>
+                        </FormItem>
+                      </Form>
+                    </TabPane>
+                    <TabPane tab="查验" key="inspect">
+                      <Form horizontal onSubmit={this.handleSubmit}>
+                        <FormItem>
+                          <Select
+                            showSearch
+                            style={{ width: 200, marginRight: 8 }}
+                            placeholder="选择报关单"
+                            optionFilterProp="children"
+                          >
+                            <Option value="200030001234567890">200030001234567890</Option>
+                            <Option value="200030001234567891">200030001234567891</Option>
+                            <Option value="200030001234567892">200030001234567892</Option>
+                          </Select>
+                          <DatePicker
+                            showTime
+                            format="YYYY-MM-DD HH:mm:ss"
+                            placeholder="选择查验时间"
+                          />
+                        </FormItem>
+                        <FormItem>
+                          <Radio.Group>
+                            <Radio.Button value="large">海关查验</Radio.Button>
+                            <Radio.Button value="default">品质查验</Radio.Button>
+                            <Radio.Button value="small">动植检查验</Radio.Button>
+                          </Radio.Group>
+                        </FormItem>
+                        <FormItem>
+                          <Button type="primary" style={{ marginRight: 8 }}>确定</Button>
+                          <Button type="ghost">取消</Button>
+                        </FormItem>
+                      </Form>
+                    </TabPane>
+                  </Tabs>
+                </Card>
+                <Timeline>
+                  <Timeline.Item>缴税 2015-09-01</Timeline.Item>
+                  <Timeline.Item>海关申报 2015-09-01</Timeline.Item>
+                  <Timeline.Item color="red">
+                    <Card bodyStyle={{ padding: 8 }}>海关查验 2015-09-01
+                      <Button type="default" size="small" icon="check" />
+                    </Card>
+                  </Timeline.Item>
+                  <Timeline.Item>创建清关委托 2015-09-01</Timeline.Item>
+                </Timeline>
+              </Col>
+            </Row>
           </div>
         </div>
       </div>
