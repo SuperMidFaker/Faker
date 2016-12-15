@@ -101,7 +101,7 @@ export default class EditToolbar extends Component {
             <Icon type="ellipsis" />
           </Button>
         </Dropdown>
-        <PublishModal form={this.props.form} />
+        <PublishModal quoteForm={this.props.form} />
       </div>
     );
   }

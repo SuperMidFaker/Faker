@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import { DECL_I_TYPE, DECL_E_TYPE, TRANS_MODE, INVOICE_TYPE, CMS_QUOTE_PERMISSION } from 'common/constants';
-import { Form, Select, Radio, Input, Col, Row } from 'antd';
+import { Form, Select, Radio, Input, InputNumber, Col, Row } from 'antd';
 
 const formatMsg = format(messages);
 const RadioGroup = Radio.Group;
@@ -133,7 +133,7 @@ export default class FeesForm extends Component {
                 rules: [{ required: true, message: '品项数必填', type: 'number' }],
                 initialValue: fieldInits.decl_item_qty,
               })(
-                <Input />
+                <InputNumber style={{ width: '100%' }} />
               )}
             </FormItem>
           </Col>
@@ -143,7 +143,7 @@ export default class FeesForm extends Component {
                 rules: [{ required: true, message: '品项数必填', type: 'number' }],
                 initialValue: fieldInits.ciq_item_qty,
               })(
-                <Input />
+                <InputNumber style={{ width: '100%' }} />
               )}
             </FormItem>
           </Col>

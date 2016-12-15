@@ -31,6 +31,7 @@ export default class CreateQtModal extends React.Component {
     intl: intlShape.isRequired,
     visible: PropTypes.bool.isRequired,
     form: PropTypes.object.isRequired,
+    quoteForm: PropTypes.object.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -43,6 +44,7 @@ export default class CreateQtModal extends React.Component {
       if (!errors) {
         const quoteData = {
           ...this.props.quoteData,
+          ...this.props.quoteForm.getFieldsValue(),
           ...this.props.form.getFieldsValue(),
         };
         const { loginId, loginName } = this.props;

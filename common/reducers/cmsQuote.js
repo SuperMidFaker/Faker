@@ -10,6 +10,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'EDITQUOTE_LOAD', 'EDITQUOTE_LOAD_SUCCEED', 'EDITQUOTE_LOAD_FAIL',
   'QUOTE_COPY', 'QUOTE_COPY_SUCCEED', 'QUOTE_COPY_FAIL',
   'QUOTE_DELETE', 'QUOTE_DELETE_SUCCEED', 'QUOTE_DELETE_FAIL',
+  'QUOTEDRAFT_DELETE', 'QUOTEDRAFT_DELETE_SUCCEED', 'QUOTEDRAFT_DELETE_FAIL',
   'FEE_ADD', 'FEE_ADD_SUCCEED', 'FEE_ADD_FAIL',
   'FEE_UPDATE', 'FEE_UPDATE_SUCCEED', 'FEE_UPDATE_FAIL',
   'FEE_DELETE', 'FEE_DELETE_SUCCEED', 'FEE_DELETE_FAIL',
@@ -300,13 +301,29 @@ export function updateQuoteStatus(quoteId, valid, tenantId, modifyBy, modifyById
   };
 }
 
-export function deleteQuote(quoteId, tenantId, modifyBy, modifyById) {
+export function deleteQuote(quoteNo) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.QUOTE_DELETE, actionTypes.QUOTE_DELETE_SUCCEED, actionTypes.QUOTE_DELETE_FAIL],
-      endpoint: 'v1/cms/quote/quoteDelete',
+      endpoint: 'v1/cms/quote/delete',
       method: 'post',
-      data: { quoteId, tenantId, modifyBy, modifyById },
+      data: { quoteNo },
+      origin: 'mongo',
+    },
+  };
+}
+
+export function deleteDraftQuote(quoteId, quoteNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.QUOTEDRAFT_DELETE,
+        actionTypes.QUOTEDRAFT_DELETE_SUCCEED,
+        actionTypes.QUOTEDRAFT_DELETE_FAIL,
+      ],
+      endpoint: 'v1/cms/quote/draft/delete',
+      method: 'post',
+      data: { quoteId, quoteNo },
       origin: 'mongo',
     },
   };

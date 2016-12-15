@@ -7,7 +7,7 @@ import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import withPrivilege, { PrivilegeCover } from 'client/common/decorators/withPrivilege';
-import { loadQuoteTable, updateQuoteStatus, deleteQuote, openCreateModal, createDraftQuote } from 'common/reducers/cmsQuote';
+import { loadQuoteTable, updateQuoteStatus, deleteQuote, deleteDraftQuote, openCreateModal, createDraftQuote } from 'common/reducers/cmsQuote';
 import { TARIFF_KINDS, TRANS_MODE, DECL_I_TYPE, DECL_E_TYPE } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -37,7 +37,7 @@ function fetchData({ state, dispatch }) {
     quotesList: state.cmsQuote.quotesList,
     listFilter: state.cmsQuote.listFilter,
   }),
-  { loadQuoteTable, updateQuoteStatus, deleteQuote, openCreateModal, createDraftQuote }
+  { loadQuoteTable, updateQuoteStatus, deleteQuote, deleteDraftQuote, openCreateModal, createDraftQuote }
 )
 @connectNav({
   depth: 2,
@@ -132,13 +132,17 @@ export default class QuoteList extends Component {
       });
     }
   }
-  handleDeleteQuote = (id) => {
-    this.props.deleteQuote(
-      id,
-      this.props.tenantId,
-      this.props.loginName,
-      this.props.loginId,
-    ).then((result) => {
+  handleDeleteQuote = (quoteNo) => {
+    this.props.deleteQuote(quoteNo).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        this.handleQuoteTableLoad();
+      }
+    });
+  }
+  handleDeleteDraft = (quoteId, quoteNo) => {
+    this.props.deleteDraftQuote(quoteId, quoteNo).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -270,7 +274,11 @@ export default class QuoteList extends Component {
                   <div>
                     <a onClick={() => this.handleChangeStatus(record._id, true)}>{msg('enable')}</a>
                     <span className="ant-divider" />
-                    <a onClick={() => this.handleDeleteQuote(record._id)}>{msg('delete')}</a>
+                    {
+                      record.status === 'draft' ?
+                        <a onClick={() => this.handleDeleteDraft(record._id, record.quote_no)}>{msg('delete')}</a>
+                      : <a onClick={() => this.handleDeleteQuote(record.quote_no)}>{msg('delete')}</a>
+                    }
                   </div>
                 </PrivilegeCover>
               </span>
