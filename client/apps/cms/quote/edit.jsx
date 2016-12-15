@@ -52,7 +52,7 @@ export default class QuotingEdit extends Component {
         </header>
         <EditToolbar form={form} onFormError={this.handleFormError} />
         <div className="main-content">
-          <div className="page-body">
+          <div className="page-body tabbed">
             <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
               <TabPane tab="报价费率" key="fees-table">
                 <FeesTable action="edit" editable={false} />

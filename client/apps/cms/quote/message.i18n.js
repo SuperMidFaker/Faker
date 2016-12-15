@@ -185,6 +185,10 @@ const messages = defineMessages({
     id: 'cms.quote.modify',
     defaultMessage: '修改',
   },
+  revise: {
+    id: 'cms.quote.revise',
+    defaultMessage: '修订',
+  },
   view: {
     id: 'cms.quote.view',
     defaultMessage: '查看',
@@ -212,6 +216,10 @@ const messages = defineMessages({
   trail: {
     id: 'cms.quote.trail',
     defaultMessage: '试算',
+  },
+  more: {
+    id: 'cms.quote.more',
+    defaultMessage: '更多',
   },
   publishTitle: {
     id: 'cms.quote.modal.publish.title',

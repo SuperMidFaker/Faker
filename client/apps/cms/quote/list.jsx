@@ -276,11 +276,11 @@ export default class QuoteList extends Component {
                 <span>
                   <PrivilegeCover module="clearance" feature="quote" action="edit">
                     <div>
-                      <a onClick={() => this.handleChangeStatus(record._id, false)}>{msg('disable')}</a>
-                      <span className="ant-divider" />
-                      <a onClick={() => this.handleQuoteEdit(record)}>{msg('modify')}</a>
-                      <span className="ant-divider" />
                       <a onClick={() => this.handleQuoteView(record)}>{msg('view')}</a>
+                      <span className="ant-divider" />
+                      <a onClick={() => this.handleQuoteEdit(record)}>{msg('revise')}</a>
+                      <span className="ant-divider" />
+                      <a onClick={() => this.handleChangeStatus(record._id, false)}>{msg('disable')}</a>
                     </div>
                   </PrivilegeCover>
                 </span>
@@ -340,7 +340,7 @@ export default class QuoteList extends Component {
               </Button>
             </div>
             <div className="panel-body table-panel">
-              <Table columns={columns} dataSource={this.dataSource} scroll={{ x: 1600 }} />
+              <Table columns={columns} dataSource={this.dataSource} scroll={{ x: 1400 }} />
             </div>
           </div>
         </div>

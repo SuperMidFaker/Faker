@@ -84,9 +84,7 @@ export default class RevisionTable extends React.Component {
   render() {
     const { revisions } = this.props;
     return (
-      <Table columns={this.columns} dataSource={revisions} pagination={false}
-        bordered rowKey="version" style={{ margin: '0 10px 10px' }}
-      />
+      <Table columns={this.columns} dataSource={revisions} pagination={false} rowKey="version" />
     );
   }
 }
