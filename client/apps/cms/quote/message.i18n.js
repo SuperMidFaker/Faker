@@ -185,6 +185,10 @@ const messages = defineMessages({
     id: 'cms.quote.modify',
     defaultMessage: '修改',
   },
+  view: {
+    id: 'cms.quote.view',
+    defaultMessage: '查看',
+  },
   valid: {
     id: 'cms.quote.valid',
     defaultMessage: '有效',

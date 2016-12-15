@@ -86,15 +86,25 @@ TaxInput.propTypes = {
   onChange: PropTypes.func,
 };
 function ColumnSwitch(props) {
-  const { record, field, onChange } = props;
+  const { record, field, onChange, inEdit } = props;
   function handleChange(value) {
     if (onChange) {
       onChange(record, field, value);
     }
   }
-  return <Switch size="small" disabled={!record.enabled && field !== 'enabled'} checked={record[field]} value={record[field] || true} onChange={handleChange} />;
+  let style = {};
+  if (!(record.invoice_en && record.enabled)) {
+    style = { color: '#CCCCCC' };
+  }
+  if (inEdit) {
+    return <Switch size="small" disabled={(!record.enabled && field !== 'enabled')} checked={record[field]} value={record[field] || true} onChange={handleChange} />;
+  } else {
+    const val = record[field] ? '是' : '否';
+    return <span style={style}>{val}</span>;
+  }
 }
 ColumnSwitch.propTypes = {
+  inEdit: PropTypes.bool,
   record: PropTypes.object.isRequired,
   field: PropTypes.string.isRequired,
   onChange: PropTypes.func,
@@ -453,8 +463,8 @@ export default class FeesTable extends Component {
         ),
         dataIndex: 'invoice_en',
         width: 80,
-        render: (o, record) =>
-          <ColumnSwitch field="invoice_en" record={record} onChange={this.handleEditChange} />,
+        render: (o, record, index) =>
+          <ColumnSwitch field="invoice_en" inEdit={editable || (index === editIndex)} record={record} onChange={this.handleEditChange} />,
       }, {
         title: msg('taxRate'),
         dataIndex: 'tax_rate',
@@ -470,9 +480,11 @@ export default class FeesTable extends Component {
         ),
         dataIndex: 'enabled',
         width: 80,
-        render: (o, record) =>
-          <ColumnSwitch field="enabled" record={record} onChange={this.handleEditChange} />,
-      }, {
+        render: (o, record, index) =>
+          <ColumnSwitch field="enabled" inEdit={editable || (index === editIndex)} record={record} onChange={this.handleEditChange} />,
+      }];
+    if (action !== 'view') {
+      columns.push({
         title: msg('operation'),
         width: 80,
         render: (o, record, index) => {
@@ -511,7 +523,8 @@ export default class FeesTable extends Component {
           }
         },
       },
-    ];
+    );
+    }
     return (
       <Table pagination={false} rowKey={getRowKey} columns={columns} dataSource={dataSource}
         loading={quoteData.loading} onChange={this.handleTableChange}

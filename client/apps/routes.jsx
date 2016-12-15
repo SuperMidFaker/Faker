@@ -272,6 +272,7 @@ export default(store, cookie) => {
               <Route path="quote">
                 <IndexRoute component={CMSQuote.List} />
                 <Route path="edit/:quoteno/:version" component={CMSQuote.Edit} />
+                <Route path="view/:quoteno/:version" component={CMSQuote.View} />
               </Route>
             </Route>
             <Route path="relation">
