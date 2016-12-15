@@ -52,6 +52,7 @@ function fetchData({ state, dispatch }) {
     loginName: state.account.username,
     fees: state.transportBilling.fees,
     loading: state.transportBilling.loading,
+    loaded: state.transportBilling.loaded,
   }),
   { loadFees, loadShipmtDetail, changeFeesFilter, loadPartners, showAdvanceModal }
 )
@@ -68,6 +69,7 @@ export default class FeesList extends React.Component {
     changeFeesFilter: PropTypes.func.isRequired,
     loadPartners: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
+    loaded: PropTypes.bool.isRequired,
     showAdvanceModal: PropTypes.func.isRequired,
   }
   state = {
@@ -84,8 +86,8 @@ export default class FeesList extends React.Component {
     });
   }
   componentWillReceiveProps(nextProps) {
-    if (this.props.fees.searchValue !== nextProps.fees.searchValue) {
-      this.handleTableLoad(nextProps.fees.searchValue);
+    if (!nextProps.loaded) {
+      this.handleTableLoad();
     }
   }
   onDateChange = (value) => {
@@ -97,17 +99,17 @@ export default class FeesList extends React.Component {
   handleSelectionClear = () => {
     this.setState({ selectedRowKeys: [] });
   }
-  handleTableLoad = (searchValue) => {
+  handleTableLoad = () => {
     this.handleSelectionClear();
     const { tenantId } = this.props;
-    const { pageSize, currentPage, filters, startDate, endDate } = this.props.fees;
+    const { pageSize, currentPage, filters, startDate, endDate, searchValue } = this.props.fees;
     this.props.loadFees({
       tenantId,
       pageSize,
       currentPage,
       startDate,
       endDate,
-      searchValue: searchValue !== undefined ? searchValue : this.props.fees.searchValue,
+      searchValue,
       filters,
     });
   }
@@ -147,7 +149,7 @@ export default class FeesList extends React.Component {
       render(o) {
         return <TrimSpan text={o} maxLen={10} />;
       },
-      filters: customers.map(item => ({ text: item.partner_code ? `${item.partner_code} | ${item.name}` : item.name, value: item.name })),
+      filters: customers.map(item => ({ text: item.partner_code ? `${item.partner_code} | ${item.name}` : item.name, value: item.partner_id })),
     }, {
       title: '运输收入',
       dataIndex: 'p_total_charge',
@@ -218,7 +220,7 @@ export default class FeesList extends React.Component {
       render(o) {
         return <TrimSpan text={o} maxLen={10} />;
       },
-      filters: carriers.map(item => ({ text: item.partner_code ? `${item.partner_code} | ${item.name}` : item.name, value: item.name })),
+      filters: carriers.map(item => ({ text: item.partner_code ? `${item.partner_code} | ${item.name}` : item.name, value: item.partner_id })),
     }, {
       title: '运输成本',
       dataIndex: 'total_charge',
@@ -364,7 +366,7 @@ export default class FeesList extends React.Component {
           searchValue,
           startDate: moment(startDate).format('YYYY-MM-DD 00:00:00'),
           endDate: moment(endDate).format('YYYY-MM-DD 23:59:59'),
-          filters: JSON.stringify(filters),
+          filters,
         };
         return params;
       },
