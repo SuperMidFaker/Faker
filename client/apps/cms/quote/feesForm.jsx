@@ -99,7 +99,7 @@ export default class FeesForm extends Component {
                 rules: [{ required: true, message: '报关类型必选', type: 'array' }],
                 initialValue: fieldInits.decl_way_code,
               })(
-                <Select multiple style={{ width: '100%' }} placeholder="不限" >
+                <Select multiple style={{ width: '100%' }} >
                   {
                   DECL_TYPE.map(dw =>
                     <Option value={dw.key} key={dw.key}>{dw.value}</Option>
@@ -115,7 +115,7 @@ export default class FeesForm extends Component {
                 rules: [{ required: true, message: '运输方式必选', type: 'array' }],
                 initialValue: fieldInits.trans_mode,
               })(
-                <Select multiple style={{ width: '100%' }} placeholder="不限" >
+                <Select multiple style={{ width: '100%' }} >
                   {
                   TRANS_MODE.map(tr =>
                     <Option value={tr.value} key={tr.value}>{tr.text}</Option>

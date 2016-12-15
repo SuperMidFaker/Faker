@@ -2,10 +2,10 @@ import React, { Component, PropTypes } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { format } from 'client/common/i18n/helpers';
-import { feeUpdate, feeAdd, feeDelete, saveQuoteModel } from 'common/reducers/cmsQuote';
+import { feeUpdate, feeAdd, feeDelete, saveQuoteModel, saveQuoteBatchEdit } from 'common/reducers/cmsQuote';
 import messages from './message.i18n';
 import RowUpdater from 'client/apps/cms/common/delegation/rowUpdater';
-import { CHARGE_MODE, FEE_STYLE, FEE_CATEGORY } from 'common/constants';
+import { CHARGE_PARAM, FEE_STYLE, FEE_CATEGORY } from 'common/constants';
 import { Select, Table, Button, Input, Switch, message } from 'antd';
 
 const formatMsg = format(messages);
@@ -25,8 +25,11 @@ function ColumnInput(props) {
   if (!record.enabled) {
     style = { color: '#CCCCCC' };
   }
-  if (record.fee_style === 'cushion') {
+  if (record.fee_style === 'cushion' && field !== 'fee_name') {
     return <span />;
+  } else if (record.charge_param === 'trade_amt' && field === 'formula_factor') {
+    return inEdit ? <Input disabled={!record.enabled} value={record[field] || ''} onChange={handleChange} addonAfter="%" />
+      : <span style={style}>{record[field] || ''}%</span>;
   } else {
     return inEdit ? <Input value={record[field] || ''} disabled={!record.enabled} onChange={handleChange} />
     : <span style={style}>{record[field] || ''}</span>;
@@ -103,6 +106,9 @@ function ColumnSelect(props) {
       onChange(record, field, value);
     }
   }
+  if (record.fee_style === 'cushion' && field === 'charge_param') {
+    return <span />;
+  }
   if (inEdit) {
     return (
       <Select value={record[field]} disabled={!record.enabled} onChange={handleChange} style={{ width: '100%' }}>
@@ -137,7 +143,7 @@ ColumnSelect.proptypes = {
     loginId: state.account.loginId,
     loginName: state.account.username,
   }),
-  { feeUpdate, feeAdd, feeDelete, saveQuoteModel }
+  { feeUpdate, feeAdd, feeDelete, saveQuoteModel, saveQuoteBatchEdit }
 )
 export default class FeesTable extends Component {
   static propTypes = {
@@ -159,9 +165,11 @@ export default class FeesTable extends Component {
     editIndex: -1,
     count: 0,
     dataSource: [],
+    editable: false,
+    batchSaved: 0,
   };
   componentWillMount() {
-    this.setState({ dataSource: this.props.quoteData.fees });
+    this.setState({ dataSource: this.props.quoteData.fees, editable: this.props.editable });
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.quoteData !== this.props.quoteData) {
@@ -191,9 +199,7 @@ export default class FeesTable extends Component {
       fee_name: '',
       fee_code: '',
       fee_style: 'service',
-      charge_mode: '0',
-      lot_num: 1,
-      free_num: 0,
+      charge_param: 'shipmt_qty',
       invoice_en: true,
       tax_rate: 6,
       enabled: true,
@@ -330,9 +336,55 @@ export default class FeesTable extends Component {
       this.setState({ dataSource: fees });
     }
   }
+  handlebatchSave = () => {
+    this.setState({ editable: this.props.editable, batchSaved: 0 });
+    this.props.saveQuoteBatchEdit(
+      this.props.quoteData
+    ).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        message.info('保存成功', 5);
+      }
+    });
+  }
+  handlebatchModify = () => {
+    this.setState({ editable: true, batchSaved: 1 });
+  }
+  handleTitleButton = () => {
+    const { action } = this.props;
+    const msg = key => formatMsg(this.props.intl, key);
+    if (action === 'edit') {
+      return (
+        <div>
+          <Button type="default" style={{ marginRight: 10 }} onClick={this.handleAddFees}>{msg('addCosts')}</Button>
+          {this.state.batchSaved === 0 && <Button type="default" onClick={this.handlebatchModify}>{msg('batchModify')}</Button>}
+          {this.state.batchSaved === 1 && <Button type="primary" onClick={this.handlebatchSave}>{msg('batchSave')}</Button>}
+        </div>
+      );
+    } else if (action === 'model') {
+      return (
+        <Button type="primary" size="default" onClick={this.handleModelSave}>{msg('save')}</Button>
+      );
+    }
+  }
+  handleBatchEnChange = (key, value) => {
+    if (key === 'invoiceEn') {
+      this.props.quoteData.fees.forEach((fs) => {
+        fs.invoice_en = value; // eslint-disable-line no-param-reassign
+      });
+    }
+    if (key === 'enabled') {
+      this.props.quoteData.fees.forEach((fs) => {
+        fs.enabled = value; // eslint-disable-line no-param-reassign
+      });
+    }
+    this.forceUpdate();
+  }
+
   render() {
-    const { quoteData, action, editable } = this.props;
-    const { editIndex, addedit, dataSource } = this.state;
+    const { quoteData, action } = this.props;
+    const { editIndex, addedit, dataSource, editable, batchSaved } = this.state;
     const msg = key => formatMsg(this.props.intl, key);
     const columns = [
       {
@@ -344,7 +396,7 @@ export default class FeesTable extends Component {
         dataIndex: 'fee_name',
         width: 150,
         render: (o, record, index) =>
-          <CustomInput field="fee_name" Edit={addedit && (index === editIndex)} placeholder="自定义费用名称" record={record} onChange={this.handleEditChange} />,
+          <ColumnInput field="fee_name" inEdit={editable || (index === editIndex)} record={record} onChange={this.handleEditChange} />,
       }, {
         title: msg('feeCode'),
         dataIndex: 'fee_code',
@@ -379,27 +431,26 @@ export default class FeesTable extends Component {
             onChange={this.handleEditChange} options={FEE_STYLE}
           />,
       }, {
-        title: msg('chargeMode'),
-        dataIndex: 'charge_mode',
+        title: msg('chargeParam'),
+        dataIndex: 'charge_param',
         width: 150,
         render: (o, record, index) =>
-          <ColumnSelect field="charge_mode" inEdit={editable || (index === editIndex)} record={record}
-            onChange={this.handleEditChange} options={CHARGE_MODE}
+          <ColumnSelect field="charge_param" inEdit={editable || (index === editIndex)} record={record}
+            onChange={this.handleEditChange} options={CHARGE_PARAM}
           />,
       }, {
-        title: msg('lotNum'),
-        dataIndex: 'lot_num',
-        width: 100,
-        render: (o, record, index) =>
-          <ColumnInput field="lot_num" inEdit={editable || (index === editIndex)} record={record} onChange={this.handleEditChange} />,
-      }, {
-        title: msg('unitPrice'),
-        dataIndex: 'unit_price',
+        title: msg('formulaFactor'),
+        dataIndex: 'formula_factor',
         width: 150,
         render: (o, record, index) =>
-          <ColumnInput field="unit_price" inEdit={editable || (index === editIndex)} record={record} onChange={this.handleEditChange} />,
+          <ColumnInput field="formula_factor" inEdit={editable || (index === editIndex)} record={record} onChange={this.handleEditChange} />,
       }, {
-        title: msg('invoiceEn'),
+        title: (
+          <div>
+            {msg('invoiceEn')}
+            {batchSaved === 1 && <Switch size="small" onChange={value => this.handleBatchEnChange('invoiceEn', value)} />}
+          </div>
+        ),
         dataIndex: 'invoice_en',
         width: 80,
         render: (o, record) =>
@@ -411,7 +462,12 @@ export default class FeesTable extends Component {
         render: (o, record, index) =>
           <TaxInput field="tax_rate" inEdit={editable || (index === editIndex)} record={record} onChange={this.handleEditChange} />,
       }, {
-        title: msg('enabledOp'),
+        title: (
+          <div>
+            {msg('enabledOp')}
+            {batchSaved === 1 && <Switch size="small" onChange={value => this.handleBatchEnChange('enabled', value)} />}
+          </div>
+        ),
         dataIndex: 'enabled',
         width: 80,
         render: (o, record) =>
@@ -459,8 +515,8 @@ export default class FeesTable extends Component {
     return (
       <Table pagination={false} rowKey={getRowKey} columns={columns} dataSource={dataSource}
         loading={quoteData.loading} onChange={this.handleTableChange}
-        title={() => (action === 'model') && <Button type="primary" size="large" onClick={this.handleModelSave}>{msg('save')}</Button>}
-        footer={() => <Button type="primary" onClick={this.handleAddFees}>{msg('addCosts')}</Button>}
+        title={this.handleTitleButton}
+        footer={() => (action === 'model') && <Button type="primary" onClick={this.handleAddFees}>{msg('addCosts')}</Button>}
       />
     );
   }

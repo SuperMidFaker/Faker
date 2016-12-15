@@ -22,6 +22,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'REVISE_QUOTE', 'REVISE_QUOTE_SUCCEED', 'REVISE_QUOTE_FAIL',
   'PUBLISH_QUOTE', 'PUBLISH_QUOTE_SUCCEED', 'PUBLISH_QUOTE_FAIL',
   'CLOSE_PUBLISH_MODAL', 'OPEN_PUBLISH_MODAL',
+  'SAVE_QUOTE_EDIT', 'SAVE_QUOTE_EDIT_SUCCEED', 'SAVE_QUOTE_EDIT_FAIL',
 ]);
 
 const initialState = {
@@ -141,6 +142,22 @@ export function saveQuoteModel(tenantId, params) {
       endpoint: 'v1/cms/quote/saveModel',
       method: 'post',
       data: { tenantId, params },
+      origin: 'mongo',
+    },
+  };
+}
+
+export function saveQuoteBatchEdit(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SAVE_QUOTE_EDIT,
+        actionTypes.SAVE_QUOTE_EDIT_SUCCEED,
+        actionTypes.SAVE_QUOTE_EDIT_FAIL,
+      ],
+      endpoint: 'v1/cms/quote/saveQuoteEdit',
+      method: 'post',
+      data: params,
       origin: 'mongo',
     },
   };

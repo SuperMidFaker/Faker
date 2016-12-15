@@ -183,18 +183,16 @@ export const FEE_CATEGORY = [
   { value: 'certs_expenses', text: '鉴定办证' },
   { value: 'custom', text: '自定义' },
 ];
-export const CHARGE_MODE = [
-  { value: '0', text: '按Shipment' },
-  { value: '1', text: '按报关单' },
-  { value: '2', text: '按品名量' },
-  { value: '3', text: '按料号' },
-  { value: '4', text: '按货值' },
-  { value: '5', text: '按实收取' },
-  { value: '6', text: '型号' },
-  { value: '7', text: '证书' },
-  { value: '8', text: '按报关单量' },
+export const CHARGE_PARAM = [
+  { value: 'formula', text: '自定义公式' },
+  { value: 'shipmt_qty', text: '运单数量' },
+  { value: 'decl_qty', text: '报关单数量' },
+  { value: 'decl_sheet_qty', text: '报关单联数' },
+  { value: 'decl_item_qty', text: '品名数量' },
+  { value: 'trade_item_qty', text: '料件数量' },
+  { value: 'trade_amt', text: '货值' },
+  { value: 'cert_qty', text: '证书数量' },
 ];
-
 export const TRANS_MODE = [
   { value: '2', text: '海运' },
   { value: '5', text: '空运' },
