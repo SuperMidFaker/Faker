@@ -7,7 +7,7 @@ import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { loadLsps, loadVehicles, doDispatch, doDispatchAndSend } from 'common/reducers/transportDispatch';
+import { loadLsps, loadVehicles, doDispatch, doDispatchAndSend, showDispatchConfirmModal } from 'common/reducers/transportDispatch';
 import { addPartner } from 'common/reducers/partner';
 import { computeCostCharge } from 'common/reducers/shipment';
 import { getChargeAmountExpression } from '../common/charge';
@@ -58,8 +58,9 @@ function fetch({ state, dispatch, cookie }) {
   vehicleTypes: state.transportDispatch.vehicleTypes,
   vehicleLengths: state.transportDispatch.vehicleLengths,
   shipmts: state.transportDispatch.shipmts,
+  dispatchConfirmModal: state.transportDispatch.dispatchConfirmModal,
 }),
-  { loadLsps, loadVehicles, doDispatch, doDispatchAndSend, addPartner, computeCostCharge, toggleCarrierModal }
+  { loadLsps, loadVehicles, doDispatch, doDispatchAndSend, addPartner, computeCostCharge, toggleCarrierModal, showDispatchConfirmModal }
 )
 export default class DispatchDock extends Component {
   static propTypes = {
@@ -84,6 +85,8 @@ export default class DispatchDock extends Component {
     computeCostCharge: PropTypes.func.isRequired,
     doDispatchAndSend: PropTypes.func.isRequired,
     toggleCarrierModal: PropTypes.func.isRequired,
+    showDispatchConfirmModal: PropTypes.func.isRequired,
+    dispatchConfirmModal: PropTypes.object.isRequired,
   }
 
   constructor(props) {
@@ -204,19 +207,13 @@ export default class DispatchDock extends Component {
     carrierSearch: '',
     plateSearch: '',
     newVehicleVisible: false,
-    dispatchConfirmModal: {
-      type: '',
-      target: {},
-      visible: false,
-    },
     lspLoading: true,
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.shipmts.length > 0 && (nextProps.lsps.pageSize !== this.state.lspsVar.pageSize
+    if (nextProps.shipmts.length > 0 && nextProps.shipmts !== this.props.shipmts || (nextProps.lsps.pageSize !== this.state.lspsVar.pageSize
       || nextProps.lsps.current !== this.state.lspsVar.current
-      || nextProps.lsps.data.length !== this.state.lspsVar.data.length
-      || nextProps.lsps.data !== this.state.lspsVar.data)) {
+      || nextProps.lsps.data.length !== this.state.lspsVar.data.length)) {
       this.setState({ lspLoading: true });
       let lspsVar = { ...nextProps.lsps };
       const charges = [];
@@ -347,7 +344,7 @@ export default class DispatchDock extends Component {
 
   handleShipmtDispatch() {
     // TODO multi shipments dispatch
-    const { type, target } = this.state.dispatchConfirmModal;
+    const { type, target } = this.props.dispatchConfirmModal;
     const { tenantId, loginId, shipmts } = this.props;
     const podType = this.state.podType;
     const shipmtNos = shipmts.map(s => ({ shipmtNo: s.shipmt_no, dispId: s.key }));
@@ -393,7 +390,7 @@ export default class DispatchDock extends Component {
 
   handleShipmtDispatchAndSend = () => {
     // TODO multi shipments dispatch
-    const { type, target } = this.state.dispatchConfirmModal;
+    const { type, target } = this.props.dispatchConfirmModal;
     const { tenantId, loginId, loginName, shipmts } = this.props;
     const podType = this.state.podType;
     const shipmtNos = shipmts.map(s => ({ shipmtNo: s.shipmt_no, dispId: s.key }));
@@ -568,20 +565,7 @@ export default class DispatchDock extends Component {
     });
   }
   showConfirm(type, target) {
-    this.setState({ dispatchConfirmModal: {
-      type,
-      target,
-      visible: true,
-    },
-    });
-    setTimeout(() => {
-      this.setState({ dispatchConfirmModal: {
-        type,
-        target,
-        visible: false,
-      },
-      });
-    }, 200);
+    this.props.showDispatchConfirmModal(true, type, target);
   }
   handleNewCarrierClick = () => {
     this.props.toggleCarrierModal(true, 'add');
@@ -653,9 +637,7 @@ export default class DispatchDock extends Component {
                   <VehicleFormMini visible={this.state.newVehicleVisible} />
                 </TabPane>
               </Tabs>
-              <DispatchConfirmModal visible={this.state.dispatchConfirmModal.visible}
-                target={this.state.dispatchConfirmModal.target}
-                type={this.state.dispatchConfirmModal.type}
+              <DispatchConfirmModal
                 shipmts={this.props.shipmts} onChange={this.handlePodTypeChange}
                 onDispatchAndSend={() => this.handleShipmtDispatchAndSend()}
                 onDispatch={() => this.handleShipmtDispatch()}

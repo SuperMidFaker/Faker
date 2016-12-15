@@ -1,8 +1,15 @@
 import React, { PropTypes, Component } from 'react';
+import { connect } from 'react-redux';
 import { Radio, Icon, Modal, Button } from 'antd';
+import { showDispatchConfirmModal } from 'common/reducers/transportDispatch';
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 
+@connect(state => ({
+  type: state.transportDispatch.dispatchConfirmModal.type,
+  target: state.transportDispatch.dispatchConfirmModal.target,
+  visible: state.transportDispatch.dispatchConfirmModal.visible,
+}), { showDispatchConfirmModal })
 export default class DispatchConfirmModal extends Component {
   static propTypes = {
     shipmts: PropTypes.array.isRequired,
@@ -12,6 +19,7 @@ export default class DispatchConfirmModal extends Component {
     type: PropTypes.string.isRequired,
     target: PropTypes.object.isRequired,
     visible: PropTypes.bool.isRequired,
+    showDispatchConfirmModal: PropTypes.func.isRequired,
   }
 
   constructor(props) {
@@ -21,13 +29,14 @@ export default class DispatchConfirmModal extends Component {
 
   state = {
     podType: 'ePOD',
-    visible: false,
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({
-      visible: nextProps.visible || this.state.visible,
-    });
+    if (nextProps.visible) {
+      this.setState({
+        visible: nextProps.visible,
+      });
+    }
   }
 
   handlePodTypeChange(e) {
@@ -37,7 +46,17 @@ export default class DispatchConfirmModal extends Component {
   }
 
   handleCancel = () => {
-    this.setState({ visible: false });
+    this.props.showDispatchConfirmModal(false, '', {});
+  }
+
+  handleDispatch = () => {
+    this.handleCancel();
+    this.props.onDispatch();
+  }
+
+  handleDispatchAndSend = () => {
+    this.handleCancel();
+    this.props.onDispatchAndSend();
   }
 
   render() {
@@ -48,13 +67,13 @@ export default class DispatchConfirmModal extends Component {
       msg = `将【${shipmt.shipmt_no}】分配给【${target.plate_number}】承运，请选择对回单的要求：`;
     }
     return (
-      <Modal title="确认回单要求" visible={this.state.visible} onCancel={this.handleCancel}
+      <Modal title="确认回单要求" visible={this.props.visible} onCancel={this.handleCancel}
         footer={[
           <Button key="cancel" type="ghost" size="large" onClick={this.handleCancel}>取消</Button>,
-          <Button key="dispatch" type="default" size="large" onClick={this.props.onDispatch}>
+          <Button key="dispatch" type="default" size="large" onClick={this.handleDispatch}>
             确定
           </Button>,
-          <Button key="diapatchAndSend" type="primary" size="large" onClick={this.props.onDispatchAndSend}>
+          <Button key="diapatchAndSend" type="primary" size="large" onClick={this.handleDispatchAndSend}>
             确定并发送
           </Button>,
         ]}

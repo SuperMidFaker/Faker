@@ -134,50 +134,50 @@ export default class ClearancePane extends React.Component {
           <Col span="12">
             <PaneFormItem labelCol={{ span: 3 }} label="提运单号"
               field={delegation.bl_wb_no} fieldCol={{ span: 9 }}
-              />
+            />
           </Col>
           <Col span="12">
             <PaneFormItem labelCol={{ span: 3 }} label="运单号"
               field={delegation.shipping_no} fieldCol={{ span: 9 }}
-              />
+            />
           </Col>
         </Row>
         <Row>
           <Col span="12">
             <PaneFormItem labelCol={{ span: 3 }} label="发票号"
               field={delegation.invoice_no} fieldCol={{ span: 9 }}
-              />
+            />
           </Col>
           <Col span="12">
             <PaneFormItem labelCol={{ span: 3 }} label="订单号"
               field={delegation.order_no} fieldCol={{ span: 9 }}
-              />
+            />
           </Col>
         </Row>
         <Row>
           <Col span="12">
             <PaneFormItem labelCol={{ span: 3 }} label="船名航次"
               field={delegation.voyage_no} fieldCol={{ span: 9 }}
-              />
+            />
           </Col>
 
           <Col span="12">
             <PaneFormItem labelCol={{ span: 3 }} label="外部编号"
               field={delegation.ref_external_no}
               fieldCol={{ span: 9 }}
-              />
+            />
           </Col>
         </Row>
         <Row>
           <Col span="12">
             <PaneFormItem labelCol={{ span: 3 }} label="总重量"
               field={delegation.weight ? `${delegation.weight} 千克` : ''} fieldCol={{ span: 9 }}
-              />
+            />
           </Col>
           <Col span="12">
             <PaneFormItem labelCol={{ span: 3 }} label="总件数"
               field={delegation.pieces ? `${delegation.pieces} 件` : ''} fieldCol={{ span: 9 }}
-              />
+            />
           </Col>
         </Row>
         <Row>
@@ -185,7 +185,7 @@ export default class ClearancePane extends React.Component {
             <PaneFormItem labelCol={{ span: 3 }} label="备注"
               field={delegation.remark}
               fieldCol={{ span: 9 }}
-              />
+            />
           </Col>
         </Row>
         <hr />

@@ -1,6 +1,6 @@
 /* eslint no-undef: 0 */
 import React, { PropTypes } from 'react';
-import { Steps, Card } from 'antd';
+import { Steps } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { SHIPMENT_TRACK_STATUS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';

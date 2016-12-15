@@ -15,7 +15,9 @@ const actionTypes = createActionTypes('@@welogix/transport/dispatch/',
     'SEGMENT_CANCEL', 'SEGMENT_CANCEL_SUCCEED', 'SEGMENT_CANCEL_FAIL',
     'GROUPED_LIST', 'GROUPED_LIST_SUCCEED', 'GROUPED_LIST_FAIL',
     'WITHDRAW', 'WITHDRAW_FAIL', 'WITHDRAW_SUCCEED',
-    'REMOVE_GROUPEDSUB', 'CHANGE_DOCK_STATUS']);
+    'REMOVE_GROUPEDSUB', 'CHANGE_DOCK_STATUS',
+    'SHOW_DISPATCH_CONFIRM_MODAL',
+  ]);
 
 const initialState = {
   loaded: true,
@@ -62,6 +64,11 @@ const initialState = {
   vehicleLengths: [],
   vehicleTypes: [],
   shipmt: {},
+  dispatchConfirmModal: {
+    type: '',
+    target: {},
+    visible: false,
+  },
 };
 
 export default function reducer(state = initialState, action) {
@@ -139,14 +146,20 @@ export default function reducer(state = initialState, action) {
     }
     case actionTypes.CHANGE_DOCK_STATUS:
       return { ...state, ...action.data };
+    case actionTypes.DO_SEND:
+      return { ...state, loading: true };
     case actionTypes.DO_SEND_SUCCEED:
       return { ...state, loaded: false, filters: { ...state.filters, status: 'dispatching' } };
     case actionTypes.DO_RETURN_SUCCEED:
       return { ...state, loaded: false, filters: { ...state.filters, status: 'dispatching' } };
     case actionTypes.WITHDRAW_SUCCEED:
       return { ...state, loaded: false, filters: { ...state.filters, status: 'dispatching' } };
+    case actionTypes.DO_DISPATCH_SEND:
+      return { ...state, loading: true };
     case actionTypes.DO_DISPATCH_SEND_SUCCEED:
       return { ...state, loaded: false, filters: { ...state.filters, status: 'dispatched' } };
+    case actionTypes.SHOW_DISPATCH_CONFIRM_MODAL:
+      return { ...state, dispatchConfirmModal: action.data };
     default:
       return state;
   }
@@ -397,5 +410,12 @@ export function withDraw(params) {
       method: 'post',
       data: params,
     },
+  };
+}
+
+export function showDispatchConfirmModal(visible, type, target) {
+  return {
+    type: actionTypes.SHOW_DISPATCH_CONFIRM_MODAL,
+    data: { visible, type, target },
   };
 }

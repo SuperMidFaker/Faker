@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Card, Row, Col, Collapse, Table, Tabs } from 'antd';
+import { Card, Row, Collapse, Table, Tabs } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { loadPaneExp } from 'common/reducers/cmsExpense';
@@ -142,12 +142,12 @@ export default class ExpensePane extends React.Component {
             <TabPane tab={this.msg('costDetail')} key="cost">
               {
                 allcost.map((cost) => {
-                  let titleLabel;
-                  if (cost.vendor === 'cert') {
-                    titleLabel = '鉴定办证';
-                  } else {
-                    titleLabel = `供应商: ${cost.vendor}`;
-                  }
+                  // let titleLabel;
+                  // if (cost.vendor === 'cert') {
+                  //   titleLabel = '鉴定办证';
+                  // } else {
+                  //   titleLabel = `供应商: ${cost.vendor}`;
+                  // }
                   const costData = cost.fees;
                   const totalCost = costData.reduce((res, cfe) => ({
                     cal_fee: res.cal_fee + parseFloat(cfe.cal_fee),
