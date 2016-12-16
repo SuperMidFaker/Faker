@@ -51,10 +51,10 @@ export default class QuotingView extends Component {
                 <FeesTable action="view" editable={false} />
               </TabPane>
               <TabPane tab="报价设置" key="fees-form">
-                <FeesForm form={form} action="edit" />
+                <FeesForm form={form} action="view" />
               </TabPane>
               <TabPane tab="修订历史" key="revision-history">
-                <RevisionTable />
+                <RevisionTable action="view" />
               </TabPane>
             </Tabs>
           </div>

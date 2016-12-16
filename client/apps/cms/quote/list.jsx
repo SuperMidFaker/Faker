@@ -133,11 +133,7 @@ export default class QuoteList extends Component {
     }
   }
   handleQuoteView = (row) => {
-    if (row.status === 'draft') {
-      this.context.router.push(`/clearance/billing/quote/view/${row.quote_no}/${row.version}`);
-    } else if (row.next_version) {
-      this.context.router.push(`/clearance/billing/quote/view/${row.quote_no}/${row.next_version}`);
-    }
+    this.context.router.push(`/clearance/billing/quote/view/${row.quote_no}/${row.version}`);
   }
   handleDeleteQuote = (quoteNo) => {
     this.props.deleteQuote(quoteNo).then((result) => {
