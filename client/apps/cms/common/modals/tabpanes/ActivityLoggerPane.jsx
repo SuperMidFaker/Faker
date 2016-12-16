@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Card, DatePicker, Form, InputNumber, Mention, Radio, Select, Tabs, Timeline } from 'antd';
+import { Button, Card, DatePicker, Form, Icon, InputNumber, Mention, Radio, Select, Tabs, Timeline } from 'antd';
 
 const Option = Select.Option;
 const FormItem = Form.Item;
@@ -102,14 +102,22 @@ export default class ActivityLoggerPane extends React.Component {
           </Tabs>
         </Card>
         <Timeline>
-          <Timeline.Item>缴税 2015-09-01</Timeline.Item>
-          <Timeline.Item>海关申报 2015-09-01</Timeline.Item>
-          <Timeline.Item color="red">
+          <Timeline.Item dot={<Icon type="check-circle-o" />} color="green">放行 2015-09-01</Timeline.Item>
+          <Timeline.Item dot={<Icon type="pay-circle-o" />}>缴税 2015-09-01</Timeline.Item>
+          <Timeline.Item dot={<Icon type="message" />}>发送消息 2015-09-01</Timeline.Item>
+          <Timeline.Item dot={<Icon type="addfile" />}>办证 2015-09-01</Timeline.Item>
+          <Timeline.Item dot={<Icon type="pause-circle-o" />} color="red">
             <Card bodyStyle={{ padding: 8 }}>海关查验 2015-09-01
               <Button type="default" size="small" icon="check" />
             </Card>
           </Timeline.Item>
-          <Timeline.Item>创建清关委托 2015-09-01</Timeline.Item>
+          <Timeline.Item dot={<Icon type="calculator" />}>录入代垫费用 2015-09-01</Timeline.Item>
+          <Timeline.Item dot={<Icon type="play-circle-o" />}>海关申报 2015-09-01</Timeline.Item>
+          <Timeline.Item dot={<Icon type="copy" />}>制单 2015-09-01</Timeline.Item>
+          <Timeline.Item dot={<Icon type="solution" />}>接单 2015-09-01</Timeline.Item>
+          <Timeline.Item dot={<Icon type="plus-circle-o" />} >
+            创建清关委托 2015-09-01
+          </Timeline.Item>
         </Timeline>
       </div>
     );
