@@ -358,6 +358,9 @@ export default class FeesTable extends Component {
       }
     });
   }
+  handlebatchCancel = () => {
+    this.setState({ editable: this.props.editable, batchSaved: 0 });
+  }
   handlebatchModify = () => {
     this.setState({ editable: true, batchSaved: 1 });
   }
@@ -367,9 +370,10 @@ export default class FeesTable extends Component {
     if (action === 'edit') {
       return (
         <div>
-          <Button type="default" style={{ marginRight: 8 }} onClick={this.handleAddFees}>{msg('addCosts')}</Button>
-          {this.state.batchSaved === 0 && <Button type="ghost" onClick={this.handlebatchModify}>{msg('batchModify')}</Button>}
-          {this.state.batchSaved === 1 && <Button type="primary" onClick={this.handlebatchSave}>{msg('batchSave')}</Button>}
+          <Button type="default" icon="plus-circle-o" style={{ marginRight: 8 }} onClick={this.handleAddFees}>{msg('addCosts')}</Button>
+          {this.state.batchSaved === 0 && <Button type="ghost" icon="edit" onClick={this.handlebatchModify}>{msg('batchModify')}</Button>}
+          {this.state.batchSaved === 1 && <Button type="primary" icon="save" style={{ marginRight: 8 }} onClick={this.handlebatchSave}>{msg('batchSave')}</Button>}
+          {this.state.batchSaved === 1 && <Button type="ghost" onClick={this.handlebatchCancel}>{msg('cancel')}</Button>}
         </div>
       );
     } else if (action === 'model') {

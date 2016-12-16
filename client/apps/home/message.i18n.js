@@ -13,6 +13,10 @@ const messages = defineMessages({
     id: 'container.corp',
     defaultMessage: '管理面板',
   },
+  notFound: {
+    id: 'container.not.found',
+    defaultMessage: '',
+  },
 });
 
 export default messages;

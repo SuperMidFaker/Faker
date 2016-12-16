@@ -74,11 +74,11 @@ export default class CustomsDeclPane extends React.Component {
     }, {
       title: '申报时间',
       dataIndex: 'process_date',
-      render: o => o && moment(o).format('YYYY.MM.DD HH:mm'),
+      render: o => o && moment(o).format('MM.DD HH:mm'),
     }, {
       title: '放行时间',
       dataIndex: 'd_date',
-      render: o => o && moment(o).format('YYYY.MM.DD HH:mm'),
+      render: o => o && moment(o).format('MM.DD HH:mm'),
     }];
     let sourceText = '';
     if (delgPanel.source === DELG_SOURCE.consigned) {
@@ -92,8 +92,8 @@ export default class CustomsDeclPane extends React.Component {
       <div className="pane-content tab-pane">
         <Card bodyStyle={{ padding: 8 }}>
           <Row>
-            <Col span="8">
-              <InfoItem labelCol={{ span: 3 }} label="报关企业"
+            <Col span="12">
+              <InfoItem labelCol={{ span: 3 }} label="报关服务商"
                 field={delgPanel.recv_name} fieldCol={{ span: 9 }}
               />
             </Col>
@@ -103,17 +103,15 @@ export default class CustomsDeclPane extends React.Component {
                   && moment(delgPanel.acpt_time).format('YYYY.MM.DD HH:mm')}
               />
             </Col>
-            <Col span="8">
+            <Col span="4">
               <InfoItem labelCol={{ span: 3 }} label="来源"
                 field={sourceText} fieldCol={{ span: 9 }}
               />
             </Col>
           </Row>
-        </Card>
-        <Card bodyStyle={{ padding: 8 }}>
           {
           delgBills.length > 0 &&
-          <Tabs defaultActiveKey={delgBills[0].key}>
+          <Tabs size="small" defaultActiveKey={delgBills[0].key}>
             {
               delgBills.map((bill) => {
                 const tableDatas = (bill.children || []).map(decl => ({
@@ -125,11 +123,11 @@ export default class CustomsDeclPane extends React.Component {
                 }));
                 const declTypes = DECL_I_TYPE.concat(DECL_E_TYPE).filter(dt => dt.key === bill.decl_way_code);
                 return (
-                  <TabPane tab={bill.bill_seq_no} key={bill.key} style={{ padding: 8 }}>
+                  <TabPane tab={declTypes.length > 0 ? declTypes[0].value : ''} key={bill.key} >
                     <Row>
                       <Col span="12">
-                        <InfoItem labelCol={{ span: 3 }} label="报关类型"
-                          field={declTypes.length > 0 ? declTypes[0].value : ''} fieldCol={{ span: 9 }}
+                        <InfoItem labelCol={{ span: 3 }} label="清单编号"
+                          field={bill.bill_seq_no} fieldCol={{ span: 9 }}
                         />
                       </Col>
                       <Col span="6">
@@ -144,7 +142,7 @@ export default class CustomsDeclPane extends React.Component {
                       </Col>
                     </Row>
                     <hr />
-                    <Table size="middle" columns={columns} pagination={false} dataSource={tableDatas} scroll={{ x: 600 }} />
+                    <Table size="middle" columns={columns} pagination={false} dataSource={tableDatas} scroll={{ x: 640 }} />
                   </TabPane>);
               })
             }

@@ -100,14 +100,9 @@ export default class BasicPane extends React.Component {
       <div className="pane-content tab-pane">
         <Card bodyStyle={{ padding: 8 }}>
           <Row>
-            <Col span="8">
+            <Col span="16">
               <InfoItem labelCol={{ span: 3 }} label="委托方"
                 field={delegation.customer_name} fieldCol={{ span: 9 }}
-              />
-            </Col>
-            <Col span="8">
-              <InfoItem labelCol={{ span: 3 }} label="代理方"
-                field={delegation.agent_name} fieldCol={{ span: 9 }}
               />
             </Col>
             <Col span="8">

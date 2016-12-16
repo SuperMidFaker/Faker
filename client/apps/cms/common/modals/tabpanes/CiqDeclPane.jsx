@@ -66,7 +66,7 @@ export default class CiqDeclPane extends React.Component {
     }, {
       title: '报检日期',
       dataIndex: 'inspection_time',
-      render: o => o && moment(o).format('YYYY.MM.DD HH:mm'),
+      render: o => o && moment(o).format('MM.DD HH:mm'),
     }, {
       title: '处理结果',
       dataIndex: 'ciq_status',
@@ -90,8 +90,8 @@ export default class CiqDeclPane extends React.Component {
       <div className="pane-content tab-pane">
         <Card bodyStyle={{ padding: 8 }}>
           <Row>
-            <Col span="8">
-              <InfoItem labelCol={{ span: 3 }} label="报检企业"
+            <Col span="12">
+              <InfoItem labelCol={{ span: 3 }} label="报检服务商"
                 field={ciqdecl.inspection_name} fieldCol={{ span: 9 }}
               />
             </Col>
@@ -100,14 +100,13 @@ export default class CiqDeclPane extends React.Component {
                 field={ciqdecl.acpt_time && moment(ciqdecl.acpt_time).format('YYYY.MM.DD HH:mm')}
               />
             </Col>
-            <Col span="8">
+            <Col span="4">
               <InfoItem labelCol={{ span: 3 }} label="来源"
                 field={sourceText} fieldCol={{ span: 9 }}
               />
             </Col>
           </Row>
-        </Card>
-        <Card bodyStyle={{ padding: 8 }}>
+          <hr />
           <Table size="middle" columns={columns} pagination={false} dataSource={ciqdecl.ciqlist} scroll={{ x: 800 }} />
         </Card>
       </div>
