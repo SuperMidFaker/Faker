@@ -139,7 +139,7 @@ export default class PreviewPanel extends React.Component {
   }
   tablePan() {
     const { previewer, tabKey } = this.props;
-    const { delegation, files, delegateTracking } = previewer;
+    const { delegation, files } = previewer;
     if (delegation.status === 0) {
       return (
         <Tabs type="card" activeKey={tabKey} onChange={this.handleTabChange}>

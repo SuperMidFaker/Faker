@@ -33,11 +33,11 @@ function getFieldInits(quoteData, tenantId) {
     }
     if (quoteData.create_tenant_id === tenantId && !isBase) {
       init.edit_permission = true;
-      init.permission = quoteData.partner_permission;
+      init.permission = quoteData.partner_permission || 1;
     }
     init.invoice_type = quoteData.invoice_type;
-    init.decl_item_qty = quoteData.decl_item_qty;
-    init.ciq_item_qty = quoteData.ciq_item_qty;
+    init.decl_item_per_sheet = quoteData.decl_item_per_sheet;
+    init.ciq_item_per_sheet = quoteData.ciq_item_per_sheet;
     [
       'decl_way_code', 'trans_mode',
     ].forEach((qd) => {
@@ -61,8 +61,12 @@ export default class FeesForm extends Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   render() {
-    const { form: { getFieldDecorator }, fieldInits } = this.props;
+    const { form: { getFieldDecorator }, fieldInits, action } = this.props;
     const DECL_TYPE = DECL_I_TYPE.concat(DECL_E_TYPE);
+    let readOnly = false;
+    if (action === 'view') {
+      readOnly = true;
+    }
     return (
       <div style={{ padding: 12 }}>
         <Row>
@@ -83,7 +87,7 @@ export default class FeesForm extends Component {
                 {getFieldDecorator('permission', {
                   initialValue: fieldInits.permission,
                 })(
-                  <RadioGroup>
+                  <RadioGroup disabled={readOnly} >
                     <Radio value={CMS_QUOTE_PERMISSION.viewable}>{this.msg('permissionView')}</Radio>
                     <Radio value={CMS_QUOTE_PERMISSION.editable}>{this.msg('permissionEdit')}</Radio>
                   </RadioGroup>
@@ -99,12 +103,12 @@ export default class FeesForm extends Component {
                 rules: [{ required: true, message: '报关类型必选', type: 'array' }],
                 initialValue: fieldInits.decl_way_code,
               })(
-                <Select multiple style={{ width: '100%' }} >
+                <Select multiple style={{ width: '100%' }} disabled={readOnly} >
                   {
-                  DECL_TYPE.map(dw =>
-                    <Option value={dw.key} key={dw.key}>{dw.value}</Option>
-                  )
-                }
+                    DECL_TYPE.map(dw =>
+                      <Option value={dw.key} key={dw.key}>{dw.value}</Option>
+                    )
+                  }
                 </Select>
               )}
             </FormItem>
@@ -115,12 +119,12 @@ export default class FeesForm extends Component {
                 rules: [{ required: true, message: '运输方式必选', type: 'array' }],
                 initialValue: fieldInits.trans_mode,
               })(
-                <Select multiple style={{ width: '100%' }} >
+                <Select multiple style={{ width: '100%' }} disabled={readOnly} >
                   {
-                  TRANS_MODE.map(tr =>
-                    <Option value={tr.value} key={tr.value}>{tr.text}</Option>
-                  )
-                }
+                    TRANS_MODE.map(tr =>
+                      <Option value={tr.value} key={tr.value}>{tr.text}</Option>
+                    )
+                  }
                 </Select>
               )}
             </FormItem>
@@ -129,21 +133,21 @@ export default class FeesForm extends Component {
         <Row>
           <Col sm={8} md={8}>
             <FormItem label={this.msg('declItemQuantity')} {...formItemLayout}>
-              {getFieldDecorator('decl_item_qty', {
+              {getFieldDecorator('decl_item_per_sheet', {
                 rules: [{ required: true, message: '品项数必填', type: 'number' }],
-                initialValue: fieldInits.decl_item_qty,
+                initialValue: fieldInits.decl_item_per_sheet,
               })(
-                <InputNumber style={{ width: '100%' }} />
+                <InputNumber style={{ width: '100%' }} readOnly={readOnly} />
               )}
             </FormItem>
           </Col>
           <Col sm={8} md={8}>
             <FormItem label={this.msg('ciqItemQuantity')} {...formItemLayout}>
-              {getFieldDecorator('ciq_item_qty', {
+              {getFieldDecorator('ciq_item_per_sheet', {
                 rules: [{ required: true, message: '品项数必填', type: 'number' }],
-                initialValue: fieldInits.ciq_item_qty,
+                initialValue: fieldInits.ciq_item_per_sheet,
               })(
-                <InputNumber style={{ width: '100%' }} />
+                <InputNumber style={{ width: '100%' }} readOnly={readOnly} />
               )}
             </FormItem>
           </Col>
@@ -153,12 +157,12 @@ export default class FeesForm extends Component {
                 rules: [{ required: true, message: '开票类型必选', type: 'number' }],
                 initialValue: fieldInits.invoice_type,
               })(
-                <Select style={{ width: '100%' }} >
+                <Select style={{ width: '100%' }} disabled={readOnly} >
                   {
-                  INVOICE_TYPE.map(inv =>
-                    <Option value={inv.value} key={inv.value}>{inv.text}</Option>
-                  )
-                }
+                    INVOICE_TYPE.map(inv =>
+                      <Option value={inv.value} key={inv.value}>{inv.text}</Option>
+                    )
+                  }
                 </Select>
               )}
             </FormItem>
