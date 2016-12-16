@@ -36,8 +36,8 @@ function getFieldInits(quoteData, tenantId) {
       init.permission = quoteData.partner_permission || 1;
     }
     init.invoice_type = quoteData.invoice_type;
-    init.decl_item_qty = quoteData.decl_item_qty;
-    init.ciq_item_qty = quoteData.ciq_item_qty;
+    init.decl_item_per_sheet = quoteData.decl_item_per_sheet;
+    init.ciq_item_per_sheet = quoteData.ciq_item_per_sheet;
     [
       'decl_way_code', 'trans_mode',
     ].forEach((qd) => {
@@ -105,10 +105,10 @@ export default class FeesForm extends Component {
               })(
                 <Select multiple style={{ width: '100%' }} disabled={readOnly} >
                   {
-                  DECL_TYPE.map(dw =>
-                    <Option value={dw.key} key={dw.key}>{dw.value}</Option>
-                  )
-                }
+                    DECL_TYPE.map(dw =>
+                      <Option value={dw.key} key={dw.key}>{dw.value}</Option>
+                    )
+                  }
                 </Select>
               )}
             </FormItem>
@@ -121,10 +121,10 @@ export default class FeesForm extends Component {
               })(
                 <Select multiple style={{ width: '100%' }} disabled={readOnly} >
                   {
-                  TRANS_MODE.map(tr =>
-                    <Option value={tr.value} key={tr.value}>{tr.text}</Option>
-                  )
-                }
+                    TRANS_MODE.map(tr =>
+                      <Option value={tr.value} key={tr.value}>{tr.text}</Option>
+                    )
+                  }
                 </Select>
               )}
             </FormItem>
@@ -133,9 +133,9 @@ export default class FeesForm extends Component {
         <Row>
           <Col sm={8} md={8}>
             <FormItem label={this.msg('declItemQuantity')} {...formItemLayout}>
-              {getFieldDecorator('decl_item_qty', {
+              {getFieldDecorator('decl_item_per_sheet', {
                 rules: [{ required: true, message: '品项数必填', type: 'number' }],
-                initialValue: fieldInits.decl_item_qty,
+                initialValue: fieldInits.decl_item_per_sheet,
               })(
                 <InputNumber style={{ width: '100%' }} readOnly={readOnly} />
               )}
@@ -143,9 +143,9 @@ export default class FeesForm extends Component {
           </Col>
           <Col sm={8} md={8}>
             <FormItem label={this.msg('ciqItemQuantity')} {...formItemLayout}>
-              {getFieldDecorator('ciq_item_qty', {
+              {getFieldDecorator('ciq_item_per_sheet', {
                 rules: [{ required: true, message: '品项数必填', type: 'number' }],
-                initialValue: fieldInits.ciq_item_qty,
+                initialValue: fieldInits.ciq_item_per_sheet,
               })(
                 <InputNumber style={{ width: '100%' }} readOnly={readOnly} />
               )}
@@ -159,10 +159,10 @@ export default class FeesForm extends Component {
               })(
                 <Select style={{ width: '100%' }} disabled={readOnly} >
                   {
-                  INVOICE_TYPE.map(inv =>
-                    <Option value={inv.value} key={inv.value}>{inv.text}</Option>
-                  )
-                }
+                    INVOICE_TYPE.map(inv =>
+                      <Option value={inv.value} key={inv.value}>{inv.text}</Option>
+                    )
+                  }
                 </Select>
               )}
             </FormItem>
