@@ -184,7 +184,7 @@ export const FEE_CATEGORY = [
   { value: 'custom', text: '自定义' },
 ];
 export const CHARGE_PARAM = [
-  { value: 'formula', text: '自定义公式' },
+  { value: '$formula', text: '自定义公式' },
   { value: 'shipmt_qty', text: '运单数量' },
   { value: 'decl_qty', text: '报关单数量' },
   { value: 'decl_sheet_qty', text: '报关单联数' },
