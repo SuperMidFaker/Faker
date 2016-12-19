@@ -249,5 +249,9 @@ const messages = defineMessages({
     id: 'cms.quote.revision.publisher',
     defaultMessage: '发布人',
   },
+  newVersion: {
+    id: 'cms.quote.revision.new.version',
+    defaultMessage: '新版本',
+  },
 });
 export default messages;

@@ -229,19 +229,11 @@ export default class QuoteList extends Component {
           }
           return tags;
         },
-      }, {
-        title: msg('status'),
-        dataIndex: 'valid',
-        width: 80,
-        render: (o) => {
-          if (!o) {
-            return <Tag color="#ccc">{msg('invalid')}</Tag>;
-          } else {
-            return <Tag color="green">{msg('valid')}</Tag>;
-          }
-        },
-      }, {
-        title: msg('version'),
+      },
+    ];
+    if (listFilter.status === 'draft') {
+      columns.push({
+        title: msg('newVersion'),
         dataIndex: 'version',
         width: 80,
       }, {
@@ -312,8 +304,93 @@ export default class QuoteList extends Component {
             );
           }
         },
-      },
-    ];
+      });
+    } else {
+      columns.push({
+        title: msg('status'),
+        dataIndex: 'valid',
+        width: 80,
+        render: (o) => {
+          if (!o) {
+            return <Tag color="#ccc">{msg('invalid')}</Tag>;
+          } else {
+            return <Tag color="green">{msg('valid')}</Tag>;
+          }
+        },
+      }, {
+        title: msg('version'),
+        dataIndex: 'version',
+        width: 80,
+      }, {
+        title: msg('publisher'),
+        dataIndex: 'publisher',
+        width: 80,
+      }, {
+        title: msg('publishDate'),
+        dataIndex: 'publish_date',
+        width: 100,
+        render: o => o && moment(o).format('MM.DD HH:mm'),
+      }, {
+        title: msg('operation'),
+        width: 120,
+        fixed: 'right',
+        render: (o, record) => {
+          let auth = '';
+          if (record.create_tenant_id === tenantId) {
+            auth = 'modify';
+          } else if (record.partner_permission === 2) {
+            auth = 'modify';
+          } else if (record.partner_permission === 1) {
+            auth = 'read';
+          }
+          if (auth === 'modify') {
+            if (record.valid) {
+              return (
+                <span>
+                  <PrivilegeCover module="clearance" feature="quote" action="edit">
+                    <div>
+                      <a onClick={() => this.handleQuoteView(record)}>{msg('view')}</a>
+                      <span className="ant-divider" />
+                      <a onClick={() => this.handleQuoteEdit(record)}>{msg('revise')}</a>
+                      <span className="ant-divider" />
+                      <a onClick={() => this.handleChangeStatus(record._id, false)}>{msg('disable')}</a>
+                    </div>
+                  </PrivilegeCover>
+                </span>
+              );
+            } else {
+              return (
+                <span>
+                  <PrivilegeCover module="clearance" feature="quote" action="edit">
+                    <div>
+                      <a onClick={() => this.handleChangeStatus(record._id, true)}>{msg('enable')}</a>
+                      <span className="ant-divider" />
+                      {
+                        record.status === 'draft' ?
+                          <a onClick={() => this.handleDeleteDraft(record._id, record.quote_no)}>{msg('delete')}</a>
+                        : <a onClick={() => this.handleDeleteQuote(record.quote_no)}>{msg('delete')}</a>
+                      }
+                      <span className="ant-divider" />
+                      <a onClick={() => this.handleQuoteView(record)}>{msg('view')}</a>
+                    </div>
+                  </PrivilegeCover>
+                </span>
+              );
+            }
+          } else if (auth === 'read') {
+            return (
+              <span>
+                <PrivilegeCover module="clearance" feature="quote" action="view">
+                  <div>
+                    <a onClick={() => this.handleQuoteView(record)}>{msg('view')}</a>
+                  </div>
+                </PrivilegeCover>
+              </span>
+            );
+          }
+        },
+      });
+    }
     return (
       <QueueAnim type={['bottom', 'up']}>
         <header className="top-bar" key="header">
