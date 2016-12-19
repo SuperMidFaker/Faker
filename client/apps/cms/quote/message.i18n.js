@@ -213,8 +213,8 @@ const messages = defineMessages({
     id: 'cms.quote.publish',
     defaultMessage: '发布',
   },
-  trail: {
-    id: 'cms.quote.trail',
+  trial: {
+    id: 'cms.quote.trial',
     defaultMessage: '试算',
   },
   more: {
@@ -252,6 +252,10 @@ const messages = defineMessages({
   newVersion: {
     id: 'cms.quote.revision.new.version',
     defaultMessage: '新版本',
+  },
+  trialTitle: {
+    id: 'cms.quote.modal.trial.title',
+    defaultMessage: '试算报价',
   },
 });
 export default messages;

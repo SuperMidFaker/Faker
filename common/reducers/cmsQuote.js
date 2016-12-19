@@ -23,6 +23,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'SAVE_QUOTE_EDIT', 'SAVE_QUOTE_EDIT_SUCCEED', 'SAVE_QUOTE_EDIT_FAIL',
   'LOAD_QUOTEREVS', 'LOAD_QUOTEREVS_SUCCEED', 'LOAD_QUOTEREVS_FAIL',
   'RESTORE_QUOTE', 'RESTORE_QUOTE_SUCCEED', 'RESTORE_QUOTE_FAIL',
+  'CLOSE_TRIAL_MODAL', 'OPEN_TRIAL_MODAL',
 ]);
 
 const initialState = {
@@ -56,6 +57,7 @@ const initialState = {
   quotesLoading: false,
   visibleCreateModal: false,
   publishModalVisible: false,
+  trialModalVisible: false,
 };
 
 export default function reducer(state = initialState, action) {
@@ -88,6 +90,10 @@ export default function reducer(state = initialState, action) {
       return { ...state, publishModalVisible: false };
     case actionTypes.LOAD_QUOTEREVS_SUCCEED:
       return { ...state, quoteRevisions: action.result.data };
+    case actionTypes.OPEN_TRIAL_MODAL:
+      return { ...state, trialModalVisible: true };
+    case actionTypes.CLOSE_TRIAL_MODAL:
+      return { ...state, trialModalVisible: false };
     default:
       return state;
   }
@@ -388,6 +394,34 @@ export function restoreQuote(quoteId, quoteNo, commitMsg) {
       endpoint: 'v1/cms/quote/restore',
       method: 'post',
       data: { quoteId, quoteNo, commitMsg },
+      origin: 'mongo',
+    },
+  };
+}
+
+export function openTrialModal() {
+  return {
+    type: actionTypes.OPEN_TRIAL_MODAL,
+  };
+}
+
+export function closeTrialModal() {
+  return {
+    type: actionTypes.CLOSE_TRIAL_MODAL,
+  };
+}
+
+export function trialQuote(quoteData) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.TRIAL_QUOTE,
+        actionTypes.TRIAL_QUOTE_SUCCEED,
+        actionTypes.TRIAL_QUOTE_FAIL,
+      ],
+      endpoint: 'v1/cms/quote/trial',
+      method: 'post',
+      data: quoteData,
       origin: 'mongo',
     },
   };

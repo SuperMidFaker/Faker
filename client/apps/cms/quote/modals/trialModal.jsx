@@ -1,13 +1,15 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Alert, Input, Modal, message, Form, Select, DatePicker } from 'antd';
-import { closePublishModal, publishQuote } from 'common/reducers/cmsQuote';
+import { Button, Steps, Modal, message, Form, Select, DatePicker } from 'antd';
+import { closeTrialModal, trialQuote } from 'common/reducers/cmsQuote';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 
 const formatMsg = format(messages);
 const Option = Select.Option;
+const Step = Steps.Step;
+const RangePicker = DatePicker.RangePicker;
 const FormItem = Form.Item;
 const formItemLayout = {
   labelCol: { span: 6 },
@@ -18,15 +20,13 @@ const formItemLayout = {
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-      quoteData: state.cmsQuote.quoteData,
-      loginId: state.account.loginId,
-      loginName: state.account.username,
-      visible: state.cmsQuote.publishModalVisible,
+    quoteData: state.cmsQuote.quoteData,
+    visible: state.cmsQuote.trialModalVisible,
   }),
-  { closePublishModal, publishQuote }
+  { closeTrialModal, trialQuote }
 )
 @Form.create()
-export default class CreateQtModal extends React.Component {
+export default class TrialModal extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     visible: PropTypes.bool.isRequired,
@@ -36,10 +36,13 @@ export default class CreateQtModal extends React.Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
-  handleCancel = () => {
-    this.props.closePublishModal();
+  state = {
+    curStep: 1,
   }
-  handleOk = () => {
+  handleCancel = () => {
+    this.props.closeTrialModal();
+  }
+  handleBeginTrial = () => {
     this.props.form.validateFields((errors) => {
       if (!errors) {
         const quoteData = {
@@ -49,34 +52,48 @@ export default class CreateQtModal extends React.Component {
         };
         quoteData.basement_timestamp = quoteData.basement_date.valueOf();
         quoteData.basement_date = undefined;
-        const { loginId, loginName } = this.props;
-        const prom = this.props.publishQuote(quoteData, loginName, loginId);
+        const prom = this.props.publishQuote(quoteData);
         prom.then((result) => {
           if (result.error) {
-            if (result.error.message === 'similar quote') {
-              message.error('相同客户或供应商清关运输类型报价已发布', 10);
-            } else {
-              message.error(result.error.message, 10);
-            }
+            message.error(result.error.message, 10);
           } else {
-            message.info('发布成功', 5);
-            this.props.closePublishModal();
-            this.context.router.push('/clearance/billing/quote');
+            this.props.closeTrialModal();
           }
         });
       }
     });
   }
-  disabledBasementDate = current => current && current.valueOf() > Date.now()
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   render() {
     const { form: { getFieldDecorator }, visible } = this.props;
+    const { curStep } = this.state;
+    let footer;
+    if (curStep === 1) {
+      footer = [
+        <Button key="cancel" type="ghost" size="large" onClick={this.handleCancel}>取消</Button>,
+        <Button key="start" size="large" onClick={this.handleBeginTrial}>开始</Button>,
+      ];
+    } else if (curStep === 2) {
+      footer = [
+        <Button key="cancel" type="ghost" size="large" onClick={this.handleCancel}>取消</Button>,
+        <Button key="next" size="large" onClick={this.handleTrialNext}>下一步</Button>,
+      ];
+    } else if (curStep === 3) {
+      footer = [
+        <Button key="cancel" type="ghost" size="large" onClick={this.handleCancel}>取消</Button>,
+        <Button key="download" size="large" onClick={this.handleDownload}>下载</Button>,
+      ];
+    }
     return (
-      <Modal title={this.msg('publishTitle')} visible={visible}
-        onOk={this.handleOk} onCancel={this.handleCancel}
+      <Modal title={this.msg('trialTitle')} visible={visible}
+        footer={footer}
       >
+        <Steps current={curStep}>
+          <Step title="选择范围" />
+          <Step title="计算费用" />
+          <Step title="下载结果" />
+        </Steps>
         <Form horizontal>
-          <Alert message="报价发布后将按设置的生效时间起重新计费" type="info" showIcon />
           <FormItem label={this.msg('basementDateType')} {...formItemLayout}>
             {getFieldDecorator('basement_datetype', {
               rules: [{ required: true, message: '基准时间类型必选' }],
@@ -91,14 +108,7 @@ export default class CreateQtModal extends React.Component {
             {getFieldDecorator('basement_date', {
               rules: [{ required: true, message: '基准时间必选', type: 'object' }],
             })(
-              <DatePicker showTime format="YYYY-MM-DD HH:mm" disabledDate={this.disabledBasementDate} />
-            )}
-          </FormItem>
-          <FormItem label={this.msg('publishRemark')} {...formItemLayout}>
-            {getFieldDecorator('publish_commit', {
-              rules: [{ required: true, message: '备注必填' }],
-            })(
-              <Input type="textarea" row={3} />
+              <RangePicker showTime format="YYYY-MM-DD HH:mm" />
             )}
           </FormItem>
         </Form>
@@ -106,3 +116,4 @@ export default class CreateQtModal extends React.Component {
     );
   }
 }
+
