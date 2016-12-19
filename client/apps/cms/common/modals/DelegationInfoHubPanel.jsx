@@ -342,7 +342,7 @@ export default class DelegationInfoHubPanel extends React.Component {
               <Button type="primary" onClick={this.handleCiqFinish}>
                 完成
               </Button>
-              
+
             </div>
           </PrivilegeCover>
         );
