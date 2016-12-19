@@ -141,7 +141,7 @@ export default class DetailPane extends React.Component {
     let shipmtSchedule = `${this.msg('shipmtSchedule')} ${shipmt.transit_time || '当'}${this.msg('day')}`;
     let transitModeInfo = `${this.msg('transitModeInfo')} ${shipmt.transport_mode}`;
     let goodsInfo = `${this.msg('goodsInfo')}  ${this.msg('totalCount')}: ${shipmt.total_count || ''} / ${this.msg('totalWeight')}: ${shipmt.total_weight || ''}${this.msg('kilogram')} / ${this.msg('totalVolume')}: ${shipmt.total_volume || ''}${this.msg('cubicMeter')}`;
-    if (shipmt.status <= 3) {
+    if (shipmt.status <= 5) {
       clientInfo = (<div>{this.msg('customerInfo')}
         <div className="extra-actions">
           <a onClick={this.handleChangeClientInfo}>修改客户单号</a>
