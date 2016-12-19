@@ -6,10 +6,11 @@ import { feeUpdate, feeAdd, feeDelete, saveQuoteModel, saveQuoteBatchEdit } from
 import messages from './message.i18n';
 import RowUpdater from 'client/apps/cms/common/delegation/rowUpdater';
 import { CHARGE_PARAM, FEE_STYLE, FEE_CATEGORY } from 'common/constants';
-import { Select, Table, Button, Input, Switch, message } from 'antd';
+import { Select, Table, Button, Input, Switch, message, Mention } from 'antd';
 
 const formatMsg = format(messages);
 const Option = Select.Option;
+const Nav = Mention.Nav;
 
 function getRowKey(row) {
   return row.id;
@@ -27,9 +28,6 @@ function ColumnInput(props) {
   }
   if (record.fee_style === 'cushion' && field !== 'fee_name') {
     return <span />;
-  } else if (record.charge_param === 'trade_amt' && field === 'formula_factor') {
-    return inEdit ? <Input disabled={!record.enabled} value={record[field] || ''} onChange={handleChange} addonAfter="%" />
-      : <span style={style}>{record[field] || ''}%</span>;
   } else {
     return inEdit ? <Input value={record[field] || ''} disabled={!record.enabled} onChange={handleChange} />
     : <span style={style}>{record[field] || ''}</span>;
@@ -86,15 +84,25 @@ TaxInput.propTypes = {
   onChange: PropTypes.func,
 };
 function ColumnSwitch(props) {
-  const { record, field, onChange } = props;
+  const { record, field, onChange, inEdit } = props;
   function handleChange(value) {
     if (onChange) {
       onChange(record, field, value);
     }
   }
-  return <Switch size="small" disabled={!record.enabled && field !== 'enabled'} checked={record[field]} value={record[field] || true} onChange={handleChange} />;
+  let style = {};
+  if (!(record.invoice_en && record.enabled)) {
+    style = { color: '#CCCCCC' };
+  }
+  if (inEdit) {
+    return <Switch size="small" disabled={(!record.enabled && field !== 'enabled')} checked={record[field]} value={record[field] || true} onChange={handleChange} />;
+  } else {
+    const val = record[field] ? '是' : '否';
+    return <span style={style}>{val}</span>;
+  }
 }
 ColumnSwitch.propTypes = {
+  inEdit: PropTypes.bool,
   record: PropTypes.object.isRequired,
   field: PropTypes.string.isRequired,
   onChange: PropTypes.func,
@@ -167,6 +175,7 @@ export default class FeesTable extends Component {
     dataSource: [],
     editable: false,
     batchSaved: 0,
+    suggestions: [],
   };
   componentWillMount() {
     this.setState({ dataSource: this.props.quoteData.fees, editable: this.props.editable });
@@ -176,6 +185,15 @@ export default class FeesTable extends Component {
       this.setState({ dataSource: nextProps.quoteData.fees });
     }
   }
+  formulaParams = [
+    { value: 'shipmt_qty', text: '运单数量' },
+    { value: 'decl_qty', text: '报关单数量' },
+    { value: 'decl_sheet_qty', text: '报关单联数' },
+    { value: 'decl_item_qty', text: '品名数量' },
+    { value: 'trade_item_qty', text: '料件数量' },
+    { value: 'trade_amt', text: '货值' },
+    { value: 'cert_qty', text: '证书数量' },
+  ];
   handleEditChange = (record, field, value) => {
     record[field] = value; // eslint-disable-line no-param-reassign
     if (record.fee_code === 'ALL_IN' && record[field] === true) {
@@ -348,6 +366,9 @@ export default class FeesTable extends Component {
       }
     });
   }
+  handlebatchCancel = () => {
+    this.setState({ editable: this.props.editable, batchSaved: 0 });
+  }
   handlebatchModify = () => {
     this.setState({ editable: true, batchSaved: 1 });
   }
@@ -357,9 +378,10 @@ export default class FeesTable extends Component {
     if (action === 'edit') {
       return (
         <div>
-          <Button type="default" style={{ marginRight: 10 }} onClick={this.handleAddFees}>{msg('addCosts')}</Button>
-          {this.state.batchSaved === 0 && <Button type="default" onClick={this.handlebatchModify}>{msg('batchModify')}</Button>}
-          {this.state.batchSaved === 1 && <Button type="primary" onClick={this.handlebatchSave}>{msg('batchSave')}</Button>}
+          <Button type="default" icon="plus-circle-o" style={{ marginRight: 8 }} onClick={this.handleAddFees}>{msg('addCosts')}</Button>
+          {this.state.batchSaved === 0 && <Button type="ghost" icon="edit" onClick={this.handlebatchModify}>{msg('batchModify')}</Button>}
+          {this.state.batchSaved === 1 && <Button type="primary" icon="save" style={{ marginRight: 8 }} onClick={this.handlebatchSave}>{msg('batchSave')}</Button>}
+          {this.state.batchSaved === 1 && <Button type="ghost" onClick={this.handlebatchCancel}>{msg('cancel')}</Button>}
         </div>
       );
     } else if (action === 'model') {
@@ -381,7 +403,20 @@ export default class FeesTable extends Component {
     }
     this.forceUpdate();
   }
-
+  handleSearch = (value) => {
+    const searchValue = value.toLowerCase();
+    const filtered = this.formulaParams.filter(item =>
+      item.value.toLowerCase().indexOf(searchValue) !== -1
+    );
+    const suggestions = filtered.map(suggestion =>
+      <Nav value={suggestion.value} data={suggestion}>
+        <span>{suggestion.text} - {suggestion.value} </span>
+      </Nav>);
+    this.setState({ suggestions });
+  }
+  handleonChange = (record, editorState) => {
+    record.formula_factor = Mention.toString(editorState); // eslint-disable-line no-param-reassign
+  }
   render() {
     const { quoteData, action } = this.props;
     const { editIndex, addedit, dataSource, editable, batchSaved } = this.state;
@@ -442,8 +477,16 @@ export default class FeesTable extends Component {
         title: msg('formulaFactor'),
         dataIndex: 'formula_factor',
         width: 150,
-        render: (o, record, index) =>
-          <ColumnInput field="formula_factor" inEdit={editable || (index === editIndex)} record={record} onChange={this.handleEditChange} />,
+        render: (o, record, index) => {
+          const inEdit = editable || (index === editIndex);
+          if (record.charge_param === '$formula' && inEdit) {
+            return (<Mention suggestions={this.state.suggestions} prefix="$" onSearchChange={this.handleSearch} defaultValue={Mention.toEditorState(o)}
+              placeholder="$公式" onChange={editorState => this.handleonChange(record, editorState)}
+            />);
+          } else {
+            return <ColumnInput field="formula_factor" inEdit={editable || (index === editIndex)} record={record} onChange={this.handleEditChange} />;
+          }
+        },
       }, {
         title: (
           <div>
@@ -453,8 +496,8 @@ export default class FeesTable extends Component {
         ),
         dataIndex: 'invoice_en',
         width: 80,
-        render: (o, record) =>
-          <ColumnSwitch field="invoice_en" record={record} onChange={this.handleEditChange} />,
+        render: (o, record, index) =>
+          <ColumnSwitch field="invoice_en" inEdit={editable || (index === editIndex)} record={record} onChange={this.handleEditChange} />,
       }, {
         title: msg('taxRate'),
         dataIndex: 'tax_rate',
@@ -470,9 +513,11 @@ export default class FeesTable extends Component {
         ),
         dataIndex: 'enabled',
         width: 80,
-        render: (o, record) =>
-          <ColumnSwitch field="enabled" record={record} onChange={this.handleEditChange} />,
-      }, {
+        render: (o, record, index) =>
+          <ColumnSwitch field="enabled" inEdit={editable || (index === editIndex)} record={record} onChange={this.handleEditChange} />,
+      }];
+    if (action !== 'view') {
+      columns.push({
         title: msg('operation'),
         width: 80,
         render: (o, record, index) => {
@@ -511,10 +556,11 @@ export default class FeesTable extends Component {
           }
         },
       },
-    ];
+    );
+    }
     return (
       <Table pagination={false} rowKey={getRowKey} columns={columns} dataSource={dataSource}
-        loading={quoteData.loading} onChange={this.handleTableChange}
+        loading={quoteData.loading} onChange={this.handleTableChange} scroll={{ y: 2300 }}
         title={this.handleTitleButton}
         footer={() => (action === 'model') && <Button type="primary" onClick={this.handleAddFees}>{msg('addCosts')}</Button>}
       />

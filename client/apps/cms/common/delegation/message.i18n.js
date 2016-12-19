@@ -305,6 +305,10 @@ export default defineMessages({
     id: 'cms.delegation.save',
     defaultMessage: '保存',
   },
+  cancel: {
+    id: 'cms.delegation.cancel',
+    defaultMessage: '取消',
+  },
   addMore: {
     id: 'cms.delegation.addMore',
     defaultMessage: '添加清关业务',

@@ -19,7 +19,7 @@ import { loadAcceptanceTable, loadBillMakeModal, acceptDelg, delDelg, loadDeclar
   showPreviewer, setDispStatus, loadDelgDisp, loadDisp, loadCiqTable, loadCertBrokers, loadRelatedDisp,
   setCiqFinish, openAcceptModal } from 'common/reducers/cmsDelegation';
 import { loadCertFees, openCertModal } from 'common/reducers/cmsExpense';
-import PreviewPanel from '../modals/preview-panel';
+import DelegationInfoHubPanel from '../modals/DelegationInfoHubPanel';
 import CertModal from './modals/certModal';
 import AcceptModal from './modals/acceptModal';
 import CiqList from './ciqList';
@@ -606,7 +606,7 @@ export default class DelegationList extends Component {
         </div>
         <BillModal ietype={this.props.ietype} />
         <DelgDispatch show={this.props.delgDispShow} onClose={this.closeDispDock} />
-        <PreviewPanel ietype={this.props.ietype} />
+        <DelegationInfoHubPanel ietype={this.props.ietype} />
         <CertModal />
         <AcceptModal />
       </QueueAnim>

@@ -6,7 +6,6 @@ import withPrivilege from 'client/common/decorators/withPrivilege';
 import messages from './message.i18n';
 import { loadEditQuote } from 'common/reducers/cmsQuote';
 import { Form, Tabs } from 'antd';
-import EditToolbar from './editToolbar';
 import FeesTable from './feesTable';
 import FeesForm from './feesForm';
 import RevisionTable from './revisionTable';
@@ -26,18 +25,13 @@ function fetchData({ params, dispatch }) {
   moduleName: 'clearance',
 })
 @Form.create()
-@withPrivilege({ module: 'clearance', feature: 'quote', action: 'edit' })
-export default class QuotingEdit extends Component {
+@withPrivilege({ module: 'clearance', feature: 'quote', action: 'view' })
+export default class QuotingView extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
   }
   state = {
     tabKey: 'fees-table',
-  }
-  handleFormError = () => {
-    this.setState({
-      tabKey: 'fees-form',
-    });
   }
   handleTabChange = (key) => {
     this.setState({ tabKey: key });
@@ -50,18 +44,17 @@ export default class QuotingEdit extends Component {
         <header className="top-bar">
           <span>{this.props.params.quoteno}</span>
         </header>
-        <EditToolbar form={form} onFormError={this.handleFormError} />
         <div className="main-content">
-          <div className="page-body tabbed">
+          <div className="page-body">
             <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
               <TabPane tab="报价费率" key="fees-table">
-                <FeesTable action="edit" editable={false} />
+                <FeesTable action="view" editable={false} />
               </TabPane>
               <TabPane tab="报价设置" key="fees-form">
-                <FeesForm form={form} action="edit" />
+                <FeesForm form={form} action="view" />
               </TabPane>
               <TabPane tab="修订历史" key="revision-history">
-                <RevisionTable />
+                <RevisionTable action="view" />
               </TabPane>
             </Tabs>
           </div>

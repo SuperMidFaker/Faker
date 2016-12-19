@@ -1,18 +1,20 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Button, Tabs, Badge } from 'antd';
+import { Badge, Button, Col, Dropdown, Icon, Menu, Row, Tabs } from 'antd';
+import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
+import InfoItem from 'client/components/InfoItem';
 import BasicPane from './tabpanes/BasicPane';
 import CustomsDeclPane from './tabpanes/CustomsDeclPane';
 import CiqDeclPane from './tabpanes/CiqDeclPane';
-import CertsPane from './tabpanes/CertsPane';
 import DutyTaxPane from './tabpanes/DutyTaxPane';
 import ExpensesPane from './tabpanes/ExpensesPane';
-import DelegateTrackingPane from './tabpanes/delegateTrackingPane';
+import ActivityLoggerPane from './tabpanes/ActivityLoggerPane';
 import { hidePreviewer, setPreviewStatus, setPreviewTabkey } from 'common/reducers/cmsDelegation';
 
 const TabPane = Tabs.TabPane;
+
 
 @injectIntl
 @connect(
@@ -27,7 +29,7 @@ const TabPane = Tabs.TabPane;
   }),
   { hidePreviewer, setPreviewStatus, setPreviewTabkey }
 )
-export default class PreviewPanel extends React.Component {
+export default class DelegationInfoHubPanel extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     ietype: PropTypes.oneOf(['import', 'export']),
@@ -137,15 +139,12 @@ export default class PreviewPanel extends React.Component {
   }
   tablePan() {
     const { previewer, tabKey } = this.props;
-    const { delegation, files, delegateTracking } = previewer;
+    const { delegation, files } = previewer;
     if (delegation.status === 0) {
       return (
         <Tabs type="card" activeKey={tabKey} onChange={this.handleTabChange}>
-          <TabPane tab="委托" key="basic">
+          <TabPane tab="委托详情" key="basic">
             <BasicPane delegation={delegation} files={files} />
-          </TabPane>
-          <TabPane tab="日志" key="delegateTracking">
-            <DelegateTrackingPane delegateTracking={delegateTracking} />
           </TabPane>
         </Tabs>
       );
@@ -153,43 +152,31 @@ export default class PreviewPanel extends React.Component {
       if (delegation.ciq_type === 'NA') {
         return (
           <Tabs type="card" activeKey={tabKey} onChange={this.handleTabChange}>
-            <TabPane tab="委托" key="basic">
-              <BasicPane delegation={delegation} files={files} />
-            </TabPane>
             <TabPane tab="报关" key="customsDecl">
               <CustomsDeclPane />
             </TabPane>
-            <TabPane tab="鉴定办证" key="certs">
-              <CertsPane />
-            </TabPane>
-            <TabPane tab="计费" key="expenses">
+            <TabPane tab="费用" key="expenses">
               <ExpensesPane />
             </TabPane>
-            <TabPane tab="日志" key="delegateTracking">
-              <DelegateTrackingPane delegateTracking={delegateTracking} />
+            <TabPane tab="委托详情" key="basic">
+              <BasicPane delegation={delegation} files={files} />
             </TabPane>
           </Tabs>
         );
       }
       return (
         <Tabs type="card" activeKey={tabKey} onChange={this.handleTabChange}>
-          <TabPane tab="委托" key="basic">
-            <BasicPane delegation={delegation} files={files} />
-          </TabPane>
           <TabPane tab="报关" key="customsDecl">
             <CustomsDeclPane />
           </TabPane>
           <TabPane tab="报检" key="ciqDecl">
             <CiqDeclPane />
           </TabPane>
-          <TabPane tab="鉴定办证" key="certs">
-            <CertsPane />
-          </TabPane>
-          <TabPane tab="计费" key="expenses">
+          <TabPane tab="费用" key="expenses">
             <ExpensesPane />
           </TabPane>
-          <TabPane tab="日志" key="delegateTracking">
-            <DelegateTrackingPane delegateTracking={delegateTracking} />
+          <TabPane tab="委托详情" key="basic">
+            <BasicPane delegation={delegation} files={files} />
           </TabPane>
         </Tabs>
       );
@@ -197,49 +184,37 @@ export default class PreviewPanel extends React.Component {
       if (delegation.ciq_type === 'NA') {
         return (
           <Tabs type="card" activeKey={tabKey} onChange={this.handleTabChange}>
-            <TabPane tab="委托" key="basic">
-              <BasicPane delegation={delegation} files={files} />
-            </TabPane>
             <TabPane tab="报关" key="customsDecl">
               <CustomsDeclPane />
-            </TabPane>
-            <TabPane tab="鉴定办证" key="certs">
-              <CertsPane />
             </TabPane>
             <TabPane tab="缴税" key="taxes">
               <DutyTaxPane />
             </TabPane>
-            <TabPane tab="计费" key="expenses">
+            <TabPane tab="费用" key="expenses">
               <ExpensesPane />
             </TabPane>
-            <TabPane tab="日志" key="delegateTracking">
-              <DelegateTrackingPane delegateTracking={delegateTracking} />
+            <TabPane tab="委托详情" key="basic">
+              <BasicPane delegation={delegation} files={files} />
             </TabPane>
           </Tabs>
         );
       }
       return (
         <Tabs type="card" activeKey={tabKey} onChange={this.handleTabChange}>
-          <TabPane tab="委托" key="basic">
-            <BasicPane delegation={delegation} files={files} />
-          </TabPane>
           <TabPane tab="报关" key="customsDecl">
             <CustomsDeclPane />
           </TabPane>
           <TabPane tab="报检" key="ciqDecl">
             <CiqDeclPane />
           </TabPane>
-          <TabPane tab="鉴定办证" key="certs">
-            <CertsPane />
-          </TabPane>
           <TabPane tab="缴税" key="taxes">
             <DutyTaxPane />
           </TabPane>
-          <TabPane tab="计费" key="expenses">
+          <TabPane tab="费用" key="expenses">
             <ExpensesPane />
           </TabPane>
-          <TabPane tab="日志" key="delegateTracking">
-            <DelegateTrackingPane delegateTracking={delegateTracking} />
+          <TabPane tab="委托详情" key="basic">
+            <BasicPane delegation={delegation} files={files} />
           </TabPane>
         </Tabs>
       );
@@ -247,6 +222,23 @@ export default class PreviewPanel extends React.Component {
   }
   button() {
     const { previewer, tabKey, ciqdecl, delgPanel } = this.props;
+    const menu = (
+      <Menu>
+        <Menu.Item key="transfer"><Icon type="select" /> 指派操作人</Menu.Item>
+        <Menu.Item key="lock"><Icon type="lock" /> 锁定</Menu.Item>
+        <Menu.Item key="delete"><Icon type="delete" /> 删除(不可恢复)</Menu.Item>
+      </Menu>
+    );
+    return (
+      <div className="btn-bar">
+        <Dropdown overlay={menu}>
+          <Button type="ghost">
+            <Icon type="setting" /> <Icon type="down" />
+          </Button>
+        </Dropdown>
+      </div>
+    );
+    /*
     if (tabKey === 'basic') {
       if (previewer.delegation.btkey === 'recall') {
         return (
@@ -360,6 +352,7 @@ export default class PreviewPanel extends React.Component {
         );
       }
     }
+    */
   }
   render() {
     const { visible, previewer } = this.props;
@@ -373,7 +366,7 @@ export default class PreviewPanel extends React.Component {
         <span className="ant-modal-close-x" />
       </button>);
     return (
-      <div className={`dock-panel preview-panel ${visible ? 'inside' : ''}`}>
+      <div className={`dock-panel info-hub-panel ${visible ? 'inside' : ''}`}>
         <div className="panel-content">
           <div className="header">
             <span className="title">{delegation.delg_no}</span>
@@ -382,9 +375,38 @@ export default class PreviewPanel extends React.Component {
               {this.button()}
             </div>
             {closer}
+            <Row>
+              <Col span="6">
+                <InfoItem labelCol={{ span: 3 }} label="委托方"
+                  field={delegation.customer_name} fieldCol={{ span: 9 }}
+                />
+              </Col>
+              <Col span="6">
+                <InfoItem labelCol={{ span: 3 }} label="提运单号"
+                  field={delegation.bl_wb_no} fieldCol={{ span: 9 }}
+                />
+              </Col>
+              <Col span="6">
+                <InfoItem labelCol={{ span: 3 }} label="服务商"
+                  field={delegation.agent_name} fieldCol={{ span: 9 }}
+                />
+              </Col>
+              <Col span="6">
+                <InfoItem labelCol={{ span: 3 }} label="委托日期" fieldCol={{ span: 9 }}
+                  field={moment(delegateTracking.delg_time).format('YYYY.MM.DD')}
+                />
+              </Col>
+            </Row>
           </div>
-          <div className="body">
-            {this.tablePan()}
+          <div className="body with-header-summary">
+            <Row gutter={16}>
+              <Col sm={24} md={12} lg={10}>
+                {this.tablePan()}
+              </Col>
+              <Col sm={24} md={12} lg={14}>
+                <ActivityLoggerPane />
+              </Col>
+            </Row>
           </div>
         </div>
       </div>

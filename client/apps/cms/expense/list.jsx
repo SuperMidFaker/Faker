@@ -19,7 +19,7 @@ import TrimSpan from 'client/components/trimSpan';
 import ExpSubTable from './expSubTable';
 import InputModal from './modals/inputModal';
 import MarkModal from './modals/markModal';
-import PreviewPanel from '../common/modals/preview-panel';
+import DelegationInfoHubPanel from '../common/modals/DelegationInfoHubPanel';
 import DelgAdvanceExpenseModal from './modals/delgAdvanceExpenseModal';
 import RowUpdater from './rowUpdater';
 import ExpEptModal from './modals/expEptModal';
@@ -458,7 +458,7 @@ export default class ExpenseList extends Component {
         </div>
         <InputModal data={unstateData} />
         <MarkModal data={unstateData} />
-        <PreviewPanel />
+        <DelegationInfoHubPanel />
         <DelgAdvanceExpenseModal />
         <ExpEptModal visible={this.state.expEptVisible} toggle={this.toggleEptModal} />
       </QueueAnim>

@@ -5,33 +5,8 @@ import { Tag, Row, Col, Card, Table } from 'antd';
 import { DELG_SOURCE } from 'common/constants';
 import moment from 'moment';
 import { loadDeclCiqByDelgNo } from 'common/reducers/cmsDeclare';
+import InfoItem from 'client/components/InfoItem';
 
-function getColCls(col) {
-  if (col) {
-    const { span, offset } = col;
-    const spanCls = span ? `col-${span}` : '';
-    const offsetCls = offset ? `col-offset-${offset}` : '';
-    return `${spanCls} ${offsetCls}`;
-  }
-  return '';
-}
-function PaneFormItem(props) {
-  const { label, labelCol, field, fieldCol } = props;
-  const labelCls = `info-label ${getColCls(labelCol)}`;
-  const fieldCls = `info-data ${getColCls(fieldCol)}`;
-  return (
-    <div className="info-item">
-      <label className={labelCls} htmlFor="pane">{label}：</label>
-      <div className={fieldCls}>{field}</div>
-    </div>
-  );
-}
-
-PaneFormItem.propTypes = {
-  label: PropTypes.string.isRequired,
-  labelCol: PropTypes.object,
-  fieldCol: PropTypes.object,
-};
 @injectIntl
 @connect(
   state => ({
@@ -79,10 +54,6 @@ export default class CiqDeclPane extends React.Component {
       title: '通关单号',
       dataIndex: 'ciq_no',
     }, {
-      title: '报检日期',
-      dataIndex: 'inspection_time',
-      render: o => o && moment(o).format('YYYY.MM.DD HH:mm'),
-    }, {
       title: '品质查验',
       dataIndex: 'ciq_quality_inspect',
       render: o => o === 1 ? <Tag color="red">是</Tag>
@@ -92,6 +63,10 @@ export default class CiqDeclPane extends React.Component {
       dataIndex: 'ciq_ap_inspect',
       render: o => o === 1 ? <Tag color="red">是</Tag>
           : <Tag>否</Tag>,
+    }, {
+      title: '报检日期',
+      dataIndex: 'inspection_time',
+      render: o => o && moment(o).format('MM.DD HH:mm'),
     }, {
       title: '处理结果',
       dataIndex: 'ciq_status',
@@ -115,25 +90,24 @@ export default class CiqDeclPane extends React.Component {
       <div className="pane-content tab-pane">
         <Card bodyStyle={{ padding: 8 }}>
           <Row>
-            <Col span="8">
-              <PaneFormItem labelCol={{ span: 3 }} label="报检企业"
+            <Col span="12">
+              <InfoItem labelCol={{ span: 3 }} label="报检服务商"
                 field={ciqdecl.inspection_name} fieldCol={{ span: 9 }}
               />
             </Col>
             <Col span="8">
-              <PaneFormItem labelCol={{ span: 3 }} label="受理日期" fieldCol={{ span: 9 }}
+              <InfoItem labelCol={{ span: 3 }} label="受理日期" fieldCol={{ span: 9 }}
                 field={ciqdecl.acpt_time && moment(ciqdecl.acpt_time).format('YYYY.MM.DD HH:mm')}
               />
             </Col>
-            <Col span="8">
-              <PaneFormItem labelCol={{ span: 3 }} label="来源"
+            <Col span="4">
+              <InfoItem labelCol={{ span: 3 }} label="来源"
                 field={sourceText} fieldCol={{ span: 9 }}
               />
             </Col>
           </Row>
-        </Card>
-        <Card bodyStyle={{ padding: 8 }}>
-          <Table size="middle" columns={columns} pagination={false} dataSource={ciqdecl.ciqlist} />
+          <hr />
+          <Table size="middle" columns={columns} pagination={false} dataSource={ciqdecl.ciqlist} scroll={{ x: 800 }} />
         </Card>
       </div>
     );

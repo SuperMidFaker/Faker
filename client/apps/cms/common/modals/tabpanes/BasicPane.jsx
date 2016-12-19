@@ -5,38 +5,14 @@ import { Button, Row, Col, Card } from 'antd';
 import moment from 'moment';
 import downloadMultiple from 'client/util/multipleDownloader';
 import { GOODSTYPES, TRANS_MODE, CLAIM_DO_AWB } from 'common/constants';
+import InfoItem from 'client/components/InfoItem';
 import './pane.less';
 
-function getColCls(col) {
-  if (col) {
-    const { span, offset } = col;
-    const spanCls = span ? `col-${span}` : '';
-    const offsetCls = offset ? `col-offset-${offset}` : '';
-    return `${spanCls} ${offsetCls}`;
-  }
-  return '';
-}
-function PaneFormItem(props) {
-  const { label, labelCol, field, fieldCol } = props;
-  const labelCls = `info-label ${getColCls(labelCol)}`;
-  const fieldCls = `info-data ${getColCls(fieldCol)}`;
-  return (
-    <div className="info-item">
-      <label className={labelCls} htmlFor="pane">{label}：</label>
-      <div className={fieldCls}>{field}</div>
-    </div>
-  );
-}
+
 function getExtension(filename) {
   const parts = filename.split('.');
   return parts[parts.length - 1];
 }
-
-PaneFormItem.propTypes = {
-  label: PropTypes.string.isRequired,
-  labelCol: PropTypes.object,
-  fieldCol: PropTypes.object,
-};
 
 @injectIntl
 @connect(
@@ -124,35 +100,30 @@ export default class BasicPane extends React.Component {
       <div className="pane-content tab-pane">
         <Card bodyStyle={{ padding: 8 }}>
           <Row>
-            <Col span="8">
-              <PaneFormItem labelCol={{ span: 3 }} label="委托方"
+            <Col span="16">
+              <InfoItem labelCol={{ span: 3 }} label="委托方"
                 field={delegation.customer_name} fieldCol={{ span: 9 }}
               />
             </Col>
             <Col span="8">
-              <PaneFormItem labelCol={{ span: 3 }} label="代理方"
-                field={delegation.agent_name} fieldCol={{ span: 9 }}
-              />
-            </Col>
-            <Col span="8">
-              <PaneFormItem labelCol={{ span: 3 }} label="委托日期" fieldCol={{ span: 9 }}
+              <InfoItem labelCol={{ span: 3 }} label="委托日期" fieldCol={{ span: 9 }}
                 field={moment(delegateTracking.delg_time).format('YYYY.MM.DD HH:mm')}
               />
             </Col>
           </Row>
           <Row>
             <Col span="8">
-              <PaneFormItem labelCol={{ span: 3 }} label="客户订单号"
+              <InfoItem labelCol={{ span: 3 }} label="客户订单号"
                 field={delegation.order_no} fieldCol={{ span: 9 }}
               />
             </Col>
             <Col span="8">
-              <PaneFormItem labelCol={{ span: 3 }} label="发票号"
+              <InfoItem labelCol={{ span: 3 }} label="发票号"
                 field={delegation.invoice_no} fieldCol={{ span: 9 }}
               />
             </Col>
             <Col span="8">
-              <PaneFormItem labelCol={{ span: 3 }} label="外部编号"
+              <InfoItem labelCol={{ span: 3 }} label="外部编号"
                 field={delegation.ref_external_no}
                 fieldCol={{ span: 9 }}
               />
@@ -160,46 +131,46 @@ export default class BasicPane extends React.Component {
           </Row>
           <Row>
             <Col span="8">
-              <PaneFormItem labelCol={{ span: 3 }} label="运输方式"
+              <InfoItem labelCol={{ span: 3 }} label="运输方式"
                 field={tms.length > 0 ? tms[0].text : ''} fieldCol={{ span: 9 }}
               />
             </Col>
             <Col span="8">
-              <PaneFormItem labelCol={{ span: 3 }} label="提运单号"
+              <InfoItem labelCol={{ span: 3 }} label="提运单号"
                 field={delegation.bl_wb_no} fieldCol={{ span: 9 }}
               />
             </Col>
             <Col span="8">
-              <PaneFormItem labelCol={{ span: 3 }} label="船名航次"
+              <InfoItem labelCol={{ span: 3 }} label="船名航次"
                 field={delegation.voyage_no} fieldCol={{ span: 9 }}
               />
             </Col>
           </Row>
           <Row>
             <Col span="8">
-              <PaneFormItem labelCol={{ span: 3 }} label="货物类型"
+              <InfoItem labelCol={{ span: 3 }} label="货物类型"
                 field={goods.length > 0 ? goods[0].text : ''} fieldCol={{ span: 9 }}
               />
             </Col>
             <Col span="8">
-              <PaneFormItem labelCol={{ span: 3 }} label="总件数"
+              <InfoItem labelCol={{ span: 3 }} label="总件数"
                 field={`${delegation.pieces} 件`} fieldCol={{ span: 9 }}
               />
             </Col>
             <Col span="8">
-              <PaneFormItem labelCol={{ span: 3 }} label="总重量"
+              <InfoItem labelCol={{ span: 3 }} label="总重量"
                 field={`${delegation.weight ? delegation.weight : ''} 千克`} fieldCol={{ span: 9 }}
               />
             </Col>
           </Row>
           <Row>
             <Col span="8">
-              <PaneFormItem labelCol={{ span: 3 }} label="是否抽/换单"
+              <InfoItem labelCol={{ span: 3 }} label="是否抽/换单"
                 field={doAwbText} fieldCol={{ span: 9 }}
               />
             </Col>
             <Col span="16">
-              <PaneFormItem labelCol={{ span: 3 }} label="备注"
+              <InfoItem labelCol={{ span: 3 }} label="备注"
                 field={delegation.remark}
                 fieldCol={{ span: 9 }}
               />

@@ -93,20 +93,19 @@ export default class EditToolbar extends Component {
   render() {
     const menu = (
       <Menu>
+        <Menu.Item key="trail">{this.msg('trail')}</Menu.Item>
         <Menu.Item key="copyQuote">{this.msg('copy')}</Menu.Item>
       </Menu>
     );
     return (
       <div className="top-bar-tools">
-        <Button type="primary" onClick={this.handleSave}>{this.msg('save')}</Button>
-        <span />
         <Button type="primary" onClick={this.handlePublish}>{this.msg('publish')}</Button>
         <span />
-        <Button type="default" >{this.msg('trail')}</Button>
+        <Button type="default" onClick={this.handleSave}>{this.msg('save')}</Button>
         <span />
         <Dropdown overlay={menu}>
           <Button type="ghost">
-            <Icon type="ellipsis" />
+            {this.msg('more')} <Icon type="down" />
           </Button>
         </Dropdown>
         <PublishModal quoteForm={this.props.form} />

@@ -22,6 +22,7 @@ export default class RevisionTable extends React.Component {
     revisions: PropTypes.arrayOf(PropTypes.shape({
       version: PropTypes.string.isRequired,
       status: PropTypes.oneOf(['current', 'archived']),
+      action: PropTypes.oneOf(['create', 'edit', 'view']),
     })),
   }
   static contextTypes = {
@@ -65,14 +66,6 @@ export default class RevisionTable extends React.Component {
     title: this.msg('publisher'),
     width: 80,
     dataIndex: 'modify_name',
-  }, {
-    title: '操作',
-    width: 80,
-    render: (o, row) => {
-      if (row.status !== 'current') {
-        return <a onClick={() => this.handleRestore(row)}>恢复此版本</a>;
-      }
-    },
   }]
   handleRestore = (row) => {
     this.props.restoreQuote(row._id, row.quote_no, `恢复自v${row.version}版本`).then((result) => {
@@ -82,11 +75,21 @@ export default class RevisionTable extends React.Component {
     });
   }
   render() {
-    const { revisions } = this.props;
+    const { revisions, action } = this.props;
+    const columns = [...this.columns];
+    if (action !== 'view') {
+      columns.push({
+        title: '操作',
+        width: 80,
+        render: (o, row) => {
+          if (row.status !== 'current') {
+            return <a onClick={() => this.handleRestore(row)}>恢复此版本</a>;
+          }
+        },
+      });
+    }
     return (
-      <Table columns={this.columns} dataSource={revisions} pagination={false}
-        bordered rowKey="version" style={{ margin: '0 10px 10px' }}
-      />
+      <Table columns={columns} dataSource={revisions} pagination={false} rowKey="version" />
     );
   }
 }

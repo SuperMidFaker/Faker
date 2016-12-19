@@ -132,6 +132,9 @@ export default class QuoteList extends Component {
       });
     }
   }
+  handleQuoteView = (row) => {
+    this.context.router.push(`/clearance/billing/quote/view/${row.quote_no}/${row.version}`);
+  }
   handleDeleteQuote = (quoteNo) => {
     this.props.deleteQuote(quoteNo).then((result) => {
       if (result.error) {
@@ -252,33 +255,57 @@ export default class QuoteList extends Component {
         render: o => o && moment(o).format('MM.DD HH:mm'),
       }, {
         title: msg('operation'),
-        width: 100,
+        width: 120,
         fixed: 'right',
         render: (o, record) => {
-          if (record.valid) {
+          let auth = '';
+          if (record.create_tenant_id === tenantId) {
+            auth = 'modify';
+          } else if (record.partner_permission === 2) {
+            auth = 'modify';
+          } else if (record.partner_permission === 1) {
+            auth = 'read';
+          }
+          if (auth === 'modify') {
+            if (record.valid) {
+              return (
+                <span>
+                  <PrivilegeCover module="clearance" feature="quote" action="edit">
+                    <div>
+                      <a onClick={() => this.handleQuoteView(record)}>{msg('view')}</a>
+                      <span className="ant-divider" />
+                      <a onClick={() => this.handleQuoteEdit(record)}>{msg('revise')}</a>
+                      <span className="ant-divider" />
+                      <a onClick={() => this.handleChangeStatus(record._id, false)}>{msg('disable')}</a>
+                    </div>
+                  </PrivilegeCover>
+                </span>
+              );
+            } else {
+              return (
+                <span>
+                  <PrivilegeCover module="clearance" feature="quote" action="edit">
+                    <div>
+                      <a onClick={() => this.handleChangeStatus(record._id, true)}>{msg('enable')}</a>
+                      <span className="ant-divider" />
+                      {
+                        record.status === 'draft' ?
+                          <a onClick={() => this.handleDeleteDraft(record._id, record.quote_no)}>{msg('delete')}</a>
+                        : <a onClick={() => this.handleDeleteQuote(record.quote_no)}>{msg('delete')}</a>
+                      }
+                      <span className="ant-divider" />
+                      <a onClick={() => this.handleQuoteView(record)}>{msg('view')}</a>
+                    </div>
+                  </PrivilegeCover>
+                </span>
+              );
+            }
+          } else if (auth === 'read') {
             return (
               <span>
-                <PrivilegeCover module="clearance" feature="quote" action="edit">
+                <PrivilegeCover module="clearance" feature="quote" action="view">
                   <div>
-                    <a onClick={() => this.handleChangeStatus(record._id, false)}>{msg('disable')}</a>
-                    <span className="ant-divider" />
-                    <a onClick={() => this.handleQuoteEdit(record)}>{msg('modify')}</a>
-                  </div>
-                </PrivilegeCover>
-              </span>
-            );
-          } else {
-            return (
-              <span>
-                <PrivilegeCover module="clearance" feature="quote" action="edit">
-                  <div>
-                    <a onClick={() => this.handleChangeStatus(record._id, true)}>{msg('enable')}</a>
-                    <span className="ant-divider" />
-                    {
-                      record.status === 'draft' ?
-                        <a onClick={() => this.handleDeleteDraft(record._id, record.quote_no)}>{msg('delete')}</a>
-                      : <a onClick={() => this.handleDeleteQuote(record.quote_no)}>{msg('delete')}</a>
-                    }
+                    <a onClick={() => this.handleQuoteView(record)}>{msg('view')}</a>
                   </div>
                 </PrivilegeCover>
               </span>
@@ -309,7 +336,7 @@ export default class QuoteList extends Component {
               </Button>
             </div>
             <div className="panel-body table-panel">
-              <Table columns={columns} dataSource={this.dataSource} scroll={{ x: 1600 }} />
+              <Table columns={columns} dataSource={this.dataSource} scroll={{ x: 1400 }} />
             </div>
           </div>
         </div>

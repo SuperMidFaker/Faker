@@ -9,38 +9,13 @@ import messages from '../../message.i18n';
 import './pane.less';
 import { renderConsignLoc } from '../../../../transport/common/consignLocation';
 import TransportStatus from './transportStatus';
+import InfoItem from 'client/components/InfoItem';
 
 const formatMsg = format(messages);
 const Panel = Collapse.Panel;
 const TimelineItem = Timeline.Item;
 const TabPane = Tabs.TabPane;
 
-function getColCls(col) {
-  if (col) {
-    const { span, offset } = col;
-    const spanCls = span ? `col-${span}` : '';
-    const offsetCls = offset ? `col-offset-${offset}` : '';
-    return `${spanCls} ${offsetCls}`;
-  }
-  return '';
-}
-function PaneFormItem(props) {
-  const { label, labelCol, field, fieldCol } = props;
-  const labelCls = `info-label ${getColCls(labelCol)}`;
-  const fieldCls = `info-data ${getColCls(fieldCol)}`;
-  return (
-    <div className="info-item">
-      <div className={labelCls}>{label}：</div>
-      <div className={fieldCls}>{field}</div>
-    </div>
-  );
-}
-PaneFormItem.propTypes = {
-  label: PropTypes.string.isRequired,
-  labelCol: PropTypes.object,
-  field: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  fieldCol: PropTypes.object,
-};
 @injectIntl
 @connect(
   state => ({
@@ -140,22 +115,22 @@ export default class TransportPane extends React.Component {
         <Collapse bordered={false} defaultActiveKey={['customer', 'trans_schedule', 'trans_mode']}>
           <Panel header={clientInfo} key="customer">
             <Col span="12">
-              <PaneFormItem labelCol={{ span: 8 }} label={this.msg('client')}
+              <InfoItem labelCol={{ span: 8 }} label={this.msg('client')}
                 field={shipmt.customer_name} fieldCol={{ span: 16 }}
               />
             </Col>
             <Col span="12">
-              <PaneFormItem labelCol={{ span: 8 }} label={this.msg('refExternalNo')}
+              <InfoItem labelCol={{ span: 8 }} label={this.msg('refExternalNo')}
                 field={shipmt.ref_external_no} fieldCol={{ span: 16 }}
               />
             </Col>
             <Col span="12">
-              <PaneFormItem labelCol={{ span: 8 }} label={this.msg('refWaybillNo')}
+              <InfoItem labelCol={{ span: 8 }} label={this.msg('refWaybillNo')}
                 field={shipmt.ref_waybill_no} fieldCol={{ span: 16 }}
               />
             </Col>
             <Col span="12">
-              <PaneFormItem labelCol={{ span: 8 }} label={this.msg('refEntryNo')}
+              <InfoItem labelCol={{ span: 8 }} label={this.msg('refEntryNo')}
                 field={shipmt.ref_entry_no} fieldCol={{ span: 16 }}
               />
             </Col>
@@ -181,27 +156,27 @@ export default class TransportPane extends React.Component {
           </Panel>
           <Panel header={transitModeInfo} key="trans_mode">
             <Col span="24">
-              <PaneFormItem labelCol={{ span: 3 }} label={this.msg('remark')}
+              <InfoItem labelCol={{ span: 3 }} label={this.msg('remark')}
                 field={shipmt.remark} fieldCol={{ span: 21 }}
               />
             </Col>
             {shipmt.transport_mode_code === PRESET_TRANSMODES.ftl &&
             <Col span="12">
-              <PaneFormItem labelCol={{ span: 8 }} label={this.msg('vehicleType')}
+              <InfoItem labelCol={{ span: 8 }} label={this.msg('vehicleType')}
                 field={shipmt.vehicle_type} fieldCol={{ span: 16 }}
               />
             </Col>
             }
             {shipmt.transport_mode_code === PRESET_TRANSMODES.ftl &&
             <Col span="12">
-              <PaneFormItem labelCol={{ span: 8 }} label={this.msg('vehicleLength')}
+              <InfoItem labelCol={{ span: 8 }} label={this.msg('vehicleLength')}
                 field={shipmt.vehicle_length} fieldCol={{ span: 16 }}
               />
             </Col>
             }
             {shipmt.transport_mode_code === PRESET_TRANSMODES.ctn &&
             <Col span="12">
-              <PaneFormItem labelCol={{ span: 8 }} label={this.msg('containerNo')}
+              <InfoItem labelCol={{ span: 8 }} label={this.msg('containerNo')}
                 field={shipmt.container_no} fieldCol={{ span: 16 }}
               />
             </Col>
@@ -209,17 +184,17 @@ export default class TransportPane extends React.Component {
           </Panel>
           <Panel header={goodsInfo} key="cargo">
             <Col span="8">
-              <PaneFormItem labelCol={{ span: 8 }} label={this.msg('goodsType')}
+              <InfoItem labelCol={{ span: 8 }} label={this.msg('goodsType')}
                 field={goodsType ? goodsType.text : shipmt.goods_type} fieldCol={{ span: 16 }}
               />
             </Col>
             <Col span="8">
-              <PaneFormItem labelCol={{ span: 8 }} label={this.msg('goodsPackage')}
+              <InfoItem labelCol={{ span: 8 }} label={this.msg('goodsPackage')}
                 field={pckg ? pckg.value : shipmt.package} fieldCol={{ span: 16 }}
               />
             </Col>
             <Col span="8">
-              <PaneFormItem labelCol={{ span: 8 }} label={this.msg('insuranceValue')}
+              <InfoItem labelCol={{ span: 8 }} label={this.msg('insuranceValue')}
                 field={shipmt.insure_value} fieldCol={{ span: 16 }}
               />
             </Col>

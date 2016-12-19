@@ -5,35 +5,10 @@ import { Tag, Row, Col, Card, Tabs, Table } from 'antd';
 import moment from 'moment';
 import { DELG_SOURCE, DECL_I_TYPE, DECL_E_TYPE } from 'common/constants';
 import { loadSubdelgsTable, loadCustPanel } from 'common/reducers/cmsDelegation';
+import InfoItem from 'client/components/InfoItem';
 
 const TabPane = Tabs.TabPane;
 
-function getColCls(col) {
-  if (col) {
-    const { span, offset } = col;
-    const spanCls = span ? `col-${span}` : '';
-    const offsetCls = offset ? `col-offset-${offset}` : '';
-    return `${spanCls} ${offsetCls}`;
-  }
-  return '';
-}
-function PaneFormItem(props) {
-  const { label, labelCol, field, fieldCol } = props;
-  const labelCls = `info-label ${getColCls(labelCol)}`;
-  const fieldCls = `info-data ${getColCls(fieldCol)}`;
-  return (
-    <div className="info-item">
-      <label className={labelCls} htmlFor="pane">{label}：</label>
-      <div className={fieldCls}>{field}</div>
-    </div>
-  );
-}
-
-PaneFormItem.propTypes = {
-  label: PropTypes.string.isRequired,
-  labelCol: PropTypes.object,
-  fieldCol: PropTypes.object,
-};
 @injectIntl
 @connect(
   state => ({
@@ -84,14 +59,6 @@ export default class CustomsDeclPane extends React.Component {
       title: '海关编号',
       dataIndex: 'entry_id',
     }, {
-      title: '申报时间',
-      dataIndex: 'process_date',
-      render: o => o && moment(o).format('YYYY.MM.DD HH:mm'),
-    }, {
-      title: '放行时间',
-      dataIndex: 'd_date',
-      render: o => o && moment(o).format('YYYY.MM.DD HH:mm'),
-    }, {
       title: '通关状态',
       dataIndex: 'note',
     }, {
@@ -104,6 +71,14 @@ export default class CustomsDeclPane extends React.Component {
           return <Tag>否</Tag>;
         }
       },
+    }, {
+      title: '申报时间',
+      dataIndex: 'process_date',
+      render: o => o && moment(o).format('MM.DD HH:mm'),
+    }, {
+      title: '放行时间',
+      dataIndex: 'd_date',
+      render: o => o && moment(o).format('MM.DD HH:mm'),
     }];
     let sourceText = '';
     if (delgPanel.source === DELG_SOURCE.consigned) {
@@ -117,28 +92,26 @@ export default class CustomsDeclPane extends React.Component {
       <div className="pane-content tab-pane">
         <Card bodyStyle={{ padding: 8 }}>
           <Row>
-            <Col span="8">
-              <PaneFormItem labelCol={{ span: 3 }} label="报关企业"
+            <Col span="12">
+              <InfoItem labelCol={{ span: 3 }} label="报关服务商"
                 field={delgPanel.recv_name} fieldCol={{ span: 9 }}
               />
             </Col>
             <Col span="8">
-              <PaneFormItem labelCol={{ span: 3 }} label="受理日期" fieldCol={{ span: 9 }}
+              <InfoItem labelCol={{ span: 3 }} label="受理日期" fieldCol={{ span: 9 }}
                 field={delgPanel.acpt_time
                   && moment(delgPanel.acpt_time).format('YYYY.MM.DD HH:mm')}
               />
             </Col>
-            <Col span="8">
-              <PaneFormItem labelCol={{ span: 3 }} label="来源"
+            <Col span="4">
+              <InfoItem labelCol={{ span: 3 }} label="来源"
                 field={sourceText} fieldCol={{ span: 9 }}
               />
             </Col>
           </Row>
-        </Card>
-        <Card bodyStyle={{ padding: 8 }}>
           {
           delgBills.length > 0 &&
-          <Tabs defaultActiveKey={delgBills[0].key}>
+          <Tabs size="small" defaultActiveKey={delgBills[0].key}>
             {
               delgBills.map((bill) => {
                 const tableDatas = (bill.children || []).map(decl => ({
@@ -150,26 +123,26 @@ export default class CustomsDeclPane extends React.Component {
                 }));
                 const declTypes = DECL_I_TYPE.concat(DECL_E_TYPE).filter(dt => dt.key === bill.decl_way_code);
                 return (
-                  <TabPane tab={bill.bill_seq_no} key={bill.key} style={{ padding: 8 }}>
+                  <TabPane tab={declTypes.length > 0 ? declTypes[0].value : ''} key={bill.key} >
                     <Row>
                       <Col span="12">
-                        <PaneFormItem labelCol={{ span: 3 }} label="报关类型"
-                          field={declTypes.length > 0 ? declTypes[0].value : ''} fieldCol={{ span: 9 }}
+                        <InfoItem labelCol={{ span: 3 }} label="清单编号"
+                          field={bill.bill_seq_no} fieldCol={{ span: 9 }}
                         />
                       </Col>
                       <Col span="6">
-                        <PaneFormItem labelCol={{ span: 3 }} label="件数"
+                        <InfoItem labelCol={{ span: 3 }} label="件数"
                           field={bill.pack_count} fieldCol={{ span: 9 }}
                         />
                       </Col>
                       <Col span="6">
-                        <PaneFormItem labelCol={{ span: 3 }} label="毛重"
+                        <InfoItem labelCol={{ span: 3 }} label="毛重"
                           field={bill.gross_wt} fieldCol={{ span: 9 }}
                         />
                       </Col>
                     </Row>
                     <hr />
-                    <Table size="middle" columns={columns} pagination={false} dataSource={tableDatas} />
+                    <Table size="middle" columns={columns} pagination={false} dataSource={tableDatas} scroll={{ x: 640 }} />
                   </TabPane>);
               })
             }
