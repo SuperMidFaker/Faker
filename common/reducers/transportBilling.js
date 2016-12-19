@@ -25,6 +25,7 @@ const actionTypes = createActionTypes('@@welogix/transport/billing/', [
   'SHOW_SHIPMENT_ADVANCE_MODAL', 'SHOW_SHIPMENT_ADVANCE_MODAL_SUCCEED', 'SHOW_SHIPMENT_ADVANCE_MODAL_FAIL',
   'SHOW_SPECIAL_CHARGE_MODAL',
   'CREATE_SPECIALCHARGE', 'CREATE_SPECIALCHARGE_FAIL', 'CREATE_SPECIALCHARGE_SUCCEED',
+  'LOAD_TARIFF_BY_TRANSPORTINFO', 'LOAD_TARIFF_BY_TRANSPORTINFO_SUCCEED', 'LOAD_TARIFF_BY_TRANSPORTINFO_FAIL',
 ]);
 
 const initialState = {
@@ -84,6 +85,8 @@ const initialState = {
     transportModeId: -1,
     goodsType: -1,
     advances: [],
+    type: -2,
+    fees: [],
   },
   specialChargeModal: {
     visible: false,
@@ -224,7 +227,7 @@ export default function reducer(state = initialState, action) {
       };
     case actionTypes.SHOW_SHIPMENT_ADVANCE_MODAL_SUCCEED:
       return {
-        ...state, advanceModal: { ...action.data, ...action.result.data },
+        ...state, advanceModal: { ...state.advanceModal, ...action.data, ...action.result.data },
       };
     case actionTypes.CREATE_ADVANCE_SUCCEED:
       return {
@@ -237,6 +240,8 @@ export default function reducer(state = initialState, action) {
     case actionTypes.CREATE_SPECIALCHARGE_SUCCEED: {
       return { ...state, loaded: false };
     }
+    case actionTypes.LOAD_TARIFF_BY_TRANSPORTINFO_SUCCEED:
+      return { ...state, advanceModal: { ...state.advanceModal, fees: action.result.data.fees } };
     default:
       return state;
   }
@@ -492,7 +497,7 @@ export function changeBillingsFilter(key, value) {
   return { type: actionTypes.CHANGE_BILLINGS_FILTER, data: { key, value } };
 }
 
-export function showAdvanceModal({ visible, dispId, shipmtNo, transportModeId, goodsType }) {
+export function showAdvanceModal({ visible, dispId, shipmtNo, transportModeId, goodsType, type }) {
   if (visible) {
     return {
       [CLIENT_API]: {
@@ -504,7 +509,7 @@ export function showAdvanceModal({ visible, dispId, shipmtNo, transportModeId, g
         endpoint: 'v1/transport/advanceCharges',
         method: 'get',
         params: { dispId },
-        data: { visible, dispId, shipmtNo, transportModeId, goodsType },
+        data: { visible, dispId, shipmtNo, transportModeId, goodsType, type },
       },
     };
   } else {
@@ -530,6 +535,22 @@ export function createSpecialCharge({ shipmtNo, dispId, type, remark, submitter,
       endpoint: 'v1/transport/billing/createSpecialCharge',
       method: 'post',
       data: { shipmtNo, dispId, type, remark, submitter, charge, tenantId, loginId },
+    },
+  };
+}
+
+export function getTariffByTransportInfo({ transModeCode, partnerId, tenantId, goodsType }) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_TARIFF_BY_TRANSPORTINFO,
+        actionTypes.LOAD_TARIFF_BY_TRANSPORTINFO_SUCCEED,
+        actionTypes.LOAD_TARIFF_BY_TRANSPORTINFO_FAIL,
+      ],
+      endpoint: 'v1/transport/tariff/byTransportInfo',
+      method: 'get',
+      params: { transModeCode, partnerId, tenantId, goodsType },
+      origin: 'mongo',
     },
   };
 }

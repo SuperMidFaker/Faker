@@ -3,8 +3,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Input, Modal, Table, Select, message } from 'antd';
 import { loadShipmtDispatch } from 'common/reducers/trackingLandStatus';
-import { showAdvanceModal, createAdvances } from 'common/reducers/transportBilling';
-import { getTariffByTransportInfo } from 'common/reducers/transportTariff';
+import { showAdvanceModal, createAdvances, getTariffByTransportInfo } from 'common/reducers/transportBilling';
 import { TMS_DUTY_TAXTYPE } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
@@ -22,7 +21,8 @@ const Option = Select.Option;
     shipmtNo: state.transportBilling.advanceModal.shipmtNo,
     transportModeId: state.transportBilling.advanceModal.transportModeId,
     goodsType: state.transportBilling.advanceModal.goodsType,
-    fees: state.transportTariff.fees,
+    type: state.transportBilling.advanceModal.type,
+    fees: state.transportBilling.advanceModal.fees,
     advances: state.transportBilling.advanceModal.advances,
   }),
   { showAdvanceModal, createAdvances, getTariffByTransportInfo, loadShipmtDispatch }
@@ -41,6 +41,7 @@ export default class ShipmentAdvanceModal extends React.Component {
     createAdvances: PropTypes.func.isRequired,
     transportModeId: PropTypes.number.isRequired,
     goodsType: PropTypes.number.isRequired,
+    type: PropTypes.number.isRequired,
     fees: PropTypes.array.isRequired,
     getTariffByTransportInfo: PropTypes.func.isRequired,
     loadShipmtDispatch: PropTypes.func.isRequired,
@@ -51,43 +52,48 @@ export default class ShipmentAdvanceModal extends React.Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.shipmtNo && this.props.shipmtNo !== nextProps.shipmtNo) {
-      const { transportModeId, goodsType, dispId } = nextProps;
+      const { transportModeId, goodsType, dispId, type } = nextProps;
       this.props.loadShipmtDispatch(dispId).then((result) => {
-        this.props.getTariffByTransportInfo({
-          transModeCode: transportModeId, partnerId: result.data.sr_partner_id, goodsType,
-          tenantId: result.data.sr_tenant_id,
-        });
+        if (type === 1) {
+          this.props.getTariffByTransportInfo({
+            transModeCode: transportModeId, partnerId: result.data.sr_partner_id, goodsType,
+            tenantId: result.data.sr_tenant_id,
+          });
+        } else if (type === -1) {
+          this.props.getTariffByTransportInfo({
+            transModeCode: transportModeId, partnerId: result.data.sp_partner_id, goodsType,
+            tenantId: result.data.sp_tenant_id,
+          });
+        }
       });
     }
     const { shipmtNo, dispId, loginId, tenantId, loginName } = nextProps;
     if (nextProps.visible) {
       const advances = nextProps.advances;
-      if (nextProps.advances.length === 0) {
-        for (let i = 0; i < nextProps.fees.length; i++) {
-          const fee = nextProps.fees[i];
-          if (fee.enabled) {
-            const advance = {
-              id: null,
-              shipmt_no: shipmtNo,
-              disp_id: dispId,
-              name: fee.fee_name,
-              code: fee.fee_code,
-              charge_mode: fee.charge_mode,
-              free_num: fee.free_num,
-              amount: 0,
-              unit_price: fee.unit_price,
-              tax_rate: fee.tax_rate,
-              currency: 'CNY',
-              tax_fee: 0,
-              invoice_en: fee.invoice_en ? 1 : 0,
-              duty_type: null,
-              remark: '',
-              submitter: loginName,
-              login_id: loginId,
-              tenant_id: tenantId,
-            };
-            advances.push(advance);
-          }
+      for (let i = 0; i < nextProps.fees.length; i++) {
+        const fee = nextProps.fees[i];
+        if (fee.enabled && fee.fee_style === 'cushion' && !advances.find(item => item.code === fee.fee_code)) {
+          const advance = {
+            id: null,
+            shipmt_no: shipmtNo,
+            disp_id: dispId,
+            name: fee.fee_name,
+            code: fee.fee_code,
+            charge_mode: fee.charge_mode,
+            free_num: fee.free_num,
+            amount: 0,
+            unit_price: fee.unit_price,
+            tax_rate: fee.tax_rate,
+            currency: 'CNY',
+            tax_fee: 0,
+            invoice_en: fee.invoice_en ? 1 : 0,
+            duty_type: null,
+            remark: '',
+            submitter: loginName,
+            login_id: loginId,
+            tenant_id: tenantId,
+          };
+          advances.push(advance);
         }
       }
       this.setState({ advances });
@@ -122,7 +128,7 @@ export default class ShipmentAdvanceModal extends React.Component {
     this.setState({ advances });
   }
   render() {
-    const { shipmtNo } = this.props;
+    const { shipmtNo, type } = this.props;
     const columns = [{
       title: '费用名称',
       dataIndex: 'name',
@@ -157,8 +163,11 @@ export default class ShipmentAdvanceModal extends React.Component {
       title: '总和',
       render: (col, row) => Number(Number(row.amount) + row.tax_fee).toFixed(2),
     }];
+    let title = '';
+    if (type === 1) title = `${shipmtNo}代垫收入`;
+    else if (type === -1) title = `${shipmtNo}代垫成本`;
     return (
-      <Modal title={`${shipmtNo}垫付费用`} onCancel={this.handleCancel} onOk={this.handleOk}
+      <Modal title={title} onCancel={this.handleCancel} onOk={this.handleOk}
         width={600} visible={this.props.visible} maskClosable={false}
       >
         <Table columns={columns} dataSource={this.state.advances} pagination={false} />

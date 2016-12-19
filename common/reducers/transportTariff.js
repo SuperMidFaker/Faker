@@ -23,7 +23,6 @@ const actionTypes = createActionTypes('@@welogix/transport/tariff/', [
   'DELETE_FEE', 'DELETE_FEE_SUCCEED', 'DELETE_FEE_FAIL',
   'UPDATE_FEE', 'UPDATE_FEE_SUCCEED', 'UPDATE_FEE_FAIL',
   'UPDATE_TARIFF_STATUS', 'UPDATE_TARIFF_STATUS_SUCCEED', 'UPDATE_TARIFF_STATUS_FAIL',
-  'LOAD_TARIFF_BY_TRANSPORTINFO', 'LOAD_TARIFF_BY_TRANSPORTINFO_SUCCEED', 'LOAD_TARIFF_BY_TRANSPORTINFO_FAIL',
 ]);
 
 const initialState = {
@@ -171,8 +170,6 @@ export default function reducer(state = initialState, action) {
       return { ...state, selectedMenuItemKey: action.key };
     case actionTypes.CREATE_FEE_SUCCEED:
       return { ...state, fees: action.result.data };
-    case actionTypes.LOAD_TARIFF_BY_TRANSPORTINFO_SUCCEED:
-      return { ...state, fees: action.result.data.fees };
     default:
       return state;
   }
@@ -481,22 +478,6 @@ export function updateFee(tariffId, feeId, fee) {
       endpoint: 'v1/transport/tariff/fee/update',
       method: 'post',
       data: { tariffId, feeId, fee },
-      origin: 'mongo',
-    },
-  };
-}
-
-export function getTariffByTransportInfo({ transModeCode, partnerId, tenantId, goodsType }) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.LOAD_TARIFF_BY_TRANSPORTINFO,
-        actionTypes.LOAD_TARIFF_BY_TRANSPORTINFO_SUCCEED,
-        actionTypes.LOAD_TARIFF_BY_TRANSPORTINFO_FAIL,
-      ],
-      endpoint: 'v1/transport/tariff/byTransportInfo',
-      method: 'get',
-      params: { transModeCode, partnerId, tenantId, goodsType },
       origin: 'mongo',
     },
   };
