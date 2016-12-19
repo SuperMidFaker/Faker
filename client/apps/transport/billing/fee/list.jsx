@@ -89,22 +89,20 @@ export default class FeesList extends React.Component {
   }
   componentWillReceiveProps(nextProps) {
     if (!nextProps.loaded) {
-      this.handleTableLoad();
+      this.handleTableLoad(nextProps);
     }
   }
   onDateChange = (value) => {
-    const promises = [this.props.changeFeesFilter('startDate', value[0]), this.props.changeFeesFilter('endDate', value[1])];
-    Promise.all(promises).then(() => {
-      this.handleTableLoad();
-    });
+    this.props.changeFeesFilter('startDate', value[0]);
+    this.props.changeFeesFilter('endDate', value[1]);
   }
   handleSelectionClear = () => {
     this.setState({ selectedRowKeys: [] });
   }
-  handleTableLoad = () => {
+  handleTableLoad = (props) => {
     this.handleSelectionClear();
-    const { tenantId } = this.props;
-    const { pageSize, currentPage, filters, startDate, endDate, searchValue } = this.props.fees;
+    const { tenantId } = props;
+    const { pageSize, currentPage, filters, startDate, endDate, searchValue } = props.fees;
     this.props.loadFees({
       tenantId,
       pageSize,
@@ -126,11 +124,9 @@ export default class FeesList extends React.Component {
   handleSearchInput = (value) => {
     this.props.changeFeesFilter('searchValue', value);
   }
-  handleShowShipmentAdvanceModal = (row) => {
+  handleShowShipmentAdvanceModal = ({ visible, dispId, shipmtNo, transportModeId, goodsType, type }) => {
     // todo 取parentDisp sr_tenant_id
-    this.props.showAdvanceModal({ visible: true, dispId: row.parent_id, shipmtNo: row.shipmt_no,
-      transportModeId: row.transport_mode_id, goodsType: row.goods_type,
-    });
+    this.props.showAdvanceModal({ visible, dispId, shipmtNo, transportModeId, goodsType, type });
   }
   handleShowSpecialChargeModal = (row, type) => {
     this.props.showSpecialChargeModal({ visible: true, dispId: row.disp_id, shipmtNo: row.shipmt_no,
@@ -168,7 +164,14 @@ export default class FeesList extends React.Component {
       render: (o, row) => {
         if (row.p_sr_name) {
           return (
-            <a onClick={() => this.handleShowShipmentAdvanceModal(row)}>
+            <a onClick={() => this.handleShowShipmentAdvanceModal({
+              visible: true,
+              dispId: row.parent_id,
+              shipmtNo: row.shipmt_no,
+              transportModeId: row.transport_mode_id,
+              goodsType: row.goods_type,
+              type: 1 })}
+            >
               {o ? o.toFixed(2) : '0.00'}
               <Icon type="edit" />
             </a>
@@ -239,8 +242,24 @@ export default class FeesList extends React.Component {
     }, {
       title: '代垫成本',
       dataIndex: 'advance_charge',
-      render(o) {
-        return o ? o.toFixed(2) : '';
+      render: (o, row) => {
+        if (row.sp_name) {
+          return (
+            <a onClick={() => this.handleShowShipmentAdvanceModal({
+              visible: true,
+              dispId: row.disp_id,
+              shipmtNo: row.shipmt_no,
+              transportModeId: row.transport_mode_id,
+              goodsType: row.goods_type,
+              type: -1 })}
+            >
+              {o ? o.toFixed(2) : '0.00'}
+              <Icon type="edit" />
+            </a>
+          );
+        } else {
+          return '';
+        }
       },
     }, {
       title: '特殊费用成本',
