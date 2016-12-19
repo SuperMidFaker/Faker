@@ -246,7 +246,7 @@ export default class ChargePanel extends React.Component {
           <Table size="small" columns={this.expenseColumns} pagination={false} dataSource={expenseds} />
         </Card>
         <Card bodyStyle={{ padding: 0 }} title="代垫费用">
-          <Table size="small" columns={this.advancesColumns} pagination={false} dataSource={advances} />
+          <Table size="small" columns={this.advancesColumns} pagination={false} dataSource={advances.filter(item => item.amount > 0)} />
         </Card>
         <Card bodyStyle={{ padding: 0 }} title="特殊费用">
           <Table size="small" columns={this.specialChargeColumns} pagination={false} dataSource={specialCharges} />
