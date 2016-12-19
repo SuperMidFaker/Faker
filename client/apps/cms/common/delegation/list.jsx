@@ -474,7 +474,7 @@ export default class DelegationList extends Component {
       columns = [...this.columns];
       columns.push({
         title: this.msg('opColumn'),
-        width: 120,
+        width: 130,
         render: (o, record) => {
           if (record.status === CMS_DELEGATION_STATUS.unaccepted && record.recv_tenant_id === tenantId && record.source === 1) {
             return (
