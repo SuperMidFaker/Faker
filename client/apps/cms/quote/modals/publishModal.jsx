@@ -18,10 +18,10 @@ const formItemLayout = {
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-      quoteData: state.cmsQuote.quoteData,
-      loginId: state.account.loginId,
-      loginName: state.account.username,
-      visible: state.cmsQuote.publishModalVisible,
+    quoteData: state.cmsQuote.quoteData,
+    loginId: state.account.loginId,
+    loginName: state.account.username,
+    visible: state.cmsQuote.publishModalVisible,
   }),
   { closePublishModal, publishQuote }
 )
