@@ -24,6 +24,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'LOAD_QUOTEREVS', 'LOAD_QUOTEREVS_SUCCEED', 'LOAD_QUOTEREVS_FAIL',
   'RESTORE_QUOTE', 'RESTORE_QUOTE_SUCCEED', 'RESTORE_QUOTE_FAIL',
   'CLOSE_TRIAL_MODAL', 'OPEN_TRIAL_MODAL',
+  'TRIAL_QUOTE', 'TRIAL_QUOTE_SUCCEED', 'TRIAL_QUOTE_FAIL',
 ]);
 
 const initialState = {
@@ -58,6 +59,7 @@ const initialState = {
   visibleCreateModal: false,
   publishModalVisible: false,
   trialModalVisible: false,
+  trialBegin: false,
 };
 
 export default function reducer(state = initialState, action) {
@@ -94,6 +96,11 @@ export default function reducer(state = initialState, action) {
       return { ...state, trialModalVisible: true };
     case actionTypes.CLOSE_TRIAL_MODAL:
       return { ...state, trialModalVisible: false };
+    case actionTypes.TRIAL_QUOTE:
+      return { ...state, trialBegin: true };
+    case actionTypes.TRIAL_QUOTE_SUCCEED:
+    case actionTypes.TRIAL_QUOTE_FAIL:
+      return { ...state, trialBegin: false };
     default:
       return state;
   }
@@ -422,7 +429,6 @@ export function trialQuote(quoteData) {
       endpoint: 'v1/cms/quote/trial',
       method: 'post',
       data: quoteData,
-      origin: 'mongo',
     },
   };
 }

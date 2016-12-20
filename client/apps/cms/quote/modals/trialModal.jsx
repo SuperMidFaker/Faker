@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Steps, Modal, message, Form, Select, DatePicker } from 'antd';
+import { Button, Steps, Modal, Form, Select, DatePicker, Progress } from 'antd';
 import { closeTrialModal, trialQuote } from 'common/reducers/cmsQuote';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
@@ -22,6 +22,7 @@ const formItemLayout = {
     tenantId: state.account.tenantId,
     quoteData: state.cmsQuote.quoteData,
     visible: state.cmsQuote.trialModalVisible,
+    trialBegin: state.cmsQuote.trialBegin,
   }),
   { closeTrialModal, trialQuote }
 )
@@ -30,17 +31,30 @@ export default class TrialModal extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     visible: PropTypes.bool.isRequired,
+    trialBegin: PropTypes.bool.isRequired,
     form: PropTypes.object.isRequired,
     quoteForm: PropTypes.object.isRequired,
   }
-  static contextTypes = {
-    router: PropTypes.object.isRequired,
-  }
   state = {
-    curStep: 1,
+    curStep: 0,
+    progressPercent: 0,
+    progressStatus: 'active',
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.trialBegin === true && this.props.trialBegin === false) {
+      this.setState({
+        curStep: 1,
+        progressPercent: 30,
+      });
+    }
   }
   handleCancel = () => {
     this.props.closeTrialModal();
+    this.setState({
+      curStep: 0,
+      progressPercent: 0,
+      progressStatus: 'active',
+    });
   }
   handleBeginTrial = () => {
     this.props.form.validateFields((errors) => {
@@ -50,14 +64,15 @@ export default class TrialModal extends React.Component {
           ...this.props.quoteForm.getFieldsValue(),
           ...this.props.form.getFieldsValue(),
         };
-        quoteData.basement_timestamp = quoteData.basement_date.valueOf();
+        quoteData.basement_range_start = quoteData.basement_date[0].valueOf();
+        quoteData.basement_range_end = quoteData.basement_date[1].valueOf();
         quoteData.basement_date = undefined;
-        const prom = this.props.publishQuote(quoteData);
+        const prom = this.props.trialQuote(quoteData);
         prom.then((result) => {
           if (result.error) {
-            message.error(result.error.message, 10);
+            this.setState({ progressStatus: 'exception', progressPercent: 70 });
           } else {
-            this.props.closeTrialModal();
+            this.setState({ progressStatus: 'success', progressPercent: 100 });
           }
         });
       }
@@ -66,33 +81,15 @@ export default class TrialModal extends React.Component {
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   render() {
     const { form: { getFieldDecorator }, visible } = this.props;
-    const { curStep } = this.state;
+    const { curStep, progressStatus, progressPercent } = this.state;
     let footer;
-    if (curStep === 1) {
+    let stepContent;
+    if (curStep === 0) {
       footer = [
         <Button key="cancel" type="ghost" size="large" onClick={this.handleCancel}>取消</Button>,
-        <Button key="start" size="large" onClick={this.handleBeginTrial}>开始</Button>,
+        <Button key="start" type="primary" size="large" onClick={this.handleBeginTrial}>开始</Button>,
       ];
-    } else if (curStep === 2) {
-      footer = [
-        <Button key="cancel" type="ghost" size="large" onClick={this.handleCancel}>取消</Button>,
-        <Button key="next" size="large" onClick={this.handleTrialNext}>下一步</Button>,
-      ];
-    } else if (curStep === 3) {
-      footer = [
-        <Button key="cancel" type="ghost" size="large" onClick={this.handleCancel}>取消</Button>,
-        <Button key="download" size="large" onClick={this.handleDownload}>下载</Button>,
-      ];
-    }
-    return (
-      <Modal title={this.msg('trialTitle')} visible={visible}
-        footer={footer}
-      >
-        <Steps current={curStep}>
-          <Step title="选择范围" />
-          <Step title="计算费用" />
-          <Step title="下载结果" />
-        </Steps>
+      stepContent = (
         <Form horizontal>
           <FormItem label={this.msg('basementDateType')} {...formItemLayout}>
             {getFieldDecorator('basement_datetype', {
@@ -106,12 +103,47 @@ export default class TrialModal extends React.Component {
           </FormItem>
           <FormItem label={this.msg('basementDate')} {...formItemLayout}>
             {getFieldDecorator('basement_date', {
-              rules: [{ required: true, message: '基准时间必选', type: 'object' }],
+              rules: [{ required: true, message: '基准时间必选', type: 'array' }],
             })(
               <RangePicker showTime format="YYYY-MM-DD HH:mm" />
             )}
           </FormItem>
         </Form>
+      );
+    } else if (curStep === 1) {
+      footer = [
+        <Button key="cancel" type="ghost" size="large" onClick={this.handleCancel}>取消</Button>,
+        <Button key="next" type="primary" size="large" onClick={this.handleTrialNext}>下一步</Button>,
+      ];
+      stepContent = (
+        <Progress type="circle" percent={progressPercent} status={progressStatus} />
+      );
+    } else if (curStep === 2) {
+      footer = [
+        <Button key="cancel" type="ghost" size="large" onClick={this.handleCancel}>取消</Button>,
+        <Button key="download" type="primary" size="large" onClick={this.handleDownload}>下载</Button>,
+      ];
+    }
+    return (
+      <Modal title={this.msg('trialTitle')} visible={visible}
+        footer={footer}
+      >
+        <Steps current={curStep}>
+          <Step title="选择范围" />
+          <Step title="计算费用" />
+          <Step title="下载结果" />
+        </Steps>
+        <div style={{
+          marginTop: '16px',
+          border: '1px dashed #e9e9e9',
+          borderRadius: '6px',
+          textAlign: 'center',
+          paddingTop: '10px',
+          paddingRight: '10px',
+        }}
+        >
+          {stepContent}
+        </div>
       </Modal>
     );
   }

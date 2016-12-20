@@ -71,10 +71,16 @@ export default class EditToolbar extends Component {
       }
     });
   }
-  handleDropdownClick = (key) => {
-    if (key === 'trial') {
-      this.props.openTrialModal();
-    }
+  handleMenuClick = (item) => {
+    this.props.form.validateFields((errors) => {
+      if (!errors) {
+        if (item.key === 'trial') {
+          this.props.openTrialModal();
+        }
+      } else {
+        this.props.onFormError();
+      }
+    });
   }
   handleCopy = () => {
     const quoteData = {
@@ -98,7 +104,7 @@ export default class EditToolbar extends Component {
   msg = key => formatMsg(this.props.intl, key)
   render() {
     const menu = (
-      <Menu onClick={this.handleDropdownClick}>
+      <Menu onClick={this.handleMenuClick}>
         <Menu.Item key="trial">{this.msg('trial')}</Menu.Item>
         <Menu.Item key="copyQuote">{this.msg('copy')}</Menu.Item>
       </Menu>
