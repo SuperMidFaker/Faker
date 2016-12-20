@@ -572,8 +572,7 @@ export default class DelegationList extends Component {
           </RadioGroup>
           <span />
           <RadioGroup value={listFilter.status} onChange={this.handleCiqFilter}>
-            <RadioButton value="ciqPending">{this.msg('ciqPending')}</RadioButton>
-            <RadioButton value="ciqPassed">{this.msg('ciqPassed')}</RadioButton>
+            <RadioButton value="ciqPending">{this.msg('ciq')}</RadioButton>
           </RadioGroup>
         </header>
         <div className="top-bar-tools">

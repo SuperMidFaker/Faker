@@ -560,7 +560,7 @@ export default class FeesTable extends Component {
     }
     return (
       <Table pagination={false} rowKey={getRowKey} columns={columns} dataSource={dataSource}
-        loading={quoteData.loading} onChange={this.handleTableChange} scroll={{ y: 500 }}
+        loading={quoteData.loading} onChange={this.handleTableChange} scroll={{ y: 450 }}
         title={this.handleTitleButton}
         footer={() => (action === 'model') && <Button type="primary" onClick={this.handleAddFees}>{msg('addCosts')}</Button>}
       />
