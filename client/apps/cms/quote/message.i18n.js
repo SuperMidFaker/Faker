@@ -189,6 +189,10 @@ const messages = defineMessages({
     id: 'cms.quote.revise',
     defaultMessage: '修订',
   },
+  reviseContinue: {
+    id: 'cms.quote.revise.continue',
+    defaultMessage: '继续修订',
+  },
   view: {
     id: 'cms.quote.view',
     defaultMessage: '查看',
