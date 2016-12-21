@@ -15,7 +15,6 @@ const Panel = Collapse.Panel;
     tenantId: state.account.tenantId,
     delgNo: state.cmsDelegation.previewer.delgNo,
     delgPanel: state.cmsDelegation.delgPanel,
-    delgBillsMap: state.cmsDelegation.delgBillsMap,
     tabKey: state.cmsDelegation.previewer.tabKey,
   }),
   { loadSubdelgsTable, loadCustPanel }
@@ -26,15 +25,11 @@ export default class CustomsDeclPane extends React.Component {
     tenantId: PropTypes.number.isRequired,
     delgNo: PropTypes.string.isRequired,
     delgPanel: PropTypes.object.isRequired,
-    delgBillsMap: PropTypes.object.isRequired,
   }
   componentWillMount() {
     this.props.loadCustPanel({
       delgNo: this.props.delgNo,
       tenantId: this.props.tenantId,
-    });
-    this.props.loadSubdelgsTable({
-      delg_no: this.props.delgNo,
     });
   }
   componentWillReceiveProps(nextProps) {
@@ -44,14 +39,11 @@ export default class CustomsDeclPane extends React.Component {
         delgNo: nextProps.delgNo,
         tenantId: this.props.tenantId,
       });
-      nextProps.loadSubdelgsTable({
-        delg_no: nextProps.delgNo,
-      });
     }
   }
   render() {
-    const { delgPanel, delgBillsMap } = this.props;
-    const delgBills = delgBillsMap[this.props.delgNo];
+    const { delgPanel } = this.props;
+    const delgBills = delgPanel.bills;
     const columns = [{
       title: '统一编号',
       dataIndex: 'pre_entry_seq_no',

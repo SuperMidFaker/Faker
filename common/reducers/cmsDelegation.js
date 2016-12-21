@@ -146,7 +146,9 @@ const initialState = {
   brokers: [],
   relatedDisps: [],
   suplliers: [],
-  delgPanel: {},
+  delgPanel: {
+    bills: [],
+  },
 };
 
 export default function reducer(state = initialState, action) {
