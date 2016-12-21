@@ -114,7 +114,7 @@ export default class TrialModal extends React.Component {
             {getFieldDecorator('basement_date', {
               rules: [{ required: true, message: '基准时间必选', type: 'array' }],
             })(
-              <RangePicker showTime format="YYYY-MM-DD HH:mm" />
+              <RangePicker showTime format="YYYY-MM-DD HH:mm" style={{ width: '100%' }}/>
             )}
           </FormItem>
         </Form>
@@ -137,7 +137,7 @@ export default class TrialModal extends React.Component {
       stepContent = trialFilename;
     }
     return (
-      <Modal title={this.msg('trialTitle')} visible={visible} footer={footer}>
+      <Modal title={this.msg('trialTitle')} visible={visible} footer={footer} closable={false}>
         <Steps current={curStep}>
           <Step title="选择范围" />
           <Step title="计算费用" />
