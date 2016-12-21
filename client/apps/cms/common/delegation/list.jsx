@@ -217,7 +217,7 @@ export default class DelegationList extends Component {
   }, {
     title: this.msg('ciqType'),
     width: 100,
-    dataIndex: 'ciq_type',
+    dataIndex: 'ciq_inspect',
     render: (o) => {
       if (o === 'NL') {
         return <Tag color="#ccc">一般报检</Tag>;
