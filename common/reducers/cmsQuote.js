@@ -30,14 +30,10 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
 const initialState = {
   partners: [],
   quoteData: {
+    _id: '',
     quote_no: '',
-    tariff_kind: '',
-    partner: {
-      name: '',
-    },
     decl_way_code: [],
     trans_mode: [],
-    remarks: [],
     modify_name: '',
     modify_id: '',
     valid: true,

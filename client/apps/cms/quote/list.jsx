@@ -294,7 +294,7 @@ export default class QuoteList extends Component {
           if (!o) {
             return <Tag color="#ccc">{msg('invalid')}</Tag>;
           } else {
-            return <Tag color="green">{msg('valid')}</Tag>;
+            return <Tag color="#87d068">{msg('valid')}</Tag>;
           }
         },
       }, {
