@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Button, Radio, Tag, message } from 'antd';
+import { Button, Radio, Tag, message, Popconfirm } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -21,7 +21,7 @@ const RadioButton = Radio.Button;
 function fetchData({ state, dispatch }) {
   return dispatch(loadQuoteTable({
     tenantId: state.account.tenantId,
-    filter: JSON.stringify({ status: 'all' }),
+    filter: JSON.stringify(state.cmsQuote.listFilter),
     pageSize: state.cmsExpense.expslist.pageSize,
     current: state.cmsExpense.expslist.current,
   }));
@@ -265,7 +265,9 @@ export default class QuoteList extends Component {
                   <div>
                     <a onClick={() => this.handleQuoteEdit(record)}>{msg('reviseContinue')}</a>
                     <span className="ant-divider" />
-                    <a onClick={() => this.handleDeleteQuote(record.quote_no)}>{msg('delete')}</a>
+                    <Popconfirm title="确定要删除吗？" onConfirm={() => this.handleDeleteDraft(record._id, record.quote_no)}>
+                      <a>{msg('delete')}</a>
+                    </Popconfirm>
                   </div>
                 </PrivilegeCover>
               </span>
@@ -343,11 +345,9 @@ export default class QuoteList extends Component {
                     <div>
                       <a onClick={() => this.handleChangeStatus(record._id, true)}>{msg('enable')}</a>
                       <span className="ant-divider" />
-                      {
-                        record.status === 'draft' ?
-                          <a onClick={() => this.handleDeleteDraft(record._id, record.quote_no)}>{msg('delete')}</a>
-                        : <a onClick={() => this.handleDeleteQuote(record.quote_no)}>{msg('delete')}</a>
-                      }
+                      <Popconfirm title="确定要删除吗？" onConfirm={() => this.handleDeleteQuote(record.quote_no)}>
+                        <a>{msg('delete')}</a>
+                      </Popconfirm>
                       <span className="ant-divider" />
                       <a onClick={() => this.handleQuoteView(record)}>{msg('view')}</a>
                     </div>
