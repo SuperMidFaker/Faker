@@ -1,13 +1,13 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Tag, Row, Col, Card, Tabs, Table } from 'antd';
+import { Collapse, Tag, Row, Col, Card, Table } from 'antd';
 import moment from 'moment';
 import { DELG_SOURCE, DECL_I_TYPE, DECL_E_TYPE } from 'common/constants';
 import { loadSubdelgsTable, loadCustPanel } from 'common/reducers/cmsDelegation';
 import InfoItem from 'client/components/InfoItem';
 
-const TabPane = Tabs.TabPane;
+const Panel = Collapse.Panel;
 
 @injectIntl
 @connect(
@@ -97,21 +97,22 @@ export default class CustomsDeclPane extends React.Component {
                 field={delgPanel.recv_name} fieldCol={{ span: 9 }}
               />
             </Col>
-            <Col span="8">
-              <InfoItem labelCol={{ span: 3 }} label="受理日期" fieldCol={{ span: 9 }}
+            <Col span="6">
+              <InfoItem labelCol={{ span: 3 }} label="接单日期" fieldCol={{ span: 9 }}
                 field={delgPanel.acpt_time
-                  && moment(delgPanel.acpt_time).format('YYYY.MM.DD HH:mm')}
+                  && moment(delgPanel.acpt_time).format('YYYY.MM.DD')}
               />
             </Col>
-            <Col span="4">
-              <InfoItem labelCol={{ span: 3 }} label="来源"
+            <Col span="6">
+              <InfoItem labelCol={{ span: 3 }} label="操作人"
                 field={sourceText} fieldCol={{ span: 9 }}
               />
             </Col>
           </Row>
-          {
+        </Card>
+        {
           delgBills.length > 0 &&
-          <Tabs size="small" defaultActiveKey={delgBills[0].key}>
+          <Collapse bordered={false} defaultActiveKey={delgBills[0].key}>
             {
               delgBills.map((bill) => {
                 const tableDatas = (bill.children || []).map(decl => ({
@@ -123,7 +124,7 @@ export default class CustomsDeclPane extends React.Component {
                 }));
                 const declTypes = DECL_I_TYPE.concat(DECL_E_TYPE).filter(dt => dt.key === bill.decl_way_code);
                 return (
-                  <TabPane tab={declTypes.length > 0 ? declTypes[0].value : ''} key={bill.key} >
+                  <Panel header={declTypes.length > 0 ? declTypes[0].value : ''} key={bill.key} >
                     <Row>
                       <Col span="12">
                         <InfoItem labelCol={{ span: 3 }} label="清单编号"
@@ -143,12 +144,11 @@ export default class CustomsDeclPane extends React.Component {
                     </Row>
                     <hr />
                     <Table size="middle" columns={columns} pagination={false} dataSource={tableDatas} scroll={{ x: 640 }} />
-                  </TabPane>);
+                  </Panel>);
               })
             }
-          </Tabs>
+          </Collapse>
         }
-        </Card>
       </div>
     );
   }

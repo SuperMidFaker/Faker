@@ -2,8 +2,9 @@ import React, { Component, PropTypes } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { message, Icon, Button, Menu, Dropdown } from 'antd';
-import { reviseQuote, copyQuote, openPublishModal } from 'common/reducers/cmsQuote';
+import { reviseQuote, copyQuote, openPublishModal, openTrialModal } from 'common/reducers/cmsQuote';
 import PublishModal from './modals/publishModal';
+import TrialModal from './modals/trialModal';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 
@@ -16,7 +17,7 @@ const formatMsg = format(messages);
     loginId: state.account.loginId,
     loginName: state.account.username,
   }),
-  { reviseQuote, copyQuote, openPublishModal }
+  { reviseQuote, copyQuote, openPublishModal, openTrialModal }
 )
 export default class EditToolbar extends Component {
   static propTypes = {
@@ -70,6 +71,17 @@ export default class EditToolbar extends Component {
       }
     });
   }
+  handleMenuClick = (item) => {
+    this.props.form.validateFields((errors) => {
+      if (!errors) {
+        if (item.key === 'trial') {
+          this.props.openTrialModal();
+        }
+      } else {
+        this.props.onFormError();
+      }
+    });
+  }
   handleCopy = () => {
     const quoteData = {
       ...this.props.quoteData,
@@ -92,8 +104,8 @@ export default class EditToolbar extends Component {
   msg = key => formatMsg(this.props.intl, key)
   render() {
     const menu = (
-      <Menu>
-        <Menu.Item key="trail">{this.msg('trail')}</Menu.Item>
+      <Menu onClick={this.handleMenuClick}>
+        <Menu.Item key="trial">{this.msg('trial')}</Menu.Item>
         <Menu.Item key="copyQuote">{this.msg('copy')}</Menu.Item>
       </Menu>
     );
@@ -109,6 +121,7 @@ export default class EditToolbar extends Component {
           </Button>
         </Dropdown>
         <PublishModal quoteForm={this.props.form} />
+        <TrialModal quoteForm={this.props.form} />
       </div>
     );
   }

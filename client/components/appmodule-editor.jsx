@@ -59,11 +59,11 @@ export default class ModuleEditor extends React.Component {
     return (
       <Modal title={formatMsg(intl, 'appEditorTitle')} visible={this.state.visible}
         onCancel={this.handleCancel} footer={
-          [
-            <Button key="confirm" type="primary" size="large" onClick={this.handleCancel}>
-              {formatGlobalMsg(intl, 'ok')}
-            </Button>,
-          ]
+        [
+          <Button key="confirm" type="primary" size="large" onClick={this.handleCancel}>
+            {formatGlobalMsg(intl, 'ok')}
+          </Button>,
+        ]
         }
       >
         <Row className="module-editor">

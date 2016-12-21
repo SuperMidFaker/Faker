@@ -166,9 +166,6 @@ export default class CollapseSideLayout extends React.Component {
         </aside>
         <div className="ant-layout-main">
           {childContent}
-          <div className="ant-layout-footer">
-            Powered by WeLogix Ver.1.0.0
-          </div>
         </div>
       </div>
     );

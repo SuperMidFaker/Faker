@@ -17,6 +17,18 @@ hr, img {
 img {
   vertical-align: middle;
 }
+.btn-group-vertical>.btn-group:after, .btn-group-vertical>.btn-group:before, .btn-toolbar:after, .btn-toolbar:before, .clearfix:after, .clearfix:before, .container:after, .container:before, .dl-horizontal dd:after, .dl-horizontal dd:before, .form-horizontal .form-group:after, .form-horizontal .form-group:before, .modal-footer:after, .modal-footer:before, .nav:after, .nav:before, .navbar-header:after, .navbar-header:before, .navbar:after, .navbar:before, .pager:after, .pager:before, .panel-body:after, .panel-body:before, .row:after, .row:before {
+  content: " ";
+  display: table;
+}
+.btn-group-vertical>.btn-group:after, .btn-group-vertical>.btn-group:before, .btn-toolbar:after, .btn-toolbar:before, .clearfix:after, .clearfix:before, .container:after, .container:before, .dl-horizontal dd:after, .dl-horizontal dd:before, .form-horizontal .form-group:after, .form-horizontal .form-group:before, .modal-footer:after, .modal-footer:before, .nav:after, .nav:before, .navbar-header:after, .navbar-header:before, .navbar:after, .navbar:before, .pager:after, .pager:before, .panel-body:after, .panel-body:before, .row:after, .row:before {
+  content: " ";
+  display: table;
+}
+.btn-group-vertical>.btn-group:after, .btn-toolbar:after, .clearfix:after, .container:after, .dl-horizontal dd:after, .dropdown-menu>li>a, .form-horizontal .form-group:after, .fuelux .wizard:after, .modal-footer:after, .nav:after, .navbar-header:after, .navbar:after, .pager:after, .panel-body:after, .row:after {
+  clear: both;
+}
+// Override antd styles
 .ant-btn-default {
   color: #40a5ed;
   background-color: #fff;
@@ -45,6 +57,9 @@ img {
 }
 .ant-steps-description > .ant-card {
   margin: 16px;
+}
+.ant-table .ant-tag {
+  margin: 0;
 }
 .ant-timeline-item-head-custom {
   background: transparent;
@@ -143,17 +158,7 @@ img {
 .collapsing, .dropdown {
   position: relative;
 }
-.btn-group-vertical>.btn-group:after, .btn-group-vertical>.btn-group:before, .btn-toolbar:after, .btn-toolbar:before, .clearfix:after, .clearfix:before, .container:after, .container:before, .dl-horizontal dd:after, .dl-horizontal dd:before, .form-horizontal .form-group:after, .form-horizontal .form-group:before, .modal-footer:after, .modal-footer:before, .nav:after, .nav:before, .navbar-header:after, .navbar-header:before, .navbar:after, .navbar:before, .pager:after, .pager:before, .panel-body:after, .panel-body:before, .row:after, .row:before {
-  content: " ";
-  display: table;
-}
-.btn-group-vertical>.btn-group:after, .btn-group-vertical>.btn-group:before, .btn-toolbar:after, .btn-toolbar:before, .clearfix:after, .clearfix:before, .container:after, .container:before, .dl-horizontal dd:after, .dl-horizontal dd:before, .form-horizontal .form-group:after, .form-horizontal .form-group:before, .modal-footer:after, .modal-footer:before, .nav:after, .nav:before, .navbar-header:after, .navbar-header:before, .navbar:after, .navbar:before, .pager:after, .pager:before, .panel-body:after, .panel-body:before, .row:after, .row:before {
-  content: " ";
-  display: table;
-}
-.btn-group-vertical>.btn-group:after, .btn-toolbar:after, .clearfix:after, .container:after, .dl-horizontal dd:after, .dropdown-menu>li>a, .form-horizontal .form-group:after, .fuelux .wizard:after, .modal-footer:after, .nav:after, .navbar-header:after, .navbar:after, .pager:after, .panel-body:after, .row:after {
-  clear: both;
-}
+
 
 
 .am-top-header {
@@ -512,7 +517,13 @@ img {
   .tools {
     float: right;
   }
-  .left-tools {
+  .toolbar-right {
+    float: right;
+    >span {
+      margin-right: 8px;
+    }
+  }
+  .toolbar-left {
     display: inline-block;
     width: 220px;
     input {

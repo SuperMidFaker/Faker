@@ -106,4 +106,3 @@ export default class CreateQtModal extends React.Component {
     );
   }
 }
-

@@ -224,36 +224,41 @@ export default class DelegationInfoHubPanel extends React.Component {
     const { previewer, tabKey, ciqdecl, delgPanel } = this.props;
     const menu = (
       <Menu>
-        <Menu.Item key="transfer"><Icon type="select" /> 指派操作人</Menu.Item>
         <Menu.Item key="lock"><Icon type="lock" /> 锁定</Menu.Item>
         <Menu.Item key="delete"><Icon type="delete" /> 删除(不可恢复)</Menu.Item>
       </Menu>
     );
-    return (
-      <div className="btn-bar">
-        <Dropdown overlay={menu}>
-          <Button type="ghost">
-            <Icon type="setting" /> <Icon type="down" />
-          </Button>
-        </Dropdown>
-      </div>
-    );
-    /*
     if (tabKey === 'basic') {
       if (previewer.delegation.btkey === 'recall') {
         return (
           <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-            <Button type="default" onClick={this.handleDispAllCancel}>
-              撤回
+            <div className="btn-bar">
+              <Button type="default" onClick={this.handleDispAllCancel}>
+                撤回
             </Button>
+              <span />
+              <Dropdown overlay={menu}>
+                <Button type="ghost">
+                  <Icon type="setting" /> <Icon type="down" />
+                </Button>
+              </Dropdown>
+            </div>
           </PrivilegeCover>
         );
       } else if (previewer.delegation.btkey === 'assign') {
         return (
           <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-            <Button type="ghost" onClick={this.handleAssignAll}>
-              转包
+            <div className="btn-bar">
+              <Button type="ghost" onClick={this.handleAssignAll}>
+                转包
             </Button>
+              <span />
+              <Dropdown overlay={menu}>
+                <Button type="ghost">
+                  <Icon type="setting" /> <Icon type="down" />
+                </Button>
+              </Dropdown>
+            </div>
           </PrivilegeCover>
         );
       }
@@ -269,15 +274,27 @@ export default class DelegationInfoHubPanel extends React.Component {
               <Button type="ghost" onClick={this.handleDisp}>
                 指定报关单位
               </Button>
+              <Dropdown overlay={menu}>
+                <Button type="ghost">
+                  <Icon type="setting" /> <Icon type="down" />
+                </Button>
+              </Dropdown>
             </div>
           </PrivilegeCover>
         );
       } else if (delgPanel.btkey === 'delgRecall') {
         return (
           <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-            <Button type="default" onClick={this.handleDispCancel}>
-              撤回
-            </Button>
+            <div className="btn-bar">
+              <Button type="default" onClick={this.handleDispCancel}>
+                撤回
+              </Button>
+              <Dropdown overlay={menu}>
+                <Button type="ghost">
+                  <Icon type="setting" /> <Icon type="down" />
+                </Button>
+              </Dropdown>
+            </div>
           </PrivilegeCover>
         );
       } else if (delgPanel.btkey === 'delgRecallMake') {
@@ -325,6 +342,7 @@ export default class DelegationInfoHubPanel extends React.Component {
               <Button type="primary" onClick={this.handleCiqFinish}>
                 完成
               </Button>
+
             </div>
           </PrivilegeCover>
         );
@@ -352,7 +370,6 @@ export default class DelegationInfoHubPanel extends React.Component {
         );
       }
     }
-    */
   }
   render() {
     const { visible, previewer } = this.props;

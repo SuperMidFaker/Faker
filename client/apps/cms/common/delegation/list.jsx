@@ -474,7 +474,7 @@ export default class DelegationList extends Component {
       columns = [...this.columns];
       columns.push({
         title: this.msg('opColumn'),
-        width: 120,
+        width: 130,
         render: (o, record) => {
           if (record.status === CMS_DELEGATION_STATUS.unaccepted && record.recv_tenant_id === tenantId && record.source === 1) {
             return (
@@ -572,8 +572,7 @@ export default class DelegationList extends Component {
           </RadioGroup>
           <span />
           <RadioGroup value={listFilter.status} onChange={this.handleCiqFilter}>
-            <RadioButton value="ciqPending">{this.msg('ciqPending')}</RadioButton>
-            <RadioButton value="ciqPassed">{this.msg('ciqPassed')}</RadioButton>
+            <RadioButton value="ciqPending">{this.msg('ciq')}</RadioButton>
           </RadioGroup>
         </header>
         <div className="top-bar-tools">

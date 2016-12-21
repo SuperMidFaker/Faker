@@ -103,7 +103,7 @@ export default class CiqList extends Component {
     title: this.msg('inspbroker'),
     width: 180,
     dataIndex: 'recv_name',
-    render: o => <TrimSpan text={o} maxLen={14} />,
+    render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
     title: this.msg('ciqStatus'),
     width: 130,
