@@ -62,11 +62,11 @@ export default class ExportExcel extends React.Component {
         >
           <Form horizontal>
             <FormItem
-              label="创建时间"
-              labelCol={{ span: 5 }}
-              wrapperCol={{ span: 12 }}
+              label="预计提货时间"
+              labelCol={{ span: 6 }}
+              wrapperCol={{ span: 18 }}
             >
-              <RangePicker style={{ width: 184 }} defaultValue={
+              <RangePicker value={
                 [moment(this.state.startDate), moment(this.state.endDate)]
               } onChange={this.handleRangeChange}
               />
