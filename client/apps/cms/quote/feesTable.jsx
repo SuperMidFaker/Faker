@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { format } from 'client/common/i18n/helpers';
-import { feeUpdate, feeAdd, feeDelete, saveQuoteModel, saveQuoteBatchEdit } from 'common/reducers/cmsQuote';
+import { feeUpdate, feeAdd, feeDelete, saveQuoteModel, saveQuoteBatchEdit, loadEditQuote } from 'common/reducers/cmsQuote';
 import messages from './message.i18n';
 import RowUpdater from 'client/apps/cms/common/delegation/rowUpdater';
 import { CHARGE_PARAM, FEE_STYLE, FEE_CATEGORY } from 'common/constants';
@@ -151,7 +151,7 @@ ColumnSelect.proptypes = {
     loginId: state.account.loginId,
     loginName: state.account.username,
   }),
-  { feeUpdate, feeAdd, feeDelete, saveQuoteModel, saveQuoteBatchEdit }
+  { feeUpdate, feeAdd, feeDelete, saveQuoteModel, saveQuoteBatchEdit, loadEditQuote }
 )
 export default class FeesTable extends Component {
   static propTypes = {
@@ -312,6 +312,11 @@ export default class FeesTable extends Component {
     this.setState({
       editIndex: -1,
     });
+    if (this.props.quoteData.status === 'draft') {
+      this.props.loadEditQuote(this.props.quoteData.quote_no, this.props.quoteData.version);
+    } else {
+      this.props.loadEditQuote(this.props.quoteData.quote_no, this.props.quoteData.next_version);
+    }
   }
   handleMdlFeeDelete = (row, index) => {
     const count = this.state.count + 1;
@@ -368,6 +373,11 @@ export default class FeesTable extends Component {
   }
   handlebatchCancel = () => {
     this.setState({ editable: this.props.editable, batchSaved: 0 });
+    if (this.props.quoteData.status === 'draft') {
+      this.props.loadEditQuote(this.props.quoteData.quote_no, this.props.quoteData.version);
+    } else {
+      this.props.loadEditQuote(this.props.quoteData.quote_no, this.props.quoteData.next_version);
+    }
   }
   handlebatchModify = () => {
     this.setState({ editable: true, batchSaved: 1 });
@@ -516,7 +526,7 @@ export default class FeesTable extends Component {
         render: (o, record, index) =>
           <ColumnSwitch field="enabled" inEdit={editable || (index === editIndex)} record={record} onChange={this.handleEditChange} />,
       }];
-    if (action !== 'view' && batchSaved === 0) {
+    if (action !== 'view') {
       columns.push({
         title: msg('operation'),
         width: 80,
@@ -525,7 +535,7 @@ export default class FeesTable extends Component {
             return (
               <RowUpdater onHit={this.handleDelete} label={msg('delete')} row={record} index={index} />
             );
-          } else if (action === 'edit') {
+          } else if (action === 'edit' && batchSaved === 0) {
             if (index === editIndex) {
               return (
                 <span>
@@ -547,6 +557,12 @@ export default class FeesTable extends Component {
                 <RowUpdater onHit={this.handleModify} label={msg('modify')} row={record} index={index} />
               );
             }
+          } else if (action === 'edit' && batchSaved === 1) {
+            if (record.category === 'custom') {
+              return (
+                <RowUpdater onHit={this.handleDelete} label={msg('delete')} row={record} index={index} />
+              );
+            }
           } else if (record.category === 'custom' && action === 'model') {
             return (
               <RowUpdater onHit={this.handleMdlFeeDelete} label={msg('delete')} row={record} index={index} />
@@ -555,8 +571,7 @@ export default class FeesTable extends Component {
             return <span />;
           }
         },
-      },
-    );
+      });
     }
     return (
       <Table pagination={false} rowKey={getRowKey} columns={columns} dataSource={dataSource}
