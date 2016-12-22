@@ -82,10 +82,12 @@ export default class BillForm extends React.Component {
     }
   }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
-  handleUploaded = () => {
+  handleUploaded = (ev) => {
+    ev.stopPropagation();
     this.props.loadBillBodyList({ billSeqNo: this.props.billHead.bill_seq_no });
   }
   handleBillSave = (ev) => {
+    ev.stopPropagation();
     ev.preventDefault();
     // todo bill head save sync with entry head, vice verse
     this.props.form.validateFields((errors) => {
