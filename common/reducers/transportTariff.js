@@ -46,6 +46,7 @@ const initialState = {
     kind: -1,
     adjustCoefficient: 1,
     revisions: [],
+    taxrate: { mode: 0, value: 0 },
   },
   ratesRefAgreement: {},
   ratesSourceLoading: false,
@@ -126,6 +127,7 @@ export default function reducer(state = initialState, action) {
         quoteNo: tariff.quoteNo,
         partnerPermission: tariff.partnerPermission,
         revisions: action.result.data.revisions,
+        taxrate: res.taxrate || initialState.agreement.taxrate,
       };
       const sur = action.result.data.tariff.surcharge;
       let surcharge = initialState.surcharge;
@@ -527,7 +529,7 @@ export function updateTariffValid(tariffId, valid) {
   };
 }
 
-export function publishTariff({ tariffId, loginName, quoteNo, tenantId, effectiveType, effectiveDate, publishCommit, partnerPermission, adjustCoefficient }) {
+export function publishTariff(data) {
   return {
     [CLIENT_API]: {
       types: [
@@ -537,7 +539,7 @@ export function publishTariff({ tariffId, loginName, quoteNo, tenantId, effectiv
       ],
       endpoint: 'v1/transport/tariff/publish',
       method: 'post',
-      data: { tariffId, loginName, quoteNo, tenantId, effectiveType, effectiveDate, publishCommit, partnerPermission, adjustCoefficient },
+      data,
       origin: 'mongo',
     },
   };

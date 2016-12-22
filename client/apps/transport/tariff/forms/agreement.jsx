@@ -7,11 +7,12 @@ import PricingCTN from './pricingCTN';
 import { loadPartners, submitAgreement,
   updateAgreement } from 'common/reducers/transportTariff';
 import { TARIFF_KINDS, GOODS_TYPES, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES,
-  PRESET_TRANSMODES, TARIFF_PARTNER_PERMISSION } from 'common/constants';
+  PRESET_TRANSMODES, TARIFF_PARTNER_PERMISSION, TAX_STATUS } from 'common/constants';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
+const RadioButton = Radio.Button;
 
 const formItemLayout = {
   labelCol: { span: 6 },
@@ -280,21 +281,6 @@ export default class AgreementForm extends React.Component {
             </Row>
             <Row>
               <Col sm={8}>
-                <FormItem label="运输模式" {...formItemLayout}>
-                  {getFieldDecorator('transModeCode', {
-                    initialValue: isNaN(formData.transModeCode) ? undefined :
-                        parseInt(formData.transModeCode, 10),
-                    rules: [{ required: true, type: 'number', message: '运输模式必选' }],
-                  })(<Select onSelect={this.handleModeSelect} disabled={readonly}>
-                    {
-                      formParams.transModes.map(tm =>
-                        <Option value={tm.id} key={tm.id}>{tm.mode_name}</Option>
-                      )
-                    }
-                  </Select>)}
-                </FormItem>
-              </Col>
-              <Col sm={8}>
                 <FormItem label="货物类型" {...formItemLayout}>
                   {getFieldDecorator('goodsType', {
                     initialValue: formData.goodsType,
@@ -316,8 +302,41 @@ export default class AgreementForm extends React.Component {
                   })(<Input disabled={readonly} placeholder="不输入默认为1" />)}
                 </FormItem>
               </Col>
+              <Col sm={4}>
+                <FormItem label="税率" {...formItemLayout}>
+                  {getFieldDecorator('taxrate.mode', {
+                    initialValue: formData.taxrate.mode })(
+                    <RadioGroup>
+                      <RadioButton value={TAX_STATUS.exctax.key}>{TAX_STATUS.exctax.value}</RadioButton>
+                      <RadioButton value={TAX_STATUS.inctax.key}>{TAX_STATUS.inctax.value}</RadioButton>
+                    </RadioGroup>)}
+                </FormItem>
+              </Col>
+              <Col sm={4}>
+                <FormItem label="税率值" {...formItemLayout}>
+                  {getFieldDecorator('taxrate.value', {
+                    initialValue: formData.taxrate.value })(
+                    <Input type="number" addonAfter="％" placeholder="请输入税率" />)}
+                </FormItem>
+              </Col>
             </Row>
-
+            <Row>
+              <Col sm={8}>
+                <FormItem label="运输模式" {...formItemLayout}>
+                  {getFieldDecorator('transModeCode', {
+                    initialValue: isNaN(formData.transModeCode) ? undefined :
+                        parseInt(formData.transModeCode, 10),
+                    rules: [{ required: true, type: 'number', message: '运输模式必选' }],
+                  })(<Select onSelect={this.handleModeSelect} disabled={readonly}>
+                    {
+                      formParams.transModes.map(tm =>
+                        <Option value={tm.id} key={tm.id}>{tm.mode_name}</Option>
+                      )
+                    }
+                  </Select>)}
+                </FormItem>
+              </Col>
+            </Row>
             {transMode === 'ltl' &&
             <PricingLTL form={form} formItemLayout={subFormLayout} onChange={this.handlePriceChange}
               readonly={readonly}
