@@ -39,6 +39,7 @@ export default class TrialModal extends React.Component {
     curStep: 0,
     progressPercent: 0,
     progressStatus: 'active',
+    trialFilename: '',
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.trialBegin === true && this.props.trialBegin === false) {
@@ -72,16 +73,24 @@ export default class TrialModal extends React.Component {
           if (result.error) {
             this.setState({ progressStatus: 'exception', progressPercent: 70 });
           } else {
-            this.setState({ progressStatus: 'success', progressPercent: 100 });
+            this.setState({
+              progressStatus: 'success', progressPercent: 100,
+              trialFilename: result.data.filename, trialFileurl: result.data.fileurl,
+            });
           }
         });
       }
     });
   }
+  handleTrialNext = () => {
+    this.setState({
+      curStep: 2,
+    });
+  }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   render() {
     const { form: { getFieldDecorator }, visible } = this.props;
-    const { curStep, progressStatus, progressPercent } = this.state;
+    const { curStep, progressStatus, progressPercent, trialFilename, trialFileurl } = this.state;
     let footer;
     let stepContent;
     if (curStep === 0) {
@@ -105,7 +114,7 @@ export default class TrialModal extends React.Component {
             {getFieldDecorator('basement_date', {
               rules: [{ required: true, message: '基准时间必选', type: 'array' }],
             })(
-              <RangePicker showTime format="YYYY-MM-DD HH:mm" />
+              <RangePicker showTime format="YYYY-MM-DD HH:mm" style={{ width: '100%' }}/>
             )}
           </FormItem>
         </Form>
@@ -113,7 +122,7 @@ export default class TrialModal extends React.Component {
     } else if (curStep === 1) {
       footer = [
         <Button key="cancel" type="ghost" size="large" onClick={this.handleCancel}>取消</Button>,
-        <Button key="next" type="primary" size="large" onClick={this.handleTrialNext}>下一步</Button>,
+        <Button key="next" type="primary" size="large" onClick={this.handleTrialNext} disabled={!trialFilename}>下一步</Button>,
       ];
       stepContent = (
         <Progress type="circle" percent={progressPercent} status={progressStatus} />
@@ -121,25 +130,27 @@ export default class TrialModal extends React.Component {
     } else if (curStep === 2) {
       footer = [
         <Button key="cancel" type="ghost" size="large" onClick={this.handleCancel}>取消</Button>,
-        <Button key="download" type="primary" size="large" onClick={this.handleDownload}>下载</Button>,
+        <a href={trialFileurl} target="_blank" rel="noopener noreferrer">
+          <Button key="download" type="primary" size="large">下载</Button>
+        </a>,
       ];
+      stepContent = trialFilename;
     }
     return (
-      <Modal title={this.msg('trialTitle')} visible={visible}
-        footer={footer}
-      >
+      <Modal title={this.msg('trialTitle')} visible={visible} footer={footer} closable={false}>
         <Steps current={curStep}>
           <Step title="选择范围" />
           <Step title="计算费用" />
           <Step title="下载结果" />
         </Steps>
         <div style={{
-          marginTop: '16px',
+          marginTop: '20px',
           border: '1px dashed #e9e9e9',
           borderRadius: '6px',
           textAlign: 'center',
           paddingTop: '10px',
           paddingRight: '10px',
+          minHeight: '60px',
         }}
         >
           {stepContent}

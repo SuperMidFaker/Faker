@@ -403,12 +403,17 @@ export default class DelegationInfoHubPanel extends React.Component {
                   field={delegation.bl_wb_no} fieldCol={{ span: 9 }}
                 />
               </Col>
-              <Col span="6">
-                <InfoItem labelCol={{ span: 3 }} label="服务商"
-                  field={delegation.agent_name} fieldCol={{ span: 9 }}
+              <Col span="4">
+                <InfoItem labelCol={{ span: 3 }} label="订单号"
+                  field={delegation.order_no} fieldCol={{ span: 9 }}
                 />
               </Col>
-              <Col span="6">
+              <Col span="4">
+                <InfoItem labelCol={{ span: 3 }} label="发票号"
+                  field={delegation.invoice_no} fieldCol={{ span: 9 }}
+                />
+              </Col>
+              <Col span="4">
                 <InfoItem labelCol={{ span: 3 }} label="委托日期" fieldCol={{ span: 9 }}
                   field={moment(delegateTracking.delg_time).format('YYYY.MM.DD')}
                 />

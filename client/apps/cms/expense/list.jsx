@@ -7,7 +7,7 @@ import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import withPrivilege from 'client/common/decorators/withPrivilege';
-import { loadExpense, openInModal, loadCurrencies, openMarkModal,
+import { loadExpense, openInModal, loadCurrencies,
   loadAdvanceParties, loadPartnersForFilter } from 'common/reducers/cmsExpense';
 import { showPreviewer } from 'common/reducers/cmsDelegation';
 import { EXP_STATUS } from 'common/constants';
@@ -18,7 +18,6 @@ import SearchBar from 'client/components/search-bar';
 import TrimSpan from 'client/components/trimSpan';
 import ExpSubTable from './expSubTable';
 import InputModal from './modals/inputModal';
-import MarkModal from './modals/markModal';
 import DelegationInfoHubPanel from '../common/modals/DelegationInfoHubPanel';
 import DelgAdvanceExpenseModal from './modals/delgAdvanceExpenseModal';
 import RowUpdater from './rowUpdater';
@@ -57,7 +56,7 @@ function fetchData({ state, dispatch }) {
     partners: state.cmsExpense.partners,
   }),
   { openInModal, loadCurrencies, loadExpense,
-    openMarkModal, showPreviewer, loadAdvanceParties }
+    showPreviewer, loadAdvanceParties }
 )
 @connectNav({
   depth: 2,
@@ -71,7 +70,6 @@ export default class ExpenseList extends Component {
     intl: intlShape.isRequired,
     listFilter: PropTypes.object.isRequired,
     openInModal: PropTypes.func.isRequired,
-    openMarkModal: PropTypes.func.isRequired,
     loadCurrencies: PropTypes.func.isRequired,
     loadExpense: PropTypes.func.isRequired,
     saved: PropTypes.bool.isRequired,
@@ -204,9 +202,6 @@ export default class ExpenseList extends Component {
   }
   toggleEptModal = () => {
     this.setState({ expEptVisible: !this.state.expEptVisible });
-  }
-  handleMarkStatement = () => {
-    this.props.openMarkModal();
   }
   handleSubexpsList = record => (
     <ExpSubTable delgNo={record.delg_no} />
@@ -441,12 +436,8 @@ export default class ExpenseList extends Component {
                 {this.msg('incExp')}
               </Button>
               <span />
-              <Button type="default" icon="download" onClick={this.handleExpExport}>
+              <Button type="ghost" icon="file-excel" onClick={this.handleExpExport}>
                 {this.msg('eptExp')}
-              </Button>
-              <span />
-              <Button type="ghost" onClick={this.handleMarkStatement}>
-                {this.msg('markState')}
               </Button>
             </div>
             <div className="panel-body table-panel group-header">
@@ -457,7 +448,6 @@ export default class ExpenseList extends Component {
           </div>
         </div>
         <InputModal data={unstateData} />
-        <MarkModal data={unstateData} />
         <DelegationInfoHubPanel />
         <DelgAdvanceExpenseModal />
         <ExpEptModal visible={this.state.expEptVisible} toggle={this.toggleEptModal} />

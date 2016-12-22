@@ -32,7 +32,7 @@ const messages = defineMessages({
   },
   eptExp: {
     id: 'cms.expense.export.expense',
-    defaultMessage: '下载费用报表',
+    defaultMessage: '导出',
   },
   chooseModel: {
     id: 'cms.expense.export.chooseModel',

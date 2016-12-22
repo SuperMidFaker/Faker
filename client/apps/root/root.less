@@ -17,17 +17,6 @@ hr, img {
 img {
   vertical-align: middle;
 }
-.btn-group-vertical>.btn-group:after, .btn-group-vertical>.btn-group:before, .btn-toolbar:after, .btn-toolbar:before, .clearfix:after, .clearfix:before, .container:after, .container:before, .dl-horizontal dd:after, .dl-horizontal dd:before, .form-horizontal .form-group:after, .form-horizontal .form-group:before, .modal-footer:after, .modal-footer:before, .nav:after, .nav:before, .navbar-header:after, .navbar-header:before, .navbar:after, .navbar:before, .pager:after, .pager:before, .panel-body:after, .panel-body:before, .row:after, .row:before {
-  content: " ";
-  display: table;
-}
-.btn-group-vertical>.btn-group:after, .btn-group-vertical>.btn-group:before, .btn-toolbar:after, .btn-toolbar:before, .clearfix:after, .clearfix:before, .container:after, .container:before, .dl-horizontal dd:after, .dl-horizontal dd:before, .form-horizontal .form-group:after, .form-horizontal .form-group:before, .modal-footer:after, .modal-footer:before, .nav:after, .nav:before, .navbar-header:after, .navbar-header:before, .navbar:after, .navbar:before, .pager:after, .pager:before, .panel-body:after, .panel-body:before, .row:after, .row:before {
-  content: " ";
-  display: table;
-}
-.btn-group-vertical>.btn-group:after, .btn-toolbar:after, .clearfix:after, .container:after, .dl-horizontal dd:after, .dropdown-menu>li>a, .form-horizontal .form-group:after, .fuelux .wizard:after, .modal-footer:after, .nav:after, .navbar-header:after, .navbar:after, .pager:after, .panel-body:after, .row:after {
-  clear: both;
-}
 // Override antd styles
 .ant-btn-default {
   color: #40a5ed;
@@ -496,6 +485,9 @@ img {
   &.form-wrapper {
     padding: 24px;
   }
+  .ant-table-title {
+    padding: 8px 16px;
+  }
 }
 .panel-header {
   position: relative;
@@ -559,7 +551,8 @@ img {
     .ant-table-footer {
       border-radius: 0 0 2px 2px;
     }
-    .ant-table-bordered .ant-table-body>table {
+    .ant-table-bordered .ant-table-body>table,
+    .ant-table-bordered .ant-table-fixed-left table {
       border: none;
     }
   }

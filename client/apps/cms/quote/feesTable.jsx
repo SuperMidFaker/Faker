@@ -481,7 +481,7 @@ export default class FeesTable extends Component {
           const inEdit = editable || (index === editIndex);
           if (record.charge_param === '$formula' && inEdit) {
             return (<Mention suggestions={this.state.suggestions} prefix="$" onSearchChange={this.handleSearch} defaultValue={Mention.toEditorState(o)}
-              placeholder="$公式" onChange={editorState => this.handleonChange(record, editorState)}
+              placeholder="$公式" onChange={editorState => this.handleonChange(record, editorState)} multiLines style={{ width: '100%', height: '100%' }}
             />);
           } else {
             return <ColumnInput field="formula_factor" inEdit={editable || (index === editIndex)} record={record} onChange={this.handleEditChange} />;
@@ -516,7 +516,7 @@ export default class FeesTable extends Component {
         render: (o, record, index) =>
           <ColumnSwitch field="enabled" inEdit={editable || (index === editIndex)} record={record} onChange={this.handleEditChange} />,
       }];
-    if (action !== 'view') {
+    if (action !== 'view' && batchSaved === 0) {
       columns.push({
         title: msg('operation'),
         width: 80,

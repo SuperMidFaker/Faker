@@ -100,7 +100,7 @@ export default class FeesForm extends Component {
           <Col sm={8} md={16}>
             <FormItem label={this.msg('declareWay')} labelCol={{ span: 3 }} wrapperCol={{ span: 21 }}>
               {getFieldDecorator('decl_way_code', {
-                rules: [{ required: true, message: '报关类型必选', type: 'array' }],
+                rules: [{ type: 'array' }],
                 initialValue: fieldInits.decl_way_code,
               })(
                 <Select multiple style={{ width: '100%' }} disabled={readOnly} >
@@ -116,7 +116,7 @@ export default class FeesForm extends Component {
           <Col sm={8} md={8}>
             <FormItem label={this.msg('transMode')} {...formItemLayout} >
               {getFieldDecorator('trans_mode', {
-                rules: [{ required: true, message: '运输方式必选', type: 'array' }],
+                rules: [{ type: 'array' }],
                 initialValue: fieldInits.trans_mode,
               })(
                 <Select multiple style={{ width: '100%' }} disabled={readOnly} >

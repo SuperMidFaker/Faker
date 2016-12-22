@@ -90,7 +90,7 @@ export default class CiqList extends Component {
   }, {
     title: this.msg('ciqType'),
     width: 100,
-    dataIndex: 'ciq_type',
+    dataIndex: 'ciq_inspect',
     render: (o) => {
       if (o === 'NL') {
         return <Tag color="#ccc">一般报检</Tag>;
@@ -130,7 +130,7 @@ export default class CiqList extends Component {
     },
   }, {
     title: this.msg('opColumn'),
-    width: 140,
+    width: 100,
     render: (record) => {
       if (record.status === 0 && record.type === 1) {
         return (
@@ -146,7 +146,7 @@ export default class CiqList extends Component {
         );
       } else {
         return (
-          <RowUpdater label={this.msg('declareView')} />
+          <span />
         );
       }
     },
@@ -248,7 +248,7 @@ export default class CiqList extends Component {
     this.dataSource.remotes = ciqlist;
     return (
       <Table columns={this.columns} dataSource={this.dataSource}
-        loading={ciqlist.loading} rowKey="delg_no"
+        loading={ciqlist.loading} rowKey="delg_no" scroll={{ x: 1300 }}
       />);
   }
 }
