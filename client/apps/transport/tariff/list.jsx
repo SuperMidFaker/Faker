@@ -216,7 +216,7 @@ export default class TariffList extends React.Component {
         this.setState({ selectedRowKeys });
       },
     };
-    const columns = [{
+    let columns = [{
       title: this.msg('quoteNo'),
       dataIndex: 'quoteNo',
       width: 100,
@@ -271,28 +271,32 @@ export default class TariffList extends React.Component {
         if (goodType) text = `${text}/${goodType.text}`;
         return text;
       },
-    }, {
-      title: this.msg('tariffStatus'),
-      dataIndex: 'valid',
-      width: 80,
-      render: (col) => {
-        if (col) {
-          return (
-            <span className="mdc-text-green">有效</span>
-          );
-        } else {
-          return (
-            <span className="mdc-text-red">无效</span>
-          );
-        }
-      },
-    }, {
+    }];
+    if (this.state.status === 'current') {
+      columns.push({
+        title: this.msg('tariffStatus'),
+        dataIndex: 'valid',
+        width: 80,
+        render: (col) => {
+          if (col) {
+            return (
+              <span className="mdc-text-green">有效</span>
+            );
+          } else {
+            return (
+              <span className="mdc-text-red">无效</span>
+            );
+          }
+        },
+      });
+    }
+    columns = columns.concat([{
       title: this.msg('effectiveDate'),
       dataIndex: 'effectiveDate',
       width: 100,
       render: (o, record) => moment(record.effectiveDate).format('YYYY.MM.DD'),
     }, {
-      title: this.msg('currentVersion'),
+      title: this.msg('version'),
       dataIndex: 'version',
       width: 100,
       render: col => `v.${col}`,
@@ -367,7 +371,7 @@ export default class TariffList extends React.Component {
         }
         return '';
       },
-    }];
+    }]);
     return (
       <QueueAnim type={['bottom', 'up']}>
         <header className="top-bar" key="header">

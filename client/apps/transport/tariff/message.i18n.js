@@ -21,9 +21,9 @@ export default defineMessages({
     id: 'transport.tariff.effective.date',
     defaultMessage: '生效时间',
   },
-  currentVersion: {
-    id: 'transport.tariff.currentVersion',
-    defaultMessage: '当前版本',
+  version: {
+    id: 'transport.tariff.version',
+    defaultMessage: '版本',
   },
   tariffStatus: {
     id: 'transport.tariff.status',
