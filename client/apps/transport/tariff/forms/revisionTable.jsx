@@ -87,7 +87,9 @@ export default class RevisionTable extends React.Component {
       });
     }
     return (
-      <Table columns={columns} dataSource={revisions} pagination={false} rowKey="version" />
+      <div className="panel-body table-panel">
+        <Table columns={columns} dataSource={revisions} pagination={false} rowKey="version"/>
+      </div>
     );
   }
 }

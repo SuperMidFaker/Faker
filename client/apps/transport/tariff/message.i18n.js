@@ -213,4 +213,8 @@ export default defineMessages({
     id: 'transport.tariff.deliverActDate',
     defaultMessage: '实际交货日期',
   },
+  createdDate: {
+    id: 'transport.tariff.createdDate',
+    defaultMessage: '创建日期',
+  },
 });

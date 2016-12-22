@@ -67,10 +67,11 @@ export default class Main extends Component {
     if (TARIFF_KINDS[agreement.kind]) {
       kindText = TARIFF_KINDS[agreement.kind].text;
     }
+
     return (
       <div>
         <header className="top-bar">
-          <span>{`${agreement.quoteNo} - ${agreement.partnerName} - ${kindText}`}</span>
+          <span>{`${agreement.quoteNo} - ${agreement.partnerName ? agreement.partnerName : ''} - ${kindText}`}</span>
         </header>
         { type === 'edit' && (
           <div className="top-bar-tools">
