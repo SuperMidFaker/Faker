@@ -3,10 +3,12 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Form, message, Input, Modal, DatePicker, Select, Alert } from 'antd';
 import { publishTariff, showPublishTariffModal } from 'common/reducers/transportTariff';
-import { TARIFF_KINDS } from 'common/constants';
+import { format } from 'client/common/i18n/helpers';
+import messages from '../message.i18n';
+
+const formatMsg = format(messages);
 const FormItem = Form.Item;
 const Option = Select.Option;
-
 
 @injectIntl
 @connect(
@@ -34,7 +36,7 @@ export default class PublishTariffModal extends React.Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
-
+  msg = descriptor => formatMsg(this.props.intl, descriptor)
   handleOk = () => {
     this.props.form.validateFields((errors) => {
       if (!errors) {
@@ -71,6 +73,7 @@ export default class PublishTariffModal extends React.Component {
       labelCol: { span: 6 },
       wrapperCol: { span: 18 },
     };
+
     return (
       <Modal title="发布" onCancel={this.handleCancel} onOk={this.handleOk}
         visible={this.props.visible} maskClosable={false}
@@ -79,14 +82,12 @@ export default class PublishTariffModal extends React.Component {
           <Alert message="报价发布后将按设置的生效时间起重新计费" type="info" showIcon />
           <FormItem label="基准日期类型" {...formItemLayout}>
             {getFieldDecorator('effectiveType', {
-              rules: [{ required: true, message: '基准日期类型必选', type: 'number' }],
+              rules: [{ required: true, message: '基准日期类型必选', type: 'string' }],
             })(<Select >
-              {
-                TARIFF_KINDS.map(
-                  (tk, idx) =>
-                    <Option value={idx} key={tk.value}>{TARIFF_KINDS[idx].text}</Option>
-                )
-              }
+              <Option value="pickupEstDate">{this.msg('pickupEstDate')}</Option>
+              <Option value="deliverEstDate">{this.msg('deliverEstDate')}</Option>
+              <Option value="pickupActDate">{this.msg('pickupActDate')}</Option>
+              <Option value="deliverActDate">{this.msg('deliverActDate')}</Option>
             </Select>)}
           </FormItem>
           <FormItem label="生效起始时间" {...formItemLayout}>
@@ -100,7 +101,7 @@ export default class PublishTariffModal extends React.Component {
             {getFieldDecorator('publishCommit', {
               rules: [{ required: true, message: '备注必填' }],
             })(
-              <Input type="textarea" row={3} />
+              <Input type="textarea" />
             )}
           </FormItem>
         </Form>

@@ -21,6 +21,10 @@ export default defineMessages({
     id: 'transport.tariff.effective.date',
     defaultMessage: '生效时间',
   },
+  publishDate: {
+    id: 'transport.tariff.publishDate',
+    defaultMessage: '发布时间',
+  },
   version: {
     id: 'transport.tariff.version',
     defaultMessage: '版本',
@@ -36,6 +40,14 @@ export default defineMessages({
   publisher: {
     id: 'transport.tariff.publisher',
     defaultMessage: '发布者',
+  },
+  reviser: {
+    id: 'transport.tariff.reviser',
+    defaultMessage: ' 最后修订人',
+  },
+  revisionDate: {
+    id: 'transport.tariff.revisionDate',
+    defaultMessage: ' 最后修订时间',
   },
   revise: {
     id: 'transport.tariff.revise',
@@ -184,5 +196,21 @@ export default defineMessages({
   transModeMeterGoodsType: {
     id: 'transport.tariff.transModeMeterGoodsType',
     defaultMessage: '运输方式/计价方式/货物类型',
+  },
+  pickupEstDate: {
+    id: 'transport.tariff.pickupEstDate',
+    defaultMessage: '预计提货日期',
+  },
+  deliverEstDate: {
+    id: 'transport.tariff.deliverEstDate',
+    defaultMessage: '预计交货日期',
+  },
+  pickupActDate: {
+    id: 'transport.tariff.pickupActDate',
+    defaultMessage: '实际提货日期',
+  },
+  deliverActDate: {
+    id: 'transport.tariff.deliverActDate',
+    defaultMessage: '实际交货日期',
   },
 });

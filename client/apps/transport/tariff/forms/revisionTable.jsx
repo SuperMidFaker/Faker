@@ -23,7 +23,7 @@ export default class RevisionTable extends React.Component {
     type: PropTypes.oneOf(['create', 'edit', 'view']),
     loginName: PropTypes.string.isRequired,
     revisions: PropTypes.array.isRequired,
-    restoreTariff: PropTypes.array.isRequired,
+    restoreTariff: PropTypes.func.isRequired,
     agreement: PropTypes.object.isRequired,
   }
   static contextTypes = {
@@ -54,13 +54,7 @@ export default class RevisionTable extends React.Component {
     title: '范围方式',
     width: 80,
     dataIndex: 'effectiveType',
-    render: (o) => {
-      if (o === 'accept') {
-        return '接单时间';
-      } else if (o === 'clean') {
-        return '海关放行时间';
-      }
-    },
+    render: o => this.msg(o),
   }, {
     title: '发布人',
     width: 80,

@@ -43,24 +43,24 @@ export default class Main extends Component {
     const { type, tariffId, agreement } = this.props;
     const { selectedKey } = this.state;
     let content = [
-      <TabPane tab="协议概况" key="0"><AgreementForm form={this.props.form} type={type} /></TabPane>,
+      <TabPane tab="报价设置" key="0"><AgreementForm form={this.props.form} type={type} /></TabPane>,
       <TabPane tab="基础费率" key="1"><RatesForm type={type} /></TabPane>,
       <TabPane tab="附加费用" key="2"><SurchargeForm type={type} /></TabPane>,
-      <TabPane tab="修订历史" key="3"><RevisionTable type={type} /></TabPane>,
+      <TabPane tab="历史版本" key="3"><RevisionTable type={type} /></TabPane>,
     ];
 
     if (type === 'create') {
       if (!tariffId) {
         content = [
-          <TabPane tab="协议概况" key="0"><AgreementForm form={this.props.form} /></TabPane>,
+          <TabPane tab="报价设置" key="0"><AgreementForm form={this.props.form} /></TabPane>,
         ];
       }
     } else if (type === 'view') {
       content = [
-        <TabPane tab="协议概况" key="0"><AgreementForm readonly form={this.props.form} type={type} /></TabPane>,
+        <TabPane tab="报价设置" key="0"><AgreementForm readonly form={this.props.form} type={type} /></TabPane>,
         <TabPane tab="基础费率" key="1"><RatesForm type={type} /></TabPane>,
         <TabPane tab="附加费用" key="2"><SurchargeForm type={type} /></TabPane>,
-        <TabPane tab="修订历史" key="3"><RevisionTable type={type} /></TabPane>,
+        <TabPane tab="历史版本" key="3"><RevisionTable type={type} /></TabPane>,
       ];
     }
     let kindText = '';

@@ -270,7 +270,7 @@ export default class AgreementForm extends React.Component {
                     initialValue: formData.partnerPermission || TARIFF_PARTNER_PERMISSION.viewable,
                     rules: [{ required: true, type: 'number' }],
                   })(
-                    <RadioGroup>
+                    <RadioGroup disabled={readonly}>
                       <Radio value={TARIFF_PARTNER_PERMISSION.viewable}>查看</Radio>
                       <Radio value={TARIFF_PARTNER_PERMISSION.editable}>修改</Radio>
                     </RadioGroup>
@@ -313,7 +313,7 @@ export default class AgreementForm extends React.Component {
                   {getFieldDecorator('adjustCoefficient', {
                     rules: [{ required: false, type: 'number', transform: v => Number(v) }],
                     initialValue: formData.adjustCoefficient,
-                  })(<Input placeholder="不输入默认为1" />)}
+                  })(<Input disabled={readonly} placeholder="不输入默认为1" />)}
                 </FormItem>
               </Col>
             </Row>

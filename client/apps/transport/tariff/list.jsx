@@ -271,30 +271,26 @@ export default class TariffList extends React.Component {
         if (goodType) text = `${text}/${goodType.text}`;
         return text;
       },
-    }];
-    if (this.state.status === 'current') {
-      columns.push({
-        title: this.msg('tariffStatus'),
-        dataIndex: 'valid',
-        width: 80,
-        render: (col) => {
-          if (col) {
-            return (
-              <span className="mdc-text-green">有效</span>
-            );
-          } else {
-            return (
-              <span className="mdc-text-red">无效</span>
-            );
-          }
-        },
-      });
-    }
-    columns = columns.concat([{
+    }, {
+      title: this.msg('tariffStatus'),
+      dataIndex: 'valid',
+      width: 80,
+      render: (col) => {
+        if (col) {
+          return (
+            <span className="mdc-text-green">有效</span>
+          );
+        } else {
+          return (
+            <span className="mdc-text-red">无效</span>
+          );
+        }
+      },
+    }, {
       title: this.msg('effectiveDate'),
       dataIndex: 'effectiveDate',
       width: 100,
-      render: (o, record) => moment(record.effectiveDate).format('YYYY.MM.DD'),
+      render: o => moment(o).format('YYYY.MM.DD'),
     }, {
       title: this.msg('version'),
       dataIndex: 'version',
@@ -305,67 +301,148 @@ export default class TariffList extends React.Component {
       dataIndex: 'publisher',
       width: 100,
     }, {
+      title: this.msg('publishDate'),
+      dataIndex: 'publishDate',
+      width: 100,
+      render: o => moment(o).format('YYYY.MM.DD'),
+    }, {
       title: formatContainerMsg(this.props.intl, 'opColumn'),
       width: 100,
       render: (o, record) => {
-        if (this.state.status === 'current') {
-          if (record.valid) {
-            return (
-              <span>
-                <PrivilegeCover module="transport" feature="tariff" action="edit">
-                  <div>
-                    <NavLink to={`/transport/billing/tariff/view/${record.quoteNo}/${record.version}`}>
-                      查看
-                    </NavLink>
-                    <span className="ant-divider" />
-                    <a onClick={() => this.handleEdit(record.quoteNo, record.version + 1)}>
-                      {this.msg('revise')}
-                    </a>
-                    <span className="ant-divider" />
-                    <a onClick={() => this.handleChangeValid(record._id, false)}>{this.msg('disable')}</a>
-                  </div>
-                </PrivilegeCover>
-              </span>
-            );
-          } else {
-            return (
-              <span>
-                <PrivilegeCover module="transport" feature="tariff" action="edit">
-                  <a onClick={() => this.handleChangeValid(record._id, true)}>{this.msg('enable')}</a>
-                </PrivilegeCover>
-                <span className="ant-divider" />
-                <PrivilegeCover module="transport" feature="tariff" action="delete">
-                  <Popconfirm title="确认删除?" onConfirm={() => this.handleDelByQuoteNo(record.quoteNo)} >
-                    <a >删除</a>
-                  </Popconfirm>
-                </PrivilegeCover>
-                <span className="ant-divider" />
-                <NavLink to={`/transport/billing/tariff/view/${record.quoteNo}/${record.version}`}>
-                  查看
-                </NavLink>
-              </span>
-            );
-          }
-        } else if (this.state.status === 'draft') {
+        if (record.valid) {
           return (
             <span>
               <PrivilegeCover module="transport" feature="tariff" action="edit">
                 <div>
-                  <NavLink to={`/transport/billing/tariff/edit/${record.quoteNo}/${record.version}`}>
-                    继续修订
+                  <NavLink to={`/transport/billing/tariff/view/${record.quoteNo}/${record.version}`}>
+                    查看
                   </NavLink>
                   <span className="ant-divider" />
-                  <PrivilegeCover module="transport" feature="tariff" action="delete">
-                    <a onClick={() => this.handleDel(record)}>删除</a>
-                  </PrivilegeCover>
+                  <a onClick={() => this.handleEdit(record.quoteNo, record.version + 1)}>
+                    {this.msg('revise')}
+                  </a>
+                  <span className="ant-divider" />
+                  <a onClick={() => this.handleChangeValid(record._id, false)}>{this.msg('disable')}</a>
                 </div>
               </PrivilegeCover>
             </span>
           );
+        } else {
+          return (
+            <span>
+              <PrivilegeCover module="transport" feature="tariff" action="edit">
+                <a onClick={() => this.handleChangeValid(record._id, true)}>{this.msg('enable')}</a>
+              </PrivilegeCover>
+              <span className="ant-divider" />
+              <PrivilegeCover module="transport" feature="tariff" action="delete">
+                <Popconfirm title="确认删除?" onConfirm={() => this.handleDelByQuoteNo(record.quoteNo)} >
+                  <a >删除</a>
+                </Popconfirm>
+              </PrivilegeCover>
+              <span className="ant-divider" />
+              <NavLink to={`/transport/billing/tariff/view/${record.quoteNo}/${record.version}`}>
+                查看
+              </NavLink>
+            </span>
+          );
         }
-        return '';
       },
-    }]);
+    }];
+    if (this.state.status === 'draft') {
+      columns = [{
+        title: this.msg('quoteNo'),
+        dataIndex: 'quoteNo',
+        width: 100,
+        render: col => <a>{col}</a>,
+      }, {
+        title: this.msg('partnerName'),
+        width: 180,
+        render: (o, record) => {
+          let partnerName = '';
+          if (record.sendTenantId === this.props.tenantId) {
+            partnerName = record.recvName || '';
+          } else if (record.recvTenantId === this.props.tenantId) {
+            partnerName = record.sendName || '';
+          }
+          return <TrimSpan text={partnerName} />;
+        },
+      }, {
+        title: this.msg('tariffType'),
+        width: 80,
+        render: (o, record) => {
+          let kindIdx = null;
+          if (record.sendTenantId === this.props.tenantId) {
+            if (record.recvName) {
+              kindIdx = 1;
+            } else {
+              kindIdx = 3;
+            }
+          } else if (record.recvTenantId === this.props.tenantId) {
+            if (record.sendName) {
+              kindIdx = 0;
+            } else {
+              kindIdx = 2;
+            }
+          }
+          if (kindIdx !== null) {
+            return TARIFF_KINDS[kindIdx].text;
+          } else {
+            return '';
+          }
+        },
+      }, {
+        title: this.msg('transModeMeterGoodsType'),
+        dataIndex: 'transModeCode',
+        width: 180,
+        render: (col, row) => {
+          let text = '';
+          const tms = formParams.transModes.find(tm => tm.id === Number(row.transModeCode));
+          const meter = TARIFF_METER_METHODS.find(m => m.value === row.meter);
+          const goodType = GOODS_TYPES.find(m => m.value === row.goodsType);
+          if (tms) text = tms.mode_name;
+          if (meter) text = `${text}/${meter.text}`;
+          if (goodType) text = `${text}/${goodType.text}`;
+          return text;
+        },
+      }, {
+        title: this.msg('effectiveDate'),
+        dataIndex: 'effectiveDate',
+        width: 100,
+        render: (o, record) => moment(record.effectiveDate).format('YYYY.MM.DD'),
+      }, {
+        title: this.msg('version'),
+        dataIndex: 'version',
+        width: 100,
+        render: col => `v.${col}`,
+      }, {
+        title: this.msg('reviser'),
+        dataIndex: 'reviser',
+        width: 100,
+      }, {
+        title: this.msg('revisionDate'),
+        dataIndex: 'revisionDate',
+        width: 100,
+        render: o => moment(o).format('YYYY.MM.DD'),
+      }, {
+        title: formatContainerMsg(this.props.intl, 'opColumn'),
+        width: 100,
+        render: (o, record) => (
+          <span>
+            <PrivilegeCover module="transport" feature="tariff" action="edit">
+              <div>
+                <NavLink to={`/transport/billing/tariff/edit/${record.quoteNo}/${record.version}`}>
+                    继续修订
+                  </NavLink>
+                <span className="ant-divider" />
+                <PrivilegeCover module="transport" feature="tariff" action="delete">
+                  <a onClick={() => this.handleDel(record)}>删除</a>
+                </PrivilegeCover>
+              </div>
+            </PrivilegeCover>
+          </span>
+          ),
+      }];
+    }
     return (
       <QueueAnim type={['bottom', 'up']}>
         <header className="top-bar" key="header">
