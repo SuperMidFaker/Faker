@@ -306,17 +306,17 @@ export default class AgreementForm extends React.Component {
                 <FormItem label="税率" {...formItemLayout}>
                   {getFieldDecorator('taxrate.mode', {
                     initialValue: formData.taxrate.mode })(
-                    <RadioGroup>
-                      <RadioButton value={TAX_STATUS.exctax.key}>{TAX_STATUS.exctax.value}</RadioButton>
-                      <RadioButton value={TAX_STATUS.inctax.key}>{TAX_STATUS.inctax.value}</RadioButton>
-                    </RadioGroup>)}
+                      <RadioGroup>
+                        <RadioButton value={TAX_STATUS.exctax.key}>{TAX_STATUS.exctax.value}</RadioButton>
+                        <RadioButton value={TAX_STATUS.inctax.key}>{TAX_STATUS.inctax.value}</RadioButton>
+                      </RadioGroup>)}
                 </FormItem>
               </Col>
               <Col sm={4}>
                 <FormItem label="税率值" {...formItemLayout}>
                   {getFieldDecorator('taxrate.value', {
                     initialValue: formData.taxrate.value })(
-                    <Input type="number" addonAfter="％" placeholder="请输入税率" />)}
+                      <Input type="number" addonAfter="％" placeholder="请输入税率" />)}
                 </FormItem>
               </Col>
             </Row>

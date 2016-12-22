@@ -51,7 +51,7 @@ export default class PublishTariffModal extends React.Component {
           tariffId: id,
           loginName,
           quoteNo, tenantId, effectiveType, effectiveDate, publishCommit, partnerPermission, adjustCoefficient,
-          intervals, vehicleTypes, taxrate
+          intervals, vehicleTypes, taxrate,
         }).then((result) => {
           if (result.error) {
             message.error(result.error.message);
