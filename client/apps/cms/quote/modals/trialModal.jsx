@@ -114,7 +114,7 @@ export default class TrialModal extends React.Component {
             {getFieldDecorator('basement_date', {
               rules: [{ required: true, message: '基准时间必选', type: 'array' }],
             })(
-              <RangePicker showTime format="YYYY-MM-DD HH:mm" style={{ width: '100%' }}/>
+              <RangePicker showTime format="YYYY-MM-DD HH:mm" style={{ width: '100%' }} />
             )}
           </FormItem>
         </Form>
