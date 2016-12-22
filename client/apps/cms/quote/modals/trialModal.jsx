@@ -114,7 +114,7 @@ export default class TrialModal extends React.Component {
             {getFieldDecorator('basement_date', {
               rules: [{ required: true, message: '基准时间必选', type: 'array' }],
             })(
-              <RangePicker showTime format="YYYY-MM-DD HH:mm" style={{ width: '100%' }}/>
+              <RangePicker showTime format="YYYY-MM-DD HH:mm" style={{ width: '100%' }} />
             )}
           </FormItem>
         </Form>
@@ -125,7 +125,7 @@ export default class TrialModal extends React.Component {
         <Button key="next" type="primary" size="large" onClick={this.handleTrialNext} disabled={!trialFilename}>下一步</Button>,
       ];
       stepContent = (
-        <Progress type="circle" percent={progressPercent} status={progressStatus} />
+        <Progress type="circle" percent={progressPercent} status={progressStatus} width={80} />
       );
     } else if (curStep === 2) {
       footer = [

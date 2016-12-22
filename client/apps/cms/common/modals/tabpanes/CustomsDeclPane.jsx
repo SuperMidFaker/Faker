@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Collapse, Tag, Row, Col, Card, Table } from 'antd';
+import { Button, Collapse, Tag, Row, Col, Card, Table } from 'antd';
 import moment from 'moment';
 import { DELG_SOURCE, DECL_I_TYPE, DECL_E_TYPE } from 'common/constants';
 import { loadSubdelgsTable, loadCustPanel } from 'common/reducers/cmsDelegation';
@@ -115,8 +115,14 @@ export default class CustomsDeclPane extends React.Component {
                   process_date: decl.process_date,
                 }));
                 const declTypes = DECL_I_TYPE.concat(DECL_E_TYPE).filter(dt => dt.key === bill.decl_way_code);
+                const panelHeader = (
+                  <div>
+                    <span>{declTypes.length > 0 ? declTypes[0].value : ''}</span>
+                    <Button type="primary">制单</Button>
+                  </div>
+                );
                 return (
-                  <Panel header={declTypes.length > 0 ? declTypes[0].value : ''} key={bill.key} >
+                  <Panel header={panelHeader} key={bill.key} >
                     <Row>
                       <Col span="12">
                         <InfoItem labelCol={{ span: 3 }} label="清单编号"

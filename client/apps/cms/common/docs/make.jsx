@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import EntryBill from './entryBill';
+import BillEditor from './BillEditor';
 
 export default class DeclareMake extends React.Component {
   static propTypes = {
@@ -9,6 +9,6 @@ export default class DeclareMake extends React.Component {
 
   render() {
     const { ietype, params } = this.props;
-    return <EntryBill ietype={ietype} params={params} />;
+    return <BillEditor ietype={ietype} params={params} />;
   }
 }
