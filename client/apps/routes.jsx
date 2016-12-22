@@ -218,7 +218,8 @@ export default(store, cookie) => {
               <Route path="tariff">
                 <IndexRoute component={TMSTariff.List} />
                 <Route path="new" component={TMSTariff.CreateNew} />
-                <Route path="edit/:uid" component={TMSTariff.Edit} />
+                <Route path="edit/:quoteNo/:version" component={TMSTariff.Edit} />
+                <Route path="view/:quoteNo/:version" component={TMSTariff.View} />
               </Route>
             </Route>
           </Route>

@@ -261,3 +261,8 @@ export const TMS_DUTY_TAXTYPE = [
   { value: 3, text: '我方普票' },
   { value: 4, text: '客户增票' },
 ];
+
+export const TARIFF_PARTNER_PERMISSION = {
+  viewable: 1,
+  editable: 2,
+};

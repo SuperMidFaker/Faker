@@ -32,6 +32,7 @@ const Option = Select.Option;
 
 export default class SurchargeForm extends React.Component {
   static propTypes = {
+    type: PropTypes.oneOf(['create', 'edit', 'view']),
     tenantId: PropTypes.number.isRequired,
     loginId: PropTypes.number.isRequired,
     loginName: PropTypes.string.isRequired,
@@ -419,14 +420,10 @@ export default class SurchargeForm extends React.Component {
       },
     ];
     return (
-      <div className="main-content">
-        <div className="page-body">
-          <div className="panel-body table-panel">
-            <Table columns={columns} dataSource={dataSource} rowKey="_id" pagination={false}
-              footer={() => <Button type="primary" onClick={this.handleAddFees}>{this.msg('addCosts')}</Button>}
-            />
-          </div>
-        </div>
+      <div className="panel-body table-panel">
+        <Table columns={columns} dataSource={dataSource} rowKey="_id" pagination={false}
+          footer={() => <Button type="primary" onClick={this.handleAddFees}>{this.msg('addCosts')}</Button>}
+        />
       </div>
     );
   }

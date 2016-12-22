@@ -5,9 +5,9 @@ export default defineMessages({
     id: 'transport.tariff',
     defaultMessage: '价格管理',
   },
-  tariffName: {
-    id: 'transport.tariff.name',
-    defaultMessage: '价格协议',
+  quoteNo: {
+    id: 'transport.tariff.quoteNo',
+    defaultMessage: '报价编号',
   },
   partnerName: {
     id: 'transport.tariff.partner.name',
@@ -19,11 +19,11 @@ export default defineMessages({
   },
   effectiveDate: {
     id: 'transport.tariff.effective.date',
-    defaultMessage: '有效期起始日',
+    defaultMessage: '生效时间',
   },
-  expiryDate: {
-    id: 'transport.tariff.expiry.date',
-    defaultMessage: '有效期截止日',
+  currentVersion: {
+    id: 'transport.tariff.currentVersion',
+    defaultMessage: '当前版本',
   },
   tariffStatus: {
     id: 'transport.tariff.status',
@@ -52,10 +52,6 @@ export default defineMessages({
   searchPlaceholder: {
     id: 'transport.tariff.search.placeholder',
     defaultMessage: '搜索协议',
-  },
-  quoteNo: {
-    id: 'transport.tariff.quote_no',
-    defaultMessage: '报价编号',
   },
   quoteManage: {
     id: 'transport.tariff.quote_manage',
@@ -188,5 +184,9 @@ export default defineMessages({
   disable: {
     id: 'transport.tariff.disable',
     defaultMessage: '禁用',
+  },
+  transModeMeterGoodsType: {
+    id: 'transport.tariff.transModeMeterGoodsType',
+    defaultMessage: '运输方式/计价方式/货物类型',
   },
 });

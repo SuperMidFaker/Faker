@@ -1,66 +1,92 @@
 import React, { Component, PropTypes } from 'react';
-import { Menu } from 'antd';
+import { Tabs, Button, Form } from 'antd';
 import { connect } from 'react-redux';
+import connectNav from 'client/common/decorators/connect-nav';
 import AgreementForm from './forms/agreement';
 import RatesForm from './forms/rates';
 import SurchargeForm from './forms/surcharge';
-import { setMenuItemKey } from 'common/reducers/transportTariff';
+import RevisionTable from './forms/revisionTable';
+import { showPublishTariffModal } from 'common/reducers/transportTariff';
+import { TARIFF_KINDS } from 'common/constants';
+import PublishTariffModal from './modals/publishTariffModal';
 
-const MenuItem = Menu.Item;
+const TabPane = Tabs.TabPane;
 
-const styles = {
-  show: {
-    display: 'block',
-  },
-  hidden: {
-    display: 'none',
-  },
-};
 @connect(state => ({
+  tenantId: state.account.tenantId,
   selectedKey: state.transportTariff.selectedMenuItemKey,
   tariffId: state.transportTariff.tariffId,
-}), { setMenuItemKey })
+  agreement: state.transportTariff.agreement,
+}), { showPublishTariffModal })
+@connectNav({
+  depth: 3,
+  moduleName: 'transport',
+})
+@Form.create()
 export default class Main extends Component {
   static propTyps = {
-    selectedKey: PropTypes.string.isRequired,  // 选中的menuItem keys
-    setMenuItemKey: PropTypes.func.isRequired,        // itemItem点击后执行的回调函数,
-    type: PropTypes.oneOf(['create', 'edit']),
+    form: PropTypes.object.isRequired,
+    tenantId: PropTypes.number.isRequired,
+    showPublishTariffModal: PropTypes.func.isRequired,        // itemItem点击后执行的回调函数,
+    type: PropTypes.oneOf(['create', 'edit', 'view']),
     tariffId: PropTypes.string,
+    agreement: PropTypes.object.isRequired,
   }
-  handleMenuItemClick = (e) => {
-    this.props.setMenuItemKey(e.key);
+  state = {
+    selectedKey: '0',
+  }
+  handleMenuItemClick = (key) => {
+    this.setState({ selectedKey: key });
   }
 
   render() {
-    const { selectedKey, type, tariffId } = this.props;
-    let slk = selectedKey;
-    let contents = [<AgreementForm />, <RatesForm />, <SurchargeForm />];
-    let menu = (
-      <Menu mode="horizontal" selectedKeys={[selectedKey]} onClick={this.handleMenuItemClick}>
-        <MenuItem key="0">协议概况</MenuItem>
-        <MenuItem key="1">基础费率</MenuItem>
-        <MenuItem key="2">附加费用</MenuItem>
-      </Menu>
-    );
+    const { type, tariffId, agreement } = this.props;
+    const { selectedKey } = this.state;
+    let content = [
+      <TabPane tab="协议概况" key="0"><AgreementForm form={this.props.form} type={type} /></TabPane>,
+      <TabPane tab="基础费率" key="1"><RatesForm type={type} /></TabPane>,
+      <TabPane tab="附加费用" key="2"><SurchargeForm type={type} /></TabPane>,
+      <TabPane tab="修订历史" key="3"><RevisionTable type={type} /></TabPane>,
+    ];
+
     if (type === 'create') {
       if (!tariffId) {
-        slk = '0';
-        menu = (
-          <Menu mode="horizontal" selectedKeys={[slk]} onClick={this.handleMenuItemClick}>
-            <MenuItem key="0">协议概况</MenuItem>
-          </Menu>
-        );
+        content = [
+          <TabPane tab="协议概况" key="0"><AgreementForm form={this.props.form} /></TabPane>,
+        ];
       }
-    } else if (type === 'edit') {
-      contents = [<AgreementForm readonly />, <RatesForm />, <SurchargeForm />];
+    } else if (type === 'view') {
+      content = [
+        <TabPane tab="协议概况" key="0"><AgreementForm readonly form={this.props.form} type={type} /></TabPane>,
+        <TabPane tab="基础费率" key="1"><RatesForm type={type} /></TabPane>,
+        <TabPane tab="附加费用" key="2"><SurchargeForm type={type} /></TabPane>,
+        <TabPane tab="修订历史" key="3"><RevisionTable type={type} /></TabPane>,
+      ];
     }
-    const content = contents.map((container, index) => <div style={parseInt(slk, 10) === index ? styles.show : styles.hidden} key={index}>{container}</div>);
+    let kindText = '';
+    if (TARIFF_KINDS[agreement.kind]) {
+      kindText = TARIFF_KINDS[agreement.kind].text;
+    }
     return (
       <div>
         <header className="top-bar">
-          {menu}
+          <span>{`${agreement.quoteNo} - ${agreement.partnerName} - ${kindText}`}</span>
         </header>
-        {content}
+        { type === 'edit' && (
+          <div className="top-bar-tools">
+            <Button type="primary" onClick={() => this.props.showPublishTariffModal(true)}>发布</Button>
+            <span />
+            <PublishTariffModal tariffForm={this.props.form} />
+          </div>
+        )}
+        <div className="main-content">
+          <div className="page-body">
+            <Tabs activeKey={selectedKey} onChange={this.handleMenuItemClick}>
+              {content}
+            </Tabs>
+          </div>
+
+        </div>
       </div>
     );
   }

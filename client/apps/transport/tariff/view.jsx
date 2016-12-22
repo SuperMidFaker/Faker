@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -18,30 +17,22 @@ function fetchData({ state, params, dispatch }) {
     quoteNo: params.quoteNo,
     version: params.version,
     tenantId: state.account.tenantId,
-    status: 'draft',
+    status: 'current',
   })));
   return Promise.all(proms);
 }
 
 @connectFetch()(fetchData)
 @injectIntl
-@connect(
-  state => ({
-    name: state.transportTariff.agreement.name,
-  })
-)
 @connectNav({
   depth: 3,
-  text: props => props.name,
   moduleName: 'transport',
   lifecycle: 'componentWillReceiveProps',
-  until: props => props.name,
 })
-@withPrivilege({ module: 'transport', feature: 'tariff', action: 'edit' })
-export default class TariffEdit extends React.Component {
+@withPrivilege({ module: 'transport', feature: 'tariff', action: 'view' })
+export default class TariffView extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    name: PropTypes.string.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -49,7 +40,7 @@ export default class TariffEdit extends React.Component {
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   render() {
     return (
-      <Main type="edit" />
+      <Main type="view" />
     );
   }
 }
