@@ -17,7 +17,7 @@ function fetchData({ state, params, dispatch }) {
     quoteNo: params.quoteNo,
     version: params.version,
     tenantId: state.account.tenantId,
-    status: 'draft',
+    status: 'current',
   })));
   return Promise.all(proms);
 }
@@ -29,8 +29,8 @@ function fetchData({ state, params, dispatch }) {
   moduleName: 'transport',
   lifecycle: 'componentWillReceiveProps',
 })
-@withPrivilege({ module: 'transport', feature: 'tariff', action: 'edit' })
-export default class TariffEdit extends React.Component {
+@withPrivilege({ module: 'transport', feature: 'tariff', action: 'view' })
+export default class TariffView extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
   }
@@ -40,7 +40,7 @@ export default class TariffEdit extends React.Component {
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   render() {
     return (
-      <Main type="edit" />
+      <Main type="view" />
     );
   }
 }

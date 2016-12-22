@@ -3,7 +3,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import withPrivilege from 'client/common/decorators/withPrivilege';
-import { loadNewForm, loadFormParams } from 'common/reducers/transportTariff';
+import { loadFormParams } from 'common/reducers/transportTariff';
 import Main from './Main';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -11,7 +11,6 @@ import messages from './message.i18n';
 const formatMsg = format(messages);
 
 function fetchData({ dispatch, state }) {
-  dispatch(loadNewForm());
   return dispatch(loadFormParams(state.account.tenantId));
 }
 

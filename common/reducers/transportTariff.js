@@ -18,19 +18,21 @@ const actionTypes = createActionTypes('@@welogix/transport/tariff/', [
   'UPDATE_RATEND', 'UPDATE_RATEND_SUCCEED', 'UPDATE_RATEND_FAIL',
   'DEL_RATEND', 'DEL_RATEND_SUCCEED', 'DEL_RATEND_FAIL',
   'LOAD_NEW_FORM', 'SURC_SAVE', 'SURC_SAVE_SUCCEED', 'SURC_SAVE_FAIL',
-  'SET_MENU_ITEM_KEY',
   'CREATE_FEE', 'CREATE_FEE_SUCCEED', 'CREATE_FEE_FAIL',
   'DELETE_FEE', 'DELETE_FEE_SUCCEED', 'DELETE_FEE_FAIL',
   'UPDATE_FEE', 'UPDATE_FEE_SUCCEED', 'UPDATE_FEE_FAIL',
-  'UPDATE_TARIFF_STATUS', 'UPDATE_TARIFF_STATUS_SUCCEED', 'UPDATE_TARIFF_STATUS_FAIL',
+  'UPDATE_TARIFF_VALID', 'UPDATE_TARIFF_VALID_SUCCEED', 'UPDATE_TARIFF_VALID_FAIL',
+  'PUBLISH_TARIFF', 'PUBLISH_TARIFF_SUCCEED', 'PUBLISH_TARIFF_FAIL',
+  'SHOW_CREATE_TARIFF_MODAL',
+  'SHOW_PUBLISH_TARIFF_MODAL',
+  'CREATE_TARIFF_BY_NEXT_VERSION', 'CREATE_TARIFF_BY_NEXT_VERSION_SUCCEED', 'CREATE_TARIFF_BY_NEXT_VERSION_FAIL',
+  'RESTORE_TARIFF', 'RESTORE_TARIFF_SUCCEED', 'RESTORE_TARIFF_FAIL',
 ]);
 
 const initialState = {
   loaded: false,
   loading: false,
-  filters: [
-    { name: 'name', value: '' },
-  ],
+  filters: { name: [], kind: ['all'], status: ['current'] },
   tarifflist: {
     totalCount: 0,
     pageSize: 10,
@@ -39,9 +41,11 @@ const initialState = {
   },
   tariffId: '',
   agreement: {
-    name: '',
+    quoteNo: '',
     intervals: [],
+    kind: -1,
     adjustCoefficient: 1,
+    revisions: [],
     taxrate: { mode: 0, value: 0 },
   },
   ratesRefAgreement: {},
@@ -72,8 +76,13 @@ const initialState = {
     load: { mode: 0, value: 0 },
     unload: { mode: 0, value: 0 },
   },
-  selectedMenuItemKey: '0',
   fees: [],
+  createTariffModal: {
+    visible: false,
+  },
+  publishTariffModal: {
+    visible: false,
+  },
 };
 
 export default function reducer(state = initialState, action) {
@@ -88,34 +97,37 @@ export default function reducer(state = initialState, action) {
         filters: JSON.parse(action.params.filters),
       };
     case actionTypes.LOAD_NEW_FORM:
-      return { ...state, agreement: initialState.agreement,
+      return { ...state,
+        createTariffModal: { ...state.createTariffModal, visible: false },
+        agreement: { ...initialState.agreement, ...action.data },
         ratesRefAgreement: initialState.agreement,
         tariffId: null,
         ratesSourceList: initialState.ratesSourceList,
         rateId: initialState.rateId,
         ratesEndList: initialState.ratesEndList,
         surcharge: initialState.surcharge,
-        partners: [],
         fees: [],
       };
     case actionTypes.LOAD_TARIFF:
       return { ...state, agreement: initialState.agreement };
     case actionTypes.LOAD_TARIFF_SUCCEED: {
+      const tariff = action.result.data.tariff;
       const res = action.result.data.tariff.agreement;
       const agreement = {
-        id: res._id,
+        id: tariff._id,
         kind: res.kind,
-        name: res.name,
         partnerId: res.partnerId,
-        effectiveDate: res.effectiveDate,
-        expiryDate: res.expiryDate,
+        partnerName: res.partnerName,
         transModeCode: res.transModeCode,
         goodsType: res.goodsType,
         meter: res.meter,
         intervals: res.intervals,
         vehicleTypes: res.vehicleTypes,
         adjustCoefficient: res.adjustCoefficient,
-        taxrate: res.taxrate,
+        quoteNo: tariff.quoteNo,
+        partnerPermission: tariff.partnerPermission,
+        revisions: action.result.data.revisions,
+        taxrate: res.taxrate || initialState.agreement.taxrate,
       };
       const sur = action.result.data.tariff.surcharge;
       let surcharge = initialState.surcharge;
@@ -127,7 +139,7 @@ export default function reducer(state = initialState, action) {
           unload: sur.unload,
         };
       }
-      const partners = res.partnerId ? [{ partner_code: res.partnerName,
+      const partners = res.partnerId ? [{ partner_code: '',
         partner_id: res.partnerId, name: res.partnerName, tid: 0 }] : [];
       return { ...state, agreement, partners, surcharge,
         ratesRefAgreement: agreement,
@@ -147,7 +159,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, formParams: action.result.data };
     case actionTypes.SUBMIT_AGREEMENT_SUCCEED:
       return { ...state, tariffId: action.result.data.tariffId, fees: action.result.data.fees,
-        ratesRefAgreement: action.data };
+        ratesRefAgreement: action.data,
+        agreement: { ...state.agreement, quoteNo: action.result.data.quoteNo } };
     case actionTypes.LOAD_RATESRC:
       return { ...state, ratesSourceLoading: true };
     case actionTypes.LOAD_RATESRC_SUCCEED:
@@ -166,10 +179,14 @@ export default function reducer(state = initialState, action) {
         ratesEndList: action.result.data };
     case actionTypes.LOAD_RATENDS_FAIL:
       return { ...state, ratesEndLoading: false };
-    case actionTypes.SET_MENU_ITEM_KEY:
-      return { ...state, selectedMenuItemKey: action.key };
     case actionTypes.CREATE_FEE_SUCCEED:
       return { ...state, fees: action.result.data };
+    case actionTypes.SHOW_CREATE_TARIFF_MODAL: {
+      return { ...state, createTariffModal: action.data };
+    }
+    case actionTypes.SHOW_PUBLISH_TARIFF_MODAL: {
+      return { ...state, publishTariffModal: action.data };
+    }
     default:
       return state;
   }
@@ -203,7 +220,7 @@ export function loadTable(params) {
   };
 }
 
-export function loadTariff({ tariffId, tenantId }) {
+export function loadTariff({ quoteNo, version, tenantId, status }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -213,13 +230,13 @@ export function loadTariff({ tariffId, tenantId }) {
       ],
       endpoint: 'v1/transport/tariff',
       method: 'get',
-      params: { tariffId, tenantId },
+      params: { quoteNo, version, tenantId, status },
       origin: 'mongo',
     },
   };
 }
 
-export function delTariff(tariffId) {
+export function delTariffById(tariffId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -227,9 +244,25 @@ export function delTariff(tariffId) {
         actionTypes.DEL_TARIFF_SUCCEED,
         actionTypes.DEL_TARIFF_FAIL,
       ],
-      endpoint: 'v1/transport/del/tariff',
+      endpoint: 'v1/transport/del/tariff/byId',
       method: 'post',
       data: { tariffId },
+      origin: 'mongo',
+    },
+  };
+}
+
+export function delTariffByQuoteNo(quoteNo, tenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DEL_TARIFF,
+        actionTypes.DEL_TARIFF_SUCCEED,
+        actionTypes.DEL_TARIFF_FAIL,
+      ],
+      endpoint: 'v1/transport/del/tariff/byQuoteNo',
+      method: 'post',
+      data: { quoteNo, tenantId },
       origin: 'mongo',
     },
   };
@@ -250,9 +283,10 @@ export function loadPartners(tenantId, roles, businessTypes) {
   };
 }
 
-export function loadNewForm() {
+export function loadNewForm(data) {
   return {
     type: actionTypes.LOAD_NEW_FORM,
+    data,
   };
 }
 
@@ -431,10 +465,6 @@ export function delRateEnd(rateId, id) {
   };
 }
 
-export function setMenuItemKey(key) {
-  return { type: actionTypes.SET_MENU_ITEM_KEY, key };
-}
-
 export function addFee(tariffId, transMode, fee) {
   return {
     [CLIENT_API]: {
@@ -483,17 +513,79 @@ export function updateFee(tariffId, feeId, fee) {
   };
 }
 
-export function updateTariffStatus(tariffId, status) {
+export function updateTariffValid(tariffId, valid) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.UPDATE_TARIFF_STATUS,
-        actionTypes.UPDATE_TARIFF_STATUS_SUCCEED,
-        actionTypes.UPDATE_TARIFF_STATUS_FAIL,
+        actionTypes.UPDATE_TARIFF_VALID,
+        actionTypes.UPDATE_TARIFF_VALID_SUCCEED,
+        actionTypes.UPDATE_TARIFF_VALID_FAIL,
       ],
-      endpoint: 'v1/transport/tariff/status',
+      endpoint: 'v1/transport/tariff/valid',
       method: 'post',
-      data: { tariffId, status },
+      data: { tariffId, valid },
+      origin: 'mongo',
+    },
+  };
+}
+
+export function publishTariff(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.PUBLISH_TARIFF,
+        actionTypes.PUBLISH_TARIFF_SUCCEED,
+        actionTypes.PUBLISH_TARIFF_FAIL,
+      ],
+      endpoint: 'v1/transport/tariff/publish',
+      method: 'post',
+      data,
+      origin: 'mongo',
+    },
+  };
+}
+
+export function showCreateTariffModal(visible) {
+  return {
+    type: actionTypes.SHOW_CREATE_TARIFF_MODAL,
+    data: { visible },
+  };
+}
+
+export function showPublishTariffModal(visible) {
+  return {
+    type: actionTypes.SHOW_PUBLISH_TARIFF_MODAL,
+    data: { visible },
+  };
+}
+
+export function createTariffByNextVersion({ quoteNo, version, tenantId }) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.CREATE_TARIFF_BY_NEXT_VERSION,
+        actionTypes.CREATE_TARIFF_BY_NEXT_VERSION_SUCCEED,
+        actionTypes.CREATE_TARIFF_BY_NEXT_VERSION_FAIL,
+      ],
+      endpoint: 'v1/transport/tariff/nextVersion',
+      method: 'post',
+      data: { quoteNo, version, tenantId },
+      origin: 'mongo',
+    },
+  };
+}
+
+export function restoreTariff({ draftId, archivedId, loginName, publishCommit }) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.RESTORE_TARIFF,
+        actionTypes.RESTORE_TARIFF_SUCCEED,
+        actionTypes.RESTORE_TARIFF_FAIL,
+      ],
+      endpoint: 'v1/transport/tariff/restore',
+      method: 'post',
+      data: { draftId, archivedId, loginName, publishCommit },
       origin: 'mongo',
     },
   };

@@ -13,6 +13,7 @@ import { loadRateEnds } from 'common/reducers/transportTariff';
 )
 export default class TariffRatesForm extends React.Component {
   static propTypes = {
+    type: PropTypes.oneOf(['create', 'edit', 'view']),
     rateId: PropTypes.string,
     loadRateEnds: PropTypes.func.isRequired,
   }
@@ -60,8 +61,8 @@ export default class TariffRatesForm extends React.Component {
   render() {
     const { sourceModal, endModal, inUpload, uploadPercent, uploadStatus } = this.state;
     return (
-      <div className="main-content">
-        <div className="page-body card-wrapper">
+      <div style={{ padding: 10 }}>
+        <div>
           <Row gutter={16}>
             <Col sm={6}>
               <Card bodyStyle={{ padding: 0 }}>

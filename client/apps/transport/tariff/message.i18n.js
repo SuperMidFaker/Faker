@@ -5,9 +5,9 @@ export default defineMessages({
     id: 'transport.tariff',
     defaultMessage: '价格管理',
   },
-  tariffName: {
-    id: 'transport.tariff.name',
-    defaultMessage: '价格协议',
+  quoteNo: {
+    id: 'transport.tariff.quoteNo',
+    defaultMessage: '报价编号',
   },
   partnerName: {
     id: 'transport.tariff.partner.name',
@@ -19,11 +19,15 @@ export default defineMessages({
   },
   effectiveDate: {
     id: 'transport.tariff.effective.date',
-    defaultMessage: '有效期起始日',
+    defaultMessage: '生效时间',
   },
-  expiryDate: {
-    id: 'transport.tariff.expiry.date',
-    defaultMessage: '有效期截止日',
+  publishDate: {
+    id: 'transport.tariff.publishDate',
+    defaultMessage: '发布时间',
+  },
+  version: {
+    id: 'transport.tariff.version',
+    defaultMessage: '版本',
   },
   tariffStatus: {
     id: 'transport.tariff.status',
@@ -33,13 +37,17 @@ export default defineMessages({
     id: 'transport.tariff.revisions',
     defaultMessage: '修订次数',
   },
-  revisionDate: {
-    id: 'transport.tariff.revision.date',
-    defaultMessage: '最新修订时间',
+  publisher: {
+    id: 'transport.tariff.publisher',
+    defaultMessage: '发布者',
   },
-  tariffReviser: {
+  reviser: {
     id: 'transport.tariff.reviser',
-    defaultMessage: '最新修订者',
+    defaultMessage: ' 最后修订人',
+  },
+  revisionDate: {
+    id: 'transport.tariff.revisionDate',
+    defaultMessage: ' 最后修订时间',
   },
   revise: {
     id: 'transport.tariff.revise',
@@ -52,10 +60,6 @@ export default defineMessages({
   searchPlaceholder: {
     id: 'transport.tariff.search.placeholder',
     defaultMessage: '搜索协议',
-  },
-  quoteNo: {
-    id: 'transport.tariff.quote_no',
-    defaultMessage: '报价编号',
   },
   quoteManage: {
     id: 'transport.tariff.quote_manage',
@@ -188,5 +192,29 @@ export default defineMessages({
   disable: {
     id: 'transport.tariff.disable',
     defaultMessage: '禁用',
+  },
+  transModeMeterGoodsType: {
+    id: 'transport.tariff.transModeMeterGoodsType',
+    defaultMessage: '运输方式/计价方式/货物类型',
+  },
+  pickupEstDate: {
+    id: 'transport.tariff.pickupEstDate',
+    defaultMessage: '预计提货日期',
+  },
+  deliverEstDate: {
+    id: 'transport.tariff.deliverEstDate',
+    defaultMessage: '预计交货日期',
+  },
+  pickupActDate: {
+    id: 'transport.tariff.pickupActDate',
+    defaultMessage: '实际提货日期',
+  },
+  deliverActDate: {
+    id: 'transport.tariff.deliverActDate',
+    defaultMessage: '实际交货日期',
+  },
+  createdDate: {
+    id: 'transport.tariff.createdDate',
+    defaultMessage: '创建日期',
   },
 });
