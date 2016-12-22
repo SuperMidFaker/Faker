@@ -33,13 +33,9 @@ export default defineMessages({
     id: 'transport.tariff.revisions',
     defaultMessage: '修订次数',
   },
-  revisionDate: {
-    id: 'transport.tariff.revision.date',
-    defaultMessage: '最新修订时间',
-  },
-  tariffReviser: {
-    id: 'transport.tariff.reviser',
-    defaultMessage: '最新修订者',
+  publisher: {
+    id: 'transport.tariff.publisher',
+    defaultMessage: '发布者',
   },
   revise: {
     id: 'transport.tariff.revise',

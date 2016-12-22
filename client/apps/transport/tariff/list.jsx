@@ -301,15 +301,9 @@ export default class TariffList extends React.Component {
       width: 100,
       render: col => `v.${col}`,
     }, {
-      title: this.msg('tariffReviser'),
-      dataIndex: 'reviser',
+      title: this.msg('publisher'),
+      dataIndex: 'publisher',
       width: 100,
-    }, {
-      title: this.msg('revisionDate'),
-      dataIndex: 'revisionDate',
-      width: 120,
-      render: (o, record) => record.revisionDate &&
-        moment(record.revisionDate).format('YYYY.MM.DD'),
     }, {
       title: formatContainerMsg(this.props.intl, 'opColumn'),
       width: 100,
