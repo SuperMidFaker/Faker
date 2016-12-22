@@ -94,31 +94,38 @@ export default class DetailPane extends React.Component {
     dataIndex: 'remark',
   }]
 
-  handleChangeTransitMode = () => {
+  handleChangeTransitMode = (e) => {
+    e.stopPropagation();
     const { shipmt } = this.props;
     this.props.showChangeShipmentModal({ visible: true, shipmtNo: shipmt.shipmt_no, type: 'transitModeChanged' });
   }
-  handleChangeTransitTime = () => {
+  handleChangeTransitTime = (e) => {
+    e.stopPropagation();
     const { shipmt } = this.props;
     this.props.showChangeShipmentModal({ visible: true, shipmtNo: shipmt.shipmt_no, type: 'timeInfoChanged' });
   }
-  handleChangeTransitConsigner = () => {
+  handleChangeTransitConsigner = (e) => {
+    e.stopPropagation();
     const { shipmt } = this.props;
     this.props.showChangeShipmentModal({ visible: true, shipmtNo: shipmt.shipmt_no, type: 'consignerInfoChanged' });
   }
-  handleChangeCorrelInfo = () => {
+  handleChangeCorrelInfo = (e) => {
+    e.stopPropagation();
     const { shipmt } = this.props;
     this.props.showChangeShipmentModal({ visible: true, shipmtNo: shipmt.shipmt_no, type: 'correlInfoChanged' });
   }
-  handleChangeClientInfo = () => {
+  handleChangeClientInfo = (e) => {
+    e.stopPropagation();
     const { shipmt } = this.props;
     this.props.showChangeShipmentModal({ visible: true, shipmtNo: shipmt.shipmt_no, type: 'clientInfoChanged' });
   }
-  handleChangeTransitConsignee = () => {
+  handleChangeTransitConsignee = (e) => {
+    e.stopPropagation();
     const { shipmt } = this.props;
     this.props.showChangeShipmentModal({ visible: true, shipmtNo: shipmt.shipmt_no, type: 'consigneeInfoChanged' });
   }
-  handleChangeTransitGoodsInfo = () => {
+  handleChangeTransitGoodsInfo = (e) => {
+    e.stopPropagation();
     const { shipmt } = this.props;
     this.props.showChangeShipmentModal({ visible: true, shipmtNo: shipmt.shipmt_no, type: 'goodsInfoChanged' });
   }
