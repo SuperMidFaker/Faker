@@ -1,21 +1,19 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Button, Tabs, Icon } from 'antd';
+import { Breadcrumb, Button, Dropdown, Menu, Radio, Icon } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { addEntry, setTabKey, openMergeSplitModal } from 'common/reducers/cmsDeclare';
-import BillForm from './forms/billForm';
-import EntryForm from './forms/entryForm';
+import BillForm from './forms/BillForm';
 import ExtraDock from './modals/extraDock';
 import MergeSplitModal from './modals/mergeSplit';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 
 const formatMsg = format(messages);
-
-const TabPane = Tabs.TabPane;
-const ButtonGroup = Button.Group;
+const RadioGroup = Radio.Group;
+const RadioButton = Radio.Button;
 
 @injectIntl
 @connect(
@@ -29,7 +27,7 @@ const ButtonGroup = Button.Group;
   depth: 3,
   moduleName: 'clearance',
 })
-export default class EntryBillForm extends React.Component {
+export default class DelegationBillEditor extends React.Component {
   static propTypes = {
     params: PropTypes.object.isRequired,
     intl: intlShape.isRequired,
@@ -79,46 +77,45 @@ export default class EntryBillForm extends React.Component {
     this.setState({ visible: true });
   }
   render() {
-    const { readonly, ietype, entries } = this.props;
-    const panes = [
-      <TabPane tab={<span><Icon type="book" />{this.msg('declareBill')}</span>} key="bill">
+    const { readonly, ietype } = this.props;
+    const menu = (
+      <Menu>
+        <Menu.Item key="lock"><Icon type="lock" /> 锁定</Menu.Item>
+        <Menu.Item key="delete"><Icon type="delete" /> 删除(不可恢复)</Menu.Item>
+      </Menu>
+    );
+    return (
+      <QueueAnim type={['bottom', 'up']}>
+        <header className="top-bar" key="header">
+          <Breadcrumb>
+            <Breadcrumb.Item>
+              制单
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              报关清单 <Icon type="down" />
+            </Breadcrumb.Item>
+          </Breadcrumb>
+          <RadioGroup onChange={this.handleDelegationFilter}>
+            <RadioButton value="all"><Icon type="right-square-o" /></RadioButton>
+            <RadioButton value="accept"><Icon type="left-square" /></RadioButton>
+          </RadioGroup>
+        </header>
+        <div className="top-bar-tools">
+          {!this.props.readonly &&
+            <Button type="primary" icon="addfile" onClick={this.handleGenerateEntry}>{this.msg('generateEntry')}</Button>
+          }
+          <span />
+          <Dropdown overlay={menu}>
+            <Button type="ghost">
+              <Icon type="setting" /> <Icon type="down" />
+            </Button>
+          </Dropdown>
+        </div>
         <div className="main-content">
           <div className="page-body tabbed fixed-height">
             <BillForm readonly={readonly} ietype={ietype} />
           </div>
         </div>
-      </TabPane>,
-    ].concat(
-      entries.map((entry, idx) => (
-        <TabPane tab={
-          <span><Icon type="file-text" />{`${this.msg('declareEntry')}-${idx + 1}`}</span>
-        } key={`entry${idx}`}
-        >
-          <div className="main-content">
-            <div className="page-body tabbed fixed-height">
-              <EntryForm readonly={readonly} ietype={ietype} entry={entry}
-                totalCount={entries.length} index={idx}
-              />
-            </div>
-          </div>
-        </TabPane>
-      ))
-      );
-    const tabButtons = (
-      <ButtonGroup style={{ marginRight: 50 }}>
-        {!this.props.readonly &&
-        <Button type="ghost" icon="plus-square" onClick={this.handleGenerateEntry}>{this.msg('generateEntry')}</Button>
-        }
-        <Button onClick={this.handleDock} icon="double-left" />
-      </ButtonGroup>
-    );
-    return (
-      <QueueAnim type={['bottom', 'up']}>
-        <Tabs tabBarExtraContent={tabButtons} activeKey={this.state.activeKey}
-          onChange={this.handleTabChange} className="top-tabs-bar"
-        >
-          {panes}
-        </Tabs>
         <MergeSplitModal />
         <ExtraDock visible={this.state.visible} />
       </QueueAnim>

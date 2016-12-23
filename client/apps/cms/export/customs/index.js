@@ -1,0 +1,1 @@
+export DeclList from './list';

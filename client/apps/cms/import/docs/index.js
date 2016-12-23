@@ -1,2 +1,2 @@
-export Make from './make';
-export View from './view';
+export MakeBill from './make';
+export ViewBill from './view';

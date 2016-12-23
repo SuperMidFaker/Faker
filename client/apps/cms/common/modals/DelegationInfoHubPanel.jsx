@@ -422,10 +422,10 @@ export default class DelegationInfoHubPanel extends React.Component {
           </div>
           <div className="body with-header-summary">
             <Row gutter={16}>
-              <Col sm={24} md={12} lg={10}>
+              <Col sm={24} md={12} lg={12}>
                 {this.tablePan()}
               </Col>
-              <Col sm={24} md={12} lg={14}>
+              <Col sm={24} md={12} lg={12}>
                 <ActivityLoggerPane />
               </Col>
             </Row>

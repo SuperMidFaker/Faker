@@ -118,7 +118,9 @@ export default class CustomsDeclPane extends React.Component {
                 const panelHeader = (
                   <div>
                     <span>{declTypes.length > 0 ? declTypes[0].value : ''}</span>
-                    <Button type="primary">制单</Button>
+                    <div className="toolbar-right">
+                      <Button type="primary">制单</Button>
+                    </div>
                   </div>
                 );
                 return (

@@ -55,12 +55,12 @@ export default class Clearance extends React.Component {
         }, {
           key: 'cms-1-1',
           group: formatMsg(intl, 'importOperation'),
-          path: '/clearance/import/declare/customs',
+          path: '/clearance/import/customs',
           text: formatMsg(intl, 'importCustomsDecl'),
         }, {
           key: 'cms-1-3',
           group: formatMsg(intl, 'importOperation'),
-          path: '/clearance/import/declare/ciq',
+          path: '/clearance/import/ciq',
           text: formatMsg(intl, 'importCiqDecl'),
         }],
       });
@@ -80,12 +80,12 @@ export default class Clearance extends React.Component {
         }, {
           key: 'cms-2-1',
           group: formatMsg(intl, 'exportOperation'),
-          path: '/clearance/export/declare/customs',
+          path: '/clearance/export/customs',
           text: formatMsg(intl, 'exportCustomsDecl'),
         }, {
           key: 'cms-2-3',
           group: formatMsg(intl, 'exportOperation'),
-          path: '/clearance/export/declare/ciq',
+          path: '/clearance/export/ciq',
           text: formatMsg(intl, 'exportCiqDecl'),
         }],
       });

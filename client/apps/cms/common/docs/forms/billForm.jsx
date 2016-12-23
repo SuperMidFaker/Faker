@@ -1,33 +1,29 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Collapse, Form, Button, message } from 'antd';
+import { Form } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import HeadForm from './headForm';
-import BodyTable from './bodyList';
-import ExcelUpload from 'client/components/excelUploader';
+import SheetHeadPanel from './SheetHeadPanel';
+import SheetBodyPanel from './SheetBodyPanel';
 import { addNewBillBody, delBillBody, editBillBody, saveBillHead, loadBillBodyList } from 'common/reducers/cmsDeclare';
 import { format } from 'client/common/i18n/helpers';
-import globalMessage from 'client/common/root.i18n';
 import messages from '../message.i18n';
 
-const Panel = Collapse.Panel;
 const formatMsg = format(messages);
-const formatGlobalMsg = format(globalMessage);
 
-function BillHead(props) {
-  return <HeadForm {...props} type="bill" />;
+function BillSheetHeadPanel(props) {
+  return <SheetHeadPanel {...props} type="bill" />;
 }
-BillHead.propTypes = {
+BillSheetHeadPanel.propTypes = {
   ietype: PropTypes.string.isRequired,
   readonly: PropTypes.bool,
   form: PropTypes.object.isRequired,
   formData: PropTypes.object.isRequired,
 };
 
-function BillBody(props) {
-  return <BodyTable {...props} type="bill" />;
+function BillSheetBodyPanel(props) {
+  return <SheetBodyPanel {...props} type="bill" />;
 }
-BillBody.propTypes = {
+BillSheetBodyPanel.propTypes = {
   ietype: PropTypes.string.isRequired,
   readonly: PropTypes.bool,
   data: PropTypes.array.isRequired,
@@ -64,84 +60,17 @@ export default class BillForm extends React.Component {
     saveBillHead: PropTypes.func.isRequired,
     loadBillBodyList: PropTypes.func.isRequired,
   }
-  componentWillReceiveProps(nextProps) {
-    if (!nextProps.readonly && nextProps.billHead !== this.props.billHead) {
-      this.billListPanelHeader = (
-        <ExcelUpload endpoint={`${API_ROOTS.default}v1/cms/declare/billbody/import`}
-          formData={{
-            data: JSON.stringify({
-              bill_seq_no: this.props.billHead.bill_seq_no,
-              tenant_id: this.props.tenantId,
-              creater_login_id: this.props.loginId,
-            }),
-          }} onUploaded={this.handleUploaded}
-        >
-          <Button type="primary" size="small" icon="file-excel">{formatGlobalMsg(this.props.intl, 'import')}</Button>
-        </ExcelUpload>
-      );
-    }
-  }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
-  handleUploaded = (ev) => {
-    ev.stopPropagation();
-    this.props.loadBillBodyList({ billSeqNo: this.props.billHead.bill_seq_no });
-  }
-  handleBillSave = (ev) => {
-    ev.stopPropagation();
-    ev.preventDefault();
-    // todo bill head save sync with entry head, vice verse
-    this.props.form.validateFields((errors) => {
-      if (!errors) {
-        const { billHead, ietype, loginId, tenantId } = this.props;
-        const head = { ...billHead, ...this.props.form.getFieldsValue() };
-        this.props.saveBillHead({ head, ietype, loginId, tenantId }).then(
-          (result) => {
-            if (result.error) {
-              message.error(result.error.message);
-            } else {
-              message.info('更新成功');
-            }
-          }
-        );
-      }
-    });
-  }
   render() {
     const { ietype, readonly, form, billHead, billBody, ...actions } = this.props;
-    const billHeadToolbar = (!readonly &&
-      <div className="extra-actions"><Button type="primary" onClick={this.handleBillSave} icon="save">
-        {formatGlobalMsg(this.props.intl, 'save')}
-      </Button></div>);
-    const billBodyToolbar = (
-      <div className="extra-actions">
-        <ExcelUpload endpoint={`${API_ROOTS.default}v1/cms/declare/billbody/import`}
-          formData={{
-            data: JSON.stringify({
-              bill_seq_no: this.props.billHead.bill_seq_no,
-              tenant_id: this.props.tenantId,
-              creater_login_id: this.props.loginId,
-            }),
-          }} onUploaded={this.handleUploaded}
-        >
-          <Button icon="file-excel">{this.msg('importBody')}</Button>
-        </ExcelUpload>
-      </div>);
     return (
       <div className="page-body">
         <div className={`panel-body collapse ${readonly ? 'readonly' : ''}`}>
-          <Collapse defaultActiveKey={['header']}>
-            <Panel header={billHeadToolbar} key="header">
-              <BillHead ietype={ietype} readonly={readonly} form={form} formData={billHead} />
-            </Panel>
-          </Collapse>
-          <Collapse defaultActiveKey={['body']}>
-            <Panel header={billBodyToolbar} key="body">
-              <BillBody ietype={ietype} readonly={readonly} data={billBody} headNo={billHead.bill_seq_no}
-                onAdd={actions.addNewBillBody} onDel={actions.delBillBody} onEdit={actions.editBillBody}
-                billSeqNo={billHead.bill_seq_no}
-              />
-            </Panel>
-          </Collapse>
+          <BillSheetHeadPanel ietype={ietype} readonly={readonly} form={form} formData={billHead} />
+          <BillSheetBodyPanel ietype={ietype} readonly={readonly} data={billBody} headNo={billHead.bill_seq_no}
+            onAdd={actions.addNewBillBody} onDel={actions.delBillBody} onEdit={actions.editBillBody}
+            billSeqNo={billHead.bill_seq_no}
+          />
         </div>
       </div>);
   }

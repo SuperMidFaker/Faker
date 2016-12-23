@@ -2,25 +2,25 @@ import React, { PropTypes } from 'react';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import { loadDelgDecls } from 'common/reducers/cmsDeclare';
-import List from '../../common/declaration/list';
+import List from '../../common/customs/list';
 
 function fetchData({ state, dispatch }) {
   return dispatch(loadDelgDecls({
-    ietype: 'export',
+    ietype: 'import',
     tenantId: state.account.tenantId,
     filter: JSON.stringify({ status: 'all' }),
-    pageSize: state.cmsDelegation.delegationlist.pageSize,
-    currentPage: state.cmsDelegation.delegationlist.current,
+    pageSize: state.cmsDeclare.delgdeclList.pageSize,
+    currentPage: state.cmsDeclare.delgdeclList.current,
   }));
 }
 
 @connectFetch()(fetchData)
-@withPrivilege({ module: 'clearance', feature: 'export' })
-export default class ExportDelgDeclsList extends React.Component {
+@withPrivilege({ module: 'clearance', feature: 'import' })
+export default class ImportDelgDeclsList extends React.Component {
   static propTypes = {
     location: PropTypes.object.isRequired,
   }
   render() {
-    return <List ietype="export" {...this.props} />;
+    return <List ietype="import" {...this.props} />;
   }
 }

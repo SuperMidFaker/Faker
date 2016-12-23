@@ -1,32 +1,30 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Card, Form, Button, message } from 'antd';
+import { Form, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import HeadForm from './headForm';
-import BodyTable from './bodyList';
+import SheetHeadPanel from './SheetHeadPanel';
+import SheetBodyPanel from './SheetBodyPanel';
 import { addNewEntryBody, delEntryBody, editEntryBody,
   saveEntryHead, delEntry } from 'common/reducers/cmsDeclare';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
-import globalMessage from 'client/common/root.i18n';
 
 const formatMsg = format(messages);
-const formatGlobalMsg = format(globalMessage);
 
-function BillHead(props) {
-  return <HeadForm {...props} type="entry" />;
+function DeclSheetHeadPanel(props) {
+  return <SheetHeadPanel {...props} type="entry" />;
 }
-BillHead.propTypes = {
+DeclSheetHeadPanel.propTypes = {
   ietype: PropTypes.string.isRequired,
   readonly: PropTypes.bool,
   form: PropTypes.object.isRequired,
   formData: PropTypes.object.isRequired,
 };
 
-function BillBody(props) {
-  return <BodyTable {...props} type="entry" />;
+function DeclSheetBodyPanel(props) {
+  return <SheetBodyPanel {...props} type="entry" />;
 }
-BillBody.propTypes = {
+DeclSheetBodyPanel.propTypes = {
   ietype: PropTypes.string.isRequired,
   readonly: PropTypes.bool,
   data: PropTypes.array.isRequired,
@@ -45,7 +43,7 @@ BillBody.propTypes = {
   { addNewEntryBody, delEntryBody, editEntryBody, saveEntryHead, delEntry }
 )
 @Form.create()
-export default class EntryForm extends React.Component {
+export default class DeclForm extends React.Component {
   static propTypes = {
     ietype: PropTypes.string.isRequired,
     intl: intlShape.isRequired,
@@ -105,24 +103,13 @@ export default class EntryForm extends React.Component {
     const head = entry.head;
     return (
       <div className="page-body">
-        <div className="panel-header">
-          {!readonly &&
-            <Button type="primary" onClick={this.handleEntryHeadSave} icon="save">
-              {formatGlobalMsg(this.props.intl, 'save')}
-            </Button>
-          }
-        </div>
         <div className={`panel-body card-wrapper ${readonly ? 'readonly' : ''}`}>
-          <Card bodyStyle={{ padding: 8 }}>
-            <BillHead ietype={ietype} readonly={readonly} form={form} formData={head} />
-          </Card>
-          <Card bodyStyle={{ padding: 0 }}>
-            <BillBody ietype={ietype} readonly={readonly} data={entry.bodies}
-              onAdd={actions.addNewEntryBody} onDel={actions.delEntryBody}
-              onEdit={actions.editEntryBody} headNo={head.id || this.state.head_id}
-              billSeqNo={head.bill_seq_no}
-            />
-          </Card>
+          <DeclSheetHeadPanel ietype={ietype} readonly={readonly} form={form} formData={head} />
+          <DeclSheetBodyPanel ietype={ietype} readonly={readonly} data={entry.bodies}
+            onAdd={actions.addNewEntryBody} onDel={actions.delEntryBody}
+            onEdit={actions.editEntryBody} headNo={head.id || this.state.head_id}
+            billSeqNo={head.bill_seq_no}
+          />
         </div>
       </div>);
   }

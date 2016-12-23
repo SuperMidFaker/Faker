@@ -4,10 +4,8 @@ import { Breadcrumb, Button, Dropdown, Menu, Radio, Icon } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
-import { addEntry, setTabKey, openMergeSplitModal } from 'common/reducers/cmsDeclare';
-import BillForm from './forms/billForm';
-import ExtraDock from './modals/extraDock';
-import MergeSplitModal from './modals/mergeSplit';
+import DeclForm from '../docs/forms/DeclForm';
+import ExtraDock from '../docs/modals/extraDock';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 
@@ -21,20 +19,17 @@ const RadioButton = Radio.Button;
     tenantId: state.account.tenantId,
     entries: state.cmsDeclare.entries,
   }),
-  { addEntry, setTabKey, openMergeSplitModal }
 )
 @connectNav({
   depth: 3,
   moduleName: 'clearance',
 })
-export default class BillEditor extends React.Component {
+export default class CustomsDeclEditor extends React.Component {
   static propTypes = {
     params: PropTypes.object.isRequired,
     intl: intlShape.isRequired,
     ietype: PropTypes.string.isRequired,
     readonly: PropTypes.bool,
-    entries: PropTypes.array.isRequired,
-    addEntry: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -43,36 +38,9 @@ export default class BillEditor extends React.Component {
     readonly: false,
   }
   state = {
-    activeKey: 'bill',
     visible: false,
   }
-  componentWillReceiveProps(nextProps) {
-    if (
-      nextProps.entries && nextProps.entries.length !== 0 &&
-      nextProps.entries !== this.props.entries &&
-      nextProps.entries[0].head.agent_code
-    ) {
-      this.setState({
-        activeKey: `entry${nextProps.entries.length - 1}`,
-      });
-    } else {
-      this.setState({ activeKey: 'bill' });
-    }
-  }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
-  handleEntryMenuClick = (ev) => {
-    if (ev.key === 'add') {
-      this.props.addEntry();
-    } else if (ev.key === 'generate') {
-      this.props.openMergeSplitModal();
-    }
-  }
-  handleTabChange = (activeKey) => {
-    this.setState({ activeKey });
-  }
-  handleGenerateEntry = () => {
-    this.props.openMergeSplitModal();
-  }
   handleDock = () => {
     this.setState({ visible: true });
   }
@@ -92,7 +60,10 @@ export default class BillEditor extends React.Component {
               制单
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              报关清单 <Icon type="down" />
+              报关清单
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              报关单 <Icon type="down" />
             </Breadcrumb.Item>
           </Breadcrumb>
           <RadioGroup onChange={this.handleDelegationFilter}>
@@ -101,10 +72,6 @@ export default class BillEditor extends React.Component {
           </RadioGroup>
         </header>
         <div className="top-bar-tools">
-          {!this.props.readonly &&
-            <Button type="primary" icon="addfile" onClick={this.handleGenerateEntry}>{this.msg('generateEntry')}</Button>
-          }
-          <span />
           <Dropdown overlay={menu}>
             <Button type="ghost">
               <Icon type="setting" /> <Icon type="down" />
@@ -113,10 +80,9 @@ export default class BillEditor extends React.Component {
         </div>
         <div className="main-content">
           <div className="page-body tabbed fixed-height">
-            <BillForm readonly={readonly} ietype={ietype} />
+            <DeclForm readonly={readonly} ietype={ietype} />
           </div>
         </div>
-        <MergeSplitModal />
         <ExtraDock visible={this.state.visible} />
       </QueueAnim>
     );

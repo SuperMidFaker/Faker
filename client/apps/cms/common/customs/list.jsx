@@ -13,9 +13,11 @@ import messages from './message.i18n';
 import TrimSpan from 'client/components/trimSpan';
 import { format } from 'client/common/i18n/helpers';
 import SearchBar from 'client/components/search-bar';
+import NavLink from 'client/components/nav-link';
 import RowUpdater from '../delegation/rowUpdater';
 import DeclnoFillModal from './modals/declNoFill';
 import DeclStatusPopover from './declStatusPopover';
+
 
 const formatMsg = format(messages);
 const RadioGroup = Radio.Group;
@@ -59,6 +61,7 @@ export default class DelgDeclList extends Component {
     dataIndex: 'pre_entry_seq_no',
     fixed: 'left',
     width: 150,
+    render: o => <NavLink to={`/clearance/${this.props.ietype}/customs/decl/${o}`}>{o}</NavLink>,
   }, {
     title: this.msg('entryId'),
     dataIndex: 'entry_id',

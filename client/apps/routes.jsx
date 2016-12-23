@@ -36,10 +36,12 @@ import WxTmsDetail from './weixin/tms/detail';
 import Clearance from './cms/module-clearance';
 import * as ImportDelegation from './cms/import/delegation';
 import * as ImportDocs from './cms/import/docs';
-import * as ImportDecl from './cms/import/declaration';
+import * as ImportCustoms from './cms/import/customs';
+import * as ImportCiq from './cms/import/ciq';
 import * as ExportDelegation from './cms/export/delegation';
 import * as ExportDocs from './cms/export/docs';
-import * as ExportDecl from './cms/export/declaration';
+import * as ExportCustoms from './cms/export/customs';
+import * as ExportCiq from './cms/export/ciq';
 import * as CMSRelation from './cms/relation';
 import * as CMSQuote from './cms/quote';
 import * as CMSExpense from './cms/expense';
@@ -230,28 +232,28 @@ export default(store, cookie) => {
               <Route path="create" component={ImportDelegation.Create} />
               <Route path="edit/:delgNo" component={ImportDelegation.Edit} />
               <Route path="docs">
-                <Route path="make/:billno" component={ImportDocs.Make} />
-                <Route path="view/:billno" component={ImportDocs.View} />
+                <Route path="make/:billno" component={ImportDocs.MakeBill} />
+                <Route path="view/:billno" component={ImportDocs.ViewBill} />
               </Route>
-              <Route path="declare">
-                <Route path="customs" component={ImportDecl.Delglist} />
-                <Route path="ciq" component={ImportDecl.Ciqlist} />
+              <Route path="customs">
+                <IndexRoute component={ImportCustoms.DeclList} />
+                <Route path="decl/:declno" component={ImportCustoms.DeclView} />
               </Route>
+              <Route path="ciq" component={ImportCiq.CiqList} />
             </Route>
             <Route path="export">
               <IndexRedirect to="/clearance/export/delegation" />
               <Route path="delegation" component={ExportDelegation.List} />
-              <Route path="ciq" component={ExportDelegation.Ciq} />
               <Route path="create" component={ExportDelegation.Create} />
               <Route path="edit/:delgNo" component={ExportDelegation.Edit} />
               <Route path="docs">
                 <Route path="make/:billno" component={ExportDocs.Make} />
                 <Route path="view/:billno" component={ExportDocs.View} />
               </Route>
-              <Route path="declare">
-                <Route path="customs" component={ExportDecl.Delglist} />
-                <Route path="ciq" component={ExportDecl.Ciqlist} />
+              <Route path="customs">
+                <IndexRoute component={ExportCustoms.DeclList} />
               </Route>
+              <Route path="ciq" component={ExportCiq.CiqList} />
             </Route>
             <Route path="billing">
               <IndexRedirect to="/clearance/billing/expense" />

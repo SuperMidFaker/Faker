@@ -1,11 +1,15 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Table, Input, Select, message } from 'antd';
+import { Button, Collapse, Dropdown, Menu, Table, Icon, Input, Select, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import RowUpdater from '../rowUpdater';
 import { format } from 'client/common/i18n/helpers';
+import ExcelUpload from 'client/components/excelUploader';
+import globalMessage from 'client/common/root.i18n';
 import messages from '../message.i18n';
 const formatMsg = format(messages);
+const formatGlobalMsg = format(globalMessage);
+const Panel = Collapse.Panel;
 const Option = Select.Option;
 
 function ColumnInput(props) {
@@ -76,7 +80,7 @@ ColumnSelect.proptypes = {
     loginId: state.account.loginId,
   })
 )
-export default class BodyTable extends React.Component {
+export default class SheetBodyPanel extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     ietype: PropTypes.oneOf(['import', 'export']),
@@ -386,10 +390,47 @@ export default class BodyTable extends React.Component {
       editBody: {},
     });
   }
+  handleButtonClick = (ev) => {
+    ev.stopPropagation();
+  }
+  handleExportData = (ev) => {
+    ev.stopPropagation();
+  }
   render() {
     const columns = this.getColumns();
-    return (<Table rowKey="id" columns={columns} dataSource={this.state.bodies}
-      size="middle" scroll={{ x: 2600, y: 400 }} pagination={this.state.pagination} bordered
-    />);
+    const menu = (
+      <Menu>
+        <Menu.Item key="importData">
+          <ExcelUpload endpoint={`${API_ROOTS.default}v1/cms/declare/billbody/import`}
+            formData={{
+              data: JSON.stringify({
+                bill_seq_no: this.billSeqNo,
+                tenant_id: this.props.tenantId,
+                creater_login_id: this.props.loginId,
+              }),
+            }} onUploaded={this.handleUploaded}
+          >
+            <Icon type="file-excel" /> {this.msg('importBody')}
+          </ExcelUpload>
+        </Menu.Item>
+        <Menu.Item key="download">下载模板</Menu.Item>
+      </Menu>
+    );
+    const billBodyToolbar = (
+      <div className="toolbar-right">
+        <Button type="ghost" onClick={this.handleExportData}>导出数据</Button>
+        <span />
+        <Dropdown.Button onClick={this.handleButtonClick} overlay={menu} type="primary">
+          {formatGlobalMsg(this.props.intl, 'add')}
+        </Dropdown.Button>
+      </div>);
+    return (
+      <Collapse defaultActiveKey={['body']}>
+        <Panel header={billBodyToolbar} key="body">
+          <Table rowKey="id" columns={columns} dataSource={this.state.bodies}
+            size="middle" scroll={{ x: 2600, y: 400 }} pagination={this.state.pagination} bordered
+          />
+        </Panel>
+      </Collapse>);
   }
 }

@@ -28,6 +28,9 @@ img {
   background-color: #40a5ed;
   border-color: #40a5ed;
 }
+.ant-collapse > .ant-collapse-item > .ant-collapse-header {
+  padding-right: 16px;
+}
 .ant-menu-root {
   font-size: 14px;
 }
@@ -509,20 +512,7 @@ img {
   .tools {
     float: right;
   }
-  .toolbar-right {
-    float: right;
-    >span {
-      margin-right: 8px;
-    }
-  }
-  .toolbar-left {
-    display: inline-block;
-    width: 220px;
-    input {
-      width: 140px;
-      margin-right: 4px;
-    }
-  }
+
   @media (max-width:767px) {
     margin-bottom: 10px;
     padding: 10px 10px 0 10px;
@@ -627,6 +617,20 @@ img {
 .popover-footer {
   padding: 8px 16px;
 }
+.toolbar-right {
+  float: right;
+  >span {
+    margin-right: 8px;
+  }
+}
+.toolbar-left {
+  display: inline-block;
+  width: 220px;
+  input {
+    width: 140px;
+    margin-right: 4px;
+  }
+}
 .ant-advanced-search-form {
   padding: 16px 60px 16px 0px;
   background: #f8f8f8;
@@ -664,8 +668,6 @@ img {
   }
 }
 .pane-content {
-  .ant-collapse > .ant-collapse-item > .ant-collapse-header {
-  }
   .ant-steps {
     padding: 16px 16px 0 16px;
   }
