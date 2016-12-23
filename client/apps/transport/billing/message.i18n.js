@@ -97,4 +97,8 @@ export default defineMessages({
     id: 'transport.billing.fee',
     defaultMessage: '费用',
   },
+  exportExcel: {
+    id: 'transport.billing.exportExcel',
+    defaultMessage: '导出账单Excel',
+  },
 });

@@ -14,6 +14,7 @@ import CancelChargeModal from '../modals/cancelChargeModal';
 import TrimSpan from 'client/components/trimSpan';
 import { createFilename } from 'client/util/dataTransform';
 import SearchBar from 'client/components/search-bar';
+import ExportBillingExcel from '../modals/exportBillingsExcel';
 
 const formatMsg = format(messages);
 
@@ -285,7 +286,7 @@ export default class BillingList extends React.Component {
     return (
       <div>
         <header className="top-bar">
-          <span>{this.msg(this.props.type)}{this.msg('billing')}</span>
+          <span>{this.msg(type)}{this.msg('billing')}</span>
         </header>
         <div className="top-bar-tools">
           <SearchBar placeholder="输入账单名称搜索" onInputSearch={this.handleSearchInput}
@@ -296,12 +297,12 @@ export default class BillingList extends React.Component {
           <div className="page-body">
             <div className="panel-header">
               <Button type="primary" onClick={this.handleAddBtnClicked}>{this.msg('createBilling')}</Button>
-              <Button style={{ marginLeft: 16 }} onClick={this.handleExportExcel}>{this.msg('export')}</Button>
+              <ExportBillingExcel type={type} style={{ marginLeft: 20 }} />
             </div>
             <div className="panel-body table-panel">
               <Table rowSelection={rowSelection} dataSource={dataSource} columns={columns} rowKey="id" loading={loading} />
             </div>
-            <BillingForm type={this.props.type} visible={this.state.billingFormVisible} toggle={this.toggleBillingForm} />
+            <BillingForm type={type} visible={this.state.billingFormVisible} toggle={this.toggleBillingForm} />
             <CancelChargeModal visible={this.state.cancelChargeModalVisible} toggle={this.toggleCancelChargeModal}
               billingId={this.state.billingId} fromId={this.state.fromId} totalCharge={this.state.totalCharge} handleOk={this.handleTableLoad}
             />
