@@ -1,12 +1,11 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Card, Row, Col, Form, Input, Select, Button, Radio, message } from 'antd';
+import { Card, Row, Col, Form, Input, Select, Radio } from 'antd';
 import PricingLTL from './pricingLTL';
 import PricingFTL from './pricingFTL';
 import PricingCTN from './pricingCTN';
-import { loadPartners, submitAgreement,
-  updateAgreement } from 'common/reducers/transportTariff';
-import { TARIFF_KINDS, GOODS_TYPES, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES,
+import { changeTariff } from 'common/reducers/transportTariff';
+import { TARIFF_KINDS, GOODS_TYPES,
   PRESET_TRANSMODES, TARIFF_PARTNER_PERMISSION, TAX_STATUS } from 'common/constants';
 
 const FormItem = Form.Item;
@@ -32,10 +31,9 @@ const subFormLayout = {
     loginName: state.account.username,
     tariffId: state.transportTariff.tariffId,
     formData: state.transportTariff.agreement,
-    partners: state.transportTariff.partners,
     formParams: state.transportTariff.formParams,
   }),
-  { loadPartners, submitAgreement, updateAgreement }
+  { changeTariff }
 )
 
 export default class AgreementForm extends React.Component {
@@ -50,15 +48,7 @@ export default class AgreementForm extends React.Component {
     tariffId: PropTypes.string,
     formData: PropTypes.object.isRequired,
     formParams: PropTypes.object.isRequired,
-    partners: PropTypes.arrayOf(PropTypes.shape({
-      tid: PropTypes.number.isRequired,
-      name: PropTypes.string.isRequired,
-      partner_id: PropTypes.number.isRequired,
-      partner_code: PropTypes.string.isRequired,
-    })),
-    loadPartners: PropTypes.func.isRequired,
-    submitAgreement: PropTypes.func.isRequired,
-    updateAgreement: PropTypes.func.isRequired,
+    changeTariff: PropTypes.func.isRequired,
   }
   state = {
     partnerVisible: true,
@@ -74,10 +64,6 @@ export default class AgreementForm extends React.Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.formData !== this.props.formData) {
-      this.price = {
-        vehicleTypes: nextProps.formData.vehicleTypes,
-        intervals: nextProps.formData.intervals,
-      };
       this.handleKindChange(nextProps.formData.kind);
     }
     if (nextProps.formData.transModeCode !== this.props.formData.transModeCode) {
@@ -86,10 +72,6 @@ export default class AgreementForm extends React.Component {
     if (nextProps.readonly && !this.props.readonly) {
       this.setState({ readonly: true });
     }
-  }
-  price = {
-    vehicleTypes: this.props.formData.vehicleTypes,
-    intervals: this.props.formData.intervals,
   }
   handleKindChange = (kindIdx) => {
     if (kindIdx >= 0) {
@@ -100,86 +82,7 @@ export default class AgreementForm extends React.Component {
     }
   }
   handlePriceChange = (intervals, vehicleTypes) => {
-    this.price.intervals = intervals;
-    this.price.vehicleTypes = vehicleTypes;
-    // console.log(this.price);
-  }
-  handleSubmit = () => {
-    this.props.form.validateFields((errors) => {
-      if (errors) {
-        message.error('表单信息错误');
-      } else {
-        const editForm = this.props.form.getFieldsValue();
-        let partnerName;
-        let partnerTid;
-        if (editForm.partnerId) {
-          const selpartners = this.props.partners.filter(
-            pt => pt.partner_id === editForm.partnerId);
-          partnerName = selpartners[0].name;
-          partnerTid = selpartners[0].tid;
-        }
-
-
-        const forms = {
-          ...this.props.formData, ...editForm, ...this.price,
-          transMode: this.state.transMode.toUpperCase(),
-        };
-        let promise;
-        if (this.props.tariffId) {
-          forms.loginName = this.props.loginName;
-          promise = this.props.updateAgreement(forms);
-        } else {
-          const { tariffId, tenantId, tenantName, loginId } = this.props;
-          forms.id = tariffId;
-          forms.tenantId = tenantId;
-          forms.tenantName = tenantName;
-          forms.loginId = loginId;
-          forms.partnerName = partnerName;
-          forms.partnerTid = partnerTid;
-          promise = this.props.submitAgreement(forms);
-        }
-        promise.then((result) => {
-          if (result.error) {
-            if (result.error.message === 'found_tariff') {
-              message.error('相同条件报价协议已存在');
-            } else {
-              message.error(result.error.message);
-            }
-          } else {
-            this.setState({ readonly: true });
-            message.success('保存成功');
-          }
-        });
-      }
-    });
-  }
-  handleTariffKindSelect = (value) => {
-    const kind = TARIFF_KINDS[value];
-    if (kind.isBase) {
-      this.setState({ partnerVisible: false });
-    } else if (kind.value === 'sales') {
-      this.props.loadPartners(this.props.tenantId,
-        [PARTNER_ROLES.CUS, PARTNER_ROLES.DCUS],
-        [PARTNER_BUSINESSE_TYPES.transport])
-        .then((result) => {
-          if (result.error) {
-            message.error(result.error.message);
-          } else {
-            this.setState({ partnerVisible: true });
-          }
-        });
-    } else if (kind.value === 'cost') {
-      this.props.loadPartners(this.props.tenantId,
-        [PARTNER_ROLES.SUP],
-        [PARTNER_BUSINESSE_TYPES.transport])
-        .then((result) => {
-          if (result.error) {
-            message.error(result.error.message);
-          } else {
-            this.setState({ partnerVisible: true });
-          }
-        });
-    }
+    this.props.changeTariff({ intervals: intervals || [], vehicleTypes: vehicleTypes || [] });
   }
   handleModeSelect = (value) => {
     if (isNaN(value)) {
@@ -219,7 +122,7 @@ export default class AgreementForm extends React.Component {
     return effDate.valueOf() >= expiryDate.valueOf();
   }
   render() {
-    const { form, formData, formParams, submitting, partners,
+    const { form, formData, formParams,
       form: { getFieldDecorator } } = this.props;
     const { partnerVisible, readonly, transMode } = this.state;
     return (
@@ -229,39 +132,14 @@ export default class AgreementForm extends React.Component {
             <Row>
               <Col sm={8}>
                 <FormItem label="价格类型" {...formItemLayout}>
-                  {getFieldDecorator('kind', {
-                    initialValue: formData.kind,
-                    rules: [{ required: true, message: '价格类型必选', type: 'number' }],
-                  })(<Select disabled onSelect={this.handleTariffKindSelect}>
-                    {
-                      TARIFF_KINDS.map(
-                        (tk, idx) =>
-                          <Option value={idx} key={tk.value}>{TARIFF_KINDS[idx].text}</Option>
-                      )
-                    }
-                  </Select>)}
+                  <Input disabled value={TARIFF_KINDS[formData.kind] ? TARIFF_KINDS[formData.kind].text : ''} />
                 </FormItem>
               </Col>
               <Col sm={8}>
                 {
                   partnerVisible &&
                   <FormItem label="合作伙伴" {...formItemLayout}>
-                    {getFieldDecorator('partnerId', {
-                      initialValue: formData.partnerId,
-                      rules: [{ required: true, message: '合作伙伴必选', type: 'number' }],
-                    })(
-                      <Select showSearch optionFilterProp="searched" disabled allowClear>
-                        {
-                        partners.map(pt => (
-                          <Option searched={`${pt.partner_code}${pt.name}`}
-                            value={pt.partner_id} key={pt.partner_id}
-                          >
-                            {pt.partner_code ? `${pt.partner_code} | ${pt.name}` : pt.name}
-                          </Option>)
-                        )
-                      }
-                      </Select>
-                    )}
+                    <Input disabled value={formData.partnerName} />
                   </FormItem>
                 }
               </Col>
@@ -302,7 +180,7 @@ export default class AgreementForm extends React.Component {
                   })(<Input disabled={readonly} placeholder="不输入默认为1" />)}
                 </FormItem>
               </Col>
-              <Col sm={4}>
+              <Col sm={5}>
                 <FormItem label="税率" {...formItemLayout}>
                   {getFieldDecorator('taxrate.mode', {
                     initialValue: formData.taxrate.mode })(
@@ -312,8 +190,8 @@ export default class AgreementForm extends React.Component {
                       </RadioGroup>)}
                 </FormItem>
               </Col>
-              <Col sm={4}>
-                <FormItem label="税率值" {...formItemLayout}>
+              <Col sm={3}>
+                <FormItem label="税率值" labelCol={{ span: 9 }} wrapperCol={{ span: 15 }}>
                   {getFieldDecorator('taxrate.value', {
                     initialValue: formData.taxrate.value })(
                       <Input type="number" addonAfter="％" placeholder="请输入税率" />)}
@@ -353,13 +231,6 @@ export default class AgreementForm extends React.Component {
             />
               }
           </Card>
-          <Col style={{ padding: '16px' }}>
-            <Button size="large" type="primary"
-              loading={submitting} onClick={this.handleSubmit}
-            >
-              保存
-            </Button>
-          </Col>
         </Form>
       </div>
     );

@@ -25,6 +25,7 @@ const actionTypes = createActionTypes('@@welogix/transport/tariff/', [
   'PUBLISH_TARIFF', 'PUBLISH_TARIFF_SUCCEED', 'PUBLISH_TARIFF_FAIL',
   'SHOW_CREATE_TARIFF_MODAL',
   'SHOW_PUBLISH_TARIFF_MODAL',
+  'CHANGE_TARIFF',
   'CREATE_TARIFF_BY_NEXT_VERSION', 'CREATE_TARIFF_BY_NEXT_VERSION_SUCCEED', 'CREATE_TARIFF_BY_NEXT_VERSION_FAIL',
   'RESTORE_TARIFF', 'RESTORE_TARIFF_SUCCEED', 'RESTORE_TARIFF_FAIL',
 ]);
@@ -43,6 +44,7 @@ const initialState = {
   agreement: {
     quoteNo: '',
     intervals: [],
+    vehicleTypes: [],
     kind: -1,
     adjustCoefficient: 1,
     revisions: [],
@@ -146,8 +148,7 @@ export default function reducer(state = initialState, action) {
         tariffId: action.result.data.tariff._id,
         ratesSourceList: { ...state.ratesSourceList,
           ...action.result.data.ratesSourceList },
-        rateId: action.result.data.ratesSourceList.data.length > 0
-          && action.result.data.ratesSourceList.data[0]._id,
+        rateId: action.result.data.ratesSourceList.data.length > 0 ? action.result.data.ratesSourceList.data[0]._id : '',
         ratesEndList: { ...state.ratesEndList,
           ...action.result.data.ratesEndList },
         fees: action.result.data.tariff.fees,
@@ -186,6 +187,9 @@ export default function reducer(state = initialState, action) {
     }
     case actionTypes.SHOW_PUBLISH_TARIFF_MODAL: {
       return { ...state, publishTariffModal: action.data };
+    }
+    case actionTypes.CHANGE_TARIFF: {
+      return { ...state, agreement: { ...state.agreement, ...action.data } };
     }
     default:
       return state;
@@ -556,6 +560,13 @@ export function showPublishTariffModal(visible) {
   return {
     type: actionTypes.SHOW_PUBLISH_TARIFF_MODAL,
     data: { visible },
+  };
+}
+
+export function changeTariff(data) {
+  return {
+    type: actionTypes.CHANGE_TARIFF,
+    data,
   };
 }
 

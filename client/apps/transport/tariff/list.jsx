@@ -25,11 +25,13 @@ const formatContainerMsg = format(containerMessages);
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
-function fetchData({ state, dispatch }) {
+function fetchData({ state, dispatch, location }) {
+  const { kind, status } = location.query;
+  const filters = { ...state.transportTariff.filters, kind: [kind], status: [status] };
   dispatch(loadFormParams(state.account.tenantId));
   return dispatch(loadTable({
     tenantId: state.account.tenantId,
-    filters: JSON.stringify(state.transportTariff.filters),
+    filters: JSON.stringify(filters),
     pageSize: state.transportTariff.tarifflist.pageSize,
     currentPage: state.transportTariff.tarifflist.current,
     sortField: state.transportTariff.sortField,
