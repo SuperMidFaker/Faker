@@ -12,7 +12,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege, { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { loadTable, delTariffById, updateTariffValid, loadFormParams,
   showCreateTariffModal, delTariffByQuoteNo, createTariffByNextVersion } from 'common/reducers/transportTariff';
-import { TARIFF_KINDS, TARIFF_METER_METHODS, GOODS_TYPES } from 'common/constants';
+import { TARIFF_KINDS, TARIFF_METER_METHODS, GOODS_TYPES, TARIFF_PARTNER_PERMISSION } from 'common/constants';
 import CreateTariffModal from './modals/createTariffModal';
 import SearchBar from 'client/components/search-bar';
 import { format } from 'client/common/i18n/helpers';
@@ -311,41 +311,51 @@ export default class TariffList extends React.Component {
       title: formatContainerMsg(this.props.intl, 'opColumn'),
       width: 100,
       render: (o, record) => {
-        if (record.valid) {
-          return (
-            <span>
-              <PrivilegeCover module="transport" feature="tariff" action="edit">
-                <div>
-                  <NavLink to={`/transport/billing/tariff/view/${record.quoteNo}/${record.version}`}>
-                    查看
-                  </NavLink>
-                  <span className="ant-divider" />
-                  <a onClick={() => this.handleEdit(record.quoteNo, record.version + 1)}>
-                    {this.msg('revise')}
-                  </a>
-                  <span className="ant-divider" />
-                  <a onClick={() => this.handleChangeValid(record._id, false)}>{this.msg('disable')}</a>
-                </div>
-              </PrivilegeCover>
-            </span>
-          );
+        if (record.createdTenantId === this.props.tenantId || record.createdTenantId !== this.props.tenantId && record.partnerPermission === TARIFF_PARTNER_PERMISSION.editable) {
+          if (record.valid) {
+            return (
+              <span>
+                <PrivilegeCover module="transport" feature="tariff" action="edit">
+                  <div>
+                    <NavLink to={`/transport/billing/tariff/view/${record.quoteNo}/${record.version}`}>
+                      查看
+                    </NavLink>
+                    <span className="ant-divider" />
+                    <a onClick={() => this.handleEdit(record.quoteNo, record.version + 1)}>
+                      {this.msg('revise')}
+                    </a>
+                    <span className="ant-divider" />
+                    <a onClick={() => this.handleChangeValid(record._id, false)}>{this.msg('disable')}</a>
+                  </div>
+                </PrivilegeCover>
+              </span>
+            );
+          } else {
+            return (
+              <span>
+                <PrivilegeCover module="transport" feature="tariff" action="edit">
+                  <a onClick={() => this.handleChangeValid(record._id, true)}>{this.msg('enable')}</a>
+                </PrivilegeCover>
+                <span className="ant-divider" />
+                <PrivilegeCover module="transport" feature="tariff" action="delete">
+                  <Popconfirm title="确认删除?" onConfirm={() => this.handleDelByQuoteNo(record.quoteNo)} >
+                    <a >删除</a>
+                  </Popconfirm>
+                </PrivilegeCover>
+                <span className="ant-divider" />
+                <NavLink to={`/transport/billing/tariff/view/${record.quoteNo}/${record.version}`}>
+                  查看
+                </NavLink>
+              </span>
+            );
+          }
         } else {
           return (
-            <span>
-              <PrivilegeCover module="transport" feature="tariff" action="edit">
-                <a onClick={() => this.handleChangeValid(record._id, true)}>{this.msg('enable')}</a>
-              </PrivilegeCover>
-              <span className="ant-divider" />
-              <PrivilegeCover module="transport" feature="tariff" action="delete">
-                <Popconfirm title="确认删除?" onConfirm={() => this.handleDelByQuoteNo(record.quoteNo)} >
-                  <a >删除</a>
-                </Popconfirm>
-              </PrivilegeCover>
-              <span className="ant-divider" />
+            <PrivilegeCover module="transport" feature="tariff" action="view">
               <NavLink to={`/transport/billing/tariff/view/${record.quoteNo}/${record.version}`}>
                 查看
               </NavLink>
-            </span>
+            </PrivilegeCover>
           );
         }
       },
@@ -428,21 +438,26 @@ export default class TariffList extends React.Component {
       }, {
         title: formatContainerMsg(this.props.intl, 'opColumn'),
         width: 100,
-        render: (o, record) => (
-          <span>
-            <PrivilegeCover module="transport" feature="tariff" action="edit">
-              <div>
-                <NavLink to={`/transport/billing/tariff/edit/${record.quoteNo}/${record.version}`}>
-                    继续修订
-                  </NavLink>
-                <span className="ant-divider" />
-                <PrivilegeCover module="transport" feature="tariff" action="delete">
-                  <a onClick={() => this.handleDel(record)}>删除</a>
+        render: (o, record) => {
+          if (record.createdTenantId === this.props.tenantId || record.createdTenantId !== this.props.tenantId && record.partnerPermission === TARIFF_PARTNER_PERMISSION.editable) {
+            return (
+              <span>
+                <PrivilegeCover module="transport" feature="tariff" action="edit">
+                  <div>
+                    <NavLink to={`/transport/billing/tariff/edit/${record.quoteNo}/${record.version}`}>
+                        继续修订
+                      </NavLink>
+                    <span className="ant-divider" />
+                    <PrivilegeCover module="transport" feature="tariff" action="delete">
+                      <a onClick={() => this.handleDel(record)}>删除</a>
+                    </PrivilegeCover>
+                  </div>
                 </PrivilegeCover>
-              </div>
-            </PrivilegeCover>
-          </span>
-          ),
+              </span>
+            );
+          }
+          return '';
+        },
       }];
     }
     return (

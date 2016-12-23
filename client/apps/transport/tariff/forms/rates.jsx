@@ -59,6 +59,7 @@ export default class TariffRatesForm extends React.Component {
     }
   }
   render() {
+    const { type } = this.props;
     const { sourceModal, endModal, inUpload, uploadPercent, uploadStatus } = this.state;
     return (
       <div style={{ padding: 10 }}>
@@ -66,33 +67,34 @@ export default class TariffRatesForm extends React.Component {
           <Row gutter={16}>
             <Col sm={6}>
               <Card bodyStyle={{ padding: 0 }}>
-                <div style={{ padding: '8px 8px' }}>
+                {(type === 'create' || type === 'edit') && (<div style={{ padding: '8px 8px' }}>
                   <Button icon="plus-circle-o"
                     onClick={this.handleSourceAdd}
                   >
                     添加
                   </Button>
-                </div>
+                </div>)}
                 <RateSourceTable visibleModal={sourceModal} onChangeVisible={this.handleVisibleChange} />
               </Card>
             </Col>
             <Col sm={18}>
               <Card bodyStyle={{ padding: 0 }}>
-                <div style={{ padding: 8 }}>
-                  <Button icon="plus-circle-o"
-                    onClick={this.handleEndAdd} disabled={!this.props.rateId}
-                  >
+                {(type === 'create' || type === 'edit') && (
+                  <div style={{ padding: 8 }}>
+                    <Button icon="plus-circle-o"
+                      onClick={this.handleEndAdd} disabled={!this.props.rateId}
+                    >
                     添加
                   </Button>
-                  <span style={{ marginLeft: 8 }}>
-                    <Upload accept=".xls,.xlsx" action={`${API_ROOTS.mongo}v1/transport/tariff/import/ratends`}
-                      data={{ rateId: this.props.rateId }} onChange={this.handleImport}
-                      showUploadList={false} withCredentials
-                    >
-                      <Button icon="upload" type="ghost">导入费率表</Button>
-                    </Upload>
-                  </span>
-                </div>
+                    <span style={{ marginLeft: 8 }}>
+                      <Upload accept=".xls,.xlsx" action={`${API_ROOTS.mongo}v1/transport/tariff/import/ratends`}
+                        data={{ rateId: this.props.rateId }} onChange={this.handleImport}
+                        showUploadList={false} withCredentials
+                      >
+                        <Button icon="upload" type="ghost">导入费率表</Button>
+                      </Upload>
+                    </span>
+                  </div>)}
                 {
                   this.props.rateId &&
                   <RateEndTable visibleModal={endModal} onChangeVisible={this.handleVisibleChange} />

@@ -186,9 +186,15 @@ export default class SurchargeForm extends React.Component {
   handleEnabledChange = (index, value) => {
     this.handleChange(index, 'enabled', value);
   }
-
+  renderTableFooter = () => {
+    const { type } = this.props;
+    if (type === 'create' || type === 'edit') {
+      return (<Button type="primary" onClick={this.handleAddFees}>{this.msg('addCosts')}</Button>);
+    }
+    return '';
+  }
   render() {
-    const { surcharge, fees } = this.props;
+    const { surcharge, fees, type } = this.props;
     const { editIndex } = this.state;
     const dataSource = [{
       fee_name: '提货费',
@@ -379,20 +385,35 @@ export default class SurchargeForm extends React.Component {
         title: this.msg('operation'),
         width: 80,
         render: (o, record, index) => {
-          if (index >= 4) {
-            if (index === editIndex) {
-              return (
-                <div>
-                  <a onClick={() => this.handleSave(index)} >保存</a>
-                </div>
-              );
-            } else {
-              if (record.category === 'custom') {
+          if (type === 'create' || type === 'edit') {
+            if (index >= 4) {
+              if (index === editIndex) {
+                return (
+                  <div>
+                    <a onClick={() => this.handleSave(index)} >保存</a>
+                  </div>
+                );
+              } else {
+                if (record.category === 'custom') {
+                  return (
+                    <div>
+                      <a onClick={() => this.handleModify(record, index)}>修改</a>
+                      <span className="ant-divider" />
+                      <a onClick={() => this.handleDelete(record, index)}>删除</a>
+                    </div>
+                  );
+                }
                 return (
                   <div>
                     <a onClick={() => this.handleModify(record, index)}>修改</a>
-                    <span className="ant-divider" />
-                    <a onClick={() => this.handleDelete(record, index)}>删除</a>
+                  </div>
+                );
+              }
+            } else {
+              if (index === editIndex) {
+                return (
+                  <div>
+                    <a onClick={() => this.handleSaveSurcharge(index)}>保存</a>
                   </div>
                 );
               }
@@ -402,19 +423,6 @@ export default class SurchargeForm extends React.Component {
                 </div>
               );
             }
-          } else {
-            if (index === editIndex) {
-              return (
-                <div>
-                  <a onClick={() => this.handleSaveSurcharge(index)}>保存</a>
-                </div>
-              );
-            }
-            return (
-              <div>
-                <a onClick={() => this.handleModify(record, index)}>修改</a>
-              </div>
-            );
           }
         },
       },
@@ -422,7 +430,7 @@ export default class SurchargeForm extends React.Component {
     return (
       <div className="panel-body table-panel">
         <Table columns={columns} dataSource={dataSource} rowKey="_id" pagination={false}
-          footer={() => <Button type="primary" onClick={this.handleAddFees}>{this.msg('addCosts')}</Button>}
+          footer={this.renderTableFooter}
         />
       </div>
     );

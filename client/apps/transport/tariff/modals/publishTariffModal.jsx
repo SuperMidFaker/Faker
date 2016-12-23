@@ -42,16 +42,16 @@ export default class PublishTariffModal extends React.Component {
       if (!errors) {
         const formData = this.props.form.getFieldsValue();
         const tariffFormData = this.props.tariffForm.getFieldsValue();
-        const { effectiveType, effectiveDate, publishCommit } = formData;
-        const { partnerPermission, adjustCoefficient, intervals, vehicleTypes, taxrate } = tariffFormData;
-        const { id, quoteNo } = this.props.agreement;
+        const { id } = this.props.agreement;
         const { tenantId, loginName } = this.props;
 
         this.props.publishTariff({
           tariffId: id,
           loginName,
-          quoteNo, tenantId, effectiveType, effectiveDate, publishCommit, partnerPermission, adjustCoefficient,
-          intervals, vehicleTypes, taxrate,
+          tenantId,
+          ...this.props.agreement,
+          ...tariffFormData,
+          ...formData,
         }).then((result) => {
           if (result.error) {
             message.error(result.error.message);
