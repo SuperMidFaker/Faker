@@ -6,18 +6,19 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'DECL_EXPS_LOAD', 'DECL_EXPS_LOAD_SUCCEED', 'DECL_EXPS_LOAD_FAIL',
   'EXP_LOAD', 'EXP_LOAD_SUCCEED', 'EXP_LOAD_FAIL',
   'CLOSE_ADVFEE_MODAL',
-  'CLOSE_IN_MODAL', 'OPEN_IN_MODAL',
+  // 'CLOSE_IN_MODAL', 'OPEN_IN_MODAL',
   'CURRENCY_LOAD', 'CURRENCY_LOAD_SUCCEED', 'CURRENCY_LOAD_FAIL',
-  'LOAD_SUBTABLE', 'LOAD_SUBTABLE_SUCCEED', 'LOAD_SUBTABLE_FAIL',
+  // 'LOAD_SUBTABLE', 'LOAD_SUBTABLE_SUCCEED', 'LOAD_SUBTABLE_FAIL',
   'CLOSE_MARK_MODAL', 'OPEN_MARK_MODAL',
-  'MARK_SAVE', 'MARK_SAVE_SUCCEED', 'MARK_SAVE_FAIL',
+  // 'MARK_SAVE', 'MARK_SAVE_SUCCEED', 'MARK_SAVE_FAIL',
   'CLOSE_CERT_MODAL', 'OPEN_CERT_MODAL',
   'EXP_CERT_LOAD', 'EXP_CERT_LOAD_SUCCEED', 'EXP_CERT_LOAD_FAIL',
   'CERT_FEES_SAVE', 'CERT_FEES_SAVE_SUCCEED', 'CERT_FEES_SAVE_FAIL',
-  'OPEN_DECL_INPUT_MODAL', 'CLOSE_DECL_INPUT_MODAL',
+  // 'OPEN_DECL_INPUT_MODAL', 'CLOSE_DECL_INPUT_MODAL',
   'LOAD_ADVPARTIES', 'LOAD_ADVPARTIES_SUCCEED', 'LOAD_ADVPARTIES_FAIL',
+  /*
   'SHOW_PREVIEWER', 'SHOW_PREVIEWER_SUCCEED', 'SHOW_PREVIEWER_FAILED',
-  'HIDE_PREVIEWER',
+  'HIDE_PREVIEWER', */
   'LOAD_DELGADVFEES', 'LOAD_DELGADVFEES_SUCCEED', 'LOAD_DELGADVFEES_FAIL',
   'COMPUTE_DELGADVFEES', 'COMPUTE_DELGADVFEES_SUCCEED', 'COMPUTE_DELGADVFEES_FAIL',
   'LOAD_DECLADVPARTIES', 'LOAD_DECLADVPARTIES_SUCCEED', 'LOAD_DECLADVPARTIES_FAIL',
@@ -28,8 +29,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
 
 const initialState = {
   expenses: {
-    servbill: [],
-    cushbill: [],
+    revenue: [],
     allcost: [],
   },
   expslist: {
@@ -60,6 +60,7 @@ const initialState = {
   declAdvanceParties: [],
   showDeclInputModal: false,
   advanceParties: [],
+  /*
   previewer: {
     customs: {
       provider: '',
@@ -74,7 +75,7 @@ const initialState = {
       data: [],
     },
     visible: false,
-  },
+  }, */
   advanceFeeModal: {
     visible: false,
     fees: [],
@@ -113,6 +114,7 @@ export default function reducer(state = initialState, action) {
       return { ...state, currencies: action.result.data };
     case actionTypes.CLOSE_IN_MODAL:
       return { ...state, showInputModal: false };
+        /*
     case actionTypes.OPEN_IN_MODAL:
       return { ...state, showInputModal: true };
     case actionTypes.CLOSE_MARK_MODAL:
@@ -149,6 +151,7 @@ export default function reducer(state = initialState, action) {
       return { ...state, declInModal: action.data, showDeclInputModal: true };
     case actionTypes.CLOSE_DECL_INPUT_MODAL:
       return { ...state, declInModal: initialState.declInModal, showDeclInputModal: false };
+    */
     case actionTypes.CLOSE_ADVFEE_MODAL:
       return { ...state, advanceFeeModal: { ...state.advanceFeeModal, visible: false } };
     case actionTypes.LOAD_ADVPARTIES_SUCCEED:
@@ -156,6 +159,7 @@ export default function reducer(state = initialState, action) {
         ...state.advanceFeeModal, visible: true, direction: action.params.direction,
         delg_no: action.params.delgNo,
       } };
+        /*
     case actionTypes.SHOW_PREVIEWER:
       return { ...state, previewer: {
         ...state.previewer,
@@ -167,6 +171,7 @@ export default function reducer(state = initialState, action) {
         ...action.result.data } };
     case actionTypes.HIDE_PREVIEWER:
       return { ...state, previewer: { ...state.previewer, visible: action.visible } };
+      */
     case actionTypes.LOAD_DELGADVFEES_SUCCEED:
       return { ...state, advanceFeeModal: { ...state.advanceFeeModal, fees: action.result.data } };
     case actionTypes.COMPUTE_DELGADVFEES_SUCCEED:
@@ -199,6 +204,7 @@ export function loadPartnersForFilter(tenantId) {
   };
 }
 
+  /*
 export function showPreviewer(params) {
   return {
     [CLIENT_API]: {
@@ -222,7 +228,7 @@ export function hidePreviewer(delgNo) {
     delgNo,
     visible: false,
   };
-}
+} */
 
 export function loadPaneExp(delgNo, tenantId) {
   return {
@@ -300,6 +306,7 @@ export function loadCurrencies() {
   };
 }
 
+  /*
 export function loadSubTable(params) {
   return {
     [CLIENT_API]: {
@@ -343,6 +350,7 @@ export function openInModal() {
     type: actionTypes.OPEN_IN_MODAL,
   };
 }
+*/
 
 export function closeAdvanceFeeModal() {
   return {
@@ -350,6 +358,7 @@ export function closeAdvanceFeeModal() {
   };
 }
 
+  /*
 export function closeMarkModal() {
   return {
     type: actionTypes.CLOSE_MARK_MODAL,
@@ -385,6 +394,7 @@ export function closeDeclInputModal() {
     type: actionTypes.CLOSE_DECL_INPUT_MODAL,
   };
 }
+*/
 
 export function loadCertFees(params) {
   return {

@@ -49,3 +49,36 @@ export const TAX_STATUS = {
     value: '运费不含税',
   },
 };
+
+export const EXPENSE_CATEGORIES = [{
+  key: 'all',
+  color: '#d9d9d9',
+  text: '全部费用',
+}, {
+  key: 'service',
+  color: '#87d068',
+  text: '服务费',
+}, {
+  key: 'advance',
+  color: '#f8e411',
+  text: '代垫费',
+}, {
+  key: 'special',
+  color: '#f04a14',
+  text: '特殊费用',
+}];
+
+
+export const EXPENSE_TYPES = [{
+  key: 'customdecl',
+  text: '报关',
+}, {
+  key: 'ciqdecl',
+  text: '报检',
+}, {
+  key: 'transport',
+  text: '运输',
+}, {
+  key: 'cert',
+  text: '鉴定办证',
+}];

@@ -30,17 +30,13 @@ const messages = defineMessages({
     id: 'cms.modals.tabpanes.fee.name',
     defaultMessage: '费用名称',
   },
-  charCount: {
-    id: 'cms.modals.tabpanes.charge.count',
-    defaultMessage: '计费数量',
-  },
-  unitPrice: {
-    id: 'cms.modals.tabpanes.unit.price',
-    defaultMessage: '计费单价',
+  feeRemark: {
+    id: 'cms.modals.tabpanes.fee.remark',
+    defaultMessage: '费用说明',
   },
   feeVal: {
     id: 'cms.modals.tabpanes.fee.val',
-    defaultMessage: '费用金额',
+    defaultMessage: '金额',
   },
   taxFee: {
     id: 'cms.modals.tabpanes.tax.fee',
@@ -48,7 +44,7 @@ const messages = defineMessages({
   },
   totalFee: {
     id: 'cms.modals.tabpanes.total.fee',
-    defaultMessage: '应收金额',
+    defaultMessage: '价税合计',
   },
   info: {
     id: 'cms.modals.tabpanes.expense,info',

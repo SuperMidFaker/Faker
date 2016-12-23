@@ -7,7 +7,7 @@ import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import withPrivilege from 'client/common/decorators/withPrivilege';
-import { loadExpense, openInModal, loadCurrencies,
+import { loadExpense, loadCurrencies,
   loadAdvanceParties, loadPartnersForFilter } from 'common/reducers/cmsExpense';
 import { showPreviewer } from 'common/reducers/cmsDelegation';
 import { EXP_STATUS } from 'common/constants';
@@ -55,7 +55,7 @@ function fetchData({ state, dispatch }) {
     saved: state.cmsExpense.saved,
     partners: state.cmsExpense.partners,
   }),
-  { openInModal, loadCurrencies, loadExpense,
+  { loadCurrencies, loadExpense,
     showPreviewer, loadAdvanceParties }
 )
 @connectNav({
@@ -69,7 +69,6 @@ export default class ExpenseList extends Component {
     expslist: PropTypes.object.isRequired,
     intl: intlShape.isRequired,
     listFilter: PropTypes.object.isRequired,
-    openInModal: PropTypes.func.isRequired,
     loadCurrencies: PropTypes.func.isRequired,
     loadExpense: PropTypes.func.isRequired,
     saved: PropTypes.bool.isRequired,
