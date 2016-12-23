@@ -52,17 +52,17 @@ export default class ShipmentAdvanceModal extends React.Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.shipmtNo && this.props.shipmtNo !== nextProps.shipmtNo) {
-      const { transportModeId, goodsType, dispId, type } = nextProps;
+      const { transportModeId, goodsType, dispId, type, tenantId } = nextProps;
       this.props.loadShipmtDispatch(dispId).then((result) => {
         if (type === 1) {
           this.props.getTariffByTransportInfo({
             transModeCode: transportModeId, partnerId: result.data.sr_partner_id, goodsType,
-            tenantId: result.data.sr_tenant_id,
+            partnerTenantId: result.data.sr_tenant_id, tenantId 
           });
         } else if (type === -1) {
           this.props.getTariffByTransportInfo({
             transModeCode: transportModeId, partnerId: result.data.sp_partner_id, goodsType,
-            tenantId: result.data.sp_tenant_id,
+            partnerTenantId: result.data.sp_tenant_id, tenantId
           });
         }
       });
