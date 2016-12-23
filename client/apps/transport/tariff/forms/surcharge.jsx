@@ -349,10 +349,10 @@ export default class SurchargeForm extends React.Component {
         dataIndex: 'invoice_en',
         width: 80,
         render: (o, record, index) => {
-          if (index >= 4) {
+          if (index >= 4 && index === editIndex) {
             return (<Switch size="small" checked={o} disabled={index !== editIndex} onChange={e => this.handleInvoiceEnChange(index, e)} />);
           } else {
-            return '';
+            return o ? '是' : '否';
           }
         },
       }, {
@@ -362,7 +362,7 @@ export default class SurchargeForm extends React.Component {
         render: (o, record, index) => {
           if (index >= 4) {
             if (index === editIndex) {
-              return (<Input value={o * 100} placeholder="自定义费用代码" addonAfter="%" onChange={e => this.handleTaxRateChange(index, e.target.value / 100)} />);
+              return (<Input value={o * 100} type="number" placeholder="自定义费用代码" addonAfter="%" onChange={e => this.handleTaxRateChange(index, e.target.value / 100)} />);
             } else {
               return `${o * 100}%`;
             }
@@ -375,10 +375,10 @@ export default class SurchargeForm extends React.Component {
         dataIndex: 'enabled',
         width: 80,
         render: (o, record, index) => {
-          if (index >= 4) {
+          if (index >= 4 && index === editIndex) {
             return (<Switch size="small" checked={o} disabled={index !== editIndex} onChange={e => this.handleEnabledChange(index, e)} />);
           } else {
-            return '';
+            return o ? '是' : '否';
           }
         },
       }, {

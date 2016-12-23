@@ -27,7 +27,10 @@ const RadioGroup = Radio.Group;
 
 function fetchData({ state, dispatch, location }) {
   const { kind, status } = location.query;
-  const filters = { ...state.transportTariff.filters, kind: [kind], status: [status] };
+  let filters = state.transportTariff.filters;
+  if (kind || status) {
+    filters = { ...state.transportTariff.filters, kind: [kind], status: [status] };
+  }
   dispatch(loadFormParams(state.account.tenantId));
   return dispatch(loadTable({
     tenantId: state.account.tenantId,

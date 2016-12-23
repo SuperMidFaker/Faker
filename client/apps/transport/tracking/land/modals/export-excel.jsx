@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Form, Button, DatePicker, Modal } from 'antd';
+import { Form, Button, DatePicker, Modal, Select, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
@@ -8,6 +8,7 @@ import moment from 'moment';
 import { createFilename } from 'client/util/dataTransform';
 
 const formatMsg = format(messages);
+const Option = Select.Option;
 const FormItem = Form.Item;
 const RangePicker = DatePicker.RangePicker;
 const startDate = new Date();
@@ -28,6 +29,7 @@ export default class ExportExcel extends React.Component {
     visible: false,
     startDate: `${moment(startDate).format('YYYY-MM-DD')} 00:00:00`,
     endDate: `${moment(new Date()).format('YYYY-MM-DD')} 23:59:59`,
+    dateType: '',
   }
   showModal = () => {
     this.setState({
@@ -35,8 +37,14 @@ export default class ExportExcel extends React.Component {
     });
   }
   handleOk = () => {
-    window.open(`${API_ROOTS.default}v1/transport/tracking/exportShipmentExcel/${createFilename('tracking')}.xlsx?tenantId=${this.props.tenantId}&startDate=${this.state.startDate}&endDate=${this.state.endDate}`);
-    this.handleClose();
+    const { dateType, endDate } = this.state;
+    const { tenantId } = this.props;
+    if (dateType !== '') {
+      window.open(`${API_ROOTS.default}v1/transport/tracking/exportShipmentExcel/${createFilename('tracking')}.xlsx?tenantId=${tenantId}&startDate=${this.state.startDate}&endDate=${endDate}&dateType=${dateType}`);
+      this.handleClose();
+    } else {
+      message.error('请选择参照时间类型');
+    }
   }
   handleClose = () => {
     this.setState({
@@ -48,6 +56,9 @@ export default class ExportExcel extends React.Component {
       startDate: `${dateString[0]} 00:00:00`,
       endDate: `${dateString[1]} 23:59:59`,
     });
+  }
+  handleDateTypeChange = (value) => {
+    this.setState({ dateType: value });
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
 
@@ -61,8 +72,18 @@ export default class ExportExcel extends React.Component {
           onCancel={this.handleClose}
         >
           <Form horizontal>
+            <FormItem label="参照时间" labelCol={{ span: 6 }}
+              wrapperCol={{ span: 13 }}
+            >
+              <Select onChange={this.handleDateTypeChange}>
+                <Option value="pickupEstDate">预计提货时间</Option>
+                <Option value="deliverEstDate">预计交货时间</Option>
+                <Option value="pickupActDate">实际提货时间</Option>
+                <Option value="deliverActDate">实际交货时间</Option>
+              </Select>
+            </FormItem>
             <FormItem
-              label="预计提货时间"
+              label="时间范围"
               labelCol={{ span: 6 }}
               wrapperCol={{ span: 18 }}
             >
