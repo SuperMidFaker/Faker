@@ -57,12 +57,12 @@ export default class ShipmentAdvanceModal extends React.Component {
         if (type === 1) {
           this.props.getTariffByTransportInfo({
             transModeCode: transportModeId, partnerId: result.data.sr_partner_id, goodsType,
-            partnerTenantId: result.data.sr_tenant_id, tenantId 
+            partnerTenantId: result.data.sr_tenant_id, tenantId,
           });
         } else if (type === -1) {
           this.props.getTariffByTransportInfo({
             transModeCode: transportModeId, partnerId: result.data.sp_partner_id, goodsType,
-            partnerTenantId: result.data.sp_tenant_id, tenantId
+            partnerTenantId: result.data.sp_tenant_id, tenantId,
           });
         }
       });
