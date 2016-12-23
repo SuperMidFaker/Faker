@@ -235,7 +235,7 @@ export default class DelegationInfoHubPanel extends React.Component {
             <div className="btn-bar">
               <Button type="default" onClick={this.handleDispAllCancel}>
                 撤回
-            </Button>
+              </Button>
               <span />
               <Dropdown overlay={menu}>
                 <Button type="ghost">

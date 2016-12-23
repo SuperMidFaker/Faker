@@ -125,7 +125,7 @@ export default class TrialModal extends React.Component {
         <Button key="next" type="primary" size="large" onClick={this.handleTrialNext} disabled={!trialFilename}>下一步</Button>,
       ];
       stepContent = (
-        <Progress type="circle" percent={progressPercent} status={progressStatus} />
+        <Progress type="circle" percent={progressPercent} status={progressStatus} width={80} />
       );
     } else if (curStep === 2) {
       footer = [

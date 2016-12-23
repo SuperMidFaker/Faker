@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Card, Form, Button, message } from 'antd';
+import { Collapse, Form, Button, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import HeadForm from './headForm';
 import BodyTable from './bodyList';
@@ -10,6 +10,7 @@ import { format } from 'client/common/i18n/helpers';
 import globalMessage from 'client/common/root.i18n';
 import messages from '../message.i18n';
 
+const Panel = Collapse.Panel;
 const formatMsg = format(messages);
 const formatGlobalMsg = format(globalMessage);
 
@@ -81,10 +82,12 @@ export default class BillForm extends React.Component {
     }
   }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
-  handleUploaded = () => {
+  handleUploaded = (ev) => {
+    ev.stopPropagation();
     this.props.loadBillBodyList({ billSeqNo: this.props.billHead.bill_seq_no });
   }
   handleBillSave = (ev) => {
+    ev.stopPropagation();
     ev.preventDefault();
     // todo bill head save sync with entry head, vice verse
     this.props.form.validateFields((errors) => {
@@ -105,36 +108,40 @@ export default class BillForm extends React.Component {
   }
   render() {
     const { ietype, readonly, form, billHead, billBody, ...actions } = this.props;
+    const billHeadToolbar = (!readonly &&
+      <div className="extra-actions"><Button type="primary" onClick={this.handleBillSave} icon="save">
+        {formatGlobalMsg(this.props.intl, 'save')}
+      </Button></div>);
+    const billBodyToolbar = (
+      <div className="extra-actions">
+        <ExcelUpload endpoint={`${API_ROOTS.default}v1/cms/declare/billbody/import`}
+          formData={{
+            data: JSON.stringify({
+              bill_seq_no: this.props.billHead.bill_seq_no,
+              tenant_id: this.props.tenantId,
+              creater_login_id: this.props.loginId,
+            }),
+          }} onUploaded={this.handleUploaded}
+        >
+          <Button icon="file-excel">{this.msg('importBody')}</Button>
+        </ExcelUpload>
+      </div>);
     return (
       <div className="page-body">
-        <div className="panel-header">
-          {!readonly &&
-          <Button type="primary" onClick={this.handleBillSave} icon="save">
-            {formatGlobalMsg(this.props.intl, 'save')}
-          </Button>}
-          <span />
-          <ExcelUpload endpoint={`${API_ROOTS.default}v1/cms/declare/billbody/import`}
-            formData={{
-              data: JSON.stringify({
-                bill_seq_no: this.props.billHead.bill_seq_no,
-                tenant_id: this.props.tenantId,
-                creater_login_id: this.props.loginId,
-              }),
-            }} onUploaded={this.handleUploaded}
-          >
-            <Button icon="file-excel">{this.msg('importBody')}</Button>
-          </ExcelUpload>
-        </div>
-        <div className={`panel-body card-wrapper ${readonly ? 'readonly' : ''}`}>
-          <Card bodyStyle={{ padding: 8 }}>
-            <BillHead ietype={ietype} readonly={readonly} form={form} formData={billHead} />
-          </Card>
-          <Card bodyStyle={{ padding: 0 }}>
-            <BillBody ietype={ietype} readonly={readonly} data={billBody} headNo={billHead.bill_seq_no}
-              onAdd={actions.addNewBillBody} onDel={actions.delBillBody} onEdit={actions.editBillBody}
-              billSeqNo={billHead.bill_seq_no}
-            />
-          </Card>
+        <div className={`panel-body collapse ${readonly ? 'readonly' : ''}`}>
+          <Collapse defaultActiveKey={['header']}>
+            <Panel header={billHeadToolbar} key="header">
+              <BillHead ietype={ietype} readonly={readonly} form={form} formData={billHead} />
+            </Panel>
+          </Collapse>
+          <Collapse defaultActiveKey={['body']}>
+            <Panel header={billBodyToolbar} key="body">
+              <BillBody ietype={ietype} readonly={readonly} data={billBody} headNo={billHead.bill_seq_no}
+                onAdd={actions.addNewBillBody} onDel={actions.delBillBody} onEdit={actions.editBillBody}
+                billSeqNo={billHead.bill_seq_no}
+              />
+            </Panel>
+          </Collapse>
         </div>
       </div>);
   }

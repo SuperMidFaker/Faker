@@ -179,24 +179,28 @@ export default class BodyTable extends React.Component {
         />,
     }, {
       title: this.msg('netwt'),
+      width: 80,
       render: (o, record, index) =>
         <ColumnInput field="wet_wt" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} edit={editBody}
         />,
     }, {
       title: this.msg('grosswt'),
+      width: 80,
       render: (o, record, index) =>
         <ColumnInput field="gross_wt" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} edit={editBody}
         />,
     }, {
       title: this.msg('element'),
+      width: 380,
       render: (o, record, index) =>
         <ColumnInput field="element" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} edit={editBody}
         />,
     }, {
       title: this.msg('quantity'),
+      width: 80,
       render: (o, record, index) =>
         <ColumnInput field="g_qty" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} edit={editBody}
@@ -217,26 +221,28 @@ export default class BodyTable extends React.Component {
         />,
     }, {
       title: this.msg('decPrice'),
+      width: 80,
       render: (o, record, index) =>
         <ColumnInput field="dec_price" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} edit={editBody}
         />,
     }, {
       title: this.msg('decTotal'),
+      width: 80,
       render: (o, record, index) =>
         <ColumnInput field="trade_total" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} edit={editBody}
         />,
     }, {
       title: this.msg('currency'),
-      width: 100,
+      width: 60,
       render: (o, record, index) =>
         <ColumnSelect field="trade_curr" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} options={currencies} edit={editBody}
         />,
     }, {
       title: this.msg('exemptionWay'),
-      width: 100,
+      width: 80,
       render: (o, record, index) =>
         <ColumnSelect field="duty_mode" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} options={exemptions} edit={editBody}
@@ -383,7 +389,7 @@ export default class BodyTable extends React.Component {
   render() {
     const columns = this.getColumns();
     return (<Table rowKey="id" columns={columns} dataSource={this.state.bodies}
-      size="small" scroll={{ x: 2600, y: 300 }} pagination={this.state.pagination}
+      size="middle" scroll={{ x: 2600, y: 400 }} pagination={this.state.pagination} bordered
     />);
   }
 }

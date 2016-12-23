@@ -15,7 +15,7 @@ const messages = defineMessages({
   },
   notFound: {
     id: 'container.not.found',
-    defaultMessage: '',
+    defaultMessage: '抱歉，无法找到该页',
   },
 });
 
