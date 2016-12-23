@@ -309,5 +309,5 @@ export {
 export * from './module';
 export * from './role';
 export * from './transport';
-export * from './tariff';
+export * from './expense';
 export * from './crm';

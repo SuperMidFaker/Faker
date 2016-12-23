@@ -136,9 +136,9 @@ export default class ExpensePane extends React.Component {
         && checkedExpCates.indexOf(SERVER_CATEGORY_MAP[rev.category]) !== -1);
       const totalFee = revenueFees.reduce((res, bsf) => ({
         fee_name: '合计',
-          cal_fee: res.cal_fee + parseFloat(bsf.cal_fee),
-          tax_fee: res.tax_fee + parseFloat(bsf.tax_fee),
-          total_fee: res.total_fee + parseFloat(bsf.total_fee),
+        cal_fee: res.cal_fee + parseFloat(bsf.cal_fee),
+        tax_fee: res.tax_fee + parseFloat(bsf.tax_fee),
+        total_fee: res.total_fee + parseFloat(bsf.total_fee),
       }), {
         fee_name: '合计',
         cal_fee: 0,
@@ -160,8 +160,8 @@ export default class ExpensePane extends React.Component {
       } */
       const totalCost = costFees.filter(cf => cf.key !== 'vendor').reduce((res, cfe) => ({
         cal_fee: res.cal_fee + parseFloat(cfe.cal_fee),
-          tax_fee: res.tax_fee + parseFloat(cfe.tax_fee),
-          total_fee: res.total_fee + parseFloat(cfe.total_fee),
+        tax_fee: res.tax_fee + parseFloat(cfe.tax_fee),
+        total_fee: res.total_fee + parseFloat(cfe.total_fee),
       }), {
         cal_fee: 0,
         tax_fee: 0,
