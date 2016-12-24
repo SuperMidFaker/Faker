@@ -88,7 +88,7 @@ export default class ActivityLoggerPane extends React.Component {
                     <Option value="200030001234567891">200030001234567891</Option>
                     <Option value="200030001234567892">200030001234567892</Option>
                   </Select>
-                  
+
                 </FormItem>
                 <FormItem>
                   <Radio.Group>
