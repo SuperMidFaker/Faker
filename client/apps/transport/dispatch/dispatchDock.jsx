@@ -615,7 +615,7 @@ export default class DispatchDock extends Component {
               <Tabs type="card" defaultActiveKey="carrier" onChange={this.handleTabChange}>
                 <TabPane tab={this.msg('tabTextCarrier')} key="carrier">
                   <div className="pane-header">
-                    <div className="tools"><Button onClick={this.handleNewCarrierClick}>新增承运商</Button></div>
+                    <div className="toolbar-right"><Button onClick={this.handleNewCarrierClick}>新增承运商</Button></div>
                     <SearchBar placeholder={this.msg('carrierSearchPlaceholder')}
                       onInputSearch={this.handleCarrierSearch} value={this.state.carrierSearch}
                     />
@@ -626,7 +626,7 @@ export default class DispatchDock extends Component {
                 </TabPane>
                 <TabPane tab={this.msg('tabTextVehicle')} key="vehicle">
                   <div className="pane-header">
-                    <div className="tools"><Button onClick={this.handleNewVehicleClick}>新增车辆</Button></div>
+                    <div className="toolbar-right"><Button onClick={this.handleNewVehicleClick}>新增车辆</Button></div>
                     <SearchBar placeholder={this.msg('vehicleSearchPlaceholder')}
                       onInputSearch={this.handlePlateSearch} value={this.state.plateSearch}
                     />

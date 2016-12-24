@@ -472,8 +472,8 @@ export default class TariffList extends React.Component {
             <RadioButton value="sale">销售价</RadioButton>
             <RadioButton value="cost">成本价</RadioButton>
           </RadioGroup>
-
-          <RadioGroup onChange={this.handleStatusChange} value={this.state.status} style={{ marginLeft: 30 }}>
+          <span />
+          <RadioGroup onChange={this.handleStatusChange} value={this.state.status} >
             <RadioButton value="draft">草稿箱</RadioButton>
           </RadioGroup>
         </header>
@@ -482,7 +482,7 @@ export default class TariffList extends React.Component {
         </div>
         <div className="main-content" key="main">
           <div className="page-body">
-            <div className="panel-header">
+            <div className="toolbar">
               <PrivilegeCover module="transport" feature="tariff" action="create">
                 <Button type="primary" icon="plus-circle-o" onClick={this.handleShowCreateTariffModal}>
                   {this.msg('tariffCreate')}

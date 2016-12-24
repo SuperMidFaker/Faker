@@ -245,7 +245,7 @@ export default class CreateBilling extends React.Component {
         </div>
         <div className="main-content">
           <div className="page-body">
-            <div className="panel-header">
+            <div className="toolbar">
               <span style={handleLableStyle}>客户: <strong>{partnerName}</strong></span>
               <span style={handleLableStyle}>{this.msg('range')}: <strong>{moment(beginDate).format('YYYY-MM-DD')} ~ {moment(endDate).format('YYYY-MM-DD')}</strong></span>
               <Button type="default" className="pull-right" onClick={() => this.props.showBeforeFeesModal(true)}>未入账运单</Button>

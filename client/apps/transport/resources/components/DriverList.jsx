@@ -109,7 +109,7 @@ function DriverList(props) {
       </header>
       <div className="main-content" key="main">
         <div className="page-body">
-          <div className="panel-header">
+          <div className="toolbar">
             <PrivilegeCover module="transport" feature="resources" action="create">
               <Button type="primary" onClick={onAddDriverBtnClicked} icon="plus-circle-o">新增司机</Button>
             </PrivilegeCover>

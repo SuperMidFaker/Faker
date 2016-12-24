@@ -171,7 +171,7 @@ export default class RoleList extends React.Component {
     }];
     return (
       <div className="page-body">
-        <div className="panel-header">
+        <div className="toolbar">
           <PrivilegeCover module="corp" feature="role" action="create">
             <Button type="primary" onClick={this.handleCreate} icon="plus-circle-o">
               {formatGlobalMsg(intl, 'createNew')}

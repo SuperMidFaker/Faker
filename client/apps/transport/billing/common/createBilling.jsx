@@ -246,7 +246,7 @@ export default class CreateBilling extends React.Component {
         </div>
         <div className="main-content">
           <div className="page-body">
-            <div className="panel-header">
+            <div className="toolbar">
               <span style={handleLableStyle}>{partnerSourceType}: <strong>{partnerName}</strong></span>
               <span style={handleLableStyle}>{this.msg('range')}: <strong>{moment(beginDate).format('YYYY-MM-DD')} ~ {moment(endDate).format('YYYY-MM-DD')}</strong></span>
               <span style={handleLableStyle}>{this.msg('chooseModel')}: <strong>{this.msg(chooseModel)}</strong></span>

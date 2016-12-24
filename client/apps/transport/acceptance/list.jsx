@@ -386,13 +386,11 @@ export default class AcceptList extends React.Component {
         },
       }];
       btns = (
-        <div style={{ display: 'inline-block' }}>
-          <PrivilegeCover module="transport" feature="shipment" action="edit">
-            <Button onClick={ev => this.handleShipmtsAccept(this.state.selectedRowKeys, ev)}>
-            批量接单
-            </Button>
-          </PrivilegeCover>
-        </div>
+        <PrivilegeCover module="transport" feature="shipment" action="edit">
+          <Button onClick={ev => this.handleShipmtsAccept(this.state.selectedRowKeys, ev)}>
+          批量接单
+          </Button>
+        </PrivilegeCover>
       );
     } else if (radioValue === 'draft') {
       columns = [...columns, {
@@ -444,7 +442,7 @@ export default class AcceptList extends React.Component {
             toggle={this.toggleAdvancedSearch}
           />
           <div className="page-body">
-            <div className="panel-header">
+            <div className="toolbar">
               <PrivilegeCover module="transport" feature="shipment" action="create">
                 <NavLink to="/transport/shipment/new">
                   <Button type="primary" icon="plus-circle-o">
@@ -452,7 +450,7 @@ export default class AcceptList extends React.Component {
                   </Button>
                 </NavLink>
               </PrivilegeCover>
-              <span className={`mass-action-btn ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
+              <span className={`${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 {btns}
               </span>
             </div>

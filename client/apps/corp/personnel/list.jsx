@@ -323,8 +323,8 @@ export default class PersonnelSetting extends React.Component {
       <div>
         <div className="main-content">
           <div className="page-body">
-            <div className="panel-header">
-              <div className="tools">
+            <div className="toolbar">
+              <div className="toolbar-right">
                 <Select style={{ width: 200 }} value={`${tenant.id}`}
                   onChange={value => this.handleTenantSwitch(value)}
                 >

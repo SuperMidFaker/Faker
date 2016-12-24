@@ -36,14 +36,14 @@ export default class OutboundShipmentsList extends React.Component {
     return (
       <QueueAnim type={['bottom', 'up']}>
         <header className="top-bar" key="header">
-          <div className="tools">
+          <div className="toolbar-right">
             <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
           </div>
           <span>{this.msg('outboundShipments')}</span>
         </header>
         <div className="main-content" key="main">
           <div className="page-body">
-            <div className="panel-header">
+            <div className="toolbar">
               <Button type="primary" icon="plus-circle-o">
                 {this.msg('importShipments')}
               </Button>

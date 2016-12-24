@@ -182,7 +182,7 @@ export default class Manage extends Component {
         </header>
         <div className="main-content">
           <div className="page-body">
-            <div className="panel-header">
+            <div className="toolbar">
               <PrivilegeCover module="clearance" feature="relation" action="create">
                 <Button type="primary" style={{ marginBottom: 8 }} onClick={
                   () => this.handleNavigationTo('/clearance/relation/create')

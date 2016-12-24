@@ -225,7 +225,7 @@ export default class NotificationPopover extends React.Component {
   render() {
     return (<div className="navbar-popover" style={{ width: 360 }}>
       <div className="popover-header">
-        <div className="tools"><a role="button" ><i className="zmdi zmdi-check-all zmdi-hc-lg" /></a></div>
+        <div className="toolbar-right"><a role="button" ><i className="zmdi zmdi-check-all zmdi-hc-lg" /></a></div>
         <span>{this.msg('notification')}</span>
       </div>
       <div className="popover-body">

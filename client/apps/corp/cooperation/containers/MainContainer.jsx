@@ -48,7 +48,7 @@ export default class MainContainer extends Component {
     return (
       <div className="main-content">
         <div className="page-body">
-          <div className="panel-header">
+          <div className="toolbar">
             <RadioGroup defaultValue={invitationType} onChange={this.handleInvitationTypeChange}>
               <RadioButton value="0">待邀请</RadioButton>
               <RadioButton value="1">收到的邀请</RadioButton>

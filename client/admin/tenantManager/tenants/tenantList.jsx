@@ -201,7 +201,7 @@ export default class TenantList extends React.Component {
     return (
       <div className="main-content">
         <div className="page-body">
-          <div className="panel-header">
+          <div className="toolbar">
             <Button type="primary" icon="plus-circle-o" onClick={this.handleNewTenant}>
                 新建租户
             </Button>

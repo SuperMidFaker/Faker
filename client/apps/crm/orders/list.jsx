@@ -296,7 +296,7 @@ export default class ShipmentOrderList extends React.Component {
 
         <div className="main-content" key="main">
           <div className="page-body">
-            <div className="panel-header">
+            <div className="toolbar">
               <Button type="primary" icon="plus-circle-o" onClick={this.handleCreate}>
                 {this.msg('new')}
               </Button>

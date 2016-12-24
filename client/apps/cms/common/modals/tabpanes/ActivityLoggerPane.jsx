@@ -88,11 +88,7 @@ export default class ActivityLoggerPane extends React.Component {
                     <Option value="200030001234567891">200030001234567891</Option>
                     <Option value="200030001234567892">200030001234567892</Option>
                   </Select>
-                  <DatePicker
-                    showTime
-                    format="YYYY-MM-DD HH:mm:ss"
-                    placeholder="选择查验时间"
-                  />
+                  
                 </FormItem>
                 <FormItem>
                   <Radio.Group>
@@ -106,8 +102,14 @@ export default class ActivityLoggerPane extends React.Component {
           </Tabs>
           <div className="toolbar-left">
             <Button type="primary" disabled>确定</Button>
-            <span />
             <Button type="ghost">取消</Button>
+          </div>
+          <div className="toolbar-right">
+            <DatePicker
+              showTime
+              format="YYYY-MM-DD HH:mm"
+              placeholder="选择时间"
+            />
           </div>
         </Card>
         <section className="timeline">
@@ -131,7 +133,6 @@ export default class ActivityLoggerPane extends React.Component {
                 海关查验 2015-09-01
                 <div className="toolbar-right">
                   <Button type="primary" shape="circle" size="small" icon="check" />
-                  <span />
                   <Button type="ghost" shape="circle" size="small" icon="ellipsis" />
                 </div>
               </Card>
@@ -143,7 +144,6 @@ export default class ActivityLoggerPane extends React.Component {
                 品质查验 2015-09-01
                 <div className="toolbar-right">
                   <Button size="small" shape="circle" icon="check" disabled />
-                  <span />
                   <Button type="ghost" shape="circle" size="small" icon="ellipsis" />
                 </div>
               </Card>

@@ -256,8 +256,8 @@ export default class CorpList extends React.Component {
     }];
     return (
       <div className="page-body">
-        <div className="panel-header">
-          <div className="tools">
+        <div className="toolbar">
+          <div className="toolbar-right">
             <span>{formatMsg(intl, 'quotas')}{' '}</span>
             <span style={{ fontSize: 20, fontWeight: 700, color: '#51C23A' }}>{corplist.totalCount}</span>
             <span style={{ fontSize: 20, fontWeight: 400, color: '#333' }}>/</span>

@@ -62,7 +62,7 @@ export default class TradeItemList extends Component {
         </header>
         <div className="main-content" key="main">
           <div className="page-body">
-            <div className="panel-header">
+            <div className="toolbar">
               <div className="toolbar-right">
                 <Select
                   showSearch

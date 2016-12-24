@@ -1058,10 +1058,10 @@ export default class DispatchList extends React.Component {
         <div className="main-content" key="main">
           <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch} toggle={this.toggleAdvancedSearch} />
           <div className="page-body">
-            <div className="panel-header">
-              <span className={`mass-action-btn ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
+            <div className="toolbar">
+              <div className={`${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 {btns}
-              </span>
+              </div>
             </div>
             <div className="panel-body table-panel">
               <div className="dispatch-table">

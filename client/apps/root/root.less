@@ -317,12 +317,6 @@ img {
     margin-right: 16px;
     font-size: 14px;
   }
-  .tools {
-    float: right;
-    >span {
-      margin-right: 8px;
-    }
-  }
   .ant-menu {
     background: none;
     line-height: 44px;
@@ -433,15 +427,9 @@ img {
     vertical-align: middle;
     margin-right: 8px;
   }
-  .tools {
-    float: right;
-    >span {
-      margin-right: 8px;
-    }
-  }
 
   @media (max-width:767px) {
-    .tools {
+    .toolbar-right {
       float: none;
       margin-bottom: 10px;
     }
@@ -501,20 +489,31 @@ img {
   h3 {
     line-height: 28px;
   }
-  .mass-action-btn {
-    margin-left: 8px;
-    span {
-      margin-right: 8px;
-    }
-  }
-  .tools {
-    float: right;
-  }
-
   @media (max-width:767px) {
     margin-bottom: 10px;
     padding: 10px 10px 0 10px;
-    .tools {
+    .toolbar-right {
+      float: none;
+      margin-bottom: 10px;
+    }
+  }
+}
+.toolbar {
+  position: relative;
+  padding: 8px 16px;
+  min-height: 46px;
+  border-bottom: 1px solid #e9e9e9;
+  button,
+  >span {
+    margin-right: 8px;
+  }
+  h3 {
+    line-height: 28px;
+  }
+  @media (max-width:767px) {
+    margin-bottom: 10px;
+    padding: 10px 10px 0 10px;
+    .toolbar-right {
       float: none;
       margin-bottom: 10px;
     }
@@ -611,9 +610,6 @@ img {
 .popover-header{
   position: relative;
   padding: 8px 16px;
-  .tools {
-    float: right;
-  }
   > span {
     font-size: 14px;
     font-weight: bold;
@@ -628,8 +624,9 @@ img {
 }
 .toolbar-right {
   float: right;
+  button,
   >span {
-    margin-right: 8px;
+    margin-left: 8px;
   }
 }
 .toolbar-left {
@@ -638,6 +635,7 @@ img {
     width: 140px;
     margin-right: 4px;
   }
+  button,
   >span {
     margin-right: 8px;
   }
@@ -651,21 +649,10 @@ img {
   span {
     vertical-align: middle;
   }
-  .tools {
-    float: right;
-  }
-  .left-tools {
-    display: inline-block;
-    width: 220px;
-    input {
-      width: 140px;
-      margin-right: 4px;
-    }
-  }
   @media (max-width:767px) {
     margin-bottom: 10px;
     padding: 10px 10px 0 10px;
-    .tools {
+    .toolbar-right {
       float: none;
       margin-bottom: 10px;
     }
@@ -926,8 +913,11 @@ img {
 }
 .timeline {
   h3 {
-    padding: 0 8px 16px 8px;
+    line-height: 28px;
+    padding: 8px;
     clear: both;
+    background: #f9f9f9;
+    margin-bottom: 16px;
   }
   .ant-card {
     margin-right: 16px;

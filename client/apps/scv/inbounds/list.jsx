@@ -364,7 +364,7 @@ export default class InboundShipmentsList extends React.Component {
         </div>
         <div className="main-content" key="main">
           <div className="page-body">
-            <div className="panel-header">
+            <div className="toolbar">
               <Upload accept=".xls,.xlsx" action={`${API_ROOTS.scv}v1/scv/inbound/import/shipments`}
                 data={{ tenantId: this.props.tenantId }} onChange={this.handleImport}
                 showUploadList={false} withCredentials
@@ -373,7 +373,6 @@ export default class InboundShipmentsList extends React.Component {
                   {this.msg('importShipments')}
                 </Button>
               </Upload>
-              <span style={{ marginRight: 8 }} />
               <Button type="primary" icon="plus-circle-o" onClick={this.handleShipmentCreate}>
                 {this.msg('newShipment')}
               </Button>

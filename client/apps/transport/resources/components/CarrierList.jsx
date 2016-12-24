@@ -88,7 +88,7 @@ export default class DriverList extends Component {
         </header>
         <div className="main-content" key="main">
           <div className="page-body">
-            <div className="panel-header">
+            <div className="toolbar">
               <PrivilegeCover module="transport" feature="resources" action="create">
                 <Button type="primary" onClick={onAddBtnClicked} icon="plus-circle-o">新增承运商</Button>
               </PrivilegeCover>

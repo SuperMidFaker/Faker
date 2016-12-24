@@ -333,11 +333,11 @@ export default class LandStatusList extends React.Component {
     return (
       <div>
         <div className="page-body">
-          <div className="panel-header">
+          <div className="toolbar">
             <PrivilegeCover module="transport" feature="tracking" action="create">
               <ExportExcel />
             </PrivilegeCover>
-            <span className={`mass-action-btn ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
+            <span className={`toolbar-right ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
               {this.renderBatchOperationButtons()}
             </span>
           </div>

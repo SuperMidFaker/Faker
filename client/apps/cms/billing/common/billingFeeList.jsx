@@ -242,7 +242,7 @@ export default class BillingFeeList extends React.Component {
         </div>
         <div className="main-content">
           <div className="page-body">
-            <div className="panel-header">
+            <div className="toolbar">
               <span style={handleLableStyle}>{this.msg('partner')}: <strong>{partnerName}</strong></span>
               <span style={handleLableStyle}>{this.msg('range')}: <strong>{moment(billing.beginDate).format('YYYY-MM-DD')} ~ {moment(billing.endDate).format('YYYY-MM-DD')}</strong></span>
               <span style={handleLableStyle}>{this.msg('chooseModel')}: <strong>{this.msg(billing.chooseModel)}</strong></span>

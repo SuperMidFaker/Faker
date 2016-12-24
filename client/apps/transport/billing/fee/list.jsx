@@ -422,9 +422,9 @@ export default class FeesList extends React.Component {
         </div>
         <div className="main-content">
           <div className="page-body">
-            <div className="panel-header">
+            <div className="toolbar">
               <Button onClick={this.handleExportExcel}>{this.msg('export')}</Button>
-              <div style={{ float: 'right' }}>
+              <div className="toolbar-right">
                 <RangePicker style={{ width: 200 }} value={[moment(startDate), moment(endDate)]}
                   onChange={this.onDateChange}
                 />

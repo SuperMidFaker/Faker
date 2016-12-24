@@ -88,14 +88,14 @@ export default class List extends React.Component {
     return (
       <QueueAnim type={['bottom', 'up']}>
         <header className="top-bar" key="header">
-          <div className="tools" />
+          <div className="toolbar-right" />
           <span>{this.msg('customer')}</span>
         </header>
         <div className="main-content" key="main">
           <Row gutter={16}>
             <Col span={6}>
               <div className="page-body">
-                <div className="panel-header">
+                <div className="toolbar">
 
                   <div className="pull-right">
                     <Button type="primary" icon="plus-circle-o" onClick={() => this.props.showCustomerModal('add')}>

@@ -72,7 +72,7 @@ export default class SCVDashboard extends React.Component {
     return (
       <QueueAnim type={['bottom', 'up']}>
         <header className="top-bar" key="header">
-          <div className="tools" />
+          <div className="toolbar-right" />
           <span>{this.msg('dashboardTitle')}</span>
         </header>
         <div className="main-content">

@@ -349,7 +349,6 @@ export default class DelegationInfoHubPanel extends React.Component {
             {this.translateStatus(delegateTracking)}
             <div className="toolbar-right">
               {this.button()}
-              <span />
               <Dropdown overlay={menu}>
                 <Button><Icon type="setting" /> <Icon type="down" /></Button>
               </Dropdown>

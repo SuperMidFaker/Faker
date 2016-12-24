@@ -430,11 +430,10 @@ export default class ExpenseList extends Component {
         </div>
         <div className="main-content" key="main">
           <div className="page-body">
-            <div className="panel-header">
+            <div className="toolbar">
               <Button type="default" icon="upload" onClick={this.handleCushInput}>
                 {this.msg('incExp')}
               </Button>
-              <span />
               <Button type="ghost" icon="file-excel" onClick={this.handleExpExport}>
                 {this.msg('eptExp')}
               </Button>

@@ -580,7 +580,7 @@ export default class DelegationList extends Component {
         </div>
         <div className="main-content" key="main">
           <div className="page-body">
-            <div className="panel-header">
+            <div className="toolbar">
               <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
                 <Button type="primary" onClick={this.handleCreateBtnClick} icon="plus">
                   {this.msg('delgNew')}
