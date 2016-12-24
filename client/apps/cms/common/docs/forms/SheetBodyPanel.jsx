@@ -156,7 +156,7 @@ export default class SheetBodyPanel extends React.Component {
         />,
     }, {
       title: this.msg('codeT'),
-      width: 100,
+      width: 80,
       render: (o, record, index) =>
         <ColumnInput field="code_t" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} edit={editBody}
@@ -225,14 +225,14 @@ export default class SheetBodyPanel extends React.Component {
         />,
     }, {
       title: this.msg('decPrice'),
-      width: 80,
+      width: 100,
       render: (o, record, index) =>
         <ColumnInput field="dec_price" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} edit={editBody}
         />,
     }, {
       title: this.msg('decTotal'),
-      width: 80,
+      width: 100,
       render: (o, record, index) =>
         <ColumnInput field="trade_total" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} edit={editBody}
@@ -428,7 +428,7 @@ export default class SheetBodyPanel extends React.Component {
       <Collapse defaultActiveKey={['body']}>
         <Panel header={billBodyToolbar} key="body">
           <Table rowKey="id" columns={columns} dataSource={this.state.bodies}
-            size="middle" scroll={{ x: 2600, y: 400 }} pagination={this.state.pagination} bordered
+            size="middle" scroll={{ x: 2600, y: 415 }} pagination={this.state.pagination} bordered
           />
         </Panel>
       </Collapse>);

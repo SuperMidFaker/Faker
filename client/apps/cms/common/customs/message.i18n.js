@@ -1,13 +1,13 @@
 import { defineMessages } from 'react-intl';
 
 export default defineMessages({
+  customsDeclaration: {
+    id: 'cms.customs.management',
+    defaultMessage: '报关管理',
+  },
   searchPlaceholder: {
     id: 'cms.customs.search.placeholder',
     defaultMessage: '海关编号/统一编号/委托编号',
-  },
-  ciqSearchPlaceholder: {
-    id: 'cms.customs.ciq.search.placeholder',
-    defaultMessage: '通关单号/统一编号/委托编号',
   },
   importOperation: {
     id: 'cms.customs.import.operation',
@@ -17,28 +17,28 @@ export default defineMessages({
     id: 'cms.customs.export.operation',
     defaultMessage: '出口操作',
   },
-  customsDeclaration: {
-    id: 'cms.customs.management',
-    defaultMessage: '报关管理',
-  },
   entryId: {
-    id: 'cms.customs.delg.entryId',
+    id: 'cms.customs.decl.entryId',
     defaultMessage: '海关编号',
+  },
+  createDecl: {
+    id: 'cms.customs.decl.create',
+    defaultMessage: '新建报关单',
   },
   delgNo: {
     id: 'cms.customs.delg.no',
     defaultMessage: '委托编号',
   },
   billNo: {
-    id: 'cms.customs.delg.billNo',
+    id: 'cms.customs.bill.no',
     defaultMessage: '清单编号',
   },
   preEntryNo: {
-    id: 'cms.customs.delg.preEntry.no',
+    id: 'cms.customs.decl.preentry.no',
     defaultMessage: '统一编号',
   },
   clrStatus: {
-    id: 'cms.customs.clr.status',
+    id: 'cms.customs.decl.status',
     defaultMessage: '通关状态',
   },
   agent: {
@@ -50,7 +50,7 @@ export default defineMessages({
     defaultMessage: '状态',
   },
   opColumn: {
-    id: 'cms.customs.delg.opColumn',
+    id: 'cms.customs.opColumn',
     defaultMessage: '操作',
   },
   entryNoFillModalTitle: {
@@ -74,23 +74,23 @@ export default defineMessages({
     defaultMessage: '海关查验',
   },
   all: {
-    id: 'cms.customs.customs.all',
+    id: 'cms.customs.filter.all',
     defaultMessage: '全部',
   },
   filterDeclared: {
-    id: 'cms.customs.customs.filter.declared',
+    id: 'cms.customs.filter.declared',
     defaultMessage: '申报',
   },
   filterInspected: {
-    id: 'cms.customs.customs.filter.inspected',
+    id: 'cms.customs.filter.inspected',
     defaultMessage: '查验',
   },
   filterTaxed: {
-    id: 'cms.customs.customs.filter.taxed',
+    id: 'cms.customs.filter.taxed',
     defaultMessage: '缴税',
   },
   filterReleased: {
-    id: 'cms.customs.customs.filter.released',
+    id: 'cms.customs.filter.released',
     defaultMessage: '放行',
   },
 });

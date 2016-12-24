@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { Alert, Button, Card } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import AmNavBar from 'client/components/am-navbar';
 import { setNavTitle } from 'common/reducers/navbar';
@@ -15,7 +16,7 @@ const formatMsg = format(messages);
   }),
   { setNavTitle }
 )
-export default class Home extends React.Component {
+export default class NotFound extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     setNavTitle: PropTypes.func.isRequired,
@@ -31,7 +32,16 @@ export default class Home extends React.Component {
       <div className="am-wrapper am-nosidebar-left">
         <AmNavBar />
         <div className="am-content">
-          404 {formatMsg(intl, 'notFound')}
+          <div className="centered-card">
+            <Card bodyStyle={{ padding: 32 }}>
+              <Alert
+                message={formatMsg(intl, 'notFound')}
+                description={formatMsg(intl, 'notFoundDesc')}
+                type="warning"
+              />
+              <Button type="ghost" size="large" style={{ width: '100%' }}>返回</Button>
+            </Card>
+          </div>
         </div>
       </div>);
   }

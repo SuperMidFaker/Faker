@@ -267,7 +267,7 @@ export default class ExpenseList extends Component {
             key: 'all_bill',
             render: (o) => {
               if (!isNaN(o)) {
-                return (<span className="mdc-text-info"><b>{o.toFixed(2)}</b></span>);
+                return (<b>{o.toFixed(2)}</b>);
               }
             },
           }, {
@@ -307,7 +307,7 @@ export default class ExpenseList extends Component {
             width: 80,
             render: (o) => {
               if (!isNaN(o)) {
-                return (<span className="mdc-text-warning"><b>{o.toFixed(2)}</b></span>);
+                return (<b>{o.toFixed(2)}</b>);
               }
             },
           }, {

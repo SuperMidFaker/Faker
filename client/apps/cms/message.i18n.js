@@ -49,10 +49,6 @@ const messages = defineMessages({
     id: 'cms.module.export.delegation',
     defaultMessage: '委托管理',
   },
-  exportCiq: {
-    id: 'cms.module.export.ciq',
-    defaultMessage: '报检委托',
-  },
   exportCustomsDecl: {
     id: 'cms.module.export.decl.customs',
     defaultMessage: '报关管理',
@@ -81,10 +77,6 @@ const messages = defineMessages({
     id: 'cms.module.billing.expense',
     defaultMessage: '费用管理',
   },
-  declExp: {
-    id: 'cms.module.billing.declExp',
-    defaultMessage: '报关单费用管理',
-  },
   billingReceivable: {
     id: 'cms.module.billing.receivable',
     defaultMessage: '应收账单',
@@ -105,49 +97,13 @@ const messages = defineMessages({
     id: 'cms.module.resources.providers',
     defaultMessage: '供应商管理',
   },
+  tradeItem: {
+    id: 'cms.module.resources.trade.item',
+    defaultMessage: '物料管理',
+  },
   settings: {
-    id: 'cms.moduleClearance.settings',
+    id: 'cms.module.settings',
     defaultMessage: '设置',
-  },
-  comp_code: {
-    id: 'cms.manage.comp_code',
-    defaultMessage: '社会信用代码',
-  },
-  comp_code_placeholder: {
-    id: 'cms.manage.comp_code_placeholder',
-    defaultMessage: '社会信用代码',
-  },
-  comp_name: {
-    id: 'cms.manage.comp_name',
-    defaultMessage: '企业名称',
-  },
-  comp_name_placeholder: {
-    id: 'cms.manage.comp_name_placeholder',
-    defaultMessage: '请填写企业名称',
-  },
-  i_e_type: {
-    id: 'cms.manage.i_e_type',
-    defaultMessage: '适用范围',
-  },
-  i_e_type_placeholder: {
-    id: 'cms.manage.i_e_type_placeholder',
-    defaultMessage: '请选择适用范围',
-  },
-  relation_type: {
-    id: 'cms.manage.relation_type',
-    defaultMessage: '关联单位类型',
-  },
-  relation_type_placeholder: {
-    id: 'cms.manage.relation_type_placeholder',
-    defaultMessage: '请选择关联单位类型',
-  },
-  relation: {
-    id: 'cms.manage.relation',
-    defaultMessage: '关联单位',
-  },
-  new: {
-    id: 'cms.manage.new',
-    defaultMessage: '新建',
   },
 });
 export default messages;

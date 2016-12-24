@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Breadcrumb, message, Icon, Radio, Tag } from 'antd';
+import { Breadcrumb, Button, Icon, Radio, Tag, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -221,6 +221,13 @@ export default class DelgDeclList extends Component {
         </div>
         <div className="main-content" key="main">
           <div className="page-body">
+            <div className="panel-header">
+              <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
+                <Button type="primary" onClick={this.handleCreateBtnClick} icon="plus">
+                  {this.msg('createDecl')}
+                </Button>
+              </PrivilegeCover>
+            </div>
             <div className="panel-body table-panel expandable">
               <Table columns={this.columns} dataSource={this.dataSource} loading={delgdeclList.loading} scroll={{ x: 1400 }} />
             </div>

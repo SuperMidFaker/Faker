@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route, IndexRoute, IndexRedirect } from 'react-router';
 import Root from './root';
-import Home from './home';
+import * as Home from './home';
 import SSO from './sso/pack-sso';
 import Login from './sso/login';
 import Forgot from './sso/forgot';
@@ -48,6 +48,7 @@ import * as CMSExpense from './cms/expense';
 import * as CMSSettings from './cms/settings';
 import * as CMSBilling from './cms/billing';
 import * as CMSResources from './cms/resources';
+import * as CMSTradeItem from './cms/tradeitem';
 import SCV from './scv/module-scv';
 import * as SCVDashboard from './scv/dashboard';
 import * as SCVOrders from './scv/orders';
@@ -124,7 +125,8 @@ export default(store, cookie) => {
         <Route path="forgot" component={Forgot} />
       </Route>
       <Route onEnter={requireAuth}>
-        <IndexRoute component={Home} />
+        <IndexRoute component={Home.Main} />
+        <Route path="notfound" component={Home.NotFound} />
         <Route path="my" component={PackAccount}>
           <Route path="profile" component={MyProfile} />
           <Route path="password" component={Password} />
@@ -290,6 +292,9 @@ export default(store, cookie) => {
               <Route path="broker">
                 <IndexRoute component={CMSResources.BrokerContainer} />
               </Route>
+              <Route path="tradeitem">
+                <IndexRoute component={CMSTradeItem.List} />
+              </Route>
             </Route>
           </Route>
           <Route path={DEFAULT_MODULES.scv.id} component={SCV}>
@@ -331,7 +336,7 @@ export default(store, cookie) => {
         </Route>
       </Route>
       <Route path="*">
-        <IndexRedirect to="/login" />
+        <IndexRedirect to="/notfound" />
       </Route>
     </Route>
   );

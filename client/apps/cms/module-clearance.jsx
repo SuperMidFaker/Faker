@@ -130,6 +130,11 @@ export default class Clearance extends React.Component {
           key: 'cms-6-0',
           path: '/clearance/resources/broker',
           text: formatMsg(intl, 'providers'),
+        }, {
+          key: 'cms-6-1',
+          group: formatMsg(intl, 'tradeItem'),
+          path: '/clearance/resources/tradeitem',
+          text: formatMsg(intl, 'tradeItem'),
         }],
       });
     }

@@ -232,7 +232,7 @@ export default class DelegationInfoHubPanel extends React.Component {
       if (previewer.delegation.btkey === 'recall') {
         return (
           <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-            <div className="btn-bar">
+            <div className="toolbar-right">
               <Button type="default" onClick={this.handleDispAllCancel}>
                 撤回
               </Button>
@@ -248,7 +248,7 @@ export default class DelegationInfoHubPanel extends React.Component {
       } else if (previewer.delegation.btkey === 'assign') {
         return (
           <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-            <div className="btn-bar">
+            <div className="toolbar-right">
               <Button type="ghost" onClick={this.handleAssignAll}>
                 转包
             </Button>
@@ -266,7 +266,7 @@ export default class DelegationInfoHubPanel extends React.Component {
       if (delgPanel.btkey === 'delgDispMake') {
         return (
           <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
-            <div className="btn-bar">
+            <div className="toolbar-right">
               <Button type="primary" onClick={this.handleMake}>
                 制单
               </Button>
@@ -285,7 +285,7 @@ export default class DelegationInfoHubPanel extends React.Component {
       } else if (delgPanel.btkey === 'delgRecall') {
         return (
           <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-            <div className="btn-bar">
+            <div className="toolbar-right">
               <Button type="default" onClick={this.handleDispCancel}>
                 撤回
               </Button>
@@ -300,7 +300,7 @@ export default class DelegationInfoHubPanel extends React.Component {
       } else if (delgPanel.btkey === 'delgRecallMake') {
         return (
           <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
-            <div className="btn-bar">
+            <div className="toolbar-right">
               <Button type="default" onClick={this.handleDispCancel}>
                 撤回
               </Button>
@@ -314,7 +314,7 @@ export default class DelegationInfoHubPanel extends React.Component {
       } else if (delgPanel.btkey === 'delgMake') {
         return (
           <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
-            <div className="btn-bar">
+            <div className="toolbar-right">
               <Button type="ghost" onClick={this.handleMake}>
                 制单
               </Button>
@@ -323,7 +323,7 @@ export default class DelegationInfoHubPanel extends React.Component {
         );
       } else if (delgPanel.btkey === 'delgView') {
         return (
-          <div className="btn-bar">
+          <div className="toolbar-right">
             <Button type="ghost" onClick={this.handleView}>
             查看
             </Button>
@@ -334,7 +334,7 @@ export default class DelegationInfoHubPanel extends React.Component {
       if (ciqdecl.btkey === 'ciqDispFinish') {
         return (
           <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
-            <div className="btn-bar">
+            <div className="toolbar-right">
               <Button type="ghost" onClick={this.handleCiqDisp}>
                 指定报检单位
               </Button>
@@ -357,7 +357,7 @@ export default class DelegationInfoHubPanel extends React.Component {
       } else if (ciqdecl.btkey === 'ciqRecallFinish') {
         return (
           <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-            <div className="btn-bar">
+            <div className="toolbar-right">
               <Button type="default" onClick={this.handleCiqDispCancel}>
                 撤回
               </Button>
