@@ -413,15 +413,15 @@ export default class SheetBodyPanel extends React.Component {
             <Icon type="file-excel" /> {this.msg('importBody')}
           </ExcelUpload>
         </Menu.Item>
-        <Menu.Item key="download">下载模板</Menu.Item>
+        <Menu.Item key="download"><Icon type="download" /> 下载模板</Menu.Item>
       </Menu>
     );
     const billBodyToolbar = (
       <div className="toolbar-right">
-        <Button type="ghost" onClick={this.handleExportData}>导出数据</Button>
+        <Button type="ghost" icon="export" onClick={this.handleExportData}>导出数据</Button>
         <span />
         <Dropdown.Button onClick={this.handleButtonClick} overlay={menu} type="primary">
-          {formatGlobalMsg(this.props.intl, 'add')}
+          <Icon type="plus-circle-o" /> {formatGlobalMsg(this.props.intl, 'add')}
         </Dropdown.Button>
       </div>);
     return (

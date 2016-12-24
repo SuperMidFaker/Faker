@@ -96,20 +96,20 @@ export default class DelegationBillEditor extends React.Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <RadioGroup onChange={this.handleDelegationFilter}>
-            <RadioButton value="all"><Icon type="right-square-o" /></RadioButton>
-            <RadioButton value="accept"><Icon type="left-square" /></RadioButton>
+            <RadioButton value="all"><Icon type="menu-unfold" /></RadioButton>
+            <RadioButton value="accept"><Icon type="menu-fold" /></RadioButton>
           </RadioGroup>
         </header>
         <div className="top-bar-tools">
-          {!this.props.readonly &&
-            <Button type="primary" icon="addfile" onClick={this.handleGenerateEntry}>{this.msg('generateEntry')}</Button>
-          }
-          <span />
           <Dropdown overlay={menu}>
-            <Button type="ghost">
+            <Button>
               <Icon type="setting" /> <Icon type="down" />
             </Button>
           </Dropdown>
+          <span />
+          {!this.props.readonly &&
+            <Button type="primary" icon="addfile" onClick={this.handleGenerateEntry}>{this.msg('generateEntry')}</Button>
+          }
         </div>
         <div className="main-content">
           <div className="page-body tabbed fixed-height">

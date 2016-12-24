@@ -104,7 +104,7 @@ export default class CustomsDeclPane extends React.Component {
         </Card>
         {
           delgBills.length > 0 &&
-          <Collapse bordered={false} defaultActiveKey={delgBills[0].key}>
+          <Collapse defaultActiveKey={delgBills[0].key}>
             {
               delgBills.map((bill) => {
                 const tableDatas = (bill.children || []).map(decl => ({
@@ -117,33 +117,17 @@ export default class CustomsDeclPane extends React.Component {
                 const declTypes = DECL_I_TYPE.concat(DECL_E_TYPE).filter(dt => dt.key === bill.decl_way_code);
                 const panelHeader = (
                   <div>
-                    <span>{declTypes.length > 0 ? declTypes[0].value : ''}</span>
+                    <span>{declTypes.length > 0 ? declTypes[0].value : ''}：{bill.pack_count}件/{bill.gross_wt}千克</span>
                     <div className="toolbar-right">
-                      <Button type="primary">制单</Button>
+                      <Button type="primary" icon="addfile">新建清单</Button>
+                      <Button type="default" icon="edit">编辑清单</Button>
+                      <Button icon="eye">查看清单</Button>
                     </div>
                   </div>
                 );
                 return (
-                  <Panel header={panelHeader} key={bill.key} >
-                    <Row>
-                      <Col span="12">
-                        <InfoItem labelCol={{ span: 3 }} label="清单编号"
-                          field={bill.bill_seq_no} fieldCol={{ span: 9 }}
-                        />
-                      </Col>
-                      <Col span="6">
-                        <InfoItem labelCol={{ span: 3 }} label="件数"
-                          field={bill.pack_count} fieldCol={{ span: 9 }}
-                        />
-                      </Col>
-                      <Col span="6">
-                        <InfoItem labelCol={{ span: 3 }} label="毛重"
-                          field={bill.gross_wt} fieldCol={{ span: 9 }}
-                        />
-                      </Col>
-                    </Row>
-                    <hr />
-                    <Table size="middle" columns={columns} pagination={false} dataSource={tableDatas} scroll={{ x: 640 }} />
+                  <Panel header={panelHeader} key={bill.key} className="table-panel" >
+                    <Table size="small" columns={columns} pagination={false} dataSource={tableDatas} scroll={{ x: 640 }} />
                   </Panel>);
               })
             }

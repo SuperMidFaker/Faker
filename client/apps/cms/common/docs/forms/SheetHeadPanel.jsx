@@ -87,9 +87,13 @@ export default class SheetHeadPanel extends React.Component {
   render() {
     const { form, readonly, formData, formRequire, ietype, intl, type } = this.props;
     const billHeadToolbar = (!readonly &&
-      <div className="toolbar-right"><Button type="primary" onClick={this.handleBillSave} icon="save">
-        {formatGlobalMsg(this.props.intl, 'save')}
-      </Button></div>);
+      <div className="toolbar-right">
+        <Button type="ghost">{formatGlobalMsg(this.props.intl, 'cancel')}</Button>
+        <span />
+        <Button type="primary" onClick={this.handleBillSave} icon="save">
+          {formatGlobalMsg(this.props.intl, 'save')}
+        </Button>
+      </div>);
     const formProps = {
       getFieldDecorator: form.getFieldDecorator,
       disabled: readonly || type === 'entry',

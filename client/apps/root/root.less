@@ -30,6 +30,9 @@ img {
   background-color: #fff;
   border-color: #40a5ed;
 }
+.ant-btn-ghost {
+  border-color: transparent;
+}
 .ant-btn-default:focus, .ant-btn-default:hover {
   color: #fff;
   background-color: #40a5ed;
@@ -594,6 +597,17 @@ img {
   transition: all ease 0.4s;
   padding: 8px 16px 8px;
 }
+.table-panel {
+  .ant-collapse-content{
+    padding: 0;
+  }
+  .ant-collapse-content > .ant-collapse-content-box {
+    padding: 0;
+  }
+  .ant-table-small {
+    border: none;
+  }
+}
 .popover-header{
   position: relative;
   padding: 8px 16px;
@@ -620,10 +634,12 @@ img {
 }
 .toolbar-left {
   display: inline-block;
-  width: 220px;
   input {
     width: 140px;
     margin-right: 4px;
+  }
+  >span {
+    margin-right: 8px;
   }
 }
 .pane-header {
@@ -789,8 +805,7 @@ img {
       .ant-tag{
         margin-left: 8px;
       }
-      .toolbar {
-        float: right;
+      .toolbar-right {
         margin-right: 32px;
       }
     }
@@ -908,4 +923,14 @@ img {
 .dynamic-delete-button[disabled] {
   cursor: not-allowed;
   opacity: 0.5;
+}
+.timeline {
+  h3 {
+    padding: 0 8px 16px 8px;
+    clear: both;
+  }
+  .ant-card {
+    margin-right: 16px;
+    margin-bottom: 0;
+  }
 }

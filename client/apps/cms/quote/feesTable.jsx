@@ -379,8 +379,8 @@ export default class FeesTable extends Component {
       return (
         <div>
           <Button type="default" icon="plus-circle-o" style={{ marginRight: 8 }} onClick={this.handleAddFees}>{msg('addCosts')}</Button>
-          {this.state.batchSaved === 0 && <Button type="ghost" icon="edit" onClick={this.handlebatchModify}>{msg('batchModify')}</Button>}
-          {this.state.batchSaved === 1 && <Button type="primary" icon="save" style={{ marginRight: 8 }} onClick={this.handlebatchSave}>{msg('batchSave')}</Button>}
+          {this.state.batchSaved === 0 && <Button icon="edit" onClick={this.handlebatchModify}>{msg('batchModify')}</Button>}
+          {this.state.batchSaved === 1 && <Button type="primary" style={{ marginRight: 8 }} onClick={this.handlebatchSave}>{msg('confirm')}</Button>}
           {this.state.batchSaved === 1 && <Button type="ghost" onClick={this.handlebatchCancel}>{msg('cancel')}</Button>}
         </div>
       );
