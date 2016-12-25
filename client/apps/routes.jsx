@@ -286,7 +286,8 @@ export default(store, cookie) => {
               <Route path="edit/:id" component={CMSRelation.Edit} />
             </Route>
             <Route path="settings">
-              <IndexRoute component={CMSSettings.List} />
+              <IndexRedirect to="/clearance/settings/quotetemplates" />
+              <Route path="quotetemplates" component={CMSSettings.QuoteTemplates} />
             </Route>
             <Route path="resources">
               <Route path="broker">

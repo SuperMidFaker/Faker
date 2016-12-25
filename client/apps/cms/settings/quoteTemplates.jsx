@@ -36,9 +36,6 @@ export default class Settings extends Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
-  state = {
-    qtModelShow: false,
-  }
   handleNavigationTo(to, query) {
     this.context.router.push({ pathname: to, query });
   }
@@ -47,11 +44,9 @@ export default class Settings extends Component {
   handleClick = (e) => {
     if (e.key === 'quotemodel') {
       this.props.loadQuoteModel(this.props.tenantId);
-      this.setState({ qtModelShow: true });
     }
   }
   render() {
-    const { qtModelShow } = this.state;
     return (
       <QueueAnim type={['bottom', 'up']}>
         <aside className="side-bar no-top-bar" key="aside">
@@ -84,7 +79,7 @@ export default class Settings extends Component {
             </Breadcrumb>
           </div>
           <div className="page-body">
-            {qtModelShow && <FeesTable action="model" editable />}
+            <FeesTable action="model" editable />
           </div>
         </div>
       </QueueAnim>

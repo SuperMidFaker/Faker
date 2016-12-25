@@ -250,8 +250,8 @@ export default class BillingList extends React.Component {
         <div className="main-content">
           <div className="page-body">
             <div className="toolbar">
-              <Button type="primary" onClick={this.handleAddBtnClicked}>{this.msg('createBilling')}</Button>
-              <Button style={{ marginLeft: 16 }} onClick={this.handleExportExcel}>{this.msg('export')}</Button>
+              <Button type="primary" icon="plus" onClick={this.handleAddBtnClicked}>{this.msg('createBilling')}</Button>
+              <Button type="ghost" icon="export" onClick={this.handleExportExcel}>{this.msg('export')}</Button>
             </div>
             <div className="panel-body table-panel">
               <Table dataSource={dataSource} columns={columns} rowKey="id" />

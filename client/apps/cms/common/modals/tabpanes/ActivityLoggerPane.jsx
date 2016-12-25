@@ -20,16 +20,17 @@ export default class ActivityLoggerPane extends React.Component {
   render() {
     const menu = (
       <Menu>
-        <Menu.Item key="all"><Checkbox >全选</Checkbox></Menu.Item>
-        <Menu.Item key="customs"><Checkbox >待处理项</Checkbox></Menu.Item>
-        <Menu.Item key="ciq"><Checkbox >事件</Checkbox></Menu.Item>
+        <Menu.Item key="all"><Checkbox >选择全部</Checkbox></Menu.Item>
+        <Menu.Divider />
+        <Menu.Item key="customs"><Checkbox >操作事件</Checkbox></Menu.Item>
+        <Menu.Item key="ciq"><Checkbox >通关事件</Checkbox></Menu.Item>
       </Menu>
     );
     return (
       <div>
         <Card bodyStyle={{ padding: 8 }}>
           <Tabs defaultActiveKey="log">
-            <TabPane tab="备注" key="log">
+            <TabPane tab={<span><Icon type="message" />备注</span>} key="log">
               <Form horizontal onSubmit={this.handleSubmit}>
                 <FormItem>
                   <Mention
@@ -41,7 +42,7 @@ export default class ActivityLoggerPane extends React.Component {
                 </FormItem>
               </Form>
             </TabPane>
-            <TabPane tab="换单" key="exchange">
+            <TabPane tab={<span><Icon type="retweet" />换单</span>} key="exchange">
               <Form horizontal onSubmit={this.handleSubmit}>
                 <FormItem>
                   <Input placeholder="海运单号" />
@@ -51,7 +52,7 @@ export default class ActivityLoggerPane extends React.Component {
                 </FormItem>
               </Form>
             </TabPane>
-            <TabPane tab="办证" key="certs">
+            <TabPane tab={<span><Icon type="addfile" />办证</span>} key="certs">
               <Form horizontal onSubmit={this.handleSubmit}>
                 <FormItem>
                   <Select
@@ -75,7 +76,7 @@ export default class ActivityLoggerPane extends React.Component {
                 </FormItem>
               </Form>
             </TabPane>
-            <TabPane tab="查验" key="inspect">
+            <TabPane tab={<span><Icon type="exception" />查验</span>} key="inspect">
               <Form horizontal onSubmit={this.handleSubmit}>
                 <FormItem>
                   <Select
@@ -116,9 +117,7 @@ export default class ActivityLoggerPane extends React.Component {
           <h3>
             <div className="toolbar-right">
               <Dropdown overlay={menu}>
-                <Button type="ghost">
-                  <Icon type="filter" />
-                </Button>
+                <Button type="ghost"><Icon type="filter" /> (3/3)</Button>
               </Dropdown>
             </div>
             动态
@@ -128,7 +127,7 @@ export default class ActivityLoggerPane extends React.Component {
             <Timeline.Item dot={<Icon type="pay-circle-o" />}>缴税 2015-09-01</Timeline.Item>
             <Timeline.Item dot={<Icon type="message" />}>发送消息 2015-09-01</Timeline.Item>
             <Timeline.Item dot={<Icon type="addfile" />}>办证 2015-09-01</Timeline.Item>
-            <Timeline.Item dot={<Icon type="pause-circle-o" />} color="red">
+            <Timeline.Item dot={<Icon type="exception" />} color="red">
               <Card bodyStyle={{ padding: 16 }}>
                 海关查验 2015-09-01
                 <div className="toolbar-right">
@@ -139,7 +138,7 @@ export default class ActivityLoggerPane extends React.Component {
             </Timeline.Item>
             <Timeline.Item dot={<Icon type="calculator" />}>录入代垫费用 2015-09-01</Timeline.Item>
             <Timeline.Item dot={<Icon type="play-circle-o" />}>海关申报 2015-09-01</Timeline.Item>
-            <Timeline.Item dot={<Icon type="pause-circle-o" />} color="green">
+            <Timeline.Item dot={<Icon type="exception" />} color="red">
               <Card bodyStyle={{ padding: 16 }}>
                 品质查验 2015-09-01
                 <div className="toolbar-right">

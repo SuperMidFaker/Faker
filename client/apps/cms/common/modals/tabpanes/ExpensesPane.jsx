@@ -1,14 +1,13 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Tag, Card, Collapse, Table, Tabs } from 'antd';
+import { Tag, Collapse, Table } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { loadPaneExp } from 'common/reducers/cmsExpense';
 import { EXPENSE_CATEGORIES, EXPENSE_TYPES } from 'common/constants';
 
 const formatMsg = format(messages);
-const TabPane = Tabs.TabPane;
 const Column = Table.Column;
 const Panel = Collapse.Panel;
 const CheckableTag = Tag.CheckableTag;
@@ -197,68 +196,64 @@ export default class ExpensePane extends React.Component {
     );
     return (
       <div className="pane-content tab-pane">
-        <Card bodyStyle={{ padding: 8 }}>
-          <Tabs activeKey={tabKey} onChange={this.handleTabChange}>
-            <TabPane tab={this.msg('revenueDetail')} key="revenue">
-              {checkedTags}
-              <Table size="middle" columns={this.columnFields} dataSource={revenueFees}
-                rowKey="fee_name" pagination={false}
+        {checkedTags}
+        <Collapse defaultActiveKey={['revenue', 'cost']}>
+          <Panel header={this.msg('revenueDetail')} key="revenue" className="table-panel">
+            <Table size="small" columns={this.columnFields} dataSource={revenueFees}
+              rowKey="fee_name" pagination={false}
+            />
+          </Panel>
+          <Panel header={this.msg('costDetail')} key="cost" className="table-panel">
+            <Table size="small" dataSource={costFees}
+              rowKey="fee_name" pagination={false}
+            >
+              <Column title={this.msg('feeName')} dataIndex="fee_name" render={this.renderFeeName} />
+              <Column title={this.msg('feeRemark')} dataIndex="remark" />
+              <Column title={this.msg('feeVal')} dataIndex="cal_fee" />
+              <Column title={this.msg('taxFee')} dataIndex="tax_fee" />
+              <Column title={this.msg('totalFee')} dataIndex="total_fee" />
+            </Table>
+          </Panel>
+          <Panel header="计费参数" key="params" className="table-panel">
+            <Table size="small" pagination={false}>
+              <Column
+                title="运单数量"
+                dataIndex="shipmtQty"
+                key="shipmtQty"
               />
-            </TabPane>
-            <TabPane tab={this.msg('costDetail')} key="cost">
-              {checkedTags}
-              <Table size="middle" dataSource={costFees} rowKey="fee_name" pagination={false}>
-                <Column title={this.msg('feeName')} dataIndex="fee_name" render={this.renderFeeName} />
-                <Column title={this.msg('feeRemark')} dataIndex="remark" />
-                <Column title={this.msg('feeVal')} dataIndex="cal_fee" />
-                <Column title={this.msg('taxFee')} dataIndex="tax_fee" />
-                <Column title={this.msg('totalFee')} dataIndex="total_fee" />
-              </Table>
-            </TabPane>
-          </Tabs>
-          <hr />
-          <Collapse bordered={false}>
-            <Panel header="计费参数" key="params">
-              <Table size="middle" pagination={false}>
-                <Column
-                  title="运单数量"
-                  dataIndex="shipmtQty"
-                  key="shipmtQty"
-                />
-                <Column
-                  title="报关单数量"
-                  dataIndex="shipmtQty"
-                  key="shipmtQty"
-                />
-                <Column
-                  title="报关单联数"
-                  dataIndex="shipmtQty"
-                  key="shipmtQty"
-                />
-                <Column
-                  title="品名数量"
-                  dataIndex="shipmtQty"
-                  key="shipmtQty"
-                />
-                <Column
-                  title="料件数量"
-                  dataIndex="shipmtQty"
-                  key="shipmtQty"
-                />
-                <Column
-                  title="货值"
-                  dataIndex="shipmtQty"
-                  key="shipmtQty"
-                />
-                <Column
-                  title="办证数量"
-                  dataIndex="shipmtQty"
-                  key="shipmtQty"
-                />
-              </Table>
-            </Panel>
-          </Collapse>
-        </Card>
+              <Column
+                title="报关单数量"
+                dataIndex="shipmtQty"
+                key="shipmtQty"
+              />
+              <Column
+                title="报关单联数"
+                dataIndex="shipmtQty"
+                key="shipmtQty"
+              />
+              <Column
+                title="品名数量"
+                dataIndex="shipmtQty"
+                key="shipmtQty"
+              />
+              <Column
+                title="料件数量"
+                dataIndex="shipmtQty"
+                key="shipmtQty"
+              />
+              <Column
+                title="货值"
+                dataIndex="shipmtQty"
+                key="shipmtQty"
+              />
+              <Column
+                title="办证数量"
+                dataIndex="shipmtQty"
+                key="shipmtQty"
+              />
+            </Table>
+          </Panel>
+        </Collapse>
       </div>
     );
   }
