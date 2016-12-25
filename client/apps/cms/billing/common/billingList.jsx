@@ -47,6 +47,7 @@ export default class BillingList extends React.Component {
     router: PropTypes.object.isRequired,
   }
   state = {
+    selectedRowKeys: [],
     billingFormVisible: false,
     cancelChargeModalVisible: false,
     billingId: '',
@@ -128,7 +129,12 @@ export default class BillingList extends React.Component {
       },
       remotes: this.props.billings,
     });
-
+    const rowSelection = {
+      selectedRowKeys: this.state.selectedRowKeys,
+      onChange: (selectedRowKeys) => {
+        this.setState({ selectedRowKeys });
+      },
+    };
     const columns = [{
       title: this.msg('billingName'),
       dataIndex: 'name',
@@ -252,9 +258,12 @@ export default class BillingList extends React.Component {
             <div className="toolbar">
               <Button type="primary" icon="plus" onClick={this.handleAddBtnClicked}>{this.msg('createBilling')}</Button>
               <Button type="ghost" icon="export" onClick={this.handleExportExcel}>{this.msg('export')}</Button>
+              <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
+                <h3>已选中{this.state.selectedRowKeys.length}项</h3>
+              </div>
             </div>
             <div className="panel-body table-panel">
-              <Table dataSource={dataSource} columns={columns} rowKey="id" />
+              <Table rowSelection={rowSelection} dataSource={dataSource} columns={columns} rowKey="id" />
             </div>
             <BillingForm type={this.props.type} visible={this.state.billingFormVisible} toggle={this.toggleBillingForm} />
             <CancelChargeModal visible={this.state.cancelChargeModalVisible} toggle={this.toggleCancelChargeModal}

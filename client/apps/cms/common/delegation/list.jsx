@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Badge, Breadcrumb, Radio, Button, Popconfirm, message, Modal, Tag } from 'antd';
+import { Badge, Breadcrumb, Button, Modal, Popconfirm, Radio, Select, Tag, message } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import TrimSpan from 'client/components/trimSpan';
@@ -29,6 +29,8 @@ import { format } from 'client/common/i18n/helpers';
 const formatMsg = format(messages);
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
+const Option = Select.Option;
+const OptGroup = Select.OptGroup;
 
 @injectIntl
 @connect(
@@ -482,6 +484,7 @@ export default class DelegationList extends Component {
       columns.push({
         title: this.msg('opColumn'),
         width: 130,
+        fixed: 'right',
         render: (o, record) => {
           if (record.status === CMS_DELEGATION_STATUS.unaccepted && record.recv_tenant_id === tenantId && record.source === 1) {
             return (
@@ -514,7 +517,7 @@ export default class DelegationList extends Component {
           } else if (record.status === CMS_DELEGATION_STATUS.accepted && record.send_tenant_id === tenantId && record.recv_tenant_id === -1) {
             return (
               <span>
-                <RowUpdater onHit={this.handleDelegationMake} label={this.msg('declareMake')} row={record} />
+                <RowUpdater onHit={this.handleDelegationMake} label={this.msg('editBill')} row={record} />
                 <span className="ant-divider" />
                 <RowUpdater onHit={() => this.handleDelegationCancel(record, 'delg')} label={this.msg('delgRecall')} row={record} />
               </span>
@@ -523,7 +526,7 @@ export default class DelegationList extends Component {
             return (
               <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
                 <span>
-                  <RowUpdater onHit={this.handleDelegationMake} label={this.msg('declareMake')} row={record} />
+                  <RowUpdater onHit={this.handleDelegationMake} label={this.msg('editBill')} row={record} />
                   <span className="ant-divider" />
                   <RowUpdater onHit={() => this.handleDelegationAssign(record, 'delg')} label={this.msg('delgDistribute')} row={record} />
                 </span>
@@ -531,15 +534,15 @@ export default class DelegationList extends Component {
             );
           } else if (record.status === CMS_DELEGATION_STATUS.declaring && record.recv_tenant_id === tenantId) {
             return (
-              <RowUpdater onHit={this.handleDelegationMake} label={this.msg('declareMake')} row={record} />
+              <RowUpdater onHit={this.handleDelegationMake} label={this.msg('editBill')} row={record} />
             );
           } else if (record.status === CMS_DELEGATION_STATUS.declared && record.recv_tenant_id === tenantId && record.sub_status === 1) {
             return (
-              <RowUpdater onHit={this.handleDelegationMake} label={this.msg('declareMake')} row={record} />
+              <RowUpdater onHit={this.handleDelegationMake} label={this.msg('editBill')} row={record} />
             );
           } else {
             return (
-              <RowUpdater onHit={this.handleDelegationView} label={this.msg('declareView')} row={record} />
+              <RowUpdater onHit={this.handleDelegationView} label={this.msg('viewBill')} row={record} />
             );
           }
         },
@@ -593,6 +596,17 @@ export default class DelegationList extends Component {
                   {this.msg('delgNew')}
                 </Button>
               </PrivilegeCover>
+              <div className="toolbar-right">
+                <Select defaultValue="my"
+                  style={{ width: 160 }}
+                  showSearch={false}
+                >
+                  <OptGroup label="常用视图">
+                    <Option value="all">全部委托</Option>
+                    <Option value="my">我负责的委托</Option>
+                  </OptGroup>
+                </Select>
+              </div>
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3>
               </div>
@@ -601,9 +615,7 @@ export default class DelegationList extends Component {
               {
                 listView === 'delegation' &&
                 <Table rowSelection={rowSelection} columns={columns} dataSource={this.dataSource} loading={delegationlist.loading}
-                  expandedRowKeys={this.state.expandedKeys} rowKey="delg_no"
-                  expandedRowRender={delegationlist.data.length > 0 && this.handleSubdelgsList}
-                  scroll={{ x: 1560 }} onExpandedRowsChange={this.handleExpandedChange}
+                  rowKey="delg_no" scroll={{ x: 1560 }}
                 />
               }
               {

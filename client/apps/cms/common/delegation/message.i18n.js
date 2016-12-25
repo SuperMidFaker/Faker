@@ -245,9 +245,13 @@ export default defineMessages({
     id: 'cms.delegation.matchQuote',
     defaultMessage: '匹配报价',
   },
-  declareView: {
-    id: 'cms.delegation.view',
-    defaultMessage: '查看',
+  viewBill: {
+    id: 'cms.delegation.view.bill',
+    defaultMessage: '查看清单',
+  },
+  editBill: {
+    id: 'cms.delegation.edit.bill',
+    defaultMessage: '编辑清单',
   },
   writeEntryId: {
     id: 'cms.delegation.write.entryId',

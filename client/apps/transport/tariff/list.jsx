@@ -488,6 +488,9 @@ export default class TariffList extends React.Component {
                   {this.msg('tariffCreate')}
                 </Button>
               </PrivilegeCover>
+              <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
+                <h3>已选中{this.state.selectedRowKeys.length}项</h3>
+              </div>
             </div>
             <div className="panel-body table-panel">
               <Table rowSelection={rowSelection} columns={columns} loading={loading}

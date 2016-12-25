@@ -54,6 +54,9 @@ export default class QuoteList extends Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
+  state = {
+    selectedRowKeys: [],
+  }
   dataSource = new Table.DataSource({
     fetcher: params => this.props.loadQuoteTable(params),
     resolve: result => result.data,
@@ -161,6 +164,12 @@ export default class QuoteList extends Component {
     const { quotesList, listFilter, tenantId } = this.props;
     this.dataSource.remotes = quotesList;
     const DECL_TYPE = DECL_I_TYPE.concat(DECL_E_TYPE);
+    const rowSelection = {
+      selectedRowKeys: this.state.selectedRowKeys,
+      onChange: (selectedRowKeys) => {
+        this.setState({ selectedRowKeys });
+      },
+    };
     const columns = [
       {
         title: msg('quoteNo'),
@@ -389,9 +398,12 @@ export default class QuoteList extends Component {
               <Button type="primary" icon="plus" onClick={this.handleCreateNew}>
                 新建报价
               </Button>
+              <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
+                <h3>已选中{this.state.selectedRowKeys.length}项</h3>
+              </div>
             </div>
             <div className="panel-body table-panel">
-              <Table columns={columns} dataSource={this.dataSource} scroll={{ x: 1400 }} />
+              <Table rowSelection={rowSelection} columns={columns} dataSource={this.dataSource} scroll={{ x: 1400 }} />
             </div>
           </div>
         </div>

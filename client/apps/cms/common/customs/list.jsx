@@ -52,6 +52,7 @@ export default class DelgDeclList extends Component {
     router: PropTypes.object.isRequired,
   }
   state = {
+    selectedRowKeys: [],
     searchInput: '',
   }
 
@@ -197,6 +198,12 @@ export default class DelgDeclList extends Component {
   render() {
     const { delgdeclList } = this.props;
     this.dataSource.remotes = delgdeclList;
+    const rowSelection = {
+      selectedRowKeys: this.state.selectedRowKeys,
+      onChange: (selectedRowKeys) => {
+        this.setState({ selectedRowKeys });
+      },
+    };
     return (
       <QueueAnim type={['bottom', 'up']}>
         <header className="top-bar" key="header">
@@ -227,9 +234,12 @@ export default class DelgDeclList extends Component {
                   {this.msg('createDecl')}
                 </Button>
               </PrivilegeCover>
+              <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
+                <h3>已选中{this.state.selectedRowKeys.length}项</h3>
+              </div>
             </div>
             <div className="panel-body table-panel expandable">
-              <Table columns={this.columns} dataSource={this.dataSource} loading={delgdeclList.loading} scroll={{ x: 1400 }} />
+              <Table rowSelection={rowSelection} columns={this.columns} rowKey="pre_entry_seq_no" dataSource={this.dataSource} loading={delgdeclList.loading} scroll={{ x: 1400 }} />
             </div>
             <DeclnoFillModal reload={this.handleTableLoad} />
           </div>

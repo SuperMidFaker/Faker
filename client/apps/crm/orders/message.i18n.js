@@ -107,7 +107,7 @@ const messages = defineMessages({
   },
   new: {
     id: 'crm.orders.new',
-    defaultMessage: '新建',
+    defaultMessage: '新建订单',
   },
   save: {
     id: 'crm.orders.save',

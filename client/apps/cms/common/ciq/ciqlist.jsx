@@ -60,6 +60,7 @@ export default class CiqDeclList extends Component {
     listFilter: PropTypes.object.isRequired,
   }
   state = {
+    selectedRowKeys: [],
     searchInput: '',
   }
   msg = key => formatMsg(this.props.intl, key);
@@ -229,6 +230,12 @@ export default class CiqDeclList extends Component {
   render() {
     const { ciqdeclList } = this.props;
     this.dataSource.remotes = ciqdeclList;
+    const rowSelection = {
+      selectedRowKeys: this.state.selectedRowKeys,
+      onChange: (selectedRowKeys) => {
+        this.setState({ selectedRowKeys });
+      },
+    };
     return (
       <QueueAnim type={['bottom', 'up']}>
         <header className="top-bar" key="header">
@@ -247,7 +254,7 @@ export default class CiqDeclList extends Component {
         <div className="main-content" key="main">
           <div className="page-body">
             <div className="panel-body table-panel expandable">
-              <Table columns={this.columns} dataSource={this.dataSource} loading={ciqdeclList.loading} scroll={{ x: 1700 }} />
+              <Table rowSelection={rowSelection} columns={this.columns} rowKey="pre_entry_seq_no" dataSource={this.dataSource} loading={ciqdeclList.loading} scroll={{ x: 1700 }} />
             </div>
             <CiqnoFillModal reload={this.handleTableLoad} />
           </div>

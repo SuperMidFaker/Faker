@@ -293,13 +293,15 @@ export default class ShipmentOrderList extends React.Component {
         <div className="top-bar-tools">
           <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
         </div>
-
         <div className="main-content" key="main">
           <div className="page-body">
             <div className="toolbar">
-              <Button type="primary" icon="plus-circle-o" onClick={this.handleCreate}>
+              <Button type="primary" icon="plus" onClick={this.handleCreate}>
                 {this.msg('new')}
               </Button>
+              <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
+                <h3>已选中{this.state.selectedRowKeys.length}项</h3>
+              </div>
             </div>
             <div className="panel-body table-panel expandable">
               <Table rowSelection={rowSelection} dataSource={dataSource} columns={columns} rowKey="id" loading={loading} scroll={{ x: 1800 }} />

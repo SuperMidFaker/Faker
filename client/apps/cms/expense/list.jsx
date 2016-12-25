@@ -78,6 +78,7 @@ export default class ExpenseList extends Component {
     router: PropTypes.object.isRequired,
   }
   state = {
+    selectedRowKeys: [],
     expandedKeys: [],
     expEptVisible: false,
     custFilter: [],
@@ -237,6 +238,12 @@ export default class ExpenseList extends Component {
     const { acptDate, cleanDate } = this.state;
     const { sortedInfo } = this.state;
     const sorted = sortedInfo || {};
+    const rowSelection = {
+      selectedRowKeys: this.state.selectedRowKeys,
+      onChange: (selectedRowKeys) => {
+        this.setState({ selectedRowKeys });
+      },
+    };
     const columns = [
       {
         title: this.msg('delgNo'),
@@ -437,9 +444,12 @@ export default class ExpenseList extends Component {
               <Button type="ghost" icon="file-excel" onClick={this.handleExpExport}>
                 {this.msg('eptExp')}
               </Button>
+              <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
+                <h3>已选中{this.state.selectedRowKeys.length}项</h3>
+              </div>
             </div>
             <div className="panel-body table-panel group-header">
-              <Table columns={columns} dataSource={this.dataSource} loading={expslist.loading}
+              <Table rowSelection={rowSelection} columns={columns} dataSource={this.dataSource} loading={expslist.loading}
                 bordered scroll={{ x: 1900 }} rowKey="delg_no"
               />
             </div>

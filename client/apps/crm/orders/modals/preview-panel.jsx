@@ -1,10 +1,11 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Tabs, Badge } from 'antd';
+import { Badge, Col, Row, Tabs } from 'antd';
+import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { CRM_ORDER_MODE, CRM_ORDER_STATUS } from 'common/constants';
 import { hidePreviewer, changePreviewerTab, loadClearanceDetail, loadTransportDetail } from 'common/reducers/crmOrders';
-
+import InfoItem from 'client/components/InfoItem';
 import ClearancePane from './tabpanes/clearancePane';
 import TransportPane from './tabpanes/transportPane';
 import LogPane from './tabpanes/logPane';
@@ -115,9 +116,6 @@ export default class PreviewPanel extends React.Component {
           <TabPane tab={this.msg('charge')} key="charge">
             <ChargePane />
           </TabPane>
-          <TabPane tab={this.msg('logs')} key="logs">
-            <LogPane />
-          </TabPane>
         </Tabs>
       );
     } else if (mode === CRM_ORDER_MODE.transport) {
@@ -128,9 +126,6 @@ export default class PreviewPanel extends React.Component {
           </TabPane>
           <TabPane tab={this.msg('charge')} key="charge">
             <ChargePane />
-          </TabPane>
-          <TabPane tab={this.msg('logs')} key="logs">
-            <LogPane />
           </TabPane>
         </Tabs>
       );
@@ -146,9 +141,6 @@ export default class PreviewPanel extends React.Component {
           <TabPane tab={this.msg('charge')} key="charge">
             <ChargePane />
           </TabPane>
-          <TabPane tab={this.msg('logs')} key="logs">
-            <LogPane />
-          </TabPane>
         </Tabs>
       );
     }
@@ -162,7 +154,7 @@ export default class PreviewPanel extends React.Component {
         <span className="ant-modal-close-x" />
       </button>);
     return (
-      <div className={`dock-panel preview-panel ${visible ? 'inside' : ''}`} id="preview-panel">
+      <div className={`dock-panel info-hub-panel ${visible ? 'inside' : ''}`} id="preview-panel">
         <div className="panel-content">
           <div className="header">
             <span className="title">{order.shipmt_order_no}</span>
@@ -170,9 +162,43 @@ export default class PreviewPanel extends React.Component {
             <div className="pull-right">
               {closer}
             </div>
+            <Row>
+              <Col span="6">
+                <InfoItem labelCol={{ span: 3 }} label="客户"
+                  field={order.customer_name} fieldCol={{ span: 9 }}
+                />
+              </Col>
+              <Col span="6">
+                <InfoItem labelCol={{ span: 3 }} label="提运单号"
+                  field={order.bl_wb_no} fieldCol={{ span: 9 }}
+                />
+              </Col>
+              <Col span="4">
+                <InfoItem labelCol={{ span: 3 }} label="订单号"
+                  field={order.order_no} fieldCol={{ span: 9 }}
+                />
+              </Col>
+              <Col span="4">
+                <InfoItem labelCol={{ span: 3 }} label="发票号"
+                  field={order.invoice_no} fieldCol={{ span: 9 }}
+                />
+              </Col>
+              <Col span="4">
+                <InfoItem labelCol={{ span: 3 }} label="委托日期" fieldCol={{ span: 9 }}
+                  field={moment(order.delg_time).format('YYYY.MM.DD')}
+                />
+              </Col>
+            </Row>
           </div>
-          <div className="body">
-            {this.renderTabs(order.shipmt_order_mode)}
+          <div className="body with-header-summary">
+            <Row gutter={16}>
+              <Col sm={24} md={12} lg={12}>
+                {this.renderTabs(order.shipmt_order_mode)}
+              </Col>
+              <Col sm={24} md={12} lg={12}>
+                <LogPane />
+              </Col>
+            </Row>
           </div>
         </div>
       </div>
