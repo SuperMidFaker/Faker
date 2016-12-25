@@ -1016,27 +1016,23 @@ export default class DispatchList extends React.Component {
         dataSource={this.dataSource} scroll={{ x: 2000 }}
       />);
     }
-
-    let btns = '';
+    let bulkBtns = '';
     if (status === 'waiting') {
-      btns = (
-        <div style={{ display: 'inline-block' }}>
-          <Button onClick={() => { this.handleBatchDockShow('dispatch'); }}>
+      bulkBtns = (
+        <span>
+          <Button type="default" onClick={() => { this.handleBatchDockShow('dispatch'); }}>
             {this.msg('btnTextBatchDispatch')}
           </Button>
-          <span />
           <Button onClick={() => this.handleBatchDockShow()}>
             {this.msg('btnTextBatchSegment')}
           </Button>
-        </div>
+        </span>
       );
     } else if (status === 'dispatching') {
-      btns = (
-        <div style={{ display: 'inline-block' }}>
-          <Button onClick={() => this.handleShipmtBatchSend()}>
-            {this.msg('btnTextBatchSend')}
-          </Button>
-        </div>
+      bulkBtns = (
+        <Button type="default" onClick={() => this.handleShipmtBatchSend()}>
+          {this.msg('btnTextBatchSend')}
+        </Button>
       );
     }
 
@@ -1059,8 +1055,8 @@ export default class DispatchList extends React.Component {
           <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch} toggle={this.toggleAdvancedSearch} />
           <div className="page-body">
             <div className="toolbar">
-              <div className={`${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-                {btns}
+              <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
+                <h3>已选中{this.state.selectedRowKeys.length}项</h3> {bulkBtns}
               </div>
             </div>
             <div className="panel-body table-panel">

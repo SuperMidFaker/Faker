@@ -508,7 +508,9 @@ img {
     margin-right: 8px;
   }
   h3 {
+    display: inline;
     line-height: 28px;
+    margin-right: 8px;
   }
   @media (max-width:767px) {
     margin-bottom: 10px;
@@ -516,6 +518,19 @@ img {
     .toolbar-right {
       float: none;
       margin-bottom: 10px;
+    }
+  }
+  .bulk-actions {
+    position: absolute;
+    top: 0;
+    left: 0;
+    overflow: inherit;
+    width: 100%;
+    min-height: 45px;
+    padding: 8px 16px;
+    background: #fff;
+    &.hide {
+      display: none;
     }
   }
 }
@@ -788,6 +803,9 @@ img {
         font-weight: 500;
         margin-right: 16px;
         line-height: 32px;
+      }
+      .ant-steps {
+        padding: 14px;
       }
       .ant-tag{
         margin-left: 8px;

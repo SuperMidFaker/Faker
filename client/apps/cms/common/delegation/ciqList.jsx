@@ -44,6 +44,7 @@ export default class CiqList extends Component {
     saved: PropTypes.bool.isRequired,
   }
   state = {
+    selectedRowKeys: [],
     expandedKeys: [],
   }
   componentDidMount() {
@@ -245,9 +246,15 @@ export default class CiqList extends Component {
   }
   render() {
     const { ciqlist } = this.props;
+    const rowSelection = {
+      selectedRowKeys: this.state.selectedRowKeys,
+      onChange: (selectedRowKeys) => {
+        this.setState({ selectedRowKeys });
+      },
+    };
     this.dataSource.remotes = ciqlist;
     return (
-      <Table columns={this.columns} dataSource={this.dataSource}
+      <Table rowSelection={rowSelection} columns={this.columns} dataSource={this.dataSource}
         loading={ciqlist.loading} rowKey="delg_no" scroll={{ x: 1300 }}
       />);
   }

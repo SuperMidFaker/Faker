@@ -226,7 +226,7 @@ export default class DelegationInfoHubPanel extends React.Component {
       if (previewer.delegation.btkey === 'recall') {
         return (
           <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-            <Button type="default" onClick={this.handleDispAllCancel}>
+            <Button type="ghost" onClick={this.handleDispAllCancel}>
               撤回
             </Button>
           </PrivilegeCover>
@@ -234,8 +234,8 @@ export default class DelegationInfoHubPanel extends React.Component {
       } else if (previewer.delegation.btkey === 'assign') {
         return (
           <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-            <Button type="ghost" onClick={this.handleAssignAll}>
-              转包
+            <Button type="primary" onClick={this.handleAssignAll}>
+              分配
             </Button>
           </PrivilegeCover>
         );

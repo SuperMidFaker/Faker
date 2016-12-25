@@ -337,9 +337,9 @@ export default class LandStatusList extends React.Component {
             <PrivilegeCover module="transport" feature="tracking" action="create">
               <ExportExcel />
             </PrivilegeCover>
-            <span className={`toolbar-right ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-              {this.renderBatchOperationButtons()}
-            </span>
+            <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
+              <h3>已选中{this.state.selectedRowKeys.length}项</h3> {this.renderBatchOperationButtons()}
+            </div>
           </div>
           <div className="panel-body table-panel">
             <Table rowSelection={rowSelection} columns={this.columns} loading={loading}

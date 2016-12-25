@@ -208,9 +208,6 @@ export default class DetailPane extends React.Component {
                 <p>{`${renderConsignLoc(shipmt, 'consigner')} ${shipmt.consigner_addr || ''}`}</p>
                 <p>{`${shipmt.consigner_contact || ''} ${shipmt.consigner_mobile || ''}`}</p>
               </TimelineItem>
-              <TimelineItem color="blue" dot={<Icon type="retweet" style={{ fontSize: '16px' }} />}>
-                <p>中转地</p>
-              </TimelineItem>
               <TimelineItem color="green" dot={<Icon type="circle-o-down" style={{ fontSize: '16px' }} />}>
                 <p><strong>{this.msg('deliveryEstDate')} {moment(shipmt.deliver_est_date).format('YYYY-MM-DD')}</strong></p>
                 <p><strong>{shipmt.consignee_name}</strong></p>

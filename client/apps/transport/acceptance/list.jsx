@@ -345,7 +345,7 @@ export default class AcceptList extends React.Component {
       radioValue = types[0].value;
     }
     let columns = this.columns;
-    let btns = '';
+    let bulkBtns = '';
     if (radioValue === 'unaccepted') {
       columns = [...columns, {
         title: formatContainerMsg(intl, 'opColumn'),
@@ -385,9 +385,9 @@ export default class AcceptList extends React.Component {
           }
         },
       }];
-      btns = (
+      bulkBtns = (
         <PrivilegeCover module="transport" feature="shipment" action="edit">
-          <Button onClick={ev => this.handleShipmtsAccept(this.state.selectedRowKeys, ev)}>
+          <Button type="default" onClick={ev => this.handleShipmtsAccept(this.state.selectedRowKeys, ev)}>
           批量接单
           </Button>
         </PrivilegeCover>
@@ -445,14 +445,14 @@ export default class AcceptList extends React.Component {
             <div className="toolbar">
               <PrivilegeCover module="transport" feature="shipment" action="create">
                 <NavLink to="/transport/shipment/new">
-                  <Button type="primary" icon="plus-circle-o">
+                  <Button type="primary" icon="plus">
                     {this.msg('shipmtCreate')}
                   </Button>
                 </NavLink>
               </PrivilegeCover>
-              <span className={`${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-                {btns}
-              </span>
+              <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
+                <h3>已选中{this.state.selectedRowKeys.length}项</h3> {bulkBtns}
+              </div>
             </div>
             <div className="panel-body table-panel">
               <Table rowSelection={rowSelection} columns={columns} loading={loading}

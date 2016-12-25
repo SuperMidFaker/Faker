@@ -1,7 +1,7 @@
 /* eslint no-undef: 0 */
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Steps, Card } from 'antd';
+import { Steps } from 'antd';
 const Step = Steps.Step;
 
 @connect(
@@ -59,9 +59,7 @@ export default class ShipmentSchedule extends React.Component {
     }
     const steps = statusDes.map((s, i) => <Step key={i} status={s.status} title={s.title} />);
     return (
-      <Card>
-        <Steps current={statusPos}>{steps}</Steps>
-      </Card>
+      <Steps current={statusPos}>{steps}</Steps>
     );
   }
 }

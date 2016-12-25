@@ -22,7 +22,6 @@ import { createFilename } from 'client/util/dataTransform';
 import { sendMessage } from 'common/reducers/corps';
 
 const formatMsg = format(messages);
-const ButtonGroup = Button.Group;
 const DropdownButton = Dropdown.Button;
 const MenuItem = Menu.Item;
 
@@ -103,7 +102,12 @@ export default class Footer extends React.Component {
   }
   handleMenuClick = (e) => {
     const { previewer: { row } } = this.props;
-    if (e.key === 'shareShipment') {
+    if (e.key === 'exportShipment') {
+      this.setState({ exportPDFvisible: true });
+      setTimeout(() => {
+        this.setState({ exportPDFvisible: false });
+      }, 200);
+    } else if (e.key === 'shareShipment') {
       this.props.onShowShareShipmentModal();
     } else if (e.key === 'terminateShipment') {
       this.handleShipmtRevoke(row.shipmt_no, row.disp_id);
@@ -112,10 +116,6 @@ export default class Footer extends React.Component {
     }
   }
   handleShowExportShipment = () => {
-    this.setState({ exportPDFvisible: true });
-    setTimeout(() => {
-      this.setState({ exportPDFvisible: false });
-    }, 200);
   }
   handleDownloadPod = () => {
     const { previewer: { row } } = this.props;
@@ -287,31 +287,32 @@ export default class Footer extends React.Component {
     const { tenantId, stage, previewer: { shipmt, dispatch, row } } = this.props;
     let menu = (
       <Menu onClick={this.handleMenuClick}>
-        <MenuItem key="shareShipment">共享运单</MenuItem>
-        <MenuItem key="terminateShipment">终止运单</MenuItem>
+        <MenuItem key="exportShipment"><Icon type="export" /> 导出运单</MenuItem>
+        <MenuItem key="shareShipment"><Icon type="share-alt" /> 共享运单</MenuItem>
+        <MenuItem key="terminateShipment"><Icon type="delete" /> 终止运单</MenuItem>
       </Menu>
     );
-    let buttons = <div />;
+    let buttons = <span />;
     if (stage === 'acceptance') {
       if (row.status === SHIPMENT_TRACK_STATUS.unaccepted) {
         if (row.source === SHIPMENT_SOURCE.consigned) {
           buttons = (
             <PrivilegeCover module="transport" feature="shipment" action="edit">
-              <ButtonGroup>
-                <Button type="ghost" onClick={() => this.handleShipmtAccept(row.key)} >
-                  接单
-                </Button>
-                <Button type="ghost" onClick={() => this.context.router.push(`/transport/shipment/edit/${row.shipmt_no}`)}>
+              <span>
+                <Button onClick={() => this.context.router.push(`/transport/shipment/edit/${row.shipmt_no}`)}>
                   修改
                 </Button>
-              </ButtonGroup>
+                <Button type="primary" icon="check" onClick={() => this.handleShipmtAccept(row.key)} >
+                  接单
+                </Button>
+              </span>
             </PrivilegeCover>
           );
           menu = (<div />);
         } else if (row.source === SHIPMENT_SOURCE.subcontracted) {
           buttons = (
             <PrivilegeCover module="transport" feature="shipment" action="edit">
-              <Button type="ghost" onClick={() => this.handleShipmtAccept(row.key)} >
+              <Button type="primary" icon="check" onClick={() => this.handleShipmtAccept(row.key)} >
                 接单
               </Button>
             </PrivilegeCover>
@@ -320,7 +321,7 @@ export default class Footer extends React.Component {
       } else if (row.status === SHIPMENT_TRACK_STATUS.accepted) {
         buttons = (
           <PrivilegeCover module="transport" feature="shipment" action="edit">
-            <Tooltip placement="top" title="退回至未接单状态">
+            <Tooltip placement="bottom" title="退回至未接单状态">
               <Button type="ghost" onClick={() => this.handleReturn(row)}>
                 退回
               </Button>
@@ -329,12 +330,11 @@ export default class Footer extends React.Component {
         );
       }
       return (
-        <div className="toolbar">
+        <div>
           {buttons}
-          <span />
-          <DropdownButton type="ghost" overlay={menu} onClick={this.handleShowExportShipment}>
-            <Icon type="export" />
-          </DropdownButton>
+          <Dropdown overlay={menu}>
+            <Button><Icon type="setting" /> <Icon type="down" /></Button>
+          </Dropdown>
           <ExportPDF visible={this.state.exportPDFvisible} shipmtNo={row.shipmt_no} publickKey={shipmt.public_key} />
         </div>
       );
@@ -342,34 +342,34 @@ export default class Footer extends React.Component {
       if (row.child_send_status === 0 && row.status === 2 && row.disp_status === 1 && row.sp_tenant_id === tenantId) {
         buttons = (
           <PrivilegeCover module="transport" feature="dispatch" action="create">
-            <ButtonGroup>
-              <Button type="ghost" onClick={() => this.handleDispatchDockShow(row)} >
-                分配
-              </Button>
-              <Button type="ghost" onClick={() => this.handleSegmentDockShow(row)} >
+            <span>
+              <Button onClick={() => this.handleSegmentDockShow(row)} >
                 分段
               </Button>
-            </ButtonGroup>
+              <Button type="primary" onClick={() => this.handleDispatchDockShow(row)} >
+                分配
+              </Button>
+            </span>
           </PrivilegeCover>
         );
       } else if (row.disp_status === 0 && row.sr_tenant_id === tenantId) {
         buttons = (
           <PrivilegeCover module="transport" feature="dispatch" action="edit">
-            <ButtonGroup>
-              <Button type="ghost" onClick={() => this.handleShipmtSend(row)} >
-                发送
-              </Button>
+            <span>
               <Button type="ghost" onClick={() => this.handleShipmtReturn(row)}>
                 退回
               </Button>
-            </ButtonGroup>
+              <Button type="primary" onClick={() => this.handleShipmtSend(row)} >
+                发送
+              </Button>
+            </span>
           </PrivilegeCover>
         );
       } else if (row.disp_status > 0 && row.sr_tenant_id === tenantId) {
         if (dispatch.downstream_status === 1) {
           buttons = (
             <PrivilegeCover module="transport" feature="dispatch" action="edit">
-              <Tooltip placement="top" title="承运商尚未接单，可立即撤回">
+              <Tooltip placement="bottom" title="承运商尚未接单，可立即撤回">
                 <Button type="ghost" onClick={() => this.handleWithDraw(row)} >
                   撤回
                 </Button>
@@ -379,12 +379,11 @@ export default class Footer extends React.Component {
         }
       }
       return (
-        <div className="toolbar">
+        <div>
           {buttons}
-          <span />
-          <DropdownButton type="ghost" overlay={menu} onClick={this.handleShowExportShipment}>
-            <Icon type="export" />
-          </DropdownButton>
+          <Dropdown overlay={menu}>
+            <Button><Icon type="setting" /> <Icon type="down" /></Button>
+          </Dropdown>
           <ExportPDF visible={this.state.exportPDFvisible} shipmtNo={row.shipmt_no} publickKey={shipmt.public_key} />
         </div>
       );
@@ -392,11 +391,8 @@ export default class Footer extends React.Component {
       if (row.status === SHIPMENT_TRACK_STATUS.unaccepted) {
         buttons = (
           <PrivilegeCover module="transport" feature="tracking" action="create">
-            <Button type="ghost" onClick={
-              () => this.props.sendMessage({ notifyType: 'notifyAccept', shipment: row })
-            }
-            >
-                催促接单
+            <Button type="ghost" onClick={() => this.props.sendMessage({ notifyType: 'notifyAccept', shipment: row })}>
+              催促接单
             </Button>
           </PrivilegeCover>
         );
@@ -406,7 +402,7 @@ export default class Footer extends React.Component {
           buttons = (
             <PrivilegeCover module="transport" feature="tracking" action="edit">
               <Button type="ghost" onClick={() => this.handleShowVehicleModal(row)} >
-                  更新车辆司机
+                更新车辆司机
               </Button>
             </PrivilegeCover>
           );
@@ -414,7 +410,7 @@ export default class Footer extends React.Component {
           buttons = (
             <PrivilegeCover module="transport" feature="tracking" action="create">
               <Button type="ghost" onClick={() => this.props.sendMessage({ notifyType: 'notifyDispatch', shipment: row })} >
-                  催促调度
+                催促调度
               </Button>
             </PrivilegeCover>
           );
@@ -423,14 +419,14 @@ export default class Footer extends React.Component {
         if (row.sp_tenant_id === -1) {
           buttons = (
             <PrivilegeCover module="transport" feature="tracking" action="edit">
-              <ButtonGroup>
+              <span>
                 <Button type="ghost" onClick={() => this.handleShowPickModal(row)} >
                   更新提货
                 </Button>
                 <Button type="ghost" onClick={() => this.handleShowCreateExcpModal(row)} >
                   记录异常
                 </Button>
-              </ButtonGroup>
+              </span>
             </PrivilegeCover>
           );
         } else if (row.sp_tenant_id === 0) {
@@ -439,40 +435,37 @@ export default class Footer extends React.Component {
               // 线下司机
             buttons = (
               <PrivilegeCover module="transport" feature="tracking" action="edit">
-                <ButtonGroup>
-                  <Button type="ghost"
-                    onClick={() => this.handleShowPickModal(row)}
-                  >
+                <span>
+                  <Button type="ghost" onClick={() => this.handleShowPickModal(row)}>
                     更新提货
                   </Button>
                   <Button type="ghost" onClick={() => this.handleShowCreateExcpModal(row)} >
                     记录异常
                   </Button>
-                </ButtonGroup>
+                </span>
               </PrivilegeCover>
             );
           } else {
             // 司机更新
             buttons = (
               <PrivilegeCover module="transport" feature="tracking" action="create">
-                <ButtonGroup>
-                  <Button type="ghost" onClick={
-                      () => this.props.sendMessage({ notifyType: 'notifyDriverPickup', shipment: row })
-                    }
+                <span>
+                  <Button type="ghost"
+                    onClick={() => this.props.sendMessage({ notifyType: 'notifyDriverPickup', shipment: row })}
                   >
-                      催促提货
+                    催促提货
                   </Button>
                   <Button type="ghost" onClick={() => this.handleShowCreateExcpModal(row)} >
                     记录异常
                   </Button>
-                </ButtonGroup>
+                </span>
               </PrivilegeCover>
             );
           }
         } else {
           buttons = (
             <PrivilegeCover module="transport" feature="tracking" action="create">
-              <ButtonGroup>
+              <span>
                 <Button type="ghost" onClick={
                     () => this.props.sendMessage({ notifyType: 'notifySpPickup', shipment: row })
                   }
@@ -482,7 +475,7 @@ export default class Footer extends React.Component {
                 <Button type="ghost" onClick={() => this.handleShowCreateExcpModal(row)} >
                   记录异常
                 </Button>
-              </ButtonGroup>
+              </span>
             </PrivilegeCover>
           );
         }
@@ -490,7 +483,7 @@ export default class Footer extends React.Component {
         if (row.sp_tenant_id === -1) {
           buttons = (
             <PrivilegeCover module="transport" feature="tracking" action="edit">
-              <ButtonGroup>
+              <span>
                 <Button type="ghost" onClick={() => this.handleShowDeliverModal(row)} >
                   更新送货
                 </Button>
@@ -506,7 +499,7 @@ export default class Footer extends React.Component {
                 <Button type="ghost" onClick={() => this.handleShowCreateExcpModal(row)} >
                   记录异常
                 </Button>
-              </ButtonGroup>
+              </span>
             </PrivilegeCover>
           );
           menu = (
@@ -520,7 +513,7 @@ export default class Footer extends React.Component {
           if (row.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
             buttons = (
               <PrivilegeCover module="transport" feature="tracking" action="edit">
-                <ButtonGroup>
+                <span>
                   <Button type="ghost" onClick={() => this.handleShowDeliverModal(row)} >
                     更新送货
                   </Button>
@@ -536,14 +529,14 @@ export default class Footer extends React.Component {
                   <Button type="ghost" onClick={() => this.handleShowCreateExcpModal(row)} >
                     记录异常
                   </Button>
-                </ButtonGroup>
+                </span>
               </PrivilegeCover>
             );
           } else {
             // 司机更新
             buttons = (
               <PrivilegeCover module="transport" feature="tracking" action="edit">
-                <ButtonGroup>
+                <span>
                   <Button type="ghost" onClick={() => this.handleShowShipmentAdvanceModal(row)} >
                     添加代垫费用
                   </Button>
@@ -553,7 +546,7 @@ export default class Footer extends React.Component {
                   <Button type="ghost" onClick={() => this.handleShowCreateExcpModal(row)} >
                     记录异常
                   </Button>
-                </ButtonGroup>
+                </span>
               </PrivilegeCover>
             );
           }
@@ -568,7 +561,7 @@ export default class Footer extends React.Component {
           // 承运商更新
           buttons = (
             <PrivilegeCover module="transport" feature="tracking" action="edit">
-              <ButtonGroup>
+              <span>
                 <Button type="ghost" onClick={() => this.handleShowShipmentAdvanceModal(row)} >
                   添加代垫费用
                 </Button>
@@ -578,7 +571,7 @@ export default class Footer extends React.Component {
                 <Button type="ghost" onClick={() => this.handleShowCreateExcpModal(row)} >
                   记录异常
                 </Button>
-              </ButtonGroup>
+              </span>
             </PrivilegeCover>
           );
         }
@@ -586,11 +579,11 @@ export default class Footer extends React.Component {
         if (row.pod_type === 'none') {
           buttons = (
             <PrivilegeCover module="transport" feature="tracking" action="edit">
-              <ButtonGroup>
+              <span>
                 <Button type="ghost" onClick={() => this.handleShowSpecialChargeModal(row)} >
                   添加特殊费用
                 </Button>
-              </ButtonGroup>
+              </span>
             </PrivilegeCover>
           );
           menu = (
@@ -603,7 +596,7 @@ export default class Footer extends React.Component {
         } else if (row.sp_tenant_id === -1) {
           buttons = (
             <PrivilegeCover module="transport" feature="tracking" action="create">
-              <ButtonGroup>
+              <span>
                 <Button type="ghost" onClick={() => this.handleShowSpecialChargeModal(row)} >
                   添加特殊费用
                 </Button>
@@ -612,7 +605,7 @@ export default class Footer extends React.Component {
                 >
                   上传回单
                 </Button>
-              </ButtonGroup>
+              </span>
             </PrivilegeCover>
           );
           menu = (
@@ -626,7 +619,7 @@ export default class Footer extends React.Component {
           if (row.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
             buttons = (
               <PrivilegeCover module="transport" feature="tracking" action="create">
-                <ButtonGroup>
+                <span>
                   <Button type="ghost" onClick={() => this.handleShowSpecialChargeModal(row)} >
                     添加特殊费用
                   </Button>
@@ -635,18 +628,18 @@ export default class Footer extends React.Component {
                   >
                     上传回单
                   </Button>
-                </ButtonGroup>
+                </span>
               </PrivilegeCover>
             );
           } else {
             // 司机上传
             buttons = (
               <PrivilegeCover module="transport" feature="tracking" action="edit">
-                <ButtonGroup>
+                <span>
                   <Button type="ghost" onClick={() => this.handleShowSpecialChargeModal(row)} >
                     添加特殊费用
                   </Button>
-                </ButtonGroup>
+                </span>
               </PrivilegeCover>
             );
           }
@@ -661,22 +654,19 @@ export default class Footer extends React.Component {
           // 承运商上传
           buttons = (
             <PrivilegeCover module="transport" feature="tracking" action="edit">
-              <ButtonGroup>
-                <Button type="ghost" onClick={() => this.handleShowSpecialChargeModal(row)} >
-                  添加特殊费用
-                </Button>
-              </ButtonGroup>
+              <Button type="ghost" onClick={() => this.handleShowSpecialChargeModal(row)} >
+                添加特殊费用
+              </Button>
             </PrivilegeCover>
           );
         }
       }
       return (
-        <div className="toolbar">
+        <div>
           {buttons}
-          <span />
-          <DropdownButton type="ghost" overlay={menu} onClick={this.handleShowExportShipment}>
-            <Icon type="export" />
-          </DropdownButton>
+          <Dropdown overlay={menu}>
+            <Button><Icon type="setting" /> <Icon type="down" /></Button>
+          </Dropdown>
           <ExportPDF visible={this.state.exportPDFvisible} shipmtNo={row.shipmt_no} publickKey={shipmt.public_key} />
         </div>
       );
@@ -726,9 +716,8 @@ export default class Footer extends React.Component {
           );
         }
         return (
-          <div className="toolbar">
+          <div>
             {buttons}
-            <span />
             <PrivilegeCover module="transport" feature="shipment" action="create">
               <div className="more-actions">
                 <DropdownButton overlay={menu} />
@@ -748,9 +737,8 @@ export default class Footer extends React.Component {
           </PrivilegeCover>
         );
         return (
-          <div className="toolbar">
+          <div>
             {buttons}
-            <span />
             <DropdownButton overlay={menu} />
           </div>
         );
@@ -758,14 +746,12 @@ export default class Footer extends React.Component {
         // 审核回单
         buttons = (
           <PrivilegeCover module="transport" feature="tracking" action="edit">
-            <ButtonGroup>
-              <Button type="ghost" onClick={() => this.handleAuditPass(row)} >
+            <Button type="ghost" onClick={() => this.handleAuditPass(row)} >
                 接受
               </Button>
-              <Button type="ghost" onClick={() => this.handleAuditReturn(row)} >
+            <Button type="ghost" onClick={() => this.handleAuditReturn(row)} >
                 拒绝
               </Button>
-            </ButtonGroup>
           </PrivilegeCover>
         );
       } else if (row.pod_status === SHIPMENT_POD_STATUS.rejectByUs) {
@@ -779,9 +765,8 @@ export default class Footer extends React.Component {
         buttons = (<div />);
       }
       return (
-        <div className="toolbar">
+        <div>
           {buttons}
-          <span />
           <DropdownButton overlay={menu} onClick={this.handleDownloadPod}>
             <Icon type="download" />
           </DropdownButton>
@@ -792,10 +777,9 @@ export default class Footer extends React.Component {
       buttons = (<div />);
     }
     return (
-      <div className="toolbar">
+      <div>
         {buttons}
-        <span />
-        <DropdownButton type="ghost" overlay={menu} onClick={this.handleShowExportShipment}>
+        <DropdownButton overlay={menu} onClick={this.handleShowExportShipment}>
           <Icon type="export" />
         </DropdownButton>
         <ExportPDF visible={this.state.exportPDFvisible} shipmtNo={row.shipmt_no} publickKey={shipmt.public_key} />

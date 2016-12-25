@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Tabs, Badge } from 'antd';
+import { Badge, Col, Row, Tabs } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import DetailPane from './tabpanes/detail-pane';
 import LogPane from './tabpanes/logPane';
@@ -10,6 +10,7 @@ import TrackingPane from './tabpanes/trackingPane';
 import { SHIPMENT_TRACK_STATUS, SHIPMENT_EFFECTIVES } from 'common/constants';
 import { hidePreviewer, sendTrackingDetailSMSMessage, changePreviewerTab } from 'common/reducers/shipment';
 import { format } from 'client/common/i18n/helpers';
+import InfoItem from 'client/components/InfoItem';
 import messages from '../message.i18n';
 import Footer from './preview-panel-footer';
 import ShareShipmentModal from './share-shipment';
@@ -156,9 +157,6 @@ export default class PreviewPanel extends React.Component {
           <TabPane tab={this.msg('shipmtException')} key="exception">
             <ExceptionPane />
           </TabPane>
-          <TabPane tab={this.msg('shipmtLogs')} key="logs">
-            <LogPane />
-          </TabPane>
         </Tabs>
       );
     } else {
@@ -176,9 +174,6 @@ export default class PreviewPanel extends React.Component {
           <TabPane tab={this.msg('shipmtException')} key="exception">
             <ExceptionPane />
           </TabPane>
-          <TabPane tab={this.msg('shipmtLogs')} key="logs">
-            <LogPane />
-          </TabPane>
         </Tabs>
       );
     }
@@ -191,19 +186,40 @@ export default class PreviewPanel extends React.Component {
       </button>);
     return (
       shipmtNo ?
-        <div className={`dock-panel preview-panel ${visible ? 'inside' : ''}`} id="preview-panel">
+        <div className={`dock-panel info-hub-panel ${visible ? 'inside' : ''}`} id="preview-panel">
           <div className="panel-content">
             <div className="header">
               <span className="title">{shipmtNo}</span>
               <Badge status={this.transformBadgeColor(shipmt.status)} text={this.msg(getTrackStatusMsg(status, effective))} />
-              <div className="pull-right">
+              <div className="toolbar-right">
                 {this.viewStages.indexOf(this.props.stage) === -1 ? (<Footer stage={stage} onShowShareShipmentModal={this.handleShowShareShipmentModal} />) : ''}
                 {closer}
               </div>
+              <Row>
+                <Col span="6">
+                  <InfoItem labelCol={{ span: 3 }} label="托运方"
+                    field={shipmt.customer_name} fieldCol={{ span: 9 }}
+                  />
+                </Col>
+                <Col span="6">
+                  <InfoItem labelCol={{ span: 3 }} label="承运商"
+                    field={shipmt.lsp_name} fieldCol={{ span: 9 }}
+                  />
+                </Col>
+                <Col span="12">
+                  <ShipmentSchedule />
+                </Col>
+              </Row>
             </div>
-            <div className="body">
-              <ShipmentSchedule />
-              {this.renderTabs(shipmt.status)}
+            <div className="body with-header-summary">
+              <Row gutter={16}>
+                <Col sm={24} md={12} lg={12}>
+                  {this.renderTabs(shipmt.status)}
+                </Col>
+                <Col sm={24} md={12} lg={12}>
+                  <LogPane />
+                </Col>
+              </Row>
             </div>
           </div>
           <ShareShipmentModal visible={this.state.shareShipmentModalVisible} shipmt={shipmt} />
