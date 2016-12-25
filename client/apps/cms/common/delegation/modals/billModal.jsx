@@ -21,9 +21,9 @@ export default class BillModal extends Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.billMakeModal.bills.length === 1 && nextProps.billMakeModal.visible) {
-      let link = `/clearance/${this.props.ietype}/docs/make/`;
+      let link = `/clearance/${this.props.ietype}/manifest/make/`;
       if (nextProps.billMakeModal.type === 'view') {
-        link = `/clearance/${this.props.ietype}/docs/view/`;
+        link = `/clearance/${this.props.ietype}/manifest/view/`;
       }
       this.context.router.push(`${link}${nextProps.billMakeModal.bills[0].bill_seq_no}`);
     }
@@ -38,10 +38,10 @@ export default class BillModal extends Component {
       return null;
     }
     const visible = billMakeModal.visible;
-    let linkTo = `/clearance/${ietype}/docs/make/`;
+    let linkTo = `/clearance/${ietype}/manifest/make/`;
     let title = '选择清单-开始制单';
     if (billMakeModal.type === 'view') {
-      linkTo = `/clearance/${ietype}/docs/view/`;
+      linkTo = `/clearance/${ietype}/manifest/view/`;
       title = '选择查看清单';
     }
     const footer = (

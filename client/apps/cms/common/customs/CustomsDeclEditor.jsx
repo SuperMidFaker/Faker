@@ -4,8 +4,8 @@ import { Breadcrumb, Button, Dropdown, Menu, Radio, Icon } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
-import DeclForm from '../docs/forms/DeclForm';
-import ExtraDock from '../docs/modals/extraDock';
+import DeclForm from './forms/DeclForm';
+import ExtraDock from '../modals/extraDock';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 

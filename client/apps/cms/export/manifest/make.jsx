@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import { loadBills, loadEntries, loadCmsParams } from 'common/reducers/cmsDeclare';
-import DelegationBillEditor from '../../common/docs/DelegationBillEditor';
+import ManifestEditor from '../../common/manifest/ManifestEditor';
 
 function fetchData({ dispatch, params, state }) {
   const promises = [];
@@ -17,11 +17,11 @@ function fetchData({ dispatch, params, state }) {
 
 @connectFetch()(fetchData)
 @withPrivilege({ module: 'clearance', feature: 'export', action: 'create' })
-export default class ExportDeclareMake extends React.Component {
+export default class ExportManifestMake extends React.Component {
   static propTypes = {
     params: PropTypes.object,
   }
   render() {
-    return <DelegationBillEditor ietype="export" params={this.props.params} />;
+    return <ManifestEditor ietype="export" params={this.props.params} />;
   }
 }

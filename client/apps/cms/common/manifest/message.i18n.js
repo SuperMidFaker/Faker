@@ -2,435 +2,435 @@ import { defineMessages } from 'react-intl';
 
 export default defineMessages({
   delgNo: {
-    id: 'cms.docs.delg.no',
+    id: 'cms.manifest.delg.no',
     defaultMessage: '报关委托号',
   },
   delgClient: {
-    id: 'cms.docs.delg.client',
+    id: 'cms.manifest.delg.client',
     defaultMessage: '委托客户',
   },
   delgTime: {
-    id: 'cms.docs.delg.time',
+    id: 'cms.manifest.delg.time',
     defaultMessage: '委托日期',
   },
   acptTime: {
-    id: 'cms.docs.delg.acpttime',
+    id: 'cms.manifest.delg.acpttime',
     defaultMessage: '接单日期',
   },
   contractNo: {
-    id: 'cms.docs.delg.contract.no',
+    id: 'cms.manifest.delg.contract.no',
     defaultMessage: '合同号',
   },
   deliveryNo: {
-    id: 'cms.docs.delg.delivery.no',
+    id: 'cms.manifest.delg.delivery.no',
     defaultMessage: '提运单号',
   },
   invoiceNo: {
-    id: 'cms.docs.delg.invoice.no',
+    id: 'cms.manifest.delg.invoice.no',
     defaultMessage: '发票号',
   },
   voyageNo: {
-    id: 'cms.docs.delg.voyage.no',
+    id: 'cms.manifest.delg.voyage.no',
     defaultMessage: '航名航次',
   },
   delgInternalNo: {
-    id: 'cms.docs.delg.internal.no',
+    id: 'cms.manifest.delg.internal.no',
     defaultMessage: '企业内部编号',
   },
   packageNum: {
-    id: 'cms.docs.delg.packageNum',
+    id: 'cms.manifest.delg.packageNum',
     defaultMessage: '件数',
   },
   delgWeight: {
-    id: 'cms.docs.delg.weight',
+    id: 'cms.manifest.delg.weight',
     defaultMessage: '重量',
   },
   delgSource: {
-    id: 'cms.docs.delg.source',
+    id: 'cms.manifest.delg.source',
     defaultMessage: '来源',
   },
   billNo: {
-    id: 'cms.docs.delg.billNo',
+    id: 'cms.manifest.delg.billNo',
     defaultMessage: '清单编号',
   },
   compEntryId: {
-    id: 'cms.docs.delg.comp.entryId',
+    id: 'cms.manifest.delg.comp.entryId',
     defaultMessage: '企业报关单编号',
   },
   entryId: {
-    id: 'cms.docs.delg.entryId',
+    id: 'cms.manifest.delg.entryId',
     defaultMessage: '报关单号',
   },
   consginSource: {
-    id: 'cms.docs.consign.source',
+    id: 'cms.manifest.consign.source',
     defaultMessage: '委托',
   },
   subcontractSource: {
-    id: 'cms.docs.subcontract.source',
+    id: 'cms.manifest.subcontract.source',
     defaultMessage: '分包',
   },
   opColumn: {
-    id: 'cms.docs.delg.opColumn',
+    id: 'cms.manifest.delg.opColumn',
     defaultMessage: '操作',
   },
   downloadCert: {
-    id: 'cms.docs.delg.downloadCert',
+    id: 'cms.manifest.delg.downloadCert',
     defaultMessage: '下载单据',
   },
   declareMake: {
-    id: 'cms.docs.make',
+    id: 'cms.manifest.make',
     defaultMessage: '制单',
   },
   declareView: {
-    id: 'cms.docs.view',
+    id: 'cms.manifest.view',
     defaultMessage: '查看',
   },
   writeEntryId: {
-    id: 'cms.docs.write.entryId',
+    id: 'cms.manifest.write.entryId',
     defaultMessage: '填写报关单号',
   },
   declareBill: {
-    id: 'cms.docs.bill',
+    id: 'cms.manifest.bill',
     defaultMessage: '报关清单',
   },
   newDeclaration: {
-    id: 'cms.docs.new.declaration',
+    id: 'cms.manifest.new.declaration',
     defaultMessage: '制作报关单',
   },
   generateEntry: {
-    id: 'cms.docs.generate.entry',
+    id: 'cms.manifest.generate.entry',
     defaultMessage: '生成报关单',
   },
   addEntry: {
-    id: 'cms.docs.add.entry',
+    id: 'cms.manifest.add.entry',
     defaultMessage: '直接添加报关单',
   },
   removeEntries: {
-    id: 'cms.docs.remove.entries',
+    id: 'cms.manifest.remove.entries',
     defaultMessage: '删除报关单',
   },
   billHeader: {
-    id: 'cms.docs.form.bill.header',
+    id: 'cms.manifest.form.bill.header',
     defaultMessage: '清单表头',
   },
   billList: {
-    id: 'cms.docs.form.bill.list',
+    id: 'cms.manifest.form.bill.list',
     defaultMessage: '清单表体',
   },
   preEntryId: {
-    id: 'cms.docs.form.pre.entry.id',
+    id: 'cms.manifest.form.pre.entry.id',
     defaultMessage: '预录入编号',
   },
   formEntryId: {
-    id: 'cms.docs.form.entry.id',
+    id: 'cms.manifest.form.entry.id',
     defaultMessage: '海关编号',
   },
   iport: {
-    id: 'cms.docs.form.iport',
+    id: 'cms.manifest.form.iport',
     defaultMessage: '进口口岸',
   },
   eport: {
-    id: 'cms.docs.form.eport',
+    id: 'cms.manifest.form.eport',
     defaultMessage: '出口口岸',
   },
   idate: {
-    id: 'cms.docs.form.idate',
+    id: 'cms.manifest.form.idate',
     defaultMessage: '进口日期',
   },
   edate: {
-    id: 'cms.docs.form.edate',
+    id: 'cms.manifest.form.edate',
     defaultMessage: '出口日期',
   },
   ddate: {
-    id: 'cms.docs.form.ddate',
+    id: 'cms.manifest.form.ddate',
     defaultMessage: '申报日期',
   },
   transMode: {
-    id: 'cms.docs.form.transMode',
+    id: 'cms.manifest.form.transMode',
     defaultMessage: '运输方式',
   },
   transModeName: {
-    id: 'cms.docs.form.transModeName',
+    id: 'cms.manifest.form.transModeName',
     defaultMessage: '运输工具名',
   },
   ladingWayBill: {
-    id: 'cms.docs.form.ladingWayBill',
+    id: 'cms.manifest.form.ladingWayBill',
     defaultMessage: '提运单号',
   },
   relationCodeSearch: {
-    id: 'cms.docs.form.relation.code.search',
+    id: 'cms.manifest.form.relation.code.search',
     defaultMessage: '代码搜索',
   },
   relationName: {
-    id: 'cms.docs.form.relation.name',
+    id: 'cms.manifest.form.relation.name',
     defaultMessage: '名称',
   },
   forwardName: {
-    id: 'cms.docs.form.forward.name',
+    id: 'cms.manifest.form.forward.name',
     defaultMessage: '收发货人',
   },
   ownerConsumeName: {
-    id: 'cms.docs.form.owner.consume.name',
+    id: 'cms.manifest.form.owner.consume.name',
     defaultMessage: '消费使用单位',
   },
   ownerProduceName: {
-    id: 'cms.docs.form.owner.produce.name',
+    id: 'cms.manifest.form.owner.produce.name',
     defaultMessage: '生产消费单位',
   },
   agentName: {
-    id: 'cms.docs.form.agent.name',
+    id: 'cms.manifest.form.agent.name',
     defaultMessage: '申报单位',
   },
   tradeMode: {
-    id: 'cms.docs.form.trade.name',
+    id: 'cms.manifest.form.trade.name',
     defaultMessage: '监管方式',
   },
   rmModeName: {
-    id: 'cms.docs.form.rm.mode.name',
+    id: 'cms.manifest.form.rm.mode.name',
     defaultMessage: '征免性质',
   },
   emsNo: {
-    id: 'cms.docs.form.ems.no',
+    id: 'cms.manifest.form.ems.no',
     defaultMessage: '备案号',
   },
   tradeCountry: {
-    id: 'cms.docs.form.trade.country',
+    id: 'cms.manifest.form.trade.country',
     defaultMessage: '贸易国',
   },
   departCountry: {
-    id: 'cms.docs.form.depart.country',
+    id: 'cms.manifest.form.depart.country',
     defaultMessage: '启运国',
   },
   destinateCountry: {
-    id: 'cms.docs.form.destinate.country',
+    id: 'cms.manifest.form.destinate.country',
     defaultMessage: '抵运国',
   },
   licenseNo: {
-    id: 'cms.docs.form.license.no',
+    id: 'cms.manifest.form.license.no',
     defaultMessage: '许可证号',
   },
   trxMode: {
-    id: 'cms.docs.form.trx.mode',
+    id: 'cms.manifest.form.trx.mode',
     defaultMessage: '成交方式',
   },
   packCount: {
-    id: 'cms.docs.form.pack.count',
+    id: 'cms.manifest.form.pack.count',
     defaultMessage: '件数',
   },
   containerNo: {
-    id: 'cms.docs.form.container.no',
+    id: 'cms.manifest.form.container.no',
     defaultMessage: '集装箱号',
   },
   usage: {
-    id: 'cms.docs.form.usage',
+    id: 'cms.manifest.form.usage',
     defaultMessage: '用途',
   },
   iDestinatePort: {
-    id: 'cms.docs.form.idest.port',
+    id: 'cms.manifest.form.idest.port',
     defaultMessage: '装货港',
   },
   eDestinatePort: {
-    id: 'cms.docs.form.edest.port',
+    id: 'cms.manifest.form.edest.port',
     defaultMessage: '指运港',
   },
   iDistrict: {
-    id: 'cms.docs.form.idistrict',
+    id: 'cms.manifest.form.idistrict',
     defaultMessage: '境内目的地',
   },
   eDistrict: {
-    id: 'cms.docs.form.edistrict',
+    id: 'cms.manifest.form.edistrict',
     defaultMessage: '境内货源地',
   },
   freightCharge: {
-    id: 'cms.docs.form.freightCharge',
+    id: 'cms.manifest.form.freightCharge',
     defaultMessage: '运费',
   },
   insurance: {
-    id: 'cms.docs.form.insurance',
+    id: 'cms.manifest.form.insurance',
     defaultMessage: '保费',
   },
   sundry: {
-    id: 'cms.docs.form.sundry',
+    id: 'cms.manifest.form.sundry',
     defaultMessage: '杂费',
   },
   packType: {
-    id: 'cms.docs.form.pack.type',
+    id: 'cms.manifest.form.pack.type',
     defaultMessage: '包装',
   },
   grosswt: {
-    id: 'cms.docs.form.gross.wt',
+    id: 'cms.manifest.form.gross.wt',
     defaultMessage: '毛重',
   },
   netwt: {
-    id: 'cms.docs.form.net.wt',
+    id: 'cms.manifest.form.net.wt',
     defaultMessage: '净重',
   },
   certMark: {
-    id: 'cms.docs.form.cert.mark',
+    id: 'cms.manifest.form.cert.mark',
     defaultMessage: '随附单证',
   },
   markNotes: {
-    id: 'cms.docs.form.mark.notes',
+    id: 'cms.manifest.form.mark.notes',
     defaultMessage: '唛码备注',
   },
   seqNumber: {
-    id: 'cms.docs.table.seq.number',
+    id: 'cms.manifest.table.seq.number',
     defaultMessage: '序号',
   },
   copGNo: {
-    id: 'cms.docs.table.cop.gno',
+    id: 'cms.manifest.table.cop.gno',
     defaultMessage: '商品货号',
   },
   emGNo: {
-    id: 'cms.docs.table.em.gno',
+    id: 'cms.manifest.table.em.gno',
     defaultMessage: '项号',
   },
   codeT: {
-    id: 'cms.docs.table.codet',
+    id: 'cms.manifest.table.codet',
     defaultMessage: '商品编码',
   },
   codeS: {
-    id: 'cms.docs.table.codes',
+    id: 'cms.manifest.table.codes',
     defaultMessage: '附加码',
   },
   gName: {
-    id: 'cms.docs.table.gname',
+    id: 'cms.manifest.table.gname',
     defaultMessage: '商品名称',
   },
   gModel: {
-    id: 'cms.docs.table.gmodel',
+    id: 'cms.manifest.table.gmodel',
     defaultMessage: '规格型号',
   },
   element: {
-    id: 'cms.docs.table.element',
+    id: 'cms.manifest.table.element',
     defaultMessage: '申报要素',
   },
   quantity: {
-    id: 'cms.docs.table.quantity',
+    id: 'cms.manifest.table.quantity',
     defaultMessage: '申报数量',
   },
   unit: {
-    id: 'cms.docs.table.unit',
+    id: 'cms.manifest.table.unit',
     defaultMessage: '成交单位',
   },
   icountry: {
-    id: 'cms.docs.table.icountry',
+    id: 'cms.manifest.table.icountry',
     defaultMessage: '原产国',
   },
   ecountry: {
-    id: 'cms.docs.table.ecountry',
+    id: 'cms.manifest.table.ecountry',
     defaultMessage: '最终目的国',
   },
   decPrice: {
-    id: 'cms.docs.table.dec.price',
+    id: 'cms.manifest.table.dec.price',
     defaultMessage: '单价',
   },
   decTotal: {
-    id: 'cms.docs.table.dec.total',
+    id: 'cms.manifest.table.dec.total',
     defaultMessage: '总价',
   },
   currency: {
-    id: 'cms.docs.table.currency',
+    id: 'cms.manifest.table.currency',
     defaultMessage: '币制',
   },
   exemptionWay: {
-    id: 'cms.docs.table.exemptionway',
+    id: 'cms.manifest.table.exemptionway',
     defaultMessage: '征免方式',
   },
   save: {
-    id: 'cms.docs.table.save',
+    id: 'cms.manifest.table.save',
     defaultMessage: '保存',
   },
   importBody: {
-    id: 'cms.docs.table.import',
+    id: 'cms.manifest.table.import',
     defaultMessage: '导入清单',
   },
   cancel: {
-    id: 'cms.docs.table.cancel',
+    id: 'cms.manifest.table.cancel',
     defaultMessage: '取消',
   },
   edit: {
-    id: 'cms.docs.table.edit',
+    id: 'cms.manifest.table.edit',
     defaultMessage: '编辑',
   },
   delete: {
-    id: 'cms.docs.table.delete',
+    id: 'cms.manifest.table.delete',
     defaultMessage: '删除',
   },
   append: {
-    id: 'cms.docs.table.append',
+    id: 'cms.manifest.table.append',
     defaultMessage: '添加',
   },
   headUncreated: {
-    id: 'cms.docs.body.headUncreated',
+    id: 'cms.manifest.body.headUncreated',
     defaultMessage: '表头未保存',
   },
   declareEntry: {
-    id: 'cms.docs.entry',
+    id: 'cms.manifest.entry',
     defaultMessage: '报关单',
   },
   entryHeader: {
-    id: 'cms.docs.entry.header',
+    id: 'cms.manifest.entry.header',
     defaultMessage: '报关单表头',
   },
   entryList: {
-    id: 'cms.docs.entry.list',
+    id: 'cms.manifest.entry.list',
     defaultMessage: '报关单表体',
   },
   mergePrinciple: {
-    id: 'cms.docs.modal.merge.principle',
+    id: 'cms.manifest.modal.merge.principle',
     defaultMessage: '归并原则',
   },
   splitPrinciple: {
-    id: 'cms.docs.modal.split.principle',
+    id: 'cms.manifest.modal.split.principle',
     defaultMessage: '拆分原则',
   },
   sortPrinciple: {
-    id: 'cms.docs.modal.sort.principle',
+    id: 'cms.manifest.modal.sort.principle',
     defaultMessage: '排序原则',
   },
   conditionalMerge: {
-    id: 'cms.docs.modal.conditional.merge',
+    id: 'cms.manifest.modal.conditional.merge',
     defaultMessage: '条件归并:',
   },
   productName: {
-    id: 'cms.docs.modal.product.name',
+    id: 'cms.manifest.modal.product.name',
     defaultMessage: '中文品名',
   },
   productCode: {
-    id: 'cms.docs.modal.product.code',
+    id: 'cms.manifest.modal.product.code',
     defaultMessage: '商品货号',
   },
   nonMerge: {
-    id: 'cms.docs.modal.non.merge',
+    id: 'cms.manifest.modal.non.merge',
     defaultMessage: '不归并:',
   },
   specialHscodeDeclare: {
-    id: 'cms.docs.modal.split.special.hscode',
+    id: 'cms.manifest.modal.split.special.hscode',
     defaultMessage: '特殊商品编码独立报关',
   },
   customControlDeclare: {
-    id: 'cms.docs.modal.split.custom.declare',
+    id: 'cms.manifest.modal.split.custom.declare',
     defaultMessage: '海关监管项独立报关',
   },
   customOnTop: {
-    id: 'cms.docs.modal.sort.custom.ontop',
+    id: 'cms.manifest.modal.sort.custom.ontop',
     defaultMessage: '海关监管项置顶',
   },
   totalPriceOnTop: {
-    id: 'cms.docs.modal.sort.totalprice.ontop',
+    id: 'cms.manifest.modal.sort.totalprice.ontop',
     defaultMessage: '最大金额项优先',
   },
   hsCodeAscSort: {
-    id: 'cms.docs.modal.sort.hscode.asc',
+    id: 'cms.manifest.modal.sort.hscode.asc',
     defaultMessage: '商品编码升序',
   },
   priceDescSort: {
-    id: 'cms.docs.modal.sort.price.desc',
+    id: 'cms.manifest.modal.sort.price.desc',
     defaultMessage: '申报金额降序',
   },
   entryNoFillModalTitle: {
-    id: 'cms.docs.modal.entrynofill.title',
+    id: 'cms.manifest.modal.entrynofill.title',
     defaultMessage: '填写报关单号',
   },
 });

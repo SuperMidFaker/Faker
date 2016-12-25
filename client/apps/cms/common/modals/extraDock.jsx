@@ -2,7 +2,7 @@ import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import { Form, Card } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import messages from '../message.i18n';
+import messages from './message.i18n';
 import { format } from 'client/common/i18n/helpers';
 const formatMsg = format(messages);
 

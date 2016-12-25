@@ -58,14 +58,14 @@ export default class SubdelgTable extends Component {
         return o || '';
       } else if (record.bill_status > 4) {
         return (
-          <NavLink to={`/clearance/${this.props.ietype}/docs/view/${o}`}>
+          <NavLink to={`/clearance/${this.props.ietype}/manifest/view/${o}`}>
             {o}
           </NavLink>
         );
       } else {
         return (
           <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
-            <NavLink to={`/clearance/${this.props.ietype}/docs/make/${o}`}>
+            <NavLink to={`/clearance/${this.props.ietype}/manifest/make/${o}`}>
               {o}
             </NavLink>
           </PrivilegeCover>

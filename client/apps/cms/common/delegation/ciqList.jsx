@@ -65,6 +65,7 @@ export default class CiqList extends Component {
     title: this.msg('delgNo'),
     dataIndex: 'delg_no',
     width: 120,
+    fixed: 'left',
     render: o => (
       <a onClick={() => this.handlePreview(o)}>
         {o}
@@ -132,6 +133,7 @@ export default class CiqList extends Component {
   }, {
     title: this.msg('opColumn'),
     width: 100,
+    fixed: 'right',
     render: (record) => {
       if (record.status === 0 && record.type === 1) {
         return (

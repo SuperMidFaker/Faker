@@ -5,8 +5,8 @@ import QueueAnim from 'rc-queue-anim';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { addEntry, setTabKey, openMergeSplitModal } from 'common/reducers/cmsDeclare';
-import BillForm from './forms/BillForm';
-import ExtraDock from './modals/extraDock';
+import BillForm from './forms/ManifestForm';
+import ExtraDock from '../modals/extraDock';
 import MergeSplitModal from './modals/mergeSplit';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -27,7 +27,7 @@ const RadioButton = Radio.Button;
   depth: 3,
   moduleName: 'clearance',
 })
-export default class DelegationBillEditor extends React.Component {
+export default class ManifestEditor extends React.Component {
   static propTypes = {
     params: PropTypes.object.isRequired,
     intl: intlShape.isRequired,

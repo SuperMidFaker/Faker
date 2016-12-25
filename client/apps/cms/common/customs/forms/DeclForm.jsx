@@ -2,8 +2,8 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Form, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import SheetHeadPanel from './SheetHeadPanel';
-import SheetBodyPanel from './SheetBodyPanel';
+import SheetHeadPanel from '../../forms/SheetHeadPanel';
+import SheetBodyPanel from '../../forms/SheetBodyPanel';
 import { addNewEntryBody, delEntryBody, editEntryBody,
   saveEntryHead, delEntry } from 'common/reducers/cmsDeclare';
 import { format } from 'client/common/i18n/helpers';

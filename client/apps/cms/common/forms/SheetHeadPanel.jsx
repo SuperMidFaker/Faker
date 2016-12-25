@@ -10,7 +10,7 @@ import {
 import { loadSearchedParam, saveBillHead } from 'common/reducers/cmsDeclare';
 import { format } from 'client/common/i18n/helpers';
 import globalMessage from 'client/common/root.i18n';
-import messages from '../message.i18n';
+import messages from './message.i18n';
 
 const formatMsg = format(messages);
 const formatGlobalMsg = format(globalMessage);

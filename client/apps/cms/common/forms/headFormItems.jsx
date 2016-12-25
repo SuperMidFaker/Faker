@@ -6,7 +6,7 @@ import FormInput from './formInput';
 import { FormLocalSearchSelect, FormRemoteSearchSelect } from './formSelect';
 import FormDatePicker from './formDatePicker';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
+import messages from './message.i18n';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;

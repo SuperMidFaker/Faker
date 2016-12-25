@@ -35,11 +35,11 @@ import WxLoadAccount from './weixin/loadAccount';
 import WxTmsDetail from './weixin/tms/detail';
 import Clearance from './cms/module-clearance';
 import * as ImportDelegation from './cms/import/delegation';
-import * as ImportDocs from './cms/import/docs';
+import * as ImportManifest from './cms/import/manifest';
 import * as ImportCustoms from './cms/import/customs';
 import * as ImportCiq from './cms/import/ciq';
 import * as ExportDelegation from './cms/export/delegation';
-import * as ExportDocs from './cms/export/docs';
+import * as ExportManifest from './cms/export/manifest';
 import * as ExportCustoms from './cms/export/customs';
 import * as ExportCiq from './cms/export/ciq';
 import * as CMSRelation from './cms/relation';
@@ -233,9 +233,9 @@ export default(store, cookie) => {
               <Route path="delegation" component={ImportDelegation.List} />
               <Route path="create" component={ImportDelegation.Create} />
               <Route path="edit/:delgNo" component={ImportDelegation.Edit} />
-              <Route path="docs">
-                <Route path="make/:billno" component={ImportDocs.MakeBill} />
-                <Route path="view/:billno" component={ImportDocs.ViewBill} />
+              <Route path="manifest">
+                <Route path="make/:billno" component={ImportManifest.Make} />
+                <Route path="view/:billno" component={ImportManifest.View} />
               </Route>
               <Route path="customs">
                 <IndexRoute component={ImportCustoms.DeclList} />
@@ -248,9 +248,9 @@ export default(store, cookie) => {
               <Route path="delegation" component={ExportDelegation.List} />
               <Route path="create" component={ExportDelegation.Create} />
               <Route path="edit/:delgNo" component={ExportDelegation.Edit} />
-              <Route path="docs">
-                <Route path="make/:billno" component={ExportDocs.Make} />
-                <Route path="view/:billno" component={ExportDocs.View} />
+              <Route path="manifest">
+                <Route path="make/:billno" component={ExportManifest.Make} />
+                <Route path="view/:billno" component={ExportManifest.View} />
               </Route>
               <Route path="customs">
                 <IndexRoute component={ExportCustoms.DeclList} />
