@@ -43,12 +43,14 @@ const initialState = {
   tariffId: '',
   agreement: {
     quoteNo: '',
+    version: 0,
     intervals: [],
     vehicleTypes: [],
     kind: -1,
     adjustCoefficient: 1,
     revisions: [],
     taxrate: { mode: 0, value: 0 },
+    priceChanged: false,
   },
   ratesRefAgreement: {},
   ratesSourceLoading: false,
@@ -116,6 +118,7 @@ export default function reducer(state = initialState, action) {
       const tariff = action.result.data.tariff;
       const res = action.result.data.tariff.agreement;
       const agreement = {
+        ...state.agreement,
         id: tariff._id,
         kind: res.kind,
         partnerId: res.partnerId,
@@ -127,6 +130,7 @@ export default function reducer(state = initialState, action) {
         vehicleTypes: res.vehicleTypes,
         adjustCoefficient: res.adjustCoefficient,
         quoteNo: tariff.quoteNo,
+        version: tariff.version,
         partnerPermission: tariff.partnerPermission,
         revisions: action.result.data.revisions,
         taxrate: res.taxrate || initialState.agreement.taxrate,

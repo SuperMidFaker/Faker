@@ -1,12 +1,12 @@
 import React, { Component, PropTypes } from 'react';
-import { Tabs, Button, Form, message } from 'antd';
+import { Tabs, Button, Form, Modal, message } from 'antd';
 import { connect } from 'react-redux';
 import connectNav from 'client/common/decorators/connect-nav';
 import AgreementForm from './forms/agreement';
 import RatesForm from './forms/rates';
 import SurchargeForm from './forms/surcharge';
 import RevisionTable from './forms/revisionTable';
-import { showPublishTariffModal, submitAgreement, updateAgreement } from 'common/reducers/transportTariff';
+import { showPublishTariffModal, submitAgreement, updateAgreement, loadTariff } from 'common/reducers/transportTariff';
 import { TARIFF_KINDS } from 'common/constants';
 import PublishTariffModal from './modals/publishTariffModal';
 
@@ -20,7 +20,7 @@ const TabPane = Tabs.TabPane;
   loginName: state.account.username,
   tariffId: state.transportTariff.tariffId,
   formData: state.transportTariff.agreement,
-}), { showPublishTariffModal, submitAgreement, updateAgreement })
+}), { showPublishTariffModal, submitAgreement, updateAgreement, loadTariff })
 @connectNav({
   depth: 3,
   moduleName: 'transport',
@@ -29,7 +29,7 @@ const TabPane = Tabs.TabPane;
 export default class Main extends Component {
   static propTyps = {
     form: PropTypes.object.isRequired,
-    showPublishTariffModal: PropTypes.func.isRequired,        // itemItem点击后执行的回调函数,
+    showPublishTariffModal: PropTypes.func.isRequired,
     type: PropTypes.oneOf(['create', 'edit', 'view']),
     tenantId: PropTypes.number.isRequired,
     tenantName: PropTypes.string.isRequired,
@@ -39,6 +39,7 @@ export default class Main extends Component {
     formData: PropTypes.object.isRequired,
     submitAgreement: PropTypes.func.isRequired,
     updateAgreement: PropTypes.func.isRequired,
+    loadTariff: PropTypes.func.isRequired,
   }
   state = {
     selectedKey: '0',
@@ -47,38 +48,55 @@ export default class Main extends Component {
     this.setState({ selectedKey: key });
   }
   handleSubmit = () => {
+    const { formData } = this.props;
     this.props.form.validateFields((errors) => {
       if (errors) {
         message.error('表单信息错误');
-      } else {
-        const editForm = this.props.form.getFieldsValue();
-        const forms = {
-          ...this.props.formData, ...editForm,
-        };
-        let promise;
-        if (this.props.tariffId) {
-          forms.loginName = this.props.loginName;
-          promise = this.props.updateAgreement(forms);
-        } else {
-          const { tariffId, tenantId, tenantName, loginId } = this.props;
-          forms.id = tariffId;
-          forms.tenantId = tenantId;
-          forms.tenantName = tenantName;
-          forms.loginId = loginId;
-
-          promise = this.props.submitAgreement(forms);
-        }
-        promise.then((result) => {
-          if (result.error) {
-            if (result.error.message === 'found_tariff') {
-              message.error('相同条件报价协议已存在');
-            } else {
-              message.error(result.error.message);
-            }
-          } else {
-            message.success('保存成功');
-          }
+      } else if (formData.priceChanged) {
+        Modal.confirm({
+          title: '确定修改？',
+          content: '价格区间修改后，原来的基础费率都会被清空',
+          onOk: this.submit,
+          onCancel: () => {},
         });
+      } else {
+        this.submit();
+      }
+    });
+  }
+  submit = () => {
+    const { tariffId, tenantId, tenantName, loginId, formData: { quoteNo, version } } = this.props;
+    const editForm = this.props.form.getFieldsValue();
+    const forms = {
+      ...this.props.formData, ...editForm,
+    };
+    let promise;
+    if (this.props.tariffId) {
+      forms.loginName = this.props.loginName;
+      promise = this.props.updateAgreement(forms);
+    } else {
+      forms.id = tariffId;
+      forms.tenantId = tenantId;
+      forms.tenantName = tenantName;
+      forms.loginId = loginId;
+
+      promise = this.props.submitAgreement(forms);
+    }
+    promise.then((result) => {
+      if (result.error) {
+        if (result.error.message === 'found_tariff') {
+          message.error('相同条件报价协议已存在');
+        } else {
+          message.error(result.error.message);
+        }
+      } else {
+        this.props.loadTariff({
+          quoteNo,
+          version,
+          tenantId,
+          status: 'draft',
+        });
+        message.success('保存成功');
       }
     });
   }

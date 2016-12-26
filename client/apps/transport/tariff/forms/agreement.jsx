@@ -56,7 +56,7 @@ export default class AgreementForm extends React.Component {
     readonly: false,
   }
   componentWillMount() {
-    this.handleModeSelect(this.props.formData.transModeCode);
+    this.modeSelect(this.props.formData.transModeCode);
     this.handleKindChange(this.props.formData.kind);
     if (this.props.readonly) {
       this.setState({ readonly: true });
@@ -67,7 +67,7 @@ export default class AgreementForm extends React.Component {
       this.handleKindChange(nextProps.formData.kind);
     }
     if (nextProps.formData.transModeCode !== this.props.formData.transModeCode) {
-      this.handleModeSelect(nextProps.formData.transModeCode);
+      this.modeSelect(nextProps.formData.transModeCode);
     }
     if (nextProps.readonly && !this.props.readonly) {
       this.setState({ readonly: true });
@@ -82,9 +82,9 @@ export default class AgreementForm extends React.Component {
     }
   }
   handlePriceChange = (intervals, vehicleTypes) => {
-    this.props.changeTariff({ intervals: intervals || [], vehicleTypes: vehicleTypes || [] });
+    this.props.changeTariff({ intervals: intervals || [], vehicleTypes: vehicleTypes || [], priceChanged: true });
   }
-  handleModeSelect = (value) => {
+  modeSelect = (value) => {
     if (isNaN(value)) {
       return;
     }
@@ -101,25 +101,9 @@ export default class AgreementForm extends React.Component {
       this.setState({ transMode: 'ltl' });
     }
   }
-  isEffectiveDateDisabled = (effDate) => {
-    if (!effDate) {
-      return false;
-    }
-    const expiryDate = this.props.form.getFieldValue('expiryDate');
-    if (!expiryDate) {
-      return false;
-    }
-    return effDate.valueOf() >= expiryDate.valueOf();
-  }
-  isExpiryDateDisabled = (expiryDate) => {
-    if (!expiryDate) {
-      return false;
-    }
-    const effDate = this.props.form.getFieldValue('effectiveDate');
-    if (!effDate) {
-      return false;
-    }
-    return effDate.valueOf() >= expiryDate.valueOf();
+  handleModeSelect = (value) => {
+    this.modeSelect(value);
+    this.props.changeTariff({ priceChanged: true });
   }
   render() {
     const { form, formData, formParams,

@@ -36,11 +36,19 @@ export default class CreateTariffModal extends React.Component {
   }
   handleOk = () => {
     const editForm = this.props.form.getFieldsValue();
-    if (editForm.kind !== undefined && editForm.partnerId !== undefined) {
-      const selpartners = this.props.partners.filter(
+    if (editForm.kind === undefined) {
+      message.error('请选择价格类型');
+    } else if ((editForm.kind === 0 || editForm.kind === 1) && editForm.partnerId === undefined) {
+      message.error('请选择合作伙伴');
+    } else {
+      const selpartners = this.props.partners.find(
         pt => pt.partner_id === editForm.partnerId);
-      const partnerName = selpartners[0].name;
-      const partnerTid = selpartners[0].tid;
+      let partnerName = '';
+      let partnerTid = -1;
+      if (selpartners) {
+        partnerName = selpartners.name;
+        partnerTid = selpartners.tid;
+      }
       this.props.loadNewForm({
         ...editForm,
         partnerName,

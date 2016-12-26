@@ -38,36 +38,48 @@ export default class PublishTariffModal extends React.Component {
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   handleOk = () => {
+    const { agreement } = this.props;
     this.props.form.validateFields((errors) => {
       if (!errors) {
-        const formData = this.props.form.getFieldsValue();
-        const tariffFormData = this.props.tariffForm.getFieldsValue();
-        const { id } = this.props.agreement;
-        const { tenantId, loginName } = this.props;
-
-        this.props.publishTariff({
-          tariffId: id,
-          loginName,
-          tenantId,
-          ...this.props.agreement,
-          ...tariffFormData,
-          ...formData,
-        }).then((result) => {
-          if (result.error) {
-            message.error(result.error.message);
-          } else {
-            message.info('发布成功');
-            this.handleCancel();
-            this.context.router.push('/transport/billing/tariff?kind=all&status=current');
-          }
-        });
+        if (agreement.priceChanged) {
+          Modal.confirm({
+            title: '确定修改？',
+            content: '价格区间修改后，原来的基础费率都会被清空',
+            onOk: this.publish,
+            onCancel: () => {},
+          });
+        } else {
+          this.publish();
+        }
       }
     });
   }
   handleCancel = () => {
     this.props.showPublishTariffModal(false);
   }
+  publish = () => {
+    const formData = this.props.form.getFieldsValue();
+    const tariffFormData = this.props.tariffForm.getFieldsValue();
+    const { id } = this.props.agreement;
+    const { tenantId, loginName } = this.props;
 
+    this.props.publishTariff({
+      tariffId: id,
+      loginName,
+      tenantId,
+      ...this.props.agreement,
+      ...tariffFormData,
+      ...formData,
+    }).then((result) => {
+      if (result.error) {
+        message.error(result.error.message);
+      } else {
+        message.info('发布成功');
+        this.handleCancel();
+        this.context.router.push('/transport/billing/tariff?kind=all&status=current');
+      }
+    });
+  }
   render() {
     const { form: { getFieldDecorator } } = this.props;
     const formItemLayout = {
