@@ -116,7 +116,7 @@ const initialState = {
     tabKey: 'basic',
     delegation: {},
     files: [],
-    delegateTracking: {},
+    delgDispatch: {},
     clearanceTracking: [],
   },
   preStatus: '',

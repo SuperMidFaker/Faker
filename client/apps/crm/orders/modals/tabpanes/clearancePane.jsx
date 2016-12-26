@@ -62,7 +62,7 @@ export default class ClearancePane extends React.Component {
       tabKey,
     });
   }
-  renderClearance({ delegation, delegateTracking, files }) {
+  renderClearance({ delegation, delgDispatch, files }) {
     let img = '';
     const FILE = [];
     files.forEach((fl) => {
@@ -92,7 +92,7 @@ export default class ClearancePane extends React.Component {
     });
     return (
       <div className="pane-content tab-pane">
-        <ClearanceStatus status={delegateTracking.status} subStatus={delegateTracking.sub_status} />
+        <ClearanceStatus status={delgDispatch.status} subStatus={delgDispatch.sub_status} />
         <hr />
         <Row>
           <Col span="12">
@@ -102,7 +102,7 @@ export default class ClearancePane extends React.Component {
           </Col>
           <Col span="12">
             <InfoItem labelCol={{ span: 3 }} label="申报单位"
-              field={delegateTracking.recv_name} fieldCol={{ span: 9 }}
+              field={delgDispatch.recv_name} fieldCol={{ span: 9 }}
             />
           </Col>
         </Row>

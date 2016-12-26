@@ -245,13 +245,25 @@ export default defineMessages({
     id: 'cms.delegation.matchQuote',
     defaultMessage: '匹配报价',
   },
-  viewBill: {
-    id: 'cms.delegation.view.bill',
+  createManifest: {
+    id: 'cms.delegation.manifest.create',
+    defaultMessage: '创建清单',
+  },
+  viewManifest: {
+    id: 'cms.delegation.manifest.view',
     defaultMessage: '查看清单',
   },
-  editBill: {
-    id: 'cms.delegation.edit.bill',
+  editManifest: {
+    id: 'cms.delegation.manifest.edit',
     defaultMessage: '编辑清单',
+  },
+  trackDecl: {
+    id: 'cms.delegation.track.decl',
+    defaultMessage: '通关追踪',
+  },
+  completeDelg: {
+    id: 'cms.delegation.complete.delg',
+    defaultMessage: '结单',
   },
   writeEntryId: {
     id: 'cms.delegation.write.entryId',

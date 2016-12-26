@@ -158,6 +158,7 @@ const CMS_DELG_STATUS = [
   { value: 2, text: '制单中' },
   { value: 3, text: '已申报' },
   { value: 4, text: '已放行' },
+  { value: 5, text: '已结单' },
 ];
 export const CMS_CIQ_STATUS = [
   { value: 0, text: '待接单' },
@@ -213,9 +214,10 @@ export const CMS_SUP_STATUS = [
 export const CMS_DELEGATION_STATUS = {
   unaccepted: 0,
   accepted: 1,
-  declaring: 2,
-  declared: 3,
-  passed: 4,
+  processing: 2,
+  declaring: 3,
+  released: 4,
+  completed: 5,
 };
 
 export const CMS_BILL_STATUS = {

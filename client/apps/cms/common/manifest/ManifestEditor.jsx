@@ -106,7 +106,6 @@ export default class ManifestEditor extends React.Component {
               <Icon type="setting" /> <Icon type="down" />
             </Button>
           </Dropdown>
-          <span />
           {!this.props.readonly &&
             <Button type="primary" icon="addfile" onClick={this.handleGenerateEntry}>{this.msg('generateEntry')}</Button>
           }

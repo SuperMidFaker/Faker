@@ -20,9 +20,9 @@ export default class DelegatedelegateTrackingPane extends React.Component {
 
   render() {
     const { previewer } = this.props;
-    const { delegation, delegateTracking } = previewer;
+    const { delegation, delgDispatch } = previewer;
     let delegateTrackingDes = [];
-    if (delegateTracking === null) {
+    if (delgDispatch === null) {
       delegateTrackingDes = [{
         status: 'wait',
         title: '创建',
@@ -74,7 +74,7 @@ export default class DelegatedelegateTrackingPane extends React.Component {
       }, {
         status: 'finish',
         title: '委托发送',
-        description: `${delegateTracking.delg_time ? moment(delegateTracking.delg_time).format(timeFormat) : ''}`,
+        description: `${delgDispatch.delg_time ? moment(delgDispatch.delg_time).format(timeFormat) : ''}`,
       }, {
         status: 'wait',
         title: '接受委托',
@@ -96,11 +96,11 @@ export default class DelegatedelegateTrackingPane extends React.Component {
       }, {
         status: 'finish',
         title: '委托发送',
-        description: `${delegateTracking.delg_time ? moment(delegateTracking.delg_time).format(timeFormat) : ''}`,
+        description: `${delgDispatch.delg_time ? moment(delgDispatch.delg_time).format(timeFormat) : ''}`,
       }, {
         status: 'finish',
         title: '接受委托',
-        description: `${delegateTracking.acpt_time ? moment(delegateTracking.acpt_time).format(timeFormat) : ''}`,
+        description: `${delgDispatch.acpt_time ? moment(delgDispatch.acpt_time).format(timeFormat) : ''}`,
       }, {
         status: 'wait',
         title: '提交海关',
@@ -118,15 +118,15 @@ export default class DelegatedelegateTrackingPane extends React.Component {
       }, {
         status: 'finish',
         title: '委托发送',
-        description: `${delegateTracking.delg_time ? moment(delegateTracking.delg_time).format(timeFormat) : ''}`,
+        description: `${delgDispatch.delg_time ? moment(delgDispatch.delg_time).format(timeFormat) : ''}`,
       }, {
         status: 'finish',
         title: '接受委托',
-        description: `${delegateTracking.acpt_time ? moment(delegateTracking.acpt_time).format(timeFormat) : ''}`,
+        description: `${delgDispatch.acpt_time ? moment(delgDispatch.acpt_time).format(timeFormat) : ''}`,
       }, {
         status: 'finish',
         title: '提交海关',
-        description: `${delegateTracking.decl_time ? moment(delegateTracking.decl_time).format(timeFormat) : ''}`,
+        description: `${delgDispatch.decl_time ? moment(delgDispatch.decl_time).format(timeFormat) : ''}`,
       }, {
         status: 'wait',
         title: '海关放行',
@@ -140,19 +140,19 @@ export default class DelegatedelegateTrackingPane extends React.Component {
       }, {
         status: 'finish',
         title: '委托发送',
-        description: `${delegateTracking.delg_time ? moment(delegateTracking.delg_time).format(timeFormat) : ''}`,
+        description: `${delgDispatch.delg_time ? moment(delgDispatch.delg_time).format(timeFormat) : ''}`,
       }, {
         status: 'finish',
         title: '接受委托',
-        description: `${delegateTracking.acpt_time ? moment(delegateTracking.acpt_time).format(timeFormat) : ''}`,
+        description: `${delgDispatch.acpt_time ? moment(delgDispatch.acpt_time).format(timeFormat) : ''}`,
       }, {
         status: 'finish',
         title: '提交海关',
-        description: `${delegateTracking.decl_time ? moment(delegateTracking.decl_time).format(timeFormat) : ''}`,
+        description: `${delgDispatch.decl_time ? moment(delgDispatch.decl_time).format(timeFormat) : ''}`,
       }, {
         status: 'finish',
         title: '海关放行',
-        description: `${delegateTracking.clea_time ? moment(delegateTracking.clea_time).format(timeFormat) : ''}`,
+        description: `${delgDispatch.clea_time ? moment(delgDispatch.clea_time).format(timeFormat) : ''}`,
       }];
     }
 
