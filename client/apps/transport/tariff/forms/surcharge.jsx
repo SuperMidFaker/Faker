@@ -72,8 +72,6 @@ export default class SurchargeForm extends React.Component {
       fee_code: '',
       fee_style: 'cushion',
       charge_mode: '0',
-      lot_num: 1,
-      free_num: 0,
       unit_price: 0,
       invoice_en: true,
       tax_rate: 0,
@@ -168,12 +166,6 @@ export default class SurchargeForm extends React.Component {
   handleChargeModeChange = (index, value) => {
     this.handleChange(index, 'charge_mode', value);
   }
-  handleLotNumChange = (index, value) => {
-    this.handleChange(index, 'lot_num', value);
-  }
-  handleFreeNumChange = (index, value) => {
-    this.handleChange(index, 'free_num', value);
-  }
   handleUnitPriceChange = (index, value) => {
     this.handleChange(index, 'unit_price', value);
   }
@@ -201,8 +193,6 @@ export default class SurchargeForm extends React.Component {
       fee_code: '',
       fee_style: 'service',
       charge_mode: surcharge.pickup.mode,
-      lot_num: 0,
-      free_num: 0,
       unit_price: surcharge.pickup.value,
       invoice_en: false,
       tax_rate: 0,
@@ -213,8 +203,6 @@ export default class SurchargeForm extends React.Component {
       fee_code: '',
       fee_style: 'service',
       charge_mode: surcharge.delivery.mode,
-      lot_num: 0,
-      free_num: 0,
       unit_price: surcharge.delivery.value,
       invoice_en: false,
       tax_rate: 0,
@@ -225,8 +213,6 @@ export default class SurchargeForm extends React.Component {
       fee_code: '',
       fee_style: 'service',
       charge_mode: surcharge.load.mode,
-      lot_num: 0,
-      free_num: 0,
       unit_price: surcharge.load.value,
       invoice_en: false,
       tax_rate: 0,
@@ -237,8 +223,6 @@ export default class SurchargeForm extends React.Component {
       fee_code: '',
       fee_style: 'service',
       charge_mode: surcharge.unload.mode,
-      lot_num: 0,
-      free_num: 0,
       unit_price: surcharge.unload.value,
       invoice_en: false,
       tax_rate: 0,
@@ -263,7 +247,7 @@ export default class SurchargeForm extends React.Component {
       }, {
         title: this.msg('feeCode'),
         dataIndex: 'fee_code',
-        width: 80,
+        width: 110,
         render: (o, record, index) => {
           if (index >= 4 && index === editIndex) {
             return (<Input value={o} placeholder="自定义费用代码" onChange={e => this.handleFeeCodeChange(index, e.target.value)} />);
@@ -302,36 +286,6 @@ export default class SurchargeForm extends React.Component {
             );
           } else {
             return Number(o) === TAX_MODE.eachwaybill.key ? TAX_MODE.eachwaybill.value : TAX_MODE.chargeunit.value;
-          }
-        },
-      }, {
-        title: this.msg('lotNum'),
-        dataIndex: 'lot_num',
-        width: 150,
-        render: (o, record, index) => {
-          if (index >= 4) {
-            if (index === editIndex) {
-              return (<Input value={o} placeholder="自定义费用代码" onChange={e => this.handleLotNumChange(index, e.target.value)} />);
-            } else {
-              return o;
-            }
-          } else {
-            return '';
-          }
-        },
-      }, {
-        title: this.msg('freeNum'),
-        dataIndex: 'free_num',
-        width: 150,
-        render: (o, record, index) => {
-          if (index >= 4) {
-            if (index === editIndex) {
-              return (<Input value={o} placeholder="自定义费用代码" onChange={e => this.handleFreeNumChange(index, e.target.value)} />);
-            } else {
-              return o;
-            }
-          } else {
-            return '';
           }
         },
       }, {

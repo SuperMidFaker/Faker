@@ -72,28 +72,40 @@ export default class ShipmentAdvanceModal extends React.Component {
       const advances = nextProps.advances;
       for (let i = 0; i < nextProps.fees.length; i++) {
         const fee = nextProps.fees[i];
-        if (fee.enabled && fee.fee_style === 'cushion' && !advances.find(item => item.code === fee.fee_code)) {
-          const advance = {
-            id: null,
-            shipmt_no: shipmtNo,
-            disp_id: dispId,
-            name: fee.fee_name,
-            code: fee.fee_code,
-            charge_mode: fee.charge_mode,
-            free_num: fee.free_num,
-            amount: 0,
-            unit_price: fee.unit_price,
-            tax_rate: fee.tax_rate,
-            currency: 'CNY',
-            tax_fee: 0,
-            invoice_en: fee.invoice_en ? 1 : 0,
-            duty_type: null,
-            remark: '',
-            submitter: loginName,
-            login_id: loginId,
-            tenant_id: tenantId,
-          };
-          advances.push(advance);
+        if (fee.enabled && fee.fee_style === 'cushion') {
+          if (!advances.find(item => item.code === fee.fee_code)) {
+            const advance = {
+              id: null,
+              shipmt_no: shipmtNo,
+              disp_id: dispId,
+              name: fee.fee_name,
+              code: fee.fee_code,
+              charge_mode: fee.charge_mode,
+              amount: 0,
+              unit_price: fee.unit_price,
+              tax_rate: fee.tax_rate,
+              currency: 'CNY',
+              tax_fee: 0,
+              invoice_en: fee.invoice_en ? 1 : 0,
+              duty_type: null,
+              remark: '',
+              submitter: loginName,
+              login_id: loginId,
+              tenant_id: tenantId,
+            };
+            advances.push(advance);
+          } else {
+            for (let j = 0; j < advances.length; j++) {
+              const advance = advances[j];
+              if (advance.code === fee.fee_code) {
+                advance.name = fee.fee_name;
+                advance.charge_mode = fee.charge_mode;
+                advance.unit_price = fee.unit_price;
+                advance.invoice_en = fee.invoice_en ? 1 : 0;
+                advance.tax_rate = fee.tax_rate;
+              }
+            }
+          }
         }
       }
       this.setState({ advances });
