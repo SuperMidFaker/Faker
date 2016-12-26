@@ -65,6 +65,7 @@ export default function makeColumns(type, handlers, msg) {
                 type="pickup"
                 shipmtNo={record.shipmt_no}
                 dispId={record.disp_id}
+                estDate={record.pickup_est_date}
                 onOK={handlers.onTableLoad}
               >
                 <Icon type="edit" />{msg('updatePickup')}
@@ -81,6 +82,7 @@ export default function makeColumns(type, handlers, msg) {
                   type="pickup"
                   shipmtNo={record.shipmt_no}
                   dispId={record.disp_id}
+                  estDate={record.pickup_est_date}
                   onOK={handlers.onTableLoad}
                 >
                   <Icon type="edit" />{msg('updatePickup')}
@@ -112,6 +114,7 @@ export default function makeColumns(type, handlers, msg) {
                 type="deliver"
                 shipmtNo={record.shipmt_no}
                 dispId={record.disp_id}
+                estDate={record.deliver_est_date}
                 onOK={handlers.onTableLoad}
               >
                 <Icon type="edit" />{msg('updateDelivery')}
@@ -126,6 +129,7 @@ export default function makeColumns(type, handlers, msg) {
                   type="deliver"
                   shipmtNo={record.shipmt_no}
                   dispId={record.disp_id}
+                  estDate={record.deliver_est_date}
                   onOK={handlers.onTableLoad}
                 >
                   <Icon type="edit" />{msg('updateDelivery')}

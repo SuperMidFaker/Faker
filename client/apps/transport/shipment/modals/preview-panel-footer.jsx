@@ -206,11 +206,11 @@ export default class Footer extends React.Component {
     this.props.showVehicleModal(row.disp_id, row.shipmt_no);
   }
   handleShowPickModal = (row) => {
-    const shipments = [{ dispId: row.disp_id, shipmtNo: row.shipmt_no }];
+    const shipments = [{ dispId: row.disp_id, shipmtNo: row.shipmt_no, estDate: row.pickup_est_date }];
     this.props.showDateModal(shipments, 'pickup');
   }
   handleShowDeliverModal = (row) => {
-    const shipments = [{ dispId: row.disp_id, shipmtNo: row.shipmt_no }];
+    const shipments = [{ dispId: row.disp_id, shipmtNo: row.shipmt_no, estDate: row.deliver_est_date }];
     this.props.showDateModal(shipments, 'deliver');
   }
   handleShowPodModal = (row) => {

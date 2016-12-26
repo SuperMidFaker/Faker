@@ -24,6 +24,7 @@ export default class PickupDeliverUpdaterPopover extends React.Component {
     intl: intlShape.isRequired,
     dispId: PropTypes.number.isRequired,
     shipmtNo: PropTypes.string.isRequired,
+    estDate: PropTypes.string.isRequired,
     type: PropTypes.string.isRequired,
     form: PropTypes.object.isRequired,
     onOK: PropTypes.func,
@@ -70,6 +71,12 @@ export default class PickupDeliverUpdaterPopover extends React.Component {
       this.setState({ visible });
     }
   }
+  handleDateChange = (date) => {
+    const daysDiff = date.diff(new Date(this.props.estDate), 'days');
+    if (daysDiff <= -3 || daysDiff >= 3) {
+      message.warn('所选时间和预计时间相差较大， 请注意是否选错日期！', 5);
+    }
+  }
   render() {
     const { shipmtNo, form: { getFieldDecorator } } = this.props;
     const colSpan = 8;
@@ -92,7 +99,7 @@ export default class PickupDeliverUpdaterPopover extends React.Component {
             rules: [{
               type: 'object', required: true, message: ruleMsg,
             }],
-          })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />)}
+          })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" onChange={this.handleDateChange}/>)}
         </FormItem>
         <FormItem wrapperCol={{ span: 16, offset: 8 }}>
           <Button type="primary" htmlType="submit" onClick={this.handleOk}>确定</Button>
