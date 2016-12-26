@@ -99,7 +99,7 @@ export default class PickupDeliverUpdaterPopover extends React.Component {
             rules: [{
               type: 'object', required: true, message: ruleMsg,
             }],
-          })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" onChange={this.handleDateChange}/>)}
+          })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" onChange={this.handleDateChange} />)}
         </FormItem>
         <FormItem wrapperCol={{ span: 16, offset: 8 }}>
           <Button type="primary" htmlType="submit" onClick={this.handleOk}>确定</Button>

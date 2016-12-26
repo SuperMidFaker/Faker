@@ -57,14 +57,14 @@ export default class PickupDeliverUpdater extends React.Component {
     this.props.form.resetFields();
   }
   handleDateChange = (date) => {
-    const shipment = this.props.shipments.find(item => {
+    const shipment = this.props.shipments.find((item) => {
       const daysDiff = date.diff(new Date(item.estDate), 'days');
       if (daysDiff <= -3 || daysDiff >= 3) {
         return true;
       }
       return false;
-    })
-    
+    });
+
     if (shipment) {
       message.warn(`所选时间和 ${shipment.shipmtNo} 预计时间相差较大， 请注意是否选错日期！`, 8);
     }
