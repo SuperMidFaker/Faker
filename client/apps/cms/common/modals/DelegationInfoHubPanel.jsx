@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Badge, Button, Col, Dropdown, Icon, Menu, Row, Tabs } from 'antd';
+import { Badge, Button, Col, Dropdown, Icon, Menu, Row, Tabs, Tag } from 'antd';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
@@ -12,7 +12,8 @@ import CiqDeclPane from './tabpanes/CiqDeclPane';
 import DutyTaxPane from './tabpanes/DutyTaxPane';
 import ExpensesPane from './tabpanes/ExpensesPane';
 import ActivityLoggerPane from './tabpanes/ActivityLoggerPane';
-import { hidePreviewer, setPreviewStatus, setPreviewTabkey } from 'common/reducers/cmsDelegation';
+import AcceptModal from '../delegation/modals/acceptModal';
+import { hidePreviewer, setPreviewStatus, setPreviewTabkey, openAcceptModal } from 'common/reducers/cmsDelegation';
 
 const TabPane = Tabs.TabPane;
 
@@ -28,7 +29,7 @@ const TabPane = Tabs.TabPane;
     ciqdecl: state.cmsDeclare.previewer.ciqdecl,
     delegateListFilter: state.cmsDelegation.delegateListFilter,
   }),
-  { hidePreviewer, setPreviewStatus, setPreviewTabkey }
+  { hidePreviewer, setPreviewStatus, setPreviewTabkey, openAcceptModal }
 )
 export default class DelegationInfoHubPanel extends React.Component {
   static propTypes = {
@@ -53,6 +54,11 @@ export default class DelegationInfoHubPanel extends React.Component {
     this.props.hidePreviewer();
   }
   handleAccept = () => {
+    this.props.openAcceptModal({
+      tenantId: this.props.tenantId,
+      dispatchIds: [this.props.delgDispatch.id],
+      type: 'delg',
+    });
     this.props.setPreviewStatus({ preStatus: 'accept' });
   }
   handleMake = () => {
@@ -91,49 +97,54 @@ export default class DelegationInfoHubPanel extends React.Component {
     this.props.setPreviewStatus({ preStatus: 'ciqfinish' });
     this.props.hidePreviewer();
   }
-  translateStatus(delg) {
+  translateStatus(delegation, delgDispatch) {
     const { tenantId } = this.props;
-    const status = delg.status;
-    const tenantid = delg.recv_tenant_id;
+    const status = delgDispatch.status;
+    let ciqTag = '';
+    if (delegation.ciq_inspect === 'NL') {
+      ciqTag = <Tag color="#ccc">一般报检</Tag>;
+    } else if (delegation.ciq_inspect === 'LA' || delegation.ciq_inspect === 'LB') {
+      ciqTag = <Tag color="#fa0">法定检验</Tag>;
+    }
     switch (status) {
-      case 0:
+      case CMS_DELEGATION_STATUS.unaccepted:
         {
-          if (tenantid === tenantId) {
-            return <Badge status="default" text="待接单" />;
+          if (delgDispatch.recv_tenant_id === tenantId) {
+            return <span><Badge status="default" text="待接单" /> {ciqTag}</span>;
           } else {
-            return <Badge status="default" text="待供应商接单" />;
+            return <span><Badge status="default" text="待供应商接单" /> {ciqTag}</span>;
           }
         }
-      case 1:
+      case CMS_DELEGATION_STATUS.accepted:
         {
-          if (tenantid === tenantId) {
-            return <Badge status="default" text="已接单" />;
+          if (delgDispatch.recv_tenant_id === tenantId) {
+            return <span><Badge status="default" text="已接单" /> {ciqTag}</span>;
           } else {
-            return <Badge status="default" text="供应商已接单" />;
+            return <span><Badge status="default" text="供应商已接单" /> {ciqTag}</span>;
           }
         }
-      case 2:
+      case CMS_DELEGATION_STATUS.processing:
         {
-          if (tenantid === this.props.tenantId) {
-            return <Badge status="warning" text="制单中" />;
+          if (delgDispatch.recv_tenant_id === tenantId) {
+            return <span><Badge status="warning" text="制单中" /> {ciqTag}</span>;
           } else {
-            return <Badge status="warning" text="供应商制单中" />;
+            return <span><Badge status="warning" text="供应商制单中" /> {ciqTag}</span>;
           }
         }
-      case 3:
+      case CMS_DELEGATION_STATUS.declaring:
         {
-          if (delg.sub_status === 1) {
-            return <Badge status="processing" text="部分申报" />;
+          if (delgDispatch.sub_status === 1) {
+            return <span><Badge status="processing" text="部分申报" /> {ciqTag}</span>;
           } else {
-            return <Badge status="processing" text="已申报" />;
+            return <span><Badge status="processing" text="已申报" /> {ciqTag}</span>;
           }
         }
-      case 4:
+      case CMS_DELEGATION_STATUS.released:
         {
-          if (delg.sub_status === 1) {
-            return <Badge status="success" text="部分放行" />;
+          if (delgDispatch.sub_status === 1) {
+            return <span><Badge status="success" text="部分放行" /> {ciqTag}</span>;
           } else {
-            return <Badge status="success" text="已放行" />;
+            return <span><Badge status="success" text="已放行" /> {ciqTag}</span>;
           }
         }
       default: return '';
@@ -151,7 +162,7 @@ export default class DelegationInfoHubPanel extends React.Component {
         </Tabs>
       );
     } else if (delegation.status === CMS_DELEGATION_STATUS.accepted || delegation.status === CMS_DELEGATION_STATUS.processing) {
-      if (delegation.ciq_type === 'NA') {
+      if (delegation.ciq_inspect === 'NA') {
         return (
           <Tabs type="card" activeKey={tabKey} onChange={this.handleTabChange}>
             <TabPane tab="报关" key="customsDecl">
@@ -183,7 +194,7 @@ export default class DelegationInfoHubPanel extends React.Component {
         </Tabs>
       );
     } else if (delegation.status === CMS_DELEGATION_STATUS.declaring || delegation.status === CMS_DELEGATION_STATUS.released) {
-      if (delegation.ciq_type === 'NA') {
+      if (delegation.ciq_inspect === 'NA') {
         return (
           <Tabs type="card" activeKey={tabKey} onChange={this.handleTabChange}>
             <TabPane tab="报关" key="customsDecl">
@@ -229,7 +240,7 @@ export default class DelegationInfoHubPanel extends React.Component {
     if (delgDispatch.status === CMS_DELEGATION_STATUS.unaccepted && delgDispatch.recv_tenant_id === tenantId) {
       return (
         <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-          <Button type="primary" onClick={this.handleDispAllCancel}>
+          <Button type="primary" onClick={this.handleAccept}>
             接单
           </Button>
         </PrivilegeCover>
@@ -282,7 +293,7 @@ export default class DelegationInfoHubPanel extends React.Component {
         <div className="panel-content">
           <div className="header">
             <span className="title">{delegation.delg_no}</span>
-            {this.translateStatus(delgDispatch)}
+            {this.translateStatus(delegation, delgDispatch)}
             <div className="toolbar-right">
               {this.delgBtns()}
               <Dropdown overlay={menu}>
@@ -329,6 +340,7 @@ export default class DelegationInfoHubPanel extends React.Component {
             </Row>
           </div>
         </div>
+        <AcceptModal />
       </div>
     );
   }
