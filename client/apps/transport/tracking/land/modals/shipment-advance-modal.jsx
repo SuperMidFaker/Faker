@@ -95,7 +95,7 @@ export default class ShipmentAdvanceModal extends React.Component {
             };
             advances.push(advance);
           } else {
-            for (let j = 0; j < advances.length; j ++) {
+            for (let j = 0; j < advances.length; j++) {
               const advance = advances[j];
               if (advance.code === fee.fee_code) {
                 advance.name = fee.fee_name;
@@ -106,7 +106,6 @@ export default class ShipmentAdvanceModal extends React.Component {
               }
             }
           }
-          
         }
       }
       this.setState({ advances });

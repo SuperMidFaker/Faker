@@ -277,7 +277,6 @@ export default class SurchargeForm extends React.Component {
         title: this.msg('chargeMode'),
         dataIndex: 'charge_mode',
         render: (o, record, index) => {
-          console.log(o, index);
           if (index === editIndex) {
             return (
               <Select value={Number(o)} style={{ width: '100%' }} onChange={e => this.handleChargeModeChange(index, e)} >
