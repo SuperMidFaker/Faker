@@ -17,6 +17,7 @@ const Option = Select.Option;
     visible: state.transportTariff.publishTariffModal.visible,
     agreement: state.transportTariff.agreement,
     loginName: state.account.username,
+    formParams: state.transportTariff.formParams,
   }),
   { publishTariff, showPublishTariffModal }
 )
@@ -32,6 +33,7 @@ export default class PublishTariffModal extends React.Component {
     showPublishTariffModal: PropTypes.func.isRequired,
     agreement: PropTypes.object.isRequired,
     loginName: PropTypes.string.isRequired,
+    formParams: PropTypes.object.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -44,7 +46,7 @@ export default class PublishTariffModal extends React.Component {
         if (agreement.priceChanged) {
           Modal.confirm({
             title: '确定修改？',
-            content: '价格区间修改后，原来的基础费率都会被清空',
+            content: '价格区间或运输模式修改后，原来的基础费率、附加费用等会被清空',
             onOk: this.publish,
             onCancel: () => {},
           });
@@ -62,7 +64,7 @@ export default class PublishTariffModal extends React.Component {
     const tariffFormData = this.props.tariffForm.getFieldsValue();
     const { id } = this.props.agreement;
     const { tenantId, loginName } = this.props;
-
+    const tms = this.props.formParams.transModes.find(tm => tm.id === Number(tariffFormData.transModeCode));
     this.props.publishTariff({
       tariffId: id,
       loginName,
@@ -70,6 +72,7 @@ export default class PublishTariffModal extends React.Component {
       ...this.props.agreement,
       ...tariffFormData,
       ...formData,
+      transMode: tms.mode_code,
     }).then((result) => {
       if (result.error) {
         message.error(result.error.message);
