@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Form, DatePicker, message, Popover, Button } from 'antd';
+import { Form, DatePicker, message, Popover, Button, Alert } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { savePickOrDeliverDate } from 'common/reducers/trackingLandStatus';
 import { format } from 'client/common/i18n/helpers';
@@ -32,6 +32,7 @@ export default class PickupDeliverUpdaterPopover extends React.Component {
   }
   state = {
     visible: false,
+    warningMessage: '',
   }
   componentDidMount() {
     const { shipmtNo } = this.props;
@@ -74,11 +75,14 @@ export default class PickupDeliverUpdaterPopover extends React.Component {
   handleDateChange = (date) => {
     const daysDiff = date.diff(new Date(this.props.estDate), 'days');
     if (daysDiff <= -3 || daysDiff >= 3) {
-      message.warn('所选时间和预计时间相差较大， 请注意是否选错日期！', 5);
+      this.setState({ warningMessage: '所选时间和预计时间相差较大， 请注意是否选错日期！' });
+    } else {
+      this.setState({ warningMessage: '' });
     }
   }
   render() {
     const { shipmtNo, form: { getFieldDecorator } } = this.props;
+    const { warningMessage } = this.state;
     const colSpan = 8;
     let title;
     let ruleMsg;
@@ -94,6 +98,7 @@ export default class PickupDeliverUpdaterPopover extends React.Component {
     }
     const content = (
       <Form className="row" style={{ width: '300px' }}>
+        <Alert message={warningMessage} type="warning" showIcon style={{ display: warningMessage === '' ? 'none' : '' }}/>
         <FormItem label={label} labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }} required >
           {getFieldDecorator('actDate', {
             rules: [{

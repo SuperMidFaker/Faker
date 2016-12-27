@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Form, DatePicker, Modal, message } from 'antd';
+import { Form, DatePicker, Modal, message, Alert } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { closeDateModal, saveBatchPickOrDeliverDate } from 'common/reducers/trackingLandStatus';
 import { format } from 'client/common/i18n/helpers';
@@ -32,6 +32,9 @@ export default class PickupDeliverUpdater extends React.Component {
     onOK: PropTypes.func,
     closeDateModal: PropTypes.func.isRequired,
     saveBatchPickOrDeliverDate: PropTypes.func.isRequired,
+  }
+  state = {
+    warningMessage: '',
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   handleOk = () => {
@@ -66,11 +69,14 @@ export default class PickupDeliverUpdater extends React.Component {
     });
 
     if (shipment) {
-      message.warn(`所选时间和 ${shipment.shipmtNo} 预计时间相差较大， 请注意是否选错日期！`, 8);
+      this.setState({ warningMessage: `所选时间和 ${shipment.shipmtNo} 预计时间相差较大， 请注意是否选错日期！` });
+    } else {
+      this.setState({ warningMessage: '' });
     }
   }
   render() {
     const { form: { getFieldDecorator } } = this.props;
+    const { warningMessage } = this.state;
     const colSpan = 6;
     let title;
     let ruleMsg;
@@ -86,6 +92,7 @@ export default class PickupDeliverUpdater extends React.Component {
       <Modal title={title} onCancel={this.handleCancel} onOk={this.handleOk}
         visible={this.props.visible}
       >
+        <Alert message={warningMessage} type="warning" showIcon style={{ display: warningMessage === '' ? 'none' : '' }}/>
         <Form className="row">
           <FormItem label={this.msg('chooseActualTime')} labelCol={{ span: colSpan }}
             wrapperCol={{ span: 24 - colSpan }} required
