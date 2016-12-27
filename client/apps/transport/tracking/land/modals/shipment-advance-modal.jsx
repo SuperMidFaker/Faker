@@ -81,6 +81,7 @@ export default class ShipmentAdvanceModal extends React.Component {
               name: fee.fee_name,
               code: fee.fee_code,
               charge_mode: fee.charge_mode,
+              category: fee.category,
               amount: 0,
               unit_price: fee.unit_price,
               tax_rate: fee.tax_rate,
@@ -103,6 +104,7 @@ export default class ShipmentAdvanceModal extends React.Component {
                 advance.unit_price = fee.unit_price;
                 advance.invoice_en = fee.invoice_en ? 1 : 0;
                 advance.tax_rate = fee.tax_rate;
+                advance.category = fee.category;
               }
             }
           }
