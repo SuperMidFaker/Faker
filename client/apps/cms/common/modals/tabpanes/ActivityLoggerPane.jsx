@@ -1,11 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Card, Checkbox, DatePicker, Dropdown, Form, Icon, Input, InputNumber, Mention, Menu, Radio, Select, Tabs, Timeline } from 'antd';
+import { Button, Card, Checkbox, Collapse, DatePicker, Dropdown, Form, Icon, Input, InputNumber, Mention, Menu, Radio, Select, Tabs, Timeline } from 'antd';
 
 const Option = Select.Option;
 const FormItem = Form.Item;
 const TabPane = Tabs.TabPane;
+const Panel = Collapse.Panel;
 
 @injectIntl
 @connect(
@@ -26,8 +27,18 @@ export default class ActivityLoggerPane extends React.Component {
         <Menu.Item key="ciq"><Checkbox >通关事件</Checkbox></Menu.Item>
       </Menu>
     );
-    return (
+    const timelineHeader = (
       <div>
+        <span>动态</span>
+        <div className="toolbar-right">
+          <Dropdown overlay={menu}>
+            <Button type="ghost"><Icon type="filter" /> (3/3)</Button>
+          </Dropdown>
+        </div>
+      </div>
+    );
+    return (
+      <div className="activity-wrapper">
         <Card bodyStyle={{ padding: 8 }}>
           <Tabs defaultActiveKey="log">
             <TabPane tab={<span><Icon type="message" />备注</span>} key="log">
@@ -113,55 +124,49 @@ export default class ActivityLoggerPane extends React.Component {
             />
           </div>
         </Card>
-        <section className="timeline">
-          <h3>
-            <div className="toolbar-right">
-              <Dropdown overlay={menu}>
-                <Button type="ghost"><Icon type="filter" /> (3/3)</Button>
-              </Dropdown>
-            </div>
-            动态
-          </h3>
-          <Timeline>
-            <Timeline.Item dot={<Icon type="check-circle-o" />} color="green">放行 2015-09-01</Timeline.Item>
-            <Timeline.Item dot={<Icon type="pay-circle-o" />}>缴税 2015-09-01</Timeline.Item>
-            <Timeline.Item dot={<Icon type="message" />}>发送消息 2015-09-01</Timeline.Item>
-            <Timeline.Item dot={<Icon type="addfile" />}>办证 2015-09-01</Timeline.Item>
-            <Timeline.Item dot={<Icon type="exception" />} color="red">
-              <Card bodyStyle={{ padding: 16 }}>
-                海关查验 2015-09-01
-                <div className="toolbar-right">
-                  <Button type="primary" shape="circle" size="small" icon="check" />
-                  <Button type="ghost" shape="circle" size="small" icon="ellipsis" />
-                </div>
-              </Card>
-            </Timeline.Item>
-            <Timeline.Item dot={<Icon type="calculator" />}>录入代垫费用 2015-09-01</Timeline.Item>
-            <Timeline.Item dot={<Icon type="play-circle-o" />}>海关申报 2015-09-01</Timeline.Item>
-            <Timeline.Item dot={<Icon type="exception" />} color="red">
-              <Card bodyStyle={{ padding: 16 }}>
-                品质查验 2015-09-01
-                <div className="toolbar-right">
-                  <Button size="small" shape="circle" icon="check" disabled />
-                  <Button type="ghost" shape="circle" size="small" icon="ellipsis" />
-                </div>
-              </Card>
-            </Timeline.Item>
-            <Timeline.Item dot={<Icon type="copy" />}>制单 2015-09-01</Timeline.Item>
-            <Timeline.Item dot={<Icon type="retweet" />}>
-              <Card bodyStyle={{ padding: 16 }}>
-                换单 2015-09-01
-                <div className="toolbar-right">
-                  <Button type="ghost" shape="circle" size="small" icon="ellipsis" />
-                </div>
-              </Card>
-            </Timeline.Item>
-            <Timeline.Item dot={<Icon type="solution" />}>接单 2015-09-01</Timeline.Item>
-            <Timeline.Item dot={<Icon type="plus-circle-o" />} >
-              创建清关委托 2015-09-01
-            </Timeline.Item>
-          </Timeline>
-        </section>
+        <Collapse bordered={false} defaultActiveKey={['timeline']}>
+          <Panel header={timelineHeader} key="timeline">
+            <Timeline>
+              <Timeline.Item dot={<Icon type="check-circle-o" />} color="green">放行 2015-09-01</Timeline.Item>
+              <Timeline.Item dot={<Icon type="pay-circle-o" />}>缴税 2015-09-01</Timeline.Item>
+              <Timeline.Item dot={<Icon type="message" />}>发送消息 2015-09-01</Timeline.Item>
+              <Timeline.Item dot={<Icon type="addfile" />}>办证 2015-09-01</Timeline.Item>
+              <Timeline.Item dot={<Icon type="exception" />} color="red">
+                <Card bodyStyle={{ padding: 16 }}>
+                  海关查验 2015-09-01
+                  <div className="toolbar-right">
+                    <Button type="primary" shape="circle" size="small" icon="check" />
+                    <Button type="ghost" shape="circle" size="small" icon="ellipsis" />
+                  </div>
+                </Card>
+              </Timeline.Item>
+              <Timeline.Item dot={<Icon type="calculator" />}>录入代垫费用 2015-09-01</Timeline.Item>
+              <Timeline.Item dot={<Icon type="play-circle-o" />}>海关申报 2015-09-01</Timeline.Item>
+              <Timeline.Item dot={<Icon type="exception" />} color="red">
+                <Card bodyStyle={{ padding: 16 }}>
+                  品质查验 2015-09-01
+                  <div className="toolbar-right">
+                    <Button size="small" shape="circle" icon="check" disabled />
+                    <Button type="ghost" shape="circle" size="small" icon="ellipsis" />
+                  </div>
+                </Card>
+              </Timeline.Item>
+              <Timeline.Item dot={<Icon type="copy" />}>制单 2015-09-01</Timeline.Item>
+              <Timeline.Item dot={<Icon type="retweet" />}>
+                <Card bodyStyle={{ padding: 16 }}>
+                  换单 2015-09-01
+                  <div className="toolbar-right">
+                    <Button type="ghost" shape="circle" size="small" icon="ellipsis" />
+                  </div>
+                </Card>
+              </Timeline.Item>
+              <Timeline.Item dot={<Icon type="solution" />}>接单 2015-09-01</Timeline.Item>
+              <Timeline.Item dot={<Icon type="plus-circle-o" />} >
+                创建清关委托 2015-09-01
+              </Timeline.Item>
+            </Timeline>
+          </Panel>
+        </Collapse>
       </div>
     );
   }

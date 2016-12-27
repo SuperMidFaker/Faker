@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Collapse, Tag, Row, Col, Card, Table } from 'antd';
+import { Button, Card, Col, Collapse, Icon, Row, Table, Tag, Tooltip } from 'antd';
 import moment from 'moment';
 import { DELG_SOURCE, DECL_I_TYPE, DECL_E_TYPE } from 'common/constants';
 import { loadSubdelgsTable, loadCustPanel } from 'common/reducers/cmsDelegation';
@@ -82,8 +82,8 @@ export default class CustomsDeclPane extends React.Component {
     }
     return (
       <div className="pane-content tab-pane">
-        <Card bodyStyle={{ padding: 8 }}>
-          <Row>
+        <Card bodyStyle={{ padding: 0 }}>
+          <Row gutter={8} style={{ padding: 8 }}>
             <Col span="12">
               <InfoItem labelCol={{ span: 3 }} label="报关服务商"
                 field={delgPanel.recv_name} fieldCol={{ span: 9 }}
@@ -101,6 +101,13 @@ export default class CustomsDeclPane extends React.Component {
               />
             </Col>
           </Row>
+          <div className="card-footer">
+            <div className="toolbar-right">
+              <Tooltip title="分配操作人员">
+                <Button type="ghost"><Icon type="user" /></Button>
+              </Tooltip>
+            </div>
+          </div>
         </Card>
         {
           delgBills.length > 0 &&
