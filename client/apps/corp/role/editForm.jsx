@@ -22,12 +22,12 @@ function goBack(router) {
 function FormInputItem(props) {
   const { type = 'text', labelName, labelSpan, required, placeholder, field, options } = props;
   const { getFieldDecorator, ...fieldOptions } = options;
-  const fieldInputProps = getFieldDecorator ? getFieldDecorator(field, fieldOptions) : {};
+  const fieldInputProps = getFieldDecorator(field, fieldOptions);
   return (
     <FormItem label={labelName} labelCol={{ span: labelSpan }} required={required}
       wrapperCol={{ span: 24 - labelSpan }}
     >
-      <Input type={type} placeholder={placeholder} {...fieldInputProps} />
+      {fieldInputProps(<Input type={type} placeholder={placeholder} />)}
     </FormItem>
   );
 }
@@ -39,7 +39,7 @@ FormInputItem.propTypes = {
   placeholder: PropTypes.string,
   field: PropTypes.string,
   options: PropTypes.shape({
-    getFieldDecorator: PropTypes.func,
+    getFieldDecorator: PropTypes.func.isRequired,
     rules: PropTypes.arrayOf(PropTypes.shape({
       required: PropTypes.bool,
       message: PropTypes.string,
@@ -191,7 +191,7 @@ export default class RoleForm extends React.Component {
                 rules: [{
                   required: true, min: 2, messages: formatMsg(intl, 'nameMessage'),
                 }, {
-                  validator: (rule, value, callback) => {
+                  validator(rule, value, callback) {
                     if (Object.keys(PRESET_ROLE_NAME_KEYS).filter(nk =>
                     nk.toUpperCase() === value.toUpperCase()).length > 0) {
                       return callback(new Error(formatMsg(intl, 'unallowDefaultName')));

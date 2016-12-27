@@ -2,11 +2,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Button, Card, Checkbox, Dropdown, Icon, Menu, Tabs, Timeline } from 'antd';
+import { Button, Card, Collapse, Checkbox, Dropdown, Icon, Menu, Tabs, Timeline } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 const formatMsg = format(messages);
 const TabPane = Tabs.TabPane;
+const Panel = Collapse.Panel;
 const timeFormat = 'YYYY-MM-DD HH:mm';
 
 @injectIntl
@@ -30,8 +31,18 @@ export default class LogPane extends React.Component {
         <Menu.Item key="tracking"><Checkbox >追踪事件</Checkbox></Menu.Item>
       </Menu>
     );
-    return (
+    const timelineHeader = (
       <div>
+        <span>动态</span>
+        <div className="toolbar-right">
+          <Dropdown overlay={menu}>
+            <Button type="ghost"><Icon type="filter" /> (3/3)</Button>
+          </Dropdown>
+        </div>
+      </div>
+    );
+    return (
+      <div className="activity-wrapper">
         <Card bodyStyle={{ padding: 8 }}>
           <Tabs defaultActiveKey="log">
             <TabPane tab={<span><Icon type="message" />备注</span>} key="log" />
@@ -39,29 +50,23 @@ export default class LogPane extends React.Component {
             <TabPane tab={<span><Icon type="exception" />异常</span>} key="exception" />
           </Tabs>
         </Card>
-        <section className="timeline">
-          <h3>
-            <div className="toolbar-right">
-              <Dropdown overlay={menu}>
-                <Button type="ghost"><Icon type="filter" /> (3/3)</Button>
-              </Dropdown>
-            </div>
-            动态
-          </h3>
-          <Timeline>
-            {
-              logs.map(
-                (item, i) =>
-                  <Timeline.Item key={i} color={i === logs.length - 1 ? 'green' : 'blue'}>
-                    <p>{this.msg(item.type)}</p>
-                    <p>{item.content}</p>
-                    <p>{`操作人员: ${item.login_name}`}</p>
-                    <p>{item.created_date && moment(item.created_date).format(timeFormat)}</p>
-                  </Timeline.Item>
-                )
-            }
-          </Timeline>
-        </section>
+        <Collapse bordered={false} defaultActiveKey={['timeline']}>
+          <Panel header={timelineHeader} key="timeline">
+            <Timeline>
+              {
+                logs.map(
+                  (item, i) =>
+                    <Timeline.Item key={i} color={i === logs.length - 1 ? 'green' : 'blue'}>
+                      <p>{this.msg(item.type)}</p>
+                      <p>{item.content}</p>
+                      <p>{`操作人员: ${item.login_name}`}</p>
+                      <p>{item.created_date && moment(item.created_date).format(timeFormat)}</p>
+                    </Timeline.Item>
+                  )
+              }
+            </Timeline>
+          </Panel>
+        </Collapse>
       </div>
     );
   }

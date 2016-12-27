@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Tag, Row, Col, Card, Table } from 'antd';
+import { Badge, Button, Card, Col, Icon, Row, Table, Tag, Tooltip } from 'antd';
 import { DELG_SOURCE } from 'common/constants';
 import moment from 'moment';
 import { loadDeclCiqByDelgNo } from 'common/reducers/cmsDeclare';
@@ -88,8 +88,8 @@ export default class CiqDeclPane extends React.Component {
     }
     return (
       <div className="pane-content tab-pane">
-        <Card bodyStyle={{ padding: 8 }}>
-          <Row>
+        <Card bodyStyle={{ padding: 0 }}>
+          <Row gutter={8} style={{ padding: 8 }}>
             <Col span="12">
               <InfoItem labelCol={{ span: 3 }} label="报检服务商"
                 field={ciqdecl.inspection_name} fieldCol={{ span: 9 }}
@@ -101,11 +101,22 @@ export default class CiqDeclPane extends React.Component {
               />
             </Col>
             <Col span="4">
-              <InfoItem labelCol={{ span: 3 }} label="来源"
+              <InfoItem labelCol={{ span: 3 }} label="操作人"
                 field={sourceText} fieldCol={{ span: 9 }}
               />
             </Col>
           </Row>
+          <div className="card-footer">
+            <Badge status="warning" text="报检待处理" />
+            <div className="toolbar-right">
+              <Tooltip title="分配报检供应商">
+                <Button type="ghost"><Icon type="swap" /></Button>
+              </Tooltip>
+              <Tooltip title="分配操作人员">
+                <Button type="ghost"><Icon type="user" /></Button>
+              </Tooltip>
+            </div>
+          </div>
         </Card>
         <Table size="middle" columns={columns} pagination={false} dataSource={ciqdecl.ciqlist} scroll={{ x: 800 }} />
       </div>
