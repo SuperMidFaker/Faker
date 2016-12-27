@@ -101,6 +101,10 @@ export default defineMessages({
     id: 'transport.tariff.fee_code',
     defaultMessage: '费用代码',
   },
+  feeCategory: {
+    id: 'transport.tariff.category',
+    defaultMessage: '费用分类',
+  },
   feeStyle: {
     id: 'transport.tariff.fee_style',
     defaultMessage: '费用类型',
@@ -108,14 +112,6 @@ export default defineMessages({
   chargeMode: {
     id: 'transport.tariff.charge_mode',
     defaultMessage: '计费方式',
-  },
-  lotNum: {
-    id: 'transport.tariff.lot_num',
-    defaultMessage: '批次量',
-  },
-  freeNum: {
-    id: 'transport.tariff.free_num',
-    defaultMessage: '免计量',
   },
   unitPrice: {
     id: 'transport.tariff.unit_quote',
