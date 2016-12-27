@@ -36,7 +36,6 @@ function getFieldInits(aspect, formData) {
 @connect(
   state => ({
     clients: state.cmsDelegation.formRequire.clients,
-    tenantName: state.account.tenantName,
     fieldInits: getFieldInits(state.account.aspect, state.cmsDelegation.formData),
   }),
   { setClientForm }
@@ -48,7 +47,6 @@ export default class BasicForm extends Component {
     fieldInits: PropTypes.object.isRequired,
     clients: PropTypes.array.isRequired,
     setClientForm: PropTypes.func.isRequired,
-    tenantName: PropTypes.string.isRequired,
   }
   msg = key => formatMsg(this.props.intl, key);
   handleClientChange = (value) => {
@@ -65,7 +63,7 @@ export default class BasicForm extends Component {
     return value;
   }
   render() {
-    const { form: { getFieldDecorator, getFieldValue }, fieldInits, clients, tenantName, partnershipType } = this.props;
+    const { form: { getFieldDecorator, getFieldValue }, fieldInits, clients, partnershipType } = this.props;
     let customerName = {
       display: '',
       required: true,
@@ -192,6 +190,27 @@ export default class BasicForm extends Component {
         </Row>
         <Row>
           <Col sm={8}>
+            {getFieldValue('trans_mode') === '2' &&
+              <FormItem label="换单" {...formItemLayout}>
+                {getFieldDecorator('claim_do_awb', { initialValue: fieldInits.claim_do_awb })(<RadioGroup>
+                  <RadioButton value={CLAIM_DO_AWB.claimDO.key}>{CLAIM_DO_AWB.claimDO.value}</RadioButton>
+                  <RadioButton value={CLAIM_DO_AWB.notClaimDO.key}>{CLAIM_DO_AWB.notClaimDO.value}</RadioButton>
+                </RadioGroup>)}
+              </FormItem>
+            }
+          </Col>
+          <Col sm={8}>
+            {getFieldValue('trans_mode') === '2' &&
+              <FormItem label="海运单号" {...formItemLayout}>
+                {getFieldDecorator('swb_no', {
+                  initialValue: fieldInits.swb_no,
+                })(<Input />)}
+              </FormItem>
+            }
+          </Col>
+        </Row>
+        <Row>
+          <Col sm={8}>
             <FormItem label={this.msg('goodsType')} {...formItemLayout}>
               {getFieldDecorator('goods_type', {
                 initialValue: fieldInits.goods_type,
@@ -222,33 +241,14 @@ export default class BasicForm extends Component {
         </Row>
         <Row>
           <Col sm={8}>
-            <FormItem label={this.msg('broker')} {...formItemLayout}>
-              {getFieldDecorator('ccb_name', {
-                initialValue: tenantName,
-              })(<Input disabled />)}
-            </FormItem>
-          </Col>
-          <Col sm={8}>
             <FormItem label={this.msg('delgInternalNo')} {...formItemLayout}>
               {getFieldDecorator('ref_external_no', {
                 initialValue: fieldInits.ref_external_no,
               })(<Input />)}
             </FormItem>
           </Col>
-          <Col sm={8}>
-            {getFieldValue('trans_mode') === '2' &&
-              <FormItem label="换单" {...formItemLayout}>
-                {getFieldDecorator('claim_do_awb', { initialValue: fieldInits.claim_do_awb })(<RadioGroup>
-                  <RadioButton value={CLAIM_DO_AWB.claimDO.key}>{CLAIM_DO_AWB.claimDO.value}</RadioButton>
-                  <RadioButton value={CLAIM_DO_AWB.notClaimDO.key}>{CLAIM_DO_AWB.notClaimDO.value}</RadioButton>
-                </RadioGroup>)}
-              </FormItem>
-            }
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <FormItem label="备注" labelCol={{ span: 2 }} wrapperCol={{ span: 22 }}>
+          <Col sm={16}>
+            <FormItem label="备注" labelCol={{ span: 3 }} wrapperCol={{ span: 21 }}>
               {getFieldDecorator('remark', {
                 initialValue: fieldInits.remark,
               })(<Input type="textarea" autosize={{ minRows: 1, maxRows: 16 }} />)}

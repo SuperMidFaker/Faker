@@ -52,19 +52,19 @@ export const TAX_STATUS = {
 
 export const EXPENSE_CATEGORIES = [{
   key: 'all',
-  color: '#d9d9d9',
+  color: '#989898',
   text: '全部费用',
 }, {
   key: 'service',
-  color: '#87d068',
+  color: '#5fbc29',
   text: '服务费',
 }, {
   key: 'advance',
-  color: '#f8e411',
+  color: '#fac450',
   text: '代垫费',
 }, {
   key: 'special',
-  color: '#f04a14',
+  color: '#f60',
   text: '特殊费用',
 }];
 

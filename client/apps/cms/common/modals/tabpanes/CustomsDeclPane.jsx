@@ -119,7 +119,7 @@ export default class CustomsDeclPane extends React.Component {
                   <div>
                     <span>{declTypes.length > 0 ? declTypes[0].value : ''}：{bill.pack_count}件/{bill.gross_wt}千克</span>
                     <div className="toolbar-right">
-                      <Button type="primary" icon="addfile">新建清单</Button>
+                      <Button type="primary" icon="addfile">创建清单</Button>
                       <Button type="default" icon="edit">编辑清单</Button>
                       <Button icon="eye">查看清单</Button>
                     </div>

@@ -19,7 +19,7 @@ function getExtension(filename) {
   state => ({
     delegation: state.cmsDelegation.previewer.delegation,
     files: state.cmsDelegation.previewer.files,
-    delegateTracking: state.cmsDelegation.previewer.delegateTracking,
+    delgDispatch: state.cmsDelegation.previewer.delgDispatch,
   })
 )
 export default class BasicPane extends React.Component {
@@ -27,7 +27,7 @@ export default class BasicPane extends React.Component {
     intl: intlShape.isRequired,
     delegation: PropTypes.object.isRequired,
     files: PropTypes.array.isRequired,
-    delegateTracking: PropTypes.object.isRequired,
+    delgDispatch: PropTypes.object.isRequired,
   }
   state = {
     sortedFiles: [],
@@ -56,7 +56,7 @@ export default class BasicPane extends React.Component {
     downloadMultiple(this.files);
   }
   render() {
-    const { delegation, delegateTracking } = this.props;
+    const { delegation, delgDispatch } = this.props;
     let img = '';
     const filenames = this.state.sortedFiles.map((fl, index) => {
       if (fl.type === 'doc') {
@@ -107,7 +107,7 @@ export default class BasicPane extends React.Component {
             </Col>
             <Col span="8">
               <InfoItem labelCol={{ span: 3 }} label="委托日期" fieldCol={{ span: 9 }}
-                field={moment(delegateTracking.delg_time).format('YYYY.MM.DD HH:mm')}
+                field={moment(delgDispatch.delg_time).format('YYYY.MM.DD HH:mm')}
               />
             </Col>
           </Row>

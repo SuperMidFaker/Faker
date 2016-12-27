@@ -64,7 +64,7 @@ export default class CiqList extends Component {
   columns = [{
     title: this.msg('delgNo'),
     dataIndex: 'delg_no',
-    width: 120,
+    width: 110,
     fixed: 'left',
     render: o => (
       <a onClick={() => this.handlePreview(o)}>
@@ -87,7 +87,6 @@ export default class CiqList extends Component {
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: this.msg('waybillLadingNo'),
-    width: 200,
     dataIndex: 'bl_wb_no',
   }, {
     title: this.msg('ciqType'),
@@ -257,7 +256,7 @@ export default class CiqList extends Component {
     this.dataSource.remotes = ciqlist;
     return (
       <Table rowSelection={rowSelection} columns={this.columns} dataSource={this.dataSource}
-        loading={ciqlist.loading} rowKey="delg_no" scroll={{ x: 1300 }}
+        loading={ciqlist.loading} rowKey="delg_no" scroll={{ x: 1480 }}
       />);
   }
 }

@@ -84,7 +84,7 @@ export default class SubForm extends Component {
     });
     const formItems = this.state.keys.map(k => (
       <Row key={k} style={{ marginBottom: 8 }}>
-        <Col sm={6}>
+        <Col sm={8}>
           <FormItem label={this.msg('declareWay')} {...formItemLayout}>
             {getFieldDecorator(`decl_way_code_${k}`, {
               rules: [{ required: true, message: '报关类型必选' }],
@@ -98,23 +98,23 @@ export default class SubForm extends Component {
             </Select>)}
           </FormItem>
         </Col>
-        <Col sm={5}>
-          <FormItem label={this.msg('packageNum')} {...formItemLayout}>
+        <Col sm={4}>
+          <FormItem label={this.msg('packageNum')} labelCol={{ span: 12 }} wrapperCol={{ span: 12 }}>
             {getFieldDecorator(`pack_count_${k}`, {
               initialValue: bills[k].pack_count || 1 })(
                 <InputNumber min={1} max={100000} style={{ width: '100%' }} />
               )}
           </FormItem>
         </Col>
-        <Col sm={5}>
-          <FormItem label={this.msg('delgGrossWt')} {...formItemLayout}>
+        <Col sm={4}>
+          <FormItem label={this.msg('delgGrossWt')} labelCol={{ span: 8 }} wrapperCol={{ span: 16 }}>
             {getFieldDecorator(`gross_wt_${k}`, {
               initialValue: bills[k].gross_wt,
             })(<Input addonAfter="千克" type="number" />)}
           </FormItem>
         </Col>
         <Col sm={6}>
-          <FormItem label={this.msg('remark')} {...formItemLayout}>
+          <FormItem label={this.msg('remark')} labelCol={{ span: 8 }} wrapperCol={{ span: 16 }}>
             {getFieldDecorator(`remark_${k}`, {
               initialValue: bills[k].remark,
             })(<Input />)}

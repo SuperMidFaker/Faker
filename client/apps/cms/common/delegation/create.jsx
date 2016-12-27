@@ -108,12 +108,11 @@ export default class AcceptanceCreate extends Component {
           <span>{this.msg('createDelegation')}</span>
         </header>
         <div className="top-bar-tools">
-          <Button size="large" type="primary" icon="save" loading={submitting} onClick={this.handleSaveBtnClick}>
-            {this.msg('save')}
-          </Button>
-          <span />
           <Button size="large" type="ghost" onClick={this.handleCancelBtnClick}>
             {this.msg('cancel')}
+          </Button>
+          <Button size="large" type="primary" icon="save" loading={submitting} onClick={this.handleSaveBtnClick}>
+            {this.msg('save')}
           </Button>
         </div>
         <div className="main-content" key="main">
