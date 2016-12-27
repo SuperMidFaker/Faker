@@ -20,6 +20,7 @@ const TabPane = Tabs.TabPane;
   loginName: state.account.username,
   tariffId: state.transportTariff.tariffId,
   formData: state.transportTariff.agreement,
+  formParams: state.transportTariff.formParams,
 }), { showPublishTariffModal, submitAgreement, updateAgreement, loadTariff })
 @connectNav({
   depth: 3,
@@ -40,6 +41,7 @@ export default class Main extends Component {
     submitAgreement: PropTypes.func.isRequired,
     updateAgreement: PropTypes.func.isRequired,
     loadTariff: PropTypes.func.isRequired,
+    formParams: PropTypes.object.isRequired,
   }
   state = {
     selectedKey: '0',
@@ -48,14 +50,14 @@ export default class Main extends Component {
     this.setState({ selectedKey: key });
   }
   handleSubmit = () => {
-    const { formData } = this.props;
+    const { formData, type } = this.props;
     this.props.form.validateFields((errors) => {
       if (errors) {
         message.error('表单信息错误');
-      } else if (formData.priceChanged) {
+      } else if (type === 'edit' && formData.priceChanged) {
         Modal.confirm({
           title: '确定修改？',
-          content: '价格区间修改后，原来的基础费率都会被清空',
+          content: '价格区间或运输模式修改后，原来的基础费率、附加费用等会被清空',
           onOk: this.submit,
           onCancel: () => {},
         });
@@ -64,11 +66,14 @@ export default class Main extends Component {
       }
     });
   }
+
   submit = () => {
     const { tariffId, tenantId, tenantName, loginId, formData: { quoteNo, version } } = this.props;
     const editForm = this.props.form.getFieldsValue();
+    const tms = this.props.formParams.transModes.find(tm => tm.id === Number(editForm.transModeCode));
     const forms = {
       ...this.props.formData, ...editForm,
+      transMode: tms.mode_code,
     };
     let promise;
     if (this.props.tariffId) {
@@ -79,7 +84,6 @@ export default class Main extends Component {
       forms.tenantId = tenantId;
       forms.tenantName = tenantName;
       forms.loginId = loginId;
-
       promise = this.props.submitAgreement(forms);
     }
     promise.then((result) => {
