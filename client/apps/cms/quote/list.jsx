@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Button, Radio, Tag, message, Popconfirm } from 'antd';
+import { Button, Popconfirm, Radio, Tag, Tooltip, message } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -398,6 +398,11 @@ export default class QuoteList extends Component {
               <Button type="primary" icon="plus" onClick={this.handleCreateNew}>
                 新建报价
               </Button>
+              <div className="toolbar-right">
+                <Tooltip title="报价模板设置">
+                  <Button icon="setting" />
+                </Tooltip>
+              </div>
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3>
               </div>

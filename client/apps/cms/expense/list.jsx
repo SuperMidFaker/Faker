@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Breadcrumb, Button, Icon, Radio, message, DatePicker } from 'antd';
+import { Breadcrumb, Button, DatePicker, Icon, Radio, Select, Tooltip, message } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -27,6 +27,9 @@ const formatMsg = format(messages);
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const RangePicker = DatePicker.RangePicker;
+const Option = Select.Option;
+const OptGroup = Select.OptGroup;
+
 const endDay = new Date();
 const firstDay = new Date();
 firstDay.setDate(1);
@@ -248,7 +251,7 @@ export default class ExpenseList extends Component {
       {
         title: this.msg('delgNo'),
         dataIndex: 'delg_no',
-        width: 120,
+        width: 110,
         fixed: 'left',
         render: o => (
           <a onClick={() => this.handlePreview(o)}>
@@ -257,31 +260,24 @@ export default class ExpenseList extends Component {
       }, {
         title: this.msg('custName'),
         dataIndex: 'send_name',
+        width: 180,
         filters: this.state.custFilter,
-        render: o => <TrimSpan text={o} maxLen={14} />,
+        render: o => <TrimSpan text={o} maxLen={12} />,
       }, {
         title: this.msg('agentName'),
         dataIndex: 'agent_name',
+        width: 180,
         filters: this.state.supeFilter,
-        render: o => <TrimSpan text={o} maxLen={14} />,
+        render: o => <TrimSpan text={o} maxLen={12} />,
       }, {
         title: this.msg('revenue'),
         children: [
           {
-            title: this.msg('allBill'),
-            width: 80,
-            dataIndex: 'all_bill',
-            key: 'all_bill',
-            render: (o) => {
-              if (!isNaN(o)) {
-                return (<b>{o.toFixed(2)}</b>);
-              }
-            },
-          }, {
             title: this.msg('serviceRevenue'),
             dataIndex: 'serv_bill',
             key: 'serv_bill',
             width: 80,
+            className: 'data-money',
             render: (o) => {
               if (!isNaN(o)) {
                 return o.toFixed(2);
@@ -292,6 +288,7 @@ export default class ExpenseList extends Component {
             dataIndex: 'cush_bill',
             key: 'cush_bill',
             width: 80,
+            className: 'data-money',
             render: (o, row) => {
               if (!isNaN(o)) {
                 const labelElem = (
@@ -303,25 +300,33 @@ export default class ExpenseList extends Component {
                   />);
               }
             },
-          },
-        ],
-      }, {
-        title: this.msg('cost'),
-        children: [
-          {
-            title: this.msg('allCost'),
-            dataIndex: 'all_cost',
+          }, {
+            title: this.msg('allBill'),
+            dataIndex: 'all_bill',
+            key: 'all_bill',
             width: 80,
+            className: 'data-money',
             render: (o) => {
               if (!isNaN(o)) {
                 return (<b>{o.toFixed(2)}</b>);
               }
             },
           }, {
+            title: this.msg('status'),
+            width: 45,
+            dataIndex: 'revenue_status',
+            key: 'revenue_status',
+          },
+        ],
+      }, {
+        title: this.msg('cost'),
+        children: [
+          {
             title: this.msg('servCost'),
             dataIndex: 'serv_cost',
             key: 'serv_cost',
             width: 80,
+            className: 'data-money',
             render: (o) => {
               if (!isNaN(o)) {
                 return o.toFixed(2);
@@ -332,6 +337,7 @@ export default class ExpenseList extends Component {
             dataIndex: 'cush_cost',
             key: 'cush_cost',
             width: 80,
+            className: 'data-money',
             render: (o, row) => {
               if (!isNaN(o)) {
                 const labelElem = (
@@ -343,20 +349,36 @@ export default class ExpenseList extends Component {
                   />);
               }
             },
+          }, {
+            title: this.msg('allCost'),
+            dataIndex: 'all_cost',
+            width: 80,
+            className: 'data-money',
+            render: (o) => {
+              if (!isNaN(o)) {
+                return (<b>{o.toFixed(2)}</b>);
+              }
+            },
+          }, {
+            title: this.msg('status'),
+            width: 45,
+            dataIndex: 'cost_status',
+            key: 'cost_status',
           },
         ],
       }, {
         title: this.msg('profit'),
         width: 80,
+        className: 'data-money',
         render: (record) => {
           const bill = isNaN(record.all_bill) ? 0 : record.all_bill;
           const cost = isNaN(record.all_cost) ? 0 : record.all_cost;
           if (bill < cost) {
-            return (<span style={{ color: 'red' }}>{-(cost - bill).toFixed(2)}</span>);
+            return (<span className="mdc-text-red">{-(cost - bill).toFixed(2)}</span>);
           } else if (bill > cost) {
-            return (<span style={{ color: 'green' }}>{(bill - cost).toFixed(2)}</span>);
+            return (<span className="mdc-text-green">{(bill - cost).toFixed(2)}</span>);
           } else {
-            return (<span>{0}</span>);
+            return (<span className="mdc-text-grey">0.00</span>);
           }
         },
       }, {
@@ -366,12 +388,7 @@ export default class ExpenseList extends Component {
       }, {
         title: this.msg('bLNo'),
         dataIndex: 'bl_wb_no',
-        width: 220,
-      }, {
-        title: this.msg('statementEn'),
-        width: 80,
-        dataIndex: 'status',
-        render: o => EXP_STATUS.filter(st => st.value === o)[0].text,
+        width: 200,
       }, {
         title: this.msg('acptTime'),
         dataIndex: 'acpt_time',
@@ -401,6 +418,10 @@ export default class ExpenseList extends Component {
           }
         },
       }, {
+        title: this.msg('statementEn'),
+        dataIndex: 'status',
+        render: o => EXP_STATUS.filter(st => st.value === o)[0].text,
+      }, {
         title: this.msg('lastActT'),
         dataIndex: 'last_charge_time',
         width: 120,
@@ -427,9 +448,10 @@ export default class ExpenseList extends Component {
           </Breadcrumb>
           <RadioGroup value={listFilter.status} onChange={this.handleRadioChange}>
             <RadioButton value="all">{this.msg('all')}</RadioButton>
-            <RadioButton value="nostatement">{this.msg('nostatement')}</RadioButton>
-            <RadioButton value="statement">{this.msg('statement')}</RadioButton>
-            <RadioButton value="invoiced">{this.msg('invoiced')}</RadioButton>
+            <RadioButton value="estimated">{this.msg('statusEstimated')}</RadioButton>
+            <RadioButton value="closed">{this.msg('statusClosed')}</RadioButton>
+            <RadioButton value="billed">{this.msg('statusBilled')}</RadioButton>
+            <RadioButton value="invoiced">{this.msg('statusInvoiced')}</RadioButton>
           </RadioGroup>
         </header>
         <div className="top-bar-tools">
@@ -444,13 +466,28 @@ export default class ExpenseList extends Component {
               <Button type="ghost" icon="file-excel" onClick={this.handleExpExport}>
                 {this.msg('eptExp')}
               </Button>
+              <div className="toolbar-right">
+                <Select defaultValue="both"
+                  style={{ width: 120 }}
+                  showSearch={false}
+                >
+                  <OptGroup label="常用视图">
+                    <Option value="both">显示收入与成本</Option>
+                    <Option value="revenueOnly">仅显示收入</Option>
+                    <Option value="costOnly">仅显示成本</Option>
+                  </OptGroup>
+                </Select>
+                <Tooltip title="费用与计费设置">
+                  <Button icon="setting" />
+                </Tooltip>
+              </div>
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3>
               </div>
             </div>
             <div className="panel-body table-panel group-header">
               <Table rowSelection={rowSelection} columns={columns} dataSource={this.dataSource} loading={expslist.loading}
-                bordered scroll={{ x: 1900 }} rowKey="delg_no"
+                bordered scroll={{ x: 2000 }} rowKey="delg_no"
               />
             </div>
           </div>

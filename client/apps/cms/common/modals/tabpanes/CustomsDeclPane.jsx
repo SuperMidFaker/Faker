@@ -47,15 +47,18 @@ export default class CustomsDeclPane extends React.Component {
     const columns = [{
       title: '统一编号',
       dataIndex: 'pre_entry_seq_no',
+      width: 120,
     }, {
       title: '海关编号',
       dataIndex: 'entry_id',
+      width: 120,
     }, {
       title: '通关状态',
       dataIndex: 'note',
     }, {
       title: '海关查验',
       dataIndex: 'customs_inspect',
+      width: 70,
       render: (o) => {
         if (o === 1) {
           return <Tag color="red">是</Tag>;
@@ -63,14 +66,6 @@ export default class CustomsDeclPane extends React.Component {
           return <Tag>否</Tag>;
         }
       },
-    }, {
-      title: '申报时间',
-      dataIndex: 'process_date',
-      render: o => o && moment(o).format('MM.DD HH:mm'),
-    }, {
-      title: '放行时间',
-      dataIndex: 'd_date',
-      render: o => o && moment(o).format('MM.DD HH:mm'),
     }];
     let sourceText = '';
     if (delgPanel.source === DELG_SOURCE.consigned) {
@@ -104,41 +99,43 @@ export default class CustomsDeclPane extends React.Component {
           <div className="card-footer">
             <div className="toolbar-right">
               <Tooltip title="分配操作人员">
-                <Button type="ghost"><Icon type="user" /></Button>
+                <Button type="ghost" shape="circle"><Icon type="user" /></Button>
               </Tooltip>
             </div>
           </div>
         </Card>
         {
           delgBills.length > 0 &&
-          <Collapse defaultActiveKey={delgBills[0].key}>
-            {
-              delgBills.map((bill) => {
-                const tableDatas = (bill.children || []).map(decl => ({
-                  key: decl.key,
-                  pre_entry_seq_no: decl.pre_entry_seq_no,
-                  entry_id: decl.entry_id,
-                  note: decl.note,
-                  process_date: decl.process_date,
-                }));
-                const declTypes = DECL_I_TYPE.concat(DECL_E_TYPE).filter(dt => dt.key === bill.decl_way_code);
-                const panelHeader = (
-                  <div>
-                    <span>{declTypes.length > 0 ? declTypes[0].value : ''}：{bill.pack_count}件/{bill.gross_wt}千克</span>
-                    <div className="toolbar-right">
-                      <Button type="primary" icon="addfile">创建清单</Button>
-                      <Button type="default" icon="edit">编辑清单</Button>
-                      <Button icon="eye">查看清单</Button>
+          <Card bodyStyle={{ padding: 0 }}>
+            <Collapse defaultActiveKey={delgBills[0].key}>
+              {
+                delgBills.map((bill) => {
+                  const tableDatas = (bill.children || []).map(decl => ({
+                    key: decl.key,
+                    pre_entry_seq_no: decl.pre_entry_seq_no,
+                    entry_id: decl.entry_id,
+                    note: decl.note,
+                    process_date: decl.process_date,
+                  }));
+                  const declTypes = DECL_I_TYPE.concat(DECL_E_TYPE).filter(dt => dt.key === bill.decl_way_code);
+                  const panelHeader = (
+                    <div>
+                      <span>{declTypes.length > 0 ? declTypes[0].value : ''}：{bill.pack_count}件/{bill.gross_wt}千克</span>
+                      <div className="toolbar-right">
+                        <Button type="primary" icon="addfile">创建清单</Button>
+                        <Button type="default" icon="edit">编辑清单</Button>
+                        <Button icon="eye">查看清单</Button>
+                      </div>
                     </div>
-                  </div>
-                );
-                return (
-                  <Panel header={panelHeader} key={bill.key} className="table-panel" >
-                    <Table size="small" columns={columns} pagination={false} dataSource={tableDatas} scroll={{ x: 640 }} />
-                  </Panel>);
-              })
-            }
-          </Collapse>
+                  );
+                  return (
+                    <Panel header={panelHeader} key={bill.key} className="table-panel" >
+                      <Table size="small" columns={columns} pagination={false} dataSource={tableDatas} scroll={{ x: 580 }} />
+                    </Panel>);
+                })
+              }
+            </Collapse>
+          </Card>
         }
       </div>
     );

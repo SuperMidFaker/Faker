@@ -82,3 +82,12 @@ export const EXPENSE_TYPES = [{
   key: 'cert',
   text: '鉴定办证',
 }];
+
+export const CMS_DELG_EXPENSE_STATUS = {
+  pending: 0,
+  estimated: 1,
+  closed: 2,
+  billed: 3,
+  invoiced: 4,
+  settled: 5,
+};

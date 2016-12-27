@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Badge, Breadcrumb, Button, Icon, Modal, Popconfirm, Radio, Select, Tag, message } from 'antd';
+import { Badge, Breadcrumb, Button, Modal, Popconfirm, Radio, Select, Tag, Tooltip, message } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import TrimSpan from 'client/components/trimSpan';
@@ -616,7 +616,9 @@ export default class DelegationList extends Component {
                     <Option value="my">我负责的委托</Option>
                   </OptGroup>
                 </Select>
-                <Button><Icon type="setting" /></Button>
+                <Tooltip title="清关业务委托设置">
+                  <Button icon="setting" />
+                </Tooltip>
               </div>
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3>

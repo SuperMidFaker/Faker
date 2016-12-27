@@ -14,16 +14,20 @@ const messages = defineMessages({
     id: 'cms.expense.all',
     defaultMessage: '全部',
   },
-  nostatement: {
-    id: 'cms.expense.nostatement',
-    defaultMessage: '未结单',
+  statusEstimated: {
+    id: 'cms.expense.status.estimated',
+    defaultMessage: '已预估',
   },
-  statement: {
-    id: 'cms.expense.statement',
+  statusClosed: {
+    id: 'cms.expense.status.closed',
     defaultMessage: '已结单',
   },
-  invoiced: {
-    id: 'cms.expense.invoiced',
+  statusBilled: {
+    id: 'cms.expense.status.billed',
+    defaultMessage: '已入账',
+  },
+  statusInvoiced: {
+    id: 'cms.expense.status.invoiced',
     defaultMessage: '已开票',
   },
   incExp: {
@@ -50,9 +54,9 @@ const messages = defineMessages({
     id: 'cms.expense.export.range',
     defaultMessage: '费用周期',
   },
-  markState: {
-    id: 'cms.expense.mark.statement',
-    defaultMessage: '标记结单',
+  status: {
+    id: 'cms.expense.status',
+    defaultMessage: '状态',
   },
   delgNo: {
     id: 'cms.expense.delgNo',

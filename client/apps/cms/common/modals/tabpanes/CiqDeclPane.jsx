@@ -47,36 +47,27 @@ export default class CiqDeclPane extends React.Component {
     const columns = [{
       title: '统一编号',
       dataIndex: 'pre_entry_seq_no',
+      width: 120,
     }, {
       title: '海关编号',
       dataIndex: 'entry_id',
+      width: 120,
     }, {
       title: '通关单号',
       dataIndex: 'ciq_no',
+      width: 120,
     }, {
       title: '品质查验',
       dataIndex: 'ciq_quality_inspect',
+      width: 60,
       render: o => o === 1 ? <Tag color="red">是</Tag>
           : <Tag>否</Tag>,
     }, {
       title: '动检查验',
       dataIndex: 'ciq_ap_inspect',
+      width: 60,
       render: o => o === 1 ? <Tag color="red">是</Tag>
           : <Tag>否</Tag>,
-    }, {
-      title: '报检日期',
-      dataIndex: 'inspection_time',
-      render: o => o && moment(o).format('MM.DD HH:mm'),
-    }, {
-      title: '处理结果',
-      dataIndex: 'ciq_status',
-      render: (o) => {
-        if (o !== 1) {
-          return <span>未完成</span>;
-        } else {
-          return <span>完成</span>;
-        }
-      },
     }];
     let sourceText = '';
     if (ciqdecl.source === DELG_SOURCE.consigned) {
@@ -110,15 +101,17 @@ export default class CiqDeclPane extends React.Component {
             <Badge status="warning" text="报检待处理" />
             <div className="toolbar-right">
               <Tooltip title="分配报检供应商">
-                <Button type="ghost"><Icon type="swap" /></Button>
+                <Button type="ghost"><Icon type="share-alt" /> 分配</Button>
               </Tooltip>
-              <Tooltip title="分配操作人员">
-                <Button type="ghost"><Icon type="user" /></Button>
+              <Tooltip title="指派操作人员">
+                <Button type="ghost" shape="circle"><Icon type="user" /></Button>
               </Tooltip>
             </div>
           </div>
         </Card>
-        <Table size="middle" columns={columns} pagination={false} dataSource={ciqdecl.ciqlist} scroll={{ x: 800 }} />
+        <Card bodyStyle={{ padding: 0 }}>
+          <Table size="middle" columns={columns} pagination={false} dataSource={ciqdecl.ciqlist} scroll={{ x: 580 }} />
+        </Card>
       </div>
     );
   }
