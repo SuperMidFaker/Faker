@@ -300,19 +300,16 @@ export default class SurchargeForm extends React.Component {
         render: (o, record, index) => {
           if (record.fee_style === 'cushion') {
             return '';
+          } else if (index === editIndex) {
+            return (
+              <Select value={Number(o)} style={{ width: '100%' }} onChange={e => this.handleChargeModeChange(index, e)} >
+                <Option value={TAX_MODE.eachwaybill.key}>{TAX_MODE.eachwaybill.value}</Option>
+                <Option value={TAX_MODE.chargeunit.key}>{TAX_MODE.chargeunit.value}</Option>
+              </Select>
+            );
           } else {
-            if (index === editIndex) {
-              return (
-                <Select value={Number(o)} style={{ width: '100%' }} onChange={e => this.handleChargeModeChange(index, e)} >
-                  <Option value={TAX_MODE.eachwaybill.key}>{TAX_MODE.eachwaybill.value}</Option>
-                  <Option value={TAX_MODE.chargeunit.key}>{TAX_MODE.chargeunit.value}</Option>
-                </Select>
-              );
-            } else {
-              return Number(o) === TAX_MODE.eachwaybill.key ? TAX_MODE.eachwaybill.value : TAX_MODE.chargeunit.value;
-            }
+            return Number(o) === TAX_MODE.eachwaybill.key ? TAX_MODE.eachwaybill.value : TAX_MODE.chargeunit.value;
           }
-          
         },
       }, {
         title: this.msg('unitPrice'),
