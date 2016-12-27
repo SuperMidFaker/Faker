@@ -92,7 +92,7 @@ export default class PickupDeliverUpdater extends React.Component {
       <Modal title={title} onCancel={this.handleCancel} onOk={this.handleOk}
         visible={this.props.visible}
       >
-        <Alert message={warningMessage} type="warning" showIcon style={{ display: warningMessage === '' ? 'none' : '' }}/>
+        <Alert message={warningMessage} type="warning" showIcon style={{ display: warningMessage === '' ? 'none' : '' }} />
         <Form className="row">
           <FormItem label={this.msg('chooseActualTime')} labelCol={{ span: colSpan }}
             wrapperCol={{ span: 24 - colSpan }} required

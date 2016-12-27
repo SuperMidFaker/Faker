@@ -71,7 +71,7 @@ export default class SurchargeForm extends React.Component {
       fee_name: '',
       fee_code: '',
       fee_style: 'cushion',
-      charge_mode: '0',
+      charge_mode: '',
       unit_price: 0,
       invoice_en: true,
       tax_rate: 0,
@@ -298,16 +298,21 @@ export default class SurchargeForm extends React.Component {
         title: this.msg('chargeMode'),
         dataIndex: 'charge_mode',
         render: (o, record, index) => {
-          if (index === editIndex) {
-            return (
-              <Select value={Number(o)} style={{ width: '100%' }} onChange={e => this.handleChargeModeChange(index, e)} >
-                <Option value={TAX_MODE.eachwaybill.key}>{TAX_MODE.eachwaybill.value}</Option>
-                <Option value={TAX_MODE.chargeunit.key}>{TAX_MODE.chargeunit.value}</Option>
-              </Select>
-            );
+          if (record.fee_style === 'cushion') {
+            return '';
           } else {
-            return Number(o) === TAX_MODE.eachwaybill.key ? TAX_MODE.eachwaybill.value : TAX_MODE.chargeunit.value;
+            if (index === editIndex) {
+              return (
+                <Select value={Number(o)} style={{ width: '100%' }} onChange={e => this.handleChargeModeChange(index, e)} >
+                  <Option value={TAX_MODE.eachwaybill.key}>{TAX_MODE.eachwaybill.value}</Option>
+                  <Option value={TAX_MODE.chargeunit.key}>{TAX_MODE.chargeunit.value}</Option>
+                </Select>
+              );
+            } else {
+              return Number(o) === TAX_MODE.eachwaybill.key ? TAX_MODE.eachwaybill.value : TAX_MODE.chargeunit.value;
+            }
           }
+          
         },
       }, {
         title: this.msg('unitPrice'),

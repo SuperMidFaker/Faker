@@ -98,7 +98,7 @@ export default class PickupDeliverUpdaterPopover extends React.Component {
     }
     const content = (
       <Form className="row" style={{ width: '300px' }}>
-        <Alert message={warningMessage} type="warning" showIcon style={{ display: warningMessage === '' ? 'none' : '' }}/>
+        <Alert message={warningMessage} type="warning" showIcon style={{ display: warningMessage === '' ? 'none' : '' }} />
         <FormItem label={label} labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }} required >
           {getFieldDecorator('actDate', {
             rules: [{
