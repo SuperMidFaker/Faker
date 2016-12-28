@@ -26,7 +26,7 @@ function ColumnInput(props) {
   if (!record.enabled) {
     style = { color: '#CCCCCC' };
   }
-  if (record.fee_style === 'cushion' && field !== 'fee_name') {
+  if (record.fee_style === 'advance' && field !== 'fee_name') {
     return <span />;
   } else {
     return inEdit ? <Input value={record[field] || ''} disabled={!record.enabled} onChange={handleChange} />
@@ -114,7 +114,7 @@ function ColumnSelect(props) {
       onChange(record, field, value);
     }
   }
-  if (record.fee_style === 'cushion' && field === 'charge_param') {
+  if (record.fee_style === 'advance' && field === 'charge_param') {
     return <span />;
   }
   if (inEdit) {
@@ -458,7 +458,7 @@ export default class FeesTable extends Component {
         dataIndex: 'fee_style',
         filters: [
           { text: '服务', value: 'service' },
-          { text: '代垫', value: 'cushion' },
+          { text: '代垫', value: 'advance' },
         ],
         width: 150,
         render: (o, record, index) =>

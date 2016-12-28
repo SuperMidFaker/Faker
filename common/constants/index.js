@@ -174,7 +174,7 @@ export const CIQ_SUP_STATUS = [
 
 export const FEE_STYLE = [
   { value: 'service', text: '服务费' },
-  { value: 'cushion', text: '代垫费' },
+  { value: 'advance', text: '代垫费' },
 ];
 export const FEE_CATEGORY = [
   { value: 'agency_expenses', text: '进出口代理' },
