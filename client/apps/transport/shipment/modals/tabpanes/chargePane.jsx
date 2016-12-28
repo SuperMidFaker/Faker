@@ -6,7 +6,7 @@ import { EXPENSE_CATEGORIES } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 const formatMsg = format(messages);
-const Column = Table.Column;
+// const Column = Table.Column;
 const Panel = Collapse.Panel;
 const CheckableTag = Tag.CheckableTag;
 const categoryKeys = EXPENSE_CATEGORIES.filter(ec => ec.key !== 'all').map(ec => ec.key);
@@ -286,43 +286,6 @@ export default class ChargePanel extends React.Component {
               <Table size="small" columns={this.feeColumns} pagination={false} dataSource={expenseds} />
             </Panel>
             <Panel header="计费参数" key="params" className="table-panel">
-              <Table size="small" pagination={false}>
-                <Column
-                  title="运单数量"
-                  dataIndex="shipmtQty"
-                  key="shipmtQty"
-                />
-                <Column
-                  title="报关单数量"
-                  dataIndex="shipmtQty"
-                  key="shipmtQty"
-                />
-                <Column
-                  title="报关单联数"
-                  dataIndex="shipmtQty"
-                  key="shipmtQty"
-                />
-                <Column
-                  title="品名数量"
-                  dataIndex="shipmtQty"
-                  key="shipmtQty"
-                />
-                <Column
-                  title="料件数量"
-                  dataIndex="shipmtQty"
-                  key="shipmtQty"
-                />
-                <Column
-                  title="货值"
-                  dataIndex="shipmtQty"
-                  key="shipmtQty"
-                />
-                <Column
-                  title="办证数量"
-                  dataIndex="shipmtQty"
-                  key="shipmtQty"
-                />
-              </Table>
             </Panel>
           </Collapse>
         </Card>
