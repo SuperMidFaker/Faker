@@ -75,7 +75,7 @@ export default class ExceptionPane extends React.Component {
   }, {
     title: this.msg('exceptionType'),
     dataIndex: 'type',
-    width: '10%',
+    width: 100,
     render: (o) => {
       const t = TRANSPORT_EXCEPTIONS.find(item => item.code === o);
       return t ? t.name : '';
@@ -83,10 +83,10 @@ export default class ExceptionPane extends React.Component {
   }, {
     title: this.msg('exceptionDescription'),
     dataIndex: 'excp_event',
+    width: 200,
   }, {
     title: this.msg('exceptionResolved'),
     dataIndex: 'resolved',
-    width: '8%',
     render: (o) => {
       if (o === 1) {
         return (<Tag color="green">已解决</Tag>);
@@ -98,16 +98,13 @@ export default class ExceptionPane extends React.Component {
   }, {
     title: this.msg('submitDate'),
     dataIndex: 'submit_date',
-    width: '15%',
     render: o => moment(o).format('YYYY-MM-DD HH:mm:ss'),
   }, {
     title: this.msg('submitter'),
     dataIndex: 'submitter',
-    width: '10%',
   }, {
     title: this.msg('operation'),
     dataIndex: 'id',
-    width: '6%',
     render: (o, record) => (<a onClick={() => this.handleShowDealExcpModal(record)}>处理</a>),
   }]
   handleShowDealExcpModal = (exception) => {
