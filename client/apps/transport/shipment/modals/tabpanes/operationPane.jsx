@@ -4,6 +4,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { Button, Card, Collapse, Checkbox, Dropdown, Icon, Menu, Tabs, Timeline } from 'antd';
 import CreateExceptionPane from './createExceptionPane';
+import CreateMessagePane from './createMessagePane';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 const formatMsg = format(messages);
@@ -46,7 +47,7 @@ export default class OperationPane extends React.Component {
       <div className="activity-wrapper">
         <Card bodyStyle={{ padding: 8 }}>
           <Tabs defaultActiveKey="log">
-            <TabPane tab={<span><Icon type="message" />备注</span>} key="log" />
+            <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateMessagePane /></TabPane>
             <TabPane tab={<span><Icon type="environment-o" />追踪</span>} key="location" />
             <TabPane tab={<span><Icon type="exception" />异常</span>} key="exception"><CreateExceptionPane /></TabPane>
           </Tabs>
