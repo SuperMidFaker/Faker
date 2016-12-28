@@ -126,26 +126,22 @@ export default class ChargePanel extends React.Component {
       });
     }
   }
-  transAdvanceCharge = (advanceCharge, index) => {
-    return {
-      key: `advanceCharge${index}`,
-      name: advanceCharge.name,
-      remark: advanceCharge.remark,
-      amount: advanceCharge.amount,
-      tax_fee: advanceCharge.tax_fee,
-      total_fee: advanceCharge.amount + advanceCharge.tax_fee,
-    };
-  }
-  transSpecialCharge = (specialCharge, index) => {
-    return {
-      key: `specialCharge${index}`,
-      name: '特殊费用',
-      remark: specialCharge.remark,
-      amount: specialCharge.amount,
-      tax_fee: '',
-      total_fee: specialCharge.amount,
-    };
-  }
+  transAdvanceCharge = (advanceCharge, index) => ({
+    key: `advanceCharge${index}`,
+    name: advanceCharge.name,
+    remark: advanceCharge.remark,
+    amount: advanceCharge.amount,
+    tax_fee: advanceCharge.tax_fee,
+    total_fee: advanceCharge.amount + advanceCharge.tax_fee,
+  })
+  transSpecialCharge = (specialCharge, index) => ({
+    key: `specialCharge${index}`,
+    name: '特殊费用',
+    remark: specialCharge.remark,
+    amount: specialCharge.amount,
+    tax_fee: '',
+    total_fee: specialCharge.amount,
+  })
   calculateTotalCharge = (charges) => {
     const totalCharge = {
       key: 'totalCharge',
