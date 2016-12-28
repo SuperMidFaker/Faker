@@ -539,7 +539,7 @@ export function createSpecialCharge({ shipmtNo, dispId, type, remark, submitter,
   };
 }
 
-export function getTariffByTransportInfo({ transModeCode, partnerId, partnerTenantId, tenantId, goodsType }) {
+export function getTariffByTransportInfo(params) {
   return {
     [CLIENT_API]: {
       types: [
@@ -549,7 +549,7 @@ export function getTariffByTransportInfo({ transModeCode, partnerId, partnerTena
       ],
       endpoint: 'v1/transport/tariff/byTransportInfo',
       method: 'get',
-      params: { transModeCode, partnerId, partnerTenantId, tenantId, goodsType },
+      params,
       origin: 'mongo',
     },
   };

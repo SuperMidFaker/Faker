@@ -17,7 +17,7 @@ const actionTypes = createActionTypes('@@welogix/transport/tariff/', [
   'SUBMIT_RATEND', 'SUBMIT_RATEND_SUCCEED', 'SUBMIT_RATEND_FAIL',
   'UPDATE_RATEND', 'UPDATE_RATEND_SUCCEED', 'UPDATE_RATEND_FAIL',
   'DEL_RATEND', 'DEL_RATEND_SUCCEED', 'DEL_RATEND_FAIL',
-  'LOAD_NEW_FORM', 'SURC_SAVE', 'SURC_SAVE_SUCCEED', 'SURC_SAVE_FAIL',
+  'LOAD_NEW_FORM',
   'CREATE_FEE', 'CREATE_FEE_SUCCEED', 'CREATE_FEE_FAIL',
   'DELETE_FEE', 'DELETE_FEE_SUCCEED', 'DELETE_FEE_FAIL',
   'UPDATE_FEE', 'UPDATE_FEE_SUCCEED', 'UPDATE_FEE_FAIL',
@@ -74,12 +74,6 @@ const initialState = {
     vehicleTypeParams: [],
     vehicleLengthParams: [],
   },
-  surcharge: {
-    pickup: { mode: 0, value: 0 },
-    delivery: { mode: 0, value: 0 },
-    load: { mode: 0, value: 0 },
-    unload: { mode: 0, value: 0 },
-  },
   fees: [],
   createTariffModal: {
     visible: false,
@@ -109,7 +103,6 @@ export default function reducer(state = initialState, action) {
         ratesSourceList: initialState.ratesSourceList,
         rateId: initialState.rateId,
         ratesEndList: initialState.ratesEndList,
-        surcharge: initialState.surcharge,
         fees: [],
       };
     case actionTypes.LOAD_TARIFF:
@@ -135,19 +128,9 @@ export default function reducer(state = initialState, action) {
         revisions: action.result.data.revisions,
         taxrate: res.taxrate || initialState.agreement.taxrate,
       };
-      const sur = action.result.data.tariff.surcharge;
-      let surcharge = initialState.surcharge;
-      if (sur) {
-        surcharge = {
-          pickup: sur.pickup,
-          delivery: sur.delivery,
-          load: sur.load,
-          unload: sur.unload,
-        };
-      }
       const partners = res.partnerId ? [{ partner_code: '',
         partner_id: res.partnerId, name: res.partnerName, tid: 0 }] : [];
-      return { ...state, agreement, partners, surcharge,
+      return { ...state, agreement, partners,
         ratesRefAgreement: agreement,
         tariffId: action.result.data.tariff._id,
         ratesSourceList: { ...state.ratesSourceList,
@@ -198,18 +181,6 @@ export default function reducer(state = initialState, action) {
     default:
       return state;
   }
-}
-
-export function submitSurcharges(tariffId, params) {
-  return {
-    [CLIENT_API]: {
-      types: [actionTypes.SURC_SAVE, actionTypes.SURC_SAVE_SUCCEED, actionTypes.SURC_SAVE_FAIL],
-      endpoint: 'v1/transport/tariff/surcharge',
-      method: 'post',
-      data: { tariffId, params },
-      origin: 'mongo',
-    },
-  };
 }
 
 export function loadTable(params) {

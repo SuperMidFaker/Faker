@@ -56,13 +56,37 @@ export default class ShipmentAdvanceModal extends React.Component {
       this.props.loadShipmtDispatch(dispId).then((result) => {
         if (type === 1) {
           this.props.getTariffByTransportInfo({
-            transModeCode: transportModeId, partnerId: result.data.sr_partner_id, goodsType,
-            partnerTenantId: result.data.sr_tenant_id, tenantId,
+            transModeCode: transportModeId,
+            partnerId: result.data.sr_partner_id,
+            goodsType,
+            partnerTenantId: result.data.sr_tenant_id,
+            tenantId,
+            pickupEstDate: result.data.pickup_est_date,
+            deliverEstDate: result.data.deliver_est_date,
+            pickupActDate: result.data.pickup_act_date,
+            deliverActDate: result.data.deliver_act_date,
+            createdDate: result.data.created_date,
+          }).then((result1) => {
+            if (result1.error) {
+              message.error(result1.error.message);
+            }
           });
         } else if (type === -1) {
           this.props.getTariffByTransportInfo({
-            transModeCode: transportModeId, partnerId: result.data.sp_partner_id, goodsType,
-            partnerTenantId: result.data.sp_tenant_id, tenantId,
+            transModeCode: transportModeId,
+            partnerId: result.data.sp_partner_id,
+            goodsType,
+            partnerTenantId: result.data.sp_tenant_id,
+            tenantId,
+            pickupEstDate: result.data.pickup_est_date,
+            deliverEstDate: result.data.deliver_est_date,
+            pickupActDate: result.data.pickup_act_date,
+            deliverActDate: result.data.deliver_act_date,
+            createdDate: result.data.created_date,
+          }).then((result1) => {
+            if (result1.error) {
+              message.error(result1.error.message);
+            }
           });
         }
       });
