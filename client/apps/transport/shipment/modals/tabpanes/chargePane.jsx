@@ -285,8 +285,7 @@ export default class ChargePanel extends React.Component {
             <Panel header={this.msg('costDetail')} key="cost" className="table-panel">
               <Table size="small" columns={this.feeColumns} pagination={false} dataSource={expenseds} />
             </Panel>
-            <Panel header="计费参数" key="params" className="table-panel">
-            </Panel>
+            <Panel header="计费参数" key="params" className="table-panel" />
           </Collapse>
         </Card>
       </div>
