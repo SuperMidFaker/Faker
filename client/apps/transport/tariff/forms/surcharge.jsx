@@ -285,7 +285,7 @@ export default class SurchargeForm extends React.Component {
                 </div>
               );
             } else {
-              if (record.category === 'custom') {
+              if (index >= 4) {
                 return (
                   <div>
                     <a onClick={() => this.handleModify(record, index)}>修改</a>
