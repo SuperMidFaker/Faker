@@ -70,7 +70,7 @@ export default class CreateSpecialCharge extends React.Component {
     }
   }
   handleCancel = () => {
-    this.props.showSpecialChargeModal({ visible: false, dispId: -1, shipmtNo: '', parentDispId: -1, spTenantId: -2 });
+    this.props.showSpecialChargeModal({ visible: false, type: '', dispId: -1, shipmtNo: '', parentDispId: -1, spTenantId: -2 });
   }
   render() {
     const { form: { getFieldDecorator }, spTenantId, type } = this.props;

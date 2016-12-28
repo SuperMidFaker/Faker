@@ -30,6 +30,8 @@ function fetchData({ state, dispatch, location }) {
   let filters = state.transportTariff.filters;
   if (kind || status) {
     filters = { ...state.transportTariff.filters, kind: [kind], status: [status] };
+  } else {
+    filters = { ...state.transportTariff.filters, kind: ['all'], status: ['current'] };
   }
   dispatch(loadFormParams(state.account.tenantId));
   return dispatch(loadTable({

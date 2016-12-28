@@ -178,6 +178,7 @@ export const FEE_STYLE = [
 ];
 export const FEE_CATEGORY = [
   { value: 'agency_expenses', text: '进出口代理' },
+  { value: 'transport_expenses', text: '运输' },
   { value: 'customs_expenses', text: '报关' },
   { value: 'ciq_expenses', text: '报检' },
   { value: 'misc_expenses', text: '杂项' },

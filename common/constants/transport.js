@@ -266,11 +266,3 @@ export const TARIFF_PARTNER_PERMISSION = {
   viewable: 1,
   editable: 2,
 };
-
-export const TMS_FEE_CATEGORY = [
-  { value: 'transport_expenses', text: '运输' },
-  { value: 'customs_expenses', text: '报关' },
-  { value: 'ciq_expenses', text: '报检' },
-  { value: 'misc_expenses', text: '杂项' },
-  { value: 'custom', text: '自定义' },
-];

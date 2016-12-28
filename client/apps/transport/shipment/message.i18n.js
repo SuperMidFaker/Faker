@@ -381,29 +381,29 @@ export default defineMessages({
     id: 'transport.shipment.log.removePoint',
     defaultMessage: '删除位置信息',
   },
-  revenueItem: {
-    id: 'transport.shipment.track.charge.revenue.item',
-    defaultMessage: '收入明细项',
+  name: {
+    id: 'transport.shipment.track.charge.name',
+    defaultMessage: '费用名称',
   },
-  chargeRate: {
-    id: 'transport.shipment.track.charge.rate',
-    defaultMessage: '费率',
+  feeRemark: {
+    id: 'transport.shipment.track.charge.feeRemark',
+    defaultMessage: '费用说明',
   },
-  chargeAmount: {
+  amount: {
     id: 'transport.shipment.track.charge.amount',
-    defaultMessage: '计费量',
+    defaultMessage: '金额',
   },
   chargeFee: {
     id: 'transport.shipment.track.charge.fee',
     defaultMessage: '金额',
   },
-  chargeChecked: {
-    id: 'transport.shipment.track.charge.checked',
-    defaultMessage: '计入',
+  taxFee: {
+    id: 'transport.shipment.track.charge.taxFee',
+    defaultMessage: '税金',
   },
-  expenseItem: {
-    id: 'transport.shipment.track.charge.expense.item',
-    defaultMessage: '成本明细项',
+  totalFee: {
+    id: 'transport.shipment.track.charge.totalFee',
+    defaultMessage: '价税合计',
   },
   trackEarnings: {
     id: 'transport.shipment.track.earnings',
@@ -597,20 +597,12 @@ export default defineMessages({
     id: 'transport.shipment.changeShipment.formError',
     defaultMessage: '表单信息有误',
   },
-  advanceName: {
-    id: 'transport.shipment.advance.name',
-    defaultMessage: '垫付类型',
+  revenueDetail: {
+    id: 'transport.modals.tabpanes.billing.revenue.detail',
+    defaultMessage: '收入明细',
   },
-  advanceAmount: {
-    id: 'transport.shipment.advance.amount',
-    defaultMessage: '金额',
-  },
-  advanceSubmitter: {
-    id: 'transport.shipment.advance.submitter',
-    defaultMessage: '提交者',
-  },
-  advanceRemark: {
-    id: 'transport.shipment.advance.remark',
-    defaultMessage: '备注',
+  costDetail: {
+    id: 'transport.modals.tabpanes.billing.cost.detail',
+    defaultMessage: '成本明细',
   },
 });

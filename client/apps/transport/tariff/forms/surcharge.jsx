@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Button, Input, Table, Select, Switch, message } from 'antd';
-import { TAX_MODE, FEE_STYLE, TMS_FEE_CATEGORY } from 'common/constants';
+import { TAX_MODE, FEE_STYLE, FEE_CATEGORY } from 'common/constants';
 import { addFee, deleteFee, updateFee } from 'common/reducers/transportTariff';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
@@ -188,12 +188,12 @@ export default class SurchargeForm extends React.Component {
             return (
               <Select value={o} style={{ width: '100%' }} onChange={e => this.handleCategoryChange(index, e)} >
                 {
-                  TMS_FEE_CATEGORY.map((opt, idx) => <Option value={opt.value} key={`${opt.value}${idx}`}>{opt.text}</Option>)
+                  FEE_CATEGORY.map((opt, idx) => <Option value={opt.value} key={`${opt.value}${idx}`}>{opt.text}</Option>)
                 }
               </Select>
             );
           } else {
-            const category = TMS_FEE_CATEGORY.find(item => item.value === o);
+            const category = FEE_CATEGORY.find(item => item.value === o);
             return category ? category.text : '';
           }
         },
