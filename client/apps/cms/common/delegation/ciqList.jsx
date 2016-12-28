@@ -103,14 +103,14 @@ export default class CiqList extends Component {
   }, {
     title: this.msg('inspbroker'),
     width: 180,
-    dataIndex: 'recv_name',
+    dataIndex: 'ciq_name',
     render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
     title: this.msg('ciqStatus'),
     width: 130,
     dataIndex: 'status',
     render: (o, record) => {
-      const CMS_STATUS = (record.type === 1) ? CMS_CIQ_STATUS : CIQ_SUP_STATUS;
+      const CMS_STATUS = (record.ciq_tenant_id === this.props.tenantId) ? CMS_CIQ_STATUS : CIQ_SUP_STATUS;
       const decl = CMS_STATUS.filter(st => st.value === o)[0];
       if (record.status === 1) {
         return <Badge status="processing" text={decl && decl.text} />;
@@ -134,15 +134,12 @@ export default class CiqList extends Component {
     width: 100,
     fixed: 'right',
     render: (record) => {
-      if (record.status === 0 && record.type === 1) {
-        return (
-          <RowUpdater onHit={this.handleAccept} label={this.msg('accepting')} row={record} />
-        );
-      } else if (record.status === 1 && record.type === 1) {
+      const type = record.ciq_tenant_id === this.props.tenantId ? 1 : 2;
+      if (record.status === 1 && type === 1) {
         return (
           <RowUpdater onHit={this.handleCiqFinish} label={this.msg('ciqFinish')} row={record} />
         );
-      } else if (record.status === 0 && record.type === 2) {
+      } else if (record.status === 0 && type === 2) {
         return (
           <RowUpdater onHit={() => this.handleDelegationCancel(record, 'ciq')} label={this.msg('delgRecall')} row={record} />
         );

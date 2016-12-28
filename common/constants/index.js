@@ -102,7 +102,6 @@ export const DELG_EXEMPTIONWAY = [{
 const DELG_SOURCE = {
   consigned: 1,       // 委托
   subcontracted: 2,   // 分包
-  assignAll: 3,   // 转包
 };
 
 const DELG_STATUS = {
@@ -177,13 +176,10 @@ export const FEE_STYLE = [
   { value: 'advance', text: '代垫费' },
 ];
 export const FEE_CATEGORY = [
-  { value: 'agency_expenses', text: '进出口代理' },
   { value: 'transport_expenses', text: '运输' },
   { value: 'customs_expenses', text: '报关' },
   { value: 'ciq_expenses', text: '报检' },
-  { value: 'misc_expenses', text: '杂项' },
   { value: 'certs_expenses', text: '鉴定办证' },
-  { value: 'custom', text: '自定义' },
 ];
 export const CHARGE_PARAM = [
   { value: '$formula', text: '自定义公式' },
@@ -283,6 +279,17 @@ export const CMS_DUTY_TAXTYPE = [
   { value: 3, text: '我方普票' },
   { value: 4, text: '客户增票' },
 ];
+
+export const clearingOption = {
+  clearSup: {
+    key: 1,
+    value: '与最终供应商结算',
+  },
+  clearAppoint: {
+    key: 2,
+    value: '与指定者结算',
+  },
+};
 
 export const CMS_QUOTE_PERMISSION = {
   viewable: 1,
