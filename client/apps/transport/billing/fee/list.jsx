@@ -14,7 +14,7 @@ import { renderConsignLoc } from '../../common/consignLocation';
 import { createFilename } from 'client/util/dataTransform';
 import ExceptionListPopover from '../../tracking/land/modals/exception-list-popover';
 import PreviewPanel from '../../shipment/modals/preview-panel';
-import { loadShipmtDetail } from 'common/reducers/shipment';
+import { loadShipmtDetail, loadFormRequire } from 'common/reducers/shipment';
 import ActDate from '../../common/actDate';
 import SearchBar from 'client/components/search-bar';
 import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
@@ -25,10 +25,11 @@ import CreateSpecialCharge from '../../tracking/land/modals/create-specialCharge
 const formatMsg = format(messages);
 const RangePicker = DatePicker.RangePicker;
 
-function fetchData({ state, dispatch }) {
+function fetchData({ cookie, state, dispatch }) {
   const startDate = new Date();
   startDate.setMonth(startDate.getMonth() - 3);
   const endDate = new Date();
+  dispatch(loadFormRequire(cookie, state.account.tenantId));
   return dispatch(loadFees({
     tenantId: state.account.tenantId,
     pageSize: state.transportBilling.fees.pageSize,

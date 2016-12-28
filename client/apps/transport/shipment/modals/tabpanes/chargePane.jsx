@@ -32,20 +32,20 @@ const typeKeys = EXPENSE_TYPES.map(ec => ec.key);
 @connect(
   state => ({
     charges: state.shipment.previewer.charges,
-    p_advance_charges: state.shipment.previewer.p_advance_charges,
-    advance_charges: state.shipment.previewer.advance_charges,
-    p_special_charges: state.shipment.previewer.p_special_charges,
-    special_charges: state.shipment.previewer.special_charges,
+    pAdvanceCharges: state.shipment.previewer.pAdvanceCharges,
+    advanceCharges: state.shipment.previewer.advanceCharges,
+    pSpecialCharges: state.shipment.previewer.pSpecialCharges,
+    specialCharges: state.shipment.previewer.specialCharges,
   })
 )
 export default class ChargePanel extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     charges: PropTypes.object.isRequired,
-    p_advance_charges: PropTypes.array.isRequired,
-    advance_charges: PropTypes.array.isRequired,
-    p_special_charges: PropTypes.array.isRequired,
-    special_charges: PropTypes.array.isRequired,
+    pAdvanceCharges: PropTypes.array.isRequired,
+    advanceCharges: PropTypes.array.isRequired,
+    pSpecialCharges: PropTypes.array.isRequired,
+    specialCharges: PropTypes.array.isRequired,
   }
   state = {
     checkedExpCates: categoryKeys,
