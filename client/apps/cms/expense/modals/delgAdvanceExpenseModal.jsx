@@ -153,6 +153,7 @@ export default class DelgAdvanceExpenseModal extends React.Component {
       editFees[row.code] = {
         fee_code: row.code,
         duty_type: row.duty_type,
+        remark: row.remark,
         disp_id: row.disp_id,
         cal_fee: value,
       };
@@ -166,10 +167,12 @@ export default class DelgAdvanceExpenseModal extends React.Component {
   }
   handleDutySelect = (row, value) => {
     const editFees = { ...this.state.editFees };
+    const dutyText = CMS_DUTY_TAXTYPE.filter(cdt => cdt.value === value)[0].text;
     if (!editFees[row.code]) {
       editFees[row.code] = {
         fee_code: row.code,
         duty_type: value,
+        remark: dutyText,
         disp_id: row.disp_id,
         cal_fee: row.cal_fee,
       };
@@ -177,6 +180,7 @@ export default class DelgAdvanceExpenseModal extends React.Component {
       editFees[row.code] = {
         ...editFees[row.code],
         duty_type: value,
+        remark: dutyText,
       };
     }
     this.setState({ editFees });

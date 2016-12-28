@@ -15,9 +15,8 @@ import BillSubTable from './billSubTable';
 import BillModal from './modals/billModal';
 import RowUpdater from './rowUpdater';
 import { loadAcceptanceTable, loadBillMakeModal, acceptDelg, delDelg, loadDeclareWay, matchQuote,
-  showPreviewer, setDispStatus, loadDisp, loadCiqTable, loadCertBrokers, loadRelatedDisp,
+  showPreviewer, setDispStatus, loadDisp, loadCiqTable,
   setCiqFinish, openAcceptModal, showDispModal } from 'common/reducers/cmsDelegation';
-import { loadCertFees, openCertModal } from 'common/reducers/cmsExpense';
 import DelegationInfoHubPanel from '../modals/DelegationInfoHubPanel';
 import AcceptModal from './modals/acceptModal';
 import DelgDispModal from './modals/delgDispModal';
@@ -52,7 +51,6 @@ const OptGroup = Select.OptGroup;
   { loadAcceptanceTable, loadBillMakeModal, acceptDelg,
     delDelg, showPreviewer, setDispStatus, loadDisp,
     loadCiqTable, loadDeclareWay, matchQuote,
-    loadCertFees, openCertModal, loadCertBrokers, loadRelatedDisp,
     setCiqFinish, openAcceptModal, showDispModal }
 )
 @connectNav({
@@ -93,9 +91,6 @@ export default class DelegationList extends Component {
     selectedRowKeys: [],
     searchInput: '',
     expandedKeys: [],
-  }
-  componentDidMount() {
-    this.props.loadCertBrokers(this.props.tenantId);
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.saved !== this.props.saved) {
@@ -436,19 +431,6 @@ export default class DelegationList extends Component {
       newFilters.filterNo = value;
     }
     return newFilters;
-  }
-  handleCertModalLoad = (row) => {
-    this.props.loadRelatedDisp(this.props.tenantId, row.delg_no);
-    const params = {};
-    params.id = row.id;
-    params.delg_no = row.delg_no;
-    if (row.recv_tenant_id === this.props.tenantId) {
-      params.recv_tenant_id = row.recv_tenant_id;
-    } else {
-      params.recv_tenant_id = row.send_tenant_id;
-    }
-    this.props.loadCertFees(params);
-    this.props.openCertModal();
   }
   render() {
     const { delegationlist, listFilter, listView, tenantId } = this.props;
