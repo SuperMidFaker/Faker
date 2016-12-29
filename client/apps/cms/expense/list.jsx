@@ -16,8 +16,6 @@ import messages from './message.i18n';
 import moment from 'moment';
 import SearchBar from 'client/components/search-bar';
 import TrimSpan from 'client/components/trimSpan';
-import ExpSubTable from './expSubTable';
-import InputModal from './modals/inputModal';
 import DelegationInfoHubPanel from '../common/modals/DelegationInfoHubPanel';
 import DelgAdvanceExpenseModal from './modals/delgAdvanceExpenseModal';
 import RowUpdater from './rowUpdater';
@@ -205,12 +203,6 @@ export default class ExpenseList extends Component {
   }
   toggleEptModal = () => {
     this.setState({ expEptVisible: !this.state.expEptVisible });
-  }
-  handleSubexpsList = record => (
-    <ExpSubTable delgNo={record.delg_no} />
-    )
-  handleExpandedChange = (expandedKeys) => {
-    this.setState({ expandedKeys });
   }
   handleAcptDateChange = (dates) => {
     const acptDate = {
@@ -437,7 +429,6 @@ export default class ExpenseList extends Component {
       },
     ];
     this.dataSource.remotes = expslist;
-    const unstateData = expslist.data.filter(dt => dt.status === 0);
     return (
       <QueueAnim type={['bottom', 'up']}>
         <header className="top-bar" key="header">
@@ -492,7 +483,6 @@ export default class ExpenseList extends Component {
             </div>
           </div>
         </div>
-        <InputModal data={unstateData} />
         <DelegationInfoHubPanel />
         <DelgAdvanceExpenseModal />
         <ExpEptModal visible={this.state.expEptVisible} toggle={this.toggleEptModal} />

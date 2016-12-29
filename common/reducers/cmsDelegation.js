@@ -650,7 +650,7 @@ export function closeAcceptModal() {
   };
 }
 
-export function acceptDelg(loginId, loginName, dispIds) {
+export function acceptDelg(loginId, loginName, dispIds, delgNo) {
   return {
     [CLIENT_API]: {
       types: [
@@ -660,7 +660,7 @@ export function acceptDelg(loginId, loginName, dispIds) {
       ],
       method: 'post',
       endpoint: 'v1/cms/delegation/accept',
-      data: { loginId, loginName, dispIds },
+      data: { loginId, loginName, dispIds, delgNo },
     },
   };
 }

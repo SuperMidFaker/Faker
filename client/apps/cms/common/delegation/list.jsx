@@ -383,6 +383,7 @@ export default class DelegationList extends Component {
       tenantId: this.props.tenantId,
       dispatchIds: [row.id],
       type: 'delg',
+      delg_no: row.delg_no,
     });
     this.acceptingRow = row;
   }
