@@ -49,6 +49,8 @@ PaneFormItem.propTypes = {
     goodsTypes: state.shipment.formRequire.goodsTypes,
     packagings: state.shipment.formRequire.packagings,
     containerPackagings: state.shipment.formRequire.containerPackagings,
+    vehicleTypes: state.shipment.formRequire.vehicleTypes,
+    vehicleLengths: state.shipment.formRequire.vehicleLengths,
   }),
   { showChangeShipmentModal }
 )
@@ -60,6 +62,8 @@ export default class DetailPane extends React.Component {
     packagings: PropTypes.array.isRequired,
     containerPackagings: PropTypes.array.isRequired,
     showChangeShipmentModal: PropTypes.func.isRequired,
+    vehicleTypes: PropTypes.array.isRequired,
+    vehicleLengths: PropTypes.array.isRequired,
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   columns = [{
@@ -137,13 +141,15 @@ export default class DetailPane extends React.Component {
     }
   }
   render() {
-    const { shipmt, goodsTypes, packagings, containerPackagings } = this.props;
+    const { shipmt, goodsTypes, packagings, containerPackagings, vehicleTypes, vehicleLengths } = this.props;
     const apackagings = this.props.shipmt.transport_mode_code === 'CTN' ? containerPackagings : packagings.map(pk => ({
       key: pk.package_code,
       value: pk.package_name,
     }));
     const pckg = apackagings.find(item => item.key === shipmt.package);
     const goodsType = goodsTypes.find(item => item.value === shipmt.goods_type);
+    const vehicleType = vehicleTypes.find(item => item.value === shipmt.vehicle_type_id);
+    const vehicleLength = vehicleLengths.find(item => item.value === shipmt.vehicle_length_id);
     let clientInfo = this.msg('customerInfo');
     let shipmtSchedule = `${this.msg('shipmtSchedule')} ${shipmt.transit_time || '当'}${this.msg('day')}`;
     let transitModeInfo = `${this.msg('transitModeInfo')} ${shipmt.transport_mode}`;
@@ -225,14 +231,14 @@ export default class DetailPane extends React.Component {
             {shipmt.transport_mode_code === PRESET_TRANSMODES.ftl &&
             <Col span="12">
               <PaneFormItem labelCol={{ span: 8 }} label={this.msg('vehicleType')}
-                field={shipmt.vehicle_type} fieldCol={{ span: 16 }}
+                field={vehicleType ? vehicleType.text : ''} fieldCol={{ span: 16 }}
               />
             </Col>
             }
             {shipmt.transport_mode_code === PRESET_TRANSMODES.ftl &&
             <Col span="12">
               <PaneFormItem labelCol={{ span: 8 }} label={this.msg('vehicleLength')}
-                field={shipmt.vehicle_length} fieldCol={{ span: 16 }}
+                field={vehicleLength ? vehicleLength.text : ''} fieldCol={{ span: 16 }}
               />
             </Col>
             }
