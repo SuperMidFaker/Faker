@@ -381,6 +381,10 @@ export default defineMessages({
     id: 'transport.shipment.log.removePoint',
     defaultMessage: '删除位置信息',
   },
+  message: {
+    id: 'transport.shipment.log.message',
+    defaultMessage: '消息',
+  },
   name: {
     id: 'transport.shipment.track.charge.name',
     defaultMessage: '费用名称',

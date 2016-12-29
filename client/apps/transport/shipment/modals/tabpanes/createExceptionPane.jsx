@@ -11,6 +11,8 @@ import '../../../index.less';
   state => ({
     loginId: state.account.loginId,
     loginName: state.account.username,
+    tenantId: state.account.tenantId,
+    tenantName: state.account.tenantName,
     shipmtNo: state.shipment.previewer.dispatch.shipmt_no,
     dispId: state.shipment.previewer.dispatch.id,
   }),
@@ -22,6 +24,8 @@ export default class CreateExceptionPane extends React.Component {
     intl: intlShape.isRequired,
     loginId: PropTypes.number.isRequired,
     loginName: PropTypes.string.isRequired,
+    tenantId: PropTypes.number.isRequired,
+    tenantName: PropTypes.string.isRequired,
     dispId: PropTypes.number.isRequired,
     shipmtNo: PropTypes.string.isRequired,
     createException: PropTypes.func.isRequired,

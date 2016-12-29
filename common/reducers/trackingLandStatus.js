@@ -228,7 +228,7 @@ export function closeLocModal() {
   };
 }
 
-export function reportLoc(tenantId, shipmtNo, parentNo, point) {
+export function reportLoc(tenantId, shipmtNo, parentNo, dispId, point) {
   return {
     [CLIENT_API]: {
       types: [
@@ -238,7 +238,7 @@ export function reportLoc(tenantId, shipmtNo, parentNo, point) {
       ],
       endpoint: 'v1/transport/tracking/point',
       method: 'post',
-      data: { tenantId, shipmtNo, parentNo, point },
+      data: { tenantId, shipmtNo, parentNo, dispId, point },
     },
   };
 }

@@ -266,3 +266,10 @@ export const TARIFF_PARTNER_PERMISSION = {
   viewable: 1,
   editable: 2,
 };
+export const SHIPMENT_LOG_CATEGORY = {
+  operation: 'operation',
+  message: 'message',
+  tracking: 'tracking',
+  exception: 'exception',
+  fee: 'fee',
+};

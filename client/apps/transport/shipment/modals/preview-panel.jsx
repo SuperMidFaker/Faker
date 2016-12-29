@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Badge, Col, Row, Tabs } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import DetailPane from './tabpanes/detail-pane';
-import OperationPane from './tabpanes/operationPane';
+import ActivityLoggerPane from './tabpanes/ActivityLoggerPane';
 import ChargePane from './tabpanes/chargePane';
 import PodPane from './tabpanes/podPane';
 import TrackingPane from './tabpanes/trackingPane';
@@ -217,7 +217,7 @@ export default class PreviewPanel extends React.Component {
                   {this.renderTabs(shipmt.status)}
                 </Col>
                 <Col sm={24} md={12} lg={12}>
-                  <OperationPane />
+                  <ActivityLoggerPane />
                 </Col>
               </Row>
             </div>
