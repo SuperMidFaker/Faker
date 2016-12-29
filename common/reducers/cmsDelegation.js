@@ -2,6 +2,7 @@ import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
+  'LOAD_PARTNERS', 'LOAD_PARTNERS_SUCCEED', 'LOAD_PARTNERS_FAIL',
   'LOAD_ACCEPT', 'LOAD_ACCEPT_SUCCEED', 'LOAD_ACCEPT_FAIL',
   'OPEN_ACCEPT_MODAL', 'CLOSE_ACCEPT_MODAL',
   'LOAD_DELGOPERATOR', 'LOAD_DELGOPERATOR_SUCCEED', 'LOAD_DELGOPERATOR_FAIL',
@@ -40,6 +41,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'CIQ_FINISH_SET', 'CIQ_FINISH_SET_SUCCEED', 'CIQ_FINISH_SET_FAIL',
   'LOAD_CIQSUB', 'LOAD_CIQSUB_SUCCEED', 'LOAD_CIQSUB_FAIL',
   'LOAD_DELG_PANEL', 'LOAD_DELG_PANEL_SUCCEED', 'LOAD_DELG_PANEL_FAILED',
+  'SHOW_DISPMODAL', 'SHOW_DISPMODAL_SUCCEED', 'SHOW_DISPMODAL_FAILED',
 ]);
 
 const initialState = {
@@ -135,11 +137,14 @@ const initialState = {
   ciqModal: {
     delgNo: '',
   },
-  delgDispShow: false,
-  saved: false,
-  delgDisp: {},
-  dispatch: {},
-  partners: [],
+  assign: {
+    delgDisp: {},
+    dispatch: {},
+    partners: [],
+    ciqSups: [],
+    delgDispShow: false,
+    saved: false,
+  },
   matchParam: {},
   matchStatus: {},
   cMQParams: [],
@@ -270,6 +275,12 @@ export default function reducer(state = initialState, action) {
         visible: action.visible,
         delgNo: action.payload.delgNo,
         ...action.result.data }, preStatus: '' };
+    case actionTypes.SHOW_DISPMODAL_SUCCEED:
+      return { ...state, assign: {
+        ...state.assign, delgDisp: action.result.data.delegation,
+        dispatch: action.result.data.dispatch, partners: action.result.data.partners,
+        delgDispShow: true, saved: false },
+      };
     case actionTypes.HIDE_PREVIEWER:
       return { ...state, previewer: { ...state.previewer, visible: action.visible } };
     case actionTypes.LOAD_DELG_PANEL_SUCCEED:
@@ -283,15 +294,18 @@ export default function reducer(state = initialState, action) {
     case actionTypes.CLOSE_CIQ_MODAL:
       return { ...state, visibleCiqModal: false, ciqModal: initialState.ciqModal };
     case actionTypes.SET_DISP_STATUS:
-      return { ...state, ...action.data };
-    case actionTypes.LOAD_DELGDISP_SUCCEED:
-      return { ...state, delgDisp: action.result.data.delegation, saved: false,
-        dispatch: action.result.data.dispatch, partners: action.result.data.partners };
+      return { ...state, assign: { ...state.assign, ...action.data } };
+    // case actionTypes.LOAD_DELGDISP:
+    //   return { ...state, delgDisp: initialState.delegation,
+    //     dispatch: initialState.dispatch, partners: initialState.partners };
+    // case actionTypes.LOAD_DELGDISP_SUCCEED:
+    //   return { ...state, delgDisp: action.result.data.delegation, saved: false,
+    //     dispatch: action.result.data.dispatch, partners: action.result.data.partners };
     case actionTypes.LOAD_DISP_SUCCEED:
-      return { ...state, delgDisp: action.result.data.delegation, saved: true,
-        dispatch: action.result.data.dispatch, partners: action.result.data.partners };
+      return { ...state, assign: { ...state.assign, delgDisp: action.result.data.delegation,
+        dispatch: action.result.data.dispatch, delgDispShow: true, saved: true } };
     case actionTypes.SET_SAVED_STATUS:
-      return { ...state, ...action.data };
+      return { ...state, assign: { ...state.assign, ...action.data } };
     case actionTypes.SET_PREW_STATUS:
       return { ...state, ...action.data };
     case actionTypes.SET_PREW_TABKEY:
@@ -312,9 +326,26 @@ export default function reducer(state = initialState, action) {
       return { ...state, acceptModal: { visible: false } };
     case actionTypes.LOAD_DELGOPERATOR_SUCCEED:
       return { ...state, acceptModal: { ...state.acceptModal, operators: action.result.data } };
+    case actionTypes.LOAD_PARTNERS_SUCCEED:
+      return { ...state, assign: { ...state.assign, ciqSups: action.result.data } };
     default:
       return state;
   }
+}
+
+export function loadPartners(tenantId, type, delgSup) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_PARTNERS,
+        actionTypes.LOAD_PARTNERS_SUCCEED,
+        actionTypes.LOAD_PARTNERS_FAIL,
+      ],
+      endpoint: 'v1/cms/delegation/partners',
+      method: 'post',
+      data: { tenantId, type, delgSup },
+    },
+  };
 }
 
 export function loadCiqSubTable(params) {
@@ -523,7 +554,7 @@ export function setSavedStatus(params) {
     data: params,
   };
 }
-export function loadDelgDisp(delgNo, tenantId, typeCode, type) {
+export function loadDelgDisp(delgNo, tenantId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -533,12 +564,12 @@ export function loadDelgDisp(delgNo, tenantId, typeCode, type) {
       ],
       endpoint: 'v1/cms/loadDelgDisp',
       method: 'get',
-      params: { delgNo, tenantId, typeCode, type },
+      params: { delgNo, tenantId },
     },
   };
 }
 
-export function loadDisp(delgNo, tenantId, typeCode, type) {
+export function loadDisp(delgNo, tenantId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -548,12 +579,12 @@ export function loadDisp(delgNo, tenantId, typeCode, type) {
       ],
       endpoint: 'v1/cms/loadDisp',
       method: 'get',
-      params: { delgNo, tenantId, typeCode, type },
+      params: { delgNo, tenantId },
     },
   };
 }
 
-export function delgDispSave(delgDisp, dispatch, partner) {
+export function delgDispSave(delgDisp, dispatch, partner, ciqSup) {
   return {
     [CLIENT_API]: {
       types: [
@@ -563,12 +594,12 @@ export function delgDispSave(delgDisp, dispatch, partner) {
       ],
       endpoint: 'v1/cms/delegation/dispsave',
       method: 'post',
-      data: { delgDisp, dispatch, partner },
+      data: { delgDisp, dispatch, partner, ciqSup },
     },
   };
 }
 
-export function delDisp(delgNo, tenantId, type) {
+export function delDisp(delgDisp, dispatch, tenantId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -578,7 +609,7 @@ export function delDisp(delgNo, tenantId, type) {
       ],
       endpoint: 'v1/cms/dispatch/del',
       method: 'post',
-      data: { delgNo, tenantId, type },
+      data: { delgDisp, dispatch, tenantId },
     },
   };
 }
@@ -826,6 +857,21 @@ export function returnDelegate(data) {
       endpoint: 'v1/cms/delegation/return',
       method: 'post',
       data,
+    },
+  };
+}
+
+export function showDispModal(delgNo, tenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SHOW_DISPMODAL,
+        actionTypes.SHOW_DISPMODAL_SUCCEED,
+        actionTypes.SHOW_DISPMODAL_FAILED,
+      ],
+      endpoint: 'v1/cms/loadDelgDisp',
+      method: 'get',
+      params: { delgNo, tenantId },
     },
   };
 }

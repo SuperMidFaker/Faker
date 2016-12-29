@@ -74,8 +74,6 @@ export default class CiqDeclPane extends React.Component {
       sourceText = '委托';
     } else if (ciqdecl.source === DELG_SOURCE.subcontracted) {
       sourceText = '分包';
-    } else {
-      sourceText = '转包';
     }
     return (
       <div className="pane-content tab-pane">
@@ -83,7 +81,7 @@ export default class CiqDeclPane extends React.Component {
           <Row gutter={8} style={{ padding: 8 }}>
             <Col span="12">
               <InfoItem labelCol={{ span: 3 }} label="报检服务商"
-                field={ciqdecl.inspection_name} fieldCol={{ span: 9 }}
+                field={ciqdecl.ciq_name} fieldCol={{ span: 9 }}
               />
             </Col>
             <Col span="8">
