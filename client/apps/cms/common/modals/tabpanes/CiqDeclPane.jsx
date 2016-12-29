@@ -2,7 +2,6 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Badge, Button, Card, Col, Icon, Row, Table, Tag, Tooltip } from 'antd';
-import { DELG_SOURCE } from 'common/constants';
 import moment from 'moment';
 import { loadDeclCiqByDelgNo } from 'common/reducers/cmsDeclare';
 import InfoItem from 'client/components/InfoItem';
@@ -42,6 +41,10 @@ export default class CiqDeclPane extends React.Component {
       this.props.loadDeclCiqByDelgNo(nextProps.delgNo, this.props.tenantId);
     }
   }
+  handleAssignOperator = () => {
+
+  }
+
   render() {
     const { ciqdecl } = this.props;
     const columns = [{
@@ -69,12 +72,6 @@ export default class CiqDeclPane extends React.Component {
       render: o => o === 1 ? <Tag color="red">是</Tag>
           : <Tag>否</Tag>,
     }];
-    let sourceText = '';
-    if (ciqdecl.source === DELG_SOURCE.consigned) {
-      sourceText = '委托';
-    } else if (ciqdecl.source === DELG_SOURCE.subcontracted) {
-      sourceText = '分包';
-    }
     return (
       <div className="pane-content tab-pane">
         <Card bodyStyle={{ padding: 0 }}>
@@ -91,7 +88,7 @@ export default class CiqDeclPane extends React.Component {
             </Col>
             <Col span="4">
               <InfoItem labelCol={{ span: 3 }} label="操作人"
-                field={sourceText} fieldCol={{ span: 9 }}
+                field={ciqdecl.recv_login_name} fieldCol={{ span: 9 }}
               />
             </Col>
           </Row>
@@ -102,7 +99,7 @@ export default class CiqDeclPane extends React.Component {
                 <Button type="ghost"><Icon type="share-alt" /> 分配</Button>
               </Tooltip>
               <Tooltip title="指派操作人员">
-                <Button type="ghost" shape="circle"><Icon type="user" /></Button>
+                <Button type="ghost" shape="circle" onClick={this.handleAssignOperator}><Icon type="user" /></Button>
               </Tooltip>
             </div>
           </div>

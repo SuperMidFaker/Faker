@@ -88,12 +88,12 @@ export default class DelgDeclList extends Component {
     },
   }, {
     title: '委托方',
-    dataIndex: 'customer_name',
+    dataIndex: 'send_name',
     width: 180,
     render: o => <TrimSpan text={o} maxLen={12} />,
   }, {
     title: this.msg('agent'),
-    dataIndex: 'decl_name',
+    dataIndex: 'customs_name',
     width: 180,
     render: o => <TrimSpan text={o} maxLen={12} />,
   }, {

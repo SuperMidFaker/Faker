@@ -102,7 +102,7 @@ export default class BasicPane extends React.Component {
           <Row>
             <Col span="16">
               <InfoItem labelCol={{ span: 3 }} label="委托方"
-                field={delegation.customer_name} fieldCol={{ span: 9 }}
+                field={delgDispatch.send_name} fieldCol={{ span: 9 }}
               />
             </Col>
             <Col span="8">
