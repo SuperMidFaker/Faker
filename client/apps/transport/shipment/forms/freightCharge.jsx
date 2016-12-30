@@ -39,26 +39,77 @@ export default class FreightCharge extends React.Component {
         'goods_type', 'package', 'vehicle_type_id',
         'vehicle_length_id', 'total_weight', 'total_volume',
       ]);
-    if (!(total_volume || total_weight || ctn || vehicle_length_id === undefined)) {
-      notification.warning({
-        message: '计算运费',
-        description: '计费数量未填写，例如：总重量/总体积/集装箱类型',
-      });
-      return;
-    }
+
     const created = this.props.formData.created_date || Date.now();
-    this.props.computeSaleCharge({
+    const data = {
       partner_id: customer_partner_id, consigner_region_code, consignee_region_code,
       goods_type, trans_mode: transport_mode_id, transport_mode_code, ctn,
       tenant_id: this.props.tenantId, created_date: created,
       vehicle_type_id, vehicle_length_id, total_weight, total_volume,
-    }).then((result) => {
+    };
+    if (customer_partner_id === undefined) {
+      notification.warning({
+        message: '计算运费',
+        description: '客户未选择',
+      });
+    } else if (transport_mode_code === undefined) {
+      notification.warning({
+        message: '计算运费',
+        description: '运输模式未选择',
+      });
+    } else if (transport_mode_code === 'FTL') {
+      if (vehicle_type_id === undefined) {
+        notification.warning({
+          message: '计算运费',
+          description: '车型未选择',
+        });
+      } else if (vehicle_length_id === undefined) {
+        notification.warning({
+          message: '计算运费',
+          description: '车长未选择',
+        });
+      } else if (total_weight === undefined) {
+        notification.warning({
+          message: '计算运费',
+          description: '总重量未填写',
+        });
+      } else if (total_volume === undefined) {
+        notification.warning({
+          message: '计算运费',
+          description: '总体积未填写',
+        });
+      } else {
+        this.computeSaleCharge(data);
+      }
+    } else if (goods_type === undefined) {
+      notification.warning({
+        message: '计算运费',
+        description: '货物类型未选择',
+      });
+    } else {
+      if (total_weight === undefined) {
+        notification.warning({
+          message: '计算运费',
+          description: '总重量未填写',
+        });
+      } else if (total_volume === undefined) {
+        notification.warning({
+          message: '计算运费',
+          description: '总体积未填写',
+        });
+      } else {
+        this.computeSaleCharge(data);
+      }
+    }
+  }
+  computeSaleCharge = (data) => {
+    this.props.computeSaleCharge(data).then((result) => {
       if (result.error) {
         message.error(result.error.message);
       } else if (result.data.freight === -1) {
         notification.error({
           message: '计算运费',
-          description: '未找到匹配的价格协议，请确认是否已创建与该客户关联的价格协议',
+          description: '未找到匹配的价格协议，请确认 所选客户、货物类型、运输模式 的价格协议是否存在！如果存在，则有可能是该价格协议未发布、未启用、或者有效期不符',
         });
       } else if (result.data.freight === -2) {
         notification.error({

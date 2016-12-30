@@ -203,7 +203,7 @@ export default class DetailPane extends React.Component {
             </Col>
             <Col span="8">
               <PaneFormItem labelCol={{ span: 8 }} label={this.msg('acceptTime')}
-                field={moment(dispatch.acpt_time).format('YYYY.MM.DD')} fieldCol={{ span: 21 }}
+                field={dispatch.acpt_time ? moment(dispatch.acpt_time).format('YYYY.MM.DD') : ''} fieldCol={{ span: 21 }}
               />
             </Col>
             <Col span="8">

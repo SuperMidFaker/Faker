@@ -50,7 +50,7 @@ export default class CreateLogPane extends React.Component {
         }
       });
     } else {
-      message.error('消息不能为空');
+      message.error('内容不能为空');
     }
   }
   render() {
