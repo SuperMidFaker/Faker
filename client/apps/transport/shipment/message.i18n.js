@@ -541,6 +541,10 @@ export default defineMessages({
     id: 'transport.acceptance.shipment.remark',
     defaultMessage: '备注',
   },
+  acceptTime: {
+    id: 'transport.acceptance.shipment.acceptTime',
+    defaultMessage: '接单时间',
+  },
   freightCharge: {
     id: 'transport.acceptance.freight.charge',
     defaultMessage: '运费',

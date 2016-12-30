@@ -2,19 +2,20 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Col, Table, Collapse, Timeline, Icon } from 'antd';
+import { Col, Table, Collapse, Steps } from 'antd';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { format } from 'client/common/i18n/helpers';
 import { renderConsignLoc } from '../../../common/consignLocation';
 import { PRESET_TRANSMODES } from 'common/constants';
 import ChangeShipment from '../change-shipment';
 import { showChangeShipmentModal } from 'common/reducers/shipment';
+import ActDate from '../../../common/actDate';
 import messages from '../../message.i18n';
 import './pane.less';
 
 const formatMsg = format(messages);
 const Panel = Collapse.Panel;
-const TimelineItem = Timeline.Item;
+const Step = Steps.Step;
 
 function getColCls(col) {
   if (col) {
@@ -51,6 +52,7 @@ PaneFormItem.propTypes = {
     containerPackagings: state.shipment.formRequire.containerPackagings,
     vehicleTypes: state.shipment.formRequire.vehicleTypes,
     vehicleLengths: state.shipment.formRequire.vehicleLengths,
+    dispatch: state.shipment.previewer.dispatch,
   }),
   { showChangeShipmentModal }
 )
@@ -64,6 +66,7 @@ export default class DetailPane extends React.Component {
     showChangeShipmentModal: PropTypes.func.isRequired,
     vehicleTypes: PropTypes.array.isRequired,
     vehicleLengths: PropTypes.array.isRequired,
+    dispatch: PropTypes.object.isRequired,
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   columns = [{
@@ -141,7 +144,7 @@ export default class DetailPane extends React.Component {
     }
   }
   render() {
-    const { shipmt, goodsTypes, packagings, containerPackagings, vehicleTypes, vehicleLengths } = this.props;
+    const { shipmt, goodsTypes, packagings, containerPackagings, vehicleTypes, vehicleLengths, dispatch } = this.props;
     const apackagings = this.props.shipmt.transport_mode_code === 'CTN' ? containerPackagings : packagings.map(pk => ({
       key: pk.package_code,
       value: pk.package_name,
@@ -181,53 +184,94 @@ export default class DetailPane extends React.Component {
         </div>);
     }
 
+    let pickupDate = moment(shipmt.pickup_est_date).format('YYYY-MM-DD');
+    if (dispatch.pickup_act_date) {
+      pickupDate = (<div>{moment(shipmt.pickup_est_date).format('YYYY-MM-DD')} <span style={{ marginLeft: 30, fontSize: '70%' }}><ActDate actDate={dispatch.pickup_act_date} estDate={shipmt.pickup_est_date} textAfter="已提货" /></span></div>);
+    }
+    let deliverDate = moment(shipmt.deliver_est_date).format('YYYY-MM-DD');
+    if (dispatch.deliver_act_date) {
+      deliverDate = (<div>{moment(shipmt.deliver_est_date).format('YYYY-MM-DD')} <span style={{ marginLeft: 30, fontSize: '70%' }}><ActDate actDate={dispatch.deliver_act_date} estDate={shipmt.deliver_est_date} textAfter="已交货" /></span></div>);
+    }
     return (
       <div className="pane-content tab-pane">
         <Collapse defaultActiveKey={['customer', 'trans_schedule', 'trans_mode']}>
           <Panel header={clientInfo} key="customer">
-            <Col span="12">
+            <Col span="8">
               <PaneFormItem labelCol={{ span: 8 }} label={this.msg('client')}
                 field={shipmt.customer_name} fieldCol={{ span: 16 }}
               />
             </Col>
-            <Col span="12">
+            <Col span="8">
+              <PaneFormItem labelCol={{ span: 8 }} label={this.msg('acceptTime')}
+                field={moment(dispatch.acpt_time).format('YYYY.MM.DD')} fieldCol={{ span: 21 }}
+              />
+            </Col>
+            <Col span="8">
+              <PaneFormItem labelCol={{ span: 8 }} label={this.msg('remark')}
+                field={shipmt.remark} fieldCol={{ span: 21 }}
+              />
+            </Col>
+            <Col span="8">
               <PaneFormItem labelCol={{ span: 8 }} label={this.msg('refExternalNo')}
                 field={shipmt.ref_external_no} fieldCol={{ span: 16 }}
               />
             </Col>
-            <Col span="12">
+            <Col span="8">
               <PaneFormItem labelCol={{ span: 8 }} label={this.msg('refWaybillNo')}
                 field={shipmt.ref_waybill_no} fieldCol={{ span: 16 }}
               />
             </Col>
-            <Col span="12">
+            <Col span="8">
               <PaneFormItem labelCol={{ span: 8 }} label={this.msg('refEntryNo')}
                 field={shipmt.ref_entry_no} fieldCol={{ span: 16 }}
               />
             </Col>
           </Panel>
           <Panel header={shipmtSchedule} key="trans_schedule">
-            <Timeline>
-              <TimelineItem color="blue" dot={<Icon type="circle-o-up" style={{ fontSize: '16px' }} />}>
-                <p><strong>{this.msg('pickupEstDate')} {moment(shipmt.pickup_est_date).format('YYYY-MM-DD')}</strong></p>
-                <p><strong>{shipmt.consigner_name || ''}</strong></p>
-                <p>{`${renderConsignLoc(shipmt, 'consigner')} ${shipmt.consigner_addr || ''}`}</p>
-                <p>{`${shipmt.consigner_contact || ''} ${shipmt.consigner_mobile || ''}`}</p>
-              </TimelineItem>
-              <TimelineItem color="green" dot={<Icon type="circle-o-down" style={{ fontSize: '16px' }} />}>
-                <p><strong>{this.msg('deliveryEstDate')} {moment(shipmt.deliver_est_date).format('YYYY-MM-DD')}</strong></p>
-                <p><strong>{shipmt.consignee_name}</strong></p>
-                <p>{`${renderConsignLoc(shipmt, 'consignee')} ${shipmt.consignee_addr || ''}`}</p>
-                <p>{`${shipmt.consignee_contact || ''} ${shipmt.consignee_mobile || ''}`}</p>
-              </TimelineItem>
-            </Timeline>
+            <div className="trans_schedule">
+              <div className="schedule">
+                <Steps direction="vertical">
+                  <Step key={0} title={shipmt.consigner_name || ''} status="process"
+                    icon={<div className="icon">始</div>}
+                    description={
+                      <div className="stepBody">
+                        <PaneFormItem labelCol={{ span: 8 }} label={this.msg('pickupEstDate')}
+                          field={pickupDate} fieldCol={{ span: 16 }}
+                        />
+                        <PaneFormItem labelCol={{ span: 8 }} label="发货地"
+                          field={`${renderConsignLoc(shipmt, 'consigner')} ${shipmt.consigner_addr || ''}`} fieldCol={{ span: 16 }}
+                        />
+                        <PaneFormItem labelCol={{ span: 8 }} label="联系人/电话"
+                          field={`${shipmt.consigner_contact || ''} ${shipmt.consigner_mobile || ''}`} fieldCol={{ span: 16 }}
+                        />
+                      </div>
+                  }
+                  />
+                </Steps>
+              </div>
+              <div className="schedule">
+                <Steps direction="vertical">
+                  <Step key={0} title={shipmt.consignee_name || ''} status="process"
+                    icon={<div className="icon">终</div>}
+                    description={
+                      <div className="stepBody">
+                        <PaneFormItem labelCol={{ span: 8 }} label={this.msg('deliveryEstDate')}
+                          field={deliverDate} fieldCol={{ span: 16 }}
+                        />
+                        <PaneFormItem labelCol={{ span: 8 }} label="收货地"
+                          field={`${renderConsignLoc(shipmt, 'consignee')} ${shipmt.consignee_addr || ''}`} fieldCol={{ span: 16 }}
+                        />
+                        <PaneFormItem labelCol={{ span: 8 }} label="联系人/电话"
+                          field={`${shipmt.consignee_contact || ''} ${shipmt.consignee_mobile || ''}`} fieldCol={{ span: 16 }}
+                        />
+                      </div>
+                  }
+                  />
+                </Steps>
+              </div>
+            </div>
           </Panel>
           <Panel header={transitModeInfo} key="trans_mode">
-            <Col span="24">
-              <PaneFormItem labelCol={{ span: 3 }} label={this.msg('remark')}
-                field={shipmt.remark} fieldCol={{ span: 21 }}
-              />
-            </Col>
             {shipmt.transport_mode_code === PRESET_TRANSMODES.ftl &&
             <Col span="12">
               <PaneFormItem labelCol={{ span: 8 }} label={this.msg('vehicleType')}
