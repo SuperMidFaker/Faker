@@ -86,20 +86,18 @@ export default class FreightCharge extends React.Component {
         message: '计算运费',
         description: '货物类型未选择',
       });
+    } else if (total_weight === undefined) {
+      notification.warning({
+        message: '计算运费',
+        description: '总重量未填写',
+      });
+    } else if (total_volume === undefined) {
+      notification.warning({
+        message: '计算运费',
+        description: '总体积未填写',
+      });
     } else {
-      if (total_weight === undefined) {
-        notification.warning({
-          message: '计算运费',
-          description: '总重量未填写',
-        });
-      } else if (total_volume === undefined) {
-        notification.warning({
-          message: '计算运费',
-          description: '总体积未填写',
-        });
-      } else {
-        this.computeSaleCharge(data);
-      }
+      this.computeSaleCharge(data);
     }
   }
   computeSaleCharge = (data) => {
