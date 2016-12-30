@@ -240,6 +240,7 @@ export default class Footer extends React.Component {
     this.props.showLocModal({
       shipmt_no: row.shipmt_no,
       parent_no: row.parent_no,
+      disp_id: row.disp_id,
     });
   }
   handleAuditPass = (row) => {

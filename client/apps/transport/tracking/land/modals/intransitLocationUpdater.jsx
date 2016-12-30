@@ -60,7 +60,7 @@ export default class LocationUpdater extends React.Component {
         const { tenantId, transit } = this.props;
         const { location_time, address } = this.props.form.getFieldsValue();
         this.props.reportLoc(
-          tenantId, transit.shipmt_no, transit.parent_no,
+          tenantId, transit.shipmt_no, transit.parent_no, transit.disp_id,
           {
             province, city, district,
             location_time, address,
