@@ -2,7 +2,7 @@ import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import { Modal, Button, Select, Form, Popconfirm, message, Switch, Radio } from 'antd';
 import { clearingOption } from 'common/constants';
-import { delgDispSave, delDisp, setSavedStatus, setDispStatus, loadPartners, showDispModal } from 'common/reducers/cmsDelegation';
+import { delgDispSave, delDisp, setSavedStatus, setDispStatus, loadciqSups } from 'common/reducers/cmsDelegation';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
@@ -68,7 +68,7 @@ function getFieldInits(delgDisp, dispatch) {
     delgDispShow: state.cmsDelegation.assign.delgDispShow,
     fieldInits: getFieldInits(state.cmsDelegation.assign.delgDisp, state.cmsDelegation.assign.dispatch),
   }),
-  { delgDispSave, delDisp, setSavedStatus, setDispStatus, loadPartners, showDispModal }
+  { delgDispSave, delDisp, setSavedStatus, setDispStatus, loadciqSups }
 )
 @Form.create()
 export default class DelgDispModal extends Component {
@@ -89,11 +89,6 @@ export default class DelgDispModal extends Component {
   state = {
     appointed: false,
   }
-  // componentWillReceiveProps(nextProps) {
-  //   if (nextProps.delgNo !== this.props.delgNo) {
-  //     this.props.showDispModal(nextProps.delgNo, this.props.tenantId);
-  //   }
-  // }
   msg = key => formatMsg(this.props.intl, key);
   handleConfirm = () => {
     const { delgDisp, dispatch, tenantId } = this.props;
@@ -120,7 +115,7 @@ export default class DelgDispModal extends Component {
     let ciqSup = {};
     if (this.state.appointed) {
       const sup = ciqSups.filter(pt => pt.partner_id === recv.ciq_name);
-      if (pts.length === 1) {
+      if (sup.length === 1) {
         ciqSup = sup[0];
       }
     }
@@ -146,7 +141,7 @@ export default class DelgDispModal extends Component {
       if (pts.length === 1) {
         delgSup = pts[0];
       }
-      this.props.loadPartners(this.props.tenantId, 'CIB', delgSup).then((result) => {
+      this.props.loadciqSups(this.props.tenantId, 'CIB', delgSup).then((result) => {
         if (result.error) {
           message.error(result.error.message);
         }

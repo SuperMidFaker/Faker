@@ -14,7 +14,6 @@ const Panel = Collapse.Panel;
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    delgDispatch: state.cmsDelegation.previewer.delgDispatch,
     delgNo: state.cmsDelegation.previewer.delgNo,
     delgPanel: state.cmsDelegation.delgPanel,
     tabKey: state.cmsDelegation.previewer.tabKey,
@@ -25,7 +24,6 @@ export default class CustomsDeclPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
-    delgDispatch: PropTypes.object,
     delgNo: PropTypes.string.isRequired,
     delgPanel: PropTypes.object.isRequired,
   }
@@ -70,7 +68,7 @@ export default class CustomsDeclPane extends React.Component {
       return <Button icon="eye" onClick={this.handleView}>查看清单</Button>;
     }
   }
-  handleAssignOperator = () => {
+  handleOperatorAssign = () => {
     this.props.openAcceptModal({
       tenantId: this.props.tenantId,
       dispatchIds: [this.props.delgPanel.id],
@@ -127,7 +125,7 @@ export default class CustomsDeclPane extends React.Component {
           <div className="card-footer">
             <div className="toolbar-right">
               <Tooltip title="分配操作人员">
-                <Button type="ghost" shape="circle" onClick={this.handleAssignOperator}><Icon type="user" /></Button>
+                <Button type="ghost" shape="circle" onClick={this.handleOperatorAssign}><Icon type="user" /></Button>
               </Tooltip>
             </div>
           </div>
