@@ -34,9 +34,9 @@ export default class DelgAdvanceExpenseModal extends React.Component {
       name: PropTypes.string,
     })),
     advanceParties: PropTypes.arrayOf(PropTypes.shape({
-      key: PropTypes.string.isRequired,
-      dispIds: PropTypes.arrayOf(PropTypes.number).isRequired,
+      dispId: PropTypes.number.isRequired,
       name: PropTypes.string.isRequired,
+      recv_services: PropTypes.string,
     })),
     advDirection: PropTypes.oneOf(['send', 'recv']),
     loadCurrencies: PropTypes.func.isRequired,
@@ -55,7 +55,7 @@ export default class DelgAdvanceExpenseModal extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.advanceParties !== this.props.advanceParties) {
       const dispIds = nextProps.advanceParties.reduce((dispatchIds, ap) =>
-          dispatchIds.concat(ap.dispIds), []);
+          dispatchIds.concat(ap.dispId), []);
       this.props.loadDelgAdvanceFee(dispIds);
     }
   }
@@ -153,6 +153,7 @@ export default class DelgAdvanceExpenseModal extends React.Component {
       editFees[row.code] = {
         fee_code: row.code,
         duty_type: row.duty_type,
+        remark: row.remark,
         disp_id: row.disp_id,
         cal_fee: value,
       };
@@ -166,10 +167,12 @@ export default class DelgAdvanceExpenseModal extends React.Component {
   }
   handleDutySelect = (row, value) => {
     const editFees = { ...this.state.editFees };
+    const dutyText = CMS_DUTY_TAXTYPE.filter(cdt => cdt.value === value)[0].text;
     if (!editFees[row.code]) {
       editFees[row.code] = {
         fee_code: row.code,
         duty_type: value,
+        remark: dutyText,
         disp_id: row.disp_id,
         cal_fee: row.cal_fee,
       };
@@ -177,6 +180,7 @@ export default class DelgAdvanceExpenseModal extends React.Component {
       editFees[row.code] = {
         ...editFees[row.code],
         duty_type: value,
+        remark: dutyText,
       };
     }
     this.setState({ editFees });
@@ -211,17 +215,15 @@ export default class DelgAdvanceExpenseModal extends React.Component {
       >
         {
           advanceParties.map((ap) => {
-            const feeData = fees.filter(fee => ap.dispIds.indexOf(fee.disp_id) >= 0);
+            const feeData = fees.filter(fee => ap.dispId === fee.disp_id);
             let titleLabel;
             if (advDirection === 'send') {
-              if (ap.server_types.length === 2) {
+              if (ap.recv_services === 'customs') {
+                titleLabel = '报关供应商';
+              } else if (ap.recv_services === 'ciq') {
+                titleLabel = '报检供应商';
+              } else {
                 titleLabel = '报关报检供应商';
-              } else if (ap.server_types.length === 1) {
-                if (ap.server_types[0] === 1) {
-                  titleLabel = '报关供应商';
-                } else if (ap.server_types[0] === 2) {
-                  titleLabel = '报检供应商';
-                }
               }
             } else if (advDirection === 'recv') {
               titleLabel = '客户';

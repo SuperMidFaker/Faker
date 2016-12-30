@@ -37,7 +37,6 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'LOAD_MQPARAM', 'LOAD_MQPARAM_SUCCEED', 'LOAD_MQPARAM_FAIL',
   'MATCH_CIQ_QUOTE', 'MATCH_CIQ_QUOTE_SUCCEED', 'MATCH_CIQ_QUOTE_FAIL',
   'BROKERS_LOAD', 'BROKERS_LOAD_SUCCEED', 'BROKERS_LOAD_FAIL',
-  'RELATED_DISP_LOAD', 'RELATED_DISP_LOAD_SUCCEED', 'RELATED_DISP_LOAD_FAIL',
   'CIQ_FINISH_SET', 'CIQ_FINISH_SET_SUCCEED', 'CIQ_FINISH_SET_FAIL',
   'LOAD_CIQSUB', 'LOAD_CIQSUB_SUCCEED', 'LOAD_CIQSUB_FAIL',
   'LOAD_DELG_PANEL', 'LOAD_DELG_PANEL_SUCCEED', 'LOAD_DELG_PANEL_FAILED',
@@ -318,8 +317,6 @@ export default function reducer(state = initialState, action) {
       return { ...state, cMQParams: action.result.data };
     case actionTypes.BROKERS_LOAD_SUCCEED:
       return { ...state, brokers: action.result.data.brokers };
-    case actionTypes.RELATED_DISP_LOAD_SUCCEED:
-      return { ...state, relatedDisps: action.result.data };
     case actionTypes.OPEN_ACCEPT_MODAL:
       return { ...state, acceptModal: { visible: true, ...action.data } };
     case actionTypes.CLOSE_ACCEPT_MODAL:
@@ -381,17 +378,6 @@ export function loadCertBrokers(tenantId) {
       endpoint: 'v1/cms/cert/brokers',
       method: 'get',
       params: { tenantId },
-    },
-  };
-}
-
-export function loadRelatedDisp(tenantId, delgNo) {
-  return {
-    [CLIENT_API]: {
-      types: [actionTypes.RELATED_DISP_LOAD, actionTypes.RELATED_DISP_LOAD_SUCCEED, actionTypes.RELATED_DISP_LOAD_FAIL],
-      endpoint: 'v1/cms/related/dispatch',
-      method: 'get',
-      params: { tenantId, delgNo },
     },
   };
 }
@@ -664,7 +650,7 @@ export function closeAcceptModal() {
   };
 }
 
-export function acceptDelg(loginId, loginName, dispIds) {
+export function acceptDelg(loginId, loginName, dispIds, delgNo) {
   return {
     [CLIENT_API]: {
       types: [
@@ -674,7 +660,7 @@ export function acceptDelg(loginId, loginName, dispIds) {
       ],
       method: 'post',
       endpoint: 'v1/cms/delegation/accept',
-      data: { loginId, loginName, dispIds },
+      data: { loginId, loginName, dispIds, delgNo },
     },
   };
 }

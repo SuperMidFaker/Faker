@@ -12,9 +12,10 @@ const Column = Table.Column;
 const Panel = Collapse.Panel;
 const CheckableTag = Tag.CheckableTag;
 const SERVER_CATEGORY_MAP = {
-  customs_expense: 'customdecl',
-  ciq_expense: 'ciqdecl',
-  cert_expense: 'cert',
+  misc_expenses: 'customdecl',
+  customs_expenses: 'customdecl',
+  ciq_expenses: 'ciqdecl',
+  cert_expenses: 'cert',
 };
 const categoryKeys = EXPENSE_CATEGORIES.filter(ec => ec.key !== 'all').map(ec => ec.key);
 const typeKeys = EXPENSE_TYPES.map(ec => ec.key);
@@ -42,7 +43,6 @@ export default class ExpensePane extends React.Component {
     tenantId: PropTypes.number.isRequired,
   }
   state = {
-    tabKey: 'revenue',
     checkedExpCates: categoryKeys,
     checkedExpTypes: typeKeys,
   }
@@ -76,13 +76,6 @@ export default class ExpensePane extends React.Component {
     dataIndex: 'total_fee',
     key: 'total_fee',
   }]
-  handleTabChange = (key) => {
-    this.setState({
-      tabKey: key,
-      checkedExpCates: categoryKeys,
-      checkedExpTypes: typeKeys,
-    });
-  }
   handleCateTagChange = (tag, checked) => {
     if (checked) {
       if (tag === 'all') {
@@ -126,53 +119,48 @@ export default class ExpensePane extends React.Component {
   }
   render() {
     const { expenses: { revenue, allcost } } = this.props;
-    const { tabKey, checkedExpCates, checkedExpTypes } = this.state;
-    let revenueFees = [];
-    let costFees = [];
-    if (tabKey === 'revenue') {
-      revenueFees = revenue.filter(rev =>
-          checkedExpCates.indexOf(rev.fee_style) !== -1
-        && checkedExpCates.indexOf(SERVER_CATEGORY_MAP[rev.category]) !== -1);
-      const totalFee = revenueFees.reduce((res, bsf) => ({
-        fee_name: '合计',
-        cal_fee: res.cal_fee + parseFloat(bsf.cal_fee),
-        tax_fee: res.tax_fee + parseFloat(bsf.tax_fee),
-        total_fee: res.total_fee + parseFloat(bsf.total_fee),
-      }), {
-        fee_name: '合计',
-        cal_fee: 0,
-        tax_fee: 0,
-        total_fee: 0,
-      });
-      totalFee.cal_fee = totalFee.cal_fee.toFixed(2);
-      totalFee.tax_fee = totalFee.tax_fee.toFixed(2);
-      totalFee.total_fee = totalFee.total_fee.toFixed(2);
-      revenueFees.push(totalFee);
-    } else {
-      costFees = allcost.reduce((res, cost) =>
+    const { checkedExpCates, checkedExpTypes } = this.state;
+    const revenueFees = revenue.filter(rev =>
+        checkedExpCates.indexOf(rev.fee_style) !== -1
+      && checkedExpTypes.indexOf(SERVER_CATEGORY_MAP[rev.category]) !== -1);
+    const totalFee = revenueFees.reduce((res, bsf) => ({
+      fee_name: '合计',
+      cal_fee: res.cal_fee + parseFloat(bsf.cal_fee),
+      tax_fee: res.tax_fee + parseFloat(bsf.tax_fee),
+      total_fee: res.total_fee + parseFloat(bsf.total_fee),
+    }), {
+      fee_name: '合计',
+      cal_fee: 0,
+      tax_fee: 0,
+      total_fee: 0,
+    });
+    totalFee.cal_fee = totalFee.cal_fee.toFixed(2);
+    totalFee.tax_fee = totalFee.tax_fee.toFixed(2);
+    totalFee.total_fee = totalFee.total_fee.toFixed(2);
+    revenueFees.push(totalFee);
+    const costFees = allcost.reduce((res, cost) =>
         res.concat({ key: 'vendor', fee_name: cost.vendor }).concat(cost.fees.filter(ct =>
-          checkedExpCates.indexOf(ct.fee_style) !== -1
-        && checkedExpCates.indexOf(SERVER_CATEGORY_MAP[ct.category]) !== -1)), []);
-        /*
+            checkedExpCates.indexOf(ct.fee_style) !== -1
+          && checkedExpTypes.indexOf(SERVER_CATEGORY_MAP[ct.category]) !== -1)), []);
+    /*
       if (allcost.length === 1) {
         costFees = costFees.filter(cd => cd.key !== 'vendor');
       } */
-      const totalCost = costFees.filter(cf => cf.key !== 'vendor').reduce((res, cfe) => ({
-        cal_fee: res.cal_fee + parseFloat(cfe.cal_fee),
-        tax_fee: res.tax_fee + parseFloat(cfe.tax_fee),
-        total_fee: res.total_fee + parseFloat(cfe.total_fee),
-      }), {
-        cal_fee: 0,
-        tax_fee: 0,
-        total_fee: 0,
-      });
-      costFees.push({
-        fee_name: '合计',
-        cal_fee: totalCost.cal_fee.toFixed(2),
-        tax_fee: totalCost.tax_fee.toFixed(2),
-        total_fee: totalCost.total_fee.toFixed(2),
-      });
-    }
+    const totalCost = costFees.filter(cf => cf.key !== 'vendor').reduce((res, cfe) => ({
+      cal_fee: res.cal_fee + parseFloat(cfe.cal_fee),
+      tax_fee: res.tax_fee + parseFloat(cfe.tax_fee),
+      total_fee: res.total_fee + parseFloat(cfe.total_fee),
+    }), {
+      cal_fee: 0,
+      tax_fee: 0,
+      total_fee: 0,
+    });
+    costFees.push({
+      fee_name: '合计',
+      cal_fee: totalCost.cal_fee.toFixed(2),
+      tax_fee: totalCost.tax_fee.toFixed(2),
+      total_fee: totalCost.total_fee.toFixed(2),
+    });
     const checkedTags = EXPENSE_CATEGORIES.map((ec) => {
       let checked = false;
       if (ec.key === 'all') {

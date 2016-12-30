@@ -48,16 +48,16 @@ const initialState = {
   listFilter: {
     status: 'all',
   },
-  showInputModal: false,
+  // showInputModal: false,
   currencies: [],
   expFeesMap: {},
-  showMarkModal: false,
+  // showMarkModal: false,
   saved: false,
-  showCertModal: false,
-  certExp: {},
-  declInModal: {
-  },
-  declAdvanceParties: [],
+  // showCertModal: false,
+  // certExp: {},
+  // declInModal: {
+  // },
+  // declAdvanceParties: [],
   showDeclInputModal: false,
   advanceParties: [],
   /*
@@ -80,9 +80,9 @@ const initialState = {
     visible: false,
     fees: [],
   },
-  certPanel: {
+  /* certPanel: {
     fees: [],
-  },
+  }, */
   partners: {
     customer: [],
     supplier: [],
@@ -245,6 +245,7 @@ export function loadPaneExp(delgNo, tenantId) {
     },
   };
 }
+  /*
 export function loadPanelCert(delgNo, tenantId) {
   return {
     [CLIENT_API]: {
@@ -276,6 +277,7 @@ export function loadDeclExps(params) {
     },
   };
 }
+*/
 
 export function loadExpense(params) {
   return {
@@ -394,7 +396,6 @@ export function closeDeclInputModal() {
     type: actionTypes.CLOSE_DECL_INPUT_MODAL,
   };
 }
-*/
 
 export function loadCertFees(params) {
   return {
@@ -427,6 +428,7 @@ export function saveCertFees(disps, params) {
     },
   };
 }
+*/
 
 export function loadAdvanceParties(delgNo, tenantId, direction) {
   return {
@@ -475,7 +477,7 @@ export function computeDelgAdvanceFees(feeItems) {
   };
 }
 
-export function loadDeclAdvanceParties(isCiq, delgNo) {
+/* export function loadDeclAdvanceParties(isCiq, delgNo) {
   return {
     [CLIENT_API]: {
       types: [
@@ -504,4 +506,4 @@ export function computeDeclAdvanceFee(formData) {
       origin: 'mongo',
     },
   };
-}
+} */

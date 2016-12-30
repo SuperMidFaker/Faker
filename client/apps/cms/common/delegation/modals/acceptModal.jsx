@@ -14,6 +14,7 @@ const getMentions = Mention.getMentions;
     tenantId: state.cmsDelegation.acceptModal.tenantId,
     type: state.cmsDelegation.acceptModal.type,
     delgDispIds: state.cmsDelegation.acceptModal.dispatchIds,
+    delg_no: state.cmsDelegation.acceptModal.delg_no,
     delgOperators: state.cmsDelegation.acceptModal.operators,
   }),
   { closeAcceptModal, acceptDelg, loadDelgOperators, setPreviewStatus }
@@ -53,7 +54,7 @@ export default class DelgAcceptModal extends React.Component {
         const name = Mention.getMentions(this.props.form.getFieldValue('operator'))[0].slice(1);
         const operator = this.props.delgOperators.filter(dop => dop.name === name)[0];
         this.props.acceptDelg(
-          operator.lid, operator.name, this.props.delgDispIds
+          operator.lid, operator.name, this.props.delgDispIds, this.props.delg_no
         ).then((result) => {
           if (result.error) {
             message.error(result.error.message);
