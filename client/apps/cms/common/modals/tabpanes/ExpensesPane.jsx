@@ -12,9 +12,10 @@ const Column = Table.Column;
 const Panel = Collapse.Panel;
 const CheckableTag = Tag.CheckableTag;
 const SERVER_CATEGORY_MAP = {
-  customs_expense: 'customdecl',
-  ciq_expense: 'ciqdecl',
-  cert_expense: 'cert',
+  misc_expenses: 'customdecl',
+  customs_expenses: 'customdecl',
+  ciq_expenses: 'ciqdecl',
+  cert_expenses: 'cert',
 };
 const categoryKeys = EXPENSE_CATEGORIES.filter(ec => ec.key !== 'all').map(ec => ec.key);
 const typeKeys = EXPENSE_TYPES.map(ec => ec.key);
