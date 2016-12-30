@@ -4,7 +4,9 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Badge, Button, Card, Col, Icon, Row, Table, Tag, Tooltip } from 'antd';
 import moment from 'moment';
 import { loadDeclCiqByDelgNo } from 'common/reducers/cmsDeclare';
+import { openAcceptModal } from 'common/reducers/cmsDelegation';
 import InfoItem from 'client/components/InfoItem';
+import SetOperatorModal from '../operatorModal';
 
 @injectIntl
 @connect(
@@ -14,7 +16,7 @@ import InfoItem from 'client/components/InfoItem';
     tenantId: state.account.tenantId,
     tabKey: state.cmsDelegation.previewer.tabKey,
   }),
-  { loadDeclCiqByDelgNo }
+  { loadDeclCiqByDelgNo, openAcceptModal }
 )
 export default class CiqDeclPane extends React.Component {
   static propTypes = {
@@ -42,7 +44,11 @@ export default class CiqDeclPane extends React.Component {
     }
   }
   handleAssignOperator = () => {
-
+    this.props.openAcceptModal({
+      tenantId: this.props.tenantId,
+      dispatchIds: [this.props.ciqdecl.id],
+      type: 'ciq',
+    });
   }
 
   render() {
@@ -107,6 +113,7 @@ export default class CiqDeclPane extends React.Component {
         <Card bodyStyle={{ padding: 0 }}>
           <Table size="middle" columns={columns} pagination={false} dataSource={ciqdecl.ciqlist} scroll={{ x: 580 }} />
         </Card>
+        <SetOperatorModal />
       </div>
     );
   }

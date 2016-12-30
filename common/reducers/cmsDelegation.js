@@ -41,6 +41,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'LOAD_CIQSUB', 'LOAD_CIQSUB_SUCCEED', 'LOAD_CIQSUB_FAIL',
   'LOAD_DELG_PANEL', 'LOAD_DELG_PANEL_SUCCEED', 'LOAD_DELG_PANEL_FAILED',
   'SHOW_DISPMODAL', 'SHOW_DISPMODAL_SUCCEED', 'SHOW_DISPMODAL_FAILED',
+  'SET_OPERATOR', 'SET_OPERATOR_SUCCEED', 'SET_OPERATOR_FAIL',
 ]);
 
 const initialState = {
@@ -661,6 +662,21 @@ export function acceptDelg(loginId, loginName, dispIds, delgNo) {
       method: 'post',
       endpoint: 'v1/cms/delegation/accept',
       data: { loginId, loginName, dispIds, delgNo },
+    },
+  };
+}
+
+export function setOpetaor(loginId, loginName, dispIds) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SET_OPERATOR,
+        actionTypes.SET_OPERATOR_SUCCEED,
+        actionTypes.SET_OPERATOR_FAIL,
+      ],
+      method: 'post',
+      endpoint: 'v1/cms/delegation/set/operator',
+      data: { loginId, loginName, dispIds },
     },
   };
 }

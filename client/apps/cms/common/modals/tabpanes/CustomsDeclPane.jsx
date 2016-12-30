@@ -4,8 +4,9 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Button, Card, Col, Collapse, Icon, Row, Table, Tag, Tooltip } from 'antd';
 import moment from 'moment';
 import { DECL_I_TYPE, DECL_E_TYPE, CMS_DELEGATION_STATUS } from 'common/constants';
-import { loadSubdelgsTable, loadCustPanel, setPreviewStatus, hidePreviewer } from 'common/reducers/cmsDelegation';
+import { loadSubdelgsTable, loadCustPanel, setPreviewStatus, hidePreviewer, openAcceptModal } from 'common/reducers/cmsDelegation';
 import InfoItem from 'client/components/InfoItem';
+import SetOperatorModal from '../operatorModal';
 
 const Panel = Collapse.Panel;
 
@@ -18,7 +19,7 @@ const Panel = Collapse.Panel;
     delgPanel: state.cmsDelegation.delgPanel,
     tabKey: state.cmsDelegation.previewer.tabKey,
   }),
-  { loadSubdelgsTable, loadCustPanel, setPreviewStatus, hidePreviewer }
+  { loadSubdelgsTable, loadCustPanel, setPreviewStatus, hidePreviewer, openAcceptModal }
 )
 export default class CustomsDeclPane extends React.Component {
   static propTypes = {
@@ -70,7 +71,11 @@ export default class CustomsDeclPane extends React.Component {
     }
   }
   handleAssignOperator = () => {
-
+    this.props.openAcceptModal({
+      tenantId: this.props.tenantId,
+      dispatchIds: [this.props.delgPanel.id],
+      type: 'delg',
+    });
   }
   render() {
     const { delgPanel } = this.props;
@@ -127,34 +132,37 @@ export default class CustomsDeclPane extends React.Component {
             </div>
           </div>
         </Card>
-        <Card bodyStyle={{ padding: 0 }}>
-          <Collapse defaultActiveKey={delgBills[0].key}>
-            {
-              delgBills.map((bill) => {
-                const tableDatas = (bill.children || []).map(decl => ({
-                  key: decl.key,
-                  pre_entry_seq_no: decl.pre_entry_seq_no,
-                  entry_id: decl.entry_id,
-                  note: decl.note,
-                  process_date: decl.process_date,
-                }));
-                const declTypes = DECL_I_TYPE.concat(DECL_E_TYPE).filter(dt => dt.key === bill.decl_way_code);
-                const panelHeader = (
-                  <div>
-                    <span>{declTypes.length > 0 ? declTypes[0].value : ''}：{bill.pack_count}件/{bill.gross_wt}千克</span>
-                    <div className="toolbar-right">
-                      {this.button()}
+        { delgBills.length > 0 &&
+          <Card bodyStyle={{ padding: 0 }}>
+            <Collapse defaultActiveKey={delgBills[0].key}>
+              {
+                delgBills.map((bill) => {
+                  const tableDatas = (bill.children || []).map(decl => ({
+                    key: decl.key,
+                    pre_entry_seq_no: decl.pre_entry_seq_no,
+                    entry_id: decl.entry_id,
+                    note: decl.note,
+                    process_date: decl.process_date,
+                  }));
+                  const declTypes = DECL_I_TYPE.concat(DECL_E_TYPE).filter(dt => dt.key === bill.decl_way_code);
+                  const panelHeader = (
+                    <div>
+                      <span>{declTypes.length > 0 ? declTypes[0].value : ''}：{bill.pack_count}件/{bill.gross_wt}千克</span>
+                      <div className="toolbar-right">
+                        {this.button()}
+                      </div>
                     </div>
-                  </div>
-                );
-                return (
-                  <Panel header={panelHeader} key={bill.key} className="table-panel" >
-                    <Table size="small" columns={columns} pagination={false} dataSource={tableDatas} scroll={{ x: 580 }} />
-                  </Panel>);
-              })
-            }
-          </Collapse>
-        </Card>
+                  );
+                  return (
+                    <Panel header={panelHeader} key={bill.key} className="table-panel" >
+                      <Table size="small" columns={columns} pagination={false} dataSource={tableDatas} scroll={{ x: 580 }} />
+                    </Panel>);
+                })
+              }
+            </Collapse>
+          </Card>
+        }
+        <SetOperatorModal />
       </div>
     );
   }
