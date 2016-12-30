@@ -220,6 +220,7 @@ export default class ExpensePane extends React.Component {
             </Panel>
             <Panel header="计费参数" key="params" className="table-panel">
               <Table size="small" pagination={false} dataSource={parameters}>
+                <Column title="计费对象" dataIndex="name" />
                 <Column title="运单数量" dataIndex="shipmt_qty" />
                 <Column title="报关单数量" dataIndex="decl_qty" />
                 <Column title="报关单联数" dataIndex="decl_sheet_qty" />
