@@ -41,6 +41,8 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'LOAD_CIQSUB', 'LOAD_CIQSUB_SUCCEED', 'LOAD_CIQSUB_FAIL',
   'LOAD_DELG_PANEL', 'LOAD_DELG_PANEL_SUCCEED', 'LOAD_DELG_PANEL_FAILED',
   'SHOW_DISPMODAL', 'SHOW_DISPMODAL_SUCCEED', 'SHOW_DISPMODAL_FAILED',
+  'SET_OPERATOR', 'SET_OPERATOR_SUCCEED', 'SET_OPERATOR_FAIL',
+  'CIQ_DISP_SAVE', 'CIQ_DISP_SAVE_SUCCEED', 'CIQ_DISP_SAVE_FAIL',
 ]);
 
 const initialState = {
@@ -142,6 +144,7 @@ const initialState = {
     partners: [],
     ciqSups: [],
     delgDispShow: false,
+    ciqDispShow: false,
     saved: false,
   },
   matchParam: {},
@@ -324,13 +327,13 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_DELGOPERATOR_SUCCEED:
       return { ...state, acceptModal: { ...state.acceptModal, operators: action.result.data } };
     case actionTypes.LOAD_PARTNERS_SUCCEED:
-      return { ...state, assign: { ...state.assign, ciqSups: action.result.data } };
+      return { ...state, assign: { ...state.assign, ciqSups: action.result.data, ciqDispShow: true } };
     default:
       return state;
   }
 }
 
-export function loadPartners(tenantId, type, delgSup) {
+export function loadciqSups(tenantId, type, delgSup) {
   return {
     [CLIENT_API]: {
       types: [
@@ -338,7 +341,7 @@ export function loadPartners(tenantId, type, delgSup) {
         actionTypes.LOAD_PARTNERS_SUCCEED,
         actionTypes.LOAD_PARTNERS_FAIL,
       ],
-      endpoint: 'v1/cms/delegation/partners',
+      endpoint: 'v1/cms/delegation/getciqSups',
       method: 'post',
       data: { tenantId, type, delgSup },
     },
@@ -570,6 +573,21 @@ export function loadDisp(delgNo, tenantId) {
   };
 }
 
+export function ciqDispSave(dispatch, ciqSup) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.CIQ_DISP_SAVE,
+        actionTypes.CIQ_DISP_SAVE_SUCCEED,
+        actionTypes.CIQ_DISP_SAVE_FAIL,
+      ],
+      endpoint: 'v1/cms/ciq/dispsave',
+      method: 'post',
+      data: { dispatch, ciqSup },
+    },
+  };
+}
+
 export function delgDispSave(delgDisp, dispatch, partner, ciqSup) {
   return {
     [CLIENT_API]: {
@@ -661,6 +679,21 @@ export function acceptDelg(loginId, loginName, dispIds, delgNo) {
       method: 'post',
       endpoint: 'v1/cms/delegation/accept',
       data: { loginId, loginName, dispIds, delgNo },
+    },
+  };
+}
+
+export function setOpetaor(loginId, loginName, dispIds) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SET_OPERATOR,
+        actionTypes.SET_OPERATOR_SUCCEED,
+        actionTypes.SET_OPERATOR_FAIL,
+      ],
+      method: 'post',
+      endpoint: 'v1/cms/delegation/set/operator',
+      data: { loginId, loginName, dispIds },
     },
   };
 }

@@ -110,37 +110,17 @@ export default class DelegationList extends Component {
         const { delegation } = this.props;
         this.handleDelegationMake(delegation);
       }
-      if (nextProps.preStatus === 'assignAll') {
-        const { delegation } = this.props;
-        this.handleDelegationAssign(delegation, 'all');
-      }
       if (nextProps.preStatus === 'dispatch') {
         const { delegation } = this.props;
-        this.handleDelegationAssign(delegation, 'delg');
-      }
-      if (nextProps.preStatus === 'ciqdispatch') {
-        const { delegation } = this.props;
-        this.handleDelegationAssign(delegation, 'ciq');
+        this.handleDelegationAssign(delegation);
       }
       if (nextProps.preStatus === 'delgDispCancel') {
         const { delegation } = this.props;
-        this.handleDelegationCancel(delegation, 'delg');
-      }
-      if (nextProps.preStatus === 'allDispCancel') {
-        const { delegation } = this.props;
-        this.handleDelegationCancel(delegation, 'all');
-      }
-      if (nextProps.preStatus === 'ciqDispCancel') {
-        const { delegation } = this.props;
-        this.handleDelegationCancel(delegation, 'ciq');
+        this.handleDelegationCancel(delegation);
       }
       if (nextProps.preStatus === 'view') {
         const { delegation } = this.props;
         this.handleDelegationView(delegation);
-      }
-      if (nextProps.preStatus === 'ciqfinish') {
-        const { delegation } = this.props;
-        this.handleCiqFinish(delegation.delg_no);
       }
     }
   }
@@ -191,7 +171,14 @@ export default class DelegationList extends Component {
     dataIndex: 'status',
     render: (o, record) => {
       const CMS_STATUS = (record.customs_tenant_id === this.props.tenantId) ? CMS_DELG_STATUS : CMS_SUP_STATUS;
-      const status = (record.customs_tenant_id === this.props.tenantId) ? record.status : record.assign_status;
+      let status = record.status;
+      if (record.customs_tenant_id !== this.props.tenantId) {
+        if (record.status === 1 && record.sub_status === 0) {
+          status = 0;
+        } else if (record.status === 1 && record.sub_status === 1) {
+          status = 1;
+        }
+      }
       const decl = CMS_STATUS.filter(st => st.value === status)[0];
       if (status === 1) {
         return <Badge status="default" text={decl && decl.text} />;
@@ -481,9 +468,28 @@ export default class DelegationList extends Component {
                   <span>
                     <RowUpdater onHit={this.handleDelegationMake} label={this.msg('createManifest')} row={record} />
                     <span className="ant-divider" />
-                    <RowUpdater onHit={() => this.handleDelegationAssign(record, 'delg')} label={this.msg('delgDistribute')} row={record} />
+                    <RowUpdater onHit={() => this.handleDelegationAssign(record)} label={this.msg('delgDistribute')} row={record} />
                   </span>
                 </PrivilegeCover>
+              );
+            } else if (record.status === CMS_DELEGATION_STATUS.processing ||
+                (record.status === CMS_DELEGATION_STATUS.declaring && record.sub_status === 1)) {
+              return (
+                <RowUpdater onHit={this.handleDelegationMake} label={this.msg('editManifest')} row={record} />
+              );
+            } else {
+              return (
+                <RowUpdater onHit={this.handleDelegationView} label={this.msg('viewManifest')} row={record} />
+              );
+            }
+          } else if (record.customs_tenant_id === -1) {
+            if (record.status === CMS_DELEGATION_STATUS.accepted && record.sub_status === CMS_DELEGATION_STATUS.accepted) {
+              return (
+                <span>
+                  <RowUpdater onHit={this.handleDelegationMake} label={this.msg('createManifest')} row={record} />
+                  <span className="ant-divider" />
+                  <RowUpdater onHit={() => this.handleDelegationCancel(record)} label={this.msg('delgRecall')} row={record} />
+                </span>
               );
             } else if (record.status === CMS_DELEGATION_STATUS.processing ||
                 record.status === CMS_DELEGATION_STATUS.declaring && record.sub_status === 1) {
@@ -495,30 +501,15 @@ export default class DelegationList extends Component {
                 <RowUpdater onHit={this.handleDelegationView} label={this.msg('viewManifest')} row={record} />
               );
             }
-          } else if (record.customs_tenant_id === -1) {
-            if (record.assign_status === CMS_DELEGATION_STATUS.accepted) {
-              return (
-                <span>
-                  <RowUpdater onHit={this.handleDelegationMake} label={this.msg('createManifest')} row={record} />
-                  <span className="ant-divider" />
-                  <RowUpdater onHit={() => this.handleDelegationCancel(record, 'delg')} label={this.msg('delgRecall')} row={record} />
-                </span>
-              );
-            } else if (record.assign_status === CMS_DELEGATION_STATUS.processing ||
-                record.assign_status === CMS_DELEGATION_STATUS.declaring && record.sub_status === 1) {
-              return (
-                <RowUpdater onHit={this.handleDelegationMake} label={this.msg('editManifest')} row={record} />
-              );
-            } else {
-              return (
-                <RowUpdater onHit={this.handleDelegationView} label={this.msg('viewManifest')} row={record} />
-              );
-            }
-          } else if (record.assign_status === CMS_DELEGATION_STATUS.unaccepted) {
+          } else if (record.status === CMS_DELEGATION_STATUS.accepted && record.sub_status === CMS_DELEGATION_STATUS.unaccepted) {
             return (
-              <RowUpdater onHit={() => this.handleDelegationCancel(record, 'delg')} label={this.msg('delgRecall')} row={record} />
+              <RowUpdater onHit={() => this.handleDelegationCancel(record)} label={this.msg('delgRecall')} row={record} />
             );
-          } else if (record.assign_status > CMS_DELEGATION_STATUS.unaccepted) {
+          } else if (record.status === CMS_DELEGATION_STATUS.accepted && record.sub_status === CMS_DELEGATION_STATUS.unaccepted) {
+            return (
+              <RowUpdater onHit={this.handleDelegationView} label={this.msg('viewManifest')} row={record} />
+            );
+          } else {
             return (
               <RowUpdater onHit={this.handleDelegationView} label={this.msg('viewManifest')} row={record} />
             );

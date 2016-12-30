@@ -2,10 +2,12 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Badge, Button, Card, Col, Icon, Row, Table, Tag, Tooltip } from 'antd';
-import { DELG_SOURCE } from 'common/constants';
 import moment from 'moment';
 import { loadDeclCiqByDelgNo } from 'common/reducers/cmsDeclare';
+import { openAcceptModal, loadciqSups } from 'common/reducers/cmsDelegation';
 import InfoItem from 'client/components/InfoItem';
+import SetOperatorModal from '../operatorModal';
+import CiqDispModal from '../ciqDispModal';
 
 @injectIntl
 @connect(
@@ -14,14 +16,16 @@ import InfoItem from 'client/components/InfoItem';
     ciqdecl: state.cmsDeclare.previewer.ciqdecl,
     tenantId: state.account.tenantId,
     tabKey: state.cmsDelegation.previewer.tabKey,
+    delegation: state.cmsDelegation.previewer.delegation,
   }),
-  { loadDeclCiqByDelgNo }
+  { loadDeclCiqByDelgNo, openAcceptModal, loadciqSups }
 )
 export default class CiqDeclPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     delgNo: PropTypes.string.isRequired,
     tenantId: PropTypes.number.isRequired,
+    delegation: PropTypes.object,
     ciqdecl: PropTypes.shape({
       inspection_name: PropTypes.string,
       acpt_time: PropTypes.date,
@@ -42,8 +46,18 @@ export default class CiqDeclPane extends React.Component {
       this.props.loadDeclCiqByDelgNo(nextProps.delgNo, this.props.tenantId);
     }
   }
+  handleOperatorAssign = () => {
+    this.props.openAcceptModal({
+      tenantId: this.props.tenantId,
+      dispatchIds: [this.props.ciqdecl.id],
+      type: 'ciq',
+    });
+  }
+  handleCiqAssign = () => {
+    this.props.loadciqSups(this.props.tenantId, 'CIB', {});
+  }
   render() {
-    const { ciqdecl } = this.props;
+    const { ciqdecl, delegation } = this.props;
     const columns = [{
       title: '统一编号',
       dataIndex: 'pre_entry_seq_no',
@@ -69,12 +83,6 @@ export default class CiqDeclPane extends React.Component {
       render: o => o === 1 ? <Tag color="red">是</Tag>
           : <Tag>否</Tag>,
     }];
-    let sourceText = '';
-    if (ciqdecl.source === DELG_SOURCE.consigned) {
-      sourceText = '委托';
-    } else if (ciqdecl.source === DELG_SOURCE.subcontracted) {
-      sourceText = '分包';
-    }
     return (
       <div className="pane-content tab-pane">
         <Card bodyStyle={{ padding: 0 }}>
@@ -91,18 +99,18 @@ export default class CiqDeclPane extends React.Component {
             </Col>
             <Col span="4">
               <InfoItem labelCol={{ span: 3 }} label="操作人"
-                field={sourceText} fieldCol={{ span: 9 }}
+                field={ciqdecl.recv_login_name} fieldCol={{ span: 9 }}
               />
             </Col>
           </Row>
           <div className="card-footer">
             <Badge status="warning" text="报检待处理" />
             <div className="toolbar-right">
-              <Tooltip title="分配报检供应商">
-                <Button type="ghost"><Icon type="share-alt" /> 分配</Button>
-              </Tooltip>
+              {delegation.appointed_option === 0 && <Tooltip title="分配报检供应商">
+                <Button type="ghost" onClick={this.handleCiqAssign}><Icon type="share-alt" /> 分配</Button>
+              </Tooltip>}
               <Tooltip title="指派操作人员">
-                <Button type="ghost" shape="circle"><Icon type="user" /></Button>
+                <Button type="ghost" shape="circle" onClick={this.handleOperatorAssign}><Icon type="user" /></Button>
               </Tooltip>
             </div>
           </div>
@@ -110,6 +118,8 @@ export default class CiqDeclPane extends React.Component {
         <Card bodyStyle={{ padding: 0 }}>
           <Table size="middle" columns={columns} pagination={false} dataSource={ciqdecl.ciqlist} scroll={{ x: 580 }} />
         </Card>
+        <SetOperatorModal />
+        <CiqDispModal />
       </div>
     );
   }
