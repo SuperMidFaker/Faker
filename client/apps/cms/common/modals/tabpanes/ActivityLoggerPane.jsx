@@ -14,11 +14,38 @@ const Panel = Collapse.Panel;
     previewer: state.cmsDelegation.previewer,
   })
 )
+@Form.create()
 export default class ActivityLoggerPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
   }
+  state = {
+    tabKey: 'log',
+  }
+  handleTabChange = (tabKey) => {
+    this.setState({ tabKey });
+  }
+  handleCancel = () => {
+    this.props.form.resetFields();
+  }
+  handleSave = () => {
+    const key = this.state.tabKey;
+    const val = this.props.form.getFieldsValue();
+    if (key === 'log') {
+
+    } else if (key === 'exchange') {
+
+    } else if (key === 'certs') {
+      if (val.certs && val.certsNum) {
+
+      }
+    } else if (key === 'inspect') {
+
+    }
+    this.props.form.resetFields();
+  }
   render() {
+    const { form: { getFieldDecorator } } = this.props;
     const menu = (
       <Menu>
         <Menu.Item key="all"><Checkbox >选择全部</Checkbox></Menu.Item>
@@ -41,57 +68,65 @@ export default class ActivityLoggerPane extends React.Component {
       <div className="activity-wrapper">
         <Card bodyStyle={{ padding: 0 }}>
           <div className="card-body-wrapper">
-            <Tabs defaultActiveKey="log">
+            <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
               <TabPane tab={<span><Icon type="message" />备注</span>} key="log">
-                <Form horizontal onSubmit={this.handleSubmit}>
+                <Form horizontal>
                   <FormItem>
-                    <Mention
+                    {getFieldDecorator('remarks',
+                    )(<Mention
                       style={{ width: '100%', height: 72 }}
                       suggestions={['afc163', 'benjycui', 'yiminghe', 'jljsj33', 'dqaria', 'RaoHai']}
                       placeholder="@提及他人"
                       multiLines
-                    />
+                    />)}
                   </FormItem>
                 </Form>
               </TabPane>
               <TabPane tab={<span><Icon type="retweet" />换单</span>} key="exchange">
-                <Form horizontal onSubmit={this.handleSubmit}>
+                <Form horizontal>
                   <FormItem>
-                    <Input placeholder="海运单号" />
+                    {getFieldDecorator('voyage_no',
+                    )(<Input placeholder="海运单号" />
+                    )}
                   </FormItem>
                   <FormItem>
-                    <Input placeholder="提单号" />
+                    {getFieldDecorator('bl_wb_no',
+                    )(<Input placeholder="提单号" />
+                    )}
                   </FormItem>
                 </Form>
               </TabPane>
               <TabPane tab={<span><Icon type="addfile" />办证</span>} key="certs">
-                <Form horizontal onSubmit={this.handleSubmit}>
+                <Form horizontal>
                   <FormItem>
-                    <Select
+                    {getFieldDecorator('certs',
+                    )(<Select
                       showSearch
                       style={{ width: 200, marginRight: 8 }}
                       placeholder="选择鉴定办证类型"
                       optionFilterProp="children"
                     >
-                      <Option value="mech_elec_cert">机电证</Option>
+                      <Option value="jdz">机电证</Option>
                       <Option value="zgz">重工证</Option>
                       <Option value="xkz">许可证</Option>
-                      <Option value="3cjd">3C外目录鉴定</Option>
+                      <Option value="3cmlwjd">3C目录外鉴定</Option>
                       <Option value="m3csq">免3C申请</Option>
                       <Option value="nxjd">能效鉴定</Option>
                       <Option value="mnxsq">免能效申请</Option>
                       <Option value="xc">消磁</Option>
-                    </Select>
+                    </Select>)}
                   </FormItem>
                   <FormItem>
-                    <InputNumber min={1} max={99} placeholder="型号数量" />
+                    { getFieldDecorator('certsNum',
+                    )(<InputNumber min={1} max={99} placeholder="型号数量" />)}
                   </FormItem>
                 </Form>
               </TabPane>
               <TabPane tab={<span><Icon type="exception" />查验</span>} key="inspect">
-                <Form horizontal onSubmit={this.handleSubmit}>
+                <Form horizontal>
                   <FormItem>
-                    <Select
+                    { getFieldDecorator('billNo',
+                    )(<Select
                       showSearch
                       style={{ width: 200, marginRight: 8 }}
                       placeholder="选择报关单"
@@ -100,15 +135,15 @@ export default class ActivityLoggerPane extends React.Component {
                       <Option value="200030001234567890">200030001234567890</Option>
                       <Option value="200030001234567891">200030001234567891</Option>
                       <Option value="200030001234567892">200030001234567892</Option>
-                    </Select>
-
+                    </Select>)}
                   </FormItem>
                   <FormItem>
-                    <Radio.Group>
+                    { getFieldDecorator('inspect',
+                    )(<Radio.Group>
                       <Radio.Button value="large">海关查验</Radio.Button>
                       <Radio.Button value="default">品质查验</Radio.Button>
                       <Radio.Button value="small">动植检查验</Radio.Button>
-                    </Radio.Group>
+                    </Radio.Group>)}
                   </FormItem>
                 </Form>
               </TabPane>
@@ -116,8 +151,8 @@ export default class ActivityLoggerPane extends React.Component {
           </div>
           <div className="card-footer">
             <div className="toolbar-left">
-              <Button type="primary" disabled>确定</Button>
-              <Button type="ghost">取消</Button>
+              <Button type="primary" onClick={this.handleSave}>确定</Button>
+              <Button type="ghost" onClick={this.handleCancel}>取消</Button>
             </div>
             <div className="toolbar-right">
               <DatePicker

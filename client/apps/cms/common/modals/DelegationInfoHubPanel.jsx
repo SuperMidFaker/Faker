@@ -75,8 +75,10 @@ export default class DelegationInfoHubPanel extends React.Component {
     this.props.hidePreviewer();
   }
   translateStatus(delegation, delgDispatch) {
-    const { tenantId } = this.props;
-    const status = delgDispatch.status;
+    let status = delgDispatch.status;
+    if (delgDispatch.status === 1 && delgDispatch.sub_status === 0) {
+      status = 0;
+    }
     let ciqTag = '';
     if (delegation.ciq_inspect === 'NL') {
       ciqTag = <Tag color="#ccc">一般报检</Tag>;
@@ -86,7 +88,7 @@ export default class DelegationInfoHubPanel extends React.Component {
     switch (status) {
       case CMS_DELEGATION_STATUS.unaccepted:
         {
-          if (delgDispatch.recv_tenant_id === tenantId) {
+          if (delgDispatch.recv_tenant_id === delgDispatch.customs_tenant_id) {
             return <span><Badge status="default" text="待接单" /> {ciqTag}</span>;
           } else {
             return <span><Badge status="default" text="待供应商接单" /> {ciqTag}</span>;
@@ -94,7 +96,7 @@ export default class DelegationInfoHubPanel extends React.Component {
         }
       case CMS_DELEGATION_STATUS.accepted:
         {
-          if (delgDispatch.recv_tenant_id === tenantId) {
+          if (delgDispatch.recv_tenant_id === delgDispatch.customs_tenant_id) {
             return <span><Badge status="default" text="已接单" /> {ciqTag}</span>;
           } else {
             return <span><Badge status="default" text="供应商已接单" /> {ciqTag}</span>;
@@ -102,7 +104,7 @@ export default class DelegationInfoHubPanel extends React.Component {
         }
       case CMS_DELEGATION_STATUS.processing:
         {
-          if (delgDispatch.recv_tenant_id === tenantId) {
+          if (delgDispatch.recv_tenant_id === delgDispatch.customs_tenant_id) {
             return <span><Badge status="warning" text="制单中" /> {ciqTag}</span>;
           } else {
             return <span><Badge status="warning" text="供应商制单中" /> {ciqTag}</span>;
