@@ -31,6 +31,7 @@ const initialState = {
   expenses: {
     revenue: [],
     allcost: [],
+    parameters: [],
   },
   expslist: {
     totalCount: 0,

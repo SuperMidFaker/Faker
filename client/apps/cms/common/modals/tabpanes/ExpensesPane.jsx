@@ -38,6 +38,10 @@ export default class ExpensePane extends React.Component {
         vendor: PropTypes.string.isRequired,
         fees: PropTypes.arrayOf(PropTypes.shape({ fee_name: PropTypes.string.isRequired })),
       })),
+      parameters: PropTypes.arrayOf(PropTypes.shape({
+        key: PropTypes.string.isRequired,
+        value: PropTypes.string.isRequired,
+      })),
     }).isRequired,
     delgNo: PropTypes.string.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -105,7 +109,7 @@ export default class ExpensePane extends React.Component {
       });
     }
   }
-  renderFeeName = (text, row) => {
+  renderCostFeeName = (text, row) => {
     if (row.key === 'vendor') {
       return {
         children: text,
@@ -117,27 +121,36 @@ export default class ExpensePane extends React.Component {
       return text;
     }
   }
+  renderCostFeeColumn = (text, row) => {
+    const col = { children: text, props: { } };
+    if (row.key === 'vendor') {
+      col.props.colSpan = 0;
+    }
+    return col;
+  }
   render() {
-    const { expenses: { revenue, allcost } } = this.props;
+    const { expenses: { revenue, allcost, parameters } } = this.props;
     const { checkedExpCates, checkedExpTypes } = this.state;
     const revenueFees = revenue.filter(rev =>
         checkedExpCates.indexOf(rev.fee_style) !== -1
       && checkedExpTypes.indexOf(SERVER_CATEGORY_MAP[rev.category]) !== -1);
-    const totalFee = revenueFees.reduce((res, bsf) => ({
-      fee_name: '合计',
-      cal_fee: res.cal_fee + parseFloat(bsf.cal_fee),
-      tax_fee: res.tax_fee + parseFloat(bsf.tax_fee),
-      total_fee: res.total_fee + parseFloat(bsf.total_fee),
-    }), {
-      fee_name: '合计',
-      cal_fee: 0,
-      tax_fee: 0,
-      total_fee: 0,
-    });
-    totalFee.cal_fee = totalFee.cal_fee.toFixed(2);
-    totalFee.tax_fee = totalFee.tax_fee.toFixed(2);
-    totalFee.total_fee = totalFee.total_fee.toFixed(2);
-    revenueFees.push(totalFee);
+    if (revenueFees.length > 0) {
+      const totalFee = revenueFees.reduce((res, bsf) => ({
+        cal_fee: res.cal_fee + parseFloat(bsf.cal_fee),
+        tax_fee: res.tax_fee + parseFloat(bsf.tax_fee),
+        total_fee: res.total_fee + parseFloat(bsf.total_fee),
+      }), {
+        cal_fee: 0,
+        tax_fee: 0,
+        total_fee: 0,
+      });
+      revenueFees.push({
+        fee_name: '合计',
+        cal_fee: totalFee.cal_fee.toFixed(2),
+        tax_fee: totalFee.tax_fee.toFixed(2),
+        total_fee: totalFee.total_fee.toFixed(2),
+      });
+    }
     const costFees = allcost.reduce((res, cost) =>
         res.concat({ key: 'vendor', fee_name: cost.vendor }).concat(cost.fees.filter(ct =>
             checkedExpCates.indexOf(ct.fee_style) !== -1
@@ -146,21 +159,23 @@ export default class ExpensePane extends React.Component {
       if (allcost.length === 1) {
         costFees = costFees.filter(cd => cd.key !== 'vendor');
       } */
-    const totalCost = costFees.filter(cf => cf.key !== 'vendor').reduce((res, cfe) => ({
-      cal_fee: res.cal_fee + parseFloat(cfe.cal_fee),
-      tax_fee: res.tax_fee + parseFloat(cfe.tax_fee),
-      total_fee: res.total_fee + parseFloat(cfe.total_fee),
-    }), {
-      cal_fee: 0,
-      tax_fee: 0,
-      total_fee: 0,
-    });
-    costFees.push({
-      fee_name: '合计',
-      cal_fee: totalCost.cal_fee.toFixed(2),
-      tax_fee: totalCost.tax_fee.toFixed(2),
-      total_fee: totalCost.total_fee.toFixed(2),
-    });
+    if (costFees.filter(cf => cf.key !== 'vendor').length > 0) {
+      const totalCost = costFees.filter(cf => cf.key !== 'vendor').reduce((res, cfe) => ({
+        cal_fee: res.cal_fee + parseFloat(cfe.cal_fee),
+        tax_fee: res.tax_fee + parseFloat(cfe.tax_fee),
+        total_fee: res.total_fee + parseFloat(cfe.total_fee),
+      }), {
+        cal_fee: 0,
+        tax_fee: 0,
+        total_fee: 0,
+      });
+      costFees.push({
+        fee_name: '合计',
+        cal_fee: totalCost.cal_fee.toFixed(2),
+        tax_fee: totalCost.tax_fee.toFixed(2),
+        total_fee: totalCost.total_fee.toFixed(2),
+      });
+    }
     const checkedTags = EXPENSE_CATEGORIES.map((ec) => {
       let checked = false;
       if (ec.key === 'all') {
@@ -195,53 +210,23 @@ export default class ExpensePane extends React.Component {
               />
             </Panel>
             <Panel header={this.msg('costDetail')} key="cost" className="table-panel">
-              <Table size="small" dataSource={costFees}
-                rowKey="fee_name" pagination={false}
-              >
-                <Column title={this.msg('feeName')} dataIndex="fee_name" render={this.renderFeeName} />
-                <Column title={this.msg('feeRemark')} dataIndex="remark" />
-                <Column title={this.msg('feeVal')} dataIndex="cal_fee" />
-                <Column title={this.msg('taxFee')} dataIndex="tax_fee" />
-                <Column title={this.msg('totalFee')} dataIndex="total_fee" />
+              <Table size="small" dataSource={costFees} rowKey="fee_name" pagination={false}>
+                <Column title={this.msg('feeName')} dataIndex="fee_name" render={this.renderCostFeeName} />
+                <Column title={this.msg('feeRemark')} dataIndex="remark" render={this.renderCostFeeColumn} />
+                <Column title={this.msg('feeVal')} dataIndex="cal_fee" render={this.renderCostFeeColumn} />
+                <Column title={this.msg('taxFee')} dataIndex="tax_fee" render={this.renderCostFeeColumn} />
+                <Column title={this.msg('totalFee')} dataIndex="total_fee" render={this.renderCostFeeColumn} />
               </Table>
             </Panel>
             <Panel header="计费参数" key="params" className="table-panel">
-              <Table size="small" pagination={false}>
-                <Column
-                  title="运单数量"
-                  dataIndex="shipmtQty"
-                  key="shipmtQty"
-                />
-                <Column
-                  title="报关单数量"
-                  dataIndex="shipmtQty"
-                  key="shipmtQty"
-                />
-                <Column
-                  title="报关单联数"
-                  dataIndex="shipmtQty"
-                  key="shipmtQty"
-                />
-                <Column
-                  title="品名数量"
-                  dataIndex="shipmtQty"
-                  key="shipmtQty"
-                />
-                <Column
-                  title="料件数量"
-                  dataIndex="shipmtQty"
-                  key="shipmtQty"
-                />
-                <Column
-                  title="货值"
-                  dataIndex="shipmtQty"
-                  key="shipmtQty"
-                />
-                <Column
-                  title="办证数量"
-                  dataIndex="shipmtQty"
-                  key="shipmtQty"
-                />
+              <Table size="small" pagination={false} dataSource={parameters}>
+                <Column title="运单数量" dataIndex="shipmt_qty" />
+                <Column title="报关单数量" dataIndex="decl_qty" />
+                <Column title="报关单联数" dataIndex="decl_sheet_qty" />
+                <Column title="品名数量" dataIndex="decl_item_qty" />
+                <Column title="料件数量" dataIndex="trade_item_qty" />
+                <Column title="货值" dataIndex="trade_amt" />
+                <Column title="办证数量" dataIndex="cert_qty" />
               </Table>
             </Panel>
           </Collapse>
