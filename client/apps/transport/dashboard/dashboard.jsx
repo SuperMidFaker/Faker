@@ -82,7 +82,7 @@ export default class Dashboard extends React.Component {
       title: '操作',
       dataIndex: 'name',
       key: 'name',
-      width: '8%',
+      width: 100,
       render(text) {
         return text;
       },
@@ -90,7 +90,6 @@ export default class Dashboard extends React.Component {
       title: '详情',
       dataIndex: 'operation',
       key: 'operation',
-      width: '92%',
       render: value => value,
     }];
     const data = [{
@@ -176,16 +175,9 @@ export default class Dashboard extends React.Component {
                 </ul>
               </Card>
             </Col>
-            <Col sm={24} lg={12}>
-              <Card>
-                <Card title="待处理" bodyStyle={{ padding: 0 }}>
-                  <Table size="small" columns={columns} dataSource={data} pagination={false} />
-                </Card>
-              </Card>
-            </Col>
-            <Col sm={24} lg={12}>
-              <Card>
-                hello
+            <Col sm={24} lg={24}>
+              <Card title="待处理" bodyStyle={{ padding: 0 }}>
+                <Table size="small" columns={columns} dataSource={data} pagination={false} />
               </Card>
             </Col>
           </Row>
