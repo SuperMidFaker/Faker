@@ -4,7 +4,6 @@ import { intlShape, injectIntl } from 'react-intl';
 import {
   loadPartners, setFormData,
 } from 'common/reducers/tenants';
-import { Button } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import connectFetch from 'client/common/decorators/connect-fetch';
 
@@ -122,11 +121,6 @@ export default class TenantApplicationList extends React.Component {
         <div className="page-body">
           <div className="panel-body table-panel">
             <Table rowSelection={rowSelection} columns={columns} loading={loading} dataSource={dataSource} />
-          </div>
-          <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-            <Button size="large" onClick={this.handleSelectionClear} className="pull-right">
-            清除所选
-            </Button>
           </div>
         </div>
       </div>);

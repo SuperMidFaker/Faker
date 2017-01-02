@@ -1,15 +1,14 @@
 import React from 'react';
-import { Route, IndexRoute } from 'react-router';
+import { Route, IndexRoute, IndexRedirect } from 'react-router';
 import Root from './root';
-import Home from 'client/admin/home';
-import SSO from 'client/apps/sso/pack-sso';
-import Login from 'client/apps/sso/login';
+import SSO from 'client/admin/sso/pack-sso';
+import Login from 'client/admin/sso/login';
 import PackAccount from 'client/apps/account/pack-account';
 import MyProfile from 'client/apps/account/profile';
 import Password from 'client/apps/account/password';
-import PackTenantMgr from './tenantManager/pack';
-import TenantMgrDashboard from './tenantManager/dashboard';
-import * as Tenants from './tenantManager/tenants';
+import ManagerPack from './packManager';
+import Dashboard from './dashboard';
+import * as Tenants from './tenants';
 import { loadAccount } from 'common/reducers/account';
 import { isLoaded } from 'client/common/redux-actions';
 import { TENANT_LEVEL } from 'common/constants';
@@ -43,13 +42,13 @@ export default(store, cookie) => {
         <Route path="login" component={Login} />
       </Route>
       <Route onEnter={requireAuth}>
-        <IndexRoute component={Home} />
+        <IndexRedirect to="/manager" />
         <Route path="account" component={PackAccount}>
           <Route path="profile" component={MyProfile} />
           <Route path="password" component={Password} />
         </Route>
-        <Route path="manager" component={PackTenantMgr}>
-          <IndexRoute component={TenantMgrDashboard} />
+        <Route path="manager" component={ManagerPack}>
+          <IndexRoute component={Dashboard} />
           <Route path="tenants">
             <IndexRoute component={Tenants.List} />
             <Route path="create" component={Tenants.Create} />

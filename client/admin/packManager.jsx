@@ -1,8 +1,7 @@
 import React, { PropTypes } from 'react';
-import AmLeftSidebar from 'client/components/am-ant-leftbar';
-import AmNavBar from '../components/am-navbar';
+import CollapseSideLayout from 'client/components/collapseSideLayout';
 
-function getLinksByAspect() {
+function getLinks() {
   return [{
     single: true,
     key: 'mng-0',
@@ -36,21 +35,15 @@ function getLinksByAspect() {
   }];
 }
 
-export default class PackTenantMgr extends React.Component {
+export default class PackManager extends React.Component {
   static propTypes = {
     location: PropTypes.object.isRequired,
     children: PropTypes.object.isRequired,
   };
   render() {
-    const linkMenus = getLinksByAspect();
+    const linkMenus = getLinks();
     return (
-      <div className="am-wrapper am-fixed-sidebar">
-        <AmNavBar />
-        <div className="am-content">
-          <AmLeftSidebar links={linkMenus} location={this.props.location} />
-          {this.props.children}
-        </div>
-      </div>
+      <CollapseSideLayout links={linkMenus} childContent={this.props.children} location={this.props.location} showLogo />
     );
   }
 }

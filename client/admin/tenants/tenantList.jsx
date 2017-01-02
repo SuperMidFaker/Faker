@@ -6,7 +6,7 @@ import {
 } from 'common/reducers/tenants';
 import { Button, message, Popconfirm } from 'antd';
 import Table from 'client/components/remoteAntTable';
-import NavLink from '../../../components/nav-link';
+import NavLink from '../../components/nav-link';
 import { resolveCurrentPageNumber } from 'client/util/react-ant';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { ACCOUNT_STATUS }
@@ -208,11 +208,6 @@ export default class TenantList extends React.Component {
           </div>
           <div className="panel-body table-panel">
             <Table rowSelection={rowSelection} columns={columns} loading={loading} dataSource={dataSource} />
-          </div>
-          <div className={`bottom-fixed-row ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-            <Button size="large" onClick={this.handleSelectionClear} className="pull-right">
-            清除所选
-            </Button>
           </div>
         </div>
       </div>);

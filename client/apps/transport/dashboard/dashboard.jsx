@@ -7,7 +7,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import { format } from 'client/common/i18n/helpers';
-import { Card, DatePicker, Table } from 'antd';
+import { Card, Col, DatePicker, Row, Table } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import NavLink from 'client/components/nav-link';
 import { loadShipmentStatistics, loadShipmtDetail, loadFormRequire } from 'common/reducers/shipment';
@@ -129,55 +129,66 @@ export default class Dashboard extends React.Component {
           <span>{this.msg('transportDashboard')}</span>
         </header>
         <div className="main-content" key="main">
-          <div className="page-body card-wrapper" delay={500}>
-            <Card title="活动简报" extra={datePicker}>
-              <ul className="statistics-columns">
-                <li className="col-4">
-                  <i className="zmdi zmdi-file-plus" style={{ backgroundColor: 'rgba(250, 196, 80, 1)' }} />
-                  <div className="statistics-cell">
-                    <h6>{this.msg('accepted')}</h6>
-                    <p className="data-num">{count[0]}</p>
-                    <NavLink to={this.logsLocation('accepted')}>查看</NavLink>
-                  </div>
-                </li>
-                <li className="col-4">
-                  <i className="zmdi zmdi-assignment" style={{ backgroundColor: 'rgba(1, 179, 202, 1)' }} />
-                  <div className="statistics-cell">
-                    <h6>{this.msg('sent')}</h6>
-                    <p className="data-num">{count[1]}</p>
-                    <NavLink to={this.logsLocation('sent')}>查看</NavLink>
-                  </div>
-                </li>
-                <li className="col-4">
-                  <i className="zmdi zmdi-truck" style={{ backgroundColor: 'rgba(0, 151, 218, 1)' }} />
-                  <div className="statistics-cell">
-                    <h6>{this.msg('pickedup')}</h6>
-                    <p className="data-num">{count[2]}</p>
-                    <NavLink to={this.logsLocation('pickedup')}>查看</NavLink>
-                  </div>
-                </li>
-                <li className="col-4">
-                  <i className="zmdi zmdi-flag" style={{ backgroundColor: 'rgba(88, 45, 170, 1)' }} />
-                  <div className="statistics-cell">
-                    <h6>{this.msg('delivered')}</h6>
-                    <p className="data-num">{count[3]}</p>
-                    <NavLink to={this.logsLocation('delivered')}>查看</NavLink>
-                  </div>
-                </li>
-                <li className="col-4">
-                  <i className="zmdi zmdi-assignment-check" style={{ backgroundColor: 'rgba(95, 188, 41, 1)' }} />
-                  <div className="statistics-cell">
-                    <h6>{this.msg('completed')}</h6>
-                    <p className="data-num">{count[4]}</p>
-                    <NavLink to={this.logsLocation('completed')}>查看</NavLink>
-                  </div>
-                </li>
-              </ul>
-            </Card>
-            <Card title="待处理" bodyStyle={{ padding: 0 }}>
-              <Table size="small" columns={columns} dataSource={data} pagination={false} />
-            </Card>
-          </div>
+          <Row gutter={16}>
+            <Col sm={24} lg={24}>
+              <Card title="活动简报" extra={datePicker}>
+                <ul className="statistics-columns">
+                  <li className="col-4">
+                    <i className="zmdi zmdi-file-plus" style={{ backgroundColor: 'rgba(250, 196, 80, 1)' }} />
+                    <div className="statistics-cell">
+                      <h6>{this.msg('accepted')}</h6>
+                      <p className="data-num">{count[0]}</p>
+                      <NavLink to={this.logsLocation('accepted')}>查看</NavLink>
+                    </div>
+                  </li>
+                  <li className="col-4">
+                    <i className="zmdi zmdi-assignment" style={{ backgroundColor: 'rgba(1, 179, 202, 1)' }} />
+                    <div className="statistics-cell">
+                      <h6>{this.msg('sent')}</h6>
+                      <p className="data-num">{count[1]}</p>
+                      <NavLink to={this.logsLocation('sent')}>查看</NavLink>
+                    </div>
+                  </li>
+                  <li className="col-4">
+                    <i className="zmdi zmdi-truck" style={{ backgroundColor: 'rgba(0, 151, 218, 1)' }} />
+                    <div className="statistics-cell">
+                      <h6>{this.msg('pickedup')}</h6>
+                      <p className="data-num">{count[2]}</p>
+                      <NavLink to={this.logsLocation('pickedup')}>查看</NavLink>
+                    </div>
+                  </li>
+                  <li className="col-4">
+                    <i className="zmdi zmdi-flag" style={{ backgroundColor: 'rgba(88, 45, 170, 1)' }} />
+                    <div className="statistics-cell">
+                      <h6>{this.msg('delivered')}</h6>
+                      <p className="data-num">{count[3]}</p>
+                      <NavLink to={this.logsLocation('delivered')}>查看</NavLink>
+                    </div>
+                  </li>
+                  <li className="col-4">
+                    <i className="zmdi zmdi-assignment-check" style={{ backgroundColor: 'rgba(95, 188, 41, 1)' }} />
+                    <div className="statistics-cell">
+                      <h6>{this.msg('completed')}</h6>
+                      <p className="data-num">{count[4]}</p>
+                      <NavLink to={this.logsLocation('completed')}>查看</NavLink>
+                    </div>
+                  </li>
+                </ul>
+              </Card>
+            </Col>
+            <Col sm={24} lg={12}>
+              <Card>
+                <Card title="待处理" bodyStyle={{ padding: 0 }}>
+                  <Table size="small" columns={columns} dataSource={data} pagination={false} />
+                </Card>
+              </Card>
+            </Col>
+            <Col sm={24} lg={12}>
+              <Card>
+                hello
+              </Card>
+            </Col>
+          </Row>
         </div>
         <PreviewPanel stage="dashboard" />
       </QueueAnim>

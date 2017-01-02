@@ -37,6 +37,7 @@ export default class CollapseSideLayout extends React.Component {
         group: PropTypes.string,
       })),
     })).isRequired,
+    showLogo: PropTypes.bool,
   }
   state = {
     selectedKeys: [],
@@ -93,9 +94,11 @@ export default class CollapseSideLayout extends React.Component {
     const collapse = this.state.collapse;
     const links = this.props.links.filter(l => !l.invisible);
     const childContent = this.props.childContent;
+    const showLogo = this.props.showLogo;
     return (
       <div className={`${collapse ? 'ant-layout-aside ant-layout-aside-collapse' : 'ant-layout-aside'}`}>
         <aside className="ant-layout-sider">
+          {showLogo ? <div className="layout-logo" /> : ''}
           <Menu mode="vertical" theme="dark" onSelect={this.handleMenuSelect} selectedKeys={this.state.selectedKeys}
             onClick={this.handleClick}
           >
