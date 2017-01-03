@@ -39,8 +39,7 @@ export default class ExpensePane extends React.Component {
         fees: PropTypes.arrayOf(PropTypes.shape({ fee_name: PropTypes.string.isRequired })),
       })),
       parameters: PropTypes.arrayOf(PropTypes.shape({
-        key: PropTypes.string.isRequired,
-        value: PropTypes.string.isRequired,
+        name: PropTypes.string.isRequired,
       })),
     }).isRequired,
     delgNo: PropTypes.string.isRequired,
@@ -63,6 +62,10 @@ export default class ExpensePane extends React.Component {
     title: this.msg('feeName'),
     dataIndex: 'fee_name',
     key: 'fee_name',
+    render: (text, row) => {
+      const categ = EXPENSE_CATEGORIES.filter(ec => ec.key === row.fee_style)[0];
+      return <span>{text}{categ && <i className="zmdi zmdi-circle" style={{ color: categ.color }} />}</span>;
+    },
   }, {
     title: this.msg('feeRemark'),
     dataIndex: 'remark',
@@ -118,7 +121,8 @@ export default class ExpensePane extends React.Component {
         },
       };
     } else {
-      return text;
+      const categ = EXPENSE_CATEGORIES.filter(ec => ec.key === row.fee_style)[0];
+      return <span>{text}{categ && <i className="zmdi zmdi-circle" style={{ color: categ.color }} />}</span>;
     }
   }
   renderCostFeeColumn = (text, row) => {
@@ -151,7 +155,7 @@ export default class ExpensePane extends React.Component {
         total_fee: totalFee.total_fee.toFixed(2),
       });
     }
-    const costFees = allcost.reduce((res, cost) =>
+    let costFees = allcost.reduce((res, cost) =>
         res.concat({ key: 'vendor', fee_name: cost.vendor }).concat(cost.fees.filter(ct =>
             checkedExpCates.indexOf(ct.fee_style) !== -1
           && checkedExpTypes.indexOf(SERVER_CATEGORY_MAP[ct.category]) !== -1)), []);
@@ -175,6 +179,8 @@ export default class ExpensePane extends React.Component {
         tax_fee: totalCost.tax_fee.toFixed(2),
         total_fee: totalCost.total_fee.toFixed(2),
       });
+    } else {
+      costFees = [];
     }
     const checkedTags = EXPENSE_CATEGORIES.map((ec) => {
       let checked = false;

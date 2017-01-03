@@ -118,9 +118,11 @@ export default class SheetBodyPanel extends React.Component {
     };
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.data !== this.props.data && !nextProps.readonly) {
+    if (nextProps.data !== this.props.data) {
       const bodies = [...nextProps.data];
-      bodies.push({ id: '__ops' });
+      if (!nextProps.readonly) {
+        bodies.push({ id: '__ops' });
+      }
       this.setState({
         bodies,
         pagination: { ...this.state.pagination, total: bodies.length },
