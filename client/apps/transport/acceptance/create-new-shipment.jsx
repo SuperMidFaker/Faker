@@ -70,6 +70,9 @@ export default class ShipmentCreate extends React.Component {
     router: PropTypes.object.isRequired,
   }
   msg = (key, values) => formatMsg(this.props.intl, key, values)
+  handleCancelBtnClick = () => {
+    this.context.router.goBack();
+  }
   handleSavePending = (ev) => {
     ev.preventDefault();
     this.props.form.validateFields((errors) => {
@@ -173,6 +176,9 @@ export default class ShipmentCreate extends React.Component {
           <span>{this.msg('shipmtCreate')}</span>
         </header>
         <div className="top-bar-tools">
+          <Button size="large" type="ghost" onClick={this.handleCancelBtnClick}>
+            {this.msg('cancel')}
+          </Button>
           <Button size="large" type="primary" loading={submitting} onClick={this.handleSavePending}>
             {formatGlobalMsg(intl, 'save')}
           </Button>

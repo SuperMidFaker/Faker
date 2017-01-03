@@ -14,6 +14,10 @@ const messages = defineMessages({
     id: 'cms.expense.all',
     defaultMessage: '全部',
   },
+  statusPending: {
+    id: 'cms.expense.status.pending',
+    defaultMessage: '待计费',
+  },
   statusEstimated: {
     id: 'cms.expense.status.estimated',
     defaultMessage: '已预估',
@@ -21,14 +25,6 @@ const messages = defineMessages({
   statusClosed: {
     id: 'cms.expense.status.closed',
     defaultMessage: '已结单',
-  },
-  statusBilled: {
-    id: 'cms.expense.status.billed',
-    defaultMessage: '已入账',
-  },
-  statusInvoiced: {
-    id: 'cms.expense.status.invoiced',
-    defaultMessage: '已开票',
   },
   incExp: {
     id: 'cms.expense.inc.expense',

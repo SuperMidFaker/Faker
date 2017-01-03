@@ -90,6 +90,7 @@ export default class AcceptanceCreate extends Component {
     this.handleSave({ accepted: false });
   }
   handleCancelBtnClick = () => {
+    this.context.router.goBack();
   }
   handleSaveAccept = () => {
     this.handleSave({ accepted: true });

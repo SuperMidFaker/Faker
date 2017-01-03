@@ -439,10 +439,9 @@ export default class ExpenseList extends Component {
           </Breadcrumb>
           <RadioGroup value={listFilter.status} onChange={this.handleRadioChange}>
             <RadioButton value="all">{this.msg('all')}</RadioButton>
+            <RadioButton value="pending">{this.msg('statusPending')}</RadioButton>
             <RadioButton value="estimated">{this.msg('statusEstimated')}</RadioButton>
             <RadioButton value="closed">{this.msg('statusClosed')}</RadioButton>
-            <RadioButton value="billed">{this.msg('statusBilled')}</RadioButton>
-            <RadioButton value="invoiced">{this.msg('statusInvoiced')}</RadioButton>
           </RadioGroup>
         </header>
         <div className="top-bar-tools">
