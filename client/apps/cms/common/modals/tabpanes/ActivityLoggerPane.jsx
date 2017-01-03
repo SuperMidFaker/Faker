@@ -1,7 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Card, Checkbox, Collapse, DatePicker, Dropdown, Form, Icon, Input, InputNumber, Mention, Menu, Radio, Select, Tabs, Timeline } from 'antd';
+import { Button, Card, Checkbox, Col, Collapse, DatePicker, Dropdown, Form, Icon, Input, InputNumber, Mention, Menu, Popover, Radio, Row, Select, Tabs, Timeline, Tooltip } from 'antd';
+import InfoItem from 'client/components/InfoItem';
 
 const Option = Select.Option;
 const FormItem = Form.Item;
@@ -169,34 +170,80 @@ export default class ActivityLoggerPane extends React.Component {
               <Timeline.Item dot={<Icon type="check-circle-o" />} color="green">放行 2015-09-01</Timeline.Item>
               <Timeline.Item dot={<Icon type="pay-circle-o" />}>缴税 2015-09-01</Timeline.Item>
               <Timeline.Item dot={<Icon type="message" />}>发送消息 2015-09-01</Timeline.Item>
-              <Timeline.Item dot={<Icon type="addfile" />}>办证 2015-09-01</Timeline.Item>
-              <Timeline.Item dot={<Icon type="exception" />} color="red">
-                <Card bodyStyle={{ padding: 16 }}>
-                  海关查验 2015-09-01
-                  <div className="toolbar-right">
-                    <Button type="primary" shape="circle" size="small" icon="check" />
+              <Timeline.Item dot={<Icon type="addfile" />}>
+                <Card title={<span>办证 <small className="timestamp">2015-09-01</small></span>} extra={
+                  <Popover
+                    content={<div><a onClick={this.hide}>修改</a><span className="ant-divider" /><a className="mdc-text-red" onClick={this.hide}>删除</a></div>}
+                    trigger="click"
+                  >
                     <Button type="ghost" shape="circle" size="small" icon="ellipsis" />
-                  </div>
+                  </Popover>} bodyStyle={{ padding: 8 }}
+                >
+                  <Row>
+                    <Col span={12}>
+                      <InfoItem label="办证类别" field="机电证" />
+                    </Col>
+                    <Col span={12}>
+                      <InfoItem label="型号数量" field="5" />
+                    </Col>
+                  </Row>
+                </Card>
+              </Timeline.Item>
+              <Timeline.Item dot={<Icon type="exception" />} color="red">
+                <Card title={<span>海关查验 <small className="timestamp">2015-09-01</small></span>} extra={<span className="toolbar-right">
+                  <Tooltip title="标记查验通过" placement="left">
+                    <Button type="primary" shape="circle" size="small" icon="check" />
+                  </Tooltip>
+                  <Popover
+                    content={<div><a className="mdc-text-red" onClick={this.hide}>删除</a></div>}
+                    trigger="click"
+                  >
+                    <Button type="ghost" shape="circle" size="small" icon="ellipsis" />
+                  </Popover></span>} bodyStyle={{ padding: 8 }}
+                >
+                  <Row>
+                    <Col span={12}>
+                      <InfoItem label="查验状态" field="查验中" />
+                    </Col>
+                  </Row>
                 </Card>
               </Timeline.Item>
               <Timeline.Item dot={<Icon type="calculator" />}>录入代垫费用 2015-09-01</Timeline.Item>
               <Timeline.Item dot={<Icon type="play-circle-o" />}>海关申报 2015-09-01</Timeline.Item>
               <Timeline.Item dot={<Icon type="exception" />} color="red">
-                <Card bodyStyle={{ padding: 16 }}>
-                  品质查验 2015-09-01
-                  <div className="toolbar-right">
-                    <Button size="small" shape="circle" icon="check" disabled />
+                <Card title={<span>品质查验 <small className="timestamp">2015-09-01</small></span>} extra={<span className="toolbar-right">
+                  <Popover
+                    content={<div><a className="mdc-text-red" onClick={this.hide}>删除</a></div>}
+                    trigger="click"
+                  >
                     <Button type="ghost" shape="circle" size="small" icon="ellipsis" />
-                  </div>
+                  </Popover></span>} bodyStyle={{ padding: 8 }}
+                >
+                  <Row>
+                    <Col span={12}>
+                      <InfoItem label="查验状态" field="已通过" />
+                    </Col>
+                  </Row>
                 </Card>
               </Timeline.Item>
               <Timeline.Item dot={<Icon type="copy" />}>制单 2015-09-01</Timeline.Item>
               <Timeline.Item dot={<Icon type="retweet" />}>
-                <Card bodyStyle={{ padding: 16 }}>
-                  换单 2015-09-01
-                  <div className="toolbar-right">
+                <Card title={<span>换单 <small className="timestamp">2015-09-01</small></span>} extra={
+                  <Popover
+                    content={<div><a onClick={this.hide}>修改</a><span className="ant-divider" /><a className="mdc-text-red" onClick={this.hide}>删除</a></div>}
+                    trigger="click"
+                  >
                     <Button type="ghost" shape="circle" size="small" icon="ellipsis" />
-                  </div>
+                  </Popover>} bodyStyle={{ padding: 8 }}
+                >
+                  <Row>
+                    <Col span={12}>
+                      <InfoItem label="海运单号" field="1243645592455" />
+                    </Col>
+                    <Col span={12}>
+                      <InfoItem label="提单号" field="YMLUN244556334*09" />
+                    </Col>
+                  </Row>
                 </Card>
               </Timeline.Item>
               <Timeline.Item dot={<Icon type="solution" />}>接单 2015-09-01</Timeline.Item>

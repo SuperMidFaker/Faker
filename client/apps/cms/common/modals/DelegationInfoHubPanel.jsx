@@ -268,7 +268,7 @@ export default class DelegationInfoHubPanel extends React.Component {
     const menu = (
       <Menu>
         <Menu.Item key="lock"><Icon type="lock" /> 锁定</Menu.Item>
-        <Menu.Item key="delete"><Icon type="delete" /> 删除(不可恢复)</Menu.Item>
+        <Menu.Item key="delete" className="mdc-text-red"><Icon type="delete" /> 删除(不可恢复)</Menu.Item>
       </Menu>
     );
     const closer = (
