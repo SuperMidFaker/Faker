@@ -1,13 +1,17 @@
 import React, { PropTypes } from 'react';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import withPrivilege from 'client/common/decorators/withPrivilege';
-import { loadBills, loadEntries } from 'common/reducers/cmsDeclare';
+import { loadBills, loadEntries, loadCmsParams } from 'common/reducers/cmsDeclare';
 import ManifestEditor from '../../common/manifest/ManifestEditor';
 
-function fetchData({ dispatch, params }) {
+function fetchData({ dispatch, params, state }) {
   const promises = [];
   promises.push(dispatch(loadBills(params.billno)));
   promises.push(dispatch(loadEntries(params.billno)));
+  promises.push(dispatch(loadCmsParams({
+    ieType: 'import',
+    tenantId: state.account.tenantId,
+  })));
   return Promise.all(promises);
 }
 
