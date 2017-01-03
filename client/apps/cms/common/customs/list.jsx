@@ -195,8 +195,15 @@ export default class DelgDeclList extends Component {
     }
     return newFilters;
   }
+  handleRadioChange = (ev) => {
+    if (ev.target.value === this.props.listFilter.status) {
+      return;
+    }
+    const filter = { ...this.props.listFilter, status: ev.target.value };
+    this.handleTableLoad(1, filter);
+  }
   render() {
-    const { delgdeclList } = this.props;
+    const { delgdeclList, listFilter } = this.props;
     this.dataSource.remotes = delgdeclList;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -215,11 +222,10 @@ export default class DelgDeclList extends Component {
               {this.msg('customsDeclaration')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <RadioGroup onChange={this.handleRadioChange}>
+          <RadioGroup value={listFilter.status} onChange={this.handleRadioChange}>
             <RadioButton value="all">{this.msg('all')}</RadioButton>
             <RadioButton value="declared">{this.msg('filterDeclared')}</RadioButton>
             <RadioButton value="inspected">{this.msg('filterInspected')}</RadioButton>
-            <RadioButton value="taxed">{this.msg('filterTaxed')}</RadioButton>
             <RadioButton value="released">{this.msg('filterReleased')}</RadioButton>
           </RadioGroup>
         </header>
