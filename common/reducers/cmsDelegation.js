@@ -43,6 +43,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'SHOW_DISPMODAL', 'SHOW_DISPMODAL_SUCCEED', 'SHOW_DISPMODAL_FAILED',
   'SET_OPERATOR', 'SET_OPERATOR_SUCCEED', 'SET_OPERATOR_FAIL',
   'CIQ_DISP_SAVE', 'CIQ_DISP_SAVE_SUCCEED', 'CIQ_DISP_SAVE_FAIL',
+  'UPDATE_BLNO', 'UPDATE_BLNO_SUCCEED', 'UPDATE_BLNO_FAIL',
 ]);
 
 const initialState = {
@@ -116,7 +117,7 @@ const initialState = {
   },
   previewer: {
     visible: false,
-    tabKey: 'basic',
+    tabKey: 'customsDecl',
     delegation: {},
     files: [],
     delgDispatch: {},
@@ -270,13 +271,18 @@ export default function reducer(state = initialState, action) {
       } else {
         return { ...state, sendPanel: { ...initialState.sendPanel, visible: action.visible } };
       }
-    case actionTypes.SHOW_PREVIEWER_SUCCEED:
+    case actionTypes.SHOW_PREVIEWER_SUCCEED: {
+      let tabKey = 'customsDecl';
+      if (action.result.data.delgDispatch.status === 0) {
+        tabKey = 'basic';
+      }
       return { ...state, previewer: {
         ...state.previewer,
-        tabKey: action.payload.tabKey || 'basic',
+        tabKey: action.payload.tabKey || tabKey,
         visible: action.visible,
         delgNo: action.payload.delgNo,
         ...action.result.data }, preStatus: '' };
+    }
     case actionTypes.SHOW_DISPMODAL_SUCCEED:
       return { ...state, assign: {
         ...state.assign, delgDisp: action.result.data.delegation,
@@ -331,6 +337,21 @@ export default function reducer(state = initialState, action) {
     default:
       return state;
   }
+}
+
+export function updateBlNo(delgNo, blNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_BLNO,
+        actionTypes.UPDATE_BLNO_SUCCEED,
+        actionTypes.UPDATE_BLNO_FAIL,
+      ],
+      endpoint: 'v1/cms/delegation/update/blNo',
+      method: 'get',
+      params: { delgNo, blNo },
+    },
+  };
 }
 
 export function loadciqSups(tenantId, type, delgSup) {

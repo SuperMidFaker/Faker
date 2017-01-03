@@ -1,52 +1,79 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Card, Checkbox, Col, Collapse, DatePicker, Dropdown, Form, Icon, Input, InputNumber, Mention, Menu, Popover, Radio, Row, Select, Tabs, Timeline, Tooltip } from 'antd';
+import { Button, Card, Checkbox, Col, Row, Collapse, DatePicker, Dropdown, Form, Icon,
+  Input, InputNumber, Mention, Menu, Popover, Radio, Select, Tabs, Timeline, Tooltip, message } from 'antd';
 import InfoItem from 'client/components/InfoItem';
+import { updateBlNo, loadCustPanel } from 'common/reducers/cmsDelegation';
+import { loadDeclHead, setInspect } from 'common/reducers/cmsDeclare';
 
 const Option = Select.Option;
 const FormItem = Form.Item;
 const TabPane = Tabs.TabPane;
 const Panel = Collapse.Panel;
+const formItemLayout = {
+  labelCol: { span: 3 },
+  wrapperCol: { span: 21 },
+};
 
 @injectIntl
 @connect(
   state => ({
+    tenantId: state.account.tenantId,
     previewer: state.cmsDelegation.previewer,
-  })
+    declHeadsPane: state.cmsDeclare.declHeadsPane,
+  }), {
+    updateBlNo, loadDeclHead, setInspect, loadCustPanel,
+  }
 )
 @Form.create()
 export default class ActivityLoggerPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
+    tenantId: PropTypes.number.isRequired,
   }
   state = {
     tabKey: 'log',
   }
   handleTabChange = (tabKey) => {
+    const delgNo = this.props.previewer.delgNo;
     this.setState({ tabKey });
+    if (tabKey === 'inspect') {
+      this.props.loadDeclHead(delgNo);
+    }
   }
   handleCancel = () => {
     this.props.form.resetFields();
   }
   handleSave = () => {
+    const { previewer } = this.props;
     const key = this.state.tabKey;
     const val = this.props.form.getFieldsValue();
+    // console.log('val', val);
     if (key === 'log') {
 
     } else if (key === 'exchange') {
-
+      this.props.updateBlNo(previewer.delgNo, val.bl_wb_no);
     } else if (key === 'certs') {
-      if (val.certs && val.certsNum) {
+      if (val.certs) {
 
       }
     } else if (key === 'inspect') {
-
+      this.props.setInspect(val.billNo, val.inspect, 1).then((result) => {
+        if (result.error) {
+          message.error(result.error.message, 5);
+        } else if (this.props.previewer.tabKey === 'customsDecl') {
+          this.props.loadCustPanel({
+            delgNo: previewer.delgNo,
+            tenantId: this.props.tenantId,
+          });
+        }
+      });
     }
-    this.props.form.resetFields();
   }
   render() {
-    const { form: { getFieldDecorator } } = this.props;
+    const { form: { getFieldDecorator }, previewer, declHeadsPane } = this.props;
+    const { delegation, delgDispatch } = previewer;
     const menu = (
       <Menu>
         <Menu.Item key="all"><Checkbox >选择全部</Checkbox></Menu.Item>
@@ -83,20 +110,20 @@ export default class ActivityLoggerPane extends React.Component {
                   </FormItem>
                 </Form>
               </TabPane>
-              <TabPane tab={<span><Icon type="retweet" />换单</span>} key="exchange">
-                <Form horizontal>
-                  <FormItem>
-                    {getFieldDecorator('voyage_no',
-                    )(<Input placeholder="海运单号" />
-                    )}
-                  </FormItem>
-                  <FormItem>
-                    {getFieldDecorator('bl_wb_no',
+              {delegation.claim_do_awb === 1 &&
+                <TabPane tab={<span><Icon type="retweet" />换单</span>} key="exchange">
+                  <Form horizontal>
+                    <FormItem label="海运单号" {...formItemLayout}>
+                      <Input value={delegation.swb_no} readOnly />
+                    </FormItem>
+                    <FormItem label="提单号" {...formItemLayout}>
+                      {getFieldDecorator('bl_wb_no', { initialValue: delegation.bl_wb_no }
                     )(<Input placeholder="提单号" />
                     )}
-                  </FormItem>
-                </Form>
-              </TabPane>
+                    </FormItem>
+                  </Form>
+                </TabPane>
+              }
               <TabPane tab={<span><Icon type="addfile" />办证</span>} key="certs">
                 <Form horizontal>
                   <FormItem>
@@ -123,31 +150,35 @@ export default class ActivityLoggerPane extends React.Component {
                   </FormItem>
                 </Form>
               </TabPane>
-              <TabPane tab={<span><Icon type="exception" />查验</span>} key="inspect">
-                <Form horizontal>
-                  <FormItem>
-                    { getFieldDecorator('billNo',
-                    )(<Select
-                      showSearch
-                      style={{ width: 200, marginRight: 8 }}
-                      placeholder="选择报关单"
-                      optionFilterProp="children"
-                    >
-                      <Option value="200030001234567890">200030001234567890</Option>
-                      <Option value="200030001234567891">200030001234567891</Option>
-                      <Option value="200030001234567892">200030001234567892</Option>
-                    </Select>)}
-                  </FormItem>
-                  <FormItem>
-                    { getFieldDecorator('inspect',
-                    )(<Radio.Group>
-                      <Radio.Button value="large">海关查验</Radio.Button>
-                      <Radio.Button value="default">品质查验</Radio.Button>
-                      <Radio.Button value="small">动植检查验</Radio.Button>
-                    </Radio.Group>)}
-                  </FormItem>
-                </Form>
-              </TabPane>
+              { delgDispatch.status > 1 &&
+                <TabPane tab={<span><Icon type="exception" />查验</span>} key="inspect">
+                  <Form horizontal>
+                    <FormItem>
+                      { getFieldDecorator('billNo',
+                      )(<Select
+                        showSearch
+                        style={{ width: 200, marginRight: 8 }}
+                        placeholder="选择报关单"
+                        optionFilterProp="children"
+                      >
+                        {
+                          declHeadsPane.map(dh =>
+                            <Option value={dh.value}>{dh.text}</Option>
+                          )
+                        }
+                      </Select>)}
+                    </FormItem>
+                    <FormItem>
+                      { getFieldDecorator('inspect',
+                      )(<Radio.Group>
+                        <Radio.Button value="customs_inspect">海关查验</Radio.Button>
+                        <Radio.Button value="ciq_quality_inspect">品质查验</Radio.Button>
+                        <Radio.Button value="ciq_ap_inspect">动植检查验</Radio.Button>
+                      </Radio.Group>)}
+                    </FormItem>
+                  </Form>
+                </TabPane>
+              }
             </Tabs>
           </div>
           <div className="card-footer">
