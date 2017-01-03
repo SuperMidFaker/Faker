@@ -30,6 +30,8 @@ const actionTypes = createActionTypes('@@welogix/cms/declaration/', [
   'DECL_FINISH_SET', 'DECL_FINISH_SET_SUCCEED', 'DECL_FINISH_SET_FAIL',
   'SAVE_STATE_TOEXP', 'SAVE_STATE_TOEXP_SUCCEED', 'SAVE_STATE_TOEXP_FAIL',
   'LOAD_DECLCIQ_DELG', 'LOAD_DECLCIQ_DELG_SUCCEED', 'LOAD_DECLCIQ_DELG_FAIL',
+  'LOAD_DECLHEAD', 'LOAD_DECLHEAD_SUCCEED', 'LOAD_DECLHEAD_FAIL',
+  'SET_INSPECT', 'SET_INSPECT_SUCCEED', 'SET_INSPECT_FAIL',
 ]);
 
 const initialState = {
@@ -91,6 +93,7 @@ const initialState = {
   previewer: {
     ciqdecl: { ciqlist: [] },
   },
+  declHeadsPane: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -207,9 +210,41 @@ export default function reducer(state = initialState, action) {
       return { ...state, delgdeclList: { ...state.delgdeclList, loading: false } };
     case actionTypes.LOAD_DECLCIQ_DELG_SUCCEED:
       return { ...state, previewer: { ciqdecl: action.result.data } };
+    case actionTypes.LOAD_DECLHEAD_SUCCEED:
+      return { ...state, declHeadsPane: action.result.data };
     default:
       return state;
   }
+}
+
+export function setInspect(entrySeqNo, inspect, val) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SET_INSPECT,
+        actionTypes.SET_INSPECT_SUCCEED,
+        actionTypes.SET_INSPECT_FAIL,
+      ],
+      endpoint: 'v1/cms/declare/set/inspect',
+      method: 'get',
+      params: { entrySeqNo, inspect, val },
+    },
+  };
+}
+
+export function loadDeclHead(delgNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_DECLHEAD,
+        actionTypes.LOAD_DECLHEAD_SUCCEED,
+        actionTypes.LOAD_DECLHEAD_FAIL,
+      ],
+      endpoint: 'v1/cms/declare/get/declheads',
+      method: 'get',
+      params: { delgNo },
+    },
+  };
 }
 
 export function loadCiqDecls(params) {

@@ -1,10 +1,10 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Card, Col, Collapse, Icon, Row, Table, Tag, Tooltip } from 'antd';
+import { Button, Card, Col, Collapse, Icon, Row, Table, Tag, Tooltip, message } from 'antd';
 import moment from 'moment';
 import { DECL_I_TYPE, DECL_E_TYPE, CMS_DELEGATION_STATUS } from 'common/constants';
-import { loadSubdelgsTable, loadCustPanel, setPreviewStatus, hidePreviewer, openAcceptModal } from 'common/reducers/cmsDelegation';
+import { loadSubdelgsTable, loadCustPanel, setPreviewStatus, hidePreviewer, openAcceptModal, loadBillMakeModal } from 'common/reducers/cmsDelegation';
 import InfoItem from 'client/components/InfoItem';
 import SetOperatorModal from '../operatorModal';
 
@@ -18,7 +18,7 @@ const Panel = Collapse.Panel;
     delgPanel: state.cmsDelegation.delgPanel,
     tabKey: state.cmsDelegation.previewer.tabKey,
   }),
-  { loadSubdelgsTable, loadCustPanel, setPreviewStatus, hidePreviewer, openAcceptModal }
+  { loadSubdelgsTable, loadCustPanel, setPreviewStatus, hidePreviewer, openAcceptModal, loadBillMakeModal }
 )
 export default class CustomsDeclPane extends React.Component {
   static propTypes = {
@@ -35,18 +35,31 @@ export default class CustomsDeclPane extends React.Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.tabKey === 'customsDecl' &&
-      nextProps.tabKey !== this.props.tabKey) {
+      nextProps.tabKey !== this.props.tabKey ||
+      nextProps.delgNo !== this.props.delgNo) {
       nextProps.loadCustPanel({
         delgNo: nextProps.delgNo,
         tenantId: this.props.tenantId,
       });
     }
   }
-  handleMake = () => {
-    this.props.setPreviewStatus({ preStatus: 'make' });
-  }
   handleView = () => {
-    this.props.setPreviewStatus({ preStatus: 'view' });
+    this.props.loadBillMakeModal({
+      delg_no: this.props.delgNo,
+    }, 'view').then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 5);
+      }
+    });
+  }
+  handleMake = () => {
+    this.props.loadBillMakeModal({
+      delg_no: this.props.delgNo,
+    }, 'make').then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 5);
+      }
+    });
   }
   button() {
     const { delgPanel } = this.props;
@@ -58,14 +71,14 @@ export default class CustomsDeclPane extends React.Component {
         return (
           <div>
             <Button type="default" icon="edit" onClick={this.handleMake}>编辑清单</Button>
-            <Button icon="eye" onClick={this.handleView}>查看清单</Button>
+            <Button icon="eye" onClick={ev => this.handleView(ev)}>查看清单</Button>
           </div>
         );
       } else if (delgPanel.status > CMS_DELEGATION_STATUS.declaring) {
-        return <Button icon="eye" onClick={this.handleView}>查看清单</Button>;
+        return <Button icon="eye" onClick={ev => this.handleView(ev)}>查看清单</Button>;
       }
     } else if (delgPanel.status > CMS_DELEGATION_STATUS.accepted) {
-      return <Button icon="eye" onClick={this.handleView}>查看清单</Button>;
+      return <Button icon="eye" onClick={ev => this.handleView(ev)}>查看清单</Button>;
     }
   }
   handleOperatorAssign = () => {
@@ -100,6 +113,28 @@ export default class CustomsDeclPane extends React.Component {
           return <Tag>否</Tag>;
         }
       },
+    }, {
+      title: '品质查验',
+      dataIndex: 'ciq_quality_inspect',
+      width: 70,
+      render: (o) => {
+        if (o === 1) {
+          return <Tag color="red">是</Tag>;
+        } else {
+          return <Tag>否</Tag>;
+        }
+      },
+    }, {
+      title: '动检查验',
+      dataIndex: 'ciq_ap_inspect',
+      width: 70,
+      render: (o) => {
+        if (o === 1) {
+          return <Tag color="red">是</Tag>;
+        } else {
+          return <Tag>否</Tag>;
+        }
+      },
     }];
     return (
       <div className="pane-content tab-pane">
@@ -122,13 +157,13 @@ export default class CustomsDeclPane extends React.Component {
               />
             </Col>
           </Row>
-          <div className="card-footer">
+          {delgPanel.type === 1 && <div className="card-footer">
             <div className="toolbar-right">
               <Tooltip title="分配操作人员">
                 <Button type="ghost" shape="circle" onClick={this.handleOperatorAssign}><Icon type="user" /></Button>
               </Tooltip>
             </div>
-          </div>
+          </div>}
         </Card>
         { delgBills.length > 0 &&
           <Card bodyStyle={{ padding: 0 }}>
@@ -141,6 +176,9 @@ export default class CustomsDeclPane extends React.Component {
                     entry_id: decl.entry_id,
                     note: decl.note,
                     process_date: decl.process_date,
+                    customs_inspect: decl.customs_inspect,
+                    ciq_ap_inspect: decl.ciq_ap_inspect,
+                    ciq_quality_inspect: decl.ciq_quality_inspect,
                   }));
                   const declTypes = DECL_I_TYPE.concat(DECL_E_TYPE).filter(dt => dt.key === bill.decl_way_code);
                   const panelHeader = (

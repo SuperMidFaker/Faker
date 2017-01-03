@@ -243,7 +243,8 @@ export default class DelegationInfoHubPanel extends React.Component {
         );
       }
     } else if (delgDispatch.customs_tenant_id === -1) {
-      if (delgDispatch.sub_status === CMS_DELEGATION_STATUS.accepted) {
+      if (delgDispatch.sub_status === CMS_DELEGATION_STATUS.accepted &&
+        delgDispatch.status === CMS_DELEGATION_STATUS.accepted) {
         return (
           <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
             <Button type="ghost" onClick={this.handleDispCancel}>
@@ -252,7 +253,8 @@ export default class DelegationInfoHubPanel extends React.Component {
           </PrivilegeCover>
         );
       }
-    } else if (delgDispatch.sub_status === CMS_DELEGATION_STATUS.unaccepted) {
+    } else if (delgDispatch.sub_status === CMS_DELEGATION_STATUS.unaccepted &&
+        delgDispatch.status === CMS_DELEGATION_STATUS.accepted) {
       return (
         <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
           <Button type="ghost" onClick={this.handleDispCancel}>
