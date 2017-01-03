@@ -44,6 +44,7 @@ const initialState = {
     data: [],
   },
   listFilter: {
+    status: 'all',
     declareType: '',
     name: '',
     sortField: '',
@@ -205,7 +206,8 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_DELG_DECLS:
       return { ...state, delgdeclList: { ...state.delgdeclList, loading: true } };
     case actionTypes.LOAD_DELG_DECLS_SUCCEED:
-      return { ...state, delgdeclList: { ...state.delgdeclList, loading: false, ...action.result.data } };
+      return { ...state, delgdeclList: { ...state.delgdeclList, loading: false, ...action.result.data },
+        listFilter: JSON.parse(action.params.filter) };
     case actionTypes.LOAD_DELG_DECLS_FAIL:
       return { ...state, delgdeclList: { ...state.delgdeclList, loading: false } };
     case actionTypes.LOAD_DECLCIQ_DELG_SUCCEED:
