@@ -6,7 +6,8 @@
   "scripts": {
     "clean": "rm -rf public/dist",
     "debug": "node --debug .",
-    "lint": "eslint --fix --ext .js --ext .jsx client server common && git add",
+    "lint": "eslint --fix --ext .js --ext .jsx client server common",
+    "lint-staged": "lint-staged",
     "admin-hot": "webpack-dev-server --config webpack/adminDev.js",
     "admin-dev": "nodemon server/sboot.js -- --admin=true --port=3026",
     "hot": "webpack-dev-server --config webpack/dev.js",
@@ -23,6 +24,7 @@
     "deploy": "npm run clean && npm run build && npm run pm2",
     "test": "mocha --reporter spec --bail --check-leaks tests/*_test.js"
   },
+  "lint-staged": { "*.{js,jsx}": ["eslint --fix", "git add"] },
   "repository": {
     "type": "git",
     "url": "git@git.welogix.cn:saas/welogix-web.git"
@@ -38,9 +40,7 @@
   ],
   "author": "WeLogix InfoTech",
   "license": "MIT",
-  "pre-commit": [
-    "lint"
-  ],
+  "pre-commit": "lint-staged",
   "dependencies": {
     "@welogix/react-data-grid": "^1.0.51",
     "antd": "^2.5.3",
@@ -97,6 +97,7 @@
     "json-loader": "^0.5.4",
     "less": "^2.7.1",
     "less-loader": "^2.2.3",
+    "lint-staged": "^3.2.5",
     "mocha": "^3.2.0",
     "postcss-loader": "^1.2.0",
     "pre-commit": "^1.1.3",

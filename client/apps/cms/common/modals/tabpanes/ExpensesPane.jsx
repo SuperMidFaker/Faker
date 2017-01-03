@@ -65,7 +65,7 @@ export default class ExpensePane extends React.Component {
     render: (text, row) => {
       const categ = EXPENSE_CATEGORIES.filter(ec => ec.key === row.fee_style)[0];
       return <span>{text}{categ && <i className="zmdi zmdi-circle" style={{ color: categ.color }} />}</span>;
-    }
+    },
   }, {
     title: this.msg('feeRemark'),
     dataIndex: 'remark',
