@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Button, Spin } from 'antd';
+import { Alert, Card, Form, Icon, Input, Button, Checkbox, Spin } from 'antd';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { submit, setValue, systemLoading } from '../../../common/reducers/auth';
@@ -8,6 +8,7 @@ import { getFormatMsg } from 'client/util/react-ant';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 const formatMsg = format(messages);
+const FormItem = Form.Item;
 
 @injectIntl
 @connect(
@@ -58,58 +59,44 @@ export default class Login extends React.Component {
   render() {
     const { auth: { error, username, remember }, intl } = this.props;
     return (
-      <Spin spinning={this.props.loading}>
-        <div className="panel-body">
+      <Card bodyStyle={{ padding: 64 }}>
+        <Spin spinning={this.props.loading}>
+          <div style={{ textAlign: 'center', padding: 16 }}>
+            <div className="icon-logo" />
+          </div>
           {error ? <div>{
-          `C${error.code}:
-            ${getFormatMsg(error.message, (key, values) => formatMsg(intl, key, values))}`
-        }</div> : null}
-          <form onSubmit={::this.handleSubmit} className="form-horizontal">
-            <div className="login-form">
-              <div className="form-group">
-                <div className="input-group">
-                  <span className="input-group-addon">
-                    <i className="icon s7-user" />
-                  </span>
-                  <input type="text" placeholder={formatMsg(intl, 'userPlaceholder')}
-                    autoComplete="off" className="form-control" value={username}
-                    onChange={ev => this.handleTextChange(ev, 'username')}
-                  />
-                </div>
-              </div>
-              <div className="form-group">
-                <div className="input-group">
-                  <span className="input-group-addon">
-                    <i className="icon s7-lock" />
-                  </span>
-                  <input type="password" placeholder={formatMsg(intl, 'pwdPlaceholder')}
-                    className="form-control" onChange={ev => this.handleTextChange(ev, 'password')}
-                  />
-                </div>
-              </div>
-              <div className="form-group login-submit">
-                <Button type="primary" className="btn btn-block btn-lg" size="large" htmlType="submit">{formatMsg(intl, 'login')}</Button>
-              </div>
-              <div className="form-group footer row">
-                <div className="col-xs-6">
-                  <NavLink to="/forgot">
-                    {formatMsg(intl, 'forgotPwd')}?
-                  </NavLink>
-                </div>
-                <div className="col-xs-6 remember">
-                  <label htmlFor="remember">{formatMsg(intl, 'remembered')}</label>
-                  <div className="am-checkbox">
-                    <input type="checkbox" id="remember" checked={remember}
-                      onChange={ev => this.handleCheckboxChange(ev, 'remember')}
-                    />
-                    <label htmlFor="remember" />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </form>
-        </div>
-      </Spin>
+            <Alert type="warning" showIcon message={`C${error.code}:
+              ${getFormatMsg(error.message, (key, values) => formatMsg(intl, key, values))}`}
+            />}</div> : null}
+          <Form onSubmit={::this.handleSubmit} className="login-form">
+            <FormItem>
+              {(
+                <Input addonBefore={<Icon type="user" />} placeholder={formatMsg(intl, 'userPlaceholder')} value={username}
+                  onChange={ev => this.handleTextChange(ev, 'username')}
+                />
+              )}
+            </FormItem>
+            <FormItem>
+              {(
+                <Input addonBefore={<Icon type="lock" />} type="Password" placeholder={formatMsg(intl, 'pwdPlaceholder')}
+                  onChange={ev => this.handleTextChange(ev, 'password')}
+                />
+              )}
+            </FormItem>
+            <FormItem>
+              {(
+                <Checkbox checked={remember} onChange={ev => this.handleCheckboxChange(ev, 'remember')}>{formatMsg(intl, 'rememberMe')}</Checkbox>
+              )}
+              <NavLink className="pull-right" to="/forgot">
+                {formatMsg(intl, 'forgotPwd')}?
+              </NavLink>
+              <Button type="primary" htmlType="submit">
+                {formatMsg(intl, 'login')}
+              </Button>
+            </FormItem>
+          </Form>
+        </Spin >
+      </Card>
     );
   }
 }

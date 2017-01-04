@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Breadcrumb, Button, DatePicker, Icon, Radio, Select, Tooltip, message } from 'antd';
+import { Badge, Breadcrumb, Button, DatePicker, Icon, Radio, Select, Tooltip, message } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -10,7 +10,6 @@ import withPrivilege from 'client/common/decorators/withPrivilege';
 import { loadExpense, loadCurrencies,
   loadAdvanceParties, loadPartnersForFilter } from 'common/reducers/cmsExpense';
 import { showPreviewer } from 'common/reducers/cmsDelegation';
-import { EXP_STATUS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import moment from 'moment';
@@ -305,9 +304,11 @@ export default class ExpenseList extends Component {
             },
           }, {
             title: this.msg('status'),
-            width: 45,
+            width: 44,
             dataIndex: 'revenue_status',
             key: 'revenue_status',
+            className: 'status-indicator',
+            render: () => (<Badge status="warning" />),
           },
         ],
       }, {
@@ -353,9 +354,11 @@ export default class ExpenseList extends Component {
             },
           }, {
             title: this.msg('status'),
-            width: 45,
+            width: 44,
             dataIndex: 'cost_status',
             key: 'cost_status',
+            className: 'status-indicator',
+            render: () => (<Badge status="success" />),
           },
         ],
       }, {
@@ -376,7 +379,6 @@ export default class ExpenseList extends Component {
       }, {
         title: this.msg('invoiceNo'),
         dataIndex: 'invoice_no',
-        width: 150,
       }, {
         title: this.msg('bLNo'),
         dataIndex: 'bl_wb_no',
@@ -384,7 +386,7 @@ export default class ExpenseList extends Component {
       }, {
         title: this.msg('acptTime'),
         dataIndex: 'acpt_time',
-        width: 120,
+        width: 100,
         sorter: (a, b) => a.acpt_time - b.acpt_time,
         sortOrder: sorted.columnKey === 'acpt_time' && sorted.order,
         filterDropdown: (
@@ -396,7 +398,7 @@ export default class ExpenseList extends Component {
       }, {
         title: this.msg('cleanDate'),
         dataIndex: 'clean_time',
-        width: 120,
+        width: 100,
         sorter: (a, b) => a.clean_time - b.clean_time,
         sortOrder: sorted.columnKey === 'clean_time' && sorted.order,
         filterDropdown: (
@@ -409,10 +411,6 @@ export default class ExpenseList extends Component {
             return <span>{moment(o).format('MM.DD HH:mm')}</span>;
           }
         },
-      }, {
-        title: this.msg('statementEn'),
-        dataIndex: 'status',
-        render: o => EXP_STATUS.filter(st => st.value === o)[0].text,
       }, {
         title: this.msg('lastActT'),
         dataIndex: 'last_charge_time',
@@ -477,7 +475,7 @@ export default class ExpenseList extends Component {
             </div>
             <div className="panel-body table-panel group-header">
               <Table rowSelection={rowSelection} columns={columns} dataSource={this.dataSource} loading={expslist.loading}
-                bordered scroll={{ x: 2000 }} rowKey="delg_no"
+                bordered scroll={{ x: 1860 }} rowKey="delg_no"
               />
             </div>
           </div>

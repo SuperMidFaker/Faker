@@ -61,8 +61,8 @@ const messages = defineMessages({
     id: 'sso.forgot.password',
     defaultMessage: '忘记密码',
   },
-  remembered: {
-    id: 'sso.login.remembered',
+  rememberMe: {
+    id: 'sso.login.remember.me',
     defaultMessage: '记住我',
   },
   verifyCodeGuide: {

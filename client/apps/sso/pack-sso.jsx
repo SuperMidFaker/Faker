@@ -1,9 +1,8 @@
 import React, { PropTypes } from 'react';
+import { Layout } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { format } from 'client/common/i18n/helpers';
-import messages from './message.i18n';
 import './sso.less';
-const formatMsg = format(messages);
+const { Content, Footer } = Layout;
 
 @injectIntl
 export default class SSOPack extends React.Component {
@@ -14,30 +13,22 @@ export default class SSOPack extends React.Component {
 
   render() {
     return (
-      <div className="am-splash-screen">
-        <div className="am-wrapper am-login">
-          <div className="am-content">
-            <div className="main-content">
-              <div className="login-container">
-                <div className="panel panel-default">
-                  <div className="panel-heading">
-                    <img src={`${__CDN__}/assets/img/welogix_logo_360.png`} width="160" alt="logo" />
-                    <span>{formatMsg(this.props.intl, 'slogan')}</span>
-                  </div>
-                  {this.props.children}
-                </div>
-              </div>
-              <div className="browser-tip">
-                <p>WeLogix支持IE10及以上版本的浏览器。为了您更顺畅的使用体验，请选择使用：</p>
-                <ul>
-                  <li><a rel="noopener noreferrer" href="http://rj.baidu.com/soft/detail/14744.html" target="_blank">谷歌(Google Chrome)浏览器</a></li>
-                  <li><a rel="noopener noreferrer" href="http://www.firefox.com.cn/download/" target="_blank">火狐(Firefox)浏览器</a></li>
-                </ul>
-                <p><a rel="noopener noreferrer" href="http://www.miitbeian.gov.cn/" target="_blank">沪ICP备16046609号-1</a></p>
-              </div>
-            </div>
+      <Layout className="am-splash-screen">
+        <Content className="main-content">
+          <div className="center-card-wrapper">
+            {this.props.children}
           </div>
-        </div>
-      </div>);
+        </Content>
+        <Footer style={{ textAlign: 'center' }}>
+          <div className="browser-tip">
+            <p>WeLogix支持IE10及以上版本的浏览器。为了您更顺畅的使用体验，请选择使用：</p>
+            <ul>
+              <li><a rel="noopener noreferrer" href="http://rj.baidu.com/soft/detail/14744.html" target="_blank">谷歌(Google Chrome)浏览器</a></li>
+              <li><a rel="noopener noreferrer" href="http://www.firefox.com.cn/download/" target="_blank">火狐(Firefox)浏览器</a></li>
+            </ul>
+          </div>
+          <div><a rel="noopener noreferrer" href="http://www.miitbeian.gov.cn/" target="_blank">沪ICP备16046609号-1</a></div>
+        </Footer>
+      </Layout>);
   }
 }
