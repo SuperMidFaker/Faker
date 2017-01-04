@@ -57,44 +57,10 @@ export default class FreightCharge extends React.Component {
         message: '计算运费',
         description: '运输模式未选择',
       });
-    } else if (transport_mode_code === 'FTL') {
-      if (vehicle_type_id === undefined) {
-        notification.warning({
-          message: '计算运费',
-          description: '车型未选择',
-        });
-      } else if (vehicle_length_id === undefined) {
-        notification.warning({
-          message: '计算运费',
-          description: '车长未选择',
-        });
-      } else if (total_weight === undefined) {
-        notification.warning({
-          message: '计算运费',
-          description: '总重量未填写',
-        });
-      } else if (total_volume === undefined) {
-        notification.warning({
-          message: '计算运费',
-          description: '总体积未填写',
-        });
-      } else {
-        this.computeSaleCharge(data);
-      }
     } else if (goods_type === undefined) {
       notification.warning({
         message: '计算运费',
         description: '货物类型未选择',
-      });
-    } else if (total_weight === undefined) {
-      notification.warning({
-        message: '计算运费',
-        description: '总重量未填写',
-      });
-    } else if (total_volume === undefined) {
-      notification.warning({
-        message: '计算运费',
-        description: '总体积未填写',
       });
     } else {
       this.computeSaleCharge(data);
