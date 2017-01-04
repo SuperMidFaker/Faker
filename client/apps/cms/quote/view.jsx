@@ -6,6 +6,7 @@ import withPrivilege from 'client/common/decorators/withPrivilege';
 import messages from './message.i18n';
 import { loadEditQuote } from 'common/reducers/cmsQuote';
 import { Form, Tabs } from 'antd';
+import Header from './formHeader';
 import FeesTable from './feesTable';
 import FeesForm from './feesForm';
 import RevisionTable from './revisionTable';
@@ -41,9 +42,7 @@ export default class QuotingView extends Component {
     const { form } = this.props;
     return (
       <div>
-        <header className="top-bar">
-          <span>{this.props.params.quoteno}</span>
-        </header>
+        <Header />
         <div className="main-content">
           <div className="page-body">
             <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>

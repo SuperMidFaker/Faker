@@ -15,7 +15,7 @@ const SERVER_CATEGORY_MAP = {
   misc_expenses: 'customdecl',
   customs_expenses: 'customdecl',
   ciq_expenses: 'ciqdecl',
-  cert_expenses: 'cert',
+  certs_expenses: 'cert',
 };
 const categoryKeys = EXPENSE_CATEGORIES.filter(ec => ec.key !== 'all').map(ec => ec.key);
 const typeKeys = EXPENSE_TYPES.map(ec => ec.key);
@@ -64,7 +64,7 @@ export default class ExpensePane extends React.Component {
     key: 'fee_name',
     render: (text, row) => {
       const categ = EXPENSE_CATEGORIES.filter(ec => ec.key === row.fee_style)[0];
-      return <span>{text}{categ && <i className="zmdi zmdi-circle" style={{ color: categ.color }} />}</span>;
+      return <span>{text}{categ && <span className="ant-badge-status-dot" style={{ backgroundColor: categ.color }} />}</span>;
     },
   }, {
     title: this.msg('feeRemark'),
@@ -122,7 +122,7 @@ export default class ExpensePane extends React.Component {
       };
     } else {
       const categ = EXPENSE_CATEGORIES.filter(ec => ec.key === row.fee_style)[0];
-      return <span>{text}{categ && <i className="zmdi zmdi-circle" style={{ color: categ.color }} />}</span>;
+      return <span>{text}{categ && <span className="ant-badge-status-dot" style={{ backgroundColor: categ.color }} />}</span>;
     }
   }
   renderCostFeeColumn = (text, row) => {
