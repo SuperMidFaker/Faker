@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Menu, Icon } from 'antd';
 import NavLink from 'client/components/nav-link';
-import AmNavBar from 'client/components/am-navbar';
+import HeaderNavBar from 'client/components/headerNavBar';
 import { setNavTitle } from 'common/reducers/navbar';
 
 @connect()
@@ -18,9 +18,9 @@ export default class MessagePack extends React.Component {
   }
   render() {
     return (
-      <div className="am-wrapper am-nosidebar-left">
-        <AmNavBar />
-        <div className="am-content">
+      <div className="layout-wrapper layout-nosider-left">
+        <HeaderNavBar />
+        <div className="layout-content">
           <aside className="side-bar no-left-menu no-top-bar">
             <h2>消息中心</h2>
             <Menu defaultSelectedKeys={['message']} mode="inline">

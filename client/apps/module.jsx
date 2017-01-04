@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { locationShape } from 'react-router';
-import AmNavBar from '../components/am-navbar';
+import HeaderNavBar from '../components/headerNavBar';
 
 export default class Module extends React.Component {
   static propTypes = {
@@ -16,8 +16,8 @@ export default class Module extends React.Component {
 
   render() {
     return (
-      <div className="am-wrapper am-fixed-sidebar">
-        <AmNavBar />
+      <div className="layout-wrapper layout-fixed-sider">
+        <HeaderNavBar />
         {this.props.children}
       </div>);
   }

@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Menu } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import AmNavBar from 'client/components/am-navbar';
+import HeaderNavBar from 'client/components/headerNavBar';
 import NavLink from 'client/components/nav-link';
 import ModuleLayout from 'client/components/module-layout';
 import { findForemostRoute } from 'client/common/decorators/withPrivilege';
@@ -77,9 +77,9 @@ export default class Home extends React.Component {
       );
     }
     return (
-      <div className="am-wrapper am-nosidebar-left">
-        <AmNavBar />
-        <div className="am-content">
+      <div className="layout-wrapper layout-nosider-left">
+        <HeaderNavBar />
+        <div className="layout-content">
           <div className="home-header home-header-bg">
             <div className="tenant-info">
               <div className="tenant-logo " style={{ backgroundImage: `url("${logo}")` }} />

@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { IntlProvider } from 'react-intl';
-import '../apps/root/root.less';
+import 'client/apps/root/root.less';
 
 @connect(
   state => ({

@@ -15,7 +15,7 @@ const formatMsg = format(messages);
     navTitle: state.navbar.navTitle,
   })
 )
-export default class AmNavBar extends React.Component {
+export default class HeaderNavBar extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     navTitle: PropTypes.object.isRequired,
@@ -54,7 +54,7 @@ export default class AmNavBar extends React.Component {
       );
     }
     return (
-      <nav className={`navbar navbar-default navbar-fixed-top am-top-header module-${moduleName}`}>
+      <nav className={`navbar navbar-default navbar-fixed-top layout-header module-${moduleName}`}>
         <div className="navbar-header">
           <NavLink to="/" className="navbar-toggle">
             <i className="zmdi zmdi-apps" />
