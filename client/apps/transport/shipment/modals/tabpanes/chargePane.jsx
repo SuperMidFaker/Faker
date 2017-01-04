@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Row, Col, Card, Table, Tag, Collapse } from 'antd';
+import { Row, Col, Card, Table, Tag, Collapse, Badge } from 'antd';
 import { EXPENSE_CATEGORIES } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
@@ -60,6 +60,17 @@ export default class ChargePanel extends React.Component {
     title: this.msg('name'),
     dataIndex: 'name',
     width: 160,
+    render: (col, record) => {
+      if (record.type === 'serverCharge') {
+        return (<span>{col} <Badge status="success" /></span>);
+      } else if (record.type === 'advanceCharge') {
+        return (<span>{col} <Badge status="warning" /></span>);
+      } else if (record.type === 'specialCharge') {
+        return (<span>{col} <Badge status="error" /></span>);
+      } else {
+        return col;
+      }
+    },
   }, {
     title: this.msg('feeRemark'),
     dataIndex: 'remark',
@@ -83,6 +94,7 @@ export default class ChargePanel extends React.Component {
   assembleChargeItems(charge, outDs) {
     if (charge.freight_charge) {
       outDs.push({
+        type: 'serverCharge',
         key: 'basic',
         name: this.msg('basicCharge'),
         remark: charge.charge_amount,
@@ -94,6 +106,7 @@ export default class ChargePanel extends React.Component {
     }
     if (charge.pickup_charge) {
       outDs.push({
+        type: 'serverCharge',
         key: 'pickup',
         name: this.msg('pickupCharge'),
         remark: '',
@@ -105,6 +118,7 @@ export default class ChargePanel extends React.Component {
     }
     if (charge.deliver_charge) {
       outDs.push({
+        type: 'serverCharge',
         key: 'deliver',
         name: this.msg('deliverCharge'),
         remark: '',
@@ -116,6 +130,7 @@ export default class ChargePanel extends React.Component {
     }
     if (charge.surcharge) {
       outDs.push({
+        type: 'serverCharge',
         key: 'surcharge',
         name: this.msg('surcharge'),
         remark: '',
@@ -127,6 +142,7 @@ export default class ChargePanel extends React.Component {
     }
   }
   transAdvanceCharge = (advanceCharge, index) => ({
+    type: 'advanceCharge',
     key: `advanceCharge${index}`,
     name: advanceCharge.name,
     remark: advanceCharge.remark,
@@ -135,6 +151,7 @@ export default class ChargePanel extends React.Component {
     total_fee: advanceCharge.amount + advanceCharge.tax_fee,
   })
   transSpecialCharge = (specialCharge, index) => ({
+    type: 'specialCharge',
     key: `specialCharge${index}`,
     name: '特殊费用',
     remark: specialCharge.remark,

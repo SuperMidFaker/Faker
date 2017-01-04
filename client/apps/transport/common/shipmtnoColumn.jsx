@@ -45,7 +45,7 @@ export default class ShipmtNoColumnRender extends React.Component {
     const { publicKey, shipmtNo, shipment, ...extra } = this.props;
     const content = (
       <div>
-        <TrackingTimeline points={this.state.points} />
+        <TrackingTimeline points={this.state.points} type="small" />
         <a href={this.makeShipmtPublicUrl(shipmtNo, publicKey)}
           target="_blank" rel="noopener noreferrer"
           style={{ marginLeft: '60%' }}
