@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Breadcrumb, Button, DatePicker, Icon, Radio, Select, Tooltip, message } from 'antd';
+import { Badge, Breadcrumb, Button, DatePicker, Icon, Radio, Select, Tooltip, message } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -304,9 +304,11 @@ export default class ExpenseList extends Component {
             },
           }, {
             title: this.msg('status'),
-            width: 45,
+            width: 44,
             dataIndex: 'revenue_status',
             key: 'revenue_status',
+            className: 'status-indicator',
+            render: () => (<Badge status="warning" />),
           },
         ],
       }, {
@@ -352,9 +354,11 @@ export default class ExpenseList extends Component {
             },
           }, {
             title: this.msg('status'),
-            width: 45,
+            width: 44,
             dataIndex: 'cost_status',
             key: 'cost_status',
+            className: 'status-indicator',
+            render: () => (<Badge status="success" />),
           },
         ],
       }, {

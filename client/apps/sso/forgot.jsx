@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Button } from 'antd';
+import { Button, Card, Form, Icon, Input } from 'antd';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { requestSms, verifySms } from 'common/reducers/auth';
@@ -8,6 +8,7 @@ import messages from './message.i18n';
 import globalMessages from 'client/common/root.i18n';
 const formatMsg = format(messages);
 const formatGlobalMsg = format(globalMessages);
+const FormItem = Form.Item;
 
 @injectIntl
 @connect(
@@ -66,73 +67,70 @@ export default class Forgot extends React.Component {
     const { intl } = this.props;
     const error = this.state.error;
     return (
-      <div className="panel-body">
+      <Card bodyStyle={{ padding: 64 }}>
         {!this.props.smsId ?
-        (<form className="form-horizontal">
+        (<Form horizontal>
           <p className="text-center">{formatMsg(intl, 'verifyCodeGuide')}</p>
-          <div className="form-group">
-            <div className="input-group">
-              <span className="input-group-addon"><i className="icon s7-phone" /></span>
-              <input name="phone" required="required" autoComplete="off" maxlenght="11"
-                placeholder={formatMsg(intl, 'phonePlaceholder')}
-                className="form-control" type="text" value={this.state.phone}
+          <FormItem>
+            {(
+              <Input addonBefore={<Icon type="mobile" />} placeholder={formatMsg(intl, 'phonePlaceholder')} value={this.state.phone} maxlenght="11"
                 onChange={ev => this.handleTextChange(ev, 'phone')}
               />
-            </div>
-          </div>
-          <div className="form-group login-submit">
+            )}
+          </FormItem>
+          <FormItem>
             <Button type="primary" className="btn btn-block btn-lg" size="large" onClick={ev => this.handleSmsRequest(ev)}>
               {formatMsg(intl, 'verifyObtatin')}
             </Button>
+          </FormItem>
+          <FormItem>
             <Button type="ghost" className="btn btn-block" size="large" onClick={ev => this.handleSmsCancel(ev)}>
               {formatGlobalMsg(intl, 'cancel')}
             </Button>
-          </div>
+          </FormItem>
           {
             error && (
             <div className="row text-center">
               <p className="text-warning">{formatMsg(intl, error.message.key, error.message.values)}</p>
             </div>)
           }
-        </form>)
+        </Form>)
           :
-        (<form className="form-horizontal">
+        (<Form horizontal>
           <p className="text-center">{formatMsg(intl, 'smsCodeSent')} </p>
-          <div className="form-group">
-            <div className="input-group">
-              <span className="input-group-addon"><i className="icon s7-phone" /></span>
-              <input name="phone" required="required" autoComplete="off" type="text" maxlenght="7"
-                placeholder={formatMsg(intl, 'smsCode')} className="form-control"
-                value={this.state.smsCode} onChange={ev => this.handleTextChange(ev, 'smsCode')}
+          <FormItem>
+            {(
+              <Input name="smsCode" addonBefore={<Icon type="mail" />} placeholder={formatMsg(intl, 'smsCode')} value={this.state.smsCode} maxlenght="6"
+                onChange={ev => this.handleTextChange(ev, 'smsCode')}
               />
-            </div>
-          </div>
-          <div className="form-group">
-            <div className="input-group">
-              <span className="input-group-addon"><i className="icon s7-lock" /></span>
-              <input name="phone" required="required" autoComplete="off" type="password"
-                placeholder={formatMsg(intl, 'newPwdPlaceholder')} className="form-control"
-                value={this.state.newPwd} onChange={ev => this.handleTextChange(ev, 'newPwd')}
+            )}
+          </FormItem>
+          <FormItem>
+            {(
+              <Input name="newPwd" addonBefore={<Icon type="lock" />} type="Password" placeholder={formatMsg(intl, 'newPwdPlaceholder')} value={this.state.newPwd}
+                onChange={ev => this.handleTextChange(ev, 'newPwd')}
               />
-            </div>
-          </div>
-          <div className="form-group login-submit">
+            )}
+          </FormItem>
+          <FormItem>
             <Button type="primary" className="btn btn-block btn-lg" size="large" onClick={ev => this.handleSmsVerify(ev)}>
               {formatMsg(intl, 'finishVerify')}
             </Button>
+          </FormItem>
+          <FormItem>
             <Button type="ghost" className="btn btn-block" size="large" onClick={ev => this.handleSmsCancel(ev)}>
               {formatGlobalMsg(intl, 'cancel')}
             </Button>
-          </div>
+          </FormItem>
           {
             error && (
             <div className="row text-center">
               <p className="text-warning">{formatMsg(intl, error.message.key, error.message.values)}</p>
             </div>)
           }
-        </form>)
+        </Form>)
         }
-      </div>
+      </Card>
     );
   }
 }
