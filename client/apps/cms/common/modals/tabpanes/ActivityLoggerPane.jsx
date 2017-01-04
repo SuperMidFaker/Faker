@@ -4,8 +4,9 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Button, Card, Checkbox, Col, Row, Collapse, DatePicker, Dropdown, Form, Icon,
   Input, InputNumber, Mention, Menu, Popover, Radio, Select, Tabs, Timeline, Tooltip, message } from 'antd';
 import InfoItem from 'client/components/InfoItem';
-import { updateBlNo, loadCustPanel } from 'common/reducers/cmsDelegation';
+import { updateBlNo, loadCustPanel, showPreviewer, updateCertParam } from 'common/reducers/cmsDelegation';
 import { loadDeclHead, setInspect } from 'common/reducers/cmsDeclare';
+import { CERTS, INSPECT_STATUS } from 'common/constants';
 
 const Option = Select.Option;
 const FormItem = Form.Item;
@@ -23,7 +24,7 @@ const formItemLayout = {
     previewer: state.cmsDelegation.previewer,
     declHeadsPane: state.cmsDeclare.declHeadsPane,
   }), {
-    updateBlNo, loadDeclHead, setInspect, loadCustPanel,
+    updateBlNo, loadDeclHead, setInspect, loadCustPanel, showPreviewer, updateCertParam,
   }
 )
 @Form.create()
@@ -49,20 +50,31 @@ export default class ActivityLoggerPane extends React.Component {
     const { previewer } = this.props;
     const key = this.state.tabKey;
     const val = this.props.form.getFieldsValue();
-    // console.log('val', val);
+    console.log('val', val);
     if (key === 'log') {
 
     } else if (key === 'exchange') {
-      this.props.updateBlNo(previewer.delgNo, val.bl_wb_no);
-    } else if (key === 'certs') {
-      if (val.certs) {
-
-      }
-    } else if (key === 'inspect') {
-      this.props.setInspect(val.billNo, val.inspect, 1).then((result) => {
+      this.props.updateBlNo(previewer.delgNo, val.bl_wb_no).then((result) => {
         if (result.error) {
           message.error(result.error.message, 5);
-        } else if (this.props.previewer.tabKey === 'customsDecl') {
+        } else {
+          this.props.showPreviewer(
+            this.props.tenantId,
+            previewer.delgNo,
+            previewer.tabKey
+          );
+        }
+      });
+    } else if (key === 'certs') {
+      if (val.certs) {
+        const certQty = val.certsNum || 0;
+        this.props.updateCertParam(previewer.delgDispatch.id, val.certs, certQty);
+      }
+    } else if (key === 'inspect') {
+      this.props.setInspect(val.billNo, val.inspect, INSPECT_STATUS.inspecting).then((result) => {
+        if (result.error) {
+          message.error(result.error.message, 5);
+        } else if (previewer.tabKey === 'customsDecl') {
           this.props.loadCustPanel({
             delgNo: previewer.delgNo,
             tenantId: this.props.tenantId,
@@ -134,14 +146,11 @@ export default class ActivityLoggerPane extends React.Component {
                       placeholder="选择鉴定办证类型"
                       optionFilterProp="children"
                     >
-                      <Option value="jdz">机电证</Option>
-                      <Option value="zgz">重工证</Option>
-                      <Option value="xkz">许可证</Option>
-                      <Option value="3cmlwjd">3C目录外鉴定</Option>
-                      <Option value="m3csq">免3C申请</Option>
-                      <Option value="nxjd">能效鉴定</Option>
-                      <Option value="mnxsq">免能效申请</Option>
-                      <Option value="xc">消磁</Option>
+                      {
+                        CERTS.map(cert =>
+                          <Option value={cert.value}>{cert.text}</Option>
+                        )
+                      }
                     </Select>)}
                   </FormItem>
                   <FormItem>
@@ -171,9 +180,9 @@ export default class ActivityLoggerPane extends React.Component {
                     <FormItem>
                       { getFieldDecorator('inspect',
                       )(<Radio.Group>
-                        <Radio.Button value="customs_inspect">海关查验</Radio.Button>
-                        <Radio.Button value="ciq_quality_inspect">品质查验</Radio.Button>
-                        <Radio.Button value="ciq_ap_inspect">动植检查验</Radio.Button>
+                        <Radio.Button value="customs">海关查验</Radio.Button>
+                        <Radio.Button value="ciq_quality">品质查验</Radio.Button>
+                        <Radio.Button value="ciq_ap">动植检查验</Radio.Button>
                       </Radio.Group>)}
                     </FormItem>
                   </Form>
