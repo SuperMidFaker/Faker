@@ -27,6 +27,12 @@ export default class FreightCharge extends React.Component {
   }
   state = {
     computed: false,
+    alert: {
+      visible: false,
+      type: 'error',
+      message: '',
+      description: '',
+    },
   }
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   handleCompute = () => {
