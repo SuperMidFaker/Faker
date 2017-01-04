@@ -25,6 +25,7 @@ const ONE_DAY_MS = 24 * 60 * 60 * 1000;
       vehicle_type_id: state.shipment.formData.vehicle_type_id,
       vehicle_length_id: state.shipment.formData.vehicle_length_id,
       container_no: state.shipment.formData.container_no,
+      courier_no: state.shipment.formData.courier_no,
       transport_mode_id: state.shipment.formData.transport_mode_id,
       transport_mode_code: state.shipment.formData.transport_mode_code,
       package: state.shipment.formData.package,
@@ -100,7 +101,7 @@ export default class ModeInfo extends React.Component {
         pickup_est_date: pickupDt, transit_time,
         deliver_est_date: deliverDt, vehicle_type_id,
         vehicle_length_id, container_no, transport_mode_code: modeCode,
-        transport_mode_id: modeId,
+        transport_mode_id: modeId, courier_no,
       },
       vertical,
       type,
@@ -148,6 +149,18 @@ export default class ModeInfo extends React.Component {
           />
         </Col>,
         <Col key="container_size" span={`${outerColSpan}`} />
+      );
+    } else if (modeCode === PRESET_TRANSMODES.exp) {
+      // 集装箱,修改箱号
+      outerColSpan = 8;
+      labelColSpan = 8;
+      modeEditCols.push(
+        <Col key="courier_no" span={`${outerColSpan}`}>
+          <InputItem labelName={this.msg('courierNo')} field="courier_no"
+            colSpan={labelColSpan} formhoc={this.props.formhoc}
+            fieldProps={{ initialValue: courier_no }}
+          />
+        </Col>
       );
     } else {
       outerColSpan = 8;

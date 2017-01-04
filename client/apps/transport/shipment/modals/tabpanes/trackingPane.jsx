@@ -34,30 +34,36 @@ export default class TrackingPane extends React.Component {
     this.props.points.forEach((item) => {
       points.push({
         ...item,
+        date: `${moment(item.location_time || item.created_date).format('YYYY-MM-DD')}`,
+        time: `${moment(item.location_time || item.created_date).format('HH:mm')}`,
         title: `${renderLoc(item, 'province', 'city', 'district') || ''} ${item.address || ''}`,
-        description: `${moment(item.location_time || item.created_date).format('YYYY-MM-DD HH:mm')}`,
+        description: '',
       });
     });
     const trackingSteps = points.map((s, i) => {
       let color = 'green';
-      let dotType = (<Icon type="environment-o" style={{ fontSize: '14px' }} />);
+      let dotType = (<Icon type="environment-o" style={{ fontSize: '14px', backgroundColor: '#fff' }} />);
       if (i === 0) {
         color = 'blue';
-        dotType = (<Icon type="environment" style={{ fontSize: '20px' }} />);
+        dotType = (<Icon type="environment" style={{ fontSize: '20px', backgroundColor: '#fff' }} />);
       }
       return (
         <Timeline.Item dot={dotType} key={i} color={color}>
-          {s.title} {s.description}
-          <Popconfirm title="确定删除这条位置信息？" onConfirm={() => this.handleRemovePoint(s.id, s.title)}>
-            <Icon type="close" className="timeline-remove" />
-          </Popconfirm>
+          <span style={{ marginLeft: -100 }}>{s.date}</span>
+          <span style={{ marginLeft: 37 }}>
+            {s.title}
+            <Popconfirm title="确定删除这条位置信息？" onConfirm={() => this.handleRemovePoint(s.id, s.title)}>
+              <Icon type="close" className="timeline-remove" />
+            </Popconfirm>
+          </span>
+          <div>{s.time}</div>
         </Timeline.Item>
       );
     });
 
     return (
       <Card>
-        <Timeline>{trackingSteps}</Timeline>
+        <Timeline style={{ marginLeft: 100 }}>{trackingSteps}</Timeline>
       </Card>
     );
   }

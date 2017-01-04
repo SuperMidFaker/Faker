@@ -24,14 +24,14 @@ function fetchData({ dispatch, params }) {
 )
 export default class TrackingDetail extends React.Component {
   static propTypes = {
-    location: PropTypes.object.isRequired,
+    shipmtDetail: PropTypes.object.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
   state = {
     stepsDirection: 'horizontal',
-  };
+  }
   componentDidMount() {
     this.resize();
     $(window).resize(() => {

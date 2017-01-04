@@ -137,6 +137,10 @@ export default defineMessages({
     id: 'transport.shipment.container.no',
     defaultMessage: '箱号',
   },
+  courierNo: {
+    id: 'transport.shipment.courier.no',
+    defaultMessage: '快递单号',
+  },
   goodsInfo: {
     id: 'transport.shipment.goods.info',
     defaultMessage: '货物信息',
