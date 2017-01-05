@@ -91,6 +91,7 @@ export default class DelgDispModal extends Component {
   }
   state = {
     appoint: false,
+    ciqSups: [],
   }
   msg = key => formatMsg(this.props.intl, key);
   handleConfirm = () => {
@@ -142,24 +143,15 @@ export default class DelgDispModal extends Component {
     this.handleOnChange(this.props.fieldInits.appointed);
   }
   handleOnChange = (checked) => {
-    if (checked) {
-      const recv = this.props.form.getFieldsValue();
-      let delgSup = {};
-      const pts = this.props.partners.filter(pt => pt.partner_id === recv.customs_name);
-      if (pts.length === 1) {
-        delgSup = pts[0];
-      }
-      this.props.loadciqSups(this.props.tenantId, 'CIB', delgSup).then((result) => {
-        if (result.error) {
-          message.error(result.error.message);
-        }
-      });
-    }
     this.setState({ appoint: checked });
   }
+  handleSelectChange = (value) => {
+    const sups = this.props.ciqSups.filter(sup => sup.partner_id !== value);
+    this.setState({ ciqSups: sups });
+  }
   render() {
-    const { form: { getFieldDecorator }, partners, delgDisp, ciqSups, delgDispShow, saved, fieldInits } = this.props;
-    const { appoint } = this.state;
+    const { form: { getFieldDecorator }, partners, delgDisp, delgDispShow, saved, fieldInits } = this.props;
+    const { appoint, ciqSups } = this.state;
     const footer = (
       <div>
         <Button type="ghost" onClick={this.handleCancel} style={{ marginRight: 10 }}>取消</Button>
@@ -183,6 +175,7 @@ export default class DelgDispModal extends Component {
                 optionFilterProp="searched"
                 placeholder={this.msg('dispatchMessage')}
                 style={{ width: '80%' }}
+                onChange={this.handleSelectChange}
               >
                 {
                 partners.map(pt => (

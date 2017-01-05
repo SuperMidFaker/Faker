@@ -54,7 +54,7 @@ export default class CiqDeclPane extends React.Component {
     });
   }
   handleCiqAssign = () => {
-    this.props.loadciqSups(this.props.tenantId, 'CIB', {});
+    this.props.loadciqSups(this.props.tenantId, 'CIB');
     this.props.setDispStatus({ ciqDispShow: true });
   }
   render() {

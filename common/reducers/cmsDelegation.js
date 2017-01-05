@@ -288,7 +288,7 @@ export default function reducer(state = initialState, action) {
       return { ...state, assign: {
         ...state.assign, delgDisp: action.result.data.delegation,
         dispatch: action.result.data.dispatch, partners: action.result.data.partners,
-        delgDispShow: true, saved: false },
+        ciqSups: action.result.data.ciqSups, delgDispShow: true, saved: false },
       };
     case actionTypes.HIDE_PREVIEWER:
       return { ...state, previewer: { ...state.previewer, visible: action.visible } };
@@ -371,7 +371,7 @@ export function updateBlNo(delgNo, blNo) {
   };
 }
 
-export function loadciqSups(tenantId, type, delgSup) {
+export function loadciqSups(tenantId, type) {
   return {
     [CLIENT_API]: {
       types: [
@@ -381,7 +381,7 @@ export function loadciqSups(tenantId, type, delgSup) {
       ],
       endpoint: 'v1/cms/delegation/getciqSups',
       method: 'post',
-      data: { tenantId, type, delgSup },
+      data: { tenantId, type },
     },
   };
 }
