@@ -69,10 +69,7 @@ export default class CustomsDeclPane extends React.Component {
       } else if (delgPanel.status === CMS_DELEGATION_STATUS.processing ||
           (delgPanel.status === CMS_DELEGATION_STATUS.declaring && delgPanel.sub_status === 1)) {
         return (
-          <div>
-            <Button type="default" icon="edit" onClick={this.handleMake}>编辑清单</Button>
-            <Button icon="eye" onClick={ev => this.handleView(ev)}>查看清单</Button>
-          </div>
+          <Button type="default" icon="edit" onClick={this.handleMake}>编辑清单</Button>
         );
       } else if (delgPanel.status > CMS_DELEGATION_STATUS.declaring) {
         return <Button icon="eye" onClick={ev => this.handleView(ev)}>查看清单</Button>;
@@ -135,7 +132,7 @@ export default class CustomsDeclPane extends React.Component {
               />
             </Col>
           </Row>
-          {delgPanel.type === 1 && <div className="card-footer">
+          {(delgPanel.type === 1 || delgPanel.customs_tenant_id === -1) && <div className="card-footer">
             <div className="toolbar-right">
               <Tooltip title="分配操作人员">
                 <Button type="ghost" shape="circle" onClick={this.handleOperatorAssign}><Icon type="user" /></Button>

@@ -334,7 +334,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_DELGOPERATOR_SUCCEED:
       return { ...state, acceptModal: { ...state.acceptModal, operators: action.result.data } };
     case actionTypes.LOAD_PARTNERS_SUCCEED:
-      return { ...state, assign: { ...state.assign, ciqSups: action.result.data, ciqDispShow: true } };
+      return { ...state, assign: { ...state.assign, ciqSups: action.result.data } };
     default:
       return state;
   }

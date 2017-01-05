@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Modal, Form, Mention, message } from 'antd';
-import { closeAcceptModal, setOpetaor, loadDelgOperators } from 'common/reducers/cmsDelegation';
+import { closeAcceptModal, setOpetaor, loadDelgOperators, loadCustPanel, loadDeclCiqByDelgNo } from 'common/reducers/cmsDelegation';
 
 const FormItem = Form.Item;
 const Nav = Mention.Nav;
@@ -12,11 +12,12 @@ const getMentions = Mention.getMentions;
   state => ({
     visible: state.cmsDelegation.acceptModal.visible,
     tenantId: state.cmsDelegation.acceptModal.tenantId,
+    delgNo: state.cmsDelegation.previewer.delgNo,
     type: state.cmsDelegation.acceptModal.type,
     delgDispIds: state.cmsDelegation.acceptModal.dispatchIds,
     delgOperators: state.cmsDelegation.acceptModal.operators,
   }),
-  { closeAcceptModal, setOpetaor, loadDelgOperators }
+  { closeAcceptModal, setOpetaor, loadDelgOperators, loadCustPanel, loadDeclCiqByDelgNo }
 )
 @Form.create()
 export default class SetOperatorModal extends React.Component {
@@ -25,6 +26,7 @@ export default class SetOperatorModal extends React.Component {
     visible: PropTypes.bool.isRequired,
     type: PropTypes.oneOf(['delg', 'ciq']),
     tenantId: PropTypes.number.isRequired,
+    delgNo: PropTypes.string.isRequired,
     delgDispIds: PropTypes.arrayOf(PropTypes.number),
     delgOperators: PropTypes.arrayOf(PropTypes.shape({
       lid: PropTypes.number,
@@ -47,7 +49,7 @@ export default class SetOperatorModal extends React.Component {
       nextProps.loadDelgOperators(nextProps.tenantId);
     }
   }
-  handleAccept = () => {
+  handleSave = () => {
     this.props.form.validateFields((errors) => {
       if (!errors) {
         const name = Mention.getMentions(this.props.form.getFieldValue('operator'))[0].slice(1);
@@ -59,6 +61,13 @@ export default class SetOperatorModal extends React.Component {
             message.error(result.error.message);
           } else {
             this.props.closeAcceptModal();
+            if (this.props.type === 'delg') {
+              this.props.loadCustPanel({
+                delgNo: this.props.delgNo, tenantId: this.props.tenantId,
+              });
+            } else if (this.props.type === 'ciq') {
+              this.props.loadDeclCiqByDelgNo(this.props.delgNo, this.props.tenantId);
+            }
           }
         });
       }
@@ -90,7 +99,7 @@ export default class SetOperatorModal extends React.Component {
   render() {
     const { visible, form: { getFieldDecorator } } = this.props;
     return (
-      <Modal visible={visible} onOk={this.handleAccept}
+      <Modal visible={visible} onOk={this.handleSave}
         onCancel={this.handleCancel}
       >
         <Form horizontal>

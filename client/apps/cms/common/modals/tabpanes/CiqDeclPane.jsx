@@ -4,7 +4,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Badge, Button, Card, Col, Icon, Row, Table, Tag, Tooltip } from 'antd';
 import moment from 'moment';
 import { loadDeclCiqByDelgNo } from 'common/reducers/cmsDeclare';
-import { openAcceptModal, loadciqSups } from 'common/reducers/cmsDelegation';
+import { openAcceptModal, loadciqSups, setDispStatus } from 'common/reducers/cmsDelegation';
 import InfoItem from 'client/components/InfoItem';
 import SetOperatorModal from '../operatorModal';
 import CiqDispModal from '../ciqDispModal';
@@ -18,7 +18,7 @@ import CiqDispModal from '../ciqDispModal';
     tabKey: state.cmsDelegation.previewer.tabKey,
     delegation: state.cmsDelegation.previewer.delegation,
   }),
-  { loadDeclCiqByDelgNo, openAcceptModal, loadciqSups }
+  { loadDeclCiqByDelgNo, openAcceptModal, loadciqSups, setDispStatus }
 )
 export default class CiqDeclPane extends React.Component {
   static propTypes = {
@@ -55,9 +55,10 @@ export default class CiqDeclPane extends React.Component {
   }
   handleCiqAssign = () => {
     this.props.loadciqSups(this.props.tenantId, 'CIB', {});
+    this.props.setDispStatus({ ciqDispShow: true });
   }
   render() {
-    const { ciqdecl, delegation } = this.props;
+    const { ciqdecl, delegation, tenantId } = this.props;
     const columns = [{
       title: '统一编号',
       dataIndex: 'pre_entry_seq_no',
@@ -106,12 +107,16 @@ export default class CiqDeclPane extends React.Component {
           <div className="card-footer">
             <Badge status="warning" text="报检待处理" />
             <div className="toolbar-right">
-              {delegation.appointed_option === 0 && <Tooltip title="分配报检供应商">
-                <Button type="ghost" onClick={this.handleCiqAssign}><Icon type="share-alt" /> 分配</Button>
-              </Tooltip>}
-              <Tooltip title="指派操作人员">
-                <Button type="ghost" shape="circle" onClick={this.handleOperatorAssign}><Icon type="user" /></Button>
-              </Tooltip>
+              {delegation.appointed_option === 0 && ciqdecl.ciq_tenant_id === tenantId &&
+                <Tooltip title="分配报检供应商">
+                  <Button type="ghost" onClick={this.handleCiqAssign}><Icon type="share-alt" /> 分配</Button>
+                </Tooltip>
+              }
+              {(ciqdecl.type === 1 || ciqdecl.ciq_tenant_id === -1) &&
+                <Tooltip title="指派操作人员">
+                  <Button type="ghost" shape="circle" onClick={this.handleOperatorAssign}><Icon type="user" /></Button>
+                </Tooltip>
+              }
             </div>
           </div>
         </Card>

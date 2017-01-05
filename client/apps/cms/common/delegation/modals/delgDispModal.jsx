@@ -45,8 +45,11 @@ ButtonSelect.PropTypes = {
 function getFieldInits(delgDisp, dispatch) {
   const init = {};
   init.appointed = false;
-  init.customs_name = dispatch.customs_name;
+  init.customs_name = '';
   init.appointed_option = 1;
+  if (dispatch.customs_name !== dispatch.recv_name) {
+    init.customs_name = dispatch.customs_name;
+  }
   if (delgDisp.appointed_option > 0) {
     init.ciq_name = delgDisp.appointed_ciq_name;
     init.appointed = true;
@@ -87,7 +90,7 @@ export default class DelgDispModal extends Component {
     delgDispShow: PropTypes.bool.isRequired,
   }
   state = {
-    appointed: false,
+    appoint: false,
   }
   msg = key => formatMsg(this.props.intl, key);
   handleConfirm = () => {
@@ -100,6 +103,8 @@ export default class DelgDispModal extends Component {
         } else {
           this.props.setSavedStatus({ saved: false });
           this.props.setDispStatus({ delgDispShow: false });
+          this.props.form.resetFields();
+          this.handleOnChange(false);
         }
       }
     );
@@ -107,6 +112,7 @@ export default class DelgDispModal extends Component {
   handleSave = () => {
     const { delgDisp, dispatch, partners, ciqSups } = this.props;
     const recv = this.props.form.getFieldsValue();
+    const appointedOption = recv.appointed_option || 0;
     let partner = {};
     const pts = partners.filter(pt => pt.partner_id === recv.customs_name);
     if (pts.length === 1) {
@@ -119,7 +125,7 @@ export default class DelgDispModal extends Component {
         ciqSup = sup[0];
       }
     }
-    const delegation = { ...delgDisp, ...{ appointed_option: recv.appointed_option } };
+    const delegation = { ...delgDisp, ...{ appointed_option: appointedOption } };
     this.props.delgDispSave(delegation, dispatch, partner, ciqSup
     ).then((result) => {
       if (result.error) {
@@ -132,6 +138,8 @@ export default class DelgDispModal extends Component {
   }
   handleCancel = () => {
     this.props.setDispStatus({ delgDispShow: false });
+    this.props.form.resetFields();
+    this.handleOnChange(this.props.fieldInits.appointed);
   }
   handleOnChange = (checked) => {
     if (checked) {
@@ -147,11 +155,11 @@ export default class DelgDispModal extends Component {
         }
       });
     }
-    this.setState({ appointed: checked });
+    this.setState({ appoint: checked });
   }
   render() {
     const { form: { getFieldDecorator }, partners, ciqSups, delgDispShow, saved, fieldInits } = this.props;
-    const { appointed } = this.state;
+    const { appoint } = this.state;
     const footer = (
       <div>
         <Button type="ghost" onClick={this.handleCancel} style={{ marginRight: 10 }}>取消</Button>
@@ -162,10 +170,10 @@ export default class DelgDispModal extends Component {
     if (fieldInits.appointed) {
       appointLabel = '指定报检供应商';
     } else {
-      appointLabel = appointed ? '指定报检供应商' : '不指定报检供应商';
+      appointLabel = appoint ? '指定报检供应商' : '不指定报检供应商';
     }
     return (
-      <Modal visible={delgDispShow} title="分配" footer={footer} >
+      <Modal visible={delgDispShow} title="分配" footer={footer} onCancel={this.handleCancel} >
         <Form vertical>
           <FormItem label="供应商" {...formItemLayout}>
             {getFieldDecorator('customs_name', { initialValue: fieldInits.customs_name }
@@ -188,9 +196,9 @@ export default class DelgDispModal extends Component {
               </Select>)}
           </FormItem>
           <FormItem label={appointLabel} {...formItemLayout} >
-            <Switch defaultChecked={fieldInits.appointed} onChange={this.handleOnChange} disabled={fieldInits.appointed} />
+            <Switch checked={appoint} onChange={this.handleOnChange} disabled={fieldInits.appointed} />
           </FormItem>
-          {(appointed || fieldInits.appointed) &&
+          {(appoint || fieldInits.appointed) &&
             <FormItem label="报检商结算对象" {...formItemLayout}>
               {getFieldDecorator('appointed_option', { initialValue: fieldInits.appointed_option })(<RadioGroup>
                 <RadioButton value={clearingOption.clearSup.key}>{clearingOption.clearSup.value}</RadioButton>
@@ -198,7 +206,7 @@ export default class DelgDispModal extends Component {
               </RadioGroup>)}
             </FormItem>
           }
-          {(appointed || fieldInits.appointed) &&
+          {(appoint || fieldInits.appointed) &&
             <FormItem label="报检供应商" {...formItemLayout} >
               {getFieldDecorator('ciq_name', { initialValue: fieldInits.ciq_name }
                 )(<Select

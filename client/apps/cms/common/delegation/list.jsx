@@ -505,11 +505,7 @@ export default class DelegationList extends Component {
             return (
               <RowUpdater onHit={() => this.handleDelegationCancel(record)} label={this.msg('delgRecall')} row={record} />
             );
-          } else if (record.status === CMS_DELEGATION_STATUS.accepted && record.sub_status === CMS_DELEGATION_STATUS.unaccepted) {
-            return (
-              <RowUpdater onHit={this.handleDelegationView} label={this.msg('viewManifest')} row={record} />
-            );
-          } else {
+          } else if (record.status > CMS_DELEGATION_STATUS.accepted) {
             return (
               <RowUpdater onHit={this.handleDelegationView} label={this.msg('viewManifest')} row={record} />
             );
