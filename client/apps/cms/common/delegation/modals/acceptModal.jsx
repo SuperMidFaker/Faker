@@ -96,7 +96,7 @@ export default class DelgAcceptModal extends React.Component {
   render() {
     const { visible, form: { getFieldDecorator } } = this.props;
     return (
-      <Modal visible={visible} onOk={this.handleAccept}
+      <Modal title="接单" visible={visible} onOk={this.handleAccept}
         onCancel={this.handleCancel}
       >
         <Form horizontal>
