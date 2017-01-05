@@ -6,7 +6,7 @@ import { Button, Card, Checkbox, Col, Row, Collapse, DatePicker, Dropdown, Form,
 import InfoItem from 'client/components/InfoItem';
 import { updateBlNo, loadCustPanel, showPreviewer, updateCertParam } from 'common/reducers/cmsDelegation';
 import { loadDeclHead, setInspect } from 'common/reducers/cmsDeclare';
-import { CERTS, INSPECT_STATUS } from 'common/constants';
+import { CERTS } from 'common/constants';
 
 const Option = Select.Option;
 const FormItem = Form.Item;
@@ -22,7 +22,7 @@ const formItemLayout = {
   state => ({
     tenantId: state.account.tenantId,
     previewer: state.cmsDelegation.previewer,
-    declHeadsPane: state.cmsDeclare.declHeadsPane,
+    declHeadsPane: state.cmsDeclare.decl_heads,
   }), {
     updateBlNo, loadDeclHead, setInspect, loadCustPanel, showPreviewer, updateCertParam,
   }
@@ -49,12 +49,11 @@ export default class ActivityLoggerPane extends React.Component {
   handleSave = () => {
     const { previewer } = this.props;
     const key = this.state.tabKey;
-    const val = this.props.form.getFieldsValue();
-    // console.log('val', val);
+    const formVals = this.props.form.getFieldsValue();
     if (key === 'log') {
 
     } else if (key === 'exchange') {
-      this.props.updateBlNo(previewer.delgNo, val.bl_wb_no).then((result) => {
+      this.props.updateBlNo(previewer.delgNo, formVals.bl_wb_no).then((result) => {
         if (result.error) {
           message.error(result.error.message, 5);
         } else {
@@ -66,12 +65,17 @@ export default class ActivityLoggerPane extends React.Component {
         }
       });
     } else if (key === 'certs') {
-      if (val.certs) {
-        const certQty = val.certsNum || 0;
-        this.props.updateCertParam(previewer.delgDispatch.id, val.certs, certQty);
+      if (formVals.certs) {
+        const certQty = formVals.certsNum || 0;
+        this.props.updateCertParam(previewer.delgDispatch.id, formVals.certs, certQty);
       }
     } else if (key === 'inspect') {
-      this.props.setInspect(val.billNo, val.inspect, INSPECT_STATUS.inspecting).then((result) => {
+      this.props.setInspect({
+        preEntrySeqNo: formVals.pre_entry_no,
+        delgNo: previewer.delgNo,
+        field: formVals.inspect_field,
+        enabled: true,
+      }).then((result) => {
         if (result.error) {
           message.error(result.error.message, 5);
         } else if (previewer.tabKey === 'customsDecl') {
@@ -112,8 +116,7 @@ export default class ActivityLoggerPane extends React.Component {
               <TabPane tab={<span><Icon type="message" />备注</span>} key="log">
                 <Form horizontal>
                   <FormItem>
-                    {getFieldDecorator('remarks',
-                    )(<Mention
+                    {getFieldDecorator('remarks')(<Mention
                       style={{ width: '100%', height: 72 }}
                       suggestions={['afc163', 'benjycui', 'yiminghe', 'jljsj33', 'dqaria', 'RaoHai']}
                       placeholder="@提及他人"
@@ -139,8 +142,7 @@ export default class ActivityLoggerPane extends React.Component {
               <TabPane tab={<span><Icon type="addfile" />办证</span>} key="certs">
                 <Form horizontal>
                   <FormItem>
-                    {getFieldDecorator('certs',
-                    )(<Select
+                    {getFieldDecorator('certs')(<Select
                       showSearch
                       style={{ width: 200, marginRight: 8 }}
                       placeholder="选择鉴定办证类型"
@@ -154,8 +156,7 @@ export default class ActivityLoggerPane extends React.Component {
                     </Select>)}
                   </FormItem>
                   <FormItem>
-                    { getFieldDecorator('certsNum',
-                    )(<InputNumber min={1} max={99} placeholder="型号数量" />)}
+                    { getFieldDecorator('certsNum')(<InputNumber min={1} max={99} placeholder="型号数量" />)}
                   </FormItem>
                 </Form>
               </TabPane>
@@ -163,26 +164,19 @@ export default class ActivityLoggerPane extends React.Component {
                 <TabPane tab={<span><Icon type="exception" />查验</span>} key="inspect">
                   <Form horizontal>
                     <FormItem>
-                      { getFieldDecorator('billNo',
-                      )(<Select
-                        showSearch
-                        style={{ width: 200, marginRight: 8 }}
-                        placeholder="选择报关单"
-                        optionFilterProp="children"
-                      >
+                      {getFieldDecorator('pre_entry_no')(<Select showSearch style={{ width: 200, marginRight: 8 }} placeholder="选择报关单" optionFilterProp="children">
                         {
                           declHeadsPane.map(dh =>
-                            <Option value={dh.value}>{dh.text}</Option>
+                            <Option value={dh.pre_entry_seq_no}>{dh.entry_id ? `${dh.entry_id}/${dh.pre_entry_seq_no}` : dh.pre_entry_seq_no}</Option>
                           )
                         }
                       </Select>)}
                     </FormItem>
                     <FormItem>
-                      { getFieldDecorator('inspect',
-                      )(<Radio.Group>
-                        <Radio.Button value="customs">海关查验</Radio.Button>
-                        <Radio.Button value="ciq_quality">品质查验</Radio.Button>
-                        <Radio.Button value="ciq_ap">动植检查验</Radio.Button>
+                      {getFieldDecorator('inspect_field')(<Radio.Group>
+                        <Radio.Button value="hgcy">海关查验</Radio.Button>
+                        <Radio.Button value="pzcy">品质查验</Radio.Button>
+                        <Radio.Button value="djcy">动植检查验</Radio.Button>
                       </Radio.Group>)}
                     </FormItem>
                   </Form>
@@ -196,11 +190,7 @@ export default class ActivityLoggerPane extends React.Component {
               <Button type="ghost" onClick={this.handleCancel}>取消</Button>
             </div>
             <div className="toolbar-right">
-              <DatePicker
-                showTime
-                format="YYYY-MM-DD HH:mm"
-                placeholder="选择时间"
-              />
+              <DatePicker showTime format="YYYY-MM-DD HH:mm" placeholder="选择时间" />
             </div>
           </div>
         </Card>

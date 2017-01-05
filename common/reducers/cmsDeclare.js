@@ -26,9 +26,7 @@ const actionTypes = createActionTypes('@@welogix/cms/declaration/', [
   'LOAD_BILLBODY', 'LOAD_BILLBODY_SUCCEED', 'LOAD_BILLBODY_FAIL',
   'LOAD_CIQ_DECLS', 'LOAD_CIQ_DECLS_SUCCEED', 'LOAD_CIQ_DECLS_FAIL',
   'LOAD_DELG_DECLS', 'LOAD_DELG_DECLS_SUCCEED', 'LOAD_DELG_DECLS_FAIL',
-  'SAVE_CHECKED_STATE', 'SAVE_CHECKED_STATE_SUCCEED', 'SAVE_CHECKED_STATE_FAIL',
-  'DECL_FINISH_SET', 'DECL_FINISH_SET_SUCCEED', 'DECL_FINISH_SET_FAIL',
-  'SAVE_STATE_TOEXP', 'SAVE_STATE_TOEXP_SUCCEED', 'SAVE_STATE_TOEXP_FAIL',
+  'CIQ_FINISH', 'CIQ_FINISH_SUCCEED', 'CIQ_FINISH_FAIL',
   'LOAD_DECLCIQ_DELG', 'LOAD_DECLCIQ_DELG_SUCCEED', 'LOAD_DECLCIQ_DELG_FAIL',
   'LOAD_DECLHEAD', 'LOAD_DECLHEAD_SUCCEED', 'LOAD_DECLHEAD_FAIL',
   'SET_INSPECT', 'SET_INSPECT_SUCCEED', 'SET_INSPECT_FAIL',
@@ -94,7 +92,7 @@ const initialState = {
   previewer: {
     ciqdecl: { ciqlist: [] },
   },
-  declHeadsPane: [],
+  decl_heads: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -211,15 +209,15 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_DELG_DECLS_FAIL:
       return { ...state, delgdeclList: { ...state.delgdeclList, loading: false } };
     case actionTypes.LOAD_DECLCIQ_DELG_SUCCEED:
-      return { ...state, previewer: { ciqdecl: action.result.data } };
+      return { ...state, previewer: { ...state.previewer, ciqdecl: action.result.data } };
     case actionTypes.LOAD_DECLHEAD_SUCCEED:
-      return { ...state, declHeadsPane: action.result.data };
+      return { ...state, decl_heads: action.result.data };
     default:
       return state;
   }
 }
 
-export function setInspect(entrySeqNo, inspect, status) {
+export function setInspect({ preEntrySeqNo, delgNo, field, enabled }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -228,8 +226,8 @@ export function setInspect(entrySeqNo, inspect, status) {
         actionTypes.SET_INSPECT_FAIL,
       ],
       endpoint: 'v1/cms/declare/set/inspect',
-      method: 'get',
-      params: { entrySeqNo, inspect, status },
+      method: 'post',
+      data: { preEntrySeqNo, delgNo, field, enabled },
     },
   };
 }
@@ -294,44 +292,13 @@ export function loadDelgDecls(params) {
   };
 }
 
-export function saveCheckedState(params) {
+export function setCiqFinish(entryId, delgNo) {
   return {
     [CLIENT_API]: {
-      types: [
-        actionTypes.SAVE_CHECKED_STATE,
-        actionTypes.SAVE_CHECKED_STATE_SUCCEED,
-        actionTypes.SAVE_CHECKED_STATE_FAIL,
-      ],
-      endpoint: 'v1/cms/declare/save/checkedState',
+      types: [actionTypes.CIQ_FINISH, actionTypes.CIQ_FINISH_SUCCEED, actionTypes.CIQ_FINISH_FAIL],
+      endpoint: 'v1/cms/ciq/finish',
       method: 'post',
-      data: params,
-    },
-  };
-}
-
-export function saveStateTOExp(params) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.SAVE_STATE_TOEXP,
-        actionTypes.SAVE_STATE_TOEXP_SUCCEED,
-        actionTypes.SAVE_STATE_TOEXP_FAIL,
-      ],
-      endpoint: 'v1/cms/expense/save/checkedState',
-      method: 'post',
-      data: params,
-      origin: 'mongo',
-    },
-  };
-}
-
-export function setDeclFinish(entryId, delgNo) {
-  return {
-    [CLIENT_API]: {
-      types: [actionTypes.DECL_FINISH_SET, actionTypes.DECL_FINISH_SET_SUCCEED, actionTypes.DECL_FINISH_SET_FAIL],
-      endpoint: 'v1/cms/set/ciq/decl/finish',
-      method: 'get',
-      params: { entryId, delgNo },
+      data: { entryId, delgNo },
     },
   };
 }

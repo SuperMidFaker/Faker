@@ -6,7 +6,7 @@ import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
-import { loadCiqDecls, saveCheckedState, setDeclFinish, saveStateTOExp } from 'common/reducers/cmsDeclare';
+import { loadCiqDecls, setInspect, setCiqFinish } from 'common/reducers/cmsDeclare';
 import { openCiqModal } from 'common/reducers/cmsDelegation';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from './message.i18n';
@@ -19,21 +19,18 @@ import CiqnoFillModal from './modals/ciqNoFill';
 const formatMsg = format(messages);
 
 function ColumnSwitch(props) {
-  const { record, field, onChange } = props;
+  const { record, field, checked, onChange } = props;
   function handleChange(value) {
     if (onChange) {
       onChange(record, field, value);
     }
   }
-  let check = false;
-  if (record[field] === 1) {
-    check = true;
-  }
-  return <Switch size="small" disabled={record.ciq_status === 1 || check} checked={check} value={record[field] || 0} onChange={handleChange} />;
+  return <Switch size="small" disabled={record.ciq_status === 1} checked={checked} onChange={handleChange} />;
 }
 ColumnSwitch.propTypes = {
   record: PropTypes.object.isRequired,
   field: PropTypes.string.isRequired,
+  checked: PropTypes.bool.isRequired,
   onChange: PropTypes.func,
 };
 
@@ -44,7 +41,7 @@ ColumnSwitch.propTypes = {
     ciqdeclList: state.cmsDeclare.ciqdeclList,
     listFilter: state.cmsDeclare.listFilter,
   }),
-  { loadCiqDecls, openCiqModal, saveCheckedState, setDeclFinish, saveStateTOExp }
+  { loadCiqDecls, openCiqModal, setCiqFinish, setInspect }
 )
 @connectNav({
   depth: 2,
@@ -132,14 +129,14 @@ export default class CiqDeclList extends Component {
     width: 80,
     fixed: 'right',
     render: (o, record) =>
-      <ColumnSwitch field="ciq_quality_inspect" record={record} onChange={this.handleEditChange} />,
+      <ColumnSwitch field="pzcy" record={record} checked={!!o} onChange={this.handleEditChange} />,
   }, {
     title: this.msg('anipkCheck'),
     dataIndex: 'ciq_ap_inspect',
     width: 100,
     fixed: 'right',
     render: (o, record) =>
-      <ColumnSwitch field="ciq_ap_inspect" record={record} onChange={this.handleEditChange} />,
+      <ColumnSwitch field="djcy" record={record} checked={!!o} onChange={this.handleEditChange} />,
   }, {
     title: this.msg('opColumn'),
     width: 100,
@@ -181,15 +178,22 @@ export default class CiqDeclList extends Component {
     },
     remotes: this.props.ciqdeclList,
   })
-  handleEditChange = (record, field, value) => {
-    record[field] = value ? 1 : 0; // eslint-disable-line no-param-reassign
-    this.props.saveCheckedState(record);
-    record.field = field; // eslint-disable-line no-param-reassign
-    this.props.saveStateTOExp(record);
-    this.forceUpdate();
+  handleEditChange = (record, field, checked) => {
+    this.props.setInspect({
+      preEntrySeqNo: record.pre_entry_seq_no,
+      delgNo: record.delg_no,
+      field,
+      enabled: checked,
+    }).then((result) => {
+      if (result.error) {
+        message.error(result.error.message);
+      } else {
+        this.handleTableLoad();
+      }
+    });
   }
   handleCiqFinish = (row) => {
-    this.props.setDeclFinish(row.entry_id, row.delg_no);
+    this.props.setCiqFinish(row.entry_id, row.delg_no);
   }
   handleTableLoad = (currentPage, filter) => {
     this.setState({ expandedKeys: [] });
