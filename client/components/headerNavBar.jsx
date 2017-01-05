@@ -10,7 +10,7 @@ import HelpcenterPopover from './helpcenter-popover';
 import ModuleMenu from './module-menu';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import './am-navbar.less';
+import './headerNavBar.less';
 
 const formatMsg = format(messages);
 const MenuItem = Menu.Item;
@@ -29,7 +29,7 @@ const RadioButton = Radio.Button;
   }),
   { logout, loadTranslation, changeUserLocale }
 )
-export default class AmNavBar extends React.Component {
+export default class HeaderNavBar extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     navTitle: PropTypes.object.isRequired,
@@ -122,7 +122,7 @@ export default class AmNavBar extends React.Component {
       );
     }
     return (
-      <nav className={`navbar navbar-default navbar-fixed-top am-top-header module-${moduleName}`}>
+      <nav className={`navbar navbar-default navbar-fixed-top layout-header module-${moduleName}`}>
         <div className="navbar-header">
           {brandNav}
         </div>

@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Alert, Button, Card } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import AmNavBar from 'client/components/am-navbar';
+import HeaderNavBar from 'client/components/headerNavBar';
 import { setNavTitle } from 'common/reducers/navbar';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -29,9 +29,9 @@ export default class NotFound extends React.Component {
   render() {
     const { intl } = this.props;
     return (
-      <div className="am-wrapper am-nosidebar-left">
-        <AmNavBar />
-        <div className="am-content">
+      <div className="layout-wrapper layout-nosider-left">
+        <HeaderNavBar />
+        <div className="layout-content">
           <div className="centered-card">
             <Card bodyStyle={{ padding: 32 }}>
               <Alert

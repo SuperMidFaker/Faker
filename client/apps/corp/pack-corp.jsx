@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Menu } from 'antd';
 import { locationShape } from 'react-router';
 import { intlShape, injectIntl } from 'react-intl';
-import AmNavBar from 'client/components/am-navbar';
+import HeaderNavBar from 'client/components/headerNavBar';
 import NavLink from 'client/components/nav-link';
 import { hasPermission } from 'client/common/decorators/withPrivilege';
 import { TENANT_LEVEL } from 'common/constants';
@@ -95,9 +95,9 @@ export default class CorpPack extends React.Component {
       );
     }
     return (
-      <div className="am-wrapper am-nosidebar-left">
-        <AmNavBar />
-        <div className="am-content">
+      <div className="layout-wrapper layout-nosider-left">
+        <HeaderNavBar />
+        <div className="layout-content">
           <header className="top-bar no-left-menu">
             <Menu defaultSelectedKeys={['corpsetting-0']} mode="horizontal">
               {linkMenus}

@@ -13,7 +13,7 @@ export default class SSOPack extends React.Component {
 
   render() {
     return (
-      <Layout className="am-splash-screen">
+      <Layout className="splash-screen">
         <Content className="main-content">
           <div className="center-card-wrapper">
             {this.props.children}

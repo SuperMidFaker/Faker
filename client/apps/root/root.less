@@ -194,12 +194,12 @@ img {
 .data-money {
   text-align: right;
 }
-.am-wrapper {
+.layout-wrapper {
   min-height:100%;
   height:100%;
-  padding-top: @am-header-height;
+  padding-top: @layout-header-height;
   @media (max-width:767px) {
-    padding-top:@am-header-height;
+    padding-top:@layout-header-height;
   }
 }
 // 不显示select mirror input
@@ -210,8 +210,8 @@ img {
     }
   }
 }
-.am-top-header {
-  background-color:@am-theme-color;
+.layout-header {
+  background-color:@theme-color;
   border:0;
   margin-bottom:0;
   box-shadow: 0 1px 2px rgba(0,0,0,.15);
@@ -226,9 +226,9 @@ img {
       color:#fff;
       padding-top:0;
       padding-bottom:0;
-      line-height: @am-header-height;
-      height: @am-header-height;
-      width: @am-leftbar-width;
+      line-height: @layout-header-height;
+      height: @layout-header-height;
+      width: @layout-sider-width;
       background-image:url("../../../public/assets/img/welogix_logo_160_100_white_trans.png");
       background-size: auto 45px;
       background-repeat:no-repeat;
@@ -239,11 +239,11 @@ img {
     }
   }
 }
-.am-nosidebar-left {
-  .am-left-sidebar {
+.layout-nosider-left {
+  .layout-left-sider {
     display: none;
   }
-  .am-top-header {
+  .layout-header {
     @media (max-width:767px) {
       background-color: #fff;
     }
@@ -266,14 +266,14 @@ img {
     }
   }
   @media (max-width:767px) {
-    .am-top-header .navbar-header .am-toggle-left-sidebar {
+    .layout-header .navbar-header .am-toggle-layout-left-sider {
       display: none;
     }
   }
 }
-.am-left-sidebar {
+.layout-left-sider {
   background-color:#333;
-  width: @am-leftbar-width;
+  width: @layout-sider-width;
   height:100%;
   left:0;
   position:absolute;
@@ -306,21 +306,21 @@ img {
     width: 60px;
   }
 }
-.am-fixed-sidebar .am-left-sidebar {
-  margin-top: @am-header-height;
+.layout-fixed-sider .layout-left-sider {
+  margin-top: @layout-header-height;
   padding-bottom:80px;
   position:fixed;
   top:0;
   bottom:0;
   z-index:1031;
 }
-.am-fixed-sidebar .am-left-sidebar:before {
-  top: @am-header-height;
+.layout-fixed-sider .layout-left-sider:before {
+  top: @layout-header-height;
 }
-.am-content {
+.layout-content {
   position:relative;
   left:0;
-  margin-left: @am-leftbar-width;
+  margin-left: @layout-sider-width;
   min-height:100%;
   height: 100%;
   transition:all .35s ease;
@@ -328,7 +328,7 @@ img {
     margin-left: 60px;
   }
 }
-.am-nosidebar-left .am-content {
+.layout-nosider-left .layout-content {
   margin-left:0
 }
 .top-bar {
@@ -809,7 +809,7 @@ img {
 .dock-panel {
   position: fixed;
   width: @dock-panel-width;
-  top: @am-header-height;
+  top: @layout-header-height;
   right: -20px;
   bottom: 0;
   z-index: 75;

@@ -113,28 +113,6 @@ export default class CustomsDeclPane extends React.Component {
           return <Tag>否</Tag>;
         }
       },
-    }, {
-      title: '品质查验',
-      dataIndex: 'ciq_quality_inspect',
-      width: 70,
-      render: (o) => {
-        if (o === 1) {
-          return <Tag color="red">是</Tag>;
-        } else {
-          return <Tag>否</Tag>;
-        }
-      },
-    }, {
-      title: '动检查验',
-      dataIndex: 'ciq_ap_inspect',
-      width: 70,
-      render: (o) => {
-        if (o === 1) {
-          return <Tag color="red">是</Tag>;
-        } else {
-          return <Tag>否</Tag>;
-        }
-      },
     }];
     return (
       <div className="pane-content tab-pane">

@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Menu, Icon } from 'antd';
 import NavLink from 'client/components/nav-link';
-import AmNavBar from 'client/components/am-navbar';
+import HeaderNavBar from 'client/components/headerNavBar';
 import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';
 
@@ -22,9 +22,9 @@ export default class AccountPack extends React.Component {
   }
   render() {
     return (
-      <div className="am-wrapper am-nosidebar-left">
-        <AmNavBar />
-        <div className="am-content">
+      <div className="layout-wrapper layout-nosider-left">
+        <HeaderNavBar />
+        <div className="layout-content">
           <aside className="side-bar no-left-menu no-top-bar">
             <h2>个人帐号</h2>
             <Menu defaultSelectedKeys={['profile']} mode="inline">
