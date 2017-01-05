@@ -2,7 +2,9 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Modal, Form, Mention, message } from 'antd';
-import { closeAcceptModal, acceptDelg, loadDelgOperators, setPreviewStatus } from 'common/reducers/cmsDelegation';
+import { closeAcceptModal, acceptDelg, loadDelgOperators, setPreviewStatus,
+  setOpetaor, loadCustPanel } from 'common/reducers/cmsDelegation';
+import { loadDeclCiqByDelgNo } from 'common/reducers/cmsDeclare';
 
 const FormItem = Form.Item;
 const Nav = Mention.Nav;
@@ -13,11 +15,13 @@ const getMentions = Mention.getMentions;
     visible: state.cmsDelegation.acceptModal.visible,
     tenantId: state.cmsDelegation.acceptModal.tenantId,
     type: state.cmsDelegation.acceptModal.type,
+    opt: state.cmsDelegation.acceptModal.opt,
     delgDispIds: state.cmsDelegation.acceptModal.dispatchIds,
     delg_no: state.cmsDelegation.acceptModal.delg_no,
     delgOperators: state.cmsDelegation.acceptModal.operators,
   }),
-  { closeAcceptModal, acceptDelg, loadDelgOperators, setPreviewStatus }
+  { closeAcceptModal, acceptDelg, loadDelgOperators, setPreviewStatus,
+    setOpetaor, loadCustPanel, loadDeclCiqByDelgNo }
 )
 @Form.create()
 export default class DelgAcceptModal extends React.Component {
@@ -25,6 +29,7 @@ export default class DelgAcceptModal extends React.Component {
     intl: intlShape.isRequired,
     visible: PropTypes.bool.isRequired,
     type: PropTypes.oneOf(['delg', 'ciq']),
+    opt: PropTypes.oneOf(['accept', 'operator']),
     tenantId: PropTypes.number.isRequired,
     delgDispIds: PropTypes.arrayOf(PropTypes.number),
     delgOperators: PropTypes.arrayOf(PropTypes.shape({
@@ -53,20 +58,39 @@ export default class DelgAcceptModal extends React.Component {
       if (!errors) {
         const name = Mention.getMentions(this.props.form.getFieldValue('operator'))[0].slice(1);
         const operator = this.props.delgOperators.filter(dop => dop.name === name)[0];
-        this.props.acceptDelg(
-          operator.lid, operator.name, this.props.delgDispIds, this.props.delg_no
-        ).then((result) => {
-          if (result.error) {
-            message.error(result.error.message);
-          } else {
-            if (this.props.type === 'delg') {
-              this.props.setPreviewStatus({ preStatus: 'accepted' });
-            } else if (this.props.type === 'ciq') {
-              this.props.setPreviewStatus({ preStatus: 'ciqaccepted' });
+        if (this.props.opt === 'accept') {
+          this.props.acceptDelg(
+            operator.lid, operator.name, this.props.delgDispIds, this.props.delg_no
+          ).then((result) => {
+            if (result.error) {
+              message.error(result.error.message);
+            } else {
+              if (this.props.type === 'delg') {
+                this.props.setPreviewStatus({ preStatus: 'accepted' });
+              } else if (this.props.type === 'ciq') {
+                this.props.setPreviewStatus({ preStatus: 'ciqaccepted' });
+              }
+              this.props.closeAcceptModal();
             }
-            this.props.closeAcceptModal();
-          }
-        });
+          });
+        } else if (this.props.opt === 'operator') {
+          this.props.setOpetaor(
+            operator.lid, operator.name, this.props.delgDispIds
+          ).then((result) => {
+            if (result.error) {
+              message.error(result.error.message);
+            } else {
+              if (this.props.type === 'delg') {
+                this.props.loadCustPanel({
+                  delgNo: this.props.delg_no, tenantId: this.props.tenantId,
+                });
+              } else if (this.props.type === 'ciq') {
+                this.props.loadDeclCiqByDelgNo(this.props.delg_no, this.props.tenantId);
+              }
+              this.props.closeAcceptModal();
+            }
+          });
+        }
       }
     });
   }

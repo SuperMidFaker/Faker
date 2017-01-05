@@ -48,13 +48,15 @@ export default class ModeInfo extends React.Component {
 
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   handlePickupChange = (pickupDt) => {
-    const transitTime = this.props.formhoc.getFieldValue('transit_time') || 0;
-    const deliverDate = new Date(
-      pickupDt.valueOf() + transitTime * ONE_DAY_MS
-    );
-    this.props.formhoc.setFieldsValue({
-      deliver_est_date: moment(deliverDate),
-    });
+    if (pickupDt) {
+      const transitTime = this.props.formhoc.getFieldValue('transit_time') || 0;
+      const deliverDate = new Date(
+        pickupDt.valueOf() + transitTime * ONE_DAY_MS
+      );
+      this.props.formhoc.setFieldsValue({
+        deliver_est_date: moment(deliverDate),
+      });
+    }
   }
   handleTransitChange = (value) => {
     const pickupDt = this.props.formhoc.getFieldValue('pickup_est_date');
@@ -68,13 +70,15 @@ export default class ModeInfo extends React.Component {
     }
   }
   handleDeliveryChange = (deliverDt) => {
-    const transitTime = this.props.formhoc.getFieldValue('transit_time') || 0;
-    const pickupDt = new Date(
-      deliverDt.valueOf() - transitTime * ONE_DAY_MS
-    );
-    this.props.formhoc.setFieldsValue({
-      pickup_est_date: moment(pickupDt, 'YYYY-MM-DD'),
-    });
+    if (deliverDt) {
+      const transitTime = this.props.formhoc.getFieldValue('transit_time') || 0;
+      const pickupDt = new Date(
+        deliverDt.valueOf() - transitTime * ONE_DAY_MS
+      );
+      this.props.formhoc.setFieldsValue({
+        pickup_est_date: moment(pickupDt, 'YYYY-MM-DD'),
+      });
+    }
   }
   handleModeChange = (id) => {
     const modes = this.props.transitModes.filter(tm => tm.id === id);

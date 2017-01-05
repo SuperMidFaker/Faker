@@ -1,7 +1,7 @@
 /* eslint camelcase: 0 */
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Button, Card, Checkbox, message, notification } from 'antd';
+import { Button, Card, Checkbox, message, Alert, Table } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import { computeSaleCharge, setConsignFields } from 'common/reducers/shipment';
 import { getChargeAmountExpression } from '../../common/charge';
@@ -33,40 +33,86 @@ export default class FreightCharge extends React.Component {
       message: '',
       description: '',
     },
+    tariffType: 'normal', // normal base all
+    tariff: {},
+    result: {},
+    params: {},
   }
   msg = (key, values) => formatMsg(this.props.intl, key, values)
-  handleCompute = () => {
+  handleCompute = (tariffType) => {
+    this.setState({ alert: {
+      visible: false,
+      type: 'error',
+      message: '',
+      description: '',
+    } });
     const {
       customer_partner_id, consigner_region_code, consignee_region_code,
       transport_mode_id, transport_mode_code,
     } = this.props.formData;
-    const { goods_type, package: ctn, vehicle_type_id, vehicle_length_id, total_weight, total_volume } =
+    const { goods_type, package: ctn, vehicle_type_id, vehicle_length_id, total_weight, total_volume, pickup_est_date, deliver_est_date } =
       this.props.formhoc.getFieldsValue([
         'goods_type', 'package', 'vehicle_type_id',
         'vehicle_length_id', 'total_weight', 'total_volume',
+        'pickup_est_date', 'deliver_est_date',
       ]);
-
     const created = this.props.formData.created_date || Date.now();
     const data = {
       partner_id: customer_partner_id, consigner_region_code, consignee_region_code,
       goods_type, trans_mode: transport_mode_id, transport_mode_code, ctn,
       tenant_id: this.props.tenantId, created_date: created,
       vehicle_type_id, vehicle_length_id, total_weight, total_volume,
+      pickup_est_date, deliver_est_date, tariffType,
     };
+
     if (customer_partner_id === undefined) {
-      notification.warning({
-        message: '计算运费',
+      this.handleResult({
+        visible: true,
+        type: 'error',
+        message: '表单填写有误',
         description: '客户未选择',
       });
+    } else if (consigner_region_code === undefined) {
+      this.handleResult({
+        visible: true,
+        type: 'error',
+        message: '表单填写有误',
+        description: '始运地未选择',
+      });
+    } else if (consignee_region_code === undefined) {
+      this.handleResult({
+        visible: true,
+        type: 'error',
+        message: '表单填写有误',
+        description: '目的地未选择',
+      });
     } else if (transport_mode_code === undefined) {
-      notification.warning({
-        message: '计算运费',
+      this.handleResult({
+        visible: true,
+        type: 'error',
+        message: '表单填写有误',
         description: '运输模式未选择',
       });
     } else if (goods_type === undefined) {
-      notification.warning({
-        message: '计算运费',
+      this.handleResult({
+        visible: true,
+        type: 'error',
+        message: '表单填写有误',
         description: '货物类型未选择',
+      });
+    } else if (pickup_est_date === undefined) {
+      this.handleResult({
+        visible: true,
+        type: 'error',
+        message: '表单填写有误',
+        description: '提货日期未选择',
+      });
+    } else if (deliver_est_date === undefined) {
+      this.handleResult({
+        visible: true,
+        type: 'error',
+        message: '表单填写有误',
+        description: '送货日期未选择',
       });
     } else {
       this.computeSaleCharge(data);
@@ -76,19 +122,18 @@ export default class FreightCharge extends React.Component {
     this.props.computeSaleCharge(data).then((result) => {
       if (result.error) {
         message.error(result.error.message);
-      } else if (result.data.freight === -1) {
-        notification.error({
-          message: '计算运费',
-          description: '未找到匹配的价格协议，请确认 所选客户、货物类型、运输模式 的价格协议是否存在！如果存在，则有可能是该价格协议未发布、未启用、或者有效期不符',
-        });
-      } else if (result.data.freight === -2) {
-        notification.error({
-          message: '计算运费',
-          description: '价格协议中未找到对应路线的报价费率',
-        });
+      } else if (result.data.freight < 0) {
+        const alert = this.translateResult(result.data.freight);
+        this.handleResult(alert);
+        if (result.data.baseChargeResult && result.data.baseChargeResult.freight >= 0) {
+          this.setState({ tariffType: 'base' });
+        }
       } else {
         this.setState({
           computed: true,
+          tariff: result.data.tariff,
+          result: result.data,
+          params: data,
         });
         // todo 起步价运费公式? pickup mode=1 x数量?
         const { freight, pickup, deliver, meter, quantity,
@@ -112,6 +157,91 @@ export default class FreightCharge extends React.Component {
         });
       }
     });
+  }
+  translateResult = (value) => {
+    let data = {};
+    if (value === -1) {
+      data = {
+        visible: true,
+        type: 'error',
+        message: '价格协议未找到',
+        description: '所选客户、货物类型、运输模式 的价格协议不存在或未发布',
+      };
+    } else if (value === -2) {
+      data = {
+        visible: true,
+        type: 'error',
+        message: '价格协议未启用',
+        description: '找到了相应的价格协议，但是没有启用',
+      };
+    } else if (value === -3) {
+      data = {
+        visible: true,
+        type: 'error',
+        message: '价格协议尚未生效',
+        description: '找到了相应的价格协议，但是其生效时间还未到，（生效基准日期类型为 运单创建时间）',
+      };
+    } else if (value === -4) {
+      data = {
+        visible: true,
+        type: 'error',
+        message: '价格协议尚未生效',
+        description: '找到了相应的价格协议，但是其生效时间还未到，（生效基准日期类型为 运单预计提货时间）',
+      };
+    } else if (value === -5) {
+      data = {
+        visible: true,
+        type: 'error',
+        message: '价格协议尚未生效',
+        description: '找到了相应的价格协议，但是其生效时间还未到，（生效基准日期类型为 运单预计送货时间）',
+      };
+    } else if (value === -21) {
+      data = {
+        visible: true,
+        type: 'error',
+        message: '价格区间问题',
+        description: '集装箱类型未选择或不在范围',
+      };
+    } else if (value === -22) {
+      data = {
+        visible: true,
+        type: 'error',
+        message: '价格区间问题',
+        description: '车型车长未选择或不在范围',
+      };
+    } else if (value === -23) {
+      data = {
+        visible: true,
+        type: 'error',
+        message: '价格区间问题',
+        description: '总重量未填或不在范围',
+      };
+    } else if (value === -24) {
+      data = {
+        visible: true,
+        type: 'error',
+        message: '价格区间问题',
+        description: '总体积未填写或不在范围',
+      };
+    } else if (value === -25) {
+      data = {
+        visible: true,
+        type: 'error',
+        message: '价格区间问题',
+        description: '找到了价格协议，但是没有相应的价格区间',
+      };
+    } else if (value === -26) {
+      data = {
+        visible: true,
+        type: 'error',
+        message: '路线不存在',
+        description: '价格协议中未找到对应的路线',
+      };
+    }
+    return data;
+  }
+  handleResult = (data) => {
+    this.setState({ alert: data });
   }
   handlePickupCheck = (ev) => {
     const { formhoc } = this.props;
@@ -163,7 +293,7 @@ export default class FreightCharge extends React.Component {
   }
   handleReset = (ev) => {
     ev.preventDefault();
-    this.setState({ computed: false });
+    this.setState({ computed: false, tariff: {} });
     this.props.formhoc.setFieldsValue({
       freight_charge: undefined,
       pickup_charge: undefined,
@@ -187,13 +317,51 @@ export default class FreightCharge extends React.Component {
   }
   render() {
     const { formhoc, formData } = this.props;
-    const { computed } = this.state;
+    const { computed, alert, tariffType, tariff, result, params } = this.state;
+    const dataSource = [{
+      key: '公斤',
+      value: params.total_weight ? params.total_weight : '',
+    }, {
+      key: '立方米',
+      value: params.total_volume ? params.total_volume : '',
+    }, {
+      key: '公里数',
+      value: result.miles,
+    }, {
+      key: '单位转换系数',
+      value: result.unitRatio,
+    }, {
+      key: '路线梯度费率',
+      value: result.gradient,
+    }, {
+      key: '调价系数',
+      value: tariff.agreement ? tariff.agreement.adjustCoefficient : '',
+    }];
     return (
-      <Card title={this.msg('freightCharge')} bodyStyle={{ padding: 16 }}
+      <Card title={`${this.msg('freightCharge')} - 销售价 ${tariff.quoteNo ? tariff.quoteNo : ''}`} bodyStyle={{ padding: 16 }}
         extra={computed ? <a role="button" onClick={this.handleReset}>重置</a> : <Button type="primary" icon="calculator"
-          onClick={this.handleCompute}
+          onClick={() => this.handleCompute('normal')}
         >{this.msg('computeCharge')}</Button>}
       >
+        {
+          alert.visible &&
+          <Alert
+            message={
+              tariffType === 'base' ? (
+                <span>基准价:{alert.message}
+                  <Button type="primary" icon="calculator"
+                    onClick={() => this.handleCompute('base')}
+                    style={{ marginLeft: 60 }}
+                  >用基准价{this.msg('computeCharge')}
+                  </Button>
+                </span>
+              ) : alert.message
+            }
+            description={alert.description}
+            type={alert.type}
+            showIcon
+          />
+        }
         {
           computed &&
           <InputItem formhoc={formhoc} labelName={this.msg('basicCharge')} addonAfter={this.msg('CNY')}
@@ -243,6 +411,10 @@ export default class FreightCharge extends React.Component {
           field="distance" fieldProps={{ initialValue: formData.distance }} type="number"
           colSpan={8} readOnly={computed}
         />
+        <Table size="small" dataSource={dataSource} pagination={false} style={{ display: computed ? '' : 'none' }}>
+          <Table.Column title="参数" key="key" dataIndex="key" />
+          <Table.Column title="数值" key="value" dataIndex="value" />
+        </Table>
       </Card>
     );
   }

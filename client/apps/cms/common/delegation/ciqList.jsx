@@ -4,9 +4,7 @@ import moment from 'moment';
 import { Badge, message, Tag } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { PARTNER_BUSINESSES, CMS_CIQ_STATUS, CIQ_SUP_STATUS } from 'common/constants';
-import { loadCiqTable, loadCertBrokers, setDispStatus, loadDisp, loadDelgDisp,
-  setCiqFinish, loadCMQParams, matchCQuote, openAcceptModal,
-} from 'common/reducers/cmsDelegation';
+import { loadCiqTable, setDispStatus, loadDelgDisp, setCiqFinish, loadCMQParams } from 'common/reducers/cmsDelegation';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from './message.i18n';
 import TrimSpan from 'client/components/trimSpan';
@@ -28,9 +26,7 @@ const formatMsg = format(messages);
     cMQParams: state.cmsDelegation.cMQParams,
     delgDispShow: state.cmsDelegation.delgDispShow,
   }),
-  { loadCiqTable, loadCertBrokers, setDispStatus,
-    loadDisp, loadDelgDisp, setCiqFinish, loadCMQParams, matchCQuote,
-    openAcceptModal }
+  { loadCiqTable, setDispStatus, loadDelgDisp, setCiqFinish, loadCMQParams }
 )
 export default class CiqList extends Component {
   static propTypes = {
@@ -46,9 +42,6 @@ export default class CiqList extends Component {
   state = {
     selectedRowKeys: [],
     expandedKeys: [],
-  }
-  componentDidMount() {
-    this.props.loadCertBrokers(this.props.tenantId);
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.saved !== this.props.saved) {
@@ -139,10 +132,6 @@ export default class CiqList extends Component {
         return (
           <RowUpdater onHit={this.handleCiqFinish} label={this.msg('ciqFinish')} row={record} />
         );
-      } else if (record.status === 0 && type === 2) {
-        return (
-          <RowUpdater onHit={() => this.handleDelegationCancel(record, 'ciq')} label={this.msg('delgRecall')} row={record} />
-        );
       } else {
         return (
           <span />
@@ -182,23 +171,6 @@ export default class CiqList extends Component {
         }
       });
   }
-  handleMatchQuote = (params) => {
-    this.props.matchCQuote(params).then(
-      (result) => {
-        if (result.error) {
-          message.error(result.error.message);
-        } else {
-          this.handleTableLoad();
-        }
-      });
-  }
-  handleAccept = (row) => {
-    this.props.openAcceptModal({
-      tenantId: this.props.tenantId,
-      dispatchIds: [row.id],
-      type: 'ciq',
-    });
-  }
   handleCiqFinish = (row) => {
     this.props.setCiqFinish(row.delg_no).then(
       (result) => {
@@ -217,14 +189,14 @@ export default class CiqList extends Component {
       type);
     this.props.setDispStatus({ delgDispShow: true });
   }
-  handleDelegationCancel = (row, type) => {
-    this.props.loadDisp(
-      row.delg_no,
-      this.props.tenantId,
-      PARTNER_BUSINESSES.CIB,
-      type);
-    this.props.setDispStatus({ delgDispShow: true });
-  }
+  // handleDelegationCancel = (row, type) => {
+  //   this.props.loadDisp(
+  //     row.delg_no,
+  //     this.props.tenantId,
+  //     PARTNER_BUSINESSES.CIB,
+  //     type);
+  //   this.props.setDispStatus({ delgDispShow: true });
+  // }
   handleTableLoad = (currentPage, filter) => {
     this.setState({ expandedKeys: [] });
     this.props.loadCiqTable({

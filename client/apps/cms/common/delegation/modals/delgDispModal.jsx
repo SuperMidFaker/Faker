@@ -1,8 +1,9 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
-import { Modal, Button, Select, Form, Popconfirm, message, Switch, Radio } from 'antd';
+import { Modal, Select, Form, message, Switch, Radio } from 'antd';
 import { clearingOption } from 'common/constants';
-import { delgDispSave, delDisp, setSavedStatus, setDispStatus, loadciqSups } from 'common/reducers/cmsDelegation';
+import { delgDispSave, delDisp, setSavedStatus, setDispStatus, loadciqSups, showPreviewer, loadCustPanel } from 'common/reducers/cmsDelegation';
+import { loadDeclCiqByDelgNo } from 'common/reducers/cmsDeclare';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
@@ -16,38 +17,41 @@ const formItemLayout = {
   labelCol: { span: 6 },
   wrapperCol: { span: 18 },
 };
-function ButtonSelect(props) {
-  const { saved, onconfirm, onclick } = props;
-  let button = '';
-  if (saved) {
-    button = (
-      <Popconfirm title="你确定撤回分配吗?" onConfirm={onconfirm} >
-        <Button size="large">撤销</Button>
-      </Popconfirm>
-      );
-  } else {
-    button = (
-      <Button size="large" type="primary" onClick={onclick}>
-          分配
-      </Button>
-      );
-  }
-  return (
-    button
-  );
-}
-ButtonSelect.PropTypes = {
-  saved: PropTypes.bool.isRequired,
-  onconfirm: PropTypes.func,
-  onclick: PropTypes.func,
-};
+// function ButtonSelect(props) {
+//   const { saved, onconfirm, onclick } = props;
+//   let button = '';
+//   if (saved) {
+//     button = (
+//       <Popconfirm title="你确定撤回分配吗?" onConfirm={onconfirm} >
+//         <Button size="large">撤销</Button>
+//       </Popconfirm>
+//       );
+//   } else {
+//     button = (
+//       <Button size="large" type="primary" onClick={onclick}>
+//           分配
+//       </Button>
+//       );
+//   }
+//   return (
+//     button
+//   );
+// }
+// ButtonSelect.PropTypes = {
+//   saved: PropTypes.bool.isRequired,
+//   onconfirm: PropTypes.func,
+//   onclick: PropTypes.func,
+// };
 
 function getFieldInits(delgDisp, dispatch) {
   const init = {};
   init.appointed = false;
-  init.customs_name = dispatch.customs_name;
+  init.customs_name = '';
   init.appointed_option = 1;
-  if (delgDisp.appointed_option > 0) {
+  if (dispatch.customs_name !== dispatch.recv_name) {
+    init.customs_name = dispatch.customs_name;
+  }
+  if (delgDisp.appointed_option > 0 && delgDisp.appointed_option < 3) {
     init.ciq_name = delgDisp.appointed_ciq_name;
     init.appointed = true;
     init.appointed_option = delgDisp.appointed_option;
@@ -66,9 +70,11 @@ function getFieldInits(delgDisp, dispatch) {
     ciqSups: state.cmsDelegation.assign.ciqSups,
     saved: state.cmsDelegation.assign.saved,
     delgDispShow: state.cmsDelegation.assign.delgDispShow,
+    previewer: state.cmsDelegation.previewer,
+    tabKey: state.cmsDelegation.previewer.tabKey,
     fieldInits: getFieldInits(state.cmsDelegation.assign.delgDisp, state.cmsDelegation.assign.dispatch),
   }),
-  { delgDispSave, delDisp, setSavedStatus, setDispStatus, loadciqSups }
+  { delgDispSave, delDisp, setSavedStatus, setDispStatus, loadciqSups, showPreviewer, loadCustPanel, loadDeclCiqByDelgNo }
 )
 @Form.create()
 export default class DelgDispModal extends Component {
@@ -85,41 +91,58 @@ export default class DelgDispModal extends Component {
     delDisp: PropTypes.func.isRequired,
     setSavedStatus: PropTypes.func.isRequired,
     delgDispShow: PropTypes.bool.isRequired,
+    tabKey: PropTypes.string,
+    previewer: PropTypes.object,
   }
   state = {
-    appointed: false,
+    appoint: false,
+    ciqSups: [],
   }
   msg = key => formatMsg(this.props.intl, key);
-  handleConfirm = () => {
-    const { delgDisp, dispatch, tenantId } = this.props;
-    this.props.delDisp(delgDisp, dispatch, tenantId
-    ).then(
-      (result) => {
-        if (result.error) {
-          message.error(result.error.message);
-        } else {
-          this.props.setSavedStatus({ saved: false });
-          this.props.setDispStatus({ delgDispShow: false });
-        }
-      }
-    );
-  }
+  // handleConfirm = () => {
+  //   const { delgDisp, dispatch, tenantId } = this.props;
+  //   this.props.delDisp(delgDisp, dispatch, tenantId
+  //   ).then(
+  //     (result) => {
+  //       if (result.error) {
+  //         message.error(result.error.message);
+  //       } else {
+  //         this.props.setSavedStatus({ saved: false });
+  //         this.props.setDispStatus({ delgDispShow: false });
+  //         this.props.form.resetFields();
+  //         this.handleOnChange(false);
+  //         if (this.props.previewer.visible) {
+  //           this.props.showPreviewer(this.props.tenantId, dispatch.delg_no, this.props.tabKey);
+  //           if (this.props.tabKey === 'customsDecl') {
+  //             this.props.loadCustPanel({
+  //               delgNo: dispatch.delg_no,
+  //               tenantId: this.props.tenantId,
+  //             });
+  //           } else if (this.props.tabKey === 'ciqDecl') {
+  //             this.props.loadDeclCiqByDelgNo(dispatch.delg_no, this.props.tenantId);
+  //           }
+  //         }
+  //       }
+  //     }
+  //   );
+  // }
   handleSave = () => {
     const { delgDisp, dispatch, partners, ciqSups } = this.props;
     const recv = this.props.form.getFieldsValue();
+    const appointedOption = recv.appointed_option || delgDisp.appointed_option;
     let partner = {};
     const pts = partners.filter(pt => pt.partner_id === recv.customs_name);
     if (pts.length === 1) {
       partner = pts[0];
     }
     let ciqSup = {};
-    if (this.state.appointed) {
+    if (this.state.appoint) {
       const sup = ciqSups.filter(pt => pt.partner_id === recv.ciq_name);
       if (sup.length === 1) {
         ciqSup = sup[0];
       }
     }
-    const delegation = { ...delgDisp, ...{ appointed_option: recv.appointed_option } };
+    const delegation = { ...delgDisp, ...{ appointed_option: appointedOption } };
     this.props.delgDispSave(delegation, dispatch, partner, ciqSup
     ).then((result) => {
       if (result.error) {
@@ -127,45 +150,51 @@ export default class DelgDispModal extends Component {
       } else {
         this.props.setSavedStatus({ saved: true });
         this.props.setDispStatus({ delgDispShow: false });
+        this.props.form.resetFields();
+        this.handleOnChange(this.props.fieldInits.appointed);
+        if (this.props.previewer.visible) {
+          this.props.showPreviewer(this.props.tenantId, dispatch.delg_no, this.props.tabKey);
+          if (this.props.tabKey === 'customsDecl') {
+            this.props.loadCustPanel({
+              delgNo: dispatch.delg_no,
+              tenantId: this.props.tenantId,
+            });
+          } else if (this.props.tabKey === 'ciqDecl') {
+            this.props.loadDeclCiqByDelgNo(dispatch.delg_no, this.props.tenantId);
+          }
+        }
       }
     });
   }
   handleCancel = () => {
     this.props.setDispStatus({ delgDispShow: false });
+    this.props.form.resetFields();
+    this.handleOnChange(this.props.fieldInits.appointed);
   }
   handleOnChange = (checked) => {
-    if (checked) {
-      const recv = this.props.form.getFieldsValue();
-      let delgSup = {};
-      const pts = this.props.partners.filter(pt => pt.partner_id === recv.customs_name);
-      if (pts.length === 1) {
-        delgSup = pts[0];
-      }
-      this.props.loadciqSups(this.props.tenantId, 'CIB', delgSup).then((result) => {
-        if (result.error) {
-          message.error(result.error.message);
-        }
-      });
-    }
-    this.setState({ appointed: checked });
+    this.setState({ appoint: checked });
+  }
+  handleSelectChange = (value) => {
+    const sups = this.props.ciqSups.filter(sup => sup.partner_id !== value);
+    this.setState({ ciqSups: sups });
   }
   render() {
-    const { form: { getFieldDecorator }, partners, ciqSups, delgDispShow, saved, fieldInits } = this.props;
-    const { appointed } = this.state;
-    const footer = (
-      <div>
-        <Button type="ghost" onClick={this.handleCancel} style={{ marginRight: 10 }}>取消</Button>
-        <ButtonSelect saved={saved} onconfirm={this.handleConfirm} onclick={this.handleSave} />
-      </div>
-    );
+    const { form: { getFieldDecorator }, partners, delgDisp, delgDispShow, fieldInits } = this.props;
+    const { appoint, ciqSups } = this.state;
+    // const footer = (
+    //   <div>
+    //     <Button type="ghost" onClick={this.handleCancel} style={{ marginRight: 10 }}>取消</Button>
+    //     <ButtonSelect saved={saved} onconfirm={this.handleConfirm} onclick={this.handleSave} />
+    //   </div>
+    // );
     let appointLabel = '';
     if (fieldInits.appointed) {
       appointLabel = '指定报检供应商';
     } else {
-      appointLabel = appointed ? '指定报检供应商' : '不指定报检供应商';
+      appointLabel = appoint ? '指定报检供应商' : '不指定报检供应商';
     }
     return (
-      <Modal visible={delgDispShow} title="分配" footer={footer} >
+      <Modal visible={delgDispShow} title="分配" onOk={this.handleSave} onCancel={this.handleCancel} >
         <Form vertical>
           <FormItem label="供应商" {...formItemLayout}>
             {getFieldDecorator('customs_name', { initialValue: fieldInits.customs_name }
@@ -175,6 +204,7 @@ export default class DelgDispModal extends Component {
                 optionFilterProp="searched"
                 placeholder={this.msg('dispatchMessage')}
                 style={{ width: '80%' }}
+                onChange={this.handleSelectChange}
               >
                 {
                 partners.map(pt => (
@@ -188,9 +218,9 @@ export default class DelgDispModal extends Component {
               </Select>)}
           </FormItem>
           <FormItem label={appointLabel} {...formItemLayout} >
-            <Switch defaultChecked={fieldInits.appointed} onChange={this.handleOnChange} disabled={fieldInits.appointed} />
+            <Switch checked={appoint} onChange={this.handleOnChange} disabled={fieldInits.appointed || delgDisp.appointed_option === 3} />
           </FormItem>
-          {(appointed || fieldInits.appointed) &&
+          {(appoint || fieldInits.appointed) &&
             <FormItem label="报检商结算对象" {...formItemLayout}>
               {getFieldDecorator('appointed_option', { initialValue: fieldInits.appointed_option })(<RadioGroup>
                 <RadioButton value={clearingOption.clearSup.key}>{clearingOption.clearSup.value}</RadioButton>
@@ -198,7 +228,7 @@ export default class DelgDispModal extends Component {
               </RadioGroup>)}
             </FormItem>
           }
-          {(appointed || fieldInits.appointed) &&
+          {(appoint || fieldInits.appointed) &&
             <FormItem label="报检供应商" {...formItemLayout} >
               {getFieldDecorator('ciq_name', { initialValue: fieldInits.ciq_name }
                 )(<Select

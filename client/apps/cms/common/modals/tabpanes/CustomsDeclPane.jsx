@@ -6,7 +6,6 @@ import moment from 'moment';
 import { DECL_I_TYPE, DECL_E_TYPE, CMS_DELEGATION_STATUS } from 'common/constants';
 import { loadSubdelgsTable, loadCustPanel, setPreviewStatus, hidePreviewer, openAcceptModal, loadBillMakeModal } from 'common/reducers/cmsDelegation';
 import InfoItem from 'client/components/InfoItem';
-import SetOperatorModal from '../operatorModal';
 
 const Panel = Collapse.Panel;
 
@@ -69,10 +68,7 @@ export default class CustomsDeclPane extends React.Component {
       } else if (delgPanel.status === CMS_DELEGATION_STATUS.processing ||
           (delgPanel.status === CMS_DELEGATION_STATUS.declaring && delgPanel.sub_status === 1)) {
         return (
-          <div>
-            <Button type="default" icon="edit" onClick={this.handleMake}>编辑清单</Button>
-            <Button icon="eye" onClick={ev => this.handleView(ev)}>查看清单</Button>
-          </div>
+          <Button type="default" icon="edit" onClick={this.handleMake}>编辑清单</Button>
         );
       } else if (delgPanel.status > CMS_DELEGATION_STATUS.declaring) {
         return <Button icon="eye" onClick={ev => this.handleView(ev)}>查看清单</Button>;
@@ -85,7 +81,9 @@ export default class CustomsDeclPane extends React.Component {
     this.props.openAcceptModal({
       tenantId: this.props.tenantId,
       dispatchIds: [this.props.delgPanel.id],
+      delg_no: this.props.delgNo,
       type: 'delg',
+      opt: 'operator',
     });
   }
   render() {
@@ -135,7 +133,7 @@ export default class CustomsDeclPane extends React.Component {
               />
             </Col>
           </Row>
-          {delgPanel.type === 1 && <div className="card-footer">
+          {(delgPanel.type === 1 || delgPanel.customs_tenant_id === -1) && <div className="card-footer">
             <div className="toolbar-right">
               <Tooltip title="分配操作人员">
                 <Button type="ghost" shape="circle" onClick={this.handleOperatorAssign}><Icon type="user" /></Button>
@@ -176,7 +174,6 @@ export default class CustomsDeclPane extends React.Component {
             </Collapse>
           </Card>
         }
-        <SetOperatorModal />
       </div>
     );
   }
