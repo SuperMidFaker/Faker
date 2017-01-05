@@ -211,7 +211,7 @@ export default class PreviewPanel extends React.Component {
                 </Col>
               </Row>
             </div>
-            <div className="body with-header-summary">
+            <div className="body with-header-summary" style={{ top: 120 }}>
               <Row gutter={16}>
                 <Col sm={24} md={12} lg={12}>
                   <Card bodyStyle={{ padding: 8 }}>

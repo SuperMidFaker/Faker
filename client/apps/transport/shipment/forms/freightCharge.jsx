@@ -74,6 +74,7 @@ export default class FreightCharge extends React.Component {
   }
   computeSaleCharge = (data) => {
     this.props.computeSaleCharge(data).then((result) => {
+      console.log(result.data);
       if (result.error) {
         message.error(result.error.message);
       } else if (result.data.freight === -1) {
