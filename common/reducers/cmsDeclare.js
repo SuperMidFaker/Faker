@@ -219,7 +219,7 @@ export default function reducer(state = initialState, action) {
   }
 }
 
-export function setInspect(entrySeqNo, inspect, val) {
+export function setInspect(entrySeqNo, inspect, status) {
   return {
     [CLIENT_API]: {
       types: [
@@ -229,7 +229,7 @@ export function setInspect(entrySeqNo, inspect, val) {
       ],
       endpoint: 'v1/cms/declare/set/inspect',
       method: 'get',
-      params: { entrySeqNo, inspect, val },
+      params: { entrySeqNo, inspect, status },
     },
   };
 }
