@@ -6,7 +6,6 @@ import moment from 'moment';
 import { loadDeclCiqByDelgNo } from 'common/reducers/cmsDeclare';
 import { openAcceptModal, loadciqSups, setDispStatus } from 'common/reducers/cmsDelegation';
 import InfoItem from 'client/components/InfoItem';
-import SetOperatorModal from '../operatorModal';
 import CiqDispModal from '../ciqDispModal';
 
 @injectIntl
@@ -50,7 +49,9 @@ export default class CiqDeclPane extends React.Component {
     this.props.openAcceptModal({
       tenantId: this.props.tenantId,
       dispatchIds: [this.props.ciqdecl.id],
+      delg_no: this.props.delgNo,
       type: 'ciq',
+      opt: 'operator',
     });
   }
   handleCiqAssign = () => {
@@ -123,7 +124,6 @@ export default class CiqDeclPane extends React.Component {
         <Card bodyStyle={{ padding: 0 }}>
           <Table size="middle" columns={columns} pagination={false} dataSource={ciqdecl.ciqlist} scroll={{ x: 580 }} />
         </Card>
-        <SetOperatorModal />
         <CiqDispModal />
       </div>
     );

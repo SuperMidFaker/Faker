@@ -18,7 +18,6 @@ import { loadAcceptanceTable, loadBillMakeModal, acceptDelg, delDelg, loadDeclar
   showPreviewer, setDispStatus, loadCiqTable, delgAssignRecall, loadCustPanel,
   openAcceptModal, showDispModal } from 'common/reducers/cmsDelegation';
 import DelegationInfoHubPanel from '../modals/DelegationInfoHubPanel';
-import AcceptModal from './modals/acceptModal';
 import DelgDispModal from './modals/delgDispModal';
 import CiqList from './ciqList';
 import messages from './message.i18n';
@@ -350,6 +349,7 @@ export default class DelegationList extends Component {
       dispatchIds: [row.id],
       type: 'delg',
       delg_no: row.delg_no,
+      opt: 'accept',
     });
     // this.acceptingRow = row;
   }
@@ -571,7 +571,6 @@ export default class DelegationList extends Component {
         <BillModal ietype={this.props.ietype} />
         <DelgDispModal />
         <DelegationInfoHubPanel ietype={this.props.ietype} />
-        <AcceptModal />
       </QueueAnim>
     );
   }

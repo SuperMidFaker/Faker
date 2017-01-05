@@ -12,7 +12,7 @@ import CiqDeclPane from './tabpanes/CiqDeclPane';
 import DutyTaxPane from './tabpanes/DutyTaxPane';
 import ExpensesPane from './tabpanes/ExpensesPane';
 import ActivityLoggerPane from './tabpanes/ActivityLoggerPane';
-import AcceptModal from '../delegation/modals/acceptModal';
+import AcceptModal from './acceptModal';
 import { hidePreviewer, setPreviewStatus, setPreviewTabkey, openAcceptModal } from 'common/reducers/cmsDelegation';
 
 const TabPane = Tabs.TabPane;
