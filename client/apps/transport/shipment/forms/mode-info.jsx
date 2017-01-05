@@ -116,24 +116,31 @@ export default class ModeInfo extends React.Component {
       modeEditCols.push(
         <Col key="vehicle_type" span={`${outerColSpan}`}>
           <FormItem label={this.msg('vehicleType')} labelCol={{ span: labelColSpan }}
-            wrapperCol={{ span: 24 - labelColSpan }}
+            wrapperCol={{ span: 24 - labelColSpan }} required
           >
-            {getFieldDecorator('vehicle_type_id', { initialValue: vehicle_type_id })(<Select>
-              {vehicleTypes.map(
-              vt => <Option value={vt.value} key={`${vt.text}${vt.value}`}>{vt.text}</Option>
-            )}
-            </Select>)}
+            {getFieldDecorator('vehicle_type_id', { initialValue: vehicle_type_id,
+              rules: [{
+                required: true, message: this.msg('vehicleTypeMust'), type: 'number',
+              }] })(
+                <Select>
+                  {vehicleTypes.map(
+                  vt => <Option value={vt.value} key={`${vt.text}${vt.value}`}>{vt.text}</Option>
+                )}
+                </Select>)}
           </FormItem>
         </Col>,
         <Col key="vehicle_length" span={`${outerColSpan}`}>
           <FormItem label={this.msg('vehicleLength')} labelCol={{ span: labelColSpan }}
-            wrapperCol={{ span: 24 - labelColSpan }}
+            wrapperCol={{ span: 24 - labelColSpan }} required
           >
-            {getFieldDecorator('vehicle_length_id', { initialValue: vehicle_length_id })(<Select>
-              {vehicleLengths.map(
+            {getFieldDecorator('vehicle_length_id', { initialValue: vehicle_length_id,
+              rules: [{
+                required: true, message: this.msg('vehicleLengthMust'), type: 'number',
+              }] })(<Select>
+                {vehicleLengths.map(
               vl => <Option value={vl.value} key={`${vl.text}${vl.value}`}>{vl.text}</Option>
             )}
-            </Select>)}
+              </Select>)}
           </FormItem>
         </Col>
       );

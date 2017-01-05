@@ -87,6 +87,9 @@ export default class FreightCharge extends React.Component {
           description: '价格协议中未找到对应路线的报价费率',
         });
       } else {
+        this.setState({
+          computed: true,
+        });
         // todo 起步价运费公式? pickup mode=1 x数量?
         const { freight, pickup, deliver, meter, quantity,
           unitRatio, gradient, miles, coefficient } = result.data;
@@ -99,9 +102,7 @@ export default class FreightCharge extends React.Component {
           ),
           distance: miles,
         });
-        this.setState({
-          computed: true,
-        });
+
         this.props.setConsignFields({
           charge_gradient: gradient,
           charge_amount: getChargeAmountExpression(meter, miles, quantity,

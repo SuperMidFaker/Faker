@@ -62,11 +62,11 @@ export default class ChargePanel extends React.Component {
     width: 160,
     render: (col, record) => {
       if (record.type === 'serverCharge') {
-        return (<span>{col} <Badge status="success" /></span>);
+        return (<Badge status="success" text={col} />);
       } else if (record.type === 'advanceCharge') {
-        return (<span>{col} <Badge status="warning" /></span>);
+        return (<Badge status="warning" text={col} />);
       } else if (record.type === 'specialCharge') {
-        return (<span>{col} <Badge status="error" /></span>);
+        return (<Badge status="error" text={col} />);
       } else {
         return col;
       }

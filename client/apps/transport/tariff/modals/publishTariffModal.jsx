@@ -102,8 +102,6 @@ export default class PublishTariffModal extends React.Component {
             })(<Select >
               <Option value="pickupEstDate">{this.msg('pickupEstDate')}</Option>
               <Option value="deliverEstDate">{this.msg('deliverEstDate')}</Option>
-              <Option value="pickupActDate">{this.msg('pickupActDate')}</Option>
-              <Option value="deliverActDate">{this.msg('deliverActDate')}</Option>
             </Select>)}
           </FormItem>
           <FormItem label="生效起始时间" {...formItemLayout}>
