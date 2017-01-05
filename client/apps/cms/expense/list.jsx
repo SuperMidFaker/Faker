@@ -315,7 +315,9 @@ export default class ExpenseList extends Component {
             key: 'revenue_status',
             className: 'status-indicator',
             render: (status) => {
-              if (status === 1) {
+              if (status === 0) {
+                return <Badge status="default" />;
+              } else if (status === 1) {
                 return <Badge status="warning" />;
               } else if (status === 2) {
                 return <Badge status="success" />;
@@ -371,7 +373,9 @@ export default class ExpenseList extends Component {
             key: 'cost_status',
             className: 'status-indicator',
             render: (status) => {
-              if (status === 1) {
+              if (status === 0) {
+                return <Badge status="default" />;
+              } else if (status === 1) {
                 return <Badge status="warning" />;
               } else if (status === 2) {
                 return <Badge status="success" />;

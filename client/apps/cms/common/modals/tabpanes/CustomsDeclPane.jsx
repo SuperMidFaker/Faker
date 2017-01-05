@@ -42,7 +42,8 @@ export default class CustomsDeclPane extends React.Component {
       });
     }
   }
-  handleView = () => {
+  handleView = (ev) => {
+    ev.stopPropagation();
     this.props.loadBillMakeModal({
       delg_no: this.props.delgNo,
     }, 'view').then((result) => {
@@ -51,7 +52,8 @@ export default class CustomsDeclPane extends React.Component {
       }
     });
   }
-  handleMake = () => {
+  handleMake = (ev) => {
+    ev.stopPropagation();
     this.props.loadBillMakeModal({
       delg_no: this.props.delgNo,
     }, 'make').then((result) => {

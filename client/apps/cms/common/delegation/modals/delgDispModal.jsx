@@ -195,7 +195,7 @@ export default class DelgDispModal extends Component {
     }
     return (
       <Modal visible={delgDispShow} title="分配" onOk={this.handleSave} onCancel={this.handleCancel} >
-        <Form vertical>
+        <Form horizontal>
           <FormItem label="供应商" {...formItemLayout}>
             {getFieldDecorator('customs_name', { initialValue: fieldInits.customs_name }
               )(<Select
@@ -221,14 +221,6 @@ export default class DelgDispModal extends Component {
             <Switch checked={appoint} onChange={this.handleOnChange} disabled={fieldInits.appointed || delgDisp.appointed_option === 3} />
           </FormItem>
           {(appoint || fieldInits.appointed) &&
-            <FormItem label="报检商结算对象" {...formItemLayout}>
-              {getFieldDecorator('appointed_option', { initialValue: fieldInits.appointed_option })(<RadioGroup>
-                <RadioButton value={clearingOption.clearSup.key}>{clearingOption.clearSup.value}</RadioButton>
-                <RadioButton value={clearingOption.clearAppoint.key}>{clearingOption.clearAppoint.value}</RadioButton>
-              </RadioGroup>)}
-            </FormItem>
-          }
-          {(appoint || fieldInits.appointed) &&
             <FormItem label="报检供应商" {...formItemLayout} >
               {getFieldDecorator('ciq_name', { initialValue: fieldInits.ciq_name }
                 )(<Select
@@ -248,6 +240,14 @@ export default class DelgDispModal extends Component {
                   )
                 }
                 </Select>)}
+            </FormItem>
+          }
+          {(appoint || fieldInits.appointed) &&
+            <FormItem label="报检商结算对象" {...formItemLayout}>
+              {getFieldDecorator('appointed_option', { initialValue: fieldInits.appointed_option })(<RadioGroup>
+                <RadioButton value={clearingOption.clearSup.key}>{clearingOption.clearSup.value}</RadioButton>
+                <RadioButton value={clearingOption.clearAppoint.key}>{clearingOption.clearAppoint.value}</RadioButton>
+              </RadioGroup>)}
             </FormItem>
           }
         </Form>
