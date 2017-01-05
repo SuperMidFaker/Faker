@@ -50,7 +50,7 @@ export default class ActivityLoggerPane extends React.Component {
     const { previewer } = this.props;
     const key = this.state.tabKey;
     const val = this.props.form.getFieldsValue();
-    console.log('val', val);
+    // console.log('val', val);
     if (key === 'log') {
 
     } else if (key === 'exchange') {
