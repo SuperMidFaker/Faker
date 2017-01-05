@@ -70,7 +70,7 @@ export default class ShipmentSchedule extends React.Component {
     }
     const steps = statusDes.map((s, i) => <Step key={i} status={s.status} title={s.title} description={s.description} />);
     return (
-      <Steps current={statusPos}>{steps}</Steps>
+      <Steps style={{ padding: 0 }} current={statusPos}>{steps}</Steps>
     );
   }
 }
