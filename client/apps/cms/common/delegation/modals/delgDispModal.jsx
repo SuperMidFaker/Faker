@@ -2,7 +2,8 @@ import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import { Modal, Button, Select, Form, Popconfirm, message, Switch, Radio } from 'antd';
 import { clearingOption } from 'common/constants';
-import { delgDispSave, delDisp, setSavedStatus, setDispStatus, loadciqSups } from 'common/reducers/cmsDelegation';
+import { delgDispSave, delDisp, setSavedStatus, setDispStatus, loadciqSups, showPreviewer, loadCustPanel } from 'common/reducers/cmsDelegation';
+import { loadDeclCiqByDelgNo } from 'common/reducers/cmsDeclare';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
@@ -69,9 +70,11 @@ function getFieldInits(delgDisp, dispatch) {
     ciqSups: state.cmsDelegation.assign.ciqSups,
     saved: state.cmsDelegation.assign.saved,
     delgDispShow: state.cmsDelegation.assign.delgDispShow,
+    previewer: state.cmsDelegation.previewer,
+    tabKey: state.cmsDelegation.previewer.tabKey,
     fieldInits: getFieldInits(state.cmsDelegation.assign.delgDisp, state.cmsDelegation.assign.dispatch),
   }),
-  { delgDispSave, delDisp, setSavedStatus, setDispStatus, loadciqSups }
+  { delgDispSave, delDisp, setSavedStatus, setDispStatus, loadciqSups, showPreviewer, loadCustPanel, loadDeclCiqByDelgNo }
 )
 @Form.create()
 export default class DelgDispModal extends Component {
@@ -88,6 +91,8 @@ export default class DelgDispModal extends Component {
     delDisp: PropTypes.func.isRequired,
     setSavedStatus: PropTypes.func.isRequired,
     delgDispShow: PropTypes.bool.isRequired,
+    tabKey: PropTypes.string,
+    previewer: PropTypes.object,
   }
   state = {
     appoint: false,
@@ -106,6 +111,17 @@ export default class DelgDispModal extends Component {
           this.props.setDispStatus({ delgDispShow: false });
           this.props.form.resetFields();
           this.handleOnChange(false);
+          if (this.props.previewer.visible) {
+            this.props.showPreviewer(this.props.tenantId, dispatch.delg_no, this.props.tabKey);
+            if (this.props.tabKey === 'customsDecl') {
+              this.props.loadCustPanel({
+                delgNo: dispatch.delg_no,
+                tenantId: this.props.tenantId,
+              });
+            } else if (this.props.tabKey === 'ciqDecl') {
+              this.props.loadDeclCiqByDelgNo(dispatch.delg_no, this.props.tenantId);
+            }
+          }
         }
       }
     );
@@ -134,6 +150,17 @@ export default class DelgDispModal extends Component {
       } else {
         this.props.setSavedStatus({ saved: true });
         this.props.setDispStatus({ delgDispShow: false });
+        if (this.props.previewer.visible) {
+          this.props.showPreviewer(this.props.tenantId, dispatch.delg_no, this.props.tabKey);
+          if (this.props.tabKey === 'customsDecl') {
+            this.props.loadCustPanel({
+              delgNo: dispatch.delg_no,
+              tenantId: this.props.tenantId,
+            });
+          } else if (this.props.tabKey === 'ciqDecl') {
+            this.props.loadDeclCiqByDelgNo(dispatch.delg_no, this.props.tenantId);
+          }
+        }
       }
     });
   }

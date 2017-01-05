@@ -104,7 +104,7 @@ export default class DelegationList extends Component {
     if (nextProps.preStatus !== this.props.preStatus) {
       if (nextProps.preStatus === 'accepted') {
         this.handleDelgListLoad();
-        this.showAcceptInfo(this.acceptingRow);
+        // this.showAcceptInfo(this.acceptingRow);
       }
       if (nextProps.preStatus === 'make') {
         const { delegation } = this.props;
@@ -260,8 +260,7 @@ export default class DelegationList extends Component {
   })
 
   handlePreview = (delgNo) => {
-    this.props.showPreviewer(this.props.tenantId, delgNo);
-    this.props.loadCustPanel({ delgNo, tenantId: this.props.tenantId });
+    this.props.showPreviewer(this.props.tenantId, delgNo, 'customsDecl');
   }
   handleCiqFinish = (delgNo) => {
     this.props.setCiqFinish(delgNo).then(
@@ -353,19 +352,19 @@ export default class DelegationList extends Component {
       }
     });
   }
-  showAcceptInfo = (row) => {
-    let closed = false;
-    const Info = Modal.info({
-      title: this.msg('successfulOperation'),
-      okText: this.msg('startMaking'),
-      content: this.msg('makeConfirm'),
-      onOk: () => {
-        this.handleDelegationMake(row);
-        closed = true;
-      },
-    });
-    setTimeout(() => !closed && Info.destroy(), 2000);
-  }
+  // showAcceptInfo = (row) => {
+  //   let closed = false;
+  //   const Info = Modal.info({
+  //     title: this.msg('successfulOperation'),
+  //     okText: this.msg('startMaking'),
+  //     content: this.msg('makeConfirm'),
+  //     onOk: () => {
+  //       this.handleDelegationMake(row);
+  //       closed = true;
+  //     },
+  //   });
+  //   setTimeout(() => !closed && Info.destroy(), 2000);
+  // }
   handleDelegationAccept = (row) => {
     this.props.openAcceptModal({
       tenantId: this.props.tenantId,
@@ -373,7 +372,7 @@ export default class DelegationList extends Component {
       type: 'delg',
       delg_no: row.delg_no,
     });
-    this.acceptingRow = row;
+    // this.acceptingRow = row;
   }
   handleDelegationAssign = (row) => {
     this.props.showDispModal(row.delg_no, this.props.tenantId);

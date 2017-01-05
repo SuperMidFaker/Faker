@@ -27,6 +27,12 @@ export default class CustomsDeclPane extends React.Component {
     delgNo: PropTypes.string.isRequired,
     delgPanel: PropTypes.object.isRequired,
   }
+  componentWillMount() {
+    this.props.loadCustPanel({
+      delgNo: this.props.delgNo,
+      tenantId: this.props.tenantId,
+    });
+  }
   componentWillReceiveProps(nextProps) {
     if (nextProps.tabKey === 'customsDecl' &&
       nextProps.tabKey !== this.props.tabKey ||

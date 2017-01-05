@@ -69,11 +69,9 @@ export default class DelegationInfoHubPanel extends React.Component {
   }
   handleAssign = () => {
     this.props.setPreviewStatus({ preStatus: 'dispatch' });
-    this.props.hidePreviewer();
   }
   handleDispCancel = () => {
     this.props.setPreviewStatus({ preStatus: 'delgDispCancel' });
-    this.props.hidePreviewer();
   }
   translateStatus(delegation, delgDispatch) {
     let status = delgDispatch.status;

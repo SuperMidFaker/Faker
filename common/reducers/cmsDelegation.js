@@ -118,7 +118,7 @@ const initialState = {
   },
   previewer: {
     visible: false,
-    tabKey: 'customsDecl',
+    tabKey: 'basic',
     delegation: {},
     files: [],
     delgDispatch: {},
@@ -154,7 +154,7 @@ const initialState = {
   cMQParams: [],
   brokers: [],
   relatedDisps: [],
-  suplliers: [],
+  suppliers: [],
   delgPanel: {
     bills: [],
   },
@@ -268,7 +268,7 @@ export default function reducer(state = initialState, action) {
       return { ...state, delegateListFilter: { ...state.delegateListFilter, status: 'undelg' } };
     case actionTypes.SHOW_SEND_DELEGATE_MODAL_SUCCEED:
       if (action.visible) {
-        return { ...state, sendPanel: { visible: action.visible, delegations: action.delegations }, suplliers: action.result.data };
+        return { ...state, sendPanel: { visible: action.visible, delegations: action.delegations }, suppliers: action.result.data };
       } else {
         return { ...state, sendPanel: { ...initialState.sendPanel, visible: action.visible } };
       }
@@ -799,7 +799,7 @@ export function toggleSendDelegateModal(visible = true, params = {}, delegations
           actionTypes.SHOW_SEND_DELEGATE_MODAL_SUCCEED,
           actionTypes.SHOW_SEND_DELEGATE_MODAL_FAIL,
         ],
-        endpoint: 'v1/cms/suplliers',
+        endpoint: 'v1/cms/suppliers',
         method: 'get',
         params,
         visible,

@@ -19,6 +19,7 @@ import DelegationInfoHubPanel from '../common/modals/DelegationInfoHubPanel';
 import DelgAdvanceExpenseModal from './modals/delgAdvanceExpenseModal';
 import RowUpdater from './rowUpdater';
 import ExpEptModal from './modals/expEptModal';
+import BillModal from '../common/delegation/modals/billModal';
 
 const formatMsg = format(messages);
 const RadioGroup = Radio.Group;
@@ -483,6 +484,7 @@ export default class ExpenseList extends Component {
         <DelegationInfoHubPanel />
         <DelgAdvanceExpenseModal />
         <ExpEptModal visible={this.state.expEptVisible} toggle={this.toggleEptModal} />
+        <BillModal ietype='import' />
       </QueueAnim>
     );
   }
