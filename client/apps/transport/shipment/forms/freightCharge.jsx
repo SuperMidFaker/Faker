@@ -351,6 +351,7 @@ export default class FreightCharge extends React.Component {
                 <span>基准价:{alert.message}
                   <Button type="primary" icon="calculator"
                     onClick={() => this.handleCompute('base')}
+                    style={{ marginLeft: 60 }}
                   >用基准价{this.msg('computeCharge')}
                   </Button>
                 </span>
