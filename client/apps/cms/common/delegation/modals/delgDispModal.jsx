@@ -50,7 +50,7 @@ function getFieldInits(delgDisp, dispatch) {
   if (dispatch.customs_name !== dispatch.recv_name) {
     init.customs_name = dispatch.customs_name;
   }
-  if (delgDisp.appointed_option > 0) {
+  if (delgDisp.appointed_option > 0 && delgDisp.appointed_option < 3) {
     init.ciq_name = delgDisp.appointed_ciq_name;
     init.appointed = true;
     init.appointed_option = delgDisp.appointed_option;
@@ -112,14 +112,14 @@ export default class DelgDispModal extends Component {
   handleSave = () => {
     const { delgDisp, dispatch, partners, ciqSups } = this.props;
     const recv = this.props.form.getFieldsValue();
-    const appointedOption = recv.appointed_option || 0;
+    const appointedOption = recv.appointed_option || delgDisp.appointed_option;
     let partner = {};
     const pts = partners.filter(pt => pt.partner_id === recv.customs_name);
     if (pts.length === 1) {
       partner = pts[0];
     }
     let ciqSup = {};
-    if (this.state.appointed) {
+    if (this.state.appoint) {
       const sup = ciqSups.filter(pt => pt.partner_id === recv.ciq_name);
       if (sup.length === 1) {
         ciqSup = sup[0];
@@ -158,7 +158,7 @@ export default class DelgDispModal extends Component {
     this.setState({ appoint: checked });
   }
   render() {
-    const { form: { getFieldDecorator }, partners, ciqSups, delgDispShow, saved, fieldInits } = this.props;
+    const { form: { getFieldDecorator }, partners, delgDisp, ciqSups, delgDispShow, saved, fieldInits } = this.props;
     const { appoint } = this.state;
     const footer = (
       <div>
@@ -196,7 +196,7 @@ export default class DelgDispModal extends Component {
               </Select>)}
           </FormItem>
           <FormItem label={appointLabel} {...formItemLayout} >
-            <Switch checked={appoint} onChange={this.handleOnChange} disabled={fieldInits.appointed} />
+            <Switch checked={appoint} onChange={this.handleOnChange} disabled={fieldInits.appointed || delgDisp.appointed_option === 3} />
           </FormItem>
           {(appoint || fieldInits.appointed) &&
             <FormItem label="报检商结算对象" {...formItemLayout}>

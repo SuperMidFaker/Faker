@@ -16,7 +16,7 @@ import BillModal from './modals/billModal';
 import RowUpdater from './rowUpdater';
 import { loadAcceptanceTable, loadBillMakeModal, acceptDelg, delDelg, loadDeclareWay, matchQuote,
   showPreviewer, setDispStatus, loadDisp, loadCiqTable,
-  setCiqFinish, openAcceptModal, showDispModal } from 'common/reducers/cmsDelegation';
+  setCiqFinish, openAcceptModal, showDispModal, loadCustPanel } from 'common/reducers/cmsDelegation';
 import DelegationInfoHubPanel from '../modals/DelegationInfoHubPanel';
 import AcceptModal from './modals/acceptModal';
 import DelgDispModal from './modals/delgDispModal';
@@ -51,7 +51,7 @@ const OptGroup = Select.OptGroup;
   { loadAcceptanceTable, loadBillMakeModal, acceptDelg,
     delDelg, showPreviewer, setDispStatus, loadDisp,
     loadCiqTable, loadDeclareWay, matchQuote,
-    setCiqFinish, openAcceptModal, showDispModal }
+    setCiqFinish, openAcceptModal, showDispModal, loadCustPanel }
 )
 @connectNav({
   depth: 2,
@@ -261,6 +261,7 @@ export default class DelegationList extends Component {
 
   handlePreview = (delgNo) => {
     this.props.showPreviewer(this.props.tenantId, delgNo);
+    this.props.loadCustPanel({ delgNo, tenantId: this.props.tenantId });
   }
   handleCiqFinish = (delgNo) => {
     this.props.setCiqFinish(delgNo).then(

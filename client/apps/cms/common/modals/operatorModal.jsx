@@ -2,7 +2,8 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Modal, Form, Mention, message } from 'antd';
-import { closeAcceptModal, setOpetaor, loadDelgOperators, loadCustPanel, loadDeclCiqByDelgNo } from 'common/reducers/cmsDelegation';
+import { closeAcceptModal, setOpetaor, loadDelgOperators, loadCustPanel } from 'common/reducers/cmsDelegation';
+import { loadDeclCiqByDelgNo } from 'common/reducers/cmsDeclare';
 
 const FormItem = Form.Item;
 const Nav = Mention.Nav;
@@ -60,7 +61,6 @@ export default class SetOperatorModal extends React.Component {
           if (result.error) {
             message.error(result.error.message);
           } else {
-            this.props.closeAcceptModal();
             if (this.props.type === 'delg') {
               this.props.loadCustPanel({
                 delgNo: this.props.delgNo, tenantId: this.props.tenantId,
@@ -68,6 +68,7 @@ export default class SetOperatorModal extends React.Component {
             } else if (this.props.type === 'ciq') {
               this.props.loadDeclCiqByDelgNo(this.props.delgNo, this.props.tenantId);
             }
+            this.props.closeAcceptModal();
           }
         });
       }
