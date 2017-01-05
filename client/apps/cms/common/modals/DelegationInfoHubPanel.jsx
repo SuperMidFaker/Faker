@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Badge, Button, Col, Dropdown, Icon, Menu, Row, Tabs, Tag } from 'antd';
+import { Badge, Button, Col, Dropdown, Icon, Menu, Row, Tabs, Tag, Popconfirm } from 'antd';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
@@ -12,7 +12,7 @@ import CiqDeclPane from './tabpanes/CiqDeclPane';
 import DutyTaxPane from './tabpanes/DutyTaxPane';
 import ExpensesPane from './tabpanes/ExpensesPane';
 import ActivityLoggerPane from './tabpanes/ActivityLoggerPane';
-import AcceptModal from '../delegation/modals/acceptModal';
+import AcceptModal from './acceptModal';
 import { hidePreviewer, setPreviewStatus, setPreviewTabkey, openAcceptModal } from 'common/reducers/cmsDelegation';
 
 const TabPane = Tabs.TabPane;
@@ -69,11 +69,9 @@ export default class DelegationInfoHubPanel extends React.Component {
   }
   handleAssign = () => {
     this.props.setPreviewStatus({ preStatus: 'dispatch' });
-    this.props.hidePreviewer();
   }
   handleDispCancel = () => {
     this.props.setPreviewStatus({ preStatus: 'delgDispCancel' });
-    this.props.hidePreviewer();
   }
   translateStatus(delegation, delgDispatch) {
     let status = delgDispatch.status;
@@ -248,9 +246,9 @@ export default class DelegationInfoHubPanel extends React.Component {
         delgDispatch.status === CMS_DELEGATION_STATUS.accepted) {
         return (
           <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-            <Button type="ghost" onClick={this.handleDispCancel}>
-              撤回
-            </Button>
+            <Popconfirm title="你确定撤回分配吗?" onConfirm={this.handleDispCancel} >
+              <Button size="large">撤回</Button>
+            </Popconfirm>
           </PrivilegeCover>
         );
       }
@@ -258,9 +256,9 @@ export default class DelegationInfoHubPanel extends React.Component {
         delgDispatch.status === CMS_DELEGATION_STATUS.accepted) {
       return (
         <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-          <Button type="ghost" onClick={this.handleDispCancel}>
-              撤回
-            </Button>
+          <Popconfirm title="你确定撤回分配吗?" onConfirm={this.handleDispCancel} >
+            <Button size="large">撤回</Button>
+          </Popconfirm>
         </PrivilegeCover>
       );
     }

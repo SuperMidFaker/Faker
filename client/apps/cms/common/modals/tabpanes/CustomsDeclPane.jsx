@@ -6,7 +6,6 @@ import moment from 'moment';
 import { DECL_I_TYPE, DECL_E_TYPE, CMS_DELEGATION_STATUS } from 'common/constants';
 import { loadSubdelgsTable, loadCustPanel, setPreviewStatus, hidePreviewer, openAcceptModal, loadBillMakeModal } from 'common/reducers/cmsDelegation';
 import InfoItem from 'client/components/InfoItem';
-import SetOperatorModal from '../operatorModal';
 
 const Panel = Collapse.Panel;
 
@@ -26,6 +25,12 @@ export default class CustomsDeclPane extends React.Component {
     tenantId: PropTypes.number.isRequired,
     delgNo: PropTypes.string.isRequired,
     delgPanel: PropTypes.object.isRequired,
+  }
+  componentWillMount() {
+    this.props.loadCustPanel({
+      delgNo: this.props.delgNo,
+      tenantId: this.props.tenantId,
+    });
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.tabKey === 'customsDecl' &&
@@ -76,7 +81,9 @@ export default class CustomsDeclPane extends React.Component {
     this.props.openAcceptModal({
       tenantId: this.props.tenantId,
       dispatchIds: [this.props.delgPanel.id],
+      delg_no: this.props.delgNo,
       type: 'delg',
+      opt: 'operator',
     });
   }
   render() {
@@ -167,7 +174,6 @@ export default class CustomsDeclPane extends React.Component {
             </Collapse>
           </Card>
         }
-        <SetOperatorModal />
       </div>
     );
   }

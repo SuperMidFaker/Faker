@@ -2,6 +2,7 @@ import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import { Modal, Select, Form, message } from 'antd';
 import { ciqDispSave, setDispStatus, showPreviewer } from 'common/reducers/cmsDelegation';
+import { loadDeclCiqByDelgNo } from 'common/reducers/cmsDeclare';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from './message.i18n';
 import { format } from 'client/common/i18n/helpers';
@@ -21,8 +22,9 @@ const formItemLayout = {
     ciqSups: state.cmsDelegation.assign.ciqSups,
     ciqDispShow: state.cmsDelegation.assign.ciqDispShow,
     dispatch: state.cmsDelegation.previewer.delgDispatch,
+    tabKey: state.cmsDelegation.previewer.tabKey,
   }),
-  { ciqDispSave, setDispStatus, showPreviewer }
+  { ciqDispSave, setDispStatus, showPreviewer, loadDeclCiqByDelgNo }
 )
 @Form.create()
 export default class CiqDispModal extends Component {
@@ -32,6 +34,7 @@ export default class CiqDispModal extends Component {
     form: PropTypes.object.isRequired,
     ciqDispShow: PropTypes.bool.isRequired,
     dispatch: PropTypes.object.isRequired,
+    tabKey: PropTypes.string,
   }
   msg = key => formatMsg(this.props.intl, key);
   handleSave = () => {
@@ -47,7 +50,8 @@ export default class CiqDispModal extends Component {
         message.error(result.error.message);
       } else {
         this.props.setDispStatus({ ciqDispShow: false });
-        this.props.showPreviewer(this.props.tenantId, dispatch.delg_no);
+        this.props.showPreviewer(this.props.tenantId, dispatch.delg_no, this.props.tabKey);
+        this.props.loadDeclCiqByDelgNo(dispatch.delg_no, this.props.tenantId);
       }
     });
   }

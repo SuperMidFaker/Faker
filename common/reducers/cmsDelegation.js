@@ -36,7 +36,6 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'LOAD_CERT', 'LOAD_CERT_SUCCEED', 'LOAD_CERT_FAIL',
   'LOAD_MQPARAM', 'LOAD_MQPARAM_SUCCEED', 'LOAD_MQPARAM_FAIL',
   'MATCH_CIQ_QUOTE', 'MATCH_CIQ_QUOTE_SUCCEED', 'MATCH_CIQ_QUOTE_FAIL',
-  'BROKERS_LOAD', 'BROKERS_LOAD_SUCCEED', 'BROKERS_LOAD_FAIL',
   'CIQ_FINISH_SET', 'CIQ_FINISH_SET_SUCCEED', 'CIQ_FINISH_SET_FAIL',
   'LOAD_CIQSUB', 'LOAD_CIQSUB_SUCCEED', 'LOAD_CIQSUB_FAIL',
   'LOAD_DELG_PANEL', 'LOAD_DELG_PANEL_SUCCEED', 'LOAD_DELG_PANEL_FAILED',
@@ -45,6 +44,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'CIQ_DISP_SAVE', 'CIQ_DISP_SAVE_SUCCEED', 'CIQ_DISP_SAVE_FAIL',
   'UPDATE_BLNO', 'UPDATE_BLNO_SUCCEED', 'UPDATE_BLNO_FAIL',
   'UPDATE_CERT_PARAM', 'UPDATE_CERT_PARAM_SUCCEED', 'UPDATE_CERT_PARAM_FAIL',
+  'RECALL_DELG_ASSIGN', 'RECALL_DELG_ASSIGN_SUCCEED', 'RECALL_DELG_ASSIGN_FAILED',
 ]);
 
 const initialState = {
@@ -118,7 +118,7 @@ const initialState = {
   },
   previewer: {
     visible: false,
-    tabKey: 'customsDecl',
+    tabKey: 'basic',
     delegation: {},
     files: [],
     delgDispatch: {},
@@ -154,7 +154,7 @@ const initialState = {
   cMQParams: [],
   brokers: [],
   relatedDisps: [],
-  suplliers: [],
+  suppliers: [],
   delgPanel: {
     bills: [],
   },
@@ -268,7 +268,7 @@ export default function reducer(state = initialState, action) {
       return { ...state, delegateListFilter: { ...state.delegateListFilter, status: 'undelg' } };
     case actionTypes.SHOW_SEND_DELEGATE_MODAL_SUCCEED:
       if (action.visible) {
-        return { ...state, sendPanel: { visible: action.visible, delegations: action.delegations }, suplliers: action.result.data };
+        return { ...state, sendPanel: { visible: action.visible, delegations: action.delegations }, suppliers: action.result.data };
       } else {
         return { ...state, sendPanel: { ...initialState.sendPanel, visible: action.visible } };
       }
@@ -288,7 +288,7 @@ export default function reducer(state = initialState, action) {
       return { ...state, assign: {
         ...state.assign, delgDisp: action.result.data.delegation,
         dispatch: action.result.data.dispatch, partners: action.result.data.partners,
-        delgDispShow: true, saved: false },
+        ciqSups: action.result.data.ciqSups, delgDispShow: true, saved: false },
       };
     case actionTypes.HIDE_PREVIEWER:
       return { ...state, previewer: { ...state.previewer, visible: action.visible } };
@@ -340,6 +340,21 @@ export default function reducer(state = initialState, action) {
   }
 }
 
+export function delgAssignRecall(delgNo, tenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.RECALL_DELG_ASSIGN,
+        actionTypes.RECALL_DELG_ASSIGN_SUCCEED,
+        actionTypes.RECALL_DELG_ASSIGN_FAILED,
+      ],
+      endpoint: 'v1/cms/delegation/assignment/recall',
+      method: 'get',
+      params: { delgNo, tenantId },
+    },
+  };
+}
+
 export function updateCertParam(dispId, cert, qty) {
   return {
     [CLIENT_API]: {
@@ -371,7 +386,7 @@ export function updateBlNo(delgNo, blNo) {
   };
 }
 
-export function loadciqSups(tenantId, type, delgSup) {
+export function loadciqSups(tenantId, type) {
   return {
     [CLIENT_API]: {
       types: [
@@ -381,7 +396,7 @@ export function loadciqSups(tenantId, type, delgSup) {
       ],
       endpoint: 'v1/cms/delegation/getciqSups',
       method: 'post',
-      data: { tenantId, type, delgSup },
+      data: { tenantId, type },
     },
   };
 }
@@ -412,16 +427,16 @@ export function setCiqFinish(delgNo) {
   };
 }
 
-export function loadCertBrokers(tenantId) {
-  return {
-    [CLIENT_API]: {
-      types: [actionTypes.BROKERS_LOAD, actionTypes.BROKERS_LOAD_SUCCEED, actionTypes.BROKERS_LOAD_FAIL],
-      endpoint: 'v1/cms/cert/brokers',
-      method: 'get',
-      params: { tenantId },
-    },
-  };
-}
+// export function loadCertBrokers(tenantId) {
+//   return {
+//     [CLIENT_API]: {
+//       types: [actionTypes.BROKERS_LOAD, actionTypes.BROKERS_LOAD_SUCCEED, actionTypes.BROKERS_LOAD_FAIL],
+//       endpoint: 'v1/cms/cert/brokers',
+//       method: 'get',
+//       params: { tenantId },
+//     },
+//   };
+// }
 
 export function loadAcceptanceTable(params) {
   return {
@@ -799,7 +814,7 @@ export function toggleSendDelegateModal(visible = true, params = {}, delegations
           actionTypes.SHOW_SEND_DELEGATE_MODAL_SUCCEED,
           actionTypes.SHOW_SEND_DELEGATE_MODAL_FAIL,
         ],
-        endpoint: 'v1/cms/suplliers',
+        endpoint: 'v1/cms/suppliers',
         method: 'get',
         params,
         visible,

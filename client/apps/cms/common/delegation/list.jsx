@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Badge, Breadcrumb, Button, Modal, Popconfirm, Radio, Select, Tag, Tooltip, message } from 'antd';
+import { Badge, Breadcrumb, Button, Popconfirm, Radio, Select, Tag, Tooltip, message } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import TrimSpan from 'client/components/trimSpan';
@@ -14,11 +14,10 @@ import SearchBar from 'client/components/search-bar';
 import BillSubTable from './billSubTable';
 import BillModal from './modals/billModal';
 import RowUpdater from './rowUpdater';
-import { loadAcceptanceTable, loadBillMakeModal, acceptDelg, delDelg, loadDeclareWay, matchQuote,
-  showPreviewer, setDispStatus, loadDisp, loadCiqTable,
-  setCiqFinish, openAcceptModal, showDispModal, loadCustPanel } from 'common/reducers/cmsDelegation';
+import { loadAcceptanceTable, loadBillMakeModal, acceptDelg, delDelg, loadDeclareWay,
+  showPreviewer, setDispStatus, loadCiqTable, delgAssignRecall, loadCustPanel,
+  openAcceptModal, showDispModal } from 'common/reducers/cmsDelegation';
 import DelegationInfoHubPanel from '../modals/DelegationInfoHubPanel';
-import AcceptModal from './modals/acceptModal';
 import DelgDispModal from './modals/delgDispModal';
 import CiqList from './ciqList';
 import messages from './message.i18n';
@@ -42,16 +41,14 @@ const OptGroup = Select.OptGroup;
     billMakeModal: state.cmsDelegation.billMakeModal,
     delgDispShow: state.cmsDelegation.assign.delgDispShow,
     preStatus: state.cmsDelegation.preStatus,
-    delgDispatch: state.cmsDelegation.previewer.delgDispatch,
+    previewer: state.cmsDelegation.previewer,
     delegation: state.cmsDelegation.previewer.delegation,
-    matchParam: state.cmsDelegation.matchParam,
     matchStatus: state.cmsDelegation.matchStatus,
     listView: state.cmsDelegation.listView,
   }),
   { loadAcceptanceTable, loadBillMakeModal, acceptDelg,
-    delDelg, showPreviewer, setDispStatus, loadDisp,
-    loadCiqTable, loadDeclareWay, matchQuote,
-    setCiqFinish, openAcceptModal, showDispModal, loadCustPanel }
+    delDelg, showPreviewer, setDispStatus, delgAssignRecall,
+    loadCiqTable, loadDeclareWay, openAcceptModal, showDispModal, loadCustPanel }
 )
 @connectNav({
   depth: 2,
@@ -73,15 +70,12 @@ export default class DelegationList extends Component {
     delDelg: PropTypes.func.isRequired,
     billMakeModal: PropTypes.object.isRequired,
     delgDispShow: PropTypes.bool.isRequired,
-    loadDisp: PropTypes.func.isRequired,
     saved: PropTypes.bool.isRequired,
     preStatus: PropTypes.string.isRequired,
-    delgDispatch: PropTypes.object.isRequired,
+    previewer: PropTypes.object.isRequired,
     delegation: PropTypes.object.isRequired,
     loadCiqTable: PropTypes.func.isRequired,
     loadDeclareWay: PropTypes.func.isRequired,
-    matchQuote: PropTypes.func.isRequired,
-    matchParam: PropTypes.object.isRequired,
     matchStatus: PropTypes.object.isRequired,
   }
   static contextTypes = {
@@ -104,7 +98,7 @@ export default class DelegationList extends Component {
     if (nextProps.preStatus !== this.props.preStatus) {
       if (nextProps.preStatus === 'accepted') {
         this.handleDelgListLoad();
-        this.showAcceptInfo(this.acceptingRow);
+        // this.showAcceptInfo(this.acceptingRow);
       }
       if (nextProps.preStatus === 'make') {
         const { delegation } = this.props;
@@ -116,7 +110,7 @@ export default class DelegationList extends Component {
       }
       if (nextProps.preStatus === 'delgDispCancel') {
         const { delegation } = this.props;
-        this.handleDelegationCancel(delegation);
+        this.handleDelgAssignRecall(delegation);
       }
       if (nextProps.preStatus === 'view') {
         const { delegation } = this.props;
@@ -263,14 +257,6 @@ export default class DelegationList extends Component {
     this.props.showPreviewer(this.props.tenantId, delgNo);
     this.props.loadCustPanel({ delgNo, tenantId: this.props.tenantId });
   }
-  handleCiqFinish = (delgNo) => {
-    this.props.setCiqFinish(delgNo).then(
-      (result) => {
-        if (result.error) {
-          message.error(result.error.message);
-        }
-      });
-  }
   handleCreateBtnClick = () => {
     this.context.router.push(`/clearance/${this.props.ietype}/create`);
   }
@@ -326,15 +312,6 @@ export default class DelegationList extends Component {
       }
     });
   }
-  handleMatchQuote = (matchParam) => {
-    this.props.matchQuote(matchParam).then((result) => {
-      if (result.error) {
-        message.error(result.error.message, 5);
-      } else {
-        this.handleDelgListLoad();
-      }
-    });
-  }
   handleDelegationMake = (row) => {
     this.props.loadBillMakeModal({
       delg_no: row.delg_no,
@@ -353,36 +330,43 @@ export default class DelegationList extends Component {
       }
     });
   }
-  showAcceptInfo = (row) => {
-    let closed = false;
-    const Info = Modal.info({
-      title: this.msg('successfulOperation'),
-      okText: this.msg('startMaking'),
-      content: this.msg('makeConfirm'),
-      onOk: () => {
-        this.handleDelegationMake(row);
-        closed = true;
-      },
-    });
-    setTimeout(() => !closed && Info.destroy(), 2000);
-  }
+  // showAcceptInfo = (row) => {
+  //   let closed = false;
+  //   const Info = Modal.info({
+  //     title: this.msg('successfulOperation'),
+  //     okText: this.msg('startMaking'),
+  //     content: this.msg('makeConfirm'),
+  //     onOk: () => {
+  //       this.handleDelegationMake(row);
+  //       closed = true;
+  //     },
+  //   });
+  //   setTimeout(() => !closed && Info.destroy(), 2000);
+  // }
   handleDelegationAccept = (row) => {
     this.props.openAcceptModal({
       tenantId: this.props.tenantId,
       dispatchIds: [row.id],
       type: 'delg',
       delg_no: row.delg_no,
+      opt: 'accept',
     });
-    this.acceptingRow = row;
+    // this.acceptingRow = row;
   }
   handleDelegationAssign = (row) => {
     this.props.showDispModal(row.delg_no, this.props.tenantId);
   }
-  handleDelegationCancel = (row) => {
-    this.props.loadDisp(
-      row.delg_no,
-      this.props.tenantId
-    );
+  handleDelgAssignRecall = (row) => {
+    this.props.delgAssignRecall(row.delg_no, this.props.tenantId).then((result) => {
+      if (result.error) {
+        message.error(result.error.message);
+      } else {
+        this.handleDelgListLoad();
+        if (this.props.previewer.visible) {
+          this.handlePreview(row.delg_no);
+        }
+      }
+    });
   }
   handleDelgDel = (delgNo) => {
     this.props.delDelg(delgNo).then((result) => {
@@ -489,7 +473,9 @@ export default class DelegationList extends Component {
                 <span>
                   <RowUpdater onHit={this.handleDelegationMake} label={this.msg('createManifest')} row={record} />
                   <span className="ant-divider" />
-                  <RowUpdater onHit={() => this.handleDelegationCancel(record)} label={this.msg('delgRecall')} row={record} />
+                  <Popconfirm title="你确定撤回分配吗?" onConfirm={() => this.handleDelgAssignRecall(record)} >
+                    <a role="button">{this.msg('delgRecall')}</a>
+                  </Popconfirm>
                 </span>
               );
             } else if (record.status === CMS_DELEGATION_STATUS.processing ||
@@ -504,7 +490,9 @@ export default class DelegationList extends Component {
             }
           } else if (record.status === CMS_DELEGATION_STATUS.accepted && record.sub_status === CMS_DELEGATION_STATUS.unaccepted) {
             return (
-              <RowUpdater onHit={() => this.handleDelegationCancel(record)} label={this.msg('delgRecall')} row={record} />
+              <Popconfirm title="你确定撤回分配吗?" onConfirm={() => this.handleDelgAssignRecall(record)} >
+                <a role="button">{this.msg('delgRecall')}</a>
+              </Popconfirm>
             );
           } else if (record.status > CMS_DELEGATION_STATUS.accepted) {
             return (
@@ -583,7 +571,6 @@ export default class DelegationList extends Component {
         <BillModal ietype={this.props.ietype} />
         <DelgDispModal />
         <DelegationInfoHubPanel ietype={this.props.ietype} />
-        <AcceptModal />
       </QueueAnim>
     );
   }
