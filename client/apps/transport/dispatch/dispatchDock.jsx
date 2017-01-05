@@ -241,12 +241,14 @@ export default class DispatchDock extends Component {
               consigner_region_code, consignee_region_code, transport_mode_id,
               transport_mode_code, package: ctn, created_date: created, goods_type,
               vehicle_type_id, vehicle_length_id, total_weight, total_volume,
+              pickup_est_date, deliver_est_date,
             } = shipmts[cj];
             this.props.computeCostCharge({
               tenant_id: this.props.tenantId, created_date: created,
               partner_id: row.partner_id, consigner_region_code, consignee_region_code,
               goods_type, trans_mode: transport_mode_id, transport_mode_code, ctn,
               vehicle_type_id, vehicle_length_id, total_weight, total_volume,
+              pickup_est_date, deliver_est_date, tariffType: 'all',
             }).then((result) => {
               if (result.error || result.data.freight < 0) {
                 const charge = {
