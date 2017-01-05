@@ -93,7 +93,7 @@ export default class ShipmentCreate extends React.Component {
             message.error(result.error.message);
           } else {
             message.success(this.msg('shipmtOpSuccess'));
-            // this.context.router.goBack();
+            this.context.router.goBack();
             this.props.loadTable(null, {
               tenantId: this.props.tenantId,
               filters: JSON.stringify(this.props.filters),

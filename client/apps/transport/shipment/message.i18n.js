@@ -117,6 +117,14 @@ export default defineMessages({
     id: 'transport.shipment.delivery.date.must',
     defaultMessage: '送货日期必填',
   },
+  vehicleTypeMust: {
+    id: 'transport.shipment.vehicle.type.must',
+    defaultMessage: '车型必填',
+  },
+  vehicleLengthMust: {
+    id: 'transport.shipment.vehicle.length.must',
+    defaultMessage: '车长必填',
+  },
   transitModeInfo: {
     id: 'transport.shipment.transit.mode.info',
     defaultMessage: '运输模式',

@@ -201,14 +201,6 @@ export default defineMessages({
     id: 'transport.tariff.deliverEstDate',
     defaultMessage: '预计交货日期',
   },
-  pickupActDate: {
-    id: 'transport.tariff.pickupActDate',
-    defaultMessage: '实际提货日期',
-  },
-  deliverActDate: {
-    id: 'transport.tariff.deliverActDate',
-    defaultMessage: '实际交货日期',
-  },
   createdDate: {
     id: 'transport.tariff.createdDate',
     defaultMessage: '创建日期',
