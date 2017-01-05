@@ -194,7 +194,7 @@ export default class ExpenseList extends Component {
     }
     return newFilters;
   }
-  handleCushInput = () => {
+  handleAdvFeesImport = () => {
 
   }
   handleExpExport = () => {
@@ -311,10 +311,16 @@ export default class ExpenseList extends Component {
           }, {
             title: this.msg('status'),
             width: 44,
-            dataIndex: 'revenue_status',
+            dataIndex: 'bill_status',
             key: 'revenue_status',
             className: 'status-indicator',
-            render: () => (<Badge status="warning" />),
+            render: (status) => {
+              if (status === 1) {
+                return <Badge status="warning" />;
+              } else if (status === 2) {
+                return <Badge status="success" />;
+              }
+            },
           },
         ],
       }, {
@@ -364,7 +370,13 @@ export default class ExpenseList extends Component {
             dataIndex: 'cost_status',
             key: 'cost_status',
             className: 'status-indicator',
-            render: () => (<Badge status="success" />),
+            render: (status) => {
+              if (status === 1) {
+                return <Badge status="warning" />;
+              } else if (status === 2) {
+                return <Badge status="success" />;
+              }
+            },
           },
         ],
       }, {
@@ -454,7 +466,7 @@ export default class ExpenseList extends Component {
         <div className="main-content" key="main">
           <div className="page-body">
             <div className="toolbar">
-              <Button type="default" icon="upload" onClick={this.handleCushInput}>
+              <Button type="default" icon="upload" onClick={this.handleAdvFeesImport}>
                 {this.msg('incExp')}
               </Button>
               <Button type="ghost" icon="file-excel" onClick={this.handleExpExport}>

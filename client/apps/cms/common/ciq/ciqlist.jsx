@@ -94,7 +94,7 @@ export default class CiqDeclList extends Component {
     },
   }, {
     title: '委托方',
-    dataIndex: 'customer_name',
+    dataIndex: 'send_name',
     width: 180,
     render: o => <TrimSpan text={o} maxLen={12} />,
   }, {

@@ -66,7 +66,7 @@ export default class DelgDeclList extends Component {
   }, {
     title: this.msg('entryId'),
     dataIndex: 'entry_id',
-    width: 150,
+    width: 180,
     fixed: 'left',
     render: (o, record) => {
       // 用id字段表示为children数据
@@ -98,6 +98,7 @@ export default class DelgDeclList extends Component {
     render: o => <TrimSpan text={o} maxLen={12} />,
   }, {
     title: '提运单号',
+    width: 140,
     dataIndex: 'bl_wb_no',
   }, {
     title: this.msg('delgNo'),
