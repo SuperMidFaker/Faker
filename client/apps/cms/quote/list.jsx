@@ -22,8 +22,8 @@ function fetchData({ state, dispatch }) {
   return dispatch(loadQuoteTable({
     tenantId: state.account.tenantId,
     filter: JSON.stringify(state.cmsQuote.listFilter),
-    pageSize: state.cmsExpense.expslist.pageSize,
-    current: state.cmsExpense.expslist.current,
+    pageSize: state.cmsQuote.quotesList.pageSize,
+    current: state.cmsQuote.quotesList.current,
   }));
 }
 
@@ -408,7 +408,7 @@ export default class QuoteList extends Component {
               </div>
             </div>
             <div className="panel-body table-panel">
-              <Table rowSelection={rowSelection} columns={columns} dataSource={this.dataSource} scroll={{ x: 1400 }} />
+              <Table rowSelection={rowSelection} columns={columns} dataSource={this.dataSource} loading={quotesList.loading} scroll={{ x: 1400 }} />
             </div>
           </div>
         </div>

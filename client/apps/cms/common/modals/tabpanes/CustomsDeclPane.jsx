@@ -94,11 +94,11 @@ export default class CustomsDeclPane extends React.Component {
     const columns = [{
       title: '统一编号',
       dataIndex: 'pre_entry_seq_no',
-      width: 120,
+      width: 140,
     }, {
       title: '海关编号',
       dataIndex: 'entry_id',
-      width: 120,
+      width: 140,
     }, {
       title: '通关状态',
       dataIndex: 'note',
