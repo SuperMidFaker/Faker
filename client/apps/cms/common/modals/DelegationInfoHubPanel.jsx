@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Badge, Button, Col, Dropdown, Icon, Menu, Row, Tabs, Tag } from 'antd';
+import { Badge, Button, Col, Dropdown, Icon, Menu, Row, Tabs, Tag, Popconfirm } from 'antd';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
@@ -246,9 +246,9 @@ export default class DelegationInfoHubPanel extends React.Component {
         delgDispatch.status === CMS_DELEGATION_STATUS.accepted) {
         return (
           <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-            <Button type="ghost" onClick={this.handleDispCancel}>
-              撤回
-            </Button>
+            <Popconfirm title="你确定撤回分配吗?" onConfirm={this.handleDispCancel} >
+              <Button size="large">撤回</Button>
+            </Popconfirm>
           </PrivilegeCover>
         );
       }
@@ -256,9 +256,9 @@ export default class DelegationInfoHubPanel extends React.Component {
         delgDispatch.status === CMS_DELEGATION_STATUS.accepted) {
       return (
         <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-          <Button type="ghost" onClick={this.handleDispCancel}>
-              撤回
-            </Button>
+          <Popconfirm title="你确定撤回分配吗?" onConfirm={this.handleDispCancel} >
+            <Button size="large">撤回</Button>
+          </Popconfirm>
         </PrivilegeCover>
       );
     }

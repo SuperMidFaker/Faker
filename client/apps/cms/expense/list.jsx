@@ -484,7 +484,7 @@ export default class ExpenseList extends Component {
         <DelegationInfoHubPanel />
         <DelgAdvanceExpenseModal />
         <ExpEptModal visible={this.state.expEptVisible} toggle={this.toggleEptModal} />
-        <BillModal ietype='import' />
+        <BillModal ietype="import" />
       </QueueAnim>
     );
   }

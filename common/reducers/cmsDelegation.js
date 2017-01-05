@@ -36,7 +36,6 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'LOAD_CERT', 'LOAD_CERT_SUCCEED', 'LOAD_CERT_FAIL',
   'LOAD_MQPARAM', 'LOAD_MQPARAM_SUCCEED', 'LOAD_MQPARAM_FAIL',
   'MATCH_CIQ_QUOTE', 'MATCH_CIQ_QUOTE_SUCCEED', 'MATCH_CIQ_QUOTE_FAIL',
-  'BROKERS_LOAD', 'BROKERS_LOAD_SUCCEED', 'BROKERS_LOAD_FAIL',
   'CIQ_FINISH_SET', 'CIQ_FINISH_SET_SUCCEED', 'CIQ_FINISH_SET_FAIL',
   'LOAD_CIQSUB', 'LOAD_CIQSUB_SUCCEED', 'LOAD_CIQSUB_FAIL',
   'LOAD_DELG_PANEL', 'LOAD_DELG_PANEL_SUCCEED', 'LOAD_DELG_PANEL_FAILED',
@@ -45,6 +44,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'CIQ_DISP_SAVE', 'CIQ_DISP_SAVE_SUCCEED', 'CIQ_DISP_SAVE_FAIL',
   'UPDATE_BLNO', 'UPDATE_BLNO_SUCCEED', 'UPDATE_BLNO_FAIL',
   'UPDATE_CERT_PARAM', 'UPDATE_CERT_PARAM_SUCCEED', 'UPDATE_CERT_PARAM_FAIL',
+  'RECALL_DELG_ASSIGN', 'RECALL_DELG_ASSIGN_SUCCEED', 'RECALL_DELG_ASSIGN_FAILED',
 ]);
 
 const initialState = {
@@ -340,6 +340,21 @@ export default function reducer(state = initialState, action) {
   }
 }
 
+export function delgAssignRecall(delgNo, tenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.RECALL_DELG_ASSIGN,
+        actionTypes.RECALL_DELG_ASSIGN_SUCCEED,
+        actionTypes.RECALL_DELG_ASSIGN_FAILED,
+      ],
+      endpoint: 'v1/cms/delegation/assignment/recall',
+      method: 'get',
+      params: { delgNo, tenantId },
+    },
+  };
+}
+
 export function updateCertParam(dispId, cert, qty) {
   return {
     [CLIENT_API]: {
@@ -412,16 +427,16 @@ export function setCiqFinish(delgNo) {
   };
 }
 
-export function loadCertBrokers(tenantId) {
-  return {
-    [CLIENT_API]: {
-      types: [actionTypes.BROKERS_LOAD, actionTypes.BROKERS_LOAD_SUCCEED, actionTypes.BROKERS_LOAD_FAIL],
-      endpoint: 'v1/cms/cert/brokers',
-      method: 'get',
-      params: { tenantId },
-    },
-  };
-}
+// export function loadCertBrokers(tenantId) {
+//   return {
+//     [CLIENT_API]: {
+//       types: [actionTypes.BROKERS_LOAD, actionTypes.BROKERS_LOAD_SUCCEED, actionTypes.BROKERS_LOAD_FAIL],
+//       endpoint: 'v1/cms/cert/brokers',
+//       method: 'get',
+//       params: { tenantId },
+//     },
+//   };
+// }
 
 export function loadAcceptanceTable(params) {
   return {
