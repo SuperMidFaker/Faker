@@ -58,6 +58,7 @@ export default class DelegationInfoHubPanel extends React.Component {
       tenantId: this.props.tenantId,
       dispatchIds: [this.props.previewer.delgDispatch.id],
       type: 'delg',
+      delg_no: this.props.previewer.delgNo,
     });
     this.props.setPreviewStatus({ preStatus: 'accept' });
     this.props.hidePreviewer();

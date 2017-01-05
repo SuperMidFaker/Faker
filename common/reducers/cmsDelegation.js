@@ -44,6 +44,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'SET_OPERATOR', 'SET_OPERATOR_SUCCEED', 'SET_OPERATOR_FAIL',
   'CIQ_DISP_SAVE', 'CIQ_DISP_SAVE_SUCCEED', 'CIQ_DISP_SAVE_FAIL',
   'UPDATE_BLNO', 'UPDATE_BLNO_SUCCEED', 'UPDATE_BLNO_FAIL',
+  'UPDATE_CERT_PARAM', 'UPDATE_CERT_PARAM_SUCCEED', 'UPDATE_CERT_PARAM_FAIL',
 ]);
 
 const initialState = {
@@ -333,10 +334,26 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_DELGOPERATOR_SUCCEED:
       return { ...state, acceptModal: { ...state.acceptModal, operators: action.result.data } };
     case actionTypes.LOAD_PARTNERS_SUCCEED:
-      return { ...state, assign: { ...state.assign, ciqSups: action.result.data, ciqDispShow: true } };
+      return { ...state, assign: { ...state.assign, ciqSups: action.result.data } };
     default:
       return state;
   }
+}
+
+export function updateCertParam(dispId, cert, qty) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_CERT_PARAM,
+        actionTypes.UPDATE_CERT_PARAM_SUCCEED,
+        actionTypes.UPDATE_CERT_PARAM_FAIL,
+      ],
+      endpoint: 'v1/cms/delegation/update/certParam',
+      method: 'get',
+      params: { dispId, cert, qty },
+      origin: 'mongo',
+    },
+  };
 }
 
 export function updateBlNo(delgNo, blNo) {

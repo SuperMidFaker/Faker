@@ -189,8 +189,31 @@ export const CHARGE_PARAM = [
   { value: 'decl_item_qty', text: '品名数量' },
   { value: 'trade_item_qty', text: '料件数量' },
   { value: 'trade_amt', text: '货值' },
-  { value: 'cert_qty', text: '证书数量' },
+  { value: 'jdz_qty', text: '机电证数量' },
+  { value: 'zgz_qty', text: '重工证数量' },
+  { value: 'xkz_qty', text: '许可证数量' },
+  { value: 'm3csq_qty', text: '免3C申请数量' },
+  { value: 'mnxsq_qty', text: '免能效申请数量' },
+  { value: 'xc_qty', text: '消磁数量' },
 ];
+
+export const CERTS = [
+  { value: 'jdz', text: '机电证' },
+  { value: 'zgz', text: '重工证' },
+  { value: 'xkz', text: '许可证' },
+  { value: '3cmlwjd', text: '3C目录外鉴定' },
+  { value: 'm3csq', text: '免3C申请' },
+  { value: 'nxjd', text: '能效鉴定' },
+  { value: 'mnxsq', text: '免能效申请' },
+  { value: 'xc', text: '消磁' },
+];
+
+export const INSPECT_STATUS = {
+  uninspect: 0,
+  inspecting: 1,
+  finish: 2,
+};
+
 export const TRANS_MODE = [
   { value: '2', text: '海运' },
   { value: '5', text: '空运' },

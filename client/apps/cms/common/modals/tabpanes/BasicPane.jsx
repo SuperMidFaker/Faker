@@ -7,7 +7,7 @@ import downloadMultiple from 'client/util/multipleDownloader';
 import { GOODSTYPES, TRANS_MODE, CLAIM_DO_AWB } from 'common/constants';
 import InfoItem from 'client/components/InfoItem';
 import './pane.less';
-
+import { showPreviewer } from 'common/reducers/cmsDelegation';
 
 function getExtension(filename) {
   const parts = filename.split('.');
@@ -20,7 +20,10 @@ function getExtension(filename) {
     delegation: state.cmsDelegation.previewer.delegation,
     files: state.cmsDelegation.previewer.files,
     delgDispatch: state.cmsDelegation.previewer.delgDispatch,
-  })
+    tenantId: state.account.tenantId,
+    delgNo: state.cmsDelegation.previewer.delgNo,
+  }),
+  { showPreviewer }
 )
 export default class BasicPane extends React.Component {
   static propTypes = {
@@ -28,11 +31,18 @@ export default class BasicPane extends React.Component {
     delegation: PropTypes.object.isRequired,
     files: PropTypes.array.isRequired,
     delgDispatch: PropTypes.object.isRequired,
+    tenantId: PropTypes.number.isRequired,
+    delgNo: PropTypes.string.isRequired,
   }
   state = {
     sortedFiles: [],
   }
   componentWillReceiveProps(nextProps) {
+    if (nextProps.tabKey === 'basic' &&
+      nextProps.tabKey !== this.props.tabKey ||
+      nextProps.delgNo !== this.props.delgNo) {
+      nextProps.showPreviewer(this.props.tenantId, nextProps.delgNo);
+    }
     if (nextProps.files.length !== this.props.files.length) {
       const sortedFiles = [];
       nextProps.files.forEach((fl) => {
