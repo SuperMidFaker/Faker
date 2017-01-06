@@ -48,6 +48,8 @@ const initialState = {
   },
   listFilter: {
     status: 'all',
+    acptDate: { en: false },
+    cleanDate: { en: false },
   },
   // showInputModal: false,
   currencies: [],
