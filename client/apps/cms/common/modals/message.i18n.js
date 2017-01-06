@@ -62,6 +62,10 @@ const messages = defineMessages({
     id: 'cms.delegation.message.ciq.dispatch',
     defaultMessage: '请选择报检供应商',
   },
+  dispatchMessage: {
+    id: 'cms.delegation.message.dispatch',
+    defaultMessage: '请选择供应商',
+  },
 });
 
 export default messages;

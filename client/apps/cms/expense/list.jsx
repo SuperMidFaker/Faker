@@ -28,15 +28,18 @@ const RangePicker = DatePicker.RangePicker;
 const Option = Select.Option;
 const OptGroup = Select.OptGroup;
 
-const endDay = new Date();
-const firstDay = new Date();
-firstDay.setDate(1);
-
 function fetchData({ state, dispatch }) {
   const promises = [];
+  const endDay = new Date();
+  const firstDay = new Date();
+  firstDay.setDate(1);
   promises.push(dispatch(loadExpense({
     tenantId: state.account.tenantId,
-    filter: JSON.stringify({ status: 'all' }),
+    filter: JSON.stringify({
+      status: 'all',
+      acptDate: { en: false, firstDay, endDay },
+      cleanDate: { en: false, firstDay, endDay },
+    }),
     pageSize: state.cmsExpense.expslist.pageSize,
     currentPage: state.cmsExpense.expslist.current,
   })));
@@ -67,6 +70,7 @@ function fetchData({ state, dispatch }) {
 export default class ExpenseList extends Component {
   static propTypes = {
     tenantId: PropTypes.number.isRequired,
+    tenantName: PropTypes.string.isRequired,
     expslist: PropTypes.object.isRequired,
     intl: intlShape.isRequired,
     listFilter: PropTypes.object.isRequired,
@@ -85,8 +89,6 @@ export default class ExpenseList extends Component {
     expEptVisible: false,
     custFilter: [],
     supeFilter: [],
-    acptDate: { en: false, firstDay, endDay },
-    cleanDate: { en: false, firstDay, endDay },
     filterAcptVisible: false,
     filterCleanVisible: false,
     sortedInfo: { field: '', order: '' },
@@ -111,11 +113,14 @@ export default class ExpenseList extends Component {
         const supplier = partners.supplier[i];
         const obj = {
           text: `${supplier.partner_code} | ${supplier.name}`,
-          value: supplier.partner_id,
+          value: `partnerId:${supplier.partner_id}`,
         };
         supeFilter.push(obj);
       }
-      // supeFilter.push({ text: `${this.props.tenantId} | ${this.props.tenantName}`, value: null });
+      supeFilter.push({
+        text: `${this.props.tenantId} | ${this.props.tenantName}`,
+        value: `tenantId:${this.props.tenantId}`,
+      });
       this.setState({ custFilter, supeFilter });
     }
   }
@@ -139,9 +144,21 @@ export default class ExpenseList extends Component {
         pageSize: pagination.pageSize,
         currentPage: pagination.current,
       };
-      const { acptDate, cleanDate } = this.state;
-      const filter = { ...this.props.listFilter, filters,
-        sortField: sorter.field, sortOrder: sorter.order, acptDate, cleanDate };
+      const enFilter = { ...filters };
+      if (filters.agent_name) {
+        const agentPartnerIds = [];
+        filters.agent_name.forEach((agent) => {
+          if (agent.indexOf('partnerId') !== -1) {
+            const partnerId = agent.substring(10);
+            agentPartnerIds.push(parseInt(partnerId, 10));
+            enFilter.agentPartnerIds = agentPartnerIds;
+          } else if (agent.indexOf('tenantId') !== -1) {
+            enFilter.agentTenantId = this.props.tenantId;
+          }
+        });
+      }
+      const filter = { ...this.props.listFilter, enFilter,
+        sortField: sorter.field, sortOrder: sorter.order };
       params.filter = JSON.stringify(filter);
       return params;
     },
@@ -211,10 +228,9 @@ export default class ExpenseList extends Component {
       firstDay: dates[0].toDate(),
       endDay: dates[1].toDate(),
     };
-    this.setState({ acptDate });
-    const { sortedInfo, cleanDate } = this.state;
+    const { sortedInfo } = this.state;
     const filter = { ...this.props.listFilter,
-      sortField: sortedInfo.field, sortOrder: sortedInfo.order, acptDate, cleanDate };
+      sortField: sortedInfo.field, sortOrder: sortedInfo.order, acptDate };
     this.handleExpListLoad(1, filter);
   }
   handleCleanDateChange = (dates) => {
@@ -223,15 +239,14 @@ export default class ExpenseList extends Component {
       firstDay: dates[0].toDate(),
       endDay: dates[1].toDate(),
     };
-    this.setState({ cleanDate });
-    const { sortedInfo, acptDate } = this.state;
+    const { sortedInfo } = this.state;
     const filter = { ...this.props.listFilter,
-      sortField: sortedInfo.field, sortOrder: sortedInfo.order, acptDate, cleanDate };
+      sortField: sortedInfo.field, sortOrder: sortedInfo.order, cleanDate };
     this.handleExpListLoad(1, filter);
   }
   render() {
     const { expslist, listFilter, delegation } = this.props;
-    const { acptDate, cleanDate } = this.state;
+    const { acptDate, cleanDate } = listFilter;
     const { sortedInfo } = this.state;
     const sorted = sortedInfo || {};
     const rowSelection = {

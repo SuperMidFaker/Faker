@@ -2,10 +2,11 @@ import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import { Modal, Select, Form, message, Switch, Radio } from 'antd';
 import { clearingOption } from 'common/constants';
-import { delgDispSave, delDisp, setSavedStatus, setDispStatus, loadciqSups, showPreviewer, loadCustPanel } from 'common/reducers/cmsDelegation';
+import { delgDispSave, setDispStatus,
+  loadciqSups, showPreviewer, loadCustPanel } from 'common/reducers/cmsDelegation';
 import { loadDeclCiqByDelgNo } from 'common/reducers/cmsDeclare';
 import { intlShape, injectIntl } from 'react-intl';
-import messages from '../message.i18n';
+import messages from './message.i18n';
 import { format } from 'client/common/i18n/helpers';
 const formatMsg = format(messages);
 
@@ -68,13 +69,12 @@ function getFieldInits(delgDisp, dispatch) {
     dispatch: state.cmsDelegation.assign.dispatch,
     partners: state.cmsDelegation.assign.partners,
     ciqSups: state.cmsDelegation.assign.ciqSups,
-    saved: state.cmsDelegation.assign.saved,
     delgDispShow: state.cmsDelegation.assign.delgDispShow,
     previewer: state.cmsDelegation.previewer,
     tabKey: state.cmsDelegation.previewer.tabKey,
     fieldInits: getFieldInits(state.cmsDelegation.assign.delgDisp, state.cmsDelegation.assign.dispatch),
   }),
-  { delgDispSave, delDisp, setSavedStatus, setDispStatus, loadciqSups, showPreviewer, loadCustPanel, loadDeclCiqByDelgNo }
+  { delgDispSave, setDispStatus, loadciqSups, showPreviewer, loadCustPanel, loadDeclCiqByDelgNo }
 )
 @Form.create()
 export default class DelgDispModal extends Component {
@@ -85,11 +85,8 @@ export default class DelgDispModal extends Component {
     dispatch: PropTypes.object.isRequired,
     partners: PropTypes.array.isRequired,
     ciqSups: PropTypes.array.isRequired,
-    saved: PropTypes.bool.isRequired,
     form: PropTypes.object.isRequired,
     delgDispSave: PropTypes.func.isRequired,
-    delDisp: PropTypes.func.isRequired,
-    setSavedStatus: PropTypes.func.isRequired,
     delgDispShow: PropTypes.bool.isRequired,
     tabKey: PropTypes.string,
     previewer: PropTypes.object,
@@ -148,8 +145,7 @@ export default class DelgDispModal extends Component {
       if (result.error) {
         message.error(result.error.message);
       } else {
-        this.props.setSavedStatus({ saved: true });
-        this.props.setDispStatus({ delgDispShow: false });
+        this.props.setDispStatus({ delgDispShow: false, saved: true });
         this.props.form.resetFields();
         this.handleOnChange(this.props.fieldInits.appointed);
         if (this.props.previewer.visible) {

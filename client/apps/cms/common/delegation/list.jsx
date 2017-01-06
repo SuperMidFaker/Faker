@@ -18,7 +18,7 @@ import { loadAcceptanceTable, loadBillMakeModal, acceptDelg, delDelg, loadDeclar
   showPreviewer, setDispStatus, loadCiqTable, delgAssignRecall, loadCustPanel,
   openAcceptModal, showDispModal } from 'common/reducers/cmsDelegation';
 import DelegationInfoHubPanel from '../modals/DelegationInfoHubPanel';
-import DelgDispModal from './modals/delgDispModal';
+// import DelgDispModal from './modals/delgDispModal';
 import CiqList from './ciqList';
 import messages from './message.i18n';
 import { format } from 'client/common/i18n/helpers';
@@ -103,10 +103,6 @@ export default class DelegationList extends Component {
       if (nextProps.preStatus === 'make') {
         const { delegation } = this.props;
         this.handleDelegationMake(delegation);
-      }
-      if (nextProps.preStatus === 'dispatch') {
-        const { delegation } = this.props;
-        this.handleDelegationAssign(delegation);
       }
       if (nextProps.preStatus === 'delgDispCancel') {
         const { delegation } = this.props;
@@ -569,7 +565,6 @@ export default class DelegationList extends Component {
           </div>
         </div>
         <BillModal ietype={this.props.ietype} />
-        <DelgDispModal />
         <DelegationInfoHubPanel ietype={this.props.ietype} />
       </QueueAnim>
     );
