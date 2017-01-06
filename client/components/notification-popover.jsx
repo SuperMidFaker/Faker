@@ -52,7 +52,7 @@ export default class NotificationPopover extends React.Component {
     conn: null,
     WebIM: null,
   }
-  componentWillMount() {
+  componentDidMount() {
     const { tenantId, loginId, loginName } = this.props;
     if (!this.easemob.conn && window) {
       const WebIM = window.WebIM;
