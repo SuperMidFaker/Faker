@@ -46,6 +46,7 @@ export default class NotificationPopover extends React.Component {
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
+    location: PropTypes.object.isRequired,
   }
   easemob = {
     conn: null,
@@ -53,11 +54,11 @@ export default class NotificationPopover extends React.Component {
   }
   componentWillMount() {
     const { tenantId, loginId, loginName } = this.props;
-    if (!this.easemob.conn) {
+    if (!this.easemob.conn && window) {
       const WebIM = window.WebIM;
       WebIM.config = {
         xmppURL: 'im-api.easemob.com',
-        apiURL: `${window.location.protocol === 'https:' ? 'https:' : 'http:'}//a1.easemob.com`,
+        apiURL: `${this.context.location.protocol === 'https:' ? 'https:' : 'http:'}//a1.easemob.com`,
         appkey: 'jiaojiao123#test',
         https: true,
         isMultiLoginSessions: true,
