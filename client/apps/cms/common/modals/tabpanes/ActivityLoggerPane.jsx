@@ -67,7 +67,13 @@ export default class ActivityLoggerPane extends React.Component {
     } else if (key === 'certs') {
       if (formVals.certs) {
         const certQty = formVals.certsNum || 0;
-        this.props.updateCertParam(previewer.delgDispatch.id, formVals.certs, certQty);
+        this.props.updateCertParam(previewer.delgNo, previewer.delgDispatch.id, formVals.certs, certQty).then((result) => {
+          if (result.error) {
+            message.error(result.error.message, 5);
+          } else {
+            message.info('保存成功', 5);
+          }
+        });
       }
     } else if (key === 'inspect') {
       this.props.setInspect({

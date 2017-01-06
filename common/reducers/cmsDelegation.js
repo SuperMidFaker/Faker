@@ -353,7 +353,7 @@ export function delgAssignRecall(delgNo, tenantId) {
   };
 }
 
-export function updateCertParam(dispId, cert, qty) {
+export function updateCertParam(delgNo, dispId, cert, qty) {
   return {
     [CLIENT_API]: {
       types: [
@@ -363,7 +363,7 @@ export function updateCertParam(dispId, cert, qty) {
       ],
       endpoint: 'v1/cms/delegation/update/certParam',
       method: 'get',
-      params: { dispId, cert, qty },
+      params: { delgNo, dispId, cert, qty },
       origin: 'mongo',
     },
   };

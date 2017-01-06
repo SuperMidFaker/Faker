@@ -393,10 +393,6 @@ export default defineMessages({
     id: 'cms.delegation.certOp',
     defaultMessage: '鉴定办证',
   },
-  dispatchMessage: {
-    id: 'cms.delegation.message.dispatch',
-    defaultMessage: '请选择供应商',
-  },
   acceptSaveMessage: {
     id: 'cms.delegation.edit.message.accept',
     defaultMessage: '确定保存接单?',
