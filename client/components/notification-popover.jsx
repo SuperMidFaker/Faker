@@ -51,11 +51,11 @@ export default class NotificationPopover extends React.Component {
     conn: null,
     WebIM: null,
   }
-  componentDidMount() {
+  componentWillMount() {
     const { tenantId, loginId, loginName } = this.props;
     if (!this.easemob.conn) {
-      const WebIM = this.easemob.WebIM = window.WebIM;
-      this.easemob.WebIM.config = {
+      const WebIM = window.WebIM;
+      WebIM.config = {
         xmppURL: 'im-api.easemob.com',
         apiURL: `${window.location.protocol === 'https:' ? 'https:' : 'http:'}//a1.easemob.com`,
         appkey: 'jiaojiao123#test',
@@ -63,7 +63,7 @@ export default class NotificationPopover extends React.Component {
         isMultiLoginSessions: true,
         isAutoLogin: true,
       };
-      const conn = this.easemob.conn = new this.easemob.WebIM.connection({
+      const conn = new WebIM.connection({
         https: WebIM.config.https,
         url: WebIM.config.xmppURL,
         isAutoLogin: WebIM.config.isAutoLogin,
@@ -95,6 +95,8 @@ export default class NotificationPopover extends React.Component {
       };
 
       conn.open(user);
+      this.easemob.conn = conn;
+      this.easemob.WebIM = WebIM;
     }
 
     if (Notification && Notification.permission !== 'granted') {
@@ -105,7 +107,9 @@ export default class NotificationPopover extends React.Component {
       });
     }
   }
-
+  componentWillUnmount() {
+    this.easemob.conn.close();
+  }
   componentWillReceiveProps(nextProps) {
     const { tenantId, loginId, loginName, tenantName, logo } = this.props;
     if (nextProps.newMessage.count !== this.props.newMessage.count) {

@@ -23,5 +23,6 @@ export default [
    ['get', '/customer*', renderWebPage],
    ['get', '/scv*', renderWebPage],
    ['get', '/my*', renderWebPage],
+   ['get', '/message*', renderWebPage],
    ['get', '/pub/*', renderWebPage],
 ];
