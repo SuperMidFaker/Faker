@@ -20,7 +20,7 @@ const formatMsg = format(messages);
 export default class ExceptionListPopover extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    excpCount: PropTypes.number.isRequired,
+    excpCount: PropTypes.number,
     dispId: PropTypes.number.isRequired,
     shipmtNo: PropTypes.string.isRequired,
     loadExceptions: PropTypes.func.isRequired,
@@ -72,7 +72,7 @@ export default class ExceptionListPopover extends React.Component {
     return (
       <Popover placement="rightTop" title={`异常 ${shipmtNo}`} content={content} trigger="hover">
         <a onMouseOver={this.handleMouseOver}>
-          {excpCount}
+          {excpCount || ''}
         </a>
       </Popover>
     );

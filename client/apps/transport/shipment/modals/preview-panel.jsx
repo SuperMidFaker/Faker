@@ -55,7 +55,7 @@ function getTrackStatusMsg(status, eff) {
     dateModalVisible: state.trackingLandStatus.dateModal.visible,
     tabKey: state.shipment.previewer.tabKey,
     shipmtNo: state.shipment.previewer.shipmt.shipmt_no,
-    status: state.shipment.previewer.shipmt.status,
+    dispatch: state.shipment.previewer.dispatch,
     effective: state.shipment.previewer.shipmt.effective,
     shipmt: state.shipment.previewer.shipmt,
     previewer: state.shipment.previewer,
@@ -76,7 +76,7 @@ export default class PreviewPanel extends React.Component {
     dateModalVisible: PropTypes.bool.isRequired,
     tabKey: PropTypes.string,
     shipmtNo: PropTypes.string,
-    status: PropTypes.number,
+    dispatch: PropTypes.number,
     effective: PropTypes.number,
     hidePreviewer: PropTypes.func.isRequired,
     sendTrackingDetailSMSMessage: PropTypes.func.isRequired,
@@ -179,7 +179,7 @@ export default class PreviewPanel extends React.Component {
     }
   }
   render() {
-    const { shipmt, visible, shipmtNo, status, effective, stage } = this.props;
+    const { shipmt, visible, shipmtNo, dispatch, effective, stage } = this.props;
     const closer = (
       <button onClick={this.handleClose} aria-label="Close" className="ant-modal-close">
         <span className="ant-modal-close-x" />
@@ -190,7 +190,7 @@ export default class PreviewPanel extends React.Component {
           <div className="panel-content">
             <div className="header">
               <span className="title">{shipmtNo}</span>
-              <Badge status={this.transformBadgeColor(shipmt.status)} text={this.msg(getTrackStatusMsg(status, effective))} />
+              <Badge status={this.transformBadgeColor(dispatch.status)} text={this.msg(getTrackStatusMsg(dispatch.status, effective))} />
               <div className="toolbar-right">
                 {this.viewStages.indexOf(this.props.stage) === -1 ? (<Footer stage={stage} onShowShareShipmentModal={this.handleShowShareShipmentModal} />) : ''}
                 {closer}
@@ -215,7 +215,7 @@ export default class PreviewPanel extends React.Component {
               <Row gutter={16}>
                 <Col sm={24} md={12} lg={12}>
                   <Card bodyStyle={{ padding: 8 }}>
-                    {this.renderTabs(shipmt.status)}
+                    {this.renderTabs(dispatch.status)}
                   </Card>
                 </Col>
                 <Col sm={24} md={12} lg={12}>

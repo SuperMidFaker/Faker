@@ -747,12 +747,14 @@ export default class Footer extends React.Component {
         // 审核回单
         buttons = (
           <PrivilegeCover module="transport" feature="tracking" action="edit">
-            <Button type="ghost" onClick={() => this.handleAuditPass(row)} >
-                接受
+            <span>
+              <Button type="ghost" onClick={() => this.handleAuditPass(row)} >
+                  接受
+                </Button>
+              <Button type="ghost" onClick={() => this.handleAuditReturn(row)} >
+                  拒绝
               </Button>
-            <Button type="ghost" onClick={() => this.handleAuditReturn(row)} >
-                拒绝
-              </Button>
+            </span>
           </PrivilegeCover>
         );
       } else if (row.pod_status === SHIPMENT_POD_STATUS.rejectByUs) {
