@@ -361,10 +361,6 @@ export default defineMessages({
     id: 'transport.tracking.modal.pod.sign.remark',
     defaultMessage: '签收备注',
   },
-  signRemarkPlaceholder: {
-    id: 'transport.tracking.modal.pod.signremark.placeholder',
-    defaultMessage: '货差/货损/拒签原因',
-  },
   podPhoto: {
     id: 'transport.tracking.modal.pod.photo',
     defaultMessage: '回单照片',

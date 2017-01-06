@@ -42,6 +42,8 @@ const initialState = {
     filters: {
       p_sr_name: [],
       sp_name: [],
+      p_status: [],
+      status: [],
     },
   },
   billings: {

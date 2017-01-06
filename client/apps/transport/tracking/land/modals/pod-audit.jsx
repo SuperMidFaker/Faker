@@ -109,7 +109,7 @@ export default class PodAuditModal extends React.Component {
           <FormItem label={this.msg('signRemark')} labelCol={{ span: colSpan }}
             wrapperCol={{ span: 24 - colSpan }}
           >
-            <Input type="textarea" placeholder={this.msg('signRemarkPlaceholder')}
+            <Input type="textarea"
               rows="5" value={remark} onChange={this.handleFieldChange}
               disabled={readonly}
             />

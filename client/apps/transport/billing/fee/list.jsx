@@ -227,6 +227,13 @@ export default class FeesList extends React.Component {
         }
         return '';
       },
+      filters: [{
+        text: '未入账', value: 0,
+      }, {
+        text: '已入账', value: 1,
+      }, {
+        text: '已结单', value: 2,
+      }],
     }, {
       title: '承运商',
       dataIndex: 'sp_name',
@@ -308,6 +315,13 @@ export default class FeesList extends React.Component {
         }
         return '';
       },
+      filters: [{
+        text: '未入账', value: 0,
+      }, {
+        text: '已入账', value: 1,
+      }, {
+        text: '已结单', value: 2,
+      }],
     }, {
       title: '盈亏',
       key: 'profit',
