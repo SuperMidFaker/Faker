@@ -16,9 +16,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'LOAD_REQUIRE', 'LOAD_REQUIRE_SUCCEED', 'LOAD_REQUIRE_FAIL',
   'LOAD_DELEGATE', 'LOAD_DELEGATE_SUCCEED', 'LOAD_DELEGATE_FAIL',
   'SEND_DELEGATE', 'SEND_DELEGATE_SUCCEED', 'SEND_DELEGATE_FAIL',
-  'RETURN_DELEGATE', 'RETURN_DELEGATE_SUCCEED', 'RETURN_DELEGATE_FAIL',
   'SHOW_SEND_DELEGATE_MODAL', 'SHOW_SEND_DELEGATE_MODAL_SUCCEED', 'SHOW_SEND_DELEGATE_MODAL_FAIL',
-  'CUS_CREATE_DELGCCB', 'CUS_CREATE_DELGCCB_SUCCEED', 'CUS_CREATE_DELGCCB_FAIL',
   'SHOW_PREVIEWER', 'SHOW_PREVIEWER_SUCCEED', 'SHOW_PREVIEWER_FAILED',
   'HIDE_PREVIEWER', 'LOAD_SUBDELG', 'LOAD_SUBDELG_SUCCEED', 'LOAD_SUBDELG_FAIL',
   'LOAD_BILLMAKE', 'LOAD_BILLMAKE_SUCCEED', 'LOAD_BILLMAKE_FAIL', 'SET_MODAL_FALSE',
@@ -122,7 +120,7 @@ const initialState = {
     delegation: {},
     files: [],
     delgDispatch: {},
-    clearanceTracking: [],
+    activities: [],
   },
   preStatus: '',
   billMakeModal: {
@@ -258,14 +256,11 @@ export default function reducer(state = initialState, action) {
       return { ...state, submitting: true };
     case actionTypes.EDIT_DELGCCB_SUCCEED:
     case actionTypes.CREATE_DELGCCB_SUCCEED:
-    case actionTypes.CUS_CREATE_DELGCCB_SUCCEED:
     case actionTypes.EDIT_DELGCCB_FAIL:
     case actionTypes.CREATE_DELGCCB_FAIL:
       return { ...state, submitting: false };
     case actionTypes.SEND_DELEGATE_SUCCEED:
       return { ...state, sendPanel: initialState.sendPanel };
-    case actionTypes.RETURN_DELEGATE_SUCCEED:
-      return { ...state, delegateListFilter: { ...state.delegateListFilter, status: 'undelg' } };
     case actionTypes.SHOW_SEND_DELEGATE_MODAL_SUCCEED:
       if (action.visible) {
         return { ...state, sendPanel: { visible: action.visible, delegations: action.delegations }, suppliers: action.result.data };
@@ -369,7 +364,7 @@ export function updateCertParam(delgNo, dispId, cert, qty) {
   };
 }
 
-export function updateBlNo(delgNo, blNo) {
+export function exchangeBlNo(delgNo, blNo) {
   return {
     [CLIENT_API]: {
       types: [
@@ -377,9 +372,9 @@ export function updateBlNo(delgNo, blNo) {
         actionTypes.UPDATE_BLNO_SUCCEED,
         actionTypes.UPDATE_BLNO_FAIL,
       ],
-      endpoint: 'v1/cms/delegation/update/blNo',
-      method: 'get',
-      params: { delgNo, blNo },
+      endpoint: 'v1/cms/delegation/exchange',
+      method: 'post',
+      data: { delgNo, blNo },
     },
   };
 }
@@ -766,21 +761,6 @@ export function createDelegationByCCB({
   };
 }
 
-export function createDelegationByCUS(data) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.CUS_CREATE_DELGCCB,
-        actionTypes.CUS_CREATE_DELGCCB_SUCCEED,
-        actionTypes.CUS_CREATE_DELGCCB_FAIL,
-      ],
-      endpoint: 'v1/cms/cus/delegation',
-      method: 'post',
-      data,
-    },
-  };
-}
-
 export function loadDelg(cookie, params) {
   return {
     [CLIENT_API]: {
@@ -904,21 +884,6 @@ export function sendDelegate(data) {
         actionTypes.SEND_DELEGATE_FAIL,
       ],
       endpoint: 'v1/cms/delegation/send',
-      method: 'post',
-      data,
-    },
-  };
-}
-
-export function returnDelegate(data) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.RETURN_DELEGATE,
-        actionTypes.RETURN_DELEGATE_SUCCEED,
-        actionTypes.RETURN_DELEGATE_FAIL,
-      ],
-      endpoint: 'v1/cms/delegation/return',
       method: 'post',
       data,
     },

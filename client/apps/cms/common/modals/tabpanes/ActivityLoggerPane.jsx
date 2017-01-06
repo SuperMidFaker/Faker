@@ -1,12 +1,13 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
+import moment from 'moment';
 import { Button, Card, Checkbox, Col, Row, Collapse, DatePicker, Dropdown, Form, Icon,
   Input, InputNumber, Mention, Menu, Popover, Radio, Select, Tabs, Timeline, Tooltip, message } from 'antd';
 import InfoItem from 'client/components/InfoItem';
-import { updateBlNo, loadCustPanel, showPreviewer, updateCertParam } from 'common/reducers/cmsDelegation';
+import { exchangeBlNo, loadCustPanel, showPreviewer, updateCertParam } from 'common/reducers/cmsDelegation';
 import { loadDeclHead, setInspect } from 'common/reducers/cmsDeclare';
-import { CERTS } from 'common/constants';
+import { CERTS, INSPECT_STATUS } from 'common/constants';
 
 const Option = Select.Option;
 const FormItem = Form.Item;
@@ -17,6 +18,21 @@ const formItemLayout = {
   wrapperCol: { span: 21 },
 };
 
+const ACTIVITY_DESC_MAP = {
+  create: { text: '创建清关委托', icon: 'plus-circle-o' },
+  accept: { text: '接单', icon: 'solution' },
+  dispatch: { text: '分配', icon: 'export' },
+  ciqdispatch: { text: '分配报检', icon: 'export' },
+  manifest: { text: '制单', icon: 'copy' },
+  declared: { text: '海关申报', icon: 'play-circle-o' },
+  advance: { text: '录入代垫费用', icon: 'calculator' },
+  hgcy: { text: '海关查验' },
+  pzcy: { text: '品质查验' },
+  djcy: { text: '动植检查验' },
+  message: { text: '发送消息', icon: 'message' },
+  clean: { text: '放行', icon: 'check-circle-o' },
+};
+
 @injectIntl
 @connect(
   state => ({
@@ -24,7 +40,7 @@ const formItemLayout = {
     previewer: state.cmsDelegation.previewer,
     declHeadsPane: state.cmsDeclare.decl_heads,
   }), {
-    updateBlNo, loadDeclHead, setInspect, loadCustPanel, showPreviewer, updateCertParam,
+    exchangeBlNo, loadDeclHead, setInspect, loadCustPanel, showPreviewer, updateCertParam,
   }
 )
 @Form.create()
@@ -34,7 +50,8 @@ export default class ActivityLoggerPane extends React.Component {
     tenantId: PropTypes.number.isRequired,
   }
   state = {
-    tabKey: 'log',
+    tabKey: 'message',
+    filterActivities: null,
   }
   handleTabChange = (tabKey) => {
     const delgNo = this.props.previewer.delgNo;
@@ -50,10 +67,10 @@ export default class ActivityLoggerPane extends React.Component {
     const { previewer } = this.props;
     const key = this.state.tabKey;
     const formVals = this.props.form.getFieldsValue();
-    if (key === 'log') {
+    if (key === 'message') {
 
     } else if (key === 'exchange') {
-      this.props.updateBlNo(previewer.delgNo, formVals.bl_wb_no).then((result) => {
+      this.props.exchangeBlNo(previewer.delgNo, formVals.bl_wb_no).then((result) => {
         if (result.error) {
           message.error(result.error.message, 5);
         } else {
@@ -72,6 +89,11 @@ export default class ActivityLoggerPane extends React.Component {
             message.error(result.error.message, 5);
           } else {
             message.info('保存成功', 5);
+            this.props.showPreviewer(
+              this.props.tenantId,
+              previewer.delgNo,
+              previewer.tabKey
+            );
           }
         });
       }
@@ -84,24 +106,32 @@ export default class ActivityLoggerPane extends React.Component {
       }).then((result) => {
         if (result.error) {
           message.error(result.error.message, 5);
-        } else if (previewer.tabKey === 'customsDecl') {
-          this.props.loadCustPanel({
-            delgNo: previewer.delgNo,
-            tenantId: this.props.tenantId,
-          });
+        } else {
+          this.props.showPreviewer(
+              this.props.tenantId,
+              previewer.delgNo,
+              previewer.tabKey
+            );
+          if (previewer.tabKey === 'customsDecl') {
+            this.props.loadCustPanel({
+              delgNo: previewer.delgNo,
+              tenantId: this.props.tenantId,
+            });
+          }
         }
       });
     }
   }
   render() {
     const { form: { getFieldDecorator }, previewer, declHeadsPane } = this.props;
-    const { delegation, delgDispatch } = previewer;
+    const { delegation, delgDispatch, activities } = previewer;
+    const selectActivities = this.state.filterActivities || activities;
     const menu = (
       <Menu>
-        <Menu.Item key="all"><Checkbox >选择全部</Checkbox></Menu.Item>
+        <Menu.Item key="all"><Checkbox>选择全部</Checkbox></Menu.Item>
         <Menu.Divider />
-        <Menu.Item key="customs"><Checkbox >操作事件</Checkbox></Menu.Item>
-        <Menu.Item key="ciq"><Checkbox >通关事件</Checkbox></Menu.Item>
+        <Menu.Item key="operation"><Checkbox>操作事件</Checkbox></Menu.Item>
+        <Menu.Item key="ciq"><Checkbox>通关事件</Checkbox></Menu.Item>
       </Menu>
     );
     const timelineHeader = (
@@ -109,7 +139,7 @@ export default class ActivityLoggerPane extends React.Component {
         <span>动态</span>
         <div className="toolbar-right">
           <Dropdown overlay={menu}>
-            <Button type="ghost"><Icon type="filter" /> (3/3)</Button>
+            <Button type="ghost"><Icon type="filter" /> ({selectActivities.length}/{activities.length})</Button>
           </Dropdown>
         </div>
       </div>
@@ -119,7 +149,7 @@ export default class ActivityLoggerPane extends React.Component {
         <Card bodyStyle={{ padding: 0 }}>
           <div className="card-body-wrapper">
             <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
-              <TabPane tab={<span><Icon type="message" />备注</span>} key="log">
+              <TabPane tab={<span><Icon type="message" />备注</span>} key="message">
                 <Form horizontal>
                   <FormItem>
                     {getFieldDecorator('remarks')(<Mention
@@ -156,7 +186,7 @@ export default class ActivityLoggerPane extends React.Component {
                     >
                       {
                         CERTS.map(cert =>
-                          <Option value={cert.value}>{cert.text}</Option>
+                          <Option value={cert.value} key={cert.value}>{cert.text}</Option>
                         )
                       }
                     </Select>)}
@@ -203,6 +233,98 @@ export default class ActivityLoggerPane extends React.Component {
         <Collapse bordered={false} defaultActiveKey={['timeline']}>
           <Panel header={timelineHeader} key="timeline">
             <Timeline>
+              {
+                selectActivities.map((activity) => {
+                  switch (activity.type) {
+                    case 'exchange':
+                      return (
+                        <Timeline.Item dot={<Icon type="retweet" />}>
+                          <Card title={<span>换单 <small className="timestamp">{moment(activity.created_date).format('YYYY-MM-DD HH:mm')}</small></span>} extra={
+                            <Popover
+                              content={<div><a onClick={this.hide}>修改</a><span className="ant-divider" /><a className="mdc-text-red" onClick={this.hide}>删除</a></div>}
+                              trigger="click"
+                            >
+                              <Button type="ghost" shape="circle" size="small" icon="ellipsis" />
+                            </Popover>} bodyStyle={{ padding: 8 }}
+                          >
+                            <Row>
+                              <Col span={12}>
+                                <InfoItem label="海运单号" field={delegation.swb_no} />
+                              </Col>
+                              <Col span={12}>
+                                <InfoItem label="提单号" field={delegation.bl_wb_no} />
+                              </Col>
+                            </Row>
+                          </Card>
+                        </Timeline.Item>);
+                    case 'hgcy':
+                    case 'pzcy':
+                    case 'djcy': {
+                      const inspect = JSON.parse(activity.note);
+                      let inspectStatusTxt;
+                      if (inspect.status === INSPECT_STATUS.inspecting) {
+                        inspectStatusTxt = '查验中';
+                      } else if (inspect.status === INSPECT_STATUS.finished) {
+                        inspectStatusTxt = '通过';
+                      }
+                      return (<Timeline.Item dot={<Icon type="exception" />} color="red">
+                        <Card title={<span>{ACTIVITY_DESC_MAP[activity.type].text}
+                          <small className="timestamp">{moment(activity.created_date).format('YYYY-MM-DD HH:mm')}</small></span>}
+                          extra={<span className="toolbar-right">
+                            <Tooltip title="标记查验通过" placement="left">
+                              <Button type="primary" shape="circle" size="small" icon="check" />
+                            </Tooltip>
+                            <Popover content={<div><a className="mdc-text-red" onClick={this.hide}>删除</a></div>} trigger="click">
+                              <Button type="ghost" shape="circle" size="small" icon="ellipsis" />
+                            </Popover></span>} bodyStyle={{ padding: 8 }}
+                        >
+                          <Row>
+                            <Col span={12}>
+                              <InfoItem label="统一编号" field={inspect.pre_entry_no} />
+                            </Col>
+                            <Col span={12}>
+                              <InfoItem label="查验状态" field={inspectStatusTxt} />
+                            </Col>
+                          </Row>
+                        </Card>
+                      </Timeline.Item>);
+                    }
+                    case 'cert': {
+                      const certInfo = JSON.parse(activity.note);
+                      const certText = CERTS.filter(ct => ct.value === certInfo.cert)[0].text;
+                      return (
+                        <Timeline.Item dot={<Icon type="addfile" />}>
+                          <Card title={<span>办证 <small className="timestamp">{moment(activity.created_date).format('YYYY-MM-DD HH:mm')}</small></span>} extra={
+                            <Popover
+                              content={<div><a onClick={this.hide}>修改</a><span className="ant-divider" /><a className="mdc-text-red" onClick={this.hide}>删除</a></div>}
+                              trigger="click"
+                            >
+                              <Button type="ghost" shape="circle" size="small" icon="ellipsis" />
+                            </Popover>} bodyStyle={{ padding: 8 }}
+                          >
+                            <Row>
+                              <Col span={12}>
+                                <InfoItem label="办证类别" field={certText} />
+                              </Col>
+                              <Col span={12}>
+                                <InfoItem label="型号数量" field={certInfo.qty} />
+                              </Col>
+                            </Row>
+                          </Card>
+                        </Timeline.Item>
+                      );
+                    }
+                    default: {
+                      const descObj = ACTIVITY_DESC_MAP[activity.type];
+                      return (<Timeline.Item dot={<Icon type={descObj.icon} />}>
+                        <p>{descObj.text} {moment(activity.created_date).format('YYYY-MM-DD HH:mm')}</p>
+                        <p>{activity.oper_name} {activity.oper_tenant_name}</p>
+                      </Timeline.Item>);
+                    }
+                  }
+                })
+              }
+              {/*
               <Timeline.Item dot={<Icon type="check-circle-o" />} color="green">放行 2015-09-01</Timeline.Item>
               <Timeline.Item dot={<Icon type="pay-circle-o" />}>缴税 2015-09-01</Timeline.Item>
               <Timeline.Item dot={<Icon type="message" />}>发送消息 2015-09-01</Timeline.Item>
@@ -286,6 +408,7 @@ export default class ActivityLoggerPane extends React.Component {
               <Timeline.Item dot={<Icon type="plus-circle-o" />} >
                 创建清关委托 2015-09-01
               </Timeline.Item>
+              */}
             </Timeline>
           </Panel>
         </Collapse>
