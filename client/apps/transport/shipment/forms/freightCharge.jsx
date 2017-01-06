@@ -35,6 +35,7 @@ export default class FreightCharge extends React.Component {
       description: '',
     },
     tariffType: 'normal', // normal base all
+    baseTariffAvailable: false,
     tariff: {},
     result: {},
     params: {},
@@ -120,6 +121,7 @@ export default class FreightCharge extends React.Component {
     }
   }
   computeSaleCharge = (data) => {
+    const tariffType = data.tariffType;
     this.props.computeSaleCharge(data).then((result) => {
       if (result.error) {
         message.error(result.error.message);
@@ -127,14 +129,19 @@ export default class FreightCharge extends React.Component {
         const alert = this.translateResult(result.data.freight);
         this.handleResult(alert);
         if (result.data.baseChargeResult && result.data.baseChargeResult.freight >= 0) {
-          this.setState({ tariffType: 'base' });
+          this.setState({ baseTariffAvailable: true });
         }
+        this.setState({
+          tariffType,
+          tariff: result.data.tariff ? result.data.tariff : {},
+        });
       } else {
         this.setState({
           computed: true,
           tariff: result.data.tariff,
           result: result.data,
           params: data,
+          tariffType,
         });
         // todo 起步价运费公式? pickup mode=1 x数量?
         const { freight, pickup, deliver, meter, quantity,
@@ -294,7 +301,14 @@ export default class FreightCharge extends React.Component {
   }
   handleReset = (ev) => {
     ev.preventDefault();
-    this.setState({ computed: false, tariff: {} });
+    this.setState({
+      tariffType: 'normal',
+      computed: false,
+      baseTariffAvailable: false,
+      tariff: {},
+      result: {},
+      params: {},
+    });
     this.props.formhoc.setFieldsValue({
       freight_charge: undefined,
       pickup_charge: undefined,
@@ -318,7 +332,7 @@ export default class FreightCharge extends React.Component {
   }
   render() {
     const { formhoc, formData } = this.props;
-    const { computed, alert, tariffType, tariff, result, params } = this.state;
+    const { computed, alert, baseTariffAvailable, tariffType, tariff, result, params } = this.state;
     const dataSource = [{
       key: '公斤',
       value: params.total_weight ? params.total_weight : '',
@@ -338,8 +352,14 @@ export default class FreightCharge extends React.Component {
       key: '调价系数',
       value: tariff.agreement ? tariff.agreement.adjustCoefficient : '',
     }];
+    const title = (<span>{this.msg('freightCharge')} - 销售{tariffType === 'base' ? '基准' : ''}价 <a
+      title="单机查看报价协议"
+      href={`/transport/billing/tariff/view/${tariff.quoteNo}/${tariff.version}`}
+      target="_blank"
+      rel="noopener noreferrer"
+    >{tariff.quoteNo ? tariff.quoteNo : ''}</a></span>);
     return (
-      <Card title={`${this.msg('freightCharge')} - 销售价 ${tariff.quoteNo ? tariff.quoteNo : ''}`} bodyStyle={{ padding: 16 }}
+      <Card title={title} bodyStyle={{ padding: 16 }}
         extra={computed ? <a role="button" onClick={this.handleReset}>重置</a> : <Button type="primary" icon="calculator"
           onClick={() => this.handleCompute('normal')}
         >{this.msg('computeCharge')}</Button>}
@@ -348,8 +368,8 @@ export default class FreightCharge extends React.Component {
           alert.visible &&
           <Alert
             message={
-              tariffType === 'base' ? (
-                <span>基准价:{alert.message}
+              baseTariffAvailable ? (
+                <span>{alert.message}
                   <Button type="primary" icon="calculator"
                     onClick={() => this.handleCompute('base')}
                     style={{ marginLeft: 60 }}
