@@ -59,7 +59,7 @@ export default class Dashboard extends React.Component {
     const columns = [{
       title: '运单号',
       dataIndex: 'shipmt_no',
-      render: (o, record) => (<a onClick={() => this.props.loadShipmtDetail(record.shipmt_no, this.props.tenantId, 'sr', 'logs', record)}>{record.shipmt_no}</a>),
+      render: (o, record) => (<a onClick={() => this.props.loadShipmtDetail(record.shipmt_no, this.props.tenantId, 'sr', 'detail', record)}>{record.shipmt_no}</a>),
     }, {
       title: this.msg('departurePlace'),
       render: (o, record) => <TrimSpan text={renderConsignLoc(record, 'consigner')} maxLen={8} />,

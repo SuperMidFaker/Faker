@@ -72,7 +72,7 @@ export default class ActivityLoggerPane extends React.Component {
       );
     } else if (log.category === SHIPMENT_LOG_CATEGORY.tracking) {
       return (
-        <Timeline.Item key={index}>
+        <Timeline.Item key={index} dot={<Icon type="environment-o" />}>
           <p>{this.msg(log.type)} {log.content}</p>
           <p>{`${log.tenant_name} ${log.login_name}`}</p>
           <p>{log.created_date && moment(log.created_date).format(timeFormat)}</p>
