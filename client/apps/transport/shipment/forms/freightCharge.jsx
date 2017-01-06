@@ -1,7 +1,7 @@
 /* eslint camelcase: 0 */
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Button, Card, Checkbox, message, Alert, Table } from 'antd';
+import { Button, Card, Checkbox, message, Alert, Table, Collapse } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import { computeSaleCharge, setConsignFields } from 'common/reducers/shipment';
 import { getChargeAmountExpression } from '../../common/charge';
@@ -9,6 +9,7 @@ import InputItem from './input-item';
 import messages from '../message.i18n';
 
 const formatMsg = format(messages);
+const Panel = Collapse.Panel;
 @connect(
   state => ({
     tenantId: state.account.tenantId,
@@ -411,10 +412,15 @@ export default class FreightCharge extends React.Component {
           field="distance" fieldProps={{ initialValue: formData.distance }} type="number"
           colSpan={8} readOnly={computed}
         />
-        <Table size="small" dataSource={dataSource} pagination={false} style={{ display: computed ? '' : 'none' }}>
-          <Table.Column title="参数" key="key" dataIndex="key" />
-          <Table.Column title="数值" key="value" dataIndex="value" />
-        </Table>
+        <Collapse bordered={false}>
+          <Panel header="计费参数" key="1">
+            <Table size="small" dataSource={dataSource} pagination={false}>
+              <Table.Column title="参数" key="key" dataIndex="key" />
+              <Table.Column title="数值" key="value" dataIndex="value" />
+            </Table>
+          </Panel>
+        </Collapse>
+
       </Card>
     );
   }
