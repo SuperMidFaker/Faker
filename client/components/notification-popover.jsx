@@ -1,7 +1,7 @@
 /* eslint-disable */
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Alert, Button, notification, message } from 'antd';
+import { Alert, Button, Popover, Badge, notification, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { format } from 'client/common/i18n/helpers';
@@ -223,7 +223,8 @@ export default class NotificationPopover extends React.Component {
   }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
   render() {
-    return (<div className="navbar-popover" style={{ width: 360 }}>
+    const { corps: { notReadMessagesNum } } = this.props;
+    const notificationContent = (<div className="navbar-popover" style={{ width: 360 }}>
       <div className="popover-header">
         <div className="toolbar-right"><a role="button" ><i className="zmdi zmdi-check-all zmdi-hc-lg" /></a></div>
         <span>{this.msg('notification')}</span>
@@ -255,5 +256,12 @@ export default class NotificationPopover extends React.Component {
         <NavLink to="/message/list">{this.msg('seeAll')}</NavLink>
       </div>
     </div>);
+
+    return (
+      <Popover content={notificationContent} placement="bottomLeft" trigger="click"
+      >
+        <div><Badge count={notReadMessagesNum} overflowCount={99}><i className="icon s7-bell" /></Badge></div>
+      </Popover>
+    );
   }
 }

@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Menu, Badge, Radio, Modal, Popover, Icon } from 'antd';
+import { Menu, Radio, Modal, Popover, Icon } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import NavLink from './nav-link';
 import { loadTranslation, changeUserLocale } from '../../common/reducers/intl';
@@ -22,7 +22,6 @@ const RadioButton = Radio.Button;
 @connect(
   state => ({
     navTitle: state.navbar.navTitle,
-    notReadMessagesNum: state.corps.notReadMessagesNum,
     avatar: state.account.profile.avatar,
     loginId: state.account.loginId,
     locale: state.intl.locale,
@@ -69,7 +68,7 @@ export default class HeaderNavBar extends React.Component {
   }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
   render() {
-    const { navTitle, notReadMessagesNum } = this.props;
+    const { navTitle } = this.props;
     const { intl, avatar, locale } = this.props;
     const defaultAvatar = `${__CDN__}/assets/img/avatar.jpg`;
     const userPopoverContent = (
@@ -97,7 +96,6 @@ export default class HeaderNavBar extends React.Component {
         </Menu>
       </div>
     );
-    const notificationContent = (<NotificationPopover />);
     const helpcenterContent = (<HelpcenterPopover />);
 
     let moduleName = navTitle.moduleName;
@@ -132,11 +130,7 @@ export default class HeaderNavBar extends React.Component {
         <div className="nav navbar-right">
           <Menu mode="horizontal">
             <MenuItem>
-              <Popover content={notificationContent} placement="bottomLeft" trigger="click"
-                onVisibleChange={this.handleVisibleChange}
-              >
-                <div><Badge count={notReadMessagesNum} overflowCount={99}><i className="icon s7-bell" /></Badge></div>
-              </Popover>
+              <NotificationPopover />
             </MenuItem>
             <MenuItem>
               <Popover content={helpcenterContent} placement="bottomRight" trigger="click"
