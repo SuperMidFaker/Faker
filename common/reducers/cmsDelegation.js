@@ -27,7 +27,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'LOAD_DELGDISP', 'LOAD_DELGDISP_SUCCEED', 'LOAD_DELGDISP_FAIL',
   'DELG_DISP_SAVE', 'DELG_DISP_SAVE_SUCCEED', 'DELG_DISP_SAVE_FAIL',
   'DEL_DISP', 'DEL_DISP_SUCCEED', 'DEL_DISP_FAIL',
-  'LOAD_DISP', 'LOAD_DISP_SUCCEED', 'LOAD_DISP_FAIL', 'SET_SAVED_STATUS', 'SET_PREW_STATUS',
+  'LOAD_DISP', 'LOAD_DISP_SUCCEED', 'LOAD_DISP_FAIL', 'SET_PREW_STATUS',
   'LOAD_CIQ', 'LOAD_CIQ_SUCCEED', 'LOAD_CIQ_FAIL', 'SET_PREW_TABKEY',
   'OPEN_CIQ_MODAL', 'CLOSE_CIQ_MODAL',
   'FILL_CUSTOMSNO', 'FILL_CUSTOMSNO_SUCCEED', 'FILL_CUSTOMSNO_FAIL',
@@ -313,8 +313,6 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_DISP_SUCCEED:
       return { ...state, assign: { ...state.assign, delgDisp: action.result.data.delegation,
         dispatch: action.result.data.dispatch, delgDispShow: true, saved: true } };
-    case actionTypes.SET_SAVED_STATUS:
-      return { ...state, assign: { ...state.assign, ...action.data } };
     case actionTypes.SET_PREW_STATUS:
       return { ...state, ...action.data };
     case actionTypes.SET_PREW_TABKEY:
@@ -587,12 +585,6 @@ export function setPreviewStatus(status) {
 export function setDispStatus(params) {
   return {
     type: actionTypes.SET_DISP_STATUS,
-    data: params,
-  };
-}
-export function setSavedStatus(params) {
-  return {
-    type: actionTypes.SET_SAVED_STATUS,
     data: params,
   };
 }

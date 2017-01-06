@@ -13,7 +13,8 @@ import DutyTaxPane from './tabpanes/DutyTaxPane';
 import ExpensesPane from './tabpanes/ExpensesPane';
 import ActivityLoggerPane from './tabpanes/ActivityLoggerPane';
 import AcceptModal from './acceptModal';
-import { hidePreviewer, setPreviewStatus, setPreviewTabkey, openAcceptModal } from 'common/reducers/cmsDelegation';
+import DelgDispModal from './delgDispModal';
+import { hidePreviewer, setPreviewStatus, setPreviewTabkey, openAcceptModal, showDispModal } from 'common/reducers/cmsDelegation';
 
 const TabPane = Tabs.TabPane;
 
@@ -29,7 +30,7 @@ const TabPane = Tabs.TabPane;
     ciqdecl: state.cmsDeclare.previewer.ciqdecl,
     delegateListFilter: state.cmsDelegation.delegateListFilter,
   }),
-  { hidePreviewer, setPreviewStatus, setPreviewTabkey, openAcceptModal }
+  { hidePreviewer, setPreviewStatus, setPreviewTabkey, openAcceptModal, showDispModal }
 )
 export default class DelegationInfoHubPanel extends React.Component {
   static propTypes = {
@@ -68,7 +69,7 @@ export default class DelegationInfoHubPanel extends React.Component {
     this.props.hidePreviewer();
   }
   handleAssign = () => {
-    this.props.setPreviewStatus({ preStatus: 'dispatch' });
+    this.props.showDispModal(this.props.previewer.delgNo, this.props.tenantId);
   }
   handleDispCancel = () => {
     this.props.setPreviewStatus({ preStatus: 'delgDispCancel' });
@@ -333,6 +334,7 @@ export default class DelegationInfoHubPanel extends React.Component {
           </div>
         </div>
         <AcceptModal />
+        <DelgDispModal />
       </div>
     );
   }
