@@ -96,7 +96,7 @@ export default class ShipmentAdvanceModal extends React.Component {
       const advances = nextProps.advances;
       for (let i = 0; i < nextProps.fees.length; i++) {
         const fee = nextProps.fees[i];
-        if (fee.enabled && fee.fee_style === 'cushion') {
+        if (fee.enabled && fee.fee_style === 'advance') {
           if (!advances.find(item => item.code === fee.fee_code)) {
             const advance = {
               id: null,
