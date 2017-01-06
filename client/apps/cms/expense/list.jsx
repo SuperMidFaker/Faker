@@ -70,6 +70,7 @@ function fetchData({ state, dispatch }) {
 export default class ExpenseList extends Component {
   static propTypes = {
     tenantId: PropTypes.number.isRequired,
+    tenantName: PropTypes.string.isRequired,
     expslist: PropTypes.object.isRequired,
     intl: intlShape.isRequired,
     listFilter: PropTypes.object.isRequired,
@@ -112,11 +113,14 @@ export default class ExpenseList extends Component {
         const supplier = partners.supplier[i];
         const obj = {
           text: `${supplier.partner_code} | ${supplier.name}`,
-          value: supplier.partner_id,
+          value: `partnerId:${supplier.partner_id}`,
         };
         supeFilter.push(obj);
       }
-      // supeFilter.push({ text: `${this.props.tenantId} | ${this.props.tenantName}`, value: null });
+      supeFilter.push({
+        text: `${this.props.tenantId} | ${this.props.tenantName}`,
+        value: `tenantId:${this.props.tenantId}`,
+      });
       this.setState({ custFilter, supeFilter });
     }
   }
@@ -140,7 +144,20 @@ export default class ExpenseList extends Component {
         pageSize: pagination.pageSize,
         currentPage: pagination.current,
       };
-      const filter = { ...this.props.listFilter, filters,
+      const enFilter = { ...filters };
+      if (filters.agent_name) {
+        const agentPartnerIds = [];
+        filters.agent_name.forEach((agent) => {
+          if (agent.indexOf('partnerId') !== -1) {
+            const partnerId = agent.substring(10);
+            agentPartnerIds.push(parseInt(partnerId, 10));
+            enFilter.agentPartnerIds = agentPartnerIds;
+          } else if (agent.indexOf('tenantId') !== -1) {
+            enFilter.agentTenantId = this.props.tenantId;
+          }
+        });
+      }
+      const filter = { ...this.props.listFilter, enFilter,
         sortField: sorter.field, sortOrder: sorter.order };
       params.filter = JSON.stringify(filter);
       return params;
