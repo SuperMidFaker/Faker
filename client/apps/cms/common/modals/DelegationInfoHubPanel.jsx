@@ -248,7 +248,7 @@ export default class DelegationInfoHubPanel extends React.Component {
         return (
           <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
             <Popconfirm title="你确定撤回分配吗?" onConfirm={this.handleDispCancel} >
-              <Button size="large">撤回</Button>
+              <Button>撤回</Button>
             </Popconfirm>
           </PrivilegeCover>
         );
@@ -258,7 +258,7 @@ export default class DelegationInfoHubPanel extends React.Component {
       return (
         <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
           <Popconfirm title="你确定撤回分配吗?" onConfirm={this.handleDispCancel} >
-            <Button size="large">撤回</Button>
+            <Button>撤回</Button>
           </Popconfirm>
         </PrivilegeCover>
       );
