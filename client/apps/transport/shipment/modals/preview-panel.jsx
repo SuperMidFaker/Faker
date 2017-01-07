@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Badge, Col, Row, Tabs, Card } from 'antd';
+import { Badge, Col, Row, Tabs } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import DetailPane from './tabpanes/detail-pane';
 import ActivityLoggerPane from './tabpanes/ActivityLoggerPane';
@@ -141,7 +141,7 @@ export default class PreviewPanel extends React.Component {
   renderTabs(status) {
     if (status >= SHIPMENT_TRACK_STATUS.podsubmit) {
       return (
-        <Tabs activeKey={this.props.tabKey} onChange={this.handleTabChange}>
+        <Tabs type="card" activeKey={this.props.tabKey} onChange={this.handleTabChange}>
           <TabPane tab={this.msg('shipmtDetail')} key="detail">
             <DetailPane />
           </TabPane>
@@ -161,7 +161,7 @@ export default class PreviewPanel extends React.Component {
       );
     } else {
       return (
-        <Tabs activeKey={this.props.tabKey} onChange={this.handleTabChange}>
+        <Tabs type="card" activeKey={this.props.tabKey} onChange={this.handleTabChange}>
           <TabPane tab={this.msg('shipmtDetail')} key="detail">
             <DetailPane />
           </TabPane>
@@ -214,9 +214,7 @@ export default class PreviewPanel extends React.Component {
             <div className="body with-header-summary">
               <Row gutter={16}>
                 <Col sm={24} md={12} lg={12}>
-                  <Card bodyStyle={{ padding: 8 }}>
-                    {this.renderTabs(dispatch.status)}
-                  </Card>
+                  {this.renderTabs(dispatch.status)}
                 </Col>
                 <Col sm={24} md={12} lg={12}>
                   <ActivityLoggerPane />

@@ -2,13 +2,14 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Col, Table, Steps, Card, Icon, Dropdown, Menu } from 'antd';
+import { Col, Table, Steps, Card, Icon, Dropdown, Menu, Row } from 'antd';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { format } from 'client/common/i18n/helpers';
 import { renderConsignLoc } from '../../../common/consignLocation';
 import { PRESET_TRANSMODES } from 'common/constants';
 import ChangeShipment from '../change-shipment';
 import { showChangeShipmentModal } from 'common/reducers/shipment';
+import InfoItem from 'client/components/InfoItem';
 import ActDate from '../../../common/actDate';
 import messages from '../../message.i18n';
 import './pane.less';
@@ -16,32 +17,6 @@ import './pane.less';
 const formatMsg = format(messages);
 const Step = Steps.Step;
 
-function getColCls(col) {
-  if (col) {
-    const { span, offset } = col;
-    const spanCls = span ? `col-${span}` : '';
-    const offsetCls = offset ? `col-offset-${offset}` : '';
-    return `${spanCls} ${offsetCls}`;
-  }
-  return '';
-}
-function PaneFormItem(props) {
-  const { label, labelCol, field, fieldCol } = props;
-  const labelCls = `info-label ${getColCls(labelCol)}`;
-  const fieldCls = `info-data ${getColCls(fieldCol)}`;
-  return (
-    <div className="info-item">
-      <div className={labelCls}>{label}：</div>
-      <div className={fieldCls}>{field}</div>
-    </div>
-  );
-}
-PaneFormItem.propTypes = {
-  label: PropTypes.string.isRequired,
-  labelCol: PropTypes.object,
-  field: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  fieldCol: PropTypes.object,
-};
 @injectIntl
 @connect(
   state => ({
@@ -206,36 +181,38 @@ export default class DetailPane extends React.Component {
         <Card title={this.msg('customerInfo')} bodyStyle={{ padding: 8 }}
           extra={clientInfo}
         >
-          <Col span="8">
-            <PaneFormItem labelCol={{ span: 8 }} label={this.msg('client')}
-              field={shipmt.customer_name} fieldCol={{ span: 16 }}
-            />
-          </Col>
-          <Col span="8">
-            <PaneFormItem labelCol={{ span: 8 }} label={this.msg('acceptTime')}
-              field={dispatch.acpt_time ? moment(dispatch.acpt_time).format('YYYY.MM.DD') : ''} fieldCol={{ span: 21 }}
-            />
-          </Col>
-          <Col span="8">
-            <PaneFormItem labelCol={{ span: 8 }} label={this.msg('remark')}
-              field={shipmt.remark} fieldCol={{ span: 21 }}
-            />
-          </Col>
-          <Col span="8">
-            <PaneFormItem labelCol={{ span: 8 }} label={this.msg('refExternalNo')}
-              field={shipmt.ref_external_no} fieldCol={{ span: 16 }}
-            />
-          </Col>
-          <Col span="8">
-            <PaneFormItem labelCol={{ span: 8 }} label={this.msg('refWaybillNo')}
-              field={shipmt.ref_waybill_no} fieldCol={{ span: 16 }}
-            />
-          </Col>
-          <Col span="8">
-            <PaneFormItem labelCol={{ span: 8 }} label={this.msg('refEntryNo')}
-              field={shipmt.ref_entry_no} fieldCol={{ span: 16 }}
-            />
-          </Col>
+          <Row>
+            <Col span="8">
+              <InfoItem labelCol={{ span: 8 }} label={this.msg('client')}
+                field={shipmt.customer_name} fieldCol={{ span: 16 }}
+              />
+            </Col>
+            <Col span="8">
+              <InfoItem labelCol={{ span: 8 }} label={this.msg('refExternalNo')}
+                field={shipmt.ref_external_no} fieldCol={{ span: 16 }}
+              />
+            </Col>
+            <Col span="8">
+              <InfoItem labelCol={{ span: 8 }} label={this.msg('acceptTime')}
+                field={dispatch.acpt_time ? moment(dispatch.acpt_time).format('YYYY.MM.DD') : ''} fieldCol={{ span: 21 }}
+              />
+            </Col>
+            <Col span="8">
+              <InfoItem labelCol={{ span: 8 }} label={this.msg('refWaybillNo')}
+                field={shipmt.ref_waybill_no} fieldCol={{ span: 16 }}
+              />
+            </Col>
+            <Col span="8">
+              <InfoItem labelCol={{ span: 8 }} label={this.msg('refEntryNo')}
+                field={shipmt.ref_entry_no} fieldCol={{ span: 16 }}
+              />
+            </Col>
+            <Col span="8">
+              <InfoItem labelCol={{ span: 8 }} label={this.msg('remark')}
+                field={shipmt.remark} fieldCol={{ span: 21 }}
+              />
+            </Col>
+          </Row>
         </Card>
         <Card title={`${this.msg('shipmtSchedule')} ${shipmt.transit_time || '当'}${this.msg('day')}`} bodyStyle={{ padding: 8 }}
           extra={shipmtSchedule}
@@ -246,14 +223,14 @@ export default class DetailPane extends React.Component {
                 <Step key={0} title={shipmt.consigner_name || (<div style={{ height: 26 }} />)} status="process"
                   icon={<div className="icon">始</div>}
                   description={
-                    <div className="stepBody">
-                      <PaneFormItem labelCol={{ span: 8 }} label={this.msg('pickupEstDate')}
+                    <div>
+                      <InfoItem labelCol={{ span: 8 }} label={this.msg('pickupEstDate')}
                         field={pickupDate} fieldCol={{ span: 16 }}
                       />
-                      <PaneFormItem labelCol={{ span: 8 }} label="发货地"
+                      <InfoItem labelCol={{ span: 8 }} label="发货地"
                         field={`${renderConsignLoc(shipmt, 'consigner')} ${shipmt.consigner_addr || ''}`} fieldCol={{ span: 16 }}
                       />
-                      <PaneFormItem labelCol={{ span: 8 }} label="联系人/电话"
+                      <InfoItem labelCol={{ span: 8 }} label="联系人/电话"
                         field={`${shipmt.consigner_contact || ''} ${shipmt.consigner_mobile || ''}`} fieldCol={{ span: 16 }}
                       />
                     </div>
@@ -266,14 +243,14 @@ export default class DetailPane extends React.Component {
                 <Step key={0} title={shipmt.consignee_name || (<div style={{ height: 26 }} />)} status="process"
                   icon={<div className="icon">终</div>}
                   description={
-                    <div className="stepBody">
-                      <PaneFormItem labelCol={{ span: 8 }} label={this.msg('deliveryEstDate')}
+                    <div>
+                      <InfoItem labelCol={{ span: 8 }} label={this.msg('deliveryEstDate')}
                         field={deliverDate} fieldCol={{ span: 16 }}
                       />
-                      <PaneFormItem labelCol={{ span: 8 }} label="收货地"
+                      <InfoItem labelCol={{ span: 8 }} label="收货地"
                         field={`${renderConsignLoc(shipmt, 'consignee')} ${shipmt.consignee_addr || ''}`} fieldCol={{ span: 16 }}
                       />
-                      <PaneFormItem labelCol={{ span: 8 }} label="联系人/电话"
+                      <InfoItem labelCol={{ span: 8 }} label="联系人/电话"
                         field={`${shipmt.consignee_contact || ''} ${shipmt.consignee_mobile || ''}`} fieldCol={{ span: 16 }}
                       />
                     </div>
@@ -286,79 +263,81 @@ export default class DetailPane extends React.Component {
         <Card title={this.msg('transitModeInfo')} bodyStyle={{ padding: 8 }}
           extra={<a onClick={this.handleChangeTransitMode}><Icon type="edit" /></a>}
         >
-          <Col span="12">
-            <PaneFormItem labelCol={{ span: 8 }} label={this.msg('transitModeInfo')}
-              field={shipmt.transport_mode} fieldCol={{ span: 16 }}
-            />
-          </Col>
-          {shipmt.transport_mode_code === PRESET_TRANSMODES.ftl &&
-          <Col span="12">
-            <PaneFormItem labelCol={{ span: 8 }} label={this.msg('vehicleType')}
-              field={vehicleType ? vehicleType.text : ''} fieldCol={{ span: 16 }}
-            />
-          </Col>
-          }
-          {shipmt.transport_mode_code === PRESET_TRANSMODES.ftl &&
-          <Col span="12">
-            <PaneFormItem labelCol={{ span: 8 }} label={this.msg('vehicleLength')}
-              field={vehicleLength ? vehicleLength.text : ''} fieldCol={{ span: 16 }}
-            />
-          </Col>
-          }
-          {shipmt.transport_mode_code === PRESET_TRANSMODES.ctn &&
-          <Col span="12">
-            <PaneFormItem labelCol={{ span: 8 }} label={this.msg('containerNo')}
-              field={shipmt.container_no} fieldCol={{ span: 16 }}
-            />
-          </Col>
-          }
-          {shipmt.transport_mode_code === PRESET_TRANSMODES.exp &&
-          <Col span="12">
-            <PaneFormItem labelCol={{ span: 8 }} label={this.msg('courierNo')}
-              field={shipmt.courier_no} fieldCol={{ span: 16 }}
-            />
-          </Col>
-          }
+          <Row>
+            <Col span="12">
+              <InfoItem labelCol={{ span: 8 }} label={this.msg('transitModeInfo')}
+                field={shipmt.transport_mode} fieldCol={{ span: 16 }}
+              />
+            </Col>
+            {shipmt.transport_mode_code === PRESET_TRANSMODES.ftl &&
+            <Col span="12">
+              <InfoItem labelCol={{ span: 8 }} label={this.msg('vehicleType')}
+                field={vehicleType ? vehicleType.text : ''} fieldCol={{ span: 16 }}
+              />
+            </Col>
+            }
+            {shipmt.transport_mode_code === PRESET_TRANSMODES.ftl &&
+            <Col span="12">
+              <InfoItem labelCol={{ span: 8 }} label={this.msg('vehicleLength')}
+                field={vehicleLength ? vehicleLength.text : ''} fieldCol={{ span: 16 }}
+              />
+            </Col>
+            }
+            {shipmt.transport_mode_code === PRESET_TRANSMODES.ctn &&
+            <Col span="12">
+              <InfoItem labelCol={{ span: 8 }} label={this.msg('containerNo')}
+                field={shipmt.container_no} fieldCol={{ span: 16 }}
+              />
+            </Col>
+            }
+            {shipmt.transport_mode_code === PRESET_TRANSMODES.exp &&
+            <Col span="12">
+              <InfoItem labelCol={{ span: 8 }} label={this.msg('courierNo')}
+                field={shipmt.courier_no} fieldCol={{ span: 16 }}
+              />
+            </Col>
+            }
+          </Row>
         </Card>
         <Card title={this.msg('goodsInfo')} bodyStyle={{ padding: 8 }}
           extra={<a onClick={this.handleChangeTransitGoodsInfo}><Icon type="edit" /></a>}
         >
-          <Col span="8">
-            <PaneFormItem labelCol={{ span: 8 }} label={this.msg('goodsType')}
-              field={goodsType ? goodsType.text : shipmt.goods_type} fieldCol={{ span: 16 }}
-            />
-          </Col>
-          <Col span="8">
-            <PaneFormItem labelCol={{ span: 8 }} label={this.msg('goodsPackage')}
-              field={pckg ? pckg.value : shipmt.package} fieldCol={{ span: 16 }}
-            />
-          </Col>
-          <Col span="8">
-            <PaneFormItem labelCol={{ span: 8 }} label={this.msg('insuranceValue')}
-              field={shipmt.insure_value} fieldCol={{ span: 16 }}
-            />
-          </Col>
+          <Row>
+            <Col span="8">
+              <InfoItem labelCol={{ span: 8 }} label={this.msg('goodsType')}
+                field={goodsType ? goodsType.text : shipmt.goods_type} fieldCol={{ span: 16 }}
+              />
+            </Col>
+            <Col span="8">
+              <InfoItem labelCol={{ span: 8 }} label={this.msg('goodsPackage')}
+                field={pckg ? pckg.value : shipmt.package} fieldCol={{ span: 16 }}
+              />
+            </Col>
+            <Col span="8">
+              <InfoItem labelCol={{ span: 8 }} label={this.msg('insuranceValue')}
+                field={shipmt.insure_value} fieldCol={{ span: 16 }}
+              />
+            </Col>
 
-          <Col span="8">
-            <PaneFormItem labelCol={{ span: 8 }} label={this.msg('totalCount')}
-              field={shipmt.total_count || ''} fieldCol={{ span: 16 }}
-            />
-          </Col>
-          <Col span="8">
-            <PaneFormItem labelCol={{ span: 8 }} label={this.msg('totalWeight')}
-              field={shipmt.total_weight !== null ? `${shipmt.total_weight} ${this.msg('kilogram')}` : ''} fieldCol={{ span: 16 }}
-            />
-          </Col>
-          <Col span="8">
-            <PaneFormItem labelCol={{ span: 8 }} label={this.msg('totalVolume')}
-              field={shipmt.total_volume !== null ? `${shipmt.total_volume} ${this.msg('cubicMeter')}` : ''} fieldCol={{ span: 16 }}
-            />
-          </Col>
-          <Col span="24">
-            <Table size="small" columns={this.columns} pagination={false}
-              dataSource={shipmt.goodslist}
-            />
-          </Col>
+            <Col span="8">
+              <InfoItem labelCol={{ span: 8 }} label={this.msg('totalCount')}
+                field={shipmt.total_count || ''} fieldCol={{ span: 16 }}
+              />
+            </Col>
+            <Col span="8">
+              <InfoItem labelCol={{ span: 8 }} label={this.msg('totalWeight')}
+                field={shipmt.total_weight !== null ? `${shipmt.total_weight} ${this.msg('kilogram')}` : ''} fieldCol={{ span: 16 }}
+              />
+            </Col>
+            <Col span="8">
+              <InfoItem labelCol={{ span: 8 }} label={this.msg('totalVolume')}
+                field={shipmt.total_volume !== null ? `${shipmt.total_volume} ${this.msg('cubicMeter')}` : ''} fieldCol={{ span: 16 }}
+              />
+            </Col>
+          </Row>
+          <Table size="small" columns={this.columns} pagination={false}
+            dataSource={shipmt.goodslist}
+          />
         </Card>
         <PrivilegeCover module="transport" feature="shipment" action="edit">
           <ChangeShipment />
