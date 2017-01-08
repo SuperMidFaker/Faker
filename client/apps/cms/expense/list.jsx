@@ -402,7 +402,7 @@ export default class ExpenseList extends Component {
         title: this.msg('profit'),
         width: 80,
         className: 'data-money',
-        render: (record) => {
+        render: (o, record) => {
           const bill = isNaN(record.all_bill) ? 0 : record.all_bill;
           const cost = isNaN(record.all_cost) ? 0 : record.all_cost;
           if (bill < cost) {
