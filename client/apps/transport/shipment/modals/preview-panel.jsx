@@ -206,7 +206,7 @@ export default class PreviewPanel extends React.Component {
                     field={shipmt.lsp_name} fieldCol={{ span: 9 }}
                   />
                 </Col>
-                <Col span="12">
+                <Col span="12" style={{ paddingTop: 8 }}>
                   <ShipmentSchedule />
                 </Col>
               </Row>

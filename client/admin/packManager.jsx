@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import CollapseSideLayout from 'client/components/collapseSideLayout';
+import CollapsibleSiderLayout from 'client/components/CollapsibleSiderLayout';
 
 function getLinks() {
   return [{
@@ -43,7 +43,7 @@ export default class PackManager extends React.Component {
   render() {
     const linkMenus = getLinks();
     return (
-      <CollapseSideLayout links={linkMenus} childContent={this.props.children} location={this.props.location} showLogo />
+      <CollapsibleSiderLayout links={linkMenus} childContent={this.props.children} location={this.props.location} showLogo />
     );
   }
 }

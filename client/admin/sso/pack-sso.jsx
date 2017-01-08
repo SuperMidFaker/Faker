@@ -1,9 +1,8 @@
 import React, { PropTypes } from 'react';
+import { Layout } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { format } from 'client/common/i18n/helpers';
-import messages from './message.i18n';
 import './sso.less';
-const formatMsg = format(messages);
+const { Content, Footer } = Layout;
 
 @injectIntl
 export default class SSOPack extends React.Component {
@@ -14,20 +13,15 @@ export default class SSOPack extends React.Component {
 
   render() {
     return (
-      <div className="am-splash-screen">
-
-        <div className="main-content">
-          <div className="login-container">
-            <div className="panel panel-default">
-              <div className="panel-heading">
-                <img src={`${__CDN__}/assets/img/welogix_logo_360.png`} width="160" alt="logo" />
-                <span>{formatMsg(this.props.intl, 'slogan')}</span>
-              </div>
-              {this.props.children}
-            </div>
+      <Layout className="splash-screen">
+        <Content className="main-content">
+          <div className="center-card-wrapper">
+            {this.props.children}
           </div>
-        </div>
-
-      </div>);
+        </Content>
+        <Footer style={{ textAlign: 'center' }}>
+          <div><a rel="noopener noreferrer" href="http://www.miitbeian.gov.cn/" target="_blank">沪ICP备16046609号-1</a></div>
+        </Footer>
+      </Layout>);
   }
 }
