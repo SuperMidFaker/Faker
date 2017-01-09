@@ -410,8 +410,8 @@ export default class FeesList extends React.Component {
           pageSize: pagination.pageSize,
           currentPage: pagination.current,
           searchValue,
-          startDate: moment(startDate).format('YYYY-MM-DD 00:00:00'),
-          endDate: moment(endDate).format('YYYY-MM-DD 23:59:59'),
+          startDate,
+          endDate,
           filters,
         };
         return params;

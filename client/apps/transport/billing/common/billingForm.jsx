@@ -48,7 +48,7 @@ export default class BillingForm extends React.Component {
     if (this.props.type === 'receivable') {
       roles = [PARTNER_ROLES.CUS, PARTNER_ROLES.DCUS];
     } else if (this.props.type === 'payable') {
-      roles = [PARTNER_ROLES.TSUP];
+      roles = [PARTNER_ROLES.SUP];
     }
     this.props.loadPartners(this.props.tenantId, roles, businessTypes);
   }
