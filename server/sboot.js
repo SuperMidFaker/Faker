@@ -27,15 +27,9 @@ global.API_ROOTS = {
   mongo: 'http://localhost:3032/',
   self: `http://localhost:${__PORT__}/`,
 };
-const isomorphic = argv.admin ?
-  require('../webpack/adminIsomorphic')
-    : require('../webpack/isomorphic');
+const isomorphic = require('../webpack/isomorphic');
 global.webpackIsomorphicTools = new WebpackIsomorphicTools(isomorphic)
   .server(rootDir, () => {
-    if (argv.admin) {
-      require('./admin');
-    } else {
-      require('./web');
-    }
+    require('./web');
     console.timeEnd('starting web server');
   });

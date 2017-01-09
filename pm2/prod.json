@@ -9,15 +9,4 @@
     "env": {
         "NODE_ENV": "production"
     }
-},{
-    "name"       : "welogix-admin",
-    "script"     : "./server/sboot.js",
-    "error_file" : "/data/deploy/logs/welogix-admin-err.log",
-    "out_file"   : "/data/deploy/logs/welogix-admin-out.log",
-    "pid_file"   : "/data/deploy/logs/welogix-admin.pid",
-    "args"      : "['--port=3026', '--admin=true']",
-    "log_date_format" : "YYYY-MM-DD HH:mm Z",
-    "env": {
-        "NODE_ENV": "production"
-    }
 }]

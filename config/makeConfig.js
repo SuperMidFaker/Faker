@@ -27,9 +27,6 @@ module.exports = (serverPort, dirName, appName) => {
   config.set('webpack_port', serverPort + 1);
   config.set('webpack_dev_path', `http://${config.get('server_host')}:${config.get('webpack_port')}/`);
   config.set('webpack_dist', 'dist');
-  config.set('webpack_admin_port', serverPort + 3);
-  config.set('webpack_admin_path', `http://${config.get('server_host')}:${config.get('webpack_admin_port')}/`);
-  config.set('webpack_admin_public_path', `${config.get('webpack_admin_path')}${config.get('webpack_dist')}/`);
   config.set('__PRODUCTIONS_ROOT_GROUP_ON_SERVER__', config.get('__PRODUCTIONS_ROOT_GROUP__'));
   config.set('CDN_URL', '');
   if (__DEV__) {
