@@ -57,6 +57,12 @@ export default function makeColumns(type, handlers, msg) {
     title: msg('shipmtActPickupDate'),
     dataIndex: 'pickup_act_date',
     render: (o, record) => {
+      const location = {
+        province: record.consigner_province,
+        city: record.consigner_city,
+        district: record.consigner_district,
+        address: record.consigner_addr,
+      };
       if (type !== 'pod' && type === 'status' && record.status === SHIPMENT_TRACK_STATUS.dispatched) {
         if (record.sp_tenant_id === -1) {
           return (
@@ -64,9 +70,11 @@ export default function makeColumns(type, handlers, msg) {
               <PickupDeliverUpdaterPopover
                 type="pickup"
                 shipmtNo={record.shipmt_no}
+                parentNo={record.parent_no}
                 dispId={record.disp_id}
                 estDate={record.pickup_est_date}
                 onOK={handlers.onTableLoad}
+                location={location}
               >
                 <Icon type="edit" />{msg('updatePickup')}
               </PickupDeliverUpdaterPopover>
@@ -81,9 +89,11 @@ export default function makeColumns(type, handlers, msg) {
                 <PickupDeliverUpdaterPopover
                   type="pickup"
                   shipmtNo={record.shipmt_no}
+                  parentNo={record.parent_no}
                   dispId={record.disp_id}
                   estDate={record.pickup_est_date}
                   onOK={handlers.onTableLoad}
+                  location={location}
                 >
                   <Icon type="edit" />{msg('updatePickup')}
                 </PickupDeliverUpdaterPopover>
@@ -106,6 +116,12 @@ export default function makeColumns(type, handlers, msg) {
     title: msg('shipmtActDeliveryDate'),
     dataIndex: 'deliver_act_date',
     render: (o, record) => {
+      const location = {
+        province: record.consignee_province,
+        city: record.consignee_city,
+        district: record.consignee_district,
+        address: record.consignee_addr,
+      };
       if (type !== 'pod' && type === 'status' && record.status === SHIPMENT_TRACK_STATUS.intransit) {
         if (record.sp_tenant_id === -1) {
           return (
@@ -113,9 +129,11 @@ export default function makeColumns(type, handlers, msg) {
               <PickupDeliverUpdaterPopover
                 type="deliver"
                 shipmtNo={record.shipmt_no}
+                parentNo={record.parent_no}
                 dispId={record.disp_id}
                 estDate={record.deliver_est_date}
                 onOK={handlers.onTableLoad}
+                location={location}
               >
                 <Icon type="edit" />{msg('updateDelivery')}
               </PickupDeliverUpdaterPopover>
@@ -128,9 +146,11 @@ export default function makeColumns(type, handlers, msg) {
                 <PickupDeliverUpdaterPopover
                   type="deliver"
                   shipmtNo={record.shipmt_no}
+                  parentNo={record.parent_no}
                   dispId={record.disp_id}
                   estDate={record.deliver_est_date}
                   onOK={handlers.onTableLoad}
+                  location={location}
                 >
                   <Icon type="edit" />{msg('updateDelivery')}
                 </PickupDeliverUpdaterPopover>

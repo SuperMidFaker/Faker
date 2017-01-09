@@ -187,13 +187,37 @@ export default class LandStatusList extends React.Component {
   handleShowPickModal = (row, ev) => {
     ev.preventDefault();
     ev.stopPropagation();
-    const shipments = [{ dispId: row.disp_id, shipmtNo: row.shipmt_no }];
+    const location = {
+      province: row.consigner_province,
+      city: row.consigner_city,
+      district: row.consigner_district,
+      address: row.consigner_addr,
+    };
+    const shipments = [{
+      dispId: row.disp_id,
+      shipmtNo: row.shipmt_no,
+      parentNo: row.parent_no,
+      estDate: row.pickup_est_date,
+      location,
+    }];
     this.props.showDateModal(shipments, 'pickup');
   }
   handleShowDeliverModal = (row, ev) => {
     ev.preventDefault();
     ev.stopPropagation();
-    const shipments = [{ dispId: row.disp_id, shipmtNo: row.shipmt_no }];
+    const location = {
+      province: row.consignee_province,
+      city: row.consignee_city,
+      district: row.consignee_district,
+      address: row.consignee_addr,
+    };
+    const shipments = [{
+      dispId: row.disp_id,
+      shipmtNo: row.shipmt_no,
+      parentNo: row.parent_no,
+      estDate: row.deliver_est_date,
+      location,
+    }];
     this.props.showDateModal(shipments, 'deliver');
   }
   handleShowBatchPickModal = () => {
@@ -202,7 +226,19 @@ export default class LandStatusList extends React.Component {
       let shipment = {};
       for (let i = 0; i < listData.length; i++) {
         if (listData[i].shipmt_no === item) {
-          shipment = { shipmtNo: item, dispId: listData[i].disp_id };
+          const location = {
+            province: listData[i].consigner_province,
+            city: listData[i].consigner_city,
+            district: listData[i].consigner_district,
+            address: listData[i].consigner_addr,
+          };
+          shipment = {
+            shipmtNo: item,
+            dispId: listData[i].disp_id,
+            parentNo: listData[i].parent_no,
+            estDate: listData[i].pickup_est_date,
+            location,
+          };
           break;
         }
       }
@@ -216,7 +252,19 @@ export default class LandStatusList extends React.Component {
       let shipment = {};
       for (let i = 0; i < listData.length; i++) {
         if (listData[i].shipmt_no === item) {
-          shipment = { shipmtNo: item, dispId: listData[i].disp_id };
+          const location = {
+            province: listData[i].consignee_province,
+            city: listData[i].consignee_city,
+            district: listData[i].consignee_district,
+            address: listData[i].consignee_addr,
+          };
+          shipment = {
+            shipmtNo: item,
+            dispId: listData[i].disp_id,
+            parentNo: listData[i].parent_no,
+            estDate: listData[i].deliver_est_date,
+            location,
+          };
           break;
         }
       }

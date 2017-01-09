@@ -206,11 +206,35 @@ export default class Footer extends React.Component {
     this.props.showVehicleModal(row.disp_id, row.shipmt_no);
   }
   handleShowPickModal = (row) => {
-    const shipments = [{ dispId: row.disp_id, shipmtNo: row.shipmt_no, estDate: row.pickup_est_date }];
+    const location = {
+      province: row.consigner_province,
+      city: row.consigner_city,
+      district: row.consigner_district,
+      address: row.consigner_addr,
+    };
+    const shipments = [{
+      dispId: row.disp_id,
+      shipmtNo: row.shipmt_no,
+      parentNo: row.parent_no,
+      estDate: row.pickup_est_date,
+      location,
+    }];
     this.props.showDateModal(shipments, 'pickup');
   }
   handleShowDeliverModal = (row) => {
-    const shipments = [{ dispId: row.disp_id, shipmtNo: row.shipmt_no, estDate: row.deliver_est_date }];
+    const location = {
+      province: row.consignee_province,
+      city: row.consignee_city,
+      district: row.consignee_district,
+      address: row.consignee_addr,
+    };
+    const shipments = [{
+      dispId: row.disp_id,
+      shipmtNo: row.shipmt_no,
+      parentNo: row.parent_no,
+      estDate: row.deliver_est_date,
+      location,
+    }];
     this.props.showDateModal(shipments, 'deliver');
   }
   handleShowPodModal = (row) => {

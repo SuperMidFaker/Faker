@@ -1,8 +1,10 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import moment from 'moment';
 import { Form, DatePicker, Modal, message, Alert } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { closeDateModal, saveBatchPickOrDeliverDate } from 'common/reducers/trackingLandStatus';
+import { closeDateModal, saveBatchPickOrDeliverDate, reportLoc } from 'common/reducers/trackingLandStatus';
+import { TRACKING_POINT_FROM_TYPE } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 const formatMsg = format(messages);
@@ -19,7 +21,7 @@ const FormItem = Form.Item;
     type: state.trackingLandStatus.dateModal.type,
     shipments: state.trackingLandStatus.dateModal.shipments,
   }),
-  { closeDateModal, saveBatchPickOrDeliverDate }
+  { closeDateModal, saveBatchPickOrDeliverDate, reportLoc }
 )
 @Form.create()
 export default class PickupDeliverUpdater extends React.Component {
@@ -32,6 +34,7 @@ export default class PickupDeliverUpdater extends React.Component {
     onOK: PropTypes.func,
     closeDateModal: PropTypes.func.isRequired,
     saveBatchPickOrDeliverDate: PropTypes.func.isRequired,
+    reportLoc: PropTypes.func.isRequired,
   }
   state = {
     warningMessage: '',
@@ -47,6 +50,13 @@ export default class PickupDeliverUpdater extends React.Component {
             if (result.error) {
               message.error(result.error.message);
             } else {
+              for (let i = 0; i < shipments.length; i++) {
+                const { dispId, shipmtNo, parentNo, location } = shipments[i];
+                // 上报位置
+                location.location_time = actDate;
+                location.from = TRACKING_POINT_FROM_TYPE.manual;
+                this.props.reportLoc(tenantId, shipmtNo, parentNo, dispId, location);
+              }
               this.props.closeDateModal();
               form.resetFields();
               onOK();
@@ -69,7 +79,7 @@ export default class PickupDeliverUpdater extends React.Component {
     });
 
     if (shipment) {
-      this.setState({ warningMessage: `所选时间和 ${shipment.shipmtNo} 预计时间相差较大， 请注意是否选错日期！` });
+      this.setState({ warningMessage: `所选时间和 ${shipment.shipmtNo} 预计时间${moment(shipment.estDate).format('YYYY.MM.DD')}相差较大， 请注意是否选错日期！` });
     } else {
       this.setState({ warningMessage: '' });
     }
