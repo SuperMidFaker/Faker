@@ -239,6 +239,7 @@ export default class DelegationList extends Component {
       const params = {
         ietype: this.props.ietype,
         tenantId: this.props.tenantId,
+        loginId: this.props.loginId,
         pageSize: pagination.pageSize,
         currentPage: pagination.current,
       };
@@ -257,12 +258,13 @@ export default class DelegationList extends Component {
     this.context.router.push(`/clearance/${this.props.ietype}/create`);
   }
   handleDelgListLoad = (currentPage, filter) => {
-    const { tenantId, listFilter, ietype,
+    const { tenantId, listFilter, ietype, loginId,
       delegationlist: { pageSize, current } } = this.props;
     this.setState({ expandedKeys: [] });
     this.props.loadAcceptanceTable({
       ietype,
       tenantId,
+      loginId,
       filter: JSON.stringify(filter || listFilter),
       pageSize,
       currentPage: currentPage || current,
@@ -273,12 +275,13 @@ export default class DelegationList extends Component {
     });
   }
   handleCiqListLoad = (currentPage, filter) => {
-    const { tenantId, ietype, listFilter,
+    const { tenantId, ietype, listFilter, loginId,
       delegationlist: { pageSize, current } } = this.props;
     this.props.loadCiqTable({
       ietype,
       filter: JSON.stringify(filter || listFilter),
       tenantId,
+      loginId,
       pageSize,
       currentPage: currentPage || current,
     }).then((result) => {
@@ -380,6 +383,14 @@ export default class DelegationList extends Component {
   )
   handleExpandedChange = (expandedKeys) => {
     this.setState({ expandedKeys });
+  }
+  handleViewChange = (value) => {
+    const filter = { ...this.props.listFilter, viewStatus: value };
+    if (this.props.listView === 'ciq') {
+      this.handleCiqListLoad(1, filter);
+    } else if (this.props.listView === 'delegation') {
+      this.handleDelgListLoad(1, filter);
+    }
   }
   handleSearch = (searchVal) => {
     const filters = this.mergeFilters(this.props.listFilter, searchVal);
@@ -533,9 +544,11 @@ export default class DelegationList extends Component {
                 </Button>
               </PrivilegeCover>
               <div className="toolbar-right">
-                <Select defaultValue="my"
+                <Select
+                  value={listFilter.viewStatus}
                   style={{ width: 160 }}
                   showSearch={false}
+                  onChange={this.handleViewChange}
                 >
                   <OptGroup label="常用视图">
                     <Option value="all">全部委托</Option>
