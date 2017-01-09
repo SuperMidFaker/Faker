@@ -48,6 +48,7 @@ const initialState = {
   },
   listFilter: {
     status: 'all',
+    viewStatus: 'both',
     acptDate: { en: false },
     cleanDate: { en: false },
   },
