@@ -76,13 +76,13 @@ export default class CiqDeclPane extends React.Component {
       title: '品质查验',
       dataIndex: 'ciq_quality_inspect',
       width: 60,
-      render: o => o === 1 ? <Tag color="red">是</Tag>
+      render: o => o === 1 ? <Tag color="#F04134">是</Tag>
           : <Tag>否</Tag>,
     }, {
       title: '动检查验',
       dataIndex: 'ciq_ap_inspect',
       width: 60,
-      render: o => o === 1 ? <Tag color="red">是</Tag>
+      render: o => o === 1 ? <Tag color="#F04134">是</Tag>
           : <Tag>否</Tag>,
     }];
     return (

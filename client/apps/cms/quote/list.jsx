@@ -185,7 +185,7 @@ export default class QuoteList extends Component {
       }, {
         title: msg('partnerLabel'),
         width: 240,
-        render: (record) => {
+        render: (text, record) => {
           let partnerName = '';
           if (record.recv_tenant_id === tenantId) {
             partnerName = record.send_tenant_name;
@@ -197,7 +197,7 @@ export default class QuoteList extends Component {
       }, {
         title: msg('tariffKinds'),
         width: 80,
-        render: (record) => {
+        render: (text, record) => {
           let tariffKinds = '';
           if (!record.send_tenant_id) {
             tariffKinds = 'salesBase';
@@ -219,7 +219,7 @@ export default class QuoteList extends Component {
           if (o) {
             o.forEach((d) => {
               const decl = DECL_TYPE.filter(dl => dl.key === d)[0];
-              tags.push(<Tag>{decl && decl.value}</Tag>);
+              tags.push(<Tag key={d}>{decl && decl.value}</Tag>);
             });
           }
           return tags;
@@ -233,7 +233,7 @@ export default class QuoteList extends Component {
           if (o) {
             o.forEach((d) => {
               const decl = TRANS_MODE.filter(dl => dl.value === d)[0];
-              tags.push(<Tag>{decl && decl.text}</Tag>);
+              tags.push(<Tag key={d}>{decl && decl.text}</Tag>);
             });
           }
           return tags;
@@ -408,7 +408,9 @@ export default class QuoteList extends Component {
               </div>
             </div>
             <div className="panel-body table-panel">
-              <Table rowSelection={rowSelection} columns={columns} dataSource={this.dataSource} loading={quotesList.loading} scroll={{ x: 1400 }} />
+              <Table rowSelection={rowSelection} columns={columns} dataSource={this.dataSource}
+                loading={quotesList.loading} scroll={{ x: 1400 }} rowKey="_id"
+              />
             </div>
           </div>
         </div>

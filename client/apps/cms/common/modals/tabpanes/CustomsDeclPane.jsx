@@ -108,7 +108,7 @@ export default class CustomsDeclPane extends React.Component {
       width: 70,
       render: (o) => {
         if (o === 1) {
-          return <Tag color="red">是</Tag>;
+          return <Tag color="#F04134">是</Tag>;
         } else {
           return <Tag>否</Tag>;
         }

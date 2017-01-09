@@ -238,7 +238,7 @@ export default class ActivityLoggerPane extends React.Component {
                   switch (activity.type) {
                     case 'exchange':
                       return (
-                        <Timeline.Item dot={<Icon type="retweet" />}>
+                        <Timeline.Item dot={<Icon type="retweet" />} key={activity.id}>
                           <Card title={<span>换单 <small className="timestamp">{moment(activity.created_date).format('YYYY-MM-DD HH:mm')}</small></span>} extra={
                             <Popover
                               content={<div><a onClick={this.hide}>修改</a><span className="ant-divider" /><a className="mdc-text-red" onClick={this.hide}>删除</a></div>}
@@ -267,7 +267,7 @@ export default class ActivityLoggerPane extends React.Component {
                       } else if (inspect.status === INSPECT_STATUS.finished) {
                         inspectStatusTxt = '通过';
                       }
-                      return (<Timeline.Item dot={<Icon type="exception" />} color="red">
+                      return (<Timeline.Item dot={<Icon type="exception" />} color="red" key={activity.id}>
                         <Card title={<span>{ACTIVITY_DESC_MAP[activity.type].text}
                           <small className="timestamp">{moment(activity.created_date).format('YYYY-MM-DD HH:mm')}</small></span>}
                           extra={<span className="toolbar-right">
@@ -293,7 +293,7 @@ export default class ActivityLoggerPane extends React.Component {
                       const certInfo = JSON.parse(activity.note);
                       const certText = CERTS.filter(ct => ct.value === certInfo.cert)[0].text;
                       return (
-                        <Timeline.Item dot={<Icon type="addfile" />}>
+                        <Timeline.Item dot={<Icon type="addfile" />} key={activity.id}>
                           <Card title={<span>办证 <small className="timestamp">{moment(activity.created_date).format('YYYY-MM-DD HH:mm')}</small></span>} extra={
                             <Popover
                               content={<div><a onClick={this.hide}>修改</a><span className="ant-divider" /><a className="mdc-text-red" onClick={this.hide}>删除</a></div>}
@@ -316,7 +316,7 @@ export default class ActivityLoggerPane extends React.Component {
                     }
                     default: {
                       const descObj = ACTIVITY_DESC_MAP[activity.type];
-                      return (<Timeline.Item dot={<Icon type={descObj.icon} />}>
+                      return (<Timeline.Item dot={<Icon type={descObj.icon} />} key={activity.id}>
                         <p>{descObj.text} {moment(activity.created_date).format('YYYY-MM-DD HH:mm')}</p>
                         <p>{activity.oper_name} {activity.oper_tenant_name}</p>
                       </Timeline.Item>);
