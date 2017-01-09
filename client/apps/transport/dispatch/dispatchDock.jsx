@@ -156,7 +156,7 @@ export default class DispatchDock extends Component {
       dataIndex: 'type',
       width: 50,
       render: (t) => {
-        if (this.props.vehicleTypes) {
+        if (this.props.vehicleTypes && this.props.vehicleTypes[t]) {
           return this.props.vehicleTypes[t].text;
         }
         return '';
