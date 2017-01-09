@@ -63,6 +63,25 @@ export default class ActivityLoggerPane extends React.Component {
   handleCancel = () => {
     this.props.form.resetFields();
   }
+  handleInspectSave = ({ preEntrySeqNo, delgNo, enabled, field }) => {
+    this.props.setInspect({ preEntrySeqNo, delgNo, field, enabled }).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 5);
+      } else {
+        this.props.showPreviewer(
+            this.props.tenantId,
+            this.props.previewer.delgNo,
+            this.props.previewer.tabKey
+          );
+        if (this.props.previewer.tabKey === 'customsDecl') {
+          this.props.loadCustPanel({
+            delgNo: this.props.previewer.delgNo,
+            tenantId: this.props.tenantId,
+          });
+        }
+      }
+    });
+  }
   handleSave = () => {
     const { previewer } = this.props;
     const key = this.state.tabKey;
@@ -98,27 +117,11 @@ export default class ActivityLoggerPane extends React.Component {
         });
       }
     } else if (key === 'inspect') {
-      this.props.setInspect({
+      this.handleInspectSave({
         preEntrySeqNo: formVals.pre_entry_no,
         delgNo: previewer.delgNo,
         field: formVals.inspect_field,
         enabled: true,
-      }).then((result) => {
-        if (result.error) {
-          message.error(result.error.message, 5);
-        } else {
-          this.props.showPreviewer(
-              this.props.tenantId,
-              previewer.delgNo,
-              previewer.tabKey
-            );
-          if (previewer.tabKey === 'customsDecl') {
-            this.props.loadCustPanel({
-              delgNo: previewer.delgNo,
-              tenantId: this.props.tenantId,
-            });
-          }
-        }
       });
     }
   }
@@ -264,16 +267,21 @@ export default class ActivityLoggerPane extends React.Component {
                       let inspectStatusTxt;
                       if (inspect.status === INSPECT_STATUS.inspecting) {
                         inspectStatusTxt = '查验中';
-                      } else if (inspect.status === INSPECT_STATUS.finished) {
+                      } else if (inspect.status === INSPECT_STATUS.finish) {
                         inspectStatusTxt = '通过';
                       }
                       return (<Timeline.Item dot={<Icon type="exception" />} color="red" key={activity.id}>
                         <Card title={<span>{ACTIVITY_DESC_MAP[activity.type].text}
                           <small className="timestamp">{moment(activity.created_date).format('YYYY-MM-DD HH:mm')}</small></span>}
                           extra={<span className="toolbar-right">
+                            {inspect.status !== INSPECT_STATUS.finish &&
                             <Tooltip title="标记查验通过" placement="left">
-                              <Button type="primary" shape="circle" size="small" icon="check" />
+                              <Button type="primary" shape="circle" size="small" icon="check" onClick={() => this.handleInspectSave({
+                                preEntrySeqNo: inspect.pre_entry_no, delgNo: previewer.delgNo, enabled: 'passed', field: activity.type,
+                              })}
+                              />
                             </Tooltip>
+                            }
                             <Popover content={<div><a className="mdc-text-red" onClick={this.hide}>删除</a></div>} trigger="click">
                               <Button type="ghost" shape="circle" size="small" icon="ellipsis" />
                             </Popover></span>} bodyStyle={{ padding: 8 }}

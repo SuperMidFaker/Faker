@@ -94,13 +94,14 @@ export default class CustomsDeclPane extends React.Component {
     const columns = [{
       title: '统一编号',
       dataIndex: 'pre_entry_seq_no',
-      width: 140,
+      width: 160,
     }, {
       title: '海关编号',
       dataIndex: 'entry_id',
-      width: 140,
+      width: 160,
     }, {
       title: '通关状态',
+      width: 100,
       dataIndex: 'note',
     }, {
       title: '海关查验',
@@ -109,6 +110,8 @@ export default class CustomsDeclPane extends React.Component {
       render: (o) => {
         if (o === 1) {
           return <Tag color="#F04134">是</Tag>;
+        } else if (o === 2) {
+          return <Tag color="rgba(39, 187, 71, 0.65)">通过</Tag>;
         } else {
           return <Tag>否</Tag>;
         }
