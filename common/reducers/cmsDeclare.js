@@ -3,7 +3,6 @@ import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/cms/declaration/', [
-  'LOAD_DELGLIST', 'LOAD_DELGLIST_SUCCEED', 'LOAD_DELGLIST_FAIL',
   'LOAD_BILLS', 'LOAD_BILLS_SUCCEED', 'LOAD_BILLS_FAIL',
   'LOAD_ENTRIES', 'LOAD_ENTRIES_SUCCEED', 'LOAD_ENTRIES_FAIL',
   'LOAD_PARAMS', 'LOAD_PARAMS_SUCCEED', 'LOAD_PARAMS_FAIL',
@@ -21,9 +20,6 @@ const actionTypes = createActionTypes('@@welogix/cms/declaration/', [
   'DEL_ENTRYBODY', 'DEL_ENTRYBODY_SUCCEED', 'DEL_ENTRYBODY_FAIL',
   'EDIT_ENTRYBODY', 'EDIT_ENTRYBODY_SUCCEED', 'EDIT_ENTRYBODY_FAIL',
   'SUBMIT_MERGESPLIT', 'SUBMIT_MERGESPLIT_SUCCEED', 'SUBMIT_MERGESPLIT_FAIL',
-  'OPEN_EF_MODAL', 'CLOSE_EF_MODAL',
-  'FILL_ENTRYNO', 'FILL_ENTRYNO_SUCCEED', 'FILL_ENTRYNO_FAIL',
-  'LOAD_BILLBODY', 'LOAD_BILLBODY_SUCCEED', 'LOAD_BILLBODY_FAIL',
   'LOAD_CIQ_DECLS', 'LOAD_CIQ_DECLS_SUCCEED', 'LOAD_CIQ_DECLS_FAIL',
   'LOAD_DELG_DECLS', 'LOAD_DELG_DECLS_SUCCEED', 'LOAD_DELG_DECLS_FAIL',
   'CIQ_FINISH', 'CIQ_FINISH_SUCCEED', 'CIQ_FINISH_FAIL',
@@ -73,10 +69,6 @@ const initialState = {
   },
   visibleMSModal: false,
   visibleEfModal: false,
-  efModal: {
-    entryHeadId: -1,
-    delgNo: '',
-  },
   ciqdeclList: {
     totalCount: 0,
     current: 1,
@@ -97,17 +89,6 @@ const initialState = {
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
-    case actionTypes.LOAD_DELGLIST:
-      return { ...state, delgList: { ...state.delgList, loading: true } };
-    case actionTypes.LOAD_DELGLIST_SUCCEED:
-      return { ...state,
-        listFilter: JSON.parse(action.params.filter),
-        delgList: {
-          ...state.delgList, loaded: true,
-          loading: false, ...action.result.data,
-        } };
-    case actionTypes.LOAD_DELGLIST_FAIL:
-      return { ...state, delgList: { ...state.delgList, loading: false } };
     case actionTypes.LOAD_BILLS_SUCCEED: {
       const ports = [...state.params.ports];
       const iePort = action.result.data.iePort;
@@ -189,12 +170,6 @@ export default function reducer(state = initialState, action) {
       return { ...state, visibleMSModal: false };
     case actionTypes.SUBMIT_MERGESPLIT_SUCCEED:
       return { ...state, entries: action.result.data };
-    case actionTypes.OPEN_EF_MODAL:
-      return { ...state, visibleEfModal: true, efModal: action.data };
-    case actionTypes.CLOSE_EF_MODAL:
-      return { ...state, visibleEfModal: false, efModal: initialState.efModal };
-    case actionTypes.LOAD_BILLBODY_SUCCEED:
-      return { ...state, billBody: action.result.data };
     case actionTypes.LOAD_CIQ_DECLS:
       return { ...state, ciqdeclList: { ...state.ciqdeclList, loading: true } };
     case actionTypes.LOAD_CIQ_DECLS_SUCCEED:
@@ -527,49 +502,6 @@ export function submitBillMegeSplit({ billNo, mergeOpt, splitOpt, sortOpt }) {
       endpoint: 'v1/cms/declare/bill/mergesplit',
       method: 'post',
       data: { billNo, mergeOpt, splitOpt, sortOpt },
-    },
-  };
-}
-
-export function openEfModal({ entryHeadId, delgNo }) {
-  return {
-    type: actionTypes.OPEN_EF_MODAL,
-    data: { entryHeadId, delgNo },
-  };
-}
-
-export function closeEfModal() {
-  return {
-    type: actionTypes.CLOSE_EF_MODAL,
-  };
-}
-
-export function fillEntryNo({ entryNo, entryHeadId, delgNo }) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.FILL_ENTRYNO,
-        actionTypes.FILL_ENTRYNO_SUCCEED,
-        actionTypes.FILL_ENTRYNO_FAIL,
-      ],
-      endpoint: 'v1/cms/declare/entry/fillno',
-      method: 'post',
-      data: { entryNo, entryHeadId, delgNo },
-    },
-  };
-}
-
-export function loadBillBodyList({ billSeqNo }) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.LOAD_BILLBODY,
-        actionTypes.LOAD_BILLBODY_SUCCEED,
-        actionTypes.LOAD_BILLBODY_FAIL,
-      ],
-      endpoint: 'v1/cms/declare/billbody/list',
-      method: 'get',
-      params: { billSeqNo },
     },
   };
 }

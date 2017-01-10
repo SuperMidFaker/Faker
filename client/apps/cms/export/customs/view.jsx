@@ -1,12 +1,12 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import withPrivilege from 'client/common/decorators/withPrivilege';
-import { loadBill, loadCmsParams } from 'common/reducers/cmsManifest';
-import ManifestEditor from '../../common/manifest/ManifestEditor';
+import { loadEntry, loadCmsParams } from 'common/reducers/cmsManifest';
+import CustomsDeclEditor from '../../common/customs/CustomsDeclEditor';
 
 function fetchData({ dispatch, params, state }) {
   const promises = [];
-  promises.push(dispatch(loadBill(params.billno)));
+  promises.push(dispatch(loadEntry(params.billseqno, params.preEntrySeqNo, state.account.tenantId)));
   promises.push(dispatch(loadCmsParams({
     ieType: 'export',
     tenantId: state.account.tenantId,
@@ -16,11 +16,8 @@ function fetchData({ dispatch, params, state }) {
 
 @connectFetch()(fetchData)
 @withPrivilege({ module: 'clearance', feature: 'export' })
-export default class ExportManifestView extends React.Component {
-  static propTypes = {
-    params: PropTypes.object,
-  }
+export default class ExportCustomsDeclView extends React.Component {
   render() {
-    return <ManifestEditor ietype="export" params={this.props.params} readonly />;
+    return <CustomsDeclEditor ietype="export" readonly />;
   }
 }

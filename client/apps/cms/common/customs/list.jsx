@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { Breadcrumb, Button, Icon, Radio, Tag, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
@@ -8,15 +9,14 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { loadDelgDecls } from 'common/reducers/cmsDeclare';
 import { openEfModal } from 'common/reducers/cmsDelegation';
-import { intlShape, injectIntl } from 'react-intl';
-import messages from './message.i18n';
 import TrimSpan from 'client/components/trimSpan';
-import { format } from 'client/common/i18n/helpers';
 import SearchBar from 'client/components/search-bar';
 import NavLink from 'client/components/nav-link';
 import RowUpdater from '../delegation/rowUpdater';
 import DeclnoFillModal from './modals/declNoFill';
 import DeclStatusPopover from './declStatusPopover';
+import { format } from 'client/common/i18n/helpers';
+import messages from './message.i18n';
 
 
 const formatMsg = format(messages);
@@ -61,8 +61,8 @@ export default class DelgDeclList extends Component {
     title: this.msg('preEntryNo'),
     dataIndex: 'pre_entry_seq_no',
     fixed: 'left',
-    width: 150,
-    render: o => <NavLink to={`/clearance/${this.props.ietype}/customs/decl/${o}`}>{o}</NavLink>,
+    width: 170,
+    render: (o, record) => <NavLink to={`/clearance/${this.props.ietype}/customs/${record.bill_seq_no}/${o}`}>{o}</NavLink>,
   }, {
     title: this.msg('entryId'),
     dataIndex: 'entry_id',
@@ -89,24 +89,19 @@ export default class DelgDeclList extends Component {
   }, {
     title: '委托方',
     dataIndex: 'send_name',
-    width: 180,
-    render: o => <TrimSpan text={o} maxLen={12} />,
+    render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: this.msg('agent'),
     dataIndex: 'customs_name',
-    width: 180,
-    render: o => <TrimSpan text={o} maxLen={12} />,
+    render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: '提运单号',
-    width: 140,
     dataIndex: 'bl_wb_no',
   }, {
     title: this.msg('delgNo'),
     dataIndex: 'delg_no',
-    width: 120,
   }, {
     title: this.msg('clrStatus'),
-    width: 150,
     dataIndex: 'note',
     render: (o, row) => {
       if (o) {
@@ -121,18 +116,18 @@ export default class DelgDeclList extends Component {
     },
   }, {
     title: this.msg('customsCheck'),
-    width: 80,
     dataIndex: 'customs_inspect',
     render: (o) => {
       if (o === 1) {
-        return <Tag color="red">是</Tag>;
+        return <Tag color="#F04134">是</Tag>;
+      } else if (o === 2) {
+        return <Tag color="rgba(39, 187, 71, 0.65)">通过</Tag>;
       } else {
         return <Tag>否</Tag>;
       }
     },
   }, {
     title: this.msg('processDate'),
-    width: 120,
     render: (o, record) => (record.id ?
     record.process_date && moment(record.process_date).format('MM.DD HH:mm') : '-'),
   }]
@@ -246,7 +241,9 @@ export default class DelgDeclList extends Component {
               </div>
             </div>
             <div className="panel-body table-panel expandable">
-              <Table rowSelection={rowSelection} columns={this.columns} rowKey="pre_entry_seq_no" dataSource={this.dataSource} loading={delgdeclList.loading} scroll={{ x: 1400 }} />
+              <Table rowSelection={rowSelection} columns={this.columns} rowKey="pre_entry_seq_no" dataSource={this.dataSource}
+                loading={delgdeclList.loading} scroll={{ x: 1000 }}
+              />
             </div>
             <DeclnoFillModal reload={this.handleTableLoad} />
           </div>

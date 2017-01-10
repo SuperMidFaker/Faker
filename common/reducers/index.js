@@ -21,6 +21,7 @@ import transportTariff from './transportTariff';
 import transportBilling from './transportBilling';
 import cmsDelegation from './cmsDelegation';
 import cmsDeclare from './cmsDeclare';
+import cmsManifest from './cmsManifest';
 import cmsCompRelation from './cmsCompRelation';
 import cmsQuote from './cmsQuote';
 import scvinbound from './scvinbound';
@@ -53,6 +54,7 @@ export default combineReducers({
   transportBilling,
   cmsDelegation,
   cmsDeclare,
+  cmsManifest,
   cmsCompRelation,
   cmsQuote,
   scvinbound,

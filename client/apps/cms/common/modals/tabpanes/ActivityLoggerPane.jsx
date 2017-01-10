@@ -8,6 +8,7 @@ import InfoItem from 'client/components/InfoItem';
 import { exchangeBlNo, loadCustPanel, showPreviewer, updateCertParam } from 'common/reducers/cmsDelegation';
 import { loadDeclHead, setInspect } from 'common/reducers/cmsDeclare';
 import { CERTS, INSPECT_STATUS } from 'common/constants';
+import ActivityEditCard from './activityEditCard';
 
 const Option = Select.Option;
 const FormItem = Form.Item;
@@ -82,6 +83,37 @@ export default class ActivityLoggerPane extends React.Component {
       }
     });
   }
+  handleSaveCert = ({ field, value }) => {
+    const certQty = value || null;
+    this.props.updateCertParam(this.props.previewer.delgNo, this.props.previewer.delgDispatch.id, field, certQty).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 5);
+      } else {
+        message.info('保存成功', 5);
+        this.props.showPreviewer(
+          this.props.tenantId,
+          this.props.previewer.delgNo,
+          this.props.previewer.tabKey
+        );
+      }
+    });
+  }
+  handleBlNoExchange = ({ value }) => {
+    this.props.exchangeBlNo(this.props.previewer.delgNo, value).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 5);
+      } else {
+        this.props.showPreviewer(
+            this.props.tenantId,
+            this.props.previewer.delgNo,
+            this.props.previewer.tabKey
+          );
+      }
+    });
+  }
+  handleActivityFilter = (ev) => {
+    ev.stopPropagation();
+  }
   handleSave = () => {
     const { previewer } = this.props;
     const key = this.state.tabKey;
@@ -89,32 +121,10 @@ export default class ActivityLoggerPane extends React.Component {
     if (key === 'message') {
 
     } else if (key === 'exchange') {
-      this.props.exchangeBlNo(previewer.delgNo, formVals.bl_wb_no).then((result) => {
-        if (result.error) {
-          message.error(result.error.message, 5);
-        } else {
-          this.props.showPreviewer(
-            this.props.tenantId,
-            previewer.delgNo,
-            previewer.tabKey
-          );
-        }
-      });
+      this.handleBlNoExchange({ value: formVals.bl_wb_no });
     } else if (key === 'certs') {
       if (formVals.certs) {
-        const certQty = formVals.certsNum || 0;
-        this.props.updateCertParam(previewer.delgNo, previewer.delgDispatch.id, formVals.certs, certQty).then((result) => {
-          if (result.error) {
-            message.error(result.error.message, 5);
-          } else {
-            message.info('保存成功', 5);
-            this.props.showPreviewer(
-              this.props.tenantId,
-              previewer.delgNo,
-              previewer.tabKey
-            );
-          }
-        });
+        this.handleSaveCert({ field: formVals.certs, value: formVals.certsNum });
       }
     } else if (key === 'inspect') {
       this.handleInspectSave({
@@ -142,7 +152,7 @@ export default class ActivityLoggerPane extends React.Component {
         <span>动态</span>
         <div className="toolbar-right">
           <Dropdown overlay={menu}>
-            <Button type="ghost"><Icon type="filter" /> ({selectActivities.length}/{activities.length})</Button>
+            <Button type="ghost" onClick={this.handleActivityFilter}><Icon type="filter" /> ({selectActivities.length}/{activities.length})</Button>
           </Dropdown>
         </div>
       </div>
@@ -242,23 +252,10 @@ export default class ActivityLoggerPane extends React.Component {
                     case 'exchange':
                       return (
                         <Timeline.Item dot={<Icon type="retweet" />} key={activity.id}>
-                          <Card title={<span>换单 <small className="timestamp">{moment(activity.created_date).format('YYYY-MM-DD HH:mm')}</small></span>} extra={
-                            <Popover
-                              content={<div><a onClick={this.hide}>修改</a><span className="ant-divider" /><a className="mdc-text-red" onClick={this.hide}>删除</a></div>}
-                              trigger="click"
-                            >
-                              <Button type="ghost" shape="circle" size="small" icon="ellipsis" />
-                            </Popover>} bodyStyle={{ padding: 8 }}
-                          >
-                            <Row>
-                              <Col span={12}>
-                                <InfoItem label="海运单号" field={delegation.swb_no} />
-                              </Col>
-                              <Col span={12}>
-                                <InfoItem label="提单号" field={delegation.bl_wb_no} />
-                              </Col>
-                            </Row>
-                          </Card>
+                          <ActivityEditCard title="换单" createdDate={activity.created_date} leftLabel="海运单号"
+                            leftValue={delegation.swb_no} rightLabel="型号数量" rightValue={delegation.bl_wb_no}
+                            onSave={this.handleBlNoExchange}
+                          />
                         </Timeline.Item>);
                     case 'hgcy':
                     case 'pzcy':
@@ -282,7 +279,16 @@ export default class ActivityLoggerPane extends React.Component {
                               />
                             </Tooltip>
                             }
-                            <Popover content={<div><a className="mdc-text-red" onClick={this.hide}>删除</a></div>} trigger="click">
+                            <Popover trigger="click" content={
+                              <div>
+                                <a className="mdc-text-red" onClick={() =>
+                                  this.handleInspectSave({ preEntrySeqNo: inspect.pre_entry_no, delgNo: previewer.delgNo,
+                                    enabled: false, field: activity.type })}
+                                >
+                                  删除
+                                </a>
+                              </div>}
+                            >
                               <Button type="ghost" shape="circle" size="small" icon="ellipsis" />
                             </Popover></span>} bodyStyle={{ padding: 8 }}
                         >
@@ -302,23 +308,10 @@ export default class ActivityLoggerPane extends React.Component {
                       const certText = CERTS.filter(ct => ct.value === certInfo.cert)[0].text;
                       return (
                         <Timeline.Item dot={<Icon type="addfile" />} key={activity.id}>
-                          <Card title={<span>办证 <small className="timestamp">{moment(activity.created_date).format('YYYY-MM-DD HH:mm')}</small></span>} extra={
-                            <Popover
-                              content={<div><a onClick={this.hide}>修改</a><span className="ant-divider" /><a className="mdc-text-red" onClick={this.hide}>删除</a></div>}
-                              trigger="click"
-                            >
-                              <Button type="ghost" shape="circle" size="small" icon="ellipsis" />
-                            </Popover>} bodyStyle={{ padding: 8 }}
-                          >
-                            <Row>
-                              <Col span={12}>
-                                <InfoItem label="办证类别" field={certText} />
-                              </Col>
-                              <Col span={12}>
-                                <InfoItem label="型号数量" field={certInfo.qty} />
-                              </Col>
-                            </Row>
-                          </Card>
+                          <ActivityEditCard title="办证" createdDate={activity.created_date} leftLabel="办证类别"
+                            leftValue={certText} rightLabel="型号数量" rightValue={certInfo.qty}
+                            onSave={this.handleSaveCert} field={certInfo.cert}
+                          />
                         </Timeline.Item>
                       );
                     }
