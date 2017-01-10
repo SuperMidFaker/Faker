@@ -408,6 +408,7 @@ export default class ExpenseList extends Component {
       }, {
         title: this.msg('profit'),
         width: 80,
+        dataIndex: 'profit',
         className: 'data-money',
         render: (o, record) => {
           const bill = isNaN(record.all_bill) ? 0 : record.all_bill;
@@ -423,6 +424,7 @@ export default class ExpenseList extends Component {
       }, {
         title: this.msg('invoiceNo'),
         dataIndex: 'invoice_no',
+        width: 200,
       }, {
         title: this.msg('bLNo'),
         dataIndex: 'bl_wb_no',
@@ -472,9 +474,9 @@ export default class ExpenseList extends Component {
     ];
     let curColumns = columns;
     if (listFilter.viewStatus === 'revenueOnly') {
-      curColumns = columns.filter(colm => colm.dataIndex !== 'cost');
+      curColumns = columns.filter(colm => colm.dataIndex !== 'cost' && colm.dataIndex !== 'profit' && colm.dataIndex !== 'agent_name');
     } else if (listFilter.viewStatus === 'costOnly') {
-      curColumns = columns.filter(colm => colm.dataIndex !== 'revenue');
+      curColumns = columns.filter(colm => colm.dataIndex !== 'revenue' && colm.dataIndex !== 'profit' && colm.dataIndex !== 'send_name');
     }
     this.dataSource.remotes = expslist;
     return (
