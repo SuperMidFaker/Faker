@@ -1,7 +1,8 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Row, Col } from 'antd';
+import { Col } from 'antd';
+import QueueAnim from 'rc-queue-anim';
 import { format } from 'client/common/i18n/helpers';
 import NavLink from './nav-link';
 import { DEFAULT_MODULES } from '../../common/constants';
@@ -26,7 +27,7 @@ export default class ModuleLayout extends React.Component {
   render() {
     const containerCls = `module-container ${this.props.size || ''}`;
     return (
-      <Row>
+      <QueueAnim type="bottom">
         {
           this.props.enabledmods.map((mod, idx) => {
             const emod = DEFAULT_MODULES[mod];
@@ -47,6 +48,6 @@ export default class ModuleLayout extends React.Component {
               </Col>);
           })
         }
-      </Row>);
+      </QueueAnim>);
   }
 }

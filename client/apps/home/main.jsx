@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Menu } from 'antd';
+import QueueAnim from 'rc-queue-anim';
 import { intlShape, injectIntl } from 'react-intl';
 import HeaderNavBar from 'client/components/headerNavBar';
 import NavLink from 'client/components/nav-link';
@@ -77,9 +78,9 @@ export default class Home extends React.Component {
       );
     }
     return (
-      <div className="layout-wrapper layout-nosider-left">
+      <div type={['bottom', 'up']} className="layout-wrapper layout-nosider-left">
         <HeaderNavBar />
-        <div className="layout-content">
+        <QueueAnim type={['bottom', 'up']} className="layout-content">
           <div className="home-header home-header-bg">
             <div className="tenant-info">
               <div className="tenant-logo " style={{ backgroundImage: `url("${logo}")` }} />
@@ -91,13 +92,13 @@ export default class Home extends React.Component {
               </Menu>
             </div>
           </div>
-          <div className="home-body">
+          <div className="home-body" key="body">
             <div className="home-body-wrapper">
               <div className="apps-handler-set" />
               <ModuleLayout size="large" />
             </div>
           </div>
-        </div>
+        </QueueAnim>
       </div>);
   }
 }
