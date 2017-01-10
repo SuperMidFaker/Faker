@@ -5,8 +5,6 @@ import * as Home from './home';
 import SSO from './sso/pack-sso';
 import Login from './sso/login';
 import Forgot from './sso/forgot';
-import WeixinBinder from './weixin/binder';
-import WxProfile from './weixin/profile';
 import PackMessage from './message/pack-message';
 import MessageList from './message/messageList';
 import PackAccount from './account/pack-account';
@@ -28,11 +26,8 @@ import * as TMSTracking from './transport/tracking';
 import * as TMSResources from './transport/resources';
 import * as TMSBilling from './transport/billing';
 import * as TMSTariff from './transport/tariff';
-import * as WeiXinPod from './weixin/tms/pod';
 import * as PublicTMS from './pub/tracking';
 import * as Template from './pub/template';
-import WxLoadAccount from './weixin/loadAccount';
-import WxTmsDetail from './weixin/tms/detail';
 import CMS from './cms/module-clearance';
 import * as CMSDashboard from './cms/dashboard';
 import * as CMSImportDelegation from './cms/import/delegation';
@@ -107,18 +102,6 @@ export default(store, cookie) => {
             <Route path="detail/:shipmtNo/:key" component={Template.ShipmentDetail} />
             <Route path="pod/:shipmtNo/:podId/:key" component={Template.ShipmentPod} />
           </Route>
-        </Route>
-      </Route>
-      <Route path="weixin">
-        <Route path="bind" component={WeixinBinder} />
-        <Route path="account" component={WxProfile} />
-        <Route path="tms" component={WxLoadAccount}>
-          <Route path="pod">
-            <IndexRoute component={WeiXinPod.List} />
-            <Route path="upload" component={WeiXinPod.UploadPod} />
-            <Route path="uploadSucceed" component={WeiXinPod.UploadSucceed} />
-          </Route>
-          <Route path="detail/:shipmtNo/:sourceType" component={WxTmsDetail} />
         </Route>
       </Route>
       <Route component={SSO}>

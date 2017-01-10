@@ -13,7 +13,6 @@ config.set('vendor_dependencies', [
   'redux',
   'serialize-javascript',
   'superagent',
-  'react-weui',
 ]);
 
 module.exports = config;

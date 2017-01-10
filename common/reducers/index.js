@@ -2,7 +2,6 @@ import { combineReducers } from 'redux';
 import intl from './intl';
 import auth from './auth';
 import account from './account';
-import weixin from './weixin';
 import chinaRegions from './chinaRegions';
 import navbar from './navbar';
 import corpDomain from './corp-domain';
@@ -35,7 +34,6 @@ export default combineReducers({
   intl,
   auth,
   account,
-  weixin,
   chinaRegions,
   navbar,
   corpDomain,
