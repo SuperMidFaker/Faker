@@ -11,7 +11,6 @@ import { CMS_DELEGATION_STATUS, CMS_DELG_STATUS, CMS_SUP_STATUS } from 'common/c
 import connectNav from 'client/common/decorators/connect-nav';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import SearchBar from 'client/components/search-bar';
-import BillSubTable from './billSubTable';
 import BillModal from './modals/billModal';
 import RowUpdater from './rowUpdater';
 import { loadAcceptanceTable, loadBillMakeModal, acceptDelg, delDelg, loadDeclareWay,
@@ -376,11 +375,6 @@ export default class DelegationList extends Component {
       }
     });
   }
-  handleSubdelgsList = record => (
-    <BillSubTable delgNo={record.delg_no} ietype={this.props.ietype}
-      reloadDelgs={this.handleDelgListLoad} delgStatus={record.status}
-    />
-  )
   handleExpandedChange = (expandedKeys) => {
     this.setState({ expandedKeys });
   }
