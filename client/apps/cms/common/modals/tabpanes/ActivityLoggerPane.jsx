@@ -111,6 +111,9 @@ export default class ActivityLoggerPane extends React.Component {
       }
     });
   }
+  handleActivityFilter = (ev) => {
+    ev.stopPropagation();
+  }
   handleSave = () => {
     const { previewer } = this.props;
     const key = this.state.tabKey;
@@ -149,7 +152,7 @@ export default class ActivityLoggerPane extends React.Component {
         <span>动态</span>
         <div className="toolbar-right">
           <Dropdown overlay={menu}>
-            <Button type="ghost"><Icon type="filter" /> ({selectActivities.length}/{activities.length})</Button>
+            <Button type="ghost" onClick={this.handleActivityFilter}><Icon type="filter" /> ({selectActivities.length}/{activities.length})</Button>
           </Dropdown>
         </div>
       </div>
