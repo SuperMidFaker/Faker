@@ -60,9 +60,10 @@ export default class Login extends React.Component {
     const { auth: { error, username, remember }, intl } = this.props;
     return (
       <Card bodyStyle={{ padding: 64 }}>
-        <Spin spinning={this.props.loading}>
+        <Spin spinning={this.props.loading} tip={formatMsg(intl, 'loading')}>
           <div style={{ textAlign: 'center', padding: 16 }}>
             <div className="icon-logo" />
+            <h3>{formatMsg(intl, 'slogan')}</h3>
           </div>
           {error ? <div>{
             <Alert type="warning" showIcon message={`C${error.code}:
