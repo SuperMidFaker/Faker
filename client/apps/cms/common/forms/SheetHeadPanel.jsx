@@ -1,13 +1,13 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Button, Collapse, Form, Row, Col, message } from 'antd';
+import { Button, Collapse, Form, Row, Col } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import FormInput from './formInput';
 import {
   RelationAutoCompSelect, PortDate, Transport,
   TradeRemission, CountryAttr, DestInvoice, LicenseTrade, Fee, ContractNo, PackWeight, ContainerUsage,
 } from './headFormItems';
-import { loadSearchedParam, saveBillHead } from 'common/reducers/cmsDeclare';
+import { loadSearchedParam, saveBillHead } from 'common/reducers/cmsManifest';
 import { format } from 'client/common/i18n/helpers';
 import globalMessage from 'client/common/root.i18n';
 import messages from './message.i18n';
@@ -25,9 +25,7 @@ const CODE_AS_STATE = {
 @injectIntl
 @connect(
   state => ({
-    billHead: state.cmsDeclare.billHead,
-    billBody: state.cmsDeclare.billBody,
-    formRequire: state.cmsDeclare.params,
+    formRequire: state.cmsManifest.params,
   }),
   { loadSearchedParam, saveBillHead }
 )
@@ -41,28 +39,13 @@ export default class SheetHeadPanel extends React.Component {
     formData: PropTypes.object.isRequired,
     formRequire: PropTypes.object.isRequired,
     loadSearchedParam: PropTypes.func.isRequired,
-    saveBillHead: PropTypes.func.isRequired,
+    onSave: PropTypes.func.isRequired,
   }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
-  handleBillSave = (ev) => {
+  handleSheetSave = (ev) => {
     ev.stopPropagation();
     ev.preventDefault();
-    // todo bill head save sync with entry head, vice verse
-    this.props.form.validateFields((errors) => {
-      if (!errors) {
-        const { billHead, ietype, loginId, tenantId } = this.props;
-        const head = { ...billHead, ...this.props.form.getFieldsValue() };
-        this.props.saveBillHead({ head, ietype, loginId, tenantId }).then(
-          (result) => {
-            if (result.error) {
-              message.error(result.error.message);
-            } else {
-              message.info('更新成功');
-            }
-          }
-        );
-      }
-    });
+    this.props.onSave();
   }
   handleRelationSel = (codeField, nameField, value) => {
     const rels = this.props.formRequire[CODE_AS_STATE[codeField]].filter(rel => rel.code === value);
@@ -90,7 +73,7 @@ export default class SheetHeadPanel extends React.Component {
       <div className="toolbar-right">
         <Button type="ghost">{formatGlobalMsg(this.props.intl, 'cancel')}</Button>
         <span />
-        <Button type="primary" onClick={this.handleBillSave} icon="save">
+        <Button type="primary" onClick={this.handleSheetSave} icon="save">
           {formatGlobalMsg(this.props.intl, 'save')}
         </Button>
       </div>);
@@ -111,7 +94,7 @@ export default class SheetHeadPanel extends React.Component {
             {type === 'entry' &&
               <Row>
                 <FormInput field="pre_entry_id" outercol={9} col={6}
-                  label={this.msg('preEntryId')} {...entryFormProps}
+                  label={this.msg('preEntryId')} {...entryFormProps} disabled
                 />
                 <Col span="15">
                   <FormInput field="entry_id" outercol={16} col={4}

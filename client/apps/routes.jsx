@@ -224,7 +224,7 @@ export default(store, cookie) => {
               </Route>
               <Route path="customs">
                 <IndexRoute component={CMSImportCustoms.DeclList} />
-                <Route path="decl/:declno" component={CMSImportCustoms.DeclView} />
+                <Route path=":billseqno/:preEntrySeqNo" component={CMSImportCustoms.DeclView} />
               </Route>
               <Route path="ciq" component={CMSImportCiq.CiqList} />
             </Route>
@@ -239,6 +239,7 @@ export default(store, cookie) => {
               </Route>
               <Route path="customs">
                 <IndexRoute component={CMSExportCustoms.DeclList} />
+                <Route path=":billseqno/:preEntrySeqNo" component={CMSExportCustoms.DeclView} />
               </Route>
               <Route path="ciq" component={CMSExportCiq.CiqList} />
             </Route>

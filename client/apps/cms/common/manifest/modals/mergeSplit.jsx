@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Modal, Card, Radio, Checkbox, Select, message, Row, Col } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { closeMergeSplitModal, submitBillMegeSplit } from 'common/reducers/cmsDeclare';
+import { closeMergeSplitModal, submitBillMegeSplit } from 'common/reducers/cmsManifest';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 const formatMsg = format(messages);
@@ -35,9 +35,9 @@ MSCheckbox.propTypes = {
 @injectIntl
 @connect(
   state => ({
-    visible: state.cmsDeclare.visibleMSModal,
-    isCustomRegisted: !!state.cmsDeclare.billHead.manual_no,
-    billNo: state.cmsDeclare.billHead.bill_seq_no,
+    visible: state.cmsManifest.visibleMSModal,
+    isCustomRegisted: !!state.cmsManifest.billHead.manual_no,
+    billNo: state.cmsManifest.billHead.bill_seq_no,
   }),
   { closeMergeSplitModal, submitBillMegeSplit }
 )

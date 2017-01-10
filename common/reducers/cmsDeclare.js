@@ -3,7 +3,6 @@ import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/cms/declaration/', [
-  'LOAD_DELGLIST', 'LOAD_DELGLIST_SUCCEED', 'LOAD_DELGLIST_FAIL',
   'LOAD_BILLS', 'LOAD_BILLS_SUCCEED', 'LOAD_BILLS_FAIL',
   'LOAD_ENTRIES', 'LOAD_ENTRIES_SUCCEED', 'LOAD_ENTRIES_FAIL',
   'LOAD_PARAMS', 'LOAD_PARAMS_SUCCEED', 'LOAD_PARAMS_FAIL',
@@ -97,17 +96,6 @@ const initialState = {
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
-    case actionTypes.LOAD_DELGLIST:
-      return { ...state, delgList: { ...state.delgList, loading: true } };
-    case actionTypes.LOAD_DELGLIST_SUCCEED:
-      return { ...state,
-        listFilter: JSON.parse(action.params.filter),
-        delgList: {
-          ...state.delgList, loaded: true,
-          loading: false, ...action.result.data,
-        } };
-    case actionTypes.LOAD_DELGLIST_FAIL:
-      return { ...state, delgList: { ...state.delgList, loading: false } };
     case actionTypes.LOAD_BILLS_SUCCEED: {
       const ports = [...state.params.ports];
       const iePort = action.result.data.iePort;
