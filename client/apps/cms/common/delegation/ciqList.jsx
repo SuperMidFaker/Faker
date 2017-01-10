@@ -154,6 +154,7 @@ export default class CiqList extends Component {
         ietype: this.props.ietype,
         filter: JSON.stringify(filters),
         tenantId: this.props.tenantId,
+        loginId: this.props.loginId,
         pageSize: pagination.pageSize,
         currentPage: pagination.current,
       };
@@ -202,6 +203,7 @@ export default class CiqList extends Component {
     this.props.loadCiqTable({
       ietype: this.props.ietype,
       tenantId: this.props.tenantId,
+      loginId: this.props.loginId,
       filter: JSON.stringify(filter || this.props.listFilter),
       pageSize: this.props.ciqlist.pageSize,
       currentPage: currentPage || this.props.ciqlist.current,

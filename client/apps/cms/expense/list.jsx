@@ -37,6 +37,7 @@ function fetchData({ state, dispatch }) {
     tenantId: state.account.tenantId,
     filter: JSON.stringify({
       status: 'all',
+      viewStatus: 'both',
       acptDate: { en: false, firstDay, endDay },
       cleanDate: { en: false, firstDay, endDay },
     }),
@@ -244,6 +245,10 @@ export default class ExpenseList extends Component {
       sortField: sortedInfo.field, sortOrder: sortedInfo.order, cleanDate };
     this.handleExpListLoad(1, filter);
   }
+  handleViewChange = (value) => {
+    const filter = { ...this.props.listFilter, viewStatus: value };
+    this.handleExpListLoad(1, filter);
+  }
   render() {
     const { expslist, listFilter, delegation } = this.props;
     const { acptDate, cleanDate } = listFilter;
@@ -283,6 +288,7 @@ export default class ExpenseList extends Component {
         render: o => <TrimSpan text={o} maxLen={12} />,
       }, {
         title: this.msg('revenue'),
+        dataIndex: 'revenue',
         children: [
           {
             title: this.msg('serviceRevenue'),
@@ -342,6 +348,7 @@ export default class ExpenseList extends Component {
         ],
       }, {
         title: this.msg('cost'),
+        dataIndex: 'cost',
         children: [
           {
             title: this.msg('servCost'),
@@ -463,6 +470,12 @@ export default class ExpenseList extends Component {
         },
       },
     ];
+    let curColumns = columns;
+    if (listFilter.viewStatus === 'revenueOnly') {
+      curColumns = columns.filter(colm => colm.dataIndex !== 'cost');
+    } else if (listFilter.viewStatus === 'costOnly') {
+      curColumns = columns.filter(colm => colm.dataIndex !== 'revenue');
+    }
     this.dataSource.remotes = expslist;
     return (
       <QueueAnim type={['bottom', 'up']}>
@@ -492,9 +505,10 @@ export default class ExpenseList extends Component {
                 {this.msg('eptExp')}
               </Button>
               <div className="toolbar-right">
-                <Select defaultValue="both"
+                <Select value={listFilter.viewStatus}
                   style={{ width: 120 }}
                   showSearch={false}
+                  onChange={this.handleViewChange}
                 >
                   <OptGroup label="常用视图">
                     <Option value="both">显示收入与成本</Option>
@@ -511,7 +525,7 @@ export default class ExpenseList extends Component {
               </div>
             </div>
             <div className="panel-body table-panel group-header">
-              <Table rowSelection={rowSelection} columns={columns} dataSource={this.dataSource} loading={expslist.loading}
+              <Table rowSelection={rowSelection} columns={curColumns} dataSource={this.dataSource} loading={expslist.loading}
                 bordered scroll={{ x: 1860 }} rowKey="delg_no"
               />
             </div>
