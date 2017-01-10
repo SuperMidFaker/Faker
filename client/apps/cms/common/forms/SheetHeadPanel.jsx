@@ -166,7 +166,7 @@ export default class SheetHeadPanel extends React.Component {
             </Row>
             <Row>
               <ContainerUsage {...formProps} intl={intl} formRequire={formRequire} />
-              <Col span="15">
+              <Col md={24} lg={15}>
                 <FormInput field="cert_mark" outercol={16} col={4}
                   label={this.msg('certMark')} {...formProps}
                 />

@@ -17,7 +17,7 @@ export function PortDate(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const { getFieldDecorator, disabled, formData, formRequire, ietype } = props;
   const customsProps = {
-    outercol: 8,
+    outercol: 24,
     col: 8,
     field: 'i_e_port',
     rules: [{ required: false }],
@@ -32,7 +32,7 @@ export function PortDate(props) {
     searchKeyFn: opt => opt.value,
   };
   const ieDateProps = {
-    outercol: 8,
+    outercol: 24,
     col: 8,
     field: 'i_e_date',
     label: ietype === 'import' ? msg('idate') : msg('edate'),
@@ -41,7 +41,7 @@ export function PortDate(props) {
     getFieldDecorator,
   };
   const dDateProps = {
-    outercol: 8,
+    outercol: 24,
     col: 8,
     field: 'd_date',
     label: msg('ddate'),
@@ -50,10 +50,16 @@ export function PortDate(props) {
     getFieldDecorator,
   };
   return (
-    <Col span="15">
-      <FormLocalSearchSelect {...customsProps} />
-      <FormDatePicker {...ieDateProps} />
-      <FormDatePicker {...dDateProps} />
+    <Col md={24} lg={15}>
+      <Col sm={24} md={8}>
+        <FormLocalSearchSelect {...customsProps} />
+      </Col>
+      <Col sm={24} md={8}>
+        <FormDatePicker {...ieDateProps} />
+      </Col>
+      <Col sm={24} md={8}>
+        <FormDatePicker {...dDateProps} />
+      </Col>
     </Col>
   );
 }
@@ -101,7 +107,7 @@ export class RelationAutoCompSelect extends React.Component {
       getFieldDecorator, codeRules, nameRules,
     } = this.props;
     return (
-      <Col span="9">
+      <Col md={24} lg={9}>
         <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} label={label} required>
           <Row>
             <Col span="8">
@@ -146,7 +152,7 @@ export function Transport(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const { getFieldDecorator, disabled, formData, formRequire } = props;
   const modeProps = {
-    outercol: 8,
+    outercol: 24,
     col: 8,
     field: 'traf_mode',
     options: formRequire.transModes.map(tm => ({
@@ -159,7 +165,7 @@ export function Transport(props) {
     getFieldDecorator,
   };
   const modeNameProps = {
-    outercol: 8,
+    outercol: 24,
     col: 8,
     field: 'traf_name',
     label: msg('transModeName'),
@@ -168,7 +174,7 @@ export function Transport(props) {
     getFieldDecorator,
   };
   const blwbProps = {
-    outercol: 8,
+    outercol: 24,
     col: 8,
     field: 'bl_wb_no',
     label: msg('ladingWayBill'),
@@ -177,10 +183,16 @@ export function Transport(props) {
     getFieldDecorator,
   };
   return (
-    <Col span="15">
-      <FormLocalSearchSelect {...modeProps} />
-      <FormInput {...modeNameProps} />
-      <FormInput {...blwbProps} />
+    <Col md={24} lg={15}>
+      <Col sm={24} md={8}>
+        <FormLocalSearchSelect {...modeProps} />
+      </Col>
+      <Col sm={24} md={8}>
+        <FormInput {...modeNameProps} />
+      </Col>
+      <Col sm={24} md={8}>
+        <FormInput {...blwbProps} />
+      </Col>
     </Col>
   );
 }
@@ -197,7 +209,7 @@ export function TradeRemission(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const { getFieldDecorator, disabled, formData, formRequire } = props;
   const tradeModeProps = {
-    outercol: 8,
+    outercol: 24,
     col: 8,
     field: 'trade_mode',
     options: formRequire.tradeModes.map(tm => ({
@@ -212,7 +224,7 @@ export function TradeRemission(props) {
     searchKeyFn: opt => opt.value,
   };
   const remissionProps = {
-    outercol: 8,
+    outercol: 24,
     col: 8,
     field: 'cut_mode',
     options: formRequire.remissionModes.map(rm => ({
@@ -226,7 +238,7 @@ export function TradeRemission(props) {
     searchKeyFn: opt => opt.value,
   };
   const emsNoProps = {
-    outercol: 8,
+    outercol: 24,
     col: 8,
     field: 'manual_no',
     label: msg('emsNo'),
@@ -235,10 +247,16 @@ export function TradeRemission(props) {
     getFieldDecorator,
   };
   return (
-    <Col span="15">
-      <FormLocalSearchSelect {...tradeModeProps} />
-      <FormLocalSearchSelect {...remissionProps} />
-      <FormInput {...emsNoProps} />
+    <Col md={24} lg={15}>
+      <Col sm={24} md={8}>
+        <FormLocalSearchSelect {...tradeModeProps} />
+      </Col>
+      <Col sm={24} md={8}>
+        <FormLocalSearchSelect {...remissionProps} />
+      </Col>
+      <Col sm={24} md={8}>
+        <FormInput {...emsNoProps} />
+      </Col>
     </Col>
   );
 }
@@ -255,7 +273,7 @@ export function CountryAttr(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const { getFieldDecorator, disabled, formData, formRequire, ietype } = props;
   const tradeCountryProps = {
-    outercol: 12,
+    outercol: 24,
     col: 8,
     field: 'trade_country',
     options: formRequire.tradeCountries.map(tc => ({
@@ -270,7 +288,7 @@ export function CountryAttr(props) {
     searchKeyFn: opt => opt.value,
   };
   const departCountryProps = {
-    outercol: 12,
+    outercol: 24,
     col: 8,
     field: 'dept_dest_country',
     options: formRequire.tradeCountries.map(tc => ({
@@ -285,9 +303,13 @@ export function CountryAttr(props) {
     searchKeyFn: opt => opt.value,
   };
   return (
-    <Col span="9">
-      <FormLocalSearchSelect {...tradeCountryProps} />
-      <FormLocalSearchSelect {...departCountryProps} />
+    <Col md={24} lg={9}>
+      <Col sm={24} md={12}>
+        <FormLocalSearchSelect {...tradeCountryProps} />
+      </Col>
+      <Col sm={24} md={12}>
+        <FormLocalSearchSelect {...departCountryProps} />
+      </Col>
     </Col>
   );
 }
@@ -306,7 +328,7 @@ export function DestInvoice(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const { getFieldDecorator, disabled, formData, formRequire, type, ietype, onSearch } = props;
   const destPortProps = {
-    outercol: 8,
+    outercol: 24,
     col: 8,
     field: 'dept_dest_port',
     options: formRequire.ports.map(port => ({
@@ -321,7 +343,7 @@ export function DestInvoice(props) {
     onSearch,
   };
   const districtProps = {
-    outercol: 8,
+    outercol: 24,
     col: 8,
     field: 'district_code',
     options: formRequire.districts.map(dist => ({
@@ -336,7 +358,7 @@ export function DestInvoice(props) {
     searchKeyFn: opt => opt.value,
   };
   const invoiceNoProps = {
-    outercol: 8,
+    outercol: 24,
     col: 8,
     field: 'invoice_no',
     label: msg('invoiceNo'),
@@ -345,10 +367,14 @@ export function DestInvoice(props) {
     getFieldDecorator,
   };
   return (
-    <Col span="15">
-      <FormRemoteSearchSelect {...destPortProps} />
-      <FormLocalSearchSelect {...districtProps} />
-      {type === 'bill' && <FormInput {...invoiceNoProps} />}
+    <Col md={24} lg={15}>
+      <Col sm={24} md={8}>
+        <FormRemoteSearchSelect {...destPortProps} />
+      </Col>
+      <Col sm={24} md={8}>
+        <FormLocalSearchSelect {...districtProps} />
+      </Col>
+      {type === 'bill' && <Col sm={24} md={8}><FormInput {...invoiceNoProps} /></Col>}
     </Col>
   );
 }
@@ -368,7 +394,7 @@ export function LicenseTrade(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const { getFieldDecorator, disabled, formData, formRequire } = props;
   const licenseNoProps = {
-    outercol: 12,
+    outercol: 24,
     col: 8,
     field: 'license_no',
     label: msg('licenseNo'),
@@ -377,7 +403,7 @@ export function LicenseTrade(props) {
     getFieldDecorator,
   };
   const trxModeProps = {
-    outercol: 12,
+    outercol: 24,
     col: 8,
     field: 'trxn_mode',
     options: formRequire.trxModes.map(tm => ({
@@ -391,9 +417,13 @@ export function LicenseTrade(props) {
     searchKeyFn: opt => opt.value,
   };
   return (
-    <Col span="9">
-      <FormInput {...licenseNoProps} />
-      <FormLocalSearchSelect {...trxModeProps} />
+    <Col md={24} lg={9}>
+      <Col sm={24} md={12}>
+        <FormInput {...licenseNoProps} />
+      </Col>
+      <Col sm={24} md={12}>
+        <FormLocalSearchSelect {...trxModeProps} />
+      </Col>
     </Col>
   );
 }
@@ -428,10 +458,10 @@ function FeeFormItem(props) {
   return (
     <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} label={label}>
       <Row>
-        <Col span="12">
+        <Col sm={24} md={12}>
           <FormInput {...feeProps} style={{ marginBottom: 0 }} />
         </Col>
-        <Col span="12" style={{ paddingLeft: 2 }}>
+        <Col sm={24} md={12} style={{ paddingLeft: 2 }}>
           <FormLocalSearchSelect {...currencyProps} style={{ marginBottom: 0 }} />
         </Col>
       </Row>
@@ -452,18 +482,18 @@ FeeFormItem.propTypes = {
 export function Fee(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   return (
-    <Col span="15">
-      <Col span="8">
+    <Col md={24} lg={15}>
+      <Col sm={24} md={8}>
         <FeeFormItem {...props} label={msg('freightCharge')} feeField="fee_rate"
           currencyField="fee_curr"
         />
       </Col>
-      <Col span="8">
+      <Col sm={24} md={8}>
         <FeeFormItem {...props} label={msg('insurance')} feeField="insur_rate"
           currencyField="insur_curr"
         />
       </Col>
-      <Col span="8">
+      <Col sm={24} md={8}>
         <FeeFormItem {...props} label={msg('sundry')} feeField="other_rate"
           currencyField="other_curr"
         />
@@ -484,7 +514,7 @@ export function ContractNo(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const { getFieldDecorator, disabled, formData } = props;
   const contractNoProps = {
-    outercol: 12,
+    outercol: 24,
     col: 8,
     field: 'contr_no',
     label: msg('contractNo'),
@@ -493,7 +523,7 @@ export function ContractNo(props) {
     getFieldDecorator,
   };
   const packCountProps = {
-    outercol: 12,
+    outercol: 24,
     col: 8,
     field: 'pack_count',
     label: msg('packCount'),
@@ -503,9 +533,13 @@ export function ContractNo(props) {
   };
 
   return (
-    <Col span="9">
-      <FormInput {...contractNoProps} />
-      <FormInput {...packCountProps} />
+    <Col md={24} lg={9}>
+      <Col sm={24} md={12}>
+        <FormInput {...contractNoProps} />
+      </Col>
+      <Col sm={24} md={12}>
+        <FormInput {...packCountProps} />
+      </Col>
     </Col>
   );
 }
@@ -522,7 +556,7 @@ export function PackWeight(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const { disabled, formData, getFieldDecorator, formRequire } = props;
   const packProps = {
-    outercol: 8,
+    outercol: 24,
     col: 8,
     label: msg('packType'),
     field: 'wrap_type',
@@ -532,7 +566,7 @@ export function PackWeight(props) {
     getFieldDecorator,
   };
   const grosswtProps = {
-    outercol: 8,
+    outercol: 24,
     col: 8,
     field: 'gross_wt',
     label: msg('grosswt'),
@@ -543,7 +577,7 @@ export function PackWeight(props) {
     getFieldDecorator,
   };
   const netwtProps = {
-    outercol: 8,
+    outercol: 24,
     col: 8,
     field: 'net_wt',
     label: msg('netwt'),
@@ -554,10 +588,16 @@ export function PackWeight(props) {
     getFieldDecorator,
   };
   return (
-    <Col span="15">
-      <FormLocalSearchSelect {...packProps} />
-      <FormInput {...grosswtProps} />
-      <FormInput {...netwtProps} />
+    <Col md={24} lg={15}>
+      <Col sm={24} lg={8}>
+        <FormLocalSearchSelect {...packProps} />
+      </Col>
+      <Col sm={24} lg={8}>
+        <FormInput {...grosswtProps} />
+      </Col>
+      <Col sm={24} lg={8}>
+        <FormInput {...netwtProps} />
+      </Col>
     </Col>
   );
 }
@@ -577,7 +617,7 @@ export function ContainerUsage(props) {
 
 
   const containerNoProps = {
-    outercol: 12,
+    outercol: 24,
     col: 8,
     field: 'container_no',
     label: msg('containerNo'),
@@ -586,7 +626,7 @@ export function ContainerUsage(props) {
     getFieldDecorator,
   };
   const usageProps = {
-    outercol: 12,
+    outercol: 24,
     col: 8,
     field: 'usage',
     label: msg('usage'),
@@ -595,9 +635,13 @@ export function ContainerUsage(props) {
     getFieldDecorator,
   };
   return (
-    <Col span="9">
-      <FormInput {...containerNoProps} />
-      <FormInput {...usageProps} />
+    <Col md={24} lg={9}>
+      <Col sm={24} md={12}>
+        <FormInput {...containerNoProps} />
+      </Col>
+      <Col sm={24} md={12}>
+        <FormInput {...usageProps} />
+      </Col>
     </Col>
   );
 }

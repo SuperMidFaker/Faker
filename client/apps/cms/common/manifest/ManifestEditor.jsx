@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Breadcrumb, Button, Dropdown, Menu, Radio, Icon } from 'antd';
+import { Breadcrumb, Button, Dropdown, Menu, Icon } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -12,8 +12,6 @@ import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 
 const formatMsg = format(messages);
-const RadioGroup = Radio.Group;
-const RadioButton = Radio.Button;
 
 @injectIntl
 @connect(
@@ -45,6 +43,7 @@ export default class ManifestEditor extends React.Component {
   state = {
     activeKey: 'bill',
     visible: false,
+    collapsed: false,
   }
   componentWillReceiveProps(nextProps) {
     if (
@@ -60,6 +59,11 @@ export default class ManifestEditor extends React.Component {
     }
   }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
+  toggle = () => {
+    this.setState({
+      collapsed: !this.state.collapsed,
+    });
+  }
   handleEntryMenuClick = (ev) => {
     if (ev.key === 'add') {
       this.props.addEntry();
@@ -95,10 +99,6 @@ export default class ManifestEditor extends React.Component {
               报关清单 <Icon type="down" />
             </Breadcrumb.Item>
           </Breadcrumb>
-          <RadioGroup onChange={this.handleDelegationFilter}>
-            <RadioButton value="all"><Icon type="menu-unfold" /></RadioButton>
-            <RadioButton value="accept"><Icon type="menu-fold" /></RadioButton>
-          </RadioGroup>
         </header>
         <div className="top-bar-tools">
           <Dropdown overlay={menu}>
@@ -109,6 +109,11 @@ export default class ManifestEditor extends React.Component {
           {!this.props.readonly &&
             <Button type="primary" icon="addfile" onClick={this.handleGenerateEntry}>{this.msg('generateEntry')}</Button>
           }
+          <Icon
+            className="trigger"
+            type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
+            onClick={this.toggle}
+          />
         </div>
         <div className="main-content">
           <div className="page-body tabbed fixed-height">
