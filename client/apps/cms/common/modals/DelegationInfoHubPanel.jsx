@@ -14,8 +14,8 @@ import ExpensesPane from './tabpanes/ExpensesPane';
 import ActivityLoggerPane from './tabpanes/ActivityLoggerPane';
 import AcceptModal from './acceptModal';
 import DelgDispModal from './delgDispModal';
-import { hidePreviewer, setPreviewStatus, setPreviewTabkey, openAcceptModal, showDispModal } from 'common/reducers/cmsDelegation';
-
+import { openAcceptModal, showDispModal } from 'common/reducers/cmsDelegation';
+import { setPreviewStatus, hidePreviewer, setPreviewTabkey } from 'common/reducers/cmsDelgInfoHub';
 const TabPane = Tabs.TabPane;
 
 
@@ -23,11 +23,10 @@ const TabPane = Tabs.TabPane;
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    visible: state.cmsDelegation.previewer.visible,
-    previewer: state.cmsDelegation.previewer,
-    tabKey: state.cmsDelegation.previewer.tabKey,
-    delgPanel: state.cmsDelegation.delgPanel,
-    ciqdecl: state.cmsDeclare.previewer.ciqdecl,
+    visible: state.cmsDelgInfoHub.previewer.visible,
+    previewer: state.cmsDelgInfoHub.previewer,
+    tabKey: state.cmsDelgInfoHub.previewer.tabKey,
+    ciqdecl: state.cmsDelgInfoHub.previewer.ciqdecl,
     delegateListFilter: state.cmsDelegation.delegateListFilter,
   }),
   { hidePreviewer, setPreviewStatus, setPreviewTabkey, openAcceptModal, showDispModal }
@@ -43,7 +42,6 @@ export default class DelegationInfoHubPanel extends React.Component {
     ciqdecl: PropTypes.object.isRequired,
     delegateListFilter: PropTypes.object.isRequired,
     setPreviewStatus: PropTypes.func.isRequired,
-    setPreviewTabkey: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,

@@ -24,7 +24,7 @@ const typeKeys = EXPENSE_TYPES.map(ec => ec.key);
 @connect(
   state => ({
     expenses: state.cmsExpense.expenses,
-    delgNo: state.cmsDelegation.previewer.delgNo,
+    delgNo: state.cmsDelgInfoHub.previewer.delgNo,
     tenantId: state.account.tenantId,
   }),
   { loadPaneExp }

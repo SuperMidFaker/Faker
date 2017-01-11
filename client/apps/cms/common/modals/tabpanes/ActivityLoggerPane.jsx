@@ -5,7 +5,7 @@ import moment from 'moment';
 import { Button, Card, Checkbox, Col, Row, Collapse, DatePicker, Dropdown, Form, Icon,
   Input, InputNumber, Mention, Menu, Popover, Radio, Select, Tabs, Timeline, Tooltip, message } from 'antd';
 import InfoItem from 'client/components/InfoItem';
-import { exchangeBlNo, loadCustPanel, loadDeclCiqByDelgNo, showPreviewer, updateCertParam } from 'common/reducers/cmsDelegation';
+import { showPreviewer, loadCustPanel, loadDeclCiqPanel, updateCertParam, exchangeBlNo } from 'common/reducers/cmsDelgInfoHub';
 import { loadDeclHead, setInspect } from 'common/reducers/cmsDeclare';
 import { CERTS, INSPECT_STATUS } from 'common/constants';
 import ActivityEditCard from './activityEditCard';
@@ -38,11 +38,11 @@ const ACTIVITY_DESC_MAP = {
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    previewer: state.cmsDelegation.previewer,
+    previewer: state.cmsDelgInfoHub.previewer,
     declHeadsPane: state.cmsDeclare.decl_heads,
   }), {
     exchangeBlNo, loadDeclHead, setInspect, loadCustPanel, showPreviewer, updateCertParam,
-    loadDeclCiqByDelgNo,
+    loadDeclCiqPanel,
   }
 )
 @Form.create()
@@ -94,7 +94,7 @@ export default class ActivityLoggerPane extends React.Component {
           });
         }
         if ((field === 'pzcy' || field === 'djcy') && this.props.previewer.tabKey === 'ciqDecl') {
-          this.props.loadDeclCiqByDelgNo(this.props.previewer.delgNo, this.props.tenantId);
+          this.props.loadDeclCiqPanel(this.props.previewer.delgNo, this.props.tenantId);
         }
       }
     });

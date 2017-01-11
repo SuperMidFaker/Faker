@@ -14,8 +14,9 @@ import SearchBar from 'client/components/search-bar';
 import BillModal from './modals/billModal';
 import RowUpdater from './rowUpdater';
 import { loadAcceptanceTable, loadBillMakeModal, acceptDelg, delDelg,
-  showPreviewer, setDispStatus, loadCiqTable, delgAssignRecall, loadCustPanel,
+  setDispStatus, loadCiqTable, delgAssignRecall,
   openAcceptModal, showDispModal } from 'common/reducers/cmsDelegation';
+import { showPreviewer, loadCustPanel } from 'common/reducers/cmsDelgInfoHub';
 import DelegationInfoHubPanel from '../modals/DelegationInfoHubPanel';
 import CiqList from './ciqList';
 import messages from './message.i18n';
@@ -39,8 +40,8 @@ const OptGroup = Select.OptGroup;
     billMakeModal: state.cmsDelegation.billMakeModal,
     delgDispShow: state.cmsDelegation.assign.delgDispShow,
     preStatus: state.cmsDelegation.preStatus,
-    previewer: state.cmsDelegation.previewer,
-    delegation: state.cmsDelegation.previewer.delegation,
+    previewer: state.cmsDelgInfoHub.previewer,
+    delegation: state.cmsDelgInfoHub.previewer.delegation,
     matchStatus: state.cmsDelegation.matchStatus,
     listView: state.cmsDelegation.listView,
   }),

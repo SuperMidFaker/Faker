@@ -5,7 +5,6 @@ const actionTypes = createActionTypes('@@welogix/cms/declaration/', [
   'LOAD_CIQ_DECLS', 'LOAD_CIQ_DECLS_SUCCEED', 'LOAD_CIQ_DECLS_FAIL',
   'LOAD_DELG_DECLS', 'LOAD_DELG_DECLS_SUCCEED', 'LOAD_DELG_DECLS_FAIL',
   'CIQ_FINISH', 'CIQ_FINISH_SUCCEED', 'CIQ_FINISH_FAIL',
-  'LOAD_DECLCIQ_DELG', 'LOAD_DECLCIQ_DELG_SUCCEED', 'LOAD_DECLCIQ_DELG_FAIL',
   'LOAD_DECLHEAD', 'LOAD_DECLHEAD_SUCCEED', 'LOAD_DECLHEAD_FAIL',
   'SET_INSPECT', 'SET_INSPECT_SUCCEED', 'SET_INSPECT_FAIL',
 ]);
@@ -30,9 +29,6 @@ const initialState = {
     pageSize: 10,
     data: [],
   },
-  previewer: {
-    ciqdecl: { ciqlist: [] },
-  },
   decl_heads: [],
 };
 
@@ -51,8 +47,6 @@ export default function reducer(state = initialState, action) {
         listFilter: JSON.parse(action.params.filter) };
     case actionTypes.LOAD_DELG_DECLS_FAIL:
       return { ...state, delgdeclList: { ...state.delgdeclList, loading: false } };
-    case actionTypes.LOAD_DECLCIQ_DELG_SUCCEED:
-      return { ...state, previewer: { ...state.previewer, ciqdecl: action.result.data } };
     case actionTypes.LOAD_DECLHEAD_SUCCEED:
       return { ...state, decl_heads: action.result.data };
     default:
@@ -101,21 +95,6 @@ export function loadCiqDecls(params) {
       endpoint: 'v1/cms/declare/get/ciqDecls',
       method: 'get',
       params,
-    },
-  };
-}
-
-export function loadDeclCiqByDelgNo(delgNo, tenantId) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.LOAD_DECLCIQ_DELG,
-        actionTypes.LOAD_DECLCIQ_DELG_SUCCEED,
-        actionTypes.LOAD_DECLCIQ_DELG_FAIL,
-      ],
-      endpoint: 'v1/cms/declare/delgno/ciqDecls',
-      method: 'get',
-      params: { delgNo, tenantId },
     },
   };
 }

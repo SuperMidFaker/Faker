@@ -17,31 +17,21 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'LOAD_DELEGATE', 'LOAD_DELEGATE_SUCCEED', 'LOAD_DELEGATE_FAIL',
   'SEND_DELEGATE', 'SEND_DELEGATE_SUCCEED', 'SEND_DELEGATE_FAIL',
   'SHOW_SEND_DELEGATE_MODAL', 'SHOW_SEND_DELEGATE_MODAL_SUCCEED', 'SHOW_SEND_DELEGATE_MODAL_FAIL',
-  'SHOW_PREVIEWER', 'SHOW_PREVIEWER_SUCCEED', 'SHOW_PREVIEWER_FAILED',
-  'HIDE_PREVIEWER', 'LOAD_SUBDELG', 'LOAD_SUBDELG_SUCCEED', 'LOAD_SUBDELG_FAIL',
   'LOAD_BILLMAKE', 'LOAD_BILLMAKE_SUCCEED', 'LOAD_BILLMAKE_FAIL', 'SET_MODAL_FALSE',
   'OPEN_EF_MODAL', 'CLOSE_EF_MODAL', 'SET_DISP_STATUS',
   'FILL_ENTRYNO', 'FILL_ENTRYNO_SUCCEED', 'FILL_ENTRYNO_FAIL',
   'LOAD_DELGDISP', 'LOAD_DELGDISP_SUCCEED', 'LOAD_DELGDISP_FAIL',
   'DELG_DISP_SAVE', 'DELG_DISP_SAVE_SUCCEED', 'DELG_DISP_SAVE_FAIL',
   'DEL_DISP', 'DEL_DISP_SUCCEED', 'DEL_DISP_FAIL',
-  'LOAD_DISP', 'LOAD_DISP_SUCCEED', 'LOAD_DISP_FAIL', 'SET_PREW_STATUS',
-  'LOAD_CIQ', 'LOAD_CIQ_SUCCEED', 'LOAD_CIQ_FAIL', 'SET_PREW_TABKEY',
+  // 'LOAD_DISP', 'LOAD_DISP_SUCCEED', 'LOAD_DISP_FAIL',
+  'LOAD_CIQ', 'LOAD_CIQ_SUCCEED', 'LOAD_CIQ_FAIL',
   'OPEN_CIQ_MODAL', 'CLOSE_CIQ_MODAL',
   'FILL_CUSTOMSNO', 'FILL_CUSTOMSNO_SUCCEED', 'FILL_CUSTOMSNO_FAIL',
-  'LOAD_DECLWAY', 'LOAD_DECLWAY_SUCCEED', 'LOAD_DECLWAY_FAIL',
-  'MATCH_QUOTE', 'MATCH_QUOTE_SUCCEED', 'MATCH_QUOTE_FAIL',
-  'LOAD_CERT', 'LOAD_CERT_SUCCEED', 'LOAD_CERT_FAIL',
-  'LOAD_MQPARAM', 'LOAD_MQPARAM_SUCCEED', 'LOAD_MQPARAM_FAIL',
-  'MATCH_CIQ_QUOTE', 'MATCH_CIQ_QUOTE_SUCCEED', 'MATCH_CIQ_QUOTE_FAIL',
   'CIQ_FINISH_SET', 'CIQ_FINISH_SET_SUCCEED', 'CIQ_FINISH_SET_FAIL',
-  'LOAD_CIQSUB', 'LOAD_CIQSUB_SUCCEED', 'LOAD_CIQSUB_FAIL',
-  'LOAD_DELG_PANEL', 'LOAD_DELG_PANEL_SUCCEED', 'LOAD_DELG_PANEL_FAILED',
+  // 'LOAD_CIQSUB', 'LOAD_CIQSUB_SUCCEED', 'LOAD_CIQSUB_FAIL',
   'SHOW_DISPMODAL', 'SHOW_DISPMODAL_SUCCEED', 'SHOW_DISPMODAL_FAILED',
   'SET_OPERATOR', 'SET_OPERATOR_SUCCEED', 'SET_OPERATOR_FAIL',
   'CIQ_DISP_SAVE', 'CIQ_DISP_SAVE_SUCCEED', 'CIQ_DISP_SAVE_FAIL',
-  'UPDATE_BLNO', 'UPDATE_BLNO_SUCCEED', 'UPDATE_BLNO_FAIL',
-  'UPDATE_CERT_PARAM', 'UPDATE_CERT_PARAM_SUCCEED', 'UPDATE_CERT_PARAM_FAIL',
   'RECALL_DELG_ASSIGN', 'RECALL_DELG_ASSIGN_SUCCEED', 'RECALL_DELG_ASSIGN_FAILED',
 ]);
 
@@ -54,12 +44,6 @@ const initialState = {
     data: [],
   },
   ciqlist: {
-    totalCount: 0,
-    current: 1,
-    pageSize: 10,
-    data: [],
-  },
-  certlist: {
     totalCount: 0,
     current: 1,
     pageSize: 10,
@@ -115,14 +99,6 @@ const initialState = {
     delgDispIds: [],
     delgOperators: [],
   },
-  previewer: {
-    visible: false,
-    tabKey: 'basic',
-    delegation: {},
-    files: [],
-    delgDispatch: {},
-    activities: [],
-  },
   preStatus: '',
   billMakeModal: {
     visible: false,
@@ -148,15 +124,10 @@ const initialState = {
     ciqDispShow: false,
     saved: false,
   },
-  matchParam: {},
   matchStatus: {},
-  cMQParams: [],
   brokers: [],
   relatedDisps: [],
   suppliers: [],
-  delgPanel: {
-    bills: [],
-  },
 };
 
 export default function reducer(state = initialState, action) {
@@ -188,45 +159,24 @@ export default function reducer(state = initialState, action) {
     }
     case actionTypes.LOAD_CIQ_FAIL:
       return { ...state, ciqlist: { ...state.ciqlist, loading: false }, ciqBillsMap: {} };
-    case actionTypes.LOAD_CERT_SUCCEED: {
-      return { ...state, certlist: { ...action.result.data, loading: false }, listFilter: JSON.parse(action.params.filter) };
-    }
-    case actionTypes.LOAD_SUBDELG: {
-      const delgBillsMap = { ...state.delgBillsMap };
-      delgBillsMap[action.params.delg_no] = [];
-      delgBillsMap[action.params.delg_no].loading = true;
-      return { ...state, delgBillsMap };
-    }
-    case actionTypes.LOAD_SUBDELG_SUCCEED: {
-      const delgBillsMap = { ...state.delgBillsMap };
-      delgBillsMap[action.params.delg_no] = action.result.data;
-      delgBillsMap[action.params.delg_no].loading = false;
-      return { ...state, delgBillsMap };
-    }
-    case actionTypes.LOAD_SUBDELG_FAIL: {
-      const delgBillsMap = { ...state.delgBillsMap };
-      delgBillsMap[action.params.delg_no] = [];
-      delgBillsMap[action.params.delg_no].loading = false;
-      return { ...state, delgBillsMap };
-    }
-    case actionTypes.LOAD_CIQSUB: {
-      const ciqBillsMap = { ...state.ciqBillsMap };
-      ciqBillsMap[action.params.delg_no] = [];
-      ciqBillsMap[action.params.delg_no].loading = true;
-      return { ...state, ciqBillsMap };
-    }
-    case actionTypes.LOAD_CIQSUB_SUCCEED: {
-      const ciqBillsMap = { ...state.ciqBillsMap };
-      ciqBillsMap[action.params.delg_no] = action.result.data;
-      ciqBillsMap[action.params.delg_no].loading = false;
-      return { ...state, ciqBillsMap };
-    }
-    case actionTypes.LOAD_CIQSUB_FAIL: {
-      const ciqBillsMap = { ...state.ciqBillsMap };
-      ciqBillsMap[action.params.delg_no] = [];
-      ciqBillsMap[action.params.delg_no].loading = false;
-      return { ...state, ciqBillsMap };
-    }
+    // case actionTypes.LOAD_CIQSUB: {
+    //   const ciqBillsMap = { ...state.ciqBillsMap };
+    //   ciqBillsMap[action.params.delg_no] = [];
+    //   ciqBillsMap[action.params.delg_no].loading = true;
+    //   return { ...state, ciqBillsMap };
+    // }
+    // case actionTypes.LOAD_CIQSUB_SUCCEED: {
+    //   const ciqBillsMap = { ...state.ciqBillsMap };
+    //   ciqBillsMap[action.params.delg_no] = action.result.data;
+    //   ciqBillsMap[action.params.delg_no].loading = false;
+    //   return { ...state, ciqBillsMap };
+    // }
+    // case actionTypes.LOAD_CIQSUB_FAIL: {
+    //   const ciqBillsMap = { ...state.ciqBillsMap };
+    //   ciqBillsMap[action.params.delg_no] = [];
+    //   ciqBillsMap[action.params.delg_no].loading = false;
+    //   return { ...state, ciqBillsMap };
+    // }
     case actionTypes.LOAD_BILLMAKE:
       return { ...state, billMakeModal: { ...state.billMakeModal, visible: false, type: action.modalType } };
     case actionTypes.LOAD_BILLMAKE_SUCCEED: {
@@ -268,28 +218,12 @@ export default function reducer(state = initialState, action) {
       } else {
         return { ...state, sendPanel: { ...initialState.sendPanel, visible: action.visible } };
       }
-    case actionTypes.SHOW_PREVIEWER_SUCCEED: {
-      let tabKey = 'customsDecl';
-      if (action.result.data.delgDispatch.status === 0) {
-        tabKey = 'basic';
-      }
-      return { ...state, previewer: {
-        ...state.previewer,
-        tabKey: action.payload.tabKey || tabKey,
-        visible: action.visible,
-        delgNo: action.payload.delgNo,
-        ...action.result.data }, preStatus: '' };
-    }
     case actionTypes.SHOW_DISPMODAL_SUCCEED:
       return { ...state, assign: {
         ...state.assign, delgDisp: action.result.data.delegation,
         dispatch: action.result.data.dispatch, partners: action.result.data.partners,
         ciqSups: action.result.data.ciqSups, delgDispShow: true, saved: false },
       };
-    case actionTypes.HIDE_PREVIEWER:
-      return { ...state, previewer: { ...state.previewer, visible: action.visible } };
-    case actionTypes.LOAD_DELG_PANEL_SUCCEED:
-      return { ...state, delgPanel: action.result.data };
     case actionTypes.OPEN_EF_MODAL:
       return { ...state, visibleEfModal: true, efModal: action.data };
     case actionTypes.CLOSE_EF_MODAL:
@@ -306,21 +240,11 @@ export default function reducer(state = initialState, action) {
     // case actionTypes.LOAD_DELGDISP_SUCCEED:
     //   return { ...state, delgDisp: action.result.data.delegation, saved: false,
     //     dispatch: action.result.data.dispatch, partners: action.result.data.partners };
-    case actionTypes.LOAD_DISP_SUCCEED:
-      return { ...state, assign: { ...state.assign, delgDisp: action.result.data.delegation,
-        dispatch: action.result.data.dispatch, delgDispShow: true, saved: true } };
-    case actionTypes.SET_PREW_STATUS:
-      return { ...state, ...action.data };
-    case actionTypes.SET_PREW_TABKEY:
-      return { ...state, previewer: { ...state.previewer, tabKey: action.data } };
-    case actionTypes.LOAD_DECLWAY_SUCCEED:
-      return { ...state, matchParam: action.result.data };
-    case actionTypes.MATCH_QUOTE_SUCCEED:
-      return { ...state, matchStatus: action.result.data };
-    case actionTypes.LOAD_MQPARAM_SUCCEED:
-      return { ...state, cMQParams: action.result.data };
-    case actionTypes.BROKERS_LOAD_SUCCEED:
-      return { ...state, brokers: action.result.data.brokers };
+    // case actionTypes.LOAD_DISP_SUCCEED:
+    //   return { ...state, assign: { ...state.assign, delgDisp: action.result.data.delegation,
+    //     dispatch: action.result.data.dispatch, delgDispShow: true, saved: true } };
+    // case actionTypes.BROKERS_LOAD_SUCCEED:
+    //   return { ...state, brokers: action.result.data.brokers };
     case actionTypes.OPEN_ACCEPT_MODAL:
       return { ...state, acceptModal: { visible: true, ...action.data } };
     case actionTypes.CLOSE_ACCEPT_MODAL:
@@ -349,37 +273,6 @@ export function delgAssignRecall(delgNo, tenantId) {
   };
 }
 
-export function updateCertParam(delgNo, dispId, cert, qty) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.UPDATE_CERT_PARAM,
-        actionTypes.UPDATE_CERT_PARAM_SUCCEED,
-        actionTypes.UPDATE_CERT_PARAM_FAIL,
-      ],
-      endpoint: 'v1/cms/delegation/update/certParam',
-      method: 'post',
-      data: { delgNo, dispId, cert, qty },
-      origin: 'mongo',
-    },
-  };
-}
-
-export function exchangeBlNo(delgNo, blNo) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.UPDATE_BLNO,
-        actionTypes.UPDATE_BLNO_SUCCEED,
-        actionTypes.UPDATE_BLNO_FAIL,
-      ],
-      endpoint: 'v1/cms/delegation/exchange',
-      method: 'post',
-      data: { delgNo, blNo },
-    },
-  };
-}
-
 export function loadciqSups(tenantId, type) {
   return {
     [CLIENT_API]: {
@@ -395,20 +288,20 @@ export function loadciqSups(tenantId, type) {
   };
 }
 
-export function loadCiqSubTable(params) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.LOAD_CIQSUB,
-        actionTypes.LOAD_CIQSUB_SUCCEED,
-        actionTypes.LOAD_CIQSUB_FAIL,
-      ],
-      endpoint: 'v1/cms/ciq/bills',
-      method: 'get',
-      params,
-    },
-  };
-}
+// export function loadCiqSubTable(params) {
+//   return {
+//     [CLIENT_API]: {
+//       types: [
+//         actionTypes.LOAD_CIQSUB,
+//         actionTypes.LOAD_CIQSUB_SUCCEED,
+//         actionTypes.LOAD_CIQSUB_FAIL,
+//       ],
+//       endpoint: 'v1/cms/ciq/bills',
+//       method: 'get',
+//       params,
+//     },
+//   };
+// }
 
 export function setCiqFinish(delgNo) {
   return {
@@ -461,94 +354,6 @@ export function loadCiqTable(params) {
     },
   };
 }
-export function loadCertTable(params) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.LOAD_CERT,
-        actionTypes.LOAD_CERT_SUCCEED,
-        actionTypes.LOAD_CERT_FAIL,
-      ],
-      endpoint: 'v1/cms/load/cert',
-      method: 'get',
-      params,
-    },
-  };
-}
-export function loadDeclareWay(row) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.LOAD_DECLWAY,
-        actionTypes.LOAD_DECLWAY_SUCCEED,
-        actionTypes.LOAD_DECLWAY_FAIL,
-      ],
-      endpoint: 'v1/cms/load/declareWay',
-      method: 'get',
-      params: row,
-    },
-  };
-}
-export function matchQuote(param) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.MATCH_QUOTE,
-        actionTypes.MATCH_QUOTE_SUCCEED,
-        actionTypes.MATCH_QUOTE_FAIL,
-      ],
-      endpoint: 'v1/cms/match/quote',
-      method: 'post',
-      data: param,
-      origin: 'mongo',
-    },
-  };
-}
-export function loadCMQParams(tenantId, delgNo, type) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.LOAD_MQPARAM,
-        actionTypes.LOAD_MQPARAM_SUCCEED,
-        actionTypes.LOAD_MQPARAM_FAIL,
-      ],
-      endpoint: 'v1/cms/load/mqParams',
-      method: 'get',
-      params: { tenantId, delgNo, type },
-    },
-  };
-}
-
-export function matchCQuote(params) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.MATCH_CIQ_QUOTE,
-        actionTypes.MATCH_CIQ_QUOTE_SUCCEED,
-        actionTypes.MATCH_CIQ_QUOTE_FAIL,
-      ],
-      endpoint: 'v1/cms/match/ciq/quote',
-      method: 'post',
-      data: params,
-      origin: 'mongo',
-    },
-  };
-}
-
-export function loadSubdelgsTable(params) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.LOAD_SUBDELG,
-        actionTypes.LOAD_SUBDELG_SUCCEED,
-        actionTypes.LOAD_SUBDELG_FAIL,
-      ],
-      endpoint: 'v1/cms/subdelgs',
-      method: 'get',
-      params,
-    },
-  };
-}
 
 export function loadBillMakeModal(params, type) {
   return {
@@ -565,19 +370,7 @@ export function loadBillMakeModal(params, type) {
     },
   };
 }
-export function setPreviewTabkey(tabkey) {
-  return {
-    type: actionTypes.SET_PREW_TABKEY,
-    data: tabkey,
-  };
-}
 
-export function setPreviewStatus(status) {
-  return {
-    type: actionTypes.SET_PREW_STATUS,
-    data: status,
-  };
-}
 export function setDispStatus(params) {
   return {
     type: actionTypes.SET_DISP_STATUS,
@@ -599,20 +392,20 @@ export function loadDelgDisp(delgNo, tenantId) {
   };
 }
 
-export function loadDisp(delgNo, tenantId) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.LOAD_DISP,
-        actionTypes.LOAD_DISP_SUCCEED,
-        actionTypes.LOAD_DISP_FAIL,
-      ],
-      endpoint: 'v1/cms/loadDisp',
-      method: 'get',
-      params: { delgNo, tenantId },
-    },
-  };
-}
+// export function loadDisp(delgNo, tenantId) {
+//   return {
+//     [CLIENT_API]: {
+//       types: [
+//         actionTypes.LOAD_DISP,
+//         actionTypes.LOAD_DISP_SUCCEED,
+//         actionTypes.LOAD_DISP_FAIL,
+//       ],
+//       endpoint: 'v1/cms/loadDisp',
+//       method: 'get',
+//       params: { delgNo, tenantId },
+//     },
+//   };
+// }
 
 export function ciqDispSave(dispatch, ciqSup) {
   return {
@@ -903,46 +696,6 @@ export function showDispModal(delgNo, tenantId) {
       method: 'get',
       params: { delgNo, tenantId },
     },
-  };
-}
-
-export function showPreviewer(tenantId, delgNo, tabKey) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.SHOW_PREVIEWER,
-        actionTypes.SHOW_PREVIEWER_SUCCEED,
-        actionTypes.SHOW_PREVIEWER_FAILED,
-      ],
-      endpoint: 'v1/cms/delegate/previewer',
-      method: 'get',
-      params: { tenantId, delgNo },
-      visible: true,
-      payload: { delgNo, tabKey },
-    },
-  };
-}
-
-export function loadCustPanel(params) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.LOAD_DELG_PANEL,
-        actionTypes.LOAD_DELG_PANEL_SUCCEED,
-        actionTypes.LOAD_DELG_PANEL_FAILED,
-      ],
-      endpoint: 'v1/cms/delegate/load/custPanel',
-      method: 'get',
-      params,
-    },
-  };
-}
-
-export function hidePreviewer(delgNo) {
-  return {
-    type: actionTypes.HIDE_PREVIEWER,
-    delgNo,
-    visible: false,
   };
 }
 

@@ -3,21 +3,21 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Badge, Button, Card, Col, Icon, Row, Table, Tag, Tooltip } from 'antd';
 import moment from 'moment';
-import { loadDeclCiqByDelgNo } from 'common/reducers/cmsDeclare';
 import { openAcceptModal, loadciqSups, setDispStatus } from 'common/reducers/cmsDelegation';
+import { loadDeclCiqPanel } from 'common/reducers/cmsDelgInfoHub';
 import InfoItem from 'client/components/InfoItem';
 import CiqDispModal from '../ciqDispModal';
 
 @injectIntl
 @connect(
   state => ({
-    delgNo: state.cmsDelegation.previewer.delgNo,
-    ciqdecl: state.cmsDeclare.previewer.ciqdecl,
+    delgNo: state.cmsDelgInfoHub.previewer.delgNo,
+    ciqdecl: state.cmsDelgInfoHub.previewer.ciqdecl,
     tenantId: state.account.tenantId,
-    tabKey: state.cmsDelegation.previewer.tabKey,
-    delegation: state.cmsDelegation.previewer.delegation,
+    tabKey: state.cmsDelgInfoHub.previewer.tabKey,
+    delegation: state.cmsDelgInfoHub.previewer.delegation,
   }),
-  { loadDeclCiqByDelgNo, openAcceptModal, loadciqSups, setDispStatus }
+  { loadDeclCiqPanel, openAcceptModal, loadciqSups, setDispStatus }
 )
 export default class CiqDeclPane extends React.Component {
   static propTypes = {
@@ -37,12 +37,12 @@ export default class CiqDeclPane extends React.Component {
     }),
   }
   componentDidMount() {
-    this.props.loadDeclCiqByDelgNo(this.props.delgNo, this.props.tenantId);
+    this.props.loadDeclCiqPanel(this.props.delgNo, this.props.tenantId);
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.tabKey === 'ciqDecl' &&
       nextProps.tabKey !== this.props.tabKey) {
-      this.props.loadDeclCiqByDelgNo(nextProps.delgNo, this.props.tenantId);
+      this.props.loadDeclCiqPanel(nextProps.delgNo, this.props.tenantId);
     }
   }
   handleOperatorAssign = () => {

@@ -1,8 +1,8 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import { Modal, Select, Form, message } from 'antd';
-import { ciqDispSave, setDispStatus, showPreviewer } from 'common/reducers/cmsDelegation';
-import { loadDeclCiqByDelgNo } from 'common/reducers/cmsDeclare';
+import { ciqDispSave, setDispStatus } from 'common/reducers/cmsDelegation';
+import { showPreviewer, loadDeclCiqPanel } from 'common/reducers/cmsDelgInfoHub';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from './message.i18n';
 import { format } from 'client/common/i18n/helpers';
@@ -21,10 +21,10 @@ const formItemLayout = {
     tenantId: state.account.tenantId,
     ciqSups: state.cmsDelegation.assign.ciqSups,
     ciqDispShow: state.cmsDelegation.assign.ciqDispShow,
-    dispatch: state.cmsDelegation.previewer.delgDispatch,
-    tabKey: state.cmsDelegation.previewer.tabKey,
+    dispatch: state.cmsDelgInfoHub.previewer.delgDispatch,
+    tabKey: state.cmsDelgInfoHub.previewer.tabKey,
   }),
-  { ciqDispSave, setDispStatus, showPreviewer, loadDeclCiqByDelgNo }
+  { ciqDispSave, setDispStatus, showPreviewer, loadDeclCiqPanel }
 )
 @Form.create()
 export default class CiqDispModal extends Component {
@@ -51,7 +51,7 @@ export default class CiqDispModal extends Component {
       } else {
         this.props.setDispStatus({ ciqDispShow: false });
         this.props.showPreviewer(this.props.tenantId, dispatch.delg_no, this.props.tabKey);
-        this.props.loadDeclCiqByDelgNo(dispatch.delg_no, this.props.tenantId);
+        this.props.loadDeclCiqPanel(dispatch.delg_no, this.props.tenantId);
       }
     });
   }
