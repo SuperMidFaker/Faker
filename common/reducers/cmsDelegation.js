@@ -358,8 +358,8 @@ export function updateCertParam(delgNo, dispId, cert, qty) {
         actionTypes.UPDATE_CERT_PARAM_FAIL,
       ],
       endpoint: 'v1/cms/delegation/update/certParam',
-      method: 'get',
-      params: { delgNo, dispId, cert, qty },
+      method: 'post',
+      data: { delgNo, dispId, cert, qty },
       origin: 'mongo',
     },
   };

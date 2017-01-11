@@ -30,7 +30,9 @@ export default class ActivityEditCard extends React.Component {
   }
   handleSave = () => {
     this.setState({ is_editing: false });
-    this.props.onSave({ field: this.props.field, value: this.state.edit_value });
+    if (this.state.edit_value !== this.props.rightValue) {
+      this.props.onSave({ field: this.props.field, value: this.state.edit_value });
+    }
   }
   handleDel = () => {
     this.props.onSave({ field: this.props.field, value: null });

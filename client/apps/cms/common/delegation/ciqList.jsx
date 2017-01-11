@@ -126,16 +126,14 @@ export default class CiqList extends Component {
     title: this.msg('opColumn'),
     width: 100,
     fixed: 'right',
-    render: (record) => {
+    render: (o, record) => {
       const type = record.ciq_tenant_id === this.props.tenantId ? 1 : 2;
       if (record.status === 1 && type === 1) {
         return (
           <RowUpdater onHit={this.handleCiqFinish} label={this.msg('ciqFinish')} row={record} />
         );
       } else {
-        return (
-          <span />
-        );
+        return <span />;
       }
     },
   }]
