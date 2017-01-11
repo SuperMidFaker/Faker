@@ -43,6 +43,7 @@ function fetchData({ state, dispatch, params, cookie }) {
     filters: state.trackingLandPod.filters,
     loading: state.trackingLandPod.loading,
     loaded: state.trackingLandPod.loaded,
+    clients: state.shipment.formRequire.clients,
   }),
   { loadPodTable, loadShipmtDetail, showAuditModal, resubmitPod, showPodModal,
     sendMessage })
@@ -64,18 +65,9 @@ export default class LandStatusList extends React.Component {
     loadPodTable: PropTypes.func.isRequired,
     showPodModal: PropTypes.func.isRequired,
     sendMessage: PropTypes.func.isRequired,
+    clients: PropTypes.array.isRequired,
   }
-  constructor(...args) {
-    super(...args);
-    this.columns = makeColumns('pod', {
-      onShipmtPreview: this.handleShipmtPreview,
-      onShowAuditModal: this.handleShowAuditModal,
-      onResubmit: this.handleResubmit,
-      onShowPodModal: this.handleShowPodModal,
-      tenantId: this.props.tenantId,
-      sendMessage: this.props.sendMessage,
-    }, this.msg);
-  }
+
   state = {
     selectedRowKeys: [],
   }
@@ -120,13 +112,22 @@ export default class LandStatusList extends React.Component {
       pageSize: result.pageSize,
     }),
     getParams: (pagination, filters, sorter) => {
+      const newFilters = [...this.props.filters];
+      if (filters.customer_name && filters.customer_name.length > 0) {
+        newFilters.push({ name: 'customer_name', value: filters.customer_name });
+      } else {
+        const index = newFilters.findIndex(item => item.name === 'customer_name');
+        if (index >= 0) {
+          newFilters.splice(index, 1);
+        }
+      }
       const params = {
         tenantId: this.props.tenantId,
         pageSize: pagination.pageSize,
         currentPage: pagination.current,
         sortField: sorter.field,
         sortOrder: sorter.order === 'descend' ? 'desc' : 'asc',
-        filters: JSON.stringify(this.props.filters),
+        filters: JSON.stringify(newFilters),
       };
       return params;
     },
@@ -194,6 +195,15 @@ export default class LandStatusList extends React.Component {
         this.setState({ selectedRowKeys });
       },
     };
+    const columns = makeColumns('pod', {
+      onShipmtPreview: this.handleShipmtPreview,
+      onShowAuditModal: this.handleShowAuditModal,
+      onResubmit: this.handleResubmit,
+      onShowPodModal: this.handleShowPodModal,
+      tenantId: this.props.tenantId,
+      sendMessage: this.props.sendMessage,
+      clients: this.props.clients,
+    }, this.msg);
     return (
       <div>
         <div className="page-body">
@@ -203,7 +213,7 @@ export default class LandStatusList extends React.Component {
             </div>
           </div>
           <div className="panel-body table-panel">
-            <Table rowSelection={rowSelection} columns={this.columns} loading={loading}
+            <Table rowSelection={rowSelection} columns={columns} loading={loading}
               dataSource={this.dataSource} scroll={{ x: 2260 }}
             />
           </div>

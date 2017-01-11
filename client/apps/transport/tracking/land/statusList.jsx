@@ -57,6 +57,7 @@ function fetchData({ state, dispatch, params, cookie }) {
     filters: state.trackingLandStatus.filters,
     loading: state.trackingLandStatus.loading,
     reportedShipmts: state.trackingLandStatus.locReportedShipments,
+    clients: state.shipment.formRequire.clients,
   }),
   {
     loadTransitTable, loadShipmtDetail, showPodModal, showDateModal,
@@ -84,21 +85,7 @@ export default class LandStatusList extends React.Component {
     loadShipmtLastPoint: PropTypes.func.isRequired,
     sendMessage: PropTypes.func.isRequired,
     deliverConfirm: PropTypes.func.isRequired,
-  }
-  constructor(...args) {
-    super(...args);
-    this.columns = makeColumns('status', {
-      onShipmtPreview: this.handleShipmtPreview,
-      onShowVehicleModal: this.handleShowVehicleModal,
-      onShowPickModal: this.handleShowPickModal,
-      renderIntransitUpdater: this.renderIntransitUpdater,
-      onShowPodModal: this.handleShowPodModal,
-      onShowDeliverModal: this.handleShowDeliverModal,
-      onTableLoad: this.handleTableLoad,
-      sendMessage: this.props.sendMessage,
-      deliverConfirm: this.handleDeliverConfirm,
-      tenantId: this.props.tenantId,
-    }, this.msg);
+    clients: PropTypes.array.isRequired,
   }
   state = {
     lastLocReportTime: null,
@@ -146,13 +133,22 @@ export default class LandStatusList extends React.Component {
       pageSize: result.pageSize,
     }),
     getParams: (pagination, filters, sorter) => {
+      const newFilters = [...this.props.filters];
+      if (filters.customer_name && filters.customer_name.length > 0) {
+        newFilters.push({ name: 'customer_name', value: filters.customer_name });
+      } else {
+        const index = newFilters.findIndex(item => item.name === 'customer_name');
+        if (index >= 0) {
+          newFilters.splice(index, 1);
+        }
+      }
       const params = {
         tenantId: this.props.tenantId,
         pageSize: pagination.pageSize,
         currentPage: pagination.current,
         sortField: sorter.field,
         sortOrder: sorter.order === 'descend' ? 'desc' : 'asc',
-        filters: JSON.stringify(this.props.filters),
+        filters: JSON.stringify(newFilters),
       };
       return params;
     },
@@ -379,6 +375,19 @@ export default class LandStatusList extends React.Component {
         this.setState({ selectedRowKeys });
       },
     };
+    const columns = makeColumns('status', {
+      onShipmtPreview: this.handleShipmtPreview,
+      onShowVehicleModal: this.handleShowVehicleModal,
+      onShowPickModal: this.handleShowPickModal,
+      renderIntransitUpdater: this.renderIntransitUpdater,
+      onShowPodModal: this.handleShowPodModal,
+      onShowDeliverModal: this.handleShowDeliverModal,
+      onTableLoad: this.handleTableLoad,
+      sendMessage: this.props.sendMessage,
+      deliverConfirm: this.handleDeliverConfirm,
+      tenantId: this.props.tenantId,
+      clients: this.props.clients,
+    }, this.msg);
     return (
       <div>
         <div className="page-body">
@@ -391,7 +400,7 @@ export default class LandStatusList extends React.Component {
             </div>
           </div>
           <div className="panel-body table-panel">
-            <Table rowSelection={rowSelection} columns={this.columns} loading={loading}
+            <Table rowSelection={rowSelection} columns={columns} loading={loading}
               dataSource={this.dataSource} scroll={{ x: 2000 }}
             />
           </div>

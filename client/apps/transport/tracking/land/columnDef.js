@@ -251,6 +251,7 @@ export default function makeColumns(type, handlers, msg) {
     title: msg('shipmtCustomer'),
     dataIndex: 'customer_name',
     render: o => <TrimSpan text={o} maxLen={10} />,
+    filters: handlers.clients.map(item => ({ text: item.partner_code ? `${item.partner_code} | ${item.name}` : item.name, value: item.partner_id })),
   }, {
     title: msg('shipmtMode'),
     dataIndex: 'transport_mode',
