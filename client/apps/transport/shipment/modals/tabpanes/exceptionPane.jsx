@@ -16,6 +16,7 @@ const formatMsg = format(messages);
   state => ({
     shipmtNo: state.shipment.previewer.shipmt.shipmt_no,
     exceptions: state.trackingLandException.exceptions,
+    previewer: state.shipment.previewer,
   }),
   { loadExceptions, showDealExcpModal }
 )
@@ -25,10 +26,11 @@ export default class ExceptionPane extends React.Component {
     shipmtNo: PropTypes.string,
     exceptions: PropTypes.object.isRequired,
     showDealExcpModal: PropTypes.func.isRequired,
+    previewer: PropTypes.object.isRequired,
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.shipmtNo !== nextProps.shipmtNo && nextProps.shipmtNo !== '') {
+    if (this.props.shipmtNo !== nextProps.shipmtNo && nextProps.shipmtNo !== '' || nextProps.previewer.visible && !nextProps.previewer.loaded) {
       this.props.loadExceptions({
         shipmtNo: nextProps.shipmtNo,
         pageSize: nextProps.exceptions.pageSize,

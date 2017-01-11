@@ -16,7 +16,7 @@ const actionTypes = createActionTypes('@@welogix/transport/tracking/land/status/
   'CHANGE_ACT_DATE', 'CHANGE_ACT_DATE_SUCCEED', 'CHANGE_ACT_DATE_FAIL',
   'LOAD_SHIPMT_DISPATCH', 'LOAD_SHIPMT_DISPATCH_SUCCEED', 'LOAD_SHIPMT_DISPATCH_FAIL',
 ]);
-
+export const { REPORT_LOC_SUCCEED } = actionTypes;
 const initialState = {
   loaded: false,
   loading: false,

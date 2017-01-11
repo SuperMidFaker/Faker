@@ -4,7 +4,8 @@ import {
   isFormDataLoadedC, appendFormAcitonTypes, formReducer,
   assignFormC, clearFormC, setFormValueC,
 } from './form-common';
-
+import { REPORT_LOC_SUCCEED } from './trackingLandStatus';
+import { CREATE_EXCEPTION_SUCCEED } from './trackingLandException';
 const actionTypes = createActionTypes('@@welogix/transport/shipment/', [
   'SET_CONSIGN_FIELDS', 'SAVE_LOCAL_GOODS', 'EDIT_LOCAL_GOODS',
   'REM_LOCAL_GOODS', 'SHOW_PREVIWER', 'HIDE_PREVIWER',
@@ -48,6 +49,8 @@ const initialState = {
   },
   previewer: {
     visible: false,
+    loaded: true,
+    params: {},
     tabKey: null,
     row: {},
     shipmt: {
@@ -147,8 +150,10 @@ export default function reducer(state = initialState, action) {
         specialCharges: action.result.data.specialCharges,
         points: action.result.data.points,
         visible: true,
+        loaded: true,
         tabKey: action.tabKey,
         row: action.row,
+        params: action.params,
       } };
     }
     case actionTypes.HIDE_PREVIWER: {
@@ -186,9 +191,13 @@ export default function reducer(state = initialState, action) {
       return { ...state, previewer: { ...state.previewer, tabKey: action.data.tabKey } };
     }
     case actionTypes.CREATE_LOG_SUCCEED: {
-      const logs = [...state.previewer.logs];
-      logs.unshift(action.result.data);
-      return { ...state, previewer: { ...state.previewer, logs } };
+      return { ...state, previewer: { ...state.previewer, loaded: false } };
+    }
+    case REPORT_LOC_SUCCEED: {
+      return { ...state, previewer: { ...state.previewer, loaded: false } };
+    }
+    case CREATE_EXCEPTION_SUCCEED: {
+      return { ...state, previewer: { ...state.previewer, loaded: false } };
     }
     default:
       return formReducer(actionTypes, state, action, { key: null }, 'shipmentlist')

@@ -8,7 +8,7 @@ const actionTypes = createActionTypes('@@welogix/transport/tracking/land/excepti
   'DEAL_EXCEPTION', 'DEAL_EXCEPTION_FAIL', 'DEAL_EXCEPTION_SUCCEED',
   'CHANGE_FILTER', 'SHOW_EXCPMODAL', 'SHOW_DEAL_EXCEPTION_MODAL', 'SHOW_CREATE_EXCEPTION_MODAL',
 ]);
-
+export const { CREATE_EXCEPTION_SUCCEED } = actionTypes;
 const initialState = {
   loaded: false,
   loading: false,
