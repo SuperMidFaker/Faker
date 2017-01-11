@@ -5,7 +5,7 @@ import moment from 'moment';
 import { Button, Card, Checkbox, Col, Row, Collapse, DatePicker, Dropdown, Form, Icon,
   Input, InputNumber, Mention, Menu, Popover, Radio, Select, Tabs, Timeline, Tooltip, message } from 'antd';
 import InfoItem from 'client/components/InfoItem';
-import { exchangeBlNo, loadCustPanel, showPreviewer, updateCertParam } from 'common/reducers/cmsDelegation';
+import { exchangeBlNo, loadCustPanel, loadDeclCiqByDelgNo, showPreviewer, updateCertParam } from 'common/reducers/cmsDelegation';
 import { loadDeclHead, setInspect } from 'common/reducers/cmsDeclare';
 import { CERTS, INSPECT_STATUS } from 'common/constants';
 import ActivityEditCard from './activityEditCard';
@@ -42,6 +42,7 @@ const ACTIVITY_DESC_MAP = {
     declHeadsPane: state.cmsDeclare.decl_heads,
   }), {
     exchangeBlNo, loadDeclHead, setInspect, loadCustPanel, showPreviewer, updateCertParam,
+    loadDeclCiqByDelgNo,
   }
 )
 @Form.create()
@@ -67,18 +68,32 @@ export default class ActivityLoggerPane extends React.Component {
   handleInspectSave = ({ preEntrySeqNo, delgNo, enabled, field }) => {
     this.props.setInspect({ preEntrySeqNo, delgNo, field, enabled }).then((result) => {
       if (result.error) {
-        message.error(result.error.message, 5);
+        if (result.error.message === 'repeated') {
+          if (enabled === 'passed') {
+            message.error('查验结果重复通过');
+          } else if (enabled === true) {
+            message.error('重复设置查验');
+          } else if (enabled === false) {
+            message.error('重复删除查验结果');
+          }
+        } else {
+          message.error(result.error.message, 5);
+        }
       } else {
+        message.info('保存成功', 5);
         this.props.showPreviewer(
             this.props.tenantId,
             this.props.previewer.delgNo,
             this.props.previewer.tabKey
           );
-        if (this.props.previewer.tabKey === 'customsDecl') {
+        if (field === 'hgcy' && this.props.previewer.tabKey === 'customsDecl') {
           this.props.loadCustPanel({
             delgNo: this.props.previewer.delgNo,
             tenantId: this.props.tenantId,
           });
+        }
+        if ((field === 'pzcy' || field === 'djcy') && this.props.previewer.tabKey === 'ciqDecl') {
+          this.props.loadDeclCiqByDelgNo(this.props.previewer.delgNo, this.props.tenantId);
         }
       }
     });
@@ -87,7 +102,13 @@ export default class ActivityLoggerPane extends React.Component {
     const certQty = value || null;
     this.props.updateCertParam(this.props.previewer.delgNo, this.props.previewer.delgDispatch.id, field, certQty).then((result) => {
       if (result.error) {
-        message.error(result.error.message, 5);
+        if (result.error.message === 'repeated') {
+          if (certQty === null) {
+            message.error('该证已删除');
+          }
+        } else {
+          message.error(result.error.message, 5);
+        }
       } else {
         message.info('保存成功', 5);
         this.props.showPreviewer(
