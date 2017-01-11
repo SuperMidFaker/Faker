@@ -13,11 +13,11 @@ import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import SearchBar from 'client/components/search-bar';
 import BillModal from './modals/billModal';
 import RowUpdater from './rowUpdater';
-import { loadAcceptanceTable, loadBillMakeModal, acceptDelg, delDelg, loadDeclareWay,
-  showPreviewer, setDispStatus, loadCiqTable, delgAssignRecall, loadCustPanel,
+import { loadAcceptanceTable, loadBillMakeModal, acceptDelg, delDelg,
+  setDispStatus, loadCiqTable, delgAssignRecall,
   openAcceptModal, showDispModal } from 'common/reducers/cmsDelegation';
+import { showPreviewer, loadCustPanel } from 'common/reducers/cmsDelgInfoHub';
 import DelegationInfoHubPanel from '../modals/DelegationInfoHubPanel';
-// import DelgDispModal from './modals/delgDispModal';
 import CiqList from './ciqList';
 import messages from './message.i18n';
 import { format } from 'client/common/i18n/helpers';
@@ -40,14 +40,14 @@ const OptGroup = Select.OptGroup;
     billMakeModal: state.cmsDelegation.billMakeModal,
     delgDispShow: state.cmsDelegation.assign.delgDispShow,
     preStatus: state.cmsDelegation.preStatus,
-    previewer: state.cmsDelegation.previewer,
-    delegation: state.cmsDelegation.previewer.delegation,
+    previewer: state.cmsDelgInfoHub.previewer,
+    delegation: state.cmsDelgInfoHub.previewer.delegation,
     matchStatus: state.cmsDelegation.matchStatus,
     listView: state.cmsDelegation.listView,
   }),
   { loadAcceptanceTable, loadBillMakeModal, acceptDelg,
     delDelg, showPreviewer, setDispStatus, delgAssignRecall,
-    loadCiqTable, loadDeclareWay, openAcceptModal, showDispModal, loadCustPanel }
+    loadCiqTable, openAcceptModal, showDispModal, loadCustPanel }
 )
 @connectNav({
   depth: 2,
@@ -74,7 +74,6 @@ export default class DelegationList extends Component {
     previewer: PropTypes.object.isRequired,
     delegation: PropTypes.object.isRequired,
     loadCiqTable: PropTypes.func.isRequired,
-    loadDeclareWay: PropTypes.func.isRequired,
     matchStatus: PropTypes.object.isRequired,
   }
   static contextTypes = {
@@ -302,13 +301,6 @@ export default class DelegationList extends Component {
     }
     const filter = { ...this.props.listFilter, status: ev.target.value };
     this.handleCiqListLoad(1, filter);
-  }
-  handleMQdeclWay = (row) => {
-    this.props.loadDeclareWay(row).then((result) => {
-      if (result.error) {
-        message.error(result.error.message, 5);
-      }
-    });
   }
   handleDelegationMake = (row) => {
     this.props.loadBillMakeModal({

@@ -4,7 +4,8 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Button, Card, Col, Collapse, Icon, Row, Table, Tag, Tooltip, message } from 'antd';
 import moment from 'moment';
 import { DECL_I_TYPE, DECL_E_TYPE, CMS_DELEGATION_STATUS } from 'common/constants';
-import { loadSubdelgsTable, loadCustPanel, setPreviewStatus, hidePreviewer, openAcceptModal, loadBillMakeModal } from 'common/reducers/cmsDelegation';
+import { openAcceptModal, loadBillMakeModal } from 'common/reducers/cmsDelegation';
+import { loadCustPanel } from 'common/reducers/cmsDelgInfoHub';
 import InfoItem from 'client/components/InfoItem';
 
 const Panel = Collapse.Panel;
@@ -13,11 +14,11 @@ const Panel = Collapse.Panel;
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    delgNo: state.cmsDelegation.previewer.delgNo,
-    delgPanel: state.cmsDelegation.delgPanel,
-    tabKey: state.cmsDelegation.previewer.tabKey,
+    delgNo: state.cmsDelgInfoHub.previewer.delgNo,
+    delgPanel: state.cmsDelgInfoHub.delgPanel,
+    tabKey: state.cmsDelgInfoHub.previewer.tabKey,
   }),
-  { loadSubdelgsTable, loadCustPanel, setPreviewStatus, hidePreviewer, openAcceptModal, loadBillMakeModal }
+  { loadCustPanel, openAcceptModal, loadBillMakeModal }
 )
 export default class CustomsDeclPane extends React.Component {
   static propTypes = {

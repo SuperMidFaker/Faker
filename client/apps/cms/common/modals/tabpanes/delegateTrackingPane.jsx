@@ -10,7 +10,7 @@ const timeFormat = 'YYYY-MM-DD HH:mm';
 @injectIntl
 @connect(
   state => ({
-    previewer: state.cmsDelegation.previewer,
+    previewer: state.cmsDelgInfoHub.previewer,
   })
 )
 export default class DelegatedelegateTrackingPane extends React.Component {

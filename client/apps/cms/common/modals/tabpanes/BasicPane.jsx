@@ -7,7 +7,7 @@ import downloadMultiple from 'client/util/multipleDownloader';
 import { GOODSTYPES, TRANS_MODE, CLAIM_DO_AWB } from 'common/constants';
 import InfoItem from 'client/components/InfoItem';
 import './pane.less';
-import { showPreviewer } from 'common/reducers/cmsDelegation';
+import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
 
 function getExtension(filename) {
   const parts = filename.split('.');
@@ -17,11 +17,11 @@ function getExtension(filename) {
 @injectIntl
 @connect(
   state => ({
-    delegation: state.cmsDelegation.previewer.delegation,
-    files: state.cmsDelegation.previewer.files,
-    delgDispatch: state.cmsDelegation.previewer.delgDispatch,
+    delegation: state.cmsDelgInfoHub.previewer.delegation,
+    files: state.cmsDelgInfoHub.previewer.files,
+    delgDispatch: state.cmsDelgInfoHub.previewer.delgDispatch,
     tenantId: state.account.tenantId,
-    delgNo: state.cmsDelegation.previewer.delgNo,
+    delgNo: state.cmsDelgInfoHub.previewer.delgNo,
   }),
   { showPreviewer }
 )

@@ -20,6 +20,7 @@ import transportResources from './transportResources';
 import transportTariff from './transportTariff';
 import transportBilling from './transportBilling';
 import cmsDelegation from './cmsDelegation';
+import cmsDelgInfoHub from './cmsDelgInfoHub';
 import cmsDeclare from './cmsDeclare';
 import cmsManifest from './cmsManifest';
 import cmsCompRelation from './cmsCompRelation';
@@ -53,6 +54,7 @@ export default combineReducers({
   transportTariff,
   transportBilling,
   cmsDelegation,
+  cmsDelgInfoHub,
   cmsDeclare,
   cmsManifest,
   cmsCompRelation,

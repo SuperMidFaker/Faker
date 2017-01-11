@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 import { Modal, Select, Form, message, Switch, Radio } from 'antd';
 import { clearingOption } from 'common/constants';
 import { delgDispSave, setDispStatus,
-  loadciqSups, showPreviewer, loadCustPanel } from 'common/reducers/cmsDelegation';
-import { loadDeclCiqByDelgNo } from 'common/reducers/cmsDeclare';
+  loadciqSups } from 'common/reducers/cmsDelegation';
+import { showPreviewer, loadCustPanel, loadDeclCiqPanel } from 'common/reducers/cmsDelgInfoHub';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from './message.i18n';
 import { format } from 'client/common/i18n/helpers';
@@ -70,11 +70,11 @@ function getFieldInits(delgDisp, dispatch) {
     partners: state.cmsDelegation.assign.partners,
     ciqSups: state.cmsDelegation.assign.ciqSups,
     delgDispShow: state.cmsDelegation.assign.delgDispShow,
-    previewer: state.cmsDelegation.previewer,
-    tabKey: state.cmsDelegation.previewer.tabKey,
+    previewer: state.cmsDelgInfoHub.previewer,
+    tabKey: state.cmsDelgInfoHub.previewer.tabKey,
     fieldInits: getFieldInits(state.cmsDelegation.assign.delgDisp, state.cmsDelegation.assign.dispatch),
   }),
-  { delgDispSave, setDispStatus, loadciqSups, showPreviewer, loadCustPanel, loadDeclCiqByDelgNo }
+  { delgDispSave, setDispStatus, loadciqSups, showPreviewer, loadCustPanel, loadDeclCiqPanel }
 )
 @Form.create()
 export default class DelgDispModal extends Component {
@@ -116,7 +116,7 @@ export default class DelgDispModal extends Component {
   //               tenantId: this.props.tenantId,
   //             });
   //           } else if (this.props.tabKey === 'ciqDecl') {
-  //             this.props.loadDeclCiqByDelgNo(dispatch.delg_no, this.props.tenantId);
+  //             this.props.loadDeclCiqPanel(dispatch.delg_no, this.props.tenantId);
   //           }
   //         }
   //       }
@@ -156,7 +156,7 @@ export default class DelgDispModal extends Component {
               tenantId: this.props.tenantId,
             });
           } else if (this.props.tabKey === 'ciqDecl') {
-            this.props.loadDeclCiqByDelgNo(dispatch.delg_no, this.props.tenantId);
+            this.props.loadDeclCiqPanel(dispatch.delg_no, this.props.tenantId);
           }
         }
       }

@@ -2,9 +2,8 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Modal, Form, Mention, message } from 'antd';
-import { closeAcceptModal, acceptDelg, loadDelgOperators, setPreviewStatus,
-  setOpetaor, loadCustPanel } from 'common/reducers/cmsDelegation';
-import { loadDeclCiqByDelgNo } from 'common/reducers/cmsDeclare';
+import { closeAcceptModal, acceptDelg, loadDelgOperators, setOpetaor } from 'common/reducers/cmsDelegation';
+import { setPreviewStatus, loadCustPanel, loadDeclCiqPanel } from 'common/reducers/cmsDelgInfoHub';
 
 const FormItem = Form.Item;
 const Nav = Mention.Nav;
@@ -21,7 +20,7 @@ const getMentions = Mention.getMentions;
     delgOperators: state.cmsDelegation.acceptModal.operators,
   }),
   { closeAcceptModal, acceptDelg, loadDelgOperators, setPreviewStatus,
-    setOpetaor, loadCustPanel, loadDeclCiqByDelgNo }
+    setOpetaor, loadCustPanel, loadDeclCiqPanel }
 )
 @Form.create()
 export default class DelgAcceptModal extends React.Component {
@@ -85,7 +84,7 @@ export default class DelgAcceptModal extends React.Component {
                   delgNo: this.props.delg_no, tenantId: this.props.tenantId,
                 });
               } else if (this.props.type === 'ciq') {
-                this.props.loadDeclCiqByDelgNo(this.props.delg_no, this.props.tenantId);
+                this.props.loadDeclCiqPanel(this.props.delg_no, this.props.tenantId);
               }
               this.props.closeAcceptModal();
             }
