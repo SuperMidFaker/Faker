@@ -106,38 +106,41 @@ export class RelationAutoCompSelect extends React.Component {
       label, codeField, nameField, formData, disabled, options,
       getFieldDecorator, codeRules, nameRules,
     } = this.props;
+    const initialCodeValue = formData && formData[codeField] || '';
+    const initialNameValue = formData && formData[nameField];
     return (
       <Col md={24} lg={9}>
         <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} label={label} required>
           <Row>
             <Col span="8">
               <FormItem>
-                {getFieldDecorator(codeField, {
-                  rules: codeRules,
-                  onChange: this.handleInputChange,
-                  initialValue: formData && formData[codeField] || '',
-                })(<Select
-                  size="large"
-                  combobox
-                  showArrow={false}
-                  disabled={disabled}
-                  allowClear
-                  optionFilterProp="search"
-                  placeholder={this.msg('relationCodeSearch')}
-                  onSelect={this.handleSelect}
-                >
-                  {
+                {disabled ?
+                  <Input disabled value={initialCodeValue} />
+                  : getFieldDecorator(codeField, {
+                    rules: codeRules,
+                    onChange: this.handleInputChange,
+                  })(<Select
+                    size="large"
+                    combobox
+                    showArrow={false}
+                    allowClear
+                    optionFilterProp="search"
+                    placeholder={this.msg('relationCodeSearch')}
+                    onSelect={this.handleSelect}
+                  >
+                    {
                     options.map(opt => <Option key={opt.code} search={opt.code}>{opt.code}</Option>)
                   }
-                </Select>)}
+                  </Select>)}
               </FormItem>
             </Col>
             <Col span="16">
               <FormItem style={{ marginBottom: 0 }} >
-                {getFieldDecorator(nameField, {
-                  rules: nameRules,
-                  initialValue: formData && formData[nameField],
-                })(<Input placeholder={this.msg('relationName')} disabled={disabled} />)}
+                {disabled ?
+                  <Input disabled value={initialNameValue} /> :
+                  getFieldDecorator(nameField, {
+                    rules: nameRules,
+                  })(<Input placeholder={this.msg('relationName')} disabled={disabled} />)}
               </FormItem>
             </Col>
           </Row>

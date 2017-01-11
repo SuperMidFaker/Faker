@@ -33,7 +33,7 @@ export default class FormInput extends React.Component {
           hasFeedback={hasFeedback} required={required}
         >
           {disabled ?
-            <Input type={type} readOnly defaultValue={initialValue}
+            <Input type={type} disabled value={initialValue}
               addonBefore={addonBefore} addonAfter={addonAfter}
             /> :
             getFieldDecorator(field, { rules, initialValue, ...fieldProps })(

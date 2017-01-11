@@ -241,10 +241,6 @@ export default defineMessages({
     id: 'cms.delegation.make',
     defaultMessage: '制单',
   },
-  matchQuote: {
-    id: 'cms.delegation.matchQuote',
-    defaultMessage: '匹配报价',
-  },
   createManifest: {
     id: 'cms.delegation.manifest.create',
     defaultMessage: '创建清单',

@@ -80,7 +80,7 @@ export default class CustomsDeclEditor extends React.Component {
   }
   render() {
     const { ietype, form, head, bodies, billMeta } = this.props;
-    const readonly = billMeta.editable;
+    const readonly = !billMeta.editable;
     const manifestMenu = (<Menu onClick={this.handleManifestVisit}>
       {[<Menu.Item key="bill"><Icon type="book" />报关清单{billMeta.bill_seq_no}</Menu.Item>,
         <Menu.Divider key="divider" />].concat(

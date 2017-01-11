@@ -94,9 +94,6 @@ export default class SheetBodyPanel extends React.Component {
     countries: PropTypes.array,
     currencies: PropTypes.array,
     exemptions: PropTypes.array,
-    onAdd: PropTypes.func.isRequired,
-    onDel: PropTypes.func.isRequired,
-    onEdit: PropTypes.func.isRequired,
   }
   constructor(props) {
     super(props);
@@ -120,7 +117,7 @@ export default class SheetBodyPanel extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.data !== this.props.data) {
       const bodies = [...nextProps.data];
-      if (!nextProps.readonly) {
+      if (!nextProps.readonly || this.props.type === 'bill') {
         bodies.push({ id: '__ops' });
       }
       this.setState({
@@ -258,7 +255,7 @@ export default class SheetBodyPanel extends React.Component {
       width: 90,
       fixed: 'right',
       render: (o, record, index) => {
-        if (readonly) {
+        if (readonly || this.props.type === 'entry') {
           return <span />;
         } else if (index === editIndex) {
           return (
@@ -400,32 +397,36 @@ export default class SheetBodyPanel extends React.Component {
   }
   render() {
     const columns = this.getColumns();
-    const menu = (
-      <Menu>
-        <Menu.Item key="importData">
-          <ExcelUpload endpoint={`${API_ROOTS.default}v1/cms/declare/billbody/import`}
-            formData={{
-              data: JSON.stringify({
-                bill_seq_no: this.billSeqNo,
-                tenant_id: this.props.tenantId,
-                creater_login_id: this.props.loginId,
-              }),
-            }} onUploaded={this.handleUploaded}
-          >
-            <Icon type="file-excel" /> {this.msg('importBody')}
-          </ExcelUpload>
-        </Menu.Item>
-        <Menu.Item key="download"><Icon type="download" /> 下载模板</Menu.Item>
-      </Menu>
-    );
-    const billBodyToolbar = (
-      <div className="toolbar-right">
-        <Button type="ghost" icon="export" onClick={this.handleExportData}>导出数据</Button>
-        <span />
-        <Dropdown.Button onClick={this.handleButtonClick} overlay={menu} type="primary">
-          <Icon type="plus-circle-o" /> {formatGlobalMsg(this.props.intl, 'add')}
-        </Dropdown.Button>
-      </div>);
+    let billBodyToolbar = null;
+    if (this.props.type === 'bill') {
+      const menu = (
+        <Menu>
+          {!this.props.readonly &&
+          <Menu.Item key="importData">
+            <ExcelUpload endpoint={`${API_ROOTS.default}v1/cms/manifest/billbody/import`}
+              formData={{
+                data: JSON.stringify({
+                  bill_seq_no: this.billSeqNo,
+                  tenant_id: this.props.tenantId,
+                  creater_login_id: this.props.loginId,
+                }),
+              }} onUploaded={this.handleUploaded}
+            >
+              <Icon type="file-excel" /> {this.msg('importBody')}
+            </ExcelUpload>
+          </Menu.Item>
+          }
+          <Menu.Item key="download"><Icon type="download" /> 下载模板</Menu.Item>
+        </Menu>);
+      billBodyToolbar = (
+        <div className="toolbar-right">
+          <Button type="ghost" icon="export" onClick={this.handleExportData}>导出数据</Button>
+          <span />
+          <Dropdown.Button onClick={this.handleButtonClick} overlay={menu} type="primary">
+            <Icon type="plus-circle-o" /> {formatGlobalMsg(this.props.intl, 'add')}
+          </Dropdown.Button>
+        </div>);
+    }
     return (
       <Collapse defaultActiveKey={['body']}>
         <Panel header={billBodyToolbar} key="body">

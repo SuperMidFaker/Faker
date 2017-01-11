@@ -1,6 +1,6 @@
 /* eslint react/no-multi-comp: 0 */
 import React, { PropTypes } from 'react';
-import { Col, Form, Select } from 'antd';
+import { Col, Form, Select, Input } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 
@@ -26,14 +26,15 @@ export class FormLocalSearchSelect extends React.Component {
       getFieldDecorator, rules, fieldProps, formData, options = [],
       searchKeyFn,
     } = this.props;
+    const initialValue = formData && formData[field];
+    const filterOpt = options.filter(opt => opt.value === initialValue)[0];
     return (
       <Col span={outercol}>
         <FormItem labelCol={{ span: col }} wrapperCol={{ span: 24 - col }} label={label}
           required={required}
         >
-          {getFieldDecorator(field, { rules, initialValue: formData && formData[field],
-            ...fieldProps })(<Select
-              disabled={disabled}
+          { disabled ? <Input disabled value={filterOpt && filterOpt.text} /> :
+            getFieldDecorator(field, { rules, initialValue, ...fieldProps })(<Select
               showSearch={!!searchKeyFn}
               showArrow
               optionFilterProp={searchKeyFn ? 'search' : undefined}
@@ -78,17 +79,20 @@ export class FormRemoteSearchSelect extends React.Component {
       outercol, label, col, field, required, disabled,
       getFieldDecorator, rules, fieldProps, formData, options = [],
     } = this.props;
+    const initialValue = formData && formData[field];
+    const filterOpt = options.filter(opt => opt.value === initialValue)[0];
     return (
       <Col span={outercol}>
         <FormItem labelCol={{ span: col }} wrapperCol={{ span: 24 - col }} label={label}
           required={required}
         >
-          {getFieldDecorator(field, { rules, initialValue: formData && formData[field],
-            ...fieldProps })(<Select disabled={disabled} showSearch onSearch={this.handleSearch}>
-              {
+          {disabled ? <Input disabled value={filterOpt && filterOpt.text} /> :
+            getFieldDecorator(field, { rules, initialValue, ...fieldProps })(
+              <Select disabled={disabled} showSearch onSearch={this.handleSearch}>
+                {
               options.map(opt => <Option key={opt.value}>{opt.text}</Option>)
             }
-            </Select>)}
+              </Select>)}
         </FormItem>
       </Col>
     );

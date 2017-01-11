@@ -32,7 +32,9 @@ export default class FormDatePicker extends React.Component {
         <FormItem labelCol={{ span: col }} wrapperCol={{ span: 24 - col }} label={label}
           required={required}
         >
-          {getFieldDecorator(field, { rules, initialValue, ...fieldProps })(<DatePicker disabled={disabled} style={{ width: '100%' }} />)}
+          {disabled ?
+            <DatePicker disabled={disabled} style={{ width: '100%' }} value={initialValue} /> :
+            getFieldDecorator(field, { rules, initialValue, ...fieldProps })(<DatePicker style={{ width: '100%' }} />)}
         </FormItem>
       </Col>
     );

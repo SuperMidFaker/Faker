@@ -127,8 +127,7 @@ export default class CiqList extends Component {
     width: 100,
     fixed: 'right',
     render: (o, record) => {
-      const type = record.ciq_tenant_id === this.props.tenantId ? 1 : 2;
-      if (record.status === 1 && type === 1) {
+      if (record.status === 1 && record.ciq_tenant_id === this.props.tenantId) {
         return (
           <RowUpdater onHit={this.handleCiqFinish} label={this.msg('ciqFinish')} row={record} />
         );

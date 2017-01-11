@@ -94,7 +94,7 @@ export default class SheetHeadPanel extends React.Component {
             {type === 'entry' &&
               <Row>
                 <FormInput field="pre_entry_id" outercol={9} col={6}
-                  label={this.msg('preEntryId')} {...entryFormProps} disabled
+                  label={this.msg('preEntryId')} {...entryFormProps}
                 />
                 <Col span="15">
                   <FormInput field="entry_id" outercol={16} col={4}

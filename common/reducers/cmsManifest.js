@@ -7,7 +7,6 @@ const actionTypes = createActionTypes('@@welogix/cms/manifest/', [
   'LOAD_ENTRY', 'LOAD_ENTRY_SUCCEED', 'LOAD_ENTRY_FAIL',
   'LOAD_PARAMS', 'LOAD_PARAMS_SUCCEED', 'LOAD_PARAMS_FAIL',
   'LOAD_SEARCHPARAM', 'LOAD_SEARCHPARAM_SUCCEED', 'LOAD_SEARCHPARAM_FAIL',
-  'ADD_NEW_BILL_BODY', 'DEL_BILL_BODY', 'EDIT_BILL_BODY',
   'ADD_BILLBODY', 'ADD_BILLBODY_SUCCEED', 'ADD_BILLBODY_FAIL',
   'DEL_BILLBODY', 'DEL_BILLBODY_SUCCEED', 'DEL_BILLBODY_FAIL',
   'EDIT_BILLBODY', 'EDIT_BILLBODY_SUCCEED', 'EDIT_BILLBODY_FAIL',
@@ -105,7 +104,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.CLOSE_MS_MODAL:
       return { ...state, visibleMSModal: false };
     case actionTypes.SUBMIT_MERGESPLIT_SUCCEED:
-      return { ...state, entries: action.result.data };
+      return { ...state, billMeta: { ...state.billMeta, entries: action.result.data } };
     default:
       return state;
   }
@@ -149,7 +148,7 @@ export function loadCmsParams(params) {
         actionTypes.LOAD_PARAMS_SUCCEED,
         actionTypes.LOAD_PARAMS_FAIL,
       ],
-      endpoint: 'v1/cms/declare/params',
+      endpoint: 'v1/cms/manifest/params',
       method: 'get',
       params,
     },
@@ -164,7 +163,7 @@ export function loadSearchedParam({ paramType, search }) {
         actionTypes.LOAD_SEARCHPARAM_SUCCEED,
         actionTypes.LOAD_SEARCHPARAM_FAIL,
       ],
-      endpoint: 'v1/cms/declare/paramfilters',
+      endpoint: 'v1/cms/manifest/paramfilters',
       method: 'get',
       params: { paramType, search },
     },
@@ -179,7 +178,7 @@ export function addNewBillBody({ body, billSeqNo, headNo, loginId }) {
         actionTypes.ADD_BILLBODY_SUCCEED,
         actionTypes.ADD_BILLBODY_FAIL,
       ],
-      endpoint: 'v1/cms/declare/billbody/add',
+      endpoint: 'v1/cms/manifest/billbody/add',
       method: 'post',
       data: { newBody: body, billNo: headNo, billSeqNo, loginId },
     },
@@ -194,7 +193,7 @@ export function delBillBody(bodyId) {
         actionTypes.DEL_BILLBODY_SUCCEED,
         actionTypes.DEL_BILLBODY_FAIL,
       ],
-      endpoint: 'v1/cms/declare/billbody/del',
+      endpoint: 'v1/cms/manifest/billbody/del',
       method: 'post',
       data: { bodyId },
     },
@@ -209,7 +208,7 @@ export function editBillBody(body) {
         actionTypes.EDIT_BILLBODY_SUCCEED,
         actionTypes.EDIT_BILLBODY_FAIL,
       ],
-      endpoint: 'v1/cms/declare/billbody/edit',
+      endpoint: 'v1/cms/manifest/billbody/edit',
       method: 'post',
       data: body,
     },
@@ -224,7 +223,7 @@ export function saveBillHead({ head, ietype, loginId, tenantId }) {
         actionTypes.SAVE_BILLHEAD_SUCCEED,
         actionTypes.SAVE_BILLHEAD_FAIL,
       ],
-      endpoint: 'v1/cms/declare/billhead',
+      endpoint: 'v1/cms/manifest/billhead',
       method: 'post',
       data: { head, ietype, loginId, tenantId },
     },
