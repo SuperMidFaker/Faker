@@ -6,6 +6,7 @@ import InputItem from './input-item';
 import { saveLocalGoods, editLocalGoods, removeLocalGoods, setConsignFields }
   from 'common/reducers/shipment';
 import PureRenderMixin from 'react/lib/ReactComponentWithPureRenderMixin';
+import { PRESET_TRANSMODES } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import globalMessages from 'client/common/root.i18n';
@@ -206,7 +207,7 @@ export default class GoodsInfo extends React.Component {
       labelColSpan, formhoc, goods, goodsTypes, formhoc: { getFieldDecorator },
       packagings, containerPackagings,
       fieldDefaults: { goods_type, total_count, packageform, total_weight, insure_value, total_volume },
-      vertical,
+      vertical, modeCode,
     } = this.props;
     const apackagings = this.props.modeCode === 'CTN' ? containerPackagings : packagings.map(pk => ({
       key: pk.package_code,
@@ -412,7 +413,7 @@ export default class GoodsInfo extends React.Component {
             </Col>
             <Col span={`${outerColSpan}`}>
               <FormItem label={this.msg('goodsPackage')} labelCol={{ span: labelColSpan }}
-                wrapperCol={{ span: 24 - labelColSpan }}
+                wrapperCol={{ span: 24 - labelColSpan }} required={modeCode === PRESET_TRANSMODES.ctn}
               >
                 {getFieldDecorator('package', { initialValue: packageform })(<Select>
                   {apackagings.map(
