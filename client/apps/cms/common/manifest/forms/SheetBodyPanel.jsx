@@ -64,19 +64,19 @@ ColumnSelect.proptypes = {
 @injectIntl
 @connect(
   state => ({
-    units: state.cmsDeclare.params.units.map(un => ({
+    units: state.cmsManifest.params.units.map(un => ({
       value: un.unit_code,
       text: un.unit_name,
     })),
-    countries: state.cmsDeclare.params.tradeCountries.map(tc => ({
+    countries: state.cmsManifest.params.tradeCountries.map(tc => ({
       value: tc.cntry_co,
       text: tc.cntry_name_cn,
     })),
-    currencies: state.cmsDeclare.params.currencies.map(cr => ({
+    currencies: state.cmsManifest.params.currencies.map(cr => ({
       value: cr.curr_code,
       text: cr.curr_name,
     })),
-    exemptions: state.cmsDeclare.params.exemptionWays,
+    exemptions: state.cmsManifest.params.exemptionWays,
     loginId: state.account.loginId,
   })
 )
