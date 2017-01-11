@@ -53,6 +53,7 @@ export default class ActivityLoggerPane extends React.Component {
   }
   state = {
     tabKey: 'message',
+    filterKey: 'all',
     filterActivities: null,
   }
   handleTabChange = (tabKey) => {
@@ -132,8 +133,29 @@ export default class ActivityLoggerPane extends React.Component {
       }
     });
   }
-  handleActivityFilter = (ev) => {
+  handleFilterClick = (ev) => {
     ev.stopPropagation();
+  }
+  handleCheckActivies = (filterKey, checked) => {
+    if (checked) {
+      if (filterKey === 'all') {
+        this.setState({ filterKey, filterActivities: null });
+      } else if (this.state.filterKey !== '' && this.state.filterKey !== filterKey) {
+        this.setState({ filterKey: 'all', filterActivities: null });
+      } else {
+        this.setState({ filterKey, filterActivities:
+            this.props.previewer.activities.filter(acty => acty.category === filterKey) });
+      }
+    } else if (filterKey === 'all') {
+      this.setState({ filterKey: '', filterActivities: [] });
+    } else if (this.state.filterKey === filterKey) {
+      this.setState({ filterKey: '', filterActivities: [] });
+    } else if (this.state.filterKey === 'all') {
+      this.setState({
+        filterKey: filterKey === 'ciq' ? 'operation' : 'ciq',
+        filterActivities: this.props.previewer.activities.filter(acty => acty.category !== filterKey),
+      });
+    }
   }
   handleSave = () => {
     const { previewer } = this.props;
@@ -162,10 +184,22 @@ export default class ActivityLoggerPane extends React.Component {
     const selectActivities = this.state.filterActivities || activities;
     const menu = (
       <Menu>
-        <Menu.Item key="all"><Checkbox>选择全部</Checkbox></Menu.Item>
+        <Menu.Item key="all">
+          <Checkbox onChange={ev => this.handleCheckActivies('all', ev.target.checked)} checked={this.state.filterKey === 'all'}>
+            选择全部
+          </Checkbox>
+        </Menu.Item>
         <Menu.Divider />
-        <Menu.Item key="operation"><Checkbox>操作事件</Checkbox></Menu.Item>
-        <Menu.Item key="ciq"><Checkbox>通关事件</Checkbox></Menu.Item>
+        <Menu.Item key="operation">
+          <Checkbox onChange={ev => this.handleCheckActivies('operation', ev.target.checked)} checked={['all', 'operation'].indexOf(this.state.filterKey) !== -1}>
+            操作事件
+          </Checkbox>
+        </Menu.Item>
+        <Menu.Item key="ciq">
+          <Checkbox onChange={ev => this.handleCheckActivies('ciq', ev.target.checked)} checked={['all', 'ciq'].indexOf(this.state.filterKey) !== -1}>
+            通关事件
+          </Checkbox>
+        </Menu.Item>
       </Menu>
     );
     const timelineHeader = (
@@ -173,7 +207,7 @@ export default class ActivityLoggerPane extends React.Component {
         <span>动态</span>
         <div className="toolbar-right">
           <Dropdown overlay={menu}>
-            <Button type="ghost" onClick={this.handleActivityFilter}><Icon type="filter" /> ({selectActivities.length}/{activities.length})</Button>
+            <Button type="ghost" onClick={this.handleFilterClick}><Icon type="filter" /> ({selectActivities.length}/{activities.length})</Button>
           </Dropdown>
         </div>
       </div>
