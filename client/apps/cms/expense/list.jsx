@@ -19,7 +19,6 @@ import DelegationInfoHubPanel from '../common/modals/DelegationInfoHubPanel';
 import DelgAdvanceExpenseModal from './modals/delgAdvanceExpenseModal';
 import RowUpdater from './rowUpdater';
 import ExpEptModal from './modals/expEptModal';
-import BillModal from '../common/delegation/modals/billModal';
 
 const formatMsg = format(messages);
 const RadioGroup = Radio.Group;
@@ -59,7 +58,6 @@ function fetchData({ state, dispatch }) {
     listFilter: state.cmsExpense.listFilter,
     saved: state.cmsExpense.saved,
     partners: state.cmsExpense.partners,
-    delegation: state.cmsDelegation.previewer.delegation,
   }),
   { loadCurrencies, loadExpense, showPreviewer, loadAdvanceParties }
 )
@@ -79,7 +77,6 @@ export default class ExpenseList extends Component {
     loadExpense: PropTypes.func.isRequired,
     saved: PropTypes.bool.isRequired,
     partners: PropTypes.object.isRequired,
-    delegation: PropTypes.object.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -250,7 +247,7 @@ export default class ExpenseList extends Component {
     this.handleExpListLoad(1, filter);
   }
   render() {
-    const { expslist, listFilter, delegation } = this.props;
+    const { expslist, listFilter } = this.props;
     const { acptDate, cleanDate } = listFilter;
     const { sortedInfo } = this.state;
     const sorted = sortedInfo || {};
@@ -260,10 +257,6 @@ export default class ExpenseList extends Component {
         this.setState({ selectedRowKeys });
       },
     };
-    let ietype = 'import';
-    if (delegation.i_e_type === 1) {
-      ietype = 'export';
-    }
     const columns = [
       {
         title: this.msg('delgNo'),
@@ -536,7 +529,6 @@ export default class ExpenseList extends Component {
         <DelegationInfoHubPanel />
         <DelgAdvanceExpenseModal />
         <ExpEptModal visible={this.state.expEptVisible} toggle={this.toggleEptModal} />
-        <BillModal ietype={ietype} />
       </QueueAnim>
     );
   }
