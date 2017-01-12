@@ -17,7 +17,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'LOAD_DELEGATE', 'LOAD_DELEGATE_SUCCEED', 'LOAD_DELEGATE_FAIL',
   'SEND_DELEGATE', 'SEND_DELEGATE_SUCCEED', 'SEND_DELEGATE_FAIL',
   'SHOW_SEND_DELEGATE_MODAL', 'SHOW_SEND_DELEGATE_MODAL_SUCCEED', 'SHOW_SEND_DELEGATE_MODAL_FAIL',
-  'LOAD_BILLMAKE', 'LOAD_BILLMAKE_SUCCEED', 'LOAD_BILLMAKE_FAIL', 'SET_MODAL_FALSE',
+  'LOAD_BILLMAKE', 'LOAD_BILLMAKE_SUCCEED', 'LOAD_BILLMAKE_FAIL',
   'OPEN_EF_MODAL', 'CLOSE_EF_MODAL', 'SET_DISP_STATUS',
   'FILL_ENTRYNO', 'FILL_ENTRYNO_SUCCEED', 'FILL_ENTRYNO_FAIL',
   'LOAD_DELGDISP', 'LOAD_DELGDISP_SUCCEED', 'LOAD_DELGDISP_FAIL',
@@ -100,11 +100,7 @@ const initialState = {
     delgOperators: [],
   },
   preStatus: '',
-  billMakeModal: {
-    visible: false,
-    type: 'make',
-    bills: [],
-  },
+  billMake: {},
   visibleEfModal: false,
   efModal: {
     entryHeadId: -1,
@@ -159,31 +155,9 @@ export default function reducer(state = initialState, action) {
     }
     case actionTypes.LOAD_CIQ_FAIL:
       return { ...state, ciqlist: { ...state.ciqlist, loading: false }, ciqBillsMap: {} };
-    // case actionTypes.LOAD_CIQSUB: {
-    //   const ciqBillsMap = { ...state.ciqBillsMap };
-    //   ciqBillsMap[action.params.delg_no] = [];
-    //   ciqBillsMap[action.params.delg_no].loading = true;
-    //   return { ...state, ciqBillsMap };
-    // }
-    // case actionTypes.LOAD_CIQSUB_SUCCEED: {
-    //   const ciqBillsMap = { ...state.ciqBillsMap };
-    //   ciqBillsMap[action.params.delg_no] = action.result.data;
-    //   ciqBillsMap[action.params.delg_no].loading = false;
-    //   return { ...state, ciqBillsMap };
-    // }
-    // case actionTypes.LOAD_CIQSUB_FAIL: {
-    //   const ciqBillsMap = { ...state.ciqBillsMap };
-    //   ciqBillsMap[action.params.delg_no] = [];
-    //   ciqBillsMap[action.params.delg_no].loading = false;
-    //   return { ...state, ciqBillsMap };
-    // }
-    case actionTypes.LOAD_BILLMAKE:
-      return { ...state, billMakeModal: { ...state.billMakeModal, visible: false, type: action.modalType } };
     case actionTypes.LOAD_BILLMAKE_SUCCEED: {
-      return { ...state, billMakeModal: { ...state.billMakeModal, visible: true, ...action.result.data } };
+      return { ...state, billMake: action.result.data };
     }
-    case actionTypes.SET_MODAL_FALSE:
-      return { ...state, billMakeModal: initialState.billMakeModal };
     case actionTypes.LOAD_DELEGATE_SUCCEED:
       return { ...state, delegationlist: { ...state.delegationlist, loading: false,
         ...action.result.data }, delegateListFilter: JSON.parse(action.params.filter) };
@@ -355,7 +329,7 @@ export function loadCiqTable(params) {
   };
 }
 
-export function loadBillMakeModal(params, type) {
+export function loadBillForMake(delgNo) {
   return {
     [CLIENT_API]: {
       types: [
@@ -365,8 +339,7 @@ export function loadBillMakeModal(params, type) {
       ],
       endpoint: 'v1/cms/billmodal',
       method: 'get',
-      params,
-      modalType: type,
+      params: { delgNo },
     },
   };
 }
@@ -452,11 +425,11 @@ export function delDisp(delgDisp, dispatch, tenantId) {
   };
 }
 
-export function closeBillMakeModal() {
-  return {
-    type: actionTypes.SET_MODAL_FALSE,
-  };
-}
+// export function closeBillMakeModal() {
+//   return {
+//     type: actionTypes.SET_MODAL_FALSE,
+//   };
+// }
 
 export function loadDelegateTable(cookie, params) {
   return {

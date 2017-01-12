@@ -4,7 +4,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Button, Card, Col, Collapse, Icon, Row, Table, Tag, Tooltip, message } from 'antd';
 import moment from 'moment';
 import { DECL_I_TYPE, DECL_E_TYPE, CMS_DELEGATION_STATUS } from 'common/constants';
-import { openAcceptModal, loadBillMakeModal } from 'common/reducers/cmsDelegation';
+import { openAcceptModal, loadBillForMake } from 'common/reducers/cmsDelegation';
 import { loadCustPanel } from 'common/reducers/cmsDelgInfoHub';
 import InfoItem from 'client/components/InfoItem';
 
@@ -17,8 +17,10 @@ const Panel = Collapse.Panel;
     delgNo: state.cmsDelgInfoHub.previewer.delgNo,
     delgPanel: state.cmsDelgInfoHub.delgPanel,
     tabKey: state.cmsDelgInfoHub.previewer.tabKey,
+    billMake: state.cmsDelegation.billMake,
+    delegation: state.cmsDelgInfoHub.previewer.delegation,
   }),
-  { loadCustPanel, openAcceptModal, loadBillMakeModal }
+  { loadCustPanel, openAcceptModal, loadBillForMake }
 )
 export default class CustomsDeclPane extends React.Component {
   static propTypes = {
@@ -26,6 +28,11 @@ export default class CustomsDeclPane extends React.Component {
     tenantId: PropTypes.number.isRequired,
     delgNo: PropTypes.string.isRequired,
     delgPanel: PropTypes.object.isRequired,
+    billMake: PropTypes.object.isRequired,
+    delegation: PropTypes.object.isRequired,
+  }
+  static contextTypes = {
+    router: PropTypes.object.isRequired,
   }
   componentWillMount() {
     this.props.loadCustPanel({
@@ -45,21 +52,31 @@ export default class CustomsDeclPane extends React.Component {
   }
   handleView = (ev) => {
     ev.stopPropagation();
-    this.props.loadBillMakeModal({
-      delg_no: this.props.delgNo,
-    }, 'view').then((result) => {
+    this.props.loadBillForMake(this.props.delgNo).then((result) => {
       if (result.error) {
         message.error(result.error.message, 5);
+      } else {
+        let ietype = 'import';
+        if (this.props.delegation.i_e_type === 1) {
+          ietype = 'export';
+        }
+        const link = `/clearance/${ietype}/manifest/view/`;
+        this.context.router.push(`${link}${this.props.billMake.bill_seq_no}`);
       }
     });
   }
   handleMake = (ev) => {
     ev.stopPropagation();
-    this.props.loadBillMakeModal({
-      delg_no: this.props.delgNo,
-    }, 'make').then((result) => {
+    this.props.loadBillForMake(this.props.delgNo).then((result) => {
       if (result.error) {
         message.error(result.error.message, 5);
+      } else {
+        let ietype = 'import';
+        if (this.props.delegation.i_e_type === 1) {
+          ietype = 'export';
+        }
+        const link = `/clearance/${ietype}/manifest/make/`;
+        this.context.router.push(`${link}${this.props.billMake.bill_seq_no}`);
       }
     });
   }

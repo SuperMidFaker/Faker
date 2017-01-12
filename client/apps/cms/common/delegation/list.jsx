@@ -11,9 +11,8 @@ import { CMS_DELEGATION_STATUS, CMS_DELG_STATUS, CMS_SUP_STATUS } from 'common/c
 import connectNav from 'client/common/decorators/connect-nav';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import SearchBar from 'client/components/search-bar';
-import BillModal from './modals/billModal';
 import RowUpdater from './rowUpdater';
-import { loadAcceptanceTable, loadBillMakeModal, acceptDelg, delDelg,
+import { loadAcceptanceTable, loadBillForMake, acceptDelg, delDelg,
   setDispStatus, loadCiqTable, delgAssignRecall,
   openAcceptModal, showDispModal } from 'common/reducers/cmsDelegation';
 import { showPreviewer, loadCustPanel } from 'common/reducers/cmsDelgInfoHub';
@@ -37,7 +36,7 @@ const OptGroup = Select.OptGroup;
     delegationlist: state.cmsDelegation.delegationlist,
     listFilter: state.cmsDelegation.listFilter,
     saved: state.cmsDelegation.assign.saved,
-    billMakeModal: state.cmsDelegation.billMakeModal,
+    billMake: state.cmsDelegation.billMake,
     delgDispShow: state.cmsDelegation.assign.delgDispShow,
     preStatus: state.cmsDelegation.preStatus,
     previewer: state.cmsDelgInfoHub.previewer,
@@ -45,7 +44,7 @@ const OptGroup = Select.OptGroup;
     matchStatus: state.cmsDelegation.matchStatus,
     listView: state.cmsDelegation.listView,
   }),
-  { loadAcceptanceTable, loadBillMakeModal, acceptDelg,
+  { loadAcceptanceTable, loadBillForMake, acceptDelg,
     delDelg, showPreviewer, setDispStatus, delgAssignRecall,
     loadCiqTable, openAcceptModal, showDispModal, loadCustPanel }
 )
@@ -64,10 +63,10 @@ export default class DelegationList extends Component {
     delegationlist: PropTypes.object.isRequired,
     listFilter: PropTypes.object.isRequired,
     loadAcceptanceTable: PropTypes.func.isRequired,
-    loadBillMakeModal: PropTypes.func.isRequired,
+    loadBillForMake: PropTypes.func.isRequired,
     acceptDelg: PropTypes.func.isRequired,
     delDelg: PropTypes.func.isRequired,
-    billMakeModal: PropTypes.object.isRequired,
+    billMake: PropTypes.object.isRequired,
     delgDispShow: PropTypes.bool.isRequired,
     saved: PropTypes.bool.isRequired,
     preStatus: PropTypes.string.isRequired,
@@ -303,20 +302,23 @@ export default class DelegationList extends Component {
     this.handleCiqListLoad(1, filter);
   }
   handleDelegationMake = (row) => {
-    this.props.loadBillMakeModal({
-      delg_no: row.delg_no,
-    }, 'make').then((result) => {
+    this.props.loadBillForMake(row.delg_no).then((result) => {
       if (result.error) {
         message.error(result.error.message, 5);
+      } else {
+        console.log('router', this.context.router);
+        const link = `/clearance/${this.props.ietype}/manifest/make/`;
+        this.context.router.push(`${link}${this.props.billMake.bill_seq_no}`);
       }
     });
   }
   handleDelegationView = (row) => {
-    this.props.loadBillMakeModal({
-      delg_no: row.delg_no,
-    }, 'view').then((result) => {
+    this.props.loadBillForMake(row.delg_no).then((result) => {
       if (result.error) {
         message.error(result.error.message, 5);
+      } else {
+        const link = `/clearance/${this.props.ietype}/manifest/view/`;
+        this.context.router.push(`${link}${this.props.billMake.bill_seq_no}`);
       }
     });
   }
@@ -563,7 +565,6 @@ export default class DelegationList extends Component {
             </div>
           </div>
         </div>
-        <BillModal ietype={this.props.ietype} />
         <DelegationInfoHubPanel ietype={this.props.ietype} />
       </QueueAnim>
     );
