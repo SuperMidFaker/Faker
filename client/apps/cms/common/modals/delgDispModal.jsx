@@ -71,7 +71,7 @@ function getFieldInits(delgDisp, dispatch) {
     ciqSups: state.cmsDelegation.assign.ciqSups,
     delgDispShow: state.cmsDelegation.assign.delgDispShow,
     previewer: state.cmsDelgInfoHub.previewer,
-    tabKey: state.cmsDelgInfoHub.previewer.tabKey,
+    tabKey: state.cmsDelgInfoHub.tabKey,
     fieldInits: getFieldInits(state.cmsDelegation.assign.delgDisp, state.cmsDelegation.assign.dispatch),
   }),
   { delgDispSave, setDispStatus, loadciqSups, showPreviewer, loadCustPanel, loadDeclCiqPanel }

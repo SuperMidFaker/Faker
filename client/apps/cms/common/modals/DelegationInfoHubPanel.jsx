@@ -25,8 +25,7 @@ const TabPane = Tabs.TabPane;
     tenantId: state.account.tenantId,
     visible: state.cmsDelgInfoHub.previewer.visible,
     previewer: state.cmsDelgInfoHub.previewer,
-    tabKey: state.cmsDelgInfoHub.previewer.tabKey,
-    ciqdecl: state.cmsDelgInfoHub.previewer.ciqdecl,
+    tabKey: state.cmsDelgInfoHub.tabKey,
     delegateListFilter: state.cmsDelegation.delegateListFilter,
   }),
   { hidePreviewer, setPreviewStatus, setPreviewTabkey, openAcceptModal, showDispModal }
@@ -39,7 +38,6 @@ export default class DelegationInfoHubPanel extends React.Component {
     tabKey: PropTypes.string,
     hidePreviewer: PropTypes.func.isRequired,
     previewer: PropTypes.object.isRequired,
-    ciqdecl: PropTypes.object.isRequired,
     delegateListFilter: PropTypes.object.isRequired,
     setPreviewStatus: PropTypes.func.isRequired,
   }

@@ -117,6 +117,7 @@ export class RelationAutoCompSelect extends React.Component {
                 {disabled ?
                   <Input disabled value={initialCodeValue} />
                   : getFieldDecorator(codeField, {
+                    initialValue: initialCodeValue,
                     rules: codeRules,
                     onChange: this.handleInputChange,
                   })(<Select
@@ -140,6 +141,7 @@ export class RelationAutoCompSelect extends React.Component {
                   <Input disabled value={initialNameValue} /> :
                   getFieldDecorator(nameField, {
                     rules: nameRules,
+                    initialValue: initialNameValue,
                   })(<Input placeholder={this.msg('relationName')} disabled={disabled} />)}
               </FormItem>
             </Col>

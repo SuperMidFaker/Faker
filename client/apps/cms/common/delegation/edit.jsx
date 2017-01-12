@@ -49,19 +49,7 @@ export default class AcceptanceEdit extends Component {
       if (!errors) {
         const { type, formData } = this.props;
         const { addedFiles, removedFiles } = this.state;
-        const formdatas = this.props.form.getFieldsValue();
-        const subformArray = [];
-        for (const i of formdatas.keys) {
-          subformArray.push({
-            decl_way_code: formdatas[`decl_way_code_${i}`],
-            manual_no: formdatas[`manual_no_${i}`],
-            pack_count: formdatas[`pack_count_${i}`],
-            gross_wt: formdatas[`gross_wt_${i}`],
-            remark: formdatas[`remark_${i}`],
-          });
-        }
         const delegation = { ...formData, ...this.props.form.getFieldsValue() };
-        delegation.subforms = subformArray;
         this.props.editDelegation({
           delegation, addedFiles, removedFiles, patnershipType: 'CCB',
           accepted: isAccepted, ietype: type === 'import' ? 0 : 1,

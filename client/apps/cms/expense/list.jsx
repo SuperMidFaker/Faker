@@ -9,7 +9,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import { loadExpense, loadCurrencies,
   loadAdvanceParties, loadPartnersForFilter } from 'common/reducers/cmsExpense';
-import { showPreviewer } from 'common/reducers/cmsDelegation';
+import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import moment from 'moment';

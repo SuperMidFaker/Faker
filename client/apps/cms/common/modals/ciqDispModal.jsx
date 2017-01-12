@@ -22,7 +22,7 @@ const formItemLayout = {
     ciqSups: state.cmsDelegation.assign.ciqSups,
     ciqDispShow: state.cmsDelegation.assign.ciqDispShow,
     dispatch: state.cmsDelgInfoHub.previewer.delgDispatch,
-    tabKey: state.cmsDelgInfoHub.previewer.tabKey,
+    tabKey: state.cmsDelgInfoHub.tabKey,
   }),
   { ciqDispSave, setDispStatus, showPreviewer, loadDeclCiqPanel }
 )

@@ -52,25 +52,7 @@ export default class AcceptanceCreate extends Component {
     this.props.form.validateFields((errors) => {
       if (!errors) {
         const { type, tenantId, loginId, username, tenantName, formData } = this.props;
-        const formdatas = this.props.form.getFieldsValue();
-        const subformArray = [];
-        let weight = 0;
-        let pieces = 0;
-        for (const i of formdatas.keys) {
-          subformArray.push({
-            decl_way_code: formdatas[`decl_way_code_${i}`],
-            manual_no: formdatas[`manual_no_${i}`],
-            pack_count: formdatas[`pack_count_${i}`],
-            gross_wt: formdatas[`gross_wt_${i}`],
-            remark: formdatas[`remark_${i}`],
-          });
-          weight += Number(formdatas[`gross_wt_${i}`]);
-          pieces += Number(formdatas[`pack_count_${i}`]);
-        }
         const delegation = { ...formData, ...this.props.form.getFieldsValue() };
-        delegation.weight = weight;
-        delegation.pieces = pieces;
-        delegation.subforms = subformArray;
         this.props.createDelegationByCCB({
           delegation, tenantId, loginId, username,
           ietype: type === 'import' ? 0 : 1, source: DELG_SOURCE.consigned,

@@ -12,18 +12,26 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
 ]);
 
 const initialState = {
+  tabKey: 'basic',
   previewer: {
     visible: false,
-    tabKey: 'basic',
     delegation: {},
     files: [],
     delgDispatch: {},
     activities: [],
-    ciqdecl: { ciqlist: [] },
   },
-  delgPanel: {
+  ciqPanel: {
+    ciq_name: '',
+    acpt_time: null,
+    source: null,
+    status: null,
+    recv_tenant_id: null,
+    ciqlist: [],
+  },
+  customsPanel: {
     bills: [],
   },
+  preStatus: '',
 };
 
 export default function reducer(state = initialState, action) {
@@ -35,21 +43,22 @@ export default function reducer(state = initialState, action) {
       }
       return { ...state, previewer: {
         ...state.previewer,
-        tabKey: action.payload.tabKey || tabKey,
         visible: action.visible,
         delgNo: action.payload.delgNo,
-        ...action.result.data }, preStatus: '' };
+        ...action.result.data },
+        preStatus: '',
+        tabKey: action.payload.tabKey || tabKey };
     }
     case actionTypes.HIDE_PREVIEWER:
       return { ...state, previewer: { ...state.previewer, visible: action.visible } };
     case actionTypes.SET_PREW_STATUS:
       return { ...state, ...action.data };
     case actionTypes.SET_PREW_TABKEY:
-      return { ...state, previewer: { ...state.previewer, tabKey: action.data } };
+      return { ...state, tabKey: action.data };
     case actionTypes.LOAD_DELG_PANEL_SUCCEED:
-      return { ...state, delgPanel: action.result.data };
+      return { ...state, customsPanel: action.result.data };
     case actionTypes.LOAD_DECLCIQ_PANEL_SUCCEED:
-      return { ...state, previewer: { ...state.previewer, ciqdecl: action.result.data } };
+      return { ...state, ciqPanel: action.result.data };
     default:
       return state;
   }

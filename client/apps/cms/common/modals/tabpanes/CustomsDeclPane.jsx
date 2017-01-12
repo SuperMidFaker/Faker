@@ -4,7 +4,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Button, Card, Col, Collapse, Icon, Row, Table, Tag, Tooltip, message } from 'antd';
 import moment from 'moment';
 import { DECL_I_TYPE, DECL_E_TYPE, CMS_DELEGATION_STATUS } from 'common/constants';
-import { openAcceptModal, loadBillMakeModal } from 'common/reducers/cmsDelegation';
+import { openAcceptModal, loadBillForMake } from 'common/reducers/cmsDelegation';
 import { loadCustPanel } from 'common/reducers/cmsDelgInfoHub';
 import InfoItem from 'client/components/InfoItem';
 
@@ -15,17 +15,24 @@ const Panel = Collapse.Panel;
   state => ({
     tenantId: state.account.tenantId,
     delgNo: state.cmsDelgInfoHub.previewer.delgNo,
-    delgPanel: state.cmsDelgInfoHub.delgPanel,
-    tabKey: state.cmsDelgInfoHub.previewer.tabKey,
+    customsPanel: state.cmsDelgInfoHub.customsPanel,
+    tabKey: state.cmsDelgInfoHub.tabKey,
+    billMake: state.cmsDelegation.billMake,
+    delegation: state.cmsDelgInfoHub.previewer.delegation,
   }),
-  { loadCustPanel, openAcceptModal, loadBillMakeModal }
+  { loadCustPanel, openAcceptModal, loadBillForMake }
 )
 export default class CustomsDeclPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     delgNo: PropTypes.string.isRequired,
-    delgPanel: PropTypes.object.isRequired,
+    customsPanel: PropTypes.object.isRequired,
+    billMake: PropTypes.object.isRequired,
+    delegation: PropTypes.object.isRequired,
+  }
+  static contextTypes = {
+    router: PropTypes.object.isRequired,
   }
   componentWillMount() {
     this.props.loadCustPanel({
@@ -45,53 +52,63 @@ export default class CustomsDeclPane extends React.Component {
   }
   handleView = (ev) => {
     ev.stopPropagation();
-    this.props.loadBillMakeModal({
-      delg_no: this.props.delgNo,
-    }, 'view').then((result) => {
+    this.props.loadBillForMake(this.props.delgNo).then((result) => {
       if (result.error) {
         message.error(result.error.message, 5);
+      } else {
+        let ietype = 'import';
+        if (this.props.delegation.i_e_type === 1) {
+          ietype = 'export';
+        }
+        const link = `/clearance/${ietype}/manifest/view/`;
+        this.context.router.push(`${link}${this.props.billMake.bill_seq_no}`);
       }
     });
   }
   handleMake = (ev) => {
     ev.stopPropagation();
-    this.props.loadBillMakeModal({
-      delg_no: this.props.delgNo,
-    }, 'make').then((result) => {
+    this.props.loadBillForMake(this.props.delgNo).then((result) => {
       if (result.error) {
         message.error(result.error.message, 5);
+      } else {
+        let ietype = 'import';
+        if (this.props.delegation.i_e_type === 1) {
+          ietype = 'export';
+        }
+        const link = `/clearance/${ietype}/manifest/make/`;
+        this.context.router.push(`${link}${this.props.billMake.bill_seq_no}`);
       }
     });
   }
   button() {
-    const { delgPanel } = this.props;
-    if (delgPanel.recv_tenant_id === delgPanel.customs_tenant_id || delgPanel.customs_tenant_id === -1) {
-      if (delgPanel.status === CMS_DELEGATION_STATUS.accepted) {
+    const { customsPanel } = this.props;
+    if (customsPanel.recv_tenant_id === customsPanel.customs_tenant_id || customsPanel.customs_tenant_id === -1) {
+      if (customsPanel.status === CMS_DELEGATION_STATUS.accepted) {
         return <Button type="primary" icon="addfile" onClick={this.handleMake}>创建清单</Button>;
-      } else if (delgPanel.status === CMS_DELEGATION_STATUS.processing ||
-          (delgPanel.status === CMS_DELEGATION_STATUS.declaring && delgPanel.sub_status === 1)) {
+      } else if (customsPanel.status === CMS_DELEGATION_STATUS.processing ||
+          (customsPanel.status === CMS_DELEGATION_STATUS.declaring && customsPanel.sub_status === 1)) {
         return (
           <Button type="default" icon="edit" onClick={this.handleMake}>编辑清单</Button>
         );
-      } else if (delgPanel.status > CMS_DELEGATION_STATUS.declaring) {
+      } else if (customsPanel.status > CMS_DELEGATION_STATUS.declaring) {
         return <Button icon="eye" onClick={ev => this.handleView(ev)}>查看清单</Button>;
       }
-    } else if (delgPanel.status > CMS_DELEGATION_STATUS.accepted) {
+    } else if (customsPanel.status > CMS_DELEGATION_STATUS.accepted) {
       return <Button icon="eye" onClick={ev => this.handleView(ev)}>查看清单</Button>;
     }
   }
   handleOperatorAssign = () => {
     this.props.openAcceptModal({
       tenantId: this.props.tenantId,
-      dispatchIds: [this.props.delgPanel.id],
+      dispatchIds: [this.props.customsPanel.id],
       delg_no: this.props.delgNo,
       type: 'delg',
       opt: 'operator',
     });
   }
   render() {
-    const { delgPanel } = this.props;
-    const delgBills = delgPanel.bills;
+    const { customsPanel } = this.props;
+    const delgBills = customsPanel.bills;
     const columns = [{
       title: '统一编号',
       dataIndex: 'pre_entry_seq_no',
@@ -124,22 +141,22 @@ export default class CustomsDeclPane extends React.Component {
           <Row gutter={8} style={{ padding: 8 }}>
             <Col span="12">
               <InfoItem labelCol={{ span: 3 }} label="报关服务商"
-                field={delgPanel.recv_name} fieldCol={{ span: 9 }}
+                field={customsPanel.recv_name} fieldCol={{ span: 9 }}
               />
             </Col>
             <Col span="6">
               <InfoItem labelCol={{ span: 3 }} label="接单日期" fieldCol={{ span: 9 }}
-                field={delgPanel.acpt_time
-                  && moment(delgPanel.acpt_time).format('YYYY.MM.DD')}
+                field={customsPanel.acpt_time
+                  && moment(customsPanel.acpt_time).format('YYYY.MM.DD')}
               />
             </Col>
             <Col span="6">
               <InfoItem labelCol={{ span: 3 }} label="操作人"
-                field={delgPanel.recv_login_name} fieldCol={{ span: 9 }}
+                field={customsPanel.recv_login_name} fieldCol={{ span: 9 }}
               />
             </Col>
           </Row>
-          {(delgPanel.type === 1 || delgPanel.customs_tenant_id === -1) && <div className="card-footer">
+          {(customsPanel.type === 1 || customsPanel.customs_tenant_id === -1) && <div className="card-footer">
             <div className="toolbar-right">
               <Tooltip title="分配操作人员">
                 <Button type="ghost" shape="circle" onClick={this.handleOperatorAssign}><Icon type="user" /></Button>

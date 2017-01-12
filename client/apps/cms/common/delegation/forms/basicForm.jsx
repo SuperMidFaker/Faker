@@ -225,16 +225,19 @@ export default class BasicForm extends Component {
             </FormItem>
           </Col>
           <Col sm={8}>
-            <FormItem label={this.msg('delgPieces')} {...formItemLayout}>
+            <FormItem label={this.msg('packageNum')} {...formItemLayout}>
               {getFieldDecorator('pieces', {
-                initialValue: fieldInits.pieces,
+                initialValue: fieldInits.pieces || 1,
               })(<InputNumber min={1} max={100000} style={{ width: '100%' }} />)}
             </FormItem>
           </Col>
           <Col sm={8}>
-            <FormItem label={this.msg('delgWeight')} {...formItemLayout}>
+            <FormItem label={this.msg('delgGrossWt')} {...formItemLayout}>
               {getFieldDecorator('weight', {
                 initialValue: fieldInits.weight,
+                rules: [{
+                  required: customerName.required, message: '毛重必填',
+                }],
               })(<Input addonAfter="千克" />)}
             </FormItem>
           </Col>
