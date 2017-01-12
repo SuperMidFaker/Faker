@@ -98,7 +98,6 @@ export default class Footer extends React.Component {
     this.context.router.push({ pathname: to, query });
   }
   handleMenuClick = (e) => {
-    console.log(e);
     const { previewer: { row } } = this.props;
     if (e.key === 'exportShipment') {
       this.setState({ exportPDFvisible: true });

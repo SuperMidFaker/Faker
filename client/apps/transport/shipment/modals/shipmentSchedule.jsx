@@ -3,6 +3,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Steps } from 'antd';
 import moment from 'moment';
+import { SHIPMENT_TRACK_STATUS } from 'common/constants';
 const Step = Steps.Step;
 
 @connect(
@@ -22,7 +23,7 @@ export default class ShipmentSchedule extends React.Component {
     const { shipmt, dispatch } = this.props;
     let statusDes = [];
     let statusPos = 0;
-    if (shipmt.status < 4) {
+    if (shipmt.status < SHIPMENT_TRACK_STATUS.intransit) {
       statusDes = [{
         status: 'wait',
         title: '未提货',
@@ -37,7 +38,7 @@ export default class ShipmentSchedule extends React.Component {
         description: `预计时间:${shipmt.deliver_est_date ? moment(shipmt.deliver_est_date).format('YYYY-MM-DD') : ''}`,
       }];
       statusPos = 0;
-    } else if (shipmt.status === 4) {
+    } else if (shipmt.status === SHIPMENT_TRACK_STATUS.intransit) {
       statusDes = [{
         status: 'finish',
         title: '已提货',
@@ -52,7 +53,7 @@ export default class ShipmentSchedule extends React.Component {
         description: `预计时间:${shipmt.deliver_est_date ? moment(shipmt.deliver_est_date).format('YYYY-MM-DD') : ''}`,
       }];
       statusPos = 1;
-    } else if (shipmt.status > 4) {
+    } else if (shipmt.status > SHIPMENT_TRACK_STATUS.intransit) {
       statusDes = [{
         status: 'finish',
         title: '已提货',
