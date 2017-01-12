@@ -98,6 +98,7 @@ export default class Footer extends React.Component {
     this.context.router.push({ pathname: to, query });
   }
   handleMenuClick = (e) => {
+    console.log(e);
     const { previewer: { row } } = this.props;
     if (e.key === 'exportShipment') {
       this.setState({ exportPDFvisible: true });
@@ -715,7 +716,10 @@ export default class Footer extends React.Component {
             {buttons}
             <PrivilegeCover module="transport" feature="shipment" action="create">
               <span className="more-actions">
-                <DropdownButton overlay={menu} />
+                <Dropdown overlay={menu}>
+                  <Button><Icon type="setting" /> <Icon type="down" /></Button>
+                </Dropdown>
+                <ExportPDF visible={this.state.exportPDFvisible} shipmtNo={row.shipmt_no} publickKey={shipmt.public_key} />
               </span>
             </PrivilegeCover>
           </span>
@@ -734,7 +738,10 @@ export default class Footer extends React.Component {
         return (
           <span>
             {buttons}
-            <DropdownButton overlay={menu} />
+            <Dropdown overlay={menu}>
+              <Button><Icon type="setting" /> <Icon type="down" /></Button>
+            </Dropdown>
+            <ExportPDF visible={this.state.exportPDFvisible} shipmtNo={row.shipmt_no} publickKey={shipmt.public_key} />
           </span>
         );
       } else if (row.pod_status === SHIPMENT_POD_STATUS.pending) {
