@@ -4,8 +4,11 @@ import {
   isFormDataLoadedC, appendFormAcitonTypes, formReducer,
   assignFormC, clearFormC, setFormValueC,
 } from './form-common';
-import { REPORT_LOC_SUCCEED } from './trackingLandStatus';
-import { CREATE_EXCEPTION_SUCCEED } from './trackingLandException';
+import { REPORT_LOC_SUCCEED, LOAD_TRANSHIPMT } from './trackingLandStatus';
+import { CREATE_EXCEPTION_SUCCEED, LOAD_EXCPSHIPMT } from './trackingLandException';
+import { LOAD_PODSHIPMT } from './trackingLandPod';
+import { LOAD_DISPSHIPMENT } from './transportDispatch';
+import { LOAD_APTSHIPMENT } from './transport-acceptance';
 const actionTypes = createActionTypes('@@welogix/transport/shipment/', [
   'SET_CONSIGN_FIELDS', 'SAVE_LOCAL_GOODS', 'EDIT_LOCAL_GOODS',
   'REM_LOCAL_GOODS', 'SHOW_PREVIWER', 'HIDE_PREVIWER',
@@ -57,6 +60,8 @@ const initialState = {
       goodslist: [],
     },
     dispatch: {
+      id: -1,
+      shipmt_no: '',
     },
     charges: {
     },
@@ -198,6 +203,21 @@ export default function reducer(state = initialState, action) {
     }
     case CREATE_EXCEPTION_SUCCEED: {
       return { ...state, previewer: { ...state.previewer, loaded: false } };
+    }
+    case LOAD_TRANSHIPMT: {
+      return { ...state, previewer: { ...state.previewer, loaded: false, visible: false } };
+    }
+    case LOAD_PODSHIPMT: {
+      return { ...state, previewer: { ...state.previewer, loaded: false, visible: false } };
+    }
+    case LOAD_EXCPSHIPMT: {
+      return { ...state, previewer: { ...state.previewer, loaded: false, visible: false } };
+    }
+    case LOAD_DISPSHIPMENT: {
+      return { ...state, previewer: { ...state.previewer, loaded: false, visible: false } };
+    }
+    case LOAD_APTSHIPMENT: {
+      return { ...state, previewer: { ...state.previewer, loaded: false, visible: false } };
     }
     default:
       return formReducer(actionTypes, state, action, { key: null }, 'shipmentlist')

@@ -8,7 +8,7 @@ const actionTypes = createActionTypes('@@welogix/transport/tracking/land/excepti
   'DEAL_EXCEPTION', 'DEAL_EXCEPTION_FAIL', 'DEAL_EXCEPTION_SUCCEED',
   'CHANGE_FILTER', 'SHOW_EXCPMODAL', 'SHOW_DEAL_EXCEPTION_MODAL', 'SHOW_CREATE_EXCEPTION_MODAL',
 ]);
-export const { CREATE_EXCEPTION_SUCCEED } = actionTypes;
+
 const initialState = {
   loaded: false,
   loading: false,
@@ -41,7 +41,7 @@ const initialState = {
   },
 };
 
-export const LOAD_EXCPSHIPMT_SUCCEED = actionTypes.LOAD_EXCPSHIPMT_SUCCEED;
+export const { CREATE_EXCEPTION_SUCCEED, LOAD_EXCPSHIPMT } = actionTypes;
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.LOAD_EXCPSHIPMT:

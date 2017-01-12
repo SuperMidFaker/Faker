@@ -76,7 +76,7 @@ export default class PreviewPanel extends React.Component {
     dateModalVisible: PropTypes.bool.isRequired,
     tabKey: PropTypes.string,
     shipmtNo: PropTypes.string,
-    dispatch: PropTypes.number,
+    dispatch: PropTypes.object,
     effective: PropTypes.number,
     hidePreviewer: PropTypes.func.isRequired,
     sendTrackingDetailSMSMessage: PropTypes.func.isRequired,
@@ -223,7 +223,7 @@ export default class PreviewPanel extends React.Component {
                   {this.renderTabs(dispatch.status)}
                 </Col>
                 <Col sm={24} md={12} lg={12}>
-                  <ActivityLoggerPane />
+                  <ActivityLoggerPane stage={stage} />
                 </Col>
               </Row>
             </div>

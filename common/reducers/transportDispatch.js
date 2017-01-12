@@ -2,7 +2,7 @@ import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/transport/dispatch/',
-  ['LOAD_APTSHIPMENT', 'LOAD_APTSHIPMENT_FAIL', 'LOAD_APTSHIPMENT_SUCCEED',
+  ['LOAD_DISPSHIPMENT', 'LOAD_DISPSHIPMENT_FAIL', 'LOAD_DISPSHIPMENT_SUCCEED',
     'LOAD_LSPS', 'LOAD_LSPS_FAIL', 'LOAD_LSPS_SUCCEED',
     'LOAD_VEHICLES', 'LOAD_VEHICLES_FAIL', 'LOAD_VEHICLES_SUCCEED',
     'DO_DISPATCH', 'DO_DISPATCH_FAIL', 'DO_DISPATCH_SUCCEED',
@@ -70,14 +70,14 @@ const initialState = {
     visible: false,
   },
 };
-
+export const { LOAD_DISPSHIPMENT } = actionTypes;
 export default function reducer(state = initialState, action) {
   switch (action.type) {
-    case actionTypes.LOAD_APTSHIPMENT:
+    case actionTypes.LOAD_DISPSHIPMENT:
       return { ...state, loading: true, dispatched: false };
-    case actionTypes.LOAD_APTSHIPMENT_FAIL:
+    case actionTypes.LOAD_DISPSHIPMENT_FAIL:
       return { ...state, loading: false, dispatched: false };
-    case actionTypes.LOAD_APTSHIPMENT_SUCCEED: {
+    case actionTypes.LOAD_DISPSHIPMENT_SUCCEED: {
       const filters = JSON.parse(action.params.filters);
       return { ...state, loading: false,
         loaded: true, shipmentlist: action.result.data,
@@ -169,9 +169,9 @@ export function loadTable(cookie, params) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.LOAD_APTSHIPMENT,
-        actionTypes.LOAD_APTSHIPMENT_SUCCEED,
-        actionTypes.LOAD_APTSHIPMENT_FAIL,
+        actionTypes.LOAD_DISPSHIPMENT,
+        actionTypes.LOAD_DISPSHIPMENT_SUCCEED,
+        actionTypes.LOAD_DISPSHIPMENT_FAIL,
       ],
       endpoint: 'v1/transport/dispatch/shipmts',
       method: 'get',
