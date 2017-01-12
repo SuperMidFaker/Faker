@@ -4,7 +4,6 @@ import { Form, Row, Col, Button, message } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
 import BasicForm from './forms/basicForm';
-import SubForm from './forms/SubForm';
 import UploadGroup from './forms/attachmentUpload';
 import { createDelegationByCCB } from 'common/reducers/cmsDelegation';
 import { DELG_SOURCE } from 'common/constants';
@@ -102,11 +101,10 @@ export default class AcceptanceCreate extends Component {
           <div className="page-body card-wrapper">
             <Form horizontal>
               <Row gutter={16}>
-                <Col sm={18}>
+                <Col sm={16}>
                   <BasicForm form={form} ieType={type} partnershipType="CCB" />
-                  <SubForm form={form} ietype={type} />
                 </Col>
-                <Col sm={6}>
+                <Col sm={8}>
                   <UploadGroup onFileListUpdate={this.handleUploadFiles} />
                 </Col>
               </Row>

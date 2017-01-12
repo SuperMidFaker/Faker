@@ -41,7 +41,7 @@ img {
 .ant-card{
   margin-bottom: 16px;
   .ant-form-item {
-    margin-bottom: 8px;
+    margin-bottom: 16px;
   }
   .ant-collapse {
     border: none;
@@ -608,7 +608,11 @@ img {
     .ant-collapse {
       margin-bottom: 16px;
       .ant-form-item {
-        margin-bottom: 8px;
+        margin-bottom: 16px;
+      }
+      .ant-form-item > .ant-form-item, 
+      .ant-form-item :not(.ant-form) > .ant-form-item {
+        margin-bottom: -16px;
       }
     }
   }
