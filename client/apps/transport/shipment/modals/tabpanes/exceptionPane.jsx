@@ -28,7 +28,15 @@ export default class ExceptionPane extends React.Component {
     showDealExcpModal: PropTypes.func.isRequired,
     previewer: PropTypes.object.isRequired,
   }
-
+  componentDidMount() {
+    if (this.props.shipmtNo) {
+      this.props.loadExceptions({
+        shipmtNo: this.props.shipmtNo,
+        pageSize: this.props.exceptions.pageSize,
+        currentPage: this.props.exceptions.current,
+      });
+    }
+  }
   componentWillReceiveProps(nextProps) {
     if (this.props.shipmtNo !== nextProps.shipmtNo && nextProps.shipmtNo !== '' || nextProps.previewer.visible && !nextProps.previewer.loaded) {
       this.props.loadExceptions({
