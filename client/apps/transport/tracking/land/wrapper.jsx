@@ -52,7 +52,7 @@ export default class TrackingLandWrapper extends React.Component {
     searchInput: '',
     radioValue: '',
     advancedSearchVisible: false,
-    stage: '',
+    stage: 'tracking',
   }
   componentWillMount() {
     const locName = this.props.location.pathname.split('/')[4];

@@ -6,7 +6,7 @@ const actionTypes = createActionTypes('@@welogix/transport/tracking/land/excepti
   'LOAD_EXCEPTIONS', 'LOAD_EXCEPTIONS_FAIL', 'LOAD_EXCEPTIONS_SUCCEED',
   'CREATE_EXCEPTION', 'CREATE_EXCEPTION_FAIL', 'CREATE_EXCEPTION_SUCCEED',
   'DEAL_EXCEPTION', 'DEAL_EXCEPTION_FAIL', 'DEAL_EXCEPTION_SUCCEED',
-  'CHANGE_FILTER', 'SHOW_EXCPMODAL', 'SHOW_DEAL_EXCEPTION_MODAL', 'SHOW_CREATE_EXCEPTION_MODAL',
+  'CHANGE_FILTER', 'SHOW_EXCPMODAL', 'SHOW_DEAL_EXCEPTION_MODAL',
 ]);
 
 const initialState = {
@@ -22,11 +22,6 @@ const initialState = {
     pageSize: 10,
     current: 1,
     data: [],
-  },
-  createExcpModal: {
-    visible: false,
-    shipmtNo: '',
-    dispId: -1,
   },
   dealExcpModal: {
     visible: false,
@@ -68,8 +63,6 @@ export default function reducer(state = initialState, action) {
     case actionTypes.DEAL_EXCEPTION_SUCCEED: {
       return { ...state };
     }
-    case actionTypes.SHOW_CREATE_EXCEPTION_MODAL:
-      return { ...state, createExcpModal: action.data };
     case actionTypes.SHOW_DEAL_EXCEPTION_MODAL:
       return { ...state, dealExcpModal: action.data };
     default:
@@ -127,13 +120,6 @@ export function createException({ dispId, excpLevel, type, typeName, excpEvent, 
       method: 'post',
       data: { dispId, excpLevel, type, typeName, excpEvent, submitter },
     },
-  };
-}
-
-export function showCreateExcpModal({ visible, shipmtNo, dispId }) {
-  return {
-    type: actionTypes.SHOW_CREATE_EXCEPTION_MODAL,
-    data: { visible, shipmtNo, dispId },
   };
 }
 

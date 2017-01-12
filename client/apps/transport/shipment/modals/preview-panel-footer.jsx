@@ -15,7 +15,6 @@ import { doSend,
 import { showDateModal, showVehicleModal, showLocModal, showChangeActDateModal }
 from 'common/reducers/trackingLandStatus';
 import { showAdvanceModal, showSpecialChargeModal } from 'common/reducers/transportBilling';
-import { showCreateExcpModal } from 'common/reducers/trackingLandException';
 import { passAudit, returnAudit, showPodModal } from 'common/reducers/trackingLandPod';
 import ExportPDF from '../../tracking/land/modals/export-pdf';
 import { createFilename } from 'client/util/dataTransform';
@@ -30,7 +29,7 @@ const MenuItem = Menu.Item;
   state => ({
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
-    avatar: state.account.profile.avatar,
+    avatar: state.account.profile.avatar || '',
     loginName: state.account.username,
     previewer: state.shipment.previewer,
     filters: state.transportDispatch.filters,
@@ -53,7 +52,6 @@ const MenuItem = Menu.Item;
     showAdvanceModal,
     showSpecialChargeModal,
     sendMessage,
-    showCreateExcpModal,
     showChangeActDateModal,
   }
 )
@@ -85,7 +83,6 @@ export default class Footer extends React.Component {
     showAdvanceModal: PropTypes.func.isRequired,
     showSpecialChargeModal: PropTypes.func.isRequired,
     sendMessage: PropTypes.func.isRequired,
-    showCreateExcpModal: PropTypes.func.isRequired,
     showChangeActDateModal: PropTypes.func.isRequired,
     stage: PropTypes.oneOf(['acceptance', 'dispatch', 'tracking', 'pod', 'exception']),
   }
@@ -253,9 +250,6 @@ export default class Footer extends React.Component {
   handleShowChangeActDateModal = (row) => {
     this.props.showChangeActDateModal({ visible: true, dispId: row.disp_id, shipmtNo: row.shipmt_no,
       pickupActDate: row.pickup_act_date, deliverActDate: row.deliver_act_date });
-  }
-  handleShowCreateExcpModal = (row) => {
-    this.props.showCreateExcpModal({ visible: true, shipmtNo: row.shipmt_no, dispId: row.disp_id });
   }
   handleResubmit = (row) => {
     this.props.showPodModal(row.pod_id, row.disp_id, row.parent_id, row.shipmt_no);
@@ -448,9 +442,6 @@ export default class Footer extends React.Component {
                 <Button type="ghost" onClick={() => this.handleShowPickModal(row)} >
                   更新提货
                 </Button>
-                <Button type="ghost" onClick={() => this.handleShowCreateExcpModal(row)} >
-                  记录异常
-                </Button>
               </span>
             </PrivilegeCover>
           );
@@ -463,9 +454,6 @@ export default class Footer extends React.Component {
                 <span>
                   <Button type="ghost" onClick={() => this.handleShowPickModal(row)}>
                     更新提货
-                  </Button>
-                  <Button type="ghost" onClick={() => this.handleShowCreateExcpModal(row)} >
-                    记录异常
                   </Button>
                 </span>
               </PrivilegeCover>
@@ -480,9 +468,6 @@ export default class Footer extends React.Component {
                   >
                     催促提货
                   </Button>
-                  <Button type="ghost" onClick={() => this.handleShowCreateExcpModal(row)} >
-                    记录异常
-                  </Button>
                 </span>
               </PrivilegeCover>
             );
@@ -496,9 +481,6 @@ export default class Footer extends React.Component {
                   }
                 >
                   催促提货
-                </Button>
-                <Button type="ghost" onClick={() => this.handleShowCreateExcpModal(row)} >
-                  记录异常
                 </Button>
               </span>
             </PrivilegeCover>
@@ -520,9 +502,6 @@ export default class Footer extends React.Component {
                 </Button>
                 <Button type="ghost" onClick={() => this.handleShowSpecialChargeModal(row)} >
                   添加特殊费用
-                </Button>
-                <Button type="ghost" onClick={() => this.handleShowCreateExcpModal(row)} >
-                  记录异常
                 </Button>
               </span>
             </PrivilegeCover>
@@ -551,9 +530,6 @@ export default class Footer extends React.Component {
                   <Button type="ghost" onClick={() => this.handleShowSpecialChargeModal(row)} >
                     添加特殊费用
                   </Button>
-                  <Button type="ghost" onClick={() => this.handleShowCreateExcpModal(row)} >
-                    记录异常
-                  </Button>
                 </span>
               </PrivilegeCover>
             );
@@ -567,9 +543,6 @@ export default class Footer extends React.Component {
                   </Button>
                   <Button type="ghost" onClick={() => this.handleShowSpecialChargeModal(row)} >
                     添加特殊费用
-                  </Button>
-                  <Button type="ghost" onClick={() => this.handleShowCreateExcpModal(row)} >
-                    记录异常
                   </Button>
                 </span>
               </PrivilegeCover>
@@ -592,9 +565,6 @@ export default class Footer extends React.Component {
                 </Button>
                 <Button type="ghost" onClick={() => this.handleShowSpecialChargeModal(row)} >
                   添加特殊费用
-                </Button>
-                <Button type="ghost" onClick={() => this.handleShowCreateExcpModal(row)} >
-                  记录异常
                 </Button>
               </span>
             </PrivilegeCover>

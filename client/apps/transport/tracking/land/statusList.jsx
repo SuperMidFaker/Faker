@@ -14,7 +14,6 @@ import {
 import { showPodModal } from 'common/reducers/trackingLandPod';
 import RowUpdater from './rowUpdater';
 import VehicleModal from './modals/vehicle-updater';
-import CreateException from './modals/create-exception';
 import PickupDeliverModal from './modals/pickup-deliver-updater';
 import LocationModal from './modals/intransitLocationUpdater';
 import PodModal from './modals/pod-submit';
@@ -410,7 +409,6 @@ export default class LandStatusList extends React.Component {
         <LocationModal onOK={this.handleTableLoad} />
         <PodModal onOK={this.handleTableLoad} />
         <RevokejectModal reload={this.handleTableLoad} />
-        <CreateException />
         <ShipmentAdvanceModal />
         <CreateSpecialCharge />
       </div>
