@@ -144,7 +144,7 @@ export default class DelegationList extends Component {
     width: 60,
     dataIndex: 'pieces',
   }, {
-    title: this.msg('delgWeight'),
+    title: this.msg('delgGrossWt'),
     width: 80,
     dataIndex: 'weight',
   }, {

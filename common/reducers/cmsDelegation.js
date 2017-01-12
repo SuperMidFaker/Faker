@@ -49,16 +49,6 @@ const initialState = {
     pageSize: 10,
     data: [],
   },
-  delgBillsMap: {
-  },
-  ciqBillsMap: {
-  },
-  ciqBills: [{
-    decl_way_code: '',
-    manual_no: '',
-    pack_count: null,
-    gross_wt: null,
-  }],
   listFilter: {
     sortField: '',
     sortOrder: '',
@@ -77,12 +67,12 @@ const initialState = {
     create_time: null,
   },
   delgFiles: [],
-  delgBills: [{
+  delgBill: {
     decl_way_code: '',
     manual_no: '',
     pack_count: null,
     gross_wt: null,
-  }],
+  },
   submitting: false,
   delegateListFilter: {
     sortField: '',
@@ -131,29 +121,18 @@ export default function reducer(state = initialState, action) {
       return { ...state, delegationlist: { ...state.delegationlist, loading: true },
         listView: 'delegation', listFilter: JSON.parse(action.params.filter) };
     case actionTypes.LOAD_ACCEPT_SUCCEED: {
-      const delgBillsMap = {};
-      const delgList = action.result.data;
-      delgList.data.forEach((delg) => {
-        delgBillsMap[delg.delg_no] = [];
-      });
-      return { ...state, delegationlist: { ...state.delegationlist, loading: false,
-        ...delgList }, delgBillsMap };
+      return { ...state, delegationlist: { ...action.result.data, loading: false } };
     }
     case actionTypes.LOAD_ACCEPT_FAIL:
-      return { ...state, delegationlist: { ...state.delegationlist, loading: false }, delgBillsMap: {} };
+      return { ...state, delegationlist: { ...state.delegationlist, loading: false } };
     case actionTypes.LOAD_CIQ:
       return { ...state, ciqlist: { ...state.ciqlist, loading: true }, listView: 'ciq',
         listFilter: JSON.parse(action.params.filter) };
     case actionTypes.LOAD_CIQ_SUCCEED: {
-      const ciqBillsMap = {};
-      const ciqList = action.result.data;
-      ciqList.data.forEach((delg) => {
-        ciqBillsMap[delg.delg_no] = [];
-      });
-      return { ...state, ciqlist: { ...action.result.data, loading: false }, ciqBillsMap };
+      return { ...state, ciqlist: { ...action.result.data, loading: false } };
     }
     case actionTypes.LOAD_CIQ_FAIL:
-      return { ...state, ciqlist: { ...state.ciqlist, loading: false }, ciqBillsMap: {} };
+      return { ...state, ciqlist: { ...state.ciqlist, loading: false } };
     case actionTypes.LOAD_BILLMAKE_SUCCEED: {
       return { ...state, billMake: action.result.data };
     }
@@ -164,7 +143,7 @@ export default function reducer(state = initialState, action) {
       return { ...state, formData: initialState.formData, delgFiles: [] };
     case actionTypes.LOAD_DELG_SUCCEED:
       return { ...state, formData: action.result.data.delegation,
-        delgFiles: action.result.data.files, delgBills: action.result.data.delgBills.rows, formRequire: action.result.data.formRequire,
+        delgFiles: action.result.data.files, delgBill: action.result.data.delgBill, formRequire: action.result.data.formRequire,
       };
     case actionTypes.SEARCH_PARAM_SUCCEED:
       return { ...state, formRequire: { ...state.formRequire, ...action.result.data } };
@@ -174,7 +153,7 @@ export default function reducer(state = initialState, action) {
       return { ...state, formData: { ...initialState.formData, create_time: new Date() } };
     case actionTypes.LOAD_REQUIRE_SUCCEED:
       return { ...state, formRequire: action.result.data, formData: initialState.formData,
-        delgFiles: initialState.delgFiles, delgBills: initialState.delgBills };
+        delgFiles: initialState.delgFiles, delgBill: initialState.delgBill };
     case actionTypes.CREATE_DELGCCB:
     case actionTypes.EDIT_DELGCCB:
       return { ...state, submitting: true };
