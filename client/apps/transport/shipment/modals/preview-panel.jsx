@@ -47,7 +47,6 @@ function getTrackStatusMsg(status, eff) {
     tenantId: state.account.tenantId,
     visible: state.shipment.previewer.visible,
     changeShipmentModalVisible: state.shipment.changeShipmentModal.visible,
-    createExcpModalVisible: state.trackingLandException.createExcpModal.visible,
     dealExcpModalVisible: state.trackingLandException.dealExcpModal.visible,
     specialChargeModalVisible: state.transportBilling.specialChargeModal.visible,
     advanceChargeModalvisible: state.transportBilling.advanceModal.visible,
@@ -68,7 +67,6 @@ export default class PreviewPanel extends React.Component {
     tenantId: PropTypes.number.isRequired,
     visible: PropTypes.bool.isRequired,
     changeShipmentModalVisible: PropTypes.bool.isRequired,
-    createExcpModalVisible: PropTypes.bool.isRequired,
     dealExcpModalVisible: PropTypes.bool.isRequired,
     specialChargeModalVisible: PropTypes.bool.isRequired,
     advanceChargeModalvisible: PropTypes.bool.isRequired,
@@ -97,7 +95,7 @@ export default class PreviewPanel extends React.Component {
     window.$(document).click((event) => {
       const previewerClicked = window.$(event.target).closest('#preview-panel').length > 0;
       if (!this.props.specialChargeModalVisible && !this.props.dealExcpModalVisible &&
-        !this.props.createExcpModalVisible && !this.props.advanceChargeModalvisible &&
+        && !this.props.advanceChargeModalvisible &&
         !this.props.changeShipmentModalVisible && !this.props.locModalVisible &&
         !this.props.dateModalVisible &&
         !previewerClicked) {

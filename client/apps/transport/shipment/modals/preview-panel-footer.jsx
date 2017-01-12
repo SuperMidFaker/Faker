@@ -327,7 +327,7 @@ export default class Footer extends React.Component {
               </span>
             </PrivilegeCover>
           );
-          menu = (<div />);
+          menu = (<span />);
         } else if (row.source === SHIPMENT_SOURCE.subcontracted) {
           buttons = (
             <PrivilegeCover module="transport" feature="shipment" action="edit">
@@ -349,13 +349,13 @@ export default class Footer extends React.Component {
         );
       }
       return (
-        <div>
+        <span>
           {buttons}
           <Dropdown overlay={menu}>
             <Button><Icon type="setting" /> <Icon type="down" /></Button>
           </Dropdown>
           <ExportPDF visible={this.state.exportPDFvisible} shipmtNo={row.shipmt_no} publickKey={shipmt.public_key} />
-        </div>
+        </span>
       );
     } else if (stage === 'dispatch') {
       if (row.child_send_status === 0 && row.status === 2 && row.disp_status === 1 && row.sp_tenant_id === tenantId) {
@@ -398,13 +398,13 @@ export default class Footer extends React.Component {
         }
       }
       return (
-        <div>
+        <span>
           {buttons}
           <Dropdown overlay={menu}>
             <Button><Icon type="setting" /> <Icon type="down" /></Button>
           </Dropdown>
           <ExportPDF visible={this.state.exportPDFvisible} shipmtNo={row.shipmt_no} publickKey={shipmt.public_key} />
-        </div>
+        </span>
       );
     } else if (stage === 'tracking') {
       if (row.status === SHIPMENT_TRACK_STATUS.unaccepted) {
@@ -657,13 +657,13 @@ export default class Footer extends React.Component {
         }
       }
       return (
-        <div>
+        <span>
           {buttons}
           <Dropdown overlay={menu}>
             <Button><Icon type="setting" /> <Icon type="down" /></Button>
           </Dropdown>
           <ExportPDF visible={this.state.exportPDFvisible} shipmtNo={row.shipmt_no} publickKey={shipmt.public_key} />
-        </div>
+        </span>
       );
     } else if (stage === 'pod') {
       if (row.pod_status === null || row.pod_status === SHIPMENT_POD_STATUS.unsubmit) {
@@ -711,14 +711,14 @@ export default class Footer extends React.Component {
           );
         }
         return (
-          <div>
+          <span>
             {buttons}
             <PrivilegeCover module="transport" feature="shipment" action="create">
-              <div className="more-actions">
+              <span className="more-actions">
                 <DropdownButton overlay={menu} />
-              </div>
+              </span>
             </PrivilegeCover>
-          </div>
+          </span>
         );
       } else if (row.pod_status === SHIPMENT_POD_STATUS.rejectByClient) {
         // 重新上传
@@ -732,10 +732,10 @@ export default class Footer extends React.Component {
           </PrivilegeCover>
         );
         return (
-          <div>
+          <span>
             {buttons}
             <DropdownButton overlay={menu} />
-          </div>
+          </span>
         );
       } else if (row.pod_status === SHIPMENT_POD_STATUS.pending) {
         // 审核回单
@@ -753,34 +753,34 @@ export default class Footer extends React.Component {
         );
       } else if (row.pod_status === SHIPMENT_POD_STATUS.rejectByUs) {
         // 我方拒绝
-        buttons = (<div />);
+        buttons = (<span />);
       } else if (row.pod_status === SHIPMENT_POD_STATUS.acceptByUs) {
         // 提交给上游客户
-        buttons = (<div />);
+        buttons = (<span />);
       } else if (row.pod_status === SHIPMENT_POD_STATUS.acceptByClient) {
         // 上游客户已接受
-        buttons = (<div />);
+        buttons = (<span />);
       }
       return (
-        <div>
+        <span>
           {buttons}
           <DropdownButton overlay={menu} onClick={this.handleDownloadPod}>
             <Icon type="download" />
           </DropdownButton>
           <ExportPDF visible={this.state.exportPDFvisible} shipmtNo={row.shipmt_no} publickKey={shipmt.public_key} />
-        </div>
+        </span>
       );
     } else if (stage === 'exception') {
-      buttons = (<div />);
+      buttons = (<span />);
     }
     return (
-      <div>
+      <span>
         {buttons}
         <DropdownButton overlay={menu} onClick={this.handleShowExportShipment}>
           <Icon type="export" />
         </DropdownButton>
         <ExportPDF visible={this.state.exportPDFvisible} shipmtNo={row.shipmt_no} publickKey={shipmt.public_key} />
-      </div>
+      </span>
     );
   }
 }

@@ -10,6 +10,7 @@ import { loadPodTable, showAuditModal, resubmitPod, showPodModal } from
 import PodAuditModal from './modals/pod-audit';
 import PodModal from './modals/pod-submit';
 import makeColumns from './columnDef';
+import { SHIPMENT_TRACK_STATUS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import { sendMessage } from 'common/reducers/corps';
@@ -169,7 +170,11 @@ export default class LandStatusList extends React.Component {
     this.props.showPodModal(row.pod_id, row.disp_id, row.parent_id, row.shipmt_no);
   }
   handleShipmtPreview = (row) => {
-    this.props.loadShipmtDetail(row.shipmt_no, this.props.tenantId, 'sr', 'pod', row).then((result) => {
+    let tabKey = 'detail';
+    if (row.status === SHIPMENT_TRACK_STATUS.podsubmit || row.status === SHIPMENT_TRACK_STATUS.podaccept) {
+      tabKey = 'pod';
+    }
+    this.props.loadShipmtDetail(row.shipmt_no, this.props.tenantId, 'sr', tabKey, row).then((result) => {
       if (result.error) {
         message.error(result.error.message);
       }
