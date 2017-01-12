@@ -38,7 +38,7 @@ const OptGroup = Select.OptGroup;
     saved: state.cmsDelegation.assign.saved,
     billMake: state.cmsDelegation.billMake,
     delgDispShow: state.cmsDelegation.assign.delgDispShow,
-    preStatus: state.cmsDelegation.preStatus,
+    preStatus: state.cmsDelgInfoHub.preStatus,
     previewer: state.cmsDelgInfoHub.previewer,
     delegation: state.cmsDelgInfoHub.previewer.delegation,
     matchStatus: state.cmsDelegation.matchStatus,
@@ -306,7 +306,6 @@ export default class DelegationList extends Component {
       if (result.error) {
         message.error(result.error.message, 5);
       } else {
-        console.log('router', this.context.router);
         const link = `/clearance/${this.props.ietype}/manifest/make/`;
         this.context.router.push(`${link}${this.props.billMake.bill_seq_no}`);
       }

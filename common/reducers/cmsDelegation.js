@@ -99,7 +99,6 @@ const initialState = {
     delgDispIds: [],
     delgOperators: [],
   },
-  preStatus: '',
   billMake: {},
   visibleEfModal: false,
   efModal: {

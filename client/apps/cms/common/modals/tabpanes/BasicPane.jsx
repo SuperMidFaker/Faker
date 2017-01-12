@@ -22,6 +22,7 @@ function getExtension(filename) {
     delgDispatch: state.cmsDelgInfoHub.previewer.delgDispatch,
     tenantId: state.account.tenantId,
     delgNo: state.cmsDelgInfoHub.previewer.delgNo,
+    tabKey: state.cmsDelgInfoHub.tabKey,
   }),
   { showPreviewer }
 )
@@ -33,6 +34,7 @@ export default class BasicPane extends React.Component {
     delgDispatch: PropTypes.object.isRequired,
     tenantId: PropTypes.number.isRequired,
     delgNo: PropTypes.string.isRequired,
+    tabKey: PropTypes.string.isRequired,
   }
   state = {
     sortedFiles: [],

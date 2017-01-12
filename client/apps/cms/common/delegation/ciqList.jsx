@@ -22,7 +22,7 @@ const formatMsg = format(messages);
     ciqlist: state.cmsDelegation.ciqlist,
     listFilter: state.cmsDelegation.listFilter,
     saved: state.cmsDelegation.saved,
-    preStatus: state.cmsDelegation.preStatus,
+    preStatus: state.cmsDelgInfoHub.preStatus,
     cMQParams: state.cmsDelegation.cMQParams,
     delgDispShow: state.cmsDelegation.delgDispShow,
   }),
