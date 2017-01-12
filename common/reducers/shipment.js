@@ -4,11 +4,13 @@ import {
   isFormDataLoadedC, appendFormAcitonTypes, formReducer,
   assignFormC, clearFormC, setFormValueC,
 } from './form-common';
+
 import { REPORT_LOC_SUCCEED, LOAD_TRANSHIPMT } from './trackingLandStatus';
 import { CREATE_EXCEPTION_SUCCEED, LOAD_EXCPSHIPMT } from './trackingLandException';
 import { LOAD_PODSHIPMT } from './trackingLandPod';
 import { LOAD_DISPSHIPMENT } from './transportDispatch';
 import { LOAD_APTSHIPMENT } from './transport-acceptance';
+import { LOAD_FEES } from './transportBilling';
 const actionTypes = createActionTypes('@@welogix/transport/shipment/', [
   'SET_CONSIGN_FIELDS', 'SAVE_LOCAL_GOODS', 'EDIT_LOCAL_GOODS',
   'REM_LOCAL_GOODS', 'SHOW_PREVIWER', 'HIDE_PREVIWER',
@@ -170,6 +172,9 @@ export default function reducer(state = initialState, action) {
     case actionTypes.SEND_SMS_MESSAGE_SUCCEED: {
       return { ...state };
     }
+    case actionTypes.SHIPMENT_STATISTICS: {
+      return { ...state, previewer: { ...state.previewer, loaded: false, visible: false } };
+    }
     case actionTypes.SHIPMENT_STATISTICS_SUCCEED: {
       return { ...state,
         statistics: {
@@ -217,6 +222,9 @@ export default function reducer(state = initialState, action) {
       return { ...state, previewer: { ...state.previewer, loaded: false, visible: false } };
     }
     case LOAD_APTSHIPMENT: {
+      return { ...state, previewer: { ...state.previewer, loaded: false, visible: false } };
+    }
+    case LOAD_FEES: {
       return { ...state, previewer: { ...state.previewer, loaded: false, visible: false } };
     }
     default:

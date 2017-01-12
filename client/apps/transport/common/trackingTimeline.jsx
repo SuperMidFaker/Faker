@@ -37,7 +37,7 @@ export default class TrackingTimeline extends React.Component {
         return (
           <TimelineItem dot={dotType} key={i} color={color}>
             <span style={{ marginLeft: -100 }}>{s.date}</span>
-            <span style={{ marginLeft: 37 }}>
+            <span style={{ marginLeft: 34 }}>
               {s.title}
             </span>
             <div>{s.time}</div>

@@ -50,7 +50,7 @@ export default class TrackingPane extends React.Component {
       return (
         <Timeline.Item dot={dotType} key={i} color={color}>
           <span style={{ marginLeft: -100 }}>{s.date}</span>
-          <span style={{ marginLeft: 37 }}>
+          <span style={{ marginLeft: 34 }}>
             {s.title}
             <Popconfirm title="确定删除这条位置信息？" onConfirm={() => this.handleRemovePoint(s.id, s.title)}>
               <Icon type="close" className="timeline-remove" />
