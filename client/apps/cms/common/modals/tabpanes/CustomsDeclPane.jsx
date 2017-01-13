@@ -34,7 +34,7 @@ export default class CustomsDeclPane extends React.Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
-  componentWillMount() {
+  componentDidMount() {
     this.props.loadCustPanel({
       delgNo: this.props.delgNo,
       tenantId: this.props.tenantId,
