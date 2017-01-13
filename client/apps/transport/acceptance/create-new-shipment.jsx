@@ -5,7 +5,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege from 'client/common/decorators/withPrivilege';
-import { loadFormRequire } from 'common/reducers/shipment';
+import { loadFormRequire, onFormFieldsChange } from 'common/reducers/shipment';
 import { savePending, saveAndAccept, loadTable, saveDraft }
   from 'common/reducers/transport-acceptance';
 import ClientInfo from '../shipment/forms/clientInfo';
@@ -39,14 +39,15 @@ function fetchData({ state, dispatch, cookie }) {
     sortOrder: state.transportAcceptance.table.sortOrder,
     pageSize: state.transportAcceptance.table.shipmentlist.pageSize,
     current: state.transportAcceptance.table.shipmentlist.current,
+    formRequireJudgeParams: state.shipment.formRequireJudgeParams, // @Form.create... 这一层使用
   }),
-  { loadTable, savePending, saveAndAccept, saveDraft })
+  { loadTable, savePending, saveAndAccept, saveDraft, onFormFieldsChange })
 @connectNav({
   depth: 3,
   moduleName: 'transport',
 })
 @withPrivilege({ module: 'transport', feature: 'shipment', action: 'create' })
-@Form.create()
+@Form.create({ onFieldsChange: (props, fields) => props.onFormFieldsChange(props, fields) })
 export default class ShipmentCreate extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,

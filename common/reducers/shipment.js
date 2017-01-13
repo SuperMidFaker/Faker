@@ -4,6 +4,7 @@ import {
   isFormDataLoadedC, appendFormAcitonTypes, formReducer,
   assignFormC, clearFormC, setFormValueC,
 } from './form-common';
+import { TARIFF_METER_METHODS } from 'common/constants';
 
 import { REPORT_LOC_SUCCEED, LOAD_TRANSHIPMT } from './trackingLandStatus';
 import { CREATE_EXCEPTION_SUCCEED, LOAD_EXCPSHIPMT } from './trackingLandException';
@@ -31,6 +32,8 @@ const actionTypes = createActionTypes('@@welogix/transport/shipment/', [
   'SHOW_CHANGE_SHIPMENT_MODAL',
   'CHANGE_PREVIEWER_TAB',
   'CREATE_LOG', 'CREATE_LOG_SUCCEED', 'CREATE_LOG_FAIL',
+  'UPDATE_FORM_REQUIRE_PARAMS',
+  'LOAD_TARIFF_BY_TRANSPORTINFO', 'LOAD_TARIFF_BY_TRANSPORTINFO_SUCCEED', 'LOAD_TARIFF_BY_TRANSPORTINFO_FAIL',
 ]);
 appendFormAcitonTypes('@@welogix/transport/shipment/', actionTypes);
 
@@ -107,6 +110,9 @@ const initialState = {
     shipmtNo: '',
     type: '',
   },
+  formRequireJudgeParams: {},
+  totalWeightRequired: false,
+  totalVolumeRequired: false,
 };
 
 export default function reducer(state = initialState, action) {
@@ -226,6 +232,29 @@ export default function reducer(state = initialState, action) {
     }
     case LOAD_FEES: {
       return { ...state, previewer: { ...state.previewer, loaded: false, visible: false } };
+    }
+    case actionTypes.UPDATE_FORM_REQUIRE_PARAMS: {
+      return { ...state, formRequireJudgeParams: { ...state.formRequireJudgeParams, ...action.formRequireJudgeParams } };
+    }
+    case actionTypes.LOAD_TARIFF_BY_TRANSPORTINFO_SUCCEED: {
+      let totalWeightRequired = false;
+      let totalVolumeRequired = false;
+      if (action.result.data) {
+        const tariff = action.result.data;
+        if (tariff.agreement.meter === TARIFF_METER_METHODS[0].value ||
+          tariff.agreement.meter === TARIFF_METER_METHODS[1].value ||
+          tariff.agreement.meter === TARIFF_METER_METHODS[3].value) {
+          totalWeightRequired = true;
+        } else if (tariff.agreement.meter === TARIFF_METER_METHODS[2].value) {
+          totalVolumeRequired = true;
+        }
+      }
+      return { ...state, totalWeightRequired, totalVolumeRequired,
+        formRequireJudgeParams: { ...state.formRequireJudgeParams, ...action.formRequireJudgeParams } };
+    }
+    case actionTypes.LOAD_TARIFF_BY_TRANSPORTINFO_FAIL: {
+      return { ...state, totalWeightRequired: false, totalVolumeRequired: false,
+        formRequireJudgeParams: { ...state.formRequireJudgeParams, ...action.formRequireJudgeParams } };
     }
     default:
       return formReducer(actionTypes, state, action, { key: null }, 'shipmentlist')
@@ -531,4 +560,43 @@ export function createLog(data) {
       data,
     },
   };
+}
+
+export function onFormFieldsChange(props, fields) {
+  const tenantId = props.tenantId;
+  const createdDate = new Date();
+  const formRequireJudgeParams = { ...props.formRequireJudgeParams, ...fields };
+  const params = {
+    tenantId,
+    createdDate,
+    partnerId: props.formData.customer_partner_id,
+    partnerTenantId: props.formData.customer_tenant_id,
+    transModeCode: formRequireJudgeParams.transport_mode_id ? formRequireJudgeParams.transport_mode_id.value : props.formData.transport_mode_id,
+    goodsType: formRequireJudgeParams.goods_type ? formRequireJudgeParams.goods_type.value : props.formData.goods_type,
+    pickupEstDate: formRequireJudgeParams.pickup_est_date ? formRequireJudgeParams.pickup_est_date.value.toDate() : props.formData.pickup_est_date,
+    deliverEstDate: formRequireJudgeParams.deliver_est_date ? formRequireJudgeParams.deliver_est_date.value.toDate() : props.formData.deliver_est_date,
+  };
+  if (params.partnerId !== undefined &&
+    params.transModeCode !== undefined && params.goodsType !== undefined &&
+    params.pickupEstDate !== undefined && params.deliverEstDate !== undefined) {
+    return {
+      [CLIENT_API]: {
+        types: [
+          actionTypes.LOAD_TARIFF_BY_TRANSPORTINFO,
+          actionTypes.LOAD_TARIFF_BY_TRANSPORTINFO_SUCCEED,
+          actionTypes.LOAD_TARIFF_BY_TRANSPORTINFO_FAIL,
+        ],
+        method: 'get',
+        endpoint: 'v1/transport/tariff/byTransportInfo',
+        params,
+        origin: 'mongo',
+        formRequireJudgeParams,
+      },
+    };
+  } else {
+    return {
+      type: actionTypes.UPDATE_FORM_REQUIRE_PARAMS,
+      formRequireJudgeParams,
+    };
+  }
 }

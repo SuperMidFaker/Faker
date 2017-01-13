@@ -92,6 +92,8 @@ ColumnSelect.propTypes = {
     goodsTypes: state.shipment.formRequire.goodsTypes,
     packagings: state.shipment.formRequire.packagings,
     containerPackagings: state.shipment.formRequire.containerPackagings,
+    totalWeightRequired: state.shipment.totalWeightRequired,
+    totalVolumeRequired: state.shipment.totalVolumeRequired,
   }),
   { saveLocalGoods, editLocalGoods, removeLocalGoods, setConsignFields }
 )
@@ -111,6 +113,8 @@ export default class GoodsInfo extends React.Component {
     removeLocalGoods: PropTypes.func.isRequired,
     setConsignFields: PropTypes.func.isRequired,
     vertical: PropTypes.bool,
+    totalWeightRequired: PropTypes.bool.isRequired,
+    totalVolumeRequired: PropTypes.bool.isRequired,
   }
   constructor(...args) {
     super(...args);
@@ -208,6 +212,7 @@ export default class GoodsInfo extends React.Component {
       packagings, containerPackagings,
       fieldDefaults: { goods_type, total_count, packageform, total_weight, insure_value, total_volume },
       vertical, modeCode,
+      totalWeightRequired, totalVolumeRequired,
     } = this.props;
     const apackagings = this.props.modeCode === 'CTN' ? containerPackagings : packagings.map(pk => ({
       key: pk.package_code,
@@ -423,7 +428,7 @@ export default class GoodsInfo extends React.Component {
               </FormItem>
               <InputItem formhoc={formhoc} labelName={this.msg('totalWeight')}
                 field="total_weight" colSpan={labelColSpan} addonAfter={this.msg('kilogram')}
-                fieldProps={{ initialValue: total_weight }}
+                fieldProps={{ initialValue: total_weight }} required={totalWeightRequired}
               />
             </Col>
             <Col span={`${outerColSpan}`}>
@@ -433,7 +438,7 @@ export default class GoodsInfo extends React.Component {
               />
               <InputItem formhoc={formhoc} labelName={this.msg('totalVolume')}
                 field="total_volume" colSpan={labelColSpan} addonAfter={this.msg('cubicMeter')}
-                fieldProps={{ initialValue: total_volume }}
+                fieldProps={{ initialValue: total_volume }} required={totalVolumeRequired}
               />
             </Col>
           </Row>
