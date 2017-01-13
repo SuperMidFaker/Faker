@@ -101,10 +101,10 @@ export default class AcceptanceCreate extends Component {
           <div className="page-body card-wrapper">
             <Form horizontal>
               <Row gutter={16}>
-                <Col sm={16}>
+                <Col sm={24} md={16}>
                   <BasicForm form={form} ieType={type} partnershipType="CCB" />
                 </Col>
-                <Col sm={8}>
+                <Col sm={24} md={8}>
                   <UploadGroup onFileListUpdate={this.handleUploadFiles} />
                 </Col>
               </Row>

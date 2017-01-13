@@ -100,10 +100,10 @@ export default class AcceptanceEdit extends Component {
           <div className="page-body card-wrapper">
             <Form horizontal form={form}>
               <Row gutter={16}>
-                <Col sm={16}>
+                <Col sm={24} md={16}>
                   <BasicForm form={form} ieType={type} partnershipType="CCB" />
                 </Col>
-                <Col sm={8}>
+                <Col sm={24} md={8}>
                   <UploadGroup onFileUpload={this.handleUploadFiles} onFileRemove={this.handleFileRemove} />
                 </Col>
               </Row>
