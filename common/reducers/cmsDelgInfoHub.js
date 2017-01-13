@@ -29,7 +29,7 @@ const initialState = {
     ciqlist: [],
   },
   customsPanel: {
-    bills: [],
+    bill: {},
   },
   preStatus: '',
 };

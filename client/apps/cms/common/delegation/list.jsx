@@ -15,7 +15,7 @@ import RowUpdater from './rowUpdater';
 import { loadAcceptanceTable, loadBillForMake, acceptDelg, delDelg,
   setDispStatus, loadCiqTable, delgAssignRecall,
   openAcceptModal, showDispModal } from 'common/reducers/cmsDelegation';
-import { showPreviewer, loadCustPanel } from 'common/reducers/cmsDelgInfoHub';
+import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
 import DelegationInfoHubPanel from '../modals/DelegationInfoHubPanel';
 import CiqList from './ciqList';
 import messages from './message.i18n';
@@ -41,12 +41,11 @@ const OptGroup = Select.OptGroup;
     preStatus: state.cmsDelgInfoHub.preStatus,
     previewer: state.cmsDelgInfoHub.previewer,
     delegation: state.cmsDelgInfoHub.previewer.delegation,
-    matchStatus: state.cmsDelegation.matchStatus,
     listView: state.cmsDelegation.listView,
   }),
   { loadAcceptanceTable, loadBillForMake, acceptDelg,
     delDelg, showPreviewer, setDispStatus, delgAssignRecall,
-    loadCiqTable, openAcceptModal, showDispModal, loadCustPanel }
+    loadCiqTable, openAcceptModal, showDispModal }
 )
 @connectNav({
   depth: 2,
@@ -73,7 +72,6 @@ export default class DelegationList extends Component {
     previewer: PropTypes.object.isRequired,
     delegation: PropTypes.object.isRequired,
     loadCiqTable: PropTypes.func.isRequired,
-    matchStatus: PropTypes.object.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -86,11 +84,6 @@ export default class DelegationList extends Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.saved !== this.props.saved) {
       this.handleDelgListLoad();
-    }
-    if (nextProps.matchStatus !== this.props.matchStatus) {
-      if (nextProps.matchStatus.status === 'noquote') {
-        message.info(formatMsg(this.props.intl, 'info'), 3);
-      }
     }
     if (nextProps.preStatus !== this.props.preStatus) {
       if (nextProps.preStatus === 'accepted') {
@@ -249,7 +242,6 @@ export default class DelegationList extends Component {
 
   handlePreview = (delgNo) => {
     this.props.showPreviewer(this.props.tenantId, delgNo);
-    this.props.loadCustPanel({ delgNo, tenantId: this.props.tenantId });
   }
   handleCreateBtnClick = () => {
     this.context.router.push(`/clearance/${this.props.ietype}/create`);

@@ -69,7 +69,6 @@ const initialState = {
   delgFiles: [],
   delgBill: {
     decl_way_code: '',
-    manual_no: '',
     pack_count: null,
     gross_wt: null,
   },
@@ -109,9 +108,6 @@ const initialState = {
     ciqDispShow: false,
     saved: false,
   },
-  matchStatus: {},
-  brokers: [],
-  relatedDisps: [],
   suppliers: [],
 };
 
