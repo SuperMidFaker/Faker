@@ -4,7 +4,6 @@ import { Form, Row, Col, Button, message } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
 import BasicForm from './forms/basicForm';
-import SubForm from './forms/SubForm';
 import UploadGroup from './forms/attachmentUpload';
 import { createDelegationByCCB } from 'common/reducers/cmsDelegation';
 import { DELG_SOURCE } from 'common/constants';
@@ -52,25 +51,7 @@ export default class AcceptanceCreate extends Component {
     this.props.form.validateFields((errors) => {
       if (!errors) {
         const { type, tenantId, loginId, username, tenantName, formData } = this.props;
-        const formdatas = this.props.form.getFieldsValue();
-        const subformArray = [];
-        let weight = 0;
-        let pieces = 0;
-        for (const i of formdatas.keys) {
-          subformArray.push({
-            decl_way_code: formdatas[`decl_way_code_${i}`],
-            manual_no: formdatas[`manual_no_${i}`],
-            pack_count: formdatas[`pack_count_${i}`],
-            gross_wt: formdatas[`gross_wt_${i}`],
-            remark: formdatas[`remark_${i}`],
-          });
-          weight += Number(formdatas[`gross_wt_${i}`]);
-          pieces += Number(formdatas[`pack_count_${i}`]);
-        }
         const delegation = { ...formData, ...this.props.form.getFieldsValue() };
-        delegation.weight = weight;
-        delegation.pieces = pieces;
-        delegation.subforms = subformArray;
         this.props.createDelegationByCCB({
           delegation, tenantId, loginId, username,
           ietype: type === 'import' ? 0 : 1, source: DELG_SOURCE.consigned,
@@ -120,11 +101,10 @@ export default class AcceptanceCreate extends Component {
           <div className="page-body card-wrapper">
             <Form horizontal>
               <Row gutter={16}>
-                <Col sm={18}>
+                <Col sm={16}>
                   <BasicForm form={form} ieType={type} partnershipType="CCB" />
-                  <SubForm form={form} ietype={type} />
                 </Col>
-                <Col sm={6}>
+                <Col sm={8}>
                   <UploadGroup onFileListUpdate={this.handleUploadFiles} />
                 </Col>
               </Row>

@@ -4,7 +4,6 @@ import { Form, Col, Button, Row, message } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
 import BasicForm from './forms/basicForm';
-import SubForm from './forms/SubForm';
 import UploadGroup from './forms/attachmentUpload';
 import { editDelegation } from 'common/reducers/cmsDelegation';
 import { intlShape, injectIntl } from 'react-intl';
@@ -49,19 +48,7 @@ export default class AcceptanceEdit extends Component {
       if (!errors) {
         const { type, formData } = this.props;
         const { addedFiles, removedFiles } = this.state;
-        const formdatas = this.props.form.getFieldsValue();
-        const subformArray = [];
-        for (const i of formdatas.keys) {
-          subformArray.push({
-            decl_way_code: formdatas[`decl_way_code_${i}`],
-            manual_no: formdatas[`manual_no_${i}`],
-            pack_count: formdatas[`pack_count_${i}`],
-            gross_wt: formdatas[`gross_wt_${i}`],
-            remark: formdatas[`remark_${i}`],
-          });
-        }
         const delegation = { ...formData, ...this.props.form.getFieldsValue() };
-        delegation.subforms = subformArray;
         this.props.editDelegation({
           delegation, addedFiles, removedFiles, patnershipType: 'CCB',
           accepted: isAccepted, ietype: type === 'import' ? 0 : 1,
@@ -102,9 +89,10 @@ export default class AcceptanceEdit extends Component {
           <span>修改委托</span>
         </header>
         <div className="top-bar-tools">
-          <Button size="large" type="primary"
-            onClick={this.handleSaveBtnClick} loading={submitting}
-          >
+          <Button size="large" type="ghost" onClick={this.handleCancelBtnClick}>
+            {this.msg('cancel')}
+          </Button>
+          <Button size="large" type="primary" onClick={this.handleSaveBtnClick} loading={submitting}>
             {this.msg('save')}
           </Button>
         </div>
@@ -112,11 +100,10 @@ export default class AcceptanceEdit extends Component {
           <div className="page-body card-wrapper">
             <Form horizontal form={form}>
               <Row gutter={16}>
-                <Col sm={18}>
+                <Col sm={16}>
                   <BasicForm form={form} ieType={type} partnershipType="CCB" />
-                  <SubForm form={form} ietype={type} />
                 </Col>
-                <Col sm={6}>
+                <Col sm={8}>
                   <UploadGroup onFileUpload={this.handleUploadFiles} onFileRemove={this.handleFileRemove} />
                 </Col>
               </Row>

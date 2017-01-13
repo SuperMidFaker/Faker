@@ -113,10 +113,11 @@ export class RelationAutoCompSelect extends React.Component {
         <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} label={label} required>
           <Row>
             <Col span="8">
-              <FormItem>
+              <FormItem style={{ marginBottom: 0 }}>
                 {disabled ?
                   <Input disabled value={initialCodeValue} />
                   : getFieldDecorator(codeField, {
+                    initialValue: initialCodeValue,
                     rules: codeRules,
                     onChange: this.handleInputChange,
                   })(<Select
@@ -140,6 +141,7 @@ export class RelationAutoCompSelect extends React.Component {
                   <Input disabled value={initialNameValue} /> :
                   getFieldDecorator(nameField, {
                     rules: nameRules,
+                    initialValue: initialNameValue,
                   })(<Input placeholder={this.msg('relationName')} disabled={disabled} />)}
               </FormItem>
             </Col>
@@ -465,7 +467,7 @@ function FeeFormItem(props) {
           <FormInput {...feeProps} style={{ marginBottom: 0 }} />
         </Col>
         <Col sm={24} md={12} style={{ paddingLeft: 2 }}>
-          <FormLocalSearchSelect {...currencyProps} style={{ marginBottom: 0 }} />
+          <FormLocalSearchSelect {...currencyProps} placeholder="币制" style={{ marginBottom: 0 }} />
         </Col>
       </Row>
     </FormItem>

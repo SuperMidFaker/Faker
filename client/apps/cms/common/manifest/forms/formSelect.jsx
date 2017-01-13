@@ -10,6 +10,7 @@ export class FormLocalSearchSelect extends React.Component {
     label: PropTypes.string,
     col: PropTypes.number,
     field: PropTypes.string,
+    placeholder: PropTypes.string,
     disabled: PropTypes.bool,
     required: PropTypes.bool,
     rules: PropTypes.array,
@@ -24,7 +25,7 @@ export class FormLocalSearchSelect extends React.Component {
     const {
       outercol, label, col, field, required, disabled,
       getFieldDecorator, rules, fieldProps, formData, options = [],
-      searchKeyFn,
+      searchKeyFn, placeholder,
     } = this.props;
     const initialValue = formData && formData[field];
     const filterOpt = options.filter(opt => opt.value === initialValue)[0];
@@ -38,6 +39,7 @@ export class FormLocalSearchSelect extends React.Component {
               showSearch={!!searchKeyFn}
               showArrow
               optionFilterProp={searchKeyFn ? 'search' : undefined}
+              placeholder={placeholder}
             >
               {
               options.map(opt => (
@@ -84,7 +86,7 @@ export class FormRemoteSearchSelect extends React.Component {
     return (
       <Col span={outercol}>
         <FormItem labelCol={{ span: col }} wrapperCol={{ span: 24 - col }} label={label}
-          required={required}
+          required={required} style={{ marginBottom: 0 }}
         >
           {disabled ? <Input disabled value={filterOpt && filterOpt.text} /> :
             getFieldDecorator(field, { rules, initialValue, ...fieldProps })(

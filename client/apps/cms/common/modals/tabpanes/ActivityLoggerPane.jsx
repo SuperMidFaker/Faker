@@ -39,6 +39,7 @@ const ACTIVITY_DESC_MAP = {
   state => ({
     tenantId: state.account.tenantId,
     previewer: state.cmsDelgInfoHub.previewer,
+    tabKey: state.cmsDelgInfoHub.tabKey,
     declHeadsPane: state.cmsDeclare.decl_heads,
   }), {
     exchangeBlNo, loadDeclHead, setInspect, loadCustPanel, showPreviewer, updateCertParam,
@@ -50,6 +51,7 @@ export default class ActivityLoggerPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
+    tabKey: PropTypes.string.isRequired,
   }
   state = {
     tabKey: 'message',
@@ -85,15 +87,15 @@ export default class ActivityLoggerPane extends React.Component {
         this.props.showPreviewer(
             this.props.tenantId,
             this.props.previewer.delgNo,
-            this.props.previewer.tabKey
+            this.props.tabKey
           );
-        if (field === 'hgcy' && this.props.previewer.tabKey === 'customsDecl') {
+        if (field === 'hgcy' && this.props.tabKey === 'customsDecl') {
           this.props.loadCustPanel({
             delgNo: this.props.previewer.delgNo,
             tenantId: this.props.tenantId,
           });
         }
-        if ((field === 'pzcy' || field === 'djcy') && this.props.previewer.tabKey === 'ciqDecl') {
+        if ((field === 'pzcy' || field === 'djcy') && this.props.tabKey === 'ciqDecl') {
           this.props.loadDeclCiqPanel(this.props.previewer.delgNo, this.props.tenantId);
         }
       }
@@ -115,7 +117,7 @@ export default class ActivityLoggerPane extends React.Component {
         this.props.showPreviewer(
           this.props.tenantId,
           this.props.previewer.delgNo,
-          this.props.previewer.tabKey
+          this.props.tabKey
         );
       }
     });
@@ -128,7 +130,7 @@ export default class ActivityLoggerPane extends React.Component {
         this.props.showPreviewer(
             this.props.tenantId,
             this.props.previewer.delgNo,
-            this.props.previewer.tabKey
+            this.props.tabKey
           );
       }
     });

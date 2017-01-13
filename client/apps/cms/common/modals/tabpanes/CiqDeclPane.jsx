@@ -12,9 +12,9 @@ import CiqDispModal from '../ciqDispModal';
 @connect(
   state => ({
     delgNo: state.cmsDelgInfoHub.previewer.delgNo,
-    ciqdecl: state.cmsDelgInfoHub.previewer.ciqdecl,
+    ciqPanel: state.cmsDelgInfoHub.ciqPanel,
     tenantId: state.account.tenantId,
-    tabKey: state.cmsDelgInfoHub.previewer.tabKey,
+    tabKey: state.cmsDelgInfoHub.tabKey,
     delegation: state.cmsDelgInfoHub.previewer.delegation,
   }),
   { loadDeclCiqPanel, openAcceptModal, loadciqSups, setDispStatus }
@@ -25,8 +25,8 @@ export default class CiqDeclPane extends React.Component {
     delgNo: PropTypes.string.isRequired,
     tenantId: PropTypes.number.isRequired,
     delegation: PropTypes.object,
-    ciqdecl: PropTypes.shape({
-      inspection_name: PropTypes.string,
+    ciqPanel: PropTypes.shape({
+      ciq_name: PropTypes.string,
       acpt_time: PropTypes.date,
       source: PropTypes.number,
       status: PropTypes.number,
@@ -48,7 +48,7 @@ export default class CiqDeclPane extends React.Component {
   handleOperatorAssign = () => {
     this.props.openAcceptModal({
       tenantId: this.props.tenantId,
-      dispatchIds: [this.props.ciqdecl.id],
+      dispatchIds: [this.props.ciqPanel.id],
       delg_no: this.props.delgNo,
       type: 'ciq',
       opt: 'operator',
@@ -59,7 +59,7 @@ export default class CiqDeclPane extends React.Component {
     this.props.setDispStatus({ ciqDispShow: true });
   }
   render() {
-    const { ciqdecl, delegation, tenantId } = this.props;
+    const { ciqPanel, delegation, tenantId } = this.props;
     const columns = [{
       title: '统一编号',
       dataIndex: 'pre_entry_seq_no',
@@ -103,29 +103,29 @@ export default class CiqDeclPane extends React.Component {
           <Row gutter={8} style={{ padding: 8 }}>
             <Col span="12">
               <InfoItem labelCol={{ span: 3 }} label="报检服务商"
-                field={ciqdecl.ciq_name} fieldCol={{ span: 9 }}
+                field={ciqPanel.ciq_name} fieldCol={{ span: 9 }}
               />
             </Col>
             <Col span="8">
               <InfoItem labelCol={{ span: 3 }} label="受理日期" fieldCol={{ span: 9 }}
-                field={ciqdecl.acpt_time && moment(ciqdecl.acpt_time).format('YYYY.MM.DD HH:mm')}
+                field={ciqPanel.acpt_time && moment(ciqPanel.acpt_time).format('YYYY.MM.DD HH:mm')}
               />
             </Col>
             <Col span="4">
               <InfoItem labelCol={{ span: 3 }} label="操作人"
-                field={ciqdecl.recv_login_name} fieldCol={{ span: 9 }}
+                field={ciqPanel.recv_login_name} fieldCol={{ span: 9 }}
               />
             </Col>
           </Row>
           <div className="card-footer">
             <Badge status="warning" text="报检待处理" />
             <div className="toolbar-right">
-              {delegation.appointed_option === 0 && ciqdecl.ciq_tenant_id === tenantId &&
+              {delegation.appointed_option === 0 && ciqPanel.ciq_tenant_id === tenantId &&
                 <Tooltip title="分配报检供应商">
                   <Button type="ghost" onClick={this.handleCiqAssign}><Icon type="share-alt" /> 分配</Button>
                 </Tooltip>
               }
-              {(ciqdecl.type === 1 || ciqdecl.ciq_tenant_id === -1) &&
+              {(ciqPanel.type === 1 || ciqPanel.ciq_tenant_id === -1) &&
                 <Tooltip title="指派操作人员">
                   <Button type="ghost" shape="circle" onClick={this.handleOperatorAssign}><Icon type="user" /></Button>
                 </Tooltip>
@@ -134,7 +134,7 @@ export default class CiqDeclPane extends React.Component {
           </div>
         </Card>
         <Card bodyStyle={{ padding: 0 }}>
-          <Table size="middle" columns={columns} pagination={false} dataSource={ciqdecl.ciqlist} scroll={{ x: 580 }} />
+          <Table size="middle" columns={columns} pagination={false} dataSource={ciqPanel.ciqlist} scroll={{ x: 580 }} />
         </Card>
         <CiqDispModal />
       </div>

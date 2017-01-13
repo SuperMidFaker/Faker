@@ -3,7 +3,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Form, Select, Icon, Input, InputNumber, Card, Col, Row, Radio, Tooltip } from 'antd';
 import { setClientForm } from 'common/reducers/cmsDelegation';
-import { GOODSTYPES, TRANS_MODE, CLAIM_DO_AWB } from 'common/constants';
+import { GOODSTYPES, TRANS_MODE, CLAIM_DO_AWB, DECL_I_TYPE, DECL_E_TYPE } from 'common/constants';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
@@ -37,6 +37,7 @@ function getFieldInits(aspect, formData) {
   state => ({
     clients: state.cmsDelegation.formRequire.clients,
     fieldInits: getFieldInits(state.account.aspect, state.cmsDelegation.formData),
+    delgBill: state.cmsDelegation.delgBill,
   }),
   { setClientForm }
 )
@@ -47,6 +48,8 @@ export default class BasicForm extends Component {
     fieldInits: PropTypes.object.isRequired,
     clients: PropTypes.array.isRequired,
     setClientForm: PropTypes.func.isRequired,
+    delgBill: PropTypes.object.isRequired,
+    ietype: PropTypes.string.isRequired,
   }
   msg = key => formatMsg(this.props.intl, key);
   handleClientChange = (value) => {
@@ -63,7 +66,8 @@ export default class BasicForm extends Component {
     return value;
   }
   render() {
-    const { form: { getFieldDecorator, getFieldValue }, fieldInits, clients, partnershipType } = this.props;
+    const { form: { getFieldDecorator, getFieldValue }, fieldInits, clients, partnershipType, ietype, delgBill } = this.props;
+    const DECL_TYPE = ietype === 'import' ? DECL_I_TYPE : DECL_E_TYPE;
     let customerName = {
       display: '',
       required: true,
@@ -109,8 +113,8 @@ export default class BasicForm extends Component {
     return (
       <Card title={this.msg('delgInfo')} bodyStyle={{ padding: 16 }}>
         <Row>
-          <Col sm={8}>
-            <FormItem label={this.msg('delgClient')} {...formItemLayout} style={{ display: customerName.display }}>
+          <Col sm={16}>
+            <FormItem label={this.msg('delgClient')} labelCol={{ span: 3 }} wrapperCol={{ span: 21 }} style={{ display: customerName.display }}>
               {getFieldDecorator('customer_name', {
                 rules: [{
                   required: customerName.required, message: '客户名称必填',
@@ -131,6 +135,22 @@ export default class BasicForm extends Component {
             </FormItem>
           </Col>
           <Col sm={8}>
+            <FormItem label={this.msg('declareWay')} {...formItemLayout}>
+              {getFieldDecorator('decl_way_code', {
+                rules: [{ required: true, message: '报关类型必选' }],
+                initialValue: delgBill.decl_way_code,
+              })(<Select>
+                {
+                  DECL_TYPE.map(dw =>
+                    <Option value={dw.key} key={dw.key}>{dw.value}</Option>
+                  )
+                }
+              </Select>)}
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col sm={8}>
             <FormItem label={this.msg('orderNo')} {...formItemLayout}>
               {getFieldDecorator('order_no', {
                 initialValue: fieldInits.order_no,
@@ -141,6 +161,13 @@ export default class BasicForm extends Component {
             <FormItem label={this.msg('invoiceNo')} {...formItemLayout}>
               {getFieldDecorator('invoice_no', {
                 initialValue: fieldInits.invoice_no,
+              })(<Input />)}
+            </FormItem>
+          </Col>
+          <Col sm={8}>
+            <FormItem label={this.msg('delgInternalNo')} {...formItemLayout}>
+              {getFieldDecorator('ref_external_no', {
+                initialValue: fieldInits.ref_external_no,
               })(<Input />)}
             </FormItem>
           </Col>
@@ -225,28 +252,24 @@ export default class BasicForm extends Component {
             </FormItem>
           </Col>
           <Col sm={8}>
-            <FormItem label={this.msg('delgPieces')} {...formItemLayout}>
+            <FormItem label={this.msg('packageNum')} {...formItemLayout}>
               {getFieldDecorator('pieces', {
-                initialValue: fieldInits.pieces,
+                initialValue: fieldInits.pieces || 1,
               })(<InputNumber min={1} max={100000} style={{ width: '100%' }} />)}
             </FormItem>
           </Col>
           <Col sm={8}>
-            <FormItem label={this.msg('delgWeight')} {...formItemLayout}>
+            <FormItem label={this.msg('delgGrossWt')} {...formItemLayout}>
               {getFieldDecorator('weight', {
                 initialValue: fieldInits.weight,
+                rules: [{
+                  required: customerName.required, message: '毛重必填',
+                }],
               })(<Input addonAfter="千克" />)}
             </FormItem>
           </Col>
         </Row>
         <Row>
-          <Col sm={8}>
-            <FormItem label={this.msg('delgInternalNo')} {...formItemLayout}>
-              {getFieldDecorator('ref_external_no', {
-                initialValue: fieldInits.ref_external_no,
-              })(<Input />)}
-            </FormItem>
-          </Col>
           <Col sm={16}>
             <FormItem label="备注" labelCol={{ span: 3 }} wrapperCol={{ span: 21 }}>
               {getFieldDecorator('remark', {

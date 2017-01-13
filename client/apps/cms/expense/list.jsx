@@ -9,7 +9,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import { loadExpense, loadCurrencies,
   loadAdvanceParties, loadPartnersForFilter } from 'common/reducers/cmsExpense';
-import { showPreviewer } from 'common/reducers/cmsDelegation';
+import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import moment from 'moment';
@@ -417,11 +417,10 @@ export default class ExpenseList extends Component {
       }, {
         title: this.msg('invoiceNo'),
         dataIndex: 'invoice_no',
-        width: 200,
+        width: 180,
       }, {
         title: this.msg('bLNo'),
         dataIndex: 'bl_wb_no',
-        width: 200,
       }, {
         title: this.msg('acptTime'),
         dataIndex: 'acpt_time',
@@ -466,10 +465,13 @@ export default class ExpenseList extends Component {
       },
     ];
     let curColumns = columns;
+    let tableWidth = 1880;
     if (listFilter.viewStatus === 'revenueOnly') {
       curColumns = columns.filter(colm => colm.dataIndex !== 'cost' && colm.dataIndex !== 'profit' && colm.dataIndex !== 'agent_name');
+      tableWidth = 1300;
     } else if (listFilter.viewStatus === 'costOnly') {
       curColumns = columns.filter(colm => colm.dataIndex !== 'revenue' && colm.dataIndex !== 'profit' && colm.dataIndex !== 'send_name');
+      tableWidth = 1300;
     }
     this.dataSource.remotes = expslist;
     return (
@@ -521,7 +523,7 @@ export default class ExpenseList extends Component {
             </div>
             <div className="panel-body table-panel group-header">
               <Table rowSelection={rowSelection} columns={curColumns} dataSource={this.dataSource} loading={expslist.loading}
-                bordered scroll={{ x: 1860 }} rowKey="delg_no"
+                bordered scroll={{ x: tableWidth }} rowKey="delg_no"
               />
             </div>
           </div>
