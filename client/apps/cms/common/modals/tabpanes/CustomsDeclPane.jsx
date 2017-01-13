@@ -1,14 +1,13 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Card, Col, Collapse, Icon, Row, Table, Tag, Tooltip, message } from 'antd';
+import { Button, Card, Col, Icon, Row, Table, Tag, Tooltip, message } from 'antd';
 import moment from 'moment';
 import { DECL_I_TYPE, DECL_E_TYPE, CMS_DELEGATION_STATUS } from 'common/constants';
 import { openAcceptModal, loadBillForMake } from 'common/reducers/cmsDelegation';
 import { loadCustPanel } from 'common/reducers/cmsDelgInfoHub';
 import InfoItem from 'client/components/InfoItem';
 
-const Panel = Collapse.Panel;
 
 @injectIntl
 @connect(
@@ -111,14 +110,6 @@ export default class CustomsDeclPane extends React.Component {
     const bill = customsPanel.bill;
     const tableDatas = (bill.children || []);
     const declTypes = DECL_I_TYPE.concat(DECL_E_TYPE).filter(dt => dt.key === bill.decl_way_code);
-    const panelHeader = (
-      <div>
-        <span>{declTypes.length > 0 ? declTypes[0].value : ''}：{bill.pack_count}件/{bill.gross_wt}千克</span>
-        <div className="toolbar-right">
-          {this.button()}
-        </div>
-      </div>
-    );
     const columns = [{
       title: '统一编号',
       dataIndex: 'pre_entry_seq_no',
@@ -175,11 +166,29 @@ export default class CustomsDeclPane extends React.Component {
           </div>}
         </Card>
         <Card bodyStyle={{ padding: 0 }}>
-          <Collapse defaultActiveKey={bill.key}>
-            <Panel header={panelHeader} key={bill.key} className="table-panel" >
-              <Table size="small" columns={columns} pagination={false} dataSource={tableDatas} scroll={{ x: 580 }} />
-            </Panel>
-          </Collapse>
+          <Row gutter={8} style={{ padding: 8 }}>
+            <Col span="12">
+              <InfoItem labelCol={{ span: 3 }} label="报关类型"
+                field={declTypes.length > 0 ? declTypes[0].value : ''} fieldCol={{ span: 9 }}
+              />
+            </Col>
+            <Col span="6">
+              <InfoItem labelCol={{ span: 3 }} label="件数" fieldCol={{ span: 9 }}
+                field={bill.pack_count}
+              />
+            </Col>
+            <Col span="6">
+              <InfoItem labelCol={{ span: 3 }} label="毛重"
+                field={bill.gross_wt} fieldCol={{ span: 9 }}
+              />
+            </Col>
+          </Row>
+          <Table size="small" columns={columns} pagination={false} dataSource={tableDatas} scroll={{ x: 580 }} />
+          <div className="card-footer">
+            <div className="toolbar-right">
+              {this.button()}
+            </div>
+          </div>
         </Card>
       </div>
     );
