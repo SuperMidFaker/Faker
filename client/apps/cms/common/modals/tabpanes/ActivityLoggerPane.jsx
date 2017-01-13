@@ -317,21 +317,21 @@ export default class ActivityLoggerPane extends React.Component {
                     case 'hgcy':
                     case 'pzcy':
                     case 'djcy': {
-                      const inspect = JSON.parse(activity.note);
+                      const inspect = parseInt(activity.note, 10);
                       let inspectStatusTxt;
-                      if (inspect.status === INSPECT_STATUS.inspecting) {
+                      if (inspect === INSPECT_STATUS.inspecting) {
                         inspectStatusTxt = '查验中';
-                      } else if (inspect.status === INSPECT_STATUS.finish) {
+                      } else if (inspect === INSPECT_STATUS.finish) {
                         inspectStatusTxt = '通过';
                       }
                       return (<Timeline.Item dot={<Icon type="exception" />} color="red" key={activity.id}>
                         <Card title={<span>{ACTIVITY_DESC_MAP[activity.type].text}
                           <small className="timestamp">{moment(activity.created_date).format('YYYY-MM-DD HH:mm')}</small></span>}
                           extra={<span className="toolbar-right">
-                            {inspect.status !== INSPECT_STATUS.finish &&
+                            {inspect !== INSPECT_STATUS.finish &&
                             <Tooltip title="标记查验通过" placement="left">
                               <Button type="primary" shape="circle" size="small" icon="check" onClick={() => this.handleInspectSave({
-                                preEntrySeqNo: inspect.pre_entry_no, delgNo: previewer.delgNo, enabled: 'passed', field: activity.type,
+                                preEntrySeqNo: activity.field, delgNo: previewer.delgNo, enabled: 'passed', field: activity.type,
                               })}
                               />
                             </Tooltip>
@@ -339,7 +339,7 @@ export default class ActivityLoggerPane extends React.Component {
                             <Popover trigger="click" content={
                               <div>
                                 <a className="mdc-text-red" onClick={() =>
-                                  this.handleInspectSave({ preEntrySeqNo: inspect.pre_entry_no, delgNo: previewer.delgNo,
+                                  this.handleInspectSave({ preEntrySeqNo: activity.field, delgNo: previewer.delgNo,
                                     enabled: false, field: activity.type })}
                                 >
                                   删除
@@ -351,7 +351,7 @@ export default class ActivityLoggerPane extends React.Component {
                         >
                           <Row>
                             <Col span={12}>
-                              <InfoItem label="统一编号" field={inspect.pre_entry_no} />
+                              <InfoItem label="统一编号" field={activity.field} />
                             </Col>
                             <Col span={12}>
                               <InfoItem label="查验状态" field={inspectStatusTxt} />
@@ -361,13 +361,14 @@ export default class ActivityLoggerPane extends React.Component {
                       </Timeline.Item>);
                     }
                     case 'cert': {
-                      const certInfo = JSON.parse(activity.note);
-                      const certText = CERTS.filter(ct => ct.value === certInfo.cert)[0].text;
+                      const certKey = activity.field;
+                      const certQty = activity.note;
+                      const certText = CERTS.filter(ct => ct.value === certKey)[0].text;
                       return (
                         <Timeline.Item dot={<Icon type="addfile" />} key={activity.id}>
                           <ActivityEditCard title="办证" createdDate={activity.created_date} leftLabel="办证类别"
-                            leftValue={certText} rightLabel="型号数量" rightValue={certInfo.qty}
-                            onSave={this.handleSaveCert} field={certInfo.cert}
+                            leftValue={certText} rightLabel="型号数量" rightValue={certQty}
+                            onSave={this.handleSaveCert} field={certKey}
                           />
                         </Timeline.Item>
                       );
