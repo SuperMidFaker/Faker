@@ -5,7 +5,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege from 'client/common/decorators/withPrivilege';
-import { loadForm, loadFormRequire } from 'common/reducers/shipment';
+import { loadForm, loadFormRequire, onFormFieldsChange } from 'common/reducers/shipment';
 import { loadTable, saveEdit } from 'common/reducers/transport-acceptance';
 import ClientInfo from '../shipment/forms/clientInfo';
 import ConsignInfo from '../shipment/forms/consign-info';
@@ -45,8 +45,9 @@ function fetchData({ state, dispatch, params, cookie }) {
     sortOrder: state.transportAcceptance.table.sortOrder,
     pageSize: state.transportAcceptance.table.shipmentlist.pageSize,
     current: state.transportAcceptance.table.shipmentlist.current,
+    formRequireJudgeParams: state.shipment.formRequireJudgeParams, // @Form.create... 这一层使用
   }),
-  { loadTable, saveEdit })
+  { loadTable, saveEdit, onFormFieldsChange })
 @connectNav({
   depth: 3,
   text: props => props.formData.shipmt_no,
@@ -55,7 +56,7 @@ function fetchData({ state, dispatch, params, cookie }) {
   lifecycle: 'componentWillReceiveProps',
 })
 @withPrivilege({ module: 'transport', feature: 'shipment', action: 'edit' })
-@Form.create()
+@Form.create({ onFieldsChange: (props, fields) => props.onFormFieldsChange(props, fields) })
 export default class ShipmentEdit extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
