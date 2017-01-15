@@ -12,7 +12,7 @@ export default class ModuleCRM extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     location: locationShape.isRequired,
-    children: PropTypes.object.isRequired,
+    children: PropTypes.node,
   };
   state = {
     linkMenus: [],

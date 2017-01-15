@@ -20,7 +20,7 @@ export default class Clearance extends React.Component {
     intl: intlShape.isRequired,
     privileges: PropTypes.object.isRequired,
     location: locationShape.isRequired,
-    children: PropTypes.object.isRequired,
+    children: PropTypes.node,
   };
   static contextTypes = {
     router: routerShape.isRequired,
