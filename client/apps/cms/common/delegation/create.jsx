@@ -89,7 +89,7 @@ export default class AcceptanceCreate extends Component {
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Header className="top-bar" key="header">
-          <span>{this.msg('createDelegation')}</span>
+          <span>{this.props.type === 'import' ? this.msg('newImportDelg') : this.msg('newExportDelg')}</span>
           <div className="top-bar-tools">
             <Button size="large" type="ghost" onClick={this.handleCancelBtnClick}>
               {this.msg('cancel')}

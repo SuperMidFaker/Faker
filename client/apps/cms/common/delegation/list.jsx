@@ -520,7 +520,7 @@ export default class DelegationList extends Component {
             <div className="toolbar">
               <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
                 <Button type="primary" onClick={this.handleCreateBtnClick} icon="plus" className="btn-success">
-                  {this.msg('delgNew')}
+                  {this.props.ietype === 'import' ? this.msg('newImportDelg') : this.msg('newExportDelg')}
                 </Button>
               </PrivilegeCover>
               <div className="toolbar-right">

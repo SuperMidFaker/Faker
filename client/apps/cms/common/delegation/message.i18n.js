@@ -301,9 +301,13 @@ export default defineMessages({
     id: 'cms.delegation.modal.make.confirm',
     defaultMessage: '已接受报关委托，开始制单？',
   },
-  delgNew: {
-    id: 'cms.delegation.delg.new',
-    defaultMessage: '新建清关委托',
+  newImportDelg: {
+    id: 'cms.delegation.import.new',
+    defaultMessage: '新建进口清关',
+  },
+  newExportDelg: {
+    id: 'cms.delegation.export.new',
+    defaultMessage: '新建出口清关',
   },
   delgSaveConfirm: {
     id: 'cms.delegation.delgsave.confirm',

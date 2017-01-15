@@ -7,7 +7,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { fillEntryId } from 'common/reducers/cmsDelegation';
 import SheetHeadPanel from '../manifest/forms/SheetHeadPanel';
 import SheetBodyPanel from '../manifest/forms/SheetBodyPanel';
-import ExtraDock from '../modals/extraDock';
+import SheetExtraPanel from '../manifest/forms/SheetExtraPanel';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 
@@ -140,14 +140,15 @@ export default class CustomsDeclEditor extends React.Component {
             defaultCollapsed
             collapsible
             collapsed={this.state.collapsed}
-            width={300}
+            width={320}
             collapsedWidth={0}
             className="right-sider"
           >
-            sider
+            <div className="right-sider-panel">
+              <SheetExtraPanel />
+            </div>
           </Sider>
         </Layout>
-        <ExtraDock visible={this.state.visible} />
       </QueueAnim>
     );
   }

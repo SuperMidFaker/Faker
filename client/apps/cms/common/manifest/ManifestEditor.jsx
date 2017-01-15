@@ -7,7 +7,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { addNewBillBody, delBillBody, editBillBody, saveBillHead, openMergeSplitModal } from 'common/reducers/cmsManifest';
 import SheetHeadPanel from './forms/SheetHeadPanel';
 import SheetBodyPanel from './forms/SheetBodyPanel';
-import ExtraDock from '../modals/extraDock';
+import SheetExtraPanel from './forms/SheetExtraPanel';
 import MergeSplitModal from './modals/mergeSplit';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -146,15 +146,16 @@ export default class ManifestEditor extends React.Component {
             defaultCollapsed
             collapsible
             collapsed={this.state.collapsed}
-            width={300}
+            width={320}
             collapsedWidth={0}
             className="right-sider"
           >
-            sider
+            <div className="right-sider-panel">
+              <SheetExtraPanel />
+            </div>
           </Sider>
         </Layout>
         <MergeSplitModal />
-        <ExtraDock visible={this.state.visible} />
       </QueueAnim>
     );
   }
