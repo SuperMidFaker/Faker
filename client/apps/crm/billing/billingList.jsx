@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
-import { Button, message, Popconfirm } from 'antd';
+import { Button, message, Popconfirm, Layout } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -14,10 +14,10 @@ import { loadBillings, sendBilling, changeBillingsFilter, removeBilling, loadPar
 import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES, CRM_BILLING_STATUS } from 'common/constants';
 import CancelChargeModal from './modals/cancelChargeModal';
 import TrimSpan from 'client/components/trimSpan';
-// import { createFilename } from 'client/util/dataTransform';
 import SearchBar from 'client/components/search-bar';
 
 const formatMsg = format(messages);
+const { Header, Content } = Layout;
 function fetchData({ state, dispatch }) {
   return dispatch(loadBillings({
     tenantId: state.account.tenantId,
@@ -294,15 +294,15 @@ export default class BillingList extends React.Component {
     };
     return (
       <div>
-        <header className="top-bar">
+        <Header className="top-bar">
           <span>{this.msg('billing')}</span>
-        </header>
-        <div className="top-bar-tools">
-          <SearchBar placeholder="输入账单名称搜索" onInputSearch={this.handleSearchInput}
-            value={this.props.billings.searchValue}
-          />
-        </div>
-        <div className="main-content">
+          <div className="top-bar-tools">
+            <SearchBar placeholder="输入账单名称搜索" onInputSearch={this.handleSearchInput}
+              value={this.props.billings.searchValue} size="large"
+            />
+          </div>
+        </Header>
+        <Content className="main-content">
           <div className="page-body">
             <div className="toolbar">
               <Button type="primary" icon="plus" onClick={this.handleAddBtnClicked}>{this.msg('createBilling')}</Button>
@@ -319,7 +319,7 @@ export default class BillingList extends React.Component {
               billingId={this.state.billingId} fromId={this.state.fromId} totalCharge={this.state.totalCharge} handleOk={this.handleTableLoad}
             />
           </div>
-        </div>
+        </Content>
       </div>
 
     );

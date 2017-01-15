@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import {
-  Icon, Button, Form, Input, Row, Col, Select, Tabs, Upload, message,
+  Icon, Button, Form, Input, Row, Col, Layout, Select, Tabs, Upload, message,
   } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import Region from '../../components/region-cascade';
@@ -21,6 +21,7 @@ import containerMessages from 'client/apps/message.i18n';
 const formatMsg = format(messages);
 const formatGlobalMsg = format(globalMessages);
 const formatContainerMsg = format(containerMessages);
+const { Content } = Layout;
 const Option = Select.Option;
 const FormItem = Form.Item;
 const TabPane = Tabs.TabPane;
@@ -280,7 +281,7 @@ export default class CorpInfo extends React.Component {
   render() {
     const msg = descriptor => formatMsg(this.props.intl, descriptor);
     return (
-      <div className="main-content">
+      <Content className="main-content">
         <div className="page-body">
           <Tabs defaultActiveKey="tab1">
             <TabPane tab={msg('basicInfo')} key="tab1">{this.renderBasicForm()}</TabPane>
@@ -289,6 +290,6 @@ export default class CorpInfo extends React.Component {
             </TabPane>
           </Tabs>
         </div>
-      </div>);
+      </Content>);
   }
 }

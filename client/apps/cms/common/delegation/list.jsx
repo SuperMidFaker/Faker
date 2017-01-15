@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Badge, Breadcrumb, Button, Popconfirm, Radio, Select, Tag, Tooltip, message } from 'antd';
+import { Badge, Breadcrumb, Button, Layout, Popconfirm, Radio, Select, Tag, Tooltip, message } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import TrimSpan from 'client/components/trimSpan';
@@ -22,6 +22,7 @@ import messages from './message.i18n';
 import { format } from 'client/common/i18n/helpers';
 
 const formatMsg = format(messages);
+const { Header, Content } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const Option = Select.Option;
@@ -490,7 +491,7 @@ export default class DelegationList extends Component {
     }
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <header className="top-bar" key="header">
+        <Header className="top-bar" key="header">
           <Breadcrumb>
             <Breadcrumb.Item>
               {this.props.ietype === 'import' ? this.msg('importClearance') : this.msg('exportClearance')}
@@ -499,7 +500,7 @@ export default class DelegationList extends Component {
               {this.msg('delegationManagement')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <RadioGroup value={listFilter.status} onChange={this.handleDelegationFilter}>
+          <RadioGroup value={listFilter.status} onChange={this.handleDelegationFilter} size="large">
             <RadioButton value="all">{this.msg('all')}</RadioButton>
             <RadioButton value="accept">{this.msg('accepting')}</RadioButton>
             <RadioButton value="undeclared">{this.msg('processing')}</RadioButton>
@@ -507,14 +508,14 @@ export default class DelegationList extends Component {
             <RadioButton value="finished">{this.msg('releasing')}</RadioButton>
           </RadioGroup>
           <span />
-          <RadioGroup value={listFilter.status} onChange={this.handleCiqFilter}>
+          <RadioGroup value={listFilter.status} onChange={this.handleCiqFilter} size="large">
             <RadioButton value="ciqPending">{this.msg('ciq')}</RadioButton>
           </RadioGroup>
-        </header>
-        <div className="top-bar-tools">
-          <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
-        </div>
-        <div className="main-content" key="main">
+          <div className="top-bar-tools">
+            <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} />
+          </div>
+        </Header>
+        <Content className="main-content" key="main">
           <div className="page-body">
             <div className="toolbar">
               <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
@@ -555,7 +556,7 @@ export default class DelegationList extends Component {
               }
             </div>
           </div>
-        </div>
+        </Content>
         <DelegationInfoHubPanel ietype={this.props.ietype} />
       </QueueAnim>
     );

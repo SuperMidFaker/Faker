@@ -1,4 +1,6 @@
 import React, { PropTypes } from 'react';
+import { Layout } from 'antd';
+const { Content } = Layout;
 
 export default class Wrapper extends React.Component {
   static propTypes = {
@@ -7,9 +9,9 @@ export default class Wrapper extends React.Component {
   render() {
     return (
       <div>
-        <div className="main-content">
+        <Content className="main-content">
           {this.props.children}
-        </div>
+        </Content>
       </div>
     );
   }

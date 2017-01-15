@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Popconfirm, Progress, message } from 'antd';
+import { Button, Popconfirm, Progress, message, Layout } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { Link } from 'react-router';
 import QueueAnim from 'rc-queue-anim';
@@ -20,6 +20,8 @@ import TrsShipmtNoColumn from '../common/trsShipmtNoColumn';
 import CcbDelgNoColumn from '../common/ccbDelgNoColumn';
 
 const formatMsg = format(messages);
+const { Header, Content } = Layout;
+
 function fetchData({ state, dispatch }) {
   const promises = [
     dispatch(loadFormRequires({
@@ -287,13 +289,13 @@ export default class ShipmentOrderList extends React.Component {
     });
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <header className="top-bar">
+        <Header className="top-bar">
           <span>{this.msg('shipmentOrders')}</span>
-        </header>
-        <div className="top-bar-tools">
-          <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
-        </div>
-        <div className="main-content" key="main">
+          <div className="top-bar-tools">
+            <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} size="large" />
+          </div>
+        </Header>
+        <Content className="main-content" key="main">
           <div className="page-body">
             <div className="toolbar">
               <Button type="primary" icon="plus" onClick={this.handleCreate}>
@@ -307,7 +309,7 @@ export default class ShipmentOrderList extends React.Component {
               <Table rowSelection={rowSelection} dataSource={dataSource} columns={columns} rowKey="id" loading={loading} scroll={{ x: 1800 }} />
             </div>
           </div>
-        </div>
+        </Content>
         <PreviewPanel />
       </QueueAnim>
     );

@@ -41,8 +41,7 @@ export default class QuoteFormHeader extends Component {
       titleText = `${title.quoteno}-${title.tariff_kind}`;
     }
     return (
-      <header className="top-bar">
-        <span>{titleText}</span>
-      </header>);
+      <span>{titleText}</span>
+    );
   }
 }

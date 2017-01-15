@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Button, DatePicker } from 'antd';
+import { Button, DatePicker, Layout } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
@@ -19,6 +19,7 @@ import TrsShipmtNoColumn from '../common/trsShipmtNoColumn';
 import CcbDelgNoColumn from '../common/ccbDelgNoColumn';
 
 const formatMsg = format(messages);
+const { Header, Content } = Layout;
 const RangePicker = DatePicker.RangePicker;
 
 function fetchData({ state, dispatch }) {
@@ -245,15 +246,15 @@ export default class FeesList extends React.Component {
     const { startDate, endDate } = this.props.fees;
     return (
       <div>
-        <header className="top-bar">
+        <Header className="top-bar">
           <span>{this.msg('fee')}</span>
-        </header>
-        <div className="top-bar-tools">
-          <SearchBar placeholder="输入订单号搜索" onInputSearch={this.handleSearchInput}
-            value={this.props.fees.searchValue}
-          />
-        </div>
-        <div className="main-content">
+          <div className="top-bar-tools">
+            <SearchBar placeholder="输入订单号搜索" onInputSearch={this.handleSearchInput}
+              value={this.props.fees.searchValue} size="large"
+            />
+          </div>
+        </Header>
+        <Content className="main-content">
           <div className="page-body">
             <div className="toolbar">
               <Button onClick={this.handleExportExcel}>{this.msg('export')}</Button>
@@ -270,7 +271,7 @@ export default class FeesList extends React.Component {
               <Table rowSelection={rowSelection} dataSource={dataSource} columns={columns} rowKey="id" scroll={{ x: 1400 }} loading={loading} />
             </div>
           </div>
-        </div>
+        </Content>
         <PreviewPanel stage="billing" />
       </div>
     );

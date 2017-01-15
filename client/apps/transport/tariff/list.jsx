@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Radio, Button, Popconfirm, message } from 'antd';
+import { Radio, Button, Popconfirm, message, Layout } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
@@ -21,7 +21,7 @@ import containerMessages from 'client/apps/message.i18n';
 
 const formatMsg = format(messages);
 const formatContainerMsg = format(containerMessages);
-
+const { Header, Content } = Layout;
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
@@ -467,7 +467,7 @@ export default class TariffList extends React.Component {
     }
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <header className="top-bar" key="header">
+        <Header className="top-bar" key="header">
           <span>{this.msg('transportTariff')}</span>
           <RadioGroup onChange={this.handleKindChange} value={this.state.kind}>
             <RadioButton value="all">全部</RadioButton>
@@ -478,11 +478,11 @@ export default class TariffList extends React.Component {
           <RadioGroup onChange={this.handleStatusChange} value={this.state.status} >
             <RadioButton value="draft">草稿箱</RadioButton>
           </RadioGroup>
-        </header>
-        <div className="top-bar-tools">
-          <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
-        </div>
-        <div className="main-content" key="main">
+          <div className="top-bar-tools">
+            <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} size="large" />
+          </div>
+        </Header>
+        <Content className="main-content" key="main">
           <div className="page-body">
             <div className="toolbar">
               <PrivilegeCover module="transport" feature="tariff" action="create">
@@ -501,7 +501,7 @@ export default class TariffList extends React.Component {
               <CreateTariffModal />
             </div>
           </div>
-        </div>
+        </Content>
       </QueueAnim>
     );
   }

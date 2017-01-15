@@ -2,12 +2,13 @@ import React, { Component, PropTypes } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Button, message } from 'antd';
+import { Button, message, Layout } from 'antd';
 import OrderForm from './form';
 import { submitOrder } from 'common/reducers/crmOrders';
 import messages from './message.i18n';
 import { format } from 'client/common/i18n/helpers';
 const formatMsg = format(messages);
+const { Header, Content } = Layout;
 
 @injectIntl
 
@@ -64,19 +65,19 @@ export default class Create extends Component {
   render() {
     return (
       <div>
-        <header className="top-bar">
+        <Header className="top-bar">
           <span>新建订单</span>
-        </header>
+        </Header>
         <div className="top-bar-tools">
           <Button size="large" type="primary" onClick={this.handleSave}>
             {this.msg('save')}
           </Button>
         </div>
-        <div className="main-content">
+        <Content className="main-content">
           <div className="page-body card-wrapper">
             <OrderForm operation="create" />
           </div>
-        </div>
+        </Content>
       </div>
     );
   }

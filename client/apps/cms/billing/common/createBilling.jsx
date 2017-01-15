@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Button, InputNumber, Checkbox, Table, message } from 'antd';
+import { Button, InputNumber, Checkbox, Layout, Table, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
@@ -11,6 +11,7 @@ import TrimSpan from 'client/components/trimSpan';
 import BeforeFeesModal from './beforeFeesModal';
 
 const formatMsg = format(messages);
+const { Header, Content } = Layout;
 
 @injectIntl
 @connectNav({
@@ -199,13 +200,13 @@ export default class CreateBilling extends React.Component {
     }];
     return (
       <div>
-        <header className="top-bar">
+        <Header className="top-bar">
           <span>{this.msg('createBilling')}</span>
-        </header>
-        <div className="top-bar-tools">
-          <Button type="primary" onClick={this.handleSave}>{this.msg('save')}</Button>
-        </div>
-        <div className="main-content">
+          <div className="top-bar-tools">
+            <Button type="primary" size="large" onClick={this.handleSave}>{this.msg('save')}</Button>
+          </div>
+        </Header>
+        <Content className="main-content">
           <div className="page-body">
             <div className="toolbar">
               <span style={handleLableStyle}>{this.msg('partner')}: <strong>{billing.partnerName}</strong></span>
@@ -218,7 +219,7 @@ export default class CreateBilling extends React.Component {
             </div>
             <BeforeFeesModal type={type} visible={this.state.beforeFeesModalVisible} toggle={this.toggleBeforeFeesModal} />
           </div>
-        </div>
+        </Content>
       </div>
     );
   }

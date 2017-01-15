@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Button, InputNumber, Icon, Checkbox, Table, message } from 'antd';
+import { Button, InputNumber, Layout, Icon, Checkbox, Table, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
@@ -15,6 +15,7 @@ import { loadShipmtDetail } from 'common/reducers/shipment';
 import ActDate from '../../common/actDate';
 
 const formatMsg = format(messages);
+const { Header, Content } = Layout;
 
 @injectIntl
 @connect(
@@ -238,13 +239,13 @@ export default class CreateBilling extends React.Component {
     }];
     return (
       <div>
-        <header className="top-bar">
+        <Header className="top-bar">
           <span>{this.msg('createBilling')}</span>
-        </header>
+        </Header>
         <div className="top-bar-tools">
           <Button type="primary" onClick={this.handleSave}>{this.msg('save')}</Button>
         </div>
-        <div className="main-content">
+        <Content className="main-content">
           <div className="page-body">
             <div className="toolbar">
               <span style={handleLableStyle}>{partnerSourceType}: <strong>{partnerName}</strong></span>
@@ -257,7 +258,7 @@ export default class CreateBilling extends React.Component {
             </div>
             <BeforeFeesModal type={type} visible={this.state.beforeFeesModalVisible} toggle={this.toggleBeforeFeesModal} />
           </div>
-        </div>
+        </Content>
         <PreviewPanel stage="billing" />
       </div>
     );

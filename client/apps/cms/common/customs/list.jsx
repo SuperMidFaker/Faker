@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Breadcrumb, Button, Icon, Radio, Tag, message } from 'antd';
+import { Breadcrumb, Button, Icon, Layout, Radio, Tag, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -18,8 +18,8 @@ import DeclStatusPopover from './declStatusPopover';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 
-
 const formatMsg = format(messages);
+const { Header, Content } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 
@@ -209,7 +209,7 @@ export default class DelgDeclList extends Component {
     };
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <header className="top-bar" key="header">
+        <Header className="top-bar" key="header">
           <Breadcrumb>
             <Breadcrumb.Item>
               {this.props.ietype === 'import' ? this.msg('importOperation') : this.msg('exportOperation')}
@@ -218,17 +218,17 @@ export default class DelgDeclList extends Component {
               {this.msg('customsDeclaration')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <RadioGroup value={listFilter.status} onChange={this.handleRadioChange}>
+          <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">
             <RadioButton value="all">{this.msg('all')}</RadioButton>
             <RadioButton value="declared">{this.msg('filterDeclared')}</RadioButton>
             <RadioButton value="inspected">{this.msg('filterInspected')}</RadioButton>
             <RadioButton value="released">{this.msg('filterReleased')}</RadioButton>
           </RadioGroup>
-        </header>
-        <div className="top-bar-tools">
-          <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
-        </div>
-        <div className="main-content" key="main">
+          <div className="top-bar-tools">
+            <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} size="large" />
+          </div>
+        </Header>
+        <Content className="main-content" key="main">
           <div className="page-body">
             <div className="toolbar">
               <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
@@ -247,7 +247,7 @@ export default class DelgDeclList extends Component {
             </div>
             <DeclnoFillModal reload={this.handleTableLoad} />
           </div>
-        </div>
+        </Content>
       </QueueAnim>
     );
   }

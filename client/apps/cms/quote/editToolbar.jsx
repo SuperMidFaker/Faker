@@ -114,9 +114,7 @@ export default class EditToolbar extends Component {
         <Dropdown overlay={menu}>
           <Button>{this.msg('more')} <Icon type="down" /></Button>
         </Dropdown>
-        <span />
         <Button type="default" icon="save" onClick={this.handleSave}>{this.msg('save')}</Button>
-        <span />
         <Button type="primary" icon="book" onClick={this.handlePublish}>{this.msg('publish')}</Button>
         <PublishModal quoteForm={this.props.form} />
         <TrialModal quoteForm={this.props.form} />

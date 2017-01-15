@@ -1,6 +1,5 @@
 @import "~antd/lib/style/mixins/compatibility.less";
 @import "~antd/lib/style/themes/default.less";
-@sider-width: 176px;
 @sider-collapse-width: 64px;
 
 .ant-layout-wrapper {
@@ -23,11 +22,18 @@
 }
 
 .ant-layout-sider {
-  width: @sider-width;
+  &.right-sider {
+    background: transparent;
+  }
+  &.menu-sider {
+    overflow-x: hidden;
+    overflow-y: auto;
+    background: #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,.15);
+  }
 }
 
 .ant-layout-sider-collapsed {
-  width: @sider-collapse-width;
   transition: all 0.3s ease;
   .ant-menu-vertical > .ant-menu-item,
   .ant-menu-inline > .ant-menu-item, 
@@ -36,6 +42,13 @@
   .ant-menu-inline > .ant-menu-submenu > .ant-menu-submenu-title, 
   .ant-menu-item-group-list > .ant-menu-submenu > .ant-menu-submenu-title {
     padding: 0 24px;
+  }
+  &.left-sider {
+    width: @sider-collapse-width;
+    z-index: 50;
+  }
+  &.right-sider {
+    width: 0;
   }
 }
 
@@ -100,16 +113,6 @@
 
 .ant-layout-sider .ant-layout-breadcrumb {
   margin: 0 8px 16px;
-}
-
-.ant-layout-sider .ant-layout-main {
-  margin-left: @sider-width;
-  transition: all 0.3s ease;
-}
-
-.ant-layout-sider-collapsed .ant-layout-main {
-  margin-left: @sider-collapse-width;
-  transition: all 0.3s ease;
 }
 
 .ant-layout-sider .ant-layout-container {

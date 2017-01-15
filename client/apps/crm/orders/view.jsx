@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Layout } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -7,6 +8,7 @@ import { loadOrder } from 'common/reducers/crmOrders';
 import messages from './message.i18n';
 import { format } from 'client/common/i18n/helpers';
 const formatMsg = format(messages);
+const { Header, Content } = Layout;
 
 function fetchData({ location, dispatch }) {
   return dispatch(loadOrder(location.query.shipmtOrderNo));
@@ -28,14 +30,14 @@ export default class View extends Component {
   render() {
     return (
       <div>
-        <header className="top-bar">
+        <Header className="top-bar">
           <span>查看订单</span>
-        </header>
-        <div className="main-content">
+        </Header>
+        <Content className="main-content">
           <div className="page-body card-wrapper">
             <OrderForm operation="view" />
           </div>
-        </div>
+        </Content>
       </div>
     );
   }

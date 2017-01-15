@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Form, Breadcrumb, Button, Dropdown, Menu, Icon, message } from 'antd';
+import { Form, Breadcrumb, Button, Dropdown, Layout, Menu, Icon, message } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -12,6 +12,7 @@ import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 
 const formatMsg = format(messages);
+const { Header, Content } = Layout;
 
 @injectIntl
 @connect(
@@ -94,7 +95,7 @@ export default class CustomsDeclEditor extends React.Component {
     </Menu>);
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <header className="top-bar">
+        <Header className="top-bar">
           <Breadcrumb>
             <Breadcrumb.Item>
               制单
@@ -108,7 +109,7 @@ export default class CustomsDeclEditor extends React.Component {
               报关单{head.entry_id || head.pre_entry_seq_no}
             </Breadcrumb.Item>
           </Breadcrumb>
-        </header>
+        </Header>
         <div className="top-bar-tools">
           <Dropdown overlay={this.lockMenu}>
             <Button>
@@ -121,7 +122,7 @@ export default class CustomsDeclEditor extends React.Component {
             onClick={this.toggle}
           />
         </div>
-        <div className="main-content">
+        <Content className="main-content">
           <div className="page-body tabbed fixed-height">
             <div className={`panel-body collapse ${readonly ? 'readonly' : ''}`}>
               <SheetHeadPanel ietype={ietype} readonly={readonly} form={form} formData={head} type="entry" onSave={this.handleEntryHeadSave} />
@@ -130,7 +131,7 @@ export default class CustomsDeclEditor extends React.Component {
               />
             </div>
           </div>
-        </div>
+        </Content>
         <ExtraDock visible={this.state.visible} />
       </QueueAnim>
     );

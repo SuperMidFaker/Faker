@@ -5,11 +5,12 @@ import { connect } from 'react-redux';
 import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import { changeInvitationType } from 'common/reducers/invitation';
-import { Radio } from 'antd';
+import { Radio, Layout } from 'antd';
 import ToInviteListContainer from './ToInviteListContainer';
 import ReceiveInvitationListContainer from './ReceiveInvitationListContainer';
 import SendInvitationListContainer from './SendInvitationListContainer';
 
+const { Content } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 
@@ -46,7 +47,7 @@ export default class MainContainer extends Component {
     ];
     const content = components[invitationType];
     return (
-      <div className="main-content">
+      <Content className="main-content">
         <div className="page-body">
           <div className="toolbar">
             <RadioGroup defaultValue={invitationType} onChange={this.handleInvitationTypeChange}>
@@ -59,7 +60,7 @@ export default class MainContainer extends Component {
             {content}
           </div>
         </div>
-      </div>
+      </Content>
     );
   }
 }

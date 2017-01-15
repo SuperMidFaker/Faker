@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Input, Form, Row, Col, Select, message } from 'antd';
+import { Button, Input, Form, Row, Col, Select, message, Layout } from 'antd';
 import { submitCompRelation } from 'common/reducers/cmsCompRelation';
 import { RELATION_TYPES, I_E_TYPES } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
@@ -9,7 +9,7 @@ import messages from '../message.i18n';
 import containerMessages from 'client/apps/message.i18n';
 const formatMsg = format(messages);
 const formatContainerMsg = format(containerMessages);
-
+const { Content } = Layout;
 const FormItem = Form.Item;
 const Option = Select.Option;
 
@@ -68,7 +68,7 @@ class CompRelationForm extends Component {
   render() {
     const { form: { getFieldDecorator }, formData, intl } = this.props;
     return (
-      <div className="main-content">
+      <Content className="main-content">
         <Form horizontal>
           <Row>
             <Col lg={12} >
@@ -157,7 +157,7 @@ class CompRelationForm extends Component {
             </Col>
           </Row>
         </Form>
-      </div>
+      </Content>
     );
   }
 }

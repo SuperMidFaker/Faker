@@ -1,13 +1,14 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Card, Row, Col } from 'antd';
+import { Card, Layout, Row, Col } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 
 const formatMsg = format(messages);
+const { Content } = Layout;
 
 @injectIntl
 @connect(
@@ -34,7 +35,7 @@ export default class CorpOverview extends React.Component {
   render() {
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <div className="main-content" key="main">
+        <Content className="main-content" key="main">
           <div className="page-body card-wrapper">
             <Row gutter={16}>
               <Col span={24}>
@@ -69,7 +70,7 @@ export default class CorpOverview extends React.Component {
               </Col>
             </Row>
           </div>
-        </div>
+        </Content>
       </QueueAnim>
     );
   }

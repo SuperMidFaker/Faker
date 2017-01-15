@@ -5,7 +5,7 @@ import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege from 'client/common/decorators/withPrivilege';
-import { Tag } from 'antd';
+import { Tag, Layout } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { loadShipmentEvents, loadShipmtDetail } from 'common/reducers/shipment';
 import TrimSpan from 'client/components/trimSpan';
@@ -18,6 +18,7 @@ import PreviewPanel from '../shipment/modals/preview-panel';
 import ActDate from '../common/actDate';
 
 const formatMsg = format(messages);
+const { Header, Content } = Layout;
 
 function fetchData({ state, dispatch, cookie, location }) {
   const { startDate, endDate, type } = location.query;
@@ -145,16 +146,16 @@ export default class Dashboard extends React.Component {
 
     return (
       <div>
-        <header className="top-bar" key="header">
+        <Header className="top-bar" key="header">
           <span>{this.msg(type)}</span>
-        </header>
-        <div className="main-content">
+        </Header>
+        <Content className="main-content">
           <div className="page-body">
             <div className="panel-body table-panel">
               <Table columns={columns} dataSource={dataSource} rowKey="id" />
             </div>
           </div>
-        </div>
+        </Content>
         <PreviewPanel stage="dashboard" />
       </div>
     );

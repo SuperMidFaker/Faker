@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { Tabs, Button, Form, Modal, message } from 'antd';
+import { Tabs, Button, Form, Modal, message, Layout } from 'antd';
 import { connect } from 'react-redux';
 import connectNav from 'client/common/decorators/connect-nav';
 import AgreementForm from './forms/agreement';
@@ -9,7 +9,7 @@ import RevisionTable from './forms/revisionTable';
 import { showPublishTariffModal, submitAgreement, updateAgreement, loadTariff } from 'common/reducers/transportTariff';
 import { TARIFF_KINDS } from 'common/constants';
 import PublishTariffModal from './modals/publishTariffModal';
-
+const { Header, Content } = Layout;
 const TabPane = Tabs.TabPane;
 
 @connect(state => ({
@@ -143,9 +143,9 @@ export default class Main extends Component {
 
     return (
       <div>
-        <header className="top-bar">
+        <Header className="top-bar">
           <span>{`${formData.quoteNo} - ${formData.partnerName ? formData.partnerName : ''} - ${kindText}`}</span>
-        </header>
+        </Header>
         <div className="top-bar-tools">
           { type === 'edit' && (
           <span>
@@ -157,14 +157,14 @@ export default class Main extends Component {
           <Button type="ghost" onClick={this.handleSubmit}>保存</Button>
             )}
         </div>
-        <div className="main-content">
+        <Content className="main-content">
           <div className="page-body">
             <Tabs activeKey={selectedKey} onChange={this.handleMenuItemClick}>
               {content}
             </Tabs>
           </div>
 
-        </div>
+        </Content>
       </div>
     );
   }

@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Radio } from 'antd';
+import { Layout, Radio } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/search-bar';
 import AdvancedSearchBar from '../../common/advanced-search-bar';
@@ -15,7 +15,7 @@ import withPrivilege from 'client/common/decorators/withPrivilege';
 
 import messages from './message.i18n';
 const formatMsg = format(messages);
-
+const { Header, Content } = Layout;
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
@@ -140,9 +140,9 @@ export default class TrackingLandWrapper extends React.Component {
       <QueueAnim animConfig={[{ opacity: [1, 0], translateY: [0, 50] },
             { opacity: [1, 0], translateY: [0, -50] }]}
       >
-        <header className="top-bar" key="header">
+        <Header className="top-bar" key="header">
           <span>{this.msg('transportTracking')}</span>
-          <RadioGroup onChange={this.handleStatusNav} value={radioValue}>
+          <RadioGroup onChange={this.handleStatusNav} value={radioValue} size="large">
             <RadioButton value="all">{this.msg('allShipmt')}</RadioButton>
             <RadioButton value="pending">{this.msg('pendingShipmt')}</RadioButton>
             <RadioButton value="accepted">{this.msg('acceptedShipmt')}</RadioButton>
@@ -151,27 +151,27 @@ export default class TrackingLandWrapper extends React.Component {
             <RadioButton value="delivered">{this.msg('deliveredShipmt')}</RadioButton>
           </RadioGroup>
           <span />
-          <RadioGroup onChange={this.handlePodNav} value={radioValue}>
+          <RadioGroup onChange={this.handlePodNav} value={radioValue} size="large">
             <RadioButton value="upload">{this.msg('uploadPOD')}</RadioButton>
             <RadioButton value="audit">{this.msg('auditPOD')}</RadioButton>
             <RadioButton value="passed">{this.msg('passedPOD')}</RadioButton>
           </RadioGroup>
           <span />
-          <RadioGroup onChange={this.handleExcpNav} value={radioValue}>
+          <RadioGroup onChange={this.handleExcpNav} value={radioValue} size="large">
             <RadioButton value="error">{this.msg('exceptionErr')}</RadioButton>
           </RadioGroup>
-        </header>
-        <div className="top-bar-tools">
-          <SearchBar placeholder={this.msg('searchShipmtPH')} onInputSearch={this.handleSearchInput}
-            value={searchInput}
-          />
-          <span />
-          <a onClick={this.toggleAdvancedSearch}>高级搜索</a>
-        </div>
-        <div className="main-content" key="main">
+          <div className="top-bar-tools">
+            <SearchBar placeholder={this.msg('searchShipmtPH')} onInputSearch={this.handleSearchInput}
+              value={searchInput} size="large"
+            />
+            <span />
+            <a onClick={this.toggleAdvancedSearch}>高级搜索</a>
+          </div>
+        </Header>
+        <Content className="main-content" key="main">
           <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch} toggle={this.toggleAdvancedSearch} />
           {this.props.children}
-        </div>
+        </Content>
         <PreviewPanel stage={stage} />
       </QueueAnim>
     );

@@ -1,13 +1,14 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Card } from 'antd';
+import { Card, Layout } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 
 const formatMsg = format(messages);
+const { Header, Content } = Layout;
 
 @injectIntl
 @connect(
@@ -34,17 +35,17 @@ export default class CRMDashboard extends React.Component {
   render() {
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <header className="top-bar" key="header">
+        <Header className="top-bar" key="header">
           <div className="toolbar-right" />
           <span>{this.msg('dashboardTitle')}</span>
-        </header>
-        <div className="main-content" key="main">
+        </Header>
+        <Content className="main-content" key="main">
           <div className="page-body card-wrapper">
             <Card>
               hello
             </Card>
           </div>
-        </div>
+        </Content>
       </QueueAnim>
     );
   }

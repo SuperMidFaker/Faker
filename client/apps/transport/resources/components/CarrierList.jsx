@@ -1,10 +1,11 @@
 import React, { Component, PropTypes } from 'react';
-import { Table, Button, Popconfirm } from 'antd';
+import { Table, Layout, Button, Popconfirm } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import moment from 'moment';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import CarrierModal from '../modals/carrierModal';
 
+const { Header, Content } = Layout;
 const rowSelection = {
   onSelect() {},
 };
@@ -83,10 +84,10 @@ export default class DriverList extends Component {
     ];
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <header className="top-bar" key="header">
+        <Header className="top-bar" key="header">
           <span>承运商管理</span>
-        </header>
-        <div className="main-content" key="main">
+        </Header>
+        <Content className="main-content" key="main">
           <div className="page-body">
             <div className="toolbar">
               <PrivilegeCover module="transport" feature="resources" action="create">
@@ -98,7 +99,7 @@ export default class DriverList extends Component {
             </div>
             <CarrierModal />
           </div>
-        </div>
+        </Content>
       </QueueAnim>
     );
   }

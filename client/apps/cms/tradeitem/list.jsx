@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Breadcrumb, Button, Radio, Select, Table } from 'antd';
+import { Breadcrumb, Button, Layout, Radio, Select, Table } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -10,6 +10,7 @@ import { loadQuoteModel } from 'common/reducers/cmsQuote';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 
 const formatMsg = format(messages);
+const { Header, Content } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const Option = Select.Option;
@@ -48,19 +49,19 @@ export default class TradeItemList extends Component {
   render() {
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <header className="top-bar" key="header">
+        <Header className="top-bar" key="header">
           <Breadcrumb>
             <Breadcrumb.Item>
               {this.msg('tradeItemManagement')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <RadioGroup onChange={this.handleRadioChange}>
+          <RadioGroup onChange={this.handleRadioChange} size="large">
             <RadioButton value="unclassified">{this.msg('filterUnclassified')}</RadioButton>
             <RadioButton value="pending">{this.msg('filterPending')}</RadioButton>
             <RadioButton value="classified">{this.msg('filterClassified')}</RadioButton>
           </RadioGroup>
-        </header>
-        <div className="main-content" key="main">
+        </Header>
+        <Content className="main-content" key="main">
           <div className="page-body">
             <div className="toolbar">
               <div className="toolbar-right">
@@ -83,7 +84,7 @@ export default class TradeItemList extends Component {
               <Table dataSource={this.dataSource} scroll={{ x: 1400 }} />
             </div>
           </div>
-        </div>
+        </Content>
       </QueueAnim>
     );
   }

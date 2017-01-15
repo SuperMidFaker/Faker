@@ -7,7 +7,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import { format } from 'client/common/i18n/helpers';
-import { Card, Col, DatePicker, Row, Table } from 'antd';
+import { Card, Col, DatePicker, Layout, Row, Table } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import NavLink from 'client/components/nav-link';
 import { loadShipmentStatistics, loadShipmtDetail, loadFormRequire } from 'common/reducers/shipment';
@@ -16,6 +16,7 @@ import '../index.less';
 import PreviewPanel from '../shipment/modals/preview-panel';
 
 const formatMsg = format(messages);
+const { Header, Content } = Layout;
 const RangePicker = DatePicker.RangePicker;
 
 function fetchData({ state, dispatch, cookie }) {
@@ -124,10 +125,10 @@ export default class Dashboard extends React.Component {
 
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <header className="top-bar" key="header">
+        <Header className="top-bar" key="header">
           <span>{this.msg('transportDashboard')}</span>
-        </header>
-        <div className="main-content" key="main">
+        </Header>
+        <Content className="main-content" key="main">
           <Row gutter={16}>
             <Col sm={24} lg={24}>
               <Card title="活动简报" extra={datePicker}>
@@ -181,7 +182,7 @@ export default class Dashboard extends React.Component {
               </Card>
             </Col>
           </Row>
-        </div>
+        </Content>
         <PreviewPanel stage="dashboard" />
       </QueueAnim>
     );

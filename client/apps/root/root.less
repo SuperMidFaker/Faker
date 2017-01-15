@@ -191,7 +191,6 @@ img {
 .layout-wrapper {
   min-height:100%;
   height:100%;
-  padding-top: @layout-header-height;
   @media (max-width:767px) {
     padding-top:@layout-header-height;
   }
@@ -326,13 +325,11 @@ img {
   margin-left:0
 }
 .top-bar {
-  position: fixed;
-  width: 100%;
   height: @top-bar-height;
   z-index: 30;
   background: rgba(252,252,252,0.95);
   padding: 0 16px;
-  line-height: 46px;
+  line-height: 48px;
   box-shadow: 0 0 1px 0 rgba(0,0,0,0.14);
   >span {
     font-size: 14px;
@@ -346,19 +343,17 @@ img {
     margin-right: 16px;
     font-size: 14px;
   }
-  .ant-menu {
-    background: none;
-    line-height: 44px;
-  }
   .ant-menu-horizontal {
     border-bottom: 0;
   }
-  &.no-left-menu {
-    left: 0;
+  &.top-bar-fixed {
+    position: fixed;
+    width: 100%;
   }
 }
 .top-bar-tools {
   position: fixed;
+  background: rgba(252,252,252,0.95);
   right: 16px;
   z-index: 55;
   padding: 8px 0;
@@ -366,6 +361,9 @@ img {
   button,
   >span {
     margin-left: 8px;
+  }
+  >a {
+    line-height: 32px;
   }
 }
 .top-tabs-bar {
@@ -390,42 +388,14 @@ img {
     }
   }
 }
-.side-bar {
-  width: @side-bar-width;
-  height: 100%;
-  padding-top: 16px;
-  top: 94px;
-  overflow-x: hidden;
-  overflow-y: auto;
-  position: fixed;
-  background: #fff;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
-  h2 {
-    padding-left: 16px;
-    line-height: 28px;
-  }
-  .ant-menu-inline, 
-  .ant-menu-inline .ant-menu-item {
-    border-right: 1px solid #fff;
-  }
-  .ant-menu-inline .ant-menu-item-selected {
-    border-right: 2px solid #108ee9;
-  }
-  &.no-left-menu {
-    left: 0;
-  }
-  &.no-top-bar {
-    top: 48px;
-  }
-}
 .main-content {
-  padding: 62px 16px 0;
+  padding: 16px 16px 0;
   min-height:100%;
-  &.with-side-bar {
-    margin-left: @side-bar-width;
-  }
   &.no-top-bar {
     padding: 24px 16px 0;
+  }
+  &.top-bar-fixed {
+    padding: 64px 16px 0;
   }
   @media (max-width:767px) {
     height:100%;
@@ -986,7 +956,7 @@ img {
 }
 .trigger {
   font-size: 18px;
-  line-height: 26px;
+  line-height: 32px;
   padding: 0 16px;
   cursor: pointer;
   transition: color .3s;

@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Button, Popconfirm, Radio, Tag, Tooltip, message } from 'antd';
+import { Button, Layout, Popconfirm, Radio, Tag, Tooltip, message } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -15,6 +15,7 @@ import moment from 'moment';
 import CreateQtModal from './modals/createQtModal';
 
 const formatMsg = format(messages);
+const { Header, Content } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 
@@ -380,19 +381,19 @@ export default class QuoteList extends Component {
     }
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <header className="top-bar" key="header">
+        <Header className="top-bar" key="header">
           <span>{msg('quoteManage')}</span>
-          <RadioGroup value={listFilter.status} onChange={this.handleRadioChange}>
+          <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">
             <RadioButton value="all">{msg('filterAll')}</RadioButton>
             <RadioButton value="selling">{msg('filterSelling')}</RadioButton>
             <RadioButton value="buying">{msg('filterBuying')}</RadioButton>
           </RadioGroup>
           <span />
-          <RadioGroup value={listFilter.status} onChange={this.handleRadioChange}>
+          <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">
             <RadioButton value="draft">{msg('filterDraft')}</RadioButton>
           </RadioGroup>
-        </header>
-        <div className="main-content" key="main">
+        </Header>
+        <Content className="main-content" key="main">
           <div className="page-body">
             <div className="toolbar">
               <Button type="primary" icon="plus" onClick={this.handleCreateNew}>
@@ -413,7 +414,7 @@ export default class QuoteList extends Component {
               />
             </div>
           </div>
-        </div>
+        </Content>
         <CreateQtModal />
       </QueueAnim>
     );

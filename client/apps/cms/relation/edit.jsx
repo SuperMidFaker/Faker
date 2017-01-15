@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import { Layout } from 'antd';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -11,6 +12,7 @@ import messages from '../message.i18n';
 import containerMessages from 'client/apps/message.i18n';
 const formatMsg = format(messages);
 const formatContainerMsg = format(containerMessages);
+const { Content } = Layout;
 
 function fetchData({ dispatch, cookie, params }) {
   return dispatch(loadCompRelation(cookie, params));
@@ -42,11 +44,11 @@ export default class EditCompRelation extends Component {
   render() {
     const { formData } = this.props;
     return (
-      <div className="main-content">
+      <Content className="main-content">
         <div className="page-body">
           <CompRelationForm router={this.context.router} formData={formData} />
         </div>
-      </div>
+      </Content>
     );
   }
 }

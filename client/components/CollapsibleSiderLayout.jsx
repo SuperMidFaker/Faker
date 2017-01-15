@@ -3,7 +3,7 @@ import { Layout, Menu } from 'antd';
 import NavLink from './nav-link';
 import './CollapsibleSiderLayout.less';
 
-const { Content, Sider } = Layout;
+const { Sider } = Layout;
 const SubMenu = Menu.SubMenu;
 const MenuItem = Menu.Item;
 const MenuItemGroup = Menu.ItemGroup;
@@ -43,7 +43,7 @@ export default class CollapsibleSiderLayout extends React.Component {
   state = {
     selectedKeys: [],
     openedKey: [],
-    collapsed: false,
+    collapsed: true,
   };
 
   componentWillMount() {
@@ -104,6 +104,8 @@ export default class CollapsibleSiderLayout extends React.Component {
           collapsible
           collapsed={this.state.collapsed}
           onCollapse={this.onCollapse}
+          width={176}
+          className="left-sider"
         >
           {showLogo ? <div className="layout-logo" /> : ''}
           <Menu mode="vertical" theme="dark" onSelect={this.handleMenuSelect} selectedKeys={this.state.selectedKeys}
@@ -171,9 +173,9 @@ export default class CollapsibleSiderLayout extends React.Component {
             }
           </Menu>
         </Sider>
-        <Content>
+        <Layout>
           {childContent}
-        </Content>
+        </Layout>
       </Layout>
     );
   }

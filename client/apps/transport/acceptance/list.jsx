@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Button, Radio, message, Popconfirm } from 'antd';
+import { Button, Radio, Layout, message, Popconfirm } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
@@ -29,6 +29,7 @@ import globalMessages from 'client/common/root.i18n';
 const formatMsg = format(messages);
 const formatContainerMsg = format(containerMessages);
 const formatGlobalMsg = format(globalMessages);
+const { Header, Content } = Layout;
 
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
@@ -420,24 +421,24 @@ export default class AcceptList extends React.Component {
     }
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <header className="top-bar" key="header">
+        <Header className="top-bar" key="header">
           <span>{this.msg('transportShipment')}</span>
-          <RadioGroup onChange={this.handleShipmentFilter} value={radioValue}>
+          <RadioGroup onChange={this.handleShipmentFilter} value={radioValue} size="large">
             <RadioButton value="unaccepted">{this.msg('unacceptedShipmt')}</RadioButton>
             <RadioButton value="accepted">{this.msg('acceptedShipmt')}</RadioButton>
           </RadioGroup>
           <span />
-          <RadioGroup onChange={this.handleShipmentFilter} value={radioValue}>
+          <RadioGroup onChange={this.handleShipmentFilter} value={radioValue} size="large">
             <RadioButton value="draft">{this.msg('draftShipmt')}</RadioButton>
             <RadioButton value="archived">{this.msg('archivedShipmt')}</RadioButton>
           </RadioGroup>
-        </header>
-        <div className="top-bar-tools">
-          <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} value={this.state.searchValue} />
-          <span />
-          <a onClick={this.toggleAdvancedSearch}>高级搜索</a>
-        </div>
-        <div className="main-content" key="main">
+          <div className="top-bar-tools">
+            <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} value={this.state.searchValue} />
+            <span />
+            <a onClick={this.toggleAdvancedSearch}>高级搜索</a>
+          </div>
+        </Header>
+        <Content className="main-content" key="main">
           <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch}
             toggle={this.toggleAdvancedSearch}
           />
@@ -460,7 +461,7 @@ export default class AcceptList extends React.Component {
               />
             </div>
           </div>
-        </div>
+        </Content>
         <AccepterModal reload={this.handleTableLoad} clearSelection={this.handleSelectionClear} />
         <RevokejectModal reload={this.handleTableLoad} />
         <PreviewPanel stage="acceptance" />

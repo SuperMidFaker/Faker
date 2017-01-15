@@ -1,6 +1,9 @@
 import React, { PropTypes } from 'react';
+import { Layout } from 'antd';
 import { locationShape } from 'react-router';
 import HeaderNavBar from '../components/headerNavBar';
+
+const { Header } = Layout;
 
 export default class Module extends React.Component {
   static propTypes = {
@@ -16,9 +19,11 @@ export default class Module extends React.Component {
 
   render() {
     return (
-      <div className="layout-wrapper layout-fixed-sider">
-        <HeaderNavBar />
+      <Layout className="layout-wrapper">
+        <Header>
+          <HeaderNavBar />
+        </Header>
         {this.props.children}
-      </div>);
+      </Layout>);
   }
 }

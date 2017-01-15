@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import { locationShape } from 'react-router';
-import CollapseSideLayout from 'client/components/collapseSideLayout';
+import CollapsibleSiderLayout from 'client/components/CollapsibleSiderLayout';
 import messages from './message.i18n';
 import { format } from 'client/common/i18n/helpers';
 
@@ -89,7 +89,7 @@ export default class ModuleSCV extends React.Component {
   }
   render() {
     return (
-      <CollapseSideLayout links={this.state.linkMenus} childContent={this.props.children} location={this.props.location} />
+      <CollapsibleSiderLayout links={this.state.linkMenus} childContent={this.props.children} location={this.props.location} />
     );
   }
 }

@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Breadcrumb, message, Icon, Switch, Tag } from 'antd';
+import { Breadcrumb, Layout, message, Icon, Switch, Tag } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -17,6 +17,7 @@ import RowUpdater from '../delegation/rowUpdater';
 import CiqnoFillModal from './modals/ciqNoFill';
 
 const formatMsg = format(messages);
+const { Header, Content } = Layout;
 
 function ColumnSwitch(props) {
   const { record, field, checked, onChange } = props;
@@ -242,7 +243,7 @@ export default class CiqDeclList extends Component {
     };
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <header className="top-bar" key="header">
+        <Header className="top-bar" key="header">
           <Breadcrumb>
             <Breadcrumb.Item>
               {this.props.ietype === 'import' ? this.msg('importOperation') : this.msg('exportOperation')}
@@ -251,18 +252,18 @@ export default class CiqDeclList extends Component {
               {this.msg('ciqDeclaration')}
             </Breadcrumb.Item>
           </Breadcrumb>
-        </header>
-        <div className="top-bar-tools">
-          <SearchBar placeholder={this.msg('ciqSearchPlaceholder')} onInputSearch={this.handleSearch} />
-        </div>
-        <div className="main-content" key="main">
+          <div className="top-bar-tools">
+            <SearchBar placeholder={this.msg('ciqSearchPlaceholder')} onInputSearch={this.handleSearch} size="large" />
+          </div>
+        </Header>
+        <Content className="main-content" key="main">
           <div className="page-body">
             <div className="panel-body table-panel expandable">
               <Table rowSelection={rowSelection} columns={this.columns} rowKey="pre_entry_seq_no" dataSource={this.dataSource} loading={ciqdeclList.loading} scroll={{ x: 1700 }} />
             </div>
             <CiqnoFillModal reload={this.handleTableLoad} />
           </div>
-        </div>
+        </Content>
       </QueueAnim>
     );
   }
