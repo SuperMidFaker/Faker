@@ -50,7 +50,7 @@ export default class CiqDispModal extends Component {
         message.error(result.error.message);
       } else {
         this.props.setDispStatus({ ciqDispShow: false });
-        this.props.showPreviewer(this.props.tenantId, dispatch.delg_no, this.props.tabKey);
+        this.props.showPreviewer(dispatch.delg_no, this.props.tabKey);
         this.props.loadDeclCiqPanel(dispatch.delg_no, this.props.tenantId);
       }
     });

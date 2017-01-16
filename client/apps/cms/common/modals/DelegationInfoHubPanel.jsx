@@ -15,7 +15,7 @@ import ActivityLoggerPane from './tabpanes/ActivityLoggerPane';
 import AcceptModal from './acceptModal';
 import DelgDispModal from './delgDispModal';
 import { openAcceptModal, showDispModal } from 'common/reducers/cmsDelegation';
-import { setPreviewStatus, hidePreviewer, setPreviewTabkey } from 'common/reducers/cmsDelgInfoHub';
+import { setPreviewStatus, hidePreviewer, setPreviewTabkey, loadBasicInfo } from 'common/reducers/cmsDelgInfoHub';
 
 const TabPane = Tabs.TabPane;
 
@@ -26,9 +26,10 @@ const TabPane = Tabs.TabPane;
     visible: state.cmsDelgInfoHub.previewer.visible,
     previewer: state.cmsDelgInfoHub.previewer,
     tabKey: state.cmsDelgInfoHub.tabKey,
+    delgNo: state.cmsDelgInfoHub.previewer.delgNo,
     delegateListFilter: state.cmsDelegation.delegateListFilter,
   }),
-  { hidePreviewer, setPreviewStatus, setPreviewTabkey, openAcceptModal, showDispModal }
+  { hidePreviewer, setPreviewStatus, setPreviewTabkey, openAcceptModal, showDispModal, loadBasicInfo }
 )
 export default class DelegationInfoHubPanel extends React.Component {
   static propTypes = {
@@ -36,6 +37,7 @@ export default class DelegationInfoHubPanel extends React.Component {
     ietype: PropTypes.oneOf(['import', 'export']),
     tenantId: PropTypes.number.isRequired,
     tabKey: PropTypes.string,
+    delgNo: PropTypes.string.isRequired,
     hidePreviewer: PropTypes.func.isRequired,
     previewer: PropTypes.object.isRequired,
     delegateListFilter: PropTypes.object.isRequired,
@@ -43,6 +45,16 @@ export default class DelegationInfoHubPanel extends React.Component {
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.tabKey !== this.props.tabKey ||
+      nextProps.delgNo !== this.props.delgNo) {
+      nextProps.loadBasicInfo(
+        this.props.tenantId,
+        nextProps.delgNo,
+        nextProps.tabKey,
+      );
+    }
   }
   handleTabChange = (tabKey) => {
     this.props.setPreviewTabkey(tabKey);
@@ -56,6 +68,7 @@ export default class DelegationInfoHubPanel extends React.Component {
       dispatchIds: [this.props.previewer.delgDispatch.id],
       type: 'delg',
       delg_no: this.props.previewer.delgNo,
+      opt: 'accept',
     });
     this.props.setPreviewStatus({ preStatus: 'accept' });
     this.props.hidePreviewer();

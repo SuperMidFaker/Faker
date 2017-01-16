@@ -108,7 +108,17 @@ export default class CustomsDeclPane extends React.Component {
   }
   render() {
     const { customsPanel } = this.props;
-    const delgBills = customsPanel.bills;
+    const bill = customsPanel.bill;
+    const tableDatas = (bill.children || []);
+    const declTypes = DECL_I_TYPE.concat(DECL_E_TYPE).filter(dt => dt.key === bill.decl_way_code);
+    const panelHeader = (
+      <div>
+        <span>{declTypes.length > 0 ? declTypes[0].value : ''}：{bill.pack_count}件/{bill.gross_wt}千克</span>
+        <div className="toolbar-right">
+          {this.button()}
+        </div>
+      </div>
+    );
     const columns = [{
       title: '统一编号',
       dataIndex: 'pre_entry_seq_no',
@@ -164,39 +174,14 @@ export default class CustomsDeclPane extends React.Component {
             </div>
           </div>}
         </Card>
-        { delgBills.length > 0 &&
-          <Card bodyStyle={{ padding: 0 }}>
-            <Collapse defaultActiveKey={delgBills[0].key}>
-              {
-                delgBills.map((bill) => {
-                  const tableDatas = (bill.children || []).map(decl => ({
-                    key: decl.key,
-                    pre_entry_seq_no: decl.pre_entry_seq_no,
-                    entry_id: decl.entry_id,
-                    note: decl.note,
-                    process_date: decl.process_date,
-                    customs_inspect: decl.customs_inspect,
-                    ciq_ap_inspect: decl.ciq_ap_inspect,
-                    ciq_quality_inspect: decl.ciq_quality_inspect,
-                  }));
-                  const declTypes = DECL_I_TYPE.concat(DECL_E_TYPE).filter(dt => dt.key === bill.decl_way_code);
-                  const panelHeader = (
-                    <div>
-                      <span>{declTypes.length > 0 ? declTypes[0].value : ''}：{bill.pack_count}件/{bill.gross_wt}千克</span>
-                      <div className="toolbar-right">
-                        {this.button()}
-                      </div>
-                    </div>
-                  );
-                  return (
-                    <Panel header={panelHeader} key={bill.key} className="table-panel" >
-                      <Table size="small" columns={columns} pagination={false} dataSource={tableDatas} scroll={{ x: 580 }} />
-                    </Panel>);
-                })
-              }
-            </Collapse>
-          </Card>
-        }
+        <Card bodyStyle={{ padding: 0 }}>
+          <Collapse defaultActiveKey={bill.key}>
+            <Panel header={panelHeader} key={bill.key} className="table-panel" >
+              <Table size="small" columns={columns} pagination={false} dataSource={tableDatas} scroll={{ x: 580 }} />
+            </Panel>
+          </Collapse>
+        </Card>
+
       </div>
     );
   }
