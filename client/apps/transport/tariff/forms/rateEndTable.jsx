@@ -267,8 +267,6 @@ export default class RateEndTable extends React.Component {
             <FormItem label="运输时间" labelCol={{ span: 4 }} wrapperCol={{ span: 16 }}>
               {getFieldDecorator('time', {
                 initialValue: editEnd.time,
-                rules: [{ required: true, type: 'number',
-                  message: '运输时间必填', transform: v => Number(v) }],
               })(<Input />)}
             </FormItem>
             {
