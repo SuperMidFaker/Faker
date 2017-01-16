@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Table, Button, Radio, Popconfirm } from 'antd';
+import { Table, Button, Layout, Radio, Popconfirm } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import { Link } from 'react-router';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
@@ -8,6 +8,7 @@ import { nodeTypes } from '../utils/dataMapping';
 
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
+const { Header, Content } = Layout;
 
 const rowSelection = {
   onSelect() {
@@ -89,15 +90,15 @@ export default function NodeList(props) {
   ];
   return (
     <QueueAnim type={['bottom', 'up']}>
-      <header className="top-bar" key="header">
+      <Header className="top-bar" key="header">
         <span>地点管理</span>
-        <RadioGroup defaultValue={nodeType} onChange={e => onRadioButtonChange(e.target.value)}>
+        <RadioGroup defaultValue={nodeType} onChange={e => onRadioButtonChange(e.target.value)} size="large">
           <RadioButton value={0}>发货地</RadioButton>
           <RadioButton value={1}>收货地</RadioButton>
           <RadioButton value={2}>中转地</RadioButton>
         </RadioGroup>
-      </header>
-      <div className="main-content" key="main">
+      </Header>
+      <Content className="main-content" key="main">
         <div className="page-body">
           <div className="toolbar">
             <PrivilegeCover module="transport" feature="resources" action="create">
@@ -108,7 +109,7 @@ export default function NodeList(props) {
             <Table rowSelection={rowSelection} columns={columns} dataSource={addUniqueKeys(dataSource)} />
           </div>
         </div>
-      </div>
+      </Content>
     </QueueAnim>
   );
 }

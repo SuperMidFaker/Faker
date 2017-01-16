@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Badge, Breadcrumb, Button, DatePicker, Icon, Radio, Select, Tooltip, message } from 'antd';
+import { Badge, Breadcrumb, Button, DatePicker, Icon, Layout, Radio, Select, Tooltip, message } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -21,6 +21,7 @@ import RowUpdater from './rowUpdater';
 import ExpEptModal from './modals/expEptModal';
 
 const formatMsg = format(messages);
+const { Header, Content } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const RangePicker = DatePicker.RangePicker;
@@ -476,23 +477,23 @@ export default class ExpenseList extends Component {
     this.dataSource.remotes = expslist;
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <header className="top-bar" key="header">
+        <Header className="top-bar" key="header">
           <Breadcrumb>
             <Breadcrumb.Item>
               {this.msg('expense')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <RadioGroup value={listFilter.status} onChange={this.handleRadioChange}>
+          <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">
             <RadioButton value="all">{this.msg('all')}</RadioButton>
             <RadioButton value="pending">{this.msg('statusPending')}</RadioButton>
             <RadioButton value="estimated">{this.msg('statusEstimated')}</RadioButton>
             <RadioButton value="closed">{this.msg('statusClosed')}</RadioButton>
           </RadioGroup>
-        </header>
-        <div className="top-bar-tools">
-          <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
-        </div>
-        <div className="main-content" key="main">
+          <div className="top-bar-tools">
+            <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} size="large" />
+          </div>
+        </Header>
+        <Content className="main-content" key="main">
           <div className="page-body">
             <div className="toolbar">
               <Button type="default" icon="upload" onClick={this.handleAdvFeesImport}>
@@ -527,7 +528,7 @@ export default class ExpenseList extends Component {
               />
             </div>
           </div>
-        </div>
+        </Content>
         <DelegationInfoHubPanel />
         <DelgAdvanceExpenseModal />
         <ExpEptModal visible={this.state.expEptVisible} toggle={this.toggleEptModal} />

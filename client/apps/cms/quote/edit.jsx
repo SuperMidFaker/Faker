@@ -5,14 +5,15 @@ import { format } from 'client/common/i18n/helpers';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import messages from './message.i18n';
 import { loadEditQuote } from 'common/reducers/cmsQuote';
-import { Form, Tabs } from 'antd';
-import Header from './formHeader';
+import { Form, Layout, Tabs } from 'antd';
+import QuoteTitle from './quoteTitle';
 import EditToolbar from './editToolbar';
 import FeesTable from './feesTable';
 import FeesForm from './feesForm';
 import RevisionTable from './revisionTable';
 import connectFetch from 'client/common/decorators/connect-fetch';
 const formatMsg = format(messages);
+const { Header, Content } = Layout;
 const TabPane = Tabs.TabPane;
 
 function fetchData({ params, dispatch }) {
@@ -48,9 +49,11 @@ export default class QuotingEdit extends Component {
     const { form } = this.props;
     return (
       <div>
-        <Header />
-        <EditToolbar form={form} onFormError={this.handleFormError} />
-        <div className="main-content">
+        <Header className="top-bar">
+          <QuoteTitle />
+          <EditToolbar form={form} onFormError={this.handleFormError} />
+        </Header>
+        <Content className="main-content">
           <div className="page-body tabbed">
             <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
               <TabPane tab="报价费率" key="fees-table">
@@ -64,7 +67,7 @@ export default class QuotingEdit extends Component {
               </TabPane>
             </Tabs>
           </div>
-        </div>
+        </Content>
       </div>
     );
   }

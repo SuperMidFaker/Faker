@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Menu } from 'antd';
+import { Menu, Layout } from 'antd';
 import { locationShape } from 'react-router';
 import { intlShape, injectIntl } from 'react-intl';
 import HeaderNavBar from 'client/components/headerNavBar';
@@ -10,6 +10,7 @@ import { TENANT_LEVEL } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from 'client/apps/message.i18n';
 const formatMsg = format(messages);
+const { Header, Content } = Layout;
 const MenuItem = Menu.Item;
 @injectIntl
 @connect(
@@ -95,16 +96,18 @@ export default class CorpPack extends React.Component {
       );
     }
     return (
-      <div className="layout-wrapper layout-nosider-left">
-        <HeaderNavBar />
-        <div className="layout-content">
-          <header className="top-bar no-left-menu">
+      <Layout className="layout-wrapper">
+        <Header>
+          <HeaderNavBar />
+        </Header>
+        <Content>
+          <Header className="top-bar">
             <Menu defaultSelectedKeys={['corpsetting-0']} mode="horizontal">
               {linkMenus}
             </Menu>
-          </header>
+          </Header>
           {this.props.children}
-        </div>
-      </div>);
+        </Content>
+      </Layout>);
   }
 }

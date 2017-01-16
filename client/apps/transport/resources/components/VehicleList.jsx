@@ -1,10 +1,11 @@
 import React, { PropTypes } from 'react';
-import { Button, Table } from 'antd';
+import { Layout, Button, Table } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import { Link } from 'react-router';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { addUniqueKeys } from 'client/util/dataTransform';
 
+const { Header, Content } = Layout;
 const rowSelection = {
   onSelect() {
   },
@@ -98,10 +99,10 @@ export default function VehicleList(props) {
   ];
   return (
     <QueueAnim type={['bottom', 'up']}>
-      <header className="top-bar" key="header">
+      <Header className="top-bar" key="header">
         <span>车辆管理</span>
-      </header>
-      <div className="main-content" key="main">
+      </Header>
+      <Content className="main-content" key="main">
         <div className="page-body">
           <div className="toolbar">
             <PrivilegeCover module="transport" feature="resources" action="create">
@@ -112,7 +113,7 @@ export default function VehicleList(props) {
             <Table columns={columns} dataSource={addUniqueKeys(dataSource)} rowSelection={rowSelection} />
           </div>
         </div>
-      </div>
+      </Content>
     </QueueAnim>
   );
 }

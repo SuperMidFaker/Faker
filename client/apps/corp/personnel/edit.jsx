@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Button, Form, Input, Row, Col, Select, message } from 'antd';
+import { Button, Form, Input, Row, Col, Select, message, Layout } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -18,6 +18,7 @@ import containerMessages from 'client/apps/message.i18n';
 const formatMsg = format(messages);
 const formatGlobalMsg = format(globalMessages);
 const formatContainerMsg = format(containerMessages);
+const { Content } = Layout;
 const FormItem = Form.Item;
 const Option = Select.Option;
 
@@ -144,7 +145,7 @@ export default class CorpEdit extends React.Component {
     const disableSubmit = this.props.tenant.id === -1;
     const msg = descriptor => formatMsg(intl, descriptor);
     return (
-      <div className="main-content">
+      <Content className="main-content">
         <div className="page-body">
           <Form horizontal onSubmit={this.handleSubmit}
             className="form-edit-content offset-right-col"
@@ -219,6 +220,6 @@ export default class CorpEdit extends React.Component {
             </Row>
           </Form>
         </div>
-      </div>);
+      </Content>);
   }
 }

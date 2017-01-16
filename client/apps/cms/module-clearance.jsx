@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { routerShape, locationShape } from 'react-router';
 import { findForemostRoute, hasPermission } from 'client/common/decorators/withPrivilege';
-import CollapseSideLayout from 'client/components/collapseSideLayout';
+import CollapsibleSiderLayout from 'client/components/CollapsibleSiderLayout';
 import messages from './message.i18n';
 import { format } from 'client/common/i18n/helpers';
 
@@ -20,7 +20,7 @@ export default class Clearance extends React.Component {
     intl: intlShape.isRequired,
     privileges: PropTypes.object.isRequired,
     location: locationShape.isRequired,
-    children: PropTypes.object.isRequired,
+    children: PropTypes.node,
   };
   static contextTypes = {
     router: routerShape.isRequired,
@@ -184,7 +184,7 @@ export default class Clearance extends React.Component {
   }
   render() {
     return (
-      <CollapseSideLayout links={this.state.linkMenus} childContent={this.props.children} location={this.props.location} />
+      <CollapsibleSiderLayout links={this.state.linkMenus} childContent={this.props.children} location={this.props.location} />
     );
   }
 }

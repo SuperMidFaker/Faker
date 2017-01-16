@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Button, InputNumber, Checkbox, Table, message } from 'antd';
+import { Button, InputNumber, Layout, Checkbox, Table, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
@@ -16,6 +16,7 @@ import { CRM_ORDER_MODE } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 const formatMsg = format(messages);
+const { Header, Content } = Layout;
 
 @injectIntl
 @connect(
@@ -237,13 +238,13 @@ export default class CreateBilling extends React.Component {
     }];
     return (
       <div>
-        <header className="top-bar">
+        <Header className="top-bar">
           <span>{this.msg('createBilling')}</span>
-        </header>
+        </Header>
         <div className="top-bar-tools">
           <Button type="primary" onClick={this.handleSave}>{this.msg('save')}</Button>
         </div>
-        <div className="main-content">
+        <Content className="main-content">
           <div className="page-body">
             <div className="toolbar">
               <span style={handleLableStyle}>客户: <strong>{partnerName}</strong></span>
@@ -255,7 +256,7 @@ export default class CreateBilling extends React.Component {
             </div>
             <BeforeFeesModal />
           </div>
-        </div>
+        </Content>
         <PreviewPanel stage="billing" />
       </div>
     );

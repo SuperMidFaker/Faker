@@ -3,12 +3,13 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Button, message } from 'antd';
+import { Button, message, Layout } from 'antd';
 import OrderForm from './form';
 import { loadOrder, editOrder } from 'common/reducers/crmOrders';
 import messages from './message.i18n';
 import { format } from 'client/common/i18n/helpers';
 const formatMsg = format(messages);
+const { Header, Content } = Layout;
 
 function fetchData({ location, dispatch }) {
   return dispatch(loadOrder(location.query.shipmtOrderNo));
@@ -63,19 +64,19 @@ export default class Edit extends Component {
   render() {
     return (
       <div>
-        <header className="top-bar">
+        <Header className="top-bar">
           <span>修改订单</span>
-        </header>
+        </Header>
         <div className="top-bar-tools">
           <Button size="large" type="primary" onClick={this.handleSave}>
             {this.msg('save')}
           </Button>
         </div>
-        <div className="main-content">
+        <Content className="main-content">
           <div className="page-body card-wrapper">
             <OrderForm operation="edit" />
           </div>
-        </div>
+        </Content>
       </div>
     );
   }

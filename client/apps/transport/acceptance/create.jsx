@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Card, Row, Col, Form, Button, message } from 'antd';
+import { Card, Row, Col, Form, Layout, Button, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -17,8 +17,10 @@ import FreightCharge from '../shipment/forms/freightCharge';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import globalMessages from 'client/common/root.i18n';
+
 const formatGlobalMsg = format(globalMessages);
 const formatMsg = format(messages);
+const { Header, Content } = Layout;
 
 function fetchData({ state, dispatch, cookie }) {
   return dispatch(loadFormRequire(cookie, state.account.tenantId));
@@ -173,18 +175,18 @@ export default class ShipmentCreate extends React.Component {
     const { intl, submitting, form } = this.props;
     return (
       <div>
-        <header className="top-bar">
+        <Header className="top-bar top-bar-fixed">
           <span>{this.msg('shipmtCreate')}</span>
-        </header>
-        <div className="top-bar-tools">
-          <Button size="large" type="ghost" onClick={this.handleCancelBtnClick}>
-            {this.msg('cancel')}
-          </Button>
-          <Button size="large" type="primary" loading={submitting} onClick={this.handleSavePending}>
-            {formatGlobalMsg(intl, 'save')}
-          </Button>
-        </div>
-        <div className="main-content">
+          <div className="top-bar-tools">
+            <Button size="large" type="ghost" onClick={this.handleCancelBtnClick}>
+              {this.msg('cancel')}
+            </Button>
+            <Button size="large" type="primary" loading={submitting} onClick={this.handleSavePending}>
+              {formatGlobalMsg(intl, 'save')}
+            </Button>
+          </div>
+        </Header>
+        <Content className="main-content top-bar-fixed">
           <Form horizontal>
             <div className="page-body card-wrapper">
               <Row gutter={16}>
@@ -218,7 +220,7 @@ export default class ShipmentCreate extends React.Component {
               </Row>
             </div>
           </Form>
-        </div>
+        </Content>
       </div>
     );
   }

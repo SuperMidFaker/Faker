@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { routerShape, locationShape } from 'react-router';
 import { findForemostRoute, hasPermission } from 'client/common/decorators/withPrivilege';
-import CollapseSideLayout from 'client/components/collapseSideLayout';
+import CollapsibleSiderLayout from 'client/components/CollapsibleSiderLayout';
 import { format } from 'client/common/i18n/helpers';
 import messages from 'client/apps/message.i18n';
 
@@ -155,7 +155,7 @@ export default class Transport extends React.Component {
   }
   render() {
     return (
-      <CollapseSideLayout links={this.state.linkMenus} childContent={this.props.children} location={this.props.location} />
+      <CollapsibleSiderLayout links={this.state.linkMenus} childContent={this.props.children} location={this.props.location} />
     );
   }
 }

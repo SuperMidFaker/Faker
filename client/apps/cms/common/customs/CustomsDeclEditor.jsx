@@ -1,17 +1,18 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Form, Breadcrumb, Button, Dropdown, Menu, Icon, message } from 'antd';
+import { Form, Breadcrumb, Button, Dropdown, Layout, Menu, Icon, message } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { fillEntryId } from 'common/reducers/cmsDelegation';
 import SheetHeadPanel from '../manifest/forms/SheetHeadPanel';
 import SheetBodyPanel from '../manifest/forms/SheetBodyPanel';
-import ExtraDock from '../modals/extraDock';
+import SheetExtraPanel from '../manifest/forms/SheetExtraPanel';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 
 const formatMsg = format(messages);
+const { Sider, Header, Content } = Layout;
 
 @injectIntl
 @connect(
@@ -42,7 +43,7 @@ export default class CustomsDeclEditor extends React.Component {
   }
   state = {
     visible: false,
-    collapsed: false,
+    collapsed: true,
   }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
   lockMenu = (
@@ -94,44 +95,60 @@ export default class CustomsDeclEditor extends React.Component {
     </Menu>);
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <header className="top-bar">
-          <Breadcrumb>
-            <Breadcrumb.Item>
-              制单
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              <Dropdown overlay={manifestMenu}>
-                <a style={{ fontSize: 14 }}>报关清单<Icon type="down" /></a>
-              </Dropdown>
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              报关单{head.entry_id || head.pre_entry_seq_no}
-            </Breadcrumb.Item>
-          </Breadcrumb>
-        </header>
-        <div className="top-bar-tools">
-          <Dropdown overlay={this.lockMenu}>
-            <Button>
-              <Icon type="setting" /> <Icon type="down" />
-            </Button>
-          </Dropdown>
-          <Icon
-            className="trigger"
-            type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
-            onClick={this.toggle}
-          />
-        </div>
-        <div className="main-content">
-          <div className="page-body tabbed fixed-height">
-            <div className={`panel-body collapse ${readonly ? 'readonly' : ''}`}>
-              <SheetHeadPanel ietype={ietype} readonly={readonly} form={form} formData={head} type="entry" onSave={this.handleEntryHeadSave} />
-              <SheetBodyPanel ietype={ietype} readonly={readonly} data={bodies}
-                headNo={head.id} billSeqNo={head.bill_seq_no} type="entry"
-              />
+        <Layout>
+          <Layout>
+            <Header className="top-bar top-bar-fixed">
+              <Breadcrumb>
+                <Breadcrumb.Item>
+                  制单
+                </Breadcrumb.Item>
+                <Breadcrumb.Item>
+                  <Dropdown overlay={manifestMenu}>
+                    <a style={{ fontSize: 14 }}>报关清单<Icon type="down" /></a>
+                  </Dropdown>
+                </Breadcrumb.Item>
+                <Breadcrumb.Item>
+                  报关单{head.entry_id || head.pre_entry_seq_no}
+                </Breadcrumb.Item>
+              </Breadcrumb>
+              <div className="top-bar-tools">
+                <Dropdown overlay={this.lockMenu}>
+                  <Button>
+                    <Icon type="setting" /> <Icon type="down" />
+                  </Button>
+                </Dropdown>
+                <Icon
+                  className="trigger"
+                  type={this.state.collapsed ? 'menu-fold' : 'menu-unfold'}
+                  onClick={this.toggle}
+                />
+              </div>
+            </Header>
+            <Content className="main-content top-bar-fixed">
+              <div className="page-body tabbed fixed-height">
+                <div className={`panel-body collapse ${readonly ? 'readonly' : ''}`}>
+                  <SheetHeadPanel ietype={ietype} readonly={readonly} form={form} formData={head} type="entry" onSave={this.handleEntryHeadSave} />
+                  <SheetBodyPanel ietype={ietype} readonly={readonly} data={bodies}
+                    headNo={head.id} billSeqNo={head.bill_seq_no} type="entry"
+                  />
+                </div>
+              </div>
+            </Content>
+          </Layout>
+          <Sider
+            trigger={null}
+            defaultCollapsed
+            collapsible
+            collapsed={this.state.collapsed}
+            width={320}
+            collapsedWidth={0}
+            className="right-sider"
+          >
+            <div className="right-sider-panel">
+              <SheetExtraPanel />
             </div>
-          </div>
-        </div>
-        <ExtraDock visible={this.state.visible} />
+          </Sider>
+        </Layout>
       </QueueAnim>
     );
   }

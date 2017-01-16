@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Card, Col, Row, Tabs, Table } from 'antd';
+import { Card, Col, Layout, Row, Tabs, Table } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/search-bar';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -9,6 +9,7 @@ import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 const TabPane = Tabs.TabPane;
 const formatMsg = format(messages);
+const { Header, Content } = Layout;
 
 @injectIntl
 @connect(
@@ -156,13 +157,13 @@ export default class AnalyticsCostList extends React.Component {
     }];
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <header className="top-bar" key="header">
+        <Header className="top-bar" key="header">
           <div className="toolbar-right">
             <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
           </div>
           <span>{this.msg('analyticsCost')}</span>
-        </header>
-        <div className="main-content" key="main">
+        </Header>
+        <Content className="main-content" key="main">
           <div className="page-body card-wrapper">
             <Row gutter={16}>
               <Col span={5}>
@@ -242,7 +243,7 @@ export default class AnalyticsCostList extends React.Component {
               </TabPane>
             </Tabs>
           </div>
-        </div>
+        </Content>
       </QueueAnim>
     );
   }

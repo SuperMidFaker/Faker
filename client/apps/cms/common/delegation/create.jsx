@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Form, Row, Col, Button, message } from 'antd';
+import { Form, Layout, Row, Col, Button, message } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
 import BasicForm from './forms/basicForm';
@@ -10,7 +10,9 @@ import { DELG_SOURCE } from 'common/constants';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from './message.i18n';
 import { format } from 'client/common/i18n/helpers';
+
 const formatMsg = format(messages);
+const { Header, Content } = Layout;
 
 @injectIntl
 @connect(
@@ -86,31 +88,31 @@ export default class AcceptanceCreate extends Component {
     const { form, type, submitting } = this.props;
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <header className="top-bar" key="header">
-          <span>{this.msg('createDelegation')}</span>
-        </header>
-        <div className="top-bar-tools">
-          <Button size="large" type="ghost" onClick={this.handleCancelBtnClick}>
-            {this.msg('cancel')}
-          </Button>
-          <Button size="large" type="primary" icon="save" loading={submitting} onClick={this.handleSaveBtnClick}>
-            {this.msg('save')}
-          </Button>
-        </div>
-        <div className="main-content" key="main">
+        <Header className="top-bar" key="header">
+          <span>{this.props.type === 'import' ? this.msg('newImportDelg') : this.msg('newExportDelg')}</span>
+          <div className="top-bar-tools">
+            <Button size="large" type="ghost" onClick={this.handleCancelBtnClick}>
+              {this.msg('cancel')}
+            </Button>
+            <Button size="large" type="primary" icon="save" loading={submitting} onClick={this.handleSaveBtnClick}>
+              {this.msg('save')}
+            </Button>
+          </div>
+        </Header>
+        <Content className="main-content" key="main">
           <div className="page-body card-wrapper">
             <Form horizontal>
               <Row gutter={16}>
-                <Col sm={16}>
+                <Col sm={24} md={16}>
                   <BasicForm form={form} ieType={type} partnershipType="CCB" />
                 </Col>
-                <Col sm={8}>
+                <Col sm={24} md={8}>
                   <UploadGroup onFileListUpdate={this.handleUploadFiles} />
                 </Col>
               </Row>
             </Form>
           </div>
-        </div>
+        </Content>
       </QueueAnim>
     );
   }

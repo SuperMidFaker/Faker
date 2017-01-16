@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Badge, Breadcrumb, Button, Popconfirm, Radio, Select, Tag, Tooltip, message } from 'antd';
+import { Badge, Breadcrumb, Button, Layout, Popconfirm, Radio, Select, Tag, Tooltip, message } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import TrimSpan from 'client/components/trimSpan';
@@ -15,13 +15,14 @@ import RowUpdater from './rowUpdater';
 import { loadAcceptanceTable, loadBillForMake, acceptDelg, delDelg,
   setDispStatus, loadCiqTable, delgAssignRecall,
   openAcceptModal, showDispModal } from 'common/reducers/cmsDelegation';
-import { showPreviewer, loadCustPanel } from 'common/reducers/cmsDelgInfoHub';
+import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
 import DelegationInfoHubPanel from '../modals/DelegationInfoHubPanel';
 import CiqList from './ciqList';
 import messages from './message.i18n';
 import { format } from 'client/common/i18n/helpers';
 
 const formatMsg = format(messages);
+const { Header, Content } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const Option = Select.Option;
@@ -41,12 +42,11 @@ const OptGroup = Select.OptGroup;
     preStatus: state.cmsDelgInfoHub.preStatus,
     previewer: state.cmsDelgInfoHub.previewer,
     delegation: state.cmsDelgInfoHub.previewer.delegation,
-    matchStatus: state.cmsDelegation.matchStatus,
     listView: state.cmsDelegation.listView,
   }),
   { loadAcceptanceTable, loadBillForMake, acceptDelg,
     delDelg, showPreviewer, setDispStatus, delgAssignRecall,
-    loadCiqTable, openAcceptModal, showDispModal, loadCustPanel }
+    loadCiqTable, openAcceptModal, showDispModal }
 )
 @connectNav({
   depth: 2,
@@ -73,7 +73,6 @@ export default class DelegationList extends Component {
     previewer: PropTypes.object.isRequired,
     delegation: PropTypes.object.isRequired,
     loadCiqTable: PropTypes.func.isRequired,
-    matchStatus: PropTypes.object.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -86,11 +85,6 @@ export default class DelegationList extends Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.saved !== this.props.saved) {
       this.handleDelgListLoad();
-    }
-    if (nextProps.matchStatus !== this.props.matchStatus) {
-      if (nextProps.matchStatus.status === 'noquote') {
-        message.info(formatMsg(this.props.intl, 'info'), 3);
-      }
     }
     if (nextProps.preStatus !== this.props.preStatus) {
       if (nextProps.preStatus === 'accepted') {
@@ -249,7 +243,6 @@ export default class DelegationList extends Component {
 
   handlePreview = (delgNo) => {
     this.props.showPreviewer(this.props.tenantId, delgNo);
-    this.props.loadCustPanel({ delgNo, tenantId: this.props.tenantId });
   }
   handleCreateBtnClick = () => {
     this.context.router.push(`/clearance/${this.props.ietype}/create`);
@@ -498,7 +491,7 @@ export default class DelegationList extends Component {
     }
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <header className="top-bar" key="header">
+        <Header className="top-bar" key="header">
           <Breadcrumb>
             <Breadcrumb.Item>
               {this.props.ietype === 'import' ? this.msg('importClearance') : this.msg('exportClearance')}
@@ -507,7 +500,7 @@ export default class DelegationList extends Component {
               {this.msg('delegationManagement')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <RadioGroup value={listFilter.status} onChange={this.handleDelegationFilter}>
+          <RadioGroup value={listFilter.status} onChange={this.handleDelegationFilter} size="large">
             <RadioButton value="all">{this.msg('all')}</RadioButton>
             <RadioButton value="accept">{this.msg('accepting')}</RadioButton>
             <RadioButton value="undeclared">{this.msg('processing')}</RadioButton>
@@ -515,26 +508,23 @@ export default class DelegationList extends Component {
             <RadioButton value="finished">{this.msg('releasing')}</RadioButton>
           </RadioGroup>
           <span />
-          <RadioGroup value={listFilter.status} onChange={this.handleCiqFilter}>
+          <RadioGroup value={listFilter.status} onChange={this.handleCiqFilter} size="large">
             <RadioButton value="ciqPending">{this.msg('ciq')}</RadioButton>
           </RadioGroup>
-        </header>
-        <div className="top-bar-tools">
-          <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
-        </div>
-        <div className="main-content" key="main">
+          <div className="top-bar-tools">
+            <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} />
+          </div>
+        </Header>
+        <Content className="main-content" key="main">
           <div className="page-body">
             <div className="toolbar">
               <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
-                <Button type="primary" onClick={this.handleCreateBtnClick} icon="plus">
-                  {this.msg('delgNew')}
+                <Button type="primary" onClick={this.handleCreateBtnClick} icon="plus" className="btn-success">
+                  {this.props.ietype === 'import' ? this.msg('newImportDelg') : this.msg('newExportDelg')}
                 </Button>
               </PrivilegeCover>
               <div className="toolbar-right">
-                <Select
-                  value={listFilter.viewStatus}
-                  style={{ width: 160 }}
-                  showSearch={false}
+                <Select value={listFilter.viewStatus} style={{ width: 160 }} showSearch={false}
                   onChange={this.handleViewChange}
                 >
                   <OptGroup label="常用视图">
@@ -563,7 +553,7 @@ export default class DelegationList extends Component {
               }
             </div>
           </div>
-        </div>
+        </Content>
         <DelegationInfoHubPanel ietype={this.props.ietype} />
       </QueueAnim>
     );

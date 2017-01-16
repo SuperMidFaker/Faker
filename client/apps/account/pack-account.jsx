@@ -1,10 +1,12 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Menu, Icon } from 'antd';
+import { Menu, Icon, Layout } from 'antd';
 import NavLink from 'client/components/nav-link';
 import HeaderNavBar from 'client/components/headerNavBar';
 import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';
+
+const { Sider, Header, Content } = Layout;
 
 @connect()
 @connectNav({
@@ -22,10 +24,12 @@ export default class AccountPack extends React.Component {
   }
   render() {
     return (
-      <div className="layout-wrapper layout-nosider-left">
-        <HeaderNavBar />
-        <div className="layout-content">
-          <aside className="side-bar no-left-menu no-top-bar">
+      <Layout className="layout-wrapper">
+        <Header>
+          <HeaderNavBar />
+        </Header>
+        <Layout>
+          <Sider className="menu-sider">
             <h2>个人帐号</h2>
             <Menu defaultSelectedKeys={['profile']} mode="inline">
               <Menu.Item key="profile">
@@ -39,12 +43,12 @@ export default class AccountPack extends React.Component {
                 </NavLink>
               </Menu.Item>
             </Menu>
-          </aside>
-          <div className="main-content no-top-bar with-side-bar">
+          </Sider>
+          <Content className="main-content">
             {this.props.children}
-          </div>
-        </div>
-      </div>
+          </Content>
+        </Layout>
+      </Layout>
     );
   }
 }

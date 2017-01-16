@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Button, Radio, Icon, message, Select, Modal, Alert } from 'antd';
+import { Button, Radio, Icon, Layout, message, Select, Modal, Alert } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
@@ -33,6 +33,7 @@ import RevokejectModal from '../shipment/modals/revoke-reject';
 import SearchBar from 'client/components/search-bar';
 import AdvancedSearchBar from '../common/advanced-search-bar';
 
+const { Header, Content } = Layout;
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 const Option = Select.Option;
@@ -1038,20 +1039,20 @@ export default class DispatchList extends React.Component {
 
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <header className="top-bar" key="header">
+        <Header className="top-bar" key="header">
           <span>{this.msg('transportDispatch')}</span>
-          <RadioGroup onChange={this.handleStatusChange} value={status}>
+          <RadioGroup onChange={this.handleStatusChange} value={status} size="large">
             <RadioButton value="waiting">{this.msg('rdTextWaiting')}</RadioButton>
             <RadioButton value="dispatching">{this.msg('rdTextDispatching')}</RadioButton>
             <RadioButton value="dispatched">{this.msg('rdTextDispatched')}</RadioButton>
           </RadioGroup>
-        </header>
-        <div className="top-bar-tools">
-          <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} value={this.state.searchValue} />
-          <span />
-          <a onClick={this.toggleAdvancedSearch}>高级搜索</a>
-        </div>
-        <div className="main-content" key="main">
+          <div className="top-bar-tools">
+            <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} value={this.state.searchValue} size="large" />
+            <span />
+            <a onClick={this.toggleAdvancedSearch}>高级搜索</a>
+          </div>
+        </Header>
+        <Content className="main-content" key="main">
           <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch} toggle={this.toggleAdvancedSearch} />
           <div className="page-body">
             <div className="toolbar">
@@ -1065,7 +1066,7 @@ export default class DispatchList extends React.Component {
               </div>
             </div>
           </div>
-        </div>
+        </Content>
         <PreviewPanel stage="dispatch" />
         <DispatchDock
           show={this.props.dispDockShow}

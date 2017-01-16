@@ -1,14 +1,17 @@
 import React from 'react';
+import { Layout } from 'antd';
+
+const { Content } = Layout;
 
 export default function ContentWrapper(props) {
   return (
-    <div className="main-content">
+    <Content className="main-content">
       <div className="page-body">
         <div className="toolbar" />
         <div className="panel-body">
           {props.children}
         </div>
       </div>
-    </div>
+    </Content>
   );
 }

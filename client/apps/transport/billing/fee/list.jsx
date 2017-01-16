@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Button, Tag, Icon, DatePicker } from 'antd';
+import { Button, Tag, Layout, Icon, DatePicker } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
@@ -23,6 +23,7 @@ import ShipmentAdvanceModal from '../../tracking/land/modals/shipment-advance-mo
 import CreateSpecialCharge from '../../tracking/land/modals/create-specialCharge';
 
 const formatMsg = format(messages);
+const { Header, Content } = Layout;
 const RangePicker = DatePicker.RangePicker;
 
 function fetchData({ cookie, state, dispatch }) {
@@ -427,15 +428,15 @@ export default class FeesList extends React.Component {
     const { startDate, endDate } = this.props.fees;
     return (
       <div>
-        <header className="top-bar">
+        <Header className="top-bar">
           <span>{this.msg('fee')}</span>
-        </header>
-        <div className="top-bar-tools">
-          <SearchBar placeholder="输入运单号搜索" onInputSearch={this.handleSearchInput}
-            value={this.props.fees.searchValue}
-          />
-        </div>
-        <div className="main-content">
+          <div className="top-bar-tools">
+            <SearchBar placeholder="输入运单号搜索" onInputSearch={this.handleSearchInput}
+              value={this.props.fees.searchValue} size="large"
+            />
+          </div>
+        </Header>
+        <Content className="main-content">
           <div className="page-body">
             <div className="toolbar">
               <Button onClick={this.handleExportExcel}>{this.msg('export')}</Button>
@@ -452,7 +453,7 @@ export default class FeesList extends React.Component {
               <Table rowSelection={rowSelection} dataSource={dataSource} columns={columns} rowKey="shipmt_no" scroll={{ x: 2000 }} loading={loading} />
             </div>
           </div>
-        </div>
+        </Content>
         <PreviewPanel stage="billing" />
         <ShipmentAdvanceModal />
         <CreateSpecialCharge />

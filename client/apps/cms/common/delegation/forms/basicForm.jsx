@@ -49,7 +49,7 @@ export default class BasicForm extends Component {
     clients: PropTypes.array.isRequired,
     setClientForm: PropTypes.func.isRequired,
     delgBill: PropTypes.object.isRequired,
-    ietype: PropTypes.string.isRequired,
+    ieType: PropTypes.string.isRequired,
   }
   msg = key => formatMsg(this.props.intl, key);
   handleClientChange = (value) => {
@@ -66,8 +66,8 @@ export default class BasicForm extends Component {
     return value;
   }
   render() {
-    const { form: { getFieldDecorator, getFieldValue }, fieldInits, clients, partnershipType, ietype, delgBill } = this.props;
-    const DECL_TYPE = ietype === 'import' ? DECL_I_TYPE : DECL_E_TYPE;
+    const { form: { getFieldDecorator, getFieldValue }, fieldInits, clients, partnershipType, ieType, delgBill } = this.props;
+    const DECL_TYPE = ieType === 'import' ? DECL_I_TYPE : DECL_E_TYPE;
     let customerName = {
       display: '',
       required: true,
@@ -113,7 +113,7 @@ export default class BasicForm extends Component {
     return (
       <Card title={this.msg('delgInfo')} bodyStyle={{ padding: 16 }}>
         <Row>
-          <Col sm={16}>
+          <Col sm={24} lg={16}>
             <FormItem label={this.msg('delgClient')} labelCol={{ span: 3 }} wrapperCol={{ span: 21 }} style={{ display: customerName.display }}>
               {getFieldDecorator('customer_name', {
                 rules: [{
@@ -134,37 +134,7 @@ export default class BasicForm extends Component {
                 )}
             </FormItem>
           </Col>
-          <Col sm={8}>
-            <FormItem label={this.msg('declareWay')} {...formItemLayout}>
-              {getFieldDecorator('decl_way_code', {
-                rules: [{ required: true, message: '报关类型必选' }],
-                initialValue: delgBill.decl_way_code,
-              })(<Select>
-                {
-                  DECL_TYPE.map(dw =>
-                    <Option value={dw.key} key={dw.key}>{dw.value}</Option>
-                  )
-                }
-              </Select>)}
-            </FormItem>
-          </Col>
-        </Row>
-        <Row>
-          <Col sm={8}>
-            <FormItem label={this.msg('orderNo')} {...formItemLayout}>
-              {getFieldDecorator('order_no', {
-                initialValue: fieldInits.order_no,
-              })(<Input />)}
-            </FormItem>
-          </Col>
-          <Col sm={8}>
-            <FormItem label={this.msg('invoiceNo')} {...formItemLayout}>
-              {getFieldDecorator('invoice_no', {
-                initialValue: fieldInits.invoice_no,
-              })(<Input />)}
-            </FormItem>
-          </Col>
-          <Col sm={8}>
+          <Col sm={24} lg={8}>
             <FormItem label={this.msg('delgInternalNo')} {...formItemLayout}>
               {getFieldDecorator('ref_external_no', {
                 initialValue: fieldInits.ref_external_no,
@@ -173,7 +143,30 @@ export default class BasicForm extends Component {
           </Col>
         </Row>
         <Row>
-          <Col sm={8}>
+          <Col sm={24} lg={8}>
+            <FormItem label={this.msg('orderNo')} {...formItemLayout}>
+              {getFieldDecorator('order_no', {
+                initialValue: fieldInits.order_no,
+              })(<Input />)}
+            </FormItem>
+          </Col>
+          <Col sm={24} lg={8}>
+            <FormItem label={this.msg('invoiceNo')} {...formItemLayout}>
+              {getFieldDecorator('invoice_no', {
+                initialValue: fieldInits.invoice_no,
+              })(<Input />)}
+            </FormItem>
+          </Col>
+          <Col sm={24} lg={8}>
+            <FormItem label={this.msg('contractNo')} {...formItemLayout}>
+              {getFieldDecorator('contract_no', {
+                initialValue: fieldInits.contract_no,
+              })(<Input />)}
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col sm={24} lg={8}>
             <FormItem label={this.msg('transMode')} {...formItemLayout}>
               {getFieldDecorator('trans_mode', {
                 initialValue: fieldInits.trans_mode,
@@ -189,7 +182,7 @@ export default class BasicForm extends Component {
                 )}
             </FormItem>
           </Col>
-          <Col sm={8}>
+          <Col sm={24} lg={8}>
             {(getFieldValue('trans_mode') === '2' || getFieldValue('trans_mode') === '5') &&
               <FormItem label={(
                 <span>
@@ -205,7 +198,7 @@ export default class BasicForm extends Component {
               </FormItem>
             }
           </Col>
-          <Col sm={8}>
+          <Col sm={24} lg={8}>
             {(getFieldValue('trans_mode') === '2' || getFieldValue('trans_mode') === '5') &&
               <FormItem label={voyageNoLabel.label} {...formItemLayout}>
                 {getFieldDecorator('voyage_no', {
@@ -216,7 +209,7 @@ export default class BasicForm extends Component {
           </Col>
         </Row>
         <Row>
-          <Col sm={8}>
+          <Col sm={24} lg={8}>
             {getFieldValue('trans_mode') === '2' &&
               <FormItem label="换单" {...formItemLayout}>
                 {getFieldDecorator('claim_do_awb', { initialValue: fieldInits.claim_do_awb })(<RadioGroup>
@@ -226,7 +219,7 @@ export default class BasicForm extends Component {
               </FormItem>
             }
           </Col>
-          <Col sm={8}>
+          <Col sm={24} lg={8}>
             {getFieldValue('trans_mode') === '2' &&
               <FormItem label="海运单号" {...formItemLayout}>
                 {getFieldDecorator('swb_no', {
@@ -237,7 +230,7 @@ export default class BasicForm extends Component {
           </Col>
         </Row>
         <Row>
-          <Col sm={8}>
+          <Col sm={24} lg={8}>
             <FormItem label={this.msg('goodsType')} {...formItemLayout}>
               {getFieldDecorator('goods_type', {
                 initialValue: fieldInits.goods_type,
@@ -251,14 +244,14 @@ export default class BasicForm extends Component {
               </Select>)}
             </FormItem>
           </Col>
-          <Col sm={8}>
+          <Col sm={24} lg={8}>
             <FormItem label={this.msg('packageNum')} {...formItemLayout}>
               {getFieldDecorator('pieces', {
                 initialValue: fieldInits.pieces || 1,
               })(<InputNumber min={1} max={100000} style={{ width: '100%' }} />)}
             </FormItem>
           </Col>
-          <Col sm={8}>
+          <Col sm={24} lg={8}>
             <FormItem label={this.msg('delgGrossWt')} {...formItemLayout}>
               {getFieldDecorator('weight', {
                 initialValue: fieldInits.weight,
@@ -270,7 +263,21 @@ export default class BasicForm extends Component {
           </Col>
         </Row>
         <Row>
-          <Col sm={16}>
+          <Col sm={24} lg={8}>
+            <FormItem label={this.msg('declareWay')} {...formItemLayout}>
+              {getFieldDecorator('decl_way_code', {
+                rules: [{ required: true, message: '报关类型必选' }],
+                initialValue: delgBill.decl_way_code,
+              })(<Select>
+                {
+                  DECL_TYPE.map(dw =>
+                    <Option value={dw.key} key={dw.key}>{dw.value}</Option>
+                  )
+                }
+              </Select>)}
+            </FormItem>
+          </Col>
+          <Col sm={24} lg={16}>
             <FormItem label="备注" labelCol={{ span: 3 }} wrapperCol={{ span: 21 }}>
               {getFieldDecorator('remark', {
                 initialValue: fieldInits.remark,

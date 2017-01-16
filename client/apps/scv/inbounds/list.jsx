@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Radio, Button, Progress, Upload, Modal, message } from 'antd';
+import { Radio, Button, Progress, Upload, Modal, message, Layout } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -18,6 +18,7 @@ import SendModal from './senderModal';
 import CreateModal from './createModal';
 
 const formatMsg = format(messages);
+const { Header, Content } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 
@@ -347,9 +348,9 @@ export default class InboundShipmentsList extends React.Component {
     const { inUpload, uploadPercent, uploadStatus } = this.state;
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <header className="top-bar" key="header">
+        <Header className="top-bar" key="header">
           <span>{this.msg('inboundShipments')}</span>
-          <RadioGroup value={listFilter.status} onChange={this.handleRadioChange}>
+          <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">
             <RadioButton value="all">{this.msg('all')}</RadioButton>
             <RadioButton value="atorigin">{this.msg('atorigin')}</RadioButton>
             <RadioButton value="intransit">{this.msg('intransit')}</RadioButton>
@@ -358,11 +359,11 @@ export default class InboundShipmentsList extends React.Component {
             <RadioButton value="delivering">{this.msg('atdelivering')}</RadioButton>
             <RadioButton value="received">{this.msg('atreceived')}</RadioButton>
           </RadioGroup>
-        </header>
-        <div className="top-bar-tools">
-          <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
-        </div>
-        <div className="main-content" key="main">
+          <div className="top-bar-tools">
+            <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} size="large" />
+          </div>
+        </Header>
+        <Content className="main-content" key="main">
           <div className="page-body">
             <div className="toolbar">
               <Upload accept=".xls,.xlsx" action={`${API_ROOTS.scv}v1/scv/inbound/import/shipments`}
@@ -387,7 +388,7 @@ export default class InboundShipmentsList extends React.Component {
           </div>
           <SendModal reload={this.handleShipmentLoad} />
           <CreateModal />
-        </div>
+        </Content>
         <Modal closable={false} maskClosable={false} footer={[]} visible={inUpload}>
           <Progress type="circle" percent={uploadPercent} status={uploadStatus}
             style={{ display: 'block', margin: '0 auto', width: '40%' }}

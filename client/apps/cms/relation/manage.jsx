@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, message } from 'antd';
+import { Layout, Button, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -14,7 +14,7 @@ import messages from '../message.i18n';
 import containerMessages from 'client/apps/message.i18n';
 const formatMsg = format(messages);
 const formatContainerMsg = format(containerMessages);
-
+const { Header, Content } = Layout;
 const rowSelection = {
   onSelect() {},
 };
@@ -177,10 +177,10 @@ export default class Manage extends Component {
     });
     return (
       <div>
-        <header className="top-bar">
+        <Header className="top-bar">
           <span />
-        </header>
-        <div className="main-content">
+        </Header>
+        <Content className="main-content">
           <div className="page-body">
             <div className="toolbar">
               <PrivilegeCover module="clearance" feature="relation" action="create">
@@ -196,7 +196,7 @@ export default class Manage extends Component {
               <Table columns={columns} dataSource={dataSource} rowSelection={rowSelection} />
             </div>
           </div>
-        </div>
+        </Content>
       </div>
     );
   }

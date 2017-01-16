@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button } from 'antd';
+import { Button, Layout } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/search-bar';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -9,6 +9,7 @@ import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 
 const formatMsg = format(messages);
+const { Header, Content } = Layout;
 
 @injectIntl
 @connect(
@@ -35,13 +36,13 @@ export default class OutboundShipmentsList extends React.Component {
   render() {
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <header className="top-bar" key="header">
+        <Header className="top-bar" key="header">
           <div className="toolbar-right">
             <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
           </div>
           <span>{this.msg('outboundShipments')}</span>
-        </header>
-        <div className="main-content" key="main">
+        </Header>
+        <Content className="main-content" key="main">
           <div className="page-body">
             <div className="toolbar">
               <Button type="primary" icon="plus-circle-o">
@@ -50,7 +51,7 @@ export default class OutboundShipmentsList extends React.Component {
             </div>
             <div className="panel-body table-panel expandable" />
           </div>
-        </div>
+        </Content>
       </QueueAnim>
     );
   }

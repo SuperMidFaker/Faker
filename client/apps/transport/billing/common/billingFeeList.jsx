@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Button, InputNumber, Checkbox, message, Table } from 'antd';
+import { Button, InputNumber, Layout, Checkbox, message, Table } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
@@ -13,6 +13,7 @@ import ExceptionListPopover from '../../tracking/land/modals/exception-list-popo
 import ActDate from '../../common/actDate';
 
 const formatMsg = format(messages);
+const { Header, Content } = Layout;
 
 @injectIntl
 @connect(
@@ -285,13 +286,13 @@ export default class BillingFeeList extends React.Component {
     }];
     return (
       <div>
-        <header className="top-bar">
+        <Header className="top-bar">
           <span>{this.msg(`${operation}Billing`)}</span>
-        </header>
+        </Header>
         <div className="top-bar-tools">
           {this.renderOperation()}
         </div>
-        <div className="main-content">
+        <Content className="main-content">
           <div className="page-body">
             <div className="toolbar">
               <span style={handleLableStyle}>{partnerSourceType}: <strong>{partnerName}</strong></span>
@@ -302,7 +303,7 @@ export default class BillingFeeList extends React.Component {
               <Table dataSource={dataSource} columns={columns} rowKey="id" footer={this.handleTableFooter} scroll={{ x: 2000 }} />
             </div>
           </div>
-        </div>
+        </Content>
         <PreviewPanel stage="billing" />
       </div>
     );

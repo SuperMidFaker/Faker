@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Row, Col, Tabs, Table, Menu, Dropdown } from 'antd';
+import { Button, Row, Col, Tabs, Table, Menu, Dropdown, Layout } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -14,6 +14,8 @@ import { loadCustomers, showCustomerModal, deleteCustomer } from 'common/reducer
 import { PARTNER_ROLES } from 'common/constants';
 
 const formatMsg = format(messages);
+const { Header, Content } = Layout;
+
 function fetchData({ state, dispatch }) {
   return dispatch(loadCustomers({
     tenantId: state.account.tenantId,
@@ -87,11 +89,11 @@ export default class List extends React.Component {
     );
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <header className="top-bar" key="header">
+        <Header className="top-bar" key="header">
           <div className="toolbar-right" />
           <span>{this.msg('customer')}</span>
-        </header>
-        <div className="main-content" key="main">
+        </Header>
+        <Content className="main-content" key="main">
           <Row gutter={16}>
             <Col span={6}>
               <div className="page-body">
@@ -119,7 +121,7 @@ export default class List extends React.Component {
               </div>
             </Col>
           </Row>
-        </div>
+        </Content>
       </QueueAnim>
     );
   }

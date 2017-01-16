@@ -1,7 +1,7 @@
 /* eslint no-undef: 0 */
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Steps, Card, Collapse, Row, Col } from 'antd';
+import { Steps, Card, Collapse, Row, Col, Layout } from 'antd';
 import { loadPubShipmtDetail } from 'common/reducers/shipment';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { renderConsignLoc, renderLoc } from '../../transport/common/consignLocation';
@@ -9,6 +9,7 @@ import TrackingTimeline from '../../transport/common/trackingTimeline';
 import moment from 'moment';
 const Step = Steps.Step;
 const Panel = Collapse.Panel;
+const { Content } = Layout;
 import './index.less';
 
 function fetchData({ dispatch, params }) {
@@ -263,7 +264,7 @@ export default class TrackingDetail extends React.Component {
         <nav className="detail-nav"><strong>运单号: {shipmt.shipmt_no} {refExternalNo}</strong></nav>
         <Row>
           <Col lg={15} sm={24}>
-            <div className="main-content">
+            <Content className="main-content">
               <Card title="运输进度" style={{ width: '100%' }}>
                 <Steps direction={this.state.stepsDirection} current={statusPos}>{steps}</Steps>
               </Card>
@@ -295,7 +296,7 @@ export default class TrackingDetail extends React.Component {
                   </Card>
                 </Col>
               </Row>
-            </div>
+            </Content>
           </Col>
           <Col lg={9} sm={24}>
             <div id="map" />

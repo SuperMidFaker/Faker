@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import { Layout } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege from 'client/common/decorators/withPrivilege';
@@ -8,6 +9,7 @@ import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 
 const formatMsg = format(messages);
+const { Content } = Layout;
 
 @injectIntl
 @connectNav({
@@ -26,11 +28,11 @@ export default class CreateCompRelation extends Component {
   }
   render() {
     return (
-      <div className="main-content">
+      <Content className="main-content">
         <div className="page-body">
           <CompRelationForm router={this.context.router} formData={initialState.formData} />
         </div>
-      </div>
+      </Content>
     );
   }
 }

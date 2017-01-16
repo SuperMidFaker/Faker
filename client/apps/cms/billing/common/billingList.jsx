@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
-import { Button, message } from 'antd';
+import { Button, Layout, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
@@ -16,6 +16,7 @@ import { createFilename } from 'client/util/dataTransform';
 import CancelChargeModal from '../modals/cancelChargeModal';
 
 const formatMsg = format(messages);
+const { Header, Content } = Layout;
 
 @injectIntl
 @connectNav({
@@ -250,10 +251,10 @@ export default class BillingList extends React.Component {
 
     return (
       <div>
-        <header className="top-bar">
+        <Header className="top-bar">
           <span>{this.msg(this.props.type)}{this.msg('billing')}</span>
-        </header>
-        <div className="main-content">
+        </Header>
+        <Content className="main-content">
           <div className="page-body">
             <div className="toolbar">
               <Button type="primary" icon="plus" onClick={this.handleAddBtnClicked}>{this.msg('createBilling')}</Button>
@@ -270,7 +271,7 @@ export default class BillingList extends React.Component {
               billingId={this.state.billingId} fromId={this.state.fromId} handleOk={this.handleTableLoad}
             />
           </div>
-        </div>
+        </Content>
       </div>
 
     );

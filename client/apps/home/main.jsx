@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Menu } from 'antd';
-import QueueAnim from 'rc-queue-anim';
+import { Menu, Layout } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import HeaderNavBar from 'client/components/headerNavBar';
 import NavLink from 'client/components/nav-link';
@@ -13,6 +12,7 @@ import messages from './message.i18n';
 import './home.less';
 
 const formatMsg = format(messages);
+const { Header, Content } = Layout;
 const MenuItem = Menu.Item;
 
 @injectIntl
@@ -78,9 +78,11 @@ export default class Home extends React.Component {
       );
     }
     return (
-      <div type={['bottom', 'up']} className="layout-wrapper layout-nosider-left">
-        <HeaderNavBar />
-        <QueueAnim type={['bottom', 'up']} className="layout-content">
+      <Layout className="layout-wrapper layout-nosider-left">
+        <Header>
+          <HeaderNavBar />
+        </Header>
+        <Content>
           <div className="home-header home-header-bg">
             <div className="tenant-info">
               <div className="tenant-logo " style={{ backgroundImage: `url("${logo}")` }} />
@@ -98,7 +100,7 @@ export default class Home extends React.Component {
               <ModuleLayout size="large" />
             </div>
           </div>
-        </QueueAnim>
-      </div>);
+        </Content>
+      </Layout>);
   }
 }

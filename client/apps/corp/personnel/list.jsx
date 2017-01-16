@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Button, Select, message } from 'antd';
+import { Button, Select, message, Layout } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
 import { loadPersonnel, loadTenantsByMaster, delPersonnel, switchTenant, switchStatus } from
@@ -20,6 +20,7 @@ import containerMessages from 'client/apps/message.i18n';
 const formatMsg = format(messages);
 const formatGlobalMsg = format(globalMessages);
 const formatContainerMsg = format(containerMessages);
+const { Content } = Layout;
 const Option = Select.Option;
 
 function fetchData({ state, dispatch, cookie }) {
@@ -321,7 +322,7 @@ export default class PersonnelSetting extends React.Component {
     }];
     return (
       <div>
-        <div className="main-content">
+        <Content className="main-content">
           <div className="page-body">
             <div className="toolbar">
               <div className="toolbar-right">
@@ -343,7 +344,7 @@ export default class PersonnelSetting extends React.Component {
               <Table rowSelection={rowSelection} columns={columns} loading={loading} dataSource={dataSource} useFixedHeader />
             </div>
           </div>
-        </div>
+        </Content>
       </div>
     );
   }

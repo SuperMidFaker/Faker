@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
-import { Button, message, Popconfirm } from 'antd';
+import { Button, message, Layout, Popconfirm } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
@@ -17,6 +17,7 @@ import SearchBar from 'client/components/search-bar';
 import ExportBillingExcel from '../modals/exportBillingsExcel';
 
 const formatMsg = format(messages);
+const { Header, Content } = Layout;
 
 @injectIntl
 
@@ -285,15 +286,15 @@ export default class BillingList extends React.Component {
     };
     return (
       <div>
-        <header className="top-bar">
+        <Header className="top-bar">
           <span>{this.msg(type)}{this.msg('billing')}</span>
-        </header>
-        <div className="top-bar-tools">
-          <SearchBar placeholder="输入账单名称搜索" onInputSearch={this.handleSearchInput}
-            value={this.props.billings.searchValue}
-          />
-        </div>
-        <div className="main-content">
+          <div className="top-bar-tools">
+            <SearchBar placeholder="输入账单名称搜索" onInputSearch={this.handleSearchInput}
+              value={this.props.billings.searchValue} size="large"
+            />
+          </div>
+        </Header>
+        <Content className="main-content">
           <div className="page-body">
             <div className="toolbar">
               <Button type="primary" onClick={this.handleAddBtnClicked}>{this.msg('createBilling')}</Button>
@@ -310,7 +311,7 @@ export default class BillingList extends React.Component {
               billingId={this.state.billingId} fromId={this.state.fromId} totalCharge={this.state.totalCharge} handleOk={this.handleTableLoad}
             />
           </div>
-        </div>
+        </Content>
       </div>
 
     );
