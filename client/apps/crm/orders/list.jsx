@@ -99,7 +99,7 @@ export default class ShipmentOrderList extends React.Component {
       if (result.error) {
         message.error(result.error.message);
       } else {
-        message.info('接单成功');
+        message.info('发送成功');
         this.handleTableLoad();
       }
     });

@@ -59,7 +59,7 @@ export default defineMessages({
   },
   searchPlaceholder: {
     id: 'transport.tariff.search.placeholder',
-    defaultMessage: '搜索协议',
+    defaultMessage: '搜索协议 报价编号/合作伙伴',
   },
   quoteManage: {
     id: 'transport.tariff.quote_manage',
