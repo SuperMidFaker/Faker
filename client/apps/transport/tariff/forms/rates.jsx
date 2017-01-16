@@ -74,7 +74,7 @@ export default class TariffRatesForm extends React.Component {
                     添加
                   </Button>
                 </div>)}
-                <RateSourceTable visibleModal={sourceModal} onChangeVisible={this.handleVisibleChange} />
+                <RateSourceTable visibleModal={sourceModal} onChangeVisible={this.handleVisibleChange} type={type} />
               </Card>
             </Col>
             <Col sm={18}>
@@ -97,7 +97,7 @@ export default class TariffRatesForm extends React.Component {
                   </div>)}
                 {
                   this.props.rateId &&
-                  <RateEndTable visibleModal={endModal} onChangeVisible={this.handleVisibleChange} />
+                  <RateEndTable visibleModal={endModal} onChangeVisible={this.handleVisibleChange} type={type} />
                 }
               </Card>
             </Col>

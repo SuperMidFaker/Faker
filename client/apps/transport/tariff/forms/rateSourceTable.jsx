@@ -33,6 +33,7 @@ export default class RateSourceTable extends React.Component {
     updateRateSource: PropTypes.func.isRequired,
     delRateSource: PropTypes.func.isRequired,
     loadRateEnds: PropTypes.func.isRequired,
+    type: PropTypes.oneOf(['create', 'edit', 'view']),
   }
   state = {
     selectedRowKeys: [],
@@ -76,16 +77,6 @@ export default class RateSourceTable extends React.Component {
     title: '起始地',
     dataIndex: 'source',
     render: (o, record) => renderRegion(record.source),
-  }, {
-    title: '操作',
-    width: 80,
-    render: (o, record) => (
-      <span>
-        <RowClick text="编辑" onHit={this.handleEdit} row={record} />
-        <span className="ant-divider" />
-        <ConfirmDel text="删除" onConfirm={this.handleDel} row={record} />
-      </span>
-      ),
   }]
   loadSources = (pageSize, current) => this.props.loadRatesSources({
     tariffId: this.props.tariffId,
@@ -192,7 +183,7 @@ export default class RateSourceTable extends React.Component {
     });
   }
   render() {
-    const { ratesSourceList, loading, visibleModal } = this.props;
+    const { ratesSourceList, loading, visibleModal, type } = this.props;
     const { modalRegion } = this.state;
     this.dataSource.remotes = ratesSourceList;
     const rowSelection = {
@@ -204,9 +195,23 @@ export default class RateSourceTable extends React.Component {
       },
       */
     };
+    const columns = [...this.columns];
+    if (type === 'create' || type === 'edit') {
+      columns.push({
+        title: '操作',
+        width: 80,
+        render: (o, record) => (
+          <span>
+            <RowClick text="编辑" onHit={this.handleEdit} row={record} />
+            <span className="ant-divider" />
+            <ConfirmDel text="删除" onConfirm={this.handleDel} row={record} />
+          </span>
+        ),
+      });
+    }
     return (
       <div>
-        <Table size="middle" rowSelection={rowSelection} columns={this.columns} loading={loading}
+        <Table size="middle" rowSelection={rowSelection} columns={columns} loading={loading}
           dataSource={this.dataSource} onRowClick={this.handleRowClick} rowKey={getRowKey}
         />
         <Modal visible={visibleModal} onOk={this.handleSourceSave} onCancel={this.handleCancel}

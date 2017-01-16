@@ -48,6 +48,7 @@ export default class RateEndTable extends React.Component {
     updateRateEnd: PropTypes.func.isRequired,
     delRateEnd: PropTypes.func.isRequired,
     loadRateEnds: PropTypes.func.isRequired,
+    type: PropTypes.oneOf(['create', 'edit', 'view']),
   }
   state = {
     selectedRowKeys: [],
@@ -214,7 +215,7 @@ export default class RateEndTable extends React.Component {
   }
   render() {
     const { ratesEndList, loading, visibleModal, form: { getFieldDecorator },
-      agreementRef, transModes, vehicleTypeParams, vehicleLengthParams } = this.props;
+      agreementRef, transModes, vehicleTypeParams, vehicleLengthParams, type } = this.props;
     const { editEnd, editRegion } = this.state;
     this.dataSource.remotes = ratesEndList;
     const rowSelection = {
@@ -243,17 +244,20 @@ export default class RateEndTable extends React.Component {
         render: (o, record) => record.gradients[vc.index],
       });
     });
-    columns.push({
-      title: '操作',
-      width: 120,
-      fixed: 'right',
-      render: (o, record) => (
-        <span>
-          <RowClick text="编辑" onHit={this.handleEdit} row={record} />
-          <span className="ant-divider" />
-          <ConfirmDel text="删除" onConfirm={this.handleDel} row={record} />
-        </span>),
-    });
+    if (type === 'create' || type === 'edit') {
+      columns.push({
+        title: '操作',
+        width: 120,
+        fixed: 'right',
+        render: (o, record) => (
+          <span>
+            <RowClick text="编辑" onHit={this.handleEdit} row={record} />
+            <span className="ant-divider" />
+            <ConfirmDel text="删除" onConfirm={this.handleDel} row={record} />
+          </span>),
+      });
+    }
+
     return (
       <div>
         <Table size="middle" rowSelection={rowSelection} columns={columns} loading={loading}
