@@ -2,14 +2,13 @@ import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import { Modal, Select, Form, message, Switch, Radio } from 'antd';
 import { clearingOption } from 'common/constants';
-import { delgDispSave, setDispStatus,
-  loadciqSups } from 'common/reducers/cmsDelegation';
+import { delgDispSave, setDispStatus, loadciqSups } from 'common/reducers/cmsDelegation';
 import { showPreviewer, loadCustPanel, loadDeclCiqPanel } from 'common/reducers/cmsDelgInfoHub';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from './message.i18n';
 import { format } from 'client/common/i18n/helpers';
-const formatMsg = format(messages);
 
+const formatMsg = format(messages);
 const Option = Select.Option;
 const FormItem = Form.Item;
 const RadioButton = Radio.Button;
@@ -218,13 +217,9 @@ export default class DelgDispModal extends Component {
           </FormItem>
           {(appoint || fieldInits.appointed) &&
             <FormItem label="报检供应商" {...formItemLayout} >
-              {getFieldDecorator('ciq_name', { initialValue: fieldInits.ciq_name }
-                )(<Select
-                  showSearch
-                  showArrow
-                  optionFilterProp="searched"
-                  placeholder={this.msg('dispatchMessage')}
-                  style={{ width: '80%' }}
+              {getFieldDecorator('ciq_name', { initialValue: fieldInits.ciq_name })(
+                <Select showSearch showArrow optionFilterProp="searched"
+                  placeholder={this.msg('dispatchMessage')} style={{ width: '80%' }}
                 >
                   {
                   ciqSups.map(pt => (

@@ -7,7 +7,6 @@ config.set('vendor_dependencies', [
   'react',
   'react-dom',
   'react-intl',
-  'react-dropzone',
   'react-redux',
   'react-router',
   'redux',

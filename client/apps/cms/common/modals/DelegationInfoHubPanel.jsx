@@ -16,8 +16,8 @@ import AcceptModal from './acceptModal';
 import DelgDispModal from './delgDispModal';
 import { openAcceptModal, showDispModal } from 'common/reducers/cmsDelegation';
 import { setPreviewStatus, hidePreviewer, setPreviewTabkey } from 'common/reducers/cmsDelgInfoHub';
-const TabPane = Tabs.TabPane;
 
+const TabPane = Tabs.TabPane;
 
 @injectIntl
 @connect(

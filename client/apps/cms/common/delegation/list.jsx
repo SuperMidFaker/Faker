@@ -524,10 +524,7 @@ export default class DelegationList extends Component {
                 </Button>
               </PrivilegeCover>
               <div className="toolbar-right">
-                <Select
-                  value={listFilter.viewStatus}
-                  style={{ width: 160 }}
-                  showSearch={false}
+                <Select value={listFilter.viewStatus} style={{ width: 160 }} showSearch={false}
                   onChange={this.handleViewChange}
                 >
                   <OptGroup label="常用视图">
