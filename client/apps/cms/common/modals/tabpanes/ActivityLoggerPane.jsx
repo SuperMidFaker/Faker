@@ -5,7 +5,7 @@ import moment from 'moment';
 import { Button, Card, Checkbox, Col, Row, Collapse, DatePicker, Dropdown, Form, Icon,
   Input, InputNumber, Mention, Menu, Popover, Radio, Select, Tabs, Timeline, Tooltip, message } from 'antd';
 import InfoItem from 'client/components/InfoItem';
-import { showPreviewer, loadCustPanel, loadDeclCiqPanel, updateCertParam, exchangeBlNo } from 'common/reducers/cmsDelgInfoHub';
+import { loadBasicInfo, loadCustPanel, loadDeclCiqPanel, updateCertParam, exchangeBlNo } from 'common/reducers/cmsDelgInfoHub';
 import { loadDeclHead, setInspect } from 'common/reducers/cmsDeclare';
 import { CERTS, INSPECT_STATUS } from 'common/constants';
 import ActivityEditCard from './activityEditCard';
@@ -42,7 +42,7 @@ const ACTIVITY_DESC_MAP = {
     tabKey: state.cmsDelgInfoHub.tabKey,
     declHeadsPane: state.cmsDeclare.decl_heads,
   }), {
-    exchangeBlNo, loadDeclHead, setInspect, loadCustPanel, showPreviewer, updateCertParam,
+    exchangeBlNo, loadDeclHead, setInspect, loadCustPanel, loadBasicInfo, updateCertParam,
     loadDeclCiqPanel,
   }
 )
@@ -84,7 +84,7 @@ export default class ActivityLoggerPane extends React.Component {
         }
       } else {
         message.info('保存成功', 5);
-        this.props.showPreviewer(
+        this.props.loadBasicInfo(
             this.props.tenantId,
             this.props.previewer.delgNo,
             this.props.tabKey
@@ -114,7 +114,7 @@ export default class ActivityLoggerPane extends React.Component {
         }
       } else {
         message.info('保存成功', 5);
-        this.props.showPreviewer(
+        this.props.loadBasicInfo(
           this.props.tenantId,
           this.props.previewer.delgNo,
           this.props.tabKey
@@ -127,11 +127,11 @@ export default class ActivityLoggerPane extends React.Component {
       if (result.error) {
         message.error(result.error.message, 5);
       } else {
-        this.props.showPreviewer(
-            this.props.tenantId,
-            this.props.previewer.delgNo,
-            this.props.tabKey
-          );
+        this.props.loadBasicInfo(
+          this.props.tenantId,
+          this.props.previewer.delgNo,
+          this.props.tabKey
+        );
       }
     });
   }

@@ -7,7 +7,7 @@ import downloadMultiple from 'client/util/multipleDownloader';
 import { GOODSTYPES, TRANS_MODE, CLAIM_DO_AWB } from 'common/constants';
 import InfoItem from 'client/components/InfoItem';
 import './pane.less';
-import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
+import { loadBasicInfo } from 'common/reducers/cmsDelgInfoHub';
 
 function getExtension(filename) {
   const parts = filename.split('.');
@@ -24,7 +24,7 @@ function getExtension(filename) {
     delgNo: state.cmsDelgInfoHub.previewer.delgNo,
     tabKey: state.cmsDelgInfoHub.tabKey,
   }),
-  { showPreviewer }
+  { loadBasicInfo }
 )
 export default class BasicPane extends React.Component {
   static propTypes = {
@@ -41,9 +41,8 @@ export default class BasicPane extends React.Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.tabKey === 'basic' &&
-      nextProps.tabKey !== this.props.tabKey ||
-      nextProps.delgNo !== this.props.delgNo) {
-      nextProps.showPreviewer(this.props.tenantId, nextProps.delgNo);
+      nextProps.tabKey !== this.props.tabKey) {
+      nextProps.loadBasicInfo(this.props.tenantId, nextProps.delgNo, 'basic');
     }
     if (nextProps.files.length !== this.props.files.length) {
       const sortedFiles = [];
