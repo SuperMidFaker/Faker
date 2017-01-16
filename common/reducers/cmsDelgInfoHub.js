@@ -3,12 +3,13 @@ import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'HIDE_PREVIEWER', 'SET_PREW_STATUS',
-  'SHOW_PREVIEWER', 'SHOW_PREVIEWER_SUCCEED', 'SHOW_PREVIEWER_FAILED',
+  'SHOW_PREVIEWER',
   'SET_PREW_TABKEY',
   'LOAD_DELG_PANEL', 'LOAD_DELG_PANEL_SUCCEED', 'LOAD_DELG_PANEL_FAILED',
   'LOAD_DECLCIQ_PANEL', 'LOAD_DECLCIQ_PANEL_SUCCEED', 'LOAD_DECLCIQ_PANEL_FAIL',
   'UPDATE_CERT_PARAM', 'UPDATE_CERT_PARAM_SUCCEED', 'UPDATE_CERT_PARAM_FAIL',
   'UPDATE_BLNO', 'UPDATE_BLNO_SUCCEED', 'UPDATE_BLNO_FAIL',
+  'LOAD_BASIC_INFO', 'LOAD_BASIC_INFO_SUCCEED', 'LOAD_BASIC_INFO_FAILED',
 ]);
 
 const initialState = {
@@ -29,25 +30,26 @@ const initialState = {
     ciqlist: [],
   },
   customsPanel: {
-    bills: [],
+    bill: {},
   },
   preStatus: '',
 };
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
-    case actionTypes.SHOW_PREVIEWER_SUCCEED: {
-      let tabKey = 'customsDecl';
-      if (action.result.data.delgDispatch.status === 0) {
-        tabKey = 'basic';
-      }
+    case actionTypes.SHOW_PREVIEWER:
       return { ...state, previewer: {
         ...state.previewer,
-        visible: action.visible,
-        delgNo: action.payload.delgNo,
+        visible: true,
+        delgNo: action.payload.delgNo },
+        tabKey: action.payload.tabKey,
+      };
+    case actionTypes.LOAD_BASIC_INFO_SUCCEED: {
+      return { ...state, previewer: {
+        ...state.previewer,
         ...action.result.data },
         preStatus: '',
-        tabKey: action.payload.tabKey || tabKey };
+        tabKey: action.payload.tabKey };
     }
     case actionTypes.HIDE_PREVIEWER:
       return { ...state, previewer: { ...state.previewer, visible: action.visible } };
@@ -64,19 +66,25 @@ export default function reducer(state = initialState, action) {
   }
 }
 
-export function showPreviewer(tenantId, delgNo, tabKey) {
+export function showPreviewer(delgNo, tabKey) {
+  return {
+    type: actionTypes.SHOW_PREVIEWER,
+    payload: { delgNo, tabKey },
+  };
+}
+
+export function loadBasicInfo(tenantId, delgNo, tabKey) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.SHOW_PREVIEWER,
-        actionTypes.SHOW_PREVIEWER_SUCCEED,
-        actionTypes.SHOW_PREVIEWER_FAILED,
+        actionTypes.LOAD_BASIC_INFO,
+        actionTypes.LOAD_BASIC_INFO_SUCCEED,
+        actionTypes.LOAD_BASIC_INFO_FAILED,
       ],
-      endpoint: 'v1/cms/delegate/previewer',
+      endpoint: 'v1/cms/delegate/previewer/basicInfo',
       method: 'get',
       params: { tenantId, delgNo },
-      visible: true,
-      payload: { delgNo, tabKey },
+      payload: { tabKey },
     },
   };
 }

@@ -165,7 +165,7 @@ export default class ExpenseList extends Component {
   })
 
   handlePreview = (delgNo) => {
-    this.props.showPreviewer(this.props.tenantId, delgNo, 'expenses');
+    this.props.showPreviewer(delgNo, 'expenses');
   }
   handleExpListLoad = (currentPage, filter) => {
     const { tenantId, listFilter, expslist: { pageSize, current } } = this.props;

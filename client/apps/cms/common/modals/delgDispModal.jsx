@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Modal, Select, Form, message, Switch, Radio } from 'antd';
 import { clearingOption } from 'common/constants';
 import { delgDispSave, setDispStatus, loadciqSups } from 'common/reducers/cmsDelegation';
-import { showPreviewer, loadCustPanel, loadDeclCiqPanel } from 'common/reducers/cmsDelgInfoHub';
+import { loadBasicInfo, loadCustPanel, loadDeclCiqPanel } from 'common/reducers/cmsDelgInfoHub';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from './message.i18n';
 import { format } from 'client/common/i18n/helpers';
@@ -73,7 +73,7 @@ function getFieldInits(delgDisp, dispatch) {
     tabKey: state.cmsDelgInfoHub.tabKey,
     fieldInits: getFieldInits(state.cmsDelegation.assign.delgDisp, state.cmsDelegation.assign.dispatch),
   }),
-  { delgDispSave, setDispStatus, loadciqSups, showPreviewer, loadCustPanel, loadDeclCiqPanel }
+  { delgDispSave, setDispStatus, loadciqSups, loadBasicInfo, loadCustPanel, loadDeclCiqPanel }
 )
 @Form.create()
 export default class DelgDispModal extends Component {
@@ -95,33 +95,6 @@ export default class DelgDispModal extends Component {
     ciqSups: [],
   }
   msg = key => formatMsg(this.props.intl, key);
-  // handleConfirm = () => {
-  //   const { delgDisp, dispatch, tenantId } = this.props;
-  //   this.props.delDisp(delgDisp, dispatch, tenantId
-  //   ).then(
-  //     (result) => {
-  //       if (result.error) {
-  //         message.error(result.error.message);
-  //       } else {
-  //         this.props.setSavedStatus({ saved: false });
-  //         this.props.setDispStatus({ delgDispShow: false });
-  //         this.props.form.resetFields();
-  //         this.handleOnChange(false);
-  //         if (this.props.previewer.visible) {
-  //           this.props.showPreviewer(this.props.tenantId, dispatch.delg_no, this.props.tabKey);
-  //           if (this.props.tabKey === 'customsDecl') {
-  //             this.props.loadCustPanel({
-  //               delgNo: dispatch.delg_no,
-  //               tenantId: this.props.tenantId,
-  //             });
-  //           } else if (this.props.tabKey === 'ciqDecl') {
-  //             this.props.loadDeclCiqPanel(dispatch.delg_no, this.props.tenantId);
-  //           }
-  //         }
-  //       }
-  //     }
-  //   );
-  // }
   handleSave = () => {
     const { delgDisp, dispatch, partners, ciqSups } = this.props;
     const recv = this.props.form.getFieldsValue();
@@ -148,7 +121,7 @@ export default class DelgDispModal extends Component {
         this.props.form.resetFields();
         this.handleOnChange(this.props.fieldInits.appointed);
         if (this.props.previewer.visible) {
-          this.props.showPreviewer(this.props.tenantId, dispatch.delg_no, this.props.tabKey);
+          this.props.loadBasicInfo(this.props.tenantId, dispatch.delg_no, this.props.tabKey);
           if (this.props.tabKey === 'customsDecl') {
             this.props.loadCustPanel({
               delgNo: dispatch.delg_no,

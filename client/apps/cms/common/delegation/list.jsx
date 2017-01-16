@@ -15,7 +15,7 @@ import RowUpdater from './rowUpdater';
 import { loadAcceptanceTable, loadBillForMake, acceptDelg, delDelg,
   setDispStatus, loadCiqTable, delgAssignRecall,
   openAcceptModal, showDispModal } from 'common/reducers/cmsDelegation';
-import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
+import { showPreviewer, loadBasicInfo } from 'common/reducers/cmsDelgInfoHub';
 import DelegationInfoHubPanel from '../modals/DelegationInfoHubPanel';
 import CiqList from './ciqList';
 import messages from './message.i18n';
@@ -43,10 +43,11 @@ const OptGroup = Select.OptGroup;
     previewer: state.cmsDelgInfoHub.previewer,
     delegation: state.cmsDelgInfoHub.previewer.delegation,
     listView: state.cmsDelegation.listView,
+    tabKey: state.cmsDelgInfoHub.tabKey,
   }),
   { loadAcceptanceTable, loadBillForMake, acceptDelg,
     delDelg, showPreviewer, setDispStatus, delgAssignRecall,
-    loadCiqTable, openAcceptModal, showDispModal }
+    loadCiqTable, openAcceptModal, showDispModal, loadBasicInfo }
 )
 @connectNav({
   depth: 2,
@@ -73,6 +74,7 @@ export default class DelegationList extends Component {
     previewer: PropTypes.object.isRequired,
     delegation: PropTypes.object.isRequired,
     loadCiqTable: PropTypes.func.isRequired,
+    tabKey: PropTypes.string.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -89,7 +91,6 @@ export default class DelegationList extends Component {
     if (nextProps.preStatus !== this.props.preStatus) {
       if (nextProps.preStatus === 'accepted') {
         this.handleDelgListLoad();
-        // this.showAcceptInfo(this.acceptingRow);
       }
       if (nextProps.preStatus === 'make') {
         const { delegation } = this.props;
@@ -241,8 +242,12 @@ export default class DelegationList extends Component {
     remotes: this.props.delegationlist,
   })
 
-  handlePreview = (delgNo) => {
-    this.props.showPreviewer(this.props.tenantId, delgNo);
+  handlePreview = (delgNo, record) => {
+    let tabKey = 'customsDecl';
+    if (record.status < 1) {
+      tabKey = 'basic';
+    }
+    this.props.showPreviewer(delgNo, tabKey);
   }
   handleCreateBtnClick = () => {
     this.context.router.push(`/clearance/${this.props.ietype}/create`);
@@ -347,7 +352,7 @@ export default class DelegationList extends Component {
       } else {
         this.handleDelgListLoad();
         if (this.props.previewer.visible) {
-          this.handlePreview(row.delg_no);
+          this.props.loadBasicInfo(this.props.tenantId, row.delg_no, this.props.tabKey);
         }
       }
     });
