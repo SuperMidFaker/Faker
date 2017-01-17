@@ -63,6 +63,10 @@ export default class AcceptanceEdit extends Component {
       }
     });
   }
+  handleCancelBtnClick = () => {
+    this.context.router.push(`/clearance/${this.props.type}/`);
+  }
+
   handleSaveBtnClick = () => {
     this.handleSave({ isAccepted: false });
   }
@@ -88,15 +92,15 @@ export default class AcceptanceEdit extends Component {
       <QueueAnim type={['bottom', 'up']}>
         <Header className="top-bar" key="header">
           <span>修改委托</span>
+          <div className="top-bar-tools">
+            <Button size="large" type="ghost" onClick={this.handleCancelBtnClick}>
+              {this.msg('cancel')}
+            </Button>
+            <Button size="large" type="primary" onClick={this.handleSaveBtnClick} loading={submitting}>
+              {this.msg('save')}
+            </Button>
+          </div>
         </Header>
-        <div className="top-bar-tools">
-          <Button size="large" type="ghost" onClick={this.handleCancelBtnClick}>
-            {this.msg('cancel')}
-          </Button>
-          <Button size="large" type="primary" onClick={this.handleSaveBtnClick} loading={submitting}>
-            {this.msg('save')}
-          </Button>
-        </div>
         <Content className="main-content" key="main">
           <div className="page-body card-wrapper">
             <Form horizontal form={form}>

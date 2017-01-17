@@ -15,7 +15,7 @@ import RowUpdater from './rowUpdater';
 import { loadAcceptanceTable, loadBillForMake, acceptDelg, delDelg,
   setDispStatus, loadCiqTable, delgAssignRecall,
   openAcceptModal, showDispModal } from 'common/reducers/cmsDelegation';
-import { showPreviewer, loadBasicInfo } from 'common/reducers/cmsDelgInfoHub';
+import { showPreviewer, loadBasicInfo, loadCustPanel, loadDeclCiqPanel } from 'common/reducers/cmsDelgInfoHub';
 import DelegationInfoHubPanel from '../modals/DelegationInfoHubPanel';
 import CiqList from './ciqList';
 import messages from './message.i18n';
@@ -47,7 +47,8 @@ const OptGroup = Select.OptGroup;
   }),
   { loadAcceptanceTable, loadBillForMake, acceptDelg,
     delDelg, showPreviewer, setDispStatus, delgAssignRecall,
-    loadCiqTable, openAcceptModal, showDispModal, loadBasicInfo }
+    loadCiqTable, openAcceptModal, showDispModal, loadBasicInfo,
+    loadCustPanel, loadDeclCiqPanel }
 )
 @connectNav({
   depth: 2,
@@ -353,6 +354,13 @@ export default class DelegationList extends Component {
         this.handleDelgListLoad();
         if (this.props.previewer.visible) {
           this.props.loadBasicInfo(this.props.tenantId, row.delg_no, this.props.tabKey);
+          if (this.props.tabKey === 'customsDecl') {
+            this.props.loadCustPanel({
+              delgNo: row.delg_no, tenantId: this.props.tenantId,
+            });
+          } else if (this.props.tabKey === 'ciqDecl') {
+            this.props.loadDeclCiqPanel(row.delg_no, this.props.tenantId);
+          }
         }
       }
     });

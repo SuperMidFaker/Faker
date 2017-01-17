@@ -369,7 +369,7 @@ export function ciqDispSave(dispatch, ciqSup) {
   };
 }
 
-export function delgDispSave(delgDisp, dispatch, partner, ciqSup) {
+export function delgDispSave(delgDisp, dispatch, partner, ciqSup, loginId, loginName) {
   return {
     [CLIENT_API]: {
       types: [
@@ -379,7 +379,7 @@ export function delgDispSave(delgDisp, dispatch, partner, ciqSup) {
       ],
       endpoint: 'v1/cms/delegation/dispsave',
       method: 'post',
-      data: { delgDisp, dispatch, partner, ciqSup },
+      data: { delgDisp, dispatch, partner, ciqSup, loginId, loginName },
     },
   };
 }
