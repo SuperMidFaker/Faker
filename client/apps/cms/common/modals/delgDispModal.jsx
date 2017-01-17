@@ -63,6 +63,8 @@ function getFieldInits(delgDisp, dispatch) {
 @connect(
   state => ({
     tenantId: state.account.tenantId,
+    loginId: state.account.loginId,
+    loginName: state.account.username,
     assign: state.cmsDelegation.assign,
     delgDisp: state.cmsDelegation.assign.delgDisp,
     dispatch: state.cmsDelegation.assign.dispatch,
@@ -96,7 +98,7 @@ export default class DelgDispModal extends Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   handleSave = () => {
-    const { delgDisp, dispatch, partners, ciqSups } = this.props;
+    const { delgDisp, dispatch, partners, ciqSups, loginId, loginName } = this.props;
     const recv = this.props.form.getFieldsValue();
     const appointedOption = recv.appointed_option || delgDisp.appointed_option;
     let partner = {};
@@ -112,7 +114,7 @@ export default class DelgDispModal extends Component {
       }
     }
     const delegation = { ...delgDisp, ...{ appointed_option: appointedOption } };
-    this.props.delgDispSave(delegation, dispatch, partner, ciqSup
+    this.props.delgDispSave(delegation, dispatch, partner, ciqSup, loginId, loginName
     ).then((result) => {
       if (result.error) {
         message.error(result.error.message);
