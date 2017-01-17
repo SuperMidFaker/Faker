@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 import { Menu, Layout } from 'antd';
 import { locationShape } from 'react-router';
 import { intlShape, injectIntl } from 'react-intl';
-import HeaderNavBar from 'client/components/headerNavBar';
+import SimpleHeaderBar from 'client/components/simpleHeaderBar';
+import connectNav from 'client/common/decorators/connect-nav';
 import NavLink from 'client/components/nav-link';
 import { hasPermission } from 'client/common/decorators/withPrivilege';
 import { TENANT_LEVEL } from 'common/constants';
@@ -19,6 +20,10 @@ const MenuItem = Menu.Item;
     privileges: state.account.privileges,
   })
 )
+@connectNav({
+  text: '管理面板',
+  moduleName: 'corp',
+})
 export default class CorpPack extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -98,7 +103,7 @@ export default class CorpPack extends React.Component {
     return (
       <Layout className="layout-wrapper">
         <Header>
-          <HeaderNavBar />
+          <SimpleHeaderBar title="管理后台" />
         </Header>
         <Content>
           <Header className="top-bar">

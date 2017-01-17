@@ -11,7 +11,7 @@ const messages = defineMessages({
   },
   corp: {
     id: 'container.corp',
-    defaultMessage: '管理面板',
+    defaultMessage: '管理后台',
   },
   notFound: {
     id: 'container.not.found',

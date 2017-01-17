@@ -13,7 +13,6 @@ import AppEditor from '../../../components/appmodule-editor';
 import { isLoaded } from 'client/common/redux-actions';
 import { resolveCurrentPageNumber } from 'client/util/react-ant';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege, { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { ACCOUNT_STATUS, MAX_STANDARD_TENANT, DEFAULT_MODULES }
   from 'common/constants';
@@ -48,11 +47,6 @@ function fetchData({ state, dispatch, cookie }) {
     closeTenantAppsEditor,
   }
 )
-@connectNav({
-  depth: 1,
-  text: props => formatContainerMsg(props.intl, 'organTitle'),
-  moduleName: 'corp',
-})
 @withPrivilege({ module: 'corp', feature: 'organization' })
 export default class CorpList extends React.Component {
   static propTypes = {

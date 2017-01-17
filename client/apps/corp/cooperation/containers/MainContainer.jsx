@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { loadPartners } from 'common/reducers/partner';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { connect } from 'react-redux';
-import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import { changeInvitationType } from 'common/reducers/invitation';
 import { Radio, Layout } from 'antd';
@@ -23,12 +22,6 @@ function fetchData({ state, dispatch, cookie }) {
 }
 
 @connectFetch()(fetchData)
-
-@connectNav({
-  depth: 1,
-  text: '协作网络',
-  muduleName: 'corp',
-})
 @connect(state => ({
   invitationType: state.invitation.invitationType,
 }), { changeInvitationType })

@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { Button, Form, Input, Row, Col, Select, message, Layout } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import { isFormDataLoaded, loadForm, assignForm, clearForm, edit, submit, loadRoles } from
 'common/reducers/personnel';
@@ -52,13 +51,6 @@ function goBack(router) {
     roles: state.personnel.roles, // .filter(rol => rol.name !== PRESET_TENANT_ROLE.owner.name),
   }),
   { edit, submit, checkLoginName })
-@connectNav({
-  depth: 3,
-  text: props => props.formData.key === null ?
-    formatMsg(props.intl, 'newUser') : props.formData.name,
-  moduleName: 'corp',
-  lifecycle: 'componentWillReceiveProps',
-})
 @withPrivilege({
   module: 'corp', feature: 'personnel',
   action: props => props.formData.key === null ? 'create' : 'edit',

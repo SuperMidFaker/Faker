@@ -111,7 +111,7 @@ export default class BasicForm extends Component {
       };
     }
     return (
-      <Card title={this.msg('delgInfo')} bodyStyle={{ padding: 16 }}>
+      <Card bodyStyle={{ padding: 16 }}>
         <Row>
           <Col sm={24} lg={16}>
             <FormItem label={this.msg('delgClient')} labelCol={{ span: 3 }} wrapperCol={{ span: 21 }} style={{ display: customerName.display }}>

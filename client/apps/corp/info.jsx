@@ -6,7 +6,6 @@ import {
 import { intlShape, injectIntl } from 'react-intl';
 import Region from '../../components/region-cascade';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege, { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { isFormDataLoaded, loadForm, edit } from
   'common/reducers/corps';
@@ -41,11 +40,6 @@ function fetchData({ state, dispatch, cookie }) {
     formData: state.corps.formData,
   }),
   { edit, checkCorpDomain })
-@connectNav({
-  depth: 1,
-  text: props => formatContainerMsg(props.intl, 'corpInfo'),
-  moduleName: 'corp',
-})
 @withPrivilege({ module: 'corp', feature: 'info' })
 @Form.create()
 export default class CorpInfo extends React.Component {

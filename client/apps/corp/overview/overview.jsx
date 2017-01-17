@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Card, Layout, Row, Col } from 'antd';
 import QueueAnim from 'rc-queue-anim';
-import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 
@@ -16,10 +15,6 @@ const { Content } = Layout;
     tenantId: state.account.tenantId,
   }),
 )
-@connectNav({
-  depth: 1,
-  moduleName: 'corp',
-})
 export default class CorpOverview extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,

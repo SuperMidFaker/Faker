@@ -2,11 +2,10 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Menu, Icon, Layout } from 'antd';
 import NavLink from 'client/components/nav-link';
-import HeaderNavBar from 'client/components/headerNavBar';
+import SimpleHeaderBar from 'client/components/simpleHeaderBar';
 import { setNavTitle } from 'common/reducers/navbar';
 
 const { Sider, Header, Content } = Layout;
-
 @connect()
 export default class MessagePack extends React.Component {
   static propTypes = {
@@ -22,11 +21,10 @@ export default class MessagePack extends React.Component {
     return (
       <Layout className="layout-wrapper">
         <Header>
-          <HeaderNavBar />
+          <SimpleHeaderBar title="消息中心" />
         </Header>
         <Layout>
           <Sider className="menu-sider">
-            <h2>消息中心</h2>
             <Menu defaultSelectedKeys={['message']} mode="inline">
               <Menu.Item key="message">
                 <NavLink to="/message/list">

@@ -7,7 +7,6 @@ import { loadPersonnel, loadTenantsByMaster, delPersonnel, switchTenant, switchS
  'common/reducers/personnel';
 import NavLink from 'client/components/nav-link';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege, { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { resolveCurrentPageNumber } from 'client/util/react-ant';
 import { isLoaded } from 'client/common/redux-actions';
@@ -53,12 +52,6 @@ function fetchData({ state, dispatch, cookie }) {
     loading: state.personnel.loading,
   }),
   { delPersonnel, switchTenant, switchStatus, loadPersonnel })
-@connectNav({
-  depth: 1,
-  text: props => formatContainerMsg(props.intl, 'personnelUser'),
-  moduleName: 'corp',
-  lifecycle: 'componentDidMount',
-})
 @withPrivilege({ module: 'corp', feature: 'personnel' })
 export default class PersonnelSetting extends React.Component {
   static propTypes = {

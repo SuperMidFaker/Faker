@@ -1,14 +1,12 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Card, Col, Collapse, Icon, Row, Table, Tag, Tooltip, message } from 'antd';
+import { Button, Card, Col, Icon, Row, Table, Tag, Tooltip, message } from 'antd';
 import moment from 'moment';
 import { DECL_I_TYPE, DECL_E_TYPE, CMS_DELEGATION_STATUS } from 'common/constants';
 import { openAcceptModal, loadBillForMake } from 'common/reducers/cmsDelegation';
 import { loadCustPanel } from 'common/reducers/cmsDelgInfoHub';
 import InfoItem from 'client/components/InfoItem';
-
-const Panel = Collapse.Panel;
 
 @injectIntl
 @connect(
@@ -84,17 +82,17 @@ export default class CustomsDeclPane extends React.Component {
     const { customsPanel } = this.props;
     if (customsPanel.recv_tenant_id === customsPanel.customs_tenant_id || customsPanel.customs_tenant_id === -1) {
       if (customsPanel.status === CMS_DELEGATION_STATUS.accepted) {
-        return <Button type="primary" icon="addfile" onClick={this.handleMake}>创建清单</Button>;
+        return <Button type="primary" size="small" icon="addfile" onClick={this.handleMake}>创建清单</Button>;
       } else if (customsPanel.status === CMS_DELEGATION_STATUS.processing ||
           (customsPanel.status === CMS_DELEGATION_STATUS.declaring && customsPanel.sub_status === 1)) {
         return (
-          <Button type="default" icon="edit" onClick={this.handleMake}>编辑清单</Button>
+          <Button type="default" size="small" icon="edit" onClick={this.handleMake}>编辑清单</Button>
         );
       } else if (customsPanel.status > CMS_DELEGATION_STATUS.declaring) {
-        return <Button icon="eye" onClick={ev => this.handleView(ev)}>查看清单</Button>;
+        return <Button icon="eye" size="small" onClick={ev => this.handleView(ev)}>查看清单</Button>;
       }
     } else if (customsPanel.status > CMS_DELEGATION_STATUS.accepted) {
-      return <Button icon="eye" onClick={ev => this.handleView(ev)}>查看清单</Button>;
+      return <Button icon="eye" size="small" onClick={ev => this.handleView(ev)}>查看清单</Button>;
     }
   }
   handleOperatorAssign = () => {
@@ -112,12 +110,7 @@ export default class CustomsDeclPane extends React.Component {
     const tableDatas = (bill.children || []);
     const declTypes = DECL_I_TYPE.concat(DECL_E_TYPE).filter(dt => dt.key === bill.decl_way_code);
     const panelHeader = (
-      <div>
-        <span>{declTypes.length > 0 ? declTypes[0].value : ''}：{bill.pack_count}件/{bill.gross_wt}千克</span>
-        <div className="toolbar-right">
-          {this.button()}
-        </div>
-      </div>
+      <span>{declTypes.length > 0 ? declTypes[0].value : ''}：{bill.pack_count}件/{bill.gross_wt}千克</span>
     );
     const columns = [{
       title: '统一编号',
@@ -174,12 +167,8 @@ export default class CustomsDeclPane extends React.Component {
             </div>
           </div>}
         </Card>
-        <Card bodyStyle={{ padding: 0 }}>
-          <Collapse defaultActiveKey={bill.key}>
-            <Panel header={panelHeader} key={bill.key} className="table-panel" >
-              <Table size="small" columns={columns} pagination={false} dataSource={tableDatas} scroll={{ x: 580 }} />
-            </Panel>
-          </Collapse>
+        <Card title={panelHeader} extra={this.button()} bodyStyle={{ padding: 0 }}>
+          <Table size="small" columns={columns} pagination={false} dataSource={tableDatas} scroll={{ x: 580 }} />
         </Card>
 
       </div>
