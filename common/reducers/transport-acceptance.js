@@ -25,7 +25,6 @@ const initialState = {
     filters: [
       { name: 'type', value: 'unaccepted' },
       /* { name: 'shipmt_no', value: ''} */
-      { name: 'viewStatus', value: 'my' }, // my, all
     ],
     sortField: 'created_date',
     sortOrder: 'desc',
