@@ -29,9 +29,13 @@ export default defineMessages({
     id: 'cms.forms.delg.invoice.no',
     defaultMessage: '发票号',
   },
+  declPort: {
+    id: 'cms.manifest.form.decl.port',
+    defaultMessage: '申报地海关',
+  },
   voyageNo: {
     id: 'cms.forms.delg.voyage.no',
-    defaultMessage: '航名航次',
+    defaultMessage: '航次号',
   },
   delgInternalNo: {
     id: 'cms.forms.delg.internal.no',

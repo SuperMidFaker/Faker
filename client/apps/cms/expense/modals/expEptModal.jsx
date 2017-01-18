@@ -44,6 +44,7 @@ export default class BillingForm extends React.Component {
     const end = moment(endDate).format('YYYY-MM-DD HH:mm:ss');
     window.open(`${API_ROOTS.default}v1/clearance/expense/exportExpExcel/${createFilename('expenses')}.xlsx?tenantId=${this.props.tenantId}&chooseModel=${fieldsValue.chooseModel}&beginDate=${begin}&endDate=${end}`);
     window.open(`${API_ROOTS.default}v1/clearance/expense/exportDeclExcel/${createFilename('declare_info')}.xlsx?tenantId=${this.props.tenantId}&chooseModel=${fieldsValue.chooseModel}&beginDate=${begin}&endDate=${end}`);
+    this.props.toggle();
   }
   handleCancel = () => {
     this.props.toggle();
