@@ -27,6 +27,7 @@ const initialState = {
     segmented: 0,
     merged: 0,
     origin: 0,
+    viewStatus: 'my',
   },
   cond: {
     type: 'none',

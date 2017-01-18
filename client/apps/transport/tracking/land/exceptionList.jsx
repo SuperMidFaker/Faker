@@ -1,12 +1,12 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Icon, message, Popover, Tag } from 'antd';
+import { Icon, message, Popover, Tag, Select } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadShipmtDetail } from 'common/reducers/shipment';
-import { loadExcpShipments } from 'common/reducers/trackingLandException';
+import { loadExcpShipments, changeExcpFilter } from 'common/reducers/trackingLandException';
 import { SHIPMENT_TRACK_STATUS } from 'common/constants';
 import ShipmtnoColumn from '../../common/shipmtnoColumn';
 import ExceptionListPopover from './modals/exception-list-popover';
@@ -14,6 +14,7 @@ import { renderConsignLoc } from '../../common/consignLocation';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 const formatMsg = format(messages);
+const Option = Select.Option;
 
 function fetchData({ state, dispatch, params, cookie }) {
   const newfilters = state.trackingLandException.filters.map((flt) => {
@@ -25,7 +26,10 @@ function fetchData({ state, dispatch, params, cookie }) {
     } else {
       return flt;
     }
-  });
+  }).concat([{
+    name: 'loginId',
+    value: state.account.loginId,
+  }]);
   return dispatch(loadExcpShipments(cookie, {
     tenantId: state.account.tenantId,
     filters: JSON.stringify(newfilters),
@@ -64,7 +68,7 @@ function renderActDate(recordActDate, recordEstDate) {
     filters: state.trackingLandException.filters,
     loading: state.trackingLandException.loading,
   }),
-  { loadExcpShipments, loadShipmtDetail })
+  { loadExcpShipments, loadShipmtDetail, changeExcpFilter })
 export default class LandStatusList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -78,6 +82,7 @@ export default class LandStatusList extends React.Component {
     shipmentlist: PropTypes.object.isRequired,
     loadShipmtDetail: PropTypes.func.isRequired,
     loadExcpShipments: PropTypes.func.isRequired,
+    changeExcpFilter: PropTypes.func.isRequired,
   }
   state = {
     selectedRowKeys: [],
@@ -350,6 +355,10 @@ export default class LandStatusList extends React.Component {
     return merged;
   }
 
+  handleSelect = (value) => {
+    this.props.changeExcpFilter('viewStatus', value);
+  }
+
   render() {
     const { shipmentlist, loading } = this.props;
     this.dataSource.remotes = shipmentlist;
@@ -359,12 +368,23 @@ export default class LandStatusList extends React.Component {
         this.setState({ selectedRowKeys });
       },
     };
+    const viewStatus = this.props.filters.find(item => item.name === 'viewStatus');
     return (
       <div>
         <div className="page-body">
           <div className="toolbar">
             <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
               <h3>已选中{this.state.selectedRowKeys.length}项</h3>
+            </div>
+            <div className="toolbar-right">
+              <Select
+                value={viewStatus ? viewStatus.value : ''}
+                onChange={this.handleSelect}
+                style={{ width: 160 }}
+              >
+                <Option value="my">我负责的运单</Option>
+                <Option value="all">全部运单</Option>
+              </Select>
             </div>
           </div>
           <div className="panel-body table-panel">

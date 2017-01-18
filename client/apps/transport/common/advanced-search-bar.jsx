@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Form, Input, Row, Col, Button, DatePicker, Checkbox, Select, Tag, Tooltip, Icon } from 'antd';
+import { Form, Input, Row, Col, Button, DatePicker, Select, Tag } from 'antd';
 import moment from 'moment';
 import { format } from 'client/common/i18n/helpers';
 import RegionCascade from 'client/components/region-cascade';
@@ -22,7 +22,6 @@ function fetchData({ state, dispatch, cookie }) {
 @injectIntl
 @connect(
   state => ({
-    loginId: state.account.loginId,
     transitModes: state.shipment.formRequire.transitModes,
   }),
   { })
@@ -32,7 +31,6 @@ export default class AdvancedSearchBar extends React.Component {
     intl: intlShape.isRequired,
     visible: PropTypes.bool.isRequired,
     onSearch: PropTypes.func.isRequired,
-    loginId: PropTypes.number.isRequired,
     toggle: PropTypes.func.isRequired,
     transitModes: PropTypes.array.isRequired,
   }
@@ -88,11 +86,7 @@ export default class AdvancedSearchBar extends React.Component {
     this.saveFieldsValue(fieldsValue);
     const result = {};
     Object.keys(fieldsValue).forEach((key) => {
-      if (key === 'relatedToMe' && fieldsValue[key] === true) {
-        result[key] = this.props.loginId;
-      } else if (key === 'relatedToMe' && fieldsValue[key] === false) {
-        result[key] = '';
-      } else if (typeof fieldsValue[key] === 'object') {
+      if (typeof fieldsValue[key] === 'object') {
         result[key] = JSON.stringify(fieldsValue[key]);
       } else {
         result[key] = fieldsValue[key];
@@ -133,8 +127,6 @@ export default class AdvancedSearchBar extends React.Component {
       item.key === 'sp_name' ||
       item.key === 'transport_mode') {
       return `${item.label}: ${item.value}`;
-    } else if (item.key === 'relatedToMe') {
-      return item.label;
     } else if (item.key === 'pickup_est_date' ||
       item.key === 'pickup_act_date' ||
       item.key === 'deliver_est_date' ||
@@ -253,16 +245,6 @@ export default class AdvancedSearchBar extends React.Component {
                 {getFieldDecorator('deliver_act_date', { initialValue: '' })(
                   <RangePicker style={{ width: '100%' }} />
                 )}
-              </FormItem>
-              <FormItem
-                label={<span>仅显示我的运单 <Tooltip title="由我新建的以及分配给我的运单"><Icon type="question-circle-o" /></Tooltip></span>}
-                labelCol={{ span: 8 }}
-                wrapperCol={{ span: 14 }}
-              >
-                {getFieldDecorator('relatedToMe', { valuePropName: 'checked' })(
-                  <Checkbox />
-                )}
-
               </FormItem>
             </Col>
           </Row>

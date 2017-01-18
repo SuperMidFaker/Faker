@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Button, Radio, Layout, message, Popconfirm } from 'antd';
+import { Button, Radio, Layout, message, Popconfirm, Select } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
@@ -33,6 +33,7 @@ const { Header, Content } = Layout;
 
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
+const Option = Select.Option;
 
 function TransitTimeLabel(props) {
   const { time, tformat } = props;
@@ -49,9 +50,10 @@ function TransitTimeLabel(props) {
 
 function fetchData({ state, dispatch, cookie }) {
   if (!state.transportAcceptance.table.loaded) {
+    const filters = state.transportAcceptance.table.filters;
     return dispatch(loadTable(cookie, {
       tenantId: state.account.tenantId,
-      filters: JSON.stringify(state.transportAcceptance.table.filters),
+      filters: JSON.stringify(filters),
       pageSize: state.transportAcceptance.table.shipmentlist.pageSize,
       currentPage: state.transportAcceptance.table.shipmentlist.current,
       sortField: state.transportAcceptance.table.sortField,
@@ -66,7 +68,12 @@ function fetchData({ state, dispatch, cookie }) {
   state => ({
     tenantId: state.account.tenantId,
     shipmentlist: state.transportAcceptance.table.shipmentlist,
-    filters: state.transportAcceptance.table.filters,
+    filters: state.transportAcceptance.table.filters.find(item => item.name === 'loginId') ?
+      state.transportAcceptance.table.filters :
+    [...state.transportAcceptance.table.filters, {
+      name: 'loginId',
+      value: state.account.loginId,
+    }],
     loading: state.transportAcceptance.table.loading,
     sortField: state.transportAcceptance.table.sortField,
     sortOrder: state.transportAcceptance.table.sortOrder,
@@ -331,6 +338,10 @@ export default class AcceptList extends React.Component {
   showAdvancedSearch = (advancedSearchVisible) => {
     this.setState({ advancedSearchVisible });
   }
+  handleSelect = (value) => {
+    const filters = this.mergeFilters([...this.props.filters], 'viewStatus', value);
+    this.handleTableLoad(filters, 1);
+  }
   render() {
     const { shipmentlist, loading, intl } = this.props;
     this.dataSource.remotes = shipmentlist;
@@ -419,6 +430,7 @@ export default class AcceptList extends React.Component {
           ),
       }];
     }
+    const viewStatus = this.props.filters.find(item => item.name === 'viewStatus');
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Header className="top-bar" key="header">
@@ -453,6 +465,16 @@ export default class AcceptList extends React.Component {
               </PrivilegeCover>
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3> {bulkBtns}
+              </div>
+              <div className="toolbar-right">
+                <Select
+                  value={viewStatus ? viewStatus.value : ''}
+                  onChange={this.handleSelect}
+                  style={{ width: 160 }}
+                >
+                  <Option value="my">我负责的运单</Option>
+                  <Option value="all">全部运单</Option>
+                </Select>
               </div>
             </div>
             <div className="panel-body table-panel">

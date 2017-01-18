@@ -16,6 +16,7 @@ const initialState = {
     { name: 'type', value: 'error' },
     { name: 'excp_level', value: 'all' },
     { name: 'shipmt_no', value: '' },
+    { name: 'viewStatus', value: 'my' }, // my, all
   ],
   shipmentlist: {
     totalCount: 0,

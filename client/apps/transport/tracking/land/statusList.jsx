@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Button, Tooltip, message } from 'antd';
+import { Button, Tooltip, Select, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
@@ -10,6 +10,7 @@ import { loadShipmtDetail } from 'common/reducers/shipment';
 import {
   loadTransitTable, showDateModal, showVehicleModal,
   showLocModal, loadShipmtLastPoint, deliverConfirm,
+  changeStatusFilter,
 } from 'common/reducers/trackingLandStatus';
 import { showPodModal } from 'common/reducers/trackingLandPod';
 import RowUpdater from './rowUpdater';
@@ -27,6 +28,7 @@ import CreateSpecialCharge from './modals/create-specialCharge';
 import { sendMessage } from 'common/reducers/corps';
 
 const formatMsg = format(messages);
+const Option = Select.Option;
 
 function fetchData({ state, dispatch, params, cookie }) {
   const newfilters = state.trackingLandStatus.filters.map((flt) => {
@@ -38,7 +40,10 @@ function fetchData({ state, dispatch, params, cookie }) {
     } else {
       return flt;
     }
-  });
+  }).concat([{
+    name: 'loginId',
+    value: state.account.loginId,
+  }]);
   return dispatch(loadTransitTable(cookie, {
     tenantId: state.account.tenantId,
     filters: JSON.stringify(newfilters),
@@ -60,7 +65,8 @@ function fetchData({ state, dispatch, params, cookie }) {
   }),
   {
     loadTransitTable, loadShipmtDetail, showPodModal, showDateModal,
-    showVehicleModal, showLocModal, loadShipmtLastPoint, sendMessage, deliverConfirm,
+    showVehicleModal, showLocModal, loadShipmtLastPoint, sendMessage,
+    deliverConfirm, changeStatusFilter,
   }
 )
 export default class LandStatusList extends React.Component {
@@ -85,6 +91,7 @@ export default class LandStatusList extends React.Component {
     sendMessage: PropTypes.func.isRequired,
     deliverConfirm: PropTypes.func.isRequired,
     clients: PropTypes.array.isRequired,
+    changeStatusFilter: PropTypes.func.isRequired,
   }
   state = {
     lastLocReportTime: null,
@@ -315,6 +322,10 @@ export default class LandStatusList extends React.Component {
     return merged;
   }
 
+  handleSelect = (value) => {
+    this.props.changeStatusFilter('viewStatus', value);
+  }
+
   renderIntransitUpdater = (record) => {
     const reported = this.props.reportedShipmts.indexOf(record.shipmt_no) >= 0;
     const ttMsg = this.state.lastLocReportTime ?
@@ -387,6 +398,7 @@ export default class LandStatusList extends React.Component {
       tenantId: this.props.tenantId,
       clients: this.props.clients,
     }, this.msg);
+    const viewStatus = this.props.filters.find(item => item.name === 'viewStatus');
     return (
       <div>
         <div className="page-body">
@@ -396,6 +408,16 @@ export default class LandStatusList extends React.Component {
             </PrivilegeCover>
             <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
               <h3>已选中{this.state.selectedRowKeys.length}项</h3> {this.renderBatchOperationButtons()}
+            </div>
+            <div className="toolbar-right">
+              <Select
+                value={viewStatus ? viewStatus.value : ''}
+                onChange={this.handleSelect}
+                style={{ width: 160 }}
+              >
+                <Option value="my">我负责的运单</Option>
+                <Option value="all">全部运单</Option>
+              </Select>
             </div>
           </div>
           <div className="panel-body table-panel">

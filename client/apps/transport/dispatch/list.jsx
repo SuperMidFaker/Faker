@@ -54,7 +54,7 @@ function fetch({ state, dispatch, cookie }) {
     loginName: state.account.username,
     avatar: state.account.profile.avatar,
     shipmentlist: state.transportDispatch.shipmentlist,
-    filters: state.transportDispatch.filters,
+    filters: { ...state.transportDispatch.filters, loginId: state.account.loginId },
     loading: state.transportDispatch.loading,
     dispatched: state.transportDispatch.dispatched,
     expandList: state.transportDispatch.expandList,
@@ -990,6 +990,11 @@ export default class DispatchList extends React.Component {
     this.setState({ advancedSearchVisible });
   }
 
+  handleSelect = (value) => {
+    const filters = this.mergeFilters(this.props.filters, 'viewStatus', value);
+    this.handleTableLoad(filters);
+  }
+
   render() {
     const { shipmentlist, loading } = this.props;
     this.dataSource.remotes = shipmentlist;
@@ -1036,7 +1041,7 @@ export default class DispatchList extends React.Component {
         </Button>
       );
     }
-
+    const viewStatus = this.props.filters.viewStatus;
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Header className="top-bar" key="header">
@@ -1058,6 +1063,16 @@ export default class DispatchList extends React.Component {
             <div className="toolbar">
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3> {bulkBtns}
+              </div>
+              <div className="toolbar-right">
+                <Select
+                  value={viewStatus}
+                  onChange={this.handleSelect}
+                  style={{ width: 160 }}
+                >
+                  <Option value="my">我负责的运单</Option>
+                  <Option value="all">全部运单</Option>
+                </Select>
               </div>
             </div>
             <div className="panel-body table-panel">
