@@ -4,7 +4,7 @@ import { Button, Collapse, Form, Row, Col } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import FormInput from './formInput';
 import {
-  RelationAutoCompSelect, PortDate, Transport,
+  RelationAutoCompSelect, PortDate, Transport, DeclCustoms, DelVoyageNo,
   TradeRemission, CountryAttr, DestInvoice, LicenseTrade, Fee, ContractNo, PackWeight, ContainerUsage,
 } from './headFormItems';
 import { loadSearchedParam, saveBillHead } from 'common/reducers/cmsManifest';
@@ -79,6 +79,7 @@ export default class SheetHeadPanel extends React.Component {
       </div>);
     const formProps = {
       getFieldDecorator: form.getFieldDecorator,
+      getFieldValue: form.getFieldValue,
       disabled: readonly || type === 'entry',
       formData,
     };
@@ -122,7 +123,7 @@ export default class SheetHeadPanel extends React.Component {
                 onSelect={this.handleRelationSel} onChange={this.handleRelationChange}
                 {...formProps} options={formRequire.owners}
               />
-              <Transport {...formProps} intl={intl} formRequire={formRequire} />
+              <DeclCustoms {...formProps} intl={intl} formRequire={formRequire} />
             </Row>
             <Row>
               <RelationAutoCompSelect label={this.msg('agentName')}
@@ -132,6 +133,10 @@ export default class SheetHeadPanel extends React.Component {
                 {...formProps} options={formRequire.agents}
               />
               <TradeRemission {...formProps} intl={intl} formRequire={formRequire} />
+            </Row>
+            <Row>
+              <Transport {...formProps} intl={intl} formRequire={formRequire} />
+              <DelVoyageNo {...formProps} intl={intl} formRequire={formRequire} />
             </Row>
             <Row>
               <CountryAttr {...formProps} intl={intl} formRequire={formRequire} ietype={ietype} />

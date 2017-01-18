@@ -37,7 +37,7 @@ export default class DelegationInfoHubPanel extends React.Component {
     ietype: PropTypes.oneOf(['import', 'export']),
     tenantId: PropTypes.number.isRequired,
     tabKey: PropTypes.string,
-    delgNo: PropTypes.string.isRequired,
+    delgNo: PropTypes.string,
     hidePreviewer: PropTypes.func.isRequired,
     previewer: PropTypes.object.isRequired,
     delegateListFilter: PropTypes.object.isRequired,
