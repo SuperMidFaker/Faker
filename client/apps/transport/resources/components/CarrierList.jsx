@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { Table, Layout, Button, Popconfirm } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import moment from 'moment';
+import SearchBar from 'client/components/search-bar';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import CarrierModal from '../modals/carrierModal';
 
@@ -18,6 +19,8 @@ export default class DriverList extends Component {
     onDeleteBtnClick: PropTypes.func.isRequired,
     onResumeBtnClick: PropTypes.func.isRequired,
     onEditBtnClick: PropTypes.func.isRequired,
+    onSearch: PropTypes.func.isRequired,
+    searchText: PropTypes.string.isRequired,
   }
 
   renderEditAndStopOperations = itemInfo => (
@@ -86,6 +89,11 @@ export default class DriverList extends Component {
       <QueueAnim type={['bottom', 'up']}>
         <Header className="top-bar" key="header">
           <span>承运商管理</span>
+          <div className="top-bar-tools">
+            <SearchBar placeholder="承运商/承运商代码/企业唯一标识码" onInputSearch={this.props.onSearch}
+              value={this.props.searchText} size="large"
+            />
+          </div>
         </Header>
         <Content className="main-content" key="main">
           <div className="page-body">

@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { Layout, Button, Table } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import { Link } from 'react-router';
+import SearchBar from 'client/components/search-bar';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { addUniqueKeys } from 'client/util/dataTransform';
 
@@ -101,6 +102,11 @@ export default function VehicleList(props) {
     <QueueAnim type={['bottom', 'up']}>
       <Header className="top-bar" key="header">
         <span>车辆管理</span>
+        <div className="top-bar-tools">
+          <SearchBar placeholder="车牌号/司机" onInputSearch={props.onSearch}
+            value={props.searchText} size="large"
+          />
+        </div>
       </Header>
       <Content className="main-content" key="main">
         <div className="page-body">
@@ -123,4 +129,6 @@ VehicleList.propTypes = {
   onAddCarBtnClick: PropTypes.func.isRequired,    // 点击新建车辆时触发的回调函数
   onStopCarBtnClick: PropTypes.func.isRequired,   // 停用按钮点击后执行的回调函数
   onResumeCarBtnClick: PropTypes.func.isRequired, // 启用按钮点击后执行的回调函数
+  onSearch: PropTypes.func.isRequired,
+  searchText: PropTypes.string.isRequired,
 };

@@ -2,9 +2,11 @@ import React, { PropTypes } from 'react';
 import { Table, Button, Layout, Radio, Popconfirm } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import { Link } from 'react-router';
+import SearchBar from 'client/components/search-bar';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { addUniqueKeys } from 'client/util/dataTransform';
 import { nodeTypes } from '../utils/dataMapping';
+import { renderLoc } from '../../common/consignLocation';
 
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
@@ -38,6 +40,11 @@ export default function NodeList(props) {
       title: '省/城市/县区',
       dataIndex: 'region',
       key: 'region',
+      render: (col, row) => {
+        let text = renderLoc(row, 'province', 'city', 'district');
+        if (row.street) text = `${text}-${row.street}`;
+        return text;
+      },
     },
     {
       title: '地址/坐标',
@@ -97,6 +104,11 @@ export default function NodeList(props) {
           <RadioButton value={1}>收货地</RadioButton>
           <RadioButton value={2}>中转地</RadioButton>
         </RadioGroup>
+        <div className="top-bar-tools">
+          <SearchBar placeholder="名称/地址/联系人/电话/邮箱" onInputSearch={props.onSearch}
+            value={props.searchText} size="large"
+          />
+        </div>
       </Header>
       <Content className="main-content" key="main">
         <div className="page-body">
@@ -120,4 +132,6 @@ NodeList.propsTypes = {
   onDeleteBtnClick: PropTypes.func.isRequired,    // 删除按钮点击时触发的回调函数
   onRadioButtonChange: PropTypes.func.isRequired, // radio button改变时触发的回调函数
   onAddNoteBtnClick: PropTypes.func.isRequired,   // 新建按钮点击后执行的回调函数
+  onSearch: PropTypes.func.isRequired,
+  searchText: PropTypes.string.isRequired,
 };

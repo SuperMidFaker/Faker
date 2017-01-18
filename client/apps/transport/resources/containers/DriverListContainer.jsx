@@ -26,6 +26,9 @@ export default class DriverListContainer extends Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
+  state = {
+    searchText: '',
+  }
   handleAddDriverBtnClicked = () => {
     this.context.router.push('/transport/resources/driver/add');
   }
@@ -42,15 +45,27 @@ export default class DriverListContainer extends Component {
       }
     });
   }
+  handleSearch = (searchText) => {
+    this.setState({ searchText });
+  }
   render() {
     const { drivers } = this.props;
-    const dataSource = drivers.map(transformRawDriverDataToDisplayData);
+    const dataSource = drivers.map(transformRawDriverDataToDisplayData).filter((item) => {
+      if (this.state.searchText) {
+        const reg = new RegExp(this.state.searchText);
+        return reg.test(item.name) || reg.test(item.phone);
+      } else {
+        return true;
+      }
+    });
     return (
       <DriverList dataSource={dataSource}
         onStopDriverBtnClick={this.handleStopDriverBtnClick}
         onResumeDriverBtnClick={this.handleResumeDriverBtnClick}
         onAddDriverBtnClicked={this.handleAddDriverBtnClicked}
         handleEditDriverLogin={this.handleEditDriverLogin}
+        onSearch={this.handleSearch}
+        searchText={this.state.searchText}
       />
     );
   }

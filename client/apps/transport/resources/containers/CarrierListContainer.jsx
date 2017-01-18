@@ -41,6 +41,9 @@ export default class DriverListContainer extends Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
+  state = {
+    searchText: '',
+  }
   componentWillReceiveProps(nextProps) {
     if (!nextProps.loaded) {
       this.props.loadPartners(null, {
@@ -65,16 +68,29 @@ export default class DriverListContainer extends Component {
   handleResumeBtnClick = (id) => {
     this.props.changePartnerStatus(id, 1, role, businessType);
   }
+  handleSearch = (searchText) => {
+    this.setState({ searchText });
+  }
   render() {
     const { partners } = this.props;
+    const dataSource = partners.filter((item) => {
+      if (this.state.searchText) {
+        const reg = new RegExp(this.state.searchText);
+        return reg.test(item.name) || reg.test(item.partner_code) || reg.test(item.partner_unique_code);
+      } else {
+        return true;
+      }
+    });
     return (
       <CarrierList
-        dataSource={partners}
+        dataSource={dataSource}
         onAddBtnClicked={this.handleAddBtnClick}
         onEditBtnClick={this.handleEditBtnClick}
         onStopBtnClick={this.handleStopBtnClick}
         onDeleteBtnClick={this.handleDeleteBtnClick}
         onResumeBtnClick={this.handleResumeBtnClick}
+        onSearch={this.handleSearch}
+        searchText={this.state.searchText}
       />
     );
   }

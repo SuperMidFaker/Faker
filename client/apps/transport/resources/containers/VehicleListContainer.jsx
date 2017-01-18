@@ -26,6 +26,9 @@ export default class VehicleListContainer extends Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
+  state = {
+    searchText: '',
+  }
   handleAddCarBtnClick = () => {
     this.context.router.push('/transport/resources/vehicle/add');
   }
@@ -35,14 +38,26 @@ export default class VehicleListContainer extends Component {
   handleResumeCarBtnClick = (carId) => {
     this.props.editVehicle({ carId, carInfo: { status: 0 } });
   }
+  handleSearch = (searchText) => {
+    this.setState({ searchText });
+  }
   render() {
     const { cars } = this.props;
-    const dataSource = cars.map(transformRawCarDataToDisplayData);
+    const dataSource = cars.map(transformRawCarDataToDisplayData).filter((car) => {
+      if (this.state.searchText) {
+        const reg = new RegExp(this.state.searchText);
+        return reg.test(car.plate_number) || reg.test(car.trailer_number) || reg.test(car.driver_name);
+      } else {
+        return true;
+      }
+    });
     return (
       <VehicleList dataSource={dataSource}
         onStopCarBtnClick={this.handleStopCarBtnClick}
         onResumeCarBtnClick={this.handleResumeCarBtnClick}
         onAddCarBtnClick={this.handleAddCarBtnClick}
+        onSearch={this.handleSearch}
+        searchText={this.state.searchText}
       />
     );
   }
