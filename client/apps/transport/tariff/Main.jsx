@@ -121,7 +121,6 @@ export default class Main extends Component {
       <TabPane tab="附加费用" key="2"><SurchargeForm type={type} /></TabPane>,
       <TabPane tab="历史版本" key="3"><RevisionTable type={type} /></TabPane>,
     ];
-
     if (type === 'create') {
       if (!tariffId) {
         content = [
@@ -140,30 +139,29 @@ export default class Main extends Component {
     if (TARIFF_KINDS[formData.kind]) {
       kindText = TARIFF_KINDS[formData.kind].text;
     }
-
     return (
       <div>
         <Header className="top-bar">
           <span>{`${formData.quoteNo} - ${formData.partnerName ? formData.partnerName : ''} - ${kindText}`}</span>
-        </Header>
-        <div className="top-bar-tools">
           { type === 'edit' && (
-          <span>
-            <Button type="primary" onClick={() => this.props.showPublishTariffModal(true)}>发布</Button>
-            <PublishTariffModal tariffForm={this.props.form} />
-          </span>
+            <div className="top-bar-tools">
+              <Button type="ghost" onClick={this.handleSubmit}>保存</Button>
+              <Button type="primary" onClick={() => this.props.showPublishTariffModal(true)}>发布</Button>
+              <PublishTariffModal tariffForm={this.props.form} />
+            </div>
             )}
-          { (type === 'edit' || type === 'create') && (
-          <Button type="ghost" onClick={this.handleSubmit}>保存</Button>
-            )}
-        </div>
+          { (type === 'create') && (
+            <div className="top-bar-tools">
+              <Button type="ghost" onClick={this.handleSubmit}>保存</Button>
+            </div>
+          )}
+        </Header>
         <Content className="main-content">
           <div className="page-body">
             <Tabs activeKey={selectedKey} onChange={this.handleMenuItemClick}>
               {content}
             </Tabs>
           </div>
-
         </Content>
       </div>
     );

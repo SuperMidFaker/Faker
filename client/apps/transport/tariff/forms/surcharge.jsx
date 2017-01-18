@@ -51,7 +51,7 @@ export default class SurchargeForm extends React.Component {
     const fee = {
       fee_name: '',
       fee_code: '',
-      fee_style: 'cushion',
+      fee_style: 'advance',
       charge_mode: '0',
       unit_price: 0,
       invoice_en: true,
@@ -145,7 +145,7 @@ export default class SurchargeForm extends React.Component {
   renderTableFooter = () => {
     const { type } = this.props;
     if (type === 'create' || type === 'edit') {
-      return (<Button type="primary" onClick={this.handleAddFees}>{this.msg('addCosts')}</Button>);
+      return (<Button type="default" onClick={this.handleAddFees}>{this.msg('addCosts')}</Button>);
     }
     return '';
   }
@@ -311,7 +311,7 @@ export default class SurchargeForm extends React.Component {
     return (
       <div className="panel-body table-panel">
         <Table columns={columns} dataSource={dataSource} rowKey="_id" pagination={false}
-          footer={this.renderTableFooter}
+          title={this.renderTableFooter}
         />
       </div>
     );
