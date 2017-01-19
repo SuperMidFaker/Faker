@@ -7,23 +7,23 @@ export default defineMessages({
   },
   accepted: {
     id: 'transport.dashboard.log.type.accepted',
-    defaultMessage: '已受理运单',
+    defaultMessage: '已受理',
   },
   sent: {
     id: 'transport.dashboard.log.type.sent',
-    defaultMessage: '已调度运单',
+    defaultMessage: '已调度',
   },
   pickedup: {
     id: 'transport.dashboard.log.type.pickedup',
-    defaultMessage: '已提货运单',
+    defaultMessage: '已提货',
   },
   delivered: {
     id: 'transport.dashboard.log.type.delivered',
-    defaultMessage: '已送货运单',
+    defaultMessage: '已送货',
   },
   completed: {
     id: 'transport.dashboard.log.type.completed',
-    defaultMessage: '已完成运单',
+    defaultMessage: '已完成',
   },
   departurePlace: {
     id: 'transport.dashboard.log.departure.place',
