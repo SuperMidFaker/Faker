@@ -7,6 +7,7 @@ import { FormLocalSearchSelect, FormRemoteSearchSelect } from './formSelect';
 import FormDatePicker from './formDatePicker';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
+import { CMS_FEE_UNIT, CMS_CONFIRM } from 'common/constants';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
@@ -154,7 +155,7 @@ export class RelationAutoCompSelect extends React.Component {
   }
 }
 
-// 申报地海关
+// 申报地海关、许可证号、合同协议号
 export function DeclCustoms(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const { getFieldDecorator, disabled, formData, formRequire } = props;
@@ -173,10 +174,34 @@ export function DeclCustoms(props) {
     })),
     searchKeyFn: opt => opt.value,
   };
+  const licenseNoProps = {
+    outercol: 24,
+    col: 8,
+    field: 'license_no',
+    label: msg('licenseNo'),
+    disabled,
+    formData,
+    getFieldDecorator,
+  };
+  const contractNoProps = {
+    outercol: 24,
+    col: 8,
+    field: 'contr_no',
+    label: msg('contractNo'),
+    disabled,
+    formData,
+    getFieldDecorator,
+  };
   return (
     <Col md={24} lg={15}>
       <Col sm={24} md={8}>
         <FormLocalSearchSelect {...declPortProps} />
+      </Col>
+      <Col sm={24} md={8}>
+        <FormInput {...licenseNoProps} />
+      </Col>
+      <Col sm={24} md={8}>
+        <FormInput {...contractNoProps} />
       </Col>
     </Col>
   );
@@ -345,7 +370,7 @@ TradeRemission.propTypes = {
   formRequire: PropTypes.object.isRequired,
 };
 
-// 贸易国、起运国、许可证号、成交方式、合同号、件数、集装箱号、用途
+// 贸易国、起运国
 export function CountryAttr(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const { getFieldDecorator, disabled, formData, formRequire, ietype } = props;
@@ -467,14 +492,15 @@ DestInvoice.propTypes = {
   onSearch: PropTypes.func.isRequired,
 };
 
-export function LicenseTrade(props) {
+// 用途、成交方式
+export function UsageTrade(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const { getFieldDecorator, disabled, formData, formRequire } = props;
-  const licenseNoProps = {
+  const usageProps = {
     outercol: 24,
     col: 8,
-    field: 'license_no',
-    label: msg('licenseNo'),
+    field: 'usage',
+    label: msg('usage'),
     disabled,
     formData,
     getFieldDecorator,
@@ -497,7 +523,7 @@ export function LicenseTrade(props) {
   return (
     <Col md={24} lg={9}>
       <Col sm={24} md={12}>
-        <FormInput {...licenseNoProps} />
+        <FormInput {...usageProps} />
       </Col>
       <Col sm={24} md={12}>
         <FormLocalSearchSelect {...trxModeProps} />
@@ -506,7 +532,7 @@ export function LicenseTrade(props) {
   );
 }
 
-LicenseTrade.propTypes = {
+UsageTrade.propTypes = {
   intl: intlShape.isRequired,
   disabled: PropTypes.bool,
   getFieldDecorator: PropTypes.func.isRequired,
@@ -538,18 +564,19 @@ function FeeFormItem(props) {
     disabled,
     formData,
     getFieldDecorator,
+    options: CMS_FEE_UNIT,
   };
   return (
     <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} label={label}>
       <Row>
-        <Col sm={24} md={8}>
-          <FormInput {...feeProps} style={{ marginBottom: 0 }} />
-        </Col>
         <Col sm={24} md={8} style={{ paddingLeft: 2 }}>
           <FormLocalSearchSelect {...currencyProps} placeholder="币制" style={{ marginBottom: 0 }} />
         </Col>
         <Col sm={24} md={8}>
-          <FormInput {...markProps} placeholder="费率" style={{ marginBottom: 0 }} />
+          <FormInput {...feeProps} style={{ marginBottom: 0 }} />
+        </Col>
+        <Col sm={24} md={8}>
+          <FormLocalSearchSelect {...markProps} style={{ marginBottom: 0 }} />
         </Col>
       </Row>
     </FormItem>
@@ -598,14 +625,15 @@ Fee.propTypes = {
   formRequire: PropTypes.object.isRequired,
 };
 
-export function ContractNo(props) {
+// 集装箱号、件数
+export function ContainerNo(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const { getFieldDecorator, disabled, formData } = props;
-  const contractNoProps = {
+  const containerNoProps = {
     outercol: 24,
     col: 8,
-    field: 'contr_no',
-    label: msg('contractNo'),
+    field: 'container_no',
+    label: msg('containerNo'),
     disabled,
     formData,
     getFieldDecorator,
@@ -624,7 +652,7 @@ export function ContractNo(props) {
   return (
     <Col md={24} lg={9}>
       <Col sm={24} md={12}>
-        <FormInput {...contractNoProps} />
+        <FormInput {...containerNoProps} />
       </Col>
       <Col sm={24} md={12}>
         <FormInput {...packCountProps} />
@@ -633,7 +661,7 @@ export function ContractNo(props) {
   );
 }
 
-ContractNo.propTypes = {
+ContainerNo.propTypes = {
   intl: intlShape.isRequired,
   disabled: PropTypes.bool,
   getFieldDecorator: PropTypes.func.isRequired,
@@ -671,7 +699,6 @@ export function PackWeight(props) {
     col: 8,
     field: 'net_wt',
     label: msg('netwt'),
-    rules: [{ required: true }],
     addonAfter: 'KG',
     disabled,
     formData,
@@ -700,45 +727,57 @@ PackWeight.propTypes = {
   formRequire: PropTypes.object.isRequired,
 };
 
-// 贸易国、起运国、许可证号、成交方式、合同号、件数、集装箱号、用途
-export function ContainerUsage(props) {
+// 特殊关系确认、价格影响确认、支付特许权使用费确认
+export function TermConfirm(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
-  const { getFieldDecorator, disabled, formData } = props;
-
-
-  const containerNoProps = {
+  const { disabled, formData, getFieldDecorator } = props;
+  const specialProps = {
     outercol: 24,
     col: 8,
-    field: 'container_no',
-    label: msg('containerNo'),
+    label: msg('specialRelation'),
+    field: 'special_relation',
     disabled,
     formData,
+    options: CMS_CONFIRM,
     getFieldDecorator,
   };
-  const usageProps = {
+  const priceEffectProps = {
     outercol: 24,
     col: 8,
-    field: 'usage',
-    label: msg('usage'),
+    label: msg('priceEffect'),
+    field: 'price_effect',
     disabled,
     formData,
     getFieldDecorator,
+    options: CMS_CONFIRM,
+  };
+  const paymentProps = {
+    outercol: 24,
+    col: 8,
+    label: msg('paymentRoyalty'),
+    field: 'payment_royalty',
+    disabled,
+    formData,
+    getFieldDecorator,
+    options: CMS_CONFIRM,
   };
   return (
-    <Col md={24} lg={9}>
-      <Col sm={24} md={12}>
-        <FormInput {...containerNoProps} />
+    <Col md={24} lg={15}>
+      <Col sm={24} lg={8}>
+        <FormLocalSearchSelect {...specialProps} />
       </Col>
-      <Col sm={24} md={12}>
-        <FormInput {...usageProps} />
+      <Col sm={24} lg={8}>
+        <FormLocalSearchSelect {...priceEffectProps} />
+      </Col>
+      <Col sm={24} lg={8}>
+        <FormLocalSearchSelect {...paymentProps} />
       </Col>
     </Col>
   );
 }
 
-ContainerUsage.propTypes = {
+TermConfirm.propTypes = {
   intl: intlShape.isRequired,
-  ietype: PropTypes.oneOf(['import', 'export']),
   disabled: PropTypes.bool,
   getFieldDecorator: PropTypes.func.isRequired,
   formData: PropTypes.object.isRequired,

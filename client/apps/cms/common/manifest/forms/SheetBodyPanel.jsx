@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Button, Collapse, Dropdown, Menu, Table, Icon, Input, Select, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import RowUpdater from './rowUpdater';
+import { updateHeadNetWt } from 'common/reducers/cmsManifest';
 import { format } from 'client/common/i18n/helpers';
 import ExcelUpload from 'client/components/excelUploader';
 import globalMessage from 'client/common/root.i18n';
@@ -78,7 +79,9 @@ ColumnSelect.proptypes = {
     })),
     exemptions: state.cmsManifest.params.exemptionWays,
     loginId: state.account.loginId,
-  })
+    billHead: state.cmsManifest.billHead,
+  }),
+  { updateHeadNetWt }
 )
 export default class SheetBodyPanel extends React.Component {
   static propTypes = {
@@ -321,6 +324,9 @@ export default class SheetBodyPanel extends React.Component {
   handleSave = (row, index) => {
     const { editBody, pagination: origPagi } = this.state;
     const recordIdx = index + (origPagi.current - 1) * origPagi.pageSize;
+    if (!editBody.wet_wt) {
+      return message.error('净重必填');
+    }
     // todo validate
     if (!editBody.id) {
       let gNO = 1;
@@ -395,12 +401,51 @@ export default class SheetBodyPanel extends React.Component {
   handleExportData = (ev) => {
     ev.stopPropagation();
   }
+  handleNetWetSummary = () => {
+    const bodyDatas = this.state.bodies;
+    let wtSum = 0;
+    bodyDatas.forEach((body) => {
+      if (body.wet_wt) {
+        wtSum += Number(body.wet_wt);
+      }
+    });
+    if (wtSum > 0) {
+      this.props.updateHeadNetWt(this.props.billSeqNo, wtSum);
+    }
+  }
+  handleGrossWtDivid = () => {
+    const totGrossWt = this.props.billHead.gross_wt;
+    const bodyDatas = this.state.bodies;
+    let wtSum = 0;
+    bodyDatas.forEach((body) => {
+      if (body.wet_wt) {
+        wtSum += Number(body.wet_wt);
+      }
+    });
+    const datas = [];
+    for (let i = 0; i < bodyDatas.length - 1; i++) {
+      const body = bodyDatas[i];
+      const grosswt = (totGrossWt * body.wet_wt / wtSum).toFixed(3);
+      const data = { ...body, gross_wt: grosswt };
+      datas.push(data);
+      this.props.onEdit(data);
+    }
+    datas.push({});
+    this.setState({ bodies: datas });
+  }
+  handleMenuClick = (e) => {
+    if (e.key === 'division') {
+      this.handleGrossWtDivid();
+    } else if (e.key === 'summary') {
+      this.handleNetWetSummary();
+    }
+  }
   render() {
     const columns = this.getColumns();
     let billBodyToolbar = null;
     if (this.props.type === 'bill') {
       const menu = (
-        <Menu>
+        <Menu onClick={this.handleMenuClick}>
           {!this.props.readonly &&
           <Menu.Item key="importData">
             <ExcelUpload endpoint={`${API_ROOTS.default}v1/cms/manifest/billbody/import`}
@@ -417,6 +462,8 @@ export default class SheetBodyPanel extends React.Component {
           </Menu.Item>
           }
           <Menu.Item key="download"><Icon type="download" /> 下载模板</Menu.Item>
+          <Menu.Item key="division"><Icon type="arrows-alt" /> 毛重分摊</Menu.Item>
+          <Menu.Item key="summary"><Icon type="shrink" /> 净重汇总</Menu.Item>
         </Menu>);
       billBodyToolbar = (
         <div className="toolbar-right">

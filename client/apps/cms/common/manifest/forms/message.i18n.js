@@ -19,7 +19,7 @@ export default defineMessages({
   },
   contractNo: {
     id: 'cms.forms.delg.contract.no',
-    defaultMessage: '合同号',
+    defaultMessage: '合同协议号',
   },
   deliveryNo: {
     id: 'cms.forms.delg.delivery.no',
@@ -48,6 +48,18 @@ export default defineMessages({
   delgWeight: {
     id: 'cms.forms.delg.weight',
     defaultMessage: '重量',
+  },
+  paymentRoyalty: {
+    id: 'cms.forms.delg.payment.royalty',
+    defaultMessage: '支付特许权使用费确认',
+  },
+  priceEffect: {
+    id: 'cms.forms.delg.price.effect',
+    defaultMessage: '价格影响确认',
+  },
+  specialRelation: {
+    id: 'cms.forms.delg.special.relation',
+    defaultMessage: '特殊关系确认',
   },
   delgSource: {
     id: 'cms.forms.delg.source',

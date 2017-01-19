@@ -13,6 +13,7 @@ const actionTypes = createActionTypes('@@welogix/cms/manifest/', [
   'SAVE_BILLHEAD', 'SAVE_BILLHEAD_SUCCEED', 'SAVE_BILLHEAD_FAIL',
   'OPEN_MS_MODAL', 'CLOSE_MS_MODAL',
   'SUBMIT_MERGESPLIT', 'SUBMIT_MERGESPLIT_SUCCEED', 'SUBMIT_MERGESPLIT_FAIL',
+  'UPDATE_HEAD_NETWT', 'UPDATE_HEAD_NETWT_SUCCEED', 'UPDATE_HEAD_NETWT_FAIL',
 ]);
 
 const initialState = {
@@ -65,6 +66,8 @@ export default function reducer(state = initialState, action) {
         billBodies: action.result.data.bodies, params: { ...state.params, ports },
       };
     }
+    case actionTypes.UPDATE_HEAD_NETWT_SUCCEED:
+      return { ...state, billHead: action.result.data };
     case actionTypes.LOAD_ENTRY_SUCCEED:
       return { ...state, entryHead: action.result.data.head, entryBodies: action.result.data.bodies,
         billMeta: action.result.data.meta };
@@ -253,6 +256,21 @@ export function submitBillMegeSplit({ billNo, mergeOpt, splitOpt, sortOpt }) {
       endpoint: 'v1/cms/declare/bill/mergesplit',
       method: 'post',
       data: { billNo, mergeOpt, splitOpt, sortOpt },
+    },
+  };
+}
+
+export function updateHeadNetWt(billSeqNo, netWt) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_HEAD_NETWT,
+        actionTypes.UPDATE_HEAD_NETWT_SUCCEED,
+        actionTypes.UPDATE_HEAD_NETWT_FAIL,
+      ],
+      endpoint: 'v1/cms/declare/bill/update/headNetWt',
+      method: 'post',
+      data: { billSeqNo, netWt },
     },
   };
 }

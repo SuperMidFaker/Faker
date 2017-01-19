@@ -314,6 +314,17 @@ export const CMS_QUOTE_PERMISSION = {
   editable: 2,
 };
 
+export const CMS_FEE_UNIT = [
+  { value: 1, text: '率' },
+  { value: 2, text: '单价' },
+  { value: 3, text: '总价' },
+];
+
+export const CMS_CONFIRM = [
+  { value: 0, text: '否' },
+  { value: 1, text: '是' },
+];
+
 export {
   TENANT_LEVEL,
   TENANT_ASPECT,
