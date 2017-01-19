@@ -121,7 +121,7 @@ export default class DispatchList extends React.Component {
     this.setState({ searchValue: filters.shipmt_no || '' });
   }
   componentWillReceiveProps(nextProps) {
-    if (!nextProps.loaded) {
+    if (!nextProps.loaded && !nextProps.loading) {
       const { filters } = this.props;
       this.handleStatusChange({ target: { value: filters.status } });
     }

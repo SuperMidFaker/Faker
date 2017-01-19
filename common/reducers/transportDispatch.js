@@ -81,13 +81,14 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_DISPSHIPMENT_SUCCEED: {
       const filters = JSON.parse(action.params.filters);
       return { ...state, loading: false,
-        loaded: true, shipmentlist: action.result.data,
+        shipmentlist: action.result.data,
         filters,
         cond: { type: 'none' },
         dispatched: false,
         segmented: false,
         lspLoaded: false,
         vehicleLoaded: false,
+        loaded: true,
       };
     }
     case actionTypes.LOAD_LSPS_SUCCEED:
@@ -148,7 +149,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.CHANGE_DOCK_STATUS:
       return { ...state, ...action.data };
     case actionTypes.DO_SEND:
-      return { ...state, loading: true };
+      return { ...state, loading: false };
     case actionTypes.DO_SEND_SUCCEED:
       return { ...state, loaded: false, filters: { ...state.filters, status: 'dispatching' } };
     case actionTypes.DO_RETURN_SUCCEED:
@@ -156,7 +157,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.WITHDRAW_SUCCEED:
       return { ...state, loaded: false, filters: { ...state.filters, status: 'dispatching' } };
     case actionTypes.DO_DISPATCH_SEND:
-      return { ...state, loading: true };
+      return { ...state, loading: false };
     case actionTypes.DO_DISPATCH_SEND_SUCCEED:
       return { ...state, loaded: false, filters: { ...state.filters, status: 'dispatched' } };
     case actionTypes.SHOW_DISPATCH_CONFIRM_MODAL:
