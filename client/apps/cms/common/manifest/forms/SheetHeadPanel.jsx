@@ -4,8 +4,8 @@ import { Button, Collapse, Form, Row, Col } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import FormInput from './formInput';
 import {
-  RelationAutoCompSelect, PortDate, Transport, DeclCustoms, DelVoyageNo,
-  TradeRemission, CountryAttr, DestInvoice, LicenseTrade, Fee, ContractNo, PackWeight, ContainerUsage,
+  RelationAutoCompSelect, PortDate, Transport, DeclCustoms, DelVoyageNo, TermConfirm,
+  TradeRemission, CountryAttr, DestInvoice, UsageTrade, Fee, ContainerNo, PackWeight,
 } from './headFormItems';
 import { loadSearchedParam, saveBillHead } from 'common/reducers/cmsManifest';
 import { format } from 'client/common/i18n/helpers';
@@ -145,20 +145,20 @@ export default class SheetHeadPanel extends React.Component {
               />
             </Row>
             <Row>
-              <LicenseTrade {...formProps} intl={intl} formRequire={formRequire} />
+              <UsageTrade {...formProps} intl={intl} formRequire={formRequire} />
               <Fee {...formProps} intl={intl} formRequire={formRequire} ietype={ietype} />
             </Row>
             <Row>
-              <ContractNo {...formProps} intl={intl} formRequire={formRequire} />
+              <ContainerNo {...formProps} intl={intl} formRequire={formRequire} />
               <PackWeight {...formProps} intl={intl} formRequire={formRequire} ietype={ietype} />
             </Row>
             <Row>
-              <ContainerUsage {...formProps} intl={intl} formRequire={formRequire} />
-              <Col md={24} lg={15}>
-                <FormInput field="cert_mark" outercol={16} col={4}
+              <Col md={24} lg={9}>
+                <FormInput field="cert_mark" outercol={24} col={4}
                   label={this.msg('certMark')} {...formProps}
                 />
               </Col>
+              <TermConfirm {...formProps} intl={intl} formRequire={formRequire} />
             </Row>
             <Col span="24">
               <FormInput field="note" outercol={9} col={4} type="textarea"
