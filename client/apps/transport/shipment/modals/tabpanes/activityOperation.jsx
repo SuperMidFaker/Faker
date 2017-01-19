@@ -30,25 +30,25 @@ export default class ActivityOperation extends React.Component {
   render() {
     const { stage, disp } = this.props;
     let tabs = (
-      <Tabs activeKey="log">
+      <Tabs defaultActiveKey="log">
         <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>
       </Tabs>
     );
     if (stage === 'acceptance') {
       tabs = (
-        <Tabs activeKey="log">
+        <Tabs defaultActiveKey="log">
           <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>
         </Tabs>
       );
     } else if (stage === 'dispatch') {
       tabs = (
-        <Tabs activeKey="log">
+        <Tabs defaultActiveKey="log">
           <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>
         </Tabs>
       );
     } else if (stage === 'tracking') {
       tabs = (
-        <Tabs activeKey="log">
+        <Tabs defaultActiveKey="log">
           <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>
           <TabPane tab={<span><Icon type="environment-o" />追踪</span>} key="location" ><CreatePointPane /></TabPane>
           <TabPane tab={<span><Icon type="exception" />异常</span>} key="exception"><CreateExceptionPane /></TabPane>
@@ -58,7 +58,7 @@ export default class ActivityOperation extends React.Component {
       if (!disp.pod_status || disp.pod_status === SHIPMENT_POD_STATUS.unsubmit) {
         if (disp.sp_tenant_id === -1) {
           tabs = (
-            <Tabs activeKey="pod">
+            <Tabs defaultActiveKey="pod">
               <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>
               <TabPane tab={<span><Icon type="exception" />异常</span>} key="exception"><CreateExceptionPane /></TabPane>
               <TabPane tab={<span><Icon type="tags" />回单</span>} key="pod"><SubmitPodPane /></TabPane>
@@ -67,7 +67,7 @@ export default class ActivityOperation extends React.Component {
         } else if (disp.sp_tenant_id === 0) {
           if (disp.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
             tabs = (
-              <Tabs activeKey="pod">
+              <Tabs defaultActiveKey="pod">
                 <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>
                 <TabPane tab={<span><Icon type="exception" />异常</span>} key="exception"><CreateExceptionPane /></TabPane>
                 <TabPane tab={<span><Icon type="tags" />回单</span>} key="pod"><SubmitPodPane /></TabPane>
@@ -76,7 +76,7 @@ export default class ActivityOperation extends React.Component {
           } else {
             // 司机上传 催促回单
             tabs = (
-              <Tabs activeKey="log">
+              <Tabs defaultActiveKey="log">
                 <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>
                 <TabPane tab={<span><Icon type="exception" />异常</span>} key="exception"><CreateExceptionPane /></TabPane>
               </Tabs>
@@ -85,7 +85,7 @@ export default class ActivityOperation extends React.Component {
         } else {
           // 承运商上传 催促回单
           tabs = (
-            <Tabs activeKey="log">
+            <Tabs defaultActiveKey="log">
               <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>
               <TabPane tab={<span><Icon type="exception" />异常</span>} key="exception"><CreateExceptionPane /></TabPane>
             </Tabs>
@@ -94,7 +94,7 @@ export default class ActivityOperation extends React.Component {
       } else if (disp.pod_status === SHIPMENT_POD_STATUS.rejectByClient) {
         // 重新上传
         tabs = (
-          <Tabs activeKey="pod">
+          <Tabs defaultActiveKey="pod">
             <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>
             <TabPane tab={<span><Icon type="exception" />异常</span>} key="exception"><CreateExceptionPane /></TabPane>
             <TabPane tab={<span><Icon type="tags" />回单</span>} key="pod"><SubmitPodPane /></TabPane>
@@ -102,7 +102,7 @@ export default class ActivityOperation extends React.Component {
         );
       } else {
         tabs = (
-          <Tabs activeKey="log">
+          <Tabs defaultActiveKey="log">
             <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>
             <TabPane tab={<span><Icon type="exception" />异常</span>} key="exception"><CreateExceptionPane /></TabPane>
           </Tabs>
@@ -110,7 +110,7 @@ export default class ActivityOperation extends React.Component {
       }
     } else if (stage === 'exception') {
       tabs = (
-        <Tabs activeKey="log">
+        <Tabs defaultActiveKey="exception">
           <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>
           <TabPane tab={<span><Icon type="exception" />异常</span>} key="exception"><CreateExceptionPane /></TabPane>
         </Tabs>
