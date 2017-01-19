@@ -51,6 +51,9 @@ import * as SCVOrders from './scv/orders';
 import * as SCVInbound from './scv/inbound';
 import * as SCVClearance from './scv/clearance';
 import * as SCVInventory from './scv/inventory';
+import * as SCVInventoryRecieving from './scv/inventory/recieving';
+import * as SCVInventoryShipping from './scv/inventory/shipping';
+import * as SCVInventoryProducts from './scv/inventory/products';
 import * as SCVPaymentsTax from './scv/payments/tax';
 import * as SCVPaymentsBilling from './scv/payments/billing';
 import * as SCVAnalyticsKpi from './scv/analytics/kpi';
@@ -293,7 +296,12 @@ export default(store, cookie) => {
               <Route path="inbound" component={SCVInbound.List} />
             </Route>
             <Route path="clearance" component={SCVClearance.List} />
-            <Route path="inventory" component={SCVInventory.List} />
+            <Route path="inventory" >
+              <Route path="stock" component={SCVInventory.List} />
+              <Route path="recieving" component={SCVInventoryRecieving.List} />
+              <Route path="shipping" component={SCVInventoryShipping.List} />
+              <Route path="products" component={SCVInventoryProducts.List} />
+            </Route>
             <Route path="payments">
               <Route path="tax" component={SCVPaymentsTax.List} />
               <Route path="billing" component={SCVPaymentsBilling.List} />

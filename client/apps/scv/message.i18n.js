@@ -29,8 +29,8 @@ const messages = defineMessages({
     id: 'scv.module.inventory',
     defaultMessage: '库存管理',
   },
-  inventoryStatus: {
-    id: 'scv.module.inventory.status',
+  inventoryStock: {
+    id: 'scv.module.inventory.stock',
     defaultMessage: '库存状态',
   },
   inventoryProducts: {
@@ -39,11 +39,11 @@ const messages = defineMessages({
   },
   inventoryRecieving: {
     id: 'scv.module.inventory.recieving',
-    defaultMessage: '进库',
+    defaultMessage: '入库收货',
   },
   inventoryShipping: {
     id: 'scv.module.inventory.shipping',
-    defaultMessage: '出库',
+    defaultMessage: '出库发货',
   },
   payment: {
     id: 'scv.module.payment',

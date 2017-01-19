@@ -40,7 +40,7 @@ export default class ShipmentsClearanceList extends React.Component {
           <div className="toolbar-right">
             <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
           </div>
-          <span>{this.msg('clearance')}</span>
+          <span>{this.msg('products')}</span>
         </Header>
         <Content className="main-content" key="main">
           <div className="page-body">

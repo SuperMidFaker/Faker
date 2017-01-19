@@ -37,7 +37,7 @@ export default class ModuleSCV extends React.Component {
     linkMenus.push({
       single: false,
       key: 'scv-2',
-      icon: 'zmdi zmdi-boat',
+      icon: 'zmdi zmdi-globe',
       text: formatMsg(intl, 'shipments'),
       sublinks: [{
         key: 'scv-2-0',
@@ -63,8 +63,8 @@ export default class ModuleSCV extends React.Component {
       text: formatMsg(intl, 'inventory'),
       sublinks: [{
         key: 'scv-4-0',
-        path: '/scv/inventory',
-        text: formatMsg(intl, 'inventoryStatus'),
+        path: '/scv/inventory/stock',
+        text: formatMsg(intl, 'inventoryStock'),
       }, {
         key: 'scv-4-1',
         path: '/scv/inventory/recieving',

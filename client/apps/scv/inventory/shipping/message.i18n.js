@@ -1,16 +1,16 @@
 import { defineMessages } from 'react-intl';
 
 const messages = defineMessages({
-  clearance: {
-    id: 'scv.clearance',
-    defaultMessage: '清关管理',
+  inventoryShipping: {
+    id: 'scv.inventory.shipping',
+    defaultMessage: '出库发货',
   },
   shipmentNo: {
-    id: 'scv.clearance.shipmentno',
+    id: 'scv.inventory.shipping.shipmentno',
     defaultMessage: 'Shipment No.',
   },
   orderNo: {
-    id: 'scv.clearance.orderno',
+    id: 'scv.inventory.shipping.orderno',
     defaultMessage: '订单号',
   },
 });
