@@ -7,6 +7,7 @@ import { Button, Card, Checkbox, Col, Row, Collapse, DatePicker, Dropdown, Form,
 import InfoItem from 'client/components/InfoItem';
 import { loadBasicInfo, loadCustPanel, loadDeclCiqPanel, updateCertParam, exchangeBlNo } from 'common/reducers/cmsDelgInfoHub';
 import { loadDeclHead, setInspect } from 'common/reducers/cmsDeclare';
+import { loadPaneExp } from 'common/reducers/cmsExpense';
 import { CERTS, INSPECT_STATUS } from 'common/constants';
 import ActivityEditCard from './activityEditCard';
 
@@ -43,7 +44,7 @@ const ACTIVITY_DESC_MAP = {
     declHeadsPane: state.cmsDeclare.decl_heads,
   }), {
     exchangeBlNo, loadDeclHead, setInspect, loadCustPanel, loadBasicInfo, updateCertParam,
-    loadDeclCiqPanel,
+    loadDeclCiqPanel, loadPaneExp,
   }
 )
 @Form.create()
@@ -89,6 +90,9 @@ export default class ActivityLoggerPane extends React.Component {
             this.props.previewer.delgNo,
             this.props.tabKey
           );
+        if (enabled === true || enabled === false) {
+          this.props.loadPaneExp(this.props.previewer.delgNo, this.props.tenantId);
+        }
         if (field === 'hgcy' && this.props.tabKey === 'customsDecl') {
           this.props.loadCustPanel({
             delgNo: this.props.previewer.delgNo,

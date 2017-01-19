@@ -14,9 +14,6 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'SEARCH_PARAM', 'SEARCH_PARAM_SUCCEED', 'SEARCH_PARAM_FAIL',
   'DEL_DELG', 'DEL_DELG_SUCCEED', 'DEL_DELG_FAIL',
   'LOAD_REQUIRE', 'LOAD_REQUIRE_SUCCEED', 'LOAD_REQUIRE_FAIL',
-  'LOAD_DELEGATE', 'LOAD_DELEGATE_SUCCEED', 'LOAD_DELEGATE_FAIL',
-  'SEND_DELEGATE', 'SEND_DELEGATE_SUCCEED', 'SEND_DELEGATE_FAIL',
-  'SHOW_SEND_DELEGATE_MODAL', 'SHOW_SEND_DELEGATE_MODAL_SUCCEED', 'SHOW_SEND_DELEGATE_MODAL_FAIL',
   'LOAD_BILLMAKE', 'LOAD_BILLMAKE_SUCCEED', 'LOAD_BILLMAKE_FAIL',
   'OPEN_EF_MODAL', 'CLOSE_EF_MODAL', 'SET_DISP_STATUS',
   'FILL_ENTRYNO', 'FILL_ENTRYNO_SUCCEED', 'FILL_ENTRYNO_FAIL',
@@ -132,9 +129,6 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_BILLMAKE_SUCCEED: {
       return { ...state, billMake: action.result.data };
     }
-    case actionTypes.LOAD_DELEGATE_SUCCEED:
-      return { ...state, delegationlist: { ...state.delegationlist, loading: false,
-        ...action.result.data }, delegateListFilter: JSON.parse(action.params.filter) };
     case actionTypes.LOAD_DELG:
       return { ...state, formData: initialState.formData, delgFiles: [] };
     case actionTypes.LOAD_DELG_SUCCEED:
@@ -158,14 +152,6 @@ export default function reducer(state = initialState, action) {
     case actionTypes.EDIT_DELGCCB_FAIL:
     case actionTypes.CREATE_DELGCCB_FAIL:
       return { ...state, submitting: false };
-    case actionTypes.SEND_DELEGATE_SUCCEED:
-      return { ...state, sendPanel: initialState.sendPanel };
-    case actionTypes.SHOW_SEND_DELEGATE_MODAL_SUCCEED:
-      if (action.visible) {
-        return { ...state, sendPanel: { visible: action.visible, delegations: action.delegations }, suppliers: action.result.data };
-      } else {
-        return { ...state, sendPanel: { ...initialState.sendPanel, visible: action.visible } };
-      }
     case actionTypes.SHOW_DISPMODAL_SUCCEED:
       return { ...state, assign: {
         ...state.assign, delgDisp: action.result.data.delegation,
@@ -399,28 +385,6 @@ export function delDisp(delgDisp, dispatch, tenantId) {
   };
 }
 
-// export function closeBillMakeModal() {
-//   return {
-//     type: actionTypes.SET_MODAL_FALSE,
-//   };
-// }
-
-export function loadDelegateTable(cookie, params) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.LOAD_DELEGATE,
-        actionTypes.LOAD_DELEGATE_SUCCEED,
-        actionTypes.LOAD_DELEGATE_FAIL,
-      ],
-      endpoint: 'v1/cms/delegate/delegations',
-      method: 'get',
-      params,
-      cookie,
-    },
-  };
-}
-
 export function loadDelgOperators(tenantId) {
   return {
     [CLIENT_API]: {
@@ -518,30 +482,6 @@ export function loadDelg(cookie, params) {
   };
 }
 
-export function toggleSendDelegateModal(visible = true, params = {}, delegations = []) {
-  if (visible) {
-    return {
-      [CLIENT_API]: {
-        types: [
-          actionTypes.SHOW_SEND_DELEGATE_MODAL,
-          actionTypes.SHOW_SEND_DELEGATE_MODAL_SUCCEED,
-          actionTypes.SHOW_SEND_DELEGATE_MODAL_FAIL,
-        ],
-        endpoint: 'v1/cms/suppliers',
-        method: 'get',
-        params,
-        visible,
-        delegations,
-      },
-    };
-  } else {
-    return {
-      type: actionTypes.SHOW_SEND_DELEGATE_MODAL_SUCCEED,
-      visible,
-    };
-  }
-}
-
 export function editDelegation(data) {
   return {
     [CLIENT_API]: {
@@ -612,21 +552,6 @@ export function loadFormRequire(cookie, tenantId, ieType) {
       method: 'get',
       params: { tenantId, ieType },
       cookie,
-    },
-  };
-}
-
-export function sendDelegate(data) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.SEND_DELEGATE,
-        actionTypes.SEND_DELEGATE_SUCCEED,
-        actionTypes.SEND_DELEGATE_FAIL,
-      ],
-      endpoint: 'v1/cms/delegation/send',
-      method: 'post',
-      data,
     },
   };
 }
