@@ -16,7 +16,6 @@ const MenuDivider = Menu.Divider;
 @injectIntl
 @connect(
   state => ({
-    navTitle: state.navbar.navTitle,
     avatar: state.account.profile.avatar,
     loginId: state.account.loginId,
     locale: state.intl.locale,
@@ -26,7 +25,6 @@ const MenuDivider = Menu.Divider;
 export default class SimpleHeaderBar extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    navTitle: PropTypes.object.isRequired,
     avatar: PropTypes.string,
     loginId: PropTypes.number.isRequired,
     locale: PropTypes.oneOf(['en', 'zh']),
@@ -64,7 +62,6 @@ export default class SimpleHeaderBar extends React.Component {
   }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
   render() {
-    const { navTitle } = this.props;
     const { intl, avatar, title } = this.props;
     const defaultAvatar = `${__CDN__}/assets/img/avatar.jpg`;
     const userPopoverContent = (
@@ -92,15 +89,13 @@ export default class SimpleHeaderBar extends React.Component {
         </Menu>
       </div>
     );
-
-    const moduleName = navTitle.moduleName;
     const brandNav = (
       <NavLink to="/" className="navbar-toggle">
         <i className="zmdi zmdi-apps" />
       </NavLink>
       );
     return (
-      <nav className={`navbar navbar-default navbar-fixed-top layout-header module-${moduleName}`}>
+      <nav className="navbar navbar-default navbar-fixed-top layout-header">
         <div className="navbar-header">
           {brandNav}
         </div>
