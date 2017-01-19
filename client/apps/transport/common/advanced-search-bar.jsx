@@ -46,19 +46,18 @@ export default class AdvancedSearchBar extends React.Component {
     this.initializeFieldsValue();
   }
   initializeFieldsValue = () => {
-    let fieldsValue = {};
     if (window.localStorage) {
-      fieldsValue = JSON.parse(window.localStorage.tmsAdvancedSearchFieldsValue || '{}');
+      const fieldsValue = JSON.parse(window.localStorage.tmsAdvancedSearchFieldsValue || '{"viewStatus":"my"}');
       this.handleSearch(fieldsValue.consigner_region, fieldsValue.consignee_region, fieldsValue);
       delete fieldsValue.consigner_region;
       delete fieldsValue.consignee_region;
       this.props.form.setFieldsValue(fieldsValue);
     }
-    return fieldsValue;
   }
   saveFieldsValue = (fieldsValue) => {
     if (window.localStorage) {
-      window.localStorage.tmsAdvancedSearchFieldsValue = JSON.stringify(fieldsValue);
+      window.localStorage.tmsAdvancedSearchFieldsValue =
+      JSON.stringify({ ...JSON.parse(window.localStorage.tmsAdvancedSearchFieldsValue || '{"viewStatus":"my"}'), ...fieldsValue });
     }
   }
   handleResetFields = () => {
@@ -104,7 +103,7 @@ export default class AdvancedSearchBar extends React.Component {
   handleShowFieldsLabel = (fieldsValue) => {
     const fields = [];
     Object.keys(fieldsValue).forEach((key) => {
-      if (fieldsValue[key] && fieldsValue[key] !== '' && fieldsValue[key] !== false && fieldsValue[key] !== null && fieldsValue[key].length !== 0) {
+      if (fieldsValue[key] && fieldsValue[key] !== '' && fieldsValue[key] !== false && fieldsValue[key] !== null && fieldsValue[key].length !== 0 && key !== 'viewStatus') {
         fields.push({
           key,
           value: fieldsValue[key],

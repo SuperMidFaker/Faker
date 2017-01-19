@@ -32,6 +32,7 @@ import { renderConsignLoc } from '../common/consignLocation';
 import RevokejectModal from '../shipment/modals/revoke-reject';
 import SearchBar from 'client/components/search-bar';
 import AdvancedSearchBar from '../common/advanced-search-bar';
+import MyShipmentsSelect from '../common/myShipmentsSelect';
 
 const { Header, Content } = Layout;
 const RadioButton = Radio.Button;
@@ -990,11 +991,6 @@ export default class DispatchList extends React.Component {
     this.setState({ advancedSearchVisible });
   }
 
-  handleSelect = (value) => {
-    const filters = this.mergeFilters(this.props.filters, 'viewStatus', value);
-    this.handleTableLoad(filters);
-  }
-
   render() {
     const { shipmentlist, loading } = this.props;
     this.dataSource.remotes = shipmentlist;
@@ -1041,7 +1037,7 @@ export default class DispatchList extends React.Component {
         </Button>
       );
     }
-    const viewStatus = this.props.filters.viewStatus;
+
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Header className="top-bar" key="header">
@@ -1065,14 +1061,7 @@ export default class DispatchList extends React.Component {
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3> {bulkBtns}
               </div>
               <div className="toolbar-right">
-                <Select
-                  value={viewStatus}
-                  onChange={this.handleSelect}
-                  style={{ width: 160 }}
-                >
-                  <Option value="my">我负责的运单</Option>
-                  <Option value="all">全部运单</Option>
-                </Select>
+                <MyShipmentsSelect onSearch={this.handleAdvancedSearch} />
               </div>
             </div>
             <div className="panel-body table-panel">

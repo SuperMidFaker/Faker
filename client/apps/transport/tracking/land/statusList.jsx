@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Button, Tooltip, Select, message } from 'antd';
+import { Button, Tooltip, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
@@ -26,9 +26,9 @@ import RevokejectModal from '../../shipment/modals/revoke-reject';
 import ShipmentAdvanceModal from './modals/shipment-advance-modal';
 import CreateSpecialCharge from './modals/create-specialCharge';
 import { sendMessage } from 'common/reducers/corps';
+import MyShipmentsSelect from '../../common/myShipmentsSelect';
 
 const formatMsg = format(messages);
-const Option = Select.Option;
 
 function fetchData({ state, dispatch, params, cookie }) {
   const newfilters = state.trackingLandStatus.filters.map((flt) => {
@@ -40,10 +40,13 @@ function fetchData({ state, dispatch, params, cookie }) {
     } else {
       return flt;
     }
-  }).concat([{
-    name: 'loginId',
-    value: state.account.loginId,
-  }]);
+  });
+  if (!newfilters.find(item => item.name === 'loginId')) {
+    newfilters.push({
+      name: 'loginId',
+      value: state.account.loginId,
+    });
+  }
   return dispatch(loadTransitTable(cookie, {
     tenantId: state.account.tenantId,
     filters: JSON.stringify(newfilters),
@@ -115,7 +118,7 @@ export default class LandStatusList extends React.Component {
     } else if (JSON.stringify(this.props.filters) !== JSON.stringify(nextProps.filters)) {
       newfilters = nextProps.filters;
     }
-    if (newfilters) {
+    if (!nextProps.loading && newfilters) {
       this.props.loadTransitTable(null, {
         tenantId: nextProps.tenantId,
         filters: JSON.stringify(newfilters),
@@ -322,8 +325,8 @@ export default class LandStatusList extends React.Component {
     return merged;
   }
 
-  handleSelect = (value) => {
-    this.props.changeStatusFilter('viewStatus', value);
+  handleAdvancedSearch = (searchVals) => {
+    this.props.changeStatusFilter('viewStatus', searchVals.viewStatus);
   }
 
   renderIntransitUpdater = (record) => {
@@ -398,7 +401,6 @@ export default class LandStatusList extends React.Component {
       tenantId: this.props.tenantId,
       clients: this.props.clients,
     }, this.msg);
-    const viewStatus = this.props.filters.find(item => item.name === 'viewStatus');
     return (
       <div>
         <div className="page-body">
@@ -410,14 +412,7 @@ export default class LandStatusList extends React.Component {
               <h3>已选中{this.state.selectedRowKeys.length}项</h3> {this.renderBatchOperationButtons()}
             </div>
             <div className="toolbar-right">
-              <Select
-                value={viewStatus ? viewStatus.value : ''}
-                onChange={this.handleSelect}
-                style={{ width: 160 }}
-              >
-                <Option value="my">我负责的运单</Option>
-                <Option value="all">全部运单</Option>
-              </Select>
+              <MyShipmentsSelect onSearch={this.handleAdvancedSearch} />
             </div>
           </div>
           <div className="panel-body table-panel">

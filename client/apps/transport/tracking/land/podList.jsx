@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Select, message } from 'antd';
+import { message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -11,11 +11,11 @@ import PodAuditModal from './modals/pod-audit';
 import PodModal from './modals/pod-submit';
 import makeColumns from './columnDef';
 import { SHIPMENT_TRACK_STATUS } from 'common/constants';
+import MyShipmentsSelect from '../../common/myShipmentsSelect';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import { sendMessage } from 'common/reducers/corps';
 const formatMsg = format(messages);
-const Option = Select.Option;
 
 function fetchData({ state, dispatch, params, cookie }) {
   const newfilters = state.trackingLandPod.filters.map((flt) => {
@@ -27,10 +27,13 @@ function fetchData({ state, dispatch, params, cookie }) {
     } else {
       return flt;
     }
-  }).concat([{
-    name: 'loginId',
-    value: state.account.loginId,
-  }]);
+  });
+  if (!newfilters.find(item => item.name === 'loginId')) {
+    newfilters.push({
+      name: 'loginId',
+      value: state.account.loginId,
+    });
+  }
   return dispatch(loadPodTable(cookie, {
     tenantId: state.account.tenantId,
     filters: JSON.stringify(newfilters),
@@ -94,7 +97,7 @@ export default class LandStatusList extends React.Component {
     } else if (JSON.stringify(this.props.filters) !== JSON.stringify(nextProps.filters)) {
       newfilters = nextProps.filters;
     }
-    if (newfilters) {
+    if (!nextProps.loading && newfilters) {
       this.props.loadPodTable(null, {
         tenantId: nextProps.tenantId,
         filters: JSON.stringify(newfilters),
@@ -196,8 +199,8 @@ export default class LandStatusList extends React.Component {
     return merged;
   }
 
-  handleSelect = (value) => {
-    this.props.changePodFilter('viewStatus', value);
+  handleAdvancedSearch = (searchVals) => {
+    this.props.changePodFilter('viewStatus', searchVals.viewStatus);
   }
 
   render() {
@@ -218,7 +221,6 @@ export default class LandStatusList extends React.Component {
       sendMessage: this.props.sendMessage,
       clients: this.props.clients,
     }, this.msg);
-    const viewStatus = this.props.filters.find(item => item.name === 'viewStatus');
     return (
       <div>
         <div className="page-body">
@@ -227,14 +229,7 @@ export default class LandStatusList extends React.Component {
               <h3>已选中{this.state.selectedRowKeys.length}项</h3>
             </div>
             <div className="toolbar-right">
-              <Select
-                value={viewStatus ? viewStatus.value : ''}
-                onChange={this.handleSelect}
-                style={{ width: 160 }}
-              >
-                <Option value="my">我负责的运单</Option>
-                <Option value="all">全部运单</Option>
-              </Select>
+              <MyShipmentsSelect onSearch={this.handleAdvancedSearch} />
             </div>
           </div>
           <div className="panel-body table-panel">
