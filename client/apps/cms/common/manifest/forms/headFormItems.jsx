@@ -699,7 +699,6 @@ export function PackWeight(props) {
     col: 8,
     field: 'net_wt',
     label: msg('netwt'),
-    rules: [{ required: true }],
     addonAfter: 'KG',
     disabled,
     formData,
