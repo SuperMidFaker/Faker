@@ -345,30 +345,6 @@ export default defineMessages({
     id: 'transport.tracking.modal.pod.signstatus',
     defaultMessage: '签收状态',
   },
-  normalSign: {
-    id: 'transport.tracking.modal.pod.sign.normal',
-    defaultMessage: '正常签收',
-  },
-  abnormalSign: {
-    id: 'transport.tracking.modal.pod.sign.abnormal',
-    defaultMessage: '异常签收',
-  },
-  refusedSign: {
-    id: 'transport.tracking.modal.pod.sign.refused',
-    defaultMessage: '拒绝签收',
-  },
-  signRemark: {
-    id: 'transport.tracking.modal.pod.sign.remark',
-    defaultMessage: '签收备注',
-  },
-  podPhoto: {
-    id: 'transport.tracking.modal.pod.photo',
-    defaultMessage: '回单照片',
-  },
-  photoSubmit: {
-    id: 'transport.tracking.modal.pod.click.submit',
-    defaultMessage: '上传照片',
-  },
   auditPod: {
     id: 'transport.tracking.table.pod.audit',
     defaultMessage: '审核回单',

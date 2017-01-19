@@ -15,7 +15,7 @@ import { doSend,
 import { showDateModal, showVehicleModal, showLocModal, showChangeActDateModal }
 from 'common/reducers/trackingLandStatus';
 import { showAdvanceModal, showSpecialChargeModal } from 'common/reducers/transportBilling';
-import { passAudit, returnAudit, showPodModal } from 'common/reducers/trackingLandPod';
+import { passAudit, returnAudit } from 'common/reducers/trackingLandPod';
 import ExportPDF from '../../tracking/land/modals/export-pdf';
 import { createFilename } from 'client/util/dataTransform';
 import { sendMessage } from 'common/reducers/corps';
@@ -43,7 +43,6 @@ const MenuItem = Menu.Item;
     doSend,
     showVehicleModal,
     showDateModal,
-    showPodModal,
     showLocModal,
     passAudit,
     returnAudit,
@@ -73,7 +72,6 @@ export default class Footer extends React.Component {
     doReturn: PropTypes.func.isRequired,
     showVehicleModal: PropTypes.func.isRequired,
     showDateModal: PropTypes.func.isRequired,
-    showPodModal: PropTypes.func.isRequired,
     showLocModal: PropTypes.func.isRequired,
     passAudit: PropTypes.func.isRequired,
     returnAudit: PropTypes.func.isRequired,
@@ -234,9 +232,6 @@ export default class Footer extends React.Component {
     }];
     this.props.showDateModal(shipments, 'deliver');
   }
-  handleShowPodModal = (row) => {
-    this.props.showPodModal(-1, row.disp_id, row.parent_id, row.shipmt_no);
-  }
   handleShowShipmentAdvanceModal = (row) => {
     // todo 取parentDisp sr_tenant_id
     this.props.showAdvanceModal({ visible: true, dispId: row.parent_id, shipmtNo: row.shipmt_no,
@@ -250,9 +245,6 @@ export default class Footer extends React.Component {
   handleShowChangeActDateModal = (row) => {
     this.props.showChangeActDateModal({ visible: true, dispId: row.disp_id, shipmtNo: row.shipmt_no,
       pickupActDate: row.pickup_act_date, deliverActDate: row.deliver_act_date });
-  }
-  handleResubmit = (row) => {
-    this.props.showPodModal(row.pod_id, row.disp_id, row.parent_id, row.shipmt_no);
   }
   handleShowTransitModal = (row) => {
     this.props.showLocModal({
@@ -591,16 +583,9 @@ export default class Footer extends React.Component {
         } else if (row.sp_tenant_id === -1) {
           buttons = (
             <PrivilegeCover module="transport" feature="tracking" action="create">
-              <span>
-                <Button type="ghost" onClick={() => this.handleShowSpecialChargeModal(row)} >
-                  添加特殊费用
-                </Button>
-                <Button type="ghost"
-                  onClick={() => this.handleShowPodModal(row)}
-                >
-                  上传回单
-                </Button>
-              </span>
+              <Button type="ghost" onClick={() => this.handleShowSpecialChargeModal(row)} >
+                添加特殊费用
+              </Button>
             </PrivilegeCover>
           );
           menu = (
@@ -614,16 +599,9 @@ export default class Footer extends React.Component {
           if (row.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
             buttons = (
               <PrivilegeCover module="transport" feature="tracking" action="create">
-                <span>
-                  <Button type="ghost" onClick={() => this.handleShowSpecialChargeModal(row)} >
-                    添加特殊费用
-                  </Button>
-                  <Button type="ghost"
-                    onClick={() => this.handleShowPodModal(row)}
-                  >
-                    上传回单
-                  </Button>
-                </span>
+                <Button type="ghost" onClick={() => this.handleShowSpecialChargeModal(row)} >
+                  添加特殊费用
+                </Button>
               </PrivilegeCover>
             );
           } else {
@@ -668,22 +646,10 @@ export default class Footer extends React.Component {
     } else if (stage === 'pod') {
       if (row.pod_status === null || row.pod_status === SHIPMENT_POD_STATUS.unsubmit) {
         if (row.sp_tenant_id === -1) {
-          buttons = (
-            <PrivilegeCover module="transport" feature="tracking" action="create">
-              <Button type="ghost" onClick={() => this.handleShowPodModal(row)} >
-                  上传回单
-              </Button>
-            </PrivilegeCover>
-          );
+          buttons = (<span />);
         } else if (row.sp_tenant_id === 0) {
           if (row.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
-            buttons = (
-              <PrivilegeCover module="transport" feature="tracking" action="create">
-                <Button type="ghost" onClick={() => this.handleShowPodModal(row)} >
-                  上传回单
-                </Button>
-              </PrivilegeCover>
-            );
+            buttons = (<span />);
           } else {
             // 司机上传
             buttons = (
@@ -725,15 +691,7 @@ export default class Footer extends React.Component {
         );
       } else if (row.pod_status === SHIPMENT_POD_STATUS.rejectByClient) {
         // 重新上传
-        buttons = (
-          <PrivilegeCover module="transport" feature="tracking" action="edit">
-            <Button type="ghost"
-              onClick={() => this.handleResubmit(row)}
-            >
-                重新上传回单
-            </Button>
-          </PrivilegeCover>
-        );
+        buttons = (<span />);
         return (
           <span>
             {buttons}

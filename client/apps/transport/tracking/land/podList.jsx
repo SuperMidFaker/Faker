@@ -5,10 +5,9 @@ import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadShipmtDetail } from 'common/reducers/shipment';
-import { loadPodTable, showAuditModal, resubmitPod, showPodModal, changePodFilter } from
+import { loadPodTable, showAuditModal, changePodFilter } from
   'common/reducers/trackingLandPod';
 import PodAuditModal from './modals/pod-audit';
-import PodModal from './modals/pod-submit';
 import makeColumns from './columnDef';
 import { SHIPMENT_TRACK_STATUS } from 'common/constants';
 import MyShipmentsSelect from '../../common/myShipmentsSelect';
@@ -53,7 +52,7 @@ function fetchData({ state, dispatch, params, cookie }) {
     loaded: state.trackingLandPod.loaded,
     clients: state.shipment.formRequire.clients,
   }),
-  { loadPodTable, loadShipmtDetail, showAuditModal, resubmitPod, showPodModal,
+  { loadPodTable, loadShipmtDetail, showAuditModal,
     sendMessage, changePodFilter })
 export default class LandStatusList extends React.Component {
   static propTypes = {
@@ -68,10 +67,8 @@ export default class LandStatusList extends React.Component {
     loaded: PropTypes.bool.isRequired,
     shipmentlist: PropTypes.object.isRequired,
     showAuditModal: PropTypes.func.isRequired,
-    resubmitPod: PropTypes.func.isRequired,
     loadShipmtDetail: PropTypes.func.isRequired,
     loadPodTable: PropTypes.func.isRequired,
-    showPodModal: PropTypes.func.isRequired,
     sendMessage: PropTypes.func.isRequired,
     clients: PropTypes.array.isRequired,
     changePodFilter: PropTypes.func.isRequired,
@@ -162,20 +159,10 @@ export default class LandStatusList extends React.Component {
   handleSelectionClear = () => {
     this.setState({ selectedRowKeys: [] });
   }
-  handleShowPodModal = (row, ev) => {
-    ev.preventDefault();
-    ev.stopPropagation();
-    this.props.showPodModal(-1, row.disp_id, row.parent_id, row.shipmt_no);
-  }
   handleShowAuditModal = (row, ev) => {
     ev.preventDefault();
     ev.stopPropagation();
     this.props.showAuditModal(row.disp_id, row.parent_id, row.pod_id);
-  }
-  handleResubmit = (row, ev) => {
-    ev.preventDefault();
-    ev.stopPropagation();
-    this.props.showPodModal(row.pod_id, row.disp_id, row.parent_id, row.shipmt_no);
   }
   handleShipmtPreview = (row) => {
     let tabKey = 'detail';
@@ -215,8 +202,6 @@ export default class LandStatusList extends React.Component {
     const columns = makeColumns('pod', {
       onShipmtPreview: this.handleShipmtPreview,
       onShowAuditModal: this.handleShowAuditModal,
-      onResubmit: this.handleResubmit,
-      onShowPodModal: this.handleShowPodModal,
       tenantId: this.props.tenantId,
       sendMessage: this.props.sendMessage,
       clients: this.props.clients,
@@ -239,7 +224,6 @@ export default class LandStatusList extends React.Component {
           </div>
         </div>
         <PodAuditModal />
-        <PodModal onOK={this.handleTableLoad} />
       </div>
     );
   }

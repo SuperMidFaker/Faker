@@ -9,8 +9,6 @@ const actionTypes = createActionTypes('@@welogix/transport/tracking/land/pod/', 
   'RESUBMIT_POD', 'RESUMBIT_POD_SUCCEED', 'RESUBMIT_POD_FAIL',
   'LOAD_PODSHIPMT', 'LOAD_PODSHIPMT_FAIL', 'LOAD_PODSHIPMT_SUCCEED',
   'LOAD_POD', 'LOAD_POD_SUCCEED', 'LOAD_POD_FAIL',
-  'SHOW_POD_MODAL', 'SHOW_POD_MODAL_SUCCEED', 'SHOW_POD_MODAL_FAIL',
-  'HIDE_POD_MODAL',
   'SAVE_POD', 'SAVE_POD_SUCCEED', 'SAVE_POD_FAIL',
 ]);
 
@@ -41,16 +39,6 @@ const initialState = {
     sign_remark: '',
     photos: '',
   },
-  podModal: {
-    visible: false,
-    shipmtNo: '',
-    podId: -1,
-    dispId: -1,
-    parentDispId: -1,
-    sign_status: 1,
-    sign_remark: '',
-    photos: '',
-  },
 };
 
 export const { LOAD_PODSHIPMT } = actionTypes;
@@ -66,12 +54,6 @@ export default function reducer(state = initialState, action) {
       return { ...state, loading: false,
         loaded: true, shipmentlist: action.result.data,
       };
-    case actionTypes.LOAD_POD_SUCCEED:
-      return { ...state, auditModal: {
-        ...state.auditModal, ...action.result.data,
-      }, podModal: {
-        ...state.podModal, ...action.result.data,
-      } };
     case actionTypes.SHOW_AUDIT_MODAL_SUCCEED:
       return { ...state,
         auditModal: {
@@ -102,21 +84,6 @@ export default function reducer(state = initialState, action) {
       const shipmentlist = { ...state.shipmentlist, data };
       return { ...state, shipmentlist };
     }
-    case actionTypes.SHOW_POD_MODAL_SUCCEED: {
-      let data = initialState.podModal;
-      if (action.result) {
-        data = action.result.data;
-      }
-      return { ...state,
-        podModal: {
-          ...data,
-          ...action.data,
-          visible: true,
-        },
-      };
-    }
-    case actionTypes.HIDE_POD_MODAL:
-      return { ...state, podModal: initialState.podModal };
     default:
       return state;
   }
@@ -205,54 +172,10 @@ export function returnAudit(dispId) {
   };
 }
 
-export function resubmitPod(dispId, parentDispId) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.RESUBMIT_POD,
-        actionTypes.RESUMBIT_POD_SUCCEED,
-        actionTypes.RESUBMIT_POD_FAIL,
-      ],
-      endpoint: 'v1/transport/tracking/pod/resubmit',
-      method: 'post',
-      data: { dispId, parentDispId },
-    },
-  };
-}
-
 export function changePodFilter(field, value) {
   return {
     type: actionTypes.CHANGE_FILTER,
     data: { field, value },
-  };
-}
-
-export function showPodModal(podId, dispId, parentDispId, shipmtNo) {
-  if (podId !== -1) {
-    return {
-      [CLIENT_API]: {
-        types: [
-          actionTypes.SHOW_POD_MODAL,
-          actionTypes.SHOW_POD_MODAL_SUCCEED,
-          actionTypes.SHOW_POD_MODAL_FAIL,
-        ],
-        endpoint: 'v1/transport/tracking/pod',
-        method: 'get',
-        params: { podId },
-        data: { podId, dispId, parentDispId, shipmtNo },
-      },
-    };
-  } else {
-    return {
-      type: actionTypes.SHOW_POD_MODAL_SUCCEED,
-      data: { podId, dispId, parentDispId, shipmtNo },
-    };
-  }
-}
-
-export function closePodModal() {
-  return {
-    type: actionTypes.HIDE_POD_MODAL,
   };
 }
 

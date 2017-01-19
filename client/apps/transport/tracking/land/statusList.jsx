@@ -12,12 +12,10 @@ import {
   showLocModal, loadShipmtLastPoint, deliverConfirm,
   changeStatusFilter,
 } from 'common/reducers/trackingLandStatus';
-import { showPodModal } from 'common/reducers/trackingLandPod';
 import RowUpdater from './rowUpdater';
 import VehicleModal from './modals/vehicle-updater';
 import PickupDeliverModal from './modals/pickup-deliver-updater';
 import LocationModal from './modals/intransitLocationUpdater';
-import PodModal from './modals/pod-submit';
 import makeColumns from './columnDef';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -67,7 +65,7 @@ function fetchData({ state, dispatch, params, cookie }) {
     clients: state.shipment.formRequire.clients,
   }),
   {
-    loadTransitTable, loadShipmtDetail, showPodModal, showDateModal,
+    loadTransitTable, loadShipmtDetail, showDateModal,
     showVehicleModal, showLocModal, loadShipmtLastPoint, sendMessage,
     deliverConfirm, changeStatusFilter,
   }
@@ -86,7 +84,6 @@ export default class LandStatusList extends React.Component {
     reportedShipmts: PropTypes.array.isRequired,
     showVehicleModal: PropTypes.func.isRequired,
     showDateModal: PropTypes.func.isRequired,
-    showPodModal: PropTypes.func.isRequired,
     showLocModal: PropTypes.func.isRequired,
     loadShipmtDetail: PropTypes.func.isRequired,
     loadTransitTable: PropTypes.func.isRequired,
@@ -286,11 +283,6 @@ export default class LandStatusList extends React.Component {
       disp_id: row.disp_id,
     });
   }
-  handleShowPodModal = (row, ev) => {
-    ev.preventDefault();
-    ev.stopPropagation();
-    this.props.showPodModal(-1, row.disp_id, row.parent_id, row.shipmt_no);
-  }
   handleShipmtPreview = (row) => {
     this.props.loadShipmtDetail(row.shipmt_no, this.props.tenantId, 'sr', 'detail', row).then((result) => {
       if (result.error) {
@@ -393,7 +385,6 @@ export default class LandStatusList extends React.Component {
       onShowVehicleModal: this.handleShowVehicleModal,
       onShowPickModal: this.handleShowPickModal,
       renderIntransitUpdater: this.renderIntransitUpdater,
-      onShowPodModal: this.handleShowPodModal,
       onShowDeliverModal: this.handleShowDeliverModal,
       onTableLoad: this.handleTableLoad,
       sendMessage: this.props.sendMessage,
@@ -424,7 +415,6 @@ export default class LandStatusList extends React.Component {
         <VehicleModal onOK={this.handleTableLoad} />
         <PickupDeliverModal onOK={this.handleTableLoad} />
         <LocationModal onOK={this.handleTableLoad} />
-        <PodModal onOK={this.handleTableLoad} />
         <RevokejectModal reload={this.handleTableLoad} />
         <ShipmentAdvanceModal />
         <CreateSpecialCharge />

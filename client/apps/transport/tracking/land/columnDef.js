@@ -311,22 +311,10 @@ export default function makeColumns(type, handlers, msg) {
       render: (o, record) => {
         if (record.pod_status === null || record.pod_status === SHIPMENT_POD_STATUS.unsubmit) {
           if (record.sp_tenant_id === -1) {
-            return (
-              <PrivilegeCover module="transport" feature="tracking" action="create">
-                <RowUpdater label={msg('submitPod')}
-                  onAnchored={handlers.onShowPodModal} row={record}
-                />
-              </PrivilegeCover>
-            );
+            return '';
           } else if (record.sp_tenant_id === 0) {
             if (record.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
-              return (
-                <PrivilegeCover module="transport" feature="tracking" action="create">
-                  <RowUpdater label={msg('submitPod')}
-                    onAnchored={handlers.onShowPodModal} row={record}
-                  />
-                </PrivilegeCover>
-              );
+              return '';
             } else {
               // 司机上传
               return (
@@ -349,16 +337,7 @@ export default function makeColumns(type, handlers, msg) {
           }
         } else if (record.pod_status === SHIPMENT_POD_STATUS.rejectByClient) {
           // 重新上传
-          return (
-            <PrivilegeCover module="transport" feature="tracking" action="create">
-              <div>
-                <Icon type="frown" />
-                <RowUpdater label={msg('resubmitPod')} onAnchored={handlers.onResubmit}
-                  row={record}
-                />
-              </div>
-            </PrivilegeCover>
-          );
+          return '';
         } else if (record.pod_status === SHIPMENT_POD_STATUS.pending) {
           // 审核回单
           return (
