@@ -136,7 +136,7 @@ export default class Dashboard extends React.Component {
                 <Card title="追踪">
                   <ul className="statistics-columns">
                     <li className="col-6">
-                      <img style={imgStyle} role="presentation" src={`${__CDN__}/assets/img/car.png`} />
+                      <img style={imgStyle} role="presentation" src={`${__CDN__}/assets/img/truck.png`} />
                     </li>
                     <li className="col-6">
                       <div className="statistics-cell">
