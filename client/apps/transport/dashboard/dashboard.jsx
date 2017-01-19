@@ -153,7 +153,7 @@ export default class Dashboard extends React.Component {
                     <li className="transport-dashboard">
                       <div className="statistics-cell">
                         <h6>待交货</h6>
-                        <Link to="/transport/tracking/road/status/intransit"><p className="data-num lg">{todos.intransit}000</p></Link>
+                        <Link to="/transport/tracking/road/status/intransit"><p className="data-num lg">{todos.intransit}</p></Link>
                       </div>
                     </li>
                   </ul>
