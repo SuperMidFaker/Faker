@@ -40,7 +40,7 @@ export default class OutboundShipmentsList extends React.Component {
           <div className="toolbar-right">
             <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
           </div>
-          <span>{this.msg('outboundShipments')}</span>
+          <span>{this.msg('clearance')}</span>
         </Header>
         <Content className="main-content" key="main">
           <div className="page-body">

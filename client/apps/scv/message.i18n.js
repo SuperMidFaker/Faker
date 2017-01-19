@@ -7,15 +7,43 @@ const messages = defineMessages({
   },
   orders: {
     id: 'scv.module.orders',
-    defaultMessage: '订单中心',
+    defaultMessage: '订单管理',
+  },
+  shipments: {
+    id: 'scv.module.shipments',
+    defaultMessage: '货运管理',
   },
   inboundShipments: {
     id: 'scv.module.shipments.inbound',
-    defaultMessage: '进口管理',
+    defaultMessage: '进口货运',
   },
   outboundShipments: {
     id: 'scv.module.shipments.outbound',
-    defaultMessage: '出口管理',
+    defaultMessage: '出口货运',
+  },
+  clearance: {
+    id: 'scv.module.clearance',
+    defaultMessage: '清关管理',
+  },
+  inventory: {
+    id: 'scv.module.inventory',
+    defaultMessage: '库存管理',
+  },
+  inventoryStatus: {
+    id: 'scv.module.inventory.status',
+    defaultMessage: '库存状态',
+  },
+  inventoryProducts: {
+    id: 'scv.module.inventory.products',
+    defaultMessage: '产品目录',
+  },
+  inventoryRecieving: {
+    id: 'scv.module.inventory.recieving',
+    defaultMessage: '进库',
+  },
+  inventoryShipping: {
+    id: 'scv.module.inventory.shipping',
+    defaultMessage: '出库',
   },
   payment: {
     id: 'scv.module.payment',

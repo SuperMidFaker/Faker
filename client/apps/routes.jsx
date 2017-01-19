@@ -48,8 +48,9 @@ import * as CMSTradeItem from './cms/tradeitem';
 import SCV from './scv/module-scv';
 import * as SCVDashboard from './scv/dashboard';
 import * as SCVOrders from './scv/orders';
-import * as SCVInbound from './scv/inbounds';
-import * as SCVOutbound from './scv/outbounds';
+import * as SCVInbound from './scv/inbound';
+import * as SCVClearance from './scv/clearance';
+import * as SCVInventory from './scv/inventory';
 import * as SCVPaymentsTax from './scv/payments/tax';
 import * as SCVPaymentsBilling from './scv/payments/billing';
 import * as SCVAnalyticsKpi from './scv/analytics/kpi';
@@ -288,8 +289,11 @@ export default(store, cookie) => {
             <IndexRedirect to="/scv/dashboard" />
             <Route path="dashboard" component={SCVDashboard.Index} />
             <Route path="orders" component={SCVOrders.List} />
-            <Route path="inbound" component={SCVInbound.List} />
-            <Route path="outbound" component={SCVOutbound.List} />
+            <Route path="shipments">
+              <Route path="inbound" component={SCVInbound.List} />
+            </Route>
+            <Route path="clearance" component={SCVClearance.List} />
+            <Route path="inventory" component={SCVInventory.List} />
             <Route path="payments">
               <Route path="tax" component={SCVPaymentsTax.List} />
               <Route path="billing" component={SCVPaymentsBilling.List} />

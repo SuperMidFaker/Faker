@@ -22,31 +22,62 @@ export default class ModuleSCV extends React.Component {
     const linkMenus = [];
     linkMenus.push({
       single: true,
-      key: 'scv-1',
+      key: 'scv-0',
       path: '/scv/dashboard',
       icon: 'icon-fontello-gauge-1',
       text: formatMsg(intl, 'dashboard'),
     });
     linkMenus.push({
       single: true,
-      key: 'scv-2',
+      key: 'scv-1',
       path: '/scv/orders',
       icon: 'icon-fontello-doc-text',
       text: formatMsg(intl, 'orders'),
     });
     linkMenus.push({
-      single: true,
-      key: 'scv-3',
-      path: '/scv/inbound',
-      icon: 'icon-ikons-login',
-      text: formatMsg(intl, 'inboundShipments'),
+      single: false,
+      key: 'scv-2',
+      icon: 'zmdi zmdi-boat',
+      text: formatMsg(intl, 'shipments'),
+      sublinks: [{
+        key: 'scv-2-0',
+        path: '/scv/shipments/inbound',
+        text: formatMsg(intl, 'inboundShipments'),
+      }, {
+        key: 'scv-2-1',
+        path: '/scv/shipments/outbound',
+        text: formatMsg(intl, 'outboundShipments'),
+      }],
     });
     linkMenus.push({
       single: true,
+      key: 'scv-3',
+      path: '/scv/clearance',
+      icon: 'zmdi zmdi-badge-check',
+      text: formatMsg(intl, 'clearance'),
+    });
+    linkMenus.push({
+      single: false,
       key: 'scv-4',
-      path: '/scv/outbound',
-      icon: 'icon-ikons-logout',
-      text: formatMsg(intl, 'outboundShipments'),
+      icon: 'zmdi zmdi-storage',
+      text: formatMsg(intl, 'inventory'),
+      sublinks: [{
+        key: 'scv-4-0',
+        path: '/scv/inventory',
+        text: formatMsg(intl, 'inventoryStatus'),
+      }, {
+        key: 'scv-4-1',
+        path: '/scv/inventory/recieving',
+        text: formatMsg(intl, 'inventoryRecieving'),
+      }, {
+        key: 'scv-4-2',
+        path: '/scv/inventory/shipping',
+        text: formatMsg(intl, 'inventoryShipping'),
+      }, {
+        key: 'scv-4-3',
+        path: '/scv/inventory/products',
+        text: formatMsg(intl, 'inventoryProducts'),
+      }],
     });
     linkMenus.push({
       single: false,
