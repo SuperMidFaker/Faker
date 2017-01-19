@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Form, Input, Row, Col, Button, DatePicker, Select, Tag } from 'antd';
+import { Form, Row, Col, Button, DatePicker, Select, Tag } from 'antd';
 import moment from 'moment';
 import { format } from 'client/common/i18n/helpers';
 import RegionCascade from 'client/components/region-cascade';
@@ -123,9 +123,7 @@ export default class AdvancedSearchBar extends React.Component {
     this.setState({ consigneeRegion: region });
   }
   format = (item) => {
-    if (item.key === 'sr_name' ||
-      item.key === 'sp_name' ||
-      item.key === 'transport_mode') {
+    if (item.key === 'transport_mode') {
       return `${item.label}: ${item.value}`;
     } else if (item.key === 'pickup_est_date' ||
       item.key === 'pickup_act_date' ||
@@ -157,15 +155,6 @@ export default class AdvancedSearchBar extends React.Component {
           <Row gutter={16}>
             <Col sm={8}>
               <FormItem
-                label="客户"
-                labelCol={{ span: 8 }}
-                wrapperCol={{ span: 14 }}
-              >
-                {getFieldDecorator('sr_name', { initialValue: '' })(
-                  <Input placeholder="请输入客户名称" size="default" />
-                )}
-              </FormItem>
-              <FormItem
                 label="出发地"
                 labelCol={{ span: 8 }}
                 wrapperCol={{ span: 14 }}
@@ -179,41 +168,6 @@ export default class AdvancedSearchBar extends React.Component {
               >
                 <RegionCascade defaultRegion={this.state.consigneeRegion} onChange={this.handleConsigneeRegionValue} />
               </FormItem>
-            </Col>
-            <Col sm={8}>
-              <FormItem
-                label="承运商"
-                labelCol={{ span: 8 }}
-                wrapperCol={{ span: 14 }}
-              >
-                {getFieldDecorator('sp_name', { initialValue: '' })(
-                  <Input placeholder="请输入承运商名称" size="default" />
-                )
-                }
-              </FormItem>
-              <FormItem
-                label="预计提货时间"
-                labelCol={{ span: 8 }}
-                wrapperCol={{ span: 14 }}
-              >
-                {getFieldDecorator('pickup_est_date', { initialValue: '' })(
-                  <RangePicker style={{ width: '100%' }} />
-                )
-                }
-
-              </FormItem>
-
-              <FormItem
-                label="预计送达时间"
-                labelCol={{ span: 8 }}
-                wrapperCol={{ span: 14 }}
-              >
-                {getFieldDecorator('deliver_est_date', { initialValue: '' })(
-                  <RangePicker style={{ width: '100%' }} />
-                )}
-              </FormItem>
-            </Col>
-            <Col sm={8}>
               <FormItem
                 label="运输模式"
                 labelCol={{ span: 8 }}
@@ -227,6 +181,30 @@ export default class AdvancedSearchBar extends React.Component {
                   </Select>
                 )}
               </FormItem>
+            </Col>
+            <Col sm={8}>
+              <FormItem
+                label="预计提货时间"
+                labelCol={{ span: 8 }}
+                wrapperCol={{ span: 14 }}
+              >
+                {getFieldDecorator('pickup_est_date', { initialValue: '' })(
+                  <RangePicker style={{ width: '100%' }} />
+                )
+                }
+
+              </FormItem>
+              <FormItem
+                label="预计送达时间"
+                labelCol={{ span: 8 }}
+                wrapperCol={{ span: 14 }}
+              >
+                {getFieldDecorator('deliver_est_date', { initialValue: '' })(
+                  <RangePicker style={{ width: '100%' }} />
+                )}
+              </FormItem>
+            </Col>
+            <Col sm={8}>
               <FormItem
                 label="实际提货时间"
                 labelCol={{ span: 8 }}
