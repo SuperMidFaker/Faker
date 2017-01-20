@@ -6,7 +6,8 @@ import CreateExceptionPane from './CreateExceptionPane';
 import CreatePointPane from './CreatePointPane';
 import CreateLogPane from './CreateLogPane';
 import SubmitPodPane from './submitPodPane';
-import { SHIPMENT_POD_STATUS, SHIPMENT_VEHICLE_CONNECT } from 'common/constants';
+import PickupDeliverPane from './pickupDeliverPane';
+import { SHIPMENT_POD_STATUS, SHIPMENT_VEHICLE_CONNECT, SHIPMENT_TRACK_STATUS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 const formatMsg = format(messages);
@@ -16,6 +17,7 @@ const TabPane = Tabs.TabPane;
 @connect(
   state => ({
     disp: state.shipment.previewer.dispatch,
+    shipmt: state.shipment.previewer.shipmt,
   })
 )
 export default class ActivityOperation extends React.Component {
@@ -23,103 +25,241 @@ export default class ActivityOperation extends React.Component {
     intl: intlShape.isRequired,
     stage: PropTypes.oneOf(['acceptance', 'dispatch', 'tracking', 'pod', 'exception', 'billing', 'dashboard']),
     disp: PropTypes.object.isRequired,
+    shipmt: PropTypes.object.isRequired,
   }
-
-  msg = descriptor => formatMsg(this.props.intl, descriptor)
-
-  render() {
-    const { stage, disp } = this.props;
-    let tabs = (
-      <Tabs defaultActiveKey="log">
-        <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>
-      </Tabs>
-    );
+  state = {
+    activeKey: 'log',
+  }
+  componentWillReceiveProps(nextProps) {
+    const { stage, disp } = nextProps;
+    let { activeKey } = this.state;
     if (stage === 'acceptance') {
-      tabs = (
-        <Tabs defaultActiveKey="log">
-          <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>
-        </Tabs>
-      );
+      activeKey = 'log';
     } else if (stage === 'dispatch') {
-      tabs = (
-        <Tabs defaultActiveKey="log">
-          <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>
-        </Tabs>
-      );
+      activeKey = 'log';
     } else if (stage === 'tracking') {
-      tabs = (
-        <Tabs defaultActiveKey="log">
-          <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>
-          <TabPane tab={<span><Icon type="environment-o" />追踪</span>} key="location" ><CreatePointPane /></TabPane>
-          <TabPane tab={<span><Icon type="exception" />异常</span>} key="exception"><CreateExceptionPane /></TabPane>
-        </Tabs>
-      );
+      if (disp.status === SHIPMENT_TRACK_STATUS.dispatched) {
+        if (disp.sp_tenant_id === -1) {
+          activeKey = 'pickup';
+        } else if (disp.sp_tenant_id === 0) {
+            // 已分配给车队
+          if (disp.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
+            // 线下司机
+            activeKey = 'pickup';
+          } else {
+            // 司机更新
+            activeKey = 'log';
+          }
+        } else {
+          // 催促提货
+          activeKey = 'log';
+        }
+      } else if (disp.status === SHIPMENT_TRACK_STATUS.intransit) {
+        if (disp.sp_tenant_id === -1) {
+          // 上报位置
+          activeKey = 'deliver';
+        } else if (disp.sp_tenant_id === 0) {
+          if (disp.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
+            // 上报位置
+            activeKey = 'deliver';
+          } else {
+            // 司机更新
+            activeKey = 'log';
+          }
+        } else {
+          // 承运商更新
+          activeKey = 'log';
+        }
+      } else {
+        activeKey = 'log';
+      }
     } else if (stage === 'pod') {
       if (!disp.pod_status || disp.pod_status === SHIPMENT_POD_STATUS.unsubmit) {
         if (disp.sp_tenant_id === -1) {
-          tabs = (
-            <Tabs defaultActiveKey="pod">
-              <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>
-              <TabPane tab={<span><Icon type="exception" />异常</span>} key="exception"><CreateExceptionPane /></TabPane>
-              <TabPane tab={<span><Icon type="tags" />回单</span>} key="pod"><SubmitPodPane /></TabPane>
-            </Tabs>
-          );
+          activeKey = 'pod';
         } else if (disp.sp_tenant_id === 0) {
           if (disp.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
-            tabs = (
-              <Tabs defaultActiveKey="pod">
-                <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>
-                <TabPane tab={<span><Icon type="exception" />异常</span>} key="exception"><CreateExceptionPane /></TabPane>
-                <TabPane tab={<span><Icon type="tags" />回单</span>} key="pod"><SubmitPodPane /></TabPane>
-              </Tabs>
-            );
+            activeKey = 'pod';
           } else {
             // 司机上传 催促回单
-            tabs = (
-              <Tabs defaultActiveKey="log">
-                <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>
-                <TabPane tab={<span><Icon type="exception" />异常</span>} key="exception"><CreateExceptionPane /></TabPane>
-              </Tabs>
-            );
+            activeKey = 'log';
           }
         } else {
           // 承运商上传 催促回单
-          tabs = (
-            <Tabs defaultActiveKey="log">
-              <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>
-              <TabPane tab={<span><Icon type="exception" />异常</span>} key="exception"><CreateExceptionPane /></TabPane>
-            </Tabs>
-          );
+          activeKey = 'log';
         }
       } else if (disp.pod_status === SHIPMENT_POD_STATUS.rejectByClient) {
         // 重新上传
-        tabs = (
-          <Tabs defaultActiveKey="pod">
-            <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>
-            <TabPane tab={<span><Icon type="exception" />异常</span>} key="exception"><CreateExceptionPane /></TabPane>
-            <TabPane tab={<span><Icon type="tags" />回单</span>} key="pod"><SubmitPodPane /></TabPane>
-          </Tabs>
-        );
+        activeKey = 'pod';
       } else {
-        tabs = (
-          <Tabs defaultActiveKey="log">
-            <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>
-            <TabPane tab={<span><Icon type="exception" />异常</span>} key="exception"><CreateExceptionPane /></TabPane>
-          </Tabs>
-        );
+        activeKey = 'log';
       }
     } else if (stage === 'exception') {
-      tabs = (
-        <Tabs defaultActiveKey="exception">
-          <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>
-          <TabPane tab={<span><Icon type="exception" />异常</span>} key="exception"><CreateExceptionPane /></TabPane>
-        </Tabs>
-      );
+      activeKey = 'exception';
+    }
+    this.setState({ activeKey });
+  }
+  msg = descriptor => formatMsg(this.props.intl, descriptor)
+  handleTabChange = (activeKey) => {
+    this.setState({ activeKey });
+  }
+  render() {
+    const { stage, disp, shipmt } = this.props;
+    const { activeKey } = this.state;
+    let tabs = [
+      <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>,
+    ];
+    if (stage === 'acceptance') {
+      tabs = [
+        <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>,
+      ];
+    } else if (stage === 'dispatch') {
+      tabs = [
+        <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>,
+      ];
+    } else if (stage === 'tracking') {
+      if (disp.status === SHIPMENT_TRACK_STATUS.dispatched) {
+        const location = {
+          province: shipmt.consigner_province,
+          city: shipmt.consigner_city,
+          district: shipmt.consigner_district,
+          address: shipmt.consigner_addr,
+        };
+        if (disp.sp_tenant_id === -1) {
+          tabs = [
+            <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>,
+            <TabPane tab={<span><Icon type="environment-o" />提货</span>} key="pickup" >
+              <PickupDeliverPane type="pickup" estDate={shipmt.pickup_est_date} location={location} />
+            </TabPane>,
+            <TabPane tab={<span><Icon type="exception" />异常</span>} key="exception"><CreateExceptionPane /></TabPane>,
+          ];
+        } else if (disp.sp_tenant_id === 0) {
+            // 已分配给车队
+          if (disp.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
+            // 线下司机
+            tabs = [
+              <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>,
+              <TabPane tab={<span><Icon type="environment-o" />提货</span>} key="pickup" >
+                <PickupDeliverPane type="pickup" estDate={shipmt.pickup_est_date} location={location} />
+              </TabPane>,
+              <TabPane tab={<span><Icon type="exception" />异常</span>} key="exception"><CreateExceptionPane /></TabPane>,
+            ];
+          } else {
+            // 司机更新
+            tabs = [
+              <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>,
+              <TabPane tab={<span><Icon type="exception" />异常</span>} key="exception"><CreateExceptionPane /></TabPane>,
+            ];
+          }
+        } else {
+          // 催促提货
+          tabs = [
+            <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>,
+            <TabPane tab={<span><Icon type="exception" />异常</span>} key="exception"><CreateExceptionPane /></TabPane>,
+          ];
+        }
+      } else if (disp.status === SHIPMENT_TRACK_STATUS.intransit) {
+        const location = {
+          province: shipmt.consignee_province,
+          city: shipmt.consignee_city,
+          district: shipmt.consignee_district,
+          address: shipmt.consignee_addr,
+        };
+        if (disp.sp_tenant_id === -1) {
+          // 上报位置
+          tabs = [
+            <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>,
+            <TabPane tab={<span><Icon type="environment-o" />送货</span>} key="deliver" >
+              <PickupDeliverPane type="deliver" estDate={shipmt.deliver_est_date} location={location} />
+            </TabPane>,
+            <TabPane tab={<span><Icon type="environment-o" />追踪</span>} key="location" ><CreatePointPane /></TabPane>,
+            <TabPane tab={<span><Icon type="exception" />异常</span>} key="exception"><CreateExceptionPane /></TabPane>,
+          ];
+        } else if (disp.sp_tenant_id === 0) {
+          if (disp.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
+            // 上报位置
+            tabs = [
+              <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>,
+              <TabPane tab={<span><Icon type="environment-o" />送货</span>} key="deliver" >
+                <PickupDeliverPane type="deliver" estDate={shipmt.deliver_est_date} location={location} />
+              </TabPane>,
+              <TabPane tab={<span><Icon type="environment-o" />追踪</span>} key="location" ><CreatePointPane /></TabPane>,
+              <TabPane tab={<span><Icon type="exception" />异常</span>} key="exception"><CreateExceptionPane /></TabPane>,
+            ];
+          } else {
+            // 司机更新
+            tabs = [
+              <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>,
+              <TabPane tab={<span><Icon type="exception" />异常</span>} key="exception"><CreateExceptionPane /></TabPane>,
+            ];
+          }
+        } else {
+          // 承运商更新
+          tabs = [
+            <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>,
+            <TabPane tab={<span><Icon type="exception" />异常</span>} key="exception"><CreateExceptionPane /></TabPane>,
+          ];
+        }
+      } else {
+        tabs = [
+          <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>,
+          <TabPane tab={<span><Icon type="exception" />异常</span>} key="exception"><CreateExceptionPane /></TabPane>,
+        ];
+      }
+    } else if (stage === 'pod') {
+      if (!disp.pod_status || disp.pod_status === SHIPMENT_POD_STATUS.unsubmit) {
+        if (disp.sp_tenant_id === -1) {
+          tabs = [
+            <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>,
+            <TabPane tab={<span><Icon type="exception" />异常</span>} key="exception"><CreateExceptionPane /></TabPane>,
+            <TabPane tab={<span><Icon type="tags" />回单</span>} key="pod"><SubmitPodPane /></TabPane>,
+          ];
+        } else if (disp.sp_tenant_id === 0) {
+          if (disp.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
+            tabs = [
+              <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>,
+              <TabPane tab={<span><Icon type="exception" />异常</span>} key="exception"><CreateExceptionPane /></TabPane>,
+              <TabPane tab={<span><Icon type="tags" />回单</span>} key="pod"><SubmitPodPane /></TabPane>,
+            ];
+          } else {
+            // 司机上传 催促回单
+            tabs = [
+              <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>,
+              <TabPane tab={<span><Icon type="exception" />异常</span>} key="exception"><CreateExceptionPane /></TabPane>,
+            ];
+          }
+        } else {
+          // 承运商上传 催促回单
+          tabs = [
+            <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>,
+            <TabPane tab={<span><Icon type="exception" />异常</span>} key="exception"><CreateExceptionPane /></TabPane>,
+          ];
+        }
+      } else if (disp.pod_status === SHIPMENT_POD_STATUS.rejectByClient) {
+        // 重新上传
+        tabs = [
+          <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>,
+          <TabPane tab={<span><Icon type="exception" />异常</span>} key="exception"><CreateExceptionPane /></TabPane>,
+          <TabPane tab={<span><Icon type="tags" />回单</span>} key="pod"><SubmitPodPane /></TabPane>,
+        ];
+      } else {
+        tabs = [
+          <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>,
+          <TabPane tab={<span><Icon type="exception" />异常</span>} key="exception"><CreateExceptionPane /></TabPane>,
+        ];
+      }
+    } else if (stage === 'exception') {
+      tabs = [
+        <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>,
+        <TabPane tab={<span><Icon type="exception" />异常</span>} key="exception"><CreateExceptionPane /></TabPane>,
+      ];
     }
     return (
       <div className="activity-wrapper">
         <Card bodyStyle={{ padding: 8 }}>
-          {tabs}
+          <Tabs activeKey={activeKey} onChange={this.handleTabChange}>
+            {tabs}
+          </Tabs>
         </Card>
       </div>
     );

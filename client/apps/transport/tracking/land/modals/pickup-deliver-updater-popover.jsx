@@ -82,9 +82,13 @@ export default class PickupDeliverUpdaterPopover extends React.Component {
     }
   }
   handleDateChange = (date) => {
-    const daysDiff = date.diff(new Date(this.props.estDate), 'days');
-    if (daysDiff <= -3 || daysDiff >= 3) {
-      this.setState({ warningMessage: `所选时间和预计时间${moment(this.props.estDate).format('YYYY.MM.DD')}相差较大， 请注意是否选错日期！` });
+    if (date) {
+      const daysDiff = date.diff(new Date(this.props.estDate), 'days');
+      if (daysDiff <= -3 || daysDiff >= 3) {
+        this.setState({ warningMessage: `所选时间和预计时间${moment(this.props.estDate).format('YYYY.MM.DD')}相差较大， 请注意是否选错日期！` });
+      } else {
+        this.setState({ warningMessage: '' });
+      }
     } else {
       this.setState({ warningMessage: '' });
     }

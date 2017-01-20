@@ -25,6 +25,7 @@ import ShipmentAdvanceModal from './modals/shipment-advance-modal';
 import CreateSpecialCharge from './modals/create-specialCharge';
 import { sendMessage } from 'common/reducers/corps';
 import MyShipmentsSelect from '../../common/myShipmentsSelect';
+import { SHIPMENT_VEHICLE_CONNECT } from 'common/constants';
 
 const formatMsg = format(messages);
 
@@ -62,6 +63,7 @@ function fetchData({ state, dispatch, params, cookie }) {
     filters: state.trackingLandStatus.filters,
     loading: state.trackingLandStatus.loading,
     reportedShipmts: state.trackingLandStatus.locReportedShipments,
+    loaded: state.trackingLandStatus.loaded,
     clients: state.shipment.formRequire.clients,
   }),
   {
@@ -80,6 +82,7 @@ export default class LandStatusList extends React.Component {
     sortOrder: PropTypes.string.isRequired,
    */
     loading: PropTypes.bool.isRequired,
+    loaded: PropTypes.bool.isRequired,
     shipmentlist: PropTypes.object.isRequired,
     reportedShipmts: PropTypes.array.isRequired,
     showVehicleModal: PropTypes.func.isRequired,
@@ -115,10 +118,10 @@ export default class LandStatusList extends React.Component {
     } else if (JSON.stringify(this.props.filters) !== JSON.stringify(nextProps.filters)) {
       newfilters = nextProps.filters;
     }
-    if (!nextProps.loading && newfilters) {
+    if (!nextProps.loading && (!nextProps.loaded || newfilters)) {
       this.props.loadTransitTable(null, {
         tenantId: nextProps.tenantId,
-        filters: JSON.stringify(newfilters),
+        filters: JSON.stringify(newfilters || this.props.filters),
         pageSize: nextProps.shipmentlist.pageSize,
         currentPage: 1,
         /*
@@ -224,6 +227,7 @@ export default class LandStatusList extends React.Component {
   }
   handleShowBatchPickModal = () => {
     const listData = this.props.shipmentlist.data;
+    const diffShipments = [];
     const shipments = this.state.selectedRowKeys.map((item) => {
       let shipment = {};
       for (let i = 0; i < listData.length; i++) {
@@ -241,15 +245,23 @@ export default class LandStatusList extends React.Component {
             estDate: listData[i].pickup_est_date,
             location,
           };
+          if (listData[i].sp_tenant_id > 0 || listData[i].sp_tenant_id === 0 && listData[i].vehicle_connect_type !== SHIPMENT_VEHICLE_CONNECT.disconnected) {
+            diffShipments.push(item);
+          }
           break;
         }
       }
       return shipment;
     });
-    this.props.showDateModal(shipments, 'pickup');
+    if (diffShipments.length === 0) {
+      this.props.showDateModal(shipments, 'pickup');
+    } else {
+      message.warn(`运单 ${diffShipments.join(',')} 不能进行此操作`, 5);
+    }
   }
   handleShowBatchDeliverModal = () => {
     const listData = this.props.shipmentlist.data;
+    const diffShipments = [];
     const shipments = this.state.selectedRowKeys.map((item) => {
       let shipment = {};
       for (let i = 0; i < listData.length; i++) {
@@ -267,12 +279,19 @@ export default class LandStatusList extends React.Component {
             estDate: listData[i].deliver_est_date,
             location,
           };
+          if (listData[i].sp_tenant_id > 0 || listData[i].sp_tenant_id === 0 && listData[i].vehicle_connect_type !== SHIPMENT_VEHICLE_CONNECT.disconnected) {
+            diffShipments.push(item);
+          }
           break;
         }
       }
       return shipment;
     });
-    this.props.showDateModal(shipments, 'deliver');
+    if (diffShipments.length === 0) {
+      this.props.showDateModal(shipments, 'deliver');
+    } else {
+      message.warn(`运单 ${diffShipments.join(',')} 不能进行此操作`, 5);
+    }
   }
   handleShowTransitModal = (row, ev) => {
     ev.preventDefault();

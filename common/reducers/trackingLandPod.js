@@ -41,7 +41,7 @@ const initialState = {
   },
 };
 
-export const { LOAD_PODSHIPMT } = actionTypes;
+export const { LOAD_PODSHIPMT, SAVE_POD_SUCCEED } = actionTypes;
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.LOAD_PODSHIPMT:

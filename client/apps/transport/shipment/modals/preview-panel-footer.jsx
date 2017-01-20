@@ -12,7 +12,7 @@ import { doSend,
          doReturn,
          changeDockStatus,
          withDraw } from 'common/reducers/transportDispatch';
-import { showDateModal, showVehicleModal, showLocModal, showChangeActDateModal }
+import { showVehicleModal, showChangeActDateModal }
 from 'common/reducers/trackingLandStatus';
 import { showAdvanceModal, showSpecialChargeModal } from 'common/reducers/transportBilling';
 import { passAudit, returnAudit } from 'common/reducers/trackingLandPod';
@@ -42,8 +42,6 @@ const MenuItem = Menu.Item;
     doReturn,
     doSend,
     showVehicleModal,
-    showDateModal,
-    showLocModal,
     passAudit,
     returnAudit,
     withDraw,
@@ -71,8 +69,6 @@ export default class Footer extends React.Component {
     doSend: PropTypes.func.isRequired,
     doReturn: PropTypes.func.isRequired,
     showVehicleModal: PropTypes.func.isRequired,
-    showDateModal: PropTypes.func.isRequired,
-    showLocModal: PropTypes.func.isRequired,
     passAudit: PropTypes.func.isRequired,
     returnAudit: PropTypes.func.isRequired,
     withDraw: PropTypes.func.isRequired,
@@ -200,38 +196,6 @@ export default class Footer extends React.Component {
   handleShowVehicleModal = (row) => {
     this.props.showVehicleModal(row.disp_id, row.shipmt_no);
   }
-  handleShowPickModal = (row) => {
-    const location = {
-      province: row.consigner_province,
-      city: row.consigner_city,
-      district: row.consigner_district,
-      address: row.consigner_addr,
-    };
-    const shipments = [{
-      dispId: row.disp_id,
-      shipmtNo: row.shipmt_no,
-      parentNo: row.parent_no,
-      estDate: row.pickup_est_date,
-      location,
-    }];
-    this.props.showDateModal(shipments, 'pickup');
-  }
-  handleShowDeliverModal = (row) => {
-    const location = {
-      province: row.consignee_province,
-      city: row.consignee_city,
-      district: row.consignee_district,
-      address: row.consignee_addr,
-    };
-    const shipments = [{
-      dispId: row.disp_id,
-      shipmtNo: row.shipmt_no,
-      parentNo: row.parent_no,
-      estDate: row.deliver_est_date,
-      location,
-    }];
-    this.props.showDateModal(shipments, 'deliver');
-  }
   handleShowShipmentAdvanceModal = (row) => {
     // todo 取parentDisp sr_tenant_id
     this.props.showAdvanceModal({ visible: true, dispId: row.parent_id, shipmtNo: row.shipmt_no,
@@ -245,13 +209,6 @@ export default class Footer extends React.Component {
   handleShowChangeActDateModal = (row) => {
     this.props.showChangeActDateModal({ visible: true, dispId: row.disp_id, shipmtNo: row.shipmt_no,
       pickupActDate: row.pickup_act_date, deliverActDate: row.deliver_act_date });
-  }
-  handleShowTransitModal = (row) => {
-    this.props.showLocModal({
-      shipmt_no: row.shipmt_no,
-      parent_no: row.parent_no,
-      disp_id: row.disp_id,
-    });
   }
   handleAuditPass = (row) => {
     const { loginName, tenantId, loginId } = this.props;
@@ -428,28 +385,12 @@ export default class Footer extends React.Component {
         }
       } else if (row.status === SHIPMENT_TRACK_STATUS.dispatched) {
         if (row.sp_tenant_id === -1) {
-          buttons = (
-            <PrivilegeCover module="transport" feature="tracking" action="edit">
-              <span>
-                <Button type="ghost" onClick={() => this.handleShowPickModal(row)} >
-                  更新提货
-                </Button>
-              </span>
-            </PrivilegeCover>
-          );
+          buttons = (<span />);
         } else if (row.sp_tenant_id === 0) {
             // 已分配给车队
           if (row.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
               // 线下司机
-            buttons = (
-              <PrivilegeCover module="transport" feature="tracking" action="edit">
-                <span>
-                  <Button type="ghost" onClick={() => this.handleShowPickModal(row)}>
-                    更新提货
-                  </Button>
-                </span>
-              </PrivilegeCover>
-            );
+            buttons = (<span />);
           } else {
             // 司机更新
             buttons = (
@@ -483,12 +424,6 @@ export default class Footer extends React.Component {
           buttons = (
             <PrivilegeCover module="transport" feature="tracking" action="edit">
               <span>
-                <Button type="ghost" onClick={() => this.handleShowDeliverModal(row)} >
-                  更新送货
-                </Button>
-                <Button type="ghost" onClick={() => this.handleShowTransitModal(row)} >
-                  上报位置
-                </Button>
                 <Button type="ghost" onClick={() => this.handleShowShipmentAdvanceModal(row)} >
                   添加垫付费用
                 </Button>
@@ -510,12 +445,6 @@ export default class Footer extends React.Component {
             buttons = (
               <PrivilegeCover module="transport" feature="tracking" action="edit">
                 <span>
-                  <Button type="ghost" onClick={() => this.handleShowDeliverModal(row)} >
-                    更新送货
-                  </Button>
-                  <Button type="ghost" onClick={() => this.handleShowTransitModal(row)} >
-                    上报位置
-                  </Button>
                   <Button type="ghost" onClick={() => this.handleShowShipmentAdvanceModal(row)} >
                     添加垫付费用
                   </Button>

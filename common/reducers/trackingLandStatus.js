@@ -124,6 +124,10 @@ export default function reducer(state = initialState, action) {
       return {
         ...state,
       };
+    case actionTypes.SAVE_DATE_SUCCEED:
+      return {
+        ...state, loading: false, loaded: false,
+      };
     default:
       return state;
   }
