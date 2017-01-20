@@ -129,6 +129,7 @@ export default class SheetBodyPanel extends React.Component {
       });
     }
   }
+
   getColumns() {
     const { ietype, type, readonly, units, countries, currencies, exemptions } = this.props;
     const { editIndex, bodies, editBody, pagination } = this.state;
@@ -138,6 +139,13 @@ export default class SheetBodyPanel extends React.Component {
       dataIndex: 'g_no',
       width: 50,
       fixed: 'left',
+    }, {
+      title: this.msg('emGNo'),
+      width: 50,
+      render: (o, record, index) =>
+        <ColumnInput field="em_g_no" inEdit={index === editIndex} record={record}
+          onChange={this.handleEditChange} edit={editBody}
+        />,
     }];
     if (type === 'bill') {
       columns.push({
@@ -150,10 +158,16 @@ export default class SheetBodyPanel extends React.Component {
       });
     }
     columns.push({
-      title: this.msg('emGNo'),
-      width: 50,
+      title: this.msg('gName'),
+      width: 200,
       render: (o, record, index) =>
-        <ColumnInput field="em_g_no" inEdit={index === editIndex} record={record}
+        <ColumnInput field="g_name" inEdit={index === editIndex} record={record}
+          onChange={this.handleEditChange} edit={editBody}
+        />,
+    }, {
+      title: this.msg('gModel'),
+      render: (o, record, index) =>
+        <ColumnInput field="g_model" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} edit={editBody}
         />,
     }, {
@@ -168,19 +182,6 @@ export default class SheetBodyPanel extends React.Component {
       width: 60,
       render: (o, record, index) =>
         <ColumnInput field="code_s" inEdit={index === editIndex} record={record}
-          onChange={this.handleEditChange} edit={editBody}
-        />,
-    }, {
-      title: this.msg('gName'),
-      width: 200,
-      render: (o, record, index) =>
-        <ColumnInput field="g_name" inEdit={index === editIndex} record={record}
-          onChange={this.handleEditChange} edit={editBody}
-        />,
-    }, {
-      title: this.msg('gModel'),
-      render: (o, record, index) =>
-        <ColumnInput field="g_model" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} edit={editBody}
         />,
     }, {
@@ -212,6 +213,20 @@ export default class SheetBodyPanel extends React.Component {
           onChange={this.handleEditChange} edit={editBody}
         />,
     }, {
+      title: this.msg('qty1'),
+      width: 80,
+      render: (o, record, index) =>
+        <ColumnInput field="qty_1" inEdit={index === editIndex} record={record}
+          onChange={this.handleEditChange} edit={editBody}
+        />,
+    }, {
+      title: this.msg('qty2'),
+      width: 80,
+      render: (o, record, index) =>
+        <ColumnInput field="qty_2" inEdit={index === editIndex} record={record}
+          onChange={this.handleEditChange} edit={editBody}
+        />,
+    }, {
       title: this.msg('unit'),
       width: 80,
       render: (o, record, index) =>
@@ -219,11 +234,18 @@ export default class SheetBodyPanel extends React.Component {
           onChange={this.handleEditChange} options={units} edit={editBody}
         />,
     }, {
-      title: ietype === 'import' ? this.msg('icountry') : this.msg('ecountry'),
-      width: 120,
+      title: this.msg('unit1'),
+      width: 80,
       render: (o, record, index) =>
-        <ColumnSelect field="orig_dest_country" inEdit={index === editIndex} record={record}
-          onChange={this.handleEditChange} options={countries} edit={editBody}
+        <ColumnInput field="unit_1" inEdit={index === editIndex} record={record}
+          onChange={this.handleEditChange} edit={editBody}
+        />,
+    }, {
+      title: this.msg('unit2'),
+      width: 80,
+      render: (o, record, index) =>
+        <ColumnInput field="unit_2" inEdit={index === editIndex} record={record}
+          onChange={this.handleEditChange} edit={editBody}
         />,
     }, {
       title: this.msg('decPrice'),
@@ -238,6 +260,13 @@ export default class SheetBodyPanel extends React.Component {
       render: (o, record, index) =>
         <ColumnInput field="trade_total" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} edit={editBody}
+        />,
+    }, {
+      title: ietype === 'import' ? this.msg('icountry') : this.msg('ecountry'),
+      width: 120,
+      render: (o, record, index) =>
+        <ColumnSelect field="orig_dest_country" inEdit={index === editIndex} record={record}
+          onChange={this.handleEditChange} options={countries} edit={editBody}
         />,
     }, {
       title: this.msg('currency'),
@@ -401,7 +430,8 @@ export default class SheetBodyPanel extends React.Component {
   handleExportData = (ev) => {
     ev.stopPropagation();
   }
-  handleNetWetSummary = () => {
+  handleNetWetSummary = (ev) => {
+    ev.stopPropagation();
     const bodyDatas = this.state.bodies;
     let wtSum = 0;
     bodyDatas.forEach((body) => {
@@ -413,7 +443,8 @@ export default class SheetBodyPanel extends React.Component {
       this.props.updateHeadNetWt(this.props.billSeqNo, wtSum);
     }
   }
-  handleGrossWtDivid = () => {
+  handleGrossWtDivid = (ev) => {
+    ev.stopPropagation();
     const totGrossWt = this.props.billHead.gross_wt;
     const bodyDatas = this.state.bodies;
     let wtSum = 0;
@@ -433,12 +464,8 @@ export default class SheetBodyPanel extends React.Component {
     datas.push({});
     this.setState({ bodies: datas });
   }
-  handleMenuClick = (e) => {
-    if (e.key === 'division') {
-      this.handleGrossWtDivid();
-    } else if (e.key === 'summary') {
-      this.handleNetWetSummary();
-    }
+  handleMenuClick = () => {
+
   }
   render() {
     const columns = this.getColumns();
@@ -462,12 +489,12 @@ export default class SheetBodyPanel extends React.Component {
           </Menu.Item>
           }
           <Menu.Item key="download"><Icon type="download" /> 下载模板</Menu.Item>
-          <Menu.Item key="division"><Icon type="arrows-alt" /> 毛重分摊</Menu.Item>
-          <Menu.Item key="summary"><Icon type="shrink" /> 净重汇总</Menu.Item>
+          <Menu.Item key="export"><Icon type="export" /> 导出数据</Menu.Item>
         </Menu>);
       billBodyToolbar = (
         <div className="toolbar-right">
-          <Button type="ghost" icon="export" onClick={this.handleExportData}>导出数据</Button>
+          <Button icon="arrows-alt" onClick={this.handleGrossWtDivid}>毛重分摊</Button>
+          <Button icon="shrink" onClick={this.handleNetWetSummary}>净重汇总</Button>
           <span />
           <Dropdown.Button onClick={this.handleButtonClick} overlay={menu} type="primary">
             <Icon type="plus-circle-o" /> {formatGlobalMsg(this.props.intl, 'add')}

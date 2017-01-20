@@ -325,6 +325,22 @@ export default defineMessages({
     id: 'cms.forms.table.quantity',
     defaultMessage: '申报数量',
   },
+  qty1: {
+    id: 'cms.forms.table.qty1',
+    defaultMessage: '法一数量',
+  },
+  qty2: {
+    id: 'cms.forms.table.qty2',
+    defaultMessage: '法二数量',
+  },
+  unit1: {
+    id: 'cms.forms.table.unit1',
+    defaultMessage: '法一单位',
+  },
+  unit2: {
+    id: 'cms.forms.table.unit2',
+    defaultMessage: '法二单位',
+  },
   unit: {
     id: 'cms.forms.table.unit',
     defaultMessage: '成交单位',
@@ -339,11 +355,11 @@ export default defineMessages({
   },
   decPrice: {
     id: 'cms.forms.table.dec.price',
-    defaultMessage: '单价',
+    defaultMessage: '申报单价',
   },
   decTotal: {
     id: 'cms.forms.table.dec.total',
-    defaultMessage: '总价',
+    defaultMessage: '申报总价',
   },
   currency: {
     id: 'cms.forms.table.currency',
