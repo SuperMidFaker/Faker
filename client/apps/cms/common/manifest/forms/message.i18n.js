@@ -271,7 +271,7 @@ export default defineMessages({
   },
   packType: {
     id: 'cms.forms.form.pack.type',
-    defaultMessage: '包装',
+    defaultMessage: '包装种类',
   },
   grosswt: {
     id: 'cms.forms.form.gross.wt',
