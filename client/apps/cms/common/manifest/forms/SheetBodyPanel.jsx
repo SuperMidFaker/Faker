@@ -3,11 +3,13 @@ import { connect } from 'react-redux';
 import { Button, Collapse, Dropdown, Menu, Table, Icon, Input, Select, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import RowUpdater from './rowUpdater';
-import { updateHeadNetWt } from 'common/reducers/cmsManifest';
+import { updateHeadNetWt, loadBillBody } from 'common/reducers/cmsManifest';
 import { format } from 'client/common/i18n/helpers';
 import ExcelUpload from 'client/components/excelUploader';
 import globalMessage from 'client/common/root.i18n';
 import messages from './message.i18n';
+import { createFilename } from 'client/util/dataTransform';
+
 const formatMsg = format(messages);
 const formatGlobalMsg = format(globalMessage);
 const Panel = Collapse.Panel;
@@ -81,7 +83,7 @@ ColumnSelect.proptypes = {
     loginId: state.account.loginId,
     billHead: state.cmsManifest.billHead,
   }),
-  { updateHeadNetWt }
+  { updateHeadNetWt, loadBillBody }
 )
 export default class SheetBodyPanel extends React.Component {
   static propTypes = {
@@ -237,15 +239,15 @@ export default class SheetBodyPanel extends React.Component {
       title: this.msg('unit1'),
       width: 80,
       render: (o, record, index) =>
-        <ColumnInput field="unit_1" inEdit={index === editIndex} record={record}
-          onChange={this.handleEditChange} edit={editBody}
+        <ColumnSelect field="unit_1" inEdit={index === editIndex} record={record}
+          onChange={this.handleEditChange} options={units} edit={editBody}
         />,
     }, {
       title: this.msg('unit2'),
       width: 80,
       render: (o, record, index) =>
-        <ColumnInput field="unit_2" inEdit={index === editIndex} record={record}
-          onChange={this.handleEditChange} edit={editBody}
+        <ColumnSelect field="unit_2" inEdit={index === editIndex} record={record}
+          onChange={this.handleEditChange} options={units} edit={editBody}
         />,
     }, {
       title: this.msg('decPrice'),
@@ -464,8 +466,15 @@ export default class SheetBodyPanel extends React.Component {
     datas.push({});
     this.setState({ bodies: datas });
   }
-  handleMenuClick = () => {
-
+  handleMenuClick = (e) => {
+    if (e.key === 'download') {
+      window.open(`${API_ROOTS.default}v1/cms/manifest/billbody/model/download/${createFilename('billbodyModel')}.xlsx`);
+    } else if (e.key === 'export') {
+      window.open(`${API_ROOTS.default}v1/cms/manifest/billbody/export/${createFilename('billbodyExport')}.xlsx?billSeqNo=${this.props.billSeqNo}`);
+    }
+  }
+  handleUploaded = () => {
+    this.props.loadBillBody(this.props.billSeqNo);
   }
   render() {
     const columns = this.getColumns();
@@ -478,7 +487,7 @@ export default class SheetBodyPanel extends React.Component {
             <ExcelUpload endpoint={`${API_ROOTS.default}v1/cms/manifest/billbody/import`}
               formData={{
                 data: JSON.stringify({
-                  bill_seq_no: this.billSeqNo,
+                  bill_seq_no: this.props.billSeqNo,
                   tenant_id: this.props.tenantId,
                   creater_login_id: this.props.loginId,
                 }),
