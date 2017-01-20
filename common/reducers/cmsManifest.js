@@ -4,6 +4,7 @@ import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/cms/manifest/', [
   'LOAD_BILL', 'LOAD_BILL_SUCCEED', 'LOAD_BILL_FAIL',
+  'LOAD_BILL_BODY', 'LOAD_BILL_BODY_SUCCEED', 'LOAD_BILL_BODY_FAIL',
   'LOAD_ENTRY', 'LOAD_ENTRY_SUCCEED', 'LOAD_ENTRY_FAIL',
   'LOAD_PARAMS', 'LOAD_PARAMS_SUCCEED', 'LOAD_PARAMS_FAIL',
   'LOAD_SEARCHPARAM', 'LOAD_SEARCHPARAM_SUCCEED', 'LOAD_SEARCHPARAM_FAIL',
@@ -66,6 +67,8 @@ export default function reducer(state = initialState, action) {
         billBodies: action.result.data.bodies, params: { ...state.params, ports },
       };
     }
+    case actionTypes.LOAD_BILL_BODY_SUCCEED:
+      return { ...state, billBodies: action.result.data };
     case actionTypes.UPDATE_HEAD_NETWT_SUCCEED:
       return { ...state, billHead: action.result.data };
     case actionTypes.LOAD_ENTRY_SUCCEED:
@@ -122,6 +125,21 @@ export function loadBill(billSeqNo) {
         actionTypes.LOAD_BILL_FAIL,
       ],
       endpoint: 'v1/cms/manifest/bill',
+      method: 'get',
+      params: { billSeqNo },
+    },
+  };
+}
+
+export function loadBillBody(billSeqNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_BILL_BODY,
+        actionTypes.LOAD_BILL_BODY_SUCCEED,
+        actionTypes.LOAD_BILL_BODY_FAIL,
+      ],
+      endpoint: 'v1/cms/manifest/bill/body',
       method: 'get',
       params: { billSeqNo },
     },

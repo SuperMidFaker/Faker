@@ -325,6 +325,7 @@ export function TradeRemission(props) {
     getFieldDecorator,
     searchKeyFn: opt => opt.value,
   };
+  const declWay = formData.decl_way_code !== '0102' && formData.decl_way_code !== '0103';
   const remissionProps = {
     outercol: 24,
     col: 8,
@@ -333,6 +334,7 @@ export function TradeRemission(props) {
       value: rm.rm_mode,
       text: `${rm.rm_mode} | ${rm.rm_spec}`,
     })),
+    rules: declWay ? [{ required: true }] : [{ required: false }],
     label: msg('rmModeName'),
     disabled,
     formData,
@@ -542,11 +544,19 @@ UsageTrade.propTypes = {
 
 // 费用
 function FeeFormItem(props) {
-  const { feeField, currencyField, markField, label, disabled, formData, getFieldDecorator, formRequire } = props;
+  const { feeField, currencyField, markField, label, disabled, formData,
+    getFieldDecorator, formRequire, require, feeCurrReq, insurCurrReq } = props;
+  let currReq = false;
+  if (currencyField === 'fee_curr') {
+    currReq = feeCurrReq;
+  } else if (currencyField === 'insur_curr') {
+    currReq = insurCurrReq;
+  }
   const feeProps = {
     field: feeField,
     disabled,
     formData,
+    rules: require ? [{ required: true }] : [{ required: false }],
     getFieldDecorator,
   };
   const currencyProps = {
@@ -557,12 +567,14 @@ function FeeFormItem(props) {
     })),
     disabled,
     formData,
+    rules: currReq ? [{ required: true }] : [{ required: false }],
     getFieldDecorator,
   };
   const markProps = {
     field: markField,
     disabled,
     formData,
+    rules: require ? [{ required: true }] : [{ required: false }],
     getFieldDecorator,
     options: CMS_FEE_UNIT,
   };
@@ -573,10 +585,10 @@ function FeeFormItem(props) {
           <FormLocalSearchSelect {...currencyProps} placeholder="币制" style={{ marginBottom: 0 }} />
         </Col>
         <Col sm={24} md={8}>
-          <FormInput {...feeProps} style={{ marginBottom: 0 }} />
+          <FormInput {...feeProps} />
         </Col>
         <Col sm={24} md={8}>
-          <FormLocalSearchSelect {...markProps} style={{ marginBottom: 0 }} />
+          <FormLocalSearchSelect {...markProps} />
         </Col>
       </Row>
     </FormItem>
@@ -596,21 +608,25 @@ FeeFormItem.propTypes = {
 
 export function Fee(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
+  const { getFieldValue } = props;
+  const require = getFieldValue('trxn_mode') === '3' || getFieldValue('trxn_mode') === '4';
+  const feeCurrReq = getFieldValue('fee_mark') !== '1' && require;
+  const insurCurrReq = getFieldValue('insur_mark') !== '1' && require;
   return (
     <Col md={24} lg={15}>
       <Col sm={24} md={8}>
         <FeeFormItem {...props} label={msg('freightCharge')} feeField="fee_rate"
-          currencyField="fee_curr" markField="fee_mark"
+          currencyField="fee_curr" markField="fee_mark" require={require} feeCurrReq={feeCurrReq}
         />
       </Col>
       <Col sm={24} md={8}>
         <FeeFormItem {...props} label={msg('insurance')} feeField="insur_rate"
-          currencyField="insur_curr" markField="insur_mark"
+          currencyField="insur_curr" markField="insur_mark" require={require} insurCurrReq={insurCurrReq}
         />
       </Col>
       <Col sm={24} md={8}>
         <FeeFormItem {...props} label={msg('sundry')} feeField="other_rate"
-          currencyField="other_curr" markField="other_mark"
+          currencyField="other_curr" markField="other_mark" require={false}
         />
       </Col>
     </Col>
@@ -621,6 +637,7 @@ Fee.propTypes = {
   intl: intlShape.isRequired,
   disabled: PropTypes.bool,
   getFieldDecorator: PropTypes.func.isRequired,
+  getFieldValue: PropTypes.func.isRequired,
   formData: PropTypes.object.isRequired,
   formRequire: PropTypes.object.isRequired,
 };
