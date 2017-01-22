@@ -58,7 +58,7 @@ export default class Clearance extends React.Component {
           path: '/clearance/import/customs',
           text: formatMsg(intl, 'importCustomsDecl'),
         }, {
-          key: 'cms-1-3',
+          key: 'cms-1-2',
           group: formatMsg(intl, 'importOperation'),
           path: '/clearance/import/ciq',
           text: formatMsg(intl, 'importCiqDecl'),
@@ -83,7 +83,7 @@ export default class Clearance extends React.Component {
           path: '/clearance/export/customs',
           text: formatMsg(intl, 'exportCustomsDecl'),
         }, {
-          key: 'cms-2-3',
+          key: 'cms-2-2',
           group: formatMsg(intl, 'exportOperation'),
           path: '/clearance/export/ciq',
           text: formatMsg(intl, 'exportCiqDecl'),
@@ -93,27 +93,27 @@ export default class Clearance extends React.Component {
     if (hasPermission(privileges, { module: 'clearance', feature: 'billing' })) {
       linkMenus.push({
         single: false,
-        key: 'cms-4',
+        key: 'cms-3',
         path: '/clearance/billing',
         icon: 'zmdi zmdi-money-box',
         text: formatMsg(intl, 'billing'),
         sublinks: [{
-          key: 'tms-4-0',
+          key: 'cms-3-0',
           group: formatMsg(intl, 'groupBilling'),
           path: '/clearance/billing/expense',
           text: formatMsg(intl, 'expense'),
         }, {
-          key: 'tms-4-2',
+          key: 'cms-3-1',
           group: formatMsg(intl, 'groupInvoice'),
           path: '/clearance/billing/receivable',
           text: formatMsg(intl, 'billingReceivable'),
         }, {
-          key: 'tms-4-3',
+          key: 'cms-3-2',
           group: formatMsg(intl, 'groupInvoice'),
           path: '/clearance/billing/payable',
           text: formatMsg(intl, 'billingPayable'),
         }, {
-          key: 'cms-4-4',
+          key: 'cms-3-3',
           group: formatMsg(intl, 'groupQuote'),
           path: '/clearance/billing/quote',
           text: formatMsg(intl, 'quote'),
@@ -123,16 +123,15 @@ export default class Clearance extends React.Component {
     if (hasPermission(privileges, { module: 'clearance', feature: 'resources' })) {
       linkMenus.push({
         single: false,
-        key: 'cms-6',
+        key: 'cms-4',
         icon: 'zmdi zmdi-library',
         text: formatMsg(intl, 'resources'),
         sublinks: [{
-          key: 'cms-6-0',
+          key: 'cms-4-0',
           path: '/clearance/resources/broker',
           text: formatMsg(intl, 'providers'),
         }, {
-          key: 'cms-6-1',
-          group: formatMsg(intl, 'tradeItem'),
+          key: 'cms-4-1',
           path: '/clearance/resources/tradeitem',
           text: formatMsg(intl, 'tradeItem'),
         }],
@@ -141,7 +140,7 @@ export default class Clearance extends React.Component {
     if (hasPermission(privileges, { module: 'clearance', feature: 'settings' })) {
       linkMenus.push({
         single: true,
-        key: 'cms-7',
+        key: 'cms-5',
         path: '/clearance/settings',
         icon: 'zmdi zmdi-settings',
         text: formatMsg(intl, 'settings'),

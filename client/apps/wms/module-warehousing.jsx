@@ -8,11 +8,11 @@ import { format } from 'client/common/i18n/helpers';
 const formatMsg = format(messages);
 
 @injectIntl
-export default class ModuleCRM extends React.Component {
+export default class ModuleWarehousing extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     location: locationShape.isRequired,
-    children: PropTypes.node,
+    children: PropTypes.object.isRequired,
   };
   state = {
     linkMenus: [],
@@ -22,52 +22,29 @@ export default class ModuleCRM extends React.Component {
     const linkMenus = [];
     linkMenus.push({
       single: true,
-      key: 'crm-1',
-      path: '/customer/dashboard',
-      icon: 'icon-fontello-gauge',
+      key: 'wms-0',
+      path: '/warehousing/dashboard',
+      icon: 'icon-fontello-gauge-1',
       text: formatMsg(intl, 'dashboard'),
     });
     linkMenus.push({
       single: true,
-      key: 'crm-2',
-      path: '/customer/orders',
+      key: 'wms-1',
+      path: '/warehousing/inbound',
       icon: 'icon-fontello-doc-text',
-      text: formatMsg(intl, 'orders'),
-    });
-    linkMenus.push({
-      single: false,
-      key: 'crm-3',
-      path: '/customer/billing',
-      icon: 'zmdi zmdi-money-box',
-      text: formatMsg(intl, 'billing'),
-      sublinks: [{
-        key: 'crm-3-0',
-        path: '/customer/billing/fees',
-        text: '费用管理',
-      }, {
-        key: 'crm-3-1',
-        path: '/customer/billing/list',
-        text: '账单管理',
-      }],
+      text: formatMsg(intl, 'inbound'),
     });
     linkMenus.push({
       single: true,
-      key: 'crm-4',
-      path: '/customer/customers',
-      icon: 'zmdi zmdi-accounts-list',
-      text: formatMsg(intl, 'customers'),
+      key: 'wms-2',
+      path: '/warehousing/outbound',
+      icon: 'zmdi zmdi-globe',
+      text: formatMsg(intl, 'outbound'),
     });
     linkMenus.push({
       single: true,
-      key: 'crm-5',
-      path: '/customer/reports',
-      icon: 'zmdi zmdi-chart',
-      text: formatMsg(intl, 'reports'),
-    });
-    linkMenus.push({
-      single: true,
-      key: 'crm-6',
-      path: '/customer/settings',
+      key: 'wms-7',
+      path: '/warehousing/settings',
       icon: 'zmdi zmdi-settings',
       text: formatMsg(intl, 'settings'),
     });

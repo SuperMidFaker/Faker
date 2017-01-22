@@ -1,5 +1,5 @@
 {
-    "cms.billing": "账单",
+  "cms.billing": "账单",
   "cms.billing.receivable": "应收",
   "cms.billing.payable": "应付",
   "cms.billing.createBilling": "创建账单",
@@ -481,7 +481,7 @@
   "personnel.edit.phone.placeholder": "used as login account",
   "personnel.edit.email.placeholder": "can be used as login account after binding",
   "personnel.edit.nonTenant": "No tenant is selected,unable to edit",
-  "container.slogan": "Logistics Cloud Platform For Global Trade",
+  "container.slogan": "Cross-boarder Supply Chain Cloud Services Platform",
   "container.applications": "Apps",
   "container.corp": "Admin",
   "container.setting": "Setting",
@@ -571,7 +571,6 @@
   "reusable.checker.phone.required": "Phone is required.",
   "reusable.checker.invalid.phone": "Invalid phone.",
   "cms.delegation.readall": "All",
-  "cms.delegation.delg.no": "Delegate Num",
   "scv.shipment.inbound.shipmentno": "Shipment No.",
   "scv.shipment.inbound.orderno": "Order No.",
   "scv.shipment.inbound.origin.country": "Origin Cntry",

@@ -238,6 +238,14 @@ const MODULE_TRANSPORT = {
   ],
 };
 
+const MODULE_WAREHOUSING = {
+  id: 'warehousing',
+  text: 'moduleWarehousing',
+  defaultText: '仓储管理',
+  features: [
+  ],
+};
+
 const MODULE_SCV = {
   id: 'scv',
   text: 'moduleSCV',
@@ -355,6 +363,7 @@ const appModules = [
   MODULE_CUSTOMER,
   MODULE_CLEARANCE,
   MODULE_TRANSPORT,
+  MODULE_WAREHOUSING,
   MODULE_SCV,
 ];
 
