@@ -456,13 +456,18 @@ export default class SheetBodyPanel extends React.Component {
       }
     });
     const datas = [];
-    for (let i = 0; i < bodyDatas.length - 1; i++) {
+    let wts = 0;
+    for (let i = 0; i < bodyDatas.length - 2; i++) {
       const body = bodyDatas[i];
       const grosswt = (totGrossWt * body.wet_wt / wtSum).toFixed(3);
+      wts += Number(grosswt);
       const data = { ...body, gross_wt: grosswt };
       datas.push(data);
       this.props.onEdit(data);
     }
+    const lastwt = totGrossWt - wts;
+    const lastBody = bodyDatas[bodyDatas.length - 2];
+    datas.push({ ...lastBody, gross_wt: lastwt });
     datas.push({});
     this.setState({ bodies: datas });
   }
