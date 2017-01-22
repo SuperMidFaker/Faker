@@ -548,9 +548,9 @@ function FeeFormItem(props) {
     getFieldDecorator, formRequire, require, feeCurrReq, insurCurrReq } = props;
   let currReq = false;
   if (currencyField === 'fee_curr') {
-    currReq = feeCurrReq;
+    currReq = feeCurrReq && require;
   } else if (currencyField === 'insur_curr') {
-    currReq = insurCurrReq;
+    currReq = insurCurrReq && require;
   }
   const feeProps = {
     field: feeField,
@@ -609,19 +609,20 @@ FeeFormItem.propTypes = {
 export function Fee(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const { getFieldValue } = props;
-  const require = getFieldValue('trxn_mode') === '3' || getFieldValue('trxn_mode') === '4';
-  const feeCurrReq = getFieldValue('fee_mark') !== '1' && require;
-  const insurCurrReq = getFieldValue('insur_mark') !== '1' && require;
+  const fobRequire = getFieldValue('trxn_mode') === '3';
+  const ciRequire = getFieldValue('trxn_mode') === '4';
+  const feeCurrReq = getFieldValue('fee_mark') !== '1';
+  const insurCurrReq = getFieldValue('insur_mark') !== '1';
   return (
     <Col md={24} lg={15}>
       <Col sm={24} md={8}>
         <FeeFormItem {...props} label={msg('freightCharge')} feeField="fee_rate"
-          currencyField="fee_curr" markField="fee_mark" require={require} feeCurrReq={feeCurrReq}
+          currencyField="fee_curr" markField="fee_mark" require={fobRequire || ciRequire} feeCurrReq={feeCurrReq}
         />
       </Col>
       <Col sm={24} md={8}>
         <FeeFormItem {...props} label={msg('insurance')} feeField="insur_rate"
-          currencyField="insur_curr" markField="insur_mark" require={require} insurCurrReq={insurCurrReq}
+          currencyField="insur_curr" markField="insur_mark" require={fobRequire} insurCurrReq={insurCurrReq}
         />
       </Col>
       <Col sm={24} md={8}>
