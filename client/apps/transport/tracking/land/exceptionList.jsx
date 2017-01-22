@@ -12,6 +12,7 @@ import ShipmtnoColumn from '../../common/shipmtnoColumn';
 import ExceptionListPopover from './modals/exception-list-popover';
 import { renderConsignLoc } from '../../common/consignLocation';
 import MyShipmentsSelect from '../../common/myShipmentsSelect';
+import TrimSpan from 'client/components/trimSpan';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 const formatMsg = format(messages);
@@ -236,14 +237,14 @@ export default class LandStatusList extends React.Component {
           return (
             <span>
               <i className="zmdi zmdi-circle mdc-text-green" />
-              {record.sp_name}
+              <TrimSpan text={record.sp_name} maxLen={10} />
             </span>
           );
         } else if (record.sp_tenant_id === -1) {
           return (
             <span>
               <i className="zmdi zmdi-circle mdc-text-grey" />
-              {record.sp_name}
+              <TrimSpan text={record.sp_name} maxLen={10} />
             </span>
           );
         } else {
