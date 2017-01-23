@@ -315,6 +315,7 @@ export const CMS_QUOTE_PERMISSION = {
 };
 
 export const CMS_FEE_UNIT = [
+  { value: 0, text: '[空]' },
   { value: 1, text: '率' },
   { value: 2, text: '单价' },
   { value: 3, text: '总价' },

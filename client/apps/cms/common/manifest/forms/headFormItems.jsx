@@ -552,6 +552,7 @@ function FeeFormItem(props) {
   } else if (currencyField === 'insur_curr') {
     currReq = insurCurrReq && require;
   }
+  formRequire.currencies.unshift({ curr_code: -1, curr_name: '[空]' });
   const feeProps = {
     field: feeField,
     disabled,

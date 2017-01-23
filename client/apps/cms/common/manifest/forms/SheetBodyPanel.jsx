@@ -3,12 +3,13 @@ import { connect } from 'react-redux';
 import { Button, Collapse, Dropdown, Menu, Table, Icon, Input, Select, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import RowUpdater from './rowUpdater';
-import { updateHeadNetWt, loadBillBody } from 'common/reducers/cmsManifest';
+import { updateHeadNetWt, loadBillBody, openAmountModel } from 'common/reducers/cmsManifest';
 import { format } from 'client/common/i18n/helpers';
 import ExcelUpload from 'client/components/excelUploader';
 import globalMessage from 'client/common/root.i18n';
 import messages from './message.i18n';
 import { createFilename } from 'client/util/dataTransform';
+import AmountModel from '../modals/amountDivid';
 
 const formatMsg = format(messages);
 const formatGlobalMsg = format(globalMessage);
@@ -83,7 +84,7 @@ ColumnSelect.proptypes = {
     loginId: state.account.loginId,
     billHead: state.cmsManifest.billHead,
   }),
-  { updateHeadNetWt, loadBillBody }
+  { updateHeadNetWt, loadBillBody, openAmountModel }
 )
 export default class SheetBodyPanel extends React.Component {
   static propTypes = {
@@ -468,8 +469,19 @@ export default class SheetBodyPanel extends React.Component {
     const lastwt = totGrossWt - wts;
     const lastBody = bodyDatas[bodyDatas.length - 2];
     datas.push({ ...lastBody, gross_wt: lastwt });
+    this.props.onEdit({ ...lastBody, gross_wt: lastwt });
     datas.push({});
     this.setState({ bodies: datas });
+  }
+  handleTotalPriceDivid = (ev) => {
+    ev.stopPropagation();
+    this.props.loadBillBody(this.props.billSeqNo).then((result) => {
+      if (result.error) {
+        message.error(result.error.message);
+      } else {
+        this.props.openAmountModel();
+      }
+    });
   }
   handleMenuClick = (e) => {
     if (e.key === 'download') {
@@ -507,21 +519,25 @@ export default class SheetBodyPanel extends React.Component {
         </Menu>);
       billBodyToolbar = (
         <div className="toolbar-right">
+          <Button icon="pie-chart" onClick={this.handleTotalPriceDivid}>金额平摊</Button>
           <Button icon="arrows-alt" onClick={this.handleGrossWtDivid}>毛重分摊</Button>
           <Button icon="shrink" onClick={this.handleNetWetSummary}>净重汇总</Button>
           <span />
-          <Dropdown.Button onClick={this.handleButtonClick} overlay={menu} type="primary">
-            <Icon type="plus-circle-o" /> {formatGlobalMsg(this.props.intl, 'add')}
-          </Dropdown.Button>
+          <Dropdown overlay={menu} type="primary">
+            <Button type="primary" onClick={this.handleButtonClick}>
+              {formatGlobalMsg(this.props.intl, 'add')} <Icon type="down" />
+            </Button>
+          </Dropdown>
         </div>);
     }
     return (
       <Collapse defaultActiveKey={['body']}>
         <Panel header={billBodyToolbar} key="body">
           <Table rowKey="id" columns={columns} dataSource={this.state.bodies}
-            size="middle" scroll={{ x: 2600, y: 415 }} pagination={this.state.pagination} bordered
+            size="middle" scroll={{ x: 2600, y: 415 }} pagination={this.state.pagination}
           />
         </Panel>
+        <AmountModel />
       </Collapse>);
   }
 }
