@@ -1,10 +1,10 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Breadcrumb, Button, Dropdown, Layout, Menu, Icon, Form, message } from 'antd';
+import { Breadcrumb, Button, Dropdown, Layout, Menu, Icon, Form, message, Popconfirm } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
-import { addNewBillBody, delBillBody, editBillBody, saveBillHead, openMergeSplitModal } from 'common/reducers/cmsManifest';
+import { addNewBillBody, delBillBody, editBillBody, saveBillHead, openMergeSplitModal, billDelete } from 'common/reducers/cmsManifest';
 import SheetHeadPanel from './forms/SheetHeadPanel';
 import SheetBodyPanel from './forms/SheetBodyPanel';
 import SheetExtraPanel from './forms/SheetExtraPanel';
@@ -24,7 +24,7 @@ const { Header, Content, Sider } = Layout;
     loginId: state.account.loginId,
     tenantId: state.account.tenantId,
   }),
-  { addNewBillBody, delBillBody, editBillBody, saveBillHead, openMergeSplitModal }
+  { addNewBillBody, delBillBody, editBillBody, saveBillHead, openMergeSplitModal, billDelete }
 )
 @connectNav({
   depth: 3,
@@ -52,11 +52,6 @@ export default class ManifestEditor extends React.Component {
     collapsed: true,
   }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
-  lockMenu = (
-    <Menu>
-      <Menu.Item key="lock"><Icon type="lock" /> 锁定</Menu.Item>
-      <Menu.Item key="delete"><Icon type="delete" /> 删除</Menu.Item>
-    </Menu>)
   toggle = () => {
     this.setState({
       collapsed: !this.state.collapsed,
@@ -91,6 +86,27 @@ export default class ManifestEditor extends React.Component {
       }
     });
   }
+  handleBillDelete = () => {
+    this.props.billDelete(this.props.billHead.bill_seq_no).then(
+      (result) => {
+        if (result.error) {
+          message.error(result.error.message);
+        } else {
+          message.info('已删除');
+        }
+      }
+    );
+  }
+
+  lockMenu = (
+    <Menu>
+      <Menu.Item key="lock"><Icon type="lock" /> 锁定</Menu.Item>
+      <Menu.Item key="delete">
+        <Popconfirm title="确定删除清单?" onConfirm={this.handleBillDelete}>
+          <a> <Icon type="delete" /> 删除</a>
+        </Popconfirm>
+      </Menu.Item>
+    </Menu>)
   render() {
     const { ietype, readonly, form, billHead, billBodies, billMeta, ...actions } = this.props;
     const declEntryMenu = (<Menu onClick={this.handleEntryVisit}>

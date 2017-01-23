@@ -15,6 +15,8 @@ const actionTypes = createActionTypes('@@welogix/cms/manifest/', [
   'OPEN_MS_MODAL', 'CLOSE_MS_MODAL',
   'SUBMIT_MERGESPLIT', 'SUBMIT_MERGESPLIT_SUCCEED', 'SUBMIT_MERGESPLIT_FAIL',
   'UPDATE_HEAD_NETWT', 'UPDATE_HEAD_NETWT_SUCCEED', 'UPDATE_HEAD_NETWT_FAIL',
+  'DELETE_BILL', 'DELETE_BILL_SUCCEED', 'DELETE_BILL_FAIL',
+  'OPEN_AMOUNT_MODEL', 'CLOSE_AMOUNT_MODEL',
 ]);
 
 const initialState = {
@@ -46,6 +48,7 @@ const initialState = {
     units: [],
   },
   visibleMSModal: false,
+  visibleAmtModal: false,
 };
 
 export default function reducer(state = initialState, action) {
@@ -67,6 +70,8 @@ export default function reducer(state = initialState, action) {
         billBodies: action.result.data.bodies, params: { ...state.params, ports },
       };
     }
+    case actionTypes.DELETE_BILL_SUCCEED:
+      return { ...state, billBodies: [], billMeta: { ...state.billMeta, entries: [] } };
     case actionTypes.LOAD_BILL_BODY_SUCCEED:
       return { ...state, billBodies: action.result.data };
     case actionTypes.UPDATE_HEAD_NETWT_SUCCEED:
@@ -109,6 +114,10 @@ export default function reducer(state = initialState, action) {
       return { ...state, visibleMSModal: true };
     case actionTypes.CLOSE_MS_MODAL:
       return { ...state, visibleMSModal: false };
+    case actionTypes.OPEN_AMOUNT_MODEL:
+      return { ...state, visibleAmtModal: true };
+    case actionTypes.CLOSE_AMOUNT_MODEL:
+      return { ...state, visibleAmtModal: false };
     case actionTypes.SUBMIT_MERGESPLIT_SUCCEED:
       return { ...state, billMeta: { ...state.billMeta, entries: action.result.data } };
     default:
@@ -263,6 +272,18 @@ export function closeMergeSplitModal() {
   };
 }
 
+export function openAmountModel() {
+  return {
+    type: actionTypes.OPEN_AMOUNT_MODEL,
+  };
+}
+
+export function closeAmountModel() {
+  return {
+    type: actionTypes.CLOSE_AMOUNT_MODEL,
+  };
+}
+
 export function submitBillMegeSplit({ billNo, mergeOpt, splitOpt, sortOpt }) {
   return {
     [CLIENT_API]: {
@@ -292,3 +313,19 @@ export function updateHeadNetWt(billSeqNo, netWt) {
     },
   };
 }
+
+export function billDelete(billSeqNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DELETE_BILL,
+        actionTypes.DELETE_BILL_SUCCEED,
+        actionTypes.DELETE_BILL_FAIL,
+      ],
+      endpoint: 'v1/cms/declare/bill/delete',
+      method: 'post',
+      data: { billSeqNo },
+    },
+  };
+}
+
