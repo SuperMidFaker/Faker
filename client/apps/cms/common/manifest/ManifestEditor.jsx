@@ -159,8 +159,6 @@ export default class ManifestEditor extends React.Component {
           </Layout>
           <Sider
             trigger={null}
-            defaultCollapsed
-            collapsible
             collapsed={this.state.collapsed}
             width={320}
             collapsedWidth={0}

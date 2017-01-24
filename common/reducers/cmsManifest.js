@@ -16,7 +16,9 @@ const actionTypes = createActionTypes('@@welogix/cms/manifest/', [
   'SUBMIT_MERGESPLIT', 'SUBMIT_MERGESPLIT_SUCCEED', 'SUBMIT_MERGESPLIT_FAIL',
   'UPDATE_HEAD_NETWT', 'UPDATE_HEAD_NETWT_SUCCEED', 'UPDATE_HEAD_NETWT_FAIL',
   'DELETE_BILL', 'DELETE_BILL_SUCCEED', 'DELETE_BILL_FAIL',
-  'OPEN_AMOUNT_MODEL', 'CLOSE_AMOUNT_MODEL',
+  'OPEN_AMOUNT_MODEL', 'CLOSE_AMOUNT_MODEL', 'SET_PANE_TABKEY',
+  'LOAD_CERT_MARKS', 'LOAD_CERT_MARKS_SUCCEED', 'LOAD_CERT_MARKS_FAIL',
+  'SAVE_CERT_MARKS', 'SAVE_CERT_MARKS_SUCCEED', 'SAVE_CERT_MARKS_FAIL',
 ]);
 
 const initialState = {
@@ -49,6 +51,9 @@ const initialState = {
   },
   visibleMSModal: false,
   visibleAmtModal: false,
+  tabKey: 'certificate',
+  certMarks: [],
+  certParams: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -120,9 +125,50 @@ export default function reducer(state = initialState, action) {
       return { ...state, visibleAmtModal: false };
     case actionTypes.SUBMIT_MERGESPLIT_SUCCEED:
       return { ...state, billMeta: { ...state.billMeta, entries: action.result.data } };
+    case actionTypes.SET_PANE_TABKEY:
+      return { ...state, tabKey: action.data };
+    case actionTypes.LOAD_CERT_MARKS_SUCCEED:
+      return { ...state, certMarks: action.result.data.certMarks, certParams: action.result.data.certParams };
     default:
       return state;
   }
+}
+
+export function loadCertMarks(billSeqNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_CERT_MARKS,
+        actionTypes.LOAD_CERT_MARKS_SUCCEED,
+        actionTypes.LOAD_CERT_MARKS_FAIL,
+      ],
+      endpoint: 'v1/cms/manifest/certMark',
+      method: 'get',
+      params: { billSeqNo },
+    },
+  };
+}
+
+export function saveCertMarks(datas) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SAVE_CERT_MARKS,
+        actionTypes.SAVE_CERT_MARKS_SUCCEED,
+        actionTypes.SAVE_CERT_MARKS_FAIL,
+      ],
+      endpoint: 'v1/cms/manifest/certMark/save',
+      method: 'post',
+      data: datas,
+    },
+  };
+}
+
+export function setPaneTabkey(tabkey) {
+  return {
+    type: actionTypes.SET_PANE_TABKEY,
+    data: tabkey,
+  };
 }
 
 export function loadBill(billSeqNo) {
