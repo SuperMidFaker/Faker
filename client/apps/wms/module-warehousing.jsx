@@ -24,21 +24,21 @@ export default class ModuleWarehousing extends React.Component {
       single: true,
       key: 'wms-0',
       path: '/warehousing/dashboard',
-      icon: 'icon-fontello-gauge-1',
+      icon: 'zmdi zmdi-desktop-windows',
       text: formatMsg(intl, 'dashboard'),
     });
     linkMenus.push({
       single: true,
       key: 'wms-1',
       path: '/warehousing/inbound',
-      icon: 'icon-fontello-doc-text',
+      icon: 'icon-fontello-download',
       text: formatMsg(intl, 'inbound'),
     });
     linkMenus.push({
       single: true,
       key: 'wms-2',
       path: '/warehousing/outbound',
-      icon: 'zmdi zmdi-globe',
+      icon: 'icon-fontello-upload',
       text: formatMsg(intl, 'outbound'),
     });
     linkMenus.push({

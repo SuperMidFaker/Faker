@@ -3,7 +3,7 @@ import { defineMessages } from 'react-intl';
 const messages = defineMessages({
   dashboard: {
     id: 'wms.module.dashboard',
-    defaultMessage: '看板',
+    defaultMessage: '工作台',
   },
   inbound: {
     id: 'wms.module.inbound',
