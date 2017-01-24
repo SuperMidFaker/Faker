@@ -69,7 +69,6 @@ export default class ManifestEditor extends React.Component {
     this.context.router.push({ pathname });
   }
   handleBillSave = () => {
-    // todo bill head save sync with entry head, vice verse
     this.props.form.validateFields((errors) => {
       if (!errors) {
         const { billHead, ietype, loginId, tenantId } = this.props;

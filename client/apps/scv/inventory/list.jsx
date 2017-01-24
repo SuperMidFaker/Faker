@@ -1,9 +1,8 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Progress, message, Layout } from 'antd';
+import { Button, message, Layout } from 'antd';
 import QueueAnim from 'rc-queue-anim';
-import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadInbounds, loadInboundPartners, openModal, openCreateModal } from 'common/reducers/scvinbound';
 import Table from 'client/components/remoteAntTable';
@@ -39,7 +38,7 @@ function fetchData({ state, dispatch }) {
   depth: 2,
   moduleName: 'scv',
 })
-export default class InboundShipmentsList extends React.Component {
+export default class InventoryStockList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -87,149 +86,45 @@ export default class InboundShipmentsList extends React.Component {
   inboundPoll = undefined
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
-    title: this.msg('shipmentNo'),
-    dataIndex: 'shipment_no',
+    title: this.msg('finishedProduct'),
+    dataIndex: 'product_name',
     width: 120,
   }, {
-    title: this.msg('orderNo'),
-    dataIndex: 'order_no',
-    width: 120,
-  }, {
-    title: this.msg('status'),
-    width: 200,
-    dataIndex: 'status',
-    render: (o, record) => {
-      if (record.status === 1) {
-        return (
-          <div>
-            {this.msg('atorigin')}
-            <Progress percent={10} strokeWidth={5} showInfo={false} />
-          </div>
-        );
-      } else if (record.status === 2) {
-        return (
-          <div>
-            {this.msg('intransit')}
-            <Progress percent={30} strokeWidth={5} showInfo={false} />
-          </div>
-        );
-      } else if (record.status === 3) {
-        return (
-          <div>
-            {this.msg('atdest')}
-            <Progress percent={60} strokeWidth={5} showInfo={false} />
-          </div>
-        );
-      } else if (record.status === 4) {
-        let subMsg;
-        if (record.sub_status === 'unaccepted') {
-          subMsg = 'Unaccepted';
-        } else if (record.sub_status === 'accepted') {
-          subMsg = 'Accepted';
-        } else if (record.sub_status === 'declaring') {
-          subMsg = 'Declaring';
-        } else if (record.sub_status === 'declared') {
-          subMsg = 'Declared';
-        } else if (record.sub_status === 'cleared') {
-          subMsg = 'Cleared';
-        }
-        return (
-          <div>
-            {this.msg('atclearance')}
-            {subMsg && <span style={{ float: 'right', color: '#87D068' }}>{subMsg}</span>}
-            <Progress percent={70} strokeWidth={5} showInfo={false} />
-          </div>
-        );
-      } else if (record.status === 5) {
-        return (
-          <div>
-            {this.msg('atdelivering')}
-            <Progress percent={80} strokeWidth={5} showInfo={false} />
-          </div>
-        );
-      } else if (record.status === 6) {
-        return (
-          <div>
-            {this.msg('atreceived')}
-            <Progress percent={100} strokeWidth={5} showInfo={false} />
-          </div>
-        );
-      } else {
-        return <span />;
-      }
-    },
-  }, {
-    title: this.msg('originCountry'),
+    title: this.msg('category'),
+    dataIndex: 'product_category',
     width: 100,
-    dataIndex: 'origin_country',
   }, {
-    title: this.msg('originPort'),
+    title: this.msg('warehouse'),
+    dataIndex: 'wh_name',
+    width: 100,
+  }, {
+    title: this.msg('stockPlan'),
     width: 80,
-    dataIndex: 'origin_port_code',
-    render: (o, row) => [row.origin_port_code || '', row.origin_port_city || ''].filter(orig => orig).join(','),
+    dataIndex: 'stock',
   }, {
-    title: this.msg('destPort'),
+    title: this.msg('unitPrice'),
+    width: 100,
+    dataIndex: 'unit_price',
+  }, {
+    title: this.msg('stockCost'),
     width: 80,
-    dataIndex: 'dest_port_code',
-    render: (o, row) => [row.dest_port_code || '', row.dest_port_city || ''].filter(orig => orig).join(','),
+    dataIndex: 'stock_cost',
   }, {
-    title: this.msg('mode'),
+    title: this.msg('cartoonSize'),
     width: 80,
-    dataIndex: 'trans_mode',
-    render: (o) => {
-      if (o === 'AIR') {
-        return <i className="zmdi zmdi-airplane zmdi-hc-2x" />;
-      } else {
-        return <i className="zmdi zmdi-boat zmdi-hc-2x" />;
-      }
-    },
+    colSpan: 3,
   }, {
-    title: this.msg('etd'),
-    width: 100,
-    dataIndex: 'etd_time',
-    render: o => o ? moment(o).format('YYYY/MM/DD') : '',
+    title: this.msg('cbmPerSku'),
+    width: 80,
+    dataIndex: 'unit_cbm',
   }, {
-    title: this.msg('atd'),
-    width: 100,
-    dataIndex: 'atd_time',
-    render: o => o ? moment(o).format('YYYY/MM/DD') : '',
+    title: this.msg('cbm'),
+    width: 60,
+    dataIndex: 'cbm',
   }, {
-    title: this.msg('eta'),
-    width: 100,
-    dataIndex: 'eta_time',
-    render: o => o ? moment(o).format('YYYY/MM/DD') : '',
-  }, {
-    title: this.msg('ata'),
-    width: 100,
-    dataIndex: 'ata_time',
-    render: o => o ? moment(o).format('YYYY/MM/DD') : '',
-  }, {
-    title: this.msg('customsCleared'),
-    width: 100,
-    dataIndex: 'decl_finished_time',
-    render: o => o ? moment(o).format('YYYY/MM/DD') : '',
-  }, {
-    title: this.msg('etaDelivery'),
-    width: 100,
-    dataIndex: 'delivery_eta',
-    render: o => o ? moment(o).format('YYYY/MM/DD') : '',
-  }, {
-    title: this.msg('ataDelivery'),
-    width: 100,
-    dataIndex: 'delivery_ata',
-    render: o => o ? moment(o).format('YYYY/MM/DD') : '',
-  }, {
-    title: this.msg('opColumn'),
-    width: 100,
-    render: (o, record) => {
-      if (record.status <= 3) {
-        return (
-          <span>
-            <span className="ant-divider" />
-          </span>
-        );
-      }
-    },
+    title: this.msg('productDesc'),
+    width: 150,
+    dataIndex: 'product_desc',
   }]
   dataSource = new Table.DataSource({
     fetcher: params => this.props.loadInbounds(params),

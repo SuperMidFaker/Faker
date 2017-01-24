@@ -2,7 +2,8 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Breadcrumb, Button, Layout, Radio, Select, Table } from 'antd';
+import { Breadcrumb, Button, Layout, Radio, Select } from 'antd';
+import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -41,6 +42,19 @@ export default class TradeItemList extends Component {
   state = {
     qtModelShow: false,
   }
+  columns = [{
+    title: this.msg('productNo'),
+    dataIndex: 'product_no',
+    width: 120,
+  }, {
+    title: this.msg('hscode'),
+    dataIndex: 'hs_code',
+    width: 80,
+  }, {
+    title: this.msg('productName'),
+    dataIndex: 'name',
+    width: 120,
+  }]
   handleNavigationTo(to, query) {
     this.context.router.push({ pathname: to, query });
   }

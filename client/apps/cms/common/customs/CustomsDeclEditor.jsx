@@ -5,6 +5,7 @@ import QueueAnim from 'rc-queue-anim';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { fillEntryId } from 'common/reducers/cmsDelegation';
+import { loadEntry } from 'common/reducers/cmsManifest';
 import SheetHeadPanel from '../manifest/forms/SheetHeadPanel';
 import SheetBodyPanel from '../manifest/forms/SheetBodyPanel';
 import SheetExtraPanel from '../manifest/forms/SheetExtraPanel';
@@ -20,8 +21,9 @@ const { Sider, Header, Content } = Layout;
     billMeta: state.cmsManifest.billMeta,
     head: state.cmsManifest.entryHead,
     bodies: state.cmsManifest.entryBodies,
+    tenantId: state.account.tenantId,
   }),
-  { fillEntryId }
+  { fillEntryId, loadEntry }
 )
 @connectNav({
   depth: 3,
@@ -60,7 +62,7 @@ export default class CustomsDeclEditor extends React.Component {
     this.setState({ visible: true });
   }
   handleManifestVisit = (ev) => {
-    const { ietype, billMeta } = this.props;
+    const { ietype, billMeta, tenantId } = this.props;
     if (ev.key === 'bill') {
       let action = 'view';
       if (billMeta.editable) {
@@ -69,8 +71,14 @@ export default class CustomsDeclEditor extends React.Component {
       const pathname = `/clearance/${ietype}/manifest/${action}/${billMeta.bill_seq_no}`;
       this.context.router.push({ pathname });
     } else {
-      const pathname = `/clearance/${ietype}/customs/${billMeta.bill_seq_no}/${ev.key}`;
-      this.context.router.push({ pathname });
+      const preEntrySeqNo = ev.key;
+      this.props.loadEntry(billMeta.bill_seq_no, preEntrySeqNo, tenantId).then(
+        (result) => {
+          if (!result.error) {
+            const pathname = `/clearance/${ietype}/customs/${billMeta.bill_seq_no}/${preEntrySeqNo}`;
+            this.context.router.push({ pathname });
+          }
+        });
     }
   }
   handleEntryHeadSave = () => {
