@@ -5,7 +5,7 @@ function* renderWebPage() {
   try {
     this.body = yield renderHtml(this.request, this.cookies.get('locale'));
   } catch (e) {
-    console.log('wewms plain render cause ', e, e.stack);
+    console.log('welogix plain render cause ', e, e.stack);
     if (e.length === 2 && e[0] === 301) {
       this.redirect(e[1].pathname + e[1].search);
     }

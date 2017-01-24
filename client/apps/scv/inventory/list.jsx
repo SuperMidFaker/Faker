@@ -2,18 +2,16 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Button, Progress, message, Layout } from 'antd';
-import QueueAnim from 'rc-queue-anim';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadInbounds, loadInboundPartners, openModal, openCreateModal } from 'common/reducers/scvinbound';
 import Table from 'client/components/remoteAntTable';
-import SearchBar from 'client/components/search-bar';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 
 const formatMsg = format(messages);
-const { Header, Content } = Layout;
+const { Header, Content, Sider } = Layout;
 
 function fetchData({ state, dispatch }) {
   return dispatch(loadInbounds({
@@ -337,30 +335,32 @@ export default class InboundShipmentsList extends React.Component {
     const { inboundlist } = this.props;
     this.dataSource.remotes = inboundlist;
     return (
-      <QueueAnim type={['bottom', 'up']}>
-        <Header className="top-bar" key="header">
+      <Layout>
+        <Header className="top-bar">
           <span>{this.msg('inventory')}</span>
-          <div className="top-bar-tools">
-            <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} size="large" />
-          </div>
         </Header>
-        <Content className="main-content" key="main">
-          <div className="page-body">
-            <div className="toolbar">
-              <Button icon="export" onClick={this.handleShipmentCreate}>
-                {this.msg('exportInventory')}
-              </Button>
+        <Layout>
+          <Sider width={280} className="menu-sider" key="sider">
+            Search
+          </Sider>
+          <Content className="main-content" key="main">
+            <div className="page-body">
+              <div className="toolbar">
+                <Button icon="export" onClick={this.handleShipmentCreate}>
+                  {this.msg('exportInventory')}
+                </Button>
+              </div>
+              <div className="panel-body table-panel expandable">
+                <Table columns={this.columns} dataSource={this.dataSource} loading={inboundlist.loading}
+                  expandedRowKeys={this.state.expandedKeys} rowKey="id"
+                  expandedRowRender={this.handleExpandDetail}
+                  scroll={{ x: 1200 }} onExpandedRowsChange={this.handleExpandedChange}
+                />
+              </div>
             </div>
-            <div className="panel-body table-panel expandable">
-              <Table columns={this.columns} dataSource={this.dataSource} loading={inboundlist.loading}
-                expandedRowKeys={this.state.expandedKeys} rowKey="id"
-                expandedRowRender={this.handleExpandDetail}
-                scroll={{ x: 1420 }} onExpandedRowsChange={this.handleExpandedChange}
-              />
-            </div>
-          </div>
-        </Content>
-      </QueueAnim>
+          </Content>
+        </Layout>
+      </Layout>
     );
   }
 }

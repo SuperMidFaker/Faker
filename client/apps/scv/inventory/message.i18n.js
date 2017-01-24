@@ -4,7 +4,7 @@ import { formati18n } from 'client/common/i18n/helpers';
 const messages = defineMessages({
   inventory: {
     id: 'scv.inventory',
-    defaultMessage: '库存管理',
+    defaultMessage: '库存查询',
   },
   importInventory: {
     id: 'scv.inventory.import',

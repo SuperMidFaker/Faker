@@ -31,11 +31,11 @@ const messages = defineMessages({
   },
   inventoryStock: {
     id: 'scv.module.inventory.stock',
-    defaultMessage: '库存状态',
+    defaultMessage: '库存查询',
   },
   inventoryProducts: {
     id: 'scv.module.inventory.products',
-    defaultMessage: '产品目录',
+    defaultMessage: '产品物料',
   },
   inventoryRecieving: {
     id: 'scv.module.inventory.recieving',
