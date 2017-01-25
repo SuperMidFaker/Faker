@@ -42,6 +42,7 @@ export default class TradeItemList extends Component {
   state = {
     qtModelShow: false,
   }
+  msg = key => formatMsg(this.props.intl, key);
   columns = [{
     title: this.msg('productNo'),
     dataIndex: 'product_no',
@@ -58,15 +59,13 @@ export default class TradeItemList extends Component {
   handleNavigationTo(to, query) {
     this.context.router.push({ pathname: to, query });
   }
-
-  msg = key => formatMsg(this.props.intl, key);
   render() {
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Header className="top-bar" key="header">
           <Breadcrumb>
             <Breadcrumb.Item>
-              {this.msg('tradeItemManagement')}
+              {this.msg('productsTradeItem')}
             </Breadcrumb.Item>
           </Breadcrumb>
           <RadioGroup onChange={this.handleRadioChange} size="large">

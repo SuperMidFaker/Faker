@@ -100,15 +100,15 @@ export default class ModuleSCV extends React.Component {
       icon: 'icon-fontello-layers',
       text: formatMsg(intl, 'products'),
       sublinks: [{
-        key: 'scv-5-0',
+        key: 'scv-6-0',
         path: '/scv/products/tradeitem',
         text: formatMsg(intl, 'productsTradeItem'),
       }, {
-        key: 'scv-5-1',
+        key: 'scv-6-1',
         path: '/scv/products/sku',
         text: formatMsg(intl, 'productsSKU'),
       }, {
-        key: 'scv-5-2',
+        key: 'scv-6-2',
         path: '/scv/products/category',
         text: formatMsg(intl, 'productsCategory'),
       }],

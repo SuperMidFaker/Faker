@@ -1,7 +1,7 @@
 import { defineMessages } from 'react-intl';
 
 const messages = defineMessages({
-  producgtsTradeItem: {
+  productsTradeItem: {
     id: 'scv.products.tradeitem',
     defaultMessage: '贸易商品归类',
   },
