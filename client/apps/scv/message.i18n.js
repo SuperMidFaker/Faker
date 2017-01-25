@@ -7,11 +7,11 @@ const messages = defineMessages({
   },
   orders: {
     id: 'scv.module.orders',
-    defaultMessage: '订单管理',
+    defaultMessage: '订单',
   },
   shipments: {
     id: 'scv.module.shipments',
-    defaultMessage: '货运管理',
+    defaultMessage: '货运',
   },
   inboundShipments: {
     id: 'scv.module.shipments.inbound',
@@ -23,19 +23,15 @@ const messages = defineMessages({
   },
   clearance: {
     id: 'scv.module.clearance',
-    defaultMessage: '清关管理',
+    defaultMessage: '清关',
   },
   inventory: {
     id: 'scv.module.inventory',
-    defaultMessage: '库存管理',
+    defaultMessage: '库存',
   },
   inventoryStock: {
     id: 'scv.module.inventory.stock',
     defaultMessage: '库存查询',
-  },
-  inventoryProducts: {
-    id: 'scv.module.inventory.products',
-    defaultMessage: '产品物料',
   },
   inventoryRecieving: {
     id: 'scv.module.inventory.recieving',
@@ -45,9 +41,13 @@ const messages = defineMessages({
     id: 'scv.module.inventory.shipping',
     defaultMessage: '出库发货',
   },
+  inventoryWarehouses: {
+    id: 'scv.module.inventory.warehouses',
+    defaultMessage: '仓库设置',
+  },
   payment: {
     id: 'scv.module.payment',
-    defaultMessage: '结算中心',
+    defaultMessage: '资金',
   },
   taxPayment: {
     id: 'scv.module.payment.tax',
@@ -57,9 +57,25 @@ const messages = defineMessages({
     id: 'scv.module.payment.billing',
     defaultMessage: '账单支付',
   },
+  products: {
+    id: 'scv.module.products',
+    defaultMessage: '商品',
+  },
+  productsTradeItem: {
+    id: 'scv.module.products.trade.item',
+    defaultMessage: '贸易商品归类',
+  },
+  productsSKU: {
+    id: 'scv.module.products.sku',
+    defaultMessage: '商品仓库料号',
+  },
+  productsCategory: {
+    id: 'scv.module.products.category',
+    defaultMessage: '商品类别',
+  },
   analytics: {
     id: 'scv.module.analytics',
-    defaultMessage: '统计分析',
+    defaultMessage: '报表',
   },
   kpiAnalytics: {
     id: 'scv.module.analytics.kpi',

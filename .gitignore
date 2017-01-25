@@ -7,3 +7,4 @@ public/assets/langs/zh.json
 .DS_Store
 test.js
 .happypack/*
+.vscode

@@ -59,7 +59,7 @@ export default class ModuleSCV extends React.Component {
     linkMenus.push({
       single: false,
       key: 'scv-4',
-      icon: 'zmdi zmdi-storage',
+      icon: 'icon-fontello-barcode-1',
       text: formatMsg(intl, 'inventory'),
       sublinks: [{
         key: 'scv-4-0',
@@ -75,8 +75,8 @@ export default class ModuleSCV extends React.Component {
         text: formatMsg(intl, 'inventoryShipping'),
       }, {
         key: 'scv-4-3',
-        path: '/scv/inventory/products',
-        text: formatMsg(intl, 'inventoryProducts'),
+        path: '/scv/inventory/warehouses',
+        text: formatMsg(intl, 'inventoryWarehouses'),
       }],
     });
     linkMenus.push({
@@ -97,21 +97,40 @@ export default class ModuleSCV extends React.Component {
     linkMenus.push({
       single: false,
       key: 'scv-6',
+      icon: 'icon-fontello-layers',
+      text: formatMsg(intl, 'products'),
+      sublinks: [{
+        key: 'scv-5-0',
+        path: '/products/tradeitem',
+        text: formatMsg(intl, 'productsTradeItem'),
+      }, {
+        key: 'scv-5-1',
+        path: '/products/sku',
+        text: formatMsg(intl, 'productsSKU'),
+      }, {
+        key: 'scv-5-2',
+        path: '/products/category',
+        text: formatMsg(intl, 'productsCategory'),
+      }],
+    });
+    linkMenus.push({
+      single: false,
+      key: 'scv-7',
       icon: 'icon-ikons-bar-chart-2',
       text: formatMsg(intl, 'analytics'),
       sublinks: [{
-        key: 'scv-6-0',
+        key: 'scv-7-0',
         path: '/scv/analytics/kpi',
         text: formatMsg(intl, 'kpiAnalytics'),
       }, {
-        key: 'scv-6-1',
+        key: 'scv-7-1',
         path: '/scv/analytics/cost',
         text: formatMsg(intl, 'costAnalytics'),
       }],
     });
     linkMenus.push({
       single: true,
-      key: 'scv-7',
+      key: 'scv-8',
       path: '/scv/settings',
       icon: 'zmdi zmdi-settings',
       text: formatMsg(intl, 'settings'),

@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, message, Layout } from 'antd';
+import { Button, Form, Icon, Input, Select, message, Layout } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadInbounds, loadInboundPartners, openModal, openCreateModal } from 'common/reducers/scvinbound';
 import Table from 'client/components/remoteAntTable';
@@ -11,6 +11,9 @@ import messages from './message.i18n';
 
 const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
+const FormItem = Form.Item;
+const Search = Input.Search;
+const Option = Select.Option;
 
 function fetchData({ state, dispatch }) {
   return dispatch(loadInbounds({
@@ -53,6 +56,7 @@ export default class InventoryStockList extends React.Component {
     inUpload: false,
     uploadPercent: 10,
     uploadStatus: 'active',
+    collapsed: false,
   }
   componentDidMount() {
     this.inboundPoll = setInterval(() => {
@@ -121,7 +125,6 @@ export default class InventoryStockList extends React.Component {
     dataIndex: 'cbm',
   }, {
     title: this.msg('productDesc'),
-    width: 150,
     dataIndex: 'product_desc',
   }]
   dataSource = new Table.DataSource({
@@ -146,6 +149,11 @@ export default class InventoryStockList extends React.Component {
     },
     remotes: this.props.inboundlist,
   })
+  toggle = () => {
+    this.setState({
+      collapsed: !this.state.collapsed,
+    });
+  }
   handleImport = (info) => {
     if (this.state.uploadChangeCount === 0) {
       this.state.uploadChangeCount++;
@@ -233,10 +241,52 @@ export default class InventoryStockList extends React.Component {
       <Layout>
         <Header className="top-bar">
           <span>{this.msg('inventory')}</span>
+          <Icon
+            className="trigger"
+            type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
+            onClick={this.toggle}
+          />
         </Header>
         <Layout>
-          <Sider width={280} className="menu-sider" key="sider">
-            Search
+          <Sider width={280} className="menu-sider" key="sider" trigger={null}
+            collapsible
+            collapsed={this.state.collapsed}
+            collapsedWidth={0}
+          >
+            <Form vertical style={{ padding: 16 }}>
+              <FormItem label="商品货号">
+                <Search placeholder="input search text" />
+              </FormItem>
+              <FormItem label="商品分类">
+                <Select
+                  showSearch
+                  placeholder="选择分类"
+                  optionFilterProp="children"
+                  filterOption={(input, option) => option.props.value.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                >
+                  <Option value="jack">Jack</Option>
+                  <Option value="lucy">Lucy</Option>
+                  <Option value="tom">Tom</Option>
+                </Select>
+              </FormItem>
+              <FormItem label="仓库">
+                <Select
+                  showSearch
+                  placeholder="选择仓库"
+                  optionFilterProp="children"
+                  filterOption={(input, option) => option.props.value.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                >
+                  <Option value="all">全部仓库</Option>
+                  <Option value="jack">物流大道仓库</Option>
+                  <Option value="lucy">希雅路仓库</Option>
+                  <Option value="tom">富特路仓库</Option>
+                </Select>
+              </FormItem>
+              <FormItem>
+                <Button type="primary">查询</Button>
+                <Button type="ghost">清除选项</Button>
+              </FormItem>
+            </Form>
           </Sider>
           <Content className="main-content" key="main">
             <div className="page-body">

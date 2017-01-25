@@ -176,16 +176,14 @@ export default class SCVDashboard extends React.Component {
                     </li>
                   </ul>
                 </Card>
+                <Card title={this.msg('statistics')}>
+                  <div id="c1" />
+                </Card>
               </Col>
               <Col span={8}>
                 <Card title={this.msg('alerts')} >
                   <Alert message="报关单221020161109715501 海关查验" type="warning" showIcon />
                   <Alert message="1067172 送货延迟：收货人外地出差，18号以后送货" type="warning" showIcon />
-                </Card>
-              </Col>
-              <Col span={24}>
-                <Card title={this.msg('statistics')}>
-                  <div id="c1" />
                 </Card>
               </Col>
             </Row>

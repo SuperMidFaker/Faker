@@ -32,10 +32,10 @@ export default class SheetExtraPanel extends React.Component {
     return (
       <Tabs activeKey={this.props.tabKey} onChange={this.handleTabChange} >
         <TabPane tab="集装箱" key="container" />
-        <TabPane tab="随附单据" key="document" />
         <TabPane tab="随附单证" key="certificate">
           <CertMarkPane />
         </TabPane>
+        <TabPane tab="关联信息" key="related" />
       </Tabs>
     );
   }
