@@ -1,37 +1,24 @@
 import React, { Component, PropTypes } from 'react';
-import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Breadcrumb, Layout, Menu, Icon } from 'antd';
+import { Breadcrumb, Menu, Icon, Layout } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import FeesTable from '../quote/feesTable';
-import { loadQuoteModel } from 'common/reducers/cmsQuote';
-import withPrivilege from 'client/common/decorators/withPrivilege';
 
 const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
 const SubMenu = Menu.SubMenu;
 
+
 @injectIntl
-@connect(
-  state => ({
-    tenantId: state.account.tenantId,
-    loginId: state.account.loginId,
-    loginName: state.account.username,
-  }),
-  { loadQuoteModel }
-)
 @connectNav({
   depth: 2,
-  moduleName: 'clearance',
+  moduleName: 'scv',
 })
-@withPrivilege({ module: 'clearance', feature: 'setting', action: 'edit' })
 export default class Settings extends Component {
   static propTypes = {
-    intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
-    loadQuoteModel: PropTypes.func.isRequired,
+    intl: intlShape.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -41,11 +28,7 @@ export default class Settings extends Component {
   }
 
   msg = key => formatMsg(this.props.intl, key);
-  handleClick = (e) => {
-    if (e.key === 'quotemodel') {
-      this.props.loadQuoteModel(this.props.tenantId);
-    }
-  }
+
   render() {
     return (
       <Layout>
@@ -55,10 +38,10 @@ export default class Settings extends Component {
               {this.msg('settings')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              业务数据
+              {this.msg('integration')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              费用模板
+              开放API
             </Breadcrumb.Item>
           </Breadcrumb>
         </Header>
@@ -68,23 +51,19 @@ export default class Settings extends Component {
               <Sider style={{ background: '#fff' }}>
                 <Menu
                   onClick={this.handleClick}
-                  defaultOpenKeys={['integration', 'bizdata']}
-                  defaultSelectedKeys={['quotemodel']}
+                  defaultOpenKeys={['integration']}
+                  defaultSelectedKeys={['openapi']}
                   mode="inline"
                 >
-                  <SubMenu key="bizdata" title={<span><Icon type="setting" /><span>业务数据</span></span>}>
-                    <Menu.Item key="quotemodel">费用模板</Menu.Item>
-                    <Menu.Item key="9">报关清单</Menu.Item>
-                  </SubMenu>
                   <SubMenu key="integration" title={<span><Icon type="cloud-o" /><span>{this.msg('integration')}</span></span>}>
-                    <Menu.Item key="1">开放API</Menu.Item>
+                    <Menu.Item key="openapi">开放API</Menu.Item>
                     <Menu.Item key="2">EDI</Menu.Item>
                   </SubMenu>
                   <Menu.Item key="notification"><span><Icon type="notification" /><span>通知提醒</span></span></Menu.Item>
                 </Menu>
               </Sider>
               <Content style={{ padding: '0 24px', minHeight: 280 }}>
-                <FeesTable action="model" editable />
+                  content
               </Content>
             </Layout>
           </div>

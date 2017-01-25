@@ -75,8 +75,8 @@ export default class ModuleSCV extends React.Component {
         text: formatMsg(intl, 'inventoryShipping'),
       }, {
         key: 'scv-4-3',
-        path: '/scv/inventory/warehouses',
-        text: formatMsg(intl, 'inventoryWarehouses'),
+        path: '/scv/inventory/warehouse',
+        text: formatMsg(intl, 'inventoryWarehouse'),
       }],
     });
     linkMenus.push({
@@ -101,15 +101,15 @@ export default class ModuleSCV extends React.Component {
       text: formatMsg(intl, 'products'),
       sublinks: [{
         key: 'scv-5-0',
-        path: '/products/tradeitem',
+        path: '/scv/products/tradeitem',
         text: formatMsg(intl, 'productsTradeItem'),
       }, {
         key: 'scv-5-1',
-        path: '/products/sku',
+        path: '/scv/products/sku',
         text: formatMsg(intl, 'productsSKU'),
       }, {
         key: 'scv-5-2',
-        path: '/products/category',
+        path: '/scv/products/category',
         text: formatMsg(intl, 'productsCategory'),
       }],
     });

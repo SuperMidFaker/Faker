@@ -55,11 +55,11 @@ export default class ModuleCWM extends React.Component {
       text: formatMsg(intl, 'products'),
       sublinks: [{
         key: 'cwm-4-0',
-        path: '/products/tradeitem',
+        path: '/cwm/products/tradeitem',
         text: formatMsg(intl, 'productsTradeItem'),
       }, {
         key: 'cwm-4-1',
-        path: '/products/sku',
+        path: '/cwm/products/sku',
         text: formatMsg(intl, 'productsSKU'),
       }],
     });

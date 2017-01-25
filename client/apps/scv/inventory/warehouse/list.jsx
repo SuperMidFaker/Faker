@@ -21,7 +21,7 @@ const { Header, Content } = Layout;
   depth: 2,
   moduleName: 'cwm',
 })
-export default class CWMInboundList extends React.Component {
+export default class CWMWarehouseList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -40,7 +40,7 @@ export default class CWMInboundList extends React.Component {
           <div className="toolbar-right">
             <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
           </div>
-          <span>{this.msg('inboundManagement')}</span>
+          <span>{this.msg('inventoryWarehouse')}</span>
         </Header>
         <Content className="main-content" key="main">
           <div className="page-body">

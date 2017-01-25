@@ -2,11 +2,11 @@ import { defineMessages } from 'react-intl';
 
 const messages = defineMessages({
   settings: {
-    id: 'scv.settings',
+    id: 'cwm.settings',
     defaultMessage: '设置',
   },
   integration: {
-    id: 'scv.settings.integration',
+    id: 'cwm.settings.integration',
     defaultMessage: '整合接口',
   },
 });

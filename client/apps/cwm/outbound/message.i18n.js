@@ -1,8 +1,8 @@
 import { defineMessages } from 'react-intl';
 
 const messages = defineMessages({
-  ordersTitle: {
-    id: 'wms.outbound',
+  outboundManagement: {
+    id: 'cwm.outbound',
     defaultMessage: '出库管理',
   },
 });

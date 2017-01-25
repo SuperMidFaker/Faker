@@ -1,9 +1,9 @@
 import { defineMessages } from 'react-intl';
 
 const messages = defineMessages({
-  dashboardTitle: {
-    id: 'cwm.dashboard.title',
-    defaultMessage: '工作台',
+  inventoryWarehouse: {
+    id: 'scv.inventory.warehouse',
+    defaultMessage: '仓库设置',
   },
 });
 

@@ -18,7 +18,7 @@ const actions = [
   'WH_LOAD', 'WH_LOAD_SUCCEED', 'WH_LOAD_FAIL', 'WH_SUBMIT', 'WH_SUBMIT_SUCCEED', 'WH_SUBMIT_FAIL', 'WH_BEGIN_EDIT', 'WH_EDIT',
   'WH_UPDATE', 'WH_UPDATE_SUCCEED', 'WH_UPDATE_FAIL', 'WH_DELETE', 'WH_DELETE_SUCCEED', 'WH_DELETE_FAIL', 'WH_EDIT_CANCEL',
 ];
-const domain = '@@qm-wewms/warehouse/';
+const domain = '@@qm-wecwm/warehouse/';
 const actionTypes = createActionTypes(domain, actions);
 
 export default function reducer(state = initialState, action) {
@@ -62,7 +62,7 @@ export function loadWarehouses(params, cookie) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.WH_LOAD, actionTypes.WH_LOAD_SUCCEED, actionTypes.WH_LOAD_FAIL],
-      endpoint: 'v1/wewms/warehouses',
+      endpoint: 'v1/wecwm/warehouses',
       method: 'get',
       params,
       cookie,
@@ -74,7 +74,7 @@ export function submitWarehouse(warehouse, corpId, tenantId) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.WH_SUBMIT, actionTypes.WH_SUBMIT_SUCCEED, actionTypes.WH_SUBMIT_FAIL],
-      endpoint: 'v1/wewms/warehouse',
+      endpoint: 'v1/wecwm/warehouse',
       method: 'post',
       data: { warehouse, corpId, tenantId },
     },
@@ -85,7 +85,7 @@ export function updateWh(warehouse) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.WH_UPDATE, actionTypes.WH_UPDATE_SUCCEED, actionTypes.WH_UPDATE_FAIL],
-      endpoint: 'v1/wewms/warehouse',
+      endpoint: 'v1/wecwm/warehouse',
       method: 'put',
       data: { warehouse },
     },
@@ -96,7 +96,7 @@ export function delWh(whkey) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.WH_DELETE, actionTypes.WH_DELETE_SUCCEED, actionTypes.WH_DELETE_FAIL],
-      endpoint: 'v1/wewms/warehouse',
+      endpoint: 'v1/wecwm/warehouse',
       method: 'del',
       data: { whkey },
     },

@@ -19,7 +19,7 @@ const actions = [
   'NTC_BEGIN_EDIT', 'NTC_EDIT', 'NTC_EDIT_CANCEL', 'NTC_UPDATE', 'NTC_UPDATE_SUCCEED', 'NTC_UPDATE_FAIL',
   'NTC_DELETE', 'NTC_DELETE_SUCCEED', 'NTC_DELETE_FAIL',
 ];
-const domain = '@@qm-wewms/notice/';
+const domain = '@@qm-wecwm/notice/';
 const actionTypes = createActionTypes(domain, actions);
 
 export default function reducer(state = initialState, action) {
@@ -63,7 +63,7 @@ export function load(params, cookie) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.NTC_LOAD, actionTypes.NTC_LOAD_SUCCEED, actionTypes.NTC_LOAD_FAIL],
-      endpoint: 'v1/wewms/notices',
+      endpoint: 'v1/wecwm/notices',
       method: 'get',
       params,
       cookie,
@@ -75,7 +75,7 @@ export function submit(notice, corpId, tenantId) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.NTC_SUBMIT, actionTypes.NTC_SUBMIT_SUCCEED, actionTypes.NTC_SUBMIT_FAIL],
-      endpoint: 'v1/wewms/notice',
+      endpoint: 'v1/wecwm/notice',
       method: 'post',
       data: { notice, corpId, tenantId },
     },
@@ -86,7 +86,7 @@ export function update(notice) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.NTC_UPDATE, actionTypes.NTC_UPDATE_SUCCEED, actionTypes.NTC_UPDATE_FAIL],
-      endpoint: 'v1/wewms/notice',
+      endpoint: 'v1/wecwm/notice',
       method: 'put',
       data: { notice },
     },
@@ -97,7 +97,7 @@ export function del(key) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.NTC_DELETE, actionTypes.NTC_DELETE_SUCCEED, actionTypes.NTC_DELETE_FAIL],
-      endpoint: 'v1/wewms/notice',
+      endpoint: 'v1/wecwm/notice',
       method: 'del',
       data: { key },
     },

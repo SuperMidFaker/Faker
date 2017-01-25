@@ -1,8 +1,8 @@
 import { defineMessages } from 'react-intl';
 
 const messages = defineMessages({
-  ordersTitle: {
-    id: 'wms.inbound',
+  inboundManagement: {
+    id: 'cwm.inbound',
     defaultMessage: '入库管理',
   },
 });

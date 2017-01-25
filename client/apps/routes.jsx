@@ -49,15 +49,22 @@ import CWM from './cwm/module-cwm';
 import * as CWMDashboard from './cwm/dashboard';
 import * as CWMInbound from './cwm/inbound';
 import * as CWMOutbound from './cwm/outbound';
+import * as CWMInventory from './cwm/inventory';
+import * as CWMProductsSku from './cwm/products/sku';
+import * as CWMWarehouse from './cwm/resources/warehouse';
+import * as CWMSettings from './cwm/settings';
 import SCV from './scv/module-scv';
 import * as SCVDashboard from './scv/dashboard';
 import * as SCVOrders from './scv/orders';
 import * as SCVInbound from './scv/inbound';
 import * as SCVClearance from './scv/clearance';
-import * as SCVInventory from './scv/inventory';
+import * as SCVInventoryStock from './scv/inventory/stock';
 import * as SCVInventoryRecieving from './scv/inventory/recieving';
 import * as SCVInventoryShipping from './scv/inventory/shipping';
-import * as SCVInventoryProducts from './scv/inventory/products';
+import * as SCVInventoryWarehouse from './scv/inventory/warehouse';
+import * as SCVProductsSku from './scv/products/sku';
+import * as SCVProductsTradeItem from './scv/products/tradeitem';
+import * as SCVProductsCategory from './scv/products/category';
 import * as SCVPaymentsTax from './scv/payments/tax';
 import * as SCVPaymentsBilling from './scv/payments/billing';
 import * as SCVAnalyticsKpi from './scv/analytics/kpi';
@@ -301,26 +308,45 @@ export default(store, cookie) => {
             </Route>
             <Route path="clearance" component={SCVClearance.List} />
             <Route path="inventory" >
-              <Route path="stock" component={SCVInventory.List} />
+              <Route path="stock" component={SCVInventoryStock.List} />
               <Route path="recieving" component={SCVInventoryRecieving.List} />
               <Route path="shipping" component={SCVInventoryShipping.List} />
-              <Route path="products" component={SCVInventoryProducts.List} />
+              <Route path="warehouse" component={SCVInventoryWarehouse.List} />
             </Route>
             <Route path="payments">
               <Route path="tax" component={SCVPaymentsTax.List} />
               <Route path="billing" component={SCVPaymentsBilling.List} />
             </Route>
+            <Route path="products">
+              <Route path="sku" component={SCVProductsSku.List} />
+              <Route path="tradeitem" component={SCVProductsTradeItem.List} />
+              <Route path="category" component={SCVProductsCategory.List} />
+            </Route>
             <Route path="analytics">
               <Route path="kpi" component={SCVAnalyticsKpi.List} />
               <Route path="cost" component={SCVAnalyticsCost.List} />
             </Route>
-            <Route path="settings" component={SCVSettings.List} />
+            <Route path="settings">
+              <IndexRedirect to="/scv/settings/openapi" />
+              <Route path="openapi" component={SCVSettings.OpenApi} />
+            </Route>
           </Route>
           <Route path={DEFAULT_MODULES.cwm.id} component={CWM}>
             <IndexRedirect to="/cwm/dashboard" />
             <Route path="dashboard" component={CWMDashboard.Index} />
             <Route path="inbound" component={CWMInbound.List} />
             <Route path="outbound" component={CWMOutbound.List} />
+            <Route path="inventory" component={CWMInventory.List} />
+            <Route path="products">
+              <Route path="sku" component={CWMProductsSku.List} />
+            </Route>
+            <Route path="resources">
+              <Route path="warehouse" component={CWMWarehouse.List} />
+            </Route>
+            <Route path="settings">
+              <IndexRedirect to="/cwm/settings/openapi" />
+              <Route path="openapi" component={CWMSettings.OpenApi} />
+            </Route>
           </Route>
           <Route path={DEFAULT_MODULES.customer.id} component={CRM}>
             <IndexRedirect to="/customer/orders" />
