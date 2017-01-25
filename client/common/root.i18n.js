@@ -97,9 +97,9 @@ const messages = defineMessages({
     id: 'component.module.clearance',
     defaultMessage: '清关管理',
   },
-  moduleWarehousing: {
-    id: 'component.module.warehousing',
-    defaultMessage: '仓储管理',
+  moduleWCM: {
+    id: 'component.module.wcm',
+    defaultMessage: '仓储协同',
   },
   moduleSCV: {
     id: 'component.module.scv',

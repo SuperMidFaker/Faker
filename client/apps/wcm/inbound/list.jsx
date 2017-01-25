@@ -19,9 +19,9 @@ const { Header, Content } = Layout;
 )
 @connectNav({
   depth: 2,
-  moduleName: 'warehousing',
+  moduleName: 'wcm',
 })
-export default class WMSOutboundList extends React.Component {
+export default class WMSInboundList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,

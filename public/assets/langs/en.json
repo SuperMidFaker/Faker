@@ -347,7 +347,7 @@
   "component.module.customer.center": "Customer Center",
   "component.module.transport": "Transportation",
   "component.module.clearance": "Clearance",
-  "component.module.warehousing": "Warehousing",
+  "component.module.wcm": "Warehousing",
   "component.module.scv": "Supply Chain Visibility",
   "component.user.setting": "Profile",
   "component.user.pwdsetting": "Password",

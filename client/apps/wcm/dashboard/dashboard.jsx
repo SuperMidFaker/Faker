@@ -18,7 +18,7 @@ const { Header, Content } = Layout;
 )
 @connectNav({
   depth: 2,
-  moduleName: 'warehousing',
+  moduleName: 'wcm',
 })
 export default class WMSDashboard extends React.Component {
   static propTypes = {

@@ -8,7 +8,7 @@ import { format } from 'client/common/i18n/helpers';
 const formatMsg = format(messages);
 
 @injectIntl
-export default class ModuleWarehousing extends React.Component {
+export default class ModuleWCM extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     location: locationShape.isRequired,
@@ -22,74 +22,74 @@ export default class ModuleWarehousing extends React.Component {
     const linkMenus = [];
     linkMenus.push({
       single: true,
-      key: 'wms-0',
-      path: '/warehousing/dashboard',
+      key: 'wcm-0',
+      path: '/wcm/dashboard',
       icon: 'zmdi zmdi-desktop-windows',
       text: formatMsg(intl, 'dashboard'),
     });
     linkMenus.push({
       single: true,
-      key: 'wms-1',
-      path: '/warehousing/inbound',
+      key: 'wcm-1',
+      path: '/wcm/inbound',
       icon: 'icon-fontello-download',
       text: formatMsg(intl, 'inbound'),
     });
     linkMenus.push({
       single: true,
-      key: 'wms-2',
-      path: '/warehousing/outbound',
+      key: 'wcm-2',
+      path: '/wcm/outbound',
       icon: 'icon-fontello-upload',
       text: formatMsg(intl, 'outbound'),
     });
     linkMenus.push({
       single: true,
-      key: 'wms-3',
-      path: '/warehousing/inventory',
+      key: 'wcm-3',
+      path: '/wcm/inventory',
       icon: 'icon-fontello-warehouse',
       text: formatMsg(intl, 'inventory'),
     });
     linkMenus.push({
       single: false,
-      key: 'wms-4',
+      key: 'wcm-4',
       icon: 'icon-fontello-layers',
       text: formatMsg(intl, 'products'),
       sublinks: [{
-        key: 'wms-4-0',
+        key: 'wcm-4-0',
         path: '/products/tradeitem',
         text: formatMsg(intl, 'productsTradeItem'),
       }, {
-        key: 'wms-4-1',
+        key: 'wcm-4-1',
         path: '/products/sku',
         text: formatMsg(intl, 'productsSKU'),
       }],
     });
     linkMenus.push({
       single: false,
-      key: 'wms-6',
+      key: 'wcm-6',
       icon: 'zmdi zmdi-library',
       text: formatMsg(intl, 'resources'),
       sublinks: [{
-        key: 'wms-6-0',
-        path: '/warehousing/resources/warehouse',
+        key: 'wcm-6-0',
+        path: '/wcm/resources/warehouse',
         text: formatMsg(intl, 'resourcesWarehouse'),
       }, {
-        key: 'wms-6-1',
-        path: '/warehousing/resources/owner',
+        key: 'wcm-6-1',
+        path: '/wcm/resources/owner',
         text: formatMsg(intl, 'resourcesOwner'),
       }, {
-        key: 'wms-6-2',
-        path: '/warehousing/resources/supplier',
+        key: 'wcm-6-2',
+        path: '/wcm/resources/supplier',
         text: formatMsg(intl, 'resourcesSupplier'),
       }, {
-        key: 'wms-6-3',
-        path: '/warehousing/resources/consignee',
+        key: 'wcm-6-3',
+        path: '/wcm/resources/consignee',
         text: formatMsg(intl, 'resourcesConsignee'),
       }],
     });
     linkMenus.push({
       single: true,
-      key: 'wms-7',
-      path: '/warehousing/settings',
+      key: 'wcm-7',
+      path: '/wcm/settings',
       icon: 'zmdi zmdi-settings',
       text: formatMsg(intl, 'settings'),
     });
