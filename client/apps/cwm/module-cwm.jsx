@@ -8,7 +8,7 @@ import { format } from 'client/common/i18n/helpers';
 const formatMsg = format(messages);
 
 @injectIntl
-export default class ModuleWCM extends React.Component {
+export default class ModuleCWM extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     location: locationShape.isRequired,
@@ -22,74 +22,74 @@ export default class ModuleWCM extends React.Component {
     const linkMenus = [];
     linkMenus.push({
       single: true,
-      key: 'wcm-0',
-      path: '/wcm/dashboard',
+      key: 'cwm-0',
+      path: '/cwm/dashboard',
       icon: 'zmdi zmdi-desktop-windows',
       text: formatMsg(intl, 'dashboard'),
     });
     linkMenus.push({
       single: true,
-      key: 'wcm-1',
-      path: '/wcm/inbound',
+      key: 'cwm-1',
+      path: '/cwm/inbound',
       icon: 'icon-fontello-download',
       text: formatMsg(intl, 'inbound'),
     });
     linkMenus.push({
       single: true,
-      key: 'wcm-2',
-      path: '/wcm/outbound',
+      key: 'cwm-2',
+      path: '/cwm/outbound',
       icon: 'icon-fontello-upload',
       text: formatMsg(intl, 'outbound'),
     });
     linkMenus.push({
       single: true,
-      key: 'wcm-3',
-      path: '/wcm/inventory',
+      key: 'cwm-3',
+      path: '/cwm/inventory',
       icon: 'icon-fontello-warehouse',
       text: formatMsg(intl, 'inventory'),
     });
     linkMenus.push({
       single: false,
-      key: 'wcm-4',
+      key: 'cwm-4',
       icon: 'icon-fontello-layers',
       text: formatMsg(intl, 'products'),
       sublinks: [{
-        key: 'wcm-4-0',
+        key: 'cwm-4-0',
         path: '/products/tradeitem',
         text: formatMsg(intl, 'productsTradeItem'),
       }, {
-        key: 'wcm-4-1',
+        key: 'cwm-4-1',
         path: '/products/sku',
         text: formatMsg(intl, 'productsSKU'),
       }],
     });
     linkMenus.push({
       single: false,
-      key: 'wcm-6',
+      key: 'cwm-6',
       icon: 'zmdi zmdi-library',
       text: formatMsg(intl, 'resources'),
       sublinks: [{
-        key: 'wcm-6-0',
-        path: '/wcm/resources/warehouse',
+        key: 'cwm-6-0',
+        path: '/cwm/resources/warehouse',
         text: formatMsg(intl, 'resourcesWarehouse'),
       }, {
-        key: 'wcm-6-1',
-        path: '/wcm/resources/owner',
+        key: 'cwm-6-1',
+        path: '/cwm/resources/owner',
         text: formatMsg(intl, 'resourcesOwner'),
       }, {
-        key: 'wcm-6-2',
-        path: '/wcm/resources/supplier',
+        key: 'cwm-6-2',
+        path: '/cwm/resources/supplier',
         text: formatMsg(intl, 'resourcesSupplier'),
       }, {
-        key: 'wcm-6-3',
-        path: '/wcm/resources/consignee',
+        key: 'cwm-6-3',
+        path: '/cwm/resources/consignee',
         text: formatMsg(intl, 'resourcesConsignee'),
       }],
     });
     linkMenus.push({
       single: true,
-      key: 'wcm-7',
-      path: '/wcm/settings',
+      key: 'cwm-7',
+      path: '/cwm/settings',
       icon: 'zmdi zmdi-settings',
       text: formatMsg(intl, 'settings'),
     });

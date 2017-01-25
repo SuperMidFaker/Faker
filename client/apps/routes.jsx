@@ -45,10 +45,10 @@ import * as CMSSettings from './cms/settings';
 import * as CMSBilling from './cms/billing';
 import * as CMSResources from './cms/resources';
 import * as CMSTradeItem from './cms/tradeitem';
-import WCM from './wcm/module-wcm';
-import * as WCMDashboard from './wcm/dashboard';
-import * as WCMInbound from './wcm/inbound';
-import * as WCMOutbound from './wcm/outbound';
+import CWM from './cwm/module-cwm';
+import * as CWMDashboard from './cwm/dashboard';
+import * as CWMInbound from './cwm/inbound';
+import * as CWMOutbound from './cwm/outbound';
 import SCV from './scv/module-scv';
 import * as SCVDashboard from './scv/dashboard';
 import * as SCVOrders from './scv/orders';
@@ -316,11 +316,11 @@ export default(store, cookie) => {
             </Route>
             <Route path="settings" component={SCVSettings.List} />
           </Route>
-          <Route path={DEFAULT_MODULES.wcm.id} component={WCM}>
-            <IndexRedirect to="/wcm/dashboard" />
-            <Route path="dashboard" component={WCMDashboard.Index} />
-            <Route path="inbound" component={WCMInbound.List} />
-            <Route path="outbound" component={WCMOutbound.List} />
+          <Route path={DEFAULT_MODULES.cwm.id} component={CWM}>
+            <IndexRedirect to="/cwm/dashboard" />
+            <Route path="dashboard" component={CWMDashboard.Index} />
+            <Route path="inbound" component={CWMInbound.List} />
+            <Route path="outbound" component={CWMOutbound.List} />
           </Route>
           <Route path={DEFAULT_MODULES.customer.id} component={CRM}>
             <IndexRedirect to="/customer/orders" />

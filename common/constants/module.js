@@ -238,9 +238,9 @@ const MODULE_TRANSPORT = {
   ],
 };
 
-const MODULE_WCM = {
-  id: 'wcm',
-  text: 'moduleWCM',
+const MODULE_CWM = {
+  id: 'cwm',
+  text: 'moduleCWM',
   defaultText: '仓储协同',
   features: [
   ],
@@ -363,7 +363,7 @@ const appModules = [
   MODULE_CUSTOMER,
   MODULE_CLEARANCE,
   MODULE_TRANSPORT,
-  MODULE_WCM,
+  MODULE_CWM,
   MODULE_SCV,
 ];
 
