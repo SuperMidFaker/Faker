@@ -2,7 +2,7 @@ import { defineMessages } from 'react-intl';
 
 const messages = defineMessages({
   search: {
-    id: 'component.navbar.search',
+    id: 'component.action.search',
     defaultMessage: '搜索',
   },
   userAccount: {

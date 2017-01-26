@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { injectIntl, intlShape } from 'react-intl';
 import { Modal, Form, Input, Radio, message } from 'antd';
-import { closeCreateModal, createShipment } from 'common/reducers/scvInboundShipments';
+import { closeAddWarehouseModal, addWarehouse } from 'common/reducers/scvInventory';
 import { formatMsg } from './message.i18n';
 
 const FormItem = Form.Item;
@@ -11,20 +11,20 @@ const RadioGroup = Radio.Group;
 
 @injectIntl
 @connect(state => ({
-  visible: state.scvInboundShipments.createModal.visible,
+  visible: state.scvInventory.addWarehouseModal.visible,
   tenantId: state.account.tenantId,
 }),
-  { closeCreateModal, createShipment }
+  { closeAddWarehouseModal, addWarehouse }
 )
 @Form.create()
-export default class CreateModal extends React.Component {
+export default class AddWarehouseModal extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     visible: PropTypes.bool.isRequired,
     tenantId: PropTypes.number.isRequired,
     form: PropTypes.object.isRequired,
-    closeCreateModal: PropTypes.func.isRequired,
-    createShipment: PropTypes.func.isRequired,
+    closeAddWarehouseModal: PropTypes.func.isRequired,
+    addWarehouse: PropTypes.func.isRequired,
   }
   msg = formatMsg(this.props.intl)
   formColSpans = {
@@ -36,12 +36,12 @@ export default class CreateModal extends React.Component {
       if (!errors) {
         const formData = this.props.form.getFieldsValue();
         formData.tenant_id = this.props.tenantId;
-        this.props.createShipment(formData).then((result) => {
+        this.props.addWarehouse(formData).then((result) => {
           if (result.error) {
             message.error(result.error.message);
           } else {
             this.props.form.resetFields();
-            this.props.closeCreateModal();
+            this.props.closeAddWarehouseModal();
           }
         });
       }
@@ -49,12 +49,12 @@ export default class CreateModal extends React.Component {
   }
   handleCancel = () => {
     this.props.form.resetFields();
-    this.props.closeCreateModal();
+    this.props.closeAddWarehouseModal();
   }
   render() {
     const { form: { getFieldDecorator, getFieldValue }, visible } = this.props;
     return (
-      <Modal title={this.msg('newShipment')} visible={visible}
+      <Modal title={this.msg('addWarehouse')} visible={visible}
         onOk={this.handleOk} onCancel={this.handleCancel}
       >
         <Form horizontal>

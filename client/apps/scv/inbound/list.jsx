@@ -5,7 +5,7 @@ import { Radio, Button, Progress, Upload, Modal, message, Layout } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { loadInbounds, loadInboundPartners, openModal, openCreateModal } from 'common/reducers/scvinbound';
+import { loadInbounds, loadInboundPartners, openModal, openCreateModal } from 'common/reducers/scvInboundShipments';
 import Table from 'client/components/remoteAntTable';
 import SearchBar from 'client/components/search-bar';
 // import TrimSpan from 'client/components/trimSpan';
@@ -26,8 +26,8 @@ function fetchData({ state, dispatch }) {
   return dispatch(loadInbounds({
     tenantId: state.account.tenantId,
     filter: JSON.stringify({ status: 'all' }),
-    pageSize: state.scvinbound.list.pageSize,
-    current: state.scvinbound.list.current,
+    pageSize: state.scvInboundShipments.list.pageSize,
+    current: state.scvInboundShipments.list.current,
   }));
 }
 
@@ -36,9 +36,9 @@ function fetchData({ state, dispatch }) {
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    reload: state.scvinbound.reload,
-    inboundlist: state.scvinbound.list,
-    listFilter: state.scvinbound.listFilter,
+    reload: state.scvInboundShipments.reload,
+    inboundlist: state.scvInboundShipments.list,
+    listFilter: state.scvInboundShipments.listFilter,
   }),
   { loadInbounds, loadInboundPartners, openModal, openCreateModal }
 )

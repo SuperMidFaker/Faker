@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Modal, Form, Select, message } from 'antd';
 import RegionCascade from 'client/components/region-cascade';
-import { closeModal, sendInboundShipment } from 'common/reducers/scvinbound';
+import { closeModal, sendInboundShipment } from 'common/reducers/scvInboundShipments';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 
@@ -14,10 +14,10 @@ const Option = Select.Option;
 @injectIntl
 @connect(
   state => ({
-    visible: state.scvinbound.sendModal.visible,
-    shipment: state.scvinbound.sendModal.shipment,
-    brokers: state.scvinbound.brokerPartners,
-    transps: state.scvinbound.transpPartners,
+    visible: state.scvInboundShipments.sendModal.visible,
+    shipment: state.scvInboundShipments.sendModal.shipment,
+    brokers: state.scvInboundShipments.brokerPartners,
+    transps: state.scvInboundShipments.transpPartners,
     tenantName: state.account.tenantName,
     tenantId: state.account.tenantId,
     loginName: state.account.username,

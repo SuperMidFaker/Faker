@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Button, Form, Icon, Input, Select, message, Layout } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { loadInbounds, loadInboundPartners, openModal, openCreateModal } from 'common/reducers/scvinbound';
+import { loadInbounds, loadInboundPartners, openModal, openCreateModal } from 'common/reducers/scvInboundShipments';
 import Table from 'client/components/remoteAntTable';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
@@ -19,8 +19,8 @@ function fetchData({ state, dispatch }) {
   return dispatch(loadInbounds({
     tenantId: state.account.tenantId,
     filter: JSON.stringify({ status: 'all' }),
-    pageSize: state.scvinbound.list.pageSize,
-    current: state.scvinbound.list.current,
+    pageSize: state.scvInboundShipments.list.pageSize,
+    current: state.scvInboundShipments.list.current,
   }));
 }
 
@@ -29,9 +29,9 @@ function fetchData({ state, dispatch }) {
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    reload: state.scvinbound.reload,
-    inboundlist: state.scvinbound.list,
-    listFilter: state.scvinbound.listFilter,
+    reload: state.scvInboundShipments.reload,
+    inboundlist: state.scvInboundShipments.list,
+    listFilter: state.scvInboundShipments.listFilter,
   }),
   { loadInbounds, loadInboundPartners, openModal, openCreateModal }
 )
@@ -295,12 +295,8 @@ export default class InventoryStockList extends React.Component {
                   {this.msg('exportInventory')}
                 </Button>
               </div>
-              <div className="panel-body table-panel expandable">
-                <Table columns={this.columns} dataSource={this.dataSource} loading={inboundlist.loading}
-                  expandedRowKeys={this.state.expandedKeys} rowKey="id"
-                  expandedRowRender={this.handleExpandDetail}
-                  scroll={{ x: 1200 }} onExpandedRowsChange={this.handleExpandedChange}
-                />
+              <div className="panel-body table-panel">
+                <Table columns={this.columns} dataSource={this.dataSource} loading={inboundlist.loading} rowKey="id" scroll={{ x: 1200 }} />
               </div>
             </div>
           </Content>
