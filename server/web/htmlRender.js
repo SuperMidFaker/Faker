@@ -45,7 +45,6 @@ function renderAsHtml(pageCss, pageJs, content) {
   <script src="${__CDN__}/assets/lib/jquery.nanoscroller/javascripts/jquery.nanoscroller.min.js" type="text/javascript"></script>
   <script src="${__CDN__}/assets/lib/easemob/strophe.js" type="text/javascript"></script>
   <script src="${__CDN__}/assets/lib/easemob/websdk-1.1.2.js" type="text/javascript"></script>
-  <script src="https://as.alipayobjects.com/g/datavis/g2/2.0.3/index.js"></script>
   ${pageJs}
 </body>
 </html>`;

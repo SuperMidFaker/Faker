@@ -32,6 +32,7 @@ import cmsBilling from './cmsBilling';
 import crmCustomers from './crmCustomers';
 import crmOrders from './crmOrders';
 import crmBilling from './crmBilling';
+import cwmResources from './cwmResources';
 
 export default combineReducers({
   intl,
@@ -67,4 +68,5 @@ export default combineReducers({
   crmCustomers,
   crmOrders,
   crmBilling,
+  cwmResources,
 });

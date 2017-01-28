@@ -26,7 +26,7 @@ const { Header, Content } = Layout;
   depth: 2,
   moduleName: 'cwm',
 })
-export default class CWMWarehouseList extends React.Component {
+export default class SCVWarehouseList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,

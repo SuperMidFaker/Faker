@@ -1,19 +1,26 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Alert, Card, Row, Col, Layout } from 'antd';
+import { Alert, Breadcrumb, Card, Row, Select, Col, Layout } from 'antd';
+import createG2 from 'g2-react';
+import { Stat } from 'g2';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
+import chartData from './chartData.json';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
+const Option = Select.Option;
 
 @injectIntl
 @connect(
   state => ({
     tenantId: state.account.tenantId,
+    data: chartData,
+    width: 360,
+    height: 360,
   }),
 )
 @connectNav({
@@ -25,165 +32,99 @@ export default class CWMDashboard extends React.Component {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
   }
-
-  componentDidMount() {
-    const data = [
-        { name: 'Jan', Import: 12814, Export: 3054 },
-        { name: 'Feb', Import: 13012, Export: 5067 },
-        { name: 'Mar', Import: 11624, Export: 4004 },
-        { name: 'Apr', Import: 8814, Export: 7054 },
-        { name: 'May', Import: 12998, Export: 2043 },
-        { name: 'Jun', Import: 12321, Export: 6507 },
-        { name: 'Jul', Import: 10342, Export: 3019 },
-        { name: 'Aug', Import: 22998, Export: 5243 },
-        { name: 'Sep', Import: 11261, Export: 4419 },
-        { name: 'Oct', Import: 2651, Export: 199 },
-        { name: 'Nov', Import: 0, Export: 0 },
-        { name: 'Dec', Import: 0, Export: 0 },
-    ];
-    const Frame = window.G2.Frame;
-    let frame = new Frame(data);
-    frame = Frame.combinColumns(frame, ['Import', 'Export'], 'Revenue', 'I/E', 'name');
-    const chart = new window.G2.Chart({
-      id: 'c1',
-      width: 1000,
-      height: 300,
-    });
-    chart.source(frame, {
-      Revenue: {
-        alias: '进出口总额（美元）',
-        formatter(val) {
-          return `${parseInt(val / 1000, 10)}k`;
-        },
-      },
-      name: {
-        alias: '2016年',
-      },
-    });
-    chart.areaStack().position('name*Revenue').color('I/E');
-    chart.render();
-  }
-  handleRadioChange = (ev) => {
-    if (ev.target.value === this.props.listFilter.status) {
-
-    }
-  }
   msg = key => formatMsg(this.props.intl, key);
   render() {
+    const PieByCategories = createG2((chart) => {
+      chart.coord('theta');
+      chart.intervalStack().position(Stat.summary.proportion()).color('category');
+      chart.render();
+    });
+    const PieByCustomers = createG2((chart) => {
+      chart.coord('theta');
+      chart.intervalStack().position(Stat.summary.proportion()).color('customer');
+      chart.render();
+    });
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Header className="top-bar" key="header">
-          <div className="toolbar-right" />
-          <span>{this.msg('dashboardTitle')}</span>
+          <Breadcrumb>
+            <Breadcrumb.Item>
+              {this.msg('dashboardTitle')}
+            </Breadcrumb.Item>
+          </Breadcrumb>
+          <div className="toolbar-right">
+            <Select
+              size="large"
+              showSearch
+              defaultActiveFirstOption
+              placeholder="选择仓库"
+              optionFilterProp="children"
+              filterOption={(input, option) => option.props.value.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+              style={{ width: 240 }}
+            >
+              <Option value="all">全部仓库</Option>
+              <Option value="jack">物流大道仓库</Option>
+              <Option value="lucy">希雅路仓库</Option>
+              <Option value="tom">富特路仓库</Option>
+            </Select>
+          </div>
         </Header>
         <Content className="main-content">
           <div className="page-body card-wrapper">
             <Row gutter={16}>
               <Col span={16}>
-                <Card title={this.msg('orders')} style={{ display: 'none' }}>
+                <Card title={this.msg('volumeToday')}>
                   <ul className="statistics-columns">
-                    <li className="col-4">
+                    <li className="col-6">
                       <div className="statistics-cell">
-                        <h6>{this.msg('accepted')}</h6>
+                        <h6>{this.msg('stockInbound')}</h6>
                         <p className="data-num">12</p>
                       </div>
                     </li>
-                    <li className="col-4">
+                    <li className="col-6">
                       <div className="statistics-cell">
-                        <h6>{this.msg('sent')}</h6>
+                        <h6>{this.msg('stockOutbound')}</h6>
                         <p className="data-num">6</p>
                       </div>
                     </li>
-                    <li className="col-4">
+                    <li className="col-6">
                       <div className="statistics-cell">
-                        <h6>{this.msg('pickedup')}</h6>
+                        <h6>{this.msg('stockReserved')}</h6>
                         <p className="data-num">23</p>
                       </div>
                     </li>
-                    <li className="col-4">
+                    <li className="col-6">
                       <div className="statistics-cell">
-                        <h6>{this.msg('delivered')}</h6>
-                        <p className="data-num" />
-                      </div>
-                    </li>
-                    <li className="col-4">
-                      <div className="statistics-cell">
-                        <h6>{this.msg('completed')}</h6>
-                        <p className="data-num">32</p>
+                        <h6>{this.msg('stockTaken')}</h6>
+                        <p className="data-num">23</p>
                       </div>
                     </li>
                   </ul>
                 </Card>
-                <Card title={this.msg('shipments')}>
-                  <ul className="statistics-columns">
-                    <li className="col-4">
-                      <div className="statistics-cell">
-                        <h6>{this.msg('atOrigin')}</h6>
-                        <p className="data-num">12</p>
-                      </div>
-                    </li>
-                    <li className="col-4">
-                      <div className="statistics-cell">
-                        <h6>{this.msg('inTransit')}</h6>
-                        <p className="data-num">6</p>
-                      </div>
-                    </li>
-                    <li className="col-4">
-                      <div className="statistics-cell">
-                        <h6>{this.msg('arrived')}</h6>
-                        <p className="data-num">23</p>
-                      </div>
-                    </li>
-                    <li className="col-4">
-                      <div className="statistics-cell">
-                        <h6>{this.msg('clearance')}</h6>
-                        <p className="data-num">23</p>
-                      </div>
-                    </li>
-                    <li className="col-4">
-                      <div className="statistics-cell">
-                        <h6>{this.msg('inland')}</h6>
-                        <p className="data-num">32</p>
-                      </div>
-                    </li>
-                    <li className="col-4">
-                      <div className="statistics-cell">
-                        <h6>{this.msg('delivered')}</h6>
-                        <p className="data-num">32</p>
-                      </div>
-                    </li>
-                  </ul>
-                </Card>
-                <Card title={this.msg('payments')}>
-                  <ul className="statistics-columns">
-                    <li className="col-8">
-                      <div className="statistics-cell">
-                        <h6>{this.msg('tax')}</h6>
-                        <p className="data-num">￥12,578.95</p>
-                      </div>
-                    </li>
-                    <li className="col-8">
-                      <div className="statistics-cell">
-                        <h6>{this.msg('freightBills')}</h6>
-                        <p className="data-num">￥67,231.53</p>
-                      </div>
-                    </li>
-                    <li className="col-8">
-                      <div className="statistics-cell">
-                        <h6>{this.msg('brokerBills')}</h6>
-                        <p className="data-num">￥32,345.06</p>
-                      </div>
-                    </li>
-                  </ul>
-                </Card>
-                <Card title={this.msg('statistics')}>
-                  <div id="c1" />
-                </Card>
+                <Row gutter={16}>
+                  <Col span={12}>
+                    <Card title={this.msg('inventoryByCategories')}>
+                      <PieByCategories
+                        data={chartData.slice(0, chartData.length / 2 - 1)}
+                        width={360}
+                        height={360}
+                      />
+                    </Card>
+                  </Col>
+                  <Col span={12}>
+                    <Card title={this.msg('inventoryByCustomers')}>
+                      <PieByCustomers
+                        data={chartData.slice(0, chartData.length / 2 - 1)}
+                        width={360}
+                        height={360}
+                      />
+                    </Card>
+                  </Col>
+                </Row>
               </Col>
               <Col span={8}>
-                <Card title={this.msg('alerts')} >
-                  <Alert message="报关单221020161109715501 海关查验" type="warning" showIcon />
-                  <Alert message="1067172 送货延迟：收货人外地出差，18号以后送货" type="warning" showIcon />
+                <Card title={this.msg('inventoryAlerts')} >
+                  <Alert message="221020161109715501 低于安全库存" type="warning" showIcon />
                 </Card>
               </Col>
             </Row>

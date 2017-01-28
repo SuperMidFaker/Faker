@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Alert, Card, Row, Col, Layout } from 'antd';
+import { Alert, Breadcrumb, Card, Row, Col, Layout } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
@@ -73,8 +73,12 @@ export default class SCVDashboard extends React.Component {
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Header className="top-bar" key="header">
+          <Breadcrumb>
+            <Breadcrumb.Item>
+              {this.msg('dashboardTitle')}
+            </Breadcrumb.Item>
+          </Breadcrumb>
           <div className="toolbar-right" />
-          <span>{this.msg('dashboardTitle')}</span>
         </Header>
         <Content className="main-content">
           <div className="page-body card-wrapper">

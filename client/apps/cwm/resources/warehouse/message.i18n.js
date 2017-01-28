@@ -1,10 +1,12 @@
 import { defineMessages } from 'react-intl';
+import { formati18n } from 'client/common/i18n/helpers';
 
 const messages = defineMessages({
-  ordersTitle: {
+  warehouse: {
     id: 'cwm.resources.warehouse',
-    defaultMessage: '仓库设置',
+    defaultMessage: '仓库',
   },
 });
 
 export default messages;
+export const formatMsg = formati18n(messages);
