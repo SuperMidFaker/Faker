@@ -2,13 +2,10 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Alert, Breadcrumb, Card, Row, Select, Col, Layout } from 'antd';
-import createG2 from 'g2-react';
-import { Stat } from 'g2';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import chartData from './chartData.json';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -18,9 +15,6 @@ const Option = Select.Option;
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    data: chartData,
-    width: 360,
-    height: 360,
   }),
 )
 @connectNav({
@@ -34,16 +28,6 @@ export default class CWMDashboard extends React.Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   render() {
-    const PieByCategories = createG2((chart) => {
-      chart.coord('theta');
-      chart.intervalStack().position(Stat.summary.proportion()).color('category');
-      chart.render();
-    });
-    const PieByCustomers = createG2((chart) => {
-      chart.coord('theta');
-      chart.intervalStack().position(Stat.summary.proportion()).color('customer');
-      chart.render();
-    });
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Header className="top-bar" key="header">
@@ -103,22 +87,10 @@ export default class CWMDashboard extends React.Component {
                 </Card>
                 <Row gutter={16}>
                   <Col span={12}>
-                    <Card title={this.msg('inventoryByCategories')}>
-                      <PieByCategories
-                        data={chartData.slice(0, chartData.length / 2 - 1)}
-                        width={360}
-                        height={360}
-                      />
-                    </Card>
+                    <Card title={this.msg('inventoryByCategories')} />
                   </Col>
                   <Col span={12}>
-                    <Card title={this.msg('inventoryByCustomers')}>
-                      <PieByCustomers
-                        data={chartData.slice(0, chartData.length / 2 - 1)}
-                        width={360}
-                        height={360}
-                      />
-                    </Card>
+                    <Card title={this.msg('inventoryByCustomers')} />
                   </Col>
                 </Row>
               </Col>
