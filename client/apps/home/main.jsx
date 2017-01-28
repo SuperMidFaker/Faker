@@ -78,7 +78,7 @@ export default class Home extends React.Component {
       );
     }
     return (
-      <Layout className="layout-wrapper layout-nosider-left">
+      <Layout className="layout-wrapper">
         <Header>
           <HeaderNavBar />
         </Header>

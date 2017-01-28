@@ -31,9 +31,7 @@ export default (routes, dynamic) => {
       const { store } = this.props;
       return (
         <Provider store={store}>
-          <div className="full-container">
-            {this.renderRouter()}
-          </div>
+          {this.renderRouter()}
         </Provider>
       );
     }
