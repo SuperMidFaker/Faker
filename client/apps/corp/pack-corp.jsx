@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Menu, Layout } from 'antd';
 import { locationShape } from 'react-router';
 import { intlShape, injectIntl } from 'react-intl';
-import SimpleHeaderBar from 'client/components/simpleHeaderBar';
+import CorpHeaderBar from 'client/components/corpHeaderBar';
 import connectNav from 'client/common/decorators/connect-nav';
 import NavLink from 'client/components/nav-link';
 import { hasPermission } from 'client/common/decorators/withPrivilege';
@@ -91,19 +91,10 @@ export default class CorpPack extends React.Component {
         </MenuItem>
       );
     }
-    if (hasPermission(privileges, { module: 'corp', feature: 'partners' })) {
-      linkMenus.push(
-        <MenuItem key="corpsetting-5">
-          <NavLink to="/corp/partners">
-            <i className="icon-fontello-network" /> {formatMsg(intl, 'partnership')}
-          </NavLink>
-        </MenuItem>
-      );
-    }
     return (
       <Layout className="layout-wrapper">
         <Header>
-          <SimpleHeaderBar title="管理后台" />
+          <CorpHeaderBar title="管理后台" />
         </Header>
         <Content>
           <Header className="top-bar">

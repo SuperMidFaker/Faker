@@ -26,4 +26,6 @@ export default [
    ['get', '/my*', renderWebPage],
    ['get', '/message*', renderWebPage],
    ['get', '/pub/*', renderWebPage],
+   ['get', '/network*', renderWebPage],
+   ['get', '/open*', renderWebPage],
 ];

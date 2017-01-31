@@ -15,8 +15,11 @@ import * as CorpOverview from './corp/overview';
 import CorpInfo from './corp/info';
 import * as Organization from './corp/organization';
 import * as Personnel from './corp/personnel';
-import * as Cooperation from './corp/cooperation';
 import * as Role from './corp/role';
+import PackNetwork from './network/packNetwork';
+import * as Network from './network';
+import PackOpenPlatform from './open/packOpenPlatform';
+import AppsList from './open/apps';
 import Module from './module';
 import TMS from './transport/module-transport';
 import * as TMSDashboard from './transport/dashboard';
@@ -57,6 +60,7 @@ import SCV from './scv/module-scv';
 import * as SCVDashboard from './scv/dashboard';
 import * as SCVOrders from './scv/orders';
 import * as SCVInbound from './scv/inbound';
+import * as SCVOutbound from './scv/outbound';
 import * as SCVClearance from './scv/clearance';
 import * as SCVInventoryStock from './scv/inventory/stock';
 import * as SCVInventoryRecieving from './scv/inventory/recieving';
@@ -133,6 +137,16 @@ export default(store, cookie) => {
         <Route path="message" component={PackMessage}>
           <Route path="list" component={MessageList} />
         </Route>
+        <Route path="network" component={PackNetwork}>
+          <Route path="partners">
+            <IndexRoute component={Network.Partners} />
+            <Route path="invitations/in" component={Network.Received} />
+            <Route path="invitations/out" component={Network.Sent} />
+          </Route>
+        </Route>
+        <Route path="open" component={PackOpenPlatform}>
+          <Route path="apps" component={AppsList} />
+        </Route>
         <Route path="corp" component={Corp}>
           <IndexRedirect to="/corp/overview" />
           <Route path="overview" component={CorpOverview.Index} />
@@ -146,11 +160,6 @@ export default(store, cookie) => {
             <IndexRoute component={Personnel.List} />
             <Route path="new" component={Personnel.Edit} />
             <Route path="edit/:id" component={Personnel.Edit} />
-          </Route>
-          <Route path="partners">
-            <IndexRoute component={Cooperation.Partners} />
-            <Route path="invitations/in" component={Cooperation.Received} />
-            <Route path="invitations/out" component={Cooperation.Sent} />
           </Route>
           <Route path="role" component={Role.Wrapper}>
             <IndexRoute component={Role.List} />
@@ -305,6 +314,7 @@ export default(store, cookie) => {
             <Route path="orders" component={SCVOrders.List} />
             <Route path="shipments">
               <Route path="inbound" component={SCVInbound.List} />
+              <Route path="outbound" component={SCVOutbound.List} />
             </Route>
             <Route path="clearance" component={SCVClearance.List} />
             <Route path="inventory" >

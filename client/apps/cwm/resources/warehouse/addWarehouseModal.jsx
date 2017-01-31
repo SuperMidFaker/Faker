@@ -52,75 +52,41 @@ export default class AddWarehouseModal extends React.Component {
     this.props.closeAddWarehouseModal();
   }
   render() {
-    const { form: { getFieldDecorator, getFieldValue }, visible } = this.props;
+    const { form: { getFieldDecorator }, visible } = this.props;
     return (
       <Modal title={this.msg('addWarehouse')} visible={visible}
         onOk={this.handleOk} onCancel={this.handleCancel}
       >
         <Form horizontal>
-          <FormItem label={this.msg('orderNo')} {...this.formColSpans}>
+          <FormItem label={this.msg('warehouseName')} {...this.formColSpans}>
             {
-              getFieldDecorator('order_no')(<Input />)
+              getFieldDecorator('warehouse_name')(<Input />)
             }
           </FormItem>
-          <FormItem label={this.msg('mode')} {...this.formColSpans}>
+          <FormItem label={this.msg('warehouseCode')} {...this.formColSpans}>
             {
-              getFieldDecorator('trans_mode', {
+              getFieldDecorator('warehouse_code')(<Input />)
+            }
+          </FormItem>
+          <FormItem label={this.msg('isBonded')} {...this.formColSpans}>
+            {
+              getFieldDecorator('is_bonded', {
                 rules: [{
                   required: true, message: this.msg('transModeRequired'),
                 }],
               })(
                 <RadioGroup>
-                  <RadioButton value="SEA">{this.msg('seaWay')}</RadioButton>
-                  <RadioButton value="AIR">{this.msg('airWay')}</RadioButton>
+                  <RadioButton value="BONDED">{this.msg('bonded')}</RadioButton>
+                  <RadioButton value="NONBONDED">{this.msg('nonBonded')}</RadioButton>
                 </RadioGroup>
               )
             }
           </FormItem>
-          {
-            getFieldValue('trans_mode') === 'SEA' &&
-            <FormItem label={this.msg('vessel')} {...this.formColSpans}>
-              {
-                getFieldDecorator('vessel')(<Input />)
-              }
-            </FormItem>
-          }
-          {
-            getFieldValue('trans_mode') === 'SEA' &&
-            <FormItem label={this.msg('billlading')} {...this.formColSpans}>
-              {
-                getFieldDecorator('billlading')(<Input />)
-              }
-            </FormItem>
-          }
-          {
-            getFieldValue('trans_mode') === 'SEA' &&
-            <FormItem label={this.msg('voyage')} {...this.formColSpans}>
-              {
-                getFieldDecorator('voyage')(<Input />)
-              }
-            </FormItem>
-          }
-          {
-            getFieldValue('trans_mode') === 'AIR' &&
-            <FormItem label={this.msg('mawb')} {...this.formColSpans}>
-              {
-                getFieldDecorator('mawb', {
-                  rules: [{
-                    required: true, message: this.msg('paramRequired'),
-                  }],
-                })(<Input />)
-              }
-            </FormItem>
-          }
-          {
-            getFieldValue('trans_mode') === 'AIR' &&
-            <FormItem label={this.msg('hawb')} {...this.formColSpans}>
-              {
-                getFieldDecorator('hawb')(<Input />)
-              }
-            </FormItem>
-          }
+          <FormItem label={this.msg('location')} {...this.formColSpans}>
+            {
+              getFieldDecorator('location')(<Input />)
+            }
+          </FormItem>
         </Form>
       </Modal>
     );

@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Row, Col, Tabs, Table, Menu, Dropdown, Layout } from 'antd';
+import { Breadcrumb, Button, Tabs, Table, Menu, Dropdown, Layout } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -14,7 +14,7 @@ import { loadCustomers, showCustomerModal, deleteCustomer } from 'common/reducer
 import { PARTNER_ROLES } from 'common/constants';
 
 const formatMsg = format(messages);
-const { Header, Content } = Layout;
+const { Header, Content, Sider } = Layout;
 
 function fetchData({ state, dispatch }) {
   return dispatch(loadCustomers({
@@ -83,22 +83,27 @@ export default class List extends React.Component {
       </Menu>
     );
     const operations = (
-      <Dropdown.Button overlay={menu} type="ghost" onClick={() => this.props.showCustomerModal('edit', customer)}>
+      <Dropdown.Button overlay={menu} onClick={() => this.props.showCustomerModal('edit', customer)}>
         修 改
       </Dropdown.Button>
     );
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Header className="top-bar" key="header">
-          <div className="toolbar-right" />
-          <span>{this.msg('customer')}</span>
+          <Breadcrumb>
+            <Breadcrumb.Item>
+              {this.msg('customer')}
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              {customer.name}
+            </Breadcrumb.Item>
+          </Breadcrumb>
         </Header>
         <Content className="main-content" key="main">
-          <Row gutter={16}>
-            <Col span={6}>
-              <div className="page-body">
+          <div className="page-body">
+            <Layout style={{ padding: '24px 0', background: '#fff' }}>
+              <Sider width={360} style={{ background: '#fff', borderRight: '1px solid #e9e9e9' }}>
                 <div className="toolbar">
-
                   <div className="pull-right">
                     <Button type="primary" icon="plus-circle-o" onClick={() => this.props.showCustomerModal('add')}>
                       {this.msg('add')}
@@ -106,21 +111,17 @@ export default class List extends React.Component {
                   </div>
                   <h3>客户列表</h3>
                 </div>
-                <div className="panel-body table-panel" >
-                  <Table dataSource={this.props.customers} columns={columns} showHeader={false} onRowClick={this.handleRowClick} />
-                  <CustomerModal onOk={this.handleTableLoad} />
-                </div>
-              </div>
-            </Col>
-            <Col span={18}>
-              <div className="page-body">
+                <Table size="middle" dataSource={this.props.customers} columns={columns} showHeader={false} onRowClick={this.handleRowClick} />
+                <CustomerModal onOk={this.handleTableLoad} />
+              </Sider>
+              <Content style={{ padding: '0 24px', minHeight: 280 }}>
                 <Tabs defaultActiveKey="1" tabBarExtraContent={operations}>
                   <Tabs.TabPane tab="企业资料" key="1"><Profile customer={customer} /></Tabs.TabPane>
                   <Tabs.TabPane tab="业务规则" key="2"><BusinessModel customer={customer} /></Tabs.TabPane>
                 </Tabs>
-              </div>
-            </Col>
-          </Row>
+              </Content>
+            </Layout>
+          </div>
         </Content>
       </QueueAnim>
     );

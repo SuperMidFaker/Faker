@@ -62,17 +62,25 @@ export default class Home extends React.Component {
   render() {
     const { intl, logo, name } = this.props;
     const tenantMenus = [
-      <MenuItem key="apps">
-        <i className="zmdi zmdi-apps" />
-        {formatMsg(intl, 'applications')}
+      <MenuItem key="home">
+        <i className="zmdi zmdi-apps" /> {formatMsg(intl, 'home')}
+      </MenuItem>,
+      <MenuItem key="network">
+        <NavLink to="/network/partners">
+          <i className="icon-fontello-network" /> {formatMsg(intl, 'network')}
+        </NavLink>
+      </MenuItem>,
+      <MenuItem key="openPlatform">
+        <NavLink to="/open/apps">
+          <i className="icon-fontello-code" /> {formatMsg(intl, 'openPlatform')}
+        </NavLink>
       </MenuItem>,
     ];
     if (this.state.corpMenuLink) {
       tenantMenus.push(
         <MenuItem key="corp">
           <NavLink to={`${this.state.corpMenuLink}`}>
-            <i className="zmdi zmdi-city-alt" />
-            {formatMsg(intl, 'corp')}
+            <i className="zmdi zmdi-city-alt" /> {formatMsg(intl, 'corp')}
           </NavLink>
         </MenuItem>
       );
@@ -89,7 +97,7 @@ export default class Home extends React.Component {
               <h2 className="tenant-name">{name}</h2>
             </div>
             <div className="tenant-nav">
-              <Menu defaultSelectedKeys={['apps']} mode="horizontal">
+              <Menu defaultSelectedKeys={['home']} mode="horizontal">
                 {tenantMenus}
               </Menu>
             </div>

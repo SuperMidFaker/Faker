@@ -158,7 +158,26 @@
   outline:0;
   margin-left: 64px;
 }
-
+.navbar-corp {
+    float: right;
+    line-height: 42px;
+    color: #fff;
+    font-size: 14px;
+    margin-right: 16px;
+    .logo {
+      display: inline-block;
+      position: relative;
+      top: 8px;
+      width: 32px;
+      height: 32px;
+      background-size: cover;
+      background-position: 50%;
+      background-repeat: no-repeat;
+      background-color: transparent;
+      border-radius: 32px;
+      margin-right: 8px;
+    }
+}
 .navbar-search {
   display: none;
   float: right !important;
@@ -176,6 +195,7 @@
     border-bottom: 1px solid rgba(255, 255, 255, .1);
     float: right;
     -webkit-transition: all ease-in-out .3s;
+    transition: all ease-in-out .3s;
   }
   input[type=search]:focus {
     width: 160px; 
