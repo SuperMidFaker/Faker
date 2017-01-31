@@ -29,12 +29,12 @@ export default class AccountPack extends React.Component {
             <Menu defaultSelectedKeys={['apps']} mode="inline">
               <Menu.Item key="apps">
                 <NavLink to="/open/apps">
-                  <span><Icon type="user" /><span>应用管理</span></span>
+                  <span><Icon type="appstore-o" /><span>应用管理</span></span>
                 </NavLink>
               </Menu.Item>
-              <Menu.Item key="security">
-                <NavLink to="/my/password">
-                  <span><Icon type="lock" /><span>安全设置</span></span>
+              <Menu.Item key="docs">
+                <NavLink to="/open/docs">
+                  <span><Icon type="book" /><span>开发文档</span></span>
                 </NavLink>
               </Menu.Item>
             </Menu>
