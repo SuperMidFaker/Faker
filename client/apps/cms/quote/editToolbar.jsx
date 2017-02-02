@@ -112,10 +112,10 @@ export default class EditToolbar extends Component {
     return (
       <div className="top-bar-tools">
         <Dropdown overlay={menu}>
-          <Button>{this.msg('more')} <Icon type="down" /></Button>
+          <Button size="large">{this.msg('more')} <Icon type="down" /></Button>
         </Dropdown>
-        <Button type="default" icon="save" onClick={this.handleSave}>{this.msg('save')}</Button>
-        <Button type="primary" icon="book" onClick={this.handlePublish}>{this.msg('publish')}</Button>
+        <Button type="default" size="large" icon="save" onClick={this.handleSave}>{this.msg('save')}</Button>
+        <Button type="primary" size="large" icon="book" onClick={this.handlePublish}>{this.msg('publish')}</Button>
         <PublishModal quoteForm={this.props.form} />
         <TrialModal quoteForm={this.props.form} />
       </div>

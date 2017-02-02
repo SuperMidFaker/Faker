@@ -439,14 +439,14 @@ export default class FeesList extends React.Component {
         <Content className="main-content">
           <div className="page-body">
             <div className="toolbar">
-              <Button onClick={this.handleExportExcel}>{this.msg('export')}</Button>
-              <div className="toolbar-right">
-                <RangePicker style={{ width: 200 }} value={[moment(startDate), moment(endDate)]}
-                  onChange={this.onDateChange}
-                />
-              </div>
+              <Button size="large" onClick={this.handleExportExcel}>{this.msg('export')}</Button>
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3>
+              </div>
+              <div className="toolbar-right">
+                <RangePicker size="large" style={{ width: 200 }} value={[moment(startDate), moment(endDate)]}
+                  onChange={this.onDateChange}
+                />
               </div>
             </div>
             <div className="panel-body table-panel">

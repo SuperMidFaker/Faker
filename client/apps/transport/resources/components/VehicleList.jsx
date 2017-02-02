@@ -112,7 +112,7 @@ export default function VehicleList(props) {
         <div className="page-body">
           <div className="toolbar">
             <PrivilegeCover module="transport" feature="resources" action="create">
-              <Button type="primary" onClick={onAddCarBtnClick} icon="plus-circle-o">新增车辆</Button>
+              <Button type="primary" size="large" onClick={onAddCarBtnClick} icon="plus-circle-o">新增车辆</Button>
             </PrivilegeCover>
           </div>
           <div className="panel-body table-panel">

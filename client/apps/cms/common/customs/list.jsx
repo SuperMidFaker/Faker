@@ -232,8 +232,8 @@ export default class DelgDeclList extends Component {
           <div className="page-body">
             <div className="toolbar">
               <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
-                <Button type="primary" onClick={this.handleCreateBtnClick} icon="plus">
-                  {this.msg('createDecl')}
+                <Button size="large" onClick={this.handleCreateBtnClick} icon="plus">
+                  {this.msg('submitForReview')}
                 </Button>
               </PrivilegeCover>
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>

@@ -46,6 +46,7 @@ export default class MyShipmentsSelect extends React.Component {
         value={fieldsValue.viewStatus ? fieldsValue.viewStatus : ''}
         onChange={this.handleSelect}
         style={{ width: 160 }}
+        size="large"
       >
         <Option value="my">我负责的运单</Option>
         <Option value="all">全部运单</Option>

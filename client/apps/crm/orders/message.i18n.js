@@ -113,6 +113,10 @@ const messages = defineMessages({
     id: 'crm.orders.save',
     defaultMessage: '保存',
   },
+  cancel: {
+    id: 'crm.orders.cancel',
+    defaultMessage: '取消',
+  },
   forwarder: {
     id: 'crm.orders.forwarder',
     defaultMessage: 'Forwarder',

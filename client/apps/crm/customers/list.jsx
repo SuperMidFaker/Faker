@@ -104,7 +104,7 @@ export default class List extends React.Component {
             <Layout style={{ padding: '24px 0', background: '#fff' }}>
               <Sider width={360} style={{ background: '#fff', borderRight: '1px solid #e9e9e9' }}>
                 <div className="toolbar">
-                  <div className="pull-right">
+                  <div className="toolbar-right">
                     <Button type="primary" icon="plus-circle-o" onClick={() => this.props.showCustomerModal('add')}>
                       {this.msg('add')}
                     </Button>

@@ -298,7 +298,7 @@ export default class ShipmentOrderList extends React.Component {
         <Content className="main-content" key="main">
           <div className="page-body">
             <div className="toolbar">
-              <Button type="primary" icon="plus" onClick={this.handleCreate} className="btn-success">
+              <Button type="primary" size="large" icon="plus" onClick={this.handleCreate} className="btn-success">
                 {this.msg('new')}
               </Button>
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>

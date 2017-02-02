@@ -532,12 +532,12 @@ export default class DelegationList extends Component {
           <div className="page-body">
             <div className="toolbar">
               <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
-                <Button type="primary" onClick={this.handleCreateBtnClick} icon="plus" className="btn-success">
+                <Button type="primary" size="large" onClick={this.handleCreateBtnClick} icon="plus" className="btn-success">
                   {this.props.ietype === 'import' ? this.msg('newImportDelg') : this.msg('newExportDelg')}
                 </Button>
               </PrivilegeCover>
               <div className="toolbar-right">
-                <Select value={listFilter.viewStatus} style={{ width: 160 }} showSearch={false}
+                <Select size="large" value={listFilter.viewStatus} style={{ width: 160 }} showSearch={false}
                   onChange={this.handleViewChange}
                 >
                   <OptGroup label="常用视图">
@@ -546,7 +546,7 @@ export default class DelegationList extends Component {
                   </OptGroup>
                 </Select>
                 <Tooltip title="清关业务委托设置">
-                  <Button icon="setting" />
+                  <Button size="large" icon="setting" />
                 </Tooltip>
               </div>
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>

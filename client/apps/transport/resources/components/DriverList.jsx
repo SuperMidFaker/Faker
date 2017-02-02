@@ -118,7 +118,7 @@ function DriverList(props) {
         <div className="page-body">
           <div className="toolbar">
             <PrivilegeCover module="transport" feature="resources" action="create">
-              <Button type="primary" onClick={onAddDriverBtnClicked} icon="plus-circle-o">新增司机</Button>
+              <Button type="primary" size="large" onClick={onAddDriverBtnClicked} icon="plus-circle-o">新增司机</Button>
             </PrivilegeCover>
           </div>
           <div className="panel-body table-panel">

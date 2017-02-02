@@ -396,12 +396,12 @@ export default class QuoteList extends Component {
         <Content className="main-content" key="main">
           <div className="page-body">
             <div className="toolbar">
-              <Button type="primary" icon="plus" onClick={this.handleCreateNew}>
+              <Button type="primary" size="large" icon="plus" onClick={this.handleCreateNew}>
                 新建报价
               </Button>
               <div className="toolbar-right">
                 <Tooltip title="报价模板设置">
-                  <Button icon="setting" />
+                  <Button size="large" icon="setting" />
                 </Tooltip>
               </div>
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>

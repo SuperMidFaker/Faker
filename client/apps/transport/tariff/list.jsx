@@ -469,13 +469,13 @@ export default class TariffList extends React.Component {
       <QueueAnim type={['bottom', 'up']}>
         <Header className="top-bar" key="header">
           <span>{this.msg('transportTariff')}</span>
-          <RadioGroup onChange={this.handleKindChange} value={this.state.kind}>
+          <RadioGroup onChange={this.handleKindChange} value={this.state.kind} size="large">
             <RadioButton value="all">全部</RadioButton>
             <RadioButton value="sale">销售价</RadioButton>
             <RadioButton value="cost">成本价</RadioButton>
           </RadioGroup>
           <span />
-          <RadioGroup onChange={this.handleStatusChange} value={this.state.status} >
+          <RadioGroup onChange={this.handleStatusChange} value={this.state.status} size="large">
             <RadioButton value="draft">草稿箱</RadioButton>
           </RadioGroup>
           <div className="top-bar-tools">
@@ -486,7 +486,7 @@ export default class TariffList extends React.Component {
           <div className="page-body">
             <div className="toolbar">
               <PrivilegeCover module="transport" feature="tariff" action="create">
-                <Button type="primary" icon="plus-circle-o" onClick={this.handleShowCreateTariffModal}>
+                <Button type="primary" size="large" icon="plus-circle-o" onClick={this.handleShowCreateTariffModal}>
                   {this.msg('tariffCreate')}
                 </Button>
               </PrivilegeCover>

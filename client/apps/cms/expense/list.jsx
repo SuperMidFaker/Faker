@@ -496,10 +496,10 @@ export default class ExpenseList extends Component {
         <Content className="main-content" key="main">
           <div className="page-body">
             <div className="toolbar">
-              <Button type="default" icon="upload" onClick={this.handleAdvFeesImport}>
+              <Button type="default" size="large" icon="upload" onClick={this.handleAdvFeesImport}>
                 {this.msg('incExp')}
               </Button>
-              <Button type="ghost" icon="file-excel" onClick={this.handleExpExport}>
+              <Button type="ghost" size="large" icon="file-excel" onClick={this.handleExpExport}>
                 {this.msg('eptExp')}
               </Button>
               <div className="toolbar-right">
@@ -507,6 +507,7 @@ export default class ExpenseList extends Component {
                   style={{ width: 120 }}
                   showSearch={false}
                   onChange={this.handleViewChange}
+                  size="large"
                 >
                   <OptGroup label="常用视图">
                     <Option value="both">显示收入与成本</Option>
@@ -515,7 +516,7 @@ export default class ExpenseList extends Component {
                   </OptGroup>
                 </Select>
                 <Tooltip title="费用与计费设置">
-                  <Button icon="setting" />
+                  <Button size="large" icon="setting" />
                 </Tooltip>
               </div>
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>

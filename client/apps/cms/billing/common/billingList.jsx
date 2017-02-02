@@ -257,8 +257,8 @@ export default class BillingList extends React.Component {
         <Content className="main-content">
           <div className="page-body">
             <div className="toolbar">
-              <Button type="primary" icon="plus" onClick={this.handleAddBtnClicked}>{this.msg('createBilling')}</Button>
-              <Button type="ghost" icon="export" onClick={this.handleExportExcel}>{this.msg('export')}</Button>
+              <Button type="primary" size="large" icon="plus" onClick={this.handleAddBtnClicked}>{this.msg('createBilling')}</Button>
+              <Button type="ghost" size="large" icon="export" onClick={this.handleExportExcel}>{this.msg('export')}</Button>
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3>
               </div>

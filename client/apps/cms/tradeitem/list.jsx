@@ -83,13 +83,14 @@ export default class TradeItemList extends Component {
                   style={{ width: 300 }}
                   placeholder="选择客户"
                   optionFilterProp="children"
+                  size="large"
                 >
                   <Option value="jack">山特维克矿山工程机械贸易(上海)有限公司</Option>
                   <Option value="lucy">永恒力叉车(上海)有限公司</Option>
                   <Option value="tom">阿特拉斯.科普柯(上海)贸易有限公司</Option>
                 </Select>
               </div>
-              <Button type="primary" icon="plus" onClick={this.handleCreateNew}>
+              <Button type="primary" size="large" icon="plus" onClick={this.handleCreateNew}>
                 导入
               </Button>
             </div>

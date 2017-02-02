@@ -114,7 +114,7 @@ export default function NodeList(props) {
         <div className="page-body">
           <div className="toolbar">
             <PrivilegeCover module="transport" feature="resources" action="create">
-              <Button type="primary" onClick={onAddNoteBtnClick} icon="plus-circle-o">新增{nodeTypes[nodeType]}</Button>
+              <Button type="primary" size="large" onClick={onAddNoteBtnClick} icon="plus-circle-o">新增{nodeTypes[nodeType]}</Button>
             </PrivilegeCover>
           </div>
           <div className="panel-body table-panel">

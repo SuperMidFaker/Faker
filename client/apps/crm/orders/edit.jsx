@@ -61,17 +61,23 @@ export default class Edit extends Component {
       });
     }
   }
+  handleCancelBtnClick = () => {
+    this.context.router.goBack();
+  }
   render() {
     return (
       <div>
         <Header className="top-bar">
           <span>修改订单</span>
+          <div className="top-bar-tools">
+            <Button size="large" type="ghost" onClick={this.handleCancelBtnClick}>
+              {this.msg('cancel')}
+            </Button>
+            <Button size="large" type="primary" onClick={this.handleSave}>
+              {this.msg('save')}
+            </Button>
+          </div>
         </Header>
-        <div className="top-bar-tools">
-          <Button size="large" type="primary" onClick={this.handleSave}>
-            {this.msg('save')}
-          </Button>
-        </div>
         <Content className="main-content">
           <div className="page-body card-wrapper">
             <OrderForm operation="edit" />
