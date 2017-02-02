@@ -24,7 +24,7 @@ const { Header, Content } = Layout;
 )
 @connectNav({
   depth: 2,
-  moduleName: 'cwm',
+  moduleName: 'scv',
 })
 export default class SCVWarehouseList extends React.Component {
   static propTypes = {

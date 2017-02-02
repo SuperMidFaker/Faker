@@ -53,6 +53,7 @@ import * as CWMDashboard from './cwm/dashboard';
 import * as CWMInbound from './cwm/inbound';
 import * as CWMOutbound from './cwm/outbound';
 import * as CWMInventory from './cwm/inventory';
+import * as CWMProductsMaterial from './cwm/products/material';
 import * as CWMProductsSku from './cwm/products/sku';
 import * as CWMWarehouse from './cwm/resources/warehouse';
 import * as CWMSettings from './cwm/settings';
@@ -299,12 +300,14 @@ export default(store, cookie) => {
               <IndexRedirect to="/clearance/settings/quotetemplates" />
               <Route path="quotetemplates" component={CMSSettings.QuoteTemplates} />
             </Route>
+            <Route path="products">
+              <Route path="tradeitem">
+                <IndexRoute component={CMSTradeItem.List} />
+              </Route>
+            </Route>
             <Route path="resources">
               <Route path="broker">
                 <IndexRoute component={CMSResources.BrokerContainer} />
-              </Route>
-              <Route path="tradeitem">
-                <IndexRoute component={CMSTradeItem.List} />
               </Route>
             </Route>
           </Route>
@@ -348,6 +351,7 @@ export default(store, cookie) => {
             <Route path="outbound" component={CWMOutbound.List} />
             <Route path="inventory" component={CWMInventory.List} />
             <Route path="products">
+              <Route path="material" component={CWMProductsMaterial.List} />
               <Route path="sku" component={CWMProductsSku.List} />
             </Route>
             <Route path="resources">

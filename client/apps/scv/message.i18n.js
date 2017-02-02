@@ -63,11 +63,11 @@ const messages = defineMessages({
   },
   productsTradeItem: {
     id: 'scv.module.products.trade.item',
-    defaultMessage: '贸易商品归类',
+    defaultMessage: '商品物料归类',
   },
   productsSKU: {
     id: 'scv.module.products.sku',
-    defaultMessage: '商品仓库料号',
+    defaultMessage: '商品库存单元',
   },
   productsCategory: {
     id: 'scv.module.products.category',

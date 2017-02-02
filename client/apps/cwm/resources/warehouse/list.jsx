@@ -34,15 +34,15 @@ export default class CWMWarehouseList extends React.Component {
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
     title: this.msg('warehouseName'),
-    dataIndex: 'wh_name',
+    dataIndex: 'whse_name',
     width: 200,
   }, {
     title: this.msg('warehouseCode'),
     width: 160,
-    dataIndex: 'wh_code',
+    dataIndex: 'whse_code',
   }, {
     title: this.msg('warehouseType'),
-    dataIndex: 'wh_type',
+    dataIndex: 'whse_type',
     width: 160,
   }, {
     title: this.msg('isBonded'),
@@ -50,11 +50,11 @@ export default class CWMWarehouseList extends React.Component {
     dataIndex: 'is_bonded',
   }, {
     title: this.msg('warehouseLocation'),
-    dataIndex: 'wh_location',
+    dataIndex: 'whse_location',
   }, {
     title: this.msg('wmsIntegration'),
     width: 120,
-    dataIndex: 'wh_integration',
+    dataIndex: 'wms_integration',
   }, {
     title: this.msg('opColumn'),
     width: 160,
@@ -81,7 +81,7 @@ export default class CWMWarehouseList extends React.Component {
         <Content className="main-content" key="main">
           <div className="page-body">
             <div className="toolbar">
-              <Button type="primary" icon="plus" onClick={this.handleAddWarehouse}>
+              <Button type="primary" size="large" icon="plus" onClick={this.handleAddWarehouse}>
                 {this.msg('addWarehouse')}
               </Button>
             </div>

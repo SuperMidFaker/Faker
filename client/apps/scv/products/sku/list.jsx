@@ -19,7 +19,7 @@ const { Header, Content } = Layout;
 )
 @connectNav({
   depth: 2,
-  moduleName: 'cwm',
+  moduleName: 'scv',
 })
 export default class CWMOutboundList extends React.Component {
   static propTypes = {

@@ -19,19 +19,23 @@ const messages = defineMessages({
   },
   products: {
     id: 'cwm.module.products',
-    defaultMessage: '商品',
+    defaultMessage: '商品管理',
   },
-  productsTradeItem: {
-    id: 'cwm.module.products.trade.item',
-    defaultMessage: '贸易商品归类',
+  productsMaterial: {
+    id: 'cwm.module.products.material',
+    defaultMessage: '商品物料',
   },
-  productsSKU: {
+  productsSku: {
     id: 'cwm.module.products.sku',
-    defaultMessage: '商品仓库料号',
+    defaultMessage: '商品库存单元',
   },
   resources: {
     id: 'cwm.module.resources',
     defaultMessage: '资源管理',
+  },
+  groupMasterData: {
+    id: 'cwm.module.resources.group.master.data',
+    defaultMessage: '基础资料',
   },
   resourcesWarehouse: {
     id: 'cwm.module.resources.warehouse',

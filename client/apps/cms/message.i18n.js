@@ -97,9 +97,13 @@ const messages = defineMessages({
     id: 'cms.module.resources.providers',
     defaultMessage: '供应商管理',
   },
+  products: {
+    id: 'cms.module.products',
+    defaultMessage: '贸易商品管理',
+  },
   tradeItem: {
-    id: 'cms.module.resources.trade.item',
-    defaultMessage: '物料管理',
+    id: 'cms.module.products.trade.item',
+    defaultMessage: '商品物料归类',
   },
   settings: {
     id: 'cms.module.settings',

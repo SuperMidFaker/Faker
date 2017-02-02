@@ -3,7 +3,7 @@ import { defineMessages } from 'react-intl';
 const messages = defineMessages({
   productsTradeItem: {
     id: 'scv.products.tradeitem',
-    defaultMessage: '贸易商品归类',
+    defaultMessage: '商品物料归类',
   },
   filterUnclassified: {
     id: 'scv.products.tradeitem.filter.unclassified',

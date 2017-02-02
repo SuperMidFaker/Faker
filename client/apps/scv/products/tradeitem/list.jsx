@@ -27,7 +27,7 @@ const Option = Select.Option;
 )
 @connectNav({
   depth: 2,
-  moduleName: 'clearance',
+  moduleName: 'scv',
 })
 @withPrivilege({ module: 'clearance', feature: 'setting', action: 'edit' })
 export default class TradeItemList extends Component {

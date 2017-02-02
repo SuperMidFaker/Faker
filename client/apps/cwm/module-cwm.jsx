@@ -37,16 +37,16 @@ export default class ModuleCWM extends React.Component {
     linkMenus.push({
       single: true,
       key: 'cwm-2',
-      path: '/cwm/outbound',
-      icon: 'icon-fontello-upload',
-      text: formatMsg(intl, 'outbound'),
+      path: '/cwm/inventory',
+      icon: 'icon-fontello-warehouse',
+      text: formatMsg(intl, 'inventory'),
     });
     linkMenus.push({
       single: true,
       key: 'cwm-3',
-      path: '/cwm/inventory',
-      icon: 'icon-fontello-warehouse',
-      text: formatMsg(intl, 'inventory'),
+      path: '/cwm/outbound',
+      icon: 'icon-fontello-upload',
+      text: formatMsg(intl, 'outbound'),
     });
     linkMenus.push({
       single: false,
@@ -55,36 +55,47 @@ export default class ModuleCWM extends React.Component {
       text: formatMsg(intl, 'products'),
       sublinks: [{
         key: 'cwm-4-0',
+        group: formatMsg(intl, 'products'),
+        path: '/cwm/products/material',
+        text: formatMsg(intl, 'productsMaterial'),
+      }, {
+        key: 'cwm-4-1',
+        group: formatMsg(intl, 'products'),
         path: '/cwm/products/sku',
-        text: formatMsg(intl, 'productsSKU'),
-      }],
+        text: formatMsg(intl, 'productsSku'),
+      },
+      ],
     });
     linkMenus.push({
       single: false,
-      key: 'cwm-6',
+      key: 'cwm-5',
       icon: 'zmdi zmdi-library',
       text: formatMsg(intl, 'resources'),
       sublinks: [{
-        key: 'cwm-6-0',
+        key: 'cwm-5-0',
+        group: formatMsg(intl, 'groupMasterData'),
         path: '/cwm/resources/warehouse',
         text: formatMsg(intl, 'resourcesWarehouse'),
       }, {
-        key: 'cwm-6-1',
+        key: 'cwm-5-1',
+        group: formatMsg(intl, 'groupMasterData'),
         path: '/cwm/resources/owner',
         text: formatMsg(intl, 'resourcesOwner'),
       }, {
-        key: 'cwm-6-2',
+        key: 'cwm-5-2',
+        group: formatMsg(intl, 'groupMasterData'),
         path: '/cwm/resources/supplier',
         text: formatMsg(intl, 'resourcesSupplier'),
       }, {
-        key: 'cwm-6-3',
+        key: 'cwm-5-3',
+        group: formatMsg(intl, 'groupMasterData'),
         path: '/cwm/resources/consignee',
         text: formatMsg(intl, 'resourcesConsignee'),
       }],
     });
     linkMenus.push({
       single: true,
-      key: 'cwm-7',
+      key: 'cwm-6',
       path: '/cwm/settings',
       icon: 'zmdi zmdi-settings',
       text: formatMsg(intl, 'settings'),

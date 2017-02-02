@@ -21,7 +21,7 @@ const { Header, Content } = Layout;
   depth: 2,
   moduleName: 'cwm',
 })
-export default class CWMProductSkuList extends React.Component {
+export default class CWMProductMaterialList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
