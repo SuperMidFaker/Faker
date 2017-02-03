@@ -6,6 +6,7 @@ import { setPaneTabkey } from 'common/reducers/cmsManifest';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import CertMarkPane from '../tabpanes/certMarkPane';
+import DocuMarkPane from '../tabpanes/docuMarkPane';
 
 const formatMsg = format(messages);
 const TabPane = Tabs.TabPane;
@@ -32,6 +33,9 @@ export default class SheetExtraPanel extends React.Component {
     return (
       <Tabs activeKey={this.props.tabKey} onChange={this.handleTabChange} >
         <TabPane tab="集装箱" key="container" />
+        <TabPane tab="随附单据" key="document" >
+          <DocuMarkPane />
+        </TabPane>
         <TabPane tab="随附单证" key="certificate">
           <CertMarkPane />
         </TabPane>
