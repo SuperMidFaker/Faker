@@ -95,7 +95,7 @@ export default class SimpleHeaderBar extends React.Component {
       </NavLink>
       );
     return (
-      <nav className="navbar navbar-default navbar-fixed-top layout-header">
+      <nav className="navbar navbar-fixed-top layout-header">
         <div className="navbar-header">
           {brandNav}
         </div>

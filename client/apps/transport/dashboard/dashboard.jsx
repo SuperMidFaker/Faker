@@ -64,9 +64,9 @@ export default class Dashboard extends React.Component {
           <span>{this.msg('transportDashboard')}</span>
         </Header>
         <Content className="main-content" key="main">
-          <div className="page-body" style={{ padding: 15 }}>
-            <Row gutter={15}>
-              <Col sm={16} lg={16}>
+          <div className="page-body card-wrapper">
+            <Row gutter={16}>
+              <Col sm={24} md={16}>
                 <Card title="活动简报" extra={datePicker}>
                   <ul className="statistics-columns">
                     <li className="col-4">
@@ -101,13 +101,6 @@ export default class Dashboard extends React.Component {
                     </li>
                   </ul>
                 </Card>
-              </Col>
-              <Col sm={8} lg={8}>
-                <Card title="公告" bodyStyle={{ height: 100 }} />
-              </Col>
-            </Row>
-            <Row gutter={15}>
-              <Col sm={16} lg={16}>
                 <Card title="受理">
                   <ul className="statistics-columns">
                     <li className="transport-dashboard">
@@ -184,7 +177,8 @@ export default class Dashboard extends React.Component {
                   </ul>
                 </Card>
               </Col>
-              <Col sm={8} lg={8}>
+              <Col sm={24} md={8}>
+                <Card title="公告" bodyStyle={{ height: 100 }} />
                 <Card title="动态" bodyStyle={{ height: 200 }} />
               </Col>
             </Row>

@@ -120,7 +120,7 @@ export default class HeaderNavBar extends React.Component {
       );
     }
     return (
-      <nav className={`navbar navbar-default navbar-fixed-top layout-header module-${moduleName}`}>
+      <nav className={`navbar navbar-fixed-top layout-header module-${moduleName}`}>
         <div className="navbar-header">
           {brandNav}
         </div>

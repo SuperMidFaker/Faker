@@ -21,7 +21,7 @@ const formatMsg = format(messages);
   }),
   { logout, loadTranslation, changeUserLocale }
 )
-export default class CorpHeaderBar extends React.Component {
+export default class TransparentHeaderBar extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     avatar: PropTypes.string,
@@ -63,12 +63,10 @@ export default class CorpHeaderBar extends React.Component {
   render() {
     const { title, corpName, corpLogo } = this.props;
     const brandNav = (
-      <NavLink to="/" className="navbar-toggle">
-        <i className="zmdi zmdi-apps" />
-      </NavLink>
+      <NavLink to="/" className={'navbar-brand'} />
       );
     return (
-      <nav className="navbar navbar-fixed-top layout-header">
+      <nav className="navbar navbar-transparent navbar-fixed-top layout-header">
         <div className="navbar-header">
           {brandNav}
         </div>

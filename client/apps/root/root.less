@@ -70,6 +70,9 @@ img {
 .ant-form-item > label {
   padding-right: 10px;
 }
+.ant-layout-header {
+  background: transparent;
+}
 .ant-menu-root {
   font-size: 14px;
 }
@@ -220,35 +223,6 @@ img {
   &-search--inline {
     .@{select-prefix-cls}-search__field__mirror {
       display: none;
-    }
-  }
-}
-.layout-header {
-  background-color:@theme-color;
-  border:0;
-  margin-bottom:0;
-  box-shadow: 0 1px 2px rgba(0,0,0,.15);
-  transition:all .35s ease;
-  .navbar-header {
-    float: left;
-    @media (max-width:767px) {
-      text-align:center;
-    }
-    .navbar-brand {
-      background-color:#3d3c3c;
-      color:#fff;
-      padding-top:0;
-      padding-bottom:0;
-      line-height: @layout-header-height;
-      height: @layout-header-height;
-      width: @layout-sider-width;
-      background-image:url("../../../public/assets/img/welogix_logo_160_100_white_trans.png");
-      background-size: auto 45px;
-      background-repeat:no-repeat;
-      background-position:center center;
-      @media (max-width:767px) {
-        display:none;
-      } 
     }
   }
 }

@@ -1,8 +1,9 @@
 import React, { PropTypes } from 'react';
 import { Layout } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
+import TransparentHeaderBar from 'client/components/transparentHeaderBar';
 import './sso.less';
-const { Content, Footer } = Layout;
+const { Header, Content, Footer } = Layout;
 
 @injectIntl
 export default class SSOPack extends React.Component {
@@ -14,6 +15,9 @@ export default class SSOPack extends React.Component {
   render() {
     return (
       <Layout className="splash-screen">
+        <Header>
+          <TransparentHeaderBar title="" />
+        </Header>
         <Content className="main-content">
           <div className="center-card-wrapper">
             {this.props.children}
