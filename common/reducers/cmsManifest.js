@@ -135,7 +135,7 @@ export default function reducer(state = initialState, action) {
   }
 }
 
-export function loadCertMarks(billSeqNo) {
+export function loadCertMarks(entryId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -145,7 +145,7 @@ export function loadCertMarks(billSeqNo) {
       ],
       endpoint: 'v1/cms/manifest/certMark',
       method: 'get',
-      params: { billSeqNo },
+      params: { entryId },
     },
   };
 }

@@ -34,7 +34,7 @@ function ColumnSelect(props) {
     return (
       <Select value={record[field] || ''} onChange={handleChange} style={{ width: '100%' }}>
         {
-          options.map((opt, idx) => <Option value={opt.text} key={`${opt.value}${idx}`}>{opt.text}</Option>)
+          options.map((opt, idx) => <Option value={opt.key} key={`${opt.value}${idx}`}>{opt.text}</Option>)
         }
       </Select>
     );
@@ -57,8 +57,9 @@ ColumnSelect.proptypes = {
 @connect(
   state => ({
     tenantId: state.account.tenantId,
+    loginId: state.account.loginId,
     tabKey: state.cmsManifest.tabKey,
-    billMeta: state.cmsManifest.billMeta,
+    head: state.cmsManifest.entryHead,
     certMarks: state.cmsManifest.certMarks,
     certParams: state.cmsManifest.certParams,
   }),
@@ -70,17 +71,13 @@ export default class CertMarkPane extends React.Component {
     tenantId: PropTypes.number.isRequired,
     certMarks: PropTypes.array,
     certParams: PropTypes.array,
-    billMeta: PropTypes.shape({
-      bill_seq_no: PropTypes.string.isRequired,
-      entries: PropTypes.arrayOf(PropTypes.shape({ pre_entry_seq_no: PropTypes.string })),
-    }),
   }
   state = {
     datas: [],
   };
   componentWillReceiveProps(nextProps) {
-    if (this.props.billMeta !== nextProps.billMeta) {
-      this.props.loadCertMarks(nextProps.billMeta.bill_seq_no);
+    if (this.props.head !== nextProps.head) {
+      this.props.loadCertMarks(nextProps.head.entry_id);
     }
     if (this.props.certMarks !== nextProps.certMarks) {
       this.setState({ datas: nextProps.certMarks });
@@ -95,11 +92,14 @@ export default class CertMarkPane extends React.Component {
     this.forceUpdate();
   }
   handleAdd = () => {
+    const { head } = this.props;
     const addOne = {
-      bill_seq_no: this.props.billMeta.bill_seq_no,
+      delg_no: head.delg_no,
+      entry_id: head.entry_id,
+      creater_login_id: this.props.loginId,
       cert_code: '',
       cert_spec: '',
-      cert_mark_code: '',
+      cert_num: '',
     };
     const data = this.state.datas;
     data.push(addOne);
@@ -138,7 +138,8 @@ export default class CertMarkPane extends React.Component {
     const { certParams } = this.props;
     const option = certParams.map(cert => ({
       value: cert.cert_code,
-      text: cert.cert_spec,
+      text: `${cert.cert_code}|${cert.cert_spec}`,
+      key: cert.cert_spec,
     }));
     const columns = [{
       title: '单证类型',
@@ -149,11 +150,11 @@ export default class CertMarkPane extends React.Component {
           onChange={this.handleEditChange} options={option}
         />,
     }, {
-      title: '单证编码',
-      dataIndex: 'cert_mark_code',
+      title: '单证编号',
+      dataIndex: 'cert_num',
       width: 200,
       render: (o, record) =>
-        <ColumnInput field="cert_mark_code" inEdit record={record}
+        <ColumnInput field="cert_num" inEdit record={record}
           onChange={this.handleEditChange}
         />,
     }, {
