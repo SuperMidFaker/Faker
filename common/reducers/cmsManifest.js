@@ -18,7 +18,11 @@ const actionTypes = createActionTypes('@@welogix/cms/manifest/', [
   'DELETE_BILL', 'DELETE_BILL_SUCCEED', 'DELETE_BILL_FAIL',
   'OPEN_AMOUNT_MODEL', 'CLOSE_AMOUNT_MODEL', 'SET_PANE_TABKEY',
   'LOAD_CERT_MARKS', 'LOAD_CERT_MARKS_SUCCEED', 'LOAD_CERT_MARKS_FAIL',
-  'SAVE_CERT_MARKS', 'SAVE_CERT_MARKS_SUCCEED', 'SAVE_CERT_MARKS_FAIL',
+  'SAVE_CERT_MARK', 'SAVE_CERT_MARK_SUCCEED', 'SAVE_CERT_MARK_FAIL',
+  'DELETE_CERT_MARK', 'DELETE_CERT_MARK_SUCCEED', 'DELETE_CERT_MARK_FAIL',
+  'LOAD_DOCU_MARKS', 'LOAD_DOCU_MARKS_SUCCEED', 'LOAD_DOCU_MARKS_FAIL',
+  'SAVE_DOCU_MARK', 'SAVE_DOCU_MARK_SUCCEED', 'SAVE_DOCU_MARK_FAIL',
+  'DELETE_DOCU_MARK', 'DELETE_DOCU_MARK_SUCCEED', 'DELETE_DOCU_MARK_FAIL',
 ]);
 
 const initialState = {
@@ -54,6 +58,7 @@ const initialState = {
   tabKey: 'certificate',
   certMarks: [],
   certParams: [],
+  docuMarks: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -129,12 +134,18 @@ export default function reducer(state = initialState, action) {
       return { ...state, tabKey: action.data };
     case actionTypes.LOAD_CERT_MARKS_SUCCEED:
       return { ...state, certMarks: action.result.data.certMarks, certParams: action.result.data.certParams };
+    case actionTypes.SAVE_CERT_MARK_SUCCEED:
+      return { ...state, certMarks: action.result.data };
+    case actionTypes.LOAD_DOCU_MARKS_SUCCEED:
+      return { ...state, docuMarks: action.result.data };
+    case actionTypes.SAVE_DOCU_MARK_SUCCEED:
+      return { ...state, docuMarks: action.result.data };
     default:
       return state;
   }
 }
 
-export function loadCertMarks(billSeqNo) {
+export function loadCertMarks(entryId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -144,22 +155,82 @@ export function loadCertMarks(billSeqNo) {
       ],
       endpoint: 'v1/cms/manifest/certMark',
       method: 'get',
-      params: { billSeqNo },
+      params: { entryId },
     },
   };
 }
 
-export function saveCertMarks(datas) {
+export function saveCertMark(datas) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.SAVE_CERT_MARKS,
-        actionTypes.SAVE_CERT_MARKS_SUCCEED,
-        actionTypes.SAVE_CERT_MARKS_FAIL,
+        actionTypes.SAVE_CERT_MARK,
+        actionTypes.SAVE_CERT_MARK_SUCCEED,
+        actionTypes.SAVE_CERT_MARK_FAIL,
       ],
       endpoint: 'v1/cms/manifest/certMark/save',
       method: 'post',
       data: datas,
+    },
+  };
+}
+
+export function delbillCertmark(id) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DELETE_CERT_MARK,
+        actionTypes.DELETE_CERT_MARK_SUCCEED,
+        actionTypes.DELETE_CERT_MARK_FAIL,
+      ],
+      endpoint: 'v1/cms/manifest/certMark/delete',
+      method: 'post',
+      data: { id },
+    },
+  };
+}
+
+export function loadDocuMarks(entryId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_DOCU_MARKS,
+        actionTypes.LOAD_DOCU_MARKS_SUCCEED,
+        actionTypes.LOAD_DOCU_MARKS_FAIL,
+      ],
+      endpoint: 'v1/cms/manifest/docuMark',
+      method: 'get',
+      params: { entryId },
+    },
+  };
+}
+
+export function saveDocuMark(datas) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SAVE_DOCU_MARK,
+        actionTypes.SAVE_DOCU_MARK_SUCCEED,
+        actionTypes.SAVE_DOCU_MARK_FAIL,
+      ],
+      endpoint: 'v1/cms/manifest/docuMark/save',
+      method: 'post',
+      data: datas,
+    },
+  };
+}
+
+export function delDocumark(id) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DELETE_DOCU_MARK,
+        actionTypes.DELETE_DOCU_MARK_SUCCEED,
+        actionTypes.DELETE_DOCU_MARK_FAIL,
+      ],
+      endpoint: 'v1/cms/manifest/docuMark/delete',
+      method: 'post',
+      data: { id },
     },
   };
 }

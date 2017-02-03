@@ -2,7 +2,8 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Button, Table, Select, Input, message } from 'antd';
-import { loadCertMarks, saveCertMark, delbillCertmark } from 'common/reducers/cmsManifest';
+import { loadDocuMarks, saveDocuMark, delDocumark } from 'common/reducers/cmsManifest';
+import { CMS_DECL_DOCU } from 'common/constants';
 
 const Option = Select.Option;
 
@@ -34,12 +35,12 @@ function ColumnSelect(props) {
     return (
       <Select value={record[field] || ''} onChange={handleChange} style={{ width: '100%' }}>
         {
-          options.map((opt, idx) => <Option value={opt.key} key={`${opt.value}${idx}`}>{opt.text}</Option>)
+          options.map((opt, idx) => <Option value={opt.text} key={`${opt.value}${idx}`}>{opt.text}</Option>)
         }
       </Select>
     );
   } else {
-    return <span>{`${record.cert_code} | ${record[field]}` || ''}</span>;
+    return <span>{record[field] || ''}</span>;
   }
 }
 
@@ -58,38 +59,33 @@ ColumnSelect.proptypes = {
     loginId: state.account.loginId,
     tabKey: state.cmsManifest.tabKey,
     head: state.cmsManifest.entryHead,
-    certMarks: state.cmsManifest.certMarks,
-    certParams: state.cmsManifest.certParams,
+    docuMarks: state.cmsManifest.docuMarks,
   }),
-  { loadCertMarks, saveCertMark, delbillCertmark }
+  { loadDocuMarks, saveDocuMark, delDocumark }
 )
-export default class CertMarkPane extends React.Component {
+export default class DocuMarkPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
-    certMarks: PropTypes.array,
+    docuMarks: PropTypes.array,
     certParams: PropTypes.array,
   }
   state = {
     datas: [],
   };
   componentDidMount() {
-    this.props.loadCertMarks(this.props.head.entry_id);
+    this.props.loadDocuMarks(this.props.head.entry_id);
   }
   componentWillReceiveProps(nextProps) {
     if (this.props.head !== nextProps.head ||
       (this.props.tabKey !== nextProps.tabKey && nextProps.tabKey === 'document')) {
-      this.props.loadCertMarks(nextProps.head.entry_id);
+      this.props.loadDocuMarks(nextProps.head.entry_id);
     }
-    if (this.props.certMarks !== nextProps.certMarks) {
-      this.setState({ datas: nextProps.certMarks });
+    if (this.props.docuMarks !== nextProps.docuMarks) {
+      this.setState({ datas: nextProps.docuMarks });
     }
   }
   handleEditChange = (record, field, value) => {
-    if (field === 'cert_spec') {
-      const cert = this.props.certParams.filter(param => param.cert_spec === value)[0];
-      record.cert_code = cert.cert_code; // eslint-disable-line no-param-reassign
-    }
     record[field] = value; // eslint-disable-line no-param-reassign
     this.forceUpdate();
   }
@@ -99,16 +95,15 @@ export default class CertMarkPane extends React.Component {
       delg_no: head.delg_no,
       entry_id: head.entry_id,
       creater_login_id: this.props.loginId,
-      cert_code: '',
-      cert_spec: '',
-      cert_num: '',
+      docu_code: '',
+      docu_spec: '',
     };
     const data = this.state.datas;
     data.push(addOne);
     this.setState({ datas: data });
   }
   handleSave = (record) => {
-    this.props.saveCertMark(record).then(
+    this.props.saveDocuMark(record).then(
       (result) => {
         if (result.error) {
           message.error(result.error.message);
@@ -119,7 +114,7 @@ export default class CertMarkPane extends React.Component {
     );
   }
   handleDelete = (record, index) => {
-    this.props.delbillCertmark(record.id).then((result) => {
+    this.props.delDocumark(record.id).then((result) => {
       if (result.error) {
         message.error(result.error.message);
       } else {
@@ -131,26 +126,20 @@ export default class CertMarkPane extends React.Component {
   }
 
   render() {
-    const { certParams } = this.props;
-    const option = certParams.map(cert => ({
-      value: cert.cert_code,
-      text: `${cert.cert_code}|${cert.cert_spec}`,
-      key: cert.cert_spec,
-    }));
     const columns = [{
-      title: '单证类型',
-      dataIndex: 'cert_spec',
+      title: '单据类型',
+      dataIndex: 'docu_spec',
       width: 200,
       render: (o, record) =>
-        <ColumnSelect field="cert_spec" inEdit={!record.id} record={record}
-          onChange={this.handleEditChange} options={option}
+        <ColumnSelect field="docu_spec" inEdit={!record.id} record={record}
+          onChange={this.handleEditChange} options={CMS_DECL_DOCU}
         />,
     }, {
-      title: '单证编号',
-      dataIndex: 'cert_num',
+      title: '单据编码',
+      dataIndex: 'docu_code',
       width: 200,
       render: (o, record) =>
-        <ColumnInput field="cert_num" inEdit={!record.id} record={record}
+        <ColumnInput field="docu_code" inEdit={!record.id} record={record}
           onChange={this.handleEditChange}
         />,
     }, {

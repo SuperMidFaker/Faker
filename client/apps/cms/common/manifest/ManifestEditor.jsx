@@ -7,13 +7,12 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { addNewBillBody, delBillBody, editBillBody, saveBillHead, openMergeSplitModal, billDelete } from 'common/reducers/cmsManifest';
 import SheetHeadPanel from './forms/SheetHeadPanel';
 import SheetBodyPanel from './forms/SheetBodyPanel';
-import SheetExtraPanel from './forms/SheetExtraPanel';
 import MergeSplitModal from './modals/mergeSplit';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 
 const formatMsg = format(messages);
-const { Header, Content, Sider } = Layout;
+const { Header, Content } = Layout;
 
 @injectIntl
 @connect(
@@ -137,11 +136,6 @@ export default class ManifestEditor extends React.Component {
                 {!this.props.readonly &&
                   <Button type="primary" size="large" icon="addfile" onClick={this.handleGenerateEntry}>{this.msg('generateEntry')}</Button>
                 }
-                <Icon
-                  className="trigger"
-                  type={this.state.collapsed ? 'menu-fold' : 'menu-unfold'}
-                  onClick={this.toggle}
-                />
               </div>
             </Header>
             <Content className="main-content top-bar-fixed">
@@ -156,17 +150,6 @@ export default class ManifestEditor extends React.Component {
               </div>
             </Content>
           </Layout>
-          <Sider
-            trigger={null}
-            collapsed={this.state.collapsed}
-            width={320}
-            collapsedWidth={0}
-            className="right-sider"
-          >
-            <div className="right-sider-panel">
-              <SheetExtraPanel />
-            </div>
-          </Sider>
         </Layout>
         <MergeSplitModal />
       </QueueAnim>
