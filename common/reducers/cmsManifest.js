@@ -19,6 +19,7 @@ const actionTypes = createActionTypes('@@welogix/cms/manifest/', [
   'OPEN_AMOUNT_MODEL', 'CLOSE_AMOUNT_MODEL', 'SET_PANE_TABKEY',
   'LOAD_CERT_MARKS', 'LOAD_CERT_MARKS_SUCCEED', 'LOAD_CERT_MARKS_FAIL',
   'SAVE_CERT_MARKS', 'SAVE_CERT_MARKS_SUCCEED', 'SAVE_CERT_MARKS_FAIL',
+  'DELETE_CERT_MARK', 'DELETE_CERT_MARK_SUCCEED', 'DELETE_CERT_MARK_FAIL',
 ]);
 
 const initialState = {
@@ -157,9 +158,24 @@ export function saveCertMarks(datas) {
         actionTypes.SAVE_CERT_MARKS_SUCCEED,
         actionTypes.SAVE_CERT_MARKS_FAIL,
       ],
-      endpoint: 'v1/cms/manifest/certMark/save',
+      endpoint: 'v1/cms/manifest/certMarks/save',
       method: 'post',
       data: datas,
+    },
+  };
+}
+
+export function delbillCertmark(id) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DELETE_CERT_MARK,
+        actionTypes.DELETE_CERT_MARK_SUCCEED,
+        actionTypes.DELETE_CERT_MARK_FAIL,
+      ],
+      endpoint: 'v1/cms/manifest/certMark/delete',
+      method: 'post',
+      data: { id },
     },
   };
 }

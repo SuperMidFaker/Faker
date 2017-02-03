@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Button, Table, Select, Input, message } from 'antd';
-import { loadCertMarks, saveCertMarks } from 'common/reducers/cmsManifest';
+import { loadCertMarks, saveCertMarks, delbillCertmark } from 'common/reducers/cmsManifest';
 
 const Option = Select.Option;
 
@@ -62,7 +62,7 @@ ColumnSelect.proptypes = {
     certMarks: state.cmsManifest.certMarks,
     certParams: state.cmsManifest.certParams,
   }),
-  { loadCertMarks, saveCertMarks }
+  { loadCertMarks, saveCertMarks, delbillCertmark }
 )
 export default class CertMarkPane extends React.Component {
   static propTypes = {
@@ -116,6 +116,17 @@ export default class CertMarkPane extends React.Component {
       }
     );
   }
+  handleDelete = (record, index) => {
+    this.props.delbillCertmark(record.id).then((result) => {
+      if (result.error) {
+        message.error(result.error.message);
+      } else {
+        const datas = [...this.state.datas];
+        datas.splice(index, 1);
+        this.setState({ datas });
+      }
+    });
+  }
   handleFooterButton = () => (
     <div>
       <Button type="primary" onClick={this.handleAdd} style={{ marginRight: 8 }}>添加</Button>
@@ -145,6 +156,10 @@ export default class CertMarkPane extends React.Component {
         <ColumnInput field="cert_mark_code" inEdit record={record}
           onChange={this.handleEditChange}
         />,
+    }, {
+      width: 80,
+      render: (o, record, index) =>
+        <Button type="ghost" shape="circle" onClick={() => this.handleDelete(record, index)} icon="delete" />,
     }];
     return (
       <Table pagination={false} columns={columns} dataSource={this.state.datas}
