@@ -18,7 +18,7 @@ const actionTypes = createActionTypes('@@welogix/cms/manifest/', [
   'DELETE_BILL', 'DELETE_BILL_SUCCEED', 'DELETE_BILL_FAIL',
   'OPEN_AMOUNT_MODEL', 'CLOSE_AMOUNT_MODEL', 'SET_PANE_TABKEY',
   'LOAD_CERT_MARKS', 'LOAD_CERT_MARKS_SUCCEED', 'LOAD_CERT_MARKS_FAIL',
-  'SAVE_CERT_MARKS', 'SAVE_CERT_MARKS_SUCCEED', 'SAVE_CERT_MARKS_FAIL',
+  'SAVE_CERT_MARK', 'SAVE_CERT_MARK_SUCCEED', 'SAVE_CERT_MARK_FAIL',
   'DELETE_CERT_MARK', 'DELETE_CERT_MARK_SUCCEED', 'DELETE_CERT_MARK_FAIL',
   'LOAD_DOCU_MARKS', 'LOAD_DOCU_MARKS_SUCCEED', 'LOAD_DOCU_MARKS_FAIL',
   'SAVE_DOCU_MARK', 'SAVE_DOCU_MARK_SUCCEED', 'SAVE_DOCU_MARK_FAIL',
@@ -134,6 +134,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, tabKey: action.data };
     case actionTypes.LOAD_CERT_MARKS_SUCCEED:
       return { ...state, certMarks: action.result.data.certMarks, certParams: action.result.data.certParams };
+    case actionTypes.SAVE_CERT_MARK_SUCCEED:
+      return { ...state, certMarks: action.result.data };
     case actionTypes.LOAD_DOCU_MARKS_SUCCEED:
       return { ...state, docuMarks: action.result.data };
     case actionTypes.SAVE_DOCU_MARK_SUCCEED:
@@ -158,15 +160,15 @@ export function loadCertMarks(entryId) {
   };
 }
 
-export function saveCertMarks(datas) {
+export function saveCertMark(datas) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.SAVE_CERT_MARKS,
-        actionTypes.SAVE_CERT_MARKS_SUCCEED,
-        actionTypes.SAVE_CERT_MARKS_FAIL,
+        actionTypes.SAVE_CERT_MARK,
+        actionTypes.SAVE_CERT_MARK_SUCCEED,
+        actionTypes.SAVE_CERT_MARK_FAIL,
       ],
-      endpoint: 'v1/cms/manifest/certMarks/save',
+      endpoint: 'v1/cms/manifest/certMark/save',
       method: 'post',
       data: datas,
     },

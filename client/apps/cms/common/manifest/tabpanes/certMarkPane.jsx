@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Button, Table, Select, Input, message } from 'antd';
-import { loadCertMarks, saveCertMarks, delbillCertmark } from 'common/reducers/cmsManifest';
+import { loadCertMarks, saveCertMark, delbillCertmark } from 'common/reducers/cmsManifest';
 
 const Option = Select.Option;
 
@@ -39,9 +39,7 @@ function ColumnSelect(props) {
       </Select>
     );
   } else {
-    const foundOpts = options.filter(opt => opt.value === record[field]);
-    const label = foundOpts.length === 1 ? foundOpts[0].text : '';
-    return <span>{label}</span>;
+    return <span>{`${record.cert_code} | ${record[field]}` || ''}</span>;
   }
 }
 
@@ -63,7 +61,7 @@ ColumnSelect.proptypes = {
     certMarks: state.cmsManifest.certMarks,
     certParams: state.cmsManifest.certParams,
   }),
-  { loadCertMarks, saveCertMarks, delbillCertmark }
+  { loadCertMarks, saveCertMark, delbillCertmark }
 )
 export default class CertMarkPane extends React.Component {
   static propTypes = {
@@ -75,8 +73,12 @@ export default class CertMarkPane extends React.Component {
   state = {
     datas: [],
   };
+  componentDidMount() {
+    this.props.loadCertMarks(this.props.head.entry_id);
+  }
   componentWillReceiveProps(nextProps) {
-    if (this.props.head !== nextProps.head) {
+    if (this.props.head !== nextProps.head ||
+      (this.props.tabKey !== nextProps.tabKey && nextProps.tabKey === 'document')) {
       this.props.loadCertMarks(nextProps.head.entry_id);
     }
     if (this.props.certMarks !== nextProps.certMarks) {
@@ -105,8 +107,8 @@ export default class CertMarkPane extends React.Component {
     data.push(addOne);
     this.setState({ datas: data });
   }
-  handleSave = () => {
-    this.props.saveCertMarks(this.state.datas).then(
+  handleSave = (record) => {
+    this.props.saveCertMark(record).then(
       (result) => {
         if (result.error) {
           message.error(result.error.message);
@@ -127,12 +129,6 @@ export default class CertMarkPane extends React.Component {
       }
     });
   }
-  handleFooterButton = () => (
-    <div>
-      <Button type="primary" onClick={this.handleAdd} style={{ marginRight: 8 }}>添加</Button>
-      <Button type="primary" onClick={this.handleSave}>保存</Button>
-    </div>
-  )
 
   render() {
     const { certParams } = this.props;
@@ -146,7 +142,7 @@ export default class CertMarkPane extends React.Component {
       dataIndex: 'cert_spec',
       width: 200,
       render: (o, record) =>
-        <ColumnSelect field="cert_spec" inEdit record={record}
+        <ColumnSelect field="cert_spec" inEdit={!record.id} record={record}
           onChange={this.handleEditChange} options={option}
         />,
     }, {
@@ -154,17 +150,22 @@ export default class CertMarkPane extends React.Component {
       dataIndex: 'cert_num',
       width: 200,
       render: (o, record) =>
-        <ColumnInput field="cert_num" inEdit record={record}
+        <ColumnInput field="cert_num" inEdit={!record.id} record={record}
           onChange={this.handleEditChange}
         />,
     }, {
       width: 80,
-      render: (o, record, index) =>
-        <Button type="ghost" shape="circle" onClick={() => this.handleDelete(record, index)} icon="delete" />,
+      render: (o, record, index) => {
+        if (record.id) {
+          return <Button type="ghost" shape="circle" onClick={() => this.handleDelete(record, index)} icon="delete" />;
+        } else {
+          return <Button type="primary" shape="circle" onClick={() => this.handleSave(record)} icon="save" />;
+        }
+      },
     }];
     return (
       <Table pagination={false} columns={columns} dataSource={this.state.datas}
-        footer={this.handleFooterButton}
+        footer={() => <Button type="dashed" onClick={this.handleAdd} icon="plus" style={{ width: '100%' }}>添加</Button>}
       />
     );
   }
