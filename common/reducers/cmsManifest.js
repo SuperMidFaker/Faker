@@ -153,7 +153,7 @@ export default function reducer(state = initialState, action) {
   }
 }
 
-export function loadContainers(entryId) {
+export function loadContainers(entrySeqNo) {
   return {
     [CLIENT_API]: {
       types: [
@@ -163,7 +163,7 @@ export function loadContainers(entryId) {
       ],
       endpoint: 'v1/cms/manifest/containers',
       method: 'get',
-      params: { entryId },
+      params: { entrySeqNo },
     },
   };
 }

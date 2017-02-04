@@ -46,12 +46,12 @@ export default class ContainersPane extends React.Component {
     datas: [],
   };
   componentDidMount() {
-    this.props.loadContainers(this.props.head.entry_id);
+    this.props.loadContainers(this.props.head.pre_entry_seq_no);
   }
   componentWillReceiveProps(nextProps) {
     if (this.props.head !== nextProps.head ||
       (this.props.tabKey !== nextProps.tabKey && nextProps.tabKey === 'container')) {
-      this.props.loadContainers(nextProps.head.entry_id);
+      this.props.loadContainers(nextProps.head.pre_entry_seq_no);
     }
     if (this.props.containers !== nextProps.containers) {
       this.setState({ datas: nextProps.containers });
@@ -67,6 +67,7 @@ export default class ContainersPane extends React.Component {
     const addOne = {
       delg_no: head.delg_no,
       entry_id: head.entry_id,
+      pre_entry_seq_no: head.pre_entry_seq_no,
       creater_login_id: this.props.loginId,
       container_id: '',
       container_wt: null,
