@@ -7,6 +7,7 @@ import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import CertMarkPane from '../tabpanes/certMarkPane';
 import DocuMarkPane from '../tabpanes/docuMarkPane';
+import ContainersPane from '../tabpanes/containersPane';
 
 const formatMsg = format(messages);
 const TabPane = Tabs.TabPane;
@@ -32,7 +33,9 @@ export default class SheetExtraPanel extends React.Component {
   render() {
     return (
       <Tabs activeKey={this.props.tabKey} onChange={this.handleTabChange} >
-        <TabPane tab="集装箱" key="container" />
+        <TabPane tab="集装箱" key="container" >
+          <ContainersPane />
+        </TabPane>
         <TabPane tab="随附单据" key="document" >
           <DocuMarkPane />
         </TabPane>

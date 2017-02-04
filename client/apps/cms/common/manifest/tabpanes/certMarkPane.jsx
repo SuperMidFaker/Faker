@@ -3,7 +3,10 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Button, Table, Select, Input, message } from 'antd';
 import { loadCertMarks, saveCertMark, delbillCertmark } from 'common/reducers/cmsManifest';
+import { format } from 'client/common/i18n/helpers';
+import messages from './message.i18n';
 
+const formatMsg = format(messages);
 const Option = Select.Option;
 
 function ColumnInput(props) {
@@ -85,6 +88,7 @@ export default class CertMarkPane extends React.Component {
       this.setState({ datas: nextProps.certMarks });
     }
   }
+  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
   handleEditChange = (record, field, value) => {
     if (field === 'cert_spec') {
       const cert = this.props.certParams.filter(param => param.cert_spec === value)[0];
@@ -138,7 +142,7 @@ export default class CertMarkPane extends React.Component {
       key: cert.cert_spec,
     }));
     const columns = [{
-      title: '单证类型',
+      title: this.msg('certSpec'),
       dataIndex: 'cert_spec',
       width: 200,
       render: (o, record) =>
@@ -146,7 +150,7 @@ export default class CertMarkPane extends React.Component {
           onChange={this.handleEditChange} options={option}
         />,
     }, {
-      title: '单证编号',
+      title: this.msg('certNum'),
       dataIndex: 'cert_num',
       width: 200,
       render: (o, record) =>
@@ -165,7 +169,7 @@ export default class CertMarkPane extends React.Component {
     }];
     return (
       <Table pagination={false} columns={columns} dataSource={this.state.datas}
-        footer={() => <Button type="dashed" onClick={this.handleAdd} icon="plus" style={{ width: '100%' }}>添加</Button>}
+        footer={() => <Button type="dashed" onClick={this.handleAdd} icon="plus" style={{ width: '100%' }}>{this.msg('add')}</Button>}
       />
     );
   }

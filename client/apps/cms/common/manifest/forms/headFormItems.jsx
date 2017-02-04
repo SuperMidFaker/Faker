@@ -38,7 +38,7 @@ export function PortDate(props) {
     field: 'i_e_date',
     label: ietype === 'import' ? msg('idate') : msg('edate'),
     disabled,
-    rules: [{ required: true }],
+    rules: [{ required: false }],
     formData,
     getFieldDecorator,
   };
@@ -48,7 +48,7 @@ export function PortDate(props) {
     field: 'd_date',
     label: msg('ddate'),
     disabled,
-    rules: [{ required: true }],
+    rules: [{ required: false }],
     formData,
     getFieldDecorator,
   };
