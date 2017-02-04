@@ -5,7 +5,7 @@ import moment from 'moment';
 import { Row, Col, Form, Select, InputNumber, DatePicker } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import { setConsignFields } from 'common/reducers/shipment';
-import { PRESET_TRANSMODES } from 'common/constants';
+import { PRESET_TRANSMODES, COURIERS } from 'common/constants';
 import InputItem from './input-item';
 import messages from '../message.i18n';
 const formatMsg = format(messages);
@@ -26,6 +26,7 @@ const ONE_DAY_MS = 24 * 60 * 60 * 1000;
       vehicle_length_id: state.shipment.formData.vehicle_length_id,
       container_no: state.shipment.formData.container_no,
       courier_no: state.shipment.formData.courier_no,
+      courier_code: state.shipment.formData.courier_code,
       transport_mode_id: state.shipment.formData.transport_mode_id,
       transport_mode_code: state.shipment.formData.transport_mode_code,
       package: state.shipment.formData.package,
@@ -97,6 +98,12 @@ export default class ModeInfo extends React.Component {
       package: pack,
     });
   }
+  handleCourierChange = (value) => {
+    const courier = COURIERS.find(item => item.code === value);
+    this.props.setConsignFields({
+      courier: courier.name,
+    });
+  }
   render() {
     const {
       transitModes, vehicleTypes, vehicleLengths,
@@ -105,7 +112,7 @@ export default class ModeInfo extends React.Component {
         pickup_est_date: pickupDt, transit_time,
         deliver_est_date: deliverDt, vehicle_type_id,
         vehicle_length_id, container_no, transport_mode_code: modeCode,
-        transport_mode_id: modeId, courier_no,
+        transport_mode_id: modeId, courier_no, courier_code,
       },
       vertical,
       type,
@@ -166,6 +173,19 @@ export default class ModeInfo extends React.Component {
       outerColSpan = 8;
       labelColSpan = 8;
       modeEditCols.push(
+        <Col key="courier_code" span={`${outerColSpan}`}>
+          <FormItem label={this.msg('courierCompany')} labelCol={{ span: labelColSpan }}
+            wrapperCol={{ span: 24 - labelColSpan }}
+          >
+            {getFieldDecorator('courier_code', { initialValue: courier_code,
+            })(
+              <Select onChange={this.handleCourierChange}>
+                {COURIERS.map(
+                c => <Option value={c.code} key={c.code}>{c.name}</Option>
+              )}
+              </Select>)}
+          </FormItem>
+        </Col>,
         <Col key="courier_no" span={`${outerColSpan}`}>
           <InputItem labelName={this.msg('courierNo')} field="courier_no"
             colSpan={labelColSpan} formhoc={this.props.formhoc}
@@ -295,7 +315,6 @@ export default class ModeInfo extends React.Component {
           <Row>
             {modeEditCols}
           </Row>
-
         </div>
       );
     }
