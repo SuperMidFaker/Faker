@@ -3,6 +3,10 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Button, Table, Input, message } from 'antd';
 import { loadContainers, saveContainer, delContainer } from 'common/reducers/cmsManifest';
+import { format } from 'client/common/i18n/helpers';
+import messages from './message.i18n';
+
+const formatMsg = format(messages);
 
 function ColumnInput(props) {
   const { inEdit, record, field, onChange } = props;
@@ -53,6 +57,7 @@ export default class ContainersPane extends React.Component {
       this.setState({ datas: nextProps.containers });
     }
   }
+  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
   handleEditChange = (record, field, value) => {
     record[field] = value; // eslint-disable-line no-param-reassign
     this.forceUpdate();
@@ -97,7 +102,7 @@ export default class ContainersPane extends React.Component {
 
   render() {
     const columns = [{
-      title: '箱号',
+      title: this.msg('containerId'),
       dataIndex: 'container_id',
       width: 100,
       render: (o, record) =>
@@ -105,7 +110,7 @@ export default class ContainersPane extends React.Component {
           onChange={this.handleEditChange}
         />,
     }, {
-      title: '自重',
+      title: this.msg('containerWt'),
       dataIndex: 'container_wt',
       width: 100,
       render: (o, record) =>
@@ -113,7 +118,7 @@ export default class ContainersPane extends React.Component {
           onChange={this.handleEditChange}
         />,
     }, {
-      title: '规格',
+      title: this.msg('containerSpec'),
       dataIndex: 'container_spec',
       width: 100,
       render: (o, record) =>
@@ -121,7 +126,7 @@ export default class ContainersPane extends React.Component {
           onChange={this.handleEditChange}
         />,
     }, {
-      title: '数量',
+      title: this.msg('containerQty'),
       dataIndex: 'container_qty',
       width: 100,
       render: (o, record) =>
@@ -140,7 +145,7 @@ export default class ContainersPane extends React.Component {
     }];
     return (
       <Table pagination={false} columns={columns} dataSource={this.state.datas}
-        footer={() => <Button type="dashed" onClick={this.handleAdd} icon="plus" style={{ width: '100%' }}>添加</Button>}
+        footer={() => <Button type="dashed" onClick={this.handleAdd} icon="plus" style={{ width: '100%' }}>{this.msg('add')}</Button>}
       />
     );
   }

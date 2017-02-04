@@ -4,7 +4,10 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Button, Table, Select, Input, message } from 'antd';
 import { loadDocuMarks, saveDocuMark, delDocumark } from 'common/reducers/cmsManifest';
 import { CMS_DECL_DOCU } from 'common/constants';
+import { format } from 'client/common/i18n/helpers';
+import messages from './message.i18n';
 
+const formatMsg = format(messages);
 const Option = Select.Option;
 
 function ColumnInput(props) {
@@ -84,6 +87,7 @@ export default class DocuMarkPane extends React.Component {
       this.setState({ datas: nextProps.docuMarks });
     }
   }
+  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
   handleEditChange = (record, field, value) => {
     record[field] = value; // eslint-disable-line no-param-reassign
     this.forceUpdate();
@@ -126,7 +130,7 @@ export default class DocuMarkPane extends React.Component {
 
   render() {
     const columns = [{
-      title: '单据类型',
+      title: this.msg('docuSpec'),
       dataIndex: 'docu_spec',
       width: 200,
       render: (o, record) =>
@@ -134,7 +138,7 @@ export default class DocuMarkPane extends React.Component {
           onChange={this.handleEditChange} options={CMS_DECL_DOCU}
         />,
     }, {
-      title: '单据编码',
+      title: this.msg('docuCode'),
       dataIndex: 'docu_code',
       width: 200,
       render: (o, record) =>
@@ -153,7 +157,7 @@ export default class DocuMarkPane extends React.Component {
     }];
     return (
       <Table pagination={false} columns={columns} dataSource={this.state.datas}
-        footer={() => <Button type="dashed" onClick={this.handleAdd} icon="plus" style={{ width: '100%' }}>添加</Button>}
+        footer={() => <Button type="dashed" onClick={this.handleAdd} icon="plus" style={{ width: '100%' }}>{this.msg('add')}</Button>}
       />
     );
   }
