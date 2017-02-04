@@ -23,6 +23,9 @@ const actionTypes = createActionTypes('@@welogix/cms/manifest/', [
   'LOAD_DOCU_MARKS', 'LOAD_DOCU_MARKS_SUCCEED', 'LOAD_DOCU_MARKS_FAIL',
   'SAVE_DOCU_MARK', 'SAVE_DOCU_MARK_SUCCEED', 'SAVE_DOCU_MARK_FAIL',
   'DELETE_DOCU_MARK', 'DELETE_DOCU_MARK_SUCCEED', 'DELETE_DOCU_MARK_FAIL',
+  'LOAD_CONTAINERS', 'LOAD_CONTAINERS_SUCCEED', 'LOAD_CONTAINERS_FAIL',
+  'SAVE_CONTAINER', 'SAVE_CONTAINER_SUCCEED', 'SAVE_CONTAINER_FAIL',
+  'DELETE_CONTAINER', 'DELETE_CONTAINER_SUCCEED', 'DELETE_CONTAINER_FAIL',
 ]);
 
 const initialState = {
@@ -55,10 +58,11 @@ const initialState = {
   },
   visibleMSModal: false,
   visibleAmtModal: false,
-  tabKey: 'certificate',
+  tabKey: 'container',
   certMarks: [],
   certParams: [],
   docuMarks: [],
+  containers: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -140,9 +144,58 @@ export default function reducer(state = initialState, action) {
       return { ...state, docuMarks: action.result.data };
     case actionTypes.SAVE_DOCU_MARK_SUCCEED:
       return { ...state, docuMarks: action.result.data };
+    case actionTypes.LOAD_CONTAINERS_SUCCEED:
+      return { ...state, containers: action.result.data };
+    case actionTypes.SAVE_CONTAINER_SUCCEED:
+      return { ...state, containers: action.result.data };
     default:
       return state;
   }
+}
+
+export function loadContainers(entryId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_CONTAINERS,
+        actionTypes.LOAD_CONTAINERS_SUCCEED,
+        actionTypes.LOAD_CONTAINERS_FAIL,
+      ],
+      endpoint: 'v1/cms/manifest/containers',
+      method: 'get',
+      params: { entryId },
+    },
+  };
+}
+
+export function saveContainer(datas) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SAVE_CONTAINER,
+        actionTypes.SAVE_CONTAINER_SUCCEED,
+        actionTypes.SAVE_CONTAINER_FAIL,
+      ],
+      endpoint: 'v1/cms/manifest/container/save',
+      method: 'post',
+      data: datas,
+    },
+  };
+}
+
+export function delContainer(id) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DELETE_CONTAINER,
+        actionTypes.DELETE_CONTAINER_SUCCEED,
+        actionTypes.DELETE_CONTAINER_FAIL,
+      ],
+      endpoint: 'v1/cms/manifest/container/delete',
+      method: 'post',
+      data: { id },
+    },
+  };
 }
 
 export function loadCertMarks(entryId) {
