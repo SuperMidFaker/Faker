@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Button, Layout, Table } from 'antd';
 import QueueAnim from 'rc-queue-anim';
-import { openAddWarehouseModal } from 'common/reducers/scvInventory';
+import { openAddWarehouseModal } from 'common/reducers/scvWarehouse';
 import SearchBar from 'client/components/search-bar';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
@@ -17,8 +17,8 @@ const { Header, Content } = Layout;
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    reload: state.scvInventory.reloadWarehouse,
-    inboundlist: state.scvInventory.warehouseList,
+    reload: state.scvWarehouse.reloadWarehouse,
+    inboundlist: state.scvWarehouse.warehouseList,
   }),
   { openAddWarehouseModal }
 )

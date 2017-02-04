@@ -18,7 +18,7 @@ const actions = [
   'WH_LOAD', 'WH_LOAD_SUCCEED', 'WH_LOAD_FAIL', 'WH_SUBMIT', 'WH_SUBMIT_SUCCEED', 'WH_SUBMIT_FAIL', 'WH_BEGIN_EDIT', 'WH_EDIT',
   'WH_UPDATE', 'WH_UPDATE_SUCCEED', 'WH_UPDATE_FAIL', 'WH_DELETE', 'WH_DELETE_SUCCEED', 'WH_DELETE_FAIL', 'WH_EDIT_CANCEL',
 ];
-const domain = '@@qm-wecwm/warehouse/';
+const domain = '@@welogix/cwm/warehouse/';
 const actionTypes = createActionTypes(domain, actions);
 
 export default function reducer(state = initialState, action) {

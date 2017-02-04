@@ -27,13 +27,13 @@ import cmsCompRelation from './cmsCompRelation';
 import cmsQuote from './cmsQuote';
 import scvInboundShipments from './scvInboundShipments';
 import scvOutboundShipments from './scvOutboundShipments';
-import scvInventory from './scvInventory';
+import scvInventoryStock from './scvInventoryStock';
+import scvWarehouse from './scvWarehouse';
 import cmsExpense from './cmsExpense';
 import cmsBilling from './cmsBilling';
 import crmCustomers from './crmCustomers';
 import crmOrders from './crmOrders';
 import crmBilling from './crmBilling';
-import cwmResources from './cwmResources';
 
 export default combineReducers({
   intl,
@@ -64,11 +64,11 @@ export default combineReducers({
   cmsQuote,
   scvInboundShipments,
   scvOutboundShipments,
-  scvInventory,
+  scvInventoryStock,
+  scvWarehouse,
   cmsExpense,
   cmsBilling,
   crmCustomers,
   crmOrders,
   crmBilling,
-  cwmResources,
 });
