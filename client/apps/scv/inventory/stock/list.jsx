@@ -1,27 +1,27 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Form, Icon, Input, Select, message, Layout } from 'antd';
+import { Button, Icon, message, Layout } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { loadInbounds, loadInboundPartners, openModal, openCreateModal } from 'common/reducers/scvInboundShipments';
-import Table from 'client/components/remoteAntTable';
 import connectNav from 'client/common/decorators/connect-nav';
-import { format } from 'client/common/i18n/helpers';
-import messages from './message.i18n';
+import { loadStocks, loadStockSearchOptions } from 'common/reducers/scvInventoryStock';
+import Table from 'client/components/remoteAntTable';
+import StockSearchForm from './searchForm';
+import { formatMsg } from './message.i18n';
 
-const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
-const FormItem = Form.Item;
-const Search = Input.Search;
-const Option = Select.Option;
 
 function fetchData({ state, dispatch }) {
-  return dispatch(loadInbounds({
+  const proms = [];
+  proms.push(dispatch(loadStockSearchOptions(state.account.tenantId)));
+  proms.push(dispatch(loadStocks({
     tenantId: state.account.tenantId,
-    filter: JSON.stringify({ status: 'all' }),
-    pageSize: state.scvInboundShipments.list.pageSize,
-    current: state.scvInboundShipments.list.current,
-  }));
+    filter: JSON.stringify(state.scvInventoryStock.listFilter),
+    sorter: JSON.stringify(state.scvInventoryStock.sortFilter),
+    pageSize: state.scvInventoryStock.list.pageSize,
+    current: state.scvInventoryStock.list.current,
+  })));
+  return Promise.all(proms);
 }
 
 @connectFetch()(fetchData)
@@ -29,11 +29,12 @@ function fetchData({ state, dispatch }) {
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    reload: state.scvInboundShipments.reload,
-    inboundlist: state.scvInboundShipments.list,
-    listFilter: state.scvInboundShipments.listFilter,
+    loading: state.scvInventoryStock.loading,
+    stocklist: state.scvInventoryStock.list,
+    listFilter: state.scvInventoryStock.listFilter,
+    sortFilter: state.scvInventoryStock.sortFilter,
   }),
-  { loadInbounds, loadInboundPartners, openModal, openCreateModal }
+  { loadStocks }
 )
 @connectNav({
   depth: 2,
@@ -43,36 +44,18 @@ export default class InventoryStockList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
-    reload: PropTypes.bool.isRequired,
-    inboundlist: PropTypes.object.isRequired,
+    loading: PropTypes.bool.isRequired,
+    stocklist: PropTypes.object.isRequired,
     listFilter: PropTypes.object.isRequired,
-    loadInbounds: PropTypes.func.isRequired,
-    loadInboundPartners: PropTypes.func.isRequired,
-    openModal: PropTypes.func.isRequired,
+    sortFilter: PropTypes.object.isRequired,
   }
   state = {
-    expandedKeys: [],
-    uploadChangeCount: 0,
-    inUpload: false,
-    uploadPercent: 10,
-    uploadStatus: 'active',
     collapsed: false,
-  }
-  componentDidMount() {
-    this.inboundPoll = setInterval(() => {
-      const { tenantId, listFilter, inboundlist: { pageSize, current } } = this.props;
-      this.props.loadInbounds({
-        tenantId,
-        filter: JSON.stringify(listFilter),
-        pageSize,
-        current,
-      });
-    }, 20 * 1000);
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.reload) {
-      const { tenantId, listFilter, inboundlist: { pageSize } } = nextProps;
-      nextProps.loadInbounds({
+      const { tenantId, listFilter, stocklist: { pageSize } } = nextProps;
+      nextProps.loadStocks({
         tenantId,
         filter: JSON.stringify(listFilter),
         pageSize,
@@ -80,13 +63,7 @@ export default class InventoryStockList extends React.Component {
       });
     }
   }
-  componentWillUnmount() {
-    if (this.inboundPoll) {
-      clearInterval(this.inboundPoll);
-    }
-  }
-  inboundPoll = undefined
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl);
   columns = [{
     title: this.msg('finishedProduct'),
     dataIndex: 'product_name',
@@ -112,7 +89,7 @@ export default class InventoryStockList extends React.Component {
     width: 80,
     dataIndex: 'stock_cost',
   }, {
-    title: this.msg('cartoonSize'),
+    title: this.msg('cartonSize'),
     width: 80,
     colSpan: 3,
   }, {
@@ -128,7 +105,7 @@ export default class InventoryStockList extends React.Component {
     dataIndex: 'product_desc',
   }]
   dataSource = new Table.DataSource({
-    fetcher: params => this.props.loadInbounds(params),
+    fetcher: params => this.props.loadStocks(params),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
       total: result.totalCount,
@@ -147,85 +124,29 @@ export default class InventoryStockList extends React.Component {
       params.filter = JSON.stringify(filter);
       return params;
     },
-    remotes: this.props.inboundlist,
+    remotes: this.props.stocklist,
   })
   toggle = () => {
     this.setState({
       collapsed: !this.state.collapsed,
     });
   }
-  handleImport = (info) => {
-    if (this.state.uploadChangeCount === 0) {
-      this.state.uploadChangeCount++;
-      this.setState({ inUpload: true, uploadStatus: 'active', uploadPercent: 10 });
-    } else if (info.event) {
-      this.state.uploadChangeCount++;
-      this.setState({ uploadPercent: info.event.percent });
-    } else if (info.file.status === 'done') {
-      this.setState({ inUpload: false, uploadStatus: 'success' });
-      this.state.uploadChangeCount = 0;
-      const { tenantId, pageSize } = this.props;
-      this.props.loadInbounds({
-        tenantId,
-        pageSize,
-        current: 1,
-      });
-    } else if (info.file.status === 'error') {
-      this.setState({ inUpload: false, uploadStatus: 'exception' });
-      this.state.uploadChangeCount = 0;
-    }
-  }
-  handleExpandedChange = (expandedKeys) => {
-    this.setState({ expandedKeys });
-  }
-  handleSendAtDest = (row) => {
-    this.props.loadInboundPartners(this.props.tenantId).then(
-      (result) => {
-        if (result.error) {
-          message.error(result.error.message);
-        } else {
-          this.props.openModal(row);
-        }
-      });
-  }
   handleShipmentLoad = () => {
-    const { tenantId, listFilter, inboundlist: { pageSize, current } } = this.props;
-    this.setState({ expandedKeys: [] });
-    this.props.loadInbounds({
+    const { tenantId, listFilter, stocklist: { pageSize, current } } = this.props;
+    this.props.loadStocks({
       tenantId,
       filter: JSON.stringify(listFilter),
       pageSize,
       current,
     });
   }
-  handleRadioChange = (ev) => {
-    if (ev.target.value === this.props.listFilter.status) {
-      return;
-    }
-    const filter = { ...this.props.listFilter, status: ev.target.value };
-    const { tenantId, inboundlist: { pageSize } } = this.props;
-    this.setState({ expandedKeys: [] });
-    this.props.loadInbounds({
+  handleSearch = (searchForm) => {
+    const filter = { ...this.props.listFilter, ...searchForm };
+    const { tenantId, stocklist: { pageSize }, sortFilter } = this.props;
+    this.props.loadStocks({
       tenantId,
       filter: JSON.stringify(filter),
-      pageSize,
-      current: 1,
-    }).then((result) => {
-      if (result.error) {
-        message.error(result.error.message);
-      }
-    });
-  }
-  handleShipmentCreate = () => {
-    this.props.openCreateModal();
-  }
-  handleSearch = (value) => {
-    const filter = { ...this.props.listFilter, shipment_no: value };
-    const { tenantId, inboundlist: { pageSize } } = this.props;
-    this.setState({ expandedKeys: [] });
-    this.props.loadInbounds({
-      tenantId,
-      filter: JSON.stringify(filter),
+      sorter: JSON.stringify(sortFilter),
       pageSize,
       current: 1,
     }).then((result) => {
@@ -235,8 +156,8 @@ export default class InventoryStockList extends React.Component {
     });
   }
   render() {
-    const { inboundlist } = this.props;
-    this.dataSource.remotes = inboundlist;
+    const { stocklist, loading } = this.props;
+    this.dataSource.remotes = stocklist;
     return (
       <Layout>
         <Header className="top-bar">
@@ -253,40 +174,7 @@ export default class InventoryStockList extends React.Component {
             collapsed={this.state.collapsed}
             collapsedWidth={0}
           >
-            <Form vertical style={{ padding: 16 }}>
-              <FormItem label="商品货号">
-                <Search placeholder="input search text" />
-              </FormItem>
-              <FormItem label="商品分类">
-                <Select
-                  showSearch
-                  placeholder="选择分类"
-                  optionFilterProp="children"
-                  filterOption={(input, option) => option.props.value.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                >
-                  <Option value="jack">Jack</Option>
-                  <Option value="lucy">Lucy</Option>
-                  <Option value="tom">Tom</Option>
-                </Select>
-              </FormItem>
-              <FormItem label="仓库">
-                <Select
-                  showSearch
-                  placeholder="选择仓库"
-                  optionFilterProp="children"
-                  filterOption={(input, option) => option.props.value.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                >
-                  <Option value="all">全部仓库</Option>
-                  <Option value="jack">物流大道仓库</Option>
-                  <Option value="lucy">希雅路仓库</Option>
-                  <Option value="tom">富特路仓库</Option>
-                </Select>
-              </FormItem>
-              <FormItem>
-                <Button type="primary">查询</Button>
-                <Button type="ghost">清除选项</Button>
-              </FormItem>
-            </Form>
+            <StockSearchForm onSearch={this.handleSearch} />
           </Sider>
           <Content className="main-content" key="main">
             <div className="page-body">
@@ -296,7 +184,7 @@ export default class InventoryStockList extends React.Component {
                 </Button>
               </div>
               <div className="panel-body table-panel">
-                <Table columns={this.columns} dataSource={this.dataSource} loading={inboundlist.loading} rowKey="id" scroll={{ x: 1200 }} />
+                <Table columns={this.columns} dataSource={this.dataSource} loading={loading} rowKey="id" scroll={{ x: 1200 }} />
               </div>
             </div>
           </Content>

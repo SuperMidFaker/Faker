@@ -273,3 +273,6 @@ export const SHIPMENT_LOG_CATEGORY = {
   exception: 'exception',
   fee: 'fee',
 };
+export const COURIERS = [
+  { name: '圆通', code: 'yuantong' },
+];

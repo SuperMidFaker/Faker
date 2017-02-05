@@ -149,6 +149,10 @@ export default defineMessages({
     id: 'transport.shipment.courier.no',
     defaultMessage: '快递单号',
   },
+  courierCompany: {
+    id: 'transport.shipment.courier.company',
+    defaultMessage: '快递公司',
+  },
   goodsInfo: {
     id: 'transport.shipment.goods.info',
     defaultMessage: '货物信息',

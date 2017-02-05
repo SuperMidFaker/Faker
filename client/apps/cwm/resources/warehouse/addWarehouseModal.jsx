@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { injectIntl, intlShape } from 'react-intl';
 import { Modal, Form, Input, Radio, message } from 'antd';
-import { closeAddWarehouseModal, addWarehouse } from 'common/reducers/cwmResources';
+import { closeAddWarehouseModal, addWarehouse } from 'common/reducers/scvWarehouse';
 import { formatMsg } from './message.i18n';
 
 const FormItem = Form.Item;
@@ -11,7 +11,7 @@ const RadioGroup = Radio.Group;
 
 @injectIntl
 @connect(state => ({
-  visible: state.cwmResources.addWarehouseModal.visible,
+  visible: state.scvWarehouse.addWarehouseModal.visible,
   tenantId: state.account.tenantId,
 }),
   { closeAddWarehouseModal, addWarehouse }
