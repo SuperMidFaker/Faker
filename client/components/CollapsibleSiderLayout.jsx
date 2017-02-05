@@ -148,7 +148,7 @@ export default class CollapsibleSiderLayout extends React.Component {
                           gl.links.map(gll => (
                             <MenuItem key={gll.key}>
                               <NavLink to={gll.path}>
-                                {gll.text}
+                                <span className="nav-text">{gll.text}</span>
                               </NavLink>
                             </MenuItem>))
                         }
@@ -157,7 +157,7 @@ export default class CollapsibleSiderLayout extends React.Component {
                   } else {
                     subMenuItems = link.sublinks.map(sub => (<MenuItem key={sub.key}>
                       <NavLink to={sub.path}>
-                        {sub.text}
+                        <span className="nav-text">{sub.text}</span>
                       </NavLink>
                     </MenuItem>));
                   }

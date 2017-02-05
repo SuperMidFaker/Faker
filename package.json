@@ -1,7 +1,19 @@
 {
   "name": "welogix-web",
   "version": "1.0.0",
-  "description": "WeLogix Clearance & Logistics Collaboration Network",
+  "title": "WeLogix Web",
+  "description": "A SaaS platform for Cross-border supply chain and logistics",
+  "homepage": "http://welogix.cn/",
+  "keywords": [
+    "TMS",
+    "CMS",
+    "logistics",
+    "SaaS",
+    "react",
+    "router",
+    "koa"
+  ],
+  "author": "WeLogix InfoTech",
   "main": "server/sboot.js",
   "scripts": {
     "clean": "rm -rf public/dist",
@@ -27,21 +39,11 @@
     "type": "git",
     "url": "git@git.welogix.cn:saas/welogix-web.git"
   },
-  "keywords": [
-    "TMS",
-    "CMS",
-    "collaboration",
-    "SaaS",
-    "react",
-    "router",
-    "koa"
-  ],
-  "author": "WeLogix InfoTech",
   "license": "MIT",
   "pre-commit": "lint-staged",
   "dependencies": {
     "@welogix/react-data-grid": "^1.0.51",
-    "antd": "^2.6.3",
+    "antd": "^2.7.0",
     "babel-core": "^6.18.2",
     "babel-runtime": "^6.18.0",
     "classnames": "^2.2.5",

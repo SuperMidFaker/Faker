@@ -121,15 +121,17 @@ export default class CustomsDeclEditor extends React.Component {
               </Breadcrumb>
               <div className="top-bar-tools">
                 <Dropdown overlay={this.lockMenu}>
-                  <Button>
+                  <Button size="large">
                     <Icon type="setting" /> <Icon type="down" />
                   </Button>
                 </Dropdown>
-                <Icon
-                  className="trigger"
-                  type={this.state.collapsed ? 'menu-fold' : 'menu-unfold'}
+                <Button size="large"
+                  className={this.state.collapsed ? '' : 'btn-toggle-on'}
+                  icon={this.state.collapsed ? 'menu-fold' : 'menu-unfold'}
                   onClick={this.toggle}
-                />
+                >
+                  附加信息
+                </Button>
               </div>
             </Header>
             <Content className="main-content top-bar-fixed">

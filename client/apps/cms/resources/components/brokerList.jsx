@@ -60,11 +60,11 @@ export default class BrokerList extends Component {
         dataIndex: 'name',
         key: 'name',
       }, {
-        title: '供应商代码',
+        title: '海关十位编码',
         dataIndex: 'partner_code',
         key: 'partner_code',
       }, {
-        title: '企业唯一标识码',
+        title: '统一社会信用代码',
         dataIndex: 'partner_unique_code',
         key: 'partner_unique_code',
       }, {
