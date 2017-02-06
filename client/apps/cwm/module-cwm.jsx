@@ -73,24 +73,12 @@ export default class ModuleCWM extends React.Component {
       text: formatMsg(intl, 'settings'),
       sublinks: [{
         key: 'cwm-5-0',
-        group: formatMsg(intl, 'resources'),
-        path: '/cwm/resources/warehouse',
-        text: formatMsg(intl, 'resourcesWarehouse'),
+        path: '/cwm/resources',
+        text: formatMsg(intl, 'resources'),
       }, {
         key: 'cwm-5-1',
-        group: formatMsg(intl, 'resources'),
-        path: '/cwm/resources/owner',
-        text: formatMsg(intl, 'resourcesOwner'),
-      }, {
-        key: 'cwm-5-2',
-        group: formatMsg(intl, 'resources'),
-        path: '/cwm/resources/supplier',
-        text: formatMsg(intl, 'resourcesSupplier'),
-      }, {
-        key: 'cwm-5-3',
-        group: formatMsg(intl, 'resources'),
-        path: '/cwm/resources/consignee',
-        text: formatMsg(intl, 'resourcesConsignee'),
+        path: '/cwm/settings',
+        text: formatMsg(intl, 'settingsApp'),
       }],
     });
     this.setState({ linkMenus });

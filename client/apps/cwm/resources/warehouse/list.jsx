@@ -1,9 +1,10 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Layout, Table } from 'antd';
+import { Breadcrumb, Button, Layout, Menu, Table } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import { openAddWarehouseModal } from 'common/reducers/scvWarehouse';
+import NavLink from 'client/components/nav-link';
 import SearchBar from 'client/components/search-bar';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
@@ -11,7 +12,7 @@ import messages from './message.i18n';
 import AddWarehouseModal from './addWarehouseModal';
 
 const formatMsg = format(messages);
-const { Header, Content } = Layout;
+const { Header, Content, Sider } = Layout;
 
 @injectIntl
 @connect(
@@ -80,14 +81,29 @@ export default class CWMWarehouseList extends React.Component {
         </Header>
         <Content className="main-content" key="main">
           <div className="page-body">
-            <div className="toolbar">
-              <Button type="primary" size="large" icon="plus" onClick={this.handleAddWarehouse}>
-                {this.msg('addWarehouse')}
-              </Button>
-            </div>
-            <div className="panel-body table-panel">
-              <Table columns={this.columns} dataSource={this.dataSource} rowKey="id" scroll={{ x: 1200 }} />
-            </div>
+            <Layout className="main-wrapper">
+              <Sider className="nav-sider">
+                <Menu
+                  defaultSelectedKeys={['warehouse']}
+                  mode="inline"
+                >
+                  <Menu.Item key="warehouse"><NavLink to="/cwm/resources/warehouse">仓库</NavLink></Menu.Item>
+                  <Menu.Item key="owner"><NavLink to="/cwm/resources/owner">货主</NavLink></Menu.Item>
+                  <Menu.Item key="vendor"><NavLink to="/cwm/resources/vendor">供应商</NavLink></Menu.Item>
+                  <Menu.Item key="consignee"><NavLink to="/cwm/resources/consignee">收货方</NavLink></Menu.Item>
+                </Menu>
+              </Sider>
+              <Content style={{ padding: '0 24px', minHeight: 280 }}>
+                <div className="toolbar">
+                  <Button type="primary" size="large" icon="plus" onClick={this.handleAddWarehouse}>
+                    {this.msg('addWarehouse')}
+                  </Button>
+                </div>
+                <div className="panel-body table-panel">
+                  <Table columns={this.columns} dataSource={this.dataSource} rowKey="id" scroll={{ x: 1200 }} />
+                </div>
+              </Content>
+            </Layout>
           </div>
           <AddWarehouseModal />
         </Content>

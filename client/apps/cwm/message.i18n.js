@@ -53,6 +53,14 @@ const messages = defineMessages({
     id: 'cwm.module.settings',
     defaultMessage: '设置',
   },
+  settingsResources: {
+    id: 'cwm.module.settings.resources',
+    defaultMessage: '资源设置',
+  },
+  settingsApp: {
+    id: 'cwm.module.settings.app',
+    defaultMessage: '应用设置',
+  },
 });
 
 export default messages;

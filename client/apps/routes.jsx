@@ -192,6 +192,7 @@ export default(store, cookie) => {
               </Route>
             </Route>
             <Route path="resources">
+              <IndexRedirect to="/transport/resources/carrier" />
               <Route path="carrier">
                 <IndexRoute component={TMSResources.CarrierListContainer} />
               </Route>
@@ -306,6 +307,7 @@ export default(store, cookie) => {
               </Route>
             </Route>
             <Route path="resources">
+              <IndexRedirect to="/clearance/resources/broker" />
               <Route path="broker">
                 <IndexRoute component={CMSResources.BrokerContainer} />
               </Route>
@@ -355,6 +357,7 @@ export default(store, cookie) => {
               <Route path="sku" component={CWMProductsSku.List} />
             </Route>
             <Route path="resources">
+              <IndexRedirect to="/cwm/resources/warehouse" />
               <Route path="warehouse" component={CWMWarehouse.List} />
             </Route>
             <Route path="settings">

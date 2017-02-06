@@ -105,7 +105,7 @@ export default class List extends React.Component {
         </Header>
         <Content className="main-content" key="main">
           <div className="page-body">
-            <Layout style={{ padding: '24px 0', background: '#fff' }}>
+            <Layout className="main-wrapper">
               <Sider width={360} style={{ background: '#fff', borderRight: '1px solid #e9e9e9' }}>
                 <div className="toolbar">
                   <div className="toolbar-right">

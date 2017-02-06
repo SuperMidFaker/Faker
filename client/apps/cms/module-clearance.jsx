@@ -155,7 +155,7 @@ export default class Clearance extends React.Component {
         text: formatMsg(intl, 'settings'),
         sublinks: [{
           key: 'cms-6-0',
-          path: '/clearance/resources/broker',
+          path: '/clearance/resources',
           text: formatMsg(intl, 'settingsResources'),
         }, {
           key: 'cms-6-1',

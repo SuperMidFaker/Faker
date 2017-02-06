@@ -101,7 +101,7 @@ export default class Transport extends React.Component {
         text: '设置',
         sublinks: [{
           key: 'tms-5-0',
-          path: '/transport/resources/carrier',
+          path: '/transport/resources',
           text: '资源设置',
         }, {
           key: 'tms-5-1',

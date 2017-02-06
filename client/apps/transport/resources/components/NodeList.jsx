@@ -120,8 +120,8 @@ export default function NodeList(props) {
       </Header>
       <Content className="main-content" key="main">
         <div className="page-body">
-          <Layout style={{ padding: '16px 0', background: '#fff' }}>
-            <Sider style={{ background: '#fff' }}>
+          <Layout className="main-wrapper">
+            <Sider className="nav-sider">
               <Menu
                 defaultSelectedKeys={['location']}
                 mode="inline"
