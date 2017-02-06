@@ -1,12 +1,13 @@
 import React, { PropTypes } from 'react';
-import { Layout, Table, Button } from 'antd';
+import { Breadcrumb, Menu, Layout, Table, Button } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import { Link } from 'react-router';
+import NavLink from 'client/components/nav-link';
 import SearchBar from 'client/components/search-bar';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { addUniqueKeys } from 'client/util/dataTransform';
 
-const { Header, Content } = Layout;
+const { Header, Content, Sider } = Layout;
 const rowSelection = {
   onSelect() {},
 };
@@ -107,7 +108,14 @@ function DriverList(props) {
   return (
     <QueueAnim type={['bottom', 'up']}>
       <Header className="top-bar" key="header">
-        <span>司机管理</span>
+        <Breadcrumb>
+          <Breadcrumb.Item>
+            资源设置
+          </Breadcrumb.Item>
+          <Breadcrumb.Item>
+            司机
+          </Breadcrumb.Item>
+        </Breadcrumb>
         <div className="top-bar-tools">
           <SearchBar placeholder="司机/手机" onInputSearch={props.onSearch}
             value={props.searchText} size="large"
@@ -116,14 +124,29 @@ function DriverList(props) {
       </Header>
       <Content className="main-content" key="main">
         <div className="page-body">
-          <div className="toolbar">
-            <PrivilegeCover module="transport" feature="resources" action="create">
-              <Button type="primary" size="large" onClick={onAddDriverBtnClicked} icon="plus-circle-o">新增司机</Button>
-            </PrivilegeCover>
-          </div>
-          <div className="panel-body table-panel">
-            <Table dataSource={addUniqueKeys(dataSource)} columns={columns} rowSelection={rowSelection} />
-          </div>
+          <Layout style={{ padding: '16px 0', background: '#fff' }}>
+            <Sider style={{ background: '#fff' }}>
+              <Menu
+                defaultSelectedKeys={['driver']}
+                mode="inline"
+              >
+                <Menu.Item key="carrier"><NavLink to="/transport/resources/carrier">承运商</NavLink></Menu.Item>
+                <Menu.Item key="vehicle"><NavLink to="/transport/resources/vehicle">车辆</NavLink></Menu.Item>
+                <Menu.Item key="driver"><NavLink to="/transport/resources/driver">司机</NavLink></Menu.Item>
+                <Menu.Item key="location"><NavLink to="/transport/resources/node">收发货地</NavLink></Menu.Item>
+              </Menu>
+            </Sider>
+            <Content style={{ padding: '0 24px', minHeight: 280 }}>
+              <div className="toolbar">
+                <PrivilegeCover module="transport" feature="resources" action="create">
+                  <Button type="primary" size="large" onClick={onAddDriverBtnClicked} icon="plus-circle-o">新增司机</Button>
+                </PrivilegeCover>
+              </div>
+              <div className="panel-body table-panel">
+                <Table dataSource={addUniqueKeys(dataSource)} columns={columns} rowSelection={rowSelection} />
+              </div>
+            </Content>
+          </Layout>
         </div>
       </Content>
     </QueueAnim>

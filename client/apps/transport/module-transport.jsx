@@ -97,24 +97,16 @@ export default class Transport extends React.Component {
       linkMenus.push({
         single: false,
         key: 'tms-5',
-        icon: 'zmdi zmdi-library',
-        text: '资源中心',
+        icon: 'zmdi zmdi-settings',
+        text: '设置',
         sublinks: [{
           key: 'tms-5-0',
           path: '/transport/resources/carrier',
-          text: '承运商管理',
+          text: '资源设置',
         }, {
-          key: 'tms-5-2',
-          path: '/transport/resources/vehicle',
-          text: '车辆管理',
-        }, {
-          key: 'tms-5-3',
-          path: '/transport/resources/driver',
-          text: '司机管理',
-        }, {
-          key: 'tms-5-4',
-          path: '/transport/resources/node',
-          text: '地点管理',
+          key: 'tms-5-1',
+          path: '/transport/settings',
+          text: '应用设置',
         }],
       });
     }

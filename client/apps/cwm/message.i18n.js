@@ -31,11 +31,7 @@ const messages = defineMessages({
   },
   resources: {
     id: 'cwm.module.resources',
-    defaultMessage: '资源管理',
-  },
-  groupMasterData: {
-    id: 'cwm.module.resources.group.master.data',
-    defaultMessage: '基础资料',
+    defaultMessage: '资源设置',
   },
   resourcesWarehouse: {
     id: 'cwm.module.resources.warehouse',

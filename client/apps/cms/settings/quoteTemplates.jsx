@@ -52,7 +52,7 @@ export default class Settings extends Component {
         <Header className="top-bar">
           <Breadcrumb>
             <Breadcrumb.Item>
-              {this.msg('settings')}
+              {this.msg('appSettings')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
               业务数据

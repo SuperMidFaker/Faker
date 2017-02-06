@@ -85,17 +85,9 @@ const messages = defineMessages({
     id: 'cms.module.billing.payable',
     defaultMessage: '应付账单',
   },
-  resources: {
-    id: 'cms.module.resources',
-    defaultMessage: '资源中心',
-  },
   quote: {
     id: 'cms.module.resources.quote',
     defaultMessage: '报价管理',
-  },
-  providers: {
-    id: 'cms.module.resources.providers',
-    defaultMessage: '供应商管理',
   },
   products: {
     id: 'cms.module.products',
@@ -108,6 +100,22 @@ const messages = defineMessages({
   settings: {
     id: 'cms.module.settings',
     defaultMessage: '设置',
+  },
+  settingsResources: {
+    id: 'cms.module.settings.resources',
+    defaultMessage: '资源设置',
+  },
+  brokers: {
+    id: 'cms.module.settings.resources.brokers',
+    defaultMessage: '报关行',
+  },
+  settingsApp: {
+    id: 'cms.module.settings.app',
+    defaultMessage: '应用设置',
+  },
+  quoteTemplates: {
+    id: 'cms.module.settings.app.quote.templates',
+    defaultMessage: '报价模板',
   },
 });
 export default messages;

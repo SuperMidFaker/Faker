@@ -1,13 +1,14 @@
 import React, { Component, PropTypes } from 'react';
-import { Table, Button, Layout, Popconfirm } from 'antd';
+import { Breadcrumb, Table, Button, Layout, Menu, Popconfirm } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import moment from 'moment';
+import NavLink from 'client/components/nav-link';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import BrokerModal from '../modals/brokerModal';
 import connectNav from 'client/common/decorators/connect-nav';
 import { mapPartnerships } from '../util/dataMapping';
 
-const { Header, Content } = Layout;
+const { Header, Content, Sider } = Layout;
 const rowSelection = {
   onSelect() {},
 };
@@ -56,7 +57,7 @@ export default class BrokerList extends Component {
 
     const columns = [
       {
-        title: '供应商名称',
+        title: '报关行名称',
         dataIndex: 'name',
         key: 'name',
       }, {
@@ -68,7 +69,7 @@ export default class BrokerList extends Component {
         dataIndex: 'partner_unique_code',
         key: 'partner_unique_code',
       }, {
-        title: '供应商类型',
+        title: '业务类型',
         dataIndex: 'business',
         key: 'business',
         render(o) {
@@ -99,18 +100,37 @@ export default class BrokerList extends Component {
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Header className="top-bar" key="header">
-          <span>供应商管理</span>
+          <Breadcrumb>
+            <Breadcrumb.Item>
+              资源设置
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              报关行
+            </Breadcrumb.Item>
+          </Breadcrumb>
         </Header>
         <Content className="main-content" key="main">
           <div className="page-body">
-            <div className="toolbar">
-              <PrivilegeCover module="transport" feature="resources" action="create">
-                <Button type="primary" size="large" onClick={onAddBtnClicked} icon="plus-circle-o">新增供应商</Button>
-              </PrivilegeCover>
-            </div>
-            <div className="panel-body table-panel">
-              <Table dataSource={dataSource} columns={columns} rowSelection={rowSelection} />
-            </div>
+            <Layout style={{ padding: '16px 0', background: '#fff' }}>
+              <Sider style={{ background: '#fff' }}>
+                <Menu
+                  defaultSelectedKeys={['broker']}
+                  mode="inline"
+                >
+                  <Menu.Item key="broker"><NavLink to="/clearance/resources/broker">报关行</NavLink></Menu.Item>
+                </Menu>
+              </Sider>
+              <Content style={{ padding: '0 24px', minHeight: 280 }}>
+                <div className="toolbar">
+                  <PrivilegeCover module="clearance" feature="resources" action="create">
+                    <Button type="primary" size="large" onClick={onAddBtnClicked} icon="plus-circle-o">新增报关行</Button>
+                  </PrivilegeCover>
+                </div>
+                <div className="panel-body table-panel">
+                  <Table dataSource={dataSource} columns={columns} rowSelection={rowSelection} />
+                </div>
+              </Content>
+            </Layout>
             <BrokerModal />
           </div>
         </Content>

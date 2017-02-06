@@ -1,12 +1,13 @@
 import React, { Component, PropTypes } from 'react';
-import { Table, Layout, Button, Popconfirm } from 'antd';
+import { Breadcrumb, Menu, Table, Layout, Button, Popconfirm } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import moment from 'moment';
+import NavLink from 'client/components/nav-link';
 import SearchBar from 'client/components/search-bar';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import CarrierModal from '../modals/carrierModal';
 
-const { Header, Content } = Layout;
+const { Header, Content, Sider } = Layout;
 const rowSelection = {
   onSelect() {},
 };
@@ -88,7 +89,14 @@ export default class DriverList extends Component {
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Header className="top-bar" key="header">
-          <span>承运商管理</span>
+          <Breadcrumb>
+            <Breadcrumb.Item>
+              资源设置
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              承运商
+            </Breadcrumb.Item>
+          </Breadcrumb>
           <div className="top-bar-tools">
             <SearchBar placeholder="承运商/承运商代码/企业唯一标识码" onInputSearch={this.props.onSearch}
               value={this.props.searchText} size="large"
@@ -97,14 +105,29 @@ export default class DriverList extends Component {
         </Header>
         <Content className="main-content" key="main">
           <div className="page-body">
-            <div className="toolbar">
-              <PrivilegeCover module="transport" feature="resources" action="create">
-                <Button type="primary" size="large" onClick={onAddBtnClicked} icon="plus-circle-o">新增承运商</Button>
-              </PrivilegeCover>
-            </div>
-            <div className="panel-body table-panel">
-              <Table dataSource={dataSource} columns={columns} rowSelection={rowSelection} />
-            </div>
+            <Layout style={{ padding: '16px 0', background: '#fff' }}>
+              <Sider style={{ background: '#fff' }}>
+                <Menu
+                  defaultSelectedKeys={['carrier']}
+                  mode="inline"
+                >
+                  <Menu.Item key="carrier"><NavLink to="/transport/resources/carrier">承运商</NavLink></Menu.Item>
+                  <Menu.Item key="vehicle"><NavLink to="/transport/resources/vehicle">车辆</NavLink></Menu.Item>
+                  <Menu.Item key="driver"><NavLink to="/transport/resources/driver">司机</NavLink></Menu.Item>
+                  <Menu.Item key="location"><NavLink to="/transport/resources/node">收发货地</NavLink></Menu.Item>
+                </Menu>
+              </Sider>
+              <Content style={{ padding: '0 24px', minHeight: 280 }}>
+                <div className="toolbar">
+                  <PrivilegeCover module="transport" feature="resources" action="create">
+                    <Button type="primary" size="large" onClick={onAddBtnClicked} icon="plus-circle-o">新增承运商</Button>
+                  </PrivilegeCover>
+                </div>
+                <div className="panel-body table-panel">
+                  <Table dataSource={dataSource} columns={columns} rowSelection={rowSelection} />
+                </div>
+              </Content>
+            </Layout>
             <CarrierModal />
           </div>
         </Content>

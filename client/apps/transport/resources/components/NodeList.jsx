@@ -1,7 +1,8 @@
 import React, { PropTypes } from 'react';
-import { Table, Button, Layout, Radio, Popconfirm } from 'antd';
+import { Breadcrumb, Menu, Table, Button, Layout, Radio, Popconfirm } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import { Link } from 'react-router';
+import NavLink from 'client/components/nav-link';
 import SearchBar from 'client/components/search-bar';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { addUniqueKeys } from 'client/util/dataTransform';
@@ -10,7 +11,7 @@ import { renderLoc } from '../../common/consignLocation';
 
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
-const { Header, Content } = Layout;
+const { Header, Content, Sider } = Layout;
 
 const rowSelection = {
   onSelect() {
@@ -98,7 +99,14 @@ export default function NodeList(props) {
   return (
     <QueueAnim type={['bottom', 'up']}>
       <Header className="top-bar" key="header">
-        <span>地点管理</span>
+        <Breadcrumb>
+          <Breadcrumb.Item>
+            资源设置
+          </Breadcrumb.Item>
+          <Breadcrumb.Item>
+            收发货地
+          </Breadcrumb.Item>
+        </Breadcrumb>
         <RadioGroup defaultValue={nodeType} onChange={e => onRadioButtonChange(e.target.value)} size="large">
           <RadioButton value={0}>发货地</RadioButton>
           <RadioButton value={1}>收货地</RadioButton>
@@ -112,14 +120,29 @@ export default function NodeList(props) {
       </Header>
       <Content className="main-content" key="main">
         <div className="page-body">
-          <div className="toolbar">
-            <PrivilegeCover module="transport" feature="resources" action="create">
-              <Button type="primary" size="large" onClick={onAddNoteBtnClick} icon="plus-circle-o">新增{nodeTypes[nodeType]}</Button>
-            </PrivilegeCover>
-          </div>
-          <div className="panel-body table-panel">
-            <Table rowSelection={rowSelection} columns={columns} dataSource={addUniqueKeys(dataSource)} />
-          </div>
+          <Layout style={{ padding: '16px 0', background: '#fff' }}>
+            <Sider style={{ background: '#fff' }}>
+              <Menu
+                defaultSelectedKeys={['location']}
+                mode="inline"
+              >
+                <Menu.Item key="carrier"><NavLink to="/transport/resources/carrier">承运商</NavLink></Menu.Item>
+                <Menu.Item key="vehicle"><NavLink to="/transport/resources/vehicle">车辆</NavLink></Menu.Item>
+                <Menu.Item key="driver"><NavLink to="/transport/resources/driver">司机</NavLink></Menu.Item>
+                <Menu.Item key="location"><NavLink to="/transport/resources/node">收发货地</NavLink></Menu.Item>
+              </Menu>
+            </Sider>
+            <Content style={{ padding: '0 24px', minHeight: 280 }}>
+              <div className="toolbar">
+                <PrivilegeCover module="transport" feature="resources" action="create">
+                  <Button type="primary" size="large" onClick={onAddNoteBtnClick} icon="plus-circle-o">新增{nodeTypes[nodeType]}</Button>
+                </PrivilegeCover>
+              </div>
+              <div className="panel-body table-panel">
+                <Table rowSelection={rowSelection} columns={columns} dataSource={addUniqueKeys(dataSource)} />
+              </div>
+            </Content>
+          </Layout>
         </div>
       </Content>
     </QueueAnim>

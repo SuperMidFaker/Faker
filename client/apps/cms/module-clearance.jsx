@@ -122,37 +122,46 @@ export default class Clearance extends React.Component {
     }
     linkMenus.push({
       single: false,
-      key: 'cwm-4',
+      key: 'cms-4',
       icon: 'icon-fontello-layers',
       text: formatMsg(intl, 'products'),
       sublinks: [{
-        key: 'cwm-4-0',
+        key: 'cms-4-0',
         group: formatMsg(intl, 'products'),
         path: '/clearance/products/tradeitem',
         text: formatMsg(intl, 'tradeItem'),
       }],
     });
-    if (hasPermission(privileges, { module: 'clearance', feature: 'resources' })) {
-      linkMenus.push({
-        single: false,
-        key: 'cms-5',
-        icon: 'zmdi zmdi-library',
-        text: formatMsg(intl, 'resources'),
-        sublinks: [{
-          key: 'cms-5-0',
-          group: formatMsg(intl, 'resources'),
-          path: '/clearance/resources/broker',
-          text: formatMsg(intl, 'providers'),
-        }],
-      });
-    }
+    linkMenus.push({
+      single: false,
+      key: 'cms-5',
+      icon: 'icon-ikons-bar-chart-2',
+      text: formatMsg(intl, 'analytics'),
+      sublinks: [{
+        key: 'cms-5-0',
+        path: '/clearance/analytics/kpi',
+        text: formatMsg(intl, 'kpiAnalytics'),
+      }, {
+        key: 'cms-5-1',
+        path: '/clearance/analytics/report',
+        text: formatMsg(intl, 'costAnalytics'),
+      }],
+    });
     if (hasPermission(privileges, { module: 'clearance', feature: 'settings' })) {
       linkMenus.push({
-        single: true,
+        single: false,
         key: 'cms-6',
-        path: '/clearance/settings',
         icon: 'zmdi zmdi-settings',
         text: formatMsg(intl, 'settings'),
+        sublinks: [{
+          key: 'cms-6-0',
+          path: '/clearance/resources/broker',
+          text: formatMsg(intl, 'settingsResources'),
+        }, {
+          key: 'cms-6-1',
+          path: '/clearance/settings',
+          text: formatMsg(intl, 'settingsApp'),
+        }],
       });
     }
     this.setState({ linkMenus });

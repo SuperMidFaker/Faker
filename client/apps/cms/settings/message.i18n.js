@@ -1,13 +1,13 @@
 import { defineMessages } from 'react-intl';
 
 const messages = defineMessages({
-  settings: {
-    id: 'cms.settings',
-    defaultMessage: '设置',
+  appSettings: {
+    id: 'cms.app.settings',
+    defaultMessage: '应用设置',
   },
-  integration: {
-    id: 'cms.settings.integration',
-    defaultMessage: '整合接口',
+  quoteTemplates: {
+    id: 'cms.app.settings.quote.templates',
+    defaultMessage: '报价模板',
   },
 });
 export default messages;
