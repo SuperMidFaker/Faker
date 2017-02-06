@@ -48,6 +48,7 @@ export default class List extends React.Component {
   state = {
     customerModalVisible: false,
     customer: {},
+    currentPage: 1,
   }
   componentWillReceiveProps(nextProps) {
     this.setState({ customer: nextProps.customers[0] || {} });
@@ -69,6 +70,9 @@ export default class List extends React.Component {
     if (e.key === 'remove') {
       this.props.deleteCustomer(this.state.customer.id, PARTNER_ROLES.CUS);
     }
+  }
+  handlePageChange = (page) => {
+    this.setState({ currentPage: page });
   }
   render() {
     const { customer } = this.state;
@@ -111,7 +115,9 @@ export default class List extends React.Component {
                   </div>
                   <h3>客户列表</h3>
                 </div>
-                <Table size="middle" dataSource={this.props.customers} columns={columns} showHeader={false} onRowClick={this.handleRowClick} />
+                <Table size="middle" dataSource={this.props.customers} columns={columns} showHeader={false} onRowClick={this.handleRowClick}
+                  pagination={{ current: this.state.currentPage, onChange: this.handlePageChange }}
+                />
                 <CustomerModal onOk={this.handleTableLoad} />
               </Sider>
               <Content style={{ padding: '0 24px', minHeight: 280 }}>
