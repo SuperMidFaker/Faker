@@ -6,6 +6,7 @@ import FormInput from './formInput';
 import {
   RelationAutoCompSelect, PortDate, Transport, DeclCustoms, DelVoyageNo, TermConfirm,
   TradeRemission, CountryAttr, DestInvoice, UsageTrade, Fee, ContainerNo, PackWeight,
+  RaDeclManulNo, StroeYard,
 } from './headFormItems';
 import { loadSearchedParam, saveBillHead } from 'common/reducers/cmsManifest';
 import { format } from 'client/common/i18n/helpers';
@@ -159,6 +160,10 @@ export default class SheetHeadPanel extends React.Component {
                 />
               </Col>
               <TermConfirm {...formProps} intl={intl} formRequire={formRequire} />
+            </Row>
+            <Row>
+              <RaDeclManulNo {...formProps} intl={intl} formRequire={formRequire} />
+              <StroeYard {...formProps} intl={intl} formRequire={formRequire} />
             </Row>
             <Col span="24">
               <FormInput field="note" outercol={9} col={4} type="textarea"

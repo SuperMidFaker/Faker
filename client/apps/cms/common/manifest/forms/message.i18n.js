@@ -167,7 +167,7 @@ export default defineMessages({
   },
   transModeName: {
     id: 'cms.forms.form.transModeName',
-    defaultMessage: '运输工具名',
+    defaultMessage: '运输工具名称',
   },
   ladingWayBill: {
     id: 'cms.forms.form.ladingWayBill',
@@ -289,6 +289,22 @@ export default defineMessages({
     id: 'cms.forms.form.mark.notes',
     defaultMessage: '唛码备注',
   },
+  raDeclNo: {
+    id: 'cms.forms.form.relate.decl.no',
+    defaultMessage: '关联报关单号',
+  },
+  raManualNo: {
+    id: 'cms.forms.form.relate.manual.no',
+    defaultMessage: '关联备案号',
+  },
+  storeNo: {
+    id: 'cms.forms.form.store.no',
+    defaultMessage: '保税/监管场所',
+  },
+  yardCode: {
+    id: 'cms.forms.form.yard.code',
+    defaultMessage: '货场代码',
+  },
   seqNumber: {
     id: 'cms.forms.table.seq.number',
     defaultMessage: '序号',
@@ -343,7 +359,15 @@ export default defineMessages({
   },
   unit: {
     id: 'cms.forms.table.unit',
-    defaultMessage: '成交单位',
+    defaultMessage: '申报单位',
+  },
+  qtyPcs: {
+    id: 'cms.forms.table.qty.pcs',
+    defaultMessage: '数量(个数)',
+  },
+  unitPcs: {
+    id: 'cms.forms.table.unit.pcs',
+    defaultMessage: '单位(个数)',
   },
   icountry: {
     id: 'cms.forms.table.icountry',
@@ -368,6 +392,18 @@ export default defineMessages({
   exemptionWay: {
     id: 'cms.forms.table.exemptionway',
     defaultMessage: '征免方式',
+  },
+  versionNo: {
+    id: 'cms.forms.table.version.no',
+    defaultMessage: '版本号',
+  },
+  productNo: {
+    id: 'cms.forms.table.product.no',
+    defaultMessage: '货号',
+  },
+  processingFees: {
+    id: 'cms.forms.table.processing.fees',
+    defaultMessage: '工缴费',
   },
   save: {
     id: 'cms.forms.table.save',
