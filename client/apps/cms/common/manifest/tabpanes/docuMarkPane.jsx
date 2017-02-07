@@ -43,7 +43,8 @@ function ColumnSelect(props) {
       </Select>
     );
   } else {
-    return <span>{record[field] || ''}</span>;
+    const option = options.find(item => item.value === record[field]);
+    return <span>{option ? option.text : ''}</span>;
   }
 }
 
@@ -132,7 +133,6 @@ export default class DocuMarkPane extends React.Component {
     const columns = [{
       title: this.msg('docuSpec'),
       dataIndex: 'docu_spec',
-      width: 200,
       render: (o, record) =>
         <ColumnSelect field="docu_spec" inEdit={!record.id} record={record}
           onChange={this.handleEditChange} options={CMS_DECL_DOCU}
@@ -140,13 +140,12 @@ export default class DocuMarkPane extends React.Component {
     }, {
       title: this.msg('docuCode'),
       dataIndex: 'docu_code',
-      width: 200,
       render: (o, record) =>
         <ColumnInput field="docu_code" inEdit={!record.id} record={record}
           onChange={this.handleEditChange}
         />,
     }, {
-      width: 80,
+      width: 60,
       render: (o, record, index) => {
         if (record.id) {
           return <Button type="ghost" shape="circle" onClick={() => this.handleDelete(record, index)} icon="delete" />;
