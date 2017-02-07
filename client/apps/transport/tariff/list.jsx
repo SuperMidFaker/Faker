@@ -311,7 +311,7 @@ export default class TariffList extends React.Component {
       title: this.msg('publishDate'),
       dataIndex: 'publishDate',
       width: 100,
-      render: o => moment(o).format('YYYY.MM.DD'),
+      render: o => o ? moment(o).format('YYYY.MM.DD') : '',
     }, {
       title: formatContainerMsg(this.props.intl, 'opColumn'),
       width: 100,
@@ -439,7 +439,7 @@ export default class TariffList extends React.Component {
         title: this.msg('publishDate'),
         dataIndex: 'publishDate',
         width: 100,
-        render: o => moment(o).format('YYYY.MM.DD'),
+        render: o => o ? moment(o).format('YYYY.MM.DD') : '',
       }, {
         title: formatContainerMsg(this.props.intl, 'opColumn'),
         width: 100,
