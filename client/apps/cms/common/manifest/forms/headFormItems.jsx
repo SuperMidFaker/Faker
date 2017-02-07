@@ -290,10 +290,10 @@ export function DelVoyageNo(props) {
   return (
     <Col md={24} lg={15}>
       <Col sm={24} md={8}>
-        <FormInput {...blwbProps} />
+        <FormInput {...voyageNoProps} />
       </Col>
       <Col sm={24} md={8}>
-        <FormInput {...voyageNoProps} />
+        <FormInput {...blwbProps} />
       </Col>
     </Col>
   );
@@ -564,12 +564,13 @@ function FeeFormItem(props) {
     field: currencyField,
     options: formRequire.currencies.map(curr => ({
       value: curr.curr_code,
-      text: curr.curr_name,
+      text: `${curr.curr_code} | ${curr.curr_name}`,
     })),
     disabled,
     formData,
     rules: currReq ? [{ required: true }] : [{ required: false }],
     getFieldDecorator,
+    searchKeyFn: opt => opt.value,
   };
   const markProps = {
     field: markField,
@@ -582,13 +583,13 @@ function FeeFormItem(props) {
   return (
     <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} label={label}>
       <Row>
-        <Col sm={24} md={8} style={{ paddingLeft: 2 }}>
+        <Col sm={24} md={12} style={{ paddingLeft: 2 }}>
           <FormLocalSearchSelect {...currencyProps} placeholder="币制" style={{ marginBottom: 0 }} />
         </Col>
-        <Col sm={24} md={8}>
+        <Col sm={24} md={6}>
           <FormInput {...feeProps} />
         </Col>
-        <Col sm={24} md={8}>
+        <Col sm={24} md={6}>
           <FormLocalSearchSelect {...markProps} />
         </Col>
       </Row>
@@ -801,3 +802,88 @@ TermConfirm.propTypes = {
   getFieldDecorator: PropTypes.func.isRequired,
   formData: PropTypes.object.isRequired,
 };
+
+// 关联报关单号 关联备案号
+export function RaDeclManulNo(props) {
+  const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
+  const { getFieldDecorator, disabled, formData } = props;
+  const raDeclNoProps = {
+    outercol: 24,
+    col: 8,
+    field: 'ra_decl_no',
+    label: msg('raDeclNo'),
+    disabled,
+    formData,
+    getFieldDecorator,
+  };
+  const raManualNoProps = {
+    outercol: 24,
+    col: 8,
+    field: 'ra_manual_no',
+    label: msg('raManualNo'),
+    disabled,
+    formData,
+    getFieldDecorator,
+  };
+
+  return (
+    <Col md={24} lg={9}>
+      <Col sm={24} md={12}>
+        <FormInput {...raDeclNoProps} />
+      </Col>
+      <Col sm={24} md={12}>
+        <FormInput {...raManualNoProps} />
+      </Col>
+    </Col>
+  );
+}
+
+ContainerNo.propTypes = {
+  intl: intlShape.isRequired,
+  disabled: PropTypes.bool,
+  getFieldDecorator: PropTypes.func.isRequired,
+  formData: PropTypes.object.isRequired,
+};
+
+// 保税/监管场所 货场代码
+export function StroeYard(props) {
+  const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
+  const { disabled, formData, getFieldDecorator } = props;
+  const grosswtProps = {
+    outercol: 24,
+    col: 8,
+    field: 'store_no',
+    label: msg('storeNo'),
+    disabled,
+    formData,
+    getFieldDecorator,
+  };
+  const netwtProps = {
+    outercol: 24,
+    col: 8,
+    field: 'yard_code',
+    label: msg('yardCode'),
+    disabled,
+    formData,
+    getFieldDecorator,
+  };
+  return (
+    <Col md={24} lg={15}>
+      <Col sm={24} lg={8}>
+        <FormInput {...grosswtProps} />
+      </Col>
+      <Col sm={24} lg={8}>
+        <FormInput {...netwtProps} />
+      </Col>
+    </Col>
+  );
+}
+
+PackWeight.propTypes = {
+  intl: intlShape.isRequired,
+  disabled: PropTypes.bool,
+  getFieldDecorator: PropTypes.func.isRequired,
+  formData: PropTypes.object.isRequired,
+  formRequire: PropTypes.object.isRequired,
+};
+

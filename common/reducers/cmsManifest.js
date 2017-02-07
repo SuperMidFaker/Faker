@@ -81,7 +81,7 @@ export default function reducer(state = initialState, action) {
       }
       return {
         ...state, billHead: action.result.data.head, billMeta: action.result.data.meta,
-        billBodies: action.result.data.bodies, params: { ...state.params, ports },
+        billBodies: action.result.data.hbodies, params: { ...state.params, ports },
       };
     }
     case actionTypes.DELETE_BILL_SUCCEED:

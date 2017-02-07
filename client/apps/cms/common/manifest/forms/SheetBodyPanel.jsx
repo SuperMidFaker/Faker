@@ -134,7 +134,7 @@ export default class SheetBodyPanel extends React.Component {
   }
 
   getColumns() {
-    const { ietype, type, readonly, units, countries, currencies, exemptions } = this.props;
+    const { type, readonly, units, countries, currencies, exemptions } = this.props;
     const { editIndex, bodies, editBody, pagination } = this.state;
     const totalCount = bodies.length;
     const columns = [{
@@ -142,13 +142,6 @@ export default class SheetBodyPanel extends React.Component {
       dataIndex: 'g_no',
       width: 50,
       fixed: 'left',
-    }, {
-      title: this.msg('emGNo'),
-      width: 50,
-      render: (o, record, index) =>
-        <ColumnInput field="em_g_no" inEdit={index === editIndex} record={record}
-          onChange={this.handleEditChange} edit={editBody}
-        />,
     }];
     if (type === 'bill') {
       columns.push({
@@ -158,9 +151,23 @@ export default class SheetBodyPanel extends React.Component {
           <ColumnInput field="cop_g_no" inEdit={index === editIndex} record={record}
             onChange={this.handleEditChange} edit={editBody}
           />,
+      }, {
+        title: this.msg('emGNo'),
+        width: 50,
+        render: (o, record, index) =>
+          <ColumnInput field="em_g_no" inEdit={index === editIndex} record={record}
+            onChange={this.handleEditChange} edit={editBody}
+          />,
       });
     }
     columns.push({
+      title: this.msg('codeT'),
+      width: 110,
+      render: (o, record, index) =>
+        <ColumnInput field="codes" inEdit={index === editIndex} record={record}
+          onChange={this.handleEditChange} edit={editBody}
+        />,
+    }, {
       title: this.msg('gName'),
       width: 200,
       render: (o, record, index) =>
@@ -169,36 +176,9 @@ export default class SheetBodyPanel extends React.Component {
         />,
     }, {
       title: this.msg('gModel'),
+      width: 300,
       render: (o, record, index) =>
         <ColumnInput field="g_model" inEdit={index === editIndex} record={record}
-          onChange={this.handleEditChange} edit={editBody}
-        />,
-    }, {
-      title: this.msg('codeT'),
-      width: 80,
-      render: (o, record, index) =>
-        <ColumnInput field="code_t" inEdit={index === editIndex} record={record}
-          onChange={this.handleEditChange} edit={editBody}
-        />,
-    }, {
-      title: this.msg('codeS'),
-      width: 60,
-      render: (o, record, index) =>
-        <ColumnInput field="code_s" inEdit={index === editIndex} record={record}
-          onChange={this.handleEditChange} edit={editBody}
-        />,
-    }, {
-      title: this.msg('netwt'),
-      width: 80,
-      render: (o, record, index) =>
-        <ColumnInput field="wet_wt" inEdit={index === editIndex} record={record}
-          onChange={this.handleEditChange} edit={editBody}
-        />,
-    }, {
-      title: this.msg('grosswt'),
-      width: 80,
-      render: (o, record, index) =>
-        <ColumnInput field="gross_wt" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} edit={editBody}
         />,
     }, {
@@ -216,41 +196,6 @@ export default class SheetBodyPanel extends React.Component {
           onChange={this.handleEditChange} edit={editBody}
         />,
     }, {
-      title: this.msg('qty1'),
-      width: 80,
-      render: (o, record, index) =>
-        <ColumnInput field="qty_1" inEdit={index === editIndex} record={record}
-          onChange={this.handleEditChange} edit={editBody}
-        />,
-    }, {
-      title: this.msg('qty2'),
-      width: 80,
-      render: (o, record, index) =>
-        <ColumnInput field="qty_2" inEdit={index === editIndex} record={record}
-          onChange={this.handleEditChange} edit={editBody}
-        />,
-    }, {
-      title: this.msg('unit'),
-      width: 80,
-      render: (o, record, index) =>
-        <ColumnSelect field="g_unit" inEdit={index === editIndex} record={record}
-          onChange={this.handleEditChange} options={units} edit={editBody}
-        />,
-    }, {
-      title: this.msg('unit1'),
-      width: 80,
-      render: (o, record, index) =>
-        <ColumnSelect field="unit_1" inEdit={index === editIndex} record={record}
-          onChange={this.handleEditChange} options={units} edit={editBody}
-        />,
-    }, {
-      title: this.msg('unit2'),
-      width: 80,
-      render: (o, record, index) =>
-        <ColumnSelect field="unit_2" inEdit={index === editIndex} record={record}
-          onChange={this.handleEditChange} options={units} edit={editBody}
-        />,
-    }, {
       title: this.msg('decPrice'),
       width: 100,
       render: (o, record, index) =>
@@ -265,13 +210,6 @@ export default class SheetBodyPanel extends React.Component {
           onChange={this.handleEditChange} edit={editBody}
         />,
     }, {
-      title: ietype === 'import' ? this.msg('icountry') : this.msg('ecountry'),
-      width: 120,
-      render: (o, record, index) =>
-        <ColumnSelect field="orig_dest_country" inEdit={index === editIndex} record={record}
-          onChange={this.handleEditChange} options={countries} edit={editBody}
-        />,
-    }, {
       title: this.msg('currency'),
       width: 60,
       render: (o, record, index) =>
@@ -279,11 +217,109 @@ export default class SheetBodyPanel extends React.Component {
           onChange={this.handleEditChange} options={currencies} edit={editBody}
         />,
     }, {
+      title: this.msg('unit'),
+      width: 80,
+      render: (o, record, index) =>
+        <ColumnSelect field="g_unit" inEdit={index === editIndex} record={record}
+          onChange={this.handleEditChange} options={units} edit={editBody}
+        />,
+    }, {
+      title: this.msg('qty1'),
+      width: 80,
+      render: (o, record, index) =>
+        <ColumnInput field="qty_1" inEdit={index === editIndex} record={record}
+          onChange={this.handleEditChange} edit={editBody}
+        />,
+    }, {
+      title: this.msg('unit1'),
+      width: 80,
+      render: (o, record, index) =>
+        <ColumnSelect field="unit_1" inEdit={index === editIndex} record={record}
+          onChange={this.handleEditChange} options={units} edit={editBody}
+        />,
+    }, {
+      title: this.msg('qty2'),
+      width: 80,
+      render: (o, record, index) =>
+        <ColumnInput field="qty_2" inEdit={index === editIndex} record={record}
+          onChange={this.handleEditChange} edit={editBody}
+        />,
+    }, {
+      title: this.msg('unit2'),
+      width: 80,
+      render: (o, record, index) =>
+        <ColumnSelect field="unit_2" inEdit={index === editIndex} record={record}
+          onChange={this.handleEditChange} options={units} edit={editBody}
+        />,
+    }, {
       title: this.msg('exemptionWay'),
       width: 80,
       render: (o, record, index) =>
         <ColumnSelect field="duty_mode" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} options={exemptions} edit={editBody}
+        />,
+    }, {
+      title: this.msg('ecountry'),
+      width: 120,
+      render: (o, record, index) =>
+        <ColumnSelect field="dest_country" inEdit={index === editIndex} record={record}
+          onChange={this.handleEditChange} options={countries} edit={editBody}
+        />,
+    }, {
+      title: this.msg('icountry'),
+      width: 120,
+      render: (o, record, index) =>
+        <ColumnSelect field="orig_country" inEdit={index === editIndex} record={record}
+          onChange={this.handleEditChange} options={countries} edit={editBody}
+        />,
+    }, {
+      title: this.msg('qtyPcs'),
+      width: 80,
+      render: (o, record, index) =>
+        <ColumnInput field="qty_pcs" inEdit={index === editIndex} record={record}
+          onChange={this.handleEditChange} edit={editBody}
+        />,
+    }, {
+      title: this.msg('unitPcs'),
+      width: 80,
+      render: (o, record, index) =>
+        <ColumnInput field="unit_pcs" inEdit={index === editIndex} record={record}
+          onChange={this.handleEditChange} edit={editBody}
+        />,
+    }, {
+      title: this.msg('netwt'),
+      width: 80,
+      render: (o, record, index) =>
+        <ColumnInput field="wet_wt" inEdit={index === editIndex} record={record}
+          onChange={this.handleEditChange} edit={editBody}
+        />,
+    }, {
+      title: this.msg('grosswt'),
+      width: 80,
+      render: (o, record, index) =>
+        <ColumnInput field="gross_wt" inEdit={index === editIndex} record={record}
+          onChange={this.handleEditChange} edit={editBody}
+        />,
+    }, {
+      title: this.msg('versionNo'),
+      width: 80,
+      render: (o, record, index) =>
+        <ColumnInput field="version_no" inEdit={index === editIndex} record={record}
+          onChange={this.handleEditChange} edit={editBody}
+        />,
+    }, {
+      title: this.msg('productNo'),
+      width: 80,
+      render: (o, record, index) =>
+        <ColumnInput field="product_no" inEdit={index === editIndex} record={record}
+          onChange={this.handleEditChange} edit={editBody}
+        />,
+    }, {
+      title: this.msg('processingFees'),
+      width: 80,
+      render: (o, record, index) =>
+        <ColumnInput field="processing_fees" inEdit={index === editIndex} record={record}
+          onChange={this.handleEditChange} edit={editBody}
         />,
     }, {
       title: this.msg('opColumn'),
