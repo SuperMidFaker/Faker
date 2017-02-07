@@ -436,8 +436,8 @@ export default class TariffList extends React.Component {
         dataIndex: 'reviser',
         width: 100,
       }, {
-        title: this.msg('revisionDate'),
-        dataIndex: 'revisionDate',
+        title: this.msg('publishDate'),
+        dataIndex: 'publishDate',
         width: 100,
         render: o => moment(o).format('YYYY.MM.DD'),
       }, {
