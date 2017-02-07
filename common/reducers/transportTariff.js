@@ -67,6 +67,7 @@ const initialState = {
     pageSize: 10,
     current: 1,
     data: [],
+    searchValue: '',
   },
   partners: [],
   formParams: {
@@ -380,7 +381,7 @@ export function delRateSource(rateId) {
   };
 }
 
-export function loadRateEnds({ rateId, pageSize, current }) {
+export function loadRateEnds({ rateId, pageSize, current, searchValue }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -390,7 +391,7 @@ export function loadRateEnds({ rateId, pageSize, current }) {
       ],
       endpoint: 'v1/transport/tariff/ratends',
       method: 'get',
-      params: { rateId, pageSize, current },
+      params: { rateId, pageSize, current, searchValue },
       origin: 'mongo',
     },
   };

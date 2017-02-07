@@ -4,10 +4,12 @@ import { Card, Row, Col, Button, Upload, Modal, Progress } from 'antd';
 import RateSourceTable from './rateSourceTable';
 import RateEndTable from './rateEndTable';
 import { loadRateEnds } from 'common/reducers/transportTariff';
+import SearchBar from 'client/components/search-bar';
 
 @connect(
   state => ({
     rateId: state.transportTariff.rateId,
+    ratesEndList: state.transportTariff.ratesEndList,
   }),
   { loadRateEnds }
 )
@@ -16,6 +18,7 @@ export default class TariffRatesForm extends React.Component {
     type: PropTypes.oneOf(['create', 'edit', 'view']),
     rateId: PropTypes.string,
     loadRateEnds: PropTypes.func.isRequired,
+    ratesEndList: PropTypes.object.isRequired,
   }
   state = {
     sourceModal: false,
@@ -52,11 +55,20 @@ export default class TariffRatesForm extends React.Component {
         rateId: this.props.rateId,
         pageSize: 10,
         current: 1,
+        searchValue: this.props.ratesEndList.searchValue,
       });
     } else if (info.file.status === 'error') {
       this.setState({ inUpload: false, uploadStatus: 'exception' });
       this.state.uploadChangeCount = 0;
     }
+  }
+  handleSearch = (value) => {
+    this.props.loadRateEnds({
+      rateId: this.props.rateId,
+      pageSize: 10,
+      current: 1,
+      searchValue: value,
+    });
   }
   render() {
     const { type } = this.props;
@@ -78,14 +90,14 @@ export default class TariffRatesForm extends React.Component {
               </Card>
             </Col>
             <Col sm={18}>
-              <Card bodyStyle={{ padding: 0 }}>
+              <Card bodyStyle={{ padding: 0, textAlign: 'right' }}>
                 {(type === 'create' || type === 'edit') && (
-                  <div style={{ padding: 8 }}>
+                  <div style={{ padding: 8, textAlign: 'left' }}>
                     <Button icon="plus-circle-o"
                       onClick={this.handleEndAdd} disabled={!this.props.rateId}
                     >
-                    添加
-                  </Button>
+                      添加
+                    </Button>
                     <span style={{ marginLeft: 8 }}>
                       <Upload accept=".xls,.xlsx" action={`${API_ROOTS.mongo}v1/transport/tariff/import/ratends`}
                         data={{ rateId: this.props.rateId }} onChange={this.handleImport}
@@ -94,6 +106,13 @@ export default class TariffRatesForm extends React.Component {
                         <Button icon="upload" type="ghost">导入费率表</Button>
                       </Upload>
                     </span>
+                    <span style={{ float: 'right', marginRight: 20 }}>
+                      <SearchBar placeholder="目的地" onInputSearch={this.handleSearch} />
+                    </span>
+                  </div>)}
+                {(type === 'view') && (
+                  <div style={{ padding: 8, marginRight: 20, display: 'inline-block' }}>
+                    <SearchBar placeholder="目的地" onInputSearch={this.handleSearch} />
                   </div>)}
                 {
                   this.props.rateId &&

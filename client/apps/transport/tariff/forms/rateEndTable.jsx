@@ -71,9 +71,8 @@ export default class RateEndTable extends React.Component {
         rateId: this.props.rateId,
         pageSize: pagination.pageSize,
         current: pagination.current,
-        filters: this.props.filters,
+        searchValue: this.props.ratesEndList.searchValue,
       };
-      params.filters = JSON.stringify(params.filters);
       return params;
     },
     remotes: this.props.tarifflist,
@@ -92,7 +91,7 @@ export default class RateEndTable extends React.Component {
     rateId: this.props.rateId,
     pageSize: this.props.ratesEndList.pageSize,
     current: current || this.props.ratesEndList.current,
-    filters: this.props.filters,
+    searchValue: this.props.ratesEndList.searchValue,
   })
   handleRegionChange = (region) => {
     const [code, province, city, district, street] = region;
@@ -259,7 +258,7 @@ export default class RateEndTable extends React.Component {
     }
 
     return (
-      <div>
+      <div style={{ display: 'inline-block' }}>
         <Table size="middle" rowSelection={rowSelection} columns={columns} loading={loading}
           dataSource={this.dataSource} scroll={{ x: 1000 }}
         />
