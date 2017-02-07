@@ -31,13 +31,13 @@ export default class ModuleSCV extends React.Component {
       single: true,
       key: 'scv-1',
       path: '/scv/orders',
-      icon: 'icon-fontello-doc-text',
+      icon: 'icon-fontello-inbox-1',
       text: formatMsg(intl, 'orders'),
     });
     linkMenus.push({
       single: false,
       key: 'scv-2',
-      icon: 'zmdi zmdi-globe',
+      icon: 'icon-fontello-flight-1',
       text: formatMsg(intl, 'shipments'),
       sublinks: [{
         key: 'scv-2-0',
@@ -59,7 +59,7 @@ export default class ModuleSCV extends React.Component {
     linkMenus.push({
       single: false,
       key: 'scv-4',
-      icon: 'icon-fontello-barcode-1',
+      icon: 'icon-fontello-warehouse',
       text: formatMsg(intl, 'inventory'),
       sublinks: [{
         key: 'scv-4-0',
@@ -82,7 +82,7 @@ export default class ModuleSCV extends React.Component {
     linkMenus.push({
       single: false,
       key: 'scv-5',
-      icon: 'zmdi zmdi-money-box',
+      icon: 'icon-fontello-money-1',
       text: formatMsg(intl, 'payment'),
       sublinks: [{
         key: 'scv-5-0',
@@ -97,7 +97,7 @@ export default class ModuleSCV extends React.Component {
     linkMenus.push({
       single: false,
       key: 'scv-6',
-      icon: 'icon-fontello-layers',
+      icon: 'icon-fontello-tags-2',
       text: formatMsg(intl, 'products'),
       sublinks: [{
         key: 'scv-6-0',

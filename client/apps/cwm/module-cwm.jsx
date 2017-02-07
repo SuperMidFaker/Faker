@@ -30,6 +30,7 @@ export default class ModuleCWM extends React.Component {
     linkMenus.push({
       single: true,
       key: 'cwm-1',
+      disabled: true,
       path: '/cwm/inbound',
       icon: 'icon-fontello-download',
       text: formatMsg(intl, 'inbound'),
@@ -51,7 +52,7 @@ export default class ModuleCWM extends React.Component {
     linkMenus.push({
       single: false,
       key: 'cwm-4',
-      icon: 'icon-fontello-layers',
+      icon: 'icon-fontello-tags-2',
       text: formatMsg(intl, 'products'),
       sublinks: [{
         key: 'cwm-4-0',
@@ -77,6 +78,7 @@ export default class ModuleCWM extends React.Component {
         text: formatMsg(intl, 'resources'),
       }, {
         key: 'cwm-5-1',
+        disabled: true,
         path: '/cwm/settings',
         text: formatMsg(intl, 'settingsApp'),
       }],

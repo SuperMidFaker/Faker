@@ -38,7 +38,7 @@ export default class ModuleCRM extends React.Component {
       single: false,
       key: 'crm-3',
       path: '/customer/billing',
-      icon: 'zmdi zmdi-money-box',
+      icon: 'icon-fontello-money-1',
       text: formatMsg(intl, 'billing'),
       sublinks: [{
         key: 'crm-3-0',
@@ -61,7 +61,7 @@ export default class ModuleCRM extends React.Component {
       single: true,
       key: 'crm-5',
       path: '/customer/reports',
-      icon: 'zmdi zmdi-chart',
+      icon: 'icon-ikons-bar-chart-2',
       text: formatMsg(intl, 'reports'),
     });
     linkMenus.push({

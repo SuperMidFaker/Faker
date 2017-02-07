@@ -95,7 +95,7 @@ export default class Clearance extends React.Component {
         single: false,
         key: 'cms-3',
         path: '/clearance/billing',
-        icon: 'zmdi zmdi-money-box',
+        icon: 'icon-fontello-money-1',
         text: formatMsg(intl, 'billing'),
         sublinks: [{
           key: 'cms-3-0',
@@ -123,7 +123,7 @@ export default class Clearance extends React.Component {
     linkMenus.push({
       single: false,
       key: 'cms-4',
-      icon: 'icon-fontello-layers',
+      icon: 'icon-fontello-tags-2',
       text: formatMsg(intl, 'products'),
       sublinks: [{
         key: 'cms-4-0',
