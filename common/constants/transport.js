@@ -275,4 +275,11 @@ export const SHIPMENT_LOG_CATEGORY = {
 };
 export const COURIERS = [
   { name: '圆通', code: 'yuantong' },
+  { name: '天天快递', code: 'tiantian' },
+  { name: '韵达', code: 'yunda' },
+  { name: '中通', code: 'zhongtong' },
+  { name: '宅急送', code: 'zhaijisong' },
+  { name: '顺丰', code: 'shunfeng' },
+  { name: '申通', code: 'shentong' },
+  { name: 'EMS', code: 'ems' },
 ];
