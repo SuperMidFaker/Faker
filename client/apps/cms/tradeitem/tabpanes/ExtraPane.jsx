@@ -17,7 +17,6 @@ const TabPane = Tabs.TabPane;
 export default class ExtraPanel extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    ietype: PropTypes.string.isRequired,
     tabKey: PropTypes.string,
   }
   handleTabChange = (tabKey) => {

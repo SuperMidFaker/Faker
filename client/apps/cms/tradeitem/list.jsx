@@ -8,10 +8,11 @@ import QueueAnim from 'rc-queue-anim';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import { loadCustomers } from 'common/reducers/crmCustomers';
-import { loadOwners, openAddModal, selectedRepoId } from 'common/reducers/cmsTradeitem';
+import { loadOwners, openAddModal, selectedRepoId, loadTradeItems } from 'common/reducers/cmsTradeitem';
 import AddTradeRepoModal from './modals/addTradeRepo';
 import ExtraPanel from './tabpanes/ExtraPane';
 import ExcelUpload from 'client/components/excelUploader';
+import { createFilename } from 'client/util/dataTransform';
 
 const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
@@ -32,9 +33,11 @@ function fetchData({ state, dispatch }) {
     loginId: state.account.loginId,
     loginName: state.account.username,
     repoOwners: state.cmsTradeitem.repoOwners,
+    repoId: state.cmsTradeitem.repoId,
+    tradeItems: state.cmsTradeitem.tradeItems,
     visibleAddModal: state.cmsTradeitem.visibleAddModal,
   }),
-  { loadCustomers, openAddModal, selectedRepoId }
+  { loadCustomers, openAddModal, selectedRepoId, loadTradeItems }
 )
 
 export default class TradeItemList extends Component {
@@ -42,6 +45,8 @@ export default class TradeItemList extends Component {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     repoOwners: PropTypes.array.isRequired,
+    tradeItems: PropTypes.array.isRequired,
+    repoId: PropTypes.number,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -147,6 +152,7 @@ export default class TradeItemList extends Component {
       this.setState({ visibleSet: true });
       const owner = this.props.repoOwners.filter(own => own.id === value)[0];
       this.props.selectedRepoId(owner.repo_id);
+      this.props.loadTradeItems(owner.repo_id);
     }
   }
   handleAddOwener = () => {
@@ -161,29 +167,36 @@ export default class TradeItemList extends Component {
   handleMenuClick = (e) => {
     if (e.key === 'create') {
     } else if (e.key === 'export') {
+    } else if (e.key === 'model') {
+      window.open(`${API_ROOTS.default}v1/cms/cmsTradeitem/tradeitems/model/download/${createFilename('tradeItemModel')}.xlsx`);
     }
   }
-  menu = (
-    <Menu onClick={this.handleMenuClick}>
-      <Menu.Item key="importData">
-        <ExcelUpload endpoint={`${API_ROOTS.default}v1/cms/cmsTradeitem/tradeitems/import`}
-          formData={{
-            data: JSON.stringify({
-              bill_seq_no: this.props.billSeqNo,
-              tenant_id: this.props.tenantId,
-              creater_login_id: this.props.loginId,
-            }),
-          }} onUploaded={this.handleUploaded}
-        >
-          <Icon type="file-excel" /> {this.msg('importItems')}
-        </ExcelUpload>
-      </Menu.Item>
-      <Menu.Item key="create"><Icon type="plus" /> 新建物料表</Menu.Item>
-      <Menu.Item key="export"><Icon type="export" /> 导出物料表</Menu.Item>
-    </Menu>);
+  handleUploaded = () => {
+    this.props.loadTradeItems(this.props.repoId);
+  }
   render() {
-    const { repoOwners } = this.props;
+    const { repoOwners, tradeItems } = this.props;
     const { visibleSet } = this.state;
+    const menu = (
+      <Menu onClick={this.handleMenuClick}>
+        <Menu.Item key="importData">
+          <ExcelUpload endpoint={`${API_ROOTS.default}v1/cms/cmsTradeitem/tradeitems/import`}
+            formData={{
+              data: JSON.stringify({
+                repo_id: this.props.repoId,
+                tenant_id: this.props.tenantId,
+                created_login_id: this.props.loginId,
+                created_login_name: this.props.loginName,
+              }),
+            }} onUploaded={this.handleUploaded}
+          >
+            <Icon type="file-excel" /> {this.msg('importItems')}
+          </ExcelUpload>
+        </Menu.Item>
+        <Menu.Item key="create"><Icon type="plus" /> 新建物料表</Menu.Item>
+        <Menu.Item key="export"><Icon type="export" /> 导出物料表</Menu.Item>
+        <Menu.Item key="model"><Icon type="download" /> 导出模板</Menu.Item>
+      </Menu>);
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Layout>
@@ -225,7 +238,7 @@ export default class TradeItemList extends Component {
                           icon={this.state.collapsed ? 'menu-fold' : 'menu-unfold'}
                           onClick={this.toggle}
                         />
-                        <Dropdown overlay={this.menu} type="primary">
+                        <Dropdown overlay={menu} type="primary">
                           <Button type="primary" onClick={this.handleButtonClick}>
                             {this.msg('addMore')} <Icon type="down" />
                           </Button>
@@ -238,7 +251,7 @@ export default class TradeItemList extends Component {
                   </Button>
                 </div>
                 <div className="panel-body table-panel">
-                  <Table columns={this.columns} dataSource={this.dataSource} scroll={{ x: 1480, y: 2300 }} />
+                  <Table columns={this.columns} dataSource={tradeItems} scroll={{ x: 1480, y: 2300 }} />
                 </div>
                 <AddTradeRepoModal />
               </div>

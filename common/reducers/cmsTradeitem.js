@@ -10,6 +10,7 @@ const actionTypes = createActionTypes('@@welogix/cms/tradeitem/', [
   'LOAD_REPO_TRADES', 'LOAD_REPO_TRADES_SUCCEED', 'LOAD_REPO_TRADES_FAIL',
   'SAVE_REPO_TRADES', 'SAVE_REPO_TRADES_SUCCEED', 'SAVE_REPO_TRADES_FAIL',
   'DELETE_REPO_TRADE', 'DELETE_REPO_TRADE_SUCCEED', 'DELETE_REPO_TRADE_FAIL',
+  'LOAD_TRADE_ITEMS', 'LOAD_TRADE_ITEMS_SUCCEED', 'LOAD_TRADE_ITEMS_FAIL',
 ]);
 
 const initialState = {
@@ -19,6 +20,7 @@ const initialState = {
   tabKey: 'copCodes',
   repoId: null,
   repoTrades: [],
+  tradeItems: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -37,9 +39,26 @@ export default function reducer(state = initialState, action) {
       return { ...state, repoId: action.payload.repoId };
     case actionTypes.LOAD_REPO_TRADES_SUCCEED:
       return { ...state, repoTrades: action.result.data };
+    case actionTypes.LOAD_TRADE_ITEMS_SUCCEED:
+      return { ...state, tradeItems: action.result.data };
     default:
       return state;
   }
+}
+
+export function loadTradeItems(repoId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_TRADE_ITEMS,
+        actionTypes.LOAD_TRADE_ITEMS_SUCCEED,
+        actionTypes.LOAD_TRADE_ITEMS_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/items/load',
+      method: 'get',
+      params: { repoId },
+    },
+  };
 }
 
 export function loadOwners(params) {
