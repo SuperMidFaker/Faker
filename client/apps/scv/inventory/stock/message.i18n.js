@@ -16,11 +16,11 @@ const messages = defineMessages({
   },
   finishedProduct: {
     id: 'scv.inventory.stock.finishedProduct',
-    defaultMessage: '料号',
+    defaultMessage: 'SKU',
   },
   category: {
     id: 'scv.inventory.stock.category',
-    defaultMessage: '类别',
+    defaultMessage: '大类',
   },
   warehouse: {
     id: 'scv.inventory.stock.warehouse',
@@ -28,7 +28,7 @@ const messages = defineMessages({
   },
   stockPlan: {
     id: 'scv.inventory.stock.stockPlan',
-    defaultMessage: '库存',
+    defaultMessage: '库存数量',
   },
   unitPrice: {
     id: 'scv.inventory.stock.unitPrice',
@@ -36,11 +36,19 @@ const messages = defineMessages({
   },
   stockCost: {
     id: 'scv.inventory.stock.stockCost',
-    defaultMessage: '库存金额',
+    defaultMessage: '总金额',
   },
-  cartonSize: {
-    id: 'scv.inventory.stock.cartonSize',
-    defaultMessage: '包装大小',
+  cartonLength: {
+    id: 'scv.inventory.stock.carton.length',
+    defaultMessage: '长(mm)',
+  },
+  cartonWidth: {
+    id: 'scv.inventory.stock.carton.width',
+    defaultMessage: '宽(mm)',
+  },
+  cartonHeight: {
+    id: 'scv.inventory.stock.carton.height',
+    defaultMessage: '高(mm)',
   },
   cbmPerSku: {
     id: 'scv.inventory.stock.cbmPerSku',

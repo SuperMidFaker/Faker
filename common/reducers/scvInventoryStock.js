@@ -20,8 +20,8 @@ const initialState = {
   },
   listFilter: {
     product_no: null,
-    product_categ: null,
-    wh_no: 'all',
+    product_category: null,
+    wh_no: null,
   },
   searchOption: {
     warehouses: [],
@@ -38,6 +38,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, loading: false };
     case actionTypes.LOAD_STOCKS_SUCCEED:
       return { ...state, list: action.result.data, loading: false };
+    case actionTypes.LOAD_STOCKSEARCHOPT_SUCCEED:
+      return { ...state, searchOption: action.result.data };
     default:
       return state;
   }

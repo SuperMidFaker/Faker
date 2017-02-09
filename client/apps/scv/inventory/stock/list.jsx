@@ -66,32 +66,28 @@ export default class InventoryStockList extends React.Component {
   msg = formatMsg(this.props.intl);
   columns = [{
     title: this.msg('finishedProduct'),
-    dataIndex: 'product_name',
-    width: 120,
+    dataIndex: 'sku_no',
+    width: 100,
   }, {
     title: this.msg('category'),
     dataIndex: 'product_category',
-    width: 100,
+    width: 120,
   }, {
     title: this.msg('warehouse'),
     dataIndex: 'wh_name',
-    width: 100,
+    width: 140,
   }, {
     title: this.msg('stockPlan'),
     width: 80,
-    dataIndex: 'stock',
+    dataIndex: 'avail_stock',
   }, {
     title: this.msg('unitPrice'),
-    width: 100,
+    width: 80,
     dataIndex: 'unit_price',
   }, {
     title: this.msg('stockCost'),
     width: 80,
     dataIndex: 'stock_cost',
-  }, {
-    title: this.msg('cartonSize'),
-    width: 80,
-    colSpan: 3,
   }, {
     title: this.msg('cbmPerSku'),
     width: 80,
@@ -100,8 +96,22 @@ export default class InventoryStockList extends React.Component {
     title: this.msg('cbm'),
     width: 60,
     dataIndex: 'cbm',
+    render: (o, row) => (row.unit_cbm * row.avail_stock).toFixed(2),
+  }, {
+    title: this.msg('cartonLength'),
+    width: 80,
+    dateIndex: 'length',
+  }, {
+    title: this.msg('cartonWidth'),
+    width: 80,
+    dateIndex: 'width',
+  }, {
+    title: this.msg('cartonHeight'),
+    width: 80,
+    dateIndex: 'height',
   }, {
     title: this.msg('productDesc'),
+    width: 160,
     dataIndex: 'product_desc',
   }]
   dataSource = new Table.DataSource({
@@ -129,15 +139,6 @@ export default class InventoryStockList extends React.Component {
   toggle = () => {
     this.setState({
       collapsed: !this.state.collapsed,
-    });
-  }
-  handleShipmentLoad = () => {
-    const { tenantId, listFilter, stocklist: { pageSize, current } } = this.props;
-    this.props.loadStocks({
-      tenantId,
-      filter: JSON.stringify(listFilter),
-      pageSize,
-      current,
     });
   }
   handleSearch = (searchForm) => {
