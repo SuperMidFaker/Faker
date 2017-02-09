@@ -311,6 +311,9 @@ export default(store, cookie) => {
               <Route path="broker">
                 <IndexRoute component={CMSResources.BrokerContainer} />
               </Route>
+              <Route path="unit">
+                <IndexRoute component={CMSResources.UnitContainer} />
+              </Route>
             </Route>
           </Route>
           <Route path={DEFAULT_MODULES.scv.id} component={SCV}>

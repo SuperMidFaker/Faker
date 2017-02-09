@@ -256,9 +256,8 @@ export default class RateEndTable extends React.Component {
           </span>),
       });
     }
-
     return (
-      <div style={{ display: 'inline-block' }}>
+      <div>
         <Table size="middle" rowSelection={rowSelection} columns={columns} loading={loading}
           dataSource={this.dataSource} scroll={{ x: 1000 }}
         />
