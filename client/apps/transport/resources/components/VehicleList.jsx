@@ -1,11 +1,11 @@
 import React, { PropTypes } from 'react';
 import { Breadcrumb, Menu, Layout, Button, Table } from 'antd';
 import QueueAnim from 'rc-queue-anim';
-import { Link } from 'react-router';
 import NavLink from 'client/components/nav-link';
 import SearchBar from 'client/components/search-bar';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { addUniqueKeys } from 'client/util/dataTransform';
+import VehicleModal from '../modals/vehicleModal';
 
 const { Header, Content, Sider } = Layout;
 const rowSelection = {
@@ -14,13 +14,18 @@ const rowSelection = {
 };
 
 export default function VehicleList(props) {
-  const { onAddCarBtnClick, dataSource, onStopCarBtnClick, onResumeCarBtnClick } = props;
+  const { onAddCarBtnClick, dataSource, onStopCarBtnClick, onResumeCarBtnClick, onEditVehicleBtnClick } = props;
 
   function editAndStopCarOperations(record) {
     return (
       <PrivilegeCover module="transport" feature="resources" action="edit">
         <span>
-          <Link to={`/transport/resources/vehicle/edit/${record.vehicle_id}`}>修改</Link>
+          <a onClick={() => onEditVehicleBtnClick(record.vehicle_id)} disabled={
+            record.status === '在途中'
+          }
+          >
+            修改
+          </a>
           <span className="ant-divider" />
           <a onClick={() => onStopCarBtnClick(record.vehicle_id)} disabled={
             record.status === '在途中'
@@ -139,6 +144,7 @@ export default function VehicleList(props) {
               <div className="panel-body table-panel">
                 <Table columns={columns} dataSource={addUniqueKeys(dataSource)} rowSelection={rowSelection} />
               </div>
+              <VehicleModal />
             </Content>
           </Layout>
         </div>
@@ -152,6 +158,7 @@ VehicleList.propTypes = {
   onAddCarBtnClick: PropTypes.func.isRequired,    // 点击新建车辆时触发的回调函数
   onStopCarBtnClick: PropTypes.func.isRequired,   // 停用按钮点击后执行的回调函数
   onResumeCarBtnClick: PropTypes.func.isRequired, // 启用按钮点击后执行的回调函数
+  onEditVehicleBtnClick: PropTypes.func.isRequired,
   onSearch: PropTypes.func.isRequired,
   searchText: PropTypes.string.isRequired,
 };
