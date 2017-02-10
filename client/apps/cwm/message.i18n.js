@@ -27,7 +27,11 @@ const messages = defineMessages({
   },
   productsSku: {
     id: 'cwm.module.products.sku',
-    defaultMessage: '商品库存单元',
+    defaultMessage: 'SKU管理',
+  },
+  productsSkuLot: {
+    id: 'cwm.module.products.sku.lot',
+    defaultMessage: '批次管理',
   },
   resources: {
     id: 'cwm.module.resources',
