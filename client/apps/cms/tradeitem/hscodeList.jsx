@@ -9,6 +9,7 @@ import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import { loadHscodes } from 'common/reducers/cmsTradeitem';
 import SearchBar from 'client/components/search-bar';
+import './index.less';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -137,8 +138,9 @@ export default class HscodeList extends Component {
     const columns = [{
       title: '商品编码',
       dataIndex: 'hscode',
-      width: 100,
+      width: 120,
       fixed: 'left',
+      className: 'hscode-list-left',
     }, {
       title: '商品名称',
       dataIndex: 'product_name',
@@ -150,7 +152,7 @@ export default class HscodeList extends Component {
     }, {
       title: '申报要素',
       dataIndex: 'declared_elements',
-      width: 600,
+      width: 300,
     }, {
       title: '法定第一单位',
       dataIndex: 'first_unit',
@@ -213,6 +215,7 @@ export default class HscodeList extends Component {
       title: '海关公告',
       dataIndex: '',
       width: 50,
+      className: 'hscode-list-right',
     }];
     return (
       <QueueAnim type={['bottom', 'up']}>
