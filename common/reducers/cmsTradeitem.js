@@ -11,6 +11,7 @@ const actionTypes = createActionTypes('@@welogix/cms/tradeitem/', [
   'SAVE_REPO_TRADES', 'SAVE_REPO_TRADES_SUCCEED', 'SAVE_REPO_TRADES_FAIL',
   'DELETE_REPO_TRADE', 'DELETE_REPO_TRADE_SUCCEED', 'DELETE_REPO_TRADE_FAIL',
   'LOAD_TRADE_ITEMS', 'LOAD_TRADE_ITEMS_SUCCEED', 'LOAD_TRADE_ITEMS_FAIL',
+  'LOAD_HSCODES', 'LOAD_HSCODES_SUCCEED', 'LOAD_HSCODES_FAIL',
 ]);
 
 const initialState = {
@@ -21,6 +22,13 @@ const initialState = {
   repoId: null,
   repoTrades: [],
   tradeItems: [],
+  hscodes: {
+    data: [],
+    pageSize: 10,
+    current: 1,
+    totalCount: 0,
+    searchText: '',
+  },
 };
 
 export default function reducer(state = initialState, action) {
@@ -41,6 +49,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, repoTrades: action.result.data };
     case actionTypes.LOAD_TRADE_ITEMS_SUCCEED:
       return { ...state, tradeItems: action.result.data };
+    case actionTypes.LOAD_HSCODES_SUCCEED:
+      return { ...state, hscodes: { ...state.hscodes, ...action.result.data } };
     default:
       return state;
   }
@@ -177,3 +187,17 @@ export function delRepoTrade(id) {
   };
 }
 
+export function loadHscodes(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_HSCODES,
+        actionTypes.LOAD_HSCODES_SUCCEED,
+        actionTypes.LOAD_HSCODES_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/hscodes',
+      method: 'get',
+      params,
+    },
+  };
+}

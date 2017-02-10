@@ -296,6 +296,7 @@ export default(store, cookie) => {
               <Route path="tradeitem">
                 <IndexRoute component={CMSTradeItem.List} />
               </Route>
+              <Route path="hscode" component={CMSTradeItem.HscodeList} />
             </Route>
             <Route path="resources">
               <IndexRedirect to="/clearance/resources/broker" />

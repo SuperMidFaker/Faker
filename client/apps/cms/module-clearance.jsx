@@ -130,6 +130,11 @@ export default class Clearance extends React.Component {
         group: formatMsg(intl, 'products'),
         path: '/clearance/products/tradeitem',
         text: formatMsg(intl, 'tradeItem'),
+      }, {
+        key: 'cms-4-1',
+        group: formatMsg(intl, 'products'),
+        path: '/clearance/products/hscode',
+        text: formatMsg(intl, 'hscode'),
       }],
     });
     linkMenus.push({
