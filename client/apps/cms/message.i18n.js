@@ -97,6 +97,10 @@ const messages = defineMessages({
     id: 'cms.module.products.trade.item',
     defaultMessage: '商品物料归类',
   },
+  hscode: {
+    id: 'cms.module.products.hscode',
+    defaultMessage: 'HS编码',
+  },
   settings: {
     id: 'cms.module.settings',
     defaultMessage: '设置',

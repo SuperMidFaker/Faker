@@ -25,12 +25,14 @@ import cmsDeclare from './cmsDeclare';
 import cmsManifest from './cmsManifest';
 import cmsCompRelation from './cmsCompRelation';
 import cmsQuote from './cmsQuote';
+import cmsResources from './cmsResources';
 import scvInboundShipments from './scvInboundShipments';
 import scvOutboundShipments from './scvOutboundShipments';
 import scvInventoryStock from './scvInventoryStock';
 import scvWarehouse from './scvWarehouse';
 import cmsExpense from './cmsExpense';
 import cmsBilling from './cmsBilling';
+import cmsTradeitem from './cmsTradeitem';
 import crmCustomers from './crmCustomers';
 import crmOrders from './crmOrders';
 import crmBilling from './crmBilling';
@@ -62,12 +64,14 @@ export default combineReducers({
   cmsManifest,
   cmsCompRelation,
   cmsQuote,
+  cmsResources,
   scvInboundShipments,
   scvOutboundShipments,
   scvInventoryStock,
   scvWarehouse,
   cmsExpense,
   cmsBilling,
+  cmsTradeitem,
   crmCustomers,
   crmOrders,
   crmBilling,

@@ -1,11 +1,11 @@
 import React, { PropTypes } from 'react';
 import { Breadcrumb, Menu, Layout, Table, Button } from 'antd';
 import QueueAnim from 'rc-queue-anim';
-import { Link } from 'react-router';
 import NavLink from 'client/components/nav-link';
 import SearchBar from 'client/components/search-bar';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { addUniqueKeys } from 'client/util/dataTransform';
+import DriverModal from '../modals/driverModal';
 
 const { Header, Content, Sider } = Layout;
 const rowSelection = {
@@ -13,7 +13,7 @@ const rowSelection = {
 };
 
 function DriverList(props) {
-  const { dataSource, onAddDriverBtnClicked, onStopDriverBtnClick, onResumeDriverBtnClick, handleEditDriverLogin } = props;
+  const { dataSource, onAddDriverBtnClicked, onStopDriverBtnClick, onResumeDriverBtnClick, handleEditDriverLogin, onEditDriver } = props;
 
   function phoneLogin(record) {
     if (record.login_disabled === 1 || record.login_disabled === null) {
@@ -41,7 +41,11 @@ function DriverList(props) {
     return (
       <PrivilegeCover module="transport" feature="resources" action="edit">
         <span>
-          <Link to={`/transport/resources/driver/edit/${record.driver_id}`}>修改</Link>
+          <a onClick={() => onEditDriver(record.driver_id)}
+            disabled={record.status === '不可用'}
+          >
+            修改
+          </a>
           <span className="ant-divider" />
           <a onClick={() => onStopDriverBtnClick(record.driver_id)}
             disabled={record.status === '不可用'}
@@ -144,6 +148,7 @@ function DriverList(props) {
               </div>
               <div className="panel-body table-panel">
                 <Table dataSource={addUniqueKeys(dataSource)} columns={columns} rowSelection={rowSelection} />
+                <DriverModal />
               </div>
             </Content>
           </Layout>

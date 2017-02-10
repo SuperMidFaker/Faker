@@ -16,7 +16,8 @@ const actionTypes = createActionTypes('@@welogix/transport/resources/', [
   'ADD_NODE', 'ADD_NODE_SUCCEED', 'ADD_NODE_FAIL',
   'EDIT_NODE', 'EDIT_NODE_SUCCEED', 'EDIT_NODE_FAIL',
   'REMOVE_NODE', 'REMOVE_NODE_SUCCEED', 'REMOVE_NODE_FAIL',
-  'CHANGE_REGION', 'ALTER_CARRIER',
+  'CHANGE_REGION', 'ALTER_CARRIER', 'ALTER_VEHICLE', 'ALTER_DRIVER',
+  'ALTER_NODE',
   'VALIDATE_VEHICLE', 'VALIDATE_VEHICLE_SUCCEED', 'VALIDATE_VEHICLE_FAIL',
   'ADD_NODE_USER', 'ADD_NODE_USER_SUCCEED', 'ADD_NODE_USER_FAIL',
   'EDIT_NODE_USER', 'EDIT_NODE_USER_SUCCEED', 'EDIT_NODE_USER_FAIL',
@@ -26,6 +27,7 @@ const actionTypes = createActionTypes('@@welogix/transport/resources/', [
 ]);
 
 const initialState = {
+  loaded: true,
   cars: [],
   drivers: [],
   vehicleValidate: true,
@@ -48,6 +50,19 @@ const initialState = {
     visible: false,
     carrier: {},
     operation: 'add',
+  },
+  vehicleModal: {
+    visible: false,
+    vehicle: {},
+    operation: 'add',
+  },
+  driverModal: {
+    visible: false,
+    driver: {},
+    operation: 'add',
+  },
+  nodeModal: {
+    visible: false,
   },
 };
 
@@ -72,13 +87,13 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_DRIVERLIST:
       return { ...state, loading: true };
     case actionTypes.LOAD_DRIVERLIST_SUCCEED:
-      return { ...state, drivers: action.result.data, loading: false };
+      return { ...state, drivers: action.result.data, loading: false, loaded: true };
     case actionTypes.EDIT_CAR:
       return { ...state, loading: true };
     case actionTypes.EDIT_CAR_SUCCEED: {
       const { carId, carInfo } = action.result.data;
       const cars = updateArray({ array: state.cars, key: 'vehicle_id', value: carId, updateInfo: carInfo });
-      return { ...state, loading: false, cars };
+      return { ...state, cars, loaded: false, loading: false };
     }
     case actionTypes.ADD_CAR:
       return { ...state, vehicleValidate: true };
@@ -97,11 +112,11 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_CARLIST:
       return { ...state, loading: true };
     case actionTypes.LOAD_CARLIST_SUCCEED:
-      return { ...state, cars: action.result.data, loading: false };
+      return { ...state, cars: action.result.data, loading: false, loaded: true };
     case actionTypes.LOAD_NODELIST:
       return { ...state, loading: true };
     case actionTypes.LOAD_NODELIST_SUCCEED:
-      return { ...state, loading: false, nodes: action.result.data };
+      return { ...state, loading: false, nodes: action.result.data, loaded: true };
     case actionTypes.REMOVE_NODE:
       return { ...state, loading: true };
     case actionTypes.REMOVE_NODE_SUCCEED: {
@@ -140,11 +155,22 @@ export default function reducer(state = initialState, action) {
       return { ...state, vehicleParams: action.result.data };
     case actionTypes.ALTER_CARRIER:
       return { ...state, carrierModal: action.data };
+    case actionTypes.ALTER_VEHICLE:
+      return { ...state, vehicleModal: { ...state.vehicleModal, ...action.data } };
+    case actionTypes.ALTER_DRIVER:
+      return { ...state, driverModal: { ...state.driverModal, ...action.data } };
+    case actionTypes.ALTER_NODE:
+      return { ...state, nodeModal: { ...state.nodeModal, ...action.data } };
+    case actionTypes.ADD_CAR_SUCCEED:
+      return { ...state, loaded: false, loading: false };
+    case actionTypes.ADD_DRIVER_SUCCEED:
+      return { ...state, loaded: false, loading: false };
+    case actionTypes.ADD_NODE_SUCCEED:
+      return { ...state, loaded: false, loading: false };
     default:
       return state;
   }
 }
-
 /**
  * 车辆相关的action creator
  */
@@ -452,5 +478,26 @@ export function toggleCarrierModal(visible, operation = '', carrier = {}) {
   return {
     type: actionTypes.ALTER_CARRIER,
     data: { visible, operation, carrier },
+  };
+}
+
+export function toggleVehicleModal(visible, operation = '', vehicle = {}) {
+  return {
+    type: actionTypes.ALTER_VEHICLE,
+    data: { visible, operation, vehicle },
+  };
+}
+
+export function toggleDriverModal(visible, operation = '', driver = {}) {
+  return {
+    type: actionTypes.ALTER_DRIVER,
+    data: { visible, operation, driver },
+  };
+}
+
+export function toggleNodeModal(visible) {
+  return {
+    type: actionTypes.ALTER_NODE,
+    data: { visible },
   };
 }

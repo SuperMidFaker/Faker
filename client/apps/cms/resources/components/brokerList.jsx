@@ -3,6 +3,7 @@ import { Breadcrumb, Table, Button, Layout, Menu, Popconfirm } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import moment from 'moment';
 import NavLink from 'client/components/nav-link';
+import SearchBar from 'client/components/search-bar';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import BrokerModal from '../modals/brokerModal';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -25,7 +26,12 @@ export default class BrokerList extends Component {
     onResumeBtnClick: PropTypes.func.isRequired,
     onEditBtnClick: PropTypes.func.isRequired,
   }
-
+  state = {
+    searchText: '',
+  }
+  handleSearch = (value) => {
+    this.setState({ searchText: value });
+  }
   renderEditAndStopOperations = itemInfo => (
     <PrivilegeCover module="corp" feature="partners" action="edit">
       <span>
@@ -54,7 +60,14 @@ export default class BrokerList extends Component {
   }
   render() {
     const { dataSource, onAddBtnClicked } = this.props;
-
+    const data = dataSource.filter((item) => {
+      if (this.state.searchText) {
+        const reg = new RegExp(this.state.searchText);
+        return reg.test(item.name) || reg.test(item.partner_code) || reg.test(item.partner_unique_code);
+      } else {
+        return true;
+      }
+    });
     const columns = [
       {
         title: '报关行名称',
@@ -108,6 +121,11 @@ export default class BrokerList extends Component {
               报关行
             </Breadcrumb.Item>
           </Breadcrumb>
+          <div className="top-bar-tools">
+            <SearchBar placeholder="名称/海关十位编码/统一社会信用代码" onInputSearch={this.handleSearch}
+              value={this.state.searchText} size="large"
+            />
+          </div>
         </Header>
         <Content className="main-content" key="main">
           <div className="page-body">
@@ -118,6 +136,7 @@ export default class BrokerList extends Component {
                   mode="inline"
                 >
                   <Menu.Item key="broker"><NavLink to="/clearance/resources/broker">报关行</NavLink></Menu.Item>
+                  <Menu.Item key="unit"><NavLink to="/clearance/resources/unit">经营单位</NavLink></Menu.Item>
                 </Menu>
               </Sider>
               <Content style={{ padding: '0 24px', minHeight: 280 }}>
@@ -127,7 +146,7 @@ export default class BrokerList extends Component {
                   </PrivilegeCover>
                 </div>
                 <div className="panel-body table-panel">
-                  <Table dataSource={dataSource} columns={columns} rowSelection={rowSelection} />
+                  <Table dataSource={data} columns={columns} rowSelection={rowSelection} />
                 </div>
               </Content>
             </Layout>

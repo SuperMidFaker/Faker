@@ -196,19 +196,10 @@ export default(store, cookie) => {
               <Route path="carrier">
                 <IndexRoute component={TMSResources.CarrierListContainer} />
               </Route>
-              <Route path="vehicle">
-                <IndexRoute component={TMSResources.VehicleListContainer} />
-                <Route path="add" component={TMSResources.VehicleFormContainer} />
-                <Route path="edit/:car_id" component={TMSResources.VehicleFormContainer} />
-              </Route>
-              <Route path="driver">
-                <IndexRoute component={TMSResources.DriverListContainer} />
-                <Route path="add" component={TMSResources.DriverFormContainer} />
-                <Route path="edit/:driver_id" component={TMSResources.DriverFormContainer} />
-              </Route>
+              <Route path="vehicle" component={TMSResources.VehicleListContainer} />
+              <Route path="driver" component={TMSResources.DriverListContainer} />
               <Route path="node">
                 <IndexRoute component={TMSResources.NodeListContainer} />
-                <Route path="add" component={TMSResources.NodeFormContainer} />
                 <Route path="edit/:node_id" component={TMSResources.NodeFormContainer} />
               </Route>
             </Route>
@@ -305,11 +296,15 @@ export default(store, cookie) => {
               <Route path="tradeitem">
                 <IndexRoute component={CMSTradeItem.List} />
               </Route>
+              <Route path="hscode" component={CMSTradeItem.HscodeList} />
             </Route>
             <Route path="resources">
               <IndexRedirect to="/clearance/resources/broker" />
               <Route path="broker">
                 <IndexRoute component={CMSResources.BrokerContainer} />
+              </Route>
+              <Route path="unit">
+                <IndexRoute component={CMSResources.UnitContainer} />
               </Route>
             </Route>
           </Route>
