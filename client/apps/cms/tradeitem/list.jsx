@@ -1,14 +1,15 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
+import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Breadcrumb, Button, Layout, Radio, Select, Dropdown, Icon, Menu } from 'antd';
+import { Breadcrumb, Button, Layout, Radio, Select, Dropdown, Icon, Menu, Popconfirm, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import { loadCustomers } from 'common/reducers/crmCustomers';
-import { loadOwners, openAddModal, selectedRepoId, loadTradeItems } from 'common/reducers/cmsTradeitem';
+import { loadOwners, openAddModal, selectedRepoId, loadTradeItems, deleteItem } from 'common/reducers/cmsTradeitem';
 import AddTradeRepoModal from './modals/addTradeRepo';
 import ExtraPanel from './tabpanes/ExtraPane';
 import ExcelUpload from 'client/components/excelUploader';
@@ -21,9 +22,16 @@ const RadioButton = Radio.Button;
 const Option = Select.Option;
 
 function fetchData({ state, dispatch }) {
-  return dispatch(loadOwners({
+  const promises = [];
+  promises.push(dispatch(loadTradeItems({
+    repoId: state.cmsTradeitem.repoId,
+    pageSize: state.cmsTradeitem.tradeItemlist.pageSize,
+    currentPage: state.cmsTradeitem.tradeItemlist.current,
+  })));
+  promises.push(dispatch(loadOwners({
     tenantId: state.account.tenantId,
-  }));
+  })));
+  return Promise.all(promises);
 }
 @connectFetch()(fetchData)
 @injectIntl
@@ -34,10 +42,10 @@ function fetchData({ state, dispatch }) {
     loginName: state.account.username,
     repoOwners: state.cmsTradeitem.repoOwners,
     repoId: state.cmsTradeitem.repoId,
-    tradeItems: state.cmsTradeitem.tradeItems,
+    tradeItemlist: state.cmsTradeitem.tradeItemlist,
     visibleAddModal: state.cmsTradeitem.visibleAddModal,
   }),
-  { loadCustomers, openAddModal, selectedRepoId, loadTradeItems }
+  { loadCustomers, openAddModal, selectedRepoId, loadTradeItems, deleteItem }
 )
 
 export default class TradeItemList extends Component {
@@ -45,12 +53,12 @@ export default class TradeItemList extends Component {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     repoOwners: PropTypes.array.isRequired,
-    tradeItems: PropTypes.array.isRequired,
+    tradeItemlist: PropTypes.object.isRequired,
     repoId: PropTypes.number,
+    visibleAddModal: PropTypes.bool,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
-    visibleAddModal: PropTypes.bool,
   }
   state = {
     visibleSet: false,
@@ -72,27 +80,27 @@ export default class TradeItemList extends Component {
   }, {
     title: this.msg('gModel'),
     dataIndex: 'g_model',
-    width: 120,
+    width: 300,
   }, {
     title: this.msg('element'),
     dataIndex: 'element',
-    width: 120,
+    width: 400,
   }, {
     title: this.msg('gUnitFtz'),
     dataIndex: 'g_unit_ftz',
-    width: 120,
+    width: 80,
   }, {
     title: this.msg('gUnit'),
     dataIndex: 'g_unit',
-    width: 120,
+    width: 80,
   }, {
     title: this.msg('unit1'),
     dataIndex: 'unit_1',
-    width: 120,
+    width: 80,
   }, {
     title: this.msg('unit2'),
     dataIndex: 'unit_2',
-    width: 120,
+    width: 80,
   }, {
     title: this.msg('fixedQty'),
     dataIndex: 'fixed_qty',
@@ -100,7 +108,7 @@ export default class TradeItemList extends Component {
   }, {
     title: this.msg('fixedUnit'),
     dataIndex: 'fixed_unit',
-    width: 120,
+    width: 80,
   }, {
     title: this.msg('origCountry'),
     dataIndex: 'origin_country',
@@ -132,19 +140,78 @@ export default class TradeItemList extends Component {
   }, {
     title: this.msg('preClassifyStartDate'),
     dataIndex: 'pre_classify_start_date ',
-    width: 120,
+    width: 180,
+    render: (o, record) => {
+      if (record.pre_classify_start_date) {
+        return moment(record.pre_classify_start_date).format('YYYY-MM-DD');
+      } else {
+        return '--';
+      }
+    },
   }, {
     title: this.msg('preClassifyEndDate'),
     dataIndex: 'pre_classify_end_date ',
-    width: 120,
+    width: 180,
+    render: (o, record) => {
+      if (record.pre_classify_end_date) {
+        return moment(record.pre_classify_end_date).format('YYYY-MM-DD');
+      } else {
+        return '--';
+      }
+    },
   }, {
     title: this.msg('remark'),
     dataIndex: 'remark',
-    width: 120,
+    width: 200,
   }]
+  dataSource = new Table.DataSource({
+    fetcher: params => this.props.loadTradeItems(params),
+    resolve: result => result.data,
+    getPagination: (result, resolve) => ({
+      total: result.totalCount,
+      current: resolve(result.totalCount, result.current, result.pageSize),
+      showSizeChanger: true,
+      showQuickJumper: false,
+      pageSize: result.pageSize,
+    }),
+    getParams: (pagination, filters, sorter) => {
+      const params = {
+        repoId: this.props.repoId,
+        pageSize: pagination.pageSize,
+        currentPage: pagination.current,
+      };
+      const filter = { ...this.props.listFilter, sortField: sorter.field, sortOrder: sorter.order };
+      params.filter = JSON.stringify(filter);
+      return params;
+    },
+    remotes: this.props.tradeItemlist,
+  })
   toggle = () => {
     this.setState({
       collapsed: !this.state.collapsed,
+    });
+  }
+  handleItemListLoad = (repoid, currentPage, filter) => {
+    const { repoId, listFilter, tradeItemlist: { pageSize, current } } = this.props;
+    this.setState({ expandedKeys: [] });
+    this.props.loadTradeItems({
+      repoId: repoid || repoId,
+      filter: JSON.stringify(filter || listFilter),
+      pageSize,
+      currentPage: currentPage || current,
+    }).then((result) => {
+      if (result.error) {
+        message.error(result.error.message);
+      }
+    });
+  }
+  handleItemDel = (id) => {
+    this.props.deleteItem(id).then((result) => {
+      if (result.error) {
+        message.error(result.error.message);
+      } else {
+        this.props.loadTradeItems(this.props.repoId);
+      }
     });
   }
   handleSelectChange = (value) => {
@@ -152,7 +219,7 @@ export default class TradeItemList extends Component {
       this.setState({ visibleSet: true });
       const owner = this.props.repoOwners.filter(own => own.id === value)[0];
       this.props.selectedRepoId(owner.repo_id);
-      this.props.loadTradeItems(owner.repo_id);
+      this.handleItemListLoad(owner.repo_id);
     }
   }
   handleAddOwener = () => {
@@ -166,17 +233,30 @@ export default class TradeItemList extends Component {
   }
   handleMenuClick = (e) => {
     if (e.key === 'create') {
+      this.context.router.push('/clearance/products/tradeitem/create');
     } else if (e.key === 'export') {
     } else if (e.key === 'model') {
       window.open(`${API_ROOTS.default}v1/cms/cmsTradeitem/tradeitems/model/download/${createFilename('tradeItemModel')}.xlsx`);
     }
   }
   handleUploaded = () => {
-    this.props.loadTradeItems(this.props.repoId);
+    this.handleItemListLoad();
   }
   render() {
-    const { repoOwners, tradeItems } = this.props;
+    const { repoOwners, tradeItemlist } = this.props;
     const { visibleSet } = this.state;
+    this.dataSource.remotes = tradeItemlist;
+    let columns = [];
+    columns = [...this.columns];
+    columns.push({
+      title: this.msg('opColumn'),
+      width: 80,
+      fixed: 'right',
+      render: (o, record) =>
+        <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleItemDel(record.id)}>
+          <a role="button">{this.msg('delete')}</a>
+        </Popconfirm>,
+    });
     const menu = (
       <Menu onClick={this.handleMenuClick}>
         <Menu.Item key="importData">
@@ -193,9 +273,9 @@ export default class TradeItemList extends Component {
             <Icon type="file-excel" /> {this.msg('importItems')}
           </ExcelUpload>
         </Menu.Item>
-        <Menu.Item key="create"><Icon type="plus" /> 新建物料表</Menu.Item>
+        <Menu.Item key="create"><Icon type="plus" /> 新增物料</Menu.Item>
         <Menu.Item key="export"><Icon type="export" /> 导出物料表</Menu.Item>
-        <Menu.Item key="model"><Icon type="download" /> 导出模板</Menu.Item>
+        <Menu.Item key="model"><Icon type="download" /> 下载模板</Menu.Item>
       </Menu>);
     return (
       <QueueAnim type={['bottom', 'up']}>
@@ -251,7 +331,7 @@ export default class TradeItemList extends Component {
                   </Button>
                 </div>
                 <div className="panel-body table-panel">
-                  <Table columns={this.columns} dataSource={tradeItems} scroll={{ x: 1480, y: 2300 }} />
+                  <Table columns={columns} dataSource={this.dataSource} scroll={{ x: 1480, y: 2300 }} />
                 </div>
                 <AddTradeRepoModal />
               </div>
