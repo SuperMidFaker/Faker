@@ -35,11 +35,11 @@ const messages = defineMessages({
   },
   inventoryRecieving: {
     id: 'scv.module.inventory.recieving',
-    defaultMessage: '入库收货',
+    defaultMessage: '收货通知',
   },
   inventoryShipping: {
     id: 'scv.module.inventory.shipping',
-    defaultMessage: '出库发货',
+    defaultMessage: '出货订单',
   },
   inventoryWarehouse: {
     id: 'scv.module.inventory.warehouse',
@@ -67,7 +67,7 @@ const messages = defineMessages({
   },
   productsSKU: {
     id: 'scv.module.products.sku',
-    defaultMessage: '商品库存单元',
+    defaultMessage: 'SKU管理',
   },
   productsCategory: {
     id: 'scv.module.products.category',
