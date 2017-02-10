@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Icon, message, Layout } from 'antd';
+import { Breadcrumb, Button, Checkbox, Select, message, Layout } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadStocks, loadStockSearchOptions } from 'common/reducers/scvInventoryStock';
@@ -10,6 +10,7 @@ import StockSearchForm from './searchForm';
 import { formatMsg } from './message.i18n';
 
 const { Header, Content, Sider } = Layout;
+const Option = Select.Option;
 
 function fetchData({ state, dispatch }) {
   const proms = [];
@@ -33,6 +34,7 @@ function fetchData({ state, dispatch }) {
     stocklist: state.scvInventoryStock.list,
     listFilter: state.scvInventoryStock.listFilter,
     sortFilter: state.scvInventoryStock.sortFilter,
+    searchOption: state.scvInventoryStock.searchOption,
   }),
   { loadStocks }
 )
@@ -48,6 +50,9 @@ export default class InventoryStockList extends React.Component {
     stocklist: PropTypes.object.isRequired,
     listFilter: PropTypes.object.isRequired,
     sortFilter: PropTypes.object.isRequired,
+    searchOption: PropTypes.shape({
+      warehouses: PropTypes.arrayOf(PropTypes.shape({ wh_no: PropTypes.string })),
+    }),
   }
   state = {
     collapsed: false,
@@ -157,33 +162,51 @@ export default class InventoryStockList extends React.Component {
     });
   }
   render() {
-    const { stocklist, loading } = this.props;
+    const { stocklist, loading, searchOption: { warehouses } } = this.props;
     this.dataSource.remotes = stocklist;
     return (
       <Layout>
-        <Header className="top-bar">
-          <span>{this.msg('inventory')}</span>
-          <Icon
-            className="trigger"
-            type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
-            onClick={this.toggle}
-          />
-        </Header>
+        <Sider width={280} className="menu-sider" key="sider" trigger={null}
+          collapsible
+          collapsed={this.state.collapsed}
+          collapsedWidth={0}
+        >
+          <div className="top-bar">
+            <Breadcrumb>
+              <Breadcrumb.Item>
+                {this.msg('inventory')}
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {this.msg('inventoryStock')}
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          </div>
+          <StockSearchForm onSearch={this.handleSearch} />
+        </Sider>
         <Layout>
-          <Sider width={280} className="menu-sider" key="sider" trigger={null}
-            collapsible
-            collapsed={this.state.collapsed}
-            collapsedWidth={0}
-          >
-            <StockSearchForm onSearch={this.handleSearch} />
-          </Sider>
+          <Header className="top-bar">
+            <Button size="large"
+              className={this.state.collapsed ? '' : 'btn-toggle-on'}
+              icon="search"
+              onClick={this.toggle}
+            />
+            <span />
+            <Select size="large" defaultValue="all" style={{ width: 200 }}>
+              <Option value="all">全部仓库</Option>
+              {
+                warehouses.map(whse => <Option key={whse.id} value={whse.wh_no}>{whse.wh_name}</Option>)
+              }
+            </Select>
+            <span />
+            <Checkbox>按SKU合并</Checkbox>
+            <div className="top-bar-tools">
+              <Button type="primary" size="large" icon="export" ghost>
+                {this.msg('exportInventory')}
+              </Button>
+            </div>
+          </Header>
           <Content className="main-content" key="main">
             <div className="page-body">
-              <div className="toolbar">
-                <Button icon="export" onClick={this.handleShipmentCreate}>
-                  {this.msg('exportInventory')}
-                </Button>
-              </div>
               <div className="panel-body table-panel">
                 <Table columns={this.columns} dataSource={this.dataSource} loading={loading} rowKey="id" scroll={{ x: 1200 }} />
               </div>

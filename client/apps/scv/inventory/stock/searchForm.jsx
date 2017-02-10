@@ -6,7 +6,7 @@ import { formatMsg } from './message.i18n';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
-const Search = Input.Search;
+const InputGroup = Input.Group;
 
 @injectIntl
 @connect(
@@ -20,7 +20,6 @@ export default class InventoryStockSearchForm extends React.Component {
     intl: intlShape.isRequired,
     form: PropTypes.object.isRequired,
     searchOption: PropTypes.shape({
-      warehouses: PropTypes.arrayOf(PropTypes.shape({ wh_no: PropTypes.string })),
       categories: PropTypes.arrayOf(PropTypes.shape({ category_no: PropTypes.string })),
     }),
     onSearch: PropTypes.func.isRequired,
@@ -35,11 +34,14 @@ export default class InventoryStockSearchForm extends React.Component {
   }
   msg = formatMsg(this.props.intl);
   render() {
-    const { form: { getFieldDecorator }, searchOption: { warehouses, categories } } = this.props;
+    const { form: { getFieldDecorator }, searchOption: { categories } } = this.props;
     return (
       <Form vertical style={{ padding: 16 }}>
-        <FormItem label="商品货号">
-          {getFieldDecorator('product_no')(<Search placeholder="商品货号信息" />)}
+        <FormItem label="SKU">
+          {getFieldDecorator('sku_no')(<Input />)}
+        </FormItem>
+        <FormItem label="商品">
+          {getFieldDecorator('product_no')(<Input placeholder="料号/品名" />)}
         </FormItem>
         <FormItem label="商品分类">
           {getFieldDecorator('product_category')(
@@ -54,17 +56,20 @@ export default class InventoryStockSearchForm extends React.Component {
               }
             </Select>)}
         </FormItem>
-        <FormItem label="仓库">
-          {getFieldDecorator('wh_no')(
-            <Select allowClear showSearch placeholder="选择仓库">
-              {
-                warehouses.map(whse => <Option key={whse.id} value={whse.wh_no}>{whse.wh_name}</Option>)
-              }
-            </Select>)}
+        <FormItem label="批次号">
+          {getFieldDecorator('lot_no')(<Input />)}
+        </FormItem>
+        <FormItem label="序列号">
+          {getFieldDecorator('serial_no')(<Input />)}
+        </FormItem>
+        <FormItem label="单价">
+          <InputGroup compact>
+            <Input style={{ width: '50%' }} placeholder="从" />
+            <Input style={{ width: '50%' }} placeholder="到" />
+          </InputGroup>
         </FormItem>
         <FormItem>
-          <Button type="primary" onClick={this.handleStockSearch}>查询</Button>
-          <Button type="ghost" onClick={this.handleSearchClear}>清除选项</Button>
+          <Button type="primary" size="large" onClick={this.handleStockSearch} style={{ width: '100%' }}>查询</Button>
         </FormItem>
       </Form>
     );
