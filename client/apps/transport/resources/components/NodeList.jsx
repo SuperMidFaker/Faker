@@ -8,6 +8,7 @@ import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { addUniqueKeys } from 'client/util/dataTransform';
 import { nodeTypes } from '../utils/dataMapping';
 import { renderLoc } from '../../common/consignLocation';
+import NodeModal from '../modals/nodeModal';
 
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
@@ -140,6 +141,7 @@ export default function NodeList(props) {
               </div>
               <div className="panel-body table-panel">
                 <Table rowSelection={rowSelection} columns={columns} dataSource={addUniqueKeys(dataSource)} />
+                <NodeModal />
               </div>
             </Content>
           </Layout>

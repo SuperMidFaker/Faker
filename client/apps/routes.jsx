@@ -200,7 +200,6 @@ export default(store, cookie) => {
               <Route path="driver" component={TMSResources.DriverListContainer} />
               <Route path="node">
                 <IndexRoute component={TMSResources.NodeListContainer} />
-                <Route path="add" component={TMSResources.NodeFormContainer} />
                 <Route path="edit/:node_id" component={TMSResources.NodeFormContainer} />
               </Route>
             </Route>
