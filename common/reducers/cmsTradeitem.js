@@ -12,16 +12,33 @@ const actionTypes = createActionTypes('@@welogix/cms/tradeitem/', [
   'DELETE_REPO_TRADE', 'DELETE_REPO_TRADE_SUCCEED', 'DELETE_REPO_TRADE_FAIL',
   'LOAD_TRADE_ITEMS', 'LOAD_TRADE_ITEMS_SUCCEED', 'LOAD_TRADE_ITEMS_FAIL',
   'LOAD_HSCODES', 'LOAD_HSCODES_SUCCEED', 'LOAD_HSCODES_FAIL',
+  'DELETE_ITEM', 'DELETE_ITEM_SUCCEED', 'DELETE_ITEM_FAIL',
+  'LOAD_PARAMS', 'LOAD_PARAMS_SUCCEED', 'LOAD_PARAMS_FAIL',
+  'CREATE_ITEM', 'CREATE_ITEM_SUCCEED', 'CREATE_ITEM_FAIL',
 ]);
 
 const initialState = {
+  listFilter: {
+    sortField: '',
+    sortOrder: '',
+  },
+  tradeItemlist: {
+    totalCount: 0,
+    current: 1,
+    pageSize: 10,
+    data: [],
+  },
   visibleAddModal: false,
   repoOwners: [],
   tradeCodes: [],
   tabKey: 'copCodes',
   repoId: null,
   repoTrades: [],
-  tradeItems: [],
+  params: {
+    currencies: [],
+    units: [],
+    tradeCountries: [],
+  },
   hscodes: {
     data: [],
     pageSize: 10,
@@ -29,6 +46,7 @@ const initialState = {
     totalCount: 0,
     searchText: '',
   },
+  itemData: {},
 };
 
 export default function reducer(state = initialState, action) {
@@ -48,7 +66,9 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_REPO_TRADES_SUCCEED:
       return { ...state, repoTrades: action.result.data };
     case actionTypes.LOAD_TRADE_ITEMS_SUCCEED:
-      return { ...state, tradeItems: action.result.data };
+      return { ...state, tradeItemlist: action.result.data };
+    case actionTypes.LOAD_PARAMS_SUCCEED:
+      return { ...state, params: action.result.data };
     case actionTypes.LOAD_HSCODES_SUCCEED:
       return { ...state, hscodes: { ...state.hscodes, ...action.result.data } };
     default:
@@ -56,7 +76,21 @@ export default function reducer(state = initialState, action) {
   }
 }
 
-export function loadTradeItems(repoId) {
+export function loadTradeParams() {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_PARAMS,
+        actionTypes.LOAD_PARAMS_SUCCEED,
+        actionTypes.LOAD_PARAMS_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/params',
+      method: 'get',
+    },
+  };
+}
+
+export function loadTradeItems(params) {
   return {
     [CLIENT_API]: {
       types: [
@@ -66,7 +100,37 @@ export function loadTradeItems(repoId) {
       ],
       endpoint: 'v1/cms/tradeitem/items/load',
       method: 'get',
-      params: { repoId },
+      params,
+    },
+  };
+}
+
+export function createTradeItem(datas) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.CREATE_ITEM,
+        actionTypes.CREATE_ITEM_SUCCEED,
+        actionTypes.CREATE_ITEM_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/create',
+      method: 'post',
+      data: datas,
+    },
+  };
+}
+
+export function deleteItem(id) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DELETE_ITEM,
+        actionTypes.DELETE_ITEM_SUCCEED,
+        actionTypes.DELETE_ITEM_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/item/delete',
+      method: 'post',
+      data: { id },
     },
   };
 }

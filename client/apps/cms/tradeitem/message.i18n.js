@@ -129,5 +129,29 @@ const messages = defineMessages({
     id: 'cms.tradeitem.tabpane.cop.name',
     defaultMessage: '单位名称',
   },
+  opColumn: {
+    id: 'cms.tradeitem.column.operation',
+    defaultMessage: '操作',
+  },
+  delete: {
+    id: 'cms.tradeitem.delete',
+    defaultMessage: '删除',
+  },
+  cancel: {
+    id: 'cms.tradeitem.cancel',
+    defaultMessage: '取消',
+  },
+  save: {
+    id: 'cms.tradeitem.save',
+    defaultMessage: '保存',
+  },
+  deleteConfirm: {
+    id: 'cms.tradeitem.delete.confirm',
+    defaultMessage: '确认删除?',
+  },
+  newItem: {
+    id: 'cms.tradeitem.new.item',
+    defaultMessage: '新增物料',
+  },
 });
 export default messages;
