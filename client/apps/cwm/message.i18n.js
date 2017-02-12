@@ -19,7 +19,7 @@ const messages = defineMessages({
   },
   products: {
     id: 'cwm.module.products',
-    defaultMessage: '商品管理',
+    defaultMessage: '货品管理',
   },
   productsMaterial: {
     id: 'cwm.module.products.material',
@@ -29,8 +29,8 @@ const messages = defineMessages({
     id: 'cwm.module.products.sku',
     defaultMessage: 'SKU管理',
   },
-  productsSkuLot: {
-    id: 'cwm.module.products.sku.lot',
+  productsLot: {
+    id: 'cwm.module.products.lot',
     defaultMessage: '批次管理',
   },
   resources: {

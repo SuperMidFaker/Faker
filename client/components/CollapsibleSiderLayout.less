@@ -22,6 +22,10 @@
 }
 
 .ant-layout-sider {
+  &.left-sider {
+    z-index: 50;
+    overflow: visible;
+  }
   &.right-sider {
     background: transparent;
   }
@@ -53,7 +57,6 @@
   }
   &.left-sider {
     width: @sider-collapse-width;
-    z-index: 50;
   }
   &.right-sider {
     width: 0;

@@ -11,7 +11,7 @@ import { TENANT_LEVEL } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from 'client/apps/message.i18n';
 const formatMsg = format(messages);
-const { Header, Content } = Layout;
+const { Header, Sider } = Layout;
 const MenuItem = Menu.Item;
 @injectIntl
 @connect(
@@ -96,14 +96,16 @@ export default class CorpPack extends React.Component {
         <Header>
           <CorpHeaderBar title="管理后台" />
         </Header>
-        <Content>
-          <Header className="top-bar">
-            <Menu defaultSelectedKeys={['corpsetting-0']} mode="horizontal">
+        <Layout>
+          <Sider className="menu-sider">
+            <Menu defaultSelectedKeys={['corpsetting-0']} mode="inline">
               {linkMenus}
             </Menu>
-          </Header>
-          {this.props.children}
-        </Content>
+          </Sider>
+          <Layout>
+            {this.props.children}
+          </Layout>
+        </Layout>
       </Layout>);
   }
 }

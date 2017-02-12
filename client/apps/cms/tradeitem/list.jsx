@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
+import connectNav from 'client/common/decorators/connect-nav';
 import { Breadcrumb, Button, Layout, Radio, Select, Dropdown, Icon, Menu, Popconfirm, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
@@ -47,7 +48,10 @@ function fetchData({ state, dispatch }) {
   }),
   { loadCustomers, openAddModal, selectedRepoId, loadTradeItems, deleteItem }
 )
-
+@connectNav({
+  depth: 2,
+  moduleName: 'clearance',
+})
 export default class TradeItemList extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -281,7 +285,7 @@ export default class TradeItemList extends Component {
       <QueueAnim type={['bottom', 'up']}>
         <Layout>
           <Layout>
-            <Header className="top-bar" key="header">
+            <Header className="top-bar top-bar-fixed" key="header">
               <Breadcrumb>
                 <Breadcrumb.Item>
                   {this.msg('tradeItemManagement')}
@@ -292,46 +296,44 @@ export default class TradeItemList extends Component {
                 <RadioButton value="pending">{this.msg('filterPending')}</RadioButton>
                 <RadioButton value="classified">{this.msg('filterClassified')}</RadioButton>
               </RadioGroup>
+              <div className="top-bar-tools">
+                <Select
+                  showSearch
+                  style={{ width: 300 }}
+                  placeholder="选择客户物料库"
+                  optionFilterProp="children"
+                  size="large"
+                  onChange={this.handleSelectChange}
+                >
+                  {
+                    repoOwners.map(data => (<Option key={data.id} value={data.id}
+                      search={`${data.partner_code}${data.name}`}
+                    >{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>)
+                    )}
+                </Select>
+                <Button type="primary" size="large" icon="plus" onClick={this.handleAddOwener}>
+                  新增物料库
+                </Button>
+                <Button size="large"
+                  className={this.state.collapsed ? '' : 'btn-toggle-on'}
+                  icon={this.state.collapsed ? 'menu-fold' : 'menu-unfold'}
+                  onClick={this.toggle}
+                />
+              </div>
             </Header>
-            <Content className="main-content" key="main">
+            <Content className="main-content top-bar-fixed" key="main">
               <div className="page-body">
                 <div className="toolbar">
-                  <div className="toolbar-right">
-                    <Select
-                      showSearch
-                      style={{ width: 300 }}
-                      placeholder="选择客户"
-                      optionFilterProp="children"
-                      size="large"
-                      onChange={this.handleSelectChange}
-                    >
-                      {
-                        repoOwners.map(data => (<Option key={data.id} value={data.id}
-                          search={`${data.partner_code}${data.name}`}
-                        >{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>)
-                        )}
-                    </Select>
-                    {visibleSet &&
-                      <div className="toolbar-right">
-                        <Button size="large"
-                          className={this.state.collapsed ? '' : 'btn-toggle-on'}
-                          icon={this.state.collapsed ? 'menu-fold' : 'menu-unfold'}
-                          onClick={this.toggle}
-                        />
-                        <Dropdown overlay={menu} type="primary">
-                          <Button type="primary" onClick={this.handleButtonClick}>
-                            {this.msg('addMore')} <Icon type="down" />
-                          </Button>
-                        </Dropdown>
-                      </div>
-                    }
-                  </div>
-                  <Button type="primary" icon="plus" onClick={this.handleAddOwener}>
-                    新增物料管理企业
-                  </Button>
+                  {visibleSet &&
+                    <Dropdown overlay={menu} type="primary">
+                      <Button type="primary" size="large" onClick={this.handleButtonClick}>
+                        {this.msg('addMore')} <Icon type="down" />
+                      </Button>
+                    </Dropdown>
+                  }
                 </div>
                 <div className="panel-body table-panel">
-                  <Table columns={columns} dataSource={this.dataSource} scroll={{ x: 1480, y: 2300 }} />
+                  <Table columns={columns} dataSource={this.dataSource} scroll={{ x: 2400, y: 2300 }} />
                 </div>
                 <AddTradeRepoModal />
               </div>

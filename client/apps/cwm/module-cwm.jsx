@@ -52,18 +52,16 @@ export default class ModuleCWM extends React.Component {
     linkMenus.push({
       single: false,
       key: 'cwm-4',
-      icon: 'icon-fontello-tags-2',
+      icon: 'icon-fontello-box',
       text: formatMsg(intl, 'products'),
       sublinks: [{
         key: 'cwm-4-0',
-        group: formatMsg(intl, 'products'),
-        path: '/cwm/products/material',
-        text: formatMsg(intl, 'productsMaterial'),
-      }, {
-        key: 'cwm-4-1',
-        group: formatMsg(intl, 'products'),
         path: '/cwm/products/sku',
         text: formatMsg(intl, 'productsSku'),
+      }, {
+        key: 'cwm-4-1',
+        path: '/cwm/products/lot',
+        text: formatMsg(intl, 'productsLot'),
       },
       ],
     });

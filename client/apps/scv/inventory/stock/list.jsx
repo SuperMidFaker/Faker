@@ -70,6 +70,10 @@ export default class InventoryStockList extends React.Component {
   }
   msg = formatMsg(this.props.intl);
   columns = [{
+    title: this.msg('warehouse'),
+    dataIndex: 'wh_name',
+    width: 140,
+  }, {
     title: this.msg('finishedProduct'),
     dataIndex: 'sku_no',
     width: 100,
@@ -77,10 +81,6 @@ export default class InventoryStockList extends React.Component {
     title: this.msg('category'),
     dataIndex: 'product_category',
     width: 120,
-  }, {
-    title: this.msg('warehouse'),
-    dataIndex: 'wh_name',
-    width: 140,
   }, {
     title: this.msg('stockPlan'),
     width: 80,
@@ -185,9 +185,17 @@ export default class InventoryStockList extends React.Component {
         </Sider>
         <Layout>
           <Header className="top-bar">
+            { this.state.collapsed && <Breadcrumb>
+              <Breadcrumb.Item>
+                {this.msg('inventory')}
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {this.msg('inventoryStock')}
+              </Breadcrumb.Item>
+            </Breadcrumb>}
             <Button size="large"
               className={this.state.collapsed ? '' : 'btn-toggle-on'}
-              icon="search"
+              icon={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
               onClick={this.toggle}
             />
             <span />

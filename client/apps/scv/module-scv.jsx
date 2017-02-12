@@ -109,6 +109,10 @@ export default class ModuleSCV extends React.Component {
         text: formatMsg(intl, 'productsSKU'),
       }, {
         key: 'scv-6-2',
+        path: '/scv/products/material',
+        text: formatMsg(intl, 'productsMaterial'),
+      }, {
+        key: 'scv-6-3',
         path: '/scv/products/category',
         text: formatMsg(intl, 'productsCategory'),
       }],

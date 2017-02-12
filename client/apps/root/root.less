@@ -136,8 +136,8 @@ img {
   border-color: #3dbd7d;
 }
 .btn-toggle-on {
-  color: #fff;
-  background-color: #108ee9;
+  color: #108ee9;
+  background-color: #fff;
   border-color: #108ee9;
 }
 .mdc-text-green,
@@ -327,26 +327,29 @@ img {
   .ant-menu-horizontal {
     border-bottom: 0;
   }
+  .top-bar-tools {
+    float: right;
+    background: rgba(252,252,252,0.95);
+    padding: 8px 0;
+    display: inline-flex;
+    button,
+    >span {
+      margin-left: 8px;
+    }
+    >a {
+      line-height: 32px;
+    }
+  }
   &.top-bar-fixed {
     position: fixed;
     width: 100%;
+    .top-bar-tools {
+      position: fixed;
+      right: 16px;
+    }
   }
 }
-.top-bar-tools {
-  position: fixed;
-  background: rgba(252,252,252,0.95);
-  right: 16px;
-  z-index: 55;
-  padding: 8px 0;
-  display: inline-flex;
-  button,
-  >span {
-    margin-left: 8px;
-  }
-  >a {
-    line-height: 32px;
-  }
-}
+
 .top-tabs-bar {
   .ant-tabs-bar {
     position: fixed;
@@ -878,6 +881,13 @@ img {
     width: 90%;
   }
 }
+.left-sider-panel {
+  min-width: 280px;
+  padding: 16px;
+  .ant-form-item {
+    margin-bottom: 8px;
+  }
+}
 .right-sider-panel {
   min-width: 360px;
   margin-top: 48px;
@@ -963,4 +973,68 @@ img {
   padding: 0 16px;
   cursor: pointer;
   transition: color .3s;
+}
+
+.ui-annotated-section {
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-flex-wrap: wrap;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -webkit-justify-content: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    max-width: 103.6rem;
+    margin: 0 auto 2rem
+}
+
+@media screen and (min-width: 720px) {
+    .ui-annotated-section {
+        margin-top: 2rem
+    }
+    .ui-annotated-section+.ui-annotated-section {
+        margin-top: 0;
+        padding-top: 2rem;
+        border-top: 1px solid #d3dbe2
+    }
+}
+
+.ui-annotated-section-content {
+    -webkit-flex: 2 1 48rem;
+    -ms-flex: 2 1 48rem;
+    flex: 2 1 48rem;
+    max-width: 100%;
+    min-width: 0
+}
+
+@media screen and (min-width: 720px) {
+    .ui-annotated-section-content {
+        padding: 0 2rem
+    }
+}
+
+.ui-annotated-section-annotation {
+    -webkit-flex: 1 0 24rem;
+    -ms-flex: 1 0 24rem;
+    flex: 1 0 24rem
+}
+
+@media screen and (min-width: 720px) {
+    .ui-annotated-section-annotation {
+        padding: 0 2rem
+    }
+}
+
+.ui-annotated-section-title {
+    padding: 2rem
+}
+
+.ui-annotated-section-description {
+    color: #707070;
+    padding: 0 2rem 2rem
+}
+
+.ui-annotated-section-description p {
+    margin-bottom: 1rem
 }

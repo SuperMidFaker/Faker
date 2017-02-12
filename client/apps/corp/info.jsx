@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import {
-  Icon, Button, Form, Input, Row, Col, Layout, Select, Tabs, Upload, message,
+  Icon, Button, Form, Input, Row, Col, Layout, Select, Upload, message,
   } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import Region from '../../components/region-cascade';
@@ -23,7 +23,6 @@ const formatContainerMsg = format(containerMessages);
 const { Content } = Layout;
 const Option = Select.Option;
 const FormItem = Form.Item;
-const TabPane = Tabs.TabPane;
 const Dragger = Upload.Dragger;
 
 function fetchData({ state, dispatch, cookie }) {
@@ -127,63 +126,76 @@ export default class CorpInfo extends React.Component {
     const {
       formData: {
         name, short_name, address,
-        code, type, remark, website, contact, phone, email,
+        code, type, remark, website,
       },
       form: { getFieldDecorator }, intl,
     } = this.props;
     const { country, province, city, district } = this.state;
     const msg = (descriptor, values) => formatMsg(intl, descriptor, values);
     return (
-      <div className="panel-body">
-        <Form horizontal className="form-edit-content">
-          <Row>
-            <Col span="12">
-              {this.renderTextInput(
+      <div className="page-body form-wrapper">
+        <Form horizontal>
+          <FormItem label={msg('enterpriseCode')} labelCol={{ span: 6 }} wrapperCol={{ span: 16 }}>
+            {getFieldDecorator('code', { initialValue: code })(<Input type="text" disabled />)}
+          </FormItem>
+          {this.renderTextInput(
                 msg('companyName'), msg('companyNameTip'), 'name', true,
                 [{ required: true, message: msg('companyNameRequired') }],
                 { initialValue: name }
               )}
-              {this.renderTextInput(
+          {this.renderTextInput(
                 msg('companyShortName'), '', 'short_name', false,
-                [{
-                  type: 'string', min: 2, pattern: /^[\u4e00-\u9fa5_a-zA-Z0-9]+$/,
-                  message: msg('shortNameMessage'),
-                }],
+            [{
+              type: 'string', min: 2, pattern: /^[\u4e00-\u9fa5_a-zA-Z0-9]+$/,
+              message: msg('shortNameMessage'),
+            }],
                 { initialValue: short_name }
               )}
-              <FormItem label={msg('location')} labelCol={{ span: 6 }} wrapperCol={{ span: 16 }}>
-                <Region onChange={this.handleRegionChange} country={country} defaultRegion={[
-                  province, city, district,
-                ]}
-                />
-              </FormItem>
-              {
+          <FormItem label={msg('location')} labelCol={{ span: 6 }} wrapperCol={{ span: 16 }}>
+            <Region onChange={this.handleRegionChange} country={country} defaultRegion={[
+              province, city, district,
+            ]}
+            />
+          </FormItem>
+          {
                 this.renderTextInput(
                   msg('fullAddress'), '', 'address', false, undefined,
                   { initialValue: address }
                 )
               }
-            </Col>
-            <Col span="12">
-              <FormItem label={msg('enterpriseCode')} labelCol={{ span: 6 }} wrapperCol={{ span: 16 }}>
-                {getFieldDecorator('code', { initialValue: code })(<Input type="text" disabled />)}
-              </FormItem>
-              <FormItem label={msg('tradeCategory')} labelCol={{ span: 6 }} wrapperCol={{ span: 16 }}>
-                {getFieldDecorator('type', { initialValue: type })(<Select defaultValue="lucy" style={{ width: '100%' }}>
-                  <Option value="freight">货代</Option>
-                </Select>)}
-              </FormItem>
-              <FormItem label={msg('companyAbout')} labelCol={{ span: 6 }} wrapperCol={{ span: 16 }}>
-                {getFieldDecorator('remark', { initialValue: remark })(<Input type="textarea" rows="3" />)}
-              </FormItem>
-              <FormItem label={msg('companyWebsite')} labelCol={{ span: 6 }} wrapperCol={{ span: 16 }}>
-                {getFieldDecorator('website', { initialValue: website })(<Input type="text" addonBefore="http://" />)}
-              </FormItem>
-            </Col>
-          </Row>
-          <Row>
-            <Col span="12">
-              {this.renderTextInput(
+          <FormItem label={msg('tradeCategory')} labelCol={{ span: 6 }} wrapperCol={{ span: 16 }}>
+            {getFieldDecorator('type', { initialValue: type })(<Select defaultValue="lucy" style={{ width: '100%' }}>
+              <Option value="freight">货代</Option>
+            </Select>)}
+          </FormItem>
+          <FormItem label={msg('companyAbout')} labelCol={{ span: 6 }} wrapperCol={{ span: 16 }}>
+            {getFieldDecorator('remark', { initialValue: remark })(<Input type="textarea" rows="3" />)}
+          </FormItem>
+          <FormItem label={msg('companyWebsite')} labelCol={{ span: 6 }} wrapperCol={{ span: 16 }}>
+            {getFieldDecorator('website', { initialValue: website })(<Input type="text" addonBefore="http://" />)}
+          </FormItem>
+          <PrivilegeCover module="corp" feature="info" action="edit">
+            <Row>
+              <Col span="21" offset="3">
+                <Button type="primary" size="large" htmlType="submit" onClick={this.handleSubmit}>
+                  {formatGlobalMsg(intl, 'save')}
+                </Button>
+              </Col>
+            </Row>
+          </PrivilegeCover>
+        </Form>
+      </div>);
+  }
+  renderContactForm() {
+    const {
+      formData: { contact, phone, email },
+      form: { getFieldDecorator }, intl,
+    } = this.props;
+    const msg = (descriptor, values) => formatMsg(intl, descriptor, values);
+    return (
+      <div className="page-body form-wrapper">
+        <Form horizontal>
+          {this.renderTextInput(
                 msg('contact'), '', 'contact', true, [{
                   required: true,
                   message: msg('contactRequired'),
@@ -194,24 +206,20 @@ export default class CorpInfo extends React.Component {
                   initialValue: contact,
                 }
               )}
-              {this.renderTextInput(msg('phone'), '', 'phone', true, [{
-                validator: (rule, value, callback) => validatePhone(
+          {this.renderTextInput(msg('phone'), '', 'phone', true, [{
+            validator: (rule, value, callback) => validatePhone(
                   value, callback,
                   (msgs, descriptor) => format(msgs)(intl, descriptor)
                 ),
-              }], { initialValue: phone })}
-            </Col>
-            <Col span="12">
-              <FormItem label={msg('position')} labelCol={{ span: 6 }} wrapperCol={{ span: 16 }}>
-                {getFieldDecorator('position')(<Input type="text" />)}
-              </FormItem>
-              {this.renderTextInput(
+          }], { initialValue: phone })}
+          <FormItem label={msg('position')} labelCol={{ span: 6 }} wrapperCol={{ span: 16 }}>
+            {getFieldDecorator('position')(<Input type="text" />)}
+          </FormItem>
+          {this.renderTextInput(
                 'Email', '', 'email', false,
                 [{ type: 'email', message: formatContainerMsg(intl, 'emailError') }],
                 { initialValue: email }
               )}
-            </Col>
-          </Row>
           <PrivilegeCover module="corp" feature="info" action="edit">
             <Row>
               <Col span="21" offset="3">
@@ -228,36 +236,28 @@ export default class CorpInfo extends React.Component {
     const { formData: { subdomain }, intl } = this.props;
     const msg = descriptor => formatMsg(intl, descriptor);
     return (
-      <div className="panel-body">
-        <Form horizontal className="form-edit-content">
-          <Row>
-            <Col span="12">
-              <FormItem label="LOGO" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
-                <img src={this.state.logo || '/assets/img/wetms.png'} style={{
-                  height: 120, width: 120, margin: 10,
-                  border: '1px solid #e0e0e0', borderRadius: 60,
-                }} alt="logo"
-                />
-                <div title={msg('dragHint')} style={{ height: 140, marginTop: 20 }}>
-                  <Dragger onChange={this.handleImgUpload} showUploadList={false}
-                    action={`${API_ROOTS.default}v1/upload/img`} withCredentials
-                  >
-                    <Icon type="upload" />
-                    <p className="ant-upload-hint">{msg('imgUploadHint')}</p>
-                  </Dragger>
-                </div>
-              </FormItem>
-            </Col>
-          </Row>
-          <Row>
-            <Col span="12">
-              <FormItem label={msg('loginSubdomain')} labelCol={{ span: 6 }}
-                wrapperCol={{ span: 16 }}
+      <div className="page-body form-wrapper">
+        <Form horizontal>
+          <FormItem label="LOGO" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
+            <img src={this.state.logo || '/assets/img/wetms.png'} style={{
+              height: 120, width: 120, margin: 10,
+              border: '1px solid #e0e0e0', borderRadius: 60,
+            }} alt="logo"
+            />
+            <div title={msg('dragHint')} style={{ height: 140, marginTop: 20 }}>
+              <Dragger onChange={this.handleImgUpload} showUploadList={false}
+                action={`${API_ROOTS.default}v1/upload/img`} withCredentials
               >
-                <Input type="text" addonAfter=".welogix.cn" disabled value={subdomain} />
-              </FormItem>
-            </Col>
-          </Row>
+                <Icon type="upload" />
+                <p className="ant-upload-hint">{msg('imgUploadHint')}</p>
+              </Dragger>
+            </div>
+          </FormItem>
+          <FormItem label={msg('loginSubdomain')} labelCol={{ span: 6 }}
+            wrapperCol={{ span: 16 }}
+          >
+            <Input type="text" addonAfter=".welogix.cn" disabled value={subdomain} />
+          </FormItem>
           <PrivilegeCover module="corp" feature="info" action="edit">
             <Row>
               <Col span="21" offset="3">
@@ -276,14 +276,45 @@ export default class CorpInfo extends React.Component {
     const msg = descriptor => formatMsg(this.props.intl, descriptor);
     return (
       <Content className="main-content">
-        <div className="page-body">
-          <Tabs defaultActiveKey="tab1">
-            <TabPane tab={msg('basicInfo')} key="tab1">{this.renderBasicForm()}</TabPane>
-            <TabPane tab={msg('brandInfo')} key="tab2">
-              {this.props.formData.level === TENANT_LEVEL.ENTERPRISE && this.renderEnterpriseForm()}
-            </TabPane>
-          </Tabs>
-        </div>
+        <section className="ui-annotated-section">
+          <div className="ui-annotated-section-annotation">
+            <div className="ui-annotated-section-title">
+              <h2>{msg('basicInfo')}</h2>
+            </div>
+            <div className="ui-annotated-section-description">
+              <p>Shopify and your customers will use this information to contact you.</p>
+            </div>
+          </div>
+          <div className="ui-annotated-section-content">
+            {this.renderBasicForm()}
+          </div>
+        </section>
+        <section className="ui-annotated-section">
+          <div className="ui-annotated-section-annotation">
+            <div className="ui-annotated-section-title">
+              <h2>{msg('contactInfo')}</h2>
+            </div>
+            <div className="ui-annotated-section-description">
+              <p>Shopify and your customers will use this information to contact you.</p>
+            </div>
+          </div>
+          <div className="ui-annotated-section-content">
+            {this.renderContactForm()}
+          </div>
+        </section>
+        <section className="ui-annotated-section">
+          <div className="ui-annotated-section-annotation">
+            <div className="ui-annotated-section-title">
+              <h2>{msg('brandInfo')}</h2>
+            </div>
+            <div className="ui-annotated-section-description">
+              <p>Shopify and your customers will use this information to contact you.</p>
+            </div>
+          </div>
+          <div className="ui-annotated-section-content">
+            {this.props.formData.level === TENANT_LEVEL.ENTERPRISE && this.renderEnterpriseForm()}
+          </div>
+        </section>
       </Content>);
   }
 }

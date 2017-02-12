@@ -36,7 +36,7 @@ export default class InventoryStockSearchForm extends React.Component {
   render() {
     const { form: { getFieldDecorator }, searchOption: { categories } } = this.props;
     return (
-      <Form vertical style={{ padding: 16 }}>
+      <Form vertical className="left-sider-panel">
         <FormItem label="SKU">
           {getFieldDecorator('sku_no')(<Input />)}
         </FormItem>

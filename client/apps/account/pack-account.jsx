@@ -39,9 +39,11 @@ export default class AccountPack extends React.Component {
               </Menu.Item>
             </Menu>
           </Sider>
-          <Content className="main-content">
-            {this.props.children}
-          </Content>
+          <Layout>
+            <Content className="main-content">
+              {this.props.children}
+            </Content>
+          </Layout>
         </Layout>
       </Layout>
     );

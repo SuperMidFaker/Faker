@@ -59,19 +59,23 @@ const messages = defineMessages({
   },
   products: {
     id: 'scv.module.products',
-    defaultMessage: '商品',
+    defaultMessage: '产品',
   },
   productsTradeItem: {
     id: 'scv.module.products.trade.item',
-    defaultMessage: '商品物料归类',
+    defaultMessage: '物料归类库',
   },
   productsSKU: {
     id: 'scv.module.products.sku',
     defaultMessage: 'SKU管理',
   },
+  productsMaterial: {
+    id: 'scv.module.products.material',
+    defaultMessage: '产品管理',
+  },
   productsCategory: {
     id: 'scv.module.products.category',
-    defaultMessage: '商品类别',
+    defaultMessage: '产品分类',
   },
   analytics: {
     id: 'scv.module.analytics',
