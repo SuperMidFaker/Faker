@@ -1,12 +1,15 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Form, Input, Select } from 'antd';
+import { Radio, Button, Form, Input, Select } from 'antd';
 import { formatMsg } from './message.i18n';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 const InputGroup = Input.Group;
+const RadioButton = Radio.Button;
+const RadioGroup = Radio.Group;
+
 
 @injectIntl
 @connect(
@@ -55,6 +58,14 @@ export default class InventoryStockSearchForm extends React.Component {
                 categories.map(categ => <Option key={categ.id} value={categ.category_no}>{categ.category_no}</Option>)
               }
             </Select>)}
+        </FormItem>
+        <FormItem>
+          <RadioGroup>
+            <RadioButton value="a">{this.msg('lot')}</RadioButton>
+            <RadioButton value="b">{this.msg('serial')}</RadioButton>
+            <RadioButton value="c">{this.msg('unitPrice')}</RadioButton>
+            <RadioButton value="d">失效日期</RadioButton>
+          </RadioGroup>
         </FormItem>
         <FormItem label={this.msg('lot')}>
           {getFieldDecorator('lot_no')(<Input />)}

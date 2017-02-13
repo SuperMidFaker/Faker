@@ -161,7 +161,7 @@ export default class InventoryStockList extends React.Component {
     this.dataSource.remotes = stocklist;
     return (
       <Layout>
-        <Sider width={280} className="menu-sider" key="sider" trigger={null}
+        <Sider width={320} className="menu-sider" key="sider" trigger={null}
           collapsible
           collapsed={this.state.collapsed}
           collapsedWidth={0}
