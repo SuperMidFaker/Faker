@@ -20,6 +20,7 @@ import PackNetwork from './network/packNetwork';
 import * as Network from './network';
 import PackOpenPlatform from './open/packOpenPlatform';
 import AppsList from './open/apps';
+import IntegrationList from './open/integration';
 import Module from './module';
 import TMS from './transport/module-transport';
 import * as TMSDashboard from './transport/dashboard';
@@ -147,6 +148,7 @@ export default(store, cookie) => {
         </Route>
         <Route path="open" component={PackOpenPlatform}>
           <Route path="apps" component={AppsList} />
+          <Route path="integration" component={IntegrationList} />
         </Route>
         <Route path="corp" component={Corp}>
           <IndexRedirect to="/corp/overview" />

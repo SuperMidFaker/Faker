@@ -59,21 +59,21 @@ export default class InventoryStockSearchForm extends React.Component {
               }
             </Select>)}
         </FormItem>
-        <FormItem>
+        <FormItem label={this.msg('lotProperties')}>
           <RadioGroup>
-            <RadioButton value="a">{this.msg('lot')}</RadioButton>
-            <RadioButton value="b">{this.msg('serial')}</RadioButton>
-            <RadioButton value="c">{this.msg('unitPrice')}</RadioButton>
-            <RadioButton value="d">失效日期</RadioButton>
+            <RadioButton value="lotNo">{this.msg('lotNo')}</RadioButton>
+            <RadioButton value="serialNo">{this.msg('serialNo')}</RadioButton>
+            <RadioButton value="unitPrice">{this.msg('unitPrice')}</RadioButton>
+            <RadioButton value="specificDate">{this.msg('specificDate')}</RadioButton>
           </RadioGroup>
         </FormItem>
-        <FormItem label={this.msg('lot')}>
-          {getFieldDecorator('lot_no')(<Input />)}
+        <FormItem>
+          {getFieldDecorator('lot_no')(<Input placeholder={this.msg('lotNo')} />)}
         </FormItem>
-        <FormItem label={this.msg('serial')}>
-          {getFieldDecorator('serial_no')(<Input />)}
+        <FormItem>
+          {getFieldDecorator('serial_no')(<Input placeholder={this.msg('serialNo')} />)}
         </FormItem>
-        <FormItem label={this.msg('unitPrice')}>
+        <FormItem>
           <InputGroup compact>
             <Input style={{ width: '50%' }} placeholder={this.msg('priceFrom')} />
             <Input style={{ width: '50%' }} placeholder={this.msg('priceTo')} />

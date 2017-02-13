@@ -32,6 +32,11 @@ export default class AccountPack extends React.Component {
                   <span><Icon type="appstore-o" /><span>应用管理</span></span>
                 </NavLink>
               </Menu.Item>
+              <Menu.Item key="integration">
+                <NavLink to="/open/integration">
+                  <span><Icon type="swap" /><span>整合对接</span></span>
+                </NavLink>
+              </Menu.Item>
               <Menu.Item key="docs">
                 <NavLink to="/open/docs">
                   <span><Icon type="book" /><span>开发文档</span></span>

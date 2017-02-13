@@ -50,13 +50,21 @@ const messages = defineMessages({
     id: 'scv.inventory.stock.category.hint',
     defaultMessage: '选择产品分类',
   },
-  lot: {
-    id: 'scv.inventory.stock.lot',
-    defaultMessage: '批次',
+  lotProperties: {
+    id: 'scv.inventory.stock.lot.properties',
+    defaultMessage: '批次属性',
   },
-  serial: {
-    id: 'scv.inventory.stock.serial',
+  lotNo: {
+    id: 'scv.inventory.stock.lot.no',
+    defaultMessage: '批次号',
+  },
+  serialNo: {
+    id: 'scv.inventory.stock.serial.no',
     defaultMessage: '序列号',
+  },
+  specificDate: {
+    id: 'scv.inventory.stock.specific.date',
+    defaultMessage: '特定日期',
   },
   warehouse: {
     id: 'scv.inventory.stock.warehouse',
@@ -72,11 +80,11 @@ const messages = defineMessages({
   },
   priceFrom: {
     id: 'scv.inventory.stock.unit.price.from',
-    defaultMessage: '从',
+    defaultMessage: '单价范围最低值',
   },
   priceTo: {
     id: 'scv.inventory.stock.unit.price.to',
-    defaultMessage: '到',
+    defaultMessage: '单价范围最高值',
   },
   stockCost: {
     id: 'scv.inventory.stock.cost',
