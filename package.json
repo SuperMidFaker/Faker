@@ -34,7 +34,12 @@
     "deploy": "npm run clean && npm run build && npm run pm2",
     "test": "mocha --reporter spec --bail --check-leaks tests/*_test.js"
   },
-  "lint-staged": { "*.{js,jsx}": ["eslint --fix", "git add"] },
+  "lint-staged": {
+    "*.{js,jsx}": [
+      "eslint --fix",
+      "git add"
+    ]
+  },
   "repository": {
     "type": "git",
     "url": "git@git.welogix.cn:saas/welogix-web.git"
@@ -45,6 +50,7 @@
     "@welogix/react-data-grid": "^1.0.51",
     "antd": "^2.7.1",
     "babel-core": "^6.18.2",
+    "babel-polyfill": "^6.22.0",
     "babel-runtime": "^6.18.0",
     "classnames": "^2.2.5",
     "glob": "^7.1.1",
