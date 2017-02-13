@@ -99,7 +99,7 @@ export default class NotificationPopover extends React.Component {
       this.easemob.WebIM = WebIM;
     }
 
-    if (Notification && Notification.permission !== 'granted') {
+    if (("Notification" in window) && Notification.permission !== 'granted') {
       Notification.requestPermission(status => {
         if (Notification.permission !== status) {
           Notification.permission = status;
@@ -197,7 +197,7 @@ export default class NotificationPopover extends React.Component {
     this.easemob.conn.send(msg.body);
   }
   notif(title, data) {
-    if (Notification && Notification.permission === 'granted') {
+    if (("Notification" in window) && Notification.permission === 'granted') {
       const n = new Notification(title, data);
       n.onclick = () => {
         // this.handleNavigationTo(data.url);
