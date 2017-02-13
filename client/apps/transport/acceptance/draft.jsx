@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Card, Row, Col, Form, Button, Layout, message } from 'antd';
+import { Breadcrumb, Card, Row, Col, Form, Button, Layout, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -136,46 +136,51 @@ export default class ShipmentDraftEdit extends React.Component {
     return (
       <div>
         <Header className="top-bar top-bar-fixed">
-          <span>{this.msg('shipmtDraft')}</span>
+          <Breadcrumb>
+            <Breadcrumb.Item>
+              {this.msg('transportShipment')}
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              {this.msg('shipmtDraft')}
+            </Breadcrumb.Item>
+          </Breadcrumb>
           <div className="top-bar-tools">
             <Button size="large" type="primary" loading={submitting} onClick={this.handleDraftAccept}>
               {this.msg('saveAndAccept')}
             </Button>
           </div>
         </Header>
-        <Content className="main-content top-bar-fixed">
+        <Content className="main-content layout-fixed-width layout-fixed-width-large top-bar-fixed">
           <Form horizontal>
-            <div className="page-body card-wrapper">
-              <Row gutter={16}>
-                <Col span="16">
-                  <Card bodyStyle={{ padding: 16 }}>
-                    <ClientInfo outerColSpan={16} intl={intl} formhoc={form} />
-                  </Card>
-                  <Card bodyStyle={{ padding: 16 }}>
-                    <ConsignInfo type="consigner" intl={intl} outerColSpan={16}
-                      labelColSpan={8} formhoc={form}
-                    />
-                  </Card>
-                  <Card bodyStyle={{ padding: 16 }}>
-                    <ConsignInfo type="consignee" intl={intl} outerColSpan={16}
-                      labelColSpan={8} formhoc={form}
-                    />
-                  </Card>
-                  <Card bodyStyle={{ padding: 16 }}>
-                    <ModeInfo intl={intl} formhoc={form} />
-                  </Card>
-                  <Card bodyStyle={{ padding: 16 }}>
-                    <GoodsInfo intl={intl} labelColSpan={8} formhoc={form} />
-                  </Card>
-                </Col>
-                <Col span="8">
-                  <Card bodyStyle={{ padding: 16 }}>
-                    <CorrelInfo formhoc={form} intl={intl} />
-                  </Card>
-                  <FreightCharge formhoc={form} intl={this.props.intl} />
-                </Col>
-              </Row>
-            </div>
+            <Row gutter={16}>
+              <Col sm={24} md={18}>
+                <Card bodyStyle={{ padding: 16 }}>
+                  <ClientInfo outerColSpan={16} intl={intl} formhoc={form} />
+                </Card>
+                <Card bodyStyle={{ padding: 16 }}>
+                  <ConsignInfo type="consigner" intl={intl} outerColSpan={16}
+                    labelColSpan={8} formhoc={form}
+                  />
+                </Card>
+                <Card bodyStyle={{ padding: 16 }}>
+                  <ConsignInfo type="consignee" intl={intl} outerColSpan={16}
+                    labelColSpan={8} formhoc={form}
+                  />
+                </Card>
+                <Card bodyStyle={{ padding: 16 }}>
+                  <ModeInfo intl={intl} formhoc={form} />
+                </Card>
+                <Card bodyStyle={{ padding: 16 }}>
+                  <GoodsInfo intl={intl} labelColSpan={8} formhoc={form} />
+                </Card>
+              </Col>
+              <Col sm={24} md={6}>
+                <Card bodyStyle={{ padding: 16 }}>
+                  <CorrelInfo formhoc={form} intl={intl} />
+                </Card>
+                <FreightCharge formhoc={form} intl={this.props.intl} />
+              </Col>
+            </Row>
           </Form>
         </Content>
       </div>

@@ -3,7 +3,7 @@ import { defineMessages } from 'react-intl';
 export default defineMessages({
   customsDeclaration: {
     id: 'cms.customs.management',
-    defaultMessage: '报关管理',
+    defaultMessage: '报关单管理',
   },
   searchPlaceholder: {
     id: 'cms.customs.search.placeholder',
@@ -11,11 +11,11 @@ export default defineMessages({
   },
   importOperation: {
     id: 'cms.customs.import.operation',
-    defaultMessage: '进口操作',
+    defaultMessage: '进口清关',
   },
   exportOperation: {
     id: 'cms.customs.export.operation',
-    defaultMessage: '出口操作',
+    defaultMessage: '出口清关',
   },
   entryId: {
     id: 'cms.customs.decl.entryId',

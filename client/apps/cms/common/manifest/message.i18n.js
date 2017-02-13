@@ -1,6 +1,14 @@
 import { defineMessages } from 'react-intl';
 
 export default defineMessages({
+  importClearance: {
+    id: 'cms.manifest.import.clearance',
+    defaultMessage: '进口清关',
+  },
+  exportClearance: {
+    id: 'cms.manifest.export.clearance',
+    defaultMessage: '出口清关',
+  },
   delgNo: {
     id: 'cms.manifest.delg.no',
     defaultMessage: '报关委托号',

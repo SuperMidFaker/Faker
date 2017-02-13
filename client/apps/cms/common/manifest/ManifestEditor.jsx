@@ -27,7 +27,7 @@ const { Header, Content, Sider } = Layout;
   { addNewBillBody, delBillBody, editBillBody, saveBillHead, openMergeSplitModal, billDelete }
 )
 @connectNav({
-  depth: 3,
+  depth: 2,
   moduleName: 'clearance',
 })
 @Form.create()
@@ -110,7 +110,7 @@ export default class ManifestEditor extends React.Component {
     const { ietype, readonly, form, billHead, billBodies, billMeta, ...actions } = this.props;
     const declEntryMenu = (<Menu onClick={this.handleEntryVisit}>
       {billMeta.entries.map(bme => (<Menu.Item key={bme.pre_entry_seq_no}>
-        <Icon type="file-text" />报关单{bme.entry_id || bme.pre_entry_seq_no}</Menu.Item>)
+        <Icon type="file-text" /> {bme.entry_id || bme.pre_entry_seq_no}</Menu.Item>)
       )}
     </Menu>);
     return (
@@ -120,14 +120,18 @@ export default class ManifestEditor extends React.Component {
             <Header className="top-bar top-bar-fixed">
               <Breadcrumb>
                 <Breadcrumb.Item>
-                  制单
+                  {this.props.ietype === 'import' ? this.msg('importClearance') : this.msg('exportClearance')}
                 </Breadcrumb.Item>
                 <Breadcrumb.Item>
-                  <Dropdown overlay={declEntryMenu}>
-                    <a style={{ fontSize: 14 }}>报关清单 {billMeta.bill_seq_no}<Icon type="down" /></a>
-                  </Dropdown>
+                  报关清单
+                </Breadcrumb.Item>
+                <Breadcrumb.Item>
+                  {billMeta.bill_seq_no}
                 </Breadcrumb.Item>
               </Breadcrumb>
+              <Dropdown overlay={declEntryMenu}>
+                <Button size="large" >生成的报关单 <Icon type="down" /></Button>
+              </Dropdown>
               <div className="top-bar-tools">
                 <Dropdown overlay={this.lockMenu}>
                   <Button size="large">

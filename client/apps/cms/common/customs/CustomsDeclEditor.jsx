@@ -26,7 +26,7 @@ const { Sider, Header, Content } = Layout;
   { fillEntryId, loadEntry }
 )
 @connectNav({
-  depth: 3,
+  depth: 2,
   moduleName: 'clearance',
 })
 @Form.create()
@@ -61,25 +61,15 @@ export default class CustomsDeclEditor extends React.Component {
   handleDock = () => {
     this.setState({ visible: true });
   }
-  handleManifestVisit = (ev) => {
-    const { ietype, billMeta, tenantId } = this.props;
-    if (ev.key === 'bill') {
-      let action = 'view';
-      if (billMeta.editable) {
-        action = 'make';
-      }
-      const pathname = `/clearance/${ietype}/manifest/${action}/${billMeta.bill_seq_no}`;
-      this.context.router.push({ pathname });
-    } else {
-      const preEntrySeqNo = ev.key;
-      this.props.loadEntry(billMeta.bill_seq_no, preEntrySeqNo, tenantId).then(
-        (result) => {
-          if (!result.error) {
-            const pathname = `/clearance/${ietype}/customs/${billMeta.bill_seq_no}/${preEntrySeqNo}`;
-            this.context.router.push({ pathname });
-          }
-        });
+  handleManifestVisit = () => {
+    const { ietype, billMeta } = this.props;
+
+    let action = 'view';
+    if (billMeta.editable) {
+      action = 'make';
     }
+    const pathname = `/clearance/${ietype}/manifest/${action}/${billMeta.bill_seq_no}`;
+    this.context.router.push({ pathname });
   }
   handleEntryHeadSave = () => {
     const entryNo = this.props.form.getFieldsValue().entry_id;
@@ -94,13 +84,6 @@ export default class CustomsDeclEditor extends React.Component {
   render() {
     const { ietype, form, head, bodies, billMeta } = this.props;
     const readonly = !billMeta.editable;
-    const manifestMenu = (<Menu onClick={this.handleManifestVisit}>
-      {[<Menu.Item key="bill"><Icon type="book" />报关清单{billMeta.bill_seq_no}</Menu.Item>,
-        <Menu.Divider key="divider" />].concat(
-        billMeta.entries.map(bme => (<Menu.Item key={bme.pre_entry_seq_no}>
-          <Icon type="file-text" />报关单{bme.entry_id || bme.pre_entry_seq_no}</Menu.Item>)
-      ))}
-    </Menu>);
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Layout>
@@ -108,17 +91,16 @@ export default class CustomsDeclEditor extends React.Component {
             <Header className="top-bar top-bar-fixed">
               <Breadcrumb>
                 <Breadcrumb.Item>
-                  制单
+                  {this.props.ietype === 'import' ? this.msg('importOperation') : this.msg('exportOperation')}
                 </Breadcrumb.Item>
                 <Breadcrumb.Item>
-                  <Dropdown overlay={manifestMenu}>
-                    <a style={{ fontSize: 14 }}>报关清单<Icon type="down" /></a>
-                  </Dropdown>
+                  {this.msg('customsDeclaration')}
                 </Breadcrumb.Item>
                 <Breadcrumb.Item>
-                  报关单{head.entry_id || head.pre_entry_seq_no}
+                  {head.entry_id || head.pre_entry_seq_no}
                 </Breadcrumb.Item>
               </Breadcrumb>
+              <Button size="large" icon="rollback" onClick={this.handleManifestVisit}>查看源清单</Button>
               <div className="top-bar-tools">
                 <Dropdown overlay={this.lockMenu}>
                   <Button size="large">

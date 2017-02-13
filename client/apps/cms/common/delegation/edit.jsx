@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Form, Col, Button, Row, message, Layout } from 'antd';
-import QueueAnim from 'rc-queue-anim';
+import { Breadcrumb, Form, Col, Button, Row, message, Layout } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import BasicForm from './forms/basicForm';
 import UploadGroup from './forms/attachmentUpload';
@@ -89,9 +88,19 @@ export default class AcceptanceEdit extends Component {
   render() {
     const { form, type, submitting } = this.props;
     return (
-      <QueueAnim type={['bottom', 'up']}>
-        <Header className="top-bar" key="header">
-          <span>修改委托</span>
+      <div>
+        <Header className="top-bar top-bar-fixed">
+          <Breadcrumb>
+            <Breadcrumb.Item>
+              {this.props.ietype === 'import' ? this.msg('importClearance') : this.msg('exportClearance')}
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              {this.props.type === 'import' ? this.msg('newImportDelg') : this.msg('newExportDelg')}
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              {this.msg('modifyDelegation')}
+            </Breadcrumb.Item>
+          </Breadcrumb>
           <div className="top-bar-tools">
             <Button size="large" type="ghost" onClick={this.handleCancelBtnClick}>
               {this.msg('cancel')}
@@ -101,21 +110,19 @@ export default class AcceptanceEdit extends Component {
             </Button>
           </div>
         </Header>
-        <Content className="main-content" key="main">
-          <div className="page-body card-wrapper">
-            <Form horizontal form={form}>
-              <Row gutter={16}>
-                <Col sm={24} md={16}>
-                  <BasicForm form={form} ieType={type} partnershipType="CCB" />
-                </Col>
-                <Col sm={24} md={8}>
-                  <UploadGroup onFileUpload={this.handleUploadFiles} onFileRemove={this.handleFileRemove} />
-                </Col>
-              </Row>
-            </Form>
-          </div>
+        <Content className="main-content layout-fixed-width layout-fixed-width-large top-bar-fixed">
+          <Form horizontal form={form}>
+            <Row gutter={16}>
+              <Col sm={24} md={18}>
+                <BasicForm form={form} ieType={type} partnershipType="CCB" />
+              </Col>
+              <Col sm={24} md={6}>
+                <UploadGroup onFileUpload={this.handleUploadFiles} onFileRemove={this.handleFileRemove} />
+              </Col>
+            </Row>
+          </Form>
         </Content>
-      </QueueAnim>
+      </div>
     );
   }
 }

@@ -7,7 +7,11 @@ export default defineMessages({
   },
   createDelegation: {
     id: 'cms.delegation.create',
-    defaultMessage: '新建清关委托',
+    defaultMessage: '新建委托',
+  },
+  modifyDelegation: {
+    id: 'cms.delegation.modify',
+    defaultMessage: '修改委托',
   },
   delgClearance: {
     id: 'cms.delegation.clearance',
@@ -19,11 +23,11 @@ export default defineMessages({
   },
   importClearance: {
     id: 'cms.delegation.import.clearance',
-    defaultMessage: '进口业务',
+    defaultMessage: '进口清关',
   },
   exportClearance: {
     id: 'cms.delegation.export.clearance',
-    defaultMessage: '出口业务',
+    defaultMessage: '出口清关',
   },
   delegationManagement: {
     id: 'cms.delegation.management',

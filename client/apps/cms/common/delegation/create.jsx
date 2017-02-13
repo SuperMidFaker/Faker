@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Form, Layout, Row, Col, Button, message } from 'antd';
-import QueueAnim from 'rc-queue-anim';
+import { Breadcrumb, Form, Layout, Row, Col, Button, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import BasicForm from './forms/basicForm';
 import UploadGroup from './forms/attachmentUpload';
@@ -87,9 +86,19 @@ export default class AcceptanceCreate extends Component {
   render() {
     const { form, type, submitting } = this.props;
     return (
-      <QueueAnim type={['bottom', 'up']}>
-        <Header className="top-bar" key="header">
-          <span>{this.props.type === 'import' ? this.msg('newImportDelg') : this.msg('newExportDelg')}</span>
+      <div>
+        <Header className="top-bar top-bar-fixed">
+          <Breadcrumb>
+            <Breadcrumb.Item>
+              {this.props.ietype === 'import' ? this.msg('importClearance') : this.msg('exportClearance')}
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              {this.msg('delegationManagement')}
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              {this.msg('createDelegation')}
+            </Breadcrumb.Item>
+          </Breadcrumb>
           <div className="top-bar-tools">
             <Button size="large" type="ghost" onClick={this.handleCancelBtnClick}>
               {this.msg('cancel')}
@@ -99,21 +108,19 @@ export default class AcceptanceCreate extends Component {
             </Button>
           </div>
         </Header>
-        <Content className="main-content" key="main">
-          <div className="page-body card-wrapper">
-            <Form horizontal>
-              <Row gutter={16}>
-                <Col sm={24} md={16}>
-                  <BasicForm form={form} ieType={type} partnershipType="CCB" />
-                </Col>
-                <Col sm={24} md={8}>
-                  <UploadGroup onFileListUpdate={this.handleUploadFiles} />
-                </Col>
-              </Row>
-            </Form>
-          </div>
+        <Content className="main-content layout-fixed-width layout-fixed-width-large top-bar-fixed">
+          <Form vertical>
+            <Row gutter={16}>
+              <Col sm={24} md={16}>
+                <BasicForm form={form} ieType={type} partnershipType="CCB" />
+              </Col>
+              <Col sm={24} md={8}>
+                <UploadGroup onFileListUpdate={this.handleUploadFiles} />
+              </Col>
+            </Row>
+          </Form>
         </Content>
-      </QueueAnim>
+      </div>
     );
   }
 }

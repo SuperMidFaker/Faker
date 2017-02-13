@@ -9,25 +9,13 @@ const messages = defineMessages({
     id: 'cms.module.import',
     defaultMessage: '进口清关',
   },
-  importAcceptance: {
-    id: 'cms.module.import.acceptance',
-    defaultMessage: '进口业务',
-  },
-  importOperation: {
-    id: 'cms.module.import.operation',
-    defaultMessage: '进口操作',
-  },
   importDelegation: {
     id: 'cms.module.import.delegation',
     defaultMessage: '委托管理',
   },
-  importCiq: {
-    id: 'cms.module.import.ciq',
-    defaultMessage: '报检委托',
-  },
   importCustomsDecl: {
     id: 'cms.module.import.decl.customs',
-    defaultMessage: '报关管理',
+    defaultMessage: '报关单管理',
   },
   importCiqDecl: {
     id: 'cms.module.import.decl.ciq',
@@ -37,21 +25,13 @@ const messages = defineMessages({
     id: 'cms.module.export',
     defaultMessage: '出口清关',
   },
-  exportAcceptance: {
-    id: 'cms.module.export.acceptance',
-    defaultMessage: '出口业务',
-  },
-  exportOperation: {
-    id: 'cms.module.export.operation',
-    defaultMessage: '出口操作',
-  },
   exportDelegation: {
     id: 'cms.module.export.delegation',
     defaultMessage: '委托管理',
   },
   exportCustomsDecl: {
     id: 'cms.module.export.decl.customs',
-    defaultMessage: '报关管理',
+    defaultMessage: '报关单管理',
   },
   exportCiqDecl: {
     id: 'cms.module.export.decl.ciq',
@@ -95,11 +75,11 @@ const messages = defineMessages({
   },
   tradeItem: {
     id: 'cms.module.products.trade.item',
-    defaultMessage: '商品物料归类',
+    defaultMessage: '物料归类库',
   },
   hscode: {
     id: 'cms.module.products.hscode',
-    defaultMessage: 'HS编码',
+    defaultMessage: 'HS编码查询',
   },
   settings: {
     id: 'cms.module.settings',
