@@ -17,6 +17,7 @@ const actionTypes = createActionTypes('@@welogix/cms/tradeitem/', [
   'CREATE_ITEM', 'CREATE_ITEM_SUCCEED', 'CREATE_ITEM_FAIL',
   'LOAD_ITEM_EDIT', 'LOAD_ITEM_EDIT_SUCCEED', 'LOAD_ITEM_EDIT_FAIL',
   'ITEM_EDITED_SAVE', 'ITEM_EDITED_SAVE_SUCCEED', 'ITEM_EDITED_SAVE_FAIL',
+  'DELETE_SELECT_ITEMS', 'DELETE_SELECT_ITEMS_SUCCEED', 'DELETE_SELECT_ITEMS_FAIL',
 ]);
 
 const initialState = {
@@ -296,6 +297,21 @@ export function loadHscodes(params) {
       endpoint: 'v1/cms/tradeitem/hscodes',
       method: 'get',
       params,
+    },
+  };
+}
+
+export function deleteSelectedItems(datas) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DELETE_SELECT_ITEMS,
+        actionTypes.DELETE_SELECT_ITEMS_SUCCEED,
+        actionTypes.DELETE_SELECT_ITEMS_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/selected/deleted',
+      method: 'post',
+      data: datas,
     },
   };
 }

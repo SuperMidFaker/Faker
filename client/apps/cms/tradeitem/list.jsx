@@ -11,7 +11,7 @@ import QueueAnim from 'rc-queue-anim';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import { loadCustomers } from 'common/reducers/crmCustomers';
-import { loadOwners, openAddModal, selectedRepoId, loadTradeItems, deleteItem } from 'common/reducers/cmsTradeitem';
+import { loadOwners, openAddModal, selectedRepoId, loadTradeItems, deleteItem, deleteSelectedItems } from 'common/reducers/cmsTradeitem';
 import AddTradeRepoModal from './modals/addTradeRepo';
 import ExtraPanel from './tabpanes/ExtraPane';
 import ExcelUpload from 'client/components/excelUploader';
@@ -47,7 +47,7 @@ function fetchData({ state, dispatch }) {
     tradeItemlist: state.cmsTradeitem.tradeItemlist,
     visibleAddModal: state.cmsTradeitem.visibleAddModal,
   }),
-  { loadCustomers, openAddModal, selectedRepoId, loadTradeItems, deleteItem }
+  { loadCustomers, openAddModal, selectedRepoId, loadTradeItems, deleteItem, deleteSelectedItems }
 )
 @connectNav({
   depth: 2,
@@ -67,6 +67,7 @@ export default class TradeItemList extends Component {
   }
   state = {
     collapsed: true,
+    selectedRowKeys: [],
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
@@ -214,7 +215,7 @@ export default class TradeItemList extends Component {
       if (result.error) {
         message.error(result.error.message);
       } else {
-        this.props.loadTradeItems(this.props.repoId);
+        this.handleItemListLoad();
       }
     });
   }
@@ -246,8 +247,25 @@ export default class TradeItemList extends Component {
   handleUploaded = () => {
     this.handleItemListLoad();
   }
+  handleDeleteSelected = () => {
+    const selectedIds = this.state.selectedRowKeys;
+    this.props.deleteSelectedItems(selectedIds).then((result) => {
+      if (result.error) {
+        message.error(result.error.message);
+      } else {
+        this.handleItemListLoad();
+      }
+    });
+  }
   render() {
     const { repoOwners, tradeItemlist, repoId } = this.props;
+    const selectedRows = this.state.selectedRowKeys;
+    const rowSelection = {
+      selectedRowKeys: selectedRows,
+      onChange: (selectedRowKeys) => {
+        this.setState({ selectedRowKeys });
+      },
+    };
     this.dataSource.remotes = tradeItemlist;
     let columns = [];
     columns = [...this.columns];
@@ -337,9 +355,16 @@ export default class TradeItemList extends Component {
                       </Button>
                     </Dropdown>
                   }
+                  {selectedRows.length > 0 &&
+                    <Popconfirm title={'是否删除所有选择项？'} onConfirm={() => this.handleDeleteSelected()}>
+                      <Button type="primary" icon="delete">
+                        批量删除
+                      </Button>
+                    </Popconfirm>
+                  }
                 </div>
                 <div className="panel-body table-panel">
-                  <Table columns={columns} dataSource={this.dataSource} scroll={{ x: 2400, y: 2300 }} />
+                  <Table rowSelection={rowSelection} rowKey="id" columns={columns} dataSource={this.dataSource} scroll={{ x: 2400, y: 2300 }} />
                 </div>
                 <AddTradeRepoModal />
               </div>
