@@ -37,17 +37,17 @@ export default class InventoryStockSearchForm extends React.Component {
     const { form: { getFieldDecorator }, searchOption: { categories } } = this.props;
     return (
       <Form vertical className="left-sider-panel">
-        <FormItem label="SKU">
+        <FormItem label={this.msg('sku')}>
           {getFieldDecorator('sku_no')(<Input />)}
         </FormItem>
-        <FormItem label="商品">
-          {getFieldDecorator('product_no')(<Input placeholder="料号/品名" />)}
+        <FormItem label={this.msg('product')}>
+          {getFieldDecorator('product_no')(<Input placeholder={this.msg('productHint')} />)}
         </FormItem>
-        <FormItem label="商品分类">
+        <FormItem label={this.msg('category')}>
           {getFieldDecorator('product_category')(
             <Select allowClear
               showSearch
-              placeholder="选择分类"
+              placeholder={this.msg('categoryHint')}
               optionFilterProp="children"
               filterOption={(input, option) => option.props.value.toLowerCase().indexOf(input.toLowerCase()) >= 0}
             >
@@ -56,20 +56,20 @@ export default class InventoryStockSearchForm extends React.Component {
               }
             </Select>)}
         </FormItem>
-        <FormItem label="批次号">
+        <FormItem label={this.msg('lot')}>
           {getFieldDecorator('lot_no')(<Input />)}
         </FormItem>
-        <FormItem label="序列号">
+        <FormItem label={this.msg('serial')}>
           {getFieldDecorator('serial_no')(<Input />)}
         </FormItem>
-        <FormItem label="单价">
+        <FormItem label={this.msg('unitPrice')}>
           <InputGroup compact>
-            <Input style={{ width: '50%' }} placeholder="从" />
-            <Input style={{ width: '50%' }} placeholder="到" />
+            <Input style={{ width: '50%' }} placeholder={this.msg('priceFrom')} />
+            <Input style={{ width: '50%' }} placeholder={this.msg('priceTo')} />
           </InputGroup>
         </FormItem>
         <FormItem>
-          <Button type="primary" size="large" onClick={this.handleStockSearch} style={{ width: '100%' }}>查询</Button>
+          <Button type="primary" size="large" onClick={this.handleStockSearch} style={{ width: '100%' }}>{this.msg('query')}</Button>
         </FormItem>
       </Form>
     );

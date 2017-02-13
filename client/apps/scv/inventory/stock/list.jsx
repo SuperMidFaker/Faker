@@ -74,7 +74,7 @@ export default class InventoryStockList extends React.Component {
     dataIndex: 'wh_name',
     width: 140,
   }, {
-    title: this.msg('finishedProduct'),
+    title: this.msg('sku'),
     dataIndex: 'sku_no',
     width: 100,
   }, {
@@ -82,7 +82,7 @@ export default class InventoryStockList extends React.Component {
     dataIndex: 'product_category',
     width: 120,
   }, {
-    title: this.msg('stockPlan'),
+    title: this.msg('stockQty'),
     width: 80,
     dataIndex: 'avail_stock',
   }, {
@@ -94,7 +94,7 @@ export default class InventoryStockList extends React.Component {
     width: 80,
     dataIndex: 'stock_cost',
   }, {
-    title: this.msg('cbmPerSku'),
+    title: this.msg('skuCbm'),
     width: 80,
     dataIndex: 'unit_cbm',
   }, {
@@ -200,13 +200,13 @@ export default class InventoryStockList extends React.Component {
             />
             <span />
             <Select size="large" defaultValue="all" style={{ width: 200 }}>
-              <Option value="all">全部仓库</Option>
+              <Option value="all">{this.msg('allWarehouses')}</Option>
               {
                 warehouses.map(whse => <Option key={whse.id} value={whse.wh_no}>{whse.wh_name}</Option>)
               }
             </Select>
             <span />
-            <Checkbox>按SKU合并</Checkbox>
+            <Checkbox>{this.msg('groupBySku')}</Checkbox>
             <div className="top-bar-tools">
               <Button type="primary" size="large" icon="export" ghost>
                 {this.msg('exportInventory')}
