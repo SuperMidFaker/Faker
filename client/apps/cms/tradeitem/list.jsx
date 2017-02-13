@@ -6,6 +6,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { Breadcrumb, Button, Layout, Radio, Select, Dropdown, Icon, Menu, Popconfirm, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
+import NavLink from 'client/components/nav-link';
 import QueueAnim from 'rc-queue-anim';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -65,18 +66,17 @@ export default class TradeItemList extends Component {
     router: PropTypes.object.isRequired,
   }
   state = {
-    visibleSet: false,
     collapsed: true,
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
     title: this.msg('copProductNo'),
     dataIndex: 'cop_product_no',
-    width: 120,
+    width: 180,
   }, {
     title: this.msg('hscode'),
     dataIndex: 'hscode',
-    width: 120,
+    width: 200,
   }, {
     title: this.msg('gName'),
     dataIndex: 'g_name',
@@ -220,7 +220,6 @@ export default class TradeItemList extends Component {
   }
   handleSelectChange = (value) => {
     if (value) {
-      this.setState({ visibleSet: true });
       const owner = this.props.repoOwners.filter(own => own.id === value)[0];
       this.props.selectedRepoId(owner.repo_id);
       this.handleItemListLoad(owner.repo_id);
@@ -247,8 +246,7 @@ export default class TradeItemList extends Component {
     this.handleItemListLoad();
   }
   render() {
-    const { repoOwners, tradeItemlist } = this.props;
-    const { visibleSet } = this.state;
+    const { repoOwners, tradeItemlist, repoId } = this.props;
     this.dataSource.remotes = tradeItemlist;
     let columns = [];
     columns = [...this.columns];
@@ -256,10 +254,17 @@ export default class TradeItemList extends Component {
       title: this.msg('opColumn'),
       width: 80,
       fixed: 'right',
-      render: (o, record) =>
-        <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleItemDel(record.id)}>
-          <a role="button">{this.msg('delete')}</a>
-        </Popconfirm>,
+      render: (o, record) => (
+        <span>
+          <NavLink to={`/clearance/products/tradeitem/edit/${record.id}`}>
+            {this.msg('modify')}
+          </NavLink>
+          <span className="ant-divider" />
+          <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleItemDel(record.id)}>
+            <a role="button">{this.msg('delete')}</a>
+          </Popconfirm>
+        </span>
+        ),
     });
     const menu = (
       <Menu onClick={this.handleMenuClick}>
@@ -314,17 +319,17 @@ export default class TradeItemList extends Component {
                 <Button type="primary" size="large" icon="plus" onClick={this.handleAddOwener}>
                   新增物料库
                 </Button>
-                <Button size="large"
+                {repoId && <Button size="large"
                   className={this.state.collapsed ? '' : 'btn-toggle-on'}
                   icon={this.state.collapsed ? 'menu-fold' : 'menu-unfold'}
                   onClick={this.toggle}
-                />
+                />}
               </div>
             </Header>
             <Content className="main-content top-bar-fixed" key="main">
               <div className="page-body">
                 <div className="toolbar">
-                  {visibleSet &&
+                  {repoId &&
                     <Dropdown overlay={menu} type="primary">
                       <Button type="primary" size="large" onClick={this.handleButtonClick}>
                         {this.msg('addMore')} <Icon type="down" />

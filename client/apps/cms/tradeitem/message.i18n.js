@@ -145,6 +145,10 @@ const messages = defineMessages({
     id: 'cms.tradeitem.save',
     defaultMessage: '保存',
   },
+  modify: {
+    id: 'cms.tradeitem.modify',
+    defaultMessage: '修改',
+  },
   deleteConfirm: {
     id: 'cms.tradeitem.delete.confirm',
     defaultMessage: '确认删除?',
@@ -152,6 +156,10 @@ const messages = defineMessages({
   newItem: {
     id: 'cms.tradeitem.new.item',
     defaultMessage: '新增物料',
+  },
+  editItem: {
+    id: 'cms.tradeitem.edit.item',
+    defaultMessage: '修改物料',
   },
 });
 export default messages;
