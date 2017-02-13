@@ -18,6 +18,10 @@ const messages = defineMessages({
     id: 'scv.inventory.export',
     defaultMessage: '导出',
   },
+  query: {
+    id: 'scv.inventory.stock.query',
+    defaultMessage: '查询',
+  },
   allWarehouses: {
     id: 'scv.inventory.stock.all.warehouse',
     defaultMessage: '全部仓库',

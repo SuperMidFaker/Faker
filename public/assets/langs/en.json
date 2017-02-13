@@ -659,6 +659,7 @@
   "scv.inventory.stock": "Inventory Inquiry",
   "scv.inventory.import": "Import",
   "scv.inventory.export": "Export",
+  "scv.inventory.stock.query": "Query",
   "scv.inventory.stock.finishedProduct": "Product",
   "scv.inventory.stock.all.warehouse": "All Warehouses",
   "scv.inventory.stock.group.by.sku": "Group by SKU",

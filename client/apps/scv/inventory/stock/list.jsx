@@ -78,21 +78,16 @@ export default class InventoryStockList extends React.Component {
     dataIndex: 'sku_no',
     width: 100,
   }, {
+    title: this.msg('product'),
+    dataIndex: 'product_name',
+    width: 100,
+  }, {
     title: this.msg('category'),
     dataIndex: 'product_category',
     width: 120,
   }, {
     title: this.msg('stockQty'),
     width: 80,
-    dataIndex: 'avail_stock',
-  }, {
-    title: this.msg('unitPrice'),
-    width: 80,
-    dataIndex: 'unit_price',
-  }, {
-    title: this.msg('stockCost'),
-    width: 80,
-    dataIndex: 'stock_cost',
   }, {
     title: this.msg('skuCbm'),
     width: 80,
