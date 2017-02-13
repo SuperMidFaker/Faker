@@ -37,7 +37,7 @@ export default class CustomsDeclEditor extends React.Component {
     billMeta: PropTypes.shape({
       bill_seq_no: PropTypes.string.isRequired,
       entries: PropTypes.arrayOf(PropTypes.shape({ pre_entry_seq_no: PropTypes.string })),
-      editable: PropTypes.bool.isRequired,
+      editable: PropTypes.bool,
     }),
   }
   static contextTypes = {

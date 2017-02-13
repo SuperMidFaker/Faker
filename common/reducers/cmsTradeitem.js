@@ -15,6 +15,9 @@ const actionTypes = createActionTypes('@@welogix/cms/tradeitem/', [
   'DELETE_ITEM', 'DELETE_ITEM_SUCCEED', 'DELETE_ITEM_FAIL',
   'LOAD_PARAMS', 'LOAD_PARAMS_SUCCEED', 'LOAD_PARAMS_FAIL',
   'CREATE_ITEM', 'CREATE_ITEM_SUCCEED', 'CREATE_ITEM_FAIL',
+  'LOAD_ITEM_EDIT', 'LOAD_ITEM_EDIT_SUCCEED', 'LOAD_ITEM_EDIT_FAIL',
+  'ITEM_EDITED_SAVE', 'ITEM_EDITED_SAVE_SUCCEED', 'ITEM_EDITED_SAVE_FAIL',
+  'DELETE_SELECT_ITEMS', 'DELETE_SELECT_ITEMS_SUCCEED', 'DELETE_SELECT_ITEMS_FAIL',
 ]);
 
 const initialState = {
@@ -71,9 +74,41 @@ export default function reducer(state = initialState, action) {
       return { ...state, params: action.result.data };
     case actionTypes.LOAD_HSCODES_SUCCEED:
       return { ...state, hscodes: { ...state.hscodes, ...action.result.data } };
+    case actionTypes.LOAD_ITEM_EDIT_SUCCEED:
+      return { ...state, itemData: action.result.data };
     default:
       return state;
   }
+}
+
+export function loadTradeItem(itemId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_ITEM_EDIT,
+        actionTypes.LOAD_ITEM_EDIT_SUCCEED,
+        actionTypes.LOAD_ITEM_EDIT_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/editItem/load',
+      method: 'get',
+      params: { itemId },
+    },
+  };
+}
+
+export function itemEditedSave(datas) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.ITEM_EDITED_SAVE,
+        actionTypes.ITEM_EDITED_SAVE_SUCCEED,
+        actionTypes.ITEM_EDITED_SAVE_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/edited/save',
+      method: 'post',
+      data: datas,
+    },
+  };
 }
 
 export function loadTradeParams() {
@@ -262,6 +297,21 @@ export function loadHscodes(params) {
       endpoint: 'v1/cms/tradeitem/hscodes',
       method: 'get',
       params,
+    },
+  };
+}
+
+export function deleteSelectedItems(datas) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DELETE_SELECT_ITEMS,
+        actionTypes.DELETE_SELECT_ITEMS_SUCCEED,
+        actionTypes.DELETE_SELECT_ITEMS_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/selected/deleted',
+      method: 'post',
+      data: datas,
     },
   };
 }

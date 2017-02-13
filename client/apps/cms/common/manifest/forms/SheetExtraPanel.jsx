@@ -26,23 +26,31 @@ export default class SheetExtraPanel extends React.Component {
     ietype: PropTypes.string.isRequired,
     tabKey: PropTypes.string,
   }
+  static contextTypes = {
+    router: PropTypes.object.isRequired,
+  }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
   handleTabChange = (tabKey) => {
     this.props.setPaneTabkey(tabKey);
   }
   render() {
+    const path = this.context.router.location.pathname.indexOf('/clearance/import/customs');
     return (
       <Tabs activeKey={this.props.tabKey} onChange={this.handleTabChange} >
         <TabPane tab="集装箱" key="container" >
           <ContainersPane />
         </TabPane>
-        <TabPane tab="随附单据" key="document" >
-          <DocuMarkPane />
-        </TabPane>
-        <TabPane tab="随附单证" key="certificate">
-          <CertMarkPane />
-        </TabPane>
-        <TabPane tab="关联信息" key="related" />
+        { (path !== -1) &&
+          <TabPane tab="随附单据" key="document" >
+            <DocuMarkPane />
+          </TabPane>}
+        { (path !== -1) &&
+          <TabPane tab="随附单证" key="certificate">
+            <CertMarkPane />
+          </TabPane>}
+        { (path !== -1) &&
+          <TabPane tab="关联信息" key="related" />
+        }
       </Tabs>
     );
   }

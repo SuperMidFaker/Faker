@@ -31,7 +31,7 @@ ColumnInput.propTypes = {
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     tabKey: state.cmsManifest.tabKey,
-    head: state.cmsManifest.entryHead,
+    billHead: state.cmsManifest.billHead,
     containers: state.cmsManifest.containers,
   }),
   { loadContainers, saveContainer, delContainer }
@@ -41,17 +41,18 @@ export default class ContainersPane extends React.Component {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     containers: PropTypes.array,
+    billHead: PropTypes.object,
   }
   state = {
     datas: [],
   };
   componentDidMount() {
-    this.props.loadContainers(this.props.head.pre_entry_seq_no);
+    this.props.loadContainers(this.props.billHead.bill_seq_no);
   }
   componentWillReceiveProps(nextProps) {
-    if (this.props.head !== nextProps.head ||
+    if (this.props.billHead !== nextProps.billHead ||
       (this.props.tabKey !== nextProps.tabKey && nextProps.tabKey === 'container')) {
-      this.props.loadContainers(nextProps.head.pre_entry_seq_no);
+      this.props.loadContainers(nextProps.billHead.bill_seq_no);
     }
     if (this.props.containers !== nextProps.containers) {
       this.setState({ datas: nextProps.containers });
@@ -63,16 +64,14 @@ export default class ContainersPane extends React.Component {
     this.forceUpdate();
   }
   handleAdd = () => {
-    const { head } = this.props;
+    const { billHead } = this.props;
     const addOne = {
-      delg_no: head.delg_no,
-      entry_id: head.entry_id,
-      pre_entry_seq_no: head.pre_entry_seq_no,
+      delg_no: billHead.delg_no,
+      bill_seq_no: billHead.bill_seq_no,
       creater_login_id: this.props.loginId,
       container_id: '',
-      container_wt: null,
-      container_spec: '',
-      container_qty: null,
+      container_wt: 2.2,
+      container_spec: '1',
     };
     const data = this.state.datas;
     data.push(addOne);
@@ -124,14 +123,6 @@ export default class ContainersPane extends React.Component {
       width: 100,
       render: (o, record) =>
         <ColumnInput field="container_spec" inEdit={!record.id} record={record}
-          onChange={this.handleEditChange}
-        />,
-    }, {
-      title: this.msg('containerQty'),
-      dataIndex: 'container_qty',
-      width: 100,
-      render: (o, record) =>
-        <ColumnInput field="container_qty" inEdit={!record.id} record={record}
           onChange={this.handleEditChange}
         />,
     }, {

@@ -8,7 +8,7 @@ function fetchData({ state, dispatch }) {
   return dispatch(loadDelgDecls({
     ietype: 'import',
     tenantId: state.account.tenantId,
-    filter: JSON.stringify({ status: 'all' }),
+    filter: JSON.stringify(state.cmsDeclare.listFilter),
     pageSize: state.cmsDeclare.delgdeclList.pageSize,
     currentPage: state.cmsDeclare.delgdeclList.current,
   }));
