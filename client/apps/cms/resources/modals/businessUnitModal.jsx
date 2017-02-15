@@ -36,9 +36,9 @@ export default class BusinessUnitModal extends React.Component {
   }
   componentWillReceiveProps(nextProps) {
     this.setState({
-      name: nextProps.businessUnit.name || '',
-      code: nextProps.businessUnit.code || '',
-      type: nextProps.businessUnit.type || 0,
+      name: nextProps.businessUnit.comp_name || '',
+      code: nextProps.businessUnit.comp_code || '',
+      type: nextProps.businessUnit.relation_type || '',
       receiveCode: nextProps.businessUnit.receive_code || '',
     });
   }
@@ -88,7 +88,7 @@ export default class BusinessUnitModal extends React.Component {
         <FormItem {...formItemLayout} label="社会信用代码:" required>
           <Input required value={code} onChange={e => this.setState({ code: e.target.value })} placeholder="10位或18位社会信用代码" />
         </FormItem>
-        { type === 3 && (
+        { type === 'owner_producer' && (
           <FormItem {...formItemLayout} label="接收代码:" required>
             <Input value={receiveCode} onChange={e => this.setState({ receiveCode: e.target.value })} />
           </FormItem>
