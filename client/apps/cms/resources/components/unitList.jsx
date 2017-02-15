@@ -21,7 +21,7 @@ export default class UnitList extends Component {
     onEditBtnClick: PropTypes.func.isRequired,
   }
   state = {
-    type: 1,
+    type: 'trade',
     searchText: '',
   }
   handleSearch = (value) => {
@@ -30,24 +30,24 @@ export default class UnitList extends Component {
   render() {
     const { dataSource, onAddBtnClicked } = this.props;
     const { type, searchText } = this.state;
-    const data = dataSource.filter(item => item.type === type).filter((item) => {
+    const data = dataSource.filter(item => item.relation_type === type).filter((item) => {
       if (this.state.searchText) {
         const reg = new RegExp(this.state.searchText);
-        return reg.test(item.name) || reg.test(item.code) || reg.test(item.receive_code);
+        return reg.test(item.comp_name) || reg.test(item.comp_code) || reg.test(item.receive_code);
       } else {
         return true;
       }
     });
     const columns = [{
       title: '公司名称',
-      dataIndex: 'name',
-      key: 'name',
+      dataIndex: 'comp_name',
+      key: 'comp_name',
     }, {
       title: '社会信用代码',
-      dataIndex: 'code',
-      key: 'code',
+      dataIndex: 'comp_code',
+      key: 'comp_code',
     }];
-    if (type === 3) {
+    if (type === 'owner_producer') {
       columns.push({
         title: '接收代码',
         dataIndex: 'receive_code',
@@ -87,9 +87,10 @@ export default class UnitList extends Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <RadioGroup value={type} onChange={e => this.setState({ type: e.target.value })} size="large">
-            <RadioButton value={1}>收发货人</RadioButton>
-            <RadioButton value={2}>消费使用单位</RadioButton>
-            <RadioButton value={3}>生产销售单位</RadioButton>
+            <RadioButton value="trade">收发货人</RadioButton>
+            <RadioButton value="owner_consumer">消费使用单位</RadioButton>
+            <RadioButton value="owner_producer">生产销售单位</RadioButton>
+            <RadioButton value="agent">申报单位</RadioButton>
           </RadioGroup>
           <div className="top-bar-tools">
             <SearchBar placeholder="公司名称/社会信用代码/接收代码" onInputSearch={this.handleSearch}
@@ -116,7 +117,7 @@ export default class UnitList extends Component {
                   </PrivilegeCover>
                 </div>
                 <div className="panel-body table-panel">
-                  <Table dataSource={data} columns={columns} rowSelection={rowSelection} />
+                  <Table dataSource={data} columns={columns} rowSelection={rowSelection} rowKey="id" />
                 </div>
               </Content>
             </Layout>

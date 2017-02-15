@@ -80,7 +80,6 @@ function buildTipItems(str, b) {
 }
 function fetchData({ state, dispatch }) {
   return dispatch(loadHscodes({
-    tenantId: state.account.tenantId,
     pageSize: state.cmsTradeitem.hscodes.pageSize,
     current: state.cmsTradeitem.hscodes.current,
     searchText: state.cmsTradeitem.hscodes.searchText,
@@ -109,9 +108,8 @@ export default class HscodeList extends Component {
   msg = key => formatMsg(this.props.intl, key)
 
   handleSearch = (value) => {
-    const { tenantId, hscodes } = this.props;
+    const { hscodes } = this.props;
     this.props.loadHscodes({
-      tenantId,
       pageSize: hscodes.pageSize,
       current: hscodes.current,
       searchText: value,
@@ -130,7 +128,6 @@ export default class HscodeList extends Component {
       }),
       getParams: (pagination) => {
         const params = {
-          tenantId: this.props.tenantId,
           pageSize: pagination.pageSize,
           current: pagination.current,
           searchText: this.props.hscodes.searchText,

@@ -1,7 +1,7 @@
 /* eslint react/no-multi-comp: 0 */
 import React, { PropTypes } from 'react';
 import { intlShape } from 'react-intl';
-import { Row, Col, Form, Input, Select } from 'antd';
+import { Row, Col, Form, Input, Select, Tooltip } from 'antd';
 import FormInput from './formInput';
 import { FormLocalSearchSelect, FormRemoteSearchSelect } from './formSelect';
 import FormDatePicker from './formDatePicker';
@@ -115,7 +115,7 @@ export class RelationAutoCompSelect extends React.Component {
       <Col md={24} lg={9}>
         <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} label={label} required>
           <Row>
-            <Col span="8">
+            <Col span="12">
               <FormItem style={{ marginBottom: 0 }}>
                 {disabled ?
                   <Input disabled value={initialCodeValue} />
@@ -133,12 +133,12 @@ export class RelationAutoCompSelect extends React.Component {
                     onSelect={this.handleSelect}
                   >
                     {
-                    options.map(opt => <Option key={opt.code} search={opt.code}>{opt.code}</Option>)
+                    options.map(opt => <Option key={opt.code} search={opt.code}><Tooltip placement="right" title={opt.name}>{opt.code}|{opt.name}</Tooltip></Option>)
                   }
                   </Select>)}
               </FormItem>
             </Col>
-            <Col span="16">
+            <Col span="12">
               <FormItem style={{ marginBottom: 0 }} >
                 {disabled ?
                   <Input disabled value={initialNameValue} /> :

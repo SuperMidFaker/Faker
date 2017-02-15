@@ -5,6 +5,7 @@ import { Form, Select, Input, Card, Col, Row, DatePicker } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
+import { loadHscodes } from 'common/reducers/cmsTradeitem';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
@@ -45,7 +46,9 @@ function getFieldInits(formData) {
       text: tc.cntry_name_cn,
     })),
     fieldInits: getFieldInits(state.cmsTradeitem.itemData),
+    hscodes: state.cmsTradeitem.hscodes,
   }),
+  { loadHscodes }
 )
 export default class BasicForm extends Component {
   static propTypes = {
@@ -55,10 +58,43 @@ export default class BasicForm extends Component {
     currencies: PropTypes.array,
     units: PropTypes.array,
     tradeCountries: PropTypes.array,
+    hscodes: PropTypes.object,
+  }
+  componentWillReceiveProps(nextProps) {
+    if (this.props.hscodes !== nextProps.hscodes) {
+      if (nextProps.hscodes.data.length === 1) {
+        const hscode = nextProps.hscodes.data[0];
+        this.props.form.setFieldsValue({
+          g_name: hscode.product_name,
+          element: hscode.declared_elements,
+          unit_1: hscode.first_unit,
+          unit_2: hscode.second_unit,
+          customs_control: hscode.customs,
+          inspection_quarantine: hscode.inspection,
+        });
+      } else {
+        this.props.form.setFieldsValue({
+          g_name: '',
+          element: '',
+          unit_1: '',
+          unit_2: '',
+          customs_control: '',
+          inspection_quarantine: '',
+        });
+      }
+    }
+  }
+  handleSearch = (value) => {
+    const { hscodes } = this.props;
+    this.props.loadHscodes({
+      pageSize: hscodes.pageSize,
+      current: hscodes.current,
+      searchText: value,
+    });
   }
   msg = key => formatMsg(this.props.intl, key);
   render() {
-    const { form: { getFieldDecorator }, fieldInits, currencies, units, tradeCountries } = this.props;
+    const { form: { getFieldDecorator }, fieldInits, currencies, units, tradeCountries, hscodes } = this.props;
     return (
       <Card bodyStyle={{ padding: 16 }}>
         <Row>
@@ -75,7 +111,14 @@ export default class BasicForm extends Component {
               {getFieldDecorator('hscode', {
                 rules: [{ required: true, message: '商品编码必填' }],
                 initialValue: fieldInits.hscode,
-              })(<Input />)}
+              })(<Select combobox optionFilterProp="search" onChange={this.handleSearch} >
+                {
+                    hscodes.data.map(data => (<Option value={data.hscode} key={data.hscode}
+                      search={data.hscode}
+                    >{data.hscode}</Option>)
+                    )}
+              </Select>
+                )}
             </FormItem>
           </Col>
           <Col sm={24} lg={8}>
@@ -100,7 +143,7 @@ export default class BasicForm extends Component {
             <FormItem label={this.msg('element')} labelCol={{ span: 3 }} wrapperCol={{ span: 21 }}>
               {getFieldDecorator('element', {
                 initialValue: fieldInits.element,
-              })(<Input type="textarea" autosize={{ minRows: 1, maxRows: 16 }} />)}
+              })(<Input type="textarea" autosize={{ minRows: 1, maxRows: 16 }} disabled />)}
             </FormItem>
           </Col>
         </Row>
@@ -165,14 +208,14 @@ export default class BasicForm extends Component {
             <FormItem label={this.msg('customsControl')} {...formItemLayout}>
               {getFieldDecorator('customs_control', {
                 initialValue: fieldInits.customs_control,
-              })(<Input />)}
+              })(<Input disabled />)}
             </FormItem>
           </Col>
           <Col sm={24} lg={8}>
             <FormItem label={this.msg('inspQuarantine')} {...formItemLayout}>
               {getFieldDecorator('inspection_quarantine', {
                 initialValue: fieldInits.inspection_quarantine,
-              })(<Input />)}
+              })(<Input disabled />)}
             </FormItem>
           </Col>
         </Row>

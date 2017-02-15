@@ -579,8 +579,8 @@ export function onFormFieldsChange(props, fields) {
     partnerTenantId: props.formData.customer_tenant_id,
     transModeCode: formRequireJudgeParams.transport_mode_id ? formRequireJudgeParams.transport_mode_id.value : props.formData.transport_mode_id,
     goodsType: formRequireJudgeParams.goods_type ? formRequireJudgeParams.goods_type.value : props.formData.goods_type,
-    pickupEstDate: formRequireJudgeParams.pickup_est_date ? formRequireJudgeParams.pickup_est_date.value.toDate() : props.formData.pickup_est_date,
-    deliverEstDate: formRequireJudgeParams.deliver_est_date ? formRequireJudgeParams.deliver_est_date.value.toDate() : props.formData.deliver_est_date,
+    pickupEstDate: formRequireJudgeParams.pickup_est_date && formRequireJudgeParams.pickup_est_date.value ? formRequireJudgeParams.pickup_est_date.value.toDate() : props.formData.pickup_est_date,
+    deliverEstDate: formRequireJudgeParams.deliver_est_date && formRequireJudgeParams.deliver_est_date.value ? formRequireJudgeParams.deliver_est_date.value.toDate() : props.formData.deliver_est_date,
   };
   if (params.partnerId !== undefined &&
     params.transModeCode !== undefined && params.goodsType !== undefined &&

@@ -40,7 +40,7 @@ export default class UnitListContainer extends Component {
     this.props.toggleBusinessUnitModal(true, 'edit', businessUnit);
   }
   handleAddBtnClick = (type) => {
-    this.props.toggleBusinessUnitModal(true, 'add', { type });
+    this.props.toggleBusinessUnitModal(true, 'add', { relation_type: type });
   }
   handleDeleteBtnClick = (id) => {
     this.props.deleteBusinessUnit(id);

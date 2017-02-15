@@ -1,5 +1,12 @@
 {
-  "plugins": ["transform-decorators-legacy", "add-module-exports"],
+  "plugins": [
+    ["transform-runtime", {
+      "helpers": true,
+      "polyfill": false,
+      "regenerator": false,
+      "moduleName": "babel-runtime"
+    }],
+    "transform-decorators-legacy", "add-module-exports"],
   "presets": ["es2015-without-regenerator", "react", "stage-0"],
   "env": {
     "i18n": {

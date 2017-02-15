@@ -18,6 +18,8 @@ const actionTypes = createActionTypes('@@welogix/cms/tradeitem/', [
   'LOAD_ITEM_EDIT', 'LOAD_ITEM_EDIT_SUCCEED', 'LOAD_ITEM_EDIT_FAIL',
   'ITEM_EDITED_SAVE', 'ITEM_EDITED_SAVE_SUCCEED', 'ITEM_EDITED_SAVE_FAIL',
   'DELETE_SELECT_ITEMS', 'DELETE_SELECT_ITEMS_SUCCEED', 'DELETE_SELECT_ITEMS_FAIL',
+  'LOAD_BODY_ITEM', 'LOAD_BODY_ITEM_SUCCEED', 'LOAD_BODY_ITEM_FAIL',
+  'LOAD_BODY_HSCODE', 'LOAD_BODY_HSCODE_SUCCEED', 'LOAD_BODY_HSCODE_FAIL',
 ]);
 
 const initialState = {
@@ -50,6 +52,8 @@ const initialState = {
     searchText: '',
   },
   itemData: {},
+  bodyItem: {},
+  bodyHscode: {},
 };
 
 export default function reducer(state = initialState, action) {
@@ -76,6 +80,12 @@ export default function reducer(state = initialState, action) {
       return { ...state, hscodes: { ...state.hscodes, ...action.result.data } };
     case actionTypes.LOAD_ITEM_EDIT_SUCCEED:
       return { ...state, itemData: action.result.data };
+    case actionTypes.SAVE_REPO_TRADES_SUCCEED:
+      return { ...state, repoTrades: action.result.data };
+    case actionTypes.LOAD_BODY_ITEM_SUCCEED:
+      return { ...state, bodyItem: action.result.data };
+    case actionTypes.LOAD_BODY_HSCODE_SUCCEED:
+      return { ...state, bodyHscode: action.result.data };
     default:
       return state;
   }
@@ -312,6 +322,36 @@ export function deleteSelectedItems(datas) {
       endpoint: 'v1/cms/tradeitem/selected/deleted',
       method: 'post',
       data: datas,
+    },
+  };
+}
+
+export function getItemForBody(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_BODY_ITEM,
+        actionTypes.LOAD_BODY_ITEM_SUCCEED,
+        actionTypes.LOAD_BODY_ITEM_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/load/item/forBody',
+      method: 'get',
+      params,
+    },
+  };
+}
+
+export function getHscodeForBody(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_BODY_HSCODE,
+        actionTypes.LOAD_BODY_HSCODE_SUCCEED,
+        actionTypes.LOAD_BODY_HSCODE_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/load/hscode/forBody',
+      method: 'get',
+      params,
     },
   };
 }

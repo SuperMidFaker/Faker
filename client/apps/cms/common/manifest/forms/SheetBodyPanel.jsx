@@ -4,6 +4,7 @@ import { Button, Collapse, Dropdown, Menu, Table, Icon, Input, Select, message }
 import { intlShape, injectIntl } from 'react-intl';
 import RowUpdater from './rowUpdater';
 import { updateHeadNetWt, loadBillBody, openAmountModel } from 'common/reducers/cmsManifest';
+import { getItemForBody, getHscodeForBody } from 'common/reducers/cmsTradeitem';
 import { format } from 'client/common/i18n/helpers';
 import ExcelUpload from 'client/components/excelUploader';
 import globalMessage from 'client/common/root.i18n';
@@ -68,6 +69,7 @@ ColumnSelect.proptypes = {
 @injectIntl
 @connect(
   state => ({
+    tenantId: state.account.tenantId,
     units: state.cmsManifest.params.units.map(un => ({
       value: un.unit_code,
       text: un.unit_name,
@@ -83,12 +85,15 @@ ColumnSelect.proptypes = {
     exemptions: state.cmsManifest.params.exemptionWays,
     loginId: state.account.loginId,
     billHead: state.cmsManifest.billHead,
+    bodyItem: state.cmsTradeitem.bodyItem,
+    bodyHscode: state.cmsTradeitem.bodyHscode,
   }),
-  { updateHeadNetWt, loadBillBody, openAmountModel }
+  { updateHeadNetWt, loadBillBody, openAmountModel, getItemForBody, getHscodeForBody }
 )
 export default class SheetBodyPanel extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
+    tenantId: PropTypes.number.isRequired,
     ietype: PropTypes.oneOf(['import', 'export']),
     type: PropTypes.oneOf(['bill', 'entry']),
     readonly: PropTypes.bool,
@@ -100,6 +105,9 @@ export default class SheetBodyPanel extends React.Component {
     countries: PropTypes.array,
     currencies: PropTypes.array,
     exemptions: PropTypes.array,
+    billHead: PropTypes.object,
+    bodyItem: PropTypes.object,
+    bodyHscode: PropTypes.object,
   }
   constructor(props) {
     super(props);
@@ -130,6 +138,62 @@ export default class SheetBodyPanel extends React.Component {
         bodies,
         pagination: { ...this.state.pagination, total: bodies.length },
       });
+    }
+    if (nextProps.bodyItem !== this.props.bodyItem) {
+      const item = nextProps.bodyItem;
+      if (item) {
+        const unit1 = this.props.units.filter(unit => unit.text === item.unit_1)[0];
+        const unit2 = this.props.units.filter(unit => unit.text === item.unit_2)[0];
+        this.setState({
+          editBody: {
+            ...this.state.editBody,
+            codes: item.hscode,
+            g_name: item.g_name,
+            g_model: item.g_model,
+            element: item.element,
+            unit_1: unit1.value,
+            unit_2: unit2.value,
+          },
+        });
+      } else {
+        this.setState({
+          editBody: {
+            ...this.state.editBody,
+            codes: '',
+            g_name: '',
+            g_model: '',
+            element: '',
+            unit_1: '',
+            unit_2: '',
+          },
+        });
+      }
+    }
+    if (nextProps.bodyHscode !== this.props.bodyHscode) {
+      const hscode = nextProps.bodyHscode;
+      if (hscode) {
+        const unit1 = this.props.units.filter(unit => unit.text === hscode.first_unit)[0];
+        const unit2 = this.props.units.filter(unit => unit.text === hscode.second_unit)[0];
+        this.setState({
+          editBody: {
+            ...this.state.editBody,
+            g_name: hscode.product_name,
+            element: hscode.declared_elements,
+            unit_1: unit1.value,
+            unit_2: unit2.value,
+          },
+        });
+      } else {
+        this.setState({
+          editBody: {
+            ...this.state.editBody,
+            g_name: '',
+            element: '',
+            unit_1: '',
+            unit_2: '',
+          },
+        });
+      }
     }
   }
 
@@ -283,8 +347,8 @@ export default class SheetBodyPanel extends React.Component {
       title: this.msg('unitPcs'),
       width: 80,
       render: (o, record, index) =>
-        <ColumnInput field="unit_pcs" inEdit={index === editIndex} record={record}
-          onChange={this.handleEditChange} edit={editBody}
+        <ColumnSelect field="unit_pcs" inEdit={index === editIndex} record={record}
+          onChange={this.handleEditChange} options={units} edit={editBody}
         />,
     }, {
       title: this.msg('netwt'),
@@ -377,7 +441,18 @@ export default class SheetBodyPanel extends React.Component {
     this.setState({
       editBody: { ...this.state.editBody, [field]: value },
     });
-    // todo onsearch 项号 ems_no
+    if (field === 'cop_g_no') {
+      const { billHead, tenantId } = this.props;
+      this.props.getItemForBody({
+        tenantId,
+        delgNo: billHead.delg_no,
+        tradeCode: billHead.trade_co,
+        copProdNo: value,
+      });
+    }
+    if (field === 'codes' && !this.props.bodyItem) {
+      this.props.getHscodeForBody({ hscode: value });
+    }
   }
   handleEdit = (row, index) => {
     if (this.props.headNo) {
@@ -547,6 +622,23 @@ export default class SheetBodyPanel extends React.Component {
               }} onUploaded={this.handleUploaded}
             >
               <Icon type="file-excel" /> {this.msg('importBody')}
+            </ExcelUpload>
+          </Menu.Item>
+          }
+          {!this.props.readonly &&
+          <Menu.Item key="importRelatedData">
+            <ExcelUpload endpoint={`${API_ROOTS.default}v1/cms/manifest/billbody/related/import`}
+              formData={{
+                data: JSON.stringify({
+                  bill_seq_no: this.props.billSeqNo,
+                  tenant_id: this.props.tenantId,
+                  creater_login_id: this.props.loginId,
+                  delgNo: this.props.billHead.delg_no,
+                  tradeCode: this.props.billHead.trade_co,
+                }),
+              }} onUploaded={this.handleUploaded}
+            >
+              <Icon type="file-excel" /> {this.msg('relatedImport')}
             </ExcelUpload>
           </Menu.Item>
           }
