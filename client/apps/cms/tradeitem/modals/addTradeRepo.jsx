@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Modal, Select, message } from 'antd';
-import { createRepo, closeAddModal } from 'common/reducers/cmsTradeitem';
+import { createRepo, closeAddModal, loadOwners } from 'common/reducers/cmsTradeitem';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 
@@ -17,7 +17,7 @@ const Option = Select.Option;
     visibleAddModal: state.cmsTradeitem.visibleAddModal,
     customers: state.crmCustomers.customers,
   }),
-  { createRepo, closeAddModal }
+  { createRepo, closeAddModal, loadOwners }
 )
 export default class AddTradeRepoModal extends React.Component {
   static propTypes = {
@@ -46,6 +46,9 @@ export default class AddTradeRepoModal extends React.Component {
           message.error(result.error.message, 10);
         } else {
           this.setState({ customerid: null });
+          this.props.loadOwners({
+            tenantId: this.props.tenantId,
+          });
           this.props.closeAddModal();
         }
       });
