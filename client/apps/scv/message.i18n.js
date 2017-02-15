@@ -11,7 +11,7 @@ const messages = defineMessages({
   },
   shipments: {
     id: 'scv.module.shipments',
-    defaultMessage: '货运',
+    defaultMessage: '货运跟踪',
   },
   inboundShipments: {
     id: 'scv.module.shipments.inbound',
@@ -23,15 +23,35 @@ const messages = defineMessages({
   },
   clearance: {
     id: 'scv.module.clearance',
-    defaultMessage: '清关',
+    defaultMessage: '清关管理',
+  },
+  clearanceManifest: {
+    id: 'scv.module.clearance.manifest',
+    defaultMessage: '报关清单',
+  },
+  clearanceCDS: {
+    id: 'scv.module.clearance.cds',
+    defaultMessage: '进出口报关单',
+  },
+  clearanceFTZ: {
+    id: 'scv.module.clearance.ftz',
+    defaultMessage: '进出境备案清单',
+  },
+  clearanceTax: {
+    id: 'scv.module.clearance.tax',
+    defaultMessage: '税金管理',
   },
   inventory: {
     id: 'scv.module.inventory',
-    defaultMessage: '库存',
+    defaultMessage: '库存管理',
   },
   inventoryStock: {
     id: 'scv.module.inventory.stock',
     defaultMessage: '库存查询',
+  },
+  inventoryTransaction: {
+    id: 'scv.module.inventory.transaction',
+    defaultMessage: '进出库记录',
   },
   inventoryRecieving: {
     id: 'scv.module.inventory.recieving',
@@ -45,21 +65,25 @@ const messages = defineMessages({
     id: 'scv.module.inventory.warehouse',
     defaultMessage: '仓库设置',
   },
-  payment: {
-    id: 'scv.module.payment',
-    defaultMessage: '资金',
+  billing: {
+    id: 'scv.module.billing',
+    defaultMessage: '费用账单',
   },
-  taxPayment: {
-    id: 'scv.module.payment.tax',
-    defaultMessage: '税费支付',
+  billingExpenses: {
+    id: 'scv.module.billing.expenses',
+    defaultMessage: '费用管理',
   },
-  billingPayment: {
-    id: 'scv.module.payment.billing',
-    defaultMessage: '账单支付',
+  billingStatements: {
+    id: 'scv.module.billing.statements',
+    defaultMessage: '对账单',
+  },
+  billingQuotes: {
+    id: 'scv.module.billing.quotes',
+    defaultMessage: '价格协议',
   },
   products: {
     id: 'scv.module.products',
-    defaultMessage: '产品',
+    defaultMessage: '产品物料',
   },
   productsTradeItem: {
     id: 'scv.module.products.trade.item',
@@ -79,7 +103,7 @@ const messages = defineMessages({
   },
   analytics: {
     id: 'scv.module.analytics',
-    defaultMessage: '报表',
+    defaultMessage: '报表中心',
   },
   kpiAnalytics: {
     id: 'scv.module.analytics.kpi',

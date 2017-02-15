@@ -28,13 +28,6 @@ export default class ModuleSCV extends React.Component {
       text: formatMsg(intl, 'dashboard'),
     });
     linkMenus.push({
-      single: true,
-      key: 'scv-1',
-      path: '/scv/orders',
-      icon: 'icon-fontello-inbox-1',
-      text: formatMsg(intl, 'orders'),
-    });
-    linkMenus.push({
       single: false,
       key: 'scv-2',
       icon: 'icon-fontello-flight-1',
@@ -50,11 +43,28 @@ export default class ModuleSCV extends React.Component {
       }],
     });
     linkMenus.push({
-      single: true,
+      single: false,
       key: 'scv-3',
       path: '/scv/clearance',
       icon: 'zmdi zmdi-badge-check',
       text: formatMsg(intl, 'clearance'),
+      sublinks: [{
+        key: 'scv-5-0',
+        path: '/scv/clearance/manifest',
+        text: formatMsg(intl, 'clearanceManifest'),
+      }, {
+        key: 'scv-5-1',
+        path: '/scv/clearance/cds',
+        text: formatMsg(intl, 'clearanceCDS'),
+      }, {
+        key: 'scv-5-2',
+        path: '/scv/clearance/ftz',
+        text: formatMsg(intl, 'clearanceFTZ'),
+      }, {
+        key: 'scv-5-3',
+        path: '/scv/clearance/tax',
+        text: formatMsg(intl, 'clearanceTax'),
+      }],
     });
     linkMenus.push({
       single: false,
@@ -67,14 +77,18 @@ export default class ModuleSCV extends React.Component {
         text: formatMsg(intl, 'inventoryStock'),
       }, {
         key: 'scv-4-1',
+        path: '/scv/inventory/transaction',
+        text: formatMsg(intl, 'inventoryTransaction'),
+      }, {
+        key: 'scv-4-2',
         path: '/scv/inventory/recieving',
         text: formatMsg(intl, 'inventoryRecieving'),
       }, {
-        key: 'scv-4-2',
+        key: 'scv-4-3',
         path: '/scv/inventory/shipping',
         text: formatMsg(intl, 'inventoryShipping'),
       }, {
-        key: 'scv-4-3',
+        key: 'scv-4-4',
         path: '/scv/inventory/warehouse',
         text: formatMsg(intl, 'inventoryWarehouse'),
       }],
@@ -82,39 +96,43 @@ export default class ModuleSCV extends React.Component {
     linkMenus.push({
       single: false,
       key: 'scv-5',
-      icon: 'icon-fontello-money-1',
-      text: formatMsg(intl, 'payment'),
+      icon: 'icon-fontello-tags-2',
+      text: formatMsg(intl, 'products'),
       sublinks: [{
         key: 'scv-5-0',
-        path: '/scv/payments/tax',
-        text: formatMsg(intl, 'taxPayment'),
+        path: '/scv/products/tradeitem',
+        text: formatMsg(intl, 'productsTradeItem'),
       }, {
         key: 'scv-5-1',
-        path: '/scv/payments/billing',
-        text: formatMsg(intl, 'billingPayment'),
+        path: '/scv/products/sku',
+        text: formatMsg(intl, 'productsSKU'),
+      }, {
+        key: 'scv-5-2',
+        path: '/scv/products/material',
+        text: formatMsg(intl, 'productsMaterial'),
+      }, {
+        key: 'scv-5-3',
+        path: '/scv/products/category',
+        text: formatMsg(intl, 'productsCategory'),
       }],
     });
     linkMenus.push({
       single: false,
       key: 'scv-6',
-      icon: 'icon-fontello-tags-2',
-      text: formatMsg(intl, 'products'),
+      icon: 'icon-fontello-money-1',
+      text: formatMsg(intl, 'billing'),
       sublinks: [{
         key: 'scv-6-0',
-        path: '/scv/products/tradeitem',
-        text: formatMsg(intl, 'productsTradeItem'),
+        path: '/scv/billing/expenses',
+        text: formatMsg(intl, 'billingExpenses'),
       }, {
         key: 'scv-6-1',
-        path: '/scv/products/sku',
-        text: formatMsg(intl, 'productsSKU'),
+        path: '/scv/billing/statements',
+        text: formatMsg(intl, 'billingStatements'),
       }, {
         key: 'scv-6-2',
-        path: '/scv/products/material',
-        text: formatMsg(intl, 'productsMaterial'),
-      }, {
-        key: 'scv-6-3',
-        path: '/scv/products/category',
-        text: formatMsg(intl, 'productsCategory'),
+        path: '/scv/billing/Quotes',
+        text: formatMsg(intl, 'billingQuotes'),
       }],
     });
     linkMenus.push({

@@ -61,7 +61,7 @@ export default class CiqDeclPane extends React.Component {
   render() {
     const { ciqPanel, delegation, tenantId } = this.props;
     const columns = [{
-      title: '统一编号',
+      title: '预报关单号',
       dataIndex: 'pre_entry_seq_no',
       width: 120,
     }, {
