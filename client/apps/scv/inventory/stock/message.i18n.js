@@ -72,7 +72,7 @@ const messages = defineMessages({
   },
   stockQty: {
     id: 'scv.inventory.stock.qty',
-    defaultMessage: '库存数量',
+    defaultMessage: '在库数量',
   },
   unitPrice: {
     id: 'scv.inventory.stock.unit.price',
