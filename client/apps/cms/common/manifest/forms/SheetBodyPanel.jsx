@@ -625,6 +625,23 @@ export default class SheetBodyPanel extends React.Component {
             </ExcelUpload>
           </Menu.Item>
           }
+          {!this.props.readonly &&
+          <Menu.Item key="importRelatedData">
+            <ExcelUpload endpoint={`${API_ROOTS.default}v1/cms/manifest/billbody/related/import`}
+              formData={{
+                data: JSON.stringify({
+                  bill_seq_no: this.props.billSeqNo,
+                  tenant_id: this.props.tenantId,
+                  creater_login_id: this.props.loginId,
+                  delgNo: this.props.billHead.delg_no,
+                  tradeCode: this.props.billHead.trade_co,
+                }),
+              }} onUploaded={this.handleUploaded}
+            >
+              <Icon type="file-excel" /> {this.msg('relatedImport')}
+            </ExcelUpload>
+          </Menu.Item>
+          }
           <Menu.Item key="download"><Icon type="download" /> 下载模板</Menu.Item>
           <Menu.Item key="export"><Icon type="export" /> 导出数据</Menu.Item>
         </Menu>);
