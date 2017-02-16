@@ -161,5 +161,21 @@ const messages = defineMessages({
     id: 'cms.tradeitem.edit.item',
     defaultMessage: '修改物料',
   },
+  declareWay: {
+    id: 'cms.tradeitem.declare.way',
+    defaultMessage: '报关类型',
+  },
+  declareUnit: {
+    id: 'cms.tradeitem.declare.unit',
+    defaultMessage: '申报单位',
+  },
+  declunitName: {
+    id: 'cms.tradeitem.declunit.name',
+    defaultMessage: '申报单位分类名称',
+  },
+  declunitCode: {
+    id: 'cms.tradeitem.declunit.code',
+    defaultMessage: '申报单位代码',
+  },
 });
 export default messages;
