@@ -20,6 +20,9 @@ const actionTypes = createActionTypes('@@welogix/cms/tradeitem/', [
   'DELETE_SELECT_ITEMS', 'DELETE_SELECT_ITEMS_SUCCEED', 'DELETE_SELECT_ITEMS_FAIL',
   'LOAD_BODY_ITEM', 'LOAD_BODY_ITEM_SUCCEED', 'LOAD_BODY_ITEM_FAIL',
   'LOAD_BODY_HSCODE', 'LOAD_BODY_HSCODE_SUCCEED', 'LOAD_BODY_HSCODE_FAIL',
+  'LOAD_DECLUNITS', 'LOAD_DECLUNITS_SUCCEED', 'LOAD_DECLUNITS_FAIL',
+  'SAVE_DECLUNIT', 'SAVE_DECLUNIT_SUCCEED', 'SAVE_DECLUNIT_FAIL',
+  'DELETE_DECLUNIT', 'DELETE_DECLUNIT_SUCCEED', 'DELETE_DECLUNIT_FAIL',
 ]);
 
 const initialState = {
@@ -54,6 +57,8 @@ const initialState = {
   itemData: {},
   bodyItem: {},
   bodyHscode: {},
+  declunits: [],
+  hstabKey: 'declunit',
 };
 
 export default function reducer(state = initialState, action) {
@@ -86,6 +91,9 @@ export default function reducer(state = initialState, action) {
       return { ...state, bodyItem: action.result.data };
     case actionTypes.LOAD_BODY_HSCODE_SUCCEED:
       return { ...state, bodyHscode: action.result.data };
+    case actionTypes.LOAD_DECLUNITS_SUCCEED:
+    case actionTypes.SAVE_DECLUNIT_SUCCEED:
+      return { ...state, declunits: action.result.data };
     default:
       return state;
   }
@@ -352,6 +360,51 @@ export function getHscodeForBody(params) {
       endpoint: 'v1/cms/tradeitem/load/hscode/forBody',
       method: 'get',
       params,
+    },
+  };
+}
+
+export function loadDeclunits(tenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_DECLUNITS,
+        actionTypes.LOAD_DECLUNITS_SUCCEED,
+        actionTypes.LOAD_DECLUNITS_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/load/declunits',
+      method: 'get',
+      params: { tenantId },
+    },
+  };
+}
+
+export function saveDeclunit(datas) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SAVE_DECLUNIT,
+        actionTypes.SAVE_DECLUNIT_SUCCEED,
+        actionTypes.SAVE_DECLUNIT_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/declunit/save',
+      method: 'post',
+      data: datas,
+    },
+  };
+}
+
+export function delDeclunit(id) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DELETE_DECLUNIT,
+        actionTypes.DELETE_DECLUNIT_SUCCEED,
+        actionTypes.DELETE_DECLUNIT_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/declunit/delete',
+      method: 'post',
+      data: { id },
     },
   };
 }
