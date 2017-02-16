@@ -3,11 +3,11 @@ import { defineMessages } from 'react-intl';
 export default defineMessages({
   searchPlaceholder: {
     id: 'cms.ciq.search.placeholder',
-    defaultMessage: '海关编号/统一编号/委托编号',
+    defaultMessage: '海关编号/预报关单号/委托编号',
   },
   ciqSearchPlaceholder: {
     id: 'cms.ciq.ciq.search.placeholder',
-    defaultMessage: '通关单号/统一编号/委托编号',
+    defaultMessage: '通关单号/预报关单号/委托编号',
   },
   importOperation: {
     id: 'cms.ciq.import.operation',
@@ -31,7 +31,7 @@ export default defineMessages({
   },
   preEntryNo: {
     id: 'cms.ciq.delg.preEntry.no',
-    defaultMessage: '统一编号',
+    defaultMessage: '预报关单号',
   },
   clrStatus: {
     id: 'cms.ciq.clr.status',

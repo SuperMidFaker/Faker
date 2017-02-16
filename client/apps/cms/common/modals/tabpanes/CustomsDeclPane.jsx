@@ -113,7 +113,7 @@ export default class CustomsDeclPane extends React.Component {
       <span>{declTypes.length > 0 ? declTypes[0].value : ''}：{bill.pack_count}件/{bill.gross_wt}千克</span>
     );
     const columns = [{
-      title: '统一编号',
+      title: '预报关单号',
       dataIndex: 'pre_entry_seq_no',
       width: 160,
     }, {

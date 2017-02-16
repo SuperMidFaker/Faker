@@ -411,7 +411,11 @@ export default defineMessages({
   },
   importBody: {
     id: 'cms.forms.table.import',
-    defaultMessage: '导入清单',
+    defaultMessage: '非关联导入',
+  },
+  relatedImport: {
+    id: 'cms.forms.table.import.related',
+    defaultMessage: '关联导入',
   },
   cancel: {
     id: 'cms.forms.table.cancel',

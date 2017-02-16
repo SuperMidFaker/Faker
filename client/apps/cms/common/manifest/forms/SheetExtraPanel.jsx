@@ -23,7 +23,7 @@ const TabPane = Tabs.TabPane;
 export default class SheetExtraPanel extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    ietype: PropTypes.string.isRequired,
+    ietype: PropTypes.string,
     tabKey: PropTypes.string,
   }
   static contextTypes = {
