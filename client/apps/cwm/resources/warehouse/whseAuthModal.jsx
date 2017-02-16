@@ -14,7 +14,7 @@ import { formatMsg } from './message.i18n';
 }),
   { closeWhseAuthModal, saveWhseAuths }
 )
-export default class AddWarehouseModal extends React.Component {
+export default class WhseAuthModal extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     visible: PropTypes.bool.isRequired,
@@ -25,6 +25,7 @@ export default class AddWarehouseModal extends React.Component {
     })) }),
     whseOwners: PropTypes.arrayOf(PropTypes.shape({
       id: PropTypes.number.isRequired,
+      pid: PropTypes.number,
       name: PropTypes.string.isRequired,
     })),
     closeWhseAuthModal: PropTypes.func.isRequired,
@@ -68,7 +69,7 @@ export default class AddWarehouseModal extends React.Component {
       const owner = whseOwners.filter(whseo => whseo.id === key)[0];
       if (owner) {
         appendOwners.push({
-          owner_tenant_id: owner.partner_tenant_id,
+          owner_tenant_id: owner.pid,
           owner_partner_id: owner.id,
           owner_name: owner.name,
         });

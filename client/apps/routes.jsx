@@ -229,6 +229,7 @@ export default(store, cookie) => {
                 <Route path="edit/:quoteNo/:version" component={TMSTariff.Edit} />
                 <Route path="view/:quoteNo/:version" component={TMSTariff.View} />
               </Route>
+              <Route path="kpi" component={TMSBilling.Kpi} />
             </Route>
           </Route>
           <Route path={DEFAULT_MODULES.clearance.id} component={CMS}>

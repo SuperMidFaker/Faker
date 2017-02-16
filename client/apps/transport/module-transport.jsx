@@ -90,6 +90,10 @@ export default class Transport extends React.Component {
           key: 'tms-4-3',
           path: '/transport/billing/tariff',
           text: '价格管理',
+        }, {
+          key: 'tms-4-4',
+          path: '/transport/billing/kpi',
+          text: 'KPI',
         }],
       });
     }

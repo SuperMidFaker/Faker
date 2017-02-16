@@ -19,6 +19,7 @@ import transportDispatch from './transportDispatch';
 import transportResources from './transportResources';
 import transportTariff from './transportTariff';
 import transportBilling from './transportBilling';
+import transportKpi from './transportKpi';
 import cmsDelegation from './cmsDelegation';
 import cmsDelgInfoHub from './cmsDelgInfoHub';
 import cmsDeclare from './cmsDeclare';
@@ -58,6 +59,7 @@ export default combineReducers({
   transportResources,
   transportTariff,
   transportBilling,
+  transportKpi,
   cmsDelegation,
   cmsDelgInfoHub,
   cmsDeclare,
