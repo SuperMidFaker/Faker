@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Breadcrumb, Layout } from 'antd';
+import { Breadcrumb, Layout, Button } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
 import { format } from 'client/common/i18n/helpers';
@@ -11,9 +11,10 @@ import messages from './message.i18n';
 import { loadHscodes } from 'common/reducers/cmsTradeitem';
 import SearchBar from 'client/components/search-bar';
 import './index.less';
+import HsExtraPanel from './tabpanes/hsExtraPane';
 
 const formatMsg = format(messages);
-const { Header, Content } = Layout;
+const { Header, Content, Sider } = Layout;
 const Customs = {
   A: '入境货物通关单',
   B: '出境货物通关单',
@@ -105,8 +106,15 @@ export default class HscodeList extends Component {
     loadHscodes: PropTypes.func.isRequired,
     hscodes: PropTypes.object.isRequired,
   }
+  state = {
+    collapsed: true,
+  }
   msg = key => formatMsg(this.props.intl, key)
-
+  toggle = () => {
+    this.setState({
+      collapsed: !this.state.collapsed,
+    });
+  }
   handleSearch = (value) => {
     const { hscodes } = this.props;
     this.props.loadHscodes({
@@ -221,25 +229,45 @@ export default class HscodeList extends Component {
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Layout>
-          <Header className="top-bar" key="header">
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                HS编码
-              </Breadcrumb.Item>
-            </Breadcrumb>
-            <div className="top-bar-tools">
-              <SearchBar placeholder="编码/名称/描述/申报要素" onInputSearch={this.handleSearch}
-                value={this.props.hscodes.searchText} size="large"
-              />
-            </div>
-          </Header>
-          <Content className="main-content" key="main">
-            <div className="page-body">
-              <div className="panel-body table-panel">
-                <Table columns={columns} dataSource={dataSource} scroll={{ x: 2260 }} rowKey="id" />
+          <Layout>
+            <Header className="top-bar top-bar-fixed" key="header">
+              <Breadcrumb>
+                <Breadcrumb.Item>
+                  商品编码
+                </Breadcrumb.Item>
+              </Breadcrumb>
+              <div className="top-bar-tools">
+                <SearchBar placeholder="编码/名称/描述/申报要素" onInputSearch={this.handleSearch}
+                  value={this.props.hscodes.searchText} size="large"
+                />
+                <Button size="large"
+                  className={this.state.collapsed ? '' : 'btn-toggle-on'}
+                  icon={this.state.collapsed ? 'menu-fold' : 'menu-unfold'}
+                  onClick={this.toggle}
+                />
               </div>
+            </Header>
+            <Content className="main-content top-bar-fixed" key="main">
+              <div className="page-body">
+                <div className="panel-body table-panel">
+                  <Table columns={columns} dataSource={dataSource} scroll={{ x: 2260 }} rowKey="id" />
+                </div>
+              </div>
+            </Content>
+          </Layout>
+          <Sider
+            trigger={null}
+            defaultCollapsed
+            collapsible
+            collapsed={this.state.collapsed}
+            width={320}
+            collapsedWidth={0}
+            className="right-sider"
+          >
+            <div className="right-sider-panel">
+              <HsExtraPanel />
             </div>
-          </Content>
+          </Sider>
         </Layout>
       </QueueAnim>
     );
