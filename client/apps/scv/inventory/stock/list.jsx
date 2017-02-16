@@ -162,8 +162,12 @@ export default class InventoryStockList extends React.Component {
         tenantId: this.props.tenantId,
         pageSize: pagination.pageSize,
         current: pagination.current,
+        sorter: JSON.stringify({
+          field: sorter.field,
+          order: sorter.order,
+        }),
       };
-      const filter = { ...this.props.listFilter, sortField: sorter.field, sortOrder: sorter.order };
+      const filter = { ...this.props.listFilter }; // todo filters
       params.filter = JSON.stringify(filter);
       return params;
     },
