@@ -90,25 +90,32 @@ export default class Transport extends React.Component {
           key: 'tms-4-3',
           path: '/transport/billing/tariff',
           text: '价格管理',
-        }, {
-          key: 'tms-4-4',
-          path: '/transport/billing/kpi',
-          text: 'KPI',
         }],
       });
     }
+    linkMenus.push({
+      single: false,
+      key: 'tms-5',
+      icon: 'icon-ikons-bar-chart-2',
+      text: formatMsg(intl, 'analytics'),
+      sublinks: [{
+        key: 'tms-5-0',
+        path: '/transport/analytics/kpi',
+        text: formatMsg(intl, 'analyticsKPI'),
+      }],
+    });
     if (hasPermission(privileges, { module: 'transport', feature: 'resources' })) {
       linkMenus.push({
         single: false,
-        key: 'tms-5',
+        key: 'tms-6',
         icon: 'zmdi zmdi-settings',
         text: '设置',
         sublinks: [{
-          key: 'tms-5-0',
+          key: 'tms-6-0',
           path: '/transport/resources',
           text: '资源设置',
         }, {
-          key: 'tms-5-1',
+          key: 'tms-6-1',
           path: '/transport/settings',
           text: '应用设置',
         }],

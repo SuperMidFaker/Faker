@@ -29,6 +29,7 @@ import * as TMSDispatch from './transport/dispatch';
 import * as TMSTracking from './transport/tracking';
 import * as TMSResources from './transport/resources';
 import * as TMSBilling from './transport/billing';
+import * as TMSAnalytics from './transport/analytics';
 import * as TMSTariff from './transport/tariff';
 import * as PublicTMS from './pub/tracking';
 import * as Template from './pub/template';
@@ -229,7 +230,9 @@ export default(store, cookie) => {
                 <Route path="edit/:quoteNo/:version" component={TMSTariff.Edit} />
                 <Route path="view/:quoteNo/:version" component={TMSTariff.View} />
               </Route>
-              <Route path="kpi" component={TMSBilling.Kpi} />
+            </Route>
+            <Route path="analytics">
+              <Route path="kpi" component={TMSAnalytics.Kpi} />
             </Route>
           </Route>
           <Route path={DEFAULT_MODULES.clearance.id} component={CMS}>

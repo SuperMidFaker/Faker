@@ -9,4 +9,3 @@ export EditPayableBilling from './payable/edit';
 export ViewReceivableBilling from './receivable/view';
 export ViewPayableBilling from './payable/view';
 export FeeList from './fee/list';
-export Kpi from './kpi/index';
