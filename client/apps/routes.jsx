@@ -65,6 +65,7 @@ import * as SCVInbound from './scv/inbound';
 import * as SCVOutbound from './scv/outbound';
 import * as SCVClearance from './scv/clearance';
 import * as SCVInventoryStock from './scv/inventory/stock';
+import * as SCVInventoryTransaction from './scv/inventory/transaction';
 import * as SCVInventoryRecieving from './scv/inventory/recieving';
 import * as SCVInventoryShipping from './scv/inventory/shipping';
 import * as SCVInventoryWarehouse from './scv/inventory/warehouse';
@@ -323,6 +324,7 @@ export default(store, cookie) => {
             <Route path="clearance" component={SCVClearance.List} />
             <Route path="inventory" >
               <Route path="stock" component={SCVInventoryStock.List} />
+              <Route path="transaction" component={SCVInventoryTransaction.List} />
               <Route path="recieving" component={SCVInventoryRecieving.List} />
               <Route path="shipping" component={SCVInventoryShipping.List} />
               <Route path="warehouse" component={SCVInventoryWarehouse.List} />
