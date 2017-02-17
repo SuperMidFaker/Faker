@@ -8,7 +8,7 @@ import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import { loadHscodes } from 'common/reducers/cmsTradeitem';
+import { loadHscodes, loadDeclunits } from 'common/reducers/cmsTradeitem';
 import SearchBar from 'client/components/search-bar';
 import './index.less';
 import HsExtraPanel from './tabpanes/hsExtraPane';
@@ -80,11 +80,14 @@ function buildTipItems(str, b) {
   return (<a>{cs}</a>); // (<Tooltip title={cs}><a>{str}</a></Tooltip>);
 }
 function fetchData({ state, dispatch }) {
-  return dispatch(loadHscodes({
+  const promises = [];
+  promises.push(dispatch(loadDeclunits(state.account.tenantId)));
+  promises.push(dispatch(loadHscodes({
     pageSize: state.cmsTradeitem.hscodes.pageSize,
     current: state.cmsTradeitem.hscodes.current,
     searchText: state.cmsTradeitem.hscodes.searchText,
-  }));
+  })));
+  return Promise.all(promises);
 }
 @connectFetch()(fetchData)
 @injectIntl
@@ -92,8 +95,9 @@ function fetchData({ state, dispatch }) {
   state => ({
     tenantId: state.account.tenantId,
     hscodes: state.cmsTradeitem.hscodes,
+    declunits: state.cmsTradeitem.declunits,
   }),
-  { loadHscodes }
+  { loadHscodes, loadDeclunits }
 )
 @connectNav({
   depth: 2,
@@ -105,11 +109,106 @@ export default class HscodeList extends Component {
     tenantId: PropTypes.number.isRequired,
     loadHscodes: PropTypes.func.isRequired,
     hscodes: PropTypes.object.isRequired,
+    declunits: PropTypes.array,
   }
   state = {
     collapsed: true,
   }
   msg = key => formatMsg(this.props.intl, key)
+  dataSource = new Table.DataSource({
+    fetcher: params => this.props.loadHscodes(params),
+    resolve: result => result.data,
+    getPagination: (result, resolve) => ({
+      total: result.totalCount,
+      current: resolve(result.totalCount, result.current, result.pageSize),
+      showSizeChanger: true,
+      showQuickJumper: false,
+      pageSize: result.pageSize,
+    }),
+    getParams: (pagination) => {
+      const params = {
+        pageSize: pagination.pageSize,
+        current: pagination.current,
+        searchText: this.props.hscodes.searchText,
+      };
+      return params;
+    },
+    remotes: this.props.hscodes,
+  });
+  columns = [{
+    title: '商品编码',
+    dataIndex: 'hscode',
+    width: 120,
+    fixed: 'left',
+    className: 'hscode-list-left',
+  }, {
+    title: '商品名称',
+    dataIndex: 'product_name',
+    width: 200,
+  }, {
+    title: '商品描述',
+    dataIndex: 'product_remark',
+    width: 100,
+  }, {
+    title: '申报要素',
+    dataIndex: 'declared_elements',
+    width: 300,
+  }, {
+    title: '法定第一单位',
+    dataIndex: 'first_unit',
+    width: 50,
+  }, {
+    title: '法定第二单位',
+    dataIndex: 'second_unit',
+    width: 50,
+  }, {
+    title: '最惠国进口税率',
+    dataIndex: 'mfn_rates',
+    width: 50,
+  }, {
+    title: '普通进口税率',
+    dataIndex: 'general_rates',
+    width: 50,
+  }, {
+    title: '暂定进口税率',
+    dataIndex: 'provisional_rates',
+    width: 50,
+  }, {
+    title: '消费税率',
+    dataIndex: 'gst_rates',
+    width: 50,
+  }, {
+    title: '出口关税率',
+    dataIndex: 'export_rates',
+    width: 50,
+  }, {
+    title: '出口退税率',
+    dataIndex: 'export_rebate_rates',
+    width: 50,
+  }, {
+    title: '增值税率',
+    dataIndex: 'vat_rates',
+    width: 50,
+  }, {
+    title: '海关监管条件',
+    dataIndex: 'customs',
+    width: 180,
+    render: col => buildTipItems(col),
+  }, {
+    title: '检验检疫类别',
+    dataIndex: 'inspection',
+    width: 180,
+    render: col => buildTipItems(col, true),
+  }, {
+    title: '能效',
+    dataIndex: '',
+    width: 50,
+  }, {
+    title: '海关公告',
+    dataIndex: '',
+    width: 50,
+    className: 'hscode-list-right',
+  }];
   toggle = () => {
     this.setState({
       collapsed: !this.state.collapsed,
@@ -124,108 +223,18 @@ export default class HscodeList extends Component {
     });
   }
   render() {
-    const dataSource = new Table.DataSource({
-      fetcher: params => this.props.loadHscodes(params),
-      resolve: result => result.data,
-      getPagination: (result, resolve) => ({
-        total: result.totalCount,
-        current: resolve(result.totalCount, result.current, result.pageSize),
-        showSizeChanger: true,
-        showQuickJumper: false,
-        pageSize: result.pageSize,
-      }),
-      getParams: (pagination) => {
-        const params = {
-          pageSize: pagination.pageSize,
-          current: pagination.current,
-          searchText: this.props.hscodes.searchText,
-        };
-        return params;
-      },
-      remotes: this.props.hscodes,
-    });
-    const columns = [{
-      title: '商品编码',
-      dataIndex: 'hscode',
-      width: 120,
-      fixed: 'left',
-      className: 'hscode-list-left',
-    }, {
-      title: '商品名称',
-      dataIndex: 'product_name',
-      width: 200,
-    }, {
-      title: '商品描述',
-      dataIndex: 'product_remark',
-      width: 100,
-    }, {
-      title: '申报要素',
-      dataIndex: 'declared_elements',
-      width: 300,
-    }, {
-      title: '法定第一单位',
-      dataIndex: 'first_unit',
-      width: 50,
-    }, {
-      title: '法定第二单位',
-      dataIndex: 'second_unit',
-      width: 50,
-    }, {
-      title: '最惠国进口税率',
-      dataIndex: 'mfn_rates',
-      width: 50,
-    }, {
-      title: '普通进口税率',
-      dataIndex: 'general_rates',
-      width: 50,
-    }, {
-      title: '暂定进口税率',
-      dataIndex: 'provisional_rates',
-      width: 50,
-    }, {
-      title: '消费税率',
-      dataIndex: 'gst_rates',
-      width: 50,
-    }, {
-      title: '出口关税率',
-      dataIndex: 'export_rates',
-      width: 50,
-    }, {
-      title: '出口退税率',
-      dataIndex: 'export_rebate_rates',
-      width: 50,
-    }, {
-      title: '增值税率',
-      dataIndex: 'vat_rates',
-      width: 50,
-    }, {
-      title: '海关监管条件',
-      dataIndex: 'customs',
-      width: 180,
-      render: col => buildTipItems(col),
-    }, {
-      title: '检验检疫类别',
-      dataIndex: 'inspection',
-      width: 180,
-      render: col => buildTipItems(col, true),
-    }, {
-      title: '能效',
-      dataIndex: '',
-      width: 50,
-    }, {
-      title: '申报单位（保税）',
-      dataIndex: '',
-      width: 50,
-    }, {
-      title: '申报单位（其他）',
-      dataIndex: '',
-      width: 50,
-    }, {
-      title: '海关公告',
-      dataIndex: '',
-      width: 50,
-      className: 'hscode-list-right',
-    }];
+    const { hscodes, declunits } = this.props;
+    this.dataSource.remotes = hscodes;
+    let columns = [];
+    columns = [...this.columns];
+    for (let i = 0; i < declunits.length; i++) {
+      const unit = declunits[i];
+      columns.push({
+        title: `${unit.unit_name}`,
+        dataIndex: `gunit_${unit.unit_code}`,
+        width: 50,
+      });
+    }
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Layout>
@@ -250,7 +259,7 @@ export default class HscodeList extends Component {
             <Content className="main-content top-bar-fixed" key="main">
               <div className="page-body">
                 <div className="panel-body table-panel">
-                  <Table columns={columns} dataSource={dataSource} scroll={{ x: 2260 }} rowKey="id" />
+                  <Table columns={columns} dataSource={this.dataSource} scroll={{ x: 2260 }} rowKey="id" />
                 </div>
               </div>
             </Content>

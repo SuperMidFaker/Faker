@@ -142,8 +142,21 @@ export default class SheetBodyPanel extends React.Component {
     if (nextProps.bodyItem !== this.props.bodyItem) {
       const item = nextProps.bodyItem;
       if (item) {
-        const unit1 = this.props.units.filter(unit => unit.text === item.unit_1)[0];
-        const unit2 = this.props.units.filter(unit => unit.text === item.unit_2)[0];
+        let unit1Val = '';
+        let unit2Val = '';
+        let gunitVal = '';
+        if (item.unit_1) {
+          const unit1 = this.props.units.filter(unit => unit.text === item.unit_1)[0];
+          unit1Val = unit1.value;
+        }
+        if (item.unit_2) {
+          const unit2 = this.props.units.filter(unit => unit.text === item.unit_2)[0];
+          unit2Val = unit2.value;
+        }
+        if (item.g_unit) {
+          const gunit = this.props.units.filter(unit => unit.text === item.g_unit)[0];
+          gunitVal = gunit.value;
+        }
         this.setState({
           editBody: {
             ...this.state.editBody,
@@ -151,8 +164,9 @@ export default class SheetBodyPanel extends React.Component {
             g_name: item.g_name,
             g_model: item.g_model,
             element: item.element,
-            unit_1: unit1.value,
-            unit_2: unit2.value,
+            g_unit: gunitVal,
+            unit_1: unit1Val,
+            unit_2: unit2Val,
           },
         });
       } else {
@@ -163,6 +177,7 @@ export default class SheetBodyPanel extends React.Component {
             g_name: '',
             g_model: '',
             element: '',
+            g_unit: '',
             unit_1: '',
             unit_2: '',
           },
@@ -172,15 +187,23 @@ export default class SheetBodyPanel extends React.Component {
     if (nextProps.bodyHscode !== this.props.bodyHscode) {
       const hscode = nextProps.bodyHscode;
       if (hscode) {
-        const unit1 = this.props.units.filter(unit => unit.text === hscode.first_unit)[0];
-        const unit2 = this.props.units.filter(unit => unit.text === hscode.second_unit)[0];
+        let unit1Val = '';
+        let unit2Val = '';
+        if (hscode.first_unit) {
+          const unit1 = this.props.units.filter(unit => unit.text === hscode.first_unit)[0];
+          unit1Val = unit1.value;
+        }
+        if (hscode.second_unit) {
+          const unit2 = this.props.units.filter(unit => unit.text === hscode.second_unit)[0];
+          unit2Val = unit2.value;
+        }
         this.setState({
           editBody: {
             ...this.state.editBody,
             g_name: hscode.product_name,
             element: hscode.declared_elements,
-            unit_1: unit1.value,
-            unit_2: unit2.value,
+            unit_1: unit1Val,
+            unit_2: unit2Val,
           },
         });
       } else {

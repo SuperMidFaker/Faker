@@ -198,7 +198,7 @@ export function delContainer(id) {
   };
 }
 
-export function loadCertMarks(entryId) {
+export function loadCertMarks(preEntrySeqNo) {
   return {
     [CLIENT_API]: {
       types: [
@@ -208,7 +208,7 @@ export function loadCertMarks(entryId) {
       ],
       endpoint: 'v1/cms/manifest/certMark',
       method: 'get',
-      params: { entryId },
+      params: { preEntrySeqNo },
     },
   };
 }

@@ -47,7 +47,7 @@ const messages = defineMessages({
   },
   unit1: {
     id: 'cms.tradeitem.table.unit1',
-    defaultMessage: '法定计量单位',
+    defaultMessage: '法一计量单位',
   },
   unit2: {
     id: 'cms.tradeitem.table.unit2',
