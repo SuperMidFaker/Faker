@@ -24,6 +24,7 @@ function fetchData({ dispatch }) {
     loginId: state.account.loginId,
     loginName: state.account.loginName,
     repoId: state.cmsTradeitem.repoId,
+    declunits: state.cmsTradeitem.declunits,
   }),
   { loadTradeParams, createTradeItem }
 )
@@ -41,6 +42,7 @@ export default class AcceptanceCreate extends Component {
     loginId: PropTypes.number.isRequired,
     loginName: PropTypes.string.isRequired,
     repoId: PropTypes.number.isRequired,
+    declunits: PropTypes.array,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -49,10 +51,14 @@ export default class AcceptanceCreate extends Component {
   handleSave = () => {
     this.props.form.validateFields((errors) => {
       if (!errors) {
-        const { repoId, tenantId, loginId, loginName } = this.props;
+        const { repoId, tenantId, loginId, loginName, declunits } = this.props;
         const item = this.props.form.getFieldsValue();
+        const gunits = [];
+        declunits.forEach((unit) => {
+          gunits.push(`gunit_${unit.unit_code}`);
+        });
         this.props.createTradeItem({
-          item, repoId, tenantId, loginId, loginName,
+          item, repoId, tenantId, loginId, loginName, gunits,
         }).then((result) => {
           if (result.error) {
             message.error(result.error.message);

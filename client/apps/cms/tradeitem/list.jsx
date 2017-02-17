@@ -11,7 +11,8 @@ import QueueAnim from 'rc-queue-anim';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import { loadCustomers } from 'common/reducers/crmCustomers';
-import { loadOwners, openAddModal, selectedRepoId, loadTradeItems, deleteItem, deleteSelectedItems } from 'common/reducers/cmsTradeitem';
+import { loadOwners, openAddModal, selectedRepoId, loadTradeItems,
+  deleteItem, deleteSelectedItems, loadDeclunits } from 'common/reducers/cmsTradeitem';
 import AddTradeRepoModal from './modals/addTradeRepo';
 import ExtraPanel from './tabpanes/ExtraPane';
 import ExcelUpload from 'client/components/excelUploader';
@@ -33,6 +34,7 @@ function fetchData({ state, dispatch }) {
   promises.push(dispatch(loadOwners({
     tenantId: state.account.tenantId,
   })));
+  promises.push(dispatch(loadDeclunits(state.account.tenantId)));
   return Promise.all(promises);
 }
 @connectFetch()(fetchData)
@@ -46,6 +48,7 @@ function fetchData({ state, dispatch }) {
     repoId: state.cmsTradeitem.repoId,
     tradeItemlist: state.cmsTradeitem.tradeItemlist,
     visibleAddModal: state.cmsTradeitem.visibleAddModal,
+    declunits: state.cmsTradeitem.declunits,
   }),
   { loadCustomers, openAddModal, selectedRepoId, loadTradeItems, deleteItem, deleteSelectedItems }
 )
@@ -61,6 +64,7 @@ export default class TradeItemList extends Component {
     tradeItemlist: PropTypes.object.isRequired,
     repoId: PropTypes.number,
     visibleAddModal: PropTypes.bool,
+    declunits: PropTypes.array,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -90,84 +94,6 @@ export default class TradeItemList extends Component {
     title: this.msg('element'),
     dataIndex: 'element',
     width: 400,
-  }, {
-    title: this.msg('gUnitFtz'),
-    dataIndex: 'g_unit_ftz',
-    width: 80,
-  }, {
-    title: this.msg('gUnit'),
-    dataIndex: 'g_unit',
-    width: 80,
-  }, {
-    title: this.msg('unit1'),
-    dataIndex: 'unit_1',
-    width: 80,
-  }, {
-    title: this.msg('unit2'),
-    dataIndex: 'unit_2',
-    width: 80,
-  }, {
-    title: this.msg('fixedQty'),
-    dataIndex: 'fixed_qty',
-    width: 120,
-  }, {
-    title: this.msg('fixedUnit'),
-    dataIndex: 'fixed_unit',
-    width: 80,
-  }, {
-    title: this.msg('origCountry'),
-    dataIndex: 'origin_country',
-    width: 120,
-  }, {
-    title: this.msg('unitNetWt'),
-    dataIndex: 'unit_net_wt',
-    width: 120,
-  }, {
-    title: this.msg('customsControl'),
-    dataIndex: 'customs_control',
-    width: 120,
-  }, {
-    title: this.msg('inspQuarantine'),
-    dataIndex: 'inspection_quarantine',
-    width: 120,
-  }, {
-    title: this.msg('unitPrice'),
-    dataIndex: 'unit_price',
-    width: 120,
-  }, {
-    title: this.msg('currency'),
-    dataIndex: 'currency',
-    width: 120,
-  }, {
-    title: this.msg('preClassifyNo'),
-    dataIndex: 'pre_classify_no',
-    width: 120,
-  }, {
-    title: this.msg('preClassifyStartDate'),
-    dataIndex: 'pre_classify_start_date ',
-    width: 180,
-    render: (o, record) => {
-      if (record.pre_classify_start_date) {
-        return moment(record.pre_classify_start_date).format('YYYY-MM-DD');
-      } else {
-        return '--';
-      }
-    },
-  }, {
-    title: this.msg('preClassifyEndDate'),
-    dataIndex: 'pre_classify_end_date ',
-    width: 180,
-    render: (o, record) => {
-      if (record.pre_classify_end_date) {
-        return moment(record.pre_classify_end_date).format('YYYY-MM-DD');
-      } else {
-        return '--';
-      }
-    },
-  }, {
-    title: this.msg('remark'),
-    dataIndex: 'remark',
-    width: 200,
   }]
   dataSource = new Table.DataSource({
     fetcher: params => this.props.loadTradeItems(params),
@@ -258,7 +184,7 @@ export default class TradeItemList extends Component {
     });
   }
   render() {
-    const { repoOwners, tradeItemlist, repoId } = this.props;
+    const { repoOwners, tradeItemlist, repoId, declunits } = this.props;
     const selectedRows = this.state.selectedRowKeys;
     const rowSelection = {
       selectedRowKeys: selectedRows,
@@ -269,6 +195,85 @@ export default class TradeItemList extends Component {
     this.dataSource.remotes = tradeItemlist;
     let columns = [];
     columns = [...this.columns];
+    for (let i = 0; i < declunits.length; i++) {
+      const unit = declunits[i];
+      columns.push({
+        title: `${unit.unit_name}`,
+        dataIndex: `gunit_${unit.unit_code}`,
+        width: 80,
+      });
+    }
+    columns.push({
+      title: this.msg('unit1'),
+      dataIndex: 'unit_1',
+      width: 80,
+    }, {
+      title: this.msg('unit2'),
+      dataIndex: 'unit_2',
+      width: 80,
+    }, {
+      title: this.msg('fixedQty'),
+      dataIndex: 'fixed_qty',
+      width: 120,
+    }, {
+      title: this.msg('fixedUnit'),
+      dataIndex: 'fixed_unit',
+      width: 80,
+    }, {
+      title: this.msg('origCountry'),
+      dataIndex: 'origin_country',
+      width: 120,
+    }, {
+      title: this.msg('unitNetWt'),
+      dataIndex: 'unit_net_wt',
+      width: 120,
+    }, {
+      title: this.msg('customsControl'),
+      dataIndex: 'customs_control',
+      width: 120,
+    }, {
+      title: this.msg('inspQuarantine'),
+      dataIndex: 'inspection_quarantine',
+      width: 120,
+    }, {
+      title: this.msg('unitPrice'),
+      dataIndex: 'unit_price',
+      width: 120,
+    }, {
+      title: this.msg('currency'),
+      dataIndex: 'currency',
+      width: 120,
+    }, {
+      title: this.msg('preClassifyNo'),
+      dataIndex: 'pre_classify_no',
+      width: 120,
+    }, {
+      title: this.msg('preClassifyStartDate'),
+      dataIndex: 'pre_classify_start_date ',
+      width: 180,
+      render: (o, record) => {
+        if (record.pre_classify_start_date) {
+          return moment(record.pre_classify_start_date).format('YYYY-MM-DD');
+        } else {
+          return '--';
+        }
+      },
+    }, {
+      title: this.msg('preClassifyEndDate'),
+      dataIndex: 'pre_classify_end_date ',
+      width: 180,
+      render: (o, record) => {
+        if (record.pre_classify_end_date) {
+          return moment(record.pre_classify_end_date).format('YYYY-MM-DD');
+        } else {
+          return '--';
+        }
+      },
+    }, {
+      title: this.msg('remark'),
+      dataIndex: 'remark',
+      width: 200,
+    });
     columns.push({
       title: this.msg('opColumn'),
       width: 80,
