@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
-import { Card } from 'antd';
+import { Card, Row, Col } from 'antd';
 import echarts from 'echarts';
 
 @injectIntl
@@ -165,14 +165,18 @@ export default class OverTime extends React.Component {
 
   render() {
     return (
-      <div className="panel-body table-panel" style={{ padding: 10 }}>
-        <Card style={{ width: '49%', display: 'inline-block' }}>
-          <div id="bar-chart-overtime" style={{ width: '100%', height: '450px' }} />
-        </Card>
-        <Card style={{ width: '49%', marginLeft: '1%', display: 'inline-block' }}>
-          <div id="pie-chart-overtime" style={{ width: '100%', height: '450px' }} />
-        </Card>
-      </div>
+      <Row gutter={24}>
+        <Col sm={24} md={12}>
+          <Card>
+            <div id="bar-chart-overtime" style={{ width: '100%', height: '450px' }} />
+          </Card>
+        </Col>
+        <Col sm={24} md={12}>
+          <Card>
+            <div id="pie-chart-overtime" style={{ width: '100%', height: '450px' }} />
+          </Card>
+        </Col>
+      </Row>
     );
   }
 }

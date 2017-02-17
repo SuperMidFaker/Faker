@@ -9,16 +9,16 @@ const messages = defineMessages({
     id: 'scv.module.orders',
     defaultMessage: '订单',
   },
-  shipments: {
-    id: 'scv.module.shipments',
-    defaultMessage: '货运跟踪',
+  tracking: {
+    id: 'scv.module.tracking',
+    defaultMessage: '状态跟踪',
   },
   inboundShipments: {
-    id: 'scv.module.shipments.inbound',
+    id: 'scv.module.tracking.inbound',
     defaultMessage: '进口货运',
   },
   outboundShipments: {
-    id: 'scv.module.shipments.outbound',
+    id: 'scv.module.tracking.outbound',
     defaultMessage: '出口货运',
   },
   clearance: {

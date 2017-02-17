@@ -24,21 +24,21 @@ export default class ModuleSCV extends React.Component {
       single: true,
       key: 'scv-0',
       path: '/scv/dashboard',
-      icon: 'icon-fontello-gauge-1',
+      icon: 'icon-fontello-gauge',
       text: formatMsg(intl, 'dashboard'),
     });
     linkMenus.push({
       single: false,
       key: 'scv-2',
-      icon: 'icon-fontello-flight-1',
-      text: formatMsg(intl, 'shipments'),
+      icon: 'icon-fontello-tasks-1',
+      text: formatMsg(intl, 'tracking'),
       sublinks: [{
         key: 'scv-2-0',
-        path: '/scv/shipments/inbound',
+        path: '/scv/tracking/inbound',
         text: formatMsg(intl, 'inboundShipments'),
       }, {
         key: 'scv-2-1',
-        path: '/scv/shipments/outbound',
+        path: '/scv/tracking/outbound',
         text: formatMsg(intl, 'outboundShipments'),
       }],
     });

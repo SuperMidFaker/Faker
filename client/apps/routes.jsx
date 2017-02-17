@@ -321,7 +321,7 @@ export default(store, cookie) => {
             <IndexRedirect to="/scv/dashboard" />
             <Route path="dashboard" component={SCVDashboard.Index} />
             <Route path="orders" component={SCVOrders.List} />
-            <Route path="shipments">
+            <Route path="tracking">
               <Route path="inbound" component={SCVInbound.List} />
               <Route path="outbound" component={SCVOutbound.List} />
             </Route>

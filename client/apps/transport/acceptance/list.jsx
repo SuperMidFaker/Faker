@@ -446,7 +446,7 @@ export default class AcceptList extends React.Component {
             <div className="toolbar">
               <PrivilegeCover module="transport" feature="shipment" action="create">
                 <NavLink to="/transport/shipment/new">
-                  <Button type="primary" size="large" icon="plus" className="btn-success">
+                  <Button type="primary" size="large" icon="plus">
                     {this.msg('shipmtCreate')}
                   </Button>
                 </NavLink>

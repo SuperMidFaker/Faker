@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Layout, Select, DatePicker, Button, Menu } from 'antd';
+import { Breadcrumb, Layout, Select, DatePicker, Button, Menu } from 'antd';
 import { loadKpi } from 'common/reducers/transportKpi';
 import { loadFormRequire } from 'common/reducers/shipment';
 import TrafficVolume from './trafficVolume';
@@ -101,27 +101,31 @@ export default class Kpi extends React.Component {
     return (
       <div>
         <Header className="top-bar">
-          <span>KPI</span>
+          <Breadcrumb>
+            <Breadcrumb.Item>
+              报表中心
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              KPI分析
+            </Breadcrumb.Item>
+          </Breadcrumb>
+          <div className="top-bar-tools">
+            <Button size="large" type="primary" onClick={this.handleExportExcel}>导出全部</Button>
+          </div>
         </Header>
         <Content className="main-content">
           <div className="page-body">
             <div className="toolbar">
-              <Button type="primary" onClick={this.handleExportExcel}>导出全部</Button>
-              <div className="toolbar-right">
-                <a onClick={() => this.handleMonth(2)}>近3月</a>
-                <a onClick={() => this.handleMonth(5)} style={{ marginLeft: 20 }}>近6月</a>
-                <a onClick={() => this.handleMonth(11)} style={{ marginLeft: 20 }}>近一年</a>
-                <MonthPicker allowClear={false} value={moment(query.beginDate)} onChange={this.handleBeginDateChange} style={{ marginLeft: 20 }} /> ~
-                <MonthPicker allowClear={false} value={moment(query.endDate)} onChange={this.handleEndDateChange} />
-                <Select
-                  showSearch
-                  style={{ width: 300, marginLeft: 20 }}
-                  placeholder="选择一个客户"
-                  optionFilterProp="children"
-                  onChange={this.handleCustomerChange}
-                  allowClear
-                >
-                  {
+              <Select
+                size="large"
+                showSearch
+                style={{ width: 300 }}
+                placeholder="选择一个客户"
+                optionFilterProp="children"
+                onChange={this.handleCustomerChange}
+                allowClear
+              >
+                {
                     clients.map(pt => (
                       <Option searched={`${pt.partner_code}${pt.name}`}
                         value={pt.partner_id} key={pt.partner_id}
@@ -130,11 +134,18 @@ export default class Kpi extends React.Component {
                       </Option>)
                     )
                   }
-                </Select>
+              </Select>
+              <div className="toolbar-right">
+                <a onClick={() => this.handleMonth(2)}>近3月</a>
+                <a onClick={() => this.handleMonth(5)} style={{ marginLeft: 20 }}>近6月</a>
+                <a onClick={() => this.handleMonth(11)} style={{ marginLeft: 20 }}>近一年</a>
+                <MonthPicker size="large" allowClear={false} value={moment(query.beginDate)} onChange={this.handleBeginDateChange} />
+                <span>~</span>
+                <MonthPicker size="large" allowClear={false} value={moment(query.endDate)} onChange={this.handleEndDateChange} />
               </div>
             </div>
-            <Layout>
-              <Sider style={{ backgroundColor: '#fff' }}>
+            <Layout className="main-wrapper">
+              <Sider className="nav-sider">
                 <Menu onClick={this.handleMenuChange}
                   style={{ width: 'inherit' }}
                   defaultOpenKeys={['sub1']}
@@ -149,12 +160,10 @@ export default class Kpi extends React.Component {
                   <Menu.Item key="4">运输费统计</Menu.Item>
                 </Menu>
               </Sider>
-              <Content>
+              <Content style={{ padding: '0 24px', minHeight: 280 }}>
                 {content}
               </Content>
             </Layout>
-
-
           </div>
         </Content>
       </div>

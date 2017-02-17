@@ -36,7 +36,7 @@ export default class Clearance extends React.Component {
         single: true,
         key: 'cms-0',
         path: '/clearance/dashboard',
-        icon: 'zmdi zmdi-tv-list',
+        icon: 'icon-fontello-desktop',
         text: formatMsg(intl, 'dashboard'),
       });
     }

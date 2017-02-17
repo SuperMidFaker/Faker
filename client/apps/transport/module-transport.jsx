@@ -36,7 +36,7 @@ export default class Transport extends React.Component {
         single: true,
         key: 'tms-0',
         path: '/transport/dashboard',
-        icon: 'zmdi zmdi-tv-list',
+        icon: 'icon-fontello-desktop',
         text: formatMsg(intl, 'dashboard'),
       });
     }
@@ -45,7 +45,7 @@ export default class Transport extends React.Component {
         single: true,
         key: 'tms-1',
         path: '/transport/shipment',
-        icon: 'zmdi zmdi-inbox',
+        icon: 'icon-fontello-doc-text-2',
         text: formatMsg(intl, 'shipment'),
       });
     }
@@ -54,7 +54,7 @@ export default class Transport extends React.Component {
         single: true,
         key: 'tms-2',
         path: '/transport/dispatch',
-        icon: 'icon-fontello-fork',
+        icon: 'icon-fontello-truck',
         text: formatMsg(intl, 'dispatch'),
       });
     }
@@ -63,7 +63,7 @@ export default class Transport extends React.Component {
         single: true,
         key: 'tms-3',
         path: '/transport/tracking',
-        icon: 'icon-fontello-tasks',
+        icon: 'icon-fontello-tasks-1',
         text: formatMsg(intl, 'tracking'),
       });
     }

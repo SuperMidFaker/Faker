@@ -24,7 +24,7 @@ export default class ModuleCWM extends React.Component {
       single: true,
       key: 'cwm-0',
       path: '/cwm/dashboard',
-      icon: 'zmdi zmdi-desktop-windows',
+      icon: 'icon-fontello-gauge',
       text: formatMsg(intl, 'dashboard'),
     });
     linkMenus.push({

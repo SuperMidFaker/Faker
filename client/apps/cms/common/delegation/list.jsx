@@ -532,7 +532,7 @@ export default class DelegationList extends Component {
           <div className="page-body">
             <div className="toolbar">
               <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
-                <Button type="primary" size="large" onClick={this.handleCreateBtnClick} icon="plus" className="btn-success">
+                <Button type="primary" size="large" onClick={this.handleCreateBtnClick} icon="plus">
                   {this.msg('createDelegation')}
                 </Button>
               </PrivilegeCover>
