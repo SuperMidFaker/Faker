@@ -94,7 +94,7 @@ export default class InventoryStockList extends React.Component {
   }, {
     title: this.msg('lotNo'),
     width: 120,
-    dataIndex: 'lot_no',
+    dataIndex: 'external_lot_no',
     render: (text, row) => this.renderNormalCol(text, row),
   }, {
     title: this.msg('serialNo'),
@@ -114,7 +114,7 @@ export default class InventoryStockList extends React.Component {
   }, {
     title: this.msg('specificDate'),
     width: 80,
-    dataIndex: 'expiry_date',
+    dataIndex: 'spec_date',
     render: (text, row) => this.renderNormalCol(text, row),
   }, {
     title: this.msg('skuCbm'),
@@ -129,17 +129,17 @@ export default class InventoryStockList extends React.Component {
   }, {
     title: this.msg('cartonLength'),
     width: 80,
-    dateIndex: 'length',
+    dataIndex: 'length',
     render: (text, row) => this.renderNormalCol(text, row),
   }, {
     title: this.msg('cartonWidth'),
     width: 80,
-    dateIndex: 'width',
+    dataIndex: 'width',
     render: (text, row) => this.renderNormalCol(text, row),
   }, {
     title: this.msg('cartonHeight'),
     width: 80,
-    dateIndex: 'height',
+    dataIndex: 'height',
     render: (text, row) => this.renderNormalCol(text, row),
   }, {
     title: this.msg('productDesc'),
@@ -148,7 +148,7 @@ export default class InventoryStockList extends React.Component {
     render: (text, row) => this.renderNormalCol(text, row),
   }]
   dataSource = new Table.DataSource({
-    fetcher: params => this.props.loadStocks(params),
+    fetcher: params => this.handleStockQuery(this.props.listFilter, params.pageSize, params.current), // todo pageSize newparams
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
       total: result.totalCount,
@@ -159,7 +159,6 @@ export default class InventoryStockList extends React.Component {
     }),
     getParams: (pagination, filters, sorter) => {
       const params = {
-        tenantId: this.props.tenantId,
         pageSize: pagination.pageSize,
         current: pagination.current,
         sorter: JSON.stringify({
@@ -167,8 +166,6 @@ export default class InventoryStockList extends React.Component {
           order: sorter.order,
         }),
       };
-      const filter = { ...this.props.listFilter }; // todo filters
-      params.filter = JSON.stringify(filter);
       return params;
     },
     remotes: this.props.stocklist,
@@ -178,34 +175,33 @@ export default class InventoryStockList extends React.Component {
       collapsed: !this.state.collapsed,
     });
   }
-  handleStockQuery = (filter) => {
+  handleStockQuery = (filter, newPageSize, newCurrent) => {
     let prom;
     const { tenantId, stocklist: { pageSize }, sortFilter } = this.props;
     if (this.state.lot_query) {
       const lotColumn = {
-        lot_no: false,
+        external_lot_no: false,
         serial_no: false,
-        expiry_date: false,
+        spec_date: false,
         unit_price: false,
         stock_cost: false,
       };
-      if (this.state.lot_property === 'unit_price') {
+      if (filter.lot_property === 'unit_price') {
         lotColumn.unit_price = true;
         lotColumn.stock_cost = true;
-      } else if (this.state.lot_property === 'lot_no') {
-        lotColumn.lot_no = true;
-      } else if (this.state.lot_property === 'serial_no') {
+      } else if (filter.lot_property === 'lot_no') {
+        lotColumn.external_lot_no = true;
+      } else if (filter.lot_property === 'serial_no') {
         lotColumn.serial_no = true;
-      } else if (this.state.lot_property === 'expiry_date') {
-        lotColumn.expiry_date = true;
+      } else if (filter.lot_property === 'spec_date') {
+        lotColumn.spec_date = true;
       }
       prom = this.props.loadLotStocks({
         tenantId,
         filter: JSON.stringify(filter),
         sorter: JSON.stringify(sortFilter),
         pageSize,
-        current: 1,
-        lot_property: this.state.lot_property,
+        current: newCurrent || 1,
       }, lotColumn);
     } else {
       prom = this.props.loadStocks({
@@ -213,7 +209,7 @@ export default class InventoryStockList extends React.Component {
         filter: JSON.stringify(filter),
         sorter: JSON.stringify(sortFilter),
         pageSize,
-        current: 1,
+        current: newCurrent || 1,
       });
     }
     prom.then((result) => {
@@ -226,10 +222,10 @@ export default class InventoryStockList extends React.Component {
     const filter = { ...this.props.listFilter, ...searchForm };
     if (checkLotProperty) {
       this.state.lot_query = true;
-      this.state.lot_property = lotProperty;
+      filter.lot_property = lotProperty;
     } else {
       this.state.lot_query = false;
-      this.state.lot_property = null;
+      filter.lot_property = null;
     }
     this.handleStockQuery(filter);
   }
@@ -262,14 +258,16 @@ export default class InventoryStockList extends React.Component {
           whnoMap[row.wh_name].push(row);
         }
       });
+      let total = stocklist.totalCount;
       Object.keys(whnoMap).forEach((whno) => {
         data.push({ key: 'wh_no', value: whno });
         data.push(...whnoMap[whno]);
+        total += 1;
       });
       this.dataSource.remotes = {
-        totalCount: stocklist.totalCount,
+        totalCount: total,
         current: stocklist.current,
-        pageSize: data.length,
+        pageSize: data.length > stocklist.pageSize ? data.length : stocklist.pageSize,
         data,
       };
       columns = [{
