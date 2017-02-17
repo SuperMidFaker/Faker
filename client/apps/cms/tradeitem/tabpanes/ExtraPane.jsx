@@ -4,6 +4,7 @@ import { Tabs } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { setPaneTabkey } from 'common/reducers/cmsTradeitem';
 import CopCodesPane from './copCodesPane';
+import SetUnitPane from './setUnitPane';
 
 const TabPane = Tabs.TabPane;
 
@@ -25,8 +26,11 @@ export default class ExtraPanel extends React.Component {
   render() {
     return (
       <Tabs activeKey={this.props.tabKey} onChange={this.handleTabChange} >
-        <TabPane tab="共享企业代码管理" key="copCodes">
+        <TabPane tab="收发货企业管理" key="copCodes">
           <CopCodesPane />
+        </TabPane>
+        <TabPane tab="申报单位设置" key="gunit" >
+          <SetUnitPane />
         </TabPane>
         <TabPane tab="客户权限设置" key="authUser" />
       </Tabs>

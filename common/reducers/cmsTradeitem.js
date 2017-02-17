@@ -23,6 +23,8 @@ const actionTypes = createActionTypes('@@welogix/cms/tradeitem/', [
   'LOAD_DECLUNITS', 'LOAD_DECLUNITS_SUCCEED', 'LOAD_DECLUNITS_FAIL',
   'SAVE_DECLUNIT', 'SAVE_DECLUNIT_SUCCEED', 'SAVE_DECLUNIT_FAIL',
   'DELETE_DECLUNIT', 'DELETE_DECLUNIT_SUCCEED', 'DELETE_DECLUNIT_FAIL',
+  'LOAD_DECLWAY_UNITS', 'LOAD_DECLWAY_UNITS_SUCCEED', 'LOAD_DECLWAY_UNITS_FAIL',
+  'SAVE_DECLWAY_UNIT', 'SAVE_DECLWAY_UNIT_SUCCEED', 'SAVE_DECLWAY_UNIT_FAIL',
 ]);
 
 const initialState = {
@@ -60,6 +62,7 @@ const initialState = {
   declunits: [],
   hstabKey: 'declunit',
   gunits: [],
+  declwayUnits: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -95,6 +98,9 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_DECLUNITS_SUCCEED:
     case actionTypes.SAVE_DECLUNIT_SUCCEED:
       return { ...state, declunits: action.result.data };
+    case actionTypes.LOAD_DECLWAY_UNITS_SUCCEED:
+    case actionTypes.SAVE_DECLWAY_UNIT_SUCCEED:
+      return { ...state, declwayUnits: action.result.data };
     default:
       return state;
   }
@@ -404,6 +410,51 @@ export function delDeclunit(id) {
         actionTypes.DELETE_DECLUNIT_FAIL,
       ],
       endpoint: 'v1/cms/tradeitem/declunit/delete',
+      method: 'post',
+      data: { id },
+    },
+  };
+}
+
+export function loadDeclwayUnit(repoId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_DECLWAY_UNITS,
+        actionTypes.LOAD_DECLWAY_UNITS_SUCCEED,
+        actionTypes.LOAD_DECLWAY_UNITS_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/declwayUnits/load',
+      method: 'get',
+      params: { repoId },
+    },
+  };
+}
+
+export function saveDeclwayUnit(datas) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SAVE_DECLWAY_UNIT,
+        actionTypes.SAVE_DECLWAY_UNIT_SUCCEED,
+        actionTypes.SAVE_DECLWAY_UNIT_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/declwayUnit/save',
+      method: 'post',
+      data: datas,
+    },
+  };
+}
+
+export function delDeclwayUnit(id) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DELETE_DECLWAY_UNIT,
+        actionTypes.DELETE_DECLWAY_UNIT_SUCCEED,
+        actionTypes.DELETE_DECLWAY_UNIT_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/declwayUnit/delete',
       method: 'post',
       data: { id },
     },
