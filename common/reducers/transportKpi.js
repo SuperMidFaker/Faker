@@ -16,6 +16,7 @@ const initialState = {
     transitModes: [],
     range: [],
     shipmentCounts: [],
+    punctualShipmentCounts: [],
   },
 };
 

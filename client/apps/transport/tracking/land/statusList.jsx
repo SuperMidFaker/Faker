@@ -143,13 +143,12 @@ export default class LandStatusList extends React.Component {
     }),
     getParams: (pagination, filters, sorter) => {
       const newFilters = [...this.props.filters];
+      const index = newFilters.findIndex(item => item.name === 'customer_name');
+      if (index >= 0) {
+        newFilters.splice(index, 1);
+      }
       if (filters.customer_name && filters.customer_name.length > 0) {
         newFilters.push({ name: 'customer_name', value: filters.customer_name });
-      } else {
-        const index = newFilters.findIndex(item => item.name === 'customer_name');
-        if (index >= 0) {
-          newFilters.splice(index, 1);
-        }
       }
       const params = {
         tenantId: this.props.tenantId,
