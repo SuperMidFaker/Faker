@@ -4,16 +4,17 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Layout, Select, DatePicker, Button, Tabs } from 'antd';
+import { Layout, Select, DatePicker, Button, Menu } from 'antd';
 import { loadKpi } from 'common/reducers/transportKpi';
 import { loadFormRequire } from 'common/reducers/shipment';
 import TrafficVolume from './trafficVolume';
 import Punctual from './punctual';
+import OverTime from './overTime';
 
-const { Header, Content } = Layout;
+const { Header, Content, Sider } = Layout;
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
-const TabPane = Tabs.TabPane;
+const SubMenu = Menu.SubMenu;
 
 function fetchData({ cookie, state, dispatch }) {
   const beginDate = new Date();
@@ -52,6 +53,9 @@ export default class Kpi extends React.Component {
     query: PropTypes.object.isRequired,
     clients: PropTypes.array.isRequired,
   }
+  state = {
+    selectedKey: '1',
+  }
   handleCustomerChange = (partnerId) => {
     const { tenantId, query } = this.props;
     this.props.loadKpi(tenantId, query.beginDate, query.endDate, partnerId || -1);
@@ -60,8 +64,29 @@ export default class Kpi extends React.Component {
     const { tenantId, query } = this.props;
     this.props.loadKpi(tenantId, dates[0], dates[1], query.partnerId);
   }
+  handleMonth = (month) => {
+    const { tenantId, query } = this.props;
+    const end = new Date();
+    const begin = new Date();
+    begin.setMonth(begin.getMonth() - month);
+    this.props.loadKpi(tenantId, begin, end, query.partnerId);
+  }
+  handleMenuChange = (e) => {
+    this.setState({ selectedKey: e.key });
+  }
   render() {
     const { query, clients, kpi } = this.props;
+    const { selectedKey } = this.state;
+    let content = (<span />);
+    if (selectedKey === '1') {
+      content = (<Punctual kpi={kpi} />);
+    } else if (selectedKey === '2') {
+      content = (<OverTime kpi={kpi} />);
+    } else if (selectedKey === '3') {
+      content = (<TrafficVolume kpi={kpi} />);
+    } else if (selectedKey === '4') {
+      content = (<span>运输费统计</span>);
+    }
     return (
       <div>
         <Header className="top-bar">
@@ -70,32 +95,53 @@ export default class Kpi extends React.Component {
         <Content className="main-content">
           <div className="page-body">
             <div className="toolbar">
-              <Button>导出</Button>
-              <RangePicker format="YYYY-MM" value={[moment(query.beginDate), moment(query.endDate)]} onChange={this.handleDateChange} />
-              <Select
-                showSearch
-                style={{ width: 300 }}
-                placeholder="选择一个客户"
-                optionFilterProp="children"
-                onChange={this.handleCustomerChange}
-                allowClear
-              >
-                {
-                  clients.map(pt => (
-                    <Option searched={`${pt.partner_code}${pt.name}`}
-                      value={pt.partner_id} key={pt.partner_id}
-                    >
-                      {pt.partner_code ? `${pt.partner_code} | ${pt.name}` : pt.name}
-                    </Option>)
-                  )
-                }
-              </Select>
+              <Button type="primary">导出</Button>
+              <div className="toolbar-right">
+                <a onClick={() => this.handleMonth(2)}>近3月</a>
+                <a onClick={() => this.handleMonth(5)} style={{ marginLeft: 20 }}>近6月</a>
+                <a onClick={() => this.handleMonth(11)} style={{ marginLeft: 20 }}>近一年</a>
+                <RangePicker format="YYYY-MM" value={[moment(query.beginDate), moment(query.endDate)]} onChange={this.handleDateChange} style={{ marginLeft: 20 }} />
+                <Select
+                  showSearch
+                  style={{ width: 300, marginLeft: 20 }}
+                  placeholder="选择一个客户"
+                  optionFilterProp="children"
+                  onChange={this.handleCustomerChange}
+                  allowClear
+                >
+                  {
+                    clients.map(pt => (
+                      <Option searched={`${pt.partner_code}${pt.name}`}
+                        value={pt.partner_id} key={pt.partner_id}
+                      >
+                        {pt.partner_code ? `${pt.partner_code} | ${pt.name}` : pt.name}
+                      </Option>)
+                    )
+                  }
+                </Select>
+              </div>
             </div>
-            <Tabs defaultActiveKey="2" tabPosition="left">
-              <TabPane tab="准时交付率" key="1"><Punctual kpi={kpi} /></TabPane>
-              <TabPane tab="运输量统计" key="2"><TrafficVolume kpi={kpi} /></TabPane>
-              <TabPane tab="运输费统计" key="3">运输费统计</TabPane>
-            </Tabs>
+            <Layout>
+              <Sider style={{ backgroundColor: '#fff' }}>
+                <Menu onClick={this.handleMenuChange}
+                  style={{ width: 'inherit' }}
+                  defaultOpenKeys={['sub1']}
+                  selectedKeys={[selectedKey]}
+                  mode="inline"
+                >
+                  <SubMenu key="sub1" title="交付率统计">
+                    <Menu.Item key="1">准时</Menu.Item>
+                    <Menu.Item key="2">超时</Menu.Item>
+                  </SubMenu>
+                  <Menu.Item key="3">运输量统计</Menu.Item>
+                  <Menu.Item key="4">运输费统计</Menu.Item>
+                </Menu>
+              </Sider>
+              <Content>
+                {content}
+              </Content>
+            </Layout>
+
 
           </div>
         </Content>

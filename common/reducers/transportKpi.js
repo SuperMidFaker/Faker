@@ -26,7 +26,7 @@ export default function reducer(state = initialState, action) {
       return { ...state, query: { ...state.query, ...action.params } };
     }
     case actionTypes.LOAD_KPI_SUCCEED:
-      return { ...state, kpi: action.result.data };
+      return { ...state, kpi: { ...state.kpi, ...action.result.data } };
     default:
       return state;
   }

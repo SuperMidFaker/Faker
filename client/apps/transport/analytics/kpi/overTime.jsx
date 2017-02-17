@@ -4,7 +4,7 @@ import { Card } from 'antd';
 import echarts from 'echarts';
 
 @injectIntl
-export default class Punctual extends React.Component {
+export default class OverTime extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     kpi: PropTypes.object.isRequired,
@@ -18,7 +18,7 @@ export default class Punctual extends React.Component {
   initializeCharts = (props) => {
     const { transitModes, range, shipmentCounts, punctualShipmentCounts } = props.kpi;
     const barOption = {
-      title: { text: '准时率' },
+      title: { text: '超时率' },
       tooltip: {
         trigger: 'axis',
         axisPointer: {            // 坐标轴指示器，坐标轴触发有效
@@ -65,7 +65,7 @@ export default class Punctual extends React.Component {
             formatter: '{c} %',
           },
         },
-        data: shipmentCounts[index].map((item1, j) => shipmentCounts[index][j] === 0 ? 0 : Number((punctualShipmentCounts[index][j] / shipmentCounts[index][j] * 100).toFixed(2))),
+        data: shipmentCounts[index].map((item1, j) => shipmentCounts[index][j] === 0 ? 0 : Number(((shipmentCounts[index][j] - punctualShipmentCounts[index][j]) / shipmentCounts[index][j] * 100).toFixed(2))),
       })),
     };
     const transitModesShipmentCount = shipmentCounts.map(arr => arr.reduce((a, b) => a + b, 0));
@@ -73,7 +73,7 @@ export default class Punctual extends React.Component {
     const transitModesPunctualShipmentCount = punctualShipmentCounts.map(arr => arr.reduce((a, b) => a + b, 0));
     const punctualShipmentCount = transitModesPunctualShipmentCount.reduce((a, b) => a + b, 0);
     const pieOption = {
-      title: { text: '准时率占比' },
+      title: { text: '超时率占比' },
       tooltip: {
         trigger: 'item',
         formatter: '{a} <br/>{b} : {c} ({d}%)',
@@ -149,16 +149,16 @@ export default class Punctual extends React.Component {
             labelLine: { show: true },
           },
         },
-        data: transitModes.map((item, index) => ({
+        data: [{ value: punctualShipmentCount, name: '准时' }].concat(transitModes.map((item, index) => ({
           name: item.mode_name,
-          value: transitModesPunctualShipmentCount[index],
-        })).concat([{ value: allShipmentCount - punctualShipmentCount, name: '超时' }]),
+          value: transitModesShipmentCount[index] - transitModesPunctualShipmentCount[index],
+        }))),
       }],
     };
     if (window) {
-      const barChart = echarts.init(window.document.getElementById('bar-chart-punctual'));
+      const barChart = echarts.init(window.document.getElementById('bar-chart-overtime'));
       barChart.setOption(barOption);
-      const pieChart = echarts.init(window.document.getElementById('pie-chart-punctual'));
+      const pieChart = echarts.init(window.document.getElementById('pie-chart-overtime'));
       pieChart.setOption(pieOption);
     }
   }
@@ -167,10 +167,10 @@ export default class Punctual extends React.Component {
     return (
       <div className="panel-body table-panel" style={{ padding: 10 }}>
         <Card style={{ width: '49%', display: 'inline-block' }}>
-          <div id="bar-chart-punctual" style={{ width: '100%', height: '450px' }} />
+          <div id="bar-chart-overtime" style={{ width: '100%', height: '450px' }} />
         </Card>
         <Card style={{ width: '49%', marginLeft: '1%', display: 'inline-block' }}>
-          <div id="pie-chart-punctual" style={{ width: '100%', height: '450px' }} />
+          <div id="pie-chart-overtime" style={{ width: '100%', height: '450px' }} />
         </Card>
       </div>
     );
