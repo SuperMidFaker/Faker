@@ -19,9 +19,9 @@ const initialState = {
   displayedColumns: {
     product_no: false,
     product_category: false,
-    lot_no: false,
+    external_lot_no: false,
     serial_no: false,
-    expiry_date: false,
+    spec_date: false,
     unit_price: false,
     stock_cost: false,
   },
