@@ -49,19 +49,19 @@ export default class ModuleSCV extends React.Component {
       icon: 'zmdi zmdi-badge-check',
       text: formatMsg(intl, 'clearance'),
       sublinks: [{
-        key: 'scv-5-0',
+        key: 'scv-3-0',
         path: '/scv/clearance/manifest',
         text: formatMsg(intl, 'clearanceManifest'),
       }, {
-        key: 'scv-5-1',
+        key: 'scv-3-1',
         path: '/scv/clearance/cds',
         text: formatMsg(intl, 'clearanceCDS'),
       }, {
-        key: 'scv-5-2',
+        key: 'scv-3-2',
         path: '/scv/clearance/ftz',
         text: formatMsg(intl, 'clearanceFTZ'),
       }, {
-        key: 'scv-5-3',
+        key: 'scv-3-3',
         path: '/scv/clearance/tax',
         text: formatMsg(intl, 'clearanceTax'),
       }],

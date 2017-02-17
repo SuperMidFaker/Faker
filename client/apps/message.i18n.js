@@ -157,30 +157,6 @@ const messages = defineMessages({
     id: 'container.servicePayment',
     defaultMessage: '付款记录',
   },
-  transportDashboard: {
-    id: 'container.transport.dashboard',
-    defaultMessage: '工作台',
-  },
-  transportShipment: {
-    id: 'container.transport.shipment',
-    defaultMessage: '运单',
-  },
-  transportDispatch: {
-    id: 'container.transport.dispatch',
-    defaultMessage: '调度',
-  },
-  transportTracking: {
-    id: 'container.transport.tracking',
-    defaultMessage: '追踪',
-  },
-  transportTariff: {
-    id: 'container.transport.tariff',
-    defaultMessage: '价格管理',
-  },
-  cmsDeclare: {
-    id: 'container.cms.declare',
-    defaultMessage: '制单',
-  },
 });
 
 export default messages;
