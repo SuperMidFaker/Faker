@@ -59,17 +59,6 @@ export default class InventoryStockList extends React.Component {
     lot_query: false,
     collapsed: false,
   }
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.reload) {
-      const { tenantId, listFilter, stocklist: { pageSize } } = nextProps;
-      nextProps.loadStocks({
-        tenantId,
-        filter: JSON.stringify(listFilter),
-        pageSize,
-        current: 1,
-      });
-    }
-  }
   msg = formatMsg(this.props.intl);
   columns = [{
     title: this.msg('sku'),
@@ -148,23 +137,22 @@ export default class InventoryStockList extends React.Component {
     render: (text, row) => this.renderNormalCol(text, row),
   }]
   dataSource = new Table.DataSource({
-    fetcher: params => this.handleStockQuery(this.props.listFilter, params.pageSize, params.current), // todo pageSize newparams
+    fetcher: params => this.handleStockQuery(this.props.listFilter, params.sorter, params.current),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
       total: result.totalCount,
       current: resolve(result.totalCount, result.current, result.pageSize),
-      showSizeChanger: true,
+      showSizeChanger: false,
       showQuickJumper: false,
       pageSize: result.pageSize,
     }),
     getParams: (pagination, filters, sorter) => {
       const params = {
-        pageSize: pagination.pageSize,
         current: pagination.current,
-        sorter: JSON.stringify({
+        sorter: {
           field: sorter.field,
           order: sorter.order,
-        }),
+        },
       };
       return params;
     },
@@ -175,7 +163,7 @@ export default class InventoryStockList extends React.Component {
       collapsed: !this.state.collapsed,
     });
   }
-  handleStockQuery = (filter, newPageSize, newCurrent) => {
+  handleStockQuery = (filter, sorter, newCurrent) => {
     let prom;
     const { tenantId, stocklist: { pageSize }, sortFilter } = this.props;
     if (this.state.lot_query) {
@@ -199,7 +187,7 @@ export default class InventoryStockList extends React.Component {
       prom = this.props.loadLotStocks({
         tenantId,
         filter: JSON.stringify(filter),
-        sorter: JSON.stringify(sortFilter),
+        sorter: JSON.stringify(sorter || sortFilter),
         pageSize,
         current: newCurrent || 1,
       }, lotColumn);
@@ -207,7 +195,7 @@ export default class InventoryStockList extends React.Component {
       prom = this.props.loadStocks({
         tenantId,
         filter: JSON.stringify(filter),
-        sorter: JSON.stringify(sortFilter),
+        sorter: JSON.stringify(sorter || sortFilter),
         pageSize,
         current: newCurrent || 1,
       });

@@ -70,6 +70,24 @@ export default class InventoryStockSearchForm extends React.Component {
   handleLotRadioChange = (ev) => {
     this.setState({ lot_property: ev.target.value });
   }
+  handleFromPrice = (ev) => {
+    const val = ev.target.value;
+    if (!isNaN(parseFloat(val))) {
+      const toprice = this.props.form.getFieldValue('price_to');
+      if (isNaN(parseFloat(toprice))) {
+        this.props.form.setFieldsValue({ price_to: val });
+      }
+    }
+  }
+  handleToPrice = (ev) => {
+    const val = ev.target.value;
+    if (!isNaN(parseFloat(val))) {
+      const fromprice = this.props.form.getFieldValue('price_from');
+      if (isNaN(parseFloat(fromprice))) {
+        this.props.form.setFieldsValue({ price_from: val });
+      }
+    }
+  }
   render() {
     const { form: { getFieldDecorator }, displayedColumns, searchOption: { categories } } = this.props;
     return (
@@ -127,8 +145,10 @@ export default class InventoryStockSearchForm extends React.Component {
           this.state.lot_property === 'unit_price' &&
           <FormItem>
             <InputGroup compact>
-              {getFieldDecorator('price_from')(<Input style={{ width: '50%' }} placeholder={this.msg('priceFrom')} />)}
-              {getFieldDecorator('price_to')(<Input style={{ width: '50%' }} placeholder={this.msg('priceTo')} />)}
+              {getFieldDecorator('price_from', { onChange: this.handleFromPrice })(
+                <Input style={{ width: '50%' }} placeholder={this.msg('priceFrom')} />)}
+              {getFieldDecorator('price_to', { onChange: this.handleToPrice })(
+                <Input style={{ width: '50%' }} placeholder={this.msg('priceTo')} />)}
             </InputGroup>
           </FormItem>
         }
