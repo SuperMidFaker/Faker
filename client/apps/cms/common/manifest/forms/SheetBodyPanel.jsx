@@ -144,6 +144,7 @@ export default class SheetBodyPanel extends React.Component {
       if (item) {
         let unit1Val = '';
         let unit2Val = '';
+        let gunitVal = '';
         if (item.unit_1) {
           const unit1 = this.props.units.filter(unit => unit.text === item.unit_1)[0];
           unit1Val = unit1.value;
@@ -152,6 +153,10 @@ export default class SheetBodyPanel extends React.Component {
           const unit2 = this.props.units.filter(unit => unit.text === item.unit_2)[0];
           unit2Val = unit2.value;
         }
+        if (item.g_unit) {
+          const gunit = this.props.units.filter(unit => unit.text === item.g_unit)[0];
+          gunitVal = gunit.value;
+        }
         this.setState({
           editBody: {
             ...this.state.editBody,
@@ -159,6 +164,7 @@ export default class SheetBodyPanel extends React.Component {
             g_name: item.g_name,
             g_model: item.g_model,
             element: item.element,
+            g_unit: gunitVal,
             unit_1: unit1Val,
             unit_2: unit2Val,
           },
@@ -171,6 +177,7 @@ export default class SheetBodyPanel extends React.Component {
             g_name: '',
             g_model: '',
             element: '',
+            g_unit: '',
             unit_1: '',
             unit_2: '',
           },
