@@ -77,12 +77,12 @@ export default class CertMarkPane extends React.Component {
     datas: [],
   };
   componentDidMount() {
-    this.props.loadCertMarks(this.props.head.entry_id);
+    this.props.loadCertMarks(this.props.head.pre_entry_seq_no);
   }
   componentWillReceiveProps(nextProps) {
     if (this.props.head !== nextProps.head ||
       (this.props.tabKey !== nextProps.tabKey && nextProps.tabKey === 'document')) {
-      this.props.loadCertMarks(nextProps.head.entry_id);
+      this.props.loadCertMarks(nextProps.head.pre_entry_seq_no);
     }
     if (this.props.certMarks !== nextProps.certMarks) {
       this.setState({ datas: nextProps.certMarks });
@@ -102,6 +102,7 @@ export default class CertMarkPane extends React.Component {
     const addOne = {
       delg_no: head.delg_no,
       entry_id: head.entry_id,
+      pre_entry_seq_no: head.pre_entry_seq_no,
       creater_login_id: this.props.loginId,
       cert_code: '',
       cert_spec: '',
