@@ -111,8 +111,8 @@ export default class Kpi extends React.Component {
                 <a onClick={() => this.handleMonth(2)}>近3月</a>
                 <a onClick={() => this.handleMonth(5)} style={{ marginLeft: 20 }}>近6月</a>
                 <a onClick={() => this.handleMonth(11)} style={{ marginLeft: 20 }}>近一年</a>
-                <MonthPicker value={moment(query.beginDate)} onChange={this.handleBeginDateChange} style={{ marginLeft: 20 }} /> ~
-                <MonthPicker value={moment(query.endDate)} onChange={this.handleEndDateChange} />
+                <MonthPicker allowClear={false} value={moment(query.beginDate)} onChange={this.handleBeginDateChange} style={{ marginLeft: 20 }} /> ~
+                <MonthPicker allowClear={false} value={moment(query.endDate)} onChange={this.handleEndDateChange} />
                 <Select
                   showSearch
                   style={{ width: 300, marginLeft: 20 }}
