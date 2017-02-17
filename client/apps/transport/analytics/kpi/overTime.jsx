@@ -65,7 +65,7 @@ export default class OverTime extends React.Component {
             formatter: '{c} %',
           },
         },
-        data: shipmentCounts[index].map((item1, j) => shipmentCounts[index][j] === 0 ? 0 : Number(((shipmentCounts[index][j] - punctualShipmentCounts[index][j]) / shipmentCounts[index][j] * 100).toFixed(2))),
+        data: shipmentCounts[index].map((item1, j) => item1 === 0 ? 0 : Number(((item1 - punctualShipmentCounts[index][j]) / item1 * 100).toFixed(2))),
       })),
     };
     const transitModesShipmentCount = shipmentCounts.map(arr => arr.reduce((a, b) => a + b, 0));

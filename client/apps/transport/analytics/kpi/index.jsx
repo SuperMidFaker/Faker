@@ -10,10 +10,11 @@ import { loadFormRequire } from 'common/reducers/shipment';
 import TrafficVolume from './trafficVolume';
 import Punctual from './punctual';
 import OverTime from './overTime';
+import { createFilename } from 'client/util/dataTransform';
 
 const { Header, Content, Sider } = Layout;
 const Option = Select.Option;
-const { RangePicker } = DatePicker;
+const { MonthPicker } = DatePicker;
 const SubMenu = Menu.SubMenu;
 
 function fetchData({ cookie, state, dispatch }) {
@@ -26,6 +27,7 @@ function fetchData({ cookie, state, dispatch }) {
     beginDate,
     endDate,
     -1,
+    state.transportKpi.separationDate
   ));
 }
 
@@ -60,9 +62,13 @@ export default class Kpi extends React.Component {
     const { tenantId, query } = this.props;
     this.props.loadKpi(tenantId, query.beginDate, query.endDate, partnerId || -1);
   }
-  handleDateChange = (dates) => {
+  handleBeginDateChange = (date) => {
     const { tenantId, query } = this.props;
-    this.props.loadKpi(tenantId, dates[0], dates[1], query.partnerId);
+    this.props.loadKpi(tenantId, date, query.endDate, query.partnerId);
+  }
+  handleEndDateChange = (date) => {
+    const { tenantId, query } = this.props;
+    this.props.loadKpi(tenantId, query.beginDate, date, query.partnerId);
   }
   handleMonth = (month) => {
     const { tenantId, query } = this.props;
@@ -73,6 +79,11 @@ export default class Kpi extends React.Component {
   }
   handleMenuChange = (e) => {
     this.setState({ selectedKey: e.key });
+  }
+  handleExportExcel = () => {
+    const { transitModes, range, shipmentCounts, punctualShipmentCounts } = this.props.kpi;
+    window.open(`${API_ROOTS.default}v1/transport/kpi/exportExcel/${createFilename('KPI')}.xlsx?transitModes=${JSON.stringify(transitModes)}&range=${
+      JSON.stringify(range)}&shipmentCounts=${JSON.stringify(shipmentCounts)}&punctualShipmentCounts=${JSON.stringify(punctualShipmentCounts)}`);
   }
   render() {
     const { query, clients, kpi } = this.props;
@@ -95,12 +106,13 @@ export default class Kpi extends React.Component {
         <Content className="main-content">
           <div className="page-body">
             <div className="toolbar">
-              <Button type="primary">导出</Button>
+              <Button type="primary" onClick={this.handleExportExcel}>导出全部</Button>
               <div className="toolbar-right">
                 <a onClick={() => this.handleMonth(2)}>近3月</a>
                 <a onClick={() => this.handleMonth(5)} style={{ marginLeft: 20 }}>近6月</a>
                 <a onClick={() => this.handleMonth(11)} style={{ marginLeft: 20 }}>近一年</a>
-                <RangePicker format="YYYY-MM" value={[moment(query.beginDate), moment(query.endDate)]} onChange={this.handleDateChange} style={{ marginLeft: 20 }} />
+                <MonthPicker value={moment(query.beginDate)} onChange={this.handleBeginDateChange} style={{ marginLeft: 20 }} /> ~
+                <MonthPicker value={moment(query.endDate)} onChange={this.handleEndDateChange} />
                 <Select
                   showSearch
                   style={{ width: 300, marginLeft: 20 }}
