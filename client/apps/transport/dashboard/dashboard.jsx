@@ -61,7 +61,7 @@ export default class Dashboard extends React.Component {
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Header className="top-bar" key="header">
-          <span>{this.msg('transportDashboard')}</span>
+          <span>{this.msg('dashboard')}</span>
         </Header>
         <Content className="main-content" key="main">
           <div className="page-body card-wrapper">

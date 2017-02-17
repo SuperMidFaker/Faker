@@ -60,6 +60,9 @@ export default class InventoryStockSearchForm extends React.Component {
   msg = formatMsg(this.props.intl);
   handleColumnCheck = (field, checked) => {
     this.props.checkDisplayColumn(field, checked);
+    if (!checked) {
+      this.props.form.setFieldsValue({ [field]: null });
+    }
   }
   handleLotPropertyCheck = (field, checked) => {
     this.setState({ lot_property_checked: checked, lot_property: null });
@@ -105,7 +108,7 @@ export default class InventoryStockSearchForm extends React.Component {
             <RadioButton value="lot_no">{this.msg('lotNo')}</RadioButton>
             <RadioButton value="serial_no">{this.msg('serialNo')}</RadioButton>
             <RadioButton value="unit_price">{this.msg('unitPrice')}</RadioButton>
-            <RadioButton value="expiry_date">{this.msg('specificDate')}</RadioButton>
+            <RadioButton value="spec_date">{this.msg('specificDate')}</RadioButton>
           </RadioGroup>
         </FormItem>
         {

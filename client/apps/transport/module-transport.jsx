@@ -5,7 +5,7 @@ import { routerShape, locationShape } from 'react-router';
 import { findForemostRoute, hasPermission } from 'client/common/decorators/withPrivilege';
 import CollapsibleSiderLayout from 'client/components/CollapsibleSiderLayout';
 import { format } from 'client/common/i18n/helpers';
-import messages from 'client/apps/message.i18n';
+import messages from './message.i18n';
 
 const formatMsg = format(messages);
 
@@ -37,7 +37,7 @@ export default class Transport extends React.Component {
         key: 'tms-0',
         path: '/transport/dashboard',
         icon: 'zmdi zmdi-tv-list',
-        text: '工作台',
+        text: formatMsg(intl, 'dashboard'),
       });
     }
     if (hasPermission(privileges, { module: 'transport', feature: 'shipment' })) {
@@ -46,7 +46,7 @@ export default class Transport extends React.Component {
         key: 'tms-1',
         path: '/transport/shipment',
         icon: 'zmdi zmdi-inbox',
-        text: formatMsg(intl, 'transportShipment'),
+        text: formatMsg(intl, 'shipment'),
       });
     }
     if (hasPermission(privileges, { module: 'transport', feature: 'dispatch' })) {
@@ -55,7 +55,7 @@ export default class Transport extends React.Component {
         key: 'tms-2',
         path: '/transport/dispatch',
         icon: 'icon-fontello-fork',
-        text: '调度',
+        text: formatMsg(intl, 'dispatch'),
       });
     }
     if (hasPermission(privileges, { module: 'transport', feature: 'tracking' })) {
@@ -64,7 +64,7 @@ export default class Transport extends React.Component {
         key: 'tms-3',
         path: '/transport/tracking',
         icon: 'icon-fontello-tasks',
-        text: '追踪',
+        text: formatMsg(intl, 'tracking'),
       });
     }
     if (hasPermission(privileges, { module: 'transport', feature: 'billing' })) {
@@ -73,23 +73,23 @@ export default class Transport extends React.Component {
         key: 'tms-4',
         path: '/transport/billing',
         icon: 'icon-fontello-money-1',
-        text: '账务中心',
+        text: formatMsg(intl, 'billing'),
         sublinks: [{
           key: 'tms-4-0',
           path: '/transport/billing/fee',
-          text: '费用管理',
+          text: formatMsg(intl, 'billingExpense'),
         }, {
           key: 'tms-4-1',
           path: '/transport/billing/receivable',
-          text: '应收账单',
+          text: formatMsg(intl, 'billingReceivable'),
         }, {
           key: 'tms-4-2',
           path: '/transport/billing/payable',
-          text: '应付账单',
+          text: formatMsg(intl, 'billingPayable'),
         }, {
           key: 'tms-4-3',
           path: '/transport/billing/tariff',
-          text: '价格管理',
+          text: formatMsg(intl, 'billingTariff'),
         }],
       });
     }
@@ -109,15 +109,15 @@ export default class Transport extends React.Component {
         single: false,
         key: 'tms-6',
         icon: 'zmdi zmdi-settings',
-        text: '设置',
+        text: formatMsg(intl, 'settings'),
         sublinks: [{
           key: 'tms-6-0',
           path: '/transport/resources',
-          text: '资源设置',
+          text: formatMsg(intl, 'settingsResources'),
         }, {
           key: 'tms-6-1',
           path: '/transport/settings',
-          text: '应用设置',
+          text: formatMsg(intl, 'settingsApp'),
         }],
       });
     }
