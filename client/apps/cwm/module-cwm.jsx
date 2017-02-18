@@ -28,12 +28,21 @@ export default class ModuleCWM extends React.Component {
       text: formatMsg(intl, 'dashboard'),
     });
     linkMenus.push({
-      single: true,
+      single: false,
       key: 'cwm-1',
-      disabled: true,
       path: '/cwm/inbound',
       icon: 'icon-fontello-download',
       text: formatMsg(intl, 'inbound'),
+      sublinks: [{
+        key: 'cwm-1-0',
+        path: '/cwm/inbound/receiving',
+        text: formatMsg(intl, 'receivingNotice'),
+      }, {
+        key: 'cwm-1-1',
+        path: '/cwm/inbound',
+        text: formatMsg(intl, 'inboundTransactions'),
+      },
+      ],
     });
     linkMenus.push({
       single: true,
@@ -43,11 +52,20 @@ export default class ModuleCWM extends React.Component {
       text: formatMsg(intl, 'inventory'),
     });
     linkMenus.push({
-      single: true,
+      single: false,
       key: 'cwm-3',
-      path: '/cwm/outbound',
       icon: 'icon-fontello-upload',
       text: formatMsg(intl, 'outbound'),
+      sublinks: [{
+        key: 'cwm-3-0',
+        path: '/cwm/outbound/shipping',
+        text: formatMsg(intl, 'shippingOrder'),
+      }, {
+        key: 'cwm-3-1',
+        path: '/cwm/outbound',
+        text: formatMsg(intl, 'outboundTransactions'),
+      },
+      ],
     });
     linkMenus.push({
       single: false,

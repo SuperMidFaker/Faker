@@ -53,7 +53,9 @@ import * as CMSTradeItem from './cms/tradeitem';
 import CWM from './cwm/module-cwm';
 import * as CWMDashboard from './cwm/dashboard';
 import * as CWMInbound from './cwm/inbound';
+import * as CWMReceivingNotice from './cwm/inbound/receiving';
 import * as CWMOutbound from './cwm/outbound';
+import * as CWMShippingOrder from './cwm/outbound/shipping';
 import * as CWMInventory from './cwm/inventory';
 import * as CWMProductsMaterial from './cwm/products/material';
 import * as CWMProductsSku from './cwm/products/sku';
@@ -67,8 +69,8 @@ import * as SCVOutbound from './scv/outbound';
 import * as SCVClearance from './scv/clearance';
 import * as SCVInventoryStock from './scv/inventory/stock';
 import * as SCVInventoryTransaction from './scv/inventory/transaction';
-import * as SCVInventoryRecieving from './scv/inventory/recieving';
-import * as SCVInventoryShipping from './scv/inventory/shipping';
+import * as SCVReceivingNotice from './scv/inventory/receiving';
+import * as SCVShippingOrder from './scv/inventory/shipping';
 import * as SCVInventoryWarehouse from './scv/inventory/warehouse';
 import * as SCVProductsSku from './scv/products/sku';
 import * as SCVProductsTradeItem from './scv/products/tradeitem';
@@ -329,10 +331,13 @@ export default(store, cookie) => {
             <Route path="inventory" >
               <Route path="stock" component={SCVInventoryStock.List} />
               <Route path="transaction" component={SCVInventoryTransaction.List} />
-              <Route path="recieving" component={SCVInventoryRecieving.List} />
+              <Route path="receiving">
+                <IndexRoute component={SCVReceivingNotice.List} />
+                <Route path="create" component={SCVReceivingNotice.Create} />
+              </Route>
               <Route path="shipping">
-                <IndexRoute component={SCVInventoryShipping.List} />
-                <Route path="create" component={SCVInventoryShipping.Create} />
+                <IndexRoute component={SCVShippingOrder.List} />
+                <Route path="create" component={SCVShippingOrder.Create} />
               </Route>
               <Route path="warehouse" component={SCVInventoryWarehouse.List} />
             </Route>
@@ -357,8 +362,20 @@ export default(store, cookie) => {
           <Route path={DEFAULT_MODULES.cwm.id} component={CWM}>
             <IndexRedirect to="/cwm/dashboard" />
             <Route path="dashboard" component={CWMDashboard.Index} />
-            <Route path="inbound" component={CWMInbound.List} />
-            <Route path="outbound" component={CWMOutbound.List} />
+            <Route path="inbound">
+              <IndexRoute component={CWMInbound.List} />
+              <Route path="receiving">
+                <IndexRoute component={CWMReceivingNotice.List} />
+                <Route path="view/:asnNo" component={CWMReceivingNotice.View} />
+              </Route>
+            </Route>
+            <Route path="outbound">
+              <IndexRoute component={CWMOutbound.List} />
+              <Route path="shipping">
+                <IndexRoute component={CWMShippingOrder.List} />
+                <Route path="view/:shippingNo" component={CWMShippingOrder.View} />
+              </Route>
+            </Route>
             <Route path="inventory" component={CWMInventory.List} />
             <Route path="products">
               <Route path="material" component={CWMProductsMaterial.List} />

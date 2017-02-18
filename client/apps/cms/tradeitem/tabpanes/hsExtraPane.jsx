@@ -24,7 +24,7 @@ export default class HsExtraPanel extends React.Component {
   }
   render() {
     return (
-      <Tabs activeKey={this.props.tabKey} onChange={this.handleTabChange} >
+      <Tabs tabPosition="left" activeKey={this.props.tabKey} onChange={this.handleTabChange} >
         <TabPane tab="申报单位管理" key="declunit" >
           <DeclUnitPane />
         </TabPane>

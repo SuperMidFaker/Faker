@@ -81,8 +81,8 @@ export default class ModuleSCV extends React.Component {
         text: formatMsg(intl, 'inventoryTransaction'),
       }, {
         key: 'scv-4-2',
-        path: '/scv/inventory/recieving',
-        text: formatMsg(intl, 'inventoryRecieving'),
+        path: '/scv/inventory/receiving',
+        text: formatMsg(intl, 'inventoryReceiving'),
       }, {
         key: 'scv-4-3',
         path: '/scv/inventory/shipping',

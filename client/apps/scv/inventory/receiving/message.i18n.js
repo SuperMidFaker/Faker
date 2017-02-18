@@ -2,19 +2,19 @@ import { defineMessages } from 'react-intl';
 
 const messages = defineMessages({
   inventory: {
-    id: 'scv.inventory.shipping.parent',
+    id: 'scv.inventory.receiving.parent',
     defaultMessage: '库存',
   },
-  shippingOrder: {
-    id: 'scv.inventory.shipping',
-    defaultMessage: '出货订单',
+  receivingNotice: {
+    id: 'scv.inventory.receiving',
+    defaultMessage: '收货通知',
   },
   shipmentNo: {
-    id: 'scv.inventory.shipping.shipmentno',
+    id: 'scv.inventory.receiving.shipmentno',
     defaultMessage: 'Shipment No.',
   },
   orderNo: {
-    id: 'scv.inventory.shipping.orderno',
+    id: 'scv.inventory.receiving.orderno',
     defaultMessage: '订单号',
   },
 });

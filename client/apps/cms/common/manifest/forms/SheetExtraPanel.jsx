@@ -36,8 +36,8 @@ export default class SheetExtraPanel extends React.Component {
   render() {
     const path = this.context.router.location.pathname.indexOf('/clearance/import/customs');
     return (
-      <Tabs activeKey={this.props.tabKey} onChange={this.handleTabChange} >
-        <TabPane tab="集装箱" key="container" >
+      <Tabs tabPosition="left" activeKey={this.props.tabKey} onChange={this.handleTabChange} >
+        <TabPane tab="集装箱" key="container">
           <ContainersPane />
         </TabPane>
         { (path !== -1) &&

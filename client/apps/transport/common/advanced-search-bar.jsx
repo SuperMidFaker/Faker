@@ -144,7 +144,7 @@ export default class AdvancedSearchBar extends React.Component {
     const { fields } = this.state;
     return (
       <div>
-        <div className="ant-alert ant-alert-info ant-alert-no-icon" style={{ display: fields.length === 0 ? 'none' : 'block' }}>
+        <div style={{ display: fields.length === 0 ? 'none' : 'block', padding: 16 }}>
           {fields.map(item => <Tag closable color="blue" key={item.key} onClose={() => this.handleCloseTag([item.key])}>{this.format(item)}</Tag>)}
         </div>
         <Form horizontal className="ant-advanced-search-form"

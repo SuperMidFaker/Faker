@@ -1,15 +1,17 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Layout, Table } from 'antd';
+import { Breadcrumb, Layout, Radio, Table } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/search-bar';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
-import messages from './message.i18n';
+import messages from '../message.i18n';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
+const RadioGroup = Radio.Group;
+const RadioButton = Radio.Button;
 
 @injectIntl
 @connect(
@@ -21,7 +23,7 @@ const { Header, Content } = Layout;
   depth: 2,
   moduleName: 'cwm',
 })
-export default class OutboundTransactionsList extends React.Component {
+export default class ReceivingNoticeList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -58,24 +60,34 @@ export default class OutboundTransactionsList extends React.Component {
     title: this.msg('consignee'),
     dataIndex: 'consignee',
   }]
+  handleStatusChange = (ev) => {
+    if (ev.target.value === this.props.listFilter.status) {
+
+    }
+  }
   render() {
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Header className="top-bar" key="header">
           <Breadcrumb>
             <Breadcrumb.Item>
-              {this.msg('outbound')}
+              {this.msg('inbound')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              {this.msg('outboundTransactions')}
+              {this.msg('receivingNotice')}
             </Breadcrumb.Item>
           </Breadcrumb>
+          <RadioGroup onChange={this.handleStatusChange} size="large">
+            <RadioButton value="pending">{this.msg('pending')}</RadioButton>
+            <RadioButton value="shipped">{this.msg('shipped')}</RadioButton>
+          </RadioGroup>
           <div className="toolbar-right" />
         </Header>
         <Content className="main-content" key="main">
           <div className="page-body">
             <div className="toolbar">
               <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} />
+              <div className="toolbar-right" />
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3>
               </div>

@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Layout } from 'antd';
+import { Breadcrumb, Layout, Table } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/search-bar';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -21,35 +21,68 @@ const { Header, Content } = Layout;
   depth: 2,
   moduleName: 'cwm',
 })
-export default class CWMInboundList extends React.Component {
+export default class InboundTransactionsList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
   }
-  msg = key => formatMsg(this.props.intl, key);
-
-  handleRadioChange = (ev) => {
-    if (ev.target.value === this.props.listFilter.status) {
-
-    }
+  static contextTypes = {
+    router: PropTypes.object.isRequired,
   }
+  state = {
+    selectedRowKeys: [],
+    searchInput: '',
+  }
+  msg = key => formatMsg(this.props.intl, key);
+  columns = [{
+    title: this.msg('shippingNo'),
+    dataIndex: 'so_no',
+    width: 200,
+  }, {
+    title: this.msg('owner'),
+    width: 200,
+    dataIndex: 'owner_code',
+  }, {
+    title: this.msg('status'),
+    width: 200,
+    dataIndex: 'status',
+  }, {
+    title: this.msg('estShippingDate'),
+    dataIndex: 'est_shipping_date',
+    width: 160,
+  }, {
+    title: this.msg('plannedQty'),
+    width: 120,
+    dataIndex: 'planned_qty',
+  }, {
+    title: this.msg('consignee'),
+    dataIndex: 'consignee',
+  }]
   render() {
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Header className="top-bar" key="header">
-          <div className="toolbar-right">
-            <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
-          </div>
-          <span>{this.msg('inboundManagement')}</span>
+          <Breadcrumb>
+            <Breadcrumb.Item>
+              {this.msg('inbound')}
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              {this.msg('inboundTransactions')}
+            </Breadcrumb.Item>
+          </Breadcrumb>
+          <div className="toolbar-right" />
         </Header>
         <Content className="main-content" key="main">
           <div className="page-body">
             <div className="toolbar">
-              <Button type="primary" icon="plus-circle-o">
-                {this.msg('importShipments')}
-              </Button>
+              <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} />
+              <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
+                <h3>已选中{this.state.selectedRowKeys.length}项</h3>
+              </div>
             </div>
-            <div className="panel-body table-panel expandable" />
+            <div className="panel-body table-panel">
+              <Table columns={this.columns} dataSource={this.dataSource} rowKey="id" scroll={{ x: 1200 }} />
+            </div>
           </div>
         </Content>
       </QueueAnim>

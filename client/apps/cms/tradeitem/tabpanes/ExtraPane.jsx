@@ -25,7 +25,7 @@ export default class ExtraPanel extends React.Component {
   }
   render() {
     return (
-      <Tabs activeKey={this.props.tabKey} onChange={this.handleTabChange} >
+      <Tabs tabPosition="left" activeKey={this.props.tabKey} onChange={this.handleTabChange} >
         <TabPane tab="收发货企业管理" key="copCodes">
           <CopCodesPane />
         </TabPane>

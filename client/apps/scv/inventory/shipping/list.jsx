@@ -24,7 +24,7 @@ const Option = Select.Option;
   depth: 2,
   moduleName: 'scv',
 })
-export default class ShipmentsClearanceList extends React.Component {
+export default class ShippingOrderList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,

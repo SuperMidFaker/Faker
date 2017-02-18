@@ -53,8 +53,8 @@ const messages = defineMessages({
     id: 'scv.module.inventory.transaction',
     defaultMessage: '进出库记录',
   },
-  inventoryRecieving: {
-    id: 'scv.module.inventory.recieving',
+  inventoryReceiving: {
+    id: 'scv.module.inventory.receiving',
     defaultMessage: '收货通知',
   },
   inventoryShipping: {

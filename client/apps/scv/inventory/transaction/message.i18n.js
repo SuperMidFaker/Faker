@@ -3,7 +3,7 @@ import { formati18n } from 'client/common/i18n/helpers';
 
 const messages = defineMessages({
   inventory: {
-    id: 'scv.inventory',
+    id: 'scv.inventory.transaction.parent',
     defaultMessage: '库存',
   },
   inventoryTransaction: {
@@ -11,11 +11,11 @@ const messages = defineMessages({
     defaultMessage: '进出库记录',
   },
   importInventory: {
-    id: 'scv.inventory.import',
+    id: 'scv.inventory.transaction.import',
     defaultMessage: '导入',
   },
   exportInventory: {
-    id: 'scv.inventory.export',
+    id: 'scv.inventory.transaction.export',
     defaultMessage: '导出',
   },
   query: {

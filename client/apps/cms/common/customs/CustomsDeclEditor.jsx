@@ -132,7 +132,7 @@ export default class CustomsDeclEditor extends React.Component {
             defaultCollapsed
             collapsible
             collapsed={this.state.collapsed}
-            width={320}
+            width={480}
             collapsedWidth={0}
             className="right-sider"
           >

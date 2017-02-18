@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Layout, Table } from 'antd';
+import { Breadcrumb, Button, Layout, Radio, Select, Table } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/search-bar';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -10,6 +10,9 @@ import messages from './message.i18n';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
+const RadioGroup = Radio.Group;
+const RadioButton = Radio.Button;
+const Option = Select.Option;
 
 @injectIntl
 @connect(
@@ -19,9 +22,9 @@ const { Header, Content } = Layout;
 )
 @connectNav({
   depth: 2,
-  moduleName: 'cwm',
+  moduleName: 'scv',
 })
-export default class OutboundTransactionsList extends React.Component {
+export default class ReceivingNoticeList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -35,20 +38,20 @@ export default class OutboundTransactionsList extends React.Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
-    title: this.msg('shippingNo'),
+    title: this.msg('receivingNo'),
     dataIndex: 'so_no',
     width: 200,
   }, {
-    title: this.msg('owner'),
+    title: this.msg('warehouse'),
     width: 200,
-    dataIndex: 'owner_code',
+    dataIndex: 'whse_code',
   }, {
     title: this.msg('status'),
     width: 200,
     dataIndex: 'status',
   }, {
-    title: this.msg('estShippingDate'),
-    dataIndex: 'est_shipping_date',
+    title: this.msg('estReceivingDate'),
+    dataIndex: 'est_receiving_date',
     width: 160,
   }, {
     title: this.msg('plannedQty'),
@@ -58,24 +61,48 @@ export default class OutboundTransactionsList extends React.Component {
     title: this.msg('consignee'),
     dataIndex: 'consignee',
   }]
+  handleStatusChange = (ev) => {
+    if (ev.target.value === this.props.listFilter.status) {
+
+    }
+  }
+  handleCreateBtnClick = () => {
+    this.context.router.push('/scv/inventory/receiving/create');
+  }
   render() {
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Header className="top-bar" key="header">
           <Breadcrumb>
             <Breadcrumb.Item>
-              {this.msg('outbound')}
+              {this.msg('inventory')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              {this.msg('outboundTransactions')}
+              {this.msg('receivingNotice')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <div className="toolbar-right" />
+          <RadioGroup onChange={this.handleStatusChange} size="large">
+            <RadioButton value="pending">{this.msg('pending')}</RadioButton>
+            <RadioButton value="received">{this.msg('received')}</RadioButton>
+          </RadioGroup>
+          <div className="toolbar-right">
+            <Button type="primary" size="large" icon="plus" onClick={this.handleCreateBtnClick}>
+              {this.msg('createReceivingNotice')}
+            </Button>
+          </div>
         </Header>
         <Content className="main-content" key="main">
           <div className="page-body">
             <div className="toolbar">
               <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} />
+              <div className="toolbar-right">
+                <Select defaultValue="orderView" size="large" style={{ width: 160 }} showSearch={false}
+                  onChange={this.handleViewChange}
+                >
+                  <Option value="orderView">订单视图</Option>
+                  <Option value="skuView">SKU视图</Option>
+                </Select>
+              </div>
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3>
               </div>
