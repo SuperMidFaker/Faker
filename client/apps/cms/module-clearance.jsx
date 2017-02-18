@@ -143,11 +143,7 @@ export default class Clearance extends React.Component {
       sublinks: [{
         key: 'cms-5-0',
         path: '/clearance/analytics/kpi',
-        text: formatMsg(intl, 'kpiAnalytics'),
-      }, {
-        key: 'cms-5-1',
-        path: '/clearance/analytics/report',
-        text: formatMsg(intl, 'costAnalytics'),
+        text: formatMsg(intl, 'analyticsKPI'),
       }],
     });
     if (hasPermission(privileges, { module: 'clearance', feature: 'settings' })) {

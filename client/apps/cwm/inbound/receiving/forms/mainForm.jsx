@@ -62,8 +62,8 @@ export default class MainForm extends Component {
               </FormItem>
             </Col>
             <Col sm={24} lg={12}>
-              <FormItem label={this.msg('estShippingDate')} >
-                {getFieldDecorator('est_shipping_date', {
+              <FormItem label={this.msg('estReceivingDate')} >
+                {getFieldDecorator('est_receiving_date', {
                 })(<DatePicker defaultValue={moment('2015/01/01', dateFormat)} format={dateFormat} style={{ width: '100%' }} />)}
               </FormItem>
             </Col>

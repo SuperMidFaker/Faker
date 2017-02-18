@@ -22,13 +22,13 @@ export default class SiderForm extends Component {
         <Card>
           <Row gutter={16}>
             <Col sm={24}>
-              <FormItem label={this.msg('soNo')}>
-                {getFieldDecorator('so_no', {
+              <FormItem label={this.msg('asnNo')}>
+                {getFieldDecorator('asn_no', {
                 })(<Input />)}
               </FormItem>
             </Col>
             <Col sm={24}>
-              <FormItem label={this.msg('salesOrderNo')} >
+              <FormItem label={this.msg('purchaseOrderNo')} >
                 {getFieldDecorator('order_no', {
                 })(<Input />)}
               </FormItem>

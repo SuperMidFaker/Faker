@@ -4,10 +4,9 @@ import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Breadcrumb, Button, Layout, Radio, Select, Dropdown, Icon, Menu, Popconfirm, message } from 'antd';
+import { Breadcrumb, Button, Layout, Radio, Select, Dropdown, Icon, Menu, Popconfirm, Tooltip, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import NavLink from 'client/components/nav-link';
-import QueueAnim from 'rc-queue-anim';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import { loadCustomers } from 'common/reducers/crmCustomers';
@@ -15,6 +14,7 @@ import { loadOwners, openAddModal, selectedRepoId, loadTradeItems,
   deleteItem, deleteSelectedItems, loadDeclunits } from 'common/reducers/cmsTradeitem';
 import AddTradeRepoModal from './modals/addTradeRepo';
 import ExtraPanel from './tabpanes/ExtraPane';
+import SearchBar from 'client/components/search-bar';
 import ExcelUpload from 'client/components/excelUploader';
 import { createFilename } from 'client/util/dataTransform';
 
@@ -161,9 +161,12 @@ export default class TradeItemList extends Component {
   handleButtonClick = (ev) => {
     ev.stopPropagation();
   }
+  handleAddItem = () => {
+    this.context.router.push('/clearance/classification/tradeitem/create');
+  }
   handleMenuClick = (e) => {
     if (e.key === 'create') {
-      this.context.router.push('/clearance/products/tradeitem/create');
+      this.context.router.push('/clearance/classification/tradeitem/create');
     } else if (e.key === 'export') {
       window.open(`${API_ROOTS.default}v1/cms/cmsTradeitem/tradeitems/export/${createFilename('itemsExport')}.xlsx?repoId=${this.props.repoId}`);
     } else if (e.key === 'model') {
@@ -280,7 +283,7 @@ export default class TradeItemList extends Component {
       fixed: 'right',
       render: (o, record) => (
         <span>
-          <NavLink to={`/clearance/products/tradeitem/edit/${record.id}`}>
+          <NavLink to={`/clearance/classification/tradeitem/edit/${record.id}`}>
             {this.msg('modify')}
           </NavLink>
           <span className="ant-divider" />
@@ -306,33 +309,25 @@ export default class TradeItemList extends Component {
             <Icon type="file-excel" /> {this.msg('importItems')}
           </ExcelUpload>
         </Menu.Item>
-        <Menu.Item key="create"><Icon type="plus" /> 新增物料</Menu.Item>
         <Menu.Item key="export"><Icon type="export" /> 导出物料表</Menu.Item>
         <Menu.Item key="model"><Icon type="download" /> 下载模板</Menu.Item>
       </Menu>);
     return (
-      <QueueAnim type={['bottom', 'up']}>
+      <Layout className="ant-layout-wrapper">
         <Layout>
-          <Layout>
-            <Header className="top-bar top-bar-fixed" key="header">
-              <Breadcrumb>
-                <Breadcrumb.Item>
-                  {this.msg('classification')}
-                </Breadcrumb.Item>
-                <Breadcrumb.Item>
-                  {this.msg('tradeItemMaster')}
-                </Breadcrumb.Item>
-              </Breadcrumb>
-              <RadioGroup onChange={this.handleRadioChange} size="large">
-                <RadioButton value="unclassified">{this.msg('filterUnclassified')}</RadioButton>
-                <RadioButton value="pending">{this.msg('filterPending')}</RadioButton>
-                <RadioButton value="classified">{this.msg('filterClassified')}</RadioButton>
-              </RadioGroup>
-              <div className="top-bar-tools">
+          <Header className="top-bar top-bar-fixed" key="header">
+            <Breadcrumb>
+              <Breadcrumb.Item>
+                {this.msg('classification')}
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {this.msg('tradeItemMaster')}
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
                 <Select
                   showSearch
-                  style={{ width: 300 }}
-                  placeholder="选择客户物料库"
+                  style={{ width: 220 }}
+                  placeholder="选择客户企业物料库"
                   optionFilterProp="children"
                   size="large"
                   onChange={this.handleSelectChange}
@@ -343,56 +338,71 @@ export default class TradeItemList extends Component {
                     >{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>)
                     )}
                 </Select>
-                <Button type="primary" size="large" icon="plus" onClick={this.handleAddOwener}>
-                  新增物料库
+                <span style={{ marginLeft: 8 }} />
+                <Tooltip placement="bottom" title="添加企业物料库">
+                  <Button type="primary" shape="circle" size="small" icon="plus" onClick={this.handleAddOwener} ghost />
+                </Tooltip>
+              </Breadcrumb.Item>
+            </Breadcrumb>
+            <RadioGroup onChange={this.handleRadioChange} size="large">
+              <RadioButton value="unclassified">{this.msg('filterUnclassified')}</RadioButton>
+              <RadioButton value="pending">{this.msg('filterPending')}</RadioButton>
+              <RadioButton value="classified">{this.msg('filterClassified')}</RadioButton>
+            </RadioGroup>
+            {repoId &&
+              <div className="top-bar-tools">
+                <Dropdown overlay={menu} type="primary">
+                  <Button size="large" onClick={this.handleButtonClick}>
+                    {this.msg('importItems')} <Icon type="down" />
+                  </Button>
+                </Dropdown>
+                <Button type="primary" size="large" icon="plus" onClick={this.handleAddItem}>
+                  {this.msg('addItem')}
                 </Button>
-                {repoId && <Button size="large"
+                <Button size="large"
                   className={this.state.collapsed ? '' : 'btn-toggle-on'}
                   icon={this.state.collapsed ? 'menu-fold' : 'menu-unfold'}
                   onClick={this.toggle}
-                />}
+                />
               </div>
-            </Header>
-            <Content className="main-content top-bar-fixed" key="main">
-              <div className="page-body">
-                <div className="toolbar">
-                  {repoId &&
-                    <Dropdown overlay={menu} type="primary">
-                      <Button type="primary" size="large" onClick={this.handleButtonClick}>
-                        {this.msg('addMore')} <Icon type="down" />
-                      </Button>
-                    </Dropdown>
-                  }
-                  {selectedRows.length > 0 &&
-                    <Popconfirm title={'是否删除所有选择项？'} onConfirm={() => this.handleDeleteSelected()}>
-                      <Button type="primary" icon="delete">
+              }
+          </Header>
+          <Content className="main-content top-bar-fixed" key="main">
+            <div className="page-body">
+              <div className="toolbar">
+                <SearchBar placeholder="编码/名称/描述/申报要素" onInputSearch={this.handleSearch} size="large" />
+                {selectedRows.length > 0 &&
+                <Popconfirm title={'是否删除所有选择项？'} onConfirm={() => this.handleDeleteSelected()}>
+                  <Button type="primary" icon="delete">
                         批量删除
                       </Button>
-                    </Popconfirm>
+                </Popconfirm>
                   }
-                </div>
-                <div className="panel-body table-panel">
-                  <Table rowSelection={rowSelection} rowKey="id" columns={columns} dataSource={this.dataSource} scroll={{ x: 2400, y: 2300 }} />
-                </div>
-                <AddTradeRepoModal />
               </div>
-            </Content>
-          </Layout>
-          <Sider
-            trigger={null}
-            defaultCollapsed
-            collapsible
-            collapsed={this.state.collapsed}
-            width={480}
-            collapsedWidth={0}
-            className="right-sider"
-          >
-            <div className="right-sider-panel">
-              <ExtraPanel />
+              <div className="panel-body table-panel">
+                <Table rowSelection={rowSelection} rowKey="id" columns={columns} dataSource={this.dataSource} scroll={{ x: 2400 }} />
+              </div>
+              <AddTradeRepoModal />
             </div>
-          </Sider>
+          </Content>
         </Layout>
-      </QueueAnim>
+        <Sider
+          trigger={null}
+          defaultCollapsed
+          collapsible
+          collapsed={this.state.collapsed}
+          width={480}
+          collapsedWidth={0}
+          className="right-sider"
+        >
+          <div className="right-sider-panel">
+            <div className="panel-header">
+              <h3>物料库设置</h3>
+            </div>
+            <ExtraPanel />
+          </div>
+        </Sider>
+      </Layout>
     );
   }
 }

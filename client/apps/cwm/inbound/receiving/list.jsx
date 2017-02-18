@@ -37,8 +37,8 @@ export default class ReceivingNoticeList extends React.Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
-    title: this.msg('shippingNo'),
-    dataIndex: 'so_no',
+    title: this.msg('asnNo'),
+    dataIndex: 'asn_no',
     width: 200,
   }, {
     title: this.msg('owner'),
@@ -49,16 +49,16 @@ export default class ReceivingNoticeList extends React.Component {
     width: 200,
     dataIndex: 'status',
   }, {
-    title: this.msg('estShippingDate'),
-    dataIndex: 'est_shipping_date',
+    title: this.msg('estReceivingDate'),
+    dataIndex: 'est_receiving_date',
     width: 160,
   }, {
     title: this.msg('plannedQty'),
     width: 120,
     dataIndex: 'planned_qty',
   }, {
-    title: this.msg('consignee'),
-    dataIndex: 'consignee',
+    title: this.msg('vendor'),
+    dataIndex: 'vendor',
   }]
   handleStatusChange = (ev) => {
     if (ev.target.value === this.props.listFilter.status) {
@@ -79,7 +79,7 @@ export default class ReceivingNoticeList extends React.Component {
           </Breadcrumb>
           <RadioGroup onChange={this.handleStatusChange} size="large">
             <RadioButton value="pending">{this.msg('pending')}</RadioButton>
-            <RadioButton value="shipped">{this.msg('shipped')}</RadioButton>
+            <RadioButton value="received">{this.msg('received')}</RadioButton>
           </RadioGroup>
           <div className="toolbar-right" />
         </Header>

@@ -81,6 +81,14 @@ const messages = defineMessages({
     id: 'cms.module.classification.hscode',
     defaultMessage: 'HS编码查询',
   },
+  analytics: {
+    id: 'cms.module.analytics',
+    defaultMessage: '报表中心',
+  },
+  analyticsKPI: {
+    id: 'cms.module.analytics.kpi',
+    defaultMessage: 'KPI分析',
+  },
   settings: {
     id: 'cms.module.settings',
     defaultMessage: '设置',

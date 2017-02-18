@@ -47,7 +47,7 @@ export default defineMessages({
   },
   settings: {
     id: 'tms.module.settings',
-    defaultMessage: '报表中心',
+    defaultMessage: '设置',
   },
   settingsResources: {
     id: 'tms.module.settings.resources',

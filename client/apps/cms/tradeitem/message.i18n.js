@@ -121,13 +121,13 @@ const messages = defineMessages({
     id: 'cms.classificagtion.tradeitem.modal.add.owner',
     defaultMessage: '添加物料管理客户',
   },
-  addMore: {
+  addItem: {
     id: 'cms.classificagtion.tradeitem.table.add',
-    defaultMessage: '添加',
+    defaultMessage: '添加物料',
   },
   importItems: {
     id: 'cms.classificagtion.tradeitem.items.import',
-    defaultMessage: '导入物料表',
+    defaultMessage: '导入',
   },
   tradeCode: {
     id: 'cms.classificagtion.tradeitem.tabpane.cop.code',

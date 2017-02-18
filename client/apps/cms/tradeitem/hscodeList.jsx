@@ -5,7 +5,6 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { Breadcrumb, Layout, Button } from 'antd';
 import Table from 'client/components/remoteAntTable';
-import QueueAnim from 'rc-queue-anim';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import { loadHscodes, loadDeclunits } from 'common/reducers/cmsTradeitem';
@@ -236,54 +235,55 @@ export default class HscodeList extends Component {
       });
     }
     return (
-      <QueueAnim type={['bottom', 'up']}>
+      <Layout className="ant-layout-wrapper">
         <Layout>
-          <Layout>
-            <Header className="top-bar top-bar-fixed" key="header">
-              <Breadcrumb>
-                <Breadcrumb.Item>
-                  {this.msg('classification')}
-                </Breadcrumb.Item>
-                <Breadcrumb.Item>
-                  {this.msg('hscodeInquiry')}
-                </Breadcrumb.Item>
-              </Breadcrumb>
-              <div className="top-bar-tools">
-                <Button size="large"
-                  className={this.state.collapsed ? '' : 'btn-toggle-on'}
-                  icon={this.state.collapsed ? 'menu-fold' : 'menu-unfold'}
-                  onClick={this.toggle}
+          <Header className="top-bar top-bar-fixed" key="header">
+            <Breadcrumb>
+              <Breadcrumb.Item>
+                {this.msg('classification')}
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {this.msg('hscodeInquiry')}
+              </Breadcrumb.Item>
+            </Breadcrumb>
+            <div className="top-bar-tools">
+              <Button size="large"
+                className={this.state.collapsed ? '' : 'btn-toggle-on'}
+                icon={this.state.collapsed ? 'menu-fold' : 'menu-unfold'}
+                onClick={this.toggle}
+              />
+            </div>
+          </Header>
+          <Content className="main-content top-bar-fixed" key="main">
+            <div className="page-body">
+              <div className="toolbar">
+                <SearchBar placeholder="编码/名称/描述/申报要素" onInputSearch={this.handleSearch}
+                  value={this.props.hscodes.searchText} size="large"
                 />
               </div>
-            </Header>
-            <Content className="main-content top-bar-fixed" key="main">
-              <div className="page-body">
-                <div className="toolbar">
-                  <SearchBar placeholder="编码/名称/描述/申报要素" onInputSearch={this.handleSearch}
-                    value={this.props.hscodes.searchText} size="large"
-                  />
-                </div>
-                <div className="panel-body table-panel">
-                  <Table columns={columns} dataSource={this.dataSource} scroll={{ x: 2260 }} rowKey="id" />
-                </div>
+              <div className="panel-body table-panel">
+                <Table columns={columns} dataSource={this.dataSource} scroll={{ x: 2260 }} rowKey="id" />
               </div>
-            </Content>
-          </Layout>
-          <Sider
-            trigger={null}
-            defaultCollapsed
-            collapsible
-            collapsed={this.state.collapsed}
-            width={480}
-            collapsedWidth={0}
-            className="right-sider"
-          >
-            <div className="right-sider-panel">
-              <HsExtraPanel />
             </div>
-          </Sider>
+          </Content>
         </Layout>
-      </QueueAnim>
+        <Sider
+          trigger={null}
+          defaultCollapsed
+          collapsible
+          collapsed={this.state.collapsed}
+          width={480}
+          collapsedWidth={0}
+          className="right-sider"
+        >
+          <div className="right-sider-panel">
+            <div className="panel-header">
+              <h3>设置</h3>
+            </div>
+            <HsExtraPanel />
+          </div>
+        </Sider>
+      </Layout>
     );
   }
 }
