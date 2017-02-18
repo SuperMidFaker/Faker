@@ -1,180 +1,188 @@
 import { defineMessages } from 'react-intl';
 
 const messages = defineMessages({
-  tradeItemManagement: {
-    id: 'cms.tradeitem.management',
-    defaultMessage: '物料管理',
+  classification: {
+    id: 'cms.classificagtion',
+    defaultMessage: '商品归类',
+  },
+  hscodeInquiry: {
+    id: 'cms.classificagtion.hscode.inquiry',
+    defaultMessage: 'HS编码查询',
+  },
+  tradeItemMaster: {
+    id: 'cms.classificagtion.tradeitem.master',
+    defaultMessage: '企业物料库',
   },
   filterUnclassified: {
-    id: 'cms.tradeitem.filter.unclassified',
+    id: 'cms.classificagtion.tradeitem.filter.unclassified',
     defaultMessage: '未归类',
   },
   filterPending: {
-    id: 'cms.tradeitem.filter.pending',
+    id: 'cms.classificagtion.tradeitem.filter.pending',
     defaultMessage: '未审核',
   },
   filterClassified: {
-    id: 'cms.tradeitem.filter.classified',
+    id: 'cms.classificagtion.tradeitem.filter.classified',
     defaultMessage: '已审核归类',
   },
   copProductNo: {
-    id: 'cms.tradeitem.table.cop.product.no',
+    id: 'cms.classificagtion.tradeitem.table.cop.product.no',
     defaultMessage: '商品货号',
   },
   hscode: {
-    id: 'cms.tradeitem.table.hscode',
+    id: 'cms.classificagtion.tradeitem.table.hscode',
     defaultMessage: '商品编码',
   },
   gName: {
-    id: 'cms.tradeitem.g.name',
+    id: 'cms.classificagtion.tradeitem.g.name',
     defaultMessage: '中文品名',
   },
   gModel: {
-    id: 'cms.tradeitem.table.gmodel',
+    id: 'cms.classificagtion.tradeitem.table.gmodel',
     defaultMessage: '中文规格型号',
   },
   element: {
-    id: 'cms.tradeitem.table.element',
+    id: 'cms.classificagtion.tradeitem.table.element',
     defaultMessage: '申报要素',
   },
   gUnitFtz: {
-    id: 'cms.tradeitem.table.g.unit.ftz',
+    id: 'cms.classificagtion.tradeitem.table.g.unit.ftz',
     defaultMessage: '保税申报计量单位',
   },
   gUnit: {
-    id: 'cms.tradeitem.table.g.unit',
+    id: 'cms.classificagtion.tradeitem.table.g.unit',
     defaultMessage: '其他申报计量单位',
   },
   unit1: {
-    id: 'cms.tradeitem.table.unit1',
+    id: 'cms.classificagtion.tradeitem.table.unit1',
     defaultMessage: '法一计量单位',
   },
   unit2: {
-    id: 'cms.tradeitem.table.unit2',
+    id: 'cms.classificagtion.tradeitem.table.unit2',
     defaultMessage: '法二计量单位',
   },
   fixedQty: {
-    id: 'cms.tradeitem.fixed.qty',
+    id: 'cms.classificagtion.tradeitem.fixed.qty',
     defaultMessage: '固定值',
   },
   fixedUnit: {
-    id: 'cms.tradeitem.fixed.unit',
+    id: 'cms.classificagtion.tradeitem.fixed.unit',
     defaultMessage: '固值单位',
   },
   origCountry: {
-    id: 'cms.tradeitem.table.origin.country',
+    id: 'cms.classificagtion.tradeitem.table.origin.country',
     defaultMessage: '产销国',
   },
   unitNetWt: {
-    id: 'cms.tradeitem.table.unit.netwt',
+    id: 'cms.classificagtion.tradeitem.table.unit.netwt',
     defaultMessage: '单个净重',
   },
   grosswt: {
-    id: 'cms.tradeitem.table.gross.wt',
+    id: 'cms.classificagtion.tradeitem.table.gross.wt',
     defaultMessage: '毛重',
   },
   netwt: {
-    id: 'cms.tradeitem.table.net.wt',
+    id: 'cms.classificagtion.tradeitem.table.net.wt',
     defaultMessage: '净重',
   },
   customsControl: {
-    id: 'cms.tradeitem.table.customs.control',
+    id: 'cms.classificagtion.tradeitem.table.customs.control',
     defaultMessage: '海关监管条件',
   },
   inspQuarantine: {
-    id: 'cms.tradeitem.table.inspection.quarantine',
+    id: 'cms.classificagtion.tradeitem.table.inspection.quarantine',
     defaultMessage: '商检检验检疫',
   },
   unitPrice: {
-    id: 'cms.tradeitem.table.unit.price',
+    id: 'cms.classificagtion.tradeitem.table.unit.price',
     defaultMessage: '单价',
   },
   currency: {
-    id: 'cms.tradeitem.table.currency',
+    id: 'cms.classificagtion.tradeitem.table.currency',
     defaultMessage: '币制',
   },
   preClassifyNo: {
-    id: 'cms.tradeitem.table.pre.classify.no',
+    id: 'cms.classificagtion.tradeitem.table.pre.classify.no',
     defaultMessage: '预归类编号',
   },
   preClassifyStartDate: {
-    id: 'cms.tradeitem.table.pre.classify.start.date',
+    id: 'cms.classificagtion.tradeitem.table.pre.classify.start.date',
     defaultMessage: '预归类日期',
   },
   preClassifyEndDate: {
-    id: 'cms.tradeitem.table.pre.classify.end.date',
+    id: 'cms.classificagtion.tradeitem.table.pre.classify.end.date',
     defaultMessage: '到期日期',
   },
   remark: {
-    id: 'cms.tradeitem.table.remark',
+    id: 'cms.classificagtion.tradeitem.table.remark',
     defaultMessage: '备注',
   },
   addOWner: {
-    id: 'cms.tradeitem.modal.add.owner',
+    id: 'cms.classificagtion.tradeitem.modal.add.owner',
     defaultMessage: '添加物料管理客户',
   },
   addMore: {
-    id: 'cms.tradeitem.table.add',
+    id: 'cms.classificagtion.tradeitem.table.add',
     defaultMessage: '添加',
   },
   importItems: {
-    id: 'cms.tradeitem.items.import',
+    id: 'cms.classificagtion.tradeitem.items.import',
     defaultMessage: '导入物料表',
   },
   tradeCode: {
-    id: 'cms.tradeitem.tabpane.cop.code',
+    id: 'cms.classificagtion.tradeitem.tabpane.cop.code',
     defaultMessage: '单位代码',
   },
   tradeName: {
-    id: 'cms.tradeitem.tabpane.cop.name',
+    id: 'cms.classificagtion.tradeitem.tabpane.cop.name',
     defaultMessage: '单位名称',
   },
   opColumn: {
-    id: 'cms.tradeitem.column.operation',
+    id: 'cms.classificagtion.tradeitem.column.operation',
     defaultMessage: '操作',
   },
   delete: {
-    id: 'cms.tradeitem.delete',
+    id: 'cms.classificagtion.tradeitem.delete',
     defaultMessage: '删除',
   },
   cancel: {
-    id: 'cms.tradeitem.cancel',
+    id: 'cms.classificagtion.tradeitem.cancel',
     defaultMessage: '取消',
   },
   save: {
-    id: 'cms.tradeitem.save',
+    id: 'cms.classificagtion.tradeitem.save',
     defaultMessage: '保存',
   },
   modify: {
-    id: 'cms.tradeitem.modify',
+    id: 'cms.classificagtion.tradeitem.modify',
     defaultMessage: '修改',
   },
   deleteConfirm: {
-    id: 'cms.tradeitem.delete.confirm',
+    id: 'cms.classificagtion.tradeitem.delete.confirm',
     defaultMessage: '确认删除?',
   },
   newItem: {
-    id: 'cms.tradeitem.new.item',
+    id: 'cms.classificagtion.tradeitem.new.item',
     defaultMessage: '新增物料',
   },
   editItem: {
-    id: 'cms.tradeitem.edit.item',
+    id: 'cms.classificagtion.tradeitem.edit.item',
     defaultMessage: '修改物料',
   },
   declareWay: {
-    id: 'cms.tradeitem.declare.way',
+    id: 'cms.classificagtion.tradeitem.declare.way',
     defaultMessage: '报关类型',
   },
   declareUnit: {
-    id: 'cms.tradeitem.declare.unit',
+    id: 'cms.classificagtion.tradeitem.declare.unit',
     defaultMessage: '申报单位',
   },
   declunitName: {
-    id: 'cms.tradeitem.declunit.name',
+    id: 'cms.classificagtion.tradeitem.declunit.name',
     defaultMessage: '申报单位分类名称',
   },
   declunitCode: {
-    id: 'cms.tradeitem.declunit.code',
+    id: 'cms.classificagtion.tradeitem.declunit.code',
     defaultMessage: '申报单位代码',
   },
 });

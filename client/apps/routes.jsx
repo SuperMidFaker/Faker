@@ -299,7 +299,7 @@ export default(store, cookie) => {
               <IndexRedirect to="/clearance/settings/quotetemplates" />
               <Route path="quotetemplates" component={CMSSettings.QuoteTemplates} />
             </Route>
-            <Route path="products">
+            <Route path="classification">
               <Route path="tradeitem">
                 <IndexRoute component={CMSTradeItem.List} />
                 <Route path="create" component={CMSTradeItem.Create} />
@@ -330,7 +330,10 @@ export default(store, cookie) => {
               <Route path="stock" component={SCVInventoryStock.List} />
               <Route path="transaction" component={SCVInventoryTransaction.List} />
               <Route path="recieving" component={SCVInventoryRecieving.List} />
-              <Route path="shipping" component={SCVInventoryShipping.List} />
+              <Route path="shipping">
+                <IndexRoute component={SCVInventoryShipping.List} />
+                <Route path="create" component={SCVInventoryShipping.Create} />
+              </Route>
               <Route path="warehouse" component={SCVInventoryWarehouse.List} />
             </Route>
             <Route path="payments">

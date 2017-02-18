@@ -3,7 +3,7 @@ import { defineMessages } from 'react-intl';
 const messages = defineMessages({
   inventoryShipping: {
     id: 'scv.inventory.shipping',
-    defaultMessage: '出库发货',
+    defaultMessage: '出货订单',
   },
   shipmentNo: {
     id: 'scv.inventory.shipping.shipmentno',

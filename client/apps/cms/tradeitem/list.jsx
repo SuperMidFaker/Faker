@@ -85,7 +85,7 @@ export default class TradeItemList extends Component {
   }, {
     title: this.msg('gName'),
     dataIndex: 'g_name',
-    width: 120,
+    width: 200,
   }, {
     title: this.msg('gModel'),
     dataIndex: 'g_model',
@@ -206,11 +206,11 @@ export default class TradeItemList extends Component {
     columns.push({
       title: this.msg('unit1'),
       dataIndex: 'unit_1',
-      width: 80,
+      width: 120,
     }, {
       title: this.msg('unit2'),
       dataIndex: 'unit_2',
-      width: 80,
+      width: 120,
     }, {
       title: this.msg('fixedQty'),
       dataIndex: 'fixed_qty',
@@ -317,7 +317,10 @@ export default class TradeItemList extends Component {
             <Header className="top-bar top-bar-fixed" key="header">
               <Breadcrumb>
                 <Breadcrumb.Item>
-                  {this.msg('tradeItemManagement')}
+                  {this.msg('classification')}
+                </Breadcrumb.Item>
+                <Breadcrumb.Item>
+                  {this.msg('tradeItemMaster')}
                 </Breadcrumb.Item>
               </Breadcrumb>
               <RadioGroup onChange={this.handleRadioChange} size="large">

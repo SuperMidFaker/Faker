@@ -69,16 +69,16 @@ const messages = defineMessages({
     id: 'cms.module.resources.quote',
     defaultMessage: '报价管理',
   },
-  products: {
-    id: 'cms.module.products',
-    defaultMessage: '贸易商品管理',
+  classification: {
+    id: 'cms.module.classification',
+    defaultMessage: '商品归类',
   },
   tradeItem: {
-    id: 'cms.module.products.trade.item',
-    defaultMessage: '物料归类库',
+    id: 'cms.module.classification.trade.item',
+    defaultMessage: '企业物料库',
   },
   hscode: {
-    id: 'cms.module.products.hscode',
+    id: 'cms.module.classification.hscode',
     defaultMessage: 'HS编码查询',
   },
   settings: {

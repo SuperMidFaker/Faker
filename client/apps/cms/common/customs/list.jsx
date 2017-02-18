@@ -225,17 +225,17 @@ export default class DelgDeclList extends Component {
             <RadioButton value="released">{this.msg('filterReleased')}</RadioButton>
           </RadioGroup>
           <div className="top-bar-tools">
-            <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} size="large" />
+            <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
+              <Button size="large" onClick={this.handleCreateBtnClick} icon="plus">
+                {this.msg('submitForReview')}
+              </Button>
+            </PrivilegeCover>
           </div>
         </Header>
         <Content className="main-content" key="main">
           <div className="page-body">
             <div className="toolbar">
-              <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
-                <Button size="large" onClick={this.handleCreateBtnClick} icon="plus">
-                  {this.msg('submitForReview')}
-                </Button>
-              </PrivilegeCover>
+              <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} />
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3>
               </div>

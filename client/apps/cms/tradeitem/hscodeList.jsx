@@ -156,39 +156,39 @@ export default class HscodeList extends Component {
   }, {
     title: '法定第一单位',
     dataIndex: 'first_unit',
-    width: 50,
+    width: 120,
   }, {
     title: '法定第二单位',
     dataIndex: 'second_unit',
-    width: 50,
+    width: 120,
   }, {
     title: '最惠国进口税率',
     dataIndex: 'mfn_rates',
-    width: 50,
+    width: 120,
   }, {
     title: '普通进口税率',
     dataIndex: 'general_rates',
-    width: 50,
+    width: 100,
   }, {
     title: '暂定进口税率',
     dataIndex: 'provisional_rates',
-    width: 50,
+    width: 100,
   }, {
     title: '消费税率',
     dataIndex: 'gst_rates',
-    width: 50,
+    width: 60,
   }, {
     title: '出口关税率',
     dataIndex: 'export_rates',
-    width: 50,
+    width: 80,
   }, {
     title: '出口退税率',
     dataIndex: 'export_rebate_rates',
-    width: 50,
+    width: 80,
   }, {
     title: '增值税率',
     dataIndex: 'vat_rates',
-    width: 50,
+    width: 60,
   }, {
     title: '海关监管条件',
     dataIndex: 'customs',
@@ -206,7 +206,7 @@ export default class HscodeList extends Component {
   }, {
     title: '海关公告',
     dataIndex: '',
-    width: 50,
+    width: 80,
     className: 'hscode-list-right',
   }];
   toggle = () => {
@@ -242,13 +242,13 @@ export default class HscodeList extends Component {
             <Header className="top-bar top-bar-fixed" key="header">
               <Breadcrumb>
                 <Breadcrumb.Item>
-                  商品编码
+                  {this.msg('classification')}
+                </Breadcrumb.Item>
+                <Breadcrumb.Item>
+                  {this.msg('hscodeInquiry')}
                 </Breadcrumb.Item>
               </Breadcrumb>
               <div className="top-bar-tools">
-                <SearchBar placeholder="编码/名称/描述/申报要素" onInputSearch={this.handleSearch}
-                  value={this.props.hscodes.searchText} size="large"
-                />
                 <Button size="large"
                   className={this.state.collapsed ? '' : 'btn-toggle-on'}
                   icon={this.state.collapsed ? 'menu-fold' : 'menu-unfold'}
@@ -258,6 +258,11 @@ export default class HscodeList extends Component {
             </Header>
             <Content className="main-content top-bar-fixed" key="main">
               <div className="page-body">
+                <div className="toolbar">
+                  <SearchBar placeholder="编码/名称/描述/申报要素" onInputSearch={this.handleSearch}
+                    value={this.props.hscodes.searchText} size="large"
+                  />
+                </div>
                 <div className="panel-body table-panel">
                   <Table columns={columns} dataSource={this.dataSource} scroll={{ x: 2260 }} rowKey="id" />
                 </div>

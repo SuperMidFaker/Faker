@@ -392,13 +392,15 @@ export default class QuoteList extends Component {
           <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">
             <RadioButton value="draft">{msg('filterDraft')}</RadioButton>
           </RadioGroup>
+          <div className="top-bar-tools">
+            <Button type="primary" size="large" icon="plus" onClick={this.handleCreateNew}>
+              新建报价
+            </Button>
+          </div>
         </Header>
         <Content className="main-content" key="main">
           <div className="page-body">
             <div className="toolbar">
-              <Button type="primary" size="large" icon="plus" onClick={this.handleCreateNew}>
-                新建报价
-              </Button>
               <div className="toolbar-right">
                 <Tooltip title="报价模板设置">
                   <Button size="large" icon="setting" />

@@ -252,12 +252,15 @@ export default class CiqDeclList extends Component {
               {this.msg('ciqDeclaration')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <div className="top-bar-tools">
-            <SearchBar placeholder={this.msg('ciqSearchPlaceholder')} onInputSearch={this.handleSearch} size="large" />
-          </div>
         </Header>
         <Content className="main-content" key="main">
           <div className="page-body">
+            <div className="toolbar">
+              <SearchBar placeholder={this.msg('ciqSearchPlaceholder')} size="large" onInputSearch={this.handleSearch} />
+              <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
+                <h3>已选中{this.state.selectedRowKeys.length}项</h3>
+              </div>
+            </div>
             <div className="panel-body table-panel expandable">
               <Table rowSelection={rowSelection} columns={this.columns} rowKey="pre_entry_seq_no" dataSource={this.dataSource} loading={ciqdeclList.loading} scroll={{ x: 1700 }} />
             </div>

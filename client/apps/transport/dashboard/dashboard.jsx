@@ -64,125 +64,123 @@ export default class Dashboard extends React.Component {
           <span>{this.msg('dashboard')}</span>
         </Header>
         <Content className="main-content" key="main">
-          <div className="page-body card-wrapper">
-            <Row gutter={16}>
-              <Col sm={24} md={16}>
-                <Card title="活动简报" extra={datePicker}>
-                  <ul className="statistics-columns">
-                    <li className="col-4">
-                      <div className="statistics-cell">
-                        <h6>{this.msg('accepted')}</h6>
-                        <Link to={this.logsLocation('accepted')}><p className="data-num lg">{count[0]}</p></Link>
-                      </div>
-                    </li>
-                    <li className="col-4">
-                      <div className="statistics-cell">
-                        <h6>{this.msg('sent')}</h6>
-                        <Link to={this.logsLocation('sent')}><p className="data-num lg">{count[1]}</p></Link>
-                      </div>
-                    </li>
-                    <li className="col-4">
-                      <div className="statistics-cell">
-                        <h6>{this.msg('pickedup')}</h6>
-                        <Link to={this.logsLocation('pickedup')}><p className="data-num lg">{count[2]}</p></Link>
-                      </div>
-                    </li>
-                    <li className="col-4">
-                      <div className="statistics-cell">
-                        <h6>{this.msg('delivered')}</h6>
-                        <Link to={this.logsLocation('delivered')}><p className="data-num lg">{count[3]}</p></Link>
-                      </div>
-                    </li>
-                    <li className="col-4">
-                      <div className="statistics-cell">
-                        <h6>{this.msg('completed')}</h6>
-                        <Link to={this.logsLocation('completed')}><p className="data-num lg">{count[4]}</p></Link>
-                      </div>
-                    </li>
-                  </ul>
-                </Card>
-                <Card title="受理">
-                  <ul className="statistics-columns">
-                    <li className="transport-dashboard">
-                      <img style={imgStyle} role="presentation" src={`${__CDN__}/assets/img/spread.png`} />
-                    </li>
-                    <li className="transport-dashboard">
-                      <div className="statistics-cell">
-                        <h6>待接单</h6>
-                        <Link to="/transport/shipment"><p className="data-num lg">{todos.unaccepted}</p></Link>
-                      </div>
-                    </li>
-                    <li className="transport-dashboard">
-                      <div className="statistics-cell">
-                        <h6>待分配</h6>
-                        <Link to="/transport/dispatch"><p className="data-num lg">{todos.undispatched}</p></Link>
-                      </div>
-                    </li>
-                    <li className="transport-dashboard">
-                      <div className="statistics-cell">
-                        <h6>待发送</h6>
-                        <Link to="/transport/dispatch"><p className="data-num lg">{todos.dispatched}</p></Link>
-                      </div>
-                    </li>
-                  </ul>
-                </Card>
-                <Card title="追踪">
-                  <ul className="statistics-columns">
-                    <li className="transport-dashboard">
-                      <img style={imgStyle} role="presentation" src={`${__CDN__}/assets/img/truck.png`} />
-                    </li>
-                    <li className="transport-dashboard">
-                      <div className="statistics-cell">
-                        <h6>待提货</h6>
-                        <Link to="/transport/tracking/road/status/dispatched"><p className="data-num lg">{todos.undelivered}</p></Link>
-                      </div>
-                    </li>
-                    <li className="transport-dashboard">
-                      <div className="statistics-cell">
-                        <h6>待上报位置</h6>
-                        <Link to="/transport/tracking/road/status/intransit"><p className="data-num lg">{todos.unReportLocation}</p></Link>
-                      </div>
-                    </li>
-                    <li className="transport-dashboard">
-                      <div className="statistics-cell">
-                        <h6>待交货</h6>
-                        <Link to="/transport/tracking/road/status/intransit"><p className="data-num lg">{todos.intransit}</p></Link>
-                      </div>
-                    </li>
-                  </ul>
-                </Card>
-                <Card title="确认">
-                  <ul className="statistics-columns">
-                    <li className="transport-dashboard">
-                      <img style={imgStyle} role="presentation" src={`${__CDN__}/assets/img/ok.png`} />
-                    </li>
-                    <li className="transport-dashboard">
-                      <div className="statistics-cell">
-                        <h6>待上传回单</h6>
-                        <Link to="/transport/tracking/road/pod/upload"><p className="data-num lg">{todos.delivered}</p></Link>
-                      </div>
-                    </li>
-                    <li className="transport-dashboard">
-                      <div className="statistics-cell">
-                        <h6>回单待审核</h6>
-                        <Link to="/transport/tracking/road/pod/audit"><p className="data-num lg">{todos.podsubmit}</p></Link>
-                      </div>
-                    </li>
-                    <li className="transport-dashboard">
-                      <div className="statistics-cell">
-                        <h6>待确认交货</h6>
-                        <Link to="/transport/tracking/road/status/delivered"><p className="data-num lg">{todos.unconfirmed}</p></Link>
-                      </div>
-                    </li>
-                  </ul>
-                </Card>
-              </Col>
-              <Col sm={24} md={8}>
-                <Card title="公告" bodyStyle={{ height: 100 }} />
-                <Card title="动态" bodyStyle={{ height: 200 }} />
-              </Col>
-            </Row>
-          </div>
+          <Row gutter={16}>
+            <Col sm={24} md={16}>
+              <Card title="活动简报" extra={datePicker}>
+                <ul className="statistics-columns">
+                  <li className="col-4">
+                    <div className="statistics-cell">
+                      <h6>{this.msg('accepted')}</h6>
+                      <Link to={this.logsLocation('accepted')}><p className="data-num lg">{count[0]}</p></Link>
+                    </div>
+                  </li>
+                  <li className="col-4">
+                    <div className="statistics-cell">
+                      <h6>{this.msg('sent')}</h6>
+                      <Link to={this.logsLocation('sent')}><p className="data-num lg">{count[1]}</p></Link>
+                    </div>
+                  </li>
+                  <li className="col-4">
+                    <div className="statistics-cell">
+                      <h6>{this.msg('pickedup')}</h6>
+                      <Link to={this.logsLocation('pickedup')}><p className="data-num lg">{count[2]}</p></Link>
+                    </div>
+                  </li>
+                  <li className="col-4">
+                    <div className="statistics-cell">
+                      <h6>{this.msg('delivered')}</h6>
+                      <Link to={this.logsLocation('delivered')}><p className="data-num lg">{count[3]}</p></Link>
+                    </div>
+                  </li>
+                  <li className="col-4">
+                    <div className="statistics-cell">
+                      <h6>{this.msg('completed')}</h6>
+                      <Link to={this.logsLocation('completed')}><p className="data-num lg">{count[4]}</p></Link>
+                    </div>
+                  </li>
+                </ul>
+              </Card>
+              <Card title="受理">
+                <ul className="statistics-columns">
+                  <li className="transport-dashboard">
+                    <img style={imgStyle} role="presentation" src={`${__CDN__}/assets/img/spread.png`} />
+                  </li>
+                  <li className="transport-dashboard">
+                    <div className="statistics-cell">
+                      <h6>待接单</h6>
+                      <Link to="/transport/shipment"><p className="data-num lg">{todos.unaccepted}</p></Link>
+                    </div>
+                  </li>
+                  <li className="transport-dashboard">
+                    <div className="statistics-cell">
+                      <h6>待分配</h6>
+                      <Link to="/transport/dispatch"><p className="data-num lg">{todos.undispatched}</p></Link>
+                    </div>
+                  </li>
+                  <li className="transport-dashboard">
+                    <div className="statistics-cell">
+                      <h6>待发送</h6>
+                      <Link to="/transport/dispatch"><p className="data-num lg">{todos.dispatched}</p></Link>
+                    </div>
+                  </li>
+                </ul>
+              </Card>
+              <Card title="追踪">
+                <ul className="statistics-columns">
+                  <li className="transport-dashboard">
+                    <img style={imgStyle} role="presentation" src={`${__CDN__}/assets/img/truck.png`} />
+                  </li>
+                  <li className="transport-dashboard">
+                    <div className="statistics-cell">
+                      <h6>待提货</h6>
+                      <Link to="/transport/tracking/road/status/dispatched"><p className="data-num lg">{todos.undelivered}</p></Link>
+                    </div>
+                  </li>
+                  <li className="transport-dashboard">
+                    <div className="statistics-cell">
+                      <h6>待上报位置</h6>
+                      <Link to="/transport/tracking/road/status/intransit"><p className="data-num lg">{todos.unReportLocation}</p></Link>
+                    </div>
+                  </li>
+                  <li className="transport-dashboard">
+                    <div className="statistics-cell">
+                      <h6>待交货</h6>
+                      <Link to="/transport/tracking/road/status/intransit"><p className="data-num lg">{todos.intransit}</p></Link>
+                    </div>
+                  </li>
+                </ul>
+              </Card>
+              <Card title="确认">
+                <ul className="statistics-columns">
+                  <li className="transport-dashboard">
+                    <img style={imgStyle} role="presentation" src={`${__CDN__}/assets/img/ok.png`} />
+                  </li>
+                  <li className="transport-dashboard">
+                    <div className="statistics-cell">
+                      <h6>待上传回单</h6>
+                      <Link to="/transport/tracking/road/pod/upload"><p className="data-num lg">{todos.delivered}</p></Link>
+                    </div>
+                  </li>
+                  <li className="transport-dashboard">
+                    <div className="statistics-cell">
+                      <h6>回单待审核</h6>
+                      <Link to="/transport/tracking/road/pod/audit"><p className="data-num lg">{todos.podsubmit}</p></Link>
+                    </div>
+                  </li>
+                  <li className="transport-dashboard">
+                    <div className="statistics-cell">
+                      <h6>待确认交货</h6>
+                      <Link to="/transport/tracking/road/status/delivered"><p className="data-num lg">{todos.unconfirmed}</p></Link>
+                    </div>
+                  </li>
+                </ul>
+              </Card>
+            </Col>
+            <Col sm={24} md={8}>
+              <Card title="公告" bodyStyle={{ height: 100 }} />
+              <Card title="动态" bodyStyle={{ height: 200 }} />
+            </Col>
+          </Row>
         </Content>
       </QueueAnim>
     );

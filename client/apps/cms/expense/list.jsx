@@ -490,18 +490,18 @@ export default class ExpenseList extends Component {
             <RadioButton value="closed">{this.msg('statusClosed')}</RadioButton>
           </RadioGroup>
           <div className="top-bar-tools">
-            <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} size="large" />
+            <Button type="default" size="large" icon="upload" onClick={this.handleAdvFeesImport}>
+              {this.msg('incExp')}
+            </Button>
+            <Button type="ghost" size="large" icon="file-excel" onClick={this.handleExpExport}>
+              {this.msg('eptExp')}
+            </Button>
           </div>
         </Header>
         <Content className="main-content" key="main">
           <div className="page-body">
             <div className="toolbar">
-              <Button type="default" size="large" icon="upload" onClick={this.handleAdvFeesImport}>
-                {this.msg('incExp')}
-              </Button>
-              <Button type="ghost" size="large" icon="file-excel" onClick={this.handleExpExport}>
-                {this.msg('eptExp')}
-              </Button>
+              <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} size="large" />
               <div className="toolbar-right">
                 <Select value={listFilter.viewStatus}
                   style={{ width: 120 }}

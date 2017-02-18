@@ -124,16 +124,14 @@ export default class Clearance extends React.Component {
       single: false,
       key: 'cms-4',
       icon: 'icon-fontello-tags-2',
-      text: formatMsg(intl, 'products'),
+      text: formatMsg(intl, 'classification'),
       sublinks: [{
         key: 'cms-4-0',
-        group: formatMsg(intl, 'products'),
-        path: '/clearance/products/tradeitem',
+        path: '/clearance/classification/tradeitem',
         text: formatMsg(intl, 'tradeItem'),
       }, {
         key: 'cms-4-1',
-        group: formatMsg(intl, 'products'),
-        path: '/clearance/products/hscode',
+        path: '/clearance/classification/hscode',
         text: formatMsg(intl, 'hscode'),
       }],
     });

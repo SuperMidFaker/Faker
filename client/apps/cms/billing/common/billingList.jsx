@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
-import { Button, Layout, message } from 'antd';
+import { Breadcrumb, Button, Layout, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
@@ -11,6 +11,7 @@ import messages from '../message.i18n';
 import BillingForm from './billingForm';
 import { loadBillings, updateBilling, sendBilling, billingInvoiced } from 'common/reducers/cmsBilling';
 import { CMS_BILLING_STATUS } from 'common/constants';
+import SearchBar from 'client/components/search-bar';
 import TrimSpan from 'client/components/trimSpan';
 import { createFilename } from 'client/util/dataTransform';
 import CancelChargeModal from '../modals/cancelChargeModal';
@@ -252,13 +253,25 @@ export default class BillingList extends React.Component {
     return (
       <div>
         <Header className="top-bar">
-          <span>{this.msg(this.props.type)}{this.msg('billing')}</span>
+          <Breadcrumb>
+            <Breadcrumb.Item>
+              {this.msg('expense')}
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              {this.msg(this.props.type)}{this.msg('billing')}
+            </Breadcrumb.Item>
+          </Breadcrumb>
+          <div className="top-bar-tools">
+            <Button type="ghost" size="large" icon="export" onClick={this.handleExportExcel}>{this.msg('export')}</Button>
+            <Button type="primary" size="large" icon="plus" onClick={this.handleAddBtnClicked}>{this.msg('createBilling')}</Button>
+          </div>
         </Header>
         <Content className="main-content">
           <div className="page-body">
             <div className="toolbar">
-              <Button type="primary" size="large" icon="plus" onClick={this.handleAddBtnClicked}>{this.msg('createBilling')}</Button>
-              <Button type="ghost" size="large" icon="export" onClick={this.handleExportExcel}>{this.msg('export')}</Button>
+              <SearchBar placeholder="输入账单名称搜索" onInputSearch={this.handleSearchInput}
+                value={this.props.billings.searchValue} size="large"
+              />
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3>
               </div>

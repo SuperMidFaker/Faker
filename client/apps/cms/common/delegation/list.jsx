@@ -525,17 +525,17 @@ export default class DelegationList extends Component {
             <RadioButton value="ciqPending">{this.msg('ciq')}</RadioButton>
           </RadioGroup>
           <div className="top-bar-tools">
-            <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} />
+            <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
+              <Button type="primary" size="large" onClick={this.handleCreateBtnClick} icon="plus">
+                {this.msg('createDelegation')}
+              </Button>
+            </PrivilegeCover>
           </div>
         </Header>
         <Content className="main-content" key="main">
           <div className="page-body">
             <div className="toolbar">
-              <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
-                <Button type="primary" size="large" onClick={this.handleCreateBtnClick} icon="plus">
-                  {this.msg('createDelegation')}
-                </Button>
-              </PrivilegeCover>
+              <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} />
               <div className="toolbar-right">
                 <Select size="large" value={listFilter.viewStatus} style={{ width: 160 }} showSearch={false}
                   onChange={this.handleViewChange}

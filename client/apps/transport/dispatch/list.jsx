@@ -1047,16 +1047,13 @@ export default class DispatchList extends React.Component {
             <RadioButton value="dispatching">{this.msg('rdTextDispatching')}</RadioButton>
             <RadioButton value="dispatched">{this.msg('rdTextDispatched')}</RadioButton>
           </RadioGroup>
-          <div className="top-bar-tools">
-            <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} value={this.state.searchValue} size="large" />
-            <span />
-            <a onClick={this.toggleAdvancedSearch}>高级搜索</a>
-          </div>
         </Header>
         <Content className="main-content" key="main">
-          <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch} toggle={this.toggleAdvancedSearch} />
           <div className="page-body">
             <div className="toolbar">
+              <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} value={this.state.searchValue} />
+              <span />
+              <a onClick={this.toggleAdvancedSearch}>过滤选项</a>
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3> {bulkBtns}
               </div>
@@ -1064,6 +1061,7 @@ export default class DispatchList extends React.Component {
                 <MyShipmentsSelect onSearch={this.handleAdvancedSearch} />
               </div>
             </div>
+            <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch} toggle={this.toggleAdvancedSearch} />
             <div className="panel-body table-panel">
               <div className="dispatch-table">
                 {tb}

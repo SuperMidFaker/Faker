@@ -81,117 +81,115 @@ export default class SCVDashboard extends React.Component {
           <div className="toolbar-right" />
         </Header>
         <Content className="main-content">
-          <div className="page-body card-wrapper">
-            <Row gutter={16}>
-              <Col sm={24} md={16}>
-                <Card title={this.msg('orders')} style={{ display: 'none' }}>
-                  <ul className="statistics-columns">
-                    <li className="col-4">
-                      <div className="statistics-cell">
-                        <h6>{this.msg('accepted')}</h6>
-                        <p className="data-num">12</p>
-                      </div>
-                    </li>
-                    <li className="col-4">
-                      <div className="statistics-cell">
-                        <h6>{this.msg('sent')}</h6>
-                        <p className="data-num">6</p>
-                      </div>
-                    </li>
-                    <li className="col-4">
-                      <div className="statistics-cell">
-                        <h6>{this.msg('pickedup')}</h6>
-                        <p className="data-num">23</p>
-                      </div>
-                    </li>
-                    <li className="col-4">
-                      <div className="statistics-cell">
-                        <h6>{this.msg('delivered')}</h6>
-                        <p className="data-num" />
-                      </div>
-                    </li>
-                    <li className="col-4">
-                      <div className="statistics-cell">
-                        <h6>{this.msg('completed')}</h6>
-                        <p className="data-num">32</p>
-                      </div>
-                    </li>
-                  </ul>
-                </Card>
-                <Card title={this.msg('shipments')}>
-                  <ul className="statistics-columns">
-                    <li className="col-4">
-                      <div className="statistics-cell">
-                        <h6>{this.msg('atOrigin')}</h6>
-                        <p className="data-num">12</p>
-                      </div>
-                    </li>
-                    <li className="col-4">
-                      <div className="statistics-cell">
-                        <h6>{this.msg('inTransit')}</h6>
-                        <p className="data-num">6</p>
-                      </div>
-                    </li>
-                    <li className="col-4">
-                      <div className="statistics-cell">
-                        <h6>{this.msg('arrived')}</h6>
-                        <p className="data-num">23</p>
-                      </div>
-                    </li>
-                    <li className="col-4">
-                      <div className="statistics-cell">
-                        <h6>{this.msg('clearance')}</h6>
-                        <p className="data-num">23</p>
-                      </div>
-                    </li>
-                    <li className="col-4">
-                      <div className="statistics-cell">
-                        <h6>{this.msg('inland')}</h6>
-                        <p className="data-num">32</p>
-                      </div>
-                    </li>
-                    <li className="col-4">
-                      <div className="statistics-cell">
-                        <h6>{this.msg('delivered')}</h6>
-                        <p className="data-num">32</p>
-                      </div>
-                    </li>
-                  </ul>
-                </Card>
-                <Card title={this.msg('payments')}>
-                  <ul className="statistics-columns">
-                    <li className="col-8">
-                      <div className="statistics-cell">
-                        <h6>{this.msg('tax')}</h6>
-                        <p className="data-num">￥12,578.95</p>
-                      </div>
-                    </li>
-                    <li className="col-8">
-                      <div className="statistics-cell">
-                        <h6>{this.msg('freightBills')}</h6>
-                        <p className="data-num">￥67,231.53</p>
-                      </div>
-                    </li>
-                    <li className="col-8">
-                      <div className="statistics-cell">
-                        <h6>{this.msg('brokerBills')}</h6>
-                        <p className="data-num">￥32,345.06</p>
-                      </div>
-                    </li>
-                  </ul>
-                </Card>
-                <Card title={this.msg('statistics')}>
-                  <div id="c1" />
-                </Card>
-              </Col>
-              <Col sm={24} md={8}>
-                <Card title={this.msg('alerts')} >
-                  <Alert message="报关单221020161109715501 海关查验" type="warning" showIcon />
-                  <Alert message="1067172 送货延迟：收货人外地出差，18号以后送货" type="warning" showIcon />
-                </Card>
-              </Col>
-            </Row>
-          </div>
+          <Row gutter={16}>
+            <Col sm={24} md={16}>
+              <Card title={this.msg('orders')} style={{ display: 'none' }}>
+                <ul className="statistics-columns">
+                  <li className="col-4">
+                    <div className="statistics-cell">
+                      <h6>{this.msg('accepted')}</h6>
+                      <p className="data-num">12</p>
+                    </div>
+                  </li>
+                  <li className="col-4">
+                    <div className="statistics-cell">
+                      <h6>{this.msg('sent')}</h6>
+                      <p className="data-num">6</p>
+                    </div>
+                  </li>
+                  <li className="col-4">
+                    <div className="statistics-cell">
+                      <h6>{this.msg('pickedup')}</h6>
+                      <p className="data-num">23</p>
+                    </div>
+                  </li>
+                  <li className="col-4">
+                    <div className="statistics-cell">
+                      <h6>{this.msg('delivered')}</h6>
+                      <p className="data-num" />
+                    </div>
+                  </li>
+                  <li className="col-4">
+                    <div className="statistics-cell">
+                      <h6>{this.msg('completed')}</h6>
+                      <p className="data-num">32</p>
+                    </div>
+                  </li>
+                </ul>
+              </Card>
+              <Card title={this.msg('shipments')}>
+                <ul className="statistics-columns">
+                  <li className="col-4">
+                    <div className="statistics-cell">
+                      <h6>{this.msg('atOrigin')}</h6>
+                      <p className="data-num">12</p>
+                    </div>
+                  </li>
+                  <li className="col-4">
+                    <div className="statistics-cell">
+                      <h6>{this.msg('inTransit')}</h6>
+                      <p className="data-num">6</p>
+                    </div>
+                  </li>
+                  <li className="col-4">
+                    <div className="statistics-cell">
+                      <h6>{this.msg('arrived')}</h6>
+                      <p className="data-num">23</p>
+                    </div>
+                  </li>
+                  <li className="col-4">
+                    <div className="statistics-cell">
+                      <h6>{this.msg('clearance')}</h6>
+                      <p className="data-num">23</p>
+                    </div>
+                  </li>
+                  <li className="col-4">
+                    <div className="statistics-cell">
+                      <h6>{this.msg('inland')}</h6>
+                      <p className="data-num">32</p>
+                    </div>
+                  </li>
+                  <li className="col-4">
+                    <div className="statistics-cell">
+                      <h6>{this.msg('delivered')}</h6>
+                      <p className="data-num">32</p>
+                    </div>
+                  </li>
+                </ul>
+              </Card>
+              <Card title={this.msg('payments')}>
+                <ul className="statistics-columns">
+                  <li className="col-8">
+                    <div className="statistics-cell">
+                      <h6>{this.msg('tax')}</h6>
+                      <p className="data-num">￥12,578.95</p>
+                    </div>
+                  </li>
+                  <li className="col-8">
+                    <div className="statistics-cell">
+                      <h6>{this.msg('freightBills')}</h6>
+                      <p className="data-num">￥67,231.53</p>
+                    </div>
+                  </li>
+                  <li className="col-8">
+                    <div className="statistics-cell">
+                      <h6>{this.msg('brokerBills')}</h6>
+                      <p className="data-num">￥32,345.06</p>
+                    </div>
+                  </li>
+                </ul>
+              </Card>
+              <Card title={this.msg('statistics')}>
+                <div id="c1" />
+              </Card>
+            </Col>
+            <Col sm={24} md={8}>
+              <Card title={this.msg('alerts')} >
+                <Alert message="报关单221020161109715501 海关查验" type="warning" showIcon />
+                <Alert message="1067172 送货延迟：收货人外地出差，18号以后送货" type="warning" showIcon />
+              </Card>
+            </Col>
+          </Row>
         </Content>
       </QueueAnim>
     );

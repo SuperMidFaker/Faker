@@ -433,28 +433,28 @@ export default class AcceptList extends React.Component {
             <RadioButton value="archived">{this.msg('archivedShipmt')}</RadioButton>
           </RadioGroup>
           <div className="top-bar-tools">
-            <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} value={this.state.searchValue} />
-            <span />
-            <a onClick={this.toggleAdvancedSearch}>高级搜索</a>
+            <PrivilegeCover module="transport" feature="shipment" action="create">
+              <NavLink to="/transport/shipment/new">
+                <Button type="primary" size="large" icon="plus">
+                  {this.msg('shipmtCreate')}
+                </Button>
+              </NavLink>
+            </PrivilegeCover>
           </div>
         </Header>
         <Content className="main-content" key="main">
-          <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch}
-            toggle={this.toggleAdvancedSearch}
-          />
           <div className="page-body">
             <div className="toolbar">
-              <PrivilegeCover module="transport" feature="shipment" action="create">
-                <NavLink to="/transport/shipment/new">
-                  <Button type="primary" size="large" icon="plus">
-                    {this.msg('shipmtCreate')}
-                  </Button>
-                </NavLink>
-              </PrivilegeCover>
+              <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} value={this.state.searchValue} />
+              <span />
+              <a onClick={this.toggleAdvancedSearch}>过滤选项</a>
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3> {bulkBtns}
               </div>
             </div>
+            <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch}
+              toggle={this.toggleAdvancedSearch}
+            />
             <div className="panel-body table-panel">
               <Table rowSelection={rowSelection} columns={columns} loading={loading}
                 dataSource={this.dataSource} scroll={{ x: 2280 }}

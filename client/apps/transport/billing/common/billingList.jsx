@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
-import { Button, message, Layout, Popconfirm } from 'antd';
+import { Breadcrumb, Button, message, Layout, Popconfirm } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
@@ -287,7 +287,14 @@ export default class BillingList extends React.Component {
     return (
       <div>
         <Header className="top-bar">
-          <span>{this.msg(type)}{this.msg('billing')}</span>
+          <Breadcrumb>
+            <Breadcrumb.Item>
+              {this.msg('expense')}
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              {this.msg(type)}{this.msg('billing')}
+            </Breadcrumb.Item>
+          </Breadcrumb>
           <div className="top-bar-tools">
             <SearchBar placeholder="输入账单名称搜索" onInputSearch={this.handleSearchInput}
               value={this.props.billings.searchValue} size="large"

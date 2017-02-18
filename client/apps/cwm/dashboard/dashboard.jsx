@@ -54,53 +54,51 @@ export default class CWMDashboard extends React.Component {
           </div>
         </Header>
         <Content className="main-content">
-          <div className="page-body card-wrapper">
-            <Row gutter={16}>
-              <Col sm={24} md={16}>
-                <Card title={this.msg('volumeToday')}>
-                  <ul className="statistics-columns">
-                    <li className="col-6">
-                      <div className="statistics-cell">
-                        <h6>{this.msg('stockInbound')}</h6>
-                        <p className="data-num">12</p>
-                      </div>
-                    </li>
-                    <li className="col-6">
-                      <div className="statistics-cell">
-                        <h6>{this.msg('stockOutbound')}</h6>
-                        <p className="data-num">6</p>
-                      </div>
-                    </li>
-                    <li className="col-6">
-                      <div className="statistics-cell">
-                        <h6>{this.msg('stockReserved')}</h6>
-                        <p className="data-num">23</p>
-                      </div>
-                    </li>
-                    <li className="col-6">
-                      <div className="statistics-cell">
-                        <h6>{this.msg('stockTaken')}</h6>
-                        <p className="data-num">23</p>
-                      </div>
-                    </li>
-                  </ul>
-                </Card>
-                <Row gutter={16}>
-                  <Col sm={24} md={12}>
-                    <Card title={this.msg('inventoryByCategories')} />
-                  </Col>
-                  <Col sm={24} md={12}>
-                    <Card title={this.msg('inventoryByCustomers')} />
-                  </Col>
-                </Row>
-              </Col>
-              <Col sm={24} md={8}>
-                <Card title={this.msg('inventoryAlerts')} >
-                  <Alert message="221020161109715501 低于安全库存" type="warning" showIcon />
-                </Card>
-              </Col>
-            </Row>
-          </div>
+          <Row gutter={16}>
+            <Col sm={24} md={16}>
+              <Card title={this.msg('volumeToday')}>
+                <ul className="statistics-columns">
+                  <li className="col-6">
+                    <div className="statistics-cell">
+                      <h6>{this.msg('stockInbound')}</h6>
+                      <p className="data-num">12</p>
+                    </div>
+                  </li>
+                  <li className="col-6">
+                    <div className="statistics-cell">
+                      <h6>{this.msg('stockOutbound')}</h6>
+                      <p className="data-num">6</p>
+                    </div>
+                  </li>
+                  <li className="col-6">
+                    <div className="statistics-cell">
+                      <h6>{this.msg('stockReserved')}</h6>
+                      <p className="data-num">23</p>
+                    </div>
+                  </li>
+                  <li className="col-6">
+                    <div className="statistics-cell">
+                      <h6>{this.msg('stockTaken')}</h6>
+                      <p className="data-num">23</p>
+                    </div>
+                  </li>
+                </ul>
+              </Card>
+              <Row gutter={16}>
+                <Col sm={24} md={12}>
+                  <Card title={this.msg('inventoryByCategories')} />
+                </Col>
+                <Col sm={24} md={12}>
+                  <Card title={this.msg('inventoryByCustomers')} />
+                </Col>
+              </Row>
+            </Col>
+            <Col sm={24} md={8}>
+              <Card title={this.msg('inventoryAlerts')} >
+                <Alert message="221020161109715501 低于安全库存" type="warning" showIcon />
+              </Card>
+            </Col>
+          </Row>
         </Content>
       </QueueAnim>
     );
