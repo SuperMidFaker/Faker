@@ -85,9 +85,9 @@ const messages = defineMessages({
     id: 'root.partnership.warehouse',
     defaultMessage: '仓储',
   },
-  moduleCustomerCenter: {
-    id: 'component.module.customer.center',
-    defaultMessage: '客户中心',
+  moduleSCOP: {
+    id: 'component.module.scop',
+    defaultMessage: '客户订单',
   },
   moduleTransport: {
     id: 'component.module.transport',

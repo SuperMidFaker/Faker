@@ -18,7 +18,7 @@ const { Header, Content } = Layout;
 )
 @connectNav({
   depth: 2,
-  moduleName: 'customer',
+  moduleName: 'scop',
 })
 export default class CRMDashboard extends React.Component {
   static propTypes = {

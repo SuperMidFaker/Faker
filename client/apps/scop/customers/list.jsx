@@ -33,7 +33,7 @@ function fetchData({ state, dispatch }) {
 )
 @connectNav({
   depth: 2,
-  moduleName: 'customer',
+  moduleName: 'scop',
 })
 export default class List extends React.Component {
   static propTypes = {

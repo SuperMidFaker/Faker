@@ -55,7 +55,7 @@ function fetchData({ state, dispatch }) {
 )
 @connectNav({
   depth: 2,
-  moduleName: 'customer',
+  moduleName: 'scop',
 })
 export default class ShipmentOrderList extends React.Component {
   static propTypes = {
@@ -82,7 +82,7 @@ export default class ShipmentOrderList extends React.Component {
   msg = key => formatMsg(this.props.intl, key)
   handleCreate = () => {
     this.props.setClientForm(-2, {});
-    this.context.router.push('/customer/orders/create');
+    this.context.router.push('/scop/orders/create');
   }
   handleRemove = (shipmtOrderNo) => {
     const { tenantId, loginId, username } = this.props;
@@ -248,7 +248,7 @@ export default class ShipmentOrderList extends React.Component {
             <div>
               <a onClick={() => this.handleAccept(record.shipmt_order_no)}>发送</a>
               <span className="ant-divider" />
-              <Link to={`/customer/orders/edit?shipmtOrderNo=${record.shipmt_order_no}`}>修改</Link>
+              <Link to={`/scop/orders/edit?shipmtOrderNo=${record.shipmt_order_no}`}>修改</Link>
               <span className="ant-divider" />
               <Popconfirm title="确定删除?" onConfirm={() => this.handleRemove(record.shipmt_order_no)}>
                 <a>删除</a>
@@ -258,7 +258,7 @@ export default class ShipmentOrderList extends React.Component {
         } else {
           return (
             <div>
-              <Link to={`/customer/orders/view?shipmtOrderNo=${record.shipmt_order_no}`}>查看</Link>
+              <Link to={`/scop/orders/view?shipmtOrderNo=${record.shipmt_order_no}`}>查看</Link>
             </div>
           );
         }

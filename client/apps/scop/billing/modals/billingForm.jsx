@@ -62,7 +62,7 @@ export default class BillingForm extends React.Component {
       const partnerTenantId = partner.tid;
       const partnerCode = partner.partner_code;
       this.context.router.push({
-        pathname: '/customer/billing/create',
+        pathname: '/scop/billing/create',
         query: {
           ...fieldsValue, partnerName, partnerCode, partnerTenantId, beginDate: moment(beginDate).format('YYYY-MM-DD 00:00:00'), endDate: moment(endDate).format('YYYY-MM-DD 23:59:59'),
         },

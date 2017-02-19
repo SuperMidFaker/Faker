@@ -67,7 +67,7 @@ export default class BillingFeeList extends React.Component {
         if (result.error) {
           message.error(result.error.message);
         } else {
-          this.context.router.push('/customer/billing');
+          this.context.router.push('/scop/billing');
         }
       });
     } else {
@@ -75,7 +75,7 @@ export default class BillingFeeList extends React.Component {
         if (result.error) {
           message.error(result.error.message);
         } else {
-          this.context.router.push('/customer/billing');
+          this.context.router.push('/scop/billing');
         }
       });
     }
@@ -93,7 +93,7 @@ export default class BillingFeeList extends React.Component {
         if (result.error) {
           message.error(result.error.message);
         } else {
-          this.context.router.push('/customer/billing');
+          this.context.router.push('/scop/billing');
         }
       });
     } else {

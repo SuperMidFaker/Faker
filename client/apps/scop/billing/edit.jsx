@@ -13,12 +13,12 @@ function fetchData({ dispatch, params }) {
 @connectFetch()(fetchData)
 @connectNav({
   depth: 3,
-  moduleName: 'customer',
+  moduleName: 'scop',
 })
 export default class Check extends React.Component {
   render() {
     return (
-      <BillingFeeList operation="check" />
+      <BillingFeeList operation="edit" />
     );
   }
 }

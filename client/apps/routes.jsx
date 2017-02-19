@@ -80,11 +80,11 @@ import * as SCVPaymentsBilling from './scv/payments/billing';
 import * as SCVAnalyticsKpi from './scv/analytics/kpi';
 import * as SCVAnalyticsCost from './scv/analytics/cost';
 import * as SCVSettings from './scv/settings';
-import CRM from './crm/module-crm';
-import * as CRMDashboard from './crm/dashboard';
-import * as CRMOrders from './crm/orders';
-import * as CRMCustomers from './crm/customers';
-import * as CRMBilling from './crm/billing';
+import SCOP from './scop/module-scop';
+import * as SCOPDashboard from './scop/dashboard';
+import * as SCOPOrders from './scop/orders';
+import * as SCOPCustomers from './scop/customers';
+import * as SCOPBilling from './scop/billing';
 import { loadAccount } from 'common/reducers/account';
 import { isLoaded } from 'client/common/redux-actions';
 import { DEFAULT_MODULES } from 'common/constants/module';
@@ -394,24 +394,24 @@ export default(store, cookie) => {
               <Route path="openapi" component={CWMSettings.OpenApi} />
             </Route>
           </Route>
-          <Route path={DEFAULT_MODULES.customer.id} component={CRM}>
-            <IndexRedirect to="/customer/orders" />
-            <Route path="dashboard" component={CRMDashboard.Index} />
+          <Route path={DEFAULT_MODULES.scop.id} component={SCOP}>
+            <IndexRedirect to="/scop/orders" />
+            <Route path="dashboard" component={SCOPDashboard.Index} />
             <Route path="orders" >
-              <IndexRoute component={CRMOrders.List} />
-              <Route path="create" component={CRMOrders.Create} />
-              <Route path="view" component={CRMOrders.View} />
-              <Route path="edit" component={CRMOrders.Edit} />
+              <IndexRoute component={SCOPOrders.List} />
+              <Route path="create" component={SCOPOrders.Create} />
+              <Route path="view" component={SCOPOrders.View} />
+              <Route path="edit" component={SCOPOrders.Edit} />
             </Route>
-            <Route path="customers" component={CRMCustomers.List} />
+            <Route path="customers" component={SCOPCustomers.List} />
             <Route path="billing">
-              <IndexRedirect to="/customer/billing/list" />
-              <Route path="fees" component={CRMBilling.FeeList} />
-              <Route path="list" component={CRMBilling.List} />
-              <Route path="create" component={CRMBilling.Create} />
-              <Route path="check/:billingId" component={CRMBilling.Check} />
-              <Route path="edit/:billingId" component={CRMBilling.Edit} />
-              <Route path="view/:billingId" component={CRMBilling.View} />
+              <IndexRedirect to="/scop/billing/list" />
+              <Route path="fees" component={SCOPBilling.FeeList} />
+              <Route path="list" component={SCOPBilling.List} />
+              <Route path="create" component={SCOPBilling.Create} />
+              <Route path="check/:billingId" component={SCOPBilling.Check} />
+              <Route path="edit/:billingId" component={SCOPBilling.Edit} />
+              <Route path="view/:billingId" component={SCOPBilling.View} />
             </Route>
           </Route>
         </Route>
