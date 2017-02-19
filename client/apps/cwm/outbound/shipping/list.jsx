@@ -39,11 +39,15 @@ export default class ShippingOrderList extends React.Component {
   columns = [{
     title: this.msg('shippingNo'),
     dataIndex: 'so_no',
-    width: 200,
+    width: 100,
   }, {
     title: this.msg('owner'),
-    width: 200,
+    width: 150,
     dataIndex: 'owner_code',
+  }, {
+    title: this.msg('warehouse'),
+    width: 150,
+    dataIndex: 'whse_code',
   }, {
     title: this.msg('status'),
     width: 200,
@@ -56,6 +60,18 @@ export default class ShippingOrderList extends React.Component {
     title: this.msg('plannedQty'),
     width: 120,
     dataIndex: 'planned_qty',
+  }, {
+    title: this.msg('packing'),
+    width: 120,
+    dataIndex: 'packing',
+  }, {
+    title: this.msg('weight'),
+    width: 120,
+    dataIndex: 'weight',
+  }, {
+    title: this.msg('cbm'),
+    width: 120,
+    dataIndex: 'cbm',
   }, {
     title: this.msg('consignee'),
     dataIndex: 'consignee',

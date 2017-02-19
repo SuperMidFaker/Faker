@@ -57,6 +57,18 @@ export default class ReceivingNoticeList extends React.Component {
     width: 120,
     dataIndex: 'planned_qty',
   }, {
+    title: this.msg('packing'),
+    width: 120,
+    dataIndex: 'packing',
+  }, {
+    title: this.msg('weight'),
+    width: 120,
+    dataIndex: 'weight',
+  }, {
+    title: this.msg('cbm'),
+    width: 120,
+    dataIndex: 'cbm',
+  }, {
     title: this.msg('vendor'),
     dataIndex: 'vendor',
   }]

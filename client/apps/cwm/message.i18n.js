@@ -9,13 +9,29 @@ const messages = defineMessages({
     id: 'cwm.module.inbound',
     defaultMessage: '入库管理',
   },
+  receivingNotice: {
+    id: 'cwm.module.inbound.receiving.notice',
+    defaultMessage: '收货通知',
+  },
+  inboundTransactions: {
+    id: 'cwm.module.inbound.transactions',
+    defaultMessage: '入库记录',
+  },
+  inventory: {
+    id: 'cwm.module.inventory',
+    defaultMessage: '在库管理',
+  },
   outbound: {
     id: 'cwm.module.outbound',
     defaultMessage: '出库管理',
   },
-  inventory: {
-    id: 'cwm.module.inventory',
-    defaultMessage: '库存管理',
+  shippingOrder: {
+    id: 'cwm.module.outbound.shipping.order',
+    defaultMessage: '出货订单',
+  },
+  outboundTransactions: {
+    id: 'cwm.module.outbound.transactions',
+    defaultMessage: '出库记录',
   },
   products: {
     id: 'cwm.module.products',

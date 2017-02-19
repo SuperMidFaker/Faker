@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Layout, Radio, Select, Table } from 'antd';
+import { Breadcrumb, Button, Layout, Radio, Table } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/search-bar';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -12,7 +12,6 @@ const formatMsg = format(messages);
 const { Header, Content } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
-const Option = Select.Option;
 
 @injectIntl
 @connect(
@@ -58,6 +57,18 @@ export default class ShippingOrderList extends React.Component {
     width: 120,
     dataIndex: 'planned_qty',
   }, {
+    title: this.msg('packing'),
+    width: 120,
+    dataIndex: 'packing',
+  }, {
+    title: this.msg('weight'),
+    width: 120,
+    dataIndex: 'weight',
+  }, {
+    title: this.msg('cbm'),
+    width: 120,
+    dataIndex: 'cbm',
+  }, {
     title: this.msg('consignee'),
     dataIndex: 'consignee',
   }]
@@ -95,20 +106,13 @@ export default class ShippingOrderList extends React.Component {
           <div className="page-body">
             <div className="toolbar">
               <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} />
-              <div className="toolbar-right">
-                <Select defaultValue="orderView" size="large" style={{ width: 160 }} showSearch={false}
-                  onChange={this.handleViewChange}
-                >
-                  <Option value="orderView">订单视图</Option>
-                  <Option value="skuView">SKU视图</Option>
-                </Select>
-              </div>
+              <div className="toolbar-right" />
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3>
               </div>
             </div>
             <div className="panel-body table-panel">
-              <Table columns={this.columns} dataSource={this.dataSource} rowKey="id" scroll={{ x: 1200 }} />
+              <Table columns={this.columns} dataSource={this.dataSource} rowKey="id" scroll={{ x: 1400 }} />
             </div>
           </div>
         </Content>

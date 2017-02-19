@@ -3,7 +3,7 @@ import { defineMessages } from 'react-intl';
 const messages = defineMessages({
   inventoryManagement: {
     id: 'cwm.inventory',
-    defaultMessage: '库存管理',
+    defaultMessage: '在库管理',
   },
 });
 

@@ -35,28 +35,52 @@ export default class InboundTransactionsList extends React.Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
-    title: this.msg('shippingNo'),
-    dataIndex: 'so_no',
-    width: 200,
-  }, {
-    title: this.msg('owner'),
-    width: 200,
-    dataIndex: 'owner_code',
-  }, {
-    title: this.msg('status'),
-    width: 200,
-    dataIndex: 'status',
-  }, {
-    title: this.msg('estShippingDate'),
-    dataIndex: 'est_shipping_date',
-    width: 160,
-  }, {
-    title: this.msg('plannedQty'),
+    title: this.msg('inboundNo'),
+    dataIndex: 'inbound_no',
     width: 120,
-    dataIndex: 'planned_qty',
   }, {
-    title: this.msg('consignee'),
-    dataIndex: 'consignee',
+    title: this.msg('inboundDate'),
+    dataIndex: 'inbound_date',
+    width: 120,
+  }, {
+    title: this.msg('warehouse'),
+    width: 160,
+    dataIndex: 'warehouse_code',
+  }, {
+    title: this.msg('sku'),
+    width: 200,
+    dataIndex: 'sku_no',
+  }, {
+    title: this.msg('preQty'),
+    width: 100,
+    dataIndex: 'pre_inbound_qty',
+  }, {
+    title: this.msg('actualQty'),
+    width: 100,
+    dataIndex: 'actual_qty',
+  }, {
+    title: this.msg('postQty'),
+    width: 100,
+    dataIndex: 'post_inbound_qty',
+  }, {
+    title: this.msg('lotNo'),
+    width: 120,
+    dataIndex: 'external_lot_no',
+  }, {
+    title: this.msg('serialNo'),
+    width: 120,
+    dataIndex: 'serial_no',
+  }, {
+    title: this.msg('vendor'),
+    dataIndex: 'vendor_name',
+  }, {
+    title: this.msg('unitPrice'),
+    width: 120,
+    dataIndex: 'unit_price',
+  }, {
+    title: this.msg('specificDate'),
+    width: 120,
+    dataIndex: 'specific_date',
   }]
   render() {
     return (
@@ -81,7 +105,7 @@ export default class InboundTransactionsList extends React.Component {
               </div>
             </div>
             <div className="panel-body table-panel">
-              <Table columns={this.columns} dataSource={this.dataSource} rowKey="id" scroll={{ x: 1200 }} />
+              <Table columns={this.columns} dataSource={this.dataSource} rowKey="id" scroll={{ x: 1400 }} />
             </div>
           </div>
         </Content>
