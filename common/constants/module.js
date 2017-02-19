@@ -1,6 +1,6 @@
-const MODULE_SCOP = {
-  id: 'scop',
-  text: 'moduleSCOP',
+const MODULE_SCOF = {
+  id: 'scof',
+  text: 'moduleSCOF',
   defaultText: '客户订单',
   features: [
   ],
@@ -360,7 +360,7 @@ const MODULE_CORPORATION = {
 };
 
 const appModules = [
-  MODULE_SCOP,
+  MODULE_SCOF,
   MODULE_CLEARANCE,
   MODULE_TRANSPORT,
   MODULE_CWM,

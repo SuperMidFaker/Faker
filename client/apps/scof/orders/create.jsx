@@ -14,7 +14,7 @@ const { Header, Content } = Layout;
 
 @connectNav({
   depth: 3,
-  moduleName: 'scop',
+  moduleName: 'scof',
 })
 @connect(
   state => ({
@@ -57,7 +57,7 @@ export default class Create extends Component {
           message.error(result.error.message);
         } else {
           message.info('保存成功');
-          this.context.router.push('/scop/orders');
+          this.context.router.push('/scof/orders');
         }
       });
     }

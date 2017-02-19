@@ -20,7 +20,7 @@ function fetchData({ location, dispatch }) {
 
 @connectNav({
   depth: 3,
-  moduleName: 'scop',
+  moduleName: 'scof',
 })
 @connect(
   state => ({

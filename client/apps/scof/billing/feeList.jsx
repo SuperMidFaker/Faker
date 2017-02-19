@@ -41,7 +41,7 @@ function fetchData({ state, dispatch }) {
 @injectIntl
 @connectNav({
   depth: 2,
-  moduleName: 'scop',
+  moduleName: 'scof',
 })
 @connect(
   state => ({

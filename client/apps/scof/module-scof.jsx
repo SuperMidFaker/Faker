@@ -23,51 +23,51 @@ export default class ModuleCRM extends React.Component {
     linkMenus.push({
       single: true,
       key: 'crm-1',
-      path: '/scop/dashboard',
+      path: '/scof/dashboard',
       icon: 'icon-fontello-gauge',
       text: formatMsg(intl, 'dashboard'),
     });
     linkMenus.push({
       single: true,
       key: 'crm-2',
-      path: '/scop/orders',
+      path: '/scof/orders',
       icon: 'icon-fontello-doc-text',
       text: formatMsg(intl, 'orders'),
     });
     linkMenus.push({
       single: false,
       key: 'crm-3',
-      path: '/scop/billing',
+      path: '/scof/billing',
       icon: 'icon-fontello-money-1',
       text: formatMsg(intl, 'billing'),
       sublinks: [{
         key: 'crm-3-0',
-        path: '/scop/billing/fees',
+        path: '/scof/billing/fees',
         text: '费用管理',
       }, {
         key: 'crm-3-1',
-        path: '/scop/billing/list',
+        path: '/scof/billing/list',
         text: '账单管理',
       }],
     });
     linkMenus.push({
       single: true,
       key: 'crm-4',
-      path: '/scop/customers',
+      path: '/scof/customers',
       icon: 'zmdi zmdi-accounts-list',
       text: formatMsg(intl, 'customers'),
     });
     linkMenus.push({
       single: true,
       key: 'crm-5',
-      path: '/scop/reports',
+      path: '/scof/reports',
       icon: 'icon-ikons-bar-chart-2',
       text: formatMsg(intl, 'reports'),
     });
     linkMenus.push({
       single: true,
       key: 'crm-6',
-      path: '/scop/settings',
+      path: '/scof/settings',
       icon: 'zmdi zmdi-settings',
       text: formatMsg(intl, 'settings'),
     });

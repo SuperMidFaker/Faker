@@ -4,7 +4,7 @@ import CreateBilling from './list/createBilling';
 
 @connectNav({
   depth: 3,
-  moduleName: 'scop',
+  moduleName: 'scof',
 })
 export default class Create extends React.Component {
   render() {

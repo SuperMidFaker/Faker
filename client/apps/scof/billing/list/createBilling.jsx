@@ -103,7 +103,7 @@ export default class CreateBilling extends React.Component {
         if (result.error) {
           message.error(result.error.message);
         } else {
-          this.context.router.push('/scop/billing');
+          this.context.router.push('/scof/billing');
         }
       });
     }

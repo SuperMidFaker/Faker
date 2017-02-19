@@ -32,7 +32,7 @@ function fetchData({ state, dispatch }) {
 
 @connectNav({
   depth: 2,
-  moduleName: 'scop',
+  moduleName: 'scof',
 })
 @injectIntl
 
@@ -180,7 +180,7 @@ export default class BillingList extends React.Component {
       title: '账单名称',
       dataIndex: 'name',
       render(o, record) {
-        return <Link to={`/scop/billing/view/${record.id}`}>{o}</Link>;
+        return <Link to={`/scof/billing/view/${record.id}`}>{o}</Link>;
       },
     }, {
       title: '开始日期',
@@ -245,7 +245,7 @@ export default class BillingList extends React.Component {
                 <a>发送</a>
               </Popconfirm>
               <span className="ant-divider" />
-              <Link to={`/scop/billing/edit/${o}`}>修改</Link>
+              <Link to={`/scof/billing/edit/${o}`}>修改</Link>
               <span className="ant-divider" />
               <Popconfirm title="确定删除？" onConfirm={() => this.handleRemoveBilling(record.id)}>
                 <a>删除</a>
@@ -255,19 +255,19 @@ export default class BillingList extends React.Component {
         } else if (record.status === 2) {
           return (
             <div>
-              <Link to={`/scop/billing/view/${o}`}>查看</Link>
+              <Link to={`/scof/billing/view/${o}`}>查看</Link>
             </div>
           );
         } else if (record.status === 3) {
           return (
             <div>
-              <Link to={`/scop/billing/check/${o}`}>{this.msg('checkBilling')}</Link>
+              <Link to={`/scof/billing/check/${o}`}>{this.msg('checkBilling')}</Link>
             </div>
           );
         } else if (record.status === 4) {
           return (
             <div>
-              <Link to={`/scop/billing/view/${o}`}>查看</Link>
+              <Link to={`/scof/billing/view/${o}`}>查看</Link>
             </div>
           );
         } else if (record.status === 5) {
@@ -279,7 +279,7 @@ export default class BillingList extends React.Component {
         } else if (record.status === 6) {
           return (
             <div>
-              <Link to={`/scop/billing/view/${o}`}>查看</Link>
+              <Link to={`/scof/billing/view/${o}`}>查看</Link>
             </div>
           );
         }

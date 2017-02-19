@@ -21,7 +21,7 @@ export default [
    ['get', '/transport*', renderWebPage],
    ['get', '/clearance*', renderWebPage],
    ['get', '/cwm*', renderWebPage],
-   ['get', '/scop*', renderWebPage],
+   ['get', '/scof*', renderWebPage],
    ['get', '/scv*', renderWebPage],
    ['get', '/my*', renderWebPage],
    ['get', '/message*', renderWebPage],
