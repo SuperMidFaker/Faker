@@ -1,11 +1,12 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Button, Table } from 'antd';
+import { Alert, Breadcrumb, Button, Layout, Table } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 
 const formatMsg = format(messages);
+const { Header, Content } = Layout;
 
 @injectIntl
 @connect(
@@ -66,15 +67,33 @@ export default class AppsList extends React.Component {
 
   render() {
     return (
-      <div className="page-body" >
-        <div className="toolbar">
-          <Button type="primary" size="large" icon="plus" onClick={this.handleAddWarehouse}>
-            {this.msg('generateAPICredential')}
-          </Button>
-        </div>
-        <div className="panel-body table-panel">
-          <Table columns={this.columns} dataSource={this.mockDataSource} />
-        </div>
+      <div>
+        <Header className="top-bar" key="header">
+          <Breadcrumb>
+            <Breadcrumb.Item>
+              API接口授权
+            </Breadcrumb.Item>
+          </Breadcrumb>
+          <div className="toolbar-right" />
+        </Header>
+        <Content className="main-content">
+          <Alert
+            description={this.msg('apiDesc')}
+            type="info"
+            showIcon
+            closable
+          />
+          <div className="page-body" >
+            <div className="toolbar">
+              <Button type="primary" size="large" icon="plus" onClick={this.handleAddWarehouse}>
+                {this.msg('generateAPICredential')}
+              </Button>
+            </div>
+            <div className="panel-body table-panel">
+              <Table columns={this.columns} dataSource={this.mockDataSource} />
+            </div>
+          </div>
+        </Content>
       </div>
     );
   }

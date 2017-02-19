@@ -1,11 +1,12 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Button, Table } from 'antd';
+import { Alert, Breadcrumb, Card, Col, Layout, Row } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
-import messages from './message.i18n';
+import messages from '../message.i18n';
 
 const formatMsg = format(messages);
+const { Header, Content } = Layout;
 
 @injectIntl
 @connect(
@@ -71,15 +72,37 @@ export default class IntegrationList extends React.Component {
 
   render() {
     return (
-      <div className="page-body" >
-        <div className="toolbar">
-          <Button type="primary" size="large" icon="plus" onClick={this.handleAddWarehouse}>
-            {this.msg('addIntegration')}
-          </Button>
-        </div>
-        <div className="panel-body table-panel">
-          <Table columns={this.columns} dataSource={this.mockDataSource} />
-        </div>
+      <div>
+        <Header className="top-bar" key="header">
+          <Breadcrumb>
+            <Breadcrumb.Item>
+              应用整合
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              应用中心
+            </Breadcrumb.Item>
+          </Breadcrumb>
+          <div className="toolbar-right" />
+        </Header>
+        <Content className="main-content">
+          <Alert
+            description={this.msg('integrationDesc')}
+            type="info"
+            showIcon
+            closable
+          />
+          <Row gutter={16}>
+            <Col sm={24} md={12} lg={8}>
+              <Card title="Amber Road CTM" extra={<a href="#">Install</a>} />
+            </Col>
+            <Col sm={24} md={12} lg={8}>
+              <Card title="Kuuwee CTM" extra={<a href="#">Install</a>} />
+            </Col>
+            <Col sm={24} md={12} lg={8}>
+              <Card title="easipass EDI" extra={<a href="#">Install</a>} />
+            </Col>
+          </Row>
+        </Content>
       </div>
     );
   }

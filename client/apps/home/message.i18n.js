@@ -27,11 +27,11 @@ const messages = defineMessages({
   },
   notFound: {
     id: 'container.not.found',
-    defaultMessage: '抱歉，无法找到该页',
+    defaultMessage: '未找到该页',
   },
   notFoundDesc: {
     id: 'container.not.found.desc',
-    defaultMessage: '您正在访问的页面可能已经删除、更名或暂时不可用。 请确认网址拼写是否正确或稍后尝试再次刷新。',
+    defaultMessage: '您访问的页面正在开发中...请耐心等待！',
   },
 });
 export default messages;

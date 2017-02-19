@@ -9,8 +9,8 @@ const messages = defineMessages({
     id: 'scv.dashboard.orders',
     defaultMessage: '订单',
   },
-  shipments: {
-    id: 'scv.dashboard.shipments',
+  shipmentsStatus: {
+    id: 'scv.dashboard.shipments.status',
     defaultMessage: '货运',
   },
   payments: {
@@ -31,7 +31,7 @@ const messages = defineMessages({
   },
   inTransit: {
     id: 'scv.dashboard.shipments.in.transit',
-    defaultMessage: '运输中',
+    defaultMessage: '海/空运输中',
   },
   arrived: {
     id: 'scv.dashboard.shipments.arrived',
@@ -43,7 +43,7 @@ const messages = defineMessages({
   },
   inland: {
     id: 'scv.dashboard.shipments.inland',
-    defaultMessage: '转运',
+    defaultMessage: '国内转运中',
   },
   delivered: {
     id: 'scv.dashboard.shipments.delivered',

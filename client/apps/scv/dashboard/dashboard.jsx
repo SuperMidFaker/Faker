@@ -117,7 +117,7 @@ export default class SCVDashboard extends React.Component {
                   </li>
                 </ul>
               </Card>
-              <Card title={this.msg('shipments')}>
+              <Card title={this.msg('shipmentsStatus')}>
                 <ul className="statistics-columns">
                   <li className="col-4">
                     <div className="statistics-cell">

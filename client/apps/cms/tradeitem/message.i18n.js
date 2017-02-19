@@ -19,11 +19,11 @@ const messages = defineMessages({
   },
   filterPending: {
     id: 'cms.classificagtion.tradeitem.filter.pending',
-    defaultMessage: '未审核',
+    defaultMessage: '归类待定',
   },
   filterClassified: {
     id: 'cms.classificagtion.tradeitem.filter.classified',
-    defaultMessage: '已审核归类',
+    defaultMessage: '已归类',
   },
   copProductNo: {
     id: 'cms.classificagtion.tradeitem.table.cop.product.no',
@@ -117,9 +117,9 @@ const messages = defineMessages({
     id: 'cms.classificagtion.tradeitem.table.remark',
     defaultMessage: '备注',
   },
-  addOWner: {
+  addRepo: {
     id: 'cms.classificagtion.tradeitem.modal.add.owner',
-    defaultMessage: '添加物料管理客户',
+    defaultMessage: '添加企业物料库',
   },
   addItem: {
     id: 'cms.classificagtion.tradeitem.table.add',

@@ -71,7 +71,7 @@ export default class Home extends React.Component {
         </NavLink>
       </MenuItem>,
       <MenuItem key="openPlatform">
-        <NavLink to="/open/apps">
+        <NavLink to="/open">
           <i className="icon-fontello-code" /> {formatMsg(intl, 'openPlatform')}
         </NavLink>
       </MenuItem>,

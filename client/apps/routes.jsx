@@ -19,8 +19,8 @@ import * as Role from './corp/role';
 import PackNetwork from './network/packNetwork';
 import * as Network from './network';
 import PackOpenPlatform from './open/packOpenPlatform';
-import AppsList from './open/apps';
-import IntegrationList from './open/integration';
+import OpenApiAuthList from './open/apiAuth';
+import * as OpenIntegration from './open/integration';
 import Module from './module';
 import TMS from './transport/module-transport';
 import * as TMSDashboard from './transport/dashboard';
@@ -151,8 +151,12 @@ export default(store, cookie) => {
           </Route>
         </Route>
         <Route path="open" component={PackOpenPlatform}>
-          <Route path="apps" component={AppsList} />
-          <Route path="integration" component={IntegrationList} />
+          <IndexRedirect to="/open/integration/apps" />
+          <Route path="apiauth" component={OpenApiAuthList} />
+          <Route path="integration">
+            <Route path="apps" component={OpenIntegration.AppsList} />
+            <Route path="installed" component={OpenIntegration.InstalledList} />
+          </Route>
         </Route>
         <Route path="corp" component={Corp}>
           <IndexRedirect to="/corp/overview" />

@@ -6,6 +6,7 @@ import CorpHeaderBar from 'client/components/corpHeaderBar';
 import { setNavTitle } from 'common/reducers/navbar';
 
 const { Sider, Header, Content } = Layout;
+const SubMenu = Menu.SubMenu;
 
 @connect()
 export default class AccountPack extends React.Component {
@@ -26,25 +27,34 @@ export default class AccountPack extends React.Component {
         </Header>
         <Layout>
           <Sider className="menu-sider">
-            <Menu defaultSelectedKeys={['apps']} mode="inline">
-              <Menu.Item key="apps">
-                <NavLink to="/open/apps">
-                  <span><Icon type="appstore-o" /><span>应用管理</span></span>
-                </NavLink>
-              </Menu.Item>
-              <Menu.Item key="integration">
-                <NavLink to="/open/integration">
-                  <span><Icon type="swap" /><span>整合对接</span></span>
+            <Menu
+              defaultSelectedKeys={['apps']}
+              defaultOpenKeys={['integration']}
+              mode="inline"
+            >
+              <SubMenu key="integration" title={<span><Icon type="appstore-o" /><span>应用整合</span></span>}>
+                <Menu.Item key="apps">
+                  <NavLink to="/open/integration/apps">
+                    应用中心
+                  </NavLink>
+                </Menu.Item>
+                <Menu.Item key="installed">
+                  <NavLink to="/open/integration/installed">
+                    已安装应用
+                  </NavLink>
+                </Menu.Item>
+              </SubMenu>
+              <Menu.Item key="apiauth">
+                <NavLink to="/open/apiauth">
+                  <span><Icon type="swap" /><span>API接口授权</span></span>
                 </NavLink>
               </Menu.Item>
               <Menu.Item key="docs">
-                <NavLink to="/open/docs">
-                  <span><Icon type="book" /><span>开发文档</span></span>
-                </NavLink>
+                <span><Icon type="book" /><span>开发文档</span></span>
               </Menu.Item>
             </Menu>
           </Sider>
-          <Content className="main-content">
+          <Content>
             {this.props.children}
           </Content>
         </Layout>

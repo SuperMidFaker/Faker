@@ -60,7 +60,7 @@ export default class AddTradeRepoModal extends React.Component {
   render() {
     const { visibleAddModal, customers } = this.props;
     return (
-      <Modal title={this.msg('addOWner')} visible={visibleAddModal}
+      <Modal title={this.msg('addRepo')} visible={visibleAddModal}
         onOk={this.handleOk} onCancel={this.handleCancel}
       >
         <Select
