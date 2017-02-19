@@ -19,7 +19,7 @@ import * as Role from './corp/role';
 import PackNetwork from './network/packNetwork';
 import * as Network from './network';
 import PackOpenPlatform from './open/packOpenPlatform';
-import OpenApiAuthList from './open/apiAuth';
+import * as OpenAPI from './open/api';
 import * as OpenIntegration from './open/integration';
 import Module from './module';
 import TMS from './transport/module-transport';
@@ -152,7 +152,10 @@ export default(store, cookie) => {
         </Route>
         <Route path="open" component={PackOpenPlatform}>
           <IndexRedirect to="/open/integration/apps" />
-          <Route path="apiauth" component={OpenApiAuthList} />
+          <Route path="api">
+            <Route path="auth" component={OpenAPI.Auth} />
+            <Route path="webhook" component={OpenAPI.Webhook} />
+          </Route>
           <Route path="integration">
             <Route path="apps" component={OpenIntegration.AppsList} />
             <Route path="installed" component={OpenIntegration.InstalledList} />

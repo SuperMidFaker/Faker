@@ -50,9 +50,11 @@ export default class ModuleMenu extends React.Component {
   render() {
     const { selectedKeys } = this.state;
     return (
-      <Menu mode="horizontal" className="nav-module"
+      <Menu
+        mode="horizontal"
         selectedKeys={selectedKeys}
         onSelect={this.handleMenuSelect}
+        className="nav-module"
       >
         {
           this.props.enabledmods.map((mod) => {

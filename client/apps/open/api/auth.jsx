@@ -1,9 +1,9 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Alert, Breadcrumb, Button, Layout, Table } from 'antd';
+import { Alert, Breadcrumb, Button, Icon, Layout, Table } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
-import messages from './message.i18n';
+import messages from '../message.i18n';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -19,7 +19,7 @@ const { Header, Content } = Layout;
   }),
 )
 
-export default class AppsList extends React.Component {
+export default class ApiAuthList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -39,6 +39,9 @@ export default class AppsList extends React.Component {
     title: this.msg('appName'),
     dataIndex: 'app_name',
   }, {
+    title: this.msg('scope'),
+    dataIndex: 'scope',
+  }, {
     title: this.msg('apiKey'),
     width: 400,
     dataIndex: 'api_key',
@@ -48,7 +51,7 @@ export default class AppsList extends React.Component {
     width: 400,
   }, {
     title: this.msg('opColumn'),
-    width: 200,
+    width: 160,
     render: () => (
       <span>
         <a href="#">修改</a>
@@ -59,7 +62,8 @@ export default class AppsList extends React.Component {
   }];
 
   mockDataSource = [{
-    app_name: '夸微关务系统',
+    app_name: '夸微制单系统',
+    scope: '全局',
     api_key: 'a530318f6f6890a68dc6efeadb623926',
     api_secret: '62740c97bf7868964b58e314cc8205c8',
   },
@@ -70,6 +74,9 @@ export default class AppsList extends React.Component {
       <div>
         <Header className="top-bar" key="header">
           <Breadcrumb>
+            <Breadcrumb.Item>
+              <Icon type="swap" /> 开放API
+            </Breadcrumb.Item>
             <Breadcrumb.Item>
               API接口授权
             </Breadcrumb.Item>

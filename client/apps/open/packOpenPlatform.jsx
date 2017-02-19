@@ -29,7 +29,7 @@ export default class AccountPack extends React.Component {
           <Sider className="menu-sider">
             <Menu
               defaultSelectedKeys={['apps']}
-              defaultOpenKeys={['integration']}
+              defaultOpenKeys={['integration', 'api']}
               mode="inline"
             >
               <SubMenu key="integration" title={<span><Icon type="appstore-o" /><span>应用整合</span></span>}>
@@ -44,12 +44,19 @@ export default class AccountPack extends React.Component {
                   </NavLink>
                 </Menu.Item>
               </SubMenu>
-              <Menu.Item key="apiauth">
-                <NavLink to="/open/apiauth">
-                  <span><Icon type="swap" /><span>API接口授权</span></span>
-                </NavLink>
-              </Menu.Item>
-              <Menu.Item key="docs">
+              <SubMenu key="api" title={<span><Icon type="swap" /><span>开放API接口</span></span>}>
+                <Menu.Item key="auth">
+                  <NavLink to="/open/api/auth">
+                    API接口授权
+                  </NavLink>
+                </Menu.Item>
+                <Menu.Item key="webhook">
+                  <NavLink to="/open/api/webhook">
+                    提醒目标Webhook
+                  </NavLink>
+                </Menu.Item>
+              </SubMenu>
+              <Menu.Item key="docs" disabled>
                 <span><Icon type="book" /><span>开发文档</span></span>
               </Menu.Item>
             </Menu>

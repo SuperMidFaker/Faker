@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Breadcrumb, Icon, Layout, Table } from 'antd';
+import { Alert, Breadcrumb, Button, Icon, Layout, Table } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
@@ -19,7 +19,7 @@ const { Header, Content } = Layout;
   }),
 )
 
-export default class InstalledAppsList extends React.Component {
+export default class WebhookList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -36,23 +36,19 @@ export default class InstalledAppsList extends React.Component {
     this.context.router.goBack();
   }
   columns = [{
-    title: this.msg('integrationName'),
-    dataIndex: 'integration_name',
-  }, {
-    title: this.msg('relatedPartner'),
+    title: this.msg('webhookName'),
+    dataIndex: 'webhook_name',
     width: 400,
-    dataIndex: 'related_partner',
   }, {
-    title: this.msg('incomingStatus'),
-    dataIndex: 'incoming_status',
-    width: 200,
+    title: this.msg('scope'),
+    width: 400,
+    dataIndex: 'scope',
   }, {
-    title: this.msg('outgoingStatus'),
-    dataIndex: 'outgoing_status',
-    width: 200,
+    title: this.msg('targetUrl'),
+    dataIndex: 'target_url',
   }, {
     title: this.msg('opColumn'),
-    width: 100,
+    width: 160,
     render: () => (
       <span>
         <a href="#">修改</a>
@@ -63,10 +59,9 @@ export default class InstalledAppsList extends React.Component {
   }];
 
   mockDataSource = [{
-    integration_name: 'Amber Road CTM',
-    related_partner: '西门子贸易',
-    incoming_status: '正常',
-    outgoing_status: '异常',
+    webhook_name: 'WMS',
+    scope: '全局',
+    target_url: 'https://wms.nlocn.com/hook',
   },
   ];
 
@@ -76,16 +71,27 @@ export default class InstalledAppsList extends React.Component {
         <Header className="top-bar" key="header">
           <Breadcrumb>
             <Breadcrumb.Item>
-              <Icon type="appstore-o" /> 应用整合
+              <Icon type="swap" /> 开放API
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              已安装应用
+              提醒目标Webhook
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="toolbar-right" />
         </Header>
         <Content className="main-content">
-          <div className="page-body">
+          <Alert
+            description={this.msg('webhookDesc')}
+            type="info"
+            showIcon
+            closable
+          />
+          <div className="page-body" >
+            <div className="toolbar">
+              <Button type="primary" size="large" icon="plus" onClick={this.handleAddWebhook}>
+                {this.msg('addWebhook')}
+              </Button>
+            </div>
             <div className="panel-body table-panel">
               <Table columns={this.columns} dataSource={this.mockDataSource} />
             </div>

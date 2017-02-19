@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Alert, Breadcrumb, Card, Col, Layout, Row } from 'antd';
+import { Alert, Breadcrumb, Card, Col, Icon, Layout, Row } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
@@ -19,7 +19,7 @@ const { Header, Content } = Layout;
   }),
 )
 
-export default class IntegrationList extends React.Component {
+export default class IntegrationAppsList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -76,7 +76,7 @@ export default class IntegrationList extends React.Component {
         <Header className="top-bar" key="header">
           <Breadcrumb>
             <Breadcrumb.Item>
-              应用整合
+              <Icon type="appstore-o" /> 应用整合
             </Breadcrumb.Item>
             <Breadcrumb.Item>
               应用中心
