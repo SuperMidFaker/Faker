@@ -7,7 +7,6 @@ import { formatMsg } from './message.i18n';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
-const InputGroup = Input.Group;
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
@@ -104,8 +103,6 @@ export default class InventoryTransactionSearchForm extends React.Component {
           >
             <RadioButton value="lot_no">{this.msg('lotNo')}</RadioButton>
             <RadioButton value="serial_no">{this.msg('serialNo')}</RadioButton>
-            <RadioButton value="unit_price">{this.msg('unitPrice')}</RadioButton>
-            <RadioButton value="expiry_date">{this.msg('specificDate')}</RadioButton>
           </RadioGroup>
         </FormItem>
         {
@@ -118,15 +115,6 @@ export default class InventoryTransactionSearchForm extends React.Component {
           this.state.lot_property === 'serial_no' &&
           <FormItem>
             {getFieldDecorator('serial_no')(<Input placeholder={this.msg('serialNo')} />)}
-          </FormItem>
-        }
-        {
-          this.state.lot_property === 'unit_price' &&
-          <FormItem>
-            <InputGroup compact>
-              {getFieldDecorator('price_from')(<Input style={{ width: '50%' }} placeholder={this.msg('priceFrom')} />)}
-              {getFieldDecorator('price_to')(<Input style={{ width: '50%' }} placeholder={this.msg('priceTo')} />)}
-            </InputGroup>
           </FormItem>
         }
         <FormItem>
