@@ -4,7 +4,7 @@ import { Card, Col, Row, Spin } from 'antd';
 import echarts from 'echarts';
 
 @injectIntl
-export default class Punctual extends React.Component {
+export default class Fees extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     kpi: PropTypes.object.isRequired,
@@ -26,9 +26,9 @@ export default class Punctual extends React.Component {
     window.$(window).unbind('resize');
   }
   initializeCharts = (props) => {
-    const { transitModes, range, shipmentCounts, punctualShipmentCounts } = props.kpi;
+    const { transitModes, range, shipmentFees } = props.kpi;
     const barOption = {
-      title: { text: '准时率' },
+      title: { text: '费用(元)' },
       tooltip: {
         trigger: 'axis',
         axisPointer: {            // 坐标轴指示器，坐标轴触发有效
@@ -72,25 +72,21 @@ export default class Punctual extends React.Component {
           normal: {
             show: true,
             position: 'top',
-            formatter: '{c} %',
           },
         },
-        data: shipmentCounts[index].map((item1, j) => item1 === 0 ? 0 : Number((punctualShipmentCounts[index][j] / item1 * 100).toFixed(2))),
+        data: shipmentFees[index],
       })),
     };
-    const transitModesShipmentCount = shipmentCounts.map(arr => arr.reduce((a, b) => a + b, 0));
-    const allShipmentCount = transitModesShipmentCount.reduce((a, b) => a + b, 0);
-    const transitModesPunctualShipmentCount = punctualShipmentCounts.map(arr => arr.reduce((a, b) => a + b, 0));
-    const punctualShipmentCount = transitModesPunctualShipmentCount.reduce((a, b) => a + b, 0);
+    const transitModesShipmentFees = shipmentFees.map(arr => arr.reduce((a, b) => Number((a + b).toFixed(2)), 0));
     const pieOption = {
-      title: { text: '准时占比' },
+      title: { text: '费用占比' },
       tooltip: {
         trigger: 'item',
         formatter: '{a} <br/>{b} : {c} ({d}%)',
       },
       legend: {
         x: 'center',
-        data: transitModes.map(item => item.mode_name).concat('超时'),
+        data: transitModes.map(item => item.mode_name),
       },
       grid: {
         left: '3%',
@@ -108,67 +104,34 @@ export default class Punctual extends React.Component {
         },
       },
       series: [{
-        name: '交付率',
+        name: '运输模式',
         type: 'pie',
-        selectedMode: 'single',
-        radius: [0, '45%'],
-
-        label: {
-          normal: {
-            position: 'inner',
-          },
-        },
-        labelLine: {
-          normal: {
-            show: false,
-          },
-        },
-        data: [
-              { value: punctualShipmentCount, name: '准时' },
-              { value: allShipmentCount - punctualShipmentCount, name: '超时' },
-        ],
-        itemStyle: {
-          emphasis: {
-            shadowBlur: 10,
-            shadowOffsetX: 0,
-            shadowColor: 'rgba(0, 0, 0, 0.5)',
-          },
-          normal: {
-            label: {
-              show: true,
-              formatter: '{b} : {c} ({d}%)',
-            },
-            labelLine: { show: true },
-          },
-        },
-      }, {
-        name: '交付率',
-        type: 'pie',
-        radius: ['50%', '70%'],
-        itemStyle: {
-          emphasis: {
-            shadowBlur: 10,
-            shadowOffsetX: 0,
-            shadowColor: 'rgba(0, 0, 0, 0.5)',
-          },
-          normal: {
-            label: {
-              show: true,
-              formatter: '{b} : {c} ({d}%)',
-            },
-            labelLine: { show: true },
-          },
-        },
+        radius: '55%',
+        center: ['50%', '60%'],
         data: transitModes.map((item, index) => ({
           name: item.mode_name,
-          value: transitModesPunctualShipmentCount[index],
-        })).concat([{ value: allShipmentCount - punctualShipmentCount, name: '超时' }]),
+          value: transitModesShipmentFees[index],
+        })),
+        itemStyle: {
+          emphasis: {
+            shadowBlur: 10,
+            shadowOffsetX: 0,
+            shadowColor: 'rgba(0, 0, 0, 0.5)',
+          },
+          normal: {
+            label: {
+              show: true,
+              formatter: '{b} : {c} ({d}%)',
+            },
+            labelLine: { show: true },
+          },
+        },
       }],
     };
     if (window) {
-      const barChart = echarts.init(window.document.getElementById('bar-chart-punctual'));
+      const barChart = echarts.init(window.document.getElementById('bar-chart-fees'));
       barChart.setOption(barOption);
-      const pieChart = echarts.init(window.document.getElementById('pie-chart-punctual'));
+      const pieChart = echarts.init(window.document.getElementById('pie-chart-fees'));
       pieChart.setOption(pieOption);
     }
   }
@@ -179,14 +142,14 @@ export default class Punctual extends React.Component {
         <Col sm={24} md={12}>
           <Spin spinning={this.props.loading}>
             <Card>
-              <div id="bar-chart-punctual" style={{ width: '100%', height: '450px' }} />
+              <div id="bar-chart-fees" style={{ width: '100%', height: '480px' }} />
             </Card>
           </Spin>
         </Col>
         <Col sm={24} md={12}>
           <Spin spinning={this.props.loading}>
             <Card>
-              <div id="pie-chart-punctual" style={{ width: '100%', height: '450px' }} />
+              <div id="pie-chart-fees" style={{ width: '100%', height: '480px' }} />
             </Card>
           </Spin>
         </Col>

@@ -18,16 +18,18 @@ const initialState = {
     range: [],
     shipmentCounts: [],
     punctualShipmentCounts: [],
+    shipmentFees: [],
+    exceptionalShipmentCounts: [],
   },
 };
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.LOAD_KPI: {
-      return { ...state, query: { ...state.query, ...action.params } };
+      return { ...state, loaded: false, loading: true };
     }
     case actionTypes.LOAD_KPI_SUCCEED:
-      return { ...state, kpi: { ...state.kpi, ...action.result.data } };
+      return { ...state, kpi: { ...state.kpi, ...action.result.data }, query: { ...state.query, ...action.params }, loading: false, loaded: true };
     default:
       return state;
   }

@@ -10,6 +10,8 @@ import { loadFormRequire } from 'common/reducers/shipment';
 import TrafficVolume from './trafficVolume';
 import Punctual from './punctual';
 import OverTime from './overTime';
+import Fees from './fees';
+import Exceptional from './exceptional';
 import { createFilename } from 'client/util/dataTransform';
 
 const { Header, Content, Sider } = Layout;
@@ -43,6 +45,8 @@ function fetchData({ cookie, state, dispatch }) {
     kpi: state.transportKpi.kpi,
     query: state.transportKpi.query,
     clients: state.shipment.formRequire.clients,
+    loading: state.transportKpi.loading,
+    loaded: state.transportKpi.loaded,
   }),
   { loadKpi }
 )
@@ -54,6 +58,8 @@ export default class Kpi extends React.Component {
     kpi: PropTypes.object.isRequired,
     query: PropTypes.object.isRequired,
     clients: PropTypes.array.isRequired,
+    loading: PropTypes.bool.isRequired,
+    loaded: PropTypes.bool.isRequired,
   }
   state = {
     selectedKey: '1',
@@ -81,22 +87,25 @@ export default class Kpi extends React.Component {
     this.setState({ selectedKey: e.key });
   }
   handleExportExcel = () => {
-    const { transitModes, range, shipmentCounts, punctualShipmentCounts } = this.props.kpi;
+    const { transitModes, range, shipmentCounts, punctualShipmentCounts, shipmentFees, exceptionalShipmentCounts } = this.props.kpi;
     window.open(`${API_ROOTS.default}v1/transport/kpi/exportExcel/${createFilename('KPI')}.xlsx?transitModes=${JSON.stringify(transitModes)}&range=${
-      JSON.stringify(range)}&shipmentCounts=${JSON.stringify(shipmentCounts)}&punctualShipmentCounts=${JSON.stringify(punctualShipmentCounts)}`);
+      JSON.stringify(range)}&shipmentCounts=${JSON.stringify(shipmentCounts)}&punctualShipmentCounts=${JSON.stringify(punctualShipmentCounts)
+      }&shipmentFees=${JSON.stringify(shipmentFees)}&exceptionalShipmentCounts=${JSON.stringify(exceptionalShipmentCounts)}`);
   }
   render() {
-    const { query, clients, kpi } = this.props;
+    const { query, clients, kpi, loading, loaded } = this.props;
     const { selectedKey } = this.state;
     let content = (<span />);
     if (selectedKey === '1') {
-      content = (<Punctual kpi={kpi} />);
+      content = (<Punctual kpi={kpi} loading={loading} loaded={loaded} />);
     } else if (selectedKey === '2') {
-      content = (<OverTime kpi={kpi} />);
+      content = (<OverTime kpi={kpi} loading={loading} loaded={loaded} />);
     } else if (selectedKey === '3') {
-      content = (<TrafficVolume kpi={kpi} />);
+      content = (<TrafficVolume kpi={kpi} loading={loading} loaded={loaded} />);
     } else if (selectedKey === '4') {
-      content = (<span>运输费统计</span>);
+      content = (<Fees kpi={kpi} loading={loading} loaded={loaded} />);
+    } else if (selectedKey === '5') {
+      content = (<Exceptional kpi={kpi} loading={loading} loaded={loaded} />);
     }
     return (
       <div>
@@ -158,6 +167,7 @@ export default class Kpi extends React.Component {
                   </SubMenu>
                   <Menu.Item key="3">运输量统计</Menu.Item>
                   <Menu.Item key="4">运输费统计</Menu.Item>
+                  <Menu.Item key="5">异常票数统计</Menu.Item>
                 </Menu>
               </Sider>
               <Content style={{ padding: '0 24px', minHeight: 280 }}>
