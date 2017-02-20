@@ -57,7 +57,6 @@ import * as CWMReceivingNotice from './cwm/inbound/receiving';
 import * as CWMOutbound from './cwm/outbound';
 import * as CWMShippingOrder from './cwm/outbound/shipping';
 import * as CWMInventory from './cwm/inventory';
-import * as CWMProductsMaterial from './cwm/products/material';
 import * as CWMProductsSku from './cwm/products/sku';
 import * as CWMWarehouse from './cwm/resources/warehouse';
 import * as CWMSettings from './cwm/settings';
@@ -385,8 +384,10 @@ export default(store, cookie) => {
             </Route>
             <Route path="inventory" component={CWMInventory.List} />
             <Route path="products">
-              <Route path="material" component={CWMProductsMaterial.List} />
-              <Route path="sku" component={CWMProductsSku.List} />
+              <Route path="sku">
+                <IndexRoute component={CWMProductsSku.List} />
+                <Route path="create" component={CWMProductsSku.Create} />
+              </Route>
             </Route>
             <Route path="resources">
               <IndexRedirect to="/cwm/resources/warehouse" />
