@@ -100,14 +100,10 @@ export default class ModuleSCV extends React.Component {
       text: formatMsg(intl, 'products'),
       sublinks: [{
         key: 'scv-5-0',
-        path: '/scv/products',
-        text: formatMsg(intl, 'products'),
+        path: '/scv/products/sku',
+        text: formatMsg(intl, 'productsSku'),
       }, {
         key: 'scv-5-1',
-        path: '/scv/products/category',
-        text: formatMsg(intl, 'productsCategory'),
-      }, {
-        key: 'scv-5-2',
         path: '/scv/products/tradeitem',
         text: formatMsg(intl, 'productsTradeItem'),
       }],

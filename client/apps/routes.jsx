@@ -73,7 +73,6 @@ import * as SCVShippingOrder from './scv/inventory/shipping';
 import * as SCVInventoryWarehouse from './scv/inventory/warehouse';
 import * as SCVProductsSku from './scv/products/sku';
 import * as SCVProductsTradeItem from './scv/products/tradeitem';
-import * as SCVProductsCategory from './scv/products/category';
 import * as SCVPaymentsTax from './scv/payments/tax';
 import * as SCVPaymentsBilling from './scv/payments/billing';
 import * as SCVAnalyticsKpi from './scv/analytics/kpi';
@@ -352,9 +351,12 @@ export default(store, cookie) => {
               <Route path="billing" component={SCVPaymentsBilling.List} />
             </Route>
             <Route path="products">
-              <Route path="sku" component={SCVProductsSku.List} />
+              <Route path="sku" >
+                <IndexRoute component={SCVProductsSku.List} />
+                <Route path="create" component={SCVProductsSku.Create} />
+                <Route path=":sku" component={SCVProductsSku.Edit} />
+              </Route>
               <Route path="tradeitem" component={SCVProductsTradeItem.List} />
-              <Route path="category" component={SCVProductsCategory.List} />
             </Route>
             <Route path="analytics">
               <Route path="kpi" component={SCVAnalyticsKpi.List} />
@@ -372,14 +374,14 @@ export default(store, cookie) => {
               <IndexRoute component={CWMInbound.List} />
               <Route path="receiving">
                 <IndexRoute component={CWMReceivingNotice.List} />
-                <Route path="view/:asnNo" component={CWMReceivingNotice.View} />
+                <Route path=":asnNo" component={CWMReceivingNotice.View} />
               </Route>
             </Route>
             <Route path="outbound">
               <IndexRoute component={CWMOutbound.List} />
               <Route path="shipping">
                 <IndexRoute component={CWMShippingOrder.List} />
-                <Route path="view/:shippingNo" component={CWMShippingOrder.View} />
+                <Route path=":shippingNo" component={CWMShippingOrder.View} />
               </Route>
             </Route>
             <Route path="inventory" component={CWMInventory.List} />
@@ -387,6 +389,7 @@ export default(store, cookie) => {
               <Route path="sku">
                 <IndexRoute component={CWMProductsSku.List} />
                 <Route path="create" component={CWMProductsSku.Create} />
+                <Route path=":sku" component={CWMProductsSku.Edit} />
               </Route>
             </Route>
             <Route path="resources">

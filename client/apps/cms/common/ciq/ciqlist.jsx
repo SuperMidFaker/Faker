@@ -243,7 +243,7 @@ export default class CiqDeclList extends Component {
     };
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <Header className="top-bar" key="header">
+        <Header className="top-bar">
           <Breadcrumb>
             <Breadcrumb.Item>
               {this.props.ietype === 'import' ? this.msg('importOperation') : this.msg('exportOperation')}

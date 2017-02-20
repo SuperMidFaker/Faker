@@ -35,13 +35,17 @@ export default class CWMSkuList extends React.Component {
     dataIndex: 'owner_name',
     width: 200,
   }, {
-    title: this.msg('sku'),
+    title: this.msg('SKU'),
     dataIndex: 'sku_no',
     width: 160,
   }, {
-    title: this.msg('product'),
+    title: this.msg('productNo'),
     width: 200,
-    dataIndex: 'product_code',
+    dataIndex: 'product_no',
+  }, {
+    title: this.msg('productName'),
+    width: 200,
+    dataIndex: 'product_name',
   }, {
     title: this.msg('category'),
     width: 120,
@@ -54,10 +58,6 @@ export default class CWMSkuList extends React.Component {
     width: 100,
     dataIndex: 'product_type',
   }, {
-    title: this.msg('unitPrice'),
-    width: 120,
-    dataIndex: 'unit_price',
-  }, {
     title: this.msg('opColumn'),
     width: 160,
   }]
@@ -67,7 +67,7 @@ export default class CWMSkuList extends React.Component {
   render() {
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <Header className="top-bar" key="header">
+        <Header className="top-bar">
           <Breadcrumb>
             <Breadcrumb.Item>
               {this.msg('products')}
@@ -78,7 +78,7 @@ export default class CWMSkuList extends React.Component {
           </Breadcrumb>
           <div className="toolbar-right">
             <Button size="large" icon="cloud-upload">
-              {this.msg('importSKUs')}
+              {this.msg('import')}
             </Button>
             <Button type="primary" size="large" icon="plus" onClick={this.handleCreateBtnClick}>
               {this.msg('createSKU')}

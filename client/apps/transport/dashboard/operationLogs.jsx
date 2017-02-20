@@ -146,7 +146,7 @@ export default class Dashboard extends React.Component {
 
     return (
       <div>
-        <Header className="top-bar" key="header">
+        <Header className="top-bar">
           <span>{this.msg(type)}</span>
         </Header>
         <Content className="main-content">

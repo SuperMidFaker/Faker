@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Button, Radio, Layout, message, Popconfirm } from 'antd';
+import { Breadcrumb, Button, Radio, Layout, message, Popconfirm } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
@@ -93,6 +93,9 @@ export default class AcceptList extends React.Component {
     loadShipmtDetail: PropTypes.func.isRequired,
     loadAcceptDispatchers: PropTypes.func.isRequired,
     loadTable: PropTypes.func.isRequired,
+  }
+  static contextTypes = {
+    router: PropTypes.object.isRequired,
   }
   state = {
     selectedRowKeys: [],
@@ -264,6 +267,9 @@ export default class AcceptList extends React.Component {
     }
     this.handleTableLoad(filterArray, 1, sortField, sortOrder);
   }
+  handleCreateBtnClick = () => {
+    this.context.router.push('/transport/shipment/new');
+  }
   handleShipmtAccept(dispId, ev) {
     ev.preventDefault();
     ev.stopPropagation();
@@ -421,8 +427,12 @@ export default class AcceptList extends React.Component {
     }
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <Header className="top-bar" key="header">
-          <span>{this.msg('transportShipment')}</span>
+        <Header className="top-bar">
+          <Breadcrumb>
+            <Breadcrumb.Item>
+              {this.msg('transportShipment')}
+            </Breadcrumb.Item>
+          </Breadcrumb>
           <RadioGroup onChange={this.handleShipmentFilter} value={radioValue} size="large">
             <RadioButton value="unaccepted">{this.msg('unacceptedShipmt')}</RadioButton>
             <RadioButton value="accepted">{this.msg('acceptedShipmt')}</RadioButton>
@@ -434,11 +444,9 @@ export default class AcceptList extends React.Component {
           </RadioGroup>
           <div className="top-bar-tools">
             <PrivilegeCover module="transport" feature="shipment" action="create">
-              <NavLink to="/transport/shipment/new">
-                <Button type="primary" size="large" icon="plus">
-                  {this.msg('shipmtCreate')}
-                </Button>
-              </NavLink>
+              <Button type="primary" size="large" icon="plus" onClick={this.handleCreateBtnClick}>
+                {this.msg('shipmtCreate')}
+              </Button>
             </PrivilegeCover>
           </div>
         </Header>

@@ -477,7 +477,7 @@ export default class ExpenseList extends Component {
     this.dataSource.remotes = expslist;
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <Header className="top-bar" key="header">
+        <Header className="top-bar">
           <Breadcrumb>
             <Breadcrumb.Item>
               {this.msg('expense')}

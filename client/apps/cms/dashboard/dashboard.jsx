@@ -37,7 +37,7 @@ export default class CMSDashboard extends React.Component {
   render() {
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <Header className="top-bar" key="header">
+        <Header className="top-bar">
           <div className="toolbar-right" />
           <span>{this.msg('dashboardTitle')}</span>
           <div className="top-bar-tools">

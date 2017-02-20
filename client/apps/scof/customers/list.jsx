@@ -93,7 +93,7 @@ export default class List extends React.Component {
     );
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <Header className="top-bar" key="header">
+        <Header className="top-bar">
           <Breadcrumb>
             <Breadcrumb.Item>
               {this.msg('customer')}

@@ -111,7 +111,7 @@ function DriverList(props) {
   ];
   return (
     <QueueAnim type={['bottom', 'up']}>
-      <Header className="top-bar" key="header">
+      <Header className="top-bar">
         <Breadcrumb>
           <Breadcrumb.Item>
             资源设置

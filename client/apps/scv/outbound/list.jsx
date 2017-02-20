@@ -348,7 +348,7 @@ export default class OutboundShipmentsList extends React.Component {
     const { inUpload, uploadPercent, uploadStatus } = this.state;
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <Header className="top-bar" key="header">
+        <Header className="top-bar">
           <span>{this.msg('outboundShipments')}</span>
           <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">
             <RadioButton value="all">{this.msg('all')}</RadioButton>

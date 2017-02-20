@@ -2,7 +2,7 @@ import { defineMessages } from 'react-intl';
 
 const messages = defineMessages({
   dashboardTitle: {
-    id: 'crm.dashboard.title',
+    id: 'scop.dashboard.title',
     defaultMessage: '看板',
   },
 });

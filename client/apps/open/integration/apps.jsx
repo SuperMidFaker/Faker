@@ -73,7 +73,7 @@ export default class IntegrationAppsList extends React.Component {
   render() {
     return (
       <div>
-        <Header className="top-bar" key="header">
+        <Header className="top-bar">
           <Breadcrumb>
             <Breadcrumb.Item>
               <Icon type="appstore-o" /> 应用整合

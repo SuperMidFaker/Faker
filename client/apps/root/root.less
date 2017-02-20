@@ -306,6 +306,8 @@ img {
   }
 }
 .top-bar {
+  position: fixed;
+  width: 100%;
   height: @top-bar-height;
   z-index: 30;
   background: rgba(252,252,252,0.95);
@@ -328,24 +330,18 @@ img {
     border-bottom: 0;
   }
   .top-bar-tools {
-    float: right;
+    position: fixed;
+    right: 16px;
     background: rgba(252,252,252,0.95);
     padding: 8px 0;
     display: inline-flex;
+    ant-btn-group,
     button,
     >span {
       margin-left: 8px;
     }
     >a {
       line-height: 32px;
-    }
-  }
-  &.top-bar-fixed {
-    position: fixed;
-    width: 100%;
-    .top-bar-tools {
-      position: fixed;
-      right: 16px;
     }
   }
 }
@@ -379,13 +375,10 @@ img {
   }
 }
 .main-content {
-  padding: 16px 16px 0;
+  padding: 64px 16px 0;
   min-height:100%;
   &.no-top-bar {
     padding: 24px 16px 0;
-  }
-  &.top-bar-fixed {
-    padding: 64px 16px 0;
   }
   @media (max-width:767px) {
     height:100%;
@@ -1041,4 +1034,7 @@ img {
 
 .ui-annotated-section-description p {
     margin-bottom: 1rem
+}
+.aside-card {
+  background: #f5f6f7;
 }

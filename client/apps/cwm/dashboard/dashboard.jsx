@@ -30,13 +30,13 @@ export default class CWMDashboard extends React.Component {
   render() {
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <Header className="top-bar" key="header">
+        <Header className="top-bar">
           <Breadcrumb>
             <Breadcrumb.Item>
               {this.msg('dashboardTitle')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <div className="toolbar-right">
+          <div className="top-bar-tools">
             <Select
               size="large"
               showSearch

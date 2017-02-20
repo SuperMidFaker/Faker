@@ -140,7 +140,7 @@ export default class TrackingLandWrapper extends React.Component {
       <QueueAnim animConfig={[{ opacity: [1, 0], translateY: [0, 50] },
             { opacity: [1, 0], translateY: [0, -50] }]}
       >
-        <Header className="top-bar" key="header">
+        <Header className="top-bar">
           <span>{this.msg('transportTracking')}</span>
           <RadioGroup onChange={this.handleStatusNav} value={radioValue} size="large">
             <RadioButton value="all">{this.msg('allShipmt')}</RadioButton>

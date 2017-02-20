@@ -88,7 +88,7 @@ export default class CustomsDeclEditor extends React.Component {
       <QueueAnim type={['bottom', 'up']}>
         <Layout>
           <Layout>
-            <Header className="top-bar top-bar-fixed">
+            <Header className="top-bar">
               <Breadcrumb>
                 <Breadcrumb.Item>
                   {this.props.ietype === 'import' ? this.msg('importOperation') : this.msg('exportOperation')}
@@ -116,7 +116,7 @@ export default class CustomsDeclEditor extends React.Component {
                 </Button>
               </div>
             </Header>
-            <Content className="main-content top-bar-fixed">
+            <Content className="main-content">
               <div className="page-body tabbed fixed-height">
                 <div className={`panel-body collapse ${readonly ? 'readonly' : ''}`}>
                   <SheetHeadPanel ietype={ietype} readonly={readonly} form={form} formData={head} type="entry" onSave={this.handleEntryHeadSave} />

@@ -78,7 +78,7 @@ export default class AcceptanceCreate extends Component {
     const { form } = this.props;
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <Header className="top-bar" key="header">
+        <Header className="top-bar">
           <span>{this.msg('editItem')}</span>
           <div className="top-bar-tools">
             <Button size="large" type="ghost" onClick={this.handleCancel}>

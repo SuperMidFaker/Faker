@@ -2,324 +2,324 @@ import { defineMessages } from 'react-intl';
 
 const messages = defineMessages({
   shipmentOrders: {
-    id: 'crm.orders',
+    id: 'scop.orders',
     defaultMessage: '订单',
   },
   shipmentNo: {
-    id: 'crm.orders.shipmentno',
+    id: 'scop.orders.shipmentno',
     defaultMessage: 'Shipment No.',
   },
   orderNo: {
-    id: 'crm.orders.orderno',
+    id: 'scop.orders.orderno',
     defaultMessage: 'Order No.',
   },
   originCountry: {
-    id: 'crm.orders.origin.country',
+    id: 'scop.orders.origin.country',
     defaultMessage: 'Origin Cntry',
   },
   originPort: {
-    id: 'crm.orders.origin.port',
+    id: 'scop.orders.origin.port',
     defaultMessage: 'Origin Port',
   },
   destPort: {
-    id: 'crm.orders.dest.port',
+    id: 'scop.orders.dest.port',
     defaultMessage: 'Dest. Port',
   },
   mode: {
-    id: 'crm.orders.mode',
+    id: 'scop.orders.mode',
     defaultMessage: 'Mode',
   },
   etd: {
-    id: 'crm.orders.etd',
+    id: 'scop.orders.etd',
     defaultMessage: 'ETD',
   },
   atd: {
-    id: 'crm.orders.atd',
+    id: 'scop.orders.atd',
     defaultMessage: 'ATD',
   },
   eta: {
-    id: 'crm.orders.eta',
+    id: 'scop.orders.eta',
     defaultMessage: 'ETA',
   },
   ata: {
-    id: 'crm.orders.ata',
+    id: 'scop.orders.ata',
     defaultMessage: 'ATA',
   },
   status: {
-    id: 'crm.orders.status',
+    id: 'scop.orders.status',
     defaultMessage: 'Status',
   },
   customsCleared: {
-    id: 'crm.orders.customs.cleared',
+    id: 'scop.orders.customs.cleared',
     defaultMessage: 'Customs Cleared',
   },
   etaDelivery: {
-    id: 'crm.orders.delivery.eta',
+    id: 'scop.orders.delivery.eta',
     defaultMessage: 'ETA of DLV',
   },
   ataDelivery: {
-    id: 'crm.orders.delivery.ata',
+    id: 'scop.orders.delivery.ata',
     defaultMessage: 'ATA of DLV',
   },
   atorigin: {
-    id: 'crm.orders.at.origin',
+    id: 'scop.orders.at.origin',
     defaultMessage: 'At Origin',
   },
   intransit: {
-    id: 'crm.orders.in.transit',
+    id: 'scop.orders.in.transit',
     defaultMessage: 'In Transit',
   },
   atdest: {
-    id: 'crm.orders.at.dest',
+    id: 'scop.orders.at.dest',
     defaultMessage: 'At Dest.',
   },
   atclearance: {
-    id: 'crm.orders.at.clearance',
+    id: 'scop.orders.at.clearance',
     defaultMessage: 'Clearance',
   },
   atdelivering: {
-    id: 'crm.orders.at.delivering',
+    id: 'scop.orders.at.delivering',
     defaultMessage: 'Delivering',
   },
   atreceived: {
-    id: 'crm.orders.at.received',
+    id: 'scop.orders.at.received',
     defaultMessage: 'Received',
   },
   opColumn: {
-    id: 'crm.orders.column.operation',
+    id: 'scop.orders.column.operation',
     defaultMessage: 'Operation',
   },
   sendAtDest: {
-    id: 'crm.orders.operation.send',
+    id: 'scop.orders.operation.send',
     defaultMessage: 'Send',
   },
   viewTrack: {
-    id: 'crm.orders.operation.viewtrack',
+    id: 'scop.orders.operation.viewtrack',
     defaultMessage: 'View',
   },
   searchPlaceholder: {
-    id: 'crm.orders.search.placeholder',
+    id: 'scop.orders.search.placeholder',
     defaultMessage: '业务编号或客户单号',
   },
   all: {
-    id: 'crm.orders.radio.all',
+    id: 'scop.orders.radio.all',
     defaultMessage: 'All',
   },
   new: {
-    id: 'crm.orders.new',
+    id: 'scop.orders.new',
     defaultMessage: '新建订单',
   },
   save: {
-    id: 'crm.orders.save',
+    id: 'scop.orders.save',
     defaultMessage: '保存',
   },
   cancel: {
-    id: 'crm.orders.cancel',
+    id: 'scop.orders.cancel',
     defaultMessage: '取消',
   },
   forwarder: {
-    id: 'crm.orders.forwarder',
+    id: 'scop.orders.forwarder',
     defaultMessage: 'Forwarder',
   },
   carrier: {
-    id: 'crm.orders.carrier',
+    id: 'scop.orders.carrier',
     defaultMessage: 'Carrier',
   },
   mawb: {
-    id: 'crm.orders.mawb',
+    id: 'scop.orders.mawb',
     defaultMessage: 'MAWB',
   },
   hawb: {
-    id: 'crm.orders.hawb',
+    id: 'scop.orders.hawb',
     defaultMessage: 'HAWB',
   },
   flightNo: {
-    id: 'crm.orders.flight.no',
+    id: 'scop.orders.flight.no',
     defaultMessage: 'Flight No.',
   },
   vessel: {
-    id: 'crm.orders.vessel',
+    id: 'scop.orders.vessel',
     defaultMessage: 'Vessel',
   },
   billlading: {
-    id: 'crm.orders.billlading',
+    id: 'scop.orders.billlading',
     defaultMessage: 'B/L',
   },
   voyage: {
-    id: 'crm.orders.voyage',
+    id: 'scop.orders.voyage',
     defaultMessage: 'Voyage',
   },
   containerSizeHeight: {
-    id: 'crm.orders.container.size.height',
+    id: 'scop.orders.container.size.height',
     defaultMessage: 'Contn. Size/Height',
   },
   moveType: {
-    id: 'crm.orders.movement.type',
+    id: 'scop.orders.movement.type',
     defaultMessage: 'Movement Type',
   },
   pickupQty: {
-    id: 'crm.orders.pickup.qty',
+    id: 'scop.orders.pickup.qty',
     defaultMessage: 'Pickup Qty',
   },
   ctnQty: {
-    id: 'crm.orders.ctn.qty',
+    id: 'scop.orders.ctn.qty',
     defaultMessage: 'CTN Qty',
   },
   grossWeight: {
-    id: 'crm.orders.gross.weight',
+    id: 'scop.orders.gross.weight',
     defaultMessage: 'Gross Weight',
   },
   broker: {
-    id: 'crm.orders.broker',
+    id: 'scop.orders.broker',
     defaultMessage: 'Broker',
   },
   cdSheetNo: {
-    id: 'crm.orders.cd.sheetno',
+    id: 'scop.orders.cd.sheetno',
     defaultMessage: 'CD Sheets No.',
   },
   sendShipment: {
-    id: 'crm.orders.sendto',
+    id: 'scop.orders.sendto',
     defaultMessage: 'Send Shipment',
   },
   sendClearance: {
-    id: 'crm.orders.send.clearance',
+    id: 'scop.orders.send.clearance',
     defaultMessage: 'Clearance',
   },
   sendTrucking: {
-    id: 'crm.orders.send.trucking',
+    id: 'scop.orders.send.trucking',
     defaultMessage: 'Trucking',
   },
   sendTransport: {
-    id: 'crm.orders.send.transportation',
+    id: 'scop.orders.send.transportation',
     defaultMessage: 'Transportation',
   },
   transportDest: {
-    id: 'crm.orders.send.transport.dest',
+    id: 'scop.orders.send.transport.dest',
     defaultMessage: 'Destination',
   },
   declareWay: {
-    id: 'crm.orders.delg.declareWay',
+    id: 'scop.orders.delg.declareWay',
     defaultMessage: '报关类型',
   },
   manualNo: {
-    id: 'crm.orders.delg.manualNo',
+    id: 'scop.orders.delg.manualNo',
     defaultMessage: '备案号',
   },
   delgGrossWt: {
-    id: 'crm.orders.delg.grosswt',
+    id: 'scop.orders.delg.grosswt',
     defaultMessage: '毛重',
   },
   packageNum: {
-    id: 'crm.orders.delg.packageNum',
+    id: 'scop.orders.delg.packageNum',
     defaultMessage: '件数',
   },
   delgWeight: {
-    id: 'crm.orders.delg.weight',
+    id: 'scop.orders.delg.weight',
     defaultMessage: '总毛重',
   },
   addMore: {
-    id: 'crm.orders.delg.addMore',
+    id: 'scop.orders.delg.addMore',
     defaultMessage: '添加',
   },
   created: {
-    id: 'crm.orders.status.created',
+    id: 'scop.orders.status.created',
     defaultMessage: '创建',
   },
   clearancing: {
-    id: 'crm.orders.status.clearancing',
+    id: 'scop.orders.status.clearancing',
     defaultMessage: '清关',
   },
   transporting: {
-    id: 'crm.orders.status.transporting',
+    id: 'scop.orders.status.transporting',
     defaultMessage: '运输',
   },
   finished: {
-    id: 'crm.orders.status.finished',
+    id: 'scop.orders.status.finished',
     defaultMessage: '完结',
   },
   clearance: {
-    id: 'crm.orders.previewer.clearance',
+    id: 'scop.orders.previewer.clearance',
     defaultMessage: '清关',
   },
   transport: {
-    id: 'crm.orders.previewer.transport',
+    id: 'scop.orders.previewer.transport',
     defaultMessage: '运输',
   },
   charge: {
-    id: 'crm.orders.previewer.charge',
+    id: 'scop.orders.previewer.charge',
     defaultMessage: '费用',
   },
   logs: {
-    id: 'crm.orders.previewer.logs',
+    id: 'scop.orders.previewer.logs',
     defaultMessage: '日志',
   },
   customerInfo: {
-    id: 'crm.orders.previewer.customerInfo',
+    id: 'scop.orders.previewer.customerInfo',
     defaultMessage: '客户信息',
   },
   shipmtSchedule: {
-    id: 'crm.orders.previewer.shipmtSchedule',
+    id: 'scop.orders.previewer.shipmtSchedule',
     defaultMessage: '运输计划',
   },
 
   client: {
-    id: 'crm.orders.client',
+    id: 'scop.orders.client',
     defaultMessage: '客户名称',
   },
   refExternalNo: {
-    id: 'crm.orders.previewer.ref.external',
+    id: 'scop.orders.previewer.ref.external',
     defaultMessage: '客户单号',
   },
   refWaybillNo: {
-    id: 'crm.orders.previewer.ref.waybill',
+    id: 'scop.orders.previewer.ref.waybill',
     defaultMessage: '关联提运单号',
   },
   refEntryNo: {
-    id: 'crm.orders.previewer.ref.entryno',
+    id: 'scop.orders.previewer.ref.entryno',
     defaultMessage: '关联报关单号',
   },
   pickupEstDate: {
-    id: 'crm.orders.previewer.pickup.est.date',
+    id: 'scop.orders.previewer.pickup.est.date',
     defaultMessage: '预计提货日期',
   },
   deliveryEstDate: {
-    id: 'crm.orders.previewer.delivery.est.date',
+    id: 'scop.orders.previewer.delivery.est.date',
     defaultMessage: '预计送货日期',
   },
   day: {
-    id: 'crm.orders.previewer.day',
+    id: 'scop.orders.previewer.day',
     defaultMessage: '天',
   },
   remark: {
-    id: 'crm.orders.previewer.remark',
+    id: 'scop.orders.previewer.remark',
     defaultMessage: '备注',
   },
   transitModeInfo: {
-    id: 'crm.orders.previewer.transit.mode.info',
+    id: 'scop.orders.previewer.transit.mode.info',
     defaultMessage: '运输模式',
   },
   goodsInfo: {
-    id: 'crm.orders.previewer.goods.info',
+    id: 'scop.orders.previewer.goods.info',
     defaultMessage: '货物信息',
   },
   goodsType: {
-    id: 'crm.orders.previewer.goods.type',
+    id: 'scop.orders.previewer.goods.type',
     defaultMessage: '货物类型',
   },
   totalCount: {
-    id: 'crm.orders.previewer.goods.total.count',
+    id: 'scop.orders.previewer.goods.total.count',
     defaultMessage: '总数量',
   },
   goodsPackage: {
-    id: 'crm.orders.previewer.goods.package',
+    id: 'scop.orders.previewer.goods.package',
     defaultMessage: '包装',
   },
   totalWeight: {
-    id: 'crm.orders.previewer.goods.total.weight',
+    id: 'scop.orders.previewer.goods.total.weight',
     defaultMessage: '总重量',
   },
   kilogram: {
-    id: 'crm.orders.previewer.goods.kilogram',
+    id: 'scop.orders.previewer.goods.kilogram',
     defaultMessage: '千克',
   },
   insuranceValue: {
@@ -327,210 +327,210 @@ const messages = defineMessages({
     defaultMessage: '保险货值',
   },
   CNY: {
-    id: 'crm.orders.previewer.goods.cny',
+    id: 'scop.orders.previewer.goods.cny',
     defaultMessage: '元',
   },
   totalVolume: {
-    id: 'crm.orders.previewer.goods.total.volume',
+    id: 'scop.orders.previewer.goods.total.volume',
     defaultMessage: '总体积',
   },
   cubicMeter: {
-    id: 'crm.orders.previewer.goods.cubic.meter',
+    id: 'scop.orders.previewer.goods.cubic.meter',
     defaultMessage: '立方米',
   },
   goodsCode: {
-    id: 'crm.orders.previewer.goods.code',
+    id: 'scop.orders.previewer.goods.code',
     defaultMessage: '货物代码',
   },
   goodsName: {
-    id: 'crm.orders.previewer.goods.name',
+    id: 'scop.orders.previewer.goods.name',
     defaultMessage: '货物名称',
   },
   goodsCount: {
-    id: 'crm.orders.previewer.goods.count',
+    id: 'scop.orders.previewer.goods.count',
     defaultMessage: '数量',
   },
   goodsWeight: {
-    id: 'crm.orders.previewer.goods.weight',
+    id: 'scop.orders.previewer.goods.weight',
     defaultMessage: '重量(千克)',
   },
   goodsVolume: {
-    id: 'crm.orders.previewer.goods.volume',
+    id: 'scop.orders.previewer.goods.volume',
     defaultMessage: '体积(立方米)',
   },
   goodsLength: {
-    id: 'crm.orders.previewer.goods.length',
+    id: 'scop.orders.previewer.goods.length',
     defaultMessage: '长(米)',
   },
   goodsWidth: {
-    id: 'crm.orders.previewer.goods.width',
+    id: 'scop.orders.previewer.goods.width',
     defaultMessage: '宽(米)',
   },
   goodsHeight: {
-    id: 'crm.orders.previewer.goods.height',
+    id: 'scop.orders.previewer.goods.height',
     defaultMessage: '高(米)',
   },
   goodsRemark: {
-    id: 'crm.orders.previewer.goods.remark',
+    id: 'scop.orders.previewer.goods.remark',
     defaultMessage: '备注',
   },
   vehicleType: {
-    id: 'crm.orders.previewer.vehicle.type',
+    id: 'scop.orders.previewer.vehicle.type',
     defaultMessage: '车型',
   },
   vehicleLength: {
-    id: 'crm.orders.previewer.vehicle.length',
+    id: 'scop.orders.previewer.vehicle.length',
     defaultMessage: '车长',
   },
   containerNo: {
-    id: 'crm.orders.previewer.container.no',
+    id: 'scop.orders.previewer.container.no',
     defaultMessage: '箱号',
   },
   basicCharge: {
-    id: 'crm.orders.previewer.basic.charge',
+    id: 'scop.orders.previewer.basic.charge',
     defaultMessage: '基本运费',
   },
   revenueItem: {
-    id: 'crm.orders.previewer.charge.revenue.item',
+    id: 'scop.orders.previewer.charge.revenue.item',
     defaultMessage: '收入明细项',
   },
   chargeRate: {
-    id: 'crm.orders.previewer.charge.rate',
+    id: 'scop.orders.previewer.charge.rate',
     defaultMessage: '费率',
   },
   chargeAmount: {
-    id: 'crm.orders.previewer.charge.amount',
+    id: 'scop.orders.previewer.charge.amount',
     defaultMessage: '计费量',
   },
   chargeFee: {
-    id: 'crm.orders.previewer.charge.fee',
+    id: 'scop.orders.previewer.charge.fee',
     defaultMessage: '金额',
   },
   chargeChecked: {
-    id: 'crm.orders.previewer.charge.checked',
+    id: 'scop.orders.previewer.charge.checked',
     defaultMessage: '计入',
   },
   pickupCharge: {
-    id: 'crm.orders.previewer.pickup.charge',
+    id: 'scop.orders.previewer.pickup.charge',
     defaultMessage: '提货费',
   },
   deliverCharge: {
-    id: 'crm.orders.previewer.deliver.charge',
+    id: 'scop.orders.previewer.deliver.charge',
     defaultMessage: '配送费',
   },
   surcharge: {
-    id: 'crm.orders.previewer.surcharge',
+    id: 'scop.orders.previewer.surcharge',
     defaultMessage: '运费调整项',
   },
   totalCharge: {
-    id: 'crm.orders.previewer.total.charge',
+    id: 'scop.orders.previewer.total.charge',
     defaultMessage: '总运费',
   },
   advanceName: {
-    id: 'crm.orders.previewer.advance.name',
+    id: 'scop.orders.previewer.advance.name',
     defaultMessage: '垫付类型',
   },
   advanceAmount: {
-    id: 'crm.orders.previewer.advance.amount',
+    id: 'scop.orders.previewer.advance.amount',
     defaultMessage: '金额',
   },
   advanceSubmitter: {
-    id: 'crm.orders.previewer.advance.submitter',
+    id: 'scop.orders.previewer.advance.submitter',
     defaultMessage: '提交者',
   },
   advanceRemark: {
-    id: 'crm.orders.previewer.advance.remark',
+    id: 'scop.orders.previewer.advance.remark',
     defaultMessage: '备注',
   },
 
   serviceFee: {
-    id: 'crm.orders.previewer.service.fee',
+    id: 'scop.orders.previewer.service.fee',
     defaultMessage: '服务费',
   },
   cushionFee: {
-    id: 'crm.orders.previewer.cushion.fee',
+    id: 'scop.orders.previewer.cushion.fee',
     defaultMessage: '代垫费',
   },
   feeName: {
-    id: 'crm.orders.previewer.fee.name',
+    id: 'scop.orders.previewer.fee.name',
     defaultMessage: '费用名称',
   },
   charCount: {
-    id: 'crm.orders.previewer.charge.count',
+    id: 'scop.orders.previewer.charge.count',
     defaultMessage: '计费数量',
   },
   unitPrice: {
-    id: 'crm.orders.previewer.unit.price',
+    id: 'scop.orders.previewer.unit.price',
     defaultMessage: '计费单价',
   },
   feeVal: {
-    id: 'crm.orders.previewer.fee.val',
+    id: 'scop.orders.previewer.fee.val',
     defaultMessage: '费用金额',
   },
   taxFee: {
-    id: 'crm.orders.previewer.tax.fee',
+    id: 'scop.orders.previewer.tax.fee',
     defaultMessage: '税金',
   },
   totalFee: {
-    id: 'crm.orders.previewer.total.fee',
+    id: 'scop.orders.previewer.total.fee',
     defaultMessage: '应收金额',
   },
 
   pendingShipmt: {
-    id: 'crm.orders.previewer.transport.status.pendingShipmt',
+    id: 'scop.orders.previewer.transport.status.pendingShipmt',
     defaultMessage: '待接单',
   },
   acceptedShipmt: {
-    id: 'crm.orders.previewer.transport.status.acceptedShipmt',
+    id: 'scop.orders.previewer.transport.status.acceptedShipmt',
     defaultMessage: '待调度',
   },
   dispatchedShipmt: {
-    id: 'crm.orders.previewer.transport.status.dispatchedShipmt',
+    id: 'scop.orders.previewer.transport.status.dispatchedShipmt',
     defaultMessage: '待提货',
   },
   intransitShipmt: {
-    id: 'crm.orders.previewer.transport.status.intransitShipmt',
+    id: 'scop.orders.previewer.transport.status.intransitShipmt',
     defaultMessage: '运输中',
   },
   deliveredShipmt: {
-    id: 'crm.orders.previewer.transport.status.deliveredShipmt',
+    id: 'scop.orders.previewer.transport.status.deliveredShipmt',
     defaultMessage: '已送货',
   },
   podsubmit: {
-    id: 'crm.orders.previewer.transport.status.podsubmit',
+    id: 'scop.orders.previewer.transport.status.podsubmit',
     defaultMessage: '回单已提交',
   },
   podaccept: {
-    id: 'crm.orders.previewer.transport.status.podaccept',
+    id: 'scop.orders.previewer.transport.status.podaccept',
     defaultMessage: '回单已接受',
   },
 
   unacceptedDelegation: {
-    id: 'crm.orders.previewer.clearance.status.unaccepted',
+    id: 'scop.orders.previewer.clearance.status.unaccepted',
     defaultMessage: '待接单',
   },
   acceptedDelegation: {
-    id: 'crm.orders.previewer.clearance.status.accepted',
+    id: 'scop.orders.previewer.clearance.status.accepted',
     defaultMessage: '已接单',
   },
   processedDelegation: {
-    id: 'crm.orders.previewer.clearance.status.processed',
+    id: 'scop.orders.previewer.clearance.status.processed',
     defaultMessage: '制单中',
   },
   declaredDelegation: {
-    id: 'crm.orders.previewer.clearance.status.declared',
+    id: 'scop.orders.previewer.clearance.status.declared',
     defaultMessage: '已申报',
   },
   releasedDelegation: {
-    id: 'crm.orders.previewer.clearance.status.released',
+    id: 'scop.orders.previewer.clearance.status.released',
     defaultMessage: '已放行',
   },
   declaredPartDelegation: {
-    id: 'crm.orders.previewer.clearance.status.declaredPart',
+    id: 'scop.orders.previewer.clearance.status.declaredPart',
     defaultMessage: '部分申报',
   },
   releasedPartDelegation: {
-    id: 'crm.orders.previewer.clearance.status.releasedPart',
+    id: 'scop.orders.previewer.clearance.status.releasedPart',
     defaultMessage: '部分放行',
   },
 });

@@ -381,7 +381,7 @@ export default class QuoteList extends Component {
     }
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <Header className="top-bar" key="header">
+        <Header className="top-bar">
           <span>{msg('quoteManage')}</span>
           <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">
             <RadioButton value="all">{msg('filterAll')}</RadioButton>

@@ -1040,7 +1040,7 @@ export default class DispatchList extends React.Component {
 
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <Header className="top-bar" key="header">
+        <Header className="top-bar">
           <span>{this.msg('transportDispatch')}</span>
           <RadioGroup onChange={this.handleStatusChange} value={status} size="large">
             <RadioButton value="waiting">{this.msg('rdTextWaiting')}</RadioButton>

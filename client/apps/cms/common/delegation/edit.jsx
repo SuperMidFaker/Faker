@@ -89,7 +89,7 @@ export default class AcceptanceEdit extends Component {
     const { form, type, submitting } = this.props;
     return (
       <div>
-        <Header className="top-bar top-bar-fixed">
+        <Header className="top-bar">
           <Breadcrumb>
             <Breadcrumb.Item>
               {this.props.ietype === 'import' ? this.msg('importClearance') : this.msg('exportClearance')}
@@ -110,7 +110,7 @@ export default class AcceptanceEdit extends Component {
             </Button>
           </div>
         </Header>
-        <Content className="main-content layout-fixed-width layout-fixed-width-large top-bar-fixed">
+        <Content className="main-content layout-fixed-width layout-fixed-width-large">
           <Form horizontal form={form}>
             <Row gutter={16}>
               <Col sm={24} md={18}>

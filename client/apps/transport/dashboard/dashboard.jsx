@@ -60,7 +60,7 @@ export default class Dashboard extends React.Component {
     const imgStyle = { width: 60, height: 60 };
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <Header className="top-bar" key="header">
+        <Header className="top-bar">
           <span>{this.msg('dashboard')}</span>
         </Header>
         <Content className="main-content" key="main">

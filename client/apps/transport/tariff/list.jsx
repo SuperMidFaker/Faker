@@ -467,7 +467,7 @@ export default class TariffList extends React.Component {
     }
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <Header className="top-bar" key="header">
+        <Header className="top-bar">
           <span>{this.msg('transportTariff')}</span>
           <RadioGroup onChange={this.handleKindChange} value={this.state.kind} size="large">
             <RadioButton value="all">全部</RadioButton>

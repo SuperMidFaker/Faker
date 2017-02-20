@@ -35,6 +35,10 @@ export default class InboundTransactionsList extends React.Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
+    title: this.msg('warehouse'),
+    width: 160,
+    dataIndex: 'warehouse_code',
+  }, {
     title: this.msg('inboundNo'),
     dataIndex: 'inbound_no',
     width: 120,
@@ -43,17 +47,9 @@ export default class InboundTransactionsList extends React.Component {
     dataIndex: 'inbound_date',
     width: 120,
   }, {
-    title: this.msg('warehouse'),
-    width: 160,
-    dataIndex: 'warehouse_code',
-  }, {
     title: this.msg('sku'),
     width: 200,
     dataIndex: 'sku_no',
-  }, {
-    title: this.msg('preQty'),
-    width: 100,
-    dataIndex: 'pre_inbound_qty',
   }, {
     title: this.msg('actualQty'),
     width: 100,
@@ -63,13 +59,8 @@ export default class InboundTransactionsList extends React.Component {
     width: 100,
     dataIndex: 'post_inbound_qty',
   }, {
-    title: this.msg('lotNo'),
+    title: this.msg('lotNo/serialNo'),
     width: 120,
-    dataIndex: 'external_lot_no',
-  }, {
-    title: this.msg('serialNo'),
-    width: 120,
-    dataIndex: 'serial_no',
   }, {
     title: this.msg('vendor'),
     dataIndex: 'vendor_name',
@@ -78,14 +69,14 @@ export default class InboundTransactionsList extends React.Component {
     width: 120,
     dataIndex: 'unit_price',
   }, {
-    title: this.msg('specificDate'),
-    width: 120,
+    title: this.msg('manufDate/expiryDate'),
+    width: 200,
     dataIndex: 'specific_date',
   }]
   render() {
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <Header className="top-bar" key="header">
+        <Header className="top-bar">
           <Breadcrumb>
             <Breadcrumb.Item>
               {this.msg('inbound')}

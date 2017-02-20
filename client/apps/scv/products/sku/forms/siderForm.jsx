@@ -22,14 +22,15 @@ export default class SiderForm extends Component {
       <div>
         <Card>
           <Col sm={24}>
-            <FormItem label={this.msg('owner')}>
+            <FormItem label={this.msg('visibleWarehouses')}>
               {getFieldDecorator('owner_code', {
               })(
-                <Select showSearch
+                <Select multiple
                   optionFilterProp="search"
-                  placeholder="选择所属货主"
+                  placeholder="选择可见仓库"
                 >
-                  <Option value="HumanScale">HumanScale</Option>
+                  <Option value="0961">恩诺-物流大道仓库</Option>
+                  <Option value="0962">恩诺-富特路仓库</Option>
                 </Select>
                 )}
             </FormItem>

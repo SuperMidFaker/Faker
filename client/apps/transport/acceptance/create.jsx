@@ -175,7 +175,7 @@ export default class ShipmentCreate extends React.Component {
     const { intl, submitting, form } = this.props;
     return (
       <div>
-        <Header className="top-bar top-bar-fixed">
+        <Header className="top-bar">
           <Breadcrumb>
             <Breadcrumb.Item>
               {this.msg('transportShipment')}
@@ -193,7 +193,7 @@ export default class ShipmentCreate extends React.Component {
             </Button>
           </div>
         </Header>
-        <Content className="main-content layout-fixed-width layout-fixed-width-large top-bar-fixed">
+        <Content className="main-content layout-fixed-width layout-fixed-width-large">
           <Form horizontal>
             <Row gutter={16}>
               <Col sm={24} md={18}>

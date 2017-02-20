@@ -307,7 +307,7 @@ export default class InventoryTransactionList extends React.Component {
           <StockSearchForm onSearch={this.handleSearch} />
         </Sider>
         <Layout>
-          <Header className="top-bar top-bar-fixed">
+          <Header className="top-bar">
             { this.state.collapsed && <Breadcrumb>
               <Breadcrumb.Item>
                 {this.msg('inventory')}
@@ -339,7 +339,7 @@ export default class InventoryTransactionList extends React.Component {
               </Button>
             </div>
           </Header>
-          <Content className="main-content top-bar-fixed" key="main">
+          <Content className="main-content" key="main">
             <div className="page-body">
               <div className="panel-body table-panel">
                 <Table columns={columns} dataSource={this.dataSource} loading={loading} rowKey="id" scroll={{ x: 1200 }} />

@@ -237,7 +237,7 @@ export default class HscodeList extends Component {
     return (
       <Layout className="ant-layout-wrapper">
         <Layout>
-          <Header className="top-bar top-bar-fixed" key="header">
+          <Header className="top-bar">
             <Breadcrumb>
               <Breadcrumb.Item>
                 {this.msg('classification')}
@@ -254,7 +254,7 @@ export default class HscodeList extends Component {
               />
             </div>
           </Header>
-          <Content className="main-content top-bar-fixed" key="main">
+          <Content className="main-content" key="main">
             <div className="page-body">
               <div className="toolbar">
                 <SearchBar placeholder="编码/名称/描述/申报要素" onInputSearch={this.handleSearch}

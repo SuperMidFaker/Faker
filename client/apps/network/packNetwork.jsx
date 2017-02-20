@@ -34,7 +34,7 @@ export default class CollabNetworkPack extends React.Component {
               </Menu.Item>
             </Menu>
           </Sider>
-          <Content className="main-content">
+          <Content>
             {this.props.children}
           </Content>
         </Layout>
