@@ -64,6 +64,7 @@ export default class InventoryStockList extends React.Component {
     title: this.msg('sku'),
     dataIndex: 'sku_no',
     width: 100,
+    sorter: true,
     render: (text, row) => this.renderNormalCol(text, row),
   }, {
     title: this.msg('product'),
@@ -74,6 +75,7 @@ export default class InventoryStockList extends React.Component {
     title: this.msg('category'),
     dataIndex: 'product_category',
     width: 120,
+    sorter: true,
     render: (text, row) => this.renderNormalCol(text, row),
   }, {
     title: this.msg('stockQty'),
@@ -89,11 +91,13 @@ export default class InventoryStockList extends React.Component {
     title: this.msg('serialNo'),
     width: 120,
     dataIndex: 'serial_no',
+    sorter: true,
     render: (text, row) => this.renderNormalCol(text, row),
   }, {
     title: this.msg('unitPrice'),
     width: 80,
     dataIndex: 'unit_price',
+    sorter: true,
     render: (text, row) => this.renderNormalCol(text, row),
   }, {
     title: this.msg('stockCost'),
@@ -132,7 +136,7 @@ export default class InventoryStockList extends React.Component {
     render: (text, row) => this.renderNormalCol(text, row),
   }, {
     title: this.msg('productDesc'),
-    width: 160,
+    width: 220,
     dataIndex: 'product_desc',
     render: (text, row) => this.renderNormalCol(text, row),
   }]
@@ -151,7 +155,7 @@ export default class InventoryStockList extends React.Component {
         current: pagination.current,
         sorter: {
           field: sorter.field,
-          order: sorter.order,
+          order: sorter.order === 'descend' ? 'DESC' : 'ASC',
         },
       };
       return params;
@@ -222,8 +226,8 @@ export default class InventoryStockList extends React.Component {
       group_by_sku: whno !== '_all_' ? false : this.props.listFilter.group_by_sku };
     this.handleStockQuery(filter);
   }
-  handleSkuGroupCheck = () => {
-    const filter = { ...this.props.listFilter, group_by_sku: true };
+  handleSkuGroupCheck = (ev) => {
+    const filter = { ...this.props.listFilter, group_by_sku: ev.target.checked };
     this.handleStockQuery(filter);
   }
   renderNormalCol(text, row) {
@@ -248,7 +252,7 @@ export default class InventoryStockList extends React.Component {
       });
       let total = stocklist.totalCount;
       Object.keys(whnoMap).forEach((whno) => {
-        data.push({ key: 'wh_no', value: whno });
+        data.push({ key: 'wh_no', id: whno, value: whno });
         data.push(...whnoMap[whno]);
         total += 1;
       });
@@ -260,7 +264,7 @@ export default class InventoryStockList extends React.Component {
       };
       columns = [{
         title: this.msg('warehouse'),
-        width: 140,
+        width: 100,
         render: (text, row) => {
           if (row.key === 'wh_no') {
             return ({

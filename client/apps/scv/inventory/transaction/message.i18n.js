@@ -26,9 +26,29 @@ const messages = defineMessages({
     id: 'scv.inventory.transaction.all.warehouse',
     defaultMessage: '全部仓库',
   },
-  groupBySku: {
-    id: 'scv.inventory.transaction.group.by.sku',
-    defaultMessage: '按SKU合并',
+  startDate: {
+    id: 'scv.inventory.transaction.start.date',
+    defaultMessage: '起始日期',
+  },
+  startStock: {
+    id: 'scv.inventory.transaction.start.stock',
+    defaultMessage: '期初库存',
+  },
+  inboundQty: {
+    id: 'scv.inventory.transaction.inbound.qty',
+    defaultMessage: '入库数量',
+  },
+  outboundQty: {
+    id: 'scv.inventory.transaction.outbound.qty',
+    defaultMessage: '出库数量',
+  },
+  endDate: {
+    id: 'scv.inventory.transaction.end.date',
+    defaultMessage: '终止日期',
+  },
+  endStock: {
+    id: 'scv.inventory.transaction.end.stock',
+    defaultMessage: '期末库存',
   },
   sku: {
     id: 'scv.inventory.transaction.sku',

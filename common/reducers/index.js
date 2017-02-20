@@ -30,6 +30,7 @@ import cmsResources from './cmsResources';
 import scvInboundShipments from './scvInboundShipments';
 import scvOutboundShipments from './scvOutboundShipments';
 import scvInventoryStock from './scvInventoryStock';
+import scvInventoryTransaction from './scvInventoryTransaction';
 import scvWarehouse from './scvWarehouse';
 import cmsExpense from './cmsExpense';
 import cmsBilling from './cmsBilling';
@@ -70,6 +71,7 @@ export default combineReducers({
   scvInboundShipments,
   scvOutboundShipments,
   scvInventoryStock,
+  scvInventoryTransaction,
   scvWarehouse,
   cmsExpense,
   cmsBilling,
