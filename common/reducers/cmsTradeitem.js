@@ -25,6 +25,7 @@ const actionTypes = createActionTypes('@@welogix/cms/tradeitem/', [
   'DELETE_DECLUNIT', 'DELETE_DECLUNIT_SUCCEED', 'DELETE_DECLUNIT_FAIL',
   'LOAD_DECLWAY_UNITS', 'LOAD_DECLWAY_UNITS_SUCCEED', 'LOAD_DECLWAY_UNITS_FAIL',
   'SAVE_DECLWAY_UNIT', 'SAVE_DECLWAY_UNIT_SUCCEED', 'SAVE_DECLWAY_UNIT_FAIL',
+  'SET_OWNER',
 ]);
 
 const initialState = {
@@ -63,6 +64,7 @@ const initialState = {
   hstabKey: 'declunit',
   gunits: [],
   declwayUnits: [],
+  owner: {},
 };
 
 export default function reducer(state = initialState, action) {
@@ -75,6 +77,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, visibleAddModal: false };
     case actionTypes.SET_PANE_TABKEY:
       return { ...state, tabKey: action.data };
+    case actionTypes.SET_OWNER:
+      return { ...state, owner: action.data };
     case actionTypes.LOAD_TRADE_CODES_SUCCEED:
       return { ...state, tradeCodes: action.result.data };
     case actionTypes.SET_SELECTED_REPOID:
@@ -233,6 +237,13 @@ export function setPaneTabkey(tabkey) {
   return {
     type: actionTypes.SET_PANE_TABKEY,
     data: tabkey,
+  };
+}
+
+export function setOwner(owner) {
+  return {
+    type: actionTypes.SET_OWNER,
+    data: owner,
   };
 }
 
