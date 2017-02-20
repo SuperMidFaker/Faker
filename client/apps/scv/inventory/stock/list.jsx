@@ -64,6 +64,7 @@ export default class InventoryStockList extends React.Component {
     title: this.msg('sku'),
     dataIndex: 'sku_no',
     width: 100,
+    sorter: true,
     render: (text, row) => this.renderNormalCol(text, row),
   }, {
     title: this.msg('product'),
@@ -74,6 +75,7 @@ export default class InventoryStockList extends React.Component {
     title: this.msg('category'),
     dataIndex: 'product_category',
     width: 120,
+    sorter: true,
     render: (text, row) => this.renderNormalCol(text, row),
   }, {
     title: this.msg('stockQty'),
@@ -89,11 +91,13 @@ export default class InventoryStockList extends React.Component {
     title: this.msg('serialNo'),
     width: 120,
     dataIndex: 'serial_no',
+    sorter: true,
     render: (text, row) => this.renderNormalCol(text, row),
   }, {
     title: this.msg('unitPrice'),
     width: 80,
     dataIndex: 'unit_price',
+    sorter: true,
     render: (text, row) => this.renderNormalCol(text, row),
   }, {
     title: this.msg('stockCost'),
@@ -151,7 +155,7 @@ export default class InventoryStockList extends React.Component {
         current: pagination.current,
         sorter: {
           field: sorter.field,
-          order: sorter.order,
+          order: sorter.order === 'descend' ? 'DESC' : 'ASC',
         },
       };
       return params;
@@ -223,7 +227,7 @@ export default class InventoryStockList extends React.Component {
     this.handleStockQuery(filter);
   }
   handleSkuGroupCheck = () => {
-    const filter = { ...this.props.listFilter, group_by_sku: true };
+    const filter = { ...this.props.listFilter, group_by_sku: true }; // todo
     this.handleStockQuery(filter);
   }
   renderNormalCol(text, row) {
