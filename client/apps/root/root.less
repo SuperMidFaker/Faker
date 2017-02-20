@@ -335,8 +335,11 @@ img {
     background: rgba(252,252,252,0.95);
     padding: 8px 0;
     display: inline-flex;
-    ant-btn-group,
-    button,
+    >.ant-btn-group {
+      display: inline-flex;
+      margin-left: 8px;
+    }
+    >button,
     >span {
       margin-left: 8px;
     }
@@ -370,7 +373,8 @@ img {
 }
 .nav-sider {
   background: #fff;
-  .ant-menu-item {
+  .ant-menu-item,
+  .ant-menu-submenu-title {
     font-size: 14px;
   }
 }

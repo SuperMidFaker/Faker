@@ -176,7 +176,7 @@ export default class ConsignInfo extends React.Component {
   }
   render() {
     const {
-      outerColSpan, labelColSpan, formhoc, consignLocations,
+      formhoc, consignLocations,
       fieldDefaults, vertical,
     } = this.props;
     const locOptions = consignLocations.map(cl => ({
@@ -223,38 +223,39 @@ export default class ConsignInfo extends React.Component {
       );
     } else {
       content = (
-        <Row>
-          <Col span={`${outerColSpan}`}>
+        <Row gutter={16}>
+          <Col sm={24} md={16}>
             <AutoCompSelectItem labelName={this.msg(this.renderMsgKeys.name)}
-              field={this.renderFields.name} colSpan={4} {...this.renderRules.name}
+              field={this.renderFields.name} {...this.renderRules.name}
               optionField="name" optionKey="key" optionValue="name"
               formhoc={formhoc} optionData={locOptions} onSelect={this.handleItemSelect}
               allowClear onChange={this.handleAutoInputChange}
               initialValue={fieldDefaults[name]}
             />
-            <FormItem label={this.msg(this.renderMsgKeys.portal)} labelCol={{ span: 4 }}
-              wrapperCol={{ span: 20 }} {...this.renderRules.portal}
+            <FormItem label={this.msg(this.renderMsgKeys.portal)}
+              {...this.renderRules.portal}
             >
               <RegionCascade defaultRegion={region} region={this.state.consignRegion}
                 onChange={this.handleRegionValue}
               />
             </FormItem>
             <InputItem formhoc={formhoc} labelName={this.msg(this.renderMsgKeys.addr)}
-              field={this.renderFields.addr} colSpan={4} {...this.renderRules.addr}
+              field={this.renderFields.addr}
+              {...this.renderRules.addr}
               fieldProps={{ initialValue: fieldDefaults[addr] }}
             />
           </Col>
-          <Col span={`${24 - outerColSpan}`}>
+          <Col sm={24} md={8}>
             <InputItem formhoc={formhoc} labelName={this.msg('contact')}
-              field={this.renderFields.contact} colSpan={labelColSpan}
+              field={this.renderFields.contact}
               fieldProps={{ initialValue: fieldDefaults[contact] }}
             />
             <InputItem formhoc={formhoc} labelName={this.msg('mobile')}
-              field={this.renderFields.mobile} colSpan={labelColSpan}
+              field={this.renderFields.mobile}
               fieldProps={{ initialValue: fieldDefaults[mobile] }}
             />
             <InputItem formhoc={formhoc} labelName={this.msg('email')}
-              field={this.renderFields.email} colSpan={labelColSpan}
+              field={this.renderFields.email}
               fieldProps={{ initialValue: fieldDefaults[email] }}
             />
           </Col>

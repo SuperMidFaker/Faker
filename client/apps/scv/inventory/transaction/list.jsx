@@ -177,7 +177,7 @@ export default class InventoryTransactionList extends React.Component {
     this.dataSource.remotes = stocklist;
     return (
       <Layout>
-        <Sider width={350} className="menu-sider" key="sider" trigger={null}
+        <Sider width={320} className="menu-sider" key="sider" trigger={null}
           collapsible
           collapsed={this.state.collapsed}
           collapsedWidth={0}
@@ -218,7 +218,7 @@ export default class InventoryTransactionList extends React.Component {
             </Select>
             <span />
             { !this.state.lot_query &&
-              <RangePicker onChange={this.handleRangeChange} value={[moment(listFilter.start_date), moment(listFilter.end_date)]} />
+              <RangePicker size="large" onChange={this.handleRangeChange} value={[moment(listFilter.start_date), moment(listFilter.end_date)]} />
             }
             <div className="top-bar-tools">
               <Button type="primary" size="large" icon="export" ghost>

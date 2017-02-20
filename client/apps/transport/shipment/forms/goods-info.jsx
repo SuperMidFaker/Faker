@@ -208,7 +208,7 @@ export default class GoodsInfo extends React.Component {
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   render() {
     const {
-      labelColSpan, formhoc, goods, goodsTypes, formhoc: { getFieldDecorator },
+      formhoc, goods, goodsTypes, formhoc: { getFieldDecorator },
       packagings, containerPackagings,
       fieldDefaults: { goods_type, total_count, packageform, total_weight, insure_value, total_volume },
       vertical, modeCode,
@@ -218,7 +218,6 @@ export default class GoodsInfo extends React.Component {
       key: pk.package_code,
       value: pk.package_name,
     }));
-    const outerColSpan = 8;
     const columns = [{
       title: this.msg('goodsCode'),
       dataIndex: 'goods_no',
@@ -395,11 +394,9 @@ export default class GoodsInfo extends React.Component {
     } else {
       content = (
         <div>
-          <Row>
-            <Col span={`${outerColSpan}`}>
-              <FormItem label={this.msg('goodsType')} labelCol={{ span: labelColSpan }}
-                wrapperCol={{ span: 24 - labelColSpan }} required
-              >
+          <Row gutter={16}>
+            <Col sm={24} md={8}>
+              <FormItem label={this.msg('goodsType')} required>
                 {getFieldDecorator('goods_type', {
                   rules: [{
                     required: true, type: 'number', message: this.msg('goodsTypeMust'),
@@ -412,14 +409,12 @@ export default class GoodsInfo extends React.Component {
                 </Select>)}
               </FormItem>
               <InputItem formhoc={formhoc} labelName={this.msg('totalCount')}
-                field="total_count" colSpan={labelColSpan}
+                field="total_count"
                 fieldProps={{ initialValue: total_count }}
               />
             </Col>
-            <Col span={`${outerColSpan}`}>
-              <FormItem label={this.msg('goodsPackage')} labelCol={{ span: labelColSpan }}
-                wrapperCol={{ span: 24 - labelColSpan }} required={modeCode === PRESET_TRANSMODES.ctn}
-              >
+            <Col sm={24} md={8}>
+              <FormItem label={this.msg('goodsPackage')} required={modeCode === PRESET_TRANSMODES.ctn}>
                 {getFieldDecorator('package', { initialValue: packageform })(<Select>
                   {apackagings.map(
                 pk => <Option value={pk.key} key={pk.key}>{pk.value}</Option>
@@ -427,17 +422,17 @@ export default class GoodsInfo extends React.Component {
                 </Select>)}
               </FormItem>
               <InputItem formhoc={formhoc} labelName={this.msg('totalWeight')}
-                field="total_weight" colSpan={labelColSpan} addonAfter={this.msg('kilogram')}
+                field="total_weight" addonAfter={this.msg('kilogram')}
                 fieldProps={{ initialValue: total_weight }} required={totalWeightRequired}
               />
             </Col>
-            <Col span={`${outerColSpan}`}>
+            <Col sm={24} md={8}>
               <InputItem formhoc={formhoc} labelName={this.msg('insuranceValue')}
-                field="insure_value" colSpan={labelColSpan} addonAfter={this.msg('CNY')}
+                field="insure_value" addonAfter={this.msg('CNY')}
                 fieldProps={{ initialValue: insure_value }}
               />
               <InputItem formhoc={formhoc} labelName={this.msg('totalVolume')}
-                field="total_volume" colSpan={labelColSpan} addonAfter={this.msg('cubicMeter')}
+                field="total_volume" addonAfter={this.msg('cubicMeter')}
                 fieldProps={{ initialValue: total_volume }} required={totalVolumeRequired}
               />
             </Col>

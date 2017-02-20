@@ -48,7 +48,7 @@ export default class ClientInfo extends React.Component {
     return selclients.length > 0 ? selclients[0].name : evalue;
   }
   render() {
-    const { formhoc, mode, outerColSpan, clients, customer_name: name, ref_external_no, vertical } = this.props;
+    const { formhoc, mode, clients, customer_name: name, ref_external_no, vertical } = this.props;
     const clientOpts = clients.map(cl => ({
       key: `${cl.partner_id}/${cl.tid}`,
       value: `${cl.partner_id}`,
@@ -66,18 +66,18 @@ export default class ClientInfo extends React.Component {
         );
     } else {
       content = (
-        <Row>
-          <Col span={`${outerColSpan}`}>
+        <Row gutter={16}>
+          <Col sm={24} md={12}>
             {
             mode === 'edit' ?
               <InputItem formhoc={formhoc} labelName={this.msg('client')}
-                colSpan={4}
+
                 field="customer_name" disabled fieldProps={{ initialValue: name }}
               /> :
               <Tooltip placement="top" title={this.msg('customerTooltipTitle')}>
                 <div>
                   <AutoCompSelectItem formhoc={formhoc} labelName={this.msg('client')}
-                    colSpan={4}
+
                     field="customer_name"
                     required optionData={clientOpts} filterFields={['code']}
                     optionField="name" optionKey="key" optionValue="value"
@@ -90,7 +90,7 @@ export default class ClientInfo extends React.Component {
               </Tooltip>
           }
           </Col>
-          <Col span={`${24 - outerColSpan}`}>
+          <Col sm={24} md={12}>
             <InputItem formhoc={formhoc} labelName={this.msg('refExternalNo')}
               colSpan={8}
               field="ref_external_no" fieldProps={{ initialValue: ref_external_no }}

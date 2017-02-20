@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Layout, Table } from 'antd';
+import { Breadcrumb, Button, Dropdown, Menu, Layout, Table } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/search-bar';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -65,6 +65,13 @@ export default class CWMSkuList extends React.Component {
     this.context.router.push('/scv/products/sku/create');
   }
   render() {
+    const menu = (
+      <Menu>
+        <Menu.Item key="1">1st menu item</Menu.Item>
+        <Menu.Item key="2">2nd menu item</Menu.Item>
+        <Menu.Item key="3">3d menu item</Menu.Item>
+      </Menu>
+);
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Header className="top-bar">
@@ -77,6 +84,9 @@ export default class CWMSkuList extends React.Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="top-bar-tools">
+            <Dropdown.Button overlay={menu}>
+      Dropdown
+    </Dropdown.Button>
             <Button.Group size="large">
               <Button>
                 {this.msg('import')}

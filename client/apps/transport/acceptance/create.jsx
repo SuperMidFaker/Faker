@@ -194,34 +194,40 @@ export default class ShipmentCreate extends React.Component {
           </div>
         </Header>
         <Content className="main-content layout-fixed-width layout-fixed-width-large">
-          <Form horizontal>
+          <Form vertical>
             <Row gutter={16}>
               <Col sm={24} md={18}>
                 <Card bodyStyle={{ padding: 16 }}>
-                  <ClientInfo outerColSpan={16} intl={intl} formhoc={form} />
+                  <ClientInfo intl={intl} formhoc={form} />
                 </Card>
-                <Card bodyStyle={{ padding: 16 }}>
-                  <ConsignInfo type="consigner" intl={intl} outerColSpan={16}
-                    labelColSpan={8} formhoc={form}
-                  />
-                </Card>
-                <Card bodyStyle={{ padding: 16 }}>
-                  <ConsignInfo type="consignee" intl={intl} outerColSpan={16}
-                    labelColSpan={8} formhoc={form}
-                  />
-                </Card>
+                <Row gutter={16}>
+                  <Col sm={24} md={12}>
+                    <Card bodyStyle={{ padding: 16 }}>
+                      <ConsignInfo type="consigner" intl={intl}
+                        formhoc={form}
+                      />
+                    </Card>
+                  </Col>
+                  <Col sm={24} md={12}>
+                    <Card bodyStyle={{ padding: 16 }}>
+                      <ConsignInfo type="consignee" intl={intl}
+                        formhoc={form}
+                      />
+                    </Card>
+                  </Col>
+                </Row>
                 <Card bodyStyle={{ padding: 16 }}>
                   <ModeInfo intl={intl} formhoc={form} />
                 </Card>
                 <Card bodyStyle={{ padding: 16 }}>
-                  <GoodsInfo intl={intl} labelColSpan={8} formhoc={form} />
+                  <GoodsInfo intl={intl} formhoc={form} />
                 </Card>
               </Col>
               <Col sm={24} md={6}>
+                <FreightCharge formhoc={form} intl={this.props.intl} />
                 <Card bodyStyle={{ padding: 16 }}>
                   <CorrelInfo formhoc={form} intl={intl} />
                 </Card>
-                <FreightCharge formhoc={form} intl={this.props.intl} />
               </Col>
             </Row>
           </Form>

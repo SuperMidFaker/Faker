@@ -117,18 +117,13 @@ export default class ModeInfo extends React.Component {
       vertical,
       type,
     } = this.props;
-    let outerColSpan = 24;
-    let labelColSpan = 2;
+
     const modeEditCols = [];
     if (modeCode === PRESET_TRANSMODES.ftl) {
       // 整车,修改车型,车长
-      outerColSpan = 8;
-      labelColSpan = 8;
       modeEditCols.push(
-        <Col key="vehicle_type" span={`${outerColSpan}`}>
-          <FormItem label={this.msg('vehicleType')} labelCol={{ span: labelColSpan }}
-            wrapperCol={{ span: 24 - labelColSpan }} required
-          >
+        <Col key="vehicle_type" sm={24} md={8}>
+          <FormItem label={this.msg('vehicleType')} required>
             {getFieldDecorator('vehicle_type_id', { initialValue: vehicle_type_id,
               rules: [{
                 required: true, message: this.msg('vehicleTypeMust'), type: 'number',
@@ -140,10 +135,8 @@ export default class ModeInfo extends React.Component {
                 </Select>)}
           </FormItem>
         </Col>,
-        <Col key="vehicle_length" span={`${outerColSpan}`}>
-          <FormItem label={this.msg('vehicleLength')} labelCol={{ span: labelColSpan }}
-            wrapperCol={{ span: 24 - labelColSpan }} required
-          >
+        <Col key="vehicle_length" sm={24} md={8}>
+          <FormItem label={this.msg('vehicleLength')} required>
             {getFieldDecorator('vehicle_length_id', { initialValue: vehicle_length_id,
               rules: [{
                 required: true, message: this.msg('vehicleLengthMust'), type: 'number',
@@ -157,26 +150,20 @@ export default class ModeInfo extends React.Component {
       );
     } else if (modeCode === PRESET_TRANSMODES.ctn) {
       // 集装箱,修改箱号
-      outerColSpan = 8;
-      labelColSpan = 8;
       modeEditCols.push(
-        <Col key="container_no" span={`${outerColSpan}`}>
+        <Col key="container_no" sm={24} md={8}>
           <InputItem labelName={this.msg('containerNo')} field="container_no"
-            colSpan={labelColSpan} formhoc={this.props.formhoc}
+            formhoc={this.props.formhoc}
             fieldProps={{ initialValue: container_no }}
           />
         </Col>,
-        <Col key="container_size" span={`${outerColSpan}`} />
+        <Col key="container_size" sm={24} md={8} />
       );
     } else if (modeCode === PRESET_TRANSMODES.exp) {
       // 集装箱,修改箱号
-      outerColSpan = 8;
-      labelColSpan = 8;
       modeEditCols.push(
-        <Col key="courier_code" span={`${outerColSpan}`}>
-          <FormItem label={this.msg('courierCompany')} labelCol={{ span: labelColSpan }}
-            wrapperCol={{ span: 24 - labelColSpan }}
-          >
+        <Col key="courier_code" sm={24} md={8}>
+          <FormItem label={this.msg('courierCompany')}>
             {getFieldDecorator('courier_code', { initialValue: courier_code,
             })(
               <Select onChange={this.handleCourierChange}>
@@ -186,19 +173,12 @@ export default class ModeInfo extends React.Component {
               </Select>)}
           </FormItem>
         </Col>,
-        <Col key="courier_no" span={`${outerColSpan}`}>
+        <Col key="courier_no" sm={24} md={8}>
           <InputItem labelName={this.msg('courierNo')} field="courier_no"
-            colSpan={labelColSpan} formhoc={this.props.formhoc}
+            formhoc={this.props.formhoc}
             fieldProps={{ initialValue: courier_no }}
           />
         </Col>
-      );
-    } else {
-      outerColSpan = 8;
-      labelColSpan = 8;
-      modeEditCols.push(
-        <Col key="body1" span={`${outerColSpan}`} />,
-        <Col key="body2" span={`${outerColSpan}`} />
       );
     }
     let content = '';
@@ -244,11 +224,9 @@ export default class ModeInfo extends React.Component {
     } else {
       content = (
         <div>
-          <Row>
-            <Col span={`${outerColSpan}`} >
-              <FormItem label={this.msg('pickupDate')} labelCol={{ span: labelColSpan }}
-                wrapperCol={{ span: 24 - labelColSpan }} required
-              >
+          <Row gutter={16}>
+            <Col sm={24} md={8}>
+              <FormItem label={this.msg('pickupDate')} required>
                 {getFieldDecorator(
                 'pickup_est_date', {
                   onChange: this.handlePickupChange,
@@ -260,10 +238,8 @@ export default class ModeInfo extends React.Component {
               )(<DatePicker style={{ width: '100%' }} />)}
               </FormItem>
             </Col>
-            <Col span={`${outerColSpan}`}>
-              <FormItem label={this.msg('shipmtTransit')} labelCol={{ span: labelColSpan }}
-                wrapperCol={{ span: 24 - labelColSpan }} required
-              >
+            <Col sm={24} md={8}>
+              <FormItem label={this.msg('shipmtTransit')} required>
                 {getFieldDecorator(
                 'transit_time', {
                   onChange: this.handleTransitChange,
@@ -274,10 +250,8 @@ export default class ModeInfo extends React.Component {
                 })(<InputNumber style={{ width: '100%' }} min={0} />)}
               </FormItem>
             </Col>
-            <Col span={`${outerColSpan}`}>
-              <FormItem label={this.msg('deliveryDate')} labelCol={{ span: labelColSpan }}
-                wrapperCol={{ span: 24 - labelColSpan }} required
-              >
+            <Col sm={24} md={8}>
+              <FormItem label={this.msg('deliveryDate')} required>
                 {getFieldDecorator(
                 'deliver_est_date', {
                   onChange: this.handleDeliveryChange,
@@ -289,12 +263,8 @@ export default class ModeInfo extends React.Component {
               )(<DatePicker style={{ width: '100%' }} />)}
               </FormItem>
             </Col>
-          </Row>
-          <Row>
-            <Col span={16}>
-              <FormItem label={this.msg('transitModeInfo')} labelCol={{ span: 4 }}
-                wrapperCol={{ span: 20 }} required
-              >
+            <Col sm={24} md={8}>
+              <FormItem label={this.msg('transitModeInfo')} required>
                 {getFieldDecorator(
                 'transport_mode_id', {
                   rules: [{
@@ -311,8 +281,6 @@ export default class ModeInfo extends React.Component {
               </Select>)}
               </FormItem>
             </Col>
-          </Row>
-          <Row>
             {modeEditCols}
           </Row>
         </div>

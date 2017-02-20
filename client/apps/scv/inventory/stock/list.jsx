@@ -283,7 +283,7 @@ export default class InventoryStockList extends React.Component {
     }
     return (
       <Layout>
-        <Sider width={350} className="menu-sider" key="sider" trigger={null}
+        <Sider width={320} className="menu-sider" key="sider" trigger={null}
           collapsible
           collapsed={this.state.collapsed}
           collapsedWidth={0}
