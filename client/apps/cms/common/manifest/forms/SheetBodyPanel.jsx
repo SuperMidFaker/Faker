@@ -167,6 +167,8 @@ export default class SheetBodyPanel extends React.Component {
             g_unit: gunitVal,
             unit_1: unit1Val,
             unit_2: unit2Val,
+            fixed_unit: item.fixed_unit,
+            fixed_qty: item.fixed_qty,
           },
         });
       } else {
@@ -499,13 +501,13 @@ export default class SheetBodyPanel extends React.Component {
       if (this.state.bodies.length > 1) {
         gNO += this.state.bodies[this.state.bodies.length - 2].g_no;
       }
-      const body = { ...editBody, g_no: gNO };
+      let body = { ...editBody, g_no: gNO };
       const { billSeqNo, headNo, loginId } = this.props;
       this.props.onAdd({ billSeqNo, body, headNo, loginId }).then((result) => {
         if (result.error) {
           message.error(result.error.message);
         } else {
-          body.id = result.data.id;
+          body = result.data;
           const bodies = [...this.state.bodies];
           bodies.splice(recordIdx, 0, body);
           const pagination = { ...origPagi, total: bodies.length };
