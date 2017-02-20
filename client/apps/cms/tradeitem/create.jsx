@@ -63,7 +63,7 @@ export default class AcceptanceCreate extends Component {
           if (result.error) {
             message.error(result.error.message);
           } else {
-            this.context.router.push('/clearance/products/tradeitem');
+            this.context.router.push('/clearance/classification/tradeitem');
           }
         });
       }

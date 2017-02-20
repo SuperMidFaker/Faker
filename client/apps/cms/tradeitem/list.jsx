@@ -11,7 +11,7 @@ import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import { loadCustomers } from 'common/reducers/crmCustomers';
 import { loadOwners, openAddModal, selectedRepoId, loadTradeItems,
-  deleteItem, deleteSelectedItems, loadDeclunits } from 'common/reducers/cmsTradeitem';
+  deleteItem, deleteSelectedItems, loadDeclunits, setOwner } from 'common/reducers/cmsTradeitem';
 import AddTradeRepoModal from './modals/addTradeRepo';
 import ExtraPanel from './tabpanes/ExtraPane';
 import SearchBar from 'client/components/search-bar';
@@ -49,8 +49,9 @@ function fetchData({ state, dispatch }) {
     tradeItemlist: state.cmsTradeitem.tradeItemlist,
     visibleAddModal: state.cmsTradeitem.visibleAddModal,
     declunits: state.cmsTradeitem.declunits,
+    owner: state.cmsTradeitem.owner,
   }),
-  { loadCustomers, openAddModal, selectedRepoId, loadTradeItems, deleteItem, deleteSelectedItems }
+  { loadCustomers, openAddModal, selectedRepoId, loadTradeItems, deleteItem, deleteSelectedItems, setOwner }
 )
 @connectNav({
   depth: 2,
@@ -65,6 +66,7 @@ export default class TradeItemList extends Component {
     repoId: PropTypes.number,
     visibleAddModal: PropTypes.bool,
     declunits: PropTypes.array,
+    owner: PropTypes.object,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -150,6 +152,7 @@ export default class TradeItemList extends Component {
       const owner = this.props.repoOwners.filter(own => own.id === value)[0];
       this.props.selectedRepoId(owner.repo_id);
       this.handleItemListLoad(owner.repo_id);
+      this.props.setOwner(owner);
     }
   }
   handleAddOwener = () => {
@@ -187,7 +190,11 @@ export default class TradeItemList extends Component {
     });
   }
   render() {
-    const { repoOwners, tradeItemlist, repoId, declunits } = this.props;
+    const { repoOwners, tradeItemlist, repoId, declunits, owner } = this.props;
+    let ownVal = '';
+    if (owner.partner_code) {
+      ownVal = `${owner.partner_code} | ${owner.name}`;
+    }
     const selectedRows = this.state.selectedRowKeys;
     const rowSelection = {
       selectedRowKeys: selectedRows,
@@ -330,6 +337,7 @@ export default class TradeItemList extends Component {
                   placeholder="选择客户企业物料库"
                   optionFilterProp="children"
                   size="large"
+                  defaultValue={`${ownVal}`}
                   onChange={this.handleSelectChange}
                 >
                   {
