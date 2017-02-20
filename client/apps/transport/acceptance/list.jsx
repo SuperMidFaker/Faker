@@ -268,7 +268,7 @@ export default class AcceptList extends React.Component {
     this.handleTableLoad(filterArray, 1, sortField, sortOrder);
   }
   handleCreateBtnClick = () => {
-    this.context.router.push('/transport/shipment/new');
+    this.context.router.push('/transport/shipment/create');
   }
   handleShipmtAccept(dispId, ev) {
     ev.preventDefault();
