@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
-import { Card, Row, Col } from 'antd';
+import { Card, Row, Col, Spin } from 'antd';
 import echarts from 'echarts';
 
 @injectIntl
@@ -8,12 +8,22 @@ export default class OverTime extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     kpi: PropTypes.object.isRequired,
+    loading: PropTypes.bool.isRequired,
+    loaded: PropTypes.bool.isRequired,
   }
   componentDidMount() {
     this.initializeCharts(this.props);
+    window.$(window).resize(() => {
+      this.initializeCharts(this.props);
+    });
   }
   componentWillReceiveProps(nextProps) {
-    this.initializeCharts(nextProps);
+    if (nextProps.loaded) {
+      this.initializeCharts(nextProps);
+    }
+  }
+  componentWillUnmount() {
+    window.$(window).unbind('resize');
   }
   initializeCharts = (props) => {
     const { transitModes, range, shipmentCounts, punctualShipmentCounts } = props.kpi;
@@ -73,7 +83,7 @@ export default class OverTime extends React.Component {
     const transitModesPunctualShipmentCount = punctualShipmentCounts.map(arr => arr.reduce((a, b) => a + b, 0));
     const punctualShipmentCount = transitModesPunctualShipmentCount.reduce((a, b) => a + b, 0);
     const pieOption = {
-      title: { text: '超时率占比' },
+      title: { text: '超时占比' },
       tooltip: {
         trigger: 'item',
         formatter: '{a} <br/>{b} : {c} ({d}%)',
@@ -98,7 +108,7 @@ export default class OverTime extends React.Component {
         },
       },
       series: [{
-        name: '访问来源',
+        name: '交付率',
         type: 'pie',
         selectedMode: 'single',
         radius: [0, '45%'],
@@ -132,7 +142,7 @@ export default class OverTime extends React.Component {
           },
         },
       }, {
-        name: '访问来源',
+        name: '交付率',
         type: 'pie',
         radius: ['50%', '70%'],
         itemStyle: {
@@ -167,14 +177,18 @@ export default class OverTime extends React.Component {
     return (
       <Row gutter={24}>
         <Col sm={24} md={12}>
-          <Card>
-            <div id="bar-chart-overtime" style={{ width: '100%', height: '450px' }} />
-          </Card>
+          <Spin spinning={this.props.loading}>
+            <Card>
+              <div id="bar-chart-overtime" style={{ width: '100%', height: '450px' }} />
+            </Card>
+          </Spin>
         </Col>
         <Col sm={24} md={12}>
-          <Card>
-            <div id="pie-chart-overtime" style={{ width: '100%', height: '450px' }} />
-          </Card>
+          <Spin spinning={this.props.loading}>
+            <Card>
+              <div id="pie-chart-overtime" style={{ width: '100%', height: '450px' }} />
+            </Card>
+          </Spin>
         </Col>
       </Row>
     );

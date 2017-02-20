@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
-import { Card, Col, Row } from 'antd';
+import { Card, Col, Row, Spin } from 'antd';
 import echarts from 'echarts';
 
 @injectIntl
@@ -8,12 +8,22 @@ export default class TrafficVolume extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     kpi: PropTypes.object.isRequired,
+    loading: PropTypes.bool.isRequired,
+    loaded: PropTypes.bool.isRequired,
   }
   componentDidMount() {
     this.initializeCharts(this.props);
+    window.$(window).resize(() => {
+      this.initializeCharts(this.props);
+    });
   }
   componentWillReceiveProps(nextProps) {
-    this.initializeCharts(nextProps);
+    if (nextProps.loaded) {
+      this.initializeCharts(nextProps);
+    }
+  }
+  componentWillUnmount() {
+    window.$(window).unbind('resize');
   }
   initializeCharts = (props) => {
     const { transitModes, range, shipmentCounts } = props.kpi;
@@ -130,14 +140,18 @@ export default class TrafficVolume extends React.Component {
     return (
       <Row gutter={24}>
         <Col sm={24} md={12}>
-          <Card>
-            <div id="bar-chart-traffic-volume" style={{ width: '100%', height: '480px' }} />
-          </Card>
+          <Spin spinning={this.props.loading}>
+            <Card>
+              <div id="bar-chart-traffic-volume" style={{ width: '100%', height: '480px' }} />
+            </Card>
+          </Spin>
         </Col>
         <Col sm={24} md={12}>
-          <Card>
-            <div id="pie-chart-traffic-volume" style={{ width: '100%', height: '480px' }} />
-          </Card>
+          <Spin spinning={this.props.loading}>
+            <Card>
+              <div id="pie-chart-traffic-volume" style={{ width: '100%', height: '480px' }} />
+            </Card>
+          </Spin>
         </Col>
       </Row>
     );
