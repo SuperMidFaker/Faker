@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Button, Select, message, Layout } from 'antd';
+import { Breadcrumb, Button, Select, message, Layout } from 'antd';
+import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
 import { loadPersonnel, loadTenantsByMaster, delPersonnel, switchTenant, switchStatus } from
@@ -19,7 +20,7 @@ import containerMessages from 'client/apps/message.i18n';
 const formatMsg = format(messages);
 const formatGlobalMsg = format(globalMessages);
 const formatContainerMsg = format(containerMessages);
-const { Content } = Layout;
+const { Header, Content } = Layout;
 const Option = Select.Option;
 
 function fetchData({ state, dispatch, cookie }) {
@@ -314,7 +315,14 @@ export default class PersonnelSetting extends React.Component {
       },
     }];
     return (
-      <div>
+      <QueueAnim type={['bottom', 'up']}>
+        <Header className="top-bar">
+          <Breadcrumb>
+            <Breadcrumb.Item>
+              {msg('members')}
+            </Breadcrumb.Item>
+          </Breadcrumb>
+        </Header>
         <Content className="main-content">
           <div className="page-body">
             <div className="toolbar">
@@ -338,7 +346,7 @@ export default class PersonnelSetting extends React.Component {
             </div>
           </div>
         </Content>
-      </div>
+      </QueueAnim>
     );
   }
 }

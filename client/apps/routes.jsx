@@ -14,7 +14,7 @@ import Corp from './corp/pack-corp';
 import * as CorpOverview from './corp/overview';
 import CorpInfo from './corp/info';
 import * as Organization from './corp/organization';
-import * as Personnel from './corp/personnel';
+import * as CorpMembers from './corp/members';
 import * as Role from './corp/role';
 import PackNetwork from './network/packNetwork';
 import * as Network from './network';
@@ -168,10 +168,10 @@ export default(store, cookie) => {
             <Route path="new" component={Organization.Edit} />
             <Route path="edit/:id" component={Organization.Edit} />
           </Route>
-          <Route path="personnel">
-            <IndexRoute component={Personnel.List} />
-            <Route path="new" component={Personnel.Edit} />
-            <Route path="edit/:id" component={Personnel.Edit} />
+          <Route path="members">
+            <IndexRoute component={CorpMembers.List} />
+            <Route path="new" component={CorpMembers.Edit} />
+            <Route path="edit/:id" component={CorpMembers.Edit} />
           </Route>
           <Route path="role" component={Role.Wrapper}>
             <IndexRoute component={Role.List} />

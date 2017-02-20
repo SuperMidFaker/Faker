@@ -64,7 +64,7 @@ export default class CorpPack extends React.Component {
     if (hasPermission(privileges, { module: 'corp', feature: 'personnel' })) {
       linkMenus.push(
         <MenuItem key="corpsetting-2">
-          <NavLink to="/corp/personnel">
+          <NavLink to="/corp/members">
             <i className="icon-ikons-users" /> {formatMsg(intl, 'personnelUser')}
           </NavLink>
         </MenuItem>

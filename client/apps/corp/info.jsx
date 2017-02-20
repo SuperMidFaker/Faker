@@ -1,8 +1,9 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import {
-  Icon, Button, Form, Input, Row, Col, Layout, Select, Upload, message,
-  } from 'antd';
+  Breadcrumb, Card, Icon, Button, Form, Input, Row, Col, Layout, Select, Upload, message,
+} from 'antd';
+import QueueAnim from 'rc-queue-anim';
 import { intlShape, injectIntl } from 'react-intl';
 import Region from '../../components/region-cascade';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -14,13 +15,11 @@ import { validatePhone } from 'common/validater';
 import { TENANT_LEVEL } from '../../../common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import globalMessages from 'client/common/root.i18n';
 import containerMessages from 'client/apps/message.i18n';
 
 const formatMsg = format(messages);
-const formatGlobalMsg = format(globalMessages);
 const formatContainerMsg = format(containerMessages);
-const { Content } = Layout;
+const { Header, Content } = Layout;
 const Option = Select.Option;
 const FormItem = Form.Item;
 const Dragger = Upload.Dragger;
@@ -115,7 +114,7 @@ export default class CorpInfo extends React.Component {
   renderTextInput(labelName, placeholder, field, required, rules, fieldProps) {
     const { form: { getFieldDecorator } } = this.props;
     return (
-      <FormItem label={labelName} labelCol={{ span: 6 }} wrapperCol={{ span: 16 }}
+      <FormItem label={labelName}
         hasFeedback required={required}
       >
         {getFieldDecorator(field, { rules, ...fieldProps })(<Input type="text" placeholder={placeholder} />)}
@@ -133,58 +132,68 @@ export default class CorpInfo extends React.Component {
     const { country, province, city, district } = this.state;
     const msg = (descriptor, values) => formatMsg(intl, descriptor, values);
     return (
-      <div className="page-body form-wrapper">
+      <Card>
         <Form horizontal>
-          <FormItem label={msg('enterpriseCode')} labelCol={{ span: 6 }} wrapperCol={{ span: 16 }}>
-            {getFieldDecorator('code', { initialValue: code })(<Input type="text" disabled />)}
-          </FormItem>
-          {this.renderTextInput(
+          <Row gutter={16}>
+            <Col sm={24} md={24}>
+              {this.renderTextInput(
                 msg('companyName'), msg('companyNameTip'), 'name', true,
                 [{ required: true, message: msg('companyNameRequired') }],
                 { initialValue: name }
               )}
-          {this.renderTextInput(
+            </Col>
+            <Col sm={24} md={12}>
+              <FormItem label={msg('enterpriseCode')} >
+                {getFieldDecorator('code', { initialValue: code })(<Input type="text" disabled />)}
+              </FormItem>
+            </Col>
+
+            <Col sm={24} md={12}>
+              {this.renderTextInput(
                 msg('companyShortName'), '', 'short_name', false,
-            [{
-              type: 'string', min: 2, pattern: /^[\u4e00-\u9fa5_a-zA-Z0-9]+$/,
-              message: msg('shortNameMessage'),
-            }],
+                [{
+                  type: 'string', min: 2, pattern: /^[\u4e00-\u9fa5_a-zA-Z0-9]+$/,
+                  message: msg('shortNameMessage'),
+                }],
                 { initialValue: short_name }
               )}
-          <FormItem label={msg('location')} labelCol={{ span: 6 }} wrapperCol={{ span: 16 }}>
-            <Region onChange={this.handleRegionChange} country={country} defaultRegion={[
-              province, city, district,
-            ]}
-            />
-          </FormItem>
-          {
+            </Col>
+            <Col sm={24} md={24}>
+              <FormItem label={msg('location')} >
+                <Region onChange={this.handleRegionChange} country={country} defaultRegion={[
+                  province, city, district,
+                ]}
+                />
+              </FormItem>
+            </Col>
+            <Col sm={24} md={24}>
+              {
                 this.renderTextInput(
                   msg('fullAddress'), '', 'address', false, undefined,
                   { initialValue: address }
                 )
               }
-          <FormItem label={msg('tradeCategory')} labelCol={{ span: 6 }} wrapperCol={{ span: 16 }}>
-            {getFieldDecorator('type', { initialValue: type })(<Select defaultValue="lucy" style={{ width: '100%' }}>
-              <Option value="freight">货代</Option>
-            </Select>)}
-          </FormItem>
-          <FormItem label={msg('companyAbout')} labelCol={{ span: 6 }} wrapperCol={{ span: 16 }}>
-            {getFieldDecorator('remark', { initialValue: remark })(<Input type="textarea" rows="3" />)}
-          </FormItem>
-          <FormItem label={msg('companyWebsite')} labelCol={{ span: 6 }} wrapperCol={{ span: 16 }}>
-            {getFieldDecorator('website', { initialValue: website })(<Input type="text" addonBefore="http://" />)}
-          </FormItem>
-          <PrivilegeCover module="corp" feature="info" action="edit">
-            <Row>
-              <Col span="21" offset="3">
-                <Button type="primary" size="large" htmlType="submit" onClick={this.handleSubmit}>
-                  {formatGlobalMsg(intl, 'save')}
-                </Button>
-              </Col>
-            </Row>
-          </PrivilegeCover>
+            </Col>
+            <Col sm={24} md={12}>
+              <FormItem label={msg('tradeCategory')} >
+                {getFieldDecorator('type', { initialValue: type })(<Select defaultValue="lucy" style={{ width: '100%' }}>
+                  <Option value="freight">货代</Option>
+                </Select>)}
+              </FormItem>
+            </Col>
+            <Col sm={24} md={12}>
+              <FormItem label={msg('companyWebsite')} >
+                {getFieldDecorator('website', { initialValue: website })(<Input type="text" addonBefore="http://" />)}
+              </FormItem>
+            </Col>
+            <Col sm={24} md={24}>
+              <FormItem label={msg('companyAbout')} >
+                {getFieldDecorator('remark', { initialValue: remark })(<Input type="textarea" rows="3" />)}
+              </FormItem>
+            </Col>
+          </Row>
         </Form>
-      </div>);
+      </Card>);
   }
   renderContactForm() {
     const {
@@ -193,9 +202,11 @@ export default class CorpInfo extends React.Component {
     } = this.props;
     const msg = (descriptor, values) => formatMsg(intl, descriptor, values);
     return (
-      <div className="page-body form-wrapper">
+      <Card>
         <Form horizontal>
-          {this.renderTextInput(
+          <Row gutter={16}>
+            <Col sm={24} md={12}>
+              {this.renderTextInput(
                 msg('contact'), '', 'contact', true, [{
                   required: true,
                   message: msg('contactRequired'),
@@ -206,115 +217,121 @@ export default class CorpInfo extends React.Component {
                   initialValue: contact,
                 }
               )}
-          {this.renderTextInput(msg('phone'), '', 'phone', true, [{
-            validator: (rule, value, callback) => validatePhone(
+            </Col>
+            <Col sm={24} md={12}>
+              <FormItem label={msg('position')} >
+                {getFieldDecorator('position')(<Input type="text" />)}
+              </FormItem>
+            </Col>
+            <Col sm={24} md={12}>
+              {this.renderTextInput(msg('phone'), '', 'phone', true, [{
+                validator: (rule, value, callback) => validatePhone(
                   value, callback,
                   (msgs, descriptor) => format(msgs)(intl, descriptor)
                 ),
-          }], { initialValue: phone })}
-          <FormItem label={msg('position')} labelCol={{ span: 6 }} wrapperCol={{ span: 16 }}>
-            {getFieldDecorator('position')(<Input type="text" />)}
-          </FormItem>
-          {this.renderTextInput(
+              }], { initialValue: phone })}
+            </Col>
+            <Col sm={24} md={12}>
+              {this.renderTextInput(
                 'Email', '', 'email', false,
                 [{ type: 'email', message: formatContainerMsg(intl, 'emailError') }],
                 { initialValue: email }
               )}
-          <PrivilegeCover module="corp" feature="info" action="edit">
-            <Row>
-              <Col span="21" offset="3">
-                <Button type="primary" size="large" htmlType="submit" onClick={this.handleSubmit}>
-                  {formatGlobalMsg(intl, 'save')}
-                </Button>
-              </Col>
-            </Row>
-          </PrivilegeCover>
+            </Col>
+          </Row>
         </Form>
-      </div>);
+      </Card>);
   }
   renderEnterpriseForm() {
-    const { formData: { subdomain }, intl } = this.props;
+    const { intl } = this.props;
     const msg = descriptor => formatMsg(intl, descriptor);
     return (
-      <div className="page-body form-wrapper">
+      <Card>
         <Form horizontal>
-          <FormItem label="LOGO" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
-            <img src={this.state.logo || '/assets/img/wetms.png'} style={{
-              height: 120, width: 120, margin: 10,
-              border: '1px solid #e0e0e0', borderRadius: 60,
-            }} alt="logo"
-            />
-            <div title={msg('dragHint')} style={{ height: 140, marginTop: 20 }}>
-              <Dragger onChange={this.handleImgUpload} showUploadList={false}
-                action={`${API_ROOTS.default}v1/upload/img`} withCredentials
-              >
-                <Icon type="upload" />
-                <p className="ant-upload-hint">{msg('imgUploadHint')}</p>
-              </Dragger>
-            </div>
-          </FormItem>
-          <FormItem label={msg('loginSubdomain')} labelCol={{ span: 6 }}
-            wrapperCol={{ span: 16 }}
-          >
-            <Input type="text" addonAfter=".welogix.cn" disabled value={subdomain} />
-          </FormItem>
-          <PrivilegeCover module="corp" feature="info" action="edit">
-            <Row>
-              <Col span="21" offset="3">
-                <Button type="primary" size="large" htmlType="submit"
-                  onClick={this.handleSubmit}
-                >
-                  {formatGlobalMsg(intl, 'save')}
-                </Button>
-              </Col>
-            </Row>
-          </PrivilegeCover>
+          <Row gutter={16}>
+            <Col sm={24} md={24}>
+              <FormItem label="LOGO">
+                <img src={this.state.logo || '/assets/img/wetms.png'} style={{
+                  height: 120, width: 120, margin: 10,
+                  border: '1px solid #e0e0e0', borderRadius: 60,
+                }} alt="logo"
+                />
+                <div title={msg('dragHint')} style={{ height: 140, marginTop: 20 }}>
+                  <Dragger onChange={this.handleImgUpload} showUploadList={false}
+                    action={`${API_ROOTS.default}v1/upload/img`} withCredentials
+                  >
+                    <Icon type="upload" />
+                    <p className="ant-upload-hint">{msg('imgUploadHint')}</p>
+                  </Dragger>
+                </div>
+              </FormItem>
+            </Col>
+
+          </Row>
         </Form>
-      </div>);
+      </Card>);
   }
   render() {
     const msg = descriptor => formatMsg(this.props.intl, descriptor);
     return (
-      <Content className="main-content">
-        <section className="ui-annotated-section">
-          <div className="ui-annotated-section-annotation">
-            <div className="ui-annotated-section-title">
-              <h2>{msg('basicInfo')}</h2>
-            </div>
-            <div className="ui-annotated-section-description">
-              <p>Shopify and your customers will use this information to contact you.</p>
-            </div>
+      <QueueAnim type={['bottom', 'up']}>
+        <Header className="top-bar">
+          <Breadcrumb>
+            <Breadcrumb.Item>
+              {msg('corpInfo')}
+            </Breadcrumb.Item>
+          </Breadcrumb>
+          <div className="top-bar-tools">
+            <PrivilegeCover module="corp" feature="info" action="edit">
+              <Button type="primary" size="large" htmlType="submit"
+                onClick={this.handleSubmit}
+              >
+                  保存
+                </Button>
+            </PrivilegeCover>
           </div>
-          <div className="ui-annotated-section-content">
-            {this.renderBasicForm()}
-          </div>
-        </section>
-        <section className="ui-annotated-section">
-          <div className="ui-annotated-section-annotation">
-            <div className="ui-annotated-section-title">
-              <h2>{msg('contactInfo')}</h2>
+        </Header>
+        <Content className="main-content layout-fixed-width layout-fixed-width-large" key="main">
+          <section className="ui-annotated-section">
+            <div className="ui-annotated-section-annotation">
+              <div className="ui-annotated-section-title">
+                <h2>{msg('basicInfo')}</h2>
+              </div>
+              <div className="ui-annotated-section-description">
+                <p />
+              </div>
             </div>
-            <div className="ui-annotated-section-description">
-              <p>Shopify and your customers will use this information to contact you.</p>
+            <div className="ui-annotated-section-content">
+              {this.renderBasicForm()}
             </div>
-          </div>
-          <div className="ui-annotated-section-content">
-            {this.renderContactForm()}
-          </div>
-        </section>
-        <section className="ui-annotated-section">
-          <div className="ui-annotated-section-annotation">
-            <div className="ui-annotated-section-title">
-              <h2>{msg('brandInfo')}</h2>
+          </section>
+          <section className="ui-annotated-section">
+            <div className="ui-annotated-section-annotation">
+              <div className="ui-annotated-section-title">
+                <h2>{msg('contactInfo')}</h2>
+              </div>
+              <div className="ui-annotated-section-description">
+                <p />
+              </div>
             </div>
-            <div className="ui-annotated-section-description">
-              <p>Shopify and your customers will use this information to contact you.</p>
+            <div className="ui-annotated-section-content">
+              {this.renderContactForm()}
             </div>
-          </div>
-          <div className="ui-annotated-section-content">
-            {this.props.formData.level === TENANT_LEVEL.ENTERPRISE && this.renderEnterpriseForm()}
-          </div>
-        </section>
-      </Content>);
+          </section>
+          <section className="ui-annotated-section">
+            <div className="ui-annotated-section-annotation">
+              <div className="ui-annotated-section-title">
+                <h2>{msg('brandInfo')}</h2>
+              </div>
+              <div className="ui-annotated-section-description">
+                <p />
+              </div>
+            </div>
+            <div className="ui-annotated-section-content">
+              {this.props.formData.level === TENANT_LEVEL.ENTERPRISE && this.renderEnterpriseForm()}
+            </div>
+          </section>
+        </Content>
+      </QueueAnim>);
   }
 }

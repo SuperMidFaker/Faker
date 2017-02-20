@@ -4,12 +4,12 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import { connect } from 'react-redux';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import { changeInvitationType } from 'common/reducers/invitation';
-import { Radio, Layout } from 'antd';
+import { Breadcrumb, Icon, Radio, Layout } from 'antd';
 import ToInviteListContainer from './ToInviteListContainer';
 import ReceiveInvitationListContainer from './ReceiveInvitationListContainer';
 import SendInvitationListContainer from './SendInvitationListContainer';
 
-const { Content } = Layout;
+const { Header, Content } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 
@@ -40,20 +40,33 @@ export default class MainContainer extends Component {
     ];
     const content = components[invitationType];
     return (
-      <Content className="main-content">
-        <div className="page-body">
-          <div className="toolbar">
-            <RadioGroup defaultValue={invitationType} onChange={this.handleInvitationTypeChange}>
-              <RadioButton value="0">待邀请</RadioButton>
-              <RadioButton value="1">收到的邀请</RadioButton>
-              <RadioButton value="2">发出的邀请</RadioButton>
-            </RadioGroup>
+      <div>
+        <Header className="top-bar">
+          <Breadcrumb>
+            <Breadcrumb.Item>
+              <Icon type="team" /> 合作伙伴
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              协作邀请
+            </Breadcrumb.Item>
+          </Breadcrumb>
+          <div className="toolbar-right" />
+        </Header>
+        <Content className="main-content">
+          <div className="page-body">
+            <div className="toolbar">
+              <RadioGroup defaultValue={invitationType} onChange={this.handleInvitationTypeChange}>
+                <RadioButton value="0">待邀请</RadioButton>
+                <RadioButton value="1">收到的邀请</RadioButton>
+                <RadioButton value="2">发出的邀请</RadioButton>
+              </RadioGroup>
+            </div>
+            <div className="panel-body table-panel">
+              {content}
+            </div>
           </div>
-          <div className="panel-body table-panel">
-            {content}
-          </div>
-        </div>
-      </Content>
+        </Content>
+      </div>
     );
   }
 }

@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
-import { Layout } from 'antd';
-const { Content } = Layout;
+import { Breadcrumb, Layout } from 'antd';
+import QueueAnim from 'rc-queue-anim';
+const { Header, Content } = Layout;
 
 export default class Wrapper extends React.Component {
   static propTypes = {
@@ -8,11 +9,18 @@ export default class Wrapper extends React.Component {
   };
   render() {
     return (
-      <div>
+      <QueueAnim type={['bottom', 'up']}>
+        <Header className="top-bar">
+          <Breadcrumb>
+            <Breadcrumb.Item>
+              角色权限
+            </Breadcrumb.Item>
+          </Breadcrumb>
+        </Header>
         <Content className="main-content">
           {this.props.children}
         </Content>
-      </div>
+      </QueueAnim>
     );
   }
 }
