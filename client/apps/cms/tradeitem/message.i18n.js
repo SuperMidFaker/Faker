@@ -45,13 +45,17 @@ const messages = defineMessages({
     id: 'cms.classificagtion.tradeitem.table.element',
     defaultMessage: '申报要素',
   },
+  gUnitGen: {
+    id: 'cms.classificagtion.tradeitem.table.g.unit.gen',
+    defaultMessage: '申报单位一',
+  },
   gUnitFtz: {
     id: 'cms.classificagtion.tradeitem.table.g.unit.ftz',
-    defaultMessage: '保税申报计量单位',
+    defaultMessage: '申报单位二',
   },
-  gUnit: {
-    id: 'cms.classificagtion.tradeitem.table.g.unit',
-    defaultMessage: '其他申报计量单位',
+  gUnitSpec: {
+    id: 'cms.classificagtion.tradeitem.table.g.unit.spec',
+    defaultMessage: '申报单位三',
   },
   unit1: {
     id: 'cms.classificagtion.tradeitem.table.unit1',

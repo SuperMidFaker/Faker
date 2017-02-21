@@ -62,7 +62,6 @@ const initialState = {
   bodyHscode: {},
   declunits: [],
   hstabKey: 'declunit',
-  gunits: [],
   declwayUnits: [],
   owner: {},
 };
@@ -92,7 +91,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_HSCODES_SUCCEED:
       return { ...state, hscodes: { ...state.hscodes, ...action.result.data } };
     case actionTypes.LOAD_ITEM_EDIT_SUCCEED:
-      return { ...state, itemData: action.result.data.tradeitem, gunits: action.result.data.gunits };
+      return { ...state, itemData: action.result.data.tradeitem };
     case actionTypes.SAVE_REPO_TRADES_SUCCEED:
       return { ...state, repoTrades: action.result.data };
     case actionTypes.LOAD_BODY_ITEM_SUCCEED:

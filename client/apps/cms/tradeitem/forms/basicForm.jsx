@@ -15,22 +15,17 @@ const formItemLayout = {
   wrapperCol: { span: 18 },
 };
 
-function getFieldInits(formData, gunits) {
+function getFieldInits(formData) {
   const init = {};
   if (formData) {
-    ['cop_product_no', 'hscode', 'g_name', 'g_model', 'element', 'g_unit_ftz', 'g_unit', 'unit_1', 'unit_2',
-      'fixed_unit', 'origin_country', 'customs_control', 'inspection_quarantine',
+    ['cop_product_no', 'hscode', 'g_name', 'g_model', 'element', 'g_unit_ftz', 'g_unit_gen', 'g_unit_spec',
+      'unit_1', 'unit_2', 'fixed_unit', 'origin_country', 'customs_control', 'inspection_quarantine',
       'currency', 'pre_classify_no', 'remark',
     ].forEach((fd) => {
       init[fd] = formData[fd] === undefined ? '' : formData[fd];
     });
     ['unit_net_wt', 'unit_price', 'fixed_qty', 'pre_classify_start_date', 'pre_classify_end_date'].forEach((fd) => {
       init[fd] = formData[fd] === undefined ? null : formData[fd];
-    });
-  }
-  if (gunits) {
-    gunits.forEach((unit) => {
-      init[`${unit.unit_code}`] = unit.unit_val || '';
     });
   }
   return init;
@@ -50,9 +45,8 @@ function getFieldInits(formData, gunits) {
       value: tc.cntry_co,
       text: tc.cntry_name_cn,
     })),
-    fieldInits: getFieldInits(state.cmsTradeitem.itemData, state.cmsTradeitem.gunits),
+    fieldInits: getFieldInits(state.cmsTradeitem.itemData),
     hscodes: state.cmsTradeitem.hscodes,
-    declunits: state.cmsTradeitem.declunits,
   }),
   { loadHscodes }
 )
@@ -65,7 +59,6 @@ export default class BasicForm extends Component {
     units: PropTypes.array,
     tradeCountries: PropTypes.array,
     hscodes: PropTypes.object,
-    declunits: PropTypes.array,
   }
   componentWillReceiveProps(nextProps) {
     if (this.props.hscodes !== nextProps.hscodes) {
@@ -101,22 +94,7 @@ export default class BasicForm extends Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   render() {
-    const { form: { getFieldDecorator }, fieldInits, currencies, units, tradeCountries, hscodes, declunits } = this.props;
-    const gunitItem = declunits.map(unit => (
-      <Col sm={24} lg={8}>
-        <FormItem label={`${unit.unit_name}`} {...formItemLayout}>
-          {getFieldDecorator(`gunit_${unit.unit_code}`, {
-            initialValue: fieldInits[`gunit_${unit.unit_code}`],
-          })(<Select>
-            {
-                units.map(gt =>
-                  <Option value={gt.text} key={gt.value}>{gt.text}</Option>
-                )
-              }
-          </Select>)}
-        </FormItem>
-      </Col>
-      ));
+    const { form: { getFieldDecorator }, fieldInits, currencies, units, tradeCountries, hscodes } = this.props;
     return (
       <div>
         <Card bodyStyle={{ padding: 16 }}>
@@ -202,6 +180,47 @@ export default class BasicForm extends Component {
               <FormItem label={this.msg('unit2')} {...formItemLayout}>
                 {getFieldDecorator('unit_2', {
                   initialValue: fieldInits.unit_2,
+                })(<Select>
+                  {
+                    units.map(gt =>
+                      <Option value={gt.text} key={gt.value}>{gt.text}</Option>
+                    )
+                  }
+                </Select>)}
+              </FormItem>
+            </Col>
+          </Row>
+          <Row>
+            <Col sm={24} lg={8}>
+              <FormItem label={this.msg('gUnitGen')} {...formItemLayout}>
+                {getFieldDecorator('g_unit_gen', {
+                  initialValue: fieldInits.g_unit_gen,
+                })(<Select>
+                  {
+                    units.map(gt =>
+                      <Option value={gt.text} key={gt.value}>{gt.text}</Option>
+                    )
+                  }
+                </Select>)}
+              </FormItem>
+            </Col>
+            <Col sm={24} lg={8}>
+              <FormItem label={this.msg('gUnitFtz')} {...formItemLayout}>
+                {getFieldDecorator('g_unit_ftz', {
+                  initialValue: fieldInits.g_unit_ftz,
+                })(<Select>
+                  {
+                    units.map(gt =>
+                      <Option value={gt.text} key={gt.value}>{gt.text}</Option>
+                    )
+                  }
+                </Select>)}
+              </FormItem>
+            </Col>
+            <Col sm={24} lg={8}>
+              <FormItem label={this.msg('gUnitSpec')} {...formItemLayout}>
+                {getFieldDecorator('g_unit_spec', {
+                  initialValue: fieldInits.g_unit_spec,
                 })(<Select>
                   {
                     units.map(gt =>
@@ -312,9 +331,6 @@ export default class BasicForm extends Component {
               </FormItem>
             </Col>
           </Row>
-        </Card>
-        <Card>
-          {gunitItem}
         </Card>
       </div>
     );

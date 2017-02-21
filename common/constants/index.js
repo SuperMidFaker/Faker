@@ -340,6 +340,12 @@ export const CMS_DECL_DOCU = [
   { value: 'C', text: '减免税货物税款担保延期证明' },
 ];
 
+export const CMS_GUNIT = [
+  { key: 'g_unit_gen', value: '一般申报单位' },
+  { key: 'g_unit_ftz', value: '保税申报单位' },
+  { key: 'g_unit_spec', value: '特殊申报单位' },
+];
+
 export {
   TENANT_LEVEL,
   TENANT_ASPECT,

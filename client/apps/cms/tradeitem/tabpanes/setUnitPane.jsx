@@ -5,7 +5,7 @@ import { Button, Table, Select, message } from 'antd';
 import { loadDeclwayUnit, saveDeclwayUnit, delDeclwayUnit } from 'common/reducers/cmsTradeitem';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
-import { DECL_I_TYPE, DECL_E_TYPE } from 'common/constants';
+import { DECL_I_TYPE, DECL_E_TYPE, CMS_GUNIT } from 'common/constants';
 
 const formatMsg = format(messages);
 const Option = Select.Option;
@@ -46,10 +46,6 @@ ColumnSelect.proptypes = {
     loginId: state.account.loginId,
     tabKey: state.cmsTradeitem.tabKey,
     repoId: state.cmsTradeitem.repoId,
-    declunits: state.cmsTradeitem.declunits.map(un => ({
-      key: un.unit_code,
-      value: un.unit_name,
-    })),
     declwayUnits: state.cmsTradeitem.declwayUnits,
   }),
   { loadDeclwayUnit, saveDeclwayUnit, delDeclwayUnit }
@@ -59,7 +55,6 @@ export default class SetUnitPane extends React.Component {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     repoId: PropTypes.number,
-    declunits: PropTypes.array,
     declwayUnits: PropTypes.array,
   }
   state = {
@@ -128,7 +123,7 @@ export default class SetUnitPane extends React.Component {
       dataIndex: 'decl_unit',
       render: (o, record) =>
         <ColumnSelect field="decl_unit" inEdit={!record.id} record={record}
-          onChange={this.handleTradeSel} options={this.props.declunits}
+          onChange={this.handleTradeSel} options={CMS_GUNIT}
         />,
     }, {
       width: 60,

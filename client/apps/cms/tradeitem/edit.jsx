@@ -26,7 +26,6 @@ function fetchData({ dispatch, params }) {
 @connect(
   state => ({
     itemData: state.cmsTradeitem.itemData,
-    declunits: state.cmsTradeitem.declunits,
     tenantId: state.account.tenantId,
   }),
   { itemEditedSave }
@@ -43,7 +42,6 @@ export default class AcceptanceCreate extends Component {
     tenantId: PropTypes.number.isRequired,
     form: PropTypes.object.isRequired,
     itemData: PropTypes.object,
-    declunits: PropTypes.array,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -54,12 +52,8 @@ export default class AcceptanceCreate extends Component {
       if (!errors) {
         const value = this.props.form.getFieldsValue();
         const item = { ...this.props.itemData, ...value };
-        const gunits = [];
-        this.props.declunits.forEach((unit) => {
-          gunits.push(`gunit_${unit.unit_code}`);
-        });
         this.props.itemEditedSave({
-          item, gunits, tenantId: this.props.tenantId,
+          item, tenantId: this.props.tenantId,
         }).then((result) => {
           if (result.error) {
             message.error(result.error.message);

@@ -7,7 +7,7 @@ import { Breadcrumb, Layout, Button, Menu, Dropdown, Icon } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import { loadHscodes, loadDeclunits } from 'common/reducers/cmsTradeitem';
+import { loadHscodes } from 'common/reducers/cmsTradeitem';
 import SearchBar from 'client/components/search-bar';
 import './index.less';
 import HsExtraPanel from './tabpanes/hsExtraPane';
@@ -82,7 +82,6 @@ function buildTipItems(str, b) {
 }
 function fetchData({ state, dispatch }) {
   const promises = [];
-  promises.push(dispatch(loadDeclunits(state.account.tenantId)));
   promises.push(dispatch(loadHscodes({
     pageSize: state.cmsTradeitem.hscodes.pageSize,
     current: state.cmsTradeitem.hscodes.current,
@@ -96,9 +95,8 @@ function fetchData({ state, dispatch }) {
   state => ({
     tenantId: state.account.tenantId,
     hscodes: state.cmsTradeitem.hscodes,
-    declunits: state.cmsTradeitem.declunits,
   }),
-  { loadHscodes, loadDeclunits }
+  { loadHscodes }
 )
 @connectNav({
   depth: 2,
@@ -110,7 +108,6 @@ export default class HscodeList extends Component {
     tenantId: PropTypes.number.isRequired,
     loadHscodes: PropTypes.func.isRequired,
     hscodes: PropTypes.object.isRequired,
-    declunits: PropTypes.array,
   }
   state = {
     collapsed: true,
@@ -203,12 +200,24 @@ export default class HscodeList extends Component {
   }, {
     title: '能效',
     dataIndex: 'efficiency',
-    width: 50,
+    width: 80,
   }, {
     title: '合并',
     dataIndex: 'g_merge',
     width: 80,
     className: 'hscode-list-right',
+  }, {
+    title: '申报单位一',
+    dataIndex: 'g_unit_gen',
+    width: 100,
+  }, {
+    title: '申报单位二',
+    dataIndex: 'g_unit_ftz',
+    width: 100,
+  }, {
+    title: '申报单位三',
+    dataIndex: 'g_unit_spec',
+    width: 100,
   }];
   toggle = () => {
     this.setState({
@@ -225,7 +234,7 @@ export default class HscodeList extends Component {
   }
   handleMenuClick = (e) => {
     if (e.key === 'model') {
-      window.open(`${API_ROOTS.default}v1/cms/cmsTradeitem/hscode/model/download/${createFilename('tradeItemModel')}.xlsx?tenantId=${this.props.tenantId}`);
+      window.open(`${API_ROOTS.default}v1/cms/cmsTradeitem/hscode/model/download/${createFilename('tradeItemModel')}.xlsx`);
     }
   }
   handleUploaded = () => {
@@ -233,18 +242,8 @@ export default class HscodeList extends Component {
   }
 
   render() {
-    const { hscodes, declunits } = this.props;
+    const { hscodes } = this.props;
     this.dataSource.remotes = hscodes;
-    let columns = [];
-    columns = [...this.columns];
-    for (let i = 0; i < declunits.length; i++) {
-      const unit = declunits[i];
-      columns.push({
-        title: `${unit.unit_name}`,
-        dataIndex: `gunit_${unit.unit_code}`,
-        width: 50,
-      });
-    }
     const menu = (
       <Menu onClick={this.handleMenuClick}>
         <Menu.Item key="importData">
@@ -279,11 +278,6 @@ export default class HscodeList extends Component {
                   {this.msg('importItems')} <Icon type="down" />
                 </Button>
               </Dropdown>
-              <Button size="large"
-                className={this.state.collapsed ? '' : 'btn-toggle-on'}
-                icon={this.state.collapsed ? 'menu-fold' : 'menu-unfold'}
-                onClick={this.toggle}
-              />
             </div>
           </Header>
           <Content className="main-content" key="main">
@@ -294,7 +288,7 @@ export default class HscodeList extends Component {
                 />
               </div>
               <div className="panel-body table-panel">
-                <Table columns={columns} dataSource={this.dataSource} scroll={{ x: 2260 }} rowKey="id" />
+                <Table columns={this.columns} dataSource={this.dataSource} scroll={{ x: 2260 }} rowKey="id" />
               </div>
             </div>
           </Content>
