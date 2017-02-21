@@ -65,6 +65,10 @@ export default class InboundTransactionsList extends React.Component {
     title: this.msg('vendor'),
     dataIndex: 'vendor_name',
   }, {
+    title: this.msg('ASN'),
+    width: 200,
+    dataIndex: 'asn_no',
+  }, {
     title: this.msg('unitPrice'),
     width: 120,
     dataIndex: 'unit_price',

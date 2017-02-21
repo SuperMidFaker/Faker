@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import { loadBill, loadCmsParams } from 'common/reducers/cmsManifest';
-import ManifestEditor from '../../common/manifest/ManifestEditor';
+import ManifestEditor from '../../common/manifest/editor';
 
 function fetchData({ dispatch, params, state }) {
   const promises = [];

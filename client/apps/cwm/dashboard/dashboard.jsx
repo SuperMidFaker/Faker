@@ -53,7 +53,7 @@ export default class CWMDashboard extends React.Component {
             </Select>
           </div>
         </Header>
-        <Content className="main-content">
+        <Content className="main-content" key="main">
           <Row gutter={16}>
             <Col sm={24} md={16}>
               <Card title={this.msg('volumeToday')}>

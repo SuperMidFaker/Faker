@@ -9,6 +9,18 @@ export default defineMessages({
     id: 'cms.manifest.export.clearance',
     defaultMessage: '出口清关',
   },
+  all: {
+    id: 'cms.manifest.filter.all',
+    defaultMessage: '全部',
+  },
+  filterWIP: {
+    id: 'cms.manifest.filter.wip',
+    defaultMessage: '制单中',
+  },
+  filterGenerated: {
+    id: 'cms.manifest.filter.generated',
+    defaultMessage: '已生成报关单',
+  },
   delgNo: {
     id: 'cms.manifest.delg.no',
     defaultMessage: '报关委托号',

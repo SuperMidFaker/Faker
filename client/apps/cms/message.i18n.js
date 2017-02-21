@@ -13,13 +13,17 @@ const messages = defineMessages({
     id: 'cms.module.import.delegation',
     defaultMessage: '委托管理',
   },
+  importManifest: {
+    id: 'cms.module.import.manifest',
+    defaultMessage: '报关清单',
+  },
   importCustomsDecl: {
     id: 'cms.module.import.decl.customs',
     defaultMessage: '报关单管理',
   },
   importCiqDecl: {
     id: 'cms.module.import.decl.ciq',
-    defaultMessage: '报检管理',
+    defaultMessage: '入境报检',
   },
   export: {
     id: 'cms.module.export',
@@ -29,13 +33,17 @@ const messages = defineMessages({
     id: 'cms.module.export.delegation',
     defaultMessage: '委托管理',
   },
+  exportManifest: {
+    id: 'cms.module.export.manifest',
+    defaultMessage: '报关清单',
+  },
   exportCustomsDecl: {
     id: 'cms.module.export.decl.customs',
     defaultMessage: '报关单管理',
   },
   exportCiqDecl: {
     id: 'cms.module.export.decl.ciq',
-    defaultMessage: '报检管理',
+    defaultMessage: '出境报检',
   },
   billing: {
     id: 'cms.module.billing',

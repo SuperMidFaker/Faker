@@ -27,41 +27,6 @@ export default class SCVDashboard extends React.Component {
   }
 
   componentDidMount() {
-    const data = [
-        { name: 'Jan', Import: 12814, Export: 3054 },
-        { name: 'Feb', Import: 13012, Export: 5067 },
-        { name: 'Mar', Import: 11624, Export: 4004 },
-        { name: 'Apr', Import: 8814, Export: 7054 },
-        { name: 'May', Import: 12998, Export: 2043 },
-        { name: 'Jun', Import: 12321, Export: 6507 },
-        { name: 'Jul', Import: 10342, Export: 3019 },
-        { name: 'Aug', Import: 22998, Export: 5243 },
-        { name: 'Sep', Import: 11261, Export: 4419 },
-        { name: 'Oct', Import: 2651, Export: 199 },
-        { name: 'Nov', Import: 0, Export: 0 },
-        { name: 'Dec', Import: 0, Export: 0 },
-    ];
-    const Frame = window.G2.Frame;
-    let frame = new Frame(data);
-    frame = Frame.combinColumns(frame, ['Import', 'Export'], 'Revenue', 'I/E', 'name');
-    const chart = new window.G2.Chart({
-      id: 'c1',
-      width: 1000,
-      height: 300,
-    });
-    chart.source(frame, {
-      Revenue: {
-        alias: '进出口总额（美元）',
-        formatter(val) {
-          return `${parseInt(val / 1000, 10)}k`;
-        },
-      },
-      name: {
-        alias: '2016年',
-      },
-    });
-    chart.areaStack().position('name*Revenue').color('I/E');
-    chart.render();
   }
   handleRadioChange = (ev) => {
     if (ev.target.value === this.props.listFilter.status) {
@@ -80,43 +45,9 @@ export default class SCVDashboard extends React.Component {
           </Breadcrumb>
           <div className="toolbar-right" />
         </Header>
-        <Content className="main-content">
+        <Content className="main-content" key="main">
           <Row gutter={16}>
             <Col sm={24} md={16}>
-              <Card title={this.msg('orders')} style={{ display: 'none' }}>
-                <ul className="statistics-columns">
-                  <li className="col-4">
-                    <div className="statistics-cell">
-                      <h6>{this.msg('accepted')}</h6>
-                      <p className="data-num">12</p>
-                    </div>
-                  </li>
-                  <li className="col-4">
-                    <div className="statistics-cell">
-                      <h6>{this.msg('sent')}</h6>
-                      <p className="data-num">6</p>
-                    </div>
-                  </li>
-                  <li className="col-4">
-                    <div className="statistics-cell">
-                      <h6>{this.msg('pickedup')}</h6>
-                      <p className="data-num">23</p>
-                    </div>
-                  </li>
-                  <li className="col-4">
-                    <div className="statistics-cell">
-                      <h6>{this.msg('delivered')}</h6>
-                      <p className="data-num" />
-                    </div>
-                  </li>
-                  <li className="col-4">
-                    <div className="statistics-cell">
-                      <h6>{this.msg('completed')}</h6>
-                      <p className="data-num">32</p>
-                    </div>
-                  </li>
-                </ul>
-              </Card>
               <Card title={this.msg('shipmentsStatus')}>
                 <ul className="statistics-columns">
                   <li className="col-4">

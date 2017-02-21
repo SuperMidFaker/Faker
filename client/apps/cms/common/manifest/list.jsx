@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Breadcrumb, Icon, Layout, Radio, Tag, message } from 'antd';
+import { Breadcrumb, Button, Icon, Layout, Radio, Tag, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -13,8 +13,6 @@ import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/search-bar';
 import NavLink from 'client/components/nav-link';
 import RowUpdater from '../delegation/rowUpdater';
-import DeclnoFillModal from './modals/declNoFill';
-import DeclStatusPopover from './declStatusPopover';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 
@@ -38,7 +36,7 @@ const RadioButton = Radio.Button;
   depth: 2,
   moduleName: 'clearance',
 })
-export default class DelgDeclList extends Component {
+export default class ManifestList extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     ietype: PropTypes.oneOf(['import', 'export']),
@@ -103,17 +101,6 @@ export default class DelgDeclList extends Component {
   }, {
     title: this.msg('clrStatus'),
     dataIndex: 'note',
-    render: (o, row) => {
-      if (o) {
-        return (
-          <DeclStatusPopover results={row.results} entryId={row.entry_id}>
-            {o}
-          </DeclStatusPopover>
-        );
-      } else {
-        return '--';
-      }
-    },
   }, {
     title: this.msg('customsCheck'),
     dataIndex: 'customs_inspect',
@@ -215,17 +202,21 @@ export default class DelgDeclList extends Component {
               {this.props.ietype === 'import' ? this.msg('importOperation') : this.msg('exportOperation')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              {this.msg('customsDeclaration')}
+              {this.msg('manifest')}
             </Breadcrumb.Item>
           </Breadcrumb>
           <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">
             <RadioButton value="all">{this.msg('all')}</RadioButton>
-            <RadioButton value="proposed">{this.msg('filterProposed')}</RadioButton>
-            <RadioButton value="reviewed">{this.msg('filterReviewed')}</RadioButton>
-            <RadioButton value="declared">{this.msg('filterDeclared')}</RadioButton>
-            <RadioButton value="finalized">{this.msg('filterFinalized')}</RadioButton>
+            <RadioButton value="wip">{this.msg('filterWIP')}</RadioButton>
+            <RadioButton value="generated">{this.msg('filterGenerated')}</RadioButton>
           </RadioGroup>
-          <div className="top-bar-tools" />
+          <div className="top-bar-tools">
+            <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
+              <Button size="large" onClick={this.handleCreateBtnClick} icon="plus">
+                {this.msg('submitForReview')}
+              </Button>
+            </PrivilegeCover>
+          </div>
         </Header>
         <Content className="main-content" key="main">
           <div className="page-body">
@@ -240,7 +231,6 @@ export default class DelgDeclList extends Component {
                 loading={delgdeclList.loading} scroll={{ x: 1000 }}
               />
             </div>
-            <DeclnoFillModal reload={this.handleTableLoad} />
           </div>
         </Content>
       </QueueAnim>

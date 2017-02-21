@@ -73,7 +73,7 @@ export default class CustomsDeclPane extends React.Component {
         if (this.props.delegation.i_e_type === 1) {
           ietype = 'export';
         }
-        const link = `/clearance/${ietype}/manifest/make/`;
+        const link = `/clearance/${ietype}/manifest/`;
         this.context.router.push(`${link}${this.props.billMake.bill_seq_no}`);
       }
     });

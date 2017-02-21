@@ -77,20 +77,20 @@ export default defineMessages({
     id: 'cms.customs.filter.all',
     defaultMessage: '全部',
   },
+  filterProposed: {
+    id: 'cms.customs.filter.proposed',
+    defaultMessage: '报关建议书',
+  },
+  filterReviewed: {
+    id: 'cms.customs.filter.reviewed',
+    defaultMessage: '已复核',
+  },
   filterDeclared: {
     id: 'cms.customs.filter.declared',
-    defaultMessage: '申报',
+    defaultMessage: '预录入',
   },
-  filterInspected: {
-    id: 'cms.customs.filter.inspected',
-    defaultMessage: '查验',
-  },
-  filterTaxed: {
-    id: 'cms.customs.filter.taxed',
-    defaultMessage: '缴税',
-  },
-  filterReleased: {
-    id: 'cms.customs.filter.released',
-    defaultMessage: '放行',
+  filterFinalized: {
+    id: 'cms.customs.filter.finalized',
+    defaultMessage: '已回填',
   },
 });

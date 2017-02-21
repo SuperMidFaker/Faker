@@ -2,11 +2,11 @@ import React, { PropTypes } from 'react';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import { loadAcceptanceTable } from 'common/reducers/cmsDelegation';
-import DelegationList from '../../common/delegation/list';
+import ManifestList from '../../common/manifest/list';
 
 function fetchData({ state, dispatch }) {
   return dispatch(loadAcceptanceTable({
-    ietype: 'import',
+    ietype: 'export',
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     filter: JSON.stringify(state.cmsDelegation.listFilter),
@@ -16,12 +16,12 @@ function fetchData({ state, dispatch }) {
 }
 
 @connectFetch()(fetchData)
-@withPrivilege({ module: 'clearance', feature: 'import' })
-export default class ImportDelegationList extends React.Component {
+@withPrivilege({ module: 'clearance', feature: 'export' })
+export default class ExportManifestList extends React.Component {
   static propTypes = {
     location: PropTypes.object.isRequired,
   }
   render() {
-    return <DelegationList ietype="import" {...this.props} />;
+    return <ManifestList ietype="export" {...this.props} />;
   }
 }

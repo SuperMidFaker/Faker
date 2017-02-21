@@ -22,7 +22,6 @@ export default class ModuleSCV extends React.Component {
     const linkMenus = [];
     linkMenus.push({
       single: true,
-      disabled: true,
       key: 'scv-0',
       path: '/scv/dashboard',
       icon: 'icon-fontello-gauge',

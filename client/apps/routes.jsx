@@ -260,7 +260,8 @@ export default(store, cookie) => {
               <Route path="create" component={CMSImportDelegation.Create} />
               <Route path="edit/:delgNo" component={CMSImportDelegation.Edit} />
               <Route path="manifest">
-                <Route path="make/:billno" component={CMSImportManifest.Make} />
+                <IndexRoute component={CMSImportManifest.List} />
+                <Route path=":billno" component={CMSImportManifest.Make} />
                 <Route path="view/:billno" component={CMSImportManifest.View} />
               </Route>
               <Route path="customs">
@@ -275,7 +276,8 @@ export default(store, cookie) => {
               <Route path="create" component={CMSExportDelegation.Create} />
               <Route path="edit/:delgNo" component={CMSExportDelegation.Edit} />
               <Route path="manifest">
-                <Route path="make/:billno" component={CMSExportManifest.Make} />
+                <IndexRoute component={CMSExportManifest.List} />
+                <Route path=":billno" component={CMSExportManifest.Make} />
                 <Route path="view/:billno" component={CMSExportManifest.View} />
               </Route>
               <Route path="customs">

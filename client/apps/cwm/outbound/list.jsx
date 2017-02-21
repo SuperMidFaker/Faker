@@ -65,6 +65,10 @@ export default class OutboundTransactionsList extends React.Component {
     title: this.msg('consignee'),
     dataIndex: 'consignee_name',
   }, {
+    title: this.msg('shippingNo'),
+    width: 200,
+    dataIndex: 'so_no',
+  }, {
     title: this.msg('unitPrice'),
     width: 120,
     dataIndex: 'unit_price',

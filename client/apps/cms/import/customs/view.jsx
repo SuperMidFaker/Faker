@@ -2,7 +2,7 @@ import React from 'react';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import { loadEntry, loadCmsParams } from 'common/reducers/cmsManifest';
-import CustomsDeclEditor from '../../common/customs/CustomsDeclEditor';
+import CustomsDeclEditor from '../../common/customs/editor';
 
 function fetchData({ dispatch, params, state }) {
   const promises = [];

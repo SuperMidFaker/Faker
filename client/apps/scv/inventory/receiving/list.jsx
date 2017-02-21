@@ -96,7 +96,7 @@ export default class ReceivingNoticeList extends React.Component {
             <RadioButton value="pending">{this.msg('pending')}</RadioButton>
             <RadioButton value="received">{this.msg('received')}</RadioButton>
           </RadioGroup>
-          <div className="toolbar-right">
+          <div className="top-bar-tools">
             <Button type="primary" size="large" icon="plus" onClick={this.handleCreateBtnClick}>
               {this.msg('createReceivingNotice')}
             </Button>

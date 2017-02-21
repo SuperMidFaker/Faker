@@ -305,7 +305,7 @@ export default class DelegationList extends Component {
       if (result.error) {
         message.error(result.error.message, 5);
       } else {
-        const link = `/clearance/${this.props.ietype}/manifest/make/`;
+        const link = `/clearance/${this.props.ietype}/manifest/`;
         this.context.router.push(`${link}${this.props.billMake.bill_seq_no}`);
       }
     });
