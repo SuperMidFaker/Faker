@@ -116,6 +116,7 @@ export default class Transport extends React.Component {
           text: formatMsg(intl, 'settingsResources'),
         }, {
           key: 'tms-6-1',
+          disabled: true,
           path: '/transport/settings',
           text: formatMsg(intl, 'settingsApp'),
         }],
