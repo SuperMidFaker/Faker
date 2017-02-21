@@ -11,7 +11,7 @@ import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import { loadCustomers } from 'common/reducers/crmCustomers';
 import { loadOwners, openAddModal, selectedRepoId, loadTradeItems,
-  deleteItem, deleteSelectedItems, loadDeclunits, setOwner } from 'common/reducers/cmsTradeitem';
+  deleteItem, deleteSelectedItems, setOwner } from 'common/reducers/cmsTradeitem';
 import AddTradeRepoModal from './modals/addTradeRepo';
 import ExtraPanel from './tabpanes/ExtraPane';
 import SearchBar from 'client/components/search-bar';
@@ -34,7 +34,6 @@ function fetchData({ state, dispatch }) {
   promises.push(dispatch(loadOwners({
     tenantId: state.account.tenantId,
   })));
-  promises.push(dispatch(loadDeclunits(state.account.tenantId)));
   return Promise.all(promises);
 }
 @connectFetch()(fetchData)
@@ -48,7 +47,6 @@ function fetchData({ state, dispatch }) {
     repoId: state.cmsTradeitem.repoId,
     tradeItemlist: state.cmsTradeitem.tradeItemlist,
     visibleAddModal: state.cmsTradeitem.visibleAddModal,
-    declunits: state.cmsTradeitem.declunits,
     owner: state.cmsTradeitem.owner,
   }),
   { loadCustomers, openAddModal, selectedRepoId, loadTradeItems, deleteItem, deleteSelectedItems, setOwner }
@@ -65,7 +63,6 @@ export default class TradeItemList extends Component {
     tradeItemlist: PropTypes.object.isRequired,
     repoId: PropTypes.number,
     visibleAddModal: PropTypes.bool,
-    declunits: PropTypes.array,
     owner: PropTypes.object,
   }
   static contextTypes = {
@@ -96,6 +93,88 @@ export default class TradeItemList extends Component {
     title: this.msg('element'),
     dataIndex: 'element',
     width: 400,
+  }, {
+    title: this.msg('gUnit1'),
+    dataIndex: 'g_unit_1',
+    width: 120,
+  }, {
+    title: this.msg('gUnit2'),
+    dataIndex: 'g_unit_2',
+    width: 120,
+  }, {
+    title: this.msg('gUnit3'),
+    dataIndex: 'g_unit_3',
+    width: 120,
+  }, {
+    title: this.msg('unit1'),
+    dataIndex: 'unit_1',
+    width: 130,
+  }, {
+    title: this.msg('unit2'),
+    dataIndex: 'unit_2',
+    width: 130,
+  }, {
+    title: this.msg('fixedQty'),
+    dataIndex: 'fixed_qty',
+    width: 120,
+  }, {
+    title: this.msg('fixedUnit'),
+    dataIndex: 'fixed_unit',
+    width: 130,
+  }, {
+    title: this.msg('origCountry'),
+    dataIndex: 'origin_country',
+    width: 120,
+  }, {
+    title: this.msg('unitNetWt'),
+    dataIndex: 'unit_net_wt',
+    width: 120,
+  }, {
+    title: this.msg('customsControl'),
+    dataIndex: 'customs_control',
+    width: 140,
+  }, {
+    title: this.msg('inspQuarantine'),
+    dataIndex: 'inspection_quarantine',
+    width: 140,
+  }, {
+    title: this.msg('unitPrice'),
+    dataIndex: 'unit_price',
+    width: 120,
+  }, {
+    title: this.msg('currency'),
+    dataIndex: 'currency',
+    width: 120,
+  }, {
+    title: this.msg('preClassifyNo'),
+    dataIndex: 'pre_classify_no',
+    width: 120,
+  }, {
+    title: this.msg('preClassifyStartDate'),
+    dataIndex: 'pre_classify_start_date ',
+    width: 180,
+    render: (o, record) => {
+      if (record.pre_classify_start_date) {
+        return moment(record.pre_classify_start_date).format('YYYY-MM-DD');
+      } else {
+        return '--';
+      }
+    },
+  }, {
+    title: this.msg('preClassifyEndDate'),
+    dataIndex: 'pre_classify_end_date ',
+    width: 180,
+    render: (o, record) => {
+      if (record.pre_classify_end_date) {
+        return moment(record.pre_classify_end_date).format('YYYY-MM-DD');
+      } else {
+        return '--';
+      }
+    },
+  }, {
+    title: this.msg('remark'),
+    dataIndex: 'remark',
+    width: 200,
   }]
   dataSource = new Table.DataSource({
     fetcher: params => this.props.loadTradeItems(params),
@@ -168,9 +247,7 @@ export default class TradeItemList extends Component {
     this.context.router.push('/clearance/classification/tradeitem/create');
   }
   handleMenuClick = (e) => {
-    if (e.key === 'create') {
-      this.context.router.push('/clearance/classification/tradeitem/create');
-    } else if (e.key === 'export') {
+    if (e.key === 'export') {
       window.open(`${API_ROOTS.default}v1/cms/cmsTradeitem/tradeitems/export/${createFilename('itemsExport')}.xlsx?repoId=${this.props.repoId}`);
     } else if (e.key === 'model') {
       window.open(`${API_ROOTS.default}v1/cms/cmsTradeitem/tradeitems/model/download/${createFilename('tradeItemModel')}.xlsx`);
@@ -190,7 +267,7 @@ export default class TradeItemList extends Component {
     });
   }
   render() {
-    const { repoOwners, tradeItemlist, repoId, declunits, owner } = this.props;
+    const { repoOwners, tradeItemlist, repoId, owner } = this.props;
     let ownVal = '';
     if (owner.partner_code) {
       ownVal = `${owner.partner_code} | ${owner.name}`;
@@ -203,87 +280,7 @@ export default class TradeItemList extends Component {
       },
     };
     this.dataSource.remotes = tradeItemlist;
-    let columns = [];
-    columns = [...this.columns];
-    for (let i = 0; i < declunits.length; i++) {
-      const unit = declunits[i];
-      columns.push({
-        title: `${unit.unit_name}`,
-        dataIndex: `gunit_${unit.unit_code}`,
-        width: 80,
-      });
-    }
-    columns.push({
-      title: this.msg('unit1'),
-      dataIndex: 'unit_1',
-      width: 120,
-    }, {
-      title: this.msg('unit2'),
-      dataIndex: 'unit_2',
-      width: 120,
-    }, {
-      title: this.msg('fixedQty'),
-      dataIndex: 'fixed_qty',
-      width: 120,
-    }, {
-      title: this.msg('fixedUnit'),
-      dataIndex: 'fixed_unit',
-      width: 80,
-    }, {
-      title: this.msg('origCountry'),
-      dataIndex: 'origin_country',
-      width: 120,
-    }, {
-      title: this.msg('unitNetWt'),
-      dataIndex: 'unit_net_wt',
-      width: 120,
-    }, {
-      title: this.msg('customsControl'),
-      dataIndex: 'customs_control',
-      width: 120,
-    }, {
-      title: this.msg('inspQuarantine'),
-      dataIndex: 'inspection_quarantine',
-      width: 120,
-    }, {
-      title: this.msg('unitPrice'),
-      dataIndex: 'unit_price',
-      width: 120,
-    }, {
-      title: this.msg('currency'),
-      dataIndex: 'currency',
-      width: 120,
-    }, {
-      title: this.msg('preClassifyNo'),
-      dataIndex: 'pre_classify_no',
-      width: 120,
-    }, {
-      title: this.msg('preClassifyStartDate'),
-      dataIndex: 'pre_classify_start_date ',
-      width: 180,
-      render: (o, record) => {
-        if (record.pre_classify_start_date) {
-          return moment(record.pre_classify_start_date).format('YYYY-MM-DD');
-        } else {
-          return '--';
-        }
-      },
-    }, {
-      title: this.msg('preClassifyEndDate'),
-      dataIndex: 'pre_classify_end_date ',
-      width: 180,
-      render: (o, record) => {
-        if (record.pre_classify_end_date) {
-          return moment(record.pre_classify_end_date).format('YYYY-MM-DD');
-        } else {
-          return '--';
-        }
-      },
-    }, {
-      title: this.msg('remark'),
-      dataIndex: 'remark',
-      width: 200,
-    });
+    const columns = [...this.columns];
     columns.push({
       title: this.msg('opColumn'),
       width: 80,
@@ -382,8 +379,8 @@ export default class TradeItemList extends Component {
                 {selectedRows.length > 0 &&
                 <Popconfirm title={'是否删除所有选择项？'} onConfirm={() => this.handleDeleteSelected()}>
                   <Button type="primary" icon="delete">
-                        批量删除
-                      </Button>
+                    批量删除
+                  </Button>
                 </Popconfirm>
                   }
               </div>
