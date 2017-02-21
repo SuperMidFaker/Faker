@@ -28,7 +28,7 @@ export default class Punctual extends React.Component {
   initializeCharts = (props) => {
     const { transitModes, range, shipmentCounts, punctualShipmentCounts } = props.kpi;
     const barOption = {
-      title: { text: '准时率' },
+      title: { text: '准时率', textStyle: { fontSize: 14 } },
       tooltip: {
         trigger: 'axis',
         axisPointer: {            // 坐标轴指示器，坐标轴触发有效
@@ -36,12 +36,13 @@ export default class Punctual extends React.Component {
         },
       },
       legend: {
+        bottom: 0,
         data: transitModes.map(item => item.mode_name),
       },
       grid: {
         left: '3%',
         right: '4%',
-        bottom: '3%',
+        bottom: '6%',
         containLabel: true,
       },
       toolbox: {
@@ -83,13 +84,14 @@ export default class Punctual extends React.Component {
     const transitModesPunctualShipmentCount = punctualShipmentCounts.map(arr => arr.reduce((a, b) => a + b, 0));
     const punctualShipmentCount = transitModesPunctualShipmentCount.reduce((a, b) => a + b, 0);
     const pieOption = {
-      title: { text: '准时占比' },
+      title: { text: '准时占比', textStyle: { fontSize: 14 } },
       tooltip: {
         trigger: 'item',
         formatter: '{a} <br/>{b} : {c} ({d}%)',
       },
       legend: {
         x: 'center',
+        bottom: 0,
         data: transitModes.map(item => item.mode_name).concat('超时'),
       },
       grid: {
