@@ -43,15 +43,19 @@ export default class NodeModal extends Component {
   handleAddNode = () => {
     const { form, nodeType, tenantId } = this.props;
     const { region } = this.state;
-    const nodeInfoInForm = form.getFieldsValue();
-    const nodeInfo = Object.assign({}, nodeInfoInForm, { ...region, type: nodeType, tenant_id: tenantId });
-    this.props.addNode(nodeInfo).then((result) => {
-      if (result.error) {
-        message.error(result.error.message);
-      } else {
-        this.handleCancel();
-      }
-    });
+    if (!region.province && !region.city && !region.district && !region.street) {
+      message.warn('区域必填');
+    } else {
+      const nodeInfoInForm = form.getFieldsValue();
+      const nodeInfo = Object.assign({}, nodeInfoInForm, { ...region, type: nodeType, tenant_id: tenantId });
+      this.props.addNode(nodeInfo).then((result) => {
+        if (result.error) {
+          message.error(result.error.message);
+        } else {
+          this.handleCancel();
+        }
+      });
+    }
   }
   handleCancel = () => {
     this.props.toggleNodeModal(false);
@@ -75,11 +79,11 @@ export default class NodeModal extends Component {
           <FormItem label="外部代码:" {...formItemLayout}>
             {getFieldDecorator('node_code')(<Input />)}
           </FormItem>
-          <FormItem label="区域" {...formItemLayout}>
-            <Cascader defaultRegion={regionValues} onChange={this.handleRegionChange} />
+          <FormItem label="区域" {...formItemLayout} required >
+            <Cascader defaultRegion={regionValues} onChange={this.handleRegionChange} required />
           </FormItem>
-          <FormItem label="具体地址:" required {...formItemLayout}>
-            {getFieldDecorator('addr')(<Input required />)}
+          <FormItem label="具体地址:" {...formItemLayout}>
+            {getFieldDecorator('addr')(<Input />)}
           </FormItem>
           <FormItem label="联系人:" {...formItemLayout} required>
             {getFieldDecorator('contact')(<Input />)}
