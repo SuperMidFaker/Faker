@@ -168,9 +168,7 @@ export default class TradeItemList extends Component {
     this.context.router.push('/clearance/classification/tradeitem/create');
   }
   handleMenuClick = (e) => {
-    if (e.key === 'create') {
-      this.context.router.push('/clearance/classification/tradeitem/create');
-    } else if (e.key === 'export') {
+    if (e.key === 'export') {
       window.open(`${API_ROOTS.default}v1/cms/cmsTradeitem/tradeitems/export/${createFilename('itemsExport')}.xlsx?repoId=${this.props.repoId}`);
     } else if (e.key === 'model') {
       window.open(`${API_ROOTS.default}v1/cms/cmsTradeitem/tradeitems/model/download/${createFilename('tradeItemModel')}.xlsx`);

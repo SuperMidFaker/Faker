@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Breadcrumb, Layout, Button } from 'antd';
+import { Breadcrumb, Layout, Button, Menu, Dropdown, Icon } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -11,6 +11,8 @@ import { loadHscodes, loadDeclunits } from 'common/reducers/cmsTradeitem';
 import SearchBar from 'client/components/search-bar';
 import './index.less';
 import HsExtraPanel from './tabpanes/hsExtraPane';
+import ExcelUpload from 'client/components/excelUploader';
+import { createFilename } from 'client/util/dataTransform';
 
 const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
@@ -200,11 +202,11 @@ export default class HscodeList extends Component {
     render: col => buildTipItems(col, true),
   }, {
     title: '能效',
-    dataIndex: '',
+    dataIndex: 'efficiency',
     width: 50,
   }, {
-    title: '海关公告',
-    dataIndex: '',
+    title: '合并',
+    dataIndex: 'g_merge',
     width: 80,
     className: 'hscode-list-right',
   }];
@@ -221,6 +223,15 @@ export default class HscodeList extends Component {
       searchText: value,
     });
   }
+  handleMenuClick = (e) => {
+    if (e.key === 'model') {
+      window.open(`${API_ROOTS.default}v1/cms/cmsTradeitem/hscode/model/download/${createFilename('tradeItemModel')}.xlsx?tenantId=${this.props.tenantId}`);
+    }
+  }
+  handleUploaded = () => {
+
+  }
+
   render() {
     const { hscodes, declunits } = this.props;
     this.dataSource.remotes = hscodes;
@@ -234,6 +245,22 @@ export default class HscodeList extends Component {
         width: 50,
       });
     }
+    const menu = (
+      <Menu onClick={this.handleMenuClick}>
+        <Menu.Item key="importData">
+          <ExcelUpload endpoint={`${API_ROOTS.default}v1/cms/cmsTradeitem/hscode/import`}
+            formData={{
+              data: JSON.stringify({
+                tenant_id: this.props.tenantId,
+              }),
+            }} onUploaded={this.handleUploaded}
+          >
+            <Icon type="file-excel" /> {this.msg('importItems')}
+          </ExcelUpload>
+        </Menu.Item>
+        <Menu.Item key="model"><Icon type="download" /> 下载模板</Menu.Item>
+      </Menu>
+    );
     return (
       <Layout className="ant-layout-wrapper">
         <Layout>
@@ -247,6 +274,11 @@ export default class HscodeList extends Component {
               </Breadcrumb.Item>
             </Breadcrumb>
             <div className="top-bar-tools">
+              <Dropdown overlay={menu} type="primary">
+                <Button size="large">
+                  {this.msg('importItems')} <Icon type="down" />
+                </Button>
+              </Dropdown>
               <Button size="large"
                 className={this.state.collapsed ? '' : 'btn-toggle-on'}
                 icon={this.state.collapsed ? 'menu-fold' : 'menu-unfold'}
