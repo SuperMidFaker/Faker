@@ -29,7 +29,7 @@ function fetchData({ cookie, state, dispatch }) {
     beginDate,
     endDate,
     -1,
-    state.transportKpi.separationDate
+    state.transportKpi.query.separationDate
   ));
 }
 
@@ -66,22 +66,26 @@ export default class Kpi extends React.Component {
   }
   handleCustomerChange = (partnerId) => {
     const { tenantId, query } = this.props;
-    this.props.loadKpi(tenantId, query.beginDate, query.endDate, partnerId || -1);
+    this.props.loadKpi(tenantId, query.beginDate, query.endDate, partnerId || -1, query.separationDate);
   }
   handleBeginDateChange = (date) => {
     const { tenantId, query } = this.props;
-    this.props.loadKpi(tenantId, date, query.endDate, query.partnerId);
+    this.props.loadKpi(tenantId, date, query.endDate, query.partnerId, query.separationDate);
   }
   handleEndDateChange = (date) => {
     const { tenantId, query } = this.props;
-    this.props.loadKpi(tenantId, query.beginDate, date, query.partnerId);
+    this.props.loadKpi(tenantId, query.beginDate, date, query.partnerId, query.separationDate);
   }
   handleMonth = (month) => {
     const { tenantId, query } = this.props;
     const end = new Date();
     const begin = new Date();
     begin.setMonth(begin.getMonth() - month);
-    this.props.loadKpi(tenantId, begin, end, query.partnerId);
+    this.props.loadKpi(tenantId, begin, end, query.partnerId, query.separationDate);
+  }
+  handleSeparationDateChange = (value) => {
+    const { tenantId, query } = this.props;
+    this.props.loadKpi(tenantId, query.beginDate, query.endDate, query.partnerId, value);
   }
   handleMenuChange = (e) => {
     this.setState({ selectedKey: e.key });
@@ -91,6 +95,13 @@ export default class Kpi extends React.Component {
     window.open(`${API_ROOTS.default}v1/transport/kpi/exportExcel/${createFilename('KPI')}.xlsx?transitModes=${JSON.stringify(transitModes)}&range=${
       JSON.stringify(range)}&shipmentCounts=${JSON.stringify(shipmentCounts)}&punctualShipmentCounts=${JSON.stringify(punctualShipmentCounts)
       }&shipmentFees=${JSON.stringify(shipmentFees)}&exceptionalShipmentCounts=${JSON.stringify(exceptionalShipmentCounts)}`);
+  }
+  renderSeparationDateOption = () => {
+    const options = [];
+    for (let i = 1; i <= 28; i++) {
+      options.push(<Option value={i}>{i}日</Option>);
+    }
+    return options;
   }
   render() {
     const { query, clients, kpi, loading, loaded } = this.props;
@@ -151,6 +162,10 @@ export default class Kpi extends React.Component {
                 <MonthPicker size="large" allowClear={false} value={moment(query.beginDate)} onChange={this.handleBeginDateChange} />
                 <span>~</span>
                 <MonthPicker size="large" allowClear={false} value={moment(query.endDate)} onChange={this.handleEndDateChange} />
+                <span style={{ marginLeft: 20 }}>结算日:</span>
+                <Select style={{ width: 70, marginLeft: 5 }} value={query.separationDate} onChange={this.handleSeparationDateChange}>
+                  {this.renderSeparationDateOption()}
+                </Select>
               </div>
             </div>
             <Layout className="main-wrapper">
