@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Layout } from 'antd';
+import { Breadcrumb, Button, Layout } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/search-bar';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -37,17 +37,21 @@ export default class CWMInventoryList extends React.Component {
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Header className="top-bar">
-          <div className="toolbar-right">
-            <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
+          <Breadcrumb>
+            <Breadcrumb.Item>
+              {this.msg('inventoryManagement')}
+            </Breadcrumb.Item>
+          </Breadcrumb>
+          <div className="top-bar-tools">
+            <Button type="primary" size="large" icon="plus">
+              {this.msg('importShipments')}
+            </Button>
           </div>
-          <span>{this.msg('inventoryManagement')}</span>
         </Header>
         <Content className="main-content" key="main">
           <div className="page-body">
             <div className="toolbar">
-              <Button type="primary" icon="plus-circle-o">
-                {this.msg('importShipments')}
-              </Button>
+              <SearchBar size="large" placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
             </div>
             <div className="panel-body table-panel expandable" />
           </div>

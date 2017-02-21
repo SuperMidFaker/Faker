@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Popconfirm, Progress, message, Layout } from 'antd';
+import { Breadcrumb, Button, Popconfirm, Progress, message, Layout } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { Link } from 'react-router';
 import QueueAnim from 'rc-queue-anim';
@@ -290,17 +290,21 @@ export default class ShipmentOrderList extends React.Component {
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Header className="top-bar">
-          <span>{this.msg('shipmentOrders')}</span>
+          <Breadcrumb>
+            <Breadcrumb.Item>
+              {this.msg('shipmentOrders')}
+            </Breadcrumb.Item>
+          </Breadcrumb>
           <div className="top-bar-tools">
-            <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} size="large" />
+            <Button type="primary" size="large" icon="plus" onClick={this.handleCreate}>
+              {this.msg('new')}
+            </Button>
           </div>
         </Header>
         <Content className="main-content" key="main">
           <div className="page-body">
             <div className="toolbar">
-              <Button type="primary" size="large" icon="plus" onClick={this.handleCreate}>
-                {this.msg('new')}
-              </Button>
+              <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} size="large" />
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3>
               </div>

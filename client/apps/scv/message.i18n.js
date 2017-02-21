@@ -85,21 +85,13 @@ const messages = defineMessages({
     id: 'scv.module.products',
     defaultMessage: '产品物料',
   },
-  productsTradeItem: {
-    id: 'scv.module.products.trade.item',
-    defaultMessage: '物料归类库',
-  },
   productsSKU: {
     id: 'scv.module.products.sku',
     defaultMessage: 'SKU管理',
   },
-  productsMaterial: {
-    id: 'scv.module.products.material',
-    defaultMessage: '产品管理',
-  },
-  productsCategory: {
-    id: 'scv.module.products.category',
-    defaultMessage: '产品分类',
+  productsTradeItem: {
+    id: 'scv.module.products.trade.item',
+    defaultMessage: '物料归类库',
   },
   analytics: {
     id: 'scv.module.analytics',
@@ -116,6 +108,14 @@ const messages = defineMessages({
   settings: {
     id: 'scv.module.settings',
     defaultMessage: '设置',
+  },
+  resources: {
+    id: 'scv.module.settings.resources',
+    defaultMessage: '资源设置',
+  },
+  settingsApp: {
+    id: 'scv.module.settings.app',
+    defaultMessage: '应用设置',
   },
 });
 

@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Radio, Button, Progress, Upload, Modal, message, Layout } from 'antd';
+import { Breadcrumb, Radio, Button, Progress, Upload, Modal, message, Layout } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -349,7 +349,11 @@ export default class InboundShipmentsList extends React.Component {
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Header className="top-bar">
-          <span>{this.msg('inboundShipments')}</span>
+          <Breadcrumb>
+            <Breadcrumb.Item>
+              {this.msg('inboundShipments')}
+            </Breadcrumb.Item>
+          </Breadcrumb>
           <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">
             <RadioButton value="all">{this.msg('all')}</RadioButton>
             <RadioButton value="atorigin">{this.msg('atorigin')}</RadioButton>
@@ -360,23 +364,23 @@ export default class InboundShipmentsList extends React.Component {
             <RadioButton value="received">{this.msg('atreceived')}</RadioButton>
           </RadioGroup>
           <div className="top-bar-tools">
-            <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} size="large" />
+            <Upload accept=".xls,.xlsx" action={`${API_ROOTS.scv}v1/scv/inbound/import/shipments`}
+              data={{ tenantId: this.props.tenantId }} onChange={this.handleImport}
+              showUploadList={false} withCredentials
+            >
+              <Button size="large">
+                {this.msg('importShipments')}
+              </Button>
+            </Upload>
+            <Button type="primary" size="large" icon="plus" onClick={this.handleShipmentCreate}>
+              {this.msg('newShipment')}
+            </Button>
           </div>
         </Header>
         <Content className="main-content" key="main">
           <div className="page-body">
             <div className="toolbar">
-              <Upload accept=".xls,.xlsx" action={`${API_ROOTS.scv}v1/scv/inbound/import/shipments`}
-                data={{ tenantId: this.props.tenantId }} onChange={this.handleImport}
-                showUploadList={false} withCredentials
-              >
-                <Button type="primary" icon="plus-circle-o">
-                  {this.msg('importShipments')}
-                </Button>
-              </Upload>
-              <Button type="primary" icon="plus-circle-o" onClick={this.handleShipmentCreate}>
-                {this.msg('newShipment')}
-              </Button>
+              <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} size="large" />
             </div>
             <div className="panel-body table-panel expandable">
               <Table columns={this.columns} dataSource={this.dataSource} loading={inboundlist.loading}

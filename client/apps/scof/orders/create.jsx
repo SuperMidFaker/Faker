@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Button, message, Layout } from 'antd';
+import { Breadcrumb, Button, message, Layout } from 'antd';
 import OrderForm from './form';
 import { submitOrder } from 'common/reducers/crmOrders';
 import messages from './message.i18n';
@@ -69,7 +69,14 @@ export default class Create extends Component {
     return (
       <div>
         <Header className="top-bar">
-          <span>新建订单</span>
+          <Breadcrumb>
+            <Breadcrumb.Item>
+              {this.msg('shipmentOrders')}
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              {this.msg('createOrder')}
+            </Breadcrumb.Item>
+          </Breadcrumb>
           <div className="top-bar-tools">
             <Button size="large" type="ghost" onClick={this.handleCancelBtnClick}>
               {this.msg('cancel')}
@@ -79,10 +86,8 @@ export default class Create extends Component {
             </Button>
           </div>
         </Header>
-        <Content className="main-content">
-          <div className="page-body card-wrapper">
-            <OrderForm operation="create" />
-          </div>
+        <Content className="main-content layout-fixed-width layout-fixed-width-large">
+          <OrderForm operation="create" />
         </Content>
       </div>
     );

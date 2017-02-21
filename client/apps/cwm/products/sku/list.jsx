@@ -76,7 +76,7 @@ export default class CWMSkuList extends React.Component {
               {this.msg('productsSku')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <div className="toolbar-right">
+          <div className="top-bar-tools">
             <Button size="large" icon="cloud-upload">
               {this.msg('import')}
             </Button>
