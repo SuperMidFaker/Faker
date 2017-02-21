@@ -40,8 +40,8 @@ export default class OverTime extends React.Component {
         data: transitModes.map(item => item.mode_name),
       },
       grid: {
-        left: '3%',
-        right: '4%',
+        left: 0,
+        right: 0,
         bottom: '6%',
         containLabel: true,
       },

@@ -40,8 +40,8 @@ export default class Exceptional extends React.Component {
         data: transitModes.map(item => item.mode_name),
       },
       grid: {
-        left: '3%',
-        right: '4%',
+        left: 0,
+        right: 0,
         bottom: '6%',
         containLabel: true,
       },
@@ -109,7 +109,7 @@ export default class Exceptional extends React.Component {
         name: '运输模式',
         type: 'pie',
         radius: '55%',
-        center: ['50%', '60%'],
+        center: ['50%', '50%'],
         data: transitModes.map((item, index) => ({
           name: item.mode_name,
           value: transitModesShipmentCount[index],
