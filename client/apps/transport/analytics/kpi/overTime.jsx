@@ -103,9 +103,7 @@ export default class OverTime extends React.Component {
       toolbox: {
         show: true,
         feature: {
-          dataZoom: {},
           dataView: { readOnly: false },
-          restore: {},
           saveAsImage: {},
         },
       },

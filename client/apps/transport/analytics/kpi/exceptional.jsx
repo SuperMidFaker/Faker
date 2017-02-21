@@ -99,9 +99,7 @@ export default class Exceptional extends React.Component {
       toolbox: {
         show: true,
         feature: {
-          dataZoom: {},
           dataView: { readOnly: false },
-          restore: {},
           saveAsImage: {},
         },
       },
