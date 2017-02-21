@@ -50,8 +50,11 @@ export default class InventoryTransactionSearchForm extends React.Component {
   }
   handleStockSearch = (ev) => {
     ev.preventDefault();
-    const formData = this.props.form.getFieldsValue();
-    this.props.onSearch(formData, this.state.lot_property_checked, this.state.lot_property);
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+        this.props.onSearch(values, this.state.lot_property_checked, this.state.lot_property);
+      }
+    });
   }
   handleSearchClear = () => {
     this.props.form.resetFields();
@@ -59,11 +62,16 @@ export default class InventoryTransactionSearchForm extends React.Component {
   msg = formatMsg(this.props.intl);
   handleColumnCheck = (field, checked) => {
     this.props.checkDisplayColumn(field, checked);
+    if (!checked) {
+      this.props.form.setFieldsValue({ [field]: null });
+    }
   }
   handleLotPropertyCheck = (field, checked) => {
+    this.props.form.setFieldsValue({ [this.state.lot_property]: null });
     this.setState({ lot_property_checked: checked, lot_property: null });
   }
   handleLotRadioChange = (ev) => {
+    this.props.form.setFieldsValue({ [this.state.lot_property]: null });
     this.setState({ lot_property: ev.target.value });
   }
   render() {
@@ -108,13 +116,13 @@ export default class InventoryTransactionSearchForm extends React.Component {
         {
           this.state.lot_property === 'lot_no' &&
           <FormItem>
-            {getFieldDecorator('lot_no')(<Input placeholder={this.msg('lotNo')} />)}
+            {getFieldDecorator('lot_no', { rules: [{ required: true, message: this.msg('lotNoRequired') }] })(<Input placeholder={this.msg('lotNo')} />)}
           </FormItem>
         }
         {
           this.state.lot_property === 'serial_no' &&
           <FormItem>
-            {getFieldDecorator('serial_no')(<Input placeholder={this.msg('serialNo')} />)}
+            {getFieldDecorator('serial_no', { rules: [{ required: true, message: this.msg('serialNoRequired') }] })(<Input placeholder={this.msg('serialNo')} />)}
           </FormItem>
         }
         <FormItem>

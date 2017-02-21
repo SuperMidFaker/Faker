@@ -78,9 +78,17 @@ const messages = defineMessages({
     id: 'scv.inventory.transaction.lot.no',
     defaultMessage: '批次号',
   },
+  lotNoRequired: {
+    id: 'scv.inventory.transaction.lot.no.required',
+    defaultMessage: '批次号查询必填',
+  },
   serialNo: {
     id: 'scv.inventory.transaction.serial.no',
     defaultMessage: '序列号',
+  },
+  serialNoRequired: {
+    id: 'scv.inventory.transaction.serial.no.required',
+    defaultMessage: '序列号查询必填',
   },
   specificDate: {
     id: 'scv.inventory.transaction.specific.date',

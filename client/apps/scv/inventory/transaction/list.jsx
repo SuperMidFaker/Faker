@@ -20,8 +20,8 @@ function fetchData({ state, dispatch }) {
   proms.push(dispatch(loadStockTransactions({
     tenantId: state.account.tenantId,
     filter: JSON.stringify({ ...state.scvInventoryTransaction.listFilter,
-      start_date: new Date(),
-      end_date: new Date(),
+      start_date: moment().startOf('day').unix(),
+      end_date: moment().add(1, 'day').startOf('day').unix(),
     }),
     sorter: JSON.stringify(state.scvInventoryTransaction.sortFilter),
     pageSize: state.scvInventoryTransaction.list.pageSize,
@@ -61,17 +61,7 @@ export default class InventoryTransactionList extends React.Component {
   state = {
     lot_query: false,
     collapsed: false,
-  }
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.reload) {
-      const { tenantId, listFilter, stocklist: { pageSize } } = nextProps;
-      nextProps.loadStocks({
-        tenantId,
-        filter: JSON.stringify(listFilter),
-        pageSize,
-        current: 1,
-      });
-    }
+    rowKeys: [],
   }
   msg = formatMsg(this.props.intl);
   columns = [{
@@ -89,8 +79,7 @@ export default class InventoryTransactionList extends React.Component {
   }, {
     title: this.msg('startDate'),
     width: 80,
-    dataIndex: 'start_date',
-    render: text => moment(text).format('YYYY.MM.DD'),
+    render: () => moment.unix(this.props.listFilter.start_date).format('YYYY.MM.DD'),
   }, {
     title: this.msg('startStock'),
     width: 80,
@@ -107,14 +96,14 @@ export default class InventoryTransactionList extends React.Component {
     title: this.msg('endDate'),
     width: 80,
     dataIndex: 'end_date',
-    render: text => moment(text).format('YYYY.MM.DD'),
+    render: () => moment.unix(this.props.listFilter.end_date).format('YYYY.MM.DD'),
   }, {
     title: this.msg('endStock'),
     width: 80,
     dataIndex: 'post_stock',
   }]
   dataSource = new Table.DataSource({
-    fetcher: params => this.props.loadStocks(params),
+    fetcher: params => this.handleStockQuery(this.props.filter, params.sorter, params.current),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
       total: result.totalCount,
@@ -125,12 +114,9 @@ export default class InventoryTransactionList extends React.Component {
     }),
     getParams: (pagination, filters, sorter) => {
       const params = {
-        tenantId: this.props.tenantId,
-        pageSize: pagination.pageSize,
         current: pagination.current,
+        sorter,
       };
-      const filter = { ...this.props.listFilter, sortField: sorter.field, sortOrder: sorter.order };
-      params.filter = JSON.stringify(filter);
       return params;
     },
     remotes: this.props.stocklist,
@@ -155,12 +141,12 @@ export default class InventoryTransactionList extends React.Component {
     });
   }
   handleSearch = (searchForm, checkLotProperty) => {
-    const filter = { ...this.props.listFilter, ...searchForm };
-    if (checkLotProperty) {
-      this.state.lot_query = true;
-    } else {
-      this.state.lot_query = false;
-    }
+    const filter = {
+      wh_no: this.props.listFilter.wh_no, pageSize: this.props.listFilter.pageSize,
+      current: this.props.listFilter.current,
+      start_date: this.props.listFilter.start_date,
+      end_date: this.props.listFilter.end_date, ...searchForm };
+    this.setState({ lot_query: checkLotProperty });
     this.handleStockQuery(filter);
   }
   handleWarehouseSelect = (whno) => {
@@ -168,9 +154,14 @@ export default class InventoryTransactionList extends React.Component {
     this.handleStockQuery(filter);
   }
   handleRangeChange = (newdates) => {
-    const filter = { ...this.props.listFilter, start_date: newdates[0], end_date: newdates[1] };
+    const filter = { ...this.props.listFilter, start_date: newdates[0].unix(),
+      end_date: newdates[1].unix() };
     this.handleStockQuery(filter);
   }
+  handleRowExpand = (expands) => {
+    this.setState({ rowKeys: expands });
+  }
+  renderExpandRow = row => row.sku_no
   render() {
     const { stocklist, loading, listFilter, displayedColumns, searchOption: { warehouses } } = this.props;
     const columns = this.columns.filter(col => displayedColumns[col.dataIndex] !== false);
@@ -217,8 +208,10 @@ export default class InventoryTransactionList extends React.Component {
               }
             </Select>
             <span />
-            { !this.state.lot_query &&
-              <RangePicker size="large" onChange={this.handleRangeChange} value={[moment(listFilter.start_date), moment(listFilter.end_date)]} />
+            {!this.state.lot_query &&
+              <RangePicker size="large" onChange={this.handleRangeChange}
+                value={[moment.unix(listFilter.start_date), moment.unix(listFilter.end_date)]}
+              />
             }
             <div className="top-bar-tools">
               <Button type="primary" size="large" icon="export" ghost>
@@ -229,7 +222,10 @@ export default class InventoryTransactionList extends React.Component {
           <Content className="main-content" key="main">
             <div className="page-body">
               <div className="panel-body table-panel">
-                <Table columns={columns} dataSource={this.dataSource} loading={loading} rowKey="id" scroll={{ x: 1200 }} />
+                <Table columns={columns} dataSource={this.dataSource} loading={loading} rowKey="id" scroll={{ x: 1200 }}
+                  expandedRowRender={this.renderExpandRow} onExpandedRowsChange={this.handleRowExpand}
+                  expandedRowKeys={this.state.rowKeys}
+                />
               </div>
             </div>
           </Content>

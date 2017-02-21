@@ -12,7 +12,7 @@ const initialState = {
   list: {
     totalCount: 0,
     current: 1,
-    pageSize: 20,
+    pageSize: 10,
     data: [],
   },
   displayedColumns: {
@@ -29,6 +29,8 @@ const initialState = {
     wh_no: '_all_',
     start_date: null,
     end_date: null,
+    serial_no: '',
+    lot_no: '',
   },
   searchOption: {
     warehouses: [],
