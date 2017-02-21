@@ -87,10 +87,6 @@ export default class ModuleSCV extends React.Component {
         key: 'scv-4-3',
         path: '/scv/inventory/shipping',
         text: formatMsg(intl, 'inventoryShipping'),
-      }, {
-        key: 'scv-4-4',
-        path: '/scv/inventory/warehouse',
-        text: formatMsg(intl, 'inventoryWarehouse'),
       }],
     });
     linkMenus.push({
@@ -143,11 +139,20 @@ export default class ModuleSCV extends React.Component {
       }],
     });
     linkMenus.push({
-      single: true,
+      single: false,
       key: 'scv-8',
-      path: '/scv/settings',
       icon: 'zmdi zmdi-settings',
       text: formatMsg(intl, 'settings'),
+      sublinks: [{
+        key: 'scv-8-0',
+        path: '/scv/resources',
+        text: formatMsg(intl, 'resources'),
+      }, {
+        key: 'scv-8-1',
+        disabled: true,
+        path: '/scv/settings',
+        text: formatMsg(intl, 'settingsApp'),
+      }],
     });
     this.setState({ linkMenus });
   }

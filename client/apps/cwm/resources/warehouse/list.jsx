@@ -7,7 +7,6 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadWarehouses, loadOwnerPartners, openWhseAuthModal, openAddWarehouseModal } from 'common/reducers/scvWarehouse';
 import Table from 'client/components/remoteAntTable';
 import NavLink from 'client/components/nav-link';
-import SearchBar from 'client/components/search-bar';
 import connectNav from 'client/common/decorators/connect-nav';
 import RowUpdater from '../rowUpdater';
 import AddWarehouseModal from './addWarehouseModal';
@@ -146,9 +145,6 @@ export default class CWMWarehouseList extends React.Component {
               {this.msg('warehouse')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <div className="toolbar-right">
-            <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
-          </div>
         </Header>
         <Content className="main-content" key="main">
           <div className="page-body">
@@ -156,12 +152,12 @@ export default class CWMWarehouseList extends React.Component {
               <Sider className="nav-sider">
                 <Menu defaultSelectedKeys={['warehouse']} mode="inline">
                   <Menu.Item key="warehouse"><NavLink to="/cwm/resources/warehouse">仓库</NavLink></Menu.Item>
-                  <Menu.Item key="owner"><NavLink to="/cwm/resources/owner">货主</NavLink></Menu.Item>
-                  <Menu.Item key="vendor"><NavLink to="/cwm/resources/vendor">供应商</NavLink></Menu.Item>
-                  <Menu.Item key="consignee"><NavLink to="/cwm/resources/consignee">收货方</NavLink></Menu.Item>
+                  <Menu.Item key="owner" disabled><NavLink to="/cwm/resources/owner">货主</NavLink></Menu.Item>
+                  <Menu.Item key="vendor" disabled><NavLink to="/cwm/resources/vendor">供应商</NavLink></Menu.Item>
+                  <Menu.Item key="consignee" disabled><NavLink to="/cwm/resources/consignee">收货方</NavLink></Menu.Item>
                 </Menu>
               </Sider>
-              <Content style={{ padding: '0 24px', minHeight: 280 }}>
+              <Content className="nav-content">
                 <div className="toolbar">
                   <Button type="primary" size="large" icon="plus" onClick={this.handleAddWarehouse}>
                     {this.msg('addWarehouse')}

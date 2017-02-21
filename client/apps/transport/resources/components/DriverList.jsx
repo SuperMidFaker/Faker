@@ -140,7 +140,7 @@ function DriverList(props) {
                 <Menu.Item key="location"><NavLink to="/transport/resources/node">收发货地</NavLink></Menu.Item>
               </Menu>
             </Sider>
-            <Content style={{ padding: '0 24px', minHeight: 280 }}>
+            <Content className="nav-content">
               <div className="toolbar">
                 <PrivilegeCover module="transport" feature="resources" action="create">
                   <Button type="primary" size="large" onClick={onAddDriverBtnClicked} icon="plus-circle-o">新增司机</Button>
