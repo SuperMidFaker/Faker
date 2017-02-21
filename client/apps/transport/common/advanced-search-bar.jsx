@@ -51,6 +51,18 @@ export default class AdvancedSearchBar extends React.Component {
       this.handleSearch(fieldsValue.consigner_region, fieldsValue.consignee_region, fieldsValue);
       delete fieldsValue.consigner_region;
       delete fieldsValue.consignee_region;
+      if (fieldsValue.pickup_est_date && fieldsValue.pickup_est_date.length > 0) {
+        fieldsValue.pickup_est_date = [new Date(fieldsValue.pickup_est_date[0]), new Date(fieldsValue.pickup_est_date[1])];
+      }
+      if (fieldsValue.pickup_act_date && fieldsValue.pickup_act_date.length > 0) {
+        fieldsValue.pickup_act_date = [new Date(fieldsValue.pickup_act_date[0]), new Date(fieldsValue.pickup_act_date[1])];
+      }
+      if (fieldsValue.deliver_est_date && fieldsValue.deliver_est_date.length > 0) {
+        fieldsValue.deliver_est_date = [new Date(fieldsValue.deliver_est_date[0]), new Date(fieldsValue.deliver_est_date[1])];
+      }
+      if (fieldsValue.deliver_act_date && fieldsValue.deliver_act_date.length > 0) {
+        fieldsValue.deliver_act_date = [new Date(fieldsValue.deliver_act_date[0]), new Date(fieldsValue.deliver_act_date[1])];
+      }
       this.props.form.setFieldsValue(fieldsValue);
     }
   }
