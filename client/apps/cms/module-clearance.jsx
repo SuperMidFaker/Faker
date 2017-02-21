@@ -35,6 +35,7 @@ export default class Clearance extends React.Component {
       linkMenus.push({
         single: true,
         key: 'cms-0',
+        disabled: true,
         path: '/clearance/dashboard',
         icon: 'icon-fontello-desktop',
         text: formatMsg(intl, 'dashboard'),
@@ -138,6 +139,7 @@ export default class Clearance extends React.Component {
     linkMenus.push({
       single: false,
       key: 'cms-5',
+      disabled: true,
       icon: 'icon-ikons-bar-chart-2',
       text: formatMsg(intl, 'analytics'),
       sublinks: [{

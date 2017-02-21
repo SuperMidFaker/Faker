@@ -114,12 +114,13 @@ export default class CollapsibleSiderLayout extends React.Component {
             {
               links.map((link) => {
                 if (link.single) {
-                  return (<MenuItem key={link.key}>
-                    <NavLink to={link.path}>
-                      <i className={`icon ${link.icon}`} />
-                      <span className="nav-text">{link.text}</span>
-                    </NavLink>
-                  </MenuItem>);
+                  return (
+                    <MenuItem key={link.key} disabled={link.disabled}>
+                      <NavLink to={link.path}>
+                        <i className={`icon ${link.icon}`} />
+                        <span className="nav-text">{link.text}</span>
+                      </NavLink>
+                    </MenuItem>);
                 } else {
                   let subMenuItems;
                   const isGrouped = link.sublinks.filter(sub => sub.group).length === link.sublinks.length;
@@ -155,14 +156,17 @@ export default class CollapsibleSiderLayout extends React.Component {
                       </MenuItemGroup>
                     ));
                   } else {
-                    subMenuItems = link.sublinks.map(sub => (<MenuItem key={sub.key}>
-                      <NavLink to={sub.path}>
-                        <span className="nav-text">{sub.text}</span>
-                      </NavLink>
-                    </MenuItem>));
+                    subMenuItems = link.sublinks.map(sub => (
+                      <MenuItem key={sub.key} disabled={sub.disabled}>
+                        <NavLink to={sub.path}>
+                          <span className="nav-text">{sub.text}</span>
+                        </NavLink>
+                      </MenuItem>));
                   }
                   return (
-                    <SubMenu key={link.key} className={this.state.openedKey[0] === link.key ? 'ant-menu-submenu-selected' : ''}
+                    <SubMenu key={link.key}
+                      disabled={link.disabled}
+                      className={this.state.openedKey[0] === link.key ? 'ant-menu-submenu-selected' : ''}
                       title={<div><i className={`icon ${link.icon}`} /><span className="nav-text">{link.text}</span></div>}
                     >
                       { subMenuItems }

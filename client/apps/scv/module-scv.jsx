@@ -22,6 +22,7 @@ export default class ModuleSCV extends React.Component {
     const linkMenus = [];
     linkMenus.push({
       single: true,
+      disabled: true,
       key: 'scv-0',
       path: '/scv/dashboard',
       icon: 'icon-fontello-gauge',
@@ -50,18 +51,22 @@ export default class ModuleSCV extends React.Component {
       text: formatMsg(intl, 'clearance'),
       sublinks: [{
         key: 'scv-3-0',
+        disabled: true,
         path: '/scv/clearance/manifest',
         text: formatMsg(intl, 'clearanceManifest'),
       }, {
         key: 'scv-3-1',
+        disabled: true,
         path: '/scv/clearance/cds',
         text: formatMsg(intl, 'clearanceCDS'),
       }, {
         key: 'scv-3-2',
+        disabled: true,
         path: '/scv/clearance/ftz',
         text: formatMsg(intl, 'clearanceFTZ'),
       }, {
         key: 'scv-3-3',
+        disabled: true,
         path: '/scv/clearance/tax',
         text: formatMsg(intl, 'clearanceTax'),
       }],
@@ -107,6 +112,7 @@ export default class ModuleSCV extends React.Component {
     linkMenus.push({
       single: false,
       key: 'scv-6',
+      disabled: true,
       icon: 'icon-fontello-money-1',
       text: formatMsg(intl, 'billing'),
       sublinks: [{
@@ -126,6 +132,7 @@ export default class ModuleSCV extends React.Component {
     linkMenus.push({
       single: false,
       key: 'scv-7',
+      disabled: true,
       icon: 'icon-ikons-bar-chart-2',
       text: formatMsg(intl, 'analytics'),
       sublinks: [{

@@ -23,6 +23,7 @@ export default class ModuleCRM extends React.Component {
     linkMenus.push({
       single: true,
       key: 'crm-1',
+      disabled: true,
       path: '/scof/dashboard',
       icon: 'icon-fontello-gauge',
       text: formatMsg(intl, 'dashboard'),
@@ -60,6 +61,7 @@ export default class ModuleCRM extends React.Component {
     linkMenus.push({
       single: true,
       key: 'crm-5',
+      disabled: true,
       path: '/scof/reports',
       icon: 'icon-ikons-bar-chart-2',
       text: formatMsg(intl, 'reports'),
@@ -67,6 +69,7 @@ export default class ModuleCRM extends React.Component {
     linkMenus.push({
       single: true,
       key: 'crm-6',
+      disabled: true,
       path: '/scof/settings',
       icon: 'zmdi zmdi-settings',
       text: formatMsg(intl, 'settings'),

@@ -13,9 +13,29 @@ const messages = defineMessages({
     id: 'open.platform.webhook.desc',
     defaultMessage: '提醒目标Webhook方便企业将业务事件提醒发送至外部第三方系统，以实现更实时的数据交换，业务流程驱动。',
   },
+  integration: {
+    id: 'open.platform.integration',
+    defaultMessage: '应用整合',
+  },
   integrationDesc: {
     id: 'open.platform.integration.desc',
     defaultMessage: '微骆平台提供了与主流关务软件、口岸信息平台的对接能力，企业用户可以通过配置对接参数，快速实现系统整合。',
+  },
+  appsStore: {
+    id: 'open.platform.integration.apps.store',
+    defaultMessage: '应用中心',
+  },
+  installedApps: {
+    id: 'open.platform.integration.installed.apps',
+    defaultMessage: '已安装应用',
+  },
+  appAmberRoadCTM: {
+    id: 'open.platform.integration.app.arctm',
+    defaultMessage: 'AmberRoad CTM',
+  },
+  appEasipassEDI: {
+    id: 'open.platform.integration.app.easipass',
+    defaultMessage: '亿通海关EDI申报',
   },
 });
 
