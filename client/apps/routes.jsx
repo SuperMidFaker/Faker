@@ -21,6 +21,8 @@ import * as Network from './network';
 import PackOpenPlatform from './open/packOpenPlatform';
 import * as OpenAPI from './open/api';
 import * as OpenIntegration from './open/integration';
+import * as OpenArCTM from './open/integration/arctm';
+import * as OpenEasipassEDI from './open/integration/easipass';
 import Module from './module';
 import TMS from './transport/module-transport';
 import * as TMSDashboard from './transport/dashboard';
@@ -157,6 +159,14 @@ export default(store, cookie) => {
           <Route path="integration">
             <Route path="apps" component={OpenIntegration.AppsList} />
             <Route path="installed" component={OpenIntegration.InstalledList} />
+            <Route path="arctm">
+              <Route path="install" component={OpenArCTM.Install} />
+              <Route path="config/:id" component={OpenArCTM.Config} />
+            </Route>
+            <Route path="easipass">
+              <Route path="install" component={OpenEasipassEDI.Install} />
+              <Route path="config/:id" component={OpenEasipassEDI.Config} />
+            </Route>
           </Route>
         </Route>
         <Route path="corp" component={Corp}>

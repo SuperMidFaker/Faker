@@ -77,7 +77,7 @@ export default class WebhookList extends React.Component {
               提醒目标Webhook
             </Breadcrumb.Item>
           </Breadcrumb>
-          <div className="toolbar-right" />
+          <div className="top-bar-tools" />
         </Header>
         <Content className="main-content">
           <Alert

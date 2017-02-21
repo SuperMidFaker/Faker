@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Breadcrumb, Icon, Layout, Table } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
+import NavLink from 'client/components/nav-link';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 
@@ -39,9 +40,13 @@ export default class InstalledAppsList extends React.Component {
     title: this.msg('integrationName'),
     dataIndex: 'integration_name',
   }, {
-    title: this.msg('relatedPartner'),
+    title: this.msg('integraionApp'),
+    dataIndex: 'integration_app',
+    width: 200,
+  }, {
+    title: this.msg('scope'),
     width: 400,
-    dataIndex: 'related_partner',
+    dataIndex: 'scope',
   }, {
     title: this.msg('incomingStatus'),
     dataIndex: 'incoming_status',
@@ -55,7 +60,7 @@ export default class InstalledAppsList extends React.Component {
     width: 100,
     render: () => (
       <span>
-        <a href="#">修改</a>
+        <NavLink to="/open/integration/arctm/config/asdasfasdfadfsaf">配置</NavLink>
         <span className="ant-divider" />
         <a href="#">停用</a>
       </span>
@@ -63,8 +68,15 @@ export default class InstalledAppsList extends React.Component {
   }];
 
   mockDataSource = [{
-    integration_name: 'Amber Road CTM',
-    related_partner: '西门子贸易',
+    integration_name: '西门子CTM接口',
+    integration_app: 'AmberRoad CTM',
+    scope: '西门子贸易',
+    incoming_status: '正常',
+    outgoing_status: '异常',
+  }, {
+    integration_name: '茂鸿国际EDI接口',
+    integration_app: 'EasypassEDI',
+    scope: '全局',
     incoming_status: '正常',
     outgoing_status: '异常',
   },
@@ -82,7 +94,7 @@ export default class InstalledAppsList extends React.Component {
               已安装应用
             </Breadcrumb.Item>
           </Breadcrumb>
-          <div className="toolbar-right" />
+          <div className="top-bar-tools" />
         </Header>
         <Content className="main-content">
           <div className="page-body">

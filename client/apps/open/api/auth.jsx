@@ -81,7 +81,7 @@ export default class ApiAuthList extends React.Component {
               API接口授权
             </Breadcrumb.Item>
           </Breadcrumb>
-          <div className="toolbar-right" />
+          <div className="top-bar-tools" />
         </Header>
         <Content className="main-content">
           <Alert
