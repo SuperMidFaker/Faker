@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import { Card, Row, Col, Spin } from 'antd';
 import echarts from 'echarts';
+import { getSelectedModesObject } from 'common/reducers/transportKpi';
 
 @injectIntl
 export default class OverTime extends React.Component {
@@ -10,6 +11,8 @@ export default class OverTime extends React.Component {
     kpi: PropTypes.object.isRequired,
     loading: PropTypes.bool.isRequired,
     loaded: PropTypes.bool.isRequired,
+    onModesChange: PropTypes.func.isRequired,
+    modes: PropTypes.array.isRequired,
   }
   componentDidMount() {
     this.initializeCharts(this.props);
@@ -38,10 +41,11 @@ export default class OverTime extends React.Component {
       legend: {
         bottom: 0,
         data: transitModes.map(item => item.mode_name),
+        selected: getSelectedModesObject(transitModes, props.modes),
       },
       grid: {
         left: 0,
-        right: 0,
+        right: '3%',
         bottom: '6%',
         containLabel: true,
       },
@@ -168,6 +172,15 @@ export default class OverTime extends React.Component {
     if (window) {
       const barChart = echarts.init(window.document.getElementById('bar-chart-overtime'));
       barChart.setOption(barOption);
+      barChart.on('legendselectchanged', (legend) => {
+        const currentModes = [];
+        transitModes.forEach((item) => {
+          if (legend.selected[item.mode_name]) {
+            currentModes.push(item);
+          }
+        });
+        this.props.onModesChange({ overTime: currentModes });
+      });
       const pieChart = echarts.init(window.document.getElementById('pie-chart-overtime'));
       pieChart.setOption(pieOption);
     }
@@ -176,14 +189,14 @@ export default class OverTime extends React.Component {
   render() {
     return (
       <Row gutter={24}>
-        <Col sm={24} md={12}>
+        <Col sm={24} md={13}>
           <Spin spinning={this.props.loading}>
             <Card>
               <div id="bar-chart-overtime" style={{ width: '100%', height: '450px' }} />
             </Card>
           </Spin>
         </Col>
-        <Col sm={24} md={12}>
+        <Col sm={24} md={11}>
           <Spin spinning={this.props.loading}>
             <Card>
               <div id="pie-chart-overtime" style={{ width: '100%', height: '450px' }} />

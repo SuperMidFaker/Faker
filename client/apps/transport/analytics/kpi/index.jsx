@@ -4,8 +4,8 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Breadcrumb, Layout, Select, DatePicker, Button, Menu } from 'antd';
-import { loadKpi } from 'common/reducers/transportKpi';
+import { Breadcrumb, Layout, Select, DatePicker, Button, Menu, Dropdown, Icon } from 'antd';
+import { loadKpi, changeModes } from 'common/reducers/transportKpi';
 import { loadFormRequire } from 'common/reducers/shipment';
 import TrafficVolume from './trafficVolume';
 import Punctual from './punctual';
@@ -47,8 +47,9 @@ function fetchData({ cookie, state, dispatch }) {
     clients: state.shipment.formRequire.clients,
     loading: state.transportKpi.loading,
     loaded: state.transportKpi.loaded,
+    modes: state.transportKpi.modes,
   }),
-  { loadKpi }
+  { loadKpi, changeModes }
 )
 export default class Kpi extends React.Component {
   static propTypes = {
@@ -60,9 +61,19 @@ export default class Kpi extends React.Component {
     clients: PropTypes.array.isRequired,
     loading: PropTypes.bool.isRequired,
     loaded: PropTypes.bool.isRequired,
+    changeModes: PropTypes.func.isRequired,
+    modes: PropTypes.object.isRequired,
   }
   state = {
     selectedKey: '1',
+  }
+  shouldComponentUpdate(nextProps, nextState) {
+    const np = { ...nextProps };
+    const tp = { ...this.props };
+    delete np.modes;
+    delete tp.modes;
+    if (JSON.stringify(np) === JSON.stringify(tp) && JSON.stringify(nextState) === JSON.stringify(this.state)) return false;
+    return true;
   }
   handleCustomerChange = (partnerId) => {
     const { tenantId, query } = this.props;
@@ -90,11 +101,22 @@ export default class Kpi extends React.Component {
   handleMenuChange = (e) => {
     this.setState({ selectedKey: e.key });
   }
-  handleExportExcel = () => {
+  handleExportExcel = (type) => {
+    const { modes } = this.props;
     const { transitModes, range, shipmentCounts, punctualShipmentCounts, shipmentFees, exceptionalShipmentCounts } = this.props.kpi;
     window.open(`${API_ROOTS.default}v1/transport/kpi/exportExcel/${createFilename('KPI')}.xlsx?transitModes=${JSON.stringify(transitModes)}&range=${
       JSON.stringify(range)}&shipmentCounts=${JSON.stringify(shipmentCounts)}&punctualShipmentCounts=${JSON.stringify(punctualShipmentCounts)
-      }&shipmentFees=${JSON.stringify(shipmentFees)}&exceptionalShipmentCounts=${JSON.stringify(exceptionalShipmentCounts)}`);
+      }&shipmentFees=${JSON.stringify(shipmentFees)}&exceptionalShipmentCounts=${JSON.stringify(exceptionalShipmentCounts)}&modes=${JSON.stringify(modes)
+      }&type=${type}`);
+  }
+  handleModesChange = (modes) => {
+    this.props.changeModes(modes);
+  }
+  handleExportClick = (e) => {
+    let type = -1;
+    if (e.key === '1') type = -1;
+    else if (e.key === '2') type = this.state.selectedKey;
+    this.handleExportExcel(type);
   }
   renderSeparationDateOption = () => {
     const options = [];
@@ -104,20 +126,26 @@ export default class Kpi extends React.Component {
     return options;
   }
   render() {
-    const { query, clients, kpi, loading, loaded } = this.props;
+    const { query, clients, kpi, loading, loaded, modes } = this.props;
     const { selectedKey } = this.state;
     let content = (<span />);
     if (selectedKey === '1') {
-      content = (<Punctual kpi={kpi} loading={loading} loaded={loaded} />);
+      content = (<Punctual kpi={kpi} loading={loading} loaded={loaded} modes={modes.punctual} onModesChange={this.handleModesChange} />);
     } else if (selectedKey === '2') {
-      content = (<OverTime kpi={kpi} loading={loading} loaded={loaded} />);
+      content = (<OverTime kpi={kpi} loading={loading} loaded={loaded} modes={modes.overTime} onModesChange={this.handleModesChange} />);
     } else if (selectedKey === '3') {
-      content = (<TrafficVolume kpi={kpi} loading={loading} loaded={loaded} />);
+      content = (<TrafficVolume kpi={kpi} loading={loading} loaded={loaded} modes={modes.volume} onModesChange={this.handleModesChange} />);
     } else if (selectedKey === '4') {
-      content = (<Fees kpi={kpi} loading={loading} loaded={loaded} />);
+      content = (<Fees kpi={kpi} loading={loading} loaded={loaded} modes={modes.fees} onModesChange={this.handleModesChange} />);
     } else if (selectedKey === '5') {
-      content = (<Exceptional kpi={kpi} loading={loading} loaded={loaded} />);
+      content = (<Exceptional kpi={kpi} loading={loading} loaded={loaded} modes={modes.exception} onModesChange={this.handleModesChange} />);
     }
+    const menu = (
+      <Menu onClick={this.handleExportClick}>
+        <Menu.Item key="1">导出全部</Menu.Item>
+        <Menu.Item key="2">导出当前</Menu.Item>
+      </Menu>
+    );
     return (
       <div>
         <Header className="top-bar">
@@ -130,7 +158,11 @@ export default class Kpi extends React.Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="top-bar-tools">
-            <Button size="large" type="primary" onClick={this.handleExportExcel}>导出全部</Button>
+            <Dropdown overlay={menu}>
+              <Button style={{ marginLeft: 8 }}>
+                导出 <Icon type="down" />
+              </Button>
+            </Dropdown>
           </div>
         </Header>
         <Content className="main-content">
