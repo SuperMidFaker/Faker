@@ -94,16 +94,16 @@ export default class TradeItemList extends Component {
     dataIndex: 'element',
     width: 400,
   }, {
-    title: this.msg('gUnitGen'),
-    dataIndex: 'g_unit_gen',
+    title: this.msg('gUnit1'),
+    dataIndex: 'g_unit_1',
     width: 120,
   }, {
-    title: this.msg('gUnitFtz'),
-    dataIndex: 'g_unit_ftz',
+    title: this.msg('gUnit2'),
+    dataIndex: 'g_unit_2',
     width: 120,
   }, {
-    title: this.msg('gUnitSpec'),
-    dataIndex: 'g_unit_spec',
+    title: this.msg('gUnit3'),
+    dataIndex: 'g_unit_3',
     width: 120,
   }, {
     title: this.msg('unit1'),

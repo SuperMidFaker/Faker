@@ -18,7 +18,7 @@ const formItemLayout = {
 function getFieldInits(formData) {
   const init = {};
   if (formData) {
-    ['cop_product_no', 'hscode', 'g_name', 'g_model', 'element', 'g_unit_ftz', 'g_unit_gen', 'g_unit_spec',
+    ['cop_product_no', 'hscode', 'g_name', 'g_model', 'element', 'g_unit_1', 'g_unit_2', 'g_unit_3',
       'unit_1', 'unit_2', 'fixed_unit', 'origin_country', 'customs_control', 'inspection_quarantine',
       'currency', 'pre_classify_no', 'remark',
     ].forEach((fd) => {
@@ -33,6 +33,7 @@ function getFieldInits(formData) {
 @injectIntl
 @connect(
   state => ({
+    tenantId: state.account.tenantId,
     currencies: state.cmsTradeitem.params.currencies.map(cr => ({
       value: cr.curr_code,
       text: cr.curr_name,
@@ -53,6 +54,7 @@ function getFieldInits(formData) {
 export default class BasicForm extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
+    tenantId: PropTypes.number.isRequired,
     form: PropTypes.object.isRequired,
     fieldInits: PropTypes.object.isRequired,
     currencies: PropTypes.array,
@@ -87,6 +89,7 @@ export default class BasicForm extends Component {
   handleSearch = (value) => {
     const { hscodes } = this.props;
     this.props.loadHscodes({
+      tenantId: this.props.tenantId,
       pageSize: hscodes.pageSize,
       current: hscodes.current,
       searchText: value,
@@ -192,9 +195,9 @@ export default class BasicForm extends Component {
           </Row>
           <Row>
             <Col sm={24} lg={8}>
-              <FormItem label={this.msg('gUnitGen')} {...formItemLayout}>
-                {getFieldDecorator('g_unit_gen', {
-                  initialValue: fieldInits.g_unit_gen,
+              <FormItem label={this.msg('gUnit1')} {...formItemLayout}>
+                {getFieldDecorator('g_unit_1', {
+                  initialValue: fieldInits.g_unit_1,
                 })(<Select>
                   {
                     units.map(gt =>
@@ -205,9 +208,9 @@ export default class BasicForm extends Component {
               </FormItem>
             </Col>
             <Col sm={24} lg={8}>
-              <FormItem label={this.msg('gUnitFtz')} {...formItemLayout}>
-                {getFieldDecorator('g_unit_ftz', {
-                  initialValue: fieldInits.g_unit_ftz,
+              <FormItem label={this.msg('gUnit2')} {...formItemLayout}>
+                {getFieldDecorator('g_unit_2', {
+                  initialValue: fieldInits.g_unit_2,
                 })(<Select>
                   {
                     units.map(gt =>
@@ -218,9 +221,9 @@ export default class BasicForm extends Component {
               </FormItem>
             </Col>
             <Col sm={24} lg={8}>
-              <FormItem label={this.msg('gUnitSpec')} {...formItemLayout}>
-                {getFieldDecorator('g_unit_spec', {
-                  initialValue: fieldInits.g_unit_spec,
+              <FormItem label={this.msg('gUnit3')} {...formItemLayout}>
+                {getFieldDecorator('g_unit_3', {
+                  initialValue: fieldInits.g_unit_3,
                 })(<Select>
                   {
                     units.map(gt =>

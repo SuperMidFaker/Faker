@@ -52,9 +52,7 @@ export default class AcceptanceCreate extends Component {
       if (!errors) {
         const value = this.props.form.getFieldsValue();
         const item = { ...this.props.itemData, ...value };
-        this.props.itemEditedSave({
-          item, tenantId: this.props.tenantId,
-        }).then((result) => {
+        this.props.itemEditedSave({ item }).then((result) => {
           if (result.error) {
             message.error(result.error.message);
           } else {

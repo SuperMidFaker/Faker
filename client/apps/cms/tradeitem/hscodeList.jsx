@@ -83,6 +83,7 @@ function buildTipItems(str, b) {
 function fetchData({ state, dispatch }) {
   const promises = [];
   promises.push(dispatch(loadHscodes({
+    tenantId: state.account.tenantId,
     pageSize: state.cmsTradeitem.hscodes.pageSize,
     current: state.cmsTradeitem.hscodes.current,
     searchText: state.cmsTradeitem.hscodes.searchText,
@@ -125,6 +126,7 @@ export default class HscodeList extends Component {
     }),
     getParams: (pagination) => {
       const params = {
+        tenantId: this.props.tenantId,
         pageSize: pagination.pageSize,
         current: pagination.current,
         searchText: this.props.hscodes.searchText,
@@ -208,15 +210,15 @@ export default class HscodeList extends Component {
     className: 'hscode-list-right',
   }, {
     title: '申报单位一',
-    dataIndex: 'g_unit_gen',
+    dataIndex: 'g_unit_1',
     width: 100,
   }, {
     title: '申报单位二',
-    dataIndex: 'g_unit_ftz',
+    dataIndex: 'g_unit_2',
     width: 100,
   }, {
     title: '申报单位三',
-    dataIndex: 'g_unit_spec',
+    dataIndex: 'g_unit_3',
     width: 100,
   }];
   toggle = () => {
@@ -227,6 +229,7 @@ export default class HscodeList extends Component {
   handleSearch = (value) => {
     const { hscodes } = this.props;
     this.props.loadHscodes({
+      tenantId: this.props.tenantId,
       pageSize: hscodes.pageSize,
       current: hscodes.current,
       searchText: value,
@@ -234,7 +237,7 @@ export default class HscodeList extends Component {
   }
   handleMenuClick = (e) => {
     if (e.key === 'model') {
-      window.open(`${API_ROOTS.default}v1/cms/cmsTradeitem/hscode/model/download/${createFilename('tradeItemModel')}.xlsx`);
+      window.open(`${API_ROOTS.default}v1/cms/cmsTradeitem/hscode/model/download/${createFilename('hsUnitModel')}.xlsx`);
     }
   }
   handleUploaded = () => {
@@ -247,7 +250,7 @@ export default class HscodeList extends Component {
     const menu = (
       <Menu onClick={this.handleMenuClick}>
         <Menu.Item key="importData">
-          <ExcelUpload endpoint={`${API_ROOTS.default}v1/cms/cmsTradeitem/hscode/import`}
+          <ExcelUpload endpoint={`${API_ROOTS.default}v1/cms/cmsTradeitem/hscode/import/gunit`}
             formData={{
               data: JSON.stringify({
                 tenant_id: this.props.tenantId,

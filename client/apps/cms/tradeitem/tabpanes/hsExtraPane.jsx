@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { Tabs } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { setPaneTabkey } from 'common/reducers/cmsTradeitem';
-import DeclUnitPane from './declUnitPane';
 
 const TabPane = Tabs.TabPane;
 
@@ -25,9 +24,7 @@ export default class HsExtraPanel extends React.Component {
   render() {
     return (
       <Tabs tabPosition="left" activeKey={this.props.tabKey} onChange={this.handleTabChange} >
-        <TabPane tab="申报单位" key="declunit" >
-          <DeclUnitPane />
-        </TabPane>
+        <TabPane tab="申报单位" key="declunit" />
       </Tabs>
     );
   }
