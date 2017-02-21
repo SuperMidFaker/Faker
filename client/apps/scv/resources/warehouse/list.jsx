@@ -1,17 +1,17 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Layout } from 'antd';
+import { Breadcrumb, Button, Layout, Menu } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadWarehouses, openAddWarehouseModal } from 'common/reducers/scvWarehouse';
 import Table from 'client/components/remoteAntTable';
-import SearchBar from 'client/components/search-bar';
+import NavLink from 'client/components/nav-link';
 import connectNav from 'client/common/decorators/connect-nav';
 import AddWarehouseModal from './addWarehouseModal';
 import { formatMsg } from './message.i18n';
 
-const { Header, Content } = Layout;
+const { Header, Content, Sider } = Layout;
 function fetchData({ state, dispatch }) {
   return dispatch(loadWarehouses({
     tenantId: state.account.tenantId,
@@ -109,7 +109,8 @@ export default class SCVWarehouseList extends React.Component {
     this.props.openAddWarehouseModal();
   }
   render() {
-    this.dataSource.remotes = this.props.warehouselist;
+    const { loading, warehouselist } = this.props;
+    this.dataSource.remotes = warehouselist;
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Header className="top-bar">
@@ -118,20 +119,29 @@ export default class SCVWarehouseList extends React.Component {
               {this.msg('inventoryWarehouse')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <div className="toolbar-right">
-            <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
-          </div>
         </Header>
         <Content className="main-content" key="main">
           <div className="page-body">
-            <div className="toolbar">
-              <Button type="primary" icon="plus" onClick={this.handleAddWarehouse}>
-                {this.msg('addWarehouse')}
-              </Button>
-            </div>
-            <div className="panel-body table-panel">
-              <Table columns={this.columns} dataSource={this.dataSource} rowKey="id" scroll={{ x: 1200 }} />
-            </div>
+            <Layout className="main-wrapper">
+              <Sider className="nav-sider">
+                <Menu defaultSelectedKeys={['warehouse']} mode="inline">
+                  <Menu.Item key="warehouse"><NavLink to="/scv/resources/warehouse">仓库</NavLink></Menu.Item>
+                  <Menu.Item key="broker" disabled><NavLink to="/scv/resources/broker">报关行</NavLink></Menu.Item>
+                  <Menu.Item key="forwarder" disabled><NavLink to="/scv/resources/forwarder">货代</NavLink></Menu.Item>
+                  <Menu.Item key="supplier" disabled><NavLink to="/scv/resources/supplier">供应商</NavLink></Menu.Item>
+                </Menu>
+              </Sider>
+              <Content className="nav-content">
+                <div className="toolbar">
+                  <Button type="primary" size="large" icon="plus" onClick={this.handleAddWarehouse}>
+                    {this.msg('addWarehouse')}
+                  </Button>
+                </div>
+                <div className="panel-body table-panel">
+                  <Table columns={this.columns} dataSource={this.dataSource} loading={loading} rowKey="wh_no" scroll={{ x: 1200 }} />
+                </div>
+              </Content>
+            </Layout>
           </div>
           <AddWarehouseModal />
         </Content>

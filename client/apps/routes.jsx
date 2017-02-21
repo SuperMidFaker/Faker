@@ -70,13 +70,13 @@ import * as SCVInventoryStock from './scv/inventory/stock';
 import * as SCVInventoryTransaction from './scv/inventory/transaction';
 import * as SCVReceivingNotice from './scv/inventory/receiving';
 import * as SCVShippingOrder from './scv/inventory/shipping';
-import * as SCVInventoryWarehouse from './scv/inventory/warehouse';
 import * as SCVProductsSku from './scv/products/sku';
 import * as SCVProductsTradeItem from './scv/products/tradeitem';
 import * as SCVPaymentsTax from './scv/payments/tax';
 import * as SCVPaymentsBilling from './scv/payments/billing';
 import * as SCVAnalyticsKpi from './scv/analytics/kpi';
 import * as SCVAnalyticsCost from './scv/analytics/cost';
+import * as SCVWarehouse from './scv/resources/warehouse';
 import * as SCVSettings from './scv/settings';
 import scof from './scof/module-scof';
 import * as SCOFDashboard from './scof/dashboard';
@@ -344,7 +344,6 @@ export default(store, cookie) => {
                 <IndexRoute component={SCVShippingOrder.List} />
                 <Route path="create" component={SCVShippingOrder.Create} />
               </Route>
-              <Route path="warehouse" component={SCVInventoryWarehouse.List} />
             </Route>
             <Route path="payments">
               <Route path="tax" component={SCVPaymentsTax.List} />
@@ -361,6 +360,10 @@ export default(store, cookie) => {
             <Route path="analytics">
               <Route path="kpi" component={SCVAnalyticsKpi.List} />
               <Route path="cost" component={SCVAnalyticsCost.List} />
+            </Route>
+            <Route path="resources">
+              <IndexRedirect to="/scv/resources/warehouse" />
+              <Route path="warehouse" component={SCVWarehouse.List} />
             </Route>
             <Route path="settings">
               <IndexRedirect to="/scv/settings/openapi" />

@@ -110,7 +110,7 @@ export default class UnitList extends Component {
                   <Menu.Item key="unit"><NavLink to="/clearance/resources/unit">经营单位</NavLink></Menu.Item>
                 </Menu>
               </Sider>
-              <Content style={{ padding: '0 24px', minHeight: 280 }}>
+              <Content className="nav-content">
                 <div className="toolbar">
                   <PrivilegeCover module="clearance" feature="resources" action="create">
                     <Button type="primary" size="large" onClick={() => onAddBtnClicked(type)} icon="plus-circle-o">新增</Button>
