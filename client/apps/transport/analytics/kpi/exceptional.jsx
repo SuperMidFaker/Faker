@@ -29,7 +29,7 @@ export default class Exceptional extends React.Component {
     window.$(window).unbind('resize');
   }
   initializeCharts = (props) => {
-    const { transitModes, range, exceptionalShipmentCounts } = props.kpi;
+    const { exceptionTypes, range, exceptionalShipmentCounts } = props.kpi;
     const barOption = {
       title: { text: '票数', textStyle: { fontSize: 14 } },
       tooltip: {
@@ -40,8 +40,8 @@ export default class Exceptional extends React.Component {
       },
       legend: {
         bottom: 0,
-        data: transitModes.map(item => item.mode_name),
-        selected: getSelectedModesObject(transitModes, props.modes),
+        data: exceptionTypes.map(item => item.name),
+        selected: getSelectedModesObject(exceptionTypes, props.modes, 'name'),
       },
       grid: {
         left: 0,
@@ -70,8 +70,8 @@ export default class Exceptional extends React.Component {
           type: 'value',
         },
       ],
-      series: transitModes.map((item, index) => ({
-        name: item.mode_name,
+      series: exceptionTypes.map((item, index) => ({
+        name: item.name,
         type: 'bar',
         label: {
           normal: {
@@ -92,7 +92,7 @@ export default class Exceptional extends React.Component {
       legend: {
         x: 'center',
         bottom: 0,
-        data: transitModes.map(item => item.mode_name),
+        data: exceptionTypes.map(item => item.name),
       },
       grid: {
         left: '3%',
@@ -112,8 +112,8 @@ export default class Exceptional extends React.Component {
         type: 'pie',
         radius: '55%',
         center: ['50%', '50%'],
-        data: transitModes.map((item, index) => ({
-          name: item.mode_name,
+        data: exceptionTypes.map((item, index) => ({
+          name: item.name,
           value: transitModesShipmentCount[index],
         })),
         itemStyle: {
@@ -137,8 +137,8 @@ export default class Exceptional extends React.Component {
       barChart.setOption(barOption);
       barChart.on('legendselectchanged', (legend) => {
         const currentModes = [];
-        transitModes.forEach((item) => {
-          if (legend.selected[item.mode_name]) {
+        exceptionTypes.forEach((item) => {
+          if (legend.selected[item.name]) {
             currentModes.push(item);
           }
         });

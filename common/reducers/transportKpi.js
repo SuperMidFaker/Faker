@@ -21,6 +21,7 @@ const initialState = {
     punctualShipmentCounts: [],
     shipmentFees: [],
     exceptionalShipmentCounts: [],
+    exceptionTypes: [],
   },
   modes: {
     punctual: [],
@@ -48,7 +49,7 @@ export default function reducer(state = initialState, action) {
           overTime: action.result.data.transitModes,
           volume: action.result.data.transitModes,
           fees: action.result.data.transitModes,
-          exception: action.result.data.transitModes,
+          exception: action.result.data.exceptionTypes,
         },
       };
     case actionTypes.CHANGE_MODES: {
@@ -81,13 +82,13 @@ export function changeModes(modes) {
   };
 }
 
-export function getSelectedModesObject(transitModes, modes) {
+export function getSelectedModesObject(transitModes, modes, field = 'mode_name') {
   const m = {};
   transitModes.forEach((item) => {
-    if (modes.find(item1 => item.mode_name === item1.mode_name)) {
-      m[item.mode_name] = true;
+    if (modes.find(item1 => item[field] === item1[field])) {
+      m[item[field]] = true;
     } else {
-      m[item.mode_name] = false;
+      m[item[field]] = false;
     }
   });
   return m;

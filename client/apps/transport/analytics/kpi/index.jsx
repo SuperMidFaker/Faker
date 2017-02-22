@@ -175,10 +175,14 @@ export default class Kpi extends React.Component {
                 placeholder="选择一个客户"
                 optionFilterProp="children"
                 onChange={this.handleCustomerChange}
-                allowClear
+                value={query.partnerId}
               >
                 {
-                    clients.map(pt => (
+                    [{
+                      partner_code: '',
+                      name: '所有客户',
+                      partner_id: -1,
+                    }].concat(clients).map(pt => (
                       <Option searched={`${pt.partner_code}${pt.name}`}
                         value={pt.partner_id} key={pt.partner_id}
                       >

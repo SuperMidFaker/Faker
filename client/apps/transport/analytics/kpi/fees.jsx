@@ -41,7 +41,7 @@ export default class Fees extends React.Component {
       legend: {
         bottom: 0,
         data: transitModes.map(item => item.mode_name),
-        selected: getSelectedModesObject(transitModes, props.modes),
+        selected: getSelectedModesObject(transitModes, props.modes, 'mode_name'),
       },
       grid: {
         left: 0,

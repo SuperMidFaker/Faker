@@ -52,16 +52,24 @@ export default class AdvancedSearchBar extends React.Component {
       delete fieldsValue.consigner_region;
       delete fieldsValue.consignee_region;
       if (fieldsValue.pickup_est_date && fieldsValue.pickup_est_date.length > 0) {
-        fieldsValue.pickup_est_date = [new Date(fieldsValue.pickup_est_date[0]), new Date(fieldsValue.pickup_est_date[1])];
+        fieldsValue.pickup_est_date = [moment(fieldsValue.pickup_est_date[0]), moment(fieldsValue.pickup_est_date[1])];
+      } else {
+        delete fieldsValue.pickup_est_date;
       }
       if (fieldsValue.pickup_act_date && fieldsValue.pickup_act_date.length > 0) {
-        fieldsValue.pickup_act_date = [new Date(fieldsValue.pickup_act_date[0]), new Date(fieldsValue.pickup_act_date[1])];
+        fieldsValue.pickup_act_date = [moment(fieldsValue.pickup_act_date[0]), moment(fieldsValue.pickup_act_date[1])];
+      } else {
+        delete fieldsValue.pickup_act_date;
       }
       if (fieldsValue.deliver_est_date && fieldsValue.deliver_est_date.length > 0) {
-        fieldsValue.deliver_est_date = [new Date(fieldsValue.deliver_est_date[0]), new Date(fieldsValue.deliver_est_date[1])];
+        fieldsValue.deliver_est_date = [moment(fieldsValue.deliver_est_date[0]), moment(fieldsValue.deliver_est_date[1])];
+      } else {
+        delete fieldsValue.deliver_est_date;
       }
       if (fieldsValue.deliver_act_date && fieldsValue.deliver_act_date.length > 0) {
-        fieldsValue.deliver_act_date = [new Date(fieldsValue.deliver_act_date[0]), new Date(fieldsValue.deliver_act_date[1])];
+        fieldsValue.deliver_act_date = [moment(fieldsValue.deliver_act_date[0]), moment(fieldsValue.deliver_act_date[1])];
+      } else {
+        delete fieldsValue.deliver_act_date;
       }
       this.props.form.setFieldsValue(fieldsValue);
     }
