@@ -37,7 +37,7 @@ export default class BrokerModal extends React.Component {
   }
   state = {
     partnerName: '',
-    partnerCode: '',
+    customsCode: '',
     partnerUniqueCode: '',
     role: PARTNER_ROLES.SUP,
     business: '',
@@ -46,7 +46,7 @@ export default class BrokerModal extends React.Component {
   componentWillReceiveProps(nextProps) {
     this.setState({
       partnerName: nextProps.carrier.name || '',
-      partnerCode: nextProps.carrier.partner_code || '',
+      customsCode: nextProps.carrier.customs_code || '',
       partnerUniqueCode: nextProps.carrier.partner_unique_code || '',
       role: nextProps.carrier.role || PARTNER_ROLES.SUP,
       business: nextProps.carrier.business || '',
@@ -70,13 +70,17 @@ export default class BrokerModal extends React.Component {
   }
   handleOk = () => {
     const { tenantId, carrier, operation } = this.props;
-    const { partnerName, partnerCode, partnerUniqueCode, role, business } = this.state;
+    const { partnerName, customsCode, partnerUniqueCode, role, business } = this.state;
     if (partnerName === '') {
       message.error('请填写供应商名称');
     } else if (operation === 'add' && partnerUniqueCode === '') {
-      message.error('请填写企业唯一标识码');
-    } else if (this.props.operation === 'edit') {
-      this.props.editPartner(carrier.id, partnerName, partnerCode, role, business).then((result) => {
+      message.error('企业唯一标识码必填');
+    } else if (operation === 'add' && partnerUniqueCode.length !== 18) {
+      message.error(`企业唯一标识码必须18位,当前${partnerUniqueCode.length}位`);
+    } else if (customsCode && customsCode.length !== 10) {
+      message.error(`海关十位编码必须为10位, 当前${customsCode.length}位`);
+    } else if (operation === 'edit') {
+      this.props.editPartner(carrier.id, partnerName, customsCode, role, business).then((result) => {
         if (result.error) {
           message.error(result.error.message);
         }
@@ -85,7 +89,7 @@ export default class BrokerModal extends React.Component {
     } else {
       this.props.checkPartner({
         tenantId,
-        partnerInfo: { name: partnerName, partnerCode, partnerUniqueCode },
+        partnerInfo: { name: partnerName, customsCode, partnerUniqueCode },
       }).then((result) => {
         let foundName = partnerName;
         if (result.data.partner && result.data.partner.name !== partnerName) {
@@ -101,8 +105,8 @@ export default class BrokerModal extends React.Component {
   }
   handleAddPartner = () => {
     const { tenantId } = this.props;
-    const { partnerName, partnerCode, partnerUniqueCode, role, business, businessType } = this.state;
-    this.props.addPartner({ tenantId, partnerInfo: { partnerName, partnerCode, partnerUniqueCode }, role, business, businessType }).then((result1) => {
+    const { partnerName, customsCode, partnerUniqueCode, role, business, businessType } = this.state;
+    this.props.addPartner({ tenantId, partnerInfo: { partnerName, customsCode, partnerUniqueCode }, role, business, businessType }).then((result1) => {
       if (result1.error) {
         message.error(result1.error.message);
       } else {
@@ -124,7 +128,7 @@ export default class BrokerModal extends React.Component {
   }
   render() {
     const { visible, operation } = this.props;
-    const { partnerName, partnerCode, partnerUniqueCode, business } = this.state;
+    const { partnerName, customsCode, partnerUniqueCode, business } = this.state;
     const businessArray = business !== '' ? business.split(',') : [];
     return (
       <Modal title={this.props.operation === 'add' ? '新增供应商' : '修改供应商'} visible={visible} onOk={this.handleOk} onCancel={this.handleCancel}>
@@ -134,8 +138,8 @@ export default class BrokerModal extends React.Component {
         <FormItem {...formItemLayout} label="企业唯一标识码:" required>
           <Input required value={partnerUniqueCode} onChange={e => this.setState({ partnerUniqueCode: e.target.value })} disabled={operation === 'edit'} />
         </FormItem>
-        <FormItem {...formItemLayout} label="供应商代码:" required>
-          <Input value={partnerCode} onChange={e => this.setState({ partnerCode: e.target.value })} />
+        <FormItem {...formItemLayout} label="海关十位编码:" required>
+          <Input value={customsCode} onChange={e => this.setState({ customsCode: e.target.value })} />
         </FormItem>
         <FormItem {...formItemLayout} label="供应商类型:" required>
           <CheckboxGroup

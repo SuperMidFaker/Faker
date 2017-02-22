@@ -46,8 +46,12 @@ export default class UnitList extends Component {
       title: '社会信用代码',
       dataIndex: 'comp_code',
       key: 'comp_code',
+    }, {
+      title: '海关十位编码',
+      dataIndex: 'customs_code',
+      key: 'customs_code',
     }];
-    if (type === 'owner_producer') {
+    if (type === 'agent') {
       columns.push({
         title: '接收代码',
         dataIndex: 'receive_code',
@@ -89,8 +93,8 @@ export default class UnitList extends Component {
           <RadioGroup value={type} onChange={e => this.setState({ type: e.target.value })} size="large">
             <RadioButton value="trade">收发货人</RadioButton>
             <RadioButton value="owner_consumer">消费使用单位</RadioButton>
-            <RadioButton value="owner_producer">生产销售单位</RadioButton>
             <RadioButton value="agent">申报单位</RadioButton>
+            <RadioButton value="owner_producer">生产销售单位</RadioButton>
           </RadioGroup>
           <div className="top-bar-tools">
             <SearchBar placeholder="公司名称/社会信用代码/接收代码" onInputSearch={this.handleSearch}

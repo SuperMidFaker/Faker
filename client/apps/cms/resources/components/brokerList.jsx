@@ -63,7 +63,7 @@ export default class BrokerList extends Component {
     const data = dataSource.filter((item) => {
       if (this.state.searchText) {
         const reg = new RegExp(this.state.searchText);
-        return reg.test(item.name) || reg.test(item.partner_code) || reg.test(item.partner_unique_code);
+        return reg.test(item.name) || reg.test(item.customs_code) || reg.test(item.partner_unique_code);
       } else {
         return true;
       }
@@ -75,8 +75,8 @@ export default class BrokerList extends Component {
         key: 'name',
       }, {
         title: '海关十位编码',
-        dataIndex: 'partner_code',
-        key: 'partner_code',
+        dataIndex: 'customs_code',
+        key: 'customs_code',
       }, {
         title: '统一社会信用代码',
         dataIndex: 'partner_unique_code',

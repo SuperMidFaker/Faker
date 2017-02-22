@@ -282,4 +282,5 @@ export const COURIERS = [
   { name: '顺丰', code: 'shunfeng' },
   { name: '申通', code: 'shentong' },
   { name: 'EMS', code: 'ems' },
+  { name: '德邦物流', code: 'debangwuliu' },
 ];

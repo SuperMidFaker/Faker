@@ -55,7 +55,7 @@ export function loadBusinessUnits(cookie, tenantId) {
   };
 }
 
-export function addBusinessUnit(name, code, type, receiveCode, tenantId) {
+export function addBusinessUnit(name, code, customsCode, type, receiveCode, tenantId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -65,12 +65,12 @@ export function addBusinessUnit(name, code, type, receiveCode, tenantId) {
       ],
       endpoint: 'v1/cms/resources/business_unit/add',
       method: 'post',
-      data: { name, code, type, receiveCode, tenantId },
+      data: { name, code, customsCode, type, receiveCode, tenantId },
     },
   };
 }
 
-export function updateBusinessUnit(id, name, code, receiveCode) {
+export function updateBusinessUnit(id, name, code, customsCode, receiveCode) {
   return {
     [CLIENT_API]: {
       types: [
@@ -80,7 +80,7 @@ export function updateBusinessUnit(id, name, code, receiveCode) {
       ],
       endpoint: 'v1/cms/resources/business_unit/update',
       method: 'post',
-      data: { id, name, code, receiveCode },
+      data: { id, name, code, customsCode, receiveCode },
     },
   };
 }

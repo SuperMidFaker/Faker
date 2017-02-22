@@ -41,6 +41,7 @@ export default class CustomerModal extends React.Component {
     name: '',
     partnerCode: '',
     partnerUniqueCode: '',
+    customsCode: '',
     contact: '',
     phone: '',
     email: '',
@@ -53,6 +54,7 @@ export default class CustomerModal extends React.Component {
         name: nextProps.customer.name,
         partnerCode: nextProps.customer.partner_code,
         partnerUniqueCode: nextProps.customer.partner_unique_code || '',
+        customsCode: nextProps.customer.customs_code || '',
         contact: nextProps.customer.contact,
         phone: nextProps.customer.phone,
         email: nextProps.customer.email,
@@ -67,6 +69,7 @@ export default class CustomerModal extends React.Component {
       name: '',
       partnerCode: '',
       partnerUniqueCode: '',
+      customsCode: '',
       contact: '',
       phone: '',
       email: '',
@@ -91,18 +94,22 @@ export default class CustomerModal extends React.Component {
     });
   }
   handleOk = () => {
-    const { id, name, partnerCode, partnerUniqueCode, contact, phone, email, businessType } = this.state;
+    const { id, name, partnerCode, partnerUniqueCode, customsCode, contact, phone, email, businessType } = this.state;
     const { tenantId, operation } = this.props;
     if (!name || name === '') {
       message.error('企业名称必填');
     } else if (operation === 'add' && partnerUniqueCode === '') {
       message.error('企业唯一标识码必填');
+    } else if (operation === 'add' && partnerUniqueCode.length !== 18) {
+      message.error(`企业唯一标识码必须18位,当前${partnerUniqueCode.length}位`);
+    } else if (customsCode && customsCode.length !== 10) {
+      message.error(`海关十位编码必须为10位, 当前${customsCode.length}位`);
     } else if (businessType === '') {
       message.error('请选择客户业务类型');
     } else if (this.props.operation === 'edit') {
       this.props.editCustomer({
         tenantId,
-        partnerInfo: { id, name, partnerCode, partnerUniqueCode, contact, phone, email },
+        partnerInfo: { id, name, partnerCode, partnerUniqueCode, customsCode, contact, phone, email },
         businessType,
       }).then((result) => {
         if (result.error) {
@@ -131,11 +138,11 @@ export default class CustomerModal extends React.Component {
     }
   }
   hancleAddCustomer = () => {
-    const { name, partnerCode, partnerUniqueCode, contact, phone, email, businessType } = this.state;
+    const { name, partnerCode, partnerUniqueCode, customsCode, contact, phone, email, businessType } = this.state;
     const { tenantId } = this.props;
     this.props.addCustomer({
       tenantId,
-      partnerInfo: { name, partnerCode, partnerUniqueCode, contact, phone, email },
+      partnerInfo: { name, partnerCode, partnerUniqueCode, customsCode, contact, phone, email },
       businessType,
     }).then((result1) => {
       if (result1.error) {
@@ -185,6 +192,13 @@ export default class CustomerModal extends React.Component {
             hasFeedback
           >
             <Input value={this.state.partnerCode} onChange={(e) => { this.setState({ partnerCode: e.target.value }); }} />
+          </FormItem>
+          <FormItem
+            {...formItemLayout}
+            label="海关十位编码"
+            hasFeedback
+          >
+            <Input value={this.state.customsCode} onChange={(e) => { this.setState({ customsCode: e.target.value }); }} />
           </FormItem>
           <FormItem
             {...formItemLayout}
