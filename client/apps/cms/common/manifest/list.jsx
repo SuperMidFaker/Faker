@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Breadcrumb, Button, Icon, Layout, Radio, Tag, message } from 'antd';
+import { Breadcrumb, Button, Layout, Radio, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -11,8 +11,6 @@ import { loadDelgDecls } from 'common/reducers/cmsDeclare';
 import { openEfModal } from 'common/reducers/cmsDelegation';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/search-bar';
-import NavLink from 'client/components/nav-link';
-import RowUpdater from '../delegation/rowUpdater';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 
@@ -56,34 +54,9 @@ export default class ManifestList extends Component {
 
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
-    title: this.msg('preEntryNo'),
-    dataIndex: 'pre_entry_seq_no',
+    title: this.msg('delgNo'),
+    dataIndex: 'delg_no',
     fixed: 'left',
-    width: 170,
-    render: (o, record) => <NavLink to={`/clearance/${this.props.ietype}/customs/${record.bill_seq_no}/${o}`}>{o}</NavLink>,
-  }, {
-    title: this.msg('entryId'),
-    dataIndex: 'entry_id',
-    width: 180,
-    fixed: 'left',
-    render: (o, record) => {
-      // 用id字段表示为children数据
-      if (record.id) {
-        if (o) {
-          return o;
-        } else {
-          return (
-            <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-              <RowUpdater onHit={this.handleDeclNoFill} row={record}
-                label={<span><Icon type="edit" /> 录入海关编号</span>}
-              />
-            </PrivilegeCover>
-          );
-        }
-      } else {
-        return '-';
-      }
-    },
   }, {
     title: '委托方',
     dataIndex: 'send_name',
@@ -96,23 +69,8 @@ export default class ManifestList extends Component {
     title: '提运单号',
     dataIndex: 'bl_wb_no',
   }, {
-    title: this.msg('delgNo'),
-    dataIndex: 'delg_no',
-  }, {
     title: this.msg('clrStatus'),
     dataIndex: 'note',
-  }, {
-    title: this.msg('customsCheck'),
-    dataIndex: 'customs_inspect',
-    render: (o) => {
-      if (o === 1) {
-        return <Tag color="#F04134">是</Tag>;
-      } else if (o === 2) {
-        return <Tag color="rgba(39, 187, 71, 0.65)">通过</Tag>;
-      } else {
-        return <Tag>否</Tag>;
-      }
-    },
   }, {
     title: this.msg('processDate'),
     render: (o, record) => (record.id ?
@@ -199,10 +157,10 @@ export default class ManifestList extends Component {
         <Header className="top-bar">
           <Breadcrumb>
             <Breadcrumb.Item>
-              {this.props.ietype === 'import' ? this.msg('importOperation') : this.msg('exportOperation')}
+              {this.props.ietype === 'import' ? this.msg('importClearance') : this.msg('exportClearance')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              {this.msg('manifest')}
+              {this.msg('declManifest')}
             </Breadcrumb.Item>
           </Breadcrumb>
           <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">

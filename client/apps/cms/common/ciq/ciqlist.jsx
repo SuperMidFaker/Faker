@@ -246,7 +246,7 @@ export default class CiqDeclList extends Component {
         <Header className="top-bar">
           <Breadcrumb>
             <Breadcrumb.Item>
-              {this.props.ietype === 'import' ? this.msg('importOperation') : this.msg('exportOperation')}
+              {this.props.ietype === 'import' ? this.msg('importClearance') : this.msg('exportClearance')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
               {this.msg('ciqDeclaration')}

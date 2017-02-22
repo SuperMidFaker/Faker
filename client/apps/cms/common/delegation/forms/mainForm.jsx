@@ -132,9 +132,9 @@ export default class MainForm extends Component {
               </FormItem>
             </Col>
             <Col sm={24} lg={12}>
-              <FormItem label={this.msg('declareWay')} >
-                {getFieldDecorator('decl_way_code', {
-                  rules: [{ required: true, message: '报关类型必选' }],
+              <FormItem label={this.msg('declareCustoms')} >
+                {getFieldDecorator('decl_customs_code', {
+                  rules: [{ required: true, message: '申报口岸必选' }],
                   initialValue: delgBill.decl_way_code,
                 })(<Select>
                   {
@@ -146,6 +146,24 @@ export default class MainForm extends Component {
               </FormItem>
             </Col>
             <Col sm={24} lg={12}>
+              <FormItem label={this.msg('declareWay')} >
+                {getFieldDecorator('decl_way_code', {
+                  rules: [{ required: true, message: '申报方式必选' }],
+                  initialValue: delgBill.decl_way_code,
+                })(<Select>
+                  {
+                    DECL_TYPE.map(dw =>
+                      <Option value={dw.key} key={dw.key}>{dw.value}</Option>
+                    )
+                  }
+                </Select>)}
+              </FormItem>
+            </Col>
+          </Row>
+        </Card>
+        <Card bodyStyle={{ padding: 16 }}>
+          <Row gutter={16}>
+            <Col sm={24} lg={24}>
               <FormItem label={this.msg('transMode')} >
                 {getFieldDecorator('trans_mode', {
                   initialValue: fieldInits.trans_mode,

@@ -1,6 +1,14 @@
 import { defineMessages } from 'react-intl';
 
 export default defineMessages({
+  importClearance: {
+    id: 'cms.delegation.import.clearance',
+    defaultMessage: '进口清关',
+  },
+  exportClearance: {
+    id: 'cms.delegation.export.clearance',
+    defaultMessage: '出口清关',
+  },
   cmsDelegation: {
     id: 'cms.delegation',
     defaultMessage: '委托',
@@ -20,14 +28,6 @@ export default defineMessages({
   searchPlaceholder: {
     id: 'cms.delegation.search.placeholder',
     defaultMessage: '委托编号/提运单号/订单号/发票号',
-  },
-  importClearance: {
-    id: 'cms.delegation.import.clearance',
-    defaultMessage: '进口清关',
-  },
-  exportClearance: {
-    id: 'cms.delegation.export.clearance',
-    defaultMessage: '出口清关',
   },
   delegationManagement: {
     id: 'cms.delegation.management',
@@ -169,9 +169,13 @@ export default defineMessages({
     id: 'cms.delegation.delg.goodstype',
     defaultMessage: '货物类型',
   },
+  declareCustoms: {
+    id: 'cms.delegation.declare.customs',
+    defaultMessage: '申报口岸',
+  },
   declareWay: {
     id: 'cms.delegation.delg.declareWay',
-    defaultMessage: '报关类型',
+    defaultMessage: '申报方式',
   },
   manualNo: {
     id: 'cms.delegation.delg.manualNo',

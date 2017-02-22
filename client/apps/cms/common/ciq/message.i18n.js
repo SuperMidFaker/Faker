@@ -1,6 +1,14 @@
 import { defineMessages } from 'react-intl';
 
 export default defineMessages({
+  importClearance: {
+    id: 'cms.ciq.import.clearance',
+    defaultMessage: '进口清关',
+  },
+  exportClearance: {
+    id: 'cms.ciq.export.clearance',
+    defaultMessage: '出口清关',
+  },
   searchPlaceholder: {
     id: 'cms.ciq.search.placeholder',
     defaultMessage: '海关编号/预报关单号/委托编号',
@@ -9,14 +17,7 @@ export default defineMessages({
     id: 'cms.ciq.ciq.search.placeholder',
     defaultMessage: '通关单号/预报关单号/委托编号',
   },
-  importOperation: {
-    id: 'cms.ciq.import.operation',
-    defaultMessage: '进口操作',
-  },
-  exportOperation: {
-    id: 'cms.ciq.export.operation',
-    defaultMessage: '出口操作',
-  },
+
   ciqDeclaration: {
     id: 'cms.ciq.management',
     defaultMessage: '报检管理',

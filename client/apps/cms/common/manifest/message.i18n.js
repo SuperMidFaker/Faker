@@ -9,6 +9,10 @@ export default defineMessages({
     id: 'cms.manifest.export.clearance',
     defaultMessage: '出口清关',
   },
+  declManifest: {
+    id: 'cms.manifest.decl.manifest',
+    defaultMessage: '报关清单',
+  },
   all: {
     id: 'cms.manifest.filter.all',
     defaultMessage: '全部',
