@@ -117,7 +117,6 @@ export default class ModeInfo extends React.Component {
       vertical,
       type,
     } = this.props;
-
     const modeEditCols = [];
     if (modeCode === PRESET_TRANSMODES.ftl) {
       // 整车,修改车型,车长
@@ -194,7 +193,7 @@ export default class ModeInfo extends React.Component {
                   rules: [{
                     required: true, message: this.msg('deliveryDateMust'), type: 'object',
                   }],
-                  initialValue: pickupDt && moment(pickupDt, 'YYYY-MM-DD'),
+                  initialValue: pickupDt && moment(new Date(pickupDt), 'YYYY-MM-DD'),
                 }
               )(<DatePicker style={{ width: '100%' }} />)}
           </FormItem>
@@ -215,7 +214,7 @@ export default class ModeInfo extends React.Component {
                   rules: [{
                     required: true, message: this.msg('deliveryDateMust'), type: 'object',
                   }],
-                  initialValue: deliverDt && moment(deliverDt, 'YYYY-MM-DD'),
+                  initialValue: deliverDt && moment(new Date(deliverDt), 'YYYY-MM-DD'),
                 }
               )(<DatePicker style={{ width: '100%' }} />)}
           </FormItem>
@@ -233,7 +232,7 @@ export default class ModeInfo extends React.Component {
                   rules: [{
                     required: true, message: this.msg('deliveryDateMust'), type: 'object',
                   }],
-                  initialValue: pickupDt && moment(pickupDt, 'YYYY-MM-DD'),
+                  initialValue: pickupDt && moment(new Date(pickupDt), 'YYYY-MM-DD'),
                 }
               )(<DatePicker style={{ width: '100%' }} />)}
               </FormItem>
@@ -258,7 +257,7 @@ export default class ModeInfo extends React.Component {
                   rules: [{
                     required: true, message: this.msg('deliveryDateMust'), type: 'object',
                   }],
-                  initialValue: deliverDt && moment(deliverDt, 'YYYY-MM-DD'),
+                  initialValue: deliverDt && moment(new Date(deliverDt), 'YYYY-MM-DD'),
                 }
               )(<DatePicker style={{ width: '100%' }} />)}
               </FormItem>
