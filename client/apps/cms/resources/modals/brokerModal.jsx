@@ -77,6 +77,8 @@ export default class BrokerModal extends React.Component {
       message.error('企业唯一标识码必填');
     } else if (operation === 'add' && partnerUniqueCode.length !== 18) {
       message.error(`企业唯一标识码必须18位,当前${partnerUniqueCode.length}位`);
+    } else if (!customsCode) {
+      message.error('海关十位编码必填');
     } else if (customsCode && customsCode.length !== 10) {
       message.error(`海关十位编码必须为10位, 当前${customsCode.length}位`);
     } else if (operation === 'edit') {
