@@ -3,6 +3,7 @@ import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/cms/manifest/', [
+  'LOAD_DELGBILLS', 'LOAD_DELGBILLS_SUCCEED', 'LOAD_DELGBILLS_FAIL',
   'LOAD_BILL', 'LOAD_BILL_SUCCEED', 'LOAD_BILL_FAIL',
   'LOAD_BILL_BODY', 'LOAD_BILL_BODY_SUCCEED', 'LOAD_BILL_BODY_FAIL',
   'LOAD_ENTRY', 'LOAD_ENTRY_SUCCEED', 'LOAD_ENTRY_FAIL',
@@ -29,6 +30,17 @@ const actionTypes = createActionTypes('@@welogix/cms/manifest/', [
 ]);
 
 const initialState = {
+  delgBillList: {
+    totalCount: 0,
+    current: 1,
+    pageSize: 10,
+    data: [],
+  },
+  listFilter: {
+    status: 'all',
+    sortField: '',
+    sortOrder: '',
+  },
   billMeta: {
     bill_seq_no: '',
     entries: [],
@@ -67,6 +79,11 @@ const initialState = {
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
+    case actionTypes.LOAD_DELGBILLS:
+      return { ...state, delgBillList: { ...state.delgBillList, loading: true } };
+    case actionTypes.LOAD_DELGBILLS_SUCCEED:
+      return { ...state, delgBillList: { ...state.delgBillList, loading: false, ...action.result.data },
+        listFilter: JSON.parse(action.params.filter) };
     case actionTypes.LOAD_BILL_SUCCEED: {
       const ports = [...state.params.ports];
       const iePort = action.result.data.iePort;
@@ -91,7 +108,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.UPDATE_HEAD_NETWT_SUCCEED:
       return { ...state, billHead: action.result.data };
     case actionTypes.LOAD_ENTRY_SUCCEED:
-      return { ...state, entryHead: action.result.data.head, entryBodies: action.result.data.bodies,
+      return { ...state, entryHead: action.result.data.head, entryBodies: action.result.data.hbodies,
         billMeta: action.result.data.meta };
     case actionTypes.LOAD_PARAMS_SUCCEED: {
       const retParams = action.result.data;
@@ -151,6 +168,21 @@ export default function reducer(state = initialState, action) {
     default:
       return state;
   }
+}
+
+export function loadDelgBill(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_DELGBILLS,
+        actionTypes.LOAD_DELGBILLS_SUCCEED,
+        actionTypes.LOAD_DELGBILLS_FAIL,
+      ],
+      endpoint: 'v1/cms/manifest/delgBill',
+      method: 'get',
+      params,
+    },
+  };
 }
 
 export function loadContainers(billSeqNo) {

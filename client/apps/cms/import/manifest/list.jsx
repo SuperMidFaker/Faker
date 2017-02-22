@@ -1,17 +1,17 @@
 import React, { PropTypes } from 'react';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import withPrivilege from 'client/common/decorators/withPrivilege';
-import { loadAcceptanceTable } from 'common/reducers/cmsDelegation';
+import { loadDelgBill } from 'common/reducers/cmsManifest';
 import ManifestList from '../../common/manifest/list';
 
 function fetchData({ state, dispatch }) {
-  return dispatch(loadAcceptanceTable({
+  return dispatch(loadDelgBill({
     ietype: 'import',
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
-    filter: JSON.stringify(state.cmsDelegation.listFilter),
-    pageSize: state.cmsDelegation.delegationlist.pageSize,
-    currentPage: state.cmsDelegation.delegationlist.current,
+    filter: JSON.stringify(state.cmsManifest.listFilter),
+    pageSize: state.cmsManifest.delgBillList.pageSize,
+    currentPage: state.cmsManifest.delgBillList.current,
   }));
 }
 

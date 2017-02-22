@@ -133,6 +133,10 @@ const messages = defineMessages({
     id: 'cms.classificagtion.tradeitem.items.import',
     defaultMessage: '导入',
   },
+  importHsunit: {
+    id: 'cms.classificagtion.hscode.gunit.import',
+    defaultMessage: '导入申报单位',
+  },
   tradeCode: {
     id: 'cms.classificagtion.tradeitem.tabpane.cop.code',
     defaultMessage: '单位代码',
