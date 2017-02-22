@@ -69,10 +69,29 @@ export default class InventoryTransactionSearchForm extends React.Component {
   handleLotPropertyCheck = (field, checked) => {
     this.props.form.setFieldsValue({ [this.state.lot_property]: null });
     this.setState({ lot_property_checked: checked, lot_property: null });
+    if (!checked) {
+      this.props.checkDisplayColumn(this.state.lot_property, false);
+      this.props.checkDisplayColumn('start_date', true);
+      this.props.checkDisplayColumn('end_date', true);
+      this.props.checkDisplayColumn('pre_stock', true);
+      this.props.checkDisplayColumn('post_stock', true);
+    } else {
+      this.props.checkDisplayColumn('start_date', false);
+      this.props.checkDisplayColumn('end_date', false);
+      this.props.checkDisplayColumn('pre_stock', false);
+      this.props.checkDisplayColumn('post_stock', false);
+    }
   }
   handleLotRadioChange = (ev) => {
     this.props.form.setFieldsValue({ [this.state.lot_property]: null });
     this.setState({ lot_property: ev.target.value });
+    if (ev.target.value === 'lot_no') {
+      this.props.checkDisplayColumn('lot_no', true);
+      this.props.checkDisplayColumn('serial_no', false);
+    } else {
+      this.props.checkDisplayColumn('lot_no', false);
+      this.props.checkDisplayColumn('serial_no', true);
+    }
   }
   render() {
     const { form: { getFieldDecorator }, displayedColumns, searchOption: { categories } } = this.props;

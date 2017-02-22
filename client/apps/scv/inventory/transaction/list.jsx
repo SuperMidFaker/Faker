@@ -8,6 +8,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { loadStockTransactions, loadStockSearchOptions } from 'common/reducers/scvInventoryTransaction';
 import Table from 'client/components/remoteAntTable';
 import StockSearchForm from './searchForm';
+import SkuDetailList from './skuDetails';
 import { formatMsg } from './message.i18n';
 
 const { Header, Content, Sider } = Layout;
@@ -67,7 +68,7 @@ export default class InventoryTransactionList extends React.Component {
   columns = [{
     title: this.msg('sku'),
     dataIndex: 'sku_no',
-    width: 100,
+    width: 80,
   }, {
     title: this.msg('product'),
     dataIndex: 'product_no',
@@ -75,10 +76,23 @@ export default class InventoryTransactionList extends React.Component {
   }, {
     title: this.msg('category'),
     dataIndex: 'product_category',
-    width: 120,
+    width: 100,
+  }, {
+    title: this.msg('lotNo'),
+    width: 100,
+    dataIndex: 'lot_no',
+    // sorter: true,
+    render: () => this.props.listFilter.lot_no,
+  }, {
+    title: this.msg('serialNo'),
+    width: 100,
+    dataIndex: 'serial_no',
+    // sorter: true,
+    render: () => this.props.listFilter.serial_no,
   }, {
     title: this.msg('startDate'),
     width: 80,
+    dataIndex: 'start_date',
     render: () => moment.unix(this.props.listFilter.start_date).format('YYYY.MM.DD'),
   }, {
     title: this.msg('startStock'),
@@ -88,10 +102,12 @@ export default class InventoryTransactionList extends React.Component {
     title: this.msg('inboundQty'),
     width: 80,
     dataIndex: 'inbound_qty',
+    render: qty => <span className="mdc-text-green">{qty}</span>,
   }, {
     title: this.msg('outboundQty'),
     width: 80,
     dataIndex: 'outbound_qty',
+    render: qty => <span className="mdc-text-red">{qty}</span>,
   }, {
     title: this.msg('endDate'),
     width: 80,
@@ -103,7 +119,7 @@ export default class InventoryTransactionList extends React.Component {
     dataIndex: 'post_stock',
   }]
   dataSource = new Table.DataSource({
-    fetcher: params => this.handleStockQuery(this.props.filter, params.sorter, params.current),
+    fetcher: params => this.handleStockQuery(this.props.listFilter, params.sorter, params.current),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
       total: result.totalCount,
@@ -115,7 +131,10 @@ export default class InventoryTransactionList extends React.Component {
     getParams: (pagination, filters, sorter) => {
       const params = {
         current: pagination.current,
-        sorter,
+        sorter: {
+          field: sorter.field,
+          order: sorter.sortOrder === 'DESCEND' ? 'desc' : 'asc',
+        },
       };
       return params;
     },
@@ -127,6 +146,7 @@ export default class InventoryTransactionList extends React.Component {
     });
   }
   handleStockQuery = (filter, sorter, newCurrent) => {
+    this.setState({ rowKeys: [] });
     const { tenantId, stocklist: { pageSize }, sortFilter } = this.props;
     this.props.loadStockTransactions({
       tenantId,
@@ -143,9 +163,9 @@ export default class InventoryTransactionList extends React.Component {
   handleSearch = (searchForm, checkLotProperty) => {
     const filter = {
       wh_no: this.props.listFilter.wh_no, pageSize: this.props.listFilter.pageSize,
-      current: this.props.listFilter.current,
+      current: this.props.listFilter.current, ...searchForm,
       start_date: this.props.listFilter.start_date,
-      end_date: this.props.listFilter.end_date, ...searchForm };
+      end_date: this.props.listFilter.end_date };
     this.setState({ lot_query: checkLotProperty });
     this.handleStockQuery(filter);
   }
@@ -161,7 +181,7 @@ export default class InventoryTransactionList extends React.Component {
   handleRowExpand = (expands) => {
     this.setState({ rowKeys: expands });
   }
-  renderExpandRow = row => row.sku_no
+  renderExpandRow = row => <SkuDetailList sku_no={row.sku_no} filter={this.props.listFilter} />
   render() {
     const { stocklist, loading, listFilter, displayedColumns, searchOption: { warehouses } } = this.props;
     const columns = this.columns.filter(col => displayedColumns[col.dataIndex] !== false);

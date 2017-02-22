@@ -5,6 +5,7 @@ const actionTypes = createActionTypes('@@welogix/scv/inventory/stock/', [
   'LOAD_TRANSACTIONS', 'LOAD_TRANSACTIONS_SUCCEED', 'LOAD_TRANSACTIONS_FAIL',
   'LOAD_STOCKSEARCHOPT', 'LOAD_STOCKSEARCHOPT_SUCCEED', 'LOAD_STOCKSEARCHOPT_FAIL',
   'CHECK_DISPLAY_COLUMN',
+  'LOAD_SKUTRANSAC', 'LOAD_SKUTRANSAC_SUCCEED', 'LOAD_SKUTRANSAC_FAIL',
 ]);
 
 const initialState = {
@@ -18,6 +19,8 @@ const initialState = {
   displayedColumns: {
     product_no: false,
     product_category: false,
+    lot_no: false,
+    serial_no: false,
   },
   sortFilter: {
     field: '',
@@ -51,6 +54,11 @@ export default function reducer(state = initialState, action) {
       return { ...state, searchOption: action.result.data };
     case actionTypes.CHECK_DISPLAY_COLUMN:
       return { ...state, displayedColumns: { ...state.displayedColumns, [action.data.column]: action.data.visible } };
+    case actionTypes.LOAD_SKUTRANSAC:
+      return { ...state, detailloading: true };
+    case actionTypes.LOAD_SKUTRANSAC_SUCCEED:
+    case actionTypes.LOAD_SKUTRANSAC_FAIL:
+      return { ...state, detailloading: false };
     default:
       return state;
   }
@@ -65,6 +73,21 @@ export function loadStockTransactions(params) {
         actionTypes.LOAD_TRANSACTIONS_FAIL,
       ],
       endpoint: 'v1/cwm/inventory/transactions',
+      method: 'get',
+      params,
+    },
+  };
+}
+
+export function loadSkuTransactions(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_SKUTRANSAC,
+        actionTypes.LOAD_SKUTRANSAC_SUCCEED,
+        actionTypes.LOAD_SKUTRANSAC_FAIL,
+      ],
+      endpoint: 'v1/cwm/inventory/sku/transactions',
       method: 'get',
       params,
     },

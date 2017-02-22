@@ -96,7 +96,7 @@ const messages = defineMessages({
   },
   warehouse: {
     id: 'scv.inventory.transaction.warehouse',
-    defaultMessage: '仓库',
+    defaultMessage: '所属仓库',
   },
   transactionQty: {
     id: 'scv.inventory.transaction.qty',
@@ -141,6 +141,26 @@ const messages = defineMessages({
   productDesc: {
     id: 'scv.inventory.transaction.product.desc',
     defaultMessage: '产品描述',
+  },
+  quantity: {
+    id: 'scv.inventory.transaction.quantity',
+    defaultMessage: '数量',
+  },
+  inboundTime: {
+    id: 'scv.inventory.transaction.inbound.time',
+    defaultMessage: '入库日期',
+  },
+  ponumber: {
+    id: 'scv.inventory.transaction.po.number',
+    defaultMessage: 'PO#',
+  },
+  outboundTime: {
+    id: 'scv.inventory.transaction.outbound.time',
+    defaultMessage: '出库日期',
+  },
+  sonumber: {
+    id: 'scv.inventory.transaction.so.number',
+    defaultMessage: 'SO#',
   },
 });
 
