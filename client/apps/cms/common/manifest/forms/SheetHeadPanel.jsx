@@ -90,7 +90,7 @@ export default class SheetHeadPanel extends React.Component {
       formData,
     };
     return (
-      <Collapse defaultActiveKey={['header']}>
+      <Collapse defaultActiveKey={['header']} className="content-min-width" style={{ marginBottom: 8 }}>
         <Panel header={billHeadToolbar} key="header">
           <Form horizontal>
             {type === 'entry' &&

@@ -363,14 +363,14 @@ export default class SheetBodyPanel extends React.Component {
         />,
     }, {
       title: this.msg('qtyPcs'),
-      width: 80,
+      width: 100,
       render: (o, record, index) =>
         <ColumnInput field="qty_pcs" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} edit={editBody}
         />,
     }, {
       title: this.msg('unitPcs'),
-      width: 80,
+      width: 100,
       render: (o, record, index) =>
         <ColumnSelect field="unit_pcs" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} options={units} edit={editBody}
@@ -631,7 +631,8 @@ export default class SheetBodyPanel extends React.Component {
   }
   render() {
     const columns = this.getColumns();
-    let billBodyToolbar = null;
+    let billBodyToolbar = '报关单表体';
+
     if (this.props.type === 'bill') {
       const menu = (
         <Menu onClick={this.handleMenuClick}>
@@ -671,23 +672,26 @@ export default class SheetBodyPanel extends React.Component {
           <Menu.Item key="export"><Icon type="export" /> 导出数据</Menu.Item>
         </Menu>);
       billBodyToolbar = (
-        <div className="toolbar-right">
-          <Button icon="pie-chart" onClick={this.handleTotalPriceDivid}>金额平摊</Button>
-          <Button icon="arrows-alt" onClick={this.handleGrossWtDivid}>毛重分摊</Button>
-          <Button icon="shrink" onClick={this.handleNetWetSummary}>净重汇总</Button>
-          <span />
-          <Dropdown overlay={menu} type="primary">
-            <Button type="primary" onClick={this.handleButtonClick}>
-              {formatGlobalMsg(this.props.intl, 'add')} <Icon type="down" />
-            </Button>
-          </Dropdown>
+        <div>
+          清单表体
+          <div className="toolbar-right">
+            <Button icon="pie-chart" onClick={this.handleTotalPriceDivid}>金额平摊</Button>
+            <Button icon="arrows-alt" onClick={this.handleGrossWtDivid}>毛重分摊</Button>
+            <Button icon="shrink" onClick={this.handleNetWetSummary}>净重汇总</Button>
+            <span />
+            <Dropdown overlay={menu} type="primary">
+              <Button type="primary" onClick={this.handleButtonClick}>
+                {formatGlobalMsg(this.props.intl, 'add')} <Icon type="down" />
+              </Button>
+            </Dropdown>
+          </div>
         </div>);
     }
     return (
       <Collapse defaultActiveKey={['body']}>
         <Panel header={billBodyToolbar} key="body">
           <Table rowKey="id" columns={columns} dataSource={this.state.bodies}
-            size="middle" scroll={{ x: 2600, y: 415 }} pagination={this.state.pagination}
+            size="middle" scroll={{ x: 2600 }} pagination={this.state.pagination}
           />
         </Panel>
         <AmountModel />

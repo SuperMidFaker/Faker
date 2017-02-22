@@ -115,15 +115,11 @@ export default class CustomsDeclEditor extends React.Component {
                 </Button>
               </div>
             </Header>
-            <Content className="main-content">
-              <div className="page-body tabbed fixed-height">
-                <div className={`panel-body collapse ${readonly ? 'readonly' : ''}`}>
-                  <SheetHeadPanel ietype={ietype} readonly={readonly} form={form} formData={head} type="entry" onSave={this.handleEntryHeadSave} />
-                  <SheetBodyPanel ietype={ietype} readonly={readonly} data={bodies}
-                    headNo={head.id} billSeqNo={head.bill_seq_no} type="entry"
-                  />
-                </div>
-              </div>
+            <Content className={`main-content ${readonly ? 'readonly' : ''}`}>
+              <SheetHeadPanel ietype={ietype} readonly={readonly} form={form} formData={head} type="entry" onSave={this.handleEntryHeadSave} />
+              <SheetBodyPanel ietype={ietype} readonly={readonly} data={bodies}
+                headNo={head.id} billSeqNo={head.bill_seq_no} type="entry"
+              />
             </Content>
           </Layout>
           <Sider

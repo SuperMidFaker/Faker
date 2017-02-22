@@ -52,6 +52,17 @@ img {
 .ant-cascader-picker-label {
   z-index: 1;
 }
+.ant-collapse {
+  &.content-min-width {
+    .ant-collapse-content {
+      overflow: scroll;
+      .ant-collapse-content-box {
+        min-width: 1200px;
+      }
+  }
+}
+
+}
 .ant-collapse > .ant-collapse-item > .ant-collapse-header {
   padding-right: 16px;
 }
@@ -398,6 +409,12 @@ img {
   &.no-top-bar {
     padding: 24px 16px 0;
   }
+  &.readonly {
+    .ant-input[disabled],
+    .ant-select-disabled {
+      color: #666;
+    }
+  }
   @media (max-width:767px) {
     height:100%;
     overflow:auto;
@@ -590,12 +607,6 @@ img {
       .ant-form-item :not(.ant-form) > .ant-form-item {
         margin-bottom: -16px;
       }
-    }
-  }
-  &.readonly {
-    .ant-input[disabled],
-    .ant-select-disabled {
-      color: #666;
     }
   }
   &.card-wrapper {
