@@ -1,16 +1,14 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import moment from 'moment';
-import { Breadcrumb, Button, Layout, Radio, message } from 'antd';
+import { Breadcrumb, Layout, Radio, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
-import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
-import { loadDelgDecls } from 'common/reducers/cmsDeclare';
-import { openEfModal } from 'common/reducers/cmsDelegation';
+import { loadDelgBill } from 'common/reducers/cmsManifest';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/search-bar';
+import NavLink from 'client/components/nav-link';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 
@@ -25,10 +23,10 @@ const RadioButton = Radio.Button;
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     loginName: state.account.username,
-    delgdeclList: state.cmsDeclare.delgdeclList,
-    listFilter: state.cmsDeclare.listFilter,
+    delgBillList: state.cmsManifest.delgBillList,
+    listFilter: state.cmsManifest.listFilter,
   }),
-  { loadDelgDecls, openEfModal }
+  { loadDelgBill }
 )
 @connectNav({
   depth: 2,
@@ -41,7 +39,7 @@ export default class ManifestList extends Component {
     tenantId: PropTypes.number.isRequired,
     loginId: PropTypes.number.isRequired,
     loginName: PropTypes.string.isRequired,
-    delgdeclList: PropTypes.object.isRequired,
+    delgBillList: PropTypes.object.isRequired,
     listFilter: PropTypes.object.isRequired,
   }
   static contextTypes = {
@@ -54,30 +52,37 @@ export default class ManifestList extends Component {
 
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
-    title: this.msg('delgNo'),
-    dataIndex: 'delg_no',
+    title: this.msg('billNo'),
+    dataIndex: 'bill_seq_no',
     fixed: 'left',
+    width: 170,
+    render: o => <NavLink to={`/clearance/${this.props.ietype}/manifest/${o}`}>{o}</NavLink>,
   }, {
     title: '委托方',
     dataIndex: 'send_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
-    title: this.msg('agent'),
+    title: '申报单位',
     dataIndex: 'customs_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: '提运单号',
     dataIndex: 'bl_wb_no',
   }, {
-    title: this.msg('clrStatus'),
-    dataIndex: 'note',
+    title: this.msg('delgNo'),
+    dataIndex: 'delg_no',
   }, {
-    title: this.msg('processDate'),
-    render: (o, record) => (record.id ?
-    record.process_date && moment(record.process_date).format('MM.DD HH:mm') : '-'),
+    title: '征免性质',
+    dataIndex: 'cut_mode',
+  }, {
+    title: '监管方式',
+    dataIndex: 'trade_mode',
+  }, {
+    title: '运输方式',
+    dataIndex: 'traf_mode',
   }]
   dataSource = new Table.DataSource({
-    fetcher: params => this.props.loadDelgDecls(params),
+    fetcher: params => this.props.loadDelgBill(params),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
       total: result.totalCount,
@@ -97,27 +102,20 @@ export default class ManifestList extends Component {
       params.filter = JSON.stringify(filter);
       return params;
     },
-    remotes: this.props.delgdeclList,
+    remotes: this.props.delgBillList,
   })
   handleTableLoad = (currentPage, filter) => {
     this.setState({ expandedKeys: [] });
-    this.props.loadDelgDecls({
+    this.props.loadDelgBill({
       ietype: this.props.ietype,
       tenantId: this.props.tenantId,
       filter: JSON.stringify(filter || this.props.listFilter),
-      pageSize: this.props.delgdeclList.pageSize,
-      currentPage: currentPage || this.props.delgdeclList.current,
+      pageSize: this.props.delgBillList.pageSize,
+      currentPage: currentPage || this.props.delgBillList.current,
     }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 5);
       }
-    });
-  }
-  handleDeclNoFill = (row) => {
-    this.props.openEfModal({
-      entryHeadId: row.id,
-      billSeqNo: row.bill_seq_no,
-      delgNo: row.delg_no,
     });
   }
   handleSearch = (searchVal) => {
@@ -144,8 +142,8 @@ export default class ManifestList extends Component {
     this.handleTableLoad(1, filter);
   }
   render() {
-    const { delgdeclList, listFilter } = this.props;
-    this.dataSource.remotes = delgdeclList;
+    const { delgBillList, listFilter } = this.props;
+    this.dataSource.remotes = delgBillList;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -160,7 +158,7 @@ export default class ManifestList extends Component {
               {this.props.ietype === 'import' ? this.msg('importClearance') : this.msg('exportClearance')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              {this.msg('declManifest')}
+              {this.msg('manifestManage')}
             </Breadcrumb.Item>
           </Breadcrumb>
           <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">
@@ -168,13 +166,6 @@ export default class ManifestList extends Component {
             <RadioButton value="wip">{this.msg('filterWIP')}</RadioButton>
             <RadioButton value="generated">{this.msg('filterGenerated')}</RadioButton>
           </RadioGroup>
-          <div className="top-bar-tools">
-            <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
-              <Button size="large" onClick={this.handleCreateBtnClick} icon="plus">
-                {this.msg('submitForReview')}
-              </Button>
-            </PrivilegeCover>
-          </div>
         </Header>
         <Content className="main-content" key="main">
           <div className="page-body">
@@ -186,7 +177,7 @@ export default class ManifestList extends Component {
             </div>
             <div className="panel-body table-panel expandable">
               <Table rowSelection={rowSelection} columns={this.columns} rowKey="pre_entry_seq_no" dataSource={this.dataSource}
-                loading={delgdeclList.loading} scroll={{ x: 1000 }}
+                loading={delgBillList.loading} scroll={{ x: 1000 }}
               />
             </div>
           </div>

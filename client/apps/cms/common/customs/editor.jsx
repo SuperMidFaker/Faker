@@ -63,12 +63,11 @@ export default class CustomsDeclEditor extends React.Component {
   }
   handleManifestVisit = () => {
     const { ietype, billMeta } = this.props;
-
-    let action = 'view';
+    let pathname = `/clearance/${ietype}/manifest/view/${billMeta.bill_seq_no}`;
     if (billMeta.editable) {
-      action = 'make';
+      pathname = `/clearance/${ietype}/manifest/${billMeta.bill_seq_no}`;
     }
-    const pathname = `/clearance/${ietype}/manifest/${action}/${billMeta.bill_seq_no}`;
+
     this.context.router.push({ pathname });
   }
   handleEntryHeadSave = () => {
