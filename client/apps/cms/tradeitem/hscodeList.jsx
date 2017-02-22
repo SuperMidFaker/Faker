@@ -257,10 +257,10 @@ export default class HscodeList extends Component {
               }),
             }} onUploaded={this.handleUploaded}
           >
-            <Icon type="file-excel" /> {this.msg('importItems')}
+            <Icon type="file-excel" /> {this.msg('importHsunit')}
           </ExcelUpload>
         </Menu.Item>
-        <Menu.Item key="model"><Icon type="download" /> 下载模板</Menu.Item>
+        <Menu.Item key="model"><Icon type="download" /> 下载模板(申报单位)</Menu.Item>
       </Menu>
     );
     return (

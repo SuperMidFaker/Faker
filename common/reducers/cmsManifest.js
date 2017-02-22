@@ -91,7 +91,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.UPDATE_HEAD_NETWT_SUCCEED:
       return { ...state, billHead: action.result.data };
     case actionTypes.LOAD_ENTRY_SUCCEED:
-      return { ...state, entryHead: action.result.data.head, entryBodies: action.result.data.bodies,
+      return { ...state, entryHead: action.result.data.head, entryBodies: action.result.data.hbodies,
         billMeta: action.result.data.meta };
     case actionTypes.LOAD_PARAMS_SUCCEED: {
       const retParams = action.result.data;
