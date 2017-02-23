@@ -411,6 +411,10 @@ export default defineMessages({
   },
   importBody: {
     id: 'cms.forms.table.import',
+    defaultMessage: '导入表体',
+  },
+  unrelatedImport: {
+    id: 'cms.forms.table.import.unrelated',
     defaultMessage: '非关联导入',
   },
   relatedImport: {

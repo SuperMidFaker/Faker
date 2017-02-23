@@ -131,7 +131,7 @@ export default class MainForm extends Component {
                   )}
               </FormItem>
             </Col>
-            <Col sm={24} lg={12}>
+            <Col sm={24} lg={8}>
               <FormItem label={this.msg('declareCustoms')} >
                 {getFieldDecorator('decl_customs_code', {
                   rules: [{ required: true, message: '申报口岸必选' }],
@@ -145,7 +145,7 @@ export default class MainForm extends Component {
                 </Select>)}
               </FormItem>
             </Col>
-            <Col sm={24} lg={12}>
+            <Col sm={24} lg={8}>
               <FormItem label={this.msg('declareWay')} >
                 {getFieldDecorator('decl_way_code', {
                   rules: [{ required: true, message: '申报方式必选' }],
@@ -159,15 +159,11 @@ export default class MainForm extends Component {
                 </Select>)}
               </FormItem>
             </Col>
-          </Row>
-        </Card>
-        <Card bodyStyle={{ padding: 16 }}>
-          <Row gutter={16}>
-            <Col sm={24} lg={24}>
+            <Col sm={24} lg={8}>
               <FormItem label={this.msg('transMode')} >
                 {getFieldDecorator('trans_mode', {
                   initialValue: fieldInits.trans_mode,
-                  rules: [{ required: true, message: '运输方式必选' }],
+                  rules: [{ required: true, message: '货物运输流转模式必选' }],
                 })(
                   <Select>
                     {

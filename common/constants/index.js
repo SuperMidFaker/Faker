@@ -140,15 +140,13 @@ const I_E_TYPES = [
 ];
 
 const DECL_I_TYPE = [
-  { key: '0000', value: '口岸进口' },
-  { key: '0100', value: '保税区进口' },
-  { key: '0102', value: '保税区进境备案' },
+  { key: '0000', value: '进口' },
+  { key: '0102', value: '进境' },
 ];
 
 const DECL_E_TYPE = [
-  { key: '0001', value: '口岸出口' },
-  { key: '0101', value: '保税区出口' },
-  { key: '0103', value: '保税区出境备案' },
+  { key: '0001', value: '出口' },
+  { key: '0103', value: '出境' },
 ];
 
 const CMS_DELG_STATUS = [
@@ -215,9 +213,11 @@ export const INSPECT_STATUS = {
 };
 
 export const TRANS_MODE = [
-  { value: '2', text: '海运' },
-  { value: '5', text: '空运' },
-  { value: '9', text: '其他' },
+  { value: 'DOM', text: '境内货物流转' },
+  { value: '2', text: '进出境江海运输' },
+  { value: '5', text: '进出境航空运输' },
+  { value: '3', text: '进出境铁路运输' },
+  { value: '4', text: '进出境公路运输' },
 ];
 export const INVOICE_TYPE = [
   { value: 0, text: '增值税专用发票' },
