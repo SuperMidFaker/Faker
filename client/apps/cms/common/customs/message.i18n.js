@@ -11,11 +11,11 @@ export default defineMessages({
   },
   importOperation: {
     id: 'cms.customs.import.operation',
-    defaultMessage: '进口清关',
+    defaultMessage: '进口进境',
   },
   exportOperation: {
     id: 'cms.customs.export.operation',
-    defaultMessage: '出口清关',
+    defaultMessage: '出口出境',
   },
   entryId: {
     id: 'cms.customs.decl.entryId',

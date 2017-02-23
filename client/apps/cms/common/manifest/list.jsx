@@ -158,7 +158,7 @@ export default class ManifestList extends Component {
               {this.props.ietype === 'import' ? this.msg('importClearance') : this.msg('exportClearance')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              {this.msg('manifestManage')}
+              {this.msg('declManifest')}
             </Breadcrumb.Item>
           </Breadcrumb>
           <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">

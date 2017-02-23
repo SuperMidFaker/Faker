@@ -7,7 +7,7 @@ const messages = defineMessages({
   },
   import: {
     id: 'cms.module.import',
-    defaultMessage: '进口清关',
+    defaultMessage: '进口进境',
   },
   importDelegation: {
     id: 'cms.module.import.delegation',
@@ -27,7 +27,7 @@ const messages = defineMessages({
   },
   export: {
     id: 'cms.module.export',
-    defaultMessage: '出口清关',
+    defaultMessage: '出口出境',
   },
   exportDelegation: {
     id: 'cms.module.export.delegation',
