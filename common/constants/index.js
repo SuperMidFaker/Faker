@@ -112,6 +112,13 @@ const DELG_STATUS = {
   finished: 4,
 };
 
+export const DECL_STATUS = {
+  proposed: 0,
+  reviewed: 1,
+  declared: 2,
+  finalized: 3,
+};
+
 const GOODSTYPES = [{
   value: 0,
   text: '普通货',

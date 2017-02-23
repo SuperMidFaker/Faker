@@ -171,7 +171,7 @@ export default defineMessages({
   },
   declareCustoms: {
     id: 'cms.delegation.declare.customs',
-    defaultMessage: '申报口岸',
+    defaultMessage: '申报地海关',
   },
   declareWay: {
     id: 'cms.delegation.delg.declareWay',

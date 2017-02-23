@@ -7,7 +7,7 @@ import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import TrimSpan from 'client/components/trimSpan';
 import NavLink from 'client/components/nav-link';
-import { CMS_DELEGATION_STATUS, CMS_DELG_STATUS, CMS_SUP_STATUS } from 'common/constants';
+import { CMS_DELEGATION_STATUS, CMS_DELG_STATUS, CMS_SUP_STATUS, DECL_I_TYPE, DECL_E_TYPE, TRANS_MODE } from 'common/constants';
 import connectNav from 'client/common/decorators/connect-nav';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import SearchBar from 'client/components/search-bar';
@@ -44,6 +44,10 @@ const OptGroup = Select.OptGroup;
     delegation: state.cmsDelgInfoHub.previewer.delegation,
     listView: state.cmsDelegation.listView,
     tabKey: state.cmsDelgInfoHub.tabKey,
+    customs: state.cmsDelegation.formRequire.customs.map(cus => ({
+      value: cus.customs_code,
+      text: `${cus.customs_name}`,
+    })),
   }),
   { loadAcceptanceTable, loadBillForMake, acceptDelg,
     delDelg, showPreviewer, setDispStatus, delgAssignRecall,
@@ -134,20 +138,50 @@ export default class DelegationList extends Component {
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: this.msg('waybillLadingNo'),
+    width: 140,
     dataIndex: 'bl_wb_no',
-  }, {
-    title: this.msg('packageNum'),
-    width: 60,
-    dataIndex: 'pieces',
-  }, {
-    title: this.msg('delgGrossWt'),
-    width: 80,
-    dataIndex: 'weight',
   }, {
     title: this.msg('broker'),
     width: 180,
     dataIndex: 'customs_name',
     render: o => <TrimSpan text={o} maxLen={10} />,
+  }, {
+    title: this.msg('declareCustoms'),
+    width: 140,
+    dataIndex: 'decl_port',
+    render: (o) => {
+      const cust = this.props.customs.filter(ct => ct.value === o)[0];
+      let port = '';
+      if (cust) {
+        port = cust.text;
+      }
+      return <TrimSpan text={port} maxLen={14} />;
+    },
+  }, {
+    title: this.msg('declareWay'),
+    width: 140,
+    dataIndex: 'decl_way_code',
+    render: (o) => {
+      const DECL_TYPE = this.props.ietype === 'import' ? DECL_I_TYPE : DECL_E_TYPE;
+      const type = DECL_TYPE.filter(dl => dl.key === o)[0];
+      let declWay = '';
+      if (type) {
+        declWay = type.value;
+      }
+      return <TrimSpan text={declWay} maxLen={14} />;
+    },
+  }, {
+    title: this.msg('transMode'),
+    width: 140,
+    dataIndex: 'trans_mode',
+    render: (o) => {
+      const mode = TRANS_MODE.filter(ts => ts.value === o)[0];
+      let trans = '';
+      if (mode) {
+        trans = mode.text;
+      }
+      return <TrimSpan text={trans} maxLen={14} />;
+    },
   }, {
     title: this.msg('declStatus'),
     width: 130,

@@ -2,7 +2,8 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Breadcrumb, Form, Col, Button, Row, message, Layout } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
-import BasicForm from './forms/basicForm';
+import MainForm from './forms/mainForm';
+import SiderForm from './forms/siderForm';
 import UploadGroup from './forms/attachmentUpload';
 import { editDelegation } from 'common/reducers/cmsDelegation';
 import { intlShape, injectIntl } from 'react-intl';
@@ -113,11 +114,12 @@ export default class AcceptanceEdit extends Component {
         <Content className="main-content layout-fixed-width layout-fixed-width-large">
           <Form horizontal form={form}>
             <Row gutter={16}>
-              <Col sm={24} md={18}>
-                <BasicForm form={form} ieType={type} partnershipType="CCB" />
+              <Col sm={24} md={16}>
+                <MainForm form={form} ieType={type} partnershipType="CCB" />
               </Col>
-              <Col sm={24} md={6}>
-                <UploadGroup onFileUpload={this.handleUploadFiles} onFileRemove={this.handleFileRemove} />
+              <Col sm={24} md={8}>
+                <SiderForm form={form} />
+                <UploadGroup onFileListUpdate={this.handleUploadFiles} />
               </Col>
             </Row>
           </Form>

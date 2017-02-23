@@ -7,6 +7,8 @@ const actionTypes = createActionTypes('@@welogix/cms/declaration/', [
   'CIQ_FINISH', 'CIQ_FINISH_SUCCEED', 'CIQ_FINISH_FAIL',
   'LOAD_DECLHEAD', 'LOAD_DECLHEAD_SUCCEED', 'LOAD_DECLHEAD_FAIL',
   'SET_INSPECT', 'SET_INSPECT_SUCCEED', 'SET_INSPECT_FAIL',
+  'DELETE_DECL', 'DELETE_DECL_SUCCEED', 'DELETE_DECL_FAIL',
+  'SET_REVIEWED', 'SET_REVIEWED_SUCCEED', 'SET_REVIEWED_FAIL',
 ]);
 
 const initialState = {
@@ -121,6 +123,36 @@ export function setCiqFinish(entryId, delgNo) {
       endpoint: 'v1/cms/ciq/finish',
       method: 'post',
       data: { entryId, delgNo },
+    },
+  };
+}
+
+export function deleteDecl(declId, billNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DELETE_DECL,
+        actionTypes.DELETE_DECL_SUCCEED,
+        actionTypes.DELETE_DECL_FAIL,
+      ],
+      endpoint: 'v1/cms/declare/delete',
+      method: 'post',
+      data: { declId, billNo },
+    },
+  };
+}
+
+export function setFilterReviewed(declId, status) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SET_REVIEWED,
+        actionTypes.SET_REVIEWED_SUCCEED,
+        actionTypes.SET_REVIEWED_FAIL,
+      ],
+      endpoint: 'v1/cms/declare/set/reviewed',
+      method: 'post',
+      data: { declId, status },
     },
   };
 }

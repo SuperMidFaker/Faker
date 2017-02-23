@@ -2,12 +2,12 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Breadcrumb, Icon, Layout, Radio, Tag, message } from 'antd';
+import { Breadcrumb, Icon, Layout, Radio, Tag, message, Popconfirm } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
-import { loadDelgDecls } from 'common/reducers/cmsDeclare';
+import { loadDelgDecls, deleteDecl, setFilterReviewed } from 'common/reducers/cmsDeclare';
 import { openEfModal } from 'common/reducers/cmsDelegation';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/search-bar';
@@ -17,6 +17,7 @@ import DeclnoFillModal from './modals/declNoFill';
 import DeclStatusPopover from './declStatusPopover';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
+import { DECL_STATUS } from 'common/constants';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -32,7 +33,7 @@ const RadioButton = Radio.Button;
     delgdeclList: state.cmsDeclare.delgdeclList,
     listFilter: state.cmsDeclare.listFilter,
   }),
-  { loadDelgDecls, openEfModal }
+  { loadDelgDecls, openEfModal, deleteDecl, setFilterReviewed }
 )
 @connectNav({
   depth: 2,
@@ -198,6 +199,36 @@ export default class DelgDeclList extends Component {
     const filter = { ...this.props.listFilter, status: ev.target.value };
     this.handleTableLoad(1, filter);
   }
+  handleDelete = (declId, billNo) => {
+    this.props.deleteDecl(declId, billNo).then((result) => {
+      if (result.error) {
+        message.error(result.error.message);
+      } else {
+        this.handleTableLoad();
+      }
+    });
+  }
+  handleReview = (row) => {
+    this.props.setFilterReviewed(row.id, DECL_STATUS.reviewed).then((result) => {
+      if (result.error) {
+        message.error(result.error.message);
+      } else {
+        this.handleTableLoad();
+      }
+    });
+  }
+  handleRecall = (row) => {
+    this.props.setFilterReviewed(row.id, DECL_STATUS.proposed).then((result) => {
+      if (result.error) {
+        message.error(result.error.message);
+      } else {
+        this.handleTableLoad();
+      }
+    });
+  }
+  handleSend = () => {
+
+  }
   render() {
     const { delgdeclList, listFilter } = this.props;
     this.dataSource.remotes = delgdeclList;
@@ -207,6 +238,42 @@ export default class DelgDeclList extends Component {
         this.setState({ selectedRowKeys });
       },
     };
+    let columns = [];
+    columns = [...this.columns];
+    columns.push({
+      title: this.msg('opColumn'),
+      width: 130,
+      fixed: 'right',
+      render: (o, record) => {
+        if (record.status === 0) {
+          return (
+            <span>
+              <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
+                <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleDelete(record.id, record.bill_seq_no)}>
+                  <a role="button">{this.msg('delete')}</a>
+                </Popconfirm>
+              </PrivilegeCover>
+              <span className="ant-divider" />
+              <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
+                <RowUpdater onHit={this.handleReview} label={this.msg('review')} row={record} />
+              </PrivilegeCover>
+            </span>
+          );
+        } else if (record.status === 1) {
+          return (
+            <span>
+              <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
+                <RowUpdater onHit={this.handleRecall} label={this.msg('recall')} row={record} />
+              </PrivilegeCover>
+              <span className="ant-divider" />
+              <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
+                <RowUpdater onHit={this.handleSend} label={this.msg('send')} row={record} />
+              </PrivilegeCover>
+            </span>
+          );
+        }
+      },
+    });
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Header className="top-bar">
@@ -236,7 +303,7 @@ export default class DelgDeclList extends Component {
               </div>
             </div>
             <div className="panel-body table-panel expandable">
-              <Table rowSelection={rowSelection} columns={this.columns} rowKey="pre_entry_seq_no" dataSource={this.dataSource}
+              <Table rowSelection={rowSelection} columns={columns} rowKey="pre_entry_seq_no" dataSource={this.dataSource}
                 loading={delgdeclList.loading} scroll={{ x: 1000 }}
               />
             </div>
