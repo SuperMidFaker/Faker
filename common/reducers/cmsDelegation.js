@@ -11,7 +11,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'LOAD_DELG', 'LOAD_DELG_SUCCEED', 'LOAD_DELG_FAIL',
   'EDIT_DELGCCB', 'EDIT_DELGCCB_SUCCEED', 'EDIT_DELGCCB_FAIL',
   'SET_CLIENT_FORM', 'NEW_FORM',
-  'SEARCH_PARAM', 'SEARCH_PARAM_SUCCEED', 'SEARCH_PARAM_FAIL',
+  // 'SEARCH_PARAM', 'SEARCH_PARAM_SUCCEED', 'SEARCH_PARAM_FAIL',
   'DEL_DELG', 'DEL_DELG_SUCCEED', 'DEL_DELG_FAIL',
   'LOAD_REQUIRE', 'LOAD_REQUIRE_SUCCEED', 'LOAD_REQUIRE_FAIL',
   'LOAD_BILLMAKE', 'LOAD_BILLMAKE_SUCCEED', 'LOAD_BILLMAKE_FAIL',
@@ -57,6 +57,7 @@ const initialState = {
     tradeModes: [],
     transModes: [],
     declareWayModes: [],
+    customs: [],
   },
   formData: {
     customer_tenant_id: -1,
@@ -135,8 +136,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, formData: action.result.data.delegation,
         delgFiles: action.result.data.files, delgBill: action.result.data.delgBill, formRequire: action.result.data.formRequire,
       };
-    case actionTypes.SEARCH_PARAM_SUCCEED:
-      return { ...state, formRequire: { ...state.formRequire, ...action.result.data } };
+    // case actionTypes.SEARCH_PARAM_SUCCEED:
+    //   return { ...state, formRequire: { ...state.formRequire, ...action.result.data } };
     case actionTypes.SET_CLIENT_FORM:
       return { ...state, formData: { ...state.formData, ...action.data } };
     case actionTypes.NEW_FORM:
@@ -504,20 +505,20 @@ export function setClientForm({ customer_tenant_id, customer_partner_id }) {
   };
 }
 
-export function searchParams(field, searched, tenantId, ieType) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.SEARCH_PARAM,
-        actionTypes.SEARCH_PARAM_SUCCEED,
-        actionTypes.SEARCH_PARAM_FAIL,
-      ],
-      endpoint: 'v1/cms/delegation/params',
-      method: 'get',
-      params: { tenantId, searched, field, ieType },
-    },
-  };
-}
+// export function searchParams(field, searched, tenantId, ieType) {
+//   return {
+//     [CLIENT_API]: {
+//       types: [
+//         actionTypes.SEARCH_PARAM,
+//         actionTypes.SEARCH_PARAM_SUCCEED,
+//         actionTypes.SEARCH_PARAM_FAIL,
+//       ],
+//       endpoint: 'v1/cms/delegation/params',
+//       method: 'get',
+//       params: { tenantId, searched, field, ieType },
+//     },
+//   };
+// }
 
 export function delDelg(delgNo) {
   return {
@@ -540,7 +541,7 @@ export function loadNewForm() {
   };
 }
 
-export function loadFormRequire(cookie, tenantId, ieType) {
+export function loadFormRequire(tenantId, ieType) {
   return {
     [CLIENT_API]: {
       types: [
@@ -551,7 +552,6 @@ export function loadFormRequire(cookie, tenantId, ieType) {
       endpoint: 'v1/cms/delegation/form/requires',
       method: 'get',
       params: { tenantId, ieType },
-      cookie,
     },
   };
 }
