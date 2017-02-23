@@ -135,6 +135,31 @@ export default class MainForm extends Component {
               </FormItem>
             </Col>
             <Col sm={24} lg={8}>
+              <FormItem label={this.msg('invoiceNo')} >
+                {getFieldDecorator('invoice_no', {
+                  initialValue: fieldInits.invoice_no,
+                })(<Input />)}
+              </FormItem>
+            </Col>
+            <Col sm={24} lg={8}>
+              <FormItem label={this.msg('orderNo')} >
+                {getFieldDecorator('order_no', {
+                  initialValue: fieldInits.order_no,
+                })(<Input />)}
+              </FormItem>
+            </Col>
+            <Col sm={24} lg={8}>
+              <FormItem label={this.msg('contractNo')} >
+                {getFieldDecorator('contract_no', {
+                  initialValue: fieldInits.contract_no,
+                })(<Input />)}
+              </FormItem>
+            </Col>
+          </Row>
+        </Card>
+        <Card bodyStyle={{ padding: 16 }}>
+          <Row gutter={16}>
+            <Col sm={24} lg={8}>
               <FormItem label={this.msg('declareCustoms')} >
                 {getFieldDecorator('decl_port', {
                   rules: [{ required: true, message: '申报口岸必选' }],
@@ -166,7 +191,7 @@ export default class MainForm extends Component {
               <FormItem label={this.msg('transMode')} >
                 {getFieldDecorator('trans_mode', {
                   initialValue: fieldInits.trans_mode,
-                  rules: [{ required: true, message: '货物运输流转模式必选' }],
+                  rules: [{ required: true, message: '境内外运输模式必选' }],
                 })(
                   <Select>
                     {
@@ -226,7 +251,7 @@ export default class MainForm extends Component {
         </Card>
         <Card bodyStyle={{ padding: 16 }}>
           <Row gutter={16}>
-            <Col sm={24} lg={24}>
+            <Col sm={24} lg={8}>
               <FormItem label={this.msg('goodsType')} >
                 {getFieldDecorator('goods_type', {
                   initialValue: fieldInits.goods_type,
@@ -240,14 +265,14 @@ export default class MainForm extends Component {
                 </Select>)}
               </FormItem>
             </Col>
-            <Col sm={24} lg={12}>
+            <Col sm={24} lg={8}>
               <FormItem label={this.msg('packageNum')} >
                 {getFieldDecorator('pieces', {
                   initialValue: fieldInits.pieces || 1,
                 })(<InputNumber min={1} max={100000} style={{ width: '100%' }} />)}
               </FormItem>
             </Col>
-            <Col sm={24} lg={12}>
+            <Col sm={24} lg={8}>
               <FormItem label={this.msg('delgGrossWt')} >
                 {getFieldDecorator('weight', {
                   initialValue: fieldInits.weight,

@@ -84,9 +84,9 @@ export default class ManifestList extends Component {
     dataIndex: 'ciq_inspect',
     render: (o) => {
       if (o === 'NL') {
-        return <Tag color="#ccc">一般报检</Tag>;
+        return <Tag color="cyan">包装报检</Tag>;
       } else if (o === 'LA' || o === 'LB') {
-        return <Tag color="#fa0">法定检验</Tag>;
+        return <Tag color="orange">法定检验</Tag>;
       }
       return <span />;
     },

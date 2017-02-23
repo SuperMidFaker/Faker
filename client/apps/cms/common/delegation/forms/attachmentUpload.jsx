@@ -88,7 +88,7 @@ export default class AttchmentUpload extends Component {
   }
   render() {
     return (
-      <Card title="附件" bodyStyle={{ padding: 16 }}>
+      <Card title="附件" bodyStyle={{ padding: 16 }} className="aside-card">
         <Alert message="可上传合同、发票、箱单等，支持Excel,Word,PDF,JPG,PNG格式" type="info" />
         <Upload listType="text" fileList={this.state.attachments}
           onRemove={this.handleRemove} onChange={this.handleChange}
