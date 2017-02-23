@@ -4,7 +4,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { Table } from 'antd';
 import { loadSkuTransactions } from 'common/reducers/scvInventoryTransaction';
-import { formatMsg } from './message.i18n';
+import { formatMsg } from '../message.i18n';
 
 @injectIntl
 @connect(

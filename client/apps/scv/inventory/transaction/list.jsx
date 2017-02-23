@@ -9,7 +9,7 @@ import { loadStockTransactions, loadStockSearchOptions } from 'common/reducers/s
 import Table from 'client/components/remoteAntTable';
 import StockSearchForm from './searchForm';
 import SkuDetailList from './skuDetails';
-import { formatMsg } from './message.i18n';
+import { formatMsg } from '../message.i18n';
 
 const { Header, Content, Sider } = Layout;
 const Option = Select.Option;

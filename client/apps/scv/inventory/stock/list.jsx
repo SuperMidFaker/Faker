@@ -7,7 +7,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { loadStocks, loadStockSearchOptions, loadLotStocks } from 'common/reducers/scvInventoryStock';
 import Table from 'client/components/remoteAntTable';
 import StockSearchForm from './searchForm';
-import { formatMsg } from './message.i18n';
+import { formatMsg } from '../message.i18n';
 
 const { Header, Content, Sider } = Layout;
 const Option = Select.Option;

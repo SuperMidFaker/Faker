@@ -4,7 +4,7 @@ import { Form, Select, DatePicker, Card, Col, Row, Table } from 'antd';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
+import messages from '../../message.i18n';
 
 const dateFormat = 'YYYY/MM/DD';
 const formatMsg = format(messages);

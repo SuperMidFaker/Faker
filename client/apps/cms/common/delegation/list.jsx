@@ -127,27 +127,22 @@ export default class DelegationList extends Component {
     dataIndex: 'send_name',
     render: o => <TrimSpan text={o} maxLen={12} />,
   }, {
-    title: this.msg('orderNo'),
-    width: 140,
-    dataIndex: 'order_no',
-    render: o => <TrimSpan text={o} maxLen={14} />,
+    title: this.msg('waybillLadingNo'),
+    width: 250,
+    dataIndex: 'bl_wb_no',
   }, {
     title: this.msg('invoiceNo'),
     width: 140,
     dataIndex: 'invoice_no',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
-    title: this.msg('waybillLadingNo'),
+    title: this.msg('orderNo'),
     width: 140,
-    dataIndex: 'bl_wb_no',
-  }, {
-    title: this.msg('broker'),
-    width: 180,
-    dataIndex: 'customs_name',
-    render: o => <TrimSpan text={o} maxLen={10} />,
+    dataIndex: 'order_no',
+    render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: this.msg('declareCustoms'),
-    width: 140,
+    width: 120,
     dataIndex: 'decl_port',
     render: (o) => {
       const cust = this.props.customs.filter(ct => ct.value === o)[0];
@@ -159,7 +154,7 @@ export default class DelegationList extends Component {
     },
   }, {
     title: this.msg('declareWay'),
-    width: 140,
+    width: 80,
     dataIndex: 'decl_way_code',
     render: (o) => {
       const DECL_TYPE = this.props.ietype === 'import' ? DECL_I_TYPE : DECL_E_TYPE;
@@ -168,7 +163,7 @@ export default class DelegationList extends Component {
       if (type) {
         declWay = type.value;
       }
-      return <TrimSpan text={declWay} maxLen={14} />;
+      return declWay;
     },
   }, {
     title: this.msg('transMode'),
@@ -180,8 +175,13 @@ export default class DelegationList extends Component {
       if (mode) {
         trans = mode.text;
       }
-      return <TrimSpan text={trans} maxLen={14} />;
+      return trans;
     },
+  }, {
+    title: this.msg('broker'),
+    width: 180,
+    dataIndex: 'customs_name',
+    render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
     title: this.msg('declStatus'),
     width: 130,
@@ -591,7 +591,7 @@ export default class DelegationList extends Component {
               {
                 listView === 'delegation' &&
                 <Table rowSelection={rowSelection} columns={columns} dataSource={this.dataSource} loading={delegationlist.loading}
-                  rowKey="delg_no" scroll={{ x: 1650 }}
+                  rowKey="delg_no" scroll={{ x: 1800 }}
                 />
               }
               {

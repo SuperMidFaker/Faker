@@ -5,7 +5,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import MainForm from './forms/mainForm';
 import SiderForm from './forms/siderForm';
-import messages from './message.i18n';
+import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
 
 const formatMsg = format(messages);

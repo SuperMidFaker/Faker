@@ -75,7 +75,7 @@ export default defineMessages({
   },
   delgClient: {
     id: 'cms.delegation.delg.client',
-    defaultMessage: '委托方',
+    defaultMessage: '委托客户',
   },
   delgTime: {
     id: 'cms.delegation.delg.time',

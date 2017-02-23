@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Radio, Button, Form, Input, Select, Checkbox } from 'antd';
 import { checkDisplayColumn } from 'common/reducers/scvInventoryStock';
-import { formatMsg } from './message.i18n';
+import { formatMsg } from '../message.i18n';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
