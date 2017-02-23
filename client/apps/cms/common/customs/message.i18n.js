@@ -93,4 +93,24 @@ export default defineMessages({
     id: 'cms.customs.filter.finalized',
     defaultMessage: '已回填',
   },
+  deleteConfirm: {
+    id: 'cms.customs.delete.confirm',
+    defaultMessage: '确认删除该报关单?',
+  },
+  delete: {
+    id: 'cms.customs.delete',
+    defaultMessage: '删除',
+  },
+  review: {
+    id: 'cms.customs.filter.review',
+    defaultMessage: '复核',
+  },
+  recall: {
+    id: 'cms.customs.recall',
+    defaultMessage: '退回',
+  },
+  send: {
+    id: 'cms.customs.send',
+    defaultMessage: '发送',
+  },
 });
