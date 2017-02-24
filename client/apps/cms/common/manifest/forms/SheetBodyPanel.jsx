@@ -500,8 +500,8 @@ export default class SheetBodyPanel extends React.Component {
         gNO += this.state.bodies[this.state.bodies.length - 2].g_no;
       }
       let body = { ...editBody, g_no: gNO };
-      const { billSeqNo, headNo, loginId } = this.props;
-      this.props.onAdd({ billSeqNo, body, headNo, loginId }).then((result) => {
+      const { billSeqNo, headNo, loginId, tenantId } = this.props;
+      this.props.onAdd({ billSeqNo, body, headNo, loginId, tenantId }).then((result) => {
         if (result.error) {
           message.error(result.error.message);
         } else {

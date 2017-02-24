@@ -26,6 +26,18 @@ const RadioButton = Radio.Button;
     loginName: state.account.username,
     delgBillList: state.cmsManifest.delgBillList,
     listFilter: state.cmsManifest.listFilter,
+    tradeModes: state.cmsManifest.formRequire.tradeModes.map(tm => ({
+      value: tm.trade_mode,
+      text: `${tm.trade_abbr}`,
+    })),
+    transModes: state.cmsManifest.formRequire.transModes.map(tm => ({
+      value: tm.trans_code,
+      text: `${tm.trans_spec}`,
+    })),
+    customs: state.cmsManifest.formRequire.customs.map(cus => ({
+      value: cus.customs_code,
+      text: `${cus.customs_name}`,
+    })),
   }),
   { loadDelgBill }
 )
@@ -57,7 +69,13 @@ export default class ManifestList extends Component {
     dataIndex: 'bill_seq_no',
     fixed: 'left',
     width: 170,
-    render: o => <NavLink to={`/clearance/${this.props.ietype}/manifest/${o}`}>{o}</NavLink>,
+    render: (o, record) => {
+      if (record.customs_tenant_id === this.props.tenantId && record.bill_status < 5) {
+        return <NavLink to={`/clearance/${this.props.ietype}/manifest/${o}`}>{o}</NavLink>;
+      } else {
+        return <NavLink to={`/clearance/${this.props.ietype}/manifest/view/${o}`}>{o}</NavLink>;
+      }
+    },
   }, {
     title: '委托方',
     dataIndex: 'send_name',
@@ -93,12 +111,36 @@ export default class ManifestList extends Component {
   }, {
     title: '监管方式',
     dataIndex: 'trade_mode',
+    render: (o) => {
+      const tradeMd = this.props.tradeModes.filter(tm => tm.value === o)[0];
+      let trade = '';
+      if (tradeMd) {
+        trade = tradeMd.text;
+      }
+      return <TrimSpan text={trade} maxLen={14} />;
+    },
   }, {
     title: '运输方式',
     dataIndex: 'traf_mode',
+    render: (o) => {
+      const transMd = this.props.transModes.filter(tm => tm.value === o)[0];
+      let trans = '';
+      if (transMd) {
+        trans = transMd.text;
+      }
+      return <TrimSpan text={trans} maxLen={14} />;
+    },
   }, {
     title: '进出口岸',
     dataIndex: 'i_e_port',
+    render: (o) => {
+      const cust = this.props.customs.filter(ct => ct.value === o)[0];
+      let port = '';
+      if (cust) {
+        port = cust.text;
+      }
+      return <TrimSpan text={port} maxLen={14} />;
+    },
   }, {
     title: '创建时间',
     render: (o, record) => (record.id ?
