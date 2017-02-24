@@ -1,7 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Layout, Radio, message } from 'antd';
+import { Breadcrumb, Layout, Radio, message, Tag } from 'antd';
+import moment from 'moment';
 import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -66,20 +67,42 @@ export default class ManifestList extends Component {
     dataIndex: 'customs_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
+    title: '订单号',
+    dataIndex: 'contr_no',
+  }, {
     title: '提运单号',
     dataIndex: 'bl_wb_no',
+  }, {
+    title: '发票号',
+    dataIndex: 'invoice_no',
   }, {
     title: this.msg('delgNo'),
     dataIndex: 'delg_no',
   }, {
-    title: '征免性质',
-    dataIndex: 'cut_mode',
+    title: '检验检疫',
+    width: 100,
+    dataIndex: 'ciq_inspect',
+    render: (o) => {
+      if (o === 'NL') {
+        return <Tag color="cyan">包装报检</Tag>;
+      } else if (o === 'LA' || o === 'LB') {
+        return <Tag color="orange">法定检验</Tag>;
+      }
+      return <span />;
+    },
   }, {
     title: '监管方式',
     dataIndex: 'trade_mode',
   }, {
     title: '运输方式',
     dataIndex: 'traf_mode',
+  }, {
+    title: '进出口岸',
+    dataIndex: 'i_e_port',
+  }, {
+    title: '创建时间',
+    render: (o, record) => (record.id ?
+    record.created_date && moment(record.created_date).format('MM.DD HH:mm') : '-'),
   }]
   dataSource = new Table.DataSource({
     fetcher: params => this.props.loadDelgBill(params),
@@ -158,7 +181,7 @@ export default class ManifestList extends Component {
               {this.props.ietype === 'import' ? this.msg('importClearance') : this.msg('exportClearance')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              {this.msg('manifestManage')}
+              {this.msg('declManifest')}
             </Breadcrumb.Item>
           </Breadcrumb>
           <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">

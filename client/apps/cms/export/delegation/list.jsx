@@ -1,18 +1,23 @@
 import React, { PropTypes } from 'react';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import withPrivilege from 'client/common/decorators/withPrivilege';
-import { loadAcceptanceTable } from 'common/reducers/cmsDelegation';
+import { loadAcceptanceTable, loadFormRequire } from 'common/reducers/cmsDelegation';
 import DelegationList from '../../common/delegation/list';
 
 function fetchData({ state, dispatch }) {
-  return dispatch(loadAcceptanceTable({
+  const promises = [];
+  promises.push(dispatch(loadAcceptanceTable({
     ietype: 'export',
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     filter: JSON.stringify(state.cmsDelegation.listFilter),
     pageSize: state.cmsDelegation.delegationlist.pageSize,
     currentPage: state.cmsDelegation.delegationlist.current,
-  }));
+  })));
+  promises.push(dispatch(
+    loadFormRequire(state.account.tenantId, 'export')
+  ));
+  return Promise.all(promises);
 }
 
 @connectFetch()(fetchData)

@@ -28,7 +28,6 @@ const { Header, Content } = Layout;
 )
 @connectNav({
   depth: 3,
-  text: '进出口清关',
   moduleName: 'clearance',
 })
 @Form.create()
@@ -91,7 +90,7 @@ export default class AcceptanceCreate extends Component {
         <Header className="top-bar">
           <Breadcrumb>
             <Breadcrumb.Item>
-              {this.props.ietype === 'import' ? this.msg('importClearance') : this.msg('exportClearance')}
+              {type === 'import' ? this.msg('importClearance') : this.msg('exportClearance')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
               {this.msg('delegationManagement')}

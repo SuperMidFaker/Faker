@@ -39,29 +39,8 @@ export default class SiderForm extends Component {
     const { form: { getFieldDecorator }, fieldInits } = this.props;
     return (
       <div>
-        <Card>
+        <Card className="aside-card">
           <Row gutter={16}>
-            <Col sm={24}>
-              <FormItem label={this.msg('invoiceNo')} >
-                {getFieldDecorator('invoice_no', {
-                  initialValue: fieldInits.invoice_no,
-                })(<Input />)}
-              </FormItem>
-            </Col>
-            <Col sm={24}>
-              <FormItem label={this.msg('orderNo')} >
-                {getFieldDecorator('order_no', {
-                  initialValue: fieldInits.order_no,
-                })(<Input />)}
-              </FormItem>
-            </Col>
-            <Col sm={24}>
-              <FormItem label={this.msg('contractNo')} >
-                {getFieldDecorator('contract_no', {
-                  initialValue: fieldInits.contract_no,
-                })(<Input />)}
-              </FormItem>
-            </Col>
             <Col sm={24}>
               <FormItem label={this.msg('delgInternalNo')} >
                 {getFieldDecorator('ref_external_no', {

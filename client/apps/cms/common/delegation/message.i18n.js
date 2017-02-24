@@ -3,11 +3,11 @@ import { defineMessages } from 'react-intl';
 export default defineMessages({
   importClearance: {
     id: 'cms.delegation.import.clearance',
-    defaultMessage: '进口清关',
+    defaultMessage: '进口进境',
   },
   exportClearance: {
     id: 'cms.delegation.export.clearance',
-    defaultMessage: '出口清关',
+    defaultMessage: '出口出境',
   },
   cmsDelegation: {
     id: 'cms.delegation',
@@ -75,7 +75,7 @@ export default defineMessages({
   },
   delgClient: {
     id: 'cms.delegation.delg.client',
-    defaultMessage: '委托方',
+    defaultMessage: '委托客户',
   },
   delgTime: {
     id: 'cms.delegation.delg.time',
@@ -91,7 +91,7 @@ export default defineMessages({
   },
   transMode: {
     id: 'cms.delegation.delg.trans_mode',
-    defaultMessage: '运输方式',
+    defaultMessage: '境内外运输模式',
   },
   waybillLadingNo: {
     id: 'cms.delegation.delg.waybill.lading.no',
@@ -171,7 +171,7 @@ export default defineMessages({
   },
   declareCustoms: {
     id: 'cms.delegation.declare.customs',
-    defaultMessage: '申报口岸',
+    defaultMessage: '申报地海关',
   },
   declareWay: {
     id: 'cms.delegation.delg.declareWay',

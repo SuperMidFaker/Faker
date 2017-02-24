@@ -7,13 +7,11 @@ import { updateHeadNetWt, loadBillBody, openAmountModel } from 'common/reducers/
 import { getItemForBody, getHscodeForBody } from 'common/reducers/cmsTradeitem';
 import { format } from 'client/common/i18n/helpers';
 import ExcelUpload from 'client/components/excelUploader';
-import globalMessage from 'client/common/root.i18n';
 import messages from './message.i18n';
 import { createFilename } from 'client/util/dataTransform';
 import AmountModel from '../modals/amountDivid';
 
 const formatMsg = format(messages);
-const formatGlobalMsg = format(globalMessage);
 const Panel = Collapse.Panel;
 const Option = Select.Option;
 
@@ -647,7 +645,7 @@ export default class SheetBodyPanel extends React.Component {
                 }),
               }} onUploaded={this.handleUploaded}
             >
-              <Icon type="file-excel" /> {this.msg('importBody')}
+              <Icon type="file-excel" /> {this.msg('unrelatedImport')}
             </ExcelUpload>
           </Menu.Item>
           }
@@ -678,10 +676,9 @@ export default class SheetBodyPanel extends React.Component {
             <Button icon="pie-chart" onClick={this.handleTotalPriceDivid}>金额平摊</Button>
             <Button icon="arrows-alt" onClick={this.handleGrossWtDivid}>毛重分摊</Button>
             <Button icon="shrink" onClick={this.handleNetWetSummary}>净重汇总</Button>
-            <span />
             <Dropdown overlay={menu} type="primary">
-              <Button type="primary" onClick={this.handleButtonClick}>
-                {formatGlobalMsg(this.props.intl, 'add')} <Icon type="down" />
+              <Button type="primary" ghost onClick={this.handleButtonClick}>
+                {this.msg('importBody')} <Icon type="down" />
               </Button>
             </Dropdown>
           </div>

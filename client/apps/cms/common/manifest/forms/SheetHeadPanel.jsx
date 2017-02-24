@@ -72,9 +72,7 @@ export default class SheetHeadPanel extends React.Component {
     const { form, readonly, formData, formRequire, ietype, intl, type } = this.props;
     const billHeadToolbar = (!readonly &&
       <div className="toolbar-right">
-        <Button type="ghost">{formatGlobalMsg(this.props.intl, 'cancel')}</Button>
-        <span />
-        <Button type="primary" onClick={this.handleSheetSave} icon="save">
+        <Button type="primary" ghost onClick={this.handleSheetSave} icon="save">
           {formatGlobalMsg(this.props.intl, 'save')}
         </Button>
       </div>);

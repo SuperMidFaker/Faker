@@ -3,7 +3,7 @@ import { formati18n } from 'client/common/i18n/helpers';
 
 const messages = defineMessages({
   inventoryWarehouse: {
-    id: 'scv.inventory.warehouse',
+    id: 'scv.resources.warehouse',
     defaultMessage: '仓库设置',
   },
   warehouseName: {
