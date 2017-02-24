@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Card, Table, Menu, Dropdown, Icon, Layout, Input, Row, Col, Modal, message } from 'antd';
+import { Breadcrumb, Button, Card, Table, Layout, Input, Row, Col, message } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -11,6 +11,7 @@ import { loadHsCodeCategories, addHsCodeCategory, removeHsCodeCategory, updateHs
 loadCategoryHsCode, addCategoryHsCode, removeCategoryHsCode } from 'common/reducers/cmsHsCode';
 import CategoryHscodeList from './categoryHscodeList';
 import SearchBar from 'client/components/search-bar';
+import './index.less';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -51,8 +52,6 @@ export default class HscodeCategory extends React.Component {
     hscodeCategory: {},
     hscodeCategories: [],
     editIndex: -1,
-    addCategoryVisible: false,
-    category: '',
   }
   componentWillReceiveProps(nextProps) {
     if (this.state.hscodeCategory.id === undefined) {
@@ -66,14 +65,10 @@ export default class HscodeCategory extends React.Component {
       this.setState({ hscodeCategory: record });
     }
   }
-  handleOptionClick = (e) => {
-    if (e.key === 'remove') {
-      this.props.removeHsCodeCategory(this.state.hscodeCategory.id).then(() => {
-        this.setState({ hscodeCategory: this.props.hscodeCategories[0] || {} });
-      });
-    } else if (e.key === 'edit') {
-      this.setState({ addCategoryVisible: true });
-    }
+  handleRemove = (id) => {
+    this.props.removeHsCodeCategory(id).then(() => {
+      this.setState({ hscodeCategory: this.props.hscodeCategories[0] || {} });
+    });
   }
   handleShowAddCategory = () => {
     const hscodeCategories = this.state.hscodeCategories.concat([{ id: -1 * this.state.hscodeCategories.length, name: '' }]);
@@ -93,22 +88,24 @@ export default class HscodeCategory extends React.Component {
       message.error('分类名称不能为空');
     }
   }
-  handleEditCategory = () => {
-    const { hscodeCategory, category } = this.state;
-    if (category) {
-      this.props.updateHsCodeCategory(hscodeCategory.id, category).then(() => {
-        this.setState({ addCategoryVisible: false });
+  handleEditCategory = (id) => {
+    const { hscodeCategories } = this.state;
+    const category = hscodeCategories.find(item => item.id === id);
+    if (category && category.name) {
+      this.props.updateHsCodeCategory(id, category.name).then(() => {
+        this.setState({ editIndex: -1 });
       });
     } else {
       message.error('分类名称不能为空');
     }
   }
+
   handleSearch = (value) => {
     const { categoryHscodes: { categoryId, current, pageSize } } = this.props;
     this.props.loadCategoryHsCode({ categoryId, current, pageSize, searchText: value });
   }
   render() {
-    const { hscodeCategory, addCategoryVisible, category } = this.state;
+    const { hscodeCategory } = this.state;
     const columns = [{
       dataIndex: 'index',
       key: 'index',
@@ -123,8 +120,8 @@ export default class HscodeCategory extends React.Component {
       render: (col, row, index) => {
         if (this.state.editIndex === index) {
           return (<Input value={col} onChange={(e) => {
-            const { editIndex, hscodeCategories } = this.state;
-            hscodeCategories[editIndex].name = e.target.value;
+            const { hscodeCategories } = this.state;
+            hscodeCategories[index].name = e.target.value;
             this.setState({ hscodeCategories });
           }}
           />);
@@ -135,22 +132,28 @@ export default class HscodeCategory extends React.Component {
     }, {
       dataIndex: 'option',
       key: 'option',
-      width: 55,
+      width: 80,
       render: (col, row, index) => {
         if (this.state.editIndex === index) {
-          return (<a onClick={this.handleAddCategory}>保存</a>);
+          if (row.id === -1) {
+            return (<a onClick={this.handleAddCategory}>保存</a>);
+          } else {
+            return (<a onClick={() => this.handleEditCategory(row.id)}>保存</a>);
+          }
         } else {
-          return '';
+          return (
+            <span>
+              <a onClick={() => this.handleRemove(row.id)}>删除</a>
+              <span className="ant-divider" />
+              <a onClick={() => {
+                this.setState({ editIndex: index });
+              }}
+              >修改</a>
+            </span>
+          );
         }
       },
     }];
-
-    const menu = (
-      <Menu onClick={this.handleOptionClick}>
-        <Menu.Item key="remove">删除 {hscodeCategory.name}</Menu.Item>
-        <Menu.Item key="edit">修改 {hscodeCategory.name}</Menu.Item>
-      </Menu>
-    );
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Header className="top-bar">
@@ -178,11 +181,6 @@ export default class HscodeCategory extends React.Component {
                   <SearchBar placeholder="编码/名称/描述/申报要素" onInputSearch={this.handleSearch}
                     value={this.props.categoryHscodes.searchText} size="large"
                   />
-                  <Dropdown overlay={menu}>
-                    <Button size="large" style={{ marginLeft: 8 }}>
-                      <Icon type="setting" /> <Icon type="down" />
-                    </Button>
-                  </Dropdown>
                 </div>
               </Col>
             </Row>
@@ -190,16 +188,8 @@ export default class HscodeCategory extends React.Component {
               <Col span={4} style={{ paddingLeft: 8, paddingRight: 8 }}>
                 <Card bodyStyle={{ padding: 0 }}>
                   <Table size="middle" dataSource={this.state.hscodeCategories} columns={columns} onRowClick={this.handleRowClick}
-                    pagination={false} rowKey="id"
+                    pagination={false} rowKey="id" rowClassName={record => record.name === hscodeCategory.name ? 'hscode-category' : ''}
                   />
-                  <Modal
-                    title={`修改分类${hscodeCategory.name}`}
-                    visible={addCategoryVisible}
-                    onCancel={() => this.setState({ addCategoryVisible: false })}
-                    onOk={this.handleEditCategory}
-                  >
-                    <Input value={category} onChange={e => this.setState({ category: e.target.value })} />
-                  </Modal>
                 </Card>
               </Col>
               <Col span={20} style={{ paddingLeft: 8, paddingRight: 8 }}>
