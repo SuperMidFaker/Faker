@@ -68,7 +68,9 @@ export default class HscodeCategory extends React.Component {
   }
   handleOptionClick = (e) => {
     if (e.key === 'remove') {
-      this.props.removeHsCodeCategory(this.state.hscodeCategory.id);
+      this.props.removeHsCodeCategory(this.state.hscodeCategory.id).then(() => {
+        this.setState({ hscodeCategory: this.props.hscodeCategories[0] || {} });
+      });
     } else if (e.key === 'edit') {
       this.setState({ addCategoryVisible: true });
     }
@@ -112,6 +114,7 @@ export default class HscodeCategory extends React.Component {
       key: 'index',
       title: '序号',
       className: 'hscode-list-left',
+      width: 55,
       render: (col, row, index) => index + 1,
     }, {
       dataIndex: 'name',
@@ -132,6 +135,7 @@ export default class HscodeCategory extends React.Component {
     }, {
       dataIndex: 'option',
       key: 'option',
+      width: 55,
       render: (col, row, index) => {
         if (this.state.editIndex === index) {
           return (<a onClick={this.handleAddCategory}>保存</a>);
@@ -160,11 +164,11 @@ export default class HscodeCategory extends React.Component {
           </Breadcrumb>
         </Header>
         <Content className="main-content" key="main">
-          <Layout className="main-wrapper" style={{ paddingLeft: 20, paddingRight: 20 }}>
+          <div className="page-body" style={{ paddingLeft: 5, paddingRight: 5 }}>
             <Row>
               <Col span={4}>
                 <div className="tool" style={{ padding: 8 }}>
-                  <Button icon="plus-circle-o" onClick={() => this.handleShowAddCategory()}>
+                  <Button size="large" icon="plus-circle-o" onClick={() => this.handleShowAddCategory()}>
                     添加
                   </Button>
                 </div>
@@ -175,7 +179,7 @@ export default class HscodeCategory extends React.Component {
                     value={this.props.categoryHscodes.searchText} size="large"
                   />
                   <Dropdown overlay={menu}>
-                    <Button style={{ marginLeft: 8 }}>
+                    <Button size="large" style={{ marginLeft: 8 }}>
                       <Icon type="setting" /> <Icon type="down" />
                     </Button>
                   </Dropdown>
@@ -204,7 +208,7 @@ export default class HscodeCategory extends React.Component {
                 </Card>
               </Col>
             </Row>
-          </Layout>
+          </div>
         </Content>
       </QueueAnim>
     );
