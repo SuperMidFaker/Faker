@@ -65,7 +65,7 @@ export default class CategoryHscodeList extends React.Component {
   handleTableLoad = (props) => {
     const { hscodeCategory, categoryHscodes } = props || this.props;
     const params = {
-      categoryId: hscodeCategory.id,
+      categoryId: hscodeCategory.id || -1,
       pageSize: categoryHscodes.pageSize,
       current: categoryHscodes.current,
       searchText: categoryHscodes.searchText,
