@@ -38,7 +38,6 @@ const RadioButton = Radio.Button;
       value: cus.customs_code,
       text: `${cus.customs_name}`,
     })),
-
   }),
   { loadDelgBill }
 )

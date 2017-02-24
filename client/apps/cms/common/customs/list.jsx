@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Breadcrumb, Icon, Layout, Radio, Tag, message, Popconfirm } from 'antd';
+import { Breadcrumb, Icon, Layout, Radio, Tag, message, Popconfirm, Badge } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -14,10 +14,9 @@ import SearchBar from 'client/components/search-bar';
 import NavLink from 'client/components/nav-link';
 import RowUpdater from '../delegation/rowUpdater';
 import DeclnoFillModal from './modals/declNoFill';
-import DeclStatusPopover from './declStatusPopover';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import { DECL_STATUS } from 'common/constants';
+import { DECL_STATUS, CMS_DECL_STATUS } from 'common/constants';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -32,6 +31,10 @@ const RadioButton = Radio.Button;
     loginName: state.account.username,
     delgdeclList: state.cmsDeclare.delgdeclList,
     listFilter: state.cmsDeclare.listFilter,
+    customs: state.cmsDeclare.customs.map(cus => ({
+      value: cus.customs_code,
+      text: `${cus.customs_name}`,
+    })),
   }),
   { loadDelgDecls, openEfModal, deleteDecl, setFilterReviewed }
 )
@@ -88,49 +91,74 @@ export default class DelgDeclList extends Component {
       }
     },
   }, {
-    title: '委托方',
-    dataIndex: 'send_name',
+    title: '收发货人',
+    dataIndex: 'trade_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: this.msg('agent'),
     dataIndex: 'customs_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
-    title: '提运单号',
-    dataIndex: 'bl_wb_no',
-  }, {
-    title: this.msg('delgNo'),
-    dataIndex: 'delg_no',
-  }, {
-    title: this.msg('clrStatus'),
-    dataIndex: 'note',
-    render: (o, row) => {
-      if (o) {
-        return (
-          <DeclStatusPopover results={row.results} entryId={row.entry_id}>
-            {o}
-          </DeclStatusPopover>
-        );
-      } else {
-        return '--';
-      }
-    },
-  }, {
-    title: this.msg('customsCheck'),
-    dataIndex: 'customs_inspect',
+    title: '进出口岸',
+    dataIndex: 'i_e_port',
     render: (o) => {
-      if (o === 1) {
-        return <Tag color="#F04134">是</Tag>;
-      } else if (o === 2) {
-        return <Tag color="rgba(39, 187, 71, 0.65)">通过</Tag>;
+      const cust = this.props.customs.filter(ct => ct.value === o)[0];
+      let port = '';
+      if (cust) {
+        port = cust.text;
+      }
+      return <TrimSpan text={port} maxLen={14} />;
+    },
+  }, {
+    title: '类型',
+    dataIndex: 'sheet_type',
+    render: (o) => {
+      if (o === 'CDF') {
+        return <Tag color="cyan">报关单</Tag>;
+      } else if (o === 'FTZ') {
+        return <Tag color="orange">备案清单</Tag>;
       } else {
-        return <Tag>否</Tag>;
+        return <span />;
       }
     },
   }, {
-    title: this.msg('processDate'),
+    title: '状态',
+    dataIndex: 'status',
+    render: (o) => {
+      const decl = CMS_DECL_STATUS.filter(st => st.value === o)[0];
+      if (o === 0) {
+        return <Badge status="default" text={decl && decl.text} />;
+      } else if (o === 1) {
+        return <Badge status="warning" text={decl && decl.text} />;
+      } else if (o === 2) {
+        return <Badge status="processing" text={decl && decl.text} />;
+      } else if (o === 3) {
+        return <Badge status="success" text={decl && decl.text} />;
+      }
+    },
+  }, {
+    title: '进出口日期',
+    dataIndex: 'i_e_date',
     render: (o, record) => (record.id ?
-    record.process_date && moment(record.process_date).format('MM.DD HH:mm') : '-'),
+      record.i_e_date && moment(record.i_e_date).format('MM.DD HH:mm') : '-'),
+  }, {
+    title: '创建日期',
+    dataIndex: 'created_date',
+    render: (o, record) => (record.id ?
+    record.created_date && moment(record.created_date).format('MM.DD HH:mm') : '-'),
+  }, {
+    title: '申报日期',
+    dataIndex: 'd_date',
+    render: (o, record) => (record.id ?
+    record.d_date && moment(record.d_date).format('MM.DD HH:mm') : '-'),
+  }, {
+    title: '申报人',
+    dataIndex: 'creater_login_id  ',
+  }, {
+    title: '回填日期',
+    dataIndex: 'backfill_date',
+    render: (o, record) => (record.id ?
+    record.backfill_date && moment(record.backfill_date).format('MM.DD HH:mm') : '-'),
   }]
   dataSource = new Table.DataSource({
     fetcher: params => this.props.loadDelgDecls(params),

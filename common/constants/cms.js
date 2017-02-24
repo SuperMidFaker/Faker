@@ -266,3 +266,10 @@ export const DECL_STATUS = {
   declared: 2,
   finalized: 3,
 };
+
+export const CMS_DECL_STATUS = [
+  { value: 0, text: '报关建议书' },
+  { value: 1, text: '已复核' },
+  { value: 2, text: '预录入' },
+  { value: 3, text: '已回填' },
+];
