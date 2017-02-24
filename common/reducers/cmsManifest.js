@@ -407,7 +407,7 @@ export function loadSearchedParam({ paramType, search }) {
   };
 }
 
-export function addNewBillBody({ body, billSeqNo, headNo, loginId }) {
+export function addNewBillBody({ body, billSeqNo, headNo, loginId, tenantId }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -417,7 +417,7 @@ export function addNewBillBody({ body, billSeqNo, headNo, loginId }) {
       ],
       endpoint: 'v1/cms/manifest/billbody/add',
       method: 'post',
-      data: { newBody: body, billNo: headNo, billSeqNo, loginId },
+      data: { newBody: body, billNo: headNo, billSeqNo, loginId, tenantId },
     },
   };
 }
@@ -491,7 +491,7 @@ export function closeAmountModel() {
   };
 }
 
-export function submitBillMegeSplit({ billNo, mergeOpt, splitOpt, sortOpt }) {
+export function submitBillMegeSplit({ billNo, mergeOpt, splitOpt, sortOpt, hsCategory }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -501,7 +501,7 @@ export function submitBillMegeSplit({ billNo, mergeOpt, splitOpt, sortOpt }) {
       ],
       endpoint: 'v1/cms/declare/bill/mergesplit',
       method: 'post',
-      data: { billNo, mergeOpt, splitOpt, sortOpt },
+      data: { billNo, mergeOpt, splitOpt, sortOpt, hsCategory },
     },
   };
 }
