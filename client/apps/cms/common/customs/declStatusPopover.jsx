@@ -19,14 +19,6 @@ export default class DeclStatusPopover extends React.Component {
     const { results, entryId, children } = this.props;
     const overlay = (
       <div>
-        <span style={{
-          marginBottom: 16,
-          lineHeight: '24px',
-          height: '24px',
-        }}
-        >
-          {entryId}
-        </span>
         <Timeline>
           {
             results.map((res) => {
@@ -48,7 +40,7 @@ export default class DeclStatusPopover extends React.Component {
       </div>
     );
     return (
-      <Popover placement="topRight" content={overlay} title="通关状态追踪">
+      <Popover placement="topRight" content={overlay} title={entryId}>
         {children}
       </Popover>
     );

@@ -15,6 +15,7 @@ import NavLink from 'client/components/nav-link';
 import RowUpdater from '../delegation/rowUpdater';
 import DeclnoFillModal from './modals/declNoFill';
 import { format } from 'client/common/i18n/helpers';
+import DeclStatusPopover from './declStatusPopover';
 import messages from './message.i18n';
 import { DECL_STATUS, CMS_DECL_STATUS } from 'common/constants';
 
@@ -65,18 +66,22 @@ export default class DelgDeclList extends Component {
     title: this.msg('preEntryNo'),
     dataIndex: 'pre_entry_seq_no',
     fixed: 'left',
-    width: 170,
+    width: 160,
     render: (o, record) => <NavLink to={`/clearance/${this.props.ietype}/customs/${record.bill_seq_no}/${o}`}>{o}</NavLink>,
   }, {
     title: this.msg('entryId'),
     dataIndex: 'entry_id',
-    width: 180,
+    width: 160,
     fixed: 'left',
     render: (o, record) => {
       // 用id字段表示为children数据
       if (record.id) {
         if (o) {
-          return o;
+          return (
+            <DeclStatusPopover results={record.results} entryId={o}>
+              {o}
+            </DeclStatusPopover>
+          );
         } else {
           return (
             <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
@@ -93,14 +98,17 @@ export default class DelgDeclList extends Component {
   }, {
     title: '收发货人',
     dataIndex: 'trade_name',
-    render: o => <TrimSpan text={o} maxLen={14} />,
+    width: 160,
+    render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
     title: this.msg('agent'),
     dataIndex: 'customs_name',
-    render: o => <TrimSpan text={o} maxLen={14} />,
+    width: 160,
+    render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
     title: '进出口岸',
     dataIndex: 'i_e_port',
+    width: 80,
     render: (o) => {
       const cust = this.props.customs.filter(ct => ct.value === o)[0];
       let port = '';
@@ -112,17 +120,19 @@ export default class DelgDeclList extends Component {
   }, {
     title: '类型',
     dataIndex: 'sheet_type',
+    width: 80,
     render: (o) => {
       if (o === 'CDF') {
-        return <Tag color="cyan">报关单</Tag>;
+        return <Tag color="blue-inverse">报关单</Tag>;
       } else if (o === 'FTZ') {
-        return <Tag color="orange">备案清单</Tag>;
+        return <Tag color="blue">备案清单</Tag>;
       } else {
         return <span />;
       }
     },
   }, {
     title: '状态',
+    width: 120,
     dataIndex: 'status',
     render: (o) => {
       const decl = CMS_DECL_STATUS.filter(st => st.value === o)[0];
@@ -140,14 +150,14 @@ export default class DelgDeclList extends Component {
     title: '进出口日期',
     dataIndex: 'i_e_date',
     render: (o, record) => (record.id ?
-      record.i_e_date && moment(record.i_e_date).format('MM.DD HH:mm') : '-'),
+      record.i_e_date && moment(record.i_e_date).format('YYYY.MM.DD') : '-'),
   }, {
-    title: '创建日期',
+    title: '创建时间',
     dataIndex: 'created_date',
     render: (o, record) => (record.id ?
     record.created_date && moment(record.created_date).format('MM.DD HH:mm') : '-'),
   }, {
-    title: '申报日期',
+    title: '申报时间',
     dataIndex: 'd_date',
     render: (o, record) => (record.id ?
     record.d_date && moment(record.d_date).format('MM.DD HH:mm') : '-'),
@@ -158,7 +168,7 @@ export default class DelgDeclList extends Component {
     title: '回填日期',
     dataIndex: 'backfill_date',
     render: (o, record) => (record.id ?
-    record.backfill_date && moment(record.backfill_date).format('MM.DD HH:mm') : '-'),
+    record.backfill_date && moment(record.backfill_date).format('YYYY.MM.DD') : '-'),
   }]
   dataSource = new Table.DataSource({
     fetcher: params => this.props.loadDelgDecls(params),
@@ -332,7 +342,7 @@ export default class DelgDeclList extends Component {
             </div>
             <div className="panel-body table-panel expandable">
               <Table rowSelection={rowSelection} columns={columns} rowKey="pre_entry_seq_no" dataSource={this.dataSource}
-                loading={delgdeclList.loading} scroll={{ x: 1000 }}
+                loading={delgdeclList.loading} scroll={{ x: 1600 }}
               />
             </div>
             <DeclnoFillModal reload={this.handleTableLoad} />

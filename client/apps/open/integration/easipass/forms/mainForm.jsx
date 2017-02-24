@@ -47,30 +47,6 @@ export default class MainForm extends Component {
         </Card>
         <Card title="Easipass parameters">
           <Row gutter={16}>
-            <Col sm={24} lg={12}>
-              <FormItem label={this.msg('发送方协同ID号')} >
-                {getFieldDecorator('sender_id', {
-                })(<Input />)}
-              </FormItem>
-            </Col>
-            <Col sm={24} lg={12}>
-              <FormItem label={this.msg('接收方协同ID号')} >
-                {getFieldDecorator('receiver_id', {
-                })(<Input />)}
-              </FormItem>
-            </Col>
-            <Col sm={24} lg={12}>
-              <FormItem label={this.msg('接收方用户ID')} >
-                {getFieldDecorator('receiver_user_id', {
-                })(<Input />)}
-              </FormItem>
-            </Col>
-            <Col sm={24} lg={12}>
-              <FormItem label={this.msg('EDI用户名')} >
-                {getFieldDecorator('edi_username', {
-                })(<Input />)}
-              </FormItem>
-            </Col>
             <Col sm={24} lg={24}>
               <FormItem label={this.msg('FTPserver')} >
                 {getFieldDecorator('ftp_server', {
