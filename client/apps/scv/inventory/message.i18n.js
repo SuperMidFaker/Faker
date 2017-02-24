@@ -28,11 +28,11 @@ const messages = defineMessages({
   },
   product: {
     id: 'scv.inventory.product',
-    defaultMessage: '产品物料',
+    defaultMessage: '产品',
   },
   productHint: {
     id: 'scv.inventory.product.hint',
-    defaultMessage: '品名/料号',
+    defaultMessage: '品名/货号',
   },
   category: {
     id: 'scv.inventory.category',
@@ -127,6 +127,18 @@ const messages = defineMessages({
   inventoryTransaction: {
     id: 'scv.inventory.transaction',
     defaultMessage: '进出库记录',
+  },
+  transTracking: {
+    id: 'scv.inventory.transaction.tracking',
+    defaultMessage: '进出库追踪',
+  },
+  trackingByLotNo: {
+    id: 'scv.inventory.transaction.tracking.by.lot',
+    defaultMessage: '按批次号追踪',
+  },
+  trackingBySerialNo: {
+    id: 'scv.inventory.transaction.tracking.by.serial',
+    defaultMessage: '按序列号追踪',
   },
   startDate: {
     id: 'scv.inventory.transaction.start.date',

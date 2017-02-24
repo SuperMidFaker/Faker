@@ -159,11 +159,11 @@ export default class DelegationList extends Component {
     render: (o) => {
       const DECL_TYPE = this.props.ietype === 'import' ? DECL_I_TYPE : DECL_E_TYPE;
       const type = DECL_TYPE.filter(dl => dl.key === o)[0];
-      let declWay = '';
-      if (type) {
-        declWay = type.value;
+      if (o === '0000' || o === '0001') {
+        return (<Tag color="blue-inverse">{type.value}</Tag>);
+      } else if (o === '0102' || o === '0103') {
+        return (<Tag color="blue">{type.value}</Tag>);
       }
-      return declWay;
     },
   }, {
     title: this.msg('transMode'),
@@ -171,11 +171,17 @@ export default class DelegationList extends Component {
     dataIndex: 'trans_mode',
     render: (o) => {
       const mode = TRANS_MODE.filter(ts => ts.value === o)[0];
-      let trans = '';
-      if (mode) {
-        trans = mode.text;
+      if (o === 'DOM') {
+        return (<span><i className="zmdi zmdi-border-outer" /> {mode.text}</span>);
+      } else if (o === '2') {
+        return (<span><i className="zmdi zmdi-boat" /> {mode.text}</span>);
+      } else if (o === '5') {
+        return (<span><i className="zmdi zmdi-airplane" /> {mode.text}</span>);
+      } else if (o === '3') {
+        return (<span><i className="zmdi zmdi-subway" /> {mode.text}</span>);
+      } else if (o === '4') {
+        return (<span><i className="zmdi zmdi-truck" /> {mode.text}</span>);
       }
-      return trans;
     },
   }, {
     title: this.msg('broker'),

@@ -1,11 +1,11 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Radio, Button, Progress, Upload, Modal, message, Layout } from 'antd';
+import { Breadcrumb, Radio, Button, Popover, Progress, Upload, Modal, message, Layout } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { loadOutboundShipment, loadOutboundPartners, openModal, openCreateModal } from 'common/reducers/scvOutboundShipments';
+import { loadInbounds, loadInboundPartners, openModal, openCreateModal } from 'common/reducers/scvInboundShipments';
 import Table from 'client/components/remoteAntTable';
 import SearchBar from 'client/components/search-bar';
 // import TrimSpan from 'client/components/trimSpan';
@@ -13,7 +13,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import RowUpdater from './rowUpdater';
-import OutboundExpander from './expander';
+import InboundExpander from './expander';
 import SendModal from './senderModal';
 import CreateModal from './createModal';
 
@@ -23,11 +23,11 @@ const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 
 function fetchData({ state, dispatch }) {
-  return dispatch(loadOutboundShipment({
+  return dispatch(loadInbounds({
     tenantId: state.account.tenantId,
     filter: JSON.stringify({ status: 'all' }),
-    pageSize: state.scvOutboundShipments.list.pageSize,
-    current: state.scvOutboundShipments.list.current,
+    pageSize: state.scvInboundShipments.list.pageSize,
+    current: state.scvInboundShipments.list.current,
   }));
 }
 
@@ -36,25 +36,25 @@ function fetchData({ state, dispatch }) {
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    reload: state.scvOutboundShipments.reload,
-    outboundList: state.scvOutboundShipments.list,
-    listFilter: state.scvOutboundShipments.listFilter,
+    reload: state.scvInboundShipments.reload,
+    inboundlist: state.scvInboundShipments.list,
+    listFilter: state.scvInboundShipments.listFilter,
   }),
-  { loadOutboundShipment, loadOutboundPartners, openModal, openCreateModal }
+  { loadInbounds, loadInboundPartners, openModal, openCreateModal }
 )
 @connectNav({
   depth: 2,
   moduleName: 'scv',
 })
-export default class OutboundShipmentsList extends React.Component {
+export default class InboundShipmentsList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     reload: PropTypes.bool.isRequired,
-    outboundList: PropTypes.object.isRequired,
+    inboundlist: PropTypes.object.isRequired,
     listFilter: PropTypes.object.isRequired,
-    loadOutboundShipment: PropTypes.func.isRequired,
-    loadOutboundPartners: PropTypes.func.isRequired,
+    loadInbounds: PropTypes.func.isRequired,
+    loadInboundPartners: PropTypes.func.isRequired,
     openModal: PropTypes.func.isRequired,
   }
   state = {
@@ -65,9 +65,9 @@ export default class OutboundShipmentsList extends React.Component {
     uploadStatus: 'active',
   }
   componentDidMount() {
-    this.outboundPoll = setInterval(() => {
-      const { tenantId, listFilter, outboundList: { pageSize, current } } = this.props;
-      this.props.loadOutboundShipment({
+    this.inboundPoll = setInterval(() => {
+      const { tenantId, listFilter, inboundlist: { pageSize, current } } = this.props;
+      this.props.loadInbounds({
         tenantId,
         filter: JSON.stringify(listFilter),
         pageSize,
@@ -77,8 +77,8 @@ export default class OutboundShipmentsList extends React.Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.reload) {
-      const { tenantId, listFilter, outboundList: { pageSize } } = nextProps;
-      nextProps.loadOutboundShipment({
+      const { tenantId, listFilter, inboundlist: { pageSize } } = nextProps;
+      nextProps.loadInbounds({
         tenantId,
         filter: JSON.stringify(listFilter),
         pageSize,
@@ -87,11 +87,11 @@ export default class OutboundShipmentsList extends React.Component {
     }
   }
   componentWillUnmount() {
-    if (this.outboundPoll) {
-      clearInterval(this.outboundPoll);
+    if (this.inboundPoll) {
+      clearInterval(this.inboundPoll);
     }
   }
-  outboundPoll = undefined
+  inboundPoll = undefined
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
     title: this.msg('shipmentNo'),
@@ -240,7 +240,7 @@ export default class OutboundShipmentsList extends React.Component {
     },
   }]
   dataSource = new Table.DataSource({
-    fetcher: params => this.props.loadOutboundShipment(params),
+    fetcher: params => this.props.loadInbounds(params),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
       total: result.totalCount,
@@ -259,7 +259,7 @@ export default class OutboundShipmentsList extends React.Component {
       params.filter = JSON.stringify(filter);
       return params;
     },
-    remotes: this.props.outboundList,
+    remotes: this.props.inboundlist,
   })
   handleImport = (info) => {
     if (this.state.uploadChangeCount === 0) {
@@ -272,7 +272,7 @@ export default class OutboundShipmentsList extends React.Component {
       this.setState({ inUpload: false, uploadStatus: 'success' });
       this.state.uploadChangeCount = 0;
       const { tenantId, pageSize } = this.props;
-      this.props.loadOutboundShipment({
+      this.props.loadInbounds({
         tenantId,
         pageSize,
         current: 1,
@@ -286,7 +286,7 @@ export default class OutboundShipmentsList extends React.Component {
     this.setState({ expandedKeys });
   }
   handleSendAtDest = (row) => {
-    this.props.loadOutboundPartners(this.props.tenantId).then(
+    this.props.loadInboundPartners(this.props.tenantId).then(
       (result) => {
         if (result.error) {
           message.error(result.error.message);
@@ -296,9 +296,9 @@ export default class OutboundShipmentsList extends React.Component {
       });
   }
   handleShipmentLoad = () => {
-    const { tenantId, listFilter, outboundList: { pageSize, current } } = this.props;
+    const { tenantId, listFilter, inboundlist: { pageSize, current } } = this.props;
     this.setState({ expandedKeys: [] });
-    this.props.loadOutboundShipment({
+    this.props.loadInbounds({
       tenantId,
       filter: JSON.stringify(listFilter),
       pageSize,
@@ -310,9 +310,9 @@ export default class OutboundShipmentsList extends React.Component {
       return;
     }
     const filter = { ...this.props.listFilter, status: ev.target.value };
-    const { tenantId, outboundList: { pageSize } } = this.props;
+    const { tenantId, inboundlist: { pageSize } } = this.props;
     this.setState({ expandedKeys: [] });
-    this.props.loadOutboundShipment({
+    this.props.loadInbounds({
       tenantId,
       filter: JSON.stringify(filter),
       pageSize,
@@ -323,15 +323,15 @@ export default class OutboundShipmentsList extends React.Component {
       }
     });
   }
-  handleExpandDetail = row => <OutboundExpander row={row} />
+  handleExpandDetail = row => <InboundExpander row={row} />
   handleShipmentCreate = () => {
     this.props.openCreateModal();
   }
   handleSearch = (value) => {
     const filter = { ...this.props.listFilter, shipment_no: value };
-    const { tenantId, outboundList: { pageSize } } = this.props;
+    const { tenantId, inboundlist: { pageSize } } = this.props;
     this.setState({ expandedKeys: [] });
-    this.props.loadOutboundShipment({
+    this.props.loadInbounds({
       tenantId,
       filter: JSON.stringify(filter),
       pageSize,
@@ -343,43 +343,63 @@ export default class OutboundShipmentsList extends React.Component {
     });
   }
   render() {
-    const { outboundList, listFilter } = this.props;
-    this.dataSource.remotes = outboundList;
+    const { inboundlist } = this.props;
+    this.dataSource.remotes = inboundlist;
     const { inUpload, uploadPercent, uploadStatus } = this.state;
+    const content = (
+      <div>
+        <a href="#" onClick={this.handleShipmentCreate}>Content</a>
+        <p>Content</p>
+      </div>
+    );
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Header className="top-bar">
-          <span>{this.msg('outboundShipments')}</span>
-          <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">
-            <RadioButton value="all">{this.msg('all')}</RadioButton>
-            <RadioButton value="atorigin">{this.msg('atorigin')}</RadioButton>
-            <RadioButton value="intransit">{this.msg('intransit')}</RadioButton>
-            <RadioButton value="atdest">{this.msg('atdest')}</RadioButton>
-            <RadioButton value="clearance">{this.msg('atclearance')}</RadioButton>
-            <RadioButton value="delivering">{this.msg('atdelivering')}</RadioButton>
-            <RadioButton value="received">{this.msg('atreceived')}</RadioButton>
+          <Breadcrumb>
+            <Breadcrumb.Item>
+              {this.msg('shipmentsTracking')}
+            </Breadcrumb.Item>
+          </Breadcrumb>
+          <RadioGroup onChange={this.handleRadioChange} size="large" defaultValue="active">
+            <RadioButton value="active">{this.msg('active')}</RadioButton>
+            <RadioButton value="delivered">{this.msg('delivered')}</RadioButton>
+          </RadioGroup>
+          <span />
+          <RadioGroup onChange={this.handleRadioChange} size="large" defaultValue="any">
+            <RadioButton value="any">{this.msg('any')}</RadioButton>
+            <RadioButton value="import">{this.msg('import')}</RadioButton>
+            <RadioButton value="export">{this.msg('export')}</RadioButton>
+          </RadioGroup>
+          <span />
+          <RadioGroup onChange={this.handleRadioChange} size="large" defaultValue="anyTrans">
+            <RadioButton value="anyTrans">{this.msg('any')}</RadioButton>
+            <RadioButton value="sea"><i className="zmdi zmdi-boat" /></RadioButton>
+            <RadioButton value="air"><i className="zmdi zmdi-airplane" /></RadioButton>
+            <RadioButton value="inland"><i className="zmdi zmdi-truck" /></RadioButton>
           </RadioGroup>
           <div className="top-bar-tools">
-            <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} size="large" />
+            <Upload accept=".xls,.xlsx" action={`${API_ROOTS.scv}v1/scv/inbound/import/shipments`}
+              data={{ tenantId: this.props.tenantId }} onChange={this.handleImport}
+              showUploadList={false} withCredentials
+            >
+              <Button size="large">
+                {this.msg('importShipments')}
+              </Button>
+            </Upload>
+            <Popover content={content} title="Title" trigger="click" placement="bottomRight">
+              <Button type="primary" size="large" icon="plus">
+                {this.msg('newShipment')}
+              </Button>
+            </Popover>
           </div>
         </Header>
         <Content className="main-content" key="main">
           <div className="page-body">
             <div className="toolbar">
-              <Upload accept=".xls,.xlsx" action={`${API_ROOTS.scv}v1/scv/outbound/import/shipments`}
-                data={{ tenantId: this.props.tenantId }} onChange={this.handleImport}
-                showUploadList={false} withCredentials
-              >
-                <Button type="primary" icon="plus-circle-o">
-                  {this.msg('importShipments')}
-                </Button>
-              </Upload>
-              <Button type="primary" icon="plus-circle-o" onClick={this.handleShipmentCreate}>
-                {this.msg('newShipment')}
-              </Button>
+              <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} size="large" />
             </div>
             <div className="panel-body table-panel expandable">
-              <Table columns={this.columns} dataSource={this.dataSource} loading={outboundList.loading}
+              <Table columns={this.columns} dataSource={this.dataSource} loading={inboundlist.loading}
                 expandedRowKeys={this.state.expandedKeys} rowKey="id"
                 expandedRowRender={this.handleExpandDetail}
                 scroll={{ x: 1420 }} onExpandedRowsChange={this.handleExpandedChange}
