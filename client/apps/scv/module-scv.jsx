@@ -45,16 +45,10 @@ export default class ModuleSCV extends React.Component {
         text: formatMsg(intl, 'clearanceManifest'),
       }, {
         key: 'scv-3-1',
-        disabled: true,
         path: '/scv/clearance/cds',
         text: formatMsg(intl, 'clearanceCDS'),
       }, {
         key: 'scv-3-2',
-        disabled: true,
-        path: '/scv/clearance/ftz',
-        text: formatMsg(intl, 'clearanceFTZ'),
-      }, {
-        key: 'scv-3-3',
         disabled: true,
         path: '/scv/clearance/tax',
         text: formatMsg(intl, 'clearanceTax'),

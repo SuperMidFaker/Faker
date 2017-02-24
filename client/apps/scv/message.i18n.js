@@ -23,11 +23,7 @@ const messages = defineMessages({
   },
   clearanceCDS: {
     id: 'scv.module.clearance.cds',
-    defaultMessage: '进出口报关单',
-  },
-  clearanceFTZ: {
-    id: 'scv.module.clearance.ftz',
-    defaultMessage: '进出境备案清单',
+    defaultMessage: '报关单/备案清单',
   },
   clearanceTax: {
     id: 'scv.module.clearance.tax',

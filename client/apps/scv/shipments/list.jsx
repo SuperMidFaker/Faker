@@ -365,14 +365,12 @@ export default class InboundShipmentsList extends React.Component {
             <RadioButton value="delivered">{this.msg('delivered')}</RadioButton>
           </RadioGroup>
           <span />
-          <RadioGroup onChange={this.handleRadioChange} size="large" defaultValue="any">
-            <RadioButton value="any">{this.msg('any')}</RadioButton>
+          <RadioGroup onChange={this.handleIEChange} size="large" defaultValue="any">
             <RadioButton value="import">{this.msg('import')}</RadioButton>
             <RadioButton value="export">{this.msg('export')}</RadioButton>
           </RadioGroup>
           <span />
-          <RadioGroup onChange={this.handleRadioChange} size="large" defaultValue="anyTrans">
-            <RadioButton value="anyTrans">{this.msg('any')}</RadioButton>
+          <RadioGroup onChange={this.handleTransChange} size="large" defaultValue="anyTrans">
             <RadioButton value="sea"><i className="zmdi zmdi-boat" /></RadioButton>
             <RadioButton value="air"><i className="zmdi zmdi-airplane" /></RadioButton>
             <RadioButton value="inland"><i className="zmdi zmdi-truck" /></RadioButton>

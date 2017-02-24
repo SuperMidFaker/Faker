@@ -128,7 +128,7 @@ export default class DelegationList extends Component {
     render: o => <TrimSpan text={o} maxLen={12} />,
   }, {
     title: this.msg('waybillLadingNo'),
-    width: 250,
+    width: 240,
     dataIndex: 'bl_wb_no',
   }, {
     title: this.msg('invoiceNo'),
@@ -597,7 +597,7 @@ export default class DelegationList extends Component {
               {
                 listView === 'delegation' &&
                 <Table rowSelection={rowSelection} columns={columns} dataSource={this.dataSource} loading={delegationlist.loading}
-                  rowKey="delg_no" scroll={{ x: 1800 }}
+                  rowKey="delg_no" scroll={{ x: 1850 }}
                 />
               }
               {

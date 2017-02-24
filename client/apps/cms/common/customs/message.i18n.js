@@ -17,6 +17,14 @@ export default defineMessages({
     id: 'cms.customs.export.operation',
     defaultMessage: '出口出境',
   },
+  declCDF: {
+    id: 'cms.customs.decl.cdf',
+    defaultMessage: '报关单',
+  },
+  declFTZ: {
+    id: 'cms.customs.decl.ftz',
+    defaultMessage: '备案清单',
+  },
   entryId: {
     id: 'cms.customs.decl.entryId',
     defaultMessage: '海关编号',

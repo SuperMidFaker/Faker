@@ -66,7 +66,8 @@ import SCV from './scv/module-scv';
 import * as SCVDashboard from './scv/dashboard';
 import * as SCVOrders from './scv/orders';
 import * as SCVShipments from './scv/shipments';
-import * as SCVClearanceManifest from './scv/clearance/manifest';
+import * as SCVCustomsDecl from './scv/clearance/customsdecl';
+import * as SCVDeclManifest from './scv/clearance/manifest';
 import * as SCVInventoryStock from './scv/inventory/stock';
 import * as SCVInventoryTransaction from './scv/inventory/transaction';
 import * as SCVReceivingNotice from './scv/inventory/receiving';
@@ -344,7 +345,8 @@ export default(store, cookie) => {
               <IndexRoute component={SCVShipments.List} />
             </Route>
             <Route path="clearance">
-              <Route path="manifest" component={SCVClearanceManifest.List} />
+              <Route path="manifest" component={SCVDeclManifest.List} />
+              <Route path="cds" component={SCVCustomsDecl.List} />
             </Route>
             <Route path="inventory">
               <Route path="stock" component={SCVInventoryStock.List} />

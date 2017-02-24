@@ -2,21 +2,18 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Breadcrumb, Icon, Layout, Radio, Tag, message, Popconfirm, Badge } from 'antd';
+import { Breadcrumb, Layout, Radio, Tag, message, Badge } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
-import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { loadDelgDecls, deleteDecl, setFilterReviewed } from 'common/reducers/cmsDeclare';
 import { openEfModal } from 'common/reducers/cmsDelegation';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/search-bar';
 import NavLink from 'client/components/nav-link';
-import RowUpdater from '../delegation/rowUpdater';
-import DeclnoFillModal from './modals/declNoFill';
 import { format } from 'client/common/i18n/helpers';
 import DeclStatusPopover from './declStatusPopover';
-import messages from './message.i18n';
+import messages from '../message.i18n';
 import { DECL_STATUS, CMS_DECL_STATUS } from 'common/constants';
 
 const formatMsg = format(messages);
@@ -41,7 +38,7 @@ const RadioButton = Radio.Button;
 )
 @connectNav({
   depth: 2,
-  moduleName: 'clearance',
+  moduleName: 'scv',
 })
 export default class DelgDeclList extends Component {
   static propTypes = {
@@ -67,7 +64,7 @@ export default class DelgDeclList extends Component {
     dataIndex: 'pre_entry_seq_no',
     fixed: 'left',
     width: 160,
-    render: (o, record) => <NavLink to={`/clearance/${this.props.ietype}/customs/${record.bill_seq_no}/${o}`}>{o}</NavLink>,
+    render: o => <NavLink to={`/scv/clearance/cds/${o}`}>{o}</NavLink>,
   }, {
     title: this.msg('entryId'),
     dataIndex: 'entry_id',
@@ -82,17 +79,7 @@ export default class DelgDeclList extends Component {
               {o}
             </DeclStatusPopover>
           );
-        } else {
-          return (
-            <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-              <RowUpdater onHit={this.handleDeclNoFill} row={record}
-                label={<span><Icon type="edit" /> 录入海关编号</span>}
-              />
-            </PrivilegeCover>
-          );
         }
-      } else {
-        return '-';
       }
     },
   }, {
@@ -285,29 +272,11 @@ export default class DelgDeclList extends Component {
       render: (o, record) => {
         if (record.status === 0) {
           return (
-            <span>
-              <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-                <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleDelete(record.id, record.bill_seq_no)}>
-                  <a role="button">{this.msg('delete')}</a>
-                </Popconfirm>
-              </PrivilegeCover>
-              <span className="ant-divider" />
-              <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-                <RowUpdater onHit={this.handleReview} label={this.msg('review')} row={record} />
-              </PrivilegeCover>
-            </span>
+            <span />
           );
         } else if (record.status === 1) {
           return (
-            <span>
-              <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-                <RowUpdater onHit={this.handleRecall} label={this.msg('recall')} row={record} />
-              </PrivilegeCover>
-              <span className="ant-divider" />
-              <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-                <RowUpdater onHit={this.handleSend} label={this.msg('send')} row={record} />
-              </PrivilegeCover>
-            </span>
+            <span />
           );
         }
       },
@@ -317,23 +286,28 @@ export default class DelgDeclList extends Component {
         <Header className="top-bar">
           <Breadcrumb>
             <Breadcrumb.Item>
-              {this.props.ietype === 'import' ? this.msg('importOperation') : this.msg('exportOperation')}
+              {this.msg('clearance')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              {this.msg('customsDeclaration')}
+              {this.msg('customsDecl')}
             </Breadcrumb.Item>
           </Breadcrumb>
+          <RadioGroup onChange={this.handleIEChange} size="large">
+            <RadioButton value="import">{this.msg('clearanceImport')}</RadioButton>
+            <RadioButton value="export">{this.msg('clearanceExport')}</RadioButton>
+          </RadioGroup>
+          <span />
+          <RadioGroup onChange={this.handleTypeChange} size="large">
+            <RadioButton value="cdf">{this.msg('declCDF')}</RadioButton>
+            <RadioButton value="ftz">{this.msg('declFTZ')}</RadioButton>
+          </RadioGroup>
+          <span />
           <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">
             <RadioButton value="all">{this.msg('all')}</RadioButton>
             <RadioButton value="proposed">{this.msg('filterProposed')}</RadioButton>
             <RadioButton value="reviewed">{this.msg('filterReviewed')}</RadioButton>
             <RadioButton value="declared">{this.msg('filterDeclared')}</RadioButton>
             <RadioButton value="finalized">{this.msg('filterFinalized')}</RadioButton>
-          </RadioGroup>
-          <span />
-          <RadioGroup onChange={this.handleTypeChange} size="large">
-            <RadioButton value="cdf">{this.msg('declCDF')}</RadioButton>
-            <RadioButton value="ftz">{this.msg('declFTZ')}</RadioButton>
           </RadioGroup>
           <div className="top-bar-tools" />
         </Header>
@@ -350,7 +324,6 @@ export default class DelgDeclList extends Component {
                 loading={delgdeclList.loading} scroll={{ x: 1600 }}
               />
             </div>
-            <DeclnoFillModal reload={this.handleTableLoad} />
           </div>
         </Content>
       </QueueAnim>
