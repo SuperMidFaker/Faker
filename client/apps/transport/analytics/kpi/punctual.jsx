@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
-import { Card, Col, Row, Spin } from 'antd';
 import echarts from 'echarts';
 import { getSelectedModesObject } from 'common/reducers/transportKpi';
+import ChartBody from './chartBody';
 
 @injectIntl
 export default class Punctual extends React.Component {
@@ -115,7 +115,7 @@ export default class Punctual extends React.Component {
         name: '交付率',
         type: 'pie',
         selectedMode: 'single',
-        radius: [0, '45%'],
+        radius: [0, '35%'],
 
         label: {
           normal: {
@@ -148,7 +148,7 @@ export default class Punctual extends React.Component {
       }, {
         name: '交付率',
         type: 'pie',
-        radius: ['50%', '70%'],
+        radius: ['40%', '60%'],
         itemStyle: {
           emphasis: {
             shadowBlur: 10,
@@ -187,23 +187,6 @@ export default class Punctual extends React.Component {
   }
 
   render() {
-    return (
-      <Row gutter={24}>
-        <Col sm={24} md={13}>
-          <Spin spinning={this.props.loading}>
-            <Card>
-              <div id="bar-chart-punctual" style={{ width: '100%', height: '450px' }} />
-            </Card>
-          </Spin>
-        </Col>
-        <Col sm={24} md={11}>
-          <Spin spinning={this.props.loading}>
-            <Card>
-              <div id="pie-chart-punctual" style={{ width: '100%', height: '450px' }} />
-            </Card>
-          </Spin>
-        </Col>
-      </Row>
-    );
+    return (<ChartBody loading={this.props.loading} barChartId="bar-chart-punctual" pieChartId="pie-chart-punctual" />);
   }
 }
