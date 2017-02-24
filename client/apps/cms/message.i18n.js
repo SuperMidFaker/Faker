@@ -89,6 +89,10 @@ const messages = defineMessages({
     id: 'cms.module.classification.hscode',
     defaultMessage: 'HS编码查询',
   },
+  hscodeCategory: {
+    id: 'cms.module.classification.hscodeCategory',
+    defaultMessage: '特殊商品编码分类',
+  },
   analytics: {
     id: 'cms.module.analytics',
     defaultMessage: '报表中心',

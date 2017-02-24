@@ -35,6 +35,7 @@ import scvWarehouse from './scvWarehouse';
 import cmsExpense from './cmsExpense';
 import cmsBilling from './cmsBilling';
 import cmsTradeitem from './cmsTradeitem';
+import cmsHsCode from './cmsHsCode';
 import crmCustomers from './crmCustomers';
 import crmOrders from './crmOrders';
 import crmBilling from './crmBilling';
@@ -76,6 +77,7 @@ export default combineReducers({
   cmsExpense,
   cmsBilling,
   cmsTradeitem,
+  cmsHsCode,
   crmCustomers,
   crmOrders,
   crmBilling,

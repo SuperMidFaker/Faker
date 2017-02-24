@@ -11,7 +11,6 @@ const actionTypes = createActionTypes('@@welogix/cms/tradeitem/', [
   'SAVE_REPO_TRADES', 'SAVE_REPO_TRADES_SUCCEED', 'SAVE_REPO_TRADES_FAIL',
   'DELETE_REPO_TRADE', 'DELETE_REPO_TRADE_SUCCEED', 'DELETE_REPO_TRADE_FAIL',
   'LOAD_TRADE_ITEMS', 'LOAD_TRADE_ITEMS_SUCCEED', 'LOAD_TRADE_ITEMS_FAIL',
-  'LOAD_HSCODES', 'LOAD_HSCODES_SUCCEED', 'LOAD_HSCODES_FAIL',
   'DELETE_ITEM', 'DELETE_ITEM_SUCCEED', 'DELETE_ITEM_FAIL',
   'LOAD_PARAMS', 'LOAD_PARAMS_SUCCEED', 'LOAD_PARAMS_FAIL',
   'CREATE_ITEM', 'CREATE_ITEM_SUCCEED', 'CREATE_ITEM_FAIL',
@@ -50,13 +49,6 @@ const initialState = {
     units: [],
     tradeCountries: [],
   },
-  hscodes: {
-    data: [],
-    pageSize: 10,
-    current: 1,
-    totalCount: 0,
-    searchText: '',
-  },
   itemData: {},
   bodyItem: {},
   bodyHscode: {},
@@ -88,8 +80,6 @@ export default function reducer(state = initialState, action) {
       return { ...state, tradeItemlist: action.result.data };
     case actionTypes.LOAD_PARAMS_SUCCEED:
       return { ...state, params: action.result.data };
-    case actionTypes.LOAD_HSCODES_SUCCEED:
-      return { ...state, hscodes: { ...state.hscodes, ...action.result.data } };
     case actionTypes.LOAD_ITEM_EDIT_SUCCEED:
       return { ...state, itemData: action.result.data.tradeitem };
     case actionTypes.SAVE_REPO_TRADES_SUCCEED:
@@ -317,21 +307,6 @@ export function delRepoTrade(id) {
       endpoint: 'v1/cms/tradeitem/repo/trade/delete',
       method: 'post',
       data: { id },
-    },
-  };
-}
-
-export function loadHscodes(params) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.LOAD_HSCODES,
-        actionTypes.LOAD_HSCODES_SUCCEED,
-        actionTypes.LOAD_HSCODES_FAIL,
-      ],
-      endpoint: 'v1/cms/tradeitem/hscodes',
-      method: 'get',
-      params,
     },
   };
 }
