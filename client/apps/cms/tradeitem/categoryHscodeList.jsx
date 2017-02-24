@@ -30,31 +30,29 @@ export default class CategoryHscodeList extends React.Component {
     addCategoryHsCode: PropTypes.func.isRequired,
   }
   state = {
-    addIndex: 0,
-    newHscode: { hscode: '' },
+    hscode: '',
   }
   componentDidMount() {
     this.handleTableLoad();
   }
   componentWillReceiveProps(nextProps) {
-    this.setState({ addIndex: nextProps.categoryHscodes.data.length });
     if (this.props.hscodeCategory.id !== nextProps.hscodeCategory.id) {
       this.handleTableLoad(nextProps);
     }
   }
   msg = key => formatMsg(this.props.intl, key)
   handleHscodeChange = (e) => {
-    this.setState({ newHscode: { ...this.state.newHscode, hscode: e.target.value } });
+    this.setState({ hscode: e.target.value });
   }
   handleAdd = () => {
-    const { newHscode } = this.state;
+    const { hscode } = this.state;
     const { hscodeCategory, tenantId } = this.props;
     if (hscodeCategory.id) {
-      this.props.addCategoryHsCode(hscodeCategory.id, tenantId, newHscode.hscode).then((result) => {
+      this.props.addCategoryHsCode(hscodeCategory.id, tenantId, hscode).then((result) => {
         if (result.error) {
           message.error(result.error.message);
         } else {
-          this.setState({ newHscode: { ...this.state.newHscode, hscode: '' } });
+          this.setState({ hscode: '' });
           this.handleTableLoad();
         }
       });
@@ -78,14 +76,17 @@ export default class CategoryHscodeList extends React.Component {
     });
   }
   render() {
-    const { addIndex, newHscode } = this.state;
+    const { hscode } = this.state;
     const { hscodeCategory } = this.props;
     const categoryHscodesDataSource = new Table.DataSource({
       fetcher: params => this.props.loadCategoryHsCode(params),
-      resolve: result => result.data.concat([newHscode]),
+      resolve: (result) => {
+        if (result.data.length === result.pageSize) return result.data;
+        else return result.data.concat([{ id: -1 }]);
+      },
       getPagination: (result, resolve) => ({
-        total: result.totalCount,
-        current: resolve(result.totalCount, result.current, result.pageSize),
+        total: result.totalCount + 1,
+        current: resolve(result.totalCount + 1, result.current, result.pageSize),
         showSizeChanger: true,
         showQuickJumper: false,
         pageSize: result.pageSize,
@@ -107,17 +108,17 @@ export default class CategoryHscodeList extends React.Component {
       title: '操作',
       fixed: 'right',
       width: 80,
-      render: (col, row, index) => {
-        if (index === addIndex) {
+      render: (col, row) => {
+        if (row.id === -1) {
           return (<a onClick={() => this.handleAdd()}>保存</a>);
         }
         return (<a onClick={() => this.handleRemove(row.id)}>删除</a>);
       },
     }]);
     columns[0].width = 150;
-    columns[0].render = (col, row, index) => {
-      if (index === addIndex) {
-        return <Input value={col} onChange={this.handleHscodeChange} style={{ width: '90%' }} />;
+    columns[0].render = (col, row) => {
+      if (row.id === -1) {
+        return <Input value={hscode} onChange={this.handleHscodeChange} style={{ width: '90%' }} />;
       }
       return col;
     };
