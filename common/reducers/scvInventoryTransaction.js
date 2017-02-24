@@ -19,6 +19,10 @@ const initialState = {
   displayedColumns: {
     product_no: false,
     product_category: false,
+    start_date: true,
+    end_date: true,
+    pre_stock: true,
+    post_stock: true,
     lot_no: false,
     serial_no: false,
   },

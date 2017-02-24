@@ -72,6 +72,28 @@ export default class ShippingOrderList extends React.Component {
     title: this.msg('consignee'),
     dataIndex: 'consignee',
   }]
+  dataSource = new Table.DataSource({
+    fetcher: params => this.handleStockQuery(this.props.listFilter, params.sorter, params.current),
+    resolve: result => result.data,
+    getPagination: (result, resolve) => ({
+      total: result.totalCount,
+      current: resolve(result.totalCount, result.current, result.pageSize),
+      showSizeChanger: false,
+      showQuickJumper: false,
+      pageSize: result.pageSize,
+    }),
+    getParams: (pagination, filters, sorter) => {
+      const params = {
+        current: pagination.current,
+        sorter: {
+          field: sorter.field,
+          order: sorter.order === 'descend' ? 'DESC' : 'ASC',
+        },
+      };
+      return params;
+    },
+    remotes: this.props.stocklist,
+  })
   handleStatusChange = (ev) => {
     if (ev.target.value === this.props.listFilter.status) {
 
