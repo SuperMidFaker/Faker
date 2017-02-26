@@ -1,6 +1,6 @@
 /* eslint react/no-multi-comp: 0 */
 import React, { Component, PropTypes } from 'react';
-import { Form, Select, Input, Card, Col, Row } from 'antd';
+import { Icon, Form, Select, Input, Card, Col, Row } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../../message.i18n';
@@ -72,7 +72,7 @@ export default class MainForm extends Component {
             <Col sm={24} lg={24}>
               <FormItem label={this.msg('hookUrl')} >
                 {getFieldDecorator('hook_url', {
-                })(<Input defaultValue="https://hook.welogix.cn/ar/randomuuid" readOnly />)}
+                })(<Input placeholder="https://openapi.welogix.cn/ar/hook/randomuuid" addonAfter={<Icon type="copy" />} readOnly />)}
               </FormItem>
             </Col>
           </Row>

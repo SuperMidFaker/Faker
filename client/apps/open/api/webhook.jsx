@@ -38,22 +38,30 @@ export default class WebhookList extends React.Component {
   columns = [{
     title: this.msg('webhookName'),
     dataIndex: 'webhook_name',
-    width: 400,
+    width: 120,
   }, {
     title: this.msg('scope'),
-    width: 400,
+    width: 200,
     dataIndex: 'scope',
   }, {
-    title: this.msg('targetUrl'),
-    dataIndex: 'target_url',
+    title: this.msg('subscribedEvents'),
+    dataIndex: 'subs_events',
+  }, {
+    title: this.msg('callbackUrl'),
+    dataIndex: 'callback_url',
+  }, {
+    title: this.msg('sign'),
+    dataIndex: 'sign',
   }, {
     title: this.msg('opColumn'),
     width: 160,
     render: () => (
       <span>
+        <a href="#">发送测试</a>
+        <span className="ant-divider" />
         <a href="#">修改</a>
         <span className="ant-divider" />
-        <a href="#">停用</a>
+        <a href="#"><Icon type="delete" /></a>
       </span>
   ),
   }];
@@ -61,7 +69,9 @@ export default class WebhookList extends React.Component {
   mockDataSource = [{
     webhook_name: 'WMS',
     scope: '全局',
-    target_url: 'https://wms.nlocn.com/hook',
+    subs_events: 'Manifest Created, Customs Cleared',
+    callback_url: 'https://wms.nlocn.com/hook',
+    sign: 'd3ec0148208487f4136d0d03a997d5b798',
   },
   ];
 

@@ -164,7 +164,7 @@ export default class MainForm extends Component {
                 {getFieldDecorator('decl_port', {
                   rules: [{ required: true, message: '申报口岸必选' }],
                   initialValue: fieldInits.decl_port,
-                })(<Select>
+                })(<Select showSearch>
                   {
                     this.props.customs.map(dw =>
                       <Option value={dw.value} key={dw.value}>{dw.text}</Option>

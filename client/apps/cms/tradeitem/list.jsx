@@ -76,11 +76,11 @@ export default class TradeItemList extends Component {
   columns = [{
     title: this.msg('copProductNo'),
     dataIndex: 'cop_product_no',
-    width: 180,
+    width: 220,
   }, {
     title: this.msg('hscode'),
     dataIndex: 'hscode',
-    width: 200,
+    width: 180,
   }, {
     title: this.msg('gName'),
     dataIndex: 'g_name',
@@ -292,7 +292,7 @@ export default class TradeItemList extends Component {
           </NavLink>
           <span className="ant-divider" />
           <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleItemDel(record.id)}>
-            <a role="button">{this.msg('delete')}</a>
+            <a role="button"><Icon type="delete" /></a>
           </Popconfirm>
         </span>
         ),
@@ -376,16 +376,17 @@ export default class TradeItemList extends Component {
             <div className="page-body">
               <div className="toolbar">
                 <SearchBar placeholder="编码/名称/描述/申报要素" onInputSearch={this.handleSearch} size="large" />
+                <span />
                 {selectedRows.length > 0 &&
                 <Popconfirm title={'是否删除所有选择项？'} onConfirm={() => this.handleDeleteSelected()}>
-                  <Button type="primary" icon="delete">
+                  <Button type="danger" size="large" icon="delete">
                     批量删除
                   </Button>
                 </Popconfirm>
                   }
               </div>
               <div className="panel-body table-panel">
-                <Table rowSelection={rowSelection} rowKey="id" columns={columns} dataSource={this.dataSource} scroll={{ x: 2400 }} />
+                <Table rowSelection={rowSelection} rowKey="id" columns={columns} dataSource={this.dataSource} scroll={{ x: 2500 }} />
               </div>
               <AddTradeRepoModal />
             </div>

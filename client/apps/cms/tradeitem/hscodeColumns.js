@@ -105,7 +105,7 @@ export const hscodeColumns = () => [{
 }, {
   title: '消费税率',
   dataIndex: 'gst_rates',
-  width: 60,
+  width: 80,
 }, {
   title: '出口关税率',
   dataIndex: 'export_rates',
@@ -117,7 +117,7 @@ export const hscodeColumns = () => [{
 }, {
   title: '增值税率',
   dataIndex: 'vat_rates',
-  width: 60,
+  width: 80,
 }, {
   title: '海关监管条件',
   dataIndex: 'customs',

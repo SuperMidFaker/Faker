@@ -85,7 +85,7 @@ export const INSPECT_STATUS = {
 };
 
 export const TRANS_MODE = [
-  { value: 'DOM', text: '境内货物转运' },
+  { value: 'DOM', text: '境内转运' },
   { value: '2', text: '国际海运' },
   { value: '5', text: '国际空运' },
   { value: '3', text: '跨境铁路运输' },
@@ -213,9 +213,9 @@ export const CMS_DECL_DOCU = [
 ];
 
 export const CMS_GUNIT = [
-  { key: 'g_unit_gen', value: '一般申报单位' },
-  { key: 'g_unit_ftz', value: '保税申报单位' },
-  { key: 'g_unit_spec', value: '特殊申报单位' },
+  { key: 'g_unit_gen', value: '申报单位一' },
+  { key: 'g_unit_ftz', value: '申报单位二' },
+  { key: 'g_unit_spec', value: '申报单位三' },
 ];
 
 export const DELG_EXEMPTIONWAY = [{

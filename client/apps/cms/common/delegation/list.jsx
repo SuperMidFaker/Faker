@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Badge, Breadcrumb, Button, Layout, Popconfirm, Radio, Select, Tag, Tooltip, message } from 'antd';
+import { Badge, Breadcrumb, Button, Layout, Icon, Popconfirm, Radio, Select, Tag, Tooltip, message } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import TrimSpan from 'client/components/trimSpan';
@@ -478,7 +478,7 @@ export default class DelegationList extends Component {
                   <span className="ant-divider" />
                   <PrivilegeCover module="clearance" feature={this.props.ietype} action="delete">
                     <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleDelgDel(record.delg_no)}>
-                      <a role="button">{this.msg('delete')}</a>
+                      <a role="button"><Icon type="delete" /></a>
                     </Popconfirm>
                   </PrivilegeCover>
                 </span>

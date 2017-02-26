@@ -41,7 +41,7 @@ function fetchData({ state, dispatch }) {
   depth: 2,
   moduleName: 'clearance',
 })
-export default class HscodeList extends Component {
+export default class HSCodeList extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -165,7 +165,7 @@ export default class HscodeList extends Component {
                 />
               </div>
               <div className="panel-body table-panel">
-                <Table columns={this.columns} dataSource={this.dataSource} scroll={{ x: 2260 }} rowKey="id" />
+                <Table columns={this.columns} dataSource={this.dataSource} scroll={{ x: 2300 }} rowKey="id" />
               </div>
             </div>
           </Content>
