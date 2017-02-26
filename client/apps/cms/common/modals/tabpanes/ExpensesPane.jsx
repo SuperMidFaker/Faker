@@ -205,7 +205,7 @@ export default class ExpensePane extends React.Component {
     );
     return (
       <div className="pane-content tab-pane">
-        <div className="toolbar-left">
+        <div className="toolbar">
           {checkedTags}
         </div>
         <Card bodyStyle={{ padding: 0 }}>

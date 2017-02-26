@@ -189,7 +189,7 @@ export default class BasicPane extends React.Component {
           </Row>
         </Card>
         <Card title="附件" bodyStyle={{ padding: 8 }} extra={
-          <Button type="primary" size="small" onClick={this.handleFilesDownload} icon="download">
+          <Button type="primary" size="small" ghost onClick={this.handleFilesDownload} icon="download">
             下载
           </Button>}
         >

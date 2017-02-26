@@ -291,7 +291,7 @@ export default class ChargePanel extends React.Component {
             </Col>
           </Row>
         </Card>
-        <div className="toolbar-left">
+        <div className="toolbar">
           {checkedTags}
         </div>
         <Card bodyStyle={{ padding: 0 }}>
