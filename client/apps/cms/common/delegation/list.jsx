@@ -418,6 +418,7 @@ export default class DelegationList extends Component {
     this.setState({ expandedKeys });
   }
   handleViewChange = (value) => {
+    console.log(value);
     const filter = { ...this.props.listFilter, viewStatus: value };
     if (this.props.listView === 'ciq') {
       this.handleCiqListLoad(1, filter);

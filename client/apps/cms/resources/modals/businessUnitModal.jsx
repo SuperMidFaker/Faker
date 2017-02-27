@@ -33,7 +33,6 @@ export default class BusinessUnitModal extends React.Component {
     code: '',
     customsCode: '',
     type: '',
-    receiveCode: '',
   }
   componentWillReceiveProps(nextProps) {
     this.setState({
@@ -41,12 +40,11 @@ export default class BusinessUnitModal extends React.Component {
       code: nextProps.businessUnit.comp_code || '',
       customsCode: nextProps.businessUnit.customs_code || '',
       type: nextProps.businessUnit.relation_type || '',
-      receiveCode: nextProps.businessUnit.receive_code || '',
     });
   }
   handleOk = () => {
     const { businessUnit } = this.props;
-    const { name, code, customsCode, receiveCode } = this.state;
+    const { name, code, customsCode } = this.state;
     if (name === '') {
       message.error('请填写公司名称');
     } else if (code === '') {
@@ -56,7 +54,7 @@ export default class BusinessUnitModal extends React.Component {
     } else if (customsCode && customsCode.length !== 10) {
       message.error(`海关10位编码必须为10位, 当前${customsCode.length}位`);
     } else if (this.props.operation === 'edit') {
-      this.props.updateBusinessUnit(businessUnit.id, name, code, customsCode, receiveCode).then((result) => {
+      this.props.updateBusinessUnit(businessUnit.id, name, code, customsCode).then((result) => {
         if (result.error) {
           message.error(result.error.message);
         }
@@ -68,8 +66,8 @@ export default class BusinessUnitModal extends React.Component {
   }
   handleAddPartner = () => {
     const { tenantId } = this.props;
-    const { name, code, customsCode, type, receiveCode } = this.state;
-    this.props.addBusinessUnit(name, code, customsCode, type, receiveCode, tenantId).then((result1) => {
+    const { name, code, customsCode, type } = this.state;
+    this.props.addBusinessUnit(name, code, customsCode, type, tenantId).then((result1) => {
       if (result1.error) {
         message.error(result1.error.message);
       } else {
@@ -83,7 +81,7 @@ export default class BusinessUnitModal extends React.Component {
   }
   render() {
     const { visible } = this.props;
-    const { name, code, customsCode, type, receiveCode } = this.state;
+    const { name, code, customsCode } = this.state;
     return (
       <Modal title={this.props.operation === 'add' ? '新增经营单位' : '修改经营单位'} visible={visible} onOk={this.handleOk} onCancel={this.handleCancel}>
         <FormItem {...formItemLayout} label="公司名称:" required>
@@ -95,11 +93,6 @@ export default class BusinessUnitModal extends React.Component {
         <FormItem {...formItemLayout} label="海关十位编码:">
           <Input required value={customsCode} onChange={e => this.setState({ customsCode: e.target.value })} placeholder="海关10位编码" />
         </FormItem>
-        { type === 'agent' && (
-          <FormItem {...formItemLayout} label="接收代码:" required>
-            <Input value={receiveCode} onChange={e => this.setState({ receiveCode: e.target.value })} />
-          </FormItem>
-        )}
       </Modal>
     );
   }

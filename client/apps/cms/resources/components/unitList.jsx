@@ -51,13 +51,6 @@ export default class UnitList extends Component {
       dataIndex: 'customs_code',
       key: 'customs_code',
     }];
-    if (type === 'agent') {
-      columns.push({
-        title: '接收代码',
-        dataIndex: 'receive_code',
-        key: 'receive_code',
-      });
-    }
     columns.push({
       title: '操作',
       dataIndex: 'id',
