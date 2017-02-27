@@ -22,11 +22,18 @@ export default class ModuleCRM extends React.Component {
     const linkMenus = [];
     linkMenus.push({
       single: true,
-      key: 'crm-1',
+      key: 'crm-0',
       disabled: true,
       path: '/scof/dashboard',
       icon: 'icon-fontello-gauge',
       text: formatMsg(intl, 'dashboard'),
+    });
+    linkMenus.push({
+      single: true,
+      key: 'crm-1',
+      path: '/scof/customers',
+      icon: 'zmdi zmdi-accounts-list',
+      text: formatMsg(intl, 'customers'),
     });
     linkMenus.push({
       single: true,
@@ -36,27 +43,27 @@ export default class ModuleCRM extends React.Component {
       text: formatMsg(intl, 'orders'),
     });
     linkMenus.push({
-      single: false,
+      single: true,
       key: 'crm-3',
+      path: '/scof/flow',
+      icon: 'icon-fontello-flow-tree',
+      text: formatMsg(intl, 'flow'),
+    });
+    linkMenus.push({
+      single: false,
+      key: 'crm-4',
       path: '/scof/billing',
       icon: 'icon-fontello-money-1',
       text: formatMsg(intl, 'billing'),
       sublinks: [{
-        key: 'crm-3-0',
+        key: 'crm-4-0',
         path: '/scof/billing/fees',
         text: '费用管理',
       }, {
-        key: 'crm-3-1',
+        key: 'crm-4-1',
         path: '/scof/billing/list',
         text: '账单管理',
       }],
-    });
-    linkMenus.push({
-      single: true,
-      key: 'crm-4',
-      path: '/scof/customers',
-      icon: 'zmdi zmdi-accounts-list',
-      text: formatMsg(intl, 'customers'),
     });
     linkMenus.push({
       single: true,

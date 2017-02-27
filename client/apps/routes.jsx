@@ -80,10 +80,11 @@ import * as SCVAnalyticsKpi from './scv/analytics/kpi';
 import * as SCVAnalyticsCost from './scv/analytics/cost';
 import * as SCVWarehouse from './scv/resources/warehouse';
 import * as SCVSettings from './scv/settings';
-import scof from './scof/module-scof';
+import SCOF from './scof/module-scof';
 import * as SCOFDashboard from './scof/dashboard';
 import * as SCOFOrders from './scof/orders';
 import * as SCOFCustomers from './scof/customers';
+import * as SCOFFlow from './scof/flow';
 import * as SCOFBilling from './scof/billing';
 import { loadAccount } from 'common/reducers/account';
 import { isLoaded } from 'client/common/redux-actions';
@@ -419,7 +420,7 @@ export default(store, cookie) => {
               <Route path="openapi" component={CWMSettings.OpenApi} />
             </Route>
           </Route>
-          <Route path={DEFAULT_MODULES.scof.id} component={scof}>
+          <Route path={DEFAULT_MODULES.scof.id} component={SCOF}>
             <IndexRedirect to="/scof/orders" />
             <Route path="dashboard" component={SCOFDashboard.Index} />
             <Route path="orders" >
@@ -429,6 +430,12 @@ export default(store, cookie) => {
               <Route path="edit" component={SCOFOrders.Edit} />
             </Route>
             <Route path="customers" component={SCOFCustomers.List} />
+            <Route path="flow" >
+              <IndexRoute component={SCOFFlow.List} />
+              <Route path="create" component={SCOFFlow.Create} />
+              <Route path="view" component={SCOFFlow.View} />
+              <Route path="edit" component={SCOFFlow.Edit} />
+            </Route>
             <Route path="billing">
               <IndexRedirect to="/scof/billing/list" />
               <Route path="fees" component={SCOFBilling.FeeList} />

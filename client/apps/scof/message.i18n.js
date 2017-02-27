@@ -5,17 +5,21 @@ const messages = defineMessages({
     id: 'scop.module.dashboard',
     defaultMessage: '概况',
   },
+  customers: {
+    id: 'scop.module.customers',
+    defaultMessage: '客户',
+  },
   orders: {
     id: 'scop.module.orders',
     defaultMessage: '订单',
   },
+  flow: {
+    id: 'scop.module.flow',
+    defaultMessage: '流程',
+  },
   billing: {
     id: 'scop.module.billing',
     defaultMessage: '账单',
-  },
-  customers: {
-    id: 'scop.module.customers',
-    defaultMessage: '客户',
   },
   reports: {
     id: 'scop.module.reports',

@@ -85,8 +85,8 @@ export default class CWMSkuList extends React.Component {
           </Breadcrumb>
           <div className="top-bar-tools">
             <Dropdown.Button overlay={menu}>
-      Dropdown
-    </Dropdown.Button>
+              Dropdown
+            </Dropdown.Button>
             <Button.Group size="large">
               <Button>
                 {this.msg('import')}
