@@ -1,7 +1,7 @@
 import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
 
-const actionTypes = createActionTypes('@@welogix/cwm/stock/', [
+const actionTypes = createActionTypes('@@welogix/cwm/transaction/', [
   'LOAD_INBOUNDTRANS', 'LOAD_INBOUNDTRANS_SUCCEED', 'LOAD_INBOUNDTRANS_FAIL',
   'LOAD_OUTBOUNDTRANS', 'LOAD_OUTBOUNDTRANS_SUCCEED', 'LOAD_OUTBOUNDTRANS_FAIL',
 ]);

@@ -2,11 +2,9 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Button, Breadcrumb, Form, Icon, Layout, Row } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { format } from 'client/common/i18n/helpers';
+import { formatMsg } from '../../message.i18n';
 import MainForm from './forms/mainForm';
-import messages from '../../message.i18n';
 
-const formatMsg = format(messages);
 const { Header, Content } = Layout;
 
 @injectIntl
@@ -32,7 +30,7 @@ export default class ConfigEasipassEDI extends React.Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
-  msg = (key, values) => formatMsg(this.props.intl, key, values);
+  msg = formatMsg(this.props.intl);
   handleSaveBtnClick = () => {
     this.handleSave({ accepted: false });
   }

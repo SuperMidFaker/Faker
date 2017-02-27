@@ -10,6 +10,7 @@ import personnel from './personnel';
 import partner from './partner';
 import role from './role';
 import invitation from './invitation';
+import openIntegration from './openIntegration';
 import transportAcceptance from './transport-acceptance';
 import trackingLandStatus from './trackingLandStatus';
 import trackingLandPod from './trackingLandPod';
@@ -33,6 +34,7 @@ import scvInventoryStock from './scvInventoryStock';
 import scvInventoryTransaction from './scvInventoryTransaction';
 import scvWarehouse from './scvWarehouse';
 import cwmTransaction from './cwmTransaction';
+import cwmSku from './cwmSku';
 import cmsExpense from './cmsExpense';
 import cmsBilling from './cmsBilling';
 import cmsTradeitem from './cmsTradeitem';
@@ -53,6 +55,7 @@ export default combineReducers({
   partner,
   role,
   invitation,
+  openIntegration,
   shipment,
   transportAcceptance,
   trackingLandStatus,
@@ -76,6 +79,7 @@ export default combineReducers({
   scvInventoryTransaction,
   scvWarehouse,
   cwmTransaction,
+  cwmSku,
   cmsExpense,
   cmsBilling,
   cmsTradeitem,

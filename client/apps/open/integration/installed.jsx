@@ -1,22 +1,33 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Breadcrumb, Icon, Layout, Table } from 'antd';
+import { Breadcrumb, Icon, Layout } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
+import connectFetch from 'client/common/decorators/connect-fetch';
 import NavLink from 'client/components/nav-link';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
+import Table from 'client/components/remoteAntTable';
+import { loadInstalledApps } from 'common/reducers/openIntegration';
+import { formatMsg } from './message.i18n';
 
-const formatMsg = format(messages);
 const { Header, Content } = Layout;
 
+function fetchData({ state, dispatch }) {
+  return dispatch(loadInstalledApps({
+    tenantId: state.account.tenantId,
+    filter: JSON.stringify(state.openIntegration.listFilter),
+    sorter: JSON.stringify(state.openIntegration.sortFilter),
+    pageSize: state.openIntegration.list.pageSize,
+    current: 1,
+  }));
+}
+
+@connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
-    profile: state.account.profile,
-    role: state.account.role_name,
+    listFilter: state.openIntegration.listFilter,
+    sortFilter: state.openIntegration.sortFilter,
     tenantId: state.account.tenantId,
-    parentTenantId: state.account.parentTenantId,
-    code: state.account.code,
+    applist: state.openIntegration.list,
   }),
 )
 
@@ -24,27 +35,18 @@ export default class InstalledAppsList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
-
   }
-  static contextTypes = {
-    router: PropTypes.object.isRequired,
-  }
-  state = {
-    avatar: '',
-  }
-  msg = (key, values) => formatMsg(this.props.intl, key, values);
-  handleCancel = () => {
-    this.context.router.goBack();
-  }
+  msg = formatMsg(this.props.intl);
   columns = [{
     title: this.msg('integrationName'),
-    dataIndex: 'integration_name',
-  }, {
-    title: this.msg('integraionApp'),
-    dataIndex: 'integration_app',
+    dataIndex: 'name',
     width: 200,
   }, {
-    title: this.msg('scope'),
+    title: this.msg('integrationApp'),
+    dataIndex: 'app_type',
+    width: 200,
+  }, {
+    title: 'scope',
     width: 400,
     dataIndex: 'scope',
   }, {
@@ -66,25 +68,36 @@ export default class InstalledAppsList extends React.Component {
         <span className="ant-divider" />
         <a href="#"><Icon type="delete" /></a>
       </span>
-  ),
+    ),
   }];
-
-  mockDataSource = [{
-    integration_name: '西门子CTM接口',
-    integration_app: 'AmberRoad CTM',
-    scope: '西门子贸易',
-    incoming_status: '正常',
-    outgoing_status: '异常',
-  }, {
-    integration_name: '茂鸿国际EDI接口',
-    integration_app: 'EasypassEDI',
-    scope: '全局',
-    incoming_status: '正常',
-    outgoing_status: '异常',
-  },
-  ];
-
+  dataSource = new Table.DataSource({
+    fetcher: params => this.props.loadInstalledApps(params),
+    resolve: result => result.data,
+    getPagination: (result, resolve) => ({
+      total: result.totalCount,
+      current: resolve(result.totalCount, result.current, result.pageSize),
+      showSizeChanger: false,
+      showQuickJumper: false,
+      pageSize: result.pageSize,
+    }),
+    getParams: (pagination, filters, sorter) => {
+      const params = {
+        tenantId: this.props.tenantId,
+        pageSize: pagination.pageSize,
+        current: pagination.current,
+        sorter: JSON.stringify({
+          field: sorter.field,
+          order: sorter.order === 'descend' ? 'DESC' : 'ASC',
+        }),
+        filter: JSON.stringify(this.props.listFilter),
+      };
+      return params;
+    },
+    remotes: this.props.applist,
+  })
   render() {
+    const { loading, applist } = this.props;
+    this.dataSource.remotes = applist;
     return (
       <div>
         <Header className="top-bar">
@@ -101,7 +114,9 @@ export default class InstalledAppsList extends React.Component {
         <Content className="main-content">
           <div className="page-body">
             <div className="panel-body table-panel">
-              <Table columns={this.columns} dataSource={this.mockDataSource} />
+              <Table columns={this.columns} dataSource={this.dataSource} loading={loading}
+                rowKey="id"
+              />
             </div>
           </div>
         </Content>

@@ -1,22 +1,18 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Button, Breadcrumb, Form, Icon, Layout, Row } from 'antd';
+import { Button, Breadcrumb, Form, Input, Card, Col, Icon, Layout, Row } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { format } from 'client/common/i18n/helpers';
 import MainForm from './forms/mainForm';
-import messages from '../../message.i18n';
+import { formatMsg } from '../message.i18n';
 
-const formatMsg = format(messages);
+const FormItem = Form.Item;
 const { Header, Content } = Layout;
 
 @injectIntl
 @connect(
   state => ({
-    profile: state.account.profile,
-    role: state.account.role_name,
     tenantId: state.account.tenantId,
-    parentTenantId: state.account.parentTenantId,
-    code: state.account.code,
+    easipass: state.openIntegration.easipassParameter,
   }),
 )
 @Form.create()
@@ -25,14 +21,12 @@ export default class InstallEasipassEDI extends React.Component {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     form: PropTypes.object.isRequired,
-    tenantName: PropTypes.string.isRequired,
-    formData: PropTypes.object.isRequired,
     submitting: PropTypes.bool.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
-  msg = (key, values) => formatMsg(this.props.intl, key, values);
+  msg = formatMsg(this.props.intl)
   handleInstallBtnClick = () => {
     this.handleSave({ accepted: false });
   }
@@ -67,9 +61,19 @@ export default class InstallEasipassEDI extends React.Component {
         </Header>
         <Content className="main-content layout-fixed-width">
           <Form vertical>
-            <Row gutter={16}>
+            <Card>
+              <Row gutter={16}>
+                <Col sm={24} lg={24}>
+                  <FormItem label={this.msg('integrationName')} >
+                    {form.getFieldDecorator('integration_name', {
+                    })(<Input />)}
+                  </FormItem>
+                </Col>
+              </Row>
+            </Card>
+            <Card title="Easipass parameters">
               <MainForm form={form} />
-            </Row>
+            </Card>
           </Form>
         </Content>
       </div>
