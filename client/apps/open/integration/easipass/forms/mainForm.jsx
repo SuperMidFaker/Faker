@@ -8,6 +8,7 @@ import messages from '../../../message.i18n';
 const formatMsg = format(messages);
 const FormItem = Form.Item;
 const Option = Select.Option;
+const OptGroup = Select.OptGroup;
 
 @injectIntl
 export default class MainForm extends Component {
@@ -33,12 +34,21 @@ export default class MainForm extends Component {
                 {getFieldDecorator('partner_code', {
                 })(
                   <Select
+                    showSearch
+                    multiple
                     optionFilterProp="search"
-                    placeholder="选择合作伙伴"
+                    placeholder="选择适用范围（可多选）"
                   >
-                    <Option value="0961">物流大道仓库</Option>
-                    <Option value="0962">希雅路仓库</Option>
-                    <Option value="0963">富特路仓库</Option>
+                    <Option value="ALL">全局</Option>
+                    <OptGroup label="Customer">
+                      <Option value="0961">物流大道仓库</Option>
+                      <Option value="0962">希雅路仓库</Option>
+                      <Option value="0963">富特路仓库</Option>
+                    </OptGroup>
+                    <OptGroup label="Provider">
+                      <Option value="0964">希雅路仓库</Option>
+                      <Option value="0965">富特路仓库</Option>
+                    </OptGroup>
                   </Select>
                   )}
               </FormItem>
@@ -47,10 +57,34 @@ export default class MainForm extends Component {
         </Card>
         <Card title="Easipass parameters">
           <Row gutter={16}>
+            <Col sm={24} lg={12}>
+              <FormItem label={this.msg('发送方协同ID号')} >
+                {getFieldDecorator('sender_id', {
+                })(<Input />)}
+              </FormItem>
+            </Col>
+            <Col sm={24} lg={12}>
+              <FormItem label={this.msg('接收方协同ID号')} >
+                {getFieldDecorator('receiver_id', {
+                })(<Input />)}
+              </FormItem>
+            </Col>
+            <Col sm={24} lg={12}>
+              <FormItem label={this.msg('接收方用户ID')} >
+                {getFieldDecorator('receiver_user_id', {
+                })(<Input />)}
+              </FormItem>
+            </Col>
+            <Col sm={24} lg={12}>
+              <FormItem label={this.msg('EDI用户名')} >
+                {getFieldDecorator('edi_username', {
+                })(<Input />)}
+              </FormItem>
+            </Col>
             <Col sm={24} lg={24}>
               <FormItem label={this.msg('FTPserver')} >
                 {getFieldDecorator('ftp_server', {
-                })(<Input defaultValue="https://hook.welogix.cn/ar/randomuuid" readOnly />)}
+                })(<Input readOnly />)}
               </FormItem>
             </Col>
             <Col sm={24} lg={12}>

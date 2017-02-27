@@ -57,12 +57,14 @@ export default class InstalledAppsList extends React.Component {
     width: 200,
   }, {
     title: this.msg('opColumn'),
-    width: 100,
+    width: 120,
     render: () => (
       <span>
         <NavLink to="/open/integration/arctm/config/asdasfasdfadfsaf">配置</NavLink>
         <span className="ant-divider" />
         <a href="#">停用</a>
+        <span className="ant-divider" />
+        <a href="#"><Icon type="delete" /></a>
       </span>
   ),
   }];
