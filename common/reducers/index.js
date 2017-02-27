@@ -10,6 +10,7 @@ import personnel from './personnel';
 import partner from './partner';
 import role from './role';
 import invitation from './invitation';
+import openIntegration from './openIntegration';
 import transportAcceptance from './transport-acceptance';
 import trackingLandStatus from './trackingLandStatus';
 import trackingLandPod from './trackingLandPod';
@@ -54,6 +55,7 @@ export default combineReducers({
   partner,
   role,
   invitation,
+  openIntegration,
   shipment,
   transportAcceptance,
   trackingLandStatus,

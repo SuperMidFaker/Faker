@@ -9,7 +9,7 @@ const { Sider, Header, Content } = Layout;
 const SubMenu = Menu.SubMenu;
 
 @connect()
-export default class AccountPack extends React.Component {
+export default class OpenPlatformPack extends React.Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     children: PropTypes.object.isRequired,
