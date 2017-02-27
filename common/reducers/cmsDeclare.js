@@ -32,6 +32,7 @@ const initialState = {
     data: [],
   },
   decl_heads: [],
+  customs: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -46,7 +47,7 @@ export default function reducer(state = initialState, action) {
       return { ...state, delgdeclList: { ...state.delgdeclList, loading: true } };
     case actionTypes.LOAD_DELG_DECLS_SUCCEED:
       return { ...state, delgdeclList: { ...state.delgdeclList, loading: false, ...action.result.data },
-        listFilter: JSON.parse(action.params.filter) };
+        listFilter: JSON.parse(action.params.filter), customs: action.result.data.customs };
     case actionTypes.LOAD_DELG_DECLS_FAIL:
       return { ...state, delgdeclList: { ...state.delgdeclList, loading: false } };
     case actionTypes.LOAD_DECLHEAD_SUCCEED:

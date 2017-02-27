@@ -145,7 +145,7 @@ export default class PreviewPanel extends React.Component {
   renderTabs(status) {
     if (status >= SHIPMENT_TRACK_STATUS.podsubmit) {
       return (
-        <Tabs type="card" activeKey={this.props.tabKey} onChange={this.handleTabChange}>
+        <Tabs activeKey={this.props.tabKey} onChange={this.handleTabChange}>
           <TabPane tab={this.msg('shipmtDetail')} key="detail">
             <DetailPane />
           </TabPane>
@@ -165,7 +165,7 @@ export default class PreviewPanel extends React.Component {
       );
     } else {
       return (
-        <Tabs type="card" activeKey={this.props.tabKey} onChange={this.handleTabChange}>
+        <Tabs activeKey={this.props.tabKey} onChange={this.handleTabChange}>
           <TabPane tab={this.msg('shipmtDetail')} key="detail">
             <DetailPane />
           </TabPane>
@@ -217,10 +217,10 @@ export default class PreviewPanel extends React.Component {
             </div>
             <div className="body with-header-summary">
               <Row gutter={16}>
-                <Col sm={24} md={12} lg={12}>
+                <Col sm={24} md={14}>
                   {this.renderTabs(dispatch.status)}
                 </Col>
-                <Col sm={24} md={12} lg={12}>
+                <Col sm={24} md={10}>
                   <ActivityLoggerPane stage={stage} />
                 </Col>
               </Row>

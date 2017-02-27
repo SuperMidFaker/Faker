@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Layout, Radio, Progress, message } from 'antd';
+import { Breadcrumb, Layout, message, Progress } from 'antd';
 import moment from 'moment';
 import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
@@ -11,12 +11,10 @@ import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/search-bar';
 import NavLink from 'client/components/nav-link';
 import { format } from 'client/common/i18n/helpers';
-import messages from './message.i18n';
+import messages from '../message.i18n';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
-const RadioGroup = Radio.Group;
-const RadioButton = Radio.Button;
 
 @injectIntl
 @connect(
@@ -26,26 +24,14 @@ const RadioButton = Radio.Button;
     loginName: state.account.username,
     delgBillList: state.cmsManifest.delgBillList,
     listFilter: state.cmsManifest.listFilter,
-    tradeModes: state.cmsManifest.formRequire.tradeModes.map(tm => ({
-      value: tm.trade_mode,
-      text: `${tm.trade_abbr}`,
-    })),
-    transModes: state.cmsManifest.formRequire.transModes.map(tm => ({
-      value: tm.trans_code,
-      text: `${tm.trans_spec}`,
-    })),
-    customs: state.cmsManifest.formRequire.customs.map(cus => ({
-      value: cus.customs_code,
-      text: `${cus.customs_name}`,
-    })),
   }),
   { loadDelgBill }
 )
 @connectNav({
   depth: 2,
-  moduleName: 'clearance',
+  moduleName: 'scv',
 })
-export default class ManifestList extends Component {
+export default class SCVManifestList extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     ietype: PropTypes.oneOf(['import', 'export']),
@@ -66,14 +52,14 @@ export default class ManifestList extends Component {
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
     title: this.msg('billNo'),
-    dataIndex: 'delg_no',
+    dataIndex: 'bill_seq_no',
     fixed: 'left',
     width: 110,
     render: (o, record) => {
       if (record.customs_tenant_id === this.props.tenantId && record.bill_status < 5) {
-        return <NavLink to={`/clearance/${this.props.ietype}/manifest/${record.bill_seq_no}`}>{o}</NavLink>;
+        return <NavLink to={`/scv/manifest/${record.bill_seq_no}`}>{o}</NavLink>;
       } else {
-        return <NavLink to={`/clearance/${this.props.ietype}/manifest/view/${record.bill_seq_no}`}>{o}</NavLink>;
+        return <NavLink to={`/clearance/manifest/view/${record.bill_seq_no}`}>{o}</NavLink>;
       }
     },
   }, {
@@ -81,10 +67,6 @@ export default class ManifestList extends Component {
     dataIndex: 'customs_name',
     width: 160,
     render: o => <TrimSpan text={o} maxLen={10} />,
-  }, {
-    title: '制单人',
-    dataIndex: 'creater_login_id',
-    width: 80,
   }, {
     title: '制单日期',
     width: 90,
@@ -97,11 +79,6 @@ export default class ManifestList extends Component {
       const perVal = (record.bill_status * 20);
       return (<Progress percent={perVal} strokeWidth={5} showInfo={false} />);
     },
-  }, {
-    title: '委托方',
-    dataIndex: 'send_name',
-    width: 160,
-    render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
     title: '提运单号',
     dataIndex: 'bl_wb_no',
@@ -199,15 +176,8 @@ export default class ManifestList extends Component {
     }
     return newFilters;
   }
-  handleRadioChange = (ev) => {
-    if (ev.target.value === this.props.listFilter.status) {
-      return;
-    }
-    const filter = { ...this.props.listFilter, status: ev.target.value };
-    this.handleTableLoad(1, filter);
-  }
   render() {
-    const { delgBillList, listFilter } = this.props;
+    const { delgBillList } = this.props;
     this.dataSource.remotes = delgBillList;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -220,17 +190,12 @@ export default class ManifestList extends Component {
         <Header className="top-bar">
           <Breadcrumb>
             <Breadcrumb.Item>
-              {this.props.ietype === 'import' ? this.msg('importClearance') : this.msg('exportClearance')}
+              {this.msg('clearance')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
               {this.msg('declManifest')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">
-            <RadioButton value="all">{this.msg('all')}</RadioButton>
-            <RadioButton value="wip">{this.msg('filterWIP')}</RadioButton>
-            <RadioButton value="generated">{this.msg('filterGenerated')}</RadioButton>
-          </RadioGroup>
         </Header>
         <Content className="main-content" key="main">
           <div className="page-body">
@@ -242,7 +207,7 @@ export default class ManifestList extends Component {
             </div>
             <div className="panel-body table-panel expandable">
               <Table rowSelection={rowSelection} columns={this.columns} rowKey="pre_entry_seq_no" dataSource={this.dataSource}
-                loading={delgBillList.loading} scroll={{ x: 1500 }}
+                loading={delgBillList.loading} scroll={{ x: 1400 }}
               />
             </div>
           </div>

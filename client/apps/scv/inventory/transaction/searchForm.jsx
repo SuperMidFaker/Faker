@@ -121,15 +121,15 @@ export default class InventoryTransactionSearchForm extends React.Component {
               }
             </Select>)}
         </FormItem>
-        <FormItem label={<CheckboxLabel field="lot_property" label={this.msg('lotProperties')}
+        <FormItem label={<CheckboxLabel field="lot_property" label={this.msg('transTracking')}
           checked={this.state.lot_property_checked} onChange={this.handleLotPropertyCheck}
         />}
         >
           <RadioGroup onChange={this.handleLotRadioChange} value={this.state.lot_property}
             disabled={!this.state.lot_property_checked}
           >
-            <RadioButton value="lot_no">{this.msg('lotNo')}</RadioButton>
-            <RadioButton value="serial_no">{this.msg('serialNo')}</RadioButton>
+            <RadioButton value="lot_no">{this.msg('trackingByLotNo')}</RadioButton>
+            <RadioButton value="serial_no">{this.msg('trackingBySerialNo')}</RadioButton>
           </RadioGroup>
         </FormItem>
         {

@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Badge, Breadcrumb, Button, Layout, Popconfirm, Radio, Select, Tag, Tooltip, message } from 'antd';
+import { Badge, Breadcrumb, Button, Layout, Icon, Popconfirm, Radio, Select, Tag, Tooltip, message } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import TrimSpan from 'client/components/trimSpan';
@@ -128,7 +128,7 @@ export default class DelegationList extends Component {
     render: o => <TrimSpan text={o} maxLen={12} />,
   }, {
     title: this.msg('waybillLadingNo'),
-    width: 250,
+    width: 240,
     dataIndex: 'bl_wb_no',
   }, {
     title: this.msg('invoiceNo'),
@@ -159,11 +159,11 @@ export default class DelegationList extends Component {
     render: (o) => {
       const DECL_TYPE = this.props.ietype === 'import' ? DECL_I_TYPE : DECL_E_TYPE;
       const type = DECL_TYPE.filter(dl => dl.key === o)[0];
-      let declWay = '';
-      if (type) {
-        declWay = type.value;
+      if (o === '0000' || o === '0001') {
+        return (<Tag color="blue-inverse">{type.value}</Tag>);
+      } else if (o === '0102' || o === '0103') {
+        return (<Tag color="blue">{type.value}</Tag>);
       }
-      return declWay;
     },
   }, {
     title: this.msg('transMode'),
@@ -171,11 +171,17 @@ export default class DelegationList extends Component {
     dataIndex: 'trans_mode',
     render: (o) => {
       const mode = TRANS_MODE.filter(ts => ts.value === o)[0];
-      let trans = '';
-      if (mode) {
-        trans = mode.text;
+      if (o === 'DOM') {
+        return (<span><i className="zmdi zmdi-border-outer" /> {mode.text}</span>);
+      } else if (o === '2') {
+        return (<span><i className="zmdi zmdi-boat" /> {mode.text}</span>);
+      } else if (o === '5') {
+        return (<span><i className="zmdi zmdi-airplane" /> {mode.text}</span>);
+      } else if (o === '3') {
+        return (<span><i className="zmdi zmdi-subway" /> {mode.text}</span>);
+      } else if (o === '4') {
+        return (<span><i className="zmdi zmdi-truck" /> {mode.text}</span>);
       }
-      return trans;
     },
   }, {
     title: this.msg('broker'),
@@ -472,7 +478,7 @@ export default class DelegationList extends Component {
                   <span className="ant-divider" />
                   <PrivilegeCover module="clearance" feature={this.props.ietype} action="delete">
                     <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleDelgDel(record.delg_no)}>
-                      <a role="button">{this.msg('delete')}</a>
+                      <a role="button"><Icon type="delete" /></a>
                     </Popconfirm>
                   </PrivilegeCover>
                 </span>
@@ -591,7 +597,7 @@ export default class DelegationList extends Component {
               {
                 listView === 'delegation' &&
                 <Table rowSelection={rowSelection} columns={columns} dataSource={this.dataSource} loading={delegationlist.loading}
-                  rowKey="delg_no" scroll={{ x: 1800 }}
+                  rowKey="delg_no" scroll={{ x: 1850 }}
                 />
               }
               {

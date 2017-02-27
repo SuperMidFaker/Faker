@@ -73,7 +73,7 @@ export default class SkuTransactionList extends React.Component {
   render() {
     const { loading } = this.props;
     return (
-      <Table columns={this.columns} pagination={false} dataSource={this.state.stocklist}
+      <Table size="middle" columns={this.columns} pagination={false} dataSource={this.state.stocklist}
         loading={loading} rowKey="id" scroll={{ y: 200 }}
       />
     );

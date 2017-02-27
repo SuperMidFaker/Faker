@@ -31,7 +31,7 @@ const { Header, Content } = Layout;
   moduleName: 'clearance',
 })
 @Form.create()
-export default class AcceptanceCreate extends Component {
+export default class CreateDelegation extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     type: PropTypes.oneOf(['import', 'export']),

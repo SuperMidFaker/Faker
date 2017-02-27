@@ -28,43 +28,27 @@ export default class ModuleSCV extends React.Component {
       text: formatMsg(intl, 'dashboard'),
     });
     linkMenus.push({
-      single: false,
+      single: true,
       key: 'scv-2',
+      path: '/scv/shipments',
       icon: 'icon-fontello-tasks-1',
-      text: formatMsg(intl, 'tracking'),
-      sublinks: [{
-        key: 'scv-2-0',
-        path: '/scv/tracking/inbound',
-        text: formatMsg(intl, 'inboundShipments'),
-      }, {
-        key: 'scv-2-1',
-        path: '/scv/tracking/outbound',
-        text: formatMsg(intl, 'outboundShipments'),
-      }],
+      text: formatMsg(intl, 'shipmentsTracking'),
     });
     linkMenus.push({
       single: false,
       key: 'scv-3',
-      path: '/scv/clearance',
       icon: 'zmdi zmdi-badge-check',
       text: formatMsg(intl, 'clearance'),
       sublinks: [{
         key: 'scv-3-0',
-        disabled: true,
         path: '/scv/clearance/manifest',
         text: formatMsg(intl, 'clearanceManifest'),
       }, {
         key: 'scv-3-1',
-        disabled: true,
         path: '/scv/clearance/cds',
         text: formatMsg(intl, 'clearanceCDS'),
       }, {
         key: 'scv-3-2',
-        disabled: true,
-        path: '/scv/clearance/ftz',
-        text: formatMsg(intl, 'clearanceFTZ'),
-      }, {
-        key: 'scv-3-3',
         disabled: true,
         path: '/scv/clearance/tax',
         text: formatMsg(intl, 'clearanceTax'),

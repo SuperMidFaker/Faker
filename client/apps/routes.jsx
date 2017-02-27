@@ -65,9 +65,9 @@ import * as CWMSettings from './cwm/settings';
 import SCV from './scv/module-scv';
 import * as SCVDashboard from './scv/dashboard';
 import * as SCVOrders from './scv/orders';
-import * as SCVInbound from './scv/inbound';
-import * as SCVOutbound from './scv/outbound';
-import * as SCVClearance from './scv/clearance';
+import * as SCVShipments from './scv/shipments';
+import * as SCVCustomsDecl from './scv/clearance/customsdecl';
+import * as SCVDeclManifest from './scv/clearance/manifest';
 import * as SCVInventoryStock from './scv/inventory/stock';
 import * as SCVInventoryTransaction from './scv/inventory/transaction';
 import * as SCVReceivingNotice from './scv/inventory/receiving';
@@ -341,12 +341,14 @@ export default(store, cookie) => {
             <IndexRedirect to="/scv/dashboard" />
             <Route path="dashboard" component={SCVDashboard.Index} />
             <Route path="orders" component={SCVOrders.List} />
-            <Route path="tracking">
-              <Route path="inbound" component={SCVInbound.List} />
-              <Route path="outbound" component={SCVOutbound.List} />
+            <Route path="shipments">
+              <IndexRoute component={SCVShipments.List} />
             </Route>
-            <Route path="clearance" component={SCVClearance.List} />
-            <Route path="inventory" >
+            <Route path="clearance">
+              <Route path="manifest" component={SCVDeclManifest.List} />
+              <Route path="cds" component={SCVCustomsDecl.List} />
+            </Route>
+            <Route path="inventory">
               <Route path="stock" component={SCVInventoryStock.List} />
               <Route path="transaction" component={SCVInventoryTransaction.List} />
               <Route path="receiving">
@@ -363,7 +365,7 @@ export default(store, cookie) => {
               <Route path="billing" component={SCVPaymentsBilling.List} />
             </Route>
             <Route path="products">
-              <Route path="sku" >
+              <Route path="sku">
                 <IndexRoute component={SCVProductsSku.List} />
                 <Route path="create" component={SCVProductsSku.Create} />
                 <Route path=":sku" component={SCVProductsSku.Edit} />

@@ -5,7 +5,7 @@ import { Form, Select, Input, Card, Col, Row, DatePicker } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
-import { loadHscodes } from 'common/reducers/cmsTradeitem';
+import { loadHscodes } from 'common/reducers/cmsHsCode';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
@@ -47,7 +47,7 @@ function getFieldInits(formData) {
       text: tc.cntry_name_cn,
     })),
     fieldInits: getFieldInits(state.cmsTradeitem.itemData),
-    hscodes: state.cmsTradeitem.hscodes,
+    hscodes: state.cmsHsCode.hscodes,
   }),
   { loadHscodes }
 )

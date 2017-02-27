@@ -23,11 +23,10 @@ const { Header, Content } = Layout;
 )
 @connectNav({
   depth: 3,
-  text: '委托信息修改',
   moduleName: 'clearance',
 })
 @Form.create()
-export default class AcceptanceEdit extends Component {
+export default class EditDelegation extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     type: PropTypes.oneOf(['import', 'export']),
@@ -96,7 +95,7 @@ export default class AcceptanceEdit extends Component {
               {this.props.ietype === 'import' ? this.msg('importClearance') : this.msg('exportClearance')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              {this.props.type === 'import' ? this.msg('newImportDelg') : this.msg('newExportDelg')}
+              {this.msg('delegationManagement')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
               {this.msg('modifyDelegation')}
@@ -123,6 +122,9 @@ export default class AcceptanceEdit extends Component {
               </Col>
             </Row>
           </Form>
+          <Row>
+            <Button type="danger" size="large">删除</Button>
+          </Row>
         </Content>
       </div>
     );

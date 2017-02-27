@@ -296,8 +296,8 @@ export default class ActivityLoggerPane extends React.Component {
           </div>
           <div className="card-footer">
             <div className="toolbar-left">
-              <Button type="primary" onClick={this.handleSave}>确定</Button>
-              <Button type="ghost" onClick={this.handleCancel}>取消</Button>
+              <Button type="primary" ghost onClick={this.handleSave}>确定</Button>
+              <Button onClick={this.handleCancel}>取消</Button>
             </div>
             <div className="toolbar-right">
               <DatePicker showTime format="YYYY-MM-DD HH:mm" placeholder="选择时间" />
