@@ -152,7 +152,7 @@ export default class ManifestEditor extends React.Component {
             </Header>
             <Content className={`main-content ${readonly ? 'readonly' : ''}`}>
               <SheetHeadPanel ietype={ietype} readonly={readonly} form={form} formData={billHead} type="bill" onSave={this.handleBillSave} />
-              <SheetBodyPanel ietype={ietype} readonly={readonly} data={billBodies} headNo={billHead.bill_seq_no}
+              <SheetBodyPanel ietype={ietype} readonly={readonly} headForm={form} data={billBodies} headNo={billHead.bill_seq_no}
                 onAdd={actions.addNewBillBody} onDel={actions.delBillBody} onEdit={actions.editBillBody}
                 billSeqNo={billHead.bill_seq_no} type="bill"
               />

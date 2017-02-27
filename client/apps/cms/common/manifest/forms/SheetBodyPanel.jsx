@@ -106,6 +106,7 @@ export default class SheetBodyPanel extends React.Component {
     billHead: PropTypes.object,
     bodyItem: PropTypes.object,
     bodyHscode: PropTypes.object,
+    headForm: PropTypes.object,
   }
   constructor(props) {
     super(props);
@@ -577,7 +578,12 @@ export default class SheetBodyPanel extends React.Component {
       }
     });
     if (wtSum > 0) {
-      this.props.updateHeadNetWt(this.props.billSeqNo, wtSum);
+      this.props.updateHeadNetWt(this.props.billSeqNo, wtSum).then(() => {
+        const { headForm } = this.props;
+        if (headForm) {
+          headForm.setFieldsValue({ net_wt: wtSum });
+        }
+      });
     }
   }
   handleGrossWtDivid = (ev) => {
