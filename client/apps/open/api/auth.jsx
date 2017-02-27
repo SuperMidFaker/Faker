@@ -51,12 +51,12 @@ export default class ApiAuthList extends React.Component {
     width: 400,
   }, {
     title: this.msg('opColumn'),
-    width: 160,
+    width: 100,
     render: () => (
       <span>
         <a href="#">修改</a>
         <span className="ant-divider" />
-        <a href="#">删除</a>
+        <a href="#"><Icon type="delete" /></a>
       </span>
   ),
   }];

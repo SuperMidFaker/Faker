@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Breadcrumb, Form, Col, Button, Row, message, Layout } from 'antd';
+import { Breadcrumb, Form, Col, Button, Popconfirm, Row, message, Layout } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import MainForm from './forms/mainForm';
 import SiderForm from './forms/siderForm';
@@ -122,8 +122,10 @@ export default class EditDelegation extends Component {
               </Col>
             </Row>
           </Form>
-          <Row>
-            <Button type="danger" size="large">删除</Button>
+          <Row className="bottom-bar">
+            <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleDelgDel()}>
+              <Button type="danger" size="large">删除</Button>
+            </Popconfirm>
           </Row>
         </Content>
       </div>
