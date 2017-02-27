@@ -50,7 +50,7 @@ const initialState = {
     sortField: '',
     sortOrder: '',
     status: 'all',
-    viewStatus: 'my',
+    viewStatus: 'all',
   },
   formRequire: {
     clients: [],

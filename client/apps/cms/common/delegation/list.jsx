@@ -89,6 +89,10 @@ export default class DelegationList extends Component {
     searchInput: '',
     expandedKeys: [],
   }
+  componentDidMount() {
+    const filters = this.initializeFilters();
+    this.handleDelgListLoad(1, { ...this.props.listFilter, ...filters });
+  }
   componentWillReceiveProps(nextProps) {
     if (nextProps.saved !== this.props.saved) {
       this.handleDelgListLoad();
@@ -109,6 +113,19 @@ export default class DelegationList extends Component {
         const { delegation } = this.props;
         this.handleDelegationView(delegation);
       }
+    }
+  }
+  initializeFilters = () => {
+    let filters = { viewStatus: 'all' };
+    if (window.localStorage) {
+      filters = JSON.parse(window.localStorage.cmsDelegationListFilters || '{"viewStatus":"all"}');
+    }
+    return filters;
+  }
+  saveFilters = (filters) => {
+    if (window.localStorage) {
+      window.localStorage.cmsDelegationListFilters =
+      JSON.stringify({ ...JSON.parse(window.localStorage.cmsDelegationListFilters || '{"viewStatus":"my"}'), viewStatus: filters.viewStatus });
     }
   }
   msg = key => formatMsg(this.props.intl, key);
@@ -418,13 +435,13 @@ export default class DelegationList extends Component {
     this.setState({ expandedKeys });
   }
   handleViewChange = (value) => {
-    console.log(value);
     const filter = { ...this.props.listFilter, viewStatus: value };
     if (this.props.listView === 'ciq') {
       this.handleCiqListLoad(1, filter);
     } else if (this.props.listView === 'delegation') {
       this.handleDelgListLoad(1, filter);
     }
+    this.saveFilters({ viewStatus: value });
   }
   handleSearch = (searchVal) => {
     const filters = this.mergeFilters(this.props.listFilter, searchVal);
