@@ -27,6 +27,17 @@ img {
     font-size: 14px;
   }
 }
+.ant-btn-background-ghost.ant-btn-danger {
+    color: #f46e65;
+    background-color: transparent;
+    border-color: #f46e65;
+}
+.ant-btn-background-ghost.ant-btn-danger:hover, 
+.ant-btn-background-ghost.ant-btn-danger:focus {
+    color: #f04134;
+    background-color: transparent;
+    border-color: #f04134;
+}
 .ant-card{
   margin-bottom: 16px;
   .ant-form-item {
@@ -104,6 +115,11 @@ img {
 }
 .ant-table-placeholder {
   border-bottom: none;
+}
+.ant-tabs-nav .ant-tabs-tab .icon {
+    width: 14px;
+    height: 14px;
+    margin-right: 8px;
 }
 .ant-timeline-item-content {
   .ant-card-head {
@@ -400,7 +416,16 @@ img {
 .bottom-bar {
   margin-top: 48px;
   padding: 24px 0;
-  border-top: 1px solid #f7f7f7;
+  border-top: 1px solid #d9d9d9;
+
+}
+.col-flex-primary {
+  order: 1;
+  flex: 1 1 auto;
+}
+.col-flex-secondary {
+  order: 2;
+  flex: 0 1 auto;
 }
 .nav-sider {
   background: #fff;
@@ -936,7 +961,6 @@ img {
 }
 .info-item {
   position: relative;
-  padding: 8px 16px;
   height: auto;
   width: 100%;
   display: block;
@@ -946,14 +970,14 @@ img {
     display: table;
   }
   .info-label {
+    text-align: right;
+    vertical-align: middle;
+    line-height: 32px;
     display: inline-block;
     overflow: hidden;
-    white-space: nowrap;
     text-overflow: ellipsis;
-    font-size: 12px;
-    vertical-align: middle;
+    white-space: nowrap;
     color: #999;
-    line-height: 14px;
   }
   .info-data {
     min-height: 22px;
@@ -962,26 +986,8 @@ img {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+    line-height: 32px;
   }
-}
-.info-item:hover {
-  background: #f4f4f4;
-}
-
-.dynamic-delete-button {
-  cursor: pointer;
-  position: relative;
-  top: 4px;
-  font-size: 24px;
-  color: #999;
-  transition: all .3s;
-}
-.dynamic-delete-button:hover {
-  color: #777;
-}
-.dynamic-delete-button[disabled] {
-  cursor: not-allowed;
-  opacity: 0.5;
 }
 .activity-wrapper {
   .ant-collapse-borderless {

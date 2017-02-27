@@ -29,7 +29,7 @@ export default class ProfileForm extends React.Component {
     const { customer } = this.props;
     return (
       <div>
-        <Card title="客户资料" extra={<a href="#" onClick={() => this.props.showCustomerModal('edit', customer)}>修改</a>}>
+        <Card title={this.msg('profile')} extra={<a href="#" onClick={() => this.props.showCustomerModal('edit', customer)}>修改</a>}>
           <Row gutter={16}>
             <Col sm={24}>
               <InfoItem
@@ -63,6 +63,8 @@ export default class ProfileForm extends React.Component {
             </Col>
           </Row>
         </Card>
+        <Card className="aside-card" title={this.msg('subCustomer')} extra={<a href="#" onClick={() => this.props.showSubCustomerModal(customer)}>添加</a>} />
+        <Card className="aside-card" title={this.msg('serviceTeam')} extra={<a href="#" onClick={() => this.props.showServiceTeamModal(customer)}>添加成员</a>} />
       </div>
     );
   }

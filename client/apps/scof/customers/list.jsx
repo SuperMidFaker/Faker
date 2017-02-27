@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Row, Col, Table, Layout } from 'antd';
+import { Breadcrumb, Button, Card, Icon, Row, Col, Tabs, Table, Layout, Popconfirm } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
@@ -15,6 +15,7 @@ import { PARTNER_ROLES } from 'common/constants';
 
 const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
+const TabPane = Tabs.TabPane;
 
 function fetchData({ state, dispatch }) {
   return dispatch(loadCustomers({
@@ -72,10 +73,8 @@ export default class CustomerList extends React.Component {
       tenantId: this.props.tenantId,
     });
   }
-  handleOptionClick = (e) => {
-    if (e.key === 'remove') {
-      this.props.deleteCustomer(this.state.customer.id, PARTNER_ROLES.CUS);
-    }
+  handleDelCustomer = () => {
+    this.props.deleteCustomer(this.state.customer.id, PARTNER_ROLES.CUS);
   }
   handlePageChange = (page) => {
     this.setState({ currentPage: page });
@@ -101,7 +100,7 @@ export default class CustomerList extends React.Component {
               </Breadcrumb.Item>
             </Breadcrumb>
             <div className="pull-right">
-              <Button type="primary" icon="plus-circle-o" onClick={() => this.props.showCustomerModal('add')}>
+              <Button type="primary" icon="plus-circle-o" onClick={() => this.props.showCustomerModal('add')} ghost>
                 {this.msg('add')}
               </Button>
             </div>
@@ -131,20 +130,39 @@ export default class CustomerList extends React.Component {
                 <Button icon="left" />
                 <Button icon="right" />
               </Button.Group>
+              <Button size="large" type="primary" icon="save" onClick={this.handleSaveBtnClick}>
+                {this.msg('save')}
+              </Button>
             </div>
           </Header>
           <Content className="main-content layout-fixed-width layout-fixed-width-large">
             <Row gutter={16}>
               <Col sm={24} md={16}>
                 <MainForm customer={customer} />
+                <Card bodyStyle={{ padding: 0 }}>
+                  <Tabs defaultActiveKey="recentOrders">
+                    <TabPane tab={<span><i className="icon icon-fontello-doc-text" />最近订单</span>} key="recentOrders" />
+                    <TabPane tab={<span><i className="icon icon-fontello-flow-tree" />流程规则</span>} key="flowRules" >
+                      <BusinessModel customer={customer} />
+                    </TabPane>
+                    <TabPane tab={<span><i className="icon icon-fontello-book" />价格协议</span>} key="tariff" />
+                    <TabPane tab={<span><Icon type="message" />备注</span>} key="message" />
+                  </Tabs>
+                </Card>
               </Col>
               <Col sm={24} md={8}>
                 <ProfileForm customer={customer} />
-                <BusinessModel customer={customer} />
+              </Col>
+            </Row>
+            <Row type="flex" className="bottom-bar">
+              <Col className="col-flex-primary" />
+              <Col className="col-flex-secondary">
+                <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleDelCustomer()}>
+                  <Button type="danger" size="large" icon="delete" ghost>删除</Button>
+                </Popconfirm>
               </Col>
             </Row>
           </Content>
-
         </Layout>
       </Layout>
     );
