@@ -13,6 +13,10 @@ const messages = defineMessages({
     id: 'cwm.outbound.transactions',
     defaultMessage: '出库记录',
   },
+  outboundListSearchPlaceholder: {
+    id: 'cwm.outbound.list.placeholder',
+    defaultMessage: 'SKU号或序列号或流水号',
+  },
   warehouse: {
     id: 'cwm.outbound.transactions.warehouse',
     defaultMessage: '仓库',

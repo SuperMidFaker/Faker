@@ -13,6 +13,10 @@ const messages = defineMessages({
     id: 'cwm.inbound.transactions',
     defaultMessage: '入库记录',
   },
+  inboundListSearchPlaceholder: {
+    id: 'cwm.inbound.list.placeholder',
+    defaultMessage: 'SKU号或序列号或流水号',
+  },
   warehouse: {
     id: 'cwm.inbound.transactions.warehouse',
     defaultMessage: '仓库',
