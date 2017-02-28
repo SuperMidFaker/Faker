@@ -13,6 +13,10 @@ const messages = defineMessages({
     id: 'scop.customers.save',
     defaultMessage: '保存',
   },
+  searchPlaceholder: {
+    id: 'scop.customers.search.placeholder',
+    defaultMessage: '搜索客户',
+  },
   customerName: {
     id: 'scop.customers.name',
     defaultMessage: '客户名称',

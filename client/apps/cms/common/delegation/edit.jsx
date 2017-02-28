@@ -122,10 +122,13 @@ export default class EditDelegation extends Component {
               </Col>
             </Row>
           </Form>
-          <Row className="bottom-bar">
-            <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleDelgDel()}>
-              <Button type="danger" size="large">删除</Button>
-            </Popconfirm>
+          <Row type="flex" className="bottom-bar">
+            <Col className="col-flex-primary" />
+            <Col className="col-flex-secondary">
+              <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleDelgDel()}>
+                <Button type="danger" size="large" ghost>删除</Button>
+              </Popconfirm>
+            </Col>
           </Row>
         </Content>
       </div>

@@ -20,7 +20,7 @@ const Option = Select.Option;
     deleteBusinessModel, addBusinessModel, updateBusinessModel }
 )
 
-export default class BusinessModel extends React.Component {
+export default class FlowRulesPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,

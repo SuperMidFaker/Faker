@@ -1,2 +1,1 @@
-export List from './list';
-export Create from './create';
+export Designer from './designer';
