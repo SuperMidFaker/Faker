@@ -1,12 +1,15 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Modal, Card, Radio, Checkbox, Select, message, Row, Col } from 'antd';
+import connectFetch from 'client/common/decorators/connect-fetch';
+import { Modal, Card, Radio, Checkbox, Select, message, Row, Col, Form } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { closeMergeSplitModal, submitBillMegeSplit } from 'common/reducers/cmsManifest';
+import { loadHsCodeCategories } from 'common/reducers/cmsHsCode';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 const formatMsg = format(messages);
 
+const FormItem = Form.Item;
 const CheckboxGroup = Checkbox.Group;
 const Option = Select.Option;
 
@@ -15,9 +18,13 @@ function MSCheckbox(props) {
   function handleChange(ev) {
     onChange(fieldOpt, field, ev.target.checked);
   }
+  let disabled = false;
+  if (fieldOpt === 'sortOpt' && field === 'customControl') {
+    disabled = true;
+  }
   return (
     <div>
-      <Checkbox onChange={handleChange} checked={state[fieldOpt][field]}>
+      <Checkbox onChange={handleChange} checked={state[fieldOpt][field]} disabled={disabled}>
         {text}
       </Checkbox>
     </div>
@@ -32,21 +39,29 @@ MSCheckbox.propTypes = {
   onChange: PropTypes.func.isRequired,
 };
 
+function fetchData({ state, dispatch }) {
+  return dispatch(loadHsCodeCategories(state.account.tenantId));
+}
+
+@connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
     visible: state.cmsManifest.visibleMSModal,
     isCustomRegisted: !!state.cmsManifest.billHead.manual_no,
     billNo: state.cmsManifest.billHead.bill_seq_no,
+    hscodeCategories: state.cmsHsCode.hscodeCategories,
   }),
   { closeMergeSplitModal, submitBillMegeSplit }
 )
+@Form.create()
 export default class MergeSplitModal extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     visible: PropTypes.bool.isRequired,
     isCustomRegisted: PropTypes.bool.isRequired,
     billNo: PropTypes.string,
+    hscodeCategories: PropTypes.array.isRequired,
   }
   state = {
     mergeOpt: {
@@ -61,14 +76,19 @@ export default class MergeSplitModal extends React.Component {
     splitOpt: {
       byHsCode: false,
       byCustom: false,
+      tradeCurr: false,
+      hsCategory: [],
+      perCount: 20,
     },
     sortOpt: {
-      customControl: false,
+      customControl: true,
+      inspectQuarantine: false,
       decTotal: false,
       decPriceDesc: false,
       hsCodeAsc: false,
     },
     sortSelectValue: '',
+    gnameVal: 'by20',
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   mergeConditions = [{
@@ -121,6 +141,18 @@ export default class MergeSplitModal extends React.Component {
       sortSelectValue: value,
     });
   }
+  handleSplitSelectChange = (value) => {
+    const splitOpt = { ...this.state.splitOpt };
+    if (value === 'by20') {
+      splitOpt.perCount = 20;
+    } else if (value === 'by50') {
+      splitOpt.perCount = 50;
+    }
+    this.setState({
+      splitOpt,
+      gnameVal: value,
+    });
+  }
   handleCheckChange = (fieldOpt, field, value) => {
     const opt = { ...this.state[fieldOpt] };
     opt[field] = value;
@@ -131,6 +163,9 @@ export default class MergeSplitModal extends React.Component {
   handleOk = () => {
     const { billNo } = this.props;
     const { splitOpt, mergeOpt, sortOpt } = this.state;
+    if (splitOpt.byHsCode) {
+      splitOpt.hsCategory = this.props.form.getFieldValue('specialSort');
+    }
     this.props.submitBillMegeSplit({ billNo, splitOpt, mergeOpt, sortOpt }).then((result) => {
       if (result.error) {
         message.error(result.error.message);
@@ -140,7 +175,8 @@ export default class MergeSplitModal extends React.Component {
     });
   }
   render() {
-    const { mergeOpt } = this.state;
+    const { mergeOpt, splitOpt } = this.state;
+    const { form: { getFieldDecorator }, hscodeCategories } = this.props;
     let mergeConditions = this.mergeConditions;
     if (this.props.isCustomRegisted) {
       mergeConditions = [...mergeConditions, { label: this.msg('emGNo'), value: 'byEmGNo' }];
@@ -182,10 +218,29 @@ export default class MergeSplitModal extends React.Component {
                 text={this.msg('specialHscodeDeclare')}
                 onChange={this.handleCheckChange} state={this.state}
               />
-              <MSCheckbox fieldOpt="splitOpt" field="byCustom"
-                text={this.msg('customControlDeclare')}
+              { splitOpt.byHsCode &&
+                <FormItem label={this.msg('specialHscodeSort')}>
+                  {getFieldDecorator('specialSort', {
+                    rules: [{ type: 'array' }],
+                  })(<Select multiple style={{ width: '100%' }} >
+                    {
+                        hscodeCategories.map(ct =>
+                          <Option value={ct.id} key={ct.id}>{ct.name}</Option>
+                        )
+                      }
+                  </Select>)}
+                </FormItem>
+              }
+              <MSCheckbox fieldOpt="splitOpt" field="tradeCurr"
+                text={this.msg('currencySplit')}
                 onChange={this.handleCheckChange} state={this.state}
               />
+              <Select onChange={this.handleSplitSelectChange} value={this.state.gnameVal}
+                style={{ width: '100%' }}
+              >
+                <Option value="by20">{'按20品拆分'}</Option>
+                <Option value="by50">{'按50品拆分'}</Option>
+              </Select>
             </Card>
           </Col>
           <Col span="11" offset="1">
@@ -194,15 +249,15 @@ export default class MergeSplitModal extends React.Component {
                 text={this.msg('customOnTop')}
                 onChange={this.handleCheckChange} state={this.state}
               />
-              <MSCheckbox fieldOpt="sortOpt" field="decTotal"
-                text={this.msg('totalPriceOnTop')}
+              <MSCheckbox fieldOpt="sortOpt" field="inspectQuarantine"
+                text={this.msg('inspectOnTop')}
                 onChange={this.handleCheckChange} state={this.state}
               />
               <Select onChange={this.handleSortSelectChange} value={this.state.sortSelectValue}
                 style={{ width: '100%' }}
               >
                 <Option value="hsCodeAsc">{this.msg('hsCodeAscSort')}</Option>
-                <Option value="decPriceDesc">{this.msg('priceDescSort')}</Option>
+                <Option value="decTotal">{this.msg('priceDescSort')}</Option>
               </Select>
             </Card>
           </Col>

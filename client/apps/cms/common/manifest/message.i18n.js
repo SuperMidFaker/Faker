@@ -437,13 +437,25 @@ export default defineMessages({
     id: 'cms.manifest.modal.split.special.hscode',
     defaultMessage: '特殊商品编码独立报关',
   },
+  specialHscodeSort: {
+    id: 'cms.manifest.modal.split.special.hscode.sort',
+    defaultMessage: '特殊商品分类:',
+  },
   customControlDeclare: {
     id: 'cms.manifest.modal.split.custom.declare',
     defaultMessage: '海关监管项独立报关',
   },
+  currencySplit: {
+    id: 'cms.manifest.modal.split.currency',
+    defaultMessage: '不同币制独立报关',
+  },
   customOnTop: {
     id: 'cms.manifest.modal.sort.custom.ontop',
     defaultMessage: '海关监管项置顶',
+  },
+  inspectOnTop: {
+    id: 'cms.manifest.modal.sort.inspect.ontop',
+    defaultMessage: '检验检疫项优先',
   },
   totalPriceOnTop: {
     id: 'cms.manifest.modal.sort.totalprice.ontop',

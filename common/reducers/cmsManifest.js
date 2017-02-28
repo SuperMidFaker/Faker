@@ -491,7 +491,7 @@ export function closeAmountModel() {
   };
 }
 
-export function submitBillMegeSplit({ billNo, mergeOpt, splitOpt, sortOpt, hsCategory }) {
+export function submitBillMegeSplit({ billNo, mergeOpt, splitOpt, sortOpt }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -501,7 +501,7 @@ export function submitBillMegeSplit({ billNo, mergeOpt, splitOpt, sortOpt, hsCat
       ],
       endpoint: 'v1/cms/declare/bill/mergesplit',
       method: 'post',
-      data: { billNo, mergeOpt, splitOpt, sortOpt, hsCategory },
+      data: { billNo, mergeOpt, splitOpt, sortOpt },
     },
   };
 }
