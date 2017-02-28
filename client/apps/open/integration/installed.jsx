@@ -5,7 +5,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import NavLink from 'client/components/nav-link';
 import Table from 'client/components/remoteAntTable';
-import { loadInstalledApps } from 'common/reducers/openIntegration';
+import { loadInstalledApps, deleteEasipassApp, updateAppStatus } from 'common/reducers/openIntegration';
 import { formatMsg } from './message.i18n';
 
 const { Header, Content } = Layout;
@@ -29,8 +29,8 @@ function fetchData({ state, dispatch }) {
     tenantId: state.account.tenantId,
     applist: state.openIntegration.list,
   }),
+  { loadInstalledApps, deleteEasipassApp, updateAppStatus }
 )
-
 export default class InstalledAppsList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -42,34 +42,51 @@ export default class InstalledAppsList extends React.Component {
     dataIndex: 'name',
     width: 200,
   }, {
-    title: this.msg('integrationApp'),
+    title: this.msg('integrationAppType'),
     dataIndex: 'app_type',
     width: 200,
-  }, {
-    title: 'scope',
-    width: 400,
-    dataIndex: 'scope',
+    render: (app) => {
+      if (app === 'EASIPASS') {
+        return 'EASIPASS EDI';
+      } else if (app === 'ARCTM') {
+        return 'AmberRoad CTM';
+      }
+    },
   }, {
     title: this.msg('incomingStatus'),
     dataIndex: 'incoming_status',
     width: 200,
+    render: () => '正常',
   }, {
     title: this.msg('outgoingStatus'),
     dataIndex: 'outgoing_status',
     width: 200,
+    render: () => '正常',
   }, {
     title: this.msg('opColumn'),
     width: 120,
-    render: () => (
-      <span>
-        <NavLink to="/open/integration/arctm/config/asdasfasdfadfsaf">配置</NavLink>
-        <span className="ant-divider" />
-        <a href="#">停用</a>
-        <span className="ant-divider" />
-        <a href="#"><Icon type="delete" /></a>
-      </span>
-    ),
-  }];
+    render: (txt, row) => {
+      if (!row.enabled) {
+        return (<span>
+          <a onClick={() => this.handleAppEnable(row)}>启用</a>
+          <span className="ant-divider" />
+          <a onClick={() => this.handleAppDelete(row)}><Icon type="delete" /></a>
+        </span>);
+      } else {
+        let configLink = null;
+        if (row.app_type === 'EASIPASS') {
+          configLink = <NavLink to={`/open/integration/easipass/config/${row.uuid}`}>配置</NavLink>;
+        } else if (row.app_type === 'ARCTM') {
+          configLink = <NavLink to={`/open/integration/arctm/config/${row.uuid}`}>配置</NavLink>;
+        }
+        return (<span>
+          {configLink}
+          <span className="ant-divider" />
+          <a onClick={() => this.handleAppDisable(row)}>停用</a>
+        </span>);
+      }
+    },
+  }]
   dataSource = new Table.DataSource({
     fetcher: params => this.props.loadInstalledApps(params),
     resolve: result => result.data,
@@ -95,6 +112,45 @@ export default class InstalledAppsList extends React.Component {
     },
     remotes: this.props.applist,
   })
+  handleAppDelete = (row) => {
+    this.props.deleteEasipassApp(row.uuid).then((result) => {
+      if (!result.error) {
+        this.props.loadInstalledApps({
+          tenantId: this.props.tenantId,
+          pageSize: this.props.applist.pageSize,
+          current: 1,
+          filter: JSON.stringify(this.props.listFilter),
+          sorter: JSON.stringify(this.props.sortFilter),
+        });
+      }
+    });
+  }
+  handleAppEnable = (row) => {
+    this.props.updateAppStatus({ uuid: row.uuid, enabled: true }).then((result) => {
+      if (!result.error) {
+        this.props.loadInstalledApps({
+          tenantId: this.props.tenantId,
+          pageSize: this.props.applist.pageSize,
+          current: this.props.applist.current,
+          filter: JSON.stringify(this.props.listFilter),
+          sorter: JSON.stringify(this.props.sortFilter),
+        });
+      }
+    });
+  }
+  handleAppDisable = (row) => {
+    this.props.updateAppStatus({ uuid: row.uuid, enabled: false }).then((result) => {
+      if (!result.error) {
+        this.props.loadInstalledApps({
+          tenantId: this.props.tenantId,
+          pageSize: this.props.applist.pageSize,
+          current: this.props.applist.current,
+          filter: JSON.stringify(this.props.listFilter),
+          sorter: JSON.stringify(this.props.sortFilter),
+        });
+      }
+    });
+  }
   render() {
     const { loading, applist } = this.props;
     this.dataSource.remotes = applist;

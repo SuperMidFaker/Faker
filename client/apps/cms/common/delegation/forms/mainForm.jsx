@@ -20,7 +20,7 @@ function getFieldInits(aspect, formData) {
     [
       'customer_name', 'invoice_no', 'contract_no', 'bl_wb_no', 'pieces', 'weight',
       'trans_mode', 'voyage_no', 'trade_mode', 'decl_port', 'decl_way_code',
-      'goods_type', 'order_no', 'remark', 'ref_external_no', 'swb_no',
+      'goods_type', 'order_no', 'swb_no',
     ].forEach((fd) => {
       init[fd] = formData[fd] === undefined ? '' : formData[fd];
     });

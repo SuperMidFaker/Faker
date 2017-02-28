@@ -3,6 +3,11 @@ import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/open/integration/', [
   'LOAD_INSTALLED', 'LOAD_INSTALLED_SUCCEED', 'LOAD_INSTALLED_FAIL',
+  'UPDATE_APPSTATUS', 'UPDATE_APPSTATUS_SUCCEED', 'UPDATE_APPSTATUS_FAIL',
+  'INSTALL_EASI', 'INSTALL_EASI_SUCCEED', 'INSTALL_EASI_FAIL',
+  'LOAD_EASI', 'LOAD_EASI_SUCCEED', 'LOAD_EASI_FAIL',
+  'UPDATE_EASI', 'UPDATE_EASI_SUCCEED', 'UPDATE_EASI_FAIL',
+  'DEL_EASI', 'DEL_EASI_SUCCEED', 'DEL_EASI_FAIL',
 ]);
 
 const initialState = {
@@ -17,8 +22,8 @@ const initialState = {
     field: '',
     order: '',
   },
-  listFilter: {
-  },
+  listFilter: {},
+  easipassApp: {},
 };
 
 export default function reducer(state = initialState, action) {
@@ -30,6 +35,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, loading: false, list: action.result.data };
     case actionTypes.LOAD_INSTALLED_FAIL:
       return { ...state, loading: false };
+    case actionTypes.LOAD_EASI_SUCCEED:
+      return { ...state, easipassApp: action.result.data };
     default:
       return state;
   }
@@ -46,6 +53,81 @@ export function loadInstalledApps(params) {
       endpoint: 'v1/platform/integration/installed',
       method: 'get',
       params,
+    },
+  };
+}
+
+export function installEasipassApp(easipass) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.INSTALL_EASI,
+        actionTypes.INSTALL_EASI_SUCCEED,
+        actionTypes.INSTALL_EASI_FAIL,
+      ],
+      endpoint: 'v1/platform/integration/install/easipass',
+      method: 'post',
+      data: easipass,
+    },
+  };
+}
+
+export function loadEasipassApp(appuuid) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_EASI,
+        actionTypes.LOAD_EASI_SUCCEED,
+        actionTypes.LOAD_EASI_FAIL,
+      ],
+      endpoint: 'v1/platform/integration/easipass',
+      method: 'get',
+      params: { uuid: appuuid },
+    },
+  };
+}
+
+export function updateEasipassApp(easipass) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_EASI,
+        actionTypes.UPDATE_EASI_SUCCEED,
+        actionTypes.UPDATE_EASI_FAIL,
+      ],
+      endpoint: 'v1/platform/integration/update/easipass',
+      method: 'post',
+      data: easipass,
+    },
+  };
+}
+
+export function updateAppStatus(easipass) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_APPSTATUS,
+        actionTypes.UPDATE_APPSTATUS_SUCCEED,
+        actionTypes.UPDATE_APPSTATUS_FAIL,
+      ],
+      endpoint: 'v1/platform/integration/update/app/status',
+      method: 'post',
+      data: easipass,
+    },
+  };
+}
+
+export function deleteEasipassApp(appuuid) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DEL_EASI,
+        actionTypes.DEL_EASI_SUCCEED,
+        actionTypes.DEL_EASI_FAIL,
+      ],
+      endpoint: 'v1/platform/integration/delete/easipass',
+      method: 'post',
+      data: { uuid: appuuid },
     },
   };
 }

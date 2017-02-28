@@ -264,8 +264,9 @@ export default class DelgDeclList extends Component {
       }
     });
   }
-  handleSend = () => {
-
+  handleSend = (record) => {
+    window.open(`${API_ROOTS.default}v1/cms/declare/send/filename.xml?billSeqNo=${record.bill_seq_no}&preEntrySeqNo=${record.pre_entry_seq_no
+    }&entryId=${record.entry_id}&tenantId=${this.props.tenantId}`);
   }
   render() {
     const { delgdeclList, listFilter } = this.props;
@@ -307,6 +308,12 @@ export default class DelgDeclList extends Component {
               <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
                 <RowUpdater onHit={this.handleSend} label={this.msg('send')} row={record} />
               </PrivilegeCover>
+            </span>
+          );
+        } else {
+          return (
+            <span>
+              <RowUpdater onHit={this.handleSend} label="查看报文" row={record} />
             </span>
           );
         }

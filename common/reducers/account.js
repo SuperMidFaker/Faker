@@ -6,6 +6,7 @@ const initialState = {
   loginId: -1,
   username: '',
   code: '',
+  customsCode: '',
   subdomain: '',
   tenantId: 0,
   aspect: 0,
