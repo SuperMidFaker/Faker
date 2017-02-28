@@ -162,11 +162,11 @@ export default(store, cookie) => {
             <Route path="installed" component={OpenIntegration.InstalledList} />
             <Route path="arctm">
               <Route path="install" component={OpenArCTM.Install} />
-              <Route path="config/:id" component={OpenArCTM.Config} />
+              <Route path="config/:uuid" component={OpenArCTM.Config} />
             </Route>
             <Route path="easipass">
               <Route path="install" component={OpenEasipassEDI.Install} />
-              <Route path="config/:id" component={OpenEasipassEDI.Config} />
+              <Route path="config/:uuid" component={OpenEasipassEDI.Config} />
             </Route>
           </Route>
         </Route>

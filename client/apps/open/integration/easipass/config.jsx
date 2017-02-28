@@ -1,21 +1,26 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Button, Breadcrumb, Form, Icon, Layout, Row } from 'antd';
+import { message, Button, Card, Breadcrumb, Form, Icon, Layout, Row } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { formatMsg } from '../../message.i18n';
+import connectFetch from 'client/common/decorators/connect-fetch';
+import { loadEasipassApp, updateEasipassApp } from 'common/reducers/openIntegration';
 import MainForm from './forms/mainForm';
+import { formatMsg } from '../message.i18n';
 
 const { Header, Content } = Layout;
 
+function fetchData({ dispatch, params }) {
+  return dispatch(loadEasipassApp(params.uuid));
+}
+
+@connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
-    profile: state.account.profile,
-    role: state.account.role_name,
     tenantId: state.account.tenantId,
-    parentTenantId: state.account.parentTenantId,
-    code: state.account.code,
+    easipass: state.openIntegration.easipassApp,
   }),
+  { updateEasipassApp }
 )
 @Form.create()
 export default class ConfigEasipassEDI extends React.Component {
@@ -23,23 +28,34 @@ export default class ConfigEasipassEDI extends React.Component {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     form: PropTypes.object.isRequired,
-    tenantName: PropTypes.string.isRequired,
-    formData: PropTypes.object.isRequired,
-    submitting: PropTypes.bool.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
+  state = { submitting: false }
   msg = formatMsg(this.props.intl);
   handleSaveBtnClick = () => {
-    this.handleSave({ accepted: false });
+    const { easipass } = this.props;
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+        this.setState({ submitting: true });
+        this.props.updateEasipassApp({ ...values, uuid: easipass.uuid }).then((result) => {
+          this.setState({ submitting: false });
+          if (result.error) {
+            message.error(result.error.message);
+          } else {
+            this.context.router.goBack();
+          }
+        });
+      }
+    });
   }
   handleCancelBtnClick = () => {
     this.context.router.goBack();
   }
 
   render() {
-    const { form, submitting } = this.props;
+    const { form, easipass } = this.props;
     return (
       <div>
         <Header className="top-bar">
@@ -51,23 +67,25 @@ export default class ConfigEasipassEDI extends React.Component {
               {this.msg('appEasipassEDI')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              西门子CTM接口
+              {easipass.name}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <div className="top-bar-tools" >
+          <div className="top-bar-tools">
             <Button size="large" type="ghost" onClick={this.handleCancelBtnClick}>
               {this.msg('cancel')}
             </Button>
-            <Button size="large" type="primary" icon="save" loading={submitting} onClick={this.handleSaveBtnClick}>
-              {this.msg('save')}
+            <Button size="large" type="primary" icon="save" loading={this.state.submitting} onClick={this.handleSaveBtnClick}>
+              {this.msg('saveApp')}
             </Button>
           </div>
         </Header>
         <Content className="main-content layout-fixed-width">
           <Form vertical>
-            <Row gutter={16}>
-              <MainForm form={form} />
-            </Row>
+            <Card title={this.msg('easipassConfig')}>
+              <Row gutter={16}>
+                <MainForm form={form} easipass={easipass} />
+              </Row>
+            </Card>
           </Form>
         </Content>
       </div>

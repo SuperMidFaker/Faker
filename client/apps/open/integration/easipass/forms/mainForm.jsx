@@ -1,4 +1,3 @@
-/* eslint react/no-multi-comp: 0 */
 import React, { Component, PropTypes } from 'react';
 import { Form, Input, Col, Row } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
@@ -11,59 +10,76 @@ export default class MainForm extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     form: PropTypes.object.isRequired,
+    easipass: PropTypes.shape({
+      send_dir: PropTypes.string.isRequired,
+    }),
   }
-  msg = formatMsg(this.props.intl);
+  msg = formatMsg(this.props.intl)
   render() {
-    const { form: { getFieldDecorator } } = this.props;
+    const { form: { getFieldDecorator }, easipass } = this.props;
     return (
       <Row gutter={16}>
         <Col sm={24} lg={12}>
-          <FormItem label={this.msg('发送方协同ID号')} >
+          <FormItem label={this.msg('epSendTradeCode')}>
             {getFieldDecorator('send_trade_code', {
+              initialValue: easipass.send_trade_code,
+              rules: [{ required: true, message: this.msg('parameterRequired') }],
             })(<Input />)}
           </FormItem>
         </Col>
         <Col sm={24} lg={12}>
-          <FormItem label={this.msg('接收方协同ID号')} >
+          <FormItem label={this.msg('epRecvTradeCode')}>
             {getFieldDecorator('receive_trade_code', {
+              initialValue: easipass.receive_trade_code,
+              rules: [{ required: true, message: this.msg('parameterRequired') }],
             })(<Input />)}
           </FormItem>
         </Col>
         <Col sm={24} lg={24}>
-          <FormItem label={this.msg('接收方用户ID(逗号分隔)')} >
+          <FormItem label={this.msg('epUserCode')}>
             {getFieldDecorator('ep_user_code', {
+              initialValue: easipass.ep_user_code,
+              rules: [{ required: true, message: this.msg('parameterRequired') }],
             })(<Input />)}
           </FormItem>
         </Col>
         <Col sm={24} lg={24}>
-          <FormItem label={this.msg('FTPserver')} >
+          <FormItem label={this.msg('FTPserver')}>
             {getFieldDecorator('ftp_server', {
-            })(<Input readOnly />)}
+              initialValue: easipass.ftp_server,
+              rules: [{ required: true, message: this.msg('parameterRequired') }],
+            })(<Input />)}
           </FormItem>
         </Col>
         <Col sm={24} lg={12}>
-          <FormItem label={this.msg('FTPusername')} >
+          <FormItem label={this.msg('FTPusername')}>
             {getFieldDecorator('username', {
+              initialValue: easipass.username,
+              rules: [{ required: true, message: this.msg('parameterRequired') }],
             })(<Input />)}
           </FormItem>
         </Col>
         <Col sm={24} lg={12}>
-          <FormItem label={this.msg('FTPpassword')} >
+          <FormItem label={this.msg('FTPpassword')}>
             {getFieldDecorator('password', {
+              initialValue: easipass.password,
+              rules: [{ required: true, message: this.msg('parameterRequired') }],
             })(<Input />)}
           </FormItem>
         </Col>
         <Col sm={24} lg={12}>
-          <FormItem label={this.msg('sendDirectory')} >
+          <FormItem label={this.msg('sendDirectory')}>
             {getFieldDecorator('send_dir', {
-              initialValue: 'send',
+              initialValue: easipass.send_dir,
+              rules: [{ required: true, message: this.msg('parameterRequired') }],
             })(<Input />)}
           </FormItem>
         </Col>
         <Col sm={24} lg={12}>
-          <FormItem label={this.msg('recvDirectory')} >
+          <FormItem label={this.msg('recvDirectory')}>
             {getFieldDecorator('recv_dir', {
-              initialValue: 'recv',
+              initialValue: easipass.recv_dir,
+              rules: [{ required: true, message: this.msg('parameterRequired') }],
             })(<Input />)}
           </FormItem>
         </Col>

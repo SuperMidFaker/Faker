@@ -30,13 +30,17 @@ const messages = defineMessages({
     id: 'open.platform.integration.app.easipass',
     defaultMessage: '亿通海关EDI申报',
   },
+  easipassConfig: {
+    id: 'open.platform.integration.easipass.config',
+    defaultMessage: '亿通配置',
+  },
   integrationName: {
     id: 'open.platform.integration.name',
     defaultMessage: '接口名称',
   },
-  integrationApp: {
+  integrationAppType: {
     id: 'open.platform.integration.app',
-    defaultMessage: '整合应用',
+    defaultMessage: '整合应用类型',
   },
   incomingStatus: {
     id: 'open.platform.integration.incoming.status',
@@ -49,6 +53,58 @@ const messages = defineMessages({
   opColumn: {
     id: 'open.platform.integration.opcolumn',
     defaultMessage: '操作',
+  },
+  installApp: {
+    id: 'open.platform.integration.install.app',
+    defaultMessage: '安装',
+  },
+  saveApp: {
+    id: 'open.platform.integration.save.app',
+    defaultMessage: '保存',
+  },
+  cancel: {
+    id: 'open.platform.integration.cancel',
+    defaultMessage: '取消',
+  },
+  integrationNameRequired: {
+    id: 'open.platform.integration.name.required',
+    defaultMessage: '应用接口名称必填',
+  },
+  parameterRequired: {
+    id: 'open.platform.integration.paramter.required',
+    defaultMessage: '接口参数必填',
+  },
+  epSendTradeCode: {
+    id: 'open.platform.integration.easipass.sendTradeCode',
+    defaultMessage: '发送方协同ID号',
+  },
+  epRecvTradeCode: {
+    id: 'open.platform.integration.easipass.recvTradeCode',
+    defaultMessage: '接收方协同ID号',
+  },
+  epUserCode: {
+    id: 'open.platform.integration.easipass.epUserCode',
+    defaultMessage: '接收方用户ID(多个逗号分隔)',
+  },
+  FTPserver: {
+    id: 'open.platform.integration.easipass.ftp.server',
+    defaultMessage: 'FTP地址',
+  },
+  FTPusername: {
+    id: 'open.platform.integration.easipass.ftp.username',
+    defaultMessage: '用户名',
+  },
+  FTPpassword: {
+    id: 'open.platform.integration.easipass.ftp.password',
+    defaultMessage: '密码',
+  },
+  sendDirectory: {
+    id: 'open.platform.integration.easipass.ftp.send.directory',
+    defaultMessage: '发送目录',
+  },
+  recvDirectory: {
+    id: 'open.platform.integration.easipass.ftp.recv.directory',
+    defaultMessage: '接收目录',
   },
 });
 
