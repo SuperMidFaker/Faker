@@ -13,7 +13,7 @@ function getFieldInits(aspect, formData) {
   const init = {};
   if (formData) {
     [
-      'invoice_no', 'contract_no', 'order_no', 'ref_external_no',
+      'ref_external_no', 'remark',
     ].forEach((fd) => {
       init[fd] = formData[fd] === undefined ? '' : formData[fd];
     });
