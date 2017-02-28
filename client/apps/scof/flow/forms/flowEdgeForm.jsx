@@ -12,7 +12,7 @@ const RadioGroup = Radio.Group;
 const Panel = Collapse.Panel;
 
 @injectIntl
-export default class FlowNodeForm extends Component {
+export default class FlowEdgeForm extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     form: PropTypes.object.isRequired,
@@ -66,7 +66,7 @@ export default class FlowNodeForm extends Component {
     ];
     return (
       <div>
-        <Card title={this.msg('flowNode')} bodyStyle={{ padding: 0 }}>
+        <Card title={this.msg('flowEdge')} bodyStyle={{ padding: 0 }}>
           <Collapse bordered={false} defaultActiveKey={['properties', 'events']}>
             <Panel header={this.msg('properties')} key="properties">
               <Row gutter={16}>
