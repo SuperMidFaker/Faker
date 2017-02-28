@@ -37,6 +37,7 @@ export default class FlowNodeForm extends Component {
     const triggerData = [];
     for (let i = 0; i < 2; ++i) {
       triggerData.push({
+        key: i,
         condition: 'ALL',
         action: 'This is production name',
       });
@@ -58,9 +59,11 @@ export default class FlowNodeForm extends Component {
     ];
     const eventData = [
       {
+        key: 0,
         event_name: 'onEntered',
       },
       {
+        key: 1,
         event_name: 'onExited',
       },
     ];
@@ -70,13 +73,13 @@ export default class FlowNodeForm extends Component {
           <Collapse bordered={false} defaultActiveKey={['properties', 'events']}>
             <Panel header={this.msg('properties')} key="properties">
               <Row gutter={16}>
-                <Col sm={24} lg={6}>
+                <Col sm={24}>
                   <FormItem label={this.msg('nodeName')}>
                     {getFieldDecorator('asn_no', {
                     })(<Input />)}
                   </FormItem>
                 </Col>
-                <Col sm={24} lg={12}>
+                <Col sm={24}>
                   <FormItem label={this.msg('nodeClass')}>
                     {getFieldDecorator('node_class', {
                     })(<RadioGroup>
@@ -86,7 +89,7 @@ export default class FlowNodeForm extends Component {
                     </RadioGroup>)}
                   </FormItem>
                 </Col>
-                <Col sm={24} lg={6}>
+                <Col sm={24}>
                   <FormItem label={this.msg('isOriginNode')}>
                     {getFieldDecorator('is_origin', {
                     })(<Switch checkedChildren={'是'} unCheckedChildren={'否'} />)}

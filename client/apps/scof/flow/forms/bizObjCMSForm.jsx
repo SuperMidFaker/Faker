@@ -1,6 +1,6 @@
 /* eslint react/no-multi-comp: 0 */
 import React, { Component, PropTypes } from 'react';
-import { Collapse, Form, Card, Col, Row, Input, Table, Tabs } from 'antd';
+import { Collapse, Form, Card, Col, Row, Icon, Input, Select, Table, Tabs } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
@@ -21,13 +21,12 @@ export default class BizObjectForm extends Component {
       { title: 'Condition', dataIndex: 'condition', key: 'condition' },
       { title: 'Action', dataIndex: 'action', key: 'action' },
       {
-        title: 'Operation',
         dataIndex: 'operation',
         key: 'operation',
+        width: 40,
         render: () => (
           <span className={'table-operation'}>
-            <a href="#">Pause</a>
-            <a href="#">Stop</a>
+            <a href="#"><Icon type="pause-circle" /></a>
           </span>
         ),
       },
@@ -36,12 +35,14 @@ export default class BizObjectForm extends Component {
     const triggerData = [];
     for (let i = 0; i < 2; ++i) {
       triggerData.push({
+        key: i,
         condition: 'ALL',
         action: 'This is production name',
       });
     }
     return (
       <Table
+        size="small"
         columns={triggerColumns}
         dataSource={triggerData}
         pagination={false}
@@ -57,9 +58,27 @@ export default class BizObjectForm extends Component {
     ];
     const eventData = [
       {
+        key: 0,
         event_name: 'onCreated',
       },
       {
+        key: 1,
+        event_name: 'onAccepted',
+      },
+      {
+        key: 2,
+        event_name: 'onDeclared',
+      },
+      {
+        key: 3,
+        event_name: 'onInspected',
+      },
+      {
+        key: 4,
+        event_name: 'onReleased',
+      },
+      {
+        key: 5,
         event_name: 'onFinished',
       },
     ];
@@ -71,40 +90,40 @@ export default class BizObjectForm extends Component {
               <Collapse bordered={false} defaultActiveKey={['properties', 'events']}>
                 <Panel header={this.msg('properties')} key="properties">
                   <Row gutter={16}>
-                    <Col sm={24} lg={12}>
+                    <Col sm={24} lg={8}>
                       <FormItem label={this.msg('declCustoms')}>
-                        {getFieldDecorator('asn_no', {
-                        })(<Input />)}
+                        {getFieldDecorator('decl_customs', {
+                        })(<Select />)}
                       </FormItem>
                     </Col>
-                    <Col sm={24} lg={6}>
+                    <Col sm={24} lg={8}>
                       <FormItem label={this.msg('declWay')}>
-                        {getFieldDecorator('asn_no', {
-                        })(<Input />)}
+                        {getFieldDecorator('decl_way', {
+                        })(<Select />)}
                       </FormItem>
                     </Col>
-                    <Col sm={24} lg={6}>
+                    <Col sm={24} lg={8}>
                       <FormItem label={this.msg('transMode')}>
-                        {getFieldDecorator('asn_no', {
-                        })(<Input />)}
+                        {getFieldDecorator('trans_mode', {
+                        })(<Select />)}
                       </FormItem>
                     </Col>
-                    <Col sm={24} lg={12}>
+                    <Col sm={24} lg={8}>
                       <FormItem label={this.msg('customsBroker')}>
-                        {getFieldDecorator('asn_no', {
-                        })(<Input />)}
+                        {getFieldDecorator('customs_broker', {
+                        })(<Select />)}
                       </FormItem>
                     </Col>
-                    <Col sm={24} lg={12}>
+                    <Col sm={24} lg={8}>
                       <FormItem label={this.msg('ciqBroker')}>
-                        {getFieldDecorator('asn_no', {
-                        })(<Input />)}
+                        {getFieldDecorator('ciq_brokder', {
+                        })(<Select />)}
                       </FormItem>
                     </Col>
-                    <Col sm={24} lg={12}>
+                    <Col sm={24} lg={8}>
                       <FormItem label={this.msg('quote')}>
-                        {getFieldDecorator('asn_no', {
-                        })(<Input />)}
+                        {getFieldDecorator('quote', {
+                        })(<Select />)}
                       </FormItem>
                     </Col>
                   </Row>

@@ -1,14 +1,12 @@
 /* eslint react/no-multi-comp: 0 */
 import React, { Component, PropTypes } from 'react';
-import { Collapse, Form, Radio, Table, Card, Col, Row, Input, Switch } from 'antd';
+import { Collapse, Form, Table, Card, Col, Row, Select, Switch } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
-const RadioButton = Radio.Button;
-const RadioGroup = Radio.Group;
 const Panel = Collapse.Panel;
 
 @injectIntl
@@ -67,34 +65,30 @@ export default class FlowEdgeForm extends Component {
     return (
       <div>
         <Card title={this.msg('flowEdge')} bodyStyle={{ padding: 0 }}>
-          <Collapse bordered={false} defaultActiveKey={['properties', 'events']}>
+          <Collapse bordered={false} defaultActiveKey={['properties', 'condition']}>
             <Panel header={this.msg('properties')} key="properties">
               <Row gutter={16}>
-                <Col sm={24} lg={6}>
-                  <FormItem label={this.msg('nodeName')}>
-                    {getFieldDecorator('asn_no', {
-                    })(<Input />)}
+                <Col sm={24}>
+                  <FormItem label={this.msg('sourceNode')}>
+                    {getFieldDecorator('source_node', {
+                    })(<Select />)}
                   </FormItem>
                 </Col>
-                <Col sm={24} lg={12}>
-                  <FormItem label={this.msg('nodeClass')}>
-                    {getFieldDecorator('node_class', {
-                    })(<RadioGroup>
-                      <RadioButton value="nodeCMS">{this.msg('nodeCMS')}</RadioButton>
-                      <RadioButton value="nodeTMS">{this.msg('nodeTMS')}</RadioButton>
-                      <RadioButton value="nodeCWM">{this.msg('nodeCWM')}</RadioButton>
-                    </RadioGroup>)}
+                <Col sm={24}>
+                  <FormItem label={this.msg('targetNode')}>
+                    {getFieldDecorator('target_node', {
+                    })(<Select />)}
                   </FormItem>
                 </Col>
-                <Col sm={24} lg={6}>
-                  <FormItem label={this.msg('isOriginNode')}>
-                    {getFieldDecorator('is_origin', {
+                <Col sm={24}>
+                  <FormItem label={this.msg('isTerminal')}>
+                    {getFieldDecorator('is_terminal', {
                     })(<Switch checkedChildren={'是'} unCheckedChildren={'否'} />)}
                   </FormItem>
                 </Col>
               </Row>
             </Panel>
-            <Panel header={this.msg('events')} key="events">
+            <Panel header={this.msg('condition')} key="condition">
               <Table
                 size="middle"
                 columns={eventColumns}

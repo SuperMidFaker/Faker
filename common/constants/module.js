@@ -1,7 +1,7 @@
 const MODULE_SCOF = {
   id: 'scof',
   text: 'moduleSCOF',
-  defaultText: '客户订单',
+  defaultText: '客户订单流',
   features: [
   ],
 };

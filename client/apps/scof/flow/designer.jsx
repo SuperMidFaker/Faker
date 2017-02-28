@@ -1,15 +1,17 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Card, Form, Row, Col, Layout } from 'antd';
+import { Breadcrumb, Button, Dropdown, Menu, Icon, Card, Form, Row, Col, Layout } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import FlowNodeForm from './forms/flowNodeForm';
+import FlowEdgeForm from './forms/flowEdgeForm';
 import BizObjCMSForm from './forms/bizObjCMSForm';
 import messages from './message.i18n';
 
 const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
+const MenuItem = Menu.Item;
 
 @injectIntl
 @connect(
@@ -91,6 +93,13 @@ export default class FlowDesigner extends React.Component {
   }
   render() {
     const { form, submitting } = this.props;
+    const menu = (
+      <Menu onClick={this.handleMenuClick}>
+        <MenuItem key="1">{this.msg('nodeCMS')}</MenuItem>
+        <MenuItem key="2">{this.msg('nodeTMS')}</MenuItem>
+        <MenuItem key="3">{this.msg('nodeCWM')}</MenuItem>
+      </Menu>
+    );
     return (
       <Layout>
         <Sider width={280} className="menu-sider" key="sider" trigger={null}
@@ -132,18 +141,34 @@ export default class FlowDesigner extends React.Component {
               </Button>
             </div>
           </Header>
-          <Content className="main-content" key="main" >
-            <Row gutter={16}>
-              <Col sm={24} md={16}>
-                <Card title={this.msg('flowChart')} bodyStyle={{ padding: 0, height: 360 }} >
-                  <div id="flowchart" />
-                </Card>
-                <FlowNodeForm form={form} />
-              </Col>
-              <Col sm={24} md={8}>
-                <BizObjCMSForm form={form} />
-              </Col>
-            </Row>
+          <Content className="main-content layout-min-width layout-min-width-large">
+            <Form vertical>
+              <Row gutter={16}>
+                <Col sm={24} md={16}>
+                  <Card
+                    title={this.msg('flowChart')}
+                    extra={<div className="toolbar-right">
+                      <Dropdown overlay={menu}>
+                        <Button icon="plus-square-o" >
+                          {this.msg('flowNode')} <Icon type="down" />
+                        </Button>
+                      </Dropdown>
+                      <Button icon="swap-right" >
+                        {this.msg('flowEdge')}
+                      </Button>
+                    </div>}
+                    bodyStyle={{ padding: 0, height: 360 }}
+                  >
+                    <div id="flowchart" />
+                  </Card>
+                  <BizObjCMSForm form={form} />
+                </Col>
+                <Col sm={24} md={8}>
+                  <FlowNodeForm form={form} />
+                  <FlowEdgeForm form={form} />
+                </Col>
+              </Row>
+            </Form>
           </Content>
         </Layout>
       </Layout>
