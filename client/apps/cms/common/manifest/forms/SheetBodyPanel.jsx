@@ -396,13 +396,6 @@ export default class SheetBodyPanel extends React.Component {
           onChange={this.handleEditChange} edit={editBody}
         />,
     }, {
-      title: this.msg('productNo'),
-      width: 80,
-      render: (o, record, index) =>
-        <ColumnInput field="product_no" inEdit={index === editIndex} record={record}
-          onChange={this.handleEditChange} edit={editBody}
-        />,
-    }, {
       title: this.msg('processingFees'),
       width: 80,
       render: (o, record, index) =>
@@ -672,7 +665,7 @@ export default class SheetBodyPanel extends React.Component {
             </ExcelUpload>
           </Menu.Item>
           }
-          <Menu.Item key="download"><Icon type="download" /> 下载模板</Menu.Item>
+          <Menu.Item key="download"><Icon type="download" /> 下载模板(非关联)</Menu.Item>
           <Menu.Item key="export"><Icon type="export" /> 导出数据</Menu.Item>
         </Menu>);
       billBodyToolbar = (
