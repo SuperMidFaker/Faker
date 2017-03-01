@@ -69,7 +69,7 @@ export default class SendModal extends React.Component {
     const { visible, form: { getFieldDecorator } } = this.props;
     const { easipassList } = this.state;
     return (
-      <Modal title="465" visible={visible}
+      <Modal title="发送报关单" visible={visible}
         onOk={this.handleOk} onCancel={this.handleCancel}
       >
         <Form>
