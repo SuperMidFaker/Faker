@@ -9,6 +9,9 @@ const actionTypes = createActionTypes('@@welogix/cms/declaration/', [
   'SET_INSPECT', 'SET_INSPECT_SUCCEED', 'SET_INSPECT_FAIL',
   'DELETE_DECL', 'DELETE_DECL_SUCCEED', 'DELETE_DECL_FAIL',
   'SET_REVIEWED', 'SET_REVIEWED_SUCCEED', 'SET_REVIEWED_FAIL',
+  'GET_EASIPASS_LIST', 'GET_EASIPASS_LIST_SUCCEED', 'GET_EASIPASS_LIST_FAIL',
+  'SHOW_SEND_DECL_MODAL',
+  'SEND_DECL', 'SEND_DECL_SUCCEED', 'SEND_DECL_FAIL',
 ]);
 
 const initialState = {
@@ -33,6 +36,11 @@ const initialState = {
   },
   decl_heads: [],
   customs: [],
+  sendDeclModal: {
+    visible: false,
+    preEntrySeqNo: '',
+    delgNo: '',
+  },
 };
 
 export default function reducer(state = initialState, action) {
@@ -52,6 +60,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, delgdeclList: { ...state.delgdeclList, loading: false } };
     case actionTypes.LOAD_DECLHEAD_SUCCEED:
       return { ...state, decl_heads: action.result.data };
+    case actionTypes.SHOW_SEND_DECL_MODAL:
+      return { ...state, sendDeclModal: { ...state.sendDeclModal, ...action.data } };
     default:
       return state;
   }
@@ -154,6 +164,43 @@ export function setFilterReviewed(declId, status) {
       endpoint: 'v1/cms/declare/set/reviewed',
       method: 'post',
       data: { declId, status },
+    },
+  };
+}
+
+export function sendDecl(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SEND_DECL,
+        actionTypes.SEND_DECL_SUCCEED,
+        actionTypes.SEND_DECL_FAIL,
+      ],
+      endpoint: 'v1/cms/declare/send',
+      method: 'post',
+      data,
+    },
+  };
+}
+
+export function showSendDeclModal({ visible = true, preEntrySeqNo = '', delgNo = '' }) {
+  return {
+    type: actionTypes.SHOW_SEND_DECL_MODAL,
+    data: { visible, preEntrySeqNo, delgNo },
+  };
+}
+
+export function getEasipassList(tenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.GET_EASIPASS_LIST,
+        actionTypes.GET_EASIPASS_LIST_SUCCEED,
+        actionTypes.GET_EASIPASS_LIST_FAIL,
+      ],
+      endpoint: 'v1/platform/integration/easipassList',
+      method: 'get',
+      params: { tenantId },
     },
   };
 }

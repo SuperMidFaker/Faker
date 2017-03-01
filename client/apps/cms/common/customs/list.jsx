@@ -7,7 +7,7 @@ import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
-import { loadDelgDecls, deleteDecl, setFilterReviewed } from 'common/reducers/cmsDeclare';
+import { loadDelgDecls, deleteDecl, setFilterReviewed, showSendDeclModal } from 'common/reducers/cmsDeclare';
 import { openEfModal } from 'common/reducers/cmsDelegation';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/search-bar';
@@ -18,6 +18,7 @@ import { format } from 'client/common/i18n/helpers';
 import DeclStatusPopover from './declStatusPopover';
 import messages from './message.i18n';
 import { DECL_STATUS, CMS_DECL_STATUS } from 'common/constants';
+import SendModal from './modals/sendModal';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -37,7 +38,7 @@ const RadioButton = Radio.Button;
       text: `${cus.customs_name}`,
     })),
   }),
-  { loadDelgDecls, openEfModal, deleteDecl, setFilterReviewed }
+  { loadDelgDecls, openEfModal, deleteDecl, setFilterReviewed, showSendDeclModal }
 )
 @connectNav({
   depth: 2,
@@ -52,6 +53,7 @@ export default class DelgDeclList extends Component {
     loginName: PropTypes.string.isRequired,
     delgdeclList: PropTypes.object.isRequired,
     listFilter: PropTypes.object.isRequired,
+    showSendDeclModal: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -264,9 +266,8 @@ export default class DelgDeclList extends Component {
       }
     });
   }
-  handleSend = (record) => {
-    window.open(`${API_ROOTS.default}v1/cms/declare/send/filename.xml?billSeqNo=${record.bill_seq_no}&preEntrySeqNo=${record.pre_entry_seq_no
-    }&entryId=${record.entry_id}&tenantId=${this.props.tenantId}`);
+  handleShowSendDeclModal = (record) => {
+    this.props.showSendDeclModal({ visible: true, preEntrySeqNo: record.pre_entry_seq_no, delgNo: record.delg_no });
   }
   render() {
     const { delgdeclList, listFilter } = this.props;
@@ -306,14 +307,14 @@ export default class DelgDeclList extends Component {
               </PrivilegeCover>
               <span className="ant-divider" />
               <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-                <RowUpdater onHit={this.handleSend} label={this.msg('send')} row={record} />
+                <RowUpdater onHit={this.handleShowSendDeclModal} label={this.msg('send')} row={record} />
               </PrivilegeCover>
             </span>
           );
         } else {
           return (
             <span>
-              <RowUpdater onHit={this.handleSend} label="查看报文" row={record} />
+              <RowUpdater onHit={this.handleShowSendDeclModal} label={this.msg('send')} row={record} />
             </span>
           );
         }
@@ -358,6 +359,7 @@ export default class DelgDeclList extends Component {
               />
             </div>
             <DeclnoFillModal reload={this.handleTableLoad} />
+            <SendModal />
           </div>
         </Content>
       </QueueAnim>
