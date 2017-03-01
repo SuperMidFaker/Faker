@@ -49,20 +49,16 @@ export default class SendModal extends React.Component {
   }
   handleOk = () => {
     const { delgNo, preEntrySeqNo, subdomain } = this.props;
-    const { easipassList } = this.state;
-    const formData = this.props.form.getFieldsValue();
-    if (formData.decType === undefined) {
-      message.error('请选择单证类型');
-    } else if (formData.easipass === undefined) {
-      message.error('请选择EDI');
-    } else {
-      const easipass = easipassList.find(item => item.app_uuid === formData.easipass);
-      const uuid = easipass ? easipass.app_uuid : '';
-      this.props.sendDecl({ preEntrySeqNo, delgNo, subdomain, uuid }).then(() => {
-        this.props.showSendDeclModal({ visible: false });
-        message.info('发送成功');
-      });
-    }
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+        const uuid = values.easipass;
+        const paperOpt = values.decType;
+        this.props.sendDecl({ preEntrySeqNo, delgNo, subdomain, uuid, paperOpt }).then(() => {
+          this.props.showSendDeclModal({ visible: false });
+          message.info('发送成功');
+        });
+      }
+    });
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   render() {
@@ -74,16 +70,16 @@ export default class SendModal extends React.Component {
       >
         <Form>
           <FormItem label="单证类型">
-            {getFieldDecorator('decType')(
+            {getFieldDecorator('decType', { rules: [{ required: true, message: '请选择单证类型' }] })(
               <RadioGroup>
-                <Radio value={1}>通关无纸</Radio>
-                <Radio value={2}>有纸</Radio>
-                <Radio value={3}>无纸</Radio>
+                <Radio value="ciqnopaper">通关无纸</Radio>
+                <Radio value="paper">有纸</Radio>
+                <Radio value="nopaper">无纸</Radio>
               </RadioGroup>
             )}
           </FormItem>
           <FormItem label="EDI列表">
-            {getFieldDecorator('easipass')(
+            {getFieldDecorator('easipass', { rules: [{ required: true, message: '请选择EDI' }] })(
               <Select placeholder="请选择">
                 {easipassList.map(item => (<Option key={item.app_uuid} value={item.app_uuid}>{item.name}</Option>))}
               </Select>
