@@ -1,6 +1,6 @@
 /* eslint react/no-multi-comp: 0 */
 import React, { Component, PropTypes } from 'react';
-import { Collapse, Form, Table, Card, Col, Row, Select, Switch } from 'antd';
+import { Collapse, Form, Table, Card, Col, Icon, Row, Select, Switch, Tooltip } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
@@ -10,7 +10,7 @@ const FormItem = Form.Item;
 const Panel = Collapse.Panel;
 
 @injectIntl
-export default class FlowEdgeForm extends Component {
+export default class FlowEdgePanel extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     form: PropTypes.object.isRequired,
@@ -74,21 +74,26 @@ export default class FlowEdgeForm extends Component {
                     })(<Select />)}
                   </FormItem>
                 </Col>
-                <Col sm={24}>
-                  <FormItem label={this.msg('targetNode')}>
-                    {getFieldDecorator('target_node', {
-                    })(<Select />)}
-                  </FormItem>
-                </Col>
-                <Col sm={24}>
+                <Col sm={6}>
                   <FormItem label={this.msg('isTerminal')}>
                     {getFieldDecorator('is_terminal', {
                     })(<Switch checkedChildren={'是'} unCheckedChildren={'否'} />)}
                   </FormItem>
                 </Col>
+                <Col sm={18}>
+                  <FormItem label={this.msg('targetNode')}>
+                    {getFieldDecorator('target_node', {
+                    })(<Select />)}
+                  </FormItem>
+                </Col>
               </Row>
             </Panel>
-            <Panel header={this.msg('condition')} key="condition">
+            <Panel header={<span>
+              {this.msg('condition')}&nbsp;
+              <Tooltip title={this.msg('tooltipEdgeCondition')}>
+                <Icon type="question-circle-o" />
+              </Tooltip></span>} key="condition"
+            >
               <Table
                 size="middle"
                 columns={eventColumns}

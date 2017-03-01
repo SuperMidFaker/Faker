@@ -1,7 +1,9 @@
 /* eslint react/no-multi-comp: 0 */
 import React, { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
 import { Collapse, Form, Radio, Table, Card, Col, Row, Input, Switch } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
+import { openAddTriggerModal } from 'common/reducers/scofFlow';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 
@@ -12,7 +14,13 @@ const RadioGroup = Radio.Group;
 const Panel = Collapse.Panel;
 
 @injectIntl
-export default class FlowNodeForm extends Component {
+@connect(
+  state => ({
+    tenantId: state.account.tenantId,
+  }),
+  { openAddTriggerModal }
+)
+export default class FlowNodePanel extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     form: PropTypes.object.isRequired,
@@ -50,12 +58,15 @@ export default class FlowNodeForm extends Component {
       />
     );
   };
+  handleAddTrigger = () => {
+    this.props.openAddTriggerModal();
+  }
   msg = key => formatMsg(this.props.intl, key);
   render() {
     const { form: { getFieldDecorator } } = this.props;
     const eventColumns = [
       { title: 'Event Name', dataIndex: 'event_name', key: 'event_name' },
-      { title: 'Triggers', key: 'operation', width: 100, render: () => <a href="#">Add Trigger</a> },
+      { title: 'Triggers', key: 'operation', width: 100, render: () => <a href="#" onClick={this.handleAddTrigger}>Add Trigger</a> },
     ];
     const eventData = [
       {
@@ -73,10 +84,16 @@ export default class FlowNodeForm extends Component {
           <Collapse bordered={false} defaultActiveKey={['properties', 'events']}>
             <Panel header={this.msg('properties')} key="properties">
               <Row gutter={16}>
-                <Col sm={24}>
+                <Col sm={18}>
                   <FormItem label={this.msg('nodeName')}>
                     {getFieldDecorator('asn_no', {
                     })(<Input />)}
+                  </FormItem>
+                </Col>
+                <Col sm={6}>
+                  <FormItem label={this.msg('isOrigin')}>
+                    {getFieldDecorator('is_origin', {
+                    })(<Switch checkedChildren={'是'} unCheckedChildren={'否'} disabled />)}
                   </FormItem>
                 </Col>
                 <Col sm={24}>
@@ -87,12 +104,6 @@ export default class FlowNodeForm extends Component {
                       <RadioButton value="nodeTMS">{this.msg('nodeTMS')}</RadioButton>
                       <RadioButton value="nodeCWM">{this.msg('nodeCWM')}</RadioButton>
                     </RadioGroup>)}
-                  </FormItem>
-                </Col>
-                <Col sm={24}>
-                  <FormItem label={this.msg('isOriginNode')}>
-                    {getFieldDecorator('is_origin', {
-                    })(<Switch checkedChildren={'是'} unCheckedChildren={'否'} />)}
                   </FormItem>
                 </Col>
               </Row>

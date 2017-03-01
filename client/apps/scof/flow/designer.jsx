@@ -4,9 +4,9 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Button, Dropdown, Menu, Icon, Card, Form, Row, Col, Layout } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
-import FlowNodeForm from './forms/flowNodeForm';
-import FlowEdgeForm from './forms/flowEdgeForm';
-import BizObjCMSForm from './forms/bizObjCMSForm';
+import FlowNodePanel from './panel/flowNodePanel';
+import FlowEdgePanel from './panel/flowEdgePanel';
+import BizObjCMSPanel from './panel/bizObjCMSPanel';
 import messages from './message.i18n';
 
 const formatMsg = format(messages);
@@ -161,11 +161,11 @@ export default class FlowDesigner extends React.Component {
                   >
                     <div id="flowchart" />
                   </Card>
-                  <BizObjCMSForm form={form} />
+                  <BizObjCMSPanel form={form} />
                 </Col>
                 <Col sm={24} md={8}>
-                  <FlowNodeForm form={form} />
-                  <FlowEdgeForm form={form} />
+                  <FlowNodePanel form={form} />
+                  <FlowEdgePanel form={form} />
                 </Col>
               </Row>
             </Form>
