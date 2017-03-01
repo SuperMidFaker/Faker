@@ -13,11 +13,13 @@ export const I_E_TYPES = [
 
 export const DECL_I_TYPE = [
   { key: '0000', value: '进口' },
+  { key: '0100', value: '进口' },
   { key: '0102', value: '进境' },
 ];
 
 export const DECL_E_TYPE = [
   { key: '0001', value: '出口' },
+  { key: '0101', value: '出口' },
   { key: '0103', value: '出境' },
 ];
 
