@@ -176,8 +176,10 @@ export default class DelegationList extends Component {
     render: (o) => {
       const DECL_TYPE = this.props.ietype === 'import' ? DECL_I_TYPE : DECL_E_TYPE;
       const type = DECL_TYPE.filter(dl => dl.key === o)[0];
-      if (o === '0000' || o === '0001') {
+      // 0000口岸进口 0001口岸出口 0100保税区进口 0101保税区出口
+      if (o === '0000' || o === '0001' || o === '0100' || o === '0101') {
         return (<Tag color="blue-inverse">{type.value}</Tag>);
+      // 0102保税区进境 0103保税区出境
       } else if (o === '0102' || o === '0103') {
         return (<Tag color="blue">{type.value}</Tag>);
       }
@@ -188,7 +190,8 @@ export default class DelegationList extends Component {
     dataIndex: 'trans_mode',
     render: (o) => {
       const mode = TRANS_MODE.filter(ts => ts.value === o)[0];
-      if (o === 'DOM') {
+      // 9为暂时兼容开放接口
+      if (o === 'DOM' || o === '9') {
         return (<span><i className="zmdi zmdi-border-outer" /> {mode.text}</span>);
       } else if (o === '2') {
         return (<span><i className="zmdi zmdi-boat" /> {mode.text}</span>);

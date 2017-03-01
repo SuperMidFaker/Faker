@@ -54,8 +54,9 @@ export default class AddTriggerModal extends React.Component {
             {
               getFieldDecorator('action_type', {
               })(
-                <Select >
+                <Select defaultValue="notify">
                   <Option value="notify">{this.msg('notify')}</Option>
+                  <Option value="create">{this.msg('create')}</Option>
                 </Select>
               )
             }
@@ -87,6 +88,33 @@ export default class AddTriggerModal extends React.Component {
               getFieldDecorator('notify_mode', {
               })(
                 <CheckboxGroup options={notifyOptions} defaultValue={['email', 'wechat']} />
+              )
+            }
+          </FormItem>
+        </Col>
+      </Row>
+    );
+    const createAction = (
+      <Row gutter={16}>
+        <Col sm={24} lg={4}>
+          <FormItem label={this.msg('actionType')}>
+            {
+              getFieldDecorator('action_type', {
+              })(
+                <Select defaultValue="create">
+                  <Option value="notify">{this.msg('notify')}</Option>
+                  <Option value="create">{this.msg('create')}</Option>
+                </Select>
+              )
+            }
+          </FormItem>
+        </Col>
+        <Col sm={24} lg={12}>
+          <FormItem label={this.msg('bizObject')}>
+            {
+              getFieldDecorator('bizObject', {
+              })(
+                <Select />
               )
             }
           </FormItem>
@@ -148,6 +176,7 @@ export default class AddTriggerModal extends React.Component {
             </Panel>
             <Panel header={this.msg('actions')} key="actions">
               {notifyAction}
+              {createAction}
             </Panel>
           </Collapse>
         </Form>
