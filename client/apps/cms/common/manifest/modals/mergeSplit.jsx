@@ -131,9 +131,9 @@ export default class MergeSplitModal extends React.Component {
     const sortOpt = { ...this.state.sortOpt };
     if (value === 'hsCodeAsc') {
       sortOpt.hsCodeAsc = true;
-      sortOpt.decPriceDesc = false;
-    } else if (value === 'decPriceDesc') {
-      sortOpt.decPriceDesc = true;
+      sortOpt.decTotal = false;
+    } else if (value === 'decTotal') {
+      sortOpt.decTotal = true;
       sortOpt.hsCodeAsc = false;
     }
     this.setState({
@@ -247,10 +247,6 @@ export default class MergeSplitModal extends React.Component {
             <Card title={this.msg('sortPrinciple')} bordered>
               <MSCheckbox fieldOpt="sortOpt" field="customControl"
                 text={this.msg('customOnTop')}
-                onChange={this.handleCheckChange} state={this.state}
-              />
-              <MSCheckbox fieldOpt="sortOpt" field="inspectQuarantine"
-                text={this.msg('inspectOnTop')}
                 onChange={this.handleCheckChange} state={this.state}
               />
               <Select onChange={this.handleSortSelectChange} value={this.state.sortSelectValue}
