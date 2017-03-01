@@ -88,6 +88,7 @@ export const INSPECT_STATUS = {
 
 export const TRANS_MODE = [
   { value: 'DOM', text: '境内转运' },
+  { value: '9', text: '境内转运' },
   { value: '2', text: '国际海运' },
   { value: '5', text: '国际空运' },
   { value: '3', text: '跨境铁路运输' },
