@@ -129,9 +129,11 @@ export default class ManifestEditor extends React.Component {
                   {billMeta.bill_seq_no}
                 </Breadcrumb.Item>
               </Breadcrumb>
-              <Dropdown overlay={declEntryMenu}>
-                <Button size="large" >生成的报关单 <Icon type="down" /></Button>
-              </Dropdown>
+              {billMeta.entries.length > 0 ? (
+                <Dropdown overlay={declEntryMenu}>
+                  <Button size="large" >生成的报关单 <Icon type="down" /></Button>
+                </Dropdown>
+              ) : null}
               <div className="top-bar-tools">
                 <Dropdown overlay={this.lockMenu}>
                   <Button size="large">
