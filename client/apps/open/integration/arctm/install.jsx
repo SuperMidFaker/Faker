@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Button, Breadcrumb, Form, Icon, Input, Col, Layout, Row } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import MainForm from './forms/mainForm';
-import { formatMsg } from '../../message.i18n';
+import { formatMsg } from '../message.i18n';
 
 const { Header, Content } = Layout;
 const FormItem = Form.Item;
