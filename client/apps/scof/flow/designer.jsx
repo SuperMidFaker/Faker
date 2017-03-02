@@ -38,6 +38,7 @@ export default class FlowDesigner extends React.Component {
     selectedRowKeys: [],
     searchInput: '',
     collapsed: false,
+    rightSidercollapsed: true,
   }
   componentDidMount() {
     const data = {
@@ -83,6 +84,11 @@ export default class FlowDesigner extends React.Component {
       collapsed: !this.state.collapsed,
     });
   }
+  toggleRightSider = () => {
+    this.setState({
+      rightSidercollapsed: !this.state.rightSidercollapsed,
+    });
+  }
   handleStatusChange = (ev) => {
     if (ev.target.value === this.props.listFilter.status) {
 
@@ -122,6 +128,11 @@ export default class FlowDesigner extends React.Component {
         </Sider>
         <Layout>
           <Header className="top-bar">
+            <Button size="large"
+              className={this.state.collapsed ? '' : 'btn-toggle-on'}
+              icon={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
+              onClick={this.toggle}
+            />
             { this.state.collapsed && <Breadcrumb>
               <Breadcrumb.Item>
                 {this.msg('flow')}
@@ -130,15 +141,16 @@ export default class FlowDesigner extends React.Component {
                 流程名称
               </Breadcrumb.Item>
             </Breadcrumb>}
-            <Button size="large"
-              className={this.state.collapsed ? '' : 'btn-toggle-on'}
-              icon={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
-              onClick={this.toggle}
-            />
+
             <div className="top-bar-tools">
               <Button size="large" type="primary" icon="save" loading={submitting} onClick={this.handleSaveBtnClick}>
                 {this.msg('save')}
               </Button>
+              <Button size="large"
+                className={this.state.rightSidercollapsed ? '' : 'btn-toggle-on'}
+                icon={this.state.rightSidercollapsed ? 'code-o' : 'code'}
+                onClick={this.toggleRightSider}
+              />
             </div>
           </Header>
           <Content className="main-content layout-min-width layout-min-width-large">
@@ -157,7 +169,7 @@ export default class FlowDesigner extends React.Component {
                         {this.msg('flowEdge')}
                       </Button>
                     </div>}
-                    bodyStyle={{ padding: 0, height: 360 }}
+                    bodyStyle={{ padding: 0, height: 300 }}
                   >
                     <div id="flowchart" />
                   </Card>
@@ -171,6 +183,21 @@ export default class FlowDesigner extends React.Component {
             </Form>
           </Content>
         </Layout>
+        <Sider
+          trigger={null}
+          defaultCollapsed
+          collapsible
+          collapsed={this.state.rightSidercollapsed}
+          width={480}
+          collapsedWidth={0}
+          className="right-sider"
+        >
+          <div className="right-sider-panel">
+            <div className="panel-header">
+              <h3>流程描述文件</h3>
+            </div>
+          </div>
+        </Sider>
       </Layout>
     );
   }

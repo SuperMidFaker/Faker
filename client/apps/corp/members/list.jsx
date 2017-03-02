@@ -273,7 +273,7 @@ export default class PersonnelSetting extends React.Component {
           return (
             <span>
               <PrivilegeCover module="corp" feature="personnel" action="edit">
-                <NavLink to={`/corp/personnel/edit/${record.key}`}>
+                <NavLink to={`/corp/members/edit/${record.key}`}>
                   {formatGlobalMsg(intl, 'modify')}
                 </NavLink>
               </PrivilegeCover>
@@ -283,7 +283,7 @@ export default class PersonnelSetting extends React.Component {
           return (
             <PrivilegeCover module="corp" feature="personnel" action="edit">
               <span>
-                <NavLink to={`/corp/personnel/edit/${record.key}`}>
+                <NavLink to={`/corp/members/edit/${record.key}`}>
                   {formatGlobalMsg(intl, 'modify')}
                 </NavLink>
                 <span className="ant-divider" />
@@ -336,7 +336,7 @@ export default class PersonnelSetting extends React.Component {
                 </Select>
               </div>
               <PrivilegeCover module="corp" feature="personnel" action="create">
-                <Button type="primary" onClick={() => this.handleNavigationTo('/corp/personnel/new')} icon="plus-circle-o">
+                <Button type="primary" onClick={() => this.handleNavigationTo('/corp/members/new')} icon="plus-circle-o">
                   {msg('newUser')}
                 </Button>
               </PrivilegeCover>
