@@ -195,7 +195,10 @@ class ConditionTable extends React.Component {
       return obj;
     });
     const columns = this.columns;
-    return <Table dataSource={dataSource} columns={columns} pagination={false} showHeader={false} footer={() => <Button type="dashed" onClick={this.handleAdd} icon="plus" style={{ width: '100%' }} />} />;
+    return (
+      <Table dataSource={dataSource} columns={columns} pagination={false} showHeader={false}
+        footer={() => <Button type="dashed" onClick={this.handleAdd} icon="plus" style={{ width: '100%' }} />}
+      />);
   }
 }
 
@@ -208,38 +211,6 @@ export default class FlowEdgePanel extends Component {
   state = {
     isTerminal: false,
     datas: [],
-  };
-  expandedRowRender = () => {
-    const triggerColumns = [
-      { title: 'Condition', dataIndex: 'condition', key: 'condition' },
-      { title: 'Action', dataIndex: 'action', key: 'action' },
-      {
-        title: 'Operation',
-        dataIndex: 'operation',
-        key: 'operation',
-        render: () => (
-          <span className={'table-operation'}>
-            <a href="#">Pause</a>
-            <a href="#">Stop</a>
-          </span>
-        ),
-      },
-    ];
-
-    const triggerData = [];
-    for (let i = 0; i < 2; ++i) {
-      triggerData.push({
-        condition: 'ALL',
-        action: 'This is production name',
-      });
-    }
-    return (
-      <Table
-        columns={triggerColumns}
-        dataSource={triggerData}
-        pagination={false}
-      />
-    );
   };
   handleTerminalChange = (checked) => {
     this.setState(

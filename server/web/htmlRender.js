@@ -38,7 +38,7 @@ function renderAsHtml(pageCss, pageJs, content) {
   <![endif]-->
   ${trackJs}
 </head>
-<body style="min-height: 680px;">
+<body>
   <div id="mount" class="full-container">${content}</div>
   <script src="${__CDN__}/assets/lib/jquery/jquery.min.js" type="text/javascript"></script>
   <script src="${__CDN__}/assets/lib/easemob/strophe.js" type="text/javascript"></script>
