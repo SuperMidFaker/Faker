@@ -5,6 +5,7 @@ import QueueAnim from 'rc-queue-anim';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadEntry, saveEntryHead } from 'common/reducers/cmsManifest';
+import { fillEntryId } from 'common/reducers/cmsDelegation';
 import SheetHeadPanel from '../manifest/forms/SheetHeadPanel';
 import SheetBodyPanel from '../manifest/forms/SheetBodyPanel';
 import SheetExtraPanel from '../manifest/forms/SheetExtraPanel';
@@ -22,7 +23,7 @@ const { Sider, Header, Content } = Layout;
     bodies: state.cmsManifest.entryBodies,
     tenantId: state.account.tenantId,
   }),
-  { saveEntryHead, loadEntry }
+  { saveEntryHead, loadEntry, fillEntryId }
 )
 @connectNav({
   depth: 2,
@@ -72,6 +73,14 @@ export default class CustomsDeclEditor extends React.Component {
   handleEntryHeadSave = () => {
     const formVals = this.props.form.getFieldsValue();
     const { head } = this.props;
+    if (formVals.entry_id) {
+      this.props.fillEntryId({ entryNo: formVals.entry_id, entryHeadId: head.id,
+        billSeqNo: head.bill_seq_no, delgNo: head.delg_no }).then((result) => {
+          if (result.error) {
+            message.error(result.error.message);
+          }
+        });
+    }
     this.props.saveEntryHead({ formVals, entryHeadId: head.id }).then((result) => {
       if (result.error) {
         message.error(result.error.message);
