@@ -53,9 +53,13 @@ export default class SendModal extends React.Component {
       if (!err) {
         const uuid = values.easipass;
         const paperOpt = values.decType;
-        this.props.sendDecl({ preEntrySeqNo, delgNo, subdomain, uuid, paperOpt }).then(() => {
-          this.props.showSendDeclModal({ visible: false });
-          message.info('发送成功');
+        this.props.sendDecl({ preEntrySeqNo, delgNo, subdomain, uuid, paperOpt }).then((result) => {
+          if (result.error) {
+            message.error(result.error.message);
+          } else {
+            message.info('发送成功');
+            this.props.showSendDeclModal({ visible: false });
+          }
         });
       }
     });
