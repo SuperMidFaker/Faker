@@ -88,7 +88,7 @@ export default class DelgDeclList extends Component {
           return (
             <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
               <RowUpdater onHit={this.handleDeclNoFill} row={record}
-                label={<span><Icon type="edit" /> 录入海关编号</span>}
+                label={<span><Icon type="edit" /> 回填海关编号</span>}
               />
             </PrivilegeCover>
           );
@@ -151,24 +151,29 @@ export default class DelgDeclList extends Component {
   }, {
     title: '进出口日期',
     dataIndex: 'i_e_date',
+    width: 100,
     render: (o, record) => (record.id ?
       record.i_e_date && moment(record.i_e_date).format('YYYY.MM.DD') : '-'),
   }, {
     title: '创建时间',
     dataIndex: 'created_date',
+    width: 100,
     render: (o, record) => (record.id ?
     record.created_date && moment(record.created_date).format('MM.DD HH:mm') : '-'),
   }, {
     title: '申报时间',
     dataIndex: 'd_date',
+    width: 100,
     render: (o, record) => (record.id ?
     record.d_date && moment(record.d_date).format('MM.DD HH:mm') : '-'),
   }, {
     title: '申报人',
-    dataIndex: 'creater_login_id  ',
+    dataIndex: 'creater_login_id',
+    width: 100,
   }, {
     title: '回填日期',
     dataIndex: 'backfill_date',
+    width: 100,
     render: (o, record) => (record.id ?
     record.backfill_date && moment(record.backfill_date).format('YYYY.MM.DD') : '-'),
   }]
@@ -344,11 +349,6 @@ export default class DelgDeclList extends Component {
             <RadioButton value="reviewed">{this.msg('filterReviewed')}</RadioButton>
             <RadioButton value="declared">{this.msg('filterDeclared')}</RadioButton>
             <RadioButton value="finalized">{this.msg('filterFinalized')}</RadioButton>
-          </RadioGroup>
-          <span />
-          <RadioGroup onChange={this.handleTypeChange} size="large">
-            <RadioButton value="cdf">{this.msg('declCDF')}</RadioButton>
-            <RadioButton value="ftz">{this.msg('declFTZ')}</RadioButton>
           </RadioGroup>
           <div className="top-bar-tools" />
         </Header>

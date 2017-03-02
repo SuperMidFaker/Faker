@@ -57,7 +57,7 @@ export default class DeclnoFillModal extends React.Component {
       <Modal title={this.msg('entryNoFillModalTitle')} visible={visible}
         onOk={this.handleOk} onCancel={this.handleCancel}
       >
-        <Input onChange={this.handleEntryNoChange} value={this.state.entryNo} />
+        <Input onChange={this.handleEntryNoChange} value={this.state.entryNo} size="large" />
       </Modal>
     );
   }

@@ -1,13 +1,12 @@
 /* eslint react/no-multi-comp: 0 */
 import React, { Component, PropTypes } from 'react';
-import { Button, Collapse, Form, Table, Card, Col, Icon, Row, Select, Switch, Tooltip, Popconfirm } from 'antd';
+import { Button, Form, Table, Card, Col, Icon, Row, Select, Switch, Tooltip, Popconfirm } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
-const Panel = Collapse.Panel;
 const Option = Select.Option;
 
 class EditableCell extends React.Component {
@@ -50,7 +49,7 @@ class EditableCell extends React.Component {
                 value={value}
                 onChange={e => this.handleChange(e)}
               >
-                <Option key="cmsDelegation">{this.msg('cmsDelegation')}</Option>
+                <Option key="cmsDelegation">cmsDelegation</Option>
               </Select>
             </div>
             :
@@ -72,13 +71,13 @@ class ConditionTable extends React.Component {
       width: '50%',
       render: (text, record, index) => this.renderColumns(this.state.data, index, 'name', text),
     }, {
-      title: 'age',
-      dataIndex: 'age',
-      render: (text, record, index) => this.renderColumns(this.state.data, index, 'age', text),
+      title: 'event',
+      dataIndex: 'event',
+      render: (text, record, index) => this.renderColumns(this.state.data, index, 'event', text),
     }, {
-      title: 'operation',
+      title: '',
       dataIndex: 'operation',
-      width: 50,
+      width: 80,
       render: (text, record, index) => {
         const { editable } = this.state.data[index].name;
         return (
@@ -87,6 +86,7 @@ class ConditionTable extends React.Component {
               editable ?
                 <span>
                   <a onClick={() => this.editDone(index, 'save')}><Icon type="save" /></a>
+                  <span className="ant-divider" />
                   <Popconfirm title="Sure to cancel?" onConfirm={() => this.editDone(index, 'cancel')}>
                     <a><Icon type="close" /></a>
                   </Popconfirm>
@@ -94,6 +94,7 @@ class ConditionTable extends React.Component {
                 :
                 <span>
                   <a onClick={() => this.edit(index)}><Icon type="edit" /></a>
+                  <span className="ant-divider" />
                   <a onClick={() => this.delete(index)}><Icon type="delete" /></a>
                 </span>
             }
@@ -108,7 +109,7 @@ class ConditionTable extends React.Component {
           editable: false,
           value: '清关委托',
         },
-        age: {
+        event: {
           editable: false,
           value: '已放行',
         },
@@ -124,7 +125,7 @@ class ConditionTable extends React.Component {
         editable: false,
         value: '报关单',
       },
-      age: {
+      event: {
         editable: false,
         value: '已回填',
       },
@@ -196,7 +197,7 @@ class ConditionTable extends React.Component {
     });
     const columns = this.columns;
     return (
-      <Table dataSource={dataSource} columns={columns} pagination={false} showHeader={false}
+      <Table dataSource={dataSource} columns={columns} pagination={false} size="middle"
         footer={() => <Button type="dashed" onClick={this.handleAdd} icon="plus" style={{ width: '100%' }} />}
       />);
   }
@@ -222,39 +223,37 @@ export default class FlowEdgePanel extends Component {
     const { form: { getFieldDecorator } } = this.props;
     return (
       <div>
-        <Card title={this.msg('flowEdge')} bodyStyle={{ padding: 0 }}>
-          <Collapse bordered={false} defaultActiveKey={['properties', 'condition']}>
-            <Panel header={this.msg('properties')} key="properties">
-              <Row gutter={16}>
-                <Col sm={24}>
-                  <FormItem label={this.msg('sourceNode')}>
-                    {getFieldDecorator('source_node', {
-                    })(<Select />)}
-                  </FormItem>
-                </Col>
-                <Col sm={6}>
-                  <FormItem label={this.msg('isTerminal')}>
-                    {getFieldDecorator('is_terminal', {
-                    })(<Switch checkedChildren={'是'} unCheckedChildren={'否'} onChange={this.handleTerminalChange} />)}
-                  </FormItem>
-                </Col>
-                <Col sm={18}>
-                  {!this.state.isTerminal && <FormItem label={this.msg('targetNode')}>
-                    {getFieldDecorator('target_node', {
-                    })(<Select />)}
-                  </FormItem>}
-                </Col>
-              </Row>
-            </Panel>
-            <Panel header={<span>
-              {this.msg('condition')}&nbsp;
-              <Tooltip title={this.msg('tooltipEdgeCondition')}>
-                <Icon type="question-circle-o" />
-              </Tooltip></span>} key="condition"
-            >
-              <ConditionTable />
-            </Panel>
-          </Collapse>
+        <Card title={this.msg('flowEdge')} bodyStyle={{ padding: 16 }}>
+          <Row gutter={16}>
+            <Col sm={24}>
+              <FormItem label={this.msg('sourceNode')}>
+                {getFieldDecorator('source_node', {
+                })(<Select />)}
+              </FormItem>
+            </Col>
+            <Col sm={24}>
+              <FormItem label={<span>
+                {this.msg('condition')}&nbsp;
+                <Tooltip title={this.msg('tooltipEdgeCondition')}>
+                  <Icon type="question-circle-o" />
+                </Tooltip></span>}
+              >
+                <ConditionTable />
+              </FormItem>
+            </Col>
+            <Col sm={6}>
+              <FormItem label={this.msg('isTerminal')}>
+                {getFieldDecorator('is_terminal', {
+                })(<Switch checkedChildren={'是'} unCheckedChildren={'否'} onChange={this.handleTerminalChange} />)}
+              </FormItem>
+            </Col>
+            <Col sm={18}>
+              {!this.state.isTerminal && <FormItem label={this.msg('targetNode')}>
+                {getFieldDecorator('target_node', {
+                })(<Select />)}
+              </FormItem>}
+            </Col>
+          </Row>
         </Card>
       </div>
     );

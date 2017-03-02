@@ -63,7 +63,7 @@ export default defineMessages({
   },
   entryNoFillModalTitle: {
     id: 'cms.customs.modal.entrynofill.title',
-    defaultMessage: '填写报关单号',
+    defaultMessage: '回填报关单海关编号',
   },
   successfulOperation: {
     id: 'cms.customs.modal.successful.operation',
