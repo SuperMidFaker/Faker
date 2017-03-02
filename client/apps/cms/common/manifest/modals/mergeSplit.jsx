@@ -18,13 +18,9 @@ function MSCheckbox(props) {
   function handleChange(ev) {
     onChange(fieldOpt, field, ev.target.checked);
   }
-  let disabled = false;
-  if (fieldOpt === 'sortOpt' && field === 'customControl') {
-    disabled = true;
-  }
   return (
     <div>
-      <Checkbox onChange={handleChange} checked={state[fieldOpt][field]} disabled={disabled}>
+      <Checkbox onChange={handleChange} checked={state[fieldOpt][field]}>
         {text}
       </Checkbox>
     </div>
@@ -249,12 +245,14 @@ export default class MergeSplitModal extends React.Component {
                 text={this.msg('customOnTop')}
                 onChange={this.handleCheckChange} state={this.state}
               />
-              <Select onChange={this.handleSortSelectChange} value={this.state.sortSelectValue}
-                style={{ width: '100%' }}
-              >
-                <Option value="hsCodeAsc">{this.msg('hsCodeAscSort')}</Option>
-                <Option value="decTotal">{this.msg('priceDescSort')}</Option>
-              </Select>
+              <MSCheckbox fieldOpt="sortOpt" field="decTotal"
+                text={this.msg('priceDescSort')}
+                onChange={this.handleCheckChange} state={this.state}
+              />
+              <MSCheckbox fieldOpt="sortOpt" field="hsCodeAsc"
+                text={this.msg('hsCodeAscSort')}
+                onChange={this.handleCheckChange} state={this.state}
+              />
             </Card>
           </Col>
         </Row>

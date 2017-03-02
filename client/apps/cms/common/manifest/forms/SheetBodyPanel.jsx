@@ -619,6 +619,8 @@ export default class SheetBodyPanel extends React.Component {
   handleMenuClick = (e) => {
     if (e.key === 'download') {
       window.open(`${API_ROOTS.default}v1/cms/manifest/billbody/model/download/${createFilename('billbodyModel')}.xlsx`);
+    } else if (e.key === 'downloadRelated') {
+      window.open(`${API_ROOTS.default}v1/cms/manifest/billbody/related/model/download/${createFilename('relatedModel')}.xlsx`);
     } else if (e.key === 'export') {
       window.open(`${API_ROOTS.default}v1/cms/manifest/billbody/export/${createFilename('billbodyExport')}.xlsx?billSeqNo=${this.props.billSeqNo}`);
     }
@@ -633,6 +635,7 @@ export default class SheetBodyPanel extends React.Component {
     if (this.props.type === 'bill') {
       const menu = (
         <Menu onClick={this.handleMenuClick}>
+          <Menu.Item key="download"><Icon type="download" /> 下载模板(非关联)</Menu.Item>
           {!this.props.readonly &&
           <Menu.Item key="importData">
             <ExcelUpload endpoint={`${API_ROOTS.default}v1/cms/manifest/billbody/import`}
@@ -648,6 +651,7 @@ export default class SheetBodyPanel extends React.Component {
             </ExcelUpload>
           </Menu.Item>
           }
+          <Menu.Item key="downloadRelated"><Icon type="download" /> 下载模板(关联)</Menu.Item>
           {!this.props.readonly &&
           <Menu.Item key="importRelatedData">
             <ExcelUpload endpoint={`${API_ROOTS.default}v1/cms/manifest/billbody/related/import`}
@@ -665,7 +669,6 @@ export default class SheetBodyPanel extends React.Component {
             </ExcelUpload>
           </Menu.Item>
           }
-          <Menu.Item key="download"><Icon type="download" /> 下载模板(非关联)</Menu.Item>
           <Menu.Item key="export"><Icon type="export" /> 导出数据</Menu.Item>
         </Menu>);
       billBodyToolbar = (
