@@ -190,15 +190,15 @@ export const CMS_QUOTE_PERMISSION = {
 };
 
 export const CMS_FEE_UNIT = [
-  { value: 0, text: '[空]' },
-  { value: 1, text: '率' },
-  { value: 2, text: '单价' },
-  { value: 3, text: '总价' },
+  { value: '0', text: '[空]' },
+  { value: '1', text: '率' },
+  { value: '2', text: '单价' },
+  { value: '3', text: '总价' },
 ];
 
 export const CMS_CONFIRM = [
-  { value: 0, text: '否' },
-  { value: 1, text: '是' },
+  { value: '0', text: '否' },
+  { value: '1', text: '是' },
 ];
 
 export const CMS_DECL_DOCU = [
@@ -216,9 +216,9 @@ export const CMS_DECL_DOCU = [
 ];
 
 export const CMS_GUNIT = [
-  { key: 'g_unit_gen', value: '申报单位一' },
-  { key: 'g_unit_ftz', value: '申报单位二' },
-  { key: 'g_unit_spec', value: '申报单位三' },
+  { key: 'g_unit_1', value: '申报单位一' },
+  { key: 'g_unit_2', value: '申报单位二' },
+  { key: 'g_unit_3', value: '申报单位三' },
 ];
 
 export const DELG_EXEMPTIONWAY = [{

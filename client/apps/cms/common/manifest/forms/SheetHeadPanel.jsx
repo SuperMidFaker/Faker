@@ -154,7 +154,7 @@ export default class SheetHeadPanel extends React.Component {
             <Row>
               <Col md={24} lg={9}>
                 <FormInput field="cert_mark" outercol={24} col={4}
-                  label={this.msg('certMark')} {...formProps}
+                  label={this.msg('certMark')} {...entryFormProps}
                 />
               </Col>
               <TermConfirm {...formProps} intl={intl} formRequire={formRequire} />
@@ -165,7 +165,7 @@ export default class SheetHeadPanel extends React.Component {
             </Row>
             <Col span="24">
               <FormInput field="note" outercol={9} col={4} type="textarea"
-                label={this.msg('markNotes')} {...formProps}
+                label={this.msg('markNotes')} {...entryFormProps}
               />
             </Col>
           </Form>

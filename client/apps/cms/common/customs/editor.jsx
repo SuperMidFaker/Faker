@@ -4,8 +4,7 @@ import { Form, Breadcrumb, Button, Dropdown, Layout, Menu, Icon, message } from 
 import QueueAnim from 'rc-queue-anim';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
-import { fillEntryId } from 'common/reducers/cmsDelegation';
-import { loadEntry } from 'common/reducers/cmsManifest';
+import { loadEntry, saveEntryHead } from 'common/reducers/cmsManifest';
 import SheetHeadPanel from '../manifest/forms/SheetHeadPanel';
 import SheetBodyPanel from '../manifest/forms/SheetBodyPanel';
 import SheetExtraPanel from '../manifest/forms/SheetExtraPanel';
@@ -23,7 +22,7 @@ const { Sider, Header, Content } = Layout;
     bodies: state.cmsManifest.entryBodies,
     tenantId: state.account.tenantId,
   }),
-  { fillEntryId, loadEntry }
+  { saveEntryHead, loadEntry }
 )
 @connectNav({
   depth: 2,
@@ -71,14 +70,15 @@ export default class CustomsDeclEditor extends React.Component {
     this.context.router.push({ pathname });
   }
   handleEntryHeadSave = () => {
-    const entryNo = this.props.form.getFieldsValue().entry_id;
+    const formVals = this.props.form.getFieldsValue();
     const { head } = this.props;
-    this.props.fillEntryId({ entryNo, entryHeadId: head.id,
-      billSeqNo: head.bill_seq_no, delgNo: head.delg_no }).then((result) => {
-        if (result.error) {
-          message.error(result.error.message);
-        }
-      });
+    this.props.saveEntryHead({ formVals, entryHeadId: head.id }).then((result) => {
+      if (result.error) {
+        message.error(result.error.message);
+      } else {
+        message.info('保存成功');
+      }
+    });
   }
   render() {
     const { ietype, form, head, bodies, billMeta } = this.props;

@@ -4,7 +4,8 @@ import { Breadcrumb, Button, Dropdown, Layout, Menu, Icon, Form, message, Popcon
 import QueueAnim from 'rc-queue-anim';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
-import { addNewBillBody, delBillBody, editBillBody, saveBillHead, openMergeSplitModal, billDelete } from 'common/reducers/cmsManifest';
+import { addNewBillBody, delBillBody, editBillBody, saveBillHead,
+  openMergeSplitModal, billDelete, updateHeadNetWt } from 'common/reducers/cmsManifest';
 import SheetHeadPanel from './forms/SheetHeadPanel';
 import SheetBodyPanel from './forms/SheetBodyPanel';
 import MergeSplitModal from './modals/mergeSplit';
@@ -24,7 +25,7 @@ const { Header, Content, Sider } = Layout;
     loginId: state.account.loginId,
     tenantId: state.account.tenantId,
   }),
-  { addNewBillBody, delBillBody, editBillBody, saveBillHead, openMergeSplitModal, billDelete }
+  { addNewBillBody, delBillBody, editBillBody, saveBillHead, openMergeSplitModal, billDelete, updateHeadNetWt }
 )
 @connectNav({
   depth: 2,
@@ -58,7 +59,36 @@ export default class ManifestEditor extends React.Component {
     });
   }
   handleGenerateEntry = () => {
-    this.props.openMergeSplitModal();
+    const billHead = this.props.billHead;
+    const bodyDatas = this.props.billBodies;
+    let wtSum = 0;
+    bodyDatas.forEach((body) => {
+      if (body.wet_wt) {
+        wtSum += Number(body.wet_wt);
+      }
+    });
+    if (wtSum > billHead.gross_wt) {
+      this.props.updateHeadNetWt(billHead.bill_seq_no, wtSum);
+      message.error('毛重必须大于总净重');
+    } else if (wtSum > 0) {
+      this.props.updateHeadNetWt(billHead.bill_seq_no, wtSum);
+      const totGrossWt = billHead.gross_wt;
+      const datas = [];
+      let wts = 0;
+      for (let i = 0; i < bodyDatas.length - 1; i++) {
+        const body = bodyDatas[i];
+        const grosswt = (totGrossWt * body.wet_wt / wtSum).toFixed(3);
+        wts += Number(grosswt);
+        const data = { ...body, gross_wt: grosswt };
+        datas.push(data);
+        this.props.editBillBody(data);
+      }
+      const lastwt = totGrossWt - wts;
+      const lastBody = bodyDatas[bodyDatas.length - 1];
+      datas.push({ ...lastBody, gross_wt: lastwt });
+      this.props.editBillBody({ ...lastBody, gross_wt: lastwt });
+      this.props.openMergeSplitModal();
+    }
   }
   handleDock = () => {
     this.setState({ visible: true });
