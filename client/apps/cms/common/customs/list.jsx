@@ -269,6 +269,9 @@ export default class DelgDeclList extends Component {
   handleShowSendDeclModal = (record) => {
     this.props.showSendDeclModal({ visible: true, preEntrySeqNo: record.pre_entry_seq_no, delgNo: record.delg_no });
   }
+  handleShowXml = (record) => {
+    window.open(`${API_ROOTS.default}v1/cms/declare/send.xml?filename=${record.ep_send_filename}`);
+  }
   render() {
     const { delgdeclList, listFilter } = this.props;
     this.dataSource.remotes = delgdeclList;
@@ -315,6 +318,10 @@ export default class DelgDeclList extends Component {
           return (
             <span>
               <RowUpdater onHit={this.handleShowSendDeclModal} label={this.msg('send')} row={record} />
+              {record.ep_send_filename ? (
+                <span>
+                  <span className="ant-divider" /><RowUpdater onHit={this.handleShowXml} label="查看报文" row={record} />
+                </span>) : null}
             </span>
           );
         }
