@@ -30,6 +30,11 @@ const RemoteAntTable = React.createClass({
       React.PropTypes.instanceOf(DataSource),
     ]),
   },
+  componentWillMount() {
+    if (typeof document !== 'undefined' && typeof window !== 'undefined') {
+      this.setState({ wlScrollY: window.innerHeight - 300 });
+    }
+  },
   isLocalDataSource(dataSource) {
     return Array.isArray(dataSource);
   },
@@ -58,9 +63,13 @@ const RemoteAntTable = React.createClass({
       } : pagination;
       dataSource = data;
     }
+    let scrollProp;
+    if (this.state.wlScrollY) {
+      scrollProp = this.props.scroll ? { ...this.props.scroll, y: this.state.wlScrollY } : { y: this.state.wlScrollY };
+    }
     return (
       <Table {...this.props} dataSource={dataSource} pagination={pagination}
-        onChange={this.handleTableChange}
+        onChange={this.handleTableChange} scroll={scrollProp}
       />
     );
   },
