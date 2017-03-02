@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { Checkbox, Col, Collapse, Modal, Form, Input, InputNumber, Radio, Row, Select } from 'antd';
+import { Button, Checkbox, Col, Collapse, Modal, Form, Input, InputNumber, Radio, Row, Select } from 'antd';
 import { closeAddTriggerModal } from 'common/reducers/scofFlow';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
@@ -30,7 +30,15 @@ export default class AddTriggerModal extends React.Component {
     form: PropTypes.object.isRequired,
     closeAddTriggerModal: PropTypes.func.isRequired,
   }
+  state = {
+    triggerMode: '',
+  }
 
+  handleModeChange = (e) => {
+    this.setState(
+      { triggerMode: e.target.value }
+    );
+  }
   handleOk = () => {
     this.props.form.resetFields();
     this.props.closeAddTriggerModal();
@@ -50,11 +58,12 @@ export default class AddTriggerModal extends React.Component {
     const notifyAction = (
       <Row gutter={16}>
         <Col sm={24} lg={4}>
-          <FormItem label={this.msg('actionType')}>
+          <FormItem>
             {
               getFieldDecorator('action_type', {
+                'option.initialValue': 'notify',
               })(
-                <Select defaultValue="notify">
+                <Select placeholder={this.msg('actionType')}>
                   <Option value="notify">{this.msg('notify')}</Option>
                   <Option value="create">{this.msg('create')}</Option>
                 </Select>
@@ -63,27 +72,27 @@ export default class AddTriggerModal extends React.Component {
           </FormItem>
         </Col>
         <Col sm={24} lg={6}>
-          <FormItem label={this.msg('receiver')}>
+          <FormItem>
             {
               getFieldDecorator('receiver', {
               })(
-                <Select />
+                <Select placeholder={this.msg('receiver')} />
               )
             }
           </FormItem>
         </Col>
         <Col sm={24} lg={6}>
-          <FormItem label={this.msg('content')}>
+          <FormItem >
             {
               getFieldDecorator('content', {
               })(
-                <Select />
+                <Select placeholder={this.msg('content')} />
               )
             }
           </FormItem>
         </Col>
         <Col sm={24} lg={8}>
-          <FormItem label={this.msg('notifyMode')}>
+          <FormItem>
             {
               getFieldDecorator('notify_mode', {
               })(
@@ -97,11 +106,12 @@ export default class AddTriggerModal extends React.Component {
     const createAction = (
       <Row gutter={16}>
         <Col sm={24} lg={4}>
-          <FormItem label={this.msg('actionType')}>
+          <FormItem>
             {
               getFieldDecorator('action_type', {
+                'option.initialValue': 'create',
               })(
-                <Select defaultValue="create">
+                <Select placeholder={this.msg('actionType')}>
                   <Option value="notify">{this.msg('notify')}</Option>
                   <Option value="create">{this.msg('create')}</Option>
                 </Select>
@@ -110,11 +120,11 @@ export default class AddTriggerModal extends React.Component {
           </FormItem>
         </Col>
         <Col sm={24} lg={12}>
-          <FormItem label={this.msg('bizObject')}>
+          <FormItem>
             {
               getFieldDecorator('bizObject', {
               })(
-                <Select />
+                <Select placeholder={this.msg('bizObject')} />
               )
             }
           </FormItem>
@@ -136,21 +146,21 @@ export default class AddTriggerModal extends React.Component {
             <Panel header={this.msg('properties')} key="properties">
               <Row gutter={16}>
                 <Col sm={24} lg={8}>
-                  <FormItem label={this.msg('triggerName')}>
+                  <FormItem>
                     {
                     getFieldDecorator('trigger_name', {
                     })(
-                      <Input />
+                      <Input placeholder={this.msg('triggerName')} />
                     )
                   }
                   </FormItem>
                 </Col>
                 <Col sm={24} lg={8}>
-                  <FormItem label={this.msg('executionMode')}>
+                  <FormItem>
                     {
-                    getFieldDecorator('exe_mode', {
+                    getFieldDecorator('trigger_mode', {
                     })(
-                      <RadioGroup>
+                      <RadioGroup onChange={this.handleModeChange}>
                         <RadioButton value="instant"><i className="icon icon-fontello-flash-1" /> {this.msg('instant')}</RadioButton>
                         <RadioButton value="scheduled"><i className="icon icon-fontello-back-in-time" /> {this.msg('scheduled')}</RadioButton>
                       </RadioGroup>
@@ -158,8 +168,8 @@ export default class AddTriggerModal extends React.Component {
                   }
                   </FormItem>
                 </Col>
-                <Col sm={24} lg={8}>
-                  <FormItem label={this.msg('timer')}>
+                {this.state.triggerMode === 'scheduled' && <Col sm={24} lg={8}>
+                  <FormItem>
                     {
                     getFieldDecorator('timer', {
                     })(
@@ -171,12 +181,15 @@ export default class AddTriggerModal extends React.Component {
                     )
                   }
                   </FormItem>
-                </Col>
+                </Col>}
               </Row>
             </Panel>
             <Panel header={this.msg('actions')} key="actions">
               {notifyAction}
               {createAction}
+              <Row>
+                <Button type="dashed" style={{ width: '100%' }}>{this.msg('addAction')}</Button>
+              </Row>
             </Panel>
           </Collapse>
         </Form>

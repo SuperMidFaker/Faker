@@ -1,7 +1,7 @@
 /* eslint react/no-multi-comp: 0 */
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Collapse, Form, Col, Row, Icon, Select, Table } from 'antd';
+import { Collapse, Form, Col, Row, Icon, Select, Table, Tag } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { openAddTriggerModal } from 'common/reducers/scofFlow';
 import { format } from 'client/common/i18n/helpers';
@@ -26,8 +26,19 @@ export default class CMSDelegationPane extends Component {
   }
   expandedRowRender = () => {
     const triggerColumns = [
-      { title: 'Condition', dataIndex: 'condition', key: 'condition' },
-      { title: 'Action', dataIndex: 'action', key: 'action' },
+      { title: 'Mode', dataIndex: 'mode', key: 'mode', width: 16,
+        render: (o) => {
+          if (o === 'instance') {
+            return (<i className="icon icon-fontello-flash-1" />);
+          } else {
+            return (<i className="icon icon-fontello-back-in-time" />);
+          }
+        },
+      },
+      { title: 'Name', dataIndex: 'name', key: 'name' },
+      { title: 'Actions', dataIndex: 'actions', key: 'actions',
+        render: () => (<span><Tag>Notify</Tag><Tag>Create</Tag></span>),
+      },
       {
         dataIndex: 'operation',
         key: 'operation',
@@ -41,19 +52,22 @@ export default class CMSDelegationPane extends Component {
     ];
 
     const triggerData = [];
-    for (let i = 0; i < 2; ++i) {
-      triggerData.push({
-        key: i,
-        condition: 'ALL',
-        action: 'This is production name',
-      });
-    }
+    triggerData.push({
+      key: 0,
+      mode: 'instance',
+      name: 'This is an instant trigger name',
+    }, {
+      key: 1,
+      mode: 'scheduled',
+      name: 'This is a timer name',
+    });
+
     return (
       <Table
-        size="small"
         columns={triggerColumns}
         dataSource={triggerData}
         pagination={false}
+        showHeader={false}
       />
     );
   };
