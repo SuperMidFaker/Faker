@@ -27,7 +27,7 @@ export default defineMessages({
   },
   deliverConfirm: {
     id: 'transport.tracking.shipmt.deliverConfirm',
-    defaultMessage: '确认送达',
+    defaultMessage: '短信确认',
   },
   shipmtPrevTrack: {
     id: 'transport.tracking.shipmt.prev.track',
@@ -167,7 +167,7 @@ export default defineMessages({
   },
   shipmtEstPickupDate: {
     id: 'transport.tracking.est.pickup.date',
-    defaultMessage: '预计提货',
+    defaultMessage: '计划提货',
   },
   shipmtActPickupDate: {
     id: 'transport.tracking.act.pickup.date',
@@ -175,7 +175,7 @@ export default defineMessages({
   },
   shipmtEstDeliveryDate: {
     id: 'transport.tracking.est.delivery.date',
-    defaultMessage: '预计到达',
+    defaultMessage: '计划到达',
   },
   shipmtActDeliveryDate: {
     id: 'transport.tracking.act.delivery.date',

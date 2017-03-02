@@ -79,15 +79,15 @@ export default defineMessages({
   },
   pickupDate: {
     id: 'transport.shipment.pickup.date',
-    defaultMessage: '提货日期',
+    defaultMessage: '计划提货日期',
   },
   pickupEstDate: {
     id: 'transport.shipment.pickup.est.date',
-    defaultMessage: '预计提货日期',
+    defaultMessage: '计划提货日期',
   },
   pickupDateMust: {
     id: 'transport.shipment.pickup.date.must',
-    defaultMessage: '提货日期必填',
+    defaultMessage: '计划提货日期必填',
   },
   shipmtSchedule: {
     id: 'transport.shipment.schedule',
@@ -107,15 +107,15 @@ export default defineMessages({
   },
   deliveryDate: {
     id: 'transport.shipment.delivery.date',
-    defaultMessage: '送货日期',
+    defaultMessage: '计划送货日期',
   },
   deliveryEstDate: {
     id: 'transport.shipment.delivery.est.date',
-    defaultMessage: '预计送货日期',
+    defaultMessage: '计划送货日期',
   },
   deliveryDateMust: {
     id: 'transport.shipment.delivery.date.must',
-    defaultMessage: '送货日期必填',
+    defaultMessage: '计划送货日期必填',
   },
   vehicleTypeMust: {
     id: 'transport.shipment.vehicle.type.must',
