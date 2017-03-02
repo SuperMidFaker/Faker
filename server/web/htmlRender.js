@@ -6,6 +6,7 @@ import { addLocaleData } from 'react-intl';
 import createStore from 'common/webReduxStore';
 import appWrapped from 'client/common/appWrapped';
 import fetchInitialState from '../util/fetch-initial-state';
+import { version } from '../../package.json';
 import thirdPart from './thirdPart';
 
 let trackJs = '';
@@ -22,6 +23,8 @@ function renderAsHtml(pageCss, pageJs, content) {
 <head>
   <title>WeLogix</title>
   <meta charset="utf-8">
+  <meta name="robots" content="NOINDEX,NOFOLLOW">
+  <meta name="version" content="${version}">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <link rel="shortcut icon" href="${__CDN__}/assets/img/favicon.ico"/>
   <link rel="apple-touch-icon-precomposed" href="${__CDN__}/assets/img/apple-touch-icon-57x57-precomposed.png" />

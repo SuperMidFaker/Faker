@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Breadcrumb, Button, Dropdown, Layout, Menu, Icon, Form, message, Popconfirm } from 'antd';
-import QueueAnim from 'rc-queue-anim';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { addNewBillBody, delBillBody, editBillBody, saveBillHead,
@@ -144,68 +143,67 @@ export default class ManifestEditor extends React.Component {
       )}
     </Menu>);
     return (
-      <QueueAnim type={['bottom', 'up']}>
+      <Layout>
         <Layout>
-          <Layout>
-            <Header className="top-bar">
-              <Breadcrumb>
-                <Breadcrumb.Item>
-                  {this.props.ietype === 'import' ? this.msg('importClearance') : this.msg('exportClearance')}
-                </Breadcrumb.Item>
-                <Breadcrumb.Item>
-                  {this.msg('declManifest')}
-                </Breadcrumb.Item>
-                <Breadcrumb.Item>
-                  {billMeta.bill_seq_no}
-                </Breadcrumb.Item>
-              </Breadcrumb>
-              {billMeta.entries.length > 0 ? (
-                <Dropdown overlay={declEntryMenu}>
-                  <Button size="large" >生成的报关单 <Icon type="down" /></Button>
-                </Dropdown>
+          <Header className="top-bar">
+            <Breadcrumb>
+              <Breadcrumb.Item>
+                {this.props.ietype === 'import' ? this.msg('importClearance') : this.msg('exportClearance')}
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {this.msg('declManifest')}
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {billMeta.bill_seq_no}
+              </Breadcrumb.Item>
+            </Breadcrumb>
+            {billMeta.entries.length > 0 ? (
+              <Dropdown overlay={declEntryMenu}>
+                <Button size="large" >生成的报关单 <Icon type="down" /></Button>
+              </Dropdown>
               ) : null}
-              <div className="top-bar-tools">
-                <Dropdown overlay={this.lockMenu}>
-                  <Button size="large">
-                    <Icon type="setting" /> <Icon type="down" />
-                  </Button>
-                </Dropdown>
-                {!this.props.readonly &&
-                  <Button type="primary" size="large" icon="addfile" onClick={this.handleGenerateEntry}>{this.msg('generateEntry')}</Button>
-                }
-                <Button size="large"
-                  className={this.state.collapsed ? '' : 'btn-toggle-on'}
-                  icon={this.state.collapsed ? 'menu-fold' : 'menu-unfold'}
-                  onClick={this.toggle}
-                >
-                  附加信息
+            <div className="top-bar-tools">
+              <Dropdown overlay={this.lockMenu}>
+                <Button size="large">
+                  <Icon type="setting" /> <Icon type="down" />
                 </Button>
-              </div>
-            </Header>
-            <Content className={`main-content ${readonly ? 'readonly' : ''}`}>
-              <SheetHeadPanel ietype={ietype} readonly={readonly} form={form} formData={billHead} type="bill" onSave={this.handleBillSave} />
-              <SheetBodyPanel ietype={ietype} readonly={readonly} headForm={form} data={billBodies} headNo={billHead.bill_seq_no}
-                onAdd={actions.addNewBillBody} onDel={actions.delBillBody} onEdit={actions.editBillBody}
-                billSeqNo={billHead.bill_seq_no} type="bill"
+              </Dropdown>
+              {!this.props.readonly &&
+              <Button type="primary" size="large" icon="addfile" onClick={this.handleGenerateEntry}>{this.msg('generateEntry')}</Button>
+                }
+              <Button size="large"
+                className={this.state.collapsed ? '' : 'btn-toggle-on'}
+                icon={this.state.collapsed ? 'folder' : 'folder-open'}
+                onClick={this.toggle}
               />
-            </Content>
-          </Layout>
-          <Sider
-            trigger={null}
-            defaultCollapsed
-            collapsible
-            collapsed={this.state.collapsed}
-            width={480}
-            collapsedWidth={0}
-            className="right-sider"
-          >
-            <div className="right-sider-panel">
-              <SheetExtraPanel />
             </div>
-          </Sider>
+          </Header>
+          <Content className={`main-content layout-min-width layout-min-width-large ${readonly ? 'readonly' : ''}`}>
+            <SheetHeadPanel ietype={ietype} readonly={readonly} form={form} formData={billHead} type="bill" onSave={this.handleBillSave} />
+            <SheetBodyPanel ietype={ietype} readonly={readonly} headForm={form} data={billBodies} headNo={billHead.bill_seq_no}
+              onAdd={actions.addNewBillBody} onDel={actions.delBillBody} onEdit={actions.editBillBody}
+              billSeqNo={billHead.bill_seq_no} type="bill"
+            />
+          </Content>
         </Layout>
+        <Sider
+          trigger={null}
+          defaultCollapsed
+          collapsible
+          collapsed={this.state.collapsed}
+          width={480}
+          collapsedWidth={0}
+          className="right-sider"
+        >
+          <div className="right-sider-panel">
+            <div className="panel-header">
+              <h3>附加资料</h3>
+            </div>
+            <SheetExtraPanel />
+          </div>
+        </Sider>
         <MergeSplitModal />
-      </QueueAnim>
+      </Layout>
     );
   }
 }

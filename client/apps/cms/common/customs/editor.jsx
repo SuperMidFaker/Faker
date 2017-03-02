@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Form, Breadcrumb, Button, Dropdown, Layout, Menu, Icon, message } from 'antd';
-import QueueAnim from 'rc-queue-anim';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadEntry, saveEntryHead } from 'common/reducers/cmsManifest';
@@ -93,59 +92,58 @@ export default class CustomsDeclEditor extends React.Component {
     const { ietype, form, head, bodies, billMeta } = this.props;
     const readonly = !billMeta.editable;
     return (
-      <QueueAnim type={['bottom', 'up']}>
+      <Layout>
         <Layout>
-          <Layout>
-            <Header className="top-bar">
-              <Breadcrumb>
-                <Breadcrumb.Item>
-                  {this.props.ietype === 'import' ? this.msg('importOperation') : this.msg('exportOperation')}
-                </Breadcrumb.Item>
-                <Breadcrumb.Item>
-                  {this.msg('customsDeclaration')}
-                </Breadcrumb.Item>
-                <Breadcrumb.Item>
-                  {head.entry_id || head.pre_entry_seq_no}
-                </Breadcrumb.Item>
-              </Breadcrumb>
-              <Button size="large" icon="rollback" onClick={this.handleManifestVisit}>查看源清单</Button>
-              <div className="top-bar-tools">
-                <Dropdown overlay={this.lockMenu}>
-                  <Button size="large">
-                    <Icon type="setting" /> <Icon type="down" />
-                  </Button>
-                </Dropdown>
-                <Button size="large"
-                  className={this.state.collapsed ? '' : 'btn-toggle-on'}
-                  icon={this.state.collapsed ? 'menu-fold' : 'menu-unfold'}
-                  onClick={this.toggle}
-                >
-                  附加信息
+          <Header className="top-bar">
+            <Breadcrumb>
+              <Breadcrumb.Item>
+                {this.props.ietype === 'import' ? this.msg('importOperation') : this.msg('exportOperation')}
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {this.msg('customsDeclaration')}
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {head.entry_id || head.pre_entry_seq_no}
+              </Breadcrumb.Item>
+            </Breadcrumb>
+            <Button size="large" icon="rollback" onClick={this.handleManifestVisit}>查看源清单</Button>
+            <div className="top-bar-tools">
+              <Dropdown overlay={this.lockMenu}>
+                <Button size="large">
+                  <Icon type="setting" /> <Icon type="down" />
                 </Button>
-              </div>
-            </Header>
-            <Content className={`main-content ${readonly ? 'readonly' : ''}`}>
-              <SheetHeadPanel ietype={ietype} readonly={readonly} form={form} formData={head} type="entry" onSave={this.handleEntryHeadSave} />
-              <SheetBodyPanel ietype={ietype} readonly={readonly} data={bodies}
-                headNo={head.id} billSeqNo={head.bill_seq_no} type="entry"
+              </Dropdown>
+              <Button size="large"
+                className={this.state.collapsed ? '' : 'btn-toggle-on'}
+                icon={this.state.collapsed ? 'folder' : 'folder-open'}
+                onClick={this.toggle}
               />
-            </Content>
-          </Layout>
-          <Sider
-            trigger={null}
-            defaultCollapsed
-            collapsible
-            collapsed={this.state.collapsed}
-            width={480}
-            collapsedWidth={0}
-            className="right-sider"
-          >
-            <div className="right-sider-panel">
-              <SheetExtraPanel />
             </div>
-          </Sider>
+          </Header>
+          <Content className={`main-content layout-min-width layout-min-width-large ${readonly ? 'readonly' : ''}`}>
+            <SheetHeadPanel ietype={ietype} readonly={readonly} form={form} formData={head} type="entry" onSave={this.handleEntryHeadSave} />
+            <SheetBodyPanel ietype={ietype} readonly={readonly} data={bodies}
+              headNo={head.id} billSeqNo={head.bill_seq_no} type="entry"
+            />
+          </Content>
         </Layout>
-      </QueueAnim>
+        <Sider
+          trigger={null}
+          defaultCollapsed
+          collapsible
+          collapsed={this.state.collapsed}
+          width={480}
+          collapsedWidth={0}
+          className="right-sider"
+        >
+          <div className="right-sider-panel">
+            <div className="panel-header">
+              <h3>附加资料</h3>
+            </div>
+            <SheetExtraPanel />
+          </div>
+        </Sider>
+      </Layout>
     );
   }
 }
