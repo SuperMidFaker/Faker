@@ -14,12 +14,15 @@ const InputGroup = Input.Group;
 
 @injectIntl
 @connect(
-  () => ({}),
+  state => ({
+    subdomain: state.account.subdomain,
+  }),
   { sendTrackingDetailSMSMessage }
 )
 export default class ShareShipmentModal extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
+    subdomain: PropTypes.string.isRequired,
     sendTrackingDetailSMSMessage: PropTypes.func.isRequired,
     shipmt: PropTypes.object.isRequired,
   }
@@ -47,10 +50,10 @@ export default class ShareShipmentModal extends React.Component {
     });
   }
   componentWillReceiveProps(nextProps) {
-    const { shipmt, visible } = nextProps;
+    const { shipmt, visible, subdomain } = nextProps;
     const show = visible || this.state.visible;
     const publicUrlPath = `/pub/tms/tracking/detail/${shipmt.shipmt_no}/${shipmt.publicUrlKey}`;
-    const publicUrl = `https://wx.welogix.cn${publicUrlPath}`;
+    const publicUrl = `https://${subdomain}.welogix.cn${publicUrlPath}`;
     const qr = qrcode.qrcode(6, 'M');
     qr.addData(publicUrl);  // 解决中文乱码
     qr.make();
