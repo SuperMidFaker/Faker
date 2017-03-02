@@ -1,13 +1,12 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Button, Breadcrumb, Form, Icon, Layout, Row } from 'antd';
+import { Button, Breadcrumb, Form, Icon, Input, Col, Layout, Row } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { format } from 'client/common/i18n/helpers';
 import MainForm from './forms/mainForm';
-import messages from '../message.i18n';
+import { formatMsg } from '../../message.i18n';
 
-const formatMsg = format(messages);
 const { Header, Content } = Layout;
+const FormItem = Form.Item;
 
 @injectIntl
 @connect(
@@ -32,7 +31,7 @@ export default class InstallAmberRoadCTM extends React.Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
-  msg = (key, values) => formatMsg(this.props.intl, key, values);
+  msg = formatMsg(this.props.intl);
   handleInstallBtnClick = () => {
     this.handleSave({ accepted: false });
   }
@@ -67,6 +66,14 @@ export default class InstallAmberRoadCTM extends React.Component {
         </Header>
         <Content className="main-content layout-fixed-width">
           <Form vertical>
+            <Row gutter={16}>
+              <Col sm={24} lg={24}>
+                <FormItem label={this.msg('integrationName')}>
+                  {form.getFieldDecorator('name', {
+                  })(<Input />)}
+                </FormItem>
+              </Col>
+            </Row>
             <Row gutter={16}>
               <MainForm form={form} />
             </Row>

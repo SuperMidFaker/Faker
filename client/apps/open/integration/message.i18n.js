@@ -106,6 +106,10 @@ const messages = defineMessages({
     id: 'open.platform.integration.easipass.ftp.recv.directory',
     defaultMessage: '接收目录',
   },
+  AmberRoadCTMParam: {
+    id: 'open.platform.integration.arctm.title.params',
+    defaultMessage: 'AmberRoad CTM参数',
+  },
 });
 
 export default messages;
