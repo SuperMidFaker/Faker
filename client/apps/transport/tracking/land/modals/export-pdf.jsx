@@ -38,7 +38,8 @@ export default class ExportPDF extends React.Component {
   }
   handleOk = () => {
     const { shipmtNo, publickKey } = this.props;
-    window.open(`${API_ROOTS.default}v1/transport/tracking/exportShipmentPDF/${createFilename('shipment')}.pdf?shipmtNo=${shipmtNo}&publickKey=${publickKey}`);
+    const domain = window.location.host;
+    window.open(`${API_ROOTS.default}v1/transport/tracking/exportShipmentPDF/${createFilename('shipment')}.pdf?shipmtNo=${shipmtNo}&publickKey=${publickKey}&domain=${domain}`);
     this.handleClose();
   }
   handleClose = () => {

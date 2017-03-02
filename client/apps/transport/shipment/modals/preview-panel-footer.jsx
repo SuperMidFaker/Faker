@@ -110,7 +110,8 @@ export default class Footer extends React.Component {
   }
   handleDownloadPod = () => {
     const { previewer: { row } } = this.props;
-    window.open(`${API_ROOTS.default}v1/transport/tracking/exportShipmentPodPDF/${createFilename('pod')}.pdf?shipmtNo=${row.shipmt_no}&podId=${row.pod_id}&publickKey=${row.public_key}`);
+    const domain = window.location.host;
+    window.open(`${API_ROOTS.default}v1/transport/tracking/exportShipmentPodPDF/${createFilename('pod')}.pdf?shipmtNo=${row.shipmt_no}&podId=${row.pod_id}&publickKey=${row.public_key}&domain=${domain}`);
   }
   handleShipmtAccept = (dispId) => {
     this.props.loadAcceptDispatchers(
