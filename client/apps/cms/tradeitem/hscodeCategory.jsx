@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Card, Table, Layout, Input, Row, Col, message } from 'antd';
+import { Breadcrumb, Button, Card, Table, Layout, Input, Row, Col, message, Popconfirm } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -71,7 +71,7 @@ export default class HscodeCategory extends React.Component {
     });
   }
   handleShowAddCategory = () => {
-    const hscodeCategories = this.state.hscodeCategories.concat([{ id: -1 * this.state.hscodeCategories.length, name: '' }]);
+    const hscodeCategories = this.state.hscodeCategories.concat([{ id: -1, name: '' }]);
     this.setState({ hscodeCategories, editIndex: hscodeCategories.length - 1 });
   }
   handleAddCategory = () => {
@@ -143,7 +143,9 @@ export default class HscodeCategory extends React.Component {
         } else {
           return (
             <span>
-              <a onClick={() => this.handleRemove(row.id)}>删除</a>
+              <Popconfirm title="确认删除该分类?" onConfirm={() => this.handleRemove(row.id)}>
+                <a role="button">删除</a>
+              </Popconfirm>
               <span className="ant-divider" />
               <a onClick={() => {
                 this.setState({ editIndex: index });
