@@ -206,6 +206,7 @@ export default class FlowEdgePanel extends Component {
     form: PropTypes.object.isRequired,
   }
   state = {
+    isTerminal: false,
     datas: [],
   };
   expandedRowRender = () => {
@@ -240,6 +241,11 @@ export default class FlowEdgePanel extends Component {
       />
     );
   };
+  handleTerminalChange = (checked) => {
+    this.setState(
+      { isTerminal: checked }
+    );
+  }
   msg = key => formatMsg(this.props.intl, key);
   render() {
     const { form: { getFieldDecorator } } = this.props;
@@ -258,14 +264,14 @@ export default class FlowEdgePanel extends Component {
                 <Col sm={6}>
                   <FormItem label={this.msg('isTerminal')}>
                     {getFieldDecorator('is_terminal', {
-                    })(<Switch checkedChildren={'是'} unCheckedChildren={'否'} />)}
+                    })(<Switch checkedChildren={'是'} unCheckedChildren={'否'} onChange={this.handleTerminalChange} />)}
                   </FormItem>
                 </Col>
                 <Col sm={18}>
-                  <FormItem label={this.msg('targetNode')}>
+                  {!this.state.isTerminal && <FormItem label={this.msg('targetNode')}>
                     {getFieldDecorator('target_node', {
                     })(<Select />)}
-                  </FormItem>
+                  </FormItem>}
                 </Col>
               </Row>
             </Panel>
