@@ -3,7 +3,7 @@ import { formati18n } from 'client/common/i18n/helpers';
 
 const messages = defineMessages({
   openPlatform: {
-    id: 'open.platform',
+    id: 'open.platform.integration.parent',
     defaultMessage: '开放平台',
   },
   integration: {

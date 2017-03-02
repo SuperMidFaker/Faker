@@ -19,11 +19,11 @@ const messages = defineMessages({
     defaultMessage: '已完成',
   },
   import: {
-    id: 'scv.shipments.import',
+    id: 'scv.shipments.filter.import',
     defaultMessage: '进口',
   },
   export: {
-    id: 'scv.shipments.export',
+    id: 'scv.shipments.filter.export',
     defaultMessage: '出口',
   },
   shipmentNo: {

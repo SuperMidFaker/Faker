@@ -69,7 +69,8 @@ export default class TradeItemList extends Component {
     router: PropTypes.object.isRequired,
   }
   state = {
-    collapsed: true,
+    collapsed: false,
+    rightSidercollapsed: true,
     selectedRowKeys: [],
   }
   msg = key => formatMsg(this.props.intl, key);
@@ -203,6 +204,11 @@ export default class TradeItemList extends Component {
       collapsed: !this.state.collapsed,
     });
   }
+  toggleRightSider = () => {
+    this.setState({
+      rightSidercollapsed: !this.state.rightSidercollapsed,
+    });
+  }
   handleItemListLoad = (repoid, currentPage, filter) => {
     const { repoId, listFilter, tradeItemlist: { pageSize, current } } = this.props;
     this.setState({ expandedKeys: [] });
@@ -318,8 +324,12 @@ export default class TradeItemList extends Component {
       </Menu>);
     return (
       <Layout className="ant-layout-wrapper">
-        <Layout>
-          <Header className="top-bar">
+        <Sider width={280} className="menu-sider" key="sider" trigger={null}
+          collapsible
+          collapsed={this.state.collapsed}
+          collapsedWidth={0}
+        >
+          <div className="top-bar">
             <Breadcrumb>
               <Breadcrumb.Item>
                 {this.msg('classification')}
@@ -327,28 +337,48 @@ export default class TradeItemList extends Component {
               <Breadcrumb.Item>
                 {this.msg('tradeItemMaster')}
               </Breadcrumb.Item>
+            </Breadcrumb>
+            <div className="pull-right">
+              <Tooltip placement="bottom" title="添加企业物料库">
+                <Button type="primary" shape="circle" size="small" icon="plus" onClick={this.handleAddOwener} ghost />
+              </Tooltip>
+            </div>
+          </div>
+        </Sider>
+        <Layout>
+          <Header className="top-bar">
+
+            { this.state.collapsed && <Breadcrumb>
               <Breadcrumb.Item>
-                <Select
-                  showSearch
-                  style={{ width: 220 }}
-                  placeholder="选择客户企业物料库"
-                  optionFilterProp="children"
-                  size="large"
-                  defaultValue={`${ownVal}`}
-                  onChange={this.handleSelectChange}
-                >
-                  {
+                {this.msg('classification')}
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {this.msg('tradeItemMaster')}
+              </Breadcrumb.Item>
+            </Breadcrumb>
+            }
+            <Button size="large"
+              className={this.state.collapsed ? '' : 'btn-toggle-on'}
+              icon={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
+              onClick={this.toggle}
+            />
+            <span />
+            <Select
+              showSearch
+              style={{ width: 220 }}
+              placeholder="选择客户企业物料库"
+              optionFilterProp="children"
+              size="large"
+              defaultValue={`${ownVal}`}
+              onChange={this.handleSelectChange}
+            >
+              {
                     repoOwners.map(data => (<Option key={data.id} value={data.id}
                       search={`${data.partner_code}${data.name}`}
                     >{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>)
                     )}
-                </Select>
-                <span style={{ marginLeft: 8 }} />
-                <Tooltip placement="bottom" title="添加企业物料库">
-                  <Button type="primary" shape="circle" size="small" icon="plus" onClick={this.handleAddOwener} ghost />
-                </Tooltip>
-              </Breadcrumb.Item>
-            </Breadcrumb>
+            </Select>
+            <span />
             <RadioGroup onChange={this.handleRadioChange} size="large">
               <RadioButton value="unclassified">{this.msg('filterUnclassified')}</RadioButton>
               <RadioButton value="pending">{this.msg('filterPending')}</RadioButton>
@@ -365,9 +395,9 @@ export default class TradeItemList extends Component {
                   {this.msg('addItem')}
                 </Button>
                 <Button size="large"
-                  className={this.state.collapsed ? '' : 'btn-toggle-on'}
-                  icon={this.state.collapsed ? 'menu-fold' : 'menu-unfold'}
-                  onClick={this.toggle}
+                  className={this.state.rightSidercollapsed ? '' : 'btn-toggle-on'}
+                  icon={this.state.rightSidercollapsed ? 'setting' : 'setting'}
+                  onClick={this.toggleRightSider}
                 />
               </div>
               }
@@ -396,7 +426,7 @@ export default class TradeItemList extends Component {
           trigger={null}
           defaultCollapsed
           collapsible
-          collapsed={this.state.collapsed}
+          collapsed={this.state.rightSidercollapsed}
           width={480}
           collapsedWidth={0}
           className="right-sider"
