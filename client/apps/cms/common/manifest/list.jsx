@@ -1,17 +1,19 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Layout, Radio, Progress, message } from 'antd';
+import { Breadcrumb, Layout, Radio, Progress, message, Popconfirm } from 'antd';
 import moment from 'moment';
 import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
-import { loadDelgBill } from 'common/reducers/cmsManifest';
+import { loadDelgBill, deleteEntries } from 'common/reducers/cmsManifest';
+import { loadBillForMake } from 'common/reducers/cmsDelegation';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/search-bar';
 import NavLink from 'client/components/nav-link';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
+import RowUpdater from './forms/rowUpdater';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -39,7 +41,7 @@ const RadioButton = Radio.Button;
       text: `${cus.customs_name}`,
     })),
   }),
-  { loadDelgBill }
+  { loadDelgBill, deleteEntries, loadBillForMake }
 )
 @connectNav({
   depth: 2,
@@ -65,10 +67,10 @@ export default class ManifestList extends Component {
 
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
-    title: this.msg('billNo'),
+    title: this.msg('delgNo'),
     dataIndex: 'delg_no',
     fixed: 'left',
-    width: 110,
+    width: 150,
     render: (o, record) => {
       if (record.customs_tenant_id === this.props.tenantId && record.bill_status < 5) {
         return <NavLink to={`/clearance/${this.props.ietype}/manifest/${record.bill_seq_no}`}>{o}</NavLink>;
@@ -108,6 +110,7 @@ export default class ManifestList extends Component {
     width: 220,
   }, {
     title: '发票号',
+    width: 220,
     dataIndex: 'invoice_no',
   }, {
     title: '监管方式',
@@ -206,9 +209,67 @@ export default class ManifestList extends Component {
     const filter = { ...this.props.listFilter, status: ev.target.value };
     this.handleTableLoad(1, filter);
   }
+  handleDelegationMake = (row) => {
+    this.props.loadBillForMake(row.delg_no).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 5);
+      } else {
+        const link = `/clearance/${this.props.ietype}/manifest/`;
+        this.context.router.push(`${link}${row.bill_seq_no}`);
+      }
+    });
+  }
+  handleDelegationView = (row) => {
+    this.props.loadBillForMake(row.delg_no).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 5);
+      } else {
+        const link = `/clearance/${this.props.ietype}/manifest/view/`;
+        this.context.router.push(`${link}${row.bill_seq_no}`);
+      }
+    });
+  }
+  handleDelegationRedo = (row) => {
+    console.log('row', row);
+    this.props.deleteEntries(row.bill_seq_no).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 5);
+      } else {
+        this.handleTableLoad();
+      }
+    });
+  }
   render() {
     const { delgBillList, listFilter } = this.props;
     this.dataSource.remotes = delgBillList;
+    let columns = [];
+    columns = [...this.columns];
+    columns.push({
+      title: this.msg('opColumn'),
+      width: 130,
+      fixed: 'right',
+      render: (o, record) => {
+        if (record.bill_status < 3) {
+          return (
+            <RowUpdater onHit={this.handleDelegationMake} label="编辑清单" row={record} />
+          );
+        } else if (record.bill_status >= 3 && record.entry_status === 0) {
+          return (
+            <span>
+              <RowUpdater onHit={this.handleDelegationView} label="查看清单" row={record} />
+              <span className="ant-divider" />
+              <Popconfirm title="确定需要重新制单吗?" onConfirm={() => this.handleDelegationRedo(record)}>
+                <a role="button">重新制单</a>
+              </Popconfirm>
+            </span>
+          );
+        } else if (record.bill_status >= 3 && record.entry_status === 1) {
+          return (
+            <RowUpdater onHit={this.handleDelegationView} label="查看清单" row={record} />
+          );
+        }
+      },
+    });
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -241,7 +302,7 @@ export default class ManifestList extends Component {
               </div>
             </div>
             <div className="panel-body table-panel expandable">
-              <Table rowSelection={rowSelection} columns={this.columns} rowKey="pre_entry_seq_no" dataSource={this.dataSource}
+              <Table rowSelection={rowSelection} columns={columns} rowKey="pre_entry_seq_no" dataSource={this.dataSource}
                 loading={delgBillList.loading} scroll={{ x: 1500 }}
               />
             </div>

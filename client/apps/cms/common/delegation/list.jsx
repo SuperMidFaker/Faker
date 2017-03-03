@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Badge, Breadcrumb, Button, Layout, Icon, Popconfirm, Radio, Select, Tag, Tooltip, message } from 'antd';
+import { Badge, Breadcrumb, Button, Layout, Icon, Popconfirm, Radio, Select, Tag, Tooltip, message, Menu, Dropdown } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import TrimSpan from 'client/components/trimSpan';
@@ -491,41 +491,41 @@ export default class DelegationList extends Component {
                     <RowUpdater onHit={this.handleDelegationAccept} label={this.msg('accepting')} row={record} />
                   </PrivilegeCover>
                   <span className="ant-divider" />
-                  <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-                    <NavLink to={`/clearance/${this.props.ietype}/edit/${record.delg_no}`}>
-                      {this.msg('modify')}
-                    </NavLink>
-                  </PrivilegeCover>
+                  <RowUpdater onHit={() => this.handleDelegationAssign(record)} label={this.msg('delgDistribute')} row={record} />
                   <span className="ant-divider" />
-                  <PrivilegeCover module="clearance" feature={this.props.ietype} action="delete">
-                    <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleDelgDel(record.delg_no)}>
-                      <a role="button"><Icon type="delete" /></a>
-                    </Popconfirm>
+                  <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
+                    <Dropdown overlay={(
+                      <Menu onClick={this.handleMenuClick}>
+                        <Menu.Item key="edit">
+                          <NavLink to={`/clearance/${this.props.ietype}/edit/${record.delg_no}`}>
+                            <Icon type="edit" /> {this.msg('modify')}
+                          </NavLink>
+                        </Menu.Item>
+                        <Menu.Item key="delete">
+                          <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleDelgDel(record.delg_no)}>
+                            <a> <Icon type="delete" /> {this.msg('delete')}</a>
+                          </Popconfirm>
+                        </Menu.Item>
+                      </Menu>)}
+                    >
+                      <a><Icon type="down" /></a>
+                    </Dropdown>
                   </PrivilegeCover>
                 </span>
               );
             } else if (record.status === CMS_DELEGATION_STATUS.unaccepted && record.source !== 1) {
               return (
-                <RowUpdater onHit={this.handleDelegationAccept} label={this.msg('accepting')} row={record} />
+                <span>
+                  <RowUpdater onHit={this.handleDelegationAccept} label={this.msg('accepting')} row={record} />
+                  <span className="ant-divider" />
+                  <RowUpdater onHit={() => this.handleDelegationAssign(record)} label={this.msg('delgDistribute')} row={record} />
+                </span>
               );
             } else if (record.status === CMS_DELEGATION_STATUS.accepted) {
               return (
                 <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
-                  <span>
-                    <RowUpdater onHit={this.handleDelegationMake} label={this.msg('createManifest')} row={record} />
-                    <span className="ant-divider" />
-                    <RowUpdater onHit={() => this.handleDelegationAssign(record)} label={this.msg('delgDistribute')} row={record} />
-                  </span>
+                  <RowUpdater onHit={this.handleDelegationMake} label={this.msg('createManifest')} row={record} />
                 </PrivilegeCover>
-              );
-            } else if (record.status === CMS_DELEGATION_STATUS.processing ||
-                (record.status === CMS_DELEGATION_STATUS.declaring && record.sub_status === 1)) {
-              return (
-                <RowUpdater onHit={this.handleDelegationMake} label={this.msg('editManifest')} row={record} />
-              );
-            } else {
-              return (
-                <RowUpdater onHit={this.handleDelegationView} label={this.msg('viewManifest')} row={record} />
               );
             }
           } else if (record.customs_tenant_id === -1) {
@@ -539,25 +539,12 @@ export default class DelegationList extends Component {
                   </Popconfirm>
                 </span>
               );
-            } else if (record.status === CMS_DELEGATION_STATUS.processing ||
-                record.status === CMS_DELEGATION_STATUS.declaring && record.sub_status === 1) {
-              return (
-                <RowUpdater onHit={this.handleDelegationMake} label={this.msg('editManifest')} row={record} />
-              );
-            } else {
-              return (
-                <RowUpdater onHit={this.handleDelegationView} label={this.msg('viewManifest')} row={record} />
-              );
             }
           } else if (record.status === CMS_DELEGATION_STATUS.accepted && record.sub_status === CMS_DELEGATION_STATUS.unaccepted) {
             return (
               <Popconfirm title="你确定撤回分配吗?" onConfirm={() => this.handleDelgAssignRecall(record)} >
                 <a role="button">{this.msg('delgRecall')}</a>
               </Popconfirm>
-            );
-          } else if (record.status > CMS_DELEGATION_STATUS.accepted) {
-            return (
-              <RowUpdater onHit={this.handleDelegationView} label={this.msg('viewManifest')} row={record} />
             );
           }
         },

@@ -28,6 +28,7 @@ const actionTypes = createActionTypes('@@welogix/cms/manifest/', [
   'SAVE_CONTAINER', 'SAVE_CONTAINER_SUCCEED', 'SAVE_CONTAINER_FAIL',
   'DELETE_CONTAINER', 'DELETE_CONTAINER_SUCCEED', 'DELETE_CONTAINER_FAIL',
   'SAVE_ENTRY_HEAD', 'SAVE_ENTRY_HEAD_SUCCEED', 'SAVE_ENTRY_HEAD_FAIL',
+  'DELETE_ENTRIES', 'DELETE_ENTRIES_SUCCEED', 'DELETE_ENTRIES_FAIL',
 ]);
 
 const initialState = {
@@ -548,6 +549,21 @@ export function saveEntryHead(datas) {
       endpoint: 'v1/cms/manifest/entry/head/save',
       method: 'post',
       data: datas,
+    },
+  };
+}
+
+export function deleteEntries(billSeqNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DELETE_ENTRIES,
+        actionTypes.DELETE_ENTRIES_SUCCEED,
+        actionTypes.DELETE_ENTRIES_FAIL,
+      ],
+      endpoint: 'v1/cms/declare/entries/delete',
+      method: 'post',
+      data: { billSeqNo },
     },
   };
 }
