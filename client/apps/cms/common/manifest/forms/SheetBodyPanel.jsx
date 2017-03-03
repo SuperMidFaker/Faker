@@ -111,7 +111,7 @@ export default class SheetBodyPanel extends React.Component {
   constructor(props) {
     super(props);
     const bodies = props.data;
-    if (!props.readonly) {
+    if (!props.readonly && this.props.type !== 'entry') {
       bodies.push({ id: '__ops' });
     }
     this.state = {
@@ -130,7 +130,7 @@ export default class SheetBodyPanel extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.data !== this.props.data) {
       const bodies = [...nextProps.data];
-      if (!nextProps.readonly || this.props.type === 'bill') {
+      if (!nextProps.readonly && this.props.type !== 'entry') {
         bodies.push({ id: '__ops' });
       }
       this.setState({
@@ -631,7 +631,6 @@ export default class SheetBodyPanel extends React.Component {
   render() {
     const columns = this.getColumns();
     let billBodyToolbar = '报关单表体';
-
     if (this.props.type === 'bill') {
       const menu = (
         <Menu onClick={this.handleMenuClick}>

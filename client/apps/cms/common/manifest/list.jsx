@@ -67,8 +67,8 @@ export default class ManifestList extends Component {
 
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
-    title: this.msg('billNo'),
-    dataIndex: 'bill_seq_no',
+    title: this.msg('delgNo'),
+    dataIndex: 'delg_no',
     fixed: 'left',
     width: 150,
     render: (o, record) => {
@@ -78,11 +78,6 @@ export default class ManifestList extends Component {
         return <NavLink to={`/clearance/${this.props.ietype}/manifest/view/${record.bill_seq_no}`}>{o}</NavLink>;
       }
     },
-  }, {
-    title: this.msg('delgNo'),
-    dataIndex: 'delg_no',
-    fixed: 'left',
-    width: 150,
   }, {
     title: '申报单位',
     dataIndex: 'customs_name',

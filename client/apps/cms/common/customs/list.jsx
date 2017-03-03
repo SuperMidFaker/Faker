@@ -319,7 +319,7 @@ export default class DelgDeclList extends Component {
               </PrivilegeCover>
             </span>
           );
-        } else {
+        } else if (record.status === 2) {
           return (
             <span>
               <RowUpdater onHit={this.handleShowSendDeclModal} label={this.msg('send')} row={record} />
