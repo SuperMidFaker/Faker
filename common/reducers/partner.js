@@ -40,22 +40,19 @@ export default function reducer(state = initialState, action) {
     case actionTypes.EDIT_PARTNER_SUCCEED: {
       return { ...state, loaded: false };
     }
-    case actionTypes.CHANGE_PARTNER_STATUS_SUCCEED: {
+    case actionTypes.CHANGE_PARTNER_STATUS_SUCCEED:
       return { ...state, loaded: false };
-    }
-    case actionTypes.DELETE_PARTNER_SUCCEED: {
+    case actionTypes.DELETE_PARTNER_SUCCEED:
       return { ...state, loaded: false };
-    }
     case actionTypes.INVITE_PARTNER:
-    case actionTypes.EDIT_PROVIDER_TYPES_SUCCEED: {
+    case actionTypes.EDIT_PROVIDER_TYPES_SUCCEED:
       return { ...state, loaded: false };
-    }
     default:
       return state;
   }
 }
 
-export function loadPartners(cookie, params) {
+export function loadPartners(params) {
   return {
     [CLIENT_API]: {
       types: [
@@ -66,7 +63,6 @@ export function loadPartners(cookie, params) {
       endpoint: 'v1/cooperation/partners',
       method: 'get',
       params,
-      cookie,
     },
   };
 }

@@ -8,8 +8,8 @@ import { toggleCarrierModal } from 'common/reducers/transportResources';
 import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 const role = PARTNER_ROLES.SUP;
 const businessType = PARTNER_BUSINESSE_TYPES.clearance;
-function fetchData({ dispatch, state, cookie }) {
-  return dispatch(loadPartners(cookie, {
+function fetchData({ dispatch, state }) {
+  return dispatch(loadPartners({
     tenantId: state.account.tenantId,
     role,
     businessType,
@@ -41,7 +41,7 @@ export default class ProviderListContainer extends Component {
   }
   componentWillReceiveProps(nextProps) {
     if (!nextProps.loaded) {
-      this.props.loadPartners(null, {
+      this.props.loadPartners({
         tenantId: nextProps.tenantId,
         role,
         businessType,

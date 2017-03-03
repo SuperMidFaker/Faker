@@ -5,7 +5,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import NavLink from 'client/components/nav-link';
 import Table from 'client/components/remoteAntTable';
-import { loadInstalledApps, deleteEasipassApp, updateAppStatus } from 'common/reducers/openIntegration';
+import { loadInstalledApps, deleteApp, updateAppStatus } from 'common/reducers/openIntegration';
 import { formatMsg } from './message.i18n';
 
 const { Header, Content } = Layout;
@@ -29,7 +29,7 @@ function fetchData({ state, dispatch }) {
     tenantId: state.account.tenantId,
     applist: state.openIntegration.list,
   }),
-  { loadInstalledApps, deleteEasipassApp, updateAppStatus }
+  { loadInstalledApps, deleteApp, updateAppStatus }
 )
 export default class InstalledAppsList extends React.Component {
   static propTypes = {
@@ -113,7 +113,7 @@ export default class InstalledAppsList extends React.Component {
     remotes: this.props.applist,
   })
   handleAppDelete = (row) => {
-    this.props.deleteEasipassApp(row.uuid).then((result) => {
+    this.props.deleteApp(row.uuid).then((result) => {
       if (!result.error) {
         this.props.loadInstalledApps({
           tenantId: this.props.tenantId,

@@ -7,7 +7,10 @@ const actionTypes = createActionTypes('@@welogix/open/integration/', [
   'INSTALL_EASI', 'INSTALL_EASI_SUCCEED', 'INSTALL_EASI_FAIL',
   'LOAD_EASI', 'LOAD_EASI_SUCCEED', 'LOAD_EASI_FAIL',
   'UPDATE_EASI', 'UPDATE_EASI_SUCCEED', 'UPDATE_EASI_FAIL',
-  'DEL_EASI', 'DEL_EASI_SUCCEED', 'DEL_EASI_FAIL',
+  'DEL_APP', 'DEL_APP_SUCCEED', 'DEL_APP_FAIL',
+  'LOAD_ARC', 'LOAD_ARC_SUCCEED', 'LOAD_ARC_FAIL',
+  'INSTALL_ARC', 'INSTALL_ARC_SUCCEED', 'INSTALL_ARC_FAIL',
+  'UPDATE_ARC', 'UPDATE_ARC_SUCCEED', 'UPDATE_ARC_FAIL',
 ]);
 
 const initialState = {
@@ -24,6 +27,7 @@ const initialState = {
   },
   listFilter: {},
   easipassApp: {},
+  arctm: {},
 };
 
 export default function reducer(state = initialState, action) {
@@ -37,6 +41,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, loading: false };
     case actionTypes.LOAD_EASI_SUCCEED:
       return { ...state, easipassApp: action.result.data };
+    case actionTypes.LOAD_ARC_SUCCEED:
+      return { ...state, arctm: action.result.data };
     default:
       return state;
   }
@@ -117,17 +123,62 @@ export function updateAppStatus(easipass) {
   };
 }
 
-export function deleteEasipassApp(appuuid) {
+export function deleteApp(appuuid) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.DEL_EASI,
-        actionTypes.DEL_EASI_SUCCEED,
-        actionTypes.DEL_EASI_FAIL,
+        actionTypes.DEL_APP,
+        actionTypes.DEL_APP_SUCCEED,
+        actionTypes.DEL_APP_FAIL,
       ],
-      endpoint: 'v1/platform/integration/delete/easipass',
+      endpoint: 'v1/platform/integration/delete',
       method: 'post',
       data: { uuid: appuuid },
+    },
+  };
+}
+
+export function loadArCtmApp(uuid) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_ARC,
+        actionTypes.LOAD_ARC_SUCCEED,
+        actionTypes.LOAD_ARC_FAIL,
+      ],
+      endpoint: 'v1/platform/integration/arctm',
+      method: 'get',
+      params: { uuid },
+    },
+  };
+}
+
+export function installArCtmApp(arctm) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.INSTALL_ARC,
+        actionTypes.INSTALL_ARC_SUCCEED,
+        actionTypes.INSTALL_ARC_FAIL,
+      ],
+      endpoint: 'v1/platform/integration/install/arctm',
+      method: 'post',
+      data: arctm,
+    },
+  };
+}
+
+export function updateArCtmApp(arctm) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_ARC,
+        actionTypes.UPDATE_ARC_SUCCEED,
+        actionTypes.UPDATE_ARC_FAIL,
+      ],
+      endpoint: 'v1/platform/integration/update/arctm',
+      method: 'post',
+      data: arctm,
     },
   };
 }

@@ -110,6 +110,26 @@ const messages = defineMessages({
     id: 'open.platform.integration.arctm.title.params',
     defaultMessage: 'AmberRoad CTM参数',
   },
+  customerNo: {
+    id: 'open.platform.integration.arctm.customerNo',
+    defaultMessage: 'CTM客户',
+  },
+  username: {
+    id: 'open.platform.integration.arctm.username',
+    defaultMessage: '用户名',
+  },
+  password: {
+    id: 'open.platform.integration.arctm.password',
+    defaultMessage: '密码',
+  },
+  hookUrl: {
+    id: 'open.platform.integration.arctm.hook.url',
+    defaultMessage: '输入接口',
+  },
+  webserviceUrl: {
+    id: 'open.platform.integration.arctm.webservice.url',
+    defaultMessage: 'web service接口',
+  },
 });
 
 export default messages;

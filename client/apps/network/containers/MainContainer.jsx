@@ -13,8 +13,8 @@ const { Header, Content } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 
-function fetchData({ state, dispatch, cookie }) {
-  return dispatch(loadPartners(cookie, {
+function fetchData({ state, dispatch }) {
+  return dispatch(loadPartners({
     tenantId: state.account.tenantId,
     role: '',
     businessType: '',
