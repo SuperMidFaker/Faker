@@ -465,7 +465,7 @@ export default class LandStatusList extends React.Component {
           <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch} toggle={this.toggleAdvancedSearch} />
           <div className="panel-body table-panel">
             <Table rowSelection={rowSelection} columns={columns} loading={loading}
-              dataSource={this.dataSource} scroll={{ x: 2200 }}
+              dataSource={this.dataSource} scroll={{ x: 2300 }}
             />
           </div>
         </div>

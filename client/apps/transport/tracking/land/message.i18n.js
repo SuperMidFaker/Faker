@@ -117,6 +117,10 @@ export default defineMessages({
     id: 'transport.tracking.shipmt.exception',
     defaultMessage: '异常',
   },
+  overtime: {
+    id: 'transport.tracking.shipmt.overtime',
+    defaultMessage: '超时',
+  },
   shipmtLastException: {
     id: 'transport.tracking.shipmt.lastException',
     defaultMessage: '最近一次异常',

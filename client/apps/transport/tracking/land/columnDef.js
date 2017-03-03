@@ -212,6 +212,23 @@ export default function makeColumns(type, handlers, msg) {
       }
     },
   }, {
+    title: msg('overtime'),
+    key: 'late',
+    width: 100,
+    render(o, record) {
+      if (record.status >= SHIPMENT_TRACK_STATUS.delivered) {
+        const deliveredActDate = new Date(record.deliver_act_date);
+        deliveredActDate.setHours(0, 0, 0, 0);
+        const pickupActDate = new Date(record.pickup_act_date);
+        pickupActDate.setHours(0, 0, 0, 0);
+        const daysDiff = moment(deliveredActDate).diff(pickupActDate, 'days');
+        if (daysDiff > record.transit_time) {
+          return `超时${daysDiff - record.transit_time}天`;
+        }
+      }
+      return '';
+    },
+  }, {
     title: msg('shipmtException'),
     dataIndex: 'excp_count',
     width: 50,
