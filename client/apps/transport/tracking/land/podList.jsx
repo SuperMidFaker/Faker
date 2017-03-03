@@ -12,6 +12,7 @@ import makeColumns from './columnDef';
 import { SHIPMENT_TRACK_STATUS } from 'common/constants';
 import MyShipmentsSelect from '../../common/myShipmentsSelect';
 import SearchBar from 'client/components/search-bar';
+import AdvancedSearchBar from '../../common/advanced-search-bar';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import { sendMessage } from 'common/reducers/corps';
@@ -78,6 +79,7 @@ export default class LandStatusList extends React.Component {
   state = {
     selectedRowKeys: [],
     searchInput: '',
+    advancedSearchVisible: false,
   }
 
   componentWillMount() {
@@ -202,13 +204,28 @@ export default class LandStatusList extends React.Component {
     return merged;
   }
 
-  handleAdvancedSearch = (searchVals) => {
+  handleShipmentViewSelect = (searchVals) => {
     this.props.changePodFilter('viewStatus', searchVals.viewStatus);
   }
 
   handleSearchInput = (value) => {
     this.setState({ searchInput: value });
     this.props.changePodFilter('shipmt_no', value);
+  }
+
+  toggleAdvancedSearch = () => {
+    this.setState({ advancedSearchVisible: !this.state.advancedSearchVisible });
+  }
+
+  showAdvancedSearch = (advancedSearchVisible) => {
+    this.setState({ advancedSearchVisible });
+  }
+
+  handleAdvancedSearch = (searchVals) => {
+    Object.keys(searchVals).forEach((key) => {
+      this.props.changePodFilter(key, searchVals[key]);
+    });
+    this.showAdvancedSearch(false);
   }
 
   render() {
@@ -234,13 +251,16 @@ export default class LandStatusList extends React.Component {
             <SearchBar placeholder={this.msg('searchShipmtPH')} onInputSearch={this.handleSearchInput}
               value={this.state.searchInput} size="large"
             />
+            <span />
+            <a onClick={this.toggleAdvancedSearch}>过滤选项</a>
             <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
               <h3>已选中{this.state.selectedRowKeys.length}项</h3>
             </div>
             <div className="toolbar-right">
-              <MyShipmentsSelect onSearch={this.handleAdvancedSearch} />
+              <MyShipmentsSelect onSearch={this.handleShipmentViewSelect} />
             </div>
           </div>
+          <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch} toggle={this.toggleAdvancedSearch} />
           <div className="panel-body table-panel">
             <Table rowSelection={rowSelection} columns={columns} loading={loading}
               dataSource={this.dataSource} scroll={{ x: 2320 }}

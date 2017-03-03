@@ -12,6 +12,7 @@ import ShipmtnoColumn from '../../common/shipmtnoColumn';
 import ExceptionListPopover from './modals/exception-list-popover';
 import { renderConsignLoc } from '../../common/consignLocation';
 import MyShipmentsSelect from '../../common/myShipmentsSelect';
+import AdvancedSearchBar from '../../common/advanced-search-bar';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/search-bar';
 import { format } from 'client/common/i18n/helpers';
@@ -92,6 +93,7 @@ export default class LandStatusList extends React.Component {
   state = {
     selectedRowKeys: [],
     searchInput: '',
+    advancedSearchVisible: false,
   }
 
   componentWillMount() {
@@ -379,13 +381,28 @@ export default class LandStatusList extends React.Component {
     return merged;
   }
 
-  handleAdvancedSearch = (searchVals) => {
+  handleShipmentViewSelect = (searchVals) => {
     this.props.changeExcpFilter('viewStatus', searchVals.viewStatus);
   }
 
   handleSearchInput = (value) => {
     this.setState({ searchInput: value });
     this.props.changeExcpFilter('shipmt_no', value);
+  }
+
+  toggleAdvancedSearch = () => {
+    this.setState({ advancedSearchVisible: !this.state.advancedSearchVisible });
+  }
+
+  showAdvancedSearch = (advancedSearchVisible) => {
+    this.setState({ advancedSearchVisible });
+  }
+
+  handleAdvancedSearch = (searchVals) => {
+    Object.keys(searchVals).forEach((key) => {
+      this.props.changeExcpFilter(key, searchVals[key]);
+    });
+    this.showAdvancedSearch(false);
   }
 
   render() {
@@ -404,13 +421,16 @@ export default class LandStatusList extends React.Component {
             <SearchBar placeholder={this.msg('searchShipmtPH')} onInputSearch={this.handleSearchInput}
               value={this.state.searchInput} size="large"
             />
+            <span />
+            <a onClick={this.toggleAdvancedSearch}>过滤选项</a>
             <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
               <h3>已选中{this.state.selectedRowKeys.length}项</h3>
             </div>
             <div className="toolbar-right">
-              <MyShipmentsSelect onSearch={this.handleAdvancedSearch} />
+              <MyShipmentsSelect onSearch={this.handleShipmentViewSelect} />
             </div>
           </div>
+          <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch} toggle={this.toggleAdvancedSearch} />
           <div className="panel-body table-panel">
             <Table rowSelection={rowSelection} columns={this.columns} loading={loading}
               dataSource={this.dataSource} scroll={{ x: 2260 }}

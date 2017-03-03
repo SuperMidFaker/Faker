@@ -3,11 +3,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Layout, Radio } from 'antd';
 import QueueAnim from 'rc-queue-anim';
-import AdvancedSearchBar from '../../common/advanced-search-bar';
 import PreviewPanel from '../../shipment/modals/preview-panel';
-import { changeStatusFilter } from 'common/reducers/trackingLandStatus';
-import { changePodFilter } from 'common/reducers/trackingLandPod';
-import { changeExcpFilter } from 'common/reducers/trackingLandException';
 import { format } from 'client/common/i18n/helpers';
 import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege, { PrivilegeCover } from 'client/common/decorators/withPrivilege';
@@ -25,7 +21,7 @@ const RadioGroup = Radio.Group;
     podfilters: state.trackingLandPod.filters,
     excpfilters: state.trackingLandException.filters,
   }),
-  { changeStatusFilter, changePodFilter, changeExcpFilter }
+  { }
 )
 @connectNav({
   depth: 2,
@@ -40,16 +36,12 @@ export default class TrackingLandWrapper extends React.Component {
     podfilters: PropTypes.array,
     excpfilters: PropTypes.array,
     children: PropTypes.object.isRequired,
-    changeStatusFilter: PropTypes.func.isRequired,
-    changePodFilter: PropTypes.func.isRequired,
-    changeExcpFilter: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
   state = {
     radioValue: '',
-    advancedSearchVisible: false,
     stage: 'tracking',
   }
   componentWillMount() {
@@ -106,32 +98,9 @@ export default class TrackingLandWrapper extends React.Component {
       `/transport/tracking/road/exception/${ev.target.value}`
     );
   }
-  handleAdvancedSearch = (searchVals) => {
-    Object.keys(searchVals).forEach((key) => {
-      this.props.changeStatusFilter(key, searchVals[key]);
-      this.props.changePodFilter(key, searchVals[key]);
-      this.props.changeExcpFilter(key, searchVals[key]);
-    });
-    this.showAdvancedSearch(false);
-  }
-  toggleAdvancedSearch = () => {
-    this.setState({ advancedSearchVisible: !this.state.advancedSearchVisible });
-  }
-  showAdvancedSearch = (advancedSearchVisible) => {
-    this.setState({ advancedSearchVisible });
-  }
 
   render() {
     const { radioValue, stage } = this.state;
-    let exportExcel = null;
-    if (radioValue === 'all' || radioValue === 'pending' || radioValue === 'accepted' ||
-      radioValue === 'dispatched' || radioValue === 'intransit' || radioValue === 'delivered') {
-      exportExcel = (
-        <PrivilegeCover module="transport" feature="tracking" action="create">
-          <ExportExcel />
-        </PrivilegeCover>
-      );
-    }
     return (
       <QueueAnim animConfig={[{ opacity: [1, 0], translateY: [0, 50] },
             { opacity: [1, 0], translateY: [0, -50] }]}
@@ -157,13 +126,13 @@ export default class TrackingLandWrapper extends React.Component {
             <RadioButton value="error">{this.msg('exceptionErr')}</RadioButton>
           </RadioGroup>
           <div className="top-bar-tools">
-            {exportExcel}
+            <PrivilegeCover module="transport" feature="tracking" action="create">
+              <ExportExcel />
+            </PrivilegeCover>
             <span />
-            <a onClick={this.toggleAdvancedSearch}>高级搜索</a>
           </div>
         </Header>
         <Content className="main-content" key="main">
-          <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch} toggle={this.toggleAdvancedSearch} />
           {this.props.children}
         </Content>
         <PreviewPanel stage={stage} />
