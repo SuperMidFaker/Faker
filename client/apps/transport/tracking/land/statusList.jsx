@@ -16,10 +16,10 @@ import RowUpdater from './rowUpdater';
 import VehicleModal from './modals/vehicle-updater';
 import PickupDeliverModal from './modals/pickup-deliver-updater';
 import LocationModal from './modals/intransitLocationUpdater';
+import SearchBar from 'client/components/search-bar';
 import makeColumns from './columnDef';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import ExportExcel from './modals/export-excel';
 import RevokejectModal from '../../shipment/modals/revoke-reject';
 import ShipmentAdvanceModal from './modals/shipment-advance-modal';
 import CreateSpecialCharge from './modals/create-specialCharge';
@@ -99,8 +99,16 @@ export default class LandStatusList extends React.Component {
   state = {
     lastLocReportTime: null,
     selectedRowKeys: [],
+    searchInput: '',
   }
-
+  componentWillMount() {
+    let searchInput;
+    const nos = this.props.filters.filter(flt => flt.name === 'shipmt_no');
+    if (nos.length === 1) {
+      searchInput = nos[0].value;
+    }
+    this.setState({ searchInput });
+  }
   componentWillReceiveProps(nextProps) {
     let newfilters;
     if (nextProps.params.state !== this.props.params.state) {
@@ -130,6 +138,12 @@ export default class LandStatusList extends React.Component {
            */
       });
     }
+    let searchInput;
+    const nos = this.props.filters.filter(flt => flt.name === 'shipmt_no');
+    if (nos.length === 1) {
+      searchInput = nos[0].value;
+    }
+    this.setState({ searchInput });
   }
   dataSource = new Table.DataSource({
     fetcher: params => this.props.loadTransitTable(null, params),
@@ -339,6 +353,11 @@ export default class LandStatusList extends React.Component {
     this.props.changeStatusFilter('viewStatus', searchVals.viewStatus);
   }
 
+  handleSearchInput = (value) => {
+    this.setState({ searchInput: value });
+    this.props.changeStatusFilter('shipmt_no', value);
+  }
+
   renderIntransitUpdater = (record) => {
     const reported = this.props.reportedShipmts.indexOf(record.shipmt_no) >= 0;
     const ttMsg = this.state.lastLocReportTime ?
@@ -414,9 +433,9 @@ export default class LandStatusList extends React.Component {
       <div>
         <div className="page-body">
           <div className="toolbar">
-            <PrivilegeCover module="transport" feature="tracking" action="create">
-              <ExportExcel />
-            </PrivilegeCover>
+            <SearchBar placeholder={this.msg('searchShipmtPH')} onInputSearch={this.handleSearchInput}
+              value={this.state.searchInput} size="large"
+            />
             <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
               <h3>已选中{this.state.selectedRowKeys.length}项</h3> {this.renderBatchOperationButtons()}
             </div>

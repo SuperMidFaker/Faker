@@ -11,6 +11,7 @@ import PodAuditModal from './modals/pod-audit';
 import makeColumns from './columnDef';
 import { SHIPMENT_TRACK_STATUS } from 'common/constants';
 import MyShipmentsSelect from '../../common/myShipmentsSelect';
+import SearchBar from 'client/components/search-bar';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import { sendMessage } from 'common/reducers/corps';
@@ -76,6 +77,16 @@ export default class LandStatusList extends React.Component {
 
   state = {
     selectedRowKeys: [],
+    searchInput: '',
+  }
+
+  componentWillMount() {
+    let searchInput;
+    const nos = this.props.filters.filter(flt => flt.name === 'shipmt_no');
+    if (nos.length === 1) {
+      searchInput = nos[0].value;
+    }
+    this.setState({ searchInput });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -106,6 +117,12 @@ export default class LandStatusList extends React.Component {
            */
       });
     }
+    let searchInput;
+    const nos = this.props.filters.filter(flt => flt.name === 'shipmt_no');
+    if (nos.length === 1) {
+      searchInput = nos[0].value;
+    }
+    this.setState({ searchInput });
   }
   dataSource = new Table.DataSource({
     fetcher: params => this.props.loadPodTable(null, params),
@@ -189,6 +206,11 @@ export default class LandStatusList extends React.Component {
     this.props.changePodFilter('viewStatus', searchVals.viewStatus);
   }
 
+  handleSearchInput = (value) => {
+    this.setState({ searchInput: value });
+    this.props.changePodFilter('shipmt_no', value);
+  }
+
   render() {
     const { shipmentlist, loading } = this.props;
     this.dataSource.remotes = shipmentlist;
@@ -209,6 +231,9 @@ export default class LandStatusList extends React.Component {
       <div>
         <div className="page-body">
           <div className="toolbar">
+            <SearchBar placeholder={this.msg('searchShipmtPH')} onInputSearch={this.handleSearchInput}
+              value={this.state.searchInput} size="large"
+            />
             <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
               <h3>已选中{this.state.selectedRowKeys.length}项</h3>
             </div>

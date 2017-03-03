@@ -13,6 +13,7 @@ import ExceptionListPopover from './modals/exception-list-popover';
 import { renderConsignLoc } from '../../common/consignLocation';
 import MyShipmentsSelect from '../../common/myShipmentsSelect';
 import TrimSpan from 'client/components/trimSpan';
+import SearchBar from 'client/components/search-bar';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 const formatMsg = format(messages);
@@ -90,6 +91,16 @@ export default class LandStatusList extends React.Component {
   }
   state = {
     selectedRowKeys: [],
+    searchInput: '',
+  }
+
+  componentWillMount() {
+    let searchInput;
+    const nos = this.props.filters.filter(flt => flt.name === 'shipmt_no');
+    if (nos.length === 1) {
+      searchInput = nos[0].value;
+    }
+    this.setState({ searchInput });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -120,6 +131,12 @@ export default class LandStatusList extends React.Component {
            */
       });
     }
+    let searchInput;
+    const nos = this.props.filters.filter(flt => flt.name === 'shipmt_no');
+    if (nos.length === 1) {
+      searchInput = nos[0].value;
+    }
+    this.setState({ searchInput });
   }
   dataSource = new Table.DataSource({
     fetcher: params => this.props.loadExcpShipments(null, params),
@@ -366,6 +383,11 @@ export default class LandStatusList extends React.Component {
     this.props.changeExcpFilter('viewStatus', searchVals.viewStatus);
   }
 
+  handleSearchInput = (value) => {
+    this.setState({ searchInput: value });
+    this.props.changeExcpFilter('shipmt_no', value);
+  }
+
   render() {
     const { shipmentlist, loading } = this.props;
     this.dataSource.remotes = shipmentlist;
@@ -379,6 +401,9 @@ export default class LandStatusList extends React.Component {
       <div>
         <div className="page-body">
           <div className="toolbar">
+            <SearchBar placeholder={this.msg('searchShipmtPH')} onInputSearch={this.handleSearchInput}
+              value={this.state.searchInput} size="large"
+            />
             <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
               <h3>已选中{this.state.selectedRowKeys.length}项</h3>
             </div>

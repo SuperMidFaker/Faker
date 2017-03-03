@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Layout, Radio } from 'antd';
 import QueueAnim from 'rc-queue-anim';
-import SearchBar from 'client/components/search-bar';
 import AdvancedSearchBar from '../../common/advanced-search-bar';
 import PreviewPanel from '../../shipment/modals/preview-panel';
 import { changeStatusFilter } from 'common/reducers/trackingLandStatus';
@@ -11,8 +10,8 @@ import { changePodFilter } from 'common/reducers/trackingLandPod';
 import { changeExcpFilter } from 'common/reducers/trackingLandException';
 import { format } from 'client/common/i18n/helpers';
 import connectNav from 'client/common/decorators/connect-nav';
-import withPrivilege from 'client/common/decorators/withPrivilege';
-
+import withPrivilege, { PrivilegeCover } from 'client/common/decorators/withPrivilege';
+import ExportExcel from './modals/export-excel';
 import messages from './message.i18n';
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -49,7 +48,6 @@ export default class TrackingLandWrapper extends React.Component {
     router: PropTypes.object.isRequired,
   }
   state = {
-    searchInput: '',
     radioValue: '',
     advancedSearchVisible: false,
     stage: 'tracking',
@@ -65,16 +63,11 @@ export default class TrackingLandWrapper extends React.Component {
       propFilters = this.props.excpfilters;
     }
     let radioValue;
-    let searchInput;
     const types = propFilters.filter(flt => flt.name === 'type');
     if (types.length === 1) {
       radioValue = types[0].value;
     }
-    const nos = propFilters.filter(flt => flt.name === 'shipmt_no');
-    if (nos.length === 1) {
-      searchInput = nos[0].value;
-    }
-    this.setState({ radioValue, searchInput });
+    this.setState({ radioValue });
   }
   componentWillReceiveProps(nextProps) {
     const locName = nextProps.location.pathname.split('/')[4];
@@ -113,12 +106,6 @@ export default class TrackingLandWrapper extends React.Component {
       `/transport/tracking/road/exception/${ev.target.value}`
     );
   }
-  handleSearchInput = (value) => {
-    this.setState({ searchInput: value });
-    this.props.changeStatusFilter('shipmt_no', value);
-    this.props.changePodFilter('shipmt_no', value);
-    this.props.changeExcpFilter('shipmt_no', value);
-  }
   handleAdvancedSearch = (searchVals) => {
     Object.keys(searchVals).forEach((key) => {
       this.props.changeStatusFilter(key, searchVals[key]);
@@ -135,7 +122,16 @@ export default class TrackingLandWrapper extends React.Component {
   }
 
   render() {
-    const { radioValue, searchInput, stage } = this.state;
+    const { radioValue, stage } = this.state;
+    let exportExcel = null;
+    if (radioValue === 'all' || radioValue === 'pending' || radioValue === 'accepted' ||
+      radioValue === 'dispatched' || radioValue === 'intransit' || radioValue === 'delivered') {
+      exportExcel = (
+        <PrivilegeCover module="transport" feature="tracking" action="create">
+          <ExportExcel />
+        </PrivilegeCover>
+      );
+    }
     return (
       <QueueAnim animConfig={[{ opacity: [1, 0], translateY: [0, 50] },
             { opacity: [1, 0], translateY: [0, -50] }]}
@@ -161,9 +157,7 @@ export default class TrackingLandWrapper extends React.Component {
             <RadioButton value="error">{this.msg('exceptionErr')}</RadioButton>
           </RadioGroup>
           <div className="top-bar-tools">
-            <SearchBar placeholder={this.msg('searchShipmtPH')} onInputSearch={this.handleSearchInput}
-              value={searchInput} size="large"
-            />
+            {exportExcel}
             <span />
             <a onClick={this.toggleAdvancedSearch}>高级搜索</a>
           </div>
