@@ -5,6 +5,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { addNewBillBody, delBillBody, editBillBody, saveBillHead,
   openMergeSplitModal, billDelete, updateHeadNetWt } from 'common/reducers/cmsManifest';
+import NavLink from 'client/components/nav-link';
 import SheetHeadPanel from './forms/SheetHeadPanel';
 import SheetBodyPanel from './forms/SheetBodyPanel';
 import MergeSplitModal from './modals/mergeSplit';
@@ -142,6 +143,7 @@ export default class ManifestEditor extends React.Component {
         <Icon type="file-text" /> {bme.entry_id || bme.pre_entry_seq_no}</Menu.Item>)
       )}
     </Menu>);
+    const path = `/clearance/${ietype}/manifest/`;
     return (
       <Layout>
         <Layout>
@@ -151,7 +153,7 @@ export default class ManifestEditor extends React.Component {
                 {this.props.ietype === 'import' ? this.msg('importClearance') : this.msg('exportClearance')}
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                {this.msg('declManifest')}
+                <NavLink to={path}>{this.msg('declManifest')}</NavLink>
               </Breadcrumb.Item>
               <Breadcrumb.Item>
                 {billMeta.bill_seq_no}

@@ -5,6 +5,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadEntry, saveEntryHead } from 'common/reducers/cmsManifest';
 import { fillEntryId } from 'common/reducers/cmsDelegation';
+import NavLink from 'client/components/nav-link';
 import SheetHeadPanel from '../manifest/forms/SheetHeadPanel';
 import SheetBodyPanel from '../manifest/forms/SheetBodyPanel';
 import SheetExtraPanel from '../manifest/forms/SheetExtraPanel';
@@ -91,6 +92,7 @@ export default class CustomsDeclEditor extends React.Component {
   render() {
     const { ietype, form, head, bodies, billMeta } = this.props;
     const readonly = !billMeta.editable;
+    const path = `/clearance/${ietype}/customs/`;
     return (
       <Layout>
         <Layout>
@@ -100,7 +102,7 @@ export default class CustomsDeclEditor extends React.Component {
                 {this.props.ietype === 'import' ? this.msg('importOperation') : this.msg('exportOperation')}
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                {this.msg('customsDeclaration')}
+                <NavLink to={path}>{this.msg('customsDeclaration')}</NavLink>
               </Breadcrumb.Item>
               <Breadcrumb.Item>
                 {head.entry_id || head.pre_entry_seq_no}
