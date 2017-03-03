@@ -190,7 +190,7 @@ export default class HscodeCategory extends React.Component {
               <Col span={4} style={{ paddingLeft: 8, paddingRight: 8 }}>
                 <Card bodyStyle={{ padding: 0 }}>
                   <Table size="middle" dataSource={this.state.hscodeCategories} columns={columns} onRowClick={this.handleRowClick}
-                    pagination={false} rowKey="id" rowClassName={record => record.name === hscodeCategory.name ? 'hscode-category' : ''}
+                    pagination={false} rowKey="id" rowClassName={record => record.name === hscodeCategory.name ? 'table-row-selected' : ''}
                   />
                 </Card>
               </Col>

@@ -124,6 +124,7 @@ export default class CustomerList extends React.Component {
           </div>
           <Table size="middle" dataSource={this.props.customers} columns={columns} showHeader={false} onRowClick={this.handleRowClick}
             pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }}
+            rowClassName={record => record.id === customer.id ? 'table-row-selected' : ''}
           />
           <CustomerModal onOk={this.handleTableLoad} />
         </Sider>
