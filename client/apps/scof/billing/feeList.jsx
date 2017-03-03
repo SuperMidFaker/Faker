@@ -156,30 +156,36 @@ export default class FeesList extends React.Component {
     }, {
       title: '委托客户',
       dataIndex: 'customer_name',
+      width: 180,
       render: o => <TrimSpan text={o} />,
       filters: customers.map(item => ({ text: item.partner_code ? `${item.partner_code} | ${item.name}` : item.name, value: item.name })),
     }, {
       title: '报关委托号',
       dataIndex: 'ccb_delg_no',
+      width: 180,
       render: o => <CcbDelgNoColumn nos={o} />,
     }, {
       title: '报关服务费',
       key: 'ccb_server_charge',
       dataIndex: 'ccb_server_charge',
+      width: 100,
       render: this.renderClearanceCharge,
     }, {
       title: '报关代垫费用',
       key: 'ccb_cush_charge',
       dataIndex: 'ccb_cush_charge',
+      width: 100,
       render: this.renderClearanceCharge,
     }, {
       title: '报关费用合计',
       key: 'ccbTotalCharge',
       dataIndex: 'ccbTotalCharge',
+      width: 100,
       render: this.renderClearanceCharge,
     }, {
       title: '运输单号',
       dataIndex: 'trs_shipmt_no',
+      width: 180,
       render(o) {
         return <TrsShipmtNoColumn nos={o} />;
       },
@@ -187,26 +193,31 @@ export default class FeesList extends React.Component {
       title: '基本运费',
       key: 'trs_freight_charge',
       dataIndex: 'trs_freight_charge',
+      width: 80,
       render: this.renderTransportCharge,
     }, {
       title: '特殊费用',
       key: 'trs_excp_charge',
       dataIndex: 'trs_excp_charge',
+      width: 80,
       render: this.renderTransportCharge,
     }, {
       title: '运输代垫费用',
       key: 'trs_advance_charge',
       dataIndex: 'trs_advance_charge',
+      width: 100,
       render: this.renderTransportCharge,
     }, {
       title: '运输费用合计',
       key: 'trsTotalCharge',
       dataIndex: 'trsTotalCharge',
+      width: 100,
       render: this.renderTransportCharge,
     }, {
       title: '订单总费用',
       key: 'total_charge',
       dataIndex: 'total_charge',
+      width: 100,
       render(o) {
         return o ? o.toFixed(2) : '';
       },
@@ -268,7 +279,7 @@ export default class FeesList extends React.Component {
               </div>
             </div>
             <div className="panel-body table-panel">
-              <Table rowSelection={rowSelection} dataSource={dataSource} columns={columns} rowKey="id" scroll={{ x: 1400 }} loading={loading} />
+              <Table rowSelection={rowSelection} dataSource={dataSource} columns={columns} rowKey="id" scroll={{ x: 1600 }} loading={loading} />
             </div>
           </div>
         </Content>

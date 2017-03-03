@@ -179,24 +179,28 @@ export default class BillingList extends React.Component {
     const columns = [{
       title: '账单名称',
       dataIndex: 'name',
+      width: 150,
       render(o, record) {
         return <Link to={`/scof/billing/view/${record.id}`}>{o}</Link>;
       },
     }, {
       title: '开始日期',
       dataIndex: 'begin_date',
+      width: 140,
       render(o) {
         return moment(o).format('YYYY.MM.DD');
       },
     }, {
       title: '结束日期',
       dataIndex: 'end_date',
+      width: 140,
       render(o) {
         return moment(o).format('YYYY.MM.DD');
       },
     }, {
       title: '客户',
       dataIndex: 'customer_name',
+      width: 180,
       render(o) {
         return <TrimSpan text={o} maxLen={10} />;
       },
@@ -204,39 +208,47 @@ export default class BillingList extends React.Component {
     }, {
       title: '运单数量',
       dataIndex: 'shipmt_order_count',
+      width: 100,
     }, {
       title: '清关费用',
       dataIndex: 'ccb_charge',
+      width: 100,
     }, {
       title: '运输费用',
       dataIndex: 'trs_charge',
+      width: 100,
     }, {
       title: '调整费用',
       dataIndex: 'adjust_charge',
+      width: 100,
       render(o) {
         return (<span style={{ color: '#FF0000' }}>{o}</span>);
       },
     }, {
       title: '账单总金额',
       dataIndex: 'total_charge',
+      width: 100,
       render(o) {
         return (<span style={{ color: '#FF9933' }}>{o}</span>);
       },
     }, {
       title: '核销金额',
       dataIndex: 'cancel_charge',
+      width: 80,
       render(o) {
         return (<span style={{ color: '#FF9933' }}>{o}</span>);
       },
     }, {
       title: '账单状态',
       dataIndex: 'status',
+      width: 180,
       render(o) {
         return CRM_BILLING_STATUS[o];
       },
     }, {
       title: '操作',
       dataIndex: 'id',
+      width: 100,
       render: (o, record) => {
         if (record.status === 1) {
           return (
