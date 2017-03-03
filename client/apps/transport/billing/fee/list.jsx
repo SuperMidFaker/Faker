@@ -146,10 +146,12 @@ export default class FeesList extends React.Component {
     }, {
       title: '客户单号',
       dataIndex: 'ref_external_no',
+      width: 100,
       render: o => <TrimSpan text={o} />,
     }, {
       title: '托运客户',
       dataIndex: 'p_sr_name',
+      width: 180,
       render(o) {
         return <TrimSpan text={o} maxLen={10} />;
       },
@@ -157,12 +159,14 @@ export default class FeesList extends React.Component {
     }, {
       title: '运输收入',
       dataIndex: 'p_total_charge',
+      width: 100,
       render(o) {
         return o ? o.toFixed(2) : '';
       },
     }, {
       title: '代垫收入',
       dataIndex: 'p_advance_charge',
+      width: 100,
       render: (o, row) => {
         if (row.p_sr_name) {
           return (
@@ -185,6 +189,7 @@ export default class FeesList extends React.Component {
     }, {
       title: '特殊费用收入',
       dataIndex: 'p_excp_charge',
+      width: 100,
       render: (o, row) => {
         if (row.p_sr_name) {
           return (
@@ -202,6 +207,7 @@ export default class FeesList extends React.Component {
     }, {
       title: '收入合计',
       key: 'pTotalCharge',
+      width: 100,
       render(o, record) {
         let pTotalCharge = 0;
         if (record.p_advance_charge) {
@@ -218,6 +224,7 @@ export default class FeesList extends React.Component {
     }, {
       title: '入账状态',
       dataIndex: 'p_status',
+      width: 100,
       render(o) {
         if (o === 0) {
           return <Tag>未入账</Tag>;
@@ -238,6 +245,7 @@ export default class FeesList extends React.Component {
     }, {
       title: '承运商',
       dataIndex: 'sp_name',
+      width: 180,
       render(o) {
         return <TrimSpan text={o} maxLen={10} />;
       },
@@ -245,12 +253,14 @@ export default class FeesList extends React.Component {
     }, {
       title: '运输成本',
       dataIndex: 'total_charge',
+      width: 100,
       render(o) {
         return o ? o.toFixed(2) : '';
       },
     }, {
       title: '代垫成本',
       dataIndex: 'advance_charge',
+      width: 100,
       render: (o, row) => {
         if (row.sp_name) {
           return (
@@ -273,6 +283,7 @@ export default class FeesList extends React.Component {
     }, {
       title: '特殊费用成本',
       dataIndex: 'excp_charge',
+      width: 100,
       render: (o, row) => {
         if (row.sp_name) {
           return (
@@ -290,6 +301,7 @@ export default class FeesList extends React.Component {
     }, {
       title: '成本合计',
       key: 'totalCharge',
+      width: 100,
       render(o, record) {
         let totalCharge = 0;
         if (record.advance_charge) {
@@ -306,6 +318,7 @@ export default class FeesList extends React.Component {
     }, {
       title: '入账状态',
       dataIndex: 'status',
+      width: 100,
       render(o) {
         if (o === 0) {
           return <Tag>未入账</Tag>;
@@ -326,6 +339,7 @@ export default class FeesList extends React.Component {
     }, {
       title: '盈亏',
       key: 'profit',
+      width: 100,
       render(_, record) {
         let pTotalCharge = 0;
         if (record.p_advance_charge) {
@@ -356,26 +370,31 @@ export default class FeesList extends React.Component {
     }, {
       title: '始发地',
       dataIndex: 'consigner_province',
+      width: 140,
       render(o, record) {
         return (<TrimSpan text={renderConsignLoc(record, 'consigner')} maxLen={8} />);
       },
     }, {
       title: '目的地',
       dataIndex: 'consignee_province',
+      width: 140,
       render(o, record) {
         return (<TrimSpan text={renderConsignLoc(record, 'consignee')} maxLen={8} />);
       },
     }, {
       title: '实际提货时间',
       dataIndex: 'pickup_act_date',
+      width: 100,
       render: (o, record) => <ActDate actDate={record.pickup_act_date} estDate={record.pickup_est_date} />,
     }, {
       title: '实际交货时间',
       dataIndex: 'deliver_act_date',
+      width: 100,
       render: (o, record) => <ActDate actDate={record.deliver_act_date} estDate={record.deliver_est_date} />,
     }, {
       title: '异常',
       dataIndex: 'excp_count',
+      width: 60,
       render(o, record) {
         return (<ExceptionListPopover
           shipmtNo={record.shipmt_no}
@@ -386,6 +405,7 @@ export default class FeesList extends React.Component {
     }, {
       title: '回单',
       dataIndex: 'pod_id',
+      width: 60,
       render(o) {
         if (!o || o === 0) {
           return '';
@@ -429,7 +449,7 @@ export default class FeesList extends React.Component {
     return (
       <div>
         <Header className="top-bar">
-          <span>{this.msg('fee')}</span>
+          <span>{this.msg('expense')}</span>
           <div className="top-bar-tools">
             <SearchBar placeholder="输入运单号搜索" onInputSearch={this.handleSearchInput}
               value={this.props.fees.searchValue} size="large"
@@ -450,7 +470,7 @@ export default class FeesList extends React.Component {
               </div>
             </div>
             <div className="panel-body table-panel">
-              <Table rowSelection={rowSelection} dataSource={dataSource} columns={columns} rowKey="shipmt_no" scroll={{ x: 2000 }} loading={loading} />
+              <Table rowSelection={rowSelection} dataSource={dataSource} columns={columns} rowKey="shipmt_no" scroll={{ x: 2500 }} loading={loading} />
             </div>
           </div>
         </Content>

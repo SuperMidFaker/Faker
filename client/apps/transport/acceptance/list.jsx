@@ -152,60 +152,76 @@ export default class AcceptList extends React.Component {
   }, {
     title: this.msg('shipRequirement'),
     dataIndex: 'sr_name',
+    width: 180,
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: this.msg('refCustomerNo'),
     dataIndex: 'ref_external_no',
+    width: 100,
     render: o => <TrimSpan text={o} />,
   }, {
     title: this.msg('shipMode'),
     dataIndex: 'transport_mode',
+    width: 80,
   }, {
     title: this.msg('shipPickupDate'),
     dataIndex: 'pickup_est_date',
+    width: 100,
     render: (o, record) => o ? moment(record.pickup_est_date).format('YYYY.MM.DD') : '',
   }, {
     title: this.msg('shipTransitTime'),
     dataIndex: 'transit_time',
+    width: 60,
     render: (o, record) => <TransitTimeLabel time={record.transit_time} tformat={this.msg} />,
   }, {
     title: this.msg('shipDeliveryDate'),
     dataIndex: 'deliver_est_date',
+    width: 100,
     render: (o, record) => o ? moment(record.deliver_est_date).format('YYYY.MM.DD') : '',
   }, {
     title: this.msg('shipConsignor'),
     dataIndex: 'consigner_name',
+    width: 150,
     render: o => <TrimSpan text={o} maxLen={8} />,
   }, {
     title: this.msg('consignorPlace'),
+    width: 120,
     render: (o, record) => <TrimSpan text={renderConsignLoc(record, 'consigner')} maxLen={8} />,
   }, {
     title: this.msg('consignorAddr'),
     dataIndex: 'consigner_addr',
+    width: 150,
     render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
     title: this.msg('shipConsignee'),
     dataIndex: 'consignee_name',
+    width: 150,
     render: o => <TrimSpan text={o} maxLen={8} />,
   }, {
     title: this.msg('consigneePlace'),
+    width: 120,
     render: (o, record) => <TrimSpan text={renderConsignLoc(record, 'consignee')} maxLen={8} />,
   }, {
     title: this.msg('consigneeAddr'),
     dataIndex: 'consignee_addr',
+    width: 150,
     render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
     title: this.msg('packageNum'),
     dataIndex: 'total_count',
+    width: 50,
   }, {
     title: this.msg('shipWeight'),
     dataIndex: 'total_weight',
+    width: 50,
   }, {
     title: this.msg('shipVolume'),
     dataIndex: 'total_volume',
+    width: 50,
   }, {
     title: this.msg('shipSource'),
     dataIndex: 'source',
+    width: 50,
     render: (o, record) => {
       if (record.source === SHIPMENT_SOURCE.consigned) {
         return this.msg('consginSource');
@@ -219,11 +235,13 @@ export default class AcceptList extends React.Component {
     title: this.msg('shipCreateDate'),
     dataIndex: 'created_date',
     sorter: true,
+    width: 120,
     render: (text, record) => moment(record.created_date).format('MM-DD HH:mm'),
   }, {
     title: this.msg('shipAcceptTime'),
     dataIndex: 'acpt_time',
     sorter: true,
+    width: 120,
     render: (text, record) => (record.acpt_time ?
      moment(record.acpt_time).format('MM-DD HH:mm') : ' '),
   }]
@@ -465,7 +483,7 @@ export default class AcceptList extends React.Component {
             />
             <div className="panel-body table-panel">
               <Table rowSelection={rowSelection} columns={columns} loading={loading}
-                dataSource={this.dataSource} scroll={{ x: 2280 }}
+                dataSource={this.dataSource} scroll={{ x: 2300 }}
               />
             </div>
           </div>

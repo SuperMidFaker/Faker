@@ -46,10 +46,11 @@ export default function makeColumns(type, handlers, msg) {
     title: msg('refCustomerNo'),
     dataIndex: 'ref_external_no',
     fixed: 'left',
-    width: 120,
+    width: 100,
     render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
     title: msg('departurePlace'),
+    width: 140,
     render: (o, record) => {
       const maxLen = 8;
       const text = renderConsignLoc(record, 'consigner');
@@ -64,10 +65,12 @@ export default function makeColumns(type, handlers, msg) {
   }, {
     title: msg('shipmtEstPickupDate'),
     dataIndex: 'pickup_est_date',
+    width: 100,
     render: (o, record) => moment(record.pickup_est_date).format('YYYY.MM.DD'),
   }, {
     title: msg('shipmtActPickupDate'),
     dataIndex: 'pickup_act_date',
+    width: 100,
     render: (o, record) => {
       const location = {
         province: record.consigner_province,
@@ -119,6 +122,7 @@ export default function makeColumns(type, handlers, msg) {
     },
   }, {
     title: msg('arrivalPlace'),
+    width: 140,
     render: (o, record) => {
       const maxLen = 8;
       const text = renderConsignLoc(record, 'consignee');
@@ -133,10 +137,12 @@ export default function makeColumns(type, handlers, msg) {
   }, {
     title: msg('shipmtEstDeliveryDate'),
     dataIndex: 'deliver_est_date',
+    width: 100,
     render: (o, record) => moment(record.deliver_est_date).format('YYYY.MM.DD'),
   }, {
     title: msg('shipmtActDeliveryDate'),
     dataIndex: 'deliver_act_date',
+    width: 100,
     render: (o, record) => {
       const location = {
         province: record.consignee_province,
@@ -187,6 +193,7 @@ export default function makeColumns(type, handlers, msg) {
   }, {
     title: msg('shipmtStatus'),
     dataIndex: 'status',
+    width: 100,
     render: (o, record) => {
       if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {
         return <Badge status="default" text={msg('pendingShipmt')} />;
@@ -207,6 +214,7 @@ export default function makeColumns(type, handlers, msg) {
   }, {
     title: msg('shipmtException'),
     dataIndex: 'excp_count',
+    width: 50,
     render(o, record) {
       return (<ExceptionListPopover
         shipmtNo={record.shipmt_no}
@@ -219,6 +227,7 @@ export default function makeColumns(type, handlers, msg) {
   columns.push({
     title: msg('shipmtCarrier'),
     dataIndex: 'sp_name',
+    width: 180,
     render: (o, record) => {
       if (record.sp_name) {
         const spSpan = <TrimSpan text={record.sp_name} maxLen={10} />;
@@ -245,6 +254,7 @@ export default function makeColumns(type, handlers, msg) {
   }, {
     title: msg('shipmtVehicle'),
     dataIndex: 'task_vehicle',
+    width: 120,
     render: (o, record) => {
       if (record.status === SHIPMENT_TRACK_STATUS.accepted) {
         if (record.sp_tenant_id === -1) { // 线下客户手动更新
@@ -263,26 +273,32 @@ export default function makeColumns(type, handlers, msg) {
   }, {
     title: msg('packageNum'),
     dataIndex: 'total_count',
+    width: 50,
   }, {
     title: msg('shipWeight'),
     dataIndex: 'total_weight',
+    width: 50,
   }, {
     title: msg('shipVolume'),
     dataIndex: 'total_volume',
+    width: 50,
   }, {
     title: msg('shipmtCustomer'),
     dataIndex: 'customer_name',
+    width: 180,
     render: o => <TrimSpan text={o} maxLen={10} />,
     filters: handlers.clients.map(item => ({ text: item.partner_code ? `${item.partner_code} | ${item.name}` : item.name, value: item.partner_id })),
   }, {
     title: msg('shipmtMode'),
     dataIndex: 'transport_mode',
+    width: 80,
   });
 
   if (type === 'pod') { // 回单处理
     columns.push({
       title: msg('spDispLoginName'),
       dataIndex: 'sp_disp_login_name',
+      width: 80,
     }, {
       title: msg('proofOfDelivery'),
       dataIndex: 'pod_type',
@@ -328,7 +344,7 @@ export default function makeColumns(type, handlers, msg) {
       },
     }, {
       title: msg('shipmtNextUpdate'),
-      width: 140,
+      width: 120,
       fixed: 'right',
       render: (o, record) => {
         if (record.pod_status === null || record.pod_status === SHIPMENT_POD_STATUS.unsubmit) {
@@ -393,6 +409,7 @@ export default function makeColumns(type, handlers, msg) {
     columns.push({
       title: msg('proofOfDelivery'),
       dataIndex: 'pod_type',
+      width: 60,
       render: (text, record) => {
         if (record.pod_type === 'qrPOD') {
           return (<Tooltip title="扫码签收回单"><Icon type="qrcode" /></Tooltip>);
@@ -404,6 +421,7 @@ export default function makeColumns(type, handlers, msg) {
       },
     }, {
       title: msg('shipmtPrevTrack'),
+      width: 120,
       render: (o, record) => {
         if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {
           return `${msg('sendAction')}
@@ -428,9 +446,10 @@ export default function makeColumns(type, handlers, msg) {
     }, {
       title: msg('spDispLoginName'),
       dataIndex: 'sp_disp_login_name',
+      width: 80,
     }, {
       title: msg('shipmtNextUpdate'),
-      width: 160,
+      width: 100,
       fixed: 'right',
       render: (o, record) => {
         if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {   // 待接单

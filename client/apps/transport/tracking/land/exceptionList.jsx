@@ -155,6 +155,7 @@ export default class LandStatusList extends React.Component {
     title: this.msg('exceptionCount'),
     fixed: 'left',
     dataIndex: 'excp_count',
+    width: 80,
     render: (o, record) => (<ExceptionListPopover
       shipmtNo={record.shipmt_no}
       dispId={record.disp_id}
@@ -230,7 +231,7 @@ export default class LandStatusList extends React.Component {
   }, {
     title: this.msg('shipmtCarrier'),
     dataIndex: 'sp_name',
-    width: 160,
+    width: 180,
     render: (o, record) => {
       if (record.sp_name) {
         if (record.sp_tenant_id > 0) {
@@ -276,10 +277,11 @@ export default class LandStatusList extends React.Component {
     width: 240,
   }, {
     title: this.msg('departurePlace'),
-    width: 150,
+    width: 140,
     render: (o, record) => renderConsignLoc(record, 'consigner'),
   }, {
     title: this.msg('arrivalPlace'),
+    width: 140,
     render: (o, record) => renderConsignLoc(record, 'consignee'),
   }, {
     title: this.msg('shipmtMode'),
@@ -321,6 +323,7 @@ export default class LandStatusList extends React.Component {
   }, {
     title: this.msg('spDispLoginName'),
     dataIndex: 'sp_disp_login_name',
+    width: 60,
   }]
   handleTableLoad = (filters, current/* , sortField, sortOrder */) => {
     this.props.loadExcpShipments(null, {

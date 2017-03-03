@@ -93,8 +93,8 @@ export default defineMessages({
     id: 'transport.billing.export',
     defaultMessage: '导出',
   },
-  fee: {
-    id: 'transport.billing.fee',
+  expense: {
+    id: 'transport.billing.expense',
     defaultMessage: '费用',
   },
   exportExcel: {

@@ -167,24 +167,29 @@ export default class BillingList extends React.Component {
     const columns = [{
       title: '账单名称',
       dataIndex: 'name',
+      width: 120,
+      fixed: 'left',
       render(o, record) {
         return <Link to={`/transport/billing/${type}/view/${record.id}`}>{o}</Link>;
       },
     }, {
       title: '开始日期',
       dataIndex: 'begin_date',
+      width: 100,
       render(o) {
         return moment(o).format('YYYY.MM.DD');
       },
     }, {
       title: '结束日期',
       dataIndex: 'end_date',
+      width: 100,
       render(o) {
         return moment(o).format('YYYY.MM.DD');
       },
     }, {
       title: type === 'receivable' ? '客户' : '承运商',
       dataIndex: type === 'receivable' ? 'sr_name' : 'sp_name',
+      width: 180,
       render(o) {
         return <TrimSpan text={o} maxLen={10} />;
       },
@@ -193,42 +198,52 @@ export default class BillingList extends React.Component {
     }, {
       title: '运单数量',
       dataIndex: 'shipmt_count',
+      width: 100,
     }, {
       title: '运单总费用',
       dataIndex: 'freight_charge',
+      width: 100,
     }, {
       title: '代垫总金额',
       dataIndex: 'advance_charge',
+      width: 100,
     }, {
       title: '特殊费用总金额',
       dataIndex: 'excp_charge',
+      width: 130,
     }, {
       title: '调整费用',
       dataIndex: 'adjust_charge',
+      width: 100,
       render(o) {
         return (<span style={{ color: '#FF0000' }}>{o}</span>);
       },
     }, {
       title: '账单总金额',
       dataIndex: 'total_charge',
+      width: 100,
       render(o) {
         return (<span style={{ color: '#FF9933' }}>{o}</span>);
       },
     }, {
       title: '核销金额',
       dataIndex: 'cancel_charge',
+      width: 100,
       render(o) {
         return (<span style={{ color: '#FF9933' }}>{o}</span>);
       },
     }, {
       title: '账单状态',
       dataIndex: 'status',
+      width: 160,
       render(o) {
         return SHIPMENT_BILLING_STATUS[o];
       },
     }, {
       title: '操作',
       dataIndex: 'id',
+      fixed: 'right',
+      width: 80,
       render: (o, record) => {
         if (record.status === 1) {
           return (
@@ -311,7 +326,7 @@ export default class BillingList extends React.Component {
               </div>
             </div>
             <div className="panel-body table-panel">
-              <Table rowSelection={rowSelection} dataSource={dataSource} columns={columns} rowKey="id" loading={loading} />
+              <Table rowSelection={rowSelection} dataSource={dataSource} columns={columns} rowKey="id" loading={loading} scroll={{ x: 1500 }} />
             </div>
             <BillingForm type={type} visible={this.state.billingFormVisible} toggle={this.toggleBillingForm} />
             <CancelChargeModal visible={this.state.cancelChargeModalVisible} toggle={this.toggleCancelChargeModal}

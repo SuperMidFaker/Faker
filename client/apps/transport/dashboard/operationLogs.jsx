@@ -60,32 +60,41 @@ export default class Dashboard extends React.Component {
     const columns = [{
       title: '运单号',
       dataIndex: 'shipmt_no',
+      fixed: 'left',
+      width: 150,
       render: (o, record) => (<a onClick={() => this.props.loadShipmtDetail(record.shipmt_no, this.props.tenantId, 'sr', 'detail', record)}>{record.shipmt_no}</a>),
     }, {
       title: this.msg('departurePlace'),
+      width: 140,
       render: (o, record) => <TrimSpan text={renderConsignLoc(record, 'consigner')} maxLen={8} />,
     }, {
       title: this.msg('shipmtEstPickupDate'),
       dataIndex: 'pickup_est_date',
+      width: 100,
       render: (o, record) => moment(record.pickup_est_date).format('YYYY.MM.DD'),
     }, {
       title: this.msg('shipmtActPickupDate'),
       dataIndex: 'pickup_act_date',
+      width: 100,
       render: (o, record) => o ? (<ActDate actDate={record.pickup_act_date} estDate={record.pickup_est_date} />) : '',
     }, {
       title: this.msg('arrivalPlace'),
+      width: 140,
       render: (o, record) => <TrimSpan text={renderConsignLoc(record, 'consignee')} maxLen={8} />,
     }, {
       title: this.msg('shipmtEstDeliveryDate'),
       dataIndex: 'deliver_est_date',
+      width: 100,
       render: (o, record) => moment(record.deliver_est_date).format('YYYY.MM.DD'),
     }, {
       title: this.msg('shipmtActDeliveryDate'),
       dataIndex: 'deliver_act_date',
+      width: 100,
       render: (o, record) => o ? (<ActDate actDate={record.deliver_act_date} estDate={record.deliver_est_date} />) : '',
     }, {
       title: this.msg('shipmtStatus'),
       dataIndex: 'status',
+      width: 100,
       render: (o, record) => {
         if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {
           return <Tag>{this.msg('pendingShipmt')}</Tag>;
@@ -106,16 +115,20 @@ export default class Dashboard extends React.Component {
     }, {
       title: this.msg('shipmtCustomer'),
       dataIndex: 'customer_name',
+      width: 180,
       render: o => <TrimSpan text={o} maxLen={10} />,
     }, {
       title: this.msg('shipmtMode'),
       dataIndex: 'transport_mode',
+      width: 80,
     }, {
       title: '操作人员',
       dataIndex: 'login_name',
+      width: 80,
     }, {
       title: '操作时间',
       dataIndex: 'created_date',
+      width: 140,
       render(o) {
         return moment(o).format('YYYY-MM-DD HH:mm:ss');
       },
@@ -152,7 +165,7 @@ export default class Dashboard extends React.Component {
         <Content className="main-content">
           <div className="page-body">
             <div className="panel-body table-panel">
-              <Table columns={columns} dataSource={dataSource} rowKey="id" />
+              <Table columns={columns} dataSource={dataSource} rowKey="id" scroll={{ x: 1600 }} />
             </div>
           </div>
         </Content>

@@ -226,7 +226,7 @@ export default class TariffList extends React.Component {
     let columns = [{
       title: this.msg('quoteNo'),
       dataIndex: 'quoteNo',
-      width: 100,
+      width: 140,
       render: col => <a>{col}</a>,
     }, {
       title: this.msg('partnerName'),
@@ -242,7 +242,7 @@ export default class TariffList extends React.Component {
       },
     }, {
       title: this.msg('tariffType'),
-      width: 80,
+      width: 90,
       render: (o, record) => {
         let kindIdx = null;
         if (record.sendTenantId === this.props.tenantId) {
@@ -267,7 +267,7 @@ export default class TariffList extends React.Component {
     }, {
       title: this.msg('transModeMeterGoodsType'),
       dataIndex: 'transModeCode',
-      width: 180,
+      width: 220,
       render: (col, row) => {
         let text = '';
         const tms = formParams.transModes.find(tm => tm.id === Number(row.transModeCode));
@@ -281,7 +281,7 @@ export default class TariffList extends React.Component {
     }, {
       title: this.msg('tariffStatus'),
       dataIndex: 'valid',
-      width: 80,
+      width: 100,
       render: (col) => {
         if (col) {
           return (
@@ -314,7 +314,7 @@ export default class TariffList extends React.Component {
       render: o => o ? moment(o).format('YYYY.MM.DD') : '',
     }, {
       title: formatContainerMsg(this.props.intl, 'opColumn'),
-      width: 100,
+      width: 160,
       render: (o, record) => {
         if (record.createdTenantId === this.props.tenantId || record.createdTenantId !== this.props.tenantId && record.partnerPermission === TARIFF_PARTNER_PERMISSION.editable) {
           if (record.valid) {
@@ -369,7 +369,7 @@ export default class TariffList extends React.Component {
       columns = [{
         title: this.msg('quoteNo'),
         dataIndex: 'quoteNo',
-        width: 100,
+        width: 140,
         render: col => <a>{col}</a>,
       }, {
         title: this.msg('partnerName'),
@@ -385,7 +385,7 @@ export default class TariffList extends React.Component {
         },
       }, {
         title: this.msg('tariffType'),
-        width: 80,
+        width: 90,
         render: (o, record) => {
           let kindIdx = null;
           if (record.sendTenantId === this.props.tenantId) {
@@ -410,7 +410,7 @@ export default class TariffList extends React.Component {
       }, {
         title: this.msg('transModeMeterGoodsType'),
         dataIndex: 'transModeCode',
-        width: 180,
+        width: 220,
         render: (col, row) => {
           let text = '';
           const tms = formParams.transModes.find(tm => tm.id === Number(row.transModeCode));
@@ -429,7 +429,7 @@ export default class TariffList extends React.Component {
       }, {
         title: this.msg('version'),
         dataIndex: 'version',
-        width: 100,
+        width: 80,
         render: col => `v.${col}`,
       }, {
         title: this.msg('reviser'),
@@ -442,7 +442,7 @@ export default class TariffList extends React.Component {
         render: o => o ? moment(o).format('YYYY.MM.DD') : '',
       }, {
         title: formatContainerMsg(this.props.intl, 'opColumn'),
-        width: 100,
+        width: 140,
         render: (o, record) => {
           if (record.createdTenantId === this.props.tenantId || record.createdTenantId !== this.props.tenantId && record.partnerPermission === TARIFF_PARTNER_PERMISSION.editable) {
             return (
