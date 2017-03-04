@@ -40,7 +40,7 @@ function fetchData({ state, dispatch }) {
   depth: 2,
   moduleName: 'clearance',
 })
-export default class HSCodeList extends Component {
+export default class HsCodeList extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,

@@ -19,7 +19,7 @@ const formatMsg = format(messages);
   { loadCategoryHsCode, removeCategoryHsCode, addCategoryHsCode }
 )
 
-export default class CategoryHscodeList extends React.Component {
+export default class SpecialCategoryHsCodeList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,

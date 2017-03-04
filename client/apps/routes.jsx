@@ -51,7 +51,9 @@ import * as CMSExpense from './cms/expense';
 import * as CMSSettings from './cms/settings';
 import * as CMSBilling from './cms/billing';
 import * as CMSResources from './cms/resources';
-import * as CMSClassification from './cms/classification';
+import * as CMSTradeItem from './cms/classification/tradeitem';
+import * as CMSClassificationHsCode from './cms/classification/hscode';
+import * as CMSClassificationSpecial from './cms/classification/special';
 import CWM from './cwm/module-cwm';
 import * as CWMDashboard from './cwm/dashboard';
 import * as CWMInbound from './cwm/inbound';
@@ -321,12 +323,12 @@ export default(store, cookie) => {
             </Route>
             <Route path="classification">
               <Route path="tradeitem">
-                <IndexRoute component={CMSClassification.TradeItemList} />
-                <Route path="create" component={CMSClassification.TradeItemCreate} />
-                <Route path="edit/:id" component={CMSClassification.TradeItemEdit} />
+                <IndexRoute component={CMSTradeItem.List} />
+                <Route path="create" component={CMSTradeItem.Create} />
+                <Route path="edit/:id" component={CMSTradeItem.Edit} />
               </Route>
-              <Route path="hscode" component={CMSClassification.HscodeList} />
-              <Route path="special" component={CMSClassification.SpecialCategory} />
+              <Route path="hscode" component={CMSClassificationHsCode.List} />
+              <Route path="special" component={CMSClassificationSpecial.Categories} />
             </Route>
             <Route path="resources">
               <IndexRedirect to="/clearance/resources/broker" />

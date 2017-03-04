@@ -35,7 +35,7 @@ function fetchData({ dispatch, params }) {
   moduleName: 'clearance',
 })
 @Form.create()
-export default class AcceptanceCreate extends Component {
+export default class EditTradeItem extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,

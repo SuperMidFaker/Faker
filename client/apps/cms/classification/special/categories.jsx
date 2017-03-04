@@ -33,7 +33,7 @@ function fetchData({ state, dispatch }) {
   depth: 2,
   moduleName: 'clearance',
 })
-export default class HscodeCategory extends React.Component {
+export default class SpecialCategories extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
