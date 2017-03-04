@@ -1,9 +1,8 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Card, Table, Layout, Input, Row, Col, message, Popconfirm } from 'antd';
+import { Breadcrumb, Button, Table, Layout, Input, Tooltip, message, Popconfirm } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -14,7 +13,7 @@ import SearchBar from 'client/components/search-bar';
 import './index.less';
 
 const formatMsg = format(messages);
-const { Header, Content } = Layout;
+const { Header, Content, Sider } = Layout;
 
 function fetchData({ state, dispatch }) {
   return dispatch(loadHsCodeCategories(state.account.tenantId));
@@ -49,6 +48,7 @@ export default class HscodeCategory extends React.Component {
     removeCategoryHsCode: PropTypes.func.isRequired,
   }
   state = {
+    collapsed: false,
     hscodeCategory: {},
     hscodeCategories: [],
     editIndex: -1,
@@ -60,6 +60,11 @@ export default class HscodeCategory extends React.Component {
     this.setState({ hscodeCategories: nextProps.hscodeCategories });
   }
   msg = key => formatMsg(this.props.intl, key)
+  toggle = () => {
+    this.setState({
+      collapsed: !this.state.collapsed,
+    });
+  }
   handleRowClick = (record, rowIndex) => {
     if (this.state.editIndex !== rowIndex) {
       this.setState({ hscodeCategory: record });
@@ -157,52 +162,66 @@ export default class HscodeCategory extends React.Component {
       },
     }];
     return (
-      <QueueAnim type={['bottom', 'up']}>
-        <Header className="top-bar">
-          <Breadcrumb>
-            <Breadcrumb.Item>
-              商品归类
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              特殊商品编码分类
-            </Breadcrumb.Item>
-          </Breadcrumb>
-        </Header>
-        <Content className="main-content" key="main">
-          <div className="page-body" style={{ paddingLeft: 5, paddingRight: 5 }}>
-            <Row>
-              <Col span={4}>
-                <div className="tool" style={{ padding: 8 }}>
-                  <Button size="large" icon="plus-circle-o" onClick={() => this.handleShowAddCategory()}>
-                    添加
-                  </Button>
-                </div>
-              </Col>
-              <Col span={20}>
-                <div className="toolbar-right" style={{ padding: 8 }}>
-                  <SearchBar placeholder="编码/名称/描述/申报要素" onInputSearch={this.handleSearch}
-                    value={this.props.categoryHscodes.searchText} size="large"
-                  />
-                </div>
-              </Col>
-            </Row>
-            <Row>
-              <Col span={4} style={{ paddingLeft: 8, paddingRight: 8 }}>
-                <Card bodyStyle={{ padding: 0 }}>
-                  <Table size="middle" dataSource={this.state.hscodeCategories} columns={columns} onRowClick={this.handleRowClick}
-                    pagination={false} rowKey="id" rowClassName={record => record.name === hscodeCategory.name ? 'table-row-selected' : ''}
-                  />
-                </Card>
-              </Col>
-              <Col span={20} style={{ paddingLeft: 8, paddingRight: 8 }}>
-                <Card bodyStyle={{ padding: 0 }}>
-                  <CategoryHscodeList hscodeCategory={hscodeCategory} />
-                </Card>
-              </Col>
-            </Row>
+      <Layout className="ant-layout-wrapper">
+        <Sider width={280} className="menu-sider" key="sider" trigger={null}
+          collapsible
+          collapsed={this.state.collapsed}
+          collapsedWidth={0}
+        >
+          <div className="top-bar">
+            <Breadcrumb>
+              <Breadcrumb.Item>
+                {this.msg('classification')}
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                特殊商品编码分类
+              </Breadcrumb.Item>
+            </Breadcrumb>
+            <div className="pull-right">
+              <Tooltip placement="bottom" title="添加特殊商品编码分类">
+                <Button type="primary" shape="circle" icon="plus" ghost onClick={() => this.handleShowAddCategory()} />
+              </Tooltip>
+            </div>
           </div>
-        </Content>
-      </QueueAnim>
+          <div className="left-sider-panel" >
+            <Table size="middle" dataSource={this.state.hscodeCategories} columns={columns} onRowClick={this.handleRowClick}
+              pagination={false} rowKey="id" rowClassName={record => record.name === hscodeCategory.name ? 'table-row-selected' : ''}
+            />
+          </div>
+        </Sider>
+        <Layout>
+          <Header className="top-bar">
+
+            { this.state.collapsed && <Breadcrumb>
+              <Breadcrumb.Item>
+                {this.msg('classification')}
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                特殊商品编码分类
+              </Breadcrumb.Item>
+            </Breadcrumb>
+            }
+            <Button size="large"
+              className={this.state.collapsed ? '' : 'btn-toggle-on'}
+              icon={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
+              onClick={this.toggle}
+            />
+          </Header>
+          <Content className="main-content" key="main">
+            <div className="page-body">
+              <div className="toolbar">
+                <SearchBar placeholder="编码/名称/描述/申报要素" onInputSearch={this.handleSearch}
+                  value={this.props.categoryHscodes.searchText} size="large"
+                />
+                <span />
+              </div>
+              <div className="panel-body table-panel">
+                <CategoryHscodeList hscodeCategory={hscodeCategory} />
+              </div>
+            </div>
+          </Content>
+        </Layout>
+      </Layout>
     );
   }
 }

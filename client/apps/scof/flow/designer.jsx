@@ -125,6 +125,7 @@ export default class FlowDesigner extends React.Component {
               </Button>
             </div>
           </div>
+          <div className="left-sider-panel" />
         </Sider>
         <Layout>
           <Header className="top-bar">

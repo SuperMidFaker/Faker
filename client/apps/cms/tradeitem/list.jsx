@@ -340,10 +340,11 @@ export default class TradeItemList extends Component {
             </Breadcrumb>
             <div className="pull-right">
               <Tooltip placement="bottom" title="添加企业物料库">
-                <Button type="primary" shape="circle" size="small" icon="plus" onClick={this.handleAddOwener} ghost />
+                <Button type="primary" shape="circle" icon="plus" onClick={this.handleAddOwener} ghost />
               </Tooltip>
             </div>
           </div>
+          <div className="left-sider-panel" />
         </Sider>
         <Layout>
           <Header className="top-bar">
