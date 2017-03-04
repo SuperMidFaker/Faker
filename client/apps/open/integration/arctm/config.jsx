@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Button, Breadcrumb, Form, Icon, Layout } from 'antd';
+import { Button, Breadcrumb, Card, Form, Icon, Layout } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadArCtmApp, updateArCtmApp } from 'common/reducers/openIntegration';
@@ -92,7 +92,9 @@ export default class ConfigAmberRoadCTM extends React.Component {
         </Header>
         <Content className="main-content layout-fixed-width">
           <Form vertical>
-            <MainForm form={form} partners={formPartners} formData={formData} />
+            <Card title={this.msg('AmberRoadCTMParam')}>
+              <MainForm form={form} partners={formPartners} formData={formData} />
+            </Card>
           </Form>
         </Content>
       </div>
