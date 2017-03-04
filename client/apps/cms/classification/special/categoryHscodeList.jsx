@@ -1,13 +1,13 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Input, message } from 'antd';
+import { Icon, Input, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { format } from 'client/common/i18n/helpers';
-import messages from './message.i18n';
+import messages from '../message.i18n';
 
 import { loadCategoryHsCode, removeCategoryHsCode, addCategoryHsCode } from 'common/reducers/cmsHsCode';
-import { hscodeColumns } from './hscodeColumns';
+import { hscodeColumns } from '../hscode/hscodeColumns';
 
 const formatMsg = format(messages);
 @injectIntl
@@ -112,7 +112,7 @@ export default class CategoryHscodeList extends React.Component {
         if (row.id === -1) {
           return (<a onClick={() => this.handleAdd()}>保存</a>);
         }
-        return (<a onClick={() => this.handleRemove(row.id)}>删除</a>);
+        return (<a onClick={() => this.handleRemove(row.id)}><Icon type="delete" /></a>);
       },
     }]);
     columns[0].width = 150;

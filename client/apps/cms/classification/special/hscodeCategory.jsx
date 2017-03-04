@@ -1,16 +1,16 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Table, Layout, Input, Tooltip, message, Popconfirm } from 'antd';
+import { Breadcrumb, Button, Table, Layout, Icon, Input, Tooltip, message, Popconfirm } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
-import messages from './message.i18n';
+import messages from '../message.i18n';
 import { loadHsCodeCategories, addHsCodeCategory, removeHsCodeCategory, updateHsCodeCategory,
 loadCategoryHsCode, addCategoryHsCode, removeCategoryHsCode } from 'common/reducers/cmsHsCode';
 import CategoryHscodeList from './categoryHscodeList';
 import SearchBar from 'client/components/search-bar';
-import './index.less';
+import '../index.less';
 
 const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
@@ -148,14 +148,14 @@ export default class HscodeCategory extends React.Component {
         } else {
           return (
             <span>
-              <Popconfirm title="确认删除该分类?" onConfirm={() => this.handleRemove(row.id)}>
-                <a role="button">删除</a>
-              </Popconfirm>
-              <span className="ant-divider" />
               <a onClick={() => {
                 this.setState({ editIndex: index });
               }}
               >修改</a>
+              <span className="ant-divider" />
+              <Popconfirm title="确认删除该分类?" onConfirm={() => this.handleRemove(row.id)}>
+                <a role="button"><Icon type="delete" /></a>
+              </Popconfirm>
             </span>
           );
         }

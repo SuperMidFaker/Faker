@@ -8,7 +8,7 @@ import { Breadcrumb, Button, Layout, Radio, Select, Dropdown, Icon, Menu, Popcon
 import Table from 'client/components/remoteAntTable';
 import NavLink from 'client/components/nav-link';
 import { format } from 'client/common/i18n/helpers';
-import messages from './message.i18n';
+import messages from '../message.i18n';
 import { loadCustomers } from 'common/reducers/crmCustomers';
 import { loadOwners, openAddModal, selectedRepoId, loadTradeItems,
   deleteItem, deleteSelectedItems, setOwner } from 'common/reducers/cmsTradeitem';

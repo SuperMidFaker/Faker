@@ -2,21 +2,13 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Button, Table, Select, message } from 'antd';
-import { loadTradeCodes, loadRepoTrades, saveRepoTrade, delRepoTrade } from 'common/reducers/cmsTradeitem';
+import { loadDeclwayUnit, saveDeclwayUnit, delDeclwayUnit } from 'common/reducers/cmsTradeitem';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
+import messages from '../../message.i18n';
+import { DECL_I_TYPE, DECL_E_TYPE, CMS_GUNIT } from 'common/constants';
 
 const formatMsg = format(messages);
 const Option = Select.Option;
-
-function ColumnInput(props) {
-  const { record, field } = props;
-  return <span>{record[field] || ''}</span>;
-}
-ColumnInput.propTypes = {
-  record: PropTypes.object.isRequired,
-  field: PropTypes.string.isRequired,
-};
 
 function ColumnSelect(props) {
   const { inEdit, record, field, options, onChange } = props;
@@ -29,13 +21,13 @@ function ColumnSelect(props) {
     return (
       <Select value={record[field] || ''} onChange={handleChange} style={{ width: '100%' }}>
         {
-          options.map((opt, idx) => <Option value={opt.code} key={`${opt.code}${idx}`}>{opt.code}</Option>)
+          options.map((opt, idx) => <Option value={opt.key} key={`${opt.key}${idx}`}>{opt.value}</Option>)
         }
       </Select>
     );
   } else {
-    const option = options.find(item => item.code === record[field]);
-    return <span>{option ? option.code : ''}</span>;
+    const option = options.find(item => item.key === record[field]);
+    return <span>{option ? option.value : ''}</span>;
   }
 }
 
@@ -54,49 +46,45 @@ ColumnSelect.proptypes = {
     loginId: state.account.loginId,
     tabKey: state.cmsTradeitem.tabKey,
     repoId: state.cmsTradeitem.repoId,
-    tradeCodes: state.cmsTradeitem.tradeCodes,
-    repoTrades: state.cmsTradeitem.repoTrades,
+    declwayUnits: state.cmsTradeitem.declwayUnits,
   }),
-  { loadTradeCodes, loadRepoTrades, saveRepoTrade, delRepoTrade }
+  { loadDeclwayUnit, saveDeclwayUnit, delDeclwayUnit }
 )
-export default class CopCodesPane extends React.Component {
+export default class SetUnitPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
-    tradeCodes: PropTypes.array,
-    repoTrades: PropTypes.array,
     repoId: PropTypes.number,
+    declwayUnits: PropTypes.array,
   }
   state = {
     datas: [],
   };
   componentDidMount() {
-    this.props.loadTradeCodes(this.props.tenantId);
-    this.props.loadRepoTrades(this.props.repoId);
+    this.props.loadDeclwayUnit(this.props.repoId);
   }
   componentWillReceiveProps(nextProps) {
     if (this.props.repoId !== nextProps.repoId ||
       (this.props.tabKey !== nextProps.tabKey && nextProps.tabKey === 'copCodes')) {
-      this.props.loadRepoTrades(nextProps.repoId);
+      this.props.loadDeclwayUnit(nextProps.repoId);
     }
-    if (this.props.repoTrades !== nextProps.repoTrades) {
-      this.setState({ datas: nextProps.repoTrades });
+    if (this.props.declwayUnits !== nextProps.declwayUnits) {
+      this.setState({ datas: nextProps.declwayUnits });
     }
   }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
   handleAdd = () => {
     const addOne = {
       repo_id: this.props.repoId,
-      creater_login_id: this.props.loginId,
-      trade_code: '',
-      trade_name: '',
+      decl_way_code: '',
+      decl_unit: '',
     };
     const data = this.state.datas;
     data.push(addOne);
     this.setState({ datas: data });
   }
   handleSave = (record) => {
-    this.props.saveRepoTrade(record).then(
+    this.props.saveDeclwayUnit(record).then(
       (result) => {
         if (result.error) {
           message.error(result.error.message);
@@ -107,7 +95,7 @@ export default class CopCodesPane extends React.Component {
     );
   }
   handleDelete = (record, index) => {
-    this.props.delRepoTrade(record.id).then((result) => {
+    this.props.delDeclwayUnit(record.id).then((result) => {
       if (result.error) {
         message.error(result.error.message);
       } else {
@@ -119,26 +107,24 @@ export default class CopCodesPane extends React.Component {
   }
   handleTradeSel = (record, field, value) => {
     record[field] = value; // eslint-disable-line no-param-reassign
-    const rels = this.props.tradeCodes.filter(tr => tr.code === value)[0];
-    if (rels) {
-      record.trade_name = rels.name; // eslint-disable-line no-param-reassign
-    }
     this.forceUpdate();
   }
   render() {
-    const { tradeCodes } = this.props;
+    const DECL_TYPE = DECL_I_TYPE.concat(DECL_E_TYPE);
     const columns = [{
-      title: this.msg('tradeCode'),
-      dataIndex: 'trade_code',
+      title: this.msg('declareWay'),
+      dataIndex: 'decl_way_code',
       render: (o, record) =>
-        <ColumnSelect field="trade_code" inEdit={!record.id} record={record}
-          onChange={this.handleTradeSel} options={tradeCodes}
+        <ColumnSelect field="decl_way_code" inEdit={!record.id} record={record}
+          onChange={this.handleTradeSel} options={DECL_TYPE}
         />,
     }, {
-      title: this.msg('tradeName'),
-      dataIndex: 'trade_name',
+      title: this.msg('declareUnit'),
+      dataIndex: 'decl_unit',
       render: (o, record) =>
-        <ColumnInput field="trade_name" record={record} />,
+        <ColumnSelect field="decl_unit" inEdit={!record.id} record={record}
+          onChange={this.handleTradeSel} options={CMS_GUNIT}
+        />,
     }, {
       width: 60,
       render: (o, record, index) => {

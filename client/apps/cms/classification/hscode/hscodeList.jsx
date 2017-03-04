@@ -6,17 +6,16 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { Breadcrumb, Layout, Button, Menu, Dropdown, Icon } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { format } from 'client/common/i18n/helpers';
-import messages from './message.i18n';
+import messages from '../message.i18n';
 import { loadHscodes } from 'common/reducers/cmsHsCode';
 import SearchBar from 'client/components/search-bar';
-import './index.less';
-import HsExtraPanel from './tabpanes/hsExtraPane';
+import '../index.less';
 import ExcelUpload from 'client/components/excelUploader';
 import { createFilename } from 'client/util/dataTransform';
 import { hscodeColumns } from './hscodeColumns';
 
 const formatMsg = format(messages);
-const { Header, Content, Sider } = Layout;
+const { Header, Content } = Layout;
 
 function fetchData({ state, dispatch }) {
   const promises = [];
@@ -170,22 +169,6 @@ export default class HSCodeList extends Component {
             </div>
           </Content>
         </Layout>
-        <Sider
-          trigger={null}
-          defaultCollapsed
-          collapsible
-          collapsed={this.state.collapsed}
-          width={480}
-          collapsedWidth={0}
-          className="right-sider"
-        >
-          <div className="right-sider-panel">
-            <div className="panel-header">
-              <h3>设置</h3>
-            </div>
-            <HsExtraPanel />
-          </div>
-        </Sider>
       </Layout>
     );
   }

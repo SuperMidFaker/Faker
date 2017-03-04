@@ -146,8 +146,8 @@ export default class Clearance extends React.Component {
         text: formatMsg(intl, 'hscode'),
       }, {
         key: 'cms-4-2',
-        path: '/clearance/classification/hscodeCategory',
-        text: formatMsg(intl, 'hscodeCategory'),
+        path: '/clearance/classification/special',
+        text: formatMsg(intl, 'specialCategory'),
       }],
     });
     linkMenus.push({

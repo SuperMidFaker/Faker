@@ -5,43 +5,41 @@ import { Form, Layout, Button, message } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
 import BasicForm from './forms/basicForm';
-import { loadTradeParams, loadTradeItem, itemEditedSave } from 'common/reducers/cmsTradeitem';
+import { loadTradeParams, createTradeItem } from 'common/reducers/cmsTradeitem';
 import { intlShape, injectIntl } from 'react-intl';
-import messages from './message.i18n';
+import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
 
-function fetchData({ dispatch, params }) {
-  const promises = [];
-  const itemId = parseInt(params.id, 10);
-  promises.push(dispatch(loadTradeParams()));
-  promises.push(dispatch(loadTradeItem(itemId)));
-  return Promise.all(promises);
+function fetchData({ dispatch }) {
+  return dispatch(loadTradeParams());
 }
-
 @connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
-    itemData: state.cmsTradeitem.itemData,
     tenantId: state.account.tenantId,
+    loginId: state.account.loginId,
+    loginName: state.account.loginName,
+    repoId: state.cmsTradeitem.repoId,
   }),
-  { itemEditedSave }
+  { loadTradeParams, createTradeItem }
 )
 @connectNav({
   depth: 3,
-  text: '物料管理',
   moduleName: 'clearance',
 })
 @Form.create()
 export default class AcceptanceCreate extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
     form: PropTypes.object.isRequired,
-    itemData: PropTypes.object,
+    tenantId: PropTypes.number.isRequired,
+    loginId: PropTypes.number.isRequired,
+    loginName: PropTypes.string.isRequired,
+    repoId: PropTypes.number.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -50,9 +48,11 @@ export default class AcceptanceCreate extends Component {
   handleSave = () => {
     this.props.form.validateFields((errors) => {
       if (!errors) {
-        const value = this.props.form.getFieldsValue();
-        const item = { ...this.props.itemData, ...value };
-        this.props.itemEditedSave({ item }).then((result) => {
+        const { repoId, tenantId, loginId, loginName } = this.props;
+        const item = this.props.form.getFieldsValue();
+        this.props.createTradeItem({
+          item, repoId, tenantId, loginId, loginName,
+        }).then((result) => {
           if (result.error) {
             message.error(result.error.message);
           } else {
@@ -71,7 +71,7 @@ export default class AcceptanceCreate extends Component {
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Header className="top-bar">
-          <span>{this.msg('editItem')}</span>
+          <span>{this.msg('newItem')}</span>
           <div className="top-bar-tools">
             <Button size="large" type="ghost" onClick={this.handleCancel}>
               {this.msg('cancel')}

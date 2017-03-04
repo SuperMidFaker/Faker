@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Form, Select, Input, Card, Col, Row, DatePicker } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
+import messages from '../../message.i18n';
 import { loadHscodes } from 'common/reducers/cmsHsCode';
 
 const formatMsg = format(messages);
