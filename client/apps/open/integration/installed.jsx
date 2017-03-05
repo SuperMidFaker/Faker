@@ -93,7 +93,7 @@ export default class InstalledAppsList extends React.Component {
     getPagination: (result, resolve) => ({
       total: result.totalCount,
       current: resolve(result.totalCount, result.current, result.pageSize),
-      showSizeChanger: false,
+      showSizeChanger: true,
       showQuickJumper: false,
       pageSize: result.pageSize,
     }),

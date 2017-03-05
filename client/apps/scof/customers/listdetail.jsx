@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Card, Form, Icon, Input, Row, Col, Tabs, Table, Layout, Popconfirm } from 'antd';
+import { Breadcrumb, Button, Card, Form, Icon, Input, Row, Col, Tabs, Table, Tooltip, Layout, Popconfirm } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import InfoItem from 'client/components/InfoItem';
@@ -112,9 +112,9 @@ export default class CustomerList extends React.Component {
                 </Breadcrumb.Item>
               </Breadcrumb>
               <div className="pull-right">
-                <Button type="primary" size="large" icon="plus-circle-o" onClick={() => this.props.showCustomerModal('add')} ghost>
-                  {this.msg('add')}
-                </Button>
+                <Tooltip placement="bottom" title="新增客户">
+                  <Button type="primary" shape="circle" icon="plus" onClick={() => this.props.showCustomerModal('add')} />
+                </Tooltip>
               </div>
             </div>
             <div className="toolbar">

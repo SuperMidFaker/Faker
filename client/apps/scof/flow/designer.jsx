@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Dropdown, Menu, Icon, Card, Form, Row, Col, Layout } from 'antd';
+import { Breadcrumb, Button, Dropdown, Menu, Icon, Card, Form, Row, Col, Layout, Tooltip } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import FlowNodePanel from './panel/flowNodePanel';
@@ -120,9 +120,9 @@ export default class FlowDesigner extends React.Component {
               </Breadcrumb.Item>
             </Breadcrumb>
             <div className="pull-right">
-              <Button type="primary" size="large" icon="plus-circle-o" ghost>
-                {this.msg('add')}
-              </Button>
+              <Tooltip placement="bottom" title="新增流程">
+                <Button type="primary" shape="circle" icon="plus" />
+              </Tooltip>
             </div>
           </div>
           <div className="left-sider-panel" />

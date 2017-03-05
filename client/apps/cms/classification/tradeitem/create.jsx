@@ -1,10 +1,11 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Form, Layout, Button, message } from 'antd';
+import { Breadcrumb, Form, Layout, Button, Row, Col, message } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
 import BasicForm from './forms/basicForm';
+import SiderForm from './forms/siderForm';
 import { loadTradeParams, createTradeItem } from 'common/reducers/cmsTradeitem';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from '../message.i18n';
@@ -71,9 +72,19 @@ export default class CreateTradeItem extends Component {
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Header className="top-bar">
-          <span>{this.msg('newItem')}</span>
+          <Breadcrumb>
+            <Breadcrumb.Item>
+              {this.msg('classification')}
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              {this.msg('tradeItemMaster')}
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              {this.msg('newItem')}
+            </Breadcrumb.Item>
+          </Breadcrumb>
           <div className="top-bar-tools">
-            <Button size="large" type="ghost" onClick={this.handleCancel}>
+            <Button size="large" onClick={this.handleCancel}>
               {this.msg('cancel')}
             </Button>
             <Button size="large" type="primary" icon="save" onClick={this.handleSave}>
@@ -81,12 +92,17 @@ export default class CreateTradeItem extends Component {
             </Button>
           </div>
         </Header>
-        <Content className="main-content" key="main">
-          <div className="page-body card-wrapper">
-            <Form horizontal>
-              <BasicForm form={form} />
-            </Form>
-          </div>
+        <Content className="main-content layout-fixed-width layout-fixed-width-large">
+          <Form vertical>
+            <Row gutter={16}>
+              <Col sm={24} md={16}>
+                <BasicForm form={form} />
+              </Col>
+              <Col sm={24} md={8}>
+                <SiderForm form={form} />
+              </Col>
+            </Row>
+          </Form>
         </Content>
       </QueueAnim>
     );

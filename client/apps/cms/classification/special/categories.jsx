@@ -179,7 +179,7 @@ export default class SpecialCategories extends React.Component {
             </Breadcrumb>
             <div className="pull-right">
               <Tooltip placement="bottom" title="添加特殊商品编码分类">
-                <Button type="primary" shape="circle" icon="plus" ghost onClick={() => this.handleShowAddCategory()} />
+                <Button type="primary" shape="circle" icon="plus" onClick={() => this.handleShowAddCategory()} />
               </Tooltip>
             </div>
           </div>

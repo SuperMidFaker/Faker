@@ -303,7 +303,7 @@ export default class ManifestList extends Component {
             </div>
             <div className="panel-body table-panel expandable">
               <Table rowSelection={rowSelection} columns={columns} rowKey="pre_entry_seq_no" dataSource={this.dataSource}
-                loading={delgBillList.loading} scroll={{ x: 1500 }}
+                loading={delgBillList.loading} scroll={{ x: 1800 }}
               />
             </div>
           </div>
