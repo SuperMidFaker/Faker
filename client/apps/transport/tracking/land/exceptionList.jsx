@@ -331,8 +331,15 @@ export default class LandStatusList extends React.Component {
     title: this.msg('shipmtActDeliveryDate'),
     dataIndex: 'deliver_act_date',
     width: 100,
-    render: (o, record) => record.deliver_prm_date ? renderActDate(record.deliver_act_date, record.deliver_prm_date) :
-      renderActDate(record.deliver_act_date, record.deliver_est_date),
+    render: (o, record) => {
+      if (record.pickup_act_date) {
+        const deliverPrmDate = new Date(record.pickup_act_date);
+        deliverPrmDate.setDate(deliverPrmDate.getDate() + record.transit_time);
+        return renderActDate(record.deliver_act_date, deliverPrmDate);
+      } else {
+        return '';
+      }
+    },
   }, {
     title: this.msg('overtime'),
     key: 'late',

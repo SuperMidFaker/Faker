@@ -192,8 +192,9 @@ export default function makeColumns(type, handlers, msg) {
           }
         }
       } else {
-        return record.deliver_prm_date ? renderActDate(record.deliver_act_date, record.deliver_prm_date) :
-        renderActDate(record.deliver_act_date, record.deliver_est_date);
+        const deliverPrmDate = new Date(record.pickup_act_date);
+        deliverPrmDate.setDate(deliverPrmDate.getDate() + record.transit_time);
+        return renderActDate(record.deliver_act_date, deliverPrmDate);
       }
     },
   }, {

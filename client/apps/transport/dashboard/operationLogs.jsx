@@ -97,11 +97,9 @@ export default class Dashboard extends React.Component {
       width: 100,
       render: (o, record) => {
         if (record.deliver_act_date) {
-          if (record.deliver_prm_date) {
-            return (<ActDate actDate={record.deliver_act_date} estDate={record.deliver_prm_date} />);
-          } else {
-            return (<ActDate actDate={record.deliver_act_date} estDate={record.deliver_est_date} />);
-          }
+          const deliverPrmDate = new Date(record.pickup_act_date);
+          deliverPrmDate.setDate(deliverPrmDate.getDate() + record.transit_time);
+          return (<ActDate actDate={record.deliver_act_date} estDate={deliverPrmDate} />);
         } else {
           return '';
         }
