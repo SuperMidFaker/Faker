@@ -31,6 +31,7 @@ const typeKeys = EXPENSE_TYPES.map(ec => ec.key);
 @injectIntl
 @connect(
   state => ({
+    shipmt: state.shipment.previewer.shipmt,
     charges: state.shipment.previewer.charges,
     pAdvanceCharges: state.shipment.previewer.pAdvanceCharges,
     advanceCharges: state.shipment.previewer.advanceCharges,
@@ -41,6 +42,7 @@ const typeKeys = EXPENSE_TYPES.map(ec => ec.key);
 export default class ChargePanel extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
+    shipmt: PropTypes.object.isRequired,
     charges: PropTypes.object.isRequired,
     pAdvanceCharges: PropTypes.array.isRequired,
     advanceCharges: PropTypes.array.isRequired,
@@ -90,6 +92,19 @@ export default class ChargePanel extends React.Component {
     dataIndex: 'total_fee',
     width: 80,
     render: this.currency,
+  }]
+  paramColumns = [{
+    title: this.msg('distance'),
+    dataIndex: 'distance',
+    render: col => col ? `${col} 公里` : '',
+  }, {
+    title: this.msg('totalWeight'),
+    dataIndex: 'total_weight',
+    render: col => col ? `${col} ${this.msg('kilogram')}` : '',
+  }, {
+    title: this.msg('totalVolume'),
+    dataIndex: 'total_volume',
+    render: col => col ? `${col} ${this.msg('cubicMeter')}` : '',
   }]
   assembleChargeItems(charge, outDs) {
     if (charge.freight_charge) {
@@ -206,7 +221,7 @@ export default class ChargePanel extends React.Component {
   }
 
   render() {
-    const { charges, intl, pAdvanceCharges, advanceCharges, pSpecialCharges, specialCharges } = this.props;
+    const { charges, intl, shipmt, pAdvanceCharges, advanceCharges, pSpecialCharges, specialCharges } = this.props;
     const { checkedExpCates, checkedExpTypes } = this.state;
 
     let revenueds = [];
@@ -267,6 +282,7 @@ export default class ChargePanel extends React.Component {
           onChange={chked => this.handleTypeTagChange(et.key, chked)}
         >{et.text}</CheckableTag>))
     );
+    const paramDataSource = [{ key: 0, distance: shipmt.distance, total_weight: shipmt.total_weight, total_volume: shipmt.total_volume }];
     return (
       <div className="pane-content tab-pane">
         <Card bodyStyle={{ padding: 16 }}>
@@ -302,7 +318,9 @@ export default class ChargePanel extends React.Component {
             <Panel header={this.msg('costDetail')} key="cost" className="table-panel">
               <Table size="small" columns={this.feeColumns} pagination={false} dataSource={expenseds} />
             </Panel>
-            <Panel header="计费参数" key="params" className="table-panel" />
+            <Panel header="计费参数" key="params" className="table-panel">
+              <Table size="small" columns={this.paramColumns} pagination={false} dataSource={paramDataSource} />
+            </Panel>
           </Collapse>
         </Card>
       </div>

@@ -63,12 +63,7 @@ export default class DealException extends React.Component {
     const { dealExcpModal: { exception } } = this.props;
     const t = TRANSPORT_EXCEPTIONS.find(item => item.code === exception.type);
     const type = t ? t.name : '';
-    let description = '';
-    if (exception.charge === null || exception.charge === 0) {
-      description = exception.excp_event;
-    } else if (exception.charge) {
-      description = `费用金额 ${exception.charge.toFixed(2)}元, ${exception.excp_event}`;
-    }
+    const description = exception.excp_event;
     if (exception.excp_level === 'INFO') {
       return (<div><Icon type="info-circle" className="sign-info" /> {type} : {description}</div>);
     } else if (exception.excp_level === 'WARN') {

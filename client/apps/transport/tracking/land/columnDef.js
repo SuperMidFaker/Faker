@@ -54,7 +54,7 @@ export default function makeColumns(type, handlers, msg) {
     render: (o, record) => {
       const maxLen = 8;
       const text = renderConsignLoc(record, 'consigner');
-      if (text.length > 8) {
+      if (text.length > maxLen) {
         return (<TrimSpan text={`${renderConsignLoc(record, 'consigner')} ${record.consigner_addr || ''}`} maxLen={maxLen} />);
       } else {
         return (
@@ -126,7 +126,7 @@ export default function makeColumns(type, handlers, msg) {
     render: (o, record) => {
       const maxLen = 8;
       const text = renderConsignLoc(record, 'consignee');
-      if (text.length > 8) {
+      if (text.length > maxLen) {
         return (<TrimSpan text={`${renderConsignLoc(record, 'consignee')} ${record.consignee_addr || ''}`} maxLen={maxLen} />);
       } else {
         return (
