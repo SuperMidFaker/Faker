@@ -323,10 +323,16 @@ export default class LandStatusList extends React.Component {
     width: 100,
     render: (o, record) => moment(record.deliver_est_date).format('YYYY.MM.DD'),
   }, {
+    title: this.msg('shipmtPrmDeliveryDate'),
+    dataIndex: 'deliver_prm_date',
+    width: 100,
+    render: o => o ? moment(o).format('YYYY.MM.DD') : '',
+  }, {
     title: this.msg('shipmtActDeliveryDate'),
     dataIndex: 'deliver_act_date',
     width: 100,
-    render: (o, record) => renderActDate(record.deliver_act_date, record.deliver_est_date),
+    render: (o, record) => record.deliver_prm_date ? renderActDate(record.deliver_act_date, record.deliver_prm_date) :
+      renderActDate(record.deliver_act_date, record.deliver_est_date),
   }, {
     title: this.msg('overtime'),
     key: 'late',
@@ -451,7 +457,7 @@ export default class LandStatusList extends React.Component {
           <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch} toggle={this.toggleAdvancedSearch} />
           <div className="panel-body table-panel">
             <Table rowSelection={rowSelection} columns={this.columns} loading={loading}
-              dataSource={this.dataSource} scroll={{ x: 2360 }}
+              dataSource={this.dataSource} scroll={{ x: 2460 }}
             />
           </div>
         </div>

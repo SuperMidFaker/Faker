@@ -181,6 +181,10 @@ export default defineMessages({
     id: 'transport.tracking.est.delivery.date',
     defaultMessage: '计划到达',
   },
+  shipmtPrmDeliveryDate: {
+    id: 'transport.tracking.promise.delivery.date',
+    defaultMessage: '承诺到达',
+  },
   shipmtActDeliveryDate: {
     id: 'transport.tracking.act.delivery.date',
     defaultMessage: '实际到达',

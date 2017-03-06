@@ -140,6 +140,11 @@ export default function makeColumns(type, handlers, msg) {
     width: 100,
     render: (o, record) => moment(record.deliver_est_date).format('YYYY.MM.DD'),
   }, {
+    title: msg('shipmtPrmDeliveryDate'),
+    dataIndex: 'deliver_prm_date',
+    width: 100,
+    render: o => o ? moment(o).format('YYYY.MM.DD') : '',
+  }, {
     title: msg('shipmtActDeliveryDate'),
     dataIndex: 'deliver_act_date',
     width: 100,
@@ -187,7 +192,8 @@ export default function makeColumns(type, handlers, msg) {
           }
         }
       } else {
-        return renderActDate(record.deliver_act_date, record.deliver_est_date);
+        return record.deliver_prm_date ? renderActDate(record.deliver_act_date, record.deliver_prm_date) :
+        renderActDate(record.deliver_act_date, record.deliver_est_date);
       }
     },
   }, {

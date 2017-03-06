@@ -349,7 +349,7 @@ export default class DispatchDock extends Component {
     const { type, target } = this.props.dispatchConfirmModal;
     const { tenantId, loginId, shipmts } = this.props;
     const podType = this.state.podType;
-    const shipmtNos = shipmts.map(s => ({ shipmtNo: s.shipmt_no, dispId: s.key }));
+    const shipmtNos = shipmts.map(s => ({ shipmtNo: s.shipmt_no, dispId: s.key, deliverPrmDate: s.deliver_prm_date }));
     if (type === 'tenant') {
       this.props.doDispatch({
         tenantId,
@@ -395,7 +395,7 @@ export default class DispatchDock extends Component {
     const { type, target } = this.props.dispatchConfirmModal;
     const { tenantId, loginId, loginName, shipmts } = this.props;
     const podType = this.state.podType;
-    const shipmtNos = shipmts.map(s => ({ shipmtNo: s.shipmt_no, dispId: s.key }));
+    const shipmtNos = shipmts.map(s => ({ shipmtNo: s.shipmt_no, dispId: s.key, deliverPrmDate: s.deliver_prm_date }));
     if (type === 'tenant') {
       this.props.doDispatchAndSend({
         tenantId,
