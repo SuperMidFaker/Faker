@@ -54,7 +54,7 @@ export default function makeColumns(type, handlers, msg) {
     render: (o, record) => {
       const maxLen = 8;
       const text = renderConsignLoc(record, 'consigner');
-      if (text.length > 8) {
+      if (text.length > maxLen) {
         return (<TrimSpan text={`${renderConsignLoc(record, 'consigner')} ${record.consigner_addr || ''}`} maxLen={maxLen} />);
       } else {
         return (
@@ -126,7 +126,7 @@ export default function makeColumns(type, handlers, msg) {
     render: (o, record) => {
       const maxLen = 8;
       const text = renderConsignLoc(record, 'consignee');
-      if (text.length > 8) {
+      if (text.length > maxLen) {
         return (<TrimSpan text={`${renderConsignLoc(record, 'consignee')} ${record.consignee_addr || ''}`} maxLen={maxLen} />);
       } else {
         return (
@@ -139,6 +139,11 @@ export default function makeColumns(type, handlers, msg) {
     dataIndex: 'deliver_est_date',
     width: 100,
     render: (o, record) => moment(record.deliver_est_date).format('YYYY.MM.DD'),
+  }, {
+    title: msg('shipmtPrmDeliveryDate'),
+    dataIndex: 'deliver_prm_date',
+    width: 100,
+    render: o => o ? moment(o).format('YYYY.MM.DD') : '',
   }, {
     title: msg('shipmtActDeliveryDate'),
     dataIndex: 'deliver_act_date',
@@ -187,7 +192,9 @@ export default function makeColumns(type, handlers, msg) {
           }
         }
       } else {
-        return renderActDate(record.deliver_act_date, record.deliver_est_date);
+        const deliverPrmDate = new Date(record.pickup_act_date);
+        deliverPrmDate.setDate(deliverPrmDate.getDate() + record.transit_time);
+        return renderActDate(record.deliver_act_date, deliverPrmDate);
       }
     },
   }, {

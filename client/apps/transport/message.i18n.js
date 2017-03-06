@@ -97,6 +97,10 @@ export default defineMessages({
     id: 'transport.dashboard.log.est.delivery.date',
     defaultMessage: '预计到达',
   },
+  shipmtPrmDeliveryDate: {
+    id: 'transport.dashboard.log.promise.delivery.date',
+    defaultMessage: '承诺到达',
+  },
   shipmtActDeliveryDate: {
     id: 'transport.dashboard.log.act.delivery.date',
     defaultMessage: '实际到达',

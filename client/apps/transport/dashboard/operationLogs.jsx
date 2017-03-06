@@ -87,10 +87,23 @@ export default class Dashboard extends React.Component {
       width: 100,
       render: (o, record) => moment(record.deliver_est_date).format('YYYY.MM.DD'),
     }, {
+      title: this.msg('shipmtPrmDeliveryDate'),
+      dataIndex: 'deliver_prm_date',
+      width: 100,
+      render: o => o ? moment(o).format('YYYY.MM.DD') : '',
+    }, {
       title: this.msg('shipmtActDeliveryDate'),
       dataIndex: 'deliver_act_date',
       width: 100,
-      render: (o, record) => o ? (<ActDate actDate={record.deliver_act_date} estDate={record.deliver_est_date} />) : '',
+      render: (o, record) => {
+        if (record.deliver_act_date) {
+          const deliverPrmDate = new Date(record.pickup_act_date);
+          deliverPrmDate.setDate(deliverPrmDate.getDate() + record.transit_time);
+          return (<ActDate actDate={record.deliver_act_date} estDate={deliverPrmDate} />);
+        } else {
+          return '';
+        }
+      },
     }, {
       title: this.msg('shipmtStatus'),
       dataIndex: 'status',
@@ -165,7 +178,7 @@ export default class Dashboard extends React.Component {
         <Content className="main-content">
           <div className="page-body">
             <div className="panel-body table-panel">
-              <Table columns={columns} dataSource={dataSource} rowKey="id" scroll={{ x: 1600 }} />
+              <Table columns={columns} dataSource={dataSource} rowKey="id" scroll={{ x: 1700 }} />
             </div>
           </div>
         </Content>

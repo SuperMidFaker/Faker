@@ -97,6 +97,7 @@ export default class ExceptionPane extends React.Component {
   }, {
     title: this.msg('exceptionResolved'),
     dataIndex: 'resolved',
+    width: 60,
     render: (o) => {
       if (o === 1) {
         return (<Tag color="green">已解决</Tag>);
@@ -108,13 +109,16 @@ export default class ExceptionPane extends React.Component {
   }, {
     title: this.msg('submitDate'),
     dataIndex: 'submit_date',
+    width: 120,
     render: o => moment(o).format('YYYY-MM-DD HH:mm:ss'),
   }, {
     title: this.msg('submitter'),
     dataIndex: 'submitter',
+    width: 60,
   }, {
     title: this.msg('operation'),
     dataIndex: 'id',
+    width: 50,
     render: (o, record) => (<a onClick={() => this.handleShowDealExcpModal(record)}>处理</a>),
   }]
   handleShowDealExcpModal = (exception) => {
