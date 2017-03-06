@@ -1,9 +1,11 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Dropdown, Menu, Icon, Card, Form, Row, Col, Layout, Tooltip } from 'antd';
+import { Breadcrumb, Button, Dropdown, Menu, Icon, Input, Card, Form, Row, Col, Layout, Table, Tooltip } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
+import { openCreateFlowModal } from 'common/reducers/scofFlow';
+import CreateFlowModal from './modal/createFlowModal';
 import FlowNodePanel from './panel/flowNodePanel';
 import FlowEdgePanel from './panel/flowEdgePanel';
 import BizObjCMSPanel from './panel/bizObjCMSPanel';
@@ -11,6 +13,7 @@ import messages from './message.i18n';
 
 const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
+const Search = Input.Search;
 const MenuItem = Menu.Item;
 
 @injectIntl
@@ -18,6 +21,7 @@ const MenuItem = Menu.Item;
   state => ({
     tenantId: state.account.tenantId,
   }),
+  { openCreateFlowModal }
 )
 @connectNav({
   depth: 2,
@@ -89,6 +93,9 @@ export default class FlowDesigner extends React.Component {
       rightSidercollapsed: !this.state.rightSidercollapsed,
     });
   }
+  handleCreateFlow = () => {
+    this.props.openCreateFlowModal();
+  }
   handleStatusChange = (ev) => {
     if (ev.target.value === this.props.listFilter.status) {
 
@@ -98,6 +105,7 @@ export default class FlowDesigner extends React.Component {
 
   }
   render() {
+    const { flow } = this.state;
     const { form, submitting } = this.props;
     const menu = (
       <Menu onClick={this.handleMenuClick}>
@@ -106,6 +114,11 @@ export default class FlowDesigner extends React.Component {
         <MenuItem key="3">{this.msg('nodeCWM')}</MenuItem>
       </Menu>
     );
+    const columns = [{
+      dataIndex: 'name',
+      key: 'name',
+      render: o => (<div style={{ paddingLeft: 15 }}>{o}</div>),
+    }];
     return (
       <Layout>
         <Sider width={280} className="menu-sider" key="sider" trigger={null}
@@ -120,12 +133,24 @@ export default class FlowDesigner extends React.Component {
               </Breadcrumb.Item>
             </Breadcrumb>
             <div className="pull-right">
-              <Tooltip placement="bottom" title="新增流程">
-                <Button type="primary" shape="circle" icon="plus" />
+              <Tooltip placement="bottom" title={this.msg('createFlow')}>
+                <Button type="primary" shape="circle" icon="plus" onClick={this.handleCreateFlow} />
               </Tooltip>
             </div>
           </div>
-          <div className="left-sider-panel" />
+          <div className="left-sider-panel">
+            <div className="toolbar">
+              <Search
+                placeholder={this.msg('searchPlaceholder')}
+                onSearch={this.handleSearch} size="large"
+              />
+            </div>
+            <Table size="middle" dataSource={this.props.flowList} columns={columns} showHeader={false} onRowClick={this.handleRowClick}
+              pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }}
+              rowClassName={record => record.id === flow.id ? 'table-row-selected' : ''}
+            />
+          </div>
+          <CreateFlowModal />
         </Sider>
         <Layout>
           <Header className="top-bar">

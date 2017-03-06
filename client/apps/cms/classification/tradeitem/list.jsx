@@ -4,7 +4,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Breadcrumb, Button, Layout, Radio, Select, Dropdown, Icon, Menu, Popconfirm, Tooltip, message } from 'antd';
+import { Breadcrumb, Button, Collapse, Layout, Radio, Dropdown, Icon, Menu, Popconfirm, Tooltip, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import NavLink from 'client/components/nav-link';
 import { format } from 'client/common/i18n/helpers';
@@ -13,16 +13,17 @@ import { loadCustomers } from 'common/reducers/crmCustomers';
 import { loadOwners, openAddModal, selectedRepoId, loadTradeItems,
   deleteItem, deleteSelectedItems, setOwner } from 'common/reducers/cmsTradeitem';
 import AddTradeRepoModal from './modals/addTradeRepo';
-import ExtraPanel from './tabpanes/ExtraPane';
 import SearchBar from 'client/components/search-bar';
 import ExcelUpload from 'client/components/excelUploader';
 import { createFilename } from 'client/util/dataTransform';
+import CopCodesPane from './panes/copCodesPane';
+import SetUnitPane from './panes/setUnitPane';
 
 const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
-const Option = Select.Option;
+const Panel = Collapse.Panel;
 
 function fetchData({ state, dispatch }) {
   const promises = [];
@@ -240,6 +241,12 @@ export default class TradeItemList extends Component {
       this.props.setOwner(owner);
     }
   }
+  handleRowClick = (record) => {
+    const owner = record;
+    this.props.selectedRepoId(owner.repo_id);
+    this.handleItemListLoad(owner.repo_id);
+    this.props.setOwner(owner);
+  }
   handleAddOwener = () => {
     this.props.loadCustomers({
       tenantId: this.props.tenantId,
@@ -273,11 +280,7 @@ export default class TradeItemList extends Component {
     });
   }
   render() {
-    const { repoOwners, tradeItemlist, repoId, owner } = this.props;
-    let ownVal = '';
-    if (owner.partner_code) {
-      ownVal = `${owner.partner_code} | ${owner.name}`;
-    }
+    const { tradeItemlist, repoId, owner } = this.props;
     const selectedRows = this.state.selectedRowKeys;
     const rowSelection = {
       selectedRowKeys: selectedRows,
@@ -303,6 +306,11 @@ export default class TradeItemList extends Component {
         </span>
         ),
     });
+    const repoColumns = [{
+      dataIndex: 'name',
+      key: 'name',
+      render: o => (<div style={{ paddingLeft: 15 }}>{o}</div>),
+    }];
     const menu = (
       <Menu onClick={this.handleMenuClick}>
         <Menu.Item key="importData">
@@ -344,7 +352,12 @@ export default class TradeItemList extends Component {
               </Tooltip>
             </div>
           </div>
-          <div className="left-sider-panel" />
+          <div className="left-sider-panel" >
+            <Table size="middle" dataSource={this.props.repoOwners} columns={repoColumns} showHeader={false} onRowClick={this.handleRowClick}
+              pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }}
+              rowClassName={record => record.id === owner.id ? 'table-row-selected' : ''}
+            />
+          </div>
         </Sider>
         <Layout>
           <Header className="top-bar">
@@ -363,22 +376,6 @@ export default class TradeItemList extends Component {
               icon={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
               onClick={this.toggle}
             />
-            <span />
-            <Select
-              showSearch
-              style={{ width: 220 }}
-              placeholder="选择客户企业物料库"
-              optionFilterProp="children"
-              size="large"
-              defaultValue={`${ownVal}`}
-              onChange={this.handleSelectChange}
-            >
-              {
-                    repoOwners.map(data => (<Option key={data.id} value={data.id}
-                      search={`${data.partner_code}${data.name}`}
-                    >{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>)
-                    )}
-            </Select>
             <span />
             <RadioGroup onChange={this.handleRadioChange} size="large">
               <RadioButton value="unclassified">{this.msg('filterUnclassified')}</RadioButton>
@@ -403,7 +400,7 @@ export default class TradeItemList extends Component {
               </div>
               }
           </Header>
-          <Content className="main-content" key="main">
+          <Content className="main-content layout-min-width layout-min-width-large">
             <div className="page-body">
               <div className="toolbar">
                 <SearchBar placeholder="编码/名称/描述/申报要素" onInputSearch={this.handleSearch} size="large" />
@@ -436,7 +433,14 @@ export default class TradeItemList extends Component {
             <div className="panel-header">
               <h3>物料库设置</h3>
             </div>
-            <ExtraPanel />
+            <Collapse accordion defaultActiveKey="trader">
+              <Panel header={'收发货企业'} key="trader">
+                <CopCodesPane />
+              </Panel>
+              <Panel header={'申报单位'} key="unit">
+                <SetUnitPane />
+              </Panel>
+            </Collapse>
           </div>
         </Sider>
       </Layout>

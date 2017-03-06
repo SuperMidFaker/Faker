@@ -210,7 +210,7 @@ export default class ManifestEditor extends React.Component {
             <div className="panel-header">
               <h3>附加资料</h3>
             </div>
-            <SheetExtraPanel />
+            <SheetExtraPanel type="bill" />
           </div>
         </Sider>
         <MergeSplitModal />

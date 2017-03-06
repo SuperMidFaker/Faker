@@ -117,17 +117,19 @@ export default class CustomerList extends React.Component {
                 </Tooltip>
               </div>
             </div>
-            <div className="toolbar">
-              <Search
-                placeholder={this.msg('searchPlaceholder')}
-                onSearch={this.handleSearch} size="large"
+            <div className="left-sider-panel">
+              <div className="toolbar">
+                <Search
+                  placeholder={this.msg('searchPlaceholder')}
+                  onSearch={this.handleSearch} size="large"
+                />
+              </div>
+              <Table size="middle" dataSource={this.props.customers} columns={columns} showHeader={false} onRowClick={this.handleRowClick}
+                pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }}
+                rowClassName={record => record.id === customer.id ? 'table-row-selected' : ''}
               />
+              <CustomerModal onOk={this.handleTableLoad} />
             </div>
-            <Table size="middle" dataSource={this.props.customers} columns={columns} showHeader={false} onRowClick={this.handleRowClick}
-              pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }}
-              rowClassName={record => record.id === customer.id ? 'table-row-selected' : ''}
-            />
-            <CustomerModal onOk={this.handleTableLoad} />
           </div>
         </Sider>
         <Layout>
