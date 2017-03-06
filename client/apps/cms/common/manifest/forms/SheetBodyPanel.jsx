@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Button, Collapse, Dropdown, Menu, Table, Icon, Input, Select, message } from 'antd';
+import { Button, Dropdown, Menu, Table, Icon, Input, Select, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import RowUpdater from './rowUpdater';
 import { updateHeadNetWt, loadBillBody, openAmountModel } from 'common/reducers/cmsManifest';
@@ -12,7 +12,6 @@ import { createFilename } from 'client/util/dataTransform';
 import AmountModel from '../modals/amountDivid';
 
 const formatMsg = format(messages);
-const Panel = Collapse.Panel;
 const Option = Select.Option;
 
 function ColumnInput(props) {
@@ -228,7 +227,7 @@ export default class SheetBodyPanel extends React.Component {
     const columns = [{
       title: this.msg('seqNumber'),
       dataIndex: 'g_no',
-      width: 50,
+      width: 45,
       fixed: 'left',
     }];
     if (type === 'bill') {
@@ -340,6 +339,20 @@ export default class SheetBodyPanel extends React.Component {
           onChange={this.handleEditChange} options={units} edit={editBody}
         />,
     }, {
+      title: this.msg('grosswt'),
+      width: 80,
+      render: (o, record, index) =>
+        <ColumnInput field="gross_wt" inEdit={index === editIndex} record={record}
+          onChange={this.handleEditChange} edit={editBody}
+        />,
+    }, {
+      title: this.msg('netwt'),
+      width: 80,
+      render: (o, record, index) =>
+        <ColumnInput field="wet_wt" inEdit={index === editIndex} record={record}
+          onChange={this.handleEditChange} edit={editBody}
+        />,
+    }, {
       title: this.msg('exemptionWay'),
       width: 80,
       render: (o, record, index) =>
@@ -375,20 +388,6 @@ export default class SheetBodyPanel extends React.Component {
           onChange={this.handleEditChange} options={units} edit={editBody}
         />,
     }, {
-      title: this.msg('netwt'),
-      width: 80,
-      render: (o, record, index) =>
-        <ColumnInput field="wet_wt" inEdit={index === editIndex} record={record}
-          onChange={this.handleEditChange} edit={editBody}
-        />,
-    }, {
-      title: this.msg('grosswt'),
-      width: 80,
-      render: (o, record, index) =>
-        <ColumnInput field="gross_wt" inEdit={index === editIndex} record={record}
-          onChange={this.handleEditChange} edit={editBody}
-        />,
-    }, {
       title: this.msg('versionNo'),
       width: 80,
       render: (o, record, index) =>
@@ -403,7 +402,6 @@ export default class SheetBodyPanel extends React.Component {
           onChange={this.handleEditChange} edit={editBody}
         />,
     }, {
-      title: this.msg('opColumn'),
       width: 90,
       fixed: 'right',
       render: (o, record, index) => {
@@ -630,7 +628,7 @@ export default class SheetBodyPanel extends React.Component {
   }
   render() {
     const columns = this.getColumns();
-    let billBodyToolbar = '报关单表体';
+    let billBodyToolbar = '';
     if (this.props.type === 'bill') {
       const menu = (
         <Menu onClick={this.handleMenuClick}>
@@ -671,28 +669,30 @@ export default class SheetBodyPanel extends React.Component {
           <Menu.Item key="export"><Icon type="export" /> 导出数据</Menu.Item>
         </Menu>);
       billBodyToolbar = (
-        <div>
-          清单表体
-          <div className="toolbar-right">
-            <Button icon="pie-chart" onClick={this.handleTotalPriceDivid}>金额平摊</Button>
-            <Button icon="arrows-alt" onClick={this.handleGrossWtDivid}>毛重分摊</Button>
-            <Button icon="shrink" onClick={this.handleNetWetSummary}>净重汇总</Button>
-            <Dropdown overlay={menu} type="primary">
-              <Button type="primary" ghost onClick={this.handleButtonClick}>
-                {this.msg('importBody')} <Icon type="down" />
-              </Button>
-            </Dropdown>
-          </div>
-        </div>);
+        <span>
+          <Button icon="pie-chart" onClick={this.handleTotalPriceDivid}>金额平摊</Button>
+          <Button icon="arrows-alt" onClick={this.handleGrossWtDivid}>毛重分摊</Button>
+          <Button icon="shrink" onClick={this.handleNetWetSummary}>净重汇总</Button>
+          <Dropdown overlay={menu} type="primary">
+            <Button type="primary" onClick={this.handleButtonClick}>
+              {this.msg('importBody')} <Icon type="down" />
+            </Button>
+          </Dropdown>
+        </span>);
     }
     return (
-      <Collapse defaultActiveKey={['body']}>
-        <Panel header={billBodyToolbar} key="body">
-          <Table rowKey="id" columns={columns} dataSource={this.state.bodies}
+      <div className="pane">
+        <div className="pane-header">
+          <div className="toolbar-right">
+            {billBodyToolbar}
+          </div>
+        </div>
+        <div className="pane-content">
+          <Table bordered rowKey="id" columns={columns} dataSource={this.state.bodies}
             size="middle" scroll={{ x: 2600 }} pagination={this.state.pagination}
           />
-        </Panel>
-        <AmountModel />
-      </Collapse>);
+          <AmountModel />
+        </div>
+      </div>);
   }
 }

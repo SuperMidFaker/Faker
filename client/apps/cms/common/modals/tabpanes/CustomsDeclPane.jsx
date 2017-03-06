@@ -141,7 +141,7 @@ export default class CustomsDeclPane extends React.Component {
     return (
       <div className="pane-content tab-pane">
         <Card bodyStyle={{ padding: 0 }}>
-          <Row gutter={8} style={{ padding: 8 }}>
+          <Row gutter={8} style={{ padding: 16 }}>
             <Col span="12">
               <InfoItem labelCol={{ span: 3 }} label="报关服务商"
                 field={customsPanel.recv_name} fieldCol={{ span: 9 }}
@@ -154,14 +154,14 @@ export default class CustomsDeclPane extends React.Component {
               />
             </Col>
             <Col span="6">
-              <InfoItem labelCol={{ span: 3 }} label="操作人"
+              <InfoItem labelCol={{ span: 3 }} label="制单人"
                 field={customsPanel.recv_login_name} fieldCol={{ span: 9 }}
               />
             </Col>
           </Row>
           {(customsPanel.type === 1 || customsPanel.customs_tenant_id === -1) && <div className="card-footer">
             <div className="toolbar-right">
-              <Tooltip title="分配操作人员">
+              <Tooltip title="分配制单人">
                 <Button type="ghost" shape="circle" onClick={this.handleOperatorAssign}><Icon type="user" /></Button>
               </Tooltip>
             </div>

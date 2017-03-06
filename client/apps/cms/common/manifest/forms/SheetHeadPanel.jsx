@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Button, Collapse, Form, Row, Col } from 'antd';
+import { Button, Form, Row, Col } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import FormInput from './formInput';
 import {
@@ -15,7 +15,6 @@ import messages from './message.i18n';
 
 const formatMsg = format(messages);
 const formatGlobalMsg = format(globalMessage);
-const Panel = Collapse.Panel;
 
 const CODE_AS_STATE = {
   trade_co: 'trades',
@@ -71,11 +70,10 @@ export default class SheetHeadPanel extends React.Component {
   render() {
     const { form, readonly, formData, formRequire, ietype, intl, type } = this.props;
     const billHeadToolbar = (!readonly &&
-      <div className="toolbar-right">
-        <Button type="primary" ghost onClick={this.handleSheetSave} icon="save">
-          {formatGlobalMsg(this.props.intl, 'save')}
-        </Button>
-      </div>);
+    <Button type="primary" onClick={this.handleSheetSave} icon="save">
+      {formatGlobalMsg(this.props.intl, 'save')}
+    </Button>
+      );
     const formProps = {
       getFieldDecorator: form.getFieldDecorator,
       getFieldValue: form.getFieldValue,
@@ -88,8 +86,13 @@ export default class SheetHeadPanel extends React.Component {
       formData,
     };
     return (
-      <Collapse defaultActiveKey={['header']} className="content-min-width" style={{ marginBottom: 8 }}>
-        <Panel header={billHeadToolbar} key="header">
+      <div className="pane">
+        <div className="pane-header">
+          <div className="toolbar-right">
+            {billHeadToolbar}
+          </div>
+        </div>
+        <div className="pane-content">
           <Form horizontal>
             {type === 'entry' &&
               <Row>
@@ -152,7 +155,7 @@ export default class SheetHeadPanel extends React.Component {
               <PackWeight {...formProps} intl={intl} formRequire={formRequire} ietype={ietype} />
             </Row>
             <Row>
-              <Col md={24} lg={9}>
+              <Col span={9}>
                 <FormInput field="cert_mark" outercol={24} col={4}
                   label={this.msg('certMark')} {...entryFormProps}
                 />
@@ -163,14 +166,14 @@ export default class SheetHeadPanel extends React.Component {
               <RaDeclManulNo {...formProps} intl={intl} formRequire={formRequire} />
               <StroeYard {...formProps} intl={intl} formRequire={formRequire} />
             </Row>
-            <Col span="24">
+            <Row>
               <FormInput field="note" outercol={9} col={4} type="textarea"
                 label={this.msg('markNotes')} {...entryFormProps}
               />
-            </Col>
+            </Row>
           </Form>
-        </Panel>
-      </Collapse>
+        </div>
+      </div>
     );
   }
 }

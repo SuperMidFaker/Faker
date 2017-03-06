@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Form, Breadcrumb, Button, Dropdown, Layout, Menu, Icon, message } from 'antd';
+import { Form, Breadcrumb, Button, Dropdown, Layout, Menu, Icon, Tabs, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadEntry, saveEntryHead } from 'common/reducers/cmsManifest';
@@ -14,6 +14,7 @@ import messages from './message.i18n';
 
 const formatMsg = format(messages);
 const { Sider, Header, Content } = Layout;
+const TabPane = Tabs.TabPane;
 
 @injectIntl
 @connect(
@@ -123,10 +124,18 @@ export default class CustomsDeclEditor extends React.Component {
             </div>
           </Header>
           <Content className={`main-content layout-min-width layout-min-width-large ${readonly ? 'readonly' : ''}`}>
-            <SheetHeadPanel ietype={ietype} readonly={readonly} form={form} formData={head} type="entry" onSave={this.handleEntryHeadSave} />
-            <SheetBodyPanel ietype={ietype} readonly={readonly} data={bodies}
-              headNo={head.id} billSeqNo={head.bill_seq_no} type="entry"
-            />
+            <div className="page-body tabbed">
+              <Tabs defaultActiveKey="header">
+                <TabPane tab="报关单表头" key="header">
+                  <SheetHeadPanel ietype={ietype} readonly={readonly} form={form} formData={head} type="entry" onSave={this.handleEntryHeadSave} />
+                </TabPane>
+                <TabPane tab="报关单表体" key="body">
+                  <SheetBodyPanel ietype={ietype} readonly={readonly} data={bodies}
+                    headNo={head.id} billSeqNo={head.bill_seq_no} type="entry"
+                  />
+                </TabPane>
+              </Tabs>
+            </div>
           </Content>
         </Layout>
         <Sider

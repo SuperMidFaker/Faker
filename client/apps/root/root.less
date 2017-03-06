@@ -549,7 +549,6 @@ img {
   position: relative;
   padding: 8px 16px;
   min-height: 46px;
-  border-bottom: 1px solid #e9e9e9;
   button,
   >span {
     margin-right: 8px;
@@ -684,23 +683,21 @@ img {
 .popover-footer {
   padding: 8px 16px;
 }
-.toolbar-right {
-  float: right;
-  button,
-  >span {
-    margin-left: 8px;
-    margin-right: 0;
+
+.pane {
+  .pane-header {
+    height: 40px;
+    line-height: 40px;
+    padding: 0 16px;
+    color: rgba(0, 0, 0, 0.65);
+    cursor: pointer;
+    position: relative;
+    -webkit-transition: all .3s;
+    transition: all .3s;
+    background-color: #f7f7f7;
   }
-}
-.toolbar-left {
-  display: inline-block;
-  input {
-    width: 140px;
-    margin-right: 4px;
-  }
-  button,
-  >span {
-    margin-right: 8px;
+  .pane-content {
+    padding: 8px 16px;
   }
 }
 .pane-header {
@@ -725,6 +722,25 @@ img {
   padding: 0 8px;
   .ant-card {
     margin-bottom: 16px;
+  }
+}
+.toolbar-right {
+  float: right;
+  button,
+  >span {
+    margin-left: 8px;
+    margin-right: 0;
+  }
+}
+.toolbar-left {
+  display: inline-block;
+  input {
+    width: 140px;
+    margin-right: 4px;
+  }
+  button,
+  >span {
+    margin-right: 8px;
   }
 }
 .form-edit-content {

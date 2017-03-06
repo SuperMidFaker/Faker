@@ -109,7 +109,7 @@ export default class BasicPane extends React.Component {
     }
     return (
       <div className="pane-content tab-pane">
-        <Card bodyStyle={{ padding: 8 }}>
+        <Card bodyStyle={{ padding: 16 }}>
           <Row>
             <Col span="16">
               <InfoItem labelCol={{ span: 3 }} label="委托方"

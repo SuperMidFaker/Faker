@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Breadcrumb, Button, Dropdown, Layout, Menu, Icon, Form, message, Popconfirm } from 'antd';
+import { Breadcrumb, Button, Dropdown, Layout, Menu, Icon, Form, message, Popconfirm, Tabs } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { addNewBillBody, delBillBody, editBillBody, saveBillHead,
@@ -15,6 +15,7 @@ import messages from './message.i18n';
 
 const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
+const TabPane = Tabs.TabPane;
 
 @injectIntl
 @connect(
@@ -181,11 +182,19 @@ export default class ManifestEditor extends React.Component {
             </div>
           </Header>
           <Content className={`main-content layout-min-width layout-min-width-large ${readonly ? 'readonly' : ''}`}>
-            <SheetHeadPanel ietype={ietype} readonly={readonly} form={form} formData={billHead} type="bill" onSave={this.handleBillSave} />
-            <SheetBodyPanel ietype={ietype} readonly={readonly} headForm={form} data={billBodies} headNo={billHead.bill_seq_no}
-              onAdd={actions.addNewBillBody} onDel={actions.delBillBody} onEdit={actions.editBillBody}
-              billSeqNo={billHead.bill_seq_no} type="bill"
-            />
+            <div className="page-body tabbed">
+              <Tabs defaultActiveKey="header">
+                <TabPane tab="清单表头" key="header">
+                  <SheetHeadPanel ietype={ietype} readonly={readonly} form={form} formData={billHead} type="bill" onSave={this.handleBillSave} />
+                </TabPane>
+                <TabPane tab="清单表体" key="body">
+                  <SheetBodyPanel ietype={ietype} readonly={readonly} headForm={form} data={billBodies} headNo={billHead.bill_seq_no}
+                    onAdd={actions.addNewBillBody} onDel={actions.delBillBody} onEdit={actions.editBillBody}
+                    billSeqNo={billHead.bill_seq_no} type="bill"
+                  />
+                </TabPane>
+              </Tabs>
+            </div>
           </Content>
         </Layout>
         <Sider

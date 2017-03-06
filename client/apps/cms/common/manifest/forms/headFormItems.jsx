@@ -53,14 +53,14 @@ export function PortDate(props) {
     getFieldDecorator,
   };
   return (
-    <Col md={24} lg={15}>
-      <Col sm={24} md={8}>
+    <Col span={15}>
+      <Col span={8}>
         <FormLocalSearchSelect {...customsProps} />
       </Col>
-      <Col sm={24} md={8}>
+      <Col span={8}>
         <FormDatePicker {...ieDateProps} />
       </Col>
-      <Col sm={24} md={8}>
+      <Col span={8}>
         <FormDatePicker {...dDateProps} />
       </Col>
     </Col>
@@ -112,10 +112,10 @@ export class RelationAutoCompSelect extends React.Component {
     const initialCodeValue = formData && formData[codeField] || '';
     const initialNameValue = formData && formData[nameField];
     return (
-      <Col md={24} lg={9}>
-        <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} label={label} required>
+      <Col span={9}>
+        <FormItem labelCol={{ span: 4 }} wrapperCol={{ span: 20 }} label={label} required>
           <Row>
-            <Col span="12">
+            <Col span="8">
               <FormItem style={{ marginBottom: 0 }}>
                 {disabled ?
                   <Input disabled value={initialCodeValue} />
@@ -138,7 +138,7 @@ export class RelationAutoCompSelect extends React.Component {
                   </Select>)}
               </FormItem>
             </Col>
-            <Col span="12">
+            <Col span="16">
               <FormItem style={{ marginBottom: 0 }} >
                 {disabled ?
                   <Input disabled value={initialNameValue} /> :
@@ -193,14 +193,14 @@ export function DeclCustoms(props) {
     getFieldDecorator,
   };
   return (
-    <Col md={24} lg={15}>
-      <Col sm={24} md={8}>
+    <Col span={15}>
+      <Col span={8}>
         <FormLocalSearchSelect {...declPortProps} />
       </Col>
-      <Col sm={24} md={8}>
+      <Col span={8}>
         <FormInput {...licenseNoProps} />
       </Col>
-      <Col sm={24} md={8}>
+      <Col span={8}>
         <FormInput {...contractNoProps} />
       </Col>
     </Col>
@@ -243,11 +243,11 @@ export function Transport(props) {
     getFieldDecorator,
   };
   return (
-    <Col md={24} lg={9}>
-      <Col sm={24} md={12}>
+    <Col span={9}>
+      <Col span={12}>
         <FormLocalSearchSelect {...modeProps} />
       </Col>
-      <Col sm={24} md={12}>
+      <Col span={12}>
         <FormInput {...modeNameProps} />
       </Col>
     </Col>
@@ -288,11 +288,11 @@ export function DelVoyageNo(props) {
     getFieldDecorator,
   };
   return (
-    <Col md={24} lg={15}>
-      <Col sm={24} md={8}>
+    <Col span={15}>
+      <Col span={8}>
         <FormInput {...voyageNoProps} />
       </Col>
-      <Col sm={24} md={8}>
+      <Col span={8}>
         <FormInput {...blwbProps} />
       </Col>
     </Col>
@@ -351,14 +351,14 @@ export function TradeRemission(props) {
     getFieldDecorator,
   };
   return (
-    <Col md={24} lg={15}>
-      <Col sm={24} md={8}>
+    <Col span={15}>
+      <Col span={8}>
         <FormLocalSearchSelect {...tradeModeProps} />
       </Col>
-      <Col sm={24} md={8}>
+      <Col span={8}>
         <FormLocalSearchSelect {...remissionProps} />
       </Col>
-      <Col sm={24} md={8}>
+      <Col span={8}>
         <FormInput {...emsNoProps} />
       </Col>
     </Col>
@@ -407,11 +407,11 @@ export function CountryAttr(props) {
     searchKeyFn: opt => opt.value,
   };
   return (
-    <Col md={24} lg={9}>
-      <Col sm={24} md={12}>
+    <Col span={9}>
+      <Col span={12}>
         <FormLocalSearchSelect {...tradeCountryProps} />
       </Col>
-      <Col sm={24} md={12}>
+      <Col span={12}>
         <FormLocalSearchSelect {...departCountryProps} />
       </Col>
     </Col>
@@ -471,14 +471,14 @@ export function DestInvoice(props) {
     getFieldDecorator,
   };
   return (
-    <Col md={24} lg={15}>
-      <Col sm={24} md={8}>
+    <Col span={15}>
+      <Col span={8}>
         <FormRemoteSearchSelect {...destPortProps} />
       </Col>
-      <Col sm={24} md={8}>
+      <Col span={8}>
         <FormLocalSearchSelect {...districtProps} />
       </Col>
-      {type === 'bill' && <Col sm={24} md={8}><FormInput {...invoiceNoProps} /></Col>}
+      {type === 'bill' && <Col span={8}><FormInput {...invoiceNoProps} /></Col>}
     </Col>
   );
 }
@@ -523,11 +523,11 @@ export function UsageTrade(props) {
     searchKeyFn: opt => opt.value,
   };
   return (
-    <Col md={24} lg={9}>
-      <Col sm={24} md={12}>
+    <Col span={9}>
+      <Col span={12}>
         <FormInput {...usageProps} />
       </Col>
-      <Col sm={24} md={12}>
+      <Col span={12}>
         <FormLocalSearchSelect {...trxModeProps} />
       </Col>
     </Col>
@@ -583,13 +583,13 @@ function FeeFormItem(props) {
   return (
     <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} label={label}>
       <Row>
-        <Col sm={24} md={12} style={{ paddingLeft: 2 }}>
+        <Col span={12} style={{ paddingLeft: 2 }}>
           <FormLocalSearchSelect {...currencyProps} placeholder="币制" style={{ marginBottom: 0 }} />
         </Col>
-        <Col sm={24} md={6}>
+        <Col span={6}>
           <FormInput {...feeProps} />
         </Col>
-        <Col sm={24} md={6}>
+        <Col span={6}>
           <FormLocalSearchSelect {...markProps} />
         </Col>
       </Row>
@@ -616,18 +616,18 @@ export function Fee(props) {
   const feeCurrReq = getFieldValue('fee_mark') !== '1';
   const insurCurrReq = getFieldValue('insur_mark') !== '1';
   return (
-    <Col md={24} lg={15}>
-      <Col sm={24} md={8}>
+    <Col span={15}>
+      <Col span={8}>
         <FeeFormItem {...props} label={msg('freightCharge')} feeField="fee_rate"
           currencyField="fee_curr" markField="fee_mark" require={fobRequire || ciRequire} feeCurrReq={feeCurrReq}
         />
       </Col>
-      <Col sm={24} md={8}>
+      <Col span={8}>
         <FeeFormItem {...props} label={msg('insurance')} feeField="insur_rate"
           currencyField="insur_curr" markField="insur_mark" require={fobRequire} insurCurrReq={insurCurrReq}
         />
       </Col>
-      <Col sm={24} md={8}>
+      <Col span={8}>
         <FeeFormItem {...props} label={msg('sundry')} feeField="other_rate"
           currencyField="other_curr" markField="other_mark" require={false}
         />
@@ -670,11 +670,11 @@ export function ContainerNo(props) {
   };
 
   return (
-    <Col md={24} lg={9}>
-      <Col sm={24} md={12}>
+    <Col span={9}>
+      <Col span={12}>
         <FormInput {...containerNoProps} />
       </Col>
-      <Col sm={24} md={12}>
+      <Col span={12}>
         <FormInput {...packCountProps} />
       </Col>
     </Col>
@@ -725,14 +725,14 @@ export function PackWeight(props) {
     getFieldDecorator,
   };
   return (
-    <Col md={24} lg={15}>
-      <Col sm={24} lg={8}>
+    <Col span={15}>
+      <Col span={8}>
         <FormLocalSearchSelect {...packProps} />
       </Col>
-      <Col sm={24} lg={8}>
+      <Col span={8}>
         <FormInput {...grosswtProps} />
       </Col>
-      <Col sm={24} lg={8}>
+      <Col span={8}>
         <FormInput {...netwtProps} />
       </Col>
     </Col>
@@ -782,14 +782,14 @@ export function TermConfirm(props) {
     options: CMS_CONFIRM,
   };
   return (
-    <Col md={24} lg={15}>
-      <Col sm={24} lg={8}>
+    <Col span={15}>
+      <Col span={8}>
         <FormLocalSearchSelect {...specialProps} />
       </Col>
-      <Col sm={24} lg={8}>
+      <Col span={8}>
         <FormLocalSearchSelect {...priceEffectProps} />
       </Col>
-      <Col sm={24} lg={8}>
+      <Col span={8}>
         <FormLocalSearchSelect {...paymentProps} />
       </Col>
     </Col>
@@ -827,11 +827,11 @@ export function RaDeclManulNo(props) {
   };
 
   return (
-    <Col md={24} lg={9}>
-      <Col sm={24} md={12}>
+    <Col span={9}>
+      <Col span={12}>
         <FormInput {...raDeclNoProps} />
       </Col>
-      <Col sm={24} md={12}>
+      <Col span={12}>
         <FormInput {...raManualNoProps} />
       </Col>
     </Col>
@@ -868,11 +868,11 @@ export function StroeYard(props) {
     getFieldDecorator,
   };
   return (
-    <Col md={24} lg={15}>
-      <Col sm={24} lg={8}>
+    <Col span={15}>
+      <Col span={8}>
         <FormInput {...grosswtProps} />
       </Col>
-      <Col sm={24} lg={8}>
+      <Col span={8}>
         <FormInput {...netwtProps} />
       </Col>
     </Col>
