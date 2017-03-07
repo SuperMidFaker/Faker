@@ -237,7 +237,7 @@ export default class Kpi extends React.Component {
               </Dropdown>
             </div>
           </Header>
-          <Content className="main-content">
+          <Content className="main-content" id="transport-kpi-main-content">
             <div className="page-body">
               <div className="toolbar">
                 <div className="toolbar-right">

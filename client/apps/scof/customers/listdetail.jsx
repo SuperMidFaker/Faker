@@ -58,7 +58,11 @@ export default class CustomerList extends React.Component {
     customers: [],
   }
   componentWillReceiveProps(nextProps) {
-    this.setState({ customer: nextProps.customers[0] || {}, customers: nextProps.customers });
+    if (this.state.customer.id) {
+      this.setState({ customer: nextProps.customers.find(item => item.id === this.state.customer.id), customers: nextProps.customers });
+    } else {
+      this.setState({ customer: nextProps.customers[0] || {}, customers: nextProps.customers });
+    }
     if (!nextProps.loaded) {
       this.handleTableLoad();
     }
