@@ -74,7 +74,7 @@ export default class BrokerList extends Component {
         dataIndex: 'name',
         key: 'name',
       }, {
-        title: '海关十位编码',
+        title: '海关编码',
         dataIndex: 'customs_code',
         key: 'customs_code',
       }, {
@@ -122,7 +122,7 @@ export default class BrokerList extends Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="top-bar-tools">
-            <SearchBar placeholder="名称/海关十位编码/统一社会信用代码" onInputSearch={this.handleSearch}
+            <SearchBar placeholder="名称/海关编码/统一社会信用代码" onInputSearch={this.handleSearch}
               value={this.state.searchText} size="large"
             />
           </div>

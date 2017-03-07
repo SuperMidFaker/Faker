@@ -90,7 +90,7 @@ export default class BusinessUnitModal extends React.Component {
         <FormItem {...formItemLayout} label="社会信用代码:" required>
           <Input required value={code} onChange={e => this.setState({ code: e.target.value })} placeholder="18位社会信用代码" />
         </FormItem>
-        <FormItem {...formItemLayout} label="海关十位编码:">
+        <FormItem {...formItemLayout} label="海关编码:">
           <Input required value={customsCode} onChange={e => this.setState({ customsCode: e.target.value })} placeholder="海关10位编码" />
         </FormItem>
       </Modal>

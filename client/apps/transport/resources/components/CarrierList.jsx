@@ -63,7 +63,7 @@ export default class DriverList extends Component {
         dataIndex: 'partner_code',
         key: 'partner_code',
       }, {
-        title: '企业唯一标识码',
+        title: '统一社会信用代码',
         dataIndex: 'partner_unique_code',
         key: 'partner_unique_code',
       }, {
@@ -98,7 +98,7 @@ export default class DriverList extends Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="top-bar-tools">
-            <SearchBar placeholder="承运商/承运商代码/企业唯一标识码" onInputSearch={this.props.onSearch}
+            <SearchBar placeholder="承运商/承运商代码/统一社会信用代码" onInputSearch={this.props.onSearch}
               value={this.props.searchText} size="large"
             />
           </div>
