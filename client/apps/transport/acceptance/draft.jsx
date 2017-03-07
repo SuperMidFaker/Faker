@@ -151,7 +151,7 @@ export default class ShipmentDraftEdit extends React.Component {
           </div>
         </Header>
         <Content className="main-content layout-fixed-width layout-fixed-width-large">
-          <Form horizontal>
+          <Form layout="horizontal">
             <Row gutter={16}>
               <Col sm={24} md={18}>
                 <Card bodyStyle={{ padding: 16 }}>

@@ -93,7 +93,7 @@ export default class SheetHeadPanel extends React.Component {
           </div>
         </div>
         <div className="pane-content">
-          <Form horizontal>
+          <Form layout="horizontal">
             {type === 'entry' &&
               <Row>
                 <FormInput field="pre_entry_id" outercol={9} col={6}

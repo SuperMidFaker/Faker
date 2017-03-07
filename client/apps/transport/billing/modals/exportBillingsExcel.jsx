@@ -73,7 +73,7 @@ export default class ExportBillingExcel extends React.Component {
           onOk={this.handleOk}
           onCancel={this.handleClose}
         >
-          <Form horizontal>
+          <Form layout="horizontal">
             <FormItem label="参照时间" labelCol={{ span: 6 }}
               wrapperCol={{ span: 13 }}
             >

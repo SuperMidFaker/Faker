@@ -57,7 +57,7 @@ export default class AddWarehouseModal extends React.Component {
       <Modal title={this.msg('addWarehouse')} visible={visible}
         onOk={this.handleOk} onCancel={this.handleCancel}
       >
-        <Form horizontal>
+        <Form layout="horizontal">
           <FormItem label={this.msg('warehouseName')} {...this.formColSpans}>
             {
               getFieldDecorator('warehouse_name')(<Input />)

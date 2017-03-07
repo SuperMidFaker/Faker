@@ -61,7 +61,7 @@ export default class ExportPDF extends React.Component {
           onOk={this.handleOk}
           onCancel={this.handleClose}
         >
-          <Form horizontal>
+          <Form layout="horizontal">
             <FormItem
               label="类型"
               labelCol={{ span: 5 }}

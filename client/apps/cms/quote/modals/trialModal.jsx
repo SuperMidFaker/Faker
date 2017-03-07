@@ -99,7 +99,7 @@ export default class TrialModal extends React.Component {
         <Button key="start" type="primary" size="large" onClick={this.handleBeginTrial}>开始</Button>,
       ];
       stepContent = (
-        <Form horizontal>
+        <Form layout="horizontal">
           <FormItem label={this.msg('basementDateType')} {...formItemLayout}>
             {getFieldDecorator('basement_datetype', {
               rules: [{ required: true, message: '基准时间类型必选' }],

@@ -69,7 +69,7 @@ class CompRelationForm extends Component {
     const { form: { getFieldDecorator }, formData, intl } = this.props;
     return (
       <Content className="main-content">
-        <Form horizontal>
+        <Form layout="horizontal">
           <Row>
             <Col lg={12} >
               {this.renderTextInput(

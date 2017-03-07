@@ -82,7 +82,7 @@ export default class LocationUpdater extends React.Component {
       <Modal title={`${this.msg('reportTransitLoc')} ${transit.shipmt_no}`} onCancel={this.handleCancel}
         onOk={this.handleOk} visible={this.props.visible}
       >
-        <Form horizontal>
+        <Form layout="horizontal">
           <FormItem labelCol={{ span: 6 }} label={this.msg('reportTime')}
             wrapperCol={{ span: 18 }} required
           >

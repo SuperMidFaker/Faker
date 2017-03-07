@@ -72,7 +72,7 @@ export default class NodeModal extends Component {
     const regionValues = [];
     return (
       <Modal visible={visible} onOk={this.handleAddNode} onCancel={this.handleCancel}>
-        <Form horizontal>
+        <Form layout="horizontal">
           <FormItem label="名称:" required {...formItemLayout}>
             {getFieldDecorator('name')(<Input required />)}
           </FormItem>

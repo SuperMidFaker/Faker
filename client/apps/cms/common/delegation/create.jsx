@@ -109,7 +109,7 @@ export default class CreateDelegation extends Component {
           </div>
         </Header>
         <Content className="main-content layout-fixed-width layout-fixed-width-large">
-          <Form vertical>
+          <Form layout="vertical">
             <Row gutter={16}>
               <Col sm={24} md={16}>
                 <MainForm form={form} ieType={type} partnershipType="CCB" />

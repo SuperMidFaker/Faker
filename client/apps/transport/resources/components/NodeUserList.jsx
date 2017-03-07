@@ -165,7 +165,7 @@ export default class NodeUserList extends Component {
           confirmLoading={this.state.confirmLoading}
           onCancel={this.handleCancel}
         >
-          <Form horizontal>
+          <Form layout="horizontal">
             <FormItem
               label="姓名"
               labelCol={{ span: 5 }}

@@ -262,7 +262,7 @@ export default class RateEndTable extends React.Component {
           dataSource={this.dataSource} scroll={{ x: 1000 }}
         />
         <Modal visible={visibleModal} onOk={this.handleSave} onCancel={this.handleCancel}>
-          <Form horizontal>
+          <Form layout="horizontal">
             <FormItem label="目的地" labelCol={{ span: 4 }} wrapperCol={{ span: 16 }}>
               <RegionCascader defaultRegion={editRegion} onChange={this.handleRegionChange} />
             </FormItem>

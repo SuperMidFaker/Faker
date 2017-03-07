@@ -80,7 +80,7 @@ export default class ConfigEasipassEDI extends React.Component {
           </div>
         </Header>
         <Content className="main-content layout-fixed-width">
-          <Form vertical>
+          <Form layout="vertical">
             <Card title={this.msg('easipassConfig')}>
               <Row gutter={16}>
                 <MainForm form={form} easipass={easipass} />

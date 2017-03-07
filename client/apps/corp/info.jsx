@@ -132,8 +132,8 @@ export default class CorpInfo extends React.Component {
     const { country, province, city, district } = this.state;
     const msg = (descriptor, values) => formatMsg(intl, descriptor, values);
     return (
-      <Card>
-        <Form horizontal>
+      <Card title={msg('basicInfo')}>
+        <Form layout="vertical">
           <Row gutter={16}>
             <Col sm={24} md={24}>
               {this.renderTextInput(
@@ -202,8 +202,8 @@ export default class CorpInfo extends React.Component {
     } = this.props;
     const msg = (descriptor, values) => formatMsg(intl, descriptor, values);
     return (
-      <Card>
-        <Form horizontal>
+      <Card title={msg('contactInfo')}>
+        <Form layout="vertical">
           <Row gutter={16}>
             <Col sm={24} md={12}>
               {this.renderTextInput(
@@ -246,8 +246,8 @@ export default class CorpInfo extends React.Component {
     const { intl } = this.props;
     const msg = descriptor => formatMsg(intl, descriptor);
     return (
-      <Card>
-        <Form horizontal>
+      <Card title={msg('brandInfo')}>
+        <Form layout="vertical">
           <Row gutter={16}>
             <Col sm={24} md={24}>
               <FormItem label="LOGO">
@@ -286,51 +286,21 @@ export default class CorpInfo extends React.Component {
               <Button type="primary" size="large" htmlType="submit"
                 onClick={this.handleSubmit}
               >
-                  保存
-                </Button>
+                {msg('save')}
+              </Button>
             </PrivilegeCover>
           </div>
         </Header>
         <Content className="main-content layout-fixed-width layout-fixed-width-large" key="main">
-          <section className="ui-annotated-section">
-            <div className="ui-annotated-section-annotation">
-              <div className="ui-annotated-section-title">
-                <h2>{msg('basicInfo')}</h2>
-              </div>
-              <div className="ui-annotated-section-description">
-                <p />
-              </div>
-            </div>
-            <div className="ui-annotated-section-content">
+          <Row gutter={16}>
+            <Col sm={24} md={16}>
               {this.renderBasicForm()}
-            </div>
-          </section>
-          <section className="ui-annotated-section">
-            <div className="ui-annotated-section-annotation">
-              <div className="ui-annotated-section-title">
-                <h2>{msg('contactInfo')}</h2>
-              </div>
-              <div className="ui-annotated-section-description">
-                <p />
-              </div>
-            </div>
-            <div className="ui-annotated-section-content">
               {this.renderContactForm()}
-            </div>
-          </section>
-          <section className="ui-annotated-section">
-            <div className="ui-annotated-section-annotation">
-              <div className="ui-annotated-section-title">
-                <h2>{msg('brandInfo')}</h2>
-              </div>
-              <div className="ui-annotated-section-description">
-                <p />
-              </div>
-            </div>
-            <div className="ui-annotated-section-content">
+            </Col>
+            <Col sm={24} md={8}>
               {this.props.formData.level === TENANT_LEVEL.ENTERPRISE && this.renderEnterpriseForm()}
-            </div>
-          </section>
+            </Col>
+          </Row>
         </Content>
       </QueueAnim>);
   }

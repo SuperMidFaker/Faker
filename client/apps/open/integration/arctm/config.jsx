@@ -91,7 +91,7 @@ export default class ConfigAmberRoadCTM extends React.Component {
           </div>
         </Header>
         <Content className="main-content layout-fixed-width">
-          <Form vertical>
+          <Form layout="vertical">
             <Card title={this.msg('AmberRoadCTMParam')}>
               <MainForm form={form} partners={formPartners} formData={formData} />
             </Card>

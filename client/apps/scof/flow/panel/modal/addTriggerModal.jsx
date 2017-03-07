@@ -141,7 +141,7 @@ export default class AddTriggerModal extends React.Component {
         onCancel={this.handleCancel}
         wrapClassName="modal-docker"
       >
-        <Form vertical>
+        <Form layout="vertical">
           <Collapse bordered={false} defaultActiveKey={['properties', 'actions']}>
             <Panel header={this.msg('properties')} key="properties">
               <Row gutter={16}>

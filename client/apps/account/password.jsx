@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Button, Form, Input, Row, Col, message } from 'antd';
+import { Button, Card, Form, Input, Row, Col, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { changePassword } from 'common/reducers/account';
 import { getFormatMsg } from 'client/util/react-ant';
@@ -103,22 +103,22 @@ export default class ChangePassword extends React.Component {
   render() {
     const { intl } = this.props;
     return (
-      <div className="page-body form-wrapper">
+      <Card>
         <Form horizontal onSubmit={this.handlePasswordChange}>
           <Row>
-            <Col xs={20} sm={16} md={12} lg={8}>
+            <Col sm={24} md={12}>
               {this.renderTextInput(this.msg('oldPwd'), 'oldPwd', this.oldPwdRules)}
               {this.renderTextInput(this.msg('newPwd'), 'newPwd', this.pwdRules)}
               {this.renderTextInput(this.msg('confirmPwd'), 'confirmPwd', this.confirmPwdRules)}
             </Col>
           </Row>
           <Row>
-            <Col span="18" offset="2">
+            <Col span="21" offset="3">
               <Button htmlType="submit" size="large" type="primary">{formatGlobalMsg(intl, 'ok')}</Button>
             </Col>
           </Row>
         </Form>
-      </div>
+      </Card>
     );
   }
 }

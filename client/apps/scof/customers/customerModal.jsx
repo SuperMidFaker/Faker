@@ -169,7 +169,7 @@ export default class CustomerModal extends React.Component {
     }
     return (
       <Modal visible={visible} title={title} onCancel={this.handleCancel} onOk={this.handleOk}>
-        <Form horizontal>
+        <Form layout="horizontal">
           <FormItem
             {...formItemLayout}
             label="企业名称"

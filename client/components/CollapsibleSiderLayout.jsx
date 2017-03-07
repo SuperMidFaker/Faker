@@ -105,6 +105,7 @@ export default class CollapsibleSiderLayout extends React.Component {
           collapsed={this.state.collapsed}
           onCollapse={this.onCollapse}
           width={176}
+          breakpoint="lg"
           className="left-sider"
         >
           {showLogo ? <div className="layout-logo" /> : ''}

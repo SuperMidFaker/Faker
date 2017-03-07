@@ -56,7 +56,7 @@ export default class CreateFlowModal extends React.Component {
         onOk={this.handleOk}
         onCancel={this.handleCancel}
       >
-        <Form vertical>
+        <Form layout="vertical">
           <Row gutter={16}>
             <Col sm={24} lg={24}>
               <FormItem label={this.msg('flowName')}>

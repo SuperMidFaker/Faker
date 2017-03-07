@@ -224,7 +224,7 @@ export default class ActivityLoggerPane extends React.Component {
           <div className="card-body-wrapper">
             <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
               <TabPane tab={<span><Icon type="message" />备注</span>} key="message">
-                <Form horizontal>
+                <Form layout="horizontal">
                   <FormItem>
                     {getFieldDecorator('remarks')(<Mention
                       style={{ width: '100%', height: 72 }}
@@ -237,7 +237,7 @@ export default class ActivityLoggerPane extends React.Component {
               </TabPane>
               {delegation.claim_do_awb === 1 &&
                 <TabPane tab={<span><Icon type="retweet" />换单</span>} key="exchange">
-                  <Form horizontal>
+                  <Form layout="horizontal">
                     <FormItem label="海运单号" {...formItemLayout}>
                       <Input value={delegation.swb_no} readOnly />
                     </FormItem>
@@ -250,7 +250,7 @@ export default class ActivityLoggerPane extends React.Component {
                 </TabPane>
               }
               <TabPane tab={<span><Icon type="addfile" />办证</span>} key="certs">
-                <Form horizontal>
+                <Form layout="horizontal">
                   <FormItem>
                     {getFieldDecorator('certs')(<Select
                       showSearch
@@ -272,7 +272,7 @@ export default class ActivityLoggerPane extends React.Component {
               </TabPane>
               { delgDispatch.status > 1 &&
                 <TabPane tab={<span><Icon type="exception" />查验</span>} key="inspect">
-                  <Form horizontal>
+                  <Form layout="horizontal">
                     <FormItem>
                       {getFieldDecorator('pre_entry_no')(<Select showSearch style={{ width: 200, marginRight: 8 }} placeholder="选择报关单" optionFilterProp="children">
                         {

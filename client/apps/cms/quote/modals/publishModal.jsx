@@ -75,7 +75,7 @@ export default class CreateQtModal extends React.Component {
       <Modal title={this.msg('publishTitle')} visible={visible}
         onOk={this.handleOk} onCancel={this.handleCancel}
       >
-        <Form horizontal>
+        <Form layout="horizontal">
           <Alert message="报价发布后将按设置的生效时间起重新计费" type="info" showIcon />
           <FormItem label={this.msg('basementDateType')} {...formItemLayout}>
             {getFieldDecorator('basement_datetype', {

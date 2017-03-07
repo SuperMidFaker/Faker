@@ -217,7 +217,7 @@ export default class RateSourceTable extends React.Component {
         <Modal visible={visibleModal} onOk={this.handleSourceSave} onCancel={this.handleCancel}
           closable={false}
         >
-          <Form horizontal>
+          <Form layout="horizontal">
             <FormItem label="起始地" labelCol={{ span: 4 }} wrapperCol={{ span: 16 }} required>
               <RegionCascader defaultRegion={modalRegion} onChange={this.handleRegionChange} />
             </FormItem>
