@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Layout, Radio, Table } from 'antd';
+import { Button, Breadcrumb, Layout, Radio, Table } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/search-bar';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -77,6 +77,9 @@ export default class ReceivingNoticeList extends React.Component {
 
     }
   }
+  handleCreateBtnClick = () => {
+    this.context.router.push('/cwm/inbound/receiving/create');
+  }
   render() {
     return (
       <QueueAnim type={['bottom', 'up']}>
@@ -93,7 +96,11 @@ export default class ReceivingNoticeList extends React.Component {
             <RadioButton value="pending">{this.msg('pending')}</RadioButton>
             <RadioButton value="received">{this.msg('received')}</RadioButton>
           </RadioGroup>
-          <div className="top-bar-tools" />
+          <div className="top-bar-tools">
+            <Button type="primary" size="large" icon="plus" onClick={this.handleCreateBtnClick}>
+              {this.msg('createReceivingNotice')}
+            </Button>
+          </div>
         </Header>
         <Content className="main-content" key="main">
           <div className="page-body">

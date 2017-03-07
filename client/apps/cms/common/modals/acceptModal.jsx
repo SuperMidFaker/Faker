@@ -111,7 +111,7 @@ export default class DelgAcceptModal extends React.Component {
     const values = this.props.form.getFieldValue('operator');
     const mentions = getMentions(values);
     if (mentions.length !== 1 || mentions[0] === '@') {
-      callback(new Error('请选择一个操作员'));
+      callback(new Error('请选择负责该笔业务的制单人'));
     } else {
       callback();
     }
@@ -123,13 +123,13 @@ export default class DelgAcceptModal extends React.Component {
         onCancel={this.handleCancel}
       >
         <Form layout="horizontal">
-          <FormItem label="操作员" labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
+          <FormItem label="制单人" labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
             {
               getFieldDecorator('operator', {
                 rules: [{ validator: this.checkMentionOperator }],
               })(
                 <Mention suggestions={this.state.suggestions}
-                  onSearchChange={this.handleSearch} placeholder="@操作员名称"
+                  onSearchChange={this.handleSearch} placeholder="@制单人"
                 />
               )
             }

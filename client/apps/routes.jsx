@@ -395,6 +395,7 @@ export default(store, cookie) => {
               <IndexRoute component={CWMInbound.List} />
               <Route path="receiving">
                 <IndexRoute component={CWMReceivingNotice.List} />
+                <Route path="create" component={CWMReceivingNotice.Create} />
                 <Route path=":asnNo" component={CWMReceivingNotice.View} />
               </Route>
             </Route>

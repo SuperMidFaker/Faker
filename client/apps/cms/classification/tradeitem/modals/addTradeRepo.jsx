@@ -1,13 +1,14 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Modal, Select, message } from 'antd';
+import { Form, Modal, Row, Col, Select, message } from 'antd';
 import { createRepo, closeAddModal, loadOwners } from 'common/reducers/cmsTradeitem';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 
 const formatMsg = format(messages);
 const Option = Select.Option;
+const FormItem = Form.Item;
 
 @injectIntl
 @connect(
@@ -63,20 +64,31 @@ export default class AddTradeRepoModal extends React.Component {
       <Modal title={this.msg('addRepo')} visible={visibleAddModal}
         onOk={this.handleOk} onCancel={this.handleCancel}
       >
-        <Select
-          showSearch
-          style={{ width: '80%' }}
-          placeholder="选择客户"
-          optionFilterProp="children"
-          size="large"
-          onChange={this.handleSelectChange}
-        >
-          {
+        <Form layout="vertical">
+          <Row gutter={16}>
+            <Col sm={24} lg={24}>
+              <FormItem label={this.msg('customer')}>
+                {
+                    (
+                      <Select
+                        showSearch
+                        placeholder="选择客户"
+                        optionFilterProp="children"
+                        size="large"
+                        onChange={this.handleSelectChange}
+                      >
+                        {
             customers.map(data => (<Option key={data.id} value={data.id}
               search={`${data.partner_code}${data.name}`}
             >{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>)
             )}
-        </Select>
+                      </Select>
+                    )
+                  }
+              </FormItem>
+            </Col>
+          </Row>
+        </Form>
       </Modal>
     );
   }
