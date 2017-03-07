@@ -55,9 +55,10 @@ export default class CustomerList extends React.Component {
     currentPage: 1,
     collapsed: false,
     unchanged: true,
+    customers: [],
   }
   componentWillReceiveProps(nextProps) {
-    this.setState({ customer: nextProps.customers[0] || {} });
+    this.setState({ customer: nextProps.customers[0] || {}, customers: nextProps.customers });
     if (!nextProps.loaded) {
       this.handleTableLoad();
     }
@@ -88,6 +89,17 @@ export default class CustomerList extends React.Component {
   }
   handlePageChange = (page) => {
     this.setState({ currentPage: page });
+  }
+  handleSearch = (value) => {
+    const customers = this.props.customers.filter((item) => {
+      if (value) {
+        const reg = new RegExp(value);
+        return reg.test(item.name);
+      } else {
+        return true;
+      }
+    });
+    this.setState({ customers, currentPage: 1 });
   }
   render() {
     const { customer } = this.state;
@@ -124,7 +136,7 @@ export default class CustomerList extends React.Component {
                   onSearch={this.handleSearch} size="large"
                 />
               </div>
-              <Table size="middle" dataSource={this.props.customers} columns={columns} showHeader={false} onRowClick={this.handleRowClick}
+              <Table size="middle" dataSource={this.state.customers} columns={columns} showHeader={false} onRowClick={this.handleRowClick}
                 pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }}
                 rowClassName={record => record.id === customer.id ? 'table-row-selected' : ''}
               />

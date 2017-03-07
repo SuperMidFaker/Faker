@@ -9,7 +9,7 @@ const actionTypes = createActionTypes('@@welogix/transport/kpi/', [
 
 const initialState = {
   loading: false,
-  loaded: true,
+  loaded: false,
   query: {
     partnerId: -1,
     separationDate: 1,

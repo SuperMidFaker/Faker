@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Breadcrumb, Layout, Select, DatePicker, Button, Menu, Dropdown, Icon } from 'antd';
+import { Breadcrumb, Layout, Select, DatePicker, Button, Menu, Dropdown, Icon, Table, Input } from 'antd';
 import { loadKpi, changeModes } from 'common/reducers/transportKpi';
 import { loadFormRequire } from 'common/reducers/shipment';
 import TrafficVolume from './trafficVolume';
@@ -18,19 +18,10 @@ const { Header, Content, Sider } = Layout;
 const Option = Select.Option;
 const { MonthPicker } = DatePicker;
 const SubMenu = Menu.SubMenu;
+const Search = Input.Search;
 
 function fetchData({ cookie, state, dispatch }) {
-  const beginDate = new Date();
-  beginDate.setMonth(beginDate.getMonth() - 5);
-  const endDate = new Date();
-  dispatch(loadFormRequire(cookie, state.account.tenantId));
-  return dispatch(loadKpi(
-    state.account.tenantId,
-    beginDate,
-    endDate,
-    -1,
-    state.transportKpi.query.separationDate
-  ));
+  return dispatch(loadFormRequire(cookie, state.account.tenantId));
 }
 
 @connectFetch()(fetchData)
@@ -66,6 +57,27 @@ export default class Kpi extends React.Component {
   }
   state = {
     selectedKey: '1',
+    customer: {},
+    currentPage: 1,
+    collapsed: false,
+    clients: [],
+  }
+  componentWillReceiveProps(nextProps) {
+    this.setState({ clients: nextProps.clients });
+    if (!nextProps.loaded && nextProps.clients.length !== this.props.clients.length) {
+      this.setState({ customer: nextProps.clients[0] || {} });
+      const beginDate = new Date();
+      beginDate.setMonth(beginDate.getMonth() - 5);
+      const endDate = new Date();
+      const { tenantId, query } = nextProps;
+      this.props.loadKpi(
+        tenantId,
+        beginDate,
+        endDate,
+        nextProps.clients[0].partner_id,
+        query.separationDate
+      );
+    }
   }
   shouldComponentUpdate(nextProps, nextState) {
     const np = { ...nextProps };
@@ -75,9 +87,31 @@ export default class Kpi extends React.Component {
     if (JSON.stringify(np) === JSON.stringify(tp) && JSON.stringify(nextState) === JSON.stringify(this.state)) return false;
     return true;
   }
-  handleCustomerChange = (partnerId) => {
+  toggle = () => {
+    this.setState({
+      collapsed: !this.state.collapsed,
+    });
+  }
+  handleRowClick = (record) => {
+    this.setState({
+      customer: record,
+    });
     const { tenantId, query } = this.props;
-    this.props.loadKpi(tenantId, query.beginDate, query.endDate, partnerId || -1, query.separationDate);
+    this.props.loadKpi(tenantId, query.beginDate, query.endDate, record.partner_id, query.separationDate);
+  }
+  handlePageChange = (page) => {
+    this.setState({ currentPage: page });
+  }
+  handleSearch = (value) => {
+    const clients = this.props.clients.filter((item) => {
+      if (value) {
+        const reg = new RegExp(value);
+        return reg.test(item.name);
+      } else {
+        return true;
+      }
+    });
+    this.setState({ clients, currentPage: 1 });
   }
   handleBeginDateChange = (date) => {
     const { tenantId, query } = this.props;
@@ -126,8 +160,8 @@ export default class Kpi extends React.Component {
     return options;
   }
   render() {
-    const { query, clients, kpi, loading, loaded, modes } = this.props;
-    const { selectedKey } = this.state;
+    const { query, kpi, loading, loaded, modes } = this.props;
+    const { selectedKey, customer } = this.state;
     let content = (<span />);
     if (selectedKey === '1') {
       content = (<Punctual kpi={kpi} loading={loading} loaded={loaded} modes={modes.punctual} onModesChange={this.handleModesChange} />);
@@ -146,88 +180,104 @@ export default class Kpi extends React.Component {
         <Menu.Item key="2">导出当前</Menu.Item>
       </Menu>
     );
+    const columns = [{
+      dataIndex: 'name',
+      key: 'name',
+      render: o => (<div style={{ paddingLeft: 15 }}>{o}</div>),
+    }];
     return (
-      <div>
-        <Header className="top-bar">
-          <Breadcrumb>
-            <Breadcrumb.Item>
-              报表中心
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              KPI分析
-            </Breadcrumb.Item>
-          </Breadcrumb>
-          <div className="top-bar-tools">
-            <Dropdown overlay={menu}>
-              <Button style={{ marginLeft: 8 }}>
-                导出 <Icon type="down" />
-              </Button>
-            </Dropdown>
-          </div>
-        </Header>
-        <Content className="main-content">
-          <div className="page-body">
-            <div className="toolbar">
-              <Select
-                size="large"
-                showSearch
-                style={{ width: 300 }}
-                placeholder="选择一个客户"
-                optionFilterProp="children"
-                onChange={this.handleCustomerChange}
-                value={query.partnerId}
-              >
-                {
-                    [{
-                      partner_code: '',
-                      name: '所有客户',
-                      partner_id: -1,
-                    }].concat(clients).map(pt => (
-                      <Option searched={`${pt.partner_code}${pt.name}`}
-                        value={pt.partner_id} key={pt.partner_id}
-                      >
-                        {pt.partner_code ? `${pt.partner_code} | ${pt.name}` : pt.name}
-                      </Option>)
-                    )
-                  }
-              </Select>
-              <div className="toolbar-right">
-                <a onClick={() => this.handleMonth(2)}>近3月</a>
-                <a onClick={() => this.handleMonth(5)} style={{ marginLeft: 20 }}>近6月</a>
-                <a onClick={() => this.handleMonth(11)} style={{ marginLeft: 20 }}>近一年</a>
-                <MonthPicker size="large" allowClear={false} value={moment(query.beginDate)} onChange={this.handleBeginDateChange} />
-                <span>~</span>
-                <MonthPicker size="large" allowClear={false} value={moment(query.endDate)} onChange={this.handleEndDateChange} />
-                <span style={{ marginLeft: 20 }}>结算日:</span>
-                <Select style={{ width: 70, marginLeft: 5 }} value={query.separationDate} onChange={this.handleSeparationDateChange}>
-                  {this.renderSeparationDateOption()}
-                </Select>
-              </div>
+      <Layout>
+        <Sider width={320} className="menu-sider" key="sider" trigger={null}
+          collapsible
+          collapsed={this.state.collapsed}
+          collapsedWidth={0}
+        >
+          <div className="left-sider-panel">
+            <div className="top-bar">
+              <Breadcrumb>
+                <Breadcrumb.Item>
+                  客户
+                </Breadcrumb.Item>
+              </Breadcrumb>
             </div>
-            <Layout className="main-wrapper">
-              <Sider className="nav-sider">
-                <Menu onClick={this.handleMenuChange}
-                  style={{ width: 'inherit' }}
-                  defaultOpenKeys={['sub1']}
-                  selectedKeys={[selectedKey]}
-                  mode="inline"
-                >
-                  <SubMenu key="sub1" title="交付率统计">
-                    <Menu.Item key="1">准时</Menu.Item>
-                    <Menu.Item key="2">超时</Menu.Item>
-                  </SubMenu>
-                  <Menu.Item key="3">运输量统计</Menu.Item>
-                  <Menu.Item key="4">运输费统计</Menu.Item>
-                  <Menu.Item key="5">异常票数统计</Menu.Item>
-                </Menu>
-              </Sider>
-              <Content style={{ padding: '0 24px', minHeight: 280 }}>
-                {content}
-              </Content>
-            </Layout>
+            <div className="left-sider-panel">
+              <div className="toolbar">
+                <Search
+                  placeholder="搜索客户"
+                  onSearch={this.handleSearch} size="large"
+                />
+              </div>
+              <Table size="middle" dataSource={this.state.clients} columns={columns} showHeader={false} onRowClick={this.handleRowClick}
+                pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }} rowKey="partner_id"
+                rowClassName={record => record.partner_id === customer.partner_id ? 'table-row-selected' : ''}
+              />
+            </div>
           </div>
-        </Content>
-      </div>
+        </Sider>
+        <Layout>
+          <Header className="top-bar">
+            { this.state.collapsed && <Breadcrumb>
+              <Breadcrumb.Item>
+                报表中心
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                KPI分析
+              </Breadcrumb.Item>
+            </Breadcrumb>}
+            <Button size="large"
+              className={this.state.collapsed ? '' : 'btn-toggle-on'}
+              icon={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
+              onClick={this.toggle}
+            />
+            <div className="top-bar-tools">
+              <Dropdown overlay={menu}>
+                <Button style={{ marginLeft: 8 }}>
+                  导出 <Icon type="down" />
+                </Button>
+              </Dropdown>
+            </div>
+          </Header>
+          <Content className="main-content">
+            <div className="page-body">
+              <div className="toolbar">
+                <div className="toolbar-right">
+                  <a onClick={() => this.handleMonth(2)}>近3月</a>
+                  <a onClick={() => this.handleMonth(5)} style={{ marginLeft: 20 }}>近6月</a>
+                  <a onClick={() => this.handleMonth(11)} style={{ marginLeft: 20 }}>近一年</a>
+                  <MonthPicker size="large" allowClear={false} value={moment(query.beginDate)} onChange={this.handleBeginDateChange} />
+                  <span>~</span>
+                  <MonthPicker size="large" allowClear={false} value={moment(query.endDate)} onChange={this.handleEndDateChange} />
+                  <span style={{ marginLeft: 20 }}>结算日:</span>
+                  <Select style={{ width: 70, marginLeft: 5 }} value={query.separationDate} onChange={this.handleSeparationDateChange}>
+                    {this.renderSeparationDateOption()}
+                  </Select>
+                </div>
+              </div>
+              <Layout className="main-wrapper">
+                <Sider className="nav-sider" width={150}>
+                  <Menu onClick={this.handleMenuChange}
+                    style={{ width: 150 }}
+                    defaultOpenKeys={['sub1']}
+                    selectedKeys={[selectedKey]}
+                    mode="inline"
+                  >
+                    <SubMenu key="sub1" title="交付率统计">
+                      <Menu.Item key="1">准时</Menu.Item>
+                      <Menu.Item key="2">超时</Menu.Item>
+                    </SubMenu>
+                    <Menu.Item key="3">运输量统计</Menu.Item>
+                    <Menu.Item key="4">运输费统计</Menu.Item>
+                    <Menu.Item key="5">异常票数统计</Menu.Item>
+                  </Menu>
+                </Sider>
+                <Content style={{ padding: '0 24px', minHeight: 280 }}>
+                  {content}
+                </Content>
+              </Layout>
+            </div>
+          </Content>
+        </Layout>
+      </Layout>
     );
   }
 }
