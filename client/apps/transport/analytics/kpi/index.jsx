@@ -63,21 +63,20 @@ export default class Kpi extends React.Component {
     clients: [],
     loaded: false,
   }
+  componentDidMount() {
+    if (this.props.clients.length !== 0) {
+      this.handleTableLoad(this.props);
+    }
+  }
   componentWillReceiveProps(nextProps) {
-    this.setState({ clients: nextProps.clients, loaded: nextProps.loaded });
+    if (nextProps.clients.length > 0) {
+      this.setState({ clients: nextProps.clients, loaded: nextProps.loaded });
+    }
     if (!nextProps.loaded && nextProps.clients.length !== this.props.clients.length) {
-      this.setState({ customer: nextProps.clients[0] || {} });
-      const beginDate = new Date();
-      beginDate.setMonth(beginDate.getMonth() - 5);
-      const endDate = new Date();
-      const { tenantId, query } = nextProps;
-      this.props.loadKpi(
-        tenantId,
-        beginDate,
-        endDate,
-        nextProps.clients[0].partner_id,
-        query.separationDate
-      );
+      this.handleTableLoad(nextProps);
+    }
+    if (!this.state.customer.partner_id) {
+      this.setState({ customer: nextProps.clients[0] });
     }
   }
   shouldComponentUpdate(nextProps, nextState) {
@@ -87,6 +86,19 @@ export default class Kpi extends React.Component {
     delete tp.modes;
     if (JSON.stringify(np) === JSON.stringify(tp) && JSON.stringify(nextState) === JSON.stringify(this.state)) return false;
     return true;
+  }
+  handleTableLoad = (props) => {
+    const beginDate = new Date();
+    beginDate.setMonth(beginDate.getMonth() - 5);
+    const endDate = new Date();
+    const { tenantId, query } = props;
+    this.props.loadKpi(
+      tenantId,
+      beginDate,
+      endDate,
+      props.clients[0].partner_id,
+      query.separationDate
+    );
   }
   toggle = () => {
     this.setState({
