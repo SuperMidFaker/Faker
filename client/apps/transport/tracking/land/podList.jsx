@@ -7,6 +7,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadShipmtDetail } from 'common/reducers/shipment';
 import { loadPodTable, showAuditModal, changePodFilter } from
   'common/reducers/trackingLandPod';
+import { deliverConfirm } from 'common/reducers/trackingLandStatus';
 import PodAuditModal from './modals/pod-audit';
 import makeColumns from './columnDef';
 import { SHIPMENT_TRACK_STATUS } from 'common/constants';
@@ -55,7 +56,7 @@ function fetchData({ state, dispatch, params, cookie }) {
     clients: state.shipment.formRequire.clients,
   }),
   { loadPodTable, loadShipmtDetail, showAuditModal,
-    sendMessage, changePodFilter })
+    sendMessage, changePodFilter, deliverConfirm })
 export default class LandStatusList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -74,6 +75,7 @@ export default class LandStatusList extends React.Component {
     sendMessage: PropTypes.func.isRequired,
     clients: PropTypes.array.isRequired,
     changePodFilter: PropTypes.func.isRequired,
+    deliverConfirm: PropTypes.func.isRequired,
   }
 
   state = {
@@ -174,6 +176,15 @@ export default class LandStatusList extends React.Component {
       }
     });
   }
+  handleDeliverConfirm = (shipmtNo, dispId) => {
+    this.props.deliverConfirm(shipmtNo, dispId).then((result) => {
+      if (!result.error) {
+        this.handleTableLoad();
+      } else {
+        message.error(result.error.message);
+      }
+    });
+  }
   handleSelectionClear = () => {
     this.setState({ selectedRowKeys: [] });
   }
@@ -243,6 +254,7 @@ export default class LandStatusList extends React.Component {
       tenantId: this.props.tenantId,
       sendMessage: this.props.sendMessage,
       clients: this.props.clients,
+      deliverConfirm: this.handleDeliverConfirm,
     }, this.msg);
     return (
       <div>
@@ -263,7 +275,7 @@ export default class LandStatusList extends React.Component {
           <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch} toggle={this.toggleAdvancedSearch} />
           <div className="panel-body table-panel">
             <Table rowSelection={rowSelection} columns={columns} loading={loading}
-              dataSource={this.dataSource} scroll={{ x: 2420 }}
+              dataSource={this.dataSource} scroll={{ x: 2520 }}
             />
           </div>
         </div>

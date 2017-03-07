@@ -418,6 +418,17 @@ export default function makeColumns(type, handlers, msg) {
           );
         } else if (record.pod_status === SHIPMENT_POD_STATUS.acceptByUs) {
           if (record.tenant_id === handlers.tenantId) {
+            if (record.deliver_confirmed === 0) {
+              return (
+                <PrivilegeCover module="transport" feature="tracking" action="edit">
+                  <div>
+                    <RowUpdater label={msg('deliverConfirm')} row={record}
+                      onAnchored={() => { handlers.deliverConfirm(record.shipmt_no, record.disp_id); }}
+                    />
+                  </div>
+                </PrivilegeCover>
+              );
+            }
             return (
               <span><Icon type="smile" /> {msg('finished')}</span>
             );
