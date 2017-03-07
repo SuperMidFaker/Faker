@@ -23,6 +23,10 @@ export const DECL_E_TYPE = [
   { key: '0103', value: '出境' },
 ];
 
+export const SOURCE_SELECT = [
+  { key: 'item', value: '企业物料表' },
+  { key: 'import', value: '导入数据' },
+];
 export const CMS_DELG_STATUS = [
   { value: 0, text: '待接单' },
   { value: 1, text: '已接单' },

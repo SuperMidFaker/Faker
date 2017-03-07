@@ -28,6 +28,7 @@ import cmsManifest from './cmsManifest';
 import cmsCompRelation from './cmsCompRelation';
 import cmsQuote from './cmsQuote';
 import cmsResources from './cmsResources';
+import cmsSettings from './cmsSettings';
 import scofFlow from './scofFlow';
 import scvInboundShipments from './scvInboundShipments';
 import scvOutboundShipments from './scvOutboundShipments';
@@ -74,6 +75,7 @@ export default combineReducers({
   cmsCompRelation,
   cmsQuote,
   cmsResources,
+  cmsSettings,
   scofFlow,
   scvInboundShipments,
   scvOutboundShipments,
