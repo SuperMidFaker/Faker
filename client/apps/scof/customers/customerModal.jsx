@@ -99,11 +99,11 @@ export default class CustomerModal extends React.Component {
     if (!name || name === '') {
       message.error('企业名称必填');
     } else if (operation === 'add' && partnerUniqueCode === '') {
-      message.error('企业唯一标识码必填');
+      message.error('统一社会信用代码必填');
     } else if (operation === 'add' && partnerUniqueCode.length !== 18) {
-      message.error(`企业唯一标识码必须18位,当前${partnerUniqueCode.length}位`);
+      message.error(`统一社会信用代码必须18位,当前${partnerUniqueCode.length}位`);
     } else if (customsCode && customsCode.length !== 10) {
-      message.error(`海关十位编码必须为10位, 当前${customsCode.length}位`);
+      message.error(`海关编码必须为10位, 当前${customsCode.length}位`);
     } else if (businessType === '') {
       message.error('请选择客户业务类型');
     } else if (this.props.operation === 'edit') {
@@ -189,16 +189,15 @@ export default class CustomerModal extends React.Component {
             {...formItemLayout}
             label="统一社会信用码"
             hasFeedback
-            required
           >
-            <Input value={this.state.partnerUniqueCode} onChange={(e) => { this.setState({ partnerUniqueCode: e.target.value }); }} />
+            <Input placeholder="请填写18位统一社会信用代码" value={this.state.partnerUniqueCode} onChange={(e) => { this.setState({ partnerUniqueCode: e.target.value }); }} />
           </FormItem>
           <FormItem
             {...formItemLayout}
-            label="海关十位编码"
+            label="海关编码"
             hasFeedback
           >
-            <Input value={this.state.customsCode} onChange={(e) => { this.setState({ customsCode: e.target.value }); }} />
+            <Input placeholder="请填写10位海关编码" value={this.state.customsCode} onChange={(e) => { this.setState({ customsCode: e.target.value }); }} />
           </FormItem>
           <FormItem
             {...formItemLayout}

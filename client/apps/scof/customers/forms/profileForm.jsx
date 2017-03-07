@@ -33,13 +33,19 @@ export default class ProfileForm extends React.Component {
           <Row gutter={16}>
             <Col sm={24}>
               <InfoItem
-                label="企业唯一标识码"
+                label="客户代码"
+                field={customer.partner_code}
+              />
+            </Col>
+            <Col sm={24}>
+              <InfoItem
+                label="统一社会信用代码"
                 field={customer.partner_unique_code}
               />
             </Col>
             <Col sm={24}>
               <InfoItem
-                label="海关十位编码"
+                label="海关编码"
                 field={customer.customs_code}
               />
             </Col>

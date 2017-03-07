@@ -74,13 +74,13 @@ export default class BrokerModal extends React.Component {
     if (partnerName === '') {
       message.error('请填写供应商名称');
     } else if (operation === 'add' && partnerUniqueCode === '') {
-      message.error('企业唯一标识码必填');
+      message.error('统一社会信用代码必填');
     } else if (operation === 'add' && partnerUniqueCode.length !== 18) {
-      message.error(`企业唯一标识码必须18位,当前${partnerUniqueCode.length}位`);
+      message.error(`统一社会信用代码必须18位,当前${partnerUniqueCode.length}位`);
     } else if (!customsCode) {
-      message.error('海关十位编码必填');
+      message.error('海关编码必填');
     } else if (customsCode && customsCode.length !== 10) {
-      message.error(`海关十位编码必须为10位, 当前${customsCode.length}位`);
+      message.error(`海关编码必须为10位, 当前${customsCode.length}位`);
     } else if (operation === 'edit') {
       this.props.editPartner(carrier.id, partnerName, customsCode, role, business).then((result) => {
         if (result.error) {
@@ -140,7 +140,7 @@ export default class BrokerModal extends React.Component {
         <FormItem {...formItemLayout} label="统一社会信用代码:" required>
           <Input required value={partnerUniqueCode} onChange={e => this.setState({ partnerUniqueCode: e.target.value })} />
         </FormItem>
-        <FormItem {...formItemLayout} label="海关十位编码:" required>
+        <FormItem {...formItemLayout} label="海关编码:" required>
           <Input value={customsCode} onChange={e => this.setState({ customsCode: e.target.value })} />
         </FormItem>
         <FormItem {...formItemLayout} label="供应商类型:" required>

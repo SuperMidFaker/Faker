@@ -48,7 +48,7 @@ export default class UnitList extends Component {
       key: 'comp_code',
       width: 300,
     }, {
-      title: '海关十位编码',
+      title: '海关编码',
       dataIndex: 'customs_code',
       key: 'customs_code',
       width: 200,
