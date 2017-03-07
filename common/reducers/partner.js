@@ -106,7 +106,7 @@ export function checkPartner({ tenantId, partnerInfo }) {
   };
 }
 
-export function editPartner(partnerId, name, code, role, business) {
+export function editPartner(partnerId, name, partnerUniqueCode, code, role, business) {
   return {
     [CLIENT_API]: {
       types: [
@@ -120,6 +120,7 @@ export function editPartner(partnerId, name, code, role, business) {
       data: {
         partnerId,
         name,
+        partnerUniqueCode,
         code,
         role,
         business,

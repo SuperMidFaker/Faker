@@ -65,9 +65,27 @@ export default class CreateExceptionPane extends React.Component {
   }
   render() {
     const { form: { getFieldDecorator } } = this.props;
+    const exceptionWhiteList = [
+      'SHIPMENT_EXCEPTION_SYS_PICKUP_OVERDUE',
+      'SHIPMENT_EXCEPTION_SYS_DELIVER_OVERDUE',
+      'SHIPMENT_EXCEPTION_MIS_GOODS',
+      'SHIPMENT_EXCEPTION_MIS_VEHICLE',
+      'SHIPMENT_EXCEPTION_ROAD_CONDITION',
+      'SHIPMENT_EXCEPTION_VEHICLE_ACCIDENT',
+      'SHIPMENT_EXCEPTION_NULL_LOCATION',
+      'SHIPMENT_EXCEPTION_MIS_DELIVER',
+      'SHIPMENT_EXCEPTION_GOODS_DAMAGED',
+      'SHIPMENT_EXCEPTION_GOODS_SHORTAGE',
+      'SHIPMENT_EXCEPTION_DELIVER_REJECTED',
+      'SHIPMENT_EXCEPTION_POD_INFO_ERROR',
+      'SHIPMENT_EXCEPTION_POD_UNQUALIFIED',
+      'SHIPMENT_EXCEPTION_COMPLAINT',
+      'SHIPMENT_EXCEPTION_OTHERS',
+      'SHIPMENT_EXCEPTION_STATUS_UPDATE_ERROR',
+    ];
     const options = [];
     for (let i = 0; i < TRANSPORT_EXCEPTIONS.length; i++) {
-      if (TRANSPORT_EXCEPTIONS[i].key.indexOf('_SYS_') < 0 && TRANSPORT_EXCEPTIONS[i].key !== 'SHIPMENT_EXCEPTION_SPECIAL_COST') {
+      if (exceptionWhiteList.indexOf(TRANSPORT_EXCEPTIONS[i].key) >= 0) {
         if (options.length === 0) {
           options.push({
             value: TRANSPORT_EXCEPTIONS[i].code,

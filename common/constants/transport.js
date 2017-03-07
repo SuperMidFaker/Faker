@@ -57,7 +57,7 @@ export const TRANSPORT_EXCEPTIONS = [{
   code: 11012,
   level: 'WARN',
   category: '提货异常',
-  name: '提货延迟',
+  name: '提货超时',
 }, {
   key: 'SHIPMENT_EXCEPTION_MIS_GOODS',
   code: 12001,
@@ -93,7 +93,7 @@ export const TRANSPORT_EXCEPTIONS = [{
   code: 11013,
   level: 'WARN',
   category: '送货异常',
-  name: '送货延迟',
+  name: '交货超时',
 }, {
   key: 'SHIPMENT_EXCEPTION_MIS_DELIVER',
   code: 12006,

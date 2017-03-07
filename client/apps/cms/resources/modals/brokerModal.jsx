@@ -82,7 +82,7 @@ export default class BrokerModal extends React.Component {
     } else if (customsCode && customsCode.length !== 10) {
       message.error(`海关编码必须为10位, 当前${customsCode.length}位`);
     } else if (operation === 'edit') {
-      this.props.editPartner(carrier.id, partnerName, customsCode, role, business).then((result) => {
+      this.props.editPartner(carrier.id, partnerName, partnerUniqueCode, customsCode, role, business).then((result) => {
         if (result.error) {
           message.error(result.error.message);
         }

@@ -70,7 +70,7 @@ export default class CarrierModal extends React.Component {
     } else if (operation === 'add' && partnerUniqueCode === '') {
       message.error('请填写统一社会信用代码');
     } else if (this.props.operation === 'edit') {
-      this.props.editPartner(carrier.id, partnerName, partnerCode, role, business).then((result) => {
+      this.props.editPartner(carrier.id, partnerName, partnerUniqueCode, partnerCode, role, business).then((result) => {
         if (result.error) {
           message.error(result.error.message);
         } else {
@@ -120,12 +120,12 @@ export default class CarrierModal extends React.Component {
     const { visible, operation } = this.props;
     const { partnerName, partnerCode, partnerUniqueCode } = this.state;
     return (
-      <Modal title={this.props.operation === 'add' ? '新增承运商' : '修改承运商'} visible={visible} onOk={this.handleOk} onCancel={this.handleCancel}>
+      <Modal title={operation === 'add' ? '新增承运商' : '修改承运商'} visible={visible} onOk={this.handleOk} onCancel={this.handleCancel}>
         <FormItem {...formItemLayout} label="承运商名称:" required>
           <Input required value={partnerName} onChange={e => this.setState({ partnerName: e.target.value })} />
         </FormItem>
         <FormItem {...formItemLayout} label="统一社会信用代码:" required>
-          <Input required value={partnerUniqueCode} onChange={e => this.setState({ partnerUniqueCode: e.target.value })} disabled={operation === 'edit'} />
+          <Input required value={partnerUniqueCode} onChange={e => this.setState({ partnerUniqueCode: e.target.value })} />
         </FormItem>
         <FormItem {...formItemLayout} label="承运商代码:" required>
           <Input value={partnerCode} onChange={e => this.setState({ partnerCode: e.target.value })} />
