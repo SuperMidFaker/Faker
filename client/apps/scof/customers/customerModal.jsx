@@ -165,14 +165,14 @@ export default class CustomerModal extends React.Component {
     if (operation === 'add') {
       title = '新增客户';
     } else if (operation === 'edit') {
-      title = '修改客户';
+      title = '修改客户资料';
     }
     return (
       <Modal visible={visible} title={title} onCancel={this.handleCancel} onOk={this.handleOk}>
         <Form layout="horizontal">
           <FormItem
             {...formItemLayout}
-            label="企业名称"
+            label="客户名称"
             hasFeedback
             required
           >
@@ -180,18 +180,18 @@ export default class CustomerModal extends React.Component {
           </FormItem>
           <FormItem
             {...formItemLayout}
-            label="企业唯一标识码"
-            hasFeedback
-            required
-          >
-            <Input value={this.state.partnerUniqueCode} onChange={(e) => { this.setState({ partnerUniqueCode: e.target.value }); }} disabled={operation === 'edit'} />
-          </FormItem>
-          <FormItem
-            {...formItemLayout}
-            label="企业代码"
+            label="客户代码"
             hasFeedback
           >
             <Input value={this.state.partnerCode} onChange={(e) => { this.setState({ partnerCode: e.target.value }); }} />
+          </FormItem>
+          <FormItem
+            {...formItemLayout}
+            label="统一社会信用码"
+            hasFeedback
+            required
+          >
+            <Input value={this.state.partnerUniqueCode} onChange={(e) => { this.setState({ partnerUniqueCode: e.target.value }); }} />
           </FormItem>
           <FormItem
             {...formItemLayout}

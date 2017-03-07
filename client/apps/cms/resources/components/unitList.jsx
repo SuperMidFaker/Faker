@@ -43,17 +43,20 @@ export default class UnitList extends Component {
       dataIndex: 'comp_name',
       key: 'comp_name',
     }, {
-      title: '社会信用代码',
+      title: '统一社会信用代码',
       dataIndex: 'comp_code',
       key: 'comp_code',
+      width: 300,
     }, {
       title: '海关十位编码',
       dataIndex: 'customs_code',
       key: 'customs_code',
+      width: 200,
     }];
     columns.push({
       title: '操作',
       dataIndex: 'id',
+      width: 100,
       key: 'id',
       render: (_, record) => {
         const { id } = record;
@@ -90,7 +93,7 @@ export default class UnitList extends Component {
             <RadioButton value="agent">申报单位</RadioButton>
           </RadioGroup>
           <div className="top-bar-tools">
-            <SearchBar placeholder="公司名称/社会信用代码/接收代码" onInputSearch={this.handleSearch}
+            <SearchBar placeholder="公司名称/社会信用代码" onInputSearch={this.handleSearch}
               value={searchText} size="large"
             />
           </div>
