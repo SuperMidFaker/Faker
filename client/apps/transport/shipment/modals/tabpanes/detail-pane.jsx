@@ -170,11 +170,24 @@ export default class DetailPane extends React.Component {
 
     let pickupDate = moment(shipmt.pickup_est_date).format('YYYY-MM-DD');
     if (dispatch.pickup_act_date) {
-      pickupDate = (<div>{moment(shipmt.pickup_est_date).format('YYYY-MM-DD')} <span style={{ marginLeft: 30, fontSize: '70%' }}><ActDate actDate={dispatch.pickup_act_date} estDate={shipmt.pickup_est_date} textAfter="已提货" /></span></div>);
+      pickupDate = (
+        <div>
+          {moment(shipmt.pickup_est_date).format('YYYY-MM-DD')}
+          <span style={{ marginLeft: 30, fontSize: '70%' }}>
+            <ActDate actDate={dispatch.pickup_act_date} estDate={shipmt.pickup_est_date} textAfter="已提货" />
+          </span>
+        </div>);
     }
     let deliverDate = moment(shipmt.deliver_est_date).format('YYYY-MM-DD');
     if (dispatch.deliver_act_date) {
-      deliverDate = (<div>{moment(shipmt.deliver_est_date).format('YYYY-MM-DD')} <span style={{ marginLeft: 30, fontSize: '70%' }}><ActDate actDate={dispatch.deliver_act_date} estDate={shipmt.deliver_est_date} textAfter="已交货" /></span></div>);
+      const deliverPrmDate = new Date(shipmt.pickup_act_date);
+      deliverPrmDate.setDate(deliverPrmDate.getDate() + shipmt.transit_time);
+      deliverDate = (<div>
+        {moment(shipmt.deliver_est_date).format('YYYY-MM-DD')}
+        <span style={{ marginLeft: 30, fontSize: '70%' }}>
+          <ActDate actDate={dispatch.deliver_act_date} estDate={deliverPrmDate} textAfter="已交货" />
+        </span>
+      </div>);
     }
     return (
       <div className="pane-content tab-pane">
