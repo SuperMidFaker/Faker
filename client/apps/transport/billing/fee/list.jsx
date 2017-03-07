@@ -451,15 +451,15 @@ export default class FeesList extends React.Component {
         <Header className="top-bar">
           <span>{this.msg('expense')}</span>
           <div className="top-bar-tools">
-            <SearchBar placeholder="输入运单号搜索" onInputSearch={this.handleSearchInput}
-              value={this.props.fees.searchValue} size="large"
-            />
+            <Button size="large" onClick={this.handleExportExcel}>{this.msg('export')}</Button>
           </div>
         </Header>
         <Content className="main-content">
           <div className="page-body">
             <div className="toolbar">
-              <Button size="large" onClick={this.handleExportExcel}>{this.msg('export')}</Button>
+              <SearchBar placeholder="输入运单号搜索" onInputSearch={this.handleSearchInput}
+                value={this.props.fees.searchValue} size="large"
+              />
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3>
               </div>

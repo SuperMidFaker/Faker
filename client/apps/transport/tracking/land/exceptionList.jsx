@@ -281,15 +281,15 @@ export default class LandStatusList extends React.Component {
   }, {
     title: this.msg('packageNum'),
     dataIndex: 'total_count',
-    width: 50,
+    width: 70,
   }, {
     title: this.msg('shipWeight'),
     dataIndex: 'total_weight',
-    width: 50,
+    width: 70,
   }, {
     title: this.msg('shipVolume'),
     dataIndex: 'total_volume',
-    width: 50,
+    width: 70,
   }, {
     title: this.msg('shipmtCustomer'),
     dataIndex: 'customer_name',
@@ -464,7 +464,7 @@ export default class LandStatusList extends React.Component {
           <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch} toggle={this.toggleAdvancedSearch} />
           <div className="panel-body table-panel">
             <Table rowSelection={rowSelection} columns={this.columns} loading={loading}
-              dataSource={this.dataSource} scroll={{ x: 2460 }}
+              dataSource={this.dataSource} scroll={{ x: 2520 }}
             />
           </div>
         </div>

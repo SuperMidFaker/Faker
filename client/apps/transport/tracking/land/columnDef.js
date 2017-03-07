@@ -297,15 +297,15 @@ export default function makeColumns(type, handlers, msg) {
   }, {
     title: msg('packageNum'),
     dataIndex: 'total_count',
-    width: 50,
+    width: 70,
   }, {
     title: msg('shipWeight'),
     dataIndex: 'total_weight',
-    width: 50,
+    width: 70,
   }, {
     title: msg('shipVolume'),
     dataIndex: 'total_volume',
-    width: 50,
+    width: 70,
   }, {
     title: msg('shipmtCustomer'),
     dataIndex: 'customer_name',

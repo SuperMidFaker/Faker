@@ -479,17 +479,17 @@ export default class TariffList extends React.Component {
             <RadioButton value="draft">草稿箱</RadioButton>
           </RadioGroup>
           <div className="top-bar-tools">
-            <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} size="large" />
+            <PrivilegeCover module="transport" feature="tariff" action="create">
+              <Button type="primary" size="large" icon="plus-circle-o" onClick={this.handleShowCreateTariffModal}>
+                {this.msg('tariffCreate')}
+              </Button>
+            </PrivilegeCover>
           </div>
         </Header>
         <Content className="main-content" key="main">
           <div className="page-body">
             <div className="toolbar">
-              <PrivilegeCover module="transport" feature="tariff" action="create">
-                <Button type="primary" size="large" icon="plus-circle-o" onClick={this.handleShowCreateTariffModal}>
-                  {this.msg('tariffCreate')}
-                </Button>
-              </PrivilegeCover>
+              <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} size="large" />
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3>
               </div>
