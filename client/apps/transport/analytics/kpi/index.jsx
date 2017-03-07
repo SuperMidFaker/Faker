@@ -61,9 +61,10 @@ export default class Kpi extends React.Component {
     currentPage: 1,
     collapsed: false,
     clients: [],
+    loaded: false,
   }
   componentWillReceiveProps(nextProps) {
-    this.setState({ clients: nextProps.clients });
+    this.setState({ clients: nextProps.clients, loaded: nextProps.loaded });
     if (!nextProps.loaded && nextProps.clients.length !== this.props.clients.length) {
       this.setState({ customer: nextProps.clients[0] || {} });
       const beginDate = new Date();
@@ -90,6 +91,11 @@ export default class Kpi extends React.Component {
   toggle = () => {
     this.setState({
       collapsed: !this.state.collapsed,
+      loaded: false,
+    }, () => {
+      window.setTimeout(() => {
+        this.setState({ loaded: true });
+      }, 200);
     });
   }
   handleRowClick = (record) => {
@@ -160,8 +166,8 @@ export default class Kpi extends React.Component {
     return options;
   }
   render() {
-    const { query, kpi, loading, loaded, modes } = this.props;
-    const { selectedKey, customer } = this.state;
+    const { query, kpi, loading, modes } = this.props;
+    const { selectedKey, customer, collapsed, loaded } = this.state;
     let content = (<span />);
     if (selectedKey === '1') {
       content = (<Punctual kpi={kpi} loading={loading} loaded={loaded} modes={modes.punctual} onModesChange={this.handleModesChange} />);
@@ -189,7 +195,7 @@ export default class Kpi extends React.Component {
       <Layout>
         <Sider width={320} className="menu-sider" key="sider" trigger={null}
           collapsible
-          collapsed={this.state.collapsed}
+          collapsed={collapsed}
           collapsedWidth={0}
         >
           <div className="left-sider-panel">
