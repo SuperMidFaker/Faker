@@ -66,7 +66,7 @@ export default class DriverModal extends Component {
 
     return (
       <Modal visible={visible} onOk={this.handleOk} onCancel={this.handleCancel}>
-        <Form horizontal>
+        <Form layout="horizontal">
           <FormItem {...formItemLayout} label="姓名" required>
             {getFieldDecorator('name', {
               initialValue: driver.name,

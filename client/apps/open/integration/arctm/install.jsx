@@ -97,7 +97,7 @@ export default class InstallAmberRoadCTM extends React.Component {
           </div>
         </Header>
         <Content className="main-content layout-fixed-width">
-          <Form vertical>
+          <Form layout="vertical">
             <Card>
               <Row gutter={16}>
                 <Col sm={24} lg={24}>

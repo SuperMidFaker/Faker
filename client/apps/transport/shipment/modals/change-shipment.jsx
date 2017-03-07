@@ -97,7 +97,7 @@ export default class ChangeShipment extends React.Component {
         onOk={this.handleOk} onCancel={this.handleCancel}
       >
         <div className="changeShipment">
-          <Form vertical>
+          <Form layout="vertical">
             {this.renderForm()}
           </Form>
         </div>

@@ -109,7 +109,7 @@ export default class SendModal extends React.Component {
       <Modal title={this.msg('sendShipment')} visible={visible}
         onOk={this.handleOk} onCancel={this.handleCancel}
       >
-        <Form horizontal>
+        <Form layout="horizontal">
           <FormItem label={this.msg('broker')} labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
             {getFieldDecorator('brkPartnerId', {
               rules: [{ required: true, message: 'broker must be select', type: 'number' }],

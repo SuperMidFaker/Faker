@@ -122,7 +122,7 @@ export default class DelgAcceptModal extends React.Component {
       <Modal title="接单" visible={visible} onOk={this.handleAccept}
         onCancel={this.handleCancel}
       >
-        <Form horizontal>
+        <Form layout="horizontal">
           <FormItem label="操作员" labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
             {
               getFieldDecorator('operator', {

@@ -82,7 +82,7 @@ export default class SegmentDock extends React.Component {
       <Option key={t.id} value={t.id}>{t.mode_name}</Option>);
     const s = (
       <div className="pane-section">
-        <Form vertical>
+        <Form layout="vertical">
           <FormItem label="中转站">
             <Select style={{ width: 600 }} onChange={this.handleNodeLocationChange.bind(this, od)}>
               {nds}

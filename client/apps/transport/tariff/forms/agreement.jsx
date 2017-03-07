@@ -111,7 +111,7 @@ export default class AgreementForm extends React.Component {
     const { partnerVisible, readonly, transMode } = this.state;
     return (
       <div style={{ padding: 10 }}>
-        <Form horizontal>
+        <Form layout="horizontal">
           <Card>
             <Row>
               <Col sm={8}>

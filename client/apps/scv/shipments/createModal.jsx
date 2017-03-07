@@ -57,7 +57,7 @@ export default class CreateModal extends React.Component {
       <Modal title={this.msg('newShipment')} visible={visible}
         onOk={this.handleOk} onCancel={this.handleCancel}
       >
-        <Form horizontal>
+        <Form layout="horizontal">
           <FormItem label={this.msg('orderNo')} {...this.formColSpans}>
             {
               getFieldDecorator('order_no')(<Input />)

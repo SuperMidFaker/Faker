@@ -52,7 +52,7 @@ export default class OrderForm extends Component {
     const shipmtOrderMode = formData.shipmt_order_mode === '' ? [] : formData.shipmt_order_mode.split(',');
     const current = shipmtOrderMode.length > 0 ? shipmtOrderMode.length : 0;
     return (
-      <Form horizontal>
+      <Form layout="horizontal">
         <BasicForm operation={operation} />
         <Steps direction="vertical" current={current}>
           {this.renderSteps(shipmtOrderMode)}

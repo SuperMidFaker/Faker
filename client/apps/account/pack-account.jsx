@@ -40,7 +40,7 @@ export default class AccountPack extends React.Component {
             </Menu>
           </Sider>
           <Layout>
-            <Content className="main-content">
+            <Content className="main-content layout-fixed-width">
               {this.props.children}
             </Content>
           </Layout>

@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Icon, Button, Upload, Form, Input, Row, Col, message } from 'antd';
+import { Icon, Button, Card, Upload, Form, Input, Row, Col, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { updateProfile } from 'common/reducers/account';
 import { isLoginNameExist, checkLoginName } from 'common/reducers/checker-reducer';
@@ -134,10 +134,10 @@ export default class MyProfile extends React.Component {
     };
     const initialAvatar = profile.avatar || `${__CDN__}/assets/img/avatar.jpg`;
     return (
-      <div className="page-body form-wrapper">
+      <Card>
         <Form horizontal onSubmit={this.handleSubmit}>
           <Row>
-            <Col xs={20} sm={16} md={12} lg={8}>
+            <Col sm={24} md={12}>
               <FormItem label={cmsg('avatar')} className="acc-avatar-form" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} >
                 <div className="acc-avatar"
                   style={{ backgroundImage: `url(${this.state.avatar || initialAvatar})` }}
@@ -181,12 +181,12 @@ export default class MyProfile extends React.Component {
             </Col>
           </Row>
           <Row>
-            <Col span="18" offset="2">
+            <Col span="21" offset="3">
               <Button size="large" htmlType="submit" type="primary">{formatGlobalMsg(intl, 'ok')}</Button>
             </Col>
           </Row>
         </Form>
-      </div>
+      </Card>
     );
   }
 }

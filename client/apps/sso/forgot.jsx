@@ -69,7 +69,7 @@ export default class Forgot extends React.Component {
     return (
       <Card bodyStyle={{ padding: 64 }}>
         {!this.props.smsId ?
-        (<Form horizontal>
+        (<Form layout="horizontal">
           <p className="text-center">{formatMsg(intl, 'verifyCodeGuide')}</p>
           <FormItem>
             {(
@@ -96,7 +96,7 @@ export default class Forgot extends React.Component {
           }
         </Form>)
           :
-        (<Form horizontal>
+        (<Form layout="horizontal">
           <p className="text-center">{formatMsg(intl, 'smsCodeSent')} </p>
           <FormItem>
             {(
