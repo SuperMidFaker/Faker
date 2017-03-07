@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Breadcrumb, Button, Radio, Layout, message, Popconfirm } from 'antd';
+import { Breadcrumb, Button, Dropdown, Menu, Icon, Radio, Layout, message, Popconfirm } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
@@ -375,7 +375,7 @@ export default class AcceptList extends React.Component {
       columns = [...columns, {
         title: formatContainerMsg(intl, 'opColumn'),
         fixed: 'right',
-        width: 150,
+        width: 80,
         render: (o, record) => {
           if (record.effective === SHIPMENT_EFFECTIVES.cancelled) {
             return (<span />);
@@ -387,13 +387,24 @@ export default class AcceptList extends React.Component {
                     {this.msg('shipmtAccept')}
                   </a>
                   <span className="ant-divider" />
-                  <NavLink to={`/transport/shipment/edit/${record.shipmt_no}`}>
-                    {formatGlobalMsg(intl, 'modify')}
-                  </NavLink>
-                  <span className="ant-divider" />
-                  <a role="button" onClick={ev => this.handleShipmtRevoke(record.shipmt_no, record.key, ev)}>
-                    {this.msg('shipmtRevoke')}
-                  </a>
+                  <Dropdown overlay={(
+                    <Menu onClick={this.handleMenuClick}>
+                      <Menu.Item key="edit">
+                        <NavLink to={`/transport/shipment/edit/${record.shipmt_no}`}>
+                          {formatGlobalMsg(intl, 'modify')}
+                        </NavLink>
+                      </Menu.Item>
+                      <Menu.Item key="delete">
+                        <Popconfirm title={this.msg('deleteConfirm')} onConfirm={ev => this.handleShipmtRevoke(record.shipmt_no, record.key, ev)}>
+                          <a role="button">
+                            {this.msg('shipmtRevoke')}
+                          </a>
+                        </Popconfirm>
+                      </Menu.Item>
+                    </Menu>)}
+                  >
+                    <a><Icon type="down" /></a>
+                  </Dropdown>
                 </span>
               </PrivilegeCover>
             );
@@ -483,7 +494,7 @@ export default class AcceptList extends React.Component {
             />
             <div className="panel-body table-panel">
               <Table rowSelection={rowSelection} columns={columns} loading={loading}
-                dataSource={this.dataSource} scroll={{ x: 2350 }}
+                dataSource={this.dataSource} scroll={{ x: 2300 }}
               />
             </div>
           </div>

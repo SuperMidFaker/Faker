@@ -3,11 +3,11 @@ import { defineMessages } from 'react-intl';
 export default defineMessages({
   importClearance: {
     id: 'cms.ciq.import.clearance',
-    defaultMessage: '进口进境',
+    defaultMessage: '进口申报',
   },
   exportClearance: {
     id: 'cms.ciq.export.clearance',
-    defaultMessage: '出口出境',
+    defaultMessage: '出口申报',
   },
   searchPlaceholder: {
     id: 'cms.ciq.search.placeholder',

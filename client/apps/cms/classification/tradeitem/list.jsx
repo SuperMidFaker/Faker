@@ -4,7 +4,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Breadcrumb, Button, Collapse, Layout, Radio, Dropdown, Icon, Menu, Popconfirm, Tooltip, message } from 'antd';
+import { Alert, Breadcrumb, Button, Collapse, Layout, Radio, Dropdown, Icon, Menu, Popconfirm, Tooltip, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import NavLink from 'client/components/nav-link';
 import { format } from 'client/common/i18n/helpers';
@@ -78,7 +78,8 @@ export default class TradeItemList extends Component {
   columns = [{
     title: this.msg('copProductNo'),
     dataIndex: 'cop_product_no',
-    width: 220,
+    fixed: 'left',
+    width: 200,
   }, {
     title: this.msg('hscode'),
     dataIndex: 'hscode',
@@ -176,7 +177,6 @@ export default class TradeItemList extends Component {
   }, {
     title: this.msg('remark'),
     dataIndex: 'remark',
-    width: 200,
   }]
   dataSource = new Table.DataSource({
     fetcher: params => this.props.loadTradeItems(params),
@@ -295,9 +295,9 @@ export default class TradeItemList extends Component {
       width: 80,
       fixed: 'right',
       render: (o, record) => (
-        <span>
+        <span className="editable-row-operations">
           <NavLink to={`/clearance/classification/tradeitem/edit/${record.id}`}>
-            {this.msg('modify')}
+            <Icon type="edit" />
           </NavLink>
           <span className="ant-divider" />
           <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleItemDel(record.id)}>
@@ -414,7 +414,7 @@ export default class TradeItemList extends Component {
                   }
               </div>
               <div className="panel-body table-panel">
-                <Table rowSelection={rowSelection} rowKey="id" columns={columns} dataSource={this.dataSource} scroll={{ x: 2500 }} />
+                <Table rowSelection={rowSelection} rowKey="id" columns={columns} dataSource={this.dataSource} scroll={{ x: 3800 }} />
               </div>
               <AddTradeRepoModal />
             </div>
@@ -434,11 +434,20 @@ export default class TradeItemList extends Component {
               <h3>物料库设置</h3>
             </div>
             <Collapse accordion defaultActiveKey="trader">
-              <Panel header={'收发货企业'} key="trader">
+              <Panel header={'授权收发货人'} key="trader">
                 <CopCodesPane />
               </Panel>
-              <Panel header={'申报单位'} key="unit">
+              <Panel header={'申报单位规则'} key="unit">
                 <SetUnitPane />
+              </Panel>
+              <Panel header={'更多'} key="more">
+                <Alert
+                  message="警告"
+                  description="删除物料库数据将无法恢复，请谨慎操作"
+                  type="warning"
+                  showIcon
+                />
+                <Button type="danger" size="large" icon="delete">删除物料库</Button>
               </Panel>
             </Collapse>
           </div>

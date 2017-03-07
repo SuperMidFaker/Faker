@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Table, Select, message } from 'antd';
+import { Button, Icon, Table, Select, message } from 'antd';
 import { loadTradeCodes, loadRepoTrades, saveRepoTrade, delRepoTrade } from 'common/reducers/cmsTradeitem';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
@@ -130,6 +130,7 @@ export default class CopCodesPane extends React.Component {
     const columns = [{
       title: this.msg('tradeCode'),
       dataIndex: 'trade_code',
+      width: 160,
       render: (o, record) =>
         <ColumnSelect field="trade_code" inEdit={!record.id} record={record}
           onChange={this.handleTradeSel} options={tradeCodes}
@@ -140,17 +141,23 @@ export default class CopCodesPane extends React.Component {
       render: (o, record) =>
         <ColumnInput field="trade_name" record={record} />,
     }, {
-      width: 60,
-      render: (o, record, index) => {
-        if (record.id) {
-          return <Button type="ghost" shape="circle" onClick={() => this.handleDelete(record, index)} icon="delete" />;
-        } else {
-          return <Button type="primary" shape="circle" onClick={() => this.handleSave(record)} icon="save" />;
-        }
-      },
+      width: 70,
+      render: (o, record, index) => (<div className="editable-row-operations">{
+            (record.id) ?
+              <span>
+                <a onClick={() => this.handleDelete(record, index)}><Icon type="delete" /></a>
+              </span>
+            :
+              <span>
+                <a onClick={() => this.handleSave(record)}><Icon type="save" /></a>
+                <span className="ant-divider" />
+                <a onClick={() => this.editDone(index, 'cancel')}><Icon type="close" /></a>
+              </span>
+          }
+      </div>),
     }];
     return (
-      <Table pagination={false} columns={columns} dataSource={this.state.datas}
+      <Table size="middle" pagination={false} columns={columns} dataSource={this.state.datas}
         footer={() => <Button type="dashed" onClick={this.handleAdd} icon="plus" style={{ width: '100%' }}>{this.msg('add')}</Button>}
       />
     );

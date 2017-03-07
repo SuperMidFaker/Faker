@@ -137,7 +137,7 @@ export default class SpecialCategories extends React.Component {
     }, {
       dataIndex: 'option',
       key: 'option',
-      width: 80,
+      width: 60,
       render: (col, row, index) => {
         if (this.state.editIndex === index) {
           if (row.id === -1) {
@@ -151,7 +151,7 @@ export default class SpecialCategories extends React.Component {
               <a onClick={() => {
                 this.setState({ editIndex: index });
               }}
-              >修改</a>
+              ><Icon type="edit" /></a>
               <span className="ant-divider" />
               <Popconfirm title="确认删除该分类?" onConfirm={() => this.handleRemove(row.id)}>
                 <a role="button"><Icon type="delete" /></a>

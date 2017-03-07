@@ -70,17 +70,17 @@ export default class BrokerList extends Component {
     });
     const columns = [
       {
-        title: '报关行名称',
+        title: '服务商名称',
         dataIndex: 'name',
         key: 'name',
-      }, {
-        title: '海关编码',
-        dataIndex: 'customs_code',
-        key: 'customs_code',
       }, {
         title: '统一社会信用代码',
         dataIndex: 'partner_unique_code',
         key: 'partner_unique_code',
+      }, {
+        title: '海关编码',
+        dataIndex: 'customs_code',
+        key: 'customs_code',
       }, {
         title: '业务类型',
         dataIndex: 'business',
@@ -118,13 +118,13 @@ export default class BrokerList extends Component {
               资源设置
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              报关行
+              清关服务商
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="top-bar-tools">
-            <SearchBar placeholder="名称/海关编码/统一社会信用代码" onInputSearch={this.handleSearch}
-              value={this.state.searchText} size="large"
-            />
+            <PrivilegeCover module="clearance" feature="resources" action="create">
+              <Button type="primary" size="large" onClick={onAddBtnClicked} icon="plus">新增</Button>
+            </PrivilegeCover>
           </div>
         </Header>
         <Content className="main-content" key="main">
@@ -135,15 +135,15 @@ export default class BrokerList extends Component {
                   defaultSelectedKeys={['broker']}
                   mode="inline"
                 >
-                  <Menu.Item key="broker"><NavLink to="/clearance/resources/broker">报关行</NavLink></Menu.Item>
-                  <Menu.Item key="unit"><NavLink to="/clearance/resources/unit">经营单位</NavLink></Menu.Item>
+                  <Menu.Item key="broker"><NavLink to="/clearance/resources/broker">清关服务商</NavLink></Menu.Item>
+                  <Menu.Item key="unit"><NavLink to="/clearance/resources/unit">经营单位代码</NavLink></Menu.Item>
                 </Menu>
               </Sider>
               <Content className="nav-content">
                 <div className="toolbar">
-                  <PrivilegeCover module="clearance" feature="resources" action="create">
-                    <Button type="primary" size="large" onClick={onAddBtnClicked} icon="plus-circle-o">新增报关行</Button>
-                  </PrivilegeCover>
+                  <SearchBar placeholder="名称/海关编码/统一社会信用代码" onInputSearch={this.handleSearch}
+                    value={this.state.searchText} size="large"
+                  />
                 </div>
                 <div className="panel-body table-panel">
                   <Table dataSource={data} columns={columns} rowSelection={rowSelection} />

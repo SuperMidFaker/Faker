@@ -83,7 +83,7 @@ export default class UnitList extends Component {
               资源设置
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              经营单位
+              经营单位代码
             </Breadcrumb.Item>
           </Breadcrumb>
           <RadioGroup value={type} onChange={e => this.setState({ type: e.target.value })} size="large">
@@ -93,9 +93,9 @@ export default class UnitList extends Component {
             <RadioButton value="agent">申报单位</RadioButton>
           </RadioGroup>
           <div className="top-bar-tools">
-            <SearchBar placeholder="公司名称/社会信用代码" onInputSearch={this.handleSearch}
-              value={searchText} size="large"
-            />
+            <PrivilegeCover module="clearance" feature="resources" action="create">
+              <Button type="primary" size="large" onClick={() => onAddBtnClicked(type)} icon="plus">新增</Button>
+            </PrivilegeCover>
           </div>
         </Header>
         <Content className="main-content" key="main">
@@ -106,15 +106,15 @@ export default class UnitList extends Component {
                   defaultSelectedKeys={['unit']}
                   mode="inline"
                 >
-                  <Menu.Item key="broker"><NavLink to="/clearance/resources/broker">报关行</NavLink></Menu.Item>
-                  <Menu.Item key="unit"><NavLink to="/clearance/resources/unit">经营单位</NavLink></Menu.Item>
+                  <Menu.Item key="broker"><NavLink to="/clearance/resources/broker">清关服务商</NavLink></Menu.Item>
+                  <Menu.Item key="unit"><NavLink to="/clearance/resources/unit">经营单位代码</NavLink></Menu.Item>
                 </Menu>
               </Sider>
               <Content className="nav-content">
                 <div className="toolbar">
-                  <PrivilegeCover module="clearance" feature="resources" action="create">
-                    <Button type="primary" size="large" onClick={() => onAddBtnClicked(type)} icon="plus-circle-o">新增</Button>
-                  </PrivilegeCover>
+                  <SearchBar placeholder="公司名称/社会信用代码" onInputSearch={this.handleSearch}
+                    value={searchText} size="large"
+                  />
                 </div>
                 <div className="panel-body table-panel">
                   <Table dataSource={data} columns={columns} rowSelection={rowSelection} rowKey="id" />

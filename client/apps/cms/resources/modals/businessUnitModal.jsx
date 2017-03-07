@@ -5,11 +5,6 @@ import { toggleBusinessUnitModal, addBusinessUnit, updateBusinessUnit } from 'co
 
 const FormItem = Form.Item;
 
-const formItemLayout = {
-  labelCol: { span: 6 },
-  wrapperCol: { span: 14 },
-};
-
 @connect(state => ({
   tenantId: state.account.tenantId,
   visible: state.cmsResources.businessUnitModal.visible,
@@ -83,16 +78,18 @@ export default class BusinessUnitModal extends React.Component {
     const { visible } = this.props;
     const { name, code, customsCode } = this.state;
     return (
-      <Modal title={this.props.operation === 'add' ? '新增经营单位' : '修改经营单位'} visible={visible} onOk={this.handleOk} onCancel={this.handleCancel}>
-        <FormItem {...formItemLayout} label="公司名称:" required>
-          <Input required value={name} onChange={e => this.setState({ name: e.target.value })} />
-        </FormItem>
-        <FormItem {...formItemLayout} label="社会信用代码:" required>
-          <Input required value={code} onChange={e => this.setState({ code: e.target.value })} placeholder="18位社会信用代码" />
-        </FormItem>
-        <FormItem {...formItemLayout} label="海关编码:">
-          <Input required value={customsCode} onChange={e => this.setState({ customsCode: e.target.value })} placeholder="海关10位编码" />
-        </FormItem>
+      <Modal title={this.props.operation === 'add' ? '新增经营单位代码' : '修改经营单位代码'} visible={visible} onOk={this.handleOk} onCancel={this.handleCancel}>
+        <Form layout="vertical">
+          <FormItem label="公司名称" required>
+            <Input required value={name} onChange={e => this.setState({ name: e.target.value })} />
+          </FormItem>
+          <FormItem label="统一社会信用代码">
+            <Input required value={code} onChange={e => this.setState({ code: e.target.value })} placeholder="18位统一社会信用代码" />
+          </FormItem>
+          <FormItem label="海关编码">
+            <Input required value={customsCode} onChange={e => this.setState({ customsCode: e.target.value })} placeholder="10位海关编码" />
+          </FormItem>
+        </Form>
       </Modal>
     );
   }

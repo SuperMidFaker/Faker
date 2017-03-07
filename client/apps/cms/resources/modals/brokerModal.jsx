@@ -8,10 +8,6 @@ import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 const FormItem = Form.Item;
 const CheckboxGroup = Checkbox.Group;
 
-const formItemLayout = {
-  labelCol: { span: 6 },
-  wrapperCol: { span: 14 },
-};
 const options = [
   { label: '报关', value: 'CCB' },
   { label: '报检', value: 'CIB' },
@@ -133,23 +129,25 @@ export default class BrokerModal extends React.Component {
     const { partnerName, customsCode, partnerUniqueCode, business } = this.state;
     const businessArray = business !== '' ? business.split(',') : [];
     return (
-      <Modal title={operation === 'add' ? '新增供应商' : '修改供应商'} visible={visible} onOk={this.handleOk} onCancel={this.handleCancel}>
-        <FormItem {...formItemLayout} label="供应商名称:" required>
-          <Input required value={partnerName} onChange={e => this.setState({ partnerName: e.target.value })} />
-        </FormItem>
-        <FormItem {...formItemLayout} label="统一社会信用代码:" required>
-          <Input required value={partnerUniqueCode} onChange={e => this.setState({ partnerUniqueCode: e.target.value })} />
-        </FormItem>
-        <FormItem {...formItemLayout} label="海关编码:" required>
-          <Input value={customsCode} onChange={e => this.setState({ customsCode: e.target.value })} />
-        </FormItem>
-        <FormItem {...formItemLayout} label="供应商类型:" required>
-          <CheckboxGroup
-            options={options}
-            value={businessArray}
-            onChange={this.handleProviderChange}
-          />
-        </FormItem>
+      <Modal title={operation === 'add' ? '新增清关服务商' : '修改清关服务商'} visible={visible} onOk={this.handleOk} onCancel={this.handleCancel}>
+        <Form layout="vertical">
+          <FormItem label="服务商名称:" required>
+            <Input required value={partnerName} onChange={e => this.setState({ partnerName: e.target.value })} />
+          </FormItem>
+          <FormItem label="统一社会信用代码:" required>
+            <Input required value={partnerUniqueCode} onChange={e => this.setState({ partnerUniqueCode: e.target.value })} />
+          </FormItem>
+          <FormItem label="海关编码:" required>
+            <Input value={customsCode} onChange={e => this.setState({ customsCode: e.target.value })} />
+          </FormItem>
+          <FormItem label="服务商类型:" required>
+            <CheckboxGroup
+              options={options}
+              value={businessArray}
+              onChange={this.handleProviderChange}
+            />
+          </FormItem>
+        </Form>
       </Modal>
     );
   }

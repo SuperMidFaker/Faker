@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Icon, Input, message } from 'antd';
+import { Icon, Popconfirm, Input, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
@@ -107,12 +107,12 @@ export default class SpecialCategoryHsCodeList extends React.Component {
       key: 'option',
       title: '操作',
       fixed: 'right',
-      width: 80,
+      width: 60,
       render: (col, row) => {
         if (row.id === -1) {
           return (<a onClick={() => this.handleAdd()}>保存</a>);
         }
-        return (<a onClick={() => this.handleRemove(row.id)}><Icon type="delete" /></a>);
+        return (<Popconfirm title="确认删除?" onConfirm={() => this.handleRemove(row.id)}><a onClick={() => this.handleRemove(row.id)}><Icon type="delete" /></a></Popconfirm>);
       },
     }]);
     columns[0].width = 150;
