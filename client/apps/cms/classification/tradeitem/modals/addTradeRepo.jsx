@@ -17,9 +17,11 @@ const FormItem = Form.Item;
     loginId: state.account.loginId,
     visibleAddModal: state.cmsTradeitem.visibleAddModal,
     customers: state.crmCustomers.customers,
+    repoOwners: state.cmsTradeitem.repoOwners,
   }),
   { createRepo, closeAddModal, loadOwners }
 )
+
 export default class AddTradeRepoModal extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -27,6 +29,7 @@ export default class AddTradeRepoModal extends React.Component {
     loginId: PropTypes.number.isRequired,
     visibleAddModal: PropTypes.bool.isRequired,
     customers: PropTypes.array.isRequired,
+    repoOwners: PropTypes.array.isRequired,
   }
   state = {
     customerid: null,
@@ -41,6 +44,7 @@ export default class AddTradeRepoModal extends React.Component {
       ownerPartnerId: customer.id,
       ownerTenantId: customer.partner_tenant_id,
       createrLoginId: this.props.loginId,
+      uniqueCode: customer.partner_unique_code,
     }).then(
       (result) => {
         if (result.error) {
@@ -59,7 +63,12 @@ export default class AddTradeRepoModal extends React.Component {
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   render() {
-    const { visibleAddModal, customers } = this.props;
+    const { visibleAddModal, customers, repoOwners } = this.props;
+    let newCustomers = customers;
+    for (let i = 0; i < repoOwners.length; i++) {
+      const owner = repoOwners[i];
+      newCustomers = newCustomers.filter(ct => ct.id !== owner.id);
+    }
     return (
       <Modal title={this.msg('addRepo')} visible={visibleAddModal}
         onOk={this.handleOk} onCancel={this.handleCancel}
@@ -69,22 +78,19 @@ export default class AddTradeRepoModal extends React.Component {
             <Col sm={24} lg={24}>
               <FormItem label={this.msg('customer')}>
                 {
-                    (
-                      <Select
-                        showSearch
-                        placeholder="选择客户"
-                        optionFilterProp="children"
-                        size="large"
-                        onChange={this.handleSelectChange}
-                      >
-                        {
-            customers.map(data => (<Option key={data.id} value={data.id}
-              search={`${data.partner_code}${data.name}`}
-            >{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>)
-            )}
-                      </Select>
-                    )
-                  }
+                  (<Select
+                    showSearch
+                    placeholder="选择客户"
+                    optionFilterProp="children"
+                    size="large"
+                    onChange={this.handleSelectChange}
+                  >
+                    {newCustomers.map(data => (<Option key={data.id} value={data.id}
+                      search={`${data.partner_code}${data.name}`}
+                    >{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>)
+                    )}
+                  </Select>)
+                }
               </FormItem>
             </Col>
           </Row>

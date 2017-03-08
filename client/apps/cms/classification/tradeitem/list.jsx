@@ -11,7 +11,7 @@ import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { loadCustomers } from 'common/reducers/crmCustomers';
 import { loadOwners, openAddModal, selectedRepoId, loadTradeItems,
-  deleteItem, deleteSelectedItems, setOwner } from 'common/reducers/cmsTradeitem';
+  deleteItem, deleteSelectedItems, setOwner, deleteRepo } from 'common/reducers/cmsTradeitem';
 import AddTradeRepoModal from './modals/addTradeRepo';
 import SearchBar from 'client/components/search-bar';
 import ExcelUpload from 'client/components/excelUploader';
@@ -50,7 +50,8 @@ function fetchData({ state, dispatch }) {
     visibleAddModal: state.cmsTradeitem.visibleAddModal,
     owner: state.cmsTradeitem.owner,
   }),
-  { loadCustomers, openAddModal, selectedRepoId, loadTradeItems, deleteItem, deleteSelectedItems, setOwner }
+  { loadCustomers, openAddModal, selectedRepoId, loadTradeItems,
+    deleteItem, deleteSelectedItems, setOwner, loadOwners, deleteRepo }
 )
 @connectNav({
   depth: 2,
@@ -73,6 +74,11 @@ export default class TradeItemList extends Component {
     collapsed: false,
     rightSidercollapsed: true,
     selectedRowKeys: [],
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.repoOwners !== this.props.repoOwners && nextProps.repoOwners.length > 0) {
+      this.handleRowClick(nextProps.repoOwners[0]);
+    }
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
@@ -233,14 +239,6 @@ export default class TradeItemList extends Component {
       }
     });
   }
-  handleSelectChange = (value) => {
-    if (value) {
-      const owner = this.props.repoOwners.filter(own => own.id === value)[0];
-      this.props.selectedRepoId(owner.repo_id);
-      this.handleItemListLoad(owner.repo_id);
-      this.props.setOwner(owner);
-    }
-  }
   handleRowClick = (record) => {
     const owner = record;
     this.props.selectedRepoId(owner.repo_id);
@@ -276,6 +274,15 @@ export default class TradeItemList extends Component {
         message.error(result.error.message);
       } else {
         this.handleItemListLoad();
+      }
+    });
+  }
+  handleDeleteRepo = () => {
+    this.props.deleteRepo(this.props.repoId).then((result) => {
+      if (result.error) {
+        message.error(result.error.message);
+      } else {
+        this.props.loadOwners({ tenantId: this.props.tenantId });
       }
     });
   }
@@ -447,7 +454,9 @@ export default class TradeItemList extends Component {
                   type="warning"
                   showIcon
                 />
-                <Button type="danger" size="large" icon="delete">删除物料库</Button>
+                <Popconfirm title="是否确认删除?" onConfirm={this.handleDeleteRepo}>
+                  <Button type="danger" size="large" icon="delete">删除物料库</Button>
+                </Popconfirm>
               </Panel>
             </Collapse>
           </div>
