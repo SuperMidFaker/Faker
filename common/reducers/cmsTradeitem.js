@@ -83,8 +83,6 @@ export default function reducer(state = initialState, action) {
       return { ...state, params: action.result.data };
     case actionTypes.LOAD_ITEM_EDIT_SUCCEED:
       return { ...state, itemData: action.result.data.tradeitem };
-    case actionTypes.SAVE_REPO_TRADES_SUCCEED:
-      return { ...state, repoTrades: action.result.data };
     case actionTypes.LOAD_BODY_ITEM_SUCCEED:
       return { ...state, bodyItem: action.result.data };
     case actionTypes.LOAD_BODY_HSCODE_SUCCEED:

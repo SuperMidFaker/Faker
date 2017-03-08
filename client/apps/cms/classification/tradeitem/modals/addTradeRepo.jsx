@@ -44,6 +44,7 @@ export default class AddTradeRepoModal extends React.Component {
       ownerPartnerId: customer.id,
       ownerTenantId: customer.partner_tenant_id,
       createrLoginId: this.props.loginId,
+      uniqueCode: customer.partner_unique_code,
     }).then(
       (result) => {
         if (result.error) {

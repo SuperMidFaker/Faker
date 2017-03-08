@@ -75,6 +75,11 @@ export default class TradeItemList extends Component {
     rightSidercollapsed: true,
     selectedRowKeys: [],
   }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.repoOwners !== this.props.repoOwners && nextProps.repoOwners.length > 0) {
+      this.handleRowClick(nextProps.repoOwners[0]);
+    }
+  }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
     title: this.msg('copProductNo'),
@@ -277,13 +282,7 @@ export default class TradeItemList extends Component {
       if (result.error) {
         message.error(result.error.message);
       } else {
-        this.props.loadOwners({ tenantId: this.props.tenantId }).then((result1) => {
-          if (result1.error) {
-            message.error(result1.error.message);
-          } else {
-            this.handleRowClick(this.props.repoOwners[0]);
-          }
-        });
+        this.props.loadOwners({ tenantId: this.props.tenantId });
       }
     });
   }
