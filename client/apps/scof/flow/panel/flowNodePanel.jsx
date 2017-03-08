@@ -1,13 +1,10 @@
-/* eslint react/no-multi-comp: 0 */
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Collapse, Form, Radio, Table, Card, Col, Row, Input, Switch } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { openAddTriggerModal } from 'common/reducers/scofFlow';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../../message.i18n';
+import { formatMsg } from '../message.i18n';
 
-const formatMsg = format(messages);
 const FormItem = Form.Item;
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
@@ -61,7 +58,7 @@ export default class FlowNodePanel extends Component {
   handleAddTrigger = () => {
     this.props.openAddTriggerModal();
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl);
   render() {
     const { form: { getFieldDecorator } } = this.props;
     const eventColumns = [
