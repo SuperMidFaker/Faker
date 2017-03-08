@@ -429,7 +429,7 @@ export function acceptDelg(loginId, loginName, dispIds, delgNo) {
   };
 }
 
-export function setOpetaor(loginId, loginName, dispIds) {
+export function setOpetaor(loginId, loginName, dispIds, delgNo) {
   return {
     [CLIENT_API]: {
       types: [
@@ -439,7 +439,7 @@ export function setOpetaor(loginId, loginName, dispIds) {
       ],
       method: 'post',
       endpoint: 'v1/cms/delegation/set/operator',
-      data: { loginId, loginName, dispIds },
+      data: { loginId, loginName, dispIds, delgNo },
     },
   };
 }

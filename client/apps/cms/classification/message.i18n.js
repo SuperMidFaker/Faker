@@ -141,9 +141,17 @@ const messages = defineMessages({
     id: 'cms.classificagtion.tradeitem.tabpane.cop.code',
     defaultMessage: '单位代码',
   },
+  compCode: {
+    id: 'cms.classificagtion.tradeitem.tabpane.comp.code',
+    defaultMessage: '信用代码',
+  },
+  customsCode: {
+    id: 'cms.classificagtion.tradeitem.tabpane.customs.code',
+    defaultMessage: '海关编码',
+  },
   tradeName: {
     id: 'cms.classificagtion.tradeitem.tabpane.cop.name',
-    defaultMessage: '单位名称',
+    defaultMessage: '企业名称',
   },
   opColumn: {
     id: 'cms.classificagtion.tradeitem.column.operation',

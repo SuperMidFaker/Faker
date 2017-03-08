@@ -29,13 +29,13 @@ function ColumnSelect(props) {
     return (
       <Select value={record[field] || ''} onChange={handleChange} style={{ width: '100%' }}>
         {
-          options.map((opt, idx) => <Option value={opt.code} key={`${opt.code}${idx}`}>{opt.code}</Option>)
+          options.map((opt, idx) => <Option value={opt.name} key={`${opt.name}${idx}`}>{opt.name}</Option>)
         }
       </Select>
     );
   } else {
-    const option = options.find(item => item.code === record[field]);
-    return <span>{option ? option.code : ''}</span>;
+    const option = options.find(item => item.name === record[field]);
+    return <span>{option ? option.name : ''}</span>;
   }
 }
 
@@ -88,7 +88,9 @@ export default class CopCodesPane extends React.Component {
     const addOne = {
       repo_id: this.props.repoId,
       creater_login_id: this.props.loginId,
-      trade_code: '',
+      relation_id: null,
+      comp_code: '',
+      customs_code: '',
       trade_name: '',
     };
     const data = this.state.datas;
@@ -102,6 +104,7 @@ export default class CopCodesPane extends React.Component {
           message.error(result.error.message);
         } else {
           message.info('保存成功', 5);
+          this.props.loadRepoTrades(this.props.repoId);
         }
       }
     );
@@ -119,27 +122,34 @@ export default class CopCodesPane extends React.Component {
   }
   handleTradeSel = (record, field, value) => {
     record[field] = value; // eslint-disable-line no-param-reassign
-    const rels = this.props.tradeCodes.filter(tr => tr.code === value)[0];
+    const rels = this.props.tradeCodes.filter(tr => tr.name === value)[0];
     if (rels) {
-      record.trade_name = rels.name; // eslint-disable-line no-param-reassign
+      record.comp_code = rels.comp_code; // eslint-disable-line no-param-reassign
+      record.customs_code = rels.customs_code; // eslint-disable-line no-param-reassign
+      record.relation_id = rels.relation_id; // eslint-disable-line no-param-reassign
     }
     this.forceUpdate();
   }
   render() {
     const { tradeCodes } = this.props;
     const columns = [{
-      title: this.msg('tradeCode'),
-      dataIndex: 'trade_code',
+      title: this.msg('tradeName'),
+      dataIndex: 'trade_name',
       width: 160,
       render: (o, record) =>
-        <ColumnSelect field="trade_code" inEdit={!record.id} record={record}
+        <ColumnSelect field="trade_name" inEdit={!record.id} record={record}
           onChange={this.handleTradeSel} options={tradeCodes}
         />,
     }, {
-      title: this.msg('tradeName'),
-      dataIndex: 'trade_name',
+      title: this.msg('compCode'),
+      dataIndex: 'comp_code',
       render: (o, record) =>
-        <ColumnInput field="trade_name" record={record} />,
+        <ColumnInput field="comp_code" record={record} />,
+    }, {
+      title: this.msg('customsCode'),
+      dataIndex: 'customs_code',
+      render: (o, record) =>
+        <ColumnInput field="customs_code" record={record} />,
     }, {
       width: 70,
       render: (o, record, index) => (<div className="editable-row-operations">{

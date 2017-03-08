@@ -159,6 +159,12 @@ export default class MergeSplitModal extends React.Component {
   handleOk = () => {
     const { billNo } = this.props;
     const { splitOpt, mergeOpt, sortOpt } = this.state;
+    if (mergeOpt.checked) {
+      if (!(mergeOpt.byHsCode || mergeOpt.byGName || mergeOpt.byCurr ||
+        mergeOpt.byCountry || mergeOpt.byCopGNo || mergeOpt.byEmGNo)) {
+        return message.error('请选择归并项');
+      }
+    }
     if (splitOpt.byHsCode) {
       splitOpt.hsCategory = this.props.form.getFieldValue('specialSort');
     }
