@@ -25,23 +25,8 @@ export default class FlowGraph extends React.Component {
   componentDidMount() {
     const data = {
       nodes: [
-        {
-          x: 440,
-          y: 210,
-          id: 'node1',
-        },
-        {
-          x: 570,
-          y: 170,
-          id: 'node2',
-        },
       ],
       edges: [
-        {
-          source: 'node1',
-          id: 'edge1',
-          target: 'node2',
-        },
       ],
     };
       // 第四步：配置G6画布
@@ -108,17 +93,15 @@ export default class FlowGraph extends React.Component {
       extra={<div className="toolbar-right">
         <Dropdown overlay={this.menu}>
           <Button icon="plus-square-o" >
-            {this.msg('flowNode')} <Icon type="down" />
+            {this.msg('addFlowNode')} <Icon type="down" />
           </Button>
         </Dropdown>
         <Button icon="swap-right" onClick={this.handleAddEdge}>
-          {this.msg('flowEdge')}
+          {this.msg('addFlowEdge')}
         </Button>
-        <Button icon="delete" onClick={this.handleRemoveItem}>
-          {this.msg('删除')}
-        </Button>
+        <Button icon="delete" onClick={this.handleRemoveItem} />
       </div>}
-      bodyStyle={{ padding: 0, height: 300 }}
+      bodyStyle={{ padding: 0, height: 240 }}
     >
       <div id="flowchart" />
     </Card>);

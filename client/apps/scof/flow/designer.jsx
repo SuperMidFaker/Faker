@@ -132,7 +132,7 @@ export default class FlowDesigner extends React.Component {
               </Button>
               <Button size="large"
                 className={this.state.rightSidercollapsed ? '' : 'btn-toggle-on'}
-                icon={this.state.rightSidercollapsed ? 'code-o' : 'code'}
+                icon={this.state.rightSidercollapsed ? 'eye-o' : 'eye'}
                 onClick={this.toggleRightSider}
               />
             </div>
@@ -140,19 +140,18 @@ export default class FlowDesigner extends React.Component {
           <Content className="main-content layout-min-width layout-min-width-large">
             <Form layout="vertical">
               <Row gutter={16}>
-                <Col sm={24} md={16}>
+                <Col sm={24} md={24}>
                   <FlowGraph onMounted={this.handleGraphMounted} onSelect={this.handleGraphElemClick} />
-                  {this.state.selGraphElement && this.state.selGraphElement.itemType === 'node' &&
-                  <BizObjCMSPanel form={form} />}
                 </Col>
-                <Col sm={24} md={8}>
-                  {this.state.selGraphElement && this.state.selGraphElement.itemType === 'node' &&
-                  <FlowNodePanel form={form} />
-                  }
-                  {this.state.selGraphElement && this.state.selGraphElement.itemType === 'edge' &&
-                  <FlowEdgePanel form={form} />
-                  }
-                </Col>
+                {this.state.selGraphElement && this.state.selGraphElement.itemType === 'node' &&
+                  <Col sm={24} md={8}><FlowNodePanel form={form} /></Col>
+                }
+                {this.state.selGraphElement && this.state.selGraphElement.itemType === 'node' &&
+                  <Col sm={24} md={16}><BizObjCMSPanel form={form} /></Col>
+                }
+                {this.state.selGraphElement && this.state.selGraphElement.itemType === 'edge' &&
+                  <Col sm={24} md={24}><FlowEdgePanel form={form} /></Col>
+                }
               </Row>
             </Form>
           </Content>
@@ -168,7 +167,7 @@ export default class FlowDesigner extends React.Component {
         >
           <div className="right-sider-panel">
             <div className="panel-header">
-              <h3>流程描述文件</h3>
+              <h3>{this.msg('monitoringPoints')}</h3>
             </div>
           </div>
         </Sider>
