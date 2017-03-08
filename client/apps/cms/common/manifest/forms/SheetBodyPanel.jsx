@@ -498,6 +498,7 @@ export default class SheetBodyPanel extends React.Component {
           message.error(result.error.message);
         } else {
           body = result.data;
+          body.codes = body.code_t + body.code_s;
           const bodies = [...this.state.bodies];
           bodies.splice(recordIdx, 0, body);
           const pagination = { ...origPagi, total: bodies.length };
