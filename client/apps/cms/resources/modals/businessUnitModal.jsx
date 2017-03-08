@@ -1,9 +1,12 @@
 import React, { PropTypes } from 'react';
-import { Modal, Form, Input, message } from 'antd';
+import { Modal, Form, Input, Radio, message } from 'antd';
 import { connect } from 'react-redux';
 import { toggleBusinessUnitModal, addBusinessUnit, updateBusinessUnit } from 'common/reducers/cmsResources';
+import { I_E_TYPES } from 'common/constants';
 
 const FormItem = Form.Item;
+const RadioButton = Radio.Button;
+const RadioGroup = Radio.Group;
 
 @connect(state => ({
   tenantId: state.account.tenantId,
@@ -28,6 +31,7 @@ export default class BusinessUnitModal extends React.Component {
     code: '',
     customsCode: '',
     type: '',
+    ieType: '',
   }
   componentWillReceiveProps(nextProps) {
     this.setState({
@@ -35,11 +39,12 @@ export default class BusinessUnitModal extends React.Component {
       code: nextProps.businessUnit.comp_code || '',
       customsCode: nextProps.businessUnit.customs_code || '',
       type: nextProps.businessUnit.relation_type || '',
+      ieType: nextProps.businessUnit.i_e_type || '',
     });
   }
   handleOk = () => {
     const { businessUnit } = this.props;
-    const { name, code, customsCode } = this.state;
+    const { name, code, customsCode, ieType } = this.state;
     if (name === '') {
       message.error('请填写公司名称');
     } else if (code === '') {
@@ -48,8 +53,10 @@ export default class BusinessUnitModal extends React.Component {
       message.error(`社会信用代码必须为18位, 当前${code.length}位`);
     } else if (customsCode && customsCode.length !== 10) {
       message.error(`海关10位编码必须为10位, 当前${customsCode.length}位`);
+    } else if (ieType === '') {
+      message.error('请选择进出口类型');
     } else if (this.props.operation === 'edit') {
-      this.props.updateBusinessUnit(businessUnit.id, name, code, customsCode).then((result) => {
+      this.props.updateBusinessUnit(businessUnit.id, name, code, customsCode, ieType).then((result) => {
         if (result.error) {
           message.error(result.error.message);
         }
@@ -61,8 +68,8 @@ export default class BusinessUnitModal extends React.Component {
   }
   handleAddPartner = () => {
     const { tenantId } = this.props;
-    const { name, code, customsCode, type } = this.state;
-    this.props.addBusinessUnit(name, code, customsCode, type, tenantId).then((result1) => {
+    const { name, code, customsCode, type, ieType } = this.state;
+    this.props.addBusinessUnit(name, code, customsCode, type, ieType, tenantId).then((result1) => {
       if (result1.error) {
         message.error(result1.error.message);
       } else {
@@ -76,7 +83,7 @@ export default class BusinessUnitModal extends React.Component {
   }
   render() {
     const { visible } = this.props;
-    const { name, code, customsCode } = this.state;
+    const { name, code, customsCode, ieType } = this.state;
     return (
       <Modal title={this.props.operation === 'add' ? '新增经营单位代码' : '修改经营单位代码'} visible={visible} onOk={this.handleOk} onCancel={this.handleCancel}>
         <Form layout="vertical">
@@ -88,6 +95,13 @@ export default class BusinessUnitModal extends React.Component {
           </FormItem>
           <FormItem label="海关编码">
             <Input required value={customsCode} onChange={e => this.setState({ customsCode: e.target.value })} placeholder="10位海关编码" />
+          </FormItem>
+          <FormItem label="进出口类型">
+            <RadioGroup onChange={e => this.setState({ ieType: e.target.value })} value={ieType}>
+              {
+                I_E_TYPES.map(item => <RadioButton value={item.key}>{item.value}</RadioButton>)
+              }
+            </RadioGroup>
           </FormItem>
         </Form>
       </Modal>

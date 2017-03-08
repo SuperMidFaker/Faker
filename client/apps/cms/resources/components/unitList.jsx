@@ -5,6 +5,7 @@ import NavLink from 'client/components/nav-link';
 import SearchBar from 'client/components/search-bar';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import BusinessUnitModal from '../modals/businessUnitModal';
+import { I_E_TYPES } from 'common/constants';
 
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
@@ -52,29 +53,42 @@ export default class UnitList extends Component {
       dataIndex: 'customs_code',
       key: 'customs_code',
       width: 200,
-    }];
-    columns.push({
+    }, {
+      title: '进出口类型',
+      dataIndex: 'i_e_type',
+      key: 'i_e_type',
+      width: 200,
+      render: (col) => {
+        const ieType = I_E_TYPES.find(item => item.key === col);
+        if (ieType) return ieType.value;
+        else return '';
+      },
+    }, {
       title: '操作',
       dataIndex: 'id',
       width: 100,
       key: 'id',
       render: (_, record) => {
         const { id } = record;
-        return (
-          <span>
-            <PrivilegeCover module="corp" feature="partners" action="edit">
-              <a onClick={() => this.props.onEditBtnClick(record)}>修改</a>
-            </PrivilegeCover>
-            <span className="ant-divider" />
-            <PrivilegeCover module="corp" feature="partners" action="delete">
-              <Popconfirm title="确定要删除吗？" onConfirm={() => this.props.onDeleteBtnClick(id)}>
-                <a>删除</a>
-              </Popconfirm>
-            </PrivilegeCover>
-          </span>
-        );
+        if (record.editable === 1) {
+          return (
+            <span>
+              <PrivilegeCover module="corp" feature="partners" action="edit">
+                <a onClick={() => this.props.onEditBtnClick(record)}>修改</a>
+              </PrivilegeCover>
+              <span className="ant-divider" />
+              <PrivilegeCover module="corp" feature="partners" action="delete">
+                <Popconfirm title="确定要删除吗？" onConfirm={() => this.props.onDeleteBtnClick(id)}>
+                  <a>删除</a>
+                </Popconfirm>
+              </PrivilegeCover>
+            </span>
+          );
+        } else {
+          return '';
+        }
       },
-    });
+    }];
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Header className="top-bar">
@@ -88,8 +102,6 @@ export default class UnitList extends Component {
           </Breadcrumb>
           <RadioGroup value={type} onChange={e => this.setState({ type: e.target.value })} size="large">
             <RadioButton value="trade">收发货人</RadioButton>
-            <RadioButton value="owner_consumer">消费使用单位</RadioButton>
-            <RadioButton value="owner_producer">生产销售单位</RadioButton>
             <RadioButton value="agent">申报单位</RadioButton>
           </RadioGroup>
           <div className="top-bar-tools">
