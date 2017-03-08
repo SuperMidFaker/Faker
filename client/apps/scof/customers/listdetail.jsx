@@ -59,7 +59,10 @@ export default class CustomerList extends React.Component {
   }
   componentWillReceiveProps(nextProps) {
     if (this.state.customer.id) {
-      this.setState({ customer: nextProps.customers.find(item => item.id === this.state.customer.id), customers: nextProps.customers });
+      this.setState({
+        customer: nextProps.customers.find(item => item.id === this.state.customer.id) || nextProps.customers[0],
+        customers: nextProps.customers,
+      });
     } else {
       this.setState({ customer: nextProps.customers[0] || {}, customers: nextProps.customers });
     }
@@ -89,7 +92,9 @@ export default class CustomerList extends React.Component {
     });
   }
   handleDelCustomer = () => {
-    this.props.deleteCustomer(this.state.customer.id, PARTNER_ROLES.CUS);
+    this.props.deleteCustomer(this.state.customer.id, PARTNER_ROLES.CUS).then(() => {
+      this.handleTableLoad();
+    });
   }
   handlePageChange = (page) => {
     this.setState({ currentPage: page });
