@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Button, Input, Form, Row, Col, Layout, Table, Tooltip } from 'antd';
 import { openCreateFlowModal } from 'common/reducers/scofFlow';
+import connectNav from 'client/common/decorators/connect-nav';
 // import CreateFlowModal from './modal/createFlowModal';
 import FlowGraph from './panel/flowGraph';
 import FlowNodePanel from './panel/flowNodePanel';
@@ -20,6 +21,10 @@ const Search = Input.Search;
   }),
   { openCreateFlowModal }
 )
+@connectNav({
+  depth: 2,
+  moduleName: 'scof',
+})
 @Form.create()
 export default class FlowDesigner extends React.Component {
   static propTypes = {

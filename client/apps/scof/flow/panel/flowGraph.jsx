@@ -32,8 +32,8 @@ export default class FlowGraph extends React.Component {
       // 第四步：配置G6画布
     this.graph = new window.G6.Graph({
       id: 'flowchart',      // 容器ID
-      width: 1200,    // 画布宽
-      height: 360,   // 画布高
+      width: 2000,    // 画布宽
+      height: 240,   // 画布高
       grid: {
         forceAlign: true, // 是否支持网格对齐
         cell: 10,          // 网格大小
