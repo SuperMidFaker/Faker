@@ -107,6 +107,7 @@ function calculateTotal(bodies) {
     billHead: state.cmsManifest.billHead,
     bodyItem: state.cmsTradeitem.bodyItem,
     bodyHscode: state.cmsTradeitem.bodyHscode,
+    entryHead: state.cmsManifest.entryHead,
   }),
   { updateHeadNetWt, loadBillBody, openAmountModel, getItemForBody, getHscodeForBody }
 )
@@ -126,6 +127,7 @@ export default class SheetBodyPanel extends React.Component {
     currencies: PropTypes.array,
     exemptions: PropTypes.array,
     billHead: PropTypes.object,
+    entryHead: PropTypes.object,
     bodyItem: PropTypes.object,
     bodyHscode: PropTypes.object,
     headForm: PropTypes.object,
@@ -670,6 +672,11 @@ export default class SheetBodyPanel extends React.Component {
   handleUploaded = () => {
     this.props.loadBillBody(this.props.billSeqNo);
   }
+  handleEntrybodyExport = () => {
+    const preSeqNo = this.props.entryHead.pre_entry_seq_no;
+    const timestamp = Date.now().toString().substr(-6);
+    window.open(`${API_ROOTS.default}v1/cms/manifest/declare/export/entry_${preSeqNo}_${timestamp}.xlsx?headId=${this.props.headNo}`);
+  }
   render() {
     const { totGrossWt, totWetWt, totTrade, totPcs } = this.state;
     const columns = this.getColumns();
@@ -743,6 +750,9 @@ export default class SheetBodyPanel extends React.Component {
           }
           <div className="toolbar-right">
             {billBodyToolbar}
+            {this.props.type === 'entry' &&
+              <Button icon="export" onClick={this.handleEntrybodyExport}>导出表体数据</Button>
+            }
           </div>
         </div>
         <div className="pane-content">
