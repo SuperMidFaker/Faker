@@ -63,6 +63,29 @@ ColumnSelect.proptypes = {
   options: PropTypes.array.isRequired,
 };
 
+function calculateTotal(bodies) {
+  let totGrossWt = 0;
+  let totWetWt = 0;
+  let totTrade = 0;
+  let totPcs = 0;
+  for (let i = 0; i < bodies.length; i++) {
+    const body = bodies[i];
+    if (body.gross_wt) {
+      totGrossWt += Number(body.gross_wt);
+    }
+    if (body.wet_wt) {
+      totWetWt += Number(body.wet_wt);
+    }
+    if (body.trade_total) {
+      totTrade += Number(body.trade_total);
+    }
+    if (body.qty_pcs) {
+      totPcs += Number(body.qty_pcs);
+    }
+  }
+  return { totGrossWt, totWetWt, totTrade, totPcs };
+}
+
 @injectIntl
 @connect(
   state => ({
@@ -113,10 +136,15 @@ export default class SheetBodyPanel extends React.Component {
     if (!props.readonly && this.props.type !== 'entry') {
       bodies.push({ id: '__ops' });
     }
+    const result = calculateTotal(bodies);
     this.state = {
       editIndex: -1,
       editBody: {},
       bodies,
+      totGrossWt: result.totGrossWt,
+      totWetWt: result.totWetWt,
+      totTrade: result.totTrade,
+      totPcs: result.totPcs,
       pagination: {
         current: 1,
         total: 0,
@@ -505,9 +533,14 @@ export default class SheetBodyPanel extends React.Component {
           if (bodies.length > pagination.current * pagination.pageSize) {
             pagination.current += 1;
           }
+          const calresult = calculateTotal(bodies);
           this.setState({
             editIndex: -1,
             editBody: {},
+            totGrossWt: calresult.totGrossWt,
+            totWetWt: calresult.totWetWt,
+            totTrade: calresult.totTrade,
+            totPcs: calresult.totPcs,
             bodies,
             pagination,
           });
@@ -520,9 +553,14 @@ export default class SheetBodyPanel extends React.Component {
         } else {
           const bodies = [...this.state.bodies];
           bodies[recordIdx] = editBody;
+          const calresult = calculateTotal(bodies);
           this.setState({
             editIndex: -1,
             editBody: {},
+            totGrossWt: calresult.totGrossWt,
+            totWetWt: calresult.totWetWt,
+            totTrade: calresult.totTrade,
+            totPcs: calresult.totPcs,
             bodies,
           });
         }
@@ -541,8 +579,13 @@ export default class SheetBodyPanel extends React.Component {
         if (pagination.current > 1 && (pagination.current - 1) * pagination.pageSize === pagination.total) {
           pagination.current -= 1;
         }
+        const calresult = calculateTotal(bodies);
         this.setState({
           bodies,
+          totGrossWt: calresult.totGrossWt,
+          totWetWt: calresult.totWetWt,
+          totTrade: calresult.totTrade,
+          totPcs: calresult.totPcs,
           pagination,
         });
       }
@@ -628,6 +671,7 @@ export default class SheetBodyPanel extends React.Component {
     this.props.loadBillBody(this.props.billSeqNo);
   }
   render() {
+    const { totGrossWt, totWetWt, totTrade, totPcs } = this.state;
     const columns = this.getColumns();
     let billBodyToolbar = (
       <Button type="primary" onClick={() => this.handleMenuClick({ key: 'export' })}>
@@ -688,6 +732,15 @@ export default class SheetBodyPanel extends React.Component {
     return (
       <div className="pane">
         <div className="pane-header">
+          <span style={{ marginLeft: 10 }}>总毛重: </span><span style={{ color: '#FF9933' }}>{totGrossWt.toFixed(3)}</span>
+          <span style={{ marginLeft: 10 }}>总净重: </span><span style={{ color: '#FF9933' }}>{totWetWt.toFixed(3)}</span>
+          <span style={{ marginLeft: 10 }}>总金额: </span><span style={{ color: '#FF9933' }}>{totTrade.toFixed(3)}</span>
+          {this.props.type === 'bill' &&
+            <span>
+              <span style={{ marginLeft: 10 }}>总个数: </span>
+              <span style={{ color: '#FF9933' }}>{totPcs.toFixed(3)}</span>
+            </span>
+          }
           <div className="toolbar-right">
             {billBodyToolbar}
           </div>
