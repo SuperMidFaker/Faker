@@ -43,21 +43,22 @@ export default class UnitList extends Component {
       title: '公司名称',
       dataIndex: 'comp_name',
       key: 'comp_name',
+      width: 240,
     }, {
       title: '统一社会信用代码',
       dataIndex: 'comp_code',
       key: 'comp_code',
-      width: 300,
+      width: 200,
     }, {
       title: '海关编码',
       dataIndex: 'customs_code',
       key: 'customs_code',
-      width: 200,
+      width: 120,
     }, {
       title: '进出口类型',
       dataIndex: 'i_e_type',
       key: 'i_e_type',
-      width: 200,
+      width: 100,
       render: (col) => {
         const ieType = I_E_TYPES.find(item => item.key === col);
         if (ieType) return ieType.value;
