@@ -49,7 +49,7 @@ export default class CarrierModal extends React.Component {
   nameChooseConfirm = (foundName, name) => {
     Modal.confirm({
       title: '请选择',
-      content: `${foundName} 与 ${name} 的唯一标示码一致，请选择该标识码下的企业名称`,
+      content: `${foundName} 与 ${name} 的唯一标识码一致，请选择该标识码下的企业名称`,
       okText: foundName,
       cancelText: name,
       onOk: () => {
