@@ -171,7 +171,7 @@ export default class CreateBilling extends React.Component {
     }, {
       title: '调整金额',
       dataIndex: 'adjust_charge',
-      render: (o, record) => (<InputNumber size="small" defaultValue={o} step={0.01} onChange={value => this.handleChangeAdjustCharges(record.id, value)} />),
+      render: (o, record) => (<InputNumber size="small" value={o || 0} step={0.01} onChange={value => this.handleChangeAdjustCharges(record.id, value)} />),
     }, {
       title: '最终费用',
       render(o, record) {
@@ -241,10 +241,10 @@ export default class CreateBilling extends React.Component {
       <div>
         <Header className="top-bar">
           <span>{this.msg('createBilling')}</span>
+          <div className="top-bar-tools">
+            <Button type="primary" onClick={this.handleSave}>{this.msg('save')}</Button>
+          </div>
         </Header>
-        <div className="top-bar-tools">
-          <Button type="primary" onClick={this.handleSave}>{this.msg('save')}</Button>
-        </div>
         <Content className="main-content">
           <div className="page-body">
             <div className="toolbar">
