@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { Modal, Card, Radio, Checkbox, Select, message, Row, Col, Form } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { closeMergeSplitModal, submitBillMegeSplit } from 'common/reducers/cmsManifest';
+import { closeMergeSplitModal, submitBillMegeSplit, loadBillBody } from 'common/reducers/cmsManifest';
 import { loadHsCodeCategories } from 'common/reducers/cmsHsCode';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
@@ -48,7 +48,7 @@ function fetchData({ state, dispatch }) {
     billNo: state.cmsManifest.billHead.bill_seq_no,
     hscodeCategories: state.cmsHsCode.hscodeCategories,
   }),
-  { closeMergeSplitModal, submitBillMegeSplit }
+  { closeMergeSplitModal, submitBillMegeSplit, loadBillBody }
 )
 @Form.create()
 export default class MergeSplitModal extends React.Component {
@@ -105,6 +105,7 @@ export default class MergeSplitModal extends React.Component {
   }]
   handleCancel = () => {
     this.props.closeMergeSplitModal();
+    this.props.loadBillBody(this.props.billNo);
   }
   handleMergeRadioChange = () => {
     this.setState({
@@ -173,6 +174,7 @@ export default class MergeSplitModal extends React.Component {
         message.error(result.error.message);
       } else {
         this.props.closeMergeSplitModal();
+        this.props.loadBillBody(this.props.billNo);
       }
     });
   }

@@ -29,6 +29,7 @@ const actionTypes = createActionTypes('@@welogix/cms/manifest/', [
   'DELETE_CONTAINER', 'DELETE_CONTAINER_SUCCEED', 'DELETE_CONTAINER_FAIL',
   'SAVE_ENTRY_HEAD', 'SAVE_ENTRY_HEAD_SUCCEED', 'SAVE_ENTRY_HEAD_FAIL',
   'DELETE_ENTRIES', 'DELETE_ENTRIES_SUCCEED', 'DELETE_ENTRIES_FAIL',
+  'DELETE_SELECTED_BODIES', 'DELETE_SELECTED_BODIES_SUCCEED', 'DELETE_SELECTED_BODIES_FAIL',
 ]);
 
 const initialState = {
@@ -564,6 +565,21 @@ export function deleteEntries(billSeqNo) {
       endpoint: 'v1/cms/declare/entries/delete',
       method: 'post',
       data: { billSeqNo },
+    },
+  };
+}
+
+export function deleteSelectedBodies(bodyIds) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DELETE_SELECTED_BODIES,
+        actionTypes.DELETE_SELECTED_BODIES_SUCCEED,
+        actionTypes.DELETE_SELECTED_BODIES_FAIL,
+      ],
+      endpoint: 'v1/cms/declare/selected/bodies/delete',
+      method: 'post',
+      data: bodyIds,
     },
   };
 }

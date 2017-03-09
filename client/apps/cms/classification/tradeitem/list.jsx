@@ -77,7 +77,12 @@ export default class TradeItemList extends Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.repoOwners !== this.props.repoOwners && nextProps.repoOwners.length > 0) {
-      this.handleRowClick(nextProps.repoOwners[0]);
+      const owner = nextProps.repoOwners.filter(rp => rp.repo_id === nextProps.repoId)[0];
+      if (owner) {
+        this.handleRowClick(owner);
+      } else {
+        this.handleRowClick(nextProps.repoOwners[0]);
+      }
     }
   }
   msg = key => formatMsg(this.props.intl, key);
