@@ -14,12 +14,10 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_FORMREQUIRE:
       // force formData change to rerender after formrequire load
       return { ...state };
-
     default:
       return { ...state };
   }
 }
-
 
 // 上传数据生成excel 返回 {filename}, 通过window.open(`${API_ROOTS.default}v1/common/excel/${filename}}) 下载生成好的excel
 // data: Array[][], filename: String
@@ -37,4 +35,3 @@ export function makeExcel(data, filename) {
     },
   };
 }
-
