@@ -1,14 +1,11 @@
-/* eslint react/no-multi-comp: 0 */
 import React, { Component, PropTypes } from 'react';
 import { Card, Icon, Table, Tabs } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { format } from 'client/common/i18n/helpers';
 import DelegationPane from './pane/cmsDelegationPane';
 import DeclManifestPane from './pane/cmsDeclManifestPane';
 import CustomsDeclPane from './pane/cmsCustomsDeclPane';
-import messages from '../../message.i18n';
+import { formatMsg } from '../message.i18n';
 
-const formatMsg = format(messages);
 const TabPane = Tabs.TabPane;
 
 @injectIntl
@@ -50,7 +47,7 @@ export default class BizObjCMSPanel extends Component {
       />
     );
   };
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl);
   render() {
     const { form } = this.props;
     return (

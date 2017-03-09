@@ -5,6 +5,7 @@ const actionTypes = createActionTypes('@@welogix/cms/tradeitem/', [
   'LOAD_OWNERS', 'LOAD_OWNERS_SUCCEED', 'LOAD_OWNERS_FAIL',
   'OPEN_ADD_MODEL', 'CLOSE_ADD_MODEL',
   'CREATE_REPO', 'CREATE_REPO_SUCCEED', 'CREATE_REPO_FAIL',
+  'DELETE_REPO', 'DELETE_REPO_SUCCEED', 'DELETE_REPO_FAIL',
   'LOAD_TRADE_CODES', 'LOAD_TRADE_CODES_SUCCEED', 'LOAD_TRADE_CODES_FAIL',
   'SET_SELECTED_REPOID', 'SET_PANE_TABKEY',
   'LOAD_REPO_TRADES', 'LOAD_REPO_TRADES_SUCCEED', 'LOAD_REPO_TRADES_FAIL',
@@ -82,8 +83,6 @@ export default function reducer(state = initialState, action) {
       return { ...state, params: action.result.data };
     case actionTypes.LOAD_ITEM_EDIT_SUCCEED:
       return { ...state, itemData: action.result.data.tradeitem };
-    case actionTypes.SAVE_REPO_TRADES_SUCCEED:
-      return { ...state, repoTrades: action.result.data };
     case actionTypes.LOAD_BODY_ITEM_SUCCEED:
       return { ...state, bodyItem: action.result.data };
     case actionTypes.LOAD_BODY_HSCODE_SUCCEED:
@@ -247,6 +246,21 @@ export function createRepo(datas) {
       endpoint: 'v1/cms/tradeitem/repo/create',
       method: 'post',
       data: datas,
+    },
+  };
+}
+
+export function deleteRepo(repoId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DELETE_REPO,
+        actionTypes.DELETE_REPO_SUCCEED,
+        actionTypes.DELETE_REPO_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/repo/delete',
+      method: 'post',
+      data: { repoId },
     },
   };
 }

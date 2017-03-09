@@ -225,11 +225,23 @@ export default class FlowEdgePanel extends Component {
       <div>
         <Card title={this.msg('flowEdge')} bodyStyle={{ padding: 16 }}>
           <Row gutter={16}>
-            <Col sm={24}>
+            <Col sm={12}>
               <FormItem label={this.msg('sourceNode')}>
                 {getFieldDecorator('source_node', {
                 })(<Select />)}
               </FormItem>
+            </Col>
+            <Col sm={3}>
+              <FormItem label={this.msg('isTerminal')}>
+                {getFieldDecorator('is_terminal', {
+                })(<Switch checkedChildren={'是'} unCheckedChildren={'否'} onChange={this.handleTerminalChange} />)}
+              </FormItem>
+            </Col>
+            <Col sm={9}>
+              {!this.state.isTerminal && <FormItem label={this.msg('targetNode')}>
+                {getFieldDecorator('target_node', {
+                })(<Select />)}
+              </FormItem>}
             </Col>
             <Col sm={24}>
               <FormItem label={<span>
@@ -240,18 +252,6 @@ export default class FlowEdgePanel extends Component {
               >
                 <ConditionTable />
               </FormItem>
-            </Col>
-            <Col sm={6}>
-              <FormItem label={this.msg('isTerminal')}>
-                {getFieldDecorator('is_terminal', {
-                })(<Switch checkedChildren={'是'} unCheckedChildren={'否'} onChange={this.handleTerminalChange} />)}
-              </FormItem>
-            </Col>
-            <Col sm={18}>
-              {!this.state.isTerminal && <FormItem label={this.msg('targetNode')}>
-                {getFieldDecorator('target_node', {
-                })(<Select />)}
-              </FormItem>}
             </Col>
           </Row>
         </Card>

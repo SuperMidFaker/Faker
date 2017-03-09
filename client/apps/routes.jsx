@@ -45,7 +45,6 @@ import * as CMSExportDelegation from './cms/export/delegation';
 import * as CMSExportManifest from './cms/export/manifest';
 import * as CMSExportCustoms from './cms/export/customs';
 import * as CMSExportCiq from './cms/export/ciq';
-import * as CMSRelation from './cms/relation';
 import * as CMSQuote from './cms/quote';
 import * as CMSExpense from './cms/expense';
 import * as CMSSettings from './cms/settings';
@@ -311,11 +310,6 @@ export default(store, cookie) => {
                 <Route path="edit/:quoteno/:version" component={CMSQuote.Edit} />
                 <Route path="view/:quoteno/:version" component={CMSQuote.View} />
               </Route>
-            </Route>
-            <Route path="relation">
-              <IndexRoute component={CMSRelation.Manage} />
-              <Route path="create" component={CMSRelation.Create} />
-              <Route path="edit/:id" component={CMSRelation.Edit} />
             </Route>
             <Route path="settings">
               <IndexRedirect to="/clearance/settings/quotetemplates" />

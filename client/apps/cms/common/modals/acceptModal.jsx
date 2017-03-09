@@ -74,7 +74,7 @@ export default class DelgAcceptModal extends React.Component {
           });
         } else if (this.props.opt === 'operator') {
           this.props.setOpetaor(
-            operator.lid, operator.name, this.props.delgDispIds
+            operator.lid, operator.name, this.props.delgDispIds, this.props.delg_no
           ).then((result) => {
             if (result.error) {
               message.error(result.error.message);

@@ -1,20 +1,17 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Dropdown, Menu, Icon, Input, Card, Form, Row, Col, Layout, Table, Tooltip } from 'antd';
-import connectNav from 'client/common/decorators/connect-nav';
-import { format } from 'client/common/i18n/helpers';
+import { Breadcrumb, Button, Input, Form, Row, Col, Layout, Table, Tooltip } from 'antd';
 import { openCreateFlowModal } from 'common/reducers/scofFlow';
-import CreateFlowModal from './modal/createFlowModal';
+// import CreateFlowModal from './modal/createFlowModal';
+import FlowGraph from './panel/flowGraph';
 import FlowNodePanel from './panel/flowNodePanel';
 import FlowEdgePanel from './panel/flowEdgePanel';
 import BizObjCMSPanel from './panel/bizObjCMSPanel';
-import messages from './message.i18n';
+import { formatMsg } from './message.i18n';
 
-const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
 const Search = Input.Search;
-const MenuItem = Menu.Item;
 
 @injectIntl
 @connect(
@@ -23,10 +20,6 @@ const MenuItem = Menu.Item;
   }),
   { openCreateFlowModal }
 )
-@connectNav({
-  depth: 2,
-  moduleName: 'scof',
-})
 @Form.create()
 export default class FlowDesigner extends React.Component {
   static propTypes = {
@@ -43,45 +36,9 @@ export default class FlowDesigner extends React.Component {
     searchInput: '',
     collapsed: false,
     rightSidercollapsed: true,
+    selGraphElement: null,
   }
-  componentDidMount() {
-    const data = {
-      nodes: [
-        {
-          x: 440,
-          y: 210,
-          id: 'node1',
-        },
-        {
-          x: 570,
-          y: 170,
-          id: 'node2',
-        },
-      ],
-      edges: [
-        {
-          source: 'node1',
-          id: 'edge1',
-          target: 'node2',
-        },
-      ],
-    };
-      // 第四步：配置G6画布
-    const graph = new window.G6.Graph({
-      id: 'flowchart',      // 容器ID
-      width: 1200,    // 画布宽
-      height: 360,   // 画布高
-      grid: {
-        forceAlign: true, // 是否支持网格对齐
-        cell: 10,          // 网格大小
-      },
-    });
-      // 第五步：载入数据
-    graph.source(data.nodes, data.edges);
-      // 第六步：渲染关系图
-    graph.render();
-  }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
 
   toggle = () => {
     this.setState({
@@ -101,19 +58,18 @@ export default class FlowDesigner extends React.Component {
 
     }
   }
+  handleGraphMounted = (graph) => {
+    this.flowGraph = graph;
+  }
+  handleGraphElemClick = (item) => {
+    this.setState({ selGraphElement: item });
+  }
   handleSaveBtnClick = () => {
-
+    // console.log(this.flowGraph.save())
   }
   render() {
     const { flow } = this.state;
     const { form, submitting } = this.props;
-    const menu = (
-      <Menu onClick={this.handleMenuClick}>
-        <MenuItem key="1">{this.msg('nodeCMS')}</MenuItem>
-        <MenuItem key="2">{this.msg('nodeTMS')}</MenuItem>
-        <MenuItem key="3">{this.msg('nodeCWM')}</MenuItem>
-      </Menu>
-    );
     const columns = [{
       dataIndex: 'name',
       key: 'name',
@@ -150,7 +106,9 @@ export default class FlowDesigner extends React.Component {
               rowClassName={record => record.id === flow.id ? 'table-row-selected' : ''}
             />
           </div>
+          {/*
           <CreateFlowModal />
+          */}
         </Sider>
         <Layout>
           <Header className="top-bar">
@@ -174,7 +132,7 @@ export default class FlowDesigner extends React.Component {
               </Button>
               <Button size="large"
                 className={this.state.rightSidercollapsed ? '' : 'btn-toggle-on'}
-                icon={this.state.rightSidercollapsed ? 'code-o' : 'code'}
+                icon={this.state.rightSidercollapsed ? 'eye-o' : 'eye'}
                 onClick={this.toggleRightSider}
               />
             </div>
@@ -182,29 +140,18 @@ export default class FlowDesigner extends React.Component {
           <Content className="main-content layout-min-width layout-min-width-large">
             <Form layout="vertical">
               <Row gutter={16}>
-                <Col sm={24} md={16}>
-                  <Card
-                    title={this.msg('flowChart')}
-                    extra={<div className="toolbar-right">
-                      <Dropdown overlay={menu}>
-                        <Button icon="plus-square-o" >
-                          {this.msg('flowNode')} <Icon type="down" />
-                        </Button>
-                      </Dropdown>
-                      <Button icon="swap-right" >
-                        {this.msg('flowEdge')}
-                      </Button>
-                    </div>}
-                    bodyStyle={{ padding: 0, height: 300 }}
-                  >
-                    <div id="flowchart" />
-                  </Card>
-                  <BizObjCMSPanel form={form} />
+                <Col sm={24} md={24}>
+                  <FlowGraph onMounted={this.handleGraphMounted} onSelect={this.handleGraphElemClick} />
                 </Col>
-                <Col sm={24} md={8}>
-                  <FlowNodePanel form={form} />
-                  <FlowEdgePanel form={form} />
-                </Col>
+                {this.state.selGraphElement && this.state.selGraphElement.itemType === 'node' &&
+                  <Col sm={24} md={8}><FlowNodePanel form={form} /></Col>
+                }
+                {this.state.selGraphElement && this.state.selGraphElement.itemType === 'node' &&
+                  <Col sm={24} md={16}><BizObjCMSPanel form={form} /></Col>
+                }
+                {this.state.selGraphElement && this.state.selGraphElement.itemType === 'edge' &&
+                  <Col sm={24} md={24}><FlowEdgePanel form={form} /></Col>
+                }
               </Row>
             </Form>
           </Content>
@@ -220,7 +167,7 @@ export default class FlowDesigner extends React.Component {
         >
           <div className="right-sider-panel">
             <div className="panel-header">
-              <h3>流程描述文件</h3>
+              <h3>{this.msg('monitoringPoints')}</h3>
             </div>
           </div>
         </Sider>

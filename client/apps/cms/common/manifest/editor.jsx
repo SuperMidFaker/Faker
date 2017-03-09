@@ -145,6 +145,7 @@ export default class ManifestEditor extends React.Component {
       )}
     </Menu>);
     const path = `/clearance/${ietype}/manifest/`;
+    const generateEntry = !this.props.readonly && billMeta.entries.length === 0;
     return (
       <Layout>
         <Layout>
@@ -162,18 +163,18 @@ export default class ManifestEditor extends React.Component {
             </Breadcrumb>
             {billMeta.entries.length > 0 ? (
               <Dropdown overlay={declEntryMenu}>
-                <Button size="large" >生成的报关单 <Icon type="down" /></Button>
+                <Button size="large" >生成的报关单<Icon type="down" /></Button>
               </Dropdown>
               ) : null}
             <div className="top-bar-tools">
+              {generateEntry &&
+                <Button type="primary" size="large" icon="addfile" onClick={this.handleGenerateEntry}>{this.msg('generateEntry')}</Button>
+                }
               <Dropdown overlay={this.lockMenu}>
                 <Button size="large">
                   <Icon type="setting" /> <Icon type="down" />
                 </Button>
               </Dropdown>
-              {!this.props.readonly &&
-              <Button type="primary" size="large" icon="addfile" onClick={this.handleGenerateEntry}>{this.msg('generateEntry')}</Button>
-                }
               <Button size="large"
                 className={this.state.collapsed ? '' : 'btn-toggle-on'}
                 icon={this.state.collapsed ? 'folder' : 'folder-open'}

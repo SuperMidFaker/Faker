@@ -85,7 +85,7 @@ export default class ManifestList extends Component {
     render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
     title: '制单人',
-    dataIndex: 'creater_login_id',
+    dataIndex: 'creater_name',
     width: 80,
   }, {
     title: '制单日期',
@@ -230,7 +230,6 @@ export default class ManifestList extends Component {
     });
   }
   handleDelegationRedo = (row) => {
-    console.log('row', row);
     this.props.deleteEntries(row.bill_seq_no).then((result) => {
       if (result.error) {
         message.error(result.error.message, 5);
@@ -240,7 +239,7 @@ export default class ManifestList extends Component {
     });
   }
   render() {
-    const { delgBillList, listFilter } = this.props;
+    const { delgBillList, listFilter, tenantId } = this.props;
     this.dataSource.remotes = delgBillList;
     let columns = [];
     columns = [...this.columns];
@@ -249,21 +248,27 @@ export default class ManifestList extends Component {
       width: 130,
       fixed: 'right',
       render: (o, record) => {
-        if (record.bill_status < 3) {
-          return (
-            <RowUpdater onHit={this.handleDelegationMake} label="编辑清单" row={record} />
-          );
-        } else if (record.bill_status >= 3 && record.entry_status === 0) {
-          return (
-            <span>
+        if (record.customs_tenant_id === tenantId || record.customs_tenant_id === -1) {
+          if (record.bill_status < 3) {
+            return (
+              <RowUpdater onHit={this.handleDelegationMake} label="编辑清单" row={record} />
+            );
+          } else if (record.bill_status >= 3 && record.entry_status === 0) {
+            return (
+              <span>
+                <RowUpdater onHit={this.handleDelegationView} label="查看清单" row={record} />
+                <span className="ant-divider" />
+                <Popconfirm title="确定需要重新制单吗?" onConfirm={() => this.handleDelegationRedo(record)}>
+                  <a role="button">重新制单</a>
+                </Popconfirm>
+              </span>
+            );
+          } else if (record.bill_status >= 3 && record.entry_status === 1) {
+            return (
               <RowUpdater onHit={this.handleDelegationView} label="查看清单" row={record} />
-              <span className="ant-divider" />
-              <Popconfirm title="确定需要重新制单吗?" onConfirm={() => this.handleDelegationRedo(record)}>
-                <a role="button">重新制单</a>
-              </Popconfirm>
-            </span>
-          );
-        } else if (record.bill_status >= 3 && record.entry_status === 1) {
+            );
+          }
+        } else {
           return (
             <RowUpdater onHit={this.handleDelegationView} label="查看清单" row={record} />
           );

@@ -601,7 +601,7 @@ export default class DelegationList extends Component {
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3>
               </div>
             </div>
-            <div className="panel-body table-panel expandable">
+            <div className="panel-body table-panel">
               {
                 listView === 'delegation' &&
                 <Table rowSelection={rowSelection} columns={columns} dataSource={this.dataSource} loading={delegationlist.loading}
