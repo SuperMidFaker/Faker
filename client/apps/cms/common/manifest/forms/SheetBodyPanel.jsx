@@ -629,7 +629,11 @@ export default class SheetBodyPanel extends React.Component {
   }
   render() {
     const columns = this.getColumns();
-    let billBodyToolbar = '';
+    let billBodyToolbar = (
+      <Button type="primary" onClick={() => this.handleMenuClick({ key: 'export' })}>
+        <Icon type="export" /> 导出数据
+      </Button>
+    );
     if (this.props.type === 'bill') {
       const menu = (
         <Menu onClick={this.handleMenuClick}>
