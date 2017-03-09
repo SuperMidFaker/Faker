@@ -138,15 +138,15 @@ export default class SheetBodyPanel extends React.Component {
     if (!props.readonly && this.props.type !== 'entry') {
       bodies.push({ id: '__ops' });
     }
-    const result = calculateTotal(bodies);
+    const calresult = calculateTotal(bodies);
     this.state = {
       editIndex: -1,
       editBody: {},
       bodies,
-      totGrossWt: result.totGrossWt,
-      totWetWt: result.totWetWt,
-      totTrade: result.totTrade,
-      totPcs: result.totPcs,
+      totGrossWt: calresult.totGrossWt,
+      totWetWt: calresult.totWetWt,
+      totTrade: calresult.totTrade,
+      totPcs: calresult.totPcs,
       pagination: {
         current: 1,
         total: 0,
@@ -162,8 +162,13 @@ export default class SheetBodyPanel extends React.Component {
       if (!nextProps.readonly && this.props.type !== 'entry') {
         bodies.push({ id: '__ops' });
       }
+      const calresult = calculateTotal(bodies);
       this.setState({
         bodies,
+        totGrossWt: calresult.totGrossWt,
+        totWetWt: calresult.totWetWt,
+        totTrade: calresult.totTrade,
+        totPcs: calresult.totPcs,
         pagination: { ...this.state.pagination, total: bodies.length },
       });
     }
