@@ -1,9 +1,9 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Button, Dropdown, Menu, Table, Icon, Input, Select, message } from 'antd';
+import { Button, Dropdown, Menu, Table, Icon, Input, Select, message, Popconfirm } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import RowUpdater from './rowUpdater';
-import { updateHeadNetWt, loadBillBody, openAmountModel } from 'common/reducers/cmsManifest';
+import { updateHeadNetWt, loadBillBody, openAmountModel, deleteSelectedBodies } from 'common/reducers/cmsManifest';
 import { getItemForBody, getHscodeForBody } from 'common/reducers/cmsTradeitem';
 import { format } from 'client/common/i18n/helpers';
 import ExcelUpload from 'client/components/excelUploader';
@@ -109,7 +109,7 @@ function calculateTotal(bodies) {
     bodyHscode: state.cmsTradeitem.bodyHscode,
     entryHead: state.cmsManifest.entryHead,
   }),
-  { updateHeadNetWt, loadBillBody, openAmountModel, getItemForBody, getHscodeForBody }
+  { updateHeadNetWt, loadBillBody, openAmountModel, getItemForBody, getHscodeForBody, deleteSelectedBodies }
 )
 export default class SheetBodyPanel extends React.Component {
   static propTypes = {
@@ -154,6 +154,7 @@ export default class SheetBodyPanel extends React.Component {
         showQuickJumper: true,
         onChange: this.handlePageChange,
       },
+      selectedRowKeys: [],
     };
   }
   componentWillReceiveProps(nextProps) {
@@ -682,8 +683,27 @@ export default class SheetBodyPanel extends React.Component {
     const timestamp = Date.now().toString().substr(-6);
     window.open(`${API_ROOTS.default}v1/cms/manifest/declare/export/entry_${preSeqNo}_${timestamp}.xlsx?headId=${this.props.headNo}`);
   }
+  handleDeleteSelected = () => {
+    const selectedIds = this.state.selectedRowKeys;
+    this.props.deleteSelectedBodies(selectedIds).then((result) => {
+      if (result.error) {
+        message.error(result.error.message);
+      } else {
+        this.props.loadBillBody(this.props.billSeqNo);
+      }
+    });
+  }
   render() {
     const { totGrossWt, totWetWt, totTrade, totPcs } = this.state;
+    const selectedRows = this.state.selectedRowKeys;
+    const disabled = this.props.readonly || this.props.type === 'entry';
+    const rowSelection = {
+      selectedRowKeys: selectedRows,
+      onChange: (selectedRowKeys) => {
+        this.setState({ selectedRowKeys });
+      },
+      getCheckboxProps: () => ({ disabled }),
+    };
     const columns = this.getColumns();
     let billBodyToolbar = (
       <Button type="primary" onClick={() => this.handleMenuClick({ key: 'export' })}>
@@ -731,6 +751,12 @@ export default class SheetBodyPanel extends React.Component {
         </Menu>);
       billBodyToolbar = (
         <span>
+          {selectedRows.length > 0 &&
+            <Popconfirm title={'是否删除所有选择项？'} onConfirm={() => this.handleDeleteSelected()}>
+              <Button type="danger" size="large" icon="delete">
+                批量删除
+              </Button>
+            </Popconfirm>}
           <Button icon="pie-chart" onClick={this.handleTotalPriceDivid}>金额平摊</Button>
           <Button icon="arrows-alt" onClick={this.handleGrossWtDivid}>毛重分摊</Button>
           <Button icon="shrink" onClick={this.handleNetWetSummary}>净重汇总</Button>
@@ -760,9 +786,9 @@ export default class SheetBodyPanel extends React.Component {
             }
           </div>
         </div>
-        <div className="pane-content">
-          <Table bordered rowKey="id" columns={columns} dataSource={this.state.bodies}
-            size="middle" scroll={{ x: 2600 }} pagination={this.state.pagination}
+        <div className="panel-body table-panel">
+          <Table bordered rowKey="id" columns={columns} dataSource={this.state.bodies} size="middle"
+            scroll={{ x: 2600 }} pagination={this.state.pagination} rowSelection={rowSelection}
           />
           <AmountModel />
         </div>
