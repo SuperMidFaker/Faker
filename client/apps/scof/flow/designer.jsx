@@ -1,11 +1,10 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Input, Form, Row, Col, Layout, Table, Tooltip } from 'antd';
+import { Breadcrumb, Button, Input, Form, Layout, Table, Tooltip } from 'antd';
 import { openCreateFlowModal } from 'common/reducers/scofFlow';
 // import CreateFlowModal from './modal/createFlowModal';
 import FlowGraph from './panel/flowGraph';
-import FlowNodePanel from './panel/flowNodePanel';
 import FlowEdgePanel from './panel/flowEdgePanel';
 import BizObjCMSPanel from './panel/bizObjCMSPanel';
 import { formatMsg } from './message.i18n';
@@ -78,9 +77,7 @@ export default class FlowDesigner extends React.Component {
     return (
       <Layout>
         <Sider width={280} className="menu-sider" key="sider" trigger={null}
-          collapsible
-          collapsed={this.state.collapsed}
-          collapsedWidth={0}
+          collapsible collapsed={this.state.collapsed} collapsedWidth={0}
         >
           <div className="top-bar">
             <Breadcrumb>
@@ -138,32 +135,19 @@ export default class FlowDesigner extends React.Component {
             </div>
           </Header>
           <Content className="main-content layout-min-width layout-min-width-large">
+            <FlowGraph onMounted={this.handleGraphMounted} onSelect={this.handleGraphElemClick} />
             <Form layout="vertical">
-              <Row gutter={16}>
-                <Col sm={24} md={24}>
-                  <FlowGraph onMounted={this.handleGraphMounted} onSelect={this.handleGraphElemClick} />
-                </Col>
-                {this.state.selGraphElement && this.state.selGraphElement.itemType === 'node' &&
-                  <Col sm={24} md={8}><FlowNodePanel form={form} /></Col>
-                }
-                {this.state.selGraphElement && this.state.selGraphElement.itemType === 'node' &&
-                  <Col sm={24} md={16}><BizObjCMSPanel form={form} /></Col>
-                }
-                {this.state.selGraphElement && this.state.selGraphElement.itemType === 'edge' &&
-                  <Col sm={24} md={24}><FlowEdgePanel form={form} /></Col>
-                }
-              </Row>
+              {this.state.selGraphElement && this.state.selGraphElement.itemType === 'node' &&
+                <BizObjCMSPanel form={form} />
+              }
+              {this.state.selGraphElement && this.state.selGraphElement.itemType === 'edge' &&
+                <FlowEdgePanel form={form} />
+              }
             </Form>
           </Content>
         </Layout>
-        <Sider
-          trigger={null}
-          defaultCollapsed
-          collapsible
-          collapsed={this.state.rightSidercollapsed}
-          width={480}
-          collapsedWidth={0}
-          className="right-sider"
+        <Sider trigger={null} defaultCollapsed collapsible collapsed={this.state.rightSidercollapsed}
+          width={480} collapsedWidth={0} className="right-sider"
         >
           <div className="right-sider-panel">
             <div className="panel-header">
