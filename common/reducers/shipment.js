@@ -93,7 +93,7 @@ const initialState = {
     logs: {
       totalCount: 0,
       data: [],
-      pageSize: 10,
+      pageSize: 20,
       currentPage: 1,
     },
     todos: {
@@ -107,6 +107,8 @@ const initialState = {
       podsubmit: 0,
       unconfirmed: 0,
     },
+    total: 0,
+    overtime: 0,
   },
   changeShipmentModal: {
     visible: false,

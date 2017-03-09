@@ -47,7 +47,7 @@ export default class AdvancedSearchBar extends React.Component {
   }
   initializeFieldsValue = () => {
     if (window.localStorage) {
-      const fieldsValue = JSON.parse(window.localStorage.tmsAdvancedSearchFieldsValue || '{"viewStatus":"my"}');
+      const fieldsValue = JSON.parse(window.localStorage.tmsAdvancedSearchFieldsValue || '{"viewStatus":"all"}');
       this.handleSearch(fieldsValue.consigner_region, fieldsValue.consignee_region, fieldsValue);
       delete fieldsValue.consigner_region;
       delete fieldsValue.consignee_region;
@@ -77,7 +77,7 @@ export default class AdvancedSearchBar extends React.Component {
   saveFieldsValue = (fieldsValue) => {
     if (window.localStorage) {
       window.localStorage.tmsAdvancedSearchFieldsValue =
-      JSON.stringify({ ...JSON.parse(window.localStorage.tmsAdvancedSearchFieldsValue || '{"viewStatus":"my"}'), ...fieldsValue });
+      JSON.stringify({ ...JSON.parse(window.localStorage.tmsAdvancedSearchFieldsValue || '{"viewStatus":"all"}'), ...fieldsValue });
     }
   }
   handleResetFields = () => {

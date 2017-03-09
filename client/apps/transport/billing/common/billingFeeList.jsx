@@ -132,15 +132,11 @@ export default class BillingFeeList extends React.Component {
     const { operation } = this.props;
     if (operation === 'check') {
       return (
-        <div className="toolbar-right">
-          <Button type="primary" onClick={this.handleAccept}>{this.msg('accept')}</Button>
-        </div>
+        <Button type="primary" onClick={this.handleAccept}>{this.msg('accept')}</Button>
       );
     } else if (operation === 'edit') {
       return (
-        <div className="toolbar-right">
-          <Button type="primary" onClick={this.handleEdit}>{this.msg('save')}</Button>
-        </div>
+        <Button type="primary" onClick={this.handleEdit}>{this.msg('save')}</Button>
       );
     }
     return '';
@@ -206,7 +202,7 @@ export default class BillingFeeList extends React.Component {
         if (operation === 'view') {
           return o ? o.toFixed(2) : '';
         }
-        return (<InputNumber size="small" defaultValue={o} step={0.01} onChange={value => this.handleChangeAdjustCharges(record.id, value)} />);
+        return (<InputNumber size="small" value={o || 0} step={0.01} onChange={value => this.handleChangeAdjustCharges(record.id, value)} />);
       },
     }, {
       title: '最终费用',
@@ -288,10 +284,10 @@ export default class BillingFeeList extends React.Component {
       <div>
         <Header className="top-bar">
           <span>{this.msg(`${operation}Billing`)}</span>
+          <div className="top-bar-tools">
+            {this.renderOperation()}
+          </div>
         </Header>
-        <div className="top-bar-tools">
-          {this.renderOperation()}
-        </div>
         <Content className="main-content">
           <div className="page-body">
             <div className="toolbar">

@@ -1,117 +1,57 @@
-/* eslint react/no-multi-comp: 0 */
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Collapse, Form, Col, Row, Icon, Select, Table, Tag } from 'antd';
+import { Collapse, Form, Col, Row, Select, Switch } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { openAddTriggerModal } from 'common/reducers/scofFlow';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../../message.i18n';
+import { TRANS_MODE, DECL_I_TYPE, DECL_E_TYPE } from 'common/constants';
+import FlowTriggerTable from '../flowTriggerTable';
+import { formatMsg } from '../../message.i18n';
 
-const formatMsg = format(messages);
 const FormItem = Form.Item;
-
 const Panel = Collapse.Panel;
+const Option = Select.Option;
 
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
+    bizDelegation: state.scofFlow.cmsParams.bizDelegation,
   }),
-  { openAddTriggerModal }
 )
 export default class CMSDelegationPane extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     form: PropTypes.object.isRequired,
   }
-  expandedRowRender = () => {
-    const triggerColumns = [
-      { title: 'Mode', dataIndex: 'mode', key: 'mode', width: 16,
-        render: (o) => {
-          if (o === 'instance') {
-            return (<i className="icon icon-fontello-flash-1" />);
-          } else {
-            return (<i className="icon icon-fontello-back-in-time" />);
-          }
-        },
-      },
-      { title: 'Name', dataIndex: 'name', key: 'name' },
-      { title: 'Actions', dataIndex: 'actions', key: 'actions',
-        render: () => (<span><Tag>Notify</Tag><Tag>Create</Tag></span>),
-      },
-      {
-        dataIndex: 'operation',
-        key: 'operation',
-        width: 40,
-        render: () => (
-          <span className={'table-operation'}>
-            <a href="#"><Icon type="pause-circle" /></a>
-          </span>
-        ),
-      },
-    ];
-
-    const triggerData = [];
-    triggerData.push({
-      key: 0,
-      mode: 'instance',
-      name: 'This is an instant trigger name',
-    }, {
-      key: 1,
-      mode: 'scheduled',
-      name: 'This is a timer name',
-    });
-
-    return (
-      <Table
-        columns={triggerColumns}
-        dataSource={triggerData}
-        pagination={false}
-        showHeader={false}
-      />
-    );
-  };
-  handleAddTrigger = () => {
-    this.props.openAddTriggerModal();
-  }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
+  eventData = [{
+    key: 'delgCreated',
+    name: 'onCreated',
+  }, {
+    key: 'delgDeclared',
+    name: 'onDeclared',
+  }, {
+    key: 'delgInspected',
+    name: 'onInspected',
+  }, {
+    key: 'delgReleased',
+    name: 'onReleased',
+  }, {
+    key: 'delgFinished',
+    name: 'onFinished',
+  }]
   render() {
-    const { form: { getFieldDecorator } } = this.props;
-    const eventColumns = [
-      { title: 'Event Name', dataIndex: 'event_name', key: 'event_name' },
-      { title: 'Triggers', key: 'operation', width: 100, render: () => <a href="#" onClick={this.handleAddTrigger}>Add Trigger</a> },
-    ];
-    const eventData = [
-      {
-        key: 0,
-        event_name: 'onCreated',
-      },
-      {
-        key: 1,
-        event_name: 'onAccepted',
-      },
-      {
-        key: 2,
-        event_name: 'onDeclared',
-      },
-      {
-        key: 3,
-        event_name: 'onInspected',
-      },
-      {
-        key: 4,
-        event_name: 'onReleased',
-      },
-      {
-        key: 9,
-        event_name: 'onFinished',
-      },
-    ];
+    const { form: { getFieldDecorator, getFieldValue } } = this.props;
+    const declWays = getFieldValue('ie_type') ? DECL_I_TYPE : DECL_E_TYPE;
     return (
       <div>
         <Collapse bordered={false} defaultActiveKey={['properties', 'events']}>
           <Panel header={this.msg('properties')} key="properties">
             <Row gutter={16}>
+              <Col sm={24} lg={24}>
+                <FormItem label={this.msg('declCustoms')}>
+                  {getFieldDecorator('ie_type', {
+                  })(<Switch checkedChildren={'进口'} unCheckedChildren={'出口'} />)}
+                </FormItem>
+              </Col>
               <Col sm={24} lg={8}>
                 <FormItem label={this.msg('declCustoms')}>
                   {getFieldDecorator('decl_customs', {
@@ -121,13 +61,25 @@ export default class CMSDelegationPane extends Component {
               <Col sm={24} lg={8}>
                 <FormItem label={this.msg('declWay')}>
                   {getFieldDecorator('decl_way', {
-                  })(<Select />)}
+                  })(<Select>
+                    {
+                      declWays.map(tr =>
+                        <Option value={tr.value} key={tr.value}>{tr.text}</Option>
+                      )
+                    }
+                  </Select>)}
                 </FormItem>
               </Col>
               <Col sm={24} lg={8}>
                 <FormItem label={this.msg('transMode')}>
                   {getFieldDecorator('trans_mode', {
-                  })(<Select />)}
+                  })(<Select>
+                    {
+                      TRANS_MODE.map(tr =>
+                        <Option value={tr.value} key={tr.value}>{tr.text}</Option>
+                      )
+                    }
+                  </Select>)}
                 </FormItem>
               </Col>
               <Col sm={24} lg={8}>
@@ -151,14 +103,7 @@ export default class CMSDelegationPane extends Component {
             </Row>
           </Panel>
           <Panel header={this.msg('events')} key="events">
-            <Table
-              size="middle"
-              columns={eventColumns}
-              expandedRowRender={this.expandedRowRender}
-              dataSource={eventData}
-              pagination={false}
-              showHeader={false}
-            />
+            <FlowTriggerTable events={this.eventData} />
           </Panel>
         </Collapse>
       </div>

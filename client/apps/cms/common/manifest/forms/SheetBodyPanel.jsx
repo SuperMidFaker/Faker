@@ -1,9 +1,9 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Button, Dropdown, Menu, Table, Icon, Input, Select, message } from 'antd';
+import { Button, Dropdown, Menu, Table, Icon, Input, Select, message, Popconfirm } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import RowUpdater from './rowUpdater';
-import { updateHeadNetWt, loadBillBody, openAmountModel } from 'common/reducers/cmsManifest';
+import { updateHeadNetWt, loadBillBody, openAmountModel, deleteSelectedBodies } from 'common/reducers/cmsManifest';
 import { getItemForBody, getHscodeForBody } from 'common/reducers/cmsTradeitem';
 import { format } from 'client/common/i18n/helpers';
 import ExcelUpload from 'client/components/excelUploader';
@@ -63,6 +63,29 @@ ColumnSelect.proptypes = {
   options: PropTypes.array.isRequired,
 };
 
+function calculateTotal(bodies) {
+  let totGrossWt = 0;
+  let totWetWt = 0;
+  let totTrade = 0;
+  let totPcs = 0;
+  for (let i = 0; i < bodies.length; i++) {
+    const body = bodies[i];
+    if (body.gross_wt) {
+      totGrossWt += Number(body.gross_wt);
+    }
+    if (body.wet_wt) {
+      totWetWt += Number(body.wet_wt);
+    }
+    if (body.trade_total) {
+      totTrade += Number(body.trade_total);
+    }
+    if (body.qty_pcs) {
+      totPcs += Number(body.qty_pcs);
+    }
+  }
+  return { totGrossWt, totWetWt, totTrade, totPcs };
+}
+
 @injectIntl
 @connect(
   state => ({
@@ -84,8 +107,9 @@ ColumnSelect.proptypes = {
     billHead: state.cmsManifest.billHead,
     bodyItem: state.cmsTradeitem.bodyItem,
     bodyHscode: state.cmsTradeitem.bodyHscode,
+    entryHead: state.cmsManifest.entryHead,
   }),
-  { updateHeadNetWt, loadBillBody, openAmountModel, getItemForBody, getHscodeForBody }
+  { updateHeadNetWt, loadBillBody, openAmountModel, getItemForBody, getHscodeForBody, deleteSelectedBodies }
 )
 export default class SheetBodyPanel extends React.Component {
   static propTypes = {
@@ -103,6 +127,7 @@ export default class SheetBodyPanel extends React.Component {
     currencies: PropTypes.array,
     exemptions: PropTypes.array,
     billHead: PropTypes.object,
+    entryHead: PropTypes.object,
     bodyItem: PropTypes.object,
     bodyHscode: PropTypes.object,
     headForm: PropTypes.object,
@@ -113,10 +138,15 @@ export default class SheetBodyPanel extends React.Component {
     if (!props.readonly && this.props.type !== 'entry') {
       bodies.push({ id: '__ops' });
     }
+    const calresult = calculateTotal(bodies);
     this.state = {
       editIndex: -1,
       editBody: {},
       bodies,
+      totGrossWt: calresult.totGrossWt,
+      totWetWt: calresult.totWetWt,
+      totTrade: calresult.totTrade,
+      totPcs: calresult.totPcs,
       pagination: {
         current: 1,
         total: 0,
@@ -124,6 +154,7 @@ export default class SheetBodyPanel extends React.Component {
         showQuickJumper: true,
         onChange: this.handlePageChange,
       },
+      selectedRowKeys: [],
     };
   }
   componentWillReceiveProps(nextProps) {
@@ -132,8 +163,13 @@ export default class SheetBodyPanel extends React.Component {
       if (!nextProps.readonly && this.props.type !== 'entry') {
         bodies.push({ id: '__ops' });
       }
+      const calresult = calculateTotal(bodies);
       this.setState({
         bodies,
+        totGrossWt: calresult.totGrossWt,
+        totWetWt: calresult.totWetWt,
+        totTrade: calresult.totTrade,
+        totPcs: calresult.totPcs,
         pagination: { ...this.state.pagination, total: bodies.length },
       });
     }
@@ -505,9 +541,14 @@ export default class SheetBodyPanel extends React.Component {
           if (bodies.length > pagination.current * pagination.pageSize) {
             pagination.current += 1;
           }
+          const calresult = calculateTotal(bodies);
           this.setState({
             editIndex: -1,
             editBody: {},
+            totGrossWt: calresult.totGrossWt,
+            totWetWt: calresult.totWetWt,
+            totTrade: calresult.totTrade,
+            totPcs: calresult.totPcs,
             bodies,
             pagination,
           });
@@ -520,9 +561,14 @@ export default class SheetBodyPanel extends React.Component {
         } else {
           const bodies = [...this.state.bodies];
           bodies[recordIdx] = editBody;
+          const calresult = calculateTotal(bodies);
           this.setState({
             editIndex: -1,
             editBody: {},
+            totGrossWt: calresult.totGrossWt,
+            totWetWt: calresult.totWetWt,
+            totTrade: calresult.totTrade,
+            totPcs: calresult.totPcs,
             bodies,
           });
         }
@@ -541,8 +587,13 @@ export default class SheetBodyPanel extends React.Component {
         if (pagination.current > 1 && (pagination.current - 1) * pagination.pageSize === pagination.total) {
           pagination.current -= 1;
         }
+        const calresult = calculateTotal(bodies);
         this.setState({
           bodies,
+          totGrossWt: calresult.totGrossWt,
+          totWetWt: calresult.totWetWt,
+          totTrade: calresult.totTrade,
+          totPcs: calresult.totPcs,
           pagination,
         });
       }
@@ -627,9 +678,38 @@ export default class SheetBodyPanel extends React.Component {
   handleUploaded = () => {
     this.props.loadBillBody(this.props.billSeqNo);
   }
+  handleEntrybodyExport = () => {
+    const preSeqNo = this.props.entryHead.pre_entry_seq_no;
+    const timestamp = Date.now().toString().substr(-6);
+    window.open(`${API_ROOTS.default}v1/cms/manifest/declare/export/entry_${preSeqNo}_${timestamp}.xlsx?headId=${this.props.headNo}`);
+  }
+  handleDeleteSelected = () => {
+    const selectedIds = this.state.selectedRowKeys;
+    this.props.deleteSelectedBodies(selectedIds).then((result) => {
+      if (result.error) {
+        message.error(result.error.message);
+      } else {
+        this.props.loadBillBody(this.props.billSeqNo);
+      }
+    });
+  }
   render() {
+    const { totGrossWt, totWetWt, totTrade, totPcs } = this.state;
+    const selectedRows = this.state.selectedRowKeys;
+    const disabled = this.props.readonly || this.props.type === 'entry';
+    const rowSelection = {
+      selectedRowKeys: selectedRows,
+      onChange: (selectedRowKeys) => {
+        this.setState({ selectedRowKeys });
+      },
+      getCheckboxProps: () => ({ disabled }),
+    };
     const columns = this.getColumns();
-    let billBodyToolbar = '';
+    let billBodyToolbar = (
+      <Button type="primary" onClick={() => this.handleMenuClick({ key: 'export' })}>
+        <Icon type="export" /> 导出数据
+      </Button>
+    );
     if (this.props.type === 'bill') {
       const menu = (
         <Menu onClick={this.handleMenuClick}>
@@ -671,6 +751,12 @@ export default class SheetBodyPanel extends React.Component {
         </Menu>);
       billBodyToolbar = (
         <span>
+          {selectedRows.length > 0 &&
+            <Popconfirm title={'是否删除所有选择项？'} onConfirm={() => this.handleDeleteSelected()}>
+              <Button type="danger" size="large" icon="delete">
+                批量删除
+              </Button>
+            </Popconfirm>}
           <Button icon="pie-chart" onClick={this.handleTotalPriceDivid}>金额平摊</Button>
           <Button icon="arrows-alt" onClick={this.handleGrossWtDivid}>毛重分摊</Button>
           <Button icon="shrink" onClick={this.handleNetWetSummary}>净重汇总</Button>
@@ -684,13 +770,25 @@ export default class SheetBodyPanel extends React.Component {
     return (
       <div className="pane">
         <div className="pane-header">
+          <span style={{ marginLeft: 10 }}>总毛重: </span><span style={{ color: '#FF9933' }}>{totGrossWt.toFixed(3)}</span>
+          <span style={{ marginLeft: 10 }}>总净重: </span><span style={{ color: '#FF9933' }}>{totWetWt.toFixed(3)}</span>
+          <span style={{ marginLeft: 10 }}>总金额: </span><span style={{ color: '#FF9933' }}>{totTrade.toFixed(3)}</span>
+          {this.props.type === 'bill' &&
+            <span>
+              <span style={{ marginLeft: 10 }}>总个数: </span>
+              <span style={{ color: '#FF9933' }}>{totPcs.toFixed(3)}</span>
+            </span>
+          }
           <div className="toolbar-right">
             {billBodyToolbar}
+            {this.props.type === 'entry' &&
+              <Button icon="export" onClick={this.handleEntrybodyExport}>导出表体数据</Button>
+            }
           </div>
         </div>
-        <div className="pane-content">
-          <Table bordered rowKey="id" columns={columns} dataSource={this.state.bodies}
-            size="middle" scroll={{ x: 2600 }} pagination={this.state.pagination}
+        <div className="panel-body table-panel">
+          <Table bordered rowKey="id" columns={columns} dataSource={this.state.bodies} size="middle"
+            scroll={{ x: 2600 }} pagination={this.state.pagination} rowSelection={rowSelection}
           />
           <AmountModel />
         </div>

@@ -30,6 +30,9 @@ const RemoteAntTable = React.createClass({
       React.PropTypes.instanceOf(DataSource),
     ]),
   },
+  getInitialState() {
+    return { wlScrollY: null };
+  },
   componentWillMount() {
     if (typeof document !== 'undefined' && typeof window !== 'undefined') {
       this.setState({ wlScrollY: window.innerHeight - 300 });
