@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Form, Modal, Row, Col, Select, message } from 'antd';
+import { Form, Modal, Select, message } from 'antd';
 import { createRepo, closeAddModal, loadOwners } from 'common/reducers/cmsTradeitem';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
@@ -21,7 +21,7 @@ const FormItem = Form.Item;
   }),
   { createRepo, closeAddModal, loadOwners }
 )
-
+@Form.create()
 export default class AddTradeRepoModal extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -50,11 +50,11 @@ export default class AddTradeRepoModal extends React.Component {
         if (result.error) {
           message.error(result.error.message, 10);
         } else {
-          this.setState({ customerid: null });
           this.props.loadOwners({
             tenantId: this.props.tenantId,
           });
           this.props.closeAddModal();
+          this.props.form.resetFields();
         }
       });
   }
@@ -63,7 +63,7 @@ export default class AddTradeRepoModal extends React.Component {
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   render() {
-    const { visibleAddModal, customers, repoOwners } = this.props;
+    const { form: { getFieldDecorator }, visibleAddModal, customers, repoOwners } = this.props;
     let newCustomers = customers;
     for (let i = 0; i < repoOwners.length; i++) {
       const owner = repoOwners[i];
@@ -74,11 +74,9 @@ export default class AddTradeRepoModal extends React.Component {
         onOk={this.handleOk} onCancel={this.handleCancel}
       >
         <Form layout="vertical">
-          <Row gutter={16}>
-            <Col sm={24} lg={24}>
-              <FormItem label={this.msg('customer')}>
-                {
-                  (<Select
+          <FormItem label={this.msg('customer')}>
+            {getFieldDecorator('customs', { initialValue: null }
+                  )(<Select
                     showSearch
                     placeholder="选择客户"
                     optionFilterProp="children"
@@ -91,9 +89,7 @@ export default class AddTradeRepoModal extends React.Component {
                     )}
                   </Select>)
                 }
-              </FormItem>
-            </Col>
-          </Row>
+          </FormItem>
         </Form>
       </Modal>
     );
