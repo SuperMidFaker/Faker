@@ -19,7 +19,7 @@ const initialState = {
   ],
   shipmentlist: {
     totalCount: 0,
-    pageSize: 10,
+    pageSize: 20,
     current: 1,
     data: [],
   },

@@ -35,7 +35,7 @@ const initialState = {
     startDate: null,
     endDate: null,
     searchValue: '',
-    pageSize: 10,
+    pageSize: 20,
     currentPage: 1,
     totalCount: 0,
     data: [],
