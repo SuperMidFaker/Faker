@@ -20,8 +20,8 @@ export default function reducer(state = initialState, action) {
 }
 
 // 上传数据生成excel 返回 {filename}, 通过window.open(`${API_ROOTS.default}v1/common/excel/${filename}}) 下载生成好的excel
-// data: Array[][], filename: String
-export function makeExcel(data, filename) {
+// sheets: [{name, data[][] }], filename: String
+export function makeExcel(sheets, filename) {
   return {
     [CLIENT_API]: {
       types: [
@@ -31,7 +31,7 @@ export function makeExcel(data, filename) {
       ],
       endpoint: 'v1/common/make/excel',
       method: 'post',
-      data: { data, filename },
+      data: { sheets, filename },
     },
   };
 }
