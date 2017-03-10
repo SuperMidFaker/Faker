@@ -6,7 +6,7 @@ import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
 import BasicForm from './forms/basicForm';
 import SiderForm from './forms/siderForm';
-import { loadTradeParams, loadTradeItem, itemEditedSave } from 'common/reducers/cmsTradeitem';
+import { loadTradeItem, itemEditedSave } from 'common/reducers/cmsTradeitem';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
@@ -17,7 +17,6 @@ const { Header, Content } = Layout;
 function fetchData({ dispatch, params }) {
   const promises = [];
   const itemId = parseInt(params.id, 10);
-  promises.push(dispatch(loadTradeParams()));
   promises.push(dispatch(loadTradeItem(itemId)));
   return Promise.all(promises);
 }
