@@ -1,12 +1,12 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Modal, Radio, Form, Select, message } from 'antd';
+import { Modal, Form, Select, message } from 'antd';
 import { showSendDeclModal, getEasipassList, sendDecl } from 'common/reducers/cmsDeclare';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
+import { CMS_IMPORT_DECL_TYPE, CMS_EXPORT_DECL_TYPE } from 'common/constants';
 const formatMsg = format(messages);
-const RadioGroup = Radio.Group;
 const FormItem = Form.Item;
 const Option = Select.Option;
 
@@ -25,6 +25,7 @@ const Option = Select.Option;
 export default class SendModal extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
+    ietype: PropTypes.oneOf(['import', 'export']),
     tenantId: PropTypes.number.isRequired,
     subdomain: PropTypes.string.isRequired,
     visible: PropTypes.bool.isRequired,
@@ -52,8 +53,8 @@ export default class SendModal extends React.Component {
     this.props.form.validateFields((err, values) => {
       if (!err) {
         const uuid = values.easipass;
-        const paperOpt = values.decType;
-        this.props.sendDecl({ preEntrySeqNo, delgNo, subdomain, uuid, paperOpt }).then((result) => {
+        const declType = values.declType;
+        this.props.sendDecl({ preEntrySeqNo, delgNo, subdomain, uuid, declType }).then((result) => {
           if (result.error) {
             message.error(result.error.message);
           } else {
@@ -66,23 +67,27 @@ export default class SendModal extends React.Component {
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   render() {
-    const { visible, form: { getFieldDecorator } } = this.props;
+    const { visible, form: { getFieldDecorator }, ietype } = this.props;
     const { easipassList } = this.state;
+    let declList = [];
+    if (ietype === 'import') {
+      declList = CMS_IMPORT_DECL_TYPE;
+    } else if (ietype === 'export') {
+      declList = CMS_EXPORT_DECL_TYPE;
+    }
     return (
-      <Modal title="发送报关单" visible={visible}
+      <Modal title={this.msg('sendDecl')} visible={visible}
         onOk={this.handleOk} onCancel={this.handleCancel}
       >
         <Form>
-          <FormItem label="单证类型">
-            {getFieldDecorator('decType', { rules: [{ required: true, message: '请选择单证类型' }] })(
-              <RadioGroup>
-                <Radio value="ciqnopaper">通关无纸</Radio>
-                <Radio value="paper">有纸</Radio>
-                <Radio value="nopaper">无纸</Radio>
-              </RadioGroup>
+          <FormItem label={this.msg('declType')}>
+            {getFieldDecorator('declType', { rules: [{ required: true, message: '请选择单证类型' }] })(
+              <Select placeholder="请选择">
+                {declList.map(item => (<Option key={item.value} value={item.value}>{item.text}</Option>))}
+              </Select>
             )}
           </FormItem>
-          <FormItem label="EDI列表">
+          <FormItem label={this.msg('easipassList')}>
             {getFieldDecorator('easipass', { rules: [{ required: true, message: '请选择EDI' }] })(
               <Select placeholder="请选择">
                 {easipassList.map(item => (<Option key={item.app_uuid} value={item.app_uuid}>{item.name}</Option>))}

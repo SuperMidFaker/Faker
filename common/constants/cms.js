@@ -280,3 +280,43 @@ export const CMS_DECL_STATUS = [
   { value: 2, text: '预录入' },
   { value: 3, text: '已回填' },
 ];
+
+export const CMS_IMPORT_DECL_TYPE = [{
+  value: '1',
+  text: '有纸进口报关单',
+}, {
+  value: '3',
+  text: '有纸进境备案清单',
+}, {
+  value: '5',
+  text: '无纸进口报关单',
+}, {
+  value: '7',
+  text: '无纸进境备案清单',
+}, {
+  value: '9',
+  text: '通关无纸进口报关单',
+}, {
+  value: 'B',
+  text: '通关无纸进境备案清单',
+}];
+
+export const CMS_EXPORT_DECL_TYPE = [{
+  value: '0',
+  text: '有纸出口报关单',
+}, {
+  value: '2',
+  text: '有纸出境备案清单',
+}, {
+  value: '4',
+  text: '无纸出口报关单',
+}, {
+  value: '6',
+  text: '无纸出境备案清单',
+}, {
+  value: '8',
+  text: '通关无纸出口报关单',
+}, {
+  value: 'A',
+  text: '通关无纸出境备案清单',
+}];

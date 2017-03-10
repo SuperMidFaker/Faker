@@ -366,7 +366,7 @@ export default class DelgDeclList extends Component {
               />
             </div>
             <DeclnoFillModal reload={this.handleTableLoad} />
-            <SendModal />
+            <SendModal ietype={this.props.ietype} />
           </div>
         </Content>
       </QueueAnim>
