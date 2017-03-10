@@ -7,7 +7,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import { format } from 'client/common/i18n/helpers';
-import { Card, Col, DatePicker, Layout, Row } from 'antd';
+import { Card, Col, DatePicker, Layout, Row, Tooltip, Icon } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import { loadShipmentStatistics, loadShipmtDetail, loadFormRequire } from 'common/reducers/shipment';
 import messages from '../message.i18n';
@@ -18,7 +18,9 @@ const { Header, Content } = Layout;
 const RangePicker = DatePicker.RangePicker;
 
 function fetchData({ state, dispatch, cookie }) {
-  const startDate = `${moment(state.shipment.statistics.startDate || new Date()).format('YYYY-MM-DD')} 00:00:00`;
+  const firstDay = new Date();
+  firstDay.setDate(1);
+  const startDate = `${moment(state.shipment.statistics.startDate || firstDay).format('YYYY-MM-DD')} 00:00:00`;
   const endDate = `${moment(state.shipment.statistics.endDate || new Date()).format('YYYY-MM-DD')} 23:59:59`;
   const promises = [dispatch(loadShipmentStatistics(cookie, state.account.tenantId, startDate, endDate)),
     dispatch(loadFormRequire(cookie, state.account.tenantId))];
@@ -56,6 +58,9 @@ export default class Dashboard extends React.Component {
         <RangePicker style={{ width: 200 }} value={[moment(startDate), moment(endDate)]}
           onChange={this.onDateChange}
         />
+        <Tooltip title="以“预计提货时间”作为时间筛选标准">
+          <Icon type="question-circle-o" style={{ marginLeft: 10 }} />
+        </Tooltip>
       </div>);
     const imgStyle = { width: 60, height: 60 };
     return (
