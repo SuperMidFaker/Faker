@@ -47,6 +47,8 @@ export const PARTNER_BUSINESSE_TYPES = {
   transport: 'transport',
 };
 
+export const KPI_CHART_COLORS = ['#FF7F00', '#C63C33', '#F1CA67', '#495779', '#26B68E', '#CB809A'];
+
 const WRAP_TYPE = [{
   text: '木箱',
   value: '1',

@@ -53,7 +53,6 @@ export default class Dashboard extends React.Component {
     tenantId: PropTypes.number.isRequired,
     loadShipmtDetail: PropTypes.func.isRequired,
   }
-
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   render() {
     const { startDate, endDate, type } = this.props.location.query;
@@ -154,6 +153,22 @@ export default class Dashboard extends React.Component {
           return <span />;
         }
       },
+      filters: [{
+        value: 1,
+        text: '待接单',
+      }, {
+        value: 2,
+        text: '待分配',
+      }, {
+        value: 3,
+        text: '待提货',
+      }, {
+        value: 4,
+        text: '运输中',
+      }, {
+        value: 5,
+        text: '已交货',
+      }],
     }, {
       title: this.msg('shipmtCustomer'),
       dataIndex: 'customer_name',
@@ -187,7 +202,6 @@ export default class Dashboard extends React.Component {
       },
       remotes: this.props.statistics.logs,
     });
-
     return (
       <div>
         <Header className="top-bar">

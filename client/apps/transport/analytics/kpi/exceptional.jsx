@@ -3,6 +3,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import echarts from 'echarts';
 import { getSelectedModesObject } from 'common/reducers/transportKpi';
 import ChartBody from './chartBody';
+import { KPI_CHART_COLORS } from 'common/constants';
 
 @injectIntl
 export default class Exceptional extends React.Component {
@@ -43,6 +44,7 @@ export default class Exceptional extends React.Component {
         data: exceptionTypes.map(item => item.name),
         selected: getSelectedModesObject(exceptionTypes, props.modes, 'name'),
       },
+      color: KPI_CHART_COLORS,
       grid: {
         left: 0,
         right: '3%',
@@ -94,6 +96,7 @@ export default class Exceptional extends React.Component {
         bottom: 0,
         data: exceptionTypes.map(item => item.name),
       },
+      color: KPI_CHART_COLORS,
       grid: {
         left: '3%',
         right: '4%',

@@ -103,7 +103,7 @@ export default defineMessages({
   },
   shipmtEstPickupDate: {
     id: 'transport.dashboard.log.est.pickup.date',
-    defaultMessage: '预计提货',
+    defaultMessage: '计划提货',
   },
   arrivalPlace: {
     id: 'transport.dashboard.log.arrival.place',
@@ -115,7 +115,7 @@ export default defineMessages({
   },
   shipmtEstDeliveryDate: {
     id: 'transport.dashboard.log.est.delivery.date',
-    defaultMessage: '预计到达',
+    defaultMessage: '计划到达',
   },
   shipmtPrmDeliveryDate: {
     id: 'transport.dashboard.log.promise.delivery.date',
