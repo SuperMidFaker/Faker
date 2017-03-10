@@ -180,7 +180,7 @@ export default class DetailPane extends React.Component {
     }
     let deliverDate = moment(shipmt.deliver_est_date).format('YYYY-MM-DD');
     if (dispatch.deliver_act_date) {
-      const deliverPrmDate = new Date(shipmt.pickup_act_date);
+      const deliverPrmDate = new Date(dispatch.pickup_act_date);
       deliverPrmDate.setDate(deliverPrmDate.getDate() + shipmt.transit_time);
       deliverDate = (<div>
         {moment(shipmt.deliver_est_date).format('YYYY-MM-DD')}
