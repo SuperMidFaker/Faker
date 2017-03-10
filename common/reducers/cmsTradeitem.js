@@ -93,6 +93,8 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_DECLWAY_UNITS_SUCCEED:
     case actionTypes.SAVE_DECLWAY_UNIT_SUCCEED:
       return { ...state, declwayUnits: action.result.data };
+    case actionTypes.CREATE_REPO_SUCCEED:
+      return { ...state, repoId: action.result.data };
     default:
       return state;
   }

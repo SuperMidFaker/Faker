@@ -4,7 +4,7 @@ import { Breadcrumb, Button, Dropdown, Layout, Menu, Icon, Form, message, Popcon
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { addNewBillBody, delBillBody, editBillBody, saveBillHead,
-  openMergeSplitModal, billDelete, updateHeadNetWt } from 'common/reducers/cmsManifest';
+  openMergeSplitModal, billDelete, updateHeadNetWt, loadBillBody } from 'common/reducers/cmsManifest';
 import NavLink from 'client/components/nav-link';
 import SheetHeadPanel from './forms/SheetHeadPanel';
 import SheetBodyPanel from './forms/SheetBodyPanel';
@@ -26,7 +26,7 @@ const TabPane = Tabs.TabPane;
     loginId: state.account.loginId,
     tenantId: state.account.tenantId,
   }),
-  { addNewBillBody, delBillBody, editBillBody, saveBillHead, openMergeSplitModal, billDelete, updateHeadNetWt }
+  { addNewBillBody, delBillBody, editBillBody, saveBillHead, openMergeSplitModal, billDelete, updateHeadNetWt, loadBillBody }
 )
 @connectNav({
   depth: 2,
@@ -60,6 +60,15 @@ export default class ManifestEditor extends React.Component {
     });
   }
   handleGenerateEntry = () => {
+    this.props.loadBillBody(this.props.billHead.bill_seq_no).then((result) => {
+      if (result.error) {
+        message.error(result.error.message);
+      } else {
+        this.generateEntry();
+      }
+    });
+  }
+  generateEntry = () => {
     const billHead = this.props.billHead;
     const bodyDatas = this.props.billBodies;
     let wtSum = 0;

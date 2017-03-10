@@ -95,8 +95,9 @@ export default class AddTriggerModal extends React.Component {
           <FormItem>
             {
               getFieldDecorator('notify_mode', {
+                initialValue: ['email', 'wechat'],
               })(
-                <CheckboxGroup options={notifyOptions} defaultValue={['email', 'wechat']} />
+                <CheckboxGroup options={notifyOptions} />
               )
             }
           </FormItem>
@@ -109,7 +110,7 @@ export default class AddTriggerModal extends React.Component {
           <FormItem>
             {
               getFieldDecorator('action_type', {
-                'option.initialValue': 'create',
+                initialValue: 'create',
               })(
                 <Select placeholder={this.msg('actionType')}>
                   <Option value="notify">{this.msg('notify')}</Option>
@@ -175,7 +176,7 @@ export default class AddTriggerModal extends React.Component {
                     })(
                       <div>
                         {this.msg('after')}
-                        <InputNumber min={1} max={3600} defaultValue={30} style={{ width: '30%' }} />
+                        <InputNumber min={1} max={3600} style={{ width: '30%' }} />
                         {this.msg('minutes')}
                       </div>
                     )
