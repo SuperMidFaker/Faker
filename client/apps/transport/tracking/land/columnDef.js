@@ -223,8 +223,8 @@ export default function makeColumns(type, handlers, msg) {
     key: 'late',
     width: 100,
     render(o, record) {
-      if (record.status >= SHIPMENT_TRACK_STATUS.delivered) {
-        const deliveredActDate = new Date(record.deliver_act_date);
+      if (record.pickup_act_date) {
+        const deliveredActDate = new Date(record.deliver_act_date || new Date());
         deliveredActDate.setHours(0, 0, 0, 0);
         const pickupActDate = new Date(record.pickup_act_date);
         pickupActDate.setHours(0, 0, 0, 0);

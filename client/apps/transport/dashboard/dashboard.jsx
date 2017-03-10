@@ -18,8 +18,8 @@ const { Header, Content } = Layout;
 const RangePicker = DatePicker.RangePicker;
 
 function fetchData({ state, dispatch, cookie }) {
-  const startDate = `${moment(new Date()).format('YYYY-MM-DD')} 00:00:00`;
-  const endDate = `${moment(new Date()).format('YYYY-MM-DD')} 23:59:59`;
+  const startDate = `${moment(state.shipment.statistics.startDate || new Date()).format('YYYY-MM-DD')} 00:00:00`;
+  const endDate = `${moment(state.shipment.statistics.endDate || new Date()).format('YYYY-MM-DD')} 23:59:59`;
   const promises = [dispatch(loadShipmentStatistics(cookie, state.account.tenantId, startDate, endDate)),
     dispatch(loadFormRequire(cookie, state.account.tenantId))];
   return Promise.all(promises);
@@ -50,7 +50,7 @@ export default class Dashboard extends React.Component {
     return `/transport/dashboard/operationLogs?type=${type}&startDate=${startDate}&endDate=${endDate}`;
   }
   render() {
-    const { count, startDate, endDate, todos } = this.props.statistics;
+    const { startDate, endDate, todos, total, overtime, intransit, exception, arrival } = this.props.statistics;
     const datePicker = (
       <div>
         <RangePicker style={{ width: 200 }} value={[moment(startDate), moment(endDate)]}
@@ -70,32 +70,32 @@ export default class Dashboard extends React.Component {
                 <ul className="statistics-columns">
                   <li className="col-4">
                     <div className="statistics-cell">
-                      <h6>{this.msg('accepted')}</h6>
-                      <Link to={this.logsLocation('accepted')}><p className="data-num lg">{count[0]}</p></Link>
+                      <h6>{this.msg('total')}</h6>
+                      <Link to={this.logsLocation('total')}><p className="data-num lg">{total}</p></Link>
                     </div>
                   </li>
                   <li className="col-4">
                     <div className="statistics-cell">
-                      <h6>{this.msg('sent')}</h6>
-                      <Link to={this.logsLocation('sent')}><p className="data-num lg">{count[1]}</p></Link>
+                      <h6>{this.msg('overtime')}</h6>
+                      <Link to={this.logsLocation('overtime')}><p className="data-num lg">{overtime}</p></Link>
                     </div>
                   </li>
                   <li className="col-4">
                     <div className="statistics-cell">
-                      <h6>{this.msg('pickedup')}</h6>
-                      <Link to={this.logsLocation('pickedup')}><p className="data-num lg">{count[2]}</p></Link>
+                      <h6>{this.msg('intransit')}</h6>
+                      <Link to={this.logsLocation('intransit')}><p className="data-num lg">{intransit}</p></Link>
                     </div>
                   </li>
                   <li className="col-4">
                     <div className="statistics-cell">
-                      <h6>{this.msg('delivered')}</h6>
-                      <Link to={this.logsLocation('delivered')}><p className="data-num lg">{count[3]}</p></Link>
+                      <h6>{this.msg('exception')}</h6>
+                      <Link to={this.logsLocation('exception')}><p className="data-num lg">{exception}</p></Link>
                     </div>
                   </li>
                   <li className="col-4">
                     <div className="statistics-cell">
-                      <h6>{this.msg('completed')}</h6>
-                      <Link to={this.logsLocation('completed')}><p className="data-num lg">{count[4]}</p></Link>
+                      <h6>{this.msg('arrival')}</h6>
+                      <Link to={this.logsLocation('arrival')}><p className="data-num lg">{arrival}</p></Link>
                     </div>
                   </li>
                 </ul>

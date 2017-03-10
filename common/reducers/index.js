@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux';
 import intl from './intl';
+import common from './common';
 import auth from './auth';
 import account from './account';
 import chinaRegions from './chinaRegions';
@@ -47,6 +48,7 @@ import crmBilling from './crmBilling';
 
 export default combineReducers({
   intl,
+  common,
   auth,
   account,
   chinaRegions,
