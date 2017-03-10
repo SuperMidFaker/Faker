@@ -1,12 +1,11 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import connectFetch from 'client/common/decorators/connect-fetch';
 import { Breadcrumb, Form, Layout, Button, Row, Col, message } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
 import BasicForm from './forms/basicForm';
 import SiderForm from './forms/siderForm';
-import { loadTradeParams, createTradeItem } from 'common/reducers/cmsTradeitem';
+import { createTradeItem } from 'common/reducers/cmsTradeitem';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
@@ -14,10 +13,6 @@ import { format } from 'client/common/i18n/helpers';
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
 
-function fetchData({ dispatch }) {
-  return dispatch(loadTradeParams());
-}
-@connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
@@ -26,7 +21,7 @@ function fetchData({ dispatch }) {
     loginName: state.account.loginName,
     repoId: state.cmsTradeitem.repoId,
   }),
-  { loadTradeParams, createTradeItem }
+  { createTradeItem }
 )
 @connectNav({
   depth: 3,

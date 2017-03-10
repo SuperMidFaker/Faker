@@ -43,13 +43,13 @@ function ColumnSelect(props) {
     return (
       <Select value={edit[field] || ''} onChange={handleChange} style={{ width: '100%' }}>
         {
-          options.map((opt, idx) => <Option value={opt.value} key={`${opt.value}${idx}`}>{opt.text}</Option>)
+          options.map((opt, idx) => <Option value={opt.value} key={`${opt.value}${idx}`}>{`${opt.value}|${opt.text}`}</Option>)
         }
       </Select>
     );
   } else {
     const foundOpts = options.filter(opt => opt.value === record[field]);
-    const label = foundOpts.length === 1 ? foundOpts[0].text : '';
+    const label = foundOpts.length === 1 ? `${foundOpts[0].value}|${foundOpts[0].text}` : '';
     return <span>{label}</span>;
   }
 }
@@ -176,21 +176,12 @@ export default class SheetBodyPanel extends React.Component {
     if (nextProps.bodyItem !== this.props.bodyItem) {
       const item = nextProps.bodyItem;
       if (item) {
-        let unit1Val = '';
-        let unit2Val = '';
-        let gunitVal = '';
-        if (item.unit_1) {
-          const unit1 = this.props.units.filter(unit => unit.text === item.unit_1)[0];
-          unit1Val = unit1.value;
-        }
-        if (item.unit_2) {
-          const unit2 = this.props.units.filter(unit => unit.text === item.unit_2)[0];
-          unit2Val = unit2.value;
-        }
-        if (item.g_unit) {
-          const gunit = this.props.units.filter(unit => unit.text === item.g_unit)[0];
-          gunitVal = gunit.value;
-        }
+        const unit1 = this.props.units.filter(unit => unit.value === item.unit_1)[0];
+        const unit1Val = unit1 ? unit1.value : '';
+        const unit2 = this.props.units.filter(unit => unit.value === item.unit_2)[0];
+        const unit2Val = unit2 ? unit2.value : '';
+        const unitg = this.props.units.filter(unit => unit.value === item.g_unit)[0];
+        const gunitVal = unitg ? unitg.value : '';
         this.setState({
           editBody: {
             ...this.state.editBody,
@@ -223,16 +214,10 @@ export default class SheetBodyPanel extends React.Component {
     if (nextProps.bodyHscode !== this.props.bodyHscode) {
       const hscode = nextProps.bodyHscode;
       if (hscode) {
-        let unit1Val = '';
-        let unit2Val = '';
-        if (hscode.first_unit) {
-          const unit1 = this.props.units.filter(unit => unit.text === hscode.first_unit)[0];
-          unit1Val = unit1.value;
-        }
-        if (hscode.second_unit) {
-          const unit2 = this.props.units.filter(unit => unit.text === hscode.second_unit)[0];
-          unit2Val = unit2.value;
-        }
+        const unit1 = this.props.units.filter(unit => unit.text === hscode.first_unit)[0];
+        const unit1Val = unit1 ? unit1.value : '';
+        const unit2 = this.props.units.filter(unit => unit.text === hscode.second_unit)[0];
+        const unit2Val = unit2 ? unit2.value : '';
         this.setState({
           editBody: {
             ...this.state.editBody,

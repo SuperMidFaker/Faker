@@ -11,7 +11,7 @@ import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { loadCustomers } from 'common/reducers/crmCustomers';
 import { loadOwners, openAddModal, selectedRepoId, loadTradeItems,
-  deleteItem, deleteSelectedItems, setOwner, deleteRepo } from 'common/reducers/cmsTradeitem';
+  deleteItem, deleteSelectedItems, setOwner, deleteRepo, loadTradeParams } from 'common/reducers/cmsTradeitem';
 import AddTradeRepoModal from './modals/addTradeRepo';
 import SearchBar from 'client/components/search-bar';
 import ExcelUpload from 'client/components/excelUploader';
@@ -35,6 +35,7 @@ function fetchData({ state, dispatch }) {
   promises.push(dispatch(loadOwners({
     tenantId: state.account.tenantId,
   })));
+  promises.push(dispatch(loadTradeParams()));
   return Promise.all(promises);
 }
 @connectFetch()(fetchData)
@@ -49,6 +50,18 @@ function fetchData({ state, dispatch }) {
     tradeItemlist: state.cmsTradeitem.tradeItemlist,
     visibleAddModal: state.cmsTradeitem.visibleAddModal,
     owner: state.cmsTradeitem.owner,
+    units: state.cmsTradeitem.params.units.map(un => ({
+      value: un.unit_code,
+      text: un.unit_name,
+    })),
+    currencies: state.cmsTradeitem.params.currencies.map(cr => ({
+      value: cr.curr_code,
+      text: cr.curr_name,
+    })),
+    tradeCountries: state.cmsTradeitem.params.tradeCountries.map(tc => ({
+      value: tc.cntry_co,
+      text: tc.cntry_name_cn,
+    })),
   }),
   { loadCustomers, openAddModal, selectedRepoId, loadTradeItems,
     deleteItem, deleteSelectedItems, setOwner, loadOwners, deleteRepo }
@@ -111,22 +124,47 @@ export default class TradeItemList extends Component {
     title: this.msg('gUnit1'),
     dataIndex: 'g_unit_1',
     width: 120,
+    render: (o) => {
+      const unit = this.props.units.filter(cur => cur.value === o)[0];
+      const text = unit ? `${unit.value}| ${unit.text}` : o;
+      return text;
+    },
   }, {
     title: this.msg('gUnit2'),
     dataIndex: 'g_unit_2',
     width: 120,
+    render: (o) => {
+      const unit = this.props.units.filter(cur => cur.value === o)[0];
+      const text = unit ? `${unit.value}| ${unit.text}` : o;
+      return text;
+    },
   }, {
     title: this.msg('gUnit3'),
     dataIndex: 'g_unit_3',
     width: 120,
+    render: (o) => {
+      const unit = this.props.units.filter(cur => cur.value === o)[0];
+      const text = unit ? `${unit.value}| ${unit.text}` : o;
+      return text;
+    },
   }, {
     title: this.msg('unit1'),
     dataIndex: 'unit_1',
     width: 130,
+    render: (o) => {
+      const unit = this.props.units.filter(cur => cur.value === o)[0];
+      const text = unit ? `${unit.value}| ${unit.text}` : o;
+      return text;
+    },
   }, {
     title: this.msg('unit2'),
     dataIndex: 'unit_2',
     width: 130,
+    render: (o) => {
+      const unit = this.props.units.filter(cur => cur.value === o)[0];
+      const text = unit ? `${unit.value}| ${unit.text}` : o;
+      return text;
+    },
   }, {
     title: this.msg('fixedQty'),
     dataIndex: 'fixed_qty',
@@ -135,10 +173,20 @@ export default class TradeItemList extends Component {
     title: this.msg('fixedUnit'),
     dataIndex: 'fixed_unit',
     width: 130,
+    render: (o) => {
+      const unit = this.props.units.filter(cur => cur.value === o)[0];
+      const text = unit ? `${unit.value}| ${unit.text}` : o;
+      return text;
+    },
   }, {
     title: this.msg('origCountry'),
     dataIndex: 'origin_country',
     width: 120,
+    render: (o) => {
+      const country = this.props.tradeCountries.filter(cur => cur.value === o)[0];
+      const text = country ? `${country.value}| ${country.text}` : o;
+      return text;
+    },
   }, {
     title: this.msg('unitNetWt'),
     dataIndex: 'unit_net_wt',
@@ -159,6 +207,11 @@ export default class TradeItemList extends Component {
     title: this.msg('currency'),
     dataIndex: 'currency',
     width: 120,
+    render: (o) => {
+      const currency = this.props.currencies.filter(cur => cur.value === o)[0];
+      const text = currency ? `${currency.value}| ${currency.text}` : o;
+      return text;
+    },
   }, {
     title: this.msg('preClassifyNo'),
     dataIndex: 'pre_classify_no',
@@ -281,6 +334,7 @@ export default class TradeItemList extends Component {
         this.handleItemListLoad();
       }
     });
+    this.setState({ selectedRowKeys: [] });
   }
   handleDeleteRepo = () => {
     this.props.deleteRepo(this.props.repoId).then((result) => {
@@ -366,7 +420,7 @@ export default class TradeItemList extends Component {
           </div>
           <div className="left-sider-panel" >
             <Table size="middle" dataSource={this.props.repoOwners} columns={repoColumns} showHeader={false} onRowClick={this.handleRowClick}
-              pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }}
+              rowKey="id" pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }}
               rowClassName={record => record.id === owner.id ? 'table-row-selected' : ''}
             />
           </div>
