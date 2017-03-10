@@ -30,18 +30,12 @@ function getFieldInits(formData) {
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    currencies: state.cmsTradeitem.params.currencies.map(cr => ({
-      value: cr.curr_code,
-      text: cr.curr_name,
-    })),
+    currencies: state.cmsTradeitem.params.currencies,
     units: state.cmsTradeitem.params.units.map(un => ({
       value: un.unit_code,
       text: un.unit_name,
     })),
-    tradeCountries: state.cmsTradeitem.params.tradeCountries.map(tc => ({
-      value: tc.cntry_co,
-      text: tc.cntry_name_cn,
-    })),
+    tradeCountries: state.cmsTradeitem.params.tradeCountries,
     fieldInits: getFieldInits(state.cmsTradeitem.itemData),
     hscodes: state.cmsHsCode.hscodes,
   }),
@@ -62,11 +56,15 @@ export default class BasicForm extends Component {
     if (this.props.hscodes !== nextProps.hscodes) {
       if (nextProps.hscodes.data.length === 1) {
         const hscode = nextProps.hscodes.data[0];
+        const firstUnit = this.props.units.filter(unit => unit.text === hscode.first_unit)[0];
+        const unit1 = firstUnit ? firstUnit.value : '';
+        const secondUnit = this.props.units.filter(unit => unit.text === hscode.second_unit)[0];
+        const unit2 = secondUnit ? secondUnit.value : '';
         this.props.form.setFieldsValue({
           g_name: hscode.product_name,
           element: hscode.declared_elements,
-          unit_1: hscode.first_unit,
-          unit_2: hscode.second_unit,
+          unit_1: unit1,
+          unit_2: unit2,
           customs_control: hscode.customs,
           inspection_quarantine: hscode.inspection,
         });
@@ -94,6 +92,14 @@ export default class BasicForm extends Component {
   msg = key => formatMsg(this.props.intl, key);
   render() {
     const { form: { getFieldDecorator }, fieldInits, currencies, units, tradeCountries, hscodes } = this.props;
+    const currencyOptions = currencies.map(curr => ({
+      value: curr.curr_code,
+      text: `${curr.curr_code} | ${curr.curr_name}`,
+    }));
+    const tradeCountriesOpts = tradeCountries.map(tc => ({
+      value: tc.cntry_co,
+      text: `${tc.cntry_co} | ${tc.cntry_name_cn}`,
+    }));
     return (
       <div>
         <Card bodyStyle={{ padding: 16 }}>
@@ -163,7 +169,7 @@ export default class BasicForm extends Component {
                 })(<Select>
                   {
                     units.map(gt =>
-                      <Option value={gt.text} key={gt.value}>{gt.text}</Option>
+                      <Option value={gt.value} key={gt.value}>{gt.text}</Option>
                     )
                   }
                 </Select>)}
@@ -176,7 +182,7 @@ export default class BasicForm extends Component {
                 })(<Select>
                   {
                     units.map(gt =>
-                      <Option value={gt.text} key={gt.value}>{gt.text}</Option>
+                      <Option value={gt.value} key={gt.value}>{gt.text}</Option>
                     )
                   }
                 </Select>)}
@@ -189,7 +195,7 @@ export default class BasicForm extends Component {
                 })(<Select>
                   {
                     units.map(gt =>
-                      <Option value={gt.text} key={gt.value}>{gt.text}</Option>
+                      <Option value={gt.value} key={gt.value}>{gt.text}</Option>
                     )
                   }
                 </Select>)}
@@ -202,7 +208,7 @@ export default class BasicForm extends Component {
                 })(<Select>
                   {
                     units.map(gt =>
-                      <Option value={gt.text} key={gt.value}>{gt.text}</Option>
+                      <Option value={gt.value} key={gt.value}>{gt.text}</Option>
                     )
                   }
                 </Select>)}
@@ -215,7 +221,7 @@ export default class BasicForm extends Component {
                 })(<Select>
                   {
                     units.map(gt =>
-                      <Option value={gt.text} key={gt.value}>{gt.text}</Option>
+                      <Option value={gt.value} key={gt.value}>{gt.text}</Option>
                     )
                   }
                 </Select>)}
@@ -240,11 +246,12 @@ export default class BasicForm extends Component {
                 {getFieldDecorator('currency', {
                   initialValue: fieldInits.currency,
                 })(
-                  <Select combobox optionFilterProp="search">
+                  <Select showArrow optionFilterProp="search">
                     {
-                      currencies.map(data => (<Option value={data.text} key={data.value}
-                        search={`${data.value}${data.text}`}
-                      >{`${data.value} | ${data.text}`}</Option>)
+                      currencyOptions.map(data => (
+                        <Option key={data.value} search={() => data.value} >
+                          {`${data.text}`}
+                        </Option>)
                       )}
                   </Select>
                   )}
@@ -264,7 +271,7 @@ export default class BasicForm extends Component {
                 })(<Select>
                   {
                     units.map(gt =>
-                      <Option value={gt.text} key={gt.value}>{gt.text}</Option>
+                      <Option value={gt.value} key={gt.value}>{gt.text}</Option>
                     )
                   }
                 </Select>)}
@@ -275,11 +282,12 @@ export default class BasicForm extends Component {
                 {getFieldDecorator('origin_country', {
                   initialValue: fieldInits.origin_country,
                 })(
-                  <Select combobox optionFilterProp="search">
+                  <Select showArrow optionFilterProp="search">
                     {
-                      tradeCountries.map(data => (<Option value={data.text} key={data.value}
-                        search={`${data.value}${data.text}`}
-                      >{`${data.value} | ${data.text}`}</Option>)
+                      tradeCountriesOpts.map(data => (
+                        <Option key={data.value} search={() => data.value} >
+                          {`${data.text}`}
+                        </Option>)
                       )}
                   </Select>
                   )}

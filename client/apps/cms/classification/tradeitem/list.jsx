@@ -126,7 +126,7 @@ export default class TradeItemList extends Component {
     width: 120,
     render: (o) => {
       const unit = this.props.units.filter(cur => cur.value === o)[0];
-      const text = unit ? unit.text : o;
+      const text = unit ? `${unit.value}| ${unit.text}` : o;
       return text;
     },
   }, {
@@ -135,7 +135,7 @@ export default class TradeItemList extends Component {
     width: 120,
     render: (o) => {
       const unit = this.props.units.filter(cur => cur.value === o)[0];
-      const text = unit ? unit.text : o;
+      const text = unit ? `${unit.value}| ${unit.text}` : o;
       return text;
     },
   }, {
@@ -144,7 +144,7 @@ export default class TradeItemList extends Component {
     width: 120,
     render: (o) => {
       const unit = this.props.units.filter(cur => cur.value === o)[0];
-      const text = unit ? unit.text : o;
+      const text = unit ? `${unit.value}| ${unit.text}` : o;
       return text;
     },
   }, {
@@ -153,7 +153,7 @@ export default class TradeItemList extends Component {
     width: 130,
     render: (o) => {
       const unit = this.props.units.filter(cur => cur.value === o)[0];
-      const text = unit ? unit.text : o;
+      const text = unit ? `${unit.value}| ${unit.text}` : o;
       return text;
     },
   }, {
@@ -162,7 +162,7 @@ export default class TradeItemList extends Component {
     width: 130,
     render: (o) => {
       const unit = this.props.units.filter(cur => cur.value === o)[0];
-      const text = unit ? unit.text : o;
+      const text = unit ? `${unit.value}| ${unit.text}` : o;
       return text;
     },
   }, {
@@ -175,7 +175,7 @@ export default class TradeItemList extends Component {
     width: 130,
     render: (o) => {
       const unit = this.props.units.filter(cur => cur.value === o)[0];
-      const text = unit ? unit.text : o;
+      const text = unit ? `${unit.value}| ${unit.text}` : o;
       return text;
     },
   }, {
@@ -184,7 +184,7 @@ export default class TradeItemList extends Component {
     width: 120,
     render: (o) => {
       const country = this.props.tradeCountries.filter(cur => cur.value === o)[0];
-      const text = country ? country.text : o;
+      const text = country ? `${country.value}| ${country.text}` : o;
       return text;
     },
   }, {
@@ -209,7 +209,7 @@ export default class TradeItemList extends Component {
     width: 120,
     render: (o) => {
       const currency = this.props.currencies.filter(cur => cur.value === o)[0];
-      const text = currency ? currency.text : o;
+      const text = currency ? `${currency.value}| ${currency.text}` : o;
       return text;
     },
   }, {
