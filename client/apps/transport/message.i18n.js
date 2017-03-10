@@ -57,6 +57,26 @@ export default defineMessages({
     id: 'tms.module.settings.app',
     defaultMessage: '应用设置',
   },
+  total: {
+    id: 'transport.dashboard.log.type.total',
+    defaultMessage: '总票数',
+  },
+  overtime: {
+    id: 'transport.dashboard.log.type.overtime',
+    defaultMessage: '超时',
+  },
+  intransit: {
+    id: 'transport.dashboard.log.type.intransit',
+    defaultMessage: '在途',
+  },
+  exception: {
+    id: 'transport.dashboard.log.type.exception',
+    defaultMessage: '异常',
+  },
+  arrival: {
+    id: 'transport.dashboard.log.type.arrival',
+    defaultMessage: '到达',
+  },
   accepted: {
     id: 'transport.dashboard.log.type.accepted',
     defaultMessage: '已受理',

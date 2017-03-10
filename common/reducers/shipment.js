@@ -109,6 +109,9 @@ const initialState = {
     },
     total: 0,
     overtime: 0,
+    intransit: 0,
+    exception: 0,
+    arrival: 0,
   },
   changeShipmentModal: {
     visible: false,

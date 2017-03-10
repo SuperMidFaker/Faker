@@ -16,6 +16,7 @@ import messages from '../message.i18n';
 import '../index.less';
 import PreviewPanel from '../shipment/modals/preview-panel';
 import ActDate from '../common/actDate';
+import ExceptionListPopover from '../tracking/land/modals/exception-list-popover';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -105,6 +106,34 @@ export default class Dashboard extends React.Component {
         }
       },
     }, {
+      title: this.msg('overtime'),
+      key: 'late',
+      width: 100,
+      render(o, record) {
+        if (record.pickup_act_date) {
+          const deliveredActDate = new Date(record.deliver_act_date || new Date());
+          deliveredActDate.setHours(0, 0, 0, 0);
+          const pickupActDate = new Date(record.pickup_act_date);
+          pickupActDate.setHours(0, 0, 0, 0);
+          const daysDiff = moment(deliveredActDate).diff(pickupActDate, 'days');
+          if (daysDiff > record.transit_time) {
+            return `超时${daysDiff - record.transit_time}天`;
+          }
+        }
+        return '';
+      },
+    }, {
+      title: this.msg('exception'),
+      dataIndex: 'excp_count',
+      width: 50,
+      render(o, record) {
+        return (<ExceptionListPopover
+          shipmtNo={record.shipmt_no}
+          dispId={record.disp_id}
+          excpCount={o}
+        />);
+      },
+    }, {
       title: this.msg('shipmtStatus'),
       dataIndex: 'status',
       width: 100,
@@ -134,17 +163,6 @@ export default class Dashboard extends React.Component {
       title: this.msg('shipmtMode'),
       dataIndex: 'transport_mode',
       width: 80,
-    }, {
-      title: '操作人员',
-      dataIndex: 'login_name',
-      width: 80,
-    }, {
-      title: '操作时间',
-      dataIndex: 'created_date',
-      width: 140,
-      render(o) {
-        return moment(o).format('YYYY-MM-DD HH:mm:ss');
-      },
     }];
     const dataSource = new Table.DataSource({
       fetcher: params => this.props.loadShipmentEvents(null, params),
@@ -178,7 +196,7 @@ export default class Dashboard extends React.Component {
         <Content className="main-content">
           <div className="page-body">
             <div className="panel-body table-panel">
-              <Table columns={columns} dataSource={dataSource} rowKey="id" scroll={{ x: 1700 }} />
+              <Table columns={columns} dataSource={dataSource} rowKey="id" scroll={{ x: 1480 }} />
             </div>
           </div>
         </Content>
