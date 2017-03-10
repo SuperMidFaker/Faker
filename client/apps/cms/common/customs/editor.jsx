@@ -27,7 +27,7 @@ const TabPane = Tabs.TabPane;
   { saveEntryHead, loadEntry, fillEntryId }
 )
 @connectNav({
-  depth: 2,
+  depth: 3,
   moduleName: 'clearance',
 })
 @Form.create()

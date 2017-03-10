@@ -224,10 +224,10 @@ export default class ActivityLoggerPane extends React.Component {
           <div className="card-body-wrapper">
             <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
               <TabPane tab={<span><Icon type="message" />备注</span>} key="message">
-                <Form layout="horizontal">
+                <Form layout="vertical">
                   <FormItem>
                     {getFieldDecorator('remarks')(<Mention
-                      style={{ width: '100%', height: 72 }}
+                      style={{ width: '100%', height: 80 }}
                       suggestions={['afc163', 'benjycui', 'yiminghe', 'jljsj33', 'dqaria', 'RaoHai']}
                       placeholder="@提及他人"
                       multiLines
@@ -237,7 +237,7 @@ export default class ActivityLoggerPane extends React.Component {
               </TabPane>
               {delegation.claim_do_awb === 1 &&
                 <TabPane tab={<span><Icon type="retweet" />换单</span>} key="exchange">
-                  <Form layout="horizontal">
+                  <Form layout="vertical">
                     <FormItem label="海运单号" {...formItemLayout}>
                       <Input value={delegation.swb_no} readOnly />
                     </FormItem>
@@ -250,11 +250,10 @@ export default class ActivityLoggerPane extends React.Component {
                 </TabPane>
               }
               <TabPane tab={<span><Icon type="addfile" />办证</span>} key="certs">
-                <Form layout="horizontal">
+                <Form layout="vertical">
                   <FormItem>
                     {getFieldDecorator('certs')(<Select
                       showSearch
-                      style={{ width: 200, marginRight: 8 }}
                       placeholder="选择鉴定办证类型"
                       optionFilterProp="children"
                     >
@@ -266,15 +265,15 @@ export default class ActivityLoggerPane extends React.Component {
                     </Select>)}
                   </FormItem>
                   <FormItem>
-                    { getFieldDecorator('certsNum')(<InputNumber min={1} max={99} placeholder="型号数量" />)}
+                    { getFieldDecorator('certsNum')(<InputNumber min={1} max={9999} placeholder="型号数量" />)}
                   </FormItem>
                 </Form>
               </TabPane>
               { delgDispatch.status > 1 &&
                 <TabPane tab={<span><Icon type="exception" />查验</span>} key="inspect">
-                  <Form layout="horizontal">
+                  <Form layout="vertical">
                     <FormItem>
-                      {getFieldDecorator('pre_entry_no')(<Select showSearch style={{ width: 200, marginRight: 8 }} placeholder="选择报关单" optionFilterProp="children">
+                      {getFieldDecorator('pre_entry_no')(<Select showSearch placeholder="选择报关单" optionFilterProp="children">
                         {
                           declHeadsPane.map(dh =>
                             <Option value={dh.pre_entry_seq_no}>{dh.entry_id ? `${dh.entry_id}/${dh.pre_entry_seq_no}` : dh.pre_entry_seq_no}</Option>

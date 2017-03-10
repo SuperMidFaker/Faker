@@ -753,7 +753,7 @@ export default class SheetBodyPanel extends React.Component {
         <span>
           {selectedRows.length > 0 &&
             <Popconfirm title={'是否删除所有选择项？'} onConfirm={() => this.handleDeleteSelected()}>
-              <Button type="danger" size="large" icon="delete">
+              <Button type="danger" icon="delete">
                 批量删除
               </Button>
             </Popconfirm>}

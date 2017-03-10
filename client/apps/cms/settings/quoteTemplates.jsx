@@ -69,17 +69,13 @@ export default class Settings extends Component {
               <Sider className="nav-sider">
                 <Menu
                   onClick={this.handleClick}
-                  defaultOpenKeys={['integration', 'bizdata']}
+                  defaultOpenKeys={['bizdata']}
                   defaultSelectedKeys={['quotemodel']}
                   mode="inline"
                 >
                   <SubMenu key="bizdata" title={<span><Icon type="setting" /><span>业务数据</span></span>}>
-                    <Menu.Item key="quotemodel"><NavLink to="/clearance/settings/quotetemplates">费用模板</NavLink></Menu.Item>
                     <Menu.Item key="billmodel"><NavLink to="/clearance/settings/billtemplates">清单模板</NavLink></Menu.Item>
-                  </SubMenu>
-                  <SubMenu key="integration" title={<span><Icon type="cloud-o" /><span>{this.msg('integration')}</span></span>}>
-                    <Menu.Item key="1">开放API</Menu.Item>
-                    <Menu.Item key="2">EDI</Menu.Item>
+                    <Menu.Item key="quotemodel"><NavLink to="/clearance/settings/quotetemplates">费用模板</NavLink></Menu.Item>
                   </SubMenu>
                   <Menu.Item key="notification"><span><Icon type="notification" /><span>通知提醒</span></span></Menu.Item>
                 </Menu>

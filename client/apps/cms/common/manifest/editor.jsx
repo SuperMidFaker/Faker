@@ -29,7 +29,7 @@ const TabPane = Tabs.TabPane;
   { addNewBillBody, delBillBody, editBillBody, saveBillHead, openMergeSplitModal, billDelete, updateHeadNetWt, loadBillBody }
 )
 @connectNav({
-  depth: 2,
+  depth: 3,
   moduleName: 'clearance',
 })
 @Form.create()

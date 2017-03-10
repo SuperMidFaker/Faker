@@ -380,19 +380,6 @@ export default class DelegationList extends Component {
       }
     });
   }
-  // showAcceptInfo = (row) => {
-  //   let closed = false;
-  //   const Info = Modal.info({
-  //     title: this.msg('successfulOperation'),
-  //     okText: this.msg('startMaking'),
-  //     content: this.msg('makeConfirm'),
-  //     onOk: () => {
-  //       this.handleDelegationMake(row);
-  //       closed = true;
-  //     },
-  //   });
-  //   setTimeout(() => !closed && Info.destroy(), 2000);
-  // }
   handleDelegationAccept = (row) => {
     this.props.openAcceptModal({
       tenantId: this.props.tenantId,
@@ -401,7 +388,6 @@ export default class DelegationList extends Component {
       delg_no: row.delg_no,
       opt: 'accept',
     });
-    // this.acceptingRow = row;
   }
   handleDelegationAssign = (row) => {
     this.props.showDispModal(row.delg_no, this.props.tenantId);
