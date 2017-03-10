@@ -7,11 +7,12 @@ import { formatMsg } from '../../message.i18n';
 
 const FormItem = Form.Item;
 const Panel = Collapse.Panel;
+const Option = Select.Option;
 
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
+    bizManifest: state.scofFlow.cmsParams.bizManifest,
   })
 )
 export default class CMSDeclManifestPane extends Component {
@@ -31,7 +32,7 @@ export default class CMSDeclManifestPane extends Component {
     name: 'onFinished',
   }]
   render() {
-    const { form: { getFieldDecorator } } = this.props;
+    const { form: { getFieldDecorator }, bizManifest: { trades, agents, templates } } = this.props;
     return (
       <Collapse bordered={false} defaultActiveKey={['properties', 'events']}>
         <Panel header={this.msg('properties')} key="properties">
@@ -39,25 +40,41 @@ export default class CMSDeclManifestPane extends Component {
             <Col sm={24} lg={8}>
               <FormItem label={this.msg('trading')}>
                 {getFieldDecorator('trading', {
-                })(<Select />)}
+                })(<Select>
+                  {
+                      trades.map(tr => <Option value={tr.code} key={tr.code}>{tr.code}|{tr.name}</Option>)
+                    }
+                </Select>)}
               </FormItem>
             </Col>
             <Col sm={24} lg={8}>
               <FormItem label={this.msg('owner')}>
                 {getFieldDecorator('owner', {
-                })(<Select />)}
+                })(<Select>
+                  {
+                      trades.map(tr => <Option value={tr.code} key={tr.code}>{tr.code}|{tr.name}</Option>)
+                    }
+                </Select>)}
               </FormItem>
             </Col>
             <Col sm={24} lg={8}>
               <FormItem label={this.msg('agent')}>
                 {getFieldDecorator('agent', {
-                })(<Select />)}
+                })(<Select>
+                  {
+                      agents.map(ag => <Option value={ag.code} key={ag.code}>{ag.code}|{ag.name}</Option>)
+                    }
+                </Select>)}
               </FormItem>
             </Col>
             <Col sm={24} lg={12}>
               <FormItem label={this.msg('manifestTemplate')}>
                 {getFieldDecorator('manifest_template', {
-                })(<Select />)}
+                })(<Select>
+                  {
+                      templates.map(tmp => <Option value={tmp.id} key={tmp.id}>{tmp.name}</Option>)
+                    }
+                </Select>)}
               </FormItem>
             </Col>
           </Row>

@@ -17,9 +17,10 @@ export default class FlowGraph extends React.Component {
     super(...args);
     this.menu = (
       <Menu onClick={this.handleMenuClick}>
-        <MenuItem key="nodecms">{this.msg('nodeCMS')}</MenuItem>
-        <MenuItem key="nodetms">{this.msg('nodeTMS')}</MenuItem>
-        <MenuItem key="nodecwm">{this.msg('nodeCWM')}</MenuItem>
+        <MenuItem key="nodeimport">{this.msg('flowNodeImport')}</MenuItem>
+        <MenuItem key="nodeexport">{this.msg('flowNodeExport')}</MenuItem>
+        <MenuItem key="nodetms">{this.msg('flowNodeTms')}</MenuItem>
+        <MenuItem key="nodecwm">{this.msg('flowNodeCwm')}</MenuItem>
       </Menu>);
   }
   componentDidMount() {
@@ -44,9 +45,10 @@ export default class FlowGraph extends React.Component {
       // 第六步：渲染关系图
     this.graph.render();
     this.props.onMounted(this.graph);
+    // todo beginAdd no element
     this.graph.on('click', (ev) => {
       if (ev.item) {
-        this.props.onSelect({ item: ev.item, itemType: ev.itemType });
+        this.props.onSelect(ev.item);
       } else {
         this.props.onSelect(null);
       }
@@ -58,22 +60,37 @@ export default class FlowGraph extends React.Component {
   }
   msg = formatMsg(this.props.intl)
   handleMenuClick = (ev) => {
-    if (ev.key === 'nodecms') {
-      this.graph.beginAdd('node', {
-        shape: 'rect',
-        color: 'red',
-        label: 'cms',
-      });
-    } else if (ev.key === 'nodetms') {
-      this.graph.beginAdd('node', {
-        shape: 'rect',
-        color: 'green',
-      });
-    } else if (ev.key === 'nodecwm') {
-      this.graph.beginAdd('node', {
-        shape: 'rect',
-        color: 'gray',
-      });
+    switch (ev.key) {
+      case 'nodeimport':
+        this.graph.beginAdd('node', {
+          shape: 'rect',
+          color: 'red',
+          kind: 'import',
+        });
+        break;
+      case 'nodeexport':
+        this.graph.beginAdd('node', {
+          shape: 'rect',
+          color: 'blue',
+          kind: 'export',
+        });
+        break;
+      case 'nodetms':
+        this.graph.beginAdd('node', {
+          shape: 'rect',
+          color: 'green',
+          kind: 'tms',
+        });
+        break;
+      case 'nodecwm':
+        this.graph.beginAdd('node', {
+          shape: 'rect',
+          color: 'gray',
+          kind: 'cwm',
+        });
+        break;
+      default:
+        break;
     }
     this.graph.refresh();
   }

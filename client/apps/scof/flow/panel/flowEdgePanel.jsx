@@ -1,6 +1,7 @@
 /* eslint react/no-multi-comp: 0 */
 import React, { Component, PropTypes } from 'react';
-import { Button, Form, Table, Card, Col, Icon, Row, Select, Switch, Tooltip, Popconfirm } from 'antd';
+import { connect } from 'react-redux';
+import { Button, Form, Table, Card, Col, Icon, Row, Select, Input, Tooltip, Popconfirm } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
@@ -204,6 +205,12 @@ class ConditionTable extends React.Component {
 }
 
 @injectIntl
+@connect(
+  state => ({
+    edge: state.scofFlow.activeElement,
+    elementMap: state.scofFlow.flowElementMap,
+  })
+)
 export default class FlowEdgePanel extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -220,28 +227,20 @@ export default class FlowEdgePanel extends Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   render() {
-    const { form: { getFieldDecorator } } = this.props;
+    const { edge, elementMap } = this.props;
     return (
       <div>
         <Card title={this.msg('flowEdge')} bodyStyle={{ padding: 16 }}>
           <Row gutter={16}>
             <Col sm={12}>
               <FormItem label={this.msg('sourceNode')}>
-                {getFieldDecorator('source_node', {
-                })(<Select />)}
+                <Input value={elementMap[edge.source] && elementMap[edge.source].name} />
               </FormItem>
             </Col>
-            <Col sm={3}>
-              <FormItem label={this.msg('isTerminal')}>
-                {getFieldDecorator('is_terminal', {
-                })(<Switch checkedChildren={'是'} unCheckedChildren={'否'} onChange={this.handleTerminalChange} />)}
+            <Col sm={12}>
+              <FormItem label={this.msg('targetNode')}>
+                <Input value={elementMap[edge.target] && elementMap[edge.target].name} />
               </FormItem>
-            </Col>
-            <Col sm={9}>
-              {!this.state.isTerminal && <FormItem label={this.msg('targetNode')}>
-                {getFieldDecorator('target_node', {
-                })(<Select />)}
-              </FormItem>}
             </Col>
             <Col sm={24}>
               <FormItem label={<span>

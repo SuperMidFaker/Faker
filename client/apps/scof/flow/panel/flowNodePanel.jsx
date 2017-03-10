@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
 import { Collapse, Form, Input } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import FlowTriggerTable from './flowTriggerTable';
@@ -8,6 +9,11 @@ const FormItem = Form.Item;
 const Panel = Collapse.Panel;
 
 @injectIntl
+@connect(
+  state => ({
+    name: state.scofFlow.activeElement.name,
+  })
+)
 export default class FlowNodePanel extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -22,12 +28,13 @@ export default class FlowNodePanel extends Component {
     name: 'onExited',
   }]
   render() {
-    const { form: { getFieldDecorator } } = this.props;
+    const { form: { getFieldDecorator }, name } = this.props;
     return (
       <Collapse bordered={false} defaultActiveKey={['properties', 'events']}>
         <Panel header={this.msg('properties')} key="properties">
           <FormItem label={this.msg('nodeName')}>
             {getFieldDecorator('name', {
+              initialValue: name,
               rules: [{ required: true, message: '名称必填' }],
             })(<Input />)}
           </FormItem>

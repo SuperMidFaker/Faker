@@ -15,16 +15,18 @@ const TabPane = Tabs.TabPane;
 @connect(
   state => ({
     tenantId: state.account.tenantId,
+    ietype: state.scofFlow.activeElement.kind,
   }),
   { loadCmsBizParams }
 )
 export default class FlowCmsNodePanel extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
+    ietype: PropTypes.oneOf(['import', 'export']),
     form: PropTypes.object.isRequired,
   }
   componentDidMount() {
-    this.props.loadCmsBizParams(this.props.tenantId);
+    this.props.loadCmsBizParams(this.props.tenantId, this.props.ietype);
   }
   msg = formatMsg(this.props.intl)
   render() {

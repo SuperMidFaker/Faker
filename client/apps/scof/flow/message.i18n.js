@@ -10,9 +10,21 @@ const messages = defineMessages({
     id: 'scof.flow.add',
     defaultMessage: '添加',
   },
-  cmsFlowNode: {
-    id: 'scof.flow.node.cms',
-    defaultMessage: '清关节点',
+  flowNodeImport: {
+    id: 'scof.flow.node.import',
+    defaultMessage: '进口清关',
+  },
+  flowNodeExport: {
+    id: 'scof.flow.node.import',
+    defaultMessage: '出口清关',
+  },
+  flowNodeTms: {
+    id: 'scof.flow.node.tms',
+    defaultMessage: '国内运输',
+  },
+  flowNodeCwm: {
+    id: 'scof.flow.node.cwm',
+    defaultMessage: '仓储协同',
   },
   bizObject: {
     id: 'scof.flow.biz.object',

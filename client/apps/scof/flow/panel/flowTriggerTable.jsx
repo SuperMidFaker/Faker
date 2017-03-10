@@ -12,8 +12,8 @@ export default class FlowTriggerTable extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     bizObj: PropTypes.string,
-    events: PropTypes.arrayOf({
-      key: PropTypes.string.isRequired, name: PropTypes.string.isRequired }).isRequired,
+    events: PropTypes.arrayOf(PropTypes.shape({
+      key: PropTypes.string.isRequired, name: PropTypes.string.isRequired })).isRequired,
   }
   msg = formatMsg(this.props.intl)
   actionColumns = [

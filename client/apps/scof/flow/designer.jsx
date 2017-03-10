@@ -2,9 +2,9 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Button, Input, Form, Layout, Table, Tooltip } from 'antd';
-import { openCreateFlowModal } from 'common/reducers/scofFlow';
+import { openCreateFlowModal, updateFlowElementMap, updateActiveElement } from 'common/reducers/scofFlow';
 import connectNav from 'client/common/decorators/connect-nav';
-// import CreateFlowModal from './modal/createFlowModal';
+import CreateFlowModal from './modal/createFlowModal';
 import FlowGraph from './panel/flowGraph';
 import FlowEdgePanel from './panel/flowEdgePanel';
 import BizObjCMSPanel from './panel/bizObjCMSPanel';
@@ -17,8 +17,11 @@ const Search = Input.Search;
 @connect(
   state => ({
     tenantId: state.account.tenantId,
+    currentFlow: state.scofFlow.currentFlow,
+    elementMap: state.scofFlow.flowElementMap,
+    activeElement: state.scofFlow.activeElement,
   }),
-  { openCreateFlowModal }
+  { openCreateFlowModal, updateFlowElementMap, updateActiveElement }
 )
 @connectNav({
   depth: 2,
@@ -65,8 +68,47 @@ export default class FlowDesigner extends React.Component {
   handleGraphMounted = (graph) => {
     this.flowGraph = graph;
   }
-  handleGraphElemClick = (item) => {
-    this.setState({ selGraphElement: item });
+  handleGraphElemClick = (element) => {
+    console.log('selected', this.state.selGraphElement);
+    let activeElementChanged = false;
+    if (this.state.selGraphElement) {
+      this.props.form.validateFields((err, values) => {
+        if (err) {
+          console.log('incoming', element);
+          this.flowGraph.changeMode('select');
+          if (element) {
+            this.flowGraph.setItemActived(element, false);  // todo edge not active
+          }
+          this.flowGraph.setItemActived(this.state.selGraphElement, true);
+          this.flowGraph.refresh();
+        } else {
+          const elementVal = { ...this.props.activeElement, ...values };
+          this.props.updateFlowElementMap(elementVal.uuid, elementVal);
+          activeElementChanged = true;
+        }
+      });
+    } else {
+      activeElementChanged = true;
+    }
+    if (activeElementChanged) {
+      if (element) {
+        const uuid = element.get('id');
+        if (this.props.elementMap[uuid]) {
+          if (!this.props.elementMap[uuid].loaded) {
+            this.props.load();
+          }
+          this.props.updateActiveElement(this.props.elementMap[uuid]);
+        } else {
+          this.props.updateActiveElement({ uuid, kind: element.get('model').kind, loaded: true,
+            type: element.get('type'), source: element.get('model').source, target: element.get('model').target,
+          });
+        }
+      } else {
+        this.props.updateActiveElement({});
+      }
+      this.props.form.resetFields();
+      this.setState({ selGraphElement: element });
+    }
   }
   handleSaveBtnClick = () => {
     // console.log(this.flowGraph.save())
@@ -108,9 +150,7 @@ export default class FlowDesigner extends React.Component {
               rowClassName={record => record.id === flow.id ? 'table-row-selected' : ''}
             />
           </div>
-          {/*
           <CreateFlowModal />
-          */}
         </Sider>
         <Layout>
           <Header className="top-bar">
@@ -141,14 +181,16 @@ export default class FlowDesigner extends React.Component {
           </Header>
           <Content className="main-content layout-min-width layout-min-width-large">
             <FlowGraph onMounted={this.handleGraphMounted} onSelect={this.handleGraphElemClick} />
+            {this.state.selGraphElement &&
             <Form layout="vertical">
-              {this.state.selGraphElement && this.state.selGraphElement.itemType === 'node' &&
-                <BizObjCMSPanel form={form} />
+              {this.state.selGraphElement.get('type') === 'node' &&
+              <BizObjCMSPanel form={form} />
               }
-              {this.state.selGraphElement && this.state.selGraphElement.itemType === 'edge' &&
-                <FlowEdgePanel form={form} />
+              {this.state.selGraphElement.get('type') === 'edge' &&
+              <FlowEdgePanel form={form} />
               }
             </Form>
+            }
           </Content>
         </Layout>
         <Sider trigger={null} defaultCollapsed collapsible collapsed={this.state.rightSidercollapsed}

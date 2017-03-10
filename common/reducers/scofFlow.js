@@ -5,6 +5,7 @@ const actionTypes = createActionTypes('@@welogix/scof/flow/', [
   'OPEN_CREATE_FLOW_MODAL', 'CLOSE_CREATE_FLOW_MODAL',
   'OPEN_ADD_TRIGGER_MODAL', 'CLOSE_ADD_TRIGGER_MODAL',
   'LOAD_CMSBIZPARAMS', 'LOAD_CMSBIZPARAMS_SUCCEED', 'LOAD_CMSBIZPARAMS_FAIL',
+  'UPDATE_FLOWELEMENT_MAP', 'UPDATE_FLOWELEMENT',
 ]);
 
 const initialState = {
@@ -15,6 +16,8 @@ const initialState = {
     visible: false,
   },
   currentFlow: { customer_parnter_id: null },
+  flowElementMap: {},
+  activeElement: { addedActions: [], delActions: [], updatedActions: [] },
   cmsParams: {
     bizDelegation: { declPorts: [], customsBrokers: [], ciqBrokers: [] },
     quotes: [],
@@ -38,6 +41,13 @@ export default function reducer(state = initialState, action) {
       return { ...state, reload: true };
     case actionTypes.LOAD_CMSBIZPARAMS_SUCCEED:
       return { ...state, cmsParams: { ...state.cmsParams, ...action.result.data } };
+    case actionTypes.UPDATE_FLOWELEMENT_MAP: {
+      const elemMap = { ...state.flowElementMap };
+      elemMap[action.data.uuid] = action.data.element;
+      return { ...state, flowElementMap: elemMap };
+    }
+    case actionTypes.UPDATE_FLOWELEMENT:
+      return { ...state, activeElement: { ...initialState.activeElement, ...action.data } };
     default:
       return state;
   }
@@ -67,7 +77,7 @@ export function closeAddTriggerModal() {
   };
 }
 
-export function loadCmsBizParams(tenantId) {
+export function loadCmsBizParams(tenantId, ietype) {
   return {
     [CLIENT_API]: {
       types: [
@@ -77,7 +87,20 @@ export function loadCmsBizParams(tenantId) {
       ],
       endpoint: 'v1/scof/flow/cms/params',
       method: 'get',
-      params: { tenantId },
+      params: { tenantId, ietype },
     },
+  };
+}
+
+export function updateFlowElementMap(uuid, element) {
+  return {
+    type: actionTypes.UPDATE_FLOWELEMENT_MAP,
+    data: { uuid, element },
+  };
+}
+export function updateActiveElement(activeElem) {
+  return {
+    type: actionTypes.UPDATE_FLOWELEMENT,
+    data: activeElem,
   };
 }
