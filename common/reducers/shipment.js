@@ -95,6 +95,9 @@ const initialState = {
       data: [],
       pageSize: 20,
       currentPage: 1,
+      filters: {
+        statusType: 'all',
+      },
     },
     todos: {
       unaccepted: 0,
@@ -450,7 +453,7 @@ export function loadShipmentStatistics(cookie, tenantId, sDate, eDate) {
   };
 }
 
-export function loadShipmentEvents(cookie, params) {
+export function loadShipmentEvents(cookie, { tenantId, startDate, endDate, type, pageSize, currentPage, filters }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -461,7 +464,7 @@ export function loadShipmentEvents(cookie, params) {
       endpoint: 'v1/transport/shipment/events',
       method: 'get',
       cookie,
-      params,
+      params: { tenantId, startDate, endDate, type, pageSize, currentPage, filters: JSON.stringify(filters) },
     },
   };
 }

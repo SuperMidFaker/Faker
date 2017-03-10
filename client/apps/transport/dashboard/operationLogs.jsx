@@ -5,7 +5,7 @@ import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege from 'client/common/decorators/withPrivilege';
-import { Tag, Layout } from 'antd';
+import { Tag, Layout, Radio } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { loadShipmentEvents, loadShipmtDetail } from 'common/reducers/shipment';
 import TrimSpan from 'client/components/trimSpan';
@@ -20,10 +20,12 @@ import ExceptionListPopover from '../tracking/land/modals/exception-list-popover
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
+const RadioButton = Radio.Button;
+const RadioGroup = Radio.Group;
 
 function fetchData({ state, dispatch, cookie, location }) {
   const { startDate, endDate, type } = location.query;
-  const { pageSize } = state.shipment.statistics.logs;
+  const { pageSize, filters } = state.shipment.statistics.logs;
   return dispatch(loadShipmentEvents(cookie, {
     tenantId: state.account.tenantId,
     startDate,
@@ -31,6 +33,7 @@ function fetchData({ state, dispatch, cookie, location }) {
     type,
     pageSize,
     currentPage: 1,
+    filters,
   }));
 }
 @connectFetch()(fetchData)
@@ -39,6 +42,7 @@ function fetchData({ state, dispatch, cookie, location }) {
   state => ({
     tenantId: state.account.tenantId,
     statistics: state.shipment.statistics,
+    filters: state.shipment.statistics.logs.filters,
   }),
   { loadShipmentEvents, loadShipmtDetail })
 @connectNav({
@@ -52,8 +56,24 @@ export default class Dashboard extends React.Component {
     children: PropTypes.object,
     tenantId: PropTypes.number.isRequired,
     loadShipmtDetail: PropTypes.func.isRequired,
+    loadShipmentEvents: PropTypes.func.isRequired,
+    statistics: PropTypes.object.isRequired,
+    filters: PropTypes.object.isRequired,
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
+  handleStatusTypeChange = (e) => {
+    const { startDate, endDate, type } = this.props.location.query;
+    const { filters, statistics, tenantId } = this.props;
+    this.props.loadShipmentEvents(null, {
+      tenantId,
+      startDate,
+      endDate,
+      type,
+      pageSize: statistics.logs.pageSize,
+      currentPage: 1,
+      filters: { ...filters, statusType: e.target.value },
+    });
+  }
   render() {
     const { startDate, endDate, type } = this.props.location.query;
 
@@ -153,22 +173,6 @@ export default class Dashboard extends React.Component {
           return <span />;
         }
       },
-      filters: [{
-        value: 1,
-        text: '待接单',
-      }, {
-        value: 2,
-        text: '待分配',
-      }, {
-        value: 3,
-        text: '待提货',
-      }, {
-        value: 4,
-        text: '运输中',
-      }, {
-        value: 5,
-        text: '已交货',
-      }],
     }, {
       title: this.msg('shipmtCustomer'),
       dataIndex: 'customer_name',
@@ -189,7 +193,7 @@ export default class Dashboard extends React.Component {
         showQuickJumper: false,
         pageSize: result.pageSize,
       }),
-      getParams: (pagination) => {
+      getParams: (pagination, filters) => {
         const params = {
           type,
           tenantId: this.props.tenantId,
@@ -197,15 +201,27 @@ export default class Dashboard extends React.Component {
           endDate,
           pageSize: pagination.pageSize,
           currentPage: pagination.current,
+          filters: { ...this.props.filters, ...filters },
         };
         return params;
       },
       remotes: this.props.statistics.logs,
     });
+    let radio = null;
+    if (type === 'overtime') {
+      radio = (
+        <RadioGroup onChange={this.handleStatusTypeChange} value={this.props.filters.statusType} size="large">
+          <RadioButton value="all">所有</RadioButton>
+          <RadioButton value="intransit">在途</RadioButton>
+          <RadioButton value="delivered">已送货</RadioButton>
+        </RadioGroup>
+      );
+    }
     return (
       <div>
         <Header className="top-bar">
           <span>{this.msg(type)}</span>
+          {radio}
         </Header>
         <Content className="main-content">
           <div className="page-body">
