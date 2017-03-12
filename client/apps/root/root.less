@@ -127,6 +127,9 @@ img {
     height: 14px;
     margin-right: 8px;
 }
+.ant-tabs-vertical.ant-tabs-left > .ant-tabs-bar .ant-tabs-tab {
+  text-align: left;
+}
 .ant-timeline-item-content {
   .ant-card-head {
     height: 36px;
@@ -800,21 +803,73 @@ img {
     margin-bottom: 0;
 
     .statistics-cell {
-        display: inline-block;
-        margin-left: 16px;
+        margin-left: 8px;
         h6 {
           font-weight: normal;
           color: #999;
+          .anticon {
+            margin-left: 8px;
+          }
+        }
+        .data {
+          display: inline-flex;
+          vertical-align: middle;
+          width: 80%;
+          padding: 8px;
         }
         .data-num {
+          flex: 1 1 auto;
+          font-family: PingFangSC;
           font-size: 20px;
           line-height: 22px;
           &.lg {
             font-size: 36px;
-            line-height: 40px;
+            line-height: 36px;
+            color: rgba(0, 0, 0, 0.65);
+          }
+          a {
             color: rgba(0, 0, 0, 0.65);
           }
         }
+        .data-percent {
+          flex: 0 1 auto;
+          margin-left: 6px;
+          font-size: 14px;
+          position: relative;
+          top: -2px;
+          text-align: right;
+          &.trend-up {
+            color: #28c29b;
+          }
+          &.trend-down {
+            color: #f25252;
+          }
+          div {
+            font-size: 12px;
+            color: #d3d3d3;
+          }
+        }
+        >i {
+            font-size: 32px;
+            font-weight: bolder;
+            border-radius: 50%;
+            color: #fff;
+            width:60px;
+            height: 60px;
+            padding: 12px 20px;
+            vertical-align: top;
+        }
+    }
+
+    .statistics-col {
+      flex: 1 1 auto;
+    }
+    .statistics-divider {
+      flex: 0 1 auto;
+      margin: 0 6px;
+      display: inline-block;
+      width: 1px;
+      background: #e9e9e9;
     }
 
     ul {
@@ -826,16 +881,6 @@ img {
         position: relative;
         border-radius: 3px;
         text-align: center;
-        i {
-            font-size: 32px;
-            font-weight: bolder;
-            border-radius: 50%;
-            color: #fff;
-            width:60px;
-            height: 60px;
-            padding: 12px 20px;
-            vertical-align: top;
-        }
     }
     li.transport-dashboard {
       width: 25%;
@@ -1013,70 +1058,6 @@ img {
   padding: 0 16px;
   cursor: pointer;
   transition: color .3s;
-}
-
-.ui-annotated-section {
-    display: -webkit-flex;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-flex-wrap: wrap;
-    -ms-flex-wrap: wrap;
-    flex-wrap: wrap;
-    -webkit-justify-content: center;
-    -ms-flex-pack: center;
-    justify-content: center;
-    max-width: 103.6rem;
-    margin: 0 auto 2rem
-}
-
-@media screen and (min-width: 720px) {
-    .ui-annotated-section {
-        margin-top: 2rem
-    }
-    .ui-annotated-section+.ui-annotated-section {
-        margin-top: 0;
-        padding-top: 2rem;
-        border-top: 1px solid #d3dbe2
-    }
-}
-
-.ui-annotated-section-content {
-    -webkit-flex: 2 1 48rem;
-    -ms-flex: 2 1 48rem;
-    flex: 2 1 48rem;
-    max-width: 100%;
-    min-width: 0
-}
-
-@media screen and (min-width: 720px) {
-    .ui-annotated-section-content {
-        padding: 0 2rem
-    }
-}
-
-.ui-annotated-section-annotation {
-    -webkit-flex: 1 0 24rem;
-    -ms-flex: 1 0 24rem;
-    flex: 1 0 24rem
-}
-
-@media screen and (min-width: 720px) {
-    .ui-annotated-section-annotation {
-        padding: 0 2rem
-    }
-}
-
-.ui-annotated-section-title {
-    padding: 2rem
-}
-
-.ui-annotated-section-description {
-    color: #707070;
-    padding: 0 2rem 2rem
-}
-
-.ui-annotated-section-description p {
-    margin-bottom: 1rem
 }
 .aside-card {
   background: #f5f6f7;

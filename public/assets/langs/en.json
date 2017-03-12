@@ -344,7 +344,7 @@
   "cms.quote.valid": "有效",
   "cms.quote.invalid": "无效",
   "cms.settings.integration": "整合接口",
-  "component.module.customer.center": "Customer Center",
+  "component.module.scof": "Orders",
   "component.module.transport": "Transportation",
   "component.module.clearance": "Clearance",
   "component.module.cwm": "Warehousing",

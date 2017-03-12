@@ -157,6 +157,11 @@ export default class SheetBodyPanel extends React.Component {
       selectedRowKeys: [],
     };
   }
+  componentWillMount() {
+    if (typeof document !== 'undefined' && typeof window !== 'undefined') {
+      this.setState({ wlScrollY: window.innerHeight - 320 });
+    }
+  }
   componentWillReceiveProps(nextProps) {
     if (nextProps.data !== this.props.data) {
       const bodies = [...nextProps.data];
@@ -254,14 +259,14 @@ export default class SheetBodyPanel extends React.Component {
     if (type === 'bill') {
       columns.push({
         title: this.msg('copGNo'),
-        width: 120,
+        width: 150,
         render: (o, record, index) =>
           <ColumnInput field="cop_g_no" inEdit={index === editIndex} record={record}
             onChange={this.handleEditChange} edit={editBody}
           />,
       }, {
         title: this.msg('emGNo'),
-        width: 50,
+        width: 100,
         render: (o, record, index) =>
           <ColumnInput field="em_g_no" inEdit={index === editIndex} record={record}
             onChange={this.handleEditChange} edit={editBody}
@@ -290,13 +295,6 @@ export default class SheetBodyPanel extends React.Component {
           onChange={this.handleEditChange} edit={editBody}
         />,
     }, {
-      title: this.msg('element'),
-      width: 380,
-      render: (o, record, index) =>
-        <ColumnInput field="element" inEdit={index === editIndex} record={record}
-          onChange={this.handleEditChange} edit={editBody}
-        />,
-    }, {
       title: this.msg('quantity'),
       width: 80,
       render: (o, record, index) =>
@@ -319,7 +317,7 @@ export default class SheetBodyPanel extends React.Component {
         />,
     }, {
       title: this.msg('currency'),
-      width: 60,
+      width: 100,
       render: (o, record, index) =>
         <ColumnSelect field="trade_curr" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} options={currencies} edit={editBody}
@@ -407,6 +405,13 @@ export default class SheetBodyPanel extends React.Component {
       render: (o, record, index) =>
         <ColumnSelect field="unit_pcs" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} options={units} edit={editBody}
+        />,
+    }, {
+      title: this.msg('element'),
+      width: 380,
+      render: (o, record, index) =>
+        <ColumnInput field="element" inEdit={index === editIndex} record={record}
+          onChange={this.handleEditChange} edit={editBody}
         />,
     }, {
       title: this.msg('versionNo'),
@@ -660,6 +665,9 @@ export default class SheetBodyPanel extends React.Component {
       window.open(`${API_ROOTS.default}v1/cms/manifest/billbody/export/${createFilename('billbodyExport')}.xlsx?billSeqNo=${this.props.billSeqNo}`);
     }
   }
+  handleManifestBodyExport = () => {
+    window.open(`${API_ROOTS.default}v1/cms/manifest/billbody/export/${createFilename('billbodyExport')}.xlsx?billSeqNo=${this.props.billSeqNo}`);
+  }
   handleUploaded = () => {
     this.props.loadBillBody(this.props.billSeqNo);
   }
@@ -732,7 +740,6 @@ export default class SheetBodyPanel extends React.Component {
             </ExcelUpload>
           </Menu.Item>
           }
-          <Menu.Item key="export"><Icon type="export" /> 导出数据</Menu.Item>
         </Menu>);
       billBodyToolbar = (
         <span>
@@ -742,14 +749,16 @@ export default class SheetBodyPanel extends React.Component {
                 批量删除
               </Button>
             </Popconfirm>}
-          <Button icon="pie-chart" onClick={this.handleTotalPriceDivid}>金额平摊</Button>
-          <Button icon="arrows-alt" onClick={this.handleGrossWtDivid}>毛重分摊</Button>
-          <Button icon="shrink" onClick={this.handleNetWetSummary}>净重汇总</Button>
-          <Dropdown overlay={menu} type="primary">
-            <Button type="primary" onClick={this.handleButtonClick}>
+          {!this.props.readonly && <Button icon="pie-chart" onClick={this.handleTotalPriceDivid}>金额平摊</Button>}
+          {!this.props.readonly && <Button icon="arrows-alt" onClick={this.handleGrossWtDivid}>毛重分摊</Button>}
+          {!this.props.readonly && <Button icon="shrink" onClick={this.handleNetWetSummary}>净重汇总</Button>}
+          <Button icon="export" onClick={this.handleManifestBodyExport}>导出</Button>
+          {!this.props.readonly && <Dropdown overlay={menu} type="primary">
+            <Button icon="upload" type="primary" onClick={this.handleButtonClick}>
               {this.msg('importBody')} <Icon type="down" />
             </Button>
           </Dropdown>
+          }
         </span>);
     }
     return (
@@ -772,8 +781,8 @@ export default class SheetBodyPanel extends React.Component {
           </div>
         </div>
         <div className="panel-body table-panel">
-          <Table bordered rowKey="id" columns={columns} dataSource={this.state.bodies} size="middle"
-            scroll={{ x: 2600 }} pagination={this.state.pagination} rowSelection={rowSelection}
+          <Table bordered rowKey="id" columns={columns} dataSource={this.state.bodies}
+            scroll={{ x: 2800, y: this.state.wlScrollY }} pagination={this.state.pagination} rowSelection={rowSelection}
           />
           <AmountModel />
         </div>

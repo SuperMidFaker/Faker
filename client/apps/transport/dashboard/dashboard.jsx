@@ -6,16 +6,14 @@ import { Link } from 'react-router';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege from 'client/common/decorators/withPrivilege';
-import { format } from 'client/common/i18n/helpers';
-import { Card, Col, DatePicker, Layout, Row, Tooltip, Icon } from 'antd';
+import { Breadcrumb, Button, Card, Col, Layout, Row } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import { loadShipmentStatistics, loadShipmtDetail, loadFormRequire } from 'common/reducers/shipment';
-import messages from '../message.i18n';
-import '../index.less';
+import StatsPanel from './panel/statsPanel';
+import TodoPanel from './panel/todoPanel';
+import { formatMsg } from './message.i18n';
 
-const formatMsg = format(messages);
 const { Header, Content } = Layout;
-const RangePicker = DatePicker.RangePicker;
 
 function fetchData({ state, dispatch, cookie }) {
   const firstDay = new Date();
@@ -46,65 +44,30 @@ export default class Dashboard extends React.Component {
   onDateChange = (value, dateString) => {
     this.props.loadShipmentStatistics(null, this.props.tenantId, `${dateString[0]} 00:00:00`, `${dateString[1]} 23:59:59`);
   }
-  msg = descriptor => formatMsg(this.props.intl, descriptor)
+  msg = formatMsg(this.props.intl)
   logsLocation = (type) => {
     const { startDate, endDate } = this.props.statistics;
     return `/transport/dashboard/operationLogs?type=${type}&startDate=${startDate}&endDate=${endDate}`;
   }
   render() {
-    const { startDate, endDate, todos, total, overtime, intransit, exception, arrival } = this.props.statistics;
-    const datePicker = (
-      <div>
-        <RangePicker style={{ width: 200 }} value={[moment(startDate), moment(endDate)]}
-          onChange={this.onDateChange}
-        />
-        <Tooltip title="以“预计提货时间”作为时间筛选标准">
-          <Icon type="question-circle-o" style={{ marginLeft: 10 }} />
-        </Tooltip>
-      </div>);
+    const { todos } = this.props.statistics;
     const imgStyle = { width: 60, height: 60 };
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Header className="top-bar">
-          <span>{this.msg('dashboard')}</span>
+          <Breadcrumb>
+            <Breadcrumb.Item>
+              {this.msg('dashboard')}
+            </Breadcrumb.Item>
+          </Breadcrumb>
+          <div className="top-bar-tools">
+            <Button size="large" icon="global" />
+          </div>
         </Header>
         <Content className="main-content" key="main">
           <Row gutter={16}>
-            <Col sm={24} md={16}>
-              <Card title="活动简报" extra={datePicker}>
-                <ul className="statistics-columns">
-                  <li className="col-4">
-                    <div className="statistics-cell">
-                      <h6>{this.msg('total')}</h6>
-                      <Link to={this.logsLocation('total')}><p className="data-num lg">{total}</p></Link>
-                    </div>
-                  </li>
-                  <li className="col-4">
-                    <div className="statistics-cell">
-                      <h6>{this.msg('overtime')}</h6>
-                      <Link to={this.logsLocation('overtime')}><p className="data-num lg">{overtime}</p></Link>
-                    </div>
-                  </li>
-                  <li className="col-4">
-                    <div className="statistics-cell">
-                      <h6>{this.msg('intransit')}</h6>
-                      <Link to={this.logsLocation('intransit')}><p className="data-num lg">{intransit}</p></Link>
-                    </div>
-                  </li>
-                  <li className="col-4">
-                    <div className="statistics-cell">
-                      <h6>{this.msg('exception')}</h6>
-                      <Link to={this.logsLocation('exception')}><p className="data-num lg">{exception}</p></Link>
-                    </div>
-                  </li>
-                  <li className="col-4">
-                    <div className="statistics-cell">
-                      <h6>{this.msg('arrival')}</h6>
-                      <Link to={this.logsLocation('arrival')}><p className="data-num lg">{arrival}</p></Link>
-                    </div>
-                  </li>
-                </ul>
-              </Card>
+            <Col sm={24} md={18}>
+              <StatsPanel />
               <Card title="受理">
                 <ul className="statistics-columns">
                   <li className="transport-dashboard">
@@ -180,10 +143,10 @@ export default class Dashboard extends React.Component {
                   </li>
                 </ul>
               </Card>
+              <TodoPanel />
             </Col>
-            <Col sm={24} md={8}>
-              <Card title="公告" bodyStyle={{ height: 100 }} />
-              <Card title="动态" bodyStyle={{ height: 200 }} />
+            <Col sm={24} md={6}>
+              <Card title="实时动态" bodyStyle={{ height: 200 }} />
             </Col>
           </Row>
         </Content>
