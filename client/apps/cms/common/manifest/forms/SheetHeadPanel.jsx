@@ -36,6 +36,7 @@ export default class SheetHeadPanel extends React.Component {
     readonly: PropTypes.bool,
     form: PropTypes.object.isRequired,
     type: PropTypes.oneOf(['bill', 'entry']),
+    ruleRequired: PropTypes.bool,
     formData: PropTypes.object.isRequired,
     formRequire: PropTypes.object.isRequired,
     loadSearchedParam: PropTypes.func.isRequired,
@@ -68,7 +69,7 @@ export default class SheetHeadPanel extends React.Component {
     this.props.loadSearchedParam({ paramType: 'port', search });
   }
   render() {
-    const { form, readonly, formData, formRequire, ietype, intl, type } = this.props;
+    const { form, readonly, formData, formRequire, ietype, intl, type, ruleRequired } = this.props;
     const billHeadToolbar = (!readonly &&
     <Button type="primary" onClick={this.handleSheetSave} icon="save">
       {formatGlobalMsg(this.props.intl, 'save')}
@@ -79,6 +80,7 @@ export default class SheetHeadPanel extends React.Component {
       getFieldValue: form.getFieldValue,
       disabled: readonly || type === 'entry',
       formData,
+      required: ruleRequired,
     };
     const entryFormProps = {
       getFieldDecorator: form.getFieldDecorator,

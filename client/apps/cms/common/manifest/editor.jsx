@@ -52,6 +52,7 @@ export default class ManifestEditor extends React.Component {
   state = {
     visible: false,
     collapsed: true,
+    ruleRequired: false,
   }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
   toggle = () => {
@@ -60,6 +61,7 @@ export default class ManifestEditor extends React.Component {
     });
   }
   handleGenerateEntry = () => {
+    this.setState({ ruleRequired: true });
     this.props.loadBillBody(this.props.billHead.bill_seq_no).then((result) => {
       if (result.error) {
         message.error(result.error.message);
@@ -69,6 +71,7 @@ export default class ManifestEditor extends React.Component {
     });
   }
   generateEntry = () => {
+    this.handleBillSave();
     const billHead = this.props.billHead;
     const bodyDatas = this.props.billBodies;
     let wtSum = 0;
@@ -195,7 +198,7 @@ export default class ManifestEditor extends React.Component {
             <div className="page-body tabbed">
               <Tabs defaultActiveKey="header">
                 <TabPane tab="清单表头" key="header">
-                  <SheetHeadPanel ietype={ietype} readonly={readonly} form={form} formData={billHead} type="bill" onSave={this.handleBillSave} />
+                  <SheetHeadPanel ietype={ietype} readonly={readonly} form={form} formData={billHead} ruleRequired={this.state.ruleRequired} type="bill" onSave={this.handleBillSave} />
                 </TabPane>
                 <TabPane tab="清单表体" key="body">
                   <SheetBodyPanel ietype={ietype} readonly={readonly} headForm={form} data={billBodies} headNo={billHead.bill_seq_no}
