@@ -12,7 +12,7 @@ const messages = defineMessages({
   },
   atOrigin: {
     id: 'transport.dashboard.log.type.atOrigin',
-    defaultMessage: '接单/调度',
+    defaultMessage: '未启运',
   },
   overtime: {
     id: 'transport.dashboard.log.type.overtime',
