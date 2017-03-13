@@ -98,7 +98,7 @@ function calculateTotal(bodies) {
     countries: state.cmsManifest.params.tradeCountries.map(tc => ({
       value: tc.cntry_co,
       text: tc.cntry_name_cn,
-      search: `${tc.cntry_co}${tc.cntry_name_en}${tc.cntry_name_cn}`,
+      search: `${tc.cntry_co}${tc.cntry_name_en}${tc.cntry_name_cn}${tc.cntry_en_short}`,
     })),
     currencies: state.cmsManifest.params.currencies.map(cr => ({
       value: cr.curr_code,

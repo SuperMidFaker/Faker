@@ -100,7 +100,7 @@ export default class BasicForm extends Component {
     const tradeCountriesOpts = tradeCountries.map(tc => ({
       value: tc.cntry_co,
       text: `${tc.cntry_co} | ${tc.cntry_name_cn}`,
-      search: `${tc.cntry_co}${tc.cntry_name_en}${tc.cntry_name_cn}`,
+      search: `${tc.cntry_co}${tc.cntry_name_en}${tc.cntry_name_cn}${tc.cntry_en_short}`,
     }));
     return (
       <div>
