@@ -10,6 +10,10 @@ const messages = defineMessages({
     id: 'transport.dashboard.log.type.total',
     defaultMessage: '总票数',
   },
+  atOrigin: {
+    id: 'transport.dashboard.log.type.atOrigin',
+    defaultMessage: '接单/调度',
+  },
   overtime: {
     id: 'transport.dashboard.log.type.overtime',
     defaultMessage: '超时',

@@ -12,7 +12,7 @@ import TrimSpan from 'client/components/trimSpan';
 import { SHIPMENT_TRACK_STATUS } from 'common/constants';
 import { renderConsignLoc } from '../common/consignLocation';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
+import messages from './message.i18n';
 import '../index.less';
 import PreviewPanel from '../shipment/modals/preview-panel';
 import ActDate from '../common/actDate';

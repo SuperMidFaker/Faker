@@ -41,7 +41,7 @@ export default class StatsPanel extends Component {
   }
   msg = formatMsg(this.props.intl)
   render() {
-    const { startDate, endDate, total, overtime, intransit, exception, arrival } = this.props.statistics;
+    const { startDate, endDate, total, atOrigin, overtime, intransit, exception, arrival } = this.props.statistics;
     const datePicker = (
       <div>
         <RangePicker style={{ width: 200 }} value={[moment(startDate), moment(endDate)]}
@@ -70,7 +70,7 @@ export default class StatsPanel extends Component {
               <h6>{this.msg('atOrigin')}</h6>
               <div className="data">
                 <div className="data-num lg">
-                  <Link to={this.logsLocation('atOrigin')} >0</Link>
+                  <Link to={this.logsLocation('atOrigin')} >{atOrigin}</Link>
                 </div>
               </div>
             </div>

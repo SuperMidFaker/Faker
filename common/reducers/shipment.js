@@ -112,6 +112,7 @@ const initialState = {
       unconfirmed: 0,
     },
     total: 0,
+    atOrigin: 0,
     overtime: 0,
     intransit: 0,
     exception: 0,
