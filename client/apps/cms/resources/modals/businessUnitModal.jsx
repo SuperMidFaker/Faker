@@ -47,9 +47,9 @@ export default class BusinessUnitModal extends React.Component {
     const { name, code, customsCode, ieType } = this.state;
     if (name === '') {
       message.error('请填写公司名称');
-    } else if (code === '') {
-      message.error('请填写社会信用代码');
-    } else if (code.length !== 18) {
+    } else if (code === '' && customsCode === '') {
+      message.error('请填写社会信用代码或者海关编码');
+    } else if (code && code.length !== 18) {
       message.error(`社会信用代码必须为18位, 当前${code.length}位`);
     } else if (customsCode && customsCode.length !== 10) {
       message.error(`海关10位编码必须为10位, 当前${customsCode.length}位`);

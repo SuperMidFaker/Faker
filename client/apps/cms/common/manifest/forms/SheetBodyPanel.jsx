@@ -41,9 +41,9 @@ function ColumnSelect(props) {
   }
   if (inEdit) {
     return (
-      <Select value={edit[field] || ''} onChange={handleChange} style={{ width: '100%' }}>
+      <Select showSearch showArrow optionFilterProp="search" value={edit[field] || ''} onChange={handleChange} style={{ width: '100%' }}>
         {
-          options.map((opt, idx) => <Option value={opt.value} key={`${opt.value}${idx}`}>{`${opt.value}|${opt.text}`}</Option>)
+          options.map((opt, idx) => <Option search={`${opt.search}`} value={opt.value} key={`${opt.value}${idx}`}>{`${opt.value}|${opt.text}`}</Option>)
         }
       </Select>
     );
@@ -93,16 +93,23 @@ function calculateTotal(bodies) {
     units: state.cmsManifest.params.units.map(un => ({
       value: un.unit_code,
       text: un.unit_name,
+      search: `${un.unit_code}${un.unit_name}`,
     })),
     countries: state.cmsManifest.params.tradeCountries.map(tc => ({
       value: tc.cntry_co,
       text: tc.cntry_name_cn,
+      search: `${tc.cntry_co}${tc.cntry_name_en}${tc.cntry_name_cn}${tc.cntry_en_short}`,
     })),
     currencies: state.cmsManifest.params.currencies.map(cr => ({
       value: cr.curr_code,
       text: cr.curr_name,
+      search: `${cr.curr_code}${cr.curr_symb}${cr.curr_name}`,
     })),
-    exemptions: state.cmsManifest.params.exemptionWays,
+    exemptions: state.cmsManifest.params.exemptionWays.map(ep => ({
+      value: ep.value,
+      text: ep.text,
+      search: `${ep.value}${ep.text}`,
+    })),
     loginId: state.account.loginId,
     billHead: state.cmsManifest.billHead,
     bodyItem: state.cmsTradeitem.bodyItem,

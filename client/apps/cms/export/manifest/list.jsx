@@ -5,11 +5,12 @@ import { loadDelgBill } from 'common/reducers/cmsManifest';
 import ManifestList from '../../common/manifest/list';
 
 function fetchData({ state, dispatch }) {
+  const newfilter = { ...state.cmsManifest.listFilter, filterNo: '' };
   return dispatch(loadDelgBill({
     ietype: 'export',
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
-    filter: JSON.stringify(state.cmsManifest.listFilter),
+    filter: JSON.stringify(newfilter),
     pageSize: state.cmsManifest.delgBillList.pageSize,
     currentPage: state.cmsManifest.delgBillList.current,
   }));

@@ -80,15 +80,15 @@ export default class CustomsDeclPane extends React.Component {
   }
   button() {
     const { customsPanel } = this.props;
+    const bill = customsPanel.bill;
     if (customsPanel.recv_tenant_id === customsPanel.customs_tenant_id || customsPanel.customs_tenant_id === -1) {
       if (customsPanel.status === CMS_DELEGATION_STATUS.accepted) {
         return <Button type="primary" size="small" ghost icon="addfile" onClick={this.handleMake}>创建清单</Button>;
-      } else if (customsPanel.status === CMS_DELEGATION_STATUS.processing ||
-          (customsPanel.status === CMS_DELEGATION_STATUS.declaring && customsPanel.sub_status === 1)) {
+      } else if (customsPanel.status > CMS_DELEGATION_STATUS.accepted && bill.bill_status < 3) {
         return (
           <Button type="primary" size="small" ghost icon="edit" onClick={this.handleMake}>编辑清单</Button>
         );
-      } else if (customsPanel.status > CMS_DELEGATION_STATUS.declaring) {
+      } else if (bill.bill_status >= 3) {
         return <Button icon="eye" size="small" onClick={ev => this.handleView(ev)}>查看清单</Button>;
       }
     } else if (customsPanel.status > CMS_DELEGATION_STATUS.accepted) {
