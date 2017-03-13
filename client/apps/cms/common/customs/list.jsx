@@ -8,6 +8,7 @@ import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { loadDelgDecls, deleteDecl, setFilterReviewed, showSendDeclModal } from 'common/reducers/cmsDeclare';
+import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
 import { openEfModal } from 'common/reducers/cmsDelegation';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/search-bar';
@@ -19,6 +20,7 @@ import DeclStatusPopover from './declStatusPopover';
 import messages from './message.i18n';
 import { DECL_STATUS, CMS_DECL_STATUS } from 'common/constants';
 import SendModal from './modals/sendModal';
+import DelegationInfoHubPanel from '../modals/DelegationInfoHubPanel';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -38,7 +40,7 @@ const RadioButton = Radio.Button;
       text: `${cus.customs_name}`,
     })),
   }),
-  { loadDelgDecls, openEfModal, deleteDecl, setFilterReviewed, showSendDeclModal }
+  { loadDelgDecls, openEfModal, deleteDecl, setFilterReviewed, showSendDeclModal, showPreviewer }
 )
 @connectNav({
   depth: 2,
@@ -65,6 +67,15 @@ export default class DelgDeclList extends Component {
 
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
+    title: this.msg('delgNo'),
+    dataIndex: 'delg_no',
+    width: 110,
+    fixed: 'left',
+    render: (o, record) => (
+      <a onClick={() => this.handlePreview(o, record)}>
+        {o}
+      </a>),
+  }, {
     title: this.msg('preEntryNo'),
     dataIndex: 'pre_entry_seq_no',
     fixed: 'left',
@@ -213,6 +224,9 @@ export default class DelgDeclList extends Component {
         message.error(result.error.message, 5);
       }
     });
+  }
+  handlePreview = (delgNo) => {
+    this.props.showPreviewer(delgNo, 'customsDecl');
   }
   handleDeclNoFill = (row) => {
     this.props.openEfModal({
@@ -369,6 +383,7 @@ export default class DelgDeclList extends Component {
             <SendModal ietype={this.props.ietype} />
           </div>
         </Content>
+        <DelegationInfoHubPanel ietype={this.props.ietype} />
       </QueueAnim>
     );
   }
