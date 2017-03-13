@@ -432,9 +432,7 @@ export default(store, cookie) => {
               <Route path="edit" component={SCOFOrders.Edit} />
             </Route>
             <Route path="customers" component={SCOFCustomers.List} />
-            <Route path="flow" >
-              <IndexRoute component={SCOFFlow.Designer} />
-            </Route>
+            <Route path="flow" component={SCOFFlow.ListPanel} />
             <Route path="billing">
               <IndexRedirect to="/scof/billing/list" />
               <Route path="fees" component={SCOFBilling.FeeList} />

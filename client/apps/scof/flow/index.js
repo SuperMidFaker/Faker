@@ -1,1 +1,1 @@
-export Designer from './designer';
+export ListPanel from './list';

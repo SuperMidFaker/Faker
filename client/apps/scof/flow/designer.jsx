@@ -1,17 +1,15 @@
+/* eslint no-console: 0 */
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Input, Form, Layout, Table, Tooltip } from 'antd';
-import { openCreateFlowModal, updateFlowElementMap, updateActiveElement } from 'common/reducers/scofFlow';
-import connectNav from 'client/common/decorators/connect-nav';
-import CreateFlowModal from './modal/createFlowModal';
-import FlowGraph from './panel/flowGraph';
+import { Breadcrumb, Button, Card, Menu, Dropdown, Icon, Form, Layout } from 'antd';
+import { updateFlowElementMap, updateActiveElement } from 'common/reducers/scofFlow';
 import FlowEdgePanel from './panel/flowEdgePanel';
 import BizObjCMSPanel from './panel/bizObjCMSPanel';
 import { formatMsg } from './message.i18n';
 
 const { Header, Content, Sider } = Layout;
-const Search = Input.Search;
+const MenuItem = Menu.Item;
 
 @injectIntl
 @connect(
@@ -21,12 +19,8 @@ const Search = Input.Search;
     elementMap: state.scofFlow.flowElementMap,
     activeElement: state.scofFlow.activeElement,
   }),
-  { openCreateFlowModal, updateFlowElementMap, updateActiveElement }
+  { updateFlowElementMap, updateActiveElement }
 )
-@connectNav({
-  depth: 2,
-  moduleName: 'scof',
-})
 @Form.create()
 export default class FlowDesigner extends React.Component {
   static propTypes = {
@@ -34,132 +28,198 @@ export default class FlowDesigner extends React.Component {
     tenantId: PropTypes.number.isRequired,
     form: PropTypes.object.isRequired,
     submitting: PropTypes.bool,
+    listCollapsed: PropTypes.bool.isRequired,
   }
-  static contextTypes = {
-    router: PropTypes.object.isRequired,
+  constructor(...args) {
+    super(...args);
+    this.menu = (
+      <Menu onClick={this.handleMenuClick}>
+        <MenuItem key="nodeimport">{this.msg('flowNodeImport')}</MenuItem>
+        <MenuItem key="nodeexport">{this.msg('flowNodeExport')}</MenuItem>
+        <MenuItem key="nodetms">{this.msg('flowNodeTms')}</MenuItem>
+        <MenuItem key="nodecwm">{this.msg('flowNodeCwm')}</MenuItem>
+      </Menu>);
+    this.state = {
+      rightSidercollapsed: true,
+      activeItem: null,
+    };
   }
-  state = {
-    selectedRowKeys: [],
-    searchInput: '',
-    collapsed: false,
-    rightSidercollapsed: true,
-    selGraphElement: null,
+  componentDidMount() {
+    const data = {
+      nodes: [
+      ],
+      edges: [
+      ],
+    };
+      // 第四步：配置G6画布
+    this.graph = new window.G6.Graph({
+      id: 'flowchart',      // 容器ID
+      width: window.innerWidth - 370,    // 画布宽
+      height: 240,   // 画布高
+      grid: {
+        forceAlign: true, // 是否支持网格对齐
+        cell: 10,          // 网格大小
+      },
+    });
+      // 第五步：载入数据
+    this.graph.source(data.nodes, data.edges);
+      // 第六步：渲染关系图
+    this.graph.render();
+    // todo beginAdd no mousedown select element
+    this.graph.on('click', (ev) => {
+      console.log('click', ev);
+    });
+    this.graph.on('mouseup', (ev) => {
+      console.log('mouseup', ev);
+      this.handleGraphItemClick(ev);
+    });
+    this.graph.on('mouseleave', (ev) => {
+      console.log('mouseleave', ev);
+    });
+      /*
+    this.graph.on('afterAdd', (ev) => {
+      console.log('afterAdd', ev)
+    }) */
+  }
+  msg = formatMsg(this.props.intl)
+  handleMenuClick = (ev) => {
+    this.props.form.validateFields((err) => {
+      if (!err) {
+        this.graph.changeMode('add');
+        switch (ev.key) {
+          case 'nodeimport':
+            this.graph.beginAdd('node', {
+              shape: 'rect',
+              color: 'red',
+              kind: 'import',
+            });
+            break;
+          case 'nodeexport':
+            this.graph.beginAdd('node', {
+              shape: 'rect',
+              color: 'blue',
+              kind: 'export',
+            });
+            break;
+          case 'nodetms':
+            this.graph.beginAdd('node', {
+              shape: 'rect',
+              color: 'green',
+              kind: 'tms',
+            });
+            break;
+          case 'nodecwm':
+            this.graph.beginAdd('node', {
+              shape: 'rect',
+              color: 'gray',
+              kind: 'cwm',
+            });
+            break;
+          default:
+            break;
+        }
+        this.graph.refresh();
+      }
+    });
+  }
+  handleAddEdge = () => {
+    this.props.form.validateFields((err) => {
+      if (!err) {
+        this.graph.changeMode('add');
+        this.graph.beginAdd('edge', {
+          shape: 'smoothArrow',
+        });
+        this.graph.refresh();
+      }
+    });
+  }
+  handleRemoveItem = () => {
+    this.graph.del();
+    this.graph.refresh();
   }
   msg = formatMsg(this.props.intl)
 
-  toggle = () => {
-    this.setState({
-      collapsed: !this.state.collapsed,
-    });
-  }
   toggleRightSider = () => {
     this.setState({
       rightSidercollapsed: !this.state.rightSidercollapsed,
     });
   }
-  handleCreateFlow = () => {
-    this.props.openCreateFlowModal();
-  }
-  handleStatusChange = (ev) => {
-    if (ev.target.value === this.props.listFilter.status) {
-
+  handleGraphItemClick = (ev) => {
+    const item = ev.item;
+    console.log(this.state.activeItem);
+    if (this.state.activeItem && item && this.state.activeItem.get('id') === item.get('id')) {
+      this.graph.refresh();
+      return;
     }
-  }
-  handleGraphMounted = (graph) => {
-    this.flowGraph = graph;
-  }
-  handleGraphElemClick = (element) => {
-    console.log('selected', this.state.selGraphElement);
-    let activeElementChanged = false;
-    if (this.state.selGraphElement) {
+    if (this.state.activeItem) {
       this.props.form.validateFields((err, values) => {
         if (err) {
-          console.log('incoming', element);
-          this.flowGraph.changeMode('select');
-          if (element) {
-            this.flowGraph.setItemActived(element, false);  // todo edge not active
+          console.log('incoming', item);
+          this.graph.changeMode('select');
+          this.graph.setItemActived(this.state.activeItem, true);
+          if (item) {
+            this.graph.setItemActived(item, false);
           }
-          this.flowGraph.setItemActived(this.state.selGraphElement, true);
-          this.flowGraph.refresh();
+          this.graph.refresh();
+          // todo edge not disactive
         } else {
           const elementVal = { ...this.props.activeElement, ...values };
+          this.props.form.resetFields();
           this.props.updateFlowElementMap(elementVal.uuid, elementVal);
-          activeElementChanged = true;
+          if (item) {
+            const uuid = item.get('id');
+            if (this.props.elementMap[uuid]) {
+              if (!this.props.elementMap[uuid].loaded) {
+                this.props.load();
+              }
+              this.props.updateActiveElement(this.props.elementMap[uuid]);
+            } else {
+              this.props.updateActiveElement({ uuid, kind: item.get('model').kind, loaded: true,
+                type: item.get('type'), source: item.get('model').source, target: item.get('model').target,
+              });
+            }
+          } else {
+            this.props.updateActiveElement({});
+          }
+          this.setState({ activeItem: item });
         }
       });
     } else {
-      activeElementChanged = true;
-    }
-    if (activeElementChanged) {
-      if (element) {
-        const uuid = element.get('id');
+      if (item) {
+        const uuid = item.get('id');
         if (this.props.elementMap[uuid]) {
           if (!this.props.elementMap[uuid].loaded) {
             this.props.load();
           }
           this.props.updateActiveElement(this.props.elementMap[uuid]);
         } else {
-          this.props.updateActiveElement({ uuid, kind: element.get('model').kind, loaded: true,
-            type: element.get('type'), source: element.get('model').source, target: element.get('model').target,
+          this.props.updateActiveElement({ uuid, kind: item.get('model').kind, loaded: true,
+            type: item.get('type'), source: item.get('model').source, target: item.get('model').target,
           });
         }
       } else {
         this.props.updateActiveElement({});
       }
-      this.props.form.resetFields();
-      this.setState({ selGraphElement: element });
+      this.setState({ activeItem: item });
     }
   }
   handleSaveBtnClick = () => {
-    // console.log(this.flowGraph.save())
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+        const elementVal = { ...this.props.activeElement, ...values };
+        this.props.updateFlowElementMap(elementVal.uuid, elementVal);
+        // todo graph node edge disconnected
+        this.props.saveFlowGraph(this.props.elementMap);
+      }
+    });
   }
   render() {
-    const { flow } = this.state;
-    const { form, submitting } = this.props;
-    const columns = [{
-      dataIndex: 'name',
-      key: 'name',
-      render: o => (<div style={{ paddingLeft: 15 }}>{o}</div>),
-    }];
+    const { form, submitting, listCollapsed, activeElement } = this.props;
     return (
       <Layout>
-        <Sider width={280} className="menu-sider" key="sider" trigger={null}
-          collapsible collapsed={this.state.collapsed} collapsedWidth={0}
-        >
-          <div className="top-bar">
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {this.msg('flow')}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-            <div className="pull-right">
-              <Tooltip placement="bottom" title={this.msg('createFlow')}>
-                <Button type="primary" shape="circle" icon="plus" onClick={this.handleCreateFlow} />
-              </Tooltip>
-            </div>
-          </div>
-          <div className="left-sider-panel">
-            <div className="toolbar">
-              <Search
-                placeholder={this.msg('searchPlaceholder')}
-                onSearch={this.handleSearch} size="large"
-              />
-            </div>
-            <Table size="middle" dataSource={this.props.flowList} columns={columns} showHeader={false} onRowClick={this.handleRowClick}
-              pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }}
-              rowClassName={record => record.id === flow.id ? 'table-row-selected' : ''}
-            />
-          </div>
-          <CreateFlowModal />
-        </Sider>
         <Layout>
           <Header className="top-bar">
-            <Button size="large"
-              className={this.state.collapsed ? '' : 'btn-toggle-on'}
-              icon={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
-              onClick={this.toggle}
-            />
-            { this.state.collapsed && <Breadcrumb>
+            {listCollapsed && <Breadcrumb>
               <Breadcrumb.Item>
                 {this.msg('flow')}
               </Breadcrumb.Item>
@@ -167,7 +227,6 @@ export default class FlowDesigner extends React.Component {
                 流程名称
               </Breadcrumb.Item>
             </Breadcrumb>}
-
             <div className="top-bar-tools">
               <Button size="large" type="primary" icon="save" loading={submitting} onClick={this.handleSaveBtnClick}>
                 {this.msg('save')}
@@ -180,13 +239,27 @@ export default class FlowDesigner extends React.Component {
             </div>
           </Header>
           <Content className="main-content layout-min-width layout-min-width-large">
-            <FlowGraph onMounted={this.handleGraphMounted} onSelect={this.handleGraphElemClick} />
-            {this.state.selGraphElement &&
+            <Card title={this.msg('flowChart')} bodyStyle={{ padding: 0, height: 240 }}
+              extra={<div className="toolbar-right">
+                <Dropdown overlay={this.menu}>
+                  <Button icon="plus-square-o" >
+                    {this.msg('addFlowNode')} <Icon type="down" />
+                  </Button>
+                </Dropdown>
+                <Button icon="swap-right" onClick={this.handleAddEdge}>
+                  {this.msg('addFlowEdge')}
+                </Button>
+                <Button icon="delete" onClick={this.handleRemoveItem} />
+              </div>}
+            >
+              <div id="flowchart" />
+            </Card>
+            {activeElement.uuid &&
             <Form layout="vertical">
-              {this.state.selGraphElement.get('type') === 'node' &&
+              {activeElement.type === 'node' && (activeElement.kind === 'import' || activeElement.kind === 'export') &&
               <BizObjCMSPanel form={form} />
               }
-              {this.state.selGraphElement.get('type') === 'edge' &&
+              {activeElement.type === 'edge' &&
               <FlowEdgePanel form={form} />
               }
             </Form>

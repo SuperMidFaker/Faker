@@ -98,9 +98,9 @@ export function updateFlowElementMap(uuid, element) {
     data: { uuid, element },
   };
 }
-export function updateActiveElement(activeElem) {
+export function updateActiveElement(element) {
   return {
     type: actionTypes.UPDATE_FLOWELEMENT,
-    data: activeElem,
+    data: element,
   };
 }
