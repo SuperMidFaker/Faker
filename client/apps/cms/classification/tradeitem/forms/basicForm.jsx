@@ -95,10 +95,12 @@ export default class BasicForm extends Component {
     const currencyOptions = currencies.map(curr => ({
       value: curr.curr_code,
       text: `${curr.curr_code} | ${curr.curr_name}`,
+      search: `${curr.curr_code}${curr.curr_symb}${curr.curr_name}`,
     }));
     const tradeCountriesOpts = tradeCountries.map(tc => ({
       value: tc.cntry_co,
       text: `${tc.cntry_co} | ${tc.cntry_name_cn}`,
+      search: `${tc.cntry_co}${tc.cntry_name_en}${tc.cntry_name_cn}`,
     }));
     return (
       <div>
@@ -166,10 +168,10 @@ export default class BasicForm extends Component {
               <FormItem label={this.msg('unit1')}>
                 {getFieldDecorator('unit_1', {
                   initialValue: fieldInits.unit_1,
-                })(<Select>
+                })(<Select showSearch showArrow optionFilterProp="search">
                   {
                     units.map(gt =>
-                      <Option value={gt.value} key={gt.value}>{gt.text}</Option>
+                      <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>
                     )
                   }
                 </Select>)}
@@ -179,10 +181,10 @@ export default class BasicForm extends Component {
               <FormItem label={this.msg('unit2')}>
                 {getFieldDecorator('unit_2', {
                   initialValue: fieldInits.unit_2,
-                })(<Select>
+                })(<Select showSearch showArrow optionFilterProp="search">
                   {
                     units.map(gt =>
-                      <Option value={gt.value} key={gt.value}>{gt.text}</Option>
+                      <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>
                     )
                   }
                 </Select>)}
@@ -192,10 +194,10 @@ export default class BasicForm extends Component {
               <FormItem label={this.msg('gUnit1')}>
                 {getFieldDecorator('g_unit_1', {
                   initialValue: fieldInits.g_unit_1,
-                })(<Select>
+                })(<Select showSearch showArrow optionFilterProp="search">
                   {
                     units.map(gt =>
-                      <Option value={gt.value} key={gt.value}>{gt.text}</Option>
+                      <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>
                     )
                   }
                 </Select>)}
@@ -205,10 +207,10 @@ export default class BasicForm extends Component {
               <FormItem label={this.msg('gUnit2')}>
                 {getFieldDecorator('g_unit_2', {
                   initialValue: fieldInits.g_unit_2,
-                })(<Select>
+                })(<Select showSearch showArrow optionFilterProp="search">
                   {
                     units.map(gt =>
-                      <Option value={gt.value} key={gt.value}>{gt.text}</Option>
+                      <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>
                     )
                   }
                 </Select>)}
@@ -218,10 +220,10 @@ export default class BasicForm extends Component {
               <FormItem label={this.msg('gUnit3')}>
                 {getFieldDecorator('g_unit_3', {
                   initialValue: fieldInits.g_unit_3,
-                })(<Select>
+                })(<Select showSearch showArrow optionFilterProp="search">
                   {
                     units.map(gt =>
-                      <Option value={gt.value} key={gt.value}>{gt.text}</Option>
+                      <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>
                     )
                   }
                 </Select>)}
@@ -246,10 +248,10 @@ export default class BasicForm extends Component {
                 {getFieldDecorator('currency', {
                   initialValue: fieldInits.currency,
                 })(
-                  <Select showArrow optionFilterProp="search">
+                  <Select showSearch showArrow optionFilterProp="search">
                     {
                       currencyOptions.map(data => (
-                        <Option key={data.value} search={() => data.value} >
+                        <Option key={data.value} search={`${data.search}`} >
                           {`${data.text}`}
                         </Option>)
                       )}
@@ -268,10 +270,10 @@ export default class BasicForm extends Component {
               <FormItem label={this.msg('fixedUnit')}>
                 {getFieldDecorator('fixed_unit', {
                   initialValue: fieldInits.fixed_unit,
-                })(<Select>
+                })(<Select showSearch showArrow optionFilterProp="search">
                   {
                     units.map(gt =>
-                      <Option value={gt.value} key={gt.value}>{gt.text}</Option>
+                      <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>
                     )
                   }
                 </Select>)}
@@ -282,10 +284,10 @@ export default class BasicForm extends Component {
                 {getFieldDecorator('origin_country', {
                   initialValue: fieldInits.origin_country,
                 })(
-                  <Select showArrow optionFilterProp="search">
+                  <Select showSearch showArrow optionFilterProp="search">
                     {
                       tradeCountriesOpts.map(data => (
-                        <Option key={data.value} search={() => data.value} >
+                        <Option key={data.value} search={`${data.search}`} >
                           {`${data.text}`}
                         </Option>)
                       )}

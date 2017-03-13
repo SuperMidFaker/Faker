@@ -383,13 +383,14 @@ export function CountryAttr(props) {
     options: formRequire.tradeCountries.map(tc => ({
       value: tc.cntry_co,
       text: `${tc.cntry_co} | ${tc.cntry_name_cn}`,
+      search: `${tc.cntry_co}${tc.cntry_name_en}${tc.cntry_name_cn}`,
     })),
     label: msg('tradeCountry'),
     disabled,
     formData,
     rules: [{ required: true }],
     getFieldDecorator,
-    searchKeyFn: opt => opt.value,
+    searchKeyFn: opt => opt.search,
   };
   const departCountryProps = {
     outercol: 24,
@@ -398,13 +399,14 @@ export function CountryAttr(props) {
     options: formRequire.tradeCountries.map(tc => ({
       value: tc.cntry_co,
       text: `${tc.cntry_co} | ${tc.cntry_name_cn}`,
+      search: `${tc.cntry_co}${tc.cntry_name_en}${tc.cntry_name_cn}`,
     })),
     label: ietype === 'import' ? msg('departCountry') : msg('destinateCountry'),
     disabled,
     formData,
     rules: [{ required: true }],
     getFieldDecorator,
-    searchKeyFn: opt => opt.value,
+    searchKeyFn: opt => opt.search,
   };
   return (
     <Col span={9}>
@@ -565,12 +567,13 @@ function FeeFormItem(props) {
     options: formRequire.currencies.map(curr => ({
       value: curr.curr_code,
       text: `${curr.curr_code} | ${curr.curr_name}`,
+      search: `${curr.curr_code}${curr.curr_symb}${curr.curr_name}`,
     })),
     disabled,
     formData,
     rules: currReq ? [{ required: true }] : [{ required: false }],
     getFieldDecorator,
-    searchKeyFn: opt => opt.value,
+    searchKeyFn: opt => opt.search,
   };
   const markProps = {
     field: markField,
@@ -578,7 +581,12 @@ function FeeFormItem(props) {
     formData,
     rules: require ? [{ required: true }] : [{ required: false }],
     getFieldDecorator,
-    options: CMS_FEE_UNIT,
+    options: CMS_FEE_UNIT.map(fu => ({
+      value: fu.value,
+      text: `${fu.value} | ${fu.text}`,
+      search: `${fu.value} | ${fu.text}`,
+    })),
+    searchKeyFn: opt => opt.search,
   };
   return (
     <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} label={label}>
