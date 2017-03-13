@@ -5,10 +5,11 @@ import { loadDelgDecls } from 'common/reducers/cmsDeclare';
 import List from '../../common/customs/list';
 
 function fetchData({ state, dispatch }) {
+  const newfilter = { ...state.cmsDeclare.listFilter, filterNo: '' };
   return dispatch(loadDelgDecls({
     ietype: 'export',
     tenantId: state.account.tenantId,
-    filter: JSON.stringify({ status: 'all' }),
+    filter: JSON.stringify({ newfilter }),
     pageSize: state.cmsDelegation.delegationlist.pageSize,
     currentPage: state.cmsDelegation.delegationlist.current,
   }));
