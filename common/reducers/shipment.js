@@ -34,6 +34,7 @@ const actionTypes = createActionTypes('@@welogix/transport/shipment/', [
   'CREATE_LOG', 'CREATE_LOG_SUCCEED', 'CREATE_LOG_FAIL',
   'UPDATE_FORM_REQUIRE_PARAMS',
   'LOAD_TARIFF_BY_TRANSPORTINFO', 'LOAD_TARIFF_BY_TRANSPORTINFO_SUCCEED', 'LOAD_TARIFF_BY_TRANSPORTINFO_FAIL',
+  'LOAD_PARTNERS', 'LOAD_PARTNERS_SUCCEED', 'LOAD_PARTNERS_FAIL',
 ]);
 appendFormAcitonTypes('@@welogix/transport/shipment/', actionTypes);
 
@@ -124,6 +125,7 @@ const initialState = {
   formRequireJudgeParams: {},
   totalWeightRequired: false,
   totalVolumeRequired: false,
+  partners: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -270,6 +272,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, totalWeightRequired: false, totalVolumeRequired: false,
         formRequireJudgeParams: { ...state.formRequireJudgeParams, ...action.formRequireJudgeParams } };
     }
+    case actionTypes.LOAD_PARTNERS_SUCCEED:
+      return { ...state, partners: action.result.data };
     default:
       return formReducer(actionTypes, state, action, { key: null }, 'shipmentlist')
              || state;
@@ -613,4 +617,19 @@ export function onFormFieldsChange(props, fields) {
       formRequireJudgeParams,
     };
   }
+}
+
+export function loadPartners(tenantId, roles, businessTypes) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_PARTNERS,
+        actionTypes.LOAD_PARTNERS_SUCCEED,
+        actionTypes.LOAD_PARTNERS_FAIL,
+      ],
+      endpoint: 'v1/cooperation/type/partners',
+      method: 'get',
+      params: { tenantId, roles: JSON.stringify(roles), businessTypes: JSON.stringify(businessTypes) },
+    },
+  };
 }

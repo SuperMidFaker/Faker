@@ -66,6 +66,7 @@ function fetchData({ state, dispatch, params, cookie }) {
     reportedShipmts: state.trackingLandStatus.locReportedShipments,
     loaded: state.trackingLandStatus.loaded,
     clients: state.shipment.formRequire.clients,
+    carriers: state.shipment.partners,
   }),
   {
     loadTransitTable, loadShipmtDetail, showDateModal,
@@ -96,6 +97,7 @@ export default class LandStatusList extends React.Component {
     deliverConfirm: PropTypes.func.isRequired,
     clients: PropTypes.array.isRequired,
     changeStatusFilter: PropTypes.func.isRequired,
+    carriers: PropTypes.array.isRequired,
   }
   state = {
     lastLocReportTime: null,
@@ -159,12 +161,20 @@ export default class LandStatusList extends React.Component {
     }),
     getParams: (pagination, filters, sorter) => {
       const newFilters = [...this.props.filters];
-      const index = newFilters.findIndex(item => item.name === 'customer_name');
+      let index = newFilters.findIndex(item => item.name === 'customer_name');
       if (index >= 0) {
         newFilters.splice(index, 1);
       }
       if (filters.customer_name && filters.customer_name.length > 0) {
         newFilters.push({ name: 'customer_name', value: filters.customer_name });
+      }
+
+      index = newFilters.findIndex(item => item.name === 'sp_name');
+      if (index >= 0) {
+        newFilters.splice(index, 1);
+      }
+      if (filters.sp_name && filters.sp_name.length > 0) {
+        newFilters.push({ name: 'sp_name', value: filters.sp_name });
       }
       const params = {
         tenantId: this.props.tenantId,
@@ -445,6 +455,7 @@ export default class LandStatusList extends React.Component {
       deliverConfirm: this.handleDeliverConfirm,
       tenantId: this.props.tenantId,
       clients: this.props.clients,
+      carriers: this.props.carriers,
     }, this.msg);
     return (
       <div>

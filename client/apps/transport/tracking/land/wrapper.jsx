@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import connectFetch from 'client/common/decorators/connect-fetch';
 import { intlShape, injectIntl } from 'react-intl';
 import { Layout, Radio } from 'antd';
 import QueueAnim from 'rc-queue-anim';
@@ -8,12 +9,18 @@ import { format } from 'client/common/i18n/helpers';
 import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege, { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import ExportExcel from './modals/export-excel';
+import { loadPartners } from 'common/reducers/shipment';
+import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 import messages from './message.i18n';
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
+function fetchData({ state, dispatch }) {
+  return dispatch(loadPartners(state.account.tenantId, [PARTNER_ROLES.SUP], [PARTNER_BUSINESSE_TYPES.transport]));
+}
+@connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({

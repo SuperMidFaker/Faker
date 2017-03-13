@@ -275,6 +275,7 @@ export default function makeColumns(type, handlers, msg) {
         return msg('ownFleet');
       }
     },
+    filters: handlers.carriers.map(item => ({ text: item.partner_code ? `${item.partner_code} | ${item.name}` : item.name, value: item.partner_id })),
   }, {
     title: msg('shipmtVehicle'),
     dataIndex: 'task_vehicle',

@@ -73,6 +73,8 @@ function renderActDate(recordActDate, recordEstDate) {
     shipmentlist: state.trackingLandException.shipmentlist,
     filters: state.trackingLandException.filters,
     loading: state.trackingLandException.loading,
+    clients: state.shipment.formRequire.clients,
+    carriers: state.shipment.partners,
   }),
   { loadExcpShipments, loadShipmtDetail, changeExcpFilter })
 export default class LandStatusList extends React.Component {
@@ -89,6 +91,8 @@ export default class LandStatusList extends React.Component {
     loadShipmtDetail: PropTypes.func.isRequired,
     loadExcpShipments: PropTypes.func.isRequired,
     changeExcpFilter: PropTypes.func.isRequired,
+    clients: PropTypes.array.isRequired,
+    carriers: PropTypes.array.isRequired,
   }
   state = {
     selectedRowKeys: [],
@@ -151,20 +155,36 @@ export default class LandStatusList extends React.Component {
       pageSize: result.pageSize,
     }),
     getParams: (pagination, filters, sorter) => {
+      const newFilters = [...this.props.filters];
+      let index = newFilters.findIndex(item => item.name === 'customer_name');
+      if (index >= 0) {
+        newFilters.splice(index, 1);
+      }
+      if (filters.customer_name && filters.customer_name.length > 0) {
+        newFilters.push({ name: 'customer_name', value: filters.customer_name });
+      }
+
+      index = newFilters.findIndex(item => item.name === 'sp_name');
+      if (index >= 0) {
+        newFilters.splice(index, 1);
+      }
+      if (filters.sp_name && filters.sp_name.length > 0) {
+        newFilters.push({ name: 'sp_name', value: filters.sp_name });
+      }
       const params = {
         tenantId: this.props.tenantId,
         pageSize: pagination.pageSize,
         currentPage: pagination.current,
         sortField: sorter.field,
         sortOrder: sorter.order === 'descend' ? 'desc' : 'asc',
-        filters: JSON.stringify(this.props.filters),
+        filters: JSON.stringify(newFilters),
       };
       return params;
     },
     remotes: this.props.shipmentlist,
   })
   msg = descriptor => formatMsg(this.props.intl, descriptor)
-  columns = [{
+  columns = () => [{
     title: this.msg('shipNo'),
     dataIndex: 'shipmt_no',
     fixed: 'left',
@@ -228,22 +248,22 @@ export default class LandStatusList extends React.Component {
     render: (o, record) => {
       if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {
         return `${this.msg('sendAction')}
-        ${moment(record.disp_time).format('MM.DD HH:mm')}`;
+          ${moment(record.disp_time).format('MM.DD HH:mm')}`;
       } else if (record.status === SHIPMENT_TRACK_STATUS.accepted) {
         return `${this.msg('acceptAction')}
-        ${moment(record.acpt_time).format('MM.DD HH:mm')}`;
+          ${moment(record.acpt_time).format('MM.DD HH:mm')}`;
       } else if (record.status === SHIPMENT_TRACK_STATUS.dispatched) {
         return `${this.msg('dispatchAction')}
-        ${moment(record.disp_time).format('MM.DD HH:mm')}`;
+          ${moment(record.disp_time).format('MM.DD HH:mm')}`;
       } else if (record.status === SHIPMENT_TRACK_STATUS.intransit) {
         return `${this.msg('pickupAction')}
-        ${moment(record.pickup_act_date).format('MM.DD HH:mm')}`;
+          ${moment(record.pickup_act_date).format('MM.DD HH:mm')}`;
       } else if (record.status === SHIPMENT_TRACK_STATUS.delivered) {
         return `${this.msg('deliverAction')}
-        ${moment(record.deliver_act_date).format('MM.DD HH:mm')}`;
+          ${moment(record.deliver_act_date).format('MM.DD HH:mm')}`;
       } else if (record.status >= SHIPMENT_TRACK_STATUS.podsubmit) {
         return `${this.msg('podUploadAction')}
-        ${moment(record.pod_recv_date).format('MM.DD HH:mm')}`;
+          ${moment(record.pod_recv_date).format('MM.DD HH:mm')}`;
       }
       return '';
     },
@@ -274,6 +294,7 @@ export default class LandStatusList extends React.Component {
         return this.msg('ownFleet');
       }
     },
+    filters: this.props.carriers.map(item => ({ text: item.partner_code ? `${item.partner_code} | ${item.name}` : item.name, value: item.partner_id })),
   }, {
     title: this.msg('shipmtVehicle'),
     dataIndex: 'task_vehicle',
@@ -295,6 +316,7 @@ export default class LandStatusList extends React.Component {
     dataIndex: 'customer_name',
     width: 180,
     render: o => <TrimSpan text={o} maxLen={10} />,
+    filters: this.props.clients.map(item => ({ text: item.partner_code ? `${item.partner_code} | ${item.name}` : item.name, value: item.partner_id })),
   }, {
     title: this.msg('departurePlace'),
     width: 140,
@@ -445,6 +467,7 @@ export default class LandStatusList extends React.Component {
         this.setState({ selectedRowKeys });
       },
     };
+    const columns = this.columns();
     return (
       <div>
         <div className="page-body">
@@ -463,7 +486,7 @@ export default class LandStatusList extends React.Component {
           </div>
           <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch} toggle={this.toggleAdvancedSearch} />
           <div className="panel-body table-panel">
-            <Table rowSelection={rowSelection} columns={this.columns} loading={loading}
+            <Table rowSelection={rowSelection} columns={columns} loading={loading}
               dataSource={this.dataSource} scroll={{ x: 2560 }}
             />
           </div>

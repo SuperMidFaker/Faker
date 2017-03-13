@@ -54,6 +54,7 @@ function fetchData({ state, dispatch, params, cookie }) {
     loading: state.trackingLandPod.loading,
     loaded: state.trackingLandPod.loaded,
     clients: state.shipment.formRequire.clients,
+    carriers: state.shipment.partners,
   }),
   { loadPodTable, loadShipmtDetail, showAuditModal,
     sendMessage, changePodFilter, deliverConfirm })
@@ -76,6 +77,7 @@ export default class LandStatusList extends React.Component {
     clients: PropTypes.array.isRequired,
     changePodFilter: PropTypes.func.isRequired,
     deliverConfirm: PropTypes.func.isRequired,
+    carriers: PropTypes.array.isRequired,
   }
 
   state = {
@@ -140,12 +142,20 @@ export default class LandStatusList extends React.Component {
     }),
     getParams: (pagination, filters, sorter) => {
       const newFilters = [...this.props.filters];
-      const index = newFilters.findIndex(item => item.name === 'customer_name');
+      let index = newFilters.findIndex(item => item.name === 'customer_name');
       if (index >= 0) {
         newFilters.splice(index, 1);
       }
       if (filters.customer_name && filters.customer_name.length > 0) {
         newFilters.push({ name: 'customer_name', value: filters.customer_name });
+      }
+
+      index = newFilters.findIndex(item => item.name === 'sp_name');
+      if (index >= 0) {
+        newFilters.splice(index, 1);
+      }
+      if (filters.sp_name && filters.sp_name.length > 0) {
+        newFilters.push({ name: 'sp_name', value: filters.sp_name });
       }
       const params = {
         tenantId: this.props.tenantId,
@@ -255,6 +265,7 @@ export default class LandStatusList extends React.Component {
       sendMessage: this.props.sendMessage,
       clients: this.props.clients,
       deliverConfirm: this.handleDeliverConfirm,
+      carriers: this.props.carriers,
     }, this.msg);
     return (
       <div>
