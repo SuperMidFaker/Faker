@@ -106,14 +106,14 @@ export default class ReceiveInvitationList extends Component {
           if (partnerships[i].business_type.indexOf(PARTNER_BUSINESSE_TYPES.clearance) >= 0) {
             reversePartnerships.push({
               role: PARTNER_ROLES.SUP,
-              business: PARTNER_BUSINESSES.clearance,
+              business: [PARTNER_BUSINESSES.CCB, PARTNER_BUSINESSES.CIB, PARTNER_BUSINESSES.ICB].join(','),
               business_type: PARTNER_BUSINESSE_TYPES.clearance,
             });
           }
           if (partnerships[i].business_type.indexOf(PARTNER_BUSINESSE_TYPES.transport) >= 0) {
             reversePartnerships.push({
               role: PARTNER_ROLES.SUP,
-              business: [PARTNER_BUSINESSES.CCB, PARTNER_BUSINESSES.CIB, PARTNER_BUSINESSES.ICB].join(','),
+              business: PARTNER_BUSINESSES.TRS,
               business_type: PARTNER_BUSINESSE_TYPES.transport,
             });
           }
