@@ -261,12 +261,10 @@ export default class ManifestBodyPanel extends React.Component {
       dataIndex: 'g_no',
       fixed: 'left',
       width: 45,
-    }];
-
-    columns.push({
+    }, {
       title: this.msg('copGNo'),
-      width: 150,
       fixed: 'left',
+      width: 150,
       render: (o, record, index) =>
         <ColumnInput field="cop_g_no" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} edit={editBody}
@@ -278,9 +276,7 @@ export default class ManifestBodyPanel extends React.Component {
         <ColumnInput field="em_g_no" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} edit={editBody}
         />,
-    });
-
-    columns.push({
+    }, {
       title: this.msg('codeT'),
       width: 110,
       render: (o, record, index) =>
@@ -309,6 +305,13 @@ export default class ManifestBodyPanel extends React.Component {
           onChange={this.handleEditChange} edit={editBody}
         />,
     }, {
+      title: this.msg('unit'),
+      width: 80,
+      render: (o, record, index) =>
+        <ColumnSelect field="g_unit" inEdit={index === editIndex} record={record}
+          onChange={this.handleEditChange} options={units} edit={editBody}
+        />,
+    }, {
       title: this.msg('decPrice'),
       width: 100,
       render: (o, record, index) =>
@@ -328,13 +331,6 @@ export default class ManifestBodyPanel extends React.Component {
       render: (o, record, index) =>
         <ColumnSelect field="trade_curr" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} options={currencies} edit={editBody}
-        />,
-    }, {
-      title: this.msg('unit'),
-      width: 80,
-      render: (o, record, index) =>
-        <ColumnSelect field="g_unit" inEdit={index === editIndex} record={record}
-          onChange={this.handleEditChange} options={units} edit={editBody}
         />,
     }, {
       title: this.msg('qty1'),
@@ -435,44 +431,45 @@ export default class ManifestBodyPanel extends React.Component {
           onChange={this.handleEditChange} edit={editBody}
         />,
     }, {
-      width: 90,
+      title: this.msg('opColumn'),
+      width: 80,
       fixed: 'right',
       render: (o, record, index) => {
         if (readonly) {
           return <span />;
         } else if (index === editIndex) {
           return (
-            <span>
-              <RowUpdater onHit={this.handleSave} label={this.msg('save')}
+            <span className="editable-row-operations">
+              <RowUpdater onHit={this.handleSave} label={<Icon type="save" />}
                 row={record} index={index}
               />
               <span className="ant-divider" />
-              <RowUpdater onHit={this.handleCancel} label={this.msg('cancel')} />
+              <RowUpdater onHit={this.handleCancel} label={<Icon type="close" />} />
             </span>
           );
         } else if (index + 1 + (pagination.current - 1) * pagination.pageSize === totalCount) {
           return (
-            <span>
-              <RowUpdater onHit={this.handleEdit} label={this.msg('append')}
+            <span className="editable-row-operations">
+              <RowUpdater onHit={this.handleEdit} label={<Icon type="plus" />}
                 index={index} row={{}}
               />
             </span>
           );
         } else {
           return (
-            <span>
-              <RowUpdater onHit={this.handleEdit} label={this.msg('edit')}
+            <span className="editable-row-operations">
+              <RowUpdater onHit={this.handleEdit} label={<Icon type="edit" />}
                 row={record} index={index}
               />
               <span className="ant-divider" />
-              <RowUpdater onHit={this.handleDel} label={this.msg('delete')}
+              <RowUpdater onHit={this.handleDel} label={<Icon type="delete" />}
                 row={record} index={index}
               />
             </span>
           );
         }
       },
-    });
+    }];
     return columns;
   }
 
@@ -769,8 +766,8 @@ export default class ManifestBodyPanel extends React.Component {
           </div>
         </div>
         <div className="panel-body table-panel">
-          <Table bordered rowKey="id" columns={columns} dataSource={this.state.bodies}
-            scroll={{ x: 2800, y: this.state.wlScrollY }} pagination={this.state.pagination} rowSelection={rowSelection}
+          <Table rowKey="id" columns={columns} dataSource={this.state.bodies}
+            scroll={{ x: 3000, y: this.state.wlScrollY }} pagination={this.state.pagination} rowSelection={rowSelection}
           />
           <AmountModel />
         </div>

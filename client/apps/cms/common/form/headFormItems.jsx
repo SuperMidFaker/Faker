@@ -13,6 +13,94 @@ const formatMsg = format(messages);
 const FormItem = Form.Item;
 const Option = Select.Option;
 
+export function IEPort(props) {
+  const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
+  const { getFieldDecorator, disabled, formData, formRequire, ietype, required } = props;
+  const customsProps = {
+    outercol: 24,
+    col: 8,
+    field: 'i_e_port',
+    rules: [{ required }],
+    options: formRequire.customs.map(cus => ({
+      value: cus.customs_code,
+      text: `${cus.customs_code} | ${cus.customs_name}`,
+    })),
+    label: ietype === 'import' ? msg('iport') : msg('eport'),
+    disabled,
+    formData,
+    getFieldDecorator,
+    searchKeyFn: opt => opt.value,
+  };
+
+  return (
+    <FormLocalSearchSelect {...customsProps} />
+  );
+}
+IEPort.propTypes = {
+  intl: intlShape.isRequired,
+  ietype: PropTypes.oneOf(['import', 'export']),
+  disabled: PropTypes.bool,
+  required: PropTypes.bool,
+  getFieldDecorator: PropTypes.func.isRequired,
+  formData: PropTypes.object.isRequired,
+  formRequire: PropTypes.object.isRequired,
+  onSearch: PropTypes.func.isRequired,
+};
+
+export function IEDate(props) {
+  const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
+  const { getFieldDecorator, disabled, formData, ietype } = props;
+  const ieDateProps = {
+    outercol: 24,
+    col: 8,
+    field: 'i_e_date',
+    label: ietype === 'import' ? msg('idate') : msg('edate'),
+    disabled,
+    rules: [{ required: false }],
+    formData,
+    getFieldDecorator,
+  };
+  return (
+    <FormDatePicker {...ieDateProps} />
+  );
+}
+IEDate.propTypes = {
+  intl: intlShape.isRequired,
+  ietype: PropTypes.oneOf(['import', 'export']),
+  disabled: PropTypes.bool,
+  required: PropTypes.bool,
+  getFieldDecorator: PropTypes.func.isRequired,
+  formData: PropTypes.object.isRequired,
+  formRequire: PropTypes.object.isRequired,
+};
+
+export function DeclDate(props) {
+  const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
+  const { getFieldDecorator, disabled, formData } = props;
+  const dDateProps = {
+    outercol: 24,
+    col: 8,
+    field: 'd_date',
+    label: msg('ddate'),
+    disabled,
+    rules: [{ required: false }],
+    formData,
+    getFieldDecorator,
+  };
+  return (
+    <FormDatePicker {...dDateProps} />
+  );
+}
+DeclDate.propTypes = {
+  intl: intlShape.isRequired,
+  disabled: PropTypes.bool,
+  required: PropTypes.bool,
+  getFieldDecorator: PropTypes.func.isRequired,
+  formData: PropTypes.object.isRequired,
+  formRequire: PropTypes.object.isRequired,
+};
+
+
 // 进出口口岸、进出口日期、申报日期
 export function PortDate(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
@@ -113,13 +201,12 @@ export class RelationAutoCompSelect extends React.Component {
     const initialCodeValue = formData && formData[codeField] || '';
     const initialNameValue = formData && formData[nameField];
     return (
-      <Col span={9}>
-        <FormItem labelCol={{ span: 4 }} wrapperCol={{ span: 20 }} label={label} required>
-          <Row>
-            <Col span="8">
-              <FormItem style={{ marginBottom: 0 }}>
-                {disabled ?
-                  <Input disabled value={initialCodeValue} />
+      <FormItem labelCol={{ span: 4 }} wrapperCol={{ span: 20 }} label={label} required>
+        <Row gutter={8}>
+          <Col span="6">
+            <FormItem style={{ marginBottom: 0 }}>
+              {disabled ?
+                <Input disabled value={initialCodeValue} />
                   : getFieldDecorator(codeField, {
                     initialValue: initialCodeValue,
                     rules: codeRules,
@@ -130,28 +217,49 @@ export class RelationAutoCompSelect extends React.Component {
                     showArrow={false}
                     allowClear
                     optionFilterProp="search"
-                    placeholder={this.msg('relationCodeSearch')}
+                    placeholder={this.msg('customsCode')}
                     onSelect={this.handleSelect}
                   >
                     {
                     options.map(opt => <Option key={opt.code} search={opt.code}><Tooltip placement="right" title={opt.name}>{opt.code}|{opt.name}</Tooltip></Option>)
                   }
                   </Select>)}
-              </FormItem>
-            </Col>
-            <Col span="16">
-              <FormItem style={{ marginBottom: 0 }} >
-                {disabled ?
-                  <Input disabled value={initialNameValue} /> :
+            </FormItem>
+          </Col>
+          <Col span="8">
+            <FormItem style={{ marginBottom: 0 }}>
+              {disabled ?
+                <Input disabled value={initialCodeValue} />
+                  : getFieldDecorator(codeField, {
+                    initialValue: initialCodeValue,
+                    onChange: this.handleInputChange,
+                  })(<Select
+                    size="large"
+                    combobox
+                    showArrow={false}
+                    allowClear
+                    optionFilterProp="search"
+                    placeholder={this.msg('scc')}
+                    onSelect={this.handleSelect}
+                  >
+                    {
+                    options.map(opt => <Option key={opt.code} search={opt.code}><Tooltip placement="right" title={opt.name}>{opt.code}|{opt.name}</Tooltip></Option>)
+                  }
+                  </Select>)}
+            </FormItem>
+          </Col>
+          <Col span="10">
+            <FormItem style={{ marginBottom: 0 }} >
+              {disabled ?
+                <Input disabled value={initialNameValue} /> :
                   getFieldDecorator(nameField, {
                     rules: nameRules,
                     initialValue: initialNameValue,
                   })(<Input placeholder={this.msg('relationName')} disabled={disabled} />)}
-              </FormItem>
-            </Col>
-          </Row>
-        </FormItem>
-      </Col>
+            </FormItem>
+          </Col>
+        </Row>
+      </FormItem>
     );
   }
 }
@@ -175,15 +283,46 @@ export function DeclCustoms(props) {
     })),
     searchKeyFn: opt => opt.value,
   };
+
+  return (
+    <FormLocalSearchSelect {...declPortProps} />
+  );
+}
+DeclCustoms.propTypes = {
+  intl: intlShape.isRequired,
+  disabled: PropTypes.bool,
+  required: PropTypes.bool,
+  getFieldDecorator: PropTypes.func.isRequired,
+  formData: PropTypes.object.isRequired,
+  formRequire: PropTypes.object.isRequired,
+};
+
+export function LicenseNo(props) {
+  const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
+  const { getFieldDecorator, disabled, formData } = props;
   const licenseNoProps = {
     outercol: 24,
-    col: 8,
+    col: 4,
     field: 'license_no',
     label: msg('licenseNo'),
     disabled,
     formData,
     getFieldDecorator,
   };
+  return (
+    <FormInput {...licenseNoProps} />
+  );
+}
+LicenseNo.propTypes = {
+  intl: intlShape.isRequired,
+  disabled: PropTypes.bool,
+  required: PropTypes.bool,
+  getFieldDecorator: PropTypes.func.isRequired,
+  formData: PropTypes.object.isRequired,
+};
+export function ContractNo(props) {
+  const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
+  const { getFieldDecorator, disabled, formData } = props;
   const contractNoProps = {
     outercol: 24,
     col: 8,
@@ -194,17 +333,7 @@ export function DeclCustoms(props) {
     getFieldDecorator,
   };
   return (
-    <Col span={15}>
-      <Col span={8}>
-        <FormLocalSearchSelect {...declPortProps} />
-      </Col>
-      <Col span={8}>
-        <FormInput {...licenseNoProps} />
-      </Col>
-      <Col span={8}>
-        <FormInput {...contractNoProps} />
-      </Col>
-    </Col>
+    <FormInput {...contractNoProps} />
   );
 }
 DeclCustoms.propTypes = {
@@ -213,7 +342,30 @@ DeclCustoms.propTypes = {
   required: PropTypes.bool,
   getFieldDecorator: PropTypes.func.isRequired,
   formData: PropTypes.object.isRequired,
-  formRequire: PropTypes.object.isRequired,
+};
+
+export function ManualNo(props) {
+  const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
+  const { getFieldDecorator, disabled, formData } = props;
+  const emsNoProps = {
+    outercol: 24,
+    col: 8,
+    field: 'manual_no',
+    label: msg('emsNo'),
+    disabled,
+    formData,
+    getFieldDecorator,
+  };
+  return (
+    <FormInput {...emsNoProps} />
+  );
+}
+ManualNo.propTypes = {
+  intl: intlShape.isRequired,
+  disabled: PropTypes.bool,
+  required: PropTypes.bool,
+  getFieldDecorator: PropTypes.func.isRequired,
+  formData: PropTypes.object.isRequired,
 };
 
 // 运输方式、运输名称
@@ -245,7 +397,7 @@ export function Transport(props) {
     getFieldDecorator,
   };
   return (
-    <Col span={9}>
+    <Col span={12}>
       <Col span={12}>
         <FormLocalSearchSelect {...modeProps} />
       </Col>
@@ -291,11 +443,11 @@ export function DelVoyageNo(props) {
     getFieldDecorator,
   };
   return (
-    <Col span={15}>
-      <Col span={8}>
+    <Col span={12}>
+      <Col span={12}>
         <FormInput {...voyageNoProps} />
       </Col>
-      <Col span={8}>
+      <Col span={12}>
         <FormInput {...blwbProps} />
       </Col>
     </Col>
@@ -345,25 +497,13 @@ export function TradeRemission(props) {
     getFieldDecorator,
     searchKeyFn: opt => opt.value,
   };
-  const emsNoProps = {
-    outercol: 24,
-    col: 8,
-    field: 'manual_no',
-    label: msg('emsNo'),
-    disabled,
-    formData,
-    getFieldDecorator,
-  };
   return (
-    <Col span={15}>
-      <Col span={8}>
+    <Col span={12}>
+      <Col span={12}>
         <FormLocalSearchSelect {...tradeModeProps} />
       </Col>
-      <Col span={8}>
+      <Col span={12}>
         <FormLocalSearchSelect {...remissionProps} />
-      </Col>
-      <Col span={8}>
-        <FormInput {...emsNoProps} />
       </Col>
     </Col>
   );
@@ -414,7 +554,7 @@ export function CountryAttr(props) {
     searchKeyFn: opt => opt.search,
   };
   return (
-    <Col span={9}>
+    <Col span={12}>
       <Col span={12}>
         <FormLocalSearchSelect {...tradeCountryProps} />
       </Col>
@@ -438,7 +578,7 @@ CountryAttr.propTypes = {
 // 装货港、境内目的地、发票号
 export function DestInvoice(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
-  const { getFieldDecorator, disabled, formData, formRequire, type, ietype, onSearch, required } = props;
+  const { getFieldDecorator, disabled, formData, formRequire, ietype, onSearch, required } = props;
   const destPortProps = {
     outercol: 24,
     col: 8,
@@ -469,24 +609,14 @@ export function DestInvoice(props) {
     getFieldDecorator,
     searchKeyFn: opt => opt.value,
   };
-  const invoiceNoProps = {
-    outercol: 24,
-    col: 8,
-    field: 'invoice_no',
-    label: msg('invoiceNo'),
-    disabled,
-    formData,
-    getFieldDecorator,
-  };
   return (
-    <Col span={15}>
-      <Col span={8}>
+    <Col span={12}>
+      <Col span={12}>
         <FormRemoteSearchSelect {...destPortProps} />
       </Col>
-      <Col span={8}>
+      <Col span={12}>
         <FormLocalSearchSelect {...districtProps} />
       </Col>
-      {type === 'bill' && <Col span={8}><FormInput {...invoiceNoProps} /></Col>}
     </Col>
   );
 }
@@ -501,6 +631,39 @@ DestInvoice.propTypes = {
   formData: PropTypes.object.isRequired,
   formRequire: PropTypes.object.isRequired,
   onSearch: PropTypes.func.isRequired,
+};
+
+export function TradeMode(props) {
+  const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
+  const { getFieldDecorator, disabled, formData, formRequire, required } = props;
+  const trxModeProps = {
+    outercol: 24,
+    col: 8,
+    field: 'trxn_mode',
+    options: formRequire.trxModes.map(tm => ({
+      value: tm.trx_mode,
+      text: `${tm.trx_mode} | ${tm.trx_spec}`,
+      search: `${tm.trx_mode}${tm.trx_spec}`,
+    })),
+    label: msg('trxMode'),
+    disabled,
+    formData,
+    rules: [{ required }],
+    getFieldDecorator,
+    searchKeyFn: opt => opt.value,
+  };
+  return (
+    <FormLocalSearchSelect {...trxModeProps} />
+  );
+}
+
+TradeMode.propTypes = {
+  intl: intlShape.isRequired,
+  disabled: PropTypes.bool,
+  required: PropTypes.bool,
+  getFieldDecorator: PropTypes.func.isRequired,
+  formData: PropTypes.object.isRequired,
+  formRequire: PropTypes.object.isRequired,
 };
 
 // 用途、成交方式
@@ -600,13 +763,13 @@ function FeeFormItem(props) {
   return (
     <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} label={label}>
       <Row>
-        <Col span={12} style={{ paddingLeft: 2 }}>
+        <Col span={10} style={{ paddingLeft: 2 }}>
           <FormLocalSearchSelect {...currencyProps} placeholder="币制" style={{ marginBottom: 0 }} />
         </Col>
         <Col span={6}>
           <FormInput {...feeProps} />
         </Col>
-        <Col span={6}>
+        <Col span={8}>
           <FormLocalSearchSelect {...markProps} />
         </Col>
       </Row>
@@ -634,7 +797,7 @@ export function Fee(props) {
   const feeCurrReq = getFieldValue('fee_mark') !== '1';
   const insurCurrReq = getFieldValue('insur_mark') !== '1';
   return (
-    <Col span={15}>
+    <Col span={18}>
       <Col span={8}>
         <FeeFormItem {...props} label={msg('freightCharge')} feeField="fee_rate"
           currencyField="fee_curr" markField="fee_mark" require={fobRequire || ciRequire} feeCurrReq={feeCurrReq}
@@ -666,7 +829,7 @@ Fee.propTypes = {
 // 集装箱号、件数
 export function ContainerNo(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
-  const { getFieldDecorator, disabled, formData, required } = props;
+  const { getFieldDecorator, disabled, formData } = props;
   const containerNoProps = {
     outercol: 24,
     col: 8,
@@ -676,26 +839,8 @@ export function ContainerNo(props) {
     formData,
     getFieldDecorator,
   };
-  const packCountProps = {
-    outercol: 24,
-    col: 8,
-    field: 'pack_count',
-    label: msg('packCount'),
-    disabled,
-    formData,
-    rules: [{ required }],
-    getFieldDecorator,
-  };
-
   return (
-    <Col span={9}>
-      <Col span={12}>
-        <FormInput {...containerNoProps} />
-      </Col>
-      <Col span={12}>
-        <FormInput {...packCountProps} />
-      </Col>
-    </Col>
+    <FormInput {...containerNoProps} />
   );
 }
 
@@ -707,10 +852,20 @@ ContainerNo.propTypes = {
   formData: PropTypes.object.isRequired,
 };
 
-// 包装、毛重、净重
+// 件数、包装、毛重、净重
 export function PackWeight(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const { disabled, formData, getFieldDecorator, formRequire, required } = props;
+  const packCountProps = {
+    outercol: 24,
+    col: 8,
+    field: 'pack_count',
+    label: msg('packCount'),
+    disabled,
+    formData,
+    rules: [{ required }],
+    getFieldDecorator,
+  };
   const packProps = {
     outercol: 24,
     col: 8,
@@ -744,14 +899,17 @@ export function PackWeight(props) {
     getFieldDecorator,
   };
   return (
-    <Col span={15}>
-      <Col span={8}>
+    <Col span={24}>
+      <Col span={6}>
+        <FormInput {...packCountProps} />
+      </Col>
+      <Col span={6}>
         <FormLocalSearchSelect {...packProps} />
       </Col>
-      <Col span={8}>
+      <Col span={6}>
         <FormInput {...grosswtProps} />
       </Col>
-      <Col span={8}>
+      <Col span={6}>
         <FormInput {...netwtProps} />
       </Col>
     </Col>
@@ -802,14 +960,14 @@ export function TermConfirm(props) {
     options: CMS_CONFIRM,
   };
   return (
-    <Col span={15}>
-      <Col span={8}>
+    <Col span={24}>
+      <Col span={6}>
         <FormLocalSearchSelect {...specialProps} />
       </Col>
-      <Col span={8}>
+      <Col span={6}>
         <FormLocalSearchSelect {...priceEffectProps} />
       </Col>
-      <Col span={8}>
+      <Col span={6}>
         <FormLocalSearchSelect {...paymentProps} />
       </Col>
     </Col>
@@ -847,7 +1005,7 @@ export function RaDeclManulNo(props) {
   };
 
   return (
-    <Col span={9}>
+    <Col span={12}>
       <Col span={12}>
         <FormInput {...raDeclNoProps} />
       </Col>
@@ -888,11 +1046,11 @@ export function StroeYard(props) {
     getFieldDecorator,
   };
   return (
-    <Col span={15}>
-      <Col span={8}>
+    <Col span={12}>
+      <Col span={12}>
         <FormInput {...grosswtProps} />
       </Col>
-      <Col span={8}>
+      <Col span={12}>
         <FormInput {...netwtProps} />
       </Col>
     </Col>

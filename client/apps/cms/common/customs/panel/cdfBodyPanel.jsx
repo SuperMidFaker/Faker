@@ -251,9 +251,7 @@ export default class CDFBodyPanel extends React.Component {
       dataIndex: 'g_no',
       fixed: 'left',
       width: 45,
-    }];
-
-    columns.push({
+    }, {
       title: this.msg('codeT'),
       width: 110,
       fixed: 'left',
@@ -408,7 +406,7 @@ export default class CDFBodyPanel extends React.Component {
         <ColumnInput field="processing_fees" inEdit={index === editIndex} record={record}
           edit={editBody}
         />,
-    });
+    }];
     return columns;
   }
 
@@ -442,15 +440,15 @@ export default class CDFBodyPanel extends React.Component {
     return (
       <div className="pane">
         <div className="pane-header">
-          <span style={{ marginLeft: 10 }}>总毛重: </span><span style={{ color: '#FF9933' }}>{totGrossWt.toFixed(3)}</span>
-          <span style={{ marginLeft: 10 }}>总净重: </span><span style={{ color: '#FF9933' }}>{totWetWt.toFixed(3)}</span>
-          <span style={{ marginLeft: 10 }}>总金额: </span><span style={{ color: '#FF9933' }}>{totTrade.toFixed(3)}</span>
+          <span style={{ marginLeft: 8 }}>总毛重: </span><span style={{ color: '#FF9933' }}>{totGrossWt.toFixed(3)}</span>
+          <span style={{ marginLeft: 8 }}>总净重: </span><span style={{ color: '#FF9933' }}>{totWetWt.toFixed(3)}</span>
+          <span style={{ marginLeft: 8 }}>总金额: </span><span style={{ color: '#FF9933' }}>{totTrade.toFixed(3)}</span>
           <div className="toolbar-right">
             <Button icon="export" onClick={this.handleEntrybodyExport}>导出表体数据</Button>
           </div>
         </div>
         <div className="panel-body table-panel">
-          <Table bordered rowKey="id" columns={columns} dataSource={this.state.bodies}
+          <Table rowKey="id" columns={columns} dataSource={this.state.bodies}
             scroll={{ x: 2700, y: this.state.wlScrollY }} pagination={this.state.pagination} rowSelection={rowSelection}
           />
         </div>

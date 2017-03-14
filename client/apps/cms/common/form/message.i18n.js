@@ -173,9 +173,13 @@ export default defineMessages({
     id: 'cms.forms.form.ladingWayBill',
     defaultMessage: '提运单号',
   },
-  relationCodeSearch: {
-    id: 'cms.forms.form.relation.code.search',
-    defaultMessage: '代码搜索',
+  customsCode: {
+    id: 'cms.forms.form.customs.code',
+    defaultMessage: '10位海关编码',
+  },
+  scc: {
+    id: 'cms.forms.form.customs.scc',
+    defaultMessage: '18位统一社会信用代码',
   },
   relationName: {
     id: 'cms.forms.form.relation.name',

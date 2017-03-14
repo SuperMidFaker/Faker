@@ -72,6 +72,8 @@ export default class ManifestEditor extends React.Component {
             const head = { ...billHead, ...this.props.form.getFieldsValue() };
             this.props.saveBillHead({ head, ietype, loginId, tenantId });
             this.generateEntry();
+          } else {
+            message.error('清单表头尚未填写完整');
           }
         });
       }
