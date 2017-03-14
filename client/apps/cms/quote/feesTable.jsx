@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { format } from 'client/common/i18n/helpers';
 import { feeUpdate, feeAdd, feeDelete, saveQuoteModel, saveQuoteBatchEdit, loadEditQuote } from 'common/reducers/cmsQuote';
 import messages from './message.i18n';
-import RowUpdater from 'client/apps/cms/common/delegation/rowUpdater';
+import RowUpdater from 'client/components/rowUpdater';
 import { CHARGE_PARAM, FEE_STYLE, FEE_CATEGORY } from 'common/constants';
 import { Select, Table, Button, Input, Switch, message, Mention } from 'antd';
 

@@ -13,7 +13,7 @@ import { openEfModal } from 'common/reducers/cmsDelegation';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/search-bar';
 import NavLink from 'client/components/nav-link';
-import RowUpdater from '../delegation/rowUpdater';
+import RowUpdater from 'client/components/rowUpdater';
 import DeclnoFillModal from './modals/declNoFill';
 import { format } from 'client/common/i18n/helpers';
 import DeclStatusPopover from './declStatusPopover';

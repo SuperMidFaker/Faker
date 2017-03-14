@@ -11,7 +11,7 @@ import { CMS_DELEGATION_STATUS, CMS_DELG_STATUS, CMS_SUP_STATUS, DECL_I_TYPE, DE
 import connectNav from 'client/common/decorators/connect-nav';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import SearchBar from 'client/components/search-bar';
-import RowUpdater from './rowUpdater';
+import RowUpdater from 'client/components/rowUpdater';
 import { loadAcceptanceTable, loadBillForMake, acceptDelg, delDelg,
   setDispStatus, loadCiqTable, delgAssignRecall,
   openAcceptModal, showDispModal } from 'common/reducers/cmsDelegation';

@@ -12,7 +12,7 @@ import {
   showLocModal, loadShipmtLastPoint, deliverConfirm,
   changeStatusFilter,
 } from 'common/reducers/trackingLandStatus';
-import RowUpdater from './rowUpdater';
+import RowUpdater from 'client/components/rowUpdater';
 import VehicleModal from './modals/vehicle-updater';
 import PickupDeliverModal from './modals/pickup-deliver-updater';
 import LocationModal from './modals/intransitLocationUpdater';

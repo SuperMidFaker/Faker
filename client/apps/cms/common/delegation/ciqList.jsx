@@ -9,7 +9,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import messages from './message.i18n';
 import TrimSpan from 'client/components/trimSpan';
 import { format } from 'client/common/i18n/helpers';
-import RowUpdater from './rowUpdater';
+import RowUpdater from 'client/components/rowUpdater';
 
 const formatMsg = format(messages);
 

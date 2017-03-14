@@ -13,7 +13,7 @@ import messages from './message.i18n';
 import TrimSpan from 'client/components/trimSpan';
 import { format } from 'client/common/i18n/helpers';
 import SearchBar from 'client/components/search-bar';
-import RowUpdater from '../delegation/rowUpdater';
+import RowUpdater from 'client/components/rowUpdater';
 import CiqnoFillModal from './modals/ciqNoFill';
 
 const formatMsg = format(messages);

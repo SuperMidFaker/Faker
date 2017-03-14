@@ -17,7 +17,7 @@ import SearchBar from 'client/components/search-bar';
 import TrimSpan from 'client/components/trimSpan';
 import DelegationInfoHubPanel from '../common/modals/DelegationInfoHubPanel';
 import DelgAdvanceExpenseModal from './modals/delgAdvanceExpenseModal';
-import RowUpdater from './rowUpdater';
+import RowUpdater from 'client/components/rowUpdater';
 import ExpEptModal from './modals/expEptModal';
 
 const formatMsg = format(messages);
