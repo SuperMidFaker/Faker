@@ -9,7 +9,7 @@ const initialState = {
   whlist: {
     totalCount: 0,
     current: 1,
-    pageSize: 10,
+    pageSize: 20,
     data: [],
   },
 };

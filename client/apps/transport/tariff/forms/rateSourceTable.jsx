@@ -146,7 +146,7 @@ export default class RateSourceTable extends React.Component {
           if (!rateId) {
             this.props.loadRateEnds({
               rateId: result.data.id,
-              pageSize: 10,
+              pageSize: 20,
               current: 1,
             });
           }
@@ -174,7 +174,7 @@ export default class RateSourceTable extends React.Component {
   handleRowClick = (row) => {
     this.props.loadRateEnds({
       rateId: row._id,
-      pageSize: 10,
+      pageSize: 20,
       current: 1,
     }).then((result) => {
       if (result.error) {

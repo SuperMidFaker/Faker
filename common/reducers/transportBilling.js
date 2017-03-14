@@ -48,7 +48,7 @@ const initialState = {
   },
   billings: {
     searchValue: '',
-    pageSize: 10,
+    pageSize: 20,
     currentPage: 1,
     data: [],
     filters: {

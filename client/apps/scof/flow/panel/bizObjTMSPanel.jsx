@@ -4,7 +4,7 @@ import { Row, Col, Card, Tabs } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { loadCmsBizParams } from 'common/reducers/scofFlow';
 import FlowNodePanel from './flowNodePanel';
-import DelegationPane from './pane/cmsDelegationPane';
+import ShipmentPane from './pane/tmsShipmentPane';
 import { formatMsg } from '../message.i18n';
 
 const TabPane = Tabs.TabPane;
@@ -38,7 +38,7 @@ export default class FlowTmsNodePanel extends Component {
           <Card title={this.msg('bizObject')} bodyStyle={{ padding: 0 }}>
             <Tabs defaultActiveKey="objShipmt">
               <TabPane tab={this.msg('objShipmt')} key="objShipmt">
-                <DelegationPane form={form} />
+                <ShipmentPane form={form} />
               </TabPane>
             </Tabs>
           </Card>

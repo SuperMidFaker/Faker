@@ -36,7 +36,7 @@ const initialState = {
   filters: { name: [], kind: ['all'], status: ['current'] },
   tarifflist: {
     totalCount: 0,
-    pageSize: 10,
+    pageSize: 20,
     current: 1,
     data: [],
   },
@@ -56,7 +56,7 @@ const initialState = {
   ratesSourceLoading: false,
   ratesSourceList: {
     totalCount: 0,
-    pageSize: 10,
+    pageSize: 20,
     current: 1,
     data: [],
   },
@@ -64,7 +64,7 @@ const initialState = {
   ratesEndLoading: false,
   ratesEndList: {
     totalCount: 0,
-    pageSize: 10,
+    pageSize: 20,
     current: 1,
     data: [],
     searchValue: '',

@@ -37,13 +37,13 @@ const initialState = {
   delegationlist: {
     totalCount: 0,
     current: 1,
-    pageSize: 10,
+    pageSize: 20,
     data: [],
   },
   ciqlist: {
     totalCount: 0,
     current: 1,
-    pageSize: 10,
+    pageSize: 20,
     data: [],
   },
   listFilter: {
