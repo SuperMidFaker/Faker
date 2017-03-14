@@ -14,7 +14,6 @@ const Option = Select.Option;
 @connect(
   state => ({
     bizDelegation: state.scofFlow.cmsParams.bizDelegation,
-    cmsNode: state.scofFlow.activeNode,
   }),
 )
 export default class CMSDelegationPane extends Component {
@@ -40,8 +39,8 @@ export default class CMSDelegationPane extends Component {
     name: 'onFinished',
   }]
   render() {
-    const { form: { getFieldDecorator }, cmsNode, bizDelegation: { declPorts, customsBrokers, ciqBrokers } } = this.props;
-    const declWays = cmsNode.kind === 'export' ? DECL_E_TYPE : DECL_I_TYPE;
+    const { form: { getFieldDecorator }, model, bizDelegation: { declPorts, customsBrokers, ciqBrokers } } = this.props;
+    const declWays = model.kind === 'export' ? DECL_E_TYPE : DECL_I_TYPE;
     return (
       <Collapse bordered={false} defaultActiveKey={['properties', 'events']}>
         <Panel header={this.msg('properties')} key="properties">
@@ -49,7 +48,7 @@ export default class CMSDelegationPane extends Component {
             <Col sm={24} lg={8}>
               <FormItem label={this.msg('declCustoms')}>
                 {getFieldDecorator('decl_port', {
-                  initialValue: cmsNode.decl_port,
+                  initialValue: model.decl_port,
                 })(<Select>
                   {
                     declPorts.map(dp => <Option value={dp.code} key={dp.code}>{dp.code}|{dp.name}</Option>)
@@ -60,7 +59,7 @@ export default class CMSDelegationPane extends Component {
             <Col sm={24} lg={8}>
               <FormItem label={this.msg('declWay')}>
                 {getFieldDecorator('decl_way', {
-                  initialValue: cmsNode.decl_way,
+                  initialValue: model.decl_way,
                 })(<Select>
                   {
                     declWays.map(dw =>
@@ -73,7 +72,7 @@ export default class CMSDelegationPane extends Component {
             <Col sm={24} lg={8}>
               <FormItem label={this.msg('transMode')}>
                 {getFieldDecorator('trans_mode', {
-                  initialValue: cmsNode.trans_mode,
+                  initialValue: model.trans_mode,
                 })(<Select>
                   {
                     TRANS_MODE.map(tr =>
@@ -86,7 +85,7 @@ export default class CMSDelegationPane extends Component {
             <Col sm={24} lg={8}>
               <FormItem label={this.msg('customsBroker')}>
                 {getFieldDecorator('customs_parnter_id', {
-                  initialValue: cmsNode.customs_parnter_id,
+                  initialValue: model.customs_parnter_id,
                 })(<Select>
                   {
                     customsBrokers.map(cb =>
@@ -99,7 +98,7 @@ export default class CMSDelegationPane extends Component {
             <Col sm={24} lg={8}>
               <FormItem label={this.msg('ciqBroker')}>
                 {getFieldDecorator('ciq_partner_id', {
-                  initialValue: cmsNode.ciq_partner_id,
+                  initialValue: model.ciq_partner_id,
                 })(<Select>
                   {
                     ciqBrokers.map(cb =>
@@ -111,8 +110,8 @@ export default class CMSDelegationPane extends Component {
             </Col>
             <Col sm={24} lg={8}>
               <FormItem label={this.msg('quote')}>
-                {getFieldDecorator('quote', {
-                  initialValue: cmsNode.quote_no,
+                {getFieldDecorator('quote_no', {
+                  initialValue: model.quote_no,
                 })(<Select />)}
               </FormItem>
             </Col>

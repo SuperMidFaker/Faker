@@ -1,23 +1,22 @@
 import React, { PropTypes } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { Col, Modal, Form, Input, Radio, Row } from 'antd';
+import { Modal, Form, Input, Select } from 'antd';
 import { closeCreateFlowModal } from 'common/reducers/scofFlow';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../../message.i18n';
+import { loadPartners } from 'common/reducers/partner';
+import { PARTNER_ROLES } from 'common/constants';
+import { formatMsg } from '../../message.i18n';
 
-const formatMsg = format(messages);
 const FormItem = Form.Item;
-const RadioButton = Radio.Button;
-const RadioGroup = Radio.Group;
-
+const Option = Select.Option;
 
 @injectIntl
 @connect(state => ({
   visible: state.scofFlow.createFlowModal.visible,
   tenantId: state.account.tenantId,
+  customerPartners: state.partner.partners,
 }),
-  { closeCreateFlowModal }
+  { closeCreateFlowModal, loadPartners }
 )
 @Form.create()
 export default class CreateFlowModal extends React.Component {
@@ -28,60 +27,56 @@ export default class CreateFlowModal extends React.Component {
     form: PropTypes.object.isRequired,
     closeCreateFlowModal: PropTypes.func.isRequired,
   }
-  state = {
-    triggerMode: '',
-  }
-
-  handleModeChange = (e) => {
-    this.setState(
-      { triggerMode: e.target.value }
-    );
+  componentDidMount() {
+    this.props.loadPartners({
+      tenantId: this.props.tenantId,
+      role: PARTNER_ROLES.CUS,
+    });
   }
   handleOk = () => {
-    this.props.form.resetFields();
-    this.props.closeCreateFlowModal();
+    this.props.form.validateFields((err, fields) => {
+      if (!err) {
+        const customer = this.props.customerPartners.filter(pt => pt.parnter_id === fields.customer)[0];
+        this.props.saveFlow({
+          name: fields.name,
+          customer_partner_id: customer.partner_id,
+          customer_partner_name: customer.name,
+        });
+        this.handleCancel();
+      }
+    });
   }
   handleCancel = () => {
     this.props.form.resetFields();
     this.props.closeCreateFlowModal();
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   render() {
-    const { visible, form: { getFieldDecorator } } = this.props;
+    const { visible, customerPartners, form: { getFieldDecorator } } = this.props;
     return (
-      <Modal
-        title={this.msg('createFlow')}
-        visible={visible}
-        maskClosable={false}
-        onOk={this.handleOk}
-        onCancel={this.handleCancel}
+      <Modal title={this.msg('createFlow')} visible={visible} maskClosable={false}
+        onOk={this.handleOk} onCancel={this.handleCancel}
       >
         <Form layout="vertical">
-          <Row gutter={16}>
-            <Col sm={24} lg={24}>
-              <FormItem label={this.msg('flowName')}>
-                {
-                    getFieldDecorator('flow_name', {
-                    })(
-                      <Input placeholder={this.msg('flowName')} />
-                    )
-                  }
-              </FormItem>
-            </Col>
-            <Col sm={24} lg={24}>
-              <FormItem>
-                {
-                    getFieldDecorator('trigger_mode', {
-                    })(
-                      <RadioGroup onChange={this.handleModeChange}>
-                        <RadioButton value="instant"><i className="icon icon-fontello-flash-1" /> {this.msg('instant')}</RadioButton>
-                        <RadioButton value="scheduled"><i className="icon icon-fontello-back-in-time" /> {this.msg('scheduled')}</RadioButton>
-                      </RadioGroup>
-                    )
-                  }
-              </FormItem>
-            </Col>
-          </Row>
+          <FormItem label={this.msg('flowName')}>
+            {
+             getFieldDecorator('name', {
+               rules: [{ required: true, message: '流程名称必填' }],
+             })(<Input placeholder={this.msg('flowName')} />)
+           }
+          </FormItem>
+          <FormItem>
+            {
+             getFieldDecorator('customer', {
+               rules: [{ required: true, message: '流程对应客户必填' }],
+             })(
+               <Select showSearch optionFilterProp="children">
+                 {customerPartners.map(data => (
+                   <Option key={data.partner_id} value={data.partner_id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>)
+              )}
+               </Select>)
+            }
+          </FormItem>
         </Form>
       </Modal>
     );

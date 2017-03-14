@@ -219,18 +219,18 @@ export default class FlowEdgePanel extends Component {
   };
   msg = formatMsg(this.props.intl)
   render() {
-    const { edge, nodesMap } = this.props;
+    const { source, target } = this.props;
     return (
       <Card title={this.msg('flowEdge')} bodyStyle={{ padding: 16 }}>
         <Row gutter={16}>
           <Col sm={12}>
             <FormItem label={this.msg('sourceNode')}>
-              <Input defaultValue={nodesMap[edge.source] && nodesMap[edge.source].name} />
+              <Input defaultValue={source.get('model').name} />
             </FormItem>
           </Col>
           <Col sm={12}>
             <FormItem label={this.msg('targetNode')}>
-              <Input defaultValue={nodesMap[edge.target] && nodesMap[edge.target].name} />
+              <Input defaultValue={target.get('model').name} />
             </FormItem>
           </Col>
           <Col sm={24}>

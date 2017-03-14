@@ -31,7 +31,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_PARTNERS:
       return { ...state, loading: true };
     case actionTypes.LOAD_PARTNERS_SUCCEED:
-      return { ...state, ...action.result.data, loaded: true, loading: false };
+      return { ...state, partners: action.result.data, loaded: true, loading: false };
     case actionTypes.SET_PROVIDER_TYPE:
       return { ...state, providerType: action.providerType };
     case actionTypes.ADD_PARTNER_SUCCEED: {

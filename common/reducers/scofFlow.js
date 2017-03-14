@@ -6,7 +6,7 @@ const actionTypes = createActionTypes('@@welogix/scof/flow/', [
   'OPEN_ADD_TRIGGER_MODAL', 'CLOSE_ADD_TRIGGER_MODAL',
   'LOAD_CMSBIZPARAMS', 'LOAD_CMSBIZPARAMS_SUCCEED', 'LOAD_CMSBIZPARAMS_FAIL',
   'UPDATE_FLOWELEMENT_MAP', 'UPDATE_FLOWELEMENT',
-  'UPDATE_NODES_MAP', 'UPDATE_EDGES_MAP', 'UPDATE_ACTIVE_ELEMENT',
+  'SAVE_GRAPH', 'SAVE_GRAPH_SUCCEED', 'SAVE_GRAPH_FAIL',
   'ADD_ACTIVE_NODE', 'ADD_ACTIVE_EDGE',
 ]);
 
@@ -17,9 +17,7 @@ const initialState = {
   addTriggerModal: {
     visible: false,
   },
-  currentFlow: { customer_parnter_id: null },
-  nodesMap: {},
-  edgesMap: {},
+  currentFlow: { customer_partner_id: null },
   activeNode: { addedActions: [], delActions: [], updActions: [] },
   activeEdge: { addedConds: [], delConds: [], updConds: [] },
   cmsParams: {
@@ -111,10 +109,18 @@ export function loadCmsBizParams(tenantId, ietype) {
   };
 }
 
-export function updateNodesMap(node) {
+export function saveFlowGraph(flowid, nodes, edges) {
   return {
-    type: actionTypes.UPDATE_NODES_MAP,
-    data: node,
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SAVE_GRAPH,
+        actionTypes.SAVE_GRAPH_SUCCEED,
+        actionTypes.SAVE_GRAPH_FAIL,
+      ],
+      endpoint: 'v1/scof/flow/update/graph',
+      method: 'post',
+      data: { flowid, nodes, edges },
+    },
   };
 }
 

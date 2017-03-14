@@ -15,7 +15,6 @@ const TabPane = Tabs.TabPane;
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    ietype: state.scofFlow.activeNode.kind,
   }),
   { loadCmsBizParams }
 )
@@ -26,29 +25,29 @@ export default class FlowCmsNodePanel extends Component {
     form: PropTypes.object.isRequired,
   }
   componentDidMount() {
-    this.props.loadCmsBizParams(this.props.tenantId, this.props.ietype);
+    this.props.loadCmsBizParams(this.props.tenantId, this.props.model.kind);
   }
   msg = formatMsg(this.props.intl)
   render() {
-    const { form } = this.props;
+    const { form, model } = this.props;
     return (
       <Row gutter={16}>
         <Col sm={24} md={8}>
           <Card title={this.msg('cmsFlowNode')} bodyStyle={{ padding: 0 }}>
-            <FlowNodePanel form={form} />
+            <FlowNodePanel form={form} model={model} />
           </Card>
         </Col>
         <Col sm={24} md={16}>
           <Card title={this.msg('bizObject')} bodyStyle={{ padding: 0 }}>
             <Tabs defaultActiveKey="objDelegation">
               <TabPane tab={this.msg('objDelegation')} key="objDelegation">
-                <DelegationPane form={form} />
+                <DelegationPane form={form} model={model} />
               </TabPane>
               <TabPane tab={this.msg('objDeclManifest')} key="objDeclManifest" >
-                <DeclManifestPane form={form} />
+                <DeclManifestPane form={form} model={model} />
               </TabPane>
               <TabPane tab={this.msg('objCustomsDecl')} key="objCustomsDecl" >
-                <CustomsDeclPane form={form} />
+                <CustomsDeclPane form={form} model={model} />
               </TabPane>
             </Tabs>
           </Card>

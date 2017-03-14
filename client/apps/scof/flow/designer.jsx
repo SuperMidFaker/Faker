@@ -3,7 +3,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Button, Card, Menu, Dropdown, Icon, Form, Layout } from 'antd';
-import { updateNodesMap, updateEdgesMap, addActiveNode, addActiveEdge, updateActiveElement } from 'common/reducers/scofFlow';
+import { saveFlowGraph } from 'common/reducers/scofFlow';
 import { uuidWithoutDash } from 'client/common/uuid';
 import FlowEdgePanel from './panel/flowEdgePanel';
 import BizObjCMSPanel from './panel/bizObjCMSPanel';
@@ -17,12 +17,8 @@ const MenuItem = Menu.Item;
   state => ({
     tenantId: state.account.tenantId,
     currentFlow: state.scofFlow.currentFlow,
-    nodesMap: state.scofFlow.nodesMap,
-    edgesMap: state.scofFlow.edgesMap,
-    activeNode: state.scofFlow.activeNode,
-    activeEdge: state.scofFlow.activeEdge,
   }),
-  { updateNodesMap, updateEdgesMap, addActiveNode, addActiveEdge, updateActiveElement }
+  { saveFlowGraph }
 )
 @Form.create()
 export default class FlowDesigner extends React.Component {
@@ -44,10 +40,10 @@ export default class FlowDesigner extends React.Component {
       </Menu>);
     this.state = {
       rightSidercollapsed: true,
+      activeItem: null,
     };
     this.beginAdd = false;
     this.dragging = false;
-    this.activeItem = null;
   }
   componentDidMount() {
     const data = {
@@ -56,7 +52,6 @@ export default class FlowDesigner extends React.Component {
       edges: [
       ],
     };
-      // 第四步：配置G6画布
     this.graph = new window.G6.Graph({
       id: 'flowchart',      // 容器ID
       width: window.innerWidth - 370,    // 画布宽
@@ -66,43 +61,54 @@ export default class FlowDesigner extends React.Component {
         cell: 10,          // 网格大小
       },
     });
-      // 第五步：载入数据
+    const nodeColorMap = {
+      import: 'red',
+      export: 'blue',
+      tms: 'green',
+      cwm: 'gray',
+    };
+    this.graph.node().label('name');
+    this.graph.node().size('', () => [100, 50]);
+    this.graph.node().color('kind', kind => nodeColorMap[kind]);
+    this.graph.node().shape('', () => 'rect');
     this.graph.source(data.nodes, data.edges);
-      // 第六步：渲染关系图
     this.graph.render();
     this.graph.on('dragstart', (ev) => {
       console.log('dragstart', ev);
       this.dragItem = ev.item;
+      // 去掉加边移动情况
       if (!this.beginAdd) {
         this.dragging = true;
       }
     });
     this.graph.on('dragend', (ev) => {
       console.log('dragend', ev);
-      if (this.activeItem) {
-        if (!this.dragItem || this.dragItem.get('id') !== this.activeItem.get('id')) {
-          this.graph.changeMode('select');
-          this.graph.setItemActived(this.activeItem, true);
-          if (this.dragItem) {
-            this.graph.setItemActived(this.dragItem, false);
-          }
-          this.graph.refresh();
-        }
-      }
     });
     this.graph.on('mouseup', (ev) => {
       console.log('mouseup', ev);
-      if (this.dragging) {
-        this.dragging = false;
-        return;
-      }
       if (this.beginAdd) {
         this.beginAdd = false;
         return;
       }
+      if (this.dragging) {
+        this.dragging = false;
+        if (this.state.activeItem) {
+          if (!this.dragItem || this.state.activeItem.get('id') !== this.dragItem.get('id')) {
+            setTimeout(() => {
+              this.graph.changeMode('select');
+              this.graph.setItemActived(this.state.activeItem, true);
+              if (this.dragItem) {
+                this.graph.setItemActived(this.dragItem, false);
+              }
+              this.graph.refresh();
+            }, 10);
+          }
+        }
+        return;
+      }
       const item = ev.item;
-      if (this.activeItem) {
-        if (item && this.activeItem.get('id') === item.get('id')) {
+      if (this.state.activeItem) {
+        if (item && this.state.activeItem.get('id') === item.get('id')) {
           return;
         }
         this.handleActiveValidated(item);
@@ -111,17 +117,10 @@ export default class FlowDesigner extends React.Component {
       }
     });
     this.graph.on('afterAdd', (ev) => {
-      console.log('afteradd');
+      console.log('afteradd', ev);
       const item = ev.item;
-      if (item) {
-        const type = item.get('type');
-        if (type === 'node') {
-          this.handleNodeAdded(item);
-        } else if (type === 'edge') {
-          this.handleEdgeAdded(item);
-        }
-        this.activeItem = item;
-      }
+      this.graph.update(item, { loaded: true });
+      this.setState({ activeItem: item });
     });
   }
   msg = formatMsg(this.props.intl)
@@ -132,32 +131,24 @@ export default class FlowDesigner extends React.Component {
       case 'nodeimport':
         this.graph.beginAdd('node', {
           id,
-          shape: 'rect',
-          color: 'red',
           kind: 'import',
         });
         break;
       case 'nodeexport':
         this.graph.beginAdd('node', {
           id,
-          shape: 'rect',
-          color: 'blue',
           kind: 'export',
         });
         break;
       case 'nodetms':
         this.graph.beginAdd('node', {
           id,
-          shape: 'rect',
-          color: 'green',
           kind: 'tms',
         });
         break;
       case 'nodecwm':
         this.graph.beginAdd('node', {
           id,
-          shape: 'rect',
-          color: 'gray',
           kind: 'cwm',
         });
         break;
@@ -177,11 +168,12 @@ export default class FlowDesigner extends React.Component {
   }
   handleMenuClick = (ev) => {
     this.beginAdd = true;
-    if (this.props.activeNode.uuid) {
+    const activeItem = this.state.activeItem;
+    if (activeItem) {
       this.props.form.validateFields((err, values) => {
         if (!err) {
-          const nodeVal = { ...this.props.activeNode, ...values };
-          this.props.updateNodesMap(nodeVal);
+          const model = { ...activeItem.get('model'), ...values };
+          this.graph.update(activeItem, model);
           this.props.form.resetFields();
           this.addNode(ev.key);
         } else {
@@ -194,11 +186,12 @@ export default class FlowDesigner extends React.Component {
   }
   handleAddEdge = () => {
     this.beginAdd = true;
-    if (this.props.activeNode.uuid) {
+    const activeItem = this.state.activeItem;
+    if (activeItem) {
       this.props.form.validateFields((err, values) => {
         if (!err) {
-          const nodeVal = { ...this.props.activeNode, ...values };
-          this.props.updateNodesMap(nodeVal);
+          const model = { ...activeItem.get('model'), ...values };
+          this.graph.update(activeItem, model);
           this.props.form.resetFields();
           this.addEdge();
         } else {
@@ -212,6 +205,7 @@ export default class FlowDesigner extends React.Component {
   handleRemoveItem = () => {
     this.graph.del();
     this.graph.refresh();
+    this.setState({ activeItem: null });
   }
   msg = formatMsg(this.props.intl)
 
@@ -220,86 +214,55 @@ export default class FlowDesigner extends React.Component {
       rightSidercollapsed: !this.state.rightSidercollapsed,
     });
   }
-  handleNodeAdded = (item) => {
-    const uuid = item.get('id');
-    const model = item.get('model');
-    this.props.addActiveNode({
-      xpos: model.x, ypos: model.y, uuid,
-      kind: model.kind, loaded: true,
-    });
-  }
-  handleEdgeAdded = (item) => {
-    this.props.addActiveEdge({
-      uuid: item.get('id'), loaded: true,
-      source: item.get('model').source, target: item.get('model').target,
-    });
-  }
   handleActiveValidated = (item) => {
-    const { activeNode, activeEdge } = this.props;
-    if (activeNode.uuid) {
+    const activeItem = this.state.activeItem;
+    if (activeItem) {
       this.props.form.validateFields((err, values) => {
         if (err) {
           this.graph.changeMode('select');
-          this.graph.setItemActived(this.activeItem, true);
+          this.graph.setItemActived(activeItem, true);
           if (item) {
             this.graph.setItemActived(item, false);
           }
           this.graph.refresh();
         } else {
-          const nodeVal = { ...activeNode, ...values };
-          this.props.updateNodesMap(nodeVal);
+          this.graph.update(activeItem, values);
           this.props.form.resetFields();
           this.handleNewItemLoad(item);
         }
       });
-    } else if (activeEdge.uuid) {
-      this.props.updateEdgesMap(activeEdge);
+    } else {
       this.handleNewItemLoad(item);
     }
   }
   handleNewItemLoad = (item) => {
-    let activeNode = {};
-    let activeEdge = {};
     if (item) {
-      const uuid = item.get('id');
-      const type = item.get('type');
-      if (type === 'node') {
-        if (this.props.nodesMap[uuid]) {
-          if (!this.props.nodesMap[uuid].loaded) {
-            this.props.load();
-          } else {
-            activeNode = this.props.nodesMap[uuid];
-            this.props.updateActiveElement(activeNode, activeEdge);
-          }
-        }
-      } else if (type === 'edge') {
-        if (this.props.edgesMap[uuid]) {
-          if (!this.props.edgesMap[uuid].loaded) {
-            this.props.load();
-          } else {
-            activeEdge = this.props.edgesMap[uuid];
-            this.props.updateActiveElement(activeNode, activeEdge);
-          }
-        }
+      if (!item.get('model').loaded) {
+        this.props.load().then();
+      } else {
+        this.setState({ activeItem: item });
       }
     } else {
-      this.props.updateActiveElement(activeNode, activeEdge);
+      this.setState({ activeItem: item });
     }
-    this.activeItem = item;
+    this.graph.refresh();
   }
   handleSaveBtnClick = () => {
-    console.log(this.graph);
-    this.props.form.validateFields((err, values) => {
-      if (!err) {
-        const elementVal = { ...this.props.activeElement, ...values };
-        this.props.updateFlowElementMap(elementVal.uuid, elementVal);
-        // todo graph node edge disconnected
-        this.props.saveFlowGraph(this.props.elementMap);
-      }
-    });
+    const activeItem = this.state.activeItem;
+    if (activeItem) {
+      const values = this.props.form.getFieldsValue();
+      this.graph.update(activeItem, values);
+    }
+    const graphItems = this.graph.get('items');
+    const nodes = graphItems.filter(item => item.get('type') === 'node').map(item => item.get('model'));
+    const edges = graphItems.filter(item => item.get('type') === 'edge').map(item => item.get('model'));
+    console.log(nodes, edges);
+    // todo graph node edge disconnected
+    this.props.saveFlowGraph(this.props.currentFlow.uuid, nodes, edges);
   }
   render() {
-    const { form, submitting, listCollapsed, activeNode, activeEdge } = this.props;
+    const { form, submitting, listCollapsed } = this.props;
+    const { activeItem } = this.state;
     return (
       <Layout>
         <Layout>
@@ -339,15 +302,15 @@ export default class FlowDesigner extends React.Component {
             >
               <div id="flowchart" />
             </Card>
-            {activeNode.uuid &&
+            {activeItem &&
             <Form layout="vertical">
-              {(activeNode.kind === 'import' || activeNode.kind === 'export') &&
-              <BizObjCMSPanel form={form} />
+              {activeItem.get('type') === 'node' && (activeItem.get('model').kind === 'import' || activeItem.get('model').kind === 'export') &&
+              <BizObjCMSPanel form={form} model={activeItem.get('model')} />
+              }
+              {activeItem.get('type') === 'edge' &&
+              <FlowEdgePanel model={activeItem.get('model')} source={activeItem.get('source')} target={activeItem.get('target')} />
               }
             </Form>
-            }
-            {activeEdge.uuid &&
-            <FlowEdgePanel />
             }
           </Content>
         </Layout>
