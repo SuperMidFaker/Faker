@@ -5,7 +5,8 @@ const actionTypes = createActionTypes('@@welogix/cms/settings/', [
   'LOAD_BILL_TEMPLATES', 'LOAD_BILL_TEMPLATES_SUCCEED', 'LOAD_BILL_TEMPLATES_FAIL',
   'CREATE_BILL_TEMPLATE', 'CREATE_BILL_TEMPLATE_SUCCEED', 'CREATE_BILL_TEMPLATE_FAIL',
   'DELETE_TEMPLATE', 'DELETE_TEMPLATE_SUCCEED', 'DELETE_TEMPLATE_FAIL',
-  'TOGGLE_BILL_TEMPLATE',
+  'TOGGLE_BILL_TEMPLATE', 'OPEN_ADD_MODEL', 'CLOSE_ADD_MODEL',
+  'LOAD_RELATED_CUSTOMERS', 'LOAD_RELATED_CUSTOMERS_SUCCEED', 'LOAD_RELATED_CUSTOMERS_FAIL',
 ]);
 
 const initialState = {
@@ -15,7 +16,9 @@ const initialState = {
     visible: false,
     templateName: '',
   },
-  billHead: [],
+  billHead: {},
+  visibleAddModal: false,
+  relatedCustomers: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -34,6 +37,12 @@ export default function reducer(state = initialState, action) {
     case actionTypes.TOGGLE_BILL_TEMPLATE: {
       return { ...state, billTemplateModal: { ...state.billTemplateModal, ...action.data } };
     }
+    case actionTypes.OPEN_ADD_MODEL:
+      return { ...state, visibleAddModal: true };
+    case actionTypes.CLOSE_ADD_MODEL:
+      return { ...state, visibleAddModal: false };
+    case actionTypes.LOAD_RELATED_CUSTOMERS_SUCCEED:
+      return { ...state, relatedCustomers: action.result.data };
     default:
       return state;
   }
@@ -88,5 +97,28 @@ export function toggleBillTempModal(visible, operation, templateName) {
   return {
     type: actionTypes.TOGGLE_BILL_TEMPLATE,
     data: { visible, operation, templateName },
+  };
+}
+
+export function openAddModal() {
+  return { type: actionTypes.OPEN_ADD_MODEL };
+}
+
+export function closeAddModal() {
+  return { type: actionTypes.CLOSE_ADD_MODEL };
+}
+
+export function loadRelatedCustomers(templatedId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_RELATED_CUSTOMERS,
+        actionTypes.LOAD_RELATED_CUSTOMERS_SUCCEED,
+        actionTypes.LOAD_RELATED_CUSTOMERS_FAIL,
+      ],
+      endpoint: 'v1/cms/settings/related/customers/load',
+      method: 'get',
+      params: { templatedId },
+    },
   };
 }

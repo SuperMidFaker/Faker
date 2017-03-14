@@ -67,7 +67,7 @@ export default class HeadForm extends React.Component {
     };
     return (
       <Collapse defaultActiveKey={['header']} className="content-min-width" style={{ marginBottom: 8 }}>
-        <Panel key="header">
+        <Panel key="header" header="清单表头">
           <Form horizontal>
             <Row>
               <RelationAutoCompSelect label={this.msg('forwardName')} intl={intl}

@@ -106,7 +106,7 @@ export class RelationAutoCompSelect extends React.Component {
     const initialNameValue = formData && formData[nameField];
     return (
       <Col md={24} lg={9}>
-        <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} label={label} required>
+        <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} label={label}>
           <Row>
             <Col span="12">
               <FormItem style={{ marginBottom: 0 }}>
@@ -201,7 +201,7 @@ DeclCustoms.propTypes = {
 // 运输方式、运输名称
 export function Transport(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
-  const { getFieldDecorator, getFieldValue, formData, formRequire } = props;
+  const { getFieldDecorator, formData, formRequire } = props;
   const modeProps = {
     outercol: 24,
     col: 8,
@@ -219,7 +219,6 @@ export function Transport(props) {
     col: 8,
     field: 'traf_name',
     label: msg('transModeName'),
-    rules: getFieldValue('traf_mode') === '2' ? [{ required: true }] : [{ required: false }],
     formData,
     getFieldDecorator,
   };
@@ -237,7 +236,6 @@ export function Transport(props) {
 Transport.propTypes = {
   intl: intlShape.isRequired,
   getFieldDecorator: PropTypes.func.isRequired,
-  getFieldValue: PropTypes.func.isRequired,
   formData: PropTypes.object.isRequired,
   formRequire: PropTypes.object.isRequired,
 };
@@ -245,15 +243,13 @@ Transport.propTypes = {
 // 提运单号、航次号
 export function DelVoyageNo(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
-  const { getFieldDecorator, getFieldValue, formData } = props;
-  const trafMode = getFieldValue('traf_mode') === '2' || getFieldValue('traf_mode') === '5';
+  const { getFieldDecorator, formData } = props;
   const blwbProps = {
     outercol: 24,
     col: 8,
     field: 'bl_wb_no',
     label: msg('ladingWayBill'),
     formData,
-    rules: trafMode ? [{ required: true }] : [{ required: false }],
     getFieldDecorator,
   };
   const voyageNoProps = {
@@ -262,7 +258,6 @@ export function DelVoyageNo(props) {
     field: 'voyage_no',
     label: msg('voyageNo'),
     formData,
-    rules: getFieldValue('traf_mode') === '2' ? [{ required: true }] : [{ required: false }],
     getFieldDecorator,
   };
   return (
@@ -279,7 +274,6 @@ export function DelVoyageNo(props) {
 DelVoyageNo.propTypes = {
   intl: intlShape.isRequired,
   getFieldDecorator: PropTypes.func.isRequired,
-  getFieldValue: PropTypes.func.isRequired,
   formData: PropTypes.object.isRequired,
 };
 
@@ -300,7 +294,6 @@ export function TradeRemission(props) {
     getFieldDecorator,
     searchKeyFn: opt => opt.value,
   };
-  const declWay = formData.decl_way_code !== '0102' && formData.decl_way_code !== '0103';
   const remissionProps = {
     outercol: 24,
     col: 8,
@@ -309,7 +302,6 @@ export function TradeRemission(props) {
       value: rm.rm_mode,
       text: `${rm.rm_mode} | ${rm.rm_spec}`,
     })),
-    rules: declWay ? [{ required: true }] : [{ required: false }],
     label: msg('rmModeName'),
     formData,
     getFieldDecorator,
@@ -504,18 +496,11 @@ UsageTrade.propTypes = {
 // 费用
 function FeeFormItem(props) {
   const { feeField, currencyField, markField, label, formData,
-    getFieldDecorator, formRequire, require, feeCurrReq, insurCurrReq } = props;
-  let currReq = false;
-  if (currencyField === 'fee_curr') {
-    currReq = feeCurrReq && require;
-  } else if (currencyField === 'insur_curr') {
-    currReq = insurCurrReq && require;
-  }
+    getFieldDecorator, formRequire } = props;
   formRequire.currencies.unshift({ curr_code: -1, curr_name: '[空]' });
   const feeProps = {
     field: feeField,
     formData,
-    rules: require ? [{ required: true }] : [{ required: false }],
     getFieldDecorator,
   };
   const currencyProps = {
@@ -525,14 +510,12 @@ function FeeFormItem(props) {
       text: `${curr.curr_code} | ${curr.curr_name}`,
     })),
     formData,
-    rules: currReq ? [{ required: true }] : [{ required: false }],
     getFieldDecorator,
     searchKeyFn: opt => opt.value,
   };
   const markProps = {
     field: markField,
     formData,
-    rules: require ? [{ required: true }] : [{ required: false }],
     getFieldDecorator,
     options: CMS_FEE_UNIT,
   };
@@ -565,26 +548,21 @@ FeeFormItem.propTypes = {
 
 export function Fee(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
-  const { getFieldValue } = props;
-  const fobRequire = getFieldValue('trxn_mode') === '3';
-  const ciRequire = getFieldValue('trxn_mode') === '4';
-  const feeCurrReq = getFieldValue('fee_mark') !== '1';
-  const insurCurrReq = getFieldValue('insur_mark') !== '1';
   return (
     <Col md={24} lg={15}>
       <Col sm={24} md={8}>
         <FeeFormItem {...props} label={msg('freightCharge')} feeField="fee_rate"
-          currencyField="fee_curr" markField="fee_mark" require={fobRequire || ciRequire} feeCurrReq={feeCurrReq}
+          currencyField="fee_curr" markField="fee_mark"
         />
       </Col>
       <Col sm={24} md={8}>
         <FeeFormItem {...props} label={msg('insurance')} feeField="insur_rate"
-          currencyField="insur_curr" markField="insur_mark" require={fobRequire} insurCurrReq={insurCurrReq}
+          currencyField="insur_curr" markField="insur_mark"
         />
       </Col>
       <Col sm={24} md={8}>
         <FeeFormItem {...props} label={msg('sundry')} feeField="other_rate"
-          currencyField="other_curr" markField="other_mark" require={false}
+          currencyField="other_curr" markField="other_mark"
         />
       </Col>
     </Col>
