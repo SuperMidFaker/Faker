@@ -4,7 +4,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Button, Table, Select, Input, message } from 'antd';
 import { loadCertMarks, saveCertMark, delbillCertmark } from 'common/reducers/cmsManifest';
 import { format } from 'client/common/i18n/helpers';
-import messages from './message.i18n';
+import messages from '../../message.i18n';
 
 const formatMsg = format(messages);
 const Option = Select.Option;

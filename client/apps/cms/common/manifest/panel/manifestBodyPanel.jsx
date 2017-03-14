@@ -2,12 +2,12 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Button, Dropdown, Menu, Table, Icon, Input, Select, message, Popconfirm } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import RowUpdater from './rowUpdater';
+import RowUpdater from '../../form/rowUpdater';
 import { updateHeadNetWt, loadBillBody, openAmountModel, deleteSelectedBodies } from 'common/reducers/cmsManifest';
 import { getItemForBody, getHscodeForBody } from 'common/reducers/cmsTradeitem';
 import { format } from 'client/common/i18n/helpers';
 import ExcelUpload from 'client/components/excelUploader';
-import messages from './message.i18n';
+import messages from '../../form/message.i18n';
 import { createFilename } from 'client/util/dataTransform';
 import AmountModel from '../modals/amountDivid';
 
@@ -142,7 +142,7 @@ export default class SheetBodyPanel extends React.Component {
   constructor(props) {
     super(props);
     const bodies = props.data;
-    if (!props.readonly && this.props.type !== 'entry') {
+    if (!props.readonly) {
       bodies.push({ id: '__ops' });
     }
     const calresult = calculateTotal(bodies);
@@ -172,7 +172,7 @@ export default class SheetBodyPanel extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.data !== this.props.data) {
       const bodies = [...nextProps.data];
-      if (!nextProps.readonly && this.props.type !== 'entry') {
+      if (!nextProps.readonly) {
         bodies.push({ id: '__ops' });
       }
       const calresult = calculateTotal(bodies);
@@ -254,32 +254,31 @@ export default class SheetBodyPanel extends React.Component {
   }
 
   getColumns() {
-    const { type, readonly, units, countries, currencies, exemptions } = this.props;
+    const { readonly, units, countries, currencies, exemptions } = this.props;
     const { editIndex, bodies, editBody, pagination } = this.state;
     const totalCount = bodies.length;
     const columns = [{
       title: this.msg('seqNumber'),
       dataIndex: 'g_no',
       width: 45,
-      fixed: 'left',
     }];
-    if (type === 'bill') {
-      columns.push({
-        title: this.msg('copGNo'),
-        width: 150,
-        render: (o, record, index) =>
-          <ColumnInput field="cop_g_no" inEdit={index === editIndex} record={record}
-            onChange={this.handleEditChange} edit={editBody}
-          />,
-      }, {
-        title: this.msg('emGNo'),
-        width: 100,
-        render: (o, record, index) =>
-          <ColumnInput field="em_g_no" inEdit={index === editIndex} record={record}
-            onChange={this.handleEditChange} edit={editBody}
-          />,
-      });
-    }
+
+    columns.push({
+      title: this.msg('copGNo'),
+      width: 150,
+      render: (o, record, index) =>
+        <ColumnInput field="cop_g_no" inEdit={index === editIndex} record={record}
+          onChange={this.handleEditChange} edit={editBody}
+        />,
+    }, {
+      title: this.msg('emGNo'),
+      width: 100,
+      render: (o, record, index) =>
+        <ColumnInput field="em_g_no" inEdit={index === editIndex} record={record}
+          onChange={this.handleEditChange} edit={editBody}
+        />,
+    });
+
     columns.push({
       title: this.msg('codeT'),
       width: 110,
@@ -438,7 +437,7 @@ export default class SheetBodyPanel extends React.Component {
       width: 90,
       fixed: 'right',
       render: (o, record, index) => {
-        if (readonly || this.props.type === 'entry') {
+        if (readonly) {
           return <span />;
         } else if (index === editIndex) {
           return (
@@ -678,11 +677,6 @@ export default class SheetBodyPanel extends React.Component {
   handleUploaded = () => {
     this.props.loadBillBody(this.props.billSeqNo);
   }
-  handleEntrybodyExport = () => {
-    const preSeqNo = this.props.entryHead.pre_entry_seq_no;
-    const timestamp = Date.now().toString().substr(-6);
-    window.open(`${API_ROOTS.default}v1/cms/manifest/declare/export/entry_${preSeqNo}_${timestamp}.xlsx?headId=${this.props.headNo}`);
-  }
   handleDeleteSelected = () => {
     const selectedIds = this.state.selectedRowKeys;
     this.props.deleteSelectedBodies(selectedIds).then((result) => {
@@ -696,7 +690,7 @@ export default class SheetBodyPanel extends React.Component {
   render() {
     const { totGrossWt, totWetWt, totTrade, totPcs } = this.state;
     const selectedRows = this.state.selectedRowKeys;
-    const disabled = this.props.readonly || this.props.type === 'entry';
+    const disabled = this.props.readonly;
     const rowSelection = {
       selectedRowKeys: selectedRows,
       onChange: (selectedRowKeys) => {
@@ -782,9 +776,6 @@ export default class SheetBodyPanel extends React.Component {
           }
           <div className="toolbar-right">
             {billBodyToolbar}
-            {this.props.type === 'entry' &&
-              <Button icon="export" onClick={this.handleEntrybodyExport}>导出表体数据</Button>
-            }
           </div>
         </div>
         <div className="panel-body table-panel">

@@ -1,20 +1,18 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Button, Form, Row, Col } from 'antd';
+import { Form, Row, Col } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import FormInput from './formInput';
+import FormInput from '../../form/formInput';
 import {
   RelationAutoCompSelect, PortDate, Transport, DeclCustoms, DelVoyageNo, TermConfirm,
   TradeRemission, CountryAttr, DestInvoice, UsageTrade, Fee, ContainerNo, PackWeight,
   RaDeclManulNo, StroeYard,
-} from './headFormItems';
+} from '../../form/headFormItems';
 import { loadSearchedParam, saveBillHead } from 'common/reducers/cmsManifest';
 import { format } from 'client/common/i18n/helpers';
-import globalMessage from 'client/common/root.i18n';
-import messages from './message.i18n';
+import messages from '../message.i18n';
 
 const formatMsg = format(messages);
-const formatGlobalMsg = format(globalMessage);
 
 const CODE_AS_STATE = {
   trade_co: 'trades',
@@ -29,7 +27,7 @@ const CODE_AS_STATE = {
   }),
   { loadSearchedParam, saveBillHead }
 )
-export default class SheetHeadPanel extends React.Component {
+export default class CDFHeadPanel extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     ietype: PropTypes.string.isRequired,
@@ -70,15 +68,10 @@ export default class SheetHeadPanel extends React.Component {
   }
   render() {
     const { form, readonly, formData, formRequire, ietype, intl, type, ruleRequired } = this.props;
-    const billHeadToolbar = (!readonly &&
-    <Button type="primary" onClick={this.handleSheetSave} icon="save">
-      {formatGlobalMsg(this.props.intl, 'save')}
-    </Button>
-      );
     const formProps = {
       getFieldDecorator: form.getFieldDecorator,
       getFieldValue: form.getFieldValue,
-      disabled: readonly || type === 'entry',
+      disabled: true,
       formData,
       required: ruleRequired,
     };
@@ -89,25 +82,18 @@ export default class SheetHeadPanel extends React.Component {
     };
     return (
       <div className="pane">
-        <div className="pane-header">
-          <div className="toolbar-right">
-            {billHeadToolbar}
-          </div>
-        </div>
         <div className="pane-content">
           <Form layout="horizontal">
-            {type === 'entry' &&
-              <Row>
-                <FormInput field="pre_entry_id" outercol={9} col={6}
-                  label={this.msg('preEntryId')} {...entryFormProps}
+            <Row>
+              <FormInput field="pre_entry_id" outercol={9} col={6}
+                label={this.msg('preEntryId')} {...entryFormProps}
+              />
+              <Col span="15">
+                <FormInput field="entry_id" outercol={16} col={4}
+                  label={this.msg('formEntryId')} {...entryFormProps}
                 />
-                <Col span="15">
-                  <FormInput field="entry_id" outercol={16} col={4}
-                    label={this.msg('formEntryId')} {...entryFormProps}
-                  />
-                </Col>
-              </Row>
-            }
+              </Col>
+            </Row>
             <Row>
               <RelationAutoCompSelect label={this.msg('forwardName')} intl={intl}
                 codeField="trade_co" nameField="trade_name"

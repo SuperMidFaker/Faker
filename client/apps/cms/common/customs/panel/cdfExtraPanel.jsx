@@ -4,10 +4,10 @@ import { Collapse } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { setPaneTabkey } from 'common/reducers/cmsManifest';
 import { format } from 'client/common/i18n/helpers';
-import messages from './message.i18n';
-import CertMarkPane from '../tabpanes/certMarkPane';
-import DocuMarkPane from '../tabpanes/docuMarkPane';
-import ContainersPane from '../tabpanes/containersPane';
+import messages from '../message.i18n';
+import CertMarkPane from './pane/certMarkPane';
+import DocuMarkPane from './pane/docuMarkPane';
+import ContainersPane from './pane/containersPane';
 
 const formatMsg = format(messages);
 const Panel = Collapse.Panel;
@@ -20,7 +20,7 @@ const Panel = Collapse.Panel;
   }),
   { setPaneTabkey }
 )
-export default class SheetExtraPanel extends React.Component {
+export default class CDFExtraPanel extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     ietype: PropTypes.string,

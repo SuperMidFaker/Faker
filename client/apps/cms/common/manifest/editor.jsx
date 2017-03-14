@@ -6,10 +6,10 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { addNewBillBody, delBillBody, editBillBody, saveBillHead,
   openMergeSplitModal, billDelete, updateHeadNetWt, loadBillBody } from 'common/reducers/cmsManifest';
 import NavLink from 'client/components/nav-link';
-import SheetHeadPanel from './forms/SheetHeadPanel';
-import SheetBodyPanel from './forms/SheetBodyPanel';
+import SheetHeadPanel from './panel/manifestHeadPanel';
+import SheetBodyPanel from './panel/manifestBodyPanel';
 import MergeSplitModal from './modals/mergeSplit';
-import SheetExtraPanel from './forms/SheetExtraPanel';
+import SheetExtraPanel from './panel/manifestExtraPanel';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 
