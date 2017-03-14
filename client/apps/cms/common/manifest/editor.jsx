@@ -66,12 +66,18 @@ export default class ManifestEditor extends React.Component {
       if (result.error) {
         message.error(result.error.message);
       } else {
-        this.generateEntry();
+        this.props.form.validateFields((errors) => {
+          if (!errors) {
+            const { billHead, ietype, loginId, tenantId } = this.props;
+            const head = { ...billHead, ...this.props.form.getFieldsValue() };
+            this.props.saveBillHead({ head, ietype, loginId, tenantId });
+            this.generateEntry();
+          }
+        });
       }
     });
   }
   generateEntry = () => {
-    this.handleBillSave();
     const billHead = this.props.billHead;
     const bodyDatas = this.props.billBodies;
     let wtSum = 0;
@@ -80,6 +86,9 @@ export default class ManifestEditor extends React.Component {
         wtSum += Number(body.wet_wt);
       }
     });
+    if (bodyDatas.length === 0 || wtSum === 0) {
+      return message.error('请检查表体数据是否正确');
+    }
     if (wtSum > billHead.gross_wt) {
       this.props.updateHeadNetWt(billHead.bill_seq_no, wtSum);
       message.error('毛重必须大于总净重');
@@ -112,11 +121,11 @@ export default class ManifestEditor extends React.Component {
     this.context.router.push({ pathname });
   }
   handleBillSave = () => {
-    this.props.form.validateFields((errors) => {
-      if (!errors) {
-        const { billHead, ietype, loginId, tenantId } = this.props;
-        const head = { ...billHead, ...this.props.form.getFieldsValue() };
-        this.props.saveBillHead({ head, ietype, loginId, tenantId }).then(
+    // this.props.form.validateFields((errors) => {
+    //   if (!errors) {
+    const { billHead, ietype, loginId, tenantId } = this.props;
+    const head = { ...billHead, ...this.props.form.getFieldsValue() };
+    this.props.saveBillHead({ head, ietype, loginId, tenantId }).then(
           (result) => {
             if (result.error) {
               message.error(result.error.message);
@@ -125,8 +134,8 @@ export default class ManifestEditor extends React.Component {
             }
           }
         );
-      }
-    });
+    //   }
+    // });
   }
   handleBillDelete = () => {
     this.props.billDelete(this.props.billHead.bill_seq_no).then(
