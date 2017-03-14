@@ -1,18 +1,20 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Collapse, Form, Row, Col } from 'antd';
+import { Button, Form, Row, Col } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import FormInput from './formInput';
+import FormInput from '../../form/formInput';
 import {
-  RelationAutoCompSelect, PortDate, Transport, DeclCustoms, DelVoyageNo,
-  TradeRemission, CountryAttr, DestInvoice, UsageTrade, Fee,
-} from './headFormItems';
-import { loadSearchedParam } from 'common/reducers/cmsManifest';
+  RelationAutoCompSelect, PortDate, Transport, DeclCustoms, DelVoyageNo, TermConfirm,
+  TradeRemission, CountryAttr, DestInvoice, UsageTrade, Fee, ContainerNo, PackWeight,
+  RaDeclManulNo, StroeYard,
+} from '../../form/headFormItems';
+import { loadSearchedParam, saveBillHead } from 'common/reducers/cmsManifest';
 import { format } from 'client/common/i18n/helpers';
-import messages from './message.i18n';
+import globalMessage from 'client/common/root.i18n';
+import messages from '../message.i18n';
 
 const formatMsg = format(messages);
-const Panel = Collapse.Panel;
+const formatGlobalMsg = format(globalMessage);
 
 const CODE_AS_STATE = {
   trade_co: 'trades',
@@ -24,20 +26,28 @@ const CODE_AS_STATE = {
 @connect(
   state => ({
     formRequire: state.cmsManifest.params,
-    ietype: state.cmsSettings.template.ietype,
   }),
-  { loadSearchedParam }
+  { loadSearchedParam, saveBillHead }
 )
-export default class HeadForm extends React.Component {
+export default class ManifestHeadPanel extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     ietype: PropTypes.string.isRequired,
+    readonly: PropTypes.bool,
     form: PropTypes.object.isRequired,
+    type: PropTypes.oneOf(['bill', 'entry']),
+    ruleRequired: PropTypes.bool,
     formData: PropTypes.object.isRequired,
     formRequire: PropTypes.object.isRequired,
     loadSearchedParam: PropTypes.func.isRequired,
+    onSave: PropTypes.func.isRequired,
   }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
+  handleSheetSave = (ev) => {
+    ev.stopPropagation();
+    ev.preventDefault();
+    this.props.onSave();
+  }
   handleRelationSel = (codeField, nameField, value) => {
     const rels = this.props.formRequire[CODE_AS_STATE[codeField]].filter(rel => rel.code === value);
     if (rels.length === 1) {
@@ -59,20 +69,37 @@ export default class HeadForm extends React.Component {
     this.props.loadSearchedParam({ paramType: 'port', search });
   }
   render() {
-    const { form, formData, formRequire, ietype, intl } = this.props;
+    const { form, readonly, formData, formRequire, ietype, intl, type, ruleRequired } = this.props;
+    const billHeadToolbar = (!readonly &&
+    <Button type="primary" onClick={this.handleSheetSave} icon="save">
+      {formatGlobalMsg(this.props.intl, 'save')}
+    </Button>
+      );
     const formProps = {
       getFieldDecorator: form.getFieldDecorator,
       getFieldValue: form.getFieldValue,
+      disabled: readonly,
+      formData,
+      required: ruleRequired,
+    };
+    const entryFormProps = {
+      getFieldDecorator: form.getFieldDecorator,
+      disabled: readonly,
       formData,
     };
     return (
-      <Collapse defaultActiveKey={['header']} className="content-min-width" style={{ marginBottom: 8 }}>
-        <Panel key="header" header="清单表头">
-          <Form horizontal>
+      <div className="pane">
+        <div className="pane-header">
+          <div className="toolbar-right">
+            {billHeadToolbar}
+          </div>
+        </div>
+        <div className="pane-content">
+          <Form layout="horizontal">
             <Row>
               <RelationAutoCompSelect label={this.msg('forwardName')} intl={intl}
                 codeField="trade_co" nameField="trade_name"
-                codeRules={[{ required: false }]} nameRules={[{ required: false }]}
+                codeRules={[{ required: true }]} nameRules={[{ required: true }]}
                 onSelect={this.handleRelationSel} onChange={this.handleRelationChange}
                 {...formProps} options={formRequire.trades}
               />
@@ -84,7 +111,7 @@ export default class HeadForm extends React.Component {
               <RelationAutoCompSelect label={
                 ietype === 'import' ? this.msg('ownerConsumeName') : this.msg('ownerProduceName')
               } codeField="owner_code" nameField="owner_name" intl={intl}
-                codeRules={[{ required: false }]} nameRules={[{ required: false }]}
+                codeRules={[{ required: true }]} nameRules={[{ required: true }]}
                 onSelect={this.handleRelationSel} onChange={this.handleRelationChange}
                 {...formProps} options={formRequire.owners}
               />
@@ -93,7 +120,7 @@ export default class HeadForm extends React.Component {
             <Row>
               <RelationAutoCompSelect label={this.msg('agentName')}
                 codeField="agent_code" nameField="agent_name" intl={intl}
-                codeRules={[{ required: false }]} nameRules={[{ required: false }]}
+                codeRules={[{ required: true }]} nameRules={[{ required: true }]}
                 onSelect={this.handleRelationSel} onChange={this.handleRelationChange}
                 {...formProps} options={formRequire.agents}
               />
@@ -106,21 +133,37 @@ export default class HeadForm extends React.Component {
             <Row>
               <CountryAttr {...formProps} intl={intl} formRequire={formRequire} ietype={ietype} />
               <DestInvoice {...formProps} intl={intl} formRequire={formRequire}
-                ietype={ietype} onSearch={this.handlePortSearch}
+                ietype={ietype} type={type} onSearch={this.handlePortSearch}
               />
             </Row>
             <Row>
               <UsageTrade {...formProps} intl={intl} formRequire={formRequire} />
               <Fee {...formProps} intl={intl} formRequire={formRequire} ietype={ietype} />
             </Row>
-            <Col span="24">
+            <Row>
+              <ContainerNo {...formProps} intl={intl} formRequire={formRequire} />
+              <PackWeight {...formProps} intl={intl} formRequire={formRequire} ietype={ietype} />
+            </Row>
+            <Row>
+              <Col span={9}>
+                <FormInput field="cert_mark" outercol={24} col={4}
+                  label={this.msg('certMark')} {...entryFormProps}
+                />
+              </Col>
+              <TermConfirm {...formProps} intl={intl} formRequire={formRequire} />
+            </Row>
+            <Row>
+              <RaDeclManulNo {...formProps} intl={intl} formRequire={formRequire} />
+              <StroeYard {...formProps} intl={intl} formRequire={formRequire} />
+            </Row>
+            <Row>
               <FormInput field="note" outercol={9} col={4} type="textarea"
-                label={this.msg('markNotes')} {...formProps}
+                label={this.msg('markNotes')} {...entryFormProps}
               />
-            </Col>
+            </Row>
           </Form>
-        </Panel>
-      </Collapse>
+        </div>
+      </div>
     );
   }
 }

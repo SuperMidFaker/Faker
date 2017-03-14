@@ -53,7 +53,7 @@ export default class TariffRatesForm extends React.Component {
       this.state.uploadChangeCount = 0;
       this.props.loadRateEnds({
         rateId: this.props.rateId,
-        pageSize: 10,
+        pageSize: 20,
         current: 1,
         searchValue: this.props.ratesEndList.searchValue,
       });
@@ -65,7 +65,7 @@ export default class TariffRatesForm extends React.Component {
   handleSearch = (value) => {
     this.props.loadRateEnds({
       rateId: this.props.rateId,
-      pageSize: 10,
+      pageSize: 20,
       current: 1,
       searchValue: value,
     });

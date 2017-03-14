@@ -25,13 +25,13 @@ const initialState = {
   ciqdeclList: {
     totalCount: 0,
     current: 1,
-    pageSize: 10,
+    pageSize: 20,
     data: [],
   },
   delgdeclList: {
     totalCount: 0,
     current: 1,
-    pageSize: 10,
+    pageSize: 20,
     data: [],
   },
   decl_heads: [],

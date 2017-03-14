@@ -79,7 +79,7 @@ const messages = defineMessages({
   },
   classification: {
     id: 'cms.module.classification',
-    defaultMessage: '商品归类',
+    defaultMessage: '物料归类',
   },
   tradeItem: {
     id: 'cms.module.classification.trade.item',

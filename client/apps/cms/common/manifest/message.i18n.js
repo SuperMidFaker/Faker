@@ -145,14 +145,6 @@ export default defineMessages({
     id: 'cms.manifest.form.bill.list',
     defaultMessage: '清单表体',
   },
-  preEntryId: {
-    id: 'cms.manifest.form.pre.entry.id',
-    defaultMessage: '预录入编号',
-  },
-  formEntryId: {
-    id: 'cms.manifest.form.entry.id',
-    defaultMessage: '海关编号',
-  },
   iport: {
     id: 'cms.manifest.form.iport',
     defaultMessage: '进口口岸',

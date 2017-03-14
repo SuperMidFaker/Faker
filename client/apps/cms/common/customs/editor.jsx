@@ -6,9 +6,9 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { loadEntry, saveEntryHead } from 'common/reducers/cmsManifest';
 import { fillEntryId } from 'common/reducers/cmsDelegation';
 import NavLink from 'client/components/nav-link';
-import SheetHeadPanel from '../manifest/forms/SheetHeadPanel';
-import SheetBodyPanel from '../manifest/forms/SheetBodyPanel';
-import SheetExtraPanel from '../manifest/forms/SheetExtraPanel';
+import SheetHeadPanel from './panel/cdfHeadPanel';
+import SheetBodyPanel from './panel/cdfBodyPanel';
+import SheetExtraPanel from './panel/cdfExtraPanel';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 

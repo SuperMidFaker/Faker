@@ -15,7 +15,7 @@ const actionTypes = createActionTypes('@@welogix/cms/hscode/', [
 const initialState = {
   hscodes: {
     data: [],
-    pageSize: 10,
+    pageSize: 20,
     current: 1,
     totalCount: 0,
     searchText: '',
@@ -24,7 +24,7 @@ const initialState = {
   categoryHscodes: {
     data: [],
     categoryId: -1,
-    pageSize: 10,
+    pageSize: 20,
     current: 1,
     totalCount: 0,
     searchText: '',

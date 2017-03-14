@@ -42,7 +42,7 @@ const initialState = {
     startDate: new Date(),
     endDate: new Date(),
     searchValue: '',
-    pageSize: 10,
+    pageSize: 20,
     current: 1,
     totalCount: 0,
     data: [],
@@ -52,7 +52,7 @@ const initialState = {
   },
   billings: {
     searchValue: '',
-    pageSize: 10,
+    pageSize: 20,
     current: 1,
     totalCount: 0,
     data: [],

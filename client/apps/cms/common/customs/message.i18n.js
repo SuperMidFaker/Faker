@@ -133,4 +133,100 @@ export default defineMessages({
     id: 'cms.customs.send',
     defaultMessage: '发送',
   },
+  preEntryId: {
+    id: 'cms.customs.form.pre.entry.id',
+    defaultMessage: '预录入编号',
+  },
+  formEntryId: {
+    id: 'cms.customs.form.entry.id',
+    defaultMessage: '海关编号',
+  },
+  forwardName: {
+    id: 'cms.customs.form.forward.name',
+    defaultMessage: '收发货人',
+  },
+  ownerConsumeName: {
+    id: 'cms.customs.form.owner.consume.name',
+    defaultMessage: '消费使用单位',
+  },
+  ownerProduceName: {
+    id: 'cms.customs.form.owner.produce.name',
+    defaultMessage: '生产消费单位',
+  },
+  agentName: {
+    id: 'cms.customs.form.agent.name',
+    defaultMessage: '申报单位',
+  },
+  certMark: {
+    id: 'cms.customs.form.cert.mark',
+    defaultMessage: '随附单证',
+  },
+  markNotes: {
+    id: 'cms.customs.form.mark.notes',
+    defaultMessage: '唛码备注',
+  },
+  seqNumber: {
+    id: 'cms.customs.table.seq.number',
+    defaultMessage: '序号',
+  },
+  copGNo: {
+    id: 'cms.customs.table.cop.gno',
+    defaultMessage: '商品货号',
+  },
+  emGNo: {
+    id: 'cms.customs.table.em.gno',
+    defaultMessage: '项号',
+  },
+  codeT: {
+    id: 'cms.customs.table.codet',
+    defaultMessage: '商品编码',
+  },
+  codeS: {
+    id: 'cms.customs.table.codes',
+    defaultMessage: '附加码',
+  },
+  gName: {
+    id: 'cms.customs.table.gname',
+    defaultMessage: '商品名称',
+  },
+  gModel: {
+    id: 'cms.customs.table.gmodel',
+    defaultMessage: '规格型号',
+  },
+  element: {
+    id: 'cms.customs.table.element',
+    defaultMessage: '申报要素',
+  },
+  quantity: {
+    id: 'cms.customs.table.quantity',
+    defaultMessage: '申报数量',
+  },
+  unit: {
+    id: 'cms.customs.table.unit',
+    defaultMessage: '成交单位',
+  },
+  icountry: {
+    id: 'cms.customs.table.icountry',
+    defaultMessage: '原产国',
+  },
+  ecountry: {
+    id: 'cms.customs.table.ecountry',
+    defaultMessage: '最终目的国',
+  },
+  decPrice: {
+    id: 'cms.customs.table.dec.price',
+    defaultMessage: '单价',
+  },
+  decTotal: {
+    id: 'cms.customs.table.dec.total',
+    defaultMessage: '总价',
+  },
+  currency: {
+    id: 'cms.customs.table.currency',
+    defaultMessage: '币制',
+  },
+  exemptionWay: {
+    id: 'cms.customs.table.exemptionway',
+    defaultMessage: '征免方式',
+  },
 });

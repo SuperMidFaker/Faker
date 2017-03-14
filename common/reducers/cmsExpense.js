@@ -36,13 +36,13 @@ const initialState = {
   expslist: {
     totalCount: 0,
     current: 1,
-    pageSize: 10,
+    pageSize: 20,
     data: [],
   },
   declexps: {
     totalCount: 0,
     current: 1,
-    pageSize: 10,
+    pageSize: 20,
     data: [],
     fields: [],
   },
