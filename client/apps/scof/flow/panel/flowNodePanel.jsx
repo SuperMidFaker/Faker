@@ -11,7 +11,7 @@ const Panel = Collapse.Panel;
 @injectIntl
 @connect(
   state => ({
-    name: state.scofFlow.activeElement.name,
+    name: state.scofFlow.activeNode.name,
   })
 )
 export default class FlowNodePanel extends Component {

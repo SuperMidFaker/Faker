@@ -14,7 +14,7 @@ const Option = Select.Option;
 @connect(
   state => ({
     bizDelegation: state.scofFlow.cmsParams.bizDelegation,
-    cmsNode: state.scofFlow.activeElement,
+    cmsNode: state.scofFlow.activeNode,
   }),
 )
 export default class CMSDelegationPane extends Component {
@@ -41,7 +41,7 @@ export default class CMSDelegationPane extends Component {
   }]
   render() {
     const { form: { getFieldDecorator }, cmsNode, bizDelegation: { declPorts, customsBrokers, ciqBrokers } } = this.props;
-    const declWays = this.props.ietype === 'export' ? DECL_E_TYPE : DECL_I_TYPE;
+    const declWays = cmsNode.kind === 'export' ? DECL_E_TYPE : DECL_I_TYPE;
     return (
       <Collapse bordered={false} defaultActiveKey={['properties', 'events']}>
         <Panel header={this.msg('properties')} key="properties">

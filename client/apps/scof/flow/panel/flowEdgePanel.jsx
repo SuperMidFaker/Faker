@@ -3,14 +3,13 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Button, Form, Table, Card, Col, Icon, Row, Select, Input, Tooltip, Popconfirm } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../../message.i18n';
+import { formatMsg } from '../message.i18n';
 
-const formatMsg = format(messages);
 const FormItem = Form.Item;
 const Option = Select.Option;
 
 class EditableCell extends React.Component {
+  static propTypes = { editable: PropTypes.bool }
   state = {
     value: this.props.value,
     editable: this.props.editable || false,
@@ -207,54 +206,45 @@ class ConditionTable extends React.Component {
 @injectIntl
 @connect(
   state => ({
-    edge: state.scofFlow.activeElement,
-    elementMap: state.scofFlow.flowElementMap,
+    edge: state.scofFlow.activeEdge,
+    nodesMap: state.scofFlow.nodesMap,
   })
 )
 export default class FlowEdgePanel extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    form: PropTypes.object.isRequired,
   }
   state = {
-    isTerminal: false,
     datas: [],
   };
-  handleTerminalChange = (checked) => {
-    this.setState(
-      { isTerminal: checked }
-    );
-  }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   render() {
-    const { edge, elementMap } = this.props;
+    const { edge, nodesMap } = this.props;
     return (
-      <div>
-        <Card title={this.msg('flowEdge')} bodyStyle={{ padding: 16 }}>
-          <Row gutter={16}>
-            <Col sm={12}>
-              <FormItem label={this.msg('sourceNode')}>
-                <Input value={elementMap[edge.source] && elementMap[edge.source].name} />
-              </FormItem>
-            </Col>
-            <Col sm={12}>
-              <FormItem label={this.msg('targetNode')}>
-                <Input value={elementMap[edge.target] && elementMap[edge.target].name} />
-              </FormItem>
-            </Col>
-            <Col sm={24}>
-              <FormItem label={<span>
-                {this.msg('condition')}&nbsp;
-                <Tooltip title={this.msg('tooltipEdgeCondition')}>
-                  <Icon type="question-circle-o" />
-                </Tooltip></span>}
-              >
-                <ConditionTable />
-              </FormItem>
-            </Col>
-          </Row>
-        </Card>
-      </div>
+      <Card title={this.msg('flowEdge')} bodyStyle={{ padding: 16 }}>
+        <Row gutter={16}>
+          <Col sm={12}>
+            <FormItem label={this.msg('sourceNode')}>
+              <Input defaultValue={nodesMap[edge.source] && nodesMap[edge.source].name} />
+            </FormItem>
+          </Col>
+          <Col sm={12}>
+            <FormItem label={this.msg('targetNode')}>
+              <Input defaultValue={nodesMap[edge.target] && nodesMap[edge.target].name} />
+            </FormItem>
+          </Col>
+          <Col sm={24}>
+            <FormItem label={<span>
+              {this.msg('condition')}&nbsp;
+              <Tooltip title={this.msg('tooltipEdgeCondition')}>
+                <Icon type="question-circle-o" />
+              </Tooltip></span>}
+            >
+              <ConditionTable />
+            </FormItem>
+          </Col>
+        </Row>
+      </Card>
     );
   }
 }

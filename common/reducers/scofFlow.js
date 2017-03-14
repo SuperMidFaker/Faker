@@ -6,6 +6,8 @@ const actionTypes = createActionTypes('@@welogix/scof/flow/', [
   'OPEN_ADD_TRIGGER_MODAL', 'CLOSE_ADD_TRIGGER_MODAL',
   'LOAD_CMSBIZPARAMS', 'LOAD_CMSBIZPARAMS_SUCCEED', 'LOAD_CMSBIZPARAMS_FAIL',
   'UPDATE_FLOWELEMENT_MAP', 'UPDATE_FLOWELEMENT',
+  'UPDATE_NODES_MAP', 'UPDATE_EDGES_MAP', 'UPDATE_ACTIVE_ELEMENT',
+  'ADD_ACTIVE_NODE', 'ADD_ACTIVE_EDGE',
 ]);
 
 const initialState = {
@@ -16,8 +18,10 @@ const initialState = {
     visible: false,
   },
   currentFlow: { customer_parnter_id: null },
-  flowElementMap: {},
-  activeElement: { addedActions: [], delActions: [], updatedActions: [] },
+  nodesMap: {},
+  edgesMap: {},
+  activeNode: { addedActions: [], delActions: [], updActions: [] },
+  activeEdge: { addedConds: [], delConds: [], updConds: [] },
   cmsParams: {
     bizDelegation: { declPorts: [], customsBrokers: [], ciqBrokers: [] },
     quotes: [],
@@ -41,13 +45,28 @@ export default function reducer(state = initialState, action) {
       return { ...state, reload: true };
     case actionTypes.LOAD_CMSBIZPARAMS_SUCCEED:
       return { ...state, cmsParams: { ...state.cmsParams, ...action.result.data } };
-    case actionTypes.UPDATE_FLOWELEMENT_MAP: {
-      const elemMap = { ...state.flowElementMap };
-      elemMap[action.data.uuid] = action.data.element;
-      return { ...state, flowElementMap: elemMap };
+    case actionTypes.UPDATE_NODES_MAP: {
+      const nodesMap = { ...state.nodesMap };
+      nodesMap[action.data.uuid] = action.data;
+      return { ...state, nodesMap, activeNode: action.data };
     }
-    case actionTypes.UPDATE_FLOWELEMENT:
-      return { ...state, activeElement: { ...initialState.activeElement, ...action.data } };
+    case actionTypes.UPDATE_EDGES_MAP: {
+      const edgesMap = { ...state.edgesMap };
+      edgesMap[action.data.uuid] = action.data;
+      return { ...state, edgesMap, activeEdge: action.data };
+    }
+    case actionTypes.ADD_ACTIVE_NODE: {
+      const nodesMap = { ...state.nodesMap };
+      nodesMap[action.data.uuid] = action.data;
+      return { ...state, nodesMap, activeEdge: initialState.activeEdge, activeNode: { ...initialState.activeNode, ...action.data } };
+    }
+    case actionTypes.ADD_ACTIVE_EDGE: {
+      const edgesMap = { ...state.edgesMap };
+      edgesMap[action.data.uuid] = action.data;
+      return { ...state, edgesMap, activeNode: initialState.activeNode, activeEdge: { ...initialState.activeEdge, ...action.data } };
+    }
+    case actionTypes.UPDATE_ACTIVE_ELEMENT:
+      return { ...state, activeNode: action.data.node, activeEdge: action.data.edge };
     default:
       return state;
   }
@@ -92,15 +111,37 @@ export function loadCmsBizParams(tenantId, ietype) {
   };
 }
 
-export function updateFlowElementMap(uuid, element) {
+export function updateNodesMap(node) {
   return {
-    type: actionTypes.UPDATE_FLOWELEMENT_MAP,
-    data: { uuid, element },
+    type: actionTypes.UPDATE_NODES_MAP,
+    data: node,
   };
 }
-export function updateActiveElement(element) {
+
+export function updateEdgesMap(edge) {
   return {
-    type: actionTypes.UPDATE_FLOWELEMENT,
-    data: element,
+    type: actionTypes.UPDATE_EDGES_MAP,
+    data: edge,
+  };
+}
+
+export function addActiveNode(node) {
+  return {
+    type: actionTypes.ADD_ACTIVE_NODE,
+    data: node,
+  };
+}
+
+export function addActiveEdge(edge) {
+  return {
+    type: actionTypes.ADD_ACTIVE_EDGE,
+    data: edge,
+  };
+}
+
+export function updateActiveElement(node, edge) {
+  return {
+    type: actionTypes.UPDATE_ACTIVE_ELEMENT,
+    data: { node, edge },
   };
 }

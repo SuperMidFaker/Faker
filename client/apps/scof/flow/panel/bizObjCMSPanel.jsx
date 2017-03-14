@@ -15,7 +15,7 @@ const TabPane = Tabs.TabPane;
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    ietype: state.scofFlow.activeElement.kind,
+    ietype: state.scofFlow.activeNode.kind,
   }),
   { loadCmsBizParams }
 )
