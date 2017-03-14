@@ -125,7 +125,7 @@ export default class DelegationList extends Component {
   saveFilters = (filters) => {
     if (window.localStorage) {
       window.localStorage.cmsDelegationListFilters =
-      JSON.stringify({ ...JSON.parse(window.localStorage.cmsDelegationListFilters || '{"viewStatus":"my"}'), viewStatus: filters.viewStatus });
+      JSON.stringify({ ...JSON.parse(window.localStorage.cmsDelegationListFilters || '{"viewStatus":"all"}'), viewStatus: filters.viewStatus });
     }
   }
   msg = key => formatMsg(this.props.intl, key);
