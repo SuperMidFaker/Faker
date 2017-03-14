@@ -10,6 +10,7 @@ import QueueAnim from 'rc-queue-anim';
 import { loadShipmentStatistics, loadFormRequire } from 'common/reducers/shipment';
 import StatsPanel from './panel/statsPanel';
 import TodoPanel from './panel/todoPanel';
+import PreviewPanel from '../shipment/modals/preview-panel';
 import { formatMsg } from './message.i18n';
 
 const { Header, Content } = Layout;
@@ -72,6 +73,7 @@ export default class Dashboard extends React.Component {
             </Col>
           </Row>
         </Content>
+        <PreviewPanel stage="dashboard" />
       </QueueAnim>
     );
   }

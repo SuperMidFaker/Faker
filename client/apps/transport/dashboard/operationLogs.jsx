@@ -10,7 +10,7 @@ import Table from 'client/components/remoteAntTable';
 import { loadShipmentEvents, loadShipmtDetail } from 'common/reducers/shipment';
 import TrimSpan from 'client/components/trimSpan';
 import { SHIPMENT_TRACK_STATUS } from 'common/constants';
-import { renderConsignLoc } from '../common/consignLocation';
+import AddressColumn from '../common/addressColumn';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import '../index.less';
@@ -86,7 +86,7 @@ export default class Dashboard extends React.Component {
     }, {
       title: this.msg('departurePlace'),
       width: 140,
-      render: (o, record) => <TrimSpan text={renderConsignLoc(record, 'consigner')} maxLen={8} />,
+      render: (o, record) => <AddressColumn shipment={record} consignType="consigner" />,
     }, {
       title: this.msg('shipmtEstPickupDate'),
       dataIndex: 'pickup_est_date',
@@ -100,7 +100,7 @@ export default class Dashboard extends React.Component {
     }, {
       title: this.msg('arrivalPlace'),
       width: 140,
-      render: (o, record) => <TrimSpan text={renderConsignLoc(record, 'consignee')} maxLen={8} />,
+      render: (o, record) => <AddressColumn shipment={record} consignType="consignee" />,
     }, {
       title: this.msg('shipmtEstDeliveryDate'),
       dataIndex: 'deliver_est_date',

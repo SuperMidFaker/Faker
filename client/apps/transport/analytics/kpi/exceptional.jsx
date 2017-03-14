@@ -70,6 +70,7 @@ export default class Exceptional extends React.Component {
       yAxis: [
         {
           type: 'value',
+          splitLine: { show: false },
         },
       ],
       series: exceptionTypes.map((item, index) => ({

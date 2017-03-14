@@ -130,6 +130,22 @@ const messages = defineMessages({
     id: 'transport.dashboard.todo.billing',
     defaultMessage: '账单',
   },
+  all: {
+    id: 'transport.dashboard.todo.accept.all',
+    defaultMessage: '所有',
+  },
+  toAccept: {
+    id: 'transport.dashboard.todo.accept.toAccept',
+    defaultMessage: '接单',
+  },
+  toDispatch: {
+    id: 'transport.dashboard.todo.accept.toDispatch',
+    defaultMessage: '分配',
+  },
+  prompt: {
+    id: 'transport.dashboard.todo.accept.prompt',
+    defaultMessage: '催促',
+  },
 });
 
 export default messages;

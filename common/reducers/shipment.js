@@ -35,6 +35,7 @@ const actionTypes = createActionTypes('@@welogix/transport/shipment/', [
   'UPDATE_FORM_REQUIRE_PARAMS',
   'LOAD_TARIFF_BY_TRANSPORTINFO', 'LOAD_TARIFF_BY_TRANSPORTINFO_SUCCEED', 'LOAD_TARIFF_BY_TRANSPORTINFO_FAIL',
   'LOAD_PARTNERS', 'LOAD_PARTNERS_SUCCEED', 'LOAD_PARTNERS_FAIL',
+  'LOAD_ACCEPTANCE_SHIPMENT', 'LOAD_ACCEPTANCE_SHIPMENT_SUCCEED', 'LOAD_ACCEPTANCE_SHIPMENT_FAIL',
 ]);
 appendFormAcitonTypes('@@welogix/transport/shipment/', actionTypes);
 
@@ -105,6 +106,32 @@ const initialState = {
     intransit: 0,
     exception: 0,
     arrival: 0,
+    todos: {
+      acceptanceList: {
+        pageSize: 20,
+        current: 1,
+        data: [],
+        totalCount: 0,
+      },
+      trackingList: {
+        pageSize: 20,
+        current: 1,
+        data: [],
+        totalCount: 0,
+      },
+      podList: {
+        pageSize: 20,
+        current: 1,
+        data: [],
+        totalCount: 0,
+      },
+      billingList: {
+        pageSize: 20,
+        current: 1,
+        data: [],
+        totalCount: 0,
+      },
+    },
   },
   changeShipmentModal: {
     visible: false,
@@ -263,6 +290,16 @@ export default function reducer(state = initialState, action) {
     }
     case actionTypes.LOAD_PARTNERS_SUCCEED:
       return { ...state, partners: action.result.data };
+    case actionTypes.LOAD_ACCEPTANCE_SHIPMENT_SUCCEED:
+      return { ...state,
+        statistics: {
+          ...state.statistics,
+          todos: {
+            ...state.statistics.todos,
+            acceptanceList: action.result.data,
+          },
+        },
+      };
     default:
       return formReducer(actionTypes, state, action, { key: null }, 'shipmentlist')
              || state;
@@ -619,6 +656,21 @@ export function loadPartners(tenantId, roles, businessTypes) {
       endpoint: 'v1/cooperation/type/partners',
       method: 'get',
       params: { tenantId, roles: JSON.stringify(roles), businessTypes: JSON.stringify(businessTypes) },
+    },
+  };
+}
+
+export function loadAcceptanceTable(cookie, { tenantId, filters, pageSize, currentPage, sortField, sortOrder }) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_ACCEPTANCE_SHIPMENT,
+        actionTypes.LOAD_ACCEPTANCE_SHIPMENT_SUCCEED,
+        actionTypes.LOAD_ACCEPTANCE_SHIPMENT_FAIL,
+      ],
+      endpoint: 'v1/transport/shipments',
+      method: 'get',
+      params: { tenantId, filters: JSON.stringify(filters), pageSize, currentPage, sortField, sortOrder },
     },
   };
 }

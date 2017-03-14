@@ -26,9 +26,9 @@ import Condition from './condition';
 import DispatchDock from './dispatchDock';
 import SegmentDock from './segmentDock';
 import ShipmtnoColumn from '../common/shipmtnoColumn';
+import AddressColumn from '../common/addressColumn';
 import { loadShipmtDetail } from 'common/reducers/shipment';
 import PreviewPanel from '../shipment/modals/preview-panel';
-import { renderConsignLoc } from '../common/consignLocation';
 import RevokejectModal from '../shipment/modals/revoke-reject';
 import SearchBar from 'client/components/search-bar';
 import AdvancedSearchBar from '../common/advanced-search-bar';
@@ -177,7 +177,7 @@ export default class DispatchList extends React.Component {
   }, {
     title: this.msg('consignerPlace'),
     width: 120,
-    render: (o, record) => <TrimSpan text={renderConsignLoc(record, 'consigner')} maxLen={8} />,
+    render: (o, record) => <AddressColumn shipment={record} consignType="consigner" />,
   }, {
     title: this.msg('consignerAddr'),
     dataIndex: 'consigner_addr',
@@ -196,7 +196,7 @@ export default class DispatchList extends React.Component {
   }, {
     title: this.msg('consigneePlace'),
     width: 120,
-    render: (o, record) => <TrimSpan text={renderConsignLoc(record, 'consignee')} maxLen={8} />,
+    render: (o, record) => <AddressColumn shipment={record} consignType="consignee" />,
   }, {
     title: this.msg('consigneeAddr'),
     dataIndex: 'consignee_addr',
@@ -425,7 +425,7 @@ export default class DispatchList extends React.Component {
     }, {
       title: this.msg('consignerPlace'),
       width: 120,
-      render: (o, record) => renderConsignLoc(record, 'consigner'),
+      render: (o, record) => <AddressColumn shipment={record} consignType="consigner" />,
     }, {
       title: this.msg('consignerAddr'),
       dataIndex: 'consigner_addr',
@@ -437,7 +437,7 @@ export default class DispatchList extends React.Component {
     }, {
       title: this.msg('consigneePlace'),
       width: 120,
-      render: (o, record) => renderConsignLoc(record, 'consignee'),
+      render: (o, record) => <AddressColumn shipment={record} consignType="consignee" />,
     }, {
       title: this.msg('consigneeAddr'),
       dataIndex: 'consignee_addr',

@@ -258,6 +258,7 @@ export default class Kpi extends React.Component {
           <Content className="main-content" id="transport-kpi-main-content">
             <div className="page-body">
               <div className="toolbar">
+                <h3>{this.state.collapsed ? customer.name : ''}</h3>
                 <div className="toolbar-right">
                   <a onClick={() => this.handleMonth(2)}>近3月</a>
                   <a onClick={() => this.handleMonth(5)} style={{ marginLeft: 20 }}>近6月</a>

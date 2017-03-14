@@ -1,49 +1,52 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Card, Badge, Tabs } from 'antd';
+import { Card, Badge, Tabs, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { loadShipmentStatistics } from 'common/reducers/shipment';
-import connectFetch from 'client/common/decorators/connect-fetch';
-import moment from 'moment';
+import { loadShipmtDetail } from 'common/reducers/shipment';
 import TodoAcceptPane from './pane/todoAcceptPane';
 import MyShipmentsSelect from '../../common/myShipmentsSelect';
 import { formatMsg } from '../message.i18n';
 
 const TabPane = Tabs.TabPane;
 
-function fetchData({ state, dispatch, cookie }) {
-  const firstDay = new Date();
-  firstDay.setDate(1);
-  const startDate = `${moment(state.shipment.statistics.startDate || firstDay).format('YYYY-MM-DD')} 00:00:00`;
-  const endDate = `${moment(state.shipment.statistics.endDate || new Date()).format('YYYY-MM-DD')} 23:59:59`;
-  const promises = [dispatch(loadShipmentStatistics(cookie, state.account.tenantId, startDate, endDate))];
-  return Promise.all(promises);
-}
-@connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    statistics: state.shipment.statistics,
+    todos: state.shipment.statistics.todos,
   }),
-  { loadShipmentStatistics })
+  { loadShipmtDetail })
 export default class TodoPanel extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    children: PropTypes.object,
+    loadShipmtDetail: PropTypes.func.isRequired,
+    todos: PropTypes.object.isRequired,
   }
 
   msg = formatMsg(this.props.intl)
   handleShipmentViewSelect = () => {
 
   }
+  handleDayChange = () => {
+
+  }
+  handleShipmtPreview = (row) => {
+    this.props.loadShipmtDetail(row.shipmt_no, this.props.tenantId, 'sr', 'detail', row).then((result) => {
+      if (result.error) {
+        message.error(result.error.message);
+      }
+    });
+  }
   render() {
-    const extra = (<MyShipmentsSelect onChange={this.handleShipmentViewSelect} />);
+    const { todos } = this.props;
+    const extra = (<div><a onClick={() => this.handleDayChange('today')} style={{ marginRight: 20 }}>今天</a>
+      <a onClick={() => this.handleDayChange('tomorrow')} style={{ marginRight: 20 }}>明天</a>
+      <MyShipmentsSelect onChange={this.handleShipmentViewSelect} /></div>);
     return (
-      <Card title={<span>待办事项</span>} bodyStyle={{ minHeight: 360 }} extra={extra}>
+      <Card title={<span>待办事项</span>} bodyStyle={{ minHeight: 360, padding: '10px 0 0' }} extra={extra}>
         <Tabs tabPosition="left" defaultActiveKey="todoAccept">
-          <TabPane tab={<span>{this.msg('todoAccept')}<Badge count={5} style={{ marginLeft: 8 }} /></span>} key="todoAccept" >
-            <TodoAcceptPane />
+          <TabPane tab={<span>{this.msg('todoAccept')}<Badge count={todos.acceptanceList.totalCount} style={{ marginLeft: 8 }} /></span>} key="todoAccept" >
+            <TodoAcceptPane onShipmtPreview={this.handleShipmtPreview} />
           </TabPane>
           <TabPane tab={<span>{this.msg('todoTrack')}<Badge count={0} style={{ marginLeft: 8 }} /></span>} key="todoTrack" />
           <TabPane tab={<span>{this.msg('todoPod')}<Badge count={999} style={{ marginLeft: 8 }} /></span>} key="todoPod" />

@@ -70,6 +70,7 @@ export default class OverTime extends React.Component {
       yAxis: [
         {
           type: 'value',
+          splitLine: { show: false },
         },
       ],
       series: transitModes.map((item, index) => ({

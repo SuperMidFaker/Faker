@@ -6,7 +6,7 @@ import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { SHIPMENT_TRACK_STATUS, SHIPMENT_POD_STATUS, SHIPMENT_VEHICLE_CONNECT } from
   'common/constants';
 import RowUpdater from './rowUpdater';
-import { renderConsignLoc } from '../../common/consignLocation';
+import AddressColumn from '../../common/addressColumn';
 import ShipmtnoColumn from '../../common/shipmtnoColumn';
 import PickupDeliverUpdaterPopover from './modals/pickup-deliver-updater-popover';
 import ExceptionListPopover from './modals/exception-list-popover';
@@ -51,17 +51,7 @@ export default function makeColumns(type, handlers, msg) {
   }, {
     title: msg('departurePlace'),
     width: 140,
-    render: (o, record) => {
-      const maxLen = 8;
-      const text = renderConsignLoc(record, 'consigner');
-      if (text.length > maxLen) {
-        return (<TrimSpan text={`${renderConsignLoc(record, 'consigner')} ${record.consigner_addr || ''}`} maxLen={maxLen} />);
-      } else {
-        return (
-          <Tooltip title={`${renderConsignLoc(record, 'consigner')} ${record.consigner_addr || ''}`} >{text}</Tooltip>
-        );
-      }
-    },
+    render: (o, record) => (<AddressColumn shipment={record} consignType="consigner" />),
   }, {
     title: msg('shipmtEstPickupDate'),
     dataIndex: 'pickup_est_date',
@@ -123,17 +113,7 @@ export default function makeColumns(type, handlers, msg) {
   }, {
     title: msg('arrivalPlace'),
     width: 140,
-    render: (o, record) => {
-      const maxLen = 8;
-      const text = renderConsignLoc(record, 'consignee');
-      if (text.length > maxLen) {
-        return (<TrimSpan text={`${renderConsignLoc(record, 'consignee')} ${record.consignee_addr || ''}`} maxLen={maxLen} />);
-      } else {
-        return (
-          <Tooltip title={`${renderConsignLoc(record, 'consignee')} ${record.consignee_addr || ''}`} >{text}</Tooltip>
-        );
-      }
-    },
+    render: (o, record) => (<AddressColumn shipment={record} consignType="consignee" />),
   }, {
     title: msg('shipmtEstDeliveryDate'),
     dataIndex: 'deliver_est_date',
@@ -298,15 +278,15 @@ export default function makeColumns(type, handlers, msg) {
   }, {
     title: msg('packageNum'),
     dataIndex: 'total_count',
-    width: 70,
+    width: 40,
   }, {
     title: msg('shipWeight'),
     dataIndex: 'total_weight',
-    width: 70,
+    width: 60,
   }, {
     title: msg('shipVolume'),
     dataIndex: 'total_volume',
-    width: 70,
+    width: 60,
   }, {
     title: msg('shipmtCustomer'),
     dataIndex: 'customer_name',

@@ -70,6 +70,7 @@ export default class TrafficVolume extends React.Component {
       yAxis: [
         {
           type: 'value',
+          splitLine: { show: false },
         },
       ],
       series: transitModes.map((item, index) => ({

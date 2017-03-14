@@ -19,8 +19,8 @@ import { SHIPMENT_SOURCE, SHIPMENT_EFFECTIVES, DEFAULT_MODULES } from 'common/co
 import AccepterModal from '../shipment/modals/accepter';
 import RevokejectModal from '../shipment/modals/revoke-reject';
 import PreviewPanel from '../shipment/modals/preview-panel';
-import { renderConsignLoc } from '../common/consignLocation';
 import ShipmtnoColumn from '../common/shipmtnoColumn';
+import AddressColumn from '../common/addressColumn';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import containerMessages from 'client/apps/message.i18n';
@@ -186,7 +186,7 @@ export default class AcceptList extends React.Component {
   }, {
     title: this.msg('consignorPlace'),
     width: 120,
-    render: (o, record) => <TrimSpan text={renderConsignLoc(record, 'consigner')} maxLen={8} />,
+    render: (o, record) => <AddressColumn shipment={record} consignType="consigner" />,
   }, {
     title: this.msg('consignorAddr'),
     dataIndex: 'consigner_addr',
@@ -200,7 +200,7 @@ export default class AcceptList extends React.Component {
   }, {
     title: this.msg('consigneePlace'),
     width: 120,
-    render: (o, record) => <TrimSpan text={renderConsignLoc(record, 'consignee')} maxLen={8} />,
+    render: (o, record) => <AddressColumn shipment={record} consignType="consignee" />,
   }, {
     title: this.msg('consigneeAddr'),
     dataIndex: 'consignee_addr',
@@ -209,15 +209,15 @@ export default class AcceptList extends React.Component {
   }, {
     title: this.msg('packageNum'),
     dataIndex: 'total_count',
-    width: 50,
+    width: 40,
   }, {
     title: this.msg('shipWeight'),
     dataIndex: 'total_weight',
-    width: 50,
+    width: 60,
   }, {
     title: this.msg('shipVolume'),
     dataIndex: 'total_volume',
-    width: 50,
+    width: 60,
   }, {
     title: this.msg('shipSource'),
     dataIndex: 'source',

@@ -9,8 +9,8 @@ import { loadShipmtDetail } from 'common/reducers/shipment';
 import { loadExcpShipments, changeExcpFilter } from 'common/reducers/trackingLandException';
 import { SHIPMENT_TRACK_STATUS } from 'common/constants';
 import ShipmtnoColumn from '../../common/shipmtnoColumn';
+import AddressColumn from '../../common/addressColumn';
 import ExceptionListPopover from './modals/exception-list-popover';
-import { renderConsignLoc } from '../../common/consignLocation';
 import MyShipmentsSelect from '../../common/myShipmentsSelect';
 import AdvancedSearchBar from '../../common/advanced-search-bar';
 import TrimSpan from 'client/components/trimSpan';
@@ -320,11 +320,11 @@ export default class LandStatusList extends React.Component {
   }, {
     title: this.msg('departurePlace'),
     width: 140,
-    render: (o, record) => renderConsignLoc(record, 'consigner'),
+    render: (o, record) => <AddressColumn shipment={record} consignType="consigner" />,
   }, {
     title: this.msg('arrivalPlace'),
     width: 140,
-    render: (o, record) => renderConsignLoc(record, 'consignee'),
+    render: (o, record) => <AddressColumn shipment={record} consignType="consignee" />,
   }, {
     title: this.msg('shipmtMode'),
     dataIndex: 'transport_mode',
