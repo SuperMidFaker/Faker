@@ -5,7 +5,7 @@ import { Modal, Form, Input, Select } from 'antd';
 import { closeCreateFlowModal } from 'common/reducers/scofFlow';
 import { loadPartners } from 'common/reducers/partner';
 import { PARTNER_ROLES } from 'common/constants';
-import { formatMsg } from '../../message.i18n';
+import { formatMsg } from '../message.i18n';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -65,7 +65,7 @@ export default class CreateFlowModal extends React.Component {
              })(<Input placeholder={this.msg('flowName')} />)
            }
           </FormItem>
-          <FormItem>
+          <FormItem label={this.msg('flowCustomer')}>
             {
              getFieldDecorator('customer', {
                rules: [{ required: true, message: '流程对应客户必填' }],
