@@ -88,7 +88,6 @@ const initialState = {
     pod: {},
   },
   statistics: {
-    count: [0, 0, 0, 0, 0],
     startDate: null,
     endDate: null,
     logs: {
@@ -99,17 +98,6 @@ const initialState = {
       filters: {
         statusType: 'all',
       },
-    },
-    todos: {
-      unaccepted: 0,
-      undispatched: 0,
-      dispatched: 0,
-      undelivered: 0,
-      intransit: 0,
-      unReportLocation: 0,
-      delivered: 0,
-      podsubmit: 0,
-      unconfirmed: 0,
     },
     total: 0,
     atOrigin: 0,

@@ -872,10 +872,9 @@ export default class DispatchList extends React.Component {
     }
     if (cer) {
       switch (consignerStep) {
-        case 20: {
+        case 20:
           filters.consigner_province = row.consigner_province;
           filters.consigner_city = row.consigner_city;
-        }
           break;
         case 40:
           filters.consigner_district = row.consigner_district;
@@ -883,10 +882,9 @@ export default class DispatchList extends React.Component {
         case 60:
           filters.consigner_addr = row.consigner_addr;
           break;
-        case 80: {
+        case 80:
           filters.consigner_addr = row.consigner_addr;
           filters.consigner_name = row.consigner_name;
-        }
           break;
         default:
           filters.consigner_province = row.consigner_province;
@@ -895,10 +893,9 @@ export default class DispatchList extends React.Component {
     }
     if (cee) {
       switch (consigneeStep) {
-        case 20: {
+        case 20:
           filters.consignee_province = row.consignee_province;
           filters.consignee_city = row.consignee_city;
-        }
           break;
         case 40:
           filters.consignee_district = row.consignee_district;
@@ -906,10 +903,9 @@ export default class DispatchList extends React.Component {
         case 60:
           filters.consignee_addr = row.consignee_addr;
           break;
-        case 80: {
+        case 80:
           filters.consignee_addr = row.consignee_addr;
           filters.consignee_name = row.consignee_name;
-        }
           break;
         default:
           filters.consignee_province = row.consignee_province;
@@ -1058,7 +1054,7 @@ export default class DispatchList extends React.Component {
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3> {bulkBtns}
               </div>
               <div className="toolbar-right">
-                <MyShipmentsSelect onSearch={this.handleAdvancedSearch} />
+                <MyShipmentsSelect onChange={this.handleAdvancedSearch} size="large" />
               </div>
             </div>
             <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch} toggle={this.toggleAdvancedSearch} />

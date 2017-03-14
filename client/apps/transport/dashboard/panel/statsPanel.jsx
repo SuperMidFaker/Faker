@@ -49,7 +49,7 @@ export default class StatsPanel extends Component {
         />
       </div>);
     return (
-      <Card title={<span>运输统计<Tooltip title="以预计提货时间为基准，一段时间内运单的总票数=未起运的数量+在途的数量+已送达的数量">
+      <Card title={<span>运输统计<Tooltip title="以计划提货时间为基准，一段时间内运单的总票数=未起运的数量+在途的数量+已送达的数量">
         <Icon type="question-circle-o" style={{ marginLeft: 8 }} />
       </Tooltip></span>} extra={datePicker}
       >

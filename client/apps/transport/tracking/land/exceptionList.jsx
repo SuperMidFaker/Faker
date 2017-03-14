@@ -481,7 +481,7 @@ export default class LandStatusList extends React.Component {
               <h3>已选中{this.state.selectedRowKeys.length}项</h3>
             </div>
             <div className="toolbar-right">
-              <MyShipmentsSelect onSearch={this.handleShipmentViewSelect} />
+              <MyShipmentsSelect onChange={this.handleShipmentViewSelect} size="large" />
             </div>
           </div>
           <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch} toggle={this.toggleAdvancedSearch} />

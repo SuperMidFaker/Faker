@@ -9,7 +9,8 @@ const Option = Select.Option;
 export default class MyShipmentsSelect extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    onSearch: PropTypes.func.isRequired,
+    onChange: PropTypes.func.isRequired,
+    size: PropTypes.string,
   }
   state = {
     fieldsValue: {},
@@ -30,12 +31,11 @@ export default class MyShipmentsSelect extends React.Component {
       this.setState({ fieldsValue: fv });
     }
   }
-  handleSearch = (fieldsValue) => {
-    this.props.onSearch(fieldsValue);
+
+  handleChange = (value) => {
+    const fieldsValue = { viewStatus: value };
+    this.props.onChange(fieldsValue);
     this.saveFieldsValue(fieldsValue);
-  }
-  handleSelect = (value) => {
-    this.handleSearch({ viewStatus: value });
   }
 
   render() {
@@ -43,9 +43,9 @@ export default class MyShipmentsSelect extends React.Component {
     return (
       <Select
         value={fieldsValue.viewStatus ? fieldsValue.viewStatus : ''}
-        onChange={this.handleSelect}
+        onChange={this.handleChange}
         style={{ width: 160 }}
-        size="large"
+        size={this.props.size}
       >
         <Option value="my">我负责的运单</Option>
         <Option value="all">全部运单</Option>
