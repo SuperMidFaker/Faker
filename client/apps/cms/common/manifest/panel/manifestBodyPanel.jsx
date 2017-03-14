@@ -118,12 +118,11 @@ function calculateTotal(bodies) {
   }),
   { updateHeadNetWt, loadBillBody, openAmountModel, getItemForBody, getHscodeForBody, deleteSelectedBodies }
 )
-export default class SheetBodyPanel extends React.Component {
+export default class ManifestBodyPanel extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     ietype: PropTypes.oneOf(['import', 'export']),
-    type: PropTypes.oneOf(['bill', 'entry']),
     readonly: PropTypes.bool,
     data: PropTypes.array.isRequired,
     headNo: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
@@ -260,12 +259,14 @@ export default class SheetBodyPanel extends React.Component {
     const columns = [{
       title: this.msg('seqNumber'),
       dataIndex: 'g_no',
+      fixed: 'left',
       width: 45,
     }];
 
     columns.push({
       title: this.msg('copGNo'),
       width: 150,
+      fixed: 'left',
       render: (o, record, index) =>
         <ColumnInput field="cop_g_no" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} edit={editBody}
@@ -699,16 +700,10 @@ export default class SheetBodyPanel extends React.Component {
       getCheckboxProps: () => ({ disabled }),
     };
     const columns = this.getColumns();
-    let billBodyToolbar = (
-      <Button type="primary" onClick={() => this.handleMenuClick({ key: 'export' })}>
-        <Icon type="export" /> 导出数据
-      </Button>
-    );
-    if (this.props.type === 'bill') {
-      const menu = (
-        <Menu onClick={this.handleMenuClick}>
-          <Menu.Item key="download"><Icon type="download" /> 下载模板(非关联)</Menu.Item>
-          {!this.props.readonly &&
+    const menu = (
+      <Menu onClick={this.handleMenuClick}>
+        <Menu.Item key="download"><Icon type="download" /> 下载模板(非关联)</Menu.Item>
+        {!this.props.readonly &&
           <Menu.Item key="importData">
             <ExcelUpload endpoint={`${API_ROOTS.default}v1/cms/manifest/billbody/import`}
               formData={{
@@ -723,8 +718,8 @@ export default class SheetBodyPanel extends React.Component {
             </ExcelUpload>
           </Menu.Item>
           }
-          <Menu.Item key="downloadRelated"><Icon type="download" /> 下载模板(关联)</Menu.Item>
-          {!this.props.readonly &&
+        <Menu.Item key="downloadRelated"><Icon type="download" /> 下载模板(关联)</Menu.Item>
+        {!this.props.readonly &&
           <Menu.Item key="importRelatedData">
             <ExcelUpload endpoint={`${API_ROOTS.default}v1/cms/manifest/billbody/related/import`}
               formData={{
@@ -741,39 +736,34 @@ export default class SheetBodyPanel extends React.Component {
             </ExcelUpload>
           </Menu.Item>
           }
-        </Menu>);
-      billBodyToolbar = (
-        <span>
-          {selectedRows.length > 0 &&
-            <Popconfirm title={'是否删除所有选择项？'} onConfirm={() => this.handleDeleteSelected()}>
-              <Button type="danger" icon="delete">
+      </Menu>);
+    const billBodyToolbar = (
+      <span>
+        {selectedRows.length > 0 &&
+        <Popconfirm title={'是否删除所有选择项？'} onConfirm={() => this.handleDeleteSelected()}>
+          <Button type="danger" icon="delete">
                 批量删除
               </Button>
-            </Popconfirm>}
-          {!this.props.readonly && <Button icon="pie-chart" onClick={this.handleTotalPriceDivid}>金额平摊</Button>}
-          {!this.props.readonly && <Button icon="arrows-alt" onClick={this.handleGrossWtDivid}>毛重分摊</Button>}
-          {!this.props.readonly && <Button icon="shrink" onClick={this.handleNetWetSummary}>净重汇总</Button>}
-          <Button icon="export" onClick={this.handleManifestBodyExport}>导出</Button>
-          {!this.props.readonly && <Dropdown overlay={menu} type="primary">
-            <Button icon="upload" type="primary" onClick={this.handleButtonClick}>
-              {this.msg('importBody')} <Icon type="down" />
-            </Button>
+        </Popconfirm>}
+        {!this.props.readonly && <Button icon="pie-chart" onClick={this.handleTotalPriceDivid}>金额平摊</Button>}
+        {!this.props.readonly && <Button icon="arrows-alt" onClick={this.handleGrossWtDivid}>毛重分摊</Button>}
+        {!this.props.readonly && <Button icon="shrink" onClick={this.handleNetWetSummary}>净重汇总</Button>}
+        <Button icon="export" onClick={this.handleManifestBodyExport}>导出</Button>
+        {!this.props.readonly && <Dropdown overlay={menu} type="primary">
+          <Button icon="upload" type="primary" onClick={this.handleButtonClick}>
+            {this.msg('importBody')} <Icon type="down" />
+          </Button>
           </Dropdown>
           }
-        </span>);
-    }
+      </span>);
+
     return (
       <div className="pane">
         <div className="pane-header">
           <span style={{ marginLeft: 10 }}>总毛重: </span><span style={{ color: '#FF9933' }}>{totGrossWt.toFixed(3)}</span>
           <span style={{ marginLeft: 10 }}>总净重: </span><span style={{ color: '#FF9933' }}>{totWetWt.toFixed(3)}</span>
           <span style={{ marginLeft: 10 }}>总金额: </span><span style={{ color: '#FF9933' }}>{totTrade.toFixed(3)}</span>
-          {this.props.type === 'bill' &&
-            <span>
-              <span style={{ marginLeft: 10 }}>总个数: </span>
-              <span style={{ color: '#FF9933' }}>{totPcs.toFixed(3)}</span>
-            </span>
-          }
+          <span style={{ marginLeft: 10 }}>总个数: </span><span style={{ color: '#FF9933' }}>{totPcs.toFixed(3)}</span>
           <div className="toolbar-right">
             {billBodyToolbar}
           </div>

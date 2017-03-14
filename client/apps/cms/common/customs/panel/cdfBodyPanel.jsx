@@ -120,7 +120,6 @@ export default class CDFBodyPanel extends React.Component {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     ietype: PropTypes.oneOf(['import', 'export']),
-    type: PropTypes.oneOf(['bill', 'entry']),
     readonly: PropTypes.bool,
     data: PropTypes.array.isRequired,
     headNo: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
@@ -139,9 +138,6 @@ export default class CDFBodyPanel extends React.Component {
   constructor(props) {
     super(props);
     const bodies = props.data;
-    if (!props.readonly && this.props.type !== 'entry') {
-      bodies.push({ id: '__ops' });
-    }
     const calresult = calculateTotal(bodies);
     this.state = {
       editIndex: -1,
@@ -434,7 +430,7 @@ export default class CDFBodyPanel extends React.Component {
   render() {
     const { totGrossWt, totWetWt, totTrade } = this.state;
     const selectedRows = this.state.selectedRowKeys;
-    const disabled = this.props.readonly || this.props.type === 'entry';
+    const disabled = this.props.readonly;
     const rowSelection = {
       selectedRowKeys: selectedRows,
       onChange: (selectedRowKeys) => {

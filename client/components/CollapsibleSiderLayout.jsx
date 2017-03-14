@@ -44,6 +44,7 @@ export default class CollapsibleSiderLayout extends React.Component {
     selectedKeys: [],
     openedKey: [],
     collapsed: true,
+    menuMode: 'vertical',
   };
 
   componentWillMount() {
@@ -54,6 +55,12 @@ export default class CollapsibleSiderLayout extends React.Component {
   }
   onCollapse = (collapsed) => {
     this.setState({ collapsed });
+    if (collapsed) {
+      this.setState({ menuMode: 'vertical' });
+    } else {
+      // TODO inline mode
+      this.setState({ menuMode: 'vertical' });
+    }
   }
   setOpenSelectedKeys(path) {
     for (let i = 0; i < this.props.links.length; i++) {
@@ -89,11 +96,6 @@ export default class CollapsibleSiderLayout extends React.Component {
       openedKey: ev.keyPath.slice(1),
     });
   }
-  handleCollapseChange = () => {
-    this.setState({
-      collapse: !this.state.collapse,
-    });
-  }
   render() {
     const links = this.props.links.filter(l => !l.invisible);
     const childContent = this.props.childContent;
@@ -108,7 +110,7 @@ export default class CollapsibleSiderLayout extends React.Component {
           className="left-sider"
         >
           {showLogo ? <div className="layout-logo" /> : ''}
-          <Menu mode="vertical" theme="dark" onSelect={this.handleMenuSelect} selectedKeys={this.state.selectedKeys}
+          <Menu mode={this.state.menuMode} theme="dark" onSelect={this.handleMenuSelect} selectedKeys={this.state.selectedKeys}
             onClick={this.handleClick}
           >
             {
