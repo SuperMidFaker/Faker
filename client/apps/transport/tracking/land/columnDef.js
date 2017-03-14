@@ -5,7 +5,7 @@ import TrimSpan from 'client/components/trimSpan';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { SHIPMENT_TRACK_STATUS, SHIPMENT_POD_STATUS, SHIPMENT_VEHICLE_CONNECT } from
   'common/constants';
-import RowUpdater from './rowUpdater';
+import RowUpdater from 'client/components/rowUpdater';
 import { renderConsignLoc } from '../../common/consignLocation';
 import ShipmtnoColumn from '../../common/shipmtnoColumn';
 import PickupDeliverUpdaterPopover from './modals/pickup-deliver-updater-popover';

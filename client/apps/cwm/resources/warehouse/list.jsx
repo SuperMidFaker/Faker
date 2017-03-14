@@ -8,7 +8,7 @@ import { loadWarehouses, loadOwnerPartners, openWhseAuthModal, openAddWarehouseM
 import Table from 'client/components/remoteAntTable';
 import NavLink from 'client/components/nav-link';
 import connectNav from 'client/common/decorators/connect-nav';
-import RowUpdater from '../rowUpdater';
+import RowUpdater from 'client/components/rowUpdater';
 import AddWarehouseModal from './addWarehouseModal';
 import WhseAuthModal from './whseAuthModal';
 import { formatMsg } from './message.i18n';

@@ -12,7 +12,7 @@ import SearchBar from 'client/components/search-bar';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import RowUpdater from './rowUpdater';
+import RowUpdater from 'client/components/rowUpdater';
 import InboundExpander from './expander';
 import SendModal from './senderModal';
 import CreateModal from './createModal';

@@ -13,7 +13,7 @@ import SearchBar from 'client/components/search-bar';
 import NavLink from 'client/components/nav-link';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import RowUpdater from './forms/rowUpdater';
+import RowUpdater from 'client/components/rowUpdater';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;

@@ -2,14 +2,14 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Button, Dropdown, Menu, Table, Icon, Input, Select, message, Popconfirm } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import RowUpdater from '../../form/rowUpdater';
 import { updateHeadNetWt, loadBillBody, openAmountModel, deleteSelectedBodies } from 'common/reducers/cmsManifest';
 import { getItemForBody, getHscodeForBody } from 'common/reducers/cmsTradeitem';
 import { format } from 'client/common/i18n/helpers';
 import ExcelUpload from 'client/components/excelUploader';
-import messages from '../../form/message.i18n';
 import { createFilename } from 'client/util/dataTransform';
 import AmountModel from '../modals/amountDivid';
+import RowUpdater from 'client/components/rowUpdater';
+import messages from '../../form/message.i18n';
 
 const formatMsg = format(messages);
 const Option = Select.Option;
