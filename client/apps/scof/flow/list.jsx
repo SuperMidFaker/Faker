@@ -1,9 +1,11 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Input, Layout, Table, Tooltip } from 'antd';
-import { openCreateFlowModal } from 'common/reducers/scofFlow';
+import { Breadcrumb, Button, Input, Layout, Tooltip } from 'antd';
+import { loadFlowList, openCreateFlowModal, openFlow, reloadFlowList } from 'common/reducers/scofFlow';
+import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
+import Table from 'client/components/remoteAntTable';
 import CreateFlowModal from './modal/createFlowModal';
 import FlowDesigner from './designer';
 import { formatMsg } from './message.i18n';
@@ -11,12 +13,27 @@ import { formatMsg } from './message.i18n';
 const Sider = Layout.Sider;
 const Search = Input.Search;
 
+function fetchData({ state, dispatch }) {
+  return dispatch(loadFlowList({
+    tenantId: state.account.tenantId,
+    filter: JSON.stringify(state.scofFlow.listFilter),
+    pageSize: state.scofFlow.flowList.pageSize,
+    current: state.scofFlow.flowList.current,
+  }));
+}
+
+@connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
     tenantId: state.account.tenantId,
+    reload: state.scofFlow.reloadFlowList,
+    loading: state.scofFlow.flowListLoading,
+    thisFlow: state.scofFlow.currentFlow,
+    listFilter: state.scofFlow.listFilter,
+    flowList: state.scofFlow.flowList,
   }),
-  { openCreateFlowModal }
+  { openCreateFlowModal, loadFlowList, openFlow, reloadFlowList }
 )
 @connectNav({
   depth: 2,
@@ -32,32 +49,92 @@ export default class FlowList extends React.Component {
     searchInput: '',
     collapsed: false,
   }
+  componentWillReceiveProps(nextProps) {
+    if (!this.props.reload && nextProps.reload) {
+      let current = nextProps.flowList.current;
+      if (nextProps.flowList.pageSize * current === nextProps.flowList.totalCount) {
+        current += 1;
+      }
+      this.props.reloadFlowList({
+        tenantId: nextProps.tenantId,
+        filter: JSON.stringify(nextProps.listFilter),
+        pageSize: nextProps.flowList.pageSize,
+        current,
+      });
+    }
+  }
   msg = formatMsg(this.props.intl)
 
+  columns = [{
+    title: this.msg('flowName'),
+    dataIndex: 'name',
+    width: 80,
+  }, {
+    title: this.msg('flowCustomer'),
+    dataIndex: 'customer',
+    width: 200,
+  }]
+  dataSource = new Table.DataSource({
+    fetcher: params => this.loadFlowList({
+      tenantId: this.props.tenantId,
+      filter: JSON.stringify(this.props.listFilter),
+      pageSize: params.pageSize,
+      current: params.current,
+    }),
+    resolve: result => result.data,
+    getPagination: (result, resolve) => ({
+      total: result.totalCount,
+      current: resolve(result.totalCount, result.current, result.pageSize),
+      showSizeChanger: false,
+      showQuickJumper: false,
+      pageSize: result.pageSize,
+    }),
+    getParams: (pagination, filters, sorter) => {
+      const params = {
+        pageSize: pagination.pageSize,
+        current: pagination.current,
+        sorter: {
+          field: sorter.field,
+          order: sorter.order === 'descend' ? 'DESC' : 'ASC',
+        },
+      };
+      return params;
+    },
+    remotes: this.props.flowList,
+  })
   handleListSiderToggle = () => {
     this.setState({
       collapsed: !this.state.collapsed,
     });
   }
+  handleSearch = (value) => {
+    const filter = { ...this.props.listFilter, name: value };
+    this.props.loadFlowList({
+      tenantId: this.props.tenantId,
+      filter: JSON.stringify(filter),
+      pageSize: this.props.flowList.pageSize,
+      current: 1,
+    });
+  }
+  handleRowClick = (row) => {
+    this.props.openFlow(row);
+  }
   handleCreateFlow = () => {
     this.props.openCreateFlowModal();
   }
   render() {
-    const { flow, collapsed } = this.state;
-    const columns = [{
-      dataIndex: 'name',
-      key: 'name',
-      render: o => (<div style={{ paddingLeft: 15 }}>{o}</div>),
-    }];
+    const { thisFlow, flowList, loading } = this.props;
+    const { collapsed } = this.state;
+    this.dataSource.remotes = flowList;
     return (
       <Layout>
-        <Sider width={280} className="menu-sider" key="sider" trigger={null}
+        <Sider width={380} className="menu-sider" key="sider" trigger={null}
           collapsible collapsed={collapsed} collapsedWidth={0}
         >
           <div className="top-bar">
             <Breadcrumb>
               <Breadcrumb.Item>
-                {this.msg('flow')}
+                {this.msg('flowName')}
               </Breadcrumb.Item>
             </Breadcrumb>
             <div className="pull-right">
@@ -68,23 +145,23 @@ export default class FlowList extends React.Component {
           </div>
           <div className="left-sider-panel">
             <div className="toolbar">
-              <Search
-                placeholder={this.msg('searchPlaceholder')}
-                onSearch={this.handleSearch} size="large"
-              />
+              <Search onSearch={this.handleSearch} size="large" />
             </div>
-            <Table size="middle" dataSource={this.props.flowList} columns={columns} showHeader={false} onRowClick={this.handleRowClick}
-              pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }}
-              rowClassName={record => record.id === flow.id ? 'table-row-selected' : ''}
+            <Table size="middle" dataSource={this.dataSource} columns={this.columns} onRowClick={this.handleRowClick}
+              rowClassName={record => thisFlow && record.id === thisFlow.id ? 'table-row-selected' : ''} loading={loading}
+              rowKey="id"
             />
           </div>
         </Sider>
         <CreateFlowModal />
+        {thisFlow &&
         <Button size="large" className={collapsed ? '' : 'btn-toggle-on'}
           icon={collapsed ? 'menu-unfold' : 'menu-fold'}
           onClick={this.handleListSiderToggle}
-        />
-        <FlowDesigner listCollapsed={collapsed} />
+        />}
+        {thisFlow &&
+        <FlowDesigner listCollapsed={collapsed} currentFlow={thisFlow} />
+        }
       </Layout>
     );
   }

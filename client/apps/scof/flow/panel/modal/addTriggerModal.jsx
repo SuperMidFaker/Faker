@@ -16,7 +16,7 @@ const CheckboxGroup = Checkbox.Group;
 
 @injectIntl
 @connect(state => ({
-  visible: state.scofFlow.addTriggerModal.visible,
+  visible: state.scofFlow.visibleTriggerModal,
   tenantId: state.account.tenantId,
 }),
   { closeAddTriggerModal }

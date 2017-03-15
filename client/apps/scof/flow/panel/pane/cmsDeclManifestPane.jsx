@@ -32,14 +32,16 @@ export default class CMSDeclManifestPane extends Component {
     name: 'onFinished',
   }]
   render() {
-    const { form: { getFieldDecorator }, bizManifest: { trades, agents, templates } } = this.props;
+    const { form: { getFieldDecorator }, model, bizManifest: { trades, agents, templates } } = this.props;
+    const ownerTitle = model.kind === 'export' ? this.msg('manifestProducer') : this.msg('manifestConsumer');
     return (
       <Collapse bordered={false} defaultActiveKey={['properties', 'events']}>
-        <Panel header={this.msg('properties')} key="properties">
+        <Panel header={this.msg('bizProperties')} key="properties">
           <Row gutter={16}>
-            <Col sm={24} lg={8}>
-              <FormItem label={this.msg('trading')}>
+            <Col sm={24} lg={12}>
+              <FormItem label={this.msg('manifestTrading')}>
                 {getFieldDecorator('trading', {
+                  initialValue: model.trading,
                 })(<Select>
                   {
                       trades.map(tr => <Option value={tr.code} key={tr.code}>{tr.code}|{tr.name}</Option>)
@@ -47,9 +49,10 @@ export default class CMSDeclManifestPane extends Component {
                 </Select>)}
               </FormItem>
             </Col>
-            <Col sm={24} lg={8}>
-              <FormItem label={this.msg('owner')}>
+            <Col sm={24} lg={12}>
+              <FormItem label={ownerTitle}>
                 {getFieldDecorator('owner', {
+                  initialValue: model.owner,
                 })(<Select>
                   {
                       trades.map(tr => <Option value={tr.code} key={tr.code}>{tr.code}|{tr.name}</Option>)
@@ -57,12 +60,13 @@ export default class CMSDeclManifestPane extends Component {
                 </Select>)}
               </FormItem>
             </Col>
-            <Col sm={24} lg={8}>
-              <FormItem label={this.msg('agent')}>
+            <Col sm={24} lg={12}>
+              <FormItem label={this.msg('manifestAgent')}>
                 {getFieldDecorator('agent', {
+                  initialValue: model.agent,
                 })(<Select>
                   {
-                      agents.map(ag => <Option value={ag.code} key={ag.code}>{ag.code}|{ag.name}</Option>)
+                      agents.map(ag => <option value={ag.code} key={ag.code}>{ag.code}|{ag.name}</option>)
                     }
                 </Select>)}
               </FormItem>
@@ -70,16 +74,17 @@ export default class CMSDeclManifestPane extends Component {
             <Col sm={24} lg={12}>
               <FormItem label={this.msg('manifestTemplate')}>
                 {getFieldDecorator('manifest_template', {
+                  initialValue: model.manifest_template,
                 })(<Select>
                   {
-                      templates.map(tmp => <Option value={tmp.id} key={tmp.id}>{tmp.name}</Option>)
+                      templates.map(tmp => <option value={tmp.id} key={tmp.id}>{tmp.name}</option>)
                     }
                 </Select>)}
               </FormItem>
             </Col>
           </Row>
         </Panel>
-        <Panel header={this.msg('events')} key="events">
+        <Panel header={this.msg('bizEvents')} key="events">
           <FlowTriggerTable events={this.eventData} />
         </Panel>
       </Collapse>

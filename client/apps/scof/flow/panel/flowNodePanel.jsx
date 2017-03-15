@@ -25,7 +25,7 @@ export default class FlowNodePanel extends Component {
     const { form: { getFieldDecorator }, model } = this.props;
     return (
       <Collapse bordered={false} defaultActiveKey={['properties', 'events']}>
-        <Panel header={this.msg('properties')} key="properties">
+        <Panel header={this.msg('bizProperties')} key="properties">
           <FormItem label={this.msg('nodeName')}>
             {getFieldDecorator('name', {
               initialValue: model.name,
@@ -33,7 +33,7 @@ export default class FlowNodePanel extends Component {
             })(<Input />)}
           </FormItem>
         </Panel>
-        <Panel header={this.msg('events')} key="events">
+        <Panel header={this.msg('bizEvents')} key="events">
           <FlowTriggerTable events={this.eventData} />
         </Panel>
       </Collapse>

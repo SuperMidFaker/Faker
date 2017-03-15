@@ -43,7 +43,7 @@ export default class CMSDelegationPane extends Component {
     const declWays = model.kind === 'export' ? DECL_E_TYPE : DECL_I_TYPE;
     return (
       <Collapse bordered={false} defaultActiveKey={['properties', 'events']}>
-        <Panel header={this.msg('properties')} key="properties">
+        <Panel header={this.msg('bizProperties')} key="properties">
           <Row gutter={16}>
             <Col sm={24} lg={8}>
               <FormItem label={this.msg('declCustoms')}>
@@ -109,7 +109,7 @@ export default class CMSDelegationPane extends Component {
               </FormItem>
             </Col>
             <Col sm={24} lg={8}>
-              <FormItem label={this.msg('quote')}>
+              <FormItem label={this.msg('quoteNo')}>
                 {getFieldDecorator('quote_no', {
                   initialValue: model.quote_no,
                 })(<Select />)}
@@ -117,7 +117,7 @@ export default class CMSDelegationPane extends Component {
             </Col>
           </Row>
         </Panel>
-        <Panel header={this.msg('events')} key="events">
+        <Panel header={this.msg('bizEvents')} key="events">
           <FlowTriggerTable events={this.eventData} />
         </Panel>
       </Collapse>

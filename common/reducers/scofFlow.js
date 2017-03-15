@@ -4,22 +4,30 @@ import { createActionTypes } from 'client/common/redux-actions';
 const actionTypes = createActionTypes('@@welogix/scof/flow/', [
   'OPEN_CREATE_FLOW_MODAL', 'CLOSE_CREATE_FLOW_MODAL',
   'OPEN_ADD_TRIGGER_MODAL', 'CLOSE_ADD_TRIGGER_MODAL',
+  'LOAD_FLOWLIST', 'LOAD_FLOWLIST_SUCCEED', 'LOAD_FLOWLIST_FAIL',
   'LOAD_CMSBIZPARAMS', 'LOAD_CMSBIZPARAMS_SUCCEED', 'LOAD_CMSBIZPARAMS_FAIL',
-  'UPDATE_FLOWELEMENT_MAP', 'UPDATE_FLOWELEMENT',
+  'SAVE_FLOW', 'SAVE_FLOW_SUCCEED', 'SAVE_FLOW_FAIL',
+  'RELOAD_FLOWLIST', 'RELOAD_FLOWLIST_SUCCEED', 'RELOAD_FLOWLIST_FAIL',
+  'LOAD_GRAPH', 'LOAD_GRAPH_SUCCEED', 'LOAD_GRAPH_FAIL',
+  'LOAD_GRAPHITEM', 'LOAD_GRAPHITEM_SUCCEED', 'LOAD_GRAPHITEM_FAIL',
   'SAVE_GRAPH', 'SAVE_GRAPH_SUCCEED', 'SAVE_GRAPH_FAIL',
-  'ADD_ACTIVE_NODE', 'ADD_ACTIVE_EDGE',
+  'OPEN_FLOW',
 ]);
 
 const initialState = {
-  createFlowModal: {
-    visible: false,
+  visibleFlowModal: false,
+  visibleTriggerModal: false,
+  flowList: {
+    totalCount: 0,
+    pageSize: 20,
+    current: 1,
+    data: [],
   },
-  addTriggerModal: {
-    visible: false,
-  },
-  currentFlow: { customer_partner_id: null },
-  activeNode: { addedActions: [], delActions: [], updActions: [] },
-  activeEdge: { addedConds: [], delConds: [], updConds: [] },
+  flowListLoading: false,
+  reloadFlowList: false,
+  listFilter: { name: '' },
+  currentFlow: null,
+  flowGraph: { nodes: [], edges: [] },
   cmsParams: {
     bizDelegation: { declPorts: [], customsBrokers: [], ciqBrokers: [] },
     quotes: [],
@@ -30,44 +38,69 @@ const initialState = {
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.OPEN_CREATE_FLOW_MODAL:
-      return { ...state, createFlowModal: { visible: true } };
+      return { ...state, visibleFlowModal: true };
     case actionTypes.CLOSE_CREATE_FLOW_MODAL:
-      return { ...state, createFlowModal: { visible: false } };
-    case actionTypes.CREATE_FLOW_SUCCEED:
-      return { ...state, reload: true };
+      return { ...state, visibleFlowModal: false };
+    case actionTypes.SAVE_FLOW_SUCCEED:
+      return { ...state, reloadFlowList: true, currentFlow: action.result.data };
     case actionTypes.OPEN_ADD_TRIGGER_MODAL:
-      return { ...state, addTriggerModal: { visible: true } };
+      return { ...state, visibleTriggerModal: true };
     case actionTypes.CLOSE_ADD_TRIGGER_MODAL:
-      return { ...state, addTriggerModal: { visible: false } };
-    case actionTypes.ADD_TRIGGER_SUCCEED:
-      return { ...state, reload: true };
+      return { ...state, visibleTriggerModal: false };
     case actionTypes.LOAD_CMSBIZPARAMS_SUCCEED:
       return { ...state, cmsParams: { ...state.cmsParams, ...action.result.data } };
-    case actionTypes.UPDATE_NODES_MAP: {
-      const nodesMap = { ...state.nodesMap };
-      nodesMap[action.data.uuid] = action.data;
-      return { ...state, nodesMap, activeNode: action.data };
+    case actionTypes.LOAD_FLOWLIST:
+      return { ...state, flowListLoading: true, listFilter: JSON.parse(action.params.filter) };
+    case actionTypes.LOAD_FLOWLIST_FAIL:
+      return { ...state, flowListLoading: false };
+    case actionTypes.LOAD_FLOWLIST_SUCCEED: {
+      const flowList = action.result.data;
+      const currentFlow = flowList.data[0];
+      return { ...state, flowListLoading: false, flowList, currentFlow };
     }
-    case actionTypes.UPDATE_EDGES_MAP: {
-      const edgesMap = { ...state.edgesMap };
-      edgesMap[action.data.uuid] = action.data;
-      return { ...state, edgesMap, activeEdge: action.data };
-    }
-    case actionTypes.ADD_ACTIVE_NODE: {
-      const nodesMap = { ...state.nodesMap };
-      nodesMap[action.data.uuid] = action.data;
-      return { ...state, nodesMap, activeEdge: initialState.activeEdge, activeNode: { ...initialState.activeNode, ...action.data } };
-    }
-    case actionTypes.ADD_ACTIVE_EDGE: {
-      const edgesMap = { ...state.edgesMap };
-      edgesMap[action.data.uuid] = action.data;
-      return { ...state, edgesMap, activeNode: initialState.activeNode, activeEdge: { ...initialState.activeEdge, ...action.data } };
-    }
-    case actionTypes.UPDATE_ACTIVE_ELEMENT:
-      return { ...state, activeNode: action.data.node, activeEdge: action.data.edge };
+    case actionTypes.RELOAD_FLOWLIST:
+      return { ...state, flowListLoading: true, listFilter: JSON.parse(action.params.filter) };
+    case actionTypes.RELOAD_FLOWLIST_FAIL:
+      return { ...state, flowListLoading: false };
+    case actionTypes.RELOAD_FLOWLIST_SUCCEED:
+      return { ...state, flowListLoading: false, reloadFlowList: false, flowList: action.result.data };
+    case actionTypes.OPEN_FLOW:
+      return { ...state, currentFlow: action.data };
+    case actionTypes.LOAD_GRAPH_SUCCEED:
+      return { ...state, flowGraph: action.result.data };
     default:
       return state;
   }
+}
+
+export function loadFlowList(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_FLOWLIST,
+        actionTypes.LOAD_FLOWLIST_SUCCEED,
+        actionTypes.LOAD_FLOWLIST_FAIL,
+      ],
+      endpoint: 'v1/scof/list/flows',
+      method: 'get',
+      params,
+    },
+  };
+}
+
+export function reloadFlowList(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.RELOAD_FLOWLIST,
+        actionTypes.RELOAD_FLOWLIST_SUCCEED,
+        actionTypes.RELOAD_FLOWLIST_FAIL,
+      ],
+      endpoint: 'v1/scof/list/flows',
+      method: 'get',
+      params,
+    },
+  };
 }
 
 export function openCreateFlowModal() {
@@ -79,6 +112,28 @@ export function openCreateFlowModal() {
 export function closeCreateFlowModal() {
   return {
     type: actionTypes.CLOSE_CREATE_FLOW_MODAL,
+  };
+}
+
+export function saveFlow(flow) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SAVE_FLOW,
+        actionTypes.SAVE_FLOW_SUCCEED,
+        actionTypes.SAVE_FLOW_FAIL,
+      ],
+      endpoint: 'v1/scof/create/flow',
+      method: 'post',
+      data: flow,
+    },
+  };
+}
+
+export function openFlow(flow) {
+  return {
+    type: actionTypes.OPEN_FLOW,
+    data: flow,
   };
 }
 
@@ -109,6 +164,36 @@ export function loadCmsBizParams(tenantId, ietype) {
   };
 }
 
+export function loadFlowGraph(flowid) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_GRAPH,
+        actionTypes.LOAD_GRAPH_SUCCEED,
+        actionTypes.LOAD_GRAPH_FAIL,
+      ],
+      endpoint: 'v1/scof/flow/graph',
+      method: 'get',
+      params: { flow: flowid },
+    },
+  };
+}
+
+export function loadFlowGraphItem(model) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_GRAPHITEM,
+        actionTypes.LOAD_GRAPHITEM_SUCCEED,
+        actionTypes.LOAD_GRAPHITEM_FAIL,
+      ],
+      endpoint: 'v1/scof/flow/graph/nodeedge',
+      method: 'get',
+      params: model,
+    },
+  };
+}
+
 export function saveFlowGraph(flowid, nodes, edges) {
   return {
     [CLIENT_API]: {
@@ -121,33 +206,5 @@ export function saveFlowGraph(flowid, nodes, edges) {
       method: 'post',
       data: { flowid, nodes, edges },
     },
-  };
-}
-
-export function updateEdgesMap(edge) {
-  return {
-    type: actionTypes.UPDATE_EDGES_MAP,
-    data: edge,
-  };
-}
-
-export function addActiveNode(node) {
-  return {
-    type: actionTypes.ADD_ACTIVE_NODE,
-    data: node,
-  };
-}
-
-export function addActiveEdge(edge) {
-  return {
-    type: actionTypes.ADD_ACTIVE_EDGE,
-    data: edge,
-  };
-}
-
-export function updateActiveElement(node, edge) {
-  return {
-    type: actionTypes.UPDATE_ACTIVE_ELEMENT,
-    data: { node, edge },
   };
 }

@@ -66,12 +66,12 @@ class ConditionTable extends React.Component {
   constructor(props) {
     super(props);
     this.columns = [{
-      title: 'name',
+      // title: this.msg('bizObject'),
       dataIndex: 'name',
       width: '50%',
       render: (text, record, index) => this.renderColumns(this.state.data, index, 'name', text),
     }, {
-      title: 'event',
+      // title: this.msg('bizEvent'),
       dataIndex: 'event',
       render: (text, record, index) => this.renderColumns(this.state.data, index, 'event', text),
     }, {
@@ -235,7 +235,7 @@ export default class FlowEdgePanel extends Component {
           </Col>
           <Col sm={24}>
             <FormItem label={<span>
-              {this.msg('condition')}&nbsp;
+              {this.msg('edgeCondition')}&nbsp;
               <Tooltip title={this.msg('tooltipEdgeCondition')}>
                 <Icon type="question-circle-o" />
               </Tooltip></span>}

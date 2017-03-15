@@ -21,7 +21,6 @@ const TabPane = Tabs.TabPane;
 export default class FlowCmsNodePanel extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    ietype: PropTypes.oneOf(['import', 'export']),
     form: PropTypes.object.isRequired,
   }
   componentDidMount() {
@@ -30,23 +29,24 @@ export default class FlowCmsNodePanel extends Component {
   msg = formatMsg(this.props.intl)
   render() {
     const { form, model } = this.props;
+    const title = model.kind === 'export' ? this.msg('flowNodeExport') : this.msg('flowNodeImport');
     return (
       <Row gutter={16}>
         <Col sm={24} md={8}>
-          <Card title={this.msg('cmsFlowNode')} bodyStyle={{ padding: 0 }}>
+          <Card title={title} bodyStyle={{ padding: 0 }}>
             <FlowNodePanel form={form} model={model} />
           </Card>
         </Col>
         <Col sm={24} md={16}>
           <Card title={this.msg('bizObject')} bodyStyle={{ padding: 0 }}>
             <Tabs defaultActiveKey="objDelegation">
-              <TabPane tab={this.msg('objDelegation')} key="objDelegation">
+              <TabPane tab={this.msg('cmsDelegation')} key="objDelegation">
                 <DelegationPane form={form} model={model} />
               </TabPane>
-              <TabPane tab={this.msg('objDeclManifest')} key="objDeclManifest" >
+              <TabPane tab={this.msg('cmsDeclManifest')} key="objDeclManifest" >
                 <DeclManifestPane form={form} model={model} />
               </TabPane>
-              <TabPane tab={this.msg('objCustomsDecl')} key="objCustomsDecl" >
+              <TabPane tab={this.msg('cmsCustomsDecl')} key="objCustomsDecl" >
                 <CustomsDeclPane form={form} model={model} />
               </TabPane>
             </Tabs>

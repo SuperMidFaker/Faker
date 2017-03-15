@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Modal, Form, Input, Select } from 'antd';
-import { closeCreateFlowModal } from 'common/reducers/scofFlow';
+import { closeCreateFlowModal, saveFlow } from 'common/reducers/scofFlow';
 import { loadPartners } from 'common/reducers/partner';
 import { PARTNER_ROLES } from 'common/constants';
 import { formatMsg } from '../message.i18n';
@@ -11,12 +11,13 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 
 @injectIntl
-@connect(state => ({
-  visible: state.scofFlow.createFlowModal.visible,
-  tenantId: state.account.tenantId,
-  customerPartners: state.partner.partners,
-}),
-  { closeCreateFlowModal, loadPartners }
+@connect(
+  state => ({
+    visible: state.scofFlow.visibleFlowModal,
+    tenantId: state.account.tenantId,
+    customerPartners: state.partner.partners,
+  }),
+  { closeCreateFlowModal, loadPartners, saveFlow }
 )
 @Form.create()
 export default class CreateFlowModal extends React.Component {
@@ -36,13 +37,18 @@ export default class CreateFlowModal extends React.Component {
   handleOk = () => {
     this.props.form.validateFields((err, fields) => {
       if (!err) {
-        const customer = this.props.customerPartners.filter(pt => pt.parnter_id === fields.customer)[0];
+        const customer = this.props.customerPartners.filter(pt => pt.id === fields.customer)[0];
         this.props.saveFlow({
           name: fields.name,
-          customer_partner_id: customer.partner_id,
-          customer_partner_name: customer.name,
+          pid: customer.id,
+          pname: customer.name,
+          tenantId: this.props.tenantId,
+        }).then((result) => {
+          console.log(result);
+          if (!result.error) {
+            this.handleCancel();
+          }
         });
-        this.handleCancel();
       }
     });
   }
@@ -62,7 +68,7 @@ export default class CreateFlowModal extends React.Component {
             {
              getFieldDecorator('name', {
                rules: [{ required: true, message: '流程名称必填' }],
-             })(<Input placeholder={this.msg('flowName')} />)
+             })(<Input />)
            }
           </FormItem>
           <FormItem label={this.msg('flowCustomer')}>
@@ -72,7 +78,7 @@ export default class CreateFlowModal extends React.Component {
              })(
                <Select showSearch optionFilterProp="children">
                  {customerPartners.map(data => (
-                   <Option key={data.partner_id} value={data.partner_id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>)
+                   <Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>)
               )}
                </Select>)
             }
