@@ -1,9 +1,9 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Breadcrumb, Form, Layout, Row, Col, Button, Tooltip, Table, Popconfirm, Icon } from 'antd';
+import { Breadcrumb, Form, Layout, Row, Col, Button, Tooltip, Table, Popconfirm, Icon, message, Mention } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { openAddModal } from 'common/reducers/cmsSettings';
+import { openAddModal, deleteRelatedCustomer, loadRelatedCustomers, loadTemplateFormVals, saveTemplateData } from 'common/reducers/cmsSettings';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from './message.i18n';
 import { format } from 'client/common/i18n/helpers';
@@ -17,15 +17,13 @@ import CustomerModal from './modals/customerModal';
 const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
 
-function fetchData({ dispatch, state }) {
+function fetchData({ dispatch, state, params }) {
   const promises = [];
   promises.push(dispatch(loadCmsParams({
     ieType: state.cmsSettings.template.ieType,
     tenantId: state.account.tenantId,
   })));
-  // promises.push(dispatch(loadCustomers({
-  //   tenantId: state.account.tenantId,
-  // })));
+  promises.push(dispatch(loadTemplateFormVals(params.id)));
   return Promise.all(promises);
 }
 
@@ -39,10 +37,11 @@ function fetchData({ dispatch, state }) {
     tenantName: state.account.tenantName,
     template: state.cmsSettings.template,
     ietype: state.cmsSettings.template.ietype,
-    templateName: state.cmsSettings.billTemplateModal.templateName,
-    billHead: state.cmsSettings.billHead,
+    templateName: state.cmsSettings.template.template_name,
+    relatedCustomers: state.cmsSettings.relatedCustomers,
+    formData: state.cmsSettings.formData,
   }),
-  { loadCustomers, openAddModal }
+  { loadCustomers, openAddModal, deleteRelatedCustomer, loadRelatedCustomers, saveTemplateData }
 )
 @connectNav({
   depth: 3,
@@ -55,6 +54,7 @@ export default class CreateTemplate extends Component {
     ietype: PropTypes.oneOf(['import', 'export']),
     form: PropTypes.object.isRequired,
     tenantName: PropTypes.string.isRequired,
+    relatedCustomers: PropTypes.array,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -64,15 +64,20 @@ export default class CreateTemplate extends Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   handleSave = () => {
-    this.props.form.validateFields((errors) => {
-      if (!errors) {
+    const { template } = this.props;
+    const element = Mention.toString(this.props.form.getFieldValue('rule_element'));
+    const head = { ...this.props.form.getFieldsValue(), rule_element: element };
+    this.props.saveTemplateData({ head, templateId: template.id }).then(
+      (result) => {
+        if (result.error) {
+          message.error(result.error.message);
+        } else {
+          message.info('保存成功');
+        }
       }
-    });
+    );
   }
-  handleSaveBtnClick = () => {
-    this.handleSave({ accepted: false });
-  }
-  handleCancelBtnClick = () => {
+  handleCancel = () => {
     this.context.router.goBack();
   }
   handleAddRelatedCustomers = () => {
@@ -81,17 +86,27 @@ export default class CreateTemplate extends Component {
     });
     this.props.openAddModal();
   }
+  handleCustDel = (id) => {
+    this.props.deleteRelatedCustomer(id).then(
+      (result) => {
+        if (result.error) {
+          message.error(result.error.message, 10);
+        } else {
+          this.props.loadRelatedCustomers(this.props.template.id);
+        }
+      });
+  }
   render() {
-    const { form, ietype, templateName, billHead } = this.props;
+    const { form, ietype, templateName, formData, relatedCustomers } = this.props;
     const columns = [{
-      dataIndex: 'name',
+      dataIndex: 'customer_name',
       key: 'name',
       render: o => (<div style={{ paddingLeft: 15 }}>{o}</div>),
     }, {
-      width: 80,
+      width: 20,
       fixed: 'right',
       render: (o, record) => (
-        <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleItemDel(record.id)}>
+        <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleCustDel(record.id)}>
           <a role="button"><Icon type="delete" /></a>
         </Popconfirm>
       ),
@@ -119,7 +134,7 @@ export default class CreateTemplate extends Component {
             </div>
           </div>
           <div className="left-sider-panel" >
-            <Table size="middle" columns={columns} showHeader={false} onRowClick={this.handleRowClick}
+            <Table size="middle" columns={columns} dataSource={relatedCustomers} showHeader={false} onRowClick={this.handleRowClick}
               rowKey="id" pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }}
             />
           </div>
@@ -135,23 +150,23 @@ export default class CreateTemplate extends Component {
               </Breadcrumb.Item>
             </Breadcrumb>
             <div className="top-bar-tools">
-              <Button size="large" type="ghost" onClick={this.handleCancelBtnClick}>
+              <Button size="large" type="ghost" onClick={this.handleCancel}>
                 {this.msg('cancel')}
               </Button>
-              <Button size="large" type="primary" icon="save" onClick={this.handleSaveBtnClick}>
+              <Button size="large" type="primary" icon="save" onClick={this.handleSave}>
                 {this.msg('save')}
               </Button>
             </div>
           </Header>
           <Content className={'main-content layout-min-width layout-min-width-large'}>
-            <HeadForm ietype={ietype} form={form} formData={billHead} />
+            <HeadForm ietype={ietype} form={form} formData={formData} />
             <Form vertical>
               <Row gutter={24}>
                 <Col sm={24} md={12}>
-                  <SetImportRules form={form} />
+                  <SetImportRules form={form} formData={formData} />
                 </Col>
                 <Col sm={24} md={12}>
-                  <MergeSplitRules />
+                  <MergeSplitRules form={form} formData={formData} />
                 </Col>
               </Row>
             </Form>

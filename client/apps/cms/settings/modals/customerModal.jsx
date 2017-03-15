@@ -2,8 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Form, Modal, Select, message } from 'antd';
-import { createRepo, loadOwners } from 'common/reducers/cmsTradeitem';
-import { closeAddModal } from 'common/reducers/cmsSettings';
+import { closeAddModal, addRelatedCusromer, loadRelatedCustomers } from 'common/reducers/cmsSettings';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 
@@ -23,9 +22,10 @@ const formItemLayout = {
     loginId: state.account.loginId,
     visibleAddModal: state.cmsSettings.visibleAddModal,
     customers: state.crmCustomers.customers,
-    repoOwners: state.cmsTradeitem.repoOwners,
+    template: state.cmsSettings.template,
+    relatedCustomers: state.cmsSettings.relatedCustomers,
   }),
-  { createRepo, closeAddModal, loadOwners }
+  { addRelatedCusromer, closeAddModal, loadRelatedCustomers }
 )
 @Form.create()
 export default class customerModal extends React.Component {
@@ -35,7 +35,8 @@ export default class customerModal extends React.Component {
     loginId: PropTypes.number.isRequired,
     visibleAddModal: PropTypes.bool.isRequired,
     customers: PropTypes.array.isRequired,
-    repoOwners: PropTypes.array.isRequired,
+    template: PropTypes.object,
+    relatedCustomers: PropTypes.array.isRequired,
   }
   state = {
     customerid: null,
@@ -45,20 +46,17 @@ export default class customerModal extends React.Component {
   }
   handleOk = () => {
     const customer = this.props.customers.filter(cust => cust.id === this.state.customerid)[0];
-    this.props.createRepo({
-      createrTenantId: this.props.tenantId,
-      ownerPartnerId: customer.id,
-      ownerTenantId: customer.partner_tenant_id,
-      createrLoginId: this.props.loginId,
-      uniqueCode: customer.partner_unique_code,
+    this.props.addRelatedCusromer({
+      template_id: this.props.template.id,
+      customer_name: customer.name,
+      customer_partner_id: customer.id,
+      customer_tenant_id: customer.partner_tenant_id,
     }).then(
       (result) => {
         if (result.error) {
           message.error(result.error.message, 10);
         } else {
-          this.props.loadOwners({
-            tenantId: this.props.tenantId,
-          });
+          this.props.loadRelatedCustomers(this.props.template.id);
           this.props.closeAddModal();
           this.props.form.resetFields();
         }
@@ -69,11 +67,11 @@ export default class customerModal extends React.Component {
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   render() {
-    const { form: { getFieldDecorator }, visibleAddModal, customers, repoOwners } = this.props;
+    const { form: { getFieldDecorator }, visibleAddModal, customers, relatedCustomers } = this.props;
     let newCustomers = customers;
-    for (let i = 0; i < repoOwners.length; i++) {
-      const owner = repoOwners[i];
-      newCustomers = newCustomers.filter(ct => ct.id !== owner.id);
+    for (let i = 0; i < relatedCustomers.length; i++) {
+      const rel = relatedCustomers[i];
+      newCustomers = newCustomers.filter(ct => ct.id !== rel.customer_partner_id);
     }
     return (
       <Modal title={this.msg('addRelatedCustomers')} visible={visibleAddModal}
