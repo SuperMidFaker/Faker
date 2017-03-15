@@ -13,6 +13,18 @@ const messages = defineMessages({
     id: 'scv.module.shipments.tracking',
     defaultMessage: '货运跟踪',
   },
+  inboundShipments: {
+    id: 'scv.module.shipments.inbound',
+    defaultMessage: '进口货运',
+  },
+  outboundShipments: {
+    id: 'scv.module.shipments.outbound',
+    defaultMessage: '出口货运',
+  },
+  domesticShipments: {
+    id: 'scv.module.shipments.domestic',
+    defaultMessage: '国内运输',
+  },
   clearance: {
     id: 'scv.module.clearance',
     defaultMessage: '清关管理',
