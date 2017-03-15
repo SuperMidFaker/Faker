@@ -66,7 +66,7 @@ import * as CWMSettings from './cwm/settings';
 import SCV from './scv/module-scv';
 import * as SCVDashboard from './scv/dashboard';
 import * as SCVOrders from './scv/orders';
-import * as SCVShipments from './scv/shipments';
+import * as SCVInboundShipments from './scv/shipments/inbound';
 import * as SCVCustomsDecl from './scv/clearance/customsdecl';
 import * as SCVDeclManifest from './scv/clearance/manifest';
 import * as SCVInventoryStock from './scv/inventory/stock';
@@ -344,7 +344,9 @@ export default(store, cookie) => {
             <Route path="dashboard" component={SCVDashboard.Index} />
             <Route path="orders" component={SCVOrders.List} />
             <Route path="shipments">
-              <IndexRoute component={SCVShipments.List} />
+              <Route path="inbound">
+                <IndexRoute component={SCVInboundShipments.List} />
+              </Route>
             </Route>
             <Route path="clearance">
               <Route path="manifest" component={SCVDeclManifest.List} />

@@ -7,8 +7,11 @@ import { intlShape, injectIntl } from 'react-intl';
 import messages from './message.i18n';
 import { format } from 'client/common/i18n/helpers';
 import BasicForm from './forms/basicForm';
+import StepNodeForm from './forms/stepNodeForm';
 import ClearanceForm from './forms/clearanceForm';
 import TransportForm from './forms/transportForm';
+import './orders.less';
+
 const formatMsg = format(messages);
 const Step = Steps.Step;
 
@@ -37,7 +40,8 @@ export default class OrderForm extends Component {
   renderSteps = (shipmtOrderMode) => {
     const { operation, formData } = this.props;
     const steps = [];
-    for (let i = 0; i < shipmtOrderMode.length; i++) {
+    steps.push(<Step key={1} status="process" description={<StepNodeForm formData={formData.subOrders[0]} index={0} operation={operation} />} />);
+    for (let i = 1; i < shipmtOrderMode.length; i++) {
       const mode = shipmtOrderMode[i];
       if (mode === 'clearance') {
         steps.push(<Step key={i + 1} title="清关" status="process" description={<ClearanceForm formData={formData.subOrders[i]} index={i} operation={operation} />} />);
@@ -52,7 +56,7 @@ export default class OrderForm extends Component {
     const shipmtOrderMode = formData.shipmt_order_mode === '' ? [] : formData.shipmt_order_mode.split(',');
     const current = shipmtOrderMode.length > 0 ? shipmtOrderMode.length : 0;
     return (
-      <Form layout="horizontal">
+      <Form layout="horizontal" className="order-flow-form">
         <BasicForm operation={operation} />
         <Steps direction="vertical" current={current}>
           {this.renderSteps(shipmtOrderMode)}
