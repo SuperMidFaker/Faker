@@ -7,7 +7,7 @@ import { Breadcrumb, Layout, Menu, Icon, Button, Table, Popconfirm, message } fr
 import { format } from 'client/common/i18n/helpers';
 import NavLink from 'client/components/nav-link';
 import messages from './message.i18n';
-import { toggleBillTempModal, loadBillemplates, deleteTemplate } from 'common/reducers/cmsSettings';
+import { toggleBillTempModal, loadBillemplates, deleteTemplate, loadRelatedCustomers } from 'common/reducers/cmsSettings';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import BillTemplateModal from './modals/billTemplateModal';
 import { loadPartners } from 'common/reducers/partner';
@@ -31,7 +31,7 @@ function fetchData({ dispatch, state }) {
     loginName: state.account.username,
     billtemplates: state.cmsSettings.billtemplates,
   }),
-  { toggleBillTempModal, loadPartners, loadBillemplates, deleteTemplate }
+  { toggleBillTempModal, loadPartners, loadBillemplates, deleteTemplate, loadRelatedCustomers }
 )
 @connectNav({
   depth: 2,
@@ -57,8 +57,8 @@ export default class billTemplates extends Component {
     });
     this.props.toggleBillTempModal(true, 'add');
   }
-  handleEdit = () => {
-
+  handleEdit = (record) => {
+    this.context.router.push(`/clearance/settings/billtemplates/edit/${record.id}`);
   }
   handleDelete = (id) => {
     this.props.deleteTemplate(id).then((result) => {
@@ -96,7 +96,7 @@ export default class billTemplates extends Component {
         key: 'status',
         render: (_, record) => (
           <span>
-            <a onClick={this.handleEdit}>修改</a>
+            <a onClick={() => this.handleEdit(record)}>{this.msg('edit')}</a>
             <span className="ant-divider" />
             <Popconfirm title="确定要删除吗？" onConfirm={() => this.handleDelete(record.id)}>
               <a>删除</a>
