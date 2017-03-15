@@ -155,7 +155,7 @@ export default class FlowList extends React.Component {
         </Sider>
         <CreateFlowModal />
         {thisFlow &&
-        <Button size="large" className={collapsed ? '' : 'btn-toggle-on'}
+        <div size="large" className={collapsed ? '' : 'btn-toggle-on'}
           icon={collapsed ? 'menu-unfold' : 'menu-fold'}
           onClick={this.handleListSiderToggle}
         />}

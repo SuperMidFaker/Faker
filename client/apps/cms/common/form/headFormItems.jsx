@@ -270,7 +270,7 @@ export function DeclCustoms(props) {
   const { getFieldDecorator, disabled, formData, formRequire, required } = props;
   const declPortProps = {
     outercol: 24,
-    col: 8,
+    col: 4,
     field: 'decl_port',
     label: msg('declPort'),
     rules: [{ required }],
@@ -302,7 +302,7 @@ export function LicenseNo(props) {
   const { getFieldDecorator, disabled, formData } = props;
   const licenseNoProps = {
     outercol: 24,
-    col: 4,
+    col: 8,
     field: 'license_no',
     label: msg('licenseNo'),
     disabled,
@@ -372,6 +372,7 @@ ManualNo.propTypes = {
 export function Transport(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const { getFieldDecorator, getFieldValue, disabled, formData, formRequire, required } = props;
+  const trafMode = getFieldValue('traf_mode') === '2' || getFieldValue('traf_mode') === '5';
   const modeProps = {
     outercol: 24,
     col: 8,
@@ -396,13 +397,26 @@ export function Transport(props) {
     formData,
     getFieldDecorator,
   };
+  const blwbProps = {
+    outercol: 24,
+    col: 8,
+    field: 'bl_wb_no',
+    label: msg('ladingWayBill'),
+    disabled,
+    formData,
+    rules: trafMode ? [{ required }] : [{ required: false }],
+    getFieldDecorator,
+  };
   return (
-    <Col span={12}>
-      <Col span={12}>
+    <Col span={16}>
+      <Col span={8}>
         <FormLocalSearchSelect {...modeProps} />
       </Col>
-      <Col span={12}>
+      <Col span={8}>
         <FormInput {...modeNameProps} />
+      </Col>
+      <Col span={8}>
+        <FormInput {...blwbProps} />
       </Col>
     </Col>
   );
@@ -421,17 +435,6 @@ Transport.propTypes = {
 export function DelVoyageNo(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const { getFieldDecorator, getFieldValue, disabled, formData, required } = props;
-  const trafMode = getFieldValue('traf_mode') === '2' || getFieldValue('traf_mode') === '5';
-  const blwbProps = {
-    outercol: 24,
-    col: 8,
-    field: 'bl_wb_no',
-    label: msg('ladingWayBill'),
-    disabled,
-    formData,
-    rules: trafMode ? [{ required }] : [{ required: false }],
-    getFieldDecorator,
-  };
   const voyageNoProps = {
     outercol: 24,
     col: 8,
@@ -446,9 +449,6 @@ export function DelVoyageNo(props) {
     <Col span={12}>
       <Col span={12}>
         <FormInput {...voyageNoProps} />
-      </Col>
-      <Col span={12}>
-        <FormInput {...blwbProps} />
       </Col>
     </Col>
   );
@@ -466,6 +466,15 @@ DelVoyageNo.propTypes = {
 export function TradeRemission(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const { getFieldDecorator, disabled, formData, formRequire, required } = props;
+  const emsNoProps = {
+    outercol: 24,
+    col: 8,
+    field: 'manual_no',
+    label: msg('emsNo'),
+    disabled,
+    formData,
+    getFieldDecorator,
+  };
   const tradeModeProps = {
     outercol: 24,
     col: 8,
@@ -498,12 +507,15 @@ export function TradeRemission(props) {
     searchKeyFn: opt => opt.value,
   };
   return (
-    <Col span={12}>
-      <Col span={12}>
+    <Col span={16}>
+      <Col span={8}>
         <FormLocalSearchSelect {...tradeModeProps} />
       </Col>
-      <Col span={12}>
+      <Col span={8}>
         <FormLocalSearchSelect {...remissionProps} />
+      </Col>
+      <Col span={8}>
+        <FormInput {...emsNoProps} />
       </Col>
     </Col>
   );
@@ -520,10 +532,10 @@ TradeRemission.propTypes = {
 // 贸易国、起运国
 export function CountryAttr(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
-  const { getFieldDecorator, disabled, formData, formRequire, ietype, required } = props;
+  const { getFieldDecorator, disabled, formData, formRequire, onSearch, ietype, required } = props;
   const tradeCountryProps = {
     outercol: 24,
-    col: 8,
+    col: 4,
     field: 'trade_country',
     options: formRequire.tradeCountries.map(tc => ({
       value: tc.cntry_co,
@@ -553,32 +565,6 @@ export function CountryAttr(props) {
     getFieldDecorator,
     searchKeyFn: opt => opt.search,
   };
-  return (
-    <Col span={12}>
-      <Col span={12}>
-        <FormLocalSearchSelect {...tradeCountryProps} />
-      </Col>
-      <Col span={12}>
-        <FormLocalSearchSelect {...departCountryProps} />
-      </Col>
-    </Col>
-  );
-}
-
-CountryAttr.propTypes = {
-  intl: intlShape.isRequired,
-  ietype: PropTypes.oneOf(['import', 'export']),
-  disabled: PropTypes.bool,
-  required: PropTypes.bool,
-  getFieldDecorator: PropTypes.func.isRequired,
-  formData: PropTypes.object.isRequired,
-  formRequire: PropTypes.object.isRequired,
-};
-
-// 装货港、境内目的地、发票号
-export function DestInvoice(props) {
-  const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
-  const { getFieldDecorator, disabled, formData, formRequire, ietype, onSearch, required } = props;
   const destPortProps = {
     outercol: 24,
     col: 8,
@@ -610,27 +596,33 @@ export function DestInvoice(props) {
     searchKeyFn: opt => opt.value,
   };
   return (
-    <Col span={12}>
-      <Col span={12}>
-        <FormRemoteSearchSelect {...destPortProps} />
+    <Row>
+      <Col span={8}>
+        <FormLocalSearchSelect {...tradeCountryProps} />
       </Col>
-      <Col span={12}>
-        <FormLocalSearchSelect {...districtProps} />
+      <Col span={16}>
+        <Col span={8}>
+          <FormLocalSearchSelect {...departCountryProps} />
+        </Col>
+        <Col span={8}>
+          <FormRemoteSearchSelect {...destPortProps} />
+        </Col>
+        <Col span={8}>
+          <FormLocalSearchSelect {...districtProps} />
+        </Col>
       </Col>
-    </Col>
+    </Row>
   );
 }
 
-DestInvoice.propTypes = {
+CountryAttr.propTypes = {
   intl: intlShape.isRequired,
   ietype: PropTypes.oneOf(['import', 'export']),
-  type: PropTypes.oneOf(['bill', 'entry']),
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   getFieldDecorator: PropTypes.func.isRequired,
   formData: PropTypes.object.isRequired,
   formRequire: PropTypes.object.isRequired,
-  onSearch: PropTypes.func.isRequired,
 };
 
 export function TradeMode(props) {
@@ -761,7 +753,7 @@ function FeeFormItem(props) {
     searchKeyFn: opt => opt.search,
   };
   return (
-    <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} label={label}>
+    <FormItem labelCol={{ span: 4 }} wrapperCol={{ span: 20 }} label={label}>
       <Row>
         <Col span={10} style={{ paddingLeft: 2 }}>
           <FormLocalSearchSelect {...currencyProps} placeholder="币制" style={{ marginBottom: 0 }} />
@@ -797,7 +789,7 @@ export function Fee(props) {
   const feeCurrReq = getFieldValue('fee_mark') !== '1';
   const insurCurrReq = getFieldValue('insur_mark') !== '1';
   return (
-    <Col span={18}>
+    <Col span={16}>
       <Col span={8}>
         <FeeFormItem {...props} label={msg('freightCharge')} feeField="fee_rate"
           currencyField="fee_curr" markField="fee_mark" require={fobRequire || ciRequire} feeCurrReq={feeCurrReq}
@@ -832,7 +824,7 @@ export function ContainerNo(props) {
   const { getFieldDecorator, disabled, formData } = props;
   const containerNoProps = {
     outercol: 24,
-    col: 8,
+    col: 4,
     field: 'container_no',
     label: msg('containerNo'),
     disabled,
@@ -852,10 +844,9 @@ ContainerNo.propTypes = {
   formData: PropTypes.object.isRequired,
 };
 
-// 件数、包装、毛重、净重
-export function PackWeight(props) {
+export function Pieces(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
-  const { disabled, formData, getFieldDecorator, formRequire, required } = props;
+  const { disabled, formData, getFieldDecorator, required } = props;
   const packCountProps = {
     outercol: 24,
     col: 8,
@@ -866,6 +857,22 @@ export function PackWeight(props) {
     rules: [{ required }],
     getFieldDecorator,
   };
+  return (
+    <FormInput {...packCountProps} />
+  );
+}
+Pieces.propTypes = {
+  intl: intlShape.isRequired,
+  disabled: PropTypes.bool,
+  required: PropTypes.bool,
+  getFieldDecorator: PropTypes.func.isRequired,
+  formData: PropTypes.object.isRequired,
+};
+
+// 件数、包装、毛重、净重
+export function PackWeight(props) {
+  const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
+  const { disabled, formData, getFieldDecorator, formRequire, required } = props;
   const packProps = {
     outercol: 24,
     col: 8,
@@ -899,17 +906,14 @@ export function PackWeight(props) {
     getFieldDecorator,
   };
   return (
-    <Col span={24}>
-      <Col span={6}>
-        <FormInput {...packCountProps} />
-      </Col>
-      <Col span={6}>
+    <Col span={16}>
+      <Col span={8}>
         <FormLocalSearchSelect {...packProps} />
       </Col>
-      <Col span={6}>
+      <Col span={8}>
         <FormInput {...grosswtProps} />
       </Col>
-      <Col span={6}>
+      <Col span={8}>
         <FormInput {...netwtProps} />
       </Col>
     </Col>
