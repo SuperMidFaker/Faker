@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Button, Icon, Menu, Dropdown, Modal, Tooltip, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
-import { SHIPMENT_TRACK_STATUS, SHIPMENT_POD_STATUS, SHIPMENT_SOURCE, SHIPMENT_VEHICLE_CONNECT } from 'common/constants';
+import { SHIPMENT_TRACK_STATUS, SHIPMENT_POD_STATUS, SHIPMENT_SOURCE, SHIPMENT_VEHICLE_CONNECT, PROMPT_TYPES } from 'common/constants';
 import { hidePreviewer } from 'common/reducers/shipment';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
@@ -360,7 +360,7 @@ export default class Footer extends React.Component {
       if (row.status === SHIPMENT_TRACK_STATUS.unaccepted) {
         buttons = (
           <PrivilegeCover module="transport" feature="tracking" action="create">
-            <Button type="ghost" onClick={() => this.props.sendMessage({ notifyType: 'notifyAccept', shipment: row })}>
+            <Button type="ghost" onClick={() => this.props.sendMessage({ module: 'transport', promptType: PROMPT_TYPES.promptAccept, shipment: row })}>
               催促接单
             </Button>
           </PrivilegeCover>
@@ -378,7 +378,7 @@ export default class Footer extends React.Component {
         } else {
           buttons = (
             <PrivilegeCover module="transport" feature="tracking" action="create">
-              <Button type="ghost" onClick={() => this.props.sendMessage({ notifyType: 'notifyDispatch', shipment: row })} >
+              <Button type="ghost" onClick={() => this.props.sendMessage({ module: 'transport', promptType: PROMPT_TYPES.promptDispatch, shipment: row })} >
                 催促调度
               </Button>
             </PrivilegeCover>
@@ -398,7 +398,7 @@ export default class Footer extends React.Component {
               <PrivilegeCover module="transport" feature="tracking" action="create">
                 <span>
                   <Button type="ghost"
-                    onClick={() => this.props.sendMessage({ notifyType: 'notifyDriverPickup', shipment: row })}
+                    onClick={() => this.props.sendMessage({ module: 'transport', promptType: PROMPT_TYPES.promptDriverPickup, shipment: row })}
                   >
                     催促提货
                   </Button>
@@ -411,7 +411,7 @@ export default class Footer extends React.Component {
             <PrivilegeCover module="transport" feature="tracking" action="create">
               <span>
                 <Button type="ghost" onClick={
-                    () => this.props.sendMessage({ notifyType: 'notifySpPickup', shipment: row })
+                    () => this.props.sendMessage({ module: 'transport', promptType: PROMPT_TYPES.promptSpPickup, shipment: row })
                   }
                 >
                   催促提货
@@ -585,7 +585,7 @@ export default class Footer extends React.Component {
             buttons = (
               <PrivilegeCover module="transport" feature="tracking" action="create">
                 <Button type="ghost" onClick={
-                    () => this.props.sendMessage({ notifyType: 'notifyDriverPod', shipment: row })
+                    () => this.props.sendMessage({ module: 'transport', promptType: PROMPT_TYPES.promptDriverPod, shipment: row })
                   }
                 >
                   催促回单
@@ -598,7 +598,7 @@ export default class Footer extends React.Component {
           buttons = (
             <PrivilegeCover module="transport" feature="tracking" action="create">
               <Button type="ghost" onClick={
-                  () => this.props.sendMessage({ notifyType: 'notifySpPod', shipment: row })
+                  () => this.props.sendMessage({ module: 'transport', promptType: PROMPT_TYPES.promptSpPod, shipment: row })
                 }
               >
                 催促回单

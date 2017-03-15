@@ -110,6 +110,16 @@ const messages = defineMessages({
     id: 'transport.dashboard.log.delivered.shipment',
     defaultMessage: '已送货',
   },
+
+  toLocateShipmt: {
+    id: 'transport.dashboard.log.toLocate.shipment',
+    defaultMessage: '待上传位置',
+  },
+  toDeliverShipmt: {
+    id: 'transport.dashboard.log.toDelivered.shipment',
+    defaultMessage: '待交货',
+  },
+
   proofOfDelivery: {
     id: 'transport.dashboard.log.proof.delivery',
     defaultMessage: '回单',
@@ -132,7 +142,7 @@ const messages = defineMessages({
   },
   all: {
     id: 'transport.dashboard.todo.accept.all',
-    defaultMessage: '所有',
+    defaultMessage: '全部',
   },
   toAccept: {
     id: 'transport.dashboard.todo.accept.toAccept',

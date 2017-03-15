@@ -36,6 +36,8 @@ const actionTypes = createActionTypes('@@welogix/transport/shipment/', [
   'LOAD_TARIFF_BY_TRANSPORTINFO', 'LOAD_TARIFF_BY_TRANSPORTINFO_SUCCEED', 'LOAD_TARIFF_BY_TRANSPORTINFO_FAIL',
   'LOAD_PARTNERS', 'LOAD_PARTNERS_SUCCEED', 'LOAD_PARTNERS_FAIL',
   'LOAD_ACCEPTANCE_SHIPMENT', 'LOAD_ACCEPTANCE_SHIPMENT_SUCCEED', 'LOAD_ACCEPTANCE_SHIPMENT_FAIL',
+  'PROMPT', 'PROMPT_SUCCEED', 'PROMPT_FAIL',
+  'LOAD_TRANSHIPMT', 'LOAD_TRANSHIPMT_FAIL', 'LOAD_TRANSHIPMT_SUCCEED',
 ]);
 appendFormAcitonTypes('@@welogix/transport/shipment/', actionTypes);
 
@@ -297,6 +299,16 @@ export default function reducer(state = initialState, action) {
           todos: {
             ...state.statistics.todos,
             acceptanceList: action.result.data,
+          },
+        },
+      };
+    case actionTypes.LOAD_TRANSHIPMT_SUCCEED:
+      return { ...state,
+        statistics: {
+          ...state.statistics,
+          todos: {
+            ...state.statistics.todos,
+            trackingList: action.result.data,
           },
         },
       };
@@ -660,7 +672,7 @@ export function loadPartners(tenantId, roles, businessTypes) {
   };
 }
 
-export function loadAcceptanceTable(cookie, { tenantId, filters, pageSize, currentPage, sortField, sortOrder }) {
+export function loadAcceptanceTable({ tenantId, filters, pageSize, currentPage, sortField, sortOrder }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -671,6 +683,36 @@ export function loadAcceptanceTable(cookie, { tenantId, filters, pageSize, curre
       endpoint: 'v1/transport/shipments',
       method: 'get',
       params: { tenantId, filters: JSON.stringify(filters), pageSize, currentPage, sortField, sortOrder },
+    },
+  };
+}
+
+export function loadTransitTable({ tenantId, filters, pageSize, currentPage }) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_TRANSHIPMT,
+        actionTypes.LOAD_TRANSHIPMT_SUCCEED,
+        actionTypes.LOAD_TRANSHIPMT_FAIL,
+      ],
+      endpoint: 'v1/transport/tracking/shipmts',
+      method: 'get',
+      params: { tenantId, filters: JSON.stringify(filters), pageSize, currentPage },
+    },
+  };
+}
+
+export function prompt(dispId, promptLastAction) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.PROMPT,
+        actionTypes.PROMPT_SUCCEED,
+        actionTypes.PROMPT_FAIL,
+      ],
+      endpoint: 'v1/transport/shipment/prompt',
+      method: 'post',
+      data: { dispId, promptLastAction },
     },
   };
 }

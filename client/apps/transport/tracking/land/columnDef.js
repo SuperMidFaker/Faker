@@ -3,7 +3,7 @@ import moment from 'moment';
 import { Badge, Icon, Tooltip } from 'antd';
 import TrimSpan from 'client/components/trimSpan';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
-import { SHIPMENT_TRACK_STATUS, SHIPMENT_POD_STATUS, SHIPMENT_VEHICLE_CONNECT } from
+import { SHIPMENT_TRACK_STATUS, SHIPMENT_POD_STATUS, SHIPMENT_VEHICLE_CONNECT, PROMPT_TYPES } from
   'common/constants';
 import RowUpdater from 'client/components/rowUpdater';
 import AddressColumn from '../../common/addressColumn';
@@ -363,7 +363,7 @@ export default function makeColumns(type, handlers, msg) {
               return (
                 <PrivilegeCover module="transport" feature="tracking" action="create">
                   <RowUpdater label={msg('notifyPOD')} row={record}
-                    onHit={() => { handlers.sendMessage({ notifyType: 'notifyDriverPod', shipment: record }); }}
+                    onHit={() => { handlers.sendMessage({ module: 'transport', promptType: PROMPT_TYPES.promptDriverPod, shipment: record }); }}
                   />
                 </PrivilegeCover>
               );
@@ -373,7 +373,7 @@ export default function makeColumns(type, handlers, msg) {
             return (
               <PrivilegeCover module="transport" feature="tracking" action="create">
                 <RowUpdater label={msg('notifyPOD')} row={record}
-                  onHit={() => { handlers.sendMessage({ notifyType: 'notifySpPod', shipment: record }); }}
+                  onHit={() => { handlers.sendMessage({ module: 'transport', promptType: PROMPT_TYPES.promptSpPod, shipment: record }); }}
                 />
               </PrivilegeCover>
             );
@@ -473,7 +473,7 @@ export default function makeColumns(type, handlers, msg) {
             <div>
               <PrivilegeCover module="transport" feature="tracking" action="create">
                 <RowUpdater label={msg('notifyAccept')} row={record}
-                  onHit={() => { handlers.sendMessage({ notifyType: 'notifyAccept', shipment: record }); }}
+                  onHit={() => { handlers.sendMessage({ module: 'transport', promptType: PROMPT_TYPES.promptAccept, shipment: record }); }}
                 />
               </PrivilegeCover>
             </div>
@@ -495,7 +495,7 @@ export default function makeColumns(type, handlers, msg) {
               <div>
                 <PrivilegeCover module="transport" feature="tracking" action="create">
                   <RowUpdater label={msg('notifyDispatch')} row={record}
-                    onHit={() => { handlers.sendMessage({ notifyType: 'notifyDispatch', shipment: record }); }}
+                    onHit={() => { handlers.sendMessage({ module: 'transport', promptType: PROMPT_TYPES.promptDispatch, shipment: record }); }}
                   />
                 </PrivilegeCover>
               </div>
@@ -515,7 +515,7 @@ export default function makeColumns(type, handlers, msg) {
                 <div>
                   <PrivilegeCover module="transport" feature="tracking" action="create">
                     <RowUpdater label={msg('notifyPickup')} row={record}
-                      onHit={() => { handlers.sendMessage({ notifyType: 'notifyDriverPickup', shipment: record }); }}
+                      onHit={() => { handlers.sendMessage({ module: 'transport', promptType: PROMPT_TYPES.promptDriverPickup, shipment: record }); }}
                     />
                   </PrivilegeCover>
                 </div>
@@ -527,7 +527,7 @@ export default function makeColumns(type, handlers, msg) {
               <div>
                 <PrivilegeCover module="transport" feature="tracking" action="create">
                   <RowUpdater label={msg('notifyPickup')} row={record}
-                    onHit={() => { handlers.sendMessage({ notifyType: 'notifySpPickup', shipment: record }); }}
+                    onHit={() => { handlers.sendMessage({ module: 'transport', promptType: PROMPT_TYPES.promptSpPickup, shipment: record }); }}
                   />
                 </PrivilegeCover>
               </div>

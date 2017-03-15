@@ -99,6 +99,15 @@ export {
   GOODSTYPES,
 };
 
+export const PROMPT_TYPES = {
+  promptAccept: 'promptAccept',
+  promptDispatch: 'promptDispatch',
+  promptDriverPickup: 'promptDriverPickup',
+  promptSpPickup: 'promptSpPickup',
+  promptDriverPod: 'promptDriverPod',
+  promptSpPod: 'promptSpPod',
+};
+
 export * from './module';
 export * from './role';
 export * from './transport';

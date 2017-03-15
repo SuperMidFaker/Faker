@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Radio, Badge } from 'antd';
+import { Badge, Tooltip } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
 import ShipmtnoColumn from '../../../common/shipmtnoColumn';
@@ -10,32 +10,44 @@ import ActDate from '../../../common/actDate';
 import { SHIPMENT_TRACK_STATUS } from 'common/constants';
 import { formatMsg } from '../../message.i18n';
 import { loadAcceptanceTable } from 'common/reducers/shipment';
-const RadioButton = Radio.Button;
-const RadioGroup = Radio.Group;
-
 
 @injectIntl
 @connect(
   state => ({
     tenantId: state.account.tenantId,
+    loginId: state.account.loginId,
     acceptanceList: state.shipment.statistics.todos.acceptanceList,
   }), { loadAcceptanceTable }
 )
-export default class TodoPodPane extends Component {
+export default class TodoAcceptPane extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
+    loginId: PropTypes.number.isRequired,
     onShipmtPreview: PropTypes.func.isRequired,
     loadAcceptanceTable: PropTypes.func.isRequired,
     acceptanceList: PropTypes.object.isRequired,
-  }
-  state = {
-    type: 'all',
+    filter: PropTypes.object.isRequired,
   }
   componentDidMount() {
-    this.props.loadAcceptanceTable(null, {
+    this.handleTableLoad(this.props);
+  }
+  componentWillReceiveProps(nextProps) {
+    if (this.props.filter.viewStatus !== nextProps.filter.viewStatus ||
+      this.props.filter.pickupEstDate !== nextProps.filter.pickupEstDate ||
+      this.props.filter.type !== nextProps.filter.type) {
+      this.handleTableLoad(nextProps);
+    }
+  }
+  handleTableLoad = (props) => {
+    this.props.loadAcceptanceTable({
       tenantId: this.props.tenantId,
-      filters: [{ name: 'viewStatus', value: 'all' }],
+      filters: [
+        { name: 'viewStatus', value: props.filter.viewStatus },
+        { name: 'pickup_est_date', value: props.filter.pickupEstDate },
+        { naeme: 'loginId', value: props.loginId },
+        { name: 'type', value: props.filter.type },
+      ],
       pageSize: this.props.acceptanceList.pageSize,
       currentPage: this.props.acceptanceList.current,
       sortField: '',
@@ -43,14 +55,11 @@ export default class TodoPodPane extends Component {
     });
   }
   msg = formatMsg(this.props.intl)
-  handleTodoFilter = (e) => {
-    this.setState({ type: e.target.value });
-  }
 
   render() {
     // const {  } = this.props;
     const dataSource = new Table.DataSource({
-      fetcher: params => this.props.loadAcceptanceTable(null, params),
+      fetcher: params => this.props.loadAcceptanceTable(params),
       resolve: result => result.data,
       getPagination: (result, resolve) => ({
         total: result.totalCount,
@@ -91,7 +100,7 @@ export default class TodoPodPane extends Component {
         <div>
           <AddressColumn shipment={record} consignType="consigner" />
           <div>{this.msg('shipmtEstPickupDate')}: {moment(record.pickup_est_date).format('YYYY.MM.DD')}</div>
-          <div>{record.pickup_act_date ? (<ActDate actDate={record.pickup_act_date} estDate={record.pickup_est_date} />) : ''}</div>
+          <div>{record.pickup_act_date ? (<ActDate actDate={record.pickup_act_date} estDate={record.pickup_est_date} textBefore={`${this.msg('shipmtActPickupDate')}:`} />) : ''}</div>
         </div>
       ),
     }, {
@@ -102,10 +111,10 @@ export default class TodoPodPane extends Component {
         if (record.deliver_act_date) {
           const deliverPrmDate = new Date(record.pickup_act_date);
           deliverPrmDate.setDate(deliverPrmDate.getDate() + record.transit_time);
-          deliverActDate = (<ActDate actDate={record.deliver_act_date} estDate={deliverPrmDate} />);
+          deliverActDate = (<ActDate actDate={record.deliver_act_date} estDate={deliverPrmDate} textBefore={`${this.msg('shipmtActDeliveryDate')}:`} />);
         }
         return (
-          <div>
+          <div className="table-cell-border-right">
             <AddressColumn shipment={record} consignType="consignee" />
             <div>{this.msg('shipmtEstDeliveryDate')}: {moment(record.deliver_est_date).format('YYYY.MM.DD')}</div>
             <div>{deliverActDate}</div>
@@ -120,14 +129,22 @@ export default class TodoPodPane extends Component {
         let relatedTime = null;
         if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {
           statusEle = <Badge status="default" text={this.msg('pendingShipmt')} />;
-          relatedTime = `创建时间：${moment(record.created_date).format('YYYY.MM.DD HH:mm')}`;
+          relatedTime = (<span>
+            <Tooltip title={moment(record.created_date).format('YYYY.MM.DD HH:mm')}>
+              <span>创建时间：{moment(record.created_date).fromNow()}</span>
+            </Tooltip>
+          </span>);
         } else if (record.status === SHIPMENT_TRACK_STATUS.accepted) {
           statusEle = <Badge status="default" text={this.msg('acceptedShipmt')} />;
+          relatedTime = (<span>
+            <Tooltip title={moment(record.acpt_time).format('YYYY.MM.DD HH:mm')}>
+              <span>接单时间：{moment(record.acpt_time).fromNow()}</span>
+            </Tooltip>
+          </span>);
         } else if (record.status === SHIPMENT_TRACK_STATUS.dispatched) {
           statusEle = <Badge status="warning" text={this.msg('dispatchedShipmt')} />;
         } else if (record.status === SHIPMENT_TRACK_STATUS.intransit) {
           statusEle = <Badge status="processing" text={this.msg('intransitShipmt')} />;
-          relatedTime = `创建时间：${moment(record.disp_time).format('YYYY.MM.DD HH:mm')}`;
         } else if (record.status === SHIPMENT_TRACK_STATUS.delivered) {
           statusEle = <Badge status="success" text={this.msg('deliveredShipmt')} />;
         } else if (record.status >= SHIPMENT_TRACK_STATUS.podsubmit) {
@@ -144,21 +161,9 @@ export default class TodoPodPane extends Component {
       },
     }];
     return (
-      <div>
-        <div className="pane-header">
-          <RadioGroup onChange={this.handleTodoFilter} value={this.state.type}>
-            <RadioButton value="all">{this.msg('all')}</RadioButton>
-            <RadioButton value="toAccept">{this.msg('toAccept')}</RadioButton>
-            <RadioButton value="toDispatch">{this.msg('toDispatch')}</RadioButton>
-            <RadioButton value="prompt">{this.msg('prompt')}</RadioButton>
-          </RadioGroup>
-        </div>
-        <div className="pane-content">
-          <Table size="middle" dataSource={dataSource} columns={columns} showHeader={false}
-            locale={{ emptyText: '没有待办事项' }}
-          />
-        </div>
-      </div>
+      <Table size="middle" dataSource={dataSource} columns={columns} showHeader={false}
+        locale={{ emptyText: '没有待办事项' }}
+      />
     );
   }
 }
