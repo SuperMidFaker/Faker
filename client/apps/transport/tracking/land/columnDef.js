@@ -266,7 +266,7 @@ export default function makeColumns(type, handlers, msg) {
           return (
             <PrivilegeCover module="transport" feature="tracking" action="edit">
               <RowUpdater label={msg('updateVehicleDriver')}
-                onAnchored={handlers.onShowVehicleModal} row={record}
+                onHit={handlers.onShowVehicleModal} row={record}
               />
             </PrivilegeCover>
           );
@@ -363,7 +363,7 @@ export default function makeColumns(type, handlers, msg) {
               return (
                 <PrivilegeCover module="transport" feature="tracking" action="create">
                   <RowUpdater label={msg('notifyPOD')} row={record}
-                    onAnchored={() => { handlers.sendMessage({ notifyType: 'notifyDriverPod', shipment: record }); }}
+                    onHit={() => { handlers.sendMessage({ notifyType: 'notifyDriverPod', shipment: record }); }}
                   />
                 </PrivilegeCover>
               );
@@ -373,7 +373,7 @@ export default function makeColumns(type, handlers, msg) {
             return (
               <PrivilegeCover module="transport" feature="tracking" action="create">
                 <RowUpdater label={msg('notifyPOD')} row={record}
-                  onAnchored={() => { handlers.sendMessage({ notifyType: 'notifySpPod', shipment: record }); }}
+                  onHit={() => { handlers.sendMessage({ notifyType: 'notifySpPod', shipment: record }); }}
                 />
               </PrivilegeCover>
             );
@@ -386,7 +386,7 @@ export default function makeColumns(type, handlers, msg) {
           return (
             <div>
               <PrivilegeCover module="transport" feature="tracking" action="create">
-                <RowUpdater label={msg('auditPod')} onAnchored={handlers.onShowAuditModal}
+                <RowUpdater label={msg('auditPod')} onHit={handlers.onShowAuditModal}
                   row={record}
                 />
               </PrivilegeCover>
@@ -404,7 +404,7 @@ export default function makeColumns(type, handlers, msg) {
                 <PrivilegeCover module="transport" feature="tracking" action="edit">
                   <div>
                     <RowUpdater label={msg('deliverConfirm')} row={record}
-                      onAnchored={() => { handlers.deliverConfirm(record.shipmt_no, record.disp_id); }}
+                      onHit={() => { handlers.deliverConfirm(record.shipmt_no, record.disp_id); }}
                     />
                   </div>
                 </PrivilegeCover>
@@ -473,7 +473,7 @@ export default function makeColumns(type, handlers, msg) {
             <div>
               <PrivilegeCover module="transport" feature="tracking" action="create">
                 <RowUpdater label={msg('notifyAccept')} row={record}
-                  onAnchored={() => { handlers.sendMessage({ notifyType: 'notifyAccept', shipment: record }); }}
+                  onHit={() => { handlers.sendMessage({ notifyType: 'notifyAccept', shipment: record }); }}
                 />
               </PrivilegeCover>
             </div>
@@ -485,7 +485,7 @@ export default function makeColumns(type, handlers, msg) {
               <div>
                 <PrivilegeCover module="transport" feature="tracking" action="edit">
                   <RowUpdater label={msg('updateVehicleDriver')} row={record}
-                    onAnchored={handlers.onShowVehicleModal}
+                    onHit={handlers.onShowVehicleModal}
                   />
                 </PrivilegeCover>
               </div>
@@ -495,7 +495,7 @@ export default function makeColumns(type, handlers, msg) {
               <div>
                 <PrivilegeCover module="transport" feature="tracking" action="create">
                   <RowUpdater label={msg('notifyDispatch')} row={record}
-                    onAnchored={() => { handlers.sendMessage({ notifyType: 'notifyDispatch', shipment: record }); }}
+                    onHit={() => { handlers.sendMessage({ notifyType: 'notifyDispatch', shipment: record }); }}
                   />
                 </PrivilegeCover>
               </div>
@@ -515,7 +515,7 @@ export default function makeColumns(type, handlers, msg) {
                 <div>
                   <PrivilegeCover module="transport" feature="tracking" action="create">
                     <RowUpdater label={msg('notifyPickup')} row={record}
-                      onAnchored={() => { handlers.sendMessage({ notifyType: 'notifyDriverPickup', shipment: record }); }}
+                      onHit={() => { handlers.sendMessage({ notifyType: 'notifyDriverPickup', shipment: record }); }}
                     />
                   </PrivilegeCover>
                 </div>
@@ -527,7 +527,7 @@ export default function makeColumns(type, handlers, msg) {
               <div>
                 <PrivilegeCover module="transport" feature="tracking" action="create">
                   <RowUpdater label={msg('notifyPickup')} row={record}
-                    onAnchored={() => { handlers.sendMessage({ notifyType: 'notifySpPickup', shipment: record }); }}
+                    onHit={() => { handlers.sendMessage({ notifyType: 'notifySpPickup', shipment: record }); }}
                   />
                 </PrivilegeCover>
               </div>
@@ -549,7 +549,7 @@ export default function makeColumns(type, handlers, msg) {
               <PrivilegeCover module="transport" feature="tracking" action="edit">
                 <div>
                   <RowUpdater label={msg('deliverConfirm')} row={record}
-                    onAnchored={() => { handlers.deliverConfirm(record.shipmt_no, record.disp_id); }}
+                    onHit={() => { handlers.deliverConfirm(record.shipmt_no, record.disp_id); }}
                   />
                 </div>
               </PrivilegeCover>

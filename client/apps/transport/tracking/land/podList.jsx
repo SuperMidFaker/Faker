@@ -198,9 +198,7 @@ export default class LandStatusList extends React.Component {
   handleSelectionClear = () => {
     this.setState({ selectedRowKeys: [] });
   }
-  handleShowAuditModal = (row, ev) => {
-    ev.preventDefault();
-    ev.stopPropagation();
+  handleShowAuditModal = (row) => {
     this.props.showAuditModal(row.disp_id, row.parent_id, row.pod_id);
   }
   handleShipmtPreview = (row) => {

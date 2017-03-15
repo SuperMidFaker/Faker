@@ -4,6 +4,8 @@ import { Card, Badge, Tabs, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { loadShipmtDetail } from 'common/reducers/shipment';
 import TodoAcceptPane from './pane/todoAcceptPane';
+import TodoTrackingPane from './pane/todoTrackingPane';
+import TodoPodPane from './pane/todoPodPane';
 import MyShipmentsSelect from '../../common/myShipmentsSelect';
 import { formatMsg } from '../message.i18n';
 
@@ -48,8 +50,12 @@ export default class TodoPanel extends Component {
           <TabPane tab={<span>{this.msg('todoAccept')}<Badge count={todos.acceptanceList.totalCount} style={{ marginLeft: 8 }} /></span>} key="todoAccept" >
             <TodoAcceptPane onShipmtPreview={this.handleShipmtPreview} />
           </TabPane>
-          <TabPane tab={<span>{this.msg('todoTrack')}<Badge count={0} style={{ marginLeft: 8 }} /></span>} key="todoTrack" />
-          <TabPane tab={<span>{this.msg('todoPod')}<Badge count={999} style={{ marginLeft: 8 }} /></span>} key="todoPod" />
+          <TabPane tab={<span>{this.msg('todoTrack')}<Badge count={todos.acceptanceList.totalCount} style={{ marginLeft: 8 }} /></span>} key="todoTrack">
+            <TodoTrackingPane onShipmtPreview={this.handleShipmtPreview} />
+          </TabPane>
+          <TabPane tab={<span>{this.msg('todoPod')}<Badge count={todos.acceptanceList.totalCount} style={{ marginLeft: 8 }} /></span>} key="todoPod">
+            <TodoPodPane onShipmtPreview={this.handleShipmtPreview} />
+          </TabPane>
           <TabPane tab={<span>{this.msg('todoBilling')}<Badge count={2} style={{ marginLeft: 8 }} /></span>} key="todoBilling" />
         </Tabs>
       </Card>);

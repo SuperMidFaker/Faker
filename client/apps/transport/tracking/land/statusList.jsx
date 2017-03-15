@@ -209,14 +209,10 @@ export default class LandStatusList extends React.Component {
   handleSelectionClear = () => {
     this.setState({ selectedRowKeys: [] });
   }
-  handleShowVehicleModal = (row, ev) => {
-    ev.preventDefault();
-    ev.stopPropagation();
+  handleShowVehicleModal = (row) => {
     this.props.showVehicleModal(row.disp_id, row.shipmt_no);
   }
-  handleShowPickModal = (row, ev) => {
-    ev.preventDefault();
-    ev.stopPropagation();
+  handleShowPickModal = (row) => {
     const location = {
       province: row.consigner_province,
       city: row.consigner_city,
@@ -232,9 +228,7 @@ export default class LandStatusList extends React.Component {
     }];
     this.props.showDateModal(shipments, 'pickup');
   }
-  handleShowDeliverModal = (row, ev) => {
-    ev.preventDefault();
-    ev.stopPropagation();
+  handleShowDeliverModal = (row) => {
     const location = {
       province: row.consignee_province,
       city: row.consignee_city,
@@ -318,9 +312,7 @@ export default class LandStatusList extends React.Component {
       message.warn(`运单 ${diffShipments.join(',')} 不能进行此操作`, 5);
     }
   }
-  handleShowTransitModal = (row, ev) => {
-    ev.preventDefault();
-    ev.stopPropagation();
+  handleShowTransitModal = (row) => {
     this.props.showLocModal({
       shipmt_no: row.shipmt_no,
       parent_no: row.parent_no,
@@ -400,7 +392,7 @@ export default class LandStatusList extends React.Component {
       <PrivilegeCover module="transport" feature="tracking" action="edit">
         <span>
           <RowUpdater label={locLabel} onHover={this.handleReportLocHover}
-            onAnchored={this.handleShowTransitModal} row={record}
+            onHit={this.handleShowTransitModal} row={record}
             className={reported ? 'mdc-text-grey' : ''}
           />
         </span>
