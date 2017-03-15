@@ -30,6 +30,7 @@ export default class TodoPanel extends Component {
     super(props);
     const startDate = new Date();
     const endDate = new Date();
+    startDate.setFullYear(1900);
     startDate.setHours(0, 0, 0, 0);
     endDate.setHours(23, 59, 59, 999);
     this.state = {
