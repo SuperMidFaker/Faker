@@ -83,6 +83,7 @@ const initialState = {
   certParams: [],
   docuMarks: [],
   containers: [],
+  templates: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -107,6 +108,7 @@ export default function reducer(state = initialState, action) {
       return {
         ...state, billHead: action.result.data.head, billMeta: action.result.data.meta,
         billBodies: action.result.data.hbodies, params: { ...state.params, ports },
+        templates: action.result.data.templates,
       };
     }
     case actionTypes.DELETE_BILL_SUCCEED:
@@ -335,7 +337,7 @@ export function setPaneTabkey(tabkey) {
   };
 }
 
-export function loadBill(billSeqNo) {
+export function loadBill(billSeqNo, tenantId, ieType) {
   return {
     [CLIENT_API]: {
       types: [
@@ -345,7 +347,7 @@ export function loadBill(billSeqNo) {
       ],
       endpoint: 'v1/cms/manifest/bill',
       method: 'get',
-      params: { billSeqNo },
+      params: { billSeqNo, tenantId, ieType },
     },
   };
 }

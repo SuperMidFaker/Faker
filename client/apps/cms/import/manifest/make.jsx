@@ -6,7 +6,7 @@ import ManifestEditor from '../../common/manifest/editor';
 
 function fetchData({ dispatch, params, state }) {
   const promises = [];
-  promises.push(dispatch(loadBill(params.billno)));
+  promises.push(dispatch(loadBill(params.billno, state.account.tenantId, 'import')));
   promises.push(dispatch(loadCmsParams({
     ieType: 'import',
     tenantId: state.account.tenantId,

@@ -1,10 +1,11 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Breadcrumb, Button, Dropdown, Layout, Menu, Icon, Form, message, Popconfirm, Tabs } from 'antd';
+import { Breadcrumb, Button, Dropdown, Layout, Menu, Icon, Form, message, Popconfirm, Tabs, Select } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { addNewBillBody, delBillBody, editBillBody, saveBillHead,
   openMergeSplitModal, billDelete, updateHeadNetWt, loadBillBody } from 'common/reducers/cmsManifest';
+import { loadTemplateFormVals } from 'common/reducers/cmsSettings';
 import NavLink from 'client/components/nav-link';
 import SheetHeadPanel from './panel/manifestHeadPanel';
 import SheetBodyPanel from './panel/manifestBodyPanel';
@@ -16,6 +17,7 @@ import messages from './message.i18n';
 const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
 const TabPane = Tabs.TabPane;
+const Option = Select.Option;
 
 @injectIntl
 @connect(
@@ -23,10 +25,13 @@ const TabPane = Tabs.TabPane;
     billMeta: state.cmsManifest.billMeta,
     billHead: state.cmsManifest.billHead,
     billBodies: state.cmsManifest.billBodies,
+    templates: state.cmsManifest.templates,
     loginId: state.account.loginId,
     tenantId: state.account.tenantId,
+    formData: state.cmsSettings.formData,
   }),
-  { addNewBillBody, delBillBody, editBillBody, saveBillHead, openMergeSplitModal, billDelete, updateHeadNetWt, loadBillBody }
+  { addNewBillBody, delBillBody, editBillBody, saveBillHead, openMergeSplitModal,
+    billDelete, updateHeadNetWt, loadBillBody, loadTemplateFormVals }
 )
 @connectNav({
   depth: 3,
@@ -42,6 +47,7 @@ export default class ManifestEditor extends React.Component {
       bill_seq_no: PropTypes.string.isRequired,
       entries: PropTypes.arrayOf(PropTypes.shape({ pre_entry_seq_no: PropTypes.string })),
     }),
+    templates: PropTypes.array.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -53,6 +59,12 @@ export default class ManifestEditor extends React.Component {
     visible: false,
     collapsed: true,
     ruleRequired: false,
+    headData: {},
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.billHead !== this.props.billHead) {
+      this.setState({ headData: nextProps.billHead });
+    }
   }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
   toggle = () => {
@@ -125,8 +137,8 @@ export default class ManifestEditor extends React.Component {
   handleBillSave = () => {
     // this.props.form.validateFields((errors) => {
     //   if (!errors) {
-    const { billHead, ietype, loginId, tenantId } = this.props;
-    const head = { ...billHead, ...this.props.form.getFieldsValue() };
+    const { billHead, ietype, loginId, tenantId, formData } = this.props;
+    const head = { ...billHead, ...this.props.form.getFieldsValue(), template_id: formData.template_id };
     this.props.saveBillHead({ head, ietype, loginId, tenantId }).then(
           (result) => {
             if (result.error) {
@@ -150,7 +162,19 @@ export default class ManifestEditor extends React.Component {
       }
     );
   }
-
+  handleSelectChange = (value) => {
+    if (value) {
+      this.props.loadTemplateFormVals(value).then((result) => {
+        if (result.error) {
+          message.error(result.error.message);
+        } else {
+          this.setState({ headData: result.data.formData });
+        }
+      });
+    } else {
+      this.setState({ headData: {} });
+    }
+  }
   lockMenu = (
     <Menu>
       <Menu.Item key="lock"><Icon type="lock" /> 锁定</Menu.Item>
@@ -161,7 +185,7 @@ export default class ManifestEditor extends React.Component {
       </Menu.Item>
     </Menu>)
   render() {
-    const { ietype, readonly, form, billHead, billBodies, billMeta, ...actions } = this.props;
+    const { ietype, readonly, form, billHead, billBodies, billMeta, templates, ...actions } = this.props;
     const declEntryMenu = (<Menu onClick={this.handleEntryVisit}>
       {billMeta.entries.map(bme => (<Menu.Item key={bme.pre_entry_seq_no}>
         <Icon type="file-text" /> {bme.entry_id || bme.pre_entry_seq_no}</Menu.Item>)
@@ -188,7 +212,22 @@ export default class ManifestEditor extends React.Component {
               <Dropdown overlay={declEntryMenu}>
                 <Button size="large" >生成的报关单<Icon type="down" /></Button>
               </Dropdown>
-              ) : null}
+              ) : <Select
+                showSearch
+                showArrow={false}
+                placeholder="选择模板"
+                optionFilterProp="children"
+                size="large"
+                onChange={this.handleSelectChange}
+                style={{ width: 200 }}
+                allowClear
+                defaultValue={billHead.template_id}
+              >
+                {templates.map(data => (<Option key={data.id} value={data.id}
+                  search={`${data.id}${data.template_name}`}
+                >{data.template_name}</Option>)
+                )}
+              </Select>}
             <div className="top-bar-tools">
               {generateEntry &&
                 <Button type="primary" size="large" icon="addfile" onClick={this.handleGenerateEntry}>{this.msg('generateEntry')}</Button>
@@ -209,7 +248,7 @@ export default class ManifestEditor extends React.Component {
             <div className="page-body tabbed">
               <Tabs defaultActiveKey="header">
                 <TabPane tab="清单表头" key="header">
-                  <SheetHeadPanel ietype={ietype} readonly={readonly} form={form} formData={billHead} ruleRequired={this.state.ruleRequired} type="bill" onSave={this.handleBillSave} />
+                  <SheetHeadPanel ietype={ietype} readonly={readonly} form={form} formData={this.state.headData} ruleRequired={this.state.ruleRequired} type="bill" onSave={this.handleBillSave} />
                 </TabPane>
                 <TabPane tab="清单表体" key="body">
                   <SheetBodyPanel ietype={ietype} readonly={readonly} headForm={form} data={billBodies} headNo={billHead.bill_seq_no}

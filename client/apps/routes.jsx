@@ -312,11 +312,10 @@ export default(store, cookie) => {
               </Route>
             </Route>
             <Route path="settings">
-              <IndexRedirect to="/clearance/settings/quotetemplates" />
+              <IndexRedirect to="/clearance/settings/billtemplates" />
               <Route path="quotetemplates" component={CMSSettings.QuoteTemplates} />
               <Route path="billtemplates">
                 <IndexRoute component={CMSSettings.BillTemplates} />
-                <Route path="create" component={CMSSettings.CreateBillTemplate} />
                 <Route path="edit/:id" component={CMSSettings.EditBillTemplate} />
               </Route>
             </Route>
