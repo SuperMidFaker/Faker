@@ -206,7 +206,7 @@ export default class LandStatusList extends React.Component {
     if (row.status === SHIPMENT_TRACK_STATUS.podsubmit || row.status === SHIPMENT_TRACK_STATUS.podaccept) {
       tabKey = 'pod';
     }
-    this.props.loadShipmtDetail(row.shipmt_no, this.props.tenantId, 'sr', tabKey, row).then((result) => {
+    this.props.loadShipmtDetail(row.shipmt_no, this.props.tenantId, 'sr', tabKey).then((result) => {
       if (result.error) {
         message.error(result.error.message);
       }

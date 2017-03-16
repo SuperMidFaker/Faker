@@ -81,7 +81,7 @@ export default class PreviewPanel extends React.Component {
     changePreviewerTab: PropTypes.func.isRequired,
     shipmt: PropTypes.object.isRequired,
     previewer: PropTypes.object.isRequired,
-    stage: PropTypes.oneOf(['acceptance', 'dispatch', 'tracking', 'pod', 'exception', 'billing', 'dashboard']),
+    stage: PropTypes.oneOf(['acceptance', 'dispatch', 'tracking', 'pod', 'exception', 'billing', 'dashboard', 'todo']),
     loadShipmtDetail: PropTypes.func.isRequired,
   }
   constructor(props) {
@@ -105,9 +105,9 @@ export default class PreviewPanel extends React.Component {
     */
   }
   componentWillReceiveProps(nextProps) {
-    const { previewer: { visible, loaded, params: { shipmtNo, tenantId, sourceType }, tabKey, row } } = nextProps;
+    const { previewer: { visible, loaded, params: { shipmtNo, tenantId, sourceType }, tabKey } } = nextProps;
     if (!loaded && visible) {
-      this.props.loadShipmtDetail(shipmtNo, tenantId, sourceType, tabKey, row);
+      this.props.loadShipmtDetail(shipmtNo, tenantId, sourceType, tabKey);
     }
   }
   componentWillUnmount() {
@@ -183,7 +183,7 @@ export default class PreviewPanel extends React.Component {
     }
   }
   render() {
-    const { shipmt, visible, shipmtNo, dispatch, effective, stage } = this.props;
+    const { shipmt, visible, shipmtNo, dispatch, effective, stage, previewer: { params: { sourceType } } } = this.props;
     const closer = (
       <button onClick={this.handleClose} aria-label="Close" className="ant-modal-close">
         <span className="ant-modal-close-x" />
@@ -221,7 +221,7 @@ export default class PreviewPanel extends React.Component {
                   {this.renderTabs(dispatch.status)}
                 </Col>
                 <Col sm={24} md={10}>
-                  <ActivityLoggerPane stage={stage} />
+                  <ActivityLoggerPane stage={stage} sourceType={sourceType} />
                 </Col>
               </Row>
             </div>

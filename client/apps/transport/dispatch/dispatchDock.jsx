@@ -1,6 +1,7 @@
 /* eslint no-loop-func: 0 */
 import React, { PropTypes, Component } from 'react';
 import update from 'react/lib/update';
+import { intlShape, injectIntl } from 'react-intl';
 import { Icon, Tag, Button, Popover, message, Tabs }
   from 'antd';
 import QueueAnim from 'rc-queue-anim';
@@ -17,8 +18,10 @@ import DispatchConfirmModal from './DispatchConfirmModal';
 import CarrierModal from '../resources/modals/carrierModal';
 import VehicleFormMini from '../resources/components/VehicleForm-mini';
 import { toggleCarrierModal } from 'common/reducers/transportResources';
-
+import { format } from 'client/common/i18n/helpers';
+import messages from './message.i18n';
 const TabPane = Tabs.TabPane;
+const formatMsg = format(messages);
 
 export function RowClick(props) {
   const { text, onHit, row, index } = props;
@@ -45,6 +48,7 @@ function fetch({ state, dispatch, cookie }) {
 }
 
 @connectFetch()(fetch)
+@injectIntl
 @connect(state => ({
   tenantId: state.account.tenantId,
   loginId: state.account.loginId,
@@ -59,18 +63,19 @@ function fetch({ state, dispatch, cookie }) {
   vehicleLengths: state.transportDispatch.vehicleLengths,
   shipmts: state.transportDispatch.shipmts,
   dispatchConfirmModal: state.transportDispatch.dispatchConfirmModal,
+  show: state.transportDispatch.dispDockShow,
 }),
   { loadLsps, loadVehicles, doDispatch, doDispatchAndSend, addPartner, computeCostCharge, toggleCarrierModal, showDispatchConfirmModal }
 )
 export default class DispatchDock extends Component {
   static propTypes = {
+    intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     loginId: PropTypes.number.isRequired,
     loginName: PropTypes.string.isRequired,
     avatar: PropTypes.string.isRequired,
     show: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
-    msg: PropTypes.func.isRequired,
     shipmts: PropTypes.array.isRequired,
     lsps: PropTypes.object.isRequired,
     loadLsps: PropTypes.func.isRequired,
@@ -91,8 +96,6 @@ export default class DispatchDock extends Component {
 
   constructor(props) {
     super(props);
-
-    this.msg = this.props.msg || noop;
     this.onClose = this.props.onClose || noop;
     this.onCloseWrapper = (reload) => {
       this.setState({ quotation: 0, podType: 'ePOD' });
@@ -209,7 +212,6 @@ export default class DispatchDock extends Component {
     newVehicleVisible: false,
     lspLoading: true,
   }
-
   componentWillReceiveProps(nextProps) {
     if (nextProps.shipmts.length > 0 && nextProps.shipmts !== this.props.shipmts || (nextProps.lsps.pageSize !== this.state.lspsVar.pageSize
       || nextProps.lsps.current !== this.state.lspsVar.current
@@ -290,7 +292,7 @@ export default class DispatchDock extends Component {
       }
     }
   }
-
+  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values);
   lspsds = new Table.DataSource({
     fetcher: params => this.props.loadLsps(null, params),
     resolve: result => result.data,

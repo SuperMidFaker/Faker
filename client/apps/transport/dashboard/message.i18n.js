@@ -119,7 +119,18 @@ const messages = defineMessages({
     id: 'transport.dashboard.log.toDelivered.shipment',
     defaultMessage: '待交货',
   },
-
+  toUploadPod: {
+    id: 'transport.dashboard.log.toUploadPod.shipment',
+    defaultMessage: '回单待上传',
+  },
+  toAuditPod: {
+    id: 'transport.dashboard.log.toAuditPod.shipment',
+    defaultMessage: '回单待审核',
+  },
+  toConfirm: {
+    id: 'transport.dashboard.log.toConfirm.shipment',
+    defaultMessage: '短信确认',
+  },
   proofOfDelivery: {
     id: 'transport.dashboard.log.proof.delivery',
     defaultMessage: '回单',

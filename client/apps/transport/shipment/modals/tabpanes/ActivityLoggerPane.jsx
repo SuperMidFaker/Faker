@@ -22,7 +22,8 @@ export default class ActivityLoggerPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     logs: PropTypes.array.isRequired,
-    stage: PropTypes.oneOf(['acceptance', 'dispatch', 'tracking', 'pod', 'exception', 'billing', 'dashboard']),
+    stage: PropTypes.string.isRequired,
+    sourceType: PropTypes.string.isRequired,
   }
   state = {
     selectedKeys: [...MENUKEYS],
@@ -104,7 +105,7 @@ export default class ActivityLoggerPane extends React.Component {
     }
   }
   render() {
-    const { logs, stage } = this.props;
+    const { logs, stage, sourceType } = this.props;
     const { selectedKeys } = this.state;
     let filteredLogs = logs;
     filteredLogs = logs.filter(log => selectedKeys.indexOf(log.category) >= 0);
@@ -145,7 +146,7 @@ export default class ActivityLoggerPane extends React.Component {
     );
     return (
       <div className="activity-wrapper">
-        <ActivityOperation stage={stage} />
+        <ActivityOperation stage={stage} sourceType={sourceType} />
         <Collapse bordered={false} defaultActiveKey={['timeline']}>
           <Panel header={timelineHeader} key="timeline">
             <Timeline>

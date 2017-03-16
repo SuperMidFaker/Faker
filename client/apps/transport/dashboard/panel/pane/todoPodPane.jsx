@@ -9,15 +9,15 @@ import AddressColumn from '../../../common/addressColumn';
 import ActDate from '../../../common/actDate';
 import { SHIPMENT_TRACK_STATUS } from 'common/constants';
 import { formatMsg } from '../../message.i18n';
-import { loadAcceptanceTable } from 'common/reducers/shipment';
+import { loadPodTable, loadShipmtDetail } from 'common/reducers/shipment';
 
 @injectIntl
 @connect(
   state => ({
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
-    acceptanceList: state.shipment.statistics.todos.acceptanceList,
-  }), { loadAcceptanceTable }
+    podList: state.shipment.statistics.todos.podList,
+  }), { loadPodTable, loadShipmtDetail }
 )
 export default class TodoAcceptPane extends Component {
   static propTypes = {
@@ -25,31 +25,32 @@ export default class TodoAcceptPane extends Component {
     tenantId: PropTypes.number.isRequired,
     loginId: PropTypes.number.isRequired,
     onShipmtPreview: PropTypes.func.isRequired,
-    loadAcceptanceTable: PropTypes.func.isRequired,
-    acceptanceList: PropTypes.object.isRequired,
+    loadPodTable: PropTypes.func.isRequired,
+    podList: PropTypes.object.isRequired,
     filter: PropTypes.object.isRequired,
+    loadShipmtDetail: PropTypes.func.isRequired,
   }
   componentDidMount() {
     this.handleTableLoad(this.props);
   }
   componentWillReceiveProps(nextProps) {
-    if (this.props.filter.viewStatus !== nextProps.filter.viewStatus ||
+    if (nextProps.filter.tabKey === 'todoPod' && (this.props.filter.viewStatus !== nextProps.filter.viewStatus ||
       this.props.filter.pickupEstDate !== nextProps.filter.pickupEstDate ||
-      this.props.filter.type !== nextProps.filter.type) {
+      this.props.filter.type !== nextProps.filter.type)) {
       this.handleTableLoad(nextProps);
     }
   }
   handleTableLoad = (props) => {
-    this.props.loadAcceptanceTable({
+    this.props.loadPodTable({
       tenantId: this.props.tenantId,
       filters: [
         { name: 'viewStatus', value: props.filter.viewStatus },
-        { name: 'pickup_est_date', value: props.filter.pickupEstDate },
+        // { name: 'pickup_est_date', value: props.filter.pickupEstDate },
         { naeme: 'loginId', value: props.loginId },
         { name: 'type', value: props.filter.type },
       ],
-      pageSize: this.props.acceptanceList.pageSize,
-      currentPage: this.props.acceptanceList.current,
+      pageSize: this.props.podList.pageSize,
+      currentPage: this.props.podList.current,
       sortField: '',
       sortOrder: '',
     });
@@ -57,9 +58,9 @@ export default class TodoAcceptPane extends Component {
   msg = formatMsg(this.props.intl)
 
   render() {
-    // const {  } = this.props;
+    const { tenantId } = this.props;
     const dataSource = new Table.DataSource({
-      fetcher: params => this.props.loadAcceptanceTable(params),
+      fetcher: params => this.props.loadPodTable(params),
       resolve: result => result.data,
       getPagination: (result, resolve) => ({
         total: result.totalCount,
@@ -75,11 +76,16 @@ export default class TodoAcceptPane extends Component {
           currentPage: pagination.current,
           sortField: sorter.field,
           sortOrder: sorter.order === 'descend' ? 'desc' : 'asc',
-          filters: [{ name: 'viewStatus', value: 'all' }],
+          filters: [
+            { name: 'viewStatus', value: this.props.filter.viewStatus },
+            // { name: 'pickup_est_date', value: props.filter.pickupEstDate },
+            { naeme: 'loginId', value: this.props.loginId },
+            { name: 'type', value: this.props.filter.type },
+          ],
         };
         return params;
       },
-      remotes: this.props.acceptanceList,
+      remotes: this.props.podList,
     });
     const columns = [{
       dataIndex: 'shipment',
@@ -87,7 +93,7 @@ export default class TodoAcceptPane extends Component {
       render: (o, record) => (
         <div>
           <ShipmtnoColumn shipmtNo={record.shipmt_no} publicKey={record.public_key}
-            shipment={record} onClick={this.props.onShipmtPreview}
+            shipment={record} onClick={() => this.props.loadShipmtDetail(record.shipmt_no, tenantId, 'sr', 'detail')}
           />
           <div>{record.ref_external_no}</div>
           <div>{record.customer_name}</div>
@@ -162,7 +168,7 @@ export default class TodoAcceptPane extends Component {
     }];
     return (
       <Table size="middle" dataSource={dataSource} columns={columns} showHeader={false}
-        locale={{ emptyText: '没有待办事项' }}
+        locale={{ emptyText: '没有待办事项' }} rowKey="id"
       />
     );
   }

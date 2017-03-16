@@ -8,9 +8,12 @@ import withPrivilege from 'client/common/decorators/withPrivilege';
 import { Breadcrumb, Button, Card, Col, Layout, Row } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import { loadShipmentStatistics, loadFormRequire } from 'common/reducers/shipment';
+import { changeDockStatus } from 'common/reducers/transportDispatch';
 import StatsPanel from './panel/statsPanel';
 import TodoPanel from './panel/todoPanel';
 import PreviewPanel from '../shipment/modals/preview-panel';
+import DispatchDock from '../dispatch/dispatchDock';
+import SegmentDock from '../dispatch/segmentDock';
 import { formatMsg } from './message.i18n';
 
 const { Header, Content } = Layout;
@@ -31,7 +34,7 @@ function fetchData({ state, dispatch, cookie }) {
     tenantId: state.account.tenantId,
     statistics: state.shipment.statistics,
   }),
-  { loadShipmentStatistics })
+  { loadShipmentStatistics, changeDockStatus })
 @connectNav({
   depth: 2,
   moduleName: 'transport',
@@ -40,6 +43,7 @@ function fetchData({ state, dispatch, cookie }) {
 export default class Dashboard extends React.Component {
   static propTypes = {
     children: PropTypes.object,
+    changeDockStatus: PropTypes.func.isRequired,
   }
   onDateChange = (value, dateString) => {
     this.props.loadShipmentStatistics(null, this.props.tenantId, `${dateString[0]} 00:00:00`, `${dateString[1]} 23:59:59`);
@@ -48,6 +52,12 @@ export default class Dashboard extends React.Component {
   logsLocation = (type) => {
     const { startDate, endDate } = this.props.statistics;
     return `/transport/dashboard/operationLogs?type=${type}&startDate=${startDate}&endDate=${endDate}`;
+  }
+  handleDispatchDockClose = () => {
+    this.props.changeDockStatus({ dispDockShow: false, shipmts: [] });
+  }
+  handleSegmentDockClose = () => {
+    this.props.changeDockStatus({ segDockShow: false, shipmts: [] });
   }
   render() {
     return (
@@ -73,7 +83,14 @@ export default class Dashboard extends React.Component {
             </Col>
           </Row>
         </Content>
-        <PreviewPanel stage="dashboard" />
+        <PreviewPanel stage="todo" />
+        <DispatchDock
+          onClose={this.handleDispatchDockClose}
+        />
+
+        <SegmentDock
+          onClose={this.handleSegmentDockClose}
+        />
       </QueueAnim>
     );
   }

@@ -1,24 +1,29 @@
 import React, { PropTypes } from 'react';
 import { Card, Icon, Tag, Button, Select, DatePicker, Row, Col, message, Alert, Form } from 'antd';
 import QueueAnim from 'rc-queue-anim';
+import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { segmentRequest } from 'common/reducers/transportDispatch';
 import { connect } from 'react-redux';
-
+import { format } from 'client/common/i18n/helpers';
+import messages from './message.i18n';
 const Option = Select.Option;
 const FormItem = Form.Item;
+const formatMsg = format(messages);
 
 function noop() {}
-
+@injectIntl
 @connect(state => ({
   nodeLocations: state.transportDispatch.nodeLocations,
   transitModes: state.transportDispatch.transitModes,
+  show: state.transportDispatch.segDockShow,
+  shipmts: state.transportDispatch.shipmts,
 }), { segmentRequest })
 export default class SegmentDock extends React.Component {
   static propTypes = {
+    intl: intlShape.isRequired,
     show: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
-    msg: PropTypes.func.isRequired,
     shipmts: PropTypes.array.isRequired,
     nodeLocations: PropTypes.array.isRequired,
     transitModes: PropTypes.array.isRequired,
@@ -27,8 +32,6 @@ export default class SegmentDock extends React.Component {
 
   constructor(props) {
     super(props);
-
-    this.msg = this.props.msg || noop;
     this.onClose = this.props.onClose || noop;
     this.onCloseWrapper = (reload) => {
       this.setState({
@@ -73,7 +76,7 @@ export default class SegmentDock extends React.Component {
       pickupMode: {},
     },
   }
-
+  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values);
   buildSegmentGroup(order) {
     const od = order || 1;
     const nds = this.props.nodeLocations.map(nd =>

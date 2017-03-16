@@ -38,6 +38,7 @@ const actionTypes = createActionTypes('@@welogix/transport/shipment/', [
   'LOAD_ACCEPTANCE_SHIPMENT', 'LOAD_ACCEPTANCE_SHIPMENT_SUCCEED', 'LOAD_ACCEPTANCE_SHIPMENT_FAIL',
   'PROMPT', 'PROMPT_SUCCEED', 'PROMPT_FAIL',
   'LOAD_TRANSHIPMT', 'LOAD_TRANSHIPMT_FAIL', 'LOAD_TRANSHIPMT_SUCCEED',
+  'LOAD_PODSHIPMT', 'LOAD_PODSHIPMT_FAIL', 'LOAD_PODSHIPMT_SUCCEED',
 ]);
 appendFormAcitonTypes('@@welogix/transport/shipment/', actionTypes);
 
@@ -64,7 +65,6 @@ const initialState = {
     loaded: true,
     params: {},
     tabKey: null,
-    row: {},
     shipmt: {
       goodslist: [],
     },
@@ -196,7 +196,6 @@ export default function reducer(state = initialState, action) {
         visible: true,
         loaded: true,
         tabKey: action.tabKey,
-        row: action.row,
         params: action.params,
       } };
     }
@@ -312,6 +311,16 @@ export default function reducer(state = initialState, action) {
           },
         },
       };
+    case actionTypes.LOAD_PODSHIPMT_SUCCEED:
+      return { ...state,
+        statistics: {
+          ...state.statistics,
+          todos: {
+            ...state.statistics.todos,
+            podList: action.result.data,
+          },
+        },
+      };
     default:
       return formReducer(actionTypes, state, action, { key: null }, 'shipmentlist')
              || state;
@@ -410,7 +419,7 @@ export function clearForm() {
   return clearFormC(actionTypes);
 }
 
-export function loadShipmtDetail(shipmtNo, tenantId, sourceType, tabKey, row) {
+export function loadShipmtDetail(shipmtNo, tenantId, sourceType, tabKey) {
   return {
     [CLIENT_API]: {
       types: [
@@ -422,7 +431,6 @@ export function loadShipmtDetail(shipmtNo, tenantId, sourceType, tabKey, row) {
       method: 'get',
       params: { shipmtNo, tenantId, sourceType },
       tabKey,
-      row,
     },
   };
 }
@@ -696,6 +704,21 @@ export function loadTransitTable({ tenantId, filters, pageSize, currentPage }) {
         actionTypes.LOAD_TRANSHIPMT_FAIL,
       ],
       endpoint: 'v1/transport/tracking/shipmts',
+      method: 'get',
+      params: { tenantId, filters: JSON.stringify(filters), pageSize, currentPage },
+    },
+  };
+}
+
+export function loadPodTable({ tenantId, filters, pageSize, currentPage }) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_PODSHIPMT,
+        actionTypes.LOAD_PODSHIPMT_SUCCEED,
+        actionTypes.LOAD_PODSHIPMT_FAIL,
+      ],
+      endpoint: 'v1/transport/tracking/pod/shipmts',
       method: 'get',
       params: { tenantId, filters: JSON.stringify(filters), pageSize, currentPage },
     },

@@ -1,12 +1,13 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Card, Badge, Radio, Tabs, message } from 'antd';
+import { Card, Badge, Radio, Tabs } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { loadShipmtDetail } from 'common/reducers/shipment';
+import { hidePreviewer } from 'common/reducers/shipment';
 import TodoAcceptPane from './pane/todoAcceptPane';
 import TodoTrackingPane from './pane/todoTrackingPane';
 import TodoPodPane from './pane/todoPodPane';
 import MyShipmentsSelect from '../../common/myShipmentsSelect';
+import AccepterModal from '../../shipment/modals/accepter';
 import { formatMsg } from '../message.i18n';
 
 const TabPane = Tabs.TabPane;
@@ -19,11 +20,11 @@ const RadioGroup = Radio.Group;
     tenantId: state.account.tenantId,
     todos: state.shipment.statistics.todos,
   }),
-  { loadShipmtDetail })
+  { hidePreviewer })
 export default class TodoPanel extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    loadShipmtDetail: PropTypes.func.isRequired,
+    hidePreviewer: PropTypes.func.isRequired,
     todos: PropTypes.object.isRequired,
   }
   constructor(props) {
@@ -35,38 +36,26 @@ export default class TodoPanel extends Component {
     endDate.setHours(23, 59, 59, 999);
     this.state = {
       pickupEstDate: [startDate, endDate],
+      deliverPrmDate: [startDate, endDate],
       viewStatus: 'all',
-      day: 'today',
-      type: 'all',
-      tabKey: 'todoAccept',
+      type: 'dispatchedOrIntransit',
+      tabKey: 'todoTrack',
     };
+    setTimeout(() => {
+      this.setState({ tabKey: 'todoPod', type: 'toUploadPod' });
+    }, 200);
+    setTimeout(() => {
+      this.setState({ tabKey: 'todoAccept', type: 'all' });
+    }, 400);
   }
 
   msg = formatMsg(this.props.intl)
   handleShipmentViewSelect = (value) => {
     this.setState({ viewStatus: value.viewStatus });
   }
-  handleDayChange = (day) => {
-    const { pickupEstDate: [startDate, endDate] } = this.state;
-    const newDate = new Date();
-    if (day === 'today') {
-      startDate.setDate(newDate.getDate());
-      endDate.setDate(newDate.getDate());
-    } else if (day === 'tomorrow') {
-      startDate.setDate(newDate.getDate() + 1);
-      endDate.setDate(newDate.getDate() + 1);
-    }
-    this.setState({ pickupEstDate: [startDate, endDate], day });
-  }
-  handleShipmtPreview = (row) => {
-    this.props.loadShipmtDetail(row.shipmt_no, this.props.tenantId, 'sr', 'detail', row).then((result) => {
-      if (result.error) {
-        message.error(result.error.message);
-      }
-    });
-  }
   handleTodoFilter = (e) => {
     this.setState({ type: e.target.value });
+    this.props.hidePreviewer();
   }
   handleTabChange = (tabKey) => {
     let type = '';
@@ -74,17 +63,24 @@ export default class TodoPanel extends Component {
       type = 'all';
     } else if (tabKey === 'todoTrack') {
       type = 'dispatchedOrIntransit';
+    } else if (tabKey === 'todoPod') {
+      type = 'toUploadPod';
     }
     this.setState({ tabKey, type });
   }
+  handleTableReload = () => {
+    const { type } = this.state;
+    this.setState({ type: '' });
+    setTimeout(() => {
+      this.setState({ type });
+    }, 200);
+  }
   render() {
     const { todos } = this.props;
-    const { day, pickupEstDate, viewStatus, type, tabKey } = this.state;
-    const filter = { pickupEstDate: JSON.stringify(pickupEstDate), viewStatus, type };
+    const { pickupEstDate, deliverPrmDate, viewStatus, type, tabKey } = this.state;
+    const filter = { pickupEstDate: JSON.stringify(pickupEstDate), deliverPrmDate: JSON.stringify(deliverPrmDate), viewStatus, type, tabKey };
     const extra = (
       <div>
-        <a onClick={() => this.handleDayChange('today')} style={{ marginRight: 20 }} className={day === 'today' ? 'mdc-text-red' : 'mdc-text-grey'}>今天</a>
-        <a onClick={() => this.handleDayChange('tomorrow')} style={{ marginRight: 20 }} className={day === 'tomorrow' ? 'mdc-text-red' : 'mdc-text-grey'}>明天</a>
         <MyShipmentsSelect onChange={this.handleShipmentViewSelect} />
       </div>);
     let radioButton = null;
@@ -104,21 +100,29 @@ export default class TodoPanel extends Component {
           <RadioButton value="toLocate">{this.msg('toLocateShipmt')}</RadioButton>
           <RadioButton value="intransit">{this.msg('toDeliverShipmt')}</RadioButton>
         </RadioGroup>);
+    } else if (tabKey === 'todoPod') {
+      radioButton = (
+        <RadioGroup onChange={this.handleTodoFilter} value={this.state.type} style={{ marginLeft: 15 }}>
+          <RadioButton value="toUploadPod">{this.msg('toUploadPod')}</RadioButton>
+          <RadioButton value="toAuditPod">{this.msg('toAuditPod')}</RadioButton>
+          <RadioButton value="toConfirm">{this.msg('toConfirm')}</RadioButton>
+        </RadioGroup>);
     }
     return (
       <Card title={<span>待办事项{radioButton}</span>} bodyStyle={{ minHeight: 360, padding: '10px 0 0' }} extra={extra}>
         <Tabs tabPosition="left" activeKey={tabKey} onChange={this.handleTabChange}>
-          <TabPane tab={<Badge dot={todos.acceptanceList.totalCount > 0} style={{ marginLeft: 4 }} ><span>{this.msg('todoAccept')}</span></Badge>} key="todoAccept" >
-            <TodoAcceptPane onShipmtPreview={this.handleShipmtPreview} filter={filter} />
+          <TabPane tab={<span>{this.msg('todoAccept')}<Badge count={todos.acceptanceList.totalCount} style={{ marginLeft: 8 }} /></span>} key="todoAccept" >
+            <TodoAcceptPane filter={filter} />
           </TabPane>
-          <TabPane tab={<Badge dot={todos.trackingList.totalCount > 0} style={{ marginLeft: 4 }} ><span>{this.msg('todoTrack')}</span></Badge>} key="todoTrack">
-            <TodoTrackingPane onShipmtPreview={this.handleShipmtPreview} filter={filter} />
+          <TabPane tab={<span>{this.msg('todoTrack')}<Badge count={todos.trackingList.totalCount} style={{ marginLeft: 8 }} /></span>} key="todoTrack">
+            <TodoTrackingPane filter={filter} />
           </TabPane>
-          <TabPane tab={<Badge dot={todos.podList.totalCount > 0} style={{ marginLeft: 4 }} ><span>{this.msg('todoPod')}</span></Badge>} key="todoPod">
-            <TodoPodPane onShipmtPreview={this.handleShipmtPreview} filter={filter} />
+          <TabPane tab={<span>{this.msg('todoPod')}<Badge count={todos.podList.totalCount} style={{ marginLeft: 8 }} /></span>} key="todoPod">
+            <TodoPodPane filter={filter} />
           </TabPane>
-          <TabPane tab={<Badge dot={todos.billingList.totalCount > 0} style={{ marginLeft: 4 }} ><span>{this.msg('todoBilling')}</span></Badge>} key="todoBilling" />
+          <TabPane tab={<span>{this.msg('todoBilling')}<Badge count={todos.billingList.totalCount} style={{ marginLeft: 8 }} /></span>} key="todoBilling" />
         </Tabs>
+        <AccepterModal reload={this.handleTableReload} clearSelection={() => {}} />
       </Card>);
   }
 }

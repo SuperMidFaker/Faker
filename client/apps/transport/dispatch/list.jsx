@@ -60,8 +60,6 @@ function fetch({ state, dispatch, cookie }) {
     dispatched: state.transportDispatch.dispatched,
     expandList: state.transportDispatch.expandList,
     cond: state.transportDispatch.cond,
-    dispDockShow: state.transportDispatch.dispDockShow,
-    segDockShow: state.transportDispatch.segDockShow,
     shipmts: state.transportDispatch.shipmts,
     loaded: state.transportDispatch.loaded,
   }),
@@ -105,8 +103,6 @@ export default class DispatchList extends React.Component {
     cond: PropTypes.object.isRequired,
     loadShipmtDetail: PropTypes.func.isRequired,
     changeDockStatus: PropTypes.func.isRequired,
-    dispDockShow: PropTypes.bool.isRequired,
-    segDockShow: PropTypes.bool.isRequired,
     shipmts: PropTypes.array.isRequired,
     loaded: PropTypes.bool.isRequired,
   }
@@ -470,7 +466,7 @@ export default class DispatchList extends React.Component {
   msgWrapper = s => this.msg(s)
 
   handleShipmtPreview = (row) => {
-    this.props.loadShipmtDetail(row.shipmt_no, this.props.tenantId, 'sp', 'detail', row).then((result) => {
+    this.props.loadShipmtDetail(row.shipmt_no, this.props.tenantId, 'sp', 'detail').then((result) => {
       if (result.error) {
         message.error(result.error.message);
       }
@@ -1067,16 +1063,11 @@ export default class DispatchList extends React.Component {
         </Content>
         <PreviewPanel stage="dispatch" />
         <DispatchDock
-          show={this.props.dispDockShow}
           shipmts={this.props.shipmts}
-          msg={this.msgWrapper}
           onClose={this.handleDispatchDockClose}
         />
-
         <SegmentDock
-          show={this.props.segDockShow}
           shipmts={this.props.shipmts}
-          msg={this.msgWrapper}
           onClose={this.handleSegmentDockClose}
         />
         <RevokejectModal reload={this.handleTableLoad} />
