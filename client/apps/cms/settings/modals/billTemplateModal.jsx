@@ -51,7 +51,7 @@ export default class BillTemplateModal extends React.Component {
         message.error(result.error.message);
       } else {
         this.props.toggleBillTempModal(false, 'add', formData.template_name);
-        this.context.router.push('/clearance/settings/billtemplates/create');
+        this.context.router.push(`/clearance/settings/billtemplates/edit/${result.data.id}`);
       }
     });
   }

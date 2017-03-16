@@ -1,9 +1,8 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Card, Radio, Checkbox, Select, message, Row, Col, Form, Switch, Collapse } from 'antd';
+import { Card, Radio, Checkbox, Select, Row, Col, Form, Switch, Collapse } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { closeMergeSplitModal, submitBillMegeSplit, loadBillBody } from 'common/reducers/cmsManifest';
 import { loadHsCodeCategories } from 'common/reducers/cmsHsCode';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -13,79 +12,43 @@ const FormItem = Form.Item;
 const CheckboxGroup = Checkbox.Group;
 const Option = Select.Option;
 const Panel = Collapse.Panel;
-
-function MSCheckbox(props) {
-  const { state, fieldOpt, field, text, onChange } = props;
-  function handleChange(ev) {
-    onChange(fieldOpt, field, ev.target.checked);
-  }
-  return (
-    <div>
-      <Checkbox onChange={handleChange} checked={state[fieldOpt][field]}>
-        {text}
-      </Checkbox>
-    </div>
-  );
-}
-
-MSCheckbox.propTypes = {
-  fieldOpt: PropTypes.string.isRequired,
-  field: PropTypes.string.isRequired,
-  text: PropTypes.string.isRequired,
-  state: PropTypes.object.isRequired,
-  onChange: PropTypes.func.isRequired,
-};
+const RadioGroup = Radio.Group;
 
 function fetchData({ state, dispatch }) {
   return dispatch(loadHsCodeCategories(state.account.tenantId));
+}
+
+function getFieldInits(formData) {
+  const init = { mergeOptArr: [], specialHsSortArr: [] };
+  if (formData.mergeOpt_arr) {
+    init.mergeOptArr = formData.mergeOpt_arr.split(',');
+  }
+  if (formData.specialHsSort) {
+    init.specialHsSortArr = formData.specialHsSort.split(',');
+  }
+  return init;
 }
 
 @connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
-    visible: state.cmsManifest.visibleMSModal,
     isCustomRegisted: !!state.cmsManifest.billHead.manual_no,
-    billNo: state.cmsManifest.billHead.bill_seq_no,
     hscodeCategories: state.cmsHsCode.hscodeCategories,
-  }),
-  { closeMergeSplitModal, submitBillMegeSplit, loadBillBody }
+    fieldInits: getFieldInits(state.cmsSettings.formData),
+  })
 )
-@Form.create()
+
 export default class MergeSplitModal extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    visible: PropTypes.bool.isRequired,
     isCustomRegisted: PropTypes.bool.isRequired,
-    billNo: PropTypes.string,
     hscodeCategories: PropTypes.array.isRequired,
+    form: PropTypes.object.isRequired,
+    formData: PropTypes.object.isRequired,
   }
   state = {
-    mergeOpt: {
-      checked: false,
-      byHsCode: false,
-      byGName: false,
-      byCurr: false,
-      byCountry: false,
-      byCopGNo: false,
-      byEmGNo: false,
-    },
-    splitOpt: {
-      byHsCode: false,
-      byCustom: false,
-      tradeCurr: false,
-      hsCategory: [],
-      perCount: 20,
-    },
-    sortOpt: {
-      customControl: true,
-      inspectQuarantine: false,
-      decTotal: false,
-      decPriceDesc: false,
-      hsCodeAsc: false,
-    },
-    sortSelectValue: '',
-    gnameVal: 'by20',
+    mergeSplit: true,
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   mergeConditions = [{
@@ -104,157 +67,94 @@ export default class MergeSplitModal extends React.Component {
     label: this.msg('productCode'),
     value: 'byCopGNo',
   }]
-  handleCancel = () => {
-    this.props.closeMergeSplitModal();
-    this.props.loadBillBody(this.props.billNo);
-  }
-  handleMergeRadioChange = () => {
-    this.setState({
-      mergeOpt: { checked: !this.state.mergeOpt.checked },
-    });
-  }
   handleMergeCheck = (checkeds) => {
     const opt = {
-      checked: this.state.mergeOpt.checked, byHsCode: false, byGName: false,
+      byHsCode: false, byGName: false,
       byCurr: false, byCountry: false, byCopGNo: false, byEmGNo: false,
     };
     checkeds.forEach((chk) => {
       opt[chk] = true;
     });
-    this.setState({
-      mergeOpt: opt,
-    });
   }
-  handleSortSelectChange = (value) => {
-    const sortOpt = { ...this.state.sortOpt };
-    if (value === 'hsCodeAsc') {
-      sortOpt.hsCodeAsc = true;
-      sortOpt.decTotal = false;
-    } else if (value === 'decTotal') {
-      sortOpt.decTotal = true;
-      sortOpt.hsCodeAsc = false;
-    }
-    this.setState({
-      sortOpt,
-      sortSelectValue: value,
-    });
-  }
-  handleSplitSelectChange = (value) => {
-    const splitOpt = { ...this.state.splitOpt };
-    if (value === 'by20') {
-      splitOpt.perCount = 20;
-    } else if (value === 'by50') {
-      splitOpt.perCount = 50;
-    }
-    this.setState({
-      splitOpt,
-      gnameVal: value,
-    });
-  }
-  handleCheckChange = (fieldOpt, field, value) => {
-    const opt = { ...this.state[fieldOpt] };
-    opt[field] = value;
-    this.setState({
-      [fieldOpt]: opt,
-    });
-  }
-  handleOk = () => {
-    const { billNo } = this.props;
-    const { splitOpt, mergeOpt, sortOpt } = this.state;
-    if (mergeOpt.checked) {
-      if (!(mergeOpt.byHsCode || mergeOpt.byGName || mergeOpt.byCurr ||
-        mergeOpt.byCountry || mergeOpt.byCopGNo || mergeOpt.byEmGNo)) {
-        return message.error('请选择归并项');
-      }
-    }
-    if (splitOpt.byHsCode) {
-      splitOpt.hsCategory = this.props.form.getFieldValue('specialSort');
-    }
-    this.props.submitBillMegeSplit({ billNo, splitOpt, mergeOpt, sortOpt }).then((result) => {
-      if (result.error) {
-        message.error(result.error.message);
-      } else {
-        this.props.closeMergeSplitModal();
-        this.props.loadBillBody(this.props.billNo);
-      }
-    });
+  handleOnChange = (checked) => {
+    this.setState({ mergeSplit: checked });
   }
   render() {
-    const { mergeOpt, splitOpt } = this.state;
-    const { form: { getFieldDecorator }, hscodeCategories } = this.props;
-    let mergeConditions = this.mergeConditions;
-    if (this.props.isCustomRegisted) {
-      mergeConditions = [...mergeConditions, { label: this.msg('emGNo'), value: 'byEmGNo' }];
-    }
+    const { mergeSplit } = this.state;
+    const { form: { getFieldDecorator, getFieldValue }, hscodeCategories, formData, fieldInits } = this.props;
     return (
-      <Card title="归并拆分规则设置" extra={<Switch />}>
-        <Collapse defaultActiveKey={['header']}>
+      <Card title="归并拆分规则设置" extra={
+        <FormItem>{getFieldDecorator('set_merge_split')(
+          <Switch checked={mergeSplit} onChange={this.handleOnChange} />)}
+        </FormItem>}
+      >
+        <Collapse defaultActiveKey={['merge']}>
           <Panel key="merge" header={this.msg('mergePrinciple')} >
             <Row>
               <Col span="3">
-                <Radio checked={mergeOpt.checked} onChange={this.handleMergeRadioChange}>
-                  {this.msg('conditionalMerge')}
-                </Radio>
+                <FormItem>
+                  {getFieldDecorator('mergeOpt_checked', { initialValue: formData.mergeOpt_checked })(
+                    <RadioGroup>
+                      <Radio value={1}>{this.msg('conditionalMerge')}</Radio>
+                      <Radio value={0}>{this.msg('nonMerge')}</Radio>
+                    </RadioGroup>)}
+                </FormItem>
               </Col>
               <Col offset="2" span="19">
-                <CheckboxGroup options={mergeConditions} disabled={!mergeOpt.checked}
-                  onChange={this.handleMergeCheck}
-                />
-              </Col>
-            </Row>
-            <Row>
-              <Col span="3">
-                <Radio checked={!mergeOpt.checked} onChange={this.handleMergeRadioChange}>
-                  {this.msg('nonMerge')}
-                </Radio>
-              </Col>
-              <Col offset="2" span="19">
-                按清单数据直接生成报关单（并按原数据排序）
+                <Row style={{ padding: 6 }}>
+                  {getFieldDecorator('mergeOpt_arr', { initialValue: fieldInits.mergeOptArr,
+                  })(<CheckboxGroup options={this.mergeConditions} disabled={!getFieldValue('mergeOpt_checked')}
+                    onChange={this.handleMergeCheck}
+                  />)}
+                </Row>
+                <Row style={{ padding: 8 }}>
+                  按清单数据直接生成报关单
+                </Row>
               </Col>
             </Row>
           </Panel>
           <Panel key="split" header={this.msg('splitPrinciple')} >
-            <MSCheckbox fieldOpt="splitOpt" field="byHsCode"
-              text={this.msg('specialHscodeDeclare')}
-              onChange={this.handleCheckChange} state={this.state}
-            />
-            { splitOpt.byHsCode &&
-              <FormItem label={this.msg('specialHscodeSort')}>
-                {getFieldDecorator('specialSort', {
-                  rules: [{ type: 'array' }],
-                })(<Select multiple style={{ width: '100%' }} >
-                  {
-                      hscodeCategories.map(ct =>
-                        <Option value={ct.id} key={ct.id}>{ct.name}</Option>
-                      )
-                    }
+            <Row>
+              {getFieldDecorator('splitOpt_byHsCode')(
+                <Checkbox defaultChecked={formData.splitOpt_byHsCode}>{this.msg('specialHscodeDeclare')}</Checkbox>)
+              }
+              <Col offset="1" span="20">
+                {getFieldValue('splitOpt_byHsCode') &&
+                <FormItem label={this.msg('specialHscodeSort')} labelCol={{ span: 4 }} wrapperCol={{ span: 20 }} >
+                  {getFieldDecorator('specialHsSort', {
+                    rules: [{ type: 'array' }],
+                    initialValue: fieldInits.specialHsSortArr,
+                  })(<Select multiple style={{ width: '100%' }} >
+                    {hscodeCategories.map(ct =>
+                      <Option value={ct.id} key={ct.id}>{ct.name}</Option>)}
+                  </Select>)}
+                </FormItem>}
+              </Col>
+            </Row>
+            <FormItem>
+              {getFieldDecorator('splitOpt_tradeCurr')(
+                <Checkbox defaultChecked={formData.splitOpt_tradeCurr}>{this.msg('currencySplit')}</Checkbox>)}
+            </FormItem>
+            {getFieldDecorator('splitOpt_perCount', {
+              initialValue: formData.splitOpt_perCount })(
+                <Select>
+                  <Option value={20}>{'按20品拆分'}</Option>
+                  <Option value={50}>{'按50品拆分'}</Option>
                 </Select>)}
-              </FormItem>
-            }
-            <MSCheckbox fieldOpt="splitOpt" field="tradeCurr"
-              text={this.msg('currencySplit')}
-              onChange={this.handleCheckChange} state={this.state}
-            />
-            <Select onChange={this.handleSplitSelectChange} value={this.state.gnameVal}
-              style={{ width: '100%' }}
-            >
-              <Option value="by20">{'按20品拆分'}</Option>
-              <Option value="by50">{'按50品拆分'}</Option>
-            </Select>
           </Panel>
           <Panel key="sort" header={this.msg('sortPrinciple')} >
-            <MSCheckbox fieldOpt="sortOpt" field="customControl"
-              text={this.msg('customOnTop')}
-              onChange={this.handleCheckChange} state={this.state}
-            />
-            <MSCheckbox fieldOpt="sortOpt" field="decTotal"
-              text={this.msg('priceDescSort')}
-              onChange={this.handleCheckChange} state={this.state}
-            />
-            <MSCheckbox fieldOpt="sortOpt" field="hsCodeAsc"
-              text={this.msg('hsCodeAscSort')}
-              onChange={this.handleCheckChange} state={this.state}
-            />
+            <FormItem>
+              {getFieldDecorator('sortOpt_customControl')(
+                <Checkbox defaultChecked={formData.sortOpt_customControl}>{this.msg('customOnTop')}</Checkbox>)}
+            </FormItem>
+            <FormItem>
+              {getFieldDecorator('sortOpt_decTotal')(
+                <Checkbox defaultChecked={formData.sortOpt_decTotal}>{this.msg('priceDescSort')}</Checkbox>)}
+            </FormItem>
+            <FormItem>
+              {getFieldDecorator('sortOpt_hsCodeAsc')(
+                <Checkbox defaultChecked={formData.sortOpt_hsCodeAsc}>{this.msg('hsCodeAscSort')}</Checkbox>)}
+            </FormItem>
           </Panel>
         </Collapse>
       </Card>

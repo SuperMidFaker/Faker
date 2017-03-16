@@ -64,9 +64,22 @@ export default class CreateTemplate extends Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   handleSave = () => {
-    const { template } = this.props;
+    const { template, relatedCustomers } = this.props;
+    if (relatedCustomers.length === 0) {
+      return message.error('至少添加一个关联客户');
+    }
     const element = Mention.toString(this.props.form.getFieldValue('rule_element'));
-    const head = { ...this.props.form.getFieldsValue(), rule_element: element };
+    const mergeOptArr = this.props.form.getFieldValue('mergeOpt_arr');
+    const specialHsSortArr = this.props.form.getFieldValue('specialHsSort');
+    let mergeOpts = '';
+    if (mergeOptArr) {
+      mergeOpts = mergeOptArr.join(',');
+    }
+    let specialHsSorts = '';
+    if (specialHsSortArr) {
+      specialHsSorts = specialHsSortArr.join(',');
+    }
+    const head = { ...this.props.form.getFieldsValue(), rule_element: element, mergeOpt_arr: mergeOpts, specialHsSort: specialHsSorts };
     this.props.saveTemplateData({ head, templateId: template.id }).then(
       (result) => {
         if (result.error) {

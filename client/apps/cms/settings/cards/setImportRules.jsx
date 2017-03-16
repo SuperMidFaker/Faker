@@ -17,14 +17,13 @@ const formItemLayout = {
 function getFieldInits(formData) {
   const init = {};
   if (formData) {
-    ['rule_g_name', 'rule_currency', 'rule_orig_country', 'rule_net_wt', 'rule_g_unit', 'rule_gunit_num',
+    ['rule_currency', 'rule_orig_country', 'rule_net_wt',
     ].forEach((fd) => {
       init[fd] = formData[fd] ? formData[fd] : '1';
     });
     ['rule_g_name', 'rule_g_unit'].forEach((fd) => {
-      init[fd] = formData[fd] ? formData[fd] : '1';
+      init[fd] = formData[fd] ? formData[fd] : '0';
     });
-    init.set_special_code = formData.set_special_code ? formData.set_special_code : true;
     init.rule_gunit_num = formData.rule_gunit_num ? formData.rule_gunit_num : 'g_unit_1';
     init.rule_element = formData.rule_element ? formData.rule_element : '';
   }
@@ -45,12 +44,12 @@ export default class FeesTable extends Component {
     formData: PropTypes.object.isRequired,
   }
   state = {
-    specialCode: false,
+    specialCode: true,
     suggestions: [],
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.formData !== this.props.formData) {
-      this.setState({ specialCode: nextProps.formData.set_special_code });
+      this.setState({ specialCode: !!nextProps.formData.set_special_code });
     }
   }
   handleOnChange = (checked) => {
@@ -77,7 +76,9 @@ export default class FeesTable extends Component {
     const { specialCode } = this.state;
     return (
       <Card title="特殊字段规则设置" extra={
-        <FormItem>{getFieldDecorator('set_special_code')(<Switch defaultChecked={!fieldInits.set_special_code} onChange={this.handleOnChange} />)}</FormItem>}
+        <FormItem>{getFieldDecorator('set_special_code')(
+          <Switch checked={specialCode} onChange={this.handleOnChange} />)}
+        </FormItem>}
       >
         <Row gutter={20}>
           <Col sm={24} lg={12}>
