@@ -684,6 +684,7 @@ export default class ManifestBodyPanel extends React.Component {
         this.props.loadBillBody(this.props.billSeqNo);
       }
     });
+    this.setState({ selectedRowKeys: [] });
   }
   render() {
     const { totGrossWt, totWetWt, totTrade, totPcs } = this.state;
@@ -739,8 +740,8 @@ export default class ManifestBodyPanel extends React.Component {
         {selectedRows.length > 0 &&
         <Popconfirm title={'是否删除所有选择项？'} onConfirm={() => this.handleDeleteSelected()}>
           <Button type="danger" icon="delete">
-                批量删除
-              </Button>
+            批量删除
+          </Button>
         </Popconfirm>}
         {!this.props.readonly && <Button icon="pie-chart" onClick={this.handleTotalPriceDivid}>金额平摊</Button>}
         {!this.props.readonly && <Button icon="arrows-alt" onClick={this.handleGrossWtDivid}>毛重分摊</Button>}
