@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 import { Table, Icon, Tag } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { openAddTriggerModal } from 'common/reducers/scofFlow';
-import AddTriggerModal from './modal/addTriggerModal';
-import { formatMsg } from '../message.i18n';
+import AddTriggerModal from './addTriggerModal';
+import { formatMsg } from '../../message.i18n';
 
 @injectIntl
 @connect()

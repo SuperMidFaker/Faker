@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { Collapse, Form, Input } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import FlowTriggerTable from './flowTriggerTable';
-import { formatMsg } from '../message.i18n';
+import { formatMsg } from '../../message.i18n';
 
 const FormItem = Form.Item;
 const Panel = Collapse.Panel;

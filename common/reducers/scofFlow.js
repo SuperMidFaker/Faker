@@ -25,6 +25,7 @@ const initialState = {
   },
   flowListLoading: false,
   reloadFlowList: false,
+  submitting: false,
   listFilter: { name: '' },
   currentFlow: null,
   flowGraph: { nodes: [], edges: [] },
@@ -41,8 +42,12 @@ export default function reducer(state = initialState, action) {
       return { ...state, visibleFlowModal: true };
     case actionTypes.CLOSE_CREATE_FLOW_MODAL:
       return { ...state, visibleFlowModal: false };
+    case actionTypes.SAVE_FLOW:
+      return { ...state, submitting: true };
+    case actionTypes.SAVE_FLOW_FAIL:
+      return { ...state, submitting: false };
     case actionTypes.SAVE_FLOW_SUCCEED:
-      return { ...state, reloadFlowList: true, currentFlow: action.result.data };
+      return { ...state, reloadFlowList: true, submitting: false, currentFlow: action.result.data };
     case actionTypes.OPEN_ADD_TRIGGER_MODAL:
       return { ...state, visibleTriggerModal: true };
     case actionTypes.CLOSE_ADD_TRIGGER_MODAL:

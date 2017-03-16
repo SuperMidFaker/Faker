@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Collapse, Form, Col, Row, Select } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import FlowTriggerTable from '../flowTriggerTable';
+import FlowTriggerTable from '../compose/flowTriggerTable';
 import { formatMsg } from '../../message.i18n';
 
 const FormItem = Form.Item;

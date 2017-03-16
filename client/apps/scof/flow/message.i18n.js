@@ -134,6 +134,30 @@ const messages = defineMessages({
     id: 'scof.flow.biz.events',
     defaultMessage: '触发事件',
   },
+  onCreated: {
+    id: 'scof.flow.biz.event.created',
+    defaultMessage: '已创建',
+  },
+  onDelgDeclared: {
+    id: 'scof.flow.biz.event.cms.declared',
+    defaultMessage: '已申报',
+  },
+  onDelgInspected: {
+    id: 'scof.flow.biz.event.cms.inspected',
+    defaultMessage: '已查验',
+  },
+  onDelgReleased: {
+    id: 'scof.flow.biz.event.cms.released',
+    defaultMessage: '已放行',
+  },
+  onManifestGenerated: {
+    id: 'scof.flow.biz.event.cms.manifest.generated',
+    defaultMessage: '已生成',
+  },
+  onCustomsReviewed: {
+    id: 'scof.flow.biz.event.cms.customs.reviewed',
+    defaultMessage: '已审核',
+  },
 });
 
 export default messages;

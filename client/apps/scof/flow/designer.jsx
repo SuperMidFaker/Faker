@@ -8,6 +8,7 @@ import { uuidWithoutDash } from 'client/common/uuid';
 import FlowEdgePanel from './panel/flowEdgePanel';
 import BizObjCMSPanel from './panel/bizObjCMSPanel';
 import BizObjTMSPanel from './panel/bizObjTMSPanel';
+import BizObjCWMPanel from './panel/bizObjCWMPanel';
 import { formatMsg } from './message.i18n';
 
 const { Header, Content, Sider } = Layout;
@@ -18,6 +19,7 @@ const MenuItem = Menu.Item;
   state => ({
     tenantId: state.account.tenantId,
     flowGraph: state.scofFlow.flowGraph,
+    submitting: state.scofFlow.submitting,
   }),
   { loadFlowGraph, loadFlowGraphItem, saveFlowGraph }
 )
@@ -71,8 +73,8 @@ export default class FlowDesigner extends React.Component {
     this.graph.node().shape('', () => 'rect');
     this.graph.edge().shape('', () => 'smoothArrow');
     const data = {
-      nodes: this.props.flowGraph.nodes,
-      edges: this.props.flowGraph.edges,
+      nodes: this.props.flowGraph.nodes.map(node => ({ ...node, addedActions: [], delActions: [], updActions: [] })),
+      edges: this.props.flowGraph.edges.map(edge => ({ ...edge, addedConds: [], delConds: [], updConds: [] })),
     };
     this.graph.source(data.nodes, data.edges);
     this.graph.render();
@@ -123,6 +125,12 @@ export default class FlowDesigner extends React.Component {
       console.log('afteradd', ev);
       const item = ev.item;
       this.graph.update(item, { loaded: true });
+      if (item.get('type') === 'edge') {
+        const source = item.get('source');
+        const target = item.get('target');
+        this.graph.update(source, { out_degree: source.get('model').out_degree + 1 });
+        this.graph.update(target, { in_degree: target.get('model').in_degree + 1 });
+      }
       this.setState({ activeItem: item });
     });
   }
@@ -133,8 +141,8 @@ export default class FlowDesigner extends React.Component {
     }
     if (nextProps.flowGraph !== this.props.flowGraph) {
       const data = {
-        nodes: nextProps.flowGraph.nodes,
-        edges: nextProps.flowGraph.edges,
+        nodes: nextProps.flowGraph.nodes.map(node => ({ ...node, addedActions: [], delActions: [], updActions: [] })),
+        edges: nextProps.flowGraph.edges.map(edge => ({ ...edge, addedConds: [], delConds: [], updConds: [] })),
       };
       this.graph.changeData(data.nodes, data.edges);
     }
@@ -163,6 +171,7 @@ export default class FlowDesigner extends React.Component {
     if (kind) {
       this.graph.beginAdd('node', {
         id, kind, addedActions: [], delActions: [], updActions: [],
+        in_degree: 0, out_degree: 0,
       });
       this.graph.refresh();
     }
@@ -171,7 +180,7 @@ export default class FlowDesigner extends React.Component {
     this.graph.changeMode('add');
     const id = uuidWithoutDash();
     this.graph.beginAdd('edge', {
-      id, addedConds: [], delConds: [], updConds: [],
+      id, conditions: [], addedConds: [], delConds: [], updConds: [],
     });
     this.graph.refresh();
   }
@@ -250,9 +259,9 @@ export default class FlowDesigner extends React.Component {
           if (!result.error) {
             if (item.get('type') === 'node') {
               const node = result.data;
-              this.graph.update(item, { ...node, loaded: true, addedActions: [], delActions: [], updActions: [] });
+              this.graph.update(item, { ...node, loaded: true });
             } else if (item.get('type') === 'edge') {
-              this.graph.update(item, { conditions: result.data, loaded: true, addedConds: [], delConds: [], updConds: [] });
+              this.graph.update(item, { conditions: result.data, loaded: true });
             }
             this.setState({ activeItem: item });
           }
@@ -262,6 +271,52 @@ export default class FlowDesigner extends React.Component {
       }
     } else {
       this.setState({ activeItem: item });
+    }
+  }
+  handleCondAdd = (cond, afterConds) => {
+    const added = this.state.activeItem.get('model').addedConds;
+    // 多次更改产生add
+    let i = 0;
+    for (; i < added.length; i++) {
+      if (added[i].key === cond.key) {
+        added[i] = cond;
+        break;
+      }
+    }
+    if (i === added.length) {
+      added.push(cond);
+    }
+    this.graph.update(this.state.activeItem, { addedConds: added, conditions: afterConds });
+  }
+  handleCondUpdate = (cond, afterConds) => {
+    const updConds = this.state.activeItem.get('model').updConds;
+    let i = 0;
+    for (; i < updConds.length; i++) {
+      if (updConds[i].key === cond.key) {
+        updConds[i] = cond;
+        break;
+      }
+    }
+    if (i === updConds.length) {
+      updConds.push(cond);
+    }
+    this.graph.update(this.state.activeItem, { updConds, conditions: afterConds });
+  }
+  handleCondDel = (cond, afterConds) => {
+    const added = this.state.activeItem.get('model').addedConds;
+    let found = false;
+    for (let i = 0; i < added.length; i++) {
+      if (added[i].key === cond.key) {
+        found = true;
+        added.splice(i, 1);
+        this.graph.update(this.state.activeItem, { addedConds: added, conditions: afterConds });
+        break;
+      }
+    }
+    if (!found) {
+      const delConds = this.state.activeItem.get('model').delConds;
+      delConds.push(cond.key);
+      this.graph.update(this.state.activeItem, { delConds, conditions: afterConds });
     }
   }
   handleSaveBtnClick = () => {
@@ -274,8 +329,13 @@ export default class FlowDesigner extends React.Component {
     const nodes = graphItems.filter(item => item.get('type') === 'node').map(item => item.get('model'));
     const edges = graphItems.filter(item => item.get('type') === 'edge').map(item => item.get('model'));
     console.log(nodes, edges);
-    // todo graph node edge disconnected indgree
-    this.props.saveFlowGraph(this.props.currentFlow.id, nodes, edges);
+    // todo graph node edge disconnected
+    this.props.saveFlowGraph(this.props.currentFlow.id, nodes, edges).then((result) => {
+      if (!result.error) {
+        this.props.loadFlowGraph(this.props.currentFlow.id);
+        this.setState({ activeItem: null });
+      }
+    });
   }
   render() {
     const { form, submitting, listCollapsed } = this.props;
@@ -327,8 +387,14 @@ export default class FlowDesigner extends React.Component {
               {activeItem.get('type') === 'node' && (activeItem.get('model').kind === 'tms') &&
               <BizObjTMSPanel form={form} model={activeItem.get('model')} />
               }
+              {activeItem.get('type') === 'node' && (activeItem.get('model').kind === 'cwm') &&
+              <BizObjCWMPanel form={form} model={activeItem.get('model')} />
+              }
               {activeItem.get('type') === 'edge' &&
-              <FlowEdgePanel model={activeItem.get('model')} source={activeItem.get('source')} target={activeItem.get('target')} />
+                <FlowEdgePanel model={activeItem.get('model')} source={activeItem.get('source').get('model')}
+                  target={activeItem.get('target').get('model')} onAdd={this.handleCondAdd} onUpdate={this.handleCondUpdate}
+                  onDel={this.handleCondDel}
+                />
               }
             </Form>
             }

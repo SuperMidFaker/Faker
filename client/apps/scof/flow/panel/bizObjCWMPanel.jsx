@@ -3,9 +3,8 @@ import { connect } from 'react-redux';
 import { Row, Col, Card, Tabs } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { loadCmsBizParams } from 'common/reducers/scofFlow';
-import FlowNodePanel from './flowNodePanel';
-import DelegationPane from './pane/cmsDelegationPane';
-import DeclManifestPane from './pane/cmsDeclManifestPane';
+import FlowNodePanel from './compose/flowNodePanel';
+import DelegationPane from './bizpane/cmsDelegationPane';
 import { formatMsg } from '../message.i18n';
 
 const TabPane = Tabs.TabPane;
@@ -41,9 +40,7 @@ export default class FlowCwmNodePanel extends Component {
               <TabPane tab={this.msg('objReceiving')} key="objReceiving">
                 <DelegationPane form={form} />
               </TabPane>
-              <TabPane tab={this.msg('objShipping')} key="objShipping" >
-                <DeclManifestPane form={form} />
-              </TabPane>
+              <TabPane tab={this.msg('objShipping')} key="objShipping" />
             </Tabs>
           </Card>
         </Col>

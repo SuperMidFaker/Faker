@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 import { Row, Col, Card, Tabs } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { loadCmsBizParams } from 'common/reducers/scofFlow';
-import FlowNodePanel from './flowNodePanel';
-import ShipmentPane from './pane/tmsShipmentPane';
+import FlowNodePanel from './compose/flowNodePanel';
+import ShipmentPane from './bizpane/tmsShipmentPane';
 import { formatMsg } from '../message.i18n';
 
 const TabPane = Tabs.TabPane;
