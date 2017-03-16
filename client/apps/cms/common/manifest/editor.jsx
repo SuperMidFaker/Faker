@@ -212,23 +212,22 @@ export default class ManifestEditor extends React.Component {
               <Dropdown overlay={declEntryMenu}>
                 <Button size="large" >生成的报关单<Icon type="down" /></Button>
               </Dropdown>
-              ) : null}
-            <Select
-              showSearch
-              showArrow={false}
-              placeholder="选择模板"
-              optionFilterProp="children"
-              size="large"
-              onChange={this.handleSelectChange}
-              style={{ width: 200 }}
-              allowClear
-              defaultValue={billHead.template_id}
-            >
-              {templates.map(data => (<Option key={data.id} value={data.id}
-                search={`${data.id}${data.template_name}`}
-              >{data.template_name}</Option>)
-              )}
-            </Select>
+              ) : <Select
+                showSearch
+                showArrow={false}
+                placeholder="选择模板"
+                optionFilterProp="children"
+                size="large"
+                onChange={this.handleSelectChange}
+                style={{ width: 200 }}
+                allowClear
+                defaultValue={billHead.template_id}
+              >
+                {templates.map(data => (<Option key={data.id} value={data.id}
+                  search={`${data.id}${data.template_name}`}
+                >{data.template_name}</Option>)
+                )}
+              </Select>}
             <div className="top-bar-tools">
               {generateEntry &&
                 <Button type="primary" size="large" icon="addfile" onClick={this.handleGenerateEntry}>{this.msg('generateEntry')}</Button>
