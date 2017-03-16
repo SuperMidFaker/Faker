@@ -158,6 +158,22 @@ const messages = defineMessages({
     id: 'scof.flow.biz.event.cms.customs.reviewed',
     defaultMessage: '已审核',
   },
+  triggerActions: {
+    id: 'scof.flow.biz.actions',
+    defaultMessage: '触发动作表',
+  },
+  actionCreate: {
+    id: 'scof.flow.biz.action.create',
+    defaultMessage: '创建',
+  },
+  actionNotify: {
+    id: 'scof.flow.biz.action.notify',
+    defaultMessage: '通知',
+  },
+  minutes: {
+    id: 'scof.flow.biz.action.scheduled.minutes',
+    defaultMessage: '分',
+  },
 });
 
 export default messages;
