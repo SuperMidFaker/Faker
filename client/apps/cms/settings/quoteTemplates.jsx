@@ -70,7 +70,7 @@ export default class Settings extends Component {
                 <Menu
                   onClick={this.handleClick}
                   defaultOpenKeys={['bizdata']}
-                  defaultSelectedKeys={['quotemodel']}
+                  defaultSelectedKeys={['billmodel']}
                   mode="inline"
                 >
                   <SubMenu key="bizdata" title={<span><Icon type="setting" /><span>业务数据</span></span>}>
