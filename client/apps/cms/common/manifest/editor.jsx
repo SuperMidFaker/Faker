@@ -4,7 +4,7 @@ import { Breadcrumb, Button, Dropdown, Layout, Menu, Icon, Form, message, Popcon
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { addNewBillBody, delBillBody, editBillBody, saveBillHead,
-  openMergeSplitModal, billDelete, updateHeadNetWt, loadBillBody } from 'common/reducers/cmsManifest';
+  openMergeSplitModal, billDelete, updateHeadNetWt, loadBillBody, saveBillRules } from 'common/reducers/cmsManifest';
 import { loadTemplateFormVals } from 'common/reducers/cmsSettings';
 import NavLink from 'client/components/nav-link';
 import SheetHeadPanel from './panel/manifestHeadPanel';
@@ -31,7 +31,7 @@ const Option = Select.Option;
     formData: state.cmsSettings.formData,
   }),
   { addNewBillBody, delBillBody, editBillBody, saveBillHead, openMergeSplitModal,
-    billDelete, updateHeadNetWt, loadBillBody, loadTemplateFormVals }
+    billDelete, updateHeadNetWt, loadBillBody, loadTemplateFormVals, saveBillRules }
 )
 @connectNav({
   depth: 3,
@@ -135,21 +135,16 @@ export default class ManifestEditor extends React.Component {
     this.context.router.push({ pathname });
   }
   handleBillSave = () => {
-    // this.props.form.validateFields((errors) => {
-    //   if (!errors) {
     const { billHead, ietype, loginId, tenantId, formData } = this.props;
     const head = { ...billHead, ...this.props.form.getFieldsValue(), template_id: formData.template_id };
     this.props.saveBillHead({ head, ietype, loginId, tenantId }).then(
-          (result) => {
-            if (result.error) {
-              message.error(result.error.message);
-            } else {
-              message.info('更新成功');
-            }
-          }
-        );
-    //   }
-    // });
+      (result) => {
+        if (result.error) {
+          message.error(result.error.message);
+        } else {
+          message.info('更新成功');
+        }
+      });
   }
   handleBillDelete = () => {
     this.props.billDelete(this.props.billHead.bill_seq_no).then(
@@ -168,11 +163,35 @@ export default class ManifestEditor extends React.Component {
         if (result.error) {
           message.error(result.error.message);
         } else {
-          this.setState({ headData: result.data.formData });
+          const formData = result.data.formData;
+          this.setState({ headData: formData });
+          const rules = {
+            template_id: formData.template_id,
+            rule_g_name: formData.rule_g_name,
+            rule_currency: formData.rule_currency,
+            rule_orig_country: formData.rule_orig_country,
+            rule_net_wt: formData.rule_net_wt,
+            rule_g_unit: formData.rule_g_unit,
+            rule_gunit_num: formData.rule_gunit_num,
+            rule_element: formData.rule_element,
+            mergeOpt_checked: formData.mergeOpt_checked,
+            mergeOpt_arr: formData.mergeOpt_arr,
+            splitOpt_byHsCode: formData.splitOpt_byHsCode,
+            specialHsSort: formData.specialHsSort,
+            splitOpt_tradeCurr: formData.splitOpt_tradeCurr,
+            splitOpt_perCount: formData.splitOpt_perCount,
+            sortOpt_customControl: formData.sortOpt_customControl,
+            sortOpt_decTotal: formData.sortOpt_decTotal,
+            sortOpt_hsCodeAsc: formData.sortOpt_hsCodeAsc,
+          };
+          this.props.saveBillRules({ rules, billSeqNo: this.props.billHead.bill_seq_no });
         }
       });
     } else {
-      this.setState({ headData: {} });
+      this.setState({ headData: this.props.billHead });
+      const { billHead, ietype, loginId, tenantId } = this.props;
+      const head = { ...billHead, ...this.props.form.getFieldsValue(), template_id: null };
+      this.props.saveBillHead({ head, ietype, loginId, tenantId });
     }
   }
   lockMenu = (
@@ -185,7 +204,7 @@ export default class ManifestEditor extends React.Component {
       </Menu.Item>
     </Menu>)
   render() {
-    const { ietype, readonly, form, billHead, billBodies, billMeta, templates, ...actions } = this.props;
+    const { ietype, readonly, form: { getFieldDecorator }, form, billHead, billBodies, billMeta, templates, ...actions } = this.props;
     const declEntryMenu = (<Menu onClick={this.handleEntryVisit}>
       {billMeta.entries.map(bme => (<Menu.Item key={bme.pre_entry_seq_no}>
         <Icon type="file-text" /> {bme.entry_id || bme.pre_entry_seq_no}</Menu.Item>)
@@ -212,22 +231,20 @@ export default class ManifestEditor extends React.Component {
               <Dropdown overlay={declEntryMenu}>
                 <Button size="large" >生成的报关单<Icon type="down" /></Button>
               </Dropdown>
-              ) : <Select
-                showSearch
+              ) : getFieldDecorator('model', { initialValue: billHead.template_id })(<Select
                 showArrow={false}
                 placeholder="选择模板"
-                optionFilterProp="children"
+                optionFilterProp="search"
                 size="large"
                 onChange={this.handleSelectChange}
                 style={{ width: 200 }}
                 allowClear
-                defaultValue={billHead.template_id}
               >
                 {templates.map(data => (<Option key={data.id} value={data.id}
                   search={`${data.id}${data.template_name}`}
                 >{data.template_name}</Option>)
                 )}
-              </Select>}
+              </Select>)}
             <div className="top-bar-tools">
               {generateEntry &&
                 <Button type="primary" size="large" icon="addfile" onClick={this.handleGenerateEntry}>{this.msg('generateEntry')}</Button>

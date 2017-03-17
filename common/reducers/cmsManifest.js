@@ -30,6 +30,8 @@ const actionTypes = createActionTypes('@@welogix/cms/manifest/', [
   'SAVE_ENTRY_HEAD', 'SAVE_ENTRY_HEAD_SUCCEED', 'SAVE_ENTRY_HEAD_FAIL',
   'DELETE_ENTRIES', 'DELETE_ENTRIES_SUCCEED', 'DELETE_ENTRIES_FAIL',
   'DELETE_SELECTED_BODIES', 'DELETE_SELECTED_BODIES_SUCCEED', 'DELETE_SELECTED_BODIES_FAIL',
+  'OPEN_RULE_MODEL', 'CLOSE_RULE_MODEL',
+  'SAVE_BILL_RULES', 'SAVE_BILL_RULES_SUCCEED', 'SAVE_BILL_RULES_FAIL',
 ]);
 
 const initialState = {
@@ -78,12 +80,14 @@ const initialState = {
   },
   visibleMSModal: false,
   visibleAmtModal: false,
+  visibleRuleModal: false,
   tabKey: 'container',
   certMarks: [],
   certParams: [],
   docuMarks: [],
   containers: [],
   templates: [],
+  billRule: {},
 };
 
 export default function reducer(state = initialState, action) {
@@ -108,7 +112,7 @@ export default function reducer(state = initialState, action) {
       return {
         ...state, billHead: action.result.data.head, billMeta: action.result.data.meta,
         billBodies: action.result.data.hbodies, params: { ...state.params, ports },
-        templates: action.result.data.templates,
+        templates: action.result.data.templates, billRule: action.result.data.billRule,
       };
     }
     case actionTypes.DELETE_BILL_SUCCEED:
@@ -159,6 +163,10 @@ export default function reducer(state = initialState, action) {
       return { ...state, visibleAmtModal: true };
     case actionTypes.CLOSE_AMOUNT_MODEL:
       return { ...state, visibleAmtModal: false };
+    case actionTypes.OPEN_RULE_MODEL:
+      return { ...state, visibleRuleModal: true };
+    case actionTypes.CLOSE_RULE_MODEL:
+      return { ...state, visibleRuleModal: false };
     case actionTypes.SUBMIT_MERGESPLIT_SUCCEED:
       return { ...state, billMeta: { ...state.billMeta, entries: action.result.data } };
     case actionTypes.SET_PANE_TABKEY:
@@ -496,6 +504,18 @@ export function closeAmountModel() {
   };
 }
 
+export function openRuleModel() {
+  return {
+    type: actionTypes.OPEN_RULE_MODEL,
+  };
+}
+
+export function closeRuleModel() {
+  return {
+    type: actionTypes.CLOSE_RULE_MODEL,
+  };
+}
+
 export function submitBillMegeSplit({ billNo, mergeOpt, splitOpt, sortOpt }) {
   return {
     [CLIENT_API]: {
@@ -582,6 +602,21 @@ export function deleteSelectedBodies(bodyIds) {
       endpoint: 'v1/cms/declare/selected/bodies/delete',
       method: 'post',
       data: bodyIds,
+    },
+  };
+}
+
+export function saveBillRules(datas) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SAVE_BILL_RULES,
+        actionTypes.SAVE_BILL_RULES_SUCCEED,
+        actionTypes.SAVE_BILL_RULES_FAIL,
+      ],
+      endpoint: 'v1/cms/manifest/bill/rules/save',
+      method: 'post',
+      data: datas,
     },
   };
 }

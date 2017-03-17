@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Button, Dropdown, Menu, Table, Icon, Input, Select, message, Popconfirm } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { updateHeadNetWt, loadBillBody, openAmountModel, deleteSelectedBodies } from 'common/reducers/cmsManifest';
+import { updateHeadNetWt, loadBillBody, openAmountModel, deleteSelectedBodies, openRuleModel } from 'common/reducers/cmsManifest';
 import { getItemForBody, getHscodeForBody } from 'common/reducers/cmsTradeitem';
 import { format } from 'client/common/i18n/helpers';
 import ExcelUpload from 'client/components/excelUploader';
@@ -10,6 +10,7 @@ import { createFilename } from 'client/util/dataTransform';
 import AmountModel from '../modals/amountDivid';
 import RowUpdater from 'client/components/rowUpdater';
 import messages from '../../form/message.i18n';
+import RelateImportRuleModal from '../modals/relateImportRules';
 
 const formatMsg = format(messages);
 const Option = Select.Option;
@@ -116,7 +117,7 @@ function calculateTotal(bodies) {
     bodyHscode: state.cmsTradeitem.bodyHscode,
     entryHead: state.cmsManifest.entryHead,
   }),
-  { updateHeadNetWt, loadBillBody, openAmountModel, getItemForBody, getHscodeForBody, deleteSelectedBodies }
+  { updateHeadNetWt, loadBillBody, openAmountModel, getItemForBody, getHscodeForBody, deleteSelectedBodies, openRuleModel }
 )
 export default class ManifestBodyPanel extends React.Component {
   static propTypes = {
@@ -605,8 +606,7 @@ export default class ManifestBodyPanel extends React.Component {
   handleExportData = (ev) => {
     ev.stopPropagation();
   }
-  handleNetWetSummary = (ev) => {
-    ev.stopPropagation();
+  handleNetWetSummary = () => {
     const bodyDatas = this.state.bodies;
     let wtSum = 0;
     bodyDatas.forEach((body) => {
@@ -623,8 +623,7 @@ export default class ManifestBodyPanel extends React.Component {
       });
     }
   }
-  handleGrossWtDivid = (ev) => {
-    ev.stopPropagation();
+  handleGrossWtDivid = () => {
     const totGrossWt = this.props.billHead.gross_wt;
     const bodyDatas = this.state.bodies;
     let wtSum = 0;
@@ -650,8 +649,7 @@ export default class ManifestBodyPanel extends React.Component {
     datas.push({});
     this.setState({ bodies: datas });
   }
-  handleTotalPriceDivid = (ev) => {
-    ev.stopPropagation();
+  handleTotalPriceDivid = () => {
     this.props.loadBillBody(this.props.billSeqNo).then((result) => {
       if (result.error) {
         message.error(result.error.message);
@@ -660,13 +658,20 @@ export default class ManifestBodyPanel extends React.Component {
       }
     });
   }
-  handleMenuClick = (e) => {
+  handleDataMenuClick = (e) => {
+    if (e.key === 'priceDivid') {
+      this.handleTotalPriceDivid();
+    } else if (e.key === 'wtDivid') {
+      this.handleGrossWtDivid();
+    } else if (e.key === 'wtSum') {
+      this.handleNetWetSummary();
+    }
+  }
+  handleDownloadMenuClick = (e) => {
     if (e.key === 'download') {
       window.open(`${API_ROOTS.default}v1/cms/manifest/billbody/model/download/${createFilename('billbodyModel')}.xlsx`);
     } else if (e.key === 'downloadRelated') {
       window.open(`${API_ROOTS.default}v1/cms/manifest/billbody/related/model/download/${createFilename('relatedModel')}.xlsx`);
-    } else if (e.key === 'export') {
-      window.open(`${API_ROOTS.default}v1/cms/manifest/billbody/export/${createFilename('billbodyExport')}.xlsx?billSeqNo=${this.props.billSeqNo}`);
     }
   }
   handleManifestBodyExport = () => {
@@ -686,6 +691,9 @@ export default class ManifestBodyPanel extends React.Component {
     });
     this.setState({ selectedRowKeys: [] });
   }
+  handleRuleSetting = () => {
+    this.props.openRuleModel();
+  }
   render() {
     const { totGrossWt, totWetWt, totTrade, totPcs } = this.state;
     const selectedRows = this.state.selectedRowKeys;
@@ -698,9 +706,14 @@ export default class ManifestBodyPanel extends React.Component {
       getCheckboxProps: () => ({ disabled }),
     };
     const columns = this.getColumns();
-    const menu = (
-      <Menu onClick={this.handleMenuClick}>
-        <Menu.Item key="download"><Icon type="download" /> 下载模板(非关联)</Menu.Item>
+    const handlemenu = (
+      <Menu onClick={this.handleDataMenuClick}>
+        <Menu.Item key="priceDivid"><Icon type="pie-chart" /> 金额平摊</Menu.Item>
+        <Menu.Item key="wtDivid"><Icon type="arrows-alt" /> 毛重分摊</Menu.Item>
+        <Menu.Item key="wtSum"><Icon type="shrink" /> 净重汇总</Menu.Item>
+      </Menu>);
+    const importmenu = (
+      <Menu>
         {!this.props.readonly &&
           <Menu.Item key="importData">
             <ExcelUpload endpoint={`${API_ROOTS.default}v1/cms/manifest/billbody/import`}
@@ -716,13 +729,12 @@ export default class ManifestBodyPanel extends React.Component {
             </ExcelUpload>
           </Menu.Item>
           }
-        <Menu.Item key="downloadRelated"><Icon type="download" /> 下载模板(关联)</Menu.Item>
         {!this.props.readonly &&
           <Menu.Item key="importRelatedData">
             <ExcelUpload endpoint={`${API_ROOTS.default}v1/cms/manifest/billbody/related/import`}
               formData={{
                 data: JSON.stringify({
-                  bill_seq_no: this.props.billSeqNo,
+                  bill_seq_no: this.props.billHead.bill_seq_no,
                   tenant_id: this.props.tenantId,
                   creater_login_id: this.props.loginId,
                   delgNo: this.props.billHead.delg_no,
@@ -732,8 +744,12 @@ export default class ManifestBodyPanel extends React.Component {
             >
               <Icon type="file-excel" /> {this.msg('relatedImport')}
             </ExcelUpload>
-          </Menu.Item>
-          }
+          </Menu.Item>}
+      </Menu>);
+    const downloadmenu = (
+      <Menu onClick={this.handleDownloadMenuClick}>
+        <Menu.Item key="download"><Icon type="download" /> 下载模板(非关联)</Menu.Item>
+        <Menu.Item key="downloadRelated"><Icon type="download" /> 下载模板(关联)</Menu.Item>
       </Menu>);
     const billBodyToolbar = (
       <span>
@@ -743,16 +759,25 @@ export default class ManifestBodyPanel extends React.Component {
             批量删除
           </Button>
         </Popconfirm>}
-        {!this.props.readonly && <Button icon="pie-chart" onClick={this.handleTotalPriceDivid}>金额平摊</Button>}
-        {!this.props.readonly && <Button icon="arrows-alt" onClick={this.handleGrossWtDivid}>毛重分摊</Button>}
-        {!this.props.readonly && <Button icon="shrink" onClick={this.handleNetWetSummary}>净重汇总</Button>}
+        {!this.props.readonly && <Dropdown overlay={handlemenu} type="primary">
+          <Button icon="share-alt" onClick={this.handleButtonClick}>
+            {this.msg('handle')} <Icon type="down" />
+          </Button>
+          </Dropdown>
+        }
         <Button icon="export" onClick={this.handleManifestBodyExport}>导出</Button>
-        {!this.props.readonly && <Dropdown overlay={menu} type="primary">
+        <Dropdown overlay={downloadmenu}>
+          <Button icon="download" onClick={this.handleButtonClick}>
+            {this.msg('download')} <Icon type="down" />
+          </Button>
+        </Dropdown>
+        {!this.props.readonly && <Dropdown overlay={importmenu} type="primary">
           <Button icon="upload" type="primary" onClick={this.handleButtonClick}>
-            {this.msg('importBody')} <Icon type="down" />
+            {this.msg('import')} <Icon type="down" />
           </Button>
           </Dropdown>
           }
+        {!this.props.readonly && <Button icon="setting" onClick={this.handleRuleSetting}>关联导入规则</Button>}
       </span>);
 
     return (
@@ -771,6 +796,7 @@ export default class ManifestBodyPanel extends React.Component {
             scroll={{ x: 3000, y: this.state.wlScrollY }} pagination={this.state.pagination} rowSelection={rowSelection}
           />
           <AmountModel />
+          <RelateImportRuleModal />
         </div>
       </div>);
   }
