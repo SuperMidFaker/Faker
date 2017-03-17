@@ -11,6 +11,7 @@ const actionTypes = createActionTypes('@@welogix/scof/flow/', [
   'LOAD_GRAPH', 'LOAD_GRAPH_SUCCEED', 'LOAD_GRAPH_FAIL',
   'LOAD_GRAPHITEM', 'LOAD_GRAPHITEM_SUCCEED', 'LOAD_GRAPHITEM_FAIL',
   'SAVE_GRAPH', 'SAVE_GRAPH_SUCCEED', 'SAVE_GRAPH_FAIL',
+  'LOAD_PTFLOWS', 'LOAD_PTFLOWLIST_SUCCEED', 'LOAD_PTFLOWLIST_FAIL',
   'OPEN_FLOW', 'SET_NODE_ACTIONS',
 ]);
 
@@ -22,6 +23,7 @@ const initialState = {
     name: '',
     actions: [],
   },
+  partnerFlows: [],
   flowList: {
     totalCount: 0,
     pageSize: 20,
@@ -81,6 +83,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, flowGraph: action.result.data };
     case actionTypes.SET_NODE_ACTIONS:
       return { ...state, nodeActions: action.data };
+    case actionTypes.LOAD_PTFLOWLIST_SUCCEED:
+      return { ...state, partnerFlows: action.result.data };
     default:
       return state;
   }
@@ -95,6 +99,21 @@ export function loadFlowList(params) {
         actionTypes.LOAD_FLOWLIST_FAIL,
       ],
       endpoint: 'v1/scof/list/flows',
+      method: 'get',
+      params,
+    },
+  };
+}
+
+export function loadPartnerFlowList(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_PTFLOWS,
+        actionTypes.LOAD_PTFLOWLIST_SUCCEED,
+        actionTypes.LOAD_PTFLOWLIST_FAIL,
+      ],
+      endpoint: 'v1/scof/partner/flows',
       method: 'get',
       params,
     },

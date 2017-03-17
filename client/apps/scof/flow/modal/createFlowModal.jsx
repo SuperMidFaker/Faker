@@ -28,11 +28,13 @@ export default class CreateFlowModal extends React.Component {
     form: PropTypes.object.isRequired,
     closeCreateFlowModal: PropTypes.func.isRequired,
   }
-  componentDidMount() {
-    this.props.loadPartners({
-      tenantId: this.props.tenantId,
-      role: PARTNER_ROLES.CUS,
-    });
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.visible && !this.props.visible) {
+      this.props.loadPartners({
+        tenantId: this.props.tenantId,
+        role: PARTNER_ROLES.CUS,
+      });
+    }
   }
   handleOk = () => {
     this.props.form.validateFields((err, fields) => {
@@ -44,7 +46,6 @@ export default class CreateFlowModal extends React.Component {
           pname: customer.name,
           tenantId: this.props.tenantId,
         }).then((result) => {
-          console.log(result);
           if (!result.error) {
             this.handleCancel();
           }

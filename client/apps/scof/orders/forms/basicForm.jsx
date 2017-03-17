@@ -4,7 +4,7 @@ import { Form, Row, Col, Card, Input, Select, Popover, Icon, Switch } from 'antd
 import { intlShape, injectIntl } from 'react-intl';
 import { GOODSTYPES, TRANS_MODE } from 'common/constants';
 import { setClientForm } from 'common/reducers/crmOrders';
-import { loadBusinessModels } from 'common/reducers/crmCustomers';
+import { loadPartnerFlowList, loadFlowGraph } from 'common/reducers/scofFlow';
 import Container from './container';
 import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
@@ -22,9 +22,9 @@ const Option = Select.Option;
     tenantName: state.account.tenantName,
     formData: state.crmOrders.formData,
     formRequires: state.crmOrders.formRequires,
-    businessModels: state.crmCustomers.businessModels,
+    flows: state.scofFlow.partnerFlows,
   }),
-  { setClientForm, loadBusinessModels }
+  { setClientForm, loadPartnerFlowList, loadFlowGraph }
 )
 
 export default class BasicForm extends Component {
@@ -36,8 +36,6 @@ export default class BasicForm extends Component {
     formData: PropTypes.object.isRequired,
     formRequires: PropTypes.object.isRequired,
     setClientForm: PropTypes.func.isRequired,
-    loadBusinessModels: PropTypes.func.isRequired,
-    businessModels: PropTypes.array.isRequired,
   }
   msg = key => formatMsg(this.props.intl, key)
   handleClientChange = (value) => {
@@ -50,69 +48,67 @@ export default class BasicForm extends Component {
         customer_tenant_id: client.tid,
         customer_partner_id: selPartnerId,
         customer_partner_code: client.partner_code,
-        shipmt_order_mode: '',
       });
-      this.props.loadBusinessModels({
+      this.props.loadPartnerFlowList({
         partnerId: selPartnerId,
         tenantId,
       });
     }
   }
-  handleBusinessModelChange = (value) => {
-    const { businessModels } = this.props;
-    const businessModel = businessModels.find(item => item.id === value);
-    const subOrders = [];
-    const modelArray = businessModel.model.split(',');
-    modelArray.forEach((item) => {
-      if (item === 'transport') {
-        subOrders.push({
-          _mode: item,
-          transports: [{
-            consigner_name: '',
-            consigner_province: '',
-            consigner_city: '',
-            consigner_district: '',
-            consigner_street: '',
-            consigner_region_code: -1,
-            consigner_addr: '',
-            consigner_email: '',
-            consigner_contact: '',
-            consigner_mobile: '',
-            consignee_name: '',
-            consignee_province: '',
-            consignee_city: '',
-            consignee_district: '',
-            consignee_street: '',
-            consignee_region_code: -1,
-            consignee_addr: '',
-            consignee_email: '',
-            consignee_contact: '',
-            consignee_mobile: '',
-            pack_count: 1,
-            gross_wt: 0,
+  handleFlowChange = (value) => {
+    this.props.loadFlowGraph(value).then((result) => {
+      if (!result.error) {
+        const subOrders = [];
+        result.data.nodes.forEach((node) => {
+          if (node.kind === 'tms') {
+            subOrders.push({
+              transports: [{
+                consigner_name: '',
+                consigner_province: '',
+                consigner_city: '',
+                consigner_district: '',
+                consigner_street: '',
+                consigner_region_code: -1,
+                consigner_addr: '',
+                consigner_email: '',
+                consigner_contact: '',
+                consigner_mobile: '',
+                consignee_name: '',
+                consignee_province: '',
+                consignee_city: '',
+                consignee_district: '',
+                consignee_street: '',
+                consignee_region_code: -1,
+                consignee_addr: '',
+                consignee_email: '',
+                consignee_contact: '',
+                consignee_mobile: '',
+                pack_count: 1,
+                gross_wt: 0,
 
-            trs_mode_id: -1,
-            trs_mode_code: '',
-            trs_mode: '',
-            remark: '',
-            package: '',
-          }],
+                trs_mode_id: -1,
+                trs_mode_code: '',
+                trs_mode: '',
+                remark: '',
+                package: '',
+              }],
+            });
+          } else if (node.kind === 'import' || node.kind === 'export') {
+            subOrders.push({
+              files: [],
+              delgBills: [{
+                decl_way_code: '',
+                pack_count: 1,
+                gross_wt: 0,
+                remark: '',
+                package: '',
+              }],
+            });
+          }
         });
-      } else if (item === 'clearance') {
-        subOrders.push({
-          _mode: item,
-          files: [],
-          delgBills: [{
-            decl_way_code: '',
-            pack_count: 1,
-            gross_wt: 0,
-            remark: '',
-            package: '',
-          }],
-        });
+        this.props.setClientForm(-1, { flowid: value, nodes: result.data.nodes, edges: result.data.edges, subOrders });
       }
     });
-    this.props.setClientForm(-1, { shipmt_order_mode: businessModel.model, subOrders });
   }
   handleChange = (key, value) => {
     this.props.setClientForm(-1, { [key]: value });
@@ -122,7 +118,7 @@ export default class BasicForm extends Component {
   }
   changeModelForm = model => model.replace(/transport/g, '运输').replace(/clearance/g, '清关')
   render() {
-    const { formRequires, formData, businessModels } = this.props;
+    const { formRequires, formData, flows } = this.props;
     const formItemLayout = {
       labelCol: { span: 6 },
       wrapperCol: { span: 18 },
@@ -144,13 +140,12 @@ export default class BasicForm extends Component {
             </FormItem>
           </Col>
           <Col sm={8}>
-            <FormItem label="业务类型" {...formItemLayout} required="true">
+            <FormItem label="业务流程" {...formItemLayout} required="true">
               <Select showSearch optionFilterProp="children"
-                value={this.changeModelForm(formData.shipmt_order_mode)}
-                onChange={value => this.handleBusinessModelChange(value)}
+                value={formData.flowid} onChange={this.handleFlowChange}
               >
-                {businessModels.map(data => (
-                  <Option key={data.id} value={data.id}>{this.changeModelForm(data.model)}</Option>)
+                {flows.map(data => (
+                  <Option key={data.id} value={data.id}>{data.name}</Option>)
                 )}
               </Select>
             </FormItem>

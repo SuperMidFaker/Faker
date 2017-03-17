@@ -177,11 +177,22 @@ export default class AddTriggerModal extends React.Component {
       >
         <Form>
           {actions.map((action, index) => {
+            let actionForm = null;
             switch (action.type) {
-              case 'CREATE': return <CreateActionForm action={action} index={index} bizObjectOptions={bizObjects} onChange={this.handleFormChange} msg={this.msg} />;
-              case 'NOTIFY': return <NotifyActionForm action={action} index={index} onChange={this.handleFormChange} msg={this.msg} />;
-              default: return null;
+              case 'CREATE': actionForm = (
+                <CreateActionForm key={`${action.type}${index}`} action={action}
+                  index={index} bizObjectOptions={bizObjects} onChange={this.handleFormChange} msg={this.msg}
+                />);
+                break;
+              case 'NOTIFY': actionForm = (
+                <NotifyActionForm key={`${action.type}${index}`} action={action}
+                  index={index} onChange={this.handleFormChange} msg={this.msg}
+                />);
+                break;
+              default:
+                break;
             }
+            return actionForm;
           })}
         </Form>
         <Button type="dashed" style={{ width: '100%' }} icon="plus" onClick={this.handleActionAdd} />
