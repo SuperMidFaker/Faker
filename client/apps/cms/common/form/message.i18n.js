@@ -413,9 +413,17 @@ export default defineMessages({
     id: 'cms.forms.table.save',
     defaultMessage: '保存',
   },
-  importBody: {
+  handle: {
+    id: 'cms.forms.table.handle',
+    defaultMessage: '数据处理',
+  },
+  import: {
     id: 'cms.forms.table.import',
-    defaultMessage: '导入表体',
+    defaultMessage: '导入',
+  },
+  download: {
+    id: 'cms.forms.table.download',
+    defaultMessage: '下载模板',
   },
   unrelatedImport: {
     id: 'cms.forms.table.import.unrelated',

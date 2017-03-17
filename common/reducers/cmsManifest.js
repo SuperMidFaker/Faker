@@ -30,6 +30,7 @@ const actionTypes = createActionTypes('@@welogix/cms/manifest/', [
   'SAVE_ENTRY_HEAD', 'SAVE_ENTRY_HEAD_SUCCEED', 'SAVE_ENTRY_HEAD_FAIL',
   'DELETE_ENTRIES', 'DELETE_ENTRIES_SUCCEED', 'DELETE_ENTRIES_FAIL',
   'DELETE_SELECTED_BODIES', 'DELETE_SELECTED_BODIES_SUCCEED', 'DELETE_SELECTED_BODIES_FAIL',
+  'OPEN_RULE_MODEL', 'CLOSE_RULE_MODEL',
 ]);
 
 const initialState = {
@@ -78,6 +79,7 @@ const initialState = {
   },
   visibleMSModal: false,
   visibleAmtModal: false,
+  visibleRuleModal: false,
   tabKey: 'container',
   certMarks: [],
   certParams: [],
@@ -159,6 +161,10 @@ export default function reducer(state = initialState, action) {
       return { ...state, visibleAmtModal: true };
     case actionTypes.CLOSE_AMOUNT_MODEL:
       return { ...state, visibleAmtModal: false };
+    case actionTypes.OPEN_RULE_MODEL:
+      return { ...state, visibleRuleModal: true };
+    case actionTypes.CLOSE_RULE_MODEL:
+      return { ...state, visibleRuleModal: false };
     case actionTypes.SUBMIT_MERGESPLIT_SUCCEED:
       return { ...state, billMeta: { ...state.billMeta, entries: action.result.data } };
     case actionTypes.SET_PANE_TABKEY:
@@ -493,6 +499,18 @@ export function openAmountModel() {
 export function closeAmountModel() {
   return {
     type: actionTypes.CLOSE_AMOUNT_MODEL,
+  };
+}
+
+export function openRuleModel() {
+  return {
+    type: actionTypes.OPEN_RULE_MODEL,
+  };
+}
+
+export function closeRuleModel() {
+  return {
+    type: actionTypes.CLOSE_RULE_MODEL,
   };
 }
 
