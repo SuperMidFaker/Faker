@@ -51,7 +51,9 @@ export default class TodoAcceptPane extends Component {
     });
   }
   msg = formatMsg(this.props.intl)
-
+  handleLoadShipmtDetail = (shipmtNo) => {
+    this.props.loadShipmtDetail(shipmtNo, this.props.tenantId, 'sp', 'detail');
+  }
   render() {
     const { tenantId } = this.props;
     const dataSource = new Table.DataSource({

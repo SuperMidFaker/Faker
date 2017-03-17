@@ -50,7 +50,9 @@ export default class TodoAcceptPane extends Component {
     });
   }
   msg = formatMsg(this.props.intl)
-
+  handleLoadShipmtDetail = (shipmtNo) => {
+    this.props.loadShipmtDetail(shipmtNo, this.props.tenantId, 'sr', 'detail');
+  }
   render() {
     const { tenantId } = this.props;
     const dataSource = new Table.DataSource({
@@ -86,8 +88,8 @@ export default class TodoAcceptPane extends Component {
         if (record.last_location_date) {
           return (
             <div>
-              <div>{renderLoc(record, 'province', 'city', 'district')}</div>
-              <div className="dashboard-table-font-small">{record.address || ''}</div>
+              <div><strong>{renderLoc(record, 'province', 'city', 'district')}</strong></div>
+              <div className="mdc-text-grey dashboard-table-font-small">{record.address || ''}</div>
               <div className="dashboard-table-font-small">上报位置时间: {moment(record.last_location_date).fromNow()}</div>
             </div>
           );

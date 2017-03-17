@@ -1,14 +1,14 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Badge, Tooltip, message } from 'antd';
+import { Badge, Tooltip, Popconfirm, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
 import { formatMsg } from '../../message.i18n';
 import { loadPodTable, loadShipmtDetail } from 'common/reducers/shipment';
 import { deliverConfirm } from 'common/reducers/trackingLandStatus';
-import RowUpdater from 'client/components/rowUpdater';
 import { columnDef } from './columnDef';
+import { SHIPMENT_POD_STATUS } from 'common/constants';
 
 @injectIntl
 @connect(
@@ -54,6 +54,9 @@ export default class TodoAcceptPane extends Component {
     });
   }
   msg = formatMsg(this.props.intl)
+  handleLoadShipmtDetail = (shipmtNo) => {
+    this.props.loadShipmtDetail(shipmtNo, this.props.tenantId, 'sr', 'detail');
+  }
   handleDeliverConfirm = (shipmtNo, dispId) => {
     this.props.deliverConfirm(shipmtNo, dispId).then((result) => {
       if (!result.error) {
@@ -64,7 +67,7 @@ export default class TodoAcceptPane extends Component {
     });
   }
   render() {
-    const { tenantId, filter } = this.props;
+    const { tenantId } = this.props;
     const dataSource = new Table.DataSource({
       fetcher: params => this.props.loadPodTable(params),
       resolve: result => result.data,
@@ -97,25 +100,32 @@ export default class TodoAcceptPane extends Component {
       width: 180,
       className: 'table-cell-vertical-align-top',
       render: (o, record) => {
-        let statusEle = this.msg('toUploadPod');
+        let toUploadPodEle = null;
+        let toAuditPodEle = null;
         let relatedTime = null;
-        if (filter.type === 'toUploadPod') {
-          statusEle = this.msg('toUploadPod');
-        } else if (filter.type === 'toAuditPod') {
-          statusEle = this.msg('toAuditPod');
+        let smsConfirm = null;
+        if (tenantId === record.tenant_id && record.deliver_confirmed === 0) {
+          smsConfirm = (<Badge status="success" text={
+            <Popconfirm title="是否确定短信确认?" onConfirm={() => this.handleDeliverConfirm(record.shipmt_no, record.disp_id)} okText="确定" cancelText="取消">
+              <a>短信确认</a>
+            </Popconfirm>}
+          />);
+        }
+        if (record.pod_status === null || record.pod_status === SHIPMENT_POD_STATUS.unsubmit || record.pod_status === SHIPMENT_POD_STATUS.rejectByClient) {
+          toUploadPodEle = <Badge status="success" text={this.msg('toUploadPod')} />;
+        } else {
           relatedTime = (<span>
             <Tooltip title={moment(record.pod_recv_date).format('YYYY.MM.DD HH:mm')}>
               <span>回单上传时间：{moment(record.pod_recv_date).fromNow()}</span>
             </Tooltip>
           </span>);
-        } else if (filter.type === 'toConfirm') {
-          statusEle = (<RowUpdater label="短信确认" row={record}
-            onHit={() => { this.handleDeliverConfirm(record.shipmt_no, record.disp_id); }}
-          />);
+        }
+        if (record.pod_status === SHIPMENT_POD_STATUS.pending) {
+          toAuditPodEle = <Badge status="success" text={this.msg('toAuditPod')} />;
         }
         return (
           <div className="table-cell-border-left">
-            <div><Badge status="success" text={statusEle} /></div>
+            <div>{toUploadPodEle} {toAuditPodEle} {smsConfirm}</div>
             <div className="mdc-text-grey dashboard-table-font-small">{relatedTime}</div>
           </div>
         );

@@ -517,7 +517,7 @@ export default class Footer extends React.Component {
         // }
       }
     } else if (stage === 'pod') {
-      if (dispatch.pod_status === null || dispatch.pod_status === SHIPMENT_POD_STATUS.unsubmit) {
+      if (!dispatch.pod_status || dispatch.pod_status === SHIPMENT_POD_STATUS.unsubmit) {
         if (dispatch.sp_tenant_id === -1) {
           buttons = (<span />);
         } else if (dispatch.sp_tenant_id === 0) {
@@ -783,7 +783,7 @@ export default class Footer extends React.Component {
           // } else {
           //   // 承运商上传
           // }
-        } else if (dispatch.pod_status === null || dispatch.pod_status === SHIPMENT_POD_STATUS.unsubmit) {
+        } else if (!dispatch.pod_status || dispatch.pod_status === SHIPMENT_POD_STATUS.unsubmit) {
           if (dispatch.sp_tenant_id === -1) {
             buttons = (<span />);
           } else if (dispatch.sp_tenant_id === 0) {
