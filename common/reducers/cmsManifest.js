@@ -31,6 +31,7 @@ const actionTypes = createActionTypes('@@welogix/cms/manifest/', [
   'DELETE_ENTRIES', 'DELETE_ENTRIES_SUCCEED', 'DELETE_ENTRIES_FAIL',
   'DELETE_SELECTED_BODIES', 'DELETE_SELECTED_BODIES_SUCCEED', 'DELETE_SELECTED_BODIES_FAIL',
   'OPEN_RULE_MODEL', 'CLOSE_RULE_MODEL',
+  'SAVE_BILL_RULES', 'SAVE_BILL_RULES_SUCCEED', 'SAVE_BILL_RULES_FAIL',
 ]);
 
 const initialState = {
@@ -86,6 +87,7 @@ const initialState = {
   docuMarks: [],
   containers: [],
   templates: [],
+  billRule: {},
 };
 
 export default function reducer(state = initialState, action) {
@@ -110,7 +112,7 @@ export default function reducer(state = initialState, action) {
       return {
         ...state, billHead: action.result.data.head, billMeta: action.result.data.meta,
         billBodies: action.result.data.hbodies, params: { ...state.params, ports },
-        templates: action.result.data.templates,
+        templates: action.result.data.templates, billRule: action.result.data.billRule,
       };
     }
     case actionTypes.DELETE_BILL_SUCCEED:
@@ -600,6 +602,21 @@ export function deleteSelectedBodies(bodyIds) {
       endpoint: 'v1/cms/declare/selected/bodies/delete',
       method: 'post',
       data: bodyIds,
+    },
+  };
+}
+
+export function saveBillRules(datas) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SAVE_BILL_RULES,
+        actionTypes.SAVE_BILL_RULES_SUCCEED,
+        actionTypes.SAVE_BILL_RULES_FAIL,
+      ],
+      endpoint: 'v1/cms/manifest/bill/rules/save',
+      method: 'post',
+      data: datas,
     },
   };
 }
