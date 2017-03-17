@@ -34,7 +34,6 @@ export default class TodoAcceptPane extends Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.filter.tabKey === 'todoAccept' && (this.props.filter.viewStatus !== nextProps.filter.viewStatus ||
-      this.props.filter.pickupEstDate !== nextProps.filter.pickupEstDate ||
       this.props.filter.type !== nextProps.filter.type)) {
       this.handleTableLoad(nextProps);
     }
@@ -44,7 +43,6 @@ export default class TodoAcceptPane extends Component {
       tenantId: this.props.tenantId,
       filters: [
         { name: 'viewStatus', value: props.filter.viewStatus },
-        { name: 'pickup_est_date', value: props.filter.pickupEstDate },
         { naeme: 'loginId', value: props.loginId },
         { name: 'type', value: props.filter.type },
       ],
@@ -77,7 +75,6 @@ export default class TodoAcceptPane extends Component {
           sortOrder: sorter.order === 'descend' ? 'desc' : 'asc',
           filters: [
             { name: 'viewStatus', value: this.props.filter.viewStatus },
-            { name: 'pickup_est_date', value: this.props.filter.pickupEstDate },
             { naeme: 'loginId', value: this.props.loginId },
             { name: 'type', value: this.props.filter.type },
           ],

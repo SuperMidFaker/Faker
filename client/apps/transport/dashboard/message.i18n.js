@@ -157,15 +157,15 @@ const messages = defineMessages({
   },
   toAccept: {
     id: 'transport.dashboard.todo.accept.toAccept',
-    defaultMessage: '接单',
+    defaultMessage: '待接单',
   },
   toDispatch: {
     id: 'transport.dashboard.todo.accept.toDispatch',
-    defaultMessage: '分配',
+    defaultMessage: '待分配',
   },
   prompt: {
     id: 'transport.dashboard.todo.accept.prompt',
-    defaultMessage: '催促',
+    defaultMessage: '客户催促',
   },
 });
 

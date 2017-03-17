@@ -35,22 +35,17 @@ export default class TodoAcceptPane extends Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.filter.tabKey === 'todoTrack' && (this.props.filter.viewStatus !== nextProps.filter.viewStatus ||
-      this.props.filter.pickupEstDate !== nextProps.filter.pickupEstDate ||
-      this.props.filter.deliverPrmDate !== nextProps.filter.deliverPrmDate ||
       this.props.filter.type !== nextProps.filter.type)) {
       this.handleTableLoad(nextProps);
     }
   }
   handleTableLoad = (props) => {
-    const dateFilter = props.filter.type === 'intransit' ? { name: 'deliver_prm_date', value: props.filter.deliverPrmDate } :
-    { name: 'pickup_est_date', value: props.filter.pickupEstDate };
     this.props.loadTransitTable({
       tenantId: this.props.tenantId,
       filters: [
         { name: 'viewStatus', value: props.filter.viewStatus },
         { naeme: 'loginId', value: props.loginId },
         { name: 'type', value: props.filter.type },
-        dateFilter,
       ],
       pageSize: this.props.trackingList.pageSize,
       currentPage: this.props.trackingList.current,
@@ -71,8 +66,6 @@ export default class TodoAcceptPane extends Component {
         pageSize: result.pageSize,
       }),
       getParams: (pagination) => {
-        const dateFilter = this.props.filter.type === 'intransit' ? { name: 'deliver_prm_date', value: this.props.filter.deliverPrmDate } :
-        { name: 'pickup_est_date', value: this.props.filter.pickupEstDate };
         const params = {
           tenantId: this.props.tenantId,
           pageSize: pagination.pageSize,
@@ -81,7 +74,6 @@ export default class TodoAcceptPane extends Component {
             { name: 'viewStatus', value: this.props.filter.viewStatus },
             { naeme: 'loginId', value: this.props.loginId },
             { name: 'type', value: this.props.filter.type },
-            dateFilter,
           ],
         };
         return params;

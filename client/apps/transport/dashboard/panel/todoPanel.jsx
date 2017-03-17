@@ -29,20 +29,13 @@ export default class TodoPanel extends Component {
   }
   constructor(props) {
     super(props);
-    const startDate = new Date();
-    const endDate = new Date();
-    startDate.setFullYear(1900);
-    startDate.setHours(0, 0, 0, 0);
-    endDate.setHours(23, 59, 59, 999);
     this.state = {
-      pickupEstDate: [startDate, endDate],
-      deliverPrmDate: [startDate, endDate],
       viewStatus: 'all',
       type: 'dispatchedOrIntransit',
       tabKey: 'todoTrack',
     };
     setTimeout(() => {
-      this.setState({ tabKey: 'todoPod', type: 'toUploadPod' });
+      this.setState({ tabKey: 'todoPod', type: 'todoAll' });
     }, 200);
     setTimeout(() => {
       this.setState({ tabKey: 'todoAccept', type: 'all' });
@@ -64,7 +57,7 @@ export default class TodoPanel extends Component {
     } else if (tabKey === 'todoTrack') {
       type = 'dispatchedOrIntransit';
     } else if (tabKey === 'todoPod') {
-      type = 'toUploadPod';
+      type = 'todoAll';
     }
     this.setState({ tabKey, type });
   }
@@ -77,8 +70,8 @@ export default class TodoPanel extends Component {
   }
   render() {
     const { todos } = this.props;
-    const { pickupEstDate, deliverPrmDate, viewStatus, type, tabKey } = this.state;
-    const filter = { pickupEstDate: JSON.stringify(pickupEstDate), deliverPrmDate: JSON.stringify(deliverPrmDate), viewStatus, type, tabKey };
+    const { viewStatus, type, tabKey } = this.state;
+    const filter = { viewStatus, type, tabKey };
     const extra = (
       <div>
         <MyShipmentsSelect onChange={this.handleShipmentViewSelect} />
@@ -96,13 +89,14 @@ export default class TodoPanel extends Component {
       radioButton = (
         <RadioGroup onChange={this.handleTodoFilter} value={this.state.type} style={{ marginLeft: 15 }}>
           <RadioButton value="dispatchedOrIntransit">{this.msg('all')}</RadioButton>
-          <RadioButton value="dispatched">{this.msg('dispatchedShipmt')}</RadioButton>
+          <RadioButton value="toPickup">{this.msg('dispatchedShipmt')}</RadioButton>
           <RadioButton value="toLocate">{this.msg('toLocateShipmt')}</RadioButton>
-          <RadioButton value="intransit">{this.msg('toDeliverShipmt')}</RadioButton>
+          <RadioButton value="toDeliver">{this.msg('toDeliverShipmt')}</RadioButton>
         </RadioGroup>);
     } else if (tabKey === 'todoPod') {
       radioButton = (
         <RadioGroup onChange={this.handleTodoFilter} value={this.state.type} style={{ marginLeft: 15 }}>
+          <RadioButton value="todoAll">{this.msg('all')}</RadioButton>
           <RadioButton value="toUploadPod">{this.msg('toUploadPod')}</RadioButton>
           <RadioButton value="toAuditPod">{this.msg('toAuditPod')}</RadioButton>
           <RadioButton value="toConfirm">{this.msg('toConfirm')}</RadioButton>

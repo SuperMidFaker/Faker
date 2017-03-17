@@ -1,15 +1,16 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Badge, Tooltip } from 'antd';
+import { Badge, Tooltip, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
 import ShipmtnoColumn from '../../../common/shipmtnoColumn';
 import AddressColumn from '../../../common/addressColumn';
 import ActDate from '../../../common/actDate';
-import { SHIPMENT_TRACK_STATUS } from 'common/constants';
 import { formatMsg } from '../../message.i18n';
 import { loadPodTable, loadShipmtDetail } from 'common/reducers/shipment';
+import { deliverConfirm } from 'common/reducers/trackingLandStatus';
+import RowUpdater from 'client/components/rowUpdater';
 
 @injectIntl
 @connect(
@@ -17,7 +18,7 @@ import { loadPodTable, loadShipmtDetail } from 'common/reducers/shipment';
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     podList: state.shipment.statistics.todos.podList,
-  }), { loadPodTable, loadShipmtDetail }
+  }), { loadPodTable, loadShipmtDetail, deliverConfirm }
 )
 export default class TodoAcceptPane extends Component {
   static propTypes = {
@@ -29,13 +30,13 @@ export default class TodoAcceptPane extends Component {
     podList: PropTypes.object.isRequired,
     filter: PropTypes.object.isRequired,
     loadShipmtDetail: PropTypes.func.isRequired,
+    deliverConfirm: PropTypes.func.isRequired,
   }
   componentDidMount() {
     this.handleTableLoad(this.props);
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.filter.tabKey === 'todoPod' && (this.props.filter.viewStatus !== nextProps.filter.viewStatus ||
-      this.props.filter.pickupEstDate !== nextProps.filter.pickupEstDate ||
       this.props.filter.type !== nextProps.filter.type)) {
       this.handleTableLoad(nextProps);
     }
@@ -45,7 +46,6 @@ export default class TodoAcceptPane extends Component {
       tenantId: this.props.tenantId,
       filters: [
         { name: 'viewStatus', value: props.filter.viewStatus },
-        // { name: 'pickup_est_date', value: props.filter.pickupEstDate },
         { naeme: 'loginId', value: props.loginId },
         { name: 'type', value: props.filter.type },
       ],
@@ -56,9 +56,17 @@ export default class TodoAcceptPane extends Component {
     });
   }
   msg = formatMsg(this.props.intl)
-
+  handleDeliverConfirm = (shipmtNo, dispId) => {
+    this.props.deliverConfirm(shipmtNo, dispId).then((result) => {
+      if (!result.error) {
+        this.handleTableLoad(this.props);
+      } else {
+        message.error(result.error.message);
+      }
+    });
+  }
   render() {
-    const { tenantId } = this.props;
+    const { tenantId, filter } = this.props;
     const dataSource = new Table.DataSource({
       fetcher: params => this.props.loadPodTable(params),
       resolve: result => result.data,
@@ -78,7 +86,6 @@ export default class TodoAcceptPane extends Component {
           sortOrder: sorter.order === 'descend' ? 'desc' : 'asc',
           filters: [
             { name: 'viewStatus', value: this.props.filter.viewStatus },
-            // { name: 'pickup_est_date', value: props.filter.pickupEstDate },
             { naeme: 'loginId', value: this.props.loginId },
             { name: 'type', value: this.props.filter.type },
           ],
@@ -131,36 +138,25 @@ export default class TodoAcceptPane extends Component {
       dataIndex: 'status',
       width: 150,
       render: (o, record) => {
-        let statusEle = null;
+        let statusEle = this.msg('toUploadPod');
         let relatedTime = null;
-        if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {
-          statusEle = <Badge status="default" text={this.msg('pendingShipmt')} />;
+        if (filter.type === 'toUploadPod') {
+          statusEle = this.msg('toUploadPod');
+        } else if (filter.type === 'toAuditPod') {
+          statusEle = this.msg('toAuditPod');
           relatedTime = (<span>
-            <Tooltip title={moment(record.created_date).format('YYYY.MM.DD HH:mm')}>
-              <span>创建时间：{moment(record.created_date).fromNow()}</span>
+            <Tooltip title={moment(record.pod_recv_date).format('YYYY.MM.DD HH:mm')}>
+              <span>回单上传时间：{moment(record.pod_recv_date).fromNow()}</span>
             </Tooltip>
           </span>);
-        } else if (record.status === SHIPMENT_TRACK_STATUS.accepted) {
-          statusEle = <Badge status="default" text={this.msg('acceptedShipmt')} />;
-          relatedTime = (<span>
-            <Tooltip title={moment(record.acpt_time).format('YYYY.MM.DD HH:mm')}>
-              <span>接单时间：{moment(record.acpt_time).fromNow()}</span>
-            </Tooltip>
-          </span>);
-        } else if (record.status === SHIPMENT_TRACK_STATUS.dispatched) {
-          statusEle = <Badge status="warning" text={this.msg('dispatchedShipmt')} />;
-        } else if (record.status === SHIPMENT_TRACK_STATUS.intransit) {
-          statusEle = <Badge status="processing" text={this.msg('intransitShipmt')} />;
-        } else if (record.status === SHIPMENT_TRACK_STATUS.delivered) {
-          statusEle = <Badge status="success" text={this.msg('deliveredShipmt')} />;
-        } else if (record.status >= SHIPMENT_TRACK_STATUS.podsubmit) {
-          statusEle = <Badge status="success" text={this.msg('proofOfDelivery')} />;
-        } else {
-          statusEle = <span />;
+        } else if (filter.type === 'toConfirm') {
+          statusEle = (<RowUpdater label="短信确认" row={record}
+            onHit={() => { this.handleDeliverConfirm(record.shipmt_no, record.disp_id); }}
+          />);
         }
         return (
           <div>
-            <div>{statusEle}</div>
+            <div><Badge status="success" text={statusEle} /></div>
             <div>{relatedTime}</div>
           </div>
         );
