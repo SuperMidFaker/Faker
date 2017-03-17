@@ -24,33 +24,38 @@ export default class TrackingSearch extends React.Component {
     router: PropTypes.object.isRequired,
   }
   state = {
-    searchText: '',
+    searchText: this.props.location.query.shipmtNo,
     dataSource: [],
   }
   componentDidMount() {
     window.$('title').text('运单查询');
+    const shipmtNo = this.props.location.query.shipmtNo;
+    if (shipmtNo) {
+      this.handleSearch();
+    }
   }
   handleInputChange = (e) => {
     this.setState({ searchText: e.target.value });
   }
 
   handleSearch = () => {
+    const searchText = this.state.searchText;
     let subdomain = '';
     if (__DEV__) {
       subdomain = this.props.location.query.subdomain;
     } else {
       subdomain = window.location.hostname.split('.')[0];
     }
-    if (/\s+/.test(this.state.searchText) || this.state.searchText === '') {
+    if (/\s+/.test(searchText) || searchText === '') {
       message.error('请输入正确的运单号或客户单号');
     } else {
-      this.props.searchShipment(this.state.searchText, subdomain).then((result) => {
+      this.props.searchShipment(searchText, subdomain).then((result) => {
         if (result.error) {
           message.error(result.error.message);
         } else if (result.data.length === 0) {
           message.info('运单不存在', 10);
         } else {
-          this.setState({ dataSource: result.data });
+          this.setState({ dataSource: result.data, searchText });
           if (result.data.length === 1) {
             const shipment = result.data[0];
             window.open(`/pub/tms/tracking/detail/${shipment.shipmt_no}/${shipment.public_key}`);

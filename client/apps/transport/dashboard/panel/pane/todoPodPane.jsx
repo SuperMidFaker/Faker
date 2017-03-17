@@ -4,13 +4,11 @@ import moment from 'moment';
 import { Badge, Tooltip, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
-import ShipmtnoColumn from '../../../common/shipmtnoColumn';
-import AddressColumn from '../../../common/addressColumn';
-import ActDate from '../../../common/actDate';
 import { formatMsg } from '../../message.i18n';
 import { loadPodTable, loadShipmtDetail } from 'common/reducers/shipment';
 import { deliverConfirm } from 'common/reducers/trackingLandStatus';
 import RowUpdater from 'client/components/rowUpdater';
+import { columnDef } from './columnDef';
 
 @injectIntl
 @connect(
@@ -79,7 +77,7 @@ export default class TodoAcceptPane extends Component {
       }),
       getParams: (pagination, filters, sorter) => {
         const params = {
-          tenantId: this.props.tenantId,
+          tenantId,
           pageSize: pagination.pageSize,
           currentPage: pagination.current,
           sortField: sorter.field,
@@ -94,49 +92,10 @@ export default class TodoAcceptPane extends Component {
       },
       remotes: this.props.podList,
     });
-    const columns = [{
-      dataIndex: 'shipment',
-      width: 200,
-      render: (o, record) => (
-        <div>
-          <ShipmtnoColumn shipmtNo={record.shipmt_no} publicKey={record.public_key}
-            shipment={record} onClick={() => this.props.loadShipmtDetail(record.shipmt_no, tenantId, 'sr', 'detail')}
-          />
-          <div>{record.ref_external_no}</div>
-          <div>{record.customer_name}</div>
-        </div>
-        ),
-    }, {
-      dataIndex: 'departurePlace',
-      width: 150,
-      render: (o, record) => (
-        <div>
-          <AddressColumn shipment={record} consignType="consigner" />
-          <div>{this.msg('shipmtEstPickupDate')}: {moment(record.pickup_est_date).format('YYYY.MM.DD')}</div>
-          <div>{record.pickup_act_date ? (<ActDate actDate={record.pickup_act_date} estDate={record.pickup_est_date} textBefore={`${this.msg('shipmtActPickupDate')}:`} />) : ''}</div>
-        </div>
-      ),
-    }, {
-      dataIndex: 'arrivalPlace',
-      width: 150,
-      render: (o, record) => {
-        let deliverActDate = null;
-        if (record.deliver_act_date) {
-          const deliverPrmDate = new Date(record.pickup_act_date);
-          deliverPrmDate.setDate(deliverPrmDate.getDate() + record.transit_time);
-          deliverActDate = (<ActDate actDate={record.deliver_act_date} estDate={deliverPrmDate} textBefore={`${this.msg('shipmtActDeliveryDate')}:`} />);
-        }
-        return (
-          <div className="table-cell-border-right">
-            <AddressColumn shipment={record} consignType="consignee" />
-            <div>{this.msg('shipmtEstDeliveryDate')}: {moment(record.deliver_est_date).format('YYYY.MM.DD')}</div>
-            <div>{deliverActDate}</div>
-          </div>
-        );
-      },
-    }, {
+    const columns = columnDef(this).concat([{
       dataIndex: 'status',
-      width: 150,
+      width: 180,
+      className: 'table-cell-vertical-align-top',
       render: (o, record) => {
         let statusEle = this.msg('toUploadPod');
         let relatedTime = null;
@@ -155,13 +114,13 @@ export default class TodoAcceptPane extends Component {
           />);
         }
         return (
-          <div>
+          <div className="table-cell-border-left">
             <div><Badge status="success" text={statusEle} /></div>
-            <div>{relatedTime}</div>
+            <div className="mdc-text-grey dashboard-table-font-small">{relatedTime}</div>
           </div>
         );
       },
-    }];
+    }]);
     return (
       <Table size="middle" dataSource={dataSource} columns={columns} showHeader={false}
         locale={{ emptyText: '没有待办事项' }} rowKey="id"

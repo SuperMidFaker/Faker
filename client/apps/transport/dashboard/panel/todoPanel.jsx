@@ -79,7 +79,7 @@ export default class TodoPanel extends Component {
     let radioButton = null;
     if (tabKey === 'todoAccept') {
       radioButton = (
-        <RadioGroup onChange={this.handleTodoFilter} value={this.state.type} style={{ marginLeft: 15 }}>
+        <RadioGroup onChange={this.handleTodoFilter} value={this.state.type} style={{ marginLeft: 25 }}>
           <RadioButton value="all">{this.msg('all')}</RadioButton>
           <RadioButton value="toAccept">{this.msg('toAccept')}</RadioButton>
           <RadioButton value="toDispatch">{this.msg('toDispatch')}</RadioButton>
@@ -87,7 +87,7 @@ export default class TodoPanel extends Component {
         </RadioGroup>);
     } else if (tabKey === 'todoTrack') {
       radioButton = (
-        <RadioGroup onChange={this.handleTodoFilter} value={this.state.type} style={{ marginLeft: 15 }}>
+        <RadioGroup onChange={this.handleTodoFilter} value={this.state.type} style={{ marginLeft: 25 }}>
           <RadioButton value="dispatchedOrIntransit">{this.msg('all')}</RadioButton>
           <RadioButton value="toPickup">{this.msg('dispatchedShipmt')}</RadioButton>
           <RadioButton value="toLocate">{this.msg('toLocateShipmt')}</RadioButton>
@@ -95,7 +95,7 @@ export default class TodoPanel extends Component {
         </RadioGroup>);
     } else if (tabKey === 'todoPod') {
       radioButton = (
-        <RadioGroup onChange={this.handleTodoFilter} value={this.state.type} style={{ marginLeft: 15 }}>
+        <RadioGroup onChange={this.handleTodoFilter} value={this.state.type} style={{ marginLeft: 25 }}>
           <RadioButton value="todoAll">{this.msg('all')}</RadioButton>
           <RadioButton value="toUploadPod">{this.msg('toUploadPod')}</RadioButton>
           <RadioButton value="toAuditPod">{this.msg('toAuditPod')}</RadioButton>
@@ -103,7 +103,7 @@ export default class TodoPanel extends Component {
         </RadioGroup>);
     }
     return (
-      <Card title={<span>待办事项{radioButton}</span>} bodyStyle={{ minHeight: 360, padding: '10px 0 0' }} extra={extra}>
+      <Card title={<span>待办事项 / <small>{this.msg(tabKey)}</small>{radioButton}</span>} bodyStyle={{ minHeight: 360, padding: '10px 0 0' }} extra={extra}>
         <Tabs tabPosition="left" activeKey={tabKey} onChange={this.handleTabChange}>
           <TabPane tab={<span>{this.msg('todoAccept')}<Badge count={todos.acceptanceList.totalCount} style={{ marginLeft: 8 }} /></span>} key="todoAccept" >
             <TodoAcceptPane filter={filter} />
