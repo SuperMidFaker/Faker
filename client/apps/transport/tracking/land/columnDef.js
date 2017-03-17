@@ -441,7 +441,7 @@ export default function makeColumns(type, handlers, msg) {
       render: (o, record) => {
         if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {
           return `${msg('sendAction')}
-            ${moment(record.disp_time).format('MM.DD HH:mm')}`;
+            ${moment(record.disp_time || record.created_date).format('MM.DD HH:mm')}`;
         } else if (record.status === SHIPMENT_TRACK_STATUS.accepted) {
           return `${msg('acceptAction')}
             ${moment(record.acpt_time).format('MM.DD HH:mm')}`;
