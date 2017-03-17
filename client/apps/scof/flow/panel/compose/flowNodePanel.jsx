@@ -14,15 +14,8 @@ export default class FlowNodePanel extends Component {
     form: PropTypes.object.isRequired,
   }
   msg = formatMsg(this.props.intl)
-  eventData = [{
-    key: 'entered',
-    name: 'onEntered',
-  }, {
-    key: 'exited',
-    name: 'onExited',
-  }]
   render() {
-    const { form: { getFieldDecorator }, model } = this.props;
+    const { form: { getFieldDecorator }, model, onNodeActionsChange } = this.props;
     return (
       <Collapse bordered={false} defaultActiveKey={['properties', 'events']}>
         <Panel header={this.msg('bizProperties')} key="properties">
@@ -34,7 +27,7 @@ export default class FlowNodePanel extends Component {
           </FormItem>
         </Panel>
         <Panel header={this.msg('bizEvents')} key="events">
-          <FlowTriggerTable events={this.eventData} />
+          <FlowTriggerTable kind={model.kind} onNodeActionsChange={onNodeActionsChange} />
         </Panel>
       </Collapse>
     );

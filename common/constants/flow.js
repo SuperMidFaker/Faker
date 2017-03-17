@@ -1,12 +1,9 @@
 exports.NODE_TRIGGERS = [{
-  onEntered: {
-    key: 'enter',
-    text: 'nodeOnEnter',
-  },
-  onExited: {
-    key: 'exit',
-    text: 'nodeOnExit',
-  },
+  key: 'enter',
+  text: 'nodeOnEnter',
+}, {
+  key: 'exit',
+  text: 'nodeOnExit',
 }];
 
 const CMS_DELEGATION_TRIGGERS = [

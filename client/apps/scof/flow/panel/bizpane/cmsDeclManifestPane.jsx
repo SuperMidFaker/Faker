@@ -21,18 +21,8 @@ export default class CMSDeclManifestPane extends Component {
     form: PropTypes.object.isRequired,
   }
   msg = formatMsg(this.props.intl)
-  eventData = [{
-    key: 'manifestCreated',
-    name: 'onCreated',
-  }, {
-    key: 'manifestGenerated',
-    name: 'onGenerated',
-  }, {
-    key: 'manifestFinished',
-    name: 'onFinished',
-  }]
   render() {
-    const { form: { getFieldDecorator }, model, bizManifest: { trades, agents, templates } } = this.props;
+    const { form: { getFieldDecorator }, model, onNodeActionsChange, bizManifest: { trades, agents, templates } } = this.props;
     const ownerTitle = model.kind === 'export' ? this.msg('manifestProducer') : this.msg('manifestConsumer');
     return (
       <Collapse bordered={false} defaultActiveKey={['properties', 'events']}>
@@ -85,7 +75,7 @@ export default class CMSDeclManifestPane extends Component {
           </Row>
         </Panel>
         <Panel header={this.msg('bizEvents')} key="events">
-          <FlowTriggerTable events={this.eventData} />
+          <FlowTriggerTable kind={model.kind} bizObj="cmsManifest" onNodeActionsChange={onNodeActionsChange} />
         </Panel>
       </Collapse>
     );

@@ -11,12 +11,17 @@ const actionTypes = createActionTypes('@@welogix/scof/flow/', [
   'LOAD_GRAPH', 'LOAD_GRAPH_SUCCEED', 'LOAD_GRAPH_FAIL',
   'LOAD_GRAPHITEM', 'LOAD_GRAPHITEM_SUCCEED', 'LOAD_GRAPHITEM_FAIL',
   'SAVE_GRAPH', 'SAVE_GRAPH_SUCCEED', 'SAVE_GRAPH_FAIL',
-  'OPEN_FLOW',
+  'OPEN_FLOW', 'SET_NODE_ACTIONS',
 ]);
 
 const initialState = {
   visibleFlowModal: false,
   visibleTriggerModal: false,
+  triggerModal: {
+    key: '',
+    name: '',
+    actions: [],
+  },
   flowList: {
     totalCount: 0,
     pageSize: 20,
@@ -29,6 +34,7 @@ const initialState = {
   listFilter: { name: '' },
   currentFlow: null,
   flowGraph: { nodes: [], edges: [] },
+  nodeActions: [],
   cmsParams: {
     bizDelegation: { declPorts: [], customsBrokers: [], ciqBrokers: [] },
     quotes: [],
@@ -49,7 +55,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.SAVE_FLOW_SUCCEED:
       return { ...state, reloadFlowList: true, submitting: false, currentFlow: action.result.data };
     case actionTypes.OPEN_ADD_TRIGGER_MODAL:
-      return { ...state, visibleTriggerModal: true };
+      return { ...state, visibleTriggerModal: true, triggerModal: action.data };
     case actionTypes.CLOSE_ADD_TRIGGER_MODAL:
       return { ...state, visibleTriggerModal: false };
     case actionTypes.LOAD_CMSBIZPARAMS_SUCCEED:
@@ -73,6 +79,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, currentFlow: action.data };
     case actionTypes.LOAD_GRAPH_SUCCEED:
       return { ...state, flowGraph: action.result.data };
+    case actionTypes.SET_NODE_ACTIONS:
+      return { ...state, nodeActions: action.data };
     default:
       return state;
   }
@@ -142,9 +150,10 @@ export function openFlow(flow) {
   };
 }
 
-export function openAddTriggerModal() {
+export function openAddTriggerModal(trigger) {
   return {
     type: actionTypes.OPEN_ADD_TRIGGER_MODAL,
+    data: trigger,
   };
 }
 
@@ -196,6 +205,13 @@ export function loadFlowGraphItem(model) {
       method: 'get',
       params: model,
     },
+  };
+}
+
+export function setNodeActions(actions) {
+  return {
+    type: actionTypes.SET_NODE_ACTIONS,
+    data: actions,
   };
 }
 

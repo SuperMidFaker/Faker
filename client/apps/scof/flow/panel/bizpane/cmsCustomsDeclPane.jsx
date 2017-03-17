@@ -19,27 +19,12 @@ export default class CMSCustomsDeclPane extends Component {
     form: PropTypes.object.isRequired,
   }
   msg = formatMsg(this.props.intl)
-  eventData = [{
-    key: 'customsCreated',
-    name: 'onCreated',
-  }, {
-    key: 'customsReviewed',
-    name: 'onReviewed',
-  }, {
-    key: 'customsDeclared',
-    name: 'onDeclared',
-  }, {
-    key: 'customsReleased',
-    name: 'onReleased',
-  }, {
-    key: 'customsFinished',
-    name: 'onFinished',
-  }]
   render() {
+    const { model, onNodeActionsChange } = this.props;
     return (
       <Collapse bordered={false} defaultActiveKey={['events']}>
-        <Panel header={this.msg('events')} key="events">
-          <FlowTriggerTable events={this.eventData} />
+        <Panel header={this.msg('bizEvents')} key="events">
+          <FlowTriggerTable kind={model.kind} bizObj="cmsCustomsDecl" onNodeActionsChange={onNodeActionsChange} />
         </Panel>
       </Collapse>
     );

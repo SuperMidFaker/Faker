@@ -3,7 +3,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Button, Card, Menu, Dropdown, Icon, Form, Layout } from 'antd';
-import { loadFlowGraph, loadFlowGraphItem, saveFlowGraph } from 'common/reducers/scofFlow';
+import { loadFlowGraph, loadFlowGraphItem, saveFlowGraph, setNodeActions } from 'common/reducers/scofFlow';
 import { uuidWithoutDash } from 'client/common/uuid';
 import FlowEdgePanel from './panel/flowEdgePanel';
 import BizObjCMSPanel from './panel/bizObjCMSPanel';
@@ -21,7 +21,7 @@ const MenuItem = Menu.Item;
     flowGraph: state.scofFlow.flowGraph,
     submitting: state.scofFlow.submitting,
   }),
-  { loadFlowGraph, loadFlowGraphItem, saveFlowGraph }
+  { loadFlowGraph, loadFlowGraphItem, saveFlowGraph, setNodeActions }
 )
 @Form.create()
 export default class FlowDesigner extends React.Component {
@@ -31,6 +31,7 @@ export default class FlowDesigner extends React.Component {
     form: PropTypes.object.isRequired,
     submitting: PropTypes.bool,
     listCollapsed: PropTypes.bool.isRequired,
+    currentFlow: PropTypes.shape({ id: PropTypes.number.isRequired }).isRequired,
   }
   constructor(...args) {
     super(...args);
@@ -73,7 +74,7 @@ export default class FlowDesigner extends React.Component {
     this.graph.node().shape('', () => 'rect');
     this.graph.edge().shape('', () => 'smoothArrow');
     const data = {
-      nodes: this.props.flowGraph.nodes.map(node => ({ ...node, addedActions: [], delActions: [], updActions: [] })),
+      nodes: this.props.flowGraph.nodes.map(node => ({ ...node, actions: [] })),
       edges: this.props.flowGraph.edges.map(edge => ({ ...edge, addedConds: [], delConds: [], updConds: [] })),
     };
     this.graph.source(data.nodes, data.edges);
@@ -130,6 +131,8 @@ export default class FlowDesigner extends React.Component {
         const target = item.get('target');
         this.graph.update(source, { out_degree: source.get('model').out_degree + 1 });
         this.graph.update(target, { in_degree: target.get('model').in_degree + 1 });
+      } else if (item.get('type') === 'node') {
+        this.props.setNodeActions([]);
       }
       this.setState({ activeItem: item });
     });
@@ -141,7 +144,7 @@ export default class FlowDesigner extends React.Component {
     }
     if (nextProps.flowGraph !== this.props.flowGraph) {
       const data = {
-        nodes: nextProps.flowGraph.nodes.map(node => ({ ...node, addedActions: [], delActions: [], updActions: [] })),
+        nodes: nextProps.flowGraph.nodes.map(node => ({ ...node, actions: [] })),
         edges: nextProps.flowGraph.edges.map(edge => ({ ...edge, addedConds: [], delConds: [], updConds: [] })),
       };
       this.graph.changeData(data.nodes, data.edges);
@@ -170,8 +173,7 @@ export default class FlowDesigner extends React.Component {
     }
     if (kind) {
       this.graph.beginAdd('node', {
-        id, kind, addedActions: [], delActions: [], updActions: [],
-        in_degree: 0, out_degree: 0,
+        id, kind, actions: [], in_degree: 0, out_degree: 0,
       });
       this.graph.refresh();
     }
@@ -260,6 +262,7 @@ export default class FlowDesigner extends React.Component {
             if (item.get('type') === 'node') {
               const node = result.data;
               this.graph.update(item, { ...node, loaded: true });
+              this.props.setNodeActions(node.actions);
             } else if (item.get('type') === 'edge') {
               this.graph.update(item, { conditions: result.data, loaded: true });
             }
@@ -267,6 +270,9 @@ export default class FlowDesigner extends React.Component {
           }
         });
       } else {
+        if (item.get('type') === 'node') {
+          this.props.setNodeActions(model.actions);
+        }
         this.setState({ activeItem: item });
       }
     } else {
@@ -319,6 +325,10 @@ export default class FlowDesigner extends React.Component {
       this.graph.update(this.state.activeItem, { delConds, conditions: afterConds });
     }
   }
+  handleNodeActionsChange = (actions) => {
+    this.graph.update(this.state.activeItem, { actions });
+    this.props.setNodeActions(actions);
+  }
   handleSaveBtnClick = () => {
     const activeItem = this.state.activeItem;
     if (activeItem) {
@@ -338,7 +348,7 @@ export default class FlowDesigner extends React.Component {
     });
   }
   render() {
-    const { form, submitting, listCollapsed } = this.props;
+    const { form, submitting, listCollapsed, currentFlow } = this.props;
     const { activeItem } = this.state;
     return (
       <Layout>
@@ -349,7 +359,7 @@ export default class FlowDesigner extends React.Component {
                 {this.msg('flowName')}
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                流程名称
+                {currentFlow.name}
               </Breadcrumb.Item>
             </Breadcrumb>}
             <div className="top-bar-tools">
@@ -382,7 +392,7 @@ export default class FlowDesigner extends React.Component {
             {activeItem &&
             <Form layout="vertical">
               {activeItem.get('type') === 'node' && (activeItem.get('model').kind === 'import' || activeItem.get('model').kind === 'export') &&
-              <BizObjCMSPanel form={form} model={activeItem.get('model')} />
+              <BizObjCMSPanel form={form} model={activeItem.get('model')} onNodeActionsChange={this.handleNodeActionsChange} />
               }
               {activeItem.get('type') === 'node' && (activeItem.get('model').kind === 'tms') &&
               <BizObjTMSPanel form={form} model={activeItem.get('model')} />

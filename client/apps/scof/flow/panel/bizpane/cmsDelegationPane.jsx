@@ -22,24 +22,8 @@ export default class CMSDelegationPane extends Component {
     form: PropTypes.object.isRequired,
   }
   msg = formatMsg(this.props.intl)
-  eventData = [{
-    key: 'delgCreated',
-    name: 'onCreated',
-  }, {
-    key: 'delgDeclared',
-    name: 'onDeclared',
-  }, {
-    key: 'delgInspected',
-    name: 'onInspected',
-  }, {
-    key: 'delgReleased',
-    name: 'onReleased',
-  }, {
-    key: 'delgFinished',
-    name: 'onFinished',
-  }]
   render() {
-    const { form: { getFieldDecorator }, model, bizDelegation: { declPorts, customsBrokers, ciqBrokers } } = this.props;
+    const { form: { getFieldDecorator }, onNodeActionsChange, model, bizDelegation: { declPorts, customsBrokers, ciqBrokers } } = this.props;
     const declWays = model.kind === 'export' ? DECL_E_TYPE : DECL_I_TYPE;
     return (
       <Collapse bordered={false} defaultActiveKey={['properties', 'events']}>
@@ -118,7 +102,7 @@ export default class CMSDelegationPane extends Component {
           </Row>
         </Panel>
         <Panel header={this.msg('bizEvents')} key="events">
-          <FlowTriggerTable events={this.eventData} />
+          <FlowTriggerTable kind={model.kind} bizObj="cmsDelegation" onNodeActionsChange={onNodeActionsChange} />
         </Panel>
       </Collapse>
     );

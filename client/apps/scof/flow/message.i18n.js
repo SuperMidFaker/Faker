@@ -134,6 +134,14 @@ const messages = defineMessages({
     id: 'scof.flow.biz.events',
     defaultMessage: '触发事件',
   },
+  nodeOnEnter: {
+    id: 'scof.flow.biz.node.onenter',
+    defaultMessage: '进入节点',
+  },
+  nodeOnExit: {
+    id: 'scof.flow.biz.node.onexit',
+    defaultMessage: '退出节点',
+  },
   onCreated: {
     id: 'scof.flow.biz.event.created',
     defaultMessage: '已创建',
