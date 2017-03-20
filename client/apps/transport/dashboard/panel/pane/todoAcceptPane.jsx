@@ -1,13 +1,16 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Badge, Tooltip, Tag } from 'antd';
+import { Badge, Tooltip, Tag, Radio } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
 import { SHIPMENT_TRACK_STATUS, PROMPT_TYPES } from 'common/constants';
 import { formatMsg } from '../../message.i18n';
-import { loadAcceptanceTable, loadShipmtDetail } from 'common/reducers/shipment';
+import { loadAcceptanceTable, loadShipmtDetail, hidePreviewer } from 'common/reducers/shipment';
 import { columnDef } from './columnDef';
+import AccepterModal from '../../../shipment/modals/accepter';
+const RadioButton = Radio.Button;
+const RadioGroup = Radio.Group;
 
 @injectIntl
 @connect(
@@ -15,7 +18,7 @@ import { columnDef } from './columnDef';
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     acceptanceList: state.shipment.statistics.todos.acceptanceList,
-  }), { loadAcceptanceTable, loadShipmtDetail }
+  }), { loadAcceptanceTable, loadShipmtDetail, hidePreviewer }
 )
 export default class TodoAcceptPane extends Component {
   static propTypes = {
@@ -26,6 +29,10 @@ export default class TodoAcceptPane extends Component {
     acceptanceList: PropTypes.object.isRequired,
     filter: PropTypes.object.isRequired,
     loadShipmtDetail: PropTypes.func.isRequired,
+    hidePreviewer: PropTypes.func.isRequired,
+  }
+  state = {
+    type: 'all',
   }
   componentDidMount() {
     this.handleTableLoad(this.props);
@@ -42,7 +49,7 @@ export default class TodoAcceptPane extends Component {
       filters: [
         { name: 'viewStatus', value: props.filter.viewStatus },
         { naeme: 'loginId', value: props.loginId },
-        { name: 'type', value: props.filter.type },
+        { name: 'type', value: this.state.type },
       ],
       pageSize: this.props.acceptanceList.pageSize,
       currentPage: 1,
@@ -53,6 +60,15 @@ export default class TodoAcceptPane extends Component {
   msg = formatMsg(this.props.intl)
   handleLoadShipmtDetail = (shipmtNo) => {
     this.props.loadShipmtDetail(shipmtNo, this.props.tenantId, 'sp', 'detail');
+  }
+  handleTableReload = () => {
+    this.handleTableLoad(this.props);
+  }
+  handleTodoFilter = (e) => {
+    this.setState({ type: e.target.value }, () => {
+      this.handleTableLoad(this.props);
+    });
+    this.props.hidePreviewer();
   }
   render() {
     const { tenantId } = this.props;
@@ -76,7 +92,7 @@ export default class TodoAcceptPane extends Component {
           filters: [
             { name: 'viewStatus', value: this.props.filter.viewStatus },
             { naeme: 'loginId', value: this.props.loginId },
-            { name: 'type', value: this.props.filter.type },
+            { name: 'type', value: this.state.type },
           ],
         };
         return params;
@@ -92,7 +108,7 @@ export default class TodoAcceptPane extends Component {
         let relatedTime = null;
         let prompt = null;
         if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {
-          statusEle = <Badge status="default" text={this.msg('pendingShipmt')} />;
+          statusEle = <Badge status="warning" text={this.msg('pendingShipmt')} />;
           relatedTime = (<span>
             <Tooltip title={moment(record.created_date).format('YYYY.MM.DD HH:mm')}>
               <span>创建时间：{moment(record.created_date).fromNow()}</span>
@@ -102,7 +118,7 @@ export default class TodoAcceptPane extends Component {
             prompt = (<Tooltip title={moment(record.prompt_last_date).format('YYYY.MM.DD HH:mm')}><Tag color="orange-inverse">客户催促</Tag></Tooltip>);
           }
         } else if (record.status === SHIPMENT_TRACK_STATUS.accepted) {
-          statusEle = <Badge status="default" text={this.msg('acceptedShipmt')} />;
+          statusEle = <Badge status="warning" text={this.msg('acceptedShipmt')} />;
           relatedTime = (<span>
             <Tooltip title={moment(record.acpt_time).format('YYYY.MM.DD HH:mm')}>
               <span>接单时间：{moment(record.acpt_time).fromNow()}</span>
@@ -111,16 +127,6 @@ export default class TodoAcceptPane extends Component {
           if (record.prompt_last_action === PROMPT_TYPES.promptDispatch) {
             prompt = (<Tooltip title={moment(record.prompt_last_date).format('YYYY.MM.DD HH:mm')}><Tag color="orange-inverse">客户催促</Tag></Tooltip>);
           }
-        } else if (record.status === SHIPMENT_TRACK_STATUS.dispatched) {
-          statusEle = <Badge status="warning" text={this.msg('dispatchedShipmt')} />;
-        } else if (record.status === SHIPMENT_TRACK_STATUS.intransit) {
-          statusEle = <Badge status="processing" text={this.msg('intransitShipmt')} />;
-        } else if (record.status === SHIPMENT_TRACK_STATUS.delivered) {
-          statusEle = <Badge status="success" text={this.msg('deliveredShipmt')} />;
-        } else if (record.status >= SHIPMENT_TRACK_STATUS.podsubmit) {
-          statusEle = <Badge status="success" text={this.msg('proofOfDelivery')} />;
-        } else {
-          statusEle = <span />;
         }
         return (
           <div className="table-cell-border-left">
@@ -131,9 +137,22 @@ export default class TodoAcceptPane extends Component {
       },
     }]);
     return (
-      <Table size="middle" dataSource={dataSource} columns={columns} showHeader={false}
-        locale={{ emptyText: '没有待办事项' }} rowKey="id"
-      />
+      <div>
+        <div className="pane-header">
+          <RadioGroup onChange={this.handleTodoFilter} value={this.state.type}>
+            <RadioButton value="all">{this.msg('all')}</RadioButton>
+            <RadioButton value="toAccept">{this.msg('toAccept')}</RadioButton>
+            <RadioButton value="toDispatch">{this.msg('toDispatch')}</RadioButton>
+            <RadioButton value="prompt">{this.msg('prompt')}</RadioButton>
+          </RadioGroup>
+        </div>
+        <div className="pane-content">
+          <Table size="middle" dataSource={dataSource} columns={columns} showHeader={false}
+            locale={{ emptyText: '没有待办事项' }} rowKey="id" loading={this.props.acceptanceList.loading}
+          />
+          <AccepterModal reload={this.handleTableReload} clearSelection={() => {}} />
+        </div>
+      </div>
     );
   }
 }

@@ -39,6 +39,7 @@ const actionTypes = createActionTypes('@@welogix/transport/shipment/', [
   'PROMPT', 'PROMPT_SUCCEED', 'PROMPT_FAIL',
   'LOAD_TRANSHIPMT', 'LOAD_TRANSHIPMT_FAIL', 'LOAD_TRANSHIPMT_SUCCEED',
   'LOAD_PODSHIPMT', 'LOAD_PODSHIPMT_FAIL', 'LOAD_PODSHIPMT_SUCCEED',
+  'COUNT_TOTAL', 'COUNT_TOTAL_SUCCEED', 'COUNT_TOTAL_FAIL',
 ]);
 appendFormAcitonTypes('@@welogix/transport/shipment/', actionTypes);
 
@@ -109,25 +110,37 @@ const initialState = {
     exception: 0,
     arrival: 0,
     todos: {
+      acceptanceTotal: 0,
+      trackingTotal: 0,
+      podTotal: 0,
+      billingTotal: 0,
       acceptanceList: {
+        loaded: false,
+        loading: false,
         pageSize: 20,
         current: 1,
         data: [],
         totalCount: 0,
       },
       trackingList: {
+        loaded: false,
+        loading: false,
         pageSize: 20,
         current: 1,
         data: [],
         totalCount: 0,
       },
       podList: {
+        loaded: false,
+        loading: false,
         pageSize: 20,
         current: 1,
         data: [],
         totalCount: 0,
       },
       billingList: {
+        loaded: false,
+        loading: false,
         pageSize: 20,
         current: 1,
         data: [],
@@ -291,13 +304,33 @@ export default function reducer(state = initialState, action) {
     }
     case actionTypes.LOAD_PARTNERS_SUCCEED:
       return { ...state, partners: action.result.data };
+    case actionTypes.LOAD_ACCEPTANCE_SHIPMENT:
+      return { ...state,
+        statistics: {
+          ...state.statistics,
+          todos: {
+            ...state.statistics.todos,
+            acceptanceList: { ...state.statistics.todos.acceptanceList, loading: true, loaded: false },
+          },
+        },
+      };
     case actionTypes.LOAD_ACCEPTANCE_SHIPMENT_SUCCEED:
       return { ...state,
         statistics: {
           ...state.statistics,
           todos: {
             ...state.statistics.todos,
-            acceptanceList: action.result.data,
+            acceptanceList: { ...action.result.data, loading: false, loaded: true },
+          },
+        },
+      };
+    case actionTypes.LOAD_TRANSHIPMT:
+      return { ...state,
+        statistics: {
+          ...state.statistics,
+          todos: {
+            ...state.statistics.todos,
+            trackingList: { ...state.statistics.todos.trackingList, loading: true, loaded: false },
           },
         },
       };
@@ -307,7 +340,17 @@ export default function reducer(state = initialState, action) {
           ...state.statistics,
           todos: {
             ...state.statistics.todos,
-            trackingList: action.result.data,
+            trackingList: { ...action.result.data, loading: false, loaded: true },
+          },
+        },
+      };
+    case actionTypes.LOAD_PODSHIPMT:
+      return { ...state,
+        statistics: {
+          ...state.statistics,
+          todos: {
+            ...state.statistics.todos,
+            podList: { ...state.statistics.podList, loading: true, loaded: false },
           },
         },
       };
@@ -317,7 +360,17 @@ export default function reducer(state = initialState, action) {
           ...state.statistics,
           todos: {
             ...state.statistics.todos,
-            podList: action.result.data,
+            podList: { ...action.result.data, loading: false, loaded: true },
+          },
+        },
+      };
+    case actionTypes.COUNT_TOTAL_SUCCEED:
+      return { ...state,
+        statistics: {
+          ...state.statistics,
+          todos: {
+            ...state.statistics.todos,
+            ...action.result.data,
           },
         },
       };
@@ -676,6 +729,21 @@ export function loadPartners(tenantId, roles, businessTypes) {
       endpoint: 'v1/cooperation/type/partners',
       method: 'get',
       params: { tenantId, roles: JSON.stringify(roles), businessTypes: JSON.stringify(businessTypes) },
+    },
+  };
+}
+
+export function countTotal(filters) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.COUNT_TOTAL,
+        actionTypes.COUNT_TOTAL_SUCCEED,
+        actionTypes.COUNT_TOTAL_FAIL,
+      ],
+      endpoint: 'v1/transport/shipment/dashboard/countTotal',
+      method: 'post',
+      data: filters,
     },
   };
 }

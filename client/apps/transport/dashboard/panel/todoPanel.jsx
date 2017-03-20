@@ -1,122 +1,93 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Card, Badge, Radio, Tabs } from 'antd';
+import { Card, Badge, Tabs } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { hidePreviewer } from 'common/reducers/shipment';
 import TodoAcceptPane from './pane/todoAcceptPane';
 import TodoTrackingPane from './pane/todoTrackingPane';
 import TodoPodPane from './pane/todoPodPane';
 import MyShipmentsSelect from '../../common/myShipmentsSelect';
-import AccepterModal from '../../shipment/modals/accepter';
+import { countTotal } from 'common/reducers/shipment';
 import { formatMsg } from '../message.i18n';
 
 const TabPane = Tabs.TabPane;
-const RadioButton = Radio.Button;
-const RadioGroup = Radio.Group;
 
 @injectIntl
 @connect(
   state => ({
     tenantId: state.account.tenantId,
     todos: state.shipment.statistics.todos,
+    loginId: state.account.loginId,
   }),
-  { hidePreviewer })
+  { countTotal })
 export default class TodoPanel extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    hidePreviewer: PropTypes.func.isRequired,
     todos: PropTypes.object.isRequired,
+    countTotal: PropTypes.object.isRequired,
+    tenantId: PropTypes.number.isRequired,
+    loginId: PropTypes.number.isRequired,
   }
   constructor(props) {
     super(props);
     this.state = {
       viewStatus: 'all',
-      type: 'dispatchedOrIntransit',
-      tabKey: 'todoTrack',
+      tabKey: 'todoAccept',
     };
-    setTimeout(() => {
-      this.setState({ tabKey: 'todoPod', type: 'todoAll' });
-    }, 200);
-    setTimeout(() => {
-      this.setState({ tabKey: 'todoAccept', type: 'all' });
-    }, 400);
   }
-
+  componentDidMount() {
+    this.handleCount();
+  }
   msg = formatMsg(this.props.intl)
   handleShipmentViewSelect = (value) => {
-    this.setState({ viewStatus: value.viewStatus });
-  }
-  handleTodoFilter = (e) => {
-    this.setState({ type: e.target.value });
-    this.props.hidePreviewer();
+    this.setState({ viewStatus: value.viewStatus }, () => {
+      this.handleCount();
+    });
   }
   handleTabChange = (tabKey) => {
-    let type = '';
-    if (tabKey === 'todoAccept') {
-      type = 'all';
-    } else if (tabKey === 'todoTrack') {
-      type = 'dispatchedOrIntransit';
-    } else if (tabKey === 'todoPod') {
-      type = 'todoAll';
-    }
-    this.setState({ tabKey, type });
+    this.setState({ tabKey });
   }
-  handleTableReload = () => {
-    const { type } = this.state;
-    this.setState({ type: '' });
-    setTimeout(() => {
-      this.setState({ type });
-    }, 200);
+  handleCount = () => {
+    const { tenantId, loginId } = this.props;
+    const acceptFilters = [
+      { name: 'viewStatus', value: this.state.viewStatus },
+      { naeme: 'loginId', value: loginId },
+      { name: 'type', value: 'all' },
+    ];
+    const trackingFilters = [
+      { name: 'viewStatus', value: this.state.viewStatus },
+      { naeme: 'loginId', value: loginId },
+      { name: 'type', value: 'dispatchedOrIntransit' },
+    ];
+    const podFilters = [
+      { name: 'viewStatus', value: this.state.viewStatus },
+      { naeme: 'loginId', value: loginId },
+      { name: 'type', value: 'todoAll' },
+    ];
+    this.props.countTotal({ tenantId, acceptFilters, trackingFilters, podFilters });
   }
   render() {
     const { todos } = this.props;
-    const { viewStatus, type, tabKey } = this.state;
-    const filter = { viewStatus, type, tabKey };
+    const { viewStatus, tabKey } = this.state;
+    const filter = { viewStatus, tabKey };
     const extra = (
       <div>
         <MyShipmentsSelect onChange={this.handleShipmentViewSelect} />
       </div>);
-    let radioButton = null;
-    if (tabKey === 'todoAccept') {
-      radioButton = (
-        <RadioGroup onChange={this.handleTodoFilter} value={this.state.type} style={{ marginLeft: 25 }}>
-          <RadioButton value="all">{this.msg('all')}</RadioButton>
-          <RadioButton value="toAccept">{this.msg('toAccept')}</RadioButton>
-          <RadioButton value="toDispatch">{this.msg('toDispatch')}</RadioButton>
-          <RadioButton value="prompt">{this.msg('prompt')}</RadioButton>
-        </RadioGroup>);
-    } else if (tabKey === 'todoTrack') {
-      radioButton = (
-        <RadioGroup onChange={this.handleTodoFilter} value={this.state.type} style={{ marginLeft: 25 }}>
-          <RadioButton value="dispatchedOrIntransit">{this.msg('all')}</RadioButton>
-          <RadioButton value="toPickup">{this.msg('dispatchedShipmt')}</RadioButton>
-          <RadioButton value="toLocate">{this.msg('toLocateShipmt')}</RadioButton>
-          <RadioButton value="toDeliver">{this.msg('toDeliverShipmt')}</RadioButton>
-        </RadioGroup>);
-    } else if (tabKey === 'todoPod') {
-      radioButton = (
-        <RadioGroup onChange={this.handleTodoFilter} value={this.state.type} style={{ marginLeft: 25 }}>
-          <RadioButton value="todoAll">{this.msg('all')}</RadioButton>
-          <RadioButton value="toUploadPod">{this.msg('toUploadPod')}</RadioButton>
-          <RadioButton value="toAuditPod">{this.msg('toAuditPod')}</RadioButton>
-          <RadioButton value="toConfirm">{this.msg('toConfirm')}</RadioButton>
-        </RadioGroup>);
-    }
     return (
-      <Card title={<span>待办事项 / <small>{this.msg(tabKey)}</small>{radioButton}</span>} bodyStyle={{ minHeight: 475, padding: '10px 0 0' }} extra={extra}>
+      <Card title={<span>待办事项 / <small>{this.msg(tabKey)}</small></span>} bodyStyle={{ minHeight: 475, padding: '10px 0 0' }} extra={extra}>
         <Tabs tabPosition="left" activeKey={tabKey} onChange={this.handleTabChange}>
-          <TabPane tab={<span>{this.msg('todoAccept')}<Badge count={todos.acceptanceList.totalCount} style={{ marginLeft: 8 }} /></span>} key="todoAccept" >
+          <TabPane tab={<span>{this.msg('todoAccept')}<Badge count={todos.acceptanceTotal} style={{ marginLeft: 8 }} /></span>} key="todoAccept" >
             <TodoAcceptPane filter={filter} />
           </TabPane>
-          <TabPane tab={<span>{this.msg('todoTrack')}<Badge count={todos.trackingList.totalCount} style={{ marginLeft: 8 }} /></span>} key="todoTrack">
+          <TabPane tab={<span>{this.msg('todoTrack')}<Badge count={todos.trackingTotal} style={{ marginLeft: 8 }} /></span>} key="todoTrack">
             <TodoTrackingPane filter={filter} />
           </TabPane>
-          <TabPane tab={<span>{this.msg('todoPod')}<Badge count={todos.podList.totalCount} style={{ marginLeft: 8 }} /></span>} key="todoPod">
+          <TabPane tab={<span>{this.msg('todoPod')}<Badge count={todos.podTotal} style={{ marginLeft: 8 }} /></span>} key="todoPod">
             <TodoPodPane filter={filter} />
           </TabPane>
           <TabPane tab={<span>{this.msg('todoBilling')}<Badge count={todos.billingList.totalCount} style={{ marginLeft: 8 }} /></span>} key="todoBilling" />
         </Tabs>
-        <AccepterModal reload={this.handleTableReload} clearSelection={() => {}} />
+
       </Card>);
   }
 }

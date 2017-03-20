@@ -1,14 +1,16 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Badge, Tooltip, Tag } from 'antd';
+import { Badge, Tooltip, Tag, Radio } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
 import { renderLoc } from '../../../common/consignLocation';
 import { SHIPMENT_TRACK_STATUS, PROMPT_TYPES } from 'common/constants';
 import { formatMsg } from '../../message.i18n';
-import { loadTransitTable, loadShipmtDetail } from 'common/reducers/shipment';
+import { loadTransitTable, loadShipmtDetail, hidePreviewer } from 'common/reducers/shipment';
 import { columnDef } from './columnDef';
+const RadioButton = Radio.Button;
+const RadioGroup = Radio.Group;
 
 @injectIntl
 @connect(
@@ -16,7 +18,7 @@ import { columnDef } from './columnDef';
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     trackingList: state.shipment.statistics.todos.trackingList,
-  }), { loadTransitTable, loadShipmtDetail }
+  }), { loadTransitTable, loadShipmtDetail, hidePreviewer }
 )
 export default class TodoAcceptPane extends Component {
   static propTypes = {
@@ -27,6 +29,10 @@ export default class TodoAcceptPane extends Component {
     trackingList: PropTypes.object.isRequired,
     filter: PropTypes.object.isRequired,
     loadShipmtDetail: PropTypes.func.isRequired,
+    hidePreviewer: PropTypes.func.isRequired,
+  }
+  state = {
+    type: 'dispatchedOrIntransit',
   }
   componentDidMount() {
     this.handleTableLoad(this.props);
@@ -43,7 +49,7 @@ export default class TodoAcceptPane extends Component {
       filters: [
         { name: 'viewStatus', value: props.filter.viewStatus },
         { naeme: 'loginId', value: props.loginId },
-        { name: 'type', value: props.filter.type },
+        { name: 'type', value: this.state.type },
       ],
       pageSize: this.props.trackingList.pageSize,
       currentPage: 1,
@@ -52,6 +58,12 @@ export default class TodoAcceptPane extends Component {
   msg = formatMsg(this.props.intl)
   handleLoadShipmtDetail = (shipmtNo) => {
     this.props.loadShipmtDetail(shipmtNo, this.props.tenantId, 'sr', 'detail');
+  }
+  handleTodoFilter = (e) => {
+    this.setState({ type: e.target.value }, () => {
+      this.handleTableLoad(this.props);
+    });
+    this.props.hidePreviewer();
   }
   render() {
     const { tenantId } = this.props;
@@ -73,7 +85,7 @@ export default class TodoAcceptPane extends Component {
           filters: [
             { name: 'viewStatus', value: this.props.filter.viewStatus },
             { naeme: 'loginId', value: this.props.loginId },
-            { name: 'type', value: this.props.filter.type },
+            { name: 'type', value: this.state.type },
           ],
         };
         return params;
@@ -85,16 +97,25 @@ export default class TodoAcceptPane extends Component {
       width: 150,
       className: 'table-cell-vertical-align-top',
       render: (o, record) => {
-        if (record.last_location_date) {
-          return (
-            <div>
-              <div><strong>{renderLoc(record, 'province', 'city', 'district')}</strong></div>
-              <div className="mdc-text-grey dashboard-table-font-small">{record.address || ''}</div>
-              <div className="dashboard-table-font-small">上报位置时间: {moment(record.last_location_date).fromNow()}</div>
-            </div>
-          );
+        let toLocate = null;
+        if (record.status === SHIPMENT_TRACK_STATUS.intransit) {
+          if (!record.last_location_date || record.last_location_date && new Date(moment(record.last_location_date).format('YYYY.MM.DD')) < new Date(moment().format('YYYY.MM.DD'))) {
+            toLocate = <Badge status="warning" text={this.msg('toLocateShipmt')} />;
+          }
         }
-        return '';
+        const area = renderLoc(record, 'province', 'city', 'district');
+        const lastLocation = area || record.address || '';
+        return (
+          <div className="table-cell-border-left">
+            <div>{toLocate}</div>
+            <div className="mdc-text-grey dashboard-table-font-small">
+              <Tooltip title={record.address || ''}>
+                <span>{ lastLocation ? `当前位置：${lastLocation}` : '' }</span>
+              </Tooltip>
+            </div>
+            <div className="mdc-text-grey dashboard-table-font-small">{record.last_location_date ? `最近上报时间: ${moment(record.last_location_date).fromNow()}` : ''}</div>
+          </div>
+        );
       },
     }, {
       dataIndex: 'status',
@@ -104,45 +125,81 @@ export default class TodoAcceptPane extends Component {
         let statusEle = null;
         let relatedTime = null;
         let prompt = null;
-        let toLocate = null;
+
         if (record.status === SHIPMENT_TRACK_STATUS.dispatched) {
-          if (new Date(moment(record.pickup_est_date).format('YYYY.MM.DD')) <= new Date(moment().format('YYYY.MM.DD'))) {
-            statusEle = <Badge status="warning" text={this.msg('dispatchedShipmt')} />;
+          if (record.p_prompt_last_action === PROMPT_TYPES.promptSpPickup) {
+            prompt = (<Tooltip title={moment(record.p_prompt_last_date).format('YYYY.MM.DD HH:mm')}><Tag color="orange-inverse">客户催促</Tag></Tooltip>);
           }
-          if (record.prompt_last_action === PROMPT_TYPES.promptSpPickup) {
-            prompt = (<Tooltip title={moment(record.prompt_last_date).format('YYYY.MM.DD HH:mm')}><Tag color="orange-inverse">客户催促</Tag></Tooltip>);
+          const newDate = new Date();
+          newDate.setHours(0, 0, 0, 0);
+          const pickupEstDate = new Date(record.pickup_est_date);
+          pickupEstDate.setHours(0, 0, 0, 0);
+          let pickupEstDateStr = '';
+          let badgeColor = 'warning';
+          if (moment(newDate).diff(pickupEstDate, 'days') === 0) {
+            pickupEstDateStr = '计划提货时间：今天';
+          } else if (newDate > pickupEstDate) {
+            pickupEstDateStr = `计划提货时间：超时 ${moment(newDate).diff(pickupEstDate, 'days')} 天`;
+            badgeColor = 'error';
+          }
+          if (new Date(moment(record.pickup_est_date).format('YYYY.MM.DD')) <= new Date(moment().format('YYYY.MM.DD'))) {
+            statusEle = <Badge status={badgeColor} text={this.msg('dispatchedShipmt')} />;
           }
           relatedTime = (<span>
-            <Tooltip title={moment(record.disp_time).format('YYYY.MM.DD HH:mm')}>
-              <span>分配时间：{moment(record.disp_time).fromNow()}</span>
+            <Tooltip title={record.pickup_est_date ? moment(record.pickup_est_date).format('YYYY.MM.DD HH:mm') : ''}>
+              <span>{pickupEstDateStr}</span>
             </Tooltip>
           </span>);
         } else if (record.status === SHIPMENT_TRACK_STATUS.intransit) {
-          if (new Date(moment(record.deliver_prm_date).format('YYYY.MM.DD')) <= new Date(moment().format('YYYY.MM.DD'))) {
-            statusEle = <Badge status="processing" text={this.msg('toDeliverShipmt')} />;
+          let badgeColor = 'warning';
+          let deliverPrmDateStr = '';
+          const deliverDate = record.deliver_prm_date || record.deliver_est_date;
+          if (deliverDate) {
+            const newDate = new Date();
+            newDate.setHours(0, 0, 0, 0);
+            const deliverPrmDate = new Date(deliverDate);
+            deliverPrmDate.setHours(0, 0, 0, 0);
+            if (moment(newDate).diff(deliverPrmDate, 'days') === 0) {
+              deliverPrmDateStr = '承诺交货时间：今天';
+            } else if (newDate > deliverPrmDate) {
+              deliverPrmDateStr = `承诺交货时间：超时 ${moment(newDate).diff(deliverPrmDate, 'days')} 天`;
+              badgeColor = 'error';
+            }
+            statusEle = <Badge status={badgeColor} text={this.msg('toDeliverShipmt')} />;
           }
+
           relatedTime = (<span>
-            <Tooltip title={moment(record.pickup_act_date).format('YYYY.MM.DD HH:mm')}>
-              <span>提货时间：{moment(record.pickup_act_date).fromNow()}</span>
+            <Tooltip title={deliverDate ? moment(deliverDate).format('YYYY.MM.DD HH:mm') : ''}>
+              <span>{deliverPrmDateStr}</span>
             </Tooltip>
           </span>);
-          if (!record.last_location_date || record.last_location_date && new Date(moment(record.last_location_date).format('YYYY.MM.DD')) < new Date(moment().format('YYYY.MM.DD'))) {
-            toLocate = <Badge status="warning" text={this.msg('toLocateShipmt')} />;
-          }
         }
 
         return (
-          <div className="table-cell-border-left">
-            <div>{statusEle} {toLocate} {prompt}</div>
+          <div>
+            <div>{statusEle} {prompt}</div>
             <div className="mdc-text-grey dashboard-table-font-small">{relatedTime}</div>
           </div>
         );
       },
     }]);
     return (
-      <Table size="middle" dataSource={dataSource} columns={columns} showHeader={false}
-        locale={{ emptyText: '没有待办事项' }} rowKey="id"
-      />
+      <div>
+        <div className="pane-header">
+          <RadioGroup onChange={this.handleTodoFilter} value={this.state.type}>
+            <RadioButton value="dispatchedOrIntransit">{this.msg('all')}</RadioButton>
+            <RadioButton value="toPickup">{this.msg('dispatchedShipmt')}</RadioButton>
+            <RadioButton value="toLocate">{this.msg('toLocateShipmt')}</RadioButton>
+            <RadioButton value="toDeliver">{this.msg('toDeliverShipmt')}</RadioButton>
+          </RadioGroup>
+        </div>
+        <div className="pane-content">
+          <Table size="middle" dataSource={dataSource} columns={columns} showHeader={false}
+            locale={{ emptyText: '没有待办事项' }} rowKey="id" loading={this.props.trackingList.loading}
+          />
+        </div>
+      </div>
+
     );
   }
 }

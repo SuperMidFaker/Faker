@@ -14,7 +14,7 @@ export const columnDef = handle => [{
         shipment={record} onClick={() => handle.handleLoadShipmtDetail(record.shipmt_no)}
       />
       <div className="mdc-text-grey dashboard-table-font-small">{record.ref_external_no}</div>
-      <div className="mdc-text-grey dashboard-table-font-small"><TrimSpan text={record.customer_name} maxLen={14} /></div>
+      <div className="mdc-text-grey dashboard-table-font-small"><TrimSpan text={record.customer_name} maxLen={99} /></div>
     </div>
     ),
 }, {
