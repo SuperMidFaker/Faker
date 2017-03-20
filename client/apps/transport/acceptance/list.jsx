@@ -152,12 +152,12 @@ export default class AcceptList extends React.Component {
   }, {
     title: this.msg('shipRequirement'),
     dataIndex: 'sr_name',
-    width: 180,
+    width: 190,
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: this.msg('refCustomerNo'),
     dataIndex: 'ref_external_no',
-    width: 100,
+    width: 110,
     render: o => <TrimSpan text={o} />,
   }, {
     title: this.msg('shipMode'),

@@ -235,8 +235,8 @@ export default class DispatchList extends React.Component {
     }, {
       title: this.msg('refCustomerNo'),
       dataIndex: 'ref_external_no',
-      width: 80,
-      render: o => <TrimSpan text={o} />,
+      width: 110,
+      render: o => <TrimSpan text={o} maxLen={10} />,
     }];
     if (s === 'waiting') {
       cols.push({
