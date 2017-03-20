@@ -47,6 +47,7 @@ function fetchData({ state, dispatch }) {
     isCustomRegisted: !!state.cmsManifest.billHead.manual_no,
     billNo: state.cmsManifest.billHead.bill_seq_no,
     hscodeCategories: state.cmsHsCode.hscodeCategories,
+    billRule: state.cmsManifest.billRule,
   }),
   { closeMergeSplitModal, submitBillMegeSplit, loadBillBody }
 )
@@ -62,7 +63,7 @@ export default class MergeSplitModal extends React.Component {
   state = {
     mergeOpt: {
       checked: false,
-      byHsCode: false,
+      byHsCode: true,
       byGName: false,
       byCurr: false,
       byCountry: false,
@@ -71,7 +72,6 @@ export default class MergeSplitModal extends React.Component {
     },
     splitOpt: {
       byHsCode: false,
-      byCustom: false,
       tradeCurr: false,
       hsCategory: [],
       perCount: 20,
@@ -83,8 +83,31 @@ export default class MergeSplitModal extends React.Component {
       decPriceDesc: false,
       hsCodeAsc: false,
     },
-    sortSelectValue: '',
-    gnameVal: 'by20',
+    mergeOptArr: [],
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.billRule !== this.props.billRule) {
+      const rule = nextProps.billRule;
+      const mergeOptArr = rule.mergeOpt_arr.split(',');
+      const specialHsSortArr = rule.specialHsSort.split(',');
+      this.setState({
+        mergeOpt: {
+          checked: rule.mergeOpt_checked,
+        },
+        splitOpt: {
+          byHsCode: rule.splitOpt_byHsCode,
+          tradeCurr: rule.splitOpt_tradeCurr,
+          hsCategory: specialHsSortArr,
+          perCount: rule.splitOpt_perCount,
+        },
+        sortOpt: {
+          customControl: rule.sortOpt_customControl,
+          decTotal: rule.sortOpt_decTotal,
+          hsCodeAsc: rule.sortOpt_hsCodeAsc,
+        },
+        mergeOptArr,
+      });
+    }
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   mergeConditions = [{
@@ -139,15 +162,8 @@ export default class MergeSplitModal extends React.Component {
     });
   }
   handleSplitSelectChange = (value) => {
-    const splitOpt = { ...this.state.splitOpt };
-    if (value === 'by20') {
-      splitOpt.perCount = 20;
-    } else if (value === 'by50') {
-      splitOpt.perCount = 50;
-    }
     this.setState({
-      splitOpt,
-      gnameVal: value,
+      splitOpt: { perCount: value },
     });
   }
   handleCheckChange = (fieldOpt, field, value) => {
@@ -200,7 +216,7 @@ export default class MergeSplitModal extends React.Component {
                 </Col>
                 <Col offset="2" span="19">
                   <CheckboxGroup options={mergeConditions} disabled={!mergeOpt.checked}
-                    onChange={this.handleMergeCheck}
+                    onChange={this.handleMergeCheck} value={this.state.mergeOptArr}
                   />
                 </Col>
               </Row>
@@ -239,11 +255,11 @@ export default class MergeSplitModal extends React.Component {
                 text={this.msg('currencySplit')}
                 onChange={this.handleCheckChange} state={this.state}
               />
-              <Select onChange={this.handleSplitSelectChange} value={this.state.gnameVal}
+              <Select onChange={this.handleSplitSelectChange} value={this.state.splitOpt.perCount}
                 style={{ width: '100%' }}
               >
-                <Option value="by20">{'按20品拆分'}</Option>
-                <Option value="by50">{'按50品拆分'}</Option>
+                <Option value={20}>{'按20品拆分'}</Option>
+                <Option value={50}>{'按50品拆分'}</Option>
               </Select>
             </Card>
           </Col>

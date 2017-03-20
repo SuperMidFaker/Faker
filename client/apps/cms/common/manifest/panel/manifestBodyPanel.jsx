@@ -204,6 +204,8 @@ export default class ManifestBodyPanel extends React.Component {
             g_unit: gunitVal,
             unit_1: unit1Val,
             unit_2: unit2Val,
+            trade_curr: item.trade_curr,
+            orig_country: item.orig_country,
             fixed_unit: item.fixed_unit,
             fixed_qty: item.fixed_qty,
           },
@@ -219,6 +221,8 @@ export default class ManifestBodyPanel extends React.Component {
             g_unit: '',
             unit_1: '',
             unit_2: '',
+            trade_curr: '',
+            orig_country: '',
           },
         });
       }
@@ -488,9 +492,10 @@ export default class ManifestBodyPanel extends React.Component {
       editBody: { ...this.state.editBody, [field]: value },
     });
     if (field === 'cop_g_no') {
-      const { billHead, tenantId } = this.props;
+      const { billHead, tenantId, billSeqNo } = this.props;
       this.props.getItemForBody({
         tenantId,
+        billSeqNo,
         delgNo: billHead.delg_no,
         tradeCode: billHead.trade_co,
         copProdNo: value,

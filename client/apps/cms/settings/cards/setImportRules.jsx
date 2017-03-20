@@ -56,7 +56,7 @@ export default class FeesTable extends Component {
     this.setState({ specialCode: checked });
   }
   formulaParams = [
-    { value: 'element', text: '规格型号' },
+    { value: 'g_model', text: '规格型号' },
     { value: 'remark', text: '备注' },
     { value: 'cop_product_no', text: '商品货号' },
   ];
@@ -72,7 +72,7 @@ export default class FeesTable extends Component {
     this.setState({ suggestions });
   }
   render() {
-    const { form: { getFieldDecorator, getFieldValue }, fieldInits } = this.props;
+    const { form: { getFieldDecorator }, fieldInits } = this.props;
     const { specialCode } = this.state;
     return (
       <Card title="特殊字段规则设置" extra={
@@ -121,25 +121,15 @@ export default class FeesTable extends Component {
           </Col>
         </Row>
         <Row gutter={20}>
-          <Col sm={24} lg={12}>
-            <FormItem label={'申报单位'} {...formItemLayout} >
-              {getFieldDecorator('rule_g_unit', { initialValue: fieldInits.rule_g_unit })(
-                <RadioGroup disabled={!specialCode} >
-                  <RadioButton value={SOURCE_CHOOSE.import.key}>{SOURCE_CHOOSE.import.value}</RadioButton>
-                  <RadioButton value={SOURCE_CHOOSE.item.key}>{SOURCE_CHOOSE.item.value}</RadioButton>
-                </RadioGroup>)}
-            </FormItem>
-          </Col>
-          <Col sm={24} lg={12}>
-            {getFieldValue('rule_g_unit') === '0' &&
-            <FormItem>
+          <Col>
+            <FormItem label={'申报单位'} labelCol={{ span: 3 }} wrapperCol={{ span: 21 }} >
               {getFieldDecorator('rule_gunit_num', { initialValue: fieldInits.rule_gunit_num })(
                 <RadioGroup disabled={!specialCode} >
                   <Radio value="g_unit_1">申报单位一</Radio>
                   <Radio value="g_unit_2">申报单位二</Radio>
                   <Radio value="g_unit_3">申报单位三</Radio>
                 </RadioGroup>)}
-            </FormItem>}
+            </FormItem>
           </Col>
         </Row>
         <Row gutter={20}>
@@ -148,7 +138,7 @@ export default class FeesTable extends Component {
               {getFieldDecorator('rule_element', {
                 initialValue: Mention.toEditorState(fieldInits.rule_element),
               })(<Mention suggestions={this.state.suggestions} prefix="$" onSearchChange={this.handleSearch}
-                placeholder="$公式" multiLines style={{ width: '100%', height: '100%' }}
+                placeholder="示例(固定值+备注)：String + $remark" multiLines style={{ width: '100%', height: '100%' }}
               />)}
             </FormItem>
           </Col>
