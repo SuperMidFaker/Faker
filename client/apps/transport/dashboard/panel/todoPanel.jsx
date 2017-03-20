@@ -103,7 +103,7 @@ export default class TodoPanel extends Component {
         </RadioGroup>);
     }
     return (
-      <Card title={<span>待办事项 / <small>{this.msg(tabKey)}</small>{radioButton}</span>} bodyStyle={{ minHeight: 360, padding: '10px 0 0' }} extra={extra}>
+      <Card title={<span>待办事项 / <small>{this.msg(tabKey)}</small>{radioButton}</span>} bodyStyle={{ minHeight: 475, padding: '10px 0 0' }} extra={extra}>
         <Tabs tabPosition="left" activeKey={tabKey} onChange={this.handleTabChange}>
           <TabPane tab={<span>{this.msg('todoAccept')}<Badge count={todos.acceptanceList.totalCount} style={{ marginLeft: 8 }} /></span>} key="todoAccept" >
             <TodoAcceptPane filter={filter} />

@@ -46,7 +46,7 @@ export default class TodoAcceptPane extends Component {
         { name: 'type', value: props.filter.type },
       ],
       pageSize: this.props.trackingList.pageSize,
-      currentPage: this.props.trackingList.current,
+      currentPage: 1,
     });
   }
   msg = formatMsg(this.props.intl)

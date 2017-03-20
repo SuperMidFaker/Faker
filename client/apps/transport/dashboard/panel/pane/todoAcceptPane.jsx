@@ -45,7 +45,7 @@ export default class TodoAcceptPane extends Component {
         { name: 'type', value: props.filter.type },
       ],
       pageSize: this.props.acceptanceList.pageSize,
-      currentPage: this.props.acceptanceList.current,
+      currentPage: 1,
       sortField: '',
       sortOrder: '',
     });
