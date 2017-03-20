@@ -20,11 +20,11 @@ const messages = defineMessages({
   },
   addFlowNode: {
     id: 'scof.flow.node.add',
-    defaultMessage: '添加节点',
+    defaultMessage: '添加流程节点',
   },
   addFlowEdge: {
     id: 'scof.flow.edge.add',
-    defaultMessage: '添加边',
+    defaultMessage: '添加节点边界',
   },
   flowEdge: {
     id: 'scof.flow.graph.edge',
@@ -130,9 +130,13 @@ const messages = defineMessages({
     id: 'scof.flow.biz.properites',
     defaultMessage: '属性',
   },
+  nodeEvents: {
+    id: 'scof.flow.node.events',
+    defaultMessage: '节点事件',
+  },
   bizEvents: {
     id: 'scof.flow.biz.events',
-    defaultMessage: '触发事件',
+    defaultMessage: '业务事件',
   },
   nodeOnEnter: {
     id: 'scof.flow.biz.node.onenter',
@@ -140,7 +144,7 @@ const messages = defineMessages({
   },
   nodeOnExit: {
     id: 'scof.flow.biz.node.onexit',
-    defaultMessage: '退出节点',
+    defaultMessage: '离开节点',
   },
   onCreated: {
     id: 'scof.flow.biz.event.created',
@@ -167,20 +171,48 @@ const messages = defineMessages({
     defaultMessage: '已审核',
   },
   triggerActions: {
-    id: 'scof.flow.biz.actions',
-    defaultMessage: '触发动作表',
+    id: 'scof.flow.trigger',
+    defaultMessage: '事件触发器',
+  },
+  triggerMode: {
+    id: 'scof.flow.trigger.mode',
+    defaultMessage: '触发方式',
+  },
+  triggerTimer: {
+    id: 'scof.flow.trigger.timer',
+    defaultMessage: '定时器',
+  },
+  triggerAction: {
+    id: 'scof.flow.trigger.action',
+    defaultMessage: '触发动作',
+  },
+  eventTrigged: {
+    id: 'scof.flow.trigger.event.trigged',
+    defaultMessage: '事件触发',
+  },
+  instantTrigger: {
+    id: 'scof.flow.trigger.instant',
+    defaultMessage: '立即触发',
+  },
+  scheduledTrigger: {
+    id: 'scof.flow.trigger.scheduled',
+    defaultMessage: '定时触发',
   },
   actionCreate: {
-    id: 'scof.flow.biz.action.create',
-    defaultMessage: '创建',
+    id: 'scof.flow.trigger.action.create',
+    defaultMessage: '创建业务对象',
   },
   actionNotify: {
-    id: 'scof.flow.biz.action.notify',
-    defaultMessage: '通知',
+    id: 'scof.flow.trigger.action.notify',
+    defaultMessage: '发送通知',
+  },
+  meantime: {
+    id: 'scof.flow.trigger.action.instant.meantime',
+    defaultMessage: '时立即',
   },
   minutes: {
-    id: 'scof.flow.biz.action.scheduled.minutes',
-    defaultMessage: '分',
+    id: 'scof.flow.trigger.action.scheduled.minutes',
+    defaultMessage: '分钟后',
   },
 });
 

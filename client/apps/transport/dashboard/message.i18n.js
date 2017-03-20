@@ -113,7 +113,7 @@ const messages = defineMessages({
 
   toLocateShipmt: {
     id: 'transport.dashboard.log.toLocate.shipment',
-    defaultMessage: '待上传位置',
+    defaultMessage: '待上报位置',
   },
   toDeliverShipmt: {
     id: 'transport.dashboard.log.toDelivered.shipment',

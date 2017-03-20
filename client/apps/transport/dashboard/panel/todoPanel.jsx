@@ -74,7 +74,7 @@ export default class TodoPanel extends Component {
         <MyShipmentsSelect onChange={this.handleShipmentViewSelect} />
       </div>);
     return (
-      <Card title={<span>待办事项 / <small>{this.msg(tabKey)}</small></span>} bodyStyle={{ minHeight: 475, padding: '10px 0 0' }} extra={extra}>
+      <Card title={<span>待办事项</span>} bodyStyle={{ minHeight: 475, padding: '10px 0 0' }} extra={extra}>
         <Tabs tabPosition="left" activeKey={tabKey} onChange={this.handleTabChange}>
           <TabPane tab={<span>{this.msg('todoAccept')}<Badge count={todos.acceptanceTotal} style={{ marginLeft: 8 }} /></span>} key="todoAccept" >
             <TodoAcceptPane filter={filter} />

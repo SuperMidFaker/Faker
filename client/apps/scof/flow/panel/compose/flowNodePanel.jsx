@@ -26,7 +26,7 @@ export default class FlowNodePanel extends Component {
             })(<Input />)}
           </FormItem>
         </Panel>
-        <Panel header={this.msg('bizEvents')} key="events">
+        <Panel header={this.msg('nodeEvents')} key="events">
           <FlowTriggerTable kind={model.kind} onNodeActionsChange={onNodeActionsChange} />
         </Panel>
       </Collapse>

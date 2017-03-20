@@ -154,7 +154,7 @@ export default class PreviewPanel extends React.Component {
         <span className="ant-modal-close-x" />
       </button>);
     return (
-      <div className={`dock-panel info-hub-panel ${visible ? 'inside' : ''}`} id="preview-panel">
+      <div className={`dock-panel dock-panel-lg ${visible ? 'inside' : ''}`} id="preview-panel">
         <div className="panel-content">
           <div className="header">
             <span className="title">{order.shipmt_order_no}</span>
