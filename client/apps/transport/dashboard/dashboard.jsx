@@ -55,9 +55,7 @@ export default class Dashboard extends React.Component {
               {this.msg('dashboard')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <div className="top-bar-tools">
-            <Button size="large" icon="global" />
-          </div>
+          <div className="top-bar-tools" />
         </Header>
         <Content className="main-content" key="main">
           <Row gutter={16}>
@@ -67,7 +65,7 @@ export default class Dashboard extends React.Component {
             </Col>
             <Col sm={24} md={6}>
               <Card title="更多应用" bodyStyle={{ minHeight: 400, textAlign: 'center' }} >
-                <Row className="mdc-text-grey"><h3>微骆运输订单查询</h3></Row>
+                <Row className="mdc-text-grey"><h3>运单查询</h3></Row>
                 <br />
                 <Row><Input value={this.state.shipmtNo} onChange={e => this.setState({ shipmtNo: e.target.value })} placeholder="输入运单号或客户单号查询" /></Row>
                 <br />
@@ -78,7 +76,7 @@ export default class Dashboard extends React.Component {
                 <br />
                 <Row style={{ borderTop: 'solid 1px #e9e9e9' }} />
                 <br />
-                <Row className="mdc-text-grey"><h3>微骆运输APP-司机版</h3></Row>
+                <Row className="mdc-text-grey"><h3>APP-司机版</h3></Row>
                 <br />
                 <Row className="mdc-text-grey">
                   <Col span={12}>
@@ -97,7 +95,7 @@ export default class Dashboard extends React.Component {
                 <br />
                 <Row style={{ borderTop: 'solid 1px #e9e9e9' }} />
                 <br />
-                <Row className="mdc-text-grey"><h3>微骆运输公众号</h3></Row>
+                <Row className="mdc-text-grey"><h3>微信服务号</h3></Row>
                 <br />
                 <Row className="mdc-text-grey"><img style={{ width: 180, height: 'auto' }} role="presentation" src={`${__CDN__}/assets/img/apple-touch-icon-144x144-precomposed.png`} /></Row>
                 <Row className="mdc-text-grey"><h5>直接扫描二维码</h5></Row>

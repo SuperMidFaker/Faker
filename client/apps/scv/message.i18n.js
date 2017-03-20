@@ -11,7 +11,7 @@ const messages = defineMessages({
   },
   shipmentsTracking: {
     id: 'scv.module.shipments.tracking',
-    defaultMessage: '货运跟踪',
+    defaultMessage: '状态跟踪',
   },
   inboundShipments: {
     id: 'scv.module.shipments.inbound',
