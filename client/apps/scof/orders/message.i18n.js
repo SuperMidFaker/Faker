@@ -213,6 +213,22 @@ const messages = defineMessages({
     id: 'scop.orders.delg.packageNum',
     defaultMessage: '件数',
   },
+  declCustoms: {
+    id: 'scof.orders.biz.cms.declcustoms',
+    defaultMessage: '申报地海关',
+  },
+  customsBroker: {
+    id: 'scof.orders.biz.cms.customs.broker',
+    defaultMessage: '报关行',
+  },
+  ciqBroker: {
+    id: 'scof.orders.biz.cms.ciq.broker',
+    defaultMessage: '报检商',
+  },
+  quoteNo: {
+    id: 'scof.orders.biz.quote.no',
+    defaultMessage: '报价编号',
+  },
   delgWeight: {
     id: 'scop.orders.delg.weight',
     defaultMessage: '总毛重',

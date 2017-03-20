@@ -6,6 +6,7 @@ import { setClientForm } from 'common/reducers/crmOrders';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
+
 const formatMsg = format(messages);
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -22,7 +23,6 @@ const formItemLayout = {
   }),
   { setClientForm }
 )
-
 export default class TransportForm extends Component {
   static propTypes = {
     intl: intlShape.isRequired,

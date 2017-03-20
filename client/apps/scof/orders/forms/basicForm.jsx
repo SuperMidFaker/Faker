@@ -59,54 +59,95 @@ export default class BasicForm extends Component {
     this.props.loadFlowGraph(value).then((result) => {
       if (!result.error) {
         const subOrders = [];
-        result.data.nodes.forEach((node) => {
-          if (node.kind === 'tms') {
-            subOrders.push({
-              transports: [{
-                consigner_name: '',
-                consigner_province: '',
-                consigner_city: '',
-                consigner_district: '',
-                consigner_street: '',
-                consigner_region_code: -1,
-                consigner_addr: '',
-                consigner_email: '',
-                consigner_contact: '',
-                consigner_mobile: '',
-                consignee_name: '',
-                consignee_province: '',
-                consignee_city: '',
-                consignee_district: '',
-                consignee_street: '',
-                consignee_region_code: -1,
-                consignee_addr: '',
-                consignee_email: '',
-                consignee_contact: '',
-                consignee_mobile: '',
-                pack_count: 1,
-                gross_wt: 0,
-
-                trs_mode_id: -1,
-                trs_mode_code: '',
-                trs_mode: '',
-                remark: '',
-                package: '',
-              }],
-            });
-          } else if (node.kind === 'import' || node.kind === 'export') {
-            subOrders.push({
-              files: [],
-              delgBills: [{
-                decl_way_code: '',
-                pack_count: 1,
-                gross_wt: 0,
-                remark: '',
-                package: '',
-              }],
-            });
+        const { nodes, edges } = result.data;
+        const nodeEndMap = {};
+        for (let i = 0; i < edges.length; i++) {
+          const edge = edges[i];
+          const targetNode = nodes.filter(node => node.id === edge.target)[0];
+          if (nodeEndMap[edge.source]) {
+            nodeEndMap[edge.source].push(targetNode);
+          } else {
+            nodeEndMap[edge.source] = [targetNode];
           }
+        }
+        const levelNodes = [nodes.filter(node => node.in_degree === 0)];
+        let nlevel = 0;
+        const visitedMap = {};
+        while (Object.keys(visitedMap).length < nodes.length) {
+          const visitNodes = [...levelNodes[nlevel]];
+          nlevel += 1;
+          levelNodes.push([]);
+          while (visitNodes.length) {
+            const vn = visitNodes.shift();
+            if (!visitedMap[vn.id]) {
+              visitedMap[vn.id] = true;
+              const vnEnds = nodeEndMap[vn.id];
+              if (Array.isArray(vnEnds)) {
+                levelNodes[nlevel].push(...vnEnds);
+              }
+            }
+          }
+        }
+        levelNodes.forEach((lnodes, level) => {
+          lnodes.forEach((node) => {
+            if (node.kind === 'tms') {
+              subOrders.push({
+                node_uuid: node.id,
+                kind: node.kind,
+                name: node.name,
+                in_degree: node.in_degree,
+                out_degree: node.out_degree,
+                level,
+                transports: [{
+                  consigner_name: '',
+                  consigner_province: '',
+                  consigner_city: '',
+                  consigner_district: '',
+                  consigner_street: '',
+                  consigner_region_code: -1,
+                  consigner_addr: '',
+                  consigner_email: '',
+                  consigner_contact: '',
+                  consigner_mobile: '',
+                  consignee_name: '',
+                  consignee_province: '',
+                  consignee_city: '',
+                  consignee_district: '',
+                  consignee_street: '',
+                  consignee_region_code: -1,
+                  consignee_addr: '',
+                  consignee_email: '',
+                  consignee_contact: '',
+                  consignee_mobile: '',
+                  pack_count: 1,
+                  gross_wt: 0,
+                  trs_mode_id: -1,
+                  trs_mode_code: '',
+                  trs_mode: '',
+                  remark: '',
+                  package: '',
+                }],
+              });
+            } else if (node.kind === 'import' || node.kind === 'export') {
+              subOrders.push({
+                node: {
+                  node_uuid: node.id,
+                  kind: node.kind,
+                  name: node.name,
+                  in_degree: node.in_degree,
+                  out_degree: node.out_degree,
+                  level,
+                  pack_count: null,
+                  gross_wt: null,
+                  remark: '',
+                  package: '',
+                },
+                files: [],
+              });
+            }
+          });
         });
-        this.props.setClientForm(-1, { flowid: value, nodes: result.data.nodes, edges: result.data.edges, subOrders });
+        this.props.setClientForm(-1, { flowid: value, subOrders });
       }
     });
   }
@@ -116,7 +157,6 @@ export default class BasicForm extends Component {
       this.props.setClientForm(-1, { containers: [] });
     }
   }
-  changeModelForm = model => model.replace(/transport/g, '运输').replace(/clearance/g, '清关')
   render() {
     const { formRequires, formData, flows } = this.props;
     const formItemLayout = {

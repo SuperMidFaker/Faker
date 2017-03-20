@@ -7,7 +7,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import messages from './message.i18n';
 import { format } from 'client/common/i18n/helpers';
 import BasicForm from './forms/basicForm';
-import StepNodeForm from './forms/stepNodeForm';
+// import StepNodeForm from './forms/stepNodeForm';
 import ClearanceForm from './forms/clearanceForm';
 import TransportForm from './forms/transportForm';
 import './orders.less';
@@ -37,29 +37,28 @@ export default class OrderForm extends Component {
   }
 
   msg = key => formatMsg(this.props.intl, key)
-  renderSteps = (shipmtOrderMode) => {
-    const { operation, formData } = this.props;
+  renderSteps = (subOrders) => {
+    const { operation } = this.props;
     const steps = [];
-    steps.push(<Step key={1} status="process" description={<StepNodeForm formData={formData.subOrders[0]} index={0} operation={operation} />} />);
-    for (let i = 1; i < shipmtOrderMode.length; i++) {
-      const mode = shipmtOrderMode[i];
-      if (mode === 'clearance') {
-        steps.push(<Step key={i + 1} title="清关" status="process" description={<ClearanceForm formData={formData.subOrders[i]} index={i} operation={operation} />} />);
-      } else if (mode === 'transport') {
-        steps.push(<Step key={i + 1} title="运输" status="process" description={<TransportForm formData={formData.subOrders[i]} index={i} operation={operation} />} />);
+    // steps.push(<Step key={1} status="process" description={<StepNodeForm formData={formData.subOrders[0]} index={0} operation={operation} />} />);
+    for (let i = 0; i < subOrders.length; i++) {
+      const order = subOrders[i];
+      if (order.kind === 'import' || order.kind === 'export') {
+        steps.push(<Step key={order.node_uuid} title={order.name} status="process" description={<ClearanceForm formData={order} index={i} operation={operation} />} />);
+      } else if (order.kind === 'tms') {
+        steps.push(<Step key={order.node_uuid} title={order.name} status="process" description={<TransportForm formData={order} index={i} operation={operation} />} />);
       }
     }
     return steps;
   }
   render() {
     const { formData, operation } = this.props;
-    const shipmtOrderMode = formData.shipmt_order_mode === '' ? [] : formData.shipmt_order_mode.split(',');
-    const current = shipmtOrderMode.length > 0 ? shipmtOrderMode.length : 0;
+    const current = formData.subOrders.length || 0;
     return (
       <Form layout="horizontal" className="order-flow-form">
         <BasicForm operation={operation} />
         <Steps direction="vertical" current={current}>
-          {this.renderSteps(shipmtOrderMode)}
+          {this.renderSteps(formData.subOrders)}
         </Steps>
       </Form>
     );

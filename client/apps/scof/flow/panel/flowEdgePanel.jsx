@@ -33,6 +33,8 @@ export default class FlowEdgePanel extends Component {
               <Input defaultValue={target.name} readOnly />
             </FormItem>
           </Col>
+        </Row>
+        <Row gutter={16}>
           <FormItem label={<span>
             {this.msg('edgeCondition')}&nbsp;
             <Tooltip title={this.msg('tooltipEdgeCondition')}>

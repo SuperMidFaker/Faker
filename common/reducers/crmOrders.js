@@ -14,6 +14,7 @@ const actionTypes = createActionTypes('@@welogix/crm/orders/', [
   'LOAD_CLEARANCE_DETAIL', 'LOAD_CLEARANCE_DETAIL_SUCCEED', 'LOAD_CLEARANCE_DETAIL_FAILED',
   'LOAD_TRANSPORT_DETAIL', 'LOAD_TRANSPORT_DETAIL_SUCCEED', 'LOAD_TRANSPORT_DETAIL_FAILED',
   'LOAD_CLEARANCE_FEES', 'LOAD_CLEARANCE_FEES_SUCCEED', 'LOAD_CLEARANCE_FEES_FAIL',
+  'LOAD_FLOWNODE', 'LOAD_FLOWNODE_SUCCEED', 'LOAD_FLOWNODE_FAILED',
 ]);
 
 const initialState = {
@@ -320,5 +321,20 @@ export function changePreviewerTab(tabKey) {
 export function hidePreviewer() {
   return {
     type: actionTypes.HIDE_PREVIWER,
+  };
+}
+
+export function loadFlowNodeData(nodeuuid, kind) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_FLOWNODE,
+        actionTypes.LOAD_FLOWNODE_SUCCEED,
+        actionTypes.LOAD_FLOWNODE_FAILED,
+      ],
+      endpoint: 'v1/scof/flow/graph/node',
+      method: 'get',
+      params: { uuid: nodeuuid, kind },
+    },
   };
 }
