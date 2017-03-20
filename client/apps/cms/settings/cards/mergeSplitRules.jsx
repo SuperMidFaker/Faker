@@ -100,7 +100,7 @@ export default class MergeSplitModal extends React.Component {
                     </RadioGroup>)}
                 </FormItem>
               </Col>
-              <Col offset="2">
+              <Col offset="2" span="19">
                 <Row style={{ padding: 6 }}>
                   {getFieldDecorator('mergeOpt_arr', { initialValue: fieldInits.mergeOptArr,
                   })(<CheckboxGroup options={this.mergeConditions} disabled={!getFieldValue('mergeOpt_checked')}
