@@ -6,7 +6,7 @@ import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
 import { SHIPMENT_TRACK_STATUS, PROMPT_TYPES } from 'common/constants';
 import { formatMsg } from '../../message.i18n';
-import { loadAcceptanceTable, loadShipmtDetail, hidePreviewer } from 'common/reducers/shipment';
+import { loadDispatchTable, loadShipmtDetail, hidePreviewer } from 'common/reducers/shipment';
 import { columnDef } from './columnDef';
 import AccepterModal from '../../../shipment/modals/accepter';
 const RadioButton = Radio.Button;
@@ -18,14 +18,14 @@ const RadioGroup = Radio.Group;
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     acceptanceList: state.shipment.statistics.todos.acceptanceList,
-  }), { loadAcceptanceTable, loadShipmtDetail, hidePreviewer }
+  }), { loadDispatchTable, loadShipmtDetail, hidePreviewer }
 )
 export default class TodoAcceptPane extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     loginId: PropTypes.number.isRequired,
-    loadAcceptanceTable: PropTypes.func.isRequired,
+    loadDispatchTable: PropTypes.func.isRequired,
     acceptanceList: PropTypes.object.isRequired,
     filter: PropTypes.object.isRequired,
     loadShipmtDetail: PropTypes.func.isRequired,
@@ -44,13 +44,13 @@ export default class TodoAcceptPane extends Component {
     }
   }
   handleTableLoad = (props) => {
-    this.props.loadAcceptanceTable({
+    this.props.loadDispatchTable({
       tenantId: this.props.tenantId,
-      filters: [
-        { name: 'viewStatus', value: props.filter.viewStatus },
-        { naeme: 'loginId', value: props.loginId },
-        { name: 'type', value: this.state.type },
-      ],
+      filters: {
+        viewStatus: props.filter.viewStatus,
+        loginId: props.loginId,
+        status: this.state.type,
+      },
       pageSize: this.props.acceptanceList.pageSize,
       currentPage: 1,
       sortField: '',
@@ -58,8 +58,12 @@ export default class TodoAcceptPane extends Component {
     });
   }
   msg = formatMsg(this.props.intl)
-  handleLoadShipmtDetail = (shipmtNo) => {
-    this.props.loadShipmtDetail(shipmtNo, this.props.tenantId, 'sp', 'detail');
+  handleLoadShipmtDetail = (record) => {
+    const { tenantId } = this.props;
+    let sourceType = 'sp';
+    if (tenantId === record.sr_tenant_id) sourceType = 'sr';
+    else if (tenantId === record.sp_tenant_id) sourceType = 'sp';
+    this.props.loadShipmtDetail(record.shipmt_no, this.props.tenantId, sourceType, 'detail');
   }
   handleTableReload = () => {
     this.handleTableLoad(this.props);
@@ -73,8 +77,20 @@ export default class TodoAcceptPane extends Component {
   render() {
     const { tenantId } = this.props;
     const dataSource = new Table.DataSource({
-      fetcher: params => this.props.loadAcceptanceTable(params),
-      resolve: result => result.data,
+      fetcher: params => this.props.loadDispatchTable(params),
+      resolve: (result) => {
+        const data = result.data;
+        data.sort((a, b) => {
+          if (new Date(a.prompt_last_date) < new Date(b.prompt_last_date)) {
+            return 1;
+          } else if (new Date(a.created_date) > new Date(b.created_date)) {
+            return 1;
+          } else {
+            return 0;
+          }
+        });
+        return data;
+      },
       getPagination: (result, resolve) => ({
         total: result.totalCount,
         current: resolve(result.totalCount, result.current, result.pageSize),
@@ -89,11 +105,11 @@ export default class TodoAcceptPane extends Component {
           currentPage: pagination.current,
           sortField: sorter.field,
           sortOrder: sorter.order === 'descend' ? 'desc' : 'asc',
-          filters: [
-            { name: 'viewStatus', value: this.props.filter.viewStatus },
-            { naeme: 'loginId', value: this.props.loginId },
-            { name: 'type', value: this.state.type },
-          ],
+          filters: {
+            viewStatus: this.props.filter.viewStatus,
+            loginId: this.props.loginId,
+            status: this.state.type,
+          },
         };
         return params;
       },
@@ -107,8 +123,12 @@ export default class TodoAcceptPane extends Component {
         let statusEle = null;
         let relatedTime = null;
         let prompt = null;
+        let statusStr = '';
+        if (tenantId === record.sr_tenant_id) statusStr = '待承运商';
+        else if (tenantId === record.sp_tenant_id) statusStr = '待';
         if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {
-          statusEle = <Badge status="warning" text={this.msg('pendingShipmt')} />;
+          statusStr = `${statusStr}接单`;
+          statusEle = <Badge status="warning" text={statusStr} />;
           relatedTime = (<span>
             <Tooltip title={moment(record.created_date).format('YYYY.MM.DD HH:mm')}>
               <span>创建时间：{moment(record.created_date).fromNow()}</span>
@@ -118,7 +138,8 @@ export default class TodoAcceptPane extends Component {
             prompt = (<Tooltip title={moment(record.prompt_last_date).format('YYYY.MM.DD HH:mm')}><Tag color="orange-inverse">客户催促</Tag></Tooltip>);
           }
         } else if (record.status === SHIPMENT_TRACK_STATUS.accepted) {
-          statusEle = <Badge status="warning" text={this.msg('acceptedShipmt')} />;
+          statusStr = `${statusStr}调度`;
+          statusEle = <Badge status="warning" text={statusStr} />;
           relatedTime = (<span>
             <Tooltip title={moment(record.acpt_time).format('YYYY.MM.DD HH:mm')}>
               <span>接单时间：{moment(record.acpt_time).fromNow()}</span>

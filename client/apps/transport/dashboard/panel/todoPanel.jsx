@@ -48,11 +48,11 @@ export default class TodoPanel extends Component {
   }
   handleCount = () => {
     const { tenantId, loginId } = this.props;
-    const acceptFilters = [
-      { name: 'viewStatus', value: this.state.viewStatus },
-      { naeme: 'loginId', value: loginId },
-      { name: 'type', value: 'all' },
-    ];
+    const acceptFilters = {
+      viewStatus: this.state.viewStatus,
+      loginId,
+      status: 'all',
+    };
     const trackingFilters = [
       { name: 'viewStatus', value: this.state.viewStatus },
       { naeme: 'loginId', value: loginId },

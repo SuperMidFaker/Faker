@@ -56,7 +56,7 @@ export default class StatsPanel extends Component {
         <ul className="statistics-columns">
           <li className="statistics-col">
             <div className="statistics-cell">
-              <h6>{this.msg('total')}</h6>
+              <div className="label">{this.msg('total')}</div>
               <div className="data">
                 <div className="data-num lg">
                   <Link to={this.logsLocation('total')}>{total}</Link>
@@ -67,7 +67,7 @@ export default class StatsPanel extends Component {
           <li className="statistics-divider" />
           <li className="statistics-col">
             <div className="statistics-cell">
-              <h6>{this.msg('atOrigin')}</h6>
+              <div className="label">{this.msg('atOrigin')}</div>
               <div className="data">
                 <div className="data-num lg">
                   <Link to={this.logsLocation('atOrigin')} >{atOrigin}</Link>
@@ -77,7 +77,7 @@ export default class StatsPanel extends Component {
           </li>
           <li className="statistics-col">
             <div className="statistics-cell">
-              <h6>{this.msg('intransit')}</h6>
+              <div className="label">{this.msg('intransit')}</div>
               <div className="data">
                 <div className="data-num lg">
                   <Link to={this.logsLocation('intransit')}>{intransit}</Link>
@@ -87,7 +87,7 @@ export default class StatsPanel extends Component {
           </li>
           <li className="statistics-col">
             <div className="statistics-cell">
-              <h6>{this.msg('arrival')}</h6>
+              <div className="label">{this.msg('arrival')}</div>
               <div className="data">
                 <div className="data-num lg">
                   <Link to={this.logsLocation('arrival')}>{arrival}</Link>
@@ -98,11 +98,11 @@ export default class StatsPanel extends Component {
           <li className="statistics-divider" />
           <li className="statistics-col">
             <div className="statistics-cell">
-              <h6>{this.msg('overtime')}
+              <div className="label">{this.msg('overtime')}
                 <Tooltip title="未能按承诺时效送达的运单数量及占总票数的比例">
                   <Icon type="question-circle-o" />
                 </Tooltip>
-              </h6>
+              </div>
               <div className="data">
                 <div className="data-num lg"><Link to={this.logsLocation('overtime')}>{overtime}</Link></div>
                 <div className="data-percent">
@@ -114,11 +114,11 @@ export default class StatsPanel extends Component {
           </li>
           <li className="statistics-col">
             <div className="statistics-cell">
-              <h6>{this.msg('exception')}
+              <div className="label">{this.msg('exception')}
                 <Tooltip title="发生过异常事件的运单数量及占总票数的比例">
                   <Icon type="question-circle-o" />
                 </Tooltip>
-              </h6>
+              </div>
               <div className="data">
                 <div className="data-num lg"><Link to={this.logsLocation('exception')}>{exception}</Link></div>
                 <div className="data-percent">

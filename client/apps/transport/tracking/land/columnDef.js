@@ -8,6 +8,7 @@ import { SHIPMENT_TRACK_STATUS, SHIPMENT_POD_STATUS, SHIPMENT_VEHICLE_CONNECT, P
 import RowUpdater from 'client/components/rowUpdater';
 import AddressColumn from '../../common/addressColumn';
 import ShipmtnoColumn from '../../common/shipmtnoColumn';
+import ShipmtLocationColumn from '../../common/shipmtLocationColumn';
 import PickupDeliverUpdaterPopover from './modals/pickup-deliver-updater-popover';
 import ExceptionListPopover from './modals/exception-list-popover';
 
@@ -37,11 +38,16 @@ export default function makeColumns(type, handlers, msg) {
     title: msg('shipNo'),
     dataIndex: 'shipmt_no',
     fixed: 'left',
-    width: 150,
+    width: 130,
     render: (o, record) => (
-      <ShipmtnoColumn shipmtNo={record.shipmt_no} publicKey={record.public_key}
+      <ShipmtnoColumn shipmtNo={record.shipmt_no}
         shipment={record} onClick={handlers.onShipmtPreview}
       />),
+  }, {
+    dataIndex: 'location',
+    fixed: 'left',
+    width: 10,
+    render: (o, record) => <div style={{ marginLeft: -10 }}><ShipmtLocationColumn shipment={record} publicKey={record.public_key} /></div>,
   }, {
     title: msg('refCustomerNo'),
     dataIndex: 'ref_external_no',

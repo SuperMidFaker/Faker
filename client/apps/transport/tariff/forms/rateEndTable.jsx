@@ -85,6 +85,7 @@ export default class RateEndTable extends React.Component {
     render: (o, record) => renderRegion(record.end),
   }, {
     title: '运输时间',
+    width: 80,
     dataIndex: 'time',
   }]
   loadEnds = current => this.props.loadRateEnds({
@@ -229,17 +230,20 @@ export default class RateEndTable extends React.Component {
         columns.push({
           title: '公里数',
           dataIndex: 'km',
+          width: 80,
         });
       }
       columns.push({
         title: '起步价',
         dataIndex: 'flare',
+        width: 80,
       });
     }
     const varColumns = getEndTableVarColumns(agreementRef, transModes, vehicleTypeParams, vehicleLengthParams);
     varColumns.forEach((vc) => {
       columns.push({
         title: vc.title,
+        width: 80,
         render: (o, record) => record.gradients[vc.index],
       });
     });

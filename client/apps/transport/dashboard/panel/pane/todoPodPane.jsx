@@ -8,7 +8,7 @@ import { formatMsg } from '../../message.i18n';
 import { loadPodTable, loadShipmtDetail, hidePreviewer } from 'common/reducers/shipment';
 import { deliverConfirm } from 'common/reducers/trackingLandStatus';
 import { columnDef } from './columnDef';
-import { SHIPMENT_POD_STATUS } from 'common/constants';
+import { SHIPMENT_POD_STATUS, SHIPMENT_VEHICLE_CONNECT } from 'common/constants';
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
@@ -60,8 +60,8 @@ export default class TodoAcceptPane extends Component {
     });
   }
   msg = formatMsg(this.props.intl)
-  handleLoadShipmtDetail = (shipmtNo) => {
-    this.props.loadShipmtDetail(shipmtNo, this.props.tenantId, 'sr', 'detail');
+  handleLoadShipmtDetail = (record) => {
+    this.props.loadShipmtDetail(record.shipmt_no, this.props.tenantId, 'sr', 'detail');
   }
   handleTodoFilter = (e) => {
     this.setState({ type: e.target.value }, () => {
@@ -80,9 +80,35 @@ export default class TodoAcceptPane extends Component {
   }
   render() {
     const { tenantId } = this.props;
+    const { type } = this.state;
     const dataSource = new Table.DataSource({
       fetcher: params => this.props.loadPodTable(params),
-      resolve: result => result.data,
+      resolve: (result) => {
+        let data = [];
+        if (result.data) {
+          data = result.data;
+          data.sort((a, b) => {
+            if (new Date(a.prompt_last_date) < new Date(b.prompt_last_date)) {
+              return 1;
+            } else if (type === 'toUploadPod' || type === 'toConfirm') {
+              if (new Date(a.deliver_act_date) > new Date(b.deliver_act_date)) {
+                return 1;
+              } else {
+                return 0;
+              }
+            } else if (type === 'toAuditPod') {
+              if (new Date(a.pod_recv_date) < new Date(b.pod_recv_date)) {
+                return 1;
+              } else {
+                return 0;
+              }
+            } else {
+              return 0;
+            }
+          });
+        }
+        return data;
+      },
       getPagination: (result, resolve) => ({
         total: result.totalCount,
         current: resolve(result.totalCount, result.current, result.pageSize),
@@ -116,6 +142,19 @@ export default class TodoAcceptPane extends Component {
         let toAuditPodEle = null;
         let relatedTime = null;
         let smsConfirm = null;
+        let statusStr = '';
+        if (record.sp_tenant_id === -1) {
+          statusStr = '回单待';
+        } else if (record.sp_tenant_id === 0 && record.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
+          if (record.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
+            statusStr = '回单待';
+          } else {
+            // 司机更新
+            statusStr = '回单待承司机';
+          }
+        } else {
+          statusStr = '回单待承运商';
+        }
         if (tenantId === record.tenant_id && record.deliver_confirmed === 0) {
           smsConfirm = (<Badge status="success" text={
             <Popconfirm title="是否确定短信确认?" onConfirm={() => this.handleDeliverConfirm(record.shipmt_no, record.disp_id)} okText="确定" cancelText="取消">
@@ -124,7 +163,8 @@ export default class TodoAcceptPane extends Component {
           />);
         }
         if (record.pod_status === null || record.pod_status === SHIPMENT_POD_STATUS.unsubmit || record.pod_status === SHIPMENT_POD_STATUS.rejectByClient) {
-          toUploadPodEle = <Badge status="warning" text={this.msg('toUploadPod')} />;
+          statusStr = `${statusStr}上传`;
+          toUploadPodEle = <Badge status="warning" text={statusStr} />;
         } else {
           relatedTime = (<span>
             <Tooltip title={moment(record.pod_recv_date).format('YYYY.MM.DD HH:mm')}>

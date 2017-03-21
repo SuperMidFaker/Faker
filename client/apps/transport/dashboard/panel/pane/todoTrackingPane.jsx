@@ -5,7 +5,7 @@ import { Badge, Tooltip, Tag, Radio } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
 import { renderLoc } from '../../../common/consignLocation';
-import { SHIPMENT_TRACK_STATUS, PROMPT_TYPES } from 'common/constants';
+import { SHIPMENT_TRACK_STATUS, PROMPT_TYPES, SHIPMENT_VEHICLE_CONNECT } from 'common/constants';
 import { formatMsg } from '../../message.i18n';
 import { loadTransitTable, loadShipmtDetail, hidePreviewer } from 'common/reducers/shipment';
 import { columnDef } from './columnDef';
@@ -56,8 +56,8 @@ export default class TodoAcceptPane extends Component {
     });
   }
   msg = formatMsg(this.props.intl)
-  handleLoadShipmtDetail = (shipmtNo) => {
-    this.props.loadShipmtDetail(shipmtNo, this.props.tenantId, 'sr', 'detail');
+  handleLoadShipmtDetail = (record) => {
+    this.props.loadShipmtDetail(record.shipmt_no, this.props.tenantId, 'sr', 'detail');
   }
   handleTodoFilter = (e) => {
     this.setState({ type: e.target.value }, () => {
@@ -67,9 +67,32 @@ export default class TodoAcceptPane extends Component {
   }
   render() {
     const { tenantId } = this.props;
+    const { type } = this.state;
     const dataSource = new Table.DataSource({
       fetcher: params => this.props.loadTransitTable(params),
-      resolve: result => result.data,
+      resolve: (result) => {
+        const data = result.data;
+        data.sort((a, b) => {
+          if (new Date(a.prompt_last_date) < new Date(b.prompt_last_date)) {
+            return 1;
+          } else if (type === 'toPickup' || type === 'toLocate') {
+            if (new Date(a.pickup_est_date) > new Date(b.pickup_est_date)) {
+              return 1;
+            } else {
+              return 0;
+            }
+          } else if (type === 'toDeliver') {
+            if (new Date(a.deliver_prm_date) < new Date(b.deliver_prm_date)) {
+              return 1;
+            } else {
+              return 0;
+            }
+          } else {
+            return 0;
+          }
+        });
+        return data;
+      },
       getPagination: (result, resolve) => ({
         total: result.totalCount,
         current: resolve(result.totalCount, result.current, result.pageSize),
@@ -129,8 +152,21 @@ export default class TodoAcceptPane extends Component {
         let statusEle = null;
         let relatedTime = null;
         let prompt = null;
-
+        let statusStr = '';
+        if (record.sp_tenant_id === -1) {
+          statusStr = '待';
+        } else if (record.sp_tenant_id === 0 && record.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
+          if (record.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
+            statusStr = '待';
+          } else {
+            // 司机更新
+            statusStr = '待承司机';
+          }
+        } else {
+          statusStr = '待承运商';
+        }
         if (record.status === SHIPMENT_TRACK_STATUS.dispatched) {
+          statusStr = `${statusStr}提货`;
           if (record.p_prompt_last_action === PROMPT_TYPES.promptSpPickup) {
             prompt = (<Tooltip title={moment(record.p_prompt_last_date).format('YYYY.MM.DD HH:mm')}><Tag color="orange-inverse">客户催促</Tag></Tooltip>);
           }
@@ -147,7 +183,7 @@ export default class TodoAcceptPane extends Component {
             badgeColor = 'error';
           }
           if (pickupEstDate <= newDate) {
-            statusEle = <Badge status={badgeColor} text={this.msg('dispatchedShipmt')} />;
+            statusEle = <Badge status={badgeColor} text={statusStr} />;
           }
           relatedTime = (<span>
             <Tooltip title={record.pickup_est_date ? moment(record.pickup_est_date).format('YYYY.MM.DD HH:mm') : ''}>
@@ -155,6 +191,7 @@ export default class TodoAcceptPane extends Component {
             </Tooltip>
           </span>);
         } else if (record.status === SHIPMENT_TRACK_STATUS.intransit) {
+          statusStr = `${statusStr}交货`;
           let badgeColor = 'warning';
           let deliverPrmDateStr = '';
           const deliverDate = record.deliver_prm_date || record.deliver_est_date;
@@ -163,13 +200,14 @@ export default class TodoAcceptPane extends Component {
             newDate.setHours(0, 0, 0, 0);
             const deliverPrmDate = new Date(deliverDate);
             deliverPrmDate.setHours(0, 0, 0, 0);
+
             if (moment(newDate).diff(deliverPrmDate, 'days') === 0) {
               deliverPrmDateStr = '承诺送货：今天';
-              statusEle = <Badge status={badgeColor} text={this.msg('toDeliverShipmt')} />;
+              statusEle = <Badge status={badgeColor} text={statusStr} />;
             } else if (newDate > deliverPrmDate) {
               deliverPrmDateStr = `承诺送货：超时 ${moment(newDate).diff(deliverPrmDate, 'days')} 天`;
               badgeColor = 'error';
-              statusEle = <Badge status={badgeColor} text={this.msg('toDeliverShipmt')} />;
+              statusEle = <Badge status={badgeColor} text={statusStr} />;
             }
           }
 

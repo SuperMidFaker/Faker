@@ -188,8 +188,8 @@ export default class LandStatusList extends React.Component {
     title: this.msg('shipNo'),
     dataIndex: 'shipmt_no',
     fixed: 'left',
-    width: 150,
-    render: (o, record) => <ShipmtnoColumn shipmtNo={record.shipmt_no} publicKey={record.public_key} shipment={record} onClick={this.handleShipmtPreview} />,
+    width: 130,
+    render: (o, record) => <ShipmtnoColumn shipmtNo={record.shipmt_no} shipment={record} onClick={this.handleShipmtPreview} />,
   }, {
     title: this.msg('exceptionCount'),
     fixed: 'left',

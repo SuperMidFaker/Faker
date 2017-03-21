@@ -144,7 +144,7 @@ export default class AcceptList extends React.Component {
         return (<span style={style} >{record.shipmt_no}</span>);
       }
       return (
-        <ShipmtnoColumn shipmtNo={record.shipmt_no} publicKey={record.public_key}
+        <ShipmtnoColumn shipmtNo={record.shipmt_no}
           style={style} shipment={record} onClick={this.handleShipmtPreview}
         />
       );

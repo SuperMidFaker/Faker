@@ -168,8 +168,8 @@ export default function reducer(state = initialState, action) {
         fees: {
           ...state.fees,
           ...action.result.data,
-          startDate: new Date(action.params.startDate),
-          endDate: new Date(action.params.endDate),
+          startDate: action.date.startDate,
+          endDate: action.date.endDate,
         },
         loading: false,
         loaded: true,
@@ -289,6 +289,7 @@ export function loadFees({ tenantId, pageSize, currentPage, searchValue, filters
         startDate: moment(startDate).format('YYYY-MM-DD 00:00:00'),
         endDate: moment(endDate).format('YYYY-MM-DD 23:59:59'),
       },
+      date: { startDate, endDate },
     },
   };
 }

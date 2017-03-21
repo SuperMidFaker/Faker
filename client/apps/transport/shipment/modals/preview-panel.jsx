@@ -204,7 +204,7 @@ export default class PreviewPanel extends React.Component {
               <span className="title">{shipmtNo}</span>
               <Badge status={this.transformBadgeColor(dispatch.status)} text={this.msg(getTrackStatusMsg(dispatch.status, effective))} />
               <div className="toolbar-right">
-                {this.viewStages.indexOf(this.props.stage) === -1 ? (<Footer stage={stage} onShowShareShipmentModal={this.handleShowShareShipmentModal} />) : ''}
+                {this.viewStages.indexOf(this.props.stage) === -1 ? (<Footer stage={stage} sourceType={sourceType} onShowShareShipmentModal={this.handleShowShareShipmentModal} />) : ''}
                 {closer}
               </div>
               <Row>

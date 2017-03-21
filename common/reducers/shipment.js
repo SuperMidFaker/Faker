@@ -35,7 +35,7 @@ const actionTypes = createActionTypes('@@welogix/transport/shipment/', [
   'UPDATE_FORM_REQUIRE_PARAMS',
   'LOAD_TARIFF_BY_TRANSPORTINFO', 'LOAD_TARIFF_BY_TRANSPORTINFO_SUCCEED', 'LOAD_TARIFF_BY_TRANSPORTINFO_FAIL',
   'LOAD_PARTNERS', 'LOAD_PARTNERS_SUCCEED', 'LOAD_PARTNERS_FAIL',
-  'LOAD_ACCEPTANCE_SHIPMENT', 'LOAD_ACCEPTANCE_SHIPMENT_SUCCEED', 'LOAD_ACCEPTANCE_SHIPMENT_FAIL',
+  'LOAD_DISPATCH_SHIPMENT', 'LOAD_DISPATCH_SHIPMENT_SUCCEED', 'LOAD_DISPATCH_SHIPMENT_FAIL',
   'PROMPT', 'PROMPT_SUCCEED', 'PROMPT_FAIL',
   'LOAD_TRANSHIPMT', 'LOAD_TRANSHIPMT_FAIL', 'LOAD_TRANSHIPMT_SUCCEED',
   'LOAD_PODSHIPMT', 'LOAD_PODSHIPMT_FAIL', 'LOAD_PODSHIPMT_SUCCEED',
@@ -304,7 +304,7 @@ export default function reducer(state = initialState, action) {
     }
     case actionTypes.LOAD_PARTNERS_SUCCEED:
       return { ...state, partners: action.result.data };
-    case actionTypes.LOAD_ACCEPTANCE_SHIPMENT:
+    case actionTypes.LOAD_DISPATCH_SHIPMENT:
       return { ...state,
         statistics: {
           ...state.statistics,
@@ -314,7 +314,7 @@ export default function reducer(state = initialState, action) {
           },
         },
       };
-    case actionTypes.LOAD_ACCEPTANCE_SHIPMENT_SUCCEED:
+    case actionTypes.LOAD_DISPATCH_SHIPMENT_SUCCEED:
       return { ...state,
         statistics: {
           ...state.statistics,
@@ -748,17 +748,17 @@ export function countTotal(filters) {
   };
 }
 
-export function loadAcceptanceTable({ tenantId, filters, pageSize, currentPage, sortField, sortOrder }) {
+export function loadDispatchTable({ tenantId, filters, pageSize, currentPage }) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.LOAD_ACCEPTANCE_SHIPMENT,
-        actionTypes.LOAD_ACCEPTANCE_SHIPMENT_SUCCEED,
-        actionTypes.LOAD_ACCEPTANCE_SHIPMENT_FAIL,
+        actionTypes.LOAD_DISPATCH_SHIPMENT,
+        actionTypes.LOAD_DISPATCH_SHIPMENT_SUCCEED,
+        actionTypes.LOAD_DISPATCH_SHIPMENT_FAIL,
       ],
-      endpoint: 'v1/transport/shipments',
+      endpoint: 'v1/transport/dispatch/shipmts',
       method: 'get',
-      params: { tenantId, filters: JSON.stringify(filters), pageSize, currentPage, sortField, sortOrder },
+      params: { tenantId, filters: JSON.stringify(filters), pageSize, currentPage },
     },
   };
 }
