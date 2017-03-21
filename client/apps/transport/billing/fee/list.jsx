@@ -155,104 +155,6 @@ export default class FeesList extends React.Component {
       width: 100,
       render: o => <TrimSpan text={o} />,
     }];
-    if (billingType === 'cost' || billingType === 'costAndRevenue') {
-      tableWidth += 680;
-      columns.push({
-        title: '承运商',
-        dataIndex: 'sp_name',
-        width: 180,
-        render(o) {
-          return <TrimSpan text={o} maxLen={10} />;
-        },
-        filters: carriers.map(item => ({ text: item.partner_code ? `${item.partner_code} | ${item.name}` : item.name, value: item.partner_id })),
-      }, {
-        title: '运输成本',
-        dataIndex: 'total_charge',
-        width: 100,
-        render(o) {
-          return o ? o.toFixed(2) : '';
-        },
-      }, {
-        title: '代垫成本',
-        dataIndex: 'advance_charge',
-        width: 100,
-        render: (o, row) => {
-          if (row.sp_name) {
-            return (
-              <a onClick={() => this.handleShowShipmentAdvanceModal({
-                visible: true,
-                dispId: row.disp_id,
-                shipmtNo: row.shipmt_no,
-                transportModeId: row.transport_mode_id,
-                goodsType: row.goods_type,
-                type: -1 })}
-              >
-                {o ? o.toFixed(2) : '0.00'}
-                <Icon type="edit" />
-              </a>
-            );
-          } else {
-            return '';
-          }
-        },
-      }, {
-        title: '特殊费用成本',
-        dataIndex: 'excp_charge',
-        width: 100,
-        render: (o, row) => {
-          if (row.sp_name) {
-            return (
-              <span onClick={() => this.handleShowSpecialChargeModal(row, -1)}>
-                <SpecialChargePopover dispId={row.disp_id} shipmtNo={row.shipmt_no}>
-                  {o ? o.toFixed(2) : '0.00'}
-                  <Icon type="edit" />
-                </SpecialChargePopover>
-              </span>
-            );
-          } else {
-            return '';
-          }
-        },
-      }, {
-        title: '成本合计',
-        key: 'totalCharge',
-        width: 100,
-        render(o, record) {
-          let totalCharge = 0;
-          if (record.advance_charge) {
-            totalCharge += record.advance_charge;
-          }
-          if (record.excp_charge) {
-            totalCharge += record.excp_charge;
-          }
-          if (record.total_charge) {
-            totalCharge += record.total_charge;
-          }
-          return record.status !== null ? totalCharge.toFixed(2) : '';
-        },
-      }, {
-        title: '入账状态',
-        dataIndex: 'status',
-        width: 100,
-        render(o) {
-          if (o === 0) {
-            return <Tag>未入账</Tag>;
-          } else if (o === 1) {
-            return <Tag color="yellow">已入账</Tag>;
-          } else if (o === 2) {
-            return <Tag color="green">已结单</Tag>;
-          }
-          return '';
-        },
-        filters: [{
-          text: '未入账', value: 0,
-        }, {
-          text: '已入账', value: 1,
-        }, {
-          text: '已结单', value: 2,
-        }],
-      });
-    }
     if (billingType === 'revenue' || billingType === 'costAndRevenue') {
       tableWidth += 680;
       columns.push({
@@ -351,6 +253,105 @@ export default class FeesList extends React.Component {
         }],
       });
     }
+    if (billingType === 'cost' || billingType === 'costAndRevenue') {
+      tableWidth += 680;
+      columns.push({
+        title: '承运商',
+        dataIndex: 'sp_name',
+        width: 180,
+        render(o) {
+          return <TrimSpan text={o} maxLen={10} />;
+        },
+        filters: carriers.map(item => ({ text: item.partner_code ? `${item.partner_code} | ${item.name}` : item.name, value: item.partner_id })),
+      }, {
+        title: '运输成本',
+        dataIndex: 'total_charge',
+        width: 100,
+        render(o) {
+          return o ? o.toFixed(2) : '';
+        },
+      }, {
+        title: '代垫成本',
+        dataIndex: 'advance_charge',
+        width: 100,
+        render: (o, row) => {
+          if (row.sp_name) {
+            return (
+              <a onClick={() => this.handleShowShipmentAdvanceModal({
+                visible: true,
+                dispId: row.disp_id,
+                shipmtNo: row.shipmt_no,
+                transportModeId: row.transport_mode_id,
+                goodsType: row.goods_type,
+                type: -1 })}
+              >
+                {o ? o.toFixed(2) : '0.00'}
+                <Icon type="edit" />
+              </a>
+            );
+          } else {
+            return '';
+          }
+        },
+      }, {
+        title: '特殊费用成本',
+        dataIndex: 'excp_charge',
+        width: 100,
+        render: (o, row) => {
+          if (row.sp_name) {
+            return (
+              <span onClick={() => this.handleShowSpecialChargeModal(row, -1)}>
+                <SpecialChargePopover dispId={row.disp_id} shipmtNo={row.shipmt_no}>
+                  {o ? o.toFixed(2) : '0.00'}
+                  <Icon type="edit" />
+                </SpecialChargePopover>
+              </span>
+            );
+          } else {
+            return '';
+          }
+        },
+      }, {
+        title: '成本合计',
+        key: 'totalCharge',
+        width: 100,
+        render(o, record) {
+          let totalCharge = 0;
+          if (record.advance_charge) {
+            totalCharge += record.advance_charge;
+          }
+          if (record.excp_charge) {
+            totalCharge += record.excp_charge;
+          }
+          if (record.total_charge) {
+            totalCharge += record.total_charge;
+          }
+          return record.status !== null ? totalCharge.toFixed(2) : '';
+        },
+      }, {
+        title: '入账状态',
+        dataIndex: 'status',
+        width: 100,
+        render(o) {
+          if (o === 0) {
+            return <Tag>未入账</Tag>;
+          } else if (o === 1) {
+            return <Tag color="yellow">已入账</Tag>;
+          } else if (o === 2) {
+            return <Tag color="green">已结单</Tag>;
+          }
+          return '';
+        },
+        filters: [{
+          text: '未入账', value: 0,
+        }, {
+          text: '已入账', value: 1,
+        }, {
+          text: '已结单', value: 2,
+        }],
+      });
+    }
+
     if (billingType === 'costAndRevenue') {
       tableWidth += 100;
       columns.push({

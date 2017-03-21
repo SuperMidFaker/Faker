@@ -161,11 +161,12 @@ export default class TodoAcceptPane extends Component {
             deliverPrmDate.setHours(0, 0, 0, 0);
             if (moment(newDate).diff(deliverPrmDate, 'days') === 0) {
               deliverPrmDateStr = '承诺送货：今天';
+              statusEle = <Badge status={badgeColor} text={this.msg('toDeliverShipmt')} />;
             } else if (newDate > deliverPrmDate) {
               deliverPrmDateStr = `承诺送货：超时 ${moment(newDate).diff(deliverPrmDate, 'days')} 天`;
               badgeColor = 'error';
+              statusEle = <Badge status={badgeColor} text={this.msg('toDeliverShipmt')} />;
             }
-            statusEle = <Badge status={badgeColor} text={this.msg('toDeliverShipmt')} />;
           }
 
           relatedTime = (<span>

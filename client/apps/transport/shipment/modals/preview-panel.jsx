@@ -143,7 +143,15 @@ export default class PreviewPanel extends React.Component {
     }
   }
   renderTabs(status) {
-    if (status >= SHIPMENT_TRACK_STATUS.podsubmit) {
+    if (status <= SHIPMENT_TRACK_STATUS.unaccepted) {
+      return (
+        <Tabs activeKey={this.props.tabKey} onChange={this.handleTabChange}>
+          <TabPane tab={this.msg('shipmtDetail')} key="detail">
+            <DetailPane />
+          </TabPane>
+        </Tabs>
+      );
+    } else if (status >= SHIPMENT_TRACK_STATUS.podsubmit) {
       return (
         <Tabs activeKey={this.props.tabKey} onChange={this.handleTabChange}>
           <TabPane tab={this.msg('shipmtDetail')} key="detail">
