@@ -31,8 +31,9 @@ export default class ClearanceForm extends Component {
   }
   componentDidMount() {
     const { formData } = this.props;
-    if (!formData.uuid && formData.node_uuid) {
-      this.props.loadFlowNodeData(formData.node_uuid, formData.kind).then((result) => {
+    const node = formData.node;
+    if (!node.uuid && node.node_uuid) {
+      this.props.loadFlowNodeData(node.node_uuid, node.kind).then((result) => {
         if (!result.error) {
           this.handleSetClientForm({ ...result.data, uuid: uuidWithoutDash() });
         }
@@ -58,10 +59,11 @@ export default class ClearanceForm extends Component {
       labelCol: { span: 8 },
       wrapperCol: { span: 16 },
     };
-    const declWays = formData.kind === 'export' ? DECL_E_TYPE : DECL_I_TYPE;
+    const node = formData.node;
+    const declWays = node.kind === 'export' ? DECL_E_TYPE : DECL_I_TYPE;
     return (
       <Card>
-        <Row key={formData.uuid} style={{ marginBottom: 8 }}>
+        <Row key={node.uuid} style={{ marginBottom: 8 }}>
           {/* <Col sm={4}>
             <FormItem label="包装方式" {...formItemLayout}>
               <Select value={item.package} onChange={value => this.handleChange(k, 'package', value)}>
@@ -73,21 +75,21 @@ export default class ClearanceForm extends Component {
           </Col> */}
           <Col sm={24} lg={8}>
             <FormItem label={this.msg('packageNum')} {...formItemLayout}>
-              <InputNumber value={formData.pack_count} min={1} max={100000} style={{ width: '100%' }}
+              <InputNumber value={node.pack_count} min={1} max={100000} style={{ width: '100%' }}
                 onChange={value => this.handleChange('pack_count', value)}
               />
             </FormItem>
           </Col>
           <Col sm={24} lg={8}>
             <FormItem label={this.msg('delgGrossWt')} {...formItemLayout}>
-              <Input value={formData.gross_wt} addonAfter="千克" type="number"
+              <Input value={node.gross_wt} addonAfter="千克" type="number"
                 onChange={ev => this.handleChange('gross_wt', ev.target.value)}
               />
             </FormItem>
           </Col>
           <Col sm={24} lg={8}>
             <FormItem label={this.msg('declCustoms')} {...formItemLayout}>
-              <Select value={formData.decl_port} onChange={value => this.handleChange('decl_port', value)}>
+              <Select value={node.decl_port} onChange={value => this.handleChange('decl_port', value)}>
                 {
                   formRequires.declPorts.map(dp => <Option value={dp.code} key={dp.code}>{dp.code}|{dp.name}</Option>)
                 }
@@ -96,7 +98,7 @@ export default class ClearanceForm extends Component {
           </Col>
           <Col sm={24} lg={8}>
             <FormItem label={this.msg('declareWay')} {...formItemLayout}>
-              <Select value={formData.decl_way_code} onChange={value => this.handleChange('decl_way_code', value)}>
+              <Select value={node.decl_way_code} onChange={value => this.handleChange('decl_way_code', value)}>
                 {declWays.map(dw =>
                   <Option value={dw.key} key={dw.key}>{dw.value}</Option>)
                 }
@@ -105,7 +107,7 @@ export default class ClearanceForm extends Component {
           </Col>
           <Col sm={24} lg={8}>
             <FormItem label={this.msg('customsBroker')} {...formItemLayout}>
-              <Select value={formData.customs_parnter_id} onChange={value => this.handleChange('customs_parnter_id', value)}>
+              <Select value={node.customs_parnter_id} onChange={value => this.handleChange('customs_parnter_id', value)}>
                 {
                   formRequires.customsBrokers.map(cb =>
                     <Option value={cb.partner_id} key={cb.partner_id}>{cb.partner_code}|{cb.name}</Option>
@@ -116,7 +118,7 @@ export default class ClearanceForm extends Component {
           </Col>
           <Col sm={24} lg={8}>
             <FormItem label={this.msg('ciqBroker')} {...formItemLayout}>
-              <Select value={formData.ciq_partner_id} onChange={value => this.handleChange('ciq_partner_id', value)}>
+              <Select value={node.ciq_partner_id} onChange={value => this.handleChange('ciq_partner_id', value)}>
                 {
                   formRequires.ciqBrokers.map(cb =>
                     <Option value={cb.partner_id} key={cb.partner_id}>{cb.partner_code}|{cb.name}</Option>
@@ -127,12 +129,12 @@ export default class ClearanceForm extends Component {
           </Col>
           <Col sm={24} lg={8}>
             <FormItem label={this.msg('quoteNo')} {...formItemLayout}>
-              <Select value={formData.quote_no} />
+              <Select value={node.quote_no} />
             </FormItem>
           </Col>
           <Col sm={24} lg={16}>
             <FormItem label="备注" labelCol={{ span: 4 }} wrapperCol={{ span: 20 }}>
-              <Input value={formData.remark} onChange={ev => this.handleChange('remark', ev.target.value)} />
+              <Input value={node.remark} onChange={ev => this.handleChange('remark', ev.target.value)} />
             </FormItem>
           </Col>
           {/*

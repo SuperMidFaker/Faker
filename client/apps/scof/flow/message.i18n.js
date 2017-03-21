@@ -58,6 +58,10 @@ const messages = defineMessages({
     id: 'scof.flow.node.cwm',
     defaultMessage: '仓储协同',
   },
+  flowNodeTerminal: {
+    id: 'scof.flow.node.terminal',
+    defaultMessage: '流程终结点',
+  },
   saveFlow: {
     id: 'scof.flow.graph.save',
     defaultMessage: '保存流程',

@@ -26,19 +26,19 @@ export default class FlowCwmNodePanel extends Component {
   }
   msg = formatMsg(this.props.intl)
   render() {
-    const { form } = this.props;
+    const { form, model, onNodeActionsChange } = this.props;
     return (
       <Row gutter={16}>
         <Col sm={24} md={8}>
           <Card title={this.msg('cwmFlowNode')} bodyStyle={{ padding: 0 }}>
-            <FlowNodePanel form={form} />
+            <FlowNodePanel form={form} model={model} onNodeActionsChange={onNodeActionsChange} />
           </Card>
         </Col>
         <Col sm={24} md={16}>
           <Card title={this.msg('bizObject')} bodyStyle={{ padding: 0 }}>
             <Tabs defaultActiveKey="objReceiving">
               <TabPane tab={this.msg('objReceiving')} key="objReceiving">
-                <DelegationPane form={form} />
+                <DelegationPane form={form} model={model} onNodeActionsChange={onNodeActionsChange} />
               </TabPane>
               <TabPane tab={this.msg('objShipping')} key="objShipping" />
             </Tabs>

@@ -41,6 +41,7 @@ export default class FlowDesigner extends React.Component {
         <MenuItem key="nodeexport">{this.msg('flowNodeExport')}</MenuItem>
         <MenuItem key="nodetms">{this.msg('flowNodeTms')}</MenuItem>
         <MenuItem key="nodecwm">{this.msg('flowNodeCwm')}</MenuItem>
+        <MenuItem key="nodeterminal">{this.msg('flowNodeTerminal')}</MenuItem>
       </Menu>);
     this.state = {
       rightSidercollapsed: true,
@@ -67,11 +68,12 @@ export default class FlowDesigner extends React.Component {
       export: 'blue',
       tms: 'green',
       cwm: 'gray',
+      terminal: 'purple',
     };
     this.graph.node().label('name');
-    this.graph.node().size('', () => [100, 50]);
+    this.graph.node().size('kind', kind => kind === 'terminal' ? 50 : [100, 50]);
     this.graph.node().color('kind', kind => nodeColorMap[kind]);
-    this.graph.node().shape('', () => 'rect');
+    this.graph.node().shape('kind', kind => kind === 'terminal' ? 'circle' : 'rect');
     this.graph.edge().shape('', () => 'smoothArrow');
     const data = {
       nodes: this.props.flowGraph.nodes.map(node => ({ ...node, actions: [] })),
@@ -168,6 +170,9 @@ export default class FlowDesigner extends React.Component {
       case 'nodecwm':
         kind = 'cwm';
         break;
+      case 'nodeterminal':
+        kind = 'terminal';
+        break;
       default:
         break;
     }
@@ -257,18 +262,23 @@ export default class FlowDesigner extends React.Component {
     if (item) {
       const model = item.get('model');
       if (!model.loaded) {
-        this.props.loadFlowGraphItem({ id: model.id, kind: model.kind, type: item.get('type') }).then((result) => {
-          if (!result.error) {
-            if (item.get('type') === 'node') {
-              const node = result.data;
-              this.graph.update(item, { ...node, loaded: true });
-              this.props.setNodeActions(node.actions);
-            } else if (item.get('type') === 'edge') {
-              this.graph.update(item, { conditions: result.data, loaded: true });
+        if (model.kind === 'terminal') {
+          this.graph.update(item, { loaded: true });
+          this.setState({ activeItem: item });
+        } else {
+          this.props.loadFlowGraphItem({ id: model.id, kind: model.kind, type: item.get('type') }).then((result) => {
+            if (!result.error) {
+              if (item.get('type') === 'node') {
+                const node = result.data;
+                this.graph.update(item, { ...node, loaded: true });
+                this.props.setNodeActions(node.actions);
+              } else if (item.get('type') === 'edge') {
+                this.graph.update(item, { conditions: result.data, loaded: true });
+              }
+              this.setState({ activeItem: item });
             }
-            this.setState({ activeItem: item });
-          }
-        });
+          });
+        }
       } else {
         if (item.get('type') === 'node') {
           this.props.setNodeActions(model.actions);

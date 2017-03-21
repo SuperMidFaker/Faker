@@ -39,7 +39,32 @@ const cmsBizObjects = [{
   triggers: CMS_CUSTOMS_TRIGGERS,
 }];
 
+const tmsBizObjects = [{
+  key: 'tmsShipment',
+  text: 'tmsShipment',
+  triggers: [{
+    key: 'shipmtCreated',
+    text: 'onCreated',
+  }, {
+    key: 'shipmtPickedUp',
+    text: 'onPickedUp',
+  }, {
+    key: 'shipmtDelivered',
+    text: 'onDelivered',
+  }, {
+    key: 'shpmtPod',
+    text: 'onPod',
+  }],
+}];
+const cwmBizObjects = [{
+  key: 'cmsDelegation',
+  text: 'cmsDelegation',
+  triggers: CMS_DELEGATION_TRIGGERS,
+}];
+
 exports.NODE_BIZ_OBJECTS = {
   import: cmsBizObjects,
   export: cmsBizObjects,
+  tms: tmsBizObjects,
+  cwm: cwmBizObjects,
 };
