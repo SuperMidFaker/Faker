@@ -150,7 +150,7 @@ export default class TodoAcceptPane extends Component {
             statusStr = '回单待';
           } else {
             // 司机更新
-            statusStr = '回单待承司机';
+            statusStr = '回单待司机';
           }
         } else {
           statusStr = '回单待承运商';

@@ -129,7 +129,7 @@ export default class TodoAcceptPane extends Component {
             statusStr = '待';
           } else {
             // 司机更新
-            statusStr = '待承司机';
+            statusStr = '待司机';
           }
         } else {
           statusStr = '待承运商';
@@ -174,7 +174,7 @@ export default class TodoAcceptPane extends Component {
             statusStr = '待';
           } else {
             // 司机更新
-            statusStr = '待承司机';
+            statusStr = '待司机';
           }
         } else {
           statusStr = '待承运商';
