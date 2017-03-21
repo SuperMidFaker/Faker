@@ -23,7 +23,6 @@ export default class CMSDeclManifestPane extends Component {
   msg = formatMsg(this.props.intl)
   render() {
     const { form: { getFieldDecorator }, model, onNodeActionsChange, bizManifest: { templates } } = this.props;
-    // const ownerTitle = model.kind === 'export' ? this.msg('manifestProducer') : this.msg('manifestConsumer');
     return (
       <Collapse bordered={false} defaultActiveKey={['properties', 'events']}>
         <Panel header={this.msg('bizProperties')} key="properties">
