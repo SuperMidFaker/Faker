@@ -88,8 +88,14 @@ export default class MergeSplitModal extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.billRule !== this.props.billRule) {
       const rule = nextProps.billRule;
-      const mergeOptArr = rule.mergeOpt_arr.split(',');
-      const specialHsSortArr = rule.specialHsSort.split(',');
+      let mergeOptArr = [];
+      if (rule.mergeOpt_arr) {
+        mergeOptArr = rule.mergeOpt_arr.split(',');
+      }
+      let specialHsSortArr = [];
+      if (rule.specialHsSort) {
+        specialHsSortArr = rule.specialHsSort.split(',');
+      }
       this.setState({
         mergeOpt: {
           checked: rule.mergeOpt_checked,

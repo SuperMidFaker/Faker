@@ -1,22 +1,14 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Modal, Form, Radio, Mention, Row, Col, message } from 'antd';
+import { Modal, Form, Mention, message } from 'antd';
 import { closeRuleModel, saveBillRules } from 'common/reducers/cmsManifest';
 import { format } from 'client/common/i18n/helpers';
-import { SOURCE_CHOOSE } from 'common/constants';
+import ImportRuleForm from '../form/bodyImportRuleForm';
 import messages from '../message.i18n';
 const formatMsg = format(messages);
 
-const FormItem = Form.Item;
-const RadioButton = Radio.Button;
-const RadioGroup = Radio.Group;
 const Nav = Mention.Nav;
-
-const formItemLayout = {
-  labelCol: { span: 6 },
-  wrapperCol: { span: 18 },
-};
 
 function getFieldInits(formData) {
   const init = {};
@@ -60,8 +52,8 @@ export default class RelateImportRuleModal extends React.Component {
   }
   handleOk = () => {
     const element = Mention.toString(this.props.form.getFieldValue('rule_element'));
-    const rules = { ...this.props.form.getFieldsValue(), rule_element: element };
-    this.props.saveBillRules({ rules, billSeqNo: this.props.billRule.bill_seq_no, template_id: -1 }).then((result) => {
+    const rules = { ...this.props.form.getFieldsValue(), rule_element: element, template_id: -1 };
+    this.props.saveBillRules({ rules, billSeqNo: this.props.billRule.bill_seq_no }).then((result) => {
       if (result.error) {
         message.error(result.error.message);
       } else {
@@ -87,74 +79,10 @@ export default class RelateImportRuleModal extends React.Component {
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   render() {
-    const { form: { getFieldDecorator }, visibleRuleModal, fieldInits } = this.props;
+    const { form, visibleRuleModal, fieldInits } = this.props;
     return (
       <Modal title={'特殊字段规则设置确认'} width={650} visible={visibleRuleModal} onOk={this.handleOk} onCancel={this.handleCancel}>
-        <Row>
-          <Row>
-            <Col sm={24} lg={12}>
-              <FormItem label={'商品名称'} {...formItemLayout} >
-                {getFieldDecorator('rule_g_name', { initialValue: fieldInits.rule_g_name })(
-                  <RadioGroup>
-                    <RadioButton value={SOURCE_CHOOSE.import.key}>{SOURCE_CHOOSE.import.value}</RadioButton>
-                    <RadioButton value={SOURCE_CHOOSE.item.key}>{SOURCE_CHOOSE.item.value}</RadioButton>
-                  </RadioGroup>)}
-              </FormItem>
-            </Col>
-            <Col sm={24} lg={12}>
-              <FormItem label={'币制'} {...formItemLayout} >
-                {getFieldDecorator('rule_currency', { initialValue: fieldInits.rule_currency })(
-                  <RadioGroup>
-                    <RadioButton value={SOURCE_CHOOSE.import.key}>{SOURCE_CHOOSE.import.value}</RadioButton>
-                    <RadioButton value={SOURCE_CHOOSE.item.key}>{SOURCE_CHOOSE.item.value}</RadioButton>
-                  </RadioGroup>)}
-              </FormItem>
-            </Col>
-          </Row>
-          <Row>
-            <Col sm={24} lg={12}>
-              <FormItem label={'原产国'} {...formItemLayout} >
-                {getFieldDecorator('rule_orig_country', { initialValue: fieldInits.rule_orig_country })(
-                  <RadioGroup>
-                    <RadioButton value={SOURCE_CHOOSE.import.key}>{SOURCE_CHOOSE.import.value}</RadioButton>
-                    <RadioButton value={SOURCE_CHOOSE.item.key}>{SOURCE_CHOOSE.item.value}</RadioButton>
-                  </RadioGroup>)}
-              </FormItem>
-            </Col>
-            <Col sm={24} lg={12}>
-              <FormItem label={'净重'} {...formItemLayout} >
-                {getFieldDecorator('rule_net_wt', { initialValue: fieldInits.rule_net_wt })(
-                  <RadioGroup>
-                    <RadioButton value={SOURCE_CHOOSE.import.key}>{SOURCE_CHOOSE.import.value}</RadioButton>
-                    <RadioButton value={SOURCE_CHOOSE.item.key}>{SOURCE_CHOOSE.item.value}</RadioButton>
-                  </RadioGroup>)}
-              </FormItem>
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <FormItem label={'申报单位'} labelCol={{ span: 3 }} wrapperCol={{ span: 21 }} >
-                {getFieldDecorator('rule_gunit_num', { initialValue: fieldInits.rule_gunit_num })(
-                  <RadioGroup>
-                    <Radio value="g_unit_1">申报单位一</Radio>
-                    <Radio value="g_unit_2">申报单位二</Radio>
-                    <Radio value="g_unit_3">申报单位三</Radio>
-                  </RadioGroup>)}
-              </FormItem>
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <FormItem label={'规格型号'} labelCol={{ span: 3 }} wrapperCol={{ span: 21 }} >
-                {getFieldDecorator('rule_element', {
-                  initialValue: Mention.toEditorState(fieldInits.rule_element),
-                })(<Mention suggestions={this.state.suggestions} prefix="$" onSearchChange={this.handleSearch}
-                  placeholder="示例(固定值+备注)：String + $remark" multiLines style={{ width: '100%', height: '100%' }}
-                />)}
-              </FormItem>
-            </Col>
-          </Row>
-        </Row>
+        <ImportRuleForm form={form} formData={fieldInits} />
       </Modal>
     );
   }
