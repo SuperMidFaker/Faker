@@ -99,7 +99,11 @@ export default class TodoAcceptPane extends Component {
       render: (o, record) => {
         let toLocate = null;
         if (record.status === SHIPMENT_TRACK_STATUS.intransit) {
-          if (!record.last_location_date || record.last_location_date && new Date(moment(record.last_location_date).format('YYYY.MM.DD')) < new Date(moment().format('YYYY.MM.DD'))) {
+          const newDate = new Date();
+          newDate.setHours(0, 0, 0, 0);
+          const lastLocationDate = new Date(record.last_location_date);
+          lastLocationDate.setHours(0, 0, 0, 0);
+          if (!record.last_location_date || lastLocationDate < newDate) {
             toLocate = <Badge status="warning" text={this.msg('toLocateShipmt')} />;
           }
         }
@@ -142,7 +146,7 @@ export default class TodoAcceptPane extends Component {
             pickupEstDateStr = `计划提货：超时 ${moment(newDate).diff(pickupEstDate, 'days')} 天`;
             badgeColor = 'error';
           }
-          if (new Date(moment(record.pickup_est_date).format('YYYY.MM.DD')) <= new Date(moment().format('YYYY.MM.DD'))) {
+          if (pickupEstDate <= newDate) {
             statusEle = <Badge status={badgeColor} text={this.msg('dispatchedShipmt')} />;
           }
           relatedTime = (<span>
@@ -194,7 +198,7 @@ export default class TodoAcceptPane extends Component {
             <RadioButton value="toDeliver">{this.msg('toDeliverShipmt')}</RadioButton>
           </RadioGroup>
         </div>
-        <div className="pane-content">
+        <div>
           <Table size="middle" dataSource={dataSource} columns={columns} showHeader={false}
             locale={{ emptyText: '没有待办事项' }} rowKey="id" loading={this.props.trackingList.loading}
           />

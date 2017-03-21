@@ -1,5 +1,4 @@
 import React from 'react';
-import ShipmtnoColumn from '../../../common/shipmtnoColumn';
 import AddressColumn from '../../../common/addressColumn';
 import ActDate from '../../../common/actDate';
 import TrimSpan from 'client/components/trimSpan';
@@ -10,9 +9,7 @@ export const columnDef = handle => [{
   className: 'table-cell-vertical-align-top',
   render: (o, record) => (
     <div>
-      <ShipmtnoColumn shipmtNo={record.shipmt_no} publicKey={record.public_key}
-        shipment={record} onClick={() => handle.handleLoadShipmtDetail(record.shipmt_no)}
-      />
+      <div><a onClick={() => handle.handleLoadShipmtDetail(record.shipmt_no)}>{record.shipmt_no}</a></div>
       <div className="mdc-text-grey dashboard-table-font-small">{record.ref_external_no}</div>
       <div className="mdc-text-grey dashboard-table-font-small"><TrimSpan text={record.customer_name} maxLen={99} /></div>
     </div>

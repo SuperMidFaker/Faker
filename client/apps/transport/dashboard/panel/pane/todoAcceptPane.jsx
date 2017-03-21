@@ -146,7 +146,7 @@ export default class TodoAcceptPane extends Component {
             <RadioButton value="prompt">{this.msg('prompt')}</RadioButton>
           </RadioGroup>
         </div>
-        <div className="pane-content">
+        <div>
           <Table size="middle" dataSource={dataSource} columns={columns} showHeader={false}
             locale={{ emptyText: '没有待办事项' }} rowKey="id" loading={this.props.acceptanceList.loading}
           />
