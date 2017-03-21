@@ -15,6 +15,13 @@ export const CRM_ORDER_MODE = {
   transport: 'transport',
 };
 
+export const SCOF_ORDER_TRANSMODES = [
+  { value: '2', text: '国际海运' },
+  { value: '5', text: '国际空运' },
+  { value: '3', text: '跨境铁路运输' },
+  { value: '4', text: '跨境公路运输' },
+];
+
 export const CRM_BILLING_STATUS = {
   1: '创建未发送',
   2: '已发送,待对方对账',

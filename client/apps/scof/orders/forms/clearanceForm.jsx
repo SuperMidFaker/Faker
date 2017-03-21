@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Form, Row, Col, Card, Input, Select, InputNumber } from 'antd';
-import { DECL_I_TYPE, DECL_E_TYPE } from 'common/constants';
+import { TRANS_MODE, DECL_I_TYPE, DECL_E_TYPE } from 'common/constants';
 import { setClientForm, loadFlowNodeData } from 'common/reducers/crmOrders';
 import { intlShape, injectIntl } from 'react-intl';
 import { uuidWithoutDash } from 'client/common/uuid';
@@ -63,7 +63,7 @@ export default class ClearanceForm extends Component {
     const declWays = node.kind === 'export' ? DECL_E_TYPE : DECL_I_TYPE;
     return (
       <Card>
-        <Row key={node.uuid} style={{ marginBottom: 8 }}>
+        <Row style={{ marginBottom: 8 }}>
           {/* <Col sm={4}>
             <FormItem label="包装方式" {...formItemLayout}>
               <Select value={item.package} onChange={value => this.handleChange(k, 'package', value)}>
@@ -74,17 +74,14 @@ export default class ClearanceForm extends Component {
             </FormItem>
           </Col> */}
           <Col sm={24} lg={8}>
-            <FormItem label={this.msg('packageNum')} {...formItemLayout}>
-              <InputNumber value={node.pack_count} min={1} max={100000} style={{ width: '100%' }}
-                onChange={value => this.handleChange('pack_count', value)}
-              />
-            </FormItem>
-          </Col>
-          <Col sm={24} lg={8}>
-            <FormItem label={this.msg('delgGrossWt')} {...formItemLayout}>
-              <Input value={node.gross_wt} addonAfter="千克" type="number"
-                onChange={ev => this.handleChange('gross_wt', ev.target.value)}
-              />
+            <FormItem label={this.msg('transMode')} {...formItemLayout}>
+              <Select value={node.trans_mode} onChange={value => this.handleChange('trans_mode', value)}>
+                {
+                    TRANS_MODE.map(tr =>
+                      <Option value={tr.value} key={tr.value}>{tr.text}</Option>
+                    )
+                  }
+              </Select>
             </FormItem>
           </Col>
           <Col sm={24} lg={8}>
@@ -107,7 +104,7 @@ export default class ClearanceForm extends Component {
           </Col>
           <Col sm={24} lg={8}>
             <FormItem label={this.msg('customsBroker')} {...formItemLayout}>
-              <Select value={node.customs_parnter_id} onChange={value => this.handleChange('customs_parnter_id', value)}>
+              <Select value={node.customs_partner_id} onChange={value => this.handleChange('customs_partner_id', value)}>
                 {
                   formRequires.customsBrokers.map(cb =>
                     <Option value={cb.partner_id} key={cb.partner_id}>{cb.partner_code}|{cb.name}</Option>
@@ -130,6 +127,20 @@ export default class ClearanceForm extends Component {
           <Col sm={24} lg={8}>
             <FormItem label={this.msg('quoteNo')} {...formItemLayout}>
               <Select value={node.quote_no} />
+            </FormItem>
+          </Col>
+          <Col sm={24} lg={4}>
+            <FormItem label={this.msg('packageNum')} labelCol={{ span: 4 }} wrapperCol={{ span: 20 }}>
+              <InputNumber value={node.pack_count} min={1} max={100000} style={{ width: '100%' }}
+                onChange={value => this.handleChange('pack_count', value)}
+              />
+            </FormItem>
+          </Col>
+          <Col sm={24} lg={4}>
+            <FormItem label={this.msg('delgGrossWt')} labelCol={{ span: 4 }} wrapperCol={{ span: 20 }}>
+              <Input value={node.gross_wt} addonAfter="千克" type="number"
+                onChange={ev => this.handleChange('gross_wt', ev.target.value)}
+              />
             </FormItem>
           </Col>
           <Col sm={24} lg={16}>

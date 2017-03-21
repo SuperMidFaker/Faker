@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Form, Row, Col, Card, Input, Select, Popover, Icon, Switch } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { GOODSTYPES, TRANS_MODE } from 'common/constants';
+import { GOODSTYPES, SCOF_ORDER_TRANSMODES } from 'common/constants';
 import { setClientForm } from 'common/reducers/crmOrders';
 import { loadPartnerFlowList, loadFlowGraph } from 'common/reducers/scofFlow';
 import Container from './container';
@@ -74,21 +74,29 @@ export default class BasicForm extends Component {
         let nlevel = 0;
         const visitedMap = {};
         while (Object.keys(visitedMap).length < nodes.length) {
-          const visitNodes = [...levelNodes[nlevel]];
+          const visitNodes = [];
+          levelNodes[nlevel].forEach((node) => {
+            visitNodes.push(node);
+            visitedMap[node.id] = true;
+          });
           nlevel += 1;
           levelNodes.push([]);
           while (visitNodes.length) {
             const vn = visitNodes.shift();
-            if (!visitedMap[vn.id]) {
-              visitedMap[vn.id] = true;
-              const vnEnds = nodeEndMap[vn.id];
-              if (Array.isArray(vnEnds)) {
-                levelNodes[nlevel].push(...vnEnds);
+            const vnEnds = nodeEndMap[vn.id];
+            if (Array.isArray(vnEnds)) {
+              for (let j = 0; j < vnEnds.length; j++) {
+                const vne = vnEnds[j];
+                if (!visitedMap[vne.id]) {
+                  levelNodes[nlevel].push(vne);
+                  visitedMap[vne.id] = true;
+                }
               }
             }
           }
         }
         levelNodes.forEach((lnodes, level) => {
+          lnodes.sort((na, nb) => na.node_uuid - nb.node_uuid);
           lnodes.forEach((node) => {
             if (node.kind === 'tms') {
               subOrders.push({
@@ -170,7 +178,7 @@ export default class BasicForm extends Component {
           <Col sm={8}>
             <FormItem label="客户名称" {...formItemLayout} required="true">
               <Select showSearch optionFilterProp="children"
-                value={formData.customer_name}
+                value={formData.customer_partner_id}
                 onChange={value => this.handleClientChange(value)}
               >
                 {formRequires.clients.map(data => (
@@ -231,7 +239,7 @@ export default class BasicForm extends Component {
             <FormItem label="运输方式" {...formItemLayout} required="true">
               <Select value={formData.cust_shipmt_trans_mode} onChange={value => this.handleChange('cust_shipmt_trans_mode', value)}>
                 {
-                TRANS_MODE.map(tr =>
+                SCOF_ORDER_TRANSMODES.map(tr =>
                   <Option value={tr.value} key={tr.value}>{tr.text}</Option>
                 )
               }
