@@ -121,13 +121,27 @@ export default class TodoAcceptPane extends Component {
       className: 'table-cell-vertical-align-top',
       render: (o, record) => {
         let toLocate = null;
+        let statusStr = '';
+        if (record.sp_tenant_id === -1) {
+          statusStr = '待';
+        } else if (record.sp_tenant_id === 0 && record.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
+          if (record.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
+            statusStr = '待';
+          } else {
+            // 司机更新
+            statusStr = '待承司机';
+          }
+        } else {
+          statusStr = '待承运商';
+        }
         if (record.status === SHIPMENT_TRACK_STATUS.intransit) {
           const newDate = new Date();
           newDate.setHours(0, 0, 0, 0);
           const lastLocationDate = new Date(record.last_location_date);
           lastLocationDate.setHours(0, 0, 0, 0);
           if (!record.last_location_date || lastLocationDate < newDate) {
-            toLocate = <Badge status="warning" text={this.msg('toLocateShipmt')} />;
+            statusStr = `${statusStr}上报位置`;
+            toLocate = <Badge status="warning" text={statusStr} />;
           }
         }
         const area = renderLoc(record, 'province', 'city', 'district');
