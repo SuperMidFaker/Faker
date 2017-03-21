@@ -433,13 +433,13 @@ export default defineMessages({
     id: 'transport.shipment.track.pay',
     defaultMessage: '成本',
   },
+  shipmtActivity: {
+    id: 'transport.shipment.tab.activity',
+    defaultMessage: '动态',
+  },
   shipmtDetail: {
     id: 'transport.shipment.tab.detail',
     defaultMessage: '运单',
-  },
-  shipmtDynamic: {
-    id: 'transport.shipment.tab.dynamic',
-    defaultMessage: '动态',
   },
   shipmtEvents: {
     id: 'transport.shipment.tab.events',

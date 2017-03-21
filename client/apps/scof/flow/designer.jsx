@@ -65,13 +65,13 @@ export default class FlowDesigner extends React.Component {
     });
     const nodeColorMap = {
       import: 'red',
-      export: 'blue',
-      tms: 'green',
-      cwm: 'gray',
-      terminal: 'purple',
+      export: 'green',
+      tms: 'blue',
+      cwm: 'purple',
+      terminal: 'black',
     };
     this.graph.node().label('name');
-    this.graph.node().size('kind', kind => kind === 'terminal' ? 50 : [100, 50]);
+    this.graph.node().size('kind', kind => kind === 'terminal' ? 20 : [100, 50]);
     this.graph.node().color('kind', kind => nodeColorMap[kind]);
     this.graph.node().shape('kind', kind => kind === 'terminal' ? 'circle' : 'rect');
     this.graph.edge().shape('', () => 'smoothArrow');

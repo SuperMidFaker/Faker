@@ -147,12 +147,18 @@ export default class DelegationInfoHubPanel extends React.Component {
           <TabPane tab="委托详情" key="basic">
             <BasicPane delegation={delegation} files={files} />
           </TabPane>
+          <TabPane tab="动态" key="activity">
+            <ActivityLoggerPane />
+          </TabPane>
         </Tabs>
       );
     } else if (delgDispatch.status === CMS_DELEGATION_STATUS.accepted || delgDispatch.status === CMS_DELEGATION_STATUS.processing) {
       if (delgDispatch.recv_services.indexOf('ciq') === -1) {
         return (
           <Tabs activeKey={tabKey} onChange={this.handleTabChange}>
+            <TabPane tab="动态" key="activity">
+              <ActivityLoggerPane />
+            </TabPane>
             <TabPane tab="报关" key="customsDecl">
               <CustomsDeclPane />
             </TabPane>
@@ -167,6 +173,9 @@ export default class DelegationInfoHubPanel extends React.Component {
       }
       return (
         <Tabs activeKey={tabKey} onChange={this.handleTabChange}>
+          <TabPane tab="动态" key="activity">
+            <ActivityLoggerPane />
+          </TabPane>
           <TabPane tab="报关" key="customsDecl">
             <CustomsDeclPane />
           </TabPane>
@@ -185,6 +194,9 @@ export default class DelegationInfoHubPanel extends React.Component {
       if (delgDispatch.recv_services.indexOf('ciq') === -1) {
         return (
           <Tabs activeKey={tabKey} onChange={this.handleTabChange}>
+            <TabPane tab="动态" key="activity">
+              <ActivityLoggerPane />
+            </TabPane>
             <TabPane tab="报关" key="customsDecl">
               <CustomsDeclPane />
             </TabPane>
@@ -202,6 +214,9 @@ export default class DelegationInfoHubPanel extends React.Component {
       }
       return (
         <Tabs activeKey={tabKey} onChange={this.handleTabChange}>
+          <TabPane tab="动态" key="activity">
+            <ActivityLoggerPane />
+          </TabPane>
           <TabPane tab="报关" key="customsDecl">
             <CustomsDeclPane />
           </TabPane>
@@ -327,14 +342,7 @@ export default class DelegationInfoHubPanel extends React.Component {
             </Row>
           </div>
           <div className="body with-header-summary">
-            <Row gutter={16}>
-              <Col sm={24} md={14}>
-                {this.infoTabs()}
-              </Col>
-              <Col sm={24} md={10}>
-                <ActivityLoggerPane />
-              </Col>
-            </Row>
+            {this.infoTabs()}
           </div>
         </div>
         <AcceptModal />
