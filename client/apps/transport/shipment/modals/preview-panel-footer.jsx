@@ -506,7 +506,7 @@ export default class Footer extends React.Component {
         );
       }
 
-      if (stage === 'pod' || stage === 'todo') {
+      if (dispatch.status >= SHIPMENT_TRACK_STATUS.delivered(stage === 'pod' || stage === 'todo')) {
         if (!dispatch.pod_status || dispatch.pod_status === SHIPMENT_POD_STATUS.unsubmit) {
           if (dispatch.sp_tenant_id === -1) {
             buttons = (<span />);
