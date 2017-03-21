@@ -39,7 +39,7 @@ export default class CWMReceivingPane extends Component {
           </Row>
         </Panel>
         <Panel header={this.msg('bizEvents')} key="events">
-          <FlowTriggerTable kind={model.kind} bizObj="CWMReceiving" onNodeActionsChange={onNodeActionsChange} />
+          <FlowTriggerTable kind={model.kind} bizObj="cwmReceiving" onNodeActionsChange={onNodeActionsChange} />
         </Panel>
       </Collapse>
     );

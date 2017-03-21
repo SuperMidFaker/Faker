@@ -56,9 +56,14 @@ const tmsBizObjects = [{
     text: 'onPod',
   }],
 }];
+
 const cwmBizObjects = [{
-  key: 'cmsDelegation',
-  text: 'cmsDelegation',
+  key: 'cwmReceiving',
+  text: 'cwmReceiving',
+  triggers: CMS_DELEGATION_TRIGGERS,
+}, {
+  key: 'cwmShipping',
+  text: 'cwmShipping',
   triggers: CMS_DELEGATION_TRIGGERS,
 }];
 
