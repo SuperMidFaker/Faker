@@ -50,13 +50,13 @@ const messages = defineMessages({
     id: 'scof.flow.node.import',
     defaultMessage: '出口清关',
   },
-  flowNodeTms: {
+  flowNodeTMS: {
     id: 'scof.flow.node.tms',
-    defaultMessage: '国内运输',
+    defaultMessage: '运输',
   },
-  flowNodeCwm: {
+  flowNodeCWM: {
     id: 'scof.flow.node.cwm',
-    defaultMessage: '仓储协同',
+    defaultMessage: '仓储',
   },
   flowNodeTerminal: {
     id: 'scof.flow.node.terminal',
@@ -81,6 +81,18 @@ const messages = defineMessages({
   cmsCustomsDecl: {
     id: 'scof.flow.biz.cms.customs.decl',
     defaultMessage: '报关单',
+  },
+  tmsShipment: {
+    id: 'scof.flow.biz.tms.shipment',
+    defaultMessage: '运单',
+  },
+  cwmReceiving: {
+    id: 'scof.flow.biz.cwm.receiving',
+    defaultMessage: '收货通知',
+  },
+  cwmShipping: {
+    id: 'scof.flow.biz.cwm.shipping',
+    defaultMessage: '出货订单',
   },
   declCustoms: {
     id: 'scof.flow.biz.cms.declcustoms',
@@ -194,9 +206,9 @@ const messages = defineMessages({
     id: 'scof.flow.trigger.action',
     defaultMessage: '触发动作',
   },
-  eventTrigged: {
-    id: 'scof.flow.trigger.event.trigged',
-    defaultMessage: '事件触发',
+  timerWait: {
+    id: 'scof.flow.trigger.timer.wait',
+    defaultMessage: '等待',
   },
   instantTrigger: {
     id: 'scof.flow.trigger.instant',
@@ -218,9 +230,9 @@ const messages = defineMessages({
     id: 'scof.flow.trigger.action.instant.meantime',
     defaultMessage: '时立即',
   },
-  minutes: {
+  timerMinutes: {
     id: 'scof.flow.trigger.action.scheduled.minutes',
-    defaultMessage: '分钟后',
+    defaultMessage: '分钟',
   },
 });
 

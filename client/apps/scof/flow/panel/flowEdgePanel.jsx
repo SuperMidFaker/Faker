@@ -1,11 +1,13 @@
 import React, { Component, PropTypes } from 'react';
-import { Form, Card, Col, Icon, Row, Input, Tooltip } from 'antd';
+import { Form, Card, Col, Select, Row, Input } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import ConditionTable from './compose/conditionTable';
 import { NODE_BIZ_OBJECTS } from 'common/constants';
 import { formatMsg } from '../message.i18n';
 
 const FormItem = Form.Item;
+const Option = Select.Option;
+
 
 @injectIntl
 export default class FlowEdgePanel extends Component {
@@ -38,10 +40,12 @@ export default class FlowEdgePanel extends Component {
         </Row>
         <Row gutter={16}>
           <FormItem label={<span>
-            {this.msg('edgeCondition')}&nbsp;
-            <Tooltip title={this.msg('tooltipEdgeCondition')}>
-              <Icon type="question-circle-o" />
-            </Tooltip></span>}
+            {this.msg('edgeCondition')}:&nbsp;满足以下
+            <Select defaultValue="all" style={{ width: 60 }} >
+              <Option value="all">所有</Option>
+              <Option value="any">任一</Option>
+            </Select>
+            条件</span>}
           >
             <ConditionTable conditions={model.conditions} bizObjects={NODE_BIZ_OBJECTS[source.kind]}
               onAdd={onAdd} onUpdate={onUpdate} onDel={onDel}

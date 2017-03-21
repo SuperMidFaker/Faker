@@ -31,14 +31,14 @@ export default class FlowTmsNodePanel extends Component {
     return (
       <Row gutter={16}>
         <Col sm={24} md={8}>
-          <Card title={this.msg('tmsFlowNode')} bodyStyle={{ padding: 0 }}>
+          <Card title={this.msg('flowNodeTMS')} bodyStyle={{ padding: 0 }}>
             <FlowNodePanel form={form} model={model} onNodeActionsChange={onNodeActionsChange} />
           </Card>
         </Col>
         <Col sm={24} md={16}>
           <Card title={this.msg('bizObject')} bodyStyle={{ padding: 0 }}>
-            <Tabs defaultActiveKey="objShipmt">
-              <TabPane tab={this.msg('objShipmt')} key="objShipmt">
+            <Tabs defaultActiveKey="tmsShipment">
+              <TabPane tab={this.msg('tmsShipment')} key="tmsShipment">
                 <ShipmentPane form={form} model={model} onNodeActionsChange={onNodeActionsChange} />
               </TabPane>
             </Tabs>

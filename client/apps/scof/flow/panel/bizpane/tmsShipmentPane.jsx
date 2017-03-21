@@ -27,7 +27,7 @@ export default class TMSShipmentPane extends Component {
     const declWays = this.props.ietype === 'export' ? DECL_E_TYPE : DECL_I_TYPE;
     return (
       <Collapse bordered={false} defaultActiveKey={['properties', 'events']}>
-        <Panel header={this.msg('properties')} key="properties">
+        <Panel header={this.msg('bizProperties')} key="properties">
           <Row gutter={16}>
             <Col sm={24} lg={12}>
               <FormItem label={this.msg('consigner')}>

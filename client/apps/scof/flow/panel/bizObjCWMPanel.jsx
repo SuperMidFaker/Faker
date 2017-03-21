@@ -31,17 +31,17 @@ export default class FlowCwmNodePanel extends Component {
     return (
       <Row gutter={16}>
         <Col sm={24} md={8}>
-          <Card title={this.msg('cwmFlowNode')} bodyStyle={{ padding: 0 }}>
+          <Card title={this.msg('flowNodeCWM')} bodyStyle={{ padding: 0 }}>
             <FlowNodePanel form={form} model={model} onNodeActionsChange={onNodeActionsChange} />
           </Card>
         </Col>
         <Col sm={24} md={16}>
           <Card title={this.msg('bizObject')} bodyStyle={{ padding: 0 }}>
-            <Tabs defaultActiveKey="objReceiving">
-              <TabPane tab={this.msg('objReceiving')} key="objReceiving">
+            <Tabs defaultActiveKey="cwmReceiving">
+              <TabPane tab={this.msg('cwmReceiving')} key="cwmReceiving">
                 <ReceivingPane form={form} model={model} onNodeActionsChange={onNodeActionsChange} />
               </TabPane>
-              <TabPane tab={this.msg('objShipping')} key="objShipping">
+              <TabPane tab={this.msg('cwmShipping')} key="cwmShipping">
                 <ShippingPane form={form} model={model} onNodeActionsChange={onNodeActionsChange} />
               </TabPane>
             </Tabs>

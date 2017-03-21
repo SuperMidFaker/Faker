@@ -376,7 +376,7 @@ export default class DelgDeclList extends Component {
             </div>
             <div className="panel-body table-panel expandable">
               <Table rowSelection={rowSelection} columns={columns} rowKey="pre_entry_seq_no" dataSource={this.dataSource}
-                loading={delgdeclList.loading} scroll={{ x: 1600 }}
+                loading={delgdeclList.loading} scroll={{ x: 1800 }}
               />
             </div>
             <DeclnoFillModal reload={this.handleTableLoad} />

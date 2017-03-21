@@ -36,11 +36,11 @@ function CreateActionForm(props) {
       <Col sm={24} lg={8}>
         <FormItem label={msg('triggerTimer')}>
           {action.instant && <span>-</span>}
-          {!action.instant && <span>{msg('eventTrigged')}
+          {!action.instant && <span>{msg('timerWait')}
             <InputNumber value={action.delay} min={1} max={3600} style={{ width: '25%' }}
               onChange={value => handleChange('delay', value)}
             />
-            {msg('minutes')}</span>}
+            {msg('timerMinutes')}</span>}
         </FormItem>
       </Col>
       <Col sm={24} lg={8}>
@@ -85,11 +85,11 @@ function NotifyActionForm(props) {
       <Col sm={24} lg={8}>
         <FormItem label={msg('triggerTimer')}>
           {action.instant && <span>-</span>}
-          {!action.instant && <span>{msg('eventTrigged')}
+          {!action.instant && <span>{msg('timerWait')}
             <InputNumber value={action.delay} min={1} max={3600} style={{ width: '25%' }}
               onChange={value => handleChange('delay', value)}
             />
-            {msg('minutes')}</span>}
+            {msg('timerMinutes')}</span>}
         </FormItem>
       </Col>
       <Col sm={24} lg={8}>

@@ -39,8 +39,8 @@ export default class FlowDesigner extends React.Component {
       <Menu onClick={this.handleMenuClick}>
         <MenuItem key="nodeimport">{this.msg('flowNodeImport')}</MenuItem>
         <MenuItem key="nodeexport">{this.msg('flowNodeExport')}</MenuItem>
-        <MenuItem key="nodetms">{this.msg('flowNodeTms')}</MenuItem>
-        <MenuItem key="nodecwm">{this.msg('flowNodeCwm')}</MenuItem>
+        <MenuItem key="nodetms">{this.msg('flowNodeTMS')}</MenuItem>
+        <MenuItem key="nodecwm">{this.msg('flowNodeCWM')}</MenuItem>
         <MenuItem key="nodeterminal">{this.msg('flowNodeTerminal')}</MenuItem>
       </Menu>);
     this.state = {
