@@ -185,7 +185,7 @@ export default class DetailPane extends React.Component {
       deliverDate = (<div>
         {moment(shipmt.deliver_est_date).format('YYYY-MM-DD')}
         <span style={{ marginLeft: 30, fontSize: '70%' }}>
-          <ActDate actDate={dispatch.deliver_act_date} estDate={deliverPrmDate} textAfter="已交货" />
+          <ActDate actDate={dispatch.deliver_act_date} estDate={deliverPrmDate} textAfter="已送货" />
         </span>
       </div>);
     }

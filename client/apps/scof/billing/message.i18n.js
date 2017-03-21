@@ -36,7 +36,7 @@ const messages = defineMessages({
   },
   deliverEstDate: {
     id: 'scop.billing.form.deliverEstDate',
-    defaultMessage: '预计交货日期',
+    defaultMessage: '预计送货日期',
   },
   pickupActDate: {
     id: 'scop.billing.form.pickupActDate',
@@ -44,7 +44,7 @@ const messages = defineMessages({
   },
   deliverActDate: {
     id: 'scop.billing.form.deliverActDate',
-    defaultMessage: '实际交货日期',
+    defaultMessage: '实际送货日期',
   },
   namePlaceholder: {
     id: 'scop.billing.form.name.placeholder',

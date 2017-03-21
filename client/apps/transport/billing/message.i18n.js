@@ -35,7 +35,7 @@ export default defineMessages({
   },
   deliverEstDate: {
     id: 'transport.billing.form.deliverEstDate',
-    defaultMessage: '预计交货日期',
+    defaultMessage: '预计送货日期',
   },
   pickupActDate: {
     id: 'transport.billing.form.pickupActDate',
@@ -43,7 +43,7 @@ export default defineMessages({
   },
   deliverActDate: {
     id: 'transport.billing.form.deliverActDate',
-    defaultMessage: '实际交货日期',
+    defaultMessage: '实际送货日期',
   },
   namePlaceholder: {
     id: 'transport.billing.form.name.placeholder',

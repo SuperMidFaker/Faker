@@ -236,7 +236,7 @@ export default class BillingFeeList extends React.Component {
       dataIndex: 'pickup_act_date',
       render: (o, record) => <ActDate actDate={record.pickup_act_date} estDate={record.pickup_est_date} />,
     }, {
-      title: '实际交货时间',
+      title: '实际送货时间',
       dataIndex: 'deliver_act_date',
       render: (o, record) => <ActDate actDate={record.deliver_act_date} estDate={record.deliver_est_date} />,
     }, {

@@ -391,7 +391,7 @@ export default defineMessages({
   },
   deliverActDateChanged: {
     id: 'transport.shipment.log.deliverActDateChanged',
-    defaultMessage: '修改交货时间',
+    defaultMessage: '修改送货时间',
   },
   removePoint: {
     id: 'transport.shipment.log.removePoint',

@@ -77,9 +77,9 @@ export default class ExportExcel extends React.Component {
             >
               <Select onChange={this.handleDateTypeChange}>
                 <Option value="pickupEstDate">预计提货时间</Option>
-                <Option value="deliverEstDate">预计交货时间</Option>
+                <Option value="deliverEstDate">预计送货时间</Option>
                 <Option value="pickupActDate">实际提货时间</Option>
-                <Option value="deliverActDate">实际交货时间</Option>
+                <Option value="deliverActDate">实际送货时间</Option>
               </Select>
             </FormItem>
             <FormItem

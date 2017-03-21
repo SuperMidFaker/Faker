@@ -395,10 +395,10 @@ export default class FlowDesigner extends React.Component {
               <BizObjCMSPanel form={form} model={activeItem.get('model')} onNodeActionsChange={this.handleNodeActionsChange} />
               }
               {activeItem.get('type') === 'node' && (activeItem.get('model').kind === 'tms') &&
-              <BizObjTMSPanel form={form} model={activeItem.get('model')} />
+              <BizObjTMSPanel form={form} model={activeItem.get('model')} onNodeActionsChange={this.handleNodeActionsChange} />
               }
               {activeItem.get('type') === 'node' && (activeItem.get('model').kind === 'cwm') &&
-              <BizObjCWMPanel form={form} model={activeItem.get('model')} />
+              <BizObjCWMPanel form={form} model={activeItem.get('model')} onNodeActionsChange={this.handleNodeActionsChange} />
               }
               {activeItem.get('type') === 'edge' &&
                 <FlowEdgePanel model={activeItem.get('model')} source={activeItem.get('source').get('model')}

@@ -217,11 +217,11 @@ export default class PreviewPanel extends React.Component {
             </div>
             <div className="body with-header-summary">
               <Row gutter={16}>
-                <Col sm={24} md={14}>
-                  {this.renderTabs(dispatch.status)}
-                </Col>
                 <Col sm={24} md={10}>
                   <ActivityLoggerPane stage={stage} sourceType={sourceType} />
+                </Col>
+                <Col sm={24} md={14}>
+                  {this.renderTabs(dispatch.status)}
                 </Col>
               </Row>
             </div>

@@ -33,7 +33,7 @@ export default class CMSDelegationPane extends Component {
               <FormItem label={this.msg('declCustoms')}>
                 {getFieldDecorator('decl_port', {
                   initialValue: model.decl_port,
-                })(<Select>
+                })(<Select showSearch>
                   {
                     declPorts.map(dp => <Option value={dp.code} key={dp.code}>{dp.code}|{dp.name}</Option>)
                   }

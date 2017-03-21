@@ -110,10 +110,10 @@ export default class TodoAcceptPane extends Component {
             <div>{toLocate}</div>
             <div className="mdc-text-grey dashboard-table-font-small">
               <Tooltip title={record.address || ''}>
-                <span>{ lastLocation ? `当前位置：${lastLocation}` : '' }</span>
+                <span>{ lastLocation ? `位置：${lastLocation}` : '' }</span>
               </Tooltip>
             </div>
-            <div className="mdc-text-grey dashboard-table-font-small">{record.last_location_date ? `最近上报时间: ${moment(record.last_location_date).fromNow()}` : ''}</div>
+            <div className="mdc-text-grey dashboard-table-font-small">{record.last_location_date ? `更新时间: ${moment(record.last_location_date).fromNow()}` : ''}</div>
           </div>
         );
       },
@@ -137,9 +137,9 @@ export default class TodoAcceptPane extends Component {
           let pickupEstDateStr = '';
           let badgeColor = 'warning';
           if (moment(newDate).diff(pickupEstDate, 'days') === 0) {
-            pickupEstDateStr = '计划提货时间：今天';
+            pickupEstDateStr = '计划提货：今天';
           } else if (newDate > pickupEstDate) {
-            pickupEstDateStr = `计划提货时间：超时 ${moment(newDate).diff(pickupEstDate, 'days')} 天`;
+            pickupEstDateStr = `计划提货：超时 ${moment(newDate).diff(pickupEstDate, 'days')} 天`;
             badgeColor = 'error';
           }
           if (new Date(moment(record.pickup_est_date).format('YYYY.MM.DD')) <= new Date(moment().format('YYYY.MM.DD'))) {
@@ -160,9 +160,9 @@ export default class TodoAcceptPane extends Component {
             const deliverPrmDate = new Date(deliverDate);
             deliverPrmDate.setHours(0, 0, 0, 0);
             if (moment(newDate).diff(deliverPrmDate, 'days') === 0) {
-              deliverPrmDateStr = '承诺交货时间：今天';
+              deliverPrmDateStr = '承诺送货：今天';
             } else if (newDate > deliverPrmDate) {
-              deliverPrmDateStr = `承诺交货时间：超时 ${moment(newDate).diff(deliverPrmDate, 'days')} 天`;
+              deliverPrmDateStr = `承诺送货：超时 ${moment(newDate).diff(deliverPrmDate, 'days')} 天`;
               badgeColor = 'error';
             }
             statusEle = <Badge status={badgeColor} text={this.msg('toDeliverShipmt')} />;

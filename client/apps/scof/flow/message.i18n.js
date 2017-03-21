@@ -174,6 +174,10 @@ const messages = defineMessages({
     id: 'scof.flow.trigger',
     defaultMessage: '事件触发器',
   },
+  addTrigger: {
+    id: 'scof.flow.trigger.add',
+    defaultMessage: '添加触发器',
+  },
   triggerMode: {
     id: 'scof.flow.trigger.mode',
     defaultMessage: '触发方式',

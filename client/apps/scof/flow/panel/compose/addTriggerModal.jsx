@@ -196,7 +196,9 @@ export default class AddTriggerModal extends React.Component {
             return actionForm;
           })}
         </Form>
-        <Button type="dashed" style={{ width: '100%' }} icon="plus" onClick={this.handleActionAdd} />
+        <Button type="dashed" style={{ width: '100%' }} icon="plus" onClick={this.handleActionAdd} >
+          {this.msg('addTrigger')}
+        </Button>
       </Modal>
     );
   }

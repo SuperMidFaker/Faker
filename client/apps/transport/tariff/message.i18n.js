@@ -199,7 +199,7 @@ export default defineMessages({
   },
   deliverEstDate: {
     id: 'transport.tariff.deliverEstDate',
-    defaultMessage: '预计交货日期',
+    defaultMessage: '预计送货日期',
   },
   createdDate: {
     id: 'transport.tariff.createdDate',

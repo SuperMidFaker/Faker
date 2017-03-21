@@ -87,7 +87,7 @@ export default class ChangeActDateModal extends React.Component {
           <DatePicker value={this.state.pickupActDate} onChange={this.handlePickupActDateChange} />
         </FormItem>
         {this.props.status === SHIPMENT_TRACK_STATUS.delivered ? (
-          <FormItem label="实际交货时间" labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }} >
+          <FormItem label="实际送货时间" labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }} >
             <DatePicker value={this.state.deliverActDate} onChange={this.handleDeliverActDateChange} />
           </FormItem>) : ''}
       </Modal>

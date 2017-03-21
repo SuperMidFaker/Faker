@@ -117,7 +117,7 @@ const messages = defineMessages({
   },
   toDeliverShipmt: {
     id: 'transport.dashboard.log.toDelivered.shipment',
-    defaultMessage: '待交货',
+    defaultMessage: '待送货',
   },
   toUploadPod: {
     id: 'transport.dashboard.log.toUploadPod.shipment',
