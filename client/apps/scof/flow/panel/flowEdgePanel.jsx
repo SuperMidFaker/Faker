@@ -28,11 +28,13 @@ export default class FlowEdgePanel extends Component {
               <Input defaultValue={source.name} readOnly />
             </FormItem>
           </Col>
+          {target.kind !== 'terminal' &&
           <Col sm={12}>
             <FormItem label={this.msg('targetNode')}>
               <Input defaultValue={target.name} readOnly />
             </FormItem>
           </Col>
+          }
         </Row>
         <Row gutter={16}>
           <FormItem label={<span>

@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Card, Form, Icon, Input, Row, Col, Tabs, Table, Tooltip, Layout, Popconfirm } from 'antd';
+import { Breadcrumb, Button, Card, Form, Input, Row, Col, Tabs, Table, Tooltip, Layout, Popconfirm } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import InfoItem from 'client/components/InfoItem';
@@ -204,13 +204,12 @@ export default class CustomerList extends React.Component {
                   </Row>
                 </Card>
                 <Card bodyStyle={{ padding: 0 }}>
-                  <Tabs defaultActiveKey="recentOrders">
-                    <TabPane tab={<span><i className="icon icon-fontello-doc-text" />最近订单</span>} key="recentOrders" />
+                  <Tabs defaultActiveKey="flowRules">
                     <TabPane tab={<span><i className="icon icon-fontello-flow-tree" />流程规则</span>} key="flowRules" >
                       <FlowRulesPane customer={customer} />
                     </TabPane>
                     <TabPane tab={<span><i className="icon icon-fontello-book" />价格协议</span>} key="tariff" />
-                    <TabPane tab={<span><Icon type="message" />备注</span>} key="message" />
+                    <TabPane tab={<span><i className="icon icon-fontello-doc-text" />收发货信息</span>} key="consignInfo" />
                   </Tabs>
                 </Card>
               </Col>

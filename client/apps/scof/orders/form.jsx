@@ -43,10 +43,11 @@ export default class OrderForm extends Component {
     // steps.push(<Step key={1} status="process" description={<StepNodeForm formData={formData.subOrders[0]} index={0} operation={operation} />} />);
     for (let i = 0; i < subOrders.length; i++) {
       const order = subOrders[i];
-      if (order.kind === 'import' || order.kind === 'export') {
-        steps.push(<Step key={order.node_uuid} title={order.name} status="process" description={<ClearanceForm formData={order} index={i} operation={operation} />} />);
-      } else if (order.kind === 'tms') {
-        steps.push(<Step key={order.node_uuid} title={order.name} status="process" description={<TransportForm formData={order} index={i} operation={operation} />} />);
+      const node = order.node;
+      if (node.kind === 'import' || node.kind === 'export') {
+        steps.push(<Step key={node.node_uuid} title={node.name} status="process" description={<ClearanceForm formData={order} index={i} operation={operation} />} />);
+      } else if (node.kind === 'tms') {
+        steps.push(<Step key={node.node_uuid} title={node.name} status="process" description={<TransportForm formData={order} index={i} operation={operation} />} />);
       }
     }
     return steps;

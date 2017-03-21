@@ -134,7 +134,7 @@ export default class ActivityLoggerPane extends React.Component {
     );
     const timelineHeader = (
       <div>
-        <span>动态</span>
+        <span>动态事件</span>
         <div className="toolbar-right">
           <Dropdown overlay={menu} onClick={e => e.stopPropagation()}>
             <Button type="ghost">

@@ -142,18 +142,24 @@ export default class PreviewPanel extends React.Component {
       default: return 'success';
     }
   }
-  renderTabs(status) {
+  renderTabs(status, stage, sourceType) {
     if (status <= SHIPMENT_TRACK_STATUS.unaccepted) {
       return (
         <Tabs activeKey={this.props.tabKey} onChange={this.handleTabChange}>
           <TabPane tab={this.msg('shipmtDetail')} key="detail">
             <DetailPane />
           </TabPane>
+          <TabPane tab={this.msg('shipmtActivity')} key="activity">
+            <ActivityLoggerPane stage={stage} sourceType={sourceType} />
+          </TabPane>
         </Tabs>
       );
     } else if (status >= SHIPMENT_TRACK_STATUS.podsubmit) {
       return (
         <Tabs activeKey={this.props.tabKey} onChange={this.handleTabChange}>
+          <TabPane tab={this.msg('shipmtActivity')} key="activity">
+            <ActivityLoggerPane stage={stage} sourceType={sourceType} />
+          </TabPane>
           <TabPane tab={this.msg('shipmtDetail')} key="detail">
             <DetailPane />
           </TabPane>
@@ -174,6 +180,9 @@ export default class PreviewPanel extends React.Component {
     } else {
       return (
         <Tabs activeKey={this.props.tabKey} onChange={this.handleTabChange}>
+          <TabPane tab={this.msg('shipmtActivity')} key="activity">
+            <ActivityLoggerPane stage={stage} sourceType={sourceType} />
+          </TabPane>
           <TabPane tab={this.msg('shipmtDetail')} key="detail">
             <DetailPane />
           </TabPane>
@@ -224,14 +233,7 @@ export default class PreviewPanel extends React.Component {
               </Row>
             </div>
             <div className="body with-header-summary">
-              <Row gutter={16}>
-                <Col sm={24} md={10}>
-                  <ActivityLoggerPane stage={stage} sourceType={sourceType} />
-                </Col>
-                <Col sm={24} md={14}>
-                  {this.renderTabs(dispatch.status)}
-                </Col>
-              </Row>
+              {this.renderTabs(dispatch.status, stage, sourceType)}
             </div>
           </div>
           <ShareShipmentModal visible={this.state.shareShipmentModalVisible} shipmt={shipmt} />

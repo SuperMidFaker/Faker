@@ -22,19 +22,6 @@ export default class TMSShipmentPane extends Component {
     form: PropTypes.object.isRequired,
   }
   msg = formatMsg(this.props.intl)
-  eventData = [{
-    key: 'shipmtCreated',
-    name: 'onCreated',
-  }, {
-    key: 'shipmtPickedUp',
-    name: 'onPickedUp',
-  }, {
-    key: 'shipmtDelivered',
-    name: 'onDelivered',
-  }, {
-    key: 'shpmtPod',
-    name: 'onPod',
-  }]
   render() {
     const { form: { getFieldDecorator }, onNodeActionsChange, model, bizDelegation: { declPorts, customsBrokers, ciqBrokers } } = this.props;
     const declWays = this.props.ietype === 'export' ? DECL_E_TYPE : DECL_I_TYPE;

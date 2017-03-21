@@ -147,7 +147,7 @@ export default class BasicForm extends Component {
             }
           });
         });
-        this.props.setClientForm(-1, { flowid: value, subOrders });
+        this.props.setClientForm(-1, { flow_id: value, subOrders });
       }
     });
   }
@@ -182,7 +182,7 @@ export default class BasicForm extends Component {
           <Col sm={8}>
             <FormItem label="业务流程" {...formItemLayout} required="true">
               <Select showSearch optionFilterProp="children"
-                value={formData.flowid} onChange={this.handleFlowChange}
+                value={formData.flow_id} onChange={this.handleFlowChange}
               >
                 {flows.map(data => (
                   <Option key={data.id} value={data.id}>{data.name}</Option>)
@@ -211,7 +211,7 @@ export default class BasicForm extends Component {
                 GOODSTYPES.map(gt =>
                   <Option value={gt.value} key={gt.value}>{gt.text}</Option>
                 )
-              }
+                }
               </Select>
             </FormItem>
           </Col>
