@@ -129,6 +129,10 @@ export default defineMessages({
     id: 'cms.manifest.generate.entry',
     defaultMessage: '生成报关单',
   },
+  saveAsTemplate: {
+    id: 'cms.manifest.saveas.template',
+    defaultMessage: '保存为模板',
+  },
   addEntry: {
     id: 'cms.manifest.add.entry',
     defaultMessage: '直接添加报关单',

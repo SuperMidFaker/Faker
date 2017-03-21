@@ -32,6 +32,7 @@ const actionTypes = createActionTypes('@@welogix/cms/manifest/', [
   'DELETE_SELECTED_BODIES', 'DELETE_SELECTED_BODIES_SUCCEED', 'DELETE_SELECTED_BODIES_FAIL',
   'OPEN_RULE_MODEL', 'CLOSE_RULE_MODEL',
   'SAVE_BILL_RULES', 'SAVE_BILL_RULES_SUCCEED', 'SAVE_BILL_RULES_FAIL',
+  'SET_STEP_VISIBLE',
 ]);
 
 const initialState = {
@@ -81,6 +82,7 @@ const initialState = {
   visibleMSModal: false,
   visibleAmtModal: false,
   visibleRuleModal: false,
+  visibleStepModal: false,
   tabKey: 'container',
   certMarks: [],
   certParams: [],
@@ -167,6 +169,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, visibleRuleModal: true };
     case actionTypes.CLOSE_RULE_MODEL:
       return { ...state, visibleRuleModal: false };
+    case actionTypes.SET_STEP_VISIBLE:
+      return { ...state, visibleStepModal: action.data };
     case actionTypes.SUBMIT_MERGESPLIT_SUCCEED:
       return { ...state, billMeta: { ...state.billMeta, entries: action.result.data } };
     case actionTypes.SET_PANE_TABKEY:
@@ -183,6 +187,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, containers: action.result.data };
     case actionTypes.SAVE_CONTAINER_SUCCEED:
       return { ...state, containers: action.result.data };
+    case actionTypes.SAVE_BILL_RULES_SUCCEED:
+      return { ...state, billRule: action.payload.rules };
     default:
       return state;
   }
@@ -617,6 +623,14 @@ export function saveBillRules(datas) {
       endpoint: 'v1/cms/manifest/bill/rules/save',
       method: 'post',
       data: datas,
+      payload: { rules: datas.rules },
     },
+  };
+}
+
+export function setStepVisible(val) {
+  return {
+    type: actionTypes.SET_STEP_VISIBLE,
+    data: val,
   };
 }
