@@ -4,12 +4,13 @@ import { Breadcrumb, Button, Dropdown, Layout, Menu, Icon, Form, message, Popcon
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { addNewBillBody, delBillBody, editBillBody, saveBillHead,
-  openMergeSplitModal, billDelete, updateHeadNetWt, loadBillBody, saveBillRules } from 'common/reducers/cmsManifest';
+  openMergeSplitModal, billDelete, updateHeadNetWt, loadBillBody, saveBillRules, setStepVisible } from 'common/reducers/cmsManifest';
 import { loadTemplateFormVals } from 'common/reducers/cmsSettings';
 import NavLink from 'client/components/nav-link';
 import SheetHeadPanel from './panel/manifestHeadPanel';
 import SheetBodyPanel from './panel/manifestBodyPanel';
 import MergeSplitModal from './modals/mergeSplit';
+import SaveTemplateModal from './modals/saveTemplateSteps';
 import SheetExtraPanel from './panel/manifestExtraPanel';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -31,7 +32,7 @@ const Option = Select.Option;
     formData: state.cmsSettings.formData,
   }),
   { addNewBillBody, delBillBody, editBillBody, saveBillHead, openMergeSplitModal,
-    billDelete, updateHeadNetWt, loadBillBody, loadTemplateFormVals, saveBillRules }
+    billDelete, updateHeadNetWt, loadBillBody, loadTemplateFormVals, saveBillRules, setStepVisible }
 )
 @connectNav({
   depth: 3,
@@ -135,16 +136,20 @@ export default class ManifestEditor extends React.Component {
     this.context.router.push({ pathname });
   }
   handleBillSave = () => {
-    const { billHead, ietype, loginId, tenantId, formData } = this.props;
-    const head = { ...billHead, ...this.props.form.getFieldsValue(), template_id: formData.template_id };
-    this.props.saveBillHead({ head, ietype, loginId, tenantId }).then(
-      (result) => {
-        if (result.error) {
-          message.error(result.error.message);
-        } else {
-          message.info('更新成功');
-        }
-      });
+    this.props.form.validateFields((errors) => {
+      if (!errors) {
+        const { billHead, ietype, loginId, tenantId, formData } = this.props;
+        const head = { ...billHead, ...this.props.form.getFieldsValue(), template_id: formData.template_id };
+        this.props.saveBillHead({ head, ietype, loginId, tenantId }).then(
+        (result) => {
+          if (result.error) {
+            message.error(result.error.message);
+          } else {
+            message.info('更新成功');
+          }
+        });
+      }
+    });
   }
   handleBillDelete = () => {
     this.props.billDelete(this.props.billHead.bill_seq_no).then(
@@ -194,6 +199,10 @@ export default class ManifestEditor extends React.Component {
       this.props.saveBillHead({ head, ietype, loginId, tenantId });
     }
   }
+  handleSaveAsTemplate = () => {
+    this.props.setStepVisible(true);
+  }
+
   lockMenu = (
     <Menu>
       <Menu.Item key="lock"><Icon type="lock" /> 锁定</Menu.Item>
@@ -246,6 +255,7 @@ export default class ManifestEditor extends React.Component {
                 )}
               </Select>)}
             <div className="top-bar-tools">
+              <Button type="primary" size="large" icon="file" onClick={this.handleSaveAsTemplate}>{this.msg('saveAsTemplate')}</Button>
               {generateEntry &&
                 <Button type="primary" size="large" icon="addfile" onClick={this.handleGenerateEntry}>{this.msg('generateEntry')}</Button>
                 }
@@ -294,6 +304,7 @@ export default class ManifestEditor extends React.Component {
           </div>
         </Sider>
         <MergeSplitModal />
+        <SaveTemplateModal />
       </Layout>
     );
   }
