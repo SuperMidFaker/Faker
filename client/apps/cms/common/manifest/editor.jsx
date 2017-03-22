@@ -220,7 +220,7 @@ export default class ManifestEditor extends React.Component {
       )}
     </Menu>);
     const path = `/clearance/${ietype}/manifest/`;
-    const generateEntry = !this.props.readonly && billMeta.entries.length === 0;
+    const editable = !this.props.readonly && billMeta.entries.length === 0;
     return (
       <Layout>
         <Layout>
@@ -256,7 +256,7 @@ export default class ManifestEditor extends React.Component {
               </Select>)}
             <div className="top-bar-tools">
               <Button type="primary" size="large" icon="file" onClick={this.handleSaveAsTemplate}>{this.msg('saveAsTemplate')}</Button>
-              {generateEntry &&
+              {editable &&
                 <Button type="primary" size="large" icon="addfile" onClick={this.handleGenerateEntry}>{this.msg('generateEntry')}</Button>
                 }
               <Dropdown overlay={this.lockMenu}>
@@ -275,10 +275,10 @@ export default class ManifestEditor extends React.Component {
             <div className="page-body tabbed">
               <Tabs defaultActiveKey="header">
                 <TabPane tab="清单表头" key="header">
-                  <SheetHeadPanel ietype={ietype} readonly={readonly} form={form} formData={this.state.headData} ruleRequired={this.state.ruleRequired} type="bill" onSave={this.handleBillSave} />
+                  <SheetHeadPanel ietype={ietype} readonly={!editable} form={form} formData={this.state.headData} ruleRequired={this.state.ruleRequired} type="bill" onSave={this.handleBillSave} />
                 </TabPane>
                 <TabPane tab="清单表体" key="body">
-                  <SheetBodyPanel ietype={ietype} readonly={readonly} headForm={form} data={billBodies} headNo={billHead.bill_seq_no}
+                  <SheetBodyPanel ietype={ietype} readonly={!editable} headForm={form} data={billBodies} headNo={billHead.bill_seq_no}
                     onAdd={actions.addNewBillBody} onDel={actions.delBillBody} onEdit={actions.editBillBody}
                     billSeqNo={billHead.bill_seq_no} type="bill"
                   />
