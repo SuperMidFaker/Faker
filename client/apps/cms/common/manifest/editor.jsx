@@ -304,7 +304,7 @@ export default class ManifestEditor extends React.Component {
           </div>
         </Sider>
         <MergeSplitModal />
-        <SaveTemplateModal />
+        <SaveTemplateModal ietype={ietype} />
       </Layout>
     );
   }

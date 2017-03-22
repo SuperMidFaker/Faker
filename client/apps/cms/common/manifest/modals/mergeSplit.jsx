@@ -248,7 +248,8 @@ export default class MergeSplitModal extends React.Component {
                 <FormItem label={this.msg('specialHscodeSort')}>
                   {getFieldDecorator('specialSort', {
                     rules: [{ type: 'array' }],
-                  })(<Select multiple style={{ width: '100%' }} >
+                    initialValue: splitOpt.hsCategory,
+                  })(<Select multiple style={{ width: '100%' }}>
                     {
                         hscodeCategories.map(ct =>
                           <Option value={ct.id} key={ct.id}>{ct.name}</Option>

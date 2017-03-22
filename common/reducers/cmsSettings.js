@@ -11,6 +11,7 @@ const actionTypes = createActionTypes('@@welogix/cms/settings/', [
   'DELETE_RELATED_CUSTOMER', 'DELETE_RELATED_CUSTOMER_SUCCEED', 'DELETE_RELATED_CUSTOMER_FAIL',
   'LOAD_FORM_VALS', 'LOAD_FORM_VALS_SUCCEED', 'LOAD_FORM_VALS_FAIL',
   'SAVE_TEMPLATE_DATA', 'SAVE_TEMPLATE_DATA_SUCCEED', 'SAVE_TEMPLATE_DATA_FAIL',
+  'SAVE_GENERATED_TEMPLATE', 'SAVE_GENERATED_TEMPLATE_SUCCEED', 'SAVE_GENERATED_TEMPLATE_FAIL',
 ]);
 
 const initialState = {
@@ -185,6 +186,21 @@ export function saveTemplateData(datas) {
         actionTypes.SAVE_TEMPLATE_DATA_FAIL,
       ],
       endpoint: 'v1/cms/settings/template/formdata/save',
+      method: 'post',
+      data: datas,
+    },
+  };
+}
+
+export function createGeneratedTemplate(datas) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SAVE_GENERATED_TEMPLATE,
+        actionTypes.SAVE_GENERATED_TEMPLATE_SUCCEED,
+        actionTypes.SAVE_GENERATED_TEMPLATE_FAIL,
+      ],
+      endpoint: 'v1/cms/settings/template/generated/create',
       method: 'post',
       data: datas,
     },
