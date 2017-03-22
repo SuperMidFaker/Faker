@@ -20,6 +20,7 @@ const Step = Steps.Step;
 @injectIntl
 @connect(
   state => ({
+    tenantId: state.account.tenantId,
     shipmt: state.shipment.previewer.shipmt,
     goodsTypes: state.shipment.formRequire.goodsTypes,
     packagings: state.shipment.formRequire.packagings,
@@ -33,6 +34,7 @@ const Step = Steps.Step;
 export default class DetailPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
+    tenantId: PropTypes.number.isRequired,
     shipmt: PropTypes.object.isRequired,
     goodsTypes: PropTypes.array.isRequired,
     packagings: PropTypes.array.isRequired,
@@ -85,6 +87,11 @@ export default class DetailPane extends React.Component {
     const { shipmt } = this.props;
     this.props.showChangeShipmentModal({ visible: true, shipmtNo: shipmt.shipmt_no, type: 'timeInfoChanged' });
   }
+  handleChangeDistance = (e) => {
+    e.stopPropagation();
+    const { shipmt } = this.props;
+    this.props.showChangeShipmentModal({ visible: true, shipmtNo: shipmt.shipmt_no, type: 'distanceInfoChanged' });
+  }
   handleChangeTransitConsigner = (e) => {
     e.stopPropagation();
     const { shipmt } = this.props;
@@ -118,7 +125,7 @@ export default class DetailPane extends React.Component {
     }
   }
   render() {
-    const { shipmt, goodsTypes, packagings, containerPackagings, vehicleTypes, vehicleLengths, dispatch } = this.props;
+    const { tenantId, shipmt, goodsTypes, packagings, containerPackagings, vehicleTypes, vehicleLengths, dispatch } = this.props;
     const apackagings = this.props.shipmt.transport_mode_code === 'CTN' ? containerPackagings : packagings.map(pk => ({
       key: pk.package_code,
       value: pk.package_name,
@@ -127,11 +134,12 @@ export default class DetailPane extends React.Component {
     const goodsType = goodsTypes.find(item => item.value === shipmt.goods_type);
     const vehicleType = vehicleTypes.find(item => item.value === shipmt.vehicle_type_id);
     const vehicleLength = vehicleLengths.find(item => item.value === shipmt.vehicle_length_id);
-    let clientInfo = '';
-    let shipmtSchedule = (<div />);
-
-    if (shipmt.status <= 5) {
-      clientInfo = (
+    let clientInfoExtra = '';
+    let shipmtScheduleExtra = (<div />);
+    let transitModeInfoExtra = '';
+    let goodsInfoExtra = '';
+    if (tenantId === shipmt.tenant_id && dispatch.status <= 5) {
+      clientInfoExtra = (
         <Dropdown overlay={(
           <Menu>
             <Menu.Item>
@@ -147,7 +155,7 @@ export default class DetailPane extends React.Component {
           </a>
         </Dropdown>
       );
-      shipmtSchedule = (
+      shipmtScheduleExtra = (
         <Dropdown overlay={(
           <Menu>
             <Menu.Item>
@@ -159,6 +167,9 @@ export default class DetailPane extends React.Component {
             <Menu.Item>
               <a onClick={this.handleChangeTransitTime}>修改时间信息</a>
             </Menu.Item>
+            <Menu.Item>
+              <a onClick={this.handleChangeDistance}>修改路程</a>
+            </Menu.Item>
           </Menu>)}
         >
           <a className="ant-dropdown-link">
@@ -166,6 +177,8 @@ export default class DetailPane extends React.Component {
           </a>
         </Dropdown>
       );
+      transitModeInfoExtra = (<a onClick={this.handleChangeTransitMode}><Icon type="edit" /></a>);
+      goodsInfoExtra = (<a onClick={this.handleChangeTransitGoodsInfo}><Icon type="edit" /></a>);
     }
 
     let pickupDate = moment(shipmt.pickup_est_date).format('YYYY-MM-DD');
@@ -189,10 +202,11 @@ export default class DetailPane extends React.Component {
         </span>
       </div>);
     }
+    const distanceStr = shipmt.distance ? `${shipmt.distance}${this.msg('kilometer')}` : '';
     return (
       <div className="pane-content tab-pane">
         <Card title={this.msg('customerInfo')} bodyStyle={{ padding: 8 }}
-          extra={clientInfo}
+          extra={clientInfoExtra}
         >
           <Row>
             <Col span="8">
@@ -227,8 +241,10 @@ export default class DetailPane extends React.Component {
             </Col>
           </Row>
         </Card>
-        <Card title={`${this.msg('shipmtSchedule')} ${shipmt.transit_time || '当'}${this.msg('day')}`} bodyStyle={{ padding: 8 }}
-          extra={shipmtSchedule}
+        <Card
+          title={`${this.msg('shipmtSchedule')} ${shipmt.transit_time || '当'}${this.msg('day')} ${distanceStr}`}
+          bodyStyle={{ padding: 8 }}
+          extra={shipmtScheduleExtra}
         >
           <div className="trans_schedule">
             <div className="schedule">
@@ -274,7 +290,7 @@ export default class DetailPane extends React.Component {
           </div>
         </Card>
         <Card title={this.msg('transitModeInfo')} bodyStyle={{ padding: 8 }}
-          extra={<a onClick={this.handleChangeTransitMode}><Icon type="edit" /></a>}
+          extra={transitModeInfoExtra}
         >
           <Row>
             <Col span="12">
@@ -313,7 +329,7 @@ export default class DetailPane extends React.Component {
           </Row>
         </Card>
         <Card title={this.msg('goodsInfo')} bodyStyle={{ padding: 8 }}
-          extra={<a onClick={this.handleChangeTransitGoodsInfo}><Icon type="edit" /></a>}
+          extra={goodsInfoExtra}
         >
           <Row>
             <Col span="8">

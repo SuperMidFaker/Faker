@@ -9,6 +9,7 @@ import GoodsInfo from '../forms/goods-info';
 import ModeInfo from '../forms/mode-info';
 import ClientInfo from '../forms/clientInfo';
 import CorrelInfo from '../forms/correlInfo';
+import DistanceInfo from '../forms/distanceInfo';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import './preview-panel.less';
@@ -87,6 +88,8 @@ export default class ChangeShipment extends React.Component {
       return (<ClientInfo outerColSpan={12} intl={intl} formhoc={form} mode="edit" vertical />);
     } else if (type === 'correlInfoChanged') {
       return (<CorrelInfo formhoc={form} intl={intl} vertical />);
+    } else if (type === 'distanceInfoChanged') {
+      return (<DistanceInfo formhoc={form} intl={intl} vertical />);
     }
     return null;
   }

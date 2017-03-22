@@ -393,6 +393,10 @@ export default defineMessages({
     id: 'transport.shipment.log.deliverActDateChanged',
     defaultMessage: '修改送货时间',
   },
+  distanceInfoChanged: {
+    id: 'transport.shipment.log.distanceInfoChanged',
+    defaultMessage: '修改路程',
+  },
   removePoint: {
     id: 'transport.shipment.log.removePoint',
     defaultMessage: '删除位置信息',

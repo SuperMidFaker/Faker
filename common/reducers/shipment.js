@@ -10,7 +10,7 @@ import { REPORT_LOC_SUCCEED, LOAD_TRANSHIPMT } from './trackingLandStatus';
 import { CREATE_EXCEPTION_SUCCEED, LOAD_EXCPSHIPMT } from './trackingLandException';
 import { LOAD_PODSHIPMT, SAVE_POD_SUCCEED } from './trackingLandPod';
 import { LOAD_DISPSHIPMENT } from './transportDispatch';
-import { LOAD_APTSHIPMENT } from './transport-acceptance';
+import { LOAD_APTSHIPMENT, SAVE_EDIT_SUCCEED } from './transport-acceptance';
 import { LOAD_FEES } from './transportBilling';
 const actionTypes = createActionTypes('@@welogix/transport/shipment/', [
   'SET_CONSIGN_FIELDS', 'SAVE_LOCAL_GOODS', 'EDIT_LOCAL_GOODS',
@@ -278,6 +278,9 @@ export default function reducer(state = initialState, action) {
     }
     case LOAD_FEES: {
       return { ...state, previewer: { ...state.previewer, loaded: false, visible: false } };
+    }
+    case SAVE_EDIT_SUCCEED: {
+      return { ...state, previewer: { ...state.previewer, loaded: false } };
     }
     case actionTypes.UPDATE_FORM_REQUIRE_PARAMS: {
       return { ...state, formRequireJudgeParams: { ...state.formRequireJudgeParams, ...action.formRequireJudgeParams } };
@@ -748,7 +751,7 @@ export function countTotal(filters) {
   };
 }
 
-export function loadDispatchTable({ tenantId, filters, pageSize, currentPage }) {
+export function loadDispatchTable({ tenantId, filters, pageSize, current }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -758,7 +761,7 @@ export function loadDispatchTable({ tenantId, filters, pageSize, currentPage }) 
       ],
       endpoint: 'v1/transport/dispatch/shipmts',
       method: 'get',
-      params: { tenantId, filters: JSON.stringify(filters), pageSize, currentPage },
+      params: { tenantId, filters: JSON.stringify(filters), pageSize, current },
     },
   };
 }

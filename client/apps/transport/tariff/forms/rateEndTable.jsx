@@ -80,7 +80,7 @@ export default class RateEndTable extends React.Component {
   columns = [{
     title: '目的地',
     dataIndex: 'end',
-    width: 200,
+    width: 240,
     fixed: 'left',
     render: (o, record) => renderRegion(record.end),
   }, {

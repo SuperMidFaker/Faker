@@ -52,7 +52,7 @@ export default class TodoAcceptPane extends Component {
         status: this.state.type,
       },
       pageSize: this.props.acceptanceList.pageSize,
-      currentPage: 1,
+      current: 1,
       sortField: '',
       sortOrder: '',
     });
@@ -78,19 +78,7 @@ export default class TodoAcceptPane extends Component {
     const { tenantId } = this.props;
     const dataSource = new Table.DataSource({
       fetcher: params => this.props.loadDispatchTable(params),
-      resolve: (result) => {
-        const data = result.data;
-        data.sort((a, b) => {
-          if (new Date(a.prompt_last_date) < new Date(b.prompt_last_date)) {
-            return 1;
-          } else if (new Date(a.created_date) > new Date(b.created_date)) {
-            return 1;
-          } else {
-            return 0;
-          }
-        });
-        return data;
-      },
+      resolve: result => result.data,
       getPagination: (result, resolve) => ({
         total: result.totalCount,
         current: resolve(result.totalCount, result.current, result.pageSize),
@@ -102,7 +90,7 @@ export default class TodoAcceptPane extends Component {
         const params = {
           tenantId,
           pageSize: pagination.pageSize,
-          currentPage: pagination.current,
+          current: pagination.current,
           sortField: sorter.field,
           sortOrder: sorter.order === 'descend' ? 'desc' : 'asc',
           filters: {

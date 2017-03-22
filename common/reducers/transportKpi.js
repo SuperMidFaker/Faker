@@ -12,6 +12,7 @@ const initialState = {
   loaded: false,
   query: {
     partnerId: -1,
+    partnerTenantId: -1,
     separationDate: 1,
   },
   kpi: {
@@ -60,7 +61,7 @@ export default function reducer(state = initialState, action) {
   }
 }
 
-export function loadKpi(tenantId, beginDate, endDate, partnerId, separationDate) {
+export function loadKpi(tenantId, beginDate, endDate, partnerId, partnerTenantId, separationDate, sourceType) {
   return {
     [CLIENT_API]: {
       types: [
@@ -70,7 +71,15 @@ export function loadKpi(tenantId, beginDate, endDate, partnerId, separationDate)
       ],
       endpoint: 'v1/transport/kpi',
       method: 'get',
-      params: { tenantId, beginDate: moment(beginDate).format('YYYY-MM-DD HH:mm:ss'), endDate: moment(endDate).format('YYYY-MM-DD HH:mm:ss'), partnerId, separationDate },
+      params: {
+        tenantId,
+        beginDate: moment(beginDate).format('YYYY-MM-DD HH:mm:ss'),
+        endDate: moment(endDate).format('YYYY-MM-DD HH:mm:ss'),
+        partnerId,
+        partnerTenantId,
+        separationDate,
+        sourceType,
+      },
     },
   };
 }

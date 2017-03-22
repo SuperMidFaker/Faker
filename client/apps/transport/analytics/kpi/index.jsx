@@ -2,17 +2,17 @@ import React, { PropTypes } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { Breadcrumb, Layout, Select, DatePicker, Button, Menu, Dropdown, Icon, Table, Input } from 'antd';
 import { loadKpi, changeModes } from 'common/reducers/transportKpi';
-import { loadFormRequire } from 'common/reducers/shipment';
+import { loadPartners } from 'common/reducers/shipment';
 import TrafficVolume from './trafficVolume';
 import Punctual from './punctual';
 import OverTime from './overTime';
 import Fees from './fees';
 import Exceptional from './exceptional';
 import { createFilename } from 'client/util/dataTransform';
+import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 
 const { Header, Content, Sider } = Layout;
 const Option = Select.Option;
@@ -20,11 +20,6 @@ const { MonthPicker } = DatePicker;
 const SubMenu = Menu.SubMenu;
 const Search = Input.Search;
 
-function fetchData({ cookie, state, dispatch }) {
-  return dispatch(loadFormRequire(cookie, state.account.tenantId));
-}
-
-@connectFetch()(fetchData)
 @injectIntl
 @connectNav({
   depth: 2,
@@ -35,12 +30,11 @@ function fetchData({ cookie, state, dispatch }) {
     tenantId: state.account.tenantId,
     kpi: state.transportKpi.kpi,
     query: state.transportKpi.query,
-    clients: state.shipment.formRequire.clients,
     loading: state.transportKpi.loading,
     loaded: state.transportKpi.loaded,
     modes: state.transportKpi.modes,
   }),
-  { loadKpi, changeModes }
+  { loadKpi, changeModes, loadPartners }
 )
 export default class Kpi extends React.Component {
   static propTypes = {
@@ -49,34 +43,42 @@ export default class Kpi extends React.Component {
     loadKpi: PropTypes.func.isRequired,
     kpi: PropTypes.object.isRequired,
     query: PropTypes.object.isRequired,
-    clients: PropTypes.array.isRequired,
     loading: PropTypes.bool.isRequired,
     loaded: PropTypes.bool.isRequired,
     changeModes: PropTypes.func.isRequired,
     modes: PropTypes.object.isRequired,
+    loadPartners: PropTypes.func.isRequired,
   }
   state = {
     selectedKey: '1',
     customer: {},
     currentPage: 1,
     collapsed: false,
+    customers: [],
+    carriers: [],
     clients: [],
     loaded: false,
+    sourceType: 'sp',
   }
-  componentDidMount() {
-    if (this.props.clients.length !== 0) {
-      this.handleTableLoad(this.props);
-    }
+  componentWillMount() {
+    this.props.loadPartners(this.props.tenantId, [PARTNER_ROLES.CUS, PARTNER_ROLES.DCUS], [PARTNER_BUSINESSE_TYPES.transport]).then((result) => {
+      this.setState({ customers: result.data, clients: result.data }, () => {
+        this.handleTableLoad(this.props);
+      });
+    });
+    this.props.loadPartners(this.props.tenantId, [PARTNER_ROLES.SUP], [PARTNER_BUSINESSE_TYPES.transport]).then((result) => {
+      this.setState({ carriers: result.data });
+    });
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.clients.length > 0) {
-      this.setState({ clients: nextProps.clients, loaded: nextProps.loaded });
+    if (this.state.clients.length > 0) {
+      this.setState({ loaded: nextProps.loaded });
     }
-    if (!nextProps.loaded && nextProps.clients.length !== this.props.clients.length) {
+    if (!nextProps.loaded && this.state.clients.length !== this.state.clients.length) {
       this.handleTableLoad(nextProps);
     }
     if (!this.state.customer.partner_id) {
-      this.setState({ customer: nextProps.clients[0] });
+      this.setState({ customer: this.state.clients[0] });
     }
   }
   shouldComponentUpdate(nextProps, nextState) {
@@ -96,8 +98,10 @@ export default class Kpi extends React.Component {
       tenantId,
       beginDate,
       endDate,
-      props.clients[0].partner_id,
-      query.separationDate
+      this.state.clients[0] ? this.state.clients[0].partner_id : -1,
+      this.state.clients[0] ? this.state.clients[0].tid : -1,
+      query.separationDate,
+      this.state.sourceType
     );
   }
   toggle = () => {
@@ -115,13 +119,19 @@ export default class Kpi extends React.Component {
       customer: record,
     });
     const { tenantId, query } = this.props;
-    this.props.loadKpi(tenantId, query.beginDate, query.endDate, record.partner_id, query.separationDate);
+    this.props.loadKpi(tenantId, query.beginDate, query.endDate, record.partner_id, record.tid, query.separationDate, this.state.sourceType);
   }
   handlePageChange = (page) => {
     this.setState({ currentPage: page });
   }
   handleSearch = (value) => {
-    const clients = this.props.clients.filter((item) => {
+    let sourceClients = [];
+    if (this.state.sourceType === 'sp') {
+      sourceClients = this.state.customers;
+    } else if (this.state.sourceType === 'sr') {
+      sourceClients = this.state.carriers;
+    }
+    const clients = sourceClients.filter((item) => {
       if (value) {
         const reg = new RegExp(value);
         return reg.test(item.name);
@@ -133,22 +143,43 @@ export default class Kpi extends React.Component {
   }
   handleBeginDateChange = (date) => {
     const { tenantId, query } = this.props;
-    this.props.loadKpi(tenantId, date, query.endDate, query.partnerId, query.separationDate);
+    this.props.loadKpi(tenantId, date, query.endDate, query.partnerId, query.partnerTenantId, query.separationDate, this.state.sourceType);
   }
   handleEndDateChange = (date) => {
     const { tenantId, query } = this.props;
-    this.props.loadKpi(tenantId, query.beginDate, date, query.partnerId, query.separationDate);
+    this.props.loadKpi(tenantId, query.beginDate, date, query.partnerId, query.partnerTenantId, query.separationDate, this.state.sourceType);
   }
   handleMonth = (month) => {
     const { tenantId, query } = this.props;
     const end = new Date();
     const begin = new Date();
     begin.setMonth(begin.getMonth() - month);
-    this.props.loadKpi(tenantId, begin, end, query.partnerId, query.separationDate);
+    this.props.loadKpi(tenantId, begin, end, query.partnerId, query.partnerTenantId, query.separationDate, this.state.sourceType);
   }
   handleSeparationDateChange = (value) => {
     const { tenantId, query } = this.props;
-    this.props.loadKpi(tenantId, query.beginDate, query.endDate, query.partnerId, value);
+    this.props.loadKpi(tenantId, query.beginDate, query.endDate, query.partnerId, query.partnerTenantId, value, this.state.sourceType);
+  }
+  toggleSourceType = () => {
+    let sourceType = this.state.sourceType;
+    let clients = [...this.state.clients];
+    if (this.state.sourceType === 'sp') {
+      sourceType = 'sr';
+      clients = [...this.state.carriers];
+    } else if (this.state.sourceType === 'sr') {
+      sourceType = 'sp';
+      clients = [...this.state.customers];
+    }
+    this.setState({ sourceType, clients, customer: clients[0] });
+    const { tenantId, query } = this.props;
+    this.props.loadKpi(
+      tenantId,
+      query.beginDate,
+      query.endDate,
+      clients ? clients[0].partner_id : -1,
+      clients ? clients[0].tid : -1,
+      query.separationDate,
+      sourceType);
   }
   handleMenuChange = (e) => {
     this.setState({ selectedKey: e.key });
@@ -179,7 +210,7 @@ export default class Kpi extends React.Component {
   }
   render() {
     const { query, kpi, loading, modes } = this.props;
-    const { selectedKey, customer, collapsed, loaded } = this.state;
+    const { selectedKey, customer, collapsed, loaded, sourceType } = this.state;
     let content = (<span />);
     if (selectedKey === '1') {
       content = (<Punctual kpi={kpi} loading={loading} loaded={loaded} modes={modes.punctual} onModesChange={this.handleModesChange} />);
@@ -203,6 +234,12 @@ export default class Kpi extends React.Component {
       key: 'name',
       render: o => (<div style={{ paddingLeft: 15 }}>{o}</div>),
     }];
+    let clientStr = '';
+    if (sourceType === 'sp') {
+      clientStr = '客户';
+    } else if (sourceType === 'sr') {
+      clientStr = '承运商';
+    }
     return (
       <Layout>
         <Sider width={320} className="menu-sider" key="sider" trigger={null}
@@ -214,14 +251,15 @@ export default class Kpi extends React.Component {
             <div className="top-bar">
               <Breadcrumb>
                 <Breadcrumb.Item>
-                  客户
+                  {clientStr}
                 </Breadcrumb.Item>
               </Breadcrumb>
+              <Button style={{ marginLeft: 140 }} onClick={this.toggleSourceType}>客户/承运商</Button>
             </div>
             <div className="left-sider-panel">
               <div className="toolbar">
                 <Search
-                  placeholder="搜索客户"
+                  placeholder="搜索"
                   onSearch={this.handleSearch} size="large"
                 />
               </div>

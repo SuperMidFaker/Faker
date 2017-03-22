@@ -80,35 +80,9 @@ export default class TodoAcceptPane extends Component {
   }
   render() {
     const { tenantId } = this.props;
-    const { type } = this.state;
     const dataSource = new Table.DataSource({
       fetcher: params => this.props.loadPodTable(params),
-      resolve: (result) => {
-        let data = [];
-        if (result.data) {
-          data = result.data;
-          data.sort((a, b) => {
-            if (new Date(a.prompt_last_date) < new Date(b.prompt_last_date)) {
-              return 1;
-            } else if (type === 'toUploadPod' || type === 'toConfirm') {
-              if (new Date(a.deliver_act_date) > new Date(b.deliver_act_date)) {
-                return 1;
-              } else {
-                return 0;
-              }
-            } else if (type === 'toAuditPod') {
-              if (new Date(a.pod_recv_date) < new Date(b.pod_recv_date)) {
-                return 1;
-              } else {
-                return 0;
-              }
-            } else {
-              return 0;
-            }
-          });
-        }
-        return data;
-      },
+      resolve: result => result.data,
       getPagination: (result, resolve) => ({
         total: result.totalCount,
         current: resolve(result.totalCount, result.current, result.pageSize),

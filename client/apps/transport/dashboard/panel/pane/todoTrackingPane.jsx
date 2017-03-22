@@ -67,32 +67,9 @@ export default class TodoAcceptPane extends Component {
   }
   render() {
     const { tenantId } = this.props;
-    const { type } = this.state;
     const dataSource = new Table.DataSource({
       fetcher: params => this.props.loadTransitTable(params),
-      resolve: (result) => {
-        const data = result.data;
-        data.sort((a, b) => {
-          if (new Date(a.prompt_last_date) < new Date(b.prompt_last_date)) {
-            return 1;
-          } else if (type === 'toPickup' || type === 'toLocate') {
-            if (new Date(a.pickup_est_date) > new Date(b.pickup_est_date)) {
-              return 1;
-            } else {
-              return 0;
-            }
-          } else if (type === 'toDeliver') {
-            if (new Date(a.deliver_prm_date) < new Date(b.deliver_prm_date)) {
-              return 1;
-            } else {
-              return 0;
-            }
-          } else {
-            return 0;
-          }
-        });
-        return data;
-      },
+      resolve: result => result.data,
       getPagination: (result, resolve) => ({
         total: result.totalCount,
         current: resolve(result.totalCount, result.current, result.pageSize),
