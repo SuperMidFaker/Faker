@@ -170,6 +170,7 @@ export class RelationAutoCompSelect extends React.Component {
   static propTypes = {
     label: PropTypes.string.isRequired,
     codeField: PropTypes.string.isRequired,
+    custCodeField: PropTypes.string.isRequired,
     nameField: PropTypes.string.isRequired,
     formData: PropTypes.object,
     disabled: PropTypes.bool,
@@ -182,33 +183,36 @@ export class RelationAutoCompSelect extends React.Component {
 
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values);
   handleSelect = (value) => {
-    const { onSelect, codeField, nameField } = this.props;
+    const { onSelect, codeField, custCodeField, nameField } = this.props;
     if (onSelect) {
-      onSelect(codeField, nameField, value);
+      onSelect(codeField, custCodeField, nameField, value);
     }
   }
   handleInputChange = (value) => {
-    const { onChange, codeField, nameField } = this.props;
+    const { onChange, codeField, custCodeField, nameField } = this.props;
     if (onChange) {
-      onChange(codeField, nameField, value);
+      onChange(codeField, custCodeField, nameField, value);
     }
   }
   render() {
     const {
-      label, codeField, nameField, formData, disabled, options,
+      label, codeField, custCodeField, nameField, formData, disabled, options,
       getFieldDecorator, codeRules, nameRules,
     } = this.props;
     const initialCodeValue = formData && formData[codeField] || '';
+    const initialCustCodeValue = formData && formData[custCodeField] || '';
     const initialNameValue = formData && formData[nameField];
+    const custOpt = options.filter(op => op.custcode !== null && op.custcode.length > 0);
+    const compOpt = options.filter(op => op.code !== null && op.code.length > 0);
     return (
       <FormItem labelCol={{ span: 4 }} wrapperCol={{ span: 20 }} label={label} required>
         <Row gutter={8}>
           <Col span="6">
             <FormItem style={{ marginBottom: 0 }}>
               {disabled ?
-                <Input disabled value={initialCodeValue} />
-                  : getFieldDecorator(codeField, {
-                    initialValue: initialCodeValue,
+                <Input disabled value={initialCustCodeValue} />
+                  : getFieldDecorator(custCodeField, {
+                    initialValue: initialCustCodeValue,
                     rules: codeRules,
                     onChange: this.handleInputChange,
                   })(<Select
@@ -221,7 +225,7 @@ export class RelationAutoCompSelect extends React.Component {
                     onSelect={this.handleSelect}
                   >
                     {
-                    options.map(opt => <Option key={opt.code} search={opt.code}><Tooltip placement="right" title={opt.name}>{opt.code}|{opt.name}</Tooltip></Option>)
+                    custOpt.map(opt => <Option key={opt.custcode} search={opt.custcode}><Tooltip placement="right" title={opt.name}>{opt.custcode}|{opt.name}</Tooltip></Option>)
                   }
                   </Select>)}
             </FormItem>
@@ -243,7 +247,7 @@ export class RelationAutoCompSelect extends React.Component {
                     onSelect={this.handleSelect}
                   >
                     {
-                    options.map(opt => <Option key={opt.code} search={opt.code}><Tooltip placement="right" title={opt.name}>{opt.code}|{opt.name}</Tooltip></Option>)
+                    compOpt.map(opt => <Option key={opt.code} search={opt.code}><Tooltip placement="right" title={opt.name}>{opt.code}|{opt.name}</Tooltip></Option>)
                   }
                   </Select>)}
             </FormItem>

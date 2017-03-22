@@ -135,11 +135,34 @@ export default class ManifestEditor extends React.Component {
     const pathname = `/clearance/${ietype}/customs/${billMeta.bill_seq_no}/${ev.key}`;
     this.context.router.push({ pathname });
   }
+  validateCode = (code, customsCode) => {
+    let info = null;
+    if (code === '' && customsCode === '') {
+      info = '请填写社会信用代码或者海关编码';
+    } else if (code && code.length !== 18) {
+      info = `社会信用代码必须为18位, 当前${code.length}位`;
+    } else if (customsCode && customsCode.length !== 10) {
+      info = `海关10位编码必须为10位, 当前${customsCode.length}位`;
+    }
+    return info;
+  }
   handleBillSave = () => {
     this.props.form.validateFields((errors) => {
       if (!errors) {
         const { billHead, ietype, loginId, tenantId, formData } = this.props;
         const head = { ...billHead, ...this.props.form.getFieldsValue(), template_id: formData.template_id };
+        const tradeInfo = this.validateCode(head.trade_co, head.trade_custco);
+        if (tradeInfo) {
+          return message.error(`${tradeInfo}`);
+        }
+        const ownInfo = this.validateCode(head.owner_code, head.owner_custco);
+        if (ownInfo) {
+          return message.error(`${ownInfo}`);
+        }
+        const agentInfo = this.validateCode(head.agent_code, head.agent_custco);
+        if (agentInfo) {
+          return message.error(`${agentInfo}`);
+        }
         this.props.saveBillHead({ head, ietype, loginId, tenantId }).then(
         (result) => {
           if (result.error) {

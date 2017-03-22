@@ -20,6 +20,9 @@ const CODE_AS_STATE = {
   trade_co: 'trades',
   owner_code: 'owners',
   agent_code: 'agents',
+  trade_custco: 'trades',
+  owner_custco: 'owners',
+  agent_custco: 'agents',
 };
 
 @injectIntl
@@ -47,19 +50,24 @@ export default class ManifestHeadPanel extends React.Component {
     ev.preventDefault();
     this.props.onSave();
   }
-  handleRelationSel = (codeField, nameField, value) => {
-    const rels = this.props.formRequire[CODE_AS_STATE[codeField]].filter(rel => rel.code === value);
+  handleRelationSel = (codeField, custCodeField, nameField, value) => {
+    let rels = this.props.formRequire[CODE_AS_STATE[codeField]].filter(rel => rel.code === value);
+    if (rels.length === 0) {
+      rels = this.props.formRequire[CODE_AS_STATE[custCodeField]].filter(rel => rel.custcode === value);
+    }
     if (rels.length === 1) {
       this.props.form.setFieldsValue({
         [codeField]: rels[0].code,
+        [custCodeField]: rels[0].custcode,
         [nameField]: rels[0].name,
       });
     }
   }
-  handleRelationChange = (codeField, nameField, value) => {
+  handleRelationChange = (codeField, custCodeField, nameField, value) => {
     if (value === undefined || value === '') {
       this.props.form.setFieldsValue({
         [codeField]: '',
+        [custCodeField]: '',
         [nameField]: '',
       });
     }
@@ -99,8 +107,8 @@ export default class ManifestHeadPanel extends React.Component {
               <Row>
                 <Col span="8">
                   <RelationAutoCompSelect label={this.msg('forwardName')} intl={intl}
-                    codeField="trade_co" nameField="trade_name"
-                    codeRules={[{ required: true }]} nameRules={[{ required: true }]}
+                    codeField="trade_co" custCodeField="trade_custco" nameField="trade_name"
+                    codeRules={[{ required: false }]} nameRules={[{ required: true }]}
                     onSelect={this.handleRelationSel} onChange={this.handleRelationChange}
                     {...formProps} options={formRequire.trades}
                   />
@@ -123,8 +131,8 @@ export default class ManifestHeadPanel extends React.Component {
                 <Col span="8">
                   <RelationAutoCompSelect label={
                   ietype === 'import' ? this.msg('ownerConsumeName') : this.msg('ownerProduceName')
-                } codeField="owner_code" nameField="owner_name" intl={intl}
-                    codeRules={[{ required: true }]} nameRules={[{ required: true }]}
+                } codeField="owner_code" custCodeField="owner_custco" nameField="owner_name" intl={intl}
+                    codeRules={[{ required: false }]} nameRules={[{ required: true }]}
                     onSelect={this.handleRelationSel} onChange={this.handleRelationChange}
                     {...formProps} options={formRequire.owners}
                   />
@@ -134,8 +142,8 @@ export default class ManifestHeadPanel extends React.Component {
               <Row>
                 <Col span="8">
                   <RelationAutoCompSelect label={this.msg('agentName')}
-                    codeField="agent_code" nameField="agent_name" intl={intl}
-                    codeRules={[{ required: true }]} nameRules={[{ required: true }]}
+                    codeField="agent_code" custCodeField="agent_custco" nameField="agent_name" intl={intl}
+                    codeRules={[{ required: false }]} nameRules={[{ required: true }]}
                     onSelect={this.handleRelationSel} onChange={this.handleRelationChange}
                     {...formProps} options={formRequire.agents}
                   />
