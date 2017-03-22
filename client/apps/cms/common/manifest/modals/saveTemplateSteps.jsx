@@ -2,7 +2,8 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Modal, Form, Mention, message, Steps, Button, Card, Input } from 'antd';
-import { setStepVisible, saveBillRules } from 'common/reducers/cmsManifest';
+import { setStepVisible } from 'common/reducers/cmsManifest';
+import { createGeneratedTemplate } from 'common/reducers/cmsSettings';
 import ImportRuleForm from '../form/bodyImportRuleForm';
 import MergeSplitForm from '../form/mergeSplitRuleForm';
 import { format } from 'client/common/i18n/helpers';
@@ -12,39 +13,24 @@ const formatMsg = format(messages);
 const FormItem = Form.Item;
 const Step = Steps.Step;
 
-function getFieldInits(formData) {
-  const init = {};
-  if (formData) {
-    ['rule_currency', 'rule_orig_country', 'rule_net_wt',
-    ].forEach((fd) => {
-      init[fd] = formData[fd] ? formData[fd] : '1';
-    });
-    ['rule_g_name', 'rule_g_unit'].forEach((fd) => {
-      init[fd] = formData[fd] ? formData[fd] : '0';
-    });
-    init.rule_gunit_num = formData.rule_gunit_num ? formData.rule_gunit_num : 'g_unit_1';
-    init.rule_element = formData.rule_element ? formData.rule_element : '';
-  }
-  return init;
-}
-
 @Form.create()
 @injectIntl
 @connect(
   state => ({
     visibleStepModal: state.cmsManifest.visibleStepModal,
-    billHead: state.cmsManifest.billHead,
     loginId: state.account.loginId,
+    loginName: state.account.username,
     tenantId: state.account.tenantId,
     billRule: state.cmsManifest.billRule,
-    fieldInits: getFieldInits(state.cmsManifest.billRule),
+    billHead: state.cmsManifest.billHead,
   }),
-  { setStepVisible, saveBillRules }
+  { setStepVisible, createGeneratedTemplate }
 )
 export default class SaveTemplateModal extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     visibleStepModal: PropTypes.bool.isRequired,
+    ietype: PropTypes.oneOf(['import', 'export']),
   }
   state = {
     current: 0,
@@ -56,9 +42,13 @@ export default class SaveTemplateModal extends React.Component {
     }
   }
   handlenext = () => {
-    const current = this.state.current + 1;
-    const formData = { ...this.state.formData, ...this.props.form.getFieldsValue() };
-    this.setState({ formData, current });
+    this.props.form.validateFields((errors) => {
+      if (!errors) {
+        const current = this.state.current + 1;
+        const formData = { ...this.state.formData, ...this.props.form.getFieldsValue() };
+        this.setState({ formData, current });
+      }
+    });
   }
   handleprev = () => {
     const current = this.state.current - 1;
@@ -69,13 +59,32 @@ export default class SaveTemplateModal extends React.Component {
     this.props.setStepVisible(false);
   }
   handleOk = () => {
-    const element = Mention.toString(this.props.form.getFieldValue('rule_element'));
-    const rules = { ...this.props.form.getFieldsValue(), rule_element: element };
-    this.props.saveBillRules({ rules, billSeqNo: this.props.billRule.bill_seq_no, template_id: -1 }).then((result) => {
+    const { tenantId, loginId, loginName, ietype, billHead } = this.props;
+    const { formData } = this.state;
+    const param = {};
+    param.template_name = formData.template_name;
+    const ieType = ietype === 'import' ? 0 : 1;
+    const params = { template_name: formData.template_name, i_e_type: ieType, tenant_id: tenantId, modify_id: loginId, modify_name: loginName };
+    const element = Mention.toString(formData.rule_element);
+    const mergeOptArr = this.props.form.getFieldValue('mergeOpt_arr');
+    const specialHsSortArr = this.props.form.getFieldValue('specialHsSort');
+    let mergeOpts = '';
+    if (mergeOptArr) {
+      mergeOpts = mergeOptArr.join(',');
+    }
+    let specialHsSorts = '';
+    if (specialHsSortArr) {
+      specialHsSorts = specialHsSortArr.join(',');
+    }
+    const ruleDatas = { ...billHead, ...formData, ...this.props.form.getFieldsValue(),
+      rule_element: element, mergeOpt_arr: mergeOpts, specialHsSort: specialHsSorts };
+    console.log('ruleDatas', ruleDatas);
+    this.props.createGeneratedTemplate({ params, ruleDatas }).then((result) => {
       if (result.error) {
         message.error(result.error.message);
       } else {
-        this.props.setStepVisible(false);
+        // this.context.router.push(`/clearance/settings/billtemplates/edit/${result.data.id}`);
+
       }
     });
   }
@@ -105,6 +114,7 @@ export default class SaveTemplateModal extends React.Component {
             <Card>
               <FormItem label="模板名称:" labelCol={{ span: 4 }} wrapperCol={{ span: 20 }} >
                 {getFieldDecorator('template_name', {
+                  initialValue: this.state.formData.template_name,
                   rules: [{ required: true, message: '模板名称必填' }],
                 })(
                   <Input />

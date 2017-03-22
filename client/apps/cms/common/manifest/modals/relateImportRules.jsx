@@ -8,8 +8,6 @@ import ImportRuleForm from '../form/bodyImportRuleForm';
 import messages from '../message.i18n';
 const formatMsg = format(messages);
 
-const Nav = Mention.Nav;
-
 function getFieldInits(formData) {
   const init = {};
   if (formData) {
@@ -60,22 +58,6 @@ export default class RelateImportRuleModal extends React.Component {
         this.props.closeRuleModel();
       }
     });
-  }
-  formulaParams = [
-    { value: 'g_model', text: '规格型号' },
-    { value: 'remark', text: '备注' },
-    { value: 'cop_product_no', text: '商品货号' },
-  ];
-  handleSearch = (value) => {
-    const searchValue = value.toLowerCase();
-    const filtered = this.formulaParams.filter(item =>
-      item.value.toLowerCase().indexOf(searchValue) !== -1
-    );
-    const suggestions = filtered.map(suggestion =>
-      <Nav value={suggestion.value} data={suggestion}>
-        <span>{suggestion.text} - {suggestion.value} </span>
-      </Nav>);
-    this.setState({ suggestions });
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   render() {

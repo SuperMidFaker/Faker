@@ -336,7 +336,6 @@ export default class DelgDeclList extends Component {
         } else if (record.status === 2) {
           return (
             <span>
-              <RowUpdater onHit={this.handleShowSendDeclModal} label={this.msg('send')} row={record} />
               {record.ep_send_filename ? (
                 <span>
                   <span className="ant-divider" /><RowUpdater onHit={this.handleShowXml} label="查看报文" row={record} />

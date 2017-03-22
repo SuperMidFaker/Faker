@@ -135,11 +135,34 @@ export default class ManifestEditor extends React.Component {
     const pathname = `/clearance/${ietype}/customs/${billMeta.bill_seq_no}/${ev.key}`;
     this.context.router.push({ pathname });
   }
+  validateCode = (code, customsCode) => {
+    let info = null;
+    if (code === '' && customsCode === '') {
+      info = '请填写社会信用代码或者海关编码';
+    } else if (code && code.length !== 18) {
+      info = `社会信用代码必须为18位, 当前${code.length}位`;
+    } else if (customsCode && customsCode.length !== 10) {
+      info = `海关10位编码必须为10位, 当前${customsCode.length}位`;
+    }
+    return info;
+  }
   handleBillSave = () => {
     this.props.form.validateFields((errors) => {
       if (!errors) {
         const { billHead, ietype, loginId, tenantId, formData } = this.props;
         const head = { ...billHead, ...this.props.form.getFieldsValue(), template_id: formData.template_id };
+        const tradeInfo = this.validateCode(head.trade_co, head.trade_custco);
+        if (tradeInfo) {
+          return message.error(`${tradeInfo}`);
+        }
+        const ownInfo = this.validateCode(head.owner_code, head.owner_custco);
+        if (ownInfo) {
+          return message.error(`${ownInfo}`);
+        }
+        const agentInfo = this.validateCode(head.agent_code, head.agent_custco);
+        if (agentInfo) {
+          return message.error(`${agentInfo}`);
+        }
         this.props.saveBillHead({ head, ietype, loginId, tenantId }).then(
         (result) => {
           if (result.error) {
@@ -220,7 +243,7 @@ export default class ManifestEditor extends React.Component {
       )}
     </Menu>);
     const path = `/clearance/${ietype}/manifest/`;
-    const generateEntry = !this.props.readonly && billMeta.entries.length === 0;
+    const editable = !this.props.readonly && billMeta.entries.length === 0;
     return (
       <Layout>
         <Layout>
@@ -256,7 +279,7 @@ export default class ManifestEditor extends React.Component {
               </Select>)}
             <div className="top-bar-tools">
               <Button type="primary" size="large" icon="file" onClick={this.handleSaveAsTemplate}>{this.msg('saveAsTemplate')}</Button>
-              {generateEntry &&
+              {editable &&
                 <Button type="primary" size="large" icon="addfile" onClick={this.handleGenerateEntry}>{this.msg('generateEntry')}</Button>
                 }
               <Dropdown overlay={this.lockMenu}>
@@ -275,10 +298,10 @@ export default class ManifestEditor extends React.Component {
             <div className="page-body tabbed">
               <Tabs defaultActiveKey="header">
                 <TabPane tab="清单表头" key="header">
-                  <SheetHeadPanel ietype={ietype} readonly={readonly} form={form} formData={this.state.headData} ruleRequired={this.state.ruleRequired} type="bill" onSave={this.handleBillSave} />
+                  <SheetHeadPanel ietype={ietype} readonly={!editable} form={form} formData={this.state.headData} ruleRequired={this.state.ruleRequired} type="bill" onSave={this.handleBillSave} />
                 </TabPane>
                 <TabPane tab="清单表体" key="body">
-                  <SheetBodyPanel ietype={ietype} readonly={readonly} headForm={form} data={billBodies} headNo={billHead.bill_seq_no}
+                  <SheetBodyPanel ietype={ietype} readonly={!editable} headForm={form} data={billBodies} headNo={billHead.bill_seq_no}
                     onAdd={actions.addNewBillBody} onDel={actions.delBillBody} onEdit={actions.editBillBody}
                     billSeqNo={billHead.bill_seq_no} type="bill"
                   />
@@ -304,7 +327,7 @@ export default class ManifestEditor extends React.Component {
           </div>
         </Sider>
         <MergeSplitModal />
-        <SaveTemplateModal />
+        <SaveTemplateModal ietype={ietype} />
       </Layout>
     );
   }

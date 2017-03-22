@@ -45,7 +45,7 @@ function fetchData({ state, dispatch }) {
   state => ({
     visible: state.cmsManifest.visibleMSModal,
     isCustomRegisted: !!state.cmsManifest.billHead.manual_no,
-    billNo: state.cmsManifest.billHead.bill_seq_no,
+    billSeqNo: state.cmsManifest.billHead.bill_seq_no,
     hscodeCategories: state.cmsHsCode.hscodeCategories,
     billRule: state.cmsManifest.billRule,
   }),
@@ -57,7 +57,7 @@ export default class MergeSplitModal extends React.Component {
     intl: intlShape.isRequired,
     visible: PropTypes.bool.isRequired,
     isCustomRegisted: PropTypes.bool.isRequired,
-    billNo: PropTypes.string,
+    billSeqNo: PropTypes.string,
     hscodeCategories: PropTypes.array.isRequired,
   }
   state = {
@@ -134,7 +134,7 @@ export default class MergeSplitModal extends React.Component {
   }]
   handleCancel = () => {
     this.props.closeMergeSplitModal();
-    this.props.loadBillBody(this.props.billNo);
+    this.props.loadBillBody(this.props.billSeqNo);
   }
   handleMergeRadioChange = () => {
     this.setState({
@@ -180,7 +180,7 @@ export default class MergeSplitModal extends React.Component {
     });
   }
   handleOk = () => {
-    const { billNo } = this.props;
+    const { billSeqNo } = this.props;
     const { splitOpt, mergeOpt, sortOpt } = this.state;
     if (mergeOpt.checked) {
       if (!(mergeOpt.byHsCode || mergeOpt.byGName || mergeOpt.byCurr ||
@@ -191,12 +191,12 @@ export default class MergeSplitModal extends React.Component {
     if (splitOpt.byHsCode) {
       splitOpt.hsCategory = this.props.form.getFieldValue('specialSort');
     }
-    this.props.submitBillMegeSplit({ billNo, splitOpt, mergeOpt, sortOpt }).then((result) => {
+    this.props.submitBillMegeSplit({ billSeqNo, splitOpt, mergeOpt, sortOpt }).then((result) => {
       if (result.error) {
         message.error(result.error.message);
       } else {
         this.props.closeMergeSplitModal();
-        this.props.loadBillBody(this.props.billNo);
+        this.props.loadBillBody(this.props.billSeqNo);
       }
     });
   }
@@ -248,7 +248,8 @@ export default class MergeSplitModal extends React.Component {
                 <FormItem label={this.msg('specialHscodeSort')}>
                   {getFieldDecorator('specialSort', {
                     rules: [{ type: 'array' }],
-                  })(<Select multiple style={{ width: '100%' }} >
+                    initialValue: splitOpt.hsCategory,
+                  })(<Select multiple style={{ width: '100%' }}>
                     {
                         hscodeCategories.map(ct =>
                           <Option value={ct.id} key={ct.id}>{ct.name}</Option>
