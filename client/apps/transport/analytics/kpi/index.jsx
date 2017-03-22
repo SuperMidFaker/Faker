@@ -77,7 +77,7 @@ export default class Kpi extends React.Component {
     if (!nextProps.loaded && this.state.clients.length !== this.state.clients.length) {
       this.handleTableLoad(nextProps);
     }
-    if (!this.state.customer.partner_id) {
+    if (this.state.clients.length > 0 && !this.state.customer.partner_id) {
       this.setState({ customer: this.state.clients[0] });
     }
   }
@@ -176,8 +176,8 @@ export default class Kpi extends React.Component {
       tenantId,
       query.beginDate,
       query.endDate,
-      clients ? clients[0].partner_id : -1,
-      clients ? clients[0].tid : -1,
+      clients.length > 0 ? clients[0].partner_id : -1,
+      clients.length > 0 ? clients[0].tid : -1,
       query.separationDate,
       sourceType);
   }
@@ -254,7 +254,7 @@ export default class Kpi extends React.Component {
                   {clientStr}
                 </Breadcrumb.Item>
               </Breadcrumb>
-              <Button style={{ marginLeft: 140 }} onClick={this.toggleSourceType}>客户/承运商</Button>
+              <div style={{ float: 'right' }}><Button onClick={this.toggleSourceType}>客户/承运商</Button></div>
             </div>
             <div className="left-sider-panel">
               <div className="toolbar">
