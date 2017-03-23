@@ -282,6 +282,12 @@ export const CMS_DECL_STATUS = [
   { value: 3, text: '已回填' },
 ];
 
+export const TRADE_ITEM_STATUS = [
+  { value: 0, text: '未归类' },
+  { value: 1, text: '归类待定' },
+  { value: 2, text: '已归类' },
+];
+
 export const CMS_IMPORT_DECL_TYPE = [{
   value: '1',
   text: '有纸进口报关单',

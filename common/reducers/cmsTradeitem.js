@@ -25,7 +25,7 @@ const actionTypes = createActionTypes('@@welogix/cms/tradeitem/', [
   'DELETE_DECLUNIT', 'DELETE_DECLUNIT_SUCCEED', 'DELETE_DECLUNIT_FAIL',
   'LOAD_DECLWAY_UNITS', 'LOAD_DECLWAY_UNITS_SUCCEED', 'LOAD_DECLWAY_UNITS_FAIL',
   'SAVE_DECLWAY_UNIT', 'SAVE_DECLWAY_UNIT_SUCCEED', 'SAVE_DECLWAY_UNIT_FAIL',
-  'SET_OWNER',
+  'SET_OWNER', 'SET_COMPARE_VISIBLE',
 ]);
 
 const initialState = {
@@ -57,6 +57,7 @@ const initialState = {
   hstabKey: 'declunit',
   declwayUnits: [],
   owner: {},
+  visibleCompareModal: false,
 };
 
 export default function reducer(state = initialState, action) {
@@ -95,6 +96,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, declwayUnits: action.result.data };
     case actionTypes.CREATE_REPO_SUCCEED:
       return { ...state, repoId: action.result.data };
+    case actionTypes.SET_COMPARE_VISIBLE:
+      return { ...state, visibleCompareModal: action.data };
     default:
       return state;
   }
@@ -459,5 +462,12 @@ export function delDeclwayUnit(id) {
       method: 'post',
       data: { id },
     },
+  };
+}
+
+export function setCompareVisible(val) {
+  return {
+    type: actionTypes.SET_COMPARE_VISIBLE,
+    data: val,
   };
 }
