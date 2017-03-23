@@ -177,7 +177,7 @@ export default class TodoAcceptPane extends Component {
             statusEle = <Badge status={badgeColor} text={statusStr} />;
           }
           relatedTime = (<span>
-            <Tooltip title={record.pickup_est_date ? moment(record.pickup_est_date).format('YYYY.MM.DD HH:mm') : ''}>
+            <Tooltip title={record.pickup_est_date ? moment(record.pickup_est_date).format('YYYY.MM.DD') : ''}>
               <span>{pickupEstDateStr}</span>
             </Tooltip>
           </span>);
@@ -185,25 +185,23 @@ export default class TodoAcceptPane extends Component {
           statusStr = `${statusStr}交货`;
           let badgeColor = 'warning';
           let deliverPrmDateStr = '';
-          const deliverDate = record.deliver_prm_date || record.deliver_est_date;
-          if (deliverDate) {
-            const newDate = new Date();
-            newDate.setHours(0, 0, 0, 0);
-            const deliverPrmDate = new Date(deliverDate);
-            deliverPrmDate.setHours(0, 0, 0, 0);
+          const newDate = new Date();
+          newDate.setHours(0, 0, 0, 0);
+          const deliverPrmDate = new Date(record.deliver_prm_date);
+          deliverPrmDate.setHours(0, 0, 0, 0);
 
-            if (moment(newDate).diff(deliverPrmDate, 'days') === 0) {
-              deliverPrmDateStr = '承诺送货：今天';
-              statusEle = <Badge status={badgeColor} text={statusStr} />;
-            } else if (newDate > deliverPrmDate) {
-              deliverPrmDateStr = `承诺送货：超时 ${moment(newDate).diff(deliverPrmDate, 'days')} 天`;
-              badgeColor = 'error';
-              statusEle = <Badge status={badgeColor} text={statusStr} />;
-            }
+          if (moment(newDate).diff(deliverPrmDate, 'days') === 0) {
+            deliverPrmDateStr = '承诺送货：今天';
+            statusEle = <Badge status={badgeColor} text={statusStr} />;
+          } else if (newDate > deliverPrmDate) {
+            deliverPrmDateStr = `承诺送货：超时 ${moment(newDate).diff(deliverPrmDate, 'days')} 天`;
+            badgeColor = 'error';
+            statusEle = <Badge status={badgeColor} text={statusStr} />;
           }
 
+
           relatedTime = (<span>
-            <Tooltip title={deliverDate ? moment(deliverDate).format('YYYY.MM.DD HH:mm') : ''}>
+            <Tooltip title={deliverPrmDate ? moment(deliverPrmDate).format('YYYY.MM.DD') : ''}>
               <span>{deliverPrmDateStr}</span>
             </Tooltip>
           </span>);

@@ -17,6 +17,8 @@ import ShareShipmentModal from './share-shipment';
 import ShipmentSchedule from './shipmentSchedule';
 import ExceptionPane from './tabpanes/exceptionPane';
 import ChangeActDateModal from '../../tracking/land/modals/changeActDateModal';
+import ShipmentAdvanceModal from '../../tracking/land/modals/shipment-advance-modal';
+import CreateSpecialCharge from '../../tracking/land/modals/create-specialCharge';
 
 const formatMsg = format(messages);
 const TabPane = Tabs.TabPane;
@@ -238,6 +240,8 @@ export default class PreviewPanel extends React.Component {
           </div>
           <ShareShipmentModal visible={this.state.shareShipmentModalVisible} shipmt={shipmt} />
           <ChangeActDateModal />
+          <ShipmentAdvanceModal />
+          <CreateSpecialCharge />
         </div>
       : null
     );

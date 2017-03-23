@@ -21,8 +21,6 @@ import makeColumns from './columnDef';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import RevokejectModal from '../../shipment/modals/revoke-reject';
-import ShipmentAdvanceModal from './modals/shipment-advance-modal';
-import CreateSpecialCharge from './modals/create-specialCharge';
 import { sendMessage } from 'common/reducers/corps';
 import AdvancedSearchBar from '../../common/advanced-search-bar';
 import MyShipmentsSelect from '../../common/myShipmentsSelect';
@@ -476,8 +474,6 @@ export default class LandStatusList extends React.Component {
         <PickupDeliverModal onOK={this.handleTableLoad} />
         <LocationModal onOK={this.handleTableLoad} />
         <RevokejectModal reload={this.handleTableLoad} />
-        <ShipmentAdvanceModal />
-        <CreateSpecialCharge />
       </div>
     );
   }

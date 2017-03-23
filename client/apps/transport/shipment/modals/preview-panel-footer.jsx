@@ -269,7 +269,6 @@ export default class Footer extends React.Component {
       <Menu onClick={this.handleMenuClick}>
         <MenuItem key="exportShipment"><Icon type="export" /> 导出运单</MenuItem>
         <MenuItem key="shareShipment"><Icon type="share-alt" /> 共享运单</MenuItem>
-        <MenuItem key="terminateShipment"><Icon type="delete" /> 终止运单</MenuItem>
       </Menu>
     );
     let buttons = <span />;
@@ -288,7 +287,6 @@ export default class Footer extends React.Component {
               </span>
             </PrivilegeCover>
           );
-          menu = (<span />);
         } else if (dispatch.source === SHIPMENT_SOURCE.subcontracted) {
           buttons = (
             <PrivilegeCover module="transport" feature="shipment" action="edit">
@@ -351,6 +349,13 @@ export default class Footer extends React.Component {
           }
         }
       }
+      menu = (
+        <Menu onClick={this.handleMenuClick}>
+          <MenuItem key="exportShipment"><Icon type="export" /> 导出运单</MenuItem>
+          <MenuItem key="shareShipment"><Icon type="share-alt" /> 共享运单</MenuItem>
+          <MenuItem key="terminateShipment"><Icon type="delete" /> 终止运单</MenuItem>
+        </Menu>
+      );
     } else if (sourceType === 'sr') {
       if (dispatch.status === SHIPMENT_TRACK_STATUS.unaccepted) {
         buttons = (
@@ -359,6 +364,13 @@ export default class Footer extends React.Component {
               催促接单
             </Button>
           </PrivilegeCover>
+        );
+        menu = (
+          <Menu onClick={this.handleMenuClick}>
+            <MenuItem key="exportShipment"><Icon type="export" /> 导出运单</MenuItem>
+            <MenuItem key="shareShipment"><Icon type="share-alt" /> 共享运单</MenuItem>
+            <MenuItem key="terminateShipment"><Icon type="delete" /> 终止运单</MenuItem>
+          </Menu>
         );
       } else if (dispatch.status === SHIPMENT_TRACK_STATUS.accepted) {
         if (dispatch.sp_tenant_id === -1) {
@@ -379,6 +391,13 @@ export default class Footer extends React.Component {
             </PrivilegeCover>
           );
         }
+        menu = (
+          <Menu onClick={this.handleMenuClick}>
+            <MenuItem key="exportShipment"><Icon type="export" /> 导出运单</MenuItem>
+            <MenuItem key="shareShipment"><Icon type="share-alt" /> 共享运单</MenuItem>
+            <MenuItem key="terminateShipment"><Icon type="delete" /> 终止运单</MenuItem>
+          </Menu>
+        );
       } else if (dispatch.status === SHIPMENT_TRACK_STATUS.dispatched) {
         if (dispatch.sp_tenant_id === -1) {
           buttons = (<span />);
@@ -415,6 +434,13 @@ export default class Footer extends React.Component {
             </PrivilegeCover>
           );
         }
+        menu = (
+          <Menu onClick={this.handleMenuClick}>
+            <MenuItem key="exportShipment"><Icon type="export" /> 导出运单</MenuItem>
+            <MenuItem key="shareShipment"><Icon type="share-alt" /> 共享运单</MenuItem>
+            <MenuItem key="terminateShipment"><Icon type="delete" /> 终止运单</MenuItem>
+          </Menu>
+        );
       } else if (dispatch.status === SHIPMENT_TRACK_STATUS.intransit) {
         if (dispatch.sp_tenant_id === -1) {
           buttons = (
