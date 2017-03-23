@@ -266,7 +266,7 @@ export default class DispatchDock extends Component {
                 lspsVar = update(lspsVar, { data: {
                   [ci]: { charge: { [cj]: { $set: charge } } } } });
               } else {
-                const { freight, pickup, deliver, meter, quantity,
+                const { quoteNo, freight, pickup, deliver, meter, quantity,
                   unitRatio, gradient, miles, coefficient } = result.data;
                 const charge = {
                   shipmt_no: shipmts[cj].shipmt_no,
@@ -275,7 +275,13 @@ export default class DispatchDock extends Component {
                   deliver_charge: deliver,
                   surcharge: 0,
                   total_charge: Number(freight) + Number(pickup) + Number(deliver),
+                  quote_no: quoteNo,
                   charge_gradient: gradient,
+                  quantity,
+                  unit_ratio: unitRatio,
+                  miles,
+                  adjust_coefficient: coefficient,
+                  meter,
                   charge_amount: getChargeAmountExpression(meter, miles, quantity,
                     unitRatio, coefficient),
                 };
@@ -551,14 +557,20 @@ export default class DispatchDock extends Component {
       } else if (result.data.freight === -2) {
         message.error('未找到对应路线的价格表');
       } else {
-        const { freight, pickup, deliver, meter, quantity,
+        const { quoteNo, freight, pickup, deliver, meter, quantity,
           unitRatio, gradient, miles, coefficient } = result.data;
         const charge = {
           freight_charge: freight,
           pickup_charge: pickup,
           deliver_charge: deliver,
           total_charge: Number(freight) + Number(pickup) + Number(deliver),
+          quote_no: quoteNo,
           charge_gradient: gradient,
+          quantity,
+          unit_ratio: unitRatio,
+          miles,
+          adjust_coefficient: coefficient,
+          meter,
           charge_amount: getChargeAmountExpression(meter, miles, quantity,
               unitRatio, coefficient),
         };

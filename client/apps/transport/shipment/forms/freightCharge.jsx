@@ -144,7 +144,7 @@ export default class FreightCharge extends React.Component {
           tariffType,
         });
         // todo 起步价运费公式? pickup mode=1 x数量?
-        const { freight, pickup, deliver, meter, quantity,
+        const { quoteNo, freight, pickup, deliver, meter, quantity,
           unitRatio, gradient, miles, coefficient } = result.data;
         this.props.formhoc.setFieldsValue({
           freight_charge: freight,
@@ -155,9 +155,14 @@ export default class FreightCharge extends React.Component {
           ),
           distance: miles,
         });
-
         this.props.setConsignFields({
+          quote_no: quoteNo,
           charge_gradient: gradient,
+          quantity,
+          unit_ratio: unitRatio,
+          miles,
+          adjust_coefficient: coefficient,
+          meter,
           charge_amount: getChargeAmountExpression(meter, miles, quantity,
               unitRatio, coefficient),
           pickup_checked: true,

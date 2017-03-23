@@ -229,7 +229,8 @@ export default class ChargePanel extends React.Component {
     let revenue = 0;
     let expense = 0;
     if (charges.revenue) {
-      revenue = charges.revenue.total_charge || revenue;
+      revenue = (charges.revenue.total_charge + charges.revenue.advance_charge +
+        charges.revenue.excp_charge + charges.revenue.adjust_charge) || revenue;
       if (checkedExpCates.indexOf('service') >= 0) {
         this.assembleChargeItems(charges.revenue, revenueds);
       }
@@ -242,7 +243,8 @@ export default class ChargePanel extends React.Component {
       revenueds.push(this.calculateTotalCharge(revenueds));
     }
     if (charges.expense) {
-      expense = charges.expense.total_charge || expense;
+      expense = (charges.expense.total_charge + charges.expense.advance_charge +
+        charges.expense.excp_charge + charges.expense.adjust_charge) || expense;
       if (checkedExpCates.indexOf('service') >= 0) {
         this.assembleChargeItems(charges.expense, expenseds);
       }
