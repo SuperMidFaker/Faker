@@ -16,6 +16,7 @@ const TabPane = Tabs.TabPane;
 @injectIntl
 @connect(
   state => ({
+    tenantId: state.account.tenantId,
     disp: state.shipment.previewer.dispatch,
     shipmt: state.shipment.previewer.shipmt,
   })
@@ -23,6 +24,7 @@ const TabPane = Tabs.TabPane;
 export default class ActivityOperation extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
+    tenantId: PropTypes.number.isRequired,
     stage: PropTypes.string.isRequired,
     disp: PropTypes.object.isRequired,
     shipmt: PropTypes.object.isRequired,
@@ -102,7 +104,7 @@ export default class ActivityOperation extends React.Component {
     this.setState({ activeKey });
   }
   render() {
-    const { disp, shipmt, sourceType, stage } = this.props;
+    const { disp, shipmt, sourceType, stage, tenantId } = this.props;
     const { activeKey } = this.state;
     let tabs = [
       <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>,
@@ -192,7 +194,7 @@ export default class ActivityOperation extends React.Component {
         }
       } else if (disp.status >= SHIPMENT_TRACK_STATUS.delivered) {
         if (!disp.pod_status || disp.pod_status === SHIPMENT_POD_STATUS.unsubmit) {
-          if (disp.sp_tenant_id === -1) {
+          if (disp.sp_tenant_id === -1 || tenantId === shipmt.tenant_id) {
             tabs = [
               <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>,
               <TabPane tab={<span><Icon type="exception" />异常</span>} key="exception"><CreateExceptionPane /></TabPane>,
