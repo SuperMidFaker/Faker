@@ -10,7 +10,7 @@ import NavLink from 'client/components/nav-link';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { loadCustomers } from 'common/reducers/crmCustomers';
-import { loadOwners, openAddModal, selectedRepoId, loadTradeItems,
+import { loadOwners, openAddModal, selectedRepoId, loadTradeItems, setCompareVisible,
   deleteItem, deleteSelectedItems, setOwner, deleteRepo, loadTradeParams } from 'common/reducers/cmsTradeitem';
 import AddTradeRepoModal from './modals/addTradeRepo';
 import SearchBar from 'client/components/search-bar';
@@ -18,6 +18,7 @@ import ExcelUpload from 'client/components/excelUploader';
 import { createFilename } from 'client/util/dataTransform';
 import CopCodesPane from './panes/copCodesPane';
 import SetUnitPane from './panes/setUnitPane';
+import ImportComparisonModal from './modals/importComparison';
 
 const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
@@ -63,7 +64,7 @@ function fetchData({ state, dispatch }) {
       text: tc.cntry_name_cn,
     })),
   }),
-  { loadCustomers, openAddModal, selectedRepoId, loadTradeItems,
+  { loadCustomers, openAddModal, selectedRepoId, loadTradeItems, setCompareVisible,
     deleteItem, deleteSelectedItems, setOwner, loadOwners, deleteRepo }
 )
 @connectNav({
@@ -87,6 +88,7 @@ export default class TradeItemList extends Component {
     collapsed: false,
     rightSidercollapsed: true,
     selectedRowKeys: [],
+    comparedData: [],
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.repoOwners !== this.props.repoOwners && nextProps.repoOwners.length > 0) {
@@ -322,8 +324,9 @@ export default class TradeItemList extends Component {
       window.open(`${API_ROOTS.default}v1/cms/cmsTradeitem/tradeitems/model/download/${createFilename('tradeItemModel')}.xlsx`);
     }
   }
-  handleUploaded = () => {
-    this.handleItemListLoad();
+  handleUploaded = (data) => {
+    this.setState({ comparedData: data });
+    this.props.setCompareVisible(true);
   }
   handleDeleteSelected = () => {
     const selectedIds = this.state.selectedRowKeys;
@@ -480,9 +483,10 @@ export default class TradeItemList extends Component {
                   }
               </div>
               <div className="panel-body table-panel">
-                <Table rowSelection={rowSelection} rowKey="id" columns={columns} dataSource={this.dataSource} scroll={{ x: 3800 }} />
+                <Table rowSelection={rowSelection} rowKey={record => record.id} columns={columns} dataSource={this.dataSource} scroll={{ x: 3800 }} />
               </div>
               <AddTradeRepoModal />
+              <ImportComparisonModal data={this.state.comparedData} />
             </div>
           </Content>
         </Layout>

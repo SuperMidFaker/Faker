@@ -53,7 +53,8 @@ export default class SaveTemplateModal extends React.Component {
   handleprev = () => {
     const current = this.state.current - 1;
     const formData = { ...this.state.formData, ...this.props.form.getFieldsValue() };
-    this.setState({ formData, current });
+    const element = Mention.toString(formData.rule_element);
+    this.setState({ formData: { ...formData, rule_element: element }, current });
   }
   handleCancel = () => {
     this.props.setStepVisible(false);
@@ -78,13 +79,9 @@ export default class SaveTemplateModal extends React.Component {
     }
     const ruleDatas = { ...billHead, ...formData, ...this.props.form.getFieldsValue(),
       rule_element: element, mergeOpt_arr: mergeOpts, specialHsSort: specialHsSorts };
-    console.log('ruleDatas', ruleDatas);
     this.props.createGeneratedTemplate({ params, ruleDatas }).then((result) => {
       if (result.error) {
         message.error(result.error.message);
-      } else {
-        // this.context.router.push(`/clearance/settings/billtemplates/edit/${result.data.id}`);
-
       }
     });
   }
