@@ -3,6 +3,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Button, Card, Menu, Dropdown, Icon, Form, Layout } from 'antd';
+import QueueAnim from 'rc-queue-anim';
 import { loadFlowGraph, loadFlowGraphItem, saveFlowGraph, setNodeActions } from 'common/reducers/scofFlow';
 import { uuidWithoutDash } from 'client/common/uuid';
 import FlowEdgePanel from './panel/flowEdgePanel';
@@ -401,21 +402,30 @@ export default class FlowDesigner extends React.Component {
             </Card>
             {activeItem &&
             <Form layout="vertical">
-              {activeItem.get('type') === 'node' && (activeItem.get('model').kind === 'import' || activeItem.get('model').kind === 'export') &&
-              <BizObjCMSPanel form={form} model={activeItem.get('model')} onNodeActionsChange={this.handleNodeActionsChange} />
-              }
-              {activeItem.get('type') === 'node' && (activeItem.get('model').kind === 'tms') &&
-              <BizObjTMSPanel form={form} model={activeItem.get('model')} onNodeActionsChange={this.handleNodeActionsChange} />
-              }
-              {activeItem.get('type') === 'node' && (activeItem.get('model').kind === 'cwm') &&
-              <BizObjCWMPanel form={form} model={activeItem.get('model')} onNodeActionsChange={this.handleNodeActionsChange} />
-              }
-              {activeItem.get('type') === 'edge' &&
-                <FlowEdgePanel model={activeItem.get('model')} source={activeItem.get('source').get('model')}
-                  target={activeItem.get('target').get('model')} onAdd={this.handleCondAdd} onUpdate={this.handleCondUpdate}
-                  onDel={this.handleCondDel}
-                />
-              }
+              <QueueAnim animConfig={[
+                { opacity: [1, 0], translateY: [0, 50] },
+                { opacity: [1, 0], translateY: [0, -50] },
+              ]}
+              >
+                {activeItem.get('type') === 'node' && activeItem.get('model').kind === 'import' &&
+                <BizObjCMSPanel form={form} model={activeItem.get('model')} onNodeActionsChange={this.handleNodeActionsChange} key="import" />
+                }
+                {activeItem.get('type') === 'node' && activeItem.get('model').kind === 'export' &&
+                <BizObjCMSPanel form={form} model={activeItem.get('model')} onNodeActionsChange={this.handleNodeActionsChange} key="export" />
+                }
+                {activeItem.get('type') === 'node' && (activeItem.get('model').kind === 'tms') &&
+                <BizObjTMSPanel form={form} model={activeItem.get('model')} onNodeActionsChange={this.handleNodeActionsChange} key="tms" />
+                }
+                {activeItem.get('type') === 'node' && (activeItem.get('model').kind === 'cwm') &&
+                <BizObjCWMPanel form={form} model={activeItem.get('model')} onNodeActionsChange={this.handleNodeActionsChange} key="cwm" />
+                }
+                {activeItem.get('type') === 'edge' &&
+                  <FlowEdgePanel model={activeItem.get('model')} source={activeItem.get('source').get('model')}
+                    target={activeItem.get('target').get('model')} onAdd={this.handleCondAdd} onUpdate={this.handleCondUpdate}
+                    onDel={this.handleCondDel} key="edge"
+                  />
+                }
+              </QueueAnim>
             </Form>
             }
           </Content>
