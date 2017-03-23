@@ -116,7 +116,7 @@ export default class ActivityLoggerPane extends React.Component {
         </Menu.Item>
         <Menu.Divider />
         <Menu.Item key="operation">
-          <Checkbox checked={selectedKeys.indexOf('operation') >= 0} onChange={() => this.handleSelect('operation')}>操作事件</Checkbox>
+          <Checkbox checked={selectedKeys.indexOf('operation') >= 0} onChange={() => this.handleSelect('operation')}>操作记录</Checkbox>
         </Menu.Item>
         <Menu.Item key="tracking">
           <Checkbox checked={selectedKeys.indexOf('tracking') >= 0} onChange={() => this.handleSelect('tracking')}>追踪事件</Checkbox>
@@ -134,7 +134,7 @@ export default class ActivityLoggerPane extends React.Component {
     );
     const timelineHeader = (
       <div>
-        <span>动态事件</span>
+        <span>操作记录</span>
         <div className="toolbar-right">
           <Dropdown overlay={menu} onClick={e => e.stopPropagation()}>
             <Button type="ghost">

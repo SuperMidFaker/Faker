@@ -439,7 +439,7 @@ export default defineMessages({
   },
   shipmtActivity: {
     id: 'transport.shipment.tab.activity',
-    defaultMessage: '动态',
+    defaultMessage: '操作',
   },
   shipmtDetail: {
     id: 'transport.shipment.tab.detail',

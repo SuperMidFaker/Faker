@@ -236,7 +236,7 @@ export default class RegionCascade extends React.Component {
         <Cascader size="large" options={chinaRegions} disabled={disableCascader}
           placeholder={formatMsg(intl, 'defaultCascaderRegion')}
           loadData={this.handleRegionLoad} changeOnSelect
-          onChange={this.handleRegionChange} value={cascadeRegion}
+          onChange={this.handleRegionChange} value={cascadeRegion} showSearch
         />
       </Row>
     );

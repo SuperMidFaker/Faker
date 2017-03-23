@@ -11,7 +11,7 @@ const messages = defineMessages({
   },
   activities: {
     id: 'container.activities',
-    defaultMessage: '动态',
+    defaultMessage: '操作',
   },
   network: {
     id: 'container.network',

@@ -235,10 +235,13 @@ export default class Kpi extends React.Component {
       render: o => (<div style={{ paddingLeft: 15 }}>{o}</div>),
     }];
     let clientStr = '';
+    let swap = '';
     if (sourceType === 'sp') {
       clientStr = '客户';
+      swap = '承运商';
     } else if (sourceType === 'sr') {
       clientStr = '承运商';
+      swap = '客户';
     }
     return (
       <Layout>
@@ -254,7 +257,7 @@ export default class Kpi extends React.Component {
                   {clientStr}
                 </Breadcrumb.Item>
               </Breadcrumb>
-              <div style={{ float: 'right' }}><Button onClick={this.toggleSourceType}>客户/承运商</Button></div>
+              <div style={{ float: 'right' }}><Button onClick={this.toggleSourceType} icon="swap">{swap}</Button></div>
             </div>
             <div className="left-sider-panel">
               <div className="toolbar">

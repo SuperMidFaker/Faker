@@ -198,7 +198,7 @@ export default class ActivityLoggerPane extends React.Component {
         <Menu.Divider />
         <Menu.Item key="operation">
           <Checkbox onChange={ev => this.handleCheckActivies('operation', ev.target.checked)} checked={['all', 'operation'].indexOf(this.state.filterKey) !== -1}>
-            操作事件
+            操作记录
           </Checkbox>
         </Menu.Item>
         <Menu.Item key="ciq">
@@ -210,7 +210,7 @@ export default class ActivityLoggerPane extends React.Component {
     );
     const timelineHeader = (
       <div>
-        <span>动态事件</span>
+        <span>操作记录</span>
         <div className="toolbar-right">
           <Dropdown overlay={menu}>
             <Button type="ghost" onClick={this.handleFilterClick}><Icon type="filter" /> ({selectActivities.length}/{activities.length})</Button>

@@ -147,7 +147,7 @@ export default class DelegationInfoHubPanel extends React.Component {
           <TabPane tab="委托详情" key="basic">
             <BasicPane delegation={delegation} files={files} />
           </TabPane>
-          <TabPane tab="动态" key="activity">
+          <TabPane tab="操作" key="activity">
             <ActivityLoggerPane />
           </TabPane>
         </Tabs>
@@ -156,7 +156,7 @@ export default class DelegationInfoHubPanel extends React.Component {
       if (delgDispatch.recv_services.indexOf('ciq') === -1) {
         return (
           <Tabs activeKey={tabKey} onChange={this.handleTabChange}>
-            <TabPane tab="动态" key="activity">
+            <TabPane tab="操作" key="activity">
               <ActivityLoggerPane />
             </TabPane>
             <TabPane tab="报关" key="customsDecl">
@@ -173,7 +173,7 @@ export default class DelegationInfoHubPanel extends React.Component {
       }
       return (
         <Tabs activeKey={tabKey} onChange={this.handleTabChange}>
-          <TabPane tab="动态" key="activity">
+          <TabPane tab="操作" key="activity">
             <ActivityLoggerPane />
           </TabPane>
           <TabPane tab="报关" key="customsDecl">
@@ -194,7 +194,7 @@ export default class DelegationInfoHubPanel extends React.Component {
       if (delgDispatch.recv_services.indexOf('ciq') === -1) {
         return (
           <Tabs activeKey={tabKey} onChange={this.handleTabChange}>
-            <TabPane tab="动态" key="activity">
+            <TabPane tab="操作" key="activity">
               <ActivityLoggerPane />
             </TabPane>
             <TabPane tab="报关" key="customsDecl">
@@ -214,7 +214,7 @@ export default class DelegationInfoHubPanel extends React.Component {
       }
       return (
         <Tabs activeKey={tabKey} onChange={this.handleTabChange}>
-          <TabPane tab="动态" key="activity">
+          <TabPane tab="操作" key="activity">
             <ActivityLoggerPane />
           </TabPane>
           <TabPane tab="报关" key="customsDecl">
