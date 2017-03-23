@@ -8,7 +8,7 @@ import { format } from 'client/common/i18n/helpers';
 const formatMsg = format(messages);
 
 @injectIntl
-export default class ModuleCRM extends React.Component {
+export default class ModuleSCOF extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     location: locationShape.isRequired,
@@ -22,7 +22,7 @@ export default class ModuleCRM extends React.Component {
     const linkMenus = [];
     linkMenus.push({
       single: true,
-      key: 'crm-0',
+      key: 'scof-0',
       disabled: true,
       path: '/scof/dashboard',
       icon: 'icon-fontello-gauge',
@@ -30,56 +30,40 @@ export default class ModuleCRM extends React.Component {
     });
     linkMenus.push({
       single: true,
-      key: 'crm-1',
-      path: '/scof/customers',
-      icon: 'zmdi zmdi-accounts-list',
-      text: formatMsg(intl, 'customers'),
-    });
-    linkMenus.push({
-      single: true,
-      key: 'crm-2',
+      key: 'scof-1',
       path: '/scof/orders',
       icon: 'icon-fontello-doc-text',
       text: formatMsg(intl, 'orders'),
     });
     linkMenus.push({
-      single: true,
-      key: 'crm-3',
-      path: '/scof/flow',
-      icon: 'icon-fontello-flow-tree',
-      text: formatMsg(intl, 'flow'),
-    });
-    linkMenus.push({
       single: false,
-      key: 'crm-4',
+      key: 'scof-2',
       path: '/scof/billing',
       icon: 'icon-fontello-money-1',
       text: formatMsg(intl, 'billing'),
       sublinks: [{
-        key: 'crm-4-0',
+        key: 'scof-2-0',
         path: '/scof/billing/fees',
         text: '费用管理',
       }, {
-        key: 'crm-4-1',
+        key: 'scof-2-1',
         path: '/scof/billing/list',
         text: '账单管理',
       }],
     });
     linkMenus.push({
       single: true,
-      key: 'crm-5',
-      disabled: true,
-      path: '/scof/reports',
-      icon: 'icon-ikons-bar-chart-2',
-      text: formatMsg(intl, 'reports'),
+      key: 'scof-3',
+      path: '/scof/flow',
+      icon: 'icon-fontello-flow-tree',
+      text: formatMsg(intl, 'flow'),
     });
     linkMenus.push({
       single: true,
-      key: 'crm-6',
-      disabled: true,
-      path: '/scof/settings',
-      icon: 'zmdi zmdi-settings',
-      text: formatMsg(intl, 'settings'),
+      key: 'scof-4',
+      path: '/scof/customers',
+      icon: 'zmdi zmdi-accounts-list',
+      text: formatMsg(intl, 'customers'),
     });
     this.setState({ linkMenus });
   }

@@ -191,7 +191,7 @@ export default class MainForm extends Component {
               <FormItem label={this.msg('transMode')} >
                 {getFieldDecorator('trans_mode', {
                   initialValue: fieldInits.trans_mode,
-                  rules: [{ required: true, message: '境内外运输模式必选' }],
+                  rules: [{ required: true, message: '货物流转必选' }],
                 })(
                   <Select>
                     {

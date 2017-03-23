@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Collapse, Form, Row, Col, Card, Input, InputNumber, Select, Popover, Icon, Switch } from 'antd';
+import { Collapse, Form, Row, Col, Card, Input, InputNumber, Radio, Select, Popover, Icon, Switch } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { GOODSTYPES, SCOF_ORDER_TRANSMODES } from 'common/constants';
 import { setClientForm } from 'common/reducers/crmOrders';
@@ -13,6 +13,8 @@ const formatMsg = format(messages);
 const Panel = Collapse.Panel;
 const FormItem = Form.Item;
 const Option = Select.Option;
+const RadioButton = Radio.Button;
+const RadioGroup = Radio.Group;
 
 @injectIntl
 @connect(
@@ -316,13 +318,11 @@ export default class BasicForm extends Component {
               </Col>
               <Col sm={8}>
                 <FormItem label="货物类型" {...formItemLayout} required="true">
-                  <Select value={formData.cust_shipmt_goods_type} onChange={value => this.handleChange('cust_shipmt_goods_type', value)}>
-                    {
-                    GOODSTYPES.map(gt =>
-                      <Option value={gt.value} key={gt.value}>{gt.text}</Option>
-                    )
-                    }
-                  </Select>
+                  <RadioGroup defaultValue={GOODSTYPES[0].value} value={formData.cust_shipmt_goods_type} onChange={value => this.handleChange('cust_shipmt_goods_type', value)}>
+                    <RadioButton value={GOODSTYPES[0].value}>{GOODSTYPES[0].text}</RadioButton>
+                    <RadioButton value={GOODSTYPES[1].value}>{GOODSTYPES[1].text}</RadioButton>
+                    <RadioButton value={GOODSTYPES[2].value}>{GOODSTYPES[2].text}</RadioButton>
+                  </RadioGroup>
                 </FormItem>
               </Col>
               <Col sm={8}>
@@ -332,7 +332,7 @@ export default class BasicForm extends Component {
               </Col>
               <Col sm={8}>
                 <FormItem label="总毛重" {...formItemLayout} required="true">
-                  <Input addonAfter="KG" value={formData.cust_shipmt_weight} onChange={e => this.handleChange('cust_shipmt_weight', e.target.value)} />
+                  <Input type="number" addonAfter="KG" value={formData.cust_shipmt_weight} onChange={e => this.handleChange('cust_shipmt_weight', e.target.value)} />
                 </FormItem>
               </Col>
             </Row>

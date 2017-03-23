@@ -91,7 +91,7 @@ export default defineMessages({
   },
   transMode: {
     id: 'cms.delegation.delg.trans_mode',
-    defaultMessage: '境内外运输模式',
+    defaultMessage: '货物流转',
   },
   waybillLadingNo: {
     id: 'cms.delegation.delg.waybill.lading.no',

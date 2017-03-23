@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Form, Row, Col, Card, Input, Select, InputNumber } from 'antd';
+import { Form, Row, Col, Card, Input, Select, Icon, InputNumber, Tooltip } from 'antd';
 import { TRANS_MODE, DECL_I_TYPE, DECL_E_TYPE } from 'common/constants';
 import { setClientForm, loadFlowNodeData } from 'common/reducers/crmOrders';
 import { intlShape, injectIntl } from 'react-intl';
@@ -56,8 +56,8 @@ export default class ClearanceForm extends Component {
   render() {
     const { formData, formRequires } = this.props;
     const formItemLayout = {
-      labelCol: { span: 8 },
-      wrapperCol: { span: 16 },
+      labelCol: { span: 6 },
+      wrapperCol: { span: 18 },
     };
     const node = formData.node;
     const declWays = node.kind === 'export' ? DECL_E_TYPE : DECL_I_TYPE;
@@ -74,7 +74,33 @@ export default class ClearanceForm extends Component {
             </FormItem>
           </Col> */}
           <Col sm={24} lg={8}>
-            <FormItem label={this.msg('transMode')} {...formItemLayout}>
+            <FormItem label={this.msg('declareWay')} {...formItemLayout}>
+              <Select value={node.decl_way_code} onChange={value => this.handleChange('decl_way_code', value)}>
+                {declWays.map(dw =>
+                  <Option value={dw.key} key={dw.key}>{dw.value}</Option>)
+                }
+              </Select>
+            </FormItem>
+          </Col>
+          <Col sm={24} lg={8}>
+            <FormItem label={this.msg('declCustoms')} {...formItemLayout}>
+              <Select showSearch value={node.decl_port} onChange={value => this.handleChange('decl_port', value)}>
+                {
+                  formRequires.declPorts.map(dp => <Option value={dp.code} key={dp.code}>{dp.code}|{dp.name}</Option>)
+                }
+              </Select>
+            </FormItem>
+          </Col>
+          <Col sm={24} lg={8}>
+            <FormItem label={(
+              <span>
+                {this.msg('transferMode')}&nbsp;
+                <Tooltip title={this.msg('tooltipTransferMode')}>
+                  <Icon type="question-circle-o" />
+                </Tooltip>
+              </span>
+            )} {...formItemLayout}
+            >
               <Select value={node.trans_mode} onChange={value => this.handleChange('trans_mode', value)}>
                 {
                     TRANS_MODE.map(tr =>
@@ -85,26 +111,8 @@ export default class ClearanceForm extends Component {
             </FormItem>
           </Col>
           <Col sm={24} lg={8}>
-            <FormItem label={this.msg('declCustoms')} {...formItemLayout}>
-              <Select value={node.decl_port} onChange={value => this.handleChange('decl_port', value)}>
-                {
-                  formRequires.declPorts.map(dp => <Option value={dp.code} key={dp.code}>{dp.code}|{dp.name}</Option>)
-                }
-              </Select>
-            </FormItem>
-          </Col>
-          <Col sm={24} lg={8}>
-            <FormItem label={this.msg('declareWay')} {...formItemLayout}>
-              <Select value={node.decl_way_code} onChange={value => this.handleChange('decl_way_code', value)}>
-                {declWays.map(dw =>
-                  <Option value={dw.key} key={dw.key}>{dw.value}</Option>)
-                }
-              </Select>
-            </FormItem>
-          </Col>
-          <Col sm={24} lg={8}>
             <FormItem label={this.msg('customsBroker')} {...formItemLayout}>
-              <Select value={node.customs_partner_id} onChange={value => this.handleChange('customs_partner_id', value)}>
+              <Select showSearch value={node.customs_partner_id} onChange={value => this.handleChange('customs_partner_id', value)}>
                 {
                   formRequires.customsBrokers.map(cb =>
                     <Option value={cb.partner_id} key={cb.partner_id}>{cb.partner_code}|{cb.name}</Option>
@@ -115,7 +123,7 @@ export default class ClearanceForm extends Component {
           </Col>
           <Col sm={24} lg={8}>
             <FormItem label={this.msg('ciqBroker')} {...formItemLayout}>
-              <Select value={node.ciq_partner_id} onChange={value => this.handleChange('ciq_partner_id', value)}>
+              <Select showSearch value={node.ciq_partner_id} onChange={value => this.handleChange('ciq_partner_id', value)}>
                 {
                   formRequires.ciqBrokers.map(cb =>
                     <Option value={cb.partner_id} key={cb.partner_id}>{cb.partner_code}|{cb.name}</Option>
@@ -129,22 +137,22 @@ export default class ClearanceForm extends Component {
               <Select value={node.quote_no} />
             </FormItem>
           </Col>
-          <Col sm={24} lg={4}>
-            <FormItem label={this.msg('packageNum')} labelCol={{ span: 4 }} wrapperCol={{ span: 20 }}>
-              <InputNumber value={node.pack_count} min={1} max={100000} style={{ width: '100%' }}
+          <Col sm={24} lg={8}>
+            <FormItem label={this.msg('packageNum')} {...formItemLayout}>
+              <InputNumber value={node.pack_count} min={1} max={100000}
                 onChange={value => this.handleChange('pack_count', value)}
               />
             </FormItem>
           </Col>
-          <Col sm={24} lg={4}>
-            <FormItem label={this.msg('delgGrossWt')} labelCol={{ span: 4 }} wrapperCol={{ span: 20 }}>
+          <Col sm={24} lg={8}>
+            <FormItem label={this.msg('delgGrossWt')} {...formItemLayout}>
               <Input value={node.gross_wt} addonAfter="千克" type="number"
                 onChange={ev => this.handleChange('gross_wt', ev.target.value)}
               />
             </FormItem>
           </Col>
-          <Col sm={24} lg={16}>
-            <FormItem label="备注" labelCol={{ span: 4 }} wrapperCol={{ span: 20 }}>
+          <Col sm={24} lg={8}>
+            <FormItem label="备注" {...formItemLayout}>
               <Input value={node.remark} onChange={ev => this.handleChange('remark', ev.target.value)} />
             </FormItem>
           </Col>

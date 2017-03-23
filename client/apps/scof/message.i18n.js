@@ -3,7 +3,7 @@ import { defineMessages } from 'react-intl';
 const messages = defineMessages({
   dashboard: {
     id: 'scop.module.dashboard',
-    defaultMessage: '概况',
+    defaultMessage: '工作台',
   },
   customers: {
     id: 'scop.module.customers',

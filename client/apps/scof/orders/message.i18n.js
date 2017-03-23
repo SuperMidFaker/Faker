@@ -213,9 +213,13 @@ const messages = defineMessages({
     id: 'scop.orders.delg.packageNum',
     defaultMessage: '件数',
   },
-  transMode: {
-    id: 'scof.orders.biz.cms.transMode',
-    defaultMessage: '境内外运输模式',
+  transferMode: {
+    id: 'scof.orders.biz.cms.transfer.mode',
+    defaultMessage: '货物流转',
+  },
+  tooltipTransferMode: {
+    id: 'scof.orders.biz.cms.transfer.mode.tooltip',
+    defaultMessage: '货物流转',
   },
   declCustoms: {
     id: 'scof.orders.biz.cms.declcustoms',

@@ -104,7 +104,7 @@ const messages = defineMessages({
   },
   transMode: {
     id: 'scof.flow.biz.cms.transMode',
-    defaultMessage: '境内外运输模式',
+    defaultMessage: '货物流转',
   },
   customsBroker: {
     id: 'scof.flow.biz.cms.customs.broker',
