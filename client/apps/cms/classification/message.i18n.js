@@ -33,6 +33,10 @@ const messages = defineMessages({
     id: 'cms.classificagtion.tradeitem.table.hscode',
     defaultMessage: '商品编码',
   },
+  preHscode: {
+    id: 'cms.classificagtion.tradeitem.modal.table.prehscode',
+    defaultMessage: '商品编码(已有)',
+  },
   gName: {
     id: 'cms.classificagtion.tradeitem.g.name',
     defaultMessage: '中文品名',
@@ -40,6 +44,10 @@ const messages = defineMessages({
   gModel: {
     id: 'cms.classificagtion.tradeitem.table.gmodel',
     defaultMessage: '中文规格型号',
+  },
+  preGModel: {
+    id: 'cms.classificagtion.tradeitem.modal.table.pregmodel',
+    defaultMessage: '中文规格型号(已有)',
   },
   element: {
     id: 'cms.classificagtion.tradeitem.table.element',
@@ -131,7 +139,7 @@ const messages = defineMessages({
   },
   importItems: {
     id: 'cms.classificagtion.tradeitem.items.import',
-    defaultMessage: '导入',
+    defaultMessage: '对比导入',
   },
   importHsunit: {
     id: 'cms.classificagtion.hscode.gunit.import',

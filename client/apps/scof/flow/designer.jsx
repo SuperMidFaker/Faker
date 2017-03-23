@@ -210,6 +210,7 @@ export default class FlowDesigner extends React.Component {
     }
   }
   handleAddEdge = () => {
+    // todo multiple add wrong
     this.beginAdd = true;
     const activeItem = this.state.activeItem;
     if (activeItem) {

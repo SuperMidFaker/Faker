@@ -18,24 +18,12 @@ function fetchData({ state, dispatch }) {
   return dispatch(loadHsCodeCategories(state.account.tenantId));
 }
 
-function getFieldInits(formData) {
-  const init = { mergeOptArr: [], specialHsSortArr: [] };
-  if (formData.mergeOpt_arr) {
-    init.mergeOptArr = formData.mergeOpt_arr.split(',');
-  }
-  if (formData.specialHsSort) {
-    init.specialHsSortArr = formData.specialHsSort.split(',');
-  }
-  return init;
-}
-
 @connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
     isCustomRegisted: !!state.cmsManifest.billHead.manual_no,
     hscodeCategories: state.cmsHsCode.hscodeCategories,
-    fieldInits: getFieldInits(state.cmsSettings.formData),
   })
 )
 
@@ -76,10 +64,10 @@ export default class MergeSplitForm extends React.Component {
   render() {
     const { form: { getFieldDecorator, getFieldValue }, hscodeCategories, formData } = this.props;
     const init = { mergeOptArr: [], specialHsSortArr: [] };
-    if (formData.mergeOpt_arr) {
+    if (formData.mergeOpt_arr !== null && formData.mergeOpt_arr.length > 0) {
       init.mergeOptArr = formData.mergeOpt_arr.split(',');
     }
-    if (formData.specialHsSort) {
+    if (formData.specialHsSort !== null && formData.specialHsSort.length > 0) {
       init.specialHsSortArr = formData.specialHsSort.split(',');
     }
     return (
