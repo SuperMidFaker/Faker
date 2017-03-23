@@ -152,6 +152,16 @@ export default class BasicForm extends Component {
                 },
                 files: [],
               });
+            } else if (node.kind === 'terminal') {
+              subOrders.push({
+                node: {
+                  node_uuid: node.id,
+                  kind: node.kind,
+                  in_degree: node.in_degree,
+                  out_degree: node.out_degree,
+                  level,
+                },
+              });
             }
           });
         });

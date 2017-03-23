@@ -14,7 +14,7 @@ export default class FlowEdgePanel extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     source: PropTypes.shape({ name: PropTypes.string.isRequired }),
-    target: PropTypes.shape({ name: PropTypes.string.isRequired }),
+    target: PropTypes.shape({ name: PropTypes.string }),
     onAdd: PropTypes.func.isRequired,
     onDel: PropTypes.func.isRequired,
     onUpdate: PropTypes.func.isRequired,
