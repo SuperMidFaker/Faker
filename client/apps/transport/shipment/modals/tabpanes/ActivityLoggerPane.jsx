@@ -145,7 +145,7 @@ export default class ActivityLoggerPane extends React.Component {
       </div>
     );
     return (
-      <div className="activity-wrapper">
+      <div className="pane-content tab-pane">
         <ActivityOperation stage={stage} sourceType={sourceType} />
         <Collapse bordered={false} defaultActiveKey={['timeline']}>
           <Panel header={timelineHeader} key="timeline">
