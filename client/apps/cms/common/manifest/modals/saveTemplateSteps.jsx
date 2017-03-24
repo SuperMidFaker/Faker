@@ -82,6 +82,8 @@ export default class SaveTemplateModal extends React.Component {
     this.props.createGeneratedTemplate({ params, ruleDatas }).then((result) => {
       if (result.error) {
         message.error(result.error.message);
+      } else {
+        this.props.setStepVisible(false);
       }
     });
   }
