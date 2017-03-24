@@ -229,6 +229,13 @@ export default class ShipmentOrderList extends React.Component {
               <Progress percent={percent} strokeWidth={5} showInfo={false} />
             </div>
           );
+        } else if (o === CRM_ORDER_STATUS.processing) {
+          return (
+            <div>
+              运行中
+              <Progress percent={percent} strokeWidth={5} showInfo={false} />
+            </div>
+          );
         }
         return '';
       },
