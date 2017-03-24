@@ -27,13 +27,13 @@ export default class FlowEdgePanel extends Component {
         <Row gutter={16}>
           <Col sm={12}>
             <FormItem label={this.msg('sourceNode')}>
-              <Input defaultValue={source.name} readOnly />
+              <Input value={source.name} readOnly />
             </FormItem>
           </Col>
           {target.kind !== 'terminal' &&
           <Col sm={12}>
             <FormItem label={this.msg('targetNode')}>
-              <Input defaultValue={target.name} readOnly />
+              <Input value={target.name} readOnly />
             </FormItem>
           </Col>
           }

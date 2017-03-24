@@ -8,6 +8,7 @@ export const CRM_ORDER_STATUS = {
   clearancing: 2,
   transporting: 3,
   finished: 4,
+  processing: 5,
 };
 
 export const CRM_ORDER_MODE = {

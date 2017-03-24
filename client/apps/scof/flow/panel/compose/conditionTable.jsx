@@ -81,6 +81,15 @@ export default class ConditionTable extends React.Component {
     }));
     this.state = { data };
   }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.conditions !== this.props.conditions) {
+      const data = nextProps.conditions.map(cond => ({
+        editable: false, key: cond.id, biz_object: cond.biz_object, event: cond.event,
+        pending: {}, id: cond.id,
+      }));
+      this.setState({ data });
+    }
+  }
   handleAdd = () => {
     const rows = [...this.state.data];
     const lastIndex = rows.length > 0 ? rows[rows.length - 1].key : 0;

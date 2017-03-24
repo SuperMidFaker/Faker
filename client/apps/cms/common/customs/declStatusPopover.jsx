@@ -16,7 +16,7 @@ export default class DeclStatusPopover extends React.Component {
     children: PropTypes.node.isRequired,
   }
   render() {
-    const { results, entryId, children } = this.props;
+    const { results = [], entryId, children } = this.props;
     const overlay = (
       <div>
         <Timeline>

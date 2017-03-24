@@ -96,8 +96,8 @@ export default class ShipmentOrderList extends React.Component {
     });
   }
   handleAccept = (shipmtOrderNo) => {
-    const { tenantId, tenantName, loginId, username } = this.props;
-    this.props.acceptOrder({ tenantId, tenantName, loginId, username, shipmtOrderNo }).then((result) => {
+    const { loginId, username } = this.props;
+    this.props.acceptOrder({ loginId, username, shipmtOrderNo }).then((result) => {
       if (result.error) {
         message.error(result.error.message);
       } else {
@@ -226,6 +226,13 @@ export default class ShipmentOrderList extends React.Component {
           return (
             <div>
               完结
+              <Progress percent={percent} strokeWidth={5} showInfo={false} />
+            </div>
+          );
+        } else if (o === CRM_ORDER_STATUS.processing) {
+          return (
+            <div>
+              运行中
               <Progress percent={percent} strokeWidth={5} showInfo={false} />
             </div>
           );
