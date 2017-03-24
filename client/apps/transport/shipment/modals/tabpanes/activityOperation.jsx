@@ -33,11 +33,19 @@ export default class ActivityOperation extends React.Component {
   state = {
     activeKey: 'log',
   }
+  componentDidMount() {
+    this.initializeActiveKey(this.props);
+  }
   componentWillReceiveProps(nextProps) {
-    const { stage, disp, sourceType } = nextProps;
+    this.initializeActiveKey(nextProps);
+  }
+  initializeActiveKey = (props) => {
+    const { stage, disp, sourceType } = props;
     let { activeKey } = this.state;
     if (sourceType === 'sr') {
-      if (disp.status === SHIPMENT_TRACK_STATUS.dispatched) {
+      if (disp.status === SHIPMENT_TRACK_STATUS.unaccepted || disp.status === SHIPMENT_TRACK_STATUS.accepted) {
+        activeKey = 'log';
+      } else if (disp.status === SHIPMENT_TRACK_STATUS.dispatched) {
         if (disp.sp_tenant_id === -1) {
           activeKey = 'pickup';
         } else if (disp.sp_tenant_id === 0) {
@@ -91,6 +99,8 @@ export default class ActivityOperation extends React.Component {
           activeKey = 'log';
         }
       }
+    } else if (sourceType === 'sp') {
+      activeKey = 'log';
     }
     if (stage === 'exception') {
       activeKey = 'exception';
@@ -119,10 +129,10 @@ export default class ActivityOperation extends React.Component {
         };
         if (disp.sp_tenant_id === -1) {
           tabs = [
-            <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>,
             <TabPane tab={<span><Icon type="environment-o" />提货</span>} key="pickup" >
               <PickupDeliverPane type="pickup" estDate={shipmt.pickup_est_date} location={location} />
             </TabPane>,
+            <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>,
             <TabPane tab={<span><Icon type="exception" />异常</span>} key="exception"><CreateExceptionPane /></TabPane>,
           ];
         } else if (disp.sp_tenant_id === 0) {
@@ -130,10 +140,10 @@ export default class ActivityOperation extends React.Component {
           if (disp.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
             // 线下司机
             tabs = [
-              <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>,
               <TabPane tab={<span><Icon type="environment-o" />提货</span>} key="pickup" >
                 <PickupDeliverPane type="pickup" estDate={shipmt.pickup_est_date} location={location} />
               </TabPane>,
+              <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>,
               <TabPane tab={<span><Icon type="exception" />异常</span>} key="exception"><CreateExceptionPane /></TabPane>,
             ];
           } else {
@@ -160,22 +170,22 @@ export default class ActivityOperation extends React.Component {
         if (disp.sp_tenant_id === -1) {
           // 上报位置
           tabs = [
-            <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>,
             <TabPane tab={<span><Icon type="environment-o" />送货</span>} key="deliver" >
               <PickupDeliverPane type="deliver" estDate={shipmt.deliver_est_date} location={location} />
             </TabPane>,
             <TabPane tab={<span><Icon type="environment-o" />追踪</span>} key="location" ><CreatePointPane /></TabPane>,
+            <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>,
             <TabPane tab={<span><Icon type="exception" />异常</span>} key="exception"><CreateExceptionPane /></TabPane>,
           ];
         } else if (disp.sp_tenant_id === 0) {
           if (disp.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
             // 上报位置
             tabs = [
-              <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>,
               <TabPane tab={<span><Icon type="environment-o" />送货</span>} key="deliver" >
                 <PickupDeliverPane type="deliver" estDate={shipmt.deliver_est_date} location={location} />
               </TabPane>,
               <TabPane tab={<span><Icon type="environment-o" />追踪</span>} key="location" ><CreatePointPane /></TabPane>,
+              <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>,
               <TabPane tab={<span><Icon type="exception" />异常</span>} key="exception"><CreateExceptionPane /></TabPane>,
             ];
           } else {
@@ -196,16 +206,16 @@ export default class ActivityOperation extends React.Component {
         if (!disp.pod_status || disp.pod_status === SHIPMENT_POD_STATUS.unsubmit) {
           if (disp.sp_tenant_id === -1 || tenantId === shipmt.tenant_id) {
             tabs = [
+              <TabPane tab={<span><Icon type="tags" />回单</span>} key="pod"><SubmitPodPane /></TabPane>,
               <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>,
               <TabPane tab={<span><Icon type="exception" />异常</span>} key="exception"><CreateExceptionPane /></TabPane>,
-              <TabPane tab={<span><Icon type="tags" />回单</span>} key="pod"><SubmitPodPane /></TabPane>,
             ];
           } else if (disp.sp_tenant_id === 0) {
             if (disp.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
               tabs = [
+                <TabPane tab={<span><Icon type="tags" />回单</span>} key="pod"><SubmitPodPane /></TabPane>,
                 <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>,
                 <TabPane tab={<span><Icon type="exception" />异常</span>} key="exception"><CreateExceptionPane /></TabPane>,
-                <TabPane tab={<span><Icon type="tags" />回单</span>} key="pod"><SubmitPodPane /></TabPane>,
               ];
             } else {
               // 司机上传 催促回单

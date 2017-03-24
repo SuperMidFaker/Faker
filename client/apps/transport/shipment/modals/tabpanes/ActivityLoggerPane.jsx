@@ -54,9 +54,10 @@ export default class ActivityLoggerPane extends React.Component {
     });
   }
   renderTimeLine = (log, index) => {
+    const style = { backgroundColor: '#fff' };
     if (log.category === SHIPMENT_LOG_CATEGORY.message) {
       return (
-        <Timeline.Item key={index} dot={<Icon type="message" />}>
+        <Timeline.Item key={index} dot={<Icon type="message" style={style} />}>
           <p>{this.msg(log.type)} {log.content}</p>
           <p>{`${log.tenant_name} ${log.login_name}`}</p>
           <p>{log.created_date && moment(log.created_date).format(timeFormat)}</p>
@@ -64,7 +65,7 @@ export default class ActivityLoggerPane extends React.Component {
       );
     } else if (log.category === SHIPMENT_LOG_CATEGORY.operation) {
       return (
-        <Timeline.Item key={index} dot={<Icon type="retweet" />}>
+        <Timeline.Item key={index} dot={<Icon type="retweet" style={style} />}>
           <p>{this.msg(log.type)} {log.content}</p>
           <p>{`${log.tenant_name} ${log.login_name}`}</p>
           <p>{log.created_date && moment(log.created_date).format(timeFormat)}</p>
@@ -72,7 +73,7 @@ export default class ActivityLoggerPane extends React.Component {
       );
     } else if (log.category === SHIPMENT_LOG_CATEGORY.tracking) {
       return (
-        <Timeline.Item key={index} dot={<Icon type="environment-o" />}>
+        <Timeline.Item key={index} dot={<Icon type="environment-o" style={style} />}>
           <p>{this.msg(log.type)} {log.content}</p>
           <p>{`${log.tenant_name} ${log.login_name}`}</p>
           <p>{log.created_date && moment(log.created_date).format(timeFormat)}</p>
@@ -80,7 +81,7 @@ export default class ActivityLoggerPane extends React.Component {
       );
     } else if (log.category === SHIPMENT_LOG_CATEGORY.exception) {
       return (
-        <Timeline.Item key={index} color="red" dot={<Icon type="exclamation-circle-o" />}>
+        <Timeline.Item key={index} color="red" dot={<Icon type="exclamation-circle-o" style={style} />}>
           <p>{this.msg(log.type)} {log.content}</p>
           <p>{`${log.tenant_name} ${log.login_name}`}</p>
           <p>{log.created_date && moment(log.created_date).format(timeFormat)}</p>
@@ -88,7 +89,7 @@ export default class ActivityLoggerPane extends React.Component {
       );
     } else if (log.category === SHIPMENT_LOG_CATEGORY.fee) {
       return (
-        <Timeline.Item key={index} dot={<Icon type="pay-circle-o" />}>
+        <Timeline.Item key={index} dot={<Icon type="pay-circle-o" style={style} />}>
           <p>{this.msg(log.type)} {log.content}</p>
           <p>{`${log.tenant_name} ${log.login_name}`}</p>
           <p>{log.created_date && moment(log.created_date).format(timeFormat)}</p>

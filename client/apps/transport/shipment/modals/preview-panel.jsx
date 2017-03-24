@@ -19,6 +19,7 @@ import ExceptionPane from './tabpanes/exceptionPane';
 import ChangeActDateModal from '../../tracking/land/modals/changeActDateModal';
 import ShipmentAdvanceModal from '../../tracking/land/modals/shipment-advance-modal';
 import CreateSpecialCharge from '../../tracking/land/modals/create-specialCharge';
+import VehicleModal from '../../tracking/land/modals/vehicle-updater';
 
 const formatMsg = format(messages);
 const TabPane = Tabs.TabPane;
@@ -145,7 +146,7 @@ export default class PreviewPanel extends React.Component {
     }
   }
   renderTabs(status, stage, sourceType) {
-    if (status <= SHIPMENT_TRACK_STATUS.unaccepted) {
+    if (status === SHIPMENT_TRACK_STATUS.unaccepted) {
       return (
         <Tabs activeKey={this.props.tabKey} onChange={this.handleTabChange}>
           <TabPane tab={this.msg('shipmtDetail')} key="detail">
@@ -153,6 +154,40 @@ export default class PreviewPanel extends React.Component {
           </TabPane>
           <TabPane tab={this.msg('shipmtActivity')} key="activity">
             <ActivityLoggerPane stage={stage} sourceType={sourceType} />
+          </TabPane>
+        </Tabs>
+      );
+    } else if (status === SHIPMENT_TRACK_STATUS.accepted) {
+      return (
+        <Tabs activeKey={this.props.tabKey} onChange={this.handleTabChange}>
+          <TabPane tab={this.msg('shipmtDetail')} key="detail">
+            <DetailPane />
+          </TabPane>
+          <TabPane tab={this.msg('shipmtActivity')} key="activity">
+            <ActivityLoggerPane stage={stage} sourceType={sourceType} />
+          </TabPane>
+          <TabPane tab={this.msg('shipmtCharge')} key="charge">
+            <ChargePane />
+          </TabPane>
+        </Tabs>
+      );
+    } else if (status === SHIPMENT_TRACK_STATUS.dispatched || status === SHIPMENT_TRACK_STATUS.intransit || status === SHIPMENT_TRACK_STATUS.delivered) {
+      return (
+        <Tabs activeKey={this.props.tabKey} onChange={this.handleTabChange}>
+          <TabPane tab={this.msg('shipmtActivity')} key="activity">
+            <ActivityLoggerPane stage={stage} sourceType={sourceType} />
+          </TabPane>
+          <TabPane tab={this.msg('shipmtDetail')} key="detail">
+            <DetailPane />
+          </TabPane>
+          <TabPane tab={this.msg('shipmtTracking')} key="tracking">
+            <TrackingPane />
+          </TabPane>
+          <TabPane tab={this.msg('shipmtCharge')} key="charge">
+            <ChargePane />
+          </TabPane>
+          <TabPane tab={this.msg('shipmtException')} key="exception">
+            <ExceptionPane />
           </TabPane>
         </Tabs>
       );
@@ -242,6 +277,7 @@ export default class PreviewPanel extends React.Component {
           <ChangeActDateModal />
           <ShipmentAdvanceModal />
           <CreateSpecialCharge />
+          <VehicleModal onOK={() => {}} />
         </div>
       : null
     );
