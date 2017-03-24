@@ -387,9 +387,6 @@ export default class TradeItemList extends Component {
             formData={{
               data: JSON.stringify({
                 repo_id: this.props.repoId,
-                tenant_id: this.props.tenantId,
-                created_login_id: this.props.loginId,
-                created_login_name: this.props.loginName,
               }),
             }} onUploaded={this.handleUploaded}
           >
