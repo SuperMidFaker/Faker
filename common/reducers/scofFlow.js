@@ -182,7 +182,7 @@ export function closeAddTriggerModal() {
   };
 }
 
-export function loadCmsBizParams(tenantId, ietype) {
+export function loadCmsBizParams(tenantId, partnerId, ietype) {
   return {
     [CLIENT_API]: {
       types: [
@@ -192,7 +192,7 @@ export function loadCmsBizParams(tenantId, ietype) {
       ],
       endpoint: 'v1/scof/flow/cms/params',
       method: 'get',
-      params: { tenantId, ietype },
+      params: { tenantId, partnerId, ietype },
     },
   };
 }
