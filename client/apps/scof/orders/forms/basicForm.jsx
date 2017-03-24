@@ -147,6 +147,7 @@ export default class BasicForm extends Component {
                   name: node.name,
                   in_degree: node.in_degree,
                   out_degree: node.out_degree,
+                  manifest_template_id: node.manifest_template_id,
                   level,
                   pack_count: null,
                   gross_wt: null,
@@ -233,7 +234,7 @@ export default class BasicForm extends Component {
               </Col>
               <Col sm={8}>
                 <FormItem label="合同号" {...formItemLayout}>
-                  <Input value={formData.cust_invoice_no} onChange={e => this.handleChange('cust_contract_no', e.target.value)} />
+                  <Input value={formData.cust_contract_no} onChange={e => this.handleChange('cust_contract_no', e.target.value)} />
                 </FormItem>
               </Col>
             </Row>
@@ -318,7 +319,7 @@ export default class BasicForm extends Component {
               </Col>
               <Col sm={8}>
                 <FormItem label="货物类型" {...formItemLayout} required="true">
-                  <RadioGroup defaultValue={GOODSTYPES[0].value} value={formData.cust_shipmt_goods_type} onChange={value => this.handleChange('cust_shipmt_goods_type', value)}>
+                  <RadioGroup value={formData.cust_shipmt_goods_type} onChange={ev => this.handleChange('cust_shipmt_goods_type', ev.target.value)}>
                     <RadioButton value={GOODSTYPES[0].value}>{GOODSTYPES[0].text}</RadioButton>
                     <RadioButton value={GOODSTYPES[1].value}>{GOODSTYPES[1].text}</RadioButton>
                     <RadioButton value={GOODSTYPES[2].value}>{GOODSTYPES[2].text}</RadioButton>
@@ -327,7 +328,7 @@ export default class BasicForm extends Component {
               </Col>
               <Col sm={8}>
                 <FormItem label="总件数" {...formItemLayout} required="true">
-                  <InputNumber min={1} value={formData.cust_shipmt_pieces} onChange={e => this.handleChange('cust_shipmt_pieces', e.target.value)} />
+                  <InputNumber min={1} value={formData.cust_shipmt_pieces} onChange={value => this.handleChange('cust_shipmt_pieces', value)} />
                 </FormItem>
               </Col>
               <Col sm={8}>

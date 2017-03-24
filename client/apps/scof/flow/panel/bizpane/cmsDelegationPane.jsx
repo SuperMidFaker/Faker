@@ -70,7 +70,7 @@ export default class CMSDelegationPane extends Component {
               <FormItem label={this.msg('customsBroker')}>
                 {getFieldDecorator('customs_parnter_id', {
                   initialValue: model.customs_parnter_id,
-                })(<Select>
+                })(<Select allowClear>
                   {
                     customsBrokers.map(cb =>
                       <Option value={cb.partner_id} key={cb.partner_id}>{cb.partner_code}|{cb.name}</Option>
@@ -83,7 +83,7 @@ export default class CMSDelegationPane extends Component {
               <FormItem label={this.msg('ciqBroker')}>
                 {getFieldDecorator('ciq_partner_id', {
                   initialValue: model.ciq_partner_id,
-                })(<Select>
+                })(<Select allowClear>
                   {
                     ciqBrokers.map(cb =>
                       <Option value={cb.partner_id} key={cb.partner_id}>{cb.partner_code}|{cb.name}</Option>

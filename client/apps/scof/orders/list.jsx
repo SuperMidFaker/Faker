@@ -96,8 +96,8 @@ export default class ShipmentOrderList extends React.Component {
     });
   }
   handleAccept = (shipmtOrderNo) => {
-    const { tenantId, tenantName, loginId, username } = this.props;
-    this.props.acceptOrder({ tenantId, tenantName, loginId, username, shipmtOrderNo }).then((result) => {
+    const { loginId, username } = this.props;
+    this.props.acceptOrder({ loginId, username, shipmtOrderNo }).then((result) => {
       if (result.error) {
         message.error(result.error.message);
       } else {
