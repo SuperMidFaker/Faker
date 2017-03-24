@@ -59,6 +59,7 @@ export default class FeesTable extends Component {
     { value: 'g_model', text: '规格型号' },
     { value: 'remark', text: '备注' },
     { value: 'cop_product_no', text: '商品货号' },
+    { value: 'null', text: '空' },
   ];
   handleSearch = (value) => {
     const searchValue = value.toLowerCase();

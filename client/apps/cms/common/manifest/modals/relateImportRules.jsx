@@ -51,7 +51,7 @@ export default class RelateImportRuleModal extends React.Component {
   handleOk = () => {
     const element = Mention.toString(this.props.form.getFieldValue('rule_element'));
     const rules = { ...this.props.form.getFieldsValue(), rule_element: element, template_id: -1 };
-    this.props.saveBillRules({ rules, billSeqNo: this.props.billRule.bill_seq_no }).then((result) => {
+    this.props.saveBillRules({ rules, billSeqNo: this.props.billHead.bill_seq_no }).then((result) => {
       if (result.error) {
         message.error(result.error.message);
       } else {
