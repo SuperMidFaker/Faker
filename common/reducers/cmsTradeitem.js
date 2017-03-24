@@ -31,7 +31,7 @@ const actionTypes = createActionTypes('@@welogix/cms/tradeitem/', [
 
 const initialState = {
   listFilter: {
-    status: 0,
+    status: 'pending',
     sortField: '',
     sortOrder: '',
   },
@@ -81,7 +81,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_REPO_TRADES_SUCCEED:
       return { ...state, repoTrades: action.result.data };
     case actionTypes.LOAD_TRADE_ITEMS_SUCCEED:
-      return { ...state, tradeItemlist: action.result.data };
+      return { ...state, tradeItemlist: action.result.data, listFilter: JSON.parse(action.params.filter) };
     case actionTypes.LOAD_PARAMS_SUCCEED:
       return { ...state, params: action.result.data };
     case actionTypes.LOAD_ITEM_EDIT_SUCCEED:
