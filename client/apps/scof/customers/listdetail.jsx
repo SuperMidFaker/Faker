@@ -9,7 +9,7 @@ import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import ProfileForm from './forms/profileForm';
 import FlowRulesPane from './flowRulesPane';
-import CustomerModal from './customerModal';
+import CustomerModal from './modals/customerModal';
 import { loadCustomers, showCustomerModal, deleteCustomer } from 'common/reducers/crmCustomers';
 import { PARTNER_ROLES } from 'common/constants';
 

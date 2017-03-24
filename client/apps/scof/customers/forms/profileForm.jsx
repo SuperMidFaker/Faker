@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Card, Row, Col } from 'antd';
 import InfoItem from 'client/components/InfoItem';
+import SubCustomerList from '../subCustomerList';
 import { format } from 'client/common/i18n/helpers';
 import { showCustomerModal } from 'common/reducers/crmCustomers';
 import messages from '../message.i18n';
@@ -69,7 +70,7 @@ export default class ProfileForm extends React.Component {
             </Col>
           </Row>
         </Card>
-        <Card className="aside-card" title={this.msg('subCustomer')} extra={<a href="#" onClick={() => this.props.showSubCustomerModal(customer)}>添加</a>} />
+        <SubCustomerList customer={customer} />
         <Card className="aside-card" title={this.msg('serviceTeam')} extra={<a href="#" onClick={() => this.props.showServiceTeamModal(customer)}>添加成员</a>} />
       </div>
     );

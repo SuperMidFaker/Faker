@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Modal, Form, Input, Checkbox, message } from 'antd';
 import { format } from 'client/common/i18n/helpers';
-import messages from './message.i18n';
-import { addCustomer, editCustomer, showCustomerModal, hideCustomerModal } from 'common/reducers/crmCustomers';
+import messages from '../message.i18n';
+import { addCustomer, editCustomer, hideCustomerModal } from 'common/reducers/crmCustomers';
 import { checkPartner } from 'common/reducers/partner';
 import { CUSTOMER_TYPES } from 'common/constants';
 const FormItem = Form.Item;
@@ -19,7 +19,7 @@ const formatMsg = format(messages);
     customer: state.crmCustomers.customerModal.customer,
     operation: state.crmCustomers.customerModal.operation,
   }),
-  { addCustomer, editCustomer, checkPartner, showCustomerModal, hideCustomerModal }
+  { addCustomer, editCustomer, checkPartner, hideCustomerModal }
 )
 
 export default class CustomerModal extends React.Component {
@@ -30,7 +30,6 @@ export default class CustomerModal extends React.Component {
     operation: PropTypes.string, // add  edit
     addCustomer: PropTypes.func.isRequired,
     checkPartner: PropTypes.func.isRequired,
-    showCustomerModal: PropTypes.func.isRequired,
     hideCustomerModal: PropTypes.func.isRequired,
     editCustomer: PropTypes.func.isRequired,
     customer: PropTypes.object.isRequired,
