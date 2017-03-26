@@ -7,7 +7,7 @@ import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import TrimSpan from 'client/components/trimSpan';
 import NavLink from 'client/components/nav-link';
-import { CMS_DELEGATION_STATUS, CMS_DELG_STATUS, CMS_SUP_STATUS, DECL_I_TYPE, DECL_E_TYPE, TRANS_MODE } from 'common/constants';
+import { CMS_DELEGATION_STATUS, CMS_DELG_STATUS, CMS_SUP_STATUS, DECL_I_TYPE, DECL_E_TYPE, TRANS_MODE, CMS_DECL_WAY_TYPE } from 'common/constants';
 import connectNav from 'client/common/decorators/connect-nav';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import SearchBar from 'client/components/search-bar';
@@ -177,10 +177,10 @@ export default class DelegationList extends Component {
       const DECL_TYPE = this.props.ietype === 'import' ? DECL_I_TYPE : DECL_E_TYPE;
       const type = DECL_TYPE.filter(dl => dl.key === o)[0];
       // 0000口岸进口 0001口岸出口 0100保税区进口 0101保税区出口
-      if (o === '0000' || o === '0001' || o === '0100' || o === '0101') {
+      if (o === CMS_DECL_WAY_TYPE.IMPT || o === CMS_DECL_WAY_TYPE.EXPT) {
         return (<Tag color="blue-inverse">{type.value}</Tag>);
       // 0102保税区进境 0103保税区出境
-      } else if (o === '0102' || o === '0103') {
+      } else if (o === CMS_DECL_WAY_TYPE.IBND || o === CMS_DECL_WAY_TYPE.EBND) {
         return (<Tag color="blue">{type.value}</Tag>);
       }
     },

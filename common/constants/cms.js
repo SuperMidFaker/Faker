@@ -12,16 +12,21 @@ export const I_E_TYPES = [
 ];
 
 export const DECL_I_TYPE = [
-  { key: '0000', value: '进口报关' },
-  { key: '0100', value: '进口报关' },
-  { key: '0102', value: '进境备案' },
+  { key: 'IMPT', value: '进口报关' },
+  { key: 'IBND', value: '进境备案' },
 ];
 
 export const DECL_E_TYPE = [
-  { key: '0001', value: '出口报关' },
-  { key: '0101', value: '出口报关' },
-  { key: '0103', value: '出境备案' },
+  { key: 'EXPT', value: '出口报关' },
+  { key: 'EBND', value: '出境备案' },
 ];
+
+export const CMS_DECL_WAY_TYPE = {
+  IMPT: 'IMPT',
+  IBND: 'IBND',
+  EXPT: 'EXPT',
+  EBND: 'EBND',
+};
 
 export const SOURCE_CHOOSE = {
   item: { key: '0', value: '企业物料表' },
