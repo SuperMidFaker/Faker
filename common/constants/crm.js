@@ -16,11 +16,23 @@ export const CRM_ORDER_MODE = {
   transport: 'transport',
 };
 
+export const SCOF_ORDER_TRANSFER = [
+  { value: 'IMP', text: '进口' },
+  { value: 'EXP', text: '出口' },
+  { value: 'DOM', text: '境内' },
+];
+
 export const SCOF_ORDER_TRANSMODES = [
-  { value: '2', text: '国际海运' },
-  { value: '5', text: '国际空运' },
-  { value: '3', text: '跨境铁路运输' },
-  { value: '4', text: '跨境公路运输' },
+  { value: '2', text: '海运', icon: 'zmdi zmdi-boat' },
+  { value: '5', text: '空运', icon: 'zmdi zmdi-airplane' },
+  { value: '4', text: '公路', icon: 'zmdi zmdi-truck' },
+  { value: '3', text: '铁路', icon: 'zmdi zmdi-subway' },
+];
+
+export const SCOF_CONTAINER_TYPE = [
+  { value: 'FCL', text: '整箱' },
+  { value: 'LCL', text: '拼箱' },
+  { value: 'BULK', text: '散货' },
 ];
 
 export const CRM_BILLING_STATUS = {

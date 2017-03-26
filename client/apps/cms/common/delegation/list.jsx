@@ -191,9 +191,7 @@ export default class DelegationList extends Component {
     render: (o) => {
       const mode = TRANS_MODE.filter(ts => ts.value === o)[0];
       // 9为暂时兼容开放接口
-      if (o === 'DOM' || o === '9') {
-        return (<span><i className="zmdi zmdi-border-outer" /> {mode.text}</span>);
-      } else if (o === '2') {
+      if (o === '2') {
         return (<span><i className="zmdi zmdi-boat" /> {mode.text}</span>);
       } else if (o === '5') {
         return (<span><i className="zmdi zmdi-airplane" /> {mode.text}</span>);
@@ -201,6 +199,8 @@ export default class DelegationList extends Component {
         return (<span><i className="zmdi zmdi-subway" /> {mode.text}</span>);
       } else if (o === '4') {
         return (<span><i className="zmdi zmdi-truck" /> {mode.text}</span>);
+      } else {
+        return (<span><i className="zmdi zmdi-border-outer" /> {mode.text}</span>);
       }
     },
   }, {

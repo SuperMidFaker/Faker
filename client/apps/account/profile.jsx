@@ -135,10 +135,10 @@ export default class MyProfile extends React.Component {
     const initialAvatar = profile.avatar || `${__CDN__}/assets/img/avatar.jpg`;
     return (
       <Card>
-        <Form horizontal onSubmit={this.handleSubmit}>
+        <Form layout="horizontal" onSubmit={this.handleSubmit}>
           <Row>
             <Col sm={24} md={12}>
-              <FormItem label={cmsg('avatar')} className="acc-avatar-form" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} >
+              <FormItem className="acc-avatar-form">
                 <div className="acc-avatar"
                   style={{ backgroundImage: `url(${this.state.avatar || initialAvatar})` }}
                 />

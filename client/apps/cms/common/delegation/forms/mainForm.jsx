@@ -176,7 +176,7 @@ export default class MainForm extends Component {
             <Col sm={24} lg={8}>
               <FormItem label={this.msg('declareWay')} >
                 {getFieldDecorator('decl_way_code', {
-                  rules: [{ required: true, message: '申报方式必选' }],
+                  rules: [{ required: true, message: '报关类型必选' }],
                   initialValue: fieldInits.decl_way_code,
                 })(<Select>
                   {
@@ -191,7 +191,7 @@ export default class MainForm extends Component {
               <FormItem label={this.msg('transMode')} >
                 {getFieldDecorator('trans_mode', {
                   initialValue: fieldInits.trans_mode,
-                  rules: [{ required: true, message: '货物流转必选' }],
+                  rules: [{ required: true, message: '运输方式必选' }],
                 })(
                   <Select>
                     {

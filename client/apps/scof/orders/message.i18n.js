@@ -215,11 +215,11 @@ const messages = defineMessages({
   },
   transferMode: {
     id: 'scof.orders.biz.cms.transfer.mode',
-    defaultMessage: '货物流转',
+    defaultMessage: '运输方式',
   },
   tooltipTransferMode: {
     id: 'scof.orders.biz.cms.transfer.mode.tooltip',
-    defaultMessage: '货物流转',
+    defaultMessage: '运输方式',
   },
   declCustoms: {
     id: 'scof.orders.biz.cms.declcustoms',

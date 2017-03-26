@@ -12,15 +12,15 @@ export const I_E_TYPES = [
 ];
 
 export const DECL_I_TYPE = [
-  { key: '0000', value: '进口' },
-  { key: '0100', value: '进口' },
-  { key: '0102', value: '进境' },
+  { key: '0000', value: '进口报关' },
+  { key: '0100', value: '进口报关' },
+  { key: '0102', value: '进境备案' },
 ];
 
 export const DECL_E_TYPE = [
-  { key: '0001', value: '出口' },
-  { key: '0101', value: '出口' },
-  { key: '0103', value: '出境' },
+  { key: '0001', value: '出口报关' },
+  { key: '0101', value: '出口报关' },
+  { key: '0103', value: '出境备案' },
 ];
 
 export const SOURCE_CHOOSE = {
@@ -92,12 +92,20 @@ export const INSPECT_STATUS = {
 };
 
 export const TRANS_MODE = [
-  { value: 'DOM', text: '境内转运' },
-  { value: '9', text: '境内转运' },
-  { value: '2', text: '国际海运' },
-  { value: '5', text: '国际空运' },
-  { value: '3', text: '跨境铁路运输' },
-  { value: '4', text: '跨境公路运输' },
+  { value: '2', text: '水路运输', desc: '' },
+  { value: '5', text: '航空运输', desc: '' },
+  { value: '3', text: '铁路运输', desc: '' },
+  { value: '4', text: '公路运输', desc: '' },
+  { value: '9', text: '其他运输', desc: '其他境内流转货物，包括特殊监管区域内货物之间的流转、调拨货物，特殊监管区域、保税监管场所之间相互流转货物，特殊监管区域外的加工贸易余料结转、深加工结转、内销等货物' },
+  { value: '0', text: '非保税区', desc: '境内非保税区运入保税区货物和保税区退区货物' },
+  { value: '1', text: '监管仓库', desc: '境内存入出口监管仓库和出口监管仓库退仓货物' },
+  { value: '7', text: '保税区', desc: '保税区运往境内非保税区货物' },
+  { value: '8', text: '保税仓库', desc: '保税仓库转内销货物' },
+  { value: 'W', text: '物流中心', desc: '从境内保税物流中心外运入中心或从中心运往境内中心外的货物' },
+  { value: 'X', text: '物流园区', desc: '从境内保税物流园区外运入园区或从园区内运往境内园区外的货物' },
+  { value: 'Y', text: '保税港区/综合保税区', desc: '保税港区、综合保税区与境内（区外）（非特殊区域、保税监管场所）之间进出的货物' },
+  { value: 'Z', text: '出口加工区', desc: '出口加工区与境内（区外）（非特殊区域、保税监管场所）之间进出的货物' },
+  { value: 'H', text: '边境特殊', desc: '境内运入深港西部通道港方口岸区的货物' },
 ];
 export const INVOICE_TYPE = [
   { value: 0, text: '增值税专用发票' },

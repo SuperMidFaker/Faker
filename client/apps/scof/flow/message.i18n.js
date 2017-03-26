@@ -100,11 +100,11 @@ const messages = defineMessages({
   },
   declWay: {
     id: 'scof.flow.biz.cms.declWay',
-    defaultMessage: '申报方式',
+    defaultMessage: '报关类型',
   },
   transMode: {
     id: 'scof.flow.biz.cms.transMode',
-    defaultMessage: '货物流转',
+    defaultMessage: '运输方式',
   },
   customsBroker: {
     id: 'scof.flow.biz.cms.customs.broker',
