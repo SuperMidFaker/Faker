@@ -3,7 +3,7 @@ import { formati18n } from 'client/common/i18n/helpers';
 
 const messages = defineMessages({
   dashboard: {
-    id: 'tms.module.dashboard',
+    id: 'transport.dashboard',
     defaultMessage: '工作台',
   },
   total: {

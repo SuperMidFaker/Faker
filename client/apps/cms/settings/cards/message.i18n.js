@@ -58,7 +58,7 @@ export default defineMessages({
     defaultMessage: '海关监管项独立报关',
   },
   currencySplit: {
-    id: 'cms.settings.split.currency',
+    id: 'cms.settings.split.diff.currency',
     defaultMessage: '不同币制独立报关',
   },
   customOnTop: {

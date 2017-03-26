@@ -47,7 +47,7 @@ const messages = defineMessages({
     defaultMessage: '进口清关',
   },
   flowNodeExport: {
-    id: 'scof.flow.node.import',
+    id: 'scof.flow.node.export',
     defaultMessage: '出口清关',
   },
   flowNodeTMS: {
