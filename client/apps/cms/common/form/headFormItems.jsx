@@ -873,7 +873,7 @@ Pieces.propTypes = {
   formData: PropTypes.object.isRequired,
 };
 
-// 件数、包装、毛重、净重
+// 包装、毛重、净重
 export function PackWeight(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const { disabled, formData, getFieldDecorator, formRequire, required } = props;
