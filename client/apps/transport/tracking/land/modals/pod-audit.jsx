@@ -85,7 +85,7 @@ export default class PodAuditModal extends React.Component {
     const { signStatus, remark, photoList } = this.state;
     const colSpan = 4;
     return (
-      <Modal title={this.msg('podModalTitle')} onCancel={this.handleAuditCancel}
+      <Modal title={this.msg('auditPod')} onCancel={this.handleAuditCancel}
         visible={visible}
         footer={[
           <Button key="return" type="ghost" size="large" onClick={this.handleAuditReturn}>
