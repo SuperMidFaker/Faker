@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Popconfirm, Progress, message, Layout } from 'antd';
+import { Breadcrumb, Button, Icon, Popconfirm, Progress, message, Layout, Tooltip } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { Link } from 'react-router';
 import QueueAnim from 'rc-queue-anim';
@@ -47,7 +47,6 @@ function fetchData({ state, dispatch }) {
     tenantName: state.account.tenantName,
     loading: state.crmOrders.loading,
     orders: state.crmOrders.orders,
-    formRequires: state.crmOrders.formRequires,
   }), {
     loadOrders, removeOrder, setClientForm, acceptOrder, loadOrderDetail,
   }
@@ -69,7 +68,6 @@ export default class ShipmentOrderList extends React.Component {
     removeOrder: PropTypes.func.isRequired,
     setClientForm: PropTypes.func.isRequired,
     acceptOrder: PropTypes.func.isRequired,
-    formRequires: PropTypes.object.isRequired,
     loadOrderDetail: PropTypes.func.isRequired,
   }
   static contextTypes = {
@@ -134,22 +132,24 @@ export default class ShipmentOrderList extends React.Component {
 
     const columns = [{
       title: '订单',
-      dataIndex: 'shipmt_order_no',
       width: 300,
       render: (o, record) => <OrderNoColumn order={record} />,
     }, {
-      title: '货运信息',
-      dataIndex: 'cust_shipmt_bill_lading',
-      width: 200,
-      render: (o, record) => <ShipmentColumn shipment={record} />,
-    }, {
-      title: '状态',
       dataIndex: 'order_status',
-      width: 100,
+      width: 160,
       render: (o, record) => {
         const percent = record.finish_num / record.shipmt_order_mode.split(',').length * 100;
-        return (<div><Progress type="circle" percent={percent} width={50} /><div>{moment(record.created_date).format('MM.DD HH:mm')}</div></div>);
+        return (<div style={{ textAlign: 'center' }}><Progress type="circle" percent={percent} width={50} />
+          <div className="mdc-text-grey table-font-small">
+            <Tooltip title={moment(record.created_date).format('YYYY.MM.DD HH:mm')}>
+              <Icon type="clock-circle-o" /> {moment(record.created_date).fromNow()}
+            </Tooltip>
+          </div>
+        </div>);
       },
+    }, {
+      width: 200,
+      render: (o, record) => <ShipmentColumn shipment={record} />,
     }, {
       title: '进度',
       render: (o, record) => <ProgressColumn order={record} />,
