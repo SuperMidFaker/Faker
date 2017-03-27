@@ -48,6 +48,7 @@ function fetchData({ state, dispatch }) {
     loginName: state.account.username,
     repoOwners: state.cmsTradeitem.repoOwners,
     repoId: state.cmsTradeitem.repoId,
+    listFilter: state.cmsTradeitem.listFilter,
     tradeItemlist: state.cmsTradeitem.tradeItemlist,
     visibleAddModal: state.cmsTradeitem.visibleAddModal,
     owner: state.cmsTradeitem.owner,
@@ -80,6 +81,7 @@ export default class TradeItemList extends Component {
     repoId: PropTypes.number,
     visibleAddModal: PropTypes.bool,
     owner: PropTypes.object,
+    listFilter: PropTypes.object.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -254,13 +256,13 @@ export default class TradeItemList extends Component {
       showQuickJumper: false,
       pageSize: result.pageSize,
     }),
-    getParams: (pagination, filters, sorter) => {
+    getParams: (pagination) => {
       const params = {
         repoId: this.props.repoId,
         pageSize: pagination.pageSize,
         currentPage: pagination.current,
       };
-      const filter = { ...this.props.listFilter, sortField: sorter.field, sortOrder: sorter.order };
+      const filter = this.props.listFilter;
       params.filter = JSON.stringify(filter);
       return params;
     },
@@ -348,8 +350,15 @@ export default class TradeItemList extends Component {
       }
     });
   }
+  handleRadioChange = (ev) => {
+    if (ev.target.value === this.props.listFilter.status) {
+      return;
+    }
+    const filter = { ...this.props.listFilter, status: ev.target.value };
+    this.handleItemListLoad(this.props.repoId, 1, filter);
+  }
   render() {
-    const { tradeItemlist, repoId, owner } = this.props;
+    const { tradeItemlist, repoId, owner, listFilter } = this.props;
     const selectedRows = this.state.selectedRowKeys;
     const rowSelection = {
       selectedRowKeys: selectedRows,
@@ -387,9 +396,6 @@ export default class TradeItemList extends Component {
             formData={{
               data: JSON.stringify({
                 repo_id: this.props.repoId,
-                tenant_id: this.props.tenantId,
-                created_login_id: this.props.loginId,
-                created_login_name: this.props.loginName,
               }),
             }} onUploaded={this.handleUploaded}
           >
@@ -446,7 +452,7 @@ export default class TradeItemList extends Component {
               onClick={this.toggle}
             />
             <span />
-            <RadioGroup onChange={this.handleRadioChange} size="large">
+            <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">
               <RadioButton value="unclassified">{this.msg('filterUnclassified')}</RadioButton>
               <RadioButton value="pending">{this.msg('filterPending')}</RadioButton>
               <RadioButton value="classified">{this.msg('filterClassified')}</RadioButton>

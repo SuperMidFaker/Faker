@@ -26,10 +26,12 @@ const actionTypes = createActionTypes('@@welogix/cms/tradeitem/', [
   'LOAD_DECLWAY_UNITS', 'LOAD_DECLWAY_UNITS_SUCCEED', 'LOAD_DECLWAY_UNITS_FAIL',
   'SAVE_DECLWAY_UNIT', 'SAVE_DECLWAY_UNIT_SUCCEED', 'SAVE_DECLWAY_UNIT_FAIL',
   'SET_OWNER', 'SET_COMPARE_VISIBLE',
+  'COMPARED_DATAS_SAVE', 'COMPARED_DATAS_SAVE_SUCCEED', 'COMPARED_DATAS_SAVE_FAIL',
 ]);
 
 const initialState = {
   listFilter: {
+    status: 'pending',
     sortField: '',
     sortOrder: '',
   },
@@ -79,7 +81,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_REPO_TRADES_SUCCEED:
       return { ...state, repoTrades: action.result.data };
     case actionTypes.LOAD_TRADE_ITEMS_SUCCEED:
-      return { ...state, tradeItemlist: action.result.data };
+      return { ...state, tradeItemlist: action.result.data, listFilter: JSON.parse(action.params.filter) };
     case actionTypes.LOAD_PARAMS_SUCCEED:
       return { ...state, params: action.result.data };
     case actionTypes.LOAD_ITEM_EDIT_SUCCEED:
@@ -101,6 +103,21 @@ export default function reducer(state = initialState, action) {
     default:
       return state;
   }
+}
+
+export function saveComparedItemDatas(datas) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.COMPARED_DATAS_SAVE,
+        actionTypes.COMPARED_DATAS_SAVE_SUCCEED,
+        actionTypes.COMPARED_DATAS_SAVE_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/compared/datas/save',
+      method: 'post',
+      data: datas,
+    },
+  };
 }
 
 export function loadTradeItem(itemId) {
