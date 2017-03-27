@@ -16,7 +16,6 @@ const formatMsg = format(messages);
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    subCustomers: state.crmCustomers.subCustomers,
   }),
   { loadSubCustomers, deleteCustomer, showSubCustomerModal }
 )
@@ -33,18 +32,15 @@ export default class SubCustomerList extends React.Component {
     deleteCustomer: PropTypes.func.isRequired,
     showSubCustomerModal: PropTypes.func.isRequired,
     customer: PropTypes.object.isRequired,
-    subCustomers: PropTypes.array.isRequired,
   }
   state = {
     currentPage: 1,
     unchanged: true,
-    customers: [],
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.customer.id !== this.props.customer.id) {
       this.handleTableLoad(nextProps);
     }
-    this.setState({ customers: nextProps.subCustomers });
   }
   msg = key => formatMsg(this.props.intl, key)
 
@@ -69,17 +65,6 @@ export default class SubCustomerList extends React.Component {
   }
   handlePageChange = (page) => {
     this.setState({ currentPage: page });
-  }
-  handleSearch = (value) => {
-    const customers = this.props.subCustomers.filter((item) => {
-      if (value) {
-        const reg = new RegExp(value);
-        return reg.test(item.name);
-      } else {
-        return true;
-      }
-    });
-    this.setState({ customers, currentPage: 1 });
   }
   render() {
     const { customer } = this.props;
@@ -108,7 +93,7 @@ export default class SubCustomerList extends React.Component {
         title={this.msg('subCustomer')}
         extra={<a href="#" onClick={() => this.props.showSubCustomerModal('add', customer)}>添加</a>}
       >
-        <Table size="middle" dataSource={this.state.customers} columns={columns} showHeader={false} onRowClick={this.handleRowClick}
+        <Table size="middle" dataSource={customer.subCustomers || []} columns={columns} showHeader={false} onRowClick={this.handleRowClick}
           pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }}
         />
         <SubCustomerModal onOk={() => this.handleTableLoad()} />
