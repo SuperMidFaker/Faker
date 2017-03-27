@@ -48,6 +48,7 @@ export default class customerModal extends React.Component {
     const customer = this.props.customers.filter(cust => cust.id === this.state.customerid)[0];
     this.props.addRelatedCusromer({
       template_id: this.props.template.id,
+      tenant_id: this.props.tenantId,
       customer_name: customer.name,
       customer_partner_id: customer.id,
       customer_tenant_id: customer.partner_tenant_id,

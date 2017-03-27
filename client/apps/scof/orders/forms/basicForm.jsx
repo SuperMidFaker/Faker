@@ -192,116 +192,104 @@ export default class BasicForm extends Component {
     };
 
     return (
-      <Card bodyStyle={{ padding: 8 }} style={{ marginLeft: 55, marginRight: 18 }}>
-        <Collapse bordered={false} defaultActiveKey={['customer', 'trading', 'shipment']}>
-          <Panel header="客户" key="customer">
-            <Row gutter={16}>
-              <Col sm={16}>
-                <FormItem label="客户名称" {...spanFormItemLayout} required="true">
-                  <Select showSearch optionFilterProp="children"
-                    value={formData.customer_partner_id}
-                    onChange={value => this.handleClientChange(value)}
-                  >
-                    {formRequires.clients.map(data => (
-                      <Option key={data.partner_id} value={data.partner_id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>)
+      <div>
+        <Card title="订单需求" bodyStyle={{ padding: 8 }}>
+          <Row gutter={16} style={{ padding: 16 }}>
+            <Col sm={16}>
+              <FormItem label="客户" {...spanFormItemLayout} required="true">
+                <Select showSearch optionFilterProp="children"
+                  value={formData.customer_partner_id}
+                  onChange={value => this.handleClientChange(value)}
+                >
+                  {formRequires.clients.map(data => (
+                    <Option key={data.partner_id} value={data.partner_id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>)
                     )}
-                  </Select>
-                </FormItem>
-              </Col>
-              <Col sm={8}>
-                <FormItem label="业务流程" {...formItemLayout} required="true">
-                  <Select showSearch optionFilterProp="children"
-                    value={formData.flow_id} onChange={this.handleFlowChange}
-                  >
-                    {flows.map(data => (
-                      <Option key={data.id} value={data.id}>{data.name}</Option>)
-                    )}
-                  </Select>
-                </FormItem>
-              </Col>
-            </Row>
-          </Panel>
-          <Panel header="贸易信息" key="trading">
-            <Row gutter={16}>
-              <Col sm={8}>
-                <FormItem label="订单号" {...formItemLayout}>
-                  <Input value={formData.cust_order_no} onChange={e => this.handleChange('cust_order_no', e.target.value)} />
-                </FormItem>
-              </Col>
-              <Col sm={8}>
-                <FormItem label="发票号" {...formItemLayout}>
-                  <Input placeholder="可用逗号分隔填写多个" value={formData.cust_invoice_no} onChange={e => this.handleChange('cust_invoice_no', e.target.value)} />
-                </FormItem>
-              </Col>
-              <Col sm={8}>
-                <FormItem label="合同号" {...formItemLayout}>
-                  <Input value={formData.cust_contract_no} onChange={e => this.handleChange('cust_contract_no', e.target.value)} />
-                </FormItem>
-              </Col>
-            </Row>
-          </Panel>
-          <Panel header="货运信息" key="shipment">
-            <Row gutter={16}>
-              <Col sm={8}>
-                <FormItem label="货物流向" {...formItemLayout} required="true">
-                  <RadioGroup value={formData.cust_shipmt_transfer} onChange={ev => this.handleChange('cust_shipmt_transfer', ev.target.value)}>
-                    <RadioButton value={SCOF_ORDER_TRANSFER[0].value}>{SCOF_ORDER_TRANSFER[0].text}</RadioButton>
-                    <RadioButton value={SCOF_ORDER_TRANSFER[1].value}>{SCOF_ORDER_TRANSFER[1].text}</RadioButton>
-                    <RadioButton value={SCOF_ORDER_TRANSFER[2].value}>{SCOF_ORDER_TRANSFER[2].text}</RadioButton>
-                  </RadioGroup>
-                </FormItem>
-              </Col>
-              <Col sm={16}>
-                <FormItem label="运输方式" {...spanFormItemLayout} required="true">
-                  <RadioGroup value={formData.cust_shipmt_trans_mode} onChange={ev => this.handleChange('cust_shipmt_trans_mode', ev.target.value)}>
-                    { (formData.cust_shipmt_transfer === 'IMP' || formData.cust_shipmt_transfer === 'EXP') &&
-                    <RadioButton value={SCOF_ORDER_TRANSMODES[0].value}><i className={SCOF_ORDER_TRANSMODES[0].icon} /> {SCOF_ORDER_TRANSMODES[0].text}</RadioButton>
+                </Select>
+              </FormItem>
+            </Col>
+          </Row>
+          <Collapse bordered={false} defaultActiveKey={['trading', 'shipment']}>
+            <Panel header="贸易信息" key="trading">
+              <Row gutter={16}>
+                <Col sm={8}>
+                  <FormItem label="订单号" {...formItemLayout}>
+                    <Input value={formData.cust_order_no} onChange={e => this.handleChange('cust_order_no', e.target.value)} />
+                  </FormItem>
+                </Col>
+                <Col sm={8}>
+                  <FormItem label="发票号" {...formItemLayout}>
+                    <Input placeholder="可用逗号分隔填写多个" value={formData.cust_invoice_no} onChange={e => this.handleChange('cust_invoice_no', e.target.value)} />
+                  </FormItem>
+                </Col>
+                <Col sm={8}>
+                  <FormItem label="合同号" {...formItemLayout}>
+                    <Input value={formData.cust_contract_no} onChange={e => this.handleChange('cust_contract_no', e.target.value)} />
+                  </FormItem>
+                </Col>
+              </Row>
+            </Panel>
+            <Panel header="货运信息" key="shipment">
+              <Row gutter={16}>
+                <Col sm={8}>
+                  <FormItem label="货物流向" {...formItemLayout} required="true">
+                    <RadioGroup value={formData.cust_shipmt_transfer} onChange={ev => this.handleChange('cust_shipmt_transfer', ev.target.value)}>
+                      <RadioButton value={SCOF_ORDER_TRANSFER[0].value}>{SCOF_ORDER_TRANSFER[0].text}</RadioButton>
+                      <RadioButton value={SCOF_ORDER_TRANSFER[1].value}>{SCOF_ORDER_TRANSFER[1].text}</RadioButton>
+                      <RadioButton value={SCOF_ORDER_TRANSFER[2].value}>{SCOF_ORDER_TRANSFER[2].text}</RadioButton>
+                    </RadioGroup>
+                  </FormItem>
+                </Col>
+                <Col sm={16}>
+                  <FormItem label="运输方式" {...spanFormItemLayout} required="true">
+                    <RadioGroup value={formData.cust_shipmt_trans_mode} onChange={ev => this.handleChange('cust_shipmt_trans_mode', ev.target.value)}>
+                      { (formData.cust_shipmt_transfer === 'IMP' || formData.cust_shipmt_transfer === 'EXP') &&
+                      <RadioButton value={SCOF_ORDER_TRANSMODES[0].value}><i className={SCOF_ORDER_TRANSMODES[0].icon} /> {SCOF_ORDER_TRANSMODES[0].text}</RadioButton>
                     }
-                    { (formData.cust_shipmt_transfer === 'IMP' || formData.cust_shipmt_transfer === 'EXP') &&
-                    <RadioButton value={SCOF_ORDER_TRANSMODES[1].value}><i className={SCOF_ORDER_TRANSMODES[1].icon} /> {SCOF_ORDER_TRANSMODES[1].text}</RadioButton>
+                      { (formData.cust_shipmt_transfer === 'IMP' || formData.cust_shipmt_transfer === 'EXP') &&
+                      <RadioButton value={SCOF_ORDER_TRANSMODES[1].value}><i className={SCOF_ORDER_TRANSMODES[1].icon} /> {SCOF_ORDER_TRANSMODES[1].text}</RadioButton>
                     }
-                    { (formData.cust_shipmt_transfer === 'DOM') &&
-                    <RadioButton value={SCOF_ORDER_TRANSMODES[2].value}><i className={SCOF_ORDER_TRANSMODES[2].icon} /> {SCOF_ORDER_TRANSMODES[2].text}</RadioButton>
+                      { (formData.cust_shipmt_transfer === 'DOM') &&
+                      <RadioButton value={SCOF_ORDER_TRANSMODES[2].value}><i className={SCOF_ORDER_TRANSMODES[2].icon} /> {SCOF_ORDER_TRANSMODES[2].text}</RadioButton>
                     }
-                    { (formData.cust_shipmt_transfer === 'DOM') &&
-                    <RadioButton value={SCOF_ORDER_TRANSMODES[3].value}><i className={SCOF_ORDER_TRANSMODES[3].icon} /> {SCOF_ORDER_TRANSMODES[3].text}</RadioButton>
+                      { (formData.cust_shipmt_transfer === 'DOM') &&
+                      <RadioButton value={SCOF_ORDER_TRANSMODES[3].value}><i className={SCOF_ORDER_TRANSMODES[3].icon} /> {SCOF_ORDER_TRANSMODES[3].text}</RadioButton>
                     }
-                  </RadioGroup>
-                </FormItem>
-              </Col>
-              <Col sm={8}>
-                { (formData.cust_shipmt_transfer !== 'DOM' && formData.cust_shipmt_trans_mode === '2') &&
-                <FormItem label="提单号" {...formItemLayout}>
-                  <Input value={formData.cust_shipmt_bill_lading} onChange={e => this.handleChange('cust_shipmt_bill_lading', e.target.value)} />
-                </FormItem>
+                    </RadioGroup>
+                  </FormItem>
+                </Col>
+                <Col sm={8}>
+                  { (formData.cust_shipmt_transfer !== 'DOM' && formData.cust_shipmt_trans_mode === '2') &&
+                  <FormItem label="提单号" {...formItemLayout}>
+                    <Input placeholder="格式：提单号*分提单号" value={formData.cust_shipmt_bill_lading} onChange={e => this.handleChange('cust_shipmt_bill_lading', e.target.value)} />
+                  </FormItem>
               }
-                { (formData.cust_shipmt_transfer !== 'DOM' && formData.cust_shipmt_trans_mode === '5') &&
-                <FormItem label="主运单号" {...formItemLayout}>
-                  <Input value={formData.cust_shipmt_mawb} onChange={e => this.handleChange('cust_shipmt_mawb', e.target.value)} />
-                </FormItem>
+                  { (formData.cust_shipmt_transfer !== 'DOM' && formData.cust_shipmt_trans_mode === '5') &&
+                  <FormItem label="主运单号" {...formItemLayout}>
+                    <Input value={formData.cust_shipmt_mawb} onChange={e => this.handleChange('cust_shipmt_mawb', e.target.value)} />
+                  </FormItem>
               }
-              </Col>
-              <Col sm={8}>
-                { (formData.cust_shipmt_transfer !== 'DOM' && formData.cust_shipmt_trans_mode === '2') &&
-                <FormItem label="海运单号" {...formItemLayout}>
-                  <Input value={formData.cust_shipmt_bill_lading_no} onChange={e => this.handleChange('cust_shipmt_bill_lading_no', e.target.value)} />
-                </FormItem>
+                </Col>
+                <Col sm={8}>
+                  { (formData.cust_shipmt_transfer !== 'DOM' && formData.cust_shipmt_trans_mode === '2') &&
+                  <FormItem label="海运单号" {...formItemLayout}>
+                    <Input value={formData.cust_shipmt_bill_lading_no} onChange={e => this.handleChange('cust_shipmt_bill_lading_no', e.target.value)} />
+                  </FormItem>
               }
-                { (formData.cust_shipmt_transfer !== 'DOM' && formData.cust_shipmt_trans_mode === '5') &&
-                <FormItem label="分运单号" {...formItemLayout}>
-                  <Input value={formData.cust_shipmt_hawb} onChange={e => this.handleChange('cust_shipmt_hawb', e.target.value)} />
-                </FormItem>
+                  { (formData.cust_shipmt_transfer !== 'DOM' && formData.cust_shipmt_trans_mode === '5') &&
+                  <FormItem label="分运单号" {...formItemLayout}>
+                    <Input value={formData.cust_shipmt_hawb} onChange={e => this.handleChange('cust_shipmt_hawb', e.target.value)} />
+                  </FormItem>
               }
-              </Col>
-              <Col sm={8}>
-                { (formData.cust_shipmt_transfer !== 'DOM' && formData.cust_shipmt_trans_mode === '2') &&
-                  <FormItem label="船名航次号" {...formItemLayout}>
-                    <Input value={formData.cust_shipmt_vessel_voy} onChange={e => this.handleChange('cust_shipmt_vessel_voy', e.target.value)} />
+                </Col>
+                <Col sm={8}>
+                  { (formData.cust_shipmt_transfer !== 'DOM' && formData.cust_shipmt_trans_mode === '2') &&
+                  <FormItem label="需要换单" {...formItemLayout}>
+                    <Switch checkedChildren={'是'} unCheckedChildren={'否'} onChange={value => this.handleChange('ccb_need_exchange', value ? 1 : 0)} checked={formData.ccb_need_exchange} />
                   </FormItem>
                 }
-              </Col>
-              <Col sm={8}>
-                { (formData.cust_shipmt_transfer !== 'DOM' && formData.cust_shipmt_trans_mode === '2') &&
+                </Col>
+                <Col sm={8}>
+                  { (formData.cust_shipmt_transfer !== 'DOM' && formData.cust_shipmt_trans_mode === '2') &&
                   <FormItem label="装箱类型" {...formItemLayout}>
                     <RadioGroup value={formData.cust_shipmt_is_container} onChange={ev => this.handleChange('cust_shipmt_is_container', ev.target.value)}>
                       <RadioButton value={SCOF_CONTAINER_TYPE[0].value}>{SCOF_CONTAINER_TYPE[0].text}</RadioButton>
@@ -310,87 +298,108 @@ export default class BasicForm extends Component {
                     </RadioGroup>
                   </FormItem>
                 }
-              </Col>
-              <Col sm={8}>
-                { (formData.cust_shipmt_transfer !== 'DOM' && formData.cust_shipmt_trans_mode === '2') &&
-                  <FormItem label="需要换单" {...formItemLayout}>
-                    <Switch checkedChildren={'是'} unCheckedChildren={'否'} onChange={value => this.handleChange('ccb_need_exchange', value ? 1 : 0)} checked={formData.ccb_need_exchange} />
+                </Col>
+                <Col sm={8}>
+                  { (formData.cust_shipmt_transfer !== 'DOM' && formData.cust_shipmt_trans_mode === '2') &&
+                  <FormItem label="船名" {...formItemLayout}>
+                    <Input placeholder="船舶英文名称或编号" value={formData.cust_shipmt_vessel} onChange={e => this.handleChange('cust_shipmt_vessel', e.target.value)} />
                   </FormItem>
                 }
-              </Col>
-              <Col sm={24}>
-                { (formData.cust_shipmt_transfer !== 'DOM' && formData.cust_shipmt_trans_mode === '2') && formData.cust_shipmt_is_container === 'FCL' && (
-                <FormItem label="箱型箱号" labelCol={{ span: 2 }} wrapperCol={{ span: 22 }}>
-                  <Popover
-                    placement="rightBottom"
-                    title="箱型箱号"
-                    trigger="click"
-                    content={<Container value={formData.containers} onChange={value => this.handleChange('containers', value)} />}
-                  >
-                    <span>
-                      <a><Icon type="edit" style={{ marginRight: 10 }} /></a>
-                      {formData.containers.map(item => `${item.container_num} x ${item.container_type}`).join('; ')}
-                    </span>
-                  </Popover>
-                </FormItem>
+                  { (formData.cust_shipmt_transfer !== 'DOM' && formData.cust_shipmt_trans_mode === '5') &&
+                  <FormItem label="航班号" {...formItemLayout}>
+                    <Input value={formData.cust_shipmt_vessel} onChange={e => this.handleChange('cust_shipmt_vessel', e.target.value)} />
+                  </FormItem>
+                }
+                </Col>
+                <Col sm={8}>
+                  { (formData.cust_shipmt_transfer !== 'DOM' && formData.cust_shipmt_trans_mode === '2') &&
+                  <FormItem label="航次号" {...formItemLayout}>
+                    <Input placeholder="航次号" value={formData.cust_shipmt_voy} onChange={e => this.handleChange('cust_shipmt_voy', e.target.value)} />
+                  </FormItem>
+                }
+                </Col>
+                <Col sm={24}>
+                  { (formData.cust_shipmt_transfer !== 'DOM' && formData.cust_shipmt_trans_mode === '2') && formData.cust_shipmt_is_container === 'FCL' && (
+                  <FormItem label="箱型箱号" labelCol={{ span: 2 }} wrapperCol={{ span: 22 }}>
+                    <Popover
+                      placement="rightBottom"
+                      title="箱型箱号"
+                      trigger="click"
+                      content={<Container value={formData.containers} onChange={value => this.handleChange('containers', value)} />}
+                    >
+                      <span>
+                        <a><Icon type="edit" style={{ marginRight: 10 }} /></a>
+                        {formData.containers.map(item => `${item.container_num} x ${item.container_type}`).join('; ')}
+                      </span>
+                    </Popover>
+                  </FormItem>
               )}
-              </Col>
-              <Col sm={8}>
-                <FormItem label="货物类型" {...formItemLayout} required="true">
-                  <RadioGroup value={formData.cust_shipmt_goods_type} onChange={ev => this.handleChange('cust_shipmt_goods_type', ev.target.value)}>
-                    <RadioButton value={GOODSTYPES[0].value}>{GOODSTYPES[0].text}</RadioButton>
-                    <RadioButton value={GOODSTYPES[1].value}>{GOODSTYPES[1].text}</RadioButton>
-                    <RadioButton value={GOODSTYPES[2].value}>{GOODSTYPES[2].text}</RadioButton>
-                  </RadioGroup>
-                </FormItem>
-              </Col>
-              <Col sm={8}>
-                <FormItem label="包装/件数" {...formItemLayout} required="true">
-                  <InputGroup compact>
-                    <Select size="large" style={{ width: '50%' }} placeholder="选择包装方式">
-                      {
+                </Col>
+                <Col sm={8}>
+                  <FormItem label="货物类型" {...formItemLayout} required="true">
+                    <RadioGroup value={formData.cust_shipmt_goods_type} onChange={ev => this.handleChange('cust_shipmt_goods_type', ev.target.value)}>
+                      <RadioButton value={GOODSTYPES[0].value}>{GOODSTYPES[0].text}</RadioButton>
+                      <RadioButton value={GOODSTYPES[1].value}>{GOODSTYPES[1].text}</RadioButton>
+                      <RadioButton value={GOODSTYPES[2].value}>{GOODSTYPES[2].text}</RadioButton>
+                    </RadioGroup>
+                  </FormItem>
+                </Col>
+                <Col sm={8}>
+                  <FormItem label="包装/件数" {...formItemLayout} required="true">
+                    <InputGroup compact>
+                      <Select size="large" style={{ width: '50%' }} placeholder="选择包装方式">
+                        {
                         WRAP_TYPE.map(wt =>
                           <Option value={wt.value} key={wt.value}>{wt.text}</Option>
                         )
                       }
-                    </Select>
-                    <Input type="number" style={{ width: '50%' }} value={formData.cust_shipmt_pieces} onChange={e => this.handleChange('cust_shipmt_pieces', e.target.value)} />
-                  </InputGroup>
-                </FormItem>
-              </Col>
-              <Col sm={8}>
-                <FormItem label="总毛重" {...formItemLayout} required="true">
-                  <Input type="number" addonAfter="KG" value={formData.cust_shipmt_weight} onChange={e => this.handleChange('cust_shipmt_weight', e.target.value)} />
-                </FormItem>
-              </Col>
-            </Row>
-          </Panel>
-          <Panel header="收发货信息" key="consignment">
-            <Row gutter={16}>
-              { (formData.cust_shipmt_transfer === 'IMP') &&
-              <Col sm={24}>
+                      </Select>
+                      <Input type="number" style={{ width: '50%' }} value={formData.cust_shipmt_pieces} onChange={e => this.handleChange('cust_shipmt_pieces', e.target.value)} />
+                    </InputGroup>
+                  </FormItem>
+                </Col>
+                <Col sm={8}>
+                  <FormItem label="总毛重" {...formItemLayout} required="true">
+                    <Input type="number" addonAfter="KG" value={formData.cust_shipmt_weight} onChange={e => this.handleChange('cust_shipmt_weight', e.target.value)} />
+                  </FormItem>
+                </Col>
+              </Row>
+            </Panel>
+            <Panel header="收发货信息" key="consignment">
+              <Row gutter={16}>
+                { (formData.cust_shipmt_transfer === 'IMP') &&
+                <Col sm={24}>
                 收货方
               </Col>
               }
-              { (formData.cust_shipmt_transfer === 'EXP') &&
-              <Col sm={24}>
+                { (formData.cust_shipmt_transfer === 'EXP') &&
+                <Col sm={24}>
                 发货方
               </Col>
               }
-              { (formData.cust_shipmt_transfer === 'DOM') &&
-              <Col sm={12}>
+                { (formData.cust_shipmt_transfer === 'DOM') &&
+                <Col sm={12}>
                 发货方
               </Col>
               }
-              { (formData.cust_shipmt_transfer === 'DOM') &&
-              <Col sm={12}>
+                { (formData.cust_shipmt_transfer === 'DOM') &&
+                <Col sm={12}>
                 收货方
               </Col>
               }
-            </Row>
-          </Panel>
-        </Collapse>
-      </Card>
+              </Row>
+            </Panel>
+          </Collapse>
+        </Card>
+        <Card title={<span>订单流程<Select size="large" placeholder="请选择流程规则" showSearch optionFilterProp="children"
+          value={formData.flow_id} onChange={this.handleFlowChange} style={{ width: '50%', marginLeft: 24 }}
+        >
+          {flows.map(data => (
+            <Option key={data.id} value={data.id}>{data.name}</Option>)
+                    )}
+        </Select></span>} bodyStyle={{ padding: 0 }}
+        />
+      </div>
     );
   }
 }

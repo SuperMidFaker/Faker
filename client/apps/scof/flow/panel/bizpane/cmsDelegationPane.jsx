@@ -68,8 +68,8 @@ export default class CMSDelegationPane extends Component {
             </Col>
             <Col sm={24} lg={8}>
               <FormItem label={this.msg('customsBroker')}>
-                {getFieldDecorator('customs_parnter_id', {
-                  initialValue: model.customs_parnter_id,
+                {getFieldDecorator('customs_partner_id', {
+                  initialValue: model.customs_partner_id,
                 })(<Select allowClear>
                   {
                     customsBrokers.map(cb =>
