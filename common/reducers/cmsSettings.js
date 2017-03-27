@@ -12,6 +12,7 @@ const actionTypes = createActionTypes('@@welogix/cms/settings/', [
   'LOAD_FORM_VALS', 'LOAD_FORM_VALS_SUCCEED', 'LOAD_FORM_VALS_FAIL',
   'SAVE_TEMPLATE_DATA', 'SAVE_TEMPLATE_DATA_SUCCEED', 'SAVE_TEMPLATE_DATA_FAIL',
   'SAVE_GENERATED_TEMPLATE', 'SAVE_GENERATED_TEMPLATE_SUCCEED', 'SAVE_GENERATED_TEMPLATE_FAIL',
+  'VALIDATE_NAME', 'VALIDATE_NAME_SUCCEED', 'VALIDATE_NAME_FAIL',
 ]);
 
 const initialState = {
@@ -210,6 +211,21 @@ export function createGeneratedTemplate(datas) {
       endpoint: 'v1/cms/settings/template/generated/create',
       method: 'post',
       data: datas,
+    },
+  };
+}
+
+export function validateTempName(name) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.VALIDATE_NAME,
+        actionTypes.VALIDATE_NAME_SUCCEED,
+        actionTypes.VALIDATE_NAME_FAIL,
+      ],
+      endpoint: 'v1/cms/settings/template/validate/name',
+      method: 'get',
+      params: { name },
     },
   };
 }
