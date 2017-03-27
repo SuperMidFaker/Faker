@@ -122,7 +122,7 @@ export default class TodoAcceptPane extends Component {
               <span>创建时间：{moment(record.created_date).fromNow()}</span>
             </Tooltip>
           </span>);
-          if (record.prompt_last_action === PROMPT_TYPES.promptAccept) {
+          if (record.prompt_last_action === PROMPT_TYPES.promptAccept && tenantId === record.sp_tenant_id) {
             prompt = (<Tooltip title={moment(record.prompt_last_date).format('YYYY.MM.DD HH:mm')}><Tag color="orange-inverse">客户催促</Tag></Tooltip>);
           }
         } else if (record.status === SHIPMENT_TRACK_STATUS.accepted) {
@@ -133,7 +133,7 @@ export default class TodoAcceptPane extends Component {
               <span>接单时间：{moment(record.acpt_time).fromNow()}</span>
             </Tooltip>
           </span>);
-          if (record.prompt_last_action === PROMPT_TYPES.promptDispatch) {
+          if (record.prompt_last_action === PROMPT_TYPES.promptDispatch && tenantId === record.sp_tenant_id) {
             prompt = (<Tooltip title={moment(record.prompt_last_date).format('YYYY.MM.DD HH:mm')}><Tag color="orange-inverse">客户催促</Tag></Tooltip>);
           }
         }
