@@ -9,11 +9,16 @@ import FeesTable from '../quote/feesTable';
 import NavLink from 'client/components/nav-link';
 import { loadQuoteModel } from 'common/reducers/cmsQuote';
 import withPrivilege from 'client/common/decorators/withPrivilege';
+import connectFetch from 'client/common/decorators/connect-fetch';
 
 const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
 const SubMenu = Menu.SubMenu;
 
+function fetchData({ dispatch, state }) {
+  return dispatch(loadQuoteModel(state.account.tenantId));
+}
+@connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
@@ -42,11 +47,7 @@ export default class Settings extends Component {
   }
 
   msg = key => formatMsg(this.props.intl, key);
-  handleClick = (e) => {
-    if (e.key === 'quotemodel') {
-      this.props.loadQuoteModel(this.props.tenantId);
-    }
-  }
+
   render() {
     return (
       <Layout>
@@ -68,7 +69,6 @@ export default class Settings extends Component {
             <Layout className="main-wrapper">
               <Sider className="nav-sider">
                 <Menu
-                  onClick={this.handleClick}
                   defaultOpenKeys={['bizdata']}
                   defaultSelectedKeys={['quotemodel']}
                   mode="inline"
