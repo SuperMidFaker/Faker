@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Collapse, Form, Row, Col, Card } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import FormInput from './formInput';
+import FormInput from '../../common/form/formInput';
 import {
   RelationAutoCompSelect, IEPort, IEDate, DeclDate, Transport, DeclCustoms, Pieces, ContractNo, LicenseNo, TermConfirm,
   TradeRemission, CountryAttr, TradeMode, Fee, ContainerNo, PackWeight,
