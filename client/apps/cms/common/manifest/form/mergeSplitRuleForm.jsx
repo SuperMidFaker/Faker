@@ -63,13 +63,6 @@ export default class MergeSplitForm extends React.Component {
   }
   render() {
     const { form: { getFieldDecorator, getFieldValue }, hscodeCategories, formData } = this.props;
-    const init = { mergeOptArr: [], specialHsSortArr: [] };
-    if (formData.mergeOpt_arr !== null && formData.mergeOpt_arr.length > 0) {
-      init.mergeOptArr = formData.mergeOpt_arr.split(',');
-    }
-    if (formData.specialHsSort !== null && formData.specialHsSort.length > 0) {
-      init.specialHsSortArr = formData.specialHsSort.split(',');
-    }
     return (
       <Row>
         <Collapse defaultActiveKey={['merge']}>
@@ -86,7 +79,7 @@ export default class MergeSplitForm extends React.Component {
               </Col>
               <Col offset="2" span="19">
                 <Row style={{ padding: 6 }}>
-                  {getFieldDecorator('mergeOpt_arr', { initialValue: init.mergeOptArr,
+                  {getFieldDecorator('mergeOpt_arr', { initialValue: formData.mergeOptArr,
                   })(<CheckboxGroup options={this.mergeConditions} disabled={!getFieldValue('mergeOpt_checked')}
                     onChange={this.handleMergeCheck}
                   />)}
@@ -107,7 +100,7 @@ export default class MergeSplitForm extends React.Component {
                 <FormItem label={this.msg('specialHscodeSort')} labelCol={{ span: 4 }} wrapperCol={{ span: 20 }} >
                   {getFieldDecorator('specialHsSort', {
                     rules: [{ type: 'array' }],
-                    initialValue: init.specialHsSortArr,
+                    initialValue: formData.specialHsSortArr,
                   })(<Select multiple style={{ width: '100%' }} >
                     {hscodeCategories.map(ct =>
                       <Option value={ct.id} key={ct.id}>{ct.name}</Option>)}
