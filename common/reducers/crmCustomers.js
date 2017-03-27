@@ -118,8 +118,12 @@ export default function reducer(state = initialState, action) {
     case actionTypes.UPDATE_BUSINESS_MODEL_SUCCEED: {
       return { ...state, businessModelsLoaded: false };
     }
-    case actionTypes.LOAD_SUB_CUSTOMERS_SUCCEED:
-      return { ...state, subCustomers: action.result.data };
+    case actionTypes.LOAD_SUB_CUSTOMERS_SUCCEED: {
+      const customers = [...state.customers];
+      const index = customers.findIndex(item => item.id === action.params.parentId);
+      customers[index].subCustomers = action.result.data;
+      return { ...state, customers, subCustomers: action.result.data };
+    }
     case actionTypes.SHOW_SUB_CUSTOMER_MODAL: {
       return { ...state, subCustomerModal: {
         visible: true,

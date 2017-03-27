@@ -163,7 +163,7 @@ export default class FreightCharge extends React.Component {
           miles,
           adjust_coefficient: coefficient,
           meter,
-          charge_amount: getChargeAmountExpression(meter, miles, quantity,
+          charge_amount: getChargeAmountExpression(meter, gradient, miles, quantity,
               unitRatio, coefficient),
           pickup_checked: true,
           deliver_checked: true,

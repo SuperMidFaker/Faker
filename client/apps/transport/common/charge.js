@@ -1,7 +1,7 @@
 import { TARIFF_METER_METHODS } from 'common/constants';
 
-export function getChargeAmountExpression(meter, miles, quantity, unitRatio, coefficient) {
-  const amounts = [];
+export function getChargeAmountExpression(meter, gradient, miles, quantity, unitRatio, coefficient) {
+  const amounts = [`${gradient}`];
   if (meter) {
     if (meter === TARIFF_METER_METHODS[3].value) {
       amounts.push(`x${miles}公里`);

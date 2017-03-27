@@ -2,7 +2,6 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Card, Table, Popconfirm, Icon } from 'antd';
-import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -12,12 +11,7 @@ import { PARTNER_ROLES } from 'common/constants';
 
 const formatMsg = format(messages);
 
-function fetchData({ state, dispatch }) {
-  return dispatch(loadSubCustomers({
-    tenantId: state.account.tenantId,
-  }));
-}
-@connectFetch()(fetchData)
+
 @injectIntl
 @connect(
   state => ({
@@ -60,11 +54,13 @@ export default class SubCustomerList extends React.Component {
       unchanged: true,
     });
   }
-  handleTableLoad = (props) => {
-    this.props.loadSubCustomers({
-      tenantId: this.props.tenantId,
-      parentId: props ? props.customer.id : this.props.customer.id,
-    });
+  handleTableLoad = (props = this.props) => {
+    if (props.customer.id) {
+      this.props.loadSubCustomers({
+        tenantId: this.props.tenantId,
+        parentId: props.customer.id,
+      });
+    }
   }
   handleDelCustomer = (id) => {
     this.props.deleteCustomer(id, PARTNER_ROLES.CUS).then(() => {

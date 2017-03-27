@@ -53,10 +53,12 @@ export default class FlowRulesPane extends React.Component {
   }
   handleTableLoad = (partnerId) => {
     const { customer, tenantId } = this.props;
-    this.props.loadBusinessModels({
-      partnerId: partnerId || customer.id,
-      tenantId,
-    });
+    if (partnerId || customer.id) {
+      this.props.loadBusinessModels({
+        partnerId: partnerId || customer.id,
+        tenantId,
+      });
+    }
   }
   msg = key => formatMsg(this.props.intl, key)
   handleSave = (model) => {

@@ -282,7 +282,7 @@ export default class DispatchDock extends Component {
                   miles,
                   adjust_coefficient: coefficient,
                   meter,
-                  charge_amount: getChargeAmountExpression(meter, miles, quantity,
+                  charge_amount: getChargeAmountExpression(meter, gradient, miles, quantity,
                     unitRatio, coefficient),
                 };
                 lspsVar = update(lspsVar, { data: {
@@ -571,7 +571,7 @@ export default class DispatchDock extends Component {
           miles,
           adjust_coefficient: coefficient,
           meter,
-          charge_amount: getChargeAmountExpression(meter, miles, quantity,
+          charge_amount: getChargeAmountExpression(meter, gradient, miles, quantity,
               unitRatio, coefficient),
         };
         const state = update(this.state, { lspsVar: { data: {
