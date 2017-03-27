@@ -1,27 +1,26 @@
 import React, { PropTypes } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
-import { Popover } from 'antd';
+import { Row, Col } from 'antd';
 
 @injectIntl
 export default class OrderNoColumn extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    nos: PropTypes.string,
+    order: PropTypes.object.isRequired,
   }
 
   render() {
-    const { nos } = this.props;
-    if (nos && nos !== '') {
-      const noArray = nos.split(',');
-      const content = (
-        <div>
-          {noArray.map((item, index) => <p key={index}>{item}</p>)}
-        </div>
-      );
+    const { order } = this.props;
+    if (order) {
       return (
-        <Popover content={content} title="清关编号">
-          <div>{`${noArray[0]}${noArray.length > 1 ? '...' : ''}`}</div>
-        </Popover>
+        <Row type="flex">
+          <Col className="col-flex-primary">
+            <a onClick={() => this.props.loadOrderDetail(order.shipmt_order_no, this.props.tenantId)}>{order.shipmt_order_no}</a>
+            <div>{order.customer_name}</div>
+            <div>{order.cust_order_no}</div>
+            <div>{order.cust_invoice_no}</div>
+          </Col>
+        </Row>
       );
     } else {
       return <div />;

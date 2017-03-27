@@ -238,7 +238,7 @@ export default class DelegationList extends Component {
           return <Badge status="success" text={decl && decl.text} />;
         }
       } else {
-        return <Badge status="default" text={decl && decl.text} />;
+        return <Badge status="error" text={decl && decl.text} />;
       }
     },
   }, {
@@ -591,7 +591,7 @@ export default class DelegationList extends Component {
               {
                 listView === 'delegation' &&
                 <Table rowSelection={rowSelection} columns={columns} dataSource={this.dataSource} loading={delegationlist.loading}
-                  rowKey="delg_no" scroll={{ x: 1850 }}
+                  rowKey="delg_no" scroll={{ x: 1900 }}
                 />
               }
               {

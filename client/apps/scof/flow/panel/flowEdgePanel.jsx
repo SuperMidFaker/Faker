@@ -25,32 +25,34 @@ export default class FlowEdgePanel extends Component {
     return (
       <Card title={this.msg('flowEdge')} bodyStyle={{ padding: 16 }}>
         <Row gutter={16}>
-          <Col sm={12}>
-            <FormItem label={this.msg('sourceNode')}>
-              <Input value={source.name} readOnly />
+          <Col sm={24} md={8}>
+            <Col sm={24}>
+              <FormItem label={this.msg('sourceNode')}>
+                <Input value={source.name} readOnly />
+              </FormItem>
+            </Col>
+            {target.kind !== 'terminal' &&
+            <Col sm={24}>
+              <FormItem label={this.msg('targetNode')}>
+                <Input value={target.name} readOnly />
+              </FormItem>
+            </Col>
+            }
+          </Col>
+          <Col sm={24} md={16}>
+            <FormItem label={<span>
+              {this.msg('edgeCondition')}:&nbsp;满足以下
+              <Select defaultValue="all" style={{ width: 60 }} >
+                <Option value="all">所有</Option>
+                <Option value="any">任一</Option>
+              </Select>
+              条件</span>}
+            >
+              <ConditionTable conditions={model.conditions} bizObjects={NODE_BIZ_OBJECTS[source.kind]}
+                onAdd={onAdd} onUpdate={onUpdate} onDel={onDel}
+              />
             </FormItem>
           </Col>
-          {target.kind !== 'terminal' &&
-          <Col sm={12}>
-            <FormItem label={this.msg('targetNode')}>
-              <Input value={target.name} readOnly />
-            </FormItem>
-          </Col>
-          }
-        </Row>
-        <Row gutter={16}>
-          <FormItem label={<span>
-            {this.msg('edgeCondition')}:&nbsp;满足以下
-            <Select defaultValue="all" style={{ width: 60 }} >
-              <Option value="all">所有</Option>
-              <Option value="any">任一</Option>
-            </Select>
-            条件</span>}
-          >
-            <ConditionTable conditions={model.conditions} bizObjects={NODE_BIZ_OBJECTS[source.kind]}
-              onAdd={onAdd} onUpdate={onUpdate} onDel={onDel}
-            />
-          </FormItem>
         </Row>
       </Card>
     );

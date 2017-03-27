@@ -224,7 +224,7 @@ export default class CiqList extends Component {
     this.dataSource.remotes = ciqlist;
     return (
       <Table rowSelection={rowSelection} columns={this.columns} dataSource={this.dataSource}
-        loading={ciqlist.loading} rowKey="delg_no" scroll={{ x: 1480 }}
+        loading={ciqlist.loading} rowKey="delg_no" scroll={{ x: 1500 }}
       />);
   }
 }

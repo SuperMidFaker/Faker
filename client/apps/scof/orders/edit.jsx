@@ -3,7 +3,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Button, message, Layout } from 'antd';
+import { Breadcrumb, Button, message, Layout } from 'antd';
 import OrderForm from './form';
 import { loadOrder, editOrder } from 'common/reducers/crmOrders';
 import { loadPartnerFlowList } from 'common/reducers/scofFlow';
@@ -77,7 +77,14 @@ export default class Edit extends Component {
     return (
       <div>
         <Header className="top-bar">
-          <span>修改订单</span>
+          <Breadcrumb>
+            <Breadcrumb.Item>
+              {this.msg('shipmentOrders')}
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              {this.msg('editOrder')}
+            </Breadcrumb.Item>
+          </Breadcrumb>
           <div className="top-bar-tools">
             <Button size="large" type="ghost" onClick={this.handleCancelBtnClick}>
               {this.msg('cancel')}
@@ -87,10 +94,8 @@ export default class Edit extends Component {
             </Button>
           </div>
         </Header>
-        <Content className="main-content">
-          <div className="page-body card-wrapper">
-            <OrderForm operation="edit" />
-          </div>
+        <Content className="main-content layout-fixed-width layout-fixed-width-large">
+          <OrderForm operation="edit" />
         </Content>
       </div>
     );

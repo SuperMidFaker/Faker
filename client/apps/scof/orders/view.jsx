@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Layout } from 'antd';
+import { Breadcrumb, Button, Layout } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -47,12 +47,25 @@ export default class View extends Component {
     return (
       <div>
         <Header className="top-bar">
-          <span>查看订单</span>
-        </Header>
-        <Content className="main-content">
-          <div className="page-body card-wrapper">
-            <OrderForm operation="view" />
+          <Breadcrumb>
+            <Breadcrumb.Item>
+              {this.msg('shipmentOrders')}
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              {this.msg('viewOrder')}
+            </Breadcrumb.Item>
+          </Breadcrumb>
+          <div className="top-bar-tools">
+            <Button size="large" type="ghost" onClick={this.handleCancelBtnClick}>
+              {this.msg('cancel')}
+            </Button>
+            <Button size="large" type="primary" onClick={this.handleSave}>
+              {this.msg('save')}
+            </Button>
           </div>
+        </Header>
+        <Content className="main-content layout-fixed-width layout-fixed-width-large">
+          <OrderForm operation="view" />
         </Content>
       </div>
     );

@@ -13,11 +13,10 @@ import messages from './message.i18n';
 import { loadOrders, loadFormRequires, removeOrder, setClientForm, acceptOrder,
 loadOrderDetail } from 'common/reducers/crmOrders';
 import moment from 'moment';
-import { CRM_ORDER_STATUS, GOODSTYPES } from 'common/constants';
-import TrimSpan from 'client/components/trimSpan';
 import PreviewPanel from './modals/preview-panel';
-import TrsShipmtNoColumn from '../common/trsShipmtNoColumn';
-import CcbDelgNoColumn from '../common/ccbDelgNoColumn';
+import OrderNoColumn from '../common/orderNoColumn';
+import ShipmentColumn from '../common/shipmentColumn';
+import ProgressColumn from '../common/progressColumn';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -125,7 +124,7 @@ export default class ShipmentOrderList extends React.Component {
     });
   }
   render() {
-    const { loading, formRequires: { packagings } } = this.props;
+    const { loading } = this.props;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -134,121 +133,30 @@ export default class ShipmentOrderList extends React.Component {
     };
 
     const columns = [{
-      title: '业务编号',
+      title: '订单',
       dataIndex: 'shipmt_order_no',
-      width: 150,
-      render: (o, record) => {
-        if (record.order_status !== CRM_ORDER_STATUS.created) {
-          return (
-            <a onClick={() => this.props.loadOrderDetail(o, this.props.tenantId)}>{o}</a>
-          );
-        }
-        return o;
-      },
+      width: 300,
+      render: (o, record) => <OrderNoColumn order={record} />,
     }, {
-      title: '清关编号',
-      dataIndex: 'ccb_delg_no',
-      width: 120,
-      render: o => <CcbDelgNoColumn nos={o} />,
-    }, {
-      title: '运输单号',
-      dataIndex: 'trs_shipmt_no',
-      width: 150,
-      render: o => <TrsShipmtNoColumn nos={o} />,
-    }, {
-      title: '客户',
-      dataIndex: 'customer_name',
-      render: o => <TrimSpan text={o} maxLen={16} />,
-    }, {
-      title: '客户订单号',
-      dataIndex: 'cust_order_no',
-      width: 120,
-    }, {
-      title: '客户发票号',
-      dataIndex: 'cust_invoice_no',
-      width: 120,
-    }, {
-      title: '提运单号',
+      title: '货运信息',
       dataIndex: 'cust_shipmt_bill_lading',
-      width: 180,
-    }, {
-      title: '件数',
-      dataIndex: 'cust_shipmt_pieces',
-      width: 50,
-    }, {
-      title: '毛重',
-      dataIndex: 'cust_shipmt_weight',
-      width: 80,
-    }, {
-      title: '包装方式',
-      dataIndex: 'cust_shipmt_package',
-      width: 80,
-      render: (o) => {
-        const pkg = packagings.find(item => item.package_code === o);
-        return pkg ? pkg.package_name : '';
-      },
-    }, {
-      title: '货物类型',
-      dataIndex: 'cust_shipmt_goods_type',
-      width: 80,
-      render: (o) => {
-        const goodsType = GOODSTYPES.find(item => item.value === o);
-        return goodsType ? goodsType.text : '';
-      },
+      width: 200,
+      render: (o, record) => <ShipmentColumn shipment={record} />,
     }, {
       title: '状态',
       dataIndex: 'order_status',
       width: 100,
       render: (o, record) => {
         const percent = record.finish_num / record.shipmt_order_mode.split(',').length * 100;
-        if (o === CRM_ORDER_STATUS.created) {
-          return (
-            <div>
-              创建
-              <Progress percent={percent} strokeWidth={5} showInfo={false} />
-            </div>
-          );
-        } else if (o === CRM_ORDER_STATUS.clearancing) {
-          return (
-            <div>
-              清关
-              <Progress percent={percent} strokeWidth={5} showInfo={false} />
-            </div>
-          );
-        } else if (o === CRM_ORDER_STATUS.transporting) {
-          return (
-            <div>
-              运输
-              <Progress percent={percent} strokeWidth={5} showInfo={false} />
-            </div>
-          );
-        } else if (o === CRM_ORDER_STATUS.finished) {
-          return (
-            <div>
-              完结
-              <Progress percent={percent} strokeWidth={5} showInfo={false} />
-            </div>
-          );
-        } else if (o === CRM_ORDER_STATUS.processing) {
-          return (
-            <div>
-              运行中
-              <Progress percent={percent} strokeWidth={5} showInfo={false} />
-            </div>
-          );
-        }
-        return '';
+        return (<div><Progress type="circle" percent={percent} width={50} /><div>{moment(record.created_date).format('MM.DD HH:mm')}</div></div>);
       },
     }, {
-      title: '创建时间',
-      dataIndex: 'created_date',
-      width: 100,
-      render: o => moment(o).format('MM.DD HH:mm'),
+      title: '进度',
+      render: (o, record) => <ProgressColumn order={record} />,
     }, {
       title: '操作',
       dataIndex: 'id',
-      width: 120,
-      fixed: 'right',
+      width: 60,
       render: (o, record) => {
         if (record.order_status === 1) {
           return (

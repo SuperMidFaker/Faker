@@ -2,8 +2,8 @@ import { defineMessages } from 'react-intl';
 
 const messages = defineMessages({
   dashboardTitle: {
-    id: 'scop.dashboard.title',
-    defaultMessage: '看板',
+    id: 'scof.dashboard',
+    defaultMessage: '工作台',
   },
 });
 

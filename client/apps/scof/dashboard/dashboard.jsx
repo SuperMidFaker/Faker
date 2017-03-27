@@ -20,7 +20,7 @@ const { Header, Content } = Layout;
   depth: 2,
   moduleName: 'scof',
 })
-export default class CRMDashboard extends React.Component {
+export default class SCOFDashboard extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
