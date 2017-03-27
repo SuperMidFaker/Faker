@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Breadcrumb, Menu, Layout, Table, Button } from 'antd';
+import { Breadcrumb, Menu, Layout, Table, Button, Popconfirm } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import NavLink from 'client/components/nav-link';
 import SearchBar from 'client/components/search-bar';
@@ -13,7 +13,8 @@ const rowSelection = {
 };
 
 function DriverList(props) {
-  const { dataSource, onAddDriverBtnClicked, onStopDriverBtnClick, onResumeDriverBtnClick, handleEditDriverLogin, onEditDriver } = props;
+  const { dataSource, onAddDriverBtnClicked, onStopDriverBtnClick, onResumeDriverBtnClick,
+    handleEditDriverLogin, onEditDriver, onRemoveDriver } = props;
 
   function phoneLogin(record) {
     if (record.login_disabled === 1 || record.login_disabled === null) {
@@ -65,6 +66,10 @@ function DriverList(props) {
           <a onClick={() => onResumeDriverBtnClick(record.driver_id)}>
             启用
           </a>
+          <span className="ant-divider" />
+          <Popconfirm title="确定要删除吗？" onConfirm={() => onRemoveDriver({ driverId: record.driver_id, driverLoginId: record.login_id })}>
+            <a>删除</a>
+          </Popconfirm>
         </span>
       </PrivilegeCover>
     );

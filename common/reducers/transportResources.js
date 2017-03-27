@@ -24,6 +24,8 @@ const actionTypes = createActionTypes('@@welogix/transport/resources/', [
   'REMOVE_NODE_USER', 'REMOVE_NODE_USER_SUCCEED', 'REMOVE_NODE_USER_FAIL',
   'UPDATE_USER_STATUS', 'UPDATE_USER_STATUS_SUCCEED', 'UPDATE_USER_STATUS_FAIL',
   'LOAD_VEHICLEPARAM', 'LOAD_VEHICLEPARAM_SUCCEED', 'LOAD_VEHICLEPARAM_FAIL',
+  'REMOVE_DRIVER', 'REMOVE_DRIVER_SUCCEED', 'REMOVE_DRIVER_FAIL',
+  'REMOVE_CAR', 'REMOVE_CAR_SUCCEED', 'REMOVE_CAR_FAIL',
 ]);
 
 const initialState = {
@@ -95,6 +97,13 @@ export default function reducer(state = initialState, action) {
       const cars = updateArray({ array: state.cars, key: 'vehicle_id', value: carId, updateInfo: carInfo });
       return { ...state, cars, loaded: false, loading: false };
     }
+    case actionTypes.REMOVE_CAR:
+      return { ...state, loading: true };
+    case actionTypes.REMOVE_CAR_SUCCEED: {
+      const { carId } = action.data;
+      const cars = state.cars.filter(car => car.vehicle_id !== carId);
+      return { ...state, cars, loading: false };
+    }
     case actionTypes.ADD_CAR:
       return { ...state, vehicleValidate: true };
     case actionTypes.EDIT_DRIVER:
@@ -108,6 +117,13 @@ export default function reducer(state = initialState, action) {
       const { driverId, driverInfo } = action.result.data;
       const drivers = updateArray({ array: state.drivers, key: 'driver_id', value: driverId, updateInfo: driverInfo });
       return { ...state, loading: false, drivers };
+    }
+    case actionTypes.REMOVE_DRIVER:
+      return { ...state, loading: true };
+    case actionTypes.REMOVE_DRIVER_SUCCEED: {
+      const { driverId } = action.data;
+      const drivers = state.drivers.filter(driver => driver.driver_id !== driverId);
+      return { ...state, drivers, loading: false };
     }
     case actionTypes.LOAD_CARLIST:
       return { ...state, loading: true };
@@ -204,6 +220,21 @@ export function editVehicle({ carId, carInfo }) {
   };
 }
 
+export function removeVehicle(carId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.REMOVE_CAR,
+        actionTypes.REMOVE_CAR_SUCCEED,
+        actionTypes.REMOVE_CAR_FAIL,
+      ],
+      endpoint: 'v1/transport/resources/remove_vehicle',
+      method: 'post',
+      data: { carId },
+    },
+  };
+}
+
 export function loadVehicleList(tenantId) {
   return {
     [CLIENT_API]: {
@@ -263,6 +294,21 @@ export function editDriver({ driverId, driverInfo }) {
       endpoint: 'v1/transport/resources/edit_driver',
       method: 'post',
       data: { driverInfo, driverId },
+    },
+  };
+}
+
+export function removeDriver({ driverId, driverLoginId }) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.REMOVE_DRIVER,
+        actionTypes.REMOVE_DRIVER_SUCCEED,
+        actionTypes.REMOVE_DRIVER_FAIL,
+      ],
+      endpoint: 'v1/transport/resources/remove_driver',
+      method: 'post',
+      data: { driverId, driverLoginId },
     },
   };
 }

@@ -2,7 +2,7 @@ import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import VehicleList from '../components/VehicleList';
 import { transformRawCarDataToDisplayData } from '../utils/dataMapping';
-import { loadVehicleList, editVehicle, toggleVehicleModal } from 'common/reducers/transportResources';
+import { loadVehicleList, editVehicle, toggleVehicleModal, removeVehicle } from 'common/reducers/transportResources';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 
@@ -16,7 +16,7 @@ function fetchData({ dispatch, state }) {
   loading: state.transportResources.loading,
   cars: state.transportResources.cars,
   tenantId: state.account.tenantId,
-}), { editVehicle, toggleVehicleModal, loadVehicleList })
+}), { editVehicle, toggleVehicleModal, loadVehicleList, removeVehicle })
 @connectNav({
   depth: 2,
   moduleName: 'transport',
@@ -30,6 +30,7 @@ export default class VehicleListContainer extends Component {
     editVehicle: PropTypes.func.isRequired,           // 停用和启用车辆的action creator
     toggleVehicleModal: PropTypes.func.isRequired,
     loadVehicleList: PropTypes.func.isRequired,
+    removeVehicle: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -56,6 +57,9 @@ export default class VehicleListContainer extends Component {
     const vehicle = cars.find(car => car.vehicle_id === vehicleId);
     this.props.toggleVehicleModal(true, 'edit', vehicle);
   }
+  handleRemoveVehicle = (carId) => {
+    this.props.removeVehicle(carId);
+  }
   handleSearch = (searchText) => {
     this.setState({ searchText });
   }
@@ -75,6 +79,7 @@ export default class VehicleListContainer extends Component {
         onResumeCarBtnClick={this.handleResumeCarBtnClick}
         onAddCarBtnClick={this.handleAddCarBtnClick}
         onEditVehicleBtnClick={this.handleEditVehicle}
+        onRemoveVehicle={this.handleRemoveVehicle}
         onSearch={this.handleSearch}
         searchText={this.state.searchText}
       />

@@ -3,7 +3,7 @@ import { message } from 'antd';
 import { connect } from 'react-redux';
 import DriverList from '../components/DriverList';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { loadDriverList, editDriver, editDriverLogin, toggleDriverModal } from 'common/reducers/transportResources';
+import { loadDriverList, editDriver, editDriverLogin, toggleDriverModal, removeDriver } from 'common/reducers/transportResources';
 import { transformRawDriverDataToDisplayData } from '../utils/dataMapping';
 import connectNav from 'client/common/decorators/connect-nav';
 
@@ -17,7 +17,7 @@ function fetchData({ dispatch, state }) {
   loading: state.transportResources.loading,
   drivers: state.transportResources.drivers,
   tenantId: state.account.tenantId,
-}), { editDriver, editDriverLogin, toggleDriverModal, loadDriverList })
+}), { editDriver, editDriverLogin, toggleDriverModal, loadDriverList, removeDriver })
 @connectNav({
   depth: 2,
   moduleName: 'transport',
@@ -30,6 +30,7 @@ export default class DriverListContainer extends Component {
     toggleDriverModal: PropTypes.func.isRequired,
     tenantId: PropTypes.number.isRequired,
     loadDriverList: PropTypes.func.isRequired,
+    removeDriver: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -62,6 +63,9 @@ export default class DriverListContainer extends Component {
     const driver = this.props.drivers.find(item => item.driver_id === driverId);
     this.props.toggleDriverModal(true, 'edit', driver);
   }
+  handleRemoveDriver = (driverId) => {
+    this.props.removeDriver(driverId);
+  }
   handleSearch = (searchText) => {
     this.setState({ searchText });
   }
@@ -82,6 +86,7 @@ export default class DriverListContainer extends Component {
         onAddDriverBtnClicked={this.handleAddDriverBtnClicked}
         handleEditDriverLogin={this.handleEditDriverLogin}
         onEditDriver={this.handleEditDriver}
+        onRemoveDriver={this.handleRemoveDriver}
         onSearch={this.handleSearch}
         searchText={this.state.searchText}
       />

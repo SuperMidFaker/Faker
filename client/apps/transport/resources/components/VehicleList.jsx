@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Breadcrumb, Menu, Layout, Button, Table } from 'antd';
+import { Breadcrumb, Menu, Layout, Button, Table, Popconfirm } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import NavLink from 'client/components/nav-link';
 import SearchBar from 'client/components/search-bar';
@@ -14,7 +14,7 @@ const rowSelection = {
 };
 
 export default function VehicleList(props) {
-  const { onAddCarBtnClick, dataSource, onStopCarBtnClick, onResumeCarBtnClick, onEditVehicleBtnClick } = props;
+  const { onAddCarBtnClick, dataSource, onStopCarBtnClick, onResumeCarBtnClick, onEditVehicleBtnClick, onRemoveVehicle } = props;
 
   function editAndStopCarOperations(record) {
     return (
@@ -45,6 +45,10 @@ export default function VehicleList(props) {
           <a onClick={() => onResumeCarBtnClick(record.vehicle_id)}>
             启用
           </a>
+          <span className="ant-divider" />
+          <Popconfirm title="确定要删除吗？" onConfirm={() => onRemoveVehicle(record.vehicle_id)}>
+            <a>删除</a>
+          </Popconfirm>
         </span>
       </PrivilegeCover>
     );
@@ -159,6 +163,7 @@ VehicleList.propTypes = {
   onStopCarBtnClick: PropTypes.func.isRequired,   // 停用按钮点击后执行的回调函数
   onResumeCarBtnClick: PropTypes.func.isRequired, // 启用按钮点击后执行的回调函数
   onEditVehicleBtnClick: PropTypes.func.isRequired,
+  onRemoveVehicle: PropTypes.func.isRequired,
   onSearch: PropTypes.func.isRequired,
   searchText: PropTypes.string.isRequired,
 };
