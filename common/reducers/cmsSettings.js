@@ -64,7 +64,7 @@ export default function reducer(state = initialState, action) {
   }
 }
 
-export function loadBillemplates(tenantId) {
+export function loadBillemplates(params) {
   return {
     [CLIENT_API]: {
       types: [
@@ -74,7 +74,7 @@ export function loadBillemplates(tenantId) {
       ],
       endpoint: 'v1/cms/settings/billtemplates/load',
       method: 'get',
-      params: { tenantId },
+      params,
     },
   };
 }

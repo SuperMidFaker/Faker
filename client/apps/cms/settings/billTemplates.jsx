@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Breadcrumb, Layout, Menu, Icon, Button, Table, Popconfirm, message } from 'antd';
+import { Breadcrumb, Layout, Menu, Icon, Button, Table, Popconfirm, message, Tabs } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import NavLink from 'client/components/nav-link';
 import messages from './message.i18n';
@@ -17,9 +17,10 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
 const SubMenu = Menu.SubMenu;
+const TabPane = Tabs.TabPane;
 
 function fetchData({ dispatch, state }) {
-  return dispatch(loadBillemplates(state.account.tenantId));
+  return dispatch(loadBillemplates({ tenantId: state.account.tenantId, ietype: 'import' }));
 }
 
 @connectFetch()(fetchData)
@@ -60,14 +61,18 @@ export default class billTemplates extends Component {
   handleEdit = (record) => {
     this.context.router.push(`/clearance/settings/billtemplates/edit/${record.id}`);
   }
-  handleDelete = (id) => {
-    this.props.deleteTemplate(id).then((result) => {
+  handleDelete = (record) => {
+    this.props.deleteTemplate(record.id).then((result) => {
       if (result.error) {
         message.error(result.error.message);
       } else {
-        this.props.loadBillemplates(this.props.tenantId);
+        const ietype = record.i_e_type === 0 ? 'import' : 'export';
+        this.props.loadBillemplates({ tenantId: this.props.tenantId, ietype });
       }
     });
+  }
+  handleTabChange = (tabKey) => {
+    this.props.loadBillemplates({ tenantId: this.props.tenantId, ietype: tabKey });
   }
   render() {
     const columns = [
@@ -98,7 +103,7 @@ export default class billTemplates extends Component {
           <span>
             <a onClick={() => this.handleEdit(record)}>{this.msg('edit')}</a>
             <span className="ant-divider" />
-            <Popconfirm title="确定要删除吗？" onConfirm={() => this.handleDelete(record.id)}>
+            <Popconfirm title="确定要删除吗？" onConfirm={() => this.handleDelete(record)}>
               <a>删除</a>
             </Popconfirm>
           </span>),
@@ -139,8 +144,15 @@ export default class billTemplates extends Component {
                 <div className="toolbar">
                   <Button type="primary" size="large" onClick={this.handleAddBtnClicked} icon="plus-circle-o">新建模板</Button>
                 </div>
-                <div className="panel-body table-panel">
-                  <Table columns={columns} dataSource={this.props.billtemplates} />
+                <div className="page-body tabbed">
+                  <Tabs defaultActiveKey="import" onChange={this.handleTabChange}>
+                    <TabPane tab="进口" key="import">
+                      <Table columns={columns} dataSource={this.props.billtemplates} />
+                    </TabPane>
+                    <TabPane tab="出口" key="export">
+                      <Table columns={columns} dataSource={this.props.billtemplates} />
+                    </TabPane>
+                  </Tabs>
                 </div>
               </Content>
             </Layout>
