@@ -11,7 +11,6 @@ const formatMsg = format(messages);
 const { Header, Content } = Layout;
 
 @injectIntl
-
 @connectNav({
   depth: 3,
   moduleName: 'scof',

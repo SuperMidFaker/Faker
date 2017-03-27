@@ -19,6 +19,7 @@ const RadioGroup = Radio.Group;
 @connect(
   state => ({
     formRequires: state.crmOrders.formRequires,
+    cmsQuotes: state.scofFlow.cmsQuotes,
   }),
   { setClientForm, loadFlowNodeData }
 )
@@ -56,7 +57,7 @@ export default class ClearanceForm extends Component {
     this.handleSetClientForm({ [key]: value });
   }
   render() {
-    const { formData, formRequires } = this.props;
+    const { formData, formRequires, cmsQuotes } = this.props;
     const formItemLayout = {
       labelCol: { span: 6 },
       wrapperCol: { span: 18 },
@@ -135,7 +136,11 @@ export default class ClearanceForm extends Component {
           </Col>
           <Col sm={24} lg={8}>
             <FormItem label={this.msg('quoteNo')} {...formItemLayout}>
-              <Select value={node.quote_no} />
+              <Select value={node.quote_no} onChange={value => this.handleChange('quote_no', value)}>
+                {
+                  cmsQuotes.map(cq => <Option value={cq.quote_no} key={cq._id}>{cq.quote_no}</Option>)
+                }
+              </Select>
             </FormItem>
           </Col>
           <Col sm={24} lg={8}>

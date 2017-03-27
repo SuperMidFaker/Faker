@@ -2,9 +2,9 @@
 import React, { PropTypes } from 'react';
 import { intlShape } from 'react-intl';
 import { Row, Col, Form, Input, Select, Tooltip } from 'antd';
-import FormInput from './formInput';
-import { FormLocalSearchSelect, FormRemoteSearchSelect } from './formSelect';
-import FormDatePicker from './formDatePicker';
+import FormInput from '../../common/form/formInput';
+import { FormLocalSearchSelect, FormRemoteSearchSelect } from '../../common/form/formSelect';
+import FormDatePicker from '../../common/form/formDatePicker';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import { CMS_FEE_UNIT, CMS_CONFIRM } from 'common/constants';

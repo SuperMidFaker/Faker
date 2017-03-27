@@ -59,7 +59,6 @@ export default class ManifestEditor extends React.Component {
   state = {
     visible: false,
     collapsed: true,
-    ruleRequired: false,
     headData: {},
   }
   componentWillReceiveProps(nextProps) {
@@ -74,7 +73,6 @@ export default class ManifestEditor extends React.Component {
     });
   }
   handleGenerateEntry = () => {
-    this.setState({ ruleRequired: true });
     this.props.loadBillBody(this.props.billHead.bill_seq_no).then((result) => {
       if (result.error) {
         message.error(result.error.message);
@@ -147,30 +145,26 @@ export default class ManifestEditor extends React.Component {
     return info;
   }
   handleBillSave = () => {
-    this.props.form.validateFields((errors) => {
-      if (!errors) {
-        const { billHead, ietype, loginId, tenantId, formData } = this.props;
-        const head = { ...billHead, ...this.props.form.getFieldsValue(), template_id: formData.template_id };
-        const tradeInfo = this.validateCode(head.trade_co, head.trade_custco);
-        if (tradeInfo) {
-          return message.error(`${tradeInfo}`);
-        }
-        const ownInfo = this.validateCode(head.owner_code, head.owner_custco);
-        if (ownInfo) {
-          return message.error(`${ownInfo}`);
-        }
-        const agentInfo = this.validateCode(head.agent_code, head.agent_custco);
-        if (agentInfo) {
-          return message.error(`${agentInfo}`);
-        }
-        this.props.saveBillHead({ head, ietype, loginId, tenantId }).then(
-        (result) => {
-          if (result.error) {
-            message.error(result.error.message);
-          } else {
-            message.info('更新成功');
-          }
-        });
+    const { billHead, ietype, loginId, tenantId, formData } = this.props;
+    const head = { ...billHead, ...this.props.form.getFieldsValue(), template_id: formData.template_id };
+    const tradeInfo = this.validateCode(head.trade_co, head.trade_custco);
+    if (tradeInfo) {
+      return message.error(`${tradeInfo}`);
+    }
+    const ownInfo = this.validateCode(head.owner_code, head.owner_custco);
+    if (ownInfo) {
+      return message.error(`${ownInfo}`);
+    }
+    const agentInfo = this.validateCode(head.agent_code, head.agent_custco);
+    if (agentInfo) {
+      return message.error(`${agentInfo}`);
+    }
+    this.props.saveBillHead({ head, ietype, loginId, tenantId }).then(
+    (result) => {
+      if (result.error) {
+        message.error(result.error.message);
+      } else {
+        message.info('更新成功');
       }
     });
   }
@@ -298,7 +292,7 @@ export default class ManifestEditor extends React.Component {
             <div className="page-body tabbed">
               <Tabs defaultActiveKey="header">
                 <TabPane tab="清单表头" key="header">
-                  <SheetHeadPanel ietype={ietype} readonly={!editable} form={form} formData={this.state.headData} ruleRequired={this.state.ruleRequired} type="bill" onSave={this.handleBillSave} />
+                  <SheetHeadPanel ietype={ietype} readonly={!editable} form={form} formData={this.state.headData} ruleRequired type="bill" onSave={this.handleBillSave} />
                 </TabPane>
                 <TabPane tab="清单表体" key="body">
                   <SheetBodyPanel ietype={ietype} readonly={!editable} headForm={form} data={billBodies} headNo={billHead.bill_seq_no}

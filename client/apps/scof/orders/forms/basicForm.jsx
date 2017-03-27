@@ -4,7 +4,7 @@ import { Collapse, Form, Row, Col, Card, Input, Radio, Select, Popover, Icon, Sw
 import { intlShape, injectIntl } from 'react-intl';
 import { GOODSTYPES, WRAP_TYPE, SCOF_CONTAINER_TYPE, SCOF_ORDER_TRANSFER, SCOF_ORDER_TRANSMODES } from 'common/constants';
 import { setClientForm } from 'common/reducers/crmOrders';
-import { loadPartnerFlowList, loadFlowGraph } from 'common/reducers/scofFlow';
+import { loadPartnerFlowList, loadFlowGraph, loadCustomerQuotes } from 'common/reducers/scofFlow';
 import Container from './container';
 import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
@@ -28,7 +28,7 @@ const InputGroup = Input.Group;
     formRequires: state.crmOrders.formRequires,
     flows: state.scofFlow.partnerFlows,
   }),
-  { setClientForm, loadPartnerFlowList, loadFlowGraph }
+  { setClientForm, loadPartnerFlowList, loadFlowGraph, loadCustomerQuotes }
 )
 
 export default class BasicForm extends Component {
@@ -57,6 +57,7 @@ export default class BasicForm extends Component {
         partnerId: selPartnerId,
         tenantId,
       });
+      this.props.loadCustomerQuotes(tenantId, selPartnerId);
     }
   }
   handleFlowChange = (value) => {
@@ -148,7 +149,6 @@ export default class BasicForm extends Component {
                   name: node.name,
                   in_degree: node.in_degree,
                   out_degree: node.out_degree,
-                  manifest_template_id: node.manifest_template_id,
                   level,
                   pack_count: null,
                   gross_wt: null,
@@ -333,7 +333,7 @@ export default class BasicForm extends Component {
                       </span>
                     </Popover>
                   </FormItem>
-              )}
+                )}
                 </Col>
                 <Col sm={8}>
                   <FormItem label="货物类型" {...formItemLayout} required="true">
@@ -347,12 +347,15 @@ export default class BasicForm extends Component {
                 <Col sm={8}>
                   <FormItem label="包装/件数" {...formItemLayout} required="true">
                     <InputGroup compact>
-                      <Select size="large" style={{ width: '50%' }} placeholder="选择包装方式">
+                      <Select size="large" style={{ width: '50%' }} placeholder="选择包装方式"
+                        onChange={value => this.handleChange('cust_shipmt_wrap_type', value)}
+                        value={formData.cust_shipmt_wrap_type}
+                      >
                         {
-                        WRAP_TYPE.map(wt =>
-                          <Option value={wt.value} key={wt.value}>{wt.text}</Option>
-                        )
-                      }
+                          WRAP_TYPE.map(wt =>
+                            <Option value={wt.value} key={wt.value}>{wt.text}</Option>
+                          )
+                        }
                       </Select>
                       <Input type="number" style={{ width: '50%' }} value={formData.cust_shipmt_pieces} onChange={e => this.handleChange('cust_shipmt_pieces', e.target.value)} />
                     </InputGroup>

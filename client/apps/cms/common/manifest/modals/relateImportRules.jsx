@@ -19,7 +19,7 @@ function getFieldInits(formData) {
       init[fd] = formData[fd] ? formData[fd] : '0';
     });
     init.rule_gunit_num = formData.rule_gunit_num ? formData.rule_gunit_num : 'g_unit_1';
-    init.rule_element = formData.rule_element ? formData.rule_element : '';
+    init.rule_element = formData.rule_element ? formData.rule_element : '$g_model';
   }
   return init;
 }

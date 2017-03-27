@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Modal, Form, Mention, message, Steps, Button, Card, Input } from 'antd';
 import { setStepVisible } from 'common/reducers/cmsManifest';
-import { createGeneratedTemplate } from 'common/reducers/cmsSettings';
+import { createGeneratedTemplate, validateTempName } from 'common/reducers/cmsSettings';
 import ImportRuleForm from '../form/bodyImportRuleForm';
 import MergeSplitForm from '../form/mergeSplitRuleForm';
 import { format } from 'client/common/i18n/helpers';
@@ -12,6 +12,35 @@ const formatMsg = format(messages);
 
 const FormItem = Form.Item;
 const Step = Steps.Step;
+
+function getFieldInits(formData) {
+  const init = { mergeOptArr: [], specialHsSortArr: [] };
+  if (formData) {
+    ['rule_currency', 'rule_orig_country', 'rule_net_wt',
+    ].forEach((fd) => {
+      init[fd] = formData[fd] ? formData[fd] : '1';
+    });
+    ['rule_g_name', 'rule_g_unit'].forEach((fd) => {
+      init[fd] = formData[fd] ? formData[fd] : '0';
+    });
+    init.rule_gunit_num = formData.rule_gunit_num ? formData.rule_gunit_num : 'g_unit_1';
+    init.rule_element = formData.rule_element ? formData.rule_element : '$g_model';
+    if (formData.mergeOpt_arr) {
+      init.mergeOptArr = formData.mergeOpt_arr.split(',');
+    }
+    if (formData.specialHsSort) {
+      init.specialHsSortArr = formData.specialHsSort.split(',');
+    }
+    ['mergeOpt_checked', 'sortOpt_customControl'].forEach((fd) => {
+      init[fd] = formData[fd] ? formData[fd] : 1;
+    });
+    ['sortOpt_decTotal', 'sortOpt_hsCodeAsc', 'splitOpt_byHsCode', 'splitOpt_tradeCurr'].forEach((fd) => {
+      init[fd] = formData[fd] ? formData[fd] : 0;
+    });
+    init.splitOpt_perCount = formData.splitOpt_perCount ? formData.splitOpt_perCount : 20;
+  }
+  return init;
+}
 
 @Form.create()
 @injectIntl
@@ -23,8 +52,9 @@ const Step = Steps.Step;
     tenantId: state.account.tenantId,
     billRule: state.cmsManifest.billRule,
     billHead: state.cmsManifest.billHead,
+    fieldInits: getFieldInits(state.cmsManifest.billRule),
   }),
-  { setStepVisible, createGeneratedTemplate }
+  { setStepVisible, createGeneratedTemplate, validateTempName }
 )
 export default class SaveTemplateModal extends React.Component {
   static propTypes = {
@@ -36,24 +66,39 @@ export default class SaveTemplateModal extends React.Component {
     current: 0,
     formData: {},
   }
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.billRule !== this.props.billRule) {
-      this.setState({ formData: nextProps.billRule });
-    }
+  componentWillMount() {
+    this.setState({ formData: this.props.fieldInits });
   }
   handlenext = () => {
     this.props.form.validateFields((errors) => {
       if (!errors) {
-        const current = this.state.current + 1;
+        let current = this.state.current;
+        if (current === 0) {
+          const name = this.props.form.getFieldValue('template_name');
+          this.props.validateTempName({ name, tenantId: this.props.tenantId }).then((result) => {
+            if (result.error) {
+              return message.error(result.error.message);
+            } else {
+              current += 1;
+              this.setState({ current });
+            }
+          });
+        } else {
+          current += 1;
+          this.setState({ current });
+        }
         const formData = { ...this.state.formData, ...this.props.form.getFieldsValue() };
-        this.setState({ formData, current });
+        this.setState({ formData });
       }
     });
   }
   handleprev = () => {
     const current = this.state.current - 1;
     const formData = { ...this.state.formData, ...this.props.form.getFieldsValue() };
-    const element = Mention.toString(formData.rule_element);
+    let element = formData.rule_element;
+    if (typeof formData.rule_element !== 'string') {
+      element = Mention.toString(formData.rule_element);
+    }
     this.setState({ formData: { ...formData, rule_element: element }, current });
   }
   handleCancel = () => {
@@ -62,11 +107,12 @@ export default class SaveTemplateModal extends React.Component {
   handleOk = () => {
     const { tenantId, loginId, loginName, ietype, billHead } = this.props;
     const { formData } = this.state;
-    const param = {};
-    param.template_name = formData.template_name;
     const ieType = ietype === 'import' ? 0 : 1;
     const params = { template_name: formData.template_name, i_e_type: ieType, tenant_id: tenantId, modify_id: loginId, modify_name: loginName };
-    const element = Mention.toString(formData.rule_element);
+    let element = formData.rule_element;
+    if (typeof formData.rule_element !== 'string') {
+      element = Mention.toString(formData.rule_element);
+    }
     const mergeOptArr = this.props.form.getFieldValue('mergeOpt_arr');
     const specialHsSortArr = this.props.form.getFieldValue('specialHsSort');
     let mergeOpts = '';
@@ -83,6 +129,7 @@ export default class SaveTemplateModal extends React.Component {
       if (result.error) {
         message.error(result.error.message);
       } else {
+        message.info('保存成功');
         this.props.setStepVisible(false);
       }
     });
