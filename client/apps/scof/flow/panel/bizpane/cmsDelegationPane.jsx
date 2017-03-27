@@ -14,6 +14,7 @@ const Option = Select.Option;
 @connect(
   state => ({
     bizDelegation: state.scofFlow.cmsParams.bizDelegation,
+    cmsQuotes: state.scofFlow.cmsQuotes,
   }),
 )
 export default class CMSDelegationPane extends Component {
@@ -23,7 +24,8 @@ export default class CMSDelegationPane extends Component {
   }
   msg = formatMsg(this.props.intl)
   render() {
-    const { form: { getFieldDecorator }, onNodeActionsChange, model, bizDelegation: { declPorts, customsBrokers, ciqBrokers } } = this.props;
+    const { form: { getFieldDecorator }, onNodeActionsChange, model,
+      bizDelegation: { declPorts, customsBrokers, ciqBrokers }, cmsQuotes } = this.props;
     const declWays = model.kind === 'export' ? DECL_E_TYPE : DECL_I_TYPE;
     return (
       <Collapse bordered={false} defaultActiveKey={['properties', 'events']}>
@@ -96,7 +98,11 @@ export default class CMSDelegationPane extends Component {
               <FormItem label={this.msg('quoteNo')}>
                 {getFieldDecorator('quote_no', {
                   initialValue: model.quote_no,
-                })(<Select />)}
+                })(<Select>
+                  {
+                    cmsQuotes.map(cq => <Option value={cq.quote_no} key={cq._id}>{cq.quote_no}</Option>)
+                  }
+                </Select>)}
               </FormItem>
             </Col>
           </Row>

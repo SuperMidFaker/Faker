@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Row, Col, Card, Tabs } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { loadCmsBizParams } from 'common/reducers/scofFlow';
+import { loadCmsBizParams, loadCustomerQuotes } from 'common/reducers/scofFlow';
 import FlowNodePanel from './compose/flowNodePanel';
 import DelegationPane from './bizpane/cmsDelegationPane';
 import DeclManifestPane from './bizpane/cmsDeclManifestPane';
@@ -17,7 +17,7 @@ const TabPane = Tabs.TabPane;
     tenantId: state.account.tenantId,
     partnerId: state.scofFlow.currentFlow.partner_id,
   }),
-  { loadCmsBizParams }
+  { loadCmsBizParams, loadCustomerQuotes }
 )
 export default class FlowCmsNodePanel extends Component {
   static propTypes = {
@@ -28,6 +28,7 @@ export default class FlowCmsNodePanel extends Component {
   }
   componentDidMount() {
     this.props.loadCmsBizParams(this.props.tenantId, this.props.partnerId, this.props.model.kind);
+    this.props.loadCustomerQuotes(this.props.tenantId, this.props.partnerId);
   }
   msg = formatMsg(this.props.intl)
   render() {
