@@ -407,11 +407,8 @@ export default class FlowDesigner extends React.Component {
                 { opacity: [1, 0], translateY: [0, -50] },
               ]}
               >
-                {activeItem.get('type') === 'node' && activeItem.get('model').kind === 'import' &&
-                <BizObjCMSPanel form={form} model={activeItem.get('model')} onNodeActionsChange={this.handleNodeActionsChange} key="import" />
-                }
-                {activeItem.get('type') === 'node' && activeItem.get('model').kind === 'export' &&
-                <BizObjCMSPanel form={form} model={activeItem.get('model')} onNodeActionsChange={this.handleNodeActionsChange} key="export" />
+                {activeItem.get('type') === 'node' && (activeItem.get('model').kind === 'import' || activeItem.get('model').kind === 'export') &&
+                <BizObjCMSPanel form={form} model={activeItem.get('model')} onNodeActionsChange={this.handleNodeActionsChange} key="cms" />
                 }
                 {activeItem.get('type') === 'node' && (activeItem.get('model').kind === 'tms') &&
                 <BizObjTMSPanel form={form} model={activeItem.get('model')} onNodeActionsChange={this.handleNodeActionsChange} key="tms" />

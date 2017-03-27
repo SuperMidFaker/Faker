@@ -58,7 +58,7 @@ export default class OrderForm extends Component {
     return (
       <Form layout="horizontal" className="order-flow-form">
         <BasicForm operation={operation} />
-        <Steps direction="vertical" current={current}>
+        <Steps direction="vertical" current={current} style={{ paddingLeft: 16 }} >
           {this.renderSteps(formData.subOrders)}
         </Steps>
       </Form>

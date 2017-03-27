@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Form, Row, Col, Card, Input, Select, Icon, InputNumber, Tooltip } from 'antd';
+import { Form, Row, Col, Card, Input, Select, Icon, InputNumber, Tooltip, Radio } from 'antd';
 import { TRANS_MODE, DECL_I_TYPE, DECL_E_TYPE } from 'common/constants';
 import { setClientForm, loadFlowNodeData } from 'common/reducers/crmOrders';
 import { intlShape, injectIntl } from 'react-intl';
@@ -12,6 +12,8 @@ import AttchmentUpload from './attachmentUpload';
 const formatMsg = format(messages);
 const FormItem = Form.Item;
 const Option = Select.Option;
+const RadioButton = Radio.Button;
+const RadioGroup = Radio.Group;
 
 @injectIntl
 @connect(
@@ -75,11 +77,10 @@ export default class ClearanceForm extends Component {
           </Col> */}
           <Col sm={24} lg={8}>
             <FormItem label={this.msg('declareWay')} {...formItemLayout}>
-              <Select value={node.decl_way_code} onChange={value => this.handleChange('decl_way_code', value)}>
-                {declWays.map(dw =>
-                  <Option value={dw.key} key={dw.key}>{dw.value}</Option>)
-                }
-              </Select>
+              <RadioGroup value={node.decl_way_code} onChange={ev => this.handleChange('decl_way_code', ev.target.value)}>
+                <RadioButton value={declWays[0].key}>{declWays[0].value}</RadioButton>
+                <RadioButton value={declWays[1].key}>{declWays[1].value}</RadioButton>
+              </RadioGroup>
             </FormItem>
           </Col>
           <Col sm={24} lg={8}>

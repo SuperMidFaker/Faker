@@ -160,20 +160,6 @@ export default class MainForm extends Component {
         <Card bodyStyle={{ padding: 16 }}>
           <Row gutter={16}>
             <Col sm={24} lg={8}>
-              <FormItem label={this.msg('declareCustoms')} >
-                {getFieldDecorator('decl_port', {
-                  rules: [{ required: true, message: '申报口岸必选' }],
-                  initialValue: fieldInits.decl_port,
-                })(<Select showSearch>
-                  {
-                    this.props.customs.map(dw =>
-                      <Option value={dw.value} key={dw.value}>{dw.text}</Option>
-                    )
-                  }
-                </Select>)}
-              </FormItem>
-            </Col>
-            <Col sm={24} lg={8}>
               <FormItem label={this.msg('declareWay')} >
                 {getFieldDecorator('decl_way_code', {
                   rules: [{ required: true, message: '报关类型必选' }],
@@ -182,6 +168,20 @@ export default class MainForm extends Component {
                   {
                     DECL_TYPE.map(dw =>
                       <Option value={dw.key} key={dw.key}>{dw.value}</Option>
+                    )
+                  }
+                </Select>)}
+              </FormItem>
+            </Col>
+            <Col sm={24} lg={8}>
+              <FormItem label={this.msg('declareCustoms')} >
+                {getFieldDecorator('decl_port', {
+                  rules: [{ required: true, message: '申报口岸必选' }],
+                  initialValue: fieldInits.decl_port,
+                })(<Select showSearch>
+                  {
+                    this.props.customs.map(dw =>
+                      <Option value={dw.value} key={dw.value}>{dw.text}</Option>
                     )
                   }
                 </Select>)}
