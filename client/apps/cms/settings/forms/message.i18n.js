@@ -161,4 +161,40 @@ export default defineMessages({
     id: 'cms.template.form.relation.name',
     defaultMessage: '名称',
   },
+  grosswt: {
+    id: 'cms.forms.relation.gross.wt',
+    defaultMessage: '毛重',
+  },
+  netwt: {
+    id: 'cms.forms.relation.net.wt',
+    defaultMessage: '净重',
+  },
+  certMark: {
+    id: 'cms.forms.relation.cert.mark',
+    defaultMessage: '随附单证',
+  },
+  paymentRoyalty: {
+    id: 'cms.forms.relation.payment.royalty',
+    defaultMessage: '支付特许权使用费确认',
+  },
+  priceEffect: {
+    id: 'cms.forms.relation.price.effect',
+    defaultMessage: '价格影响确认',
+  },
+  specialRelation: {
+    id: 'cms.forms.relation.special.relation',
+    defaultMessage: '特殊关系确认',
+  },
+  storeNo: {
+    id: 'cms.forms.relation.store.no',
+    defaultMessage: '保税/监管场所',
+  },
+  yardCode: {
+    id: 'cms.forms.relation.yard.code',
+    defaultMessage: '货场代码',
+  },
+  packCount: {
+    id: 'cms.forms.relation.pack.count',
+    defaultMessage: '件数',
+  },
 });
