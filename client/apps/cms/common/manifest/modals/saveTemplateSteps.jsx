@@ -75,7 +75,7 @@ export default class SaveTemplateModal extends React.Component {
         let current = this.state.current;
         if (current === 0) {
           const name = this.props.form.getFieldValue('template_name');
-          this.props.validateTempName(name).then((result) => {
+          this.props.validateTempName({ name, tenantId: this.props.tenantId }).then((result) => {
             if (result.error) {
               return message.error(result.error.message);
             } else {

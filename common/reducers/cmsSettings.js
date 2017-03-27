@@ -215,7 +215,7 @@ export function createGeneratedTemplate(datas) {
   };
 }
 
-export function validateTempName(name) {
+export function validateTempName(params) {
   return {
     [CLIENT_API]: {
       types: [
@@ -225,7 +225,7 @@ export function validateTempName(name) {
       ],
       endpoint: 'v1/cms/settings/template/validate/name',
       method: 'get',
-      params: { name },
+      params,
     },
   };
 }
