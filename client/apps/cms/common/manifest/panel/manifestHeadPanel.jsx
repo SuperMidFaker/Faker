@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Button, Card, Form, Row, Col } from 'antd';
+import { Button, Card, Form, Row, Col, Popconfirm, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import FormInput from '../../form/formInput';
 import {
@@ -8,7 +8,7 @@ import {
   TradeRemission, CountryAttr, TradeMode, Fee, ContainerNo, PackWeight,
   RaDeclManulNo, StroeYard,
 } from '../../form/headFormItems';
-import { loadSearchedParam, saveBillHead } from 'common/reducers/cmsManifest';
+import { loadSearchedParam, saveBillHead, cleanHeadDatas } from 'common/reducers/cmsManifest';
 import { format } from 'client/common/i18n/helpers';
 import globalMessage from 'client/common/root.i18n';
 import messages from '../message.i18n';
@@ -30,7 +30,7 @@ const CODE_AS_STATE = {
   state => ({
     formRequire: state.cmsManifest.params,
   }),
-  { loadSearchedParam, saveBillHead }
+  { loadSearchedParam, saveBillHead, cleanHeadDatas }
 )
 export default class ManifestHeadPanel extends React.Component {
   static propTypes = {
@@ -75,13 +75,18 @@ export default class ManifestHeadPanel extends React.Component {
   handlePortSearch = (field, search) => {
     this.props.loadSearchedParam({ paramType: 'port', search });
   }
+  handleBillHeadDelete = () => {
+    this.props.cleanHeadDatas(this.props.formData).then((result) => {
+      if (result.error) {
+        message.error(result.error.message);
+      } else {
+        this.props.form.resetFields();
+      }
+    });
+  }
+
   render() {
     const { form, readonly, formData, formRequire, ietype, intl, ruleRequired } = this.props;
-    const billHeadToolbar = (!readonly &&
-    <Button type="primary" onClick={this.handleSheetSave} icon="save">
-      {formatGlobalMsg(this.props.intl, 'save')}
-    </Button>
-      );
     const formProps = {
       getFieldDecorator: form.getFieldDecorator,
       getFieldValue: form.getFieldValue,
@@ -97,8 +102,15 @@ export default class ManifestHeadPanel extends React.Component {
     return (
       <div className="pane">
         <div className="pane-header">
-          <div className="toolbar-right">
-            {billHeadToolbar}
+          <div>
+            {!readonly &&
+              <Button type="primary" onClick={this.handleSheetSave} icon="save">
+                {formatGlobalMsg(this.props.intl, 'save')}
+              </Button>}
+            {!readonly &&
+              <Popconfirm title={'是否确认重置表头数据?'} onConfirm={() => this.handleBillHeadDelete()}>
+                <Button type="danger" ghost icon="delete">重置</Button>
+              </Popconfirm>}
           </div>
         </div>
         <div className="pane-content">

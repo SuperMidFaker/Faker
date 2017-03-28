@@ -340,3 +340,9 @@ export const CMS_EXPORT_DECL_TYPE = [{
   value: 'A',
   text: '通关无纸出境备案清单',
 }];
+
+export const CMS_ITEM_STATUS = {
+  unclassified: 0,
+  pending: 1,
+  classified: 2,
+};

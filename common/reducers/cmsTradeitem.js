@@ -27,6 +27,7 @@ const actionTypes = createActionTypes('@@welogix/cms/tradeitem/', [
   'SAVE_DECLWAY_UNIT', 'SAVE_DECLWAY_UNIT_SUCCEED', 'SAVE_DECLWAY_UNIT_FAIL',
   'SET_OWNER', 'SET_COMPARE_VISIBLE',
   'COMPARED_DATAS_SAVE', 'COMPARED_DATAS_SAVE_SUCCEED', 'COMPARED_DATAS_SAVE_FAIL',
+  'SET_ITEM_STATUS', 'SET_ITEM_STATUS_SUCCEED', 'SET_ITEM_STATUS_FAIL',
 ]);
 
 const initialState = {
@@ -488,3 +489,19 @@ export function setCompareVisible(val) {
     data: val,
   };
 }
+
+export function setItemStatus(datas) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SET_ITEM_STATUS,
+        actionTypes.SET_ITEM_STATUS_SUCCEED,
+        actionTypes.SET_ITEM_STATUS_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/status/set',
+      method: 'post',
+      data: datas,
+    },
+  };
+}
+

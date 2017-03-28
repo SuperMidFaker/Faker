@@ -672,9 +672,14 @@ export default class ManifestBodyPanel extends React.Component {
       this.handleNetWetSummary();
     }
   }
-  handleDownloadMenuClick = (e) => {
+  handleUnrelatedImportMenuClick = (e) => {
     if (e.key === 'download') {
       window.open(`${API_ROOTS.default}v1/cms/manifest/billbody/model/download/${createFilename('billbodyModel')}.xlsx`);
+    }
+  }
+  handleRelatedImportMenuClick = (e) => {
+    if (e.key === 'rule') {
+      this.props.openRuleModel();
     } else if (e.key === 'downloadRelated') {
       window.open(`${API_ROOTS.default}v1/cms/manifest/billbody/related/model/download/${createFilename('relatedModel')}.xlsx`);
     }
@@ -696,8 +701,26 @@ export default class ManifestBodyPanel extends React.Component {
     });
     this.setState({ selectedRowKeys: [] });
   }
-  handleRuleSetting = () => {
-    this.props.openRuleModel();
+  handleBodyDelete = () => {
+    const ids = [];
+    for (let i = 0; i < this.state.bodies.length - 1; i++) {
+      const body = this.state.bodies[i];
+      ids.push(body.id);
+    }
+    if (ids.length > 0) {
+      this.props.deleteSelectedBodies(ids).then((result) => {
+        if (result.error) {
+          message.error(result.error.message);
+        } else {
+          this.props.loadBillBody(this.props.billSeqNo);
+        }
+      });
+    }
+  }
+  handleMoreMenuClick = (e) => {
+    if (e.key === 'exportBody') {
+      this.handleManifestBodyExport();
+    }
   }
   render() {
     const { totGrossWt, totWetWt, totTrade, totPcs } = this.state;
@@ -717,83 +740,86 @@ export default class ManifestBodyPanel extends React.Component {
         <Menu.Item key="wtDivid"><Icon type="arrows-alt" /> 毛重分摊</Menu.Item>
         <Menu.Item key="wtSum"><Icon type="shrink" /> 净重汇总</Menu.Item>
       </Menu>);
-    const importmenu = (
-      <Menu>
-        {!this.props.readonly &&
-          <Menu.Item key="importData">
-            <ExcelUpload endpoint={`${API_ROOTS.default}v1/cms/manifest/billbody/import`}
-              formData={{
-                data: JSON.stringify({
-                  bill_seq_no: this.props.billSeqNo,
-                  tenant_id: this.props.tenantId,
-                  creater_login_id: this.props.loginId,
-                }),
-              }} onUploaded={this.handleUploaded}
-            >
-              <Icon type="file-excel" /> {this.msg('unrelatedImport')}
-            </ExcelUpload>
-          </Menu.Item>
-          }
-        {!this.props.readonly &&
-          <Menu.Item key="importRelatedData">
-            <ExcelUpload endpoint={`${API_ROOTS.default}v1/cms/manifest/billbody/related/import`}
-              formData={{
-                data: JSON.stringify({
-                  bill_seq_no: this.props.billHead.bill_seq_no,
-                  tenant_id: this.props.tenantId,
-                  creater_login_id: this.props.loginId,
-                  delgNo: this.props.billHead.delg_no,
-                  tradeCode: this.props.billHead.trade_co,
-                }),
-              }} onUploaded={this.handleUploaded}
-            >
-              <Icon type="file-excel" /> {this.msg('relatedImport')}
-            </ExcelUpload>
-          </Menu.Item>}
+    const unrelatedImportmenu = (
+      <Menu onClick={this.handleUnrelatedImportMenuClick}>
+        <Menu.Item key="download"><Icon type="download" /> 下载模板</Menu.Item>
       </Menu>);
-    const downloadmenu = (
-      <Menu onClick={this.handleDownloadMenuClick}>
-        <Menu.Item key="download"><Icon type="download" /> 下载模板(非关联)</Menu.Item>
-        <Menu.Item key="downloadRelated"><Icon type="download" /> 下载模板(关联)</Menu.Item>
+    const relatedImportmenu = (
+      <Menu onClick={this.handleRelatedImportMenuClick}>
+        <Menu.Item key="downloadRelated"><Icon type="download" /> 下载模板</Menu.Item>
+        <Menu.Item key="rule"><Icon type="download" /> 关联导入规则</Menu.Item>
+      </Menu>);
+    const moremenu = (
+      <Menu onClick={this.handleMoreMenuClick}>
+        <Menu.Item key="exportBody"><Icon type="download" /> 导出表体</Menu.Item>
+        <Menu.Item key="delete">
+          <Popconfirm title="确定删除表体数据?" onConfirm={this.handleBodyDelete}>
+            <a> <Icon type="delete" /> 清空表体</a>
+          </Popconfirm>
+        </Menu.Item>
       </Menu>);
     const billBodyToolbar = (
       <span>
-        {selectedRows.length > 0 &&
-        <Popconfirm title={'是否删除所有选择项？'} onConfirm={() => this.handleDeleteSelected()}>
-          <Button type="danger" icon="delete">
-            批量删除
-          </Button>
-        </Popconfirm>}
         {!this.props.readonly && <Dropdown overlay={handlemenu} type="primary">
-          <Button icon="share-alt" onClick={this.handleButtonClick}>
+          <Button onClick={this.handleButtonClick}>
             {this.msg('handle')} <Icon type="down" />
           </Button>
           </Dropdown>
         }
-        <Button icon="export" onClick={this.handleManifestBodyExport}>导出</Button>
-        <Dropdown overlay={downloadmenu}>
-          <Button icon="download" onClick={this.handleButtonClick}>
-            {this.msg('download')} <Icon type="down" />
-          </Button>
-        </Dropdown>
-        {!this.props.readonly && <Dropdown overlay={importmenu} type="primary">
-          <Button icon="upload" type="primary" onClick={this.handleButtonClick}>
-            {this.msg('import')} <Icon type="down" />
-          </Button>
-          </Dropdown>
-          }
-        {!this.props.readonly && <Button icon="setting" onClick={this.handleRuleSetting}>关联导入规则</Button>}
+        {this.props.readonly && <Button icon="export" onClick={this.handleManifestBodyExport}>导出</Button>}
+        {!this.props.readonly &&
+          <ExcelUpload endpoint={`${API_ROOTS.default}v1/cms/manifest/billbody/import`}
+            formData={{
+              data: JSON.stringify({
+                bill_seq_no: this.props.billSeqNo,
+                tenant_id: this.props.tenantId,
+                creater_login_id: this.props.loginId,
+              }),
+            }} onUploaded={this.handleUploaded}
+          >
+            <Dropdown.Button onClick={this.handleUnrelatedImport} overlay={unrelatedImportmenu} type="primary" style={{ marginLeft: 8 }}>
+              {this.msg('unrelatedImport')}
+            </Dropdown.Button>
+          </ExcelUpload>}
+        {!this.props.readonly &&
+          <ExcelUpload endpoint={`${API_ROOTS.default}v1/cms/manifest/billbody/related/import`}
+            formData={{
+              data: JSON.stringify({
+                bill_seq_no: this.props.billHead.bill_seq_no,
+                tenant_id: this.props.tenantId,
+                creater_login_id: this.props.loginId,
+                delgNo: this.props.billHead.delg_no,
+                tradeCode: this.props.billHead.trade_co,
+              }),
+            }} onUploaded={this.handleUploaded}
+          >
+            <Dropdown.Button onClick={this.handleRelatedImport} overlay={relatedImportmenu} type="primary" style={{ marginLeft: 8 }}>
+              {this.msg('relatedImport')}
+            </Dropdown.Button>
+          </ExcelUpload>}
+        {!this.props.readonly &&
+          <Dropdown overlay={moremenu}>
+            <Button onClick={this.handleButtonClick} style={{ marginLeft: 8 }}>
+              {this.msg('more')} <Icon type="down" />
+            </Button>
+          </Dropdown>}
+        {selectedRows.length > 0 &&
+          <Popconfirm title={'是否删除所有选择项？'} onConfirm={() => this.handleDeleteSelected()}>
+            <Button type="danger" icon="delete" style={{ marginLeft: 8 }}>
+              批量删除
+            </Button>
+          </Popconfirm>}
       </span>);
 
     return (
       <div className="pane">
-        <div className="pane-header">
-          <span style={{ marginLeft: 10 }}>总毛重: </span><span style={{ color: '#FF9933' }}>{totGrossWt.toFixed(3)}</span>
-          <span style={{ marginLeft: 10 }}>总净重: </span><span style={{ color: '#FF9933' }}>{totWetWt.toFixed(3)}</span>
-          <span style={{ marginLeft: 10 }}>总金额: </span><span style={{ color: '#FF9933' }}>{totTrade.toFixed(3)}</span>
-          <span style={{ marginLeft: 10 }}>总个数: </span><span style={{ color: '#FF9933' }}>{totPcs.toFixed(3)}</span>
+        <div className="panel-header">
+          {billBodyToolbar}
           <div className="toolbar-right">
-            {billBodyToolbar}
+            <span style={{ marginLeft: 10 }}>总毛重: </span><span style={{ color: '#FF9933' }}>{totGrossWt.toFixed(3)}</span>
+            <span style={{ marginLeft: 10 }}>总净重: </span><span style={{ color: '#FF9933' }}>{totWetWt.toFixed(3)}</span>
+            <span style={{ marginLeft: 10 }}>总金额: </span><span style={{ color: '#FF9933' }}>{totTrade.toFixed(3)}</span>
+            <span style={{ marginLeft: 10 }}>总个数: </span><span style={{ color: '#FF9933' }}>{totPcs.toFixed(3)}</span>
           </div>
         </div>
         <div className="panel-body table-panel">
