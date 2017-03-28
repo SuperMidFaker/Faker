@@ -5,6 +5,7 @@ const actionTypes = createActionTypes('@@welogix/transport/tracking/land/status/
   'SHOW_VEHICLE_MODAL', 'SHOW_DATE_MODAL',
   'HIDE_VEHICLE_MODAL', 'HIDE_DATE_MODAL',
   'SHOW_CHANGE_ACTDATE_MODAL',
+  'SHOW_CHANGE_DELIVER_PRM_DATE_MODAL',
   'SHOW_LOC_MODAL', 'HIDE_LOC_MODAL', 'CHANGE_FILTER',
   'REPORT_LOC', 'REPORT_LOC_SUCCEED', 'REPORT_LOC_FAIL',
   'LOAD_LASTPOINT', 'LOAD_LASTPOINT_SUCCEED', 'LOAD_LASTPOINT_FAIL',
@@ -15,6 +16,7 @@ const actionTypes = createActionTypes('@@welogix/transport/tracking/land/status/
   'DELIVER_CONFIRM', 'DELIVER_CONFIRM_SUCCEED', 'DELIVER_CONFIRM_FAIL',
   'CHANGE_ACT_DATE', 'CHANGE_ACT_DATE_SUCCEED', 'CHANGE_ACT_DATE_FAIL',
   'LOAD_SHIPMT_DISPATCH', 'LOAD_SHIPMT_DISPATCH_SUCCEED', 'LOAD_SHIPMT_DISPATCH_FAIL',
+  'CHANGE_DELIVER_PRM_DATE', 'CHANGE_DELIVER_PRM_DATE_SUCCEED', 'CHANGE_DELIVER_PRM_DATE_FAIL',
 ]);
 
 const initialState = {
@@ -50,6 +52,12 @@ const initialState = {
     shipmtNo: '',
     pickupActDate: '',
     deliverActDate: '',
+  },
+  changeDeliverPrmDateModal: {
+    visible: false,
+    dispId: -1,
+    shipmtNo: '',
+    deliverPrmDate: '',
   },
   locModal: {
     visible: false,
@@ -119,6 +127,10 @@ export default function reducer(state = initialState, action) {
     case actionTypes.SHOW_CHANGE_ACTDATE_MODAL:
       return {
         ...state, changeActDateModal: { ...state.changeActDateModal, ...action.data },
+      };
+    case actionTypes.SHOW_CHANGE_DELIVER_PRM_DATE_MODAL:
+      return {
+        ...state, changeDeliverPrmDateModal: { ...state.changeDeliverPrmDateModal, ...action.data },
       };
     case actionTypes.DELIVER_CONFIRM_SUCCEED:
       return {
@@ -277,6 +289,13 @@ export function showChangeActDateModal({ visible, dispId = -1, shipmtNo = '', pi
   };
 }
 
+export function showChangeDeliverPrmDateModal({ visible, dispId = -1, shipmtNo = '', deliverPrmDate }) {
+  return {
+    type: actionTypes.SHOW_CHANGE_DELIVER_PRM_DATE_MODAL,
+    data: { visible, dispId, shipmtNo, deliverPrmDate },
+  };
+}
+
 export function deliverConfirm(shipmtNo, dispId) {
   return {
     [CLIENT_API]: {
@@ -303,6 +322,21 @@ export function changePickDeliverDate({ dispId, shipmtNo, loginName, loginId, te
       endpoint: 'v1/transport/tracking/changePickDeliverDate',
       method: 'post',
       data: { dispId, shipmtNo, loginName, loginId, tenantId, tenantName, pickupActDate, deliverActDate },
+    },
+  };
+}
+
+export function changeDeliverPrmDate({ dispId, shipmtNo, loginName, loginId, tenantId, tenantName, deliverPrmDate }) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.CHANGE_DELIVER_PRM_DATE,
+        actionTypes.CHANGE_DELIVER_PRM_DATE_SUCCEED,
+        actionTypes.CHANGE_DELIVER_PRM_DATE_FAIL,
+      ],
+      endpoint: 'v1/transport/tracking/changeDeliverPrmDate',
+      method: 'post',
+      data: { dispId, shipmtNo, loginName, loginId, tenantId, tenantName, deliverPrmDate },
     },
   };
 }

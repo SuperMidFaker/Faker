@@ -178,9 +178,7 @@ export default function makeColumns(type, handlers, msg) {
           }
         }
       } else {
-        const deliverPrmDate = new Date(record.pickup_act_date);
-        deliverPrmDate.setDate(deliverPrmDate.getDate() + record.transit_time);
-        return renderActDate(record.deliver_act_date, deliverPrmDate);
+        return renderActDate(record.deliver_act_date, record.deliver_est_date);
       }
     },
   }, {
@@ -210,13 +208,13 @@ export default function makeColumns(type, handlers, msg) {
     width: 100,
     render(o, record) {
       if (record.pickup_act_date) {
-        const deliveredActDate = new Date(record.deliver_act_date || new Date());
+        const deliveredActDate = new Date(record.deliver_act_date);
         deliveredActDate.setHours(0, 0, 0, 0);
-        const pickupActDate = new Date(record.pickup_act_date);
-        pickupActDate.setHours(0, 0, 0, 0);
-        const daysDiff = moment(deliveredActDate).diff(pickupActDate, 'days');
-        if (daysDiff > record.transit_time) {
-          return `超时${daysDiff - record.transit_time}天`;
+        const deliverEstDate = new Date(record.deliver_est_date);
+        deliverEstDate.setHours(0, 0, 0, 0);
+        const daysDiff = moment(deliveredActDate).diff(deliverEstDate, 'days');
+        if (daysDiff > 0) {
+          return `超时${daysDiff}天`;
         }
       }
       return '';

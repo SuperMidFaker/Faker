@@ -9,6 +9,7 @@ import { renderConsignLoc } from '../../../common/consignLocation';
 import { PRESET_TRANSMODES } from 'common/constants';
 import ChangeShipment from '../change-shipment';
 import { showChangeShipmentModal } from 'common/reducers/shipment';
+import { showChangeDeliverPrmDateModal } from 'common/reducers/trackingLandStatus';
 import InfoItem from 'client/components/InfoItem';
 import ActDate from '../../../common/actDate';
 import messages from '../../message.i18n';
@@ -29,7 +30,7 @@ const Step = Steps.Step;
     vehicleLengths: state.shipment.formRequire.vehicleLengths,
     dispatch: state.shipment.previewer.dispatch,
   }),
-  { showChangeShipmentModal }
+  { showChangeShipmentModal, showChangeDeliverPrmDateModal }
 )
 export default class DetailPane extends React.Component {
   static propTypes = {
@@ -43,6 +44,7 @@ export default class DetailPane extends React.Component {
     vehicleTypes: PropTypes.array.isRequired,
     vehicleLengths: PropTypes.array.isRequired,
     dispatch: PropTypes.object.isRequired,
+    showChangeDeliverPrmDateModal: PropTypes.func.isRequired,
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   columns = [{
@@ -86,6 +88,11 @@ export default class DetailPane extends React.Component {
     e.stopPropagation();
     const { shipmt } = this.props;
     this.props.showChangeShipmentModal({ visible: true, shipmtNo: shipmt.shipmt_no, type: 'timeInfoChanged' });
+  }
+  handleChangeDeliverPrmDate = (e) => {
+    e.stopPropagation();
+    const { shipmt, dispatch } = this.props;
+    this.props.showChangeDeliverPrmDateModal({ visible: true, shipmtNo: shipmt.shipmt_no, dispId: dispatch.id });
   }
   handleChangeDistance = (e) => {
     e.stopPropagation();
@@ -165,7 +172,10 @@ export default class DetailPane extends React.Component {
               <a onClick={this.handleChangeTransitConsignee}>修改收货信息</a>
             </Menu.Item>
             <Menu.Item>
-              <a onClick={this.handleChangeTransitTime}>修改时间信息</a>
+              <a onClick={this.handleChangeTransitTime}>修改计划时间信息</a>
+            </Menu.Item>
+            <Menu.Item>
+              <a onClick={this.handleChangeDeliverPrmDate}>修改承诺送货时间</a>
             </Menu.Item>
             <Menu.Item>
               <a onClick={this.handleChangeDistance}>修改路程</a>
@@ -193,12 +203,10 @@ export default class DetailPane extends React.Component {
     }
     let deliverDate = moment(shipmt.deliver_est_date).format('YYYY-MM-DD');
     if (dispatch.deliver_act_date) {
-      const deliverPrmDate = new Date(dispatch.pickup_act_date);
-      deliverPrmDate.setDate(deliverPrmDate.getDate() + shipmt.transit_time);
       deliverDate = (<div>
         {moment(shipmt.deliver_est_date).format('YYYY-MM-DD')}
         <span style={{ marginLeft: 30, fontSize: '70%' }}>
-          <ActDate actDate={dispatch.deliver_act_date} estDate={deliverPrmDate} textAfter="已送货" />
+          <ActDate actDate={dispatch.deliver_act_date} estDate={shipmt.deliver_est_date} textAfter="已送货" />
         </span>
       </div>);
     }

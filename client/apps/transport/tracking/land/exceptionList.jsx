@@ -353,15 +353,7 @@ export default class LandStatusList extends React.Component {
     title: this.msg('shipmtActDeliveryDate'),
     dataIndex: 'deliver_act_date',
     width: 100,
-    render: (o, record) => {
-      if (record.pickup_act_date) {
-        const deliverPrmDate = new Date(record.pickup_act_date);
-        deliverPrmDate.setDate(deliverPrmDate.getDate() + record.transit_time);
-        return renderActDate(record.deliver_act_date, deliverPrmDate);
-      } else {
-        return '';
-      }
-    },
+    render: (o, record) => renderActDate(record.deliver_act_date, record.deliver_est_date),
   }, {
     title: this.msg('overtime'),
     key: 'late',
@@ -370,11 +362,11 @@ export default class LandStatusList extends React.Component {
       if (record.status >= SHIPMENT_TRACK_STATUS.delivered) {
         const deliveredActDate = new Date(record.deliver_act_date);
         deliveredActDate.setHours(0, 0, 0, 0);
-        const pickupActDate = new Date(record.pickup_act_date);
-        pickupActDate.setHours(0, 0, 0, 0);
-        const daysDiff = moment(deliveredActDate).diff(pickupActDate, 'days');
-        if (daysDiff > record.transit_time) {
-          return `超时${daysDiff - record.transit_time}天`;
+        const deliverEstDate = new Date(record.deliver_est_date);
+        deliverEstDate.setHours(0, 0, 0, 0);
+        const daysDiff = moment(deliveredActDate).diff(deliverEstDate, 'days');
+        if (daysDiff > 0) {
+          return `超时${daysDiff}天`;
         }
       }
       return '';
