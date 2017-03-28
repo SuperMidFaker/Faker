@@ -14,9 +14,9 @@ import { loadOrders, loadFormRequires, removeOrder, setClientForm, acceptOrder,
 loadOrderDetail } from 'common/reducers/crmOrders';
 import moment from 'moment';
 import PreviewPanel from './modals/preview-panel';
-import OrderNoColumn from '../common/orderNoColumn';
-import ShipmentColumn from '../common/shipmentColumn';
-import ProgressColumn from '../common/progressColumn';
+import OrderNoColumn from './orderNoColumn';
+import ShipmentColumn from './shipmentColumn';
+import ProgressColumn from './progressColumn';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -157,6 +157,7 @@ export default class ShipmentOrderList extends React.Component {
       title: '操作',
       dataIndex: 'id',
       width: 60,
+      fixed: 'right',
       render: (o, record) => {
         if (record.order_status === 1) {
           return (
