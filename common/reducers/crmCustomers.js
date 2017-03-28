@@ -122,7 +122,7 @@ export default function reducer(state = initialState, action) {
       const customers = [...state.customers];
       const index = customers.findIndex(item => item.id === action.params.parentId);
       customers[index].subCustomers = action.result.data;
-      return { ...state, customers, subCustomers: action.result.data };
+      return { ...state, customers };
     }
     case actionTypes.SHOW_SUB_CUSTOMER_MODAL: {
       return { ...state, subCustomerModal: {

@@ -36,6 +36,7 @@ export default class SubCustomerList extends React.Component {
   state = {
     currentPage: 1,
     unchanged: true,
+    subCustomers: [],
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.customer.id !== this.props.customer.id) {
@@ -55,6 +56,8 @@ export default class SubCustomerList extends React.Component {
       this.props.loadSubCustomers({
         tenantId: this.props.tenantId,
         parentId: props.customer.id,
+      }).then((result) => {
+        this.setState({ subCustomers: result.data });
       });
     }
   }
@@ -68,6 +71,7 @@ export default class SubCustomerList extends React.Component {
   }
   render() {
     const { customer } = this.props;
+
     const columns = [{
       dataIndex: 'name',
       key: 'name',
@@ -93,8 +97,8 @@ export default class SubCustomerList extends React.Component {
         title={this.msg('subCustomer')}
         extra={<a href="#" onClick={() => this.props.showSubCustomerModal('add', customer)}>添加</a>}
       >
-        <Table size="middle" dataSource={customer.subCustomers || []} columns={columns} showHeader={false} onRowClick={this.handleRowClick}
-          pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }}
+        <Table size="middle" dataSource={this.state.subCustomers} columns={columns} showHeader={false} onRowClick={this.handleRowClick}
+          pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }} rowKey="id"
         />
         <SubCustomerModal onOk={() => this.handleTableLoad()} />
       </Card>

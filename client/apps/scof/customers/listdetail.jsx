@@ -132,6 +132,7 @@ export default class CustomerList extends React.Component {
         showHeader={false}
         pagination={false}
         rowKey="id"
+        size="small"
       />
     );
   }
