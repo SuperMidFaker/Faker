@@ -17,9 +17,6 @@ const actionTypes = createActionTypes('@@welogix/crm/customers/', [
   'UPDATE_BUSINESS_MODEL', 'UPDATE_BUSINESS_MODEL_SUCCEED', 'UPDATE_BUSINESS_MODEL_FAIL',
   'LOAD_SUB_CUSTOMERS', 'LOAD_SUB_CUSTOMERS_FAIL', 'LOAD_SUB_CUSTOMERS_SUCCEED',
   'SHOW_SUB_CUSTOMER_MODAL', 'HIDE_SUB_CUSTOMER_MODAL',
-  // 'ADD_SUB_CUSTOMER', 'ADD_SUB_CUSTOMER_FAIL', 'ADD_SUB_CUSTOMER_SUCCEED',
-  // 'EDIT_SUB_CUSTOMER', 'EDIT_SUB_CUSTOMER_FAIL', 'EDIT_SUB_CUSTOMER_SUCCEED',
-  // 'DELETE_SUB_CUSTOMER', 'DELETE_SUB_CUSTOMER_SUCCEED', 'DELETE_SUB_CUSTOMER_FAIL',
 ]);
 
 const initialState = {
@@ -47,8 +44,14 @@ export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.LOAD_CUSTOMERS:
       return { ...state, loading: true };
-    case actionTypes.LOAD_CUSTOMERS_SUCCEED:
-      return { ...state, customers: action.result.data, loaded: true, loading: false };
+    case actionTypes.LOAD_CUSTOMERS_SUCCEED: {
+      const customers = action.result.data.filter(customer => customer.parent_id === 0).map((customer) => {
+        const subCustomers = [...action.result.data.filter(cus => cus.parent_id === customer.id)];
+        const children = subCustomers.length > 0 ? subCustomers : null;
+        return { ...customer, subCustomers, children };
+      });
+      return { ...state, customers, loaded: true, loading: false };
+    }
     case actionTypes.ADD_CUSTOMER_SUCCEED: {
       return { ...state, loaded: false };
     }
@@ -119,10 +122,7 @@ export default function reducer(state = initialState, action) {
       return { ...state, businessModelsLoaded: false };
     }
     case actionTypes.LOAD_SUB_CUSTOMERS_SUCCEED: {
-      const customers = [...state.customers];
-      const index = customers.findIndex(item => item.id === action.params.parentId);
-      customers[index].subCustomers = action.result.data;
-      return { ...state, customers, subCustomers: action.result.data };
+      return { ...state, subCustomers: action.result.data };
     }
     case actionTypes.SHOW_SUB_CUSTOMER_MODAL: {
       return { ...state, subCustomerModal: {
@@ -316,49 +316,3 @@ export function showSubCustomerModal(operation = '', customer = {}) {
 export function hideSubCustomerModal() {
   return { type: actionTypes.HIDE_SUB_CUSTOMER_MODAL };
 }
-
-// export function addSubCustomer({ tenantId, partnerInfo }) {
-//   return {
-//     [CLIENT_API]: {
-//       types: [
-//         actionTypes.ADD_SUB_CUSTOMER,
-//         actionTypes.ADD_SUB_CUSTOMER_SUCCEED,
-//         actionTypes.ADD_SUB_CUSTOMER_FAIL,
-//       ],
-//       endpoint: 'v1/crm/subCustomer/add',
-//       method: 'post',
-//       data: { tenantId, partnerInfo },
-//     },
-//   };
-// }
-
-// export function editSubCustomer({ tenantId, partnerInfo }) {
-//   return {
-//     [CLIENT_API]: {
-//       types: [
-//         actionTypes.EDIT_SUB_CUSTOMER,
-//         actionTypes.EDIT_SUB_CUSTOMER_SUCCEED,
-//         actionTypes.EDIT_SUB_CUSTOMER_FAIL,
-//       ],
-//       endpoint: 'v1/crm/subCustomer/edit',
-//       method: 'post',
-//       data: { tenantId, partnerInfo },
-//     },
-//   };
-// }
-
-// export function deleteSubCustomer(id) {
-//   return {
-//     [CLIENT_API]: {
-//       types: [
-//         actionTypes.DELETE_SUB_CUSTOMER,
-//         actionTypes.DELETE_SUB_CUSTOMER_SUCCEED,
-//         actionTypes.DELETE_SUB_CUSTOMER_FAIL,
-//       ],
-//       endpoint: 'v1/crm/subCustomer/delete',
-//       method: 'post',
-//       id,
-//       data: { id },
-//     },
-//   };
-// }
