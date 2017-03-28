@@ -10,7 +10,7 @@ import messages from './message.i18n';
 import ProfileForm from './forms/profileForm';
 import FlowRulesPane from './flowRulesPane';
 import CustomerModal from './modals/customerModal';
-import { loadCustomers, showCustomerModal, deleteCustomer, loadSubCustomers } from 'common/reducers/crmCustomers';
+import { loadCustomers, showCustomerModal, deleteCustomer } from 'common/reducers/crmCustomers';
 import { PARTNER_ROLES } from 'common/constants';
 
 const formatMsg = format(messages);
@@ -32,7 +32,7 @@ function fetchData({ state, dispatch }) {
     customers: state.crmCustomers.customers,
     loaded: state.crmCustomers.loaded,
   }),
-  { loadCustomers, deleteCustomer, showCustomerModal, loadSubCustomers }
+  { loadCustomers, deleteCustomer, showCustomerModal }
 )
 @connectNav({
   depth: 2,
@@ -48,7 +48,6 @@ export default class CustomerList extends React.Component {
     loadCustomers: PropTypes.func.isRequired,
     deleteCustomer: PropTypes.func.isRequired,
     showCustomerModal: PropTypes.func.isRequired,
-    loadSubCustomers: PropTypes.func.isRequired,
   }
   state = {
     customerModalVisible: false,
@@ -111,38 +110,13 @@ export default class CustomerList extends React.Component {
     });
     this.setState({ customers, currentPage: 1 });
   }
-  handleExpand = (expanded, record) => {
-    if (expanded) {
-      this.props.loadSubCustomers({
-        tenantId: this.props.tenantId,
-        parentId: record.id,
-      });
-    }
-  }
-  expandedRowRender = (record) => {
-    const columns = [{
-      dataIndex: 'name',
-      key: 'name',
-      render: o => (<div style={{ paddingLeft: 15 }}>{o}</div>),
-    }];
-    return (
-      <Table
-        columns={columns}
-        dataSource={record.subCustomers || []}
-        showHeader={false}
-        pagination={false}
-        rowKey="id"
-        size="small"
-      />
-    );
-  }
   render() {
     const { customer } = this.state;
     const { form: { getFieldDecorator } } = this.props;
     const columns = [{
       dataIndex: 'name',
       key: 'name',
-      render: o => (<div style={{ paddingLeft: 15 }}>{o}</div>),
+      render: o => (<span>{o}</span>),
     }];
     return (
       <Layout>
@@ -172,8 +146,8 @@ export default class CustomerList extends React.Component {
                 />
               </div>
               <Table size="middle" dataSource={this.state.customers} columns={columns} showHeader={false} onRowClick={this.handleRowClick}
-                pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }} expandedRowRender={this.expandedRowRender}
-                rowClassName={record => record.id === customer.id ? 'table-row-selected' : ''} rowKey="id" onExpand={this.handleExpand}
+                pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }}
+                rowClassName={record => record.id === customer.id ? 'table-row-selected' : ''} rowKey="id"
               />
               <CustomerModal onOk={this.handleTableLoad} />
             </div>

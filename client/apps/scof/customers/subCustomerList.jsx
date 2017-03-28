@@ -6,7 +6,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import SubCustomerModal from './modals/subCustomerModal';
-import { loadSubCustomers, showSubCustomerModal, deleteCustomer } from 'common/reducers/crmCustomers';
+import { showSubCustomerModal, deleteCustomer } from 'common/reducers/crmCustomers';
 import { PARTNER_ROLES } from 'common/constants';
 
 const formatMsg = format(messages);
@@ -17,7 +17,7 @@ const formatMsg = format(messages);
   state => ({
     tenantId: state.account.tenantId,
   }),
-  { loadSubCustomers, deleteCustomer, showSubCustomerModal }
+  { deleteCustomer, showSubCustomerModal }
 )
 @connectNav({
   depth: 2,
@@ -28,43 +28,16 @@ export default class SubCustomerList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
-    loadSubCustomers: PropTypes.func.isRequired,
     deleteCustomer: PropTypes.func.isRequired,
     showSubCustomerModal: PropTypes.func.isRequired,
     customer: PropTypes.object.isRequired,
   }
   state = {
     currentPage: 1,
-    unchanged: true,
-    subCustomers: [],
-  }
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.customer.id !== this.props.customer.id) {
-      this.handleTableLoad(nextProps);
-    }
   }
   msg = key => formatMsg(this.props.intl, key)
-
-  handleRowClick = (record) => {
-    this.setState({
-      customer: record,
-      unchanged: true,
-    });
-  }
-  handleTableLoad = (props = this.props) => {
-    if (props.customer.id) {
-      this.props.loadSubCustomers({
-        tenantId: this.props.tenantId,
-        parentId: props.customer.id,
-      }).then((result) => {
-        this.setState({ subCustomers: result.data });
-      });
-    }
-  }
   handleDelCustomer = (id) => {
-    this.props.deleteCustomer(id, PARTNER_ROLES.CUS).then(() => {
-      this.handleTableLoad();
-    });
+    this.props.deleteCustomer(id, PARTNER_ROLES.CUS);
   }
   handlePageChange = (page) => {
     this.setState({ currentPage: page });
@@ -97,7 +70,7 @@ export default class SubCustomerList extends React.Component {
         title={this.msg('subCustomer')}
         extra={<a href="#" onClick={() => this.props.showSubCustomerModal('add', customer)}>添加</a>}
       >
-        <Table size="middle" dataSource={this.state.subCustomers} columns={columns} showHeader={false} onRowClick={this.handleRowClick}
+        <Table size="middle" dataSource={customer.subCustomers} columns={columns} showHeader={false}
           pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }} rowKey="id"
         />
         <SubCustomerModal onOk={() => this.handleTableLoad()} />
