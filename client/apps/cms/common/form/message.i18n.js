@@ -521,4 +521,8 @@ export default defineMessages({
     id: 'cms.forms.modal.entrynofill.title',
     defaultMessage: '填写报关单号',
   },
+  more: {
+    id: 'cms.forms.more',
+    defaultMessage: '更多',
+  },
 });
