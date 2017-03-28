@@ -36,8 +36,8 @@ export default class ShipmentColumn extends React.Component {
       return (
         <Row type="flex">
           <Col className="col-flex-primary">
-            <div>{transMode} <a onClick={() => this.props.loadOrderDetail(shipment.cust_shipmt_bill_lading, this.props.tenantId)}>{shipment.cust_shipmt_bill_lading}</a></div>
-            <div>{wrapType && wrapType[0] && wrapType[0].text}{shipment.cust_shipmt_pieces}件 {shipment.cust_shipmt_weight}KG</div>
+            <div>{transMode} {shipment.cust_shipmt_bill_lading} {shipment.cust_shipmt_mawb && `${shipment.cust_shipmt_mawb}_${shipment.cust_shipmt_hawb}`}</div>
+            <div>{shipment.cust_shipmt_package}{wrapType && wrapType[0] && wrapType[0].text}{shipment.cust_shipmt_pieces}件 {shipment.cust_shipmt_weight}KG</div>
             <div>{gtTag}</div>
           </Col>
           <Col className="col-flex-secondary" />
