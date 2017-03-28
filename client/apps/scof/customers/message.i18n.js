@@ -29,6 +29,10 @@ const messages = defineMessages({
     id: 'scop.customers.display.name',
     defaultMessage: '显示名称',
   },
+  englishName: {
+    id: 'scop.customers.english.name',
+    defaultMessage: '英文名称',
+  },
   profile: {
     id: 'scop.customers.profile',
     defaultMessage: '客户资料',
