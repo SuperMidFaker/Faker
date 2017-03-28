@@ -118,25 +118,25 @@ const messages = defineMessages({
     id: 'scof.flow.biz.cms.quote.no',
     defaultMessage: '报价编号',
   },
-  manifestTrading: {
-    id: 'scof.flow.biz.cms.trading',
-    defaultMessage: '收发货人',
-  },
-  manifestConsumer: {
-    id: 'scof.flow.biz.cms.consumer',
-    defaultMessage: '消费使用单位',
-  },
-  manifestProducer: {
-    id: 'scof.flow.biz.cms.producer',
-    defaultMessage: '生产消费单位',
-  },
-  manifestAgent: {
-    id: 'scof.flow.biz.cms.agent',
-    defaultMessage: '申报单位',
-  },
   manifestTemplate: {
     id: 'scof.flow.biz.cms.manifest.template',
     defaultMessage: '清单模板',
+  },
+  consigner: {
+    id: 'scof.flow.biz.tms.consigner',
+    defaultMessage: '收货人',
+  },
+  consignee: {
+    id: 'scof.flow.biz.tms.consignee',
+    defaultMessage: '发货人',
+  },
+  transitMode: {
+    id: 'scof.flow.biz.tms.transit.mode',
+    defaultMessage: '运输模式',
+  },
+  cargoType: {
+    id: 'scof.flow.biz.tms.cargo.type',
+    defaultMessage: '货物类型',
   },
   nodeName: {
     id: 'scof.flow.biz.node.name',
@@ -185,6 +185,18 @@ const messages = defineMessages({
   onCustomsReviewed: {
     id: 'scof.flow.biz.event.cms.customs.reviewed',
     defaultMessage: '已审核',
+  },
+  onPickedUp: {
+    id: 'scof.flow.biz.event.tms.shipment.pickedup',
+    defaultMessage: '已提货',
+  },
+  onDelivered: {
+    id: 'scof.flow.biz.event.tms.shipment.delivered',
+    defaultMessage: '已发货',
+  },
+  onPod: {
+    id: 'scof.flow.biz.event.tms.shipment.pod',
+    defaultMessage: '已回单',
   },
   triggerActions: {
     id: 'scof.flow.trigger',

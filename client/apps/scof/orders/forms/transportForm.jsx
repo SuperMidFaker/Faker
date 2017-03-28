@@ -1,11 +1,13 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { intlShape, injectIntl } from 'react-intl';
 import { Form, Row, Col, Card, Input, Select, InputNumber } from 'antd';
 import RegionCascade from 'client/components/region-cascade';
-import { setClientForm } from 'common/reducers/crmOrders';
-import { intlShape, injectIntl } from 'react-intl';
-import messages from '../message.i18n';
+import { setClientForm, loadFlowNodeData } from 'common/reducers/crmOrders';
+import { uuidWithoutDash } from 'client/common/uuid';
+import { GOODS_TYPES } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
+import messages from '../message.i18n';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
@@ -21,7 +23,7 @@ const formItemLayout = {
   state => ({
     formRequires: state.crmOrders.formRequires,
   }),
-  { setClientForm }
+  { setClientForm, loadFlowNodeData }
 )
 export default class TransportForm extends Component {
   static propTypes = {
@@ -32,208 +34,159 @@ export default class TransportForm extends Component {
     formData: PropTypes.object.isRequired,
     setClientForm: PropTypes.func.isRequired,
   }
-  static contextTypes = {
-    router: PropTypes.object.isRequired,
+  componentDidMount() {
+    const { formData, formRequires } = this.props;
+    const node = formData.node;
+    if (!node.uuid && node.node_uuid) {
+      this.props.loadFlowNodeData(node.node_uuid, node.kind).then((result) => {
+        if (!result.error) {
+          const nodedata = result.data;
+          const consigner = formRequires.consignerLocations.filter(cl => cl.node_id === nodedata.consigner_id)[0];
+          const consignee = formRequires.consigneeLocations.filter(cl => cl.node_id === nodedata.consignee_id)[0];
+          const transitMode = formRequires.transitModes.filter(tm => tm.mode_code === nodedata.transit_mode)[0];
+          this.handleSetClientForm({
+            consigner_name: consigner && consigner.name,
+            consigner_province: consigner && consigner.province,
+            consigner_city: consigner && consigner.city,
+            consigner_district: consigner && consigner.district,
+            consigner_street: consigner && consigner.street,
+            consigner_region_code: consigner && consigner.region_code,
+            consigner_addr: consigner && consigner.addr,
+            consigner_email: consigner && consigner.email,
+            consigner_contact: consigner && consigner.contact,
+            consigner_mobile: consigner && consigner.mobile,
+            consignee_name: consignee && consignee.name,
+            consignee_province: consignee && consignee.province,
+            consignee_city: consignee && consignee.city,
+            consignee_district: consignee && consignee.district,
+            consignee_street: consignee && consignee.street,
+            consignee_region_code: consignee && consignee.region_code,
+            consignee_addr: consignee && consignee.addr,
+            consignee_email: consignee && consignee.email,
+            consignee_contact: consignee && consignee.contact,
+            consignee_mobile: consignee && consignee.mobile,
+            pack_count: null,
+            gross_wt: null,
+            goods_type: nodedata.goods_type,
+            trs_mode_id: transitMode && transitMode.id,
+            trs_mode_code: nodedata.transit_mode,
+            trs_mode: transitMode && transitMode.mode_name,
+            remark: '',
+            package: '',
+            uuid: uuidWithoutDash() });
+        }
+      });
+    }
   }
-
   msg = key => formatMsg(this.props.intl, key)
   handleSetClientForm = (data) => {
     const { index, formData } = this.props;
-    const newData = { ...formData, ...data };
+    const newData = { ...formData, node: { ...formData.node, ...data } };
     this.props.setClientForm(index, newData);
   }
-  handleAddRow = () => {
-    const transport = {
-      consigner_name: '',
-      consigner_province: '',
-      consigner_city: '',
-      consigner_district: '',
-      consigner_street: '',
-      consigner_region_code: '',
-      consigner_addr: '',
-      consigner_email: '',
-      consigner_contact: '',
-      consigner_mobile: '',
-      consignee_name: '',
-      consignee_province: '',
-      consignee_city: '',
-      consignee_district: '',
-      consignee_street: '',
-      consignee_region_code: -1,
-      consignee_addr: '',
-      consignee_email: '',
-      consignee_contact: '',
-      consignee_mobile: '',
-      pack_count: 1,
-      gross_wt: 0,
-
-      trs_mode_id: -1,
-      trs_mode_code: '',
-      trs_mode: '',
-      remark: '',
-      package: '',
-    };
-
-    const transports = [...this.props.formData.transports];
-
-    const lastPos = transports.length - 1;
-    transport.consigner_name = transports[lastPos].consigner_name;
-    transport.consigner_province = transports[lastPos].consigner_province;
-    transport.consigner_city = transports[lastPos].consigner_city;
-    transport.consigner_district = transports[lastPos].consigner_district;
-    transport.consigner_street = transports[lastPos].consigner_street;
-    transport.consigner_region_code = transports[lastPos].consigner_region_code;
-    transport.consigner_addr = transports[lastPos].consigner_addr;
-    transport.consigner_email = transports[lastPos].consigner_email;
-    transport.consigner_contact = transports[lastPos].consigner_contact;
-    transport.consigner_mobile = transports[lastPos].consigner_mobile;
-
-    transport.trs_mode_id = transports[lastPos].trs_mode_id;
-    transport.trs_mode_code = transports[lastPos].trs_mode_code;
-    transport.trs_mode = transports[lastPos].trs_mode;
-    transport.package = transports[lastPos].package;
-
-    transports.push(transport);
-    this.handleSetClientForm({ transports });
+  handleChange = (key, value) => {
+    this.handleSetClientForm({ [key]: value });
   }
-  handleRemoveRow(k) {
-    const transports = [...this.props.formData.transports];
-    transports.splice(k, 1);
-    this.handleSetClientForm({ transports });
-  }
-  handleChange = (k, key, value) => {
-    const transports = [...this.props.formData.transports];
-    transports[k][key] = value;
-    this.handleSetClientForm({ transports });
-  }
-  handleConsignChange = (k, key, value) => {
-    const transports = [...this.props.formData.transports];
-    if (typeof value === 'string') {
-      transports[k][key] = value;
-      if (key === 'consigner_name') {
-        transports[k].consigner_province = '';
-        transports[k].consigner_city = '';
-        transports[k].consigner_district = '';
-        transports[k].consigner_street = '';
-        transports[k].consigner_region_code = -1;
-        transports[k].consigner_addr = '';
-        transports[k].consigner_email = '';
-        transports[k].consigner_contact = '';
-        transports[k].consigner_mobile = '';
-      } else if (key === 'consignee_name') {
-        transports[k].consignee_province = '';
-        transports[k].consignee_city = '';
-        transports[k].consignee_district = '';
-        transports[k].consignee_street = '';
-        transports[k].consignee_region_code = -1;
-        transports[k].consignee_addr = '';
-        transports[k].consignee_email = '';
-        transports[k].consignee_contact = '';
-        transports[k].consignee_mobile = '';
-      }
-    } else {
-      let consign = {};
-      if (key === 'consigner_name') {
-        consign = this.props.formRequires.consignerLocations.find(item => item.node_id === value);
-        transports[k].consigner_name = consign.name;
-        transports[k].consigner_province = consign.province;
-        transports[k].consigner_city = consign.city;
-        transports[k].consigner_district = consign.district;
-        transports[k].consigner_street = consign.street;
-        transports[k].consigner_region_code = consign.region_code;
-        transports[k].consigner_addr = consign.addr;
-        transports[k].consigner_email = consign.email;
-        transports[k].consigner_contact = consign.contact;
-        transports[k].consigner_mobile = consign.mobile;
-      } else if (key === 'consignee_name') {
-        consign = this.props.formRequires.consigneeLocations.find(item => item.node_id === value);
-        transports[k].consignee_name = consign.name;
-        transports[k].consignee_province = consign.province;
-        transports[k].consignee_city = consign.city;
-        transports[k].consignee_district = consign.district;
-        transports[k].consignee_street = consign.street;
-        transports[k].consignee_region_code = consign.region_code;
-        transports[k].consignee_addr = consign.addr;
-        transports[k].consignee_email = consign.email;
-        transports[k].consignee_contact = consign.contact;
-        transports[k].consignee_mobile = consign.mobile;
-      }
+  handleConsignChange = (key, value) => {
+    const consignForm = {};
+    if (key === 'consigner_name') {
+      const consign = this.props.formRequires.consignerLocations.find(item => item.node_id === value);
+      consignForm.consigner_name = consign.name;
+      consignForm.consigner_province = consign.province;
+      consignForm.consigner_city = consign.city;
+      consignForm.consigner_district = consign.district;
+      consignForm.consigner_street = consign.street;
+      consignForm.consigner_region_code = consign.region_code;
+      consignForm.consigner_addr = consign.addr;
+      consignForm.consigner_email = consign.email;
+      consignForm.consigner_contact = consign.contact;
+      consignForm.consigner_mobile = consign.mobile;
+    } else if (key === 'consignee_name') {
+      const consign = this.props.formRequires.consigneeLocations.find(item => item.node_id === value);
+      consignForm.consignee_name = consign.name;
+      consignForm.consignee_province = consign.province;
+      consignForm.consignee_city = consign.city;
+      consignForm.consignee_district = consign.district;
+      consignForm.consignee_street = consign.street;
+      consignForm.consignee_region_code = consign.region_code;
+      consignForm.consignee_addr = consign.addr;
+      consignForm.consignee_email = consign.email;
+      consignForm.consignee_contact = consign.contact;
+      consignForm.consignee_mobile = consign.mobile;
     }
-    this.handleSetClientForm({ transports });
+    this.handleSetClientForm(consignForm);
   }
-  handleRegionValueChange = (k, consignType, region) => {
+  handleRegionValueChange = (consignType, region) => {
     const [code, province, city, district, street] = region;
-
-    const transports = [...this.props.formData.transports];
-    transports[k][`${consignType}_region_code`] = code;
-    transports[k][`${consignType}_province`] = province;
-    transports[k][`${consignType}_city`] = city;
-    transports[k][`${consignType}_district`] = district;
-    transports[k][`${consignType}_street`] = street;
-    this.handleSetClientForm({ transports });
+    const consign = {};
+    consign[`${consignType}_region_code`] = code;
+    consign[`${consignType}_province`] = province;
+    consign[`${consignType}_city`] = city;
+    consign[`${consignType}_district`] = district;
+    consign[`${consignType}_street`] = street;
+    this.handleSetClientForm(consign);
   }
   handleTransmodeChange = (value) => {
     const transportMode = this.props.formRequires.transitModes.find(item => item.id === value);
-    const transports = this.props.formData.transports.map(item => ({
-      ...item,
+    this.handleSetClientForm({
       trs_mode_id: transportMode.id,
       trs_mode_code: transportMode.mode_code,
       trs_mode: transportMode.mode_name,
-    }));
-    this.handleSetClientForm({ transports });
+    });
   }
   handleCommonFieldChange = (filed, value) => {
-    const transports = this.props.formData.transports.map(item => ({
-      ...item,
-      [filed]: value,
-    }));
-    this.handleSetClientForm({ transports });
+    this.handleSetClientForm({ [filed]: value });
   }
 
   render() {
     const { formRequires, formData } = this.props;
-    const index = 0;
-    const transport = formData.transports[index];
-    const transitMode = formData.transports.length > 0 ? formData.transports[index].trs_mode : '';
+    const node = formData.node;
     const consignerRegion = [
-      transport.consigner_province, transport.consigner_city,
-      transport.consigner_district, transport.consigner_street,
+      node.consigner_province, node.consigner_city,
+      node.consigner_district, node.consigner_street,
     ];
     const consigneeRegion = [
-      transport.consignee_province, transport.consignee_city,
-      transport.consignee_district, transport.consignee_street,
+      node.consignee_province, node.consignee_city,
+      node.consignee_district, node.consignee_street,
     ];
     return (
       <Card>
         <Row>
-          <Col span={6}>
+          <Col span={8}>
             <FormItem label="运输模式" {...formItemLayout} required="true">
-              <Select value={transitMode} onChange={this.handleTransmodeChange}>
+              <Select value={node.trs_mode_id} onChange={this.handleTransmodeChange}>
                 {formRequires.transitModes.map(
                   tm => <Option value={tm.id} key={`${tm.mode_code}${tm.id}`}>{tm.mode_name}</Option>
                 )}
               </Select>
             </FormItem>
           </Col>
-          <Col span={6}>
+          <Col span={8}>
+            <FormItem label="货物类型" {...formItemLayout}>
+              <Select value={node.goods_type} onChange={value => this.handleCommonFieldChange('goods_type', value)}>
+                {GOODS_TYPES.map(gt => <Option value={gt.value} key={gt.value}>{gt.text}</Option>)}
+              </Select>
+            </FormItem>
+          </Col>
+          <Col span={8}>
             <FormItem label="包装方式" {...formItemLayout}>
-              <Select value={transport.package} onChange={value => this.handleCommonFieldChange('package', value)}>
+              <Select value={node.package} onChange={value => this.handleCommonFieldChange('package', value)}>
                 {formRequires.packagings.map(
                   pk => <Option value={pk.package_code} key={pk.package_code}>{pk.package_name}</Option>
                 )}
               </Select>
             </FormItem>
           </Col>
-          <Col span={6}>
+          <Col span={8}>
             <FormItem label={this.msg('packageNum')} {...formItemLayout}>
-              <InputNumber min={1} style={{ width: '100%' }} value={transport.pack_count}
+              <InputNumber min={1} style={{ width: '100%' }} value={node.pack_count}
                 onChange={value => this.handleCommonFieldChange('pack_count', value)}
               />
             </FormItem>
           </Col>
-          <Col span={6}>
+          <Col span={8}>
             <FormItem label={this.msg('delgGrossWt')} {...formItemLayout}>
-              <Input value={transport.gross_wt} addonAfter="千克" type="number"
+              <Input value={node.gross_wt} addonAfter="千克" type="number"
                 onChange={e => this.handleCommonFieldChange('gross_wt', e.target.value)}
               />
             </FormItem>
@@ -242,11 +195,8 @@ export default class TransportForm extends Component {
 
         <Row>
           <Col sm={6}>
-            <FormItem
-              label="发货方"
-              {...formItemLayout}
-            >
-              <Select combobox value={transport.consigner_name} onChange={value => this.handleConsignChange(index, 'consigner_name', value)}>
+            <FormItem label="发货方" {...formItemLayout}>
+              <Select combobox value={node.consigner_id} onChange={value => this.handleConsignChange('consigner_id', value)}>
                 {formRequires.consignerLocations.map(dw =>
                   <Option value={dw.node_id} key={dw.node_id}>{dw.name}</Option>)
                 }
@@ -256,15 +206,15 @@ export default class TransportForm extends Component {
           <Col sm={6}>
             <FormItem label="始发地" {...formItemLayout}>
               <RegionCascade defaultRegion={consignerRegion} region={consignerRegion}
-                onChange={region => this.handleRegionValueChange(index, 'consigner', region)}
+                onChange={region => this.handleRegionValueChange('consigner', region)}
                 style={{ width: '100%' }}
               />
             </FormItem>
           </Col>
           <Col sm={12}>
             <FormItem label="提货地址" labelCol={{ span: 3 }} wrapperCol={{ span: 21 }}>
-              <Input value={transport.consigner_addr}
-                onChange={e => this.handleChange(index, 'consigner_addr', e.target.value)}
+              <Input value={node.consigner_addr}
+                onChange={e => this.handleChange('consigner_addr', e.target.value)}
               />
             </FormItem>
           </Col>
@@ -272,22 +222,22 @@ export default class TransportForm extends Component {
         <Row>
           <Col sm={6}>
             <FormItem label="联系人" {...formItemLayout}>
-              <Input value={transport.consigner_contact}
-                onChange={e => this.handleChange(index, 'consigner_contact', e.target.value)}
+              <Input value={node.consigner_contact}
+                onChange={e => this.handleChange('consigner_contact', e.target.value)}
               />
             </FormItem>
           </Col>
           <Col sm={6}>
             <FormItem label="电话" {...formItemLayout}>
-              <Input value={transport.consigner_mobile} type="tel"
-                onChange={e => this.handleChange(index, 'consigner_mobile', e.target.value)}
+              <Input value={node.consigner_mobile} type="tel"
+                onChange={e => this.handleChange('consigner_mobile', e.target.value)}
               />
             </FormItem>
           </Col>
           <Col sm={6}>
             <FormItem label="邮箱" {...formItemLayout}>
-              <Input value={transport.consigner_email} type="email"
-                onChange={e => this.handleChange(index, 'consigner_email', e.target.value)}
+              <Input value={node.consigner_email} type="email"
+                onChange={e => this.handleChange('consigner_email', e.target.value)}
               />
             </FormItem>
           </Col>
@@ -295,11 +245,8 @@ export default class TransportForm extends Component {
 
         <Row>
           <Col sm={6}>
-            <FormItem
-              label="收货方"
-              {...formItemLayout}
-            >
-              <Select combobox value={transport.consignee_name} onChange={value => this.handleConsignChange(index, 'consignee_name', value)}>
+            <FormItem label="收货方" {...formItemLayout}>
+              <Select combobox value={node.consignee_id} onChange={value => this.handleConsignChange('consignee_name', value)}>
                 {formRequires.consigneeLocations.map(dw =>
                   <Option value={dw.node_id} key={dw.node_id}>{dw.name}</Option>)
                 }
@@ -309,15 +256,15 @@ export default class TransportForm extends Component {
           <Col sm={6}>
             <FormItem label="目的地" {...formItemLayout}>
               <RegionCascade defaultRegion={consigneeRegion} region={consigneeRegion}
-                onChange={region => this.handleRegionValueChange(index, 'consignee', region)}
+                onChange={region => this.handleRegionValueChange('consignee', region)}
                 style={{ width: '100%' }}
               />
             </FormItem>
           </Col>
           <Col sm={12}>
             <FormItem label="送货地址" labelCol={{ span: 3 }} wrapperCol={{ span: 21 }}>
-              <Input value={transport.consignee_addr}
-                onChange={e => this.handleChange(index, 'consignee_addr', e.target.value)}
+              <Input value={node.consignee_addr}
+                onChange={e => this.handleChange('consignee_addr', e.target.value)}
               />
             </FormItem>
           </Col>
@@ -325,22 +272,22 @@ export default class TransportForm extends Component {
         <Row>
           <Col sm={6}>
             <FormItem label="联系人" {...formItemLayout}>
-              <Input value={transport.consignee_contact}
-                onChange={e => this.handleChange(index, 'consignee_contact', e.target.value)}
+              <Input value={node.consignee_contact}
+                onChange={e => this.handleChange('consignee_contact', e.target.value)}
               />
             </FormItem>
           </Col>
           <Col sm={6}>
             <FormItem label="电话" {...formItemLayout}>
-              <Input value={transport.consignee_mobile} type="tel"
-                onChange={e => this.handleChange(index, 'consignee_mobile', e.target.value)}
+              <Input value={node.consignee_mobile} type="tel"
+                onChange={e => this.handleChange('consignee_mobile', e.target.value)}
               />
             </FormItem>
           </Col>
           <Col sm={6}>
             <FormItem label="邮箱" {...formItemLayout}>
-              <Input value={transport.consignee_email} type="email"
-                onChange={e => this.handleChange(index, 'consignee_email', e.target.value)}
+              <Input value={node.consignee_email} type="email"
+                onChange={e => this.handleChange('consignee_email', e.target.value)}
               />
             </FormItem>
           </Col>
@@ -349,7 +296,7 @@ export default class TransportForm extends Component {
         <Row>
           <Col span={18}>
             <FormItem label="备注" labelCol={{ span: 2 }} wrapperCol={{ span: 22 }}>
-              <Input value={transport.remark} onChange={e => this.handleCommonFieldChange('remark', e.target.value)} />
+              <Input value={node.remark} onChange={e => this.handleCommonFieldChange('remark', e.target.value)} />
             </FormItem>
           </Col>
         </Row>
