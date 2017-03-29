@@ -232,7 +232,7 @@ export default class Kpi extends React.Component {
     const columns = [{
       dataIndex: 'name',
       key: 'name',
-      render: o => (<div style={{ paddingLeft: 15 }}>{o}</div>),
+      render: o => (<span style={{ paddingLeft: 15 }}>{o}</span>),
     }];
     let clientStr = '';
     let swap = '';
