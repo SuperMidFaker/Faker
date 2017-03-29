@@ -20,14 +20,12 @@ const actionTypes = createActionTypes('@@welogix/cms/tradeitem/', [
   'DELETE_SELECT_ITEMS', 'DELETE_SELECT_ITEMS_SUCCEED', 'DELETE_SELECT_ITEMS_FAIL',
   'LOAD_BODY_ITEM', 'LOAD_BODY_ITEM_SUCCEED', 'LOAD_BODY_ITEM_FAIL',
   'LOAD_BODY_HSCODE', 'LOAD_BODY_HSCODE_SUCCEED', 'LOAD_BODY_HSCODE_FAIL',
-  'LOAD_DECLUNITS', 'LOAD_DECLUNITS_SUCCEED', 'LOAD_DECLUNITS_FAIL',
-  'SAVE_DECLUNIT', 'SAVE_DECLUNIT_SUCCEED', 'SAVE_DECLUNIT_FAIL',
-  'DELETE_DECLUNIT', 'DELETE_DECLUNIT_SUCCEED', 'DELETE_DECLUNIT_FAIL',
-  'LOAD_DECLWAY_UNITS', 'LOAD_DECLWAY_UNITS_SUCCEED', 'LOAD_DECLWAY_UNITS_FAIL',
-  'SAVE_DECLWAY_UNIT', 'SAVE_DECLWAY_UNIT_SUCCEED', 'SAVE_DECLWAY_UNIT_FAIL',
   'SET_OWNER', 'SET_COMPARE_VISIBLE',
   'COMPARED_DATAS_SAVE', 'COMPARED_DATAS_SAVE_SUCCEED', 'COMPARED_DATAS_SAVE_FAIL',
   'SET_ITEM_STATUS', 'SET_ITEM_STATUS_SUCCEED', 'SET_ITEM_STATUS_FAIL',
+  'LOAD_REPO_USERS', 'LOAD_REPO_USERS_SUCCEED', 'LOAD_REPO_USERS_FAIL',
+  'ADD_REPO_USER', 'ADD_REPO_USER_SUCCEED', 'ADD_REPO_USER_FAIL',
+  'DELETE_REPO_USER', 'DELETE_REPO_USER_SUCCEED', 'DELETE_REPO_USER_FAIL',
 ]);
 
 const initialState = {
@@ -48,6 +46,7 @@ const initialState = {
   tabKey: 'copCodes',
   repoId: null,
   repoTrades: [],
+  repoUsers: [],
   params: {
     currencies: [],
     units: [],
@@ -56,9 +55,7 @@ const initialState = {
   itemData: {},
   bodyItem: {},
   bodyHscode: {},
-  declunits: [],
   hstabKey: 'declunit',
-  declwayUnits: [],
   owner: {},
   visibleCompareModal: false,
 };
@@ -91,16 +88,12 @@ export default function reducer(state = initialState, action) {
       return { ...state, bodyItem: action.result.data };
     case actionTypes.LOAD_BODY_HSCODE_SUCCEED:
       return { ...state, bodyHscode: action.result.data };
-    case actionTypes.LOAD_DECLUNITS_SUCCEED:
-    case actionTypes.SAVE_DECLUNIT_SUCCEED:
-      return { ...state, declunits: action.result.data };
-    case actionTypes.LOAD_DECLWAY_UNITS_SUCCEED:
-    case actionTypes.SAVE_DECLWAY_UNIT_SUCCEED:
-      return { ...state, declwayUnits: action.result.data };
     case actionTypes.CREATE_REPO_SUCCEED:
       return { ...state, repoId: action.result.data };
     case actionTypes.SET_COMPARE_VISIBLE:
       return { ...state, visibleCompareModal: action.data };
+    case actionTypes.LOAD_REPO_USERS_SUCCEED:
+      return { ...state, repoUsers: action.result.data };
     default:
       return state;
   }
@@ -393,96 +386,6 @@ export function getHscodeForBody(params) {
   };
 }
 
-export function loadDeclunits(tenantId) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.LOAD_DECLUNITS,
-        actionTypes.LOAD_DECLUNITS_SUCCEED,
-        actionTypes.LOAD_DECLUNITS_FAIL,
-      ],
-      endpoint: 'v1/cms/tradeitem/load/declunits',
-      method: 'get',
-      params: { tenantId },
-    },
-  };
-}
-
-export function saveDeclunit(datas) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.SAVE_DECLUNIT,
-        actionTypes.SAVE_DECLUNIT_SUCCEED,
-        actionTypes.SAVE_DECLUNIT_FAIL,
-      ],
-      endpoint: 'v1/cms/tradeitem/declunit/save',
-      method: 'post',
-      data: datas,
-    },
-  };
-}
-
-export function delDeclunit(id) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.DELETE_DECLUNIT,
-        actionTypes.DELETE_DECLUNIT_SUCCEED,
-        actionTypes.DELETE_DECLUNIT_FAIL,
-      ],
-      endpoint: 'v1/cms/tradeitem/declunit/delete',
-      method: 'post',
-      data: { id },
-    },
-  };
-}
-
-export function loadDeclwayUnit(repoId) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.LOAD_DECLWAY_UNITS,
-        actionTypes.LOAD_DECLWAY_UNITS_SUCCEED,
-        actionTypes.LOAD_DECLWAY_UNITS_FAIL,
-      ],
-      endpoint: 'v1/cms/tradeitem/declwayUnits/load',
-      method: 'get',
-      params: { repoId },
-    },
-  };
-}
-
-export function saveDeclwayUnit(datas) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.SAVE_DECLWAY_UNIT,
-        actionTypes.SAVE_DECLWAY_UNIT_SUCCEED,
-        actionTypes.SAVE_DECLWAY_UNIT_FAIL,
-      ],
-      endpoint: 'v1/cms/tradeitem/declwayUnit/save',
-      method: 'post',
-      data: datas,
-    },
-  };
-}
-
-export function delDeclwayUnit(id) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.DELETE_DECLWAY_UNIT,
-        actionTypes.DELETE_DECLWAY_UNIT_SUCCEED,
-        actionTypes.DELETE_DECLWAY_UNIT_FAIL,
-      ],
-      endpoint: 'v1/cms/tradeitem/declwayUnit/delete',
-      method: 'post',
-      data: { id },
-    },
-  };
-}
-
 export function setCompareVisible(val) {
   return {
     type: actionTypes.SET_COMPARE_VISIBLE,
@@ -505,3 +408,47 @@ export function setItemStatus(datas) {
   };
 }
 
+export function loadRepoUsers(tenantId, repoId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_REPO_USERS,
+        actionTypes.LOAD_REPO_USERS_SUCCEED,
+        actionTypes.LOAD_REPO_USERS_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/repoUsers',
+      method: 'get',
+      params: { tenantId, repoId },
+    },
+  };
+}
+
+export function addRepoUser(repoId, partnerTenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.ADD_REPO_USER,
+        actionTypes.ADD_REPO_USER_SUCCEED,
+        actionTypes.ADD_REPO_USER_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/repoUser/add',
+      method: 'post',
+      data: { repoId, partnerTenantId },
+    },
+  };
+}
+
+export function deleteRepoUser(repoUserId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DELETE_REPO_USER,
+        actionTypes.DELETE_REPO_USER_SUCCEED,
+        actionTypes.DELETE_REPO_USER_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/repoUser/delete',
+      method: 'post',
+      data: { repoUserId },
+    },
+  };
+}

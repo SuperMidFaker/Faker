@@ -17,7 +17,7 @@ import SearchBar from 'client/components/search-bar';
 import ExcelUpload from 'client/components/excelUploader';
 import { createFilename } from 'client/util/dataTransform';
 import CopCodesPane from './panes/copCodesPane';
-import SetUnitPane from './panes/setUnitPane';
+import RepoUsersPane from './panes/repoUsersPane';
 import ImportComparisonModal from './modals/importComparison';
 import { CMS_ITEM_STATUS } from 'common/constants';
 import RowUpdater from 'client/components/rowUpdater';
@@ -573,8 +573,8 @@ export default class TradeItemList extends Component {
               <Panel header={'授权收发货人'} key="trader">
                 <CopCodesPane />
               </Panel>
-              <Panel header={'申报单位规则'} key="unit">
-                <SetUnitPane />
+              <Panel header={'授权报关行'} key="user">
+                <RepoUsersPane owner={owner} />
               </Panel>
               <Panel header={'更多'} key="more">
                 <Alert
