@@ -22,7 +22,7 @@ function ColumnInput(props) {
       onChange(field, ev.target.value);
     }
   }
-  return inEdit ? <Input value={edit[field] || ''} onChange={handleChange} />
+  return inEdit ? <Input type="textarea" autosize value={edit[field] || ''} onChange={handleChange} />
     : <span>{record[field] || ''}</span>;
 }
 ColumnInput.propTypes = {

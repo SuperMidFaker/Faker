@@ -70,16 +70,28 @@ export default class CreateTemplate extends Component {
     }
     const element = Mention.toString(this.props.form.getFieldValue('rule_element'));
     const mergeOptArr = this.props.form.getFieldValue('mergeOpt_arr');
-    const specialHsSortArr = this.props.form.getFieldValue('specialHsSort');
-    let mergeOpts = '';
-    if (mergeOptArr) {
-      mergeOpts = mergeOptArr.join(',');
+    const specialHsSortArr = this.props.form.getFieldValue('split_spl_category');
+    const mergeObj = { merge_byhscode: 0, merge_bygname: 0, merge_bycurr: 0, merge_bycountry: 0, merge_bycopgno: 0, merge_byengno: 0 };
+    for (const mergeOpt of mergeOptArr) {
+      if (mergeOpt === 'byHsCode') {
+        mergeObj.merge_byhscode = 1;
+      } else if (mergeOpt === 'byGName') {
+        mergeObj.merge_bygname = 1;
+      } else if (mergeOpt === 'byCurr') {
+        mergeObj.merge_bycurr = 1;
+      } else if (mergeOpt === 'byCountry') {
+        mergeObj.merge_bycountry = 1;
+      } else if (mergeOpt === 'byCopGNo') {
+        mergeObj.merge_bycopgno = 1;
+      } else if (mergeOpt === 'byEmGNo') {
+        mergeObj.merge_byengno = 1;
+      }
     }
     let specialHsSorts = '';
     if (specialHsSortArr) {
       specialHsSorts = specialHsSortArr.join(',');
     }
-    const head = { ...this.props.form.getFieldsValue(), rule_element: element, mergeOpt_arr: mergeOpts, specialHsSort: specialHsSorts };
+    const head = { ...this.props.form.getFieldsValue(), ...mergeObj, rule_element: element, split_spl_category: specialHsSorts };
     this.props.saveTemplateData({ head, templateId: template.id }).then(
       (result) => {
         if (result.error) {
