@@ -92,7 +92,7 @@ export default class DetailPane extends React.Component {
   handleChangeDeliverPrmDate = (e) => {
     e.stopPropagation();
     const { shipmt, dispatch } = this.props;
-    this.props.showChangeDeliverPrmDateModal({ visible: true, shipmtNo: shipmt.shipmt_no, dispId: dispatch.id });
+    this.props.showChangeDeliverPrmDateModal({ visible: true, shipmtNo: shipmt.shipmt_no, dispId: dispatch.id, deliverPrmDate: dispatch.deliver_prm_date });
   }
   handleChangeDistance = (e) => {
     e.stopPropagation();
