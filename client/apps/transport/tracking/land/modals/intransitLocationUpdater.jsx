@@ -83,18 +83,18 @@ export default class LocationUpdater extends React.Component {
         onOk={this.handleOk} visible={this.props.visible}
       >
         <Form layout="horizontal">
-          <FormItem labelCol={{ span: 6 }} label={this.msg('reportTime')}
-            wrapperCol={{ span: 18 }} required
+          <FormItem label={this.msg('reportTime')}
+            required colon={false}
           >
             {getFieldDecorator('location_time', {
               rules: [{
                 type: 'object',
                 required: true, message: this.msg('reportTimeMust'),
               }],
-            })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />)}
+            })(<DatePicker style={{ width: '100%' }} showTime format="YYYY-MM-DD HH:mm:ss" />)}
           </FormItem>
-          <FormItem labelCol={{ span: 6 }} label={this.msg('reportPosition')}
-            wrapperCol={{ span: 18 }}
+          <FormItem label={this.msg('reportPosition')}
+            colon={false}
           >
             <RegionCascade onChange={this.handleRegionChange} />
           </FormItem>
