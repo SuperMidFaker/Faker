@@ -2,8 +2,8 @@ import React, { Component, PropTypes } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Breadcrumb, Button, message, Layout } from 'antd';
-import OrderForm from './form';
+import { BackTop, Breadcrumb, Button, message, Layout } from 'antd';
+import OrderForm from './forms/orderForm';
 import { submitOrder } from 'common/reducers/crmOrders';
 import messages from './message.i18n';
 import { format } from 'client/common/i18n/helpers';
@@ -87,6 +87,7 @@ export default class Create extends Component {
         </Header>
         <Content className="main-content layout-fixed-width layout-fixed-width-large">
           <OrderForm operation="create" />
+          <BackTop />
         </Content>
       </div>
     );

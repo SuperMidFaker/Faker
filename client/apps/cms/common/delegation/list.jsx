@@ -247,7 +247,7 @@ export default class DelegationList extends Component {
     dataIndex: 'ciq_inspect',
     render: (o) => {
       if (o === 'NL') {
-        return <Tag color="cyan">包装报检</Tag>;
+        return <Tag color="cyan">包装检疫</Tag>;
       } else if (o === 'LA' || o === 'LB') {
         return <Tag color="orange">法定检验</Tag>;
       }

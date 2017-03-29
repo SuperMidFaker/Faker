@@ -16,13 +16,14 @@ const formatMsg = format(messages);
 const Option = Select.Option;
 
 function ColumnInput(props) {
-  const { inEdit, edit, record, field, onChange } = props;
+  const { inEdit, edit, record, field, onChange, type, autosize } = props;
   function handleChange(ev) {
     if (onChange) {
       onChange(field, ev.target.value);
     }
   }
-  return inEdit ? <Input value={edit[field] || ''} onChange={handleChange} />
+  const typeStr = (!type) ? 'text' : type;
+  return inEdit ? <Input type={typeStr} autosize={autosize} value={edit[field] || ''} onChange={handleChange} />
     : <span>{record[field] || ''}</span>;
 }
 ColumnInput.propTypes = {
@@ -31,6 +32,8 @@ ColumnInput.propTypes = {
   field: PropTypes.string.isRequired,
   edit: PropTypes.object,
   onChange: PropTypes.func,
+  type: PropTypes.oneOf(['text', 'textarea']),
+  autosize: PropTypes.bool,
 };
 
 function ColumnSelect(props) {
@@ -299,7 +302,7 @@ export default class ManifestBodyPanel extends React.Component {
       title: this.msg('gModel'),
       width: 300,
       render: (o, record, index) =>
-        <ColumnInput field="g_model" inEdit={index === editIndex} record={record}
+        <ColumnInput type="textarea" autosize field="g_model" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} edit={editBody}
         />,
     }, {

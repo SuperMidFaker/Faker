@@ -48,7 +48,7 @@ export default class SubCustomerList extends React.Component {
     return (
       <Card
         bodyStyle={{ padding: 0, backgroundColor: '#fff' }}
-        className="aside-card"
+        className="secondary-card"
         title={this.msg('subCustomer')}
         extra={<a href="#" onClick={() => this.props.showSubCustomerModal('add', customer)}>添加</a>}
       >

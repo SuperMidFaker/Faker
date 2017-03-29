@@ -71,7 +71,7 @@ export default class ProfileForm extends React.Component {
           </Row>
         </Card>
         {customer.parent_id === 0 ? (<SubCustomerList customer={customer} />) : null}
-        <Card className="aside-card" title={this.msg('serviceTeam')} extra={<a href="#" onClick={() => this.props.showServiceTeamModal(customer)}>添加成员</a>} />
+        <Card className="secondary-card" title={this.msg('serviceTeam')} extra={<a href="#" onClick={() => this.props.showServiceTeamModal(customer)}>添加成员</a>} />
       </div>
     );
   }
