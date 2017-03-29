@@ -345,8 +345,9 @@ export default class BasicForm extends Component {
                   </FormItem>
                 </Col>
                 <Col sm={8}>
-                  <FormItem label="包装/件数" {...formItemLayout} required="true">
+                  <FormItem label="件数/包装" {...formItemLayout} required="true">
                     <InputGroup compact>
+                      <Input type="number" style={{ width: '50%' }} value={formData.cust_shipmt_pieces} onChange={e => this.handleChange('cust_shipmt_pieces', e.target.value)} />
                       <Select size="large" style={{ width: '50%' }} placeholder="选择包装方式"
                         onChange={value => this.handleChange('cust_shipmt_wrap_type', value)}
                         value={formData.cust_shipmt_wrap_type}
@@ -357,7 +358,6 @@ export default class BasicForm extends Component {
                           )
                         }
                       </Select>
-                      <Input type="number" style={{ width: '50%' }} value={formData.cust_shipmt_pieces} onChange={e => this.handleChange('cust_shipmt_pieces', e.target.value)} />
                     </InputGroup>
                   </FormItem>
                 </Col>

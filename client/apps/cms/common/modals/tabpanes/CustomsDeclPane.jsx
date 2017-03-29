@@ -140,37 +140,42 @@ export default class CustomsDeclPane extends React.Component {
     }];
     return (
       <div className="pane-content tab-pane">
-        <Card bodyStyle={{ padding: 0 }}>
-          <Row gutter={8} style={{ padding: 16 }}>
-            <Col span="12">
-              <InfoItem labelCol={{ span: 3 }} label="报关服务商"
-                field={customsPanel.recv_name} fieldCol={{ span: 9 }}
-              />
-            </Col>
-            <Col span="6">
-              <InfoItem labelCol={{ span: 3 }} label="接单日期" fieldCol={{ span: 9 }}
-                field={customsPanel.acpt_time
+        <Row gutter={16}>
+          <Col span={18}>
+            <Card title={panelHeader} extra={this.button()} bodyStyle={{ padding: 0 }}>
+              <Table size="small" columns={columns} pagination={false} dataSource={tableDatas} scroll={{ x: 580 }} />
+            </Card>
+          </Col>
+          <Col span={6}>
+            <Card bodyStyle={{ padding: 0 }}>
+              <Row gutter={8} style={{ padding: 16 }}>
+                <Col span="24">
+                  <InfoItem labelCol={{ span: 3 }} label="报关服务商"
+                    field={customsPanel.recv_name} fieldCol={{ span: 9 }}
+                  />
+                </Col>
+                <Col span="24">
+                  <InfoItem labelCol={{ span: 3 }} label="接单日期" fieldCol={{ span: 9 }}
+                    field={customsPanel.acpt_time
                   && moment(customsPanel.acpt_time).format('YYYY.MM.DD')}
-              />
-            </Col>
-            <Col span="6">
-              <InfoItem labelCol={{ span: 3 }} label="制单人"
-                field={customsPanel.recv_login_name} fieldCol={{ span: 9 }}
-              />
-            </Col>
-          </Row>
-          {(customsPanel.type === 1 || customsPanel.customs_tenant_id === -1) && <div className="card-footer">
-            <div className="toolbar-right">
-              <Tooltip title="分配制单人">
-                <Button type="ghost" shape="circle" onClick={this.handleOperatorAssign}><Icon type="user" /></Button>
-              </Tooltip>
-            </div>
-          </div>}
-        </Card>
-        <Card title={panelHeader} extra={this.button()} bodyStyle={{ padding: 0 }}>
-          <Table size="small" columns={columns} pagination={false} dataSource={tableDatas} scroll={{ x: 580 }} />
-        </Card>
-
+                  />
+                </Col>
+                <Col span="24">
+                  <InfoItem labelCol={{ span: 3 }} label="制单人"
+                    field={customsPanel.recv_login_name} fieldCol={{ span: 9 }}
+                  />
+                </Col>
+              </Row>
+              {(customsPanel.type === 1 || customsPanel.customs_tenant_id === -1) && <div className="card-footer">
+                <div className="toolbar-right">
+                  <Tooltip title="分配制单人">
+                    <Button type="ghost" shape="circle" onClick={this.handleOperatorAssign}><Icon type="user" /></Button>
+                  </Tooltip>
+                </div>
+              </div>}
+            </Card>
+          </Col>
+        </Row>
       </div>
     );
   }

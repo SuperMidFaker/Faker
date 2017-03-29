@@ -133,6 +133,7 @@ export default class ShipmentOrderList extends React.Component {
     const columns = [{
       title: '订单',
       width: 300,
+      fixed: 'left',
       render: (o, record) => <OrderNoColumn order={record} />,
     }, {
       dataIndex: 'order_status',

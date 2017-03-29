@@ -99,43 +99,49 @@ export default class CiqDeclPane extends React.Component {
     }];
     return (
       <div className="pane-content tab-pane">
-        <Card bodyStyle={{ padding: 0 }}>
-          <Row gutter={8} style={{ padding: 16 }}>
-            <Col span="12">
-              <InfoItem labelCol={{ span: 3 }} label="报检服务商"
-                field={ciqPanel.ciq_name} fieldCol={{ span: 9 }}
-              />
-            </Col>
-            <Col span="8">
-              <InfoItem labelCol={{ span: 3 }} label="受理日期" fieldCol={{ span: 9 }}
-                field={ciqPanel.acpt_time && moment(ciqPanel.acpt_time).format('YYYY.MM.DD HH:mm')}
-              />
-            </Col>
-            <Col span="4">
-              <InfoItem labelCol={{ span: 3 }} label="操作人"
-                field={ciqPanel.recv_login_name} fieldCol={{ span: 9 }}
-              />
-            </Col>
-          </Row>
-          <div className="card-footer">
-            <Badge status="warning" text="报检待处理" />
-            <div className="toolbar-right">
-              {delegation.appointed_option === 0 && ciqPanel.ciq_tenant_id === tenantId &&
-                <Tooltip title="分配报检供应商">
-                  <Button type="ghost" onClick={this.handleCiqAssign}><Icon type="share-alt" /> 分配</Button>
-                </Tooltip>
+        <Row gutter={16}>
+          <Col span={18}>
+            <Card bodyStyle={{ padding: 0 }}>
+              <Table size="middle" columns={columns} pagination={false} dataSource={ciqPanel.ciqlist} scroll={{ x: 580 }} />
+            </Card>
+          </Col>
+          <Col span={6}>
+            <Card bodyStyle={{ padding: 0 }}>
+              <Row gutter={8} style={{ padding: 16 }}>
+                <Col span="24">
+                  <InfoItem labelCol={{ span: 3 }} label="报检服务商"
+                    field={ciqPanel.ciq_name} fieldCol={{ span: 9 }}
+                  />
+                </Col>
+                <Col span="24">
+                  <InfoItem labelCol={{ span: 3 }} label="受理日期" fieldCol={{ span: 9 }}
+                    field={ciqPanel.acpt_time && moment(ciqPanel.acpt_time).format('YYYY.MM.DD HH:mm')}
+                  />
+                </Col>
+                <Col span="24">
+                  <InfoItem labelCol={{ span: 3 }} label="操作人"
+                    field={ciqPanel.recv_login_name} fieldCol={{ span: 9 }}
+                  />
+                </Col>
+              </Row>
+              <div className="card-footer">
+                <Badge status="warning" text="报检待处理" />
+                <div className="toolbar-right">
+                  {delegation.appointed_option === 0 && ciqPanel.ciq_tenant_id === tenantId &&
+                  <Tooltip title="分配报检供应商">
+                    <Button type="ghost" onClick={this.handleCiqAssign}><Icon type="share-alt" /> 分配</Button>
+                  </Tooltip>
               }
-              {(ciqPanel.type === 1 || ciqPanel.ciq_tenant_id === -1) &&
-                <Tooltip title="指派操作人员">
-                  <Button type="ghost" shape="circle" onClick={this.handleOperatorAssign}><Icon type="user" /></Button>
-                </Tooltip>
+                  {(ciqPanel.type === 1 || ciqPanel.ciq_tenant_id === -1) &&
+                  <Tooltip title="指派操作人员">
+                    <Button type="ghost" shape="circle" onClick={this.handleOperatorAssign}><Icon type="user" /></Button>
+                  </Tooltip>
               }
-            </div>
-          </div>
-        </Card>
-        <Card bodyStyle={{ padding: 0 }}>
-          <Table size="middle" columns={columns} pagination={false} dataSource={ciqPanel.ciqlist} scroll={{ x: 580 }} />
-        </Card>
+                </div>
+              </div>
+            </Card>
+          </Col>
+        </Row>
         <CiqDispModal />
       </div>
     );

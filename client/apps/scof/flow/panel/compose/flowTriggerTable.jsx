@@ -23,7 +23,7 @@ export default class FlowTriggerTable extends React.Component {
   msg = formatMsg(this.props.intl)
   eventColumns = [
     { dataIndex: 'name' },
-    { dataIndex: 'operation', width: 100, render: (di, row) =>
+    { dataIndex: 'operation', width: 76, render: (di, row) =>
       <a onClick={() => this.handleTriggerActions(row.key, row.name)}>{this.msg('triggerActions')}</a> },
   ]
   handleTriggerActions = (key, name) => {
