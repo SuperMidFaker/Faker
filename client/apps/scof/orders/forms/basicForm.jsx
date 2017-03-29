@@ -105,41 +105,23 @@ export default class BasicForm extends Component {
           lnodes.forEach((node) => {
             if (node.kind === 'tms') {
               subOrders.push({
-                node_uuid: node.id,
-                kind: node.kind,
-                name: node.name,
-                in_degree: node.in_degree,
-                out_degree: node.out_degree,
-                level,
-                transports: [{
-                  consigner_name: '',
-                  consigner_province: '',
-                  consigner_city: '',
-                  consigner_district: '',
-                  consigner_street: '',
-                  consigner_region_code: -1,
-                  consigner_addr: '',
-                  consigner_email: '',
-                  consigner_contact: '',
-                  consigner_mobile: '',
-                  consignee_name: '',
-                  consignee_province: '',
-                  consignee_city: '',
-                  consignee_district: '',
-                  consignee_street: '',
-                  consignee_region_code: -1,
-                  consignee_addr: '',
-                  consignee_email: '',
-                  consignee_contact: '',
-                  consignee_mobile: '',
-                  pack_count: 1,
-                  gross_wt: 0,
-                  trs_mode_id: -1,
-                  trs_mode_code: '',
+                node: {
+                  node_uuid: node.id,
+                  kind: node.kind,
+                  name: node.name,
+                  in_degree: node.in_degree,
+                  out_degree: node.out_degree,
+                  level,
+                  consigner_id: null,
+                  consignee_id: null,
+                  pack_count: null,
+                  gross_wt: null,
+                  trs_mode_id: null,
+                  trs_mode_code: null,
                   trs_mode: '',
                   remark: '',
                   package: '',
-                }],
+                },
               });
             } else if (node.kind === 'import' || node.kind === 'export') {
               subOrders.push({
@@ -397,9 +379,7 @@ export default class BasicForm extends Component {
         <Card title={<span>订单流程<Select size="large" placeholder="请选择流程规则" showSearch optionFilterProp="children"
           value={formData.flow_id} onChange={this.handleFlowChange} style={{ width: '50%', marginLeft: 24 }}
         >
-          {flows.map(data => (
-            <Option key={data.id} value={data.id}>{data.name}</Option>)
-                    )}
+          {flows.map(data => <Option key={data.id} value={data.id}>{data.name}</Option>)}
         </Select></span>} bodyStyle={{ padding: 0 }}
         />
       </div>

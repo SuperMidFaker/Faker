@@ -115,28 +115,20 @@ export default class Dashboard extends React.Component {
       title: this.msg('shipmtActDeliveryDate'),
       dataIndex: 'deliver_act_date',
       width: 100,
-      render: (o, record) => {
-        if (record.deliver_act_date) {
-          const deliverPrmDate = new Date(record.pickup_act_date);
-          deliverPrmDate.setDate(deliverPrmDate.getDate() + record.transit_time);
-          return (<ActDate actDate={record.deliver_act_date} estDate={deliverPrmDate} />);
-        } else {
-          return '';
-        }
-      },
+      render: (o, record) => o ? (<ActDate actDate={record.deliver_act_date} estDate={record.deliver_est_date} />) : '',
     }, {
       title: this.msg('overtime'),
       key: 'late',
       width: 100,
       render(o, record) {
         if (record.pickup_act_date) {
-          const deliveredActDate = new Date(record.deliver_act_date || new Date());
+          const deliveredActDate = new Date(record.deliver_act_date);
           deliveredActDate.setHours(0, 0, 0, 0);
-          const pickupActDate = new Date(record.pickup_act_date);
-          pickupActDate.setHours(0, 0, 0, 0);
-          const daysDiff = moment(deliveredActDate).diff(pickupActDate, 'days');
-          if (daysDiff > record.transit_time) {
-            return `超时${daysDiff - record.transit_time}天`;
+          const deliverEstDate = new Date(record.deliver_est_date);
+          deliverEstDate.setHours(0, 0, 0, 0);
+          const daysDiff = moment(deliveredActDate).diff(deliverEstDate, 'days');
+          if (daysDiff > 0) {
+            return `超时${daysDiff}天`;
           }
         }
         return '';

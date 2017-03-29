@@ -11,7 +11,7 @@ import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { loadCustomers } from 'common/reducers/crmCustomers';
 import { loadOwners, openAddModal, selectedRepoId, loadTradeItems, setCompareVisible,
-  deleteItem, deleteSelectedItems, setOwner, deleteRepo, loadTradeParams } from 'common/reducers/cmsTradeitem';
+  deleteItem, deleteSelectedItems, setOwner, deleteRepo, loadTradeParams, setItemStatus } from 'common/reducers/cmsTradeitem';
 import AddTradeRepoModal from './modals/addTradeRepo';
 import SearchBar from 'client/components/search-bar';
 import ExcelUpload from 'client/components/excelUploader';
@@ -19,6 +19,8 @@ import { createFilename } from 'client/util/dataTransform';
 import CopCodesPane from './panes/copCodesPane';
 import SetUnitPane from './panes/setUnitPane';
 import ImportComparisonModal from './modals/importComparison';
+import { CMS_ITEM_STATUS } from 'common/constants';
+import RowUpdater from 'client/components/rowUpdater';
 
 const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
@@ -30,6 +32,7 @@ function fetchData({ state, dispatch }) {
   const promises = [];
   promises.push(dispatch(loadTradeItems({
     repoId: state.cmsTradeitem.repoId,
+    filter: JSON.stringify(state.cmsTradeitem.listFilter),
     pageSize: state.cmsTradeitem.tradeItemlist.pageSize,
     currentPage: state.cmsTradeitem.tradeItemlist.current,
   })));
@@ -66,7 +69,7 @@ function fetchData({ state, dispatch }) {
     })),
   }),
   { loadCustomers, openAddModal, selectedRepoId, loadTradeItems, setCompareVisible,
-    deleteItem, deleteSelectedItems, setOwner, loadOwners, deleteRepo }
+    deleteItem, deleteSelectedItems, setOwner, loadOwners, deleteRepo, setItemStatus }
 )
 @connectNav({
   depth: 2,
@@ -306,6 +309,7 @@ export default class TradeItemList extends Component {
     this.props.selectedRepoId(owner.repo_id);
     this.handleItemListLoad(owner.repo_id);
     this.props.setOwner(owner);
+    this.toggle();
   }
   handleAddOwener = () => {
     this.props.loadCustomers({
@@ -357,6 +361,24 @@ export default class TradeItemList extends Component {
     const filter = { ...this.props.listFilter, status: ev.target.value };
     this.handleItemListLoad(this.props.repoId, 1, filter);
   }
+  handleItemPass = (row) => {
+    this.props.setItemStatus({ id: row.id, status: CMS_ITEM_STATUS.classified }).then((result) => {
+      if (result.error) {
+        message.error(result.error.message);
+      } else {
+        this.handleItemListLoad();
+      }
+    });
+  }
+  handleItemRefused = (row) => {
+    this.props.setItemStatus({ id: row.id, status: CMS_ITEM_STATUS.unclassified }).then((result) => {
+      if (result.error) {
+        message.error(result.error.message);
+      } else {
+        this.handleItemListLoad();
+      }
+    });
+  }
   render() {
     const { tradeItemlist, repoId, owner, listFilter } = this.props;
     const selectedRows = this.state.selectedRowKeys;
@@ -370,19 +392,54 @@ export default class TradeItemList extends Component {
     const columns = [...this.columns];
     columns.push({
       title: this.msg('opColumn'),
-      width: 80,
+      width: 150,
       fixed: 'right',
-      render: (o, record) => (
-        <span className="editable-row-operations">
-          <NavLink to={`/clearance/classification/tradeitem/edit/${record.id}`}>
-            <Icon type="edit" />
-          </NavLink>
-          <span className="ant-divider" />
-          <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleItemDel(record.id)}>
-            <a role="button"><Icon type="delete" /></a>
-          </Popconfirm>
-        </span>
-        ),
+      render: (o, record) => {
+        if (record.status === CMS_ITEM_STATUS.unclassified) {
+          return (<span>
+            <NavLink to={`/clearance/classification/tradeitem/edit/${record.id}`}>
+              <Icon type="edit" /> {this.msg('modify')}
+            </NavLink>
+            <span className="ant-divider" />
+            <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleItemDel(record.id)}>
+              <a role="button"><Icon type="delete" /> {this.msg('delete')}</a>
+            </Popconfirm>
+          </span>);
+        } else if (record.status === CMS_ITEM_STATUS.pending) {
+          return (
+            <span>
+              <RowUpdater onHit={this.handleItemPass} label={this.msg('pass')} row={record} />
+              <span className="ant-divider" />
+              <RowUpdater onHit={this.handleItemRefused} label={this.msg('refuse')} row={record} />
+              <span className="ant-divider" />
+              <Dropdown overlay={(
+                <Menu>
+                  <Menu.Item key="edit">
+                    <NavLink to={`/clearance/classification/tradeitem/edit/${record.id}`}>
+                      <Icon type="edit" /> {this.msg('modify')}
+                    </NavLink>
+                  </Menu.Item>
+                  <Menu.Item key="delete">
+                    <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleItemDel(record.id)}>
+                      <a role="button"><Icon type="delete" /> {this.msg('delete')}</a>
+                    </Popconfirm>
+                  </Menu.Item>
+                </Menu>)}
+              >
+                <a><Icon type="down" /></a>
+              </Dropdown>
+            </span>
+          );
+        } else if (record.status === CMS_ITEM_STATUS.classified) {
+          return (
+            <span>
+              <NavLink to={`/clearance/classification/tradeitem/edit/${record.id}`}>
+                <Icon type="edit" /> {this.msg('modify')}
+              </NavLink>
+            </span>
+          );
+        }
+      },
     });
     const repoColumns = [{
       dataIndex: 'name',
@@ -443,6 +500,9 @@ export default class TradeItemList extends Component {
               </Breadcrumb.Item>
               <Breadcrumb.Item>
                 {this.msg('tradeItemMaster')}
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {`${owner.name}`}
               </Breadcrumb.Item>
             </Breadcrumb>
             }

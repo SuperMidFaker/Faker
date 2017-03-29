@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Collapse, Form, Col, Row, Select } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { TRANS_MODE, DECL_I_TYPE, DECL_E_TYPE } from 'common/constants';
+import { GOODS_TYPES } from 'common/constants';
 import FlowTriggerTable from '../compose/flowTriggerTable';
 import { formatMsg } from '../../message.i18n';
 
@@ -13,8 +13,8 @@ const Option = Select.Option;
 @injectIntl
 @connect(
   state => ({
-    bizDelegation: state.scofFlow.cmsParams.bizDelegation,
-  }),
+    tmsParams: state.scofFlow.tmsParams,
+  })
 )
 export default class TMSShipmentPane extends Component {
   static propTypes = {
@@ -23,44 +23,41 @@ export default class TMSShipmentPane extends Component {
   }
   msg = formatMsg(this.props.intl)
   render() {
-    const { form: { getFieldDecorator }, onNodeActionsChange, model, bizDelegation: { declPorts, customsBrokers, ciqBrokers } } = this.props;
-    const declWays = this.props.ietype === 'export' ? DECL_E_TYPE : DECL_I_TYPE;
+    const { form: { getFieldDecorator }, onNodeActionsChange, model, tmsParams: { consigners, consignees, transitModes } } = this.props;
     return (
       <Collapse bordered={false} defaultActiveKey={['properties', 'events']}>
         <Panel header={this.msg('bizProperties')} key="properties">
           <Row gutter={16}>
             <Col sm={24} lg={12}>
               <FormItem label={this.msg('consigner')}>
-                {getFieldDecorator('decl_port', {
-                  initialValue: model.decl_port,
+                {getFieldDecorator('consigner_id', {
+                  initialValue: model.consigner_id,
                 })(<Select>
                   {
-                    declPorts.map(dp => <Option value={dp.code} key={dp.code}>{dp.code}|{dp.name}</Option>)
+                    consigners.map(cg => <Option value={cg.node_id} key={cg.name}>{cg.name}</Option>)
                   }
                 </Select>)}
               </FormItem>
             </Col>
             <Col sm={24} lg={12}>
               <FormItem label={this.msg('consignee')}>
-                {getFieldDecorator('decl_way', {
-                  initialValue: model.decl_way,
+                {getFieldDecorator('consignee_id', {
+                  initialValue: model.consignee_id,
                 })(<Select>
                   {
-                    declWays.map(dw =>
-                      <Option value={dw.key} key={dw.key}>{dw.value}</Option>
-                    )
+                    consignees.map(cg => <Option value={cg.node_id} key={cg.name}>{cg.name}</Option>)
                   }
                 </Select>)}
               </FormItem>
             </Col>
             <Col sm={24} lg={12}>
-              <FormItem label={this.msg('transMode')}>
-                {getFieldDecorator('trans_mode', {
-                  initialValue: model.trans_mode,
+              <FormItem label={this.msg('transitMode')}>
+                {getFieldDecorator('transit_mode', {
+                  initialValue: model.transit_mode,
                 })(<Select>
                   {
-                    TRANS_MODE.map(tr =>
-                      <Option value={tr.value} key={tr.value}>{tr.text}</Option>
+                    transitModes.map(tr =>
+                      <Option value={tr.mode_code} key={tr.mode_code}>{tr.mode_name}</Option>
                     )
                   }
                 </Select>)}
@@ -68,40 +65,18 @@ export default class TMSShipmentPane extends Component {
             </Col>
             <Col sm={24} lg={12}>
               <FormItem label={this.msg('cargoType')}>
-                {getFieldDecorator('customs_parnter_id', {
-                  initialValue: model.customs_parnter_id,
+                {getFieldDecorator('goods_type', {
+                  initialValue: model.goods_type,
                 })(<Select>
                   {
-                    customsBrokers.map(cb =>
-                      <Option value={cb.partner_id} key={cb.partner_id}>{cb.partner_code}|{cb.name}</Option>
-                    )
+                    GOODS_TYPES.map(gt => <Option value={gt.value} key={gt.value}>{gt.text}</Option>)
                   }
                 </Select>)}
-              </FormItem>
-            </Col>
-            <Col sm={24} lg={12}>
-              <FormItem label={this.msg('carrier')}>
-                {getFieldDecorator('ciq_partner_id', {
-                  initialValue: model.ciq_partner_id,
-                })(<Select>
-                  {
-                    ciqBrokers.map(cb =>
-                      <Option value={cb.partner_id} key={cb.partner_id}>{cb.partner_code}|{cb.name}</Option>
-                    )
-                  }
-                </Select>)}
-              </FormItem>
-            </Col>
-            <Col sm={24} lg={12}>
-              <FormItem label={this.msg('quote')}>
-                {getFieldDecorator('quote', {
-                  initialValue: model.quote_no,
-                })(<Select />)}
               </FormItem>
             </Col>
           </Row>
         </Panel>
-        <Panel header={this.msg('events')} key="events">
+        <Panel header={this.msg('bizEvents')} key="events">
           <FlowTriggerTable kind={model.kind} bizObj="tmsShipment" onNodeActionsChange={onNodeActionsChange} />
         </Panel>
       </Collapse>

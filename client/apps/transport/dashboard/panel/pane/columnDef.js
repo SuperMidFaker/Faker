@@ -33,9 +33,7 @@ export const columnDef = handle => [{
   render: (o, record) => {
     let deliverActDate = null;
     if (record.deliver_act_date) {
-      const deliverPrmDate = new Date(record.pickup_act_date);
-      deliverPrmDate.setDate(deliverPrmDate.getDate() + record.transit_time);
-      deliverActDate = (<ActDate actDate={record.deliver_act_date} estDate={deliverPrmDate} textBefore={`${handle.msg('shipmtActDeliveryDate')}:`} />);
+      deliverActDate = (<ActDate actDate={record.deliver_act_date} estDate={record.deliver_est_date} textBefore={`${handle.msg('shipmtActDeliveryDate')}:`} />);
     }
     return (
       <div>

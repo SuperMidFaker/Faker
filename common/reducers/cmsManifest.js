@@ -32,6 +32,7 @@ const actionTypes = createActionTypes('@@welogix/cms/manifest/', [
   'DELETE_SELECTED_BODIES', 'DELETE_SELECTED_BODIES_SUCCEED', 'DELETE_SELECTED_BODIES_FAIL',
   'OPEN_RULE_MODEL', 'CLOSE_RULE_MODEL',
   'SAVE_BILL_RULES', 'SAVE_BILL_RULES_SUCCEED', 'SAVE_BILL_RULES_FAIL',
+  'CLEAN_HEAD_DATAS', 'CLEAN_HEAD_DATAS_SUCCEED', 'CLEAN_HEAD_DATAS_FAIL',
   'SET_STEP_VISIBLE',
 ]);
 
@@ -118,7 +119,9 @@ export default function reducer(state = initialState, action) {
       };
     }
     case actionTypes.DELETE_BILL_SUCCEED:
-      return { ...state, billBodies: [], billMeta: { ...state.billMeta, entries: [] } };
+      return { ...state, billHead: action.result.data.head, billBodies: [], billMeta: { ...state.billMeta, entries: [] } };
+    case actionTypes.CLEAN_HEAD_DATAS_SUCCEED:
+      return { ...state, billHead: action.result.data.head };
     case actionTypes.LOAD_BILL_BODY_SUCCEED:
       return { ...state, billBodies: action.result.data };
     case actionTypes.UPDATE_HEAD_NETWT_SUCCEED:
@@ -552,7 +555,7 @@ export function updateHeadNetWt(billSeqNo, netWt) {
   };
 }
 
-export function billDelete(billSeqNo) {
+export function billDelete(datas) {
   return {
     [CLIENT_API]: {
       types: [
@@ -562,7 +565,22 @@ export function billDelete(billSeqNo) {
       ],
       endpoint: 'v1/cms/declare/bill/delete',
       method: 'post',
-      data: { billSeqNo },
+      data: datas,
+    },
+  };
+}
+
+export function cleanHeadDatas(datas) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.CLEAN_HEAD_DATAS,
+        actionTypes.CLEAN_HEAD_DATAS_SUCCEED,
+        actionTypes.CLEAN_HEAD_DATAS_FAIL,
+      ],
+      endpoint: 'v1/cms/manifest/head/datas/delete',
+      method: 'post',
+      data: datas,
     },
   };
 }

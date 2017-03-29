@@ -192,13 +192,15 @@ export default class CustomerList extends React.Component {
                     <Col sm={24} lg={12}>
                       <FormItem label={this.msg('displayName')} >
                         {getFieldDecorator('display_name', {
-                        })(<Input onChange={this.handleInputChanged} value={customer.display_name} />)}
+                          initialValue: customer.display_name,
+                        })(<Input onChange={this.handleInputChanged} />)}
                       </FormItem>
                     </Col>
                     <Col sm={24} lg={12}>
                       <FormItem label={this.msg('englishName')} >
                         {getFieldDecorator('en_name', {
-                        })(<Input onChange={this.handleInputChanged} value={customer.en_name} />)}
+                          initialValue: customer.en_name,
+                        })(<Input onChange={this.handleInputChanged} />)}
                       </FormItem>
                     </Col>
                   </Row>

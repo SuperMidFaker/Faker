@@ -50,7 +50,7 @@ export default class TodoAcceptPane extends Component {
       tenantId: this.props.tenantId,
       filters: [
         { name: 'viewStatus', value: props.filter.viewStatus },
-        { naeme: 'loginId', value: props.loginId },
+        { name: 'loginId', value: props.loginId },
         { name: 'type', value: this.state.type },
       ],
       pageSize: this.props.podList.pageSize,

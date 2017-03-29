@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Modal, Form, Input, Checkbox, message } from 'antd';
+import { Modal, Form, Input, Checkbox, Button, Icon, Row, Col, message } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { addCustomer, editCustomer, hideSubCustomerModal } from 'common/reducers/crmCustomers';
@@ -62,9 +62,6 @@ export default class SubCustomerModal extends React.Component {
     } else if (nextProps.operation === 'add') {
       this.setState({
         parentId: nextProps.customer.id,
-        partnerCode: nextProps.customer.partner_code,
-        partnerUniqueCode: nextProps.customer.partner_unique_code || '',
-        customsCode: nextProps.customer.customs_code || '',
       });
     }
   }
@@ -132,7 +129,7 @@ export default class SubCustomerModal extends React.Component {
     });
   }
   render() {
-    const { visible, operation } = this.props;
+    const { visible, operation, customer } = this.props;
     const { businessType } = this.state;
     const businessArray = businessType !== '' ? businessType.split(',') : [];
     const formItemLayout = {
@@ -168,14 +165,38 @@ export default class SubCustomerModal extends React.Component {
             label="统一社会信用码"
             hasFeedback
           >
-            <Input placeholder="请填写18位统一社会信用代码" value={this.state.partnerUniqueCode} onChange={(e) => { this.setState({ partnerUniqueCode: e.target.value }); }} />
+            <Row gutter={5}>
+              <Col span={20}>
+                <Input placeholder="请填写18位统一社会信用代码"
+                  value={this.state.partnerUniqueCode}
+                  onChange={(e) => { this.setState({ partnerUniqueCode: e.target.value }); }}
+                />
+              </Col>
+              <Col span={2}>
+                <Button size="middle" onClick={() => this.setState({ partnerUniqueCode: customer.partner_unique_code })}>
+                  <Icon type="left" />
+                </Button>
+              </Col>
+            </Row>
           </FormItem>
           <FormItem
             {...formItemLayout}
             label="海关编码"
             hasFeedback
           >
-            <Input placeholder="请填写10位海关编码" value={this.state.customsCode} onChange={(e) => { this.setState({ customsCode: e.target.value }); }} />
+            <Row gutter={5}>
+              <Col span={20}>
+                <Input placeholder="请填写10位海关编码"
+                  value={this.state.customsCode}
+                  onChange={(e) => { this.setState({ customsCode: e.target.value }); }}
+                />
+              </Col>
+              <Col span={2}>
+                <Button size="middle" onClick={() => this.setState({ customsCode: customer.customs_code })}>
+                  <Icon type="left" />
+                </Button>
+              </Col>
+            </Row>
           </FormItem>
           <FormItem
             {...formItemLayout}

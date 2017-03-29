@@ -209,5 +209,17 @@ const messages = defineMessages({
     id: 'cms.classificagtion.tradeitem.declunit.code',
     defaultMessage: '申报单位代码',
   },
+  status: {
+    id: 'cms.classificagtion.tradeitem.status',
+    defaultMessage: '状态',
+  },
+  pass: {
+    id: 'cms.classificagtion.tradeitem.pass',
+    defaultMessage: '归类通过',
+  },
+  refuse: {
+    id: 'cms.classificagtion.tradeitem.refuse',
+    defaultMessage: '归类拒绝',
+  },
 });
 export default messages;

@@ -125,9 +125,6 @@ export default class ManifestEditor extends React.Component {
       this.props.openMergeSplitModal();
     }
   }
-  handleDock = () => {
-    this.setState({ visible: true });
-  }
   handleEntryVisit = (ev) => {
     const { ietype, billMeta } = this.props;
     const pathname = `/clearance/${ietype}/customs/${billMeta.bill_seq_no}/${ev.key}`;
@@ -169,12 +166,13 @@ export default class ManifestEditor extends React.Component {
     });
   }
   handleBillDelete = () => {
-    this.props.billDelete(this.props.billHead.bill_seq_no).then(
+    this.props.billDelete(this.props.billHead).then(
       (result) => {
         if (result.error) {
           message.error(result.error.message);
         } else {
           message.info('已删除');
+          this.props.form.resetFields();
         }
       }
     );
@@ -219,15 +217,21 @@ export default class ManifestEditor extends React.Component {
   handleSaveAsTemplate = () => {
     this.props.setStepVisible(true);
   }
+  handleLockMenu = (e) => {
+    if (e.key === 'template') {
+      this.props.setStepVisible(true);
+    }
+  }
 
   lockMenu = (
-    <Menu>
-      <Menu.Item key="lock"><Icon type="lock" /> 锁定</Menu.Item>
+    <Menu onClick={this.handleLockMenu}>
+      <Menu.Item key="lock"><Icon type="lock" /> 锁定清单</Menu.Item>
       <Menu.Item key="delete">
-        <Popconfirm title="确定删除清单?" onConfirm={this.handleBillDelete}>
-          <a> <Icon type="delete" /> 删除</a>
+        <Popconfirm title="确定删除清单表头表体数据?" onConfirm={this.handleBillDelete}>
+          <a> <Icon type="delete" /> 重置清单</a>
         </Popconfirm>
       </Menu.Item>
+      <Menu.Item key="template"><Icon type="file" /> {this.msg('saveAsTemplate')}</Menu.Item>
     </Menu>)
   render() {
     const { ietype, readonly, form: { getFieldDecorator }, form, billHead, billBodies, billMeta, templates, ...actions } = this.props;
@@ -253,11 +257,13 @@ export default class ManifestEditor extends React.Component {
                 {billMeta.bill_seq_no}
               </Breadcrumb.Item>
             </Breadcrumb>
-            {billMeta.entries.length > 0 ? (
+            {billMeta.entries.length > 0 &&
               <Dropdown overlay={declEntryMenu}>
-                <Button size="large" >生成的报关单<Icon type="down" /></Button>
+                <Button size="large">生成的报关单<Icon type="down" /></Button>
               </Dropdown>
-              ) : getFieldDecorator('model', { initialValue: billHead.template_id })(<Select
+            }
+            <div className="top-bar-tools">
+              {editable && getFieldDecorator('model', { initialValue: billHead.template_id })(<Select
                 showArrow={false}
                 placeholder="选择模板"
                 optionFilterProp="search"
@@ -269,18 +275,16 @@ export default class ManifestEditor extends React.Component {
                 {templates.map(data => (<Option key={data.id} value={data.id}
                   search={`${data.id}${data.template_name}`}
                 >{data.template_name}</Option>)
-                )}
-              </Select>)}
-            <div className="top-bar-tools">
-              <Button type="primary" size="large" icon="file" onClick={this.handleSaveAsTemplate}>{this.msg('saveAsTemplate')}</Button>
+                  )}
+              </Select>)
+              }
+              {editable && <Button type="primary" size="large" icon="addfile" onClick={this.handleGenerateEntry}>{this.msg('generateEntry')}</Button> }
               {editable &&
-                <Button type="primary" size="large" icon="addfile" onClick={this.handleGenerateEntry}>{this.msg('generateEntry')}</Button>
-                }
-              <Dropdown overlay={this.lockMenu}>
-                <Button size="large">
-                  <Icon type="setting" /> <Icon type="down" />
-                </Button>
-              </Dropdown>
+                <Dropdown overlay={this.lockMenu}><Button size="large"> 更多 <Icon type="down" /></Button></Dropdown>
+              }
+              {!editable &&
+                <Button type="primary" size="large" icon="file" onClick={this.handleSaveAsTemplate}>{this.msg('saveAsTemplate')}</Button>
+              }
               <Button size="large"
                 className={this.state.collapsed ? '' : 'btn-toggle-on'}
                 icon={this.state.collapsed ? 'folder' : 'folder-open'}

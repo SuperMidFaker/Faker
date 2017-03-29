@@ -84,7 +84,7 @@ export default class TodoAcceptPane extends Component {
           currentPage: pagination.current,
           filters: [
             { name: 'viewStatus', value: this.props.filter.viewStatus },
-            { naeme: 'loginId', value: this.props.loginId },
+            { name: 'loginId', value: this.props.loginId },
             { name: 'type', value: this.state.type },
           ],
         };
@@ -184,25 +184,25 @@ export default class TodoAcceptPane extends Component {
         } else if (record.status === SHIPMENT_TRACK_STATUS.intransit) {
           statusStr = `${statusStr}交货`;
           let badgeColor = 'warning';
-          let deliverPrmDateStr = '';
+          let deliverEstDateStr = '';
           const newDate = new Date();
           newDate.setHours(0, 0, 0, 0);
-          const deliverPrmDate = new Date(record.deliver_prm_date);
-          deliverPrmDate.setHours(0, 0, 0, 0);
+          const deliverEstDate = new Date(record.deliver_est_date);
+          deliverEstDate.setHours(0, 0, 0, 0);
 
-          if (moment(newDate).diff(deliverPrmDate, 'days') === 0) {
-            deliverPrmDateStr = '承诺送货：今天';
+          if (moment(newDate).diff(deliverEstDate, 'days') === 0) {
+            deliverEstDateStr = '计划送货：今天';
             statusEle = <Badge status={badgeColor} text={statusStr} />;
-          } else if (newDate > deliverPrmDate) {
-            deliverPrmDateStr = `承诺送货：超时 ${moment(newDate).diff(deliverPrmDate, 'days')} 天`;
+          } else if (newDate > deliverEstDate) {
+            deliverEstDateStr = `计划送货：超时 ${moment(newDate).diff(deliverEstDate, 'days')} 天`;
             badgeColor = 'error';
             statusEle = <Badge status={badgeColor} text={statusStr} />;
           }
 
 
           relatedTime = (<span>
-            <Tooltip title={deliverPrmDate ? moment(deliverPrmDate).format('YYYY.MM.DD') : ''}>
-              <span>{deliverPrmDateStr}</span>
+            <Tooltip title={deliverEstDate ? moment(deliverEstDate).format('YYYY.MM.DD') : ''}>
+              <span>{deliverEstDateStr}</span>
             </Tooltip>
           </span>);
         }

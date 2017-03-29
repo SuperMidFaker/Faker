@@ -6,6 +6,7 @@ const actionTypes = createActionTypes('@@welogix/scof/flow/', [
   'OPEN_ADD_TRIGGER_MODAL', 'CLOSE_ADD_TRIGGER_MODAL',
   'LOAD_FLOWLIST', 'LOAD_FLOWLIST_SUCCEED', 'LOAD_FLOWLIST_FAIL',
   'LOAD_CMSBIZPARAMS', 'LOAD_CMSBIZPARAMS_SUCCEED', 'LOAD_CMSBIZPARAMS_FAIL',
+  'LOAD_TMSBIZPARAMS', 'LOAD_TMSBIZPARAMS_SUCCEED', 'LOAD_TMSBIZPARAMS_FAIL',
   'LOAD_CUSTOMERQUOTES', 'LOAD_CUSTOMERQUOTES_SUCCEED', 'LOAD_CUSTOMERQUOTES_FAIL',
   'SAVE_FLOW', 'SAVE_FLOW_SUCCEED', 'SAVE_FLOW_FAIL',
   'RELOAD_FLOWLIST', 'RELOAD_FLOWLIST_SUCCEED', 'RELOAD_FLOWLIST_FAIL',
@@ -44,6 +45,7 @@ const initialState = {
     bizManifest: { trades: [], agents: [], templates: [] },
   },
   cmsQuotes: [],
+  tmsParams: { consigners: [], consignees: [], transitModes: [], packagings: [] },
 };
 
 export default function reducer(state = initialState, action) {
@@ -66,6 +68,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, cmsParams: { ...state.cmsParams, ...action.result.data } };
     case actionTypes.LOAD_CUSTOMERQUOTES_SUCCEED:
       return { ...state, cmsQuotes: action.result.data };
+    case actionTypes.LOAD_TMSBIZPARAMS_SUCCEED:
+      return { ...state, tmsParams: action.result.data };
     case actionTypes.LOAD_FLOWLIST:
       return { ...state, flowListLoading: true, listFilter: JSON.parse(action.params.filter) };
     case actionTypes.LOAD_FLOWLIST_FAIL:
@@ -213,6 +217,21 @@ export function loadCustomerQuotes(tenantId, customerPartnerId) {
       method: 'get',
       origin: 'mongo',
       params: { recv_tenant_id: tenantId, send_partner_id: customerPartnerId },
+    },
+  };
+}
+
+export function loadTmsBizParams(tenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_TMSBIZPARAMS,
+        actionTypes.LOAD_TMSBIZPARAMS_SUCCEED,
+        actionTypes.LOAD_TMSBIZPARAMS_FAIL,
+      ],
+      endpoint: 'v1/scof/flow/tms/params',
+      method: 'get',
+      params: { tenantId },
     },
   };
 }
