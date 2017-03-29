@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Form, Row, Col, Card, Input, Select, Icon, InputNumber } from 'antd';
+import { Button, Form, Row, Col, Card, Input, Select, Icon } from 'antd';
 import RegionCascade from 'client/components/chinaRegionCascader';
 import { setClientForm, loadFlowNodeData } from 'common/reducers/crmOrders';
 import { uuidWithoutDash } from 'client/common/uuid';
@@ -153,100 +153,53 @@ export default class TransportForm extends Component {
     return (
       <Card>
         <Row>
-          <Col span={8}>
-            <FormItem label="运输模式" {...formItemLayout} required="true">
-              <Select value={node.trs_mode_id} onChange={this.handleTransmodeChange}>
-                {formRequires.transitModes.map(
-                  tm => <Option value={tm.id} key={`${tm.mode_code}${tm.id}`}>{tm.mode_name}</Option>
-                )}
-              </Select>
-            </FormItem>
-          </Col>
-          <Col span={8}>
-            <FormItem label="货物类型" {...formItemLayout}>
-              <Select value={node.goods_type} onChange={value => this.handleCommonFieldChange('goods_type', value)}>
-                {GOODS_TYPES.map(gt => <Option value={gt.value} key={gt.value}>{gt.text}</Option>)}
-              </Select>
-            </FormItem>
-          </Col>
-          <Col span={8}>
-            <FormItem label="包装方式" {...formItemLayout}>
-              <Select value={node.package} onChange={value => this.handleCommonFieldChange('package', value)}>
-                {formRequires.packagings.map(
-                  pk => <Option value={pk.package_code} key={pk.package_code}>{pk.package_name}</Option>
-                )}
-              </Select>
-            </FormItem>
-          </Col>
-          <Col span={8}>
-            <FormItem label={this.msg('packageNum')} {...formItemLayout}>
-              <InputNumber min={1} style={{ width: '100%' }} value={node.pack_count}
-                onChange={value => this.handleCommonFieldChange('pack_count', value)}
-              />
-            </FormItem>
-          </Col>
-          <Col span={8}>
-            <FormItem label={this.msg('delgGrossWt')} {...formItemLayout}>
-              <Input value={node.gross_wt} addonAfter="千克" type="number"
-                onChange={e => this.handleCommonFieldChange('gross_wt', e.target.value)}
-              />
-            </FormItem>
-          </Col>
-        </Row>
-
-        <Row>
-          <Col sm={6}>
-            <FormItem label="发货方" {...formItemLayout}>
-              <Select combobox value={node.consigner_id} onChange={value => this.handleConsignChange('consigner_name', value)}>
-                {formRequires.consignerLocations.map(dw =>
-                  <Option value={dw.node_id} key={dw.node_id}>{dw.name}</Option>)
-                }
-              </Select>
-            </FormItem>
-          </Col>
-          <Col sm={6}>
-            <FormItem label="始发地" {...formItemLayout}>
-              <RegionCascade defaultRegion={consignerRegion} region={consignerRegion}
-                onChange={region => this.handleRegionValueChange('consigner', region)}
-                style={{ width: '100%' }}
-              />
-            </FormItem>
-          </Col>
-          <Col sm={12}>
-            <FormItem label="提货地址" labelCol={{ span: 3 }} wrapperCol={{ span: 21 }}>
-              <Input value={node.consigner_addr}
-                onChange={e => this.handleChange('consigner_addr', e.target.value)}
-              />
-            </FormItem>
-          </Col>
-        </Row>
-        <Row>
-          <Col sm={6}>
-            <FormItem label="联系人" {...formItemLayout}>
-              <Input value={node.consigner_contact}
-                onChange={e => this.handleChange('consigner_contact', e.target.value)}
-              />
-            </FormItem>
-          </Col>
-          <Col sm={6}>
-            <FormItem label="电话" {...formItemLayout}>
-              <Input value={node.consigner_mobile} type="tel"
-                onChange={e => this.handleChange('consigner_mobile', e.target.value)}
-              />
-            </FormItem>
-          </Col>
-          <Col sm={6}>
-            <FormItem label="邮箱" {...formItemLayout}>
-              <Input value={node.consigner_email} type="email"
-                onChange={e => this.handleChange('consigner_email', e.target.value)}
-              />
-            </FormItem>
-          </Col>
-        </Row>
-
-        <Row>
           <Col sm={24}>
-            <FormItem label="收货方" {...formItemLayout}>
+            <FormItem label="发货方">
+              <Col span="6" style={{ paddingRight: 8 }}>
+                <Select size="large" combobox value={node.consigner_id}
+                  onChange={value => this.handleConsignChange('consigner_name', value)}
+                >
+                  {formRequires.consignerLocations.map(dw =>
+                    <Option value={dw.node_id} key={dw.node_id}>{dw.name}</Option>)
+                }
+                </Select>
+              </Col>
+              <Col span="18">
+                <InputGroup size="large">
+                  <Col span="8">
+                    <RegionCascade defaultRegion={consignerRegion} region={consignerRegion}
+                      onChange={region => this.handleRegionValueChange('consigner', region)}
+                    />
+                  </Col>
+                  <Col span="16">
+                    <Input prefix={<Icon type="environment-o" />} value={node.consigner_addr}
+                      onChange={e => this.handleChange('consigner_addr', e.target.value)}
+                      addonAfter={<Button size="small" icon="contacts" />}
+                    />
+                  </Col>
+                </InputGroup>
+                <InputGroup size="large">
+                  <Col span="8">
+                    <Input prefix={<Icon type="user" />} value={node.consigner_contact}
+                      onChange={e => this.handleChange('consigner_contact', e.target.value)}
+                    />
+                  </Col>
+                  <Col span="8">
+                    <Input prefix={<Icon type="mobile" />} value={node.consigner_mobile} type="tel"
+                      onChange={e => this.handleChange('consigner_mobile', e.target.value)}
+                    />
+                  </Col>
+                  <Col span="8">
+                    <Input prefix={<Icon type="mail" />} value={node.consigner_email} type="email"
+                      onChange={e => this.handleChange('consigner_email', e.target.value)}
+                    />
+                  </Col>
+                </InputGroup>
+              </Col>
+            </FormItem>
+          </Col>
+          <Col sm={24}>
+            <FormItem label="收货方">
               <Col span="6" style={{ paddingRight: 8 }}>
                 <Select size="large" combobox value={node.consignee_id}
                   onChange={value => this.handleConsignChange('consignee_name', value)}
@@ -266,6 +219,7 @@ export default class TransportForm extends Component {
                   <Col span="16">
                     <Input prefix={<Icon type="environment-o" />} value={node.consignee_addr}
                       onChange={e => this.handleChange('consignee_addr', e.target.value)}
+                      addonAfter={<Button size="small" icon="contacts" />}
                     />
                   </Col>
                 </InputGroup>
@@ -289,17 +243,46 @@ export default class TransportForm extends Component {
               </Col>
             </FormItem>
           </Col>
-        </Row>
-        <Row>
-          <Col sm={24}>
-            <FormItem label="联系人" {...formItemLayout} />
+          <Col span={8}>
+            <FormItem label="运输模式" {...formItemLayout} required="true">
+              <Select value={node.trs_mode_id} onChange={this.handleTransmodeChange}>
+                {formRequires.transitModes.map(
+                  tm => <Option value={tm.id} key={`${tm.mode_code}${tm.id}`}>{tm.mode_name}</Option>
+                )}
+              </Select>
+            </FormItem>
           </Col>
-        </Row>
-
-        <Row>
-          <Col span={18}>
-            <FormItem label="备注" labelCol={{ span: 2 }} wrapperCol={{ span: 22 }}>
+          <Col span={8}>
+            <FormItem label="货物类型" {...formItemLayout}>
+              <Select value={node.goods_type} onChange={value => this.handleCommonFieldChange('goods_type', value)}>
+                {GOODS_TYPES.map(gt => <Option value={gt.value} key={gt.value}>{gt.text}</Option>)}
+              </Select>
+            </FormItem>
+          </Col>
+          <Col span={8}>
+            <FormItem label="备注" {...formItemLayout}>
               <Input value={node.remark} onChange={e => this.handleCommonFieldChange('remark', e.target.value)} />
+            </FormItem>
+          </Col>
+          <Col span={8}>
+            <FormItem label={this.msg('packageNum')} {...formItemLayout}>
+              <InputGroup compact>
+                <Input type="number" style={{ width: '50%' }} value={node.pack_count} onChange={e => this.handleChange('pack_count', e.target.value)} />
+                <Select size="large" style={{ width: '50%' }} placeholder="选择包装方式"
+                  value={node.package} onChange={value => this.handleCommonFieldChange('package', value)}
+                >
+                  {formRequires.packagings.map(
+                    pk => <Option value={pk.package_code} key={pk.package_code}>{pk.package_name}</Option>
+                  )}
+                </Select>
+              </InputGroup>
+            </FormItem>
+          </Col>
+          <Col span={8}>
+            <FormItem label={this.msg('delgGrossWt')} {...formItemLayout}>
+              <Input value={node.gross_wt} addonAfter="千克" type="number"
+                onChange={e => this.handleCommonFieldChange('gross_wt', e.target.value)}
+              />
             </FormItem>
           </Col>
         </Row>
