@@ -88,28 +88,53 @@ export default class MergeSplitModal extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.billRule !== this.props.billRule) {
       const rule = nextProps.billRule;
-      let mergeOptArr = [];
-      if (rule.mergeOpt_arr) {
-        mergeOptArr = rule.mergeOpt_arr.split(',');
+      const mergeOptArr = [];
+      if (rule.merge_byhscode) {
+        mergeOptArr.push('byHsCode');
       }
-      let specialHsSortArr = [];
-      if (rule.specialHsSort) {
-        specialHsSortArr = rule.specialHsSort.split(',');
+      if (rule.merge_bygname) {
+        mergeOptArr.push('byGName');
+      }
+      if (rule.merge_bycurr) {
+        mergeOptArr.push('byCurr');
+      }
+      if (rule.merge_bycountry) {
+        mergeOptArr.push('byCountry');
+      }
+      if (rule.merge_bycopgno) {
+        mergeOptArr.push('byCopGNo');
+      }
+      if (rule.merge_byengno) {
+        mergeOptArr.push('byEmGNo');
+      }
+      const specialHsSortArr = [];
+      if (rule.split_spl_category) {
+        const splArr = rule.split_spl_category.split(',');
+        splArr.forEach((data) => {
+          const numData = Number(data);
+          specialHsSortArr.push(numData);
+        });
       }
       this.setState({
         mergeOpt: {
-          checked: rule.mergeOpt_checked,
+          checked: rule.merge_checked,
+          byHsCode: rule.merge_byhscode,
+          byGName: rule.merge_bygname,
+          byCurr: rule.merge_bycurr,
+          byCountry: rule.merge_bycountry,
+          byCopGNo: rule.merge_bycopgno,
+          byEmGNo: rule.merge_byengno,
         },
         splitOpt: {
-          byHsCode: rule.splitOpt_byHsCode,
-          tradeCurr: rule.splitOpt_tradeCurr,
+          byHsCode: rule.split_hscode,
+          tradeCurr: rule.split_curr,
           hsCategory: specialHsSortArr,
-          perCount: rule.splitOpt_perCount,
+          perCount: rule.split_percount,
         },
         sortOpt: {
-          customControl: rule.sortOpt_customControl,
-          decTotal: rule.sortOpt_decTotal,
-          hsCodeAsc: rule.sortOpt_hsCodeAsc,
+          customControl: rule.sort_customs,
+          decTotal: rule.sort_dectotal,
+          hsCodeAsc: rule.sort_hscode,
         },
         mergeOptArr,
       });
@@ -151,6 +176,7 @@ export default class MergeSplitModal extends React.Component {
     });
     this.setState({
       mergeOpt: opt,
+      mergeOptArr: checkeds,
     });
   }
   handleSortSelectChange = (value) => {
@@ -168,9 +194,8 @@ export default class MergeSplitModal extends React.Component {
     });
   }
   handleSplitSelectChange = (value) => {
-    this.setState({
-      splitOpt: { perCount: value },
-    });
+    const splitOpt = { ...this.state.splitOpt, perCount: value };
+    this.setState({ splitOpt });
   }
   handleCheckChange = (fieldOpt, field, value) => {
     const opt = { ...this.state[fieldOpt] };

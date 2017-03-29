@@ -96,7 +96,7 @@ export default class ManifestList extends Component {
     title: '进度',
     width: 180,
     render: (o, record) => {
-      const perVal = (record.bill_status * 20);
+      const perVal = (record.bill_status * 25);
       return (<Progress percent={perVal} strokeWidth={5} showInfo={false} />);
     },
   }, {

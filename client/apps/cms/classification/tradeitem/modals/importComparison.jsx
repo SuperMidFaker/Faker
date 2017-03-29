@@ -69,8 +69,8 @@ export default class ImportComparisonModal extends React.Component {
   }
   handleOk = () => {
     const { tenantId, loginId, loginName } = this.props;
-    const datas = this.state.dataSource.filter(data => data.feedback !== 'repeat' && data.feedback !== 'chooseGmdel' &&
-      data.feedback !== 'chooseHscode' && data.feedback !== 'wrongImHscode' && data.feedback !== 'wrongHscode' && data.feedback !== 'wrongpreHscode');
+    const datas = this.state.dataSource.filter(data => data.feedback !== 'repeat' && data.feedback !== 'prehscode'
+      && data.feedback !== 'preGmodel' && data.feedback !== 'wrongImHscode' && data.feedback !== 'wrongHscode');
     this.props.saveComparedItemDatas({ datas, tenantId, loginId, loginName }).then((result) => {
       if (result.error) {
         message.error(result.error.message);
@@ -95,16 +95,20 @@ export default class ImportComparisonModal extends React.Component {
     }
     this.setState({ dataSource, pagination });
   }
-  handleNewHscode = (row, index) => {
+  handleCodeChoose = (row, index) => {
     const dataSource = this.state.dataSource;
     const recordIdx = index + (this.state.pagination.current - 1) * this.state.pagination.pageSize;
-    dataSource[recordIdx] = { ...row, feedback: 'newhscode' };
-    this.setState({ dataSource });
-  }
-  handleNewGmodel = (row, index) => {
-    const dataSource = this.state.dataSource;
-    const recordIdx = index + (this.state.pagination.current - 1) * this.state.pagination.pageSize;
-    dataSource[recordIdx] = { ...row, feedback: 'newGmodel' };
+    let feedback = '';
+    if (row.feedback === 'prehscode') {
+      feedback = 'newhscode';
+    } else if (row.feedback === 'newhscode') {
+      feedback = 'prehscode';
+    } else if (row.feedback === 'newGmodel') {
+      feedback = 'preGmodel';
+    } else if (row.feedback === 'preGmodel') {
+      feedback = 'newGmodel';
+    }
+    dataSource[recordIdx] = { ...row, feedback };
     this.setState({ dataSource });
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
@@ -127,13 +131,13 @@ export default class ImportComparisonModal extends React.Component {
     dataIndex: 'hscode',
     width: 180,
     render: (o, record) => {
-      if (record.feedback === 'wrongImHscode' || record.feedback === 'wrongHscode') {
+      if (record.feedback === 'wrongImHscode' || record.feedback === 'wrongHscode' || record.feedback === 'impWrongHscode') {
         return (
           <Tooltip title="错误的商品编码">
             <Tag color="red">{o}</Tag>
           </Tooltip>
         );
-      } else if (record.feedback === 'newhscode') {
+      } else if (record.feedback === 'newhscode' || record.feedback === 'wrongpreHscode') {
         return (
           <Tooltip title="使用该商品编码">
             <Tag color="green">{o}</Tag>
@@ -153,6 +157,11 @@ export default class ImportComparisonModal extends React.Component {
             <Tag color="red">{o}</Tag>
           </Tooltip>
         );
+      } else if (record.feedback === 'prehscode') {
+        return (
+          <Tooltip title="使用该商品编码">
+            <Tag color="green">{o}</Tag>
+          </Tooltip>);
       } else {
         return <span>{o}</span>;
       }
@@ -179,6 +188,16 @@ export default class ImportComparisonModal extends React.Component {
     title: this.msg('preGModel'),
     dataIndex: 'item_g_model',
     width: 300,
+    render: (o, record) => {
+      if (record.feedback === 'preGmodel') {
+        return (
+          <Tooltip title="使用该规格型号">
+            <Tag color="green">{o}</Tag>
+          </Tooltip>);
+      } else {
+        return <span>{o}</span>;
+      }
+    },
   }, {
     title: this.msg('element'),
     dataIndex: 'element',
@@ -202,27 +221,47 @@ export default class ImportComparisonModal extends React.Component {
     const columns = [...this.columns];
     columns.push({
       title: this.msg('opColumn'),
-      width: 120,
+      width: 130,
       fixed: 'right',
       render: (o, record, index) => {
-        if (record.feedback === 'chooseHscode' || record.feedback === 'wrongpreHscode') {
+        if (record.feedback === 'prehscode') {
           return (
             <span>
               <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleRowDel(index)}>
                 <a role="button"><Icon type="delete" /></a>
               </Popconfirm>
               <span className="ant-divider" />
-              <RowUpdater onHit={this.handleNewHscode} label="使用新编码" row={record} index={index} />
+              <RowUpdater onHit={this.handleCodeChoose} label="使用新编码" row={record} index={index} />
             </span>
           );
-        } else if (record.feedback === 'chooseGmdel') {
+        } else if (record.feedback === 'newhscode') {
           return (
             <span>
               <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleRowDel(index)}>
                 <a role="button"><Icon type="delete" /></a>
               </Popconfirm>
               <span className="ant-divider" />
-              <RowUpdater onHit={this.handleNewGmodel} label="使用新规格型号" row={record} index={index} />
+              <RowUpdater onHit={this.handleCodeChoose} label="使用原编码" row={record} index={index} />
+            </span>
+          );
+        } else if (record.feedback === 'preGmodel') {
+          return (
+            <span>
+              <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleRowDel(index)}>
+                <a role="button"><Icon type="delete" /></a>
+              </Popconfirm>
+              <span className="ant-divider" />
+              <RowUpdater onHit={this.handleCodeChoose} label="使用新规格型号" row={record} index={index} />
+            </span>
+          );
+        } else if (record.feedback === 'newGmodel') {
+          return (
+            <span>
+              <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleRowDel(index)}>
+                <a role="button"><Icon type="delete" /></a>
+              </Popconfirm>
+              <span className="ant-divider" />
+              <RowUpdater onHit={this.handleCodeChoose} label="使用原规格型号" row={record} index={index} />
             </span>
           );
         } else {

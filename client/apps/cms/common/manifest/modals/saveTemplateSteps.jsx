@@ -14,7 +14,7 @@ const FormItem = Form.Item;
 const Step = Steps.Step;
 
 function getFieldInits(formData) {
-  const init = { mergeOptArr: [], specialHsSortArr: [] };
+  const init = { mergeOpt_arr: [], specialHsSortArr: [] };
   if (formData) {
     ['rule_currency', 'rule_orig_country', 'rule_net_wt',
     ].forEach((fd) => {
@@ -25,19 +25,38 @@ function getFieldInits(formData) {
     });
     init.rule_gunit_num = formData.rule_gunit_num ? formData.rule_gunit_num : 'g_unit_1';
     init.rule_element = formData.rule_element ? formData.rule_element : '$g_model';
-    if (formData.mergeOpt_arr) {
-      init.mergeOptArr = formData.mergeOpt_arr.split(',');
+    if (formData.merge_byhscode) {
+      init.mergeOpt_arr.push('byHsCode');
     }
-    if (formData.specialHsSort) {
-      init.specialHsSortArr = formData.specialHsSort.split(',');
+    if (formData.merge_bygname) {
+      init.mergeOpt_arr.push('byGName');
     }
-    ['mergeOpt_checked', 'sortOpt_customControl'].forEach((fd) => {
+    if (formData.merge_bycurr) {
+      init.mergeOpt_arr.push('byCurr');
+    }
+    if (formData.merge_bycountry) {
+      init.mergeOpt_arr.push('byCountry');
+    }
+    if (formData.merge_bycopgno) {
+      init.mergeOpt_arr.push('byCopGNo');
+    }
+    if (formData.merge_byengno) {
+      init.mergeOpt_arr.push('byEmGNo');
+    }
+    if (formData.split_spl_category) {
+      const splArr = formData.split_spl_category.split(',');
+      splArr.forEach((data) => {
+        const numData = Number(data);
+        init.specialHsSortArr.push(numData);
+      });
+    }
+    ['merge_checked', 'sort_customs'].forEach((fd) => {
       init[fd] = formData[fd] ? formData[fd] : 1;
     });
-    ['sortOpt_decTotal', 'sortOpt_hsCodeAsc', 'splitOpt_byHsCode', 'splitOpt_tradeCurr'].forEach((fd) => {
+    ['sort_dectotal', 'sort_hscode', 'split_hscode', 'split_curr'].forEach((fd) => {
       init[fd] = formData[fd] ? formData[fd] : 0;
     });
-    init.splitOpt_perCount = formData.splitOpt_perCount ? formData.splitOpt_perCount : 20;
+    init.split_percount = formData.split_percount ? formData.split_percount : 20;
   }
   return init;
 }
@@ -52,7 +71,6 @@ function getFieldInits(formData) {
     tenantId: state.account.tenantId,
     billRule: state.cmsManifest.billRule,
     billHead: state.cmsManifest.billHead,
-    fieldInits: getFieldInits(state.cmsManifest.billRule),
   }),
   { setStepVisible, createGeneratedTemplate, validateTempName }
 )
@@ -66,8 +84,11 @@ export default class SaveTemplateModal extends React.Component {
     current: 0,
     formData: {},
   }
-  componentWillMount() {
-    this.setState({ formData: this.props.fieldInits });
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.billRule !== this.props.billRule) {
+      const formData = getFieldInits(nextProps.billRule);
+      this.setState({ formData });
+    }
   }
   handlenext = () => {
     this.props.form.validateFields((errors) => {
@@ -114,17 +135,29 @@ export default class SaveTemplateModal extends React.Component {
       element = Mention.toString(formData.rule_element);
     }
     const mergeOptArr = this.props.form.getFieldValue('mergeOpt_arr');
-    const specialHsSortArr = this.props.form.getFieldValue('specialHsSort');
-    let mergeOpts = '';
-    if (mergeOptArr) {
-      mergeOpts = mergeOptArr.join(',');
+    const specialHsSortArr = this.props.form.getFieldValue('split_spl_category');
+    const mergeObj = { merge_byhscode: 0, merge_bygname: 0, merge_bycurr: 0, merge_bycountry: 0, merge_bycopgno: 0, merge_byengno: 0 };
+    for (const mergeOpt of mergeOptArr) {
+      if (mergeOpt === 'byHsCode') {
+        mergeObj.merge_byhscode = 1;
+      } else if (mergeOpt === 'byGName') {
+        mergeObj.merge_bygname = 1;
+      } else if (mergeOpt === 'byCurr') {
+        mergeObj.merge_bycurr = 1;
+      } else if (mergeOpt === 'byCountry') {
+        mergeObj.merge_bycountry = 1;
+      } else if (mergeOpt === 'byCopGNo') {
+        mergeObj.merge_bycopgno = 1;
+      } else if (mergeOpt === 'byEmGNo') {
+        mergeObj.merge_byengno = 1;
+      }
     }
     let specialHsSorts = '';
     if (specialHsSortArr) {
       specialHsSorts = specialHsSortArr.join(',');
     }
     const ruleDatas = { ...billHead, ...formData, ...this.props.form.getFieldsValue(),
-      rule_element: element, mergeOpt_arr: mergeOpts, specialHsSort: specialHsSorts };
+      ...mergeObj, rule_element: element, split_spl_category: specialHsSorts };
     this.props.createGeneratedTemplate({ params, ruleDatas }).then((result) => {
       if (result.error) {
         message.error(result.error.message);
