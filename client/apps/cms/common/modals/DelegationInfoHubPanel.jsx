@@ -90,7 +90,7 @@ export default class DelegationInfoHubPanel extends React.Component {
     }
     let ciqTag = '';
     if (delegation.ciq_inspect === 'NL') {
-      ciqTag = <Tag color="cyan">包装报检</Tag>;
+      ciqTag = <Tag color="cyan">包装检疫</Tag>;
     } else if (delegation.ciq_inspect === 'LA' || delegation.ciq_inspect === 'LB') {
       ciqTag = <Tag color="orange">法定检验</Tag>;
     }

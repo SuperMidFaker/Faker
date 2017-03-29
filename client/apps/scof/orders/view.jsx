@@ -4,7 +4,7 @@ import { Breadcrumb, Button, Layout } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import OrderForm from './form';
+import OrderForm from './forms/orderForm';
 import { loadOrder } from 'common/reducers/crmOrders';
 import { loadPartnerFlowList } from 'common/reducers/scofFlow';
 import messages from './message.i18n';

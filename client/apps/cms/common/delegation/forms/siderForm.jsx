@@ -39,7 +39,7 @@ export default class SiderForm extends Component {
     const { form: { getFieldDecorator }, fieldInits } = this.props;
     return (
       <div>
-        <Card className="aside-card">
+        <Card className="secondary-card">
           <Row gutter={16}>
             <Col sm={24}>
               <FormItem label={this.msg('delgInternalNo')} >

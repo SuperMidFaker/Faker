@@ -127,9 +127,7 @@ export default class ManifestHeadPanel extends React.Component {
                 </Col>
                 <Col span="16">
                   <Col span="8">
-                    <IEPort {...formProps} ietype={ietype} intl={intl} formRequire={formRequire}
-                      onSearch={this.handlePortSearch}
-                    />
+                    <IEPort {...formProps} ietype={ietype} intl={intl} formRequire={formRequire} />
                   </Col>
                   <Col span="8">
                     <IEDate {...formProps} ietype={ietype} intl={intl} formRequire={formRequire} />
@@ -162,7 +160,7 @@ export default class ManifestHeadPanel extends React.Component {
                 </Col>
                 <TradeRemission {...formProps} intl={intl} formRequire={formRequire} />
               </Row>
-              <CountryAttr {...formProps} intl={intl} formRequire={formRequire} ietype={ietype} />
+              <CountryAttr {...formProps} intl={intl} formRequire={formRequire} ietype={ietype} onSearch={this.handlePortSearch} />
               <Row>
                 <Col span="5">
                   <LicenseNo {...formProps} intl={intl} formRequire={formRequire} />

@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Collapse, Form, Row, Col, Card, Input, Radio, Select, Popover, Icon, Switch } from 'antd';
+import { Collapse, Form, Row, Col, Card, Input, Radio, Select, Steps, Popover, Icon, Switch } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { GOODSTYPES, WRAP_TYPE, SCOF_CONTAINER_TYPE, SCOF_ORDER_TRANSFER, SCOF_ORDER_TRANSMODES } from 'common/constants';
 import { setClientForm } from 'common/reducers/crmOrders';
@@ -8,6 +8,9 @@ import { loadPartnerFlowList, loadFlowGraph, loadCustomerQuotes } from 'common/r
 import Container from './container';
 import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
+import ClearanceForm from './clearanceForm';
+import TransportForm from './transportForm';
+import '../orders.less';
 
 const formatMsg = format(messages);
 const Panel = Collapse.Panel;
@@ -16,6 +19,7 @@ const Option = Select.Option;
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 const InputGroup = Input.Group;
+const Step = Steps.Step;
 
 @injectIntl
 @connect(
@@ -162,6 +166,21 @@ export default class BasicForm extends Component {
       this.props.setClientForm(-1, { containers: [] });
     }
   }
+  renderSteps = (subOrders) => {
+    const { operation } = this.props;
+    const steps = [];
+    // steps.push(<Step key={1} status="process" description={<StepNodeForm formData={formData.subOrders[0]} index={0} operation={operation} />} />);
+    for (let i = 0; i < subOrders.length; i++) {
+      const order = subOrders[i];
+      const node = order.node;
+      if (node.kind === 'import' || node.kind === 'export') {
+        steps.push(<Step key={node.node_uuid} title={node.name} status="process" description={<ClearanceForm formData={order} index={i} operation={operation} />} />);
+      } else if (node.kind === 'tms') {
+        steps.push(<Step key={node.node_uuid} title={node.name} status="process" description={<TransportForm formData={order} index={i} operation={operation} />} />);
+      }
+    }
+    return steps;
+  }
   render() {
     const { formRequires, formData, flows } = this.props;
     const formItemLayout = {
@@ -172,25 +191,22 @@ export default class BasicForm extends Component {
       labelCol: { span: 3 },
       wrapperCol: { span: 21 },
     };
-
+    const current = formData.subOrders.length || 0;
     return (
-      <div>
-        <Card title="订单需求" bodyStyle={{ padding: 8 }}>
-          <Row gutter={16} style={{ padding: 16 }}>
-            <Col sm={16}>
-              <FormItem label="客户" {...spanFormItemLayout} required="true">
-                <Select showSearch optionFilterProp="children"
-                  value={formData.customer_partner_id}
-                  onChange={value => this.handleClientChange(value)}
-                >
-                  {formRequires.clients.map(data => (
-                    <Option key={data.partner_id} value={data.partner_id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>)
-                    )}
-                </Select>
-              </FormItem>
-            </Col>
-          </Row>
-          <Collapse bordered={false} defaultActiveKey={['trading', 'shipment']}>
+      <Form layout="horizontal" className="order-flow-form">
+        <Card title={<span>客户需求
+          <Select size="large" placeholder="请选择客户" showSearch optionFilterProp="children"
+            value={formData.customer_partner_id}
+            onChange={value => this.handleClientChange(value)}
+            style={{ width: '50%', marginLeft: 24 }}
+          >
+            {formRequires.clients.map(data => (
+              <Option key={data.partner_id} value={data.partner_id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>)
+            )}
+          </Select></span>}
+          bodyStyle={{ padding: 8 }}
+        >
+          <Collapse bordered={false} defaultActiveKey={['trading', 'shipment', 'consignment']}>
             <Panel header="贸易信息" key="trading">
               <Row gutter={16}>
                 <Col sm={8}>
@@ -327,8 +343,9 @@ export default class BasicForm extends Component {
                   </FormItem>
                 </Col>
                 <Col sm={8}>
-                  <FormItem label="包装/件数" {...formItemLayout} required="true">
+                  <FormItem label="件数/包装" {...formItemLayout} required="true">
                     <InputGroup compact>
+                      <Input type="number" style={{ width: '50%' }} value={formData.cust_shipmt_pieces} onChange={e => this.handleChange('cust_shipmt_pieces', e.target.value)} />
                       <Select size="large" style={{ width: '50%' }} placeholder="选择包装方式"
                         onChange={value => this.handleChange('cust_shipmt_wrap_type', value)}
                         value={formData.cust_shipmt_wrap_type}
@@ -339,7 +356,6 @@ export default class BasicForm extends Component {
                           )
                         }
                       </Select>
-                      <Input type="number" style={{ width: '50%' }} value={formData.cust_shipmt_pieces} onChange={e => this.handleChange('cust_shipmt_pieces', e.target.value)} />
                     </InputGroup>
                   </FormItem>
                 </Col>
@@ -351,6 +367,10 @@ export default class BasicForm extends Component {
               </Row>
             </Panel>
             <Panel header="收发货信息" key="consignment">
+              <Steps size="small" direction="vertical">
+                <Step status="wait" title="发货方" icon={<Icon type="logout" />} />
+                <Step status="wait" title="收货方" icon={<Icon type="login" />} />
+              </Steps>
               <Row gutter={16}>
                 { (formData.cust_shipmt_transfer === 'IMP') &&
                 <Col sm={24}>
@@ -376,13 +396,20 @@ export default class BasicForm extends Component {
             </Panel>
           </Collapse>
         </Card>
-        <Card title={<span>订单流程<Select size="large" placeholder="请选择流程规则" showSearch optionFilterProp="children"
-          value={formData.flow_id} onChange={this.handleFlowChange} style={{ width: '50%', marginLeft: 24 }}
+        <Card title={<span>执行流程
+          <Select size="large" placeholder="请选择流程规则" showSearch allowClear optionFilterProp="children"
+            value={formData.flow_id} onChange={this.handleFlowChange} style={{ width: '50%', marginLeft: 24 }}
+          >
+            {flows.map(data => <Option key={data.id} value={data.id}>{data.name}</Option>)}
+          </Select></span>}
+          className="secondary-card"
+          bodyStyle={{ padding: 16 }}
         >
-          {flows.map(data => <Option key={data.id} value={data.id}>{data.name}</Option>)}
-        </Select></span>} bodyStyle={{ padding: 0 }}
-        />
-      </div>
+          <Steps direction="vertical" current={current}>
+            {this.renderSteps(formData.subOrders)}
+          </Steps>
+        </Card>
+      </Form>
     );
   }
 }

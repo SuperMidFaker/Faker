@@ -35,7 +35,7 @@ export default class SiderForm extends Component {
             </FormItem>
           </Col>
         </Card>
-        <Card title="Trade Classification" className="aside-card">
+        <Card title="Trade Classification" className="secondary-card">
           <Row gutter={16}>
             <Col sm={24}>
               <FormItem label={this.msg('hsCode')} >

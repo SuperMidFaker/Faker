@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { Button, Col, Modal, Form, Checkbox, Input, InputNumber, Radio, Row, Select } from 'antd';
+import { Button, Card, Col, Modal, Form, Checkbox, Icon, Input, InputNumber, Radio, Row, Select } from 'antd';
 import { closeAddTriggerModal } from 'common/reducers/scofFlow';
 import { uuidWithoutDash } from 'client/common/uuid';
 import { formatMsg } from '../../message.i18n';
@@ -24,41 +24,43 @@ function CreateActionForm(props) {
     onChange(actionKey, value, index);
   }
   return (
-    <Row gutter={16}>
-      <Col sm={24} lg={8}>
-        <FormItem label={msg('triggerMode')}>
-          <RadioGroup value={action.instant ? 'instant' : 'scheduled'} onChange={ev => handleChange('instant', ev.target.value === 'instant')}>
-            <RadioButton value="instant"><i className="icon icon-fontello-flash-1" />{msg('instantTrigger')}</RadioButton>
-            <RadioButton value="scheduled"><i className="icon icon-fontello-back-in-time" />{msg('scheduledTrigger')}</RadioButton>
-          </RadioGroup>
-        </FormItem>
-      </Col>
-      <Col sm={24} lg={8}>
-        <FormItem label={msg('triggerTimer')}>
-          {action.instant && <span>-</span>}
-          {!action.instant && <span>{msg('timerWait')}
-            <InputNumber value={action.delay} min={1} max={3600} style={{ width: '25%' }}
-              onChange={value => handleChange('delay', value)}
-            />
-            {msg('timerMinutes')}</span>}
-        </FormItem>
-      </Col>
-      <Col sm={24} lg={8}>
-        <FormItem label={msg('triggerAction')}>
-          <Select value={action.type} onChange={value => handleChange('type', value)}>
-            <Option value="CREATE">{msg('actionCreate')}</Option>
-            <Option value="NOTIFY">{msg('actionNotify')}</Option>
-          </Select>
-        </FormItem>
-      </Col>
-      <Col sm={24} lg={24}>
-        <FormItem>
-          <Select value={action.biz_object} onChange={value => handleChange('biz_object', value)}>
-            {bizObjectOptions.map(bo => <Option value={bo.key} key={bo.key}>{bo.text}</Option>)}
-          </Select>
-        </FormItem>
-      </Col>
-    </Row>);
+    <Card extra={<a href="#"><Icon type="delete" /></a>}>
+      <Row gutter={16}>
+        <Col sm={24} lg={8}>
+          <FormItem label={msg('triggerMode')}>
+            <RadioGroup value={action.instant ? 'instant' : 'scheduled'} onChange={ev => handleChange('instant', ev.target.value === 'instant')}>
+              <RadioButton value="instant"><i className="icon icon-fontello-flash-1" />{msg('instantTrigger')}</RadioButton>
+              <RadioButton value="scheduled"><i className="icon icon-fontello-back-in-time" />{msg('scheduledTrigger')}</RadioButton>
+            </RadioGroup>
+          </FormItem>
+        </Col>
+        <Col sm={24} lg={8}>
+          <FormItem label={msg('triggerTimer')}>
+            {action.instant && <span>-</span>}
+            {!action.instant && <span>{msg('timerWait')}
+              <InputNumber value={action.delay} min={1} max={3600} style={{ width: '25%' }}
+                onChange={value => handleChange('delay', value)}
+              />
+              {msg('timerMinutes')}</span>}
+          </FormItem>
+        </Col>
+        <Col sm={24} lg={8}>
+          <FormItem label={msg('triggerAction')}>
+            <Select value={action.type} onChange={value => handleChange('type', value)}>
+              <Option value="CREATE">{msg('actionCreate')}</Option>
+              <Option value="NOTIFY">{msg('actionNotify')}</Option>
+            </Select>
+          </FormItem>
+        </Col>
+        <Col sm={24} lg={24}>
+          <FormItem>
+            <Select value={action.biz_object} onChange={value => handleChange('biz_object', value)}>
+              {bizObjectOptions.map(bo => <Option value={bo.key} key={bo.key}>{bo.text}</Option>)}
+            </Select>
+          </FormItem>
+        </Col>
+      </Row>
+    </Card>);
 }
 
 CreateActionForm.propTypes = {
@@ -73,51 +75,53 @@ function NotifyActionForm(props) {
     onChange(actionKey, value, index);
   }
   return (
-    <Row gutter={16}>
-      <Col sm={24} lg={8}>
-        <FormItem label={msg('triggerMode')}>
-          <RadioGroup value={action.instant ? 'instant' : 'scheduled'} onChange={ev => handleChange('instant', ev.target.value === 'instant')}>
-            <RadioButton value="instant"><i className="icon icon-fontello-flash-1" />{msg('instantTrigger')}</RadioButton>
-            <RadioButton value="scheduled"><i className="icon icon-fontello-back-in-time" />{msg('scheduledTrigger')}</RadioButton>
-          </RadioGroup>
-        </FormItem>
-      </Col>
-      <Col sm={24} lg={8}>
-        <FormItem label={msg('triggerTimer')}>
-          {action.instant && <span>-</span>}
-          {!action.instant && <span>{msg('timerWait')}
-            <InputNumber value={action.delay} min={1} max={3600} style={{ width: '25%' }}
-              onChange={value => handleChange('delay', value)}
-            />
-            {msg('timerMinutes')}</span>}
-        </FormItem>
-      </Col>
-      <Col sm={24} lg={8}>
-        <FormItem label={msg('triggerAction')}>
-          {
-            <Select value={action.type} onChange={value => handleChange('type', value)}>
-              <Option value="CREATE" key="CREATE">{msg('actionCreate')}</Option>
-              <Option value="NOTIFY" key="NOTIFY">{msg('actionNotify')}</Option>
-            </Select>
-          }
-        </FormItem>
-      </Col>
-      <Col sm={24} lg={8}>
-        <FormItem>
-          <Input placeholder={msg('receiverPlaceholder')} />
-        </FormItem>
-      </Col>
-      <Col sm={24} lg={8}>
-        <FormItem >
-          <Select placeholder={msg('content')} />
-        </FormItem>
-      </Col>
-      <Col sm={24} lg={8}>
-        <FormItem>
-          <CheckboxGroup options={notifyOptions} defaultValue={['email', 'wechat']} />
-        </FormItem>
-      </Col>
-    </Row>);
+    <Card extra={<a href="#"><Icon type="delete" /></a>}>
+      <Row gutter={16}>
+        <Col sm={24} lg={8}>
+          <FormItem label={msg('triggerMode')}>
+            <RadioGroup value={action.instant ? 'instant' : 'scheduled'} onChange={ev => handleChange('instant', ev.target.value === 'instant')}>
+              <RadioButton value="instant"><i className="icon icon-fontello-flash-1" />{msg('instantTrigger')}</RadioButton>
+              <RadioButton value="scheduled"><i className="icon icon-fontello-back-in-time" />{msg('scheduledTrigger')}</RadioButton>
+            </RadioGroup>
+          </FormItem>
+        </Col>
+        <Col sm={24} lg={8}>
+          <FormItem label={msg('triggerTimer')}>
+            {action.instant && <span>-</span>}
+            {!action.instant && <span>{msg('timerWait')}
+              <InputNumber value={action.delay} min={1} max={3600} style={{ width: '25%' }}
+                onChange={value => handleChange('delay', value)}
+              />
+              {msg('timerMinutes')}</span>}
+          </FormItem>
+        </Col>
+        <Col sm={24} lg={8}>
+          <FormItem label={msg('triggerAction')}>
+            {
+              <Select value={action.type} onChange={value => handleChange('type', value)}>
+                <Option value="CREATE" key="CREATE">{msg('actionCreate')}</Option>
+                <Option value="NOTIFY" key="NOTIFY">{msg('actionNotify')}</Option>
+              </Select>
+            }
+          </FormItem>
+        </Col>
+        <Col sm={24} lg={8}>
+          <FormItem>
+            <Input placeholder={msg('receiverPlaceholder')} />
+          </FormItem>
+        </Col>
+        <Col sm={24} lg={8}>
+          <FormItem >
+            <Select placeholder={msg('content')} />
+          </FormItem>
+        </Col>
+        <Col sm={24} lg={8}>
+          <FormItem>
+            <CheckboxGroup options={notifyOptions} defaultValue={['email', 'wechat']} />
+          </FormItem>
+        </Col>
+      </Row>
+    </Card>);
 }
 
 NotifyActionForm.propTypes = {

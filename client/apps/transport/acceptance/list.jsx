@@ -288,21 +288,40 @@ export default class AcceptList extends React.Component {
   handleCreateBtnClick = () => {
     this.context.router.push('/transport/shipment/create');
   }
-  handleShipmtAccept(dispId, ev) {
+  isCompleteShipment(shipmt) {
+    return shipmt.consigner_name && shipmt.consignee_province &&
+      shipmt.deliver_est_date && shipmt.pickup_est_date;
+  }
+  handleShipmtAccept(row, ev) {
     ev.preventDefault();
     ev.stopPropagation();
+    if (!this.isCompleteShipment(row)) {
+      message.error('运单信息未完整, 请完善');
+      return;
+    }
     this.props.loadAcceptDispatchers(
-      this.props.tenantId, [dispId]
+      this.props.tenantId, [row.key]
     ).then((result) => {
       if (result.error) {
         message.error(result.error.message);
       }
     });
-    this.setState({ selectedRowKeys: [dispId] });
+    this.setState({ selectedRowKeys: [row.key] });
   }
   handleShipmtsAccept(dispIds, ev) {
     ev.preventDefault();
     ev.stopPropagation();
+    let valid = true;
+    for (let i = 0; i < dispIds.length; i++) {
+      const shipmt = this.props.shipmentlist.data.filter(shl => shl.key === dispIds[i])[0];
+      if (!this.isCompleteShipment(shipmt)) {
+        valid = false;
+        break;
+      }
+    }
+    if (!valid) {
+      return;
+    }
     this.props.loadAcceptDispatchers(
       this.props.tenantId, dispIds
     ).then((result) => {
@@ -383,7 +402,7 @@ export default class AcceptList extends React.Component {
             return (
               <PrivilegeCover module="transport" feature="shipment" action="edit">
                 <span>
-                  <a role="button" onClick={ev => this.handleShipmtAccept(record.key, ev)}>
+                  <a role="button" onClick={ev => this.handleShipmtAccept(record, ev)}>
                     {this.msg('shipmtAccept')}
                   </a>
                   <span className="ant-divider" />
@@ -412,7 +431,7 @@ export default class AcceptList extends React.Component {
             return (
               <span>
                 <PrivilegeCover module="transport" feature="shipment" action="edit">
-                  <a role="button" onClick={ev => this.handleShipmtAccept(record.key, ev)}>
+                  <a role="button" onClick={ev => this.handleShipmtAccept(record, ev)}>
                     {this.msg('shipmtAccept')}
                   </a>
                 </PrivilegeCover>

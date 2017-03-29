@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { Breadcrumb, Button, message, Layout } from 'antd';
-import OrderForm from './form';
+import OrderForm from './forms/orderForm';
 import { loadOrder, editOrder } from 'common/reducers/crmOrders';
 import { loadPartnerFlowList, loadCustomerQuotes } from 'common/reducers/scofFlow';
 import messages from './message.i18n';

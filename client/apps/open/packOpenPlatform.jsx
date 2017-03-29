@@ -44,7 +44,7 @@ export default class OpenPlatformPack extends React.Component {
                   </NavLink>
                 </Menu.Item>
               </SubMenu>
-              <SubMenu key="api" title={<span><Icon type="swap" /><span>开放API接口</span></span>}>
+              <SubMenu key="api" title={<span><Icon type="api" /><span>开放API接口</span></span>}>
                 <Menu.Item key="auth">
                   <NavLink to="/open/api/auth">
                     API接口授权
