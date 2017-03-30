@@ -38,6 +38,7 @@ export class FormLocalSearchSelect extends React.Component {
             getFieldDecorator(field, { rules, initialValue, ...fieldProps })(<Select
               showSearch={!!searchKeyFn}
               showArrow
+              allowClear
               optionFilterProp={searchKeyFn ? 'search' : undefined}
               placeholder={placeholder}
             >
@@ -90,7 +91,7 @@ export class FormRemoteSearchSelect extends React.Component {
         >
           {disabled ? <Input disabled value={filterOpt && filterOpt.text} /> :
             getFieldDecorator(field, { rules, initialValue, ...fieldProps })(
-              <Select disabled={disabled} showSearch onSearch={this.handleSearch}>
+              <Select disabled={disabled} showSearch allowClear onSearch={this.handleSearch}>
                 {
               options.map(opt => <Option key={opt.value}>{opt.text}</Option>)
             }

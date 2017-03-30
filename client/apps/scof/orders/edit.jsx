@@ -33,7 +33,7 @@ function fetchData({ location, dispatch }) {
   }),
   { editOrder, loadPartnerFlowList, loadCustomerQuotes }
 )
-export default class Edit extends Component {
+export default class EditOrder extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -42,6 +42,9 @@ export default class Edit extends Component {
     tenantName: PropTypes.string.isRequired,
     formData: PropTypes.object.isRequired,
     editOrder: PropTypes.func.isRequired,
+  }
+  static contextTypes = {
+    router: PropTypes.object.isRequired,
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.formData.customer_partner_id !== this.props.formData.customer_partner_id) {

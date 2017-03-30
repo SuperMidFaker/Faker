@@ -1020,14 +1020,14 @@ export function RaDeclManulNo(props) {
   );
 }
 
-ContainerNo.propTypes = {
+RaDeclManulNo.propTypes = {
   intl: intlShape.isRequired,
   getFieldDecorator: PropTypes.func.isRequired,
   formData: PropTypes.object.isRequired,
 };
 
 // 保税/监管场所 货场代码
-export function StroeYard(props) {
+export function StoreYard(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const { formData, getFieldDecorator } = props;
   const grosswtProps = {
@@ -1060,7 +1060,7 @@ export function StroeYard(props) {
   );
 }
 
-PackWeight.propTypes = {
+StoreYard.propTypes = {
   intl: intlShape.isRequired,
   getFieldDecorator: PropTypes.func.isRequired,
   formData: PropTypes.object.isRequired,

@@ -230,9 +230,7 @@ export default class BasicForm extends Component {
                 <Col sm={8}>
                   <FormItem label="货物流向" {...formItemLayout} required="true">
                     <RadioGroup value={formData.cust_shipmt_transfer} onChange={ev => this.handleChange('cust_shipmt_transfer', ev.target.value)}>
-                      <RadioButton value={SCOF_ORDER_TRANSFER[0].value}>{SCOF_ORDER_TRANSFER[0].text}</RadioButton>
-                      <RadioButton value={SCOF_ORDER_TRANSFER[1].value}>{SCOF_ORDER_TRANSFER[1].text}</RadioButton>
-                      <RadioButton value={SCOF_ORDER_TRANSFER[2].value}>{SCOF_ORDER_TRANSFER[2].text}</RadioButton>
+                      {SCOF_ORDER_TRANSFER.map(sot => <RadioButton value={sot.value}>{sot.text}</RadioButton>)}
                     </RadioGroup>
                   </FormItem>
                 </Col>

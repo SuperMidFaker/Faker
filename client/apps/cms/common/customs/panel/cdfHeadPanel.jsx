@@ -6,22 +6,13 @@ import FormInput from '../../form/formInput';
 import {
   RelationAutoCompSelect, IEPort, IEDate, DeclDate, Transport, ContractNo, LicenseNo, TermConfirm,
   TradeRemission, CountryAttr, TradeMode, Fee, ContainerNo, PackWeight, Pieces,
-  RaDeclManulNo, StroeYard,
+  RaDeclManulNo, StoreYard,
 } from '../../form/headFormItems';
 import { loadSearchedParam, saveBillHead } from 'common/reducers/cmsManifest';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 
 const formatMsg = format(messages);
-
-const CODE_AS_STATE = {
-  trade_co: 'trades',
-  owner_code: 'owners',
-  agent_code: 'agents',
-  trade_custco: 'trades',
-  owner_custco: 'owners',
-  agent_custco: 'agents',
-};
 
 @injectIntl
 @connect(
@@ -43,36 +34,7 @@ export default class CDFHeadPanel extends React.Component {
     onSave: PropTypes.func.isRequired,
   }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
-  handleSheetSave = (ev) => {
-    ev.stopPropagation();
-    ev.preventDefault();
-    this.props.onSave();
-  }
-  handleRelationSel = (codeField, custCodeField, nameField, value) => {
-    let rels = this.props.formRequire[CODE_AS_STATE[codeField]].filter(rel => rel.code === value);
-    if (rels.length === 0) {
-      rels = this.props.formRequire[CODE_AS_STATE[custCodeField]].filter(rel => rel.custcode === value);
-    }
-    if (rels.length === 1) {
-      this.props.form.setFieldsValue({
-        [codeField]: rels[0].code,
-        [custCodeField]: rels[0].custcode,
-        [nameField]: rels[0].name,
-      });
-    }
-  }
-  handleRelationChange = (codeField, custCodeField, nameField, value) => {
-    if (value === undefined || value === '') {
-      this.props.form.setFieldsValue({
-        [codeField]: '',
-        [custCodeField]: '',
-        [nameField]: '',
-      });
-    }
-  }
-  handlePortSearch = (field, search) => {
-    this.props.loadSearchedParam({ paramType: 'port', search });
-  }
+
   render() {
     const { form, readonly, formData, formRequire, ietype, intl, ruleRequired } = this.props;
     const formProps = {
@@ -109,15 +71,12 @@ export default class CDFHeadPanel extends React.Component {
                   <RelationAutoCompSelect label={this.msg('forwardName')} intl={intl}
                     codeField="trade_co" nameField="trade_name" custCodeField="trade_custco"
                     codeRules={[{ required: true }]} nameRules={[{ required: true }]}
-                    onSelect={this.handleRelationSel} onChange={this.handleRelationChange}
                     {...formProps} options={formRequire.trades}
                   />
                 </Col>
                 <Col span="16">
                   <Col span="8">
-                    <IEPort {...formProps} ietype={ietype} intl={intl} formRequire={formRequire}
-                      onSearch={this.handlePortSearch}
-                    />
+                    <IEPort {...formProps} ietype={ietype} intl={intl} formRequire={formRequire} />
                   </Col>
                   <Col span="8">
                     <IEDate {...formProps} ietype={ietype} intl={intl} formRequire={formRequire} />
@@ -133,7 +92,6 @@ export default class CDFHeadPanel extends React.Component {
                   ietype === 'import' ? this.msg('ownerConsumeName') : this.msg('ownerProduceName')
                 } codeField="owner_code" custCodeField="owner_custco" nameField="owner_name" intl={intl}
                     codeRules={[{ required: true }]} nameRules={[{ required: true }]}
-                    onSelect={this.handleRelationSel} onChange={this.handleRelationChange}
                     {...formProps} options={formRequire.owners}
                   />
                 </Col>
@@ -144,7 +102,6 @@ export default class CDFHeadPanel extends React.Component {
                   <RelationAutoCompSelect label={this.msg('agentName')}
                     codeField="agent_code" custCodeField="agent_custco" nameField="agent_name" intl={intl}
                     codeRules={[{ required: true }]} nameRules={[{ required: true }]}
-                    onSelect={this.handleRelationSel} onChange={this.handleRelationChange}
                     {...formProps} options={formRequire.agents}
                   />
                 </Col>
@@ -192,7 +149,7 @@ export default class CDFHeadPanel extends React.Component {
             </Row>
             <Row>
               <RaDeclManulNo {...formProps} intl={intl} formRequire={formRequire} />
-              <StroeYard {...formProps} intl={intl} formRequire={formRequire} />
+              <StoreYard {...formProps} intl={intl} formRequire={formRequire} />
             </Row>
           </Form>
         </div>

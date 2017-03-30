@@ -11,6 +11,7 @@ import AmountModel from '../modals/amountDivid';
 import RowUpdater from 'client/components/rowUpdater';
 import messages from '../../form/message.i18n';
 import RelateImportRuleModal from '../modals/relateImportRules';
+import { loadHscodes } from 'common/reducers/cmsHsCode';
 
 const formatMsg = format(messages);
 const Option = Select.Option;
@@ -67,6 +68,35 @@ ColumnSelect.proptypes = {
   options: PropTypes.array.isRequired,
 };
 
+function ColumnSearchSelect(props) {
+  const { inEdit, edit, record, field, options, onChange } = props;
+  function handleChange(value) {
+    if (onChange) {
+      onChange(field, value);
+    }
+  }
+  if (inEdit) {
+    return (
+      <Select combobox optionFilterProp="search" value={edit[field] || ''} onChange={handleChange} style={{ width: '100%' }}>
+        {
+          options.map((opt, idx) => <Option search={`${opt.search}`} value={opt.value} key={`${opt.value}${idx}`}>{opt.text}</Option>)
+        }
+      </Select>
+    );
+  } else {
+    return <span>{record[field] || ''}</span>;
+  }
+}
+
+ColumnSearchSelect.proptypes = {
+  inEdit: PropTypes.bool,
+  edit: PropTypes.object,
+  record: PropTypes.object.isRequired,
+  field: PropTypes.string.isRequired,
+  onChange: PropTypes.func,
+  options: PropTypes.array.isRequired,
+};
+
 function calculateTotal(bodies) {
   let totGrossWt = 0;
   let totWetWt = 0;
@@ -114,13 +144,19 @@ function calculateTotal(bodies) {
       text: ep.text,
       search: `${ep.value}${ep.text}`,
     })),
+    hscodes: state.cmsHsCode.hscodes,
+    hscodeData: state.cmsHsCode.hscodes.data.map(un => ({
+      value: un.hscode,
+      text: un.hscode,
+      search: un.hscode,
+    })),
     loginId: state.account.loginId,
     billHead: state.cmsManifest.billHead,
     bodyItem: state.cmsTradeitem.bodyItem,
     bodyHscode: state.cmsTradeitem.bodyHscode,
     entryHead: state.cmsManifest.entryHead,
   }),
-  { updateHeadNetWt, loadBillBody, openAmountModel, getItemForBody, getHscodeForBody, deleteSelectedBodies, openRuleModel }
+  { updateHeadNetWt, loadBillBody, openAmountModel, getItemForBody, getHscodeForBody, deleteSelectedBodies, openRuleModel, loadHscodes }
 )
 export default class ManifestBodyPanel extends React.Component {
   static propTypes = {
@@ -141,6 +177,7 @@ export default class ManifestBodyPanel extends React.Component {
     bodyItem: PropTypes.object,
     bodyHscode: PropTypes.object,
     headForm: PropTypes.object,
+    hscodes: PropTypes.object,
   }
   constructor(props) {
     super(props);
@@ -230,9 +267,9 @@ export default class ManifestBodyPanel extends React.Component {
         });
       }
     }
-    if (nextProps.bodyHscode !== this.props.bodyHscode) {
-      const hscode = nextProps.bodyHscode;
-      if (hscode) {
+    if (nextProps.hscodes !== this.props.hscodes) {
+      if (nextProps.hscodes.data.length === 1) {
+        const hscode = nextProps.hscodes.data[0];
         const unit1 = this.props.units.filter(unit => unit.text === hscode.first_unit)[0];
         const unit1Val = unit1 ? unit1.value : '';
         const unit2 = this.props.units.filter(unit => unit.text === hscode.second_unit)[0];
@@ -261,7 +298,7 @@ export default class ManifestBodyPanel extends React.Component {
   }
 
   getColumns() {
-    const { readonly, units, countries, currencies, exemptions } = this.props;
+    const { readonly, units, countries, currencies, exemptions, hscodeData } = this.props;
     const { editIndex, bodies, editBody, pagination } = this.state;
     const totalCount = bodies.length;
     const columns = [{
@@ -288,8 +325,8 @@ export default class ManifestBodyPanel extends React.Component {
       title: this.msg('codeT'),
       width: 110,
       render: (o, record, index) =>
-        <ColumnInput field="codes" inEdit={index === editIndex} record={record}
-          onChange={this.handleEditChange} edit={editBody}
+        <ColumnSearchSelect field="codes" inEdit={index === editIndex} record={record}
+          onChange={this.handleEditChange} options={hscodeData} edit={editBody}
         />,
     }, {
       title: this.msg('gName'),
@@ -504,8 +541,15 @@ export default class ManifestBodyPanel extends React.Component {
         copProdNo: value,
       });
     }
-    if (field === 'codes' && !this.props.bodyItem) {
-      this.props.getHscodeForBody({ hscode: value });
+    if (field === 'codes') {
+      // this.props.getHscodeForBody({ hscode: value });
+      const { hscodes } = this.props;
+      this.props.loadHscodes({
+        tenantId: this.props.tenantId,
+        pageSize: hscodes.pageSize,
+        current: hscodes.current,
+        searchText: value,
+      });
     }
   }
   handleEdit = (row, index) => {

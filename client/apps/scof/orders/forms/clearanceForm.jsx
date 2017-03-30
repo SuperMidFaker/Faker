@@ -94,6 +94,8 @@ export default class ClearanceForm extends Component {
               </Select>
             </FormItem>
           </Col>
+        </Row>
+        <Row>
           <Col sm={24} lg={8}>
             <FormItem label={this.msg('transferMode')} {...formItemLayout}>
               <Select value={node.trans_mode} onChange={value => this.handleChange('trans_mode', value)}>
@@ -107,14 +109,22 @@ export default class ClearanceForm extends Component {
           </Col>
           <Col sm={24} lg={8}>
             <FormItem label="运输工具" {...formItemLayout}>
-              <Input value={node.remark} onChange={ev => this.handleChange('remark', ev.target.value)} />
+              { node.trans_mode === '2' ?
+                <InputGroup compact>
+                  <Input style={{ width: '60%' }} value={node.traf_name} onChange={ev => this.handleChange('traf_name', ev.target.value)} />
+                  <Input style={{ width: '40%' }} placeholder="航次号" value={node.voyage_no} onChange={ev => this.handleChange('voyage_no', ev.target.value)} />
+                </InputGroup>
+                :
+                <Input value={node.traf_name} onChange={ev => this.handleChange('traf_name', ev.target.value)} />}
             </FormItem>
           </Col>
           <Col sm={24} lg={8}>
             <FormItem label="提运单号" {...formItemLayout}>
-              <Input value={node.remark} onChange={ev => this.handleChange('remark', ev.target.value)} />
+              <Input value={node.bl_wb_no} onChange={ev => this.handleChange('bl_wb_no', ev.target.value)} />
             </FormItem>
           </Col>
+        </Row>
+        <Row>
           <Col sm={24} lg={8}>
             <FormItem label={this.msg('packageNum')} {...formItemLayout}>
               <InputGroup compact>

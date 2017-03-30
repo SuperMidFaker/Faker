@@ -13,6 +13,7 @@ const RadioGroup = Radio.Group;
 const formatMsg = format(messages);
 const FormItem = Form.Item;
 const Option = Select.Option;
+const InputGroup = Input.Group;
 
 function getFieldInits(aspect, formData) {
   const init = {};
@@ -83,11 +84,11 @@ export default class MainForm extends Component {
       };
     }
     let transModeLabel = {
-      label: '',
+      label: '提运单号',
       title: '',
     };
     let voyageNoLabel = {
-      label: '',
+      label: '运输工具名称',
       placeholder: '',
     };
     if (getFieldValue('trans_mode') === '2' || fieldInits.trans_mode === '2') {
@@ -96,7 +97,7 @@ export default class MainForm extends Component {
         title: '填报提单号。如有分提单的，填报提单号*分提单号',
       };
       voyageNoLabel = {
-        label: formatMsg(this.props.intl, 'voyageNo'),
+        label: '运输工具名称/航次号',
         placeholder: '填写船舶英文名称',
       };
     } else if (getFieldValue('trans_mode') === '5' || fieldInits.trans_mode === '5') {
@@ -105,15 +106,15 @@ export default class MainForm extends Component {
         title: '填报总运单号_分运单号，无分运单的填报总运单号',
       };
       voyageNoLabel = {
-        label: formatMsg(this.props.intl, 'flightNo'),
+        label: '运输工具名称',
         placeholder: '填写航班号',
       };
     }
     return (
       <div>
-        <Card>
+        <Card bodyStyle={{ padding: 16 }}>
           <Row gutter={16}>
-            <Col sm={24} lg={24}>
+            <Col sm={24} lg={8}>
               <FormItem label={this.msg('delgClient')} style={{ display: customerName.display }}>
                 {getFieldDecorator('customer_name', {
                   rules: [{
@@ -134,31 +135,6 @@ export default class MainForm extends Component {
                   )}
               </FormItem>
             </Col>
-            <Col sm={24} lg={8}>
-              <FormItem label={this.msg('invoiceNo')} >
-                {getFieldDecorator('invoice_no', {
-                  initialValue: fieldInits.invoice_no,
-                })(<Input />)}
-              </FormItem>
-            </Col>
-            <Col sm={24} lg={8}>
-              <FormItem label={this.msg('orderNo')} >
-                {getFieldDecorator('order_no', {
-                  initialValue: fieldInits.order_no,
-                })(<Input />)}
-              </FormItem>
-            </Col>
-            <Col sm={24} lg={8}>
-              <FormItem label={this.msg('contractNo')} >
-                {getFieldDecorator('contract_no', {
-                  initialValue: fieldInits.contract_no,
-                })(<Input />)}
-              </FormItem>
-            </Col>
-          </Row>
-        </Card>
-        <Card bodyStyle={{ padding: 16 }}>
-          <Row gutter={16}>
             <Col sm={24} lg={8}>
               <FormItem label={this.msg('declareWay')} >
                 {getFieldDecorator('decl_way_code', {
@@ -188,6 +164,31 @@ export default class MainForm extends Component {
               </FormItem>
             </Col>
             <Col sm={24} lg={8}>
+              <FormItem label={this.msg('invoiceNo')} >
+                {getFieldDecorator('invoice_no', {
+                  initialValue: fieldInits.invoice_no,
+                })(<Input />)}
+              </FormItem>
+            </Col>
+            <Col sm={24} lg={8}>
+              <FormItem label={this.msg('orderNo')} >
+                {getFieldDecorator('order_no', {
+                  initialValue: fieldInits.order_no,
+                })(<Input />)}
+              </FormItem>
+            </Col>
+            <Col sm={24} lg={8}>
+              <FormItem label={this.msg('contractNo')} >
+                {getFieldDecorator('contract_no', {
+                  initialValue: fieldInits.contract_no,
+                })(<Input />)}
+              </FormItem>
+            </Col>
+          </Row>
+        </Card>
+        <Card bodyStyle={{ padding: 16 }}>
+          <Row gutter={16}>
+            <Col sm={24} lg={8}>
               <FormItem label={this.msg('transMode')} >
                 {getFieldDecorator('trans_mode', {
                   initialValue: fieldInits.trans_mode,
@@ -203,24 +204,18 @@ export default class MainForm extends Component {
                   )}
               </FormItem>
             </Col>
-            <Col sm={24} lg={12}>
-              {(getFieldValue('trans_mode') === '2' || getFieldValue('trans_mode') === '5') &&
-                <FormItem label={(
-                  <span>
-                    {transModeLabel.label}&nbsp;
-                    <Tooltip title={transModeLabel.title}>
-                      <Icon type="question-circle-o" />
-                    </Tooltip>
-                  </span>)}
-                >
-                  {getFieldDecorator('bl_wb_no', {
-                    initialValue: fieldInits.bl_wb_no,
-                  })(<Input />)}
+
+            <Col sm={24} lg={8}>
+              {(getFieldValue('trans_mode') === '2') ?
+                <FormItem label={voyageNoLabel.label} >
+                  {getFieldDecorator('voyage_no', {
+                    initialValue: fieldInits.voyage_no,
+                  })(<InputGroup compact>
+                    <Input style={{ width: '60%' }} />
+                    <Input style={{ width: '40%' }} placeholder="航次号" />
+                  </InputGroup>)}
                 </FormItem>
-              }
-            </Col>
-            <Col sm={24} lg={12}>
-              {(getFieldValue('trans_mode') === '2' || getFieldValue('trans_mode') === '5') &&
+                :
                 <FormItem label={voyageNoLabel.label} >
                   {getFieldDecorator('voyage_no', {
                     initialValue: fieldInits.voyage_no,
@@ -228,6 +223,22 @@ export default class MainForm extends Component {
                 </FormItem>
               }
             </Col>
+            <Col sm={24} lg={8}>
+              <FormItem label={(
+                <span>
+                  {transModeLabel.label}&nbsp;
+                  <Tooltip title={transModeLabel.title}>
+                    <Icon type="question-circle-o" />
+                  </Tooltip>
+                </span>)}
+              >
+                {getFieldDecorator('bl_wb_no', {
+                  initialValue: fieldInits.bl_wb_no,
+                })(<Input />)}
+              </FormItem>
+            </Col>
+          </Row>
+          <Row gutter={16}>
             <Col sm={24} lg={12}>
               {getFieldValue('trans_mode') === '2' &&
                 <FormItem label="换单" >

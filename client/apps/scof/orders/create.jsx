@@ -25,7 +25,7 @@ const { Header, Content } = Layout;
   }),
   { submitOrder }
 )
-export default class Create extends Component {
+export default class CreateOrder extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,

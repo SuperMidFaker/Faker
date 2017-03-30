@@ -185,7 +185,13 @@ export default class ManifestEditor extends React.Component {
           message.error(result.error.message);
         } else {
           const formData = result.data.formData;
-          this.setState({ headData: formData });
+          for (const key in formData) {
+            if (!formData[key]) {
+              delete formData[key];
+            }
+          }
+          const headData = { ...this.props.billHead, ...formData };
+          this.setState({ headData });
           const rules = {
             template_id: formData.template_id,
             rule_g_name: formData.rule_g_name,
