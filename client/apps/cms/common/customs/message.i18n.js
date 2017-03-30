@@ -133,6 +133,10 @@ export default defineMessages({
     id: 'cms.customs.send',
     defaultMessage: '发送',
   },
+  sendPackets: {
+    id: 'cms.customs.send.packets',
+    defaultMessage: '发送报文',
+  },
   preEntryId: {
     id: 'cms.customs.form.pre.entry.id',
     defaultMessage: '预录入编号',

@@ -440,11 +440,11 @@ export default class CDFBodyPanel extends React.Component {
     return (
       <div className="pane">
         <div className="pane-header">
-          <span style={{ marginLeft: 8 }}>总毛重: </span><span style={{ color: '#FF9933' }}>{totGrossWt.toFixed(3)}</span>
-          <span style={{ marginLeft: 8 }}>总净重: </span><span style={{ color: '#FF9933' }}>{totWetWt.toFixed(3)}</span>
-          <span style={{ marginLeft: 8 }}>总金额: </span><span style={{ color: '#FF9933' }}>{totTrade.toFixed(3)}</span>
+          <Button icon="export" onClick={this.handleEntrybodyExport}>导出表体数据</Button>
           <div className="toolbar-right">
-            <Button icon="export" onClick={this.handleEntrybodyExport}>导出表体数据</Button>
+            <span style={{ marginLeft: 8 }}>总毛重: </span><span style={{ color: '#FF9933' }}>{totGrossWt.toFixed(3)}</span>
+            <span style={{ marginLeft: 8 }}>总净重: </span><span style={{ color: '#FF9933' }}>{totWetWt.toFixed(3)}</span>
+            <span style={{ marginLeft: 8 }}>总金额: </span><span style={{ color: '#FF9933' }}>{totTrade.toFixed(3)}</span>
           </div>
         </div>
         <div className="panel-body table-panel">
