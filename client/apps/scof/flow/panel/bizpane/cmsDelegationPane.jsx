@@ -35,7 +35,7 @@ export default class CMSDelegationPane extends Component {
               <FormItem label={this.msg('declCustoms')}>
                 {getFieldDecorator('decl_port', {
                   initialValue: model.decl_port,
-                })(<Select showSearch>
+                })(<Select allowClear showSearch>
                   {
                     declPorts.map(dp => <Option value={dp.code} key={dp.code}>{dp.code}|{dp.name}</Option>)
                   }
@@ -46,7 +46,7 @@ export default class CMSDelegationPane extends Component {
               <FormItem label={this.msg('declWay')}>
                 {getFieldDecorator('decl_way', {
                   initialValue: model.decl_way,
-                })(<Select>
+                })(<Select allowClear>
                   {
                     declWays.map(dw =>
                       <Option value={dw.key} key={dw.key}>{dw.value}</Option>
@@ -59,7 +59,7 @@ export default class CMSDelegationPane extends Component {
               <FormItem label={this.msg('transMode')}>
                 {getFieldDecorator('trans_mode', {
                   initialValue: model.trans_mode,
-                })(<Select>
+                })(<Select allowClear>
                   {
                     TRANS_MODE.map(tr =>
                       <Option value={tr.value} key={tr.value}>{tr.text}</Option>
@@ -98,7 +98,7 @@ export default class CMSDelegationPane extends Component {
               <FormItem label={this.msg('quoteNo')}>
                 {getFieldDecorator('quote_no', {
                   initialValue: model.quote_no,
-                })(<Select>
+                })(<Select allowClear>
                   {
                     cmsQuotes.map(cq => <Option value={cq.quote_no} key={cq._id}>{cq.quote_no}</Option>)
                   }

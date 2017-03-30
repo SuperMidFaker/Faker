@@ -87,7 +87,6 @@ export default class ChinaRegionCascader extends React.Component {
     onChange: PropTypes.func.isRequired, // value参数 ['region_code', 'province', 'city','district', 'street'], country
     loadProvinces: PropTypes.func.isRequired,
     loadNextRegionList: PropTypes.func.isRequired,
-    style: React.CSSProperties,
   }
   constructor(...args) {
     super(...args);
@@ -204,9 +203,9 @@ export default class ChinaRegionCascader extends React.Component {
   }
   render() {
     const { cascadeRegion, disableCascader, chinaRegions } = this.state;
-    const { intl, style } = this.props;
+    const { intl } = this.props;
     return (
-      <Cascader size="large" style={style} options={chinaRegions} disabled={disableCascader}
+      <Cascader size="large" options={chinaRegions} disabled={disableCascader}
         placeholder={formatMsg(intl, 'defaultCascaderRegion')}
         loadData={this.handleRegionLoad} changeOnSelect
         onChange={this.handleRegionChange} value={cascadeRegion} showSearch

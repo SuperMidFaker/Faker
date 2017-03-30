@@ -87,7 +87,7 @@ export default class ClearanceForm extends Component {
           </Col>
           <Col sm={24} lg={8}>
             <FormItem label={this.msg('quoteNo')} {...formItemLayout}>
-              <Select value={node.quote_no} onChange={value => this.handleChange('quote_no', value)}>
+              <Select allowClear value={node.quote_no} onChange={value => this.handleChange('quote_no', value)}>
                 {
                   cmsQuotes.map(cq => <Option value={cq.quote_no} key={cq._id}>{cq.quote_no}</Option>)
                 }
@@ -148,7 +148,7 @@ export default class ClearanceForm extends Component {
         <Row>
           <Col sm={24} lg={8}>
             <FormItem label={this.msg('customsBroker')} {...formItemLayout}>
-              <Select showSearch value={node.customs_partner_id} onChange={value => this.handleChange('customs_partner_id', value)}>
+              <Select allowClear showSearch value={node.customs_partner_id} onChange={value => this.handleChange('customs_partner_id', value)}>
                 {
                   formRequires.customsBrokers.map(cb =>
                     <Option value={cb.partner_id} key={cb.partner_id}>{cb.partner_code}|{cb.name}</Option>
@@ -159,7 +159,7 @@ export default class ClearanceForm extends Component {
           </Col>
           <Col sm={24} lg={8}>
             <FormItem label={this.msg('ciqBroker')} {...formItemLayout}>
-              <Select showSearch value={node.ciq_partner_id} onChange={value => this.handleChange('ciq_partner_id', value)}>
+              <Select allowClear showSearch value={node.ciq_partner_id} onChange={value => this.handleChange('ciq_partner_id', value)}>
                 {
                   formRequires.ciqBrokers.map(cb =>
                     <Option value={cb.partner_id} key={cb.partner_id}>{cb.partner_code}|{cb.name}</Option>

@@ -32,7 +32,7 @@ export default class TMSShipmentPane extends Component {
               <FormItem label={this.msg('consigner')}>
                 {getFieldDecorator('consigner_id', {
                   initialValue: model.consigner_id,
-                })(<Select>
+                })(<Select allowClear>
                   {
                     consigners.map(cg => <Option value={cg.node_id} key={cg.name}>{cg.name}</Option>)
                   }
@@ -43,7 +43,7 @@ export default class TMSShipmentPane extends Component {
               <FormItem label={this.msg('consignee')}>
                 {getFieldDecorator('consignee_id', {
                   initialValue: model.consignee_id,
-                })(<Select>
+                })(<Select allowClear>
                   {
                     consignees.map(cg => <Option value={cg.node_id} key={cg.name}>{cg.name}</Option>)
                   }
@@ -54,7 +54,7 @@ export default class TMSShipmentPane extends Component {
               <FormItem label={this.msg('transitMode')}>
                 {getFieldDecorator('transit_mode', {
                   initialValue: model.transit_mode,
-                })(<Select>
+                })(<Select allowClear>
                   {
                     transitModes.map(tr =>
                       <Option value={tr.mode_code} key={tr.mode_code}>{tr.mode_name}</Option>
@@ -67,7 +67,7 @@ export default class TMSShipmentPane extends Component {
               <FormItem label={this.msg('cargoType')}>
                 {getFieldDecorator('goods_type', {
                   initialValue: model.goods_type,
-                })(<Select>
+                })(<Select allowClear>
                   {
                     GOODS_TYPES.map(gt => <Option value={gt.value} key={gt.value}>{gt.text}</Option>)
                   }
