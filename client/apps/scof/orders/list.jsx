@@ -10,13 +10,13 @@ import SearchBar from 'client/components/search-bar';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import { loadOrders, loadFormRequires, removeOrder, setClientForm, acceptOrder,
-loadOrderDetail } from 'common/reducers/crmOrders';
+import { loadOrders, loadFormRequires, removeOrder, setClientForm, acceptOrder } from 'common/reducers/crmOrders';
 import moment from 'moment';
 import PreviewPanel from './modals/preview-panel';
 import OrderNoColumn from './orderNoColumn';
 import ShipmentColumn from './shipmentColumn';
 import ProgressColumn from './progressColumn';
+import { CRM_ORDER_STATUS } from 'common/constants';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -47,9 +47,7 @@ function fetchData({ state, dispatch }) {
     tenantName: state.account.tenantName,
     loading: state.crmOrders.loading,
     orders: state.crmOrders.orders,
-  }), {
-    loadOrders, removeOrder, setClientForm, acceptOrder, loadOrderDetail,
-  }
+  }), { loadOrders, removeOrder, setClientForm, acceptOrder }
 )
 @connectNav({
   depth: 2,
@@ -68,7 +66,6 @@ export default class OrderList extends React.Component {
     removeOrder: PropTypes.func.isRequired,
     setClientForm: PropTypes.func.isRequired,
     acceptOrder: PropTypes.func.isRequired,
-    loadOrderDetail: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -139,7 +136,7 @@ export default class OrderList extends React.Component {
       dataIndex: 'order_status',
       width: 160,
       render: (o, record) => {
-        const percent = record.finish_num / record.shipmt_order_mode.split(',').length * 100;
+        const percent = record.flow_node_num ? record.finish_num / record.flow_node_num * 100 : 0;
         return (<div style={{ textAlign: 'center' }}><Progress type="circle" percent={percent} width={50} />
           <div className="mdc-text-grey table-font-small">
             <Tooltip title={moment(record.created_date).format('YYYY.MM.DD HH:mm')}>
@@ -156,11 +153,10 @@ export default class OrderList extends React.Component {
       render: (o, record) => <ProgressColumn order={record} />,
     }, {
       title: '操作',
-      dataIndex: 'id',
       width: 60,
       fixed: 'right',
       render: (o, record) => {
-        if (record.order_status === 1) {
+        if (record.order_status === CRM_ORDER_STATUS.created) {
           return (
             <div>
               <a onClick={() => this.handleAccept(record.shipmt_order_no)}><Icon type="play-circle" /></a>

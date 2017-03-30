@@ -2,7 +2,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Card, Menu, Dropdown, Icon, Form, Layout } from 'antd';
+import { Breadcrumb, Button, Card, Menu, Dropdown, Icon, Layout } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import { loadFlowGraph, loadFlowGraphItem, saveFlowGraph, setNodeActions } from 'common/reducers/scofFlow';
 import { uuidWithoutDash } from 'client/common/uuid';
@@ -24,12 +24,10 @@ const MenuItem = Menu.Item;
   }),
   { loadFlowGraph, loadFlowGraphItem, saveFlowGraph, setNodeActions }
 )
-@Form.create()
 export default class FlowDesigner extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
-    form: PropTypes.object.isRequired,
     submitting: PropTypes.bool,
     listCollapsed: PropTypes.bool.isRequired,
     currentFlow: PropTypes.shape({ id: PropTypes.number.isRequired, name: PropTypes.string.isRequired }).isRequired,
@@ -50,6 +48,7 @@ export default class FlowDesigner extends React.Component {
     };
     this.beginAdd = false;
     this.dragging = false;
+    this.formhoc = null;
   }
   componentWillMount() {
     this.props.loadFlowGraph(this.props.currentFlow.id);
@@ -71,7 +70,7 @@ export default class FlowDesigner extends React.Component {
       cwm: 'purple',
       terminal: 'black',
     };
-    this.graph.node().label('name');
+    this.graph.node().label('name', name => name);
     this.graph.node().size('kind', kind => kind === 'terminal' ? 20 : [100, 50]);
     this.graph.node().color('kind', kind => nodeColorMap[kind]);
     this.graph.node().shape('kind', kind => kind === 'terminal' ? 'circle' : 'rect');
@@ -153,7 +152,7 @@ export default class FlowDesigner extends React.Component {
     if (kind) {
       this.graph.beginAdd('node', {
         id, kind, actions: [], in_degree: 0, out_degree: 0,
-        name: kind !== 'terminal' ? `节点${this.graph.get('nodes').length + 1}` : undefined,
+        name: kind !== 'terminal' ? `节点${this.graph.get('items').filter(item => item.get('type') === 'node').length + 1}` : undefined,
       });
       this.graph.refresh();
     }
@@ -169,11 +168,10 @@ export default class FlowDesigner extends React.Component {
   handleMenuClick = (ev) => {
     this.beginAdd = true;
     const activeItem = this.state.activeItem;
-    if (activeItem) {
-      this.props.form.validateFields((err, values) => {
+    if (activeItem && this.formhoc) {
+      this.formhoc.validateFields((err, values) => {
         if (!err) {
           this.graph.update(activeItem, values);
-          this.props.form.resetFields();
           this.addNode(ev.key);
         } else {
           this.beginAdd = false;
@@ -186,11 +184,10 @@ export default class FlowDesigner extends React.Component {
   handleAddEdge = () => {
     this.beginAdd = true;
     const activeItem = this.state.activeItem;
-    if (activeItem) {
-      this.props.form.validateFields((err, values) => {
+    if (activeItem && this.formhoc) {
+      this.formhoc.validateFields((err, values) => {
         if (!err) {
           this.graph.update(activeItem, values);
-          this.props.form.resetFields();
           this.addEdge();
         } else {
           this.beginAdd = false;
@@ -214,10 +211,9 @@ export default class FlowDesigner extends React.Component {
   }
   handleActiveValidated = (item) => {
     const activeItem = this.state.activeItem;
-    if (activeItem) {
-      const values = this.props.form.getFieldsValue();
+    if (activeItem && this.formhoc) {
+      const values = this.formhoc.getFieldsValue();
       this.graph.update(activeItem, values);
-      this.props.form.resetFields();
     }
     this.handleNewItemLoad(item);
   }
@@ -251,6 +247,7 @@ export default class FlowDesigner extends React.Component {
     } else {
       this.setState({ activeItem: item });
     }
+    this.graph.refresh();
   }
   handleCondAdd = (cond, afterConds) => {
     const added = this.state.activeItem.get('model').addedConds;
@@ -302,10 +299,11 @@ export default class FlowDesigner extends React.Component {
     this.graph.update(this.state.activeItem, { actions });
     this.props.setNodeActions(actions);
   }
+  handlePanelForm = (form) => { this.formhoc = form; }
   handleSaveBtnClick = () => {
     const activeItem = this.state.activeItem;
-    if (activeItem) {
-      const values = this.props.form.getFieldsValue();
+    if (activeItem && this.formhoc) {
+      const values = this.formhoc.getFieldsValue();
       this.graph.update(activeItem, values);
     }
     const graphItems = this.graph.get('items');
@@ -321,7 +319,7 @@ export default class FlowDesigner extends React.Component {
     });
   }
   render() {
-    const { form, submitting, listCollapsed, currentFlow } = this.props;
+    const { submitting, listCollapsed, currentFlow } = this.props;
     const { activeItem } = this.state;
     return (
       <Layout>
@@ -363,20 +361,19 @@ export default class FlowDesigner extends React.Component {
               <div id="flowchart" />
             </Card>
             {activeItem &&
-            <Form layout="vertical">
               <QueueAnim animConfig={[
                 { opacity: [1, 0], translateY: [0, 50] },
                 { opacity: [1, 0], translateY: [0, -50] },
               ]}
               >
                 {activeItem.get('type') === 'node' && (activeItem.get('model').kind === 'import' || activeItem.get('model').kind === 'export') &&
-                <BizObjCMSPanel form={form} model={activeItem.get('model')} onNodeActionsChange={this.handleNodeActionsChange} key="cms" />
+                <BizObjCMSPanel onFormInit={this.handlePanelForm} model={activeItem.get('model')} onNodeActionsChange={this.handleNodeActionsChange} key="cms" />
                 }
                 {activeItem.get('type') === 'node' && (activeItem.get('model').kind === 'tms') &&
-                <BizObjTMSPanel form={form} model={activeItem.get('model')} onNodeActionsChange={this.handleNodeActionsChange} key="tms" />
+                <BizObjTMSPanel onFormInit={this.handlePanelForm} model={activeItem.get('model')} onNodeActionsChange={this.handleNodeActionsChange} key="tms" />
                 }
                 {activeItem.get('type') === 'node' && (activeItem.get('model').kind === 'cwm') &&
-                <BizObjCWMPanel form={form} model={activeItem.get('model')} onNodeActionsChange={this.handleNodeActionsChange} key="cwm" />
+                <BizObjCWMPanel onFormInit={this.handlePanelForm} model={activeItem.get('model')} onNodeActionsChange={this.handleNodeActionsChange} key="cwm" />
                 }
                 {activeItem.get('type') === 'edge' &&
                   <FlowEdgePanel model={activeItem.get('model')} source={activeItem.get('source').get('model')}
@@ -385,7 +382,6 @@ export default class FlowDesigner extends React.Component {
                   />
                 }
               </QueueAnim>
-            </Form>
             }
           </Content>
         </Layout>

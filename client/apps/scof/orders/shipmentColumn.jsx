@@ -14,30 +14,25 @@ export default class ShipmentColumn extends React.Component {
     const { shipment } = this.props;
     if (shipment) {
       let gtTag = '';
-      const goodsType = GOODSTYPES.filter(gt => gt.value === shipment.cust_shipmt_goods_type);
-      if (goodsType && goodsType[0]) {
-        if (goodsType[0].value === 1) {
-          gtTag = (<Tag color="#2db7f5">{goodsType[0].text}</Tag>);
-        } else if (goodsType[0].value === 2) {
-          gtTag = (<Tag color="#f50">{goodsType[0].text}</Tag>);
+      const goodsType = GOODSTYPES.filter(gt => gt.value === shipment.cust_shipmt_goods_type)[0];
+      if (goodsType) {
+        if (goodsType.value === 1) {
+          gtTag = (<Tag color="#2db7f5">{goodsType.text}</Tag>);
+        } else if (goodsType.value === 2) {
+          gtTag = (<Tag color="#f50">{goodsType.text}</Tag>);
         }
       }
-      let transMode = '';
-      if (shipment.cust_shipmt_trans_mode === SCOF_ORDER_TRANSMODES[0].value) {
-        transMode = (<i className={SCOF_ORDER_TRANSMODES[0].icon} />);
-      } else if (shipment.cust_shipmt_trans_mode === SCOF_ORDER_TRANSMODES[1].value) {
-        transMode = (<i className={SCOF_ORDER_TRANSMODES[1].icon} />);
-      } else if (shipment.cust_shipmt_trans_mode === SCOF_ORDER_TRANSMODES[2].value) {
-        transMode = (<i className={SCOF_ORDER_TRANSMODES[2].icon} />);
-      } else if (shipment.cust_shipmt_trans_mode === SCOF_ORDER_TRANSMODES[3].value) {
-        transMode = (<i className={SCOF_ORDER_TRANSMODES[3].icon} />);
+      let transModeDom = '';
+      const transMode = SCOF_ORDER_TRANSMODES.filter(sot => sot.value === shipment.cust_shipmt_trans_mode)[0];
+      if (transMode) {
+        transModeDom = <i className={transMode.icon} />;
       }
-      const wrapType = WRAP_TYPE.filter(wt => wt.value === shipment.cust_shipmt_package);
+      const wrapType = WRAP_TYPE.filter(wt => wt.value === shipment.cust_shipmt_package)[0];
       return (
         <Row type="flex">
           <Col className="col-flex-primary">
-            <div>{transMode} {shipment.cust_shipmt_bill_lading} {shipment.cust_shipmt_mawb && `${shipment.cust_shipmt_mawb}_${shipment.cust_shipmt_hawb}`}</div>
-            <div>{shipment.cust_shipmt_package}{wrapType && wrapType[0] && wrapType[0].text}{shipment.cust_shipmt_pieces}件 {shipment.cust_shipmt_weight}KG</div>
+            <div>{transModeDom} {shipment.cust_shipmt_bill_lading} {shipment.cust_shipmt_mawb && `${shipment.cust_shipmt_mawb}_${shipment.cust_shipmt_hawb}`}</div>
+            <div>{shipment.cust_shipmt_package}{wrapType && wrapType.text}{shipment.cust_shipmt_pieces}件 {shipment.cust_shipmt_weight}KG</div>
             <div>{gtTag}</div>
           </Col>
           <Col className="col-flex-secondary" />

@@ -5,10 +5,8 @@ export const CUSTOMER_TYPES = [
 
 export const CRM_ORDER_STATUS = {
   created: 1,
-  clearancing: 2,
-  transporting: 3,
+  processing: 2,
   finished: 4,
-  processing: 5,
 };
 
 export const CRM_ORDER_MODE = {
