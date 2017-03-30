@@ -33,7 +33,7 @@ const actionTypes = createActionTypes('@@welogix/cms/manifest/', [
   'OPEN_RULE_MODEL', 'CLOSE_RULE_MODEL',
   'SAVE_BILL_RULES', 'SAVE_BILL_RULES_SUCCEED', 'SAVE_BILL_RULES_FAIL',
   'CLEAN_HEAD_DATAS', 'CLEAN_HEAD_DATAS_SUCCEED', 'CLEAN_HEAD_DATAS_FAIL',
-  'SET_STEP_VISIBLE',
+  'SET_STEP_VISIBLE', 'BILL_HEAD_CHANGE',
 ]);
 
 const initialState = {
@@ -91,6 +91,7 @@ const initialState = {
   containers: [],
   templates: [],
   billRule: {},
+  billHeadFieldsChangeTimes: 0,
 };
 
 export default function reducer(state = initialState, action) {
@@ -192,6 +193,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, containers: action.result.data };
     case actionTypes.SAVE_BILL_RULES_SUCCEED:
       return { ...state, billRule: action.payload.rules };
+    case actionTypes.BILL_HEAD_CHANGE:
+      return { ...state, billHeadFieldsChangeTimes: state.billHeadFieldsChangeTimes + 1 };
     default:
       return state;
   }
@@ -650,5 +653,12 @@ export function setStepVisible(val) {
   return {
     type: actionTypes.SET_STEP_VISIBLE,
     data: val,
+  };
+}
+
+export function billHeadChange(values) {
+  return {
+    type: actionTypes.BILL_HEAD_CHANGE,
+    data: values,
   };
 }

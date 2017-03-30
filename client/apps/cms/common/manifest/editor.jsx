@@ -4,7 +4,7 @@ import { Breadcrumb, Button, Dropdown, Layout, Menu, Icon, Form, message, Popcon
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { addNewBillBody, delBillBody, editBillBody, saveBillHead,
-  openMergeSplitModal, billDelete, updateHeadNetWt, loadBillBody, saveBillRules, setStepVisible } from 'common/reducers/cmsManifest';
+  openMergeSplitModal, billDelete, updateHeadNetWt, loadBillBody, saveBillRules, setStepVisible, billHeadChange } from 'common/reducers/cmsManifest';
 import { loadTemplateFormVals } from 'common/reducers/cmsSettings';
 import NavLink from 'client/components/nav-link';
 import SheetHeadPanel from './panel/manifestHeadPanel';
@@ -32,13 +32,14 @@ const Option = Select.Option;
     formData: state.cmsSettings.formData,
   }),
   { addNewBillBody, delBillBody, editBillBody, saveBillHead, openMergeSplitModal,
-    billDelete, updateHeadNetWt, loadBillBody, loadTemplateFormVals, saveBillRules, setStepVisible }
+    billDelete, updateHeadNetWt, loadBillBody, loadTemplateFormVals, saveBillRules,
+    setStepVisible, billHeadChange }
 )
 @connectNav({
   depth: 3,
   moduleName: 'clearance',
 })
-@Form.create()
+@Form.create({ onValuesChange: (props, values) => props.billHeadChange(values) })
 export default class ManifestEditor extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,

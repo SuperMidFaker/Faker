@@ -29,6 +29,7 @@ const CODE_AS_STATE = {
 @connect(
   state => ({
     formRequire: state.cmsManifest.params,
+    billHeadFieldsChangeTimes: state.cmsManifest.billHeadFieldsChangeTimes,
   }),
   { loadSearchedParam, saveBillHead, cleanHeadDatas }
 )
@@ -43,9 +44,19 @@ export default class ManifestHeadPanel extends React.Component {
     formRequire: PropTypes.object.isRequired,
     loadSearchedParam: PropTypes.func.isRequired,
     onSave: PropTypes.func.isRequired,
+    billHeadFieldsChangeTimes: PropTypes.number.isRequired,
+  }
+  state = {
+    changed: false,
+  }
+  componentWillReceiveProps(nextProps) {
+    if (this.props.billHeadFieldsChangeTimes !== nextProps.billHeadFieldsChangeTimes) {
+      this.setState({ changed: true });
+    }
   }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
   handleSheetSave = (ev) => {
+    console.log('handleSheetSave');
     ev.stopPropagation();
     ev.preventDefault();
     this.props.onSave();
@@ -104,7 +115,7 @@ export default class ManifestHeadPanel extends React.Component {
         <div className="pane-header">
           <div>
             {!readonly &&
-              <Button type="primary" onClick={this.handleSheetSave} icon="save">
+              <Button type="primary" onClick={this.handleSheetSave} icon="save" disabled={this.state.changed === false}>
                 {formatGlobalMsg(this.props.intl, 'save')}
               </Button>}
             {!readonly &&
