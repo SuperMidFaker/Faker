@@ -230,6 +230,7 @@ export default class TransportForm extends Component {
               <Col span="6" style={{ paddingRight: 8 }}>
                 <Select allowClear size="large" combobox value={node.consigner_id} optionLabelProp="children"
                   onChange={value => this.handleConsignChange('consigner_name', value)}
+                  onSelect={value => this.handleConsignSelect('consigner_name', value)}
                 >
                   {formRequires.consignerLocations.map(dw =>
                     <Option value={dw.node_id} key={dw.node_id}>{dw.name}</Option>)
@@ -275,6 +276,7 @@ export default class TransportForm extends Component {
               <Col span="6" style={{ paddingRight: 8 }}>
                 <Select allowClear size="large" combobox value={node.consignee_id} optionLabelProp="children"
                   onChange={value => this.handleConsignChange('consignee_name', value)}
+                  onSelect={value => this.handleConsignSelect('consignee_name', value)}
                 >
                   {formRequires.consigneeLocations.map(dw =>
                     <Option value={dw.node_id} key={dw.node_id}>{dw.name}</Option>)
