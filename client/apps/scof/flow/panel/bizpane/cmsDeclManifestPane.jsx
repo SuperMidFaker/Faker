@@ -31,7 +31,7 @@ export default class CMSDeclManifestPane extends Component {
               <FormItem label={this.msg('manifestTemplate')}>
                 {getFieldDecorator('manifest_template', {
                   initialValue: model.manifest_template,
-                })(<Select>
+                })(<Select allowClear>
                   {
                       templates.map(tmp => <Option value={tmp.id} key={tmp.id}>{tmp.name}</Option>)
                     }

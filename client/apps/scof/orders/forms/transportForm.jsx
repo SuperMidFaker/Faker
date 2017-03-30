@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Button, Form, Row, Col, Card, Input, Select, Icon } from 'antd';
-import RegionCascade from 'client/components/chinaRegionCascader';
+import RegionCascader from 'client/components/chinaRegionCascader';
 import { setClientForm, loadFlowNodeData } from 'common/reducers/crmOrders';
 import { uuidWithoutDash } from 'client/common/uuid';
 import { GOODS_TYPES } from 'common/constants';
@@ -228,7 +228,7 @@ export default class TransportForm extends Component {
           <Col sm={24}>
             <FormItem label="发货方">
               <Col span="6" style={{ paddingRight: 8 }}>
-                <Select size="large" combobox value={node.consigner_id} optionLabelProp="children"
+                <Select allowClear size="large" combobox value={node.consigner_id} optionLabelProp="children"
                   onChange={value => this.handleConsignChange('consigner_name', value)}
                 >
                   {formRequires.consignerLocations.map(dw =>
@@ -239,7 +239,7 @@ export default class TransportForm extends Component {
               <Col span="18">
                 <InputGroup size="large">
                   <Col span="8">
-                    <RegionCascade defaultRegion={consignerRegion} region={consignerRegion}
+                    <RegionCascader defaultRegion={consignerRegion} region={consignerRegion}
                       onChange={region => this.handleRegionValueChange('consigner', region)}
                     />
                   </Col>
@@ -273,7 +273,7 @@ export default class TransportForm extends Component {
           <Col sm={24}>
             <FormItem label="收货方">
               <Col span="6" style={{ paddingRight: 8 }}>
-                <Select size="large" combobox value={node.consignee_id} optionLabelProp="children"
+                <Select allowClear size="large" combobox value={node.consignee_id} optionLabelProp="children"
                   onChange={value => this.handleConsignChange('consignee_name', value)}
                 >
                   {formRequires.consigneeLocations.map(dw =>
@@ -284,7 +284,7 @@ export default class TransportForm extends Component {
               <Col span="18">
                 <InputGroup size="large">
                   <Col span="8">
-                    <RegionCascade defaultRegion={consigneeRegion} region={consigneeRegion}
+                    <RegionCascader defaultRegion={consigneeRegion} region={consigneeRegion}
                       onChange={region => this.handleRegionValueChange('consignee', region)}
                     />
                   </Col>

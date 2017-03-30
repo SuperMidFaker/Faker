@@ -10,7 +10,6 @@ import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
 import ClearanceForm from './clearanceForm';
 import TransportForm from './transportForm';
-import '../orders.less';
 
 const formatMsg = format(messages);
 const Panel = Collapse.Panel;
@@ -367,32 +366,11 @@ export default class BasicForm extends Component {
               </Row>
             </Panel>
             <Panel header="收发货信息" key="consignment">
-              <Steps size="small" direction="vertical">
+              <Steps size="small">
                 <Step status="wait" title="发货方" icon={<Icon type="logout" />} />
                 <Step status="wait" title="收货方" icon={<Icon type="login" />} />
+
               </Steps>
-              <Row gutter={16}>
-                { (formData.cust_shipmt_transfer === 'IMP') &&
-                <Col sm={24}>
-                收货方
-              </Col>
-              }
-                { (formData.cust_shipmt_transfer === 'EXP') &&
-                <Col sm={24}>
-                发货方
-              </Col>
-              }
-                { (formData.cust_shipmt_transfer === 'DOM') &&
-                <Col sm={12}>
-                发货方
-              </Col>
-              }
-                { (formData.cust_shipmt_transfer === 'DOM') &&
-                <Col sm={12}>
-                收货方
-              </Col>
-              }
-              </Row>
             </Panel>
           </Collapse>
         </Card>
@@ -402,7 +380,6 @@ export default class BasicForm extends Component {
           >
             {flows.map(data => <Option key={data.id} value={data.id}>{data.name}</Option>)}
           </Select></span>}
-          className="secondary-card"
           bodyStyle={{ padding: 16 }}
         >
           <Steps direction="vertical" current={current}>

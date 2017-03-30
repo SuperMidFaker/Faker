@@ -18,8 +18,8 @@ export default class progressColumn extends React.Component {
       return (
         <div className="order-progress">
           <Steps size="small" current={1}>
-            <Step title="Finished" />
-            <Step title="In Progress" />
+            <Step title="进境清关" description={<span><div className="mdc-text-grey table-font-small">开始：03.23</div><div className="mdc-text-grey table-font-small">放行：03.24</div></span>} />
+            <Step title="区内短驳" description={<span><div className="mdc-text-grey table-font-small">开始：03.24 10:25</div><div className="table-font-small">提货：03.24 14:23</div></span>} />
             <Step title="Waiting" />
           </Steps>
         </div>
