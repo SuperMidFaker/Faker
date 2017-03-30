@@ -408,7 +408,7 @@ export function setItemStatus(datas) {
   };
 }
 
-export function loadRepoUsers(tenantId, repoId) {
+export function loadRepoUsers(repoId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -418,7 +418,7 @@ export function loadRepoUsers(tenantId, repoId) {
       ],
       endpoint: 'v1/cms/tradeitem/repoUsers',
       method: 'get',
-      params: { tenantId, repoId },
+      params: { repoId },
     },
   };
 }

@@ -46,12 +46,12 @@ export default class CopCodesPane extends React.Component {
     }).then((result) => {
       this.setState({ brokers: result.data.filter(item => item.partner_tenant_id !== -1) });
     });
-    this.props.loadRepoUsers(this.props.tenantId, this.props.repoId);
+    this.props.loadRepoUsers(this.props.repoId);
   }
   componentWillReceiveProps(nextProps) {
     if (this.props.repoId !== nextProps.repoId ||
       (this.props.tabKey !== nextProps.tabKey && nextProps.tabKey === 'copCodes')) {
-      this.props.loadRepoUsers(nextProps.tenantId, nextProps.repoId);
+      this.props.loadRepoUsers(nextProps.repoId);
     }
     if (this.props.repoUsers !== nextProps.repoUsers) {
       this.setState({ datas: nextProps.repoUsers });
@@ -75,7 +75,7 @@ export default class CopCodesPane extends React.Component {
           message.error(result.error.message);
         } else {
           message.info('保存成功', 5);
-          this.props.loadRepoUsers(this.props.tenantId, this.props.repoId);
+          this.props.loadRepoUsers(this.props.repoId);
         }
       }
     );
@@ -122,7 +122,7 @@ export default class CopCodesPane extends React.Component {
             </Select>
           );
         } else {
-          return <span>{record.tenant_id === this.props.tenantId ? this.props.tenantName : record.name}</span>;
+          return record.name;
         }
       },
     }];
