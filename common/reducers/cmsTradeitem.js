@@ -2,7 +2,7 @@ import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/cms/tradeitem/', [
-  'LOAD_OWNERS', 'LOAD_OWNERS_SUCCEED', 'LOAD_OWNERS_FAIL',
+  'LOAD_REPOS', 'LOAD_REPOS_SUCCEED', 'LOAD_REPOS_FAIL',
   'OPEN_ADD_MODEL', 'CLOSE_ADD_MODEL',
   'CREATE_REPO', 'CREATE_REPO_SUCCEED', 'CREATE_REPO_FAIL',
   'DELETE_REPO', 'DELETE_REPO_SUCCEED', 'DELETE_REPO_FAIL',
@@ -20,7 +20,7 @@ const actionTypes = createActionTypes('@@welogix/cms/tradeitem/', [
   'DELETE_SELECT_ITEMS', 'DELETE_SELECT_ITEMS_SUCCEED', 'DELETE_SELECT_ITEMS_FAIL',
   'LOAD_BODY_ITEM', 'LOAD_BODY_ITEM_SUCCEED', 'LOAD_BODY_ITEM_FAIL',
   'LOAD_BODY_HSCODE', 'LOAD_BODY_HSCODE_SUCCEED', 'LOAD_BODY_HSCODE_FAIL',
-  'SET_OWNER', 'SET_COMPARE_VISIBLE',
+  'SET_REPO', 'SET_COMPARE_VISIBLE',
   'COMPARED_DATAS_SAVE', 'COMPARED_DATAS_SAVE_SUCCEED', 'COMPARED_DATAS_SAVE_FAIL',
   'SET_ITEM_STATUS', 'SET_ITEM_STATUS_SUCCEED', 'SET_ITEM_STATUS_FAIL',
   'LOAD_REPO_USERS', 'LOAD_REPO_USERS_SUCCEED', 'LOAD_REPO_USERS_FAIL',
@@ -41,7 +41,7 @@ const initialState = {
     data: [],
   },
   visibleAddModal: false,
-  repoOwners: [],
+  repos: [],
   tradeCodes: [],
   tabKey: 'copCodes',
   repoId: null,
@@ -56,22 +56,22 @@ const initialState = {
   bodyItem: {},
   bodyHscode: {},
   hstabKey: 'declunit',
-  owner: {},
+  repo: {},
   visibleCompareModal: false,
 };
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
-    case actionTypes.LOAD_OWNERS_SUCCEED:
-      return { ...state, repoOwners: action.result.data };
+    case actionTypes.LOAD_REPOS_SUCCEED:
+      return { ...state, repos: action.result.data };
     case actionTypes.OPEN_ADD_MODEL:
       return { ...state, visibleAddModal: true };
     case actionTypes.CLOSE_ADD_MODEL:
       return { ...state, visibleAddModal: false };
     case actionTypes.SET_PANE_TABKEY:
       return { ...state, tabKey: action.data };
-    case actionTypes.SET_OWNER:
-      return { ...state, owner: action.data };
+    case actionTypes.SET_REPO:
+      return { ...state, repo: action.data };
     case actionTypes.LOAD_TRADE_CODES_SUCCEED:
       return { ...state, tradeCodes: action.result.data };
     case actionTypes.SET_SELECTED_REPOID:
@@ -203,15 +203,15 @@ export function deleteItem(id) {
   };
 }
 
-export function loadOwners(params) {
+export function loadRepos(params) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.LOAD_OWNERS,
-        actionTypes.LOAD_OWNERS_SUCCEED,
-        actionTypes.LOAD_OWNERS_FAIL,
+        actionTypes.LOAD_REPOS,
+        actionTypes.LOAD_REPOS_SUCCEED,
+        actionTypes.LOAD_REPOS_FAIL,
       ],
-      endpoint: 'v1/cms/tradeitem/owners/load',
+      endpoint: 'v1/cms/tradeitem/repos/load',
       method: 'get',
       params,
     },
@@ -244,10 +244,10 @@ export function setPaneTabkey(tabkey) {
   };
 }
 
-export function setOwner(owner) {
+export function setRepo(repo) {
   return {
-    type: actionTypes.SET_OWNER,
-    data: owner,
+    type: actionTypes.SET_REPO,
+    data: repo,
   };
 }
 

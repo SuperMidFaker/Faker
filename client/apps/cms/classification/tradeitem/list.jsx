@@ -10,8 +10,8 @@ import NavLink from 'client/components/nav-link';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { loadCustomers } from 'common/reducers/crmCustomers';
-import { loadOwners, openAddModal, selectedRepoId, loadTradeItems, setCompareVisible,
-  deleteItem, deleteSelectedItems, setOwner, deleteRepo, loadTradeParams, setItemStatus } from 'common/reducers/cmsTradeitem';
+import { loadRepos, openAddModal, selectedRepoId, loadTradeItems, setCompareVisible,
+  deleteItem, deleteSelectedItems, setRepo, deleteRepo, loadTradeParams, setItemStatus } from 'common/reducers/cmsTradeitem';
 import AddTradeRepoModal from './modals/addTradeRepo';
 import SearchBar from 'client/components/search-bar';
 import ExcelUpload from 'client/components/excelUploader';
@@ -36,7 +36,7 @@ function fetchData({ state, dispatch }) {
     pageSize: state.cmsTradeitem.tradeItemlist.pageSize,
     currentPage: state.cmsTradeitem.tradeItemlist.current,
   })));
-  promises.push(dispatch(loadOwners({
+  promises.push(dispatch(loadRepos({
     tenantId: state.account.tenantId,
   })));
   promises.push(dispatch(loadTradeParams()));
@@ -49,12 +49,12 @@ function fetchData({ state, dispatch }) {
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     loginName: state.account.username,
-    repoOwners: state.cmsTradeitem.repoOwners,
+    repos: state.cmsTradeitem.repos,
     repoId: state.cmsTradeitem.repoId,
     listFilter: state.cmsTradeitem.listFilter,
     tradeItemlist: state.cmsTradeitem.tradeItemlist,
     visibleAddModal: state.cmsTradeitem.visibleAddModal,
-    owner: state.cmsTradeitem.owner,
+    repo: state.cmsTradeitem.repo,
     units: state.cmsTradeitem.params.units.map(un => ({
       value: un.unit_code,
       text: un.unit_name,
@@ -69,7 +69,7 @@ function fetchData({ state, dispatch }) {
     })),
   }),
   { loadCustomers, openAddModal, selectedRepoId, loadTradeItems, setCompareVisible,
-    deleteItem, deleteSelectedItems, setOwner, loadOwners, deleteRepo, setItemStatus }
+    deleteItem, deleteSelectedItems, setRepo, loadRepos, deleteRepo, setItemStatus }
 )
 @connectNav({
   depth: 2,
@@ -79,11 +79,11 @@ export default class TradeItemList extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
-    repoOwners: PropTypes.array.isRequired,
+    repos: PropTypes.array.isRequired,
     tradeItemlist: PropTypes.object.isRequired,
     repoId: PropTypes.number,
     visibleAddModal: PropTypes.bool,
-    owner: PropTypes.object,
+    repo: PropTypes.object,
     listFilter: PropTypes.object.isRequired,
   }
   static contextTypes = {
@@ -96,12 +96,12 @@ export default class TradeItemList extends Component {
     comparedData: [],
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.repoOwners !== this.props.repoOwners && nextProps.repoOwners.length > 0) {
-      const owner = nextProps.repoOwners.filter(rp => rp.repo_id === nextProps.repoId)[0];
-      if (owner) {
-        this.handleRowClick(owner);
+    if (nextProps.repos !== this.props.repos && nextProps.repos.length > 0) {
+      const repo = nextProps.repos.find(rp => rp.id === nextProps.repoId);
+      if (repo) {
+        this.handleRowClick(repo);
       } else {
-        this.handleRowClick(nextProps.repoOwners[0]);
+        this.handleRowClick(nextProps.repos[0]);
       }
     }
   }
@@ -305,10 +305,10 @@ export default class TradeItemList extends Component {
     });
   }
   handleRowClick = (record) => {
-    const owner = record;
-    this.props.selectedRepoId(owner.repo_id);
-    this.handleItemListLoad(owner.repo_id);
-    this.props.setOwner(owner);
+    const repo = record;
+    this.props.selectedRepoId(repo.id);
+    this.handleItemListLoad(repo.id);
+    this.props.setRepo(repo);
     this.toggle();
   }
   handleAddOwener = () => {
@@ -350,7 +350,7 @@ export default class TradeItemList extends Component {
       if (result.error) {
         message.error(result.error.message);
       } else {
-        this.props.loadOwners({ tenantId: this.props.tenantId });
+        this.props.loadRepos({ tenantId: this.props.tenantId });
       }
     });
   }
@@ -380,7 +380,7 @@ export default class TradeItemList extends Component {
     });
   }
   render() {
-    const { tradeItemlist, repoId, owner, listFilter } = this.props;
+    const { tradeItemlist, repoId, repo, listFilter } = this.props;
     const selectedRows = this.state.selectedRowKeys;
     const rowSelection = {
       selectedRowKeys: selectedRows,
@@ -485,9 +485,9 @@ export default class TradeItemList extends Component {
             </div>
           </div>
           <div className="left-sider-panel" >
-            <Table size="middle" dataSource={this.props.repoOwners} columns={repoColumns} showHeader={false} onRowClick={this.handleRowClick}
+            <Table size="middle" dataSource={this.props.repos} columns={repoColumns} showHeader={false} onRowClick={this.handleRowClick}
               rowKey="id" pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }}
-              rowClassName={record => record.id === owner.id ? 'table-row-selected' : ''}
+              rowClassName={record => record.id === repo.id ? 'table-row-selected' : ''}
             />
           </div>
         </Sider>
@@ -502,7 +502,7 @@ export default class TradeItemList extends Component {
                 {this.msg('tradeItemMaster')}
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                {`${owner.name}`}
+                {`${repo.name}`}
               </Breadcrumb.Item>
             </Breadcrumb>
             }
@@ -574,7 +574,7 @@ export default class TradeItemList extends Component {
                 <CopCodesPane />
               </Panel>
               <Panel header={'授权报关行'} key="user">
-                <RepoUsersPane owner={owner} />
+                <RepoUsersPane repo={repo} />
               </Panel>
               <Panel header={'更多'} key="more">
                 <Alert

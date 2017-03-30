@@ -4,7 +4,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Modal, Popconfirm, Icon, Tooltip, Tag, Table, message } from 'antd';
 import RowUpdater from 'client/components/rowUpdater';
 import TrimSpan from 'client/components/trimSpan';
-import { createRepo, setCompareVisible, loadOwners, saveComparedItemDatas, loadTradeItems } from 'common/reducers/cmsTradeitem';
+import { createRepo, setCompareVisible, loadRepos, saveComparedItemDatas, loadTradeItems } from 'common/reducers/cmsTradeitem';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 import { TRADE_ITEM_STATUS } from 'common/constants';
@@ -21,7 +21,7 @@ const formatMsg = format(messages);
     listFilter: state.cmsTradeitem.listFilter,
     visibleCompareModal: state.cmsTradeitem.visibleCompareModal,
   }),
-  { createRepo, setCompareVisible, loadOwners, saveComparedItemDatas, loadTradeItems }
+  { createRepo, setCompareVisible, loadRepos, saveComparedItemDatas, loadTradeItems }
 )
 
 export default class ImportComparisonModal extends React.Component {

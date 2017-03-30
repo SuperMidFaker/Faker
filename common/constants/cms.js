@@ -346,3 +346,9 @@ export const CMS_ITEM_STATUS = {
   pending: 1,
   classified: 2,
 };
+
+export const CMS_TRADE_REPO_PERMISSION = {
+  edit: 'edit',
+  approval: 'approval',
+  view: 'view',
+};

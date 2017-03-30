@@ -6,7 +6,7 @@ import { loadRepoUsers, addRepoUser, deleteRepoUser } from 'common/reducers/cmsT
 import { loadPartners } from 'common/reducers/partner';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
-import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
+import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES, CMS_TRADE_REPO_PERMISSION } from 'common/constants';
 const role = PARTNER_ROLES.SUP;
 const businessType = PARTNER_BUSINESSE_TYPES.clearance;
 
@@ -32,7 +32,7 @@ export default class CopCodesPane extends React.Component {
     tenantId: PropTypes.number.isRequired,
     repoUsers: PropTypes.array,
     repoId: PropTypes.number,
-    owner: PropTypes.object.isRequired,
+    repo: PropTypes.object.isRequired,
   }
   state = {
     datas: [],
@@ -44,7 +44,7 @@ export default class CopCodesPane extends React.Component {
       role,
       businessType,
     }).then((result) => {
-      this.setState({ brokers: result.data });
+      this.setState({ brokers: result.data.filter(item => item.partner_tenant_id !== -1) });
     });
     this.props.loadRepoUsers(this.props.tenantId, this.props.repoId);
   }
@@ -106,6 +106,7 @@ export default class CopCodesPane extends React.Component {
     this.setState({ datas });
   }
   render() {
+    const { repo } = this.props;
     const { brokers } = this.state;
     const columns = [{
       title: this.msg('tradeName'),
@@ -127,7 +128,7 @@ export default class CopCodesPane extends React.Component {
     }, {
       width: 70,
       render: (o, record, index) => {
-        if (record.tenant_id !== this.props.tenantId) {
+        if (repo.permission === CMS_TRADE_REPO_PERMISSION.edit && record.tenant_id !== this.props.tenantId) {
           return (
             <div className="editable-row-operations">{
               (record.id) ?

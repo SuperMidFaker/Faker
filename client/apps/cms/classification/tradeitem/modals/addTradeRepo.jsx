@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Form, Modal, Select, message } from 'antd';
-import { createRepo, closeAddModal, loadOwners } from 'common/reducers/cmsTradeitem';
+import { createRepo, closeAddModal, loadRepos } from 'common/reducers/cmsTradeitem';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 
@@ -17,9 +17,9 @@ const FormItem = Form.Item;
     loginId: state.account.loginId,
     visibleAddModal: state.cmsTradeitem.visibleAddModal,
     customers: state.crmCustomers.customers,
-    repoOwners: state.cmsTradeitem.repoOwners,
+    repos: state.cmsTradeitem.repos,
   }),
-  { createRepo, closeAddModal, loadOwners }
+  { createRepo, closeAddModal, loadRepos }
 )
 @Form.create()
 export default class AddTradeRepoModal extends React.Component {
@@ -29,7 +29,7 @@ export default class AddTradeRepoModal extends React.Component {
     loginId: PropTypes.number.isRequired,
     visibleAddModal: PropTypes.bool.isRequired,
     customers: PropTypes.array.isRequired,
-    repoOwners: PropTypes.array.isRequired,
+    repos: PropTypes.array.isRequired,
   }
   state = {
     customerid: null,
@@ -50,7 +50,7 @@ export default class AddTradeRepoModal extends React.Component {
         if (result.error) {
           message.error(result.error.message, 10);
         } else {
-          this.props.loadOwners({
+          this.props.loadRepos({
             tenantId: this.props.tenantId,
           });
           this.props.closeAddModal();
@@ -63,10 +63,10 @@ export default class AddTradeRepoModal extends React.Component {
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   render() {
-    const { form: { getFieldDecorator }, visibleAddModal, customers, repoOwners } = this.props;
+    const { form: { getFieldDecorator }, visibleAddModal, customers, repos } = this.props;
     let newCustomers = customers;
-    for (let i = 0; i < repoOwners.length; i++) {
-      const owner = repoOwners[i];
+    for (let i = 0; i < repos.length; i++) {
+      const owner = repos[i];
       newCustomers = newCustomers.filter(ct => ct.id !== owner.id);
     }
     return (
