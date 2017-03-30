@@ -12,9 +12,8 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import SearchBar from 'client/components/search-bar';
 import RowUpdater from 'client/components/rowUpdater';
-import { loadAcceptanceTable, loadBillForMake, acceptDelg, delDelg,
-  setDispStatus, loadCiqTable, delgAssignRecall,
-  openAcceptModal, showDispModal } from 'common/reducers/cmsDelegation';
+import { loadAcceptanceTable, acceptDelg, delDelg, setDispStatus, loadCiqTable, delgAssignRecall,
+  ensureManifestMeta, openAcceptModal, showDispModal } from 'common/reducers/cmsDelegation';
 import { showPreviewer, loadBasicInfo, loadCustPanel, loadDeclCiqPanel } from 'common/reducers/cmsDelgInfoHub';
 import DelegationInfoHubPanel from '../modals/DelegationInfoHubPanel';
 import CiqList from './ciqList';
@@ -49,8 +48,8 @@ const OptGroup = Select.OptGroup;
       text: `${cus.customs_name}`,
     })),
   }),
-  { loadAcceptanceTable, loadBillForMake, acceptDelg,
-    delDelg, showPreviewer, setDispStatus, delgAssignRecall,
+  { loadAcceptanceTable, acceptDelg, delDelg, showPreviewer,
+    setDispStatus, delgAssignRecall, ensureManifestMeta,
     loadCiqTable, openAcceptModal, showDispModal, loadBasicInfo,
     loadCustPanel, loadDeclCiqPanel }
 )
@@ -69,7 +68,7 @@ export default class DelegationList extends Component {
     delegationlist: PropTypes.object.isRequired,
     listFilter: PropTypes.object.isRequired,
     loadAcceptanceTable: PropTypes.func.isRequired,
-    loadBillForMake: PropTypes.func.isRequired,
+    ensureManifestMeta: PropTypes.func.isRequired,
     acceptDelg: PropTypes.func.isRequired,
     delDelg: PropTypes.func.isRequired,
     billMake: PropTypes.object.isRequired,
@@ -361,22 +360,26 @@ export default class DelegationList extends Component {
     this.handleCiqListLoad(1, filter);
   }
   handleDelegationMake = (row) => {
-    this.props.loadBillForMake(row.delg_no).then((result) => {
+    this.props.ensureManifestMeta(row.delg_no).then((result) => {
       if (result.error) {
         message.error(result.error.message, 5);
       } else {
-        const link = `/clearance/${this.props.ietype}/manifest/`;
-        this.context.router.push(`${link}${this.props.billMake.bill_seq_no}`);
+        const { i_e_type: ietype, bill_seq_no: seqno } = result.data;
+        const clearType = ietype === 0 ? 'import' : 'export';
+        const link = `/clearance/${clearType}/manifest/`;
+        this.context.router.push(`${link}${seqno}`);
       }
     });
   }
   handleDelegationView = (row) => {
-    this.props.loadBillForMake(row.delg_no).then((result) => {
+    this.props.ensureManifestMeta(row.delg_no).then((result) => {
       if (result.error) {
         message.error(result.error.message, 5);
       } else {
-        const link = `/clearance/${this.props.ietype}/manifest/view/`;
-        this.context.router.push(`${link}${this.props.billMake.bill_seq_no}`);
+        const { i_e_type: ietype, bill_seq_no: seqno } = result.data;
+        const clearType = ietype === 0 ? 'import' : 'export';
+        const link = `/clearance/${clearType}/manifest/view/`;
+        this.context.router.push(`${link}${seqno}`);
       }
     });
   }

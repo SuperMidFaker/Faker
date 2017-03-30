@@ -14,7 +14,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   // 'SEARCH_PARAM', 'SEARCH_PARAM_SUCCEED', 'SEARCH_PARAM_FAIL',
   'DEL_DELG', 'DEL_DELG_SUCCEED', 'DEL_DELG_FAIL',
   'LOAD_REQUIRE', 'LOAD_REQUIRE_SUCCEED', 'LOAD_REQUIRE_FAIL',
-  'LOAD_BILLMAKE', 'LOAD_BILLMAKE_SUCCEED', 'LOAD_BILLMAKE_FAIL',
+  'ENSURE_MANIFESTMETA', 'ENSURE_MANIFESTMETA_SUCCEED', 'ENSURE_MANIFESTMETA_FAIL',
   'OPEN_EF_MODAL', 'CLOSE_EF_MODAL', 'SET_DISP_STATUS',
   'FILL_ENTRYNO', 'FILL_ENTRYNO_SUCCEED', 'FILL_ENTRYNO_FAIL',
   'LOAD_DELGDISP', 'LOAD_DELGDISP_SUCCEED', 'LOAD_DELGDISP_FAIL',
@@ -86,7 +86,6 @@ const initialState = {
     delgDispIds: [],
     delgOperators: [],
   },
-  billMake: {},
   visibleEfModal: false,
   efModal: {
     entryHeadId: -1,
@@ -127,9 +126,6 @@ export default function reducer(state = initialState, action) {
     }
     case actionTypes.LOAD_CIQ_FAIL:
       return { ...state, ciqlist: { ...state.ciqlist, loading: false } };
-    case actionTypes.LOAD_BILLMAKE_SUCCEED: {
-      return { ...state, billMake: action.result.data };
-    }
     case actionTypes.LOAD_DELG:
       return { ...state, formData: initialState.formData, delgFiles: [] };
     case actionTypes.LOAD_DELG_SUCCEED:
@@ -290,15 +286,15 @@ export function loadCiqTable(params) {
   };
 }
 
-export function loadBillForMake(delgNo) {
+export function ensureManifestMeta(delgNo) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.LOAD_BILLMAKE,
-        actionTypes.LOAD_BILLMAKE_SUCCEED,
-        actionTypes.LOAD_BILLMAKE_FAIL,
+        actionTypes.ENSURE_MANIFESTMETA,
+        actionTypes.ENSURE_MANIFESTMETA_SUCCEED,
+        actionTypes.ENSURE_MANIFESTMETA_FAIL,
       ],
-      endpoint: 'v1/cms/billmodal',
+      endpoint: 'v1/cms/manifest/meta',
       method: 'get',
       params: { delgNo },
     },

@@ -4,7 +4,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Button, Card, Col, Icon, Row, Table, Tag, Tooltip, message } from 'antd';
 import moment from 'moment';
 import { DECL_I_TYPE, DECL_E_TYPE, CMS_DELEGATION_STATUS } from 'common/constants';
-import { openAcceptModal, loadBillForMake } from 'common/reducers/cmsDelegation';
+import { openAcceptModal, ensureManifestMeta } from 'common/reducers/cmsDelegation';
 import { loadCustPanel } from 'common/reducers/cmsDelgInfoHub';
 import InfoItem from 'client/components/InfoItem';
 
@@ -18,7 +18,7 @@ import InfoItem from 'client/components/InfoItem';
     billMake: state.cmsDelegation.billMake,
     delegation: state.cmsDelgInfoHub.previewer.delegation,
   }),
-  { loadCustPanel, openAcceptModal, loadBillForMake }
+  { loadCustPanel, openAcceptModal, ensureManifestMeta }
 )
 export default class CustomsDeclPane extends React.Component {
   static propTypes = {
@@ -50,31 +50,27 @@ export default class CustomsDeclPane extends React.Component {
   }
   handleView = (ev) => {
     ev.stopPropagation();
-    this.props.loadBillForMake(this.props.delgNo).then((result) => {
+    this.props.ensureManifestMeta(this.props.delgNo).then((result) => {
       if (result.error) {
         message.error(result.error.message, 5);
       } else {
-        let ietype = 'import';
-        if (this.props.delegation.i_e_type === 1) {
-          ietype = 'export';
-        }
-        const link = `/clearance/${ietype}/manifest/view/`;
-        this.context.router.push(`${link}${this.props.billMake.bill_seq_no}`);
+        const { i_e_type: ietype, bill_seq_no: seqno } = result.data;
+        const clearType = ietype === 0 ? 'import' : 'export';
+        const link = `/clearance/${clearType}/manifest/view/`;
+        this.context.router.push(`${link}${seqno}`);
       }
     });
   }
   handleMake = (ev) => {
     ev.stopPropagation();
-    this.props.loadBillForMake(this.props.delgNo).then((result) => {
+    this.props.ensureManifestMeta(this.props.delgNo).then((result) => {
       if (result.error) {
         message.error(result.error.message, 5);
       } else {
-        let ietype = 'import';
-        if (this.props.delegation.i_e_type === 1) {
-          ietype = 'export';
-        }
-        const link = `/clearance/${ietype}/manifest/`;
-        this.context.router.push(`${link}${this.props.billMake.bill_seq_no}`);
+        const { i_e_type: ietype, bill_seq_no: seqno } = result.data;
+        const clearType = ietype === 0 ? 'import' : 'export';
+        const link = `/clearance/${clearType}/manifest/`;
+        this.context.router.push(`${link}${seqno}`);
       }
     });
   }
