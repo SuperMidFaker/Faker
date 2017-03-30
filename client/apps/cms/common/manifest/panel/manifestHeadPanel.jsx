@@ -59,6 +59,7 @@ export default class ManifestHeadPanel extends React.Component {
     ev.stopPropagation();
     ev.preventDefault();
     this.props.onSave();
+    this.setState({ changed: false });
   }
   handleRelationSel = (codeField, custCodeField, nameField, value) => {
     let rels = this.props.formRequire[CODE_AS_STATE[codeField]].filter(rel => rel.code === value);

@@ -583,7 +583,7 @@ export default class TradeItemList extends Component {
               <Panel header={'授权收发货人'} key="trader">
                 <CopCodesPane repo={repo} />
               </Panel>
-              <Panel header={'授权报关行'} key="user">
+              <Panel header={'授权使用单位'} key="user">
                 <RepoUsersPane repo={repo} />
               </Panel>
               {

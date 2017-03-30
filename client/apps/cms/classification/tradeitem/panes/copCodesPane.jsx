@@ -35,8 +35,7 @@ function ColumnSelect(props) {
       </Select>
     );
   } else {
-    const option = options.find(item => item.name === record[field]);
-    return <span>{option ? option.name : ''}</span>;
+    return <span>{record[field]}</span>;
   }
 }
 
@@ -174,7 +173,7 @@ export default class CopCodesPane extends React.Component {
     }
     return (
       <Table size="middle" pagination={false} columns={columns} dataSource={this.state.datas}
-        footer={() => <Button type="dashed" onClick={this.handleAdd} icon="plus" style={{ width: '100%' }}>{this.msg('add')}</Button>}
+        footer={() => repo.permission === CMS_TRADE_REPO_PERMISSION.edit ? <Button type="dashed" onClick={this.handleAdd} icon="plus" style={{ width: '100%' }}>{this.msg('add')}</Button> : null}
       />
     );
   }
