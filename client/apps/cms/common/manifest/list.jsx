@@ -8,9 +8,10 @@ import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadDelgBill, deleteEntries } from 'common/reducers/cmsManifest';
 import { loadBillForMake } from 'common/reducers/cmsDelegation';
+import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/search-bar';
-import NavLink from 'client/components/nav-link';
+import DelegationInfoHubPanel from '../modals/DelegationInfoHubPanel';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import RowUpdater from 'client/components/rowUpdater';
@@ -41,7 +42,7 @@ const RadioButton = Radio.Button;
       text: `${cus.customs_name}`,
     })),
   }),
-  { loadDelgBill, deleteEntries, loadBillForMake }
+  { loadDelgBill, deleteEntries, loadBillForMake, showPreviewer }
 )
 @connectNav({
   depth: 2,
@@ -56,6 +57,7 @@ export default class ManifestList extends Component {
     loginName: PropTypes.string.isRequired,
     delgBillList: PropTypes.object.isRequired,
     listFilter: PropTypes.object.isRequired,
+    showPreviewer: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -71,13 +73,13 @@ export default class ManifestList extends Component {
     dataIndex: 'delg_no',
     fixed: 'left',
     width: 150,
-    render: (o, record) => {
-      if (record.customs_tenant_id === this.props.tenantId && record.bill_status < 5) {
-        return <NavLink to={`/clearance/${this.props.ietype}/manifest/${record.bill_seq_no}`}>{o}</NavLink>;
-      } else {
-        return <NavLink to={`/clearance/${this.props.ietype}/manifest/view/${record.bill_seq_no}`}>{o}</NavLink>;
-      }
-    },
+    render: (o, record) =>
+      // if (record.customs_tenant_id === this.props.tenantId && record.bill_status < 5) {
+      //   return <NavLink to={`/clearance/${this.props.ietype}/manifest/${record.bill_seq_no}`}>{o}</NavLink>;
+      // } else {
+      //   return <NavLink to={`/clearance/${this.props.ietype}/manifest/view/${record.bill_seq_no}`}>{o}</NavLink>;
+      // }
+      <a onClick={() => this.handlePreview(o, record)}>{o}</a>,
   }, {
     title: '申报单位',
     dataIndex: 'customs_name',
@@ -172,6 +174,13 @@ export default class ManifestList extends Component {
     },
     remotes: this.props.delgBillList,
   })
+  handlePreview = (delgNo, record) => {
+    let tabKey = 'customsDecl';
+    if (record.status < 1) {
+      tabKey = 'basic';
+    }
+    this.props.showPreviewer(delgNo, tabKey);
+  }
   handleTableLoad = (currentPage, filter) => {
     this.setState({ expandedKeys: [] });
     this.props.loadDelgBill({
@@ -313,6 +322,7 @@ export default class ManifestList extends Component {
             </div>
           </div>
         </Content>
+        <DelegationInfoHubPanel ietype={this.props.ietype} />
       </QueueAnim>
     );
   }
