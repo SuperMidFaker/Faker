@@ -13,6 +13,7 @@ const formatMsg = format(messages);
 const FormItem = Form.Item;
 const Option = Select.Option;
 
+// 进出口口岸
 export function IEPort(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const { getFieldDecorator, disabled, formData, formRequire, ietype, required } = props;
@@ -44,9 +45,9 @@ IEPort.propTypes = {
   getFieldDecorator: PropTypes.func.isRequired,
   formData: PropTypes.object.isRequired,
   formRequire: PropTypes.object.isRequired,
-  onSearch: PropTypes.func.isRequired,
 };
 
+// 进出口日期
 export function IEDate(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const { getFieldDecorator, disabled, formData, ietype } = props;
@@ -74,6 +75,7 @@ IEDate.propTypes = {
   formRequire: PropTypes.object.isRequired,
 };
 
+// 申报日期
 export function DeclDate(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const { getFieldDecorator, disabled, formData } = props;
@@ -98,71 +100,6 @@ DeclDate.propTypes = {
   getFieldDecorator: PropTypes.func.isRequired,
   formData: PropTypes.object.isRequired,
   formRequire: PropTypes.object.isRequired,
-};
-
-
-// 进出口口岸、进出口日期、申报日期
-export function PortDate(props) {
-  const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
-  const { getFieldDecorator, disabled, formData, formRequire, ietype, required } = props;
-  const customsProps = {
-    outercol: 24,
-    col: 8,
-    field: 'i_e_port',
-    rules: [{ required }],
-    options: formRequire.customs.map(cus => ({
-      value: cus.customs_code,
-      text: `${cus.customs_code} | ${cus.customs_name}`,
-    })),
-    label: ietype === 'import' ? msg('iport') : msg('eport'),
-    disabled,
-    formData,
-    getFieldDecorator,
-    searchKeyFn: opt => opt.value,
-  };
-  const ieDateProps = {
-    outercol: 24,
-    col: 8,
-    field: 'i_e_date',
-    label: ietype === 'import' ? msg('idate') : msg('edate'),
-    disabled,
-    rules: [{ required: false }],
-    formData,
-    getFieldDecorator,
-  };
-  const dDateProps = {
-    outercol: 24,
-    col: 8,
-    field: 'd_date',
-    label: msg('ddate'),
-    disabled,
-    rules: [{ required: false }],
-    formData,
-    getFieldDecorator,
-  };
-  return (
-    <Col span={15}>
-      <Col span={8}>
-        <FormLocalSearchSelect {...customsProps} />
-      </Col>
-      <Col span={8}>
-        <FormDatePicker {...ieDateProps} />
-      </Col>
-      <Col span={8}>
-        <FormDatePicker {...dDateProps} />
-      </Col>
-    </Col>
-  );
-}
-PortDate.propTypes = {
-  intl: intlShape.isRequired,
-  ietype: PropTypes.oneOf(['import', 'export']),
-  disabled: PropTypes.bool,
-  required: PropTypes.bool,
-  getFieldDecorator: PropTypes.func.isRequired,
-  formData: PropTypes.object.isRequired,
-  formRequire: PropTypes.object.isRequired,
-  onSearch: PropTypes.func.isRequired,
 };
 
 // 关联单位
@@ -268,7 +205,7 @@ export class RelationAutoCompSelect extends React.Component {
   }
 }
 
-// 申报地海关、许可证号、合同协议号
+// 申报地海关
 export function DeclCustoms(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const { getFieldDecorator, disabled, formData, formRequire, required } = props;
@@ -301,6 +238,7 @@ DeclCustoms.propTypes = {
   formRequire: PropTypes.object.isRequired,
 };
 
+// 许可证号
 export function LicenseNo(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const { getFieldDecorator, disabled, formData } = props;
@@ -324,6 +262,8 @@ LicenseNo.propTypes = {
   getFieldDecorator: PropTypes.func.isRequired,
   formData: PropTypes.object.isRequired,
 };
+
+// 合同协议号
 export function ContractNo(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const { getFieldDecorator, disabled, formData } = props;
@@ -340,7 +280,7 @@ export function ContractNo(props) {
     <FormInput {...contractNoProps} />
   );
 }
-DeclCustoms.propTypes = {
+ContractNo.propTypes = {
   intl: intlShape.isRequired,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
@@ -348,6 +288,7 @@ DeclCustoms.propTypes = {
   formData: PropTypes.object.isRequired,
 };
 
+// 备案号（未使用）
 export function ManualNo(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const { getFieldDecorator, disabled, formData } = props;
@@ -372,12 +313,12 @@ ManualNo.propTypes = {
   formData: PropTypes.object.isRequired,
 };
 
-// 运输方式、运输名称
+// 运输方式、运输工具名称、提运单号
 export function Transport(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const { getFieldDecorator, getFieldValue, disabled, formData, formRequire, required } = props;
   const trafMode = getFieldValue('traf_mode') === '2' || getFieldValue('traf_mode') === '5';
-  const modeProps = {
+  const trafModeProps = {
     outercol: 24,
     col: 8,
     field: 'traf_mode',
@@ -391,14 +332,24 @@ export function Transport(props) {
     rules: [{ required }],
     getFieldDecorator,
   };
-  const modeNameProps = {
-    outercol: 24,
-    col: 8,
+  const trafNameProps = {
+    outercol: 16,
+    col: 12,
     field: 'traf_name',
     label: msg('transModeName'),
     rules: getFieldValue('traf_mode') === '2' ? [{ required }] : [{ required: false }],
     disabled,
     formData,
+    getFieldDecorator,
+  };
+  const voyageNoProps = {
+    outercol: 8,
+    col: 0,
+    field: 'voyage_no',
+    placeholder: '航次号',
+    disabled,
+    formData,
+    rules: getFieldValue('voyage_no') === '2' ? [{ required }] : [{ required: false }],
     getFieldDecorator,
   };
   const blwbProps = {
@@ -414,10 +365,11 @@ export function Transport(props) {
   return (
     <Col span={16}>
       <Col span={8}>
-        <FormLocalSearchSelect {...modeProps} />
+        <FormLocalSearchSelect {...trafModeProps} />
       </Col>
       <Col span={8}>
-        <FormInput {...modeNameProps} />
+        <FormInput {...trafNameProps} />
+        <FormInput {...voyageNoProps} />
       </Col>
       <Col span={8}>
         <FormInput {...blwbProps} />
@@ -435,7 +387,7 @@ Transport.propTypes = {
   formRequire: PropTypes.object.isRequired,
 };
 
-// 提运单号、航次号
+// 航次号（未使用）
 export function DelVoyageNo(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const { getFieldDecorator, getFieldValue, disabled, formData, required } = props;
@@ -533,7 +485,7 @@ TradeRemission.propTypes = {
   formRequire: PropTypes.object.isRequired,
 };
 
-// 贸易国、起运国
+// 贸易国、起运国、装卸货港、境内目的地
 export function CountryAttr(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const { getFieldDecorator, disabled, formData, formRequire, onSearch, ietype, required } = props;
@@ -629,6 +581,7 @@ CountryAttr.propTypes = {
   formRequire: PropTypes.object.isRequired,
 };
 
+// 成交方式
 export function TradeMode(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const { getFieldDecorator, disabled, formData, formRequire, required } = props;
@@ -654,56 +607,6 @@ export function TradeMode(props) {
 }
 
 TradeMode.propTypes = {
-  intl: intlShape.isRequired,
-  disabled: PropTypes.bool,
-  required: PropTypes.bool,
-  getFieldDecorator: PropTypes.func.isRequired,
-  formData: PropTypes.object.isRequired,
-  formRequire: PropTypes.object.isRequired,
-};
-
-// 用途、成交方式
-export function UsageTrade(props) {
-  const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
-  const { getFieldDecorator, disabled, formData, formRequire, required } = props;
-  const usageProps = {
-    outercol: 24,
-    col: 8,
-    field: 'usage',
-    label: msg('usage'),
-    disabled,
-    formData,
-    getFieldDecorator,
-  };
-  const trxModeProps = {
-    outercol: 24,
-    col: 8,
-    field: 'trxn_mode',
-    options: formRequire.trxModes.map(tm => ({
-      value: tm.trx_mode,
-      text: `${tm.trx_mode} | ${tm.trx_spec}`,
-      search: `${tm.trx_mode}${tm.trx_spec}`,
-    })),
-    label: msg('trxMode'),
-    disabled,
-    formData,
-    rules: [{ required }],
-    getFieldDecorator,
-    searchKeyFn: opt => opt.value,
-  };
-  return (
-    <Col span={9}>
-      <Col span={12}>
-        <FormInput {...usageProps} />
-      </Col>
-      <Col span={12}>
-        <FormLocalSearchSelect {...trxModeProps} />
-      </Col>
-    </Col>
-  );
-}
-
-UsageTrade.propTypes = {
   intl: intlShape.isRequired,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
@@ -822,7 +725,7 @@ Fee.propTypes = {
   formRequire: PropTypes.object.isRequired,
 };
 
-// 集装箱号、件数
+// 集装箱号
 export function ContainerNo(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const { getFieldDecorator, disabled, formData } = props;
@@ -848,6 +751,7 @@ ContainerNo.propTypes = {
   formData: PropTypes.object.isRequired,
 };
 
+// 件数
 export function Pieces(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const { disabled, formData, getFieldDecorator, required } = props;
@@ -1024,7 +928,7 @@ export function RaDeclManulNo(props) {
   );
 }
 
-ContainerNo.propTypes = {
+RaDeclManulNo.propTypes = {
   intl: intlShape.isRequired,
   disabled: PropTypes.bool,
   getFieldDecorator: PropTypes.func.isRequired,
@@ -1032,7 +936,7 @@ ContainerNo.propTypes = {
 };
 
 // 保税/监管场所 货场代码
-export function StroeYard(props) {
+export function StoreYard(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const { disabled, formData, getFieldDecorator } = props;
   const grosswtProps = {
@@ -1065,7 +969,7 @@ export function StroeYard(props) {
   );
 }
 
-PackWeight.propTypes = {
+StoreYard.propTypes = {
   intl: intlShape.isRequired,
   disabled: PropTypes.bool,
   getFieldDecorator: PropTypes.func.isRequired,

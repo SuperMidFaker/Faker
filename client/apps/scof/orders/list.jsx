@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Icon, Popconfirm, Progress, message, Layout, Tooltip } from 'antd';
+import { Breadcrumb, Button, Dropdown, Menu, Icon, Popconfirm, Progress, message, Layout, Tooltip } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { Link } from 'react-router';
 import QueueAnim from 'rc-queue-anim';
@@ -55,7 +55,7 @@ function fetchData({ state, dispatch }) {
   depth: 2,
   moduleName: 'scof',
 })
-export default class ShipmentOrderList extends React.Component {
+export default class OrderList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     loading: PropTypes.bool.isRequired,
@@ -98,7 +98,7 @@ export default class ShipmentOrderList extends React.Component {
       if (result.error) {
         message.error(result.error.message);
       } else {
-        message.info('发送成功');
+        message.info('订单流程已启动');
         this.handleTableLoad();
       }
     });
@@ -163,20 +163,27 @@ export default class ShipmentOrderList extends React.Component {
         if (record.order_status === 1) {
           return (
             <div>
-              <a onClick={() => this.handleAccept(record.shipmt_order_no)}>发送</a>
+              <a onClick={() => this.handleAccept(record.shipmt_order_no)}><Icon type="play-circle" /></a>
               <span className="ant-divider" />
-              <Link to={`/scof/orders/edit?shipmtOrderNo=${record.shipmt_order_no}`}>修改</Link>
-              <span className="ant-divider" />
-              <Popconfirm title="确定删除?" onConfirm={() => this.handleRemove(record.shipmt_order_no)}>
-                <a>删除</a>
-              </Popconfirm>
+              <Dropdown overlay={(
+                <Menu onClick={this.handleMenuClick}>
+                  <Menu.Item key="edit">
+                    <Link to={`/scof/orders/edit?shipmtOrderNo=${record.shipmt_order_no}`}><Icon type="edit" />修改</Link>
+                  </Menu.Item>
+                  <Menu.Item key="delete">
+                    <Popconfirm title="确定删除?" onConfirm={() => this.handleRemove(record.shipmt_order_no)}>
+                      <a><Icon type="delete" />删除</a>
+                    </Popconfirm>
+                  </Menu.Item>
+                </Menu>)}
+              >
+                <a><Icon type="down" /></a>
+              </Dropdown>
             </div>
           );
         } else {
           return (
-            <div>
-              <Link to={`/scof/orders/view?shipmtOrderNo=${record.shipmt_order_no}`}>查看</Link>
-            </div>
+            <div />
           );
         }
       },
@@ -226,7 +233,7 @@ export default class ShipmentOrderList extends React.Component {
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3>
               </div>
             </div>
-            <div className="panel-body table-panel expandable">
+            <div className="panel-body table-panel">
               <Table rowSelection={rowSelection} dataSource={dataSource} columns={columns} rowKey="id" loading={loading} scroll={{ x: 1800 }} />
             </div>
           </div>

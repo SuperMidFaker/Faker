@@ -6,7 +6,7 @@ import FormInput from '../../form/formInput';
 import {
   RelationAutoCompSelect, IEPort, IEDate, DeclDate, Transport, ContractNo, LicenseNo, TermConfirm,
   TradeRemission, CountryAttr, TradeMode, Fee, ContainerNo, PackWeight, Pieces,
-  RaDeclManulNo, StroeYard,
+  RaDeclManulNo, StoreYard,
 } from '../../form/headFormItems';
 import { loadSearchedParam, saveBillHead } from 'common/reducers/cmsManifest';
 import { format } from 'client/common/i18n/helpers';
@@ -192,7 +192,7 @@ export default class CDFHeadPanel extends React.Component {
             </Row>
             <Row>
               <RaDeclManulNo {...formProps} intl={intl} formRequire={formRequire} />
-              <StroeYard {...formProps} intl={intl} formRequire={formRequire} />
+              <StoreYard {...formProps} intl={intl} formRequire={formRequire} />
             </Row>
           </Form>
         </div>
