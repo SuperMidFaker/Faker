@@ -7,7 +7,6 @@ import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadDelgBill, deleteEntries } from 'common/reducers/cmsManifest';
-import { loadBillForMake } from 'common/reducers/cmsDelegation';
 import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/search-bar';
@@ -42,7 +41,7 @@ const RadioButton = Radio.Button;
       text: `${cus.customs_name}`,
     })),
   }),
-  { loadDelgBill, deleteEntries, loadBillForMake, showPreviewer }
+  { loadDelgBill, deleteEntries, showPreviewer }
 )
 @connectNav({
   depth: 2,
@@ -219,24 +218,12 @@ export default class ManifestList extends Component {
     this.handleTableLoad(1, filter);
   }
   handleDelegationMake = (row) => {
-    this.props.loadBillForMake(row.delg_no).then((result) => {
-      if (result.error) {
-        message.error(result.error.message, 5);
-      } else {
-        const link = `/clearance/${this.props.ietype}/manifest/`;
-        this.context.router.push(`${link}${row.bill_seq_no}`);
-      }
-    });
+    const link = `/clearance/${this.props.ietype}/manifest/`;
+    this.context.router.push(`${link}${row.bill_seq_no}`);
   }
   handleDelegationView = (row) => {
-    this.props.loadBillForMake(row.delg_no).then((result) => {
-      if (result.error) {
-        message.error(result.error.message, 5);
-      } else {
-        const link = `/clearance/${this.props.ietype}/manifest/view/`;
-        this.context.router.push(`${link}${row.bill_seq_no}`);
-      }
-    });
+    const link = `/clearance/${this.props.ietype}/manifest/view/`;
+    this.context.router.push(`${link}${row.bill_seq_no}`);
   }
   handleDelegationRedo = (row) => {
     this.props.deleteEntries(row.bill_seq_no).then((result) => {
