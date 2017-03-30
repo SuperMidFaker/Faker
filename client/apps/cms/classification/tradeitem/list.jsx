@@ -19,7 +19,7 @@ import { createFilename } from 'client/util/dataTransform';
 import CopCodesPane from './panes/copCodesPane';
 import RepoUsersPane from './panes/repoUsersPane';
 import ImportComparisonModal from './modals/importComparison';
-import { CMS_ITEM_STATUS } from 'common/constants';
+import { CMS_ITEM_STATUS, CMS_TRADE_REPO_PERMISSION } from 'common/constants';
 import RowUpdater from 'client/components/rowUpdater';
 
 const formatMsg = format(messages);
@@ -390,57 +390,59 @@ export default class TradeItemList extends Component {
     };
     this.dataSource.remotes = tradeItemlist;
     const columns = [...this.columns];
-    columns.push({
-      title: this.msg('opColumn'),
-      width: 150,
-      fixed: 'right',
-      render: (o, record) => {
-        if (record.status === CMS_ITEM_STATUS.unclassified) {
-          return (<span>
-            <NavLink to={`/clearance/classification/tradeitem/edit/${record.id}`}>
-              <Icon type="edit" /> {this.msg('modify')}
-            </NavLink>
-            <span className="ant-divider" />
-            <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleItemDel(record.id)}>
-              <a role="button"><Icon type="delete" /> {this.msg('delete')}</a>
-            </Popconfirm>
-          </span>);
-        } else if (record.status === CMS_ITEM_STATUS.pending) {
-          return (
-            <span>
-              <RowUpdater onHit={this.handleItemPass} label={this.msg('pass')} row={record} />
-              <span className="ant-divider" />
-              <RowUpdater onHit={this.handleItemRefused} label={this.msg('refuse')} row={record} />
-              <span className="ant-divider" />
-              <Dropdown overlay={(
-                <Menu>
-                  <Menu.Item key="edit">
-                    <NavLink to={`/clearance/classification/tradeitem/edit/${record.id}`}>
-                      <Icon type="edit" /> {this.msg('modify')}
-                    </NavLink>
-                  </Menu.Item>
-                  <Menu.Item key="delete">
-                    <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleItemDel(record.id)}>
-                      <a role="button"><Icon type="delete" /> {this.msg('delete')}</a>
-                    </Popconfirm>
-                  </Menu.Item>
-                </Menu>)}
-              >
-                <a><Icon type="down" /></a>
-              </Dropdown>
-            </span>
-          );
-        } else if (record.status === CMS_ITEM_STATUS.classified) {
-          return (
-            <span>
+    if (repo.permission === CMS_TRADE_REPO_PERMISSION.edit) {
+      columns.push({
+        title: this.msg('opColumn'),
+        width: 150,
+        fixed: 'right',
+        render: (o, record) => {
+          if (record.status === CMS_ITEM_STATUS.unclassified) {
+            return (<span>
               <NavLink to={`/clearance/classification/tradeitem/edit/${record.id}`}>
                 <Icon type="edit" /> {this.msg('modify')}
               </NavLink>
-            </span>
-          );
-        }
-      },
-    });
+              <span className="ant-divider" />
+              <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleItemDel(record.id)}>
+                <a role="button"><Icon type="delete" /> {this.msg('delete')}</a>
+              </Popconfirm>
+            </span>);
+          } else if (record.status === CMS_ITEM_STATUS.pending) {
+            return (
+              <span>
+                <RowUpdater onHit={this.handleItemPass} label={this.msg('pass')} row={record} />
+                <span className="ant-divider" />
+                <RowUpdater onHit={this.handleItemRefused} label={this.msg('refuse')} row={record} />
+                <span className="ant-divider" />
+                <Dropdown overlay={(
+                  <Menu>
+                    <Menu.Item key="edit">
+                      <NavLink to={`/clearance/classification/tradeitem/edit/${record.id}`}>
+                        <Icon type="edit" /> {this.msg('modify')}
+                      </NavLink>
+                    </Menu.Item>
+                    <Menu.Item key="delete">
+                      <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleItemDel(record.id)}>
+                        <a role="button"><Icon type="delete" /> {this.msg('delete')}</a>
+                      </Popconfirm>
+                    </Menu.Item>
+                  </Menu>)}
+                >
+                  <a><Icon type="down" /></a>
+                </Dropdown>
+              </span>
+            );
+          } else if (record.status === CMS_ITEM_STATUS.classified) {
+            return (
+              <span>
+                <NavLink to={`/clearance/classification/tradeitem/edit/${record.id}`}>
+                  <Icon type="edit" /> {this.msg('modify')}
+                </NavLink>
+              </span>
+            );
+          }
+        },
+      });
+    }
     const repoColumns = [{
       dataIndex: 'name',
       key: 'name',
@@ -519,14 +521,22 @@ export default class TradeItemList extends Component {
             </RadioGroup>
             {repoId &&
               <div className="top-bar-tools">
-                <Dropdown overlay={menu} type="primary">
-                  <Button size="large" onClick={this.handleButtonClick}>
-                    {this.msg('importItems')} <Icon type="down" />
-                  </Button>
-                </Dropdown>
-                <Button type="primary" size="large" icon="plus" onClick={this.handleAddItem}>
-                  {this.msg('addItem')}
-                </Button>
+                {repo.permission === CMS_TRADE_REPO_PERMISSION.edit &&
+                  (
+                    <Dropdown overlay={menu} type="primary">
+                      <Button size="large" onClick={this.handleButtonClick}>
+                        {this.msg('importItems')} <Icon type="down" />
+                      </Button>
+                    </Dropdown>
+                  )
+                }
+                {repo.permission === CMS_TRADE_REPO_PERMISSION.edit &&
+                  (
+                    <Button type="primary" size="large" icon="plus" onClick={this.handleAddItem}>
+                      {this.msg('addItem')}
+                    </Button>
+                  )
+                }
                 <Button size="large"
                   className={this.state.rightSidercollapsed ? '' : 'btn-toggle-on'}
                   icon={this.state.rightSidercollapsed ? 'setting' : 'setting'}
@@ -540,7 +550,7 @@ export default class TradeItemList extends Component {
               <div className="toolbar">
                 <SearchBar placeholder="编码/名称/描述/申报要素" onInputSearch={this.handleSearch} size="large" />
                 <span />
-                {selectedRows.length > 0 &&
+                {repo.permission === CMS_TRADE_REPO_PERMISSION.edit && selectedRows.length > 0 &&
                 <Popconfirm title={'是否删除所有选择项？'} onConfirm={() => this.handleDeleteSelected()}>
                   <Button type="danger" size="large" icon="delete">
                     批量删除
@@ -571,22 +581,25 @@ export default class TradeItemList extends Component {
             </div>
             <Collapse accordion defaultActiveKey="trader">
               <Panel header={'授权收发货人'} key="trader">
-                <CopCodesPane />
+                <CopCodesPane repo={repo} />
               </Panel>
               <Panel header={'授权报关行'} key="user">
                 <RepoUsersPane repo={repo} />
               </Panel>
-              <Panel header={'更多'} key="more">
-                <Alert
-                  message="警告"
-                  description="删除物料库数据将无法恢复，请谨慎操作"
-                  type="warning"
-                  showIcon
-                />
-                <Popconfirm title="是否确认删除?" onConfirm={this.handleDeleteRepo}>
-                  <Button type="danger" size="large" icon="delete">删除物料库</Button>
-                </Popconfirm>
-              </Panel>
+              {
+                repo.permission === CMS_TRADE_REPO_PERMISSION.edit &&
+                (<Panel header={'更多'} key="more">
+                  <Alert
+                    message="警告"
+                    description="删除物料库数据将无法恢复，请谨慎操作"
+                    type="warning"
+                    showIcon
+                  />
+                  <Popconfirm title="是否确认删除?" onConfirm={this.handleDeleteRepo}>
+                    <Button type="danger" size="large" icon="delete">删除物料库</Button>
+                  </Popconfirm>
+                </Panel>)
+              }
             </Collapse>
           </div>
         </Sider>
