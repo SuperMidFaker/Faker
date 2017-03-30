@@ -42,8 +42,8 @@ export default class CreateFlowModal extends React.Component {
         const customer = this.props.customerPartners.filter(pt => pt.id === fields.customer)[0];
         this.props.saveFlow({
           name: fields.name,
-          pid: customer.id,
-          pname: customer.name,
+          partner_id: customer.id,
+          partner_name: customer.name,
           tenantId: this.props.tenantId,
         }).then((result) => {
           if (!result.error) {

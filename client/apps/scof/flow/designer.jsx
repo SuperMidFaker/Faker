@@ -32,7 +32,7 @@ export default class FlowDesigner extends React.Component {
     form: PropTypes.object.isRequired,
     submitting: PropTypes.bool,
     listCollapsed: PropTypes.bool.isRequired,
-    currentFlow: PropTypes.shape({ id: PropTypes.number.isRequired }).isRequired,
+    currentFlow: PropTypes.shape({ id: PropTypes.number.isRequired, name: PropTypes.string.isRequired }).isRequired,
   }
   constructor(...args) {
     super(...args);
@@ -82,37 +82,10 @@ export default class FlowDesigner extends React.Component {
     };
     this.graph.source(data.nodes, data.edges);
     this.graph.render();
-    this.graph.on('dragstart', (ev) => {
-      console.log('dragstart', ev);
-      this.dragItem = ev.item;
-      // 去掉加边移动情况
-      if (!this.beginAdd) {
-        this.dragging = true;
-      }
-    });
-    this.graph.on('dragend', (ev) => {
-      console.log('dragend', ev);
-    });
     this.graph.on('mouseup', (ev) => {
       console.log('mouseup', ev);
       if (this.beginAdd) {
         this.beginAdd = false;
-        return;
-      }
-      if (this.dragging) {
-        this.dragging = false;
-        if (this.state.activeItem) {
-          if (!this.dragItem || this.state.activeItem.get('id') !== this.dragItem.get('id')) {
-            setTimeout(() => {
-              this.graph.changeMode('select');
-              this.graph.setItemActived(this.state.activeItem, true);
-              if (this.dragItem) {
-                this.graph.setItemActived(this.dragItem, false);
-              }
-              this.graph.refresh();
-            }, 10);
-          }
-        }
         return;
       }
       const item = ev.item;
@@ -180,6 +153,7 @@ export default class FlowDesigner extends React.Component {
     if (kind) {
       this.graph.beginAdd('node', {
         id, kind, actions: [], in_degree: 0, out_degree: 0,
+        name: kind !== 'terminal' ? `节点${this.graph.get('nodes').length + 1}` : undefined,
       });
       this.graph.refresh();
     }
@@ -241,23 +215,11 @@ export default class FlowDesigner extends React.Component {
   handleActiveValidated = (item) => {
     const activeItem = this.state.activeItem;
     if (activeItem) {
-      this.props.form.validateFields((err, values) => {
-        if (err) {
-          this.graph.changeMode('select');
-          this.graph.setItemActived(activeItem, true);
-          if (item) {
-            this.graph.setItemActived(item, false);
-          }
-          this.graph.refresh();
-        } else {
-          this.graph.update(activeItem, values);
-          this.props.form.resetFields();
-          this.handleNewItemLoad(item);
-        }
-      });
-    } else {
-      this.handleNewItemLoad(item);
+      const values = this.props.form.getFieldsValue();
+      this.graph.update(activeItem, values);
+      this.props.form.resetFields();
     }
+    this.handleNewItemLoad(item);
   }
   handleNewItemLoad = (item) => {
     if (item) {
