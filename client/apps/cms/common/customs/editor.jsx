@@ -1,9 +1,10 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Form, Breadcrumb, Button, Dropdown, Layout, Menu, Icon, Tabs, message } from 'antd';
+import { Form, Breadcrumb, Button, Layout, Tabs, message, Popconfirm } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadEntry, saveEntryHead } from 'common/reducers/cmsManifest';
+import { deleteDecl, setFilterReviewed, showSendDeclModal } from 'common/reducers/cmsDeclare';
 import { fillEntryId } from 'common/reducers/cmsDelegation';
 import NavLink from 'client/components/nav-link';
 import SheetHeadPanel from './panel/cdfHeadPanel';
@@ -11,6 +12,8 @@ import SheetBodyPanel from './panel/cdfBodyPanel';
 import SheetExtraPanel from './panel/cdfExtraPanel';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
+import { DECL_STATUS } from 'common/constants';
+import SendModal from './modals/sendModal';
 
 const formatMsg = format(messages);
 const { Sider, Header, Content } = Layout;
@@ -24,7 +27,7 @@ const TabPane = Tabs.TabPane;
     bodies: state.cmsManifest.entryBodies,
     tenantId: state.account.tenantId,
   }),
-  { saveEntryHead, loadEntry, fillEntryId }
+  { saveEntryHead, loadEntry, fillEntryId, deleteDecl, setFilterReviewed, showSendDeclModal }
 )
 @connectNav({
   depth: 3,
@@ -49,11 +52,6 @@ export default class CustomsDeclEditor extends React.Component {
     collapsed: true,
   }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
-  lockMenu = (
-    <Menu>
-      <Menu.Item key="lock"><Icon type="lock" /> 锁定</Menu.Item>
-      <Menu.Item key="delete"><Icon type="delete" /> 删除</Menu.Item>
-    </Menu>);
   toggle = () => {
     this.setState({
       collapsed: !this.state.collapsed,
@@ -68,7 +66,6 @@ export default class CustomsDeclEditor extends React.Component {
     if (billMeta.editable) {
       pathname = `/clearance/${ietype}/manifest/${billMeta.bill_seq_no}`;
     }
-
     this.context.router.push({ pathname });
   }
   handleEntryHeadSave = () => {
@@ -89,6 +86,40 @@ export default class CustomsDeclEditor extends React.Component {
         message.info('保存成功');
       }
     });
+  }
+  handleDelete = () => {
+    const head = this.props.head;
+    this.props.deleteDecl(head.id, head.bill_seq_no).then((result) => {
+      if (result.error) {
+        message.error(result.error.message);
+      } else {
+        this.context.router.push(`/clearance/${this.props.ietype}/customs`);
+      }
+    });
+  }
+  handleReview = () => {
+    const head = this.props.head;
+    this.props.setFilterReviewed(this.props.head.id, DECL_STATUS.reviewed).then((result) => {
+      if (result.error) {
+        message.error(result.error.message);
+      } else {
+        this.props.loadEntry(head.bill_seq_no, head.pre_entry_seq_no, this.props.tenantId);
+      }
+    });
+  }
+  handleRecall = () => {
+    const head = this.props.head;
+    this.props.setFilterReviewed(head.id, DECL_STATUS.proposed).then((result) => {
+      if (result.error) {
+        message.error(result.error.message);
+      } else {
+        this.props.loadEntry(head.bill_seq_no, head.pre_entry_seq_no, this.props.tenantId);
+      }
+    });
+  }
+  handleShowSendDeclModal = () => {
+    const head = this.props.head;
+    this.props.showSendDeclModal({ visible: true, preEntrySeqNo: head.pre_entry_seq_no, delgNo: head.delg_no });
   }
   render() {
     const { ietype, form, head, bodies, billMeta } = this.props;
@@ -111,11 +142,12 @@ export default class CustomsDeclEditor extends React.Component {
             </Breadcrumb>
             <Button size="large" icon="rollback" onClick={this.handleManifestVisit}>查看源清单</Button>
             <div className="top-bar-tools">
-              <Dropdown overlay={this.lockMenu}>
-                <Button size="large">
-                  <Icon type="setting" /> <Icon type="down" />
-                </Button>
-              </Dropdown>
+              { head.status === 0 && <Button type="primary" size="large" onClick={this.handleReview}>{this.msg('review')}</Button> }
+              { head.status === 0 && <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleDelete()}>
+                <Button size="large" >{this.msg('delete')}</Button>
+              </Popconfirm> }
+              { head.status === 1 && <Button type="primary" size="large" onClick={this.handleShowSendDeclModal}>{this.msg('sendPackets')}</Button> }
+              { head.status === 1 && <Button size="large" onClick={this.handleRecall}>{this.msg('recall')}</Button> }
               <Button size="large"
                 className={this.state.collapsed ? '' : 'btn-toggle-on'}
                 icon={this.state.collapsed ? 'folder' : 'folder-open'}
@@ -152,6 +184,7 @@ export default class CustomsDeclEditor extends React.Component {
               <h3>附加资料</h3>
             </div>
             <SheetExtraPanel type="entry" />
+            <SendModal ietype={ietype} />
           </div>
         </Sider>
       </Layout>

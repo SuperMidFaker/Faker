@@ -329,7 +329,7 @@ export default class DelgDeclList extends Component {
               </PrivilegeCover>
               <span className="ant-divider" />
               <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-                <RowUpdater onHit={this.handleShowSendDeclModal} label={this.msg('send')} row={record} />
+                <RowUpdater onHit={this.handleShowSendDeclModal} label={this.msg('sendPackets')} row={record} />
               </PrivilegeCover>
             </span>
           );
