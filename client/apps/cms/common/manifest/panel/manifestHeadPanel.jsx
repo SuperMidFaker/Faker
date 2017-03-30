@@ -56,7 +56,6 @@ export default class ManifestHeadPanel extends React.Component {
   }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
   handleSheetSave = (ev) => {
-    console.log('handleSheetSave');
     ev.stopPropagation();
     ev.preventDefault();
     this.props.onSave();
