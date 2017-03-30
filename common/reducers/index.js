@@ -26,7 +26,6 @@ import cmsDelegation from './cmsDelegation';
 import cmsDelgInfoHub from './cmsDelgInfoHub';
 import cmsDeclare from './cmsDeclare';
 import cmsManifest from './cmsManifest';
-import cmsCompRelation from './cmsCompRelation';
 import cmsQuote from './cmsQuote';
 import cmsResources from './cmsResources';
 import cmsSettings from './cmsSettings';
@@ -74,7 +73,6 @@ export default combineReducers({
   cmsDelgInfoHub,
   cmsDeclare,
   cmsManifest,
-  cmsCompRelation,
   cmsQuote,
   cmsResources,
   cmsSettings,
