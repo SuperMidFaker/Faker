@@ -89,7 +89,7 @@ export default class CopCodesPane extends React.Component {
     const addOne = {
       repo_id: this.props.repoId,
       creater_login_id: this.props.loginId,
-      relation_id: null,
+      comp_manager_id: null,
       comp_code: '',
       customs_code: '',
       trade_name: '',
@@ -127,7 +127,7 @@ export default class CopCodesPane extends React.Component {
     if (rels) {
       record.comp_code = rels.comp_code; // eslint-disable-line no-param-reassign
       record.customs_code = rels.customs_code; // eslint-disable-line no-param-reassign
-      record.relation_id = rels.relation_id; // eslint-disable-line no-param-reassign
+      record.comp_manager_id = rels.comp_manager_id; // eslint-disable-line no-param-reassign
     }
     this.forceUpdate();
   }
