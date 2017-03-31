@@ -5,9 +5,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import FormInput from '../../common/form/formInput';
 import {
   RelationAutoCompSelect, IEPort, IEDate, DeclDate, Transport, DeclCustoms, Pieces, ContractNo, LicenseNo, TermConfirm,
-  TradeRemission, CountryAttr, TradeMode, Fee, ContainerNo, PackWeight,
-  RaDeclManulNo, StroeYard,
-} from './headFormItems';
+  TradeRemission, CountryAttr, TradeMode, Fee, ContainerNo, PackWeight, RaDeclManulNo, StoreYard } from './headFormItems';
 import { loadSearchedParam } from 'common/reducers/cmsManifest';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -177,7 +175,7 @@ export default class HeadForm extends React.Component {
               </Row>
               <Row>
                 <RaDeclManulNo {...formProps} intl={intl} formRequire={formRequire} />
-                <StroeYard {...formProps} intl={intl} formRequire={formRequire} />
+                <StoreYard {...formProps} intl={intl} formRequire={formRequire} />
               </Row>
             </Form>
           </div>

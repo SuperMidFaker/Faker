@@ -117,12 +117,16 @@ export default class ManifestEditor extends React.Component {
         wts += Number(grosswt);
         const data = { ...body, gross_wt: grosswt };
         datas.push(data);
-        this.props.editBillBody(data);
+        if (body.gross_wt !== Number(grosswt)) {
+          this.props.editBillBody(data);
+        }
       }
       const lastwt = totGrossWt - wts;
       const lastBody = bodyDatas[bodyDatas.length - 1];
       datas.push({ ...lastBody, gross_wt: lastwt });
-      this.props.editBillBody({ ...lastBody, gross_wt: lastwt });
+      if (lastBody.gross_wt !== lastwt) {
+        this.props.editBillBody({ ...lastBody, gross_wt: lastwt });
+      }
       this.props.openMergeSplitModal();
     }
   }
@@ -144,7 +148,11 @@ export default class ManifestEditor extends React.Component {
   }
   handleBillSave = () => {
     const { billHead, ietype, loginId, tenantId, formData } = this.props;
-    const head = { ...billHead, ...this.props.form.getFieldsValue(), template_id: formData.template_id };
+    let templateId = formData.template_id;
+    if (!this.props.form.getFieldValue('model')) {
+      templateId = null;
+    }
+    const head = { ...billHead, ...this.props.form.getFieldsValue(), template_id: templateId };
     const tradeInfo = this.validateCode(head.trade_co, head.trade_custco);
     if (tradeInfo) {
       return message.error(`${tradeInfo}`);
@@ -221,9 +229,9 @@ export default class ManifestEditor extends React.Component {
       });
     } else {
       this.setState({ headData: this.props.billHead });
-      const { billHead, ietype, loginId, tenantId } = this.props;
-      const head = { ...billHead, ...this.props.form.getFieldsValue(), template_id: null };
-      this.props.saveBillHead({ head, ietype, loginId, tenantId });
+      // const { billHead, ietype, loginId, tenantId } = this.props;
+      // const head = { ...billHead, ...this.props.form.getFieldsValue(), template_id: null };
+      // this.props.saveBillHead({ head, ietype, loginId, tenantId });
     }
   }
   handleSaveAsTemplate = () => {
