@@ -10,6 +10,7 @@ import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
 import ClearanceForm from './clearanceForm';
 import TransportForm from './transportForm';
+import WarehouseForm from './warehouseForm';
 
 const formatMsg = format(messages);
 const Panel = Collapse.Panel;
@@ -176,6 +177,8 @@ export default class BasicForm extends Component {
         steps.push(<Step key={node.node_uuid} title={node.name} status="process" description={<ClearanceForm formData={order} index={i} operation={operation} />} />);
       } else if (node.kind === 'tms') {
         steps.push(<Step key={node.node_uuid} title={node.name} status="process" description={<TransportForm formData={order} index={i} operation={operation} />} />);
+      } else if (node.kind === 'cwm') {
+        steps.push(<Step key={node.node_uuid} title={node.name} status="process" description={<WarehouseForm formData={order} index={i} operation={operation} />} />);
       }
     }
     return steps;

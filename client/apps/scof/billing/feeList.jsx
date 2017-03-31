@@ -160,7 +160,7 @@ export default class FeesList extends React.Component {
       render: o => <TrimSpan text={o} />,
       filters: customers.map(item => ({ text: item.partner_code ? `${item.partner_code} | ${item.name}` : item.name, value: item.name })),
     }, {
-      title: '报关委托号',
+      title: '委托编号',
       dataIndex: 'ccb_delg_no',
       width: 180,
       render: o => <CcbDelgNoColumn nos={o} />,

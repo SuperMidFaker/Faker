@@ -19,6 +19,7 @@ const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
 const TabPane = Tabs.TabPane;
 const Option = Select.Option;
+const OptGroup = Select.OptGroup;
 
 @injectIntl
 @connect(
@@ -243,7 +244,7 @@ export default class ManifestEditor extends React.Component {
           <a> <Icon type="delete" /> 重置清单</a>
         </Popconfirm>
       </Menu.Item>
-      <Menu.Item key="template"><Icon type="file" /> {this.msg('saveAsTemplate')}</Menu.Item>
+      <Menu.Item key="template"><Icon type="book" /> {this.msg('saveAsTemplate')}</Menu.Item>
     </Menu>)
   render() {
     const { ietype, readonly, form: { getFieldDecorator }, form, billHead, billBodies, billMeta, templates, ...actions } = this.props;
@@ -276,7 +277,6 @@ export default class ManifestEditor extends React.Component {
             }
             <div className="top-bar-tools">
               {editable && getFieldDecorator('model', { initialValue: billHead.template_id })(<Select
-                showArrow={false}
                 placeholder="选择模板"
                 optionFilterProp="search"
                 size="large"
@@ -284,10 +284,12 @@ export default class ManifestEditor extends React.Component {
                 style={{ width: 200 }}
                 allowClear
               >
-                {templates.map(data => (<Option key={data.id} value={data.id}
-                  search={`${data.id}${data.template_name}`}
-                >{data.template_name}</Option>)
-                  )}
+                <OptGroup label="可用清单模板">
+                  {templates.map(data => (<Option key={data.id} value={data.id}
+                    search={`${data.id}${data.template_name}`}
+                  ><Icon type="book" /> {data.template_name}</Option>)
+                    )}
+                </OptGroup>
               </Select>)
               }
               {editable && <Button type="primary" size="large" icon="addfile" onClick={this.handleGenerateEntry}>{this.msg('generateEntry')}</Button> }
@@ -295,7 +297,7 @@ export default class ManifestEditor extends React.Component {
                 <Dropdown overlay={this.lockMenu}><Button size="large"> 更多 <Icon type="down" /></Button></Dropdown>
               }
               {!editable &&
-                <Button type="primary" size="large" icon="file" onClick={this.handleSaveAsTemplate}>{this.msg('saveAsTemplate')}</Button>
+                <Button size="large" icon="book" onClick={this.handleSaveAsTemplate}>{this.msg('saveAsTemplate')}</Button>
               }
               <Button size="large"
                 className={this.state.collapsed ? '' : 'btn-toggle-on'}

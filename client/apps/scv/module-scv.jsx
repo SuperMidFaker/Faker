@@ -30,7 +30,6 @@ export default class ModuleSCV extends React.Component {
     linkMenus.push({
       single: false,
       key: 'scv-2',
-      path: '/scv/shipments',
       icon: 'icon-fontello-tasks-1',
       text: formatMsg(intl, 'shipmentsTracking'),
       sublinks: [{

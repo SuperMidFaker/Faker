@@ -162,7 +162,7 @@ export default class BillingFeeList extends React.Component {
       dataIndex: 'cust_order_no',
       render: o => <TrimSpan text={o} />,
     }, {
-      title: '报关委托号',
+      title: '委托编号',
       dataIndex: 'ccb_delg_no',
       render: o => <CcbDelgNoColumn nos={o} />,
     }, {

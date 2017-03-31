@@ -1,9 +1,9 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Card, Col, Icon, Row, Table, Tag, Tooltip, message } from 'antd';
+import { Badge, Button, Card, Col, Icon, Progress, Row, Table, Tag, Tooltip, message } from 'antd';
 import moment from 'moment';
-import { DECL_I_TYPE, DECL_E_TYPE, CMS_DELEGATION_STATUS } from 'common/constants';
+import { DECL_I_TYPE, DECL_E_TYPE, CMS_DELEGATION_STATUS, CMS_DECL_STATUS } from 'common/constants';
 import { openAcceptModal, ensureManifestMeta } from 'common/reducers/cmsDelegation';
 import { loadCustPanel } from 'common/reducers/cmsDelgInfoHub';
 import InfoItem from 'client/components/InfoItem';
@@ -108,43 +108,57 @@ export default class CustomsDeclPane extends React.Component {
     const panelHeader = (
       <span>{declTypes.length > 0 ? declTypes[0].value : ''}：{bill.pack_count}件/{bill.gross_wt}千克</span>
     );
+    const perVal = (bill.bill_status * 25) > 100 ? 100 : bill.bill_status * 25;
+    const manifestProgress = (<Progress percent={perVal} strokeWidth={5} showInfo={false} />);
     const columns = [{
-      title: '预报关单号',
-      dataIndex: 'pre_entry_seq_no',
-      width: 160,
-    }, {
-      title: '海关编号',
-      dataIndex: 'entry_id',
-      width: 160,
-    }, {
-      title: '通关状态',
-      width: 100,
-      dataIndex: 'note',
-    }, {
-      title: '海关查验',
+      title: '报关单',
       dataIndex: 'customs_inspect',
-      width: 70,
-      render: (o) => {
-        if (o === 1) {
-          return <Tag color="#F04134">是</Tag>;
-        } else if (o === 2) {
-          return <Tag color="rgba(39, 187, 71, 0.65)">通过</Tag>;
-        } else {
-          return <Tag>否</Tag>;
+      render: (o, record) => {
+        let inspectFlag = <Tag>否</Tag>;
+        let sheetType = '';
+        if (record.sheet_type === 'CDF') {
+          sheetType = <Tag color="blue-inverse">报关单</Tag>;
+        } else if (record.sheet_type === 'FTZ') {
+          sheetType = <Tag color="blue">备案清单</Tag>;
         }
+        const decl = CMS_DECL_STATUS.filter(st => st.value === o)[0];
+        let declStatus = '';
+        if (record.status === 0) {
+          declStatus = <Badge status="default" text={decl && decl.text} />;
+        } else if (record.status === 1) {
+          declStatus = <Badge status="warning" text={decl && decl.text} />;
+        } else if (record.status === 2) {
+          declStatus = <Badge status="processing" text={decl && decl.text} />;
+        } else if (record.status === 3) {
+          declStatus = <Badge status="success" text={decl && decl.text} />;
+        }
+        const declNo = (record.entry_id) ? <span>{sheetType} 海关编号# {record.entry_id}</span> : <span className="mdc-text-grey">{sheetType} 预报关编号# {record.pre_entry_seq_no}</span>;
+        if (o === 1) {
+          inspectFlag = <Tag color="#F04134">是</Tag>;
+        } else if (o === 2) {
+          inspectFlag = <Tag color="rgba(39, 187, 71, 0.65)">通过</Tag>;
+        }
+        return (<Card title={declNo} className="with-card-footer">
+          {record.note}
+          {inspectFlag}
+          <div className="card-footer">
+            {declStatus}
+          </div>
+        </Card>);
       },
     }];
     return (
       <div className="pane-content tab-pane">
         <Row gutter={16}>
-          <Col span={18}>
-            <Card title={panelHeader} extra={this.button()} bodyStyle={{ padding: 0 }}>
-              <Table size="small" columns={columns} pagination={false} dataSource={tableDatas} scroll={{ x: 580 }} />
+          <Col span={18} className="table-list">
+            <Card bodyStyle={{ padding: 16 }}>
+              {manifestProgress}{panelHeader}{this.button()}
             </Card>
+            <Table size="middle" showHeader={false} columns={columns} pagination={false} dataSource={tableDatas} />
           </Col>
           <Col span={6}>
-            <Card bodyStyle={{ padding: 0 }}>
-              <Row gutter={8} style={{ padding: 16 }}>
+            <Card bodyStyle={{ padding: 16 }} className="secondary-card">
+              <Row gutter={8}>
                 <Col span="24">
                   <InfoItem labelCol={{ span: 3 }} label="报关服务商"
                     field={customsPanel.recv_name} fieldCol={{ span: 9 }}

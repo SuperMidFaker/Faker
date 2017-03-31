@@ -3,7 +3,7 @@ import { defineMessages } from 'react-intl';
 export default defineMessages({
   delgNo: {
     id: 'cms.forms.delg.no',
-    defaultMessage: '报关委托号',
+    defaultMessage: '委托编号',
   },
   delgClient: {
     id: 'cms.forms.delg.client',
