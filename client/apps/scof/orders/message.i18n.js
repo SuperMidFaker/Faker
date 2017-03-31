@@ -557,6 +557,38 @@ const messages = defineMessages({
     id: 'scop.orders.previewer.clearance.status.releasedPart',
     defaultMessage: '部分放行',
   },
+  delgDeclare: {
+    id: 'scop.orders.progress.action.delg.declare',
+    defaultMessage: '申报',
+  },
+  delgInspect: {
+    id: 'scop.orders.progress.action.delg.inspect',
+    defaultMessage: '查验',
+  },
+  delgRelease: {
+    id: 'scop.orders.progress.action.delg.release',
+    defaultMessage: '放行',
+  },
+  mainfestCreate: {
+    id: 'scop.orders.progress.action.manifest.generate',
+    defaultMessage: '制单',
+  },
+  manifestGenerate: {
+    id: 'scop.orders.progress.action.manifest.generate',
+    defaultMessage: '制单',
+  },
+  shipmtPickup: {
+    id: 'scop.orders.progress.action.shipmt.pickup',
+    defaultMessage: '提货',
+  },
+  shipmtDeliver: {
+    id: 'scop.orders.progress.action.shipmt.deliver',
+    defaultMessage: '交货',
+  },
+  shipmtPod: {
+    id: 'scop.orders.progress.action.shipmt.pod',
+    defaultMessage: '回单',
+  },
 });
 
 export default messages;
