@@ -17,7 +17,7 @@ const FormItem = Form.Item;
     visible: state.trackingLandStatus.changeActDateModal.visible,
     dispId: state.trackingLandStatus.changeActDateModal.dispId,
     shipmtNo: state.trackingLandStatus.changeActDateModal.shipmtNo,
-    status: state.shipment.previewer.shipmt.status,
+    status: state.shipment.previewer.dispatch.status,
     pickupActDate: state.trackingLandStatus.changeActDateModal.pickupActDate,
     deliverActDate: state.trackingLandStatus.changeActDateModal.deliverActDate,
   }),
@@ -78,6 +78,7 @@ export default class ChangeActDateModal extends React.Component {
     this.props.showChangeActDateModal({ visible: false });
   }
   render() {
+    console.log(this.props.status, SHIPMENT_TRACK_STATUS.delivered);
     const colSpan = 10;
     return (
       <Modal title="纠正节点时间" onCancel={this.handleCancel} onOk={this.handleOk}
