@@ -132,6 +132,11 @@ export default class CopCodesPane extends React.Component {
     }
     this.forceUpdate();
   }
+  editDone = (index) => {
+    const datas = [...this.state.datas];
+    datas.splice(index, 1);
+    this.setState({ datas });
+  }
   render() {
     const { tradeCodes } = this.props;
     const columns = [{
@@ -166,7 +171,7 @@ export default class CopCodesPane extends React.Component {
                 <span>
                   <a onClick={() => this.handleSave(record)}><Icon type="save" /></a>
                   <span className="ant-divider" />
-                  <a onClick={() => this.editDone(index, 'cancel')}><Icon type="close" /></a>
+                  <a onClick={() => this.editDone(index)}><Icon type="close" /></a>
                 </span>
             }
             </div>);

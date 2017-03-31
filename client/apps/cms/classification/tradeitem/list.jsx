@@ -566,7 +566,7 @@ export default class TradeItemList extends Component {
           defaultCollapsed
           collapsible
           collapsed={this.state.rightSidercollapsed}
-          width={480}
+          width={520}
           collapsedWidth={0}
           className="right-sider"
         >
