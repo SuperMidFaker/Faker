@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Button, Icon, Table, Select, message } from 'antd';
 import { loadTradeCodes, loadRepoTrades, saveRepoTrade, delRepoTrade } from 'common/reducers/cmsTradeitem';
-import { CMS_TRADE_REPO_PERMISSION } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 
@@ -73,12 +72,14 @@ export default class CopCodesPane extends React.Component {
   };
   componentDidMount() {
     this.props.loadTradeCodes(this.props.tenantId);
-    this.props.loadRepoTrades(this.props.repoId);
+    if (this.props.repoId) {
+      this.props.loadRepoTrades(this.props.tenantId, this.props.repoId);
+    }
   }
   componentWillReceiveProps(nextProps) {
     if (this.props.repoId !== nextProps.repoId ||
       (this.props.tabKey !== nextProps.tabKey && nextProps.tabKey === 'copCodes')) {
-      this.props.loadRepoTrades(nextProps.repoId);
+      this.props.loadRepoTrades(this.props.tenantId, nextProps.repoId);
     }
     if (this.props.repoTrades !== nextProps.repoTrades) {
       this.setState({ datas: nextProps.repoTrades });
@@ -88,7 +89,7 @@ export default class CopCodesPane extends React.Component {
   handleAdd = () => {
     const addOne = {
       repo_id: this.props.repoId,
-      creater_login_id: this.props.loginId,
+      tenant_id: this.props.tenantId,
       relation_id: null,
       comp_code: '',
       customs_code: '',
@@ -105,7 +106,7 @@ export default class CopCodesPane extends React.Component {
           message.error(result.error.message);
         } else {
           message.info('保存成功', 5);
-          this.props.loadRepoTrades(this.props.repoId);
+          this.props.loadRepoTrades(this.props.tenantId, this.props.repoId);
         }
       }
     );
@@ -132,7 +133,7 @@ export default class CopCodesPane extends React.Component {
     this.forceUpdate();
   }
   render() {
-    const { tradeCodes, repo } = this.props;
+    const { tradeCodes } = this.props;
     const columns = [{
       title: this.msg('tradeName'),
       dataIndex: 'trade_name',
@@ -151,29 +152,32 @@ export default class CopCodesPane extends React.Component {
       dataIndex: 'customs_code',
       render: (o, record) =>
         <ColumnInput field="customs_code" record={record} />,
+    }, {
+      width: 70,
+      render: (o, record, index) => {
+        if (index !== 0) {
+          return (
+            <div className="editable-row-operations">
+              {record.id ?
+                <span>
+                  <a onClick={() => this.handleDelete(record, index)}><Icon type="delete" /></a>
+                </span>
+              :
+                <span>
+                  <a onClick={() => this.handleSave(record)}><Icon type="save" /></a>
+                  <span className="ant-divider" />
+                  <a onClick={() => this.editDone(index, 'cancel')}><Icon type="close" /></a>
+                </span>
+            }
+            </div>);
+        } else {
+          return '';
+        }
+      },
     }];
-    if (repo.permission === CMS_TRADE_REPO_PERMISSION.edit) {
-      columns.push({
-        width: 70,
-        render: (o, record, index) => (
-          <div className="editable-row-operations">
-            {record.id ?
-              <span>
-                <a onClick={() => this.handleDelete(record, index)}><Icon type="delete" /></a>
-              </span>
-            :
-              <span>
-                <a onClick={() => this.handleSave(record)}><Icon type="save" /></a>
-                <span className="ant-divider" />
-                <a onClick={() => this.editDone(index, 'cancel')}><Icon type="close" /></a>
-              </span>
-          }
-          </div>),
-      });
-    }
     return (
       <Table size="middle" pagination={false} columns={columns} dataSource={this.state.datas}
-        footer={repo.permission === CMS_TRADE_REPO_PERMISSION.edit ? () => <Button type="dashed" onClick={this.handleAdd} icon="plus" style={{ width: '100%' }}>{this.msg('add')}</Button> : null}
+        footer={() => <Button type="dashed" onClick={this.handleAdd} icon="plus" style={{ width: '100%' }}>{this.msg('add')}</Button>}
       />
     );
   }

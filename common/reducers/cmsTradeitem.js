@@ -296,7 +296,7 @@ export function loadTradeCodes(tenantId) {
   };
 }
 
-export function loadRepoTrades(repoId) {
+export function loadRepoTrades(tenantId, repoId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -306,7 +306,7 @@ export function loadRepoTrades(repoId) {
       ],
       endpoint: 'v1/cms/tradeitem/repoTrades/load',
       method: 'get',
-      params: { repoId },
+      params: { tenantId, repoId },
     },
   };
 }
