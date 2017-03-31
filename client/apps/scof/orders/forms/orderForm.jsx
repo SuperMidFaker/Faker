@@ -35,7 +35,7 @@ const Step = Steps.Step;
   { setClientForm, loadPartnerFlowList, loadFlowGraph, loadCustomerQuotes }
 )
 
-export default class BasicForm extends Component {
+export default class OrderForm extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -105,7 +105,7 @@ export default class BasicForm extends Component {
           }
         }
         levelNodes.forEach((lnodes, level) => {
-          lnodes.sort((na, nb) => na.node_uuid - nb.node_uuid);
+          lnodes.sort((na, nb) => na.id < nb.id ? -1 : 1);
           lnodes.forEach((node) => {
             if (node.kind === 'tms') {
               subOrders.push({

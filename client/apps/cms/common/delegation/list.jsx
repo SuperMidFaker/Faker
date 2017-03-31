@@ -198,7 +198,7 @@ export default class DelegationList extends Component {
         return (<span><i className="zmdi zmdi-subway" /> {mode.text}</span>);
       } else if (o === '4') {
         return (<span><i className="zmdi zmdi-truck" /> {mode.text}</span>);
-      } else {
+      } else if (mode) {
         return (<span><i className="zmdi zmdi-border-outer" /> {mode.text}</span>);
       }
     },

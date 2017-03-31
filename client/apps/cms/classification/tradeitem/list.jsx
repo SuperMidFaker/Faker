@@ -30,12 +30,7 @@ const Panel = Collapse.Panel;
 
 function fetchData({ state, dispatch }) {
   const promises = [];
-  promises.push(dispatch(loadTradeItems({
-    repoId: state.cmsTradeitem.repoId,
-    filter: JSON.stringify(state.cmsTradeitem.listFilter),
-    pageSize: state.cmsTradeitem.tradeItemlist.pageSize,
-    currentPage: state.cmsTradeitem.tradeItemlist.current,
-  })));
+
   promises.push(dispatch(loadRepos({
     tenantId: state.account.tenantId,
   })));

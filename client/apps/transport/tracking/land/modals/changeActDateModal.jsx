@@ -78,7 +78,6 @@ export default class ChangeActDateModal extends React.Component {
     this.props.showChangeActDateModal({ visible: false });
   }
   render() {
-    console.log(this.props.status, SHIPMENT_TRACK_STATUS.delivered);
     const colSpan = 10;
     return (
       <Modal title="纠正节点时间" onCancel={this.handleCancel} onOk={this.handleOk}

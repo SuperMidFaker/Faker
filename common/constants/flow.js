@@ -7,20 +7,20 @@ exports.NODE_TRIGGERS = [{
 }];
 
 const CMS_DELEGATION_TRIGGERS = [
-  { key: 'created', text: 'onCreated' },
-  { key: 'declared', text: 'onDelgDeclared' },
-  { key: 'inspected', text: 'onDelgInspected' },
-  { key: 'released', text: 'onDelgReleased' },
+  { key: 'created', text: 'onCreated', actionText: 'delgCreate' },
+  { key: 'declared', text: 'onDelgDeclared', actionText: 'delgDeclare' },
+  { key: 'inspected', text: 'onDelgInspected', actionText: 'delgInspect' },
+  { key: 'released', text: 'onDelgReleased', actionText: 'delgRelease' },
 ];
 
 const CMS_MANIFEST_TRIGGERS = [
   { key: 'created', text: 'onCreated' },
-  { key: 'generated', text: 'onManifestGenerated' },
+  { key: 'generated', text: 'onManifestGenerated', actionText: 'manifestGenerate' },
 ];
 
 const CMS_CUSTOMS_TRIGGERS = [
   { key: 'created', text: 'onCreated' },
-  { key: 'reviewed', text: 'onCustomsReviewed' },
+  { key: 'reviewed', text: 'onCustomsReviewed', actionText: 'customsReviewed' },
   { key: 'declared', text: 'onDelgDeclared' },
   { key: 'released', text: 'onDelgReleased' },
 ];
@@ -45,15 +45,19 @@ const tmsBizObjects = [{
   triggers: [{
     key: 'shipmtCreated',
     text: 'onCreated',
+    actionText: 'shipmtCreate',
   }, {
     key: 'shipmtPickedUp',
     text: 'onPickedUp',
+    actionText: 'shipmtPickup',
   }, {
     key: 'shipmtDelivered',
     text: 'onDelivered',
+    actionText: 'shipmtDeliver',
   }, {
     key: 'shpmtPod',
     text: 'onPod',
+    actionText: 'shipmtPod',
   }],
 }];
 

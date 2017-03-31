@@ -66,9 +66,9 @@ export default class UnitList extends Component {
       },
     }, {
       title: '操作',
-      dataIndex: 'relation_id',
+      dataIndex: 'id',
       width: 100,
-      key: 'relation_id',
+      key: 'id',
       render: (_, record) => {
         if (record.editable === 1) {
           return (
@@ -78,7 +78,7 @@ export default class UnitList extends Component {
               </PrivilegeCover>
               <span className="ant-divider" />
               <PrivilegeCover module="corp" feature="partners" action="delete">
-                <Popconfirm title="确定要删除吗？" onConfirm={() => this.props.onDeleteBtnClick(record.relation_id)}>
+                <Popconfirm title="确定要删除吗？" onConfirm={() => this.props.onDeleteBtnClick(record.id)}>
                   <a>删除</a>
                 </Popconfirm>
               </PrivilegeCover>
