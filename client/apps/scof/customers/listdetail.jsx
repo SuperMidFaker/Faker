@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Card, Form, Input, Row, Col, Tabs, Table, Tooltip, Layout, Popconfirm } from 'antd';
+import { Breadcrumb, Button, Card, Form, Input, Row, Col, Tabs, Table, Tooltip, Layout, Popconfirm, message } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import InfoItem from 'client/components/InfoItem';
@@ -10,7 +10,7 @@ import messages from './message.i18n';
 import ProfileForm from './forms/profileForm';
 import FlowRulesPane from './flowRulesPane';
 import CustomerModal from './modals/customerModal';
-import { loadCustomers, showCustomerModal, deleteCustomer } from 'common/reducers/crmCustomers';
+import { loadCustomers, showCustomerModal, deleteCustomer, updateCustomerNames } from 'common/reducers/crmCustomers';
 import { PARTNER_ROLES } from 'common/constants';
 
 const formatMsg = format(messages);
@@ -32,7 +32,7 @@ function fetchData({ state, dispatch }) {
     customers: state.crmCustomers.customers,
     loaded: state.crmCustomers.loaded,
   }),
-  { loadCustomers, deleteCustomer, showCustomerModal }
+  { loadCustomers, deleteCustomer, showCustomerModal, updateCustomerNames }
 )
 @connectNav({
   depth: 2,
@@ -48,6 +48,7 @@ export default class CustomerList extends React.Component {
     loadCustomers: PropTypes.func.isRequired,
     deleteCustomer: PropTypes.func.isRequired,
     showCustomerModal: PropTypes.func.isRequired,
+    updateCustomerNames: PropTypes.func.isRequired,
   }
   state = {
     customerModalVisible: false,
@@ -58,14 +59,12 @@ export default class CustomerList extends React.Component {
     customers: [],
   }
   componentWillReceiveProps(nextProps) {
-    if (this.state.customer.id) {
+    if (nextProps.customers !== this.props.customers) {
       this.setState({
         customer: nextProps.customers.find(item => item.id === this.state.customer.id) || nextProps.customers[0],
-        customers: nextProps.customers,
       });
-    } else {
-      this.setState({ customer: nextProps.customers[0] || {}, customers: nextProps.customers });
     }
+    this.setState({ customers: nextProps.customers });
     if (!nextProps.loaded) {
       this.handleTableLoad();
     }
@@ -79,12 +78,17 @@ export default class CustomerList extends React.Component {
   }
   handleInputChanged = () => {
     this.setState({ unchanged: false });
+    if (this.state.customer.parent_id !== 0) {
+      const customer = this.props.customers.find(item => item.id === this.state.customer.parent_id);
+      this.setState({ customer });
+    }
   }
   handleRowClick = (record) => {
     this.setState({
       customer: record,
       unchanged: true,
     });
+    this.props.form.setFieldsValue(record);
   }
   handleTableLoad = () => {
     this.props.loadCustomers({
@@ -109,6 +113,17 @@ export default class CustomerList extends React.Component {
       }
     });
     this.setState({ customers, currentPage: 1 });
+  }
+  handleSaveBtnClick = () => {
+    const fieldsValue = this.props.form.getFieldsValue();
+    const data = { ...fieldsValue, id: this.state.customer.id, parent_id: this.state.customer.parent_id };
+    this.props.updateCustomerNames(data).then((result) => {
+      if (result.error) {
+        message.error(result.error.message);
+      } else {
+        message.info('修改成功');
+      }
+    });
   }
   render() {
     const { customer } = this.state;
