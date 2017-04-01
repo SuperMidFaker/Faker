@@ -16,7 +16,7 @@ export default function InfoItem(props) {
   const fieldCls = `info-data ${getColCls(fieldCol)}`;
   return (
     <div className="info-item">
-      <label className={labelCls} htmlFor="pane">{label}：</label>
+      <label className={labelCls} htmlFor="pane">{label}</label>
       <div className={fieldCls}>{field}</div>
     </div>
   );

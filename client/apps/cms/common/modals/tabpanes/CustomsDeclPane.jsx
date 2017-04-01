@@ -1,12 +1,14 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Spin, Badge, Button, Card, Col, Icon, Progress, Row, Table, Tag, Tooltip, message } from 'antd';
+import { Spin, Badge, Button, Card, Col, Progress, Row, Table, Tag, Steps, message } from 'antd';
 import moment from 'moment';
-import { DECL_I_TYPE, DECL_E_TYPE, CMS_DELEGATION_STATUS, CMS_DECL_STATUS } from 'common/constants';
+import { CMS_DELEGATION_STATUS, CMS_DECL_STATUS } from 'common/constants';
 import { openAcceptModal, ensureManifestMeta } from 'common/reducers/cmsDelegation';
 import { loadCustPanel } from 'common/reducers/cmsDelgInfoHub';
 import InfoItem from 'client/components/InfoItem';
+
+const Step = Steps.Step;
 
 @injectIntl
 @connect(
@@ -74,23 +76,6 @@ export default class CustomsDeclPane extends React.Component {
       }
     });
   }
-  button() {
-    const { customsPanel } = this.props;
-    const bill = customsPanel.bill;
-    if (customsPanel.recv_tenant_id === customsPanel.customs_tenant_id || customsPanel.customs_tenant_id === -1) {
-      if (customsPanel.status === CMS_DELEGATION_STATUS.accepted) {
-        return <Button type="primary" size="small" ghost icon="addfile" onClick={this.handleMake}>创建清单</Button>;
-      } else if (customsPanel.status > CMS_DELEGATION_STATUS.accepted && bill.bill_status < 3) {
-        return (
-          <Button type="primary" size="small" ghost icon="edit" onClick={this.handleMake}>编辑清单</Button>
-        );
-      } else if (bill.bill_status >= 3) {
-        return <Button icon="eye" size="small" onClick={ev => this.handleView(ev)}>查看清单</Button>;
-      }
-    } else if (customsPanel.status > CMS_DELEGATION_STATUS.accepted) {
-      return <Button icon="eye" size="small" onClick={ev => this.handleView(ev)}>查看清单</Button>;
-    }
-  }
   handleOperatorAssign = () => {
     this.props.openAcceptModal({
       tenantId: this.props.tenantId,
@@ -100,16 +85,33 @@ export default class CustomsDeclPane extends React.Component {
       opt: 'operator',
     });
   }
+  renderButton() {
+    const { customsPanel } = this.props;
+    const bill = customsPanel.bill;
+    if (customsPanel.recv_tenant_id === customsPanel.customs_tenant_id || customsPanel.customs_tenant_id === -1) {
+      if (customsPanel.status === CMS_DELEGATION_STATUS.accepted) {
+        return <Button type="primary" ghost icon="addfile" onClick={this.handleMake}>创建</Button>;
+      } else if (customsPanel.status > CMS_DELEGATION_STATUS.accepted && bill.bill_status < 3) {
+        return (
+          <Button type="primary" ghost icon="edit" onClick={this.handleMake}>编辑</Button>
+        );
+      } else if (bill.bill_status >= 3) {
+        return <Button icon="eye" onClick={ev => this.handleView(ev)}>查看</Button>;
+      }
+    } else if (customsPanel.status > CMS_DELEGATION_STATUS.accepted) {
+      return <Button icon="eye" onClick={ev => this.handleView(ev)}>查看</Button>;
+    }
+  }
   render() {
     const { customsPanel, customsSpinning } = this.props;
     const bill = customsPanel.bill;
     const tableDatas = (bill.children || []);
-    const declTypes = DECL_I_TYPE.concat(DECL_E_TYPE).filter(dt => dt.key === bill.decl_way_code);
-    const panelHeader = (
-      <span>{declTypes.length > 0 ? declTypes[0].value : ''}：{bill.pack_count}件/{bill.gross_wt}千克</span>
-    );
+    // const declTypes = DECL_I_TYPE.concat(DECL_E_TYPE).filter(dt => dt.key === bill.decl_way_code);
+    // const panelHeader = (
+    //  <span>{declTypes.length > 0 ? declTypes[0].value : ''}：{bill.pack_count}件/{bill.gross_wt}千克</span>
+    // );
     const perVal = (bill.bill_status * 25) > 100 ? 100 : bill.bill_status * 25;
-    const manifestProgress = (<Progress percent={perVal} strokeWidth={5} showInfo={false} />);
+    const manifestProgress = (<Progress percent={perVal} />);
     const columns = [{
       title: '报关单',
       dataIndex: 'customs_inspect',
@@ -121,7 +123,7 @@ export default class CustomsDeclPane extends React.Component {
         } else if (record.sheet_type === 'FTZ') {
           sheetType = <Tag color="blue">备案清单</Tag>;
         }
-        const decl = CMS_DECL_STATUS.filter(st => st.value === o)[0];
+        const decl = CMS_DECL_STATUS.filter(st => st.value === record.status)[0];
         let declStatus = '';
         if (record.status === 0) {
           declStatus = <Badge status="default" text={decl && decl.text} />;
@@ -132,33 +134,85 @@ export default class CustomsDeclPane extends React.Component {
         } else if (record.status === 3) {
           declStatus = <Badge status="success" text={decl && decl.text} />;
         }
-        const declNo = (record.entry_id) ? <span>{sheetType} 海关编号# {record.entry_id}</span> : <span className="mdc-text-grey">{sheetType} 预报关编号# {record.pre_entry_seq_no}</span>;
+        const declNo = (record.entry_id) ?
+          <span>海关编号# {record.entry_id} {sheetType}</span> :
+          <span className="mdc-text-grey">预报关编号# {record.pre_entry_seq_no} {sheetType}</span>;
         if (o === 1) {
           inspectFlag = <Tag color="#F04134">是</Tag>;
         } else if (o === 2) {
           inspectFlag = <Tag color="rgba(39, 187, 71, 0.65)">通过</Tag>;
         }
         return (<Card title={declNo} className="with-card-footer">
-          {record.note}
-          {inspectFlag}
+          <Row style={{ marginBottom: 16 }}>
+            <Col span="24">
+              <Steps progressDot current={1}>
+                <Step title="录入日期" description={record.created_date
+                    && moment(record.created_date).format('YYYY.MM.DD')}
+                />
+                <Step title="申报日期" description={record.d_date
+                    && moment(record.d_date).format('YYYY.MM.DD')}
+                />
+                <Step title="放行日期" description={record.clear_date
+                    && moment(record.clear_date).format('YYYY.MM.DD')}
+                />
+              </Steps>
+            </Col>
+          </Row>
+          <Row gutter={8}>
+            <Col span="12">
+              <InfoItem label="收发货人" field={record.trade_name} />
+            </Col>
+            <Col span="12">
+              <InfoItem label="申报单位" field={record.agent_name} />
+            </Col>
+            <Col span="8">
+              <InfoItem label="进出口岸" field={record.i_e_port} />
+            </Col>
+            <Col span="8">
+              <InfoItem label="监管方式" field={record.trade_mode} />
+            </Col>
+            <Col span="8">
+              <InfoItem label="海关查验" field={inspectFlag} />
+            </Col>
+          </Row>
           <div className="card-footer">
-            {declStatus}
+            {declStatus} {record.note}
           </div>
         </Card>);
       },
     }];
+    const assignee = (customsPanel.type === 1 || customsPanel.customs_tenant_id === -1) ?
+      <a onClick={this.handleOperatorAssign}>{customsPanel.recv_login_name}</a> :
+      <span>{customsPanel.recv_login_name}</span>;
     return (
       <div className="pane-content tab-pane">
         <Spin spinning={customsSpinning}>
           <Row gutter={16}>
             <Col span={18} className="table-list">
-              <Card bodyStyle={{ padding: 16 }}>
-                {manifestProgress}{panelHeader}{this.button()}
+              <Card title="报关清单" extra={this.renderButton()} bodyStyle={{ padding: 16 }}>
+                <Row gutter={8}>
+                  <Col span="4">
+                    <InfoItem labelCol={{ span: 3 }} label="制单人"
+                      field={assignee} fieldCol={{ span: 9 }}
+                    />
+                  </Col>
+                  <Col span="4">
+                    <InfoItem labelCol={{ span: 3 }} label="制单日期" fieldCol={{ span: 9 }}
+                      field={customsPanel.acpt_time
+                    && moment(customsPanel.acpt_time).format('YYYY.MM.DD')}
+                    />
+                  </Col>
+                  <Col span="16">
+                    <InfoItem labelCol={{ span: 3 }} label="制单进度" fieldCol={{ span: 9 }}
+                      field={manifestProgress}
+                    />
+                  </Col>
+                </Row>
               </Card>
               <Table size="middle" showHeader={false} columns={columns} pagination={false} dataSource={tableDatas} />
             </Col>
             <Col span={6}>
-              <Card bodyStyle={{ padding: 16, paddingBottom: 40 }} className="secondary-card">
+              <Card bodyStyle={{ padding: 16 }} className="secondary-card">
                 <Row gutter={8}>
                   <Col span="24">
                     <InfoItem labelCol={{ span: 3 }} label="报关服务商"
@@ -171,19 +225,7 @@ export default class CustomsDeclPane extends React.Component {
                     && moment(customsPanel.acpt_time).format('YYYY.MM.DD')}
                     />
                   </Col>
-                  <Col span="24">
-                    <InfoItem labelCol={{ span: 3 }} label="制单人"
-                      field={customsPanel.recv_login_name} fieldCol={{ span: 9 }}
-                    />
-                  </Col>
                 </Row>
-                {(customsPanel.type === 1 || customsPanel.customs_tenant_id === -1) && <div className="card-footer">
-                  <div className="toolbar-right">
-                    <Tooltip title="分配制单人">
-                      <Button type="ghost" shape="circle" onClick={this.handleOperatorAssign}><Icon type="user" /></Button>
-                    </Tooltip>
-                  </div>
-                </div>}
               </Card>
             </Col>
           </Row>
