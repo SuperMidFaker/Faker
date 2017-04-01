@@ -192,7 +192,7 @@ const messages = defineMessages({
   },
   onDelivered: {
     id: 'scof.flow.biz.event.tms.shipment.delivered',
-    defaultMessage: '已发货',
+    defaultMessage: '已送货',
   },
   onPod: {
     id: 'scof.flow.biz.event.tms.shipment.pod',

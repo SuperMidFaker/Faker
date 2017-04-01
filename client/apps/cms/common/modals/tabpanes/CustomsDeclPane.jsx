@@ -158,7 +158,7 @@ export default class CustomsDeclPane extends React.Component {
               <Table size="middle" showHeader={false} columns={columns} pagination={false} dataSource={tableDatas} />
             </Col>
             <Col span={6}>
-              <Card bodyStyle={{ padding: 16 }} className="secondary-card with-card-footer">
+              <Card bodyStyle={{ padding: 16, paddingBottom: 40 }} className="secondary-card">
                 <Row gutter={8}>
                   <Col span="24">
                     <InfoItem labelCol={{ span: 3 }} label="报关服务商"
