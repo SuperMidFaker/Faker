@@ -13,6 +13,7 @@ config.set('vendor_dependencies', [
   'redux',
   'serialize-javascript',
   'superagent',
+  'moment',
 ]);
 
 module.exports = config;

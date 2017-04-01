@@ -89,14 +89,14 @@ function getRequestLocale(request) {
   return locale || 'zh';
 }
 export default function render(request, locale) {
-  if (__DEV__) {
+  if (!__PROD__) {
     webpackIsomorphicTools.refresh();
   }
   return new Promise((resolve, reject) => {
     const url = request.url;
     const cookie = request.get('cookie');
     const store = createStore(undefined, request);
-    if (__DEV__) {
+    if (!__PROD__) {
       return resolve(inlineRenderHtmls(store, ''));
     }
     const curLocale = locale || getRequestLocale(request);
