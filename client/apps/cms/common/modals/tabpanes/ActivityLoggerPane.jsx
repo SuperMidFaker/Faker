@@ -220,7 +220,7 @@ export default class ActivityLoggerPane extends React.Component {
     );
     return (
       <div className="pane-content tab-pane">
-        <Card bodyStyle={{ padding: 0 }}>
+        <Card bodyStyle={{ padding: 0 }} className="with-card-footer">
           <div className="card-body-wrapper">
             <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
               <TabPane tab={<span><Icon type="message" />备注</span>} key="message">
