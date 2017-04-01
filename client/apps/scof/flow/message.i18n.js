@@ -246,6 +246,10 @@ const messages = defineMessages({
     id: 'scof.flow.trigger.action.scheduled.minutes',
     defaultMessage: '分钟',
   },
+  deleteConfirm: {
+    id: 'scof.flow.trigger.action.confirm.delete',
+    defaultMessage: '确定删除该动作',
+  },
 });
 
 export default messages;
