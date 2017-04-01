@@ -1,4 +1,6 @@
 import React, { PropTypes } from 'react';
+import { Spin } from 'antd';
+import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import { loadBill, loadCmsParams } from 'common/reducers/cmsManifest';
@@ -13,14 +15,20 @@ function fetchData({ dispatch, params, state }) {
   })));
   return Promise.all(promises);
 }
-
+@connect(
+  state => ({
+    manifestSpinning: state.cmsManifest.manifestLoading,
+  }),
+  { }
+)
 @connectFetch()(fetchData)
 @withPrivilege({ module: 'clearance', feature: 'import', aciton: 'create' })
 export default class ImportManifestMake extends React.Component {
   static propTypes = {
     params: PropTypes.object,
+    manifestSpinning: PropTypes.bool.isRequired,
   }
   render() {
-    return <ManifestEditor ietype="import" params={this.props.params} />;
+    return <Spin spinning={this.props.manifestSpinning}><ManifestEditor ietype="import" params={this.props.params} /></Spin>;
   }
 }
