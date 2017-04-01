@@ -140,13 +140,12 @@ export default class MainForm extends Component {
                 {getFieldDecorator('decl_way_code', {
                   rules: [{ required: true, message: '报关类型必选' }],
                   initialValue: fieldInits.decl_way_code,
-                })(<Select>
-                  {
-                    DECL_TYPE.map(dw =>
-                      <Option value={dw.key} key={dw.key}>{dw.value}</Option>
-                    )
-                  }
-                </Select>)}
+                })(
+                  <RadioGroup>
+                    <RadioButton value={DECL_TYPE[0].key}>{DECL_TYPE[0].value}</RadioButton>
+                    <RadioButton value={DECL_TYPE[1].key}>{DECL_TYPE[1].value}</RadioButton>
+                  </RadioGroup>
+                  )}
               </FormItem>
             </Col>
             <Col sm={24} lg={8}>

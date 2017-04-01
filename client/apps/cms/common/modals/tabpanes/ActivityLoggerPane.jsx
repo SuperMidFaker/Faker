@@ -354,7 +354,7 @@ export default class ActivityLoggerPane extends React.Component {
                         >
                           <Row>
                             <Col span={12}>
-                              <InfoItem label="预报关单号" field={activity.field} />
+                              <InfoItem label="预报关编号" field={activity.field} />
                             </Col>
                             <Col span={12}>
                               <InfoItem label="查验状态" field={inspectStatusTxt} />

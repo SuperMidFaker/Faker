@@ -53,12 +53,21 @@ img {
     padding: 8px;
   }
   .card-footer {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
     background: #f4f4f4;
     border-top: 1px solid #e9e9e9;
     height: 38px;
     line-height: 36px;
     padding: 0 8px;
-  } 
+  }
+  &.with-card-footer {
+    .ant-card-body {
+      padding-bottom: 64px;
+    }
+  }
 }
 .ant-cascader-picker-label {
   z-index: 1;
@@ -1088,4 +1097,16 @@ img {
   -webkit-transform-origin-x: 0;
   transform: scale(0.92);
   -webkit-transform: scale(0.92);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.table-list {
+  .ant-table-middle .ant-table-tbody > tr > td {
+    padding: 0 8px;
+    border: none;
+  }
+  .ant-table-row:hover,
+  .ant-table-tbody > tr:hover {
+    background: transparent;
+  }
 }

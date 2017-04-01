@@ -1030,7 +1030,7 @@ RaDeclManulNo.propTypes = {
 export function StoreYard(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const { formData, getFieldDecorator } = props;
-  const grosswtProps = {
+  const storeNoProps = {
     outercol: 24,
     col: 8,
     field: 'store_no',
@@ -1039,7 +1039,7 @@ export function StoreYard(props) {
     formData,
     getFieldDecorator,
   };
-  const netwtProps = {
+  const yardCodeProps = {
     outercol: 24,
     col: 8,
     field: 'yard_code',
@@ -1051,10 +1051,10 @@ export function StoreYard(props) {
   return (
     <Col span={12}>
       <Col span={12}>
-        <FormInput {...grosswtProps} />
+        <FormInput {...storeNoProps} />
       </Col>
       <Col span={12}>
-        <FormInput {...netwtProps} />
+        <FormInput {...yardCodeProps} />
       </Col>
     </Col>
   );
@@ -1064,6 +1064,4 @@ StoreYard.propTypes = {
   intl: intlShape.isRequired,
   getFieldDecorator: PropTypes.func.isRequired,
   formData: PropTypes.object.isRequired,
-  formRequire: PropTypes.object.isRequired,
 };
-

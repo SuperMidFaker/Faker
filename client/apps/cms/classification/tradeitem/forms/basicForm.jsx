@@ -140,6 +140,7 @@ export default class BasicForm extends Component {
               <FormItem label={this.msg('gModel')}>
                 {getFieldDecorator('g_model', {
                   initialValue: fieldInits.g_model,
+                  rules: [{ required: true, message: '规格型号必填' }],
                 })(<Input type="textarea" autosize={{ minRows: 1, maxRows: 16 }} />)}
               </FormItem>
             </Col>

@@ -7,7 +7,7 @@ export default defineMessages({
   },
   searchPlaceholder: {
     id: 'cms.customs.search.placeholder',
-    defaultMessage: '海关编号/预报关单号/委托编号',
+    defaultMessage: '海关编号/预报关编号/委托编号',
   },
   importOperation: {
     id: 'cms.customs.import.operation',
@@ -43,7 +43,7 @@ export default defineMessages({
   },
   preEntryNo: {
     id: 'cms.customs.decl.preentry.no',
-    defaultMessage: '预报关单号',
+    defaultMessage: '预报关编号',
   },
   clrStatus: {
     id: 'cms.customs.decl.status',

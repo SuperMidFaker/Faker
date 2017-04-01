@@ -31,7 +31,7 @@ export default defineMessages({
   },
   delgNo: {
     id: 'cms.manifest.delg.no',
-    defaultMessage: '报关委托号',
+    defaultMessage: '委托编号',
   },
   delgClient: {
     id: 'cms.manifest.delg.client',

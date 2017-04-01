@@ -15,6 +15,7 @@ const actionTypes = createActionTypes('@@welogix/crm/orders/', [
   'LOAD_TRANSPORT_DETAIL', 'LOAD_TRANSPORT_DETAIL_SUCCEED', 'LOAD_TRANSPORT_DETAIL_FAILED',
   'LOAD_CLEARANCE_FEES', 'LOAD_CLEARANCE_FEES_SUCCEED', 'LOAD_CLEARANCE_FEES_FAIL',
   'LOAD_FLOWNODE', 'LOAD_FLOWNODE_SUCCEED', 'LOAD_FLOWNODE_FAILED',
+  'LOAD_ORDERPROG', 'LOAD_ORDERPROG_SUCCEED', 'LOAD_ORDERPROG_FAILED',
 ]);
 
 const initialState = {
@@ -337,6 +338,21 @@ export function loadFlowNodeData(nodeuuid, kind) {
       endpoint: 'v1/scof/flow/graph/node',
       method: 'get',
       params: { uuid: nodeuuid, kind },
+    },
+  };
+}
+
+export function loadOrderProgress(orderNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_ORDERPROG,
+        actionTypes.LOAD_ORDERPROG_SUCCEED,
+        actionTypes.LOAD_ORDERPROG_FAILED,
+      ],
+      endpoint: 'v1/crm/order/flow/progress',
+      method: 'get',
+      params: { order_no: orderNo },
     },
   };
 }

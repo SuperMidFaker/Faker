@@ -10,6 +10,7 @@ import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
 import ClearanceForm from './clearanceForm';
 import TransportForm from './transportForm';
+import WarehouseForm from './warehouseForm';
 
 const formatMsg = format(messages);
 const Panel = Collapse.Panel;
@@ -34,7 +35,7 @@ const Step = Steps.Step;
   { setClientForm, loadPartnerFlowList, loadFlowGraph, loadCustomerQuotes }
 )
 
-export default class BasicForm extends Component {
+export default class OrderForm extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -104,7 +105,7 @@ export default class BasicForm extends Component {
           }
         }
         levelNodes.forEach((lnodes, level) => {
-          lnodes.sort((na, nb) => na.node_uuid - nb.node_uuid);
+          lnodes.sort((na, nb) => na.id < nb.id ? -1 : 1);
           lnodes.forEach((node) => {
             if (node.kind === 'tms') {
               subOrders.push({
@@ -176,6 +177,8 @@ export default class BasicForm extends Component {
         steps.push(<Step key={node.node_uuid} title={node.name} status="process" description={<ClearanceForm formData={order} index={i} operation={operation} />} />);
       } else if (node.kind === 'tms') {
         steps.push(<Step key={node.node_uuid} title={node.name} status="process" description={<TransportForm formData={order} index={i} operation={operation} />} />);
+      } else if (node.kind === 'cwm') {
+        steps.push(<Step key={node.node_uuid} title={node.name} status="process" description={<WarehouseForm formData={order} index={i} operation={operation} />} />);
       }
     }
     return steps;
