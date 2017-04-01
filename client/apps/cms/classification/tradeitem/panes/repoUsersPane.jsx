@@ -69,7 +69,7 @@ export default class CopCodesPane extends React.Component {
     this.setState({ datas: data });
   }
   handleSave = (record) => {
-    this.props.addRepoUser(record.repoId, record.partnerTenantId).then(
+    this.props.addRepoUser(this.props.tenantId, record.repoId, record.partnerTenantId, record.name).then(
       (result) => {
         if (result.error) {
           message.error(result.error.message);

@@ -14,6 +14,7 @@ const FormItem = Form.Item;
 @connect(
   state => ({
     tenantId: state.account.tenantId,
+    tenantName: state.account.tenantName,
     loginId: state.account.loginId,
     visibleAddModal: state.cmsTradeitem.visibleAddModal,
     customers: state.crmCustomers.customers,
@@ -26,6 +27,7 @@ export default class AddTradeRepoModal extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
+    tenantName: PropTypes.number.isRequired,
     loginId: PropTypes.number.isRequired,
     visibleAddModal: PropTypes.bool.isRequired,
     customers: PropTypes.array.isRequired,
@@ -43,6 +45,8 @@ export default class AddTradeRepoModal extends React.Component {
       createrTenantId: this.props.tenantId,
       ownerPartnerId: customer.id,
       ownerTenantId: customer.partner_tenant_id,
+      ownerName: customer.name,
+      tenantName: this.props.tenantName,
       createrLoginId: this.props.loginId,
       uniqueCode: customer.partner_unique_code,
     }).then(
