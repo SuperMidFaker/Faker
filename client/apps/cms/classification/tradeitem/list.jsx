@@ -87,7 +87,7 @@ export default class TradeItemList extends Component {
     collapsed: false,
     rightSidercollapsed: true,
     selectedRowKeys: [],
-    comparedData: [],
+    compareduuid: '',
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.repos !== this.props.repos && nextProps.repos.length > 0) {
@@ -327,7 +327,8 @@ export default class TradeItemList extends Component {
     }
   }
   handleUploaded = (data) => {
-    this.setState({ comparedData: data });
+    console.log('data', data);
+    this.setState({ compareduuid: data });
     this.props.setCompareVisible(true);
   }
   handleDeleteSelected = () => {
@@ -600,7 +601,7 @@ export default class TradeItemList extends Component {
                 <Table rowSelection={rowSelection} rowKey={record => record.id} columns={columns} dataSource={this.dataSource} scroll={{ x: 3800 }} />
               </div>
               <AddTradeRepoModal />
-              <ImportComparisonModal data={this.state.comparedData} />
+              <ImportComparisonModal data={this.state.compareduuid} />
             </div>
           </Content>
         </Layout>

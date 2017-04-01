@@ -1,10 +1,11 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Modal, Popconfirm, Icon, Tooltip, Tag, Table, message } from 'antd';
+import { Modal, Popconfirm, Icon, Tooltip, Tag, message, Table } from 'antd';
 import RowUpdater from 'client/components/rowUpdater';
 import TrimSpan from 'client/components/trimSpan';
-import { createRepo, setCompareVisible, loadRepos, saveComparedItemDatas, loadTradeItems } from 'common/reducers/cmsTradeitem';
+import { createRepo, setCompareVisible, loadRepos, saveComparedItemDatas,
+  loadTradeItems, loadTempItems, comparedCancel, deleteTempData } from 'common/reducers/cmsTradeitem';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 import { TRADE_ITEM_STATUS } from 'common/constants';
@@ -19,9 +20,11 @@ const formatMsg = format(messages);
     loginName: state.account.username,
     repoId: state.cmsTradeitem.repoId,
     listFilter: state.cmsTradeitem.listFilter,
+    tempItems: state.cmsTradeitem.tempItems,
     visibleCompareModal: state.cmsTradeitem.visibleCompareModal,
   }),
-  { createRepo, setCompareVisible, loadRepos, saveComparedItemDatas, loadTradeItems }
+  { createRepo, setCompareVisible, loadRepos, saveComparedItemDatas,
+    loadTradeItems, loadTempItems, comparedCancel, deleteTempData }
 )
 
 export default class ImportComparisonModal extends React.Component {
@@ -31,14 +34,14 @@ export default class ImportComparisonModal extends React.Component {
     loginId: PropTypes.number.isRequired,
     repoId: PropTypes.number,
     listFilter: PropTypes.object.isRequired,
+    tempItems: PropTypes.object,
     visibleCompareModal: PropTypes.bool.isRequired,
     data: PropTypes.array.isRequired,
   }
   constructor(props) {
     super(props);
-    const dataSource = props.data;
+    const uuid = props.data;
     this.state = {
-      dataSource,
       pagination: {
         current: 1,
         total: 0,
@@ -46,13 +49,24 @@ export default class ImportComparisonModal extends React.Component {
         showQuickJumper: true,
         onChange: this.handlePageChange,
       },
+      uuid,
+      dataSource: [],
+      feedbackChanges: {},
     };
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.data !== this.props.data) {
       this.setState({
-        dataSource: nextProps.data,
-        pagination: { ...this.state.pagination, total: nextProps.data.length },
+        uuid: nextProps.data,
+      });
+    }
+    if (nextProps.visibleCompareModal && nextProps.visibleCompareModal !== this.props.visibleCompareModal) {
+      this.handleTempItemsLoad();
+    }
+    if (nextProps.tempItems !== this.props.tempItems) {
+      this.setState({
+        dataSource: nextProps.tempItems.data,
+        pagination: { ...this.state.pagination, total: nextProps.tempItems.totalCount },
       });
     }
   }
@@ -63,15 +77,28 @@ export default class ImportComparisonModal extends React.Component {
         current,
       },
     });
+    this.handleTempItemsLoad(current);
+  }
+  handleTempItemsLoad = (currentPage) => {
+    this.props.loadTempItems({
+      uuid: this.state.uuid,
+      pageSize: this.props.tempItems.pageSize,
+      currentPage: currentPage || this.props.tempItems.current,
+    }).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 5);
+      }
+    });
   }
   handleCancel = () => {
+    this.props.comparedCancel({ uuid: this.state.uuid });
     this.props.setCompareVisible(false);
   }
   handleOk = () => {
     const { tenantId, loginId, loginName } = this.props;
-    const datas = this.state.dataSource.filter(data => data.feedback !== 'repeat' && data.feedback !== 'prehscode'
-      && data.feedback !== 'preGmodel' && data.feedback !== 'wrongImHscode' && data.feedback !== 'wrongHscode');
-    this.props.saveComparedItemDatas({ datas, tenantId, loginId, loginName }).then((result) => {
+    const { uuid, feedbackChanges } = this.state;
+    const changes = JSON.stringify(feedbackChanges);
+    this.props.saveComparedItemDatas({ uuid, feedbackChanges: changes, tenantId, loginId, loginName }).then((result) => {
       if (result.error) {
         message.error(result.error.message);
       } else {
@@ -85,19 +112,17 @@ export default class ImportComparisonModal extends React.Component {
       }
     });
   }
-  handleRowDel = (index) => {
-    const dataSource = this.state.dataSource;
-    const recordIdx = index + (this.state.pagination.current - 1) * this.state.pagination.pageSize;
-    dataSource.splice(recordIdx, 1);
-    const pagination = { ...this.state.pagination, total: dataSource.length };
-    if (pagination.current > 1 && (pagination.current - 1) * pagination.pageSize === pagination.total) {
-      pagination.current -= 1;
-    }
-    this.setState({ dataSource, pagination });
+  handleRowDel = (tempId) => {
+    this.props.deleteTempData(tempId).then((result) => {
+      if (result.error) {
+        message.error(result.error.message);
+      } else {
+        this.handleTempItemsLoad();
+      }
+    });
   }
   handleCodeChoose = (row, index) => {
     const dataSource = this.state.dataSource;
-    const recordIdx = index + (this.state.pagination.current - 1) * this.state.pagination.pageSize;
     let feedback = '';
     if (row.feedback === 'prehscode') {
       feedback = 'newhscode';
@@ -108,8 +133,10 @@ export default class ImportComparisonModal extends React.Component {
     } else if (row.feedback === 'preGmodel') {
       feedback = 'newGmodel';
     }
-    dataSource[recordIdx] = { ...row, feedback };
-    this.setState({ dataSource });
+    const change = {};
+    change[`${row.id}`] = feedback;
+    dataSource[index] = { ...row, feedback };
+    this.setState({ dataSource, feedbackChanges: { ...this.state.feedbackChanges, ...change } });
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   columns = [{
@@ -227,7 +254,7 @@ export default class ImportComparisonModal extends React.Component {
         if (record.feedback === 'prehscode') {
           return (
             <span>
-              <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleRowDel(index)}>
+              <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleRowDel(record.id)}>
                 <a role="button"><Icon type="delete" /></a>
               </Popconfirm>
               <span className="ant-divider" />
@@ -237,7 +264,7 @@ export default class ImportComparisonModal extends React.Component {
         } else if (record.feedback === 'newhscode') {
           return (
             <span>
-              <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleRowDel(index)}>
+              <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleRowDel(record.id)}>
                 <a role="button"><Icon type="delete" /></a>
               </Popconfirm>
               <span className="ant-divider" />
@@ -247,7 +274,7 @@ export default class ImportComparisonModal extends React.Component {
         } else if (record.feedback === 'preGmodel') {
           return (
             <span>
-              <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleRowDel(index)}>
+              <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleRowDel(record.id)}>
                 <a role="button"><Icon type="delete" /></a>
               </Popconfirm>
               <span className="ant-divider" />
@@ -257,7 +284,7 @@ export default class ImportComparisonModal extends React.Component {
         } else if (record.feedback === 'newGmodel') {
           return (
             <span>
-              <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleRowDel(index)}>
+              <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleRowDel(record.id)}>
                 <a role="button"><Icon type="delete" /></a>
               </Popconfirm>
               <span className="ant-divider" />
@@ -266,7 +293,7 @@ export default class ImportComparisonModal extends React.Component {
           );
         } else {
           return (
-            <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleRowDel(index)}>
+            <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleRowDel(record.id)}>
               <a role="button"><Icon type="delete" /></a>
             </Popconfirm>);
         }
