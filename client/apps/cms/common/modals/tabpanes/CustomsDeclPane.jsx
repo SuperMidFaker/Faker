@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Spin, Badge, Button, Card, Col, Progress, Row, Table, Tag, Steps, message } from 'antd';
+import { Spin, Badge, Button, Card, Col, Icon, Progress, Row, Table, Tag, Steps, message } from 'antd';
 import moment from 'moment';
 import { CMS_DELEGATION_STATUS, CMS_DECL_STATUS } from 'common/constants';
 import { openAcceptModal, ensureManifestMeta } from 'common/reducers/cmsDelegation';
@@ -192,17 +192,27 @@ export default class CustomsDeclPane extends React.Component {
               <Card title="报关清单" extra={this.renderButton()} bodyStyle={{ padding: 16 }}>
                 <Row gutter={8}>
                   <Col span="4">
-                    <InfoItem labelCol={{ span: 3 }} label="制单人"
-                      field={assignee} fieldCol={{ span: 9 }}
+                    <InfoItem label="制单人" prefix={<Icon type="user" />}
+                      field={assignee}
                     />
                   </Col>
                   <Col span="4">
-                    <InfoItem labelCol={{ span: 3 }} label="制单日期" fieldCol={{ span: 9 }}
+                    <InfoItem label="制单日期" prefix={<Icon type="calendar" />}
                       field={customsPanel.acpt_time
                     && moment(customsPanel.acpt_time).format('YYYY.MM.DD')}
                     />
                   </Col>
-                  <Col span="16">
+                  <Col span="4">
+                    <InfoItem labelCol={{ span: 3 }} label="物料数量"
+                      field={customsPanel.itemCount} fieldCol={{ span: 9 }}
+                    />
+                  </Col>
+                  <Col span="4">
+                    <InfoItem labelCol={{ span: 3 }} label="申报货值"
+                      field={customsPanel.declValue} fieldCol={{ span: 9 }}
+                    />
+                  </Col>
+                  <Col span="8">
                     <InfoItem labelCol={{ span: 3 }} label="制单进度" fieldCol={{ span: 9 }}
                       field={manifestProgress}
                     />

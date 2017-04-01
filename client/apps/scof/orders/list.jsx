@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Dropdown, Menu, Icon, Popconfirm, Progress, message, Layout, Tooltip } from 'antd';
+import { Breadcrumb, Button, Dropdown, Menu, Icon, Radio, Popconfirm, Progress, message, Layout, Tooltip } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { Link } from 'react-router';
 import QueueAnim from 'rc-queue-anim';
@@ -20,6 +20,9 @@ import { CRM_ORDER_STATUS } from 'common/constants';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
+const RadioGroup = Radio.Group;
+const RadioButton = Radio.Button;
+const ButtonGroup = Button.Group;
 
 function fetchData({ state, dispatch }) {
   const promises = [
@@ -215,6 +218,23 @@ export default class OrderList extends React.Component {
               {this.msg('shipmentOrders')}
             </Breadcrumb.Item>
           </Breadcrumb>
+          <RadioGroup onChange={this.handleRadioChange} size="large" defaultValue="active">
+            <RadioButton value="active">{this.msg('active')}</RadioButton>
+            <RadioButton value="completed">{this.msg('completed')}</RadioButton>
+          </RadioGroup>
+          <span />
+          <RadioGroup onChange={this.handleIEChange} size="large" defaultValue="all">
+            <RadioButton value="all">{this.msg('all')}</RadioButton>
+            <RadioButton value="import">{this.msg('import')}</RadioButton>
+            <RadioButton value="export">{this.msg('export')}</RadioButton>
+            <RadioButton value="domestic">{this.msg('domestic')}</RadioButton>
+          </RadioGroup>
+          <span />
+          <ButtonGroup>
+            <Button size="large" type="primary" value="sea"><i className="zmdi zmdi-boat" />&nbsp;</Button>
+            <Button size="large" type="primary" value="air">&nbsp;<i className="zmdi zmdi-airplane" />&nbsp;</Button>
+            <Button size="large" type="primary" value="road">&nbsp;<i className="zmdi zmdi-truck" /></Button>
+          </ButtonGroup>
           <div className="top-bar-tools">
             <Button type="primary" size="large" icon="plus" onClick={this.handleCreate}>
               {this.msg('new')}

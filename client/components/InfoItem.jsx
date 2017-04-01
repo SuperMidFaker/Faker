@@ -11,13 +11,13 @@ function getColCls(col) {
 }
 
 export default function InfoItem(props) {
-  const { label, labelCol, field, fieldCol } = props;
+  const { label, labelCol, field, fieldCol, prefix, suffix } = props;
   const labelCls = `info-label ${getColCls(labelCol)}`;
   const fieldCls = `info-data ${getColCls(fieldCol)}`;
   return (
     <div className="info-item">
       <label className={labelCls} htmlFor="pane">{label}</label>
-      <div className={fieldCls}>{field}</div>
+      <div className={fieldCls}>{prefix && <span className="info-item-prefix">{prefix}</span>}{field}{suffix && <span className="info-item-suffix">{suffix}</span>}</div>
     </div>
   );
 }
@@ -26,4 +26,6 @@ InfoItem.propTypes = {
   label: PropTypes.string.isRequired,
   labelCol: PropTypes.object,
   fieldCol: PropTypes.object,
+  prefix: PropTypes.object,
+  suffix: PropTypes.object,
 };
