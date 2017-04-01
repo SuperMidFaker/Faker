@@ -325,12 +325,14 @@ export function Transport(props) {
     options: formRequire.transModes.map(tm => ({
       value: tm.trans_code,
       text: `${tm.trans_code} | ${tm.trans_spec}`,
+      search: `${tm.trans_code}${tm.trans_spec}`,
     })),
     label: msg('transMode'),
     disabled,
     formData,
     rules: [{ required }],
     getFieldDecorator,
+    searchKeyFn: opt => opt.search,
   };
   const trafNameProps = {
     outercol: 16,
@@ -543,13 +545,14 @@ export function CountryAttr(props) {
     options: formRequire.districts.map(dist => ({
       value: dist.district_code,
       text: `${dist.district_code} | ${dist.district_name}`,
+      search: `${dist.district_code}${dist.district_name}`,
     })),
     label: ietype === 'import' ? msg('iDistrict') : msg('eDistrict'),
     rules: [{ required }],
     disabled,
     formData,
     getFieldDecorator,
-    searchKeyFn: opt => opt.value,
+    searchKeyFn: opt => opt.search,
   };
   return (
     <Row>

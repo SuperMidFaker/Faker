@@ -356,7 +356,7 @@ export default class TradeItemList extends Component {
     this.handleItemListLoad(this.props.repoId, 1, filter);
   }
   handleItemPass = (row) => {
-    this.props.setItemStatus({ id: row.id, status: CMS_ITEM_STATUS.classified }).then((result) => {
+    this.props.setItemStatus({ ids: [row.id], status: CMS_ITEM_STATUS.classified }).then((result) => {
       if (result.error) {
         message.error(result.error.message);
       } else {
@@ -365,10 +365,30 @@ export default class TradeItemList extends Component {
     });
   }
   handleItemRefused = (row) => {
-    this.props.setItemStatus({ id: row.id, status: CMS_ITEM_STATUS.unclassified }).then((result) => {
+    this.props.setItemStatus({ ids: [row.id], status: CMS_ITEM_STATUS.unclassified }).then((result) => {
       if (result.error) {
         message.error(result.error.message);
       } else {
+        this.handleItemListLoad();
+      }
+    });
+  }
+  handleItemsPass = () => {
+    this.props.setItemStatus({ ids: this.state.selectedRowKeys, status: CMS_ITEM_STATUS.classified }).then((result) => {
+      if (result.error) {
+        message.error(result.error.message);
+      } else {
+        this.setState({ selectedRowKeys: [] });
+        this.handleItemListLoad();
+      }
+    });
+  }
+  handleItemsRefused = () => {
+    this.props.setItemStatus({ ids: this.state.selectedRowKeys, status: CMS_ITEM_STATUS.unclassified }).then((result) => {
+      if (result.error) {
+        message.error(result.error.message);
+      } else {
+        this.setState({ selectedRowKeys: [] });
         this.handleItemListLoad();
       }
     });
@@ -382,6 +402,30 @@ export default class TradeItemList extends Component {
         this.setState({ selectedRowKeys });
       },
     };
+    let batchOperation = null;
+    if (repo.permission === CMS_TRADE_REPO_PERMISSION.edit && selectedRows.length > 0) {
+      if (listFilter.status === 'unclassified') {
+        batchOperation = (<Popconfirm title={'是否删除所有选择项？'} onConfirm={() => this.handleDeleteSelected()}>
+          <Button type="danger" size="large" icon="delete">
+                    批量删除
+                  </Button>
+        </Popconfirm>);
+      } else if (listFilter.status === 'pending') {
+        batchOperation = (<span>
+          <Button size="large" onClick={this.handleItemsPass}>
+                    批量通过
+                  </Button>
+          <Button size="large" onClick={this.handleItemsRefused} >
+                    批量拒绝
+                  </Button>
+          <Popconfirm title={'是否删除所有选择项？'} onConfirm={() => this.handleDeleteSelected()}>
+            <Button type="danger" size="large" icon="delete">
+                      批量删除
+                    </Button>
+          </Popconfirm>
+        </span>);
+      }
+    }
     this.dataSource.remotes = tradeItemlist;
     const columns = [...this.columns];
     if (repo.permission === CMS_TRADE_REPO_PERMISSION.edit) {
@@ -544,13 +588,7 @@ export default class TradeItemList extends Component {
               <div className="toolbar">
                 <SearchBar placeholder="编码/名称/描述/申报要素" onInputSearch={this.handleSearch} size="large" />
                 <span />
-                {repo.permission === CMS_TRADE_REPO_PERMISSION.edit && selectedRows.length > 0 &&
-                <Popconfirm title={'是否删除所有选择项？'} onConfirm={() => this.handleDeleteSelected()}>
-                  <Button type="danger" size="large" icon="delete">
-                    批量删除
-                  </Button>
-                </Popconfirm>
-                  }
+                {batchOperation}
               </div>
               <div className="panel-body table-panel">
                 <Table rowSelection={rowSelection} rowKey={record => record.id} columns={columns} dataSource={this.dataSource} scroll={{ x: 3800 }} />

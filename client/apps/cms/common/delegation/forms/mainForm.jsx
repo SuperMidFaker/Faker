@@ -20,7 +20,7 @@ function getFieldInits(aspect, formData) {
   if (formData) {
     [
       'customer_name', 'invoice_no', 'contract_no', 'bl_wb_no', 'pieces', 'weight',
-      'trans_mode', 'voyage_no', 'trade_mode', 'decl_port', 'decl_way_code',
+      'trans_mode', 'traf_name', 'voyage_no', 'trade_mode', 'decl_port', 'decl_way_code',
       'goods_type', 'order_no', 'swb_no',
     ].forEach((fd) => {
       init[fd] = formData[fd] === undefined ? '' : formData[fd];
@@ -68,6 +68,7 @@ export default class MainForm extends Component {
   render() {
     const { form: { getFieldDecorator, getFieldValue }, fieldInits, clients, partnershipType, ieType } = this.props;
     const DECL_TYPE = ieType === 'import' ? DECL_I_TYPE : DECL_E_TYPE;
+    const transMode = getFieldValue('trans_mode');
     let customerName = {
       display: '',
       required: true,
@@ -91,7 +92,7 @@ export default class MainForm extends Component {
       label: '运输工具名称',
       placeholder: '',
     };
-    if (getFieldValue('trans_mode') === '2' || fieldInits.trans_mode === '2') {
+    if (transMode === '2' || fieldInits.trans_mode === '2') {
       transModeLabel = {
         label: formatMsg(this.props.intl, 'bLNo'),
         title: '填报提单号。如有分提单的，填报提单号*分提单号',
@@ -100,7 +101,7 @@ export default class MainForm extends Component {
         label: '运输工具名称/航次号',
         placeholder: '填写船舶英文名称',
       };
-    } else if (getFieldValue('trans_mode') === '5' || fieldInits.trans_mode === '5') {
+    } else if (transMode === '5' || fieldInits.trans_mode === '5') {
       transModeLabel = {
         label: formatMsg(this.props.intl, 'deliveryNo'),
         title: '填报总运单号_分运单号，无分运单的填报总运单号',
@@ -205,22 +206,16 @@ export default class MainForm extends Component {
             </Col>
 
             <Col sm={24} lg={8}>
-              {(getFieldValue('trans_mode') === '2') ?
-                <FormItem label={voyageNoLabel.label} >
-                  {getFieldDecorator('voyage_no', {
+              <FormItem label={voyageNoLabel.label} >
+                <InputGroup compact>
+                  {getFieldDecorator('traf_name', {
+                    initialValue: fieldInits.traf_name,
+                  })(<Input style={{ width: transMode === '2' ? '60%' : '100%' }} />)}
+                  {transMode === '2' && getFieldDecorator('voyage_no', {
                     initialValue: fieldInits.voyage_no,
-                  })(<InputGroup compact>
-                    <Input style={{ width: '60%' }} />
-                    <Input style={{ width: '40%' }} placeholder="航次号" />
-                  </InputGroup>)}
-                </FormItem>
-                :
-                <FormItem label={voyageNoLabel.label} >
-                  {getFieldDecorator('voyage_no', {
-                    initialValue: fieldInits.voyage_no,
-                  })(<Input placeholder={voyageNoLabel.placeholder} />)}
-                </FormItem>
-              }
+                  })(<Input style={{ width: '40%' }} placeholder="航次号" />)}
+                </InputGroup>
+              </FormItem>
             </Col>
             <Col sm={24} lg={8}>
               <FormItem label={(
@@ -239,7 +234,7 @@ export default class MainForm extends Component {
           </Row>
           <Row gutter={16}>
             <Col sm={24} lg={12}>
-              {getFieldValue('trans_mode') === '2' &&
+              {transMode === '2' &&
                 <FormItem label="换单" >
                   {getFieldDecorator('claim_do_awb', { initialValue: fieldInits.claim_do_awb })(<RadioGroup>
                     <RadioButton value={CLAIM_DO_AWB.claimDO.key}>{CLAIM_DO_AWB.claimDO.value}</RadioButton>
@@ -249,7 +244,7 @@ export default class MainForm extends Component {
               }
             </Col>
             <Col sm={24} lg={12}>
-              {getFieldValue('trans_mode') === '2' &&
+              {transMode === '2' &&
                 <FormItem label="海运单号" >
                   {getFieldDecorator('swb_no', {
                     initialValue: fieldInits.swb_no,
