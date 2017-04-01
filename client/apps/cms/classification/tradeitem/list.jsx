@@ -258,6 +258,7 @@ export default class TradeItemList extends Component {
         repoId: this.props.repoId,
         pageSize: pagination.pageSize,
         currentPage: pagination.current,
+        searchText: this.props.tradeItemlist.searchText,
       };
       const filter = this.props.listFilter;
       params.filter = JSON.stringify(filter);
@@ -275,14 +276,15 @@ export default class TradeItemList extends Component {
       rightSidercollapsed: !this.state.rightSidercollapsed,
     });
   }
-  handleItemListLoad = (repoid, currentPage, filter) => {
-    const { repoId, listFilter, tradeItemlist: { pageSize, current } } = this.props;
+  handleItemListLoad = (repoid, currentPage, filter, search) => {
+    const { repoId, listFilter, tradeItemlist: { pageSize, current, searchText } } = this.props;
     this.setState({ expandedKeys: [] });
     this.props.loadTradeItems({
       repoId: repoid || repoId,
       filter: JSON.stringify(filter || listFilter),
       pageSize,
       currentPage: currentPage || current,
+      searchText: search !== undefined ? search : searchText,
     }).then((result) => {
       if (result.error) {
         message.error(result.error.message);
@@ -392,6 +394,10 @@ export default class TradeItemList extends Component {
         this.handleItemListLoad();
       }
     });
+  }
+  handleSearch = (value) => {
+    const { repoId, listFilter } = this.props;
+    this.handleItemListLoad(repoId, 1, listFilter, value);
   }
   render() {
     const { tradeItemlist, repoId, repo, listFilter } = this.props;
