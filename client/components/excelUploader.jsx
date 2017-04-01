@@ -20,7 +20,7 @@ export default class ExcelUploader extends React.Component {
       this.setState({ inUpload: true, uploadStatus: 'active', uploadPercent: 10 });
     } else if (info.event) {
       this.state.uploadChangeCount++;
-      this.setState({ uploadPercent: info.event.percent });
+      this.setState({ uploadPercent: info.event.percent * 0.8 });
     } else if (info.file.status === 'done') {
       const reponseData = info.file.response.data;
       this.setState({ inUpload: false, uploadStatus: 'success' });

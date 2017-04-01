@@ -22,6 +22,9 @@ const actionTypes = createActionTypes('@@welogix/cms/tradeitem/', [
   'LOAD_REPO_USERS', 'LOAD_REPO_USERS_SUCCEED', 'LOAD_REPO_USERS_FAIL',
   'ADD_REPO_USER', 'ADD_REPO_USER_SUCCEED', 'ADD_REPO_USER_FAIL',
   'DELETE_REPO_USER', 'DELETE_REPO_USER_SUCCEED', 'DELETE_REPO_USER_FAIL',
+  'LOAD_TEMP_ITEMS', 'LOAD_TEMP_ITEMS_SUCCEED', 'LOAD_TEMP_ITEMS_FAIL',
+  'COMPARED_CANCEL', 'COMPARED_CANCEL_SUCCEED', 'COMPARED_CANCEL_FAIL',
+  'DELETE_TEMP_DATA', 'DELETE_TEMP_DATA_SUCCEED', 'DELETE_TEMP_DATA_FAIL',
 ]);
 
 const initialState = {
@@ -35,6 +38,12 @@ const initialState = {
     current: 1,
     pageSize: 20,
     searchText: '',
+    data: [],
+  },
+  tempItems: {
+    totalCount: 0,
+    current: 1,
+    pageSize: 10,
     data: [],
   },
   visibleAddModal: false,
@@ -86,6 +95,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, visibleCompareModal: action.data };
     case actionTypes.LOAD_REPO_USERS_SUCCEED:
       return { ...state, repoUsers: action.result.data };
+    case actionTypes.LOAD_TEMP_ITEMS_SUCCEED:
+      return { ...state, tempItems: action.result.data };
     default:
       return state;
   }
@@ -204,6 +215,21 @@ export function loadRepos(params) {
         actionTypes.LOAD_REPOS_FAIL,
       ],
       endpoint: 'v1/cms/tradeitem/repos/load',
+      method: 'get',
+      params,
+    },
+  };
+}
+
+export function loadTempItems(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_TEMP_ITEMS,
+        actionTypes.LOAD_TEMP_ITEMS_SUCCEED,
+        actionTypes.LOAD_TEMP_ITEMS_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/temp/items/load',
       method: 'get',
       params,
     },
@@ -381,6 +407,36 @@ export function deleteRepoUser(repoUserId) {
       endpoint: 'v1/cms/tradeitem/repoUser/delete',
       method: 'post',
       data: { repoUserId },
+    },
+  };
+}
+
+export function comparedCancel(datas) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.COMPARED_CANCEL,
+        actionTypes.COMPARED_CANCEL_SUCCEED,
+        actionTypes.COMPARED_CANCEL_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/compared/datas/cancel',
+      method: 'post',
+      data: datas,
+    },
+  };
+}
+
+export function deleteTempData(id) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DELETE_TEMP_DATA,
+        actionTypes.DELETE_TEMP_DATA_SUCCEED,
+        actionTypes.DELETE_TEMP_DATA_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/compared/del',
+      method: 'post',
+      data: { id },
     },
   };
 }
