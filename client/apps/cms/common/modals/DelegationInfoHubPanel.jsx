@@ -24,7 +24,7 @@ const TabPane = Tabs.TabPane;
   state => ({
     tenantId: state.account.tenantId,
     visible: state.cmsDelgInfoHub.previewer.visible,
-    basicSpinning: state.cmsDelgInfoHub.basicPreviewLoad,
+    basicSpinning: state.cmsDelgInfoHub.basicPreviewLoading,
     previewer: state.cmsDelgInfoHub.previewer,
     tabKey: state.cmsDelgInfoHub.tabKey,
     delgNo: state.cmsDelgInfoHub.previewer.delgNo,
