@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { Button, Card, Col, Modal, Form, Checkbox, Icon, Input, InputNumber, Radio, Row, Select } from 'antd';
+import { Button, Card, Popconfirm, Col, Modal, Form, Checkbox, Icon, Input, InputNumber, Radio, Row, Select } from 'antd';
 import { closeAddTriggerModal } from 'common/reducers/scofFlow';
 import { uuidWithoutDash } from 'client/common/uuid';
 import { formatMsg } from '../../message.i18n';
@@ -19,12 +19,19 @@ const notifyOptions = [
 ];
 
 function CreateActionForm(props) {
-  const { action, index, bizObjectOptions, msg, onChange } = props;
+  const { action, index, bizObjectOptions, msg, onChange, onDel } = props;
   function handleChange(actionKey, value) {
     onChange(actionKey, value, index);
   }
+  function handleDel() {
+    onDel(index);
+  }
   return (
-    <Card extra={<a href="#"><Icon type="delete" /></a>}>
+    <Card extra={(
+      <Popconfirm title={msg('deleteConfirm')} onConfirm={handleDel}>
+        <a role="button"><Icon type="delete" /></a>
+      </Popconfirm>)}
+    >
       <Row gutter={16}>
         <Col sm={24} lg={8}>
           <FormItem label={msg('triggerMode')}>
@@ -70,12 +77,19 @@ CreateActionForm.propTypes = {
 };
 
 function NotifyActionForm(props) {
-  const { action, index, msg, onChange } = props;
+  const { action, index, msg, onChange, onDel } = props;
   function handleChange(actionKey, value) {
     onChange(actionKey, value, index);
   }
+  function handleDel() {
+    onDel(index);
+  }
   return (
-    <Card extra={<a href="#"><Icon type="delete" /></a>}>
+    <Card extra={(
+      <Popconfirm title={msg('deleteConfirm')} onConfirm={handleDel}>
+        <a role="button"><Icon type="delete" /></a>
+      </Popconfirm>)}
+    >
       <Row gutter={16}>
         <Col sm={24} lg={8}>
           <FormItem label={msg('triggerMode')}>
@@ -164,6 +178,11 @@ export default class AddTriggerModal extends React.Component {
     actions[index][key] = value;
     this.setState({ actions });
   }
+  handleActionDel = (index) => {
+    const actions = [...this.state.actions];
+    actions.splice(index, 1);
+    this.setState({ actions });
+  }
   handleOk = () => {
     this.props.onModalOK(this.props.nodeBizObject, this.props.trigger, this.state.actions);
     this.props.closeAddTriggerModal();
@@ -185,12 +204,12 @@ export default class AddTriggerModal extends React.Component {
             let actionForm = null;
             switch (action.type) {
               case 'CREATE': actionForm = (
-                <CreateActionForm key={`${action.type}${index}`} action={action}
+                <CreateActionForm key={`${action.type}${index}`} action={action} onDel={this.handleActionDel}
                   index={index} bizObjectOptions={bizObjects} onChange={this.handleFormChange} msg={this.msg}
                 />);
                 break;
               case 'NOTIFY': actionForm = (
-                <NotifyActionForm key={`${action.type}${index}`} action={action}
+                <NotifyActionForm key={`${action.type}${index}`} action={action} onDel={this.handleActionDel}
                   index={index} onChange={this.handleFormChange} msg={this.msg}
                 />);
                 break;
