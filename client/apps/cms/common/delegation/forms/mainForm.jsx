@@ -20,7 +20,7 @@ function getFieldInits(aspect, formData) {
   if (formData) {
     [
       'customer_name', 'invoice_no', 'contract_no', 'bl_wb_no', 'pieces', 'weight',
-      'trans_mode', 'voyage_no', 'trade_mode', 'decl_port', 'decl_way_code',
+      'trans_mode', 'traf_name', 'voyage_no', 'trade_mode', 'decl_port', 'decl_way_code',
       'goods_type', 'order_no', 'swb_no',
     ].forEach((fd) => {
       init[fd] = formData[fd] === undefined ? '' : formData[fd];
@@ -51,9 +51,6 @@ export default class MainForm extends Component {
     setClientForm: PropTypes.func.isRequired,
     ieType: PropTypes.string.isRequired,
   }
-  state = {
-    transMode: '',
-  }
   msg = key => formatMsg(this.props.intl, key);
   handleClientChange = (value) => {
     if (typeof value === 'string') {
@@ -68,13 +65,10 @@ export default class MainForm extends Component {
     }
     return value;
   }
-  handleTransModeChange = (value) => {
-    this.setState({ transMode: value });
-  }
   render() {
-    const { form: { getFieldDecorator }, fieldInits, clients, partnershipType, ieType } = this.props;
+    const { form: { getFieldDecorator, getFieldValue }, fieldInits, clients, partnershipType, ieType } = this.props;
     const DECL_TYPE = ieType === 'import' ? DECL_I_TYPE : DECL_E_TYPE;
-    const { transMode } = this.state;
+    const transMode = getFieldValue('trans_mode');
     let customerName = {
       display: '',
       required: true,
@@ -200,7 +194,7 @@ export default class MainForm extends Component {
                   initialValue: fieldInits.trans_mode,
                   rules: [{ required: true, message: '运输方式必选' }],
                 })(
-                  <Select onChange={this.handleTransModeChange}>
+                  <Select>
                     {
                       TRANS_MODE.map(tr =>
                         <Option value={tr.value} key={tr.value}>{tr.text}</Option>
@@ -212,22 +206,16 @@ export default class MainForm extends Component {
             </Col>
 
             <Col sm={24} lg={8}>
-              {(transMode === '2') ?
-                <FormItem label={voyageNoLabel.label} >
-                  {getFieldDecorator('voyage_no', {
+              <FormItem label={voyageNoLabel.label} >
+                <InputGroup compact>
+                  {getFieldDecorator('traf_name', {
+                    initialValue: fieldInits.traf_name,
+                  })(<Input style={{ width: transMode === '2' ? '60%' : '100%' }} />)}
+                  {transMode === '2' && getFieldDecorator('voyage_no', {
                     initialValue: fieldInits.voyage_no,
-                  })(<InputGroup compact>
-                    <Input style={{ width: '60%' }} />
-                    <Input style={{ width: '40%' }} placeholder="航次号" />
-                  </InputGroup>)}
-                </FormItem>
-                :
-                <FormItem label={voyageNoLabel.label} >
-                  {getFieldDecorator('voyage_no', {
-                    initialValue: fieldInits.voyage_no,
-                  })(<Input placeholder={voyageNoLabel.placeholder} />)}
-                </FormItem>
-              }
+                  })(<Input style={{ width: '40%' }} placeholder="航次号" />)}
+                </InputGroup>
+              </FormItem>
             </Col>
             <Col sm={24} lg={8}>
               <FormItem label={(
