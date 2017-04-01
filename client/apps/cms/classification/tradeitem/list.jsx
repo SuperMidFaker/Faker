@@ -378,6 +378,7 @@ export default class TradeItemList extends Component {
       if (result.error) {
         message.error(result.error.message);
       } else {
+        this.setState({ selectedRowKeys: [] });
         this.handleItemListLoad();
       }
     });
@@ -387,6 +388,7 @@ export default class TradeItemList extends Component {
       if (result.error) {
         message.error(result.error.message);
       } else {
+        this.setState({ selectedRowKeys: [] });
         this.handleItemListLoad();
       }
     });
