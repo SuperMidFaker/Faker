@@ -16,7 +16,6 @@ import AddTradeRepoModal from './modals/addTradeRepo';
 import SearchBar from 'client/components/search-bar';
 import ExcelUpload from 'client/components/excelUploader';
 import { createFilename } from 'client/util/dataTransform';
-import CopCodesPane from './panes/copCodesPane';
 import RepoUsersPane from './panes/repoUsersPane';
 import ImportComparisonModal from './modals/importComparison';
 import { CMS_ITEM_STATUS, CMS_TRADE_REPO_PERMISSION } from 'common/constants';
@@ -439,8 +438,8 @@ export default class TradeItemList extends Component {
       });
     }
     const repoColumns = [{
-      dataIndex: 'name',
-      key: 'name',
+      dataIndex: 'owner_name',
+      key: 'owner_name',
       render: o => (<div style={{ paddingLeft: 15 }}>{o}</div>),
     }];
     const menu = (
@@ -499,7 +498,7 @@ export default class TradeItemList extends Component {
                 {this.msg('tradeItemMaster')}
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                {`${repo.name}`}
+                {`${repo.owner_name}`}
               </Breadcrumb.Item>
             </Breadcrumb>
             }
@@ -566,7 +565,7 @@ export default class TradeItemList extends Component {
           defaultCollapsed
           collapsible
           collapsed={this.state.rightSidercollapsed}
-          width={480}
+          width={520}
           collapsedWidth={0}
           className="right-sider"
         >
@@ -575,9 +574,6 @@ export default class TradeItemList extends Component {
               <h3>物料库设置</h3>
             </div>
             <Collapse accordion defaultActiveKey="trader">
-              <Panel header={'授权收发货人'} key="trader">
-                <CopCodesPane repo={repo} />
-              </Panel>
               <Panel header={'授权使用单位'} key="user">
                 <RepoUsersPane repo={repo} />
               </Panel>

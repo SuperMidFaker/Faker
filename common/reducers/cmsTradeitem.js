@@ -6,11 +6,7 @@ const actionTypes = createActionTypes('@@welogix/cms/tradeitem/', [
   'OPEN_ADD_MODEL', 'CLOSE_ADD_MODEL',
   'CREATE_REPO', 'CREATE_REPO_SUCCEED', 'CREATE_REPO_FAIL',
   'DELETE_REPO', 'DELETE_REPO_SUCCEED', 'DELETE_REPO_FAIL',
-  'LOAD_TRADE_CODES', 'LOAD_TRADE_CODES_SUCCEED', 'LOAD_TRADE_CODES_FAIL',
   'SET_SELECTED_REPOID', 'SET_PANE_TABKEY',
-  'LOAD_REPO_TRADES', 'LOAD_REPO_TRADES_SUCCEED', 'LOAD_REPO_TRADES_FAIL',
-  'SAVE_REPO_TRADES', 'SAVE_REPO_TRADES_SUCCEED', 'SAVE_REPO_TRADES_FAIL',
-  'DELETE_REPO_TRADE', 'DELETE_REPO_TRADE_SUCCEED', 'DELETE_REPO_TRADE_FAIL',
   'LOAD_TRADE_ITEMS', 'LOAD_TRADE_ITEMS_SUCCEED', 'LOAD_TRADE_ITEMS_FAIL',
   'DELETE_ITEM', 'DELETE_ITEM_SUCCEED', 'DELETE_ITEM_FAIL',
   'LOAD_PARAMS', 'LOAD_PARAMS_SUCCEED', 'LOAD_PARAMS_FAIL',
@@ -45,7 +41,6 @@ const initialState = {
   tradeCodes: [],
   tabKey: 'copCodes',
   repoId: null,
-  repoTrades: [],
   repoUsers: [],
   params: {
     currencies: [],
@@ -72,12 +67,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, tabKey: action.data };
     case actionTypes.SET_REPO:
       return { ...state, repo: action.data };
-    case actionTypes.LOAD_TRADE_CODES_SUCCEED:
-      return { ...state, tradeCodes: action.result.data };
     case actionTypes.SET_SELECTED_REPOID:
       return { ...state, repoId: action.payload.repoId };
-    case actionTypes.LOAD_REPO_TRADES_SUCCEED:
-      return { ...state, repoTrades: action.result.data };
     case actionTypes.LOAD_TRADE_ITEMS_SUCCEED:
       return { ...state, tradeItemlist: action.result.data, listFilter: JSON.parse(action.params.filter) };
     case actionTypes.LOAD_PARAMS_SUCCEED:
@@ -281,66 +272,6 @@ export function deleteRepo(repoId) {
   };
 }
 
-export function loadTradeCodes(tenantId) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.LOAD_TRADE_CODES,
-        actionTypes.LOAD_TRADE_CODES_SUCCEED,
-        actionTypes.LOAD_TRADE_CODES_FAIL,
-      ],
-      endpoint: 'v1/cms/tradeitem/tradeCodes/load',
-      method: 'get',
-      params: { tenantId },
-    },
-  };
-}
-
-export function loadRepoTrades(tenantId, repoId) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.LOAD_REPO_TRADES,
-        actionTypes.LOAD_REPO_TRADES_SUCCEED,
-        actionTypes.LOAD_REPO_TRADES_FAIL,
-      ],
-      endpoint: 'v1/cms/tradeitem/repoTrades/load',
-      method: 'get',
-      params: { tenantId, repoId },
-    },
-  };
-}
-
-export function saveRepoTrade(datas) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.SAVE_REPO_TRADES,
-        actionTypes.SAVE_REPO_TRADES_SUCCEED,
-        actionTypes.SAVE_REPO_TRADES_FAIL,
-      ],
-      endpoint: 'v1/cms/tradeitem/repo/trade/save',
-      method: 'post',
-      data: datas,
-    },
-  };
-}
-
-export function delRepoTrade(id) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.DELETE_REPO_TRADE,
-        actionTypes.DELETE_REPO_TRADE_SUCCEED,
-        actionTypes.DELETE_REPO_TRADE_FAIL,
-      ],
-      endpoint: 'v1/cms/tradeitem/repo/trade/delete',
-      method: 'post',
-      data: { id },
-    },
-  };
-}
-
 export function deleteSelectedItems(datas) {
   return {
     [CLIENT_API]: {
@@ -423,7 +354,7 @@ export function loadRepoUsers(repoId) {
   };
 }
 
-export function addRepoUser(repoId, partnerTenantId) {
+export function addRepoUser(tenantId, repoId, partnerTenantId, name) {
   return {
     [CLIENT_API]: {
       types: [
@@ -433,7 +364,7 @@ export function addRepoUser(repoId, partnerTenantId) {
       ],
       endpoint: 'v1/cms/tradeitem/repoUser/add',
       method: 'post',
-      data: { repoId, partnerTenantId },
+      data: { tenantId, repoId, partnerTenantId, name },
     },
   };
 }
