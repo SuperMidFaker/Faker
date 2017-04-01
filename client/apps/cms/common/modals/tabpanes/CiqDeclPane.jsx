@@ -106,7 +106,7 @@ export default class CiqDeclPane extends React.Component {
             </Card>
           </Col>
           <Col span={6}>
-            <Card bodyStyle={{ padding: 0 }}>
+            <Card bodyStyle={{ padding: 0 }} className="with-card-footer">
               <Row gutter={8} style={{ padding: 16 }}>
                 <Col span="24">
                   <InfoItem labelCol={{ span: 3 }} label="报检服务商"
