@@ -36,7 +36,6 @@ const OptGroup = Select.OptGroup;
     delegationlist: state.cmsDelegation.delegationlist,
     listFilter: state.cmsDelegation.listFilter,
     saved: state.cmsDelegation.assign.saved,
-    billMake: state.cmsDelegation.billMake,
     delgDispShow: state.cmsDelegation.assign.delgDispShow,
     preStatus: state.cmsDelgInfoHub.preStatus,
     previewer: state.cmsDelgInfoHub.previewer,
@@ -71,7 +70,6 @@ export default class DelegationList extends Component {
     ensureManifestMeta: PropTypes.func.isRequired,
     acceptDelg: PropTypes.func.isRequired,
     delDelg: PropTypes.func.isRequired,
-    billMake: PropTypes.object.isRequired,
     delgDispShow: PropTypes.bool.isRequired,
     saved: PropTypes.bool.isRequired,
     preStatus: PropTypes.string.isRequired,
@@ -189,7 +187,6 @@ export default class DelegationList extends Component {
     dataIndex: 'trans_mode',
     render: (o) => {
       const mode = TRANS_MODE.filter(ts => ts.value === o)[0];
-      // 9为暂时兼容开放接口
       if (o === '2') {
         return (<span><i className="zmdi zmdi-boat" /> {mode.text}</span>);
       } else if (o === '5') {

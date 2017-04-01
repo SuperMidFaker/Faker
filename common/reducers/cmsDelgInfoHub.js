@@ -14,6 +14,9 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
 
 const initialState = {
   tabKey: 'basic',
+  basicPreviewLoading: false,
+  ciqPanelLoading: false,
+  customsPanelLoading: false,
   previewer: {
     visible: false,
     delegation: {},
@@ -44,12 +47,13 @@ export default function reducer(state = initialState, action) {
         delgNo: action.payload.delgNo },
         tabKey: action.payload.tabKey,
       };
+    case actionTypes.LOAD_BASIC_INFO:
+      return { ...state, basicPreviewLoading: true };
+    case actionTypes.LOAD_BASIC_INFO_FAILED:
+      return { ...state, basicPreviewLoading: false };
     case actionTypes.LOAD_BASIC_INFO_SUCCEED: {
-      return { ...state, previewer: {
-        ...state.previewer,
-        ...action.result.data },
-        preStatus: '',
-        tabKey: action.payload.tabKey };
+      return { ...state, previewer: { ...state.previewer, ...action.result.data },
+        preStatus: '', basicPreviewLoading: false, tabKey: action.payload.tabKey };
     }
     case actionTypes.HIDE_PREVIEWER:
       return { ...state, previewer: { ...state.previewer, visible: action.visible } };
@@ -57,10 +61,18 @@ export default function reducer(state = initialState, action) {
       return { ...state, ...action.data };
     case actionTypes.SET_PREW_TABKEY:
       return { ...state, tabKey: action.data };
+    case actionTypes.LOAD_DELG_PANEL:
+      return { ...state, customsPanelLoading: true };
+    case actionTypes.LOAD_DELG_PANEL_FAILED:
+      return { ...state, customsPanelLoading: false };
     case actionTypes.LOAD_DELG_PANEL_SUCCEED:
-      return { ...state, customsPanel: action.result.data };
+      return { ...state, customsPanel: action.result.data, customsPanelLoading: false };
+    case actionTypes.LOAD_DECLCIQ_PANEL:
+      return { ...state, ciqPanelLoading: true };
+    case actionTypes.LOAD_DECLCIQ_PANEL_FAIL:
+      return { ...state, ciqPanelLoading: false };
     case actionTypes.LOAD_DECLCIQ_PANEL_SUCCEED:
-      return { ...state, ciqPanel: action.result.data };
+      return { ...state, ciqPanel: action.result.data, ciqPanelLoading: false };
     default:
       return state;
   }

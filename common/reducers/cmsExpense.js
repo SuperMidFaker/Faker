@@ -28,6 +28,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
 ]);
 
 const initialState = {
+  expensesLoading: false,
   expenses: {
     revenue: [],
     allcost: [],
@@ -96,9 +97,11 @@ const initialState = {
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.EXP_PANE_LOAD:
-      return { ...state, expenses: initialState.expenses };
+      return { ...state, expenses: initialState.expenses, expensesLoading: true };
+    case actionTypes.EXP_PANE_LOAD_FAIL:
+      return { ...state, expenses: initialState.expenses, expensesLoading: false };
     case actionTypes.EXP_PANE_LOAD_SUCCEED:
-      return { ...state, expenses: { ...state.expenses, ...action.result.data } };
+      return { ...state, expenses: { ...state.expenses, ...action.result.data }, expensesLoading: false };
     case actionTypes.EXP_LOAD:
       return { ...state, expslist: { ...initialState.expslist, loading: true }, saved: false };
     case actionTypes.EXP_LOAD_SUCCEED: {

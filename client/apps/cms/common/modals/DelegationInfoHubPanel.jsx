@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Badge, Button, Col, Dropdown, Icon, Menu, Row, Tabs, Tag, Popconfirm } from 'antd';
+import { Spin, Badge, Button, Col, Dropdown, Icon, Menu, Row, Tabs, Tag, Popconfirm } from 'antd';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
@@ -24,6 +24,7 @@ const TabPane = Tabs.TabPane;
   state => ({
     tenantId: state.account.tenantId,
     visible: state.cmsDelgInfoHub.previewer.visible,
+    basicSpinning: state.cmsDelgInfoHub.basicPreviewLoad,
     previewer: state.cmsDelgInfoHub.previewer,
     tabKey: state.cmsDelgInfoHub.tabKey,
     delgNo: state.cmsDelgInfoHub.previewer.delgNo,
@@ -38,6 +39,7 @@ export default class DelegationInfoHubPanel extends React.Component {
     tenantId: PropTypes.number.isRequired,
     tabKey: PropTypes.string,
     delgNo: PropTypes.string,
+    basicSpinning: PropTypes.bool.isRequired,
     hidePreviewer: PropTypes.func.isRequired,
     previewer: PropTypes.object.isRequired,
     delegateListFilter: PropTypes.object.isRequired,
@@ -47,8 +49,7 @@ export default class DelegationInfoHubPanel extends React.Component {
     router: PropTypes.object.isRequired,
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.tabKey !== this.props.tabKey ||
-      nextProps.delgNo !== this.props.delgNo) {
+    if (nextProps.delgNo !== this.props.delgNo) {
       nextProps.loadBasicInfo(
         this.props.tenantId,
         nextProps.delgNo,
@@ -289,7 +290,7 @@ export default class DelegationInfoHubPanel extends React.Component {
     }
   }
   render() {
-    const { visible, previewer } = this.props;
+    const { visible, previewer, basicSpinning } = this.props;
     const { delegation, delgDispatch } = previewer;
     const menu = (
       <Menu>
@@ -308,39 +309,41 @@ export default class DelegationInfoHubPanel extends React.Component {
     return (
       <div className={`dock-panel dock-panel-lg ${visible ? 'inside' : ''}`}>
         <div className="panel-content">
-          <div className="header">
-            <span className="title">{delegation.delg_no}</span>
-            {this.translateStatus(delegation, delgDispatch)}
-            <div className="toolbar-right">
-              {this.delgBtns()}
-              <Dropdown overlay={menu}>
-                <Button><Icon type="ellipsis" /></Button>
-              </Dropdown>
-              {closer}
+          <Spin spinning={basicSpinning}>
+            <div className="header">
+              <span className="title">{delegation.delg_no}</span>
+              {this.translateStatus(delegation, delgDispatch)}
+              <div className="toolbar-right">
+                {this.delgBtns()}
+                <Dropdown overlay={menu}>
+                  <Button><Icon type="ellipsis" /></Button>
+                </Dropdown>
+                {closer}
+              </div>
+              <Row>
+                <Col span="8">
+                  <InfoItem label="委托方"
+                    field={delgDispatch.send_name}
+                  />
+                </Col>
+                <Col span="6">
+                  <InfoItem label="提运单号"
+                    field={delegation.bl_wb_no}
+                  />
+                </Col>
+                <Col span="6">
+                  <InfoItem label="发票号"
+                    field={delegation.invoice_no}
+                  />
+                </Col>
+                <Col span="4">
+                  <InfoItem label="委托日期"
+                    field={moment(delgDispatch.delg_time).format('YYYY.MM.DD')}
+                  />
+                </Col>
+              </Row>
             </div>
-            <Row>
-              <Col span="8">
-                <InfoItem label="委托方"
-                  field={delgDispatch.send_name}
-                />
-              </Col>
-              <Col span="6">
-                <InfoItem label="提运单号"
-                  field={delegation.bl_wb_no}
-                />
-              </Col>
-              <Col span="6">
-                <InfoItem label="发票号"
-                  field={delegation.invoice_no}
-                />
-              </Col>
-              <Col span="4">
-                <InfoItem label="委托日期"
-                  field={moment(delgDispatch.delg_time).format('YYYY.MM.DD')}
-                />
-              </Col>
-            </Row>
-          </div>
+          </Spin>
           <div className="body with-header-summary">
             {this.infoTabs()}
           </div>

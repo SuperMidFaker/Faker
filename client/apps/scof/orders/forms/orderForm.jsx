@@ -143,6 +143,17 @@ export default class OrderForm extends Component {
                 },
                 files: [],
               });
+            } else if (node.kind === 'cwm') {
+              subOrders.push({
+                node: {
+                  node_uuid: node.id,
+                  kind: node.kind,
+                  name: node.name,
+                  in_degree: node.in_degree,
+                  out_degree: node.out_degree,
+                  level,
+                },
+              });
             } else if (node.kind === 'terminal') {
               subOrders.push({
                 node: {

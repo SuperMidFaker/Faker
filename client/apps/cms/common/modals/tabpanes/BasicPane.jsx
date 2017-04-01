@@ -40,10 +40,6 @@ export default class BasicPane extends React.Component {
     sortedFiles: [],
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.tabKey === 'basic' &&
-      nextProps.tabKey !== this.props.tabKey) {
-      nextProps.loadBasicInfo(this.props.tenantId, nextProps.delgNo, 'basic');
-    }
     if (nextProps.files.length !== this.props.files.length) {
       const sortedFiles = [];
       nextProps.files.forEach((fl) => {

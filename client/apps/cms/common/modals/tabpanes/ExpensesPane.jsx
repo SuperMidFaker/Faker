@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Card, Collapse, Table, Tag } from 'antd';
+import { Spin, Card, Collapse, Table, Tag } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { loadPaneExp } from 'common/reducers/cmsExpense';
@@ -23,6 +23,7 @@ const typeKeys = EXPENSE_TYPES.map(ec => ec.key);
 @injectIntl
 @connect(
   state => ({
+    expensesLoading: state.cmsExpense.expensesLoading,
     expenses: state.cmsExpense.expenses,
     delgNo: state.cmsDelgInfoHub.previewer.delgNo,
     tenantId: state.account.tenantId,
@@ -133,7 +134,7 @@ export default class ExpensePane extends React.Component {
     return col;
   }
   render() {
-    const { expenses: { revenue, allcost, parameters } } = this.props;
+    const { expenses: { revenue, allcost, parameters }, expensesLoading } = this.props;
     const { checkedExpCates, checkedExpTypes } = this.state;
     const revenueFees = revenue.filter(rev =>
         checkedExpCates.indexOf(rev.fee_style) !== -1
@@ -205,39 +206,41 @@ export default class ExpensePane extends React.Component {
     );
     return (
       <div className="pane-content tab-pane">
-        <div className="toolbar">
-          {checkedTags}
-        </div>
-        <Card bodyStyle={{ padding: 0 }}>
-          <Collapse defaultActiveKey={['revenue', 'cost']}>
-            <Panel header={this.msg('revenueDetail')} key="revenue" className="table-panel">
-              <Table size="small" columns={this.columnFields} dataSource={revenueFees}
-                rowKey="fee_name" pagination={false}
-              />
-            </Panel>
-            <Panel header={this.msg('costDetail')} key="cost" className="table-panel">
-              <Table size="small" dataSource={costFees} rowKey="fee_name" pagination={false}>
-                <Column title={this.msg('feeName')} dataIndex="fee_name" render={this.renderCostFeeName} />
-                <Column title={this.msg('feeRemark')} dataIndex="remark" render={this.renderCostFeeColumn} />
-                <Column title={this.msg('feeVal')} dataIndex="cal_fee" render={this.renderCostFeeColumn} />
-                <Column title={this.msg('taxFee')} dataIndex="tax_fee" render={this.renderCostFeeColumn} />
-                <Column title={this.msg('totalFee')} dataIndex="total_fee" render={this.renderCostFeeColumn} />
-              </Table>
-            </Panel>
-            <Panel header="计费参数" key="params" className="table-panel">
-              <Table size="small" pagination={false} dataSource={parameters}>
-                <Column title="计费对象" dataIndex="name" />
-                <Column title="运单数量" dataIndex="shipmt_qty" />
-                <Column title="报关单数量" dataIndex="decl_qty" />
-                <Column title="报关单联数" dataIndex="decl_sheet_qty" />
-                <Column title="品名数量" dataIndex="decl_item_qty" />
-                <Column title="料件数量" dataIndex="trade_item_qty" />
-                <Column title="货值" dataIndex="trade_amt" />
-                <Column title="办证数量" dataIndex="cert_qty" />
-              </Table>
-            </Panel>
-          </Collapse>
-        </Card>
+        <Spin spinning={expensesLoading}>
+          <div className="toolbar">
+            {checkedTags}
+          </div>
+          <Card bodyStyle={{ padding: 0 }}>
+            <Collapse defaultActiveKey={['revenue', 'cost']}>
+              <Panel header={this.msg('revenueDetail')} key="revenue" className="table-panel">
+                <Table size="small" columns={this.columnFields} dataSource={revenueFees}
+                  rowKey="fee_name" pagination={false}
+                />
+              </Panel>
+              <Panel header={this.msg('costDetail')} key="cost" className="table-panel">
+                <Table size="small" dataSource={costFees} rowKey="fee_name" pagination={false}>
+                  <Column title={this.msg('feeName')} dataIndex="fee_name" render={this.renderCostFeeName} />
+                  <Column title={this.msg('feeRemark')} dataIndex="remark" render={this.renderCostFeeColumn} />
+                  <Column title={this.msg('feeVal')} dataIndex="cal_fee" render={this.renderCostFeeColumn} />
+                  <Column title={this.msg('taxFee')} dataIndex="tax_fee" render={this.renderCostFeeColumn} />
+                  <Column title={this.msg('totalFee')} dataIndex="total_fee" render={this.renderCostFeeColumn} />
+                </Table>
+              </Panel>
+              <Panel header="计费参数" key="params" className="table-panel">
+                <Table size="small" pagination={false} dataSource={parameters}>
+                  <Column title="计费对象" dataIndex="name" />
+                  <Column title="运单数量" dataIndex="shipmt_qty" />
+                  <Column title="报关单数量" dataIndex="decl_qty" />
+                  <Column title="报关单联数" dataIndex="decl_sheet_qty" />
+                  <Column title="品名数量" dataIndex="decl_item_qty" />
+                  <Column title="料件数量" dataIndex="trade_item_qty" />
+                  <Column title="货值" dataIndex="trade_amt" />
+                  <Column title="办证数量" dataIndex="cert_qty" />
+                </Table>
+              </Panel>
+            </Collapse>
+          </Card>
+        </Spin>
       </div>
     );
   }

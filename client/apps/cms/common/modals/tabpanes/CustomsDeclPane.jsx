@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Badge, Button, Card, Col, Icon, Progress, Row, Table, Tag, Tooltip, message } from 'antd';
+import { Spin, Badge, Button, Card, Col, Icon, Progress, Row, Table, Tag, Tooltip, message } from 'antd';
 import moment from 'moment';
 import { DECL_I_TYPE, DECL_E_TYPE, CMS_DELEGATION_STATUS, CMS_DECL_STATUS } from 'common/constants';
 import { openAcceptModal, ensureManifestMeta } from 'common/reducers/cmsDelegation';
@@ -15,7 +15,7 @@ import InfoItem from 'client/components/InfoItem';
     delgNo: state.cmsDelgInfoHub.previewer.delgNo,
     customsPanel: state.cmsDelgInfoHub.customsPanel,
     tabKey: state.cmsDelgInfoHub.tabKey,
-    billMake: state.cmsDelegation.billMake,
+    customsSpinning: state.cmsDelgInfoHub.customsPanelLoading,
     delegation: state.cmsDelgInfoHub.previewer.delegation,
   }),
   { loadCustPanel, openAcceptModal, ensureManifestMeta }
@@ -26,7 +26,7 @@ export default class CustomsDeclPane extends React.Component {
     tenantId: PropTypes.number.isRequired,
     delgNo: PropTypes.string.isRequired,
     customsPanel: PropTypes.object.isRequired,
-    billMake: PropTypes.object.isRequired,
+    customsSpinning: PropTypes.bool.isRequired,
     delegation: PropTypes.object.isRequired,
   }
   static contextTypes = {
@@ -101,7 +101,7 @@ export default class CustomsDeclPane extends React.Component {
     });
   }
   render() {
-    const { customsPanel } = this.props;
+    const { customsPanel, customsSpinning } = this.props;
     const bill = customsPanel.bill;
     const tableDatas = (bill.children || []);
     const declTypes = DECL_I_TYPE.concat(DECL_E_TYPE).filter(dt => dt.key === bill.decl_way_code);
@@ -149,43 +149,45 @@ export default class CustomsDeclPane extends React.Component {
     }];
     return (
       <div className="pane-content tab-pane">
-        <Row gutter={16}>
-          <Col span={18} className="table-list">
-            <Card bodyStyle={{ padding: 16 }}>
-              {manifestProgress}{panelHeader}{this.button()}
-            </Card>
-            <Table size="middle" showHeader={false} columns={columns} pagination={false} dataSource={tableDatas} />
-          </Col>
-          <Col span={6}>
-            <Card bodyStyle={{ padding: 16 }} className="secondary-card with-card-footer">
-              <Row gutter={8}>
-                <Col span="24">
-                  <InfoItem labelCol={{ span: 3 }} label="报关服务商"
-                    field={customsPanel.recv_name} fieldCol={{ span: 9 }}
-                  />
-                </Col>
-                <Col span="24">
-                  <InfoItem labelCol={{ span: 3 }} label="接单日期" fieldCol={{ span: 9 }}
-                    field={customsPanel.acpt_time
-                  && moment(customsPanel.acpt_time).format('YYYY.MM.DD')}
-                  />
-                </Col>
-                <Col span="24">
-                  <InfoItem labelCol={{ span: 3 }} label="制单人"
-                    field={customsPanel.recv_login_name} fieldCol={{ span: 9 }}
-                  />
-                </Col>
-              </Row>
-              {(customsPanel.type === 1 || customsPanel.customs_tenant_id === -1) && <div className="card-footer">
-                <div className="toolbar-right">
-                  <Tooltip title="分配制单人">
-                    <Button type="ghost" shape="circle" onClick={this.handleOperatorAssign}><Icon type="user" /></Button>
-                  </Tooltip>
-                </div>
-              </div>}
-            </Card>
-          </Col>
-        </Row>
+        <Spin spinning={customsSpinning}>
+          <Row gutter={16}>
+            <Col span={18} className="table-list">
+              <Card bodyStyle={{ padding: 16 }}>
+                {manifestProgress}{panelHeader}{this.button()}
+              </Card>
+              <Table size="middle" showHeader={false} columns={columns} pagination={false} dataSource={tableDatas} />
+            </Col>
+            <Col span={6}>
+              <Card bodyStyle={{ padding: 16 }} className="secondary-card with-card-footer">
+                <Row gutter={8}>
+                  <Col span="24">
+                    <InfoItem labelCol={{ span: 3 }} label="报关服务商"
+                      field={customsPanel.recv_name} fieldCol={{ span: 9 }}
+                    />
+                  </Col>
+                  <Col span="24">
+                    <InfoItem labelCol={{ span: 3 }} label="接单日期" fieldCol={{ span: 9 }}
+                      field={customsPanel.acpt_time
+                    && moment(customsPanel.acpt_time).format('YYYY.MM.DD')}
+                    />
+                  </Col>
+                  <Col span="24">
+                    <InfoItem labelCol={{ span: 3 }} label="制单人"
+                      field={customsPanel.recv_login_name} fieldCol={{ span: 9 }}
+                    />
+                  </Col>
+                </Row>
+                {(customsPanel.type === 1 || customsPanel.customs_tenant_id === -1) && <div className="card-footer">
+                  <div className="toolbar-right">
+                    <Tooltip title="分配制单人">
+                      <Button type="ghost" shape="circle" onClick={this.handleOperatorAssign}><Icon type="user" /></Button>
+                    </Tooltip>
+                  </div>
+                </div>}
+              </Card>
+            </Col>
+          </Row>
+        </Spin>
       </div>
     );
   }
