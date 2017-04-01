@@ -3,16 +3,16 @@ import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/cms/manifest/', [
-  'LOAD_DELGBILLS', 'LOAD_DELGBILLS_SUCCEED', 'LOAD_DELGBILLS_FAIL',
-  'LOAD_BILL', 'LOAD_BILL_SUCCEED', 'LOAD_BILL_FAIL',
-  'LOAD_BILL_BODY', 'LOAD_BILL_BODY_SUCCEED', 'LOAD_BILL_BODY_FAIL',
-  'LOAD_ENTRY', 'LOAD_ENTRY_SUCCEED', 'LOAD_ENTRY_FAIL',
+  'LOAD_DELG_MANIFEST', 'LOAD_DELG_MANIFEST_SUCCEED', 'LOAD_DELG_MANIFEST_FAIL',
+  'LOAD_MANIFEST', 'LOAD_MANIFEST_SUCCEED', 'LOAD_MANIFEST_FAIL',
+  'LOAD_MANIFEST_BODY', 'LOAD_MANIFEST_BODY_SUCCEED', 'LOAD_MANIFEST_BODY_FAIL',
+  'LOAD_CUSTOMS_DECL', 'LOAD_CUSTOMS_DECL_SUCCEED', 'LOAD_CUSTOMS_DECL_FAIL',
   'LOAD_PARAMS', 'LOAD_PARAMS_SUCCEED', 'LOAD_PARAMS_FAIL',
   'LOAD_SEARCHPARAM', 'LOAD_SEARCHPARAM_SUCCEED', 'LOAD_SEARCHPARAM_FAIL',
   'ADD_BILLBODY', 'ADD_BILLBODY_SUCCEED', 'ADD_BILLBODY_FAIL',
   'DEL_BILLBODY', 'DEL_BILLBODY_SUCCEED', 'DEL_BILLBODY_FAIL',
   'EDIT_BILLBODY', 'EDIT_BILLBODY_SUCCEED', 'EDIT_BILLBODY_FAIL',
-  'SAVE_BILLHEAD', 'SAVE_BILLHEAD_SUCCEED', 'SAVE_BILLHEAD_FAIL',
+  'SAVE_MANIFEST_HEAD', 'SAVE_MANIFEST_HEAD_SUCCEED', 'SAVE_MANIFEST_HEAD_FAIL',
   'OPEN_MS_MODAL', 'CLOSE_MS_MODAL',
   'SUBMIT_MERGESPLIT', 'SUBMIT_MERGESPLIT_SUCCEED', 'SUBMIT_MERGESPLIT_FAIL',
   'UPDATE_HEAD_NETWT', 'UPDATE_HEAD_NETWT_SUCCEED', 'UPDATE_HEAD_NETWT_FAIL',
@@ -37,6 +37,8 @@ const actionTypes = createActionTypes('@@welogix/cms/manifest/', [
 ]);
 
 const initialState = {
+  manifestLoading: false,
+  customsDeclLoading: false,
   delgBillList: {
     totalCount: 0,
     current: 1,
@@ -96,12 +98,16 @@ const initialState = {
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
-    case actionTypes.LOAD_DELGBILLS:
+    case actionTypes.LOAD_DELG_MANIFEST:
       return { ...state, delgBillList: { ...state.delgBillList, loading: true } };
-    case actionTypes.LOAD_DELGBILLS_SUCCEED:
+    case actionTypes.LOAD_DELG_MANIFEST_SUCCEED:
       return { ...state, delgBillList: { ...state.delgBillList, loading: false, ...action.result.data },
         listFilter: JSON.parse(action.params.filter), formRequire: action.result.data.formRequire };
-    case actionTypes.LOAD_BILL_SUCCEED: {
+    case actionTypes.LOAD_MANIFEST:
+      return { ...state, manifestLoading: true };
+    case actionTypes.LOAD_MANIFEST_FAILED:
+      return { ...state, manifestLoading: false };
+    case actionTypes.LOAD_MANIFEST_SUCCEED: {
       const ports = [...state.params.ports];
       const iePort = action.result.data.iePort;
       const destPort = action.result.data.destPort;
@@ -117,19 +123,24 @@ export default function reducer(state = initialState, action) {
         ...state, billHead: action.result.data.head, billMeta: action.result.data.meta,
         billBodies: action.result.data.hbodies, params: { ...state.params, ports },
         templates: action.result.data.templates, billRule: action.result.data.billRule,
+        manifestLoading: false,
       };
     }
     case actionTypes.DELETE_BILL_SUCCEED:
       return { ...state, billHead: action.result.data.head, billBodies: [], billMeta: { ...state.billMeta, entries: [] } };
     case actionTypes.CLEAN_HEAD_DATAS_SUCCEED:
       return { ...state, billHead: action.result.data.head };
-    case actionTypes.LOAD_BILL_BODY_SUCCEED:
+    case actionTypes.LOAD_MANIFEST_BODY_SUCCEED:
       return { ...state, billBodies: action.result.data };
     case actionTypes.UPDATE_HEAD_NETWT_SUCCEED:
       return { ...state, billHead: action.result.data };
-    case actionTypes.LOAD_ENTRY_SUCCEED:
+    case actionTypes.LOAD_CUSTOMS_DECL:
+      return { ...state, customsDeclLoading: true };
+    case actionTypes.LOAD_CUSTOMS_DECL_FAILED:
+      return { ...state, customsDeclLoading: false };
+    case actionTypes.LOAD_CUSTOMS_DECL_SUCCEED:
       return { ...state, entryHead: action.result.data.head, entryBodies: action.result.data.hbodies,
-        billMeta: action.result.data.meta };
+        billMeta: action.result.data.meta, customsDeclLoading: false };
     case actionTypes.LOAD_PARAMS_SUCCEED: {
       const retParams = action.result.data;
       const retPorts = retParams.ports;
@@ -159,7 +170,7 @@ export default function reducer(state = initialState, action) {
       }
       return { ...state, params: { ...state.params, ...retParam } };
     }
-    case actionTypes.SAVE_BILLHEAD_SUCCEED:
+    case actionTypes.SAVE_MANIFEST_HEAD_SUCCEED:
       return { ...state, billHead: action.result.data };
     case actionTypes.OPEN_MS_MODAL:
       return { ...state, visibleMSModal: true };
@@ -204,9 +215,9 @@ export function loadDelgBill(params) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.LOAD_DELGBILLS,
-        actionTypes.LOAD_DELGBILLS_SUCCEED,
-        actionTypes.LOAD_DELGBILLS_FAIL,
+        actionTypes.LOAD_DELG_MANIFEST,
+        actionTypes.LOAD_DELG_MANIFEST_SUCCEED,
+        actionTypes.LOAD_DELG_MANIFEST_FAIL,
       ],
       endpoint: 'v1/cms/manifest/delgBill',
       method: 'get',
@@ -361,9 +372,9 @@ export function loadBill(billSeqNo, tenantId, ieType) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.LOAD_BILL,
-        actionTypes.LOAD_BILL_SUCCEED,
-        actionTypes.LOAD_BILL_FAIL,
+        actionTypes.LOAD_MANIFEST,
+        actionTypes.LOAD_MANIFEST_SUCCEED,
+        actionTypes.LOAD_MANIFEST_FAIL,
       ],
       endpoint: 'v1/cms/manifest/bill',
       method: 'get',
@@ -376,9 +387,9 @@ export function loadBillBody(billSeqNo) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.LOAD_BILL_BODY,
-        actionTypes.LOAD_BILL_BODY_SUCCEED,
-        actionTypes.LOAD_BILL_BODY_FAIL,
+        actionTypes.LOAD_MANIFEST_BODY,
+        actionTypes.LOAD_MANIFEST_BODY_SUCCEED,
+        actionTypes.LOAD_MANIFEST_BODY_FAIL,
       ],
       endpoint: 'v1/cms/manifest/bill/body',
       method: 'get',
@@ -391,9 +402,9 @@ export function loadEntry(billSeqNo, preEntrySeqNo, tenantId) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.LOAD_ENTRY,
-        actionTypes.LOAD_ENTRY_SUCCEED,
-        actionTypes.LOAD_ENTRY_FAIL,
+        actionTypes.LOAD_CUSTOMS_DECL,
+        actionTypes.LOAD_CUSTOMS_DECL_SUCCEED,
+        actionTypes.LOAD_CUSTOMS_DECL_FAIL,
       ],
       endpoint: 'v1/cms/manifest/entry',
       method: 'get',
@@ -481,9 +492,9 @@ export function saveBillHead({ head, ietype, loginId, tenantId }) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.SAVE_BILLHEAD,
-        actionTypes.SAVE_BILLHEAD_SUCCEED,
-        actionTypes.SAVE_BILLHEAD_FAIL,
+        actionTypes.SAVE_MANIFEST_HEAD,
+        actionTypes.SAVE_MANIFEST_HEAD_SUCCEED,
+        actionTypes.SAVE_MANIFEST_HEAD_FAIL,
       ],
       endpoint: 'v1/cms/manifest/billhead',
       method: 'post',

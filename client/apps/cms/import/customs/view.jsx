@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
+import { Spin } from 'antd';
+import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import { loadEntry, loadCmsParams } from 'common/reducers/cmsManifest';
@@ -13,11 +15,19 @@ function fetchData({ dispatch, params, state }) {
   })));
   return Promise.all(promises);
 }
-
+@connect(
+  state => ({
+    customsDeclSpinning: state.cmsManifest.customsDeclLoading,
+  }),
+  { }
+)
 @connectFetch()(fetchData)
 @withPrivilege({ module: 'clearance', feature: 'import' })
 export default class ImportCustomsDeclView extends React.Component {
+  static propTypes = {
+    customsDeclSpinning: PropTypes.bool.isRequired,
+  }
   render() {
-    return <CustomsDeclEditor ietype="import" readonly />;
+    return <Spin spinning={this.props.customsDeclSpinning}><CustomsDeclEditor ietype="import" readonly /></Spin>;
   }
 }
