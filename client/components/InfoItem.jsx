@@ -25,8 +25,8 @@ export default class InfoItem extends React.Component {
     overlay: PropTypes.object,
     labelCol: PropTypes.object,
     fieldCol: PropTypes.object,
-    prefix: PropTypes.node,
-    suffix: PropTypes.node,
+    addonBefore: PropTypes.node,
+    addonAfter: PropTypes.node,
     editable: PropTypes.bool,
     type: PropTypes.string,
     placeholder: PropTypes.string,
@@ -69,23 +69,26 @@ export default class InfoItem extends React.Component {
     const { type, field, placeholder, editable, overlay, onEdit } = this.props;
     if (editable) {
       if (type === 'dropdown') {
-        return (<Dropdown overlay={overlay}>
-          <a className="ant-dropdown-link">
-            {(field && field.length > 0) ? field : placeholder } <Icon type="down" />
-          </a>
-        </Dropdown>);
+        return (<span>{this.renderAddonBefore()}
+          <Dropdown overlay={overlay} trigger={['click']}>
+            <span>
+              {(field && field.length > 0) ? field : placeholder } <Icon type="down" />
+            </span>
+          </Dropdown>
+          {this.renderAddonAfter()}
+        </span>);
       }
-      return (<EditableCell type={type} value={field} placeholder={placeholder} onChange={onEdit} />);
+      return (<EditableCell type={type} value={field} addonBefore={this.renderAddonBefore()} addonAfter={this.renderAddonAfter()} placeholder={placeholder} onChange={onEdit} />);
     }
-    return field;
+    return <span>{this.renderAddonBefore()}{field}{this.renderAddonAfter()}</span>;
   }
-  renderPrefix() {
-    const { prefixCls, prefix } = this.props;
-    return prefix ? (<span className={`${prefixCls}-prefix`}>{prefix}</span>) : null;
+  renderAddonBefore() {
+    const { prefixCls, addonBefore } = this.props;
+    return addonBefore ? (<span className={`${prefixCls}-addon-before`}>{addonBefore}</span>) : null;
   }
-  renderSuffix() {
-    const { prefixCls, field, suffix } = this.props;
-    return (field && field.length > 0 && suffix) ? (<span className={`${prefixCls}-suffix`}>{suffix}</span>) : null;
+  renderAddonAfter() {
+    const { prefixCls, field, addonAfter } = this.props;
+    return ((field && (field.length > 0 || field !== 0)) && addonAfter) ? (<span className={`${prefixCls}-addon-after`}>{addonAfter}</span>) : null;
   }
 
   render() {
@@ -94,7 +97,7 @@ export default class InfoItem extends React.Component {
     return (
       <Row className={prefixCls}>
         {this.renderLabel()}
-        <div className={fieldCls}>{this.renderPrefix()}{this.renderField()}{this.renderSuffix()}</div>
+        <div className={fieldCls}>{this.renderField()}</div>
       </Row>
     );
   }

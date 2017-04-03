@@ -4,7 +4,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Spin, Badge, Button, Card, Col, Icon, Progress, Row, Table, Tag, Steps, message } from 'antd';
 import moment from 'moment';
 import { CMS_DELEGATION_STATUS, CMS_DECL_STATUS } from 'common/constants';
-import { openAcceptModal, ensureManifestMeta } from 'common/reducers/cmsDelegation';
+import { openAcceptModal, ensureManifestMeta, loadDelgOperators } from 'common/reducers/cmsDelegation';
 import { loadCustPanel } from 'common/reducers/cmsDelgInfoHub';
 import InfoItem from 'client/components/InfoItem';
 
@@ -20,7 +20,7 @@ const Step = Steps.Step;
     customsSpinning: state.cmsDelgInfoHub.customsPanelLoading,
     delegation: state.cmsDelgInfoHub.previewer.delegation,
   }),
-  { loadCustPanel, openAcceptModal, ensureManifestMeta }
+  { loadCustPanel, openAcceptModal, ensureManifestMeta, loadDelgOperators }
 )
 export default class CustomsDeclPane extends React.Component {
   static propTypes = {
@@ -85,7 +85,7 @@ export default class CustomsDeclPane extends React.Component {
       opt: 'operator',
     });
   }
-  renderButton() {
+  renderManifestAction() {
     const { customsPanel } = this.props;
     const bill = customsPanel.bill;
     if (customsPanel.recv_tenant_id === customsPanel.customs_tenant_id || customsPanel.customs_tenant_id === -1) {
@@ -181,23 +181,22 @@ export default class CustomsDeclPane extends React.Component {
         </Card>);
       },
     }];
-    const assignee = (customsPanel.type === 1 || customsPanel.customs_tenant_id === -1) ?
-      <a onClick={this.handleOperatorAssign}>{customsPanel.recv_login_name}</a> :
-      <span>{customsPanel.recv_login_name}</span>;
+    const assignable = (customsPanel.type === 1 || customsPanel.customs_tenant_id === -1);
+    // const assigneeOptions = this.state.data.map(d => <Option key={d.value}>{d.text}</Option>);
     return (
       <div className="pane-content tab-pane">
         <Spin spinning={customsSpinning}>
           <Row gutter={16}>
             <Col span={18} className="table-list">
-              <Card title={manifestProgress} extra={this.renderButton()} bodyStyle={{ padding: 16 }}>
+              <Card title={manifestProgress} extra={this.renderManifestAction()} bodyStyle={{ padding: 16 }}>
                 <Row gutter={8}>
                   <Col span="6">
-                    <InfoItem editable label="制单人" prefix={<Icon type="user" />}
-                      field={assignee}
+                    <InfoItem type="select" label="制单人" placeholder="分配制单人" addonBefore={<Icon type="user" />}
+                      field={customsPanel.recv_login_name} editable={assignable}
                     />
                   </Col>
                   <Col span="6">
-                    <InfoItem label="制单日期" prefix={<Icon type="calendar" />}
+                    <InfoItem label="制单日期" addonBefore={<Icon type="calendar" />}
                       field={customsPanel.acpt_time
                     && moment(customsPanel.acpt_time).format('YYYY.MM.DD')}
                     />

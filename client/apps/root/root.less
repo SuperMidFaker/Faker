@@ -1061,11 +1061,11 @@ img {
       color: @link-hover-color;
     }
   }
-  &-prefix {
+  &-addon-before {
     color: @text-color-secondary;
     margin-right: 4px;
   }
-  &-suffix {
+  &-addon-after {
     color: @text-color-secondary;
     font-size: 12px;
     margin-left: 4px;
@@ -1144,7 +1144,8 @@ img {
 
 .editable-cell {
   position: relative;
-  .ant-input {
+  .ant-input,
+  .ant-select {
     font-size: 14px;
   }
 }
@@ -1168,8 +1169,11 @@ img {
   display: none;
 }
 
-.editable-cell-icon-check {
-  line-height: 28px;
+.editable-cell-icon-save {
+  color: @primary-color;
+}
+.editable-cell-icon-close {
+  color: @error-color;
 }
 
 .editable-cell:hover .editable-cell-icon,
