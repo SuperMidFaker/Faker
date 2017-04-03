@@ -1,7 +1,7 @@
 /* eslint react/no-multi-comp: 0 */
 import React, { PropTypes } from 'react';
 import { intlShape } from 'react-intl';
-import { Row, Col, Form, Input, Select, Tooltip } from 'antd';
+import { Row, Col, Form, Input, Select } from 'antd';
 import FormInput from './formInput';
 import { FormLocalSearchSelect, FormRemoteSearchSelect } from './formSelect';
 import FormDatePicker from './formDatePicker';
@@ -143,7 +143,7 @@ export class RelationAutoCompSelect extends React.Component {
     const compOpt = options.filter(op => op.code !== null && op.code.length > 0);
     return (
       <FormItem labelCol={{ span: 4 }} wrapperCol={{ span: 20 }} label={label} required>
-        <Row gutter={8}>
+        <Row gutter={4}>
           <Col span="6">
             <FormItem style={{ marginBottom: 0 }}>
               {disabled ?
@@ -155,14 +155,15 @@ export class RelationAutoCompSelect extends React.Component {
                   })(<Select
                     size="large"
                     mode="combobox"
-                    showArrow={false}
                     allowClear
                     optionFilterProp="search"
                     placeholder={this.msg('customsCode')}
                     onSelect={this.handleSelect}
+                    dropdownMatchSelectWidth={false}
+                    dropdownStyle={{ width: 360 }}
                   >
                     {
-                    custOpt.map(opt => <Option key={opt.custcode} search={opt.custcode}><Tooltip placement="right" title={opt.name}>{opt.custcode}|{opt.name}</Tooltip></Option>)
+                    custOpt.map(opt => <Option key={opt.custcode} search={opt.custcode}>{opt.custcode} | {opt.name}</Option>)
                   }
                   </Select>)}
             </FormItem>
@@ -177,14 +178,15 @@ export class RelationAutoCompSelect extends React.Component {
                   })(<Select
                     size="large"
                     mode="combobox"
-                    showArrow={false}
                     allowClear
                     optionFilterProp="search"
                     placeholder={this.msg('scc')}
                     onSelect={this.handleSelect}
+                    dropdownMatchSelectWidth={false}
+                    dropdownStyle={{ width: 360 }}
                   >
                     {
-                    compOpt.map(opt => <Option key={opt.code} search={opt.code}><Tooltip placement="right" title={opt.name}>{opt.code}|{opt.name}</Tooltip></Option>)
+                    compOpt.map(opt => <Option key={opt.code} search={opt.code}>{opt.code} | {opt.name}</Option>)
                   }
                   </Select>)}
             </FormItem>
@@ -664,8 +666,8 @@ function FeeFormItem(props) {
   };
   return (
     <FormItem labelCol={{ span: 4 }} wrapperCol={{ span: 20 }} label={label}>
-      <Row>
-        <Col span={10} style={{ paddingLeft: 2 }}>
+      <Row gutter={4}>
+        <Col span={10}>
           <FormLocalSearchSelect {...currencyProps} placeholder="币制" style={{ marginBottom: 0 }} />
         </Col>
         <Col span={6}>
