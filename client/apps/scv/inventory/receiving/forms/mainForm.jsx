@@ -50,7 +50,7 @@ export default class MainForm extends Component {
               <FormItem label={this.msg('warehouse')}>
                 {getFieldDecorator('whse_code', {
                 })(
-                  <Select combobox
+                  <Select mode="combobox"
                     optionFilterProp="search"
                     placeholder="选择仓库"
                   >

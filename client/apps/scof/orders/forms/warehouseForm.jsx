@@ -228,7 +228,7 @@ export default class WarehouseForm extends Component {
           <Col sm={24}>
             <FormItem label="发货方">
               <Col span="6" style={{ paddingRight: 8 }}>
-                <Select allowClear size="large" combobox showArrow value={node.consigner_id} optionLabelProp="children"
+                <Select allowClear size="large" mode="combobox" showArrow value={node.consigner_id} optionLabelProp="children"
                   onChange={value => this.handleConsignChange('consigner_name', value)}
                   onSelect={value => this.handleConsignSelect('consigner_name', value)}
                 >
@@ -274,7 +274,7 @@ export default class WarehouseForm extends Component {
           <Col sm={24}>
             <FormItem label="收货方">
               <Col span="6" style={{ paddingRight: 8 }}>
-                <Select allowClear size="large" combobox showArrow value={node.consignee_id} optionLabelProp="children"
+                <Select allowClear size="large" mode="combobox" showArrow value={node.consignee_id} optionLabelProp="children"
                   onChange={value => this.handleConsignChange('consignee_name', value)}
                   onSelect={value => this.handleConsignSelect('consignee_name', value)}
                 >

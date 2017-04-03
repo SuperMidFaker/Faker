@@ -337,7 +337,7 @@ export default class DelegationInfoHubPanel extends React.Component {
                   />
                 </Col>
                 <Col span="4">
-                  <InfoItem label="委托日期"
+                  <InfoItem label="委托日期" prefix={<Icon type="calendar" />}
                     field={moment(delgDispatch.delg_time).format('YYYY.MM.DD')}
                   />
                 </Col>

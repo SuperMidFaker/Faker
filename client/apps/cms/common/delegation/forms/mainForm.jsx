@@ -124,7 +124,7 @@ export default class MainForm extends Component {
                   getValueFromEvent: this.handleClientChange,
                   initialValue: fieldInits.customer_name,
                 })(
-                  <Select size="large" combobox showArrow={false} optionFilterProp="search"
+                  <Select size="large" mode="combobox" showArrow={false} optionFilterProp="search"
                     placeholder="输入客户代码或名称"
                   >
                     {

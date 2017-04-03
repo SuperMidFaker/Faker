@@ -101,7 +101,7 @@ export default class MergeSplitForm extends React.Component {
                   {getFieldDecorator('split_spl_category', {
                     rules: [{ type: 'array' }],
                     initialValue: formData.specialHsSortArr,
-                  })(<Select multiple style={{ width: '100%' }} >
+                  })(<Select mode="multiple" style={{ width: '100%' }} >
                     {hscodeCategories.map(ct =>
                       <Option value={ct.id} key={ct.id}>{ct.name}</Option>)}
                   </Select>)}

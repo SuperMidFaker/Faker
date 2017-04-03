@@ -55,7 +55,7 @@ export default class MainForm extends Component {
               <FormItem label={this.msg('productNo')}>
                 {getFieldDecorator('product_no', {
                 })(
-                  <Select combobox
+                  <Select mode="combobox"
                     optionFilterProp="search"
                   >
                     <Option value="B10EW">Ballo Green Dome Standard</Option>
@@ -69,7 +69,7 @@ export default class MainForm extends Component {
               <FormItem label={this.msg('category')}>
                 {getFieldDecorator('product_category', {
                 })(
-                  <Select combobox
+                  <Select mode="combobox"
                     optionFilterProp="search"
                     placeholder="选择产品分类"
                   >

@@ -25,7 +25,7 @@ export default class SiderForm extends Component {
             <FormItem label={this.msg('visibleWarehouses')}>
               {getFieldDecorator('owner_code', {
               })(
-                <Select multiple
+                <Select mode="multiple"
                   optionFilterProp="search"
                   placeholder="选择可见仓库"
                 >

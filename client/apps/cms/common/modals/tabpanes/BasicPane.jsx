@@ -1,8 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Row, Col, Card } from 'antd';
-import moment from 'moment';
+import { Button, Row, Menu, Col, Card } from 'antd';
 import downloadMultiple from 'client/util/multipleDownloader';
 import { GOODSTYPES, TRANS_MODE, CLAIM_DO_AWB } from 'common/constants';
 import InfoItem from 'client/components/InfoItem';
@@ -63,7 +62,7 @@ export default class BasicPane extends React.Component {
     downloadMultiple(this.files);
   }
   render() {
-    const { delegation, delgDispatch } = this.props;
+    const { delegation } = this.props;
     let img = '';
     const filenames = this.state.sortedFiles.map((fl, index) => {
       if (fl.type === 'doc') {
@@ -107,80 +106,68 @@ export default class BasicPane extends React.Component {
       <div className="pane-content tab-pane">
         <Card bodyStyle={{ padding: 16 }}>
           <Row>
-            <Col span="16">
-              <InfoItem labelCol={{ span: 3 }} label="委托方"
-                field={delgDispatch.send_name} fieldCol={{ span: 9 }}
+            <Col span="8">
+              <InfoItem label="订单号"
+                field={delegation.order_no} placeholder="添加订单号" editable
               />
             </Col>
             <Col span="8">
-              <InfoItem labelCol={{ span: 3 }} label="委托日期" fieldCol={{ span: 9 }}
-                field={moment(delgDispatch.delg_time).format('YYYY.MM.DD HH:mm')}
-              />
-            </Col>
-          </Row>
-          <Row>
-            <Col span="8">
-              <InfoItem labelCol={{ span: 3 }} label="客户订单号"
-                field={delegation.order_no} fieldCol={{ span: 9 }}
+              <InfoItem label="发票号"
+                field={delegation.invoice_no} placeholder="添加发票号" editable
               />
             </Col>
             <Col span="8">
-              <InfoItem labelCol={{ span: 3 }} label="发票号"
-                field={delegation.invoice_no} fieldCol={{ span: 9 }}
-              />
-            </Col>
-            <Col span="8">
-              <InfoItem labelCol={{ span: 3 }} label="外部编号"
-                field={delegation.ref_external_no}
-                fieldCol={{ span: 9 }}
+              <InfoItem label="合同号"
+                field={delegation.contract_no} placeholder="添加合同号" editable
               />
             </Col>
           </Row>
           <Row>
             <Col span="8">
-              <InfoItem labelCol={{ span: 3 }} label="运输方式"
-                field={tms.length > 0 ? tms[0].text : ''} fieldCol={{ span: 9 }}
+              <InfoItem label="运输方式"
+                field={tms.length > 0 ? tms[0].text : ''}
               />
             </Col>
             <Col span="8">
-              <InfoItem labelCol={{ span: 3 }} label="提运单号"
-                field={delegation.bl_wb_no} fieldCol={{ span: 9 }}
+              <InfoItem label="提运单号"
+                field={delegation.bl_wb_no}
               />
             </Col>
             <Col span="8">
-              <InfoItem labelCol={{ span: 3 }} label="船名航次"
-                field={delegation.voyage_no} fieldCol={{ span: 9 }}
-              />
-            </Col>
-          </Row>
-          <Row>
-            <Col span="8">
-              <InfoItem labelCol={{ span: 3 }} label="货物类型"
-                field={goods.length > 0 ? goods[0].text : ''} fieldCol={{ span: 9 }}
-              />
-            </Col>
-            <Col span="8">
-              <InfoItem labelCol={{ span: 3 }} label="总件数"
-                field={`${delegation.pieces} 件`} fieldCol={{ span: 9 }}
-              />
-            </Col>
-            <Col span="8">
-              <InfoItem labelCol={{ span: 3 }} label="总重量"
-                field={`${delegation.weight ? delegation.weight : ''} 千克`} fieldCol={{ span: 9 }}
+              <InfoItem label="运输工具名称"
+                field={delegation.traf_name}
               />
             </Col>
           </Row>
           <Row>
             <Col span="8">
-              <InfoItem labelCol={{ span: 3 }} label="是否抽/换单"
-                field={doAwbText} fieldCol={{ span: 9 }}
+              <InfoItem type="dropdown" label="货物类型"
+                field={goods.length > 0 ? goods[0].text : ''} placeholder="选择货物类型" editable overlay={<Menu>
+                  <Menu.Item>Menu</Menu.Item>
+
+                </Menu>
+                }
+              />
+            </Col>
+            <Col span="8">
+              <InfoItem label="总件数"
+                field={delegation.pieces} suffix="件"
+              />
+            </Col>
+            <Col span="8">
+              <InfoItem label="总重量"
+                field={delegation.weight} suffix="千克"
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col span="8">
+              <InfoItem label="是否抽/换单"
+                field={doAwbText}
               />
             </Col>
             <Col span="16">
-              <InfoItem labelCol={{ span: 3 }} label="备注"
-                field={delegation.remark}
-                fieldCol={{ span: 9 }}
-              />
+              <InfoItem type="textarea" label="备注" field={delegation.remark} placeholder="添加备注" editable />
             </Col>
           </Row>
         </Card>

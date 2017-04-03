@@ -927,7 +927,7 @@ img {
       position: relative;
       overflow: hidden;
       z-index: 2;
-      padding: 8px 16px;
+      padding: 8px 16px 0;
       background: #fff;
       box-shadow: 0 1px 3px rgba(0,0,0,0.2);
       -moz-box-shadow: 0 1px 3px rgba(0,0,0,0.2);
@@ -1021,12 +1021,13 @@ img {
   height: auto;
   width: 100%;
   display: block;
-  color: #5a5a5a;
+  color: @text-color;
+  margin-bottom: 8px;
   &:before {
     content: " ";
     display: table;
   }
-  .info-label {
+  &-label {
     text-align: right;
     vertical-align: middle;
     line-height: 24px;
@@ -1036,7 +1037,7 @@ img {
     white-space: nowrap;
     color: #919191;
   }
-  .info-data {
+  &-field {
     min-height: 32px;
     font-size: 14px;
     vertical-align: middle;
@@ -1044,13 +1045,29 @@ img {
     white-space: nowrap;
     text-overflow: ellipsis;
     line-height: 32px;
+    >a {
+      color: @text-color;
+    }
+    >a:hover {
+      color: @link-hover-color;
+    }
   }
-  .info-item-prefix {
-    color: #bfbfbf;
+  &-placeholder {
+    color: @disabled-color;
+    >a {
+      color: @disabled-color;
+    }
+    >a:hover {
+      color: @link-hover-color;
+    }
+  }
+  &-prefix {
+    color: @text-color-secondary;
     margin-right: 4px;
   }
-  .info-item-suffix {
-    color: #bfbfbf;
+  &-suffix {
+    color: @text-color-secondary;
+    font-size: 12px;
     margin-left: 4px;
   }
 }
@@ -1122,5 +1139,58 @@ img {
   .ant-table-row:hover,
   .ant-table-tbody > tr:hover {
     background: transparent;
+  }
+}
+
+.editable-cell {
+  position: relative;
+  .ant-input {
+    font-size: 14px;
+  }
+}
+
+.editable-cell-input-wrapper,
+.editable-cell-text-wrapper {
+  padding-right: 24px;
+}
+
+.editable-cell-icon,
+.editable-cell-icon-check {
+  position: absolute;
+  top: 8px;
+  right: 16px;
+  width: 24px;
+  cursor: pointer;
+}
+
+.editable-cell-icon {
+  line-height: 18px;
+  display: none;
+}
+
+.editable-cell-icon-check {
+  line-height: 28px;
+}
+
+.editable-cell:hover .editable-cell-icon,
+.editable-cell:hover .editable-cell-icon-check {
+  display: inline-block;
+}
+
+.editable-cell-icon:hover,
+.editable-cell-icon-check:hover {
+  color: #108ee9;
+}
+
+.editable-add-btn {
+  margin-bottom: 8px;
+}
+.editable-cell-placeholder {
+  color: @disabled-color;
+  >a {
+    color: @disabled-color;
+  }
+  >a:hover {
+    color: @link-hover-color;
   }
 }

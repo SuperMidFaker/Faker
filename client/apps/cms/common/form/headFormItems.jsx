@@ -154,7 +154,7 @@ export class RelationAutoCompSelect extends React.Component {
                     onChange: this.handleInputChange,
                   })(<Select
                     size="large"
-                    combobox
+                    mode="combobox"
                     showArrow={false}
                     allowClear
                     optionFilterProp="search"
@@ -176,7 +176,7 @@ export class RelationAutoCompSelect extends React.Component {
                     onChange: this.handleInputChange,
                   })(<Select
                     size="large"
-                    combobox
+                    mode="combobox"
                     showArrow={false}
                     allowClear
                     optionFilterProp="search"

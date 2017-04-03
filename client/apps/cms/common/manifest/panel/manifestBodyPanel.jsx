@@ -77,7 +77,7 @@ function ColumnSearchSelect(props) {
   }
   if (inEdit) {
     return (
-      <Select combobox optionFilterProp="search" value={edit[field] || ''} onChange={handleChange} style={{ width: '100%' }}>
+      <Select mode="combobox" optionFilterProp="search" value={edit[field] || ''} onChange={handleChange} style={{ width: '100%' }}>
         {
           options.map((opt, idx) => <Option search={`${opt.search}`} value={opt.value} key={`${opt.value}${idx}`}>{opt.text}</Option>)
         }

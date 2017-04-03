@@ -52,7 +52,7 @@ export default class AutoCompletionSelectItem extends React.Component {
       >
         {getFieldDecorator(field, { onChange, rules, initialValue: initialValue || '',
           getValueFromEvent })(<Select
-            combobox
+            mode="combobox"
             filterOption={this.getComboFilter}
             placeholder={placeholder}
             onSelect={this.handleComboSelect}

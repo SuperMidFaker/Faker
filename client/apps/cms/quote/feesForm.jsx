@@ -103,7 +103,7 @@ export default class FeesForm extends Component {
                 rules: [{ type: 'array' }],
                 initialValue: fieldInits.decl_way_code,
               })(
-                <Select multiple style={{ width: '100%' }} disabled={readOnly} >
+                <Select mode="multiple" style={{ width: '100%' }} disabled={readOnly} >
                   {
                     DECL_TYPE.map(dw =>
                       <Option value={dw.key} key={dw.key}>{dw.value}</Option>
@@ -119,7 +119,7 @@ export default class FeesForm extends Component {
                 rules: [{ type: 'array' }],
                 initialValue: fieldInits.trans_mode,
               })(
-                <Select multiple style={{ width: '100%' }} disabled={readOnly} >
+                <Select mode="multiple" style={{ width: '100%' }} disabled={readOnly} >
                   {
                     TRANS_MODE.map(tr =>
                       <Option value={tr.value} key={tr.value}>{tr.text}</Option>
