@@ -120,7 +120,7 @@ export default class ManifestHeadPanel extends React.Component {
               </Button>}
             {!readonly &&
               <Popconfirm title={'是否确认重置表头数据?'} onConfirm={() => this.handleBillHeadDelete()}>
-                <Button type="danger" ghost icon="delete">重置</Button>
+                <Button icon="reload">重置</Button>
               </Popconfirm>}
           </div>
         </div>
@@ -211,13 +211,15 @@ export default class ManifestHeadPanel extends React.Component {
                 </Col>
               </Row>
             </Card>
-            <Row>
-              <TermConfirm {...formProps} intl={intl} formRequire={formRequire} />
-            </Row>
-            <Row>
-              <RaDeclManulNo {...formProps} intl={intl} formRequire={formRequire} />
-              <StoreYard {...formProps} intl={intl} formRequire={formRequire} />
-            </Row>
+            <Card>
+              <Row>
+                <TermConfirm {...formProps} intl={intl} formRequire={formRequire} />
+              </Row>
+              <Row>
+                <RaDeclManulNo {...formProps} intl={intl} formRequire={formRequire} />
+                <StoreYard {...formProps} intl={intl} formRequire={formRequire} />
+              </Row>
+            </Card>
           </Form>
         </div>
       </div>

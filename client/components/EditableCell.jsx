@@ -53,7 +53,7 @@ export default class EditableCell extends React.Component {
             showSearch
             placeholder={placeholder}
             defaultValue={value}
-            style={{ width: '100%', marginRight: 40 }}
+            style={{ width: '90%' }}
           >
             {options}
           </Select>

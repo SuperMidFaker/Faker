@@ -18,6 +18,8 @@ const actionTypes = createActionTypes('@@welogix/scof/flow/', [
 ]);
 
 const initialState = {
+  listCollapsed: false,
+  graphLoading: false,
   visibleFlowModal: false,
   visibleTriggerModal: false,
   triggerModal: {
@@ -87,8 +89,12 @@ export default function reducer(state = initialState, action) {
       return { ...state, flowListLoading: false, reloadFlowList: false, flowList: action.result.data };
     case actionTypes.OPEN_FLOW:
       return { ...state, currentFlow: action.data };
+    case actionTypes.LOAD_GRAPH:
+      return { ...state, graphLoading: true };
     case actionTypes.LOAD_GRAPH_SUCCEED:
-      return { ...state, flowGraph: action.result.data };
+      return { ...state, flowGraph: action.result.data, graphLoading: false };
+    case actionTypes.LOAD_GRAPH_FAIL:
+      return { ...state, graphLoading: false };
     case actionTypes.SET_NODE_ACTIONS:
       return { ...state, nodeActions: action.data };
     case actionTypes.LOAD_PTFLOWLIST_SUCCEED:

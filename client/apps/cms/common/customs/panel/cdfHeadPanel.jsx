@@ -144,13 +144,15 @@ export default class CDFHeadPanel extends React.Component {
                 </Col>
               </Row>
             </Card>
-            <Row>
-              <TermConfirm {...formProps} intl={intl} formRequire={formRequire} />
-            </Row>
-            <Row>
-              <RaDeclManulNo {...formProps} intl={intl} formRequire={formRequire} />
-              <StoreYard {...formProps} intl={intl} formRequire={formRequire} />
-            </Row>
+            <Card>
+              <Row>
+                <TermConfirm {...formProps} intl={intl} formRequire={formRequire} />
+              </Row>
+              <Row>
+                <RaDeclManulNo {...formProps} intl={intl} formRequire={formRequire} />
+                <StoreYard {...formProps} intl={intl} formRequire={formRequire} />
+              </Row>
+            </Card>
           </Form>
         </div>
       </div>

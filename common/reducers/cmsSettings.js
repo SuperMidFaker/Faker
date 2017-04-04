@@ -16,6 +16,7 @@ const actionTypes = createActionTypes('@@welogix/cms/settings/', [
 ]);
 
 const initialState = {
+  templateValLoading: false,
   template: {},
   billtemplates: [],
   billTemplateModal: {
@@ -50,6 +51,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, visibleAddModal: false };
     case actionTypes.LOAD_RELATED_CUSTOMERS_SUCCEED:
       return { ...state, relatedCustomers: action.result.data };
+    case actionTypes.LOAD_FORM_VALS:
+      return { ...state, templateValLoading: true };
     case actionTypes.LOAD_FORM_VALS_SUCCEED: {
       const retData = action.result.data.template;
       if (retData.i_e_type === 0) {
@@ -58,8 +61,10 @@ export default function reducer(state = initialState, action) {
         retData.ietype = 'export';
       }
       return { ...state, template: { ...state.template, ...retData }, relatedCustomers: action.result.data.customers,
-        formData: action.result.data.formData };
+        formData: action.result.data.formData, templateValLoading: false };
     }
+    case actionTypes.LOAD_FORM_VALS_FAIL:
+      return { ...state, templateValLoading: false };
     default:
       return state;
   }

@@ -20,11 +20,11 @@ const messages = defineMessages({
   },
   addFlowNode: {
     id: 'scof.flow.node.add',
-    defaultMessage: '添加流程节点',
+    defaultMessage: '添加节点',
   },
   addFlowEdge: {
     id: 'scof.flow.edge.add',
-    defaultMessage: '添加节点边界',
+    defaultMessage: '添加边界',
   },
   flowEdge: {
     id: 'scof.flow.graph.edge',
@@ -64,7 +64,7 @@ const messages = defineMessages({
   },
   saveFlow: {
     id: 'scof.flow.graph.save',
-    defaultMessage: '保存流程',
+    defaultMessage: '保存',
   },
   bizObject: {
     id: 'scof.flow.biz.object',

@@ -2,7 +2,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Card, Menu, Dropdown, Icon, Layout } from 'antd';
+import { Breadcrumb, Button, Card, Menu, Dropdown, Icon, Layout, Spin, message } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import { loadFlowGraph, loadFlowGraphItem, saveFlowGraph, setNodeActions } from 'common/reducers/scofFlow';
 import { uuidWithoutDash } from 'client/common/uuid';
@@ -21,6 +21,7 @@ const MenuItem = Menu.Item;
     tenantId: state.account.tenantId,
     flowGraph: state.scofFlow.flowGraph,
     submitting: state.scofFlow.submitting,
+    graphLoading: state.scofFlow.graphLoading,
   }),
   { loadFlowGraph, loadFlowGraphItem, saveFlowGraph, setNodeActions }
 )
@@ -29,6 +30,7 @@ export default class FlowDesigner extends React.Component {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     submitting: PropTypes.bool,
+    graphLoading: PropTypes.bool.isRequired,
     listCollapsed: PropTypes.bool.isRequired,
     currentFlow: PropTypes.shape({ id: PropTypes.number.isRequired, name: PropTypes.string.isRequired }).isRequired,
   }
@@ -315,6 +317,9 @@ export default class FlowDesigner extends React.Component {
       if (!result.error) {
         this.props.loadFlowGraph(this.props.currentFlow.id);
         this.setState({ activeItem: null });
+        message.success('保存成功');
+      } else {
+        message.error('保存失败', 5);
       }
     });
   }
@@ -345,44 +350,46 @@ export default class FlowDesigner extends React.Component {
             </div>
           </Header>
           <Content className="main-content layout-min-width layout-min-width-large">
-            <Card title={this.msg('flowRelationGraph')} bodyStyle={{ padding: 0, height: 240 }}
-              extra={<div className="toolbar-right">
-                <Dropdown overlay={this.menu}>
-                  <Button icon="plus-square-o" >
-                    {this.msg('addFlowNode')} <Icon type="down" />
+            <Spin spinning={this.props.graphLoading}>
+              <Card title={this.msg('flowRelationGraph')} bodyStyle={{ padding: 0, height: 240 }}
+                extra={<div className="toolbar-right">
+                  <Dropdown overlay={this.menu}>
+                    <Button icon="plus-square-o" >
+                      {this.msg('addFlowNode')} <Icon type="down" />
+                    </Button>
+                  </Dropdown>
+                  <Button icon="swap-right" onClick={this.handleAddEdge}>
+                    {this.msg('addFlowEdge')}
                   </Button>
-                </Dropdown>
-                <Button icon="swap-right" onClick={this.handleAddEdge}>
-                  {this.msg('addFlowEdge')}
-                </Button>
-                <Button icon="delete" onClick={this.handleRemoveItem} />
-              </div>}
-            >
-              <div id="flowchart" />
-            </Card>
-            {activeItem &&
-              <QueueAnim animConfig={[
-                { opacity: [1, 0], translateY: [0, 50] },
-                { opacity: [1, 0], translateY: [0, -50] },
-              ]}
+                  <Button icon="delete" onClick={this.handleRemoveItem} />
+                </div>}
               >
-                {activeItem.get('type') === 'node' && (activeItem.get('model').kind === 'import' || activeItem.get('model').kind === 'export') &&
-                <BizObjCMSPanel onFormInit={this.handlePanelForm} model={activeItem.get('model')} onNodeActionsChange={this.handleNodeActionsChange} key="cms" />
-                }
-                {activeItem.get('type') === 'node' && (activeItem.get('model').kind === 'tms') &&
-                <BizObjTMSPanel onFormInit={this.handlePanelForm} model={activeItem.get('model')} onNodeActionsChange={this.handleNodeActionsChange} key="tms" />
-                }
-                {activeItem.get('type') === 'node' && (activeItem.get('model').kind === 'cwm') &&
-                <BizObjCWMPanel onFormInit={this.handlePanelForm} model={activeItem.get('model')} onNodeActionsChange={this.handleNodeActionsChange} key="cwm" />
-                }
-                {activeItem.get('type') === 'edge' &&
-                  <FlowEdgePanel model={activeItem.get('model')} source={activeItem.get('source').get('model')}
-                    target={activeItem.get('target').get('model')} onAdd={this.handleCondAdd} onUpdate={this.handleCondUpdate}
-                    onDel={this.handleCondDel} key="edge"
-                  />
-                }
-              </QueueAnim>
-            }
+                <div id="flowchart" />
+              </Card>
+              {activeItem &&
+                <QueueAnim animConfig={[
+                  { opacity: [1, 0], translateY: [0, 50] },
+                  { opacity: [1, 0], translateY: [0, -50] },
+                ]}
+                >
+                  {activeItem.get('type') === 'node' && (activeItem.get('model').kind === 'import' || activeItem.get('model').kind === 'export') &&
+                  <BizObjCMSPanel onFormInit={this.handlePanelForm} model={activeItem.get('model')} onNodeActionsChange={this.handleNodeActionsChange} key="cms" />
+                  }
+                  {activeItem.get('type') === 'node' && (activeItem.get('model').kind === 'tms') &&
+                  <BizObjTMSPanel onFormInit={this.handlePanelForm} model={activeItem.get('model')} onNodeActionsChange={this.handleNodeActionsChange} key="tms" />
+                  }
+                  {activeItem.get('type') === 'node' && (activeItem.get('model').kind === 'cwm') &&
+                  <BizObjCWMPanel onFormInit={this.handlePanelForm} model={activeItem.get('model')} onNodeActionsChange={this.handleNodeActionsChange} key="cwm" />
+                  }
+                  {activeItem.get('type') === 'edge' &&
+                    <FlowEdgePanel model={activeItem.get('model')} source={activeItem.get('source').get('model')}
+                      target={activeItem.get('target').get('model')} onAdd={this.handleCondAdd} onUpdate={this.handleCondUpdate}
+                      onDel={this.handleCondDel} key="edge"
+                    />
+                  }
+                </QueueAnim>
+              }
+            </Spin>
           </Content>
         </Layout>
         <Sider trigger={null} defaultCollapsed collapsible collapsed={this.state.rightSidercollapsed}

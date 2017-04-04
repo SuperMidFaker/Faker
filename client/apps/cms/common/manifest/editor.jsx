@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Breadcrumb, Button, Dropdown, Layout, Menu, Icon, Form, message, Popconfirm, Tabs, Select } from 'antd';
+import { Breadcrumb, Button, Dropdown, Layout, Menu, Icon, Form, message, Popconfirm, Tabs, Select, Spin } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { addNewBillBody, delBillBody, editBillBody, saveBillHead,
@@ -31,6 +31,7 @@ const OptGroup = Select.OptGroup;
     loginId: state.account.loginId,
     tenantId: state.account.tenantId,
     formData: state.cmsSettings.formData,
+    templateValLoading: state.cmsSettings.templateValLoading,
   }),
   { addNewBillBody, delBillBody, editBillBody, saveBillHead, openMergeSplitModal,
     billDelete, updateHeadNetWt, loadBillBody, loadTemplateFormVals, saveBillRules,
@@ -51,6 +52,7 @@ export default class ManifestEditor extends React.Component {
       entries: PropTypes.arrayOf(PropTypes.shape({ pre_entry_seq_no: PropTypes.string })),
     }),
     templates: PropTypes.array.isRequired,
+    templateValLoading: PropTypes.bool.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -61,6 +63,7 @@ export default class ManifestEditor extends React.Component {
   state = {
     visible: false,
     collapsed: true,
+    generating: false,
     headData: {},
   }
   componentWillReceiveProps(nextProps) {
@@ -75,8 +78,10 @@ export default class ManifestEditor extends React.Component {
     });
   }
   handleGenerateEntry = () => {
+    this.setState({ generating: true });
     this.props.loadBillBody(this.props.billHead.bill_seq_no).then((result) => {
       if (result.error) {
+        this.setState({ generating: false });
         message.error(result.error.message);
       } else {
         this.props.form.validateFields((errors) => {
@@ -86,6 +91,7 @@ export default class ManifestEditor extends React.Component {
             this.props.saveBillHead({ head, ietype, loginId, tenantId });
             this.generateEntry();
           } else {
+            this.setState({ generating: false });
             message.error('清单表头尚未填写完整');
           }
         });
@@ -102,6 +108,7 @@ export default class ManifestEditor extends React.Component {
       }
     });
     if (bodyDatas.length === 0 || wtSum === 0) {
+      this.setState({ generating: false });
       return message.error('请检查表体数据是否正确');
     }
     if (wtSum > billHead.gross_wt) {
@@ -128,6 +135,7 @@ export default class ManifestEditor extends React.Component {
       if (lastBody.gross_wt !== lastwt) {
         this.props.editBillBody({ ...lastBody, gross_wt: lastwt });
       }
+      this.setState({ generating: false });
       this.props.openMergeSplitModal();
     }
   }
@@ -300,7 +308,7 @@ export default class ManifestEditor extends React.Component {
                 </OptGroup>
               </Select>)
               }
-              {editable && <Button type="primary" size="large" icon="addfile" onClick={this.handleGenerateEntry}>{this.msg('generateEntry')}</Button> }
+              {editable && <Button type="primary" size="large" icon="addfile" loading={this.state.generating} onClick={this.handleGenerateEntry}>{this.msg('generateEntry')}</Button> }
               {editable &&
                 <Dropdown overlay={this.lockMenu}><Button size="large"> 更多 <Icon type="down" /></Button></Dropdown>
               }
@@ -318,7 +326,9 @@ export default class ManifestEditor extends React.Component {
             <div className="page-body tabbed">
               <Tabs defaultActiveKey="header">
                 <TabPane tab="清单表头" key="header">
-                  <SheetHeadPanel ietype={ietype} readonly={!editable} form={form} formData={this.state.headData} ruleRequired type="bill" onSave={this.handleBillSave} />
+                  <Spin spinning={this.props.templateValLoading}>
+                    <SheetHeadPanel ietype={ietype} readonly={!editable} form={form} formData={this.state.headData} ruleRequired type="bill" onSave={this.handleBillSave} />
+                  </Spin>
                 </TabPane>
                 <TabPane tab="清单表体" key="body">
                   <SheetBodyPanel ietype={ietype} readonly={!editable} headForm={form} data={billBodies} headNo={billHead.bill_seq_no}
