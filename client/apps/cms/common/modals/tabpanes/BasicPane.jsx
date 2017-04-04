@@ -5,6 +5,7 @@ import { Button, Row, Menu, Icon, Col, Card } from 'antd';
 import downloadMultiple from 'client/util/multipleDownloader';
 import { GOODSTYPES, TRANS_MODE, CLAIM_DO_AWB } from 'common/constants';
 import InfoItem from 'client/components/InfoItem';
+import MdIcon from 'client/components/MdIcon';
 import './pane.less';
 import { loadBasicInfo } from 'common/reducers/cmsDelgInfoHub';
 
@@ -86,7 +87,7 @@ export default class BasicPane extends React.Component {
       );
     });
     const goods = GOODSTYPES.filter(gt => gt.value === delegation.goods_type);
-    const tms = TRANS_MODE.filter(tm => tm.value === delegation.trans_mode);
+    const transMode = TRANS_MODE.filter(tm => tm.value === delegation.trans_mode);
     let doAwbText = '';
     if (delegation.trans_mode === '2') {
       if (CLAIM_DO_AWB.notClaimDO.key === delegation.claim_do_awb) {
@@ -124,8 +125,8 @@ export default class BasicPane extends React.Component {
           </Row>
           <Row>
             <Col span="8">
-              <InfoItem label="运输方式" addonBefore={<Icon type="compass" />}
-                field={tms.length > 0 ? tms[0].text : ''}
+              <InfoItem label="运输方式" addonBefore={<MdIcon type={transMode[0].icon} />}
+                field={transMode.length > 0 ? transMode[0].text : ''}
               />
             </Col>
             <Col span="8">
@@ -139,6 +140,21 @@ export default class BasicPane extends React.Component {
               />
             </Col>
           </Row>
+          {
+            delegation.trans_mode === '2' &&
+            <Row>
+              <Col span="8">
+                <InfoItem label="是否换单"
+                  field={doAwbText}
+                />
+              </Col>
+              <Col span="8">
+                <InfoItem label="海运单号"
+                  field={delegation.swb}
+                />
+              </Col>
+            </Row>
+            }
           <Row>
             <Col span="8">
               <InfoItem type="dropdown" label="货物类型"
@@ -161,11 +177,6 @@ export default class BasicPane extends React.Component {
             </Col>
           </Row>
           <Row>
-            <Col span="8">
-              <InfoItem label="是否抽/换单"
-                field={doAwbText}
-              />
-            </Col>
             <Col span="16">
               <InfoItem type="textarea" label="备注" field={delegation.remark} placeholder="添加备注" editable />
             </Col>

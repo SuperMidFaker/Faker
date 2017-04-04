@@ -12,6 +12,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import SearchBar from 'client/components/search-bar';
 import RowUpdater from 'client/components/rowUpdater';
+import MdIcon from 'client/components/MdIcon';
 import { loadAcceptanceTable, acceptDelg, delDelg, setDispStatus, loadCiqTable, delgAssignRecall,
   ensureManifestMeta, openAcceptModal, showDispModal } from 'common/reducers/cmsDelegation';
 import { showPreviewer, loadBasicInfo, loadCustPanel, loadDeclCiqPanel } from 'common/reducers/cmsDelgInfoHub';
@@ -187,17 +188,7 @@ export default class DelegationList extends Component {
     dataIndex: 'trans_mode',
     render: (o) => {
       const mode = TRANS_MODE.filter(ts => ts.value === o)[0];
-      if (o === '2') {
-        return (<span><i className="zmdi zmdi-boat" /> {mode.text}</span>);
-      } else if (o === '5') {
-        return (<span><i className="zmdi zmdi-airplane" /> {mode.text}</span>);
-      } else if (o === '3') {
-        return (<span><i className="zmdi zmdi-subway" /> {mode.text}</span>);
-      } else if (o === '4') {
-        return (<span><i className="zmdi zmdi-truck" /> {mode.text}</span>);
-      } else if (mode) {
-        return (<span><i className="zmdi zmdi-border-outer" /> {mode.text}</span>);
-      }
+      return (<span><MdIcon type={mode.icon} /> {mode.text}</span>);
     },
   }, {
     title: this.msg('broker'),
