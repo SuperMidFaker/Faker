@@ -7,6 +7,7 @@ import Table from 'client/components/remoteAntTable';
 import { Link } from 'react-router';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/search-bar';
+import ButtonToggle from 'client/components/ButtonToggle';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -231,9 +232,9 @@ export default class OrderList extends React.Component {
           </RadioGroup>
           <span />
           <ButtonGroup>
-            <Button size="large" type="primary" value="sea"><i className="zmdi zmdi-boat" />&nbsp;</Button>
-            <Button size="large" type="primary" value="air">&nbsp;<i className="zmdi zmdi-airplane" />&nbsp;</Button>
-            <Button size="large" type="primary" value="road">&nbsp;<i className="zmdi zmdi-truck" /></Button>
+            <ButtonToggle size="large" toggle><i className="zmdi zmdi-boat" />&nbsp;</ButtonToggle>
+            <ButtonToggle size="large" toggle>&nbsp;<i className="zmdi zmdi-airplane" />&nbsp;</ButtonToggle>
+            <ButtonToggle size="large" toggle>&nbsp;<i className="zmdi zmdi-truck" /></ButtonToggle>
           </ButtonGroup>
           <div className="top-bar-tools">
             <Button type="primary" size="large" icon="plus" onClick={this.handleCreate}>
