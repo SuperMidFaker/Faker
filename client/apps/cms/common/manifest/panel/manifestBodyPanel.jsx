@@ -569,7 +569,7 @@ export default class ManifestBodyPanel extends React.Component {
         editBody: row,
       });
     } else {
-      message.error(this.msg('headUncreated'));
+      message.error(this.msg('headUncreated'), 10);
     }
   }
   handleSave = (row, index) => {
@@ -588,7 +588,7 @@ export default class ManifestBodyPanel extends React.Component {
       const { billSeqNo, headNo, loginId, tenantId } = this.props;
       this.props.onAdd({ billSeqNo, body, headNo, loginId, tenantId }).then((result) => {
         if (result.error) {
-          message.error(result.error.message);
+          message.error(result.error.message, 10);
         } else {
           body = result.data;
           body.codes = body.code_t + body.code_s;
@@ -614,7 +614,7 @@ export default class ManifestBodyPanel extends React.Component {
     } else {
       this.props.onEdit(editBody).then((result) => {
         if (result.error) {
-          message.error(result.error.message);
+          message.error(result.error.message, 10);
         } else {
           const bodies = [...this.state.bodies];
           bodies[recordIdx] = editBody;
@@ -635,7 +635,7 @@ export default class ManifestBodyPanel extends React.Component {
   handleDel = (row, index) => {
     this.props.onDel(row.id).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else {
         const bodies = [...this.state.bodies];
         const recordIdx = index + (this.state.pagination.current - 1) * this.state.pagination.pageSize;
@@ -714,7 +714,7 @@ export default class ManifestBodyPanel extends React.Component {
   handleTotalPriceDivid = () => {
     this.props.loadBillBody(this.props.billSeqNo).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else {
         this.props.openAmountModel();
       }
@@ -751,7 +751,7 @@ export default class ManifestBodyPanel extends React.Component {
     const selectedIds = this.state.selectedRowKeys;
     this.props.deleteSelectedBodies(selectedIds).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else {
         this.props.loadBillBody(this.props.billSeqNo);
       }
@@ -767,7 +767,7 @@ export default class ManifestBodyPanel extends React.Component {
     if (ids.length > 0) {
       this.props.deleteSelectedBodies(ids).then((result) => {
         if (result.error) {
-          message.error(result.error.message);
+          message.error(result.error.message, 10);
         } else {
           this.props.loadBillBody(this.props.billSeqNo);
         }
@@ -799,16 +799,16 @@ export default class ManifestBodyPanel extends React.Component {
       </Menu>);
     const unrelatedImportmenu = (
       <Menu onClick={this.handleUnrelatedImportMenuClick}>
-        <Menu.Item key="download"><Icon type="download" /> 下载模板</Menu.Item>
+        <Menu.Item key="download"><Icon type="file-excel" /> 下载模板</Menu.Item>
       </Menu>);
     const relatedImportmenu = (
       <Menu onClick={this.handleRelatedImportMenuClick}>
-        <Menu.Item key="downloadRelated"><Icon type="download" /> 下载模板</Menu.Item>
-        <Menu.Item key="rule"><Icon type="download" /> 关联导入规则</Menu.Item>
+        <Menu.Item key="downloadRelated"><Icon type="file-excel" /> 下载模板</Menu.Item>
+        <Menu.Item key="rule"><Icon type="setting" /> 关联导入规则</Menu.Item>
       </Menu>);
     const moremenu = (
       <Menu onClick={this.handleMoreMenuClick}>
-        <Menu.Item key="exportBody"><Icon type="download" /> 导出表体</Menu.Item>
+        <Menu.Item key="exportBody"><Icon type="export" /> 导出表体</Menu.Item>
         <Menu.Item key="delete">
           <Popconfirm title="确定删除表体数据?" onConfirm={this.handleBodyDelete}>
             <a> <Icon type="delete" /> 清空表体</a>
@@ -817,14 +817,9 @@ export default class ManifestBodyPanel extends React.Component {
       </Menu>);
     const billBodyToolbar = (
       <span>
-        {!this.props.readonly && <Dropdown overlay={handlemenu} type="primary">
-          <Button onClick={this.handleButtonClick}>
-            {this.msg('handle')} <Icon type="down" />
-          </Button>
-          </Dropdown>
-        }
         {this.props.readonly && <Button icon="export" onClick={this.handleManifestBodyExport}>导出</Button>}
         {!this.props.readonly &&
+        <Dropdown.Button onClick={this.handleUnrelatedImport} overlay={unrelatedImportmenu} style={{ marginLeft: 8 }}>
           <ExcelUpload endpoint={`${API_ROOTS.default}v1/cms/manifest/billbody/import`}
             formData={{
               data: JSON.stringify({
@@ -834,11 +829,12 @@ export default class ManifestBodyPanel extends React.Component {
               }),
             }} onUploaded={this.handleUploaded}
           >
-            <Dropdown.Button onClick={this.handleUnrelatedImport} overlay={unrelatedImportmenu} type="primary" style={{ marginLeft: 8 }}>
-              {this.msg('unrelatedImport')}
-            </Dropdown.Button>
-          </ExcelUpload>}
+            {this.msg('unrelatedImport')}
+          </ExcelUpload>
+        </Dropdown.Button>
+        }
         {!this.props.readonly &&
+        <Dropdown.Button onClick={this.handleRelatedImport} overlay={relatedImportmenu} style={{ marginLeft: 8 }}>
           <ExcelUpload endpoint={`${API_ROOTS.default}v1/cms/manifest/billbody/related/import`}
             formData={{
               data: JSON.stringify({
@@ -850,10 +846,16 @@ export default class ManifestBodyPanel extends React.Component {
               }),
             }} onUploaded={this.handleUploaded}
           >
-            <Dropdown.Button onClick={this.handleRelatedImport} overlay={relatedImportmenu} type="primary" style={{ marginLeft: 8 }}>
-              {this.msg('relatedImport')}
-            </Dropdown.Button>
-          </ExcelUpload>}
+            {this.msg('relatedImport')}
+          </ExcelUpload>
+        </Dropdown.Button>
+        }
+        {!this.props.readonly && <Dropdown overlay={handlemenu}>
+          <Button onClick={this.handleButtonClick} style={{ marginLeft: 8 }}>
+            {this.msg('handle')} <Icon type="down" />
+          </Button>
+          </Dropdown>
+        }
         {!this.props.readonly &&
           <Dropdown overlay={moremenu}>
             <Button onClick={this.handleButtonClick} style={{ marginLeft: 8 }}>
@@ -873,10 +875,10 @@ export default class ManifestBodyPanel extends React.Component {
         <div className="panel-header">
           {billBodyToolbar}
           <div className="toolbar-right">
-            <span style={{ marginLeft: 10 }}>总毛重: </span><span style={{ color: '#FF9933' }}>{totGrossWt.toFixed(3)}</span>
-            <span style={{ marginLeft: 10 }}>总净重: </span><span style={{ color: '#FF9933' }}>{totWetWt.toFixed(3)}</span>
-            <span style={{ marginLeft: 10 }}>总金额: </span><span style={{ color: '#FF9933' }}>{totTrade.toFixed(3)}</span>
-            <span style={{ marginLeft: 10 }}>总个数: </span><span style={{ color: '#FF9933' }}>{totPcs.toFixed(3)}</span>
+            <span style={{ marginLeft: 8 }}>总毛重: </span><span style={{ color: '#FF9933' }}>{totGrossWt.toFixed(3)}</span>
+            <span style={{ marginLeft: 8 }}>总净重: </span><span style={{ color: '#FF9933' }}>{totWetWt.toFixed(3)}</span>
+            <span style={{ marginLeft: 8 }}>总金额: </span><span style={{ color: '#FF9933' }}>{totTrade.toFixed(3)}</span>
+            <span style={{ marginLeft: 8 }}>总个数: </span><span style={{ color: '#FF9933' }}>{totPcs.toFixed(3)}</span>
           </div>
         </div>
         <div className="panel-body table-panel">

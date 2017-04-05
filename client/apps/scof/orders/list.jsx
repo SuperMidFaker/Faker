@@ -81,7 +81,7 @@ export default class OrderList extends React.Component {
     const { tenantId, loginId, username } = this.props;
     this.props.removeOrder({ tenantId, loginId, username, shipmtOrderNo }).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else {
         message.info('删除成功');
         this.handleTableLoad();
@@ -92,7 +92,7 @@ export default class OrderList extends React.Component {
     const { loginId, username } = this.props;
     this.props.acceptOrder({ loginId, username, shipmtOrderNo }).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else {
         message.info('订单流程已启动');
         this.handleTableLoad();

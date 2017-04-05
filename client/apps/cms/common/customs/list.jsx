@@ -261,7 +261,7 @@ export default class DelgDeclList extends Component {
   handleDelete = (declId, billNo) => {
     this.props.deleteDecl(declId, billNo).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else {
         this.handleTableLoad();
       }
@@ -270,7 +270,7 @@ export default class DelgDeclList extends Component {
   handleReview = (row) => {
     this.props.setFilterReviewed(row.id, DECL_STATUS.reviewed).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else {
         this.handleTableLoad();
       }
@@ -279,7 +279,7 @@ export default class DelgDeclList extends Component {
   handleRecall = (row) => {
     this.props.setFilterReviewed(row.id, DECL_STATUS.proposed).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else {
         this.handleTableLoad();
       }

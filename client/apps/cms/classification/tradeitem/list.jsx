@@ -291,14 +291,14 @@ export default class TradeItemList extends Component {
       searchText: search !== undefined ? search : searchText,
     }).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       }
     });
   }
   handleItemDel = (id) => {
     this.props.deleteItem(id).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else {
         this.handleItemListLoad();
       }
@@ -337,7 +337,7 @@ export default class TradeItemList extends Component {
     const selectedIds = this.state.selectedRowKeys;
     this.props.deleteSelectedItems(selectedIds).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else {
         this.handleItemListLoad();
       }
@@ -347,7 +347,7 @@ export default class TradeItemList extends Component {
   handleDeleteRepo = () => {
     this.props.deleteRepo(this.props.repoId).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else {
         this.props.loadRepos({ tenantId: this.props.tenantId });
       }
@@ -363,7 +363,7 @@ export default class TradeItemList extends Component {
   handleItemPass = (row) => {
     this.props.setItemStatus({ ids: [row.id], status: CMS_ITEM_STATUS.classified }).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else {
         this.handleItemListLoad();
       }
@@ -372,7 +372,7 @@ export default class TradeItemList extends Component {
   handleItemRefused = (row) => {
     this.props.setItemStatus({ ids: [row.id], status: CMS_ITEM_STATUS.unclassified }).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else {
         this.handleItemListLoad();
       }
@@ -381,7 +381,7 @@ export default class TradeItemList extends Component {
   handleItemsPass = () => {
     this.props.setItemStatus({ ids: this.state.selectedRowKeys, status: CMS_ITEM_STATUS.classified }).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else {
         this.setState({ selectedRowKeys: [] });
         this.handleItemListLoad();
@@ -391,7 +391,7 @@ export default class TradeItemList extends Component {
   handleItemsRefused = () => {
     this.props.setItemStatus({ ids: this.state.selectedRowKeys, status: CMS_ITEM_STATUS.unclassified }).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else {
         this.setState({ selectedRowKeys: [] });
         this.handleItemListLoad();

@@ -86,7 +86,7 @@ export default class Main extends Component {
     if (this.props.tariffId) {
       this.props.updateAgreement(forms).then((result) => {
         if (result.error) {
-          message.error(result.error.message);
+          message.error(result.error.message, 10);
         } else {
           message.success('保存成功');
           this.props.loadTariff({
@@ -103,7 +103,7 @@ export default class Main extends Component {
           if (result.error.message === 'found_tariff') {
             message.error('相同条件报价协议已存在');
           } else {
-            message.error(result.error.message);
+            message.error(result.error.message, 10);
           }
         } else {
           message.success('保存成功');

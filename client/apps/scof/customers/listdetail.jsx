@@ -119,7 +119,7 @@ export default class CustomerList extends React.Component {
     const data = { ...fieldsValue, id: this.state.customer.id, parent_id: this.state.customer.parent_id };
     this.props.updateCustomerNames(data).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else {
         message.info('修改成功');
       }

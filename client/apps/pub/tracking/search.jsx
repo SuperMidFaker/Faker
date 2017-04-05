@@ -51,7 +51,7 @@ export default class TrackingSearch extends React.Component {
     } else {
       this.props.searchShipment(searchText, subdomain).then((result) => {
         if (result.error) {
-          message.error(result.error.message);
+          message.error(result.error.message, 10);
         } else if (result.data.length === 0) {
           message.info('运单不存在', 10);
         } else {

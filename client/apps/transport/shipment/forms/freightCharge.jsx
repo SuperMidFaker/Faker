@@ -124,7 +124,7 @@ export default class FreightCharge extends React.Component {
     const tariffType = data.tariffType;
     this.props.computeSaleCharge(data).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else if (result.data.freight < 0) {
         const alert = this.translateResult(result.data.freight);
         this.handleResult(alert);

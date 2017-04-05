@@ -139,7 +139,7 @@ export default class RateEndTable extends React.Component {
           }
           prom.then((result) => {
             if (result.error) {
-              message.error(result.error.message);
+              message.error(result.error.message, 10);
             } else {
               message.success('保存成功');
               this.props.onChangeVisible('end', false);
@@ -201,7 +201,7 @@ export default class RateEndTable extends React.Component {
   handleDel = (row) => {
     this.props.delRateEnd(this.props.rateId, row._id).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else {
         let current = this.props.ratesEndList.current;
         if (current > 1 &&

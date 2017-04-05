@@ -156,7 +156,7 @@ export default class InventoryTransactionList extends React.Component {
       current: newCurrent || 1,
     }).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       }
     });
   }

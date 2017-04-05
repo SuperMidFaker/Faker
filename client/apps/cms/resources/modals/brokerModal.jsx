@@ -80,7 +80,7 @@ export default class BrokerModal extends React.Component {
     } else if (operation === 'edit') {
       this.props.editPartner(carrier.id, partnerName, partnerUniqueCode, customsCode, role, business).then((result) => {
         if (result.error) {
-          message.error(result.error.message);
+          message.error(result.error.message, 10);
         }
         this.handleCancel();
       });

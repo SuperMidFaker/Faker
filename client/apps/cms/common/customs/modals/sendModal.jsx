@@ -56,7 +56,7 @@ export default class SendModal extends React.Component {
         const declType = values.declType;
         this.props.sendDecl({ preEntrySeqNo, delgNo, subdomain, uuid, declType }).then((result) => {
           if (result.error) {
-            message.error(result.error.message);
+            message.error(result.error.message, 10);
           } else {
             message.info('发送成功');
             this.props.showSendDeclModal({ visible: false });

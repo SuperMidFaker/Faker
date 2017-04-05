@@ -84,7 +84,7 @@ export default class SpecialCategories extends React.Component {
     if (hscodeCategories[editIndex].name) {
       this.props.addHsCodeCategory(this.props.tenantId, hscodeCategories[editIndex].name).then((result) => {
         if (result.error) {
-          message.error(result.error.message);
+          message.error(result.error.message, 10);
         } else {
           this.setState({ editIndex: -1 });
         }

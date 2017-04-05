@@ -118,7 +118,7 @@ export default class Footer extends React.Component {
       this.props.tenantId, [dispId]
     ).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       }
     });
   }
@@ -216,7 +216,7 @@ export default class Footer extends React.Component {
     const { loginName, tenantId, loginId } = this.props;
     this.props.passAudit(podId, dispId, parentId, loginName, tenantId, loginId).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else {
         this.props.hidePreviewer();
       }
@@ -225,7 +225,7 @@ export default class Footer extends React.Component {
   handleAuditReturn = (dispId) => {
     this.props.returnAudit(dispId).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else {
         this.props.hidePreviewer();
       }
@@ -236,7 +236,7 @@ export default class Footer extends React.Component {
     const list = [{ dispId, shipmtNo, parentId }];
     this.props.withDraw({ tenantId, loginId, loginName, list: JSON.stringify(list) }).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else {
         this.props.hidePreviewer();
       }
@@ -247,7 +247,7 @@ export default class Footer extends React.Component {
     const shipmtDispIds = [dispId];
     this.props.returnShipment({ shipmtDispIds, tenantId, loginId, loginName }).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else {
         this.props.hidePreviewer();
       }

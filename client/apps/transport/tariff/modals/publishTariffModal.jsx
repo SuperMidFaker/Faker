@@ -75,7 +75,7 @@ export default class PublishTariffModal extends React.Component {
       transMode: tms.mode_code,
     }).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else {
         message.info('发布成功');
         this.handleCancel();

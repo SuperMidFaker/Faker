@@ -94,7 +94,7 @@ export default class QuoteList extends Component {
       current: currentPage || current,
     }).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       }
     });
   }
@@ -129,7 +129,7 @@ export default class QuoteList extends Component {
       const { loginName, loginId } = this.props;
       this.props.createDraftQuote(row.quote_no, loginName, loginId).then((result) => {
         if (result.error) {
-          message.error(result.error.message);
+          message.error(result.error.message, 10);
         } else {
           this.context.router.push(`/clearance/billing/quote/edit/${row.quote_no}/${result.data.version}`);
         }

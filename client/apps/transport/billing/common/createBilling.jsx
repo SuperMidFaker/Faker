@@ -87,7 +87,7 @@ export default class CreateBilling extends React.Component {
         toTenantId: partnerTenantId, shipmtCount, fees,
       }).then((result) => {
         if (result.error) {
-          message.error(result.error.message);
+          message.error(result.error.message, 10);
         } else {
           this.context.router.push(`/transport/billing/${type}`);
         }

@@ -64,7 +64,7 @@ export default class billTemplates extends Component {
   handleDelete = (record) => {
     this.props.deleteTemplate(record.id).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else {
         const ietype = record.i_e_type === 0 ? 'import' : 'export';
         this.props.loadBillemplates({ tenantId: this.props.tenantId, ietype });

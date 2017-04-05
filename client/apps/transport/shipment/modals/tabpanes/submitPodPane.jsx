@@ -88,7 +88,7 @@ export default class SubmitPodPane extends React.Component {
                              signStatus, remark, photos, loginId, tenantId, tenantName).then(
       (result) => {
         if (result.error) {
-          message.error(result.error.message);
+          message.error(result.error.message, 10);
         } else {
           message.info('提交成功');
         }

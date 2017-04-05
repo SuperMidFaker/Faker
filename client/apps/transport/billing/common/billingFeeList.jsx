@@ -63,7 +63,7 @@ export default class BillingFeeList extends React.Component {
         modifyTimes, shipmtCount, fees,
       }).then((result) => {
         if (result.error) {
-          message.error(result.error.message);
+          message.error(result.error.message, 10);
         } else {
           this.context.router.push(`/transport/billing/${type}`);
         }
@@ -71,7 +71,7 @@ export default class BillingFeeList extends React.Component {
     } else {
       this.props.acceptBilling({ tenantId, loginId, loginName, billingId }).then((result) => {
         if (result.error) {
-          message.error(result.error.message);
+          message.error(result.error.message, 10);
         } else {
           this.context.router.push(`/transport/billing/${type}`);
         }
@@ -90,7 +90,7 @@ export default class BillingFeeList extends React.Component {
         shipmtCount, fees,
       }).then((result) => {
         if (result.error) {
-          message.error(result.error.message);
+          message.error(result.error.message, 10);
         } else {
           this.context.router.push(`/transport/billing/${type}`);
         }

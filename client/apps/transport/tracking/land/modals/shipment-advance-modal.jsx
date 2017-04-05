@@ -146,7 +146,7 @@ export default class ShipmentAdvanceModal extends React.Component {
     this.handleCancel();
     this.props.createAdvances(advances).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else {
         message.info('添加成功');
       }

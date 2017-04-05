@@ -118,7 +118,7 @@ export default class DelgDispModal extends Component {
     this.props.delgDispSave(delegation, dispatch, partner, ciqSup, loginId, loginName
     ).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else {
         this.props.setDispStatus({ delgDispShow: false, saved: true });
         this.props.form.resetFields();

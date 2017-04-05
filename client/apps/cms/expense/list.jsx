@@ -177,7 +177,7 @@ export default class ExpenseList extends Component {
       currentPage: currentPage || current,
     }).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       }
     });
   }

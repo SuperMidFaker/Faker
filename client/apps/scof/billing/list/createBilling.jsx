@@ -101,7 +101,7 @@ export default class CreateBilling extends React.Component {
         shipmtCount, fees,
       }).then((result) => {
         if (result.error) {
-          message.error(result.error.message);
+          message.error(result.error.message, 10);
         } else {
           this.context.router.push('/scof/billing');
         }

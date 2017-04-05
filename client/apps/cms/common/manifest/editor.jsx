@@ -84,7 +84,7 @@ export default class ManifestEditor extends React.Component {
     this.props.loadBillBody(this.props.billHead.bill_seq_no).then((result) => {
       if (result.error) {
         this.setState({ generating: false });
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else {
         this.props.form.validateFields((errors) => {
           if (!errors) {
@@ -179,7 +179,7 @@ export default class ManifestEditor extends React.Component {
     this.props.saveBillHead({ head, ietype, loginId, tenantId }).then(
     (result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else {
         message.info('更新成功');
       }
@@ -189,7 +189,7 @@ export default class ManifestEditor extends React.Component {
     this.props.billDelete(this.props.billHead).then(
       (result) => {
         if (result.error) {
-          message.error(result.error.message);
+          message.error(result.error.message, 10);
         } else {
           message.info('已删除');
           this.props.form.resetFields();
@@ -201,7 +201,7 @@ export default class ManifestEditor extends React.Component {
     if (value) {
       this.props.loadTemplateFormVals(value).then((result) => {
         if (result.error) {
-          message.error(result.error.message);
+          message.error(result.error.message, 10);
         } else {
           const formData = result.data.formData;
           for (const key in formData) {

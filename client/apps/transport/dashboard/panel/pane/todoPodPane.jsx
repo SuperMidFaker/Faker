@@ -74,7 +74,7 @@ export default class TodoAcceptPane extends Component {
       if (!result.error) {
         this.handleTableLoad(this.props);
       } else {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       }
     });
   }

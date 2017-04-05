@@ -551,7 +551,7 @@ export default class DispatchDock extends Component {
       vehicle_type_id, vehicle_length_id, total_weight, total_volume,
     }).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else if (result.data.freight === -1) {
         message.error('未找到适合计算的价格协议');
       } else if (result.data.freight === -2) {

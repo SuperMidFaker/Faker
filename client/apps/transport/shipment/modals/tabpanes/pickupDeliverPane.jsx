@@ -48,7 +48,7 @@ export default class PickupDeliverPane extends React.Component {
       this.props.savePickOrDeliverDate({ type, shipmtNo, dispId, actDate: actDate.toString(), loginId, tenantId, loginName, tenantName }).then(
         (result) => {
           if (result.error) {
-            message.error(result.error.message);
+            message.error(result.error.message, 10);
           } else {
             // 上报位置
             location.location_time = actDate.toString();

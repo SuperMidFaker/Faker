@@ -76,7 +76,7 @@ export default class VehicleUpdater extends React.Component {
     this.props.saveVehicle(shipmtNo, dispId, plate, driver, remark).then(
       (result) => {
         if (result.error) {
-          message.error(result.error.message);
+          message.error(result.error.message, 10);
         } else {
           this.props.closeVehicleModal();
           onOK();

@@ -50,7 +50,7 @@ export default class AmountModel extends React.Component {
     const lastBody = bodies[bodies.length - 1];
     this.props.editBillBody({ ...lastBody, trade_total: lastTot }).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else {
         this.props.loadBillBody(this.props.billMeta.bill_seq_no);
         this.props.closeAmountModel();

@@ -98,7 +98,7 @@ export default class SaveTemplateModal extends React.Component {
           const name = this.props.form.getFieldValue('template_name');
           this.props.validateTempName({ name, tenantId: this.props.tenantId }).then((result) => {
             if (result.error) {
-              return message.error(result.error.message);
+              return message.error(result.error.message, 10);
             } else {
               current += 1;
               this.setState({ current });
@@ -160,7 +160,7 @@ export default class SaveTemplateModal extends React.Component {
       ...mergeObj, rule_element: element, split_spl_category: specialHsSorts };
     this.props.createGeneratedTemplate({ params, ruleDatas }).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else {
         message.info('保存成功');
         this.props.setStepVisible(false);

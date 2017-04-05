@@ -142,7 +142,7 @@ export default class OutboundTransactionsList extends React.Component {
       current: 1,
     }).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       }
     });
   }

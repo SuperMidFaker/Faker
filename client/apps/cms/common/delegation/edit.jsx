@@ -54,7 +54,7 @@ export default class EditDelegation extends Component {
           accepted: isAccepted, ietype: type === 'import' ? 0 : 1,
         }).then((result) => {
           if (result.error) {
-            message.error(result.error.message);
+            message.error(result.error.message, 10);
           } else {
             this.context.router.push(`/clearance/${type}/`);
           }

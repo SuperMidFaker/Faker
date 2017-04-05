@@ -70,7 +70,7 @@ export default class CreateTariffModal extends React.Component {
         [PARTNER_BUSINESSE_TYPES.transport])
         .then((result) => {
           if (result.error) {
-            message.error(result.error.message);
+            message.error(result.error.message, 10);
           } else {
             this.setState({ partnerVisible: true });
           }
@@ -81,7 +81,7 @@ export default class CreateTariffModal extends React.Component {
         [PARTNER_BUSINESSE_TYPES.transport])
         .then((result) => {
           if (result.error) {
-            message.error(result.error.message);
+            message.error(result.error.message, 10);
           } else {
             this.setState({ partnerVisible: true });
           }

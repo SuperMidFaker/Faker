@@ -60,7 +60,7 @@ export default class ChangeShipment extends React.Component {
         this.props.saveEdit(form, tenantId, loginId, type)
         .then((result) => {
           if (result.error) {
-            message.error(result.error.message);
+            message.error(result.error.message, 10);
           } else {
             message.success(this.msg('changeShipmentSuccess'));
             this.handleCancel();

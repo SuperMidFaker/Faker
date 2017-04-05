@@ -60,7 +60,7 @@ export default class PodAuditModal extends React.Component {
     this.props.passAudit(podId, dispId, parentDispId, auditor, tenantId, loginId).then(
       (result) => {
         if (result.error) {
-          message.error(result.error.message);
+          message.error(result.error.message, 10);
         } else {
           this.props.closePodAuditModal();
         }
@@ -71,7 +71,7 @@ export default class PodAuditModal extends React.Component {
     this.props.returnAudit(dispId).then(
       (result) => {
         if (result.error) {
-          message.error(result.error.message);
+          message.error(result.error.message, 10);
         } else {
           this.props.closePodAuditModal();
         }

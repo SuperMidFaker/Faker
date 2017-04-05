@@ -165,7 +165,7 @@ export default class CiqList extends Component {
     this.props.loadCMQParams(this.props.tenantId, delgNo, 2).then(
       (result) => {
         if (result.error) {
-          message.error(result.error.message);
+          message.error(result.error.message, 10);
         }
       });
   }
@@ -173,7 +173,7 @@ export default class CiqList extends Component {
     this.props.setCiqFinish(row.delg_no).then(
       (result) => {
         if (result.error) {
-          message.error(result.error.message);
+          message.error(result.error.message, 10);
         } else {
           this.handleTableLoad();
         }

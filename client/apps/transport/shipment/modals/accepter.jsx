@@ -43,7 +43,7 @@ export default class AccepterModal extends React.Component {
       this.state.disperId, this.state.disperName
     ).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else {
         this.props.clearSelection();
         this.props.reload();

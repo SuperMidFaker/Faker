@@ -38,7 +38,7 @@ export default class CreateModal extends React.Component {
         formData.tenant_id = this.props.tenantId;
         this.props.createShipment(formData).then((result) => {
           if (result.error) {
-            message.error(result.error.message);
+            message.error(result.error.message, 10);
           } else {
             this.props.form.resetFields();
             this.props.closeCreateModal();

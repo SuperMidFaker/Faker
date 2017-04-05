@@ -42,7 +42,7 @@ export default class ConfigEasipassEDI extends React.Component {
         this.props.updateEasipassApp({ ...values, uuid: easipass.uuid }).then((result) => {
           this.setState({ submitting: false });
           if (result.error) {
-            message.error(result.error.message);
+            message.error(result.error.message, 10);
           } else {
             this.context.router.goBack();
           }

@@ -60,7 +60,7 @@ export default class CreateDelegation extends Component {
           accepted,
         }).then((result) => {
           if (result.error) {
-            message.error(result.error.message);
+            message.error(result.error.message, 10);
           } else {
             this.context.router.push(`/clearance/${type}`);
           }

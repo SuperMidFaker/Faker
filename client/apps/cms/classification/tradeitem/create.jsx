@@ -50,7 +50,7 @@ export default class CreateTradeItem extends Component {
           item, repoId, tenantId, loginId, loginName,
         }).then((result) => {
           if (result.error) {
-            message.error(result.error.message);
+            message.error(result.error.message, 10);
           } else {
             this.context.router.push('/clearance/classification/tradeitem');
           }

@@ -89,7 +89,7 @@ export default class ManifestHeadPanel extends React.Component {
   handleBillHeadDelete = () => {
     this.props.cleanHeadDatas(this.props.formData).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else {
         this.props.form.resetFields();
       }

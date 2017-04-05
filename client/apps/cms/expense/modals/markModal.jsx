@@ -74,7 +74,7 @@ export default class MarkModal extends Component {
   handleSave = () => {
     this.props.saveMarkstate(this.props.data).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else {
         this.props.closeMarkModal();
       }

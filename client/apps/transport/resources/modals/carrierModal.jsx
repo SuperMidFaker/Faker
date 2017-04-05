@@ -72,7 +72,7 @@ export default class CarrierModal extends React.Component {
     } else if (this.props.operation === 'edit') {
       this.props.editPartner(carrier.id, partnerName, partnerUniqueCode, partnerCode, role, business).then((result) => {
         if (result.error) {
-          message.error(result.error.message);
+          message.error(result.error.message, 10);
         } else {
           this.handleCancel();
           message.success('修改成功');

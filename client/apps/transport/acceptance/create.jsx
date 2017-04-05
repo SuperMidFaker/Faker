@@ -93,7 +93,7 @@ export default class ShipmentCreate extends React.Component {
           login_name: this.props.loginName,
         }).then((result) => {
           if (result.error) {
-            message.error(result.error.message);
+            message.error(result.error.message, 10);
           } else {
             message.success(this.msg('shipmtOpSuccess'));
             this.context.router.goBack();
@@ -126,7 +126,7 @@ export default class ShipmentCreate extends React.Component {
           login_name: this.props.loginName,
         }).then((result) => {
           if (result.error) {
-            message.error(result.error.message);
+            message.error(result.error.message, 10);
           } else {
             message.success(this.msg('shipmtOpSuccess'));
             this.context.router.goBack();
@@ -156,7 +156,7 @@ export default class ShipmentCreate extends React.Component {
       login_name: this.props.loginName,
     }).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else {
         message.success(this.msg('shipmtOpSuccess'));
         this.context.router.goBack();

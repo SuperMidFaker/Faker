@@ -191,7 +191,7 @@ export default class LandStatusList extends React.Component {
       if (!result.error) {
         this.handleTableLoad();
       } else {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       }
     });
   }
@@ -208,7 +208,7 @@ export default class LandStatusList extends React.Component {
     }
     this.props.loadShipmtDetail(row.shipmt_no, this.props.tenantId, 'sr', tabKey).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       }
     });
   }

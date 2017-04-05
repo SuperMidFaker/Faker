@@ -144,7 +144,7 @@ export default class TariffList extends React.Component {
   handleDelByQuoteNo = (quoteNo) => {
     this.props.delTariffByQuoteNo(quoteNo, this.props.tenantId).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else {
         this.handleTableLoad();
       }
@@ -153,7 +153,7 @@ export default class TariffList extends React.Component {
   handleDel = (row) => {
     this.props.delTariffById(row._id).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else {
         this.handleTableLoad();
       }
@@ -170,7 +170,7 @@ export default class TariffList extends React.Component {
       tenantId: this.props.tenantId,
     }).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else {
         this.context.router.push({
           pathname: `/transport/billing/tariff/edit/${quoteNo}/${version}`,
@@ -208,7 +208,7 @@ export default class TariffList extends React.Component {
     ev.stopPropagation();
     this.props.delDraft(shipmtNo).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else {
         this.handleTableLoad(undefined, 1);
       }

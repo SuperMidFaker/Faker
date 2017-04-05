@@ -50,7 +50,7 @@ export default class BeforeFeesModal extends React.Component {
       tenantId,
     }).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       }
     });
   }
@@ -59,7 +59,7 @@ export default class BeforeFeesModal extends React.Component {
     if (nextProps.BfdispIds !== this.props.BfdispIds) {
       this.props.loadExpsBeforeTime(nextProps.BfdispIds, this.props.tenantId).then((result) => {
         if (result.error) {
-          message.error(result.error.message);
+          message.error(result.error.message, 10);
         } else {
           const exps = result.data.data.map(item => ({
             ...item,

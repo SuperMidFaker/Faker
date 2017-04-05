@@ -91,7 +91,7 @@ export default class ShipmentDraftEdit extends React.Component {
         this.props.acceptDraft(form, loginId, loginName, tenantId)
         .then((result) => {
           if (result.error) {
-            message.error(result.error.message);
+            message.error(result.error.message, 10);
           } else {
             message.success(this.msg('shipmtOpSuccess'));
             this.context.router.goBack();
@@ -117,7 +117,7 @@ export default class ShipmentDraftEdit extends React.Component {
     this.props.saveEdit(form, this.props.tenantId, this.props.loginId)
       .then((result) => {
         if (result.error) {
-          message.error(result.error.message);
+          message.error(result.error.message, 10);
         } else {
           this.context.router.goBack();
           this.props.loadTable(null, {

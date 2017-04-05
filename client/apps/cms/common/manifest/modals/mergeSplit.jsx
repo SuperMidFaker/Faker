@@ -218,7 +218,7 @@ export default class MergeSplitModal extends React.Component {
     }
     this.props.submitBillMegeSplit({ billSeqNo, splitOpt, mergeOpt, sortOpt }).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else {
         this.props.closeMergeSplitModal();
         this.props.loadBillBody(this.props.billSeqNo);

@@ -62,7 +62,7 @@ export default class CreateOrder extends Component {
     } else {
       this.props.submitOrder({ formData, tenantId, loginId, username, tenantName }).then((result) => {
         if (result.error) {
-          message.error(result.error.message);
+          message.error(result.error.message, 10);
         } else {
           message.info('保存成功');
           this.context.router.push('/scof/orders');

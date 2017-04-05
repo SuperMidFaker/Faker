@@ -303,7 +303,7 @@ export default class AcceptList extends React.Component {
       this.props.tenantId, [row.key]
     ).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       }
     });
     this.setState({ selectedRowKeys: [row.key] });
@@ -326,7 +326,7 @@ export default class AcceptList extends React.Component {
       this.props.tenantId, dispIds
     ).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       }
     });
   }
@@ -345,7 +345,7 @@ export default class AcceptList extends React.Component {
     ev.stopPropagation();
     this.props.delDraft(shipmtNo).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else {
         this.handleTableLoad(undefined, 1);
       }
@@ -354,7 +354,7 @@ export default class AcceptList extends React.Component {
   handleShipmtPreview = (row) => {
     this.props.loadShipmtDetail(row.shipmt_no, this.props.tenantId, 'sp', 'detail').then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       }
     });
   }

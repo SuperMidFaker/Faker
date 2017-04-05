@@ -38,7 +38,7 @@ export default class AddWarehouseModal extends React.Component {
         formData.tenant_id = this.props.tenantId;
         this.props.addWarehouse(formData).then((result) => {
           if (result.error) {
-            message.error(result.error.message);
+            message.error(result.error.message, 10);
           } else {
             this.props.form.resetFields();
             this.props.closeAddWarehouseModal();

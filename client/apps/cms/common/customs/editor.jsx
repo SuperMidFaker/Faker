@@ -77,13 +77,13 @@ export default class CustomsDeclEditor extends React.Component {
       this.props.fillEntryId({ entryNo: formVals.entry_id, entryHeadId: head.id,
         billSeqNo: head.bill_seq_no, delgNo: head.delg_no }).then((result) => {
           if (result.error) {
-            message.error(result.error.message);
+            message.error(result.error.message, 10);
           }
         });
     }
     this.props.saveEntryHead({ formVals, entryHeadId: head.id }).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else {
         message.info('保存成功');
       }
@@ -93,7 +93,7 @@ export default class CustomsDeclEditor extends React.Component {
     const head = this.props.head;
     this.props.deleteDecl(head.id, head.bill_seq_no).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else {
         this.context.router.push(`/clearance/${this.props.ietype}/customs`);
       }
@@ -103,7 +103,7 @@ export default class CustomsDeclEditor extends React.Component {
     const head = this.props.head;
     this.props.setFilterReviewed(this.props.head.id, DECL_STATUS.reviewed).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else {
         this.props.loadEntry(head.bill_seq_no, head.pre_entry_seq_no, this.props.tenantId);
       }
@@ -113,7 +113,7 @@ export default class CustomsDeclEditor extends React.Component {
     const head = this.props.head;
     this.props.setFilterReviewed(head.id, DECL_STATUS.proposed).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else {
         this.props.loadEntry(head.bill_seq_no, head.pre_entry_seq_no, this.props.tenantId);
       }

@@ -468,7 +468,7 @@ export default class DispatchList extends React.Component {
   handleShipmtPreview = (row) => {
     this.props.loadShipmtDetail(row.shipmt_no, this.props.tenantId, 'sp', 'detail').then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       }
     });
   }

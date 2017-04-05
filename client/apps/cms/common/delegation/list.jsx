@@ -315,7 +315,7 @@ export default class DelegationList extends Component {
       currentPage: currentPage || current,
     }).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       }
     });
   }
@@ -331,7 +331,7 @@ export default class DelegationList extends Component {
       currentPage: currentPage || current,
     }).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       }
     });
   }
@@ -388,7 +388,7 @@ export default class DelegationList extends Component {
   handleDelgAssignRecall = (row) => {
     this.props.delgAssignRecall(row.delg_no, this.props.tenantId).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else {
         this.handleDelgListLoad();
         if (this.props.previewer.visible) {
@@ -407,7 +407,7 @@ export default class DelegationList extends Component {
   handleDelgDel = (delgNo) => {
     this.props.delDelg(delgNo).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else {
         this.handleDelgListLoad();
       }

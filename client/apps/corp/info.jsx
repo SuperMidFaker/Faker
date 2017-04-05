@@ -83,7 +83,7 @@ export default class CorpInfo extends React.Component {
           logo: file.response.data,
         });
       } else {
-        message.error(file.response.msg);
+        message.error(file.response.msg, 10);
       }
     }
   }

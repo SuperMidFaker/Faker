@@ -148,7 +148,7 @@ export default class NotificationPopover extends React.Component {
           promptType === PROMPT_TYPES.promptSpPickup || promptType === PROMPT_TYPES.promptSpPod) {
           this.props.getTenantUsers(shipment.sp_tenant_id).then(result => {
             if (result.error) {
-              message.error(result.error.message);
+              message.error(result.error.message, 10);
             } else {
               result.data.users.forEach(item => {
                 this.handleSendMessage({ to: `L_${item.login_id}`, content: JSON.stringify(content) });
@@ -165,7 +165,7 @@ export default class NotificationPopover extends React.Component {
         } else if (promptType === PROMPT_TYPES.promptDriverPod || promptType === PROMPT_TYPES.promptDriverPickup) {
           this.props.getDriver(shipment.task_driver_id).then(result => {
             if (result.error) {
-              message.error(result.error.message);
+              message.error(result.error.message, 10);
             } else {
               const driver = result.data;
               this.handleSendMessage({ to: `L_${driver.login_id}`, content: JSON.stringify(content) });
@@ -185,7 +185,7 @@ export default class NotificationPopover extends React.Component {
   handleRecordMessage({ loginId, tenantId, loginName, messages }) {
     this.props.recordMessages({ loginId, tenantId, loginName, messages }).then(result => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else {
         message.info('催促成功');
       }

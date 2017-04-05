@@ -289,7 +289,7 @@ export default class InboundShipmentsList extends React.Component {
     this.props.loadInboundPartners(this.props.tenantId).then(
       (result) => {
         if (result.error) {
-          message.error(result.error.message);
+          message.error(result.error.message, 10);
         } else {
           this.props.openModal(row);
         }
@@ -319,7 +319,7 @@ export default class InboundShipmentsList extends React.Component {
       current: 1,
     }).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       }
     });
   }
@@ -338,7 +338,7 @@ export default class InboundShipmentsList extends React.Component {
       current: 1,
     }).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       }
     });
   }

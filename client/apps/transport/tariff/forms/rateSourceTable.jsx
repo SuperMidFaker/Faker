@@ -97,7 +97,7 @@ export default class RateSourceTable extends React.Component {
   handleDel = (row) => {
     this.props.delRateSource(row._id).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else {
         let current = this.props.ratesSourceList.current;
         if (current > 1 &&
@@ -126,7 +126,7 @@ export default class RateSourceTable extends React.Component {
       }
       prom.then((result) => {
         if (result.error) {
-          message.error(result.error.message);
+          message.error(result.error.message, 10);
         } else {
           message.success('保存成功');
           let current = this.props.ratesSourceList.current;
@@ -178,7 +178,7 @@ export default class RateSourceTable extends React.Component {
       current: 1,
     }).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       }
     });
   }

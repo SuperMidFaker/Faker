@@ -50,7 +50,7 @@ export default class SpecialCategoryHsCodeList extends React.Component {
     if (hscodeCategory.id) {
       this.props.addCategoryHsCode(hscodeCategory.id, tenantId, hscode).then((result) => {
         if (result.error) {
-          message.error(result.error.message);
+          message.error(result.error.message, 10);
         } else {
           this.setState({ hscode: '' });
           this.handleTableLoad();

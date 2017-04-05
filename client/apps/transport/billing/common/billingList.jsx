@@ -91,7 +91,7 @@ export default class BillingList extends React.Component {
     const { loginId, tenantId, loginName } = this.props;
     this.props.sendBilling({ tenantId, loginId, loginName, billingId }).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else {
         message.info('发送成功');
         this.handleTableLoad();
@@ -102,7 +102,7 @@ export default class BillingList extends React.Component {
     const { loginId, tenantId, loginName } = this.props;
     this.props.removeBilling({ tenantId, loginId, loginName, billingId }).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else {
         message.info('删除成功');
         this.handleTableLoad();

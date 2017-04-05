@@ -100,7 +100,7 @@ export default class SubCustomerModal extends React.Component {
         businessType,
       }).then((result) => {
         if (result.error) {
-          message.error(result.error.message);
+          message.error(result.error.message, 10);
         } else {
           this.props.onOk();
           message.success('修改成功');

@@ -206,7 +206,7 @@ export default class InventoryStockList extends React.Component {
     }
     prom.then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       }
     });
   }

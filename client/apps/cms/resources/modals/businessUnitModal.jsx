@@ -58,7 +58,7 @@ export default class BusinessUnitModal extends React.Component {
     } else if (this.props.operation === 'edit') {
       this.props.updateBusinessUnit(businessUnit.id, name, code, customsCode, ieType).then((result) => {
         if (result.error) {
-          message.error(result.error.message);
+          message.error(result.error.message, 10);
         }
         this.handleCancel();
       });
@@ -71,7 +71,7 @@ export default class BusinessUnitModal extends React.Component {
     const { name, code, customsCode, type, ieType } = this.state;
     this.props.addBusinessUnit(name, code, customsCode, type, ieType, tenantId).then((result1) => {
       if (result1.error) {
-        message.error(result1.error.message);
+        message.error(result1.error.message, 10);
       } else {
         this.handleCancel();
         message.info('添加成功');

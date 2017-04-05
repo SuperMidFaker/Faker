@@ -45,7 +45,7 @@ export default class InstallEasipassEDI extends React.Component {
         this.props.installEasipassApp({ ...values, uuid, app_type: 'EASIPASS', tenant_id: tenantId }).then((result) => {
           this.setState({ submitting: false });
           if (result.error) {
-            message.error(result.error.message);
+            message.error(result.error.message, 10);
           } else {
             this.context.router.goBack();
           }

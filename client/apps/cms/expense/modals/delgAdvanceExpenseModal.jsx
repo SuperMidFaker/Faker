@@ -203,7 +203,7 @@ export default class DelgAdvanceExpenseModal extends React.Component {
         this.props.closeAdvanceFeeModal();
         this.setState({ editFees: {} });
       } else {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       }
     });
   }

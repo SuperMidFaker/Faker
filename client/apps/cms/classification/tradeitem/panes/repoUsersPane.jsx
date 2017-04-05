@@ -72,7 +72,7 @@ export default class CopCodesPane extends React.Component {
     this.props.addRepoUser(this.props.tenantId, record.repoId, record.partnerTenantId, record.name).then(
       (result) => {
         if (result.error) {
-          message.error(result.error.message);
+          message.error(result.error.message, 10);
         } else {
           message.info('保存成功', 5);
           this.props.loadRepoUsers(this.props.repoId);
@@ -83,7 +83,7 @@ export default class CopCodesPane extends React.Component {
   handleDelete = (record, index) => {
     this.props.deleteRepoUser(record.id).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else {
         const datas = [...this.state.datas];
         datas.splice(index, 1);

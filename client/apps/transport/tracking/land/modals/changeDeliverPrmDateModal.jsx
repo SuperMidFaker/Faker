@@ -51,7 +51,7 @@ export default class ChangeDeliverPrmDateModal extends React.Component {
     };
     this.props.changeDeliverPrmDate(data).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else {
         this.handleCancel();
         message.info('修改成功');

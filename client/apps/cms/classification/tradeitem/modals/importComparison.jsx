@@ -100,7 +100,7 @@ export default class ImportComparisonModal extends React.Component {
     const changes = JSON.stringify(feedbackChanges);
     this.props.saveComparedItemDatas({ uuid, feedbackChanges: changes, tenantId, loginId, loginName }).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else {
         this.props.setCompareVisible(false);
         this.props.loadTradeItems({
@@ -115,7 +115,7 @@ export default class ImportComparisonModal extends React.Component {
   handleRowDel = (tempId) => {
     this.props.deleteTempData(tempId).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else {
         const totCount = this.props.tempItems.totalCount - 1;
         const current = this.props.tempItems.current;

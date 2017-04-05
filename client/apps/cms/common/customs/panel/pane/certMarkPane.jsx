@@ -116,7 +116,7 @@ export default class CertMarkPane extends React.Component {
     this.props.saveCertMark(record).then(
       (result) => {
         if (result.error) {
-          message.error(result.error.message);
+          message.error(result.error.message, 10);
         } else {
           message.info('保存成功', 5);
         }
@@ -126,7 +126,7 @@ export default class CertMarkPane extends React.Component {
   handleDelete = (record, index) => {
     this.props.delbillCertmark(record.id).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else {
         const datas = [...this.state.datas];
         datas.splice(index, 1);

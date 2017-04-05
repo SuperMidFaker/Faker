@@ -61,7 +61,7 @@ export default class ChangeActDateModal extends React.Component {
     }
     this.props.changePickDeliverDate(data).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else {
         this.handleCancel();
         message.info('修改成功');

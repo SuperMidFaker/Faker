@@ -127,7 +127,7 @@ export default class RegionCascade extends React.Component {
     if (!this.props.provLoaded) {
       this.props.loadProvinces().then((result) => {
         if (result.error) {
-          message.error(result.error.message);
+          message.error(result.error.message, 10);
         }
       });
     }
@@ -197,7 +197,7 @@ export default class RegionCascade extends React.Component {
     const targetOption = selOpts[selOpts.length - 1];
     this.props.loadRegionChildren(targetOption.code).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else {
         targetOption.children = result.data.map(rg => ({
           value: rg.name,

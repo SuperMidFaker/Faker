@@ -71,7 +71,7 @@ export default class EditOrder extends Component {
     } else {
       this.props.editOrder({ formData, tenantId, loginId, username, tenantName }).then((result) => {
         if (result.error) {
-          message.error(result.error.message);
+          message.error(result.error.message, 10);
         } else {
           message.info('保存成功');
         }

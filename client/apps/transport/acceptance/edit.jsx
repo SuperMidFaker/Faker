@@ -89,7 +89,7 @@ export default class ShipmentEdit extends React.Component {
         this.props.saveEdit(form, tenantId, loginId)
         .then((result) => {
           if (result.error) {
-            message.error(result.error.message);
+            message.error(result.error.message, 10);
           } else {
             message.success(this.msg('shipmtOpSuccess'));
             this.context.router.goBack();

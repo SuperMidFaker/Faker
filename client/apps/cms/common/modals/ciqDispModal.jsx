@@ -47,7 +47,7 @@ export default class CiqDispModal extends Component {
     }
     this.props.ciqDispSave(dispatch, ciqSup).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else {
         this.props.setDispStatus({ ciqDispShow: false });
         this.props.showPreviewer(dispatch.delg_no, this.props.tabKey);

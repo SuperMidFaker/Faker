@@ -95,7 +95,7 @@ export default class CreateTemplate extends Component {
     this.props.saveTemplateData({ head, templateId: template.id }).then(
       (result) => {
         if (result.error) {
-          message.error(result.error.message);
+          message.error(result.error.message, 10);
         } else {
           message.info('保存成功');
         }

@@ -50,7 +50,7 @@ export default class NodeModal extends Component {
       const nodeInfo = Object.assign({}, nodeInfoInForm, { ...region, type: nodeType, tenant_id: tenantId });
       this.props.addNode(nodeInfo).then((result) => {
         if (result.error) {
-          message.error(result.error.message);
+          message.error(result.error.message, 10);
         } else {
           this.handleCancel();
         }

@@ -62,7 +62,7 @@ export default class DelgAcceptModal extends React.Component {
             operator.lid, operator.name, this.props.delgDispIds, this.props.delg_no
           ).then((result) => {
             if (result.error) {
-              message.error(result.error.message);
+              message.error(result.error.message, 10);
             } else {
               if (this.props.type === 'delg') {
                 this.props.setPreviewStatus({ preStatus: 'accepted' });
@@ -77,7 +77,7 @@ export default class DelgAcceptModal extends React.Component {
             operator.lid, operator.name, this.props.delgDispIds, this.props.delg_no
           ).then((result) => {
             if (result.error) {
-              message.error(result.error.message);
+              message.error(result.error.message, 10);
             } else {
               if (this.props.type === 'delg') {
                 this.props.loadCustPanel({

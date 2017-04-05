@@ -71,7 +71,7 @@ export default class BillingList extends React.Component {
     const { tenantId } = this.props;
     this.props.sendBilling({ tenantId, billingId }).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else {
         message.info('发送成功');
         this.handleTableLoad();
@@ -98,7 +98,7 @@ export default class BillingList extends React.Component {
   handleInvoiced = (billingId) => {
     this.props.billingInvoiced({ tenantId: this.props.tenantId, billingId }).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       } else {
         this.handleTableLoad();
       }

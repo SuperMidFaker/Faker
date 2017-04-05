@@ -63,7 +63,7 @@ export default class CreateBilling extends React.Component {
       tenantId,
     }).then((result) => {
       if (result.error) {
-        message.error(result.error.message);
+        message.error(result.error.message, 10);
       }
     });
   }
@@ -89,7 +89,7 @@ export default class CreateBilling extends React.Component {
         toTenantId: partnerTenantId, fees,
       }).then((result) => {
         if (result.error) {
-          message.error(result.error.message);
+          message.error(result.error.message, 10);
         } else {
           this.context.router.push(`/clearance/billing/${type}`);
         }

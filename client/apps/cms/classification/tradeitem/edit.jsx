@@ -53,7 +53,7 @@ export default class EditTradeItem extends Component {
         const item = { ...this.props.itemData, ...value };
         this.props.itemEditedSave({ item }).then((result) => {
           if (result.error) {
-            message.error(result.error.message);
+            message.error(result.error.message, 10);
           } else {
             this.context.router.push('/clearance/classification/tradeitem');
           }
