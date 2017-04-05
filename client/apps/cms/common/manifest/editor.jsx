@@ -271,6 +271,10 @@ export default class ManifestEditor extends React.Component {
     </Menu>);
     const path = `/clearance/${ietype}/manifest/`;
     const editable = !this.props.readonly && billMeta.entries.length === 0;
+    const modelProps = {};
+    if (billHead.template_id) {
+      modelProps.initialValue = billHead.template_id;
+    }
     return (
       <Layout>
         <Layout>
@@ -292,8 +296,8 @@ export default class ManifestEditor extends React.Component {
               </Dropdown>
             }
             <div className="top-bar-tools">
-              {editable && getFieldDecorator('model', { initialValue: billHead.template_id })(<Select
-                placeholder="选择模板"
+              {editable && getFieldDecorator('model', modelProps)(<Select
+                placeholder="选择可用清单模板"
                 optionFilterProp="search"
                 size="large"
                 onChange={this.handleSelectChange}

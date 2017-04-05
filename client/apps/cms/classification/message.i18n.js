@@ -13,6 +13,10 @@ const messages = defineMessages({
     id: 'cms.classificagtion.tradeitem.master',
     defaultMessage: '企业物料库',
   },
+  searchRepoPlaceholder: {
+    id: 'cms.classificagtion.tradeitem.searchRepoPlaceholder',
+    defaultMessage: '输入客户名称搜索',
+  },
   filterUnclassified: {
     id: 'cms.classificagtion.tradeitem.filter.unclassified',
     defaultMessage: '未归类',
