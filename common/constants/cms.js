@@ -133,10 +133,10 @@ export const CMS_DELEGATION_STATUS = {
   completed: 5,
 };
 
-export const CMS_BILL_STATUS = {
-  undeclared: 0,
-  declaring: 1,
-  declared: 2,
+export const CMS_DELEGATION_MANIFEST = {
+  uncreated: 0,
+  created: 1,
+  manifested: 2,
 };
 
 export const CMS_BILLING_STATUS = {

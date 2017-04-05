@@ -236,7 +236,7 @@ export default class OrderList extends React.Component {
           </RadioGroup>
           <span />
           <RadioGroup onChange={this.handleTransferChange} size="large" value={filters.transfer}>
-            <RadioButton value="all">{this.msg('all')}</RadioButton>
+            <RadioButton value="all">全部</RadioButton>
             <RadioButton value={SCOF_ORDER_TRANSFER[0].value}>{SCOF_ORDER_TRANSFER[0].text}</RadioButton>
             <RadioButton value={SCOF_ORDER_TRANSFER[1].value}>{SCOF_ORDER_TRANSFER[1].text}</RadioButton>
             <RadioButton value={SCOF_ORDER_TRANSFER[2].value}>{SCOF_ORDER_TRANSFER[2].text}</RadioButton>

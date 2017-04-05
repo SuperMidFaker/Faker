@@ -116,7 +116,7 @@ export function hidePreviewer(delgNo) {
   };
 }
 
-export function setPreviewStatus(status) {
+export function setPreviewStatus(status) { // todo
   return {
     type: actionTypes.SET_PREW_STATUS,
     data: status,

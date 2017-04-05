@@ -61,10 +61,6 @@ export default defineMessages({
     id: 'cms.delegation.stage.ciq.passed',
     defaultMessage: '报检已通过',
   },
-  declaringDelg: {
-    id: 'cms.delegation.declaring',
-    defaultMessage: '制单中',
-  },
   delgInfo: {
     id: 'cms.delegation.delg.info',
     defaultMessage: '基础信息',

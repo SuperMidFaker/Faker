@@ -31,6 +31,12 @@ export default class ClearanceForm extends Component {
     operation: PropTypes.oneOf(['view', 'edit', 'create']),
     formData: PropTypes.object.isRequired,
     formRequires: PropTypes.object.isRequired,
+    shipment: PropTypes.shape({
+      cust_shipmt_trans_mode: PropTypes.string.isRequired,
+      cust_shipmt_mawb: PropTypes.string,
+      cust_shipmt_hawb: PropTypes.string,
+      cust_shipmt_bill_lading: PropTypes.string,
+    }),
     setClientForm: PropTypes.func.isRequired,
   }
   componentDidMount() {
@@ -57,6 +63,25 @@ export default class ClearanceForm extends Component {
   handleChange = (key, value) => {
     this.handleSetClientForm({ [key]: value });
   }
+  handleShipmentRelate = () => {
+    const { shipment } = this.props;
+    if (shipment.cust_shipmt_trans_mode) {
+      const related = {
+        trans_mode: shipment.cust_shipmt_trans_mode,
+        gross_wt: shipment.cust_shipmt_weight,
+        wrap_type: shipment.cust_shipmt_wrap_type,
+        pack_count: shipment.cust_shipmt_pieces,
+        traf_name: shipment.cust_shipmt_vessel,
+        voyage_no: shipment.cust_shipmt_voy,
+      };
+      if (related.trans_mode === '2') {
+        related.bl_wb_no = shipment.cust_shipmt_bill_lading;
+      } else if (related.trans_mode === '5') {
+        related.bl_wb_no = [shipment.cust_shipmt_mawb || '', shipment.cust_shipmt_hawb || ''].join('_');
+      }
+      this.handleSetClientForm(related);
+    }
+  }
   render() {
     const { formData, formRequires, cmsQuotes } = this.props;
     const formItemLayout = {
@@ -66,7 +91,7 @@ export default class ClearanceForm extends Component {
     const node = formData.node;
     const declWays = node.kind === 'export' ? DECL_E_TYPE : DECL_I_TYPE;
     return (
-      <Card>
+      <Card extra={<a role="button" onClick={this.handleShipmentRelate}>关联货运信息</a>} style={{ paddingTop: 8 }}>
         <Row style={{ marginBottom: 8 }}>
           <Col sm={24} lg={8}>
             <FormItem label={this.msg('declareWay')} {...formItemLayout}>
@@ -99,11 +124,7 @@ export default class ClearanceForm extends Component {
           <Col sm={24} lg={8}>
             <FormItem label={this.msg('transferMode')} {...formItemLayout}>
               <Select value={node.trans_mode} onChange={value => this.handleChange('trans_mode', value)}>
-                {
-                    TRANS_MODE.map(tr =>
-                      <Option value={tr.value} key={tr.value}>{tr.text}</Option>
-                    )
-                  }
+                {TRANS_MODE.map(tr => <Option value={tr.value} key={tr.value}>{tr.text}</Option>)}
               </Select>
             </FormItem>
           </Col>
@@ -130,8 +151,7 @@ export default class ClearanceForm extends Component {
               <InputGroup compact>
                 <Input type="number" style={{ width: '50%' }} value={node.pack_count} onChange={e => this.handleChange('pack_count', e.target.value)} />
                 <Select size="large" style={{ width: '50%' }} placeholder="选择包装方式"
-                  onChange={value => this.handleChange('package', value)}
-                  value={node.package}
+                  onChange={value => this.handleChange('wrap_type', value)} value={node.wrap_type}
                 >
                   {
                     WRAP_TYPE.map(wt =>
