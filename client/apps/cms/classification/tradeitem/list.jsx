@@ -305,7 +305,6 @@ export default class TradeItemList extends Component {
     this.props.selectedRepoId(repo.id);
     this.handleItemListLoad(repo.id);
     this.props.setRepo(repo);
-    this.toggle();
   }
   handleAddOwener = () => {
     this.props.loadCustomers({
@@ -327,7 +326,6 @@ export default class TradeItemList extends Component {
     }
   }
   handleUploaded = (data) => {
-    console.log('data', data);
     this.setState({ compareduuid: data });
     this.props.setCompareVisible(true);
   }
@@ -414,21 +412,21 @@ export default class TradeItemList extends Component {
       if (listFilter.status === 'unclassified') {
         batchOperation = (<Popconfirm title={'是否删除所有选择项？'} onConfirm={() => this.handleDeleteSelected()}>
           <Button type="danger" size="large" icon="delete">
-                    批量删除
-                  </Button>
+            批量删除
+          </Button>
         </Popconfirm>);
       } else if (listFilter.status === 'pending') {
         batchOperation = (<span>
           <Button size="large" onClick={this.handleItemsPass}>
-                    批量通过
-                  </Button>
+            批量通过
+          </Button>
           <Button size="large" onClick={this.handleItemsRefused} >
-                    批量拒绝
-                  </Button>
+            批量拒绝
+          </Button>
           <Popconfirm title={'是否删除所有选择项？'} onConfirm={() => this.handleDeleteSelected()}>
             <Button type="danger" size="large" icon="delete">
-                      批量删除
-                    </Button>
+              批量删除
+            </Button>
           </Popconfirm>
         </span>);
       }

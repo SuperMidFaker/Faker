@@ -71,7 +71,7 @@ export default class AddTradeRepoModal extends React.Component {
     let newCustomers = customers;
     for (let i = 0; i < repos.length; i++) {
       const owner = repos[i];
-      newCustomers = newCustomers.filter(ct => ct.id !== owner.id);
+      newCustomers = newCustomers.filter(ct => ct.id !== owner.owner_partner_id);
     }
     return (
       <Modal title={this.msg('addRepo')} visible={visibleAddModal}
