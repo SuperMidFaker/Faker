@@ -32,6 +32,7 @@ function fetchData({ state, dispatch }) {
     thisFlow: state.scofFlow.currentFlow,
     listFilter: state.scofFlow.listFilter,
     flowList: state.scofFlow.flowList,
+    listCollapsed: state.scofFlow.listCollapsed,
   }),
   { openCreateFlowModal, loadFlowList, openFlow, reloadFlowList }
 )
@@ -40,14 +41,17 @@ function fetchData({ state, dispatch }) {
   moduleName: 'scof',
 })
 export default class FlowList extends React.Component {
+  static defaultProps ={
+    listCollapsed: false,
+  }
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
+    listCollapsed: PropTypes.bool.isRequired,
   }
   state = {
     selectedRowKeys: [],
     searchInput: '',
-    collapsed: false,
   }
   componentWillReceiveProps(nextProps) {
     if (!this.props.reload && nextProps.reload) {
@@ -66,13 +70,7 @@ export default class FlowList extends React.Component {
   msg = formatMsg(this.props.intl)
 
   columns = [{
-    title: this.msg('flowName'),
-    dataIndex: 'name',
-    width: 80,
-  }, {
-    title: this.msg('flowCustomer'),
-    dataIndex: 'customer',
-    width: 200,
+    render: (o, record) => <div><div>{record.name}</div><div className="mdc-text-grey">{record.customer}</div></div>,
   }]
   dataSource = new Table.DataSource({
     fetcher: params => this.loadFlowList({
@@ -102,11 +100,6 @@ export default class FlowList extends React.Component {
     },
     remotes: this.props.flowList,
   })
-  handleListSiderToggle = () => {
-    this.setState({
-      collapsed: !this.state.collapsed,
-    });
-  }
   handleSearch = (value) => {
     const filter = { ...this.props.listFilter, name: value };
     this.props.loadFlowList({
@@ -123,13 +116,12 @@ export default class FlowList extends React.Component {
     this.props.openCreateFlowModal();
   }
   render() {
-    const { thisFlow, flowList, loading } = this.props;
-    const { collapsed } = this.state;
+    const { thisFlow, flowList, loading, listCollapsed } = this.props;
     this.dataSource.remotes = flowList;
     return (
       <Layout>
         <Sider width={380} className="menu-sider" key="sider" trigger={null}
-          collapsible collapsed={collapsed} collapsedWidth={0}
+          collapsible collapsed={listCollapsed} collapsedWidth={0}
         >
           <div className="top-bar">
             <Breadcrumb>
@@ -147,19 +139,15 @@ export default class FlowList extends React.Component {
             <div className="toolbar">
               <Search onSearch={this.handleSearch} size="large" />
             </div>
-            <Table size="middle" dataSource={this.dataSource} columns={this.columns} onRowClick={this.handleRowClick}
+            <Table showHeader={false} size="middle" dataSource={this.dataSource} columns={this.columns} onRowClick={this.handleRowClick}
               rowClassName={record => thisFlow && record.id === thisFlow.id ? 'table-row-selected' : ''} loading={loading}
               rowKey="id"
             />
           </div>
         </Sider>
         <CreateFlowModal />
-        <div className={collapsed ? '' : 'btn-toggle-on'}
-          icon={collapsed ? 'menu-unfold' : 'menu-fold'}
-          onClick={this.handleListSiderToggle}
-        />
         {thisFlow &&
-        <FlowDesigner listCollapsed={collapsed} currentFlow={thisFlow} />
+        <FlowDesigner currentFlow={thisFlow} />
         }
       </Layout>
     );

@@ -5,6 +5,7 @@ import { Breadcrumb, Button, Card, Form, Input, Row, Col, Tabs, Table, Tooltip, 
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import InfoItem from 'client/components/InfoItem';
+import ButtonToggle from 'client/components/ButtonToggle';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import ProfileForm from './forms/profileForm';
@@ -177,9 +178,8 @@ export default class CustomerList extends React.Component {
                 {customer.name}
               </Breadcrumb.Item>
             </Breadcrumb>}
-            <Button size="large"
-              className={this.state.collapsed ? '' : 'btn-toggle-on'}
-              icon={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
+            <ButtonToggle size="large"
+              iconOn="menu-fold" iconOff="menu-unfold"
               onClick={this.toggle}
             />
             <div className="top-bar-tools">

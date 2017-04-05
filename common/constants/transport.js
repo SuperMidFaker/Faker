@@ -218,7 +218,7 @@ export const GOODS_TYPES = [{
   text: '温控货物',
 }, {
   value: 2,
-  text: '危险品',
+  text: '危化品',
 }, {
   value: 3,
   text: '大件货物',

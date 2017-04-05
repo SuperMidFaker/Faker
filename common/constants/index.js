@@ -80,7 +80,7 @@ const GOODSTYPES = [{
   text: '冷冻品',
 }, {
   value: 2,
-  text: '危险品',
+  text: '危化品',
 }];
 
 const CHINA_CODE = 'CN';

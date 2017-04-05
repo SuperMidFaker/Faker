@@ -2,10 +2,12 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Card, Menu, Dropdown, Icon, Layout, Spin, message } from 'antd';
+import { Breadcrumb, Button, Card, Menu, Dropdown, Icon, Layout, Spin, Radio, Tooltip, message } from 'antd';
 import QueueAnim from 'rc-queue-anim';
-import { loadFlowGraph, loadFlowGraphItem, saveFlowGraph, setNodeActions } from 'common/reducers/scofFlow';
+import { toggleFlowList, loadFlowGraph, loadFlowGraphItem, saveFlowGraph, setNodeActions } from 'common/reducers/scofFlow';
 import { uuidWithoutDash } from 'client/common/uuid';
+import ButtonToggle from 'client/components/ButtonToggle';
+import MdIcon from 'client/components/MdIcon';
 import FlowEdgePanel from './panel/flowEdgePanel';
 import BizObjCMSPanel from './panel/bizObjCMSPanel';
 import BizObjTMSPanel from './panel/bizObjTMSPanel';
@@ -14,6 +16,8 @@ import { formatMsg } from './message.i18n';
 
 const { Header, Content, Sider } = Layout;
 const MenuItem = Menu.Item;
+const RadioGroup = Radio.Group;
+const RadioButton = Radio.Button;
 
 @injectIntl
 @connect(
@@ -22,10 +26,14 @@ const MenuItem = Menu.Item;
     flowGraph: state.scofFlow.flowGraph,
     submitting: state.scofFlow.submitting,
     graphLoading: state.scofFlow.graphLoading,
+    listCollapsed: state.scofFlow.listCollapsed,
   }),
-  { loadFlowGraph, loadFlowGraphItem, saveFlowGraph, setNodeActions }
+  { toggleFlowList, loadFlowGraph, loadFlowGraphItem, saveFlowGraph, setNodeActions }
 )
 export default class FlowDesigner extends React.Component {
+  static defaultProps ={
+    listCollapsed: false,
+  }
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -183,6 +191,22 @@ export default class FlowDesigner extends React.Component {
       this.addNode(ev.key);
     }
   }
+  handleAddNode = (ev) => {
+    this.beginAdd = true;
+    const activeItem = this.state.activeItem;
+    if (activeItem && this.formhoc) {
+      this.formhoc.validateFields((err, values) => {
+        if (!err) {
+          this.graph.update(activeItem, values);
+          this.addNode(ev.value);
+        } else {
+          this.beginAdd = false;
+        }
+      });
+    } else {
+      this.addNode(ev.value);
+    }
+  }
   handleAddEdge = () => {
     this.beginAdd = true;
     const activeItem = this.state.activeItem;
@@ -206,6 +230,9 @@ export default class FlowDesigner extends React.Component {
   }
   msg = formatMsg(this.props.intl)
 
+  toggle = () => {
+    this.props.toggleFlowList();
+  }
   toggleRightSider = () => {
     this.setState({
       rightSidercollapsed: !this.state.rightSidercollapsed,
@@ -323,6 +350,26 @@ export default class FlowDesigner extends React.Component {
       }
     });
   }
+  renderGraghToolbar() {
+    return (<RadioGroup onChange={this.handleAddNode}>
+      <Tooltip title={this.msg('flowNodeImport')}>
+        <RadioButton value="nodeimport"><MdIcon mode="ikons" type="login" /></RadioButton>
+      </Tooltip>
+      <Tooltip title={this.msg('flowNodeExport')}>
+        <RadioButton value="nodeexport"><MdIcon mode="ikons" type="logout" /></RadioButton>
+      </Tooltip>
+      <Tooltip title={this.msg('flowNodeTMS')}>
+        <RadioButton value="nodetms"><MdIcon type="truck" /></RadioButton>
+      </Tooltip>
+      <Tooltip title={this.msg('flowNodeCWM')}>
+        <RadioButton value="nodecwm"><MdIcon type="layers" /></RadioButton>
+      </Tooltip>
+      <Tooltip title={this.msg('flowNodeTerminal')}>
+        <RadioButton value="nodeterminal"><MdIcon type="dot-circle" /></RadioButton>
+      </Tooltip>
+    </RadioGroup>
+    );
+  }
   render() {
     const { submitting, listCollapsed, currentFlow } = this.props;
     const { activeItem } = this.state;
@@ -338,6 +385,11 @@ export default class FlowDesigner extends React.Component {
                 {currentFlow.name}
               </Breadcrumb.Item>
             </Breadcrumb>}
+            <ButtonToggle size="large"
+              iconOn="menu-fold" iconOff="menu-unfold"
+              onClick={this.toggle}
+              toggle
+            />
             <div className="top-bar-tools">
               <Button size="large" type="primary" icon="save" loading={submitting} onClick={this.handleSaveBtnClick}>
                 {this.msg('saveFlow')}
@@ -353,6 +405,7 @@ export default class FlowDesigner extends React.Component {
             <Spin spinning={this.props.graphLoading}>
               <Card title={this.msg('flowRelationGraph')} bodyStyle={{ padding: 0, height: 240 }}
                 extra={<div className="toolbar-right">
+                  {this.renderGraghToolbar()}
                   <Dropdown overlay={this.menu}>
                     <Button icon="plus-square-o" >
                       {this.msg('addFlowNode')} <Icon type="down" />

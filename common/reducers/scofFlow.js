@@ -2,6 +2,7 @@ import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/scof/flow/', [
+  'TOGGLE_FLOW_LIST',
   'OPEN_CREATE_FLOW_MODAL', 'CLOSE_CREATE_FLOW_MODAL',
   'OPEN_ADD_TRIGGER_MODAL', 'CLOSE_ADD_TRIGGER_MODAL',
   'LOAD_FLOWLIST', 'LOAD_FLOWLIST_SUCCEED', 'LOAD_FLOWLIST_FAIL',
@@ -52,6 +53,8 @@ const initialState = {
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
+    case actionTypes.TOGGLE_FLOW_LIST:
+      return { ...state, listCollapsed: !state.listCollapsed };
     case actionTypes.OPEN_CREATE_FLOW_MODAL:
       return { ...state, visibleFlowModal: true };
     case actionTypes.CLOSE_CREATE_FLOW_MODAL:
@@ -146,6 +149,12 @@ export function reloadFlowList(params) {
       method: 'get',
       params,
     },
+  };
+}
+
+export function toggleFlowList() {
+  return {
+    type: actionTypes.TOGGLE_FLOW_LIST,
   };
 }
 
