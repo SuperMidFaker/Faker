@@ -460,7 +460,9 @@ export default class DelegationList extends Component {
         width: 130,
         fixed: 'right',
         render: (o, record) => {
+          // 1.当前租户为报关供应商
           if (record.customs_tenant_id === tenantId) {
+            // 1.1 报关委托未接单
             if (record.status === CMS_DELEGATION_STATUS.unaccepted && record.source === 1) {
               return (
                 <span>
@@ -490,6 +492,7 @@ export default class DelegationList extends Component {
                   </PrivilegeCover>
                 </span>
               );
+            // 1.2 报关分包未接单
             } else if (record.status === CMS_DELEGATION_STATUS.unaccepted && record.source !== 1) {
               return (
                 <span>
@@ -498,6 +501,7 @@ export default class DelegationList extends Component {
                   <RowUpdater onHit={() => this.handleDelegationAssign(record)} label={this.msg('delgDistribute')} row={record} />
                 </span>
               );
+            // 1.3 报关委托/分包已接单
             } else if (record.status === CMS_DELEGATION_STATUS.accepted) {
               return (
                 <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
@@ -505,7 +509,9 @@ export default class DelegationList extends Component {
                 </PrivilegeCover>
               );
             }
+          // 2.当前租户为发送方，且报关供应商为线下租户
           } else if (record.customs_tenant_id === -1) {
+            // 2.1报关委托已接单，且分包已接单
             if (record.status === CMS_DELEGATION_STATUS.accepted && record.sub_status === CMS_DELEGATION_STATUS.accepted) {
               return (
                 <span>
@@ -517,6 +523,7 @@ export default class DelegationList extends Component {
                 </span>
               );
             }
+          // 3.当前租户为发送方，且报关供应商为线上租户，但分包尚未接单
           } else if (record.status === CMS_DELEGATION_STATUS.accepted && record.sub_status === CMS_DELEGATION_STATUS.unaccepted) {
             return (
               <Popconfirm title="你确定撤回分配吗?" onConfirm={() => this.handleDelgAssignRecall(record)} >

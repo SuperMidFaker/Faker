@@ -252,16 +252,18 @@ export default class ManifestEditor extends React.Component {
     }
   }
 
-  lockMenu = (
-    <Menu onClick={this.handleLockMenu}>
-      <Menu.Item key="lock"><Icon type="lock" /> 锁定清单</Menu.Item>
-      <Menu.Item key="delete">
-        <Popconfirm title="确定删除清单表头表体数据?" onConfirm={this.handleBillDelete}>
-          <a> <Icon type="delete" /> 重置清单</a>
-        </Popconfirm>
-      </Menu.Item>
-      <Menu.Item key="template"><Icon type="book" /> {this.msg('saveAsTemplate')}</Menu.Item>
-    </Menu>)
+  renderOverlayMenu(editable) {
+    return (
+      <Menu onClick={this.handleLockMenu}>
+        <Menu.Item key="template"><Icon type="book" /> {this.msg('saveAsTemplate')}</Menu.Item>
+        {editable && <Menu.Item key="lock"><Icon type="lock" /> 锁定清单</Menu.Item>}
+        {editable && <Menu.Item key="delete">
+          <Popconfirm title="确定删除清单表头表体数据?" onConfirm={this.handleBillDelete}>
+            <a> <Icon type="delete" /> 重置清单</a>
+          </Popconfirm>
+        </Menu.Item>}
+      </Menu>);
+  }
   render() {
     const { ietype, readonly, form: { getFieldDecorator }, form, billHead, billBodies, billMeta, templates, ...actions } = this.props;
     const declEntryMenu = (<Menu onClick={this.handleEntryVisit}>
@@ -312,13 +314,13 @@ export default class ManifestEditor extends React.Component {
                 </OptGroup>
               </Select>)
               }
-              {editable && <Button type="primary" size="large" icon="addfile" loading={this.state.generating} onClick={this.handleGenerateEntry}>{this.msg('generateEntry')}</Button> }
               {editable &&
-                <Dropdown overlay={this.lockMenu}><Button size="large"> 更多 <Icon type="down" /></Button></Dropdown>
+                <Dropdown overlay={this.renderOverlayMenu(editable)}><Button size="large" icon="ellipsis" /></Dropdown>
               }
               {!editable &&
                 <Button size="large" icon="book" onClick={this.handleSaveAsTemplate}>{this.msg('saveAsTemplate')}</Button>
               }
+              {editable && <Button type="primary" size="large" icon="addfile" loading={this.state.generating} onClick={this.handleGenerateEntry}>{this.msg('generateEntry')}</Button> }
               <Button size="large"
                 className={this.state.collapsed ? '' : 'btn-toggle-on'}
                 icon={this.state.collapsed ? 'folder' : 'folder-open'}
