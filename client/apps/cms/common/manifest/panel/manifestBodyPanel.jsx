@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Button, Dropdown, Menu, Table, Icon, Input, Select, message, Popconfirm } from 'antd';
+import { Button, Dropdown, Menu, Table, Icon, Tooltip, Tag, Input, Select, message, Popconfirm } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { updateHeadNetWt, loadBillBody, openAmountModel, deleteSelectedBodies, openRuleModel } from 'common/reducers/cmsManifest';
 import { getItemForBody, getHscodeForBody } from 'common/reducers/cmsTradeitem';
@@ -24,8 +24,15 @@ function ColumnInput(props) {
     }
   }
   const typeStr = (!type) ? 'text' : type;
-  return inEdit ? <Input type={typeStr} autosize={autosize} value={edit[field] || ''} onChange={handleChange} />
-    : <span>{record[field] || ''}</span>;
+  if (inEdit) {
+    return (<Input type={typeStr} autosize={autosize} value={edit[field] || ''} onChange={handleChange} />);
+  } else if (field === 'cop_g_no' && record.feedback === 'noMatch') {
+    return (<Tooltip title="物料库中未对该货号归类">
+      <Tag color="red">{record[field] || ''}</Tag>
+    </Tooltip>);
+  } else {
+    return <span>{record[field] || ''}</span>;
+  }
 }
 ColumnInput.propTypes = {
   inEdit: PropTypes.bool,
@@ -83,6 +90,10 @@ function ColumnSearchSelect(props) {
         }
       </Select>
     );
+  } else if (record.feedback === 'wrongHs') {
+    return (<Tooltip title="错误的商品编码">
+      <Tag color="red">{record[field] || ''}</Tag>
+    </Tooltip>);
   } else {
     return <span>{record[field] || ''}</span>;
   }
@@ -537,7 +548,6 @@ export default class ManifestBodyPanel extends React.Component {
         tenantId,
         billSeqNo,
         delgNo: billHead.delg_no,
-        tradeCode: billHead.trade_co,
         copProdNo: value,
       });
     }
