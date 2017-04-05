@@ -5,20 +5,24 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { Breadcrumb, Button, message, Layout } from 'antd';
 import OrderForm from './forms/orderForm';
-import { loadOrder, editOrder } from 'common/reducers/crmOrders';
+import { loadFormRequires, loadOrder, editOrder } from 'common/reducers/crmOrders';
 import { loadPartnerFlowList, loadCustomerQuotes } from 'common/reducers/scofFlow';
 import messages from './message.i18n';
 import { format } from 'client/common/i18n/helpers';
+
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
 
-function fetchData({ location, dispatch }) {
-  return dispatch(loadOrder(location.query.shipmtOrderNo));
+function fetchData({ state, location, dispatch }) {
+  const proms = [
+    dispatch(loadFormRequires({ tenantId: state.account.tenantId })),
+    dispatch(loadOrder(location.query.shipmtOrderNo)),
+  ];
+  return Promise.all(proms);
 }
 
 @connectFetch()(fetchData)
 @injectIntl
-
 @connectNav({
   depth: 3,
   moduleName: 'scof',

@@ -177,7 +177,7 @@ export default class OrderForm extends Component {
       this.props.setClientForm(-1, { containers: [] });
     }
   }
-  renderSteps = (subOrders) => {
+  renderSteps = (subOrders, shipment) => {
     const { operation } = this.props;
     const steps = [];
     // steps.push(<Step key={1} status="process" description={<StepNodeForm formData={formData.subOrders[0]} index={0} operation={operation} />} />);
@@ -185,7 +185,7 @@ export default class OrderForm extends Component {
       const order = subOrders[i];
       const node = order.node;
       if (node.kind === 'import' || node.kind === 'export') {
-        steps.push(<Step key={node.node_uuid} title={node.name} status="process" description={<ClearanceForm formData={order} index={i} operation={operation} />} />);
+        steps.push(<Step key={node.node_uuid} title={node.name} status="process" description={<ClearanceForm formData={order} shipment={shipment} index={i} operation={operation} />} />);
       } else if (node.kind === 'tms') {
         steps.push(<Step key={node.node_uuid} title={node.name} status="process" description={<TransportForm formData={order} index={i} operation={operation} />} />);
       } else if (node.kind === 'cwm') {
@@ -203,6 +203,20 @@ export default class OrderForm extends Component {
     const spanFormItemLayout = {
       labelCol: { span: 3 },
       wrapperCol: { span: 21 },
+    };
+    const orderShipment = {
+      cust_shipmt_trans_mode: formData.cust_shipmt_trans_mode,
+      cust_shipmt_mawb: formData.cust_shipmt_mawb,
+      cust_shipmt_hawb: formData.cust_shipmt_hawb,
+      cust_shipmt_bill_lading: formData.cust_shipmt_bill_lading,
+      cust_shipmt_bill_lading_no: formData.cust_shipmt_bill_lading_no,
+      cust_shipmt_vessel: formData.cust_shipmt_vessel,
+      cust_shipmt_voy: formData.cust_shipmt_voy,
+      cust_shipmt_pieces: formData.cust_shipmt_pieces,
+      cust_shipmt_weight: formData.cust_shipmt_weight,
+      cust_shipmt_goods_type: formData.cust_shipmt_goods_type,
+      cust_shipmt_is_container: formData.cust_shipmt_is_container,
+      cust_shipmt_wrap_type: formData.cust_shipmt_wrap_type,
     };
     const current = formData.subOrders.length || 0;
     return (
@@ -395,7 +409,7 @@ export default class OrderForm extends Component {
           bodyStyle={{ padding: 16 }}
         >
           <Steps direction="vertical" current={current}>
-            {this.renderSteps(formData.subOrders)}
+            {this.renderSteps(formData.subOrders, orderShipment)}
           </Steps>
         </Card>
       </Form>

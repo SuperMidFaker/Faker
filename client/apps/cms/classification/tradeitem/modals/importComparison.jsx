@@ -117,7 +117,14 @@ export default class ImportComparisonModal extends React.Component {
       if (result.error) {
         message.error(result.error.message);
       } else {
-        this.handleTempItemsLoad();
+        const totCount = this.props.tempItems.totalCount - 1;
+        const current = this.props.tempItems.current;
+        const count = (current - 1) * this.props.tempItems.pageSize;
+        if (totCount === count && totCount > 0) {
+          this.handleTempItemsLoad(current - 1);
+        } else {
+          this.handleTempItemsLoad();
+        }
       }
     });
   }
@@ -134,7 +141,7 @@ export default class ImportComparisonModal extends React.Component {
       feedback = 'newGmodel';
     }
     const change = {};
-    change[`${row.id}`] = feedback;
+    change[row.id] = feedback;
     dataSource[index] = { ...row, feedback };
     this.setState({ dataSource, feedbackChanges: { ...this.state.feedbackChanges, ...change } });
   }

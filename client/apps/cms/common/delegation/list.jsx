@@ -7,7 +7,9 @@ import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import TrimSpan from 'client/components/trimSpan';
 import NavLink from 'client/components/nav-link';
-import { CMS_DELEGATION_STATUS, CMS_DELG_STATUS, CMS_SUP_STATUS, DECL_I_TYPE, DECL_E_TYPE, TRANS_MODE, CMS_DECL_WAY_TYPE } from 'common/constants';
+import {
+  CMS_DELEGATION_STATUS, CMS_DELEGATION_MANIFEST, CMS_DELG_STATUS, CMS_SUP_STATUS,
+  DECL_I_TYPE, DECL_E_TYPE, TRANS_MODE, CMS_DECL_WAY_TYPE } from 'common/constants';
 import connectNav from 'client/common/decorators/connect-nav';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import SearchBar from 'client/components/search-bar';
@@ -503,9 +505,10 @@ export default class DelegationList extends Component {
               );
             // 1.3 报关委托/分包已接单
             } else if (record.status === CMS_DELEGATION_STATUS.accepted) {
+              const label = record.manifested === CMS_DELEGATION_MANIFEST.uncreated ? this.msg('createManifest') : this.msg('editManifest');
               return (
                 <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
-                  <RowUpdater onHit={this.handleDelegationMake} label={this.msg('createManifest')} row={record} />
+                  <RowUpdater onHit={this.handleDelegationMake} label={label} row={record} />
                 </PrivilegeCover>
               );
             }
@@ -513,9 +516,10 @@ export default class DelegationList extends Component {
           } else if (record.customs_tenant_id === -1) {
             // 2.1报关委托已接单，且分包已接单
             if (record.status === CMS_DELEGATION_STATUS.accepted && record.sub_status === CMS_DELEGATION_STATUS.accepted) {
+              const label = record.manifested === CMS_DELEGATION_MANIFEST.uncreated ? this.msg('createManifest') : this.msg('editManifest');
               return (
                 <span>
-                  <RowUpdater onHit={this.handleDelegationMake} label={this.msg('createManifest')} row={record} />
+                  <RowUpdater onHit={this.handleDelegationMake} label={label} row={record} />
                   <span className="ant-divider" />
                   <Popconfirm title="你确定撤回分配吗?" onConfirm={() => this.handleDelgAssignRecall(record)} >
                     <a role="button">{this.msg('delgRecall')}</a>

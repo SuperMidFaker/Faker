@@ -1,15 +1,24 @@
 import React, { Component, PropTypes } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
+import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { BackTop, Breadcrumb, Button, message, Layout } from 'antd';
 import OrderForm from './forms/orderForm';
-import { submitOrder } from 'common/reducers/crmOrders';
+import { loadFormRequires, submitOrder } from 'common/reducers/crmOrders';
 import messages from './message.i18n';
 import { format } from 'client/common/i18n/helpers';
+
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
 
+function fetchData({ state, dispatch }) {
+  return dispatch(loadFormRequires({
+    tenantId: state.account.tenantId,
+  }));
+}
+
+@connectFetch()(fetchData)
 @injectIntl
 @connectNav({
   depth: 3,
