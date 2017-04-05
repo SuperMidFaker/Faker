@@ -11,34 +11,27 @@ import ButtonToggle from 'client/components/ButtonToggle';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import { loadOrders, loadFormRequires, removeOrder, setClientForm, acceptOrder } from 'common/reducers/crmOrders';
+import { loadOrders, removeOrder, setClientForm, acceptOrder } from 'common/reducers/crmOrders';
 import moment from 'moment';
 import PreviewPanel from './modals/preview-panel';
 import OrderNoColumn from './orderNoColumn';
 import ShipmentColumn from './shipmentColumn';
 import ProgressColumn from './progressColumn';
-import { CRM_ORDER_STATUS } from 'common/constants';
+import { SCOF_ORDER_TRANSFER, CRM_ORDER_STATUS } from 'common/constants';
 
-const formatMsg = format(messages);
 const { Header, Content } = Layout;
+const formatMsg = format(messages);
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const ButtonGroup = Button.Group;
 
 function fetchData({ state, dispatch }) {
-  const promises = [
-    dispatch(loadFormRequires({
-      tenantId: state.account.tenantId,
-    })),
-    dispatch(loadOrders({
-      tenantId: state.account.tenantId,
-      pageSize: state.crmOrders.orders.pageSize,
-      current: state.crmOrders.orders.current,
-      searchValue: state.crmOrders.orders.searchValue,
-      filters: state.crmOrders.orders.filters,
-    })),
-  ];
-  return Promise.all(promises);
+  return dispatch(loadOrders({
+    tenantId: state.account.tenantId,
+    pageSize: state.crmOrders.orders.pageSize,
+    current: state.crmOrders.orders.current,
+    filters: state.crmOrders.orderFilters,
+  }));
 }
 
 @connectFetch()(fetchData)
@@ -51,6 +44,7 @@ function fetchData({ state, dispatch }) {
     tenantName: state.account.tenantName,
     loading: state.crmOrders.loading,
     orders: state.crmOrders.orders,
+    filters: state.crmOrders.orderFilters,
   }), { loadOrders, removeOrder, setClientForm, acceptOrder }
 )
 @connectNav({
@@ -66,6 +60,7 @@ export default class OrderList extends React.Component {
     username: PropTypes.string.isRequired,
     tenantName: PropTypes.string.isRequired,
     orders: PropTypes.object.isRequired,
+    filters: PropTypes.object.isRequired,
     loadOrders: PropTypes.func.isRequired,
     removeOrder: PropTypes.func.isRequired,
     setClientForm: PropTypes.func.isRequired,
@@ -109,21 +104,38 @@ export default class OrderList extends React.Component {
       tenantId: this.props.tenantId,
       pageSize: this.props.orders.pageSize,
       current: this.props.orders.current,
-      searchValue: this.props.orders.searchValue,
-      filters: this.props.orders.filters,
+      filters: this.props.filters,
     });
   }
   handleSearch = (searchValue) => {
+    const filters = { ...this.props.filters, order_no: searchValue };
     this.props.loadOrders({
       tenantId: this.props.tenantId,
       pageSize: this.props.orders.pageSize,
       current: this.props.orders.current,
-      searchValue,
-      filters: this.props.orders.filters,
+      filters,
+    });
+  }
+  handleProgressChange = (ev) => {
+    const filters = { ...this.props.filters, progress: ev.target.value };
+    this.props.loadOrders({
+      tenantId: this.props.tenantId,
+      pageSize: this.props.orders.pageSize,
+      current: this.props.orders.current,
+      filters,
+    });
+  }
+  handleTransferChange = (ev) => {
+    const filters = { ...this.props.filters, transfer: ev.target.value };
+    this.props.loadOrders({
+      tenantId: this.props.tenantId,
+      pageSize: this.props.orders.pageSize,
+      current: this.props.orders.current,
+      filters,
     });
   }
   render() {
-    const { loading } = this.props;
+    const { loading, filters } = this.props;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -198,14 +210,13 @@ export default class OrderList extends React.Component {
         showQuickJumper: false,
         pageSize: result.pageSize,
       }),
-      getParams: (pagination, filters) => {
-        const { searchValue } = this.props.orders;
+      getParams: (pagination, tblfilters) => {
+        const newfilters = { ...this.props.filters, ...tblfilters[0] };
         const params = {
           tenantId: this.props.tenantId,
           pageSize: pagination.pageSize,
           current: pagination.current,
-          searchValue,
-          filters,
+          filters: newfilters,
         };
         return params;
       },
@@ -219,16 +230,16 @@ export default class OrderList extends React.Component {
               {this.msg('shipmentOrders')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <RadioGroup onChange={this.handleRadioChange} size="large" defaultValue="active">
-            <RadioButton value="active">{this.msg('active')}</RadioButton>
-            <RadioButton value="completed">{this.msg('completed')}</RadioButton>
+          <RadioGroup onChange={this.handleProgressChange} size="large" value={filters.progress}>
+            <RadioButton value="active">未完成</RadioButton>
+            <RadioButton value="completed">已完成</RadioButton>
           </RadioGroup>
           <span />
-          <RadioGroup onChange={this.handleIEChange} size="large" defaultValue="all">
+          <RadioGroup onChange={this.handleTransferChange} size="large" value={filters.transfer}>
             <RadioButton value="all">{this.msg('all')}</RadioButton>
-            <RadioButton value="import">{this.msg('import')}</RadioButton>
-            <RadioButton value="export">{this.msg('export')}</RadioButton>
-            <RadioButton value="domestic">{this.msg('domestic')}</RadioButton>
+            <RadioButton value={SCOF_ORDER_TRANSFER[0].value}>{SCOF_ORDER_TRANSFER[0].text}</RadioButton>
+            <RadioButton value={SCOF_ORDER_TRANSFER[1].value}>{SCOF_ORDER_TRANSFER[1].text}</RadioButton>
+            <RadioButton value={SCOF_ORDER_TRANSFER[2].value}>{SCOF_ORDER_TRANSFER[2].text}</RadioButton>
           </RadioGroup>
           <span />
           <ButtonGroup>

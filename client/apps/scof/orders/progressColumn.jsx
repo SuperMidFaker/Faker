@@ -51,7 +51,7 @@ export default class ProgressColumn extends React.Component {
                 }
               }
             }
-            return (<Step title={prog.name} description={(
+            return (<Step title={prog.name} key={prog.name} description={(
               <span>
                 {prog.start && <div className="mdc-text-grey table-font-small">开始: {prog.start.trigger_time && moment(prog.start.trigger_time).format('MM.DD HH:mm')}</div>}
                 {prog.end && <div className="mdc-text-grey table-font-small">{endDesc}: {prog.end.trigger_time && moment(prog.end.trigger_time).format('MM.DD HH:mm')}</div>}

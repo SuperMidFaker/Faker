@@ -73,10 +73,9 @@ const initialState = {
     totalCount: 0,
     pageSize: 20,
     current: 1,
-    filters: [],
-    searchValue: '',
     data: [],
   },
+  orderFilters: { progress: 'active', transfer: 'all' },
 
 };
 
@@ -96,10 +95,8 @@ export default function reducer(state = initialState, action) {
         return { ...state, formData: { ...state.formData, subOrders } };
       }
     }
-    case actionTypes.SUBMIT_ORDER_SUCCEED:
-      return { ...state };
     case actionTypes.LOAD_ORDERS:
-      return { ...state, loading: true };
+      return { ...state, loading: true, orderFilters: JSON.parse(action.params.filters) };
     case actionTypes.LOAD_ORDERS_SUCCEED:
       return { ...state, orders: action.result.data, loading: false };
     case actionTypes.LOAD_ORDER_SUCCEED:
@@ -155,7 +152,7 @@ export function loadFormRequires(params) {
   };
 }
 
-export function loadOrders({ tenantId, pageSize, current, searchValue, filters }) {
+export function loadOrders({ tenantId, pageSize, current, filters }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -165,7 +162,7 @@ export function loadOrders({ tenantId, pageSize, current, searchValue, filters }
       ],
       endpoint: 'v1/crm/orders',
       method: 'get',
-      params: { tenantId, pageSize, current, searchValue, filters: JSON.stringify(filters) },
+      params: { tenantId, pageSize, current, filters: JSON.stringify(filters) },
     },
   };
 }

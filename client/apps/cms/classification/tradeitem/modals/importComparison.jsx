@@ -141,7 +141,7 @@ export default class ImportComparisonModal extends React.Component {
       feedback = 'newGmodel';
     }
     const change = {};
-    change[`${row.id}`] = feedback;
+    change[row.id] = feedback;
     dataSource[index] = { ...row, feedback };
     this.setState({ dataSource, feedbackChanges: { ...this.state.feedbackChanges, ...change } });
   }
