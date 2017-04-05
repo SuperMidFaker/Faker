@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-import { Spin } from 'antd';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import withPrivilege from 'client/common/decorators/withPrivilege';
@@ -28,6 +27,6 @@ export default class ExportCustomsDeclView extends React.Component {
     customsDeclSpinning: PropTypes.bool.isRequired,
   }
   render() {
-    return <Spin spinning={this.props.customsDeclSpinning}><CustomsDeclEditor ietype="export" readonly /></Spin>;
+    return <CustomsDeclEditor ietype="export" declSpinning={this.props.customsDeclSpinning} readonly />;
   }
 }

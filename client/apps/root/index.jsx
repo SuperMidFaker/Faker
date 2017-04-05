@@ -45,6 +45,9 @@ function fetchData({ state, dispatch, cookie, location }) {
   }),
 )
 export default class Root extends React.Component {
+  static defaultProps = {
+    locale: 'zh',
+  }
   static propTypes = {
     children: PropTypes.object.isRequired,
     location: PropTypes.object.isRequired,

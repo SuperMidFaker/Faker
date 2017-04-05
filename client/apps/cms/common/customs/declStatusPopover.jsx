@@ -7,10 +7,10 @@ const TimelineItem = Timeline.Item;
 export default class DeclStatusPopover extends React.Component {
   static propTypes = {
     results: PropTypes.arrayOf(PropTypes.shape({
-      channel_status: PropTypes.bool.isRequired,
+      channel_status: PropTypes.number.isRequired,
       channel: PropTypes.oneOf(['hg', 'edi']),
       process_note: PropTypes.string.isRequired,
-      processed_date: PropTypes.object.isRequired,
+      processed_date: PropTypes.object,
     })),
     entryId: PropTypes.string.isRequired,
     children: PropTypes.node.isRequired,
@@ -29,7 +29,7 @@ export default class DeclStatusPopover extends React.Component {
                 channelText = 'EDI回执';
               }
               return (
-                <TimelineItem key={res.process_note} color={res.channel_status ? 'green' : 'blue'}>
+                <TimelineItem key={res.process_note} color={res.channel_status === 1 ? 'green' : 'blue'}>
                   <p>{res.process_note}</p>
                   <p>{`${moment(res.process_date).format('YYYY-MM-DD HH:mm')} ${channelText}`}</p>
                 </TimelineItem>

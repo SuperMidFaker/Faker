@@ -115,7 +115,7 @@ export class RelationAutoCompSelect extends React.Component {
     codeRules: PropTypes.array,
     nameRules: PropTypes.array,
     onSelect: PropTypes.func.isRequired,
-    onChange: PropTypes.func.isRequired,
+    onChange: PropTypes.func,
   }
 
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values);

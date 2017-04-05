@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-import { Spin } from 'antd';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import withPrivilege from 'client/common/decorators/withPrivilege';
@@ -29,6 +28,6 @@ export default class ImportManifestMake extends React.Component {
     manifestSpinning: PropTypes.bool.isRequired,
   }
   render() {
-    return <Spin spinning={this.props.manifestSpinning}><ManifestEditor ietype="import" params={this.props.params} /></Spin>;
+    return <ManifestEditor ietype="import" params={this.props.params} manifestSpinning={this.props.manifestSpinning} />;
   }
 }

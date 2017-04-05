@@ -1,12 +1,13 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Form, Breadcrumb, Button, Layout, Tabs, message, Popconfirm } from 'antd';
+import { Form, Breadcrumb, Button, Layout, Tabs, message, Popconfirm, Spin } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadEntry, saveEntryHead } from 'common/reducers/cmsManifest';
 import { deleteDecl, setFilterReviewed, showSendDeclModal } from 'common/reducers/cmsDeclare';
 import { fillEntryId } from 'common/reducers/cmsDelegation';
 import NavLink from 'client/components/nav-link';
+import ButtonToggle from 'client/components/ButtonToggle';
 import SheetHeadPanel from './panel/cdfHeadPanel';
 import SheetBodyPanel from './panel/cdfBodyPanel';
 import SheetExtraPanel from './panel/cdfExtraPanel';
@@ -43,6 +44,7 @@ export default class CustomsDeclEditor extends React.Component {
       entries: PropTypes.arrayOf(PropTypes.shape({ pre_entry_seq_no: PropTypes.string })),
       editable: PropTypes.bool,
     }),
+    declSpinning: PropTypes.bool.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -148,26 +150,27 @@ export default class CustomsDeclEditor extends React.Component {
               </Popconfirm> }
               { head.status === 1 && <Button type="primary" size="large" onClick={this.handleShowSendDeclModal}>{this.msg('sendPackets')}</Button> }
               { head.status === 1 && <Button size="large" onClick={this.handleRecall}>{this.msg('recall')}</Button> }
-              <Button size="large"
-                className={this.state.collapsed ? '' : 'btn-toggle-on'}
-                icon={this.state.collapsed ? 'folder' : 'folder-open'}
+              <ButtonToggle size="large"
+                iconOff="folder" iconOn="folder-open"
                 onClick={this.toggle}
               />
             </div>
           </Header>
           <Content className={`main-content layout-min-width layout-min-width-large ${readonly ? 'readonly' : ''}`}>
-            <div className="page-body tabbed">
-              <Tabs defaultActiveKey="header">
-                <TabPane tab="报关单表头" key="header">
-                  <SheetHeadPanel ietype={ietype} readonly={readonly} form={form} formData={head} type="entry" onSave={this.handleEntryHeadSave} />
-                </TabPane>
-                <TabPane tab="报关单表体" key="body">
-                  <SheetBodyPanel ietype={ietype} readonly={readonly} data={bodies}
-                    headNo={head.id} billSeqNo={head.bill_seq_no} type="entry"
-                  />
-                </TabPane>
-              </Tabs>
-            </div>
+            <Spin spinning={this.props.declSpinning}>
+              <div className="page-body tabbed">
+                <Tabs defaultActiveKey="header">
+                  <TabPane tab="报关单表头" key="header">
+                    <SheetHeadPanel ietype={ietype} readonly={readonly} form={form} formData={head} type="entry" onSave={this.handleEntryHeadSave} />
+                  </TabPane>
+                  <TabPane tab="报关单表体" key="body">
+                    <SheetBodyPanel ietype={ietype} readonly={readonly} data={bodies}
+                      headNo={head.id} billSeqNo={head.bill_seq_no} type="entry"
+                    />
+                  </TabPane>
+                </Tabs>
+              </div>
+            </Spin>
           </Content>
         </Layout>
         <Sider

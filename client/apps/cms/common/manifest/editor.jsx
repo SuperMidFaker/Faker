@@ -7,6 +7,7 @@ import { addNewBillBody, delBillBody, editBillBody, saveBillHead,
   openMergeSplitModal, billDelete, updateHeadNetWt, loadBillBody, saveBillRules, setStepVisible, billHeadChange } from 'common/reducers/cmsManifest';
 import { loadTemplateFormVals } from 'common/reducers/cmsSettings';
 import NavLink from 'client/components/nav-link';
+import ButtonToggle from 'client/components/ButtonToggle';
 import SheetHeadPanel from './panel/manifestHeadPanel';
 import SheetBodyPanel from './panel/manifestBodyPanel';
 import MergeSplitModal from './modals/mergeSplit';
@@ -53,6 +54,7 @@ export default class ManifestEditor extends React.Component {
     }),
     templates: PropTypes.array.isRequired,
     templateValLoading: PropTypes.bool.isRequired,
+    manifestSpinning: PropTypes.bool.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -310,36 +312,32 @@ export default class ManifestEditor extends React.Component {
                 </OptGroup>
               </Select>)
               }
-              {editable &&
-                <Dropdown overlay={this.renderOverlayMenu(editable)}><Button size="large" icon="ellipsis" /></Dropdown>
-              }
-              {!editable &&
-                <Button size="large" icon="book" onClick={this.handleSaveAsTemplate}>{this.msg('saveAsTemplate')}</Button>
-              }
+              <Dropdown overlay={this.renderOverlayMenu(editable)}><Button size="large" icon="ellipsis" /></Dropdown>
               {editable && <Button type="primary" size="large" icon="addfile" loading={this.state.generating} onClick={this.handleGenerateEntry}>{this.msg('generateEntry')}</Button> }
-              <Button size="large"
-                className={this.state.collapsed ? '' : 'btn-toggle-on'}
-                icon={this.state.collapsed ? 'folder' : 'folder-open'}
+              <ButtonToggle size="large"
+                iconOff="folder" iconOn="folder-open"
                 onClick={this.toggle}
               />
             </div>
           </Header>
           <Content className={`main-content layout-min-width layout-min-width-large ${readonly ? 'readonly' : ''}`}>
-            <div className="page-body tabbed">
-              <Tabs defaultActiveKey="header">
-                <TabPane tab="清单表头" key="header">
-                  <Spin spinning={this.props.templateValLoading}>
-                    <SheetHeadPanel ietype={ietype} readonly={!editable} form={form} formData={this.state.headData} ruleRequired type="bill" onSave={this.handleBillSave} />
-                  </Spin>
-                </TabPane>
-                <TabPane tab="清单表体" key="body">
-                  <SheetBodyPanel ietype={ietype} readonly={!editable} headForm={form} data={billBodies} headNo={billHead.bill_seq_no}
-                    onAdd={actions.addNewBillBody} onDel={actions.delBillBody} onEdit={actions.editBillBody}
-                    billSeqNo={billHead.bill_seq_no} type="bill"
-                  />
-                </TabPane>
-              </Tabs>
-            </div>
+            <Spin spinning={this.props.manifestSpinning}>
+              <div className="page-body tabbed">
+                <Tabs defaultActiveKey="header">
+                  <TabPane tab="清单表头" key="header">
+                    <Spin spinning={this.props.templateValLoading}>
+                      <SheetHeadPanel ietype={ietype} readonly={!editable} form={form} formData={this.state.headData} ruleRequired type="bill" onSave={this.handleBillSave} />
+                    </Spin>
+                  </TabPane>
+                  <TabPane tab="清单表体" key="body">
+                    <SheetBodyPanel ietype={ietype} readonly={!editable} headForm={form} data={billBodies} headNo={billHead.bill_seq_no}
+                      onAdd={actions.addNewBillBody} onDel={actions.delBillBody} onEdit={actions.editBillBody}
+                      billSeqNo={billHead.bill_seq_no} type="bill"
+                    />
+                  </TabPane>
+                </Tabs>
+              </div>
+            </Spin>
           </Content>
         </Layout>
         <Sider
