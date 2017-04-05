@@ -104,14 +104,13 @@ export default class CustomerList extends React.Component {
     this.setState({ currentPage: page });
   }
   handleSearch = (value) => {
-    const customers = this.props.customers.filter((item) => {
-      if (value) {
+    let customers = this.props.customers;
+    if (value) {
+      customers = this.props.customers.filter((item) => {
         const reg = new RegExp(value);
         return reg.test(item.name);
-      } else {
-        return true;
-      }
-    });
+      });
+    }
     this.setState({ customers, currentPage: 1 });
   }
   handleSaveBtnClick = () => {

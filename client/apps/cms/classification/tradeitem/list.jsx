@@ -4,8 +4,8 @@ import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Alert, Breadcrumb, Button, Collapse, Layout, Radio, Dropdown, Icon, Menu, Popconfirm, Tooltip, message } from 'antd';
-import Table from 'client/components/remoteAntTable';
+import { Alert, Breadcrumb, Button, Collapse, Layout, Radio, Dropdown, Icon, Menu, Popconfirm, Tooltip, Input, Table, message } from 'antd';
+import RemoteTable from 'client/components/remoteAntTable';
 import NavLink from 'client/components/nav-link';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
@@ -26,6 +26,7 @@ const { Header, Content, Sider } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const Panel = Collapse.Panel;
+const Search = Input.Search;
 
 function fetchData({ state, dispatch }) {
   const promises = [];
@@ -88,6 +89,8 @@ export default class TradeItemList extends Component {
     rightSidercollapsed: true,
     selectedRowKeys: [],
     compareduuid: '',
+    repos: [],
+    currentPage: 1,
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.repos !== this.props.repos && nextProps.repos.length > 0) {
@@ -98,6 +101,7 @@ export default class TradeItemList extends Component {
         this.handleRowClick(nextProps.repos[0]);
       }
     }
+    this.setState({ repos: nextProps.repos });
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
@@ -243,7 +247,7 @@ export default class TradeItemList extends Component {
     title: this.msg('remark'),
     dataIndex: 'remark',
   }]
-  dataSource = new Table.DataSource({
+  dataSource = new RemoteTable.DataSource({
     fetcher: params => this.props.loadTradeItems(params),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
@@ -398,6 +402,19 @@ export default class TradeItemList extends Component {
     const { repoId, listFilter } = this.props;
     this.handleItemListLoad(repoId, 1, listFilter, value);
   }
+  handlePageChange = (page) => {
+    this.setState({ currentPage: page });
+  }
+  handleRepoSearch = (value) => {
+    let repos = this.props.repos;
+    if (value) {
+      repos = this.props.repos.filter((item) => {
+        const reg = new RegExp(value);
+        return reg.test(item.owner_name);
+      });
+    }
+    this.setState({ repos, currentPage: 1 });
+  }
   render() {
     const { tradeItemlist, repoId, repo, listFilter } = this.props;
     const selectedRows = this.state.selectedRowKeys;
@@ -530,7 +547,13 @@ export default class TradeItemList extends Component {
             </div>
           </div>
           <div className="left-sider-panel" >
-            <Table size="middle" dataSource={this.props.repos} columns={repoColumns} showHeader={false} onRowClick={this.handleRowClick}
+            <div className="toolbar">
+              <Search
+                placeholder={this.msg('searchRepoPlaceholder')}
+                onSearch={this.handleRepoSearch} size="large"
+              />
+            </div>
+            <Table size="middle" dataSource={this.state.repos} columns={repoColumns} showHeader={false} onRowClick={this.handleRowClick}
               rowKey="id" pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }}
               rowClassName={record => record.id === repo.id ? 'table-row-selected' : ''}
             />
@@ -596,7 +619,7 @@ export default class TradeItemList extends Component {
                 {batchOperation}
               </div>
               <div className="panel-body table-panel">
-                <Table rowSelection={rowSelection} rowKey={record => record.id} columns={columns} dataSource={this.dataSource} scroll={{ x: 3800 }} />
+                <RemoteTable rowSelection={rowSelection} rowKey={record => record.id} columns={columns} dataSource={this.dataSource} scroll={{ x: 3800 }} />
               </div>
               <AddTradeRepoModal />
               <ImportComparisonModal data={this.state.compareduuid} />

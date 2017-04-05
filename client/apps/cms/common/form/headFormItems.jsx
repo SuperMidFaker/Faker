@@ -450,7 +450,7 @@ export function TradeRemission(props) {
     getFieldDecorator,
     searchKeyFn: opt => opt.value,
   };
-  const declWay = formData.decl_way_code !== '0102' && formData.decl_way_code !== '0103';
+  // const declWay = formData.decl_way_code !== '0102' && formData.decl_way_code !== '0103';
   const remissionProps = {
     outercol: 24,
     col: 8,
@@ -459,7 +459,8 @@ export function TradeRemission(props) {
       value: rm.rm_mode,
       text: `${rm.rm_mode} | ${rm.rm_spec}`,
     })),
-    rules: declWay ? [{ required }] : [{ required: false }],
+    // rules: declWay ? [{ required }] : [{ required: false }],
+    required: false,
     label: msg('rmModeName'),
     disabled,
     formData,
