@@ -13,6 +13,9 @@ const actionTypes = createActionTypes('@@welogix/cms/settings/', [
   'SAVE_TEMPLATE_DATA', 'SAVE_TEMPLATE_DATA_SUCCEED', 'SAVE_TEMPLATE_DATA_FAIL',
   'SAVE_GENERATED_TEMPLATE', 'SAVE_GENERATED_TEMPLATE_SUCCEED', 'SAVE_GENERATED_TEMPLATE_FAIL',
   'VALIDATE_NAME', 'VALIDATE_NAME_SUCCEED', 'VALIDATE_NAME_FAIL',
+  'ADD_BILL_TEMPLATE_USER', 'ADD_BILL_TEMPLATE_USER_SUCCEED', 'ADD_BILL_TEMPLATE_USER_FAIL',
+  'DELETE_BILL_TEMPLATE_USER', 'DELETE_BILL_TEMPLATE_USER_SUCCEED', 'DELETE_BILL_TEMPLATE_USER_FAIL',
+  'LOAD_BILL_TEMPLATE_USERS', 'LOAD_BILL_TEMPLATE_USERS_SUCCEED', 'LOAD_BILL_TEMPLATE_USERS_FAIL',
 ]);
 
 const initialState = {
@@ -26,6 +29,7 @@ const initialState = {
   billHead: {},
   visibleAddModal: false,
   relatedCustomers: [],
+  billTemplateUsers: [],
   formData: {},
 };
 
@@ -61,8 +65,10 @@ export default function reducer(state = initialState, action) {
         retData.ietype = 'export';
       }
       return { ...state, template: { ...state.template, ...retData }, relatedCustomers: action.result.data.customers,
-        formData: action.result.data.formData, templateValLoading: false };
+        formData: action.result.data.formData, billTemplateUsers: action.result.data.users, templateValLoading: false };
     }
+    case actionTypes.LOAD_BILL_TEMPLATE_USERS_SUCCEED:
+      return { ...state, billTemplateUsers: action.result.data };
     case actionTypes.LOAD_FORM_VALS_FAIL:
       return { ...state, templateValLoading: false };
     default:
@@ -231,6 +237,51 @@ export function validateTempName(params) {
       endpoint: 'v1/cms/settings/template/validate/name',
       method: 'get',
       params,
+    },
+  };
+}
+
+export function addBillTemplateUser(datas) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.ADD_BILL_TEMPLATE_USER,
+        actionTypes.ADD_BILL_TEMPLATE_USER_SUCCEED,
+        actionTypes.ADD_BILL_TEMPLATE_USER_FAIL,
+      ],
+      endpoint: 'v1/cms/settings/billtemplate/user/add',
+      method: 'post',
+      data: datas,
+    },
+  };
+}
+
+export function deleteBillTemplateUser(id) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DELETE_BILL_TEMPLATE_USER,
+        actionTypes.DELETE_BILL_TEMPLATE_USER_SUCCEED,
+        actionTypes.DELETE_BILL_TEMPLATE_USER_FAIL,
+      ],
+      endpoint: 'v1/cms/settings/billtemplate/user/delete',
+      method: 'post',
+      data: { id },
+    },
+  };
+}
+
+export function loadBillTemplateUsers(templateId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_BILL_TEMPLATE_USERS,
+        actionTypes.LOAD_BILL_TEMPLATE_USERS_SUCCEED,
+        actionTypes.LOAD_BILL_TEMPLATE_USERS_FAIL,
+      ],
+      endpoint: 'v1/cms/settings/billtemplate/users',
+      method: 'get',
+      params: { templateId },
     },
   };
 }

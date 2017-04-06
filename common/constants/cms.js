@@ -352,3 +352,8 @@ export const CMS_TRADE_REPO_PERMISSION = {
   approval: 'approval',
   view: 'view',
 };
+
+export const CMS_BILL_TEMPLATE_PERMISSION = {
+  edit: 'edit',
+  view: 'view',
+};

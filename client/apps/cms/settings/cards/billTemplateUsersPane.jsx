@@ -2,11 +2,11 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Button, Icon, Table, Select, message } from 'antd';
-import { loadRepoUsers, addRepoUser, deleteRepoUser } from 'common/reducers/cmsTradeitem';
+import { loadBillTemplateUsers, addBillTemplateUser, deleteBillTemplateUser } from 'common/reducers/cmsSettings';
 import { loadPartners } from 'common/reducers/partner';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../../message.i18n';
-import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES, CMS_TRADE_REPO_PERMISSION } from 'common/constants';
+import messages from '../message.i18n';
+import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES, CMS_BILL_TEMPLATE_PERMISSION } from 'common/constants';
 const role = PARTNER_ROLES.SUP;
 const businessType = PARTNER_BUSINESSE_TYPES.clearance;
 
@@ -19,24 +19,22 @@ const Option = Select.Option;
     tenantId: state.account.tenantId,
     tenantName: state.account.tenantName,
     loginId: state.account.loginId,
-    tabKey: state.cmsTradeitem.tabKey,
-    repoId: state.cmsTradeitem.repoId,
-    repoUsers: state.cmsTradeitem.repoUsers,
+    billTemplateUsers: state.cmsSettings.billTemplateUsers,
   }),
-  { loadPartners, loadRepoUsers, addRepoUser, deleteRepoUser }
+  { loadPartners, loadBillTemplateUsers, addBillTemplateUser, deleteBillTemplateUser }
 )
-export default class RepoUsersPane extends React.Component {
+export default class BillTemplateUsersPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantName: PropTypes.number.isRequired,
     tenantId: PropTypes.number.isRequired,
-    repoUsers: PropTypes.array,
-    repoId: PropTypes.number,
-    repo: PropTypes.object.isRequired,
+    template: PropTypes.object.isRequired,
+    billTemplateUsers: PropTypes.array.isRequired,
   }
   state = {
     datas: [],
     brokers: [],
+    user: {},
   };
   componentDidMount() {
     this.props.loadPartners({
@@ -46,42 +44,38 @@ export default class RepoUsersPane extends React.Component {
     }).then((result) => {
       this.setState({ brokers: result.data.filter(item => item.partner_tenant_id !== -1) });
     });
-    this.props.loadRepoUsers(this.props.repoId);
   }
   componentWillReceiveProps(nextProps) {
-    if (this.props.repoId !== nextProps.repoId ||
-      (this.props.tabKey !== nextProps.tabKey && nextProps.tabKey === 'copCodes')) {
-      this.props.loadRepoUsers(nextProps.repoId);
-    }
-    if (this.props.repoUsers !== nextProps.repoUsers) {
-      this.setState({ datas: nextProps.repoUsers });
-    }
+    this.setState({
+      datas: nextProps.billTemplateUsers,
+      user: nextProps.billTemplateUsers.find(item => item.tenant_id === this.props.tenantId),
+    });
   }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
   handleAdd = () => {
     const addOne = {
-      repoId: this.props.repoId,
-      partnerTenantId: -1,
-      name: '',
+      template_id: this.props.template.id,
+      tenant_id: null,
+      tenant_name: '',
     };
     const data = this.state.datas;
     data.push(addOne);
     this.setState({ datas: data });
   }
   handleSave = (record) => {
-    this.props.addRepoUser(this.props.tenantId, record.repoId, record.partnerTenantId, record.name).then(
+    this.props.addBillTemplateUser(record).then(
       (result) => {
         if (result.error) {
           message.error(result.error.message, 10);
         } else {
           message.info('保存成功', 5);
-          this.props.loadRepoUsers(this.props.repoId);
+          this.props.loadBillTemplateUsers(this.props.template.id);
         }
       }
     );
   }
   handleDelete = (record, index) => {
-    this.props.deleteRepoUser(record.id).then((result) => {
+    this.props.deleteBillTemplateUser(record.id).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -93,10 +87,9 @@ export default class RepoUsersPane extends React.Component {
   }
   handleTradeSel = (record, value) => {
     record.tenant_id = value; // eslint-disable-line no-param-reassign
-    record.partnerTenantId = value; // eslint-disable-line no-param-reassign
     const rels = this.state.brokers.find(tr => tr.partner_tenant_id === value);
     if (rels) {
-      record.name = rels.name; // eslint-disable-line no-param-reassign
+      record.tenant_name = rels.name; // eslint-disable-line no-param-reassign
     }
     this.forceUpdate();
   }
@@ -106,11 +99,10 @@ export default class RepoUsersPane extends React.Component {
     this.setState({ datas });
   }
   render() {
-    const { repo } = this.props;
-    const { brokers } = this.state;
+    const { brokers, user } = this.state;
     const columns = [{
-      title: this.msg('tradeName'),
-      dataIndex: 'name',
+      title: this.msg('tenantName'),
+      dataIndex: 'tenant_name',
       width: 160,
       render: (o, record) => {
         if (!record.id) {
@@ -122,11 +114,11 @@ export default class RepoUsersPane extends React.Component {
             </Select>
           );
         } else {
-          return record.name;
+          return record.tenant_name;
         }
       },
     }];
-    if (repo.permission === CMS_TRADE_REPO_PERMISSION.edit) {
+    if (user.permission === CMS_BILL_TEMPLATE_PERMISSION.edit) {
       columns.push({
         width: 70,
         render: (o, record, index) => {
@@ -153,7 +145,7 @@ export default class RepoUsersPane extends React.Component {
     }
     return (
       <Table size="middle" pagination={false} columns={columns} dataSource={this.state.datas}
-        footer={repo.permission === CMS_TRADE_REPO_PERMISSION.edit ? () => <Button type="dashed" onClick={this.handleAdd} icon="plus" style={{ width: '100%' }}>{this.msg('add')}</Button> : null}
+        footer={user.permission === CMS_BILL_TEMPLATE_PERMISSION.edit ? () => <Button type="dashed" onClick={this.handleAdd} icon="plus" style={{ width: '100%' }}>{this.msg('add')}</Button> : null}
       />
     );
   }

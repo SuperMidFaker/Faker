@@ -37,5 +37,9 @@ const messages = defineMessages({
     id: 'cms.app.settings.add.related.customers',
     defaultMessage: '添加关联客户',
   },
+  tenantName: {
+    id: 'cms.app.settings.billTemplate.tenantName',
+    defaultMessage: '企业名称',
+  },
 });
 export default messages;
