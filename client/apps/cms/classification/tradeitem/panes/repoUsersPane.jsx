@@ -28,7 +28,7 @@ const Option = Select.Option;
 export default class RepoUsersPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantName: PropTypes.number.isRequired,
+    tenantName: PropTypes.string.isRequired,
     tenantId: PropTypes.number.isRequired,
     repoUsers: PropTypes.array,
     repoId: PropTypes.number,
@@ -46,7 +46,9 @@ export default class RepoUsersPane extends React.Component {
     }).then((result) => {
       this.setState({ brokers: result.data.filter(item => item.partner_tenant_id !== -1) });
     });
-    this.props.loadRepoUsers(this.props.repoId);
+    if (this.props.repoId) {
+      this.props.loadRepoUsers(this.props.repoId);
+    }
   }
   componentWillReceiveProps(nextProps) {
     if (this.props.repoId !== nextProps.repoId ||

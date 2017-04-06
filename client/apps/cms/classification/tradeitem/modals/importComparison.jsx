@@ -36,7 +36,7 @@ export default class ImportComparisonModal extends React.Component {
     listFilter: PropTypes.object.isRequired,
     tempItems: PropTypes.object,
     visibleCompareModal: PropTypes.bool.isRequired,
-    data: PropTypes.array.isRequired,
+    data: PropTypes.string.isRequired,
   }
   constructor(props) {
     super(props);

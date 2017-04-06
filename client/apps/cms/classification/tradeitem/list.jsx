@@ -4,7 +4,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Alert, Breadcrumb, Button, Collapse, Layout, Radio, Dropdown, Icon, Menu, Popconfirm, Tooltip, Input, Table, message } from 'antd';
+import { Alert, Breadcrumb, Button, Collapse, Layout, Radio, Dropdown, Icon, Menu, Popconfirm, Tooltip, Table, message } from 'antd';
 import RemoteTable from 'client/components/remoteAntTable';
 import NavLink from 'client/components/nav-link';
 import { format } from 'client/common/i18n/helpers';
@@ -27,7 +27,6 @@ const { Header, Content, Sider } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const Panel = Collapse.Panel;
-const Search = Input.Search;
 
 function fetchData({ state, dispatch }) {
   const promises = [];
@@ -553,9 +552,9 @@ export default class TradeItemList extends Component {
           </div>
           <div className="left-sider-panel" >
             <div className="toolbar">
-              <Search
+              <SearchBar
                 placeholder={this.msg('searchRepoPlaceholder')}
-                onSearch={this.handleRepoSearch} size="large"
+                onInputSearch={this.handleRepoSearch} size="large"
               />
             </div>
             <Table size="middle" dataSource={this.state.repos} columns={repoColumns} showHeader={false} onRowClick={this.handleRowClick}

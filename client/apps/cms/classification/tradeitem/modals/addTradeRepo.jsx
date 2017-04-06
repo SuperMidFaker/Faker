@@ -27,7 +27,7 @@ export default class AddTradeRepoModal extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
-    tenantName: PropTypes.number.isRequired,
+    tenantName: PropTypes.string.isRequired,
     loginId: PropTypes.number.isRequired,
     visibleAddModal: PropTypes.bool.isRequired,
     customers: PropTypes.array.isRequired,

@@ -4,6 +4,7 @@ import { Collapse, Form, Col, Row, Select } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { GOODS_TYPES } from 'common/constants';
 import FlowTriggerTable from '../compose/flowTriggerTable';
+import * as Location from 'client/util/location';
 import { formatMsg } from '../../message.i18n';
 
 const FormItem = Form.Item;
@@ -22,6 +23,7 @@ export default class TMSShipmentPane extends Component {
     form: PropTypes.object.isRequired,
   }
   msg = formatMsg(this.props.intl)
+  renderConsign = consign => `${consign.name} ${Location.renderLoc(consign)} ${consign.contact || ''} ${consign.mobile || ''}`
   render() {
     const { form: { getFieldDecorator }, onNodeActionsChange, model, tmsParams: { consigners, consignees, transitModes } } = this.props;
     return (
@@ -34,7 +36,7 @@ export default class TMSShipmentPane extends Component {
                   initialValue: model.consigner_id,
                 })(<Select allowClear>
                   {
-                    consigners.map(cg => <Option value={cg.node_id} key={cg.name}>{cg.name}</Option>)
+                    consigners.map(cg => <Option value={cg.node_id} key={cg.name}>{this.renderConsign(cg)}</Option>)
                   }
                 </Select>)}
               </FormItem>
@@ -45,7 +47,7 @@ export default class TMSShipmentPane extends Component {
                   initialValue: model.consignee_id,
                 })(<Select allowClear>
                   {
-                    consignees.map(cg => <Option value={cg.node_id} key={cg.name}>{cg.name}</Option>)
+                    consignees.map(cg => <Option value={cg.node_id} key={cg.name}>{this.renderConsign(cg)}</Option>)
                   }
                 </Select>)}
               </FormItem>

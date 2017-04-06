@@ -29,6 +29,10 @@ const messages = defineMessages({
     id: 'cms.app.settings.edit',
     defaultMessage: '修改',
   },
+  view: {
+    id: 'cms.app.settings.view',
+    defaultMessage: '查看',
+  },
   relatedCustomers: {
     id: 'cms.app.settings.related.customers',
     defaultMessage: '关联客户',

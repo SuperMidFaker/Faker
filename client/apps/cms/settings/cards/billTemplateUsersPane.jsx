@@ -6,7 +6,7 @@ import { loadBillTemplateUsers, addBillTemplateUser, deleteBillTemplateUser } fr
 import { loadPartners } from 'common/reducers/partner';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
-import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES, CMS_BILL_TEMPLATE_PERMISSION } from 'common/constants';
+import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 const role = PARTNER_ROLES.SUP;
 const businessType = PARTNER_BUSINESSE_TYPES.clearance;
 
@@ -30,11 +30,11 @@ export default class BillTemplateUsersPane extends React.Component {
     tenantId: PropTypes.number.isRequired,
     template: PropTypes.object.isRequired,
     billTemplateUsers: PropTypes.array.isRequired,
+    operation: PropTypes.string.isRequired,
   }
   state = {
     datas: [],
     brokers: [],
-    user: {},
   };
   componentDidMount() {
     this.props.loadPartners({
@@ -48,7 +48,6 @@ export default class BillTemplateUsersPane extends React.Component {
   componentWillReceiveProps(nextProps) {
     this.setState({
       datas: nextProps.billTemplateUsers,
-      user: nextProps.billTemplateUsers.find(item => item.tenant_id === this.props.tenantId),
     });
   }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
@@ -99,7 +98,8 @@ export default class BillTemplateUsersPane extends React.Component {
     this.setState({ datas });
   }
   render() {
-    const { brokers, user } = this.state;
+    const { brokers } = this.state;
+    const { operation } = this.props;
     const columns = [{
       title: this.msg('tenantName'),
       dataIndex: 'tenant_name',
@@ -118,7 +118,7 @@ export default class BillTemplateUsersPane extends React.Component {
         }
       },
     }];
-    if (user.permission === CMS_BILL_TEMPLATE_PERMISSION.edit) {
+    if (operation === 'edit') {
       columns.push({
         width: 70,
         render: (o, record, index) => {
@@ -145,7 +145,7 @@ export default class BillTemplateUsersPane extends React.Component {
     }
     return (
       <Table size="middle" pagination={false} columns={columns} dataSource={this.state.datas}
-        footer={user.permission === CMS_BILL_TEMPLATE_PERMISSION.edit ? () => <Button type="dashed" onClick={this.handleAdd} icon="plus" style={{ width: '100%' }}>{this.msg('add')}</Button> : null}
+        footer={operation === 'edit' ? () => <Button type="dashed" onClick={this.handleAdd} icon="plus" style={{ width: '100%' }}>{this.msg('add')}</Button> : null}
       />
     );
   }

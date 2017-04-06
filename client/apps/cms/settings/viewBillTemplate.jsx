@@ -20,8 +20,8 @@ function fetchData({ dispatch, state, params }) {
   depth: 3,
   moduleName: 'clearance',
 })
-export default class EditBillTemplate extends Component {
+export default class ViewBillTemplate extends Component {
   render() {
-    return (<BillTemplate operation="edit" />);
+    return (<BillTemplate operation="view" />);
   }
 }
