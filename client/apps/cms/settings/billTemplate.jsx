@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Breadcrumb, Form, Layout, Row, Col, Button, Tooltip, Table, Popconfirm, Icon, message, Mention, Collapse } from 'antd';
-import { openAddModal, deleteRelatedCustomer, loadRelatedCustomers, saveTemplateData } from 'common/reducers/cmsSettings';
+import { openAddModal, deleteRelatedCustomer, loadRelatedCustomers, saveTemplateData, countFieldsChange } from 'common/reducers/cmsSettings';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from './message.i18n';
 import { format } from 'client/common/i18n/helpers';
@@ -29,10 +29,11 @@ const Panel = Collapse.Panel;
     templateName: state.cmsSettings.template.template_name,
     relatedCustomers: state.cmsSettings.relatedCustomers,
     formData: state.cmsSettings.formData,
+    changeTimes: state.cmsSettings.changeTimes,
   }),
-  { loadCustomers, openAddModal, deleteRelatedCustomer, loadRelatedCustomers, saveTemplateData }
+  { loadCustomers, openAddModal, deleteRelatedCustomer, loadRelatedCustomers, saveTemplateData, countFieldsChange }
 )
-@Form.create()
+@Form.create({ onFieldsChange: (props, values) => props.countFieldsChange(values) })
 export default class BillTemplate extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -42,6 +43,7 @@ export default class BillTemplate extends Component {
     relatedCustomers: PropTypes.array,
     template: PropTypes.object.isRequired,
     operation: PropTypes.string.isRequired,
+    changeTimes: PropTypes.number,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -49,6 +51,12 @@ export default class BillTemplate extends Component {
   state = {
     attachments: [],
     rightSidercollapsed: true,
+    changed: false,
+  }
+  componentWillReceiveProps(nextProps) {
+    if (this.props.changeTimes !== nextProps.changeTimes) {
+      this.setState({ changed: true });
+    }
   }
   msg = key => formatMsg(this.props.intl, key);
   handleSave = () => {
@@ -85,6 +93,7 @@ export default class BillTemplate extends Component {
         if (result.error) {
           message.error(result.error.message, 10);
         } else {
+          this.setState({ changed: false });
           message.info('保存成功');
         }
       }
@@ -178,7 +187,7 @@ export default class BillTemplate extends Component {
                 {this.msg('cancel')}
               </Button>}
               {operation === 'edit' &&
-              <Button size="large" type="primary" icon="save" onClick={this.handleSave}>
+              <Button size="large" type="primary" icon="save" onClick={this.handleSave} disabled={!this.state.changed}>
                 {this.msg('save')}
               </Button>}
               <ButtonToggle size="large"

@@ -87,7 +87,7 @@ export default class CustomsDeclPane extends React.Component {
   }
   renderManifestAction() {
     const { customsPanel } = this.props;
-    const bill = customsPanel.bill;
+    const bill = customsPanel.bill; // todo
     if (customsPanel.recv_tenant_id === customsPanel.customs_tenant_id || customsPanel.customs_tenant_id === -1) {
       if (customsPanel.status === CMS_DELEGATION_STATUS.accepted) {
         return <Button type="primary" ghost icon="addfile" onClick={this.handleMake}>创建</Button>;

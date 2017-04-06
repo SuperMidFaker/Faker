@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Card, Form, Input, Row, Col, Tabs, Table, Tooltip, Layout, Popconfirm, message } from 'antd';
+import { Breadcrumb, Button, Card, Form, Input, Row, Col, Tabs, Table, Tooltip, Layout, message } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import InfoItem from 'client/components/InfoItem';
@@ -231,14 +231,6 @@ export default class CustomerList extends React.Component {
               </Col>
               <Col sm={24} md={8}>
                 <ProfileForm customer={customer} />
-              </Col>
-            </Row>
-            <Row type="flex" className="bottom-bar">
-              <Col className="col-flex-primary" />
-              <Col className="col-flex-secondary">
-                <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleDelCustomer()}>
-                  <Button type="danger" size="large" icon="delete" ghost>删除</Button>
-                </Popconfirm>
               </Col>
             </Row>
           </Content>
