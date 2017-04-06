@@ -192,20 +192,20 @@ export default class FlowDesigner extends React.Component {
       this.addNode(ev.key);
     }
   }
-  handleAddNode = (ev) => {
+  handleAddToolbarNode = (ev) => {
     this.beginAdd = true;
     const activeItem = this.state.activeItem;
     if (activeItem && this.formhoc) {
       this.formhoc.validateFields((err, values) => {
         if (!err) {
           this.graph.update(activeItem, values);
-          this.addNode(ev.value);
+          this.addNode(ev.target.value);
         } else {
           this.beginAdd = false;
         }
       });
     } else {
-      this.addNode(ev.value);
+      this.addNode(ev.target.value);
     }
   }
   handleAddEdge = () => {
@@ -351,23 +351,13 @@ export default class FlowDesigner extends React.Component {
       }
     });
   }
-  renderGraghToolbar() {
-    return (<RadioGroup onChange={this.handleAddNode}>
-      <Tooltip title={this.msg('flowNodeImport')}>
-        <RadioButton value="nodeimport"><MdIcon mode="ikons" type="login" /></RadioButton>
-      </Tooltip>
-      <Tooltip title={this.msg('flowNodeExport')}>
-        <RadioButton value="nodeexport"><MdIcon mode="ikons" type="logout" /></RadioButton>
-      </Tooltip>
-      <Tooltip title={this.msg('flowNodeTMS')}>
-        <RadioButton value="nodetms"><MdIcon type="truck" /></RadioButton>
-      </Tooltip>
-      <Tooltip title={this.msg('flowNodeCWM')}>
-        <RadioButton value="nodecwm"><MdIcon type="layers" /></RadioButton>
-      </Tooltip>
-      <Tooltip title={this.msg('flowNodeTerminal')}>
-        <RadioButton value="nodeterminal"><MdIcon type="dot-circle" /></RadioButton>
-      </Tooltip>
+  renderGraphToolbar() {
+    return (<RadioGroup onChange={this.handleAddToolbarNode}>
+      <RadioButton value="nodeimport"><Tooltip title={this.msg('flowNodeImport')}><span><MdIcon mode="ikons" type="login" /></span></Tooltip></RadioButton>
+      <RadioButton value="nodeexport"><Tooltip title={this.msg('flowNodeExport')}><span><MdIcon mode="ikons" type="logout" /></span></Tooltip></RadioButton>
+      <RadioButton value="nodetms"><Tooltip title={this.msg('flowNodeTMS')}><span><MdIcon type="truck" /></span></Tooltip></RadioButton>
+      <RadioButton value="nodecwm"><Tooltip title={this.msg('flowNodeCWM')}><span><MdIcon type="layers" /></span></Tooltip></RadioButton>
+      <RadioButton value="nodeterminal"><Tooltip title={this.msg('flowNodeTerminal')}><span><MdIcon type="dot-circle" /></span></Tooltip></RadioButton>
     </RadioGroup>
     );
   }
@@ -405,7 +395,7 @@ export default class FlowDesigner extends React.Component {
             <Spin spinning={this.props.graphLoading}>
               <Card title={this.msg('flowRelationGraph')} bodyStyle={{ padding: 0, height: 240 }}
                 extra={<div className="toolbar-right">
-                  {this.renderGraghToolbar()}
+                  {this.renderGraphToolbar()}
                   <Dropdown overlay={this.menu}>
                     <Button icon="plus-square-o" >
                       {this.msg('addFlowNode')} <Icon type="down" />
