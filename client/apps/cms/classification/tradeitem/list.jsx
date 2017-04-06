@@ -581,6 +581,7 @@ export default class TradeItemList extends Component {
             <ButtonToggle size="large"
               iconOn="menu-fold" iconOff="menu-unfold"
               onClick={this.toggle}
+              toggle
             />
             <span />
             <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">

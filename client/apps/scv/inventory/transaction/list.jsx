@@ -219,6 +219,7 @@ export default class InventoryTransactionList extends React.Component {
             <ButtonToggle size="large"
               iconOn="menu-fold" iconOff="menu-unfold"
               onClick={this.toggle}
+              toggle
             />
             <span />
             <Select size="large" value={listFilter.wh_no} style={{ width: 200 }} onSelect={this.handleWarehouseSelect}>

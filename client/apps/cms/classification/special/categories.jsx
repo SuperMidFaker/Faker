@@ -205,6 +205,7 @@ export default class SpecialCategories extends React.Component {
             <ButtonToggle size="large"
               iconOn="menu-fold" iconOff="menu-unfold"
               onClick={this.toggle}
+              toggle
             />
           </Header>
           <Content className="main-content" key="main">
