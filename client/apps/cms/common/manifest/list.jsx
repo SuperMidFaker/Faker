@@ -96,10 +96,7 @@ export default class ManifestList extends Component {
   }, {
     title: '进度',
     width: 180,
-    render: (o, record) => {
-      const perVal = (record.bill_status * 25) > 100 ? 100 : record.bill_status * 25;
-      return (<Progress percent={perVal} strokeWidth={5} showInfo={false} />);
-    },
+    render: (o, record) => <Progress percent={record.bill_status} strokeWidth={5} showInfo={false} />,
   }, {
     title: '委托方',
     dataIndex: 'send_name',
@@ -245,11 +242,11 @@ export default class ManifestList extends Component {
       fixed: 'right',
       render: (o, record) => {
         if (record.customs_tenant_id === tenantId || record.customs_tenant_id === -1) {
-          if (record.bill_status < 3) {
+          if (record.bill_status < 100) {
             return (
               <RowUpdater onHit={this.handleDelegationMake} label={<span><Icon type="edit" /> 编辑清单</span>} row={record} />
             );
-          } else if (record.bill_status >= 3 && record.entry_status === 0) {
+          } else if (record.bill_status === 100 && record.entry_status === 0) {
             return (
               <span>
                 <RowUpdater onHit={this.handleDelegationView} label={<span><Icon type="eye-o" /> 查看清单</span>} row={record} />
@@ -259,7 +256,7 @@ export default class ManifestList extends Component {
                 </Popconfirm>
               </span>
             );
-          } else if (record.bill_status >= 3 && record.entry_status === 1) {
+          } else if (record.bill_status === 100 && record.entry_status === 1) {
             return (
               <RowUpdater onHit={this.handleDelegationView} label={<span><Icon type="eye-o" /> 查看清单</span>} row={record} />
             );

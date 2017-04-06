@@ -95,7 +95,7 @@ export default class CustomsDeclPane extends React.Component {
         return (
           <Button type="primary" ghost icon="edit" onClick={this.handleMake}>编辑</Button>
         );
-      } else if (bill.bill_status >= 3) {
+      } else if (bill.bill_status === 100) {
         return <Button icon="eye" onClick={ev => this.handleView(ev)}>查看</Button>;
       }
     } else if (customsPanel.status > CMS_DELEGATION_STATUS.accepted) {
@@ -110,8 +110,7 @@ export default class CustomsDeclPane extends React.Component {
     // const panelHeader = (
     //  <span>{declTypes.length > 0 ? declTypes[0].value : ''}：{bill.pack_count}件/{bill.gross_wt}千克</span>
     // );
-    const perVal = (bill.bill_status * 25) > 100 ? 100 : bill.bill_status * 25;
-    const manifestProgress = (<div style={{ width: 220 }}>报关清单 <Progress strokeWidth={5} percent={perVal} /></div>);
+    const manifestProgress = (<div style={{ width: 220 }}>报关清单 <Progress strokeWidth={5} percent={bill.bill_status} /></div>);
     const columns = [{
       title: '报关单',
       dataIndex: 'customs_inspect',
