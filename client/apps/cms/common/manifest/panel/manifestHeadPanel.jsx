@@ -112,7 +112,7 @@ export default class ManifestHeadPanel extends React.Component {
     };
     return (
       <div className="pane">
-        <div className="pane-header">
+        <div className="panel-header">
           <div>
             {!readonly &&
               <Button type="primary" onClick={this.handleSheetSave} icon="save" disabled={this.state.changed === false}>

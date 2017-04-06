@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Button, Table, Input, Select } from 'antd';
+import { Alert, Button, Table, Input, Select } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { updateHeadNetWt, loadBillBody, openAmountModel, deleteSelectedBodies } from 'common/reducers/cmsManifest';
 import { getItemForBody, getHscodeForBody } from 'common/reducers/cmsTradeitem';
@@ -437,14 +437,15 @@ export default class CDFBodyPanel extends React.Component {
       getCheckboxProps: () => ({ disabled }),
     };
     const columns = this.getColumns();
+    const stats = (<div><span style={{ marginLeft: 8 }}>总毛重: </span><span style={{ color: '#FF9933' }}>{totGrossWt.toFixed(3)}</span>
+      <span style={{ marginLeft: 8 }}>总净重: </span><span style={{ color: '#FF9933' }}>{totWetWt.toFixed(3)}</span>
+      <span style={{ marginLeft: 8 }}>总金额: </span><span style={{ color: '#FF9933' }}>{totTrade.toFixed(3)}</span></div>);
     return (
       <div className="pane">
-        <div className="pane-header">
+        <div className="panel-header">
           <Button icon="export" onClick={this.handleEntrybodyExport}>导出表体数据</Button>
           <div className="toolbar-right">
-            <span style={{ marginLeft: 8 }}>总毛重: </span><span style={{ color: '#FF9933' }}>{totGrossWt.toFixed(3)}</span>
-            <span style={{ marginLeft: 8 }}>总净重: </span><span style={{ color: '#FF9933' }}>{totWetWt.toFixed(3)}</span>
-            <span style={{ marginLeft: 8 }}>总金额: </span><span style={{ color: '#FF9933' }}>{totTrade.toFixed(3)}</span>
+            <Alert message={stats} type="info" />
           </div>
         </div>
         <div className="panel-body table-panel">

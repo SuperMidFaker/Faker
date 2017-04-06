@@ -51,20 +51,22 @@ export default class CDFHeadPanel extends React.Component {
     };
     return (
       <div className="pane">
-        <div className="pane-content">
-          <Form layout="horizontal">
-            <Row>
-              <Col span="6">
-                <FormInput field="pre_entry_id" outercol={24} col={8}
-                  label={this.msg('preEntryId')} {...entryFormProps}
+        <Form layout="horizontal">
+          <div className="panel-header">
+            <Row gutter={16}>
+              <Col span="4">
+                <FormInput field="pre_entry_id"
+                  addonBefore={this.msg('preEntryId')} {...entryFormProps}
                 />
               </Col>
-              <Col span="6">
-                <FormInput field="entry_id" outercol={24} col={8}
-                  label={this.msg('formEntryId')} {...entryFormProps}
+              <Col span="4">
+                <FormInput field="entry_id"
+                  addonBefore={this.msg('formEntryId')} {...entryFormProps}
                 />
               </Col>
             </Row>
+          </div>
+          <div className="pane-content">
             <Card>
               <Row>
                 <Col span="8">
@@ -153,8 +155,9 @@ export default class CDFHeadPanel extends React.Component {
                 <StoreYard {...formProps} intl={intl} formRequire={formRequire} />
               </Row>
             </Card>
-          </Form>
-        </div>
+
+          </div>
+        </Form>
       </div>
     );
   }
