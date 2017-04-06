@@ -141,12 +141,12 @@ export default class DelegationInfoHubPanel extends React.Component {
   }
   infoTabs() {
     const { previewer, tabKey } = this.props;
-    const { delegation, delgDispatch, files } = previewer;
+    const { delgDispatch } = previewer;
     if (delgDispatch.status === CMS_DELEGATION_STATUS.unaccepted) {
       return (
         <Tabs activeKey={tabKey} onChange={this.handleTabChange}>
           <TabPane tab="委托详情" key="basic">
-            <BasicPane delegation={delegation} files={files} />
+            <BasicPane />
           </TabPane>
           <TabPane tab="操作" key="activity">
             <ActivityLoggerPane />
@@ -167,7 +167,7 @@ export default class DelegationInfoHubPanel extends React.Component {
               <ExpensesPane />
             </TabPane>
             <TabPane tab="委托详情" key="basic">
-              <BasicPane delegation={delegation} files={files} />
+              <BasicPane />
             </TabPane>
           </Tabs>
         );
@@ -187,7 +187,7 @@ export default class DelegationInfoHubPanel extends React.Component {
             <ExpensesPane />
           </TabPane>
           <TabPane tab="委托详情" key="basic">
-            <BasicPane delegation={delegation} files={files} />
+            <BasicPane />
           </TabPane>
         </Tabs>
       );
@@ -208,7 +208,7 @@ export default class DelegationInfoHubPanel extends React.Component {
               <ExpensesPane />
             </TabPane>
             <TabPane tab="委托详情" key="basic">
-              <BasicPane delegation={delegation} files={files} />
+              <BasicPane />
             </TabPane>
           </Tabs>
         );
@@ -231,7 +231,7 @@ export default class DelegationInfoHubPanel extends React.Component {
             <ExpensesPane />
           </TabPane>
           <TabPane tab="委托详情" key="basic">
-            <BasicPane delegation={delegation} files={files} />
+            <BasicPane />
           </TabPane>
         </Tabs>
       );

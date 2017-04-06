@@ -16,6 +16,11 @@ export default class EditableCell extends React.Component {
     value: this.props.value,
     editMode: false,
   }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.value !== this.props.value) {
+      this.setState({ value: nextProps.value });
+    }
+  }
   handleChange = (e) => {
     const value = e.target.value;
     this.setState({ value });
