@@ -76,36 +76,26 @@ export default class DelgDeclList extends Component {
         {o}
       </a>),
   }, {
-    title: this.msg('preEntryNo'),
-    dataIndex: 'pre_entry_seq_no',
-    fixed: 'left',
-    width: 160,
-    render: (o, record) => <NavLink to={`/clearance/${this.props.ietype}/customs/${record.bill_seq_no}/${o}`}>{o}</NavLink>,
-  }, {
-    title: this.msg('entryId'),
+    title: this.msg('declNo'),
     dataIndex: 'entry_id',
-    width: 160,
+    width: 200,
     fixed: 'left',
     render: (o, record) => {
-      // 用id字段表示为children数据
-      if (record.id) {
-        if (o) {
-          return (
-            <DeclStatusPopover results={record.results} entryId={o}>
-              {o}
-            </DeclStatusPopover>
-          );
-        } else {
-          return (
-            <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-              <RowUpdater onHit={this.handleDeclNoFill} row={record}
-                label={<span><Icon type="edit" /> 回填海关编号</span>}
-              />
-            </PrivilegeCover>
-          );
-        }
-      } else {
-        return '-';
+      switch (record.status) {
+        case 0:
+        case 1:
+          return (<span><Tag>预</Tag> <NavLink to={`/clearance/${this.props.ietype}/customs/${record.bill_seq_no}/${record.pre_entry_seq_no}`}>{record.pre_entry_seq_no}</NavLink></span>);
+        case 2:
+          return (o) ? <span><Tag color="green">海关</Tag> <DeclStatusPopover results={record.results} entryId={o}>
+            <NavLink to={`/clearance/${this.props.ietype}/customs/${record.bill_seq_no}/${record.pre_entry_seq_no}`}>{o}</NavLink>
+          </DeclStatusPopover></span> :
+          <span><Tag>预</Tag> <NavLink to={`/clearance/${this.props.ietype}/customs/${record.bill_seq_no}/${record.pre_entry_seq_no}`}>{record.pre_entry_seq_no}</NavLink></span>;
+        case 3:
+          return (<span><Tag color="green">海关</Tag> <DeclStatusPopover results={record.results} entryId={o}>
+            <NavLink to={`/clearance/${this.props.ietype}/customs/${record.bill_seq_no}/${record.pre_entry_seq_no}`}>{o}</NavLink>
+          </DeclStatusPopover></span>);
+        default:
+          return <span />;
       }
     },
   }, {
@@ -133,7 +123,7 @@ export default class DelgDeclList extends Component {
   }, {
     title: '类型',
     dataIndex: 'sheet_type',
-    width: 80,
+    width: 100,
     render: (o) => {
       if (o === 'CDF') {
         return <Tag color="blue-inverse">报关单</Tag>;
@@ -145,7 +135,6 @@ export default class DelgDeclList extends Component {
     },
   }, {
     title: '状态',
-    width: 120,
     dataIndex: 'status',
     render: (o) => {
       const decl = CMS_DECL_STATUS.filter(st => st.value === o)[0];
@@ -311,13 +300,13 @@ export default class DelgDeclList extends Component {
           return (
             <span>
               <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-                <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleDelete(record.id, record.bill_seq_no)}>
-                  <a role="button">{this.msg('delete')}</a>
-                </Popconfirm>
+                <RowUpdater onHit={this.handleReview} label={<span><Icon type="check-circle-o" /> {this.msg('review')}</span>} row={record} />
               </PrivilegeCover>
               <span className="ant-divider" />
               <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-                <RowUpdater onHit={this.handleReview} label={this.msg('review')} row={record} />
+                <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleDelete(record.id, record.bill_seq_no)}>
+                  <a role="button"><Icon type="delete" /></a>
+                </Popconfirm>
               </PrivilegeCover>
             </span>
           );
@@ -325,20 +314,25 @@ export default class DelgDeclList extends Component {
           return (
             <span>
               <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-                <RowUpdater onHit={this.handleRecall} label={this.msg('recall')} row={record} />
+                <RowUpdater onHit={this.handleShowSendDeclModal} label={this.msg('sendPackets')} row={record} />
               </PrivilegeCover>
               <span className="ant-divider" />
               <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-                <RowUpdater onHit={this.handleShowSendDeclModal} label={this.msg('sendPackets')} row={record} />
+                <RowUpdater onHit={this.handleRecall} label={<span><Icon type="close-circle-o" /> {this.msg('recall')}</span>} row={record} />
               </PrivilegeCover>
             </span>
           );
         } else if (record.status === 2) {
           return (
             <span>
+              <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
+                <RowUpdater onHit={this.handleDeclNoFill} row={record}
+                  label={<span><Icon type="edit" />海关编号</span>}
+                />
+              </PrivilegeCover>
               {record.ep_send_filename ? (
                 <span>
-                  <span className="ant-divider" /><RowUpdater onHit={this.handleShowXml} label="查看报文" row={record} />
+                  <span className="ant-divider" /><RowUpdater onHit={this.handleShowXml} label="报文" row={record} />
                 </span>) : null}
             </span>
           );
@@ -375,7 +369,7 @@ export default class DelgDeclList extends Component {
             </div>
             <div className="panel-body table-panel expandable">
               <Table rowSelection={rowSelection} columns={columns} rowKey="pre_entry_seq_no" dataSource={this.dataSource}
-                loading={delgdeclList.loading} scroll={{ x: 1800 }}
+                loading={delgdeclList.loading} scroll={{ x: 1600 }}
               />
             </div>
             <DeclnoFillModal reload={this.handleTableLoad} />

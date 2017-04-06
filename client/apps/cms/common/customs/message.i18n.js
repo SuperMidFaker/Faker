@@ -25,6 +25,10 @@ export default defineMessages({
     id: 'cms.customs.decl.ftz',
     defaultMessage: '备案清单',
   },
+  declNo: {
+    id: 'cms.customs.decl.no',
+    defaultMessage: '报关单号',
+  },
   entryId: {
     id: 'cms.customs.decl.entryId',
     defaultMessage: '海关编号',
