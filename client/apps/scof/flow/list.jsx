@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Button, Input, Layout, Tooltip } from 'antd';
-import { loadFlowList, openCreateFlowModal, openFlow, reloadFlowList } from 'common/reducers/scofFlow';
+import { loadFlowList, openCreateFlowModal, openFlow, reloadFlowList, editFlow } from 'common/reducers/scofFlow';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import Table from 'client/components/remoteAntTable';
@@ -35,7 +35,7 @@ function fetchData({ state, dispatch }) {
     flowList: state.scofFlow.flowList,
     listCollapsed: state.scofFlow.listCollapsed,
   }),
-  { openCreateFlowModal, loadFlowList, openFlow, reloadFlowList }
+  { openCreateFlowModal, loadFlowList, openFlow, reloadFlowList, editFlow }
 )
 @connectNav({
   depth: 2,
@@ -71,7 +71,10 @@ export default class FlowList extends React.Component {
   msg = formatMsg(this.props.intl)
 
   columns = [{
-    render: (o, record) => <div><div><EditableCell value={record.name} cellTrigger={false} /></div><div className="mdc-text-grey">{record.customer}</div></div>,
+    render: (o, record) => (<div>
+      <EditableCell value={record.name} cellTrigger={false} onSave={name => this.handleFlowNameChange(record.id, name)} />
+      <div className="mdc-text-grey">{record.customer}</div>
+    </div>),
   }]
   dataSource = new Table.DataSource({
     fetcher: params => this.loadFlowList({
@@ -115,6 +118,9 @@ export default class FlowList extends React.Component {
   }
   handleCreateFlow = () => {
     this.props.openCreateFlowModal();
+  }
+  handleFlowNameChange = (flowid, name) => {
+    this.props.editFlow(flowid, { name });
   }
   render() {
     const { thisFlow, flowList, loading, listCollapsed } = this.props;

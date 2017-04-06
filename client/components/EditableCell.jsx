@@ -27,8 +27,8 @@ export default class EditableCell extends React.Component {
   }
   check = () => {
     this.setState({ editMode: false });
-    if (this.props.onChange) {
-      this.props.onChange(this.state.value);
+    if (this.props.onSave) {
+      this.props.onSave(this.state.value);
     }
   }
   close = () => {
