@@ -7,7 +7,6 @@ import { GOODSTYPES, TRANS_MODE, CLAIM_DO_AWB } from 'common/constants';
 import InfoItem from 'client/components/InfoItem';
 import MdIcon from 'client/components/MdIcon';
 import './pane.less';
-import { loadBasicInfo } from 'common/reducers/cmsDelgInfoHub';
 
 function getExtension(filename) {
   const parts = filename.split('.');
@@ -19,22 +18,13 @@ function getExtension(filename) {
   state => ({
     delegation: state.cmsDelgInfoHub.previewer.delegation,
     files: state.cmsDelgInfoHub.previewer.files,
-    delgDispatch: state.cmsDelgInfoHub.previewer.delgDispatch,
-    tenantId: state.account.tenantId,
-    delgNo: state.cmsDelgInfoHub.previewer.delgNo,
-    tabKey: state.cmsDelgInfoHub.tabKey,
-  }),
-  { loadBasicInfo }
+  })
 )
 export default class BasicPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     delegation: PropTypes.object.isRequired,
     files: PropTypes.array.isRequired,
-    delgDispatch: PropTypes.object.isRequired,
-    tenantId: PropTypes.number.isRequired,
-    delgNo: PropTypes.string.isRequired,
-    tabKey: PropTypes.string.isRequired,
   }
   state = {
     sortedFiles: [],
@@ -135,23 +125,17 @@ export default class BasicPane extends React.Component {
               />
             </Col>
             <Col span="8">
-              <InfoItem label="运输工具名称"
-                field={delegation.traf_name}
-              />
+              <InfoItem label="运输工具名称" field={delegation.traf_name} />
             </Col>
           </Row>
           {
             delegation.trans_mode === '2' &&
             <Row>
               <Col span="8">
-                <InfoItem label="是否换单"
-                  field={doAwbText}
-                />
+                <InfoItem label="是否换单" field={doAwbText} />
               </Col>
               <Col span="8">
-                <InfoItem label="海运单号"
-                  field={delegation.swb}
-                />
+                <InfoItem label="海运单号" field={delegation.swb_no} />
               </Col>
             </Row>
             }

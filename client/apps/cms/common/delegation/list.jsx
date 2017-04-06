@@ -9,7 +9,7 @@ import TrimSpan from 'client/components/trimSpan';
 import NavLink from 'client/components/nav-link';
 import {
   CMS_DELEGATION_STATUS, CMS_DELEGATION_MANIFEST, CMS_DELG_STATUS, CMS_SUP_STATUS,
-  DECL_I_TYPE, DECL_E_TYPE, TRANS_MODE, CMS_DECL_WAY_TYPE } from 'common/constants';
+  DELG_SOURCE, DECL_I_TYPE, DECL_E_TYPE, TRANS_MODE, CMS_DECL_WAY_TYPE } from 'common/constants';
 import connectNav from 'client/common/decorators/connect-nav';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import SearchBar from 'client/components/search-bar';
@@ -190,7 +190,7 @@ export default class DelegationList extends Component {
     dataIndex: 'trans_mode',
     render: (o) => {
       const mode = TRANS_MODE.filter(ts => ts.value === o)[0];
-      return (<span><MdIcon type={mode.icon} /> {mode.text}</span>);
+      return mode ? <span><MdIcon type={mode.icon} /> {mode.text}</span> : <span />;
     },
   }, {
     title: this.msg('broker'),
@@ -462,80 +462,73 @@ export default class DelegationList extends Component {
         width: 130,
         fixed: 'right',
         render: (o, record) => {
-          // 1.当前租户为报关供应商
-          if (record.customs_tenant_id === tenantId) {
-            // 1.1 报关委托未接单
-            if (record.status === CMS_DELEGATION_STATUS.unaccepted && record.source === 1) {
-              return (
-                <span>
-                  <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-                    <RowUpdater onHit={this.handleDelegationAccept} label={this.msg('accepting')} row={record} />
-                  </PrivilegeCover>
-                  <span className="ant-divider" />
-                  <RowUpdater onHit={() => this.handleDelegationAssign(record)} label={this.msg('delgDistribute')} row={record} />
-                  <span className="ant-divider" />
-                  <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-                    <Dropdown overlay={(
-                      <Menu onClick={this.handleMenuClick}>
-                        <Menu.Item key="edit">
-                          <NavLink to={`/clearance/${this.props.ietype}/edit/${record.delg_no}`}>
-                            <Icon type="edit" /> {this.msg('modify')}
-                          </NavLink>
-                        </Menu.Item>
-                        <Menu.Item key="delete">
-                          <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleDelgDel(record.delg_no)}>
-                            <a> <Icon type="delete" /> {this.msg('delete')}</a>
-                          </Popconfirm>
-                        </Menu.Item>
-                      </Menu>)}
-                    >
-                      <a><Icon type="down" /></a>
-                    </Dropdown>
-                  </PrivilegeCover>
-                </span>
-              );
-            // 1.2 报关分包未接单
-            } else if (record.status === CMS_DELEGATION_STATUS.unaccepted && record.source !== 1) {
-              return (
-                <span>
+          // 1. 当前租户报关委托未接单且直接委托
+          if (record.status === CMS_DELEGATION_STATUS.unaccepted && record.source === DELG_SOURCE.consigned) {
+            return (
+              <span>
+                <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
                   <RowUpdater onHit={this.handleDelegationAccept} label={this.msg('accepting')} row={record} />
-                  <span className="ant-divider" />
-                  <RowUpdater onHit={() => this.handleDelegationAssign(record)} label={this.msg('delgDistribute')} row={record} />
-                </span>
-              );
-            // 1.3 报关委托/分包已接单
-            } else if (record.status === CMS_DELEGATION_STATUS.accepted) {
-              const label = record.manifested === CMS_DELEGATION_MANIFEST.uncreated ?
-                <span><Icon type="file-add" /> {this.msg('createManifest')}</span> :
-                <span><Icon type="edit" /> {this.msg('editManifest')}</span>;
-              return (
+                </PrivilegeCover>
+                <span className="ant-divider" />
+                <RowUpdater onHit={() => this.handleDelegationAssign(record)} label={this.msg('delgDistribute')} row={record} />
+                <span className="ant-divider" />
+                <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
+                  <Dropdown overlay={(
+                    <Menu onClick={this.handleMenuClick}>
+                      <Menu.Item key="edit">
+                        <NavLink to={`/clearance/${this.props.ietype}/edit/${record.delg_no}`}>
+                          <Icon type="edit" /> {this.msg('modify')}
+                        </NavLink>
+                      </Menu.Item>
+                      <Menu.Item key="delete">
+                        <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleDelgDel(record.delg_no)}>
+                          <a> <Icon type="delete" /> {this.msg('delete')}</a>
+                        </Popconfirm>
+                      </Menu.Item>
+                    </Menu>)}
+                  >
+                    <a><Icon type="down" /></a>
+                  </Dropdown>
+                </PrivilegeCover>
+              </span>
+            );
+          // 2 报关分包未接单
+          } else if (record.status === CMS_DELEGATION_STATUS.unaccepted && record.source === DELG_SOURCE.subcontracted) {
+            return (
+              <span>
+                <RowUpdater onHit={this.handleDelegationAccept} label={this.msg('accepting')} row={record} />
+                <span className="ant-divider" />
+                <RowUpdater onHit={() => this.handleDelegationAssign(record)} label={this.msg('delgDistribute')} row={record} />
+              </span>
+            );
+          // 3 报关委托/分包已接单 或开始制单
+          } else if (record.status === CMS_DELEGATION_STATUS.accepted || record.status === CMS_DELEGATION_STATUS.processing) {
+            let recallOp = null;
+            let assignOp = null;
+            if (record.customs_tenant_id === -1 || record.sub_status === CMS_DELEGATION_STATUS.unaccepted) {
+              // 3.1 当前租户为发送方，且报关供应商为线下租户
+              // 3.2 当前租户为发送方，且报关供应商为线上租户，但分包尚未接单
+              recallOp = (
+                <Popconfirm title="你确定撤回分配吗?" onConfirm={() => this.handleDelgAssignRecall(record)} >
+                  <a role="button">{this.msg('delgRecall')}</a>
+                </Popconfirm>);
+            } else if (record.customs_tenant_id === tenantId) {
+              // 3.3 当前租户未分配
+              assignOp = <RowUpdater onHit={() => this.handleDelegationAssign(record)} label={this.msg('delgDistribute')} row={record} />;
+            }
+            const label = record.manifested === CMS_DELEGATION_MANIFEST.uncreated ?
+              <span><Icon type="file-add" /> {this.msg('createManifest')}</span> :
+              <span><Icon type="edit" /> {this.msg('editManifest')}</span>;
+            return (
+              <span>
                 <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
                   <RowUpdater onHit={this.handleDelegationMake} label={label} row={record} />
                 </PrivilegeCover>
-              );
-            }
-          // 2.当前租户为发送方，且报关供应商为线下租户
-          } else if (record.customs_tenant_id === -1) {
-            // 2.1报关委托已接单，且分包已接单
-            if (record.status === CMS_DELEGATION_STATUS.accepted && record.sub_status === CMS_DELEGATION_STATUS.accepted) {
-              const label = record.manifested === CMS_DELEGATION_MANIFEST.uncreated ? this.msg('createManifest') : this.msg('editManifest');
-              return (
-                <span>
-                  <RowUpdater onHit={this.handleDelegationMake} label={label} row={record} />
-                  <span className="ant-divider" />
-                  <Popconfirm title="你确定撤回分配吗?" onConfirm={() => this.handleDelgAssignRecall(record)} >
-                    <a role="button">{this.msg('delgRecall')}</a>
-                  </Popconfirm>
-                </span>
-              );
-            }
-          // 3.当前租户为发送方，且报关供应商为线上租户，但分包尚未接单
-          } else if (record.status === CMS_DELEGATION_STATUS.accepted && record.sub_status === CMS_DELEGATION_STATUS.unaccepted) {
-            return (
-              <Popconfirm title="你确定撤回分配吗?" onConfirm={() => this.handleDelgAssignRecall(record)} >
-                <a role="button">{this.msg('delgRecall')}</a>
-              </Popconfirm>
-            );
+                { assignOp && <span className="ant-divider" />}
+                { assignOp }
+                { recallOp && <span className="ant-divider" />}
+                { recallOp }
+              </span>);
           }
         },
       });
