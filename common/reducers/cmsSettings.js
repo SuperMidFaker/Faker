@@ -16,6 +16,7 @@ const actionTypes = createActionTypes('@@welogix/cms/settings/', [
   'ADD_BILL_TEMPLATE_USER', 'ADD_BILL_TEMPLATE_USER_SUCCEED', 'ADD_BILL_TEMPLATE_USER_FAIL',
   'DELETE_BILL_TEMPLATE_USER', 'DELETE_BILL_TEMPLATE_USER_SUCCEED', 'DELETE_BILL_TEMPLATE_USER_FAIL',
   'LOAD_BILL_TEMPLATE_USERS', 'LOAD_BILL_TEMPLATE_USERS_SUCCEED', 'LOAD_BILL_TEMPLATE_USERS_FAIL',
+  'COUNT_FIELDS_CHANGE',
 ]);
 
 const initialState = {
@@ -31,6 +32,7 @@ const initialState = {
   relatedCustomers: [],
   billTemplateUsers: [],
   formData: {},
+  changeTimes: 0,
 };
 
 export default function reducer(state = initialState, action) {
@@ -71,6 +73,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, billTemplateUsers: action.result.data };
     case actionTypes.LOAD_FORM_VALS_FAIL:
       return { ...state, templateValLoading: false };
+    case actionTypes.COUNT_FIELDS_CHANGE:
+      return { ...state, changeTimes: state.changeTimes + 1 };
     default:
       return state;
   }
@@ -283,5 +287,12 @@ export function loadBillTemplateUsers(templateId) {
       method: 'get',
       params: { templateId },
     },
+  };
+}
+
+export function countFieldsChange(values) {
+  return {
+    type: actionTypes.COUNT_FIELDS_CHANGE,
+    data: values,
   };
 }
