@@ -2,7 +2,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Card, Menu, Dropdown, Icon, Layout, Spin, Radio, Tooltip, message } from 'antd';
+import { Alert, Breadcrumb, Button, Card, Collapse, Popconfirm, Menu, Dropdown, Icon, Layout, Spin, Radio, Tooltip, message } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import { toggleFlowList, loadFlowGraph, loadFlowGraphItem, saveFlowGraph, setNodeActions } from 'common/reducers/scofFlow';
 import { uuidWithoutDash } from 'client/common/uuid';
@@ -18,6 +18,7 @@ const { Header, Content, Sider } = Layout;
 const MenuItem = Menu.Item;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
+const Panel = Collapse.Panel;
 
 @injectIntl
 @connect(
@@ -394,9 +395,8 @@ export default class FlowDesigner extends React.Component {
               <Button size="large" type="primary" icon="save" loading={submitting} onClick={this.handleSaveBtnClick}>
                 {this.msg('saveFlow')}
               </Button>
-              <Button size="large"
-                className={this.state.rightSidercollapsed ? '' : 'btn-toggle-on'}
-                icon={this.state.rightSidercollapsed ? 'eye-o' : 'eye'}
+              <ButtonToggle size="large"
+                iconOn="setting" iconOff="setting"
                 onClick={this.toggleRightSider}
               />
             </div>
@@ -450,8 +450,21 @@ export default class FlowDesigner extends React.Component {
         >
           <div className="right-sider-panel">
             <div className="panel-header">
-              <h3>{this.msg('monitoringPoints')}</h3>
+              <h3>流程设置</h3>
             </div>
+            <Collapse accordion defaultActiveKey="">
+              <Panel header={'更多'} key="more">
+                <Alert
+                  message="警告"
+                  description="删除流程将无法恢复，请谨慎操作"
+                  type="warning"
+                  showIcon
+                />
+                <Popconfirm title="是否确认删除?" onConfirm={this.handleDeleteRepo}>
+                  <Button type="danger" size="large" icon="delete">删除流程</Button>
+                </Popconfirm>
+              </Panel>
+            </Collapse>
           </div>
         </Sider>
       </Layout>

@@ -9,6 +9,7 @@ import messages from '../message.i18n';
 import { loadHsCodeCategories, addHsCodeCategory, removeHsCodeCategory, updateHsCodeCategory,
 loadCategoryHsCode, addCategoryHsCode, removeCategoryHsCode } from 'common/reducers/cmsHsCode';
 import CategoryHscodeList from './categoryHscodeList';
+import ButtonToggle from 'client/components/ButtonToggle';
 import SearchBar from 'client/components/search-bar';
 import '../index.less';
 
@@ -200,10 +201,9 @@ export default class SpecialCategories extends React.Component {
                 特殊商品编码分类
               </Breadcrumb.Item>
             </Breadcrumb>
-            }
-            <Button size="large"
-              className={this.state.collapsed ? '' : 'btn-toggle-on'}
-              icon={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
+          }
+            <ButtonToggle size="large"
+              iconOn="menu-fold" iconOff="menu-unfold"
               onClick={this.toggle}
             />
           </Header>

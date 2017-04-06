@@ -6,6 +6,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { Breadcrumb, Layout, Select, DatePicker, Button, Menu, Dropdown, Icon, Table, Input } from 'antd';
 import { loadKpi, changeModes } from 'common/reducers/transportKpi';
 import { loadPartners } from 'common/reducers/shipment';
+import ButtonToggle from 'client/components/ButtonToggle';
 import TrafficVolume from './trafficVolume';
 import Punctual from './punctual';
 import OverTime from './overTime';
@@ -283,9 +284,8 @@ export default class Kpi extends React.Component {
                 KPI分析
               </Breadcrumb.Item>
             </Breadcrumb>}
-            <Button size="large"
-              className={this.state.collapsed ? '' : 'btn-toggle-on'}
-              icon={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
+            <ButtonToggle size="large"
+              iconOn="menu-fold" iconOff="menu-unfold"
               onClick={this.toggle}
             />
             <div className="top-bar-tools">

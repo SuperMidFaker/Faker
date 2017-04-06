@@ -207,7 +207,7 @@ export default class ExpensePane extends React.Component {
     return (
       <div className="pane-content tab-pane">
         <Spin spinning={expensesLoading}>
-          <div className="toolbar">
+          <div className="pane-header">
             {checkedTags}
           </div>
           <Card bodyStyle={{ padding: 0 }}>

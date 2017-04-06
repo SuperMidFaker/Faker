@@ -56,15 +56,15 @@ export const EXPENSE_CATEGORIES = [{
   text: '全部费用',
 }, {
   key: 'service',
-  color: '#5fbc29',
+  color: '#87d068',
   text: '服务费',
 }, {
   key: 'advance',
-  color: '#fac450',
+  color: '#f78e3d',
   text: '代垫费',
 }, {
   key: 'special',
-  color: '#f60',
+  color: '#f50',
   text: '特殊费用',
 }];
 

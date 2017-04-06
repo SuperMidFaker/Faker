@@ -3,9 +3,10 @@ import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege from 'client/common/decorators/withPrivilege';
-import { Breadcrumb, Col, Layout, Row, Button } from 'antd';
+import { Breadcrumb, Col, Layout, Row } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import { changeDockStatus } from 'common/reducers/transportDispatch';
+import ButtonToggle from 'client/components/ButtonToggle';
 import StatsPanel from './panel/statsPanel';
 import TodoPanel from './panel/todoPanel';
 import MoreApplications from './panel/moreApplications';
@@ -56,9 +57,8 @@ export default class Dashboard extends React.Component {
                 </Breadcrumb.Item>
               </Breadcrumb>
               <div className="top-bar-tools" style={{ marginRight: collapsed ? 0 : 330 }}>
-                <Button size="large"
-                  className={collapsed ? '' : 'btn-toggle-on'}
-                  icon={!collapsed ? 'menu-unfold' : 'menu-fold'}
+                <ButtonToggle size="large"
+                  iconOn="menu-unfold" iconOff="menu-fold"
                   onClick={this.toggle}
                 />
               </div>

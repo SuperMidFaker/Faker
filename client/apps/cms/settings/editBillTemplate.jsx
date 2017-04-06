@@ -6,6 +6,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import { openAddModal, deleteRelatedCustomer, loadRelatedCustomers, loadTemplateFormVals, saveTemplateData } from 'common/reducers/cmsSettings';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from './message.i18n';
+import ButtonToggle from 'client/components/ButtonToggle';
 import { format } from 'client/common/i18n/helpers';
 import HeadForm from './forms/headForm';
 import { loadCmsParams } from 'common/reducers/cmsManifest';
@@ -190,9 +191,8 @@ export default class CreateTemplate extends Component {
               <Button size="large" type="primary" icon="save" onClick={this.handleSave}>
                 {this.msg('save')}
               </Button>
-              <Button size="large"
-                className={this.state.rightSidercollapsed ? '' : 'btn-toggle-on'}
-                icon={this.state.rightSidercollapsed ? 'setting' : 'setting'}
+              <ButtonToggle size="large"
+                iconOn="setting" iconOff="setting"
                 onClick={this.toggleRightSider}
               />
             </div>

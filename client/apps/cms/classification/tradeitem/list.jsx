@@ -13,6 +13,7 @@ import { loadCustomers } from 'common/reducers/crmCustomers';
 import { loadRepos, openAddModal, selectedRepoId, loadTradeItems, setCompareVisible,
   deleteItem, deleteSelectedItems, setRepo, deleteRepo, loadTradeParams, setItemStatus } from 'common/reducers/cmsTradeitem';
 import AddTradeRepoModal from './modals/addTradeRepo';
+import ButtonToggle from 'client/components/ButtonToggle';
 import SearchBar from 'client/components/search-bar';
 import ExcelUpload from 'client/components/excelUploader';
 import { createFilename } from 'client/util/dataTransform';
@@ -577,10 +578,9 @@ export default class TradeItemList extends Component {
                 {`${repo.owner_name}`}
               </Breadcrumb.Item>
             </Breadcrumb>
-            }
-            <Button size="large"
-              className={this.state.collapsed ? '' : 'btn-toggle-on'}
-              icon={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
+          }
+            <ButtonToggle size="large"
+              iconOn="menu-fold" iconOff="menu-unfold"
               onClick={this.toggle}
             />
             <span />
@@ -607,9 +607,8 @@ export default class TradeItemList extends Component {
                     </Button>
                   )
                 }
-                <Button size="large"
-                  className={this.state.rightSidercollapsed ? '' : 'btn-toggle-on'}
-                  icon={this.state.rightSidercollapsed ? 'setting' : 'setting'}
+                <ButtonToggle size="large"
+                  iconOn="setting" iconOff="setting"
                   onClick={this.toggleRightSider}
                 />
               </div>

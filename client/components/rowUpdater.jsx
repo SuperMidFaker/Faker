@@ -20,7 +20,7 @@ export default function RowUpdater(props) {
 }
 
 RowUpdater.propTypes = {
-  label: PropTypes.string,
+  label: PropTypes.any,
   onHit: PropTypes.func,
   onHover: PropTypes.func,
   row: PropTypes.object,

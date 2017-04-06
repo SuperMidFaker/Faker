@@ -6,6 +6,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadStocks, loadStockSearchOptions, loadLotStocks } from 'common/reducers/scvInventoryStock';
 import Table from 'client/components/remoteAntTable';
+import ButtonToggle from 'client/components/ButtonToggle';
 import StockSearchForm from './searchForm';
 import { formatMsg } from '../message.i18n';
 
@@ -310,9 +311,8 @@ export default class InventoryStockList extends React.Component {
                 {this.msg('inventoryStock')}
               </Breadcrumb.Item>
             </Breadcrumb>}
-            <Button size="large"
-              className={this.state.collapsed ? '' : 'btn-toggle-on'}
-              icon={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
+            <ButtonToggle size="large"
+              iconOn="menu-fold" iconOff="menu-unfold"
               onClick={this.toggle}
             />
             <span />

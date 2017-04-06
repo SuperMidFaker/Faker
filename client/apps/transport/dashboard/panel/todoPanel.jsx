@@ -23,7 +23,7 @@ export default class TodoPanel extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     todos: PropTypes.object.isRequired,
-    countTotal: PropTypes.object.isRequired,
+    countTotal: PropTypes.func.isRequired,
     tenantId: PropTypes.number.isRequired,
     loginId: PropTypes.number.isRequired,
   }
