@@ -505,7 +505,9 @@ export default class DelegationList extends Component {
               );
             // 1.3 报关委托/分包已接单
             } else if (record.status === CMS_DELEGATION_STATUS.accepted) {
-              const label = record.manifested === CMS_DELEGATION_MANIFEST.uncreated ? this.msg('createManifest') : this.msg('editManifest');
+              const label = record.manifested === CMS_DELEGATION_MANIFEST.uncreated ?
+                <span><Icon type="file-add" /> {this.msg('createManifest')}</span> :
+                <span><Icon type="edit" /> {this.msg('editManifest')}</span>;
               return (
                 <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
                   <RowUpdater onHit={this.handleDelegationMake} label={label} row={record} />

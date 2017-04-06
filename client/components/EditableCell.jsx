@@ -8,6 +8,9 @@ export default class EditableCell extends React.Component {
     type: PropTypes.string,
     value: PropTypes.any,
     placeholder: PropTypes.string,
+    cellTrigger: PropTypes.bool,
+    onSave: PropTypes.func,
+    onCancel: PropTypes.func,
   }
   state = {
     value: this.props.value,
@@ -28,6 +31,11 @@ export default class EditableCell extends React.Component {
   }
   edit = () => {
     this.setState({ editMode: true });
+  }
+  cellEdit = () => {
+    if (this.props.cellTrigger) {
+      this.setState({ editMode: true });
+    }
   }
   renderControl() {
     const { type, placeholder, options, addonBefore, addonAfter } = this.props;
@@ -93,9 +101,9 @@ export default class EditableCell extends React.Component {
               {this.renderControl()}
             </div>
             :
-            <div className="editable-cell-text-wrapper" onClick={this.edit}>
+            <div className="editable-cell-text-wrapper" onClick={this.cellEdit}>
               {this.renderText()}
-              <Icon type="edit" className="editable-cell-icon" />
+              <Icon type="edit" className="editable-cell-icon" onClick={this.edit} />
             </div>
         }
       </div>

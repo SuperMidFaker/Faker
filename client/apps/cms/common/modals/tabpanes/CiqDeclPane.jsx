@@ -111,19 +111,13 @@ export default class CiqDeclPane extends React.Component {
               <Card bodyStyle={{ padding: 16, paddingBottom: 40 }} className="secondary-card">
                 <Row gutter={8}>
                   <Col span="24">
-                    <InfoItem labelCol={{ span: 3 }} label="报检服务商"
-                      field={ciqPanel.ciq_name} fieldCol={{ span: 9 }}
-                    />
+                    <InfoItem label="报检服务商" field={ciqPanel.ciq_name} />
                   </Col>
                   <Col span="24">
-                    <InfoItem labelCol={{ span: 3 }} label="受理日期" fieldCol={{ span: 9 }}
-                      field={ciqPanel.acpt_time && moment(ciqPanel.acpt_time).format('YYYY.MM.DD HH:mm')}
-                    />
+                    <InfoItem label="受理日期" field={ciqPanel.acpt_time && moment(ciqPanel.acpt_time).format('YYYY.MM.DD HH:mm')} />
                   </Col>
                   <Col span="24">
-                    <InfoItem labelCol={{ span: 3 }} label="操作人"
-                      field={ciqPanel.recv_login_name} fieldCol={{ span: 9 }}
-                    />
+                    <InfoItem label="操作人" field={ciqPanel.recv_login_name} />
                   </Col>
                 </Row>
                 <div className="card-footer">

@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Form, Row, Col, Card, Input, Select, Radio } from 'antd';
+import { Form, Row, Col, Card, Icon, Input, Select, Radio } from 'antd';
 import { TRANS_MODE, WRAP_TYPE, DECL_I_TYPE, DECL_E_TYPE } from 'common/constants';
 import { setClientForm, loadFlowNodeData } from 'common/reducers/crmOrders';
 import { intlShape, injectIntl } from 'react-intl';
@@ -91,7 +91,7 @@ export default class ClearanceForm extends Component {
     const node = formData.node;
     const declWays = node.kind === 'export' ? DECL_E_TYPE : DECL_I_TYPE;
     return (
-      <Card extra={<a role="button" onClick={this.handleShipmentRelate}>关联货运信息</a>} style={{ paddingTop: 8 }}>
+      <Card extra={<a role="button" onClick={this.handleShipmentRelate}><Icon type="sync" /> 关联货运信息</a>} bodyStyle={{ paddingTop: 40 }}>
         <Row style={{ marginBottom: 8 }}>
           <Col sm={24} lg={8}>
             <FormItem label={this.msg('declareWay')} {...formItemLayout}>

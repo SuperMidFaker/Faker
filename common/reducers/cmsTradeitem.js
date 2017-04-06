@@ -28,6 +28,8 @@ const actionTypes = createActionTypes('@@welogix/cms/tradeitem/', [
 ]);
 
 const initialState = {
+  reposLoading: false,
+  tradeItemsLoading: false,
   listFilter: {
     status: 'pending',
     sortField: '',
@@ -67,8 +69,12 @@ const initialState = {
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
+    case actionTypes.LOAD_REPOS:
+      return { ...state, reposLoading: true };
     case actionTypes.LOAD_REPOS_SUCCEED:
-      return { ...state, repos: action.result.data };
+      return { ...state, repos: action.result.data, reposLoading: false };
+    case actionTypes.LOAD_REPOS_FAIL:
+      return { ...state, reposLoading: false };
     case actionTypes.OPEN_ADD_MODEL:
       return { ...state, visibleAddModal: true };
     case actionTypes.CLOSE_ADD_MODEL:
@@ -79,8 +85,12 @@ export default function reducer(state = initialState, action) {
       return { ...state, repo: action.data };
     case actionTypes.SET_SELECTED_REPOID:
       return { ...state, repoId: action.payload.repoId };
+    case actionTypes.LOAD_TRADE_ITEMS:
+      return { ...state, tradeItemsLoading: true };
     case actionTypes.LOAD_TRADE_ITEMS_SUCCEED:
-      return { ...state, tradeItemlist: action.result.data, listFilter: JSON.parse(action.params.filter) };
+      return { ...state, tradeItemlist: action.result.data, listFilter: JSON.parse(action.params.filter), tradeItemsLoading: false };
+    case actionTypes.LOAD_TRADE_ITEMS_FAIL:
+      return { ...state, tradeItemsLoading: false };
     case actionTypes.LOAD_PARAMS_SUCCEED:
       return { ...state, params: action.result.data };
     case actionTypes.LOAD_ITEM_EDIT_SUCCEED:

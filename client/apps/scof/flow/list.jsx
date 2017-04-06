@@ -6,6 +6,7 @@ import { loadFlowList, openCreateFlowModal, openFlow, reloadFlowList } from 'com
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import Table from 'client/components/remoteAntTable';
+import EditableCell from 'client/components/EditableCell';
 import CreateFlowModal from './modal/createFlowModal';
 import FlowDesigner from './designer';
 import { formatMsg } from './message.i18n';
@@ -70,7 +71,7 @@ export default class FlowList extends React.Component {
   msg = formatMsg(this.props.intl)
 
   columns = [{
-    render: (o, record) => <div><div>{record.name}</div><div className="mdc-text-grey">{record.customer}</div></div>,
+    render: (o, record) => <div><div><EditableCell value={record.name} cellTrigger={false} /></div><div className="mdc-text-grey">{record.customer}</div></div>,
   }]
   dataSource = new Table.DataSource({
     fetcher: params => this.loadFlowList({
@@ -120,7 +121,7 @@ export default class FlowList extends React.Component {
     this.dataSource.remotes = flowList;
     return (
       <Layout>
-        <Sider width={380} className="menu-sider" key="sider" trigger={null}
+        <Sider width={320} className="menu-sider" key="sider" trigger={null}
           collapsible collapsed={listCollapsed} collapsedWidth={0}
         >
           <div className="top-bar">

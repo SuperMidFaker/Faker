@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Layout, Radio, Progress, message, Popconfirm } from 'antd';
+import { Breadcrumb, Layout, Radio, Icon, Progress, message, Popconfirm } from 'antd';
 import moment from 'moment';
 import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
@@ -247,12 +247,12 @@ export default class ManifestList extends Component {
         if (record.customs_tenant_id === tenantId || record.customs_tenant_id === -1) {
           if (record.bill_status < 3) {
             return (
-              <RowUpdater onHit={this.handleDelegationMake} label="编辑清单" row={record} />
+              <RowUpdater onHit={this.handleDelegationMake} label={<span><Icon type="edit" /> 编辑清单</span>} row={record} />
             );
           } else if (record.bill_status >= 3 && record.entry_status === 0) {
             return (
               <span>
-                <RowUpdater onHit={this.handleDelegationView} label="查看清单" row={record} />
+                <RowUpdater onHit={this.handleDelegationView} label={<span><Icon type="eye-o" /> 查看清单</span>} row={record} />
                 <span className="ant-divider" />
                 <Popconfirm title="确定需要重新制单吗?" onConfirm={() => this.handleDelegationRedo(record)}>
                   <a role="button">重新制单</a>
@@ -261,12 +261,12 @@ export default class ManifestList extends Component {
             );
           } else if (record.bill_status >= 3 && record.entry_status === 1) {
             return (
-              <RowUpdater onHit={this.handleDelegationView} label="查看清单" row={record} />
+              <RowUpdater onHit={this.handleDelegationView} label={<span><Icon type="eye-o" /> 查看清单</span>} row={record} />
             );
           }
         } else {
           return (
-            <RowUpdater onHit={this.handleDelegationView} label="查看清单" row={record} />
+            <RowUpdater onHit={this.handleDelegationView} label={<span><Icon type="eye-o" /> 查看清单</span>} row={record} />
           );
         }
       },

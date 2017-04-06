@@ -50,6 +50,8 @@ function fetchData({ state, dispatch }) {
     tradeItemlist: state.cmsTradeitem.tradeItemlist,
     visibleAddModal: state.cmsTradeitem.visibleAddModal,
     repo: state.cmsTradeitem.repo,
+    reposLoading: state.cmsTradeitem.reposLoading,
+    tradeItemsLoading: state.cmsTradeitem.tradeItemsLoading,
     units: state.cmsTradeitem.params.units.map(un => ({
       value: un.unit_code,
       text: un.unit_name,
@@ -80,6 +82,8 @@ export default class TradeItemList extends Component {
     visibleAddModal: PropTypes.bool,
     repo: PropTypes.object,
     listFilter: PropTypes.object.isRequired,
+    reposLoading: PropTypes.bool.isRequired,
+    tradeItemsLoading: PropTypes.bool.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -555,7 +559,7 @@ export default class TradeItemList extends Component {
             </div>
             <Table size="middle" dataSource={this.state.repos} columns={repoColumns} showHeader={false} onRowClick={this.handleRowClick}
               rowKey="id" pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }}
-              rowClassName={record => record.id === repo.id ? 'table-row-selected' : ''}
+              rowClassName={record => record.id === repo.id ? 'table-row-selected' : ''} loading={this.props.reposLoading}
             />
           </div>
         </Sider>
@@ -619,7 +623,7 @@ export default class TradeItemList extends Component {
                 {batchOperation}
               </div>
               <div className="panel-body table-panel">
-                <RemoteTable rowSelection={rowSelection} rowKey={record => record.id} columns={columns} dataSource={this.dataSource} scroll={{ x: 3800 }} />
+                <RemoteTable loading={this.props.tradeItemsLoading} rowSelection={rowSelection} rowKey={record => record.id} columns={columns} dataSource={this.dataSource} scroll={{ x: 3800 }} />
               </div>
               <AddTradeRepoModal />
               <ImportComparisonModal data={this.state.compareduuid} />

@@ -78,7 +78,7 @@ export default class InfoItem extends React.Component {
           {this.renderAddonAfter()}
         </span>);
       }
-      return (<EditableCell type={type} value={field} addonBefore={this.renderAddonBefore()} addonAfter={this.renderAddonAfter()} placeholder={placeholder} onChange={onEdit} />);
+      return (<EditableCell cellTrigger type={type} value={field} addonBefore={this.renderAddonBefore()} addonAfter={this.renderAddonAfter()} placeholder={placeholder} onChange={onEdit} />);
     }
     return <span>{this.renderAddonBefore()}{field}{this.renderAddonAfter()}</span>;
   }
