@@ -317,6 +317,7 @@ export default(store, cookie) => {
               <Route path="billtemplates">
                 <IndexRoute component={CMSSettings.BillTemplates} />
                 <Route path="edit/:id" component={CMSSettings.EditBillTemplate} />
+                <Route path="view/:id" component={CMSSettings.ViewBillTemplate} />
               </Route>
             </Route>
             <Route path="classification">

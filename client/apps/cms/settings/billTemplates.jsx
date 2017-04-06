@@ -11,7 +11,7 @@ import { toggleBillTempModal, loadBillemplates, deleteTemplate, loadRelatedCusto
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import BillTemplateModal from './modals/billTemplateModal';
 import { loadPartners } from 'common/reducers/partner';
-import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
+import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES, CMS_BILL_TEMPLATE_PERMISSION } from 'common/constants';
 import connectFetch from 'client/common/decorators/connect-fetch';
 
 const formatMsg = format(messages);
@@ -99,14 +99,21 @@ export default class billTemplates extends Component {
         title: '操作',
         dataIndex: 'status',
         key: 'status',
-        render: (_, record) => (
-          <span>
-            <a onClick={() => this.handleEdit(record)}>{this.msg('edit')}</a>
-            <span className="ant-divider" />
-            <Popconfirm title="确定要删除吗？" onConfirm={() => this.handleDelete(record)}>
-              <a>删除</a>
-            </Popconfirm>
-          </span>),
+        render: (_, record) => {
+          if (record.permission === CMS_BILL_TEMPLATE_PERMISSION.edit) {
+            return (
+              <span>
+                <a onClick={() => this.handleEdit(record)}>{this.msg('edit')}</a>
+                <span className="ant-divider" />
+                <Popconfirm title="确定要删除吗？" onConfirm={() => this.handleDelete(record)}>
+                  <a>删除</a>
+                </Popconfirm>
+              </span>);
+          } else if (record.permission === CMS_BILL_TEMPLATE_PERMISSION.view) {
+            return <NavLink to={`/clearance/settings/billtemplates/view/${record.id}`}>{this.msg('view')}</NavLink>;
+          }
+          return '';
+        },
       },
     ];
     return (
@@ -147,10 +154,10 @@ export default class billTemplates extends Component {
                 <div className="page-body tabbed">
                   <Tabs defaultActiveKey="import" onChange={this.handleTabChange}>
                     <TabPane tab="进口" key="import">
-                      <Table columns={columns} dataSource={this.props.billtemplates} />
+                      <Table columns={columns} dataSource={this.props.billtemplates} rowKey="id" />
                     </TabPane>
                     <TabPane tab="出口" key="export">
-                      <Table columns={columns} dataSource={this.props.billtemplates} />
+                      <Table columns={columns} dataSource={this.props.billtemplates} rowKey="id" />
                     </TabPane>
                   </Tabs>
                 </div>
