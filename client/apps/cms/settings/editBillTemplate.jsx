@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Breadcrumb, Form, Layout, Row, Col, Button, Tooltip, Table, Popconfirm, Icon, message, Mention } from 'antd';
+import { Breadcrumb, Form, Layout, Row, Col, Button, Tooltip, Table, Popconfirm, Icon, message, Mention, Collapse } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { openAddModal, deleteRelatedCustomer, loadRelatedCustomers, loadTemplateFormVals, saveTemplateData } from 'common/reducers/cmsSettings';
@@ -13,9 +13,11 @@ import { loadCustomers } from 'common/reducers/crmCustomers';
 import SetImportRules from './cards/setImportRules';
 import MergeSplitRules from './cards/mergeSplitRules';
 import CustomerModal from './modals/customerModal';
+import BillTemplateUsersPane from './cards/billTemplateUsersPane';
 
 const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
+const Panel = Collapse.Panel;
 
 function fetchData({ dispatch, state, params }) {
   const promises = [];
@@ -55,12 +57,14 @@ export default class CreateTemplate extends Component {
     form: PropTypes.object.isRequired,
     tenantName: PropTypes.string.isRequired,
     relatedCustomers: PropTypes.array,
+    template: PropTypes.object.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
   state = {
     attachments: [],
+    rightSidercollapsed: true,
   }
   msg = key => formatMsg(this.props.intl, key);
   handleSave = () => {
@@ -121,8 +125,13 @@ export default class CreateTemplate extends Component {
         }
       });
   }
+  toggleRightSider = () => {
+    this.setState({
+      rightSidercollapsed: !this.state.rightSidercollapsed,
+    });
+  }
   render() {
-    const { form, ietype, templateName, formData, relatedCustomers } = this.props;
+    const { form, ietype, templateName, formData, relatedCustomers, template } = this.props;
     const columns = [{
       dataIndex: 'customer_name',
       key: 'name',
@@ -181,6 +190,11 @@ export default class CreateTemplate extends Component {
               <Button size="large" type="primary" icon="save" onClick={this.handleSave}>
                 {this.msg('save')}
               </Button>
+              <Button size="large"
+                className={this.state.rightSidercollapsed ? '' : 'btn-toggle-on'}
+                icon={this.state.rightSidercollapsed ? 'setting' : 'setting'}
+                onClick={this.toggleRightSider}
+              />
             </div>
           </Header>
           <Content className={'main-content layout-min-width layout-min-width-large'}>
@@ -198,6 +212,26 @@ export default class CreateTemplate extends Component {
             <CustomerModal />
           </Content>
         </Layout>
+        <Sider
+          trigger={null}
+          defaultCollapsed
+          collapsible
+          collapsed={this.state.rightSidercollapsed}
+          width={480}
+          collapsedWidth={0}
+          className="right-sider"
+        >
+          <div className="right-sider-panel">
+            <div className="panel-header">
+              <h3>模板设置</h3>
+            </div>
+            <Collapse accordion defaultActiveKey="user">
+              <Panel header={'授权使用单位'} key="user">
+                <BillTemplateUsersPane template={template} />
+              </Panel>
+            </Collapse>
+          </div>
+        </Sider>
       </Layout>
     );
   }

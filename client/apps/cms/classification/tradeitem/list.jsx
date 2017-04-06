@@ -643,7 +643,7 @@ export default class TradeItemList extends Component {
             <div className="panel-header">
               <h3>物料库设置</h3>
             </div>
-            <Collapse accordion defaultActiveKey="trader">
+            <Collapse accordion defaultActiveKey="user">
               <Panel header={'授权使用单位'} key="user">
                 <RepoUsersPane repo={repo} />
               </Panel>

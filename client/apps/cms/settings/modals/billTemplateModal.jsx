@@ -16,6 +16,7 @@ const formItemLayout = {
   tenantId: state.account.tenantId,
   loginId: state.account.loginId,
   loginName: state.account.username,
+  tenantName: state.account.tenantName,
   visible: state.cmsSettings.billTemplateModal.visible,
   operation: state.cmsSettings.billTemplateModal.operation,
   partners: state.partner.partners,
@@ -26,6 +27,7 @@ export default class BillTemplateModal extends React.Component {
     tenantId: PropTypes.number.isRequired,
     loginId: PropTypes.number.isRequired,
     loginName: PropTypes.string.isRequired,
+    tenantName: PropTypes.string.isRequired,
     visible: PropTypes.bool,
     operation: PropTypes.string, // 'add' 'edit'
   }
@@ -44,8 +46,8 @@ export default class BillTemplateModal extends React.Component {
     }
   }
   handleAddNew = (formData) => {
-    const { tenantId, loginId, loginName } = this.props;
-    const params = { ...formData, tenant_id: tenantId, modify_id: loginId, modify_name: loginName };
+    const { tenantId, loginId, loginName, tenantName } = this.props;
+    const params = { ...formData, tenant_id: tenantId, modify_id: loginId, modify_name: loginName, tenant_name: tenantName };
     this.props.createBillTemplate(params).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
