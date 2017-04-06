@@ -18,6 +18,8 @@ const Option = Select.Option;
     visible: state.cmsDeclare.sendDeclModal.visible,
     preEntrySeqNo: state.cmsDeclare.sendDeclModal.preEntrySeqNo,
     delgNo: state.cmsDeclare.sendDeclModal.delgNo,
+    loginId: state.account.loginId,
+    loginName: state.account.username,
   }),
   { showSendDeclModal, getEasipassList, sendDecl }
 )
@@ -49,12 +51,12 @@ export default class SendModal extends React.Component {
     this.props.showSendDeclModal({ visible: false });
   }
   handleOk = () => {
-    const { delgNo, preEntrySeqNo, subdomain } = this.props;
+    const { delgNo, preEntrySeqNo, subdomain, loginId, username } = this.props;
     this.props.form.validateFields((err, values) => {
       if (!err) {
         const uuid = values.easipass;
         const declType = values.declType;
-        this.props.sendDecl({ preEntrySeqNo, delgNo, subdomain, uuid, declType }).then((result) => {
+        this.props.sendDecl({ preEntrySeqNo, delgNo, subdomain, uuid, declType, loginId, username }).then((result) => {
           if (result.error) {
             message.error(result.error.message, 10);
           } else {

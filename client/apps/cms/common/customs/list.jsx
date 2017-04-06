@@ -169,24 +169,21 @@ export default class DelgDeclList extends Component {
     title: '创建时间',
     dataIndex: 'created_date',
     width: 100,
-    render: (o, record) => (record.id ?
-    record.created_date && moment(record.created_date).format('MM.DD HH:mm') : '-'),
+    render: createdt => (createdt && moment(createdt).format('MM.DD HH:mm') : '-'),
   }, {
-    title: '申报时间',
-    dataIndex: 'd_date',
+    title: '发送时间',
+    dataIndex: 'epsend_date',
     width: 100,
-    render: (o, record) => (record.id ?
-    record.d_date && moment(record.d_date).format('MM.DD HH:mm') : '-'),
+    render: senddate => (senddate && moment(senddate).format('MM.DD HH:mm') : '-'),
   }, {
-    title: '申报人',
-    dataIndex: 'creater_login_id',
+    title: '发送人',
+    dataIndex: 'epsend_login_name',
     width: 100,
   }, {
     title: '回填日期',
     dataIndex: 'backfill_date',
     width: 100,
-    render: (o, record) => (record.id ?
-    record.backfill_date && moment(record.backfill_date).format('YYYY.MM.DD') : '-'),
+    render: backdt => (backdt && moment(backdt).format('YYYY.MM.DD') : '-'),
   }]
   dataSource = new Table.DataSource({
     fetcher: params => this.props.loadDelgDecls(params),
