@@ -7,6 +7,7 @@ import messages from './message.i18n';
 import { format } from 'client/common/i18n/helpers';
 import HeadForm from './forms/headForm';
 import { loadCustomers } from 'common/reducers/crmCustomers';
+import ButtonToggle from 'client/components/ButtonToggle';
 import SetImportRules from './cards/setImportRules';
 import MergeSplitRules from './cards/mergeSplitRules';
 import CustomerModal from './modals/customerModal';
@@ -180,9 +181,8 @@ export default class BillTemplate extends Component {
               <Button size="large" type="primary" icon="save" onClick={this.handleSave}>
                 {this.msg('save')}
               </Button>}
-              <Button size="large"
-                className={this.state.rightSidercollapsed ? '' : 'btn-toggle-on'}
-                icon={this.state.rightSidercollapsed ? 'setting' : 'setting'}
+              <ButtonToggle size="large"
+                iconOn="setting" iconOff="setting"
                 onClick={this.toggleRightSider}
               />
             </div>
