@@ -275,10 +275,10 @@ export default class MainForm extends Component {
                 <InputGroup compact>
                   {getFieldDecorator('pieces', {
                     initialValue: fieldInits.pieces || 1,
-                  })(<InputNumber min={1} max={100000} style={{ width: '50%' }} />)}
+                  })(<InputNumber size="large" min={1} max={100000} style={{ width: '50%' }} />)}
                   {getFieldDecorator('wrap_type', {
                     initialValue: fieldInits.wrap_type,
-                  })(<Select style={{ width: '50%' }} placeholder="选择包装方式">
+                  })(<Select size="large" style={{ width: '50%' }} placeholder="选择包装方式">
                     {
                     WRAP_TYPE.map(wt =>
                       <Option value={wt.value} key={wt.value}>{wt.text}</Option>
