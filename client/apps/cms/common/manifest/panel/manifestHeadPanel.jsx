@@ -8,7 +8,7 @@ import {
   TradeRemission, CountryAttr, TradeMode, Fee, ContainerNo, PackWeight,
   RaDeclManulNo, StoreYard,
 } from '../../form/headFormItems';
-import { loadSearchedParam, saveBillHead, cleanHeadDatas } from 'common/reducers/cmsManifest';
+import { loadSearchedParam, saveBillHead, resetBillHead } from 'common/reducers/cmsManifest';
 import { format } from 'client/common/i18n/helpers';
 import globalMessage from 'client/common/root.i18n';
 import messages from '../message.i18n';
@@ -31,7 +31,7 @@ const CODE_AS_STATE = {
     formRequire: state.cmsManifest.params,
     billHeadFieldsChangeTimes: state.cmsManifest.billHeadFieldsChangeTimes,
   }),
-  { loadSearchedParam, saveBillHead, cleanHeadDatas }
+  { loadSearchedParam, saveBillHead, resetBillHead }
 )
 export default class ManifestHeadPanel extends React.Component {
   static propTypes = {
@@ -77,8 +77,8 @@ export default class ManifestHeadPanel extends React.Component {
   handlePortSearch = (field, search) => {
     this.props.loadSearchedParam({ paramType: 'port', search });
   }
-  handleBillHeadDelete = () => {
-    this.props.cleanHeadDatas(this.props.formData).then((result) => {
+  handleBillHeadReset = () => {
+    this.props.resetBillHead(this.props.formData).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -110,7 +110,7 @@ export default class ManifestHeadPanel extends React.Component {
                 {formatGlobalMsg(this.props.intl, 'save')}
               </Button>}
             {!readonly &&
-              <Popconfirm title={'是否确认重置表头数据?'} onConfirm={() => this.handleBillHeadDelete()}>
+              <Popconfirm title={'是否确认重置表头数据?'} onConfirm={this.handleBillHeadReset}>
                 <Button icon="reload" style={{ marginLeft: 15 }}>重置</Button>
               </Popconfirm>}
           </div>
