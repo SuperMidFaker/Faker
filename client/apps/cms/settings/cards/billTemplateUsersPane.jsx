@@ -26,7 +26,7 @@ const Option = Select.Option;
 export default class BillTemplateUsersPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantName: PropTypes.number.isRequired,
+    tenantName: PropTypes.string.isRequired,
     tenantId: PropTypes.number.isRequired,
     template: PropTypes.object.isRequired,
     billTemplateUsers: PropTypes.array.isRequired,

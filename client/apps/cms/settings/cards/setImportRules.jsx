@@ -48,8 +48,10 @@ export default class FeesTable extends Component {
     suggestions: [],
   }
   componentWillReceiveProps(nextProps) {
+    const { fieldInits } = nextProps;
     if (nextProps.formData !== this.props.formData) {
       this.setState({ specialCode: !!nextProps.formData.set_special_code });
+      this.props.form.setFieldsValue({ rule_element: Mention.toEditorState(fieldInits.rule_element) });
     }
   }
   handleOnChange = (checked) => {
