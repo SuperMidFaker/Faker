@@ -3,7 +3,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Form, Select, Icon, Input, InputNumber, Card, Col, Row, Radio, Tooltip } from 'antd';
 import { setClientForm } from 'common/reducers/cmsDelegation';
-import { GOODSTYPES, TRANS_MODE, CLAIM_DO_AWB, DECL_I_TYPE, DECL_E_TYPE } from 'common/constants';
+import { GOODSTYPES, TRANS_MODE, CLAIM_DO_AWB, DECL_I_TYPE, DECL_E_TYPE, WRAP_TYPE } from 'common/constants';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
@@ -21,7 +21,7 @@ function getFieldInits(aspect, formData) {
     [
       'customer_name', 'invoice_no', 'contract_no', 'bl_wb_no', 'pieces', 'weight',
       'trans_mode', 'traf_name', 'voyage_no', 'trade_mode', 'decl_port', 'decl_way_code',
-      'goods_type', 'order_no', 'swb_no',
+      'goods_type', 'order_no', 'swb_no', 'wrap_type',
     ].forEach((fd) => {
       init[fd] = formData[fd] === undefined ? '' : formData[fd];
     });
@@ -272,9 +272,20 @@ export default class MainForm extends Component {
             </Col>
             <Col sm={24} lg={8}>
               <FormItem label={this.msg('packageNum')} >
-                {getFieldDecorator('pieces', {
-                  initialValue: fieldInits.pieces || 1,
-                })(<InputNumber min={1} max={100000} style={{ width: '100%' }} />)}
+                <InputGroup compact>
+                  {getFieldDecorator('pieces', {
+                    initialValue: fieldInits.pieces || 1,
+                  })(<InputNumber min={1} max={100000} style={{ width: '50%' }} />)}
+                  {getFieldDecorator('wrap_type', {
+                    initialValue: fieldInits.wrap_type,
+                  })(<Select style={{ width: '50%' }} placeholder="选择包装方式">
+                    {
+                    WRAP_TYPE.map(wt =>
+                      <Option value={wt.value} key={wt.value}>{wt.text}</Option>
+                      )
+                  }
+                  </Select>)}
+                </InputGroup>
               </FormItem>
             </Col>
             <Col sm={24} lg={8}>
