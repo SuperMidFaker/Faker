@@ -289,7 +289,7 @@ export default class ExpenseList extends Component {
             dataIndex: 'serv_bill',
             key: 'serv_bill',
             width: 80,
-            className: 'data-money',
+            className: 'cell-align-right',
             render: (o) => {
               if (!isNaN(o)) {
                 return o.toFixed(2);
@@ -300,7 +300,7 @@ export default class ExpenseList extends Component {
             dataIndex: 'cush_bill',
             key: 'cush_bill',
             width: 80,
-            className: 'data-money',
+            className: 'cell-align-right',
             render: (o, row) => {
               if (!isNaN(o)) {
                 const labelElem = (
@@ -317,7 +317,7 @@ export default class ExpenseList extends Component {
             dataIndex: 'all_bill',
             key: 'all_bill',
             width: 80,
-            className: 'data-money',
+            className: 'cell-align-right',
             render: (o) => {
               if (!isNaN(o)) {
                 return (<b>{o.toFixed(2)}</b>);
@@ -349,7 +349,7 @@ export default class ExpenseList extends Component {
             dataIndex: 'serv_cost',
             key: 'serv_cost',
             width: 80,
-            className: 'data-money',
+            className: 'cell-align-right',
             render: (o) => {
               if (!isNaN(o)) {
                 return o.toFixed(2);
@@ -360,7 +360,7 @@ export default class ExpenseList extends Component {
             dataIndex: 'cush_cost',
             key: 'cush_cost',
             width: 80,
-            className: 'data-money',
+            className: 'cell-align-right',
             render: (o, row) => {
               if (!isNaN(o)) {
                 const labelElem = (
@@ -376,7 +376,7 @@ export default class ExpenseList extends Component {
             title: this.msg('allCost'),
             dataIndex: 'all_cost',
             width: 80,
-            className: 'data-money',
+            className: 'cell-align-right',
             render: (o) => {
               if (!isNaN(o)) {
                 return (<b>{o.toFixed(2)}</b>);
@@ -403,7 +403,7 @@ export default class ExpenseList extends Component {
         title: this.msg('profit'),
         width: 80,
         dataIndex: 'profit',
-        className: 'data-money',
+        className: 'cell-align-right',
         render: (o, record) => {
           const bill = isNaN(record.all_bill) ? 0 : record.all_bill;
           const cost = isNaN(record.all_cost) ? 0 : record.all_cost;

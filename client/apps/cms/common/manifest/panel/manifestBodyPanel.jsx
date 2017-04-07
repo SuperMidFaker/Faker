@@ -17,7 +17,7 @@ const formatMsg = format(messages);
 const Option = Select.Option;
 
 function ColumnInput(props) {
-  const { inEdit, edit, record, field, onChange, type, autosize } = props;
+  const { inEdit, edit, record, field, onChange, type, autosize, decimal } = props;
   function handleChange(ev) {
     if (onChange) {
       onChange(field, ev.target.value);
@@ -30,6 +30,8 @@ function ColumnInput(props) {
     return (<Tooltip title="物料库中未对该货号归类">
       <Tag color="red">{record[field] || ''}</Tag>
     </Tooltip>);
+  } else if (decimal) {
+    return <span>{record[field] ? record[field].toFixed(decimal) : '' }</span>;
   } else {
     return <span>{record[field] || ''}</span>;
   }
@@ -42,6 +44,7 @@ ColumnInput.propTypes = {
   onChange: PropTypes.func,
   type: PropTypes.oneOf(['text', 'textarea']),
   autosize: PropTypes.bool,
+  decimal: PropTypes.number,
 };
 
 function ColumnSelect(props) {
@@ -354,8 +357,9 @@ export default class ManifestBodyPanel extends React.Component {
           onChange={this.handleEditChange} edit={editBody}
         />,
     }, {
-      title: this.msg('quantity'),
+      title: <div className="cell-align-right">{this.msg('quantity')}</div>,
       width: 80,
+      className: 'cell-align-right',
       render: (o, record, index) =>
         <ColumnInput field="g_qty" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} edit={editBody}
@@ -368,18 +372,20 @@ export default class ManifestBodyPanel extends React.Component {
           onChange={this.handleEditChange} options={units} edit={editBody}
         />,
     }, {
-      title: this.msg('decPrice'),
+      title: <div className="cell-align-right">{this.msg('decPrice')}</div>,
       width: 100,
+      className: 'cell-align-right',
       render: (o, record, index) =>
         <ColumnInput field="dec_price" inEdit={index === editIndex} record={record}
-          onChange={this.handleEditChange} edit={editBody}
+          onChange={this.handleEditChange} edit={editBody} decimal={5}
         />,
     }, {
-      title: this.msg('decTotal'),
+      title: <div className="cell-align-right">{this.msg('decTotal')}</div>,
       width: 100,
+      className: 'cell-align-right',
       render: (o, record, index) =>
         <ColumnInput field="trade_total" inEdit={index === editIndex} record={record}
-          onChange={this.handleEditChange} edit={editBody}
+          onChange={this.handleEditChange} edit={editBody} decimal={4}
         />,
     }, {
       title: this.msg('currency'),
@@ -389,8 +395,9 @@ export default class ManifestBodyPanel extends React.Component {
           onChange={this.handleEditChange} options={currencies} edit={editBody}
         />,
     }, {
-      title: this.msg('qty1'),
+      title: <div className="cell-align-right">{this.msg('qty1')}</div>,
       width: 80,
+      className: 'cell-align-right',
       render: (o, record, index) =>
         <ColumnInput field="qty_1" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} edit={editBody}
@@ -403,11 +410,12 @@ export default class ManifestBodyPanel extends React.Component {
           onChange={this.handleEditChange} options={units} edit={editBody}
         />,
     }, {
-      title: this.msg('qty2'),
+      title: <div className="cell-align-right">{this.msg('qty2')}</div>,
       width: 80,
+      className: 'cell-align-right',
       render: (o, record, index) =>
         <ColumnInput field="qty_2" inEdit={index === editIndex} record={record}
-          onChange={this.handleEditChange} edit={editBody}
+          onChange={this.handleEditChange} edit={editBody} decimal={3}
         />,
     }, {
       title: this.msg('unit2'),
@@ -417,18 +425,20 @@ export default class ManifestBodyPanel extends React.Component {
           onChange={this.handleEditChange} options={units} edit={editBody}
         />,
     }, {
-      title: this.msg('grosswt'),
+      title: <div className="cell-align-right">{this.msg('grosswt')}</div>,
       width: 80,
+      className: 'cell-align-right',
       render: (o, record, index) =>
         <ColumnInput field="gross_wt" inEdit={index === editIndex} record={record}
-          onChange={this.handleEditChange} edit={editBody}
+          onChange={this.handleEditChange} edit={editBody} decimal={3}
         />,
     }, {
-      title: this.msg('netwt'),
+      title: <div className="cell-align-right">{this.msg('netwt')}</div>,
       width: 80,
+      className: 'cell-align-right',
       render: (o, record, index) =>
         <ColumnInput field="wet_wt" inEdit={index === editIndex} record={record}
-          onChange={this.handleEditChange} edit={editBody}
+          onChange={this.handleEditChange} edit={editBody} decimal={3}
         />,
     }, {
       title: this.msg('exemptionWay'),
@@ -480,11 +490,12 @@ export default class ManifestBodyPanel extends React.Component {
           onChange={this.handleEditChange} edit={editBody}
         />,
     }, {
-      title: this.msg('processingFees'),
+      title: <div className="cell-align-right">{this.msg('processingFees')}</div>,
       width: 80,
+      className: 'cell-align-right',
       render: (o, record, index) =>
         <ColumnInput field="processing_fees" inEdit={index === editIndex} record={record}
-          onChange={this.handleEditChange} edit={editBody}
+          onChange={this.handleEditChange} edit={editBody} decimal={4}
         />,
     }, {
       title: this.msg('opColumn'),

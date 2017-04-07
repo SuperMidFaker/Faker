@@ -109,15 +109,20 @@ export default class ManifestEditor extends React.Component {
         wtSum += Number(body.wet_wt);
       }
     });
-    if (bodyDatas.length === 0 || wtSum === 0) {
+    if (bodyDatas.length === 0) {
       this.setState({ generating: false });
-      return message.error('请检查表体数据是否正确', 3);
+      return message.error('尚未录入表体数据', 3);
+    }
+    if (wtSum === 0) {
+      this.setState({ generating: false });
+      return message.error('表体数据总净重为零', 3);
     }
     if (wtSum > billHead.gross_wt) {
       this.props.updateHeadNetWt(billHead.bill_seq_no, wtSum);
       this.setState({ generating: false });
-      message.error('毛重必须大于总净重', 3);
-    } else if (wtSum > 0) {
+      return message.error('毛重必须大于总净重', 3);
+    }
+    if (wtSum > 0) {
       this.props.updateHeadNetWt(billHead.bill_seq_no, wtSum);
       const totGrossWt = billHead.gross_wt;
       const datas = [];
@@ -182,7 +187,7 @@ export default class ManifestEditor extends React.Component {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
-        message.info('更新成功');
+        message.info('保存成功');
       }
     });
   }

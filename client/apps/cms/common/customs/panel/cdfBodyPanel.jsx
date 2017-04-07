@@ -12,14 +12,20 @@ const formatMsg = format(messages);
 const Option = Select.Option;
 
 function ColumnInput(props) {
-  const { inEdit, edit, record, field, onChange } = props;
+  const { inEdit, edit, record, field, onChange, type, autosize, decimal } = props;
   function handleChange(ev) {
     if (onChange) {
       onChange(field, ev.target.value);
     }
   }
-  return inEdit ? <Input value={edit[field] || ''} onChange={handleChange} />
-    : <span>{record[field] || ''}</span>;
+  const typeStr = (!type) ? 'text' : type;
+  if (inEdit) {
+    return (<Input type={typeStr} autosize={autosize} value={edit[field] || ''} onChange={handleChange} />);
+  } else if (decimal) {
+    return <span>{record[field] ? record[field].toFixed(decimal) : '' }</span>;
+  } else {
+    return <span>{record[field] || ''}</span>;
+  }
 }
 ColumnInput.propTypes = {
   inEdit: PropTypes.bool,
@@ -27,6 +33,9 @@ ColumnInput.propTypes = {
   field: PropTypes.string.isRequired,
   edit: PropTypes.object,
   onChange: PropTypes.func,
+  type: PropTypes.oneOf(['text', 'textarea']),
+  autosize: PropTypes.bool,
+  decimal: PropTypes.number,
 };
 
 function ColumnSelect(props) {
@@ -274,32 +283,12 @@ export default class CDFBodyPanel extends React.Component {
           edit={editBody}
         />,
     }, {
-      title: this.msg('quantity'),
+      title: <div className="cell-align-right">{this.msg('quantity')}</div>,
       width: 80,
+      className: 'cell-align-right',
       render: (o, record, index) =>
         <ColumnInput field="g_qty" inEdit={index === editIndex} record={record}
           edit={editBody}
-        />,
-    }, {
-      title: this.msg('decPrice'),
-      width: 100,
-      render: (o, record, index) =>
-        <ColumnInput field="dec_price" inEdit={index === editIndex} record={record}
-          edit={editBody}
-        />,
-    }, {
-      title: this.msg('decTotal'),
-      width: 100,
-      render: (o, record, index) =>
-        <ColumnInput field="trade_total" inEdit={index === editIndex} record={record}
-          edit={editBody}
-        />,
-    }, {
-      title: this.msg('currency'),
-      width: 100,
-      render: (o, record, index) =>
-        <ColumnSelect field="trade_curr" inEdit={index === editIndex} record={record}
-          options={currencies} edit={editBody}
         />,
     }, {
       title: this.msg('unit'),
@@ -309,8 +298,32 @@ export default class CDFBodyPanel extends React.Component {
           options={units} edit={editBody}
         />,
     }, {
-      title: this.msg('qty1'),
+      title: <div className="cell-align-right">{this.msg('decPrice')}</div>,
+      width: 100,
+      className: 'cell-align-right',
+      render: (o, record, index) =>
+        <ColumnInput field="dec_price" inEdit={index === editIndex} record={record}
+          edit={editBody} decimal={5}
+        />,
+    }, {
+      title: <div className="cell-align-right">{this.msg('decTotal')}</div>,
+      width: 100,
+      className: 'cell-align-right',
+      render: (o, record, index) =>
+        <ColumnInput field="trade_total" inEdit={index === editIndex} record={record}
+          edit={editBody} decimal={4}
+        />,
+    }, {
+      title: this.msg('currency'),
+      width: 100,
+      render: (o, record, index) =>
+        <ColumnSelect field="trade_curr" inEdit={index === editIndex} record={record}
+          options={currencies} edit={editBody}
+        />,
+    }, {
+      title: <div className="cell-align-right">{this.msg('qty1')}</div>,
       width: 80,
+      className: 'cell-align-right',
       render: (o, record, index) =>
         <ColumnInput field="qty_1" inEdit={index === editIndex} record={record}
           edit={editBody}
@@ -323,11 +336,12 @@ export default class CDFBodyPanel extends React.Component {
           options={units} edit={editBody}
         />,
     }, {
-      title: this.msg('qty2'),
+      title: <div className="cell-align-right">{this.msg('qty2')}</div>,
       width: 80,
+      className: 'cell-align-right',
       render: (o, record, index) =>
         <ColumnInput field="qty_2" inEdit={index === editIndex} record={record}
-          edit={editBody}
+          edit={editBody} decimal={3}
         />,
     }, {
       title: this.msg('unit2'),
@@ -337,18 +351,20 @@ export default class CDFBodyPanel extends React.Component {
           options={units} edit={editBody}
         />,
     }, {
-      title: this.msg('grosswt'),
+      title: <div className="cell-align-right">{this.msg('grosswt')}</div>,
       width: 80,
+      className: 'cell-align-right',
       render: (o, record, index) =>
         <ColumnInput field="gross_wt" inEdit={index === editIndex} record={record}
-          edit={editBody}
+          edit={editBody} decimal={3}
         />,
     }, {
-      title: this.msg('netwt'),
+      title: <div className="cell-align-right">{this.msg('netwt')}</div>,
       width: 80,
+      className: 'cell-align-right',
       render: (o, record, index) =>
         <ColumnInput field="wet_wt" inEdit={index === editIndex} record={record}
-          edit={editBody}
+          edit={editBody} decimal={3}
         />,
     }, {
       title: this.msg('exemptionWay'),
@@ -402,9 +418,10 @@ export default class CDFBodyPanel extends React.Component {
     }, {
       title: this.msg('processingFees'),
       width: 80,
+      className: 'cell-align-right',
       render: (o, record, index) =>
         <ColumnInput field="processing_fees" inEdit={index === editIndex} record={record}
-          edit={editBody}
+          edit={editBody} decimal={4}
         />,
     }];
     return columns;
