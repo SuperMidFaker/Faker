@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Spin, Badge, Button, Card, Col, Icon, Progress, Row, Table, Tag, Steps, message } from 'antd';
 import moment from 'moment';
-import { CMS_DELEGATION_STATUS, CMS_DECL_STATUS } from 'common/constants';
+import { CMS_DECL_STATUS } from 'common/constants';
 import { openAcceptModal, ensureManifestMeta, loadDelgOperators } from 'common/reducers/cmsDelegation';
 import { loadCustPanel } from 'common/reducers/cmsDelgInfoHub';
 import InfoItem from 'client/components/InfoItem';
@@ -18,7 +18,6 @@ const Step = Steps.Step;
     customsPanel: state.cmsDelgInfoHub.customsPanel,
     tabKey: state.cmsDelgInfoHub.tabKey,
     customsSpinning: state.cmsDelgInfoHub.customsPanelLoading,
-    delegation: state.cmsDelgInfoHub.previewer.delegation,
   }),
   { loadCustPanel, openAcceptModal, ensureManifestMeta, loadDelgOperators }
 )
@@ -27,23 +26,26 @@ export default class CustomsDeclPane extends React.Component {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     delgNo: PropTypes.string.isRequired,
-    customsPanel: PropTypes.object.isRequired,
+    customsPanel: PropTypes.shape({
+      customs_name: PropTypes.string,
+      acpt_time: PropTypes.date,
+      accepted: PropTypes.bool.isRequired,
+      bill: PropTypes.shape({ bill_status: PropTypes.number.isRequired }),
+      decls: PropTypes.arrayOf(PropTypes.shape({ gross_wt: PropTypes.number })),
+    }).isRequired,
     customsSpinning: PropTypes.bool.isRequired,
-    delegation: PropTypes.object.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
-  componentDidMount() {
+  componentWillMount() {
     this.props.loadCustPanel({
       delgNo: this.props.delgNo,
       tenantId: this.props.tenantId,
     });
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.tabKey === 'customsDecl' &&
-      nextProps.tabKey !== this.props.tabKey ||
-      nextProps.delgNo !== this.props.delgNo) {
+    if (nextProps.tabKey === 'customsDecl' && nextProps.delgNo !== this.props.delgNo) {
       nextProps.loadCustPanel({
         delgNo: nextProps.delgNo,
         tenantId: this.props.tenantId,
@@ -87,25 +89,23 @@ export default class CustomsDeclPane extends React.Component {
   }
   renderManifestAction() {
     const { customsPanel } = this.props;
-    const bill = customsPanel.bill; // todo
-    if (customsPanel.recv_tenant_id === customsPanel.customs_tenant_id || customsPanel.customs_tenant_id === -1) {
-      if (customsPanel.status === CMS_DELEGATION_STATUS.accepted) {
+    const bill = customsPanel.bill;
+    if (customsPanel.accepted) {
+      if (bill.bill_status === 0) {
         return <Button type="primary" ghost icon="addfile" onClick={this.handleMake}>创建</Button>;
-      } else if (customsPanel.status > CMS_DELEGATION_STATUS.accepted && bill.bill_status < 3) {
+      } else if (bill.bill_status < 100) {
         return (
           <Button type="primary" ghost icon="edit" onClick={this.handleMake}>编辑</Button>
         );
       } else if (bill.bill_status === 100) {
         return <Button icon="eye" onClick={ev => this.handleView(ev)}>查看</Button>;
       }
-    } else if (customsPanel.status > CMS_DELEGATION_STATUS.accepted) {
-      return <Button icon="eye" onClick={ev => this.handleView(ev)}>查看</Button>;
     }
   }
   render() {
-    const { customsPanel, customsSpinning } = this.props;
+    const { customsPanel, customsSpinning, tenantId } = this.props;
     const bill = customsPanel.bill;
-    const tableDatas = (bill.children || []);
+    const tableDatas = customsPanel.decls;
     // const declTypes = DECL_I_TYPE.concat(DECL_E_TYPE).filter(dt => dt.key === bill.decl_way_code);
     // const panelHeader = (
     //  <span>{declTypes.length > 0 ? declTypes[0].value : ''}：{bill.pack_count}件/{bill.gross_wt}千克</span>
@@ -180,7 +180,7 @@ export default class CustomsDeclPane extends React.Component {
         </Card>);
       },
     }];
-    const assignable = (customsPanel.type === 1 || customsPanel.customs_tenant_id === -1);
+    const assignable = (customsPanel.customs_tenant_id === tenantId || customsPanel.customs_tenant_id === -1);
     // const assigneeOptions = this.state.data.map(d => <Option key={d.value}>{d.text}</Option>);
     return (
       <div className="pane-content tab-pane">
@@ -191,24 +191,19 @@ export default class CustomsDeclPane extends React.Component {
                 <Row gutter={8}>
                   <Col span="6">
                     <InfoItem type="select" label="制单人" placeholder="分配制单人" addonBefore={<Icon type="user" />}
-                      field={customsPanel.recv_login_name} editable={assignable}
+                      field={bill.creater_name} editable={assignable}
                     />
                   </Col>
                   <Col span="6">
                     <InfoItem label="制单日期" addonBefore={<Icon type="calendar" />}
-                      field={customsPanel.acpt_time
-                    && moment(customsPanel.acpt_time).format('YYYY.MM.DD')}
+                      field={bill.created_date && moment(bill.created_date).format('YYYY.MM.DD')}
                     />
                   </Col>
                   <Col span="6">
-                    <InfoItem label="物料数量" suffix="项"
-                      field={customsPanel.itemCount}
-                    />
+                    <InfoItem label="物料数量" suffix="项" field={bill.pack_count} />
                   </Col>
                   <Col span="6">
-                    <InfoItem label="申报货值" suffix="人民币"
-                      field={customsPanel.declValue}
-                    />
+                    <InfoItem label="申报货值" suffix="人民币" field={bill.declValue} />
                   </Col>
                 </Row>
               </Card>
@@ -218,15 +213,10 @@ export default class CustomsDeclPane extends React.Component {
               <Card bodyStyle={{ padding: 16 }} className="secondary-card">
                 <Row gutter={8}>
                   <Col span="24">
-                    <InfoItem label="报关服务商"
-                      field={customsPanel.recv_name}
-                    />
+                    <InfoItem label="报关服务商" field={customsPanel.customs_name} />
                   </Col>
                   <Col span="24">
-                    <InfoItem label="接单日期"
-                      field={customsPanel.acpt_time
-                    && moment(customsPanel.acpt_time).format('YYYY.MM.DD')}
-                    />
+                    <InfoItem label="接单日期" field={customsPanel.acpt_time && moment(customsPanel.acpt_time).format('YYYY.MM.DD')} />
                   </Col>
                 </Row>
               </Card>

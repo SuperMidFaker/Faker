@@ -138,7 +138,7 @@ export function setCiqFinish(entryId, delgNo) {
   };
 }
 
-export function deleteDecl(declId, billNo) {
+export function deleteDecl(declId, delgNo, billNo) {
   return {
     [CLIENT_API]: {
       types: [
@@ -148,7 +148,7 @@ export function deleteDecl(declId, billNo) {
       ],
       endpoint: 'v1/cms/declare/delete',
       method: 'post',
-      data: { declId, billNo },
+      data: { declId, delgNo, billNo },
     },
   };
 }

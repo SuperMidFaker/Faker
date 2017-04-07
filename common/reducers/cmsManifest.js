@@ -16,7 +16,7 @@ const actionTypes = createActionTypes('@@welogix/cms/manifest/', [
   'OPEN_MS_MODAL', 'CLOSE_MS_MODAL',
   'SUBMIT_MERGESPLIT', 'SUBMIT_MERGESPLIT_SUCCEED', 'SUBMIT_MERGESPLIT_FAIL',
   'UPDATE_HEAD_NETWT', 'UPDATE_HEAD_NETWT_SUCCEED', 'UPDATE_HEAD_NETWT_FAIL',
-  'DELETE_BILL', 'DELETE_BILL_SUCCEED', 'DELETE_BILL_FAIL',
+  'RESET_BILL', 'RESET_BILL_SUCCEED', 'RESET_BILL_FAIL',
   'OPEN_AMOUNT_MODEL', 'CLOSE_AMOUNT_MODEL', 'SET_PANE_TABKEY',
   'LOAD_CERT_MARKS', 'LOAD_CERT_MARKS_SUCCEED', 'LOAD_CERT_MARKS_FAIL',
   'SAVE_CERT_MARK', 'SAVE_CERT_MARK_SUCCEED', 'SAVE_CERT_MARK_FAIL',
@@ -28,11 +28,11 @@ const actionTypes = createActionTypes('@@welogix/cms/manifest/', [
   'SAVE_CONTAINER', 'SAVE_CONTAINER_SUCCEED', 'SAVE_CONTAINER_FAIL',
   'DELETE_CONTAINER', 'DELETE_CONTAINER_SUCCEED', 'DELETE_CONTAINER_FAIL',
   'SAVE_ENTRY_HEAD', 'SAVE_ENTRY_HEAD_SUCCEED', 'SAVE_ENTRY_HEAD_FAIL',
-  'DELETE_ENTRIES', 'DELETE_ENTRIES_SUCCEED', 'DELETE_ENTRIES_FAIL',
+  'REDO_MANIFEST', 'REDO_MANIFEST_SUCCEED', 'REDO_MANIFEST_FAIL',
   'DELETE_SELECTED_BODIES', 'DELETE_SELECTED_BODIES_SUCCEED', 'DELETE_SELECTED_BODIES_FAIL',
   'OPEN_RULE_MODEL', 'CLOSE_RULE_MODEL',
   'SAVE_BILL_RULES', 'SAVE_BILL_RULES_SUCCEED', 'SAVE_BILL_RULES_FAIL',
-  'CLEAN_HEAD_DATAS', 'CLEAN_HEAD_DATAS_SUCCEED', 'CLEAN_HEAD_DATAS_FAIL',
+  'RESET_BILLHEAD', 'RESET_BILLHEAD_SUCCEED', 'RESET_BILLHEAD_FAIL',
   'SET_STEP_VISIBLE', 'BILL_HEAD_CHANGE',
 ]);
 
@@ -126,9 +126,9 @@ export default function reducer(state = initialState, action) {
         manifestLoading: false,
       };
     }
-    case actionTypes.DELETE_BILL_SUCCEED:
+    case actionTypes.RESET_BILL_SUCCEED:
       return { ...state, billHead: action.result.data.head, billBodies: [], billMeta: { ...state.billMeta, entries: [] } };
-    case actionTypes.CLEAN_HEAD_DATAS_SUCCEED:
+    case actionTypes.RESET_BILLHEAD_SUCCEED:
       return { ...state, billHead: action.result.data.head };
     case actionTypes.LOAD_MANIFEST_BODY_SUCCEED:
       return { ...state, billBodies: action.result.data };
@@ -171,7 +171,7 @@ export default function reducer(state = initialState, action) {
       return { ...state, params: { ...state.params, ...retParam } };
     }
     case actionTypes.SAVE_MANIFEST_HEAD_SUCCEED:
-      return { ...state, billHead: action.result.data };
+      return { ...state, billHead: action.result.data, billHeadFieldsChangeTimes: 0 };
     case actionTypes.OPEN_MS_MODAL:
       return { ...state, visibleMSModal: true };
     case actionTypes.CLOSE_MS_MODAL:
@@ -569,30 +569,30 @@ export function updateHeadNetWt(billSeqNo, netWt) {
   };
 }
 
-export function billDelete(datas) {
+export function resetBill(billhead) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.DELETE_BILL,
-        actionTypes.DELETE_BILL_SUCCEED,
-        actionTypes.DELETE_BILL_FAIL,
+        actionTypes.RESET_BILL,
+        actionTypes.RESET_BILL_SUCCEED,
+        actionTypes.RESET_BILL_FAIL,
       ],
-      endpoint: 'v1/cms/declare/bill/delete',
+      endpoint: 'v1/cms/manifest/bill/reset',
       method: 'post',
-      data: datas,
+      data: billhead,
     },
   };
 }
 
-export function cleanHeadDatas(datas) {
+export function resetBillHead(datas) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.CLEAN_HEAD_DATAS,
-        actionTypes.CLEAN_HEAD_DATAS_SUCCEED,
-        actionTypes.CLEAN_HEAD_DATAS_FAIL,
+        actionTypes.RESET_BILLHEAD,
+        actionTypes.RESET_BILLHEAD_SUCCEED,
+        actionTypes.RESET_BILLHEAD_FAIL,
       ],
-      endpoint: 'v1/cms/manifest/head/datas/delete',
+      endpoint: 'v1/cms/manifest/bill/reset/head',
       method: 'post',
       data: datas,
     },
@@ -614,17 +614,17 @@ export function saveEntryHead(datas) {
   };
 }
 
-export function deleteEntries(billSeqNo) {
+export function redoManifest(delgNo, billSeqNo) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.DELETE_ENTRIES,
-        actionTypes.DELETE_ENTRIES_SUCCEED,
-        actionTypes.DELETE_ENTRIES_FAIL,
+        actionTypes.REDO_MANIFEST,
+        actionTypes.REDO_MANIFEST_SUCCEED,
+        actionTypes.REDO_MANIFEST_FAIL,
       ],
-      endpoint: 'v1/cms/declare/entries/delete',
+      endpoint: 'v1/cms/manifest/redo',
       method: 'post',
-      data: { billSeqNo },
+      data: { delgNo, billSeqNo },
     },
   };
 }

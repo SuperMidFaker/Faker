@@ -4,7 +4,7 @@ import { Breadcrumb, Button, Dropdown, Layout, Menu, Icon, Form, message, Popcon
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { addNewBillBody, delBillBody, editBillBody, saveBillHead,
-  openMergeSplitModal, billDelete, updateHeadNetWt, loadBillBody, saveBillRules, setStepVisible, billHeadChange } from 'common/reducers/cmsManifest';
+  openMergeSplitModal, resetBill, updateHeadNetWt, loadBillBody, saveBillRules, setStepVisible, billHeadChange } from 'common/reducers/cmsManifest';
 import { loadTemplateFormVals } from 'common/reducers/cmsSettings';
 import NavLink from 'client/components/nav-link';
 import ButtonToggle from 'client/components/ButtonToggle';
@@ -33,9 +33,10 @@ const OptGroup = Select.OptGroup;
     tenantId: state.account.tenantId,
     formData: state.cmsSettings.formData,
     templateValLoading: state.cmsSettings.templateValLoading,
+    billHeadFieldsChangeTimes: state.cmsManifest.billHeadFieldsChangeTimes,
   }),
   { addNewBillBody, delBillBody, editBillBody, saveBillHead, openMergeSplitModal,
-    billDelete, updateHeadNetWt, loadBillBody, loadTemplateFormVals, saveBillRules,
+    resetBill, updateHeadNetWt, loadBillBody, loadTemplateFormVals, saveBillRules,
     setStepVisible, billHeadChange }
 )
 @connectNav({
@@ -55,6 +56,7 @@ export default class ManifestEditor extends React.Component {
     templates: PropTypes.array.isRequired,
     templateValLoading: PropTypes.bool.isRequired,
     manifestSpinning: PropTypes.bool.isRequired,
+    billHeadFieldsChangeTimes: PropTypes.number.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -191,8 +193,8 @@ export default class ManifestEditor extends React.Component {
       }
     });
   }
-  handleBillDelete = () => {
-    this.props.billDelete(this.props.billHead).then(
+  handleBillReset = () => {
+    this.props.resetBill(this.props.billHead).then(
       (result) => {
         if (result.error) {
           message.error(result.error.message, 10);
@@ -266,14 +268,14 @@ export default class ManifestEditor extends React.Component {
         <Menu.Item key="template"><Icon type="book" /> {this.msg('saveAsTemplate')}</Menu.Item>
         {editable && <Menu.Item key="lock"><Icon type="lock" /> 锁定清单</Menu.Item>}
         {editable && <Menu.Item key="delete">
-          <Popconfirm title="确定删除清单表头表体数据?" onConfirm={this.handleBillDelete}>
+          <Popconfirm title="确定删除清单表头表体数据?" onConfirm={this.handleBillReset}>
             <a> <Icon type="delete" /> 重置清单</a>
           </Popconfirm>
         </Menu.Item>}
       </Menu>);
   }
   render() {
-    const { ietype, readonly, form: { getFieldDecorator }, form, billHead, billBodies, billMeta, templates, ...actions } = this.props;
+    const { billHeadFieldsChangeTimes, ietype, readonly, form: { getFieldDecorator }, form, billHead, billBodies, billMeta, templates, ...actions } = this.props;
     const declEntryMenu = (<Menu onClick={this.handleEntryVisit}>
       {billMeta.entries.map(bme => (<Menu.Item key={bme.pre_entry_seq_no}>
         <Icon type="file-text" /> {bme.entry_id || bme.pre_entry_seq_no}</Menu.Item>)
@@ -323,7 +325,10 @@ export default class ManifestEditor extends React.Component {
               </Select>)
               }
               <Dropdown overlay={this.renderOverlayMenu(editable)}><Button size="large" icon="ellipsis" /></Dropdown>
-              {editable && <Button type="primary" size="large" icon="addfile" loading={this.state.generating} onClick={this.handleGenerateEntry}>{this.msg('generateEntry')}</Button> }
+              {editable &&
+                (<Button type="primary" size="large" icon="addfile" disabled={billHeadFieldsChangeTimes > 0}
+                  loading={this.state.generating} onClick={this.handleGenerateEntry}
+                >{this.msg('generateEntry')}</Button>) }
               <ButtonToggle size="large"
                 iconOff="folder" iconOn="folder-open"
                 onClick={this.toggle}

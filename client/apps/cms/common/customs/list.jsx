@@ -244,8 +244,8 @@ export default class DelgDeclList extends Component {
     const filter = { ...this.props.listFilter, status: ev.target.value };
     this.handleTableLoad(1, filter);
   }
-  handleDelete = (declId, billNo) => {
-    this.props.deleteDecl(declId, billNo).then((result) => {
+  handleDelete = (declId, delgNo, billNo) => {
+    this.props.deleteDecl(declId, delgNo, billNo).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -301,7 +301,7 @@ export default class DelgDeclList extends Component {
               </PrivilegeCover>
               <span className="ant-divider" />
               <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-                <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleDelete(record.id, record.bill_seq_no)}>
+                <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleDelete(record.id, record.delg_no, record.bill_seq_no)}>
                   <a role="button"><Icon type="delete" /></a>
                 </Popconfirm>
               </PrivilegeCover>
