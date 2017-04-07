@@ -28,7 +28,7 @@ const actionTypes = createActionTypes('@@welogix/cms/manifest/', [
   'SAVE_CONTAINER', 'SAVE_CONTAINER_SUCCEED', 'SAVE_CONTAINER_FAIL',
   'DELETE_CONTAINER', 'DELETE_CONTAINER_SUCCEED', 'DELETE_CONTAINER_FAIL',
   'SAVE_ENTRY_HEAD', 'SAVE_ENTRY_HEAD_SUCCEED', 'SAVE_ENTRY_HEAD_FAIL',
-  'DELETE_ENTRIES', 'DELETE_ENTRIES_SUCCEED', 'DELETE_ENTRIES_FAIL',
+  'REDO_MANIFEST', 'REDO_MANIFEST_SUCCEED', 'REDO_MANIFEST_FAIL',
   'DELETE_SELECTED_BODIES', 'DELETE_SELECTED_BODIES_SUCCEED', 'DELETE_SELECTED_BODIES_FAIL',
   'OPEN_RULE_MODEL', 'CLOSE_RULE_MODEL',
   'SAVE_BILL_RULES', 'SAVE_BILL_RULES_SUCCEED', 'SAVE_BILL_RULES_FAIL',
@@ -614,17 +614,17 @@ export function saveEntryHead(datas) {
   };
 }
 
-export function deleteEntries(billSeqNo) {
+export function redoManifest(delgNo, billSeqNo) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.DELETE_ENTRIES,
-        actionTypes.DELETE_ENTRIES_SUCCEED,
-        actionTypes.DELETE_ENTRIES_FAIL,
+        actionTypes.REDO_MANIFEST,
+        actionTypes.REDO_MANIFEST_SUCCEED,
+        actionTypes.REDO_MANIFEST_FAIL,
       ],
-      endpoint: 'v1/cms/declare/entries/delete',
+      endpoint: 'v1/cms/manifest/redo',
       method: 'post',
-      data: { billSeqNo },
+      data: { delgNo, billSeqNo },
     },
   };
 }

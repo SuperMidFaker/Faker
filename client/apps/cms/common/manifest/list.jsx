@@ -6,7 +6,7 @@ import moment from 'moment';
 import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
-import { loadDelgBill, deleteEntries } from 'common/reducers/cmsManifest';
+import { loadDelgBill, redoManifest } from 'common/reducers/cmsManifest';
 import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/search-bar';
@@ -41,7 +41,7 @@ const RadioButton = Radio.Button;
       text: `${cus.customs_name}`,
     })),
   }),
-  { loadDelgBill, deleteEntries, showPreviewer }
+  { loadDelgBill, redoManifest, showPreviewer }
 )
 @connectNav({
   depth: 2,
@@ -222,8 +222,8 @@ export default class ManifestList extends Component {
     const link = `/clearance/${this.props.ietype}/manifest/view/`;
     this.context.router.push(`${link}${row.bill_seq_no}`);
   }
-  handleDelegationRedo = (row) => {
-    this.props.deleteEntries(row.bill_seq_no).then((result) => {
+  handleManifestRedo = (row) => {
+    this.props.redoManifest(row.delg_no, row.bill_seq_no).then((result) => {
       if (result.error) {
         message.error(result.error.message, 5);
       } else {
@@ -251,7 +251,7 @@ export default class ManifestList extends Component {
               <span>
                 <RowUpdater onHit={this.handleDelegationView} label={<span><Icon type="eye-o" /> 查看</span>} row={record} />
                 <span className="ant-divider" />
-                <Popconfirm title="确定需要重新制单吗?" onConfirm={() => this.handleDelegationRedo(record)}>
+                <Popconfirm title="确定需要重新制单吗?" onConfirm={() => this.handleManifestRedo(record)}>
                   <a role="button">重新制单</a>
                 </Popconfirm>
               </span>
