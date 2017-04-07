@@ -31,6 +31,7 @@ function fetchData({ state, dispatch }) {
   state => ({
     tenantId: state.account.tenantId,
     customers: state.crmCustomers.customers,
+    loading: state.crmCustomers.loading,
     loaded: state.crmCustomers.loaded,
   }),
   { loadCustomers, deleteCustomer, showCustomerModal, updateCustomerNames }
@@ -50,6 +51,7 @@ export default class CustomerList extends React.Component {
     deleteCustomer: PropTypes.func.isRequired,
     showCustomerModal: PropTypes.func.isRequired,
     updateCustomerNames: PropTypes.func.isRequired,
+    loading: PropTypes.bool.isRequired,
   }
   state = {
     customerModalVisible: false,
@@ -131,7 +133,7 @@ export default class CustomerList extends React.Component {
     const columns = [{
       dataIndex: 'name',
       key: 'name',
-      render: o => (<span>{o}</span>),
+      render: o => (<span className="menu-sider-item">{o}</span>),
     }];
     return (
       <Layout>
@@ -162,7 +164,7 @@ export default class CustomerList extends React.Component {
               </div>
               <Table size="middle" dataSource={this.state.customers} columns={columns} showHeader={false} onRowClick={this.handleRowClick}
                 pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }}
-                rowClassName={record => record.id === customer.id ? 'table-row-selected' : ''} rowKey="id"
+                rowClassName={record => record.id === customer.id ? 'table-row-selected' : ''} rowKey="id" loading={this.props.loading}
               />
               <CustomerModal onOk={this.handleTableLoad} />
             </div>
