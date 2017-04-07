@@ -171,7 +171,7 @@ export default function reducer(state = initialState, action) {
       return { ...state, params: { ...state.params, ...retParam } };
     }
     case actionTypes.SAVE_MANIFEST_HEAD_SUCCEED:
-      return { ...state, billHead: action.result.data };
+      return { ...state, billHead: action.result.data, billHeadFieldsChangeTimes: 0 };
     case actionTypes.OPEN_MS_MODAL:
       return { ...state, visibleMSModal: true };
     case actionTypes.CLOSE_MS_MODAL:

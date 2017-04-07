@@ -46,20 +46,11 @@ export default class ManifestHeadPanel extends React.Component {
     onSave: PropTypes.func.isRequired,
     billHeadFieldsChangeTimes: PropTypes.number.isRequired,
   }
-  state = {
-    changed: false,
-  }
-  componentWillReceiveProps(nextProps) {
-    if (this.props.billHeadFieldsChangeTimes !== nextProps.billHeadFieldsChangeTimes) {
-      this.setState({ changed: true });
-    }
-  }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
   handleSheetSave = (ev) => {
     ev.stopPropagation();
     ev.preventDefault();
     this.props.onSave();
-    this.setState({ changed: false });
   }
   handleRelationSel = (codeField, custCodeField, nameField, value) => {
     let rels = this.props.formRequire[CODE_AS_STATE[codeField]].filter(rel => rel.code === value);
@@ -97,7 +88,7 @@ export default class ManifestHeadPanel extends React.Component {
   }
 
   render() {
-    const { form, readonly, formData, formRequire, ietype, intl, ruleRequired } = this.props;
+    const { form, readonly, formData, formRequire, ietype, intl, ruleRequired, billHeadFieldsChangeTimes } = this.props;
     const formProps = {
       getFieldDecorator: form.getFieldDecorator,
       getFieldValue: form.getFieldValue,
@@ -115,7 +106,7 @@ export default class ManifestHeadPanel extends React.Component {
         <div className="panel-header">
           <div>
             {!readonly &&
-              <Button type="primary" onClick={this.handleSheetSave} icon="save" disabled={this.state.changed === false}>
+              <Button type="primary" onClick={this.handleSheetSave} icon="save" disabled={billHeadFieldsChangeTimes === 0}>
                 {formatGlobalMsg(this.props.intl, 'save')}
               </Button>}
             {!readonly &&
