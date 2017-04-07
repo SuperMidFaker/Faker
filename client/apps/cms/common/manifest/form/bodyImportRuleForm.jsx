@@ -37,6 +37,12 @@ export default class ImportRuleForm extends React.Component {
   state = {
     suggestions: [],
   }
+  componentWillReceiveProps(nextProps) {
+    const { formData } = nextProps;
+    if (nextProps.formData !== this.props.formData) {
+      this.props.form.setFieldsValue({ rule_element: Mention.toEditorState(formData.rule_element) });
+    }
+  }
   formulaParams = [
     { value: 'g_model', text: '规格型号' },
     { value: 'remark', text: '备注' },
