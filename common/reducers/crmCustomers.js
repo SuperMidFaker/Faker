@@ -43,6 +43,9 @@ export default function reducer(state = initialState, action) {
       });
       return { ...state, customers, loaded: true, loading: false };
     }
+    case actionTypes.LOAD_CUSTOMERS_FAIL: {
+      return { ...state, loading: false };
+    }
     case actionTypes.ADD_CUSTOMER_SUCCEED: {
       return { ...state, loaded: false };
     }
