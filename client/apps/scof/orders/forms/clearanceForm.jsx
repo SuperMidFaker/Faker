@@ -77,7 +77,7 @@ export default class ClearanceForm extends Component {
       if (related.trans_mode === '2') {
         related.bl_wb_no = shipment.cust_shipmt_bill_lading;
       } else if (related.trans_mode === '5') {
-        related.bl_wb_no = [shipment.cust_shipmt_mawb || '', shipment.cust_shipmt_hawb || ''].join('_');
+        related.bl_wb_no = shipment.cust_shipmt_hawb ? [shipment.cust_shipmt_mawb || '', shipment.cust_shipmt_hawb || ''].join('_') : shipment.cust_shipmt_mawb;
       }
       this.handleSetClientForm(related);
     }
@@ -91,7 +91,7 @@ export default class ClearanceForm extends Component {
     const node = formData.node;
     const declWays = node.kind === 'export' ? DECL_E_TYPE : DECL_I_TYPE;
     return (
-      <Card extra={<a role="button" onClick={this.handleShipmentRelate}><Icon type="sync" /> 关联货运信息</a>} bodyStyle={{ paddingTop: 40 }}>
+      <Card extra={<a role="button" onClick={this.handleShipmentRelate}><Icon type="sync" /> 提取货运信息</a>} bodyStyle={{ paddingTop: 40 }}>
         <Row style={{ marginBottom: 8 }}>
           <Col sm={24} lg={8}>
             <FormItem label={this.msg('declareWay')} {...formItemLayout}>

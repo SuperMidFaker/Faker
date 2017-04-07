@@ -34,6 +34,12 @@ export default class TransportForm extends Component {
     formRequires: PropTypes.object.isRequired,
     formData: PropTypes.object.isRequired,
     setClientForm: PropTypes.func.isRequired,
+    shipment: PropTypes.shape({
+      cust_shipmt_pieces: PropTypes.string,
+      cust_shipmt_weight: PropTypes.string,
+      cust_shipmt_goods_type: PropTypes.string,
+      cust_shipmt_wrap_type: PropTypes.string,
+    }),
   }
   componentDidMount() {
     const { formData, formRequires } = this.props;
@@ -210,6 +216,18 @@ export default class TransportForm extends Component {
   handleCommonFieldChange = (filed, value) => {
     this.handleSetClientForm({ [filed]: value });
   }
+  handleShipmentRelate = () => {
+    const { shipment } = this.props;
+    if (shipment.cust_shipmt_trans_mode) {
+      const related = {
+        goods_type: shipment.cust_shipmt_goods_type,
+        gross_wt: shipment.cust_shipmt_weight,
+        package: shipment.cust_shipmt_wrap_type,
+        pack_count: shipment.cust_shipmt_pieces,
+      };
+      this.handleSetClientForm(related);
+    }
+  }
 
   render() {
     const { formRequires, formData } = this.props;
@@ -223,7 +241,7 @@ export default class TransportForm extends Component {
       node.consignee_district, node.consignee_street,
     ];
     return (
-      <Card>
+      <Card extra={<a role="button" onClick={this.handleShipmentRelate}><Icon type="sync" /> 提取货运信息</a>} bodyStyle={{ paddingTop: 40 }}>
         <Row>
           <Col sm={24}>
             <FormItem label="发货方">

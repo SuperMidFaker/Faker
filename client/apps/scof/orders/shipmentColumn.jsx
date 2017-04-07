@@ -31,8 +31,8 @@ export default class ShipmentColumn extends React.Component {
       return (
         <Row type="flex">
           <Col className="col-flex-primary">
-            <div>{transModeDom} {shipment.cust_shipmt_bill_lading} {shipment.cust_shipmt_mawb && `${shipment.cust_shipmt_mawb}_${shipment.cust_shipmt_hawb}`}</div>
-            <div>{shipment.cust_shipmt_package}{wrapType && wrapType.text}{shipment.cust_shipmt_pieces}件 {shipment.cust_shipmt_weight}KG</div>
+            <div>{transModeDom} {shipment.cust_shipmt_bill_lading} {shipment.cust_shipmt_hawb ? `${shipment.cust_shipmt_mawb}_${shipment.cust_shipmt_hawb}` : shipment.cust_shipmt_mawb}</div>
+            <div>{shipment.cust_shipmt_package}{wrapType && wrapType.text}{shipment.cust_shipmt_pieces && `${shipment.cust_shipmt_pieces}件`} {shipment.cust_shipmt_weight && `${shipment.cust_shipmt_weight}KG`}</div>
             <div>{gtTag}</div>
           </Col>
           <Col className="col-flex-secondary" />

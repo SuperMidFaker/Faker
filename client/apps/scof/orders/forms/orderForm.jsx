@@ -187,7 +187,7 @@ export default class OrderForm extends Component {
       if (node.kind === 'import' || node.kind === 'export') {
         steps.push(<Step key={node.node_uuid} title={node.name} status="process" description={<ClearanceForm formData={order} shipment={shipment} index={i} operation={operation} />} />);
       } else if (node.kind === 'tms') {
-        steps.push(<Step key={node.node_uuid} title={node.name} status="process" description={<TransportForm formData={order} index={i} operation={operation} />} />);
+        steps.push(<Step key={node.node_uuid} title={node.name} status="process" description={<TransportForm formData={order} shipment={shipment} index={i} operation={operation} />} />);
       } else if (node.kind === 'cwm') {
         steps.push(<Step key={node.node_uuid} title={node.name} status="process" description={<WarehouseForm formData={order} index={i} operation={operation} />} />);
       }

@@ -183,6 +183,7 @@ export default class CustomerList extends React.Component {
             <ButtonToggle size="large"
               iconOn="menu-fold" iconOff="menu-unfold"
               onClick={this.toggle}
+              toggle
             />
             <div className="top-bar-tools">
               <Button.Group size="large">
