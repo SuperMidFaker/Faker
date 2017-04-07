@@ -70,7 +70,7 @@ export default class UnitList extends Component {
       width: 100,
       key: 'id',
       render: (_, record) => {
-        if (record.editable === 1) {
+        if (record.comp_partner_id === null) {
           return (
             <span>
               <PrivilegeCover module="corp" feature="partners" action="edit">
