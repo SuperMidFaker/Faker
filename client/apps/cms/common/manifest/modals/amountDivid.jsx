@@ -54,6 +54,7 @@ export default class AmountModel extends React.Component {
       } else {
         this.props.loadBillBody(this.props.billMeta.bill_seq_no);
         this.props.closeAmountModel();
+        message.success(`总毛重: ${amount} 已平摊`, 3);
       }
     });
   }

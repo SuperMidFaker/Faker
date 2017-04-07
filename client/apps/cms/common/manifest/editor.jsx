@@ -94,7 +94,7 @@ export default class ManifestEditor extends React.Component {
             this.generateEntry();
           } else {
             this.setState({ generating: false });
-            message.error('清单表头尚未填写完整');
+            message.error('清单表头尚未填写完整', 3);
           }
         });
       }
@@ -111,11 +111,12 @@ export default class ManifestEditor extends React.Component {
     });
     if (bodyDatas.length === 0 || wtSum === 0) {
       this.setState({ generating: false });
-      return message.error('请检查表体数据是否正确');
+      return message.error('请检查表体数据是否正确', 3);
     }
     if (wtSum > billHead.gross_wt) {
       this.props.updateHeadNetWt(billHead.bill_seq_no, wtSum);
-      message.error('毛重必须大于总净重');
+      this.setState({ generating: false });
+      message.error('毛重必须大于总净重', 3);
     } else if (wtSum > 0) {
       this.props.updateHeadNetWt(billHead.bill_seq_no, wtSum);
       const totGrossWt = billHead.gross_wt;

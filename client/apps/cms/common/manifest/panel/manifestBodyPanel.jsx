@@ -682,6 +682,7 @@ export default class ManifestBodyPanel extends React.Component {
         if (headForm) {
           headForm.setFieldsValue({ net_wt: wtSum });
         }
+        message.success(`已汇总净重: ${wtSum.toFixed(3)}千克`, 3);
       });
     }
   }
@@ -710,6 +711,7 @@ export default class ManifestBodyPanel extends React.Component {
     this.props.onEdit({ ...lastBody, gross_wt: lastwt });
     datas.push({});
     this.setState({ bodies: datas });
+    message.success(`总毛重: ${totGrossWt.toFixed(3)}千克已分摊`, 3);
   }
   handleTotalPriceDivid = () => {
     this.props.loadBillBody(this.props.billSeqNo).then((result) => {
