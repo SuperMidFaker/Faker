@@ -21,7 +21,9 @@ export default class AmountModel extends React.Component {
     intl: intlShape.isRequired,
     visibleAmtModal: PropTypes.bool.isRequired,
     billBodies: PropTypes.array,
-    billMeta: PropTypes.Object,
+    billMeta: PropTypes.shape({
+      bill_seq_no: PropTypes.string.isRequired,
+    }),
   }
   state = {
     amount: null,
@@ -54,7 +56,7 @@ export default class AmountModel extends React.Component {
       } else {
         this.props.loadBillBody(this.props.billMeta.bill_seq_no);
         this.props.closeAmountModel();
-        message.success(`总毛重: ${amount} 已平摊`, 3);
+        message.success(`总金额: ${amount} 已平摊`, 3);
       }
     });
   }

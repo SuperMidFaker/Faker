@@ -290,8 +290,8 @@ export default class MergeSplitModal extends React.Component {
               <Select onChange={this.handleSplitSelectChange} value={this.state.splitOpt.perCount}
                 style={{ width: '100%' }}
               >
-                <Option value={20}>{'按20品拆分'}</Option>
-                <Option value={50}>{'按50品拆分'}</Option>
+                <Option value="20">{'按20品拆分'}</Option>
+                <Option value="50">{'按50品拆分'}</Option>
               </Select>
             </Card>
           </Col>

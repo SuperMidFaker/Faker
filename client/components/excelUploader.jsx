@@ -4,7 +4,7 @@ import { Progress, Upload, Modal } from 'antd';
 export default class ExcelUploader extends React.Component {
   static propTypes = {
     endpoint: PropTypes.string.isRequired,
-    children: PropTypes.element.isRequired,
+    children: PropTypes.node.isRequired,
     formData: PropTypes.object,
     onUploaded: PropTypes.func,
   }

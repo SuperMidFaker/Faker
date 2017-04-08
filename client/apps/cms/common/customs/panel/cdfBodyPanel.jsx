@@ -22,7 +22,7 @@ function ColumnInput(props) {
   if (inEdit) {
     return (<Input type={typeStr} autosize={autosize} value={edit[field] || ''} onChange={handleChange} />);
   } else if (decimal) {
-    return <span>{record[field] ? record[field].toFixed(decimal) : '' }</span>;
+    return <span>{record[field] ? parseFloat(record[field]).toFixed(decimal) : ''}</span>;
   } else {
     return <span>{record[field] || ''}</span>;
   }

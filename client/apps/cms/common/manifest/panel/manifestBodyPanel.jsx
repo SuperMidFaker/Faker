@@ -31,7 +31,7 @@ function ColumnInput(props) {
       <Tag color="red">{record[field] || ''}</Tag>
     </Tooltip>);
   } else if (decimal) {
-    return <span>{record[field] ? record[field].toFixed(decimal) : '' }</span>;
+    return <span>{record[field] ? parseFloat(record[field]).toFixed(decimal) : ''}</span>;
   } else {
     return <span>{record[field] || ''}</span>;
   }
