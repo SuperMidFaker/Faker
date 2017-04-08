@@ -65,18 +65,22 @@ export default class Home extends React.Component {
       <MenuItem key="home">
         <i className="zmdi zmdi-apps" /> {formatMsg(intl, 'home')}
       </MenuItem>,
-      <MenuItem key="network">
-        <NavLink to="/network/partners">
-          <i className="icon-fontello-network" /> {formatMsg(intl, 'network')}
-        </NavLink>
-      </MenuItem>,
-      <MenuItem key="openPlatform">
-        <NavLink to="/open">
-          <i className="icon-fontello-puzzle" /> {formatMsg(intl, 'openPlatform')}
-        </NavLink>
-      </MenuItem>,
     ];
     if (this.state.corpMenuLink) {
+      tenantMenus.push(
+        <MenuItem key="network">
+          <NavLink to="/network/partners">
+            <i className="icon-fontello-network" /> {formatMsg(intl, 'network')}
+          </NavLink>
+        </MenuItem>
+      );
+      tenantMenus.push(
+        <MenuItem key="openPlatform">
+          <NavLink to="/open">
+            <i className="icon-fontello-puzzle" /> {formatMsg(intl, 'openPlatform')}
+          </NavLink>
+        </MenuItem>
+      );
       tenantMenus.push(
         <MenuItem key="corp">
           <NavLink to={`${this.state.corpMenuLink}`}>
