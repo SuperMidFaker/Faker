@@ -41,10 +41,11 @@ const initialState = {
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.SHOW_PREVIEWER:
-      return { ...state, previewer: {
-        ...state.previewer,
-        visible: true,
-        delgNo: action.payload.delgNo },
+      return { ...state,
+        previewer: {
+          ...state.previewer,
+          visible: true,
+          delgNo: action.payload.delgNo },
         tabKey: action.payload.tabKey,
       };
     case actionTypes.LOAD_BASIC_INFO:
@@ -56,7 +57,7 @@ export default function reducer(state = initialState, action) {
         preStatus: '', basicPreviewLoading: false, tabKey: action.payload.tabKey };
     }
     case actionTypes.HIDE_PREVIEWER:
-      return { ...state, previewer: { ...state.previewer, visible: action.visible } };
+      return { ...state, previewer: { ...state.previewer, visible: false } };
     case actionTypes.SET_PREW_STATUS:
       return { ...state, ...action.data };
     case actionTypes.SET_PREW_TABKEY:
@@ -112,7 +113,7 @@ export function hidePreviewer(delgNo) {
   return {
     type: actionTypes.HIDE_PREVIEWER,
     delgNo,
-    visible: false,
+//    visible: false,
   };
 }
 

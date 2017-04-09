@@ -36,8 +36,23 @@ export default class ProgressColumn extends React.Component {
         currentStep = index + 1;
       }
     });
+    let progWidth = '';
+    switch (progress.length) {
+      case 2:
+        progWidth = '25%';
+        break;
+      case 3:
+        progWidth = '50%';
+        break;
+      case 4:
+        progWidth = '75%';
+        break;
+      default:
+        progWidth = '100%';
+        break;
+    }
     return (
-      <div className="order-progress">
+      <div className="order-progress" style={{ width: progWidth }}>
         {this.props.order.order_status !== CRM_ORDER_STATUS.created &&
         <Steps size="small" current={currentStep}>
           {progress.map((prog) => {

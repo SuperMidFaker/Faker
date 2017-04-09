@@ -1,12 +1,21 @@
 import React, { PropTypes } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
+import { connect } from 'react-redux';
 import { Row, Col, Icon, Popover } from 'antd';
+import { loadOrderDetail } from 'common/reducers/crmOrders';
 
 @injectIntl
+@connect(
+  state => ({
+    tenantId: state.account.tenantId,
+  }),
+  { loadOrderDetail }
+)
 export default class OrderNoColumn extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     order: PropTypes.object.isRequired,
+    loadOrderDetail: PropTypes.func.isRequired,
   }
 
   render() {

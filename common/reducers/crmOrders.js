@@ -6,7 +6,7 @@ const actionTypes = createActionTypes('@@welogix/crm/orders/', [
   'LOAD_ORDERS', 'LOAD_ORDERS_SUCCEED', 'LOAD_ORDERS_FAIL',
   'LOAD_ORDER', 'LOAD_ORDER_SUCCEED', 'LOAD_ORDER_FAIL',
   'SUBMIT_ORDER', 'SUBMIT_ORDER_SUCCEED', 'SUBMIT_ORDER_FAIL',
-  'SET_CLIENT_FORM', 'HIDE_PREVIWER', 'CHANGE_PREVIEWER_TAB',
+  'SET_CLIENT_FORM', 'HIDE_DOCK', 'CHANGE_DOCK_TAB',
   'REMOVE_ORDER', 'REMOVE_ORDER_SUCCEED', 'REMOVE_ORDER_FAIL',
   'EDIT_ORDER', 'EDIT_ORDER_SUCCEED', 'EDIT_ORDER_FAIL',
   'ACCEPT_ORDER', 'ACCEPT_ORDER_SUCCEED', 'ACCEPT_ORDER_FAIL',
@@ -21,7 +21,7 @@ const actionTypes = createActionTypes('@@welogix/crm/orders/', [
 const initialState = {
   loaded: true,
   loading: false,
-  previewer: {
+  dock: {
     visible: false,
     tabKey: null,
     order: {},
@@ -100,35 +100,35 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_ORDER_SUCCEED:
       return { ...state, formData: action.result.data };
     case actionTypes.LOAD_DETAIL_SUCCEED: {
-      return { ...state, previewer: {
-        ...state.previewer,
+      return { ...state, dock: {
+        ...state.dock,
         visible: true,
         tabKey: action.tabKey,
         ...action.result.data,
       } };
     }
     case actionTypes.LOAD_CLEARANCE_DETAIL_SUCCEED: {
-      return { ...state, previewer: {
-        ...state.previewer,
+      return { ...state, dock: {
+        ...state.dock,
         clearances: action.result.data,
       } };
     }
     case actionTypes.LOAD_CLEARANCE_FEES_SUCCEED:
-      return { ...state, previewer: {
-        ...state.previewer,
-        clearanceFees: action.result.data || initialState.previewer.clearanceFees,
+      return { ...state, dock: {
+        ...state.dock,
+        clearanceFees: action.result.data || initialState.dock.clearanceFees,
       } };
     case actionTypes.LOAD_TRANSPORT_DETAIL_SUCCEED: {
-      return { ...state, previewer: {
-        ...state.previewer,
+      return { ...state, dock: {
+        ...state.dock,
         transports: action.result.data,
       } };
     }
-    case actionTypes.HIDE_PREVIWER: {
-      return { ...state, previewer: { ...state.previewer, visible: false } };
+    case actionTypes.HIDE_DOCK: {
+      return { ...state, dock: { ...state.dock, visible: false } };
     }
-    case actionTypes.CHANGE_PREVIEWER_TAB: {
-      return { ...state, previewer: { ...state.previewer, tabKey: action.data.tabKey } };
+    case actionTypes.CHANGE_dock_TAB: {
+      return { ...state, dock: { ...state.dock, tabKey: action.data.tabKey } };
     }
     default:
       return state;
@@ -309,16 +309,16 @@ export function loadTransportDetail({ shipmtNos, tenantId }) {
   };
 }
 
-export function changePreviewerTab(tabKey) {
+export function changeDockTab(tabKey) {
   return {
-    type: actionTypes.CHANGE_PREVIEWER_TAB,
+    type: actionTypes.CHANGE_DOCK_TAB,
     data: { tabKey },
   };
 }
 
-export function hidePreviewer() {
+export function hideDock() {
   return {
-    type: actionTypes.HIDE_PREVIWER,
+    type: actionTypes.HIDE_DOCK,
   };
 }
 

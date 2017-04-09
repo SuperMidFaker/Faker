@@ -501,12 +501,13 @@ export default class ManifestBodyPanel extends React.Component {
       title: this.msg('opColumn'),
       width: 80,
       fixed: 'right',
+      className: 'editable-row-operations',
       render: (o, record, index) => {
         if (readonly) {
           return <span />;
         } else if (index === editIndex) {
           return (
-            <span className="editable-row-operations">
+            <span>
               <RowUpdater onHit={this.handleSave} label={<Icon type="save" />}
                 row={record} index={index}
               />
@@ -516,7 +517,7 @@ export default class ManifestBodyPanel extends React.Component {
           );
         } else if (index + 1 + (pagination.current - 1) * pagination.pageSize === totalCount) {
           return (
-            <span className="editable-row-operations">
+            <span>
               <RowUpdater onHit={this.handleEdit} label={<Icon type="plus" />}
                 index={index} row={{}}
               />
@@ -524,7 +525,7 @@ export default class ManifestBodyPanel extends React.Component {
           );
         } else {
           return (
-            <span className="editable-row-operations">
+            <span>
               <RowUpdater onHit={this.handleEdit} label={<Icon type="edit" />}
                 row={record} index={index}
               />

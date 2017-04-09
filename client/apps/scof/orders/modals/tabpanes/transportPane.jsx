@@ -19,7 +19,7 @@ const TabPane = Tabs.TabPane;
 @injectIntl
 @connect(
   state => ({
-    transports: state.crmOrders.previewer.transports,
+    transports: state.crmOrders.dock.transports,
     goodsTypes: state.crmOrders.formRequires.goodsTypes,
     packagings: state.crmOrders.formRequires.packagings,
     containerPackagings: state.crmOrders.formRequires.containerPackagings,

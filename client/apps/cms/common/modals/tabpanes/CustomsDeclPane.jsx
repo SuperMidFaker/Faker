@@ -29,8 +29,8 @@ export default class CustomsDeclPane extends React.Component {
     customsPanel: PropTypes.shape({
       customs_name: PropTypes.string,
       acpt_time: PropTypes.date,
-      accepted: PropTypes.bool.isRequired,
-      bill: PropTypes.shape({ bill_status: PropTypes.number.isRequired }),
+      accepted: PropTypes.bool,
+      bill: PropTypes.shape({ bill_status: PropTypes.number }),
       decls: PropTypes.arrayOf(PropTypes.shape({ gross_wt: PropTypes.number })),
     }).isRequired,
     customsSpinning: PropTypes.bool.isRequired,

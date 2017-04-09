@@ -13,7 +13,7 @@ import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import { loadOrders, removeOrder, setClientForm, acceptOrder } from 'common/reducers/crmOrders';
 import moment from 'moment';
-import PreviewPanel from './modals/preview-panel';
+import OrderDockPanel from './modals/orderDockPanel';
 import OrderNoColumn from './orderNoColumn';
 import ShipmentColumn from './shipmentColumn';
 import ProgressColumn from './progressColumn';
@@ -145,7 +145,7 @@ export default class OrderList extends React.Component {
 
     const columns = [{
       title: '订单',
-      width: 300,
+      width: 250,
       fixed: 'left',
       render: (o, record) => <OrderNoColumn order={record} />,
     }, {
@@ -165,12 +165,13 @@ export default class OrderList extends React.Component {
       width: 200,
       render: (o, record) => <ShipmentColumn shipment={record} />,
     }, {
-      title: '进度',
+      title: '进度状态',
       render: (o, record) => <ProgressColumn order={record} />,
     }, {
       title: '操作',
-      width: 60,
+      width: 80,
       fixed: 'right',
+      className: 'editable-row-operations',
       render: (o, record) => {
         if (record.order_status === CRM_ORDER_STATUS.created) {
           return (
@@ -266,7 +267,7 @@ export default class OrderList extends React.Component {
             </div>
           </div>
         </Content>
-        <PreviewPanel />
+        <OrderDockPanel />
       </QueueAnim>
     );
   }

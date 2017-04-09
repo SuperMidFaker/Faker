@@ -115,7 +115,7 @@ export default class BasicPane extends React.Component {
           </Row>
           <Row>
             <Col span="8">
-              <InfoItem label="运输方式" addonBefore={<MdIcon type={transMode[0].icon} />}
+              <InfoItem label="运输方式" addonBefore={transMode[0] && <MdIcon type={transMode[0].icon} />}
                 field={transMode.length > 0 ? transMode[0].text : ''}
               />
             </Col>

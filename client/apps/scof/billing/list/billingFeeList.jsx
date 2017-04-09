@@ -9,7 +9,7 @@ import { loadFeesByBillingId, updateBillingFees, checkBilling, acceptBilling, ed
 import TrimSpan from 'client/components/trimSpan';
 import TrsShipmtNoColumn from '../../common/trsShipmtNoColumn';
 import CcbDelgNoColumn from '../../common/ccbDelgNoColumn';
-import PreviewPanel from '../../orders/modals/preview-panel';
+import OrderDockPanel from '../../orders/modals/orderDockPanel';
 import { loadOrderDetail } from 'common/reducers/crmOrders';
 
 const formatMsg = format(messages);
@@ -275,7 +275,7 @@ export default class BillingFeeList extends React.Component {
             </div>
           </div>
         </Content>
-        <PreviewPanel stage="billing" />
+        <OrderDockPanel stage="billing" />
       </div>
     );
   }

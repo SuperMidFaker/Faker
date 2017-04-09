@@ -11,12 +11,12 @@ const formatMsg = format(messages);
 
 @injectIntl
 
-export default class LogPane extends React.Component {
+export default class FlowPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   render() {
-    return null;
+    return <span>FlowPane</span>;
   }
 }

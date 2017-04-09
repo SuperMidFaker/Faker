@@ -400,7 +400,7 @@ export default class OrderForm extends Component {
             </Panel>
           </Collapse>
         </Card>
-        <Card title={<span>执行流程
+        <Card title={<span>订单流程
           <Select size="large" placeholder="请选择流程规则" showSearch allowClear optionFilterProp="children"
             value={formData.flow_id} onChange={this.handleFlowChange} style={{ width: '50%', marginLeft: 24 }}
           >

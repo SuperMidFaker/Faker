@@ -13,14 +13,14 @@ const TabPane = Tabs.TabPane;
 @injectIntl
 @connect(
   state => ({
-    order: state.crmOrders.previewer.order,
-    delgNos: state.crmOrders.previewer.order.ccb_delg_no,
-    transports: state.crmOrders.previewer.transports,
-    clearanceFees: state.crmOrders.previewer.clearanceFees,
+    order: state.crmOrders.dock.order,
+    delgNos: state.crmOrders.dock.order.ccb_delg_no,
+    transports: state.crmOrders.dock.transports,
+    clearanceFees: state.crmOrders.dock.clearanceFees,
   }),
   { loadClearanceFees }
 )
-export default class ChargePanel extends React.Component {
+export default class BillingPanel extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     loadClearanceFees: PropTypes.func.isRequired,
