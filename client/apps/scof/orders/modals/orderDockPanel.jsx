@@ -49,8 +49,7 @@ export default class OrderDockPanel extends React.Component {
   getTrackStatusMsg(status) {
     switch (status) {
       case CRM_ORDER_STATUS.created: return this.msg('created');
-      case CRM_ORDER_STATUS.clearancing: return this.msg('clearancing');
-      case CRM_ORDER_STATUS.transporting: return this.msg('transporting');
+      case CRM_ORDER_STATUS.processing: return this.msg('processing');
       case CRM_ORDER_STATUS.finished: return this.msg('finished');
       default: return '';
     }
@@ -65,8 +64,7 @@ export default class OrderDockPanel extends React.Component {
   transformBadgeColor(status) {
     switch (status) {
       case CRM_ORDER_STATUS.created: return 'default';
-      case CRM_ORDER_STATUS.clearancing: return 'processing';
-      case CRM_ORDER_STATUS.transporting: return 'processing';
+      case CRM_ORDER_STATUS.processing: return 'processing';
       case CRM_ORDER_STATUS.finished: return 'success';
       default: return 'default';
     }

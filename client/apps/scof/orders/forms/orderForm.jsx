@@ -393,8 +393,8 @@ export default class OrderForm extends Component {
             </Panel>
             <Panel header="收发货信息" key="consignment">
               <Steps size="small">
-                <Step status="wait" title="发货方" icon={<Icon type="logout" />} />
-                <Step status="wait" title="收货方" icon={<Icon type="login" />} />
+                <Step status="wait" title="发货方" icon={<Icon type="environment-o" />} />
+                <Step status="wait" title="收货方" icon={<Icon type="environment" />} />
 
               </Steps>
             </Panel>

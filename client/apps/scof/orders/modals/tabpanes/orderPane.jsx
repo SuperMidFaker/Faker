@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Collapse, Row, Col, Card, Icon, Menu } from 'antd';
-import { GOODSTYPES, TRANS_MODE } from 'common/constants';
+import { GOODSTYPES, TRANS_MODE, WRAP_TYPE } from 'common/constants';
 import InfoItem from 'client/components/InfoItem';
 import MdIcon from 'client/components/MdIcon';
 
@@ -29,7 +29,7 @@ export default class OrderPane extends React.Component {
     const { order } = this.props;
     const goods = GOODSTYPES.filter(gt => gt.value === order.cust_shipmt_goods_type)[0];
     const transMode = TRANS_MODE.filter(tm => tm.value === order.cust_shipmt_trans_mode)[0];
-
+    const wrapType = WRAP_TYPE.filter(wt => wt.value === order.cust_shipmt_wrap_type)[0];
     return (
       <div className="pane-content tab-pane">
         <Card bodyStyle={{ padding: 0 }}>
@@ -60,14 +60,62 @@ export default class OrderPane extends React.Component {
                     field={transMode ? transMode.text : ''}
                   />
                 </Col>
+                {
+                (order.cust_shipmt_transfer !== 'DOM' && order.cust_shipmt_trans_mode === '2') &&
                 <Col span="8">
-                  <InfoItem label="提运单号" addonBefore={<Icon type="tag-o" />}
-                    field={order.bl_wb_no} placeholder="添加提运单号" editable
+                  <InfoItem label="提单号" addonBefore={<Icon type="tag-o" />}
+                    field={order.cust_shipmt_bill_lading} placeholder="添加提单号" editable
                   />
                 </Col>
+                }
+                {
+                (order.cust_shipmt_transfer !== 'DOM' && order.cust_shipmt_trans_mode === '5') &&
                 <Col span="8">
-                  <InfoItem label="运输工具名称" field={order.traf_name} />
+                  <InfoItem label="主运单号" addonBefore={<Icon type="tag-o" />}
+                    field={order.cust_shipmt_mawb} placeholder="添加主运单号" editable
+                  />
                 </Col>
+                }
+                {
+                (order.cust_shipmt_transfer !== 'DOM' && order.cust_shipmt_trans_mode === '2') &&
+                <Col span="8">
+                  <InfoItem label="海运单号" addonBefore={<Icon type="tag-o" />}
+                    field={order.cust_shipmt_bill_lading_no} placeholder="添加海运单号" editable
+                  />
+                </Col>
+                }
+                {
+                (order.cust_shipmt_transfer !== 'DOM' && order.cust_shipmt_trans_mode === '5') &&
+                <Col span="8">
+                  <InfoItem label="分运单号" addonBefore={<Icon type="tag-o" />}
+                    field={order.cust_shipmt_hawb} placeholder="添加分运单号" editable
+                  />
+                </Col>
+                }
+                {
+                (order.cust_shipmt_transfer !== 'DOM' && order.cust_shipmt_trans_mode === '2') &&
+                <Col span="8">
+                  <InfoItem label="船名" addonBefore={<Icon type="tag-o" />}
+                    field={order.cust_shipmt_vessel} placeholder="添加船名" editable
+                  />
+                </Col>
+                }
+                {
+                (order.cust_shipmt_transfer !== 'DOM' && order.cust_shipmt_trans_mode === '5') &&
+                <Col span="8">
+                  <InfoItem label="航班号" addonBefore={<Icon type="tag-o" />}
+                    field={order.cust_shipmt_vessel} placeholder="添加航班号" editable
+                  />
+                </Col>
+                }
+                {
+                (order.cust_shipmt_transfer !== 'DOM' && order.cust_shipmt_trans_mode === '2') &&
+                <Col span="8">
+                  <InfoItem label="航次号" addonBefore={<Icon type="tag-o" />}
+                    field={order.cust_shipmt_voy} placeholder="添加航次号" editable
+                  />
+                </Col>
+                }
               </Row>
               <Row>
                 <Col span="8">
@@ -81,7 +129,7 @@ export default class OrderPane extends React.Component {
                 </Col>
                 <Col span="8">
                   <InfoItem label="总件数"
-                    field={order.cust_shipmt_pieces} addonAfter="件" editable
+                    field={order.cust_shipmt_pieces} addonAfter={wrapType && wrapType.text} editable
                   />
                 </Col>
                 <Col span="8">
