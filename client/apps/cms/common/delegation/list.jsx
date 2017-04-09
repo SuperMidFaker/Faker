@@ -459,7 +459,7 @@ export default class DelegationList extends Component {
       columns = [...this.columns];
       columns.push({
         title: this.msg('opColumn'),
-        width: 130,
+        width: 150,
         fixed: 'right',
         render: (o, record) => {
           // 1. 当前租户报关委托未接单且直接委托
@@ -518,7 +518,7 @@ export default class DelegationList extends Component {
             }
             const label = record.manifested === CMS_DELEGATION_MANIFEST.uncreated ?
               <span><Icon type="file-add" /> {this.msg('createManifest')}</span> :
-              <span><Icon type="edit" /> {this.msg('editManifest')}</span>;
+              <span><Icon type="file-text" /> {this.msg('editManifest')}</span>;
             return (
               <span>
                 <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">

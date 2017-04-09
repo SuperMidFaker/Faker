@@ -427,7 +427,7 @@ export default defineMessages({
   },
   unrelatedImport: {
     id: 'cms.forms.table.import.unrelated',
-    defaultMessage: '非关联导入',
+    defaultMessage: '直接导入',
   },
   relatedImport: {
     id: 'cms.forms.table.import.related',

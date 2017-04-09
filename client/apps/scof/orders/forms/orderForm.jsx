@@ -258,7 +258,7 @@ export default class OrderForm extends Component {
                 <Col sm={8}>
                   <FormItem label="货物流向" {...formItemLayout} required="true">
                     <RadioGroup value={formData.cust_shipmt_transfer} onChange={ev => this.handleChange('cust_shipmt_transfer', ev.target.value)}>
-                      {SCOF_ORDER_TRANSFER.map(sot => <RadioButton value={sot.value}>{sot.text}</RadioButton>)}
+                      {SCOF_ORDER_TRANSFER.map(sot => <RadioButton value={sot.value}><Icon type={sot.icon} /> {sot.text}</RadioButton>)}
                     </RadioGroup>
                   </FormItem>
                 </Col>

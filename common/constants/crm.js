@@ -15,9 +15,9 @@ export const CRM_ORDER_MODE = {
 };
 
 export const SCOF_ORDER_TRANSFER = [
-  { value: 'IMP', text: '进口' },
-  { value: 'EXP', text: '出口' },
-  { value: 'DOM', text: '境内' },
+  { value: 'IMP', text: '进口', icon: 'login' },
+  { value: 'EXP', text: '出口', icon: 'logout' },
+  { value: 'DOM', text: '境内流转', icon: 'reload' },
 ];
 
 export const SCOF_ORDER_TRANSMODES = [

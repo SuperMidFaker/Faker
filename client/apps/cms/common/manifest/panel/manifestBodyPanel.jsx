@@ -818,7 +818,7 @@ export default class ManifestBodyPanel extends React.Component {
     const relatedImportmenu = (
       <Menu onClick={this.handleRelatedImportMenuClick}>
         <Menu.Item key="downloadRelated"><Icon type="file-excel" /> 下载模板</Menu.Item>
-        <Menu.Item key="rule"><Icon type="setting" /> 关联导入规则</Menu.Item>
+        <Menu.Item key="rule"><Icon type="tool" /> 关联导入规则</Menu.Item>
       </Menu>);
     const moremenu = (
       <Menu onClick={this.handleMoreMenuClick}>
@@ -843,7 +843,7 @@ export default class ManifestBodyPanel extends React.Component {
               }),
             }} onUploaded={this.handleUploaded}
           >
-            {this.msg('unrelatedImport')}
+            <Icon type="upload" /> {this.msg('unrelatedImport')}
           </ExcelUpload>
         </Dropdown.Button>
         }
@@ -860,7 +860,7 @@ export default class ManifestBodyPanel extends React.Component {
               }),
             }} onUploaded={this.handleUploaded}
           >
-            {this.msg('relatedImport')}
+            <Icon type="link" /> {this.msg('relatedImport')}
           </ExcelUpload>
         </Dropdown.Button>
         }

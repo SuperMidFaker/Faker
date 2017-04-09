@@ -1,11 +1,12 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Col, Row, Tabs } from 'antd';
+import { Icon, Col, Row, Tabs } from 'antd';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { CRM_ORDER_STATUS } from 'common/constants';
+import { CRM_ORDER_STATUS, SCOF_ORDER_TRANSFER, TRANS_MODE } from 'common/constants';
 import { hideDock, changeDockTab, loadClearanceDetail, loadTransportDetail } from 'common/reducers/crmOrders';
 import InfoItem from 'client/components/InfoItem';
+import MdIcon from 'client/components/MdIcon';
 import DockPanel from 'client/components/DockPanel';
 import OrderPane from './tabpanes/orderPane';
 import FlowPane from './tabpanes/flowPane';
@@ -126,19 +127,27 @@ export default class OrderDockPanel extends React.Component {
 
   render() {
     const { order, visible } = this.props;
+    const transfer = SCOF_ORDER_TRANSFER.filter(sot => sot.value === order.cust_shipmt_transfer)[0];
+    const transMode = TRANS_MODE.filter(tm => tm.value === order.cust_shipmt_trans_mode)[0];
+    const wbNo = order.cust_shipmt_bill_lading || (order.cust_shipmt_hawb ? `${order.cust_shipmt_mawb}_${order.cust_shipmt_hawb}` : order.cust_shipmt_mawb);
     return (
       <DockPanel size="large" visible={visible} onClose={this.props.hideDock}
         title={order.shipmt_order_no}
         status={this.transformBadgeColor(order.order_status)} statusText={this.getTrackStatusMsg(order.order_status)}
         extra={<Row>
-          <Col span="6">
+          <Col span="8">
             <InfoItem label="客户" field={order.customer_name} />
           </Col>
-          <Col span="6">
-            <InfoItem label="提运单号" field={order.cust_shipmt_bill_lading} />
-          </Col>
           <Col span="4">
-            <InfoItem label="接单日期" field={moment(order.delg_time).format('YYYY.MM.DD')} />
+            <InfoItem label="货物流向" addonBefore={transfer && <Icon type={transfer.icon} />}
+              field={transfer && transfer.text}
+            />
+          </Col>
+          <Col span="6">
+            <InfoItem label="提运单号" addonBefore={transMode && <MdIcon type={transMode.icon} />} field={wbNo} />
+          </Col>
+          <Col span="6">
+            <InfoItem label="接单日期" addonBefore={<Icon type="calendar" />} field={moment(order.delg_time).format('YYYY.MM.DD')} />
           </Col>
         </Row>
         }

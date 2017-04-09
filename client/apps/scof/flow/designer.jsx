@@ -2,7 +2,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Alert, Breadcrumb, Button, Card, Collapse, Popconfirm, Menu, Dropdown, Icon, Layout, Spin, Radio, Tooltip, message } from 'antd';
+import { Alert, Breadcrumb, Button, Card, Collapse, Popconfirm, Layout, Spin, Radio, Tooltip, message } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import { toggleFlowList, loadFlowGraph, loadFlowGraphItem, saveFlowGraph, setNodeActions } from 'common/reducers/scofFlow';
 import { uuidWithoutDash } from 'client/common/uuid';
@@ -15,7 +15,6 @@ import BizObjCWMPanel from './panel/bizObjCWMPanel';
 import { formatMsg } from './message.i18n';
 
 const { Header, Content, Sider } = Layout;
-const MenuItem = Menu.Item;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const Panel = Collapse.Panel;
@@ -45,14 +44,6 @@ export default class FlowDesigner extends React.Component {
   }
   constructor(...args) {
     super(...args);
-    this.menu = (
-      <Menu onClick={this.handleMenuClick}>
-        <MenuItem key="nodeimport">{this.msg('flowNodeImport')}</MenuItem>
-        <MenuItem key="nodeexport">{this.msg('flowNodeExport')}</MenuItem>
-        <MenuItem key="nodetms">{this.msg('flowNodeTMS')}</MenuItem>
-        <MenuItem key="nodecwm">{this.msg('flowNodeCWM')}</MenuItem>
-        <MenuItem key="nodeterminal">{this.msg('flowNodeTerminal')}</MenuItem>
-      </Menu>);
     this.state = {
       rightSidercollapsed: true,
       activeItem: null,
@@ -353,11 +344,11 @@ export default class FlowDesigner extends React.Component {
   }
   renderGraphToolbar() {
     return (<RadioGroup onChange={this.handleAddToolbarNode}>
-      <RadioButton value="nodeimport"><Tooltip title={this.msg('flowNodeImport')}><span><MdIcon mode="ikons" type="login" /></span></Tooltip></RadioButton>
-      <RadioButton value="nodeexport"><Tooltip title={this.msg('flowNodeExport')}><span><MdIcon mode="ikons" type="logout" /></span></Tooltip></RadioButton>
-      <RadioButton value="nodetms"><Tooltip title={this.msg('flowNodeTMS')}><span><MdIcon type="truck" /></span></Tooltip></RadioButton>
-      <RadioButton value="nodecwm"><Tooltip title={this.msg('flowNodeCWM')}><span><MdIcon type="layers" /></span></Tooltip></RadioButton>
-      <RadioButton value="nodeterminal"><Tooltip title={this.msg('flowNodeTerminal')}><span><MdIcon type="dot-circle" /></span></Tooltip></RadioButton>
+      <RadioButton value="nodeimport"><Tooltip title={`添加${this.msg('flowNodeImport')}节点`}><span><MdIcon mode="ikons" type="login" /></span></Tooltip></RadioButton>
+      <RadioButton value="nodeexport"><Tooltip title={`添加${this.msg('flowNodeExport')}节点`}><span><MdIcon mode="ikons" type="logout" /></span></Tooltip></RadioButton>
+      <RadioButton value="nodetms"><Tooltip title={`添加${this.msg('flowNodeTMS')}节点`}><span><MdIcon type="truck" /></span></Tooltip></RadioButton>
+      <RadioButton value="nodecwm"><Tooltip title={`添加${this.msg('flowNodeCWM')}节点`}><span><MdIcon type="layers" /></span></Tooltip></RadioButton>
+      <RadioButton value="nodeterminal"><Tooltip title={`添加${this.msg('flowNodeTerminal')}节点`}><span><MdIcon type="dot-circle" /></span></Tooltip></RadioButton>
     </RadioGroup>
     );
   }
@@ -396,11 +387,6 @@ export default class FlowDesigner extends React.Component {
               <Card title={this.msg('flowRelationGraph')} bodyStyle={{ padding: 0, height: 240 }}
                 extra={<div className="toolbar-right">
                   {this.renderGraphToolbar()}
-                  <Dropdown overlay={this.menu}>
-                    <Button icon="plus-square-o" >
-                      {this.msg('addFlowNode')} <Icon type="down" />
-                    </Button>
-                  </Dropdown>
                   <Button icon="swap-right" onClick={this.handleAddEdge}>
                     {this.msg('addFlowEdge')}
                   </Button>

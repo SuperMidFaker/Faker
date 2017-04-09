@@ -275,7 +275,7 @@ export default class ManifestEditor extends React.Component {
       </Menu>);
   }
   render() {
-    const { billHeadFieldsChangeTimes, ietype, readonly, form: { getFieldDecorator }, form, billHead, billBodies, billMeta, templates, ...actions } = this.props;
+    const { billHeadFieldsChangeTimes, ietype, form: { getFieldDecorator }, form, billHead, billBodies, billMeta, templates, ...actions } = this.props;
     const declEntryMenu = (<Menu onClick={this.handleEntryVisit}>
       {billMeta.entries.map(bme => (<Menu.Item key={bme.pre_entry_seq_no}>
         <Icon type="file-text" /> {bme.entry_id || bme.pre_entry_seq_no}</Menu.Item>)
@@ -304,7 +304,7 @@ export default class ManifestEditor extends React.Component {
             </Breadcrumb>
             {billMeta.entries.length > 0 &&
               <Dropdown overlay={declEntryMenu}>
-                <Button size="large">生成的报关单<Icon type="down" /></Button>
+                <Button size="large"><Icon type="check-circle-o" />已生成报关单<Icon type="down" /></Button>
               </Dropdown>
             }
             <div className="top-bar-tools">
@@ -335,7 +335,7 @@ export default class ManifestEditor extends React.Component {
               />
             </div>
           </Header>
-          <Content className={`main-content layout-min-width layout-min-width-large ${readonly ? 'readonly' : ''}`}>
+          <Content className={`main-content layout-min-width layout-min-width-large ${!editable ? 'readonly' : ''}`}>
             <Spin spinning={this.props.manifestSpinning}>
               <div className="page-body tabbed">
                 <Tabs defaultActiveKey="header">

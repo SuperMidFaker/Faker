@@ -13,7 +13,7 @@ export default class DockPanel extends React.Component {
     prefixCls: PropTypes.string.isRequired,
     visible: PropTypes.bool.isRequired,
     size: PropTypes.string,
-    title: PropTypes.object,
+    title: PropTypes.string,
     status: PropTypes.oneOf(['default', 'processing', 'warning', 'error', 'success']),
     statusText: PropTypes.string,
     toolbar: PropTypes.node,

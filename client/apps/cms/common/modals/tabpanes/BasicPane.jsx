@@ -76,8 +76,8 @@ export default class BasicPane extends React.Component {
         </div>
       );
     });
-    const goods = GOODSTYPES.filter(gt => gt.value === delegation.goods_type);
-    const transMode = TRANS_MODE.filter(tm => tm.value === delegation.trans_mode);
+    const goods = GOODSTYPES.filter(gt => gt.value === delegation.goods_type)[0];
+    const transMode = TRANS_MODE.filter(tm => tm.value === delegation.trans_mode)[0];
     let doAwbText = '';
     if (delegation.trans_mode === '2') {
       if (CLAIM_DO_AWB.notClaimDO.key === delegation.claim_do_awb) {
@@ -115,8 +115,8 @@ export default class BasicPane extends React.Component {
           </Row>
           <Row>
             <Col span="8">
-              <InfoItem label="运输方式" addonBefore={transMode[0] && <MdIcon type={transMode[0].icon} />}
-                field={transMode.length > 0 ? transMode[0].text : ''}
+              <InfoItem label="运输方式" addonBefore={transMode && <MdIcon type={transMode.icon} />}
+                field={transMode.length > 0 ? transMode.text : ''}
               />
             </Col>
             <Col span="8">
@@ -142,9 +142,9 @@ export default class BasicPane extends React.Component {
           <Row>
             <Col span="8">
               <InfoItem type="dropdown" label="货物类型"
-                field={goods.length > 0 ? goods[0].text : ''} placeholder="选择货物类型" editable overlay={<Menu>
+                field={goods.length > 0 ? goods.text : ''} placeholder="选择货物类型" editable
+                overlay={<Menu>
                   <Menu.Item>Menu</Menu.Item>
-
                 </Menu>
                 }
               />

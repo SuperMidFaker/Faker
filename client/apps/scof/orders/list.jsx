@@ -4,6 +4,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Button, Dropdown, Menu, Icon, Radio, Popconfirm, Progress, message, Layout, Tooltip } from 'antd';
 import Table from 'client/components/remoteAntTable';
+import MdIcon from 'client/components/MdIcon';
 import { Link } from 'react-router';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/search-bar';
@@ -162,6 +163,13 @@ export default class OrderList extends React.Component {
         </div>);
       },
     }, {
+      dataIndex: 'cust_shipmt_transfer',
+      width: 40,
+      render: (o) => {
+        const transfer = SCOF_ORDER_TRANSFER.filter(sot => sot.value === o)[0];
+        return transfer && <Tooltip title={transfer.text} ><Icon type={transfer.icon} /></Tooltip>;
+      },
+    }, {
       width: 200,
       render: (o, record) => <ShipmentColumn shipment={record} />,
     }, {
@@ -232,21 +240,21 @@ export default class OrderList extends React.Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <RadioGroup onChange={this.handleProgressChange} size="large" value={filters.progress}>
-            <RadioButton value="active">未完成</RadioButton>
+            <RadioButton value="active">进行中</RadioButton>
             <RadioButton value="completed">已完成</RadioButton>
           </RadioGroup>
           <span />
           <RadioGroup onChange={this.handleTransferChange} size="large" value={filters.transfer}>
             <RadioButton value="all">全部</RadioButton>
-            <RadioButton value={SCOF_ORDER_TRANSFER[0].value}>{SCOF_ORDER_TRANSFER[0].text}</RadioButton>
-            <RadioButton value={SCOF_ORDER_TRANSFER[1].value}>{SCOF_ORDER_TRANSFER[1].text}</RadioButton>
-            <RadioButton value={SCOF_ORDER_TRANSFER[2].value}>{SCOF_ORDER_TRANSFER[2].text}</RadioButton>
+            <RadioButton value={SCOF_ORDER_TRANSFER[0].value}><Icon type={SCOF_ORDER_TRANSFER[0].icon} /> {SCOF_ORDER_TRANSFER[0].text}</RadioButton>
+            <RadioButton value={SCOF_ORDER_TRANSFER[1].value}><Icon type={SCOF_ORDER_TRANSFER[1].icon} /> {SCOF_ORDER_TRANSFER[1].text}</RadioButton>
+            <RadioButton value={SCOF_ORDER_TRANSFER[2].value}><Icon type={SCOF_ORDER_TRANSFER[2].icon} /> {SCOF_ORDER_TRANSFER[2].text}</RadioButton>
           </RadioGroup>
           <span />
           <ButtonGroup>
-            <ButtonToggle size="large" toggle><i className="zmdi zmdi-boat" />&nbsp;</ButtonToggle>
-            <ButtonToggle size="large" toggle>&nbsp;<i className="zmdi zmdi-airplane" />&nbsp;</ButtonToggle>
-            <ButtonToggle size="large" toggle>&nbsp;<i className="zmdi zmdi-truck" /></ButtonToggle>
+            <ButtonToggle size="large" toggle><MdIcon type="boat" />&nbsp;</ButtonToggle>
+            <ButtonToggle size="large" toggle>&nbsp;<MdIcon type="airplane" />&nbsp;</ButtonToggle>
+            <ButtonToggle size="large" toggle>&nbsp;<MdIcon type="truck" /></ButtonToggle>
           </ButtonGroup>
           <div className="top-bar-tools">
             <Button type="primary" size="large" icon="plus" onClick={this.handleCreate}>
