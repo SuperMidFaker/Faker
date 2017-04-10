@@ -630,31 +630,31 @@ export default defineMessages({
     defaultMessage: '表单信息有误',
   },
   revenueDetail: {
-    id: 'transport.modals.tabpanes.billing.revenue.detail',
+    id: 'transport.shipment.modals.tabpanes.billing.revenue.detail',
     defaultMessage: '收入明细',
   },
   costDetail: {
-    id: 'transport.modals.tabpanes.billing.cost.detail',
+    id: 'transport.shipment.modals.tabpanes.billing.cost.detail',
     defaultMessage: '成本明细',
   },
   normalSign: {
-    id: 'transport.tracking.modal.pod.sign.normal',
+    id: 'transport.shipment.modal.pod.sign.normal',
     defaultMessage: '正常签收',
   },
   abnormalSign: {
-    id: 'transport.tracking.modal.pod.sign.abnormal',
+    id: 'transport.shipment.modal.pod.sign.abnormal',
     defaultMessage: '异常签收',
   },
   refusedSign: {
-    id: 'transport.tracking.modal.pod.sign.refused',
+    id: 'transport.shipment.modal.pod.sign.refused',
     defaultMessage: '拒绝签收',
   },
   signRemark: {
-    id: 'transport.tracking.modal.pod.sign.remark',
+    id: 'transport.shipment.modal.pod.sign.remark',
     defaultMessage: '签收备注',
   },
   photoSubmit: {
-    id: 'transport.tracking.modal.pod.click.submit',
+    id: 'transport.shipment.modal.pod.click.submit',
     defaultMessage: '上传照片',
   },
 });
