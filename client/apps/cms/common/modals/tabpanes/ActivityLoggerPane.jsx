@@ -26,6 +26,8 @@ const ACTIVITY_DESC_MAP = {
   dispatch: { text: '分配', icon: 'export' },
   ciqdispatch: { text: '分配报检', icon: 'export' },
   manifest: { text: '制单', icon: 'copy' },
+  lock: { text: '锁定', icon: 'lock' },
+  unlock: { text: '解锁', icon: 'unlock' },
   declared: { text: '海关申报', icon: 'play-circle-o' },
   advance: { text: '录入代垫费用', icon: 'calculator' },
   hgcy: { text: '海关查验' },

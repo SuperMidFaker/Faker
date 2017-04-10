@@ -86,7 +86,7 @@ export default class ManifestList extends Component {
     render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
     title: '制单人',
-    dataIndex: 'creater_name',
+    dataIndex: 'preparer_name',
     width: 80,
   }, {
     title: '制单日期',

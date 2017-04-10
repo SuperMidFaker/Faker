@@ -2,7 +2,8 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Alert, Button, Dropdown, Menu, Table, Icon, Tooltip, Tag, Input, Select, message, Popconfirm } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { updateHeadNetWt, loadBillBody, openAmountModel, deleteSelectedBodies, openRuleModel } from 'common/reducers/cmsManifest';
+import { addNewBillBody, delBillBody, editBillBody, updateHeadNetWt, loadBillBody, openAmountModel,
+  deleteSelectedBodies, openRuleModel } from 'common/reducers/cmsManifest';
 import { getItemForBody, getHscodeForBody } from 'common/reducers/cmsTradeitem';
 import { format } from 'client/common/i18n/helpers';
 import ExcelUpload from 'client/components/excelUploader';
@@ -87,9 +88,9 @@ function ColumnSearchSelect(props) {
   }
   if (inEdit) {
     return (
-      <Select mode="combobox" optionFilterProp="search" value={edit[field] || ''} onChange={handleChange} style={{ width: '100%' }}>
+      <Select showSearch showArrow={false} mode="combobox" optionFilterProp="search" value={edit[field] || ''} onChange={handleChange} style={{ width: '100%' }}>
         {
-          options.map((opt, idx) => <Option search={`${opt.search}`} value={opt.value} key={`${opt.value}${idx}`}>{opt.text}</Option>)
+          options.map((opt, idx) => <Option search={opt.search} value={opt.value} key={`${opt.value}${idx}`}>{opt.text}</Option>)
         }
       </Select>
     );
@@ -168,9 +169,9 @@ function calculateTotal(bodies) {
     billHead: state.cmsManifest.billHead,
     bodyItem: state.cmsTradeitem.bodyItem,
     bodyHscode: state.cmsTradeitem.bodyHscode,
-    entryHead: state.cmsManifest.entryHead,
   }),
-  { updateHeadNetWt, loadBillBody, openAmountModel, getItemForBody, getHscodeForBody, deleteSelectedBodies, openRuleModel, loadHscodes }
+  { addNewBillBody, delBillBody, editBillBody, updateHeadNetWt, loadBillBody, openAmountModel,
+    getItemForBody, getHscodeForBody, deleteSelectedBodies, openRuleModel, loadHscodes }
 )
 export default class ManifestBodyPanel extends React.Component {
   static propTypes = {
@@ -179,7 +180,6 @@ export default class ManifestBodyPanel extends React.Component {
     ietype: PropTypes.oneOf(['import', 'export']),
     readonly: PropTypes.bool,
     data: PropTypes.array.isRequired,
-    headNo: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     billSeqNo: PropTypes.string,
     loginId: PropTypes.number.isRequired,
     units: PropTypes.array,
@@ -187,7 +187,6 @@ export default class ManifestBodyPanel extends React.Component {
     currencies: PropTypes.array,
     exemptions: PropTypes.array,
     billHead: PropTypes.object,
-    entryHead: PropTypes.object,
     bodyItem: PropTypes.object,
     bodyHscode: PropTypes.object,
     headForm: PropTypes.object,
@@ -575,7 +574,7 @@ export default class ManifestBodyPanel extends React.Component {
     }
   }
   handleEdit = (row, index) => {
-    if (this.props.headNo) {
+    if (this.props.billSeqNo) {
       this.setState({
         editIndex: index,
         editBody: row,
@@ -597,8 +596,8 @@ export default class ManifestBodyPanel extends React.Component {
         gNO += this.state.bodies[this.state.bodies.length - 2].g_no;
       }
       let body = { ...editBody, g_no: gNO };
-      const { billSeqNo, headNo, loginId, tenantId } = this.props;
-      this.props.onAdd({ billSeqNo, body, headNo, loginId, tenantId }).then((result) => {
+      const { billSeqNo, loginId, tenantId } = this.props;
+      this.props.addNewBillBody({ billSeqNo, body, loginId, tenantId }).then((result) => {
         if (result.error) {
           message.error(result.error.message, 10);
         } else {
@@ -624,7 +623,7 @@ export default class ManifestBodyPanel extends React.Component {
         }
       });
     } else {
-      this.props.onEdit(editBody).then((result) => {
+      this.props.editBillBody(editBody).then((result) => {
         if (result.error) {
           message.error(result.error.message, 10);
         } else {
@@ -645,7 +644,7 @@ export default class ManifestBodyPanel extends React.Component {
     }
   }
   handleDel = (row, index) => {
-    this.props.onDel(row.id).then((result) => {
+    this.props.delBillBody(row.id).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -715,12 +714,12 @@ export default class ManifestBodyPanel extends React.Component {
       wts += Number(grosswt);
       const data = { ...body, gross_wt: grosswt };
       datas.push(data);
-      this.props.onEdit(data);
+      this.props.editBillBody(data);
     }
     const lastwt = totGrossWt - wts;
     const lastBody = bodyDatas[bodyDatas.length - 2];
     datas.push({ ...lastBody, gross_wt: lastwt });
-    this.props.onEdit({ ...lastBody, gross_wt: lastwt });
+    this.props.editBillBody({ ...lastBody, gross_wt: lastwt });
     datas.push({});
     this.setState({ bodies: datas });
     message.success(`总毛重: ${totGrossWt.toFixed(3)}千克已分摊`, 3);

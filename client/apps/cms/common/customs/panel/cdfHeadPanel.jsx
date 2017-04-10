@@ -27,7 +27,6 @@ export default class CDFHeadPanel extends React.Component {
     ietype: PropTypes.string.isRequired,
     readonly: PropTypes.bool,
     form: PropTypes.object.isRequired,
-    ruleRequired: PropTypes.bool,
     formData: PropTypes.object.isRequired,
     formRequire: PropTypes.object.isRequired,
     loadSearchedParam: PropTypes.func.isRequired,
@@ -36,13 +35,13 @@ export default class CDFHeadPanel extends React.Component {
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
 
   render() {
-    const { form, readonly, formData, formRequire, ietype, intl, ruleRequired } = this.props;
+    const { form, readonly, formData, formRequire, ietype, intl } = this.props;
     const formProps = {
       getFieldDecorator: form.getFieldDecorator,
       getFieldValue: form.getFieldValue,
       disabled: true,
       formData,
-      required: ruleRequired,
+      required: false,
     };
     const entryFormProps = {
       getFieldDecorator: form.getFieldDecorator,

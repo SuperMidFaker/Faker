@@ -33,6 +33,7 @@ const actionTypes = createActionTypes('@@welogix/cms/manifest/', [
   'OPEN_RULE_MODEL', 'CLOSE_RULE_MODEL',
   'SAVE_BILL_RULES', 'SAVE_BILL_RULES_SUCCEED', 'SAVE_BILL_RULES_FAIL',
   'RESET_BILLHEAD', 'RESET_BILLHEAD_SUCCEED', 'RESET_BILLHEAD_FAIL',
+  'LOCK_MANIFEST', 'LOCK_MANIFEST_SUCCEED', 'LOCK_MANIFEST_FAIL',
   'SET_STEP_VISIBLE', 'BILL_HEAD_CHANGE',
 ]);
 
@@ -204,6 +205,9 @@ export default function reducer(state = initialState, action) {
       return { ...state, containers: action.result.data };
     case actionTypes.SAVE_BILL_RULES_SUCCEED:
       return { ...state, billRule: action.payload.rules };
+    case actionTypes.LOCK_MANIFEST_SUCCEED:
+      return { ...state, billHead: { ...state.billHead, locking_login_id: action.data.loginId,
+        locking_name: action.data.loginName } };
     case actionTypes.BILL_HEAD_CHANGE:
       return { ...state, billHeadFieldsChangeTimes: state.billHeadFieldsChangeTimes + 1 };
     default:
@@ -443,7 +447,7 @@ export function loadSearchedParam({ paramType, search }) {
   };
 }
 
-export function addNewBillBody({ body, billSeqNo, headNo, loginId, tenantId }) {
+export function addNewBillBody({ body, billSeqNo, loginId, tenantId }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -453,7 +457,7 @@ export function addNewBillBody({ body, billSeqNo, headNo, loginId, tenantId }) {
       ],
       endpoint: 'v1/cms/manifest/billbody/add',
       method: 'post',
-      data: { newBody: body, billNo: headNo, billSeqNo, loginId, tenantId },
+      data: { newBody: body, billSeqNo, loginId, tenantId },
     },
   };
 }
@@ -671,5 +675,20 @@ export function billHeadChange(values) {
   return {
     type: actionTypes.BILL_HEAD_CHANGE,
     data: values,
+  };
+}
+
+export function lockManifest(locker) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOCK_MANIFEST,
+        actionTypes.LOCK_MANIFEST_SUCCEED,
+        actionTypes.LOCK_MANIFEST_FAIL,
+      ],
+      endpoint: 'v1/cms/manifest/lock',
+      method: 'post',
+      data: locker,
+    },
   };
 }

@@ -51,12 +51,12 @@ export default class SendModal extends React.Component {
     this.props.showSendDeclModal({ visible: false });
   }
   handleOk = () => {
-    const { delgNo, preEntrySeqNo, subdomain, loginId, username } = this.props;
+    const { delgNo, preEntrySeqNo, subdomain, loginId, loginName } = this.props;
     this.props.form.validateFields((err, values) => {
       if (!err) {
         const uuid = values.easipass;
         const declType = values.declType;
-        this.props.sendDecl({ preEntrySeqNo, delgNo, subdomain, uuid, declType, loginId, username }).then((result) => {
+        this.props.sendDecl({ preEntrySeqNo, delgNo, subdomain, uuid, declType, loginId, username: loginName }).then((result) => {
           if (result.error) {
             message.error(result.error.message, 10);
           } else {

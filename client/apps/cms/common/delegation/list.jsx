@@ -101,17 +101,9 @@ export default class DelegationList extends Component {
       if (nextProps.preStatus === 'accepted') {
         this.handleDelgListLoad();
       }
-      if (nextProps.preStatus === 'make') {
-        const { delegation } = this.props;
-        this.handleDelegationMake(delegation);
-      }
       if (nextProps.preStatus === 'delgDispCancel') {
         const { delegation } = this.props;
         this.handleDelgAssignRecall(delegation);
-      }
-      if (nextProps.preStatus === 'view') {
-        const { delegation } = this.props;
-        this.handleDelegationView(delegation);
       }
     }
   }
@@ -350,25 +342,14 @@ export default class DelegationList extends Component {
     this.handleCiqListLoad(1, filter);
   }
   handleDelegationMake = (row) => {
-    this.props.ensureManifestMeta(row.delg_no).then((result) => {
+    const { loginId, loginName } = this.props;
+    this.props.ensureManifestMeta({ delg_no: row.delg_no, loginId, loginName }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 5);
       } else {
         const { i_e_type: ietype, bill_seq_no: seqno } = result.data;
         const clearType = ietype === 0 ? 'import' : 'export';
         const link = `/clearance/${clearType}/manifest/`;
-        this.context.router.push(`${link}${seqno}`);
-      }
-    });
-  }
-  handleDelegationView = (row) => {
-    this.props.ensureManifestMeta(row.delg_no).then((result) => {
-      if (result.error) {
-        message.error(result.error.message, 5);
-      } else {
-        const { i_e_type: ietype, bill_seq_no: seqno } = result.data;
-        const clearType = ietype === 0 ? 'import' : 'export';
-        const link = `/clearance/${clearType}/manifest/view/`;
         this.context.router.push(`${link}${seqno}`);
       }
     });
@@ -516,7 +497,7 @@ export default class DelegationList extends Component {
               // 3.3 当前租户未分配
               assignOp = <RowUpdater onHit={() => this.handleDelegationAssign(record)} label={this.msg('delgDistribute')} row={record} />;
             }
-            const label = record.manifested === CMS_DELEGATION_MANIFEST.uncreated ?
+            const label = record.manifested === CMS_DELEGATION_MANIFEST.uncreated ?  // *todo* distinguish edit make bill_seq_no
               <span><Icon type="file-add" /> {this.msg('createManifest')}</span> :
               <span><Icon type="file-text" /> {this.msg('editManifest')}</span>;
             return (

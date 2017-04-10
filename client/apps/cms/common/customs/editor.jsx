@@ -161,12 +161,10 @@ export default class CustomsDeclEditor extends React.Component {
               <div className="page-body tabbed">
                 <Tabs defaultActiveKey="header">
                   <TabPane tab="报关单表头" key="header">
-                    <SheetHeadPanel ietype={ietype} readonly={readonly} form={form} formData={head} type="entry" onSave={this.handleEntryHeadSave} />
+                    <SheetHeadPanel ietype={ietype} readonly={readonly} form={form} formData={head} onSave={this.handleEntryHeadSave} />
                   </TabPane>
                   <TabPane tab="报关单表体" key="body">
-                    <SheetBodyPanel ietype={ietype} readonly={readonly} data={bodies}
-                      headNo={head.id} billSeqNo={head.bill_seq_no} type="entry"
-                    />
+                    <SheetBodyPanel ietype={ietype} readonly={readonly} data={bodies} headNo={head.id} />
                   </TabPane>
                 </Tabs>
               </div>
