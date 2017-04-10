@@ -138,14 +138,10 @@ export default class DelgDeclList extends Component {
     dataIndex: 'status',
     render: (o) => {
       const decl = CMS_DECL_STATUS.filter(st => st.value === o)[0];
-      if (o === 0) {
-        return <Badge status="default" text={decl && decl.text} />;
-      } else if (o === 1) {
-        return <Badge status="warning" text={decl && decl.text} />;
-      } else if (o === 2) {
-        return <Badge status="processing" text={decl && decl.text} />;
-      } else if (o === 3) {
-        return <Badge status="success" text={decl && decl.text} />;
+      if (decl) {
+        return <Badge status={decl.badge} text={decl && decl.text} />;
+      } else {
+        return null;
       }
     },
   }, {

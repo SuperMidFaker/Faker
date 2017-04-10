@@ -127,7 +127,7 @@ export default class CustomsDeclPane extends React.Component {
           sheetType = <Tag color="blue">备案清单</Tag>;
         }
         const decl = CMS_DECL_STATUS.filter(st => st.value === record.status)[0];
-        const declStatus = decl && <Badge status="default" text={decl.text} />;
+        const declStatus = decl && <Badge status={decl.badge} text={decl.text} />;
         const declNo = (record.entry_id) ?
           <span>海关编号# {record.entry_id} {sheetType}</span> :
           <span className="mdc-text-grey">预报关编号# {record.pre_entry_seq_no} {sheetType}</span>;

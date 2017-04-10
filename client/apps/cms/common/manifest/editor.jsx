@@ -3,13 +3,13 @@ import { connect } from 'react-redux';
 import { Breadcrumb, Button, Dropdown, Layout, Menu, Icon, Form, message, Popconfirm, Tabs, Select, Spin } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
-import { addNewBillBody, delBillBody, editBillBody, saveBillHead, lockManifest,
-  openMergeSplitModal, resetBill, updateHeadNetWt, loadBillBody, saveBillRules, setStepVisible, billHeadChange } from 'common/reducers/cmsManifest';
+import { saveBillHead, lockManifest, openMergeSplitModal, resetBill, updateHeadNetWt,
+  loadBillBody, saveBillRules, setStepVisible, billHeadChange } from 'common/reducers/cmsManifest';
 import { loadTemplateFormVals } from 'common/reducers/cmsSettings';
 import NavLink from 'client/components/nav-link';
 import ButtonToggle from 'client/components/ButtonToggle';
-import SheetHeadPanel from './panel/manifestHeadPanel';
-import SheetBodyPanel from './panel/manifestBodyPanel';
+import ManifestHeadPanel from './panel/manifestHeadPanel';
+import ManifestBodyPanel from './panel/manifestBodyPanel';
 import MergeSplitModal from './modals/mergeSplit';
 import SaveTemplateModal from './modals/saveTemplateSteps';
 import SheetExtraPanel from './panel/manifestExtraPanel';
@@ -36,9 +36,8 @@ const OptGroup = Select.OptGroup;
     templateValLoading: state.cmsSettings.templateValLoading,
     billHeadFieldsChangeTimes: state.cmsManifest.billHeadFieldsChangeTimes,
   }),
-  { addNewBillBody, delBillBody, editBillBody, saveBillHead, openMergeSplitModal,
-    resetBill, updateHeadNetWt, loadBillBody, loadTemplateFormVals, saveBillRules,
-    setStepVisible, billHeadChange, lockManifest }
+  { saveBillHead, openMergeSplitModal, resetBill, updateHeadNetWt, loadBillBody,
+    loadTemplateFormVals, saveBillRules, setStepVisible, billHeadChange, lockManifest }
 )
 @connectNav({
   depth: 3,
@@ -302,7 +301,7 @@ export default class ManifestEditor extends React.Component {
       </Menu>);
   }
   render() {
-    const { billHeadFieldsChangeTimes, ietype, form: { getFieldDecorator }, loginId, form, billHead, billBodies, billMeta, templates, ...actions } = this.props;
+    const { billHeadFieldsChangeTimes, ietype, form: { getFieldDecorator }, loginId, form, billHead, billBodies, billMeta, templates } = this.props;
     const declEntryMenu = (<Menu onClick={this.handleEntryVisit}>
       {billMeta.entries.map(bme => (<Menu.Item key={bme.pre_entry_seq_no}>
         <Icon type="file-text" /> {bme.entry_id || bme.pre_entry_seq_no}</Menu.Item>)
@@ -368,14 +367,11 @@ export default class ManifestEditor extends React.Component {
                 <Tabs defaultActiveKey="header">
                   <TabPane tab="清单表头" key="header">
                     <Spin spinning={this.props.templateValLoading}>
-                      <SheetHeadPanel ietype={ietype} readonly={!editable} form={form} formData={this.state.headData} ruleRequired onSave={this.handleBillSave} />
+                      <ManifestHeadPanel ietype={ietype} readonly={!editable} form={form} formData={this.state.headData} onSave={this.handleBillSave} />
                     </Spin>
                   </TabPane>
                   <TabPane tab="清单表体" key="body">
-                    <SheetBodyPanel ietype={ietype} readonly={!editable} headForm={form} data={billBodies} headNo={billHead.bill_seq_no}
-                      onAdd={actions.addNewBillBody} onDel={actions.delBillBody} onEdit={actions.editBillBody}
-                      billSeqNo={billHead.bill_seq_no}
-                    />
+                    <ManifestBodyPanel ietype={ietype} readonly={!editable} headForm={form} data={billBodies} billSeqNo={billHead.bill_seq_no} />
                   </TabPane>
                 </Tabs>
               </div>

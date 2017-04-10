@@ -39,7 +39,6 @@ export default class ManifestHeadPanel extends React.Component {
     ietype: PropTypes.string.isRequired,
     readonly: PropTypes.bool,
     form: PropTypes.object.isRequired,
-    ruleRequired: PropTypes.bool,
     formData: PropTypes.object.isRequired,
     formRequire: PropTypes.object.isRequired,
     loadSearchedParam: PropTypes.func.isRequired,
@@ -88,13 +87,13 @@ export default class ManifestHeadPanel extends React.Component {
   }
 
   render() {
-    const { form, readonly, formData, formRequire, ietype, intl, ruleRequired, billHeadFieldsChangeTimes } = this.props;
+    const { form, readonly, formData, formRequire, ietype, intl, billHeadFieldsChangeTimes } = this.props;
     const formProps = {
       getFieldDecorator: form.getFieldDecorator,
       getFieldValue: form.getFieldValue,
       disabled: readonly,
       formData,
-      required: ruleRequired,
+      required: true,
     };
     const entryFormProps = {
       getFieldDecorator: form.getFieldDecorator,

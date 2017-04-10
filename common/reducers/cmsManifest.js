@@ -447,7 +447,7 @@ export function loadSearchedParam({ paramType, search }) {
   };
 }
 
-export function addNewBillBody({ body, billSeqNo, headNo, loginId, tenantId }) {
+export function addNewBillBody({ body, billSeqNo, loginId, tenantId }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -457,7 +457,7 @@ export function addNewBillBody({ body, billSeqNo, headNo, loginId, tenantId }) {
       ],
       endpoint: 'v1/cms/manifest/billbody/add',
       method: 'post',
-      data: { newBody: body, billNo: headNo, billSeqNo, loginId, tenantId },
+      data: { newBody: body, billSeqNo, loginId, tenantId },
     },
   };
 }

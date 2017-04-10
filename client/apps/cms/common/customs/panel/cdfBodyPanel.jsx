@@ -132,7 +132,6 @@ export default class CDFBodyPanel extends React.Component {
     readonly: PropTypes.bool,
     data: PropTypes.array.isRequired,
     headNo: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    billSeqNo: PropTypes.string,
     loginId: PropTypes.number.isRequired,
     units: PropTypes.array,
     countries: PropTypes.array,
