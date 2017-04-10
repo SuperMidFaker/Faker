@@ -124,11 +124,11 @@ const messages = defineMessages({
   },
   consigner: {
     id: 'scof.flow.biz.tms.consigner',
-    defaultMessage: '收货人',
+    defaultMessage: '发货人',
   },
   consignee: {
     id: 'scof.flow.biz.tms.consignee',
-    defaultMessage: '发货人',
+    defaultMessage: '收货人',
   },
   transitMode: {
     id: 'scof.flow.biz.tms.transit.mode',
