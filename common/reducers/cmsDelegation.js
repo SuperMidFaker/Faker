@@ -286,7 +286,7 @@ export function loadCiqTable(params) {
   };
 }
 
-export function ensureManifestMeta(delgNo) {
+export function ensureManifestMeta(delger) {
   return {
     [CLIENT_API]: {
       types: [
@@ -295,8 +295,8 @@ export function ensureManifestMeta(delgNo) {
         actionTypes.ENSURE_MANIFESTMETA_FAIL,
       ],
       endpoint: 'v1/cms/manifest/meta',
-      method: 'get',
-      params: { delgNo },
+      method: 'post',
+      data: delger,
     },
   };
 }

@@ -18,6 +18,8 @@ const Step = Steps.Step;
     customsPanel: state.cmsDelgInfoHub.customsPanel,
     tabKey: state.cmsDelgInfoHub.tabKey,
     customsSpinning: state.cmsDelgInfoHub.customsPanelLoading,
+    loginId: state.account.loginId,
+    loginName: state.account.username,
   }),
   { loadCustPanel, openAcceptModal, ensureManifestMeta, loadDelgOperators }
 )
@@ -54,20 +56,15 @@ export default class CustomsDeclPane extends React.Component {
   }
   handleView = (ev) => {
     ev.stopPropagation();
-    this.props.ensureManifestMeta(this.props.delgNo).then((result) => {
-      if (result.error) {
-        message.error(result.error.message, 5);
-      } else {
-        const { i_e_type: ietype, bill_seq_no: seqno } = result.data;
-        const clearType = ietype === 0 ? 'import' : 'export';
-        const link = `/clearance/${clearType}/manifest/view/`;
-        this.context.router.push(`${link}${seqno}`);
-      }
-    });
+    const bill = this.props.customsPanel.bill;
+    const clearType = bill.i_e_type === 0 ? 'import' : 'export';
+    const link = `/clearance/${clearType}/manifest/view/`;
+    this.context.router.push(`${link}${bill.bill_seq_no}`);
   }
   handleMake = (ev) => {
     ev.stopPropagation();
-    this.props.ensureManifestMeta(this.props.delgNo).then((result) => {
+    const { loginId, loginName, delgNo } = this.props;
+    this.props.ensureManifestMeta({ delg_no: delgNo, loginId, loginName }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 5);
       } else {
@@ -77,6 +74,13 @@ export default class CustomsDeclPane extends React.Component {
         this.context.router.push(`${link}${seqno}`);
       }
     });
+  }
+  handleManfestEdit = (ev) => {
+    ev.stopPropagation();
+    const { customsPanel } = this.props;
+    const clearType = customsPanel.bill.i_e_type === 0 ? 'import' : 'export';
+    const link = `/clearance/${clearType}/manifest/`;
+    this.context.router.push(`${link}${customsPanel.bill.bill_seq_no}`);
   }
   handleOperatorAssign = () => {
     this.props.openAcceptModal({
@@ -95,10 +99,10 @@ export default class CustomsDeclPane extends React.Component {
         return <Button type="primary" ghost icon="addfile" onClick={this.handleMake}>创建</Button>;
       } else if (bill.bill_status < 100) {
         return (
-          <Button type="primary" ghost icon="edit" onClick={this.handleMake}>编辑</Button>
+          <Button type="primary" ghost icon="edit" onClick={this.handleManfestEdit}>编辑</Button>
         );
-      } else if (bill.bill_status === 100) {
-        return <Button icon="eye" onClick={ev => this.handleView(ev)}>查看</Button>;
+      } else if (bill.bill_status === 100 && bill.bill_seq_no) {
+        return <Button icon="eye" onClick={this.handleView}>查看</Button>;
       }
     }
   }
@@ -123,16 +127,7 @@ export default class CustomsDeclPane extends React.Component {
           sheetType = <Tag color="blue">备案清单</Tag>;
         }
         const decl = CMS_DECL_STATUS.filter(st => st.value === record.status)[0];
-        let declStatus = '';
-        if (record.status === 0) {
-          declStatus = <Badge status="default" text={decl && decl.text} />;
-        } else if (record.status === 1) {
-          declStatus = <Badge status="warning" text={decl && decl.text} />;
-        } else if (record.status === 2) {
-          declStatus = <Badge status="processing" text={decl && decl.text} />;
-        } else if (record.status === 3) {
-          declStatus = <Badge status="success" text={decl && decl.text} />;
-        }
+        const declStatus = decl && <Badge status="default" text={decl.text} />;
         const declNo = (record.entry_id) ?
           <span>海关编号# {record.entry_id} {sheetType}</span> :
           <span className="mdc-text-grey">预报关编号# {record.pre_entry_seq_no} {sheetType}</span>;
@@ -141,10 +136,16 @@ export default class CustomsDeclPane extends React.Component {
         } else if (o === 2) {
           inspectFlag = <Tag color="rgba(39, 187, 71, 0.65)">通过</Tag>;
         }
+        let step = 0;
+        if (record.status === CMS_DECL_STATUS[3].value) {
+          step = 1;
+        } else if (record.passed) {
+          step = 2;
+        }
         return (<Card title={declNo} className="with-card-footer">
           <Row style={{ marginBottom: 16 }}>
             <Col span="24">
-              <Steps progressDot current={1}>
+              <Steps progressDot current={step}>
                 <Step title="录入日期" description={record.created_date
                     && moment(record.created_date).format('YYYY.MM.DD')}
                 />
@@ -182,6 +183,7 @@ export default class CustomsDeclPane extends React.Component {
     }];
     const assignable = (customsPanel.customs_tenant_id === tenantId || customsPanel.customs_tenant_id === -1);
     // const assigneeOptions = this.state.data.map(d => <Option key={d.value}>{d.text}</Option>);
+    // todo declValue
     return (
       <div className="pane-content tab-pane">
         <Spin spinning={customsSpinning}>
@@ -191,7 +193,7 @@ export default class CustomsDeclPane extends React.Component {
                 <Row gutter={8}>
                   <Col span="6">
                     <InfoItem type="select" label="制单人" placeholder="分配制单人" addonBefore={<Icon type="user" />}
-                      field={bill.creater_name} editable={assignable}
+                      field={bill.preparer_name} editable={assignable}
                     />
                   </Col>
                   <Col span="6">

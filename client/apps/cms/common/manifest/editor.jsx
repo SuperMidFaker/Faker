@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Breadcrumb, Button, Dropdown, Layout, Menu, Icon, Form, message, Popconfirm, Tabs, Select, Spin } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
-import { addNewBillBody, delBillBody, editBillBody, saveBillHead,
+import { addNewBillBody, delBillBody, editBillBody, saveBillHead, lockManifest,
   openMergeSplitModal, resetBill, updateHeadNetWt, loadBillBody, saveBillRules, setStepVisible, billHeadChange } from 'common/reducers/cmsManifest';
 import { loadTemplateFormVals } from 'common/reducers/cmsSettings';
 import NavLink from 'client/components/nav-link';
@@ -30,6 +30,7 @@ const OptGroup = Select.OptGroup;
     billBodies: state.cmsManifest.billBodies,
     templates: state.cmsManifest.templates,
     loginId: state.account.loginId,
+    loginName: state.account.username,
     tenantId: state.account.tenantId,
     formData: state.cmsSettings.formData,
     templateValLoading: state.cmsSettings.templateValLoading,
@@ -37,7 +38,7 @@ const OptGroup = Select.OptGroup;
   }),
   { addNewBillBody, delBillBody, editBillBody, saveBillHead, openMergeSplitModal,
     resetBill, updateHeadNetWt, loadBillBody, loadTemplateFormVals, saveBillRules,
-    setStepVisible, billHeadChange }
+    setStepVisible, billHeadChange, lockManifest }
 )
 @connectNav({
   depth: 3,
@@ -256,18 +257,44 @@ export default class ManifestEditor extends React.Component {
   handleSaveAsTemplate = () => {
     this.props.setStepVisible(true);
   }
-  handleLockMenu = (e) => {
-    if (e.key === 'template') {
+  handleOverlayMenu = (ev) => {
+    if (ev.key === 'template') {
       this.props.setStepVisible(true);
+    } else if (ev.key === 'lock') {
+      const { loginId, loginName, billHead } = this.props;
+      this.props.lockManifest({ loginId, loginName, billSeqNo: billHead.bill_seq_no, delgNo: billHead.delg_no }).then((result) => {
+        if (result.error) {
+          message.error(result.error.message);
+        } else {
+          message.info('锁定成功');
+        }
+      });
+    } else if (ev.key === 'unlock') {
+      const { billHead } = this.props;
+      this.props.lockManifest({ loginId: null, loginName: null, billSeqNo: billHead.bill_seq_no, delgNo: billHead.delg_no }).then((result) => {
+        if (result.error) {
+          message.error(result.error.message);
+        } else {
+          message.info('解锁成功');
+        }
+      });
     }
   }
 
   renderOverlayMenu(editable) {
+    let lockMenuItem = null;
+    if (editable) {
+      if (this.props.billHead.locking_login_id === this.props.loginId) {
+        lockMenuItem = <Menu.Item key="unlock"><Icon type="unlock" /> 解锁清单</Menu.Item>;
+      } else if (!this.props.billHead.locking_login_id) {
+        lockMenuItem = <Menu.Item key="lock"><Icon type="lock" /> 锁定清单</Menu.Item>;
+      }
+    }
     return (
-      <Menu onClick={this.handleLockMenu}>
+      <Menu onClick={this.handleOverlayMenu}>
         <Menu.Item key="template"><Icon type="book" /> {this.msg('saveAsTemplate')}</Menu.Item>
-        {editable && <Menu.Item key="lock"><Icon type="lock" /> 锁定清单</Menu.Item>}
-        {editable && <Menu.Item key="delete">
+        {editable && lockMenuItem}
+        {editable && <Menu.Item key="reset">
           <Popconfirm title="确定删除清单表头表体数据?" onConfirm={this.handleBillReset}>
             <a> <Icon type="delete" /> 重置清单</a>
           </Popconfirm>
@@ -275,14 +302,17 @@ export default class ManifestEditor extends React.Component {
       </Menu>);
   }
   render() {
-    const { billHeadFieldsChangeTimes, ietype, form: { getFieldDecorator }, form, billHead, billBodies, billMeta, templates, ...actions } = this.props;
+    const { billHeadFieldsChangeTimes, ietype, form: { getFieldDecorator }, loginId, form, billHead, billBodies, billMeta, templates, ...actions } = this.props;
     const declEntryMenu = (<Menu onClick={this.handleEntryVisit}>
       {billMeta.entries.map(bme => (<Menu.Item key={bme.pre_entry_seq_no}>
         <Icon type="file-text" /> {bme.entry_id || bme.pre_entry_seq_no}</Menu.Item>)
       )}
     </Menu>);
     const path = `/clearance/${ietype}/manifest/`;
-    const editable = !this.props.readonly && billMeta.entries.length === 0;
+    let editable = !this.props.readonly && billMeta.entries.length === 0;
+    if (editable && billHead.locking_login_id && billHead.locking_login_id !== loginId) {
+      editable = false;
+    }
     const modelProps = {};
     if (billHead.template_id) {
       modelProps.initialValue = billHead.template_id;
@@ -299,7 +329,7 @@ export default class ManifestEditor extends React.Component {
                 <NavLink to={path}>{this.msg('declManifest')}</NavLink>
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                {billMeta.bill_seq_no}
+                {billMeta.bill_seq_no}{billHead.locking_name && `(${billHead.locking_name}锁定)`}
               </Breadcrumb.Item>
             </Breadcrumb>
             {billMeta.entries.length > 0 &&
@@ -329,10 +359,7 @@ export default class ManifestEditor extends React.Component {
                 (<Button type="primary" size="large" icon="addfile" disabled={billHeadFieldsChangeTimes > 0}
                   loading={this.state.generating} onClick={this.handleGenerateEntry}
                 >{this.msg('generateEntry')}</Button>) }
-              <ButtonToggle size="large"
-                iconOff="folder" iconOn="folder-open"
-                onClick={this.toggle}
-              />
+              <ButtonToggle size="large" iconOff="folder" iconOn="folder-open" onClick={this.toggle} />
             </div>
           </Header>
           <Content className={`main-content layout-min-width layout-min-width-large ${!editable ? 'readonly' : ''}`}>
@@ -341,13 +368,13 @@ export default class ManifestEditor extends React.Component {
                 <Tabs defaultActiveKey="header">
                   <TabPane tab="清单表头" key="header">
                     <Spin spinning={this.props.templateValLoading}>
-                      <SheetHeadPanel ietype={ietype} readonly={!editable} form={form} formData={this.state.headData} ruleRequired type="bill" onSave={this.handleBillSave} />
+                      <SheetHeadPanel ietype={ietype} readonly={!editable} form={form} formData={this.state.headData} ruleRequired onSave={this.handleBillSave} />
                     </Spin>
                   </TabPane>
                   <TabPane tab="清单表体" key="body">
                     <SheetBodyPanel ietype={ietype} readonly={!editable} headForm={form} data={billBodies} headNo={billHead.bill_seq_no}
                       onAdd={actions.addNewBillBody} onDel={actions.delBillBody} onEdit={actions.editBillBody}
-                      billSeqNo={billHead.bill_seq_no} type="bill"
+                      billSeqNo={billHead.bill_seq_no}
                     />
                   </TabPane>
                 </Tabs>

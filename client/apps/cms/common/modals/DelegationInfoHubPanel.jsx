@@ -45,9 +45,6 @@ export default class DelegationInfoHubPanel extends React.Component {
     delegateListFilter: PropTypes.object.isRequired,
     setPreviewStatus: PropTypes.func.isRequired,
   }
-  static contextTypes = {
-    router: PropTypes.object.isRequired,
-  }
   componentWillReceiveProps(nextProps) {
     if (nextProps.delgNo !== this.props.delgNo) {
       nextProps.loadBasicInfo(
@@ -72,10 +69,6 @@ export default class DelegationInfoHubPanel extends React.Component {
       opt: 'accept',
     });
     this.props.setPreviewStatus({ preStatus: 'accept' });
-    this.props.hidePreviewer();
-  }
-  handleMake = () => {
-    this.props.setPreviewStatus({ preStatus: 'make' });
     this.props.hidePreviewer();
   }
   handleAssign = () => {
