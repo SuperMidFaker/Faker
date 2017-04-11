@@ -12,6 +12,7 @@ const actionTypes = createActionTypes('@@welogix/cms/declaration/', [
   'GET_EASIPASS_LIST', 'GET_EASIPASS_LIST_SUCCEED', 'GET_EASIPASS_LIST_FAIL',
   'SHOW_SEND_DECL_MODAL',
   'SEND_DECL', 'SEND_DECL_SUCCEED', 'SEND_DECL_FAIL',
+  'LOAD_CUSTOMSRES', 'LOAD_CUSTOMSRES_SUCCEED', 'LOAD_CUSTOMSRES_FAIL',
 ]);
 
 const initialState = {
@@ -41,6 +42,7 @@ const initialState = {
     preEntrySeqNo: '',
     delgNo: '',
   },
+  customsResults: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -62,6 +64,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, decl_heads: action.result.data };
     case actionTypes.SHOW_SEND_DECL_MODAL:
       return { ...state, sendDeclModal: { ...state.sendDeclModal, ...action.data } };
+    case actionTypes.LOAD_CUSTOMSRES_SUCCEED:
+      return { ...state, customsResults: action.result.data };
     default:
       return state;
   }
@@ -201,6 +205,21 @@ export function getEasipassList(tenantId) {
       endpoint: 'v1/platform/integration/easipassList',
       method: 'get',
       params: { tenantId },
+    },
+  };
+}
+
+export function loadCustomsResults(entryId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_CUSTOMSRES,
+        actionTypes.LOAD_CUSTOMSRES_SUCCEED,
+        actionTypes.LOAD_CUSTOMSRES_FAIL,
+      ],
+      endpoint: 'v1/cms/customs/results',
+      method: 'get',
+      params: { entryId },
     },
   };
 }

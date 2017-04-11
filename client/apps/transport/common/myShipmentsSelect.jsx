@@ -10,6 +10,7 @@ export default class MyShipmentsSelect extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     onChange: PropTypes.func.isRequired,
+    onInitialize: PropTypes.func,
     size: PropTypes.string,
   }
   state = {
@@ -21,7 +22,9 @@ export default class MyShipmentsSelect extends React.Component {
   initializeFieldsValue = () => {
     if (window.localStorage) {
       const fieldsValue = JSON.parse(window.localStorage.tmsAdvancedSearchFieldsValue || '{ "viewStatus": "all" }');
-      this.props.onChange(fieldsValue);
+      if (this.props.onInitialize) {
+        this.props.onInitialize(fieldsValue);
+      }
       this.setState({ fieldsValue });
     }
   }

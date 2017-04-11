@@ -71,7 +71,7 @@ export default class TodoPanel extends Component {
     const filter = { viewStatus, tabKey };
     const extra = (
       <div>
-        <MyShipmentsSelect onChange={this.handleShipmentViewSelect} />
+        <MyShipmentsSelect onChange={this.handleShipmentViewSelect} onInitialize={this.handleShipmentViewSelect} />
       </div>);
     return (
       <Card title={<span>待办事项</span>} bodyStyle={{ minHeight: 475, padding: '10px 0 0' }} extra={extra}>
