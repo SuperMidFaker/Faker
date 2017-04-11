@@ -143,7 +143,7 @@ export default class CustomsDeclEditor extends React.Component {
                 {head.entry_id || head.pre_entry_seq_no}
               </Breadcrumb.Item>
             </Breadcrumb>
-            <Badge status={decl.badge} text={decl && decl.text} />
+            <Badge status={decl && decl.badge} text={decl && decl.text} />
             <div className="top-bar-tools">
               { head.status === DECL_STATUS.proposed && <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleDelete()}>
                 <Tooltip title={this.msg('delete')} placement="bottom">
