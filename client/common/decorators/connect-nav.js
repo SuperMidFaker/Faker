@@ -7,7 +7,7 @@ import { argumentContainer } from '../util';
  * 高阶组件状态迁移周期componentDidMount在客户端加载完成时,一般用于显示固定导航标题
  * componentWillReceiveProps在客户端设置props变化后导航信息
  */
-export default function connectNav({ depth, moduleName, lifecycle = 'componentDidMount', until }) {
+export default function connectNav({ depth, moduleName, jumpOut = false, lifecycle = 'componentDidMount', until }) {
   return (Wrapped) => {
     class WrappedComponent extends Component {
       static contextTypes = {
@@ -33,8 +33,7 @@ export default function connectNav({ depth, moduleName, lifecycle = 'componentDi
           this.context.store.dispatch(setNavTitle({
             depth,
             moduleName,
-            goBackFn: depth === 3 ? () => this.context.router.goBack() : undefined,
-            // router.goBack won't work on initial login next
+            jumpOut,
           }));
         }
       }

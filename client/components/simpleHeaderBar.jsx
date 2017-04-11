@@ -12,7 +12,7 @@ import './headerNavBar.less';
 const formatMsg = format(messages);
 const MenuItem = Menu.Item;
 const MenuDivider = Menu.Divider;
-
+// *todo* merge with HeaderNavBar
 @injectIntl
 @connect(
   state => ({

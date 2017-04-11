@@ -124,8 +124,7 @@
   }
 }
 .navbar-header {
-  a,
-  a:hover {
+  a, a:hover {
     color: #fcfcfc;
   }
 }
@@ -141,6 +140,24 @@
   position:absolute;
   left:0;
   top:0;
+  margin:0;
+  font-size: 30px;
+  color: #fcfcfc;
+  text-align:center;
+  padding:0 16px;
+  border-width:0;
+  line-height:48px;
+  width: @layout-sider-width;
+  @media (max-width:767px) {
+    width: 60px;
+    display:block;
+  }
+  :hover {
+    color: #fcfcfc;
+  }
+}
+.navbar-anchor {
+  border-radius:0;
   margin:0;
   font-size: 30px;
   color: #fcfcfc;

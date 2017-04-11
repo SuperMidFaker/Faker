@@ -30,7 +30,7 @@ export default class InfoItem extends React.Component {
     addonAfter: PropTypes.node,
     editable: PropTypes.bool,
     type: PropTypes.string,
-    size: PropTypes.oneOf('small', 'large'),
+    size: PropTypes.oneOf(['small', 'large']),
     placeholder: PropTypes.string,
     onEdit: PropTypes.func,
   }

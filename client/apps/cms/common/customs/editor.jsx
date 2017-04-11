@@ -33,6 +33,7 @@ const TabPane = Tabs.TabPane;
 @connectNav({
   depth: 3,
   moduleName: 'clearance',
+  jumpOut: true,
 })
 @Form.create()
 export default class CustomsDeclEditor extends React.Component {

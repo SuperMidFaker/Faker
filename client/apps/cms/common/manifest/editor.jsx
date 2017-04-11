@@ -42,6 +42,7 @@ const OptGroup = Select.OptGroup;
 @connectNav({
   depth: 3,
   moduleName: 'clearance',
+  jumpOut: true,
 })
 @Form.create({ onValuesChange: (props, values) => props.billHeadChange(values) })
 export default class ManifestEditor extends React.Component {
