@@ -153,7 +153,7 @@ export default class CustomsDeclEditor extends React.Component {
               { head.status === DECL_STATUS.proposed && <Button type="primary" size="large" icon="check-circle-o" onClick={this.handleReview}>{this.msg('review')}</Button> }
               { head.status === DECL_STATUS.reviewed && <Tooltip title={this.msg('recall')} placement="bottom"><Button size="large" icon="left-circle-o" onClick={this.handleRecall} /></Tooltip> }
               { head.status === DECL_STATUS.reviewed && <Button type="primary" size="large" icon="mail" onClick={this.handleShowSendDeclModal}>{this.msg('sendPackets')}</Button> }
-              { head.status === DECL_STATUS.finalized && <Button type="primary" ghost size="large" icon="flag" onClick={this.handleMarkReleasedModal}>{this.msg('markReleased')}</Button> }
+              { head.status === DECL_STATUS.finalized && head.passed === 0 && <Button type="primary" ghost size="large" icon="flag" onClick={this.handleMarkReleasedModal}>{this.msg('markReleased')}</Button> }
               <Button size="large" icon="file-text" onClick={this.handleManifestVisit}>查看报关清单</Button>
               <ButtonToggle size="large"
                 iconOff="folder" iconOn="folder-open"

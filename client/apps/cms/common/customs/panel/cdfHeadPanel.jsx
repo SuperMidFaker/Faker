@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Card, Form, Row, Col } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
+import InfoItem from 'client/components/InfoItem';
 import FormInput from '../../form/formInput';
 import {
   RelationAutoCompSelect, IEPort, IEDate, DeclDate, Transport, ContractNo, LicenseNo, TermConfirm,
@@ -43,24 +44,19 @@ export default class CDFHeadPanel extends React.Component {
       formData,
       required: false,
     };
-    const entryFormProps = {
-      getFieldDecorator: form.getFieldDecorator,
-      disabled: formData.entry_id || formData.pre_entry_id,
-      formData,
-    };
     return (
       <div className="pane">
         <Form layout="horizontal">
           <div className="panel-header">
-            <Row gutter={16}>
-              <Col span="4">
-                <FormInput field="pre_entry_id"
-                  addonBefore={this.msg('preEntryId')} {...entryFormProps}
+            <Row>
+              <Col span="6">
+                <InfoItem size="small" field={formData.pre_entry_id}
+                  addonBefore={this.msg('preEntryId')}
                 />
               </Col>
-              <Col span="4">
-                <FormInput field="entry_id"
-                  addonBefore={this.msg('formEntryId')} {...entryFormProps}
+              <Col span="6">
+                <InfoItem size="small" field={formData.entry_id} placeholder="点击回填"
+                  addonBefore={this.msg('formEntryId')} editable={!formData.entry_id}
                 />
               </Col>
             </Row>

@@ -141,6 +141,10 @@ export default defineMessages({
     id: 'cms.customs.send.packets',
     defaultMessage: '发送报文',
   },
+  markReleased: {
+    id: 'cms.customs.mark.released',
+    defaultMessage: '标记放行',
+  },
   preEntryId: {
     id: 'cms.customs.form.pre.entry.id',
     defaultMessage: '预录入编号',

@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { Dropdown, Icon, Col, Row, Input } from 'antd';
+import classNames from 'classnames';
 import EditableCell from './EditableCell';
 
 function getColCls(col) {
@@ -20,7 +21,7 @@ export default class InfoItem extends React.Component {
   };
 
   static propTypes = {
-    label: PropTypes.string.isRequired,
+    label: PropTypes.string,
     field: PropTypes.any,
     overlay: PropTypes.object,
     labelCol: PropTypes.object,
@@ -29,6 +30,7 @@ export default class InfoItem extends React.Component {
     addonAfter: PropTypes.node,
     editable: PropTypes.bool,
     type: PropTypes.string,
+    size: PropTypes.oneOf('small', 'large'),
     placeholder: PropTypes.string,
     onEdit: PropTypes.func,
   }
@@ -38,7 +40,7 @@ export default class InfoItem extends React.Component {
 
     let labelChildren = label;
     // Remove duplicated user input colon
-    if (colon) {
+    if (label && colon) {
       labelChildren = label.replace(/[：|:]\s*$/, '');
     }
 
@@ -92,10 +94,17 @@ export default class InfoItem extends React.Component {
   }
 
   render() {
-    const { prefixCls, fieldCol } = this.props;
+    const { prefixCls, size = '', fieldCol } = this.props;
+    const sizeCls = ({
+      large: 'lg',
+      small: 'sm',
+    })[size] || '';
     const fieldCls = `${prefixCls}-field ${getColCls(fieldCol)}`;
+    const classes = classNames(prefixCls, {
+      [`${prefixCls}-${sizeCls}`]: sizeCls,
+    });
     return (
-      <Row className={prefixCls}>
+      <Row className={classes}>
         {this.renderLabel()}
         <div className={fieldCls}>{this.renderField()}</div>
       </Row>

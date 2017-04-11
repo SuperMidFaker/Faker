@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import moment from 'moment';
-import { Timeline, Popover } from 'antd';
+import { Timeline, Popover, Icon } from 'antd';
 
 const TimelineItem = Timeline.Item;
 
@@ -31,7 +31,7 @@ export default class DeclStatusPopover extends React.Component {
               return (
                 <TimelineItem key={res.process_note} color={res.channel_status === 1 ? 'green' : 'blue'}>
                   <p>{res.process_note}</p>
-                  <p>{`${moment(res.process_date).format('YYYY-MM-DD HH:mm')} ${channelText}`}</p>
+                  <p>{`${moment(res.process_date).format('YYYY-MM-DD HH:mm')}`} <span className="mdc-text-grey">{channelText}</span></p>
                 </TimelineItem>
               );
             })
@@ -40,7 +40,7 @@ export default class DeclStatusPopover extends React.Component {
       </div>
     );
     return (
-      <Popover placement="topRight" content={overlay} title={entryId}>
+      <Popover placement="topRight" content={overlay} title={<span><Icon type="file" /> {entryId}</span>}>
         {children}
       </Popover>
     );

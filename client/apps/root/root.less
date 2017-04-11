@@ -572,6 +572,7 @@ img {
     padding: 6px 16px;
     margin-bottom: 0; 
   }
+  .info-item,
   .ant-form-item {
     margin-bottom: 0;
   }
@@ -1152,6 +1153,14 @@ img {
     color: @text-color-secondary;
     font-size: 12px;
     margin-left: 4px;
+  }
+  &-sm > .info-item-field {
+    min-height: 28px;
+    line-height: 28px;
+    .editable-cell-input-wrapper, 
+    .editable-cell-text-wrapper {
+      line-height: 28px;
+    }
   }
 }
 .activity-wrapper {

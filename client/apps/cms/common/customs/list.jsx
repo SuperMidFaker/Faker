@@ -86,14 +86,16 @@ export default class DelgDeclList extends Component {
         case 1:
           return (<span><Tag>预</Tag> <NavLink to={`/clearance/${this.props.ietype}/customs/${record.bill_seq_no}/${record.pre_entry_seq_no}`}>{record.pre_entry_seq_no}</NavLink></span>);
         case 2:
-          return (o) ? <span><Tag color="green">海关</Tag> <DeclStatusPopover results={record.results} entryId={o}>
-            <NavLink to={`/clearance/${this.props.ietype}/customs/${record.bill_seq_no}/${record.pre_entry_seq_no}`}>{o}</NavLink>
-          </DeclStatusPopover></span> :
+          return (o) ? <span>
+            <DeclStatusPopover results={record.results} entryId={o}><Tag color={record.passed === 1 ? 'green' : 'blue'}>海关</Tag></DeclStatusPopover>
+            <NavLink to={`/clearance/${this.props.ietype}/customs/${record.bill_seq_no}/${record.pre_entry_seq_no}`}> {o}</NavLink>
+          </span> :
           <span><Tag>预</Tag> <NavLink to={`/clearance/${this.props.ietype}/customs/${record.bill_seq_no}/${record.pre_entry_seq_no}`}>{record.pre_entry_seq_no}</NavLink></span>;
         case 3:
-          return (<span><Tag color="green">海关</Tag> <DeclStatusPopover results={record.results} entryId={o}>
-            <NavLink to={`/clearance/${this.props.ietype}/customs/${record.bill_seq_no}/${record.pre_entry_seq_no}`}>{o}</NavLink>
-          </DeclStatusPopover></span>);
+          return (<span>
+            <DeclStatusPopover results={record.results} entryId={o}><Tag color={record.passed === 1 ? 'green' : 'blue'}>海关</Tag></DeclStatusPopover>
+            <NavLink to={`/clearance/${this.props.ietype}/customs/${record.bill_seq_no}/${record.pre_entry_seq_no}`}> {o}</NavLink>
+          </span>);
         default:
           return <span />;
       }
