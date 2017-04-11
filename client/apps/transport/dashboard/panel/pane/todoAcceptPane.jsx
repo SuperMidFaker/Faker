@@ -39,7 +39,7 @@ export default class TodoAcceptPane extends Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.filter.tabKey === 'todoAccept' && (this.props.filter.viewStatus !== nextProps.filter.viewStatus ||
-      this.props.filter.type !== nextProps.filter.type)) {
+      this.props.filter.type !== nextProps.filter.type || this.props.filter.tabKey !== nextProps.filter.tabKey)) {
       this.handleTableLoad(nextProps);
     }
   }

@@ -55,12 +55,12 @@ export default class TodoPanel extends Component {
     };
     const trackingFilters = [
       { name: 'viewStatus', value: this.state.viewStatus },
-      { naeme: 'loginId', value: loginId },
+      { name: 'loginId', value: loginId },
       { name: 'type', value: 'dispatchedOrIntransit' },
     ];
     const podFilters = [
       { name: 'viewStatus', value: this.state.viewStatus },
-      { naeme: 'loginId', value: loginId },
+      { name: 'loginId', value: loginId },
       { name: 'type', value: 'todoAll' },
     ];
     this.props.countTotal({ tenantId, acceptFilters, trackingFilters, podFilters });

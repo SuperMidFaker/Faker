@@ -41,7 +41,7 @@ export default class TodoAcceptPane extends Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.filter.tabKey === 'todoPod' && (this.props.filter.viewStatus !== nextProps.filter.viewStatus ||
-      this.props.filter.type !== nextProps.filter.type)) {
+      this.props.filter.type !== nextProps.filter.type || this.props.filter.tabKey !== nextProps.filter.tabKey)) {
       this.handleTableLoad(nextProps);
     }
   }
@@ -99,7 +99,7 @@ export default class TodoAcceptPane extends Component {
           sortOrder: sorter.order === 'descend' ? 'desc' : 'asc',
           filters: [
             { name: 'viewStatus', value: this.props.filter.viewStatus },
-            { naeme: 'loginId', value: this.props.loginId },
+            { name: 'loginId', value: this.props.loginId },
             { name: 'type', value: this.state.type },
           ],
         };

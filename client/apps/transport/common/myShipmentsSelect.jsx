@@ -21,6 +21,7 @@ export default class MyShipmentsSelect extends React.Component {
   initializeFieldsValue = () => {
     if (window.localStorage) {
       const fieldsValue = JSON.parse(window.localStorage.tmsAdvancedSearchFieldsValue || '{ "viewStatus": "all" }');
+      this.props.onChange(fieldsValue);
       this.setState({ fieldsValue });
     }
   }
