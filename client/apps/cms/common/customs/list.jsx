@@ -20,7 +20,7 @@ import DeclStatusPopover from './declStatusPopover';
 import messages from './message.i18n';
 import { DECL_STATUS, CMS_DECL_STATUS } from 'common/constants';
 import SendModal from './modals/sendModal';
-import DelegationInfoHubPanel from '../modals/DelegationInfoHubPanel';
+import DelegationInfoHubPanel from '../dockhub/DelegationInfoHubPanel';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;

@@ -10,7 +10,7 @@ import { renderConsignLoc } from '../../common/consignLocation';
 import TrimSpan from 'client/components/trimSpan';
 import BeforeFeesModal from './beforeFeesModal';
 import ExceptionListPopover from '../../tracking/land/modals/exception-list-popover';
-import PreviewPanel from '../../shipment/modals/preview-panel';
+import PreviewPanel from '../../shipment/dock/preview-panel';
 import { loadShipmtDetail } from 'common/reducers/shipment';
 import ActDate from '../../common/actDate';
 

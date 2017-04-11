@@ -16,9 +16,9 @@ import { loadTable, loadAcceptDispatchers, revokeOrReject, delDraft } from
 'common/reducers/transport-acceptance';
 import { loadShipmtDetail } from 'common/reducers/shipment';
 import { SHIPMENT_SOURCE, SHIPMENT_EFFECTIVES, DEFAULT_MODULES } from 'common/constants';
-import AccepterModal from '../shipment/modals/accepter';
-import RevokejectModal from '../shipment/modals/revoke-reject';
-import PreviewPanel from '../shipment/modals/preview-panel';
+import AccepterModal from '../shipment/dock/accepter';
+import RevokejectModal from '../shipment/dock/revoke-reject';
+import PreviewPanel from '../shipment/dock/preview-panel';
 import ShipmtnoColumn from '../common/shipmtnoColumn';
 import AddressColumn from '../common/addressColumn';
 import { format } from 'client/common/i18n/helpers';

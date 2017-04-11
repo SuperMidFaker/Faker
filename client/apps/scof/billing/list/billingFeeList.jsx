@@ -9,7 +9,7 @@ import { loadFeesByBillingId, updateBillingFees, checkBilling, acceptBilling, ed
 import TrimSpan from 'client/components/trimSpan';
 import TrsShipmtNoColumn from '../../common/trsShipmtNoColumn';
 import CcbDelgNoColumn from '../../common/ccbDelgNoColumn';
-import OrderDockPanel from '../../orders/modals/orderDockPanel';
+import OrderDockPanel from '../../orders/docks/orderDockPanel';
 import { loadOrderDetail } from 'common/reducers/crmOrders';
 
 const formatMsg = format(messages);

@@ -15,10 +15,10 @@ import messages from './message.i18n';
 import { loadOrders, removeOrder, setClientForm, acceptOrder } from 'common/reducers/crmOrders';
 import { emptyFlows } from 'common/reducers/scofFlow';
 import moment from 'moment';
-import OrderDockPanel from './modals/orderDockPanel';
-import OrderNoColumn from './orderNoColumn';
-import ShipmentColumn from './shipmentColumn';
-import ProgressColumn from './progressColumn';
+import OrderDockPanel from './docks/orderDockPanel';
+import OrderNoColumn from './columndef/orderNoColumn';
+import ShipmentColumn from './columndef/shipmentColumn';
+import ProgressColumn from './columndef/progressColumn';
 import { SCOF_ORDER_TRANSFER, CRM_ORDER_STATUS } from 'common/constants';
 
 const { Header, Content } = Layout;

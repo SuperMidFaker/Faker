@@ -18,7 +18,7 @@ import MdIcon from 'client/components/MdIcon';
 import { loadAcceptanceTable, acceptDelg, delDelg, setDispStatus, loadCiqTable, delgAssignRecall,
   ensureManifestMeta, openAcceptModal, showDispModal } from 'common/reducers/cmsDelegation';
 import { showPreviewer, loadBasicInfo, loadCustPanel, loadDeclCiqPanel } from 'common/reducers/cmsDelgInfoHub';
-import DelegationInfoHubPanel from '../modals/DelegationInfoHubPanel';
+import DelegationInfoHubPanel from '../dockhub/DelegationInfoHubPanel';
 import CiqList from './ciqList';
 import messages from './message.i18n';
 import { format } from 'client/common/i18n/helpers';

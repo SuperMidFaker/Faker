@@ -8,7 +8,7 @@ import { SHIPMENT_TRACK_STATUS, PROMPT_TYPES } from 'common/constants';
 import { formatMsg } from '../../message.i18n';
 import { loadDispatchTable, loadShipmtDetail, hidePreviewer } from 'common/reducers/shipment';
 import { columnDef } from './columnDef';
-import AccepterModal from '../../../shipment/modals/accepter';
+import AccepterModal from '../../../shipment/dock/accepter';
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
