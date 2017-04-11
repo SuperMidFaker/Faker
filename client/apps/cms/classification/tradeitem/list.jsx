@@ -90,7 +90,7 @@ export default class TradeItemList extends Component {
   }
   state = {
     collapsed: false,
-    rightSidercollapsed: true,
+    rightSiderCollapsed: true,
     selectedRowKeys: [],
     compareduuid: '',
     repos: [],
@@ -281,7 +281,7 @@ export default class TradeItemList extends Component {
   }
   toggleRightSider = () => {
     this.setState({
-      rightSidercollapsed: !this.state.rightSidercollapsed,
+      rightSiderCollapsed: !this.state.rightSiderCollapsed,
     });
   }
   handleItemListLoad = (repoid, currentPage, filter, search) => {
@@ -633,7 +633,7 @@ export default class TradeItemList extends Component {
           trigger={null}
           defaultCollapsed
           collapsible
-          collapsed={this.state.rightSidercollapsed}
+          collapsed={this.state.rightSiderCollapsed}
           width={480}
           collapsedWidth={0}
           className="right-sider"

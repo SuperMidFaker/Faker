@@ -3,8 +3,9 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Layout, Radio, Icon, Progress, message, Popconfirm } from 'antd';
 import moment from 'moment';
-import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
+import Table from 'client/components/remoteAntTable';
+import ButtonToggle from 'client/components/ButtonToggle';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadDelgBill, redoManifest } from 'common/reducers/cmsManifest';
 import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
@@ -16,7 +17,7 @@ import messages from './message.i18n';
 import RowUpdater from 'client/components/rowUpdater';
 
 const formatMsg = format(messages);
-const { Header, Content } = Layout;
+const { Header, Content, Sider } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 
@@ -62,6 +63,7 @@ export default class ManifestList extends Component {
     router: PropTypes.object.isRequired,
   }
   state = {
+    rightSiderCollapsed: true,
     selectedRowKeys: [],
     searchInput: '',
   }
@@ -71,7 +73,7 @@ export default class ManifestList extends Component {
     title: this.msg('delgNo'),
     dataIndex: 'delg_no',
     fixed: 'left',
-    width: 150,
+    width: 120,
     render: (o, record) =>
       // if (record.customs_tenant_id === this.props.tenantId && record.bill_status < 5) {
       //   return <NavLink to={`/clearance/${this.props.ietype}/manifest/${record.bill_seq_no}`}>{o}</NavLink>;
@@ -94,14 +96,14 @@ export default class ManifestList extends Component {
     render: (o, record) => (record.id ?
     record.created_date && moment(record.created_date).format('YYYY.MM.DD') : '-'),
   }, {
-    title: '进度',
+    title: '清单完整度',
     width: 180,
     render: (o, record) => <Progress percent={record.bill_status} strokeWidth={5} showInfo={false} />,
   }, {
     title: '委托方',
     dataIndex: 'send_name',
-    width: 160,
-    render: o => <TrimSpan text={o} maxLen={10} />,
+    width: 180,
+    render: o => <TrimSpan text={o} maxLen={12} />,
   }, {
     title: '提运单号',
     dataIndex: 'bl_wb_no',
@@ -170,6 +172,11 @@ export default class ManifestList extends Component {
     },
     remotes: this.props.delgBillList,
   })
+  toggleRightSider = () => {
+    this.setState({
+      rightSiderCollapsed: !this.state.rightSiderCollapsed,
+    });
+  }
   handlePreview = (delgNo, record) => {
     let tabKey = 'customsDecl';
     if (record.status < 1) {
@@ -238,7 +245,7 @@ export default class ManifestList extends Component {
     columns = [...this.columns];
     columns.push({
       title: this.msg('opColumn'),
-      width: 130,
+      width: 80,
       fixed: 'right',
       render: (o, record) => {
         if (record.customs_tenant_id === tenantId || record.customs_tenant_id === -1) {
@@ -275,39 +282,61 @@ export default class ManifestList extends Component {
       },
     };
     return (
-      <QueueAnim type={['bottom', 'up']}>
-        <Header className="top-bar">
-          <Breadcrumb>
-            <Breadcrumb.Item>
-              {this.props.ietype === 'import' ? this.msg('importClearance') : this.msg('exportClearance')}
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              {this.msg('declManifest')}
-            </Breadcrumb.Item>
-          </Breadcrumb>
-          <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">
-            <RadioButton value="all">{this.msg('all')}</RadioButton>
-            <RadioButton value="wip">{this.msg('filterWIP')}</RadioButton>
-            <RadioButton value="generated">{this.msg('filterGenerated')}</RadioButton>
-          </RadioGroup>
-        </Header>
-        <Content className="main-content" key="main">
-          <div className="page-body">
-            <div className="toolbar">
-              <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} />
-              <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-                <h3>已选中{this.state.selectedRowKeys.length}项</h3>
-              </div>
+      <Layout>
+        <Layout>
+          <Header className="top-bar">
+            <Breadcrumb>
+              <Breadcrumb.Item>
+                {this.props.ietype === 'import' ? this.msg('importClearance') : this.msg('exportClearance')}
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {this.msg('declManifest')}
+              </Breadcrumb.Item>
+            </Breadcrumb>
+            <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">
+              <RadioButton value="all">{this.msg('all')}</RadioButton>
+              <RadioButton value="wip">{this.msg('filterWIP')}</RadioButton>
+              <RadioButton value="generated">{this.msg('filterGenerated')}</RadioButton>
+            </RadioGroup>
+            <div className="top-bar-tools">
+              <ButtonToggle size="large" iconOff="book" iconOn="book" onClick={this.toggleRightSider} />
             </div>
-            <div className="panel-body table-panel expandable">
-              <Table rowSelection={rowSelection} columns={columns} rowKey="pre_entry_seq_no" dataSource={this.dataSource}
-                loading={delgBillList.loading} scroll={{ x: 1800 }}
-              />
+          </Header>
+          <Content className="main-content">
+            <QueueAnim type={['bottom', 'up']}>
+              <div className="page-body" key="body">
+                <div className="toolbar">
+                  <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} />
+                  <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
+                    <h3>已选中{this.state.selectedRowKeys.length}项</h3>
+                  </div>
+                </div>
+                <div className="panel-body table-panel expandable">
+                  <Table rowSelection={rowSelection} columns={columns} rowKey="pre_entry_seq_no" dataSource={this.dataSource}
+                    loading={delgBillList.loading} scroll={{ x: 1800 }}
+                  />
+                </div>
+              </div>
+            </QueueAnim>
+          </Content>
+          <DelegationInfoHubPanel ietype={this.props.ietype} />
+        </Layout>
+        <Sider
+          trigger={null}
+          defaultCollapsed
+          collapsible
+          collapsed={this.state.rightSiderCollapsed}
+          width={480}
+          collapsedWidth={0}
+          className="right-sider"
+        >
+          <div className="right-sider-panel">
+            <div className="panel-header">
+              <h3>清单模板</h3>
             </div>
           </div>
-        </Content>
-        <DelegationInfoHubPanel ietype={this.props.ietype} />
-      </QueueAnim>
+        </Sider>
+      </Layout>
     );
   }
 }

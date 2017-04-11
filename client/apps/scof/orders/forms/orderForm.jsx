@@ -274,9 +274,6 @@ export default class OrderForm extends Component {
                       { (formData.cust_shipmt_transfer === 'DOM') &&
                       <RadioButton value={SCOF_ORDER_TRANSMODES[2].value}><i className={SCOF_ORDER_TRANSMODES[2].icon} /> {SCOF_ORDER_TRANSMODES[2].text}</RadioButton>
                     }
-                      { (formData.cust_shipmt_transfer === 'DOM') &&
-                      <RadioButton value={SCOF_ORDER_TRANSMODES[3].value}><i className={SCOF_ORDER_TRANSMODES[3].icon} /> {SCOF_ORDER_TRANSMODES[3].text}</RadioButton>
-                    }
                     </RadioGroup>
                   </FormItem>
                 </Col>

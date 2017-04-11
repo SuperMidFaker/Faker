@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Breadcrumb, Button, Dropdown, Layout, Menu, Icon, Form, message, Popconfirm, Tabs, Select, Spin } from 'antd';
+import { Breadcrumb, Button, Dropdown, Layout, Menu, Icon, Form, message, Popconfirm, Switch, Tooltip, Tabs, Select, Spin } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { saveBillHead, lockManifest, openMergeSplitModal, resetBill, updateHeadNetWt,
@@ -47,6 +47,7 @@ const OptGroup = Select.OptGroup;
 export default class ManifestEditor extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
+    loginId: PropTypes.number.isRequired,
     ietype: PropTypes.oneOf(['import', 'export']),
     readonly: PropTypes.bool,
     billMeta: PropTypes.shape({
@@ -68,11 +69,17 @@ export default class ManifestEditor extends React.Component {
     visible: false,
     collapsed: true,
     generating: false,
+    locked: false,
+    lockedByOthers: false,
     headData: {},
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.billHead !== this.props.billHead) {
-      this.setState({ headData: nextProps.billHead });
+      this.setState({
+        headData: nextProps.billHead,
+        locked: nextProps.billHead.locking_login_id,
+        lockedByOthers: nextProps.billHead.locking_login_id !== this.props.loginId,
+      });
     }
   }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
@@ -260,6 +267,13 @@ export default class ManifestEditor extends React.Component {
     if (ev.key === 'template') {
       this.props.setStepVisible(true);
     } else if (ev.key === 'lock') {
+      this.handleLock(true);
+    } else if (ev.key === 'unlock') {
+      this.handleLock(false);
+    }
+  }
+  handleLock = (lock) => {
+    if (lock) {
       const { loginId, loginName, billHead } = this.props;
       this.props.lockManifest({ loginId, loginName, billSeqNo: billHead.bill_seq_no, delgNo: billHead.delg_no }).then((result) => {
         if (result.error) {
@@ -268,7 +282,7 @@ export default class ManifestEditor extends React.Component {
           message.info('锁定成功');
         }
       });
-    } else if (ev.key === 'unlock') {
+    } else {
       const { billHead } = this.props;
       this.props.lockManifest({ loginId: null, loginName: null, billSeqNo: billHead.bill_seq_no, delgNo: billHead.delg_no }).then((result) => {
         if (result.error) {
@@ -302,9 +316,10 @@ export default class ManifestEditor extends React.Component {
   }
   render() {
     const { billHeadFieldsChangeTimes, ietype, form: { getFieldDecorator }, loginId, form, billHead, billBodies, billMeta, templates } = this.props;
+    const { locked, lockedByOthers } = this.state;
     const declEntryMenu = (<Menu onClick={this.handleEntryVisit}>
       {billMeta.entries.map(bme => (<Menu.Item key={bme.pre_entry_seq_no}>
-        <Icon type="file-text" /> {bme.entry_id || bme.pre_entry_seq_no}</Menu.Item>)
+        <Icon type="file" /> {bme.entry_id || bme.pre_entry_seq_no}</Menu.Item>)
       )}
     </Menu>);
     const path = `/clearance/${ietype}/manifest/`;
@@ -328,15 +343,13 @@ export default class ManifestEditor extends React.Component {
                 <NavLink to={path}>{this.msg('declManifest')}</NavLink>
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                {billMeta.bill_seq_no}{billHead.locking_name && `(${billHead.locking_name}锁定)`}
+                {billMeta.bill_seq_no}
               </Breadcrumb.Item>
             </Breadcrumb>
-            {billMeta.entries.length > 0 &&
-              <Dropdown overlay={declEntryMenu}>
-                <Button size="large"><Icon type="check-circle-o" />已生成报关单<Icon type="down" /></Button>
-              </Dropdown>
-            }
             <div className="top-bar-tools">
+              {locked && <Tooltip title={`清单编辑状态已锁定，仅限${billHead.locking_name}可进行编辑`} placement="bottom">
+                <Switch checked={locked} checkedChildren="已锁定" disabled={lockedByOthers} onChange={this.handleLock} style={{ marginTop: 4 }} />
+                </Tooltip>}
               {editable && getFieldDecorator('model', modelProps)(<Select
                 placeholder="选择可用清单模板"
                 optionFilterProp="search"
@@ -358,6 +371,11 @@ export default class ManifestEditor extends React.Component {
                 (<Button type="primary" size="large" icon="addfile" disabled={billHeadFieldsChangeTimes > 0}
                   loading={this.state.generating} onClick={this.handleGenerateEntry}
                 >{this.msg('generateEntry')}</Button>) }
+              {billMeta.entries.length > 0 &&
+                <Dropdown overlay={declEntryMenu}>
+                  <Button size="large"><Icon type="check-circle-o" />已生成报关单<Icon type="down" /></Button>
+                </Dropdown>
+              }
               <ButtonToggle size="large" iconOff="folder" iconOn="folder-open" onClick={this.toggle} />
             </div>
           </Header>

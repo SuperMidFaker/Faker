@@ -35,7 +35,7 @@ export default class CDFHeadPanel extends React.Component {
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
 
   render() {
-    const { form, readonly, formData, formRequire, ietype, intl } = this.props;
+    const { form, formData, formRequire, ietype, intl } = this.props;
     const formProps = {
       getFieldDecorator: form.getFieldDecorator,
       getFieldValue: form.getFieldValue,
@@ -45,7 +45,7 @@ export default class CDFHeadPanel extends React.Component {
     };
     const entryFormProps = {
       getFieldDecorator: form.getFieldDecorator,
-      disabled: readonly,
+      disabled: formData.entry_id || formData.pre_entry_id,
       formData,
     };
     return (
@@ -133,14 +133,14 @@ export default class CDFHeadPanel extends React.Component {
                 </Col>
                 <Col span={16}>
                   <FormInput field="cert_mark" outercol={24} col={4}
-                    label={this.msg('certMark')} {...entryFormProps}
+                    label={this.msg('certMark')} {...formProps}
                   />
                 </Col>
               </Row>
               <Row>
                 <Col span={16} offset={8}>
                   <FormInput field="note" outercol={24} col={4}
-                    label={this.msg('markNotes')} {...entryFormProps}
+                    label={this.msg('markNotes')} {...formProps}
                   />
                 </Col>
               </Row>

@@ -286,7 +286,7 @@ export default class DelgDeclList extends Component {
     columns = [...this.columns];
     columns.push({
       title: this.msg('opColumn'),
-      width: 130,
+      width: 150,
       fixed: 'right',
       render: (o, record) => {
         if (record.status === 0) {
@@ -307,11 +307,11 @@ export default class DelgDeclList extends Component {
           return (
             <span>
               <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-                <RowUpdater onHit={this.handleShowSendDeclModal} label={this.msg('sendPackets')} row={record} />
+                <RowUpdater onHit={this.handleShowSendDeclModal} label={<span><Icon type="mail" /> {this.msg('sendPackets')}</span>} row={record} />
               </PrivilegeCover>
               <span className="ant-divider" />
               <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-                <RowUpdater onHit={this.handleRecall} label={<span><Icon type="close-circle-o" /> {this.msg('recall')}</span>} row={record} />
+                <RowUpdater onHit={this.handleRecall} label={<span><Icon type="left-circle-o" /> {this.msg('recall')}</span>} row={record} />
               </PrivilegeCover>
             </span>
           );
@@ -321,13 +321,13 @@ export default class DelgDeclList extends Component {
               {!record.entry_id &&
               <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
                 <RowUpdater onHit={this.handleDeclNoFill} row={record}
-                  label={<span><Icon type="edit" />海关编号</span>}
+                  label={<span><Icon type="edit" /> 海关编号</span>}
                 />
               </PrivilegeCover>}
               {!record.entry_id && record.ep_send_filename && <span className="ant-divider" />}
               {record.ep_send_filename && (
                 <span>
-                  <RowUpdater onHit={this.handleShowXml} label={<span><Icon type="eye-o" />报文</span>} row={record} />
+                  <RowUpdater onHit={this.handleShowXml} label={<span><Icon type="eye-o" /> 查看报文</span>} row={record} />
                 </span>)}
             </span>
           );
@@ -364,7 +364,7 @@ export default class DelgDeclList extends Component {
             </div>
             <div className="panel-body table-panel expandable">
               <Table rowSelection={rowSelection} columns={columns} rowKey="pre_entry_seq_no" dataSource={this.dataSource}
-                loading={delgdeclList.loading} scroll={{ x: 1600 }}
+                loading={delgdeclList.loading} scroll={{ x: 1650 }}
               />
             </div>
             <DeclnoFillModal reload={this.handleTableLoad} />

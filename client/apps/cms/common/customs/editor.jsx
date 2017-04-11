@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Form, Breadcrumb, Button, Layout, Tabs, message, Popconfirm, Spin } from 'antd';
+import { Badge, Form, Breadcrumb, Button, Layout, Tabs, Tooltip, message, Popconfirm, Spin } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadEntry, saveEntryHead } from 'common/reducers/cmsManifest';
@@ -13,7 +13,7 @@ import SheetBodyPanel from './panel/cdfBodyPanel';
 import SheetExtraPanel from './panel/cdfExtraPanel';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import { DECL_STATUS } from 'common/constants';
+import { DECL_STATUS, CMS_DECL_STATUS } from 'common/constants';
 import SendModal from './modals/sendModal';
 
 const formatMsg = format(messages);
@@ -127,6 +127,7 @@ export default class CustomsDeclEditor extends React.Component {
     const { ietype, form, head, bodies, billMeta } = this.props;
     const readonly = !billMeta.editable;
     const path = `/clearance/${ietype}/customs/`;
+    const decl = CMS_DECL_STATUS.filter(st => st.value === head.status)[0];
     return (
       <Layout>
         <Layout>
@@ -142,14 +143,18 @@ export default class CustomsDeclEditor extends React.Component {
                 {head.entry_id || head.pre_entry_seq_no}
               </Breadcrumb.Item>
             </Breadcrumb>
-            <Button size="large" icon="rollback" onClick={this.handleManifestVisit}>查看源清单</Button>
+            <Badge status={decl.badge} text={decl && decl.text} />
             <div className="top-bar-tools">
-              { head.status === 0 && <Button type="primary" size="large" onClick={this.handleReview}>{this.msg('review')}</Button> }
-              { head.status === 0 && <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleDelete()}>
-                <Button size="large" >{this.msg('delete')}</Button>
+              { head.status === DECL_STATUS.proposed && <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleDelete()}>
+                <Tooltip title={this.msg('delete')} placement="bottom">
+                  <Button size="large" icon="delete" />
+                </Tooltip>
               </Popconfirm> }
-              { head.status === 1 && <Button type="primary" size="large" onClick={this.handleShowSendDeclModal}>{this.msg('sendPackets')}</Button> }
-              { head.status === 1 && <Button size="large" onClick={this.handleRecall}>{this.msg('recall')}</Button> }
+              { head.status === DECL_STATUS.proposed && <Button type="primary" size="large" icon="check-circle-o" onClick={this.handleReview}>{this.msg('review')}</Button> }
+              { head.status === DECL_STATUS.reviewed && <Tooltip title={this.msg('recall')} placement="bottom"><Button size="large" icon="left-circle-o" onClick={this.handleRecall} /></Tooltip> }
+              { head.status === DECL_STATUS.reviewed && <Button type="primary" size="large" icon="mail" onClick={this.handleShowSendDeclModal}>{this.msg('sendPackets')}</Button> }
+              { head.status === DECL_STATUS.finalized && <Button type="primary" ghost size="large" icon="flag" onClick={this.handleMarkReleasedModal}>{this.msg('markReleased')}</Button> }
+              <Button size="large" icon="file-text" onClick={this.handleManifestVisit}>查看报关清单</Button>
               <ButtonToggle size="large"
                 iconOff="folder" iconOn="folder-open"
                 onClick={this.toggle}
