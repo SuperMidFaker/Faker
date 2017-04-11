@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Breadcrumb, Button, Dropdown, Layout, Menu, Icon, Form, message, Popconfirm, Switch, Tooltip, Tabs, Select, Spin } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
-import { saveBillHead, lockManifest, openMergeSplitModal, resetBill, updateHeadNetWt,
+import { saveBillHead, lockManifest, openMergeSplitModal, resetBill, updateHeadNetWt, editBillBody,
   loadBillBody, saveBillRules, setStepVisible, billHeadChange } from 'common/reducers/cmsManifest';
 import { loadTemplateFormVals } from 'common/reducers/cmsSettings';
 import NavLink from 'client/components/nav-link';
@@ -36,7 +36,7 @@ const OptGroup = Select.OptGroup;
     templateValLoading: state.cmsSettings.templateValLoading,
     billHeadFieldsChangeTimes: state.cmsManifest.billHeadFieldsChangeTimes,
   }),
-  { saveBillHead, openMergeSplitModal, resetBill, updateHeadNetWt, loadBillBody,
+  { saveBillHead, openMergeSplitModal, resetBill, updateHeadNetWt, loadBillBody, editBillBody,
     loadTemplateFormVals, saveBillRules, setStepVisible, billHeadChange, lockManifest }
 )
 @connectNav({
@@ -59,6 +59,7 @@ export default class ManifestEditor extends React.Component {
     templateValLoading: PropTypes.bool.isRequired,
     manifestSpinning: PropTypes.bool.isRequired,
     billHeadFieldsChangeTimes: PropTypes.number.isRequired,
+    editBillBody: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
