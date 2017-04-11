@@ -16,7 +16,7 @@ const actionTypes = createActionTypes('@@welogix/scof/flow/', [
   'LOAD_GRAPHITEM', 'LOAD_GRAPHITEM_SUCCEED', 'LOAD_GRAPHITEM_FAIL',
   'SAVE_GRAPH', 'SAVE_GRAPH_SUCCEED', 'SAVE_GRAPH_FAIL',
   'LOAD_PTFLOWS', 'LOAD_PTFLOWLIST_SUCCEED', 'LOAD_PTFLOWLIST_FAIL',
-  'OPEN_FLOW', 'SET_NODE_ACTIONS',
+  'OPEN_FLOW', 'SET_NODE_ACTIONS', 'EMPTY_FLOWS',
 ]);
 
 const initialState = {
@@ -103,6 +103,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, nodeActions: action.data };
     case actionTypes.LOAD_PTFLOWLIST_SUCCEED:
       return { ...state, partnerFlows: action.result.data };
+    case actionTypes.EMPTY_FLOWS:
+      return { ...state, partnerFlows: [], cmsQuotes: [] };
     default:
       return state;
   }
@@ -317,4 +319,8 @@ export function saveFlowGraph(flowid, nodes, edges) {
       data: { flowid, nodes, edges },
     },
   };
+}
+
+export function emptyFlows() {
+  return { type: actionTypes.EMPTY_FLOWS };
 }

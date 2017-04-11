@@ -20,7 +20,7 @@ import SearchBar from 'client/components/search-bar';
 import makeColumns from './columnDef';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import RevokejectModal from '../../shipment/modals/revoke-reject';
+import RevokejectModal from '../../shipment/dock/revoke-reject';
 import { sendMessage } from 'common/reducers/corps';
 import AdvancedSearchBar from '../../common/advanced-search-bar';
 import MyShipmentsSelect from '../../common/myShipmentsSelect';

@@ -13,11 +13,12 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import { loadOrders, removeOrder, setClientForm, acceptOrder } from 'common/reducers/crmOrders';
+import { emptyFlows } from 'common/reducers/scofFlow';
 import moment from 'moment';
-import OrderDockPanel from './modals/orderDockPanel';
-import OrderNoColumn from './orderNoColumn';
-import ShipmentColumn from './shipmentColumn';
-import ProgressColumn from './progressColumn';
+import OrderDockPanel from './docks/orderDockPanel';
+import OrderNoColumn from './columndef/orderNoColumn';
+import ShipmentColumn from './columndef/shipmentColumn';
+import ProgressColumn from './columndef/progressColumn';
 import { SCOF_ORDER_TRANSFER, CRM_ORDER_STATUS } from 'common/constants';
 
 const { Header, Content } = Layout;
@@ -46,7 +47,7 @@ function fetchData({ state, dispatch }) {
     loading: state.crmOrders.loading,
     orders: state.crmOrders.orders,
     filters: state.crmOrders.orderFilters,
-  }), { loadOrders, removeOrder, setClientForm, acceptOrder }
+  }), { loadOrders, removeOrder, setClientForm, acceptOrder, emptyFlows }
 )
 @connectNav({
   depth: 2,
@@ -76,6 +77,7 @@ export default class OrderList extends React.Component {
   msg = key => formatMsg(this.props.intl, key)
   handleCreate = () => {
     this.props.setClientForm(-2, {});
+    this.props.emptyFlows();
     this.context.router.push('/scof/orders/create');
   }
   handleRemove = (shipmtOrderNo) => {

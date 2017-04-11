@@ -14,7 +14,7 @@ export default class ShipmtNoColumnRender extends React.Component {
   }
   render() {
     const { shipmtNo, ...extra } = this.props;
-    const { ...rest } = extra; // eslint-disable-line no-unused-vars
+    const { shipment, ...rest } = extra; // eslint-disable-line no-unused-vars
     return (
       <a {...rest} onClick={this.handleClick}>
         <TrimSpan text={shipmtNo} maxLen={14} />

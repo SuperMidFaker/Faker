@@ -4,7 +4,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import { intlShape, injectIntl } from 'react-intl';
 import { Layout, Radio } from 'antd';
 import QueueAnim from 'rc-queue-anim';
-import PreviewPanel from '../../shipment/modals/preview-panel';
+import PreviewPanel from '../../shipment/dock/preview-panel';
 import { format } from 'client/common/i18n/helpers';
 import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege, { PrivilegeCover } from 'client/common/decorators/withPrivilege';

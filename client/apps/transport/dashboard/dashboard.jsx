@@ -10,7 +10,7 @@ import ButtonToggle from 'client/components/ButtonToggle';
 import StatsPanel from './panel/statsPanel';
 import TodoPanel from './panel/todoPanel';
 import MoreApplications from './panel/moreApplications';
-import PreviewPanel from '../shipment/modals/preview-panel';
+import PreviewPanel from '../shipment/dock/preview-panel';
 import DispatchDock from '../dispatch/dispatchDock';
 import SegmentDock from '../dispatch/segmentDock';
 import { formatMsg } from './message.i18n';

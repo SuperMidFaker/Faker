@@ -7,7 +7,6 @@ import messages from '../message.i18n';
 import { loadFeesBeforeTime, alterBillingFees, loadClearanceFeesBeforeTime, loadTransportFeesBeforeTime,
 showBeforeFeesModal } from 'common/reducers/crmBilling';
 import TrimSpan from 'client/components/trimSpan';
-// import PreviewPanel from '../../orders/modals/preview-panel';
 import TrsShipmtNoColumn from '../../common/trsShipmtNoColumn';
 import CcbDelgNoColumn from '../../common/ccbDelgNoColumn';
 import { loadOrderDetail } from 'common/reducers/crmOrders';

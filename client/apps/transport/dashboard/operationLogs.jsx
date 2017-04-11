@@ -14,7 +14,7 @@ import AddressColumn from '../common/addressColumn';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import '../index.less';
-import PreviewPanel from '../shipment/modals/preview-panel';
+import PreviewPanel from '../shipment/dock/preview-panel';
 import ActDate from '../common/actDate';
 import ExceptionListPopover from '../tracking/land/modals/exception-list-popover';
 

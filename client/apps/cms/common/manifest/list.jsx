@@ -11,7 +11,7 @@ import { loadDelgBill, redoManifest } from 'common/reducers/cmsManifest';
 import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/search-bar';
-import DelegationInfoHubPanel from '../modals/DelegationInfoHubPanel';
+import DelegationInfoHubPanel from '../dockhub/DelegationInfoHubPanel';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import RowUpdater from 'client/components/rowUpdater';
@@ -109,7 +109,7 @@ export default class ManifestList extends Component {
     dataIndex: 'bl_wb_no',
     width: 220,
   }, {
-    title: '发票号',
+    title: '订单号',
     width: 220,
     dataIndex: 'invoice_no',
   }, {

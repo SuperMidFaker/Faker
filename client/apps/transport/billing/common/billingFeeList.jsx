@@ -7,7 +7,7 @@ import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { loadFeesByBillingId, updateBillingFees, checkBilling, acceptBilling, editBilling } from 'common/reducers/transportBilling';
 import TrimSpan from 'client/components/trimSpan';
-import PreviewPanel from '../../shipment/modals/preview-panel';
+import PreviewPanel from '../../shipment/dock/preview-panel';
 import { loadShipmtDetail } from 'common/reducers/shipment';
 import ExceptionListPopover from '../../tracking/land/modals/exception-list-popover';
 import ActDate from '../../common/actDate';

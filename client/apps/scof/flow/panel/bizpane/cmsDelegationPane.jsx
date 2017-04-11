@@ -75,7 +75,7 @@ export default class CMSDelegationPane extends Component {
                 })(<Select allowClear>
                   {
                     customsBrokers.map(cb =>
-                      <Option value={cb.partner_id} key={cb.partner_id}>{cb.partner_code}|{cb.name}</Option>
+                      <Option value={cb.partner_id} key={cb.partner_id}>{cb.customs_code}|{cb.name}</Option>
                     )
                   }
                 </Select>)}
@@ -88,7 +88,7 @@ export default class CMSDelegationPane extends Component {
                 })(<Select allowClear>
                   {
                     ciqBrokers.map(cb =>
-                      <Option value={cb.partner_id} key={cb.partner_id}>{cb.partner_code}|{cb.name}</Option>
+                      <Option value={cb.partner_id} key={cb.partner_id}>{cb.customs_code}|{cb.name}</Option>
                     )
                   }
                 </Select>)}

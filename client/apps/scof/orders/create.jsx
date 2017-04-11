@@ -55,8 +55,6 @@ export default class CreateOrder extends Component {
     // ccb_need_exchange: 0,
     if (formData.customer_name === '') {
       message.error('请选择客户');
-    } else if (formData.cust_shipmt_trans_mode === '') {
-      message.error('请选择运输方式');
     } else if (formData.cust_shipmt_goods_type === null) {
       message.error('请选择货物类型');
     } else {

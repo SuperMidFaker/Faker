@@ -5,9 +5,9 @@ import moment from 'moment';
 import { Steps } from 'antd';
 import { loadOrderProgress } from 'common/reducers/crmOrders';
 import { CRM_ORDER_STATUS, NODE_BIZ_OBJECTS } from 'common/constants';
-import messages from './message.i18n';
+import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
-import './orders.less';
+import '../orders.less';
 
 const formatMsg = format(messages);
 const Step = Steps.Step;

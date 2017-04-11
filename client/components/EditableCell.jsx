@@ -26,20 +26,28 @@ export default class EditableCell extends React.Component {
     this.setState({ value });
   }
   check = () => {
-    this.setState({ editMode: false });
+    setTimeout(() => {
+      this.setState({ editMode: false });
+    }, 10);
     if (this.props.onSave) {
       this.props.onSave(this.state.value);
     }
   }
   close = () => {
-    this.setState({ editMode: false });
+    setTimeout(() => {
+      this.setState({ editMode: false });
+    }, 10);
   }
   edit = () => {
-    this.setState({ editMode: true });
+    setTimeout(() => {
+      this.setState({ editMode: true });
+    }, 10);
   }
   cellEdit = () => {
     if (this.props.cellTrigger) {
-      this.setState({ editMode: true });
+      setTimeout(() => {
+        this.setState({ editMode: true });
+      }, 10);
     }
   }
   renderControl() {

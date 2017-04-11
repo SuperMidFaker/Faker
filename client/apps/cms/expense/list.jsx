@@ -15,7 +15,7 @@ import messages from './message.i18n';
 import moment from 'moment';
 import SearchBar from 'client/components/search-bar';
 import TrimSpan from 'client/components/trimSpan';
-import DelegationInfoHubPanel from '../common/modals/DelegationInfoHubPanel';
+import DelegationInfoHubPanel from '../common/dockhub/DelegationInfoHubPanel';
 import DelgAdvanceExpenseModal from './modals/delgAdvanceExpenseModal';
 import RowUpdater from 'client/components/rowUpdater';
 import ExpEptModal from './modals/expEptModal';
