@@ -4,6 +4,7 @@ import { routerShape } from 'react-router';
 import { Menu, Radio, Modal, Popover, Icon } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import NavLink from './nav-link';
+import MdIcon from './MdIcon';
 import { loadTranslation, changeUserLocale } from '../../common/reducers/intl';
 import { logout } from 'common/reducers/account';
 import { goBackNav } from 'common/reducers/navbar';
@@ -93,7 +94,7 @@ export default class HeaderNavBar extends React.Component {
           </MenuItem>
           <MenuItem>
             <a role="button" onClick={this.handleLanguageSetting}>
-              <i className="zmdi zmdi-globe zmdi-hc-fw" />
+              <MdIcon type="globe" />
               <span>{formatMsg(intl, 'userLanguage')}</span>
             </a>
           </MenuItem>
@@ -117,7 +118,7 @@ export default class HeaderNavBar extends React.Component {
     } else if (navTitle.depth === 2) {
       brandNav = (
         <NavLink to="/" className="navbar-toggle">
-          <i className="zmdi zmdi-apps" />
+          <MdIcon type="apps" />
         </NavLink>
       );
       navMenu = (
@@ -126,12 +127,12 @@ export default class HeaderNavBar extends React.Component {
     } else if (navTitle.depth === 3) {
       brandNav = [(
         <a role="button" className="navbar-anchor" key="back" onClick={this.handleGoBack}>
-          <i className="zmdi zmdi-arrow-left" />
+          <MdIcon type="arrow-left" />
         </a>)];
       if (navTitle.jumpOut) {
         brandNav.push(
           <a role="button" className="navbar-anchor" key="close" onClick={this.handleGoDepth2}>
-            <i className="zmdi zmdi-close" />
+            <MdIcon type="close" />
           </a>);
       }
     }

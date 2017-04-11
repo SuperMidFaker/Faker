@@ -23,6 +23,7 @@ export default class ButtonToggle extends React.Component {
     };
   }
   handleClick = (e) => {
+    this.node.blur();
     this.setState({ toggle: !this.state.toggle });
     const onClick = this.props.onClick;
     if (onClick) {
@@ -37,7 +38,7 @@ export default class ButtonToggle extends React.Component {
     const toggleCls = this.state.toggle ? 'btn-toggle-on' : 'btn-toggle-off';
     const toggleIcon = this.state.toggle ? iconOn : iconOff;
 
-    return (<Button type={type} shape={shape} size={size} icon={toggleIcon} className={toggleCls} onClick={this.handleClick}>{children}</Button>
+    return (<Button ref={this.node} type={type} shape={shape} size={size} icon={toggleIcon} className={toggleCls} onClick={this.handleClick}>{children}</Button>
     );
   }
 }
