@@ -263,7 +263,7 @@ export default class OrderForm extends Component {
                   </FormItem>
                 </Col>
                 <Col sm={16}>
-                  <FormItem label="运输方式" {...spanFormItemLayout} required="true">
+                  <FormItem label="运输方式" {...spanFormItemLayout}>
                     <RadioGroup value={formData.cust_shipmt_trans_mode} onChange={ev => this.handleChange('cust_shipmt_trans_mode', ev.target.value)}>
                       { (formData.cust_shipmt_transfer === 'IMP' || formData.cust_shipmt_transfer === 'EXP') &&
                       <RadioButton value={SCOF_ORDER_TRANSMODES[0].value}><i className={SCOF_ORDER_TRANSMODES[0].icon} /> {SCOF_ORDER_TRANSMODES[0].text}</RadioButton>

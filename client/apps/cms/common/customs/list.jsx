@@ -154,12 +154,12 @@ export default class DelgDeclList extends Component {
     title: '创建时间',
     dataIndex: 'created_date',
     width: 100,
-    render: createdt => (createdt && moment(createdt).format('MM.DD HH:mm') : '-'),
+    render: createdt => (createdt ? moment(createdt).format('MM.DD HH:mm') : '-'),
   }, {
     title: '发送时间',
     dataIndex: 'epsend_date',
     width: 100,
-    render: senddate => (senddate && moment(senddate).format('MM.DD HH:mm') : '-'),
+    render: senddate => (senddate ? moment(senddate).format('MM.DD HH:mm') : '-'),
   }, {
     title: '发送人',
     dataIndex: 'epsend_login_name',
@@ -168,7 +168,7 @@ export default class DelgDeclList extends Component {
     title: '回填日期',
     dataIndex: 'backfill_date',
     width: 100,
-    render: backdt => (backdt && moment(backdt).format('YYYY.MM.DD') : '-'),
+    render: backdt => (backdt ? moment(backdt).format('YYYY.MM.DD') : '-'),
   }]
   dataSource = new Table.DataSource({
     fetcher: params => this.props.loadDelgDecls(params),
@@ -318,15 +318,17 @@ export default class DelgDeclList extends Component {
         } else if (record.status === 2) {
           return (
             <span>
+              {!record.entry_id &&
               <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
                 <RowUpdater onHit={this.handleDeclNoFill} row={record}
                   label={<span><Icon type="edit" />海关编号</span>}
                 />
-              </PrivilegeCover>
-              {record.ep_send_filename ? (
+              </PrivilegeCover>}
+              {!record.entry_id && record.ep_send_filename && <span className="ant-divider" />}
+              {record.ep_send_filename && (
                 <span>
-                  <span className="ant-divider" /><RowUpdater onHit={this.handleShowXml} label="报文" row={record} />
-                </span>) : null}
+                  <RowUpdater onHit={this.handleShowXml} label={<span><Icon type="eye-o" />报文</span>} row={record} />
+                </span>)}
             </span>
           );
         }

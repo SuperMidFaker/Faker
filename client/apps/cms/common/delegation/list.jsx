@@ -354,6 +354,19 @@ export default class DelegationList extends Component {
       }
     });
   }
+  handleDelegationView = (row) => {
+    const { loginId, loginName } = this.props;
+    this.props.ensureManifestMeta({ delg_no: row.delg_no, loginId, loginName }).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 5);
+      } else {
+        const { i_e_type: ietype, bill_seq_no: seqno } = result.data;
+        const clearType = ietype === 0 ? 'import' : 'export';
+        const link = `/clearance/${clearType}/manifest/view/`;
+        this.context.router.push(`${link}${seqno}`);
+      }
+    });
+  }
   handleDelegationAccept = (row) => {
     this.props.openAcceptModal({
       tenantId: this.props.tenantId,
@@ -510,6 +523,11 @@ export default class DelegationList extends Component {
                 { recallOp && <span className="ant-divider" />}
                 { recallOp }
               </span>);
+          } else if (record.status === CMS_DELEGATION_STATUS.declaring || record.status === CMS_DELEGATION_STATUS.released) {
+            return (
+              <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
+                <RowUpdater onHit={this.handleDelegationView} label={<span><Icon type="eye-o" /> {this.msg('viewManifest')}</span>} row={record} />
+              </PrivilegeCover>);
           }
         },
       });
