@@ -30,12 +30,21 @@ export default class DeclnoFillModal extends React.Component {
     entryNo: '',
   }
   handleEntryNoChange = (ev) => {
-    this.setState({ entryNo: ev.target.value });
+    if (ev.target.value) {
+      const declno = ev.target.value.trim();
+      this.setState({ entryNo: declno });
+    } else {
+      this.setState({ entryNo: '' });
+    }
   }
   handleCancel = () => {
     this.props.closeEfModal();
   }
   handleOk = () => {
+    if (this.state.entryNo.length !== 18) {
+      message.error('报关单号长度应为18位数字', 10);
+      return;
+    }
     this.props.fillEntryId({
       entryHeadId: this.props.entryHeadId, entryNo: this.state.entryNo,
       billSeqNo: this.props.billSeqNo, delgNo: this.props.delgNo,

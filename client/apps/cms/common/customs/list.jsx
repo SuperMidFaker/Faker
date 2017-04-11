@@ -81,19 +81,37 @@ export default class DelgDeclList extends Component {
     width: 200,
     fixed: 'left',
     render: (o, record) => {
+      const preentrySpan = (
+        <span>
+          <Tag>预</Tag>
+          <NavLink to={`/clearance/${this.props.ietype}/customs/${record.bill_seq_no}/${record.pre_entry_seq_no}`}>
+            {record.pre_entry_seq_no}
+          </NavLink>
+        </span>);
       switch (record.status) {
         case 0:
         case 1:
-          return (<span><Tag>预</Tag> <NavLink to={`/clearance/${this.props.ietype}/customs/${record.bill_seq_no}/${record.pre_entry_seq_no}`}>{record.pre_entry_seq_no}</NavLink></span>);
+          return preentrySpan;
         case 2:
-          return (o) ? <span><Tag color="green">海关</Tag> <DeclStatusPopover results={record.results} entryId={o}>
-            <NavLink to={`/clearance/${this.props.ietype}/customs/${record.bill_seq_no}/${record.pre_entry_seq_no}`}>{o}</NavLink>
-          </DeclStatusPopover></span> :
-          <span><Tag>预</Tag> <NavLink to={`/clearance/${this.props.ietype}/customs/${record.bill_seq_no}/${record.pre_entry_seq_no}`}>{record.pre_entry_seq_no}</NavLink></span>;
+          return (o) ? (
+            <DeclStatusPopover entryId={o}>
+              <span>
+                <Tag color="green">海关</Tag>
+                <NavLink to={`/clearance/${this.props.ietype}/customs/${record.bill_seq_no}/${record.pre_entry_seq_no}`}>
+                  {o}
+                </NavLink>
+              </span>
+            </DeclStatusPopover>) : preentrySpan;
         case 3:
-          return (<span><Tag color="green">海关</Tag> <DeclStatusPopover results={record.results} entryId={o}>
-            <NavLink to={`/clearance/${this.props.ietype}/customs/${record.bill_seq_no}/${record.pre_entry_seq_no}`}>{o}</NavLink>
-          </DeclStatusPopover></span>);
+          return (
+            <DeclStatusPopover entryId={o}>
+              <span>
+                <Tag color="green">海关</Tag>
+                <NavLink to={`/clearance/${this.props.ietype}/customs/${record.bill_seq_no}/${record.pre_entry_seq_no}`}>
+                  {o}
+                </NavLink>
+              </span>
+            </DeclStatusPopover>);
         default:
           return <span />;
       }
