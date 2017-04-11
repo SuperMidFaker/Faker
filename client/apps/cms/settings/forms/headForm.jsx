@@ -161,7 +161,7 @@ export default class HeadForm extends React.Component {
                 </Row>
                 <Row>
                   <Col span="8">
-                    <DeclCustoms {...formProps} intl={intl} formRequire={formRequire} />
+                    <DeclCustoms {...formProps} intl={intl} formRequire={formRequire} disabled />
                   </Col>
                   <Col span={16}>
                     <FormInput field="note" outercol={24} col={4}
