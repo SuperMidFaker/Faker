@@ -1,104 +1,600 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
+import moment from 'moment';
+import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Breadcrumb, Button, Layout, Radio, Select } from 'antd';
-import Table from 'client/components/remoteAntTable';
-import QueueAnim from 'rc-queue-anim';
+import { Breadcrumb, Button, Layout, Radio, Dropdown, Icon, Menu, Popconfirm, Table, message } from 'antd';
+import RemoteTable from 'client/components/remoteAntTable';
+import NavLink from 'client/components/nav-link';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import { loadQuoteModel } from 'common/reducers/cmsQuote';
-import withPrivilege from 'client/common/decorators/withPrivilege';
+import { loadCustomers } from 'common/reducers/crmCustomers';
+import { loadRepoBrokers, openAddModal, selectedRepoId, loadTradeItems, setCompareVisible,
+  deleteItem, deleteSelectedItems, setRepo, loadTradeParams, setItemStatus } from 'common/reducers/cmsTradeitem';
+import ButtonToggle from 'client/components/ButtonToggle';
+import SearchBar from 'client/components/search-bar';
+import ExcelUpload from 'client/components/excelUploader';
+import { createFilename } from 'client/util/dataTransform';
+import { CMS_ITEM_STATUS, CMS_TRADE_REPO_PERMISSION } from 'common/constants';
+import RowUpdater from 'client/components/rowUpdater';
 
 const formatMsg = format(messages);
-const { Header, Content } = Layout;
+const { Header, Content, Sider } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
-const Option = Select.Option;
 
+function fetchData({ state, dispatch }) {
+  const promises = [];
+
+  promises.push(dispatch(loadRepoBrokers({
+    tenantId: state.account.tenantId,
+  })));
+  promises.push(dispatch(loadTradeParams()));
+  return Promise.all(promises);
+}
+@connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     loginName: state.account.username,
+    repoBrokers: state.cmsTradeitem.repoBrokers,
+    repoId: state.cmsTradeitem.repoId,
+    listFilter: state.cmsTradeitem.listFilter,
+    tradeItemlist: state.cmsTradeitem.tradeItemlist,
+    visibleAddModal: state.cmsTradeitem.visibleAddModal,
+    repo: state.cmsTradeitem.repo,
+    reposLoading: state.cmsTradeitem.reposLoading,
+    tradeItemsLoading: state.cmsTradeitem.tradeItemsLoading,
+    units: state.cmsTradeitem.params.units.map(un => ({
+      value: un.unit_code,
+      text: un.unit_name,
+    })),
+    currencies: state.cmsTradeitem.params.currencies.map(cr => ({
+      value: cr.curr_code,
+      text: cr.curr_name,
+    })),
+    tradeCountries: state.cmsTradeitem.params.tradeCountries.map(tc => ({
+      value: tc.cntry_co,
+      text: tc.cntry_name_cn,
+    })),
   }),
-  { loadQuoteModel }
+  { loadCustomers, openAddModal, selectedRepoId, loadTradeItems, setCompareVisible,
+    deleteItem, deleteSelectedItems, setRepo, setItemStatus }
 )
 @connectNav({
   depth: 2,
-  moduleName: 'scv',
+  moduleName: 'clearance',
 })
-@withPrivilege({ module: 'clearance', feature: 'setting', action: 'edit' })
 export default class TradeItemList extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
-    loadQuoteModel: PropTypes.func.isRequired,
+    repoBrokers: PropTypes.array.isRequired,
+    tradeItemlist: PropTypes.object.isRequired,
+    repoId: PropTypes.number,
+    visibleAddModal: PropTypes.bool,
+    repo: PropTypes.object,
+    listFilter: PropTypes.object.isRequired,
+    reposLoading: PropTypes.bool.isRequired,
+    tradeItemsLoading: PropTypes.bool.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
   state = {
-    qtModelShow: false,
+    collapsed: false,
+    rightSiderCollapsed: true,
+    selectedRowKeys: [],
+    compareduuid: '',
+    repoBrokers: [],
+    currentPage: 1,
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.repoBrokers !== this.props.repoBrokers) {
+      this.setState({ repoBrokers: nextProps.repoBrokers });
+    }
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
-    title: this.msg('productNo'),
-    dataIndex: 'product_no',
-    width: 120,
+    title: this.msg('copProductNo'),
+    dataIndex: 'cop_product_no',
+    fixed: 'left',
+    width: 200,
   }, {
     title: this.msg('hscode'),
-    dataIndex: 'hs_code',
-    width: 80,
+    dataIndex: 'hscode',
+    width: 180,
   }, {
-    title: this.msg('productName'),
-    dataIndex: 'name',
+    title: this.msg('gName'),
+    dataIndex: 'g_name',
+    width: 200,
+  }, {
+    title: this.msg('gModel'),
+    dataIndex: 'g_model',
+    width: 300,
+  }, {
+    title: this.msg('element'),
+    dataIndex: 'element',
+    width: 400,
+  }, {
+    title: this.msg('gUnit1'),
+    dataIndex: 'g_unit_1',
     width: 120,
+    render: (o) => {
+      const unit = this.props.units.filter(cur => cur.value === o)[0];
+      const text = unit ? `${unit.value}| ${unit.text}` : o;
+      return text;
+    },
+  }, {
+    title: this.msg('gUnit2'),
+    dataIndex: 'g_unit_2',
+    width: 120,
+    render: (o) => {
+      const unit = this.props.units.filter(cur => cur.value === o)[0];
+      const text = unit ? `${unit.value}| ${unit.text}` : o;
+      return text;
+    },
+  }, {
+    title: this.msg('gUnit3'),
+    dataIndex: 'g_unit_3',
+    width: 120,
+    render: (o) => {
+      const unit = this.props.units.filter(cur => cur.value === o)[0];
+      const text = unit ? `${unit.value}| ${unit.text}` : o;
+      return text;
+    },
+  }, {
+    title: this.msg('unit1'),
+    dataIndex: 'unit_1',
+    width: 130,
+    render: (o) => {
+      const unit = this.props.units.filter(cur => cur.value === o)[0];
+      const text = unit ? `${unit.value}| ${unit.text}` : o;
+      return text;
+    },
+  }, {
+    title: this.msg('unit2'),
+    dataIndex: 'unit_2',
+    width: 130,
+    render: (o) => {
+      const unit = this.props.units.filter(cur => cur.value === o)[0];
+      const text = unit ? `${unit.value}| ${unit.text}` : o;
+      return text;
+    },
+  }, {
+    title: this.msg('fixedQty'),
+    dataIndex: 'fixed_qty',
+    width: 120,
+  }, {
+    title: this.msg('fixedUnit'),
+    dataIndex: 'fixed_unit',
+    width: 130,
+    render: (o) => {
+      const unit = this.props.units.filter(cur => cur.value === o)[0];
+      const text = unit ? `${unit.value}| ${unit.text}` : o;
+      return text;
+    },
+  }, {
+    title: this.msg('origCountry'),
+    dataIndex: 'origin_country',
+    width: 120,
+    render: (o) => {
+      const country = this.props.tradeCountries.filter(cur => cur.value === o)[0];
+      const text = country ? `${country.value}| ${country.text}` : o;
+      return text;
+    },
+  }, {
+    title: this.msg('unitNetWt'),
+    dataIndex: 'unit_net_wt',
+    width: 120,
+  }, {
+    title: this.msg('customsControl'),
+    dataIndex: 'customs_control',
+    width: 140,
+  }, {
+    title: this.msg('inspQuarantine'),
+    dataIndex: 'inspection_quarantine',
+    width: 140,
+  }, {
+    title: this.msg('unitPrice'),
+    dataIndex: 'unit_price',
+    width: 120,
+  }, {
+    title: this.msg('currency'),
+    dataIndex: 'currency',
+    width: 120,
+    render: (o) => {
+      const currency = this.props.currencies.filter(cur => cur.value === o)[0];
+      const text = currency ? `${currency.value}| ${currency.text}` : o;
+      return text;
+    },
+  }, {
+    title: this.msg('preClassifyNo'),
+    dataIndex: 'pre_classify_no',
+    width: 120,
+  }, {
+    title: this.msg('preClassifyStartDate'),
+    dataIndex: 'pre_classify_start_date ',
+    width: 180,
+    render: (o, record) => {
+      if (record.pre_classify_start_date) {
+        return moment(record.pre_classify_start_date).format('YYYY-MM-DD');
+      } else {
+        return '--';
+      }
+    },
+  }, {
+    title: this.msg('preClassifyEndDate'),
+    dataIndex: 'pre_classify_end_date ',
+    width: 180,
+    render: (o, record) => {
+      if (record.pre_classify_end_date) {
+        return moment(record.pre_classify_end_date).format('YYYY-MM-DD');
+      } else {
+        return '--';
+      }
+    },
+  }, {
+    title: this.msg('remark'),
+    dataIndex: 'remark',
   }]
-  handleNavigationTo(to, query) {
-    this.context.router.push({ pathname: to, query });
+  dataSource = new RemoteTable.DataSource({
+    fetcher: params => this.props.loadTradeItems(params),
+    resolve: result => result.data,
+    getPagination: (result, resolve) => ({
+      total: result.totalCount,
+      current: resolve(result.totalCount, result.current, result.pageSize),
+      showSizeChanger: true,
+      showQuickJumper: false,
+      pageSize: result.pageSize,
+    }),
+    getParams: (pagination) => {
+      const params = {
+        repoId: this.props.repoId,
+        pageSize: pagination.pageSize,
+        currentPage: pagination.current,
+        searchText: this.props.tradeItemlist.searchText,
+      };
+      const filter = this.props.listFilter;
+      params.filter = JSON.stringify(filter);
+      return params;
+    },
+    remotes: this.props.tradeItemlist,
+  })
+  toggle = () => {
+    this.setState({
+      collapsed: !this.state.collapsed,
+    });
+  }
+  toggleRightSider = () => {
+    this.setState({
+      rightSiderCollapsed: !this.state.rightSiderCollapsed,
+    });
+  }
+  handleItemListLoad = (repoid, currentPage, filter, search) => {
+    const { repoId, listFilter, tradeItemlist: { pageSize, current, searchText } } = this.props;
+    this.setState({ expandedKeys: [] });
+    this.props.loadTradeItems({
+      repoId: repoid || repoId,
+      filter: JSON.stringify(filter || listFilter),
+      pageSize,
+      currentPage: currentPage || current,
+      searchText: search !== undefined ? search : searchText,
+    }).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      }
+    });
+  }
+  handleItemDel = (id) => {
+    this.props.deleteItem(id).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        this.handleItemListLoad();
+      }
+    });
+  }
+  handleRowClick = (record) => {
+    const repo = record;
+    this.props.selectedRepoId(repo.id);
+    this.handleItemListLoad(repo.id);
+    this.props.setRepo(repo);
+  }
+  handleButtonClick = (ev) => {
+    ev.stopPropagation();
+  }
+  handleAddItem = () => {
+    this.context.router.push('/clearance/classification/tradeitem/create');
+  }
+  handleMenuClick = (e) => {
+    if (e.key === 'export') {
+      window.open(`${API_ROOTS.default}v1/cms/cmsTradeitem/tradeitems/export/${createFilename('itemsExport')}.xlsx?repoId=${this.props.repoId}`);
+    } else if (e.key === 'model') {
+      window.open(`${API_ROOTS.default}v1/cms/cmsTradeitem/tradeitems/model/download/${createFilename('tradeItemModel')}.xlsx`);
+    }
+  }
+  handleUploaded = (data) => {
+    this.setState({ compareduuid: data });
+    this.props.setCompareVisible(true);
+  }
+  handleDeleteSelected = () => {
+    const selectedIds = this.state.selectedRowKeys;
+    this.props.deleteSelectedItems(selectedIds).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        this.handleItemListLoad();
+      }
+    });
+    this.setState({ selectedRowKeys: [] });
+  }
+  handleRadioChange = (ev) => {
+    if (ev.target.value === this.props.listFilter.status) {
+      return;
+    }
+    const filter = { ...this.props.listFilter, status: ev.target.value };
+    this.handleItemListLoad(this.props.repoId, 1, filter);
+  }
+  handleItemPass = (row) => {
+    this.props.setItemStatus({ ids: [row.id], status: CMS_ITEM_STATUS.classified }).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        this.handleItemListLoad();
+      }
+    });
+  }
+  handleItemRefused = (row) => {
+    this.props.setItemStatus({ ids: [row.id], status: CMS_ITEM_STATUS.unclassified }).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        this.handleItemListLoad();
+      }
+    });
+  }
+  handleItemsPass = () => {
+    this.props.setItemStatus({ ids: this.state.selectedRowKeys, status: CMS_ITEM_STATUS.classified }).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        this.setState({ selectedRowKeys: [] });
+        this.handleItemListLoad();
+      }
+    });
+  }
+  handleItemsRefused = () => {
+    this.props.setItemStatus({ ids: this.state.selectedRowKeys, status: CMS_ITEM_STATUS.unclassified }).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        this.setState({ selectedRowKeys: [] });
+        this.handleItemListLoad();
+      }
+    });
+  }
+  handleSearch = (value) => {
+    const { repoId, listFilter } = this.props;
+    this.handleItemListLoad(repoId, 1, listFilter, value);
+  }
+  handlePageChange = (page) => {
+    this.setState({ currentPage: page });
+  }
+  handleRepoSearch = (value) => {
+    let repos = this.props.repos;
+    if (value) {
+      repos = this.props.repos.filter((item) => {
+        const reg = new RegExp(value);
+        return reg.test(item.owner_name);
+      });
+    }
+    this.setState({ repos, currentPage: 1 });
+  }
+  handleUnusualLoad = () => {
+
   }
   render() {
-    return (
-      <QueueAnim type={['bottom', 'up']}>
-        <Header className="top-bar">
-          <Breadcrumb>
-            <Breadcrumb.Item>
-              {this.msg('productsTradeItem')}
-            </Breadcrumb.Item>
-          </Breadcrumb>
-          <RadioGroup onChange={this.handleRadioChange} size="large">
-            <RadioButton value="unclassified">{this.msg('filterUnclassified')}</RadioButton>
-            <RadioButton value="pending">{this.msg('filterPending')}</RadioButton>
-            <RadioButton value="classified">{this.msg('filterClassified')}</RadioButton>
-          </RadioGroup>
-        </Header>
-        <Content className="main-content" key="main">
-          <div className="page-body">
-            <div className="toolbar">
-              <div className="toolbar-right">
-                <Select
-                  showSearch
-                  style={{ width: 300 }}
-                  placeholder="选择客户"
-                  optionFilterProp="children"
+    const { tradeItemlist, repoId, repo, listFilter } = this.props;
+    const selectedRows = this.state.selectedRowKeys;
+    const rowSelection = {
+      selectedRowKeys: selectedRows,
+      onChange: (selectedRowKeys) => {
+        this.setState({ selectedRowKeys });
+      },
+    };
+    let batchOperation = null;
+    if (repo.permission === CMS_TRADE_REPO_PERMISSION.edit && selectedRows.length > 0) {
+      if (listFilter.status === 'unclassified') {
+        batchOperation = (<Popconfirm title={'是否删除所有选择项？'} onConfirm={() => this.handleDeleteSelected()}>
+          <Button type="danger" size="large" icon="delete">
+            批量删除
+          </Button>
+        </Popconfirm>);
+      } else if (listFilter.status === 'pending') {
+        batchOperation = (<span>
+          <Button size="large" onClick={this.handleItemsPass}>
+            批量通过
+          </Button>
+          <Button size="large" onClick={this.handleItemsRefused} >
+            批量拒绝
+          </Button>
+          <Popconfirm title={'是否删除所有选择项？'} onConfirm={() => this.handleDeleteSelected()}>
+            <Button type="danger" size="large" icon="delete">
+              批量删除
+            </Button>
+          </Popconfirm>
+        </span>);
+      }
+    }
+    this.dataSource.remotes = tradeItemlist;
+    const columns = [...this.columns];
+    if (repo.permission === CMS_TRADE_REPO_PERMISSION.edit) {
+      columns.push({
+        title: this.msg('opColumn'),
+        width: 150,
+        fixed: 'right',
+        render: (o, record) => {
+          if (record.status === CMS_ITEM_STATUS.unclassified) {
+            return (<span>
+              <NavLink to={`/clearance/classification/tradeitem/edit/${record.id}`}>
+                <Icon type="edit" /> {this.msg('modify')}
+              </NavLink>
+              <span className="ant-divider" />
+              <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleItemDel(record.id)}>
+                <a role="button"><Icon type="delete" /> {this.msg('delete')}</a>
+              </Popconfirm>
+            </span>);
+          } else if (record.status === CMS_ITEM_STATUS.pending) {
+            return (
+              <span>
+                <RowUpdater onHit={this.handleItemPass} label={this.msg('pass')} row={record} />
+                <span className="ant-divider" />
+                <RowUpdater onHit={this.handleItemRefused} label={this.msg('refuse')} row={record} />
+                <span className="ant-divider" />
+                <Dropdown overlay={(
+                  <Menu>
+                    <Menu.Item key="edit">
+                      <NavLink to={`/clearance/classification/tradeitem/edit/${record.id}`}>
+                        <Icon type="edit" /> {this.msg('modify')}
+                      </NavLink>
+                    </Menu.Item>
+                    <Menu.Item key="delete">
+                      <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleItemDel(record.id)}>
+                        <a role="button"><Icon type="delete" /> {this.msg('delete')}</a>
+                      </Popconfirm>
+                    </Menu.Item>
+                  </Menu>)}
                 >
-                  <Option value="jack">山特维克矿山工程机械贸易(上海)有限公司</Option>
-                  <Option value="lucy">永恒力叉车(上海)有限公司</Option>
-                  <Option value="tom">阿特拉斯.科普柯(上海)贸易有限公司</Option>
-                </Select>
-              </div>
-              <Button type="primary" icon="plus" onClick={this.handleCreateNew}>
-                导入
-              </Button>
-            </div>
-            <div className="panel-body table-panel">
-              <Table dataSource={this.dataSource} scroll={{ x: 1400 }} />
-            </div>
+                  <a><Icon type="down" /></a>
+                </Dropdown>
+              </span>
+            );
+          } else if (record.status === CMS_ITEM_STATUS.classified) {
+            return (
+              <span>
+                <NavLink to={`/clearance/classification/tradeitem/edit/${record.id}`}>
+                  <Icon type="edit" /> {this.msg('modify')}
+                </NavLink>
+              </span>
+            );
+          }
+        },
+      });
+    }
+    const repoColumns = [{
+      dataIndex: 'name',
+      key: 'name',
+      render: o => (<div style={{ paddingLeft: 15 }}>{o}</div>),
+    }];
+    const menu = (
+      <Menu onClick={this.handleMenuClick}>
+        <Menu.Item key="importData">
+          <ExcelUpload endpoint={`${API_ROOTS.default}v1/cms/cmsTradeitem/tradeitems/import`}
+            formData={{
+              data: JSON.stringify({
+                repo_id: this.props.repoId,
+              }),
+            }} onUploaded={this.handleUploaded}
+          >
+            <Icon type="file-excel" /> {this.msg('importItems')}
+          </ExcelUpload>
+        </Menu.Item>
+        <Menu.Item key="export"><Icon type="export" /> 导出物料表</Menu.Item>
+        <Menu.Item key="model"><Icon type="download" /> 下载模板</Menu.Item>
+      </Menu>);
+    return (
+      <Layout className="ant-layout-wrapper">
+        <Sider width={280} className="menu-sider" key="sider" trigger={null}
+          collapsible
+          collapsed={this.state.collapsed}
+          collapsedWidth={0}
+        >
+          <div className="top-bar">
+            <Breadcrumb>
+              <Breadcrumb.Item>
+                {this.msg('classification')}
+              </Breadcrumb.Item>
+            </Breadcrumb>
           </div>
-        </Content>
-      </QueueAnim>
+          <div className="left-sider-panel" >
+            <div className="toolbar">
+              <SearchBar
+                placeholder={this.msg('searchRepoPlaceholder')}
+                onInputSearch={this.handleRepoSearch} size="large"
+              />
+            </div>
+            <Table size="middle" dataSource={this.state.repoBrokers} columns={repoColumns} showHeader={false} onRowClick={this.handleRowClick}
+              rowKey="id" pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }}
+              rowClassName={record => record.id === repo.id ? 'table-row-selected' : ''} loading={this.props.reposLoading}
+            />
+          </div>
+        </Sider>
+        <Layout>
+          <Header className="top-bar">
+
+            { this.state.collapsed && <Breadcrumb>
+              <Breadcrumb.Item>
+                {this.msg('classification')}
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {this.msg('tradeItemMaster')}
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {`${repo.owner_name}`}
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          }
+            <ButtonToggle size="large"
+              iconOn="menu-fold" iconOff="menu-unfold"
+              onClick={this.toggle}
+              toggle
+            />
+            <span />
+            <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">
+              <RadioButton value="unclassified">{this.msg('filterUnclassified')}</RadioButton>
+              <RadioButton value="pending">{this.msg('filterPending')}</RadioButton>
+              <RadioButton value="classified">{this.msg('filterClassified')}</RadioButton>
+            </RadioGroup>
+            <Button onClick={this.handleUnusualLoad}>{this.msg('filterUnusual')}</Button>
+            {repoId &&
+              <div className="top-bar-tools">
+                {repo.permission === CMS_TRADE_REPO_PERMISSION.edit &&
+                  (
+                    <Dropdown overlay={menu} type="primary">
+                      <Button size="large" onClick={this.handleButtonClick}>
+                        {this.msg('importItems')} <Icon type="down" />
+                      </Button>
+                    </Dropdown>
+                  )
+                }
+                {repo.permission === CMS_TRADE_REPO_PERMISSION.edit &&
+                  (
+                    <Button type="primary" size="large" icon="plus" onClick={this.handleAddItem}>
+                      {this.msg('addItem')}
+                    </Button>
+                  )
+                }
+              </div>
+              }
+          </Header>
+          <Content className="main-content layout-min-width layout-min-width-large">
+            <div className="page-body">
+              <div className="toolbar">
+                <SearchBar placeholder="编码/名称/描述/申报要素" onInputSearch={this.handleSearch} size="large" />
+                <span />
+                {batchOperation}
+              </div>
+              <div className="panel-body table-panel">
+                <RemoteTable loading={this.props.tradeItemsLoading} rowSelection={rowSelection} rowKey={record => record.id} columns={columns} dataSource={this.dataSource} scroll={{ x: 3800 }} />
+              </div>
+            </div>
+          </Content>
+        </Layout>
+      </Layout>
     );
   }
 }
