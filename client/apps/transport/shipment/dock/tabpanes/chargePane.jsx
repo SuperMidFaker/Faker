@@ -309,7 +309,7 @@ export default class ChargePanel extends React.Component {
             </Col>
           </Row>
         </Card>
-        <div className="toolbar">
+        <div className="pane-header">
           {checkedTags}
         </div>
         <Card bodyStyle={{ padding: 0 }}>

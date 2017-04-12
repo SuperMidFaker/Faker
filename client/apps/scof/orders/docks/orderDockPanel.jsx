@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Icon, Col, Row, Tabs } from 'antd';
+import { Button, Icon, Col, Row, Tabs } from 'antd';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { CRM_ORDER_STATUS, SCOF_ORDER_TRANSFER, TRANS_MODE } from 'common/constants';
@@ -123,6 +123,10 @@ export default class OrderDockPanel extends React.Component {
    // }
   }
 
+  renderAlert() {
+    return (<Button type="primary">创建清单</Button>);
+  }
+
   render() {
     const { order, visible } = this.props;
     const transfer = SCOF_ORDER_TRANSFER.filter(sot => sot.value === order.cust_shipmt_transfer)[0];
@@ -149,6 +153,7 @@ export default class OrderDockPanel extends React.Component {
           </Col>
         </Row>
         }
+        alert={this.renderAlert()}
       >
         {this.renderTabs()}
       </DockPanel>

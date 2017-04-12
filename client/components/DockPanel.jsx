@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Badge, Spin } from 'antd';
+import { Alert, Badge, Spin } from 'antd';
 import classNames from 'classnames';
 
 function noop() {}
@@ -7,6 +7,7 @@ function noop() {}
 export default class DockPanel extends React.Component {
   static defaultProps = {
     prefixCls: 'dock-panel',
+    alertType: 'info',
     loading: false,
   }
   static propTypes = {
@@ -22,6 +23,8 @@ export default class DockPanel extends React.Component {
     loading: PropTypes.bool,
     onClose: PropTypes.func,
     className: PropTypes.string,
+    alert: PropTypes.node,
+    alertType: PropTypes.string,
   }
   componentDidMount() {
     window.$(document).click((event) => {
@@ -42,7 +45,7 @@ export default class DockPanel extends React.Component {
   }
 
   render() {
-    const { prefixCls, size = '', className, visible, title, status, statusText, toolbar, extra, loading, children } = this.props;
+    const { prefixCls, size = '', className, visible, title, status, statusText, toolbar, extra, loading, alert, alertType, children } = this.props;
     const sizeCls = ({
       large: 'lg',
       small: 'sm',
@@ -70,6 +73,7 @@ export default class DockPanel extends React.Component {
             {extra ? <div className={`${prefixCls}-extra`}>{extra}</div> : null}
           </div>
           <div className={bodyCls}>
+            {alert ? <Alert message={alert} type={alertType} closable /> : null}
             {children}
           </div>
         </Spin>

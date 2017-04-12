@@ -256,13 +256,13 @@ export default class PreviewPanel extends React.Component {
               </div>
               <Row>
                 <Col span="6">
-                  <InfoItem labelCol={{ span: 3 }} label="托运方"
-                    field={shipmt.customer_name} fieldCol={{ span: 9 }}
+                  <InfoItem label="托运方"
+                    field={shipmt.customer_name}
                   />
                 </Col>
                 <Col span="6">
-                  <InfoItem labelCol={{ span: 3 }} label="承运商"
-                    field={shipmt.lsp_name} fieldCol={{ span: 9 }}
+                  <InfoItem label="承运商"
+                    field={shipmt.lsp_name}
                   />
                 </Col>
                 <Col span="12" style={{ paddingTop: 8 }}>

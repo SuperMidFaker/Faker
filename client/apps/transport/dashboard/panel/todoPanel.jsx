@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Card, Badge, Tabs } from 'antd';
+import { Card, Badge, Tabs, Icon } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import TodoAcceptPane from './pane/todoAcceptPane';
 import TodoTrackingPane from './pane/todoTrackingPane';
@@ -76,16 +76,16 @@ export default class TodoPanel extends Component {
     return (
       <Card title={<span>待办事项</span>} bodyStyle={{ minHeight: 475, padding: '10px 0 0' }} extra={extra}>
         <Tabs tabPosition="left" activeKey={tabKey} onChange={this.handleTabChange}>
-          <TabPane tab={<span>{this.msg('todoAccept')}<Badge count={todos.acceptanceTotal} style={{ marginLeft: 8 }} /></span>} key="todoAccept" >
+          <TabPane tab={<span><Icon type="inbox" /> {this.msg('todoAccept')}<Badge count={todos.acceptanceTotal} style={{ marginLeft: 8 }} /></span>} key="todoAccept" >
             <TodoAcceptPane filter={filter} />
           </TabPane>
-          <TabPane tab={<span>{this.msg('todoTrack')}<Badge count={todos.trackingTotal} style={{ marginLeft: 8 }} /></span>} key="todoTrack">
+          <TabPane tab={<span><Icon type="compass" /> {this.msg('todoTrack')}<Badge count={todos.trackingTotal} style={{ marginLeft: 8 }} /></span>} key="todoTrack">
             <TodoTrackingPane filter={filter} />
           </TabPane>
-          <TabPane tab={<span>{this.msg('todoPod')}<Badge count={todos.podTotal} style={{ marginLeft: 8 }} /></span>} key="todoPod">
+          <TabPane tab={<span><Icon type="select" /> {this.msg('todoPod')}<Badge count={todos.podTotal} style={{ marginLeft: 8 }} /></span>} key="todoPod">
             <TodoPodPane filter={filter} />
           </TabPane>
-          <TabPane tab={<span>{this.msg('todoBilling')}<Badge count={todos.billingList.totalCount} style={{ marginLeft: 8 }} /></span>} key="todoBilling" />
+          <TabPane tab={<span><Icon type="pay-circle-o" /> {this.msg('todoBilling')}<Badge count={todos.billingList.totalCount} style={{ marginLeft: 8 }} /></span>} key="todoBilling" />
         </Tabs>
 
       </Card>);

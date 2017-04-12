@@ -213,45 +213,43 @@ export default class DetailPane extends React.Component {
     const distanceStr = shipmt.distance ? `${shipmt.distance}${this.msg('kilometer')}` : '';
     return (
       <div className="pane-content tab-pane">
-        <Card title={this.msg('customerInfo')} bodyStyle={{ padding: 8 }}
-          extra={clientInfoExtra}
-        >
+        <Card title={this.msg('customerInfo')} bodyStyle={{ padding: 16 }} extra={clientInfoExtra}>
           <Row>
             <Col span="8">
-              <InfoItem labelCol={{ span: 8 }} label={this.msg('client')}
-                field={shipmt.customer_name} fieldCol={{ span: 16 }}
+              <InfoItem label={this.msg('client')}
+                field={shipmt.customer_name}
               />
             </Col>
             <Col span="8">
-              <InfoItem labelCol={{ span: 8 }} label={this.msg('refExternalNo')}
-                field={shipmt.ref_external_no} fieldCol={{ span: 16 }}
+              <InfoItem label={this.msg('refExternalNo')} addonBefore={<Icon type="tag-o" />}
+                field={shipmt.ref_external_no} editable
               />
             </Col>
             <Col span="8">
-              <InfoItem labelCol={{ span: 8 }} label={this.msg('acceptTime')}
+              <InfoItem label={this.msg('acceptTime')}
                 field={dispatch.acpt_time ? moment(dispatch.acpt_time).format('YYYY.MM.DD') : ''} fieldCol={{ span: 21 }}
               />
             </Col>
             <Col span="8">
-              <InfoItem labelCol={{ span: 8 }} label={this.msg('refWaybillNo')}
-                field={shipmt.ref_waybill_no} fieldCol={{ span: 16 }}
+              <InfoItem label={this.msg('refWaybillNo')} addonBefore={<Icon type="tag-o" />}
+                field={shipmt.ref_waybill_no} editable
               />
             </Col>
             <Col span="8">
-              <InfoItem labelCol={{ span: 8 }} label={this.msg('refEntryNo')}
-                field={shipmt.ref_entry_no} fieldCol={{ span: 16 }}
+              <InfoItem label={this.msg('refEntryNo')} addonBefore={<Icon type="tag-o" />}
+                field={shipmt.ref_entry_no} editable
               />
             </Col>
             <Col span="8">
-              <InfoItem labelCol={{ span: 8 }} label={this.msg('remark')}
-                field={shipmt.remark} fieldCol={{ span: 21 }}
+              <InfoItem label={this.msg('remark')}
+                field={shipmt.remark} editable
               />
             </Col>
           </Row>
         </Card>
         <Card
           title={`${this.msg('shipmtSchedule')} ${shipmt.transit_time || '当'}${this.msg('day')} ${distanceStr}`}
-          bodyStyle={{ padding: 8 }}
+          bodyStyle={{ padding: 16 }}
           extra={shipmtScheduleExtra}
         >
           <div className="trans_schedule">
@@ -261,14 +259,14 @@ export default class DetailPane extends React.Component {
                   icon={<div className="icon">始</div>}
                   description={
                     <div>
-                      <InfoItem labelCol={{ span: 8 }} label={this.msg('pickupEstDate')}
-                        field={pickupDate} fieldCol={{ span: 16 }}
+                      <InfoItem label={this.msg('pickupEstDate')}
+                        field={pickupDate}
                       />
-                      <InfoItem labelCol={{ span: 8 }} label="发货地"
-                        field={`${renderConsignLoc(shipmt, 'consigner')} ${shipmt.consigner_addr || ''}`} fieldCol={{ span: 16 }}
+                      <InfoItem label="发货地"
+                        field={`${renderConsignLoc(shipmt, 'consigner')} ${shipmt.consigner_addr || ''}`}
                       />
-                      <InfoItem labelCol={{ span: 8 }} label="联系人/电话"
-                        field={`${shipmt.consigner_contact || ''} ${shipmt.consigner_mobile || ''}`} fieldCol={{ span: 16 }}
+                      <InfoItem label="联系人/电话"
+                        field={`${shipmt.consigner_contact || ''} ${shipmt.consigner_mobile || ''}`}
                       />
                     </div>
                 }
@@ -281,14 +279,14 @@ export default class DetailPane extends React.Component {
                   icon={<div className="icon">终</div>}
                   description={
                     <div>
-                      <InfoItem labelCol={{ span: 8 }} label={this.msg('deliveryEstDate')}
-                        field={deliverDate} fieldCol={{ span: 16 }}
+                      <InfoItem label={this.msg('deliveryEstDate')}
+                        field={deliverDate}
                       />
-                      <InfoItem labelCol={{ span: 8 }} label="收货地"
-                        field={`${renderConsignLoc(shipmt, 'consignee')} ${shipmt.consignee_addr || ''}`} fieldCol={{ span: 16 }}
+                      <InfoItem label="收货地"
+                        field={`${renderConsignLoc(shipmt, 'consignee')} ${shipmt.consignee_addr || ''}`}
                       />
-                      <InfoItem labelCol={{ span: 8 }} label="联系人/电话"
-                        field={`${shipmt.consignee_contact || ''} ${shipmt.consignee_mobile || ''}`} fieldCol={{ span: 16 }}
+                      <InfoItem label="联系人/电话"
+                        field={`${shipmt.consignee_contact || ''} ${shipmt.consignee_mobile || ''}`}
                       />
                     </div>
                 }
@@ -297,78 +295,77 @@ export default class DetailPane extends React.Component {
             </div>
           </div>
         </Card>
-        <Card title={this.msg('transitModeInfo')} bodyStyle={{ padding: 8 }}
+        <Card title={this.msg('transitModeInfo')} bodyStyle={{ padding: 16 }}
           extra={transitModeInfoExtra}
         >
           <Row>
             <Col span="12">
-              <InfoItem labelCol={{ span: 8 }} label={this.msg('transitModeInfo')}
-                field={shipmt.transport_mode} fieldCol={{ span: 16 }}
+              <InfoItem label={this.msg('transitModeInfo')}
+                field={shipmt.transport_mode}
               />
             </Col>
             {shipmt.transport_mode_code === PRESET_TRANSMODES.ftl &&
             <Col span="12">
-              <InfoItem labelCol={{ span: 8 }} label={this.msg('vehicleType')}
-                field={vehicleType ? vehicleType.text : ''} fieldCol={{ span: 16 }}
+              <InfoItem label={this.msg('vehicleType')}
+                field={vehicleType ? vehicleType.text : ''}
               />
             </Col>
             }
             {shipmt.transport_mode_code === PRESET_TRANSMODES.ftl &&
             <Col span="12">
-              <InfoItem labelCol={{ span: 8 }} label={this.msg('vehicleLength')}
-                field={vehicleLength ? vehicleLength.text : ''} fieldCol={{ span: 16 }}
+              <InfoItem label={this.msg('vehicleLength')}
+                field={vehicleLength ? vehicleLength.text : ''} addonAfter="米"
               />
             </Col>
             }
             {shipmt.transport_mode_code === PRESET_TRANSMODES.ctn &&
             <Col span="12">
-              <InfoItem labelCol={{ span: 8 }} label={this.msg('containerNo')}
-                field={shipmt.container_no} fieldCol={{ span: 16 }}
+              <InfoItem label={this.msg('containerNo')}
+                field={shipmt.container_no}
               />
             </Col>
             }
             {shipmt.transport_mode_code === PRESET_TRANSMODES.exp &&
             <Col span="12">
-              <InfoItem labelCol={{ span: 8 }} label={this.msg('courierNo')}
-                field={shipmt.courier_no} fieldCol={{ span: 16 }}
+              <InfoItem label={this.msg('courierNo')}
+                field={shipmt.courier_no}
               />
             </Col>
             }
           </Row>
         </Card>
-        <Card title={this.msg('goodsInfo')} bodyStyle={{ padding: 8 }}
+        <Card title={this.msg('goodsInfo')} bodyStyle={{ padding: 16 }}
           extra={goodsInfoExtra}
         >
           <Row>
             <Col span="8">
-              <InfoItem labelCol={{ span: 8 }} label={this.msg('goodsType')}
-                field={goodsType ? goodsType.text : shipmt.goods_type} fieldCol={{ span: 16 }}
+              <InfoItem label={this.msg('goodsType')}
+                field={goodsType ? goodsType.text : shipmt.goods_type} editable
               />
             </Col>
             <Col span="8">
-              <InfoItem labelCol={{ span: 8 }} label={this.msg('goodsPackage')}
-                field={pckg ? pckg.value : shipmt.package} fieldCol={{ span: 16 }}
+              <InfoItem label={this.msg('goodsPackage')}
+                field={pckg ? pckg.value : shipmt.package} editable
               />
             </Col>
             <Col span="8">
-              <InfoItem labelCol={{ span: 8 }} label={this.msg('insuranceValue')}
-                field={shipmt.insure_value} fieldCol={{ span: 16 }}
-              />
-            </Col>
-
-            <Col span="8">
-              <InfoItem labelCol={{ span: 8 }} label={this.msg('totalCount')}
-                field={shipmt.total_count || ''} fieldCol={{ span: 16 }}
+              <InfoItem label={this.msg('insuranceValue')}
+                field={shipmt.insure_value} addonAfter="元" editable
               />
             </Col>
             <Col span="8">
-              <InfoItem labelCol={{ span: 8 }} label={this.msg('totalWeight')}
-                field={shipmt.total_weight !== null ? `${shipmt.total_weight} ${this.msg('kilogram')}` : ''} fieldCol={{ span: 16 }}
+              <InfoItem label={this.msg('totalCount')}
+                field={shipmt.total_count} addonAfter="件" editable
               />
             </Col>
             <Col span="8">
-              <InfoItem labelCol={{ span: 8 }} label={this.msg('totalVolume')}
-                field={shipmt.total_volume !== null ? `${shipmt.total_volume} ${this.msg('cubicMeter')}` : ''} fieldCol={{ span: 16 }}
+              <InfoItem label={this.msg('totalWeight')}
+                field={shipmt.total_weight} addonAfter={this.msg('kilogram')} editable
+              />
+            </Col>
+            <Col span="8">
+              <InfoItem label={this.msg('totalVolume')}
+                field={shipmt.total_volume} addonAfter={this.msg('cubicMeter')} editable
               />
             </Col>
           </Row>

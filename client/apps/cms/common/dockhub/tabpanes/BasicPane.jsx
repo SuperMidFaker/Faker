@@ -142,7 +142,7 @@ export default class BasicPane extends React.Component {
           <Row>
             <Col span="8">
               <InfoItem type="dropdown" label="货物类型"
-                field={goods.length > 0 ? goods.text : ''} placeholder="选择货物类型" editable
+                field={(goods && goods.length > 0) ? goods.text : ''} placeholder="选择货物类型" editable
                 overlay={<Menu>
                   <Menu.Item>Menu</Menu.Item>
                 </Menu>

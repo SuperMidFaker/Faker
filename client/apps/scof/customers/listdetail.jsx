@@ -207,6 +207,9 @@ export default class CustomerList extends React.Component {
                       />
                     </Col>
                     <Col sm={24} lg={12}>
+                      <InfoItem label={this.msg('displayName')} field={customer.display_name}
+                        placeholder="添加显示名称" onEdit={this.handleInputChanged} editable
+                      />
                       <FormItem label={this.msg('displayName')} >
                         {getFieldDecorator('display_name', {
                           initialValue: customer.display_name,
@@ -214,6 +217,9 @@ export default class CustomerList extends React.Component {
                       </FormItem>
                     </Col>
                     <Col sm={24} lg={12}>
+                      <InfoItem label={this.msg('englishName')} field={customer.en_name}
+                        placeholder="添加英文名称" onEdit={this.handleInputChanged} editable
+                      />
                       <FormItem label={this.msg('englishName')} >
                         {getFieldDecorator('en_name', {
                           initialValue: customer.en_name,
