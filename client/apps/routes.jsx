@@ -30,6 +30,7 @@ import * as TMSAcceptance from './transport/acceptance';
 import * as TMSDispatch from './transport/dispatch';
 import * as TMSTracking from './transport/tracking';
 import * as TMSResources from './transport/resources';
+import * as TMSSettings from './transport/settings';
 import * as TMSBilling from './transport/billing';
 import * as TMSAnalytics from './transport/analytics';
 import * as TMSTariff from './transport/tariff';
@@ -225,6 +226,12 @@ export default(store, cookie) => {
                 <IndexRoute component={TMSResources.NodeListContainer} />
                 <Route path="edit/:node_id" component={TMSResources.NodeFormContainer} />
               </Route>
+            </Route>
+            <Route path="settings">
+              <IndexRedirect to="/transport/settings/transportModes" />
+              <Route path="transportModes" component={TMSSettings.TransportModes} />
+              <Route path="paramVehicles" component={TMSSettings.ParamVehicles} />
+              <Route path="paramPackages" component={TMSSettings.ParamPackages} />
             </Route>
             <Route path="billing">
               <IndexRedirect to="/transport/billing/receivable" />

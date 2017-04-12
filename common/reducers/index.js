@@ -19,6 +19,7 @@ import trackingLandException from './trackingLandException';
 import shipment from './shipment';
 import transportDispatch from './transportDispatch';
 import transportResources from './transportResources';
+import transportSettings from './transportSettings';
 import transportTariff from './transportTariff';
 import transportBilling from './transportBilling';
 import transportKpi from './transportKpi';
@@ -66,6 +67,7 @@ export default combineReducers({
   trackingLandException,
   transportDispatch,
   transportResources,
+  transportSettings,
   transportTariff,
   transportBilling,
   transportKpi,
