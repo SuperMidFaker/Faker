@@ -25,6 +25,7 @@ const actionTypes = createActionTypes('@@welogix/cms/tradeitem/', [
   'LOAD_TEMP_ITEMS', 'LOAD_TEMP_ITEMS_SUCCEED', 'LOAD_TEMP_ITEMS_FAIL',
   'COMPARED_CANCEL', 'COMPARED_CANCEL_SUCCEED', 'COMPARED_CANCEL_FAIL',
   'DELETE_TEMP_DATA', 'DELETE_TEMP_DATA_SUCCEED', 'DELETE_TEMP_DATA_FAIL',
+  'LOAD_REPO_BROKERS', 'LOAD_REPO_BROKERS_SUCCEED', 'LOAD_REPO_BROKERS_FAIL',
 ]);
 
 const initialState = {
@@ -65,6 +66,7 @@ const initialState = {
   hstabKey: 'declunit',
   repo: {},
   visibleCompareModal: false,
+  repoBrokers: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -107,6 +109,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, repoUsers: action.result.data };
     case actionTypes.LOAD_TEMP_ITEMS_SUCCEED:
       return { ...state, tempItems: action.result.data };
+    case actionTypes.LOAD_REPO_BROKERS_SUCCEED:
+      return { ...state, repoId: action.result.data.repoId, repoBrokers: action.result.data.repoBrokers };
     default:
       return state;
   }
@@ -447,6 +451,21 @@ export function deleteTempData(id) {
       endpoint: 'v1/cms/tradeitem/compared/del',
       method: 'post',
       data: { id },
+    },
+  };
+}
+
+export function loadRepoBrokers(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_REPO_BROKERS,
+        actionTypes.LOAD_REPO_BROKERS_SUCCEED,
+        actionTypes.LOAD_REPO_BROKERS_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/repo/brokers/load',
+      method: 'get',
+      params,
     },
   };
 }
