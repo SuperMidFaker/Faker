@@ -16,7 +16,6 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'LOAD_REQUIRE', 'LOAD_REQUIRE_SUCCEED', 'LOAD_REQUIRE_FAIL',
   'ENSURE_MANIFESTMETA', 'ENSURE_MANIFESTMETA_SUCCEED', 'ENSURE_MANIFESTMETA_FAIL',
   'OPEN_EF_MODAL', 'CLOSE_EF_MODAL', 'SET_DISP_STATUS',
-  'FILL_ENTRYNO', 'FILL_ENTRYNO_SUCCEED', 'FILL_ENTRYNO_FAIL',
   'LOAD_DELGDISP', 'LOAD_DELGDISP_SUCCEED', 'LOAD_DELGDISP_FAIL',
   'DELG_DISP_SAVE', 'DELG_DISP_SAVE_SUCCEED', 'DELG_DISP_SAVE_FAIL',
   'DEL_DISP', 'DEL_DISP_SUCCEED', 'DEL_DISP_FAIL',
@@ -588,20 +587,6 @@ export function closeEfModal() {
 export function closeCiqModal() {
   return {
     type: actionTypes.CLOSE_CIQ_MODAL,
-  };
-}
-export function fillEntryId({ entryNo, entryHeadId, billSeqNo, delgNo }) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.FILL_ENTRYNO,
-        actionTypes.FILL_ENTRYNO_SUCCEED,
-        actionTypes.FILL_ENTRYNO_FAIL,
-      ],
-      endpoint: 'v1/cms/fill/declno',
-      method: 'post',
-      data: { entryNo, entryHeadId, billSeqNo, delgNo },
-    },
   };
 }
 

@@ -116,7 +116,7 @@ export default class BasicPane extends React.Component {
           <Row>
             <Col span="8">
               <InfoItem label="运输方式" addonBefore={transMode && <MdIcon type={transMode.icon} />}
-                field={transMode.length > 0 ? transMode.text : ''}
+                field={(transMode && transMode.length > 0) ? transMode.text : ''}
               />
             </Col>
             <Col span="8">
@@ -142,7 +142,7 @@ export default class BasicPane extends React.Component {
           <Row>
             <Col span="8">
               <InfoItem type="dropdown" label="货物类型"
-                field={goods.length > 0 ? goods.text : ''} placeholder="选择货物类型" editable
+                field={(goods && goods.length > 0) ? goods.text : ''} placeholder="选择货物类型" editable
                 overlay={<Menu>
                   <Menu.Item>Menu</Menu.Item>
                 </Menu>

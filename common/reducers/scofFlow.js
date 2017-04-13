@@ -105,6 +105,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, partnerFlows: action.result.data };
     case actionTypes.EMPTY_FLOWS:
       return { ...state, partnerFlows: [], cmsQuotes: [] };
+    case actionTypes.EDIT_FLOW_SUCCEED:
+      return { ...state, currentFlow: state.currentFlow && { ...state.currentFlow, ...action.data.flow } };
     default:
       return state;
   }
