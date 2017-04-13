@@ -44,7 +44,7 @@ export default class TransportModes extends Component {
     updateTransportMode: PropTypes.func.isRequired,
   }
   state = {
-    editIndex: -1,
+    editId: -2,
     transportModes: [],
   }
   componentWillReceiveProps(nextProps) {
@@ -56,24 +56,25 @@ export default class TransportModes extends Component {
     const mode = transportModes.find(item => item.id === id);
     if (mode && mode.mode_name) {
       this.props.updateTransportMode(mode).then(() => {
-        this.setState({ editIndex: -1 });
+        this.setState({ editId: -2 });
       });
     } else {
       message.error('名称不能为空');
     }
   }
   handleAdd = () => {
-    const { editIndex, transportModes } = this.state;
-    if (transportModes[editIndex].mode_name) {
+    const { transportModes } = this.state;
+    const index = transportModes.length - 1;
+    if (transportModes[index].mode_name) {
       this.props.addTransportMode({
         tenant_id: this.props.tenantId,
-        mode_code: transportModes[editIndex].mode_code,
-        mode_name: transportModes[editIndex].mode_name,
+        mode_code: transportModes[index].mode_code,
+        mode_name: transportModes[index].mode_name,
       }).then((result) => {
         if (result.error) {
           message.error(result.error.message, 10);
         } else {
-          this.setState({ editIndex: -1 });
+          this.setState({ editId: -2 });
         }
       });
     } else {
@@ -93,11 +94,16 @@ export default class TransportModes extends Component {
         title: '名称',
         dataIndex: 'mode_name',
         key: 'mode_name',
-        render: (col, row, index) => {
-          if (this.state.editIndex === index) {
+        render: (col, row) => {
+          if (this.state.editId === row.id) {
             return (<Input value={col} onChange={(e) => {
-              const { transportModes } = this.state;
-              transportModes[index].mode_name = e.target.value;
+              const transportModes = this.state.transportModes.map((item) => {
+                if (item.id === row.id) {
+                  return { ...item, mode_name: e.target.value };
+                } else {
+                  return item;
+                }
+              });
               this.setState({ transportModes });
             }}
             />);
@@ -109,11 +115,16 @@ export default class TransportModes extends Component {
         title: '代码',
         dataIndex: 'mode_code',
         key: 'mode_code',
-        render: (col, row, index) => {
-          if (this.state.editIndex === index) {
+        render: (col, row) => {
+          if (this.state.editId === row.id) {
             return (<Input value={col} onChange={(e) => {
-              const { transportModes } = this.state;
-              transportModes[index].mode_code = e.target.value;
+              const transportModes = this.state.transportModes.map((item) => {
+                if (item.id === row.id) {
+                  return { ...item, mode_code: e.target.value };
+                } else {
+                  return item;
+                }
+              });
               this.setState({ transportModes });
             }}
             />);
@@ -125,29 +136,29 @@ export default class TransportModes extends Component {
         title: '操作',
         dataIndex: 'enabled',
         key: 'enabled',
-        render: (_, record, index) => {
-          if (record.mode_code !== PRESET_TRANSMODES.ftl && record.mode_code !== PRESET_TRANSMODES.exp &&
-            record.mode_code !== PRESET_TRANSMODES.ltl && record.mode_code !== PRESET_TRANSMODES.ctn) {
-            if (this.state.editIndex === index) {
-              if (record.id === -1) {
+        render: (_, row) => {
+          if (row.mode_code !== PRESET_TRANSMODES.ftl && row.mode_code !== PRESET_TRANSMODES.exp &&
+            row.mode_code !== PRESET_TRANSMODES.ltl && row.mode_code !== PRESET_TRANSMODES.ctn) {
+            if (this.state.editId === row.id) {
+              if (row.id === -1) {
                 return (<a onClick={this.handleAdd}><Icon type="save" /></a>);
               } else {
-                return (<a onClick={() => this.handleEdit(record.id)}><Icon type="save" /></a>);
+                return (<a onClick={() => this.handleEdit(row.id)}><Icon type="save" /></a>);
               }
-            } else if (record.id === -1) {
+            } else if (row.id === -1) {
               return (<a onClick={() => {
-                this.setState({ editIndex: index });
+                this.setState({ editId: row.id });
               }}
               ><Icon type="plus" /></a>);
             } else {
               return (
                 <span>
                   <a onClick={() => {
-                    this.setState({ editIndex: index });
+                    this.setState({ editId: row.id });
                   }}
                   ><Icon type="edit" /></a>
                   <span className="ant-divider" />
-                  <Popconfirm title="确认删除该分类?" onConfirm={() => this.handleRemove(record)}>
+                  <Popconfirm title="确认删除?" onConfirm={() => this.handleRemove(row)}>
                     <a role="button"><Icon type="delete" /></a>
                   </Popconfirm>
                 </span>

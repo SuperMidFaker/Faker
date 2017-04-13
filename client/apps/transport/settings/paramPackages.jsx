@@ -43,7 +43,7 @@ export default class ParamPackages extends Component {
     updateParamPackage: PropTypes.func.isRequired,
   }
   state = {
-    editIndex: -1,
+    editId: -2,
     paramPackages: [],
   }
   componentWillReceiveProps(nextProps) {
@@ -55,24 +55,25 @@ export default class ParamPackages extends Component {
     const pack = paramPackages.find(item => item.id === id);
     if (pack && pack.package_name) {
       this.props.updateParamPackage(pack).then(() => {
-        this.setState({ editIndex: -1 });
+        this.setState({ editId: -2 });
       });
     } else {
       message.error('名称不能为空');
     }
   }
   handleAdd = () => {
-    const { editIndex, paramPackages } = this.state;
-    if (paramPackages[editIndex].package_name) {
+    const { paramPackages } = this.state;
+    const index = paramPackages.length - 1;
+    if (paramPackages[index].package_name) {
       this.props.addParamPackage({
         tenant_id: this.props.tenantId,
-        package_code: paramPackages[editIndex].package_code,
-        package_name: paramPackages[editIndex].package_name,
+        package_code: paramPackages[index].package_code,
+        package_name: paramPackages[index].package_name,
       }).then((result) => {
         if (result.error) {
           message.error(result.error.message, 10);
         } else {
-          this.setState({ editIndex: -1 });
+          this.setState({ editId: -2 });
         }
       });
     } else {
@@ -92,11 +93,16 @@ export default class ParamPackages extends Component {
         title: '名称',
         dataIndex: 'package_name',
         key: 'package_name',
-        render: (col, row, index) => {
-          if (this.state.editIndex === index) {
+        render: (col, row) => {
+          if (this.state.editId === row.id) {
             return (<Input value={col} onChange={(e) => {
-              const { paramPackages } = this.state;
-              paramPackages[index].package_name = e.target.value;
+              const paramPackages = this.state.paramPackages.map((item) => {
+                if (item.id === row.id) {
+                  return { ...item, package_name: e.target.value };
+                } else {
+                  return item;
+                }
+              });
               this.setState({ paramPackages });
             }}
             />);
@@ -108,11 +114,16 @@ export default class ParamPackages extends Component {
         title: '代码',
         dataIndex: 'package_code',
         key: 'package_code',
-        render: (col, row, index) => {
-          if (this.state.editIndex === index) {
+        render: (col, row) => {
+          if (this.state.editId === row.id) {
             return (<Input value={col} onChange={(e) => {
-              const { paramPackages } = this.state;
-              paramPackages[index].package_code = e.target.value;
+              const paramPackages = this.state.paramPackages.map((item) => {
+                if (item.id === row.id) {
+                  return { ...item, package_code: e.target.value };
+                } else {
+                  return item;
+                }
+              });
               this.setState({ paramPackages });
             }}
             />);
@@ -124,27 +135,27 @@ export default class ParamPackages extends Component {
         title: '操作',
         dataIndex: 'enabled',
         key: 'enabled',
-        render: (_, record, index) => {
-          if (this.state.editIndex === index) {
-            if (record.id === -1) {
+        render: (_, row) => {
+          if (this.state.editId === row.id) {
+            if (row.id === -1) {
               return (<a onClick={this.handleAdd}><Icon type="save" /></a>);
             } else {
-              return (<a onClick={() => this.handleEdit(record.id)}><Icon type="save" /></a>);
+              return (<a onClick={() => this.handleEdit(row.id)}><Icon type="save" /></a>);
             }
-          } else if (record.id === -1) {
+          } else if (row.id === -1) {
             return (<a onClick={() => {
-              this.setState({ editIndex: index });
+              this.setState({ editId: row.id });
             }}
             ><Icon type="plus" /></a>);
           } else {
             return (
               <span>
                 <a onClick={() => {
-                  this.setState({ editIndex: index });
+                  this.setState({ editId: row.id });
                 }}
                 ><Icon type="edit" /></a>
                 <span className="ant-divider" />
-                <Popconfirm title="确认删除该分类?" onConfirm={() => this.handleRemove(record)}>
+                <Popconfirm title="确认删除?" onConfirm={() => this.handleRemove(row)}>
                   <a role="button"><Icon type="delete" /></a>
                 </Popconfirm>
               </span>
