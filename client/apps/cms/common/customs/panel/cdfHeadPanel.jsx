@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Card, Form, Row, Col } from 'antd';
+import { Card, Form, Row, Col, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import InfoItem from 'client/components/InfoItem';
 import FormInput from '../../form/formInput';
@@ -9,7 +9,7 @@ import {
   TradeRemission, CountryAttr, TradeMode, Fee, ContainerNo, PackWeight, Pieces,
   RaDeclManulNo, StoreYard,
 } from '../../form/headFormItems';
-import { loadSearchedParam, saveBillHead } from 'common/reducers/cmsManifest';
+import { fillEntryId } from 'common/reducers/cmsManifest';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 
@@ -20,7 +20,7 @@ const formatMsg = format(messages);
   state => ({
     formRequire: state.cmsManifest.params,
   }),
-  { loadSearchedParam, saveBillHead }
+  { fillEntryId }
 )
 export default class CDFHeadPanel extends React.Component {
   static propTypes = {
@@ -30,11 +30,21 @@ export default class CDFHeadPanel extends React.Component {
     form: PropTypes.object.isRequired,
     formData: PropTypes.object.isRequired,
     formRequire: PropTypes.object.isRequired,
-    loadSearchedParam: PropTypes.func.isRequired,
-    onSave: PropTypes.func.isRequired,
+    fillEntryId: PropTypes.func.isRequired,
   }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
 
+  handleEntryFill = (entryNo) => {
+    const { formData } = this.props;
+    this.props.fillEntryId({
+      entryNo, entryHeadId: formData.id,
+      billSeqNo: formData.bill_seq_no, delgNo: formData.delg_no,
+    }).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      }
+    });
+  }
   render() {
     const { form, formData, formRequire, ietype, intl } = this.props;
     const formProps = {
@@ -56,7 +66,7 @@ export default class CDFHeadPanel extends React.Component {
               </Col>
               <Col span="6">
                 <InfoItem size="small" field={formData.entry_id} placeholder="点击回填"
-                  addonBefore={this.msg('formEntryId')} editable={!formData.entry_id}
+                  addonBefore={this.msg('formEntryId')} editable={!formData.entry_id} onEdit={this.handleEntryFill}
                 />
               </Col>
             </Row>

@@ -5,7 +5,6 @@ import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadEntry, saveEntryHead } from 'common/reducers/cmsManifest';
 import { deleteDecl, setFilterReviewed, showSendDeclModal } from 'common/reducers/cmsDeclare';
-import { fillEntryId } from 'common/reducers/cmsDelegation';
 import NavLink from 'client/components/nav-link';
 import ButtonToggle from 'client/components/ButtonToggle';
 import SheetHeadPanel from './panel/cdfHeadPanel';
@@ -28,7 +27,7 @@ const TabPane = Tabs.TabPane;
     bodies: state.cmsManifest.entryBodies,
     tenantId: state.account.tenantId,
   }),
-  { saveEntryHead, loadEntry, fillEntryId, deleteDecl, setFilterReviewed, showSendDeclModal }
+  { saveEntryHead, loadEntry, deleteDecl, setFilterReviewed, showSendDeclModal }
 )
 @connectNav({
   depth: 3,
@@ -72,17 +71,8 @@ export default class CustomsDeclEditor extends React.Component {
     this.context.router.push({ pathname });
   }
   handleEntryHeadSave = () => {
-    const formVals = this.props.form.getFieldsValue();
-    const { head } = this.props;
-    if (formVals.entry_id) {
-      this.props.fillEntryId({ entryNo: formVals.entry_id, entryHeadId: head.id,
-        billSeqNo: head.bill_seq_no, delgNo: head.delg_no }).then((result) => {
-          if (result.error) {
-            message.error(result.error.message, 10);
-          }
-        });
-    }
-    this.props.saveEntryHead({ formVals, entryHeadId: head.id }).then((result) => {
+    const formVals = this.props.form.getFieldsValue(); // *todo* save entry mark/note
+    this.props.saveEntryHead({ formVals, entryHeadId: this.props.head.id }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -167,7 +157,7 @@ export default class CustomsDeclEditor extends React.Component {
               <div className="page-body tabbed">
                 <Tabs defaultActiveKey="header">
                   <TabPane tab="报关单表头" key="header">
-                    <SheetHeadPanel ietype={ietype} readonly={readonly} form={form} formData={head} onSave={this.handleEntryHeadSave} />
+                    <SheetHeadPanel ietype={ietype} readonly={readonly} form={form} formData={head} />
                   </TabPane>
                   <TabPane tab="报关单表体" key="body">
                     <SheetBodyPanel ietype={ietype} readonly={readonly} data={bodies} headNo={head.id} />
