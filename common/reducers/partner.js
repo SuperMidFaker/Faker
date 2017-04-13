@@ -9,9 +9,11 @@ const actionTypes = createActionTypes('@@welogix/partner/', [
   'EDIT_PARTNER', 'EDIT_PARTNER_SUCCEED', 'EDIT_PARTNER_FAIL',
   'CHANGE_PARTNER_STATUS', 'CHANGE_PARTNER_STATUS_SUCCEED', 'CHANGE_PARTNER_STATUS_FAIL',
   'DELETE_PARTNER', 'DELETE_PARTNER_SUCCEED', 'DELETE_PARTNER_FAIL',
-  'INVITE_PARTNER',
+  'INVITE_PARTNER', 'OPEN_SPMODAL', 'CLOSE_SPMODAL',
+  'ADD_SP', 'ADD_SP_SUCCEED', 'ADD_SP_FAIL',
+  'EDIT_SP', 'EDIT_SP_SUCCEED', 'EDIT_SP_FAIL',
 ]);
-
+// *TODO* customerModal brokerModal group together
 const initialState = {
   loading: true,
   loaded: true,
@@ -24,6 +26,8 @@ const initialState = {
   partners: [],
   selectedMenuItemKey: '0',  // 记录当前MenuItemKey的值,
   providerType: 'ALL',        // 记录当前被选中的物流供应商, 值对应为:['ALL', 'FWD', 'CCB', 'TRS', 'WHS']
+  visibleSpModal: false,
+  spModal: { },
 };
 
 export default function reducer(state = initialState, action) {
@@ -47,6 +51,10 @@ export default function reducer(state = initialState, action) {
     case actionTypes.INVITE_PARTNER:
     case actionTypes.EDIT_PROVIDER_TYPES_SUCCEED:
       return { ...state, loaded: false };
+    case actionTypes.CLOSE_SPMODAL:
+      return { ...state, visibleSpModal: false, spModal: initialState.spModal };
+    case actionTypes.OPEN_SPMODAL:
+      return { ...state, spModal: action.data, visibleSpModal: true };
     default:
       return state;
   }
@@ -171,5 +179,43 @@ export function invitePartner(id) {
   return {
     type: actionTypes.INVITE_PARTNER,
     id,
+  };
+}
+
+export function openSpModal(partner, operation) {
+  return { type: actionTypes.OPEN_SPMODAL, data: { partner, operation } };
+}
+
+export function closeSpModal() {
+  return { type: actionTypes.CLOSE_SPMODAL };
+}
+
+export function addSp(sp) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.ADD_SP,
+        actionTypes.ADD_SP_SUCCEED,
+        actionTypes.ADD_SP_FAIL,
+      ],
+      endpoint: 'v1/cooperation/partner/spadd',
+      method: 'post',
+      data: sp,
+    },
+  };
+}
+
+export function editSp(sp) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.EDIT_SP,
+        actionTypes.EDIT_SP_SUCCEED,
+        actionTypes.EDIT_SP_FAIL,
+      ],
+      endpoint: 'v1/cooperation/partner/spedit',
+      method: 'post',
+      data: sp,
+    },
   };
 }

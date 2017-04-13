@@ -1,17 +1,16 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Layout, Menu } from 'antd';
-import QueueAnim from 'rc-queue-anim';
+import { Button, Layout } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadWarehouses, openAddWarehouseModal } from 'common/reducers/scvWarehouse';
 import Table from 'client/components/remoteAntTable';
-import NavLink from 'client/components/nav-link';
 import connectNav from 'client/common/decorators/connect-nav';
+import ScvResourceWrapper from '../wrapper';
 import AddWarehouseModal from './addWarehouseModal';
-import { formatMsg } from './message.i18n';
+import { formatMsg } from '../message.i18n';
 
-const { Header, Content, Sider } = Layout;
+const Content = Layout.Content;
 function fetchData({ state, dispatch }) {
   return dispatch(loadWarehouses({
     tenantId: state.account.tenantId,
@@ -39,7 +38,7 @@ function fetchData({ state, dispatch }) {
   depth: 2,
   moduleName: 'scv',
 })
-export default class SCVWarehouseList extends React.Component {
+export default class ScvWarehouseList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -112,40 +111,19 @@ export default class SCVWarehouseList extends React.Component {
     const { loading, warehouselist } = this.props;
     this.dataSource.remotes = warehouselist;
     return (
-      <QueueAnim type={['bottom', 'up']}>
-        <Header className="top-bar">
-          <Breadcrumb>
-            <Breadcrumb.Item>
-              {this.msg('inventoryWarehouse')}
-            </Breadcrumb.Item>
-          </Breadcrumb>
-        </Header>
-        <Content className="main-content" key="main">
-          <div className="page-body">
-            <Layout className="main-wrapper">
-              <Sider className="nav-sider">
-                <Menu defaultSelectedKeys={['warehouse']} mode="inline">
-                  <Menu.Item key="warehouse"><NavLink to="/scv/resources/warehouse">仓库</NavLink></Menu.Item>
-                  <Menu.Item key="broker" disabled><NavLink to="/scv/resources/broker">报关行</NavLink></Menu.Item>
-                  <Menu.Item key="forwarder" disabled><NavLink to="/scv/resources/forwarder">货代</NavLink></Menu.Item>
-                  <Menu.Item key="supplier" disabled><NavLink to="/scv/resources/supplier">供应商</NavLink></Menu.Item>
-                </Menu>
-              </Sider>
-              <Content className="nav-content">
-                <div className="toolbar">
-                  <Button type="primary" size="large" icon="plus" onClick={this.handleAddWarehouse}>
-                    {this.msg('addWarehouse')}
-                  </Button>
-                </div>
-                <div className="panel-body table-panel">
-                  <Table columns={this.columns} dataSource={this.dataSource} loading={loading} rowKey="wh_no" scroll={{ x: 1200 }} />
-                </div>
-              </Content>
-            </Layout>
+      <ScvResourceWrapper menuKey="warehouse">
+        <Content className="nav-content">
+          <div className="toolbar">
+            <Button type="primary" size="large" icon="plus" onClick={this.handleAddWarehouse}>
+              {this.msg('addWarehouse')}
+            </Button>
           </div>
-          <AddWarehouseModal />
+          <div className="panel-body table-panel">
+            <Table columns={this.columns} dataSource={this.dataSource} loading={loading} rowKey="wh_no" scroll={{ x: 1200 }} />
+          </div>
         </Content>
-      </QueueAnim>
+        <AddWarehouseModal />
+      </ScvResourceWrapper>
     );
   }
 }

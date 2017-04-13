@@ -81,7 +81,7 @@ import * as SCVPaymentsTax from './scv/payments/tax';
 import * as SCVPaymentsBilling from './scv/payments/billing';
 import * as SCVAnalyticsKpi from './scv/analytics/kpi';
 import * as SCVAnalyticsCost from './scv/analytics/cost';
-import * as SCVWarehouse from './scv/resources/warehouse';
+import * as SCVResource from './scv/resources';
 import * as SCVSettings from './scv/settings';
 import SCOF from './scof/module-scof';
 import * as SCOFDashboard from './scof/dashboard';
@@ -394,8 +394,9 @@ export default(store, cookie) => {
               <Route path="cost" component={SCVAnalyticsCost.List} />
             </Route>
             <Route path="resources">
-              <IndexRedirect to="/scv/resources/warehouse" />
-              <Route path="warehouse" component={SCVWarehouse.List} />
+              <IndexRoute component={SCVResource.Warehouses} />
+              <Route path="warehouse" component={SCVResource.Warehouses} />
+              <Route path="serviceprovider" component={SCVResource.ServiceProviders} />
             </Route>
             <Route path="settings">
               <IndexRedirect to="/scv/settings/openapi" />

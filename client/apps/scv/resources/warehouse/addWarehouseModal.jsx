@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { injectIntl, intlShape } from 'react-intl';
 import { Modal, Form, Input, Radio, message } from 'antd';
 import { closeAddWarehouseModal, addWarehouse } from 'common/reducers/scvWarehouse';
-import { formatMsg } from './message.i18n';
+import { formatMsg } from '../message.i18n';
 
 const FormItem = Form.Item;
 const RadioButton = Radio.Button;
