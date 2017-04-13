@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Badge, Form, Breadcrumb, Button, Layout, Tabs, Tooltip, message, Popconfirm, Spin } from 'antd';
+import { Badge, Form, Breadcrumb, Button, Icon, Layout, Tabs, Tooltip, message, Popconfirm, Spin } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadEntry, saveEntryHead } from 'common/reducers/cmsManifest';
@@ -128,7 +128,7 @@ export default class CustomsDeclEditor extends React.Component {
                 {this.props.ietype === 'import' ? this.msg('importOperation') : this.msg('exportOperation')}
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                <NavLink to={path}>{this.msg('customsDeclaration')}</NavLink>
+                <Icon type="file" /> <NavLink to={path}>{this.msg('customsDeclaration')}</NavLink>
               </Breadcrumb.Item>
               <Breadcrumb.Item>
                 {head.entry_id || head.pre_entry_seq_no}

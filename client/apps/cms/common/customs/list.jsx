@@ -357,7 +357,7 @@ export default class DelgDeclList extends Component {
               {this.props.ietype === 'import' ? this.msg('importOperation') : this.msg('exportOperation')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              {this.msg('customsDeclaration')}
+              <Icon type="file" /> {this.msg('customsDeclaration')}
             </Breadcrumb.Item>
           </Breadcrumb>
           <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">

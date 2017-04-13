@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { routerShape } from 'react-router';
-import { Menu, Radio, Modal, Popover, Icon } from 'antd';
+import { Menu, Radio, Modal, Popover, Icon, Tooltip } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import NavLink from './nav-link';
 import MdIcon from './MdIcon';
@@ -126,14 +126,18 @@ export default class HeaderNavBar extends React.Component {
       );
     } else if (navTitle.depth === 3) {
       brandNav = [(
-        <a role="button" className="navbar-anchor" key="back" onClick={this.handleGoBack}>
-          <MdIcon type="arrow-left" />
-        </a>)];
+        <Tooltip placement="bottomLeft" arrowPointAtCenter mouseEnterDelay={2} title="Go back to previous step" >
+          <a role="button" className="navbar-anchor" key="back" onClick={this.handleGoBack}>
+            <MdIcon type="arrow-left" />
+          </a>
+        </Tooltip>)];
       if (navTitle.jumpOut) {
         brandNav.push(
-          <a role="button" className="navbar-anchor" key="close" onClick={this.handleGoDepth2}>
-            <MdIcon type="close" />
-          </a>);
+          <Tooltip placement="bottomLeft" arrowPointAtCenter mouseEnterDelay={2} title="Close to up level" >
+            <a role="button" className="navbar-anchor" key="close" onClick={this.handleGoDepth2}>
+              <MdIcon type="close" />
+            </a>
+          </Tooltip>);
       }
     }
     return (

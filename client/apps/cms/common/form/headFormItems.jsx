@@ -114,7 +114,7 @@ export class RelationAutoCompSelect extends React.Component {
     getFieldDecorator: PropTypes.func.isRequired,
     codeRules: PropTypes.array,
     nameRules: PropTypes.array,
-    onSelect: PropTypes.func.isRequired,
+    onSelect: PropTypes.func,
     onChange: PropTypes.func,
   }
 

@@ -7,11 +7,11 @@ const messages = defineMessages({
   },
   clearanceImport: {
     id: 'scv.clearance.import',
-    defaultMessage: '进口/进境',
+    defaultMessage: '进口',
   },
   clearanceExport: {
     id: 'scv.clearance.export',
-    defaultMessage: '出口/出境',
+    defaultMessage: '出口',
   },
   declCDF: {
     id: 'scv.clearance.decl.cdf',
@@ -27,7 +27,7 @@ const messages = defineMessages({
   },
   customsDecl: {
     id: 'scv.clearance.customs.decl',
-    defaultMessage: '报关单/备案清单',
+    defaultMessage: '报关单管理',
   },
 });
 

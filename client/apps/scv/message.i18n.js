@@ -25,6 +25,10 @@ const messages = defineMessages({
     id: 'scv.module.shipments.domestic',
     defaultMessage: '国内运输',
   },
+  customizeTracking: {
+    id: 'scv.module.tracking.customize',
+    defaultMessage: '自定义追踪表',
+  },
   clearance: {
     id: 'scv.module.clearance',
     defaultMessage: '清关管理',
@@ -33,9 +37,9 @@ const messages = defineMessages({
     id: 'scv.module.clearance.manifest',
     defaultMessage: '报关清单',
   },
-  clearanceCDS: {
-    id: 'scv.module.clearance.cds',
-    defaultMessage: '报关单/备案清单',
+  clearanceDecl: {
+    id: 'scv.module.clearance.decl',
+    defaultMessage: '报关单管理',
   },
   clearanceTax: {
     id: 'scv.module.clearance.tax',

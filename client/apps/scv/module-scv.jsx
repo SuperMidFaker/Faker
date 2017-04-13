@@ -31,7 +31,7 @@ export default class ModuleSCV extends React.Component {
       single: false,
       key: 'scv-2',
       icon: 'icon-fontello-tasks-1',
-      text: formatMsg(intl, 'shipmentsTracking'),
+      text: formatMsg(intl, 'tracking'),
       sublinks: [{
         key: 'scv-2-0',
         path: '/scv/shipments/inbound',
@@ -42,9 +42,10 @@ export default class ModuleSCV extends React.Component {
         path: '/scv/shipments/outbound',
         text: formatMsg(intl, 'outboundShipments'),
       }, {
-        key: 'scv-2-2',
-        path: '/scv/shipments/domestic',
-        text: formatMsg(intl, 'domesticShipments'),
+        key: 'scv-2-99',
+        icon: 'zmdi zmdi-wrench',
+        path: '/scv/tracking/customize',
+        text: formatMsg(intl, 'customizeTracking'),
       }],
     });
     linkMenus.push({
@@ -54,16 +55,19 @@ export default class ModuleSCV extends React.Component {
       text: formatMsg(intl, 'clearance'),
       sublinks: [{
         key: 'scv-3-0',
+        icon: 'anticon anticon-file-text',
         path: '/scv/clearance/manifest',
         text: formatMsg(intl, 'clearanceManifest'),
       }, {
         key: 'scv-3-1',
-        path: '/scv/clearance/cds',
-        text: formatMsg(intl, 'clearanceCDS'),
+        path: '/scv/clearance/decl',
+        icon: 'anticon anticon-file',
+        text: formatMsg(intl, 'clearanceDecl'),
       }, {
         key: 'scv-3-2',
         disabled: true,
         path: '/scv/clearance/tax',
+        icon: 'anticon anticon-bank',
         text: formatMsg(intl, 'clearanceTax'),
       }],
     });
@@ -93,16 +97,16 @@ export default class ModuleSCV extends React.Component {
     linkMenus.push({
       single: false,
       key: 'scv-5',
-      icon: 'icon-fontello-tags-2',
+      icon: 'icon-fontello-database',
       text: formatMsg(intl, 'products'),
       sublinks: [{
         key: 'scv-5-0',
-        path: '/scv/products/sku',
-        text: formatMsg(intl, 'productsSKU'),
-      }, {
-        key: 'scv-5-1',
         path: '/scv/products/tradeitem',
         text: formatMsg(intl, 'productsTradeItem'),
+      }, {
+        key: 'scv-5-1',
+        path: '/scv/products/sku',
+        text: formatMsg(intl, 'productsSKU'),
       }],
     });
     linkMenus.push({

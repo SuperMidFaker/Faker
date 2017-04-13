@@ -36,7 +36,10 @@ export default class ButtonToggle extends React.Component {
     } = this.props;
     const toggleCls = this.state.toggle ? 'btn-toggle-on' : 'btn-toggle-off';
     const toggleIcon = this.state.toggle ? iconOn : iconOff;
-    return (<Button type={type} shape={shape} size={size} icon={toggleIcon} className={toggleCls} onClick={this.handleClick}>{children}</Button>
+    return (
+      <Button type={type} shape={shape} size={size} icon={toggleIcon} className={toggleCls} onClick={this.handleClick}>
+        {children}
+      </Button>
     );
   }
 }

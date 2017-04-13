@@ -342,7 +342,7 @@ export default class ManifestEditor extends React.Component {
                 {this.props.ietype === 'import' ? this.msg('importClearance') : this.msg('exportClearance')}
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                <NavLink to={path}>{this.msg('declManifest')}</NavLink>
+                <Icon type="file-text" /> <NavLink to={path}>{this.msg('declManifest')}</NavLink>
               </Breadcrumb.Item>
               <Breadcrumb.Item>
                 {billMeta.bill_seq_no}

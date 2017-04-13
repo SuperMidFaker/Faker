@@ -289,13 +289,9 @@ export default class DelgDeclList extends Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <RadioGroup onChange={this.handleIEChange} size="large">
+            <RadioButton value="all">{this.msg('all')}</RadioButton>
             <RadioButton value="import">{this.msg('clearanceImport')}</RadioButton>
             <RadioButton value="export">{this.msg('clearanceExport')}</RadioButton>
-          </RadioGroup>
-          <span />
-          <RadioGroup onChange={this.handleTypeChange} size="large">
-            <RadioButton value="cdf">{this.msg('declCDF')}</RadioButton>
-            <RadioButton value="ftz">{this.msg('declFTZ')}</RadioButton>
           </RadioGroup>
           <span />
           <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">
