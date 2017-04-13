@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { Form, Row, Col, Card } from 'antd';
+import { Form, Row, Col, Card, message } from 'antd';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import NodeForm from '../components/NodeForm';
@@ -19,6 +19,7 @@ function fetchData({ dispatch, params }) {
   region: state.transportResources.region,
   tenantId: state.account.tenantId,
   nodeUsers: state.transportResources.nodeUsers,
+  partners: state.shipment.partners,
 }), {
   addNode, editNode, changeRegion, addNodeUser,
   editNodeUser, removeNodeUser, updateUserStatus,
@@ -43,6 +44,7 @@ export default class NodeFormConainer extends Component {
     editNodeUser: PropTypes.func.isRequired,
     removeNodeUser: PropTypes.func.isRequired,
     updateUserStatus: PropTypes.func.isRequired,
+    partners: PropTypes.array.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -59,12 +61,17 @@ export default class NodeFormConainer extends Component {
   handleEditNode = (e) => {
     e.preventDefault();
     const { form, params, region } = this.props;
-    const nodeInfoInform = form.getFieldsValue();
-    const nodeInfo = { ...nodeInfoInform, ...region };
-    const nodeId = params.node_id;
-    this.props.editNode({ nodeId, nodeInfo }).then(() => {
-      this.context.router.goBack();
-    });
+    const nodeInfoInForm = form.getFieldsValue();
+    if (!nodeInfoInForm.ref_partner_id || nodeInfoInForm.ref_partner_id <= 0) {
+      message.warn('关联方必填');
+    } else {
+      const refPartnerName = this.props.partners.find(item => item.partner_id === nodeInfoInForm.ref_partner_id).name;
+      const nodeInfo = { ...nodeInfoInForm, ...region, ref_partner_name: refPartnerName };
+      const nodeId = params.node_id;
+      this.props.editNode({ nodeId, nodeInfo }).then(() => {
+        this.context.router.goBack();
+      });
+    }
   }
   handleRegionChange = (value) => {
     const [code, province, city, district, street] = value;
