@@ -1,20 +1,15 @@
 import React, { Component, PropTypes } from 'react';
-import { Form, Input, Modal, message } from 'antd';
+import { Modal, Form, message } from 'antd';
 import { connect } from 'react-redux';
 import withPrivilege from 'client/common/decorators/withPrivilege';
-import Cascader from 'client/components/region-cascade';
 import { addNode, toggleNodeModal } from 'common/reducers/transportResources';
+import NodeForm from '../components/NodeForm';
 
-const FormItem = Form.Item;
-
-const formItemLayout = {
-  labelCol: { span: 6 },
-  wrapperCol: { span: 14 },
-};
 @connect(state => ({
   tenantId: state.account.tenantId,
   visible: state.transportResources.nodeModal.visible,
   nodeType: state.transportResources.nodeType,
+  partners: state.shipment.partners,
 }), {
   addNode, toggleNodeModal,
 })
@@ -30,6 +25,7 @@ export default class NodeModal extends Component {
     addNode: PropTypes.func.isRequired,
     toggleNodeModal: PropTypes.func.isRequired,
     nodeType: PropTypes.number.isRequired,
+    partners: PropTypes.array.isRequired,
   }
   state = {
     region: {
@@ -43,11 +39,14 @@ export default class NodeModal extends Component {
   handleAddNode = () => {
     const { form, nodeType, tenantId } = this.props;
     const { region } = this.state;
+    const nodeInfoInForm = form.getFieldsValue();
     if (!region.province && !region.city && !region.district && !region.street) {
       message.warn('区域必填');
+    } else if (!nodeInfoInForm.ref_partner_id || nodeInfoInForm.ref_partner_id <= 0) {
+      message.warn('关联方必填');
     } else {
-      const nodeInfoInForm = form.getFieldsValue();
-      const nodeInfo = Object.assign({}, nodeInfoInForm, { ...region, type: nodeType, tenant_id: tenantId });
+      const refPartnerName = this.props.partners.find(item => item.partner_id === nodeInfoInForm.ref_partner_id).name;
+      const nodeInfo = Object.assign({}, nodeInfoInForm, { ...region, type: nodeType, tenant_id: tenantId, ref_partner_name: refPartnerName });
       this.props.addNode(nodeInfo).then((result) => {
         if (result.error) {
           message.error(result.error.message, 10);
@@ -68,36 +67,13 @@ export default class NodeModal extends Component {
   }
   render() {
     const { form, visible } = this.props;
-    const getFieldDecorator = form.getFieldDecorator;
-    const regionValues = [];
     return (
       <Modal visible={visible} onOk={this.handleAddNode} onCancel={this.handleCancel}>
-        <Form layout="horizontal">
-          <FormItem label="名称:" required {...formItemLayout}>
-            {getFieldDecorator('name')(<Input required />)}
-          </FormItem>
-          <FormItem label="外部代码:" {...formItemLayout}>
-            {getFieldDecorator('node_code')(<Input />)}
-          </FormItem>
-          <FormItem label="区域" {...formItemLayout} required >
-            <Cascader defaultRegion={regionValues} onChange={this.handleRegionChange} required />
-          </FormItem>
-          <FormItem label="具体地址:" {...formItemLayout}>
-            {getFieldDecorator('addr')(<Input />)}
-          </FormItem>
-          <FormItem label="联系人:" {...formItemLayout} required>
-            {getFieldDecorator('contact')(<Input />)}
-          </FormItem>
-          <FormItem label="手机号:" {...formItemLayout} required>
-            {getFieldDecorator('mobile')(<Input required />)}
-          </FormItem>
-          <FormItem label="邮箱:" {...formItemLayout}>
-            {getFieldDecorator('email')(<Input />)}
-          </FormItem>
-          <FormItem label="备注:" {...formItemLayout}>
-            {getFieldDecorator('remark')(<Input type="textarea" />)}
-          </FormItem>
-        </Form>
+        <NodeForm mode="add"
+          form={form}
+          onRegionChange={this.handleRegionChange}
+          onSubmitBtnClick={this.handleAddNode}
+        />
       </Modal>
     );
   }

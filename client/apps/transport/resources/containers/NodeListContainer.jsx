@@ -3,10 +3,16 @@ import { connect } from 'react-redux';
 import NodeList from '../components/NodeList';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadNodeList, setNodeType, removeNode, toggleNodeModal } from 'common/reducers/transportResources';
+import { loadPartners } from 'common/reducers/shipment';
+import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 import connectNav from 'client/common/decorators/connect-nav';
 
 function fetchData({ dispatch, state }) {
-  return dispatch(loadNodeList(state.account.tenantId));
+  const promises = [
+    dispatch(loadNodeList(state.account.tenantId)),
+    dispatch(loadPartners(state.account.tenantId, [PARTNER_ROLES.CUS], [PARTNER_BUSINESSE_TYPES.transport])),
+  ];
+  return Promise.all(promises);
 }
 
 @connectFetch()(fetchData)

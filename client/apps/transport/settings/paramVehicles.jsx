@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Breadcrumb, Layout, Menu, Icon, Table, Popconfirm, Input, message } from 'antd';
+import { Breadcrumb, Layout, Menu, Icon, Table, Popconfirm, Input, Select, message } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import NavLink from 'client/components/nav-link';
 import messages from './message.i18n';
@@ -13,6 +13,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
 const SubMenu = Menu.SubMenu;
+const Option = Select.Option;
 
 function fetchData({ dispatch, state }) {
   return dispatch(loadParamVehicles(state.account.tenantId));
@@ -43,11 +44,11 @@ export default class ParamVehicles extends Component {
     updateParamVehicle: PropTypes.func.isRequired,
   }
   state = {
-    editIndex: -1,
+    editId: -2,
     paramVehicles: [],
   }
   componentWillReceiveProps(nextProps) {
-    this.setState({ paramVehicles: nextProps.paramVehicles.concat([{ id: -1, text: '', value: '', kind: 0 }]) });
+    this.setState({ paramVehicles: nextProps.paramVehicles.concat([{ id: -1, text: '', value: '', kind: null }]) });
   }
   msg = key => formatMsg(this.props.intl, key)
   handleEdit = (id) => {
@@ -55,25 +56,26 @@ export default class ParamVehicles extends Component {
     const vehicle = paramVehicles.find(item => item.id === id);
     if (vehicle && vehicle.text) {
       this.props.updateParamVehicle(vehicle).then(() => {
-        this.setState({ editIndex: -1 });
+        this.setState({ editId: -2 });
       });
     } else {
       message.error('名称不能为空');
     }
   }
   handleAdd = () => {
-    const { editIndex, paramVehicles } = this.state;
-    if (paramVehicles[editIndex].text) {
+    const { paramVehicles } = this.state;
+    const index = paramVehicles.length - 1;
+    if (paramVehicles[index].text) {
       this.props.addParamVehicle({
         tenant_id: this.props.tenantId,
-        value: paramVehicles[editIndex].value,
-        text: paramVehicles[editIndex].text,
-        kind: paramVehicles[editIndex].kind,
+        value: paramVehicles[index].value,
+        text: paramVehicles[index].text,
+        kind: paramVehicles[index].kind,
       }).then((result) => {
         if (result.error) {
           message.error(result.error.message, 10);
         } else {
-          this.setState({ editIndex: -1 });
+          this.setState({ editId: -2 });
         }
       });
     } else {
@@ -93,11 +95,16 @@ export default class ParamVehicles extends Component {
         title: '名称',
         dataIndex: 'text',
         key: 'text',
-        render: (col, row, index) => {
-          if (this.state.editIndex === index) {
+        render: (col, row) => {
+          if (this.state.editId === row.id) {
             return (<Input value={col} onChange={(e) => {
-              const { paramVehicles } = this.state;
-              paramVehicles[index].text = e.target.value;
+              const paramVehicles = this.state.paramVehicles.map((item) => {
+                if (item.id === row.id) {
+                  return { ...item, text: e.target.value };
+                } else {
+                  return item;
+                }
+              });
               this.setState({ paramVehicles });
             }}
             />);
@@ -109,43 +116,56 @@ export default class ParamVehicles extends Component {
         title: '代码',
         dataIndex: 'value',
         key: 'value',
-        render: (col, row, index) => {
-          if (this.state.editIndex === index) {
-            return (<Input value={col} onChange={(e) => {
-              const { paramVehicles } = this.state;
-              paramVehicles[index].value = e.target.value;
+      }, {
+        title: '车型/车长',
+        dataIndex: 'kind',
+        key: 'kind',
+        render: (col, row) => {
+          if (this.state.editId === row.id) {
+            return (<Select value={col} onChange={(value) => {
+              const paramVehicles = this.state.paramVehicles.map((item) => {
+                if (item.id === row.id) {
+                  return { ...item, kind: Number(value) };
+                } else {
+                  return item;
+                }
+              });
               this.setState({ paramVehicles });
             }}
-            />);
-          } else {
-            return col;
-          }
+              style={{ width: '100%' }}
+            >
+              <Option value={0}>车型</Option>
+              <Option value={1}>车长</Option>
+            </Select>);
+          } else if (col === 0) return '车型';
+          else if (col === 1) return '车长';
+          else return '';
         },
       }, {
         title: '操作',
         dataIndex: 'enabled',
         key: 'enabled',
-        render: (_, record, index) => {
-          if (this.state.editIndex === index) {
-            if (record.id === -1) {
+        render: (_, row) => {
+          if (this.state.editId === row.id) {
+            if (row.id === -1) {
               return (<a onClick={this.handleAdd}><Icon type="save" /></a>);
             } else {
-              return (<a onClick={() => this.handleEdit(record.id)}><Icon type="save" /></a>);
+              return (<a onClick={() => this.handleEdit(row.id)}><Icon type="save" /></a>);
             }
-          } else if (record.id === -1) {
+          } else if (row.id === -1) {
             return (<a onClick={() => {
-              this.setState({ editIndex: index });
+              this.setState({ editId: row.id });
             }}
             ><Icon type="plus" /></a>);
           } else {
             return (
               <span>
                 <a onClick={() => {
-                  this.setState({ editIndex: index });
+                  this.setState({ editId: row.id });
                 }}
                 ><Icon type="edit" /></a>
                 <span className="ant-divider" />
-                <Popconfirm title="确认删除该分类?" onConfirm={() => this.handleRemove(record)}>
+                <Popconfirm title="确认删除?" onConfirm={() => this.handleRemove(row)}>
                   <a role="button"><Icon type="delete" /></a>
                 </Popconfirm>
               </span>
