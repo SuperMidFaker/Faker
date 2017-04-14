@@ -7,11 +7,11 @@ import { formatMsg } from './message.i18n';
 
 const { Header, Content, Sider } = Layout;
 @injectIntl
-export default class ScvResourceWrapper extends React.Component {
+export default class ScvClassificationWrapper extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
-    menuKey: PropTypes.oneOf(['warehouse', 'serviceprovider', 'forwareder', 'supplier']),
+    menuKey: PropTypes.oneOf(['sync']),
     children: PropTypes.node.isRequired,
   }
   msg = formatMsg(this.props.intl)
@@ -22,10 +22,7 @@ export default class ScvResourceWrapper extends React.Component {
         <Header className="top-bar">
           <Breadcrumb>
             <Breadcrumb.Item>
-              {menuKey === 'warehouse' && '仓库'}
-              {menuKey === 'serviceprovider' && '服务商'}
-              {menuKey === 'forwarder' && '货代'}
-              {menuKey === 'supplier' && '供应商'}
+              {menuKey === 'sync' && '同步设置'}
             </Breadcrumb.Item>
           </Breadcrumb>
         </Header>
@@ -34,10 +31,7 @@ export default class ScvResourceWrapper extends React.Component {
             <Layout className="main-wrapper">
               <Sider className="nav-sider">
                 <Menu selectedKeys={[menuKey]} mode="inline">
-                  <Menu.Item key="warehouse"><NavLink to="/scv/resources/warehouse">仓库</NavLink></Menu.Item>
-                  <Menu.Item key="serviceprovider"><NavLink to="/scv/resources/serviceprovider">服务商</NavLink></Menu.Item>
-                  <Menu.Item key="forwarder" disabled><NavLink to="/scv/resources/forwarder">货代</NavLink></Menu.Item>
-                  <Menu.Item key="supplier" disabled><NavLink to="/scv/resources/supplier">供应商</NavLink></Menu.Item>
+                  <Menu.Item key="sync"><NavLink to="/scv/classification/sync">同步设置</NavLink></Menu.Item>
                 </Menu>
               </Sider>
               {children}

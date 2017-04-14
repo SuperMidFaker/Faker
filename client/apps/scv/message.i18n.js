@@ -121,6 +121,10 @@ const messages = defineMessages({
     id: 'scv.module.settings.app',
     defaultMessage: '应用设置',
   },
+  classifyTradeItem: {
+    id: 'scv.module.classify.tradeitem',
+    defaultMessage: '归类设置',
+  },
 });
 
 export default messages;

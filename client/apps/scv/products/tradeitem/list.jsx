@@ -10,7 +10,7 @@ import NavLink from 'client/components/nav-link';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import { loadTradeParams } from 'common/reducers/cmsTradeitem';
-import { loadTradeItems, setAdditemModalVisible, deleteItem, deleteSelectedItems, setItemStatus } from 'common/reducers/scvTradeitem';
+import { loadTradeItems, setAdditemModalVisible, deleteItem, deleteSelectedItems, setItemStatus } from 'common/reducers/scvClassification';
 import SearchBar from 'client/components/search-bar';
 import ExcelUpload from 'client/components/excelUploader';
 import { createFilename } from 'client/util/dataTransform';
@@ -26,9 +26,9 @@ function fetchData({ state, dispatch }) {
   const promises = [];
   promises.push(dispatch(loadTradeItems({
     tenantId: state.account.tenantId,
-    filter: JSON.stringify(state.scvTradeitem.listFilter),
-    pageSize: state.scvTradeitem.tradeItemlist.pageSize,
-    currentPage: state.scvTradeitem.tradeItemlist.current,
+    filter: JSON.stringify(state.scvClassification.listFilter),
+    pageSize: state.scvClassification.tradeItemlist.pageSize,
+    currentPage: state.scvClassification.tradeItemlist.current,
   })));
   promises.push(dispatch(loadTradeParams()));
   return Promise.all(promises);
@@ -40,10 +40,10 @@ function fetchData({ state, dispatch }) {
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     loginName: state.account.username,
-    listFilter: state.scvTradeitem.listFilter,
-    tradeItemlist: state.scvTradeitem.tradeItemlist,
-    visibleAddItemModal: state.scvTradeitem.visibleAddItemModal,
-    tradeItemsLoading: state.scvTradeitem.tradeItemsLoading,
+    listFilter: state.scvClassification.listFilter,
+    tradeItemlist: state.scvClassification.tradeItemlist,
+    visibleAddItemModal: state.scvClassification.visibleAddItemModal,
+    tradeItemsLoading: state.scvClassification.tradeItemsLoading,
     units: state.cmsTradeitem.params.units.map(un => ({
       value: un.unit_code,
       text: un.unit_name,

@@ -155,6 +155,10 @@ export default class ModuleSCV extends React.Component {
         path: '/scv/resources',
         text: formatMsg(intl, 'resources'),
       }, {
+        key: 'scv-8-2',
+        path: '/scv/classification',
+        text: formatMsg(intl, 'classifyTradeItem'),
+      }, {
         key: 'scv-8-1',
         disabled: true,
         path: '/scv/settings',

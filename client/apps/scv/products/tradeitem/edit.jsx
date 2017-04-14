@@ -7,7 +7,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import BasicForm from './forms/basicForm';
 import SiderForm from './forms/siderForm';
 import { loadPartners } from 'common/reducers/partner';
-import { loadScvTradeItem, itemEditedSave } from 'common/reducers/scvTradeitem';
+import { loadScvTradeItem, itemEditedSave } from 'common/reducers/scvClassification';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from './message.i18n';
 import { format } from 'client/common/i18n/helpers';
@@ -29,7 +29,7 @@ function fetchData({ dispatch, params }) {
 @injectIntl
 @connect(
   state => ({
-    itemData: state.scvTradeitem.itemData,
+    itemData: state.scvClassification.itemData,
     tenantId: state.account.tenantId,
   }),
   { itemEditedSave, loadPartners }

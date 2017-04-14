@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Input, Icon, Select } from 'antd';
 
+const Option = Select.Option;
 export default class EditableCell extends React.Component {
   static propTypes = {
     addonBefore: PropTypes.node,
@@ -9,6 +10,7 @@ export default class EditableCell extends React.Component {
     value: PropTypes.any,
     placeholder: PropTypes.string,
     cellTrigger: PropTypes.bool,
+    options: PropTypes.arrayOf(PropTypes.shape({ key: PropTypes.string.isRequired, text: PropTypes.string.isRequired })),
     onSave: PropTypes.func,
     onCancel: PropTypes.func,
   }
@@ -50,6 +52,9 @@ export default class EditableCell extends React.Component {
       }, 10);
     }
   }
+  handleSelectChange = (value) => {
+    this.setState({ value });
+  }
   renderControl() {
     const { type, placeholder, options, addonBefore, addonAfter } = this.props;
     const { value } = this.state;
@@ -70,15 +75,14 @@ export default class EditableCell extends React.Component {
         </div>);
       case 'select':
         return (<div>{addonBefore}
-          <Select
-            showSearch
-            placeholder={placeholder}
-            defaultValue={value}
-            style={{ width: '90%' }}
-          >
-            {options}
+          <Select showSearch placeholder={placeholder} value={value} style={{ width: '90%' }} onChange={this.handleSelectChange}>
+            {options.map(opt => <Option key={opt.key} value={opt.key}>{opt.text}</Option>)}
           </Select>
-          <Icon type="close" className="editable-cell-icon-close" onClick={this.close} />
+          <div>
+            <Icon type="check" className="editable-cell-icon-save" onClick={this.check} />
+            <span className="ant-divider" />
+            <Icon type="close" className="editable-cell-icon-close" onClick={this.close} />
+          </div>
         </div>);
       default:
         return (<Input
@@ -98,8 +102,12 @@ export default class EditableCell extends React.Component {
     }
   }
   renderText() {
-    const { placeholder, addonBefore, addonAfter } = this.props;
+    const { type, options, placeholder, addonBefore, addonAfter } = this.props;
     const { value } = this.state;
+    if (type === 'select') {
+      const option = options.filter(opt => opt.key === value)[0];
+      return (option && <span>{addonBefore}{value}{addonAfter}</span>);
+    }
     return (value && (value.length > 0 || value !== 0)) ?
       <span>{addonBefore}{value}{addonAfter}</span> :
       <span>{addonBefore}<span className="editable-cell-placeholder">{placeholder}</span>{addonAfter}</span>;
