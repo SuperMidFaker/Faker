@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Form, Select, Input, Card, Col, Row } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../../message.i18n';
+import messages from './../message.i18n';
 import { loadHscodes } from 'common/reducers/cmsHsCode';
 
 const formatMsg = format(messages);
@@ -23,6 +23,7 @@ function getFieldInits(formData) {
     ['unit_net_wt', 'unit_price', 'fixed_qty', 'pre_classify_start_date', 'pre_classify_end_date'].forEach((fd) => {
       init[fd] = formData[fd] === undefined ? null : formData[fd];
     });
+    init.broker = formData.contribute_tenant_id === undefined ? null : formData.contribute_tenant_id;
   }
   return init;
 }
@@ -36,7 +37,7 @@ function getFieldInits(formData) {
       text: un.unit_name,
     })),
     tradeCountries: state.cmsTradeitem.params.tradeCountries,
-    fieldInits: getFieldInits(state.cmsTradeitem.itemData),
+    fieldInits: getFieldInits(state.scvTradeitem.itemData),
     hscodes: state.cmsHsCode.hscodes,
   }),
   { loadHscodes }
@@ -46,6 +47,8 @@ export default class BasicForm extends Component {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     form: PropTypes.object.isRequired,
+    action: PropTypes.string.isRequired,
+    brokers: PropTypes.array,
     fieldInits: PropTypes.object.isRequired,
     currencies: PropTypes.array,
     units: PropTypes.array,
@@ -91,7 +94,7 @@ export default class BasicForm extends Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   render() {
-    const { form: { getFieldDecorator }, fieldInits, currencies, units, tradeCountries, hscodes } = this.props;
+    const { form: { getFieldDecorator }, action, fieldInits, currencies, units, tradeCountries, hscodes, brokers } = this.props;
     const currencyOptions = currencies.map(curr => ({
       value: curr.curr_code,
       text: `${curr.curr_code} | ${curr.curr_name}`,
@@ -106,27 +109,46 @@ export default class BasicForm extends Component {
       <div>
         <Card bodyStyle={{ padding: 16 }}>
           <Row gutter={16}>
-            <Col sm={24} lg={12}>
+            <Col sm={24} lg={8}>
+              <FormItem label={this.msg('broker')}>
+                {getFieldDecorator('broker', {
+                  rules: [{ required: true, message: '必须指定报关行' }],
+                  initialValue: fieldInits.broker }
+                  )(<Select
+                    disabled={action === 'edit'}
+                    showSearch
+                    placeholder="选择报关行"
+                    optionFilterProp="children"
+                    size="large"
+                    style={{ width: '100%' }}
+                  >
+                    {brokers.map(data => (<Option key={data.id} value={data.partner_tenant_id}
+                      search={`${data.partner_code}${data.name}`}
+                    >{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>)
+                    )}
+                  </Select>)
+                }
+              </FormItem>
+            </Col>
+            <Col sm={24} lg={8}>
               <FormItem label={this.msg('copProductNo')}>
                 {getFieldDecorator('cop_product_no', {
                   rules: [{ required: true, message: '商品货号必填' }],
                   initialValue: fieldInits.cop_product_no,
-                })(<Input />)}
+                })(<Input disabled={action === 'edit'} />)}
               </FormItem>
             </Col>
-            <Col sm={24} lg={12}>
+            <Col sm={24} lg={8}>
               <FormItem label={this.msg('hscode')}>
                 {getFieldDecorator('hscode', {
-                  rules: [{ required: true, message: '商品编码必填' }],
                   initialValue: fieldInits.hscode,
                 })(<Select combobox optionFilterProp="search" onChange={this.handleSearch} >
-                  {
-                      hscodes.data.map(data => (<Option value={data.hscode} key={data.hscode}
-                        search={data.hscode}
-                      >{data.hscode}</Option>)
-                      )}
+                  { hscodes.data.map(data => (<Option value={data.hscode} key={data.hscode}
+                    search={data.hscode}
+                  >{data.hscode}</Option>))
+                    }
                 </Select>
-                  )}
+                )}
               </FormItem>
             </Col>
             <Col sm={24} lg={24}>
@@ -140,7 +162,6 @@ export default class BasicForm extends Component {
               <FormItem label={this.msg('gModel')}>
                 {getFieldDecorator('g_model', {
                   initialValue: fieldInits.g_model,
-                  rules: [{ required: true, message: '规格型号必填' }],
                 })(<Input type="textarea" autosize={{ minRows: 1, maxRows: 16 }} />)}
               </FormItem>
             </Col>

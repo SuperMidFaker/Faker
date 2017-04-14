@@ -387,7 +387,11 @@ export default(store, cookie) => {
               <Route path="billing" component={SCVPaymentsBilling.List} />
             </Route>
             <Route path="products">
-              <Route path="tradeitem" component={SCVProductsTradeItem.List} />
+              <Route path="tradeitem">
+                <IndexRoute component={SCVProductsTradeItem.List} />
+                <Route path="create" component={SCVProductsTradeItem.Create} />
+                <Route path="edit/:id" component={SCVProductsTradeItem.Edit} />
+              </Route>
             </Route>
             <Route path="analytics">
               <Route path="kpi" component={SCVAnalyticsKpi.List} />

@@ -16,7 +16,6 @@ import ExcelUpload from 'client/components/excelUploader';
 import { createFilename } from 'client/util/dataTransform';
 import { CMS_ITEM_STATUS } from 'common/constants';
 import RowUpdater from 'client/components/rowUpdater';
-import AddItem from './modals/addItem';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -280,7 +279,8 @@ export default class TradeItemList extends Component {
     ev.stopPropagation();
   }
   handleAddItem = () => {
-    this.props.setAdditemModalVisible(true);
+    // this.props.setAdditemModalVisible(true);
+    this.context.router.push('/scv/products/tradeitem/create');
   }
   handleMenuClick = (e) => {
     if (e.key === 'export') {
@@ -397,6 +397,10 @@ export default class TradeItemList extends Component {
       render: (o, record) => {
         if (record.status === CMS_ITEM_STATUS.unclassified) {
           return (<span>
+            <NavLink to={`/scv/products/tradeitem/edit/${record.id}`}>
+              <Icon type="edit" /> {this.msg('modify')}
+            </NavLink>
+            <span className="ant-divider" />
             <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleItemDel(record.id)}>
               <a role="button"><Icon type="delete" /> {this.msg('delete')}</a>
             </Popconfirm>
@@ -410,6 +414,11 @@ export default class TradeItemList extends Component {
               <span className="ant-divider" />
               <Dropdown overlay={(
                 <Menu>
+                  <Menu.Item key="edit">
+                    <NavLink to={`/scv/products/tradeitem/edit/${record.id}`}>
+                      <Icon type="edit" /> {this.msg('modify')}
+                    </NavLink>
+                  </Menu.Item>
                   <Menu.Item key="delete">
                     <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleItemDel(record.id)}>
                       <a role="button"><Icon type="delete" /> {this.msg('delete')}</a>
@@ -424,7 +433,7 @@ export default class TradeItemList extends Component {
         } else if (record.status === CMS_ITEM_STATUS.classified) {
           return (
             <span>
-              <NavLink to={`/clearance/classification/tradeitem/edit/${record.id}`}>
+              <NavLink to={`/scv/products/tradeitem/edit/${record.id}`}>
                 <Icon type="edit" /> {this.msg('modify')}
               </NavLink>
             </span>
@@ -488,7 +497,6 @@ export default class TradeItemList extends Component {
               <RemoteTable loading={this.props.tradeItemsLoading} rowSelection={rowSelection} rowKey={record => record.id} columns={columns} dataSource={this.dataSource} scroll={{ x: 3800 }} />
             </div>
           </div>
-          <AddItem />
         </Content>
       </Layout>
     );
