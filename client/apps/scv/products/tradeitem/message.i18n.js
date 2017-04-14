@@ -13,10 +13,6 @@ const messages = defineMessages({
     id: 'scv.products.tradeitem.master',
     defaultMessage: '企业物料库',
   },
-  searchRepoPlaceholder: {
-    id: 'scv.products.tradeitem.searchRepoPlaceholder',
-    defaultMessage: '输入报关行名称搜索',
-  },
   filterUnclassified: {
     id: 'scv.products.tradeitem.filter.unclassified',
     defaultMessage: '未归类',
@@ -29,13 +25,17 @@ const messages = defineMessages({
     id: 'scv.products.tradeitem.filter.classified',
     defaultMessage: '已归类',
   },
-  filterUnusual: {
-    id: 'scv.products.tradeitem.filter.unusual',
-    defaultMessage: '归类异常',
+  filterConfilict: {
+    id: 'scv.products.tradeitem.filter.confilict',
+    defaultMessage: '归类冲突',
   },
   copProductNo: {
     id: 'scv.products.tradeitem.table.cop.product.no',
     defaultMessage: '商品货号',
+  },
+  contributed: {
+    id: 'scv.products.tradeitem.table.contributed',
+    defaultMessage: '归类来源',
   },
   hscode: {
     id: 'scv.products.tradeitem.table.hscode',
@@ -228,6 +228,10 @@ const messages = defineMessages({
   refuse: {
     id: 'scv.products.tradeitem.refuse',
     defaultMessage: '归类拒绝',
+  },
+  broker: {
+    id: 'scv.products.tradeitem.broker',
+    defaultMessage: '报关行',
   },
 });
 export default messages;

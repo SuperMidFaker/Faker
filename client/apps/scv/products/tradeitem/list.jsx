@@ -4,31 +4,32 @@ import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Breadcrumb, Button, Layout, Radio, Dropdown, Icon, Menu, Popconfirm, Table, message } from 'antd';
+import { Breadcrumb, Button, Layout, Radio, Dropdown, Icon, Menu, Popconfirm, message } from 'antd';
 import RemoteTable from 'client/components/remoteAntTable';
 import NavLink from 'client/components/nav-link';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import { loadCustomers } from 'common/reducers/crmCustomers';
-import { loadRepoBrokers, openAddModal, selectedRepoId, loadTradeItems, setCompareVisible,
-  deleteItem, deleteSelectedItems, setRepo, loadTradeParams, setItemStatus } from 'common/reducers/cmsTradeitem';
-import ButtonToggle from 'client/components/ButtonToggle';
+import { loadTradeParams } from 'common/reducers/cmsTradeitem';
+import { loadTradeItems, setAdditemModalVisible, deleteItem, deleteSelectedItems, setItemStatus } from 'common/reducers/scvTradeitem';
 import SearchBar from 'client/components/search-bar';
 import ExcelUpload from 'client/components/excelUploader';
 import { createFilename } from 'client/util/dataTransform';
-import { CMS_ITEM_STATUS, CMS_TRADE_REPO_PERMISSION } from 'common/constants';
+import { CMS_ITEM_STATUS } from 'common/constants';
 import RowUpdater from 'client/components/rowUpdater';
+import AddItem from './modals/addItem';
 
 const formatMsg = format(messages);
-const { Header, Content, Sider } = Layout;
+const { Header, Content } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 
 function fetchData({ state, dispatch }) {
   const promises = [];
-
-  promises.push(dispatch(loadRepoBrokers({
+  promises.push(dispatch(loadTradeItems({
     tenantId: state.account.tenantId,
+    filter: JSON.stringify(state.scvTradeitem.listFilter),
+    pageSize: state.scvTradeitem.tradeItemlist.pageSize,
+    currentPage: state.scvTradeitem.tradeItemlist.current,
   })));
   promises.push(dispatch(loadTradeParams()));
   return Promise.all(promises);
@@ -40,14 +41,10 @@ function fetchData({ state, dispatch }) {
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     loginName: state.account.username,
-    repoBrokers: state.cmsTradeitem.repoBrokers,
-    repoId: state.cmsTradeitem.repoId,
-    listFilter: state.cmsTradeitem.listFilter,
-    tradeItemlist: state.cmsTradeitem.tradeItemlist,
-    visibleAddModal: state.cmsTradeitem.visibleAddModal,
-    repo: state.cmsTradeitem.repo,
-    reposLoading: state.cmsTradeitem.reposLoading,
-    tradeItemsLoading: state.cmsTradeitem.tradeItemsLoading,
+    listFilter: state.scvTradeitem.listFilter,
+    tradeItemlist: state.scvTradeitem.tradeItemlist,
+    visibleAddItemModal: state.scvTradeitem.visibleAddItemModal,
+    tradeItemsLoading: state.scvTradeitem.tradeItemsLoading,
     units: state.cmsTradeitem.params.units.map(un => ({
       value: un.unit_code,
       text: un.unit_name,
@@ -61,8 +58,7 @@ function fetchData({ state, dispatch }) {
       text: tc.cntry_name_cn,
     })),
   }),
-  { loadCustomers, openAddModal, selectedRepoId, loadTradeItems, setCompareVisible,
-    deleteItem, deleteSelectedItems, setRepo, setItemStatus }
+  { loadTradeItems, setAdditemModalVisible, deleteItem, deleteSelectedItems, setItemStatus }
 )
 @connectNav({
   depth: 2,
@@ -72,30 +68,18 @@ export default class TradeItemList extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
-    repoBrokers: PropTypes.array.isRequired,
     tradeItemlist: PropTypes.object.isRequired,
-    repoId: PropTypes.number,
-    visibleAddModal: PropTypes.bool,
-    repo: PropTypes.object,
+    visibleAddItemModal: PropTypes.bool,
     listFilter: PropTypes.object.isRequired,
-    reposLoading: PropTypes.bool.isRequired,
     tradeItemsLoading: PropTypes.bool.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
   state = {
-    collapsed: false,
-    rightSiderCollapsed: true,
     selectedRowKeys: [],
     compareduuid: '',
-    repoBrokers: [],
-    currentPage: 1,
-  }
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.repoBrokers !== this.props.repoBrokers) {
-      this.setState({ repoBrokers: nextProps.repoBrokers });
-    }
+    brokers: [],
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
@@ -103,6 +87,10 @@ export default class TradeItemList extends Component {
     dataIndex: 'cop_product_no',
     fixed: 'left',
     width: 200,
+  }, {
+    title: this.msg('contributed'),
+    dataIndex: 'contribute_tenant_name',
+    width: 180,
   }, {
     title: this.msg('hscode'),
     dataIndex: 'hscode',
@@ -253,7 +241,7 @@ export default class TradeItemList extends Component {
     }),
     getParams: (pagination) => {
       const params = {
-        repoId: this.props.repoId,
+        tenantId: this.props.tenantId,
         pageSize: pagination.pageSize,
         currentPage: pagination.current,
         searchText: this.props.tradeItemlist.searchText,
@@ -264,21 +252,11 @@ export default class TradeItemList extends Component {
     },
     remotes: this.props.tradeItemlist,
   })
-  toggle = () => {
-    this.setState({
-      collapsed: !this.state.collapsed,
-    });
-  }
-  toggleRightSider = () => {
-    this.setState({
-      rightSiderCollapsed: !this.state.rightSiderCollapsed,
-    });
-  }
-  handleItemListLoad = (repoid, currentPage, filter, search) => {
-    const { repoId, listFilter, tradeItemlist: { pageSize, current, searchText } } = this.props;
+  handleItemListLoad = (currentPage, filter, search) => {
+    const { tenantId, listFilter, tradeItemlist: { pageSize, current, searchText } } = this.props;
     this.setState({ expandedKeys: [] });
     this.props.loadTradeItems({
-      repoId: repoid || repoId,
+      tenantId,
       filter: JSON.stringify(filter || listFilter),
       pageSize,
       currentPage: currentPage || current,
@@ -298,28 +276,21 @@ export default class TradeItemList extends Component {
       }
     });
   }
-  handleRowClick = (record) => {
-    const repo = record;
-    this.props.selectedRepoId(repo.id);
-    this.handleItemListLoad(repo.id);
-    this.props.setRepo(repo);
-  }
   handleButtonClick = (ev) => {
     ev.stopPropagation();
   }
   handleAddItem = () => {
-    this.context.router.push('/clearance/classification/tradeitem/create');
+    this.props.setAdditemModalVisible(true);
   }
   handleMenuClick = (e) => {
     if (e.key === 'export') {
-      window.open(`${API_ROOTS.default}v1/cms/cmsTradeitem/tradeitems/export/${createFilename('itemsExport')}.xlsx?repoId=${this.props.repoId}`);
+      window.open(`${API_ROOTS.default}v1/scv/tradeitems/export/${createFilename('itemsExport')}.xlsx?tenantId=${this.props.tenantId}`);
     } else if (e.key === 'model') {
-      window.open(`${API_ROOTS.default}v1/cms/cmsTradeitem/tradeitems/model/download/${createFilename('tradeItemModel')}.xlsx`);
+      window.open(`${API_ROOTS.default}v1/scv/tradeitems/model/download/${createFilename('tradeItemModel')}.xlsx`);
     }
   }
-  handleUploaded = (data) => {
-    this.setState({ compareduuid: data });
-    this.props.setCompareVisible(true);
+  handleUploaded = () => {
+
   }
   handleDeleteSelected = () => {
     const selectedIds = this.state.selectedRowKeys;
@@ -337,7 +308,7 @@ export default class TradeItemList extends Component {
       return;
     }
     const filter = { ...this.props.listFilter, status: ev.target.value };
-    this.handleItemListLoad(this.props.repoId, 1, filter);
+    this.handleItemListLoad(1, filter);
   }
   handleItemPass = (row) => {
     this.props.setItemStatus({ ids: [row.id], status: CMS_ITEM_STATUS.classified }).then((result) => {
@@ -378,27 +349,14 @@ export default class TradeItemList extends Component {
     });
   }
   handleSearch = (value) => {
-    const { repoId, listFilter } = this.props;
-    this.handleItemListLoad(repoId, 1, listFilter, value);
+    const { listFilter } = this.props;
+    this.handleItemListLoad(1, listFilter, value);
   }
-  handlePageChange = (page) => {
-    this.setState({ currentPage: page });
-  }
-  handleRepoSearch = (value) => {
-    let repos = this.props.repos;
-    if (value) {
-      repos = this.props.repos.filter((item) => {
-        const reg = new RegExp(value);
-        return reg.test(item.owner_name);
-      });
-    }
-    this.setState({ repos, currentPage: 1 });
-  }
-  handleUnusualLoad = () => {
+  handleConfilictLoad = () => {
 
   }
   render() {
-    const { tradeItemlist, repoId, repo, listFilter } = this.props;
+    const { tradeItemlist, listFilter } = this.props;
     const selectedRows = this.state.selectedRowKeys;
     const rowSelection = {
       selectedRowKeys: selectedRows,
@@ -407,7 +365,7 @@ export default class TradeItemList extends Component {
       },
     };
     let batchOperation = null;
-    if (repo.permission === CMS_TRADE_REPO_PERMISSION.edit && selectedRows.length > 0) {
+    if (selectedRows.length > 0) {
       if (listFilter.status === 'unclassified') {
         batchOperation = (<Popconfirm title={'是否删除所有选择项？'} onConfirm={() => this.handleDeleteSelected()}>
           <Button type="danger" size="large" icon="delete">
@@ -432,71 +390,55 @@ export default class TradeItemList extends Component {
     }
     this.dataSource.remotes = tradeItemlist;
     const columns = [...this.columns];
-    if (repo.permission === CMS_TRADE_REPO_PERMISSION.edit) {
-      columns.push({
-        title: this.msg('opColumn'),
-        width: 150,
-        fixed: 'right',
-        render: (o, record) => {
-          if (record.status === CMS_ITEM_STATUS.unclassified) {
-            return (<span>
+    columns.push({
+      title: this.msg('opColumn'),
+      width: 150,
+      fixed: 'right',
+      render: (o, record) => {
+        if (record.status === CMS_ITEM_STATUS.unclassified) {
+          return (<span>
+            <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleItemDel(record.id)}>
+              <a role="button"><Icon type="delete" /> {this.msg('delete')}</a>
+            </Popconfirm>
+          </span>);
+        } else if (record.status === CMS_ITEM_STATUS.pending) {
+          return (
+            <span>
+              <RowUpdater onHit={this.handleItemPass} label={this.msg('pass')} row={record} />
+              <span className="ant-divider" />
+              <RowUpdater onHit={this.handleItemRefused} label={this.msg('refuse')} row={record} />
+              <span className="ant-divider" />
+              <Dropdown overlay={(
+                <Menu>
+                  <Menu.Item key="delete">
+                    <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleItemDel(record.id)}>
+                      <a role="button"><Icon type="delete" /> {this.msg('delete')}</a>
+                    </Popconfirm>
+                  </Menu.Item>
+                </Menu>)}
+              >
+                <a><Icon type="down" /></a>
+              </Dropdown>
+            </span>
+          );
+        } else if (record.status === CMS_ITEM_STATUS.classified) {
+          return (
+            <span>
               <NavLink to={`/clearance/classification/tradeitem/edit/${record.id}`}>
                 <Icon type="edit" /> {this.msg('modify')}
               </NavLink>
-              <span className="ant-divider" />
-              <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleItemDel(record.id)}>
-                <a role="button"><Icon type="delete" /> {this.msg('delete')}</a>
-              </Popconfirm>
-            </span>);
-          } else if (record.status === CMS_ITEM_STATUS.pending) {
-            return (
-              <span>
-                <RowUpdater onHit={this.handleItemPass} label={this.msg('pass')} row={record} />
-                <span className="ant-divider" />
-                <RowUpdater onHit={this.handleItemRefused} label={this.msg('refuse')} row={record} />
-                <span className="ant-divider" />
-                <Dropdown overlay={(
-                  <Menu>
-                    <Menu.Item key="edit">
-                      <NavLink to={`/clearance/classification/tradeitem/edit/${record.id}`}>
-                        <Icon type="edit" /> {this.msg('modify')}
-                      </NavLink>
-                    </Menu.Item>
-                    <Menu.Item key="delete">
-                      <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleItemDel(record.id)}>
-                        <a role="button"><Icon type="delete" /> {this.msg('delete')}</a>
-                      </Popconfirm>
-                    </Menu.Item>
-                  </Menu>)}
-                >
-                  <a><Icon type="down" /></a>
-                </Dropdown>
-              </span>
-            );
-          } else if (record.status === CMS_ITEM_STATUS.classified) {
-            return (
-              <span>
-                <NavLink to={`/clearance/classification/tradeitem/edit/${record.id}`}>
-                  <Icon type="edit" /> {this.msg('modify')}
-                </NavLink>
-              </span>
-            );
-          }
-        },
-      });
-    }
-    const repoColumns = [{
-      dataIndex: 'name',
-      key: 'name',
-      render: o => (<div style={{ paddingLeft: 15 }}>{o}</div>),
-    }];
+            </span>
+          );
+        }
+      },
+    });
     const menu = (
       <Menu onClick={this.handleMenuClick}>
         <Menu.Item key="importData">
           <ExcelUpload endpoint={`${API_ROOTS.default}v1/cms/cmsTradeitem/tradeitems/import`}
             formData={{
               data: JSON.stringify({
-                repo_id: this.props.repoId,
+                owner_tenant_id: this.props.tenantId,
               }),
             }} onUploaded={this.handleUploaded}
           >
@@ -508,92 +450,46 @@ export default class TradeItemList extends Component {
       </Menu>);
     return (
       <Layout className="ant-layout-wrapper">
-        <Sider width={280} className="menu-sider" key="sider" trigger={null}
-          collapsible
-          collapsed={this.state.collapsed}
-          collapsedWidth={0}
-        >
-          <div className="top-bar">
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {this.msg('classification')}
-              </Breadcrumb.Item>
-            </Breadcrumb>
+        <Header className="top-bar">
+          <Breadcrumb>
+            <Breadcrumb.Item>
+              {this.msg('classification')}
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              {this.msg('tradeItemMaster')}
+            </Breadcrumb.Item>
+          </Breadcrumb>
+          <span />
+          <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">
+            <RadioButton value="unclassified">{this.msg('filterUnclassified')}</RadioButton>
+            <RadioButton value="pending">{this.msg('filterPending')}</RadioButton>
+            <RadioButton value="classified">{this.msg('filterClassified')}</RadioButton>
+          </RadioGroup>
+          <Button onClick={this.handleConfilictLoad} size="large" style={{ left: 8 }}>{this.msg('filterConfilict')}</Button>
+          <div className="top-bar-tools">
+            <Dropdown overlay={menu} type="primary">
+              <Button size="large" onClick={this.handleButtonClick}>
+                {this.msg('importItems')} <Icon type="down" />
+              </Button>
+            </Dropdown>
+            <Button type="primary" size="large" icon="plus" onClick={this.handleAddItem}>
+              {this.msg('addItem')}
+            </Button>
           </div>
-          <div className="left-sider-panel" >
+        </Header>
+        <Content className="main-content layout-min-width layout-min-width-large">
+          <div className="page-body">
             <div className="toolbar">
-              <SearchBar
-                placeholder={this.msg('searchRepoPlaceholder')}
-                onInputSearch={this.handleRepoSearch} size="large"
-              />
+              <SearchBar placeholder="编码/名称/描述/申报要素" onInputSearch={this.handleSearch} size="large" />
+              <span />
+              {batchOperation}
             </div>
-            <Table size="middle" dataSource={this.state.repoBrokers} columns={repoColumns} showHeader={false} onRowClick={this.handleRowClick}
-              rowKey="id" pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }}
-              rowClassName={record => record.id === repo.id ? 'table-row-selected' : ''} loading={this.props.reposLoading}
-            />
+            <div className="panel-body table-panel">
+              <RemoteTable loading={this.props.tradeItemsLoading} rowSelection={rowSelection} rowKey={record => record.id} columns={columns} dataSource={this.dataSource} scroll={{ x: 3800 }} />
+            </div>
           </div>
-        </Sider>
-        <Layout>
-          <Header className="top-bar">
-
-            { this.state.collapsed && <Breadcrumb>
-              <Breadcrumb.Item>
-                {this.msg('classification')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.msg('tradeItemMaster')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {`${repo.owner_name}`}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          }
-            <ButtonToggle size="large"
-              iconOn="menu-fold" iconOff="menu-unfold"
-              onClick={this.toggle}
-              toggle
-            />
-            <span />
-            <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">
-              <RadioButton value="unclassified">{this.msg('filterUnclassified')}</RadioButton>
-              <RadioButton value="pending">{this.msg('filterPending')}</RadioButton>
-              <RadioButton value="classified">{this.msg('filterClassified')}</RadioButton>
-            </RadioGroup>
-            <Button onClick={this.handleUnusualLoad}>{this.msg('filterUnusual')}</Button>
-            {repoId &&
-              <div className="top-bar-tools">
-                {repo.permission === CMS_TRADE_REPO_PERMISSION.edit &&
-                  (
-                    <Dropdown overlay={menu} type="primary">
-                      <Button size="large" onClick={this.handleButtonClick}>
-                        {this.msg('importItems')} <Icon type="down" />
-                      </Button>
-                    </Dropdown>
-                  )
-                }
-                {repo.permission === CMS_TRADE_REPO_PERMISSION.edit &&
-                  (
-                    <Button type="primary" size="large" icon="plus" onClick={this.handleAddItem}>
-                      {this.msg('addItem')}
-                    </Button>
-                  )
-                }
-              </div>
-              }
-          </Header>
-          <Content className="main-content layout-min-width layout-min-width-large">
-            <div className="page-body">
-              <div className="toolbar">
-                <SearchBar placeholder="编码/名称/描述/申报要素" onInputSearch={this.handleSearch} size="large" />
-                <span />
-                {batchOperation}
-              </div>
-              <div className="panel-body table-panel">
-                <RemoteTable loading={this.props.tradeItemsLoading} rowSelection={rowSelection} rowKey={record => record.id} columns={columns} dataSource={this.dataSource} scroll={{ x: 3800 }} />
-              </div>
-            </div>
-          </Content>
-        </Layout>
+          <AddItem />
+        </Content>
       </Layout>
     );
   }
