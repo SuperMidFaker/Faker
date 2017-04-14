@@ -119,7 +119,7 @@ export default class DelgDeclList extends Component {
     width: 160,
     render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
-    title: this.msg('agent'),
+    title: '报关单位',
     dataIndex: 'customs_name',
     width: 160,
     render: o => <TrimSpan text={o} maxLen={10} />,

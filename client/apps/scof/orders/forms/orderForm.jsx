@@ -31,6 +31,7 @@ const Step = Steps.Step;
     formData: state.crmOrders.formData,
     formRequires: state.crmOrders.formRequires,
     flows: state.scofFlow.partnerFlows,
+    graphLoading: state.scofFlow.graphLoading,
   }),
   { setClientForm, loadPartnerFlowList, loadFlowGraph, loadCustomerQuotes }
 )
@@ -44,6 +45,7 @@ export default class OrderForm extends Component {
     formData: PropTypes.object.isRequired,
     formRequires: PropTypes.object.isRequired,
     setClientForm: PropTypes.func.isRequired,
+    graphLoading: PropTypes.bool.isRequired,
   }
   msg = key => formatMsg(this.props.intl, key)
   handleClientChange = (value) => {
@@ -403,6 +405,7 @@ export default class OrderForm extends Component {
           >
             {flows.map(data => <Option key={data.id} value={data.id}>{data.name}</Option>)}
           </Select></span>}
+          loading={this.props.graphLoading}
           bodyStyle={{ padding: 16 }}
         >
           <Steps direction="vertical" current={current}>

@@ -3,10 +3,12 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Button, Form, Row, Col, Card, Input, Select, Icon } from 'antd';
 import RegionCascader from 'client/components/chinaRegionCascader';
+import { loadTmsBizParams } from 'common/reducers/scofFlow';
 import { setClientForm, loadFlowNodeData } from 'common/reducers/crmOrders';
 import { uuidWithoutDash } from 'client/common/uuid';
 import { GOODS_TYPES } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
+import * as Location from 'client/util/location';
 import messages from '../message.i18n';
 
 const formatMsg = format(messages);
@@ -22,16 +24,16 @@ const formItemLayout = {
 @injectIntl
 @connect(
   state => ({
-    formRequires: state.crmOrders.formRequires,
+    tenantId: state.account.tenantId,
+    tmsParams: state.scofFlow.tmsParams,
   }),
-  { setClientForm, loadFlowNodeData }
+  { setClientForm, loadFlowNodeData, loadTmsBizParams }
 )
 export default class TransportForm extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     index: PropTypes.number.isRequired,
     operation: PropTypes.oneOf(['view', 'edit', 'create']),
-    formRequires: PropTypes.object.isRequired,
     formData: PropTypes.object.isRequired,
     setClientForm: PropTypes.func.isRequired,
     shipment: PropTypes.shape({
@@ -42,15 +44,16 @@ export default class TransportForm extends Component {
     }),
   }
   componentDidMount() {
-    const { formData, formRequires } = this.props;
+    this.props.loadTmsBizParams(this.props.tenantId);
+    const { formData, tmsParams: { consigners, consignees, transitModes } } = this.props;
     const node = formData.node;
     if (!node.uuid && node.node_uuid) {
       this.props.loadFlowNodeData(node.node_uuid, node.kind).then((result) => {
         if (!result.error) {
           const nodedata = result.data;
-          const consigner = formRequires.consignerLocations.filter(cl => cl.node_id === nodedata.consigner_id)[0];
-          const consignee = formRequires.consigneeLocations.filter(cl => cl.node_id === nodedata.consignee_id)[0];
-          const transitMode = formRequires.transitModes.filter(tm => tm.mode_code === nodedata.transit_mode)[0];
+          const consigner = consigners.filter(cl => cl.node_id === nodedata.consigner_id)[0];
+          const consignee = consignees.filter(cl => cl.node_id === nodedata.consignee_id)[0];
+          const transitMode = transitModes.filter(tm => tm.mode_code === nodedata.transit_mode)[0];
           this.handleSetClientForm({
             consigner_id: nodedata.consigner_id,
             consigner_name: consigner && consigner.name,
@@ -100,9 +103,10 @@ export default class TransportForm extends Component {
     if (typeof value !== 'string') {
       return;
     }
+    const { tmsParams: { consigners, consignees } } = this.props;
     const consignForm = {};
     if (key === 'consigner_name') {
-      const consign = this.props.formRequires.consignerLocations.find(item => item.name === value);
+      const consign = consigners.find(item => item.name === value);
       if (consign) {
         consignForm.consigner_name = consign.name;
         consignForm.consigner_province = consign.province;
@@ -130,7 +134,7 @@ export default class TransportForm extends Component {
         consignForm.consigner_id = null;
       }
     } else if (key === 'consignee_name') {
-      const consign = this.props.formRequires.consigneeLocations.find(item => item.name === value);
+      const consign = consignees.find(item => item.name === value);
       if (consign) {
         consignForm.consignee_name = consign.name;
         consignForm.consignee_province = consign.province;
@@ -162,8 +166,9 @@ export default class TransportForm extends Component {
   }
   handleConsignSelect = (key, value) => {
     const consignForm = {};
+    const { tmsParams: { consigners, consignees } } = this.props;
     if (key === 'consigner_name') {
-      const consign = this.props.formRequires.consignerLocations.find(item => item.node_id === value);
+      const consign = consigners.find(item => item.node_id === value);
       if (consign) {
         consignForm.consigner_id = consign.node_id;
         consignForm.consigner_name = consign.name;
@@ -178,7 +183,7 @@ export default class TransportForm extends Component {
         consignForm.consigner_mobile = consign.mobile;
       }
     } else if (key === 'consignee_name') {
-      const consign = this.props.formRequires.consigneeLocations.find(item => item.node_id === value);
+      const consign = consignees.find(item => item.node_id === value);
       if (consign) {
         consignForm.consignee_id = consign.node_id;
         consignForm.consignee_name = consign.name;
@@ -206,7 +211,7 @@ export default class TransportForm extends Component {
     this.handleSetClientForm(consign);
   }
   handleTransmodeChange = (value) => {
-    const transportMode = this.props.formRequires.transitModes.find(item => item.id === value);
+    const transportMode = this.props.tmsParams.transitModes.find(item => item.id === value);
     this.handleSetClientForm({
       trs_mode_id: transportMode.id,
       trs_mode_code: transportMode.mode_code,
@@ -228,9 +233,9 @@ export default class TransportForm extends Component {
       this.handleSetClientForm(related);
     }
   }
-
+  renderConsign = consign => `${consign.name} | ${Location.renderLoc(consign)} | ${consign.contact || ''}`
   render() {
-    const { formRequires, formData } = this.props;
+    const { formData, tmsParams: { consigners, consignees, transitModes, packagings } } = this.props;
     const node = formData.node;
     const consignerRegion = [
       node.consigner_province, node.consigner_city,
@@ -249,9 +254,11 @@ export default class TransportForm extends Component {
                 <Select allowClear size="large" mode="combobox" showArrow value={node.consigner_id} optionLabelProp="children"
                   onChange={value => this.handleConsignChange('consigner_name', value)}
                   onSelect={value => this.handleConsignSelect('consigner_name', value)}
+                  dropdownMatchSelectWidth={false}
+                  dropdownStyle={{ width: 400 }}
                 >
-                  {formRequires.consignerLocations.map(dw =>
-                    <Option value={dw.node_id} key={dw.node_id}>{dw.name}</Option>)
+                  {consigners.map(dw =>
+                    <Option value={dw.node_id} key={dw.node_id}>{this.renderConsign(dw)}</Option>)
                 }
                 </Select>
               </Col>
@@ -295,9 +302,11 @@ export default class TransportForm extends Component {
                 <Select allowClear size="large" mode="combobox" showArrow value={node.consignee_id} optionLabelProp="children"
                   onChange={value => this.handleConsignChange('consignee_name', value)}
                   onSelect={value => this.handleConsignSelect('consignee_name', value)}
+                  dropdownMatchSelectWidth={false}
+                  dropdownStyle={{ width: 400 }}
                 >
-                  {formRequires.consigneeLocations.map(dw =>
-                    <Option value={dw.node_id} key={dw.node_id}>{dw.name}</Option>)
+                  {consignees.map(dw =>
+                    <Option value={dw.node_id} key={dw.node_id}>{this.renderConsign(dw)}</Option>)
                 }
                 </Select>
               </Col>
@@ -338,7 +347,7 @@ export default class TransportForm extends Component {
           <Col span={8}>
             <FormItem label="运输模式" {...formItemLayout} required="true">
               <Select value={node.trs_mode_id} onChange={this.handleTransmodeChange}>
-                {formRequires.transitModes.map(
+                {transitModes.map(
                   tm => <Option value={tm.id} key={`${tm.mode_code}${tm.id}`}>{tm.mode_name}</Option>
                 )}
               </Select>
@@ -363,7 +372,7 @@ export default class TransportForm extends Component {
                 <Select size="large" style={{ width: '50%' }} placeholder="选择包装方式"
                   value={node.package} onChange={value => this.handleCommonFieldChange('package', value)}
                 >
-                  {formRequires.packagings.map(
+                  {packagings.map(
                     pk => <Option value={pk.package_code} key={pk.package_code}>{pk.package_name}</Option>
                   )}
                 </Select>

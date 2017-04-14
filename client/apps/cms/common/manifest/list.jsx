@@ -82,7 +82,7 @@ export default class ManifestList extends Component {
       // }
       <a onClick={() => this.handlePreview(o, record)}>{o}</a>,
   }, {
-    title: '申报单位',
+    title: '报关单位',
     dataIndex: 'customs_name',
     width: 160,
     render: o => <TrimSpan text={o} maxLen={10} />,
