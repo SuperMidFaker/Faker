@@ -8,6 +8,7 @@ const actionTypes = createActionTypes('@@welogix/scv/tradeitem/', [
   'DELETE_ITEM', 'DELETE_ITEM_SUCCEED', 'DELETE_ITEM_FAIL',
   'DELETE_SELECT_ITEMS', 'DELETE_SELECT_ITEMS_SUCCEED', 'DELETE_SELECT_ITEMS_FAIL',
   'SET_ITEM_STATUS', 'SET_ITEM_STATUS_SUCCEED', 'SET_ITEM_STATUS_FAIL',
+  'LOAD_TRADE_ITEM', 'LOAD_TRADE_ITEM_SUCCEED', 'LOAD_TRADE_ITEM_FAIL',
 ]);
 
 const initialState = {
@@ -23,18 +24,21 @@ const initialState = {
   },
   tradeItemsLoading: false,
   visibleAddItemModal: false,
+  itemData: {},
 };
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.LOAD_TRADE_ITEMS:
-      return { ...state, tradeItemsLoading: true };
+      return { ...state, tradeItemsLoading: true, itemData: initialState.itemData };
     case actionTypes.LOAD_TRADE_ITEMS_SUCCEED:
       return { ...state, tradeItemlist: action.result.data, listFilter: JSON.parse(action.params.filter), tradeItemsLoading: false };
     case actionTypes.LOAD_TRADE_ITEMS_FAIL:
       return { ...state, tradeItemsLoading: false };
     case actionTypes.SET_ADD_ITEM_VISIBLE:
       return { ...state, visibleAddItemModal: action.data };
+    case actionTypes.LOAD_TRADE_ITEM_SUCCEED:
+      return { ...state, itemData: action.result.data.tradeitem };
     default:
       return state;
   }
@@ -118,6 +122,21 @@ export function setItemStatus(datas) {
       endpoint: 'v1/scv/tradeitem/status/set',
       method: 'post',
       data: datas,
+    },
+  };
+}
+
+export function loadScvTradeItem(itemId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_TRADE_ITEM,
+        actionTypes.LOAD_TRADE_ITEM_SUCCEED,
+        actionTypes.LOAD_TRADE_ITEM_FAIL,
+      ],
+      endpoint: 'v1/scv/tradeitem/editItem/load',
+      method: 'get',
+      params: { itemId },
     },
   };
 }
