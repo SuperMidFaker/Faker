@@ -75,7 +75,7 @@ import * as SCVInventoryStock from './scv/inventory/stock';
 import * as SCVInventoryTransaction from './scv/inventory/transaction';
 import * as SCVReceivingNotice from './scv/inventory/receiving';
 import * as SCVShippingOrder from './scv/inventory/shipping';
-import * as SCVProductsSku from './scv/products/sku';
+import * as SCVInventorySku from './scv/inventory/sku';
 import * as SCVProductsTradeItem from './scv/products/tradeitem';
 import * as SCVPaymentsTax from './scv/payments/tax';
 import * as SCVPaymentsBilling from './scv/payments/billing';
@@ -376,17 +376,17 @@ export default(store, cookie) => {
                 <IndexRoute component={SCVShippingOrder.List} />
                 <Route path="create" component={SCVShippingOrder.Create} />
               </Route>
+              <Route path="sku">
+                <IndexRoute component={SCVInventorySku.List} />
+                <Route path="create" component={SCVInventorySku.Create} />
+                <Route path=":sku" component={SCVInventorySku.Edit} />
+              </Route>
             </Route>
             <Route path="payments">
               <Route path="tax" component={SCVPaymentsTax.List} />
               <Route path="billing" component={SCVPaymentsBilling.List} />
             </Route>
             <Route path="products">
-              <Route path="sku">
-                <IndexRoute component={SCVProductsSku.List} />
-                <Route path="create" component={SCVProductsSku.Create} />
-                <Route path=":sku" component={SCVProductsSku.Edit} />
-              </Route>
               <Route path="tradeitem" component={SCVProductsTradeItem.List} />
             </Route>
             <Route path="analytics">

@@ -74,39 +74,39 @@ export default class ModuleSCV extends React.Component {
     linkMenus.push({
       single: false,
       key: 'scv-4',
-      icon: 'icon-fontello-warehouse',
-      text: formatMsg(intl, 'inventory'),
+      icon: 'icon-fontello-database',
+      text: formatMsg(intl, 'products'),
       sublinks: [{
         key: 'scv-4-0',
-        path: '/scv/inventory/stock',
-        text: formatMsg(intl, 'inventoryStock'),
-      }, {
-        key: 'scv-4-1',
-        path: '/scv/inventory/transaction',
-        text: formatMsg(intl, 'inventoryTransaction'),
-      }, {
-        key: 'scv-4-2',
-        path: '/scv/inventory/receiving',
-        text: formatMsg(intl, 'inventoryReceiving'),
-      }, {
-        key: 'scv-4-3',
-        path: '/scv/inventory/shipping',
-        text: formatMsg(intl, 'inventoryShipping'),
+        path: '/scv/products/tradeitem',
+        text: formatMsg(intl, 'productsTradeItem'),
       }],
     });
     linkMenus.push({
       single: false,
       key: 'scv-5',
-      icon: 'icon-fontello-database',
-      text: formatMsg(intl, 'products'),
+      icon: 'icon-fontello-warehouse',
+      text: formatMsg(intl, 'inventory'),
       sublinks: [{
         key: 'scv-5-0',
-        path: '/scv/products/tradeitem',
-        text: formatMsg(intl, 'productsTradeItem'),
+        path: '/scv/inventory/stock',
+        text: formatMsg(intl, 'inventoryStock'),
       }, {
         key: 'scv-5-1',
-        path: '/scv/products/sku',
-        text: formatMsg(intl, 'productsSKU'),
+        path: '/scv/inventory/transaction',
+        text: formatMsg(intl, 'inventoryTransaction'),
+      }, {
+        key: 'scv-5-2',
+        path: '/scv/inventory/receiving',
+        text: formatMsg(intl, 'inventoryReceiving'),
+      }, {
+        key: 'scv-5-3',
+        path: '/scv/inventory/shipping',
+        text: formatMsg(intl, 'inventoryShipping'),
+      }, {
+        key: 'scv-5-4',
+        path: '/scv/inventory/sku',
+        text: formatMsg(intl, 'inventorySKU'),
       }],
     });
     linkMenus.push({
