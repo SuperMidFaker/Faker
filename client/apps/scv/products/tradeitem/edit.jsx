@@ -71,7 +71,7 @@ export default class EditTradeItem extends Component {
           if (result.error) {
             message.error(result.error.message, 10);
           } else {
-            this.context.router.push('/clearance/classification/tradeitem');
+            this.context.router.push('/scv/products/tradeitem');
           }
         });
       }

@@ -9,6 +9,7 @@ const actionTypes = createActionTypes('@@welogix/scv/tradeitem/', [
   'DELETE_SELECT_ITEMS', 'DELETE_SELECT_ITEMS_SUCCEED', 'DELETE_SELECT_ITEMS_FAIL',
   'SET_ITEM_STATUS', 'SET_ITEM_STATUS_SUCCEED', 'SET_ITEM_STATUS_FAIL',
   'LOAD_TRADE_ITEM', 'LOAD_TRADE_ITEM_SUCCEED', 'LOAD_TRADE_ITEM_FAIL',
+  'ITEM_EDITED_SAVE', 'ITEM_EDITED_SAVE_SUCCEED', 'ITEM_EDITED_SAVE_FAIL',
 ]);
 
 const initialState = {
@@ -137,6 +138,21 @@ export function loadScvTradeItem(itemId) {
       endpoint: 'v1/scv/tradeitem/editItem/load',
       method: 'get',
       params: { itemId },
+    },
+  };
+}
+
+export function itemEditedSave(datas) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.ITEM_EDITED_SAVE,
+        actionTypes.ITEM_EDITED_SAVE_SUCCEED,
+        actionTypes.ITEM_EDITED_SAVE_FAIL,
+      ],
+      endpoint: 'v1/scv/tradeitem/update',
+      method: 'post',
+      data: datas,
     },
   };
 }
