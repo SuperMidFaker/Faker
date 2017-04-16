@@ -512,19 +512,8 @@ export default class TradeItemList extends Component {
       key: 'owner_name',
       render: o => (<div style={{ paddingLeft: 15 }}>{o}</div>),
     }];
-    const menu = (
+    const importMenu = (
       <Menu onClick={this.handleMenuClick}>
-        <Menu.Item key="importData">
-          <ExcelUpload endpoint={`${API_ROOTS.default}v1/cms/cmsTradeitem/tradeitems/import`}
-            formData={{
-              data: JSON.stringify({
-                repo_id: this.props.repoId,
-              }),
-            }} onUploaded={this.handleUploaded}
-          >
-            <Icon type="file-excel" /> {this.msg('importItems')}
-          </ExcelUpload>
-        </Menu.Item>
         <Menu.Item key="export"><Icon type="export" /> 导出物料表</Menu.Item>
         <Menu.Item key="model"><Icon type="download" /> 下载模板</Menu.Item>
       </Menu>);
@@ -593,11 +582,17 @@ export default class TradeItemList extends Component {
               <div className="top-bar-tools">
                 {repo.permission === CMS_TRADE_REPO_PERMISSION.edit &&
                   (
-                    <Dropdown overlay={menu} type="primary">
-                      <Button size="large" onClick={this.handleButtonClick}>
-                        {this.msg('importItems')} <Icon type="down" />
-                      </Button>
-                    </Dropdown>
+                    <Dropdown.Button overlay={importMenu}>
+                      <ExcelUpload endpoint={`${API_ROOTS.default}v1/cms/cmsTradeitem/tradeitems/import`}
+                        formData={{
+                          data: JSON.stringify({
+                            repo_id: this.props.repoId,
+                          }),
+                        }} onUploaded={this.handleUploaded}
+                      >
+                        {this.msg('importItems')}
+                      </ExcelUpload>
+                    </Dropdown.Button>
                   )
                 }
                 {repo.permission === CMS_TRADE_REPO_PERMISSION.edit &&

@@ -46,13 +46,21 @@ export default class ImportComparisonModal extends React.Component {
         current: 1,
         total: 0,
         pageSize: 10,
-        showQuickJumper: true,
+        showQuickJumper: false,
         onChange: this.handlePageChange,
       },
       uuid,
       dataSource: [],
       feedbackChanges: {},
     };
+  }
+  getInitialState() {
+    return { modalWidth: 1000 };
+  }
+  componentWillMount() {
+    if (typeof document !== 'undefined' && typeof window !== 'undefined') {
+      this.setState({ modalWidth: window.innerWidth - 48 });
+    }
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.data !== this.props.data) {
@@ -240,6 +248,7 @@ export default class ImportComparisonModal extends React.Component {
   }, {
     title: this.msg('status'),
     dataIndex: 'status',
+    fixed: 'right',
     width: 120,
     render: (o) => {
       const status = TRADE_ITEM_STATUS.filter(sts => sts.value === o)[0];
@@ -261,41 +270,41 @@ export default class ImportComparisonModal extends React.Component {
         if (record.feedback === 'prehscode') {
           return (
             <span>
+              <RowUpdater onHit={this.handleCodeChoose} label="使用新编码" row={record} index={index} />
+              <span className="ant-divider" />
               <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleRowDel(record.id)}>
                 <a role="button"><Icon type="delete" /></a>
               </Popconfirm>
-              <span className="ant-divider" />
-              <RowUpdater onHit={this.handleCodeChoose} label="使用新编码" row={record} index={index} />
             </span>
           );
         } else if (record.feedback === 'newhscode') {
           return (
             <span>
+              <RowUpdater onHit={this.handleCodeChoose} label="使用原编码" row={record} index={index} />
+              <span className="ant-divider" />
               <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleRowDel(record.id)}>
                 <a role="button"><Icon type="delete" /></a>
               </Popconfirm>
-              <span className="ant-divider" />
-              <RowUpdater onHit={this.handleCodeChoose} label="使用原编码" row={record} index={index} />
             </span>
           );
         } else if (record.feedback === 'preGmodel') {
           return (
             <span>
+              <RowUpdater onHit={this.handleCodeChoose} label="使用新规格型号" row={record} index={index} />
+              <span className="ant-divider" />
               <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleRowDel(record.id)}>
                 <a role="button"><Icon type="delete" /></a>
               </Popconfirm>
-              <span className="ant-divider" />
-              <RowUpdater onHit={this.handleCodeChoose} label="使用新规格型号" row={record} index={index} />
             </span>
           );
         } else if (record.feedback === 'newGmodel') {
           return (
             <span>
+              <RowUpdater onHit={this.handleCodeChoose} label="使用原规格型号" row={record} index={index} />
+              <span className="ant-divider" />
               <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleRowDel(record.id)}>
                 <a role="button"><Icon type="delete" /></a>
               </Popconfirm>
-              <span className="ant-divider" />
-              <RowUpdater onHit={this.handleCodeChoose} label="使用原规格型号" row={record} index={index} />
             </span>
           );
         } else {
@@ -308,9 +317,9 @@ export default class ImportComparisonModal extends React.Component {
     });
     return (
       <Modal title={this.msg('对比结果确认')} visible={visibleCompareModal}
-        onOk={this.handleOk} onCancel={this.handleCancel} width={1000}
+        onOk={this.handleOk} onCancel={this.handleCancel} width={this.state.modalWidth} maskClosable={false} style={{ top: 24 }}
       >
-        <Table rowKey={record => record.cop_product_no} columns={columns} dataSource={this.state.dataSource} pagination={this.state.pagination} scroll={{ x: 1500 }} />
+        <Table size="middle" rowKey={record => record.cop_product_no} columns={columns} dataSource={this.state.dataSource} pagination={this.state.pagination} scroll={{ x: 1500 }} />
       </Modal>
     );
   }

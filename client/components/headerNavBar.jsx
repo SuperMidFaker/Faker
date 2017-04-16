@@ -32,6 +32,9 @@ const RadioButton = Radio.Button;
   { logout, loadTranslation, changeUserLocale, goBackNav }
 )
 export default class HeaderNavBar extends React.Component {
+  static defaultProps = {
+    locale: 'zh',
+  }
   static propTypes = {
     intl: intlShape.isRequired,
     navTitle: PropTypes.shape({
@@ -126,14 +129,14 @@ export default class HeaderNavBar extends React.Component {
       );
     } else if (navTitle.depth === 3) {
       brandNav = [(
-        <Tooltip placement="bottomLeft" arrowPointAtCenter mouseEnterDelay={2} title="Go back to previous step" >
+        <Tooltip placement="bottomLeft" arrowPointAtCenter mouseEnterDelay={2} title="Go back to previous step" key="back" >
           <a role="button" className="navbar-anchor" key="back" onClick={this.handleGoBack}>
             <MdIcon type="arrow-left" />
           </a>
         </Tooltip>)];
-      if (navTitle.jumpOut) {
+      if (navTitle.jumpOut && this.props.navTitle.stack > 1) {
         brandNav.push(
-          <Tooltip placement="bottomLeft" arrowPointAtCenter mouseEnterDelay={2} title="Close to up level" >
+          <Tooltip placement="bottomLeft" arrowPointAtCenter mouseEnterDelay={2} title="Close to up level" key="close" >
             <a role="button" className="navbar-anchor" key="close" onClick={this.handleGoDepth2}>
               <MdIcon type="close" />
             </a>
