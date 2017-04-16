@@ -304,6 +304,7 @@ export default class TradeItemList extends Component {
     this.setState({ selectedRowKeys: [] });
   }
   handleRadioChange = (ev) => {
+    this.setState({ selectedRowKeys: [] });
     if (ev.target.value === this.props.listFilter.status) {
       return;
     }
@@ -315,6 +316,7 @@ export default class TradeItemList extends Component {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
+        message.success('归类通过');
         this.handleItemListLoad();
       }
     });
@@ -324,6 +326,7 @@ export default class TradeItemList extends Component {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
+        message.warning('归类拒绝');
         this.handleItemListLoad();
       }
     });
@@ -408,9 +411,9 @@ export default class TradeItemList extends Component {
         } else if (record.status === CMS_ITEM_STATUS.pending) {
           return (
             <span>
-              <RowUpdater onHit={this.handleItemPass} label={this.msg('pass')} row={record} />
+              <RowUpdater onHit={this.handleItemPass} label={<span><Icon type="check-circle-o" /> {this.msg('pass')}</span>} row={record} />
               <span className="ant-divider" />
-              <RowUpdater onHit={this.handleItemRefused} label={this.msg('refuse')} row={record} />
+              <RowUpdater onHit={this.handleItemRefused} label={<span><Icon type="close-circle-o" /> {this.msg('refuse')}</span>} row={record} />
               <span className="ant-divider" />
               <Dropdown overlay={(
                 <Menu>
@@ -491,7 +494,10 @@ export default class TradeItemList extends Component {
             <div className="toolbar">
               <SearchBar placeholder="编码/名称/描述/申报要素" onInputSearch={this.handleSearch} size="large" />
               <span />
-              {batchOperation}
+              <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
+                <h3>已选中{this.state.selectedRowKeys.length}项</h3>
+                {batchOperation}
+              </div>
             </div>
             <div className="panel-body table-panel">
               <RemoteTable loading={this.props.tradeItemsLoading} rowSelection={rowSelection} rowKey={record => record.id} columns={columns} dataSource={this.dataSource} scroll={{ x: 3800 }} />

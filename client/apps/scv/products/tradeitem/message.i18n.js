@@ -223,11 +223,11 @@ const messages = defineMessages({
   },
   pass: {
     id: 'scv.products.tradeitem.pass',
-    defaultMessage: '归类通过',
+    defaultMessage: '通过',
   },
   refuse: {
     id: 'scv.products.tradeitem.refuse',
-    defaultMessage: '归类拒绝',
+    defaultMessage: '拒绝',
   },
   broker: {
     id: 'scv.products.tradeitem.broker',
