@@ -2,6 +2,10 @@ import { defineMessages } from 'react-intl';
 import { formati18n } from 'client/common/i18n/helpers';
 
 const messages = defineMessages({
+  sourceSync: {
+    id: 'scv.classification.source.sync',
+    defaultMessage: '来源同步',
+  },
   classifyBroker: {
     id: 'scv.classification.broker',
     defaultMessage: '归类报关行',
@@ -13,10 +17,6 @@ const messages = defineMessages({
   classifyShare: {
     id: 'scv.classification.share',
     defaultMessage: '共享报关行范围',
-  },
-  isBonded: {
-    id: 'scv.resources.warehouse.bonded',
-    defaultMessage: '保税仓',
   },
   warehouseOperator: {
     id: 'scv.resources.warehouse.operator',

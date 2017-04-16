@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Layout } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { loadSyncList, loadClassificatonBrokers } from 'common/reducers/scvClassification';
+import { loadSyncList, loadClassificatonBrokers, updateAudit, renewSharees } from 'common/reducers/scvClassification';
 import connectNav from 'client/common/decorators/connect-nav';
 import Table from 'client/components/remoteAntTable';
 import EditableCell from 'client/components/EditableCell';
@@ -33,7 +33,8 @@ function fetchData({ state, dispatch }) {
     tenantId: state.account.tenantId,
     synclist: state.scvClassification.synclist,
     brokers: state.scvClassification.shareBrokers,
-  })
+  }),
+  { updateAudit, renewSharees }
 )
 @connectNav({
   depth: 2,
@@ -51,7 +52,7 @@ export default class ScvClassifySyncList extends React.Component {
     width: 200,
   }, {
     title: this.msg('classifyAudit'),
-    width: 160,
+    width: 200,
     dataIndex: 'audit_way',
     render: (aw, row) => (
       <EditableCell value={aw} options={SYNC_AUDIT_METHODS} type="select"
@@ -60,10 +61,16 @@ export default class ScvClassifySyncList extends React.Component {
   }, {
     title: this.msg('classifyShare'),
     width: 300,
-    render: (_, row) => <SyncShareEditCell checkedBrokers={row.shares} shareBrokers={this.props.brokers}
-      onSave={value => this.handleShareChange(row.id, value)}
-    />,
+    render: (_, row) => (<SyncShareEditCell checkedBrokers={row.shares} shareBrokers={this.props.brokers}
+      onSave={this.handleShareChange} contribute={row.broker_tenant_id}
+    />),
   }]
+  handleAuditChange = (syncId, audit) => {
+    this.props.updateAudit(syncId, audit);
+  }
+  handleShareChange = (contributeTenantId, shareeTenantIds) => {
+    this.props.renewSharees(contributeTenantId, shareeTenantIds);
+  }
   dataSource = new Table.DataSource({
     fetcher: params => this.props.loadSyncList(params),
     resolve: result => result.data,

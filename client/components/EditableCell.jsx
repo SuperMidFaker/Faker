@@ -61,12 +61,7 @@ export default class EditableCell extends React.Component {
     switch (type) {
       case 'textarea':
         return (<div>
-          <Input
-            type="textarea"
-            autosize
-            value={value}
-            onChange={this.handleChange}
-          />
+          <Input type="textarea" autosize value={value} onChange={this.handleChange} />
           <div>
             <Icon type="check" className="editable-cell-icon-save" onClick={this.check} />
             <span className="ant-divider" />
@@ -74,15 +69,13 @@ export default class EditableCell extends React.Component {
           </div>
         </div>);
       case 'select':
-        return (<div>{addonBefore}
+        return (<div>
           <Select showSearch placeholder={placeholder} value={value} style={{ width: '90%' }} onChange={this.handleSelectChange}>
             {options.map(opt => <Option key={opt.key} value={opt.key}>{opt.text}</Option>)}
           </Select>
-          <div>
-            <Icon type="check" className="editable-cell-icon-save" onClick={this.check} />
-            <span className="ant-divider" />
-            <Icon type="close" className="editable-cell-icon-close" onClick={this.close} />
-          </div>
+          <Icon type="check" className="editable-cell-icon-save" onClick={this.check} />
+          <span className="ant-divider" />
+          <Icon type="close" className="editable-cell-icon-close" onClick={this.close} />
         </div>);
       default:
         return (<Input
@@ -106,7 +99,7 @@ export default class EditableCell extends React.Component {
     const { value } = this.state;
     if (type === 'select') {
       const option = options.filter(opt => opt.key === value)[0];
-      return (option && <span>{addonBefore}{value}{addonAfter}</span>);
+      return (option && <span>{addonBefore}{option.text}{addonAfter}</span>);
     }
     return (value && (value.length > 0 || value !== 0)) ?
       <span>{addonBefore}{value}{addonAfter}</span> :

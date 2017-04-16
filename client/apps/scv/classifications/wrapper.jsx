@@ -22,7 +22,7 @@ export default class ScvClassificationWrapper extends React.Component {
         <Header className="top-bar">
           <Breadcrumb>
             <Breadcrumb.Item>
-              {menuKey === 'sync' && '同步设置'}
+              {menuKey === 'sync' && this.msg('sourceSync')}
             </Breadcrumb.Item>
           </Breadcrumb>
         </Header>
@@ -31,7 +31,7 @@ export default class ScvClassificationWrapper extends React.Component {
             <Layout className="main-wrapper">
               <Sider className="nav-sider">
                 <Menu selectedKeys={[menuKey]} mode="inline">
-                  <Menu.Item key="sync"><NavLink to="/scv/classification/sync">同步设置</NavLink></Menu.Item>
+                  <Menu.Item key="sync"><NavLink to="/scv/classification/sync">{this.msg('sourceSync')}</NavLink></Menu.Item>
                 </Menu>
               </Sider>
               {children}

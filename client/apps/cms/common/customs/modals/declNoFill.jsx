@@ -72,4 +72,3 @@ export default class DeclnoFillModal extends React.Component {
     );
   }
 }
-
