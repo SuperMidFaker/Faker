@@ -3,7 +3,6 @@ import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/scv/classification/', [
   'LOAD_TRADE_ITEMS', 'LOAD_TRADE_ITEMS_SUCCEED', 'LOAD_TRADE_ITEMS_FAIL',
-  'SET_ADD_ITEM_VISIBLE',
   'ADD_ITEM', 'ADD_ITEM_SUCCEED', 'ADD_ITEM_FAIL',
   'DELETE_ITEM', 'DELETE_ITEM_SUCCEED', 'DELETE_ITEM_FAIL',
   'DELETE_SELECT_ITEMS', 'DELETE_SELECT_ITEMS_SUCCEED', 'DELETE_SELECT_ITEMS_FAIL',
@@ -13,6 +12,8 @@ const actionTypes = createActionTypes('@@welogix/scv/classification/', [
   'LOAD_CLASBROKERS', 'LOAD_CLASBROKERS_SUCCEED', 'LOAD_CLASBROKERS_FAIL',
   'UPDATE_AUDIT', 'UPDATE_AUDIT_SUCCEED', 'UPDATE_AUDIT_FAIL',
   'RENEW_SHAREE', 'RENEW_SHAREE_SUCCEED', 'RENEW_SHAREE_FAIL',
+  'SET_COMPARE_VISIBLE',
+  'COMPARED_DATAS_SAVE', 'COMPARED_DATAS_SAVE_SUCCEED', 'COMPARED_DATAS_SAVE_FAIL',
   'LOAD_MASTERCONF', 'LOAD_MASTERCONF_SUCCEED', 'LOAD_MASTERCONF_FAIL',
 ]);
 
@@ -28,7 +29,7 @@ const initialState = {
     status: 'pending',
   },
   tradeItemsLoading: false,
-  visibleAddItemModal: false,
+  visibleCompareModal: false,
   itemData: {},
   synclist: {
     totalCount: 0,
@@ -50,8 +51,6 @@ export default function reducer(state = initialState, action) {
       return { ...state, tradeItemlist: action.result.data, listFilter: JSON.parse(action.params.filter), tradeItemsLoading: false };
     case actionTypes.LOAD_TRADE_ITEMS_FAIL:
       return { ...state, tradeItemsLoading: false };
-    case actionTypes.SET_ADD_ITEM_VISIBLE:
-      return { ...state, visibleAddItemModal: action.data };
     case actionTypes.LOAD_TRADE_ITEM_SUCCEED:
       return { ...state, itemData: action.result.data.tradeitem };
     case actionTypes.LOAD_SYNCS_SUCCEED:
@@ -59,8 +58,8 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_CLASBROKERS_SUCCEED:
       return { ...state, shareBrokers: action.result.data.filter(data => data.partner_tenant_id > 0)
         .map(data => ({ tenant_id: data.partner_tenant_id, name: data.name })) };
-    case actionTypes.LOAD_MASTERCONF_SUCCEED:
-      return { ...state, master: action.result.data };
+    case actionTypes.SET_COMPARE_VISIBLE:
+      return { ...state, visibleCompareModal: action.data };
     default:
       return state;
   }
@@ -78,13 +77,6 @@ export function loadTradeItems(params) {
       method: 'get',
       params,
     },
-  };
-}
-
-export function setAdditemModalVisible(val) {
-  return {
-    type: actionTypes.SET_ADD_ITEM_VISIBLE,
-    data: val,
   };
 }
 
@@ -223,6 +215,7 @@ export function renewSharees(contribute, sharees) {
   };
 }
 
+
 export function loadMasterConfig({ tenantId }) {
   return {
     [CLIENT_API]: {
@@ -234,6 +227,28 @@ export function loadMasterConfig({ tenantId }) {
       endpoint: 'v1/scv/classification/master/config',
       method: 'get',
       params: { tenantId },
+    },
+  };
+}
+
+export function setCompareVisible(val) {
+  return {
+    type: actionTypes.SET_COMPARE_VISIBLE,
+    data: val,
+  };
+}
+
+export function saveComparedItemDatas(datas) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.COMPARED_DATAS_SAVE,
+        actionTypes.COMPARED_DATAS_SAVE_SUCCEED,
+        actionTypes.COMPARED_DATAS_SAVE_FAIL,
+      ],
+      endpoint: 'v1/scv/tradeitem/compared/datas/save',
+      method: 'post',
+      data: datas,
     },
   };
 }

@@ -10,12 +10,13 @@ import NavLink from 'client/components/nav-link';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import { loadTradeParams } from 'common/reducers/cmsTradeitem';
-import { loadTradeItems, setAdditemModalVisible, deleteItem, deleteSelectedItems, setItemStatus } from 'common/reducers/scvClassification';
+import { loadTradeItems, deleteItem, deleteSelectedItems, setItemStatus, setCompareVisible } from 'common/reducers/scvClassification';
 import SearchBar from 'client/components/search-bar';
 import ExcelUpload from 'client/components/excelUploader';
 import { createFilename } from 'client/util/dataTransform';
 import { CMS_ITEM_STATUS } from 'common/constants';
 import RowUpdater from 'client/components/rowUpdater';
+import ImportComparisonModal from './modals/importComparison';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -57,7 +58,7 @@ function fetchData({ state, dispatch }) {
       text: tc.cntry_name_cn,
     })),
   }),
-  { loadTradeItems, setAdditemModalVisible, deleteItem, deleteSelectedItems, setItemStatus }
+  { loadTradeItems, deleteItem, deleteSelectedItems, setItemStatus, setCompareVisible }
 )
 @connectNav({
   depth: 2,
@@ -279,7 +280,6 @@ export default class TradeItemList extends Component {
     ev.stopPropagation();
   }
   handleAddItem = () => {
-    // this.props.setAdditemModalVisible(true);
     this.context.router.push('/scv/products/tradeitem/create');
   }
   handleMenuClick = (e) => {
@@ -289,8 +289,9 @@ export default class TradeItemList extends Component {
       window.open(`${API_ROOTS.default}v1/scv/tradeitems/model/download/${createFilename('tradeItemModel')}.xlsx`);
     }
   }
-  handleUploaded = () => {
-
+  handleUploaded = (data) => {
+    this.setState({ compareduuid: data });
+    this.props.setCompareVisible(true);
   }
   handleDeleteSelected = () => {
     const selectedIds = this.state.selectedRowKeys;
@@ -444,19 +445,8 @@ export default class TradeItemList extends Component {
         }
       },
     });
-    const menu = (
+    const importMenu = (
       <Menu onClick={this.handleMenuClick}>
-        <Menu.Item key="importData">
-          <ExcelUpload endpoint={`${API_ROOTS.default}v1/cms/cmsTradeitem/tradeitems/import`}
-            formData={{
-              data: JSON.stringify({
-                owner_tenant_id: this.props.tenantId,
-              }),
-            }} onUploaded={this.handleUploaded}
-          >
-            <Icon type="file-excel" /> {this.msg('importItems')}
-          </ExcelUpload>
-        </Menu.Item>
         <Menu.Item key="export"><Icon type="export" /> 导出物料表</Menu.Item>
         <Menu.Item key="model"><Icon type="download" /> 下载模板</Menu.Item>
       </Menu>);
@@ -479,11 +469,17 @@ export default class TradeItemList extends Component {
           </RadioGroup>
           <Button onClick={this.handleConfilictLoad} size="large" style={{ left: 8 }}>{this.msg('filterConfilict')}</Button>
           <div className="top-bar-tools">
-            <Dropdown overlay={menu} type="primary">
-              <Button size="large" onClick={this.handleButtonClick}>
-                {this.msg('importItems')} <Icon type="down" />
-              </Button>
-            </Dropdown>
+            <Dropdown.Button overlay={importMenu}>
+              <ExcelUpload endpoint={`${API_ROOTS.default}v1/scv/tradeitems/import`}
+                formData={{
+                  data: JSON.stringify({
+                    owner_tenant_id: this.props.tenantId,
+                  }),
+                }} onUploaded={this.handleUploaded}
+              >
+                {this.msg('importItems')}
+              </ExcelUpload>
+            </Dropdown.Button>
             <Button type="primary" size="large" icon="plus" onClick={this.handleAddItem}>
               {this.msg('addItem')}
             </Button>
@@ -502,6 +498,7 @@ export default class TradeItemList extends Component {
             <div className="panel-body table-panel">
               <RemoteTable loading={this.props.tradeItemsLoading} rowSelection={rowSelection} rowKey={record => record.id} columns={columns} dataSource={this.dataSource} scroll={{ x: 3800 }} />
             </div>
+            <ImportComparisonModal data={this.state.compareduuid} />
           </div>
         </Content>
       </Layout>
