@@ -401,6 +401,14 @@ export default class CDFBodyPanel extends React.Component {
           options={units} edit={editBody}
         />,
     }, {
+      title: this.msg('customs'),
+      width: 100,
+      dataIndex: 'customs',
+    }, {
+      title: this.msg('inspection'),
+      width: 100,
+      dataIndex: 'inspection',
+    }, {
       title: this.msg('element'),
       width: 380,
       render: (o, record, index) =>

@@ -525,4 +525,12 @@ export default defineMessages({
     id: 'cms.forms.more',
     defaultMessage: '更多',
   },
+  customs: {
+    id: 'cms.forms.customs',
+    defaultMessage: '海关监管条件',
+  },
+  inspection: {
+    id: 'cms.forms.inspection',
+    defaultMessage: '检验检疫类别',
+  },
 });
