@@ -311,7 +311,7 @@ export default class DelegationDockPanel extends React.Component {
       <DockPanel size="large" visible={visible} onClose={this.props.hidePreviewer}
         title={delegation.delg_no}
         extra={this.renderExtra()}
-        // alert={this.renderAlert()}
+        alert={this.renderBtns()}
       >
         {this.renderTabs()}
         <AcceptModal />

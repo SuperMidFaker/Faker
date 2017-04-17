@@ -10,7 +10,7 @@ import { renderConsignLoc } from '../../common/consignLocation';
 import TrimSpan from 'client/components/trimSpan';
 import BeforeFeesModal from './beforeFeesModal';
 import ExceptionListPopover from '../../tracking/land/modals/exception-list-popover';
-import PreviewPanel from '../../shipment/dock/preview-panel';
+import ShipmentDockPanel from '../../shipment/dock/shipmentDockPanel';
 import { loadShipmtDetail } from 'common/reducers/shipment';
 import ActDate from '../../common/actDate';
 
@@ -259,7 +259,7 @@ export default class CreateBilling extends React.Component {
             <BeforeFeesModal type={type} visible={this.state.beforeFeesModalVisible} toggle={this.toggleBeforeFeesModal} />
           </div>
         </Content>
-        <PreviewPanel stage="billing" />
+        <ShipmentDockPanel stage="billing" />
       </div>
     );
   }

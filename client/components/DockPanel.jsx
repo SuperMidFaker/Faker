@@ -92,7 +92,7 @@ export default class DockPanel extends React.Component {
             {extra ? <div className={`${prefixCls}-head-extra`}>{extra}</div> : null}
           </div>
           <div className={bodyCls}>
-            {alert ? <Alert message={alert} type={alertType} closable /> : null}
+            {alert ? <Alert message={alert} type={alertType} /> : null}
             {children}
           </div>
         </Spin>

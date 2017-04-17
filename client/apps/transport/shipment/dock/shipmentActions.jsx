@@ -51,7 +51,7 @@ const MenuItem = Menu.Item;
     showChangeActDateModal,
   }
 )
-export default class Footer extends React.Component {
+export default class ShipmentActions extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,

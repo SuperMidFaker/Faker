@@ -13,7 +13,7 @@ import TrimSpan from 'client/components/trimSpan';
 import { renderConsignLoc } from '../../common/consignLocation';
 import { createFilename } from 'client/util/dataTransform';
 import ExceptionListPopover from '../../tracking/land/modals/exception-list-popover';
-import PreviewPanel from '../../shipment/dock/preview-panel';
+import ShipmentDockPanel from '../../shipment/dock/shipmentDockPanel';
 import { loadShipmtDetail, loadFormRequire } from 'common/reducers/shipment';
 import ActDate from '../../common/actDate';
 import SearchBar from 'client/components/search-bar';
@@ -498,7 +498,7 @@ export default class FeesList extends React.Component {
             </div>
           </div>
         </Content>
-        <PreviewPanel stage="billing" />
+        <ShipmentDockPanel stage="billing" />
         <ShipmentAdvanceModal />
         <CreateSpecialCharge />
       </div>

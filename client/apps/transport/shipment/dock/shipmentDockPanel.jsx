@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Badge, Col, Row, Tabs } from 'antd';
+import { Col, Row, Tabs } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import DetailPane from './tabpanes/detail-pane';
 import ActivityLoggerPane from './tabpanes/ActivityLoggerPane';
@@ -11,8 +11,9 @@ import { SHIPMENT_TRACK_STATUS, SHIPMENT_EFFECTIVES } from 'common/constants';
 import { hidePreviewer, sendTrackingDetailSMSMessage, changePreviewerTab, loadShipmtDetail } from 'common/reducers/shipment';
 import { format } from 'client/common/i18n/helpers';
 import InfoItem from 'client/components/InfoItem';
+import DockPanel from 'client/components/DockPanel';
 import messages from '../message.i18n';
-import Footer from './preview-panel-footer';
+import ShipmentActions from './shipmentActions';
 import ShareShipmentModal from './share-shipment';
 import ShipmentSchedule from './shipmentSchedule';
 import ExceptionPane from './tabpanes/exceptionPane';
@@ -94,30 +95,11 @@ export default class PreviewPanel extends React.Component {
       shareShipmentModalVisible: false,
     };
   }
-  componentDidMount() {
-    /*
-    window.$(document).click((event) => {
-      const previewerClicked = window.$(event.target).closest('#preview-panel').length > 0;
-      if (!this.props.specialChargeModalVisible && !this.props.dealExcpModalVisible &&
-        && !this.props.advanceChargeModalvisible &&
-        !this.props.changeShipmentModalVisible && !this.props.locModalVisible &&
-        !this.props.dateModalVisible &&
-        !previewerClicked) {
-        this.handleClose();
-      }
-    });
-    */
-  }
   componentWillReceiveProps(nextProps) {
     const { previewer: { visible, loaded, params: { shipmtNo, tenantId, sourceType }, tabKey } } = nextProps;
     if (!loaded && visible) {
       this.props.loadShipmtDetail(shipmtNo, tenantId, sourceType, tabKey);
     }
-  }
-  componentWillUnmount() {
-    /*
-    window.$(document).unbind('click');
-    */
   }
   viewStages = ['billing', 'dashboard'];
   msg = descriptor => formatMsg(this.props.intl, descriptor)
@@ -237,50 +219,42 @@ export default class PreviewPanel extends React.Component {
       );
     }
   }
+  renderExtra() {
+    const { shipmt } = this.props;
+    return (<Row>
+      <Col span="6">
+        <InfoItem label="托运方"
+          field={shipmt.customer_name}
+        />
+      </Col>
+      <Col span="6">
+        <InfoItem label="承运商"
+          field={shipmt.lsp_name}
+        />
+      </Col>
+      <Col span="12" style={{ paddingTop: 8 }}>
+        <ShipmentSchedule />
+      </Col>
+    </Row>);
+  }
   render() {
     const { shipmt, visible, shipmtNo, dispatch, effective, stage, previewer: { params: { sourceType } } } = this.props;
-    const closer = (
-      <button onClick={this.handleClose} aria-label="Close" className="ant-modal-close">
-        <span className="ant-modal-close-x" />
-      </button>);
     return (
       shipmtNo ?
-        <div className={`dock-panel dock-panel-lg ${visible ? 'inside' : ''}`} id="preview-panel">
-          <div className="panel-content">
-            <div className="header">
-              <span className="title">{shipmtNo}</span>
-              <Badge status={this.transformBadgeColor(dispatch.status)} text={this.msg(getTrackStatusMsg(dispatch.status, effective))} />
-              <div className="toolbar-right">
-                {this.viewStages.indexOf(this.props.stage) === -1 ? (<Footer stage={stage} sourceType={sourceType} onShowShareShipmentModal={this.handleShowShareShipmentModal} />) : ''}
-                {closer}
-              </div>
-              <Row>
-                <Col span="6">
-                  <InfoItem label="托运方"
-                    field={shipmt.customer_name}
-                  />
-                </Col>
-                <Col span="6">
-                  <InfoItem label="承运商"
-                    field={shipmt.lsp_name}
-                  />
-                </Col>
-                <Col span="12" style={{ paddingTop: 8 }}>
-                  <ShipmentSchedule />
-                </Col>
-              </Row>
-            </div>
-            <div className="body with-header-summary">
-              {this.renderTabs(dispatch.status, stage, sourceType)}
-            </div>
-          </div>
+        <DockPanel size="large" visible={visible} onClose={this.handleClose}
+          title={shipmtNo}
+          status={this.transformBadgeColor(dispatch.status)} statusText={this.msg(getTrackStatusMsg(dispatch.status, effective))}
+          extra={this.renderExtra()}
+          alert={this.viewStages.indexOf(this.props.stage) === -1 ? (<ShipmentActions stage={stage} sourceType={sourceType} onShowShareShipmentModal={this.handleShowShareShipmentModal} />) : ''}
+        >
+          {this.renderTabs(dispatch.status, stage, sourceType)}
           <ShareShipmentModal visible={this.state.shareShipmentModalVisible} shipmt={shipmt} />
           <ChangeActDateModal />
           <ChangeDeliverPrmDateModal />
           <ShipmentAdvanceModal />
           <CreateSpecialCharge />
           <VehicleModal onOK={() => {}} />
-        </div>
+        </DockPanel>
       : null
     );
   }

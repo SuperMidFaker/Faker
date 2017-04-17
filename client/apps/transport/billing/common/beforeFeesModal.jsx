@@ -9,7 +9,7 @@ import { loadFeesBeforeTime, alterBillingFees } from 'common/reducers/transportB
 import { renderConsignLoc } from '../../common/consignLocation';
 import TrimSpan from 'client/components/trimSpan';
 import ExceptionListPopover from '../../tracking/land/modals/exception-list-popover';
-import PreviewPanel from '../../shipment/dock/preview-panel';
+import ShipmentDockPanel from '../../shipment/dock/shipmentDockPanel';
 import { loadShipmtDetail } from 'common/reducers/shipment';
 import ActDate from '../../common/actDate';
 
@@ -179,7 +179,7 @@ export default class BeforeFeesModal extends React.Component {
     return (
       <Modal visible={this.props.visible} width="85%" title="未入账运单" onOk={this.props.toggle} onCancel={this.props.toggle}>
         <Table dataSource={this.state.dataSource} columns={columns} rowKey="id" />
-        <PreviewPanel stage="billing" />
+        <ShipmentDockPanel stage="billing" />
       </Modal>
     );
   }

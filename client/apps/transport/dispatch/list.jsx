@@ -28,7 +28,7 @@ import SegmentDock from './segmentDock';
 import ShipmtnoColumn from '../common/shipmtnoColumn';
 import AddressColumn from '../common/addressColumn';
 import { loadShipmtDetail } from 'common/reducers/shipment';
-import PreviewPanel from '../shipment/dock/preview-panel';
+import ShipmentDockPanel from '../shipment/dock/shipmentDockPanel';
 import RevokejectModal from '../shipment/dock/revoke-reject';
 import SearchBar from 'client/components/search-bar';
 import AdvancedSearchBar from '../common/advanced-search-bar';
@@ -1061,7 +1061,7 @@ export default class DispatchList extends React.Component {
             </div>
           </div>
         </Content>
-        <PreviewPanel stage="dispatch" />
+        <ShipmentDockPanel stage="dispatch" />
         <DispatchDock
           shipmts={this.props.shipmts}
           onClose={this.handleDispatchDockClose}

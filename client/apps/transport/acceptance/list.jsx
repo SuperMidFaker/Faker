@@ -18,7 +18,7 @@ import { loadShipmtDetail } from 'common/reducers/shipment';
 import { SHIPMENT_SOURCE, SHIPMENT_EFFECTIVES, DEFAULT_MODULES } from 'common/constants';
 import AccepterModal from '../shipment/dock/accepter';
 import RevokejectModal from '../shipment/dock/revoke-reject';
-import PreviewPanel from '../shipment/dock/preview-panel';
+import ShipmentDockPanel from '../shipment/dock/shipmentDockPanel';
 import ShipmtnoColumn from '../common/shipmtnoColumn';
 import AddressColumn from '../common/addressColumn';
 import { format } from 'client/common/i18n/helpers';
@@ -520,7 +520,7 @@ export default class AcceptList extends React.Component {
         </Content>
         <AccepterModal reload={this.handleTableLoad} clearSelection={this.handleSelectionClear} />
         <RevokejectModal reload={this.handleTableLoad} />
-        <PreviewPanel stage="acceptance" />
+        <ShipmentDockPanel stage="acceptance" />
       </QueueAnim>
     );
   }

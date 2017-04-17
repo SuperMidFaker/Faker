@@ -12,7 +12,6 @@ import CorrelInfo from '../forms/correlInfo';
 import DistanceInfo from '../forms/distanceInfo';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
-import './preview-panel.less';
 const formatMsg = format(messages);
 
 @injectIntl

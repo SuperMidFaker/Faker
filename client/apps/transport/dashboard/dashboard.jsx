@@ -10,7 +10,7 @@ import ButtonToggle from 'client/components/ButtonToggle';
 import StatsPanel from './panel/statsPanel';
 import TodoPanel from './panel/todoPanel';
 import MoreApplications from './panel/moreApplications';
-import PreviewPanel from '../shipment/dock/preview-panel';
+import ShipmentDockPanel from '../shipment/dock/shipmentDockPanel';
 import DispatchDock from '../dispatch/dispatchDock';
 import SegmentDock from '../dispatch/segmentDock';
 import { formatMsg } from './message.i18n';
@@ -71,7 +71,7 @@ export default class Dashboard extends React.Component {
                 </Col>
               </Row>
             </Content>
-            <PreviewPanel stage="todo" />
+            <ShipmentDockPanel stage="todo" />
             <DispatchDock
               onClose={this.handleDispatchDockClose}
             />
