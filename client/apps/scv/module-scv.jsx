@@ -35,7 +35,7 @@ export default class ModuleSCV extends React.Component {
     if (nextProps.trackings.length > 0) {
       trackingSublinks = nextProps.trackings.map((item, index) => ({
         key: `scv-2-${index}`,
-        path: `/scv/tracking/instance/${item.id}`,
+        path: `/scv/tracking/${item.id}`,
         text: item.name,
       }));
     }
