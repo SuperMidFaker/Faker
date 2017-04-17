@@ -1,6 +1,6 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
-import { Modal, Select, Form, message, Switch, Radio } from 'antd';
+import { Col, Modal, Select, Form, message, Switch, Radio } from 'antd';
 import { clearingOption } from 'common/constants';
 import { delgDispSave, setDispStatus, loadciqSups, acceptDelg } from 'common/reducers/cmsDelegation';
 import { loadBasicInfo, loadCustPanel, loadDeclCiqPanel } from 'common/reducers/cmsDelgInfoHub';
@@ -13,35 +13,6 @@ const Option = Select.Option;
 const FormItem = Form.Item;
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
-const formItemLayout = {
-  labelCol: { span: 6 },
-  wrapperCol: { span: 18 },
-};
-// function ButtonSelect(props) {
-//   const { saved, onconfirm, onclick } = props;
-//   let button = '';
-//   if (saved) {
-//     button = (
-//       <Popconfirm title="你确定撤回分配吗?" onConfirm={onconfirm} >
-//         <Button size="large">撤销</Button>
-//       </Popconfirm>
-//       );
-//   } else {
-//     button = (
-//       <Button size="large" type="primary" onClick={onclick}>
-//           分配
-//       </Button>
-//       );
-//   }
-//   return (
-//     button
-//   );
-// }
-// ButtonSelect.PropTypes = {
-//   saved: PropTypes.bool.isRequired,
-//   onconfirm: PropTypes.func,
-//   onclick: PropTypes.func,
-// };
 
 function getFieldInits(delgDisp, dispatch) {
   const init = {};
@@ -152,29 +123,16 @@ export default class DelgDispModal extends Component {
   render() {
     const { form: { getFieldDecorator }, partners, delgDisp, delgDispShow, fieldInits } = this.props;
     const { appoint, ciqSups } = this.state;
-    // const footer = (
-    //   <div>
-    //     <Button type="ghost" onClick={this.handleCancel} style={{ marginRight: 10 }}>取消</Button>
-    //     <ButtonSelect saved={saved} onconfirm={this.handleConfirm} onclick={this.handleSave} />
-    //   </div>
-    // );
-    let appointLabel = '';
-    if (fieldInits.appointed) {
-      appointLabel = '指定报检供应商';
-    } else {
-      appointLabel = appoint ? '指定报检供应商' : '不指定报检供应商';
-    }
     return (
       <Modal visible={delgDispShow} title="分配" onOk={this.handleSave} onCancel={this.handleCancel} >
-        <Form layout="horizontal">
-          <FormItem label="供应商" {...formItemLayout}>
+        <Form layout="vertical">
+          <FormItem label="报关单位">
             {getFieldDecorator('customs_name', { initialValue: fieldInits.customs_name }
               )(<Select
                 showSearch
                 showArrow
                 optionFilterProp="searched"
                 placeholder={this.msg('dispatchMessage')}
-                style={{ width: '80%' }}
                 onChange={this.handleSelectChange}
               >
                 {
@@ -188,14 +146,16 @@ export default class DelgDispModal extends Component {
               }
               </Select>)}
           </FormItem>
-          <FormItem label={appointLabel} {...formItemLayout} >
-            <Switch checked={appoint} onChange={this.handleOnChange} disabled={fieldInits.appointed || delgDisp.appointed_option === 3} />
-          </FormItem>
-          {(appoint || fieldInits.appointed) &&
-            <FormItem label="报检供应商" {...formItemLayout} >
-              {getFieldDecorator('ciq_name', { initialValue: fieldInits.ciq_name })(
-                <Select showSearch showArrow optionFilterProp="searched"
-                  placeholder={this.msg('dispatchMessage')} style={{ width: '80%' }}
+          <FormItem label="报检供应商" >
+            <Col span={6}>
+              <Switch checked={appoint} onChange={this.handleOnChange} checkedChildren="指定" unCheckedChildren="不指定"
+                disabled={fieldInits.appointed || delgDisp.appointed_option === 3}
+              />
+            </Col>
+            <Col span={18}>
+              {(appoint || fieldInits.appointed) && getFieldDecorator('ciq_name', { initialValue: fieldInits.ciq_name })(
+                <Select size="large" showSearch showArrow optionFilterProp="searched"
+                  placeholder={this.msg('dispatchMessage')}
                 >
                   {
                   ciqSups.map(pt => (
@@ -207,10 +167,11 @@ export default class DelgDispModal extends Component {
                   )
                 }
                 </Select>)}
-            </FormItem>
-          }
+            </Col>
+          </FormItem>
+
           {(appoint || fieldInits.appointed) &&
-            <FormItem label="报检商结算对象" {...formItemLayout}>
+            <FormItem label="报检商结算对象">
               {getFieldDecorator('appointed_option', { initialValue: fieldInits.appointed_option })(<RadioGroup>
                 <RadioButton value={clearingOption.clearSup.key}>{clearingOption.clearSup.value}</RadioButton>
                 <RadioButton value={clearingOption.clearAppoint.key}>{clearingOption.clearAppoint.value}</RadioButton>

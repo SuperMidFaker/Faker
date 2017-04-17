@@ -10,7 +10,7 @@ const actionTypes = createActionTypes('@@welogix/cms/declaration/', [
   'DELETE_DECL', 'DELETE_DECL_SUCCEED', 'DELETE_DECL_FAIL',
   'SET_REVIEWED', 'SET_REVIEWED_SUCCEED', 'SET_REVIEWED_FAIL',
   'GET_EASIPASS_LIST', 'GET_EASIPASS_LIST_SUCCEED', 'GET_EASIPASS_LIST_FAIL',
-  'SHOW_SEND_DECL_MODAL',
+  'SHOW_SEND_DECL_MODAL', 'CLEAR_CUSTOMSRES',
   'SEND_DECL', 'SEND_DECL_SUCCEED', 'SEND_DECL_FAIL',
   'LOAD_CUSTOMSRES', 'LOAD_CUSTOMSRES_SUCCEED', 'LOAD_CUSTOMSRES_FAIL',
 ]);
@@ -66,6 +66,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, sendDeclModal: { ...state.sendDeclModal, ...action.data } };
     case actionTypes.LOAD_CUSTOMSRES_SUCCEED:
       return { ...state, customsResults: action.result.data };
+    case actionTypes.CLEAR_CUSTOMSRES:
+      return { ...state, customsResults: [] };
     default:
       return state;
   }
@@ -222,4 +224,8 @@ export function loadCustomsResults(entryId) {
       params: { entryId },
     },
   };
+}
+
+export function clearCustomsResults() {
+  return { type: actionTypes.CLEAR_CUSTOMSRES };
 }

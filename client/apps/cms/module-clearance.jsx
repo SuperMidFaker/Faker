@@ -51,6 +51,7 @@ export default class Clearance extends React.Component {
         sublinks: [{
           key: 'cms-1-0',
           group: formatMsg(intl, 'import'),
+          icon: 'anticon anticon-inbox',
           path: '/clearance/import/delegation',
           text: formatMsg(intl, 'importDelegation'),
         }, {
@@ -84,6 +85,7 @@ export default class Clearance extends React.Component {
         sublinks: [{
           key: 'cms-2-0',
           group: formatMsg(intl, 'export'),
+          icon: 'anticon anticon-inbox',
           path: '/clearance/export/delegation',
           text: formatMsg(intl, 'exportDelegation'),
         }, {

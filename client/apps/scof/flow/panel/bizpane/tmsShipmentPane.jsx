@@ -23,7 +23,7 @@ export default class TMSShipmentPane extends Component {
     form: PropTypes.object.isRequired,
   }
   msg = formatMsg(this.props.intl)
-  renderConsign = consign => `${consign.name} ${Location.renderLoc(consign)} ${consign.contact || ''} ${consign.mobile || ''}`
+  renderConsign = consign => `${consign.name} | ${Location.renderLoc(consign)} | ${consign.contact || ''} | ${consign.mobile || ''}`
   render() {
     const { form: { getFieldDecorator }, onNodeActionsChange, model, tmsParams: { consigners, consignees, transitModes } } = this.props;
     return (
@@ -34,22 +34,30 @@ export default class TMSShipmentPane extends Component {
               <FormItem label={this.msg('consigner')}>
                 {getFieldDecorator('consigner_id', {
                   initialValue: model.consigner_id,
-                })(<Select allowClear>
-                  {
+                })(
+                  <Select allowClear
+                    dropdownMatchSelectWidth={false}
+                    dropdownStyle={{ width: 400 }}
+                  >
+                    {
                     consigners.map(cg => <Option value={cg.node_id} key={cg.name}>{this.renderConsign(cg)}</Option>)
                   }
-                </Select>)}
+                  </Select>)}
               </FormItem>
             </Col>
             <Col sm={24} lg={12}>
               <FormItem label={this.msg('consignee')}>
                 {getFieldDecorator('consignee_id', {
                   initialValue: model.consignee_id,
-                })(<Select allowClear>
-                  {
-                    consignees.map(cg => <Option value={cg.node_id} key={cg.name}>{this.renderConsign(cg)}</Option>)
-                  }
-                </Select>)}
+                })(
+                  <Select allowClear
+                    dropdownMatchSelectWidth={false}
+                    dropdownStyle={{ width: 400 }}
+                  >
+                    {
+                      consignees.map(cg => <Option value={cg.node_id} key={cg.name}>{this.renderConsign(cg)}</Option>)
+                    }
+                  </Select>)}
               </FormItem>
             </Col>
             <Col sm={24} lg={12}>

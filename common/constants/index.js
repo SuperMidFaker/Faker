@@ -115,3 +115,4 @@ export * from './expense';
 export * from './crm';
 export * from './cms';
 export * from './flow';
+export * from './classification';

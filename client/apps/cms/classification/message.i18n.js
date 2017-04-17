@@ -219,11 +219,11 @@ const messages = defineMessages({
   },
   pass: {
     id: 'cms.classificagtion.tradeitem.pass',
-    defaultMessage: '归类通过',
+    defaultMessage: '通过',
   },
   refuse: {
     id: 'cms.classificagtion.tradeitem.refuse',
-    defaultMessage: '归类拒绝',
+    defaultMessage: '拒绝',
   },
 });
 export default messages;

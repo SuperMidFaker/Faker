@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Form, Card, Col, DatePicker, Row, Input } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../../message.i18n';
+import messages from './../message.i18n';
 import moment from 'moment';
 
 const formatMsg = format(messages);
@@ -13,7 +13,7 @@ const FormItem = Form.Item;
 function getFieldInits(formData) {
   const init = {};
   if (formData) {
-    ['pre_classify_start_date', 'pre_classify_end_date'].forEach((fd) => {
+    ['pre_classify_no', 'pre_classify_start_date', 'pre_classify_end_date', 'remark'].forEach((fd) => {
       init[fd] = formData[fd] === undefined ? null : moment(formData[fd]);
     });
     ['pre_classify_no', 'remark'].forEach((fd) => {
@@ -27,7 +27,7 @@ function getFieldInits(formData) {
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    fieldInits: getFieldInits(state.cmsTradeitem.itemData),
+    fieldInits: getFieldInits(state.scvClassification.itemData),
   }),
   { }
 )

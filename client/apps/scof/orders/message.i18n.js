@@ -581,6 +581,10 @@ const messages = defineMessages({
     id: 'scof.orders.progress.action.manifest.generate',
     defaultMessage: '制单',
   },
+  customsReviewed: {
+    id: 'scof.orders.progress.action.customs.reviewed',
+    defaultMessage: '复核',
+  },
   shipmtPickup: {
     id: 'scof.orders.progress.action.shipmt.pickup',
     defaultMessage: '提货',

@@ -289,9 +289,9 @@ export const DECL_STATUS = {
 };
 
 export const CMS_DECL_STATUS = [
-  { value: 0, text: '报关建议书', badge: 'default' },
+  { value: 0, text: '报关草单', badge: 'default' },
   { value: 1, text: '已复核', badge: 'warning' },
-  { value: 2, text: '预录入', badge: 'processing' },
+  { value: 2, text: '已发送', badge: 'processing' },
   { value: 3, text: '已回填', badge: 'success' },
 ];
 

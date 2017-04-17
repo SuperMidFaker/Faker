@@ -3,12 +3,12 @@ import React, { PropTypes } from 'react';
 import { Steps } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../../message.i18n';
+import messages from '../../../message.i18n';
 const formatMsg = format(messages);
 const Step = Steps.Step;
 
 @injectIntl
-export default class ClearanceStatus extends React.Component {
+export default class CMSStatus extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     status: PropTypes.number.isRequired,
@@ -134,9 +134,9 @@ export default class ClearanceStatus extends React.Component {
       }];
       statusPos = -1;
     }
-    const steps = statusDes.map((s, i) => <Step key={i} status={s.status} title={s.title} />);
+    const steps = statusDes.map((s, i) => <Step key={i} status={s.status} description={s.title} />);
     return (
-      <Steps current={statusPos}>{steps}</Steps>
+      <Steps current={statusPos} progressDot>{steps}</Steps>
     );
   }
 }

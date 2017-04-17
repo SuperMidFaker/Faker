@@ -313,7 +313,7 @@ export default class ActivityLoggerPane extends React.Component {
                       return (
                         <Timeline.Item dot={<Icon type="retweet" />} key={activity.id}>
                           <ActivityEditCard title="换单" createdDate={activity.created_date} leftLabel="海运单号"
-                            leftValue={delegation.swb_no} rightLabel="型号数量" rightValue={delegation.bl_wb_no}
+                            leftValue={delegation.swb_no} rightLabel="提货单号" rightValue={delegation.bl_wb_no}
                             onSave={this.handleBlNoExchange}
                           />
                         </Timeline.Item>);

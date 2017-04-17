@@ -115,7 +115,7 @@ export default defineMessages({
   },
   generateEntry: {
     id: 'cms.forms.generate.entry',
-    defaultMessage: '生成报关单',
+    defaultMessage: '生成报关草单',
   },
   addEntry: {
     id: 'cms.forms.add.entry',
@@ -524,5 +524,13 @@ export default defineMessages({
   more: {
     id: 'cms.forms.more',
     defaultMessage: '更多',
+  },
+  customs: {
+    id: 'cms.forms.customs',
+    defaultMessage: '海关监管条件',
+  },
+  inspection: {
+    id: 'cms.forms.inspection',
+    defaultMessage: '检验检疫类别',
   },
 });

@@ -122,11 +122,10 @@ export default class DelgAcceptModal extends React.Component {
       <Modal title="接单" visible={visible} onOk={this.handleAccept}
         onCancel={this.handleCancel}
       >
-        <Form layout="horizontal">
-          <FormItem label="制单人" labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
+        <Form layout="vertical">
+          <FormItem label="制单人" required>
             {
               getFieldDecorator('operator', {
-                rules: [{ validator: this.checkMentionOperator }],
               })(
                 <Mention suggestions={this.state.suggestions}
                   onSearchChange={this.handleSearch} placeholder="@制单人"

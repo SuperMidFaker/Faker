@@ -10,7 +10,6 @@ import MdIcon from 'client/components/MdIcon';
 import DockPanel from 'client/components/DockPanel';
 import OrderPane from './tabpanes/orderPane';
 import FlowPane from './tabpanes/flowPane';
-import ActivityPane from './tabpanes/activityPane';
 import BillingPane from './tabpanes/billingPane';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
@@ -114,9 +113,6 @@ export default class OrderDockPanel extends React.Component {
         </TabPane>
         <TabPane tab={this.msg('billing')} key="billing">
           <BillingPane />
-        </TabPane>
-        <TabPane tab={this.msg('activity')} key="activity">
-          <ActivityPane />
         </TabPane>
       </Tabs>
     );

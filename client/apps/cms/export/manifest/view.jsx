@@ -28,6 +28,6 @@ export default class ExportManifestView extends React.Component {
     manifestSpinning: PropTypes.bool.isRequired,
   }
   render() {
-    return <ManifestEditor ietype="export" params={this.props.params} manifestSpinning={this.state.manifestSpinning} readonly />;
+    return <ManifestEditor ietype="export" params={this.props.params} manifestSpinning={this.props.manifestSpinning} readonly />;
   }
 }

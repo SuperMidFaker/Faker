@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Button, Layout, Popconfirm } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { loadPartners, openSpModal } from 'common/reducers/partner';
+import { loadPartners, openSpModal, changePartnerStatus, deletePartner } from 'common/reducers/partner';
 import Table from 'client/components/remoteAntTable';
 import connectNav from 'client/common/decorators/connect-nav';
 import ScvResourceWrapper from '../wrapper';
@@ -29,7 +29,7 @@ function fetchData({ dispatch, state }) {
     partners: state.partner.partners,
     tenantId: state.account.tenantId,
   }),
-  { openSpModal }
+  { openSpModal, loadPartners, changePartnerStatus, deletePartner }
 )
 @connectNav({
   depth: 2,
@@ -39,6 +39,14 @@ export default class ScvServiceProviderList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
+  }
+  componentWillReceiveProps(nextProps) {
+    if (!nextProps.loaded) {
+      this.props.loadPartners({
+        tenantId: nextProps.tenantId,
+        role: PARTNER_ROLES.SUP,
+      });
+    }
   }
   msg = formatMsg(this.props.intl);
   handleSpEdit = (partner) => {
@@ -106,9 +114,9 @@ export default class ScvServiceProviderList extends React.Component {
         return (
           <PrivilegeCover module="corp" feature="partners" action="edit">
             <span>
-              <a onClick={() => this.props.handleSpEdit(record)}>修改</a>
+              <a onClick={() => this.handleSpEdit(record)}>修改</a>
               <span className="ant-divider" />
-              <a onClick={() => this.props.handleSpDisable(record)}>停用</a>
+              <a onClick={() => this.handleSpDisable(record)}>停用</a>
             </span>
           </PrivilegeCover>
         );
@@ -116,13 +124,13 @@ export default class ScvServiceProviderList extends React.Component {
         return (
           <span>
             <PrivilegeCover module="corp" feature="partners" action="delete">
-              <Popconfirm title="确定要删除吗？" onConfirm={() => this.props.handleSpDelete(record)}>
+              <Popconfirm title="确定要删除吗？" onConfirm={() => this.handleSpDelete(record)}>
                 <a>删除</a>
               </Popconfirm>
             </PrivilegeCover>
             <span className="ant-divider" />
             <PrivilegeCover module="corp" feature="partners" action="edit">
-              <a onClick={() => this.props.handleSpEnable(record)}>启用</a>
+              <a onClick={() => this.handleSpEnable(record)}>启用</a>
             </PrivilegeCover>
           </span>);
       }

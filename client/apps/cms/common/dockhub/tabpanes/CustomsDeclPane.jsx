@@ -142,22 +142,7 @@ export default class CustomsDeclPane extends React.Component {
         } else if (record.passed) {
           step = 2;
         }
-        return (<Card title={declNo} className="with-card-footer">
-          <Row style={{ marginBottom: 16 }}>
-            <Col span="24">
-              <Steps progressDot current={step}>
-                <Step title="录入日期" description={record.created_date
-                    && moment(record.created_date).format('YYYY.MM.DD')}
-                />
-                <Step title="申报日期" description={record.d_date
-                    && moment(record.d_date).format('YYYY.MM.DD')}
-                />
-                <Step title="放行日期" description={record.clear_date
-                    && moment(record.clear_date).format('YYYY.MM.DD')}
-                />
-              </Steps>
-            </Col>
-          </Row>
+        return (<Card title={<span>{declNo}</span>} extra={declStatus} bodyStyle={{ paddingBottom: 56 }}>
           <Row gutter={8}>
             <Col span="12">
               <InfoItem label="收发货人" field={record.trade_name} />
@@ -176,7 +161,17 @@ export default class CustomsDeclPane extends React.Component {
             </Col>
           </Row>
           <div className="card-footer">
-            {declStatus} {record.note}
+            <Steps progressDot current={step}>
+              <Step description={`录入 ${record.created_date
+                    ? moment(record.created_date).format('YYYY.MM.DD') : ''}`}
+              />
+              <Step description={`申报 ${record.d_date
+                    ? moment(record.d_date).format('YYYY.MM.DD') : ''}`}
+              />
+              <Step description={`放行 ${record.clear_date
+                    ? moment(record.clear_date).format('YYYY.MM.DD') : ''}`}
+              />
+            </Steps>
           </div>
         </Card>);
       },

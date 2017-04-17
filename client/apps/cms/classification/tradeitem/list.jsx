@@ -4,7 +4,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Alert, Breadcrumb, Button, Collapse, Layout, Radio, Dropdown, Icon, Menu, Popconfirm, Tooltip, Table, message } from 'antd';
+import { Alert, Breadcrumb, Button, Collapse, Layout, Radio, Dropdown, Input, Icon, Menu, Popconfirm, Tooltip, Table, message } from 'antd';
 import RemoteTable from 'client/components/remoteAntTable';
 import NavLink from 'client/components/nav-link';
 import { format } from 'client/common/i18n/helpers';
@@ -27,6 +27,7 @@ const { Header, Content, Sider } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const Panel = Collapse.Panel;
+const Search = Input.Search;
 
 function fetchData({ state, dispatch }) {
   const promises = [];
@@ -112,11 +113,21 @@ export default class TradeItemList extends Component {
     title: this.msg('copProductNo'),
     dataIndex: 'cop_product_no',
     fixed: 'left',
-    width: 200,
+    width: 150,
   }, {
     title: this.msg('hscode'),
     dataIndex: 'hscode',
-    width: 180,
+    width: 120,
+    render: (o, record) => {
+      switch (record.status) {
+        case CMS_ITEM_STATUS.pending:
+          return <span>{o} <Icon type="question-circle-o" className="mdc-text-warning" /></span>;
+        case CMS_ITEM_STATUS.classified:
+          return <span>{o} <Icon type="check-circle-o" className="mdc-text-success" /></span>;
+        default:
+          return o;
+      }
+    },
   }, {
     title: this.msg('gName'),
     dataIndex: 'g_name',
@@ -132,7 +143,7 @@ export default class TradeItemList extends Component {
   }, {
     title: this.msg('gUnit1'),
     dataIndex: 'g_unit_1',
-    width: 120,
+    width: 100,
     render: (o) => {
       const unit = this.props.units.filter(cur => cur.value === o)[0];
       const text = unit ? `${unit.value}| ${unit.text}` : o;
@@ -141,7 +152,7 @@ export default class TradeItemList extends Component {
   }, {
     title: this.msg('gUnit2'),
     dataIndex: 'g_unit_2',
-    width: 120,
+    width: 100,
     render: (o) => {
       const unit = this.props.units.filter(cur => cur.value === o)[0];
       const text = unit ? `${unit.value}| ${unit.text}` : o;
@@ -150,7 +161,7 @@ export default class TradeItemList extends Component {
   }, {
     title: this.msg('gUnit3'),
     dataIndex: 'g_unit_3',
-    width: 120,
+    width: 100,
     render: (o) => {
       const unit = this.props.units.filter(cur => cur.value === o)[0];
       const text = unit ? `${unit.value}| ${unit.text}` : o;
@@ -201,14 +212,6 @@ export default class TradeItemList extends Component {
     dataIndex: 'unit_net_wt',
     width: 120,
   }, {
-    title: this.msg('customsControl'),
-    dataIndex: 'customs_control',
-    width: 140,
-  }, {
-    title: this.msg('inspQuarantine'),
-    dataIndex: 'inspection_quarantine',
-    width: 140,
-  }, {
     title: this.msg('unitPrice'),
     dataIndex: 'unit_price',
     width: 120,
@@ -221,6 +224,14 @@ export default class TradeItemList extends Component {
       const text = currency ? `${currency.value}| ${currency.text}` : o;
       return text;
     },
+  }, {
+    title: this.msg('customsControl'),
+    dataIndex: 'customs_control',
+    width: 140,
+  }, {
+    title: this.msg('inspQuarantine'),
+    dataIndex: 'inspection_quarantine',
+    width: 140,
   }, {
     title: this.msg('preClassifyNo'),
     dataIndex: 'pre_classify_no',
@@ -358,6 +369,7 @@ export default class TradeItemList extends Component {
     });
   }
   handleRadioChange = (ev) => {
+    this.setState({ selectedRowKeys: [] });
     if (ev.target.value === this.props.listFilter.status) {
       return;
     }
@@ -369,6 +381,7 @@ export default class TradeItemList extends Component {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
+        message.success('归类通过');
         this.handleItemListLoad();
       }
     });
@@ -378,6 +391,7 @@ export default class TradeItemList extends Component {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
+        message.warning('归类拒绝');
         this.handleItemListLoad();
       }
     });
@@ -438,10 +452,10 @@ export default class TradeItemList extends Component {
         </Popconfirm>);
       } else if (listFilter.status === 'pending') {
         batchOperation = (<span>
-          <Button size="large" onClick={this.handleItemsPass}>
+          <Button size="large" onClick={this.handleItemsPass} icon="check-circle-o">
             批量通过
           </Button>
-          <Button size="large" onClick={this.handleItemsRefused} >
+          <Button size="large" onClick={this.handleItemsRefused} icon="close-circle-o">
             批量拒绝
           </Button>
           <Popconfirm title={'是否删除所有选择项？'} onConfirm={() => this.handleDeleteSelected()}>
@@ -473,9 +487,9 @@ export default class TradeItemList extends Component {
           } else if (record.status === CMS_ITEM_STATUS.pending) {
             return (
               <span>
-                <RowUpdater onHit={this.handleItemPass} label={this.msg('pass')} row={record} />
+                <RowUpdater onHit={this.handleItemPass} label={<span><Icon type="check-circle-o" /> {this.msg('pass')}</span>} row={record} />
                 <span className="ant-divider" />
-                <RowUpdater onHit={this.handleItemRefused} label={this.msg('refuse')} row={record} />
+                <RowUpdater onHit={this.handleItemRefused} label={<span><Icon type="close-circle-o" /> {this.msg('refuse')}</span>} row={record} />
                 <span className="ant-divider" />
                 <Dropdown overlay={(
                   <Menu>
@@ -512,19 +526,8 @@ export default class TradeItemList extends Component {
       key: 'owner_name',
       render: o => (<div style={{ paddingLeft: 15 }}>{o}</div>),
     }];
-    const menu = (
+    const importMenu = (
       <Menu onClick={this.handleMenuClick}>
-        <Menu.Item key="importData">
-          <ExcelUpload endpoint={`${API_ROOTS.default}v1/cms/cmsTradeitem/tradeitems/import`}
-            formData={{
-              data: JSON.stringify({
-                repo_id: this.props.repoId,
-              }),
-            }} onUploaded={this.handleUploaded}
-          >
-            <Icon type="file-excel" /> {this.msg('importItems')}
-          </ExcelUpload>
-        </Menu.Item>
         <Menu.Item key="export"><Icon type="export" /> 导出物料表</Menu.Item>
         <Menu.Item key="model"><Icon type="download" /> 下载模板</Menu.Item>
       </Menu>);
@@ -552,10 +555,7 @@ export default class TradeItemList extends Component {
           </div>
           <div className="left-sider-panel" >
             <div className="toolbar">
-              <SearchBar
-                placeholder={this.msg('searchRepoPlaceholder')}
-                onInputSearch={this.handleRepoSearch} size="large"
-              />
+              <Search placeholder={this.msg('searchRepoPlaceholder')} onSearch={this.handleRepoSearch} size="large" />
             </div>
             <Table size="middle" dataSource={this.state.repos} columns={repoColumns} showHeader={false} onRowClick={this.handleRowClick}
               rowKey="id" pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }}
@@ -585,19 +585,25 @@ export default class TradeItemList extends Component {
             />
             <span />
             <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">
-              <RadioButton value="unclassified">{this.msg('filterUnclassified')}</RadioButton>
-              <RadioButton value="pending">{this.msg('filterPending')}</RadioButton>
-              <RadioButton value="classified">{this.msg('filterClassified')}</RadioButton>
+              <RadioButton value="unclassified"><Icon type="exclamation-circle-o" /> {this.msg('filterUnclassified')}</RadioButton>
+              <RadioButton value="pending"><Icon type="question-circle-o" /> {this.msg('filterPending')}</RadioButton>
+              <RadioButton value="classified"><Icon type="check-circle-o" /> {this.msg('filterClassified')}</RadioButton>
             </RadioGroup>
             {repoId &&
               <div className="top-bar-tools">
                 {repo.permission === CMS_TRADE_REPO_PERMISSION.edit &&
                   (
-                    <Dropdown overlay={menu} type="primary">
-                      <Button size="large" onClick={this.handleButtonClick}>
-                        {this.msg('importItems')} <Icon type="down" />
-                      </Button>
-                    </Dropdown>
+                    <Dropdown.Button overlay={importMenu}>
+                      <ExcelUpload endpoint={`${API_ROOTS.default}v1/cms/cmsTradeitem/tradeitems/import`}
+                        formData={{
+                          data: JSON.stringify({
+                            repo_id: this.props.repoId,
+                          }),
+                        }} onUploaded={this.handleUploaded}
+                      >
+                        {this.msg('importItems')}
+                      </ExcelUpload>
+                    </Dropdown.Button>
                   )
                 }
                 {repo.permission === CMS_TRADE_REPO_PERMISSION.edit &&
@@ -618,8 +624,10 @@ export default class TradeItemList extends Component {
             <div className="page-body">
               <div className="toolbar">
                 <SearchBar placeholder="编码/名称/描述/申报要素" onInputSearch={this.handleSearch} size="large" />
-                <span />
-                {batchOperation}
+                <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
+                  <h3>已选中{this.state.selectedRowKeys.length}项</h3>
+                  {batchOperation}
+                </div>
               </div>
               <div className="panel-body table-panel">
                 <RemoteTable loading={this.props.tradeItemsLoading} rowSelection={rowSelection} rowKey={record => record.id} columns={columns} dataSource={this.dataSource} scroll={{ x: 3800 }} />

@@ -69,6 +69,10 @@ const messages = defineMessages({
     id: 'scv.module.inventory.warehouse',
     defaultMessage: '仓库设置',
   },
+  inventorySKU: {
+    id: 'scv.module.inventory.sku',
+    defaultMessage: 'SKU管理',
+  },
   billing: {
     id: 'scv.module.billing',
     defaultMessage: '费用账单',
@@ -87,11 +91,7 @@ const messages = defineMessages({
   },
   products: {
     id: 'scv.module.products',
-    defaultMessage: '产品物料',
-  },
-  productsSKU: {
-    id: 'scv.module.products.sku',
-    defaultMessage: 'SKU管理',
+    defaultMessage: '物料归类',
   },
   productsTradeItem: {
     id: 'scv.module.products.trade.item',
@@ -120,6 +120,10 @@ const messages = defineMessages({
   settingsApp: {
     id: 'scv.module.settings.app',
     defaultMessage: '应用设置',
+  },
+  classifyTradeItem: {
+    id: 'scv.module.classify.tradeitem',
+    defaultMessage: '归类设置',
   },
 });
 
