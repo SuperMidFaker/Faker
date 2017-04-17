@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Spin, Badge, Button, Col, Dropdown, Icon, Menu, Row, Tabs, Tag, Popconfirm } from 'antd';
+import { Spin, Badge, Button, Col, Icon, Row, Tabs, Tag, Popconfirm } from 'antd';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
@@ -285,12 +285,6 @@ export default class DelegationInfoHubPanel extends React.Component {
   render() {
     const { visible, previewer, basicSpinning } = this.props;
     const { delegation, delgDispatch } = previewer;
-    const menu = (
-      <Menu>
-        <Menu.Item key="lock"><Icon type="lock" /> 锁定</Menu.Item>
-        <Menu.Item key="delete" className="mdc-text-red"><Icon type="delete" /> 删除</Menu.Item>
-      </Menu>
-    );
     const closer = (
       <button
         onClick={this.handleClose}
@@ -308,9 +302,6 @@ export default class DelegationInfoHubPanel extends React.Component {
               {this.translateStatus(delegation, delgDispatch)}
               <div className="toolbar-right">
                 {this.delgBtns()}
-                <Dropdown overlay={menu}>
-                  <Button><Icon type="ellipsis" /></Button>
-                </Dropdown>
                 {closer}
               </div>
               <Row>

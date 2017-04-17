@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Breadcrumb, Icon, Layout, Radio, Tag, message, Popconfirm, Badge } from 'antd';
+import { Breadcrumb, Dropdown, Menu, Icon, Layout, Radio, Tag, message, Popconfirm, Badge } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -301,7 +301,7 @@ export default class DelgDeclList extends Component {
     columns = [...this.columns];
     columns.push({
       title: this.msg('opColumn'),
-      width: 150,
+      width: 140,
       fixed: 'right',
       render: (o, record) => {
         if (record.status === 0) {
@@ -341,9 +341,16 @@ export default class DelgDeclList extends Component {
               </PrivilegeCover>}
               {!record.entry_id && record.ep_send_filename && <span className="ant-divider" />}
               {record.ep_send_filename && (
-                <span>
-                  <RowUpdater onHit={this.handleShowXml} label={<span><Icon type="eye-o" /> 查看报文</span>} row={record} />
-                </span>)}
+                <Dropdown overlay={(
+                  <Menu>
+                    <Menu.Item key="edit">
+                      <a role="button" onClick={this.handleShowXml}><Icon type="eye-o" /> EDI报文</a>
+                    </Menu.Item>
+                  </Menu>)}
+                >
+                  <a><Icon type="down" /></a>
+                  </Dropdown>
+                )}
             </span>
           );
         }

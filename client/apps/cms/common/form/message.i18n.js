@@ -115,7 +115,7 @@ export default defineMessages({
   },
   generateEntry: {
     id: 'cms.forms.generate.entry',
-    defaultMessage: '生成报关单',
+    defaultMessage: '生成报关草单',
   },
   addEntry: {
     id: 'cms.forms.add.entry',

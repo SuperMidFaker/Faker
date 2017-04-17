@@ -375,7 +375,7 @@ export default class ManifestEditor extends React.Component {
                 >{this.msg('generateEntry')}</Button>) }
               {billMeta.entries.length > 0 &&
                 <Dropdown overlay={declEntryMenu}>
-                  <Button size="large"><Icon type="check-circle-o" />已生成报关单<Icon type="down" /></Button>
+                  <Button size="large"><Icon type="check-circle-o" />已生成报关草单<Icon type="down" /></Button>
                 </Dropdown>
               }
               <ButtonToggle size="large" iconOff="folder" iconOn="folder-open" onClick={this.toggle} />

@@ -27,7 +27,7 @@ export default defineMessages({
   },
   filterGenerated: {
     id: 'cms.manifest.filter.generated',
-    defaultMessage: '已生成报关单',
+    defaultMessage: '已生成报关草单',
   },
   delgNo: {
     id: 'cms.manifest.delg.no',
