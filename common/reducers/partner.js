@@ -27,7 +27,7 @@ const initialState = {
   selectedMenuItemKey: '0',  // 记录当前MenuItemKey的值,
   providerType: 'ALL',        // 记录当前被选中的物流供应商, 值对应为:['ALL', 'FWD', 'CCB', 'TRS', 'WHS']
   visibleSpModal: false,
-  spModal: { },
+  spModal: { partner: {} },
 };
 
 export default function reducer(state = initialState, action) {

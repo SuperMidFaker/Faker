@@ -30,6 +30,7 @@ export default function reducer(state = initialState, action) {
         }
       } else if (action.navInfo.depth === 2) {
         stack = 1;
+        backed = false;
       }
       return { ...state, navTitle: { ...state.navTitle, ...action.navInfo, stack }, backed };
     }
