@@ -160,7 +160,7 @@ export default class CustomizeTracking extends React.Component {
           <Header className="top-bar">
             { this.state.collapsed && <Breadcrumb>
               <Breadcrumb.Item>
-                {this.msg('tracking')}
+                {this.msg('shipmentsTrackingCustomize')}
               </Breadcrumb.Item>
               <Breadcrumb.Item>
                 {tracking.name}

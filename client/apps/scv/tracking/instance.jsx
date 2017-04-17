@@ -46,6 +46,7 @@ export default class Instance extends Component {
 
   render() {
     const { trackingItems } = this.props;
+    const { tracking } = this.state;
     const columns = trackingItems.map(item => ({
       dataIndex: item.field,
       key: item.field,
@@ -59,7 +60,7 @@ export default class Instance extends Component {
               {this.msg('shipmentsTracking')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              业务数据
+              {tracking.name}
             </Breadcrumb.Item>
           </Breadcrumb>
         </Header>
