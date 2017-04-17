@@ -2,25 +2,25 @@ import { defineMessages } from 'react-intl';
 import { formati18n } from 'client/common/i18n/helpers';
 
 const messages = defineMessages({
-  sourceSync: {
-    id: 'scv.classification.source.sync',
-    defaultMessage: '来源同步',
+  masterConfig: {
+    id: 'scv.classification.master.config',
+    defaultMessage: '主库配置',
   },
-  classifyBroker: {
-    id: 'scv.classification.broker',
-    defaultMessage: '归类报关行',
+  slaveConfig: {
+    id: 'scv.classification.slave.config',
+    defaultMessage: '从库同步',
+  },
+  classifySourceRepo: {
+    id: 'scv.classification.slave.source.repo',
+    defaultMessage: '来源物料集',
   },
   classifyAudit: {
-    id: 'scv.classification.audit',
+    id: 'scv.classification.slave.audit',
     defaultMessage: '审核方式',
   },
-  classifyShare: {
-    id: 'scv.classification.share',
-    defaultMessage: '共享报关行范围',
-  },
-  warehouseOperator: {
-    id: 'scv.resources.warehouse.operator',
-    defaultMessage: '经营者',
+  classifyShareScope: {
+    id: 'scv.classification.slave.share.scope',
+    defaultMessage: '共享范围',
   },
   warehouseLocation: {
     id: 'scv.resources.warehouse.location',

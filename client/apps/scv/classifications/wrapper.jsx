@@ -10,8 +10,7 @@ const { Header, Content, Sider } = Layout;
 export default class ScvClassificationWrapper extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
-    menuKey: PropTypes.oneOf(['sync']),
+    menuKey: PropTypes.oneOf(['master', 'slave']),
     children: PropTypes.node.isRequired,
   }
   msg = formatMsg(this.props.intl)
@@ -22,7 +21,8 @@ export default class ScvClassificationWrapper extends React.Component {
         <Header className="top-bar">
           <Breadcrumb>
             <Breadcrumb.Item>
-              {menuKey === 'sync' && this.msg('sourceSync')}
+              {menuKey === 'master' && this.msg('masterConfig')}
+              {menuKey === 'slave' && this.msg('slaveConfig')}
             </Breadcrumb.Item>
           </Breadcrumb>
         </Header>
@@ -31,7 +31,8 @@ export default class ScvClassificationWrapper extends React.Component {
             <Layout className="main-wrapper">
               <Sider className="nav-sider">
                 <Menu selectedKeys={[menuKey]} mode="inline">
-                  <Menu.Item key="sync"><NavLink to="/scv/classification/sync">{this.msg('sourceSync')}</NavLink></Menu.Item>
+                  <Menu.Item key="master"><NavLink to="/scv/classification/master">{this.msg('masterConfig')}</NavLink></Menu.Item>
+                  <Menu.Item key="slave"><NavLink to="/scv/classification/slave">{this.msg('slaveConfig')}</NavLink></Menu.Item>
                 </Menu>
               </Sider>
               {children}

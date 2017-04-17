@@ -1,1 +1,2 @@
-export Sync from './sync/list';
+export Slave from './slave/config';
+export Master from './master/config';

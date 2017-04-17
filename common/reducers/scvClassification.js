@@ -13,6 +13,7 @@ const actionTypes = createActionTypes('@@welogix/scv/classification/', [
   'LOAD_CLASBROKERS', 'LOAD_CLASBROKERS_SUCCEED', 'LOAD_CLASBROKERS_FAIL',
   'UPDATE_AUDIT', 'UPDATE_AUDIT_SUCCEED', 'UPDATE_AUDIT_FAIL',
   'RENEW_SHAREE', 'RENEW_SHAREE_SUCCEED', 'RENEW_SHAREE_FAIL',
+  'LOAD_MASTERCONF', 'LOAD_MASTERCONF_SUCCEED', 'LOAD_MASTERCONF_FAIL',
 ]);
 
 const initialState = {
@@ -35,6 +36,9 @@ const initialState = {
     pageSize: 20,
     data: [],
   },
+  master: {
+    sharees: [],
+  },
   shareBrokers: [],
 };
 
@@ -55,6 +59,8 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_CLASBROKERS_SUCCEED:
       return { ...state, shareBrokers: action.result.data.filter(data => data.partner_tenant_id > 0)
         .map(data => ({ tenant_id: data.partner_tenant_id, name: data.name })) };
+    case actionTypes.LOAD_MASTERCONF_SUCCEED:
+      return { ...state, master: action.result.data };
     default:
       return state;
   }
@@ -165,7 +171,7 @@ export function loadSyncList(params) {
         actionTypes.LOAD_SYNCS_SUCCEED,
         actionTypes.LOAD_SYNCS_FAIL,
       ],
-      endpoint: 'v1/scv/classification/syncs',
+      endpoint: 'v1/scv/classification/slave/config',
       method: 'get',
       params,
     },
@@ -213,6 +219,21 @@ export function renewSharees(contribute, sharees) {
       endpoint: 'v1/scv/classification/sync/update/sharees',
       method: 'post',
       data: { contribute, sharees },
+    },
+  };
+}
+
+export function loadMasterConfig({ tenantId }) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_MASTERCONF,
+        actionTypes.LOAD_MASTERCONF_SUCCEED,
+        actionTypes.LOAD_MASTERCONF_FAIL,
+      ],
+      endpoint: 'v1/scv/classification/master/config',
+      method: 'get',
+      params: { tenantId },
     },
   };
 }

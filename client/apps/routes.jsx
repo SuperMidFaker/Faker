@@ -405,8 +405,9 @@ export default(store, cookie) => {
               <Route path="serviceprovider" component={SCVResource.ServiceProviders} />
             </Route>
             <Route path="classification">
-              <IndexRoute component={SCVClassification.Sync} />
-              <Route path="sync" component={SCVClassification.Sync} />
+              <IndexRoute component={SCVClassification.Master} />
+              <Route path="master" component={SCVClassification.Master} />
+              <Route path="slave" component={SCVClassification.Slave} />
             </Route>
             <Route path="settings">
               <IndexRedirect to="/scv/settings/openapi" />

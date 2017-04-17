@@ -7,8 +7,8 @@ import { loadSyncList, loadClassificatonBrokers, updateAudit, renewSharees } fro
 import connectNav from 'client/common/decorators/connect-nav';
 import Table from 'client/components/remoteAntTable';
 import EditableCell from 'client/components/EditableCell';
-import ScvClassificationWrapper from '../wrapper';
 import SyncShareEditCell from './syncShareEditCell';
+import ScvClassificationWrapper from '../wrapper';
 import { SYNC_AUDIT_METHODS, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 import { formatMsg } from '../message.i18n';
 
@@ -40,14 +40,14 @@ function fetchData({ state, dispatch }) {
   depth: 2,
   moduleName: 'scv',
 })
-export default class ScvClassifySyncList extends React.Component {
+export default class ScvClassificationSlaveConfig extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
   }
   msg = formatMsg(this.props.intl)
   columns = [{
-    title: this.msg('classifyBroker'),
+    title: this.msg('classifySourceRepo'),
     dataIndex: 'broker_name',
     width: 200,
   }, {
@@ -59,7 +59,7 @@ export default class ScvClassifySyncList extends React.Component {
         onSave={value => this.handleAuditChange(row.id, value)}
       />),
   }, {
-    title: this.msg('classifyShare'),
+    title: this.msg('classifyShareScope'),
     width: 300,
     render: (_, row) => (<SyncShareEditCell checkedBrokers={row.shares} shareBrokers={this.props.brokers}
       onSave={this.handleShareChange} contribute={row.broker_tenant_id}
@@ -68,8 +68,8 @@ export default class ScvClassifySyncList extends React.Component {
   handleAuditChange = (syncId, audit) => {
     this.props.updateAudit(syncId, audit);
   }
-  handleShareChange = (contributeTenantId, shareeTenantIds) => {
-    this.props.renewSharees(contributeTenantId, shareeTenantIds);
+  handleShareChange = (contributeTenantId, shareeTenants) => {
+    this.props.renewSharees(contributeTenantId, shareeTenants);
   }
   dataSource = new Table.DataSource({
     fetcher: params => this.props.loadSyncList(params),
@@ -95,7 +95,7 @@ export default class ScvClassifySyncList extends React.Component {
     const { loading, synclist } = this.props;
     this.dataSource.remotes = synclist;
     return (
-      <ScvClassificationWrapper menuKey="sync">
+      <ScvClassificationWrapper menuKey="slave">
         <Content className="nav-content">
           <div className="panel-body table-panel">
             <Table columns={this.columns} dataSource={this.dataSource} loading={loading} rowKey="id" scroll={{ x: 1200 }} />
