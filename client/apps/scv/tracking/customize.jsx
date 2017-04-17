@@ -132,7 +132,7 @@ export default class CustomizeTracking extends React.Component {
             <div className="top-bar">
               <Breadcrumb>
                 <Breadcrumb.Item>
-                  {this.msg('shipmentsTracking')}
+                  {this.msg('shipmentsTrackingCustomize')}
                 </Breadcrumb.Item>
               </Breadcrumb>
               <div className="pull-right">
