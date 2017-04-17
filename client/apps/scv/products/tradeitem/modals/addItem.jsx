@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Modal, Form, Input, message, Select } from 'antd';
-import { setAdditemModalVisible, addItem, loadTradeItems } from 'common/reducers/scvTradeitem';
+import { setAdditemModalVisible, addItem, loadTradeItems } from 'common/reducers/scvClassification';
 import { loadPartners } from 'common/reducers/partner';
 import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
@@ -22,10 +22,10 @@ const Option = Select.Option;
     tenantName: state.account.tenantName,
     loginId: state.account.loginId,
     loginName: state.account.username,
-    visibleAddItemModal: state.scvTradeitem.visibleAddItemModal,
-    brokers: state.scvTradeitem.brokers,
-    listFilter: state.scvTradeitem.listFilter,
-    tradeItemlist: state.scvTradeitem.tradeItemlist,
+    visibleAddItemModal: state.scvClassification.visibleAddItemModal,
+    brokers: state.scvClassification.brokers,
+    listFilter: state.scvClassification.listFilter,
+    tradeItemlist: state.scvClassification.tradeItemlist,
   }),
   { setAdditemModalVisible, loadPartners, addItem, loadTradeItems }
 )

@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { Timeline, Popover, Icon } from 'antd';
-import { loadCustomsResults } from 'common/reducers/cmsDeclare';
+import { loadCustomsResults, clearCustomsResults } from 'common/reducers/cmsDeclare';
 
 const TimelineItem = Timeline.Item;
 
@@ -10,7 +10,7 @@ const TimelineItem = Timeline.Item;
   state => ({
     results: state.cmsDeclare.customsResults,
   }),
-  { loadCustomsResults })
+  { loadCustomsResults, clearCustomsResults })
 export default class DeclStatusPopover extends React.Component {
   static propTypes = {
     results: PropTypes.arrayOf(PropTypes.shape({
@@ -22,8 +22,12 @@ export default class DeclStatusPopover extends React.Component {
     entryId: PropTypes.string.isRequired,
     children: PropTypes.node.isRequired,
   }
-  componentWillMount() {
-    this.props.loadCustomsResults(this.props.entryId);
+  handleViewResult = (visible) => {
+    if (visible) {
+      this.props.loadCustomsResults(this.props.entryId);
+    } else {
+      this.props.clearCustomsResults();
+    }
   }
   render() {
     const { results = [], entryId, children } = this.props;
@@ -50,7 +54,9 @@ export default class DeclStatusPopover extends React.Component {
       </div>
     );
     return (
-      <Popover placement="topRight" content={overlay} title={<span><Icon type="file" /> {entryId}</span>}>
+      <Popover placement="topRight" content={overlay} title={<span><Icon type="file" /> {entryId}</span>}
+        onVisibleChange={this.handleViewResult}
+      >
         {children}
       </Popover>
     );

@@ -37,7 +37,7 @@ function getFieldInits(formData) {
       text: un.unit_name,
     })),
     tradeCountries: state.cmsTradeitem.params.tradeCountries,
-    fieldInits: getFieldInits(state.scvTradeitem.itemData),
+    fieldInits: getFieldInits(state.scvClassification.itemData),
     hscodes: state.cmsHsCode.hscodes,
   }),
   { loadHscodes }

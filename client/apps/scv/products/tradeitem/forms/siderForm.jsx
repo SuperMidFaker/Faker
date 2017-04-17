@@ -27,7 +27,7 @@ function getFieldInits(formData) {
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    fieldInits: getFieldInits(state.scvTradeitem.itemData),
+    fieldInits: getFieldInits(state.scvClassification.itemData),
   }),
   { }
 )

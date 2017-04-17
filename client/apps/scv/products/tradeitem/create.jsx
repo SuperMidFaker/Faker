@@ -5,7 +5,7 @@ import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
 import BasicForm from './forms/basicForm';
 import SiderForm from './forms/siderForm';
-import { addItem } from 'common/reducers/scvTradeitem';
+import { scvClassification } from 'common/reducers/scvClassification';
 import { loadPartners } from 'common/reducers/partner';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from './message.i18n';
@@ -26,7 +26,7 @@ const businessType = PARTNER_BUSINESSE_TYPES.clearance;
     loginName: state.account.loginName,
     brokers: state.partner.partners,
   }),
-  { addItem, loadPartners }
+  { scvClassification, loadPartners }
 )
 @connectNav({
   depth: 3,
@@ -77,7 +77,7 @@ export default class CreateTradeItem extends Component {
             contribute_tenant_name: broker.name,
           };
         }
-        this.props.addItem({ params }).then((result) => {
+        this.props.scvClassification({ params }).then((result) => {
           if (result.error) {
             message.error(result.error.message, 10);
           } else {
