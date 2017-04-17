@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { Breadcrumb, Layout, Table } from 'antd';
+import { loadTrackingItems } from 'common/reducers/scvTracking';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 // import connectFetch from 'client/common/decorators/connect-fetch';
@@ -20,8 +21,9 @@ const { Header, Content } = Layout;
   state => ({
     tenantId: state.account.tenantId,
     trackings: state.scvTracking.trackings,
+    trackingItems: state.scvTracking.trackingItems,
   }),
-  { }
+  { loadTrackingItems }
 )
 @connectNav({
   depth: 2,
@@ -31,19 +33,24 @@ export default class Instance extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     trackings: PropTypes.array.isRequired,
+    trackingItems: PropTypes.array.isRequired,
   }
   state = {
     tracking: {},
   }
   componentWillReceiveProps(nextProps) {
     this.setState({ tracking: nextProps.trackings.find(item => item.id === nextProps.params.trackingId) });
+    this.props.loadTrackingItems(nextProps.params.trackingId);
   }
   msg = key => formatMsg(this.props.intl, key)
 
   render() {
-    // const { tracking } = this.state;
-    const columns = [
-    ];
+    const { trackingItems } = this.props;
+    const columns = trackingItems.map(item => ({
+      dataIndex: item.field,
+      key: item.field,
+      title: item.custom_title,
+    }));
     return (
       <Layout>
         <Header className="top-bar">

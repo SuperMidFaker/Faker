@@ -99,7 +99,7 @@ export default class TrackingModal extends React.Component {
     const { visible, operation, tracking, form: { getFieldDecorator } } = this.props;
     const { selectedKeys, targetKeys } = this.state;
     return (
-      <Modal title={operation === 'add' ? '新增追踪' : '修改追踪'} visible={visible} onOk={this.handleOk} onCancel={this.handleCancel}>
+      <Modal title={operation === 'add' ? '新增追踪' : '修改追踪'} visible={visible} onOk={this.handleOk} onCancel={this.handleCancel} width={680}>
         <FormItem label="追踪名称:" required>
           {getFieldDecorator('name', {
             initialValue: tracking.name || '',
@@ -110,7 +110,7 @@ export default class TrackingModal extends React.Component {
         <FormItem label="追踪项:" required>
           <Transfer
             dataSource={this.props.trackingFields}
-            titles={['Source', 'Target']}
+            titles={['', '']}
             targetKeys={targetKeys}
             selectedKeys={selectedKeys}
             onChange={this.handleChange}
@@ -119,7 +119,10 @@ export default class TrackingModal extends React.Component {
             render={item => item.title}
             rowKey={item => item.field}
             showSearch
-            style={{ width: '100%' }}
+            listStyle={{
+              width: 300,
+              height: 400,
+            }}
           />
         </FormItem>
       </Modal>
