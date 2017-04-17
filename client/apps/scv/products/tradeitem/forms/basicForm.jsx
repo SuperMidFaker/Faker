@@ -112,7 +112,6 @@ export default class BasicForm extends Component {
             <Col sm={24} lg={8}>
               <FormItem label={this.msg('broker')}>
                 {getFieldDecorator('broker', {
-                  rules: [{ required: true, message: '必须指定报关行' }],
                   initialValue: fieldInits.broker }
                   )(<Select
                     disabled={action === 'edit'}
@@ -317,7 +316,6 @@ export default class BasicForm extends Component {
                   )}
               </FormItem>
             </Col>
-
           </Row>
         </Card>
       </div>

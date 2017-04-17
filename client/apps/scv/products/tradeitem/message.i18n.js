@@ -231,7 +231,7 @@ const messages = defineMessages({
   },
   broker: {
     id: 'scv.products.tradeitem.broker',
-    defaultMessage: '报关行',
+    defaultMessage: '指定报关行',
   },
 });
 export default messages;
