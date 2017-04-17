@@ -1,67 +1,65 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Form, Input, Table, Tooltip, Layout, message } from 'antd';
+import { Breadcrumb, Button, Input, Table, Tooltip, Layout, Popconfirm, Icon } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import ButtonToggle from 'client/components/ButtonToggle';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import { loadCustomers, showCustomerModal, deleteCustomer, updateCustomerNames } from 'common/reducers/crmCustomers';
-import { PARTNER_ROLES } from 'common/constants';
+import { loadTrackings, addTracking, removeTracking, updateTracking, loadTrackingFields, toggleTrackingModal } from 'common/reducers/scvTracking';
+import TrackingModal from './modals/trackingModal';
+import TrackingItems from './trackingItems';
 
 const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
 const Search = Input.Search;
 
 function fetchData({ state, dispatch }) {
-  return dispatch(loadCustomers({
-    tenantId: state.account.tenantId,
-  }));
+  dispatch(loadTrackingFields());
+  return dispatch(loadTrackings(state.account.tenantId));
 }
 @connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    customers: state.crmCustomers.customers,
-    loading: state.crmCustomers.loading,
-    loaded: state.crmCustomers.loaded,
+    trackings: state.scvTracking.trackings,
+    loading: state.scvTracking.loading,
+    loaded: state.scvTracking.loaded,
   }),
-  { loadCustomers, deleteCustomer, showCustomerModal, updateCustomerNames }
+  { loadTrackings, addTracking, removeTracking, updateTracking, toggleTrackingModal }
 )
 @connectNav({
   depth: 2,
   moduleName: 'scv',
 })
-@Form.create()
 export default class CustomizeTracking extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     loaded: PropTypes.bool.isRequired,
-    tenantId: PropTypes.number.isRequired,
-    customers: PropTypes.array.isRequired,
-    loadCustomers: PropTypes.func.isRequired,
-    deleteCustomer: PropTypes.func.isRequired,
-    showCustomerModal: PropTypes.func.isRequired,
-    updateCustomerNames: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
+    tenantId: PropTypes.number.isRequired,
+    trackings: PropTypes.array.isRequired,
+    toggleTrackingModal: PropTypes.func.isRequired,
+    loadTrackings: PropTypes.func.isRequired,
+    addTracking: PropTypes.func.isRequired,
+    removeTracking: PropTypes.func.isRequired,
+    updateTracking: PropTypes.func.isRequired,
   }
   state = {
-    customerModalVisible: false,
-    customer: {},
+    tracking: {},
     currentPage: 1,
     collapsed: false,
-    unchanged: true,
-    customers: [],
+    trackings: [],
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.customers !== this.props.customers && !this.state.customer.id) {
+    if (nextProps.trackings !== this.props.trackings && !this.state.tracking.id) {
       this.setState({
-        customer: nextProps.customers.find(item => item.id === this.state.customer.id) || nextProps.customers[0],
+        tracking: nextProps.trackings.find(item => item.id === this.state.tracking.id) || nextProps.trackings[0],
       });
     }
-    this.setState({ customers: nextProps.customers });
+    this.setState({ trackings: nextProps.trackings });
     if (!nextProps.loaded) {
       this.handleTableLoad();
     }
@@ -73,56 +71,55 @@ export default class CustomizeTracking extends React.Component {
       collapsed: !this.state.collapsed,
     });
   }
-  handleInputChanged = () => {
-    this.setState({ unchanged: false });
+  handleShowTrackingModal = () => {
+    this.props.toggleTrackingModal(true, 'add');
   }
   handleRowClick = (record) => {
     this.setState({
-      customer: record,
-      unchanged: true,
+      tracking: record,
     });
-    this.props.form.setFieldsValue(record);
   }
   handleTableLoad = () => {
-    this.props.loadCustomers({
-      tenantId: this.props.tenantId,
-    });
+    this.props.loadTrackings(this.props.tenantId);
   }
-  handleDelCustomer = () => {
-    this.props.deleteCustomer(this.state.customer.id, PARTNER_ROLES.CUS).then(() => {
+  handleRemove = (id) => {
+    this.props.removeTracking(id).then(() => {
       this.handleTableLoad();
     });
+  }
+  handleEdit = () => {
+    this.props.toggleTrackingModal(true, 'edit', this.state.tracking);
   }
   handlePageChange = (page) => {
     this.setState({ currentPage: page });
   }
   handleSearch = (value) => {
-    let customers = this.props.customers;
+    let trackings = this.props.trackings;
     if (value) {
-      customers = this.props.customers.filter((item) => {
+      trackings = this.props.trackings.filter((item) => {
         const reg = new RegExp(value);
         return reg.test(item.name);
       });
     }
-    this.setState({ customers, currentPage: 1 });
-  }
-  handleSaveBtnClick = () => {
-    const fieldsValue = this.props.form.getFieldsValue();
-    const data = { ...fieldsValue, id: this.state.customer.id };
-    this.props.updateCustomerNames(data).then((result) => {
-      if (result.error) {
-        message.error(result.error.message, 10);
-      } else {
-        message.info('修改成功');
-      }
-    });
+    this.setState({ trackings, currentPage: 1 });
   }
   render() {
-    const { customer } = this.state;
+    const { tracking } = this.state;
     const columns = [{
       dataIndex: 'name',
       key: 'name',
       render: o => (<span className="menu-sider-item">{o}</span>),
+    }, {
+      title: '操作',
+      dataIndex: 'id',
+      key: 'id',
+      render: (_, row) => (
+        <span>
+          <Popconfirm title="确认删除?" onConfirm={() => this.handleRemove(row.id)}>
+            <a role="button"><Icon type="delete" /></a>
+          </Popconfirm>
+        </span>
+        ),
     }];
     return (
       <Layout>
@@ -135,12 +132,12 @@ export default class CustomizeTracking extends React.Component {
             <div className="top-bar">
               <Breadcrumb>
                 <Breadcrumb.Item>
-                  {this.msg('tracking')}
+                  {this.msg('shipmentsTracking')}
                 </Breadcrumb.Item>
               </Breadcrumb>
               <div className="pull-right">
                 <Tooltip placement="bottom" title="新增追踪表">
-                  <Button type="primary" shape="circle" icon="plus" onClick={() => this.props.showCustomerModal('add')} />
+                  <Button type="primary" shape="circle" icon="plus" onClick={() => this.handleShowTrackingModal()} />
                 </Tooltip>
               </div>
             </div>
@@ -151,10 +148,11 @@ export default class CustomizeTracking extends React.Component {
                   onSearch={this.handleSearch} size="large"
                 />
               </div>
-              <Table size="middle" dataSource={this.state.customers} columns={columns} showHeader={false} onRowClick={this.handleRowClick}
+              <Table size="middle" dataSource={this.state.trackings} columns={columns} showHeader={false} onRowClick={this.handleRowClick}
                 pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }}
-                rowClassName={record => record.id === customer.id ? 'table-row-selected' : ''} rowKey="id" loading={this.props.loading}
+                rowClassName={record => record.id === tracking.id ? 'table-row-selected' : ''} rowKey="id" loading={this.props.loading}
               />
+              <TrackingModal onOk={this.handleTableLoad} />
             </div>
           </div>
         </Sider>
@@ -165,7 +163,7 @@ export default class CustomizeTracking extends React.Component {
                 {this.msg('tracking')}
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                {customer.name}
+                {tracking.name}
               </Breadcrumb.Item>
             </Breadcrumb>}
             <ButtonToggle size="large"
@@ -174,16 +172,12 @@ export default class CustomizeTracking extends React.Component {
               toggle
             />
             <div className="top-bar-tools">
-              <Button.Group size="large">
-                <Button icon="left" />
-                <Button icon="right" />
-              </Button.Group>
-              <Button size="large" type="primary" icon="save" disabled={this.state.unchanged} onClick={this.handleSaveBtnClick}>
-                {this.msg('save')}
-              </Button>
+              <Button type="primary" onClick={this.handleEdit}>重新设定</Button>
             </div>
           </Header>
-          <Content className="main-content layout-fixed-width layout-fixed-width-large" />
+          <Content className="main-content layout-fixed-width layout-fixed-width-large">
+            <TrackingItems tracking={tracking} />
+          </Content>
         </Layout>
       </Layout>
     );
