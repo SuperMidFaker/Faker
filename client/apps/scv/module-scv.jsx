@@ -1,23 +1,44 @@
 import React, { PropTypes } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
+import { connect } from 'react-redux';
+import connectFetch from 'client/common/decorators/connect-fetch';
 import { locationShape } from 'react-router';
+import { loadTrackings } from 'common/reducers/scvTracking';
 import CollapsibleSiderLayout from 'client/components/CollapsibleSiderLayout';
 import messages from './message.i18n';
 import { format } from 'client/common/i18n/helpers';
 
 const formatMsg = format(messages);
-
+function fetchData({ state, dispatch }) {
+  return dispatch(loadTrackings(state.account.tenantId));
+}
+@connectFetch()(fetchData)
+@connect(
+  state => ({
+    trackings: state.scvTracking.trackings,
+  }),
+  { }
+)
 @injectIntl
 export default class ModuleSCV extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     location: locationShape.isRequired,
     children: PropTypes.object.isRequired,
+    trackings: PropTypes.array.isRequired,
   };
   state = {
     linkMenus: [],
   }
-  componentWillMount() {
+  componentWillReceiveProps(nextProps) {
+    let trackingSublinks = [];
+    if (nextProps.trackings.length > 0) {
+      trackingSublinks = nextProps.trackings.map((item, index) => ({
+        key: `scv-2-${index}`,
+        path: `/scv/tracking/instance/${item.id}`,
+        text: item.name,
+      }));
+    }
     const { intl } = this.props;
     const linkMenus = [];
     linkMenus.push({
@@ -32,21 +53,12 @@ export default class ModuleSCV extends React.Component {
       key: 'scv-2',
       icon: 'icon-fontello-tasks-1',
       text: formatMsg(intl, 'tracking'),
-      sublinks: [{
-        key: 'scv-2-0',
-        path: '/scv/shipments/inbound',
-        text: formatMsg(intl, 'inboundShipments'),
-      }, {
-        key: 'scv-2-1',
-        disabled: true,
-        path: '/scv/shipments/outbound',
-        text: formatMsg(intl, 'outboundShipments'),
-      }, {
+      sublinks: trackingSublinks.concat([{
         key: 'scv-2-99',
         icon: 'zmdi zmdi-wrench',
         path: '/scv/tracking/customize',
         text: formatMsg(intl, 'customizeTracking'),
-      }],
+      }]),
     });
     linkMenus.push({
       single: false,

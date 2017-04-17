@@ -36,6 +36,7 @@ import scvOutboundShipments from './scvOutboundShipments';
 import scvInventoryStock from './scvInventoryStock';
 import scvInventoryTransaction from './scvInventoryTransaction';
 import scvWarehouse from './scvWarehouse';
+import scvTracking from './scvTracking';
 import scvClassification from './scvClassification';
 import cwmTransaction from './cwmTransaction';
 import cwmSku from './cwmSku';
@@ -85,6 +86,7 @@ export default combineReducers({
   scvInventoryStock,
   scvInventoryTransaction,
   scvWarehouse,
+  scvTracking,
   scvClassification,
   cwmTransaction,
   cwmSku,

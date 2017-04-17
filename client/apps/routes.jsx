@@ -356,6 +356,7 @@ export default(store, cookie) => {
               <Route path="customize">
                 <IndexRoute component={SCVTracking.Customize} />
               </Route>
+              <Route path="instance/:trackingId" component={SCVTracking.Instance} />
             </Route>
             <Route path="shipments">
               <Route path="inbound">
