@@ -18,7 +18,7 @@ import MdIcon from 'client/components/MdIcon';
 import { loadAcceptanceTable, acceptDelg, delDelg, setDispStatus, loadCiqTable, delgAssignRecall,
   ensureManifestMeta, openAcceptModal, showDispModal } from 'common/reducers/cmsDelegation';
 import { showPreviewer, loadBasicInfo, loadCustPanel, loadDeclCiqPanel } from 'common/reducers/cmsDelgInfoHub';
-import DelegationInfoHubPanel from '../dockhub/DelegationInfoHubPanel';
+import DelegationDockPanel from '../dockhub/delegationDockPanel';
 import CiqList from './ciqList';
 import messages from './message.i18n';
 import { format } from 'client/common/i18n/helpers';
@@ -597,7 +597,7 @@ export default class DelegationList extends Component {
             </div>
           </div>
         </Content>
-        <DelegationInfoHubPanel ietype={this.props.ietype} />
+        <DelegationDockPanel ietype={this.props.ietype} />
       </QueueAnim>
     );
   }

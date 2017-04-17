@@ -15,7 +15,7 @@ import messages from './message.i18n';
 import moment from 'moment';
 import SearchBar from 'client/components/search-bar';
 import TrimSpan from 'client/components/trimSpan';
-import DelegationInfoHubPanel from '../common/dockhub/DelegationInfoHubPanel';
+import DelegationDockPanel from '../common/dockhub/delegationDockPanel';
 import DelgAdvanceExpenseModal from './modals/delgAdvanceExpenseModal';
 import RowUpdater from 'client/components/rowUpdater';
 import ExpEptModal from './modals/expEptModal';
@@ -530,7 +530,7 @@ export default class ExpenseList extends Component {
             </div>
           </div>
         </Content>
-        <DelegationInfoHubPanel />
+        <DelegationDockPanel />
         <DelgAdvanceExpenseModal />
         <ExpEptModal visible={this.state.expEptVisible} toggle={this.toggleEptModal} />
       </QueueAnim>

@@ -11,7 +11,7 @@ import { loadDelgBill, redoManifest } from 'common/reducers/cmsManifest';
 import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/search-bar';
-import DelegationInfoHubPanel from '../dockhub/DelegationInfoHubPanel';
+import DelegationDockPanel from '../dockhub/delegationDockPanel';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import RowUpdater from 'client/components/rowUpdater';
@@ -319,7 +319,7 @@ export default class ManifestList extends Component {
               </div>
             </QueueAnim>
           </Content>
-          <DelegationInfoHubPanel ietype={this.props.ietype} />
+          <DelegationDockPanel ietype={this.props.ietype} />
         </Layout>
         <Sider
           trigger={null}

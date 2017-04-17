@@ -20,10 +20,10 @@ const TabPane = Tabs.TabPane;
 @connect(
   state => ({
     tenantId: state.account.tenantId,
+    dock: state.crmOrders.dock,
     visible: state.crmOrders.dock.visible,
     tabKey: state.crmOrders.dock.tabKey,
     order: state.crmOrders.dock.order,
-    dock: state.crmOrders.dock,
     delgNos: state.crmOrders.dock.order.ccb_delg_no || '',
     shipmtNos: state.crmOrders.dock.order.trs_shipmt_no || '',
   }),
@@ -35,23 +35,14 @@ export default class OrderDockPanel extends React.Component {
     tenantId: PropTypes.number.isRequired,
     visible: PropTypes.bool.isRequired,
     tabKey: PropTypes.string,
+    dock: PropTypes.object.isRequired,
     hideDock: PropTypes.func.isRequired,
     changeDockTab: PropTypes.func.isRequired,
     order: PropTypes.object.isRequired,
-    dock: PropTypes.object.isRequired,
     delgNos: PropTypes.string.isRequired,
     shipmtNos: PropTypes.string.isRequired,
     loadClearanceDetail: PropTypes.func.isRequired,
     loadTransportDetail: PropTypes.func.isRequired,
-  }
-
-  getTrackStatusMsg(status) {
-    switch (status) {
-      case CRM_ORDER_STATUS.created: return this.msg('created');
-      case CRM_ORDER_STATUS.processing: return this.msg('processing');
-      case CRM_ORDER_STATUS.finished: return this.msg('finished');
-      default: return '';
-    }
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   handleTabChange = (tabKey) => {
@@ -60,7 +51,7 @@ export default class OrderDockPanel extends React.Component {
   handleClose = () => {
     this.props.hideDock();
   }
-  transformBadgeColor(status) {
+  renderStatus(status) {
     switch (status) {
       case CRM_ORDER_STATUS.created: return 'default';
       case CRM_ORDER_STATUS.processing: return 'processing';
@@ -68,41 +59,15 @@ export default class OrderDockPanel extends React.Component {
       default: return 'default';
     }
   }
-
-  renderTabs() {
-    /*
-    let tabKey;
-    if (this.props.tabKey) {
-      tabKey = this.props.tabKey;
-    } else if (mode.indexOf(CRM_ORDER_MODE.clearance) >= 0) {
-      tabKey = CRM_ORDER_MODE.clearance;
-    } else {
-      tabKey = CRM_ORDER_MODE.transport;
+  renderStatusMsg(status) {
+    switch (status) {
+      case CRM_ORDER_STATUS.created: return this.msg('created');
+      case CRM_ORDER_STATUS.processing: return this.msg('processing');
+      case CRM_ORDER_STATUS.finished: return this.msg('finished');
+      default: return '';
     }
-    if (mode === CRM_ORDER_MODE.clearance) {
-      return (
-        <Tabs type="card" activeKey={tabKey} onChange={this.handleTabChange}>
-          <TabPane tab={this.msg('clearance')} key="clearance">
-            <ClearancePane />
-          </TabPane>
-          <TabPane tab={this.msg('charge')} key="charge">
-            <ChargePane />
-          </TabPane>
-        </Tabs>
-      );
-    } else if (mode === CRM_ORDER_MODE.transport) {
-      return (
-        <Tabs type="card" activeKey={tabKey} onChange={this.handleTabChange}>
-          <TabPane tab={this.msg('transport')} key="transport">
-            <TransportPane />
-          </TabPane>
-          <TabPane tab={this.msg('charge')} key="charge">
-            <ChargePane />
-          </TabPane>
-        </Tabs>
-      );
-    } else {
-      */
+  }
+  renderTabs() {
     return (
       <Tabs defaultActiveKey="order" onChange={this.handleTabChange}>
         <TabPane tab={this.msg('order')} key="order">
@@ -116,40 +81,40 @@ export default class OrderDockPanel extends React.Component {
         </TabPane>
       </Tabs>
     );
-   // }
   }
-
   renderAlert() {
     return (<Button type="primary">创建清单</Button>);
   }
-
-  render() {
-    const { order, visible } = this.props;
+  renderExtra() {
+    const { order } = this.props;
     const transfer = SCOF_ORDER_TRANSFER.filter(sot => sot.value === order.cust_shipmt_transfer)[0];
     const transMode = TRANS_MODE.filter(tm => tm.value === order.cust_shipmt_trans_mode)[0];
     const wbNo = order.cust_shipmt_bill_lading || (order.cust_shipmt_hawb ? `${order.cust_shipmt_mawb}_${order.cust_shipmt_hawb}` : order.cust_shipmt_mawb);
     return (
+      <Row>
+        <Col span="8">
+          <InfoItem label="客户" field={order.customer_name} />
+        </Col>
+        <Col span="4">
+          <InfoItem label="货物流向" addonBefore={transfer && <Icon type={transfer.icon} />} field={transfer && transfer.text} />
+        </Col>
+        <Col span="6">
+          <InfoItem label="提运单号" addonBefore={transMode && <MdIcon type={transMode.icon} />} field={wbNo} />
+        </Col>
+        <Col span="6">
+          <InfoItem label="接单日期" addonBefore={<Icon type="calendar" />} field={moment(order.delg_time).format('YYYY.MM.DD')} />
+        </Col>
+      </Row>);
+  }
+
+  render() {
+    const { order, visible } = this.props;
+    return (
       <DockPanel size="large" visible={visible} onClose={this.props.hideDock}
         title={order.shipmt_order_no}
-        status={this.transformBadgeColor(order.order_status)} statusText={this.getTrackStatusMsg(order.order_status)}
-        extra={<Row>
-          <Col span="8">
-            <InfoItem label="客户" field={order.customer_name} />
-          </Col>
-          <Col span="4">
-            <InfoItem label="货物流向" addonBefore={transfer && <Icon type={transfer.icon} />}
-              field={transfer && transfer.text}
-            />
-          </Col>
-          <Col span="6">
-            <InfoItem label="提运单号" addonBefore={transMode && <MdIcon type={transMode.icon} />} field={wbNo} />
-          </Col>
-          <Col span="6">
-            <InfoItem label="接单日期" addonBefore={<Icon type="calendar" />} field={moment(order.delg_time).format('YYYY.MM.DD')} />
-          </Col>
-        </Row>
-        }
-        alert={this.renderAlert()}
+        status={this.renderStatus(order.order_status)} statusText={this.renderStatusMsg(order.order_status)}
+        extra={this.renderExtra()}
+        // alert={this.renderAlert()}
       >
         {this.renderTabs()}
       </DockPanel>

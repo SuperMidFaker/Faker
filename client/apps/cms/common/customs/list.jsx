@@ -20,7 +20,7 @@ import DeclStatusPopover from './declStatusPopover';
 import messages from './message.i18n';
 import { DECL_STATUS, CMS_DECL_STATUS } from 'common/constants';
 import SendModal from './modals/sendModal';
-import DelegationInfoHubPanel from '../dockhub/DelegationInfoHubPanel';
+import DelegationDockPanel from '../dockhub/delegationDockPanel';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -393,7 +393,7 @@ export default class DelgDeclList extends Component {
             <SendModal ietype={this.props.ietype} />
           </div>
         </Content>
-        <DelegationInfoHubPanel ietype={this.props.ietype} />
+        <DelegationDockPanel ietype={this.props.ietype} />
       </QueueAnim>
     );
   }

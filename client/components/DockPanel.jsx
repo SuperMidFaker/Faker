@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Alert, Badge, Button, Spin } from 'antd';
+import { Alert, Badge, Breadcrumb, Button, Spin } from 'antd';
 import classNames from 'classnames';
 
 function noop() {}
@@ -9,6 +9,7 @@ export default class DockPanel extends React.Component {
     prefixCls: 'dock-panel',
     alertType: 'info',
     loading: false,
+    currentDepth: 1,
   }
   static propTypes = {
     prefixCls: PropTypes.string.isRequired,
@@ -17,7 +18,6 @@ export default class DockPanel extends React.Component {
     title: PropTypes.string,
     status: PropTypes.oneOf(['default', 'processing', 'warning', 'error', 'success']),
     statusText: PropTypes.string,
-    toolbar: PropTypes.node,
     extra: PropTypes.node,
     children: PropTypes.any,
     loading: PropTypes.bool,
@@ -25,14 +25,22 @@ export default class DockPanel extends React.Component {
     className: PropTypes.string,
     alert: PropTypes.node,
     alertType: PropTypes.string,
+    currentDepth: PropTypes.number,
+    onForward: PropTypes.func,
+    onBackward: PropTypes.func,
+  }
+  state = {
+    depth: this.props.currentDepth,
   }
   componentDidMount() {
+    /*
     window.$(document).click((event) => {
       const dockPanelClicked = window.$(event.target).closest('#dock-panel').length > 0;
       if (!dockPanelClicked) {
         this.handleClose();
       }
     });
+    */
   }
   componentWillUnmount() {
     window.$(document).unbind('click');
@@ -43,9 +51,21 @@ export default class DockPanel extends React.Component {
     });
     (this.props.onClose || noop)(e);
   }
+  handleForward = (e) => {
+    this.setState({
+      depth: this.state.depth + 1,
+    });
+    (this.props.onForward || noop)(e);
+  }
+  handleBackward = (e) => {
+    this.setState({
+      depth: this.state.depth - 1,
+    });
+    (this.props.onBackward || noop)(e);
+  }
 
   render() {
-    const { prefixCls, size = '', className, visible, title, status, statusText, toolbar, extra, loading, alert, alertType, children } = this.props;
+    const { prefixCls, size = '', className, visible, title, status, statusText, extra, loading, alert, alertType, children } = this.props;
     const sizeCls = ({
       large: 'lg',
       small: 'sm',
@@ -60,15 +80,16 @@ export default class DockPanel extends React.Component {
         <Spin spinning={loading}>
           <div className={`${prefixCls}-head`}>
             <div className={`${prefixCls}-head-title`}>
-              <Button icon="left" />
-              <span>{title}</span>
-              {status ? <span className="status"><Badge status={status} text={statusText} /></span> : null}
-              <div className="pull-right">
-                {toolbar ? <div className={`${prefixCls}-toolbar`}>{toolbar}</div> : null}
+              {this.state.depth > 1 && <Button icon="left" onClick={this.handleBackward} />}
+              <Breadcrumb>
+                <Breadcrumb.Item>{title}</Breadcrumb.Item>
+              </Breadcrumb>
+              {status ? <Badge status={status} text={statusText} /> : null}
+              <div className={`${prefixCls}-head-close`}>
                 <Button shape="circle" icon="close" onClick={this.handleClose} />
               </div>
             </div>
-            {extra ? <div className={`${prefixCls}-extra`}>{extra}</div> : null}
+            {extra ? <div className={`${prefixCls}-head-extra`}>{extra}</div> : null}
           </div>
           <div className={bodyCls}>
             {alert ? <Alert message={alert} type={alertType} closable /> : null}

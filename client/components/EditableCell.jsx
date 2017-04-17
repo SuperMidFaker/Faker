@@ -97,7 +97,7 @@ export default class EditableCell extends React.Component {
   renderText() {
     const { type, options, placeholder, addonBefore, addonAfter } = this.props;
     const { value } = this.state;
-    if (type === 'select') {
+    if (type === 'select' && options) {
       const option = options.filter(opt => opt.key === value)[0];
       return (option && <span>{addonBefore}{option.text}{addonAfter}</span>);
     }

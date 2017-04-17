@@ -1,11 +1,12 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Spin, Badge, Button, Col, Icon, Row, Tabs, Tag, Popconfirm } from 'antd';
+import { Badge, Button, Col, Icon, Row, Tabs, Tag, Popconfirm } from 'antd';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { CMS_DELEGATION_STATUS } from 'common/constants';
 import InfoItem from 'client/components/InfoItem';
+import DockPanel from 'client/components/DockPanel';
 import BasicPane from './tabpanes/BasicPane';
 import CustomsDeclPane from './tabpanes/CustomsDeclPane';
 import CiqDeclPane from './tabpanes/CiqDeclPane';
@@ -24,7 +25,6 @@ const TabPane = Tabs.TabPane;
   state => ({
     tenantId: state.account.tenantId,
     visible: state.cmsDelgInfoHub.previewer.visible,
-    basicSpinning: state.cmsDelgInfoHub.basicPreviewLoading,
     previewer: state.cmsDelgInfoHub.previewer,
     tabKey: state.cmsDelgInfoHub.tabKey,
     delgNo: state.cmsDelgInfoHub.previewer.delgNo,
@@ -32,14 +32,13 @@ const TabPane = Tabs.TabPane;
   }),
   { hidePreviewer, setPreviewStatus, setPreviewTabkey, openAcceptModal, showDispModal, loadBasicInfo }
 )
-export default class DelegationInfoHubPanel extends React.Component {
+export default class DelegationDockPanel extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     ietype: PropTypes.oneOf(['import', 'export']),
     tenantId: PropTypes.number.isRequired,
     tabKey: PropTypes.string,
     delgNo: PropTypes.string,
-    basicSpinning: PropTypes.bool.isRequired,
     hidePreviewer: PropTypes.func.isRequired,
     previewer: PropTypes.object.isRequired,
     delegateListFilter: PropTypes.object.isRequired,
@@ -57,9 +56,6 @@ export default class DelegationInfoHubPanel extends React.Component {
   handleTabChange = (tabKey) => {
     this.props.setPreviewTabkey(tabKey);
   }
-  handleClose = () => {
-    this.props.hidePreviewer();
-  }
   handleAccept = () => {
     this.props.openAcceptModal({
       tenantId: this.props.tenantId,
@@ -69,7 +65,7 @@ export default class DelegationInfoHubPanel extends React.Component {
       opt: 'accept',
     });
     this.props.setPreviewStatus({ preStatus: 'accept' });
-    this.props.hidePreviewer();
+    // this.props.hidePreviewer();
   }
   handleAssign = () => {
     this.props.showDispModal(this.props.previewer.delgNo, this.props.tenantId);
@@ -132,7 +128,7 @@ export default class DelegationInfoHubPanel extends React.Component {
       default: return '';
     }
   }
-  infoTabs() {
+  renderTabs() {
     const { previewer, tabKey } = this.props;
     const { delgDispatch } = previewer;
     if (delgDispatch.status === CMS_DELEGATION_STATUS.unaccepted) {
@@ -231,7 +227,7 @@ export default class DelegationInfoHubPanel extends React.Component {
     }
   }
 
-  delgBtns() {
+  renderBtns() {
     const { previewer } = this.props;
     const { delgDispatch } = previewer;
     if (delgDispatch.recv_tenant_id === delgDispatch.customs_tenant_id) {
@@ -282,59 +278,45 @@ export default class DelegationInfoHubPanel extends React.Component {
       );
     }
   }
-  render() {
-    const { visible, previewer, basicSpinning } = this.props;
-    const { delegation, delgDispatch } = previewer;
-    const closer = (
-      <button
-        onClick={this.handleClose}
-        aria-label="Close"
-        className="ant-modal-close"
-      >
-        <span className="ant-modal-close-x" />
-      </button>);
+  renderExtra() {
+    const { delegation, delgDispatch } = this.props.previewer;
     return (
-      <div className={`dock-panel dock-panel-lg ${visible ? 'inside' : ''}`}>
-        <div className="panel-content">
-          <Spin spinning={basicSpinning}>
-            <div className="header">
-              <span className="title">{delegation.delg_no}</span>
-              {this.translateStatus(delegation, delgDispatch)}
-              <div className="toolbar-right">
-                {this.delgBtns()}
-                {closer}
-              </div>
-              <Row>
-                <Col span="8">
-                  <InfoItem label="委托方"
-                    field={delgDispatch.send_name}
-                  />
-                </Col>
-                <Col span="6">
-                  <InfoItem label="提运单号"
-                    field={delegation.bl_wb_no}
-                  />
-                </Col>
-                <Col span="6">
-                  <InfoItem label="发票号"
-                    field={delegation.invoice_no}
-                  />
-                </Col>
-                <Col span="4">
-                  <InfoItem label="委托日期" addonBefore={<Icon type="calendar" />}
-                    field={moment(delgDispatch.delg_time).format('YYYY.MM.DD')}
-                  />
-                </Col>
-              </Row>
-            </div>
-          </Spin>
-          <div className="body with-header-summary">
-            {this.infoTabs()}
-          </div>
-        </div>
+      <Row>
+        <Col span="8">
+          <InfoItem label="委托方"
+            field={delgDispatch.send_name}
+          />
+        </Col>
+        <Col span="6">
+          <InfoItem label="提运单号"
+            field={delegation.bl_wb_no}
+          />
+        </Col>
+        <Col span="6">
+          <InfoItem label="发票号"
+            field={delegation.invoice_no}
+          />
+        </Col>
+        <Col span="4">
+          <InfoItem label="委托日期" addonBefore={<Icon type="calendar" />}
+            field={moment(delgDispatch.delg_time).format('YYYY.MM.DD')}
+          />
+        </Col>
+      </Row>);
+  }
+  render() {
+    const { visible, previewer } = this.props;
+    const { delegation } = previewer;
+    return (
+      <DockPanel size="large" visible={visible} onClose={this.props.hidePreviewer}
+        title={delegation.delg_no}
+        extra={this.renderExtra()}
+        // alert={this.renderAlert()}
+      >
+        {this.renderTabs()}
         <AcceptModal />
         <DelgDispModal />
-      </div>
+      </DockPanel>
     );
   }
 }
