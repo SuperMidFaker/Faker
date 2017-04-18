@@ -8,12 +8,11 @@ const actionTypes = createActionTypes('@@welogix/cms/tradeitem/', [
   'DELETE_REPO', 'DELETE_REPO_SUCCEED', 'DELETE_REPO_FAIL',
   'SET_SELECTED_REPOID', 'SET_PANE_TABKEY',
   'LOAD_TRADE_ITEMS', 'LOAD_TRADE_ITEMS_SUCCEED', 'LOAD_TRADE_ITEMS_FAIL',
-  'DELETE_ITEM', 'DELETE_ITEM_SUCCEED', 'DELETE_ITEM_FAIL',
   'LOAD_PARAMS', 'LOAD_PARAMS_SUCCEED', 'LOAD_PARAMS_FAIL',
   'CREATE_ITEM', 'CREATE_ITEM_SUCCEED', 'CREATE_ITEM_FAIL',
   'LOAD_ITEM_EDIT', 'LOAD_ITEM_EDIT_SUCCEED', 'LOAD_ITEM_EDIT_FAIL',
   'ITEM_EDITED_SAVE', 'ITEM_EDITED_SAVE_SUCCEED', 'ITEM_EDITED_SAVE_FAIL',
-  'DELETE_SELECT_ITEMS', 'DELETE_SELECT_ITEMS_SUCCEED', 'DELETE_SELECT_ITEMS_FAIL',
+  'DELETE_ITEMS', 'DELETE_ITEMS_SUCCEED', 'DELETE_ITEMS_FAIL',
   'LOAD_BODY_ITEM', 'LOAD_BODY_ITEM_SUCCEED', 'LOAD_BODY_ITEM_FAIL',
   'LOAD_BODY_HSCODE', 'LOAD_BODY_HSCODE_SUCCEED', 'LOAD_BODY_HSCODE_FAIL',
   'SET_REPO', 'SET_COMPARE_VISIBLE',
@@ -201,21 +200,6 @@ export function createTradeItem(datas) {
   };
 }
 
-export function deleteItem(id) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.DELETE_ITEM,
-        actionTypes.DELETE_ITEM_SUCCEED,
-        actionTypes.DELETE_ITEM_FAIL,
-      ],
-      endpoint: 'v1/cms/tradeitem/item/delete',
-      method: 'post',
-      data: { id },
-    },
-  };
-}
-
 export function loadRepos(params) {
   return {
     [CLIENT_API]: {
@@ -309,17 +293,17 @@ export function deleteRepo(repoId) {
   };
 }
 
-export function deleteSelectedItems(datas) {
+export function deleteItems(data) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.DELETE_SELECT_ITEMS,
-        actionTypes.DELETE_SELECT_ITEMS_SUCCEED,
-        actionTypes.DELETE_SELECT_ITEMS_FAIL,
+        actionTypes.DELETE_ITEMS,
+        actionTypes.DELETE_ITEMS_SUCCEED,
+        actionTypes.DELETE_ITEMS_FAIL,
       ],
-      endpoint: 'v1/cms/tradeitem/selected/deleted',
+      endpoint: 'v1/cms/tradeitem/delete/items',
       method: 'post',
-      data: datas,
+      data,
     },
   };
 }
