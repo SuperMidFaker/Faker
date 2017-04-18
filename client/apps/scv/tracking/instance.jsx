@@ -55,7 +55,9 @@ export default class Instance extends Component {
       dataIndex: item.field,
       key: item.field,
       title: item.custom_title,
+      width: 150,
     }));
+    const tableWidth = 150 * trackingItems.length;
     return (
       <Layout>
         <Header className="top-bar">
@@ -70,11 +72,9 @@ export default class Instance extends Component {
         </Header>
         <Content className="main-content" key="main">
           <div className="page-body">
-            <Layout className="main-wrapper">
-              <Content className="nav-content">
-                <Table columns={columns} />
-              </Content>
-            </Layout>
+            <div className="panel-body table-panel">
+              <Table columns={columns} scroll={{ x: tableWidth }} />
+            </div>
           </div>
         </Content>
       </Layout>
