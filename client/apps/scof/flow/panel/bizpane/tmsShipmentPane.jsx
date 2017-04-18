@@ -41,7 +41,7 @@ export default class TMSShipmentPane extends Component {
                     dropdownStyle={{ width: 400 }}
                   >
                     {
-                    consigners.filter(cl => cl.ref_partner_id === currentFlow.partner_id).map(cg => <Option value={cg.node_id} key={cg.name}>{this.renderConsign(cg)}</Option>)
+                    consigners.filter(cl => cl.ref_partner_id === currentFlow.partner_id || cl.ref_partner_id === -1).map(cg => <Option value={cg.node_id} key={cg.name}>{this.renderConsign(cg)}</Option>)
                   }
                   </Select>)}
               </FormItem>
@@ -56,7 +56,7 @@ export default class TMSShipmentPane extends Component {
                     dropdownStyle={{ width: 400 }}
                   >
                     {
-                      consignees.filter(cl => cl.ref_partner_id === currentFlow.partner_id).map(cg => <Option value={cg.node_id} key={cg.name}>{this.renderConsign(cg)}</Option>)
+                      consignees.filter(cl => cl.ref_partner_id === currentFlow.partner_id || cl.ref_partner_id === -1).map(cg => <Option value={cg.node_id} key={cg.name}>{this.renderConsign(cg)}</Option>)
                     }
                   </Select>)}
               </FormItem>

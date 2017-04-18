@@ -259,7 +259,7 @@ export default class TransportForm extends Component {
                   dropdownMatchSelectWidth={false}
                   dropdownStyle={{ width: 400 }}
                 >
-                  {consigners.filter(cl => cl.ref_partner_id === customerPartnerId).map(dw =>
+                  {consigners.filter(cl => cl.ref_partner_id === customerPartnerId || cl.ref_partner_id === -1).map(dw =>
                     <Option value={dw.node_id} key={dw.node_id}>{this.renderConsign(dw)}</Option>)
                 }
                 </Select>
@@ -307,7 +307,7 @@ export default class TransportForm extends Component {
                   dropdownMatchSelectWidth={false}
                   dropdownStyle={{ width: 400 }}
                 >
-                  {consignees.filter(cl => cl.ref_partner_id === customerPartnerId).map(dw =>
+                  {consignees.filter(cl => cl.ref_partner_id === customerPartnerId || cl.ref_partner_id === -1).map(dw =>
                     <Option value={dw.node_id} key={dw.node_id}>{this.renderConsign(dw)}</Option>)
                 }
                 </Select>
