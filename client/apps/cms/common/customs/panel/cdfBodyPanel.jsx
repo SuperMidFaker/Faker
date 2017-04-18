@@ -410,7 +410,6 @@ export default class CDFBodyPanel extends React.Component {
       dataIndex: 'inspection',
     }, {
       title: this.msg('element'),
-      width: 380,
       render: (o, record, index) =>
         <ColumnInput field="element" inEdit={index === editIndex} record={record}
           edit={editBody}
@@ -474,7 +473,7 @@ export default class CDFBodyPanel extends React.Component {
         </div>
         <div className="panel-body table-panel">
           <Table rowKey="id" columns={columns} dataSource={this.state.bodies}
-            scroll={{ x: 2700, y: this.state.wlScrollY }} pagination={this.state.pagination} rowSelection={rowSelection}
+            scroll={{ x: 2800, y: this.state.wlScrollY }} pagination={this.state.pagination} rowSelection={rowSelection}
           />
         </div>
       </div>);
