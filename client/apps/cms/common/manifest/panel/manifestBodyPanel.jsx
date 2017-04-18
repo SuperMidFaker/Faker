@@ -376,7 +376,7 @@ export default class ManifestBodyPanel extends React.Component {
       className: 'cell-align-right',
       render: (o, record, index) =>
         <ColumnInput field="dec_price" inEdit={index === editIndex} record={record}
-          onChange={this.handleEditChange} edit={editBody} decimal={5}
+          onChange={this.handleEditChange} edit={editBody} decimal={3}
         />,
     }, {
       title: <div className="cell-align-right">{this.msg('decTotal')}</div>,
@@ -384,7 +384,7 @@ export default class ManifestBodyPanel extends React.Component {
       className: 'cell-align-right',
       render: (o, record, index) =>
         <ColumnInput field="trade_total" inEdit={index === editIndex} record={record}
-          onChange={this.handleEditChange} edit={editBody} decimal={4}
+          onChange={this.handleEditChange} edit={editBody} decimal={3}
         />,
     }, {
       title: this.msg('currency'),
@@ -494,7 +494,7 @@ export default class ManifestBodyPanel extends React.Component {
       className: 'cell-align-right',
       render: (o, record, index) =>
         <ColumnInput field="processing_fees" inEdit={index === editIndex} record={record}
-          onChange={this.handleEditChange} edit={editBody} decimal={4}
+          onChange={this.handleEditChange} edit={editBody} decimal={3}
         />,
     }, {
       title: this.msg('opColumn'),

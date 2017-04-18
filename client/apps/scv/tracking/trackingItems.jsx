@@ -135,6 +135,7 @@ export default class TrackingItems extends React.Component {
       key: 'position',
       title: '排序',
       width: 50,
+      className: 'editable-row-operations',
       render: (o, row) => {
         const options = [];
         const index = trackingItems.findIndex(item => item.id === row.id);
@@ -155,6 +156,7 @@ export default class TrackingItems extends React.Component {
       dataIndex: 'id',
       key: 'id',
       width: 50,
+      className: 'editable-row-operations',
       render: (_, row) => {
         if (row.id === this.state.editId) {
           return (

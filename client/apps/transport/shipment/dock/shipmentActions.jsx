@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Button, Icon, Menu, Dropdown, Modal, Tooltip, message } from 'antd';
+import { Button, Modal, Tooltip, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { SHIPMENT_TRACK_STATUS, SHIPMENT_POD_STATUS, SHIPMENT_SOURCE, SHIPMENT_VEHICLE_CONNECT, PROMPT_TYPES } from 'common/constants';
@@ -16,12 +16,10 @@ import { showVehicleModal, showChangeActDateModal }
 from 'common/reducers/trackingLandStatus';
 import { showAdvanceModal, showSpecialChargeModal } from 'common/reducers/transportBilling';
 import { passAudit, returnAudit } from 'common/reducers/trackingLandPod';
-import ExportPDF from '../../tracking/land/modals/export-pdf';
 import { createFilename } from 'client/util/dataTransform';
 import { sendMessage } from 'common/reducers/corps';
 
 const formatMsg = format(messages);
-const MenuItem = Menu.Item;
 
 @injectIntl
 @connect(
@@ -265,13 +263,7 @@ export default class ShipmentActions extends React.Component {
   }
   render() {
     const { tenantId, stage, sourceType, previewer: { shipmt, dispatch } } = this.props;
-    let menu = (
-      <Menu onClick={this.handleMenuClick}>
-        <MenuItem key="exportShipment"><Icon type="export" /> 导出运单</MenuItem>
-        <MenuItem key="shareShipment"><Icon type="share-alt" /> 共享运单</MenuItem>
-      </Menu>
-    );
-    let buttons = <span />;
+    let buttons = null;
     if (sourceType === 'sp') {
       if (dispatch.status === SHIPMENT_TRACK_STATUS.unaccepted) {
         if (dispatch.source === SHIPMENT_SOURCE.consigned) {
@@ -349,13 +341,6 @@ export default class ShipmentActions extends React.Component {
           }
         }
       }
-      menu = (
-        <Menu onClick={this.handleMenuClick}>
-          <MenuItem key="exportShipment"><Icon type="export" /> 导出运单</MenuItem>
-          <MenuItem key="shareShipment"><Icon type="share-alt" /> 共享运单</MenuItem>
-          <MenuItem key="terminateShipment"><Icon type="delete" /> 终止运单</MenuItem>
-        </Menu>
-      );
     } else if (sourceType === 'sr') {
       if (dispatch.status === SHIPMENT_TRACK_STATUS.unaccepted) {
         buttons = (
@@ -364,13 +349,6 @@ export default class ShipmentActions extends React.Component {
               催促接单
             </Button>
           </PrivilegeCover>
-        );
-        menu = (
-          <Menu onClick={this.handleMenuClick}>
-            <MenuItem key="exportShipment"><Icon type="export" /> 导出运单</MenuItem>
-            <MenuItem key="shareShipment"><Icon type="share-alt" /> 共享运单</MenuItem>
-            <MenuItem key="terminateShipment"><Icon type="delete" /> 终止运单</MenuItem>
-          </Menu>
         );
       } else if (dispatch.status === SHIPMENT_TRACK_STATUS.accepted) {
         if (dispatch.sp_tenant_id === -1) {
@@ -391,21 +369,14 @@ export default class ShipmentActions extends React.Component {
             </PrivilegeCover>
           );
         }
-        menu = (
-          <Menu onClick={this.handleMenuClick}>
-            <MenuItem key="exportShipment"><Icon type="export" /> 导出运单</MenuItem>
-            <MenuItem key="shareShipment"><Icon type="share-alt" /> 共享运单</MenuItem>
-            <MenuItem key="terminateShipment"><Icon type="delete" /> 终止运单</MenuItem>
-          </Menu>
-        );
       } else if (dispatch.status === SHIPMENT_TRACK_STATUS.dispatched) {
         if (dispatch.sp_tenant_id === -1) {
-          buttons = (<span />);
+          buttons = null;
         } else if (dispatch.sp_tenant_id === 0) {
             // 已分配给车队
           if (dispatch.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
               // 线下司机
-            buttons = (<span />);
+            buttons = null;
           } else {
             // 司机更新
             buttons = (
@@ -434,15 +405,10 @@ export default class ShipmentActions extends React.Component {
             </PrivilegeCover>
           );
         }
-        menu = (
-          <Menu onClick={this.handleMenuClick}>
-            <MenuItem key="exportShipment"><Icon type="export" /> 导出运单</MenuItem>
-            <MenuItem key="shareShipment"><Icon type="share-alt" /> 共享运单</MenuItem>
-            <MenuItem key="terminateShipment"><Icon type="delete" /> 终止运单</MenuItem>
-          </Menu>
-        );
       } else if (dispatch.status === SHIPMENT_TRACK_STATUS.intransit) {
         if (dispatch.sp_tenant_id === -1) {
+          buttons = null;
+          /*
           buttons = (
             <PrivilegeCover module="transport" feature="tracking" action="edit">
               <span>
@@ -455,15 +421,11 @@ export default class ShipmentActions extends React.Component {
               </span>
             </PrivilegeCover>
           );
-          menu = (
-            <Menu onClick={this.handleMenuClick}>
-              <MenuItem key="shareShipment">共享运单</MenuItem>
-              <MenuItem key="terminateShipment">终止运单</MenuItem>
-              <MenuItem key="changeActDate">纠正节点时间</MenuItem>
-            </Menu>
-          );
+          */
         } else if (dispatch.sp_tenant_id === 0) {
           if (dispatch.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
+            buttons = null;
+            /*
             buttons = (
               <PrivilegeCover module="transport" feature="tracking" action="edit">
                 <span>
@@ -475,9 +437,11 @@ export default class ShipmentActions extends React.Component {
                   </Button>
                 </span>
               </PrivilegeCover>
-            );
+            );*/
           } else {
             // 司机更新
+            buttons = null;
+            /*
             buttons = (
               <PrivilegeCover module="transport" feature="tracking" action="edit">
                 <span>
@@ -490,16 +454,12 @@ export default class ShipmentActions extends React.Component {
                 </span>
               </PrivilegeCover>
             );
+            */
           }
-          menu = (
-            <Menu onClick={this.handleMenuClick}>
-              <MenuItem key="shareShipment">共享运单</MenuItem>
-              <MenuItem key="terminateShipment">终止运单</MenuItem>
-              <MenuItem key="changeActDate">纠正节点时间</MenuItem>
-            </Menu>
-          );
         } else {
           // 承运商更新
+          buttons = null;
+          /*
           buttons = (
             <PrivilegeCover module="transport" feature="tracking" action="edit">
               <span>
@@ -512,15 +472,11 @@ export default class ShipmentActions extends React.Component {
               </span>
             </PrivilegeCover>
           );
+          */
         }
       } else if (dispatch.status === SHIPMENT_TRACK_STATUS.delivered) {
-        menu = (
-          <Menu onClick={this.handleMenuClick}>
-            <MenuItem key="shareShipment">共享运单</MenuItem>
-            <MenuItem key="terminateShipment">终止运单</MenuItem>
-            <MenuItem key="changeActDate">纠正节点时间</MenuItem>
-          </Menu>
-        );
+        buttons = null;
+        /*
         buttons = (
           <PrivilegeCover module="transport" feature="tracking" action="edit">
             <span>
@@ -530,15 +486,16 @@ export default class ShipmentActions extends React.Component {
             </span>
           </PrivilegeCover>
         );
+        */
       }
 
       if (dispatch.status >= SHIPMENT_TRACK_STATUS.delivered && (stage === 'pod' || stage === 'todo')) {
         if (!dispatch.pod_status || dispatch.pod_status === SHIPMENT_POD_STATUS.unsubmit) {
           if (dispatch.sp_tenant_id === -1) {
-            buttons = (<span />);
+            buttons = null;
           } else if (dispatch.sp_tenant_id === 0) {
             if (dispatch.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
-              buttons = (<span />);
+              buttons = null;
             } else {
               // 司机上传
               buttons = (
@@ -567,7 +524,7 @@ export default class ShipmentActions extends React.Component {
           }
         } else if (dispatch.pod_status === SHIPMENT_POD_STATUS.rejectByClient) {
           // 重新上传
-          buttons = (<span />);
+          buttons = null;
         } else if (dispatch.pod_status === SHIPMENT_POD_STATUS.pending) {
           // 审核回单
           buttons = (
@@ -584,28 +541,18 @@ export default class ShipmentActions extends React.Component {
           );
         } else if (dispatch.pod_status === SHIPMENT_POD_STATUS.rejectByUs) {
           // 我方拒绝
-          buttons = (<span />);
+          buttons = null;
         } else if (dispatch.pod_status === SHIPMENT_POD_STATUS.acceptByUs) {
           // 提交给上游客户
-          buttons = (<span />);
+          buttons = null;
         } else if (dispatch.pod_status === SHIPMENT_POD_STATUS.acceptByClient) {
           // 上游客户已接受
-          buttons = (<span />);
+          buttons = null;
         }
       }
     }
     return (
-      <span>
-        {buttons}
-        <PrivilegeCover module="transport" feature="shipment" action="create">
-          <span className="more-actions">
-            <Dropdown overlay={menu}>
-              <Button><Icon type="setting" /> <Icon type="down" /></Button>
-            </Dropdown>
-            <ExportPDF visible={this.state.exportPDFvisible} shipmtNo={shipmt.shipmt_no} publickKey={shipmt.public_key} />
-          </span>
-        </PrivilegeCover>
-      </span>
+      buttons
     );
   }
 }

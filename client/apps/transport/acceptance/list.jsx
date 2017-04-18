@@ -482,13 +482,9 @@ export default class AcceptList extends React.Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <RadioGroup onChange={this.handleShipmentFilter} value={radioValue} size="large">
+            <RadioButton value="draft">{this.msg('draftShipmt')}</RadioButton>
             <RadioButton value="unaccepted">{this.msg('unacceptedShipmt')}</RadioButton>
             <RadioButton value="accepted">{this.msg('acceptedShipmt')}</RadioButton>
-          </RadioGroup>
-          <span />
-          <RadioGroup onChange={this.handleShipmentFilter} value={radioValue} size="large">
-            <RadioButton value="draft">{this.msg('draftShipmt')}</RadioButton>
-            <RadioButton value="archived">{this.msg('archivedShipmt')}</RadioButton>
           </RadioGroup>
           <div className="top-bar-tools">
             <PrivilegeCover module="transport" feature="shipment" action="create">
