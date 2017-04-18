@@ -51,8 +51,8 @@ function getFieldDefaults(state, type) {
   (state, props) => ({
     fieldDefaults: getFieldDefaults(state, props.type),
     consignLocations: props.type === 'consignee' ?
-      state.shipment.formRequire.consigneeLocations :
-      state.shipment.formRequire.consignerLocations,
+      state.shipment.formRequire.consigneeLocations.filter(cl => cl.ref_partner_id === state.shipment.formData.customer_partner_id) :
+      state.shipment.formRequire.consignerLocations.filter(cl => cl.ref_partner_id === state.shipment.formData.customer_partner_id),
   }),
   { setConsignFields }
 )

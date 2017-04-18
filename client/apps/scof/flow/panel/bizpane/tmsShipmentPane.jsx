@@ -21,11 +21,12 @@ export default class TMSShipmentPane extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     form: PropTypes.object.isRequired,
+    currentFlow: PropTypes.object.isRequired,
   }
   msg = formatMsg(this.props.intl)
   renderConsign = consign => `${consign.name} | ${Location.renderLoc(consign)} | ${consign.contact || ''} | ${consign.mobile || ''}`
   render() {
-    const { form: { getFieldDecorator }, onNodeActionsChange, model, tmsParams: { consigners, consignees, transitModes } } = this.props;
+    const { form: { getFieldDecorator }, onNodeActionsChange, model, tmsParams: { consigners, consignees, transitModes }, currentFlow } = this.props;
     return (
       <Collapse bordered={false} defaultActiveKey={['properties', 'events']}>
         <Panel header={this.msg('bizProperties')} key="properties">
@@ -40,7 +41,7 @@ export default class TMSShipmentPane extends Component {
                     dropdownStyle={{ width: 400 }}
                   >
                     {
-                    consigners.map(cg => <Option value={cg.node_id} key={cg.name}>{this.renderConsign(cg)}</Option>)
+                    consigners.filter(cl => cl.ref_partner_id === currentFlow.partner_id).map(cg => <Option value={cg.node_id} key={cg.name}>{this.renderConsign(cg)}</Option>)
                   }
                   </Select>)}
               </FormItem>
@@ -55,7 +56,7 @@ export default class TMSShipmentPane extends Component {
                     dropdownStyle={{ width: 400 }}
                   >
                     {
-                      consignees.map(cg => <Option value={cg.node_id} key={cg.name}>{this.renderConsign(cg)}</Option>)
+                      consignees.filter(cl => cl.ref_partner_id === currentFlow.partner_id).map(cg => <Option value={cg.node_id} key={cg.name}>{this.renderConsign(cg)}</Option>)
                     }
                   </Select>)}
               </FormItem>

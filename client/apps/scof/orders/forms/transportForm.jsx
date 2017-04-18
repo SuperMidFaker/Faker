@@ -26,6 +26,7 @@ const formItemLayout = {
   state => ({
     tenantId: state.account.tenantId,
     tmsParams: state.scofFlow.tmsParams,
+    customerPartnerId: state.crmOrders.formData.customer_partner_id,
   }),
   { setClientForm, loadFlowNodeData, loadTmsBizParams }
 )
@@ -36,6 +37,7 @@ export default class TransportForm extends Component {
     operation: PropTypes.oneOf(['view', 'edit', 'create']),
     formData: PropTypes.object.isRequired,
     setClientForm: PropTypes.func.isRequired,
+    customerPartnerId: PropTypes.number,
     shipment: PropTypes.shape({
       cust_shipmt_pieces: PropTypes.string,
       cust_shipmt_weight: PropTypes.string,
@@ -235,7 +237,7 @@ export default class TransportForm extends Component {
   }
   renderConsign = consign => `${consign.name} | ${Location.renderLoc(consign)} | ${consign.contact || ''}`
   render() {
-    const { formData, tmsParams: { consigners, consignees, transitModes, packagings } } = this.props;
+    const { formData, tmsParams: { consigners, consignees, transitModes, packagings }, customerPartnerId } = this.props;
     const node = formData.node;
     const consignerRegion = [
       node.consigner_province, node.consigner_city,
@@ -257,7 +259,7 @@ export default class TransportForm extends Component {
                   dropdownMatchSelectWidth={false}
                   dropdownStyle={{ width: 400 }}
                 >
-                  {consigners.map(dw =>
+                  {consigners.filter(cl => cl.ref_partner_id === customerPartnerId).map(dw =>
                     <Option value={dw.node_id} key={dw.node_id}>{this.renderConsign(dw)}</Option>)
                 }
                 </Select>
@@ -305,7 +307,7 @@ export default class TransportForm extends Component {
                   dropdownMatchSelectWidth={false}
                   dropdownStyle={{ width: 400 }}
                 >
-                  {consignees.map(dw =>
+                  {consignees.filter(cl => cl.ref_partner_id === customerPartnerId).map(dw =>
                     <Option value={dw.node_id} key={dw.node_id}>{this.renderConsign(dw)}</Option>)
                 }
                 </Select>

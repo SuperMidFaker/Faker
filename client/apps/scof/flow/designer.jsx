@@ -40,7 +40,7 @@ export default class FlowDesigner extends React.Component {
     submitting: PropTypes.bool,
     graphLoading: PropTypes.bool.isRequired,
     listCollapsed: PropTypes.bool.isRequired,
-    currentFlow: PropTypes.shape({ id: PropTypes.number.isRequired, name: PropTypes.string.isRequired }).isRequired,
+    currentFlow: PropTypes.shape({ id: PropTypes.number.isRequired, name: PropTypes.string.isRequired, partner_id: PropTypes.number.isRequired }).isRequired,
   }
   constructor(...args) {
     super(...args);
@@ -405,7 +405,7 @@ export default class FlowDesigner extends React.Component {
                   <BizObjCMSPanel onFormInit={this.handlePanelForm} model={activeItem.get('model')} onNodeActionsChange={this.handleNodeActionsChange} key="cms" />
                   }
                   {activeItem.get('type') === 'node' && (activeItem.get('model').kind === 'tms') &&
-                  <BizObjTMSPanel onFormInit={this.handlePanelForm} model={activeItem.get('model')} onNodeActionsChange={this.handleNodeActionsChange} key="tms" />
+                  <BizObjTMSPanel onFormInit={this.handlePanelForm} model={activeItem.get('model')} onNodeActionsChange={this.handleNodeActionsChange} key="tms" currentFlow={currentFlow} />
                   }
                   {activeItem.get('type') === 'node' && (activeItem.get('model').kind === 'cwm') &&
                   <BizObjCWMPanel onFormInit={this.handlePanelForm} model={activeItem.get('model')} onNodeActionsChange={this.handleNodeActionsChange} key="cwm" />
