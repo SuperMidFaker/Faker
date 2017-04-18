@@ -11,7 +11,7 @@ import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { loadCustomers } from 'common/reducers/crmCustomers';
 import { loadRepos, openAddModal, selectedRepoId, loadTradeItems, setCompareVisible,
-  deleteItem, deleteSelectedItems, setRepo, deleteRepo, loadTradeParams, setItemStatus } from 'common/reducers/cmsTradeitem';
+  deleteItems, setRepo, deleteRepo, loadTradeParams, setItemStatus } from 'common/reducers/cmsTradeitem';
 import AddTradeRepoModal from './modals/addTradeRepo';
 import ButtonToggle from 'client/components/ButtonToggle';
 import SearchBar from 'client/components/search-bar';
@@ -67,7 +67,7 @@ function fetchData({ state, dispatch }) {
     })),
   }),
   { loadCustomers, openAddModal, selectedRepoId, loadTradeItems, setCompareVisible,
-    deleteItem, deleteSelectedItems, setRepo, loadRepos, deleteRepo, setItemStatus }
+    deleteItems, setRepo, loadRepos, deleteRepo, setItemStatus }
 )
 @connectNav({
   depth: 2,
@@ -311,7 +311,8 @@ export default class TradeItemList extends Component {
     });
   }
   handleItemDel = (id) => {
-    this.props.deleteItem(id).then((result) => {
+    const { repoId } = this.props;
+    this.props.deleteItems({ repoId, ids: [id] }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -350,7 +351,7 @@ export default class TradeItemList extends Component {
   }
   handleDeleteSelected = () => {
     const selectedIds = this.state.selectedRowKeys;
-    this.props.deleteSelectedItems(selectedIds).then((result) => {
+    this.props.deleteItems({ repoId: this.props.repoId, ids: selectedIds }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -377,7 +378,7 @@ export default class TradeItemList extends Component {
     this.handleItemListLoad(this.props.repoId, 1, filter);
   }
   handleItemPass = (row) => {
-    this.props.setItemStatus({ ids: [row.id], status: CMS_ITEM_STATUS.classified }).then((result) => {
+    this.props.setItemStatus({ repoId: this.props.repoId, ids: [row.id], status: CMS_ITEM_STATUS.classified }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -387,7 +388,7 @@ export default class TradeItemList extends Component {
     });
   }
   handleItemRefused = (row) => {
-    this.props.setItemStatus({ ids: [row.id], status: CMS_ITEM_STATUS.unclassified }).then((result) => {
+    this.props.setItemStatus({ repoId: this.props.repoId, ids: [row.id], status: CMS_ITEM_STATUS.unclassified }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -397,7 +398,7 @@ export default class TradeItemList extends Component {
     });
   }
   handleItemsPass = () => {
-    this.props.setItemStatus({ ids: this.state.selectedRowKeys, status: CMS_ITEM_STATUS.classified }).then((result) => {
+    this.props.setItemStatus({ repoId: this.props.repoId, ids: this.state.selectedRowKeys, status: CMS_ITEM_STATUS.classified }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -407,7 +408,7 @@ export default class TradeItemList extends Component {
     });
   }
   handleItemsRefused = () => {
-    this.props.setItemStatus({ ids: this.state.selectedRowKeys, status: CMS_ITEM_STATUS.unclassified }).then((result) => {
+    this.props.setItemStatus({ repoId: this.props.repoId, ids: this.state.selectedRowKeys, status: CMS_ITEM_STATUS.unclassified }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
