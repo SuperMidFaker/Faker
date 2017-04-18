@@ -21,18 +21,14 @@ export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.NAVB_SET_TITLE: {
       let stack = state.navTitle.stack;
-      let backed = state.backed;
       if (state.navTitle.depth === 3 && action.navInfo.depth === 3) {
-        if (backed) {
-          backed = false; // 页面回退时stack不变
-        } else {
-          stack++;
+        if (!state.backed) {
+          stack++; // 页面回退时stack不变
         }
       } else if (action.navInfo.depth === 2) {
         stack = 1;
-        backed = false; // 页面回退时stack不变
       }
-      return { ...state, navTitle: { ...state.navTitle, ...action.navInfo, stack }, backed };
+      return { ...state, navTitle: { ...state.navTitle, ...action.navInfo, stack }, backed: false };
     }
     case actionTypes.NAVB_GOBACK: {
       return { ...state, navTitle: { ...state.navTitle, stack: state.navTitle.stack - 1 }, backed: true };
