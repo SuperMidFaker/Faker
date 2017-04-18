@@ -45,6 +45,9 @@ export default class Instance extends Component {
     if (nextProps.trackings.length > 0) {
       this.setState({ tracking: nextProps.trackings.find(item => item.id === Number(nextProps.params.trackingId)) });
     }
+    if (this.props.params.trackingId !== nextProps.params.trackingId) {
+      this.props.loadTrackingItems(Number(nextProps.params.trackingId));
+    }
   }
   msg = key => formatMsg(this.props.intl, key)
 
