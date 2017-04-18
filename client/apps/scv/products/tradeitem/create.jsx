@@ -70,6 +70,8 @@ export default class CreateTradeItem extends Component {
           owner_name: tenantName,
           creater_login_id: loginId,
           creater_name: loginName,
+          contribute_tenant_id: tenantId,
+          contribute_tenant_name: tenantName,
         };
         if (broker) {
           params = { ...params,

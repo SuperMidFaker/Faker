@@ -25,8 +25,8 @@ const messages = defineMessages({
     id: 'scv.products.tradeitem.filter.classified',
     defaultMessage: '已归类',
   },
-  filterConfilict: {
-    id: 'scv.products.tradeitem.filter.confilict',
+  filterConflict: {
+    id: 'scv.products.tradeitem.filter.conflict',
     defaultMessage: '归类冲突',
   },
   copProductNo: {

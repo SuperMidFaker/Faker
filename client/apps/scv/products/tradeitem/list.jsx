@@ -356,9 +356,6 @@ export default class TradeItemList extends Component {
     const { listFilter } = this.props;
     this.handleItemListLoad(1, listFilter, value);
   }
-  handleConfilictLoad = () => {
-
-  }
   render() {
     const { tradeItemlist, listFilter } = this.props;
     const selectedRows = this.state.selectedRowKeys;
@@ -467,7 +464,10 @@ export default class TradeItemList extends Component {
             <RadioButton value="pending">{this.msg('filterPending')}</RadioButton>
             <RadioButton value="classified">{this.msg('filterClassified')}</RadioButton>
           </RadioGroup>
-          <Button onClick={this.handleConfilictLoad} size="large" style={{ left: 8 }}>{this.msg('filterConfilict')}</Button>
+          <span />
+          <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">
+            <RadioButton value="conflicted">{this.msg('filterConflict')}</RadioButton>
+          </RadioGroup>
           <div className="top-bar-tools">
             <Dropdown.Button overlay={importMenu}>
               <ExcelUpload endpoint={`${API_ROOTS.default}v1/scv/tradeitems/import`}
