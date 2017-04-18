@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { routerShape } from 'react-router';
 import { Menu, Radio, Modal, Popover, Icon, Tooltip } from 'antd';
+import Avatar from 'react-avatar';
 import { intlShape, injectIntl } from 'react-intl';
 import NavLink from './nav-link';
 import MdIcon from './MdIcon';
@@ -26,6 +27,7 @@ const RadioButton = Radio.Button;
   state => ({
     navTitle: state.navbar.navTitle,
     avatar: state.account.profile.avatar,
+    name: state.account.profile.name,
     loginId: state.account.loginId,
     locale: state.intl.locale,
   }),
@@ -43,6 +45,7 @@ export default class HeaderNavBar extends React.Component {
       moduleName: PropTypes.string,
     }).isRequired,
     avatar: PropTypes.string,
+    name: PropTypes.string,
     loginId: PropTypes.number.isRequired,
     locale: PropTypes.oneOf(['en', 'zh']),
     changeUserLocale: PropTypes.func.isRequired,
@@ -84,8 +87,8 @@ export default class HeaderNavBar extends React.Component {
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
   render() {
     const { navTitle } = this.props;
-    const { intl, avatar, locale } = this.props;
-    const defaultAvatar = `${__CDN__}/assets/img/avatar.jpg`;
+    const { intl, avatar, name, locale } = this.props;
+    // const defaultAvatar = `${__CDN__}/assets/img/avatar.jpg`;
     const userPopoverContent = (
       <div className="navbar-popover">
         <Menu>
@@ -168,7 +171,7 @@ export default class HeaderNavBar extends React.Component {
                 onVisibleChange={this.handleVisibleChange}
               >
                 <div>
-                  <img className="navbar-avatar" src={avatar || defaultAvatar} alt="avatar" />
+                  {avatar ? <Avatar src={avatar} size={32} round /> : <Avatar name={name} size={32} round />}
                   <i className="angle-down s7-angle-down" />
                 </div>
               </Popover>

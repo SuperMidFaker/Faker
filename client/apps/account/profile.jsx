@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Icon, Button, Card, Upload, Form, Input, Row, Col, message } from 'antd';
+import { Button, Card, Upload, Form, Input, Row, Col, message } from 'antd';
+import Avatar from 'react-avatar';
 import { intlShape, injectIntl } from 'react-intl';
 import { updateProfile } from 'common/reducers/account';
 import { isLoginNameExist, checkLoginName } from 'common/reducers/checker-reducer';
@@ -132,21 +133,14 @@ export default class MyProfile extends React.Component {
       onChange: this.handleAvatarChange,
       withCredentials: true,
     };
-    const initialAvatar = profile.avatar || `${__CDN__}/assets/img/avatar.jpg`;
     return (
       <Card>
         <Form layout="horizontal" onSubmit={this.handleSubmit}>
           <Row>
             <Col sm={24} md={12}>
-              <FormItem className="acc-avatar-form">
-                <div className="acc-avatar"
-                  style={{ backgroundImage: `url(${this.state.avatar || initialAvatar})` }}
-                />
+              <FormItem label="头像" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
                 <Upload {...uploadProps}>
-                  <Button type="ghost">
-                    <Icon type="upload" />
-                    {this.msg('avatarUpdate')}
-                  </Button>
+                  {this.state.avatar ? <Avatar src={this.state.avatar} size={80} round /> : <Avatar name={this.props.profile.name} size={80} round />}
                 </Upload>
               </FormItem>
               <FormInput label={cmsg('fullName')} field="name" required rules={
