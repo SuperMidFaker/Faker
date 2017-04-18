@@ -39,10 +39,12 @@ export default class TMSShipmentPane extends Component {
                   <Select allowClear
                     dropdownMatchSelectWidth={false}
                     dropdownStyle={{ width: 400 }}
+                    optionFilterProp="children"
+                    showSearch
                   >
                     {
-                    consigners.filter(cl => cl.ref_partner_id === currentFlow.partner_id || cl.ref_partner_id === -1).map(cg => <Option value={cg.node_id} key={cg.name}>{this.renderConsign(cg)}</Option>)
-                  }
+                      consigners.filter(cl => cl.ref_partner_id === currentFlow.partner_id || cl.ref_partner_id === -1).map(cg => <Option value={cg.node_id} key={cg.node_id}>{this.renderConsign(cg)}</Option>)
+                    }
                   </Select>)}
               </FormItem>
             </Col>
@@ -54,9 +56,11 @@ export default class TMSShipmentPane extends Component {
                   <Select allowClear
                     dropdownMatchSelectWidth={false}
                     dropdownStyle={{ width: 400 }}
+                    optionFilterProp="children"
+                    showSearch
                   >
                     {
-                      consignees.filter(cl => cl.ref_partner_id === currentFlow.partner_id || cl.ref_partner_id === -1).map(cg => <Option value={cg.node_id} key={cg.name}>{this.renderConsign(cg)}</Option>)
+                      consignees.filter(cl => cl.ref_partner_id === currentFlow.partner_id || cl.ref_partner_id === -1).map(cg => <Option value={cg.node_id} key={cg.node_id}>{this.renderConsign(cg)}</Option>)
                     }
                   </Select>)}
               </FormItem>
