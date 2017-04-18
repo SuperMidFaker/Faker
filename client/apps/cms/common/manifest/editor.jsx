@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Breadcrumb, Button, Dropdown, Layout, Menu, Icon, Form, message, Popconfirm, Switch, Tooltip, Tabs, Select, Spin } from 'antd';
+import { Breadcrumb, Button, Dropdown, Layout, Menu, Icon, Form, Modal, message, Switch, Tooltip, Tabs, Select, Spin } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { saveBillHead, lockManifest, openMergeSplitModal, resetBill, updateHeadNetWt, editBillBody,
@@ -21,6 +21,7 @@ const { Header, Content, Sider } = Layout;
 const TabPane = Tabs.TabPane;
 const Option = Select.Option;
 const OptGroup = Select.OptGroup;
+const confirm = Modal.confirm;
 
 @injectIntl
 @connect(
@@ -203,16 +204,29 @@ export default class ManifestEditor extends React.Component {
     });
   }
   handleBillReset = () => {
-    this.props.resetBill(this.props.billHead).then(
-      (result) => {
-        if (result.error) {
-          message.error(result.error.message, 10);
-        } else {
-          message.info('已删除');
-          this.props.form.resetFields();
-        }
-      }
-    );
+    const self = this;
+    confirm({
+      title: '确定要重置清单吗?',
+      content: '点击确定将清空所有表头和表体数据',
+      onOk() {
+        return new Promise((resolve, reject) => {
+          self.props.resetBill(self.props.billHead).then(
+            (result) => {
+              if (result.error) {
+                message.error(result.error.message, 10);
+                return reject();
+              } else {
+                message.info('清单已重置');
+                self.props.form.resetFields();
+                return resolve();
+              }
+            }
+          );
+          // setTimeout(Math.random() > 0.5 ? resolve : reject, 1000);
+        }).catch(() => message.error('重置失败'));
+      },
+      onCancel() {},
+    });
   }
   handleSelectChange = (value) => {
     if (value) {
@@ -281,7 +295,7 @@ export default class ManifestEditor extends React.Component {
         if (result.error) {
           message.error(result.error.message);
         } else {
-          message.info('锁定成功');
+          message.warning('锁定成功');
         }
       });
     } else {
@@ -290,7 +304,7 @@ export default class ManifestEditor extends React.Component {
         if (result.error) {
           message.error(result.error.message);
         } else {
-          message.info('解锁成功');
+          message.success('解锁成功');
         }
       });
     }
@@ -310,9 +324,7 @@ export default class ManifestEditor extends React.Component {
         <Menu.Item key="template"><Icon type="book" /> {this.msg('saveAsTemplate')}</Menu.Item>
         {editable && lockMenuItem}
         {editable && <Menu.Item key="reset">
-          <Popconfirm title="确定删除清单表头表体数据?" onConfirm={this.handleBillReset}>
-            <a> <Icon type="delete" /> 重置清单</a>
-          </Popconfirm>
+          <a role="button" onClick={this.handleBillReset}> <Icon type="reload" /> 重置清单</a>
         </Menu.Item>}
       </Menu>);
   }
@@ -349,8 +361,14 @@ export default class ManifestEditor extends React.Component {
               </Breadcrumb.Item>
             </Breadcrumb>
             <div className="top-bar-tools">
-              {locked && <Tooltip title={`清单编辑状态已锁定，仅限${billHead.locking_name}可进行编辑`} placement="bottom">
-                <Switch checked={locked} checkedChildren="已锁定" disabled={lockedByOthers} onChange={this.handleLock} style={{ marginTop: 4 }} />
+              {locked &&
+                <Tooltip title={`清单已锁定，仅限${billHead.locking_name}可进行编辑`} placement="bottom">
+                  <Switch className="switch-lock" checked={locked}
+                    checkedChildren={<Icon type="lock" />}
+                    unCheckedChildren={<Icon type="unlock" />}
+                    disabled={lockedByOthers}
+                    onChange={this.handleLock} style={{ marginTop: 4 }}
+                  />
                 </Tooltip>}
               {editable && getFieldDecorator('model', modelProps)(<Select
                 placeholder="选择可用清单模板"

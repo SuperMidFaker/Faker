@@ -7,6 +7,7 @@ import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { CMS_DELEGATION_STATUS } from 'common/constants';
 import InfoItem from 'client/components/InfoItem';
 import DockPanel from 'client/components/DockPanel';
+import MdIcon from 'client/components/MdIcon';
 import BasicPane from './tabpanes/BasicPane';
 import CustomsDeclPane from './tabpanes/CustomsDeclPane';
 import CiqDeclPane from './tabpanes/CiqDeclPane';
@@ -226,7 +227,13 @@ export default class DelegationDockPanel extends React.Component {
       );
     }
   }
-
+  renderTitle() {
+    const { ietype, previewer } = this.props;
+    const { delegation } = previewer;
+    return ietype === 'import' ?
+      <span><MdIcon mode="ikons" type="login" tagWrapped />{delegation.delg_no}</span> :
+      <span><MdIcon mode="ikons" type="logout" tagWrapped />{delegation.delg_no}</span>;
+  }
   renderBtns() {
     const { previewer } = this.props;
     const { delgDispatch } = previewer;
@@ -305,11 +312,10 @@ export default class DelegationDockPanel extends React.Component {
       </Row>);
   }
   render() {
-    const { visible, previewer } = this.props;
-    const { delegation } = previewer;
+    const { visible } = this.props;
     return (
       <DockPanel size="large" visible={visible} onClose={this.props.hidePreviewer}
-        title={delegation.delg_no}
+        title={this.renderTitle()}
         extra={this.renderExtra()}
         alert={this.renderBtns()}
       >

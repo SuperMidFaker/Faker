@@ -71,7 +71,7 @@ export default class EditableCell extends React.Component {
       case 'select':
         return (<div>
           <Select showSearch placeholder={placeholder} value={value} style={{ width: '90%' }} onChange={this.handleSelectChange}>
-            {options.map(opt => <Option key={opt.key} value={opt.key}>{opt.text}</Option>)}
+            {options && options.map(opt => <Option key={opt.key} value={opt.key}>{opt.text}</Option>)}
           </Select>
           <Icon type="check" className="editable-cell-icon-save" onClick={this.check} />
           <span className="ant-divider" />

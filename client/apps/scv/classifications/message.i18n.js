@@ -22,16 +22,12 @@ const messages = defineMessages({
     id: 'scv.classification.slave.share.scope',
     defaultMessage: '共享范围',
   },
-  warehouseLocation: {
-    id: 'scv.resources.warehouse.location',
-    defaultMessage: '位置',
-  },
   opColumn: {
-    id: 'scv.resources.warehouse.opColumn',
+    id: 'scv.classification.opColumn',
     defaultMessage: '操作',
   },
   whseEdit: {
-    id: 'scv.resources.warehouse.edit',
+    id: 'scv.classification.edit',
     defaultMessage: '修改',
   },
 });

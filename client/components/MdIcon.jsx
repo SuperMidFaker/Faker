@@ -1,21 +1,28 @@
 import React, { PropTypes } from 'react';
-import { Icon } from 'antd';
+import { Icon, Tag } from 'antd';
 
 export default function MdIcon(props) {
-  const { mode, type } = props;
+  const { mode, type, tagWrapped } = props;
+  let icon = '';
   switch (mode) {
     case 'ikons':
-      return (<i className={`icon icon-ikons-${type}`} />);
+      icon = (<i className={`icon icon-ikons-${type}`} />);
+      break;
     case 'fontello':
-      return (<i className={`icon icon-fontello-${type}`} />);
+      icon = (<i className={`icon icon-fontello-${type}`} />);
+      break;
     case 'antd':
-      return (<Icon type={type} />);
+      icon = (<Icon type={type} />);
+      break;
     default:
-      return (<i className={`zmdi zmdi-${type}`} />);
+      icon = (<i className={`zmdi zmdi-${type}`} />);
+      break;
   }
+  return tagWrapped ? <Tag>{icon}</Tag> : icon;
 }
 
 MdIcon.propTypes = {
   type: PropTypes.string.isRequired,
   mode: PropTypes.string,
+  tagWrapped: PropTypes.bool,
 };

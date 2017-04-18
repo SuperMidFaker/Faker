@@ -213,40 +213,6 @@ export default class DetailPane extends React.Component {
     const distanceStr = shipmt.distance ? `${shipmt.distance}${this.msg('kilometer')}` : '';
     return (
       <div className="pane-content tab-pane">
-        <Card title={this.msg('customerInfo')} bodyStyle={{ padding: 16 }} extra={clientInfoExtra}>
-          <Row>
-            <Col span="8">
-              <InfoItem label={this.msg('client')}
-                field={shipmt.customer_name}
-              />
-            </Col>
-            <Col span="8">
-              <InfoItem label={this.msg('refExternalNo')} addonBefore={<Icon type="tag-o" />}
-                field={shipmt.ref_external_no} editable
-              />
-            </Col>
-            <Col span="8">
-              <InfoItem label={this.msg('acceptTime')}
-                field={dispatch.acpt_time ? moment(dispatch.acpt_time).format('YYYY.MM.DD') : ''} fieldCol={{ span: 21 }}
-              />
-            </Col>
-            <Col span="8">
-              <InfoItem label={this.msg('refWaybillNo')} addonBefore={<Icon type="tag-o" />}
-                field={shipmt.ref_waybill_no} editable
-              />
-            </Col>
-            <Col span="8">
-              <InfoItem label={this.msg('refEntryNo')} addonBefore={<Icon type="tag-o" />}
-                field={shipmt.ref_entry_no} editable
-              />
-            </Col>
-            <Col span="8">
-              <InfoItem label={this.msg('remark')}
-                field={shipmt.remark} editable
-              />
-            </Col>
-          </Row>
-        </Card>
         <Card
           title={`${this.msg('shipmtSchedule')} ${shipmt.transit_time || '当'}${this.msg('day')} ${distanceStr}`}
           bodyStyle={{ padding: 16 }}
@@ -372,6 +338,30 @@ export default class DetailPane extends React.Component {
           <Table size="small" columns={this.columns} pagination={false}
             dataSource={shipmt.goodslist}
           />
+        </Card>
+        <Card title={this.msg('customerInfo')} bodyStyle={{ padding: 16 }} extra={clientInfoExtra}>
+          <Row>
+            <Col span="8">
+              <InfoItem label={this.msg('refExternalNo')} addonBefore={<Icon type="tag-o" />}
+                field={shipmt.ref_external_no} editable
+              />
+            </Col>
+            <Col span="8">
+              <InfoItem label={this.msg('refWaybillNo')} addonBefore={<Icon type="tag-o" />}
+                field={shipmt.ref_waybill_no} editable
+              />
+            </Col>
+            <Col span="8">
+              <InfoItem label={this.msg('refEntryNo')} addonBefore={<Icon type="tag-o" />}
+                field={shipmt.ref_entry_no} editable
+              />
+            </Col>
+            <Col span="24">
+              <InfoItem label={this.msg('remark')}
+                field={shipmt.remark} editable
+              />
+            </Col>
+          </Row>
         </Card>
         <PrivilegeCover module="transport" feature="shipment" action="edit">
           <ChangeShipment />
