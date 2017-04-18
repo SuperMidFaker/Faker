@@ -37,7 +37,7 @@ export default class TrackingItems extends React.Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.tracking.id !== this.props.tracking.id) {
-      this.props.loadTrackingItems(nextProps.tracking.id);
+      this.props.loadTrackingItems(nextProps.tracking.id || -1);
     }
     this.setState({ trackingItems: nextProps.trackingItems });
   }

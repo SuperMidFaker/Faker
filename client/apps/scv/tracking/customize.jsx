@@ -55,9 +55,9 @@ export default class CustomizeTracking extends React.Component {
     editId: -1,
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.trackings !== this.props.trackings && !this.state.tracking.id) {
+    if (nextProps.trackings.length !== this.props.trackings.length) {
       this.setState({
-        tracking: nextProps.trackings.find(item => item.id === this.state.tracking.id) || nextProps.trackings[0],
+        tracking: nextProps.trackings.find(item => item.id === this.state.tracking.id) || nextProps.trackings[0] || {},
       });
     }
     this.setState({ trackings: nextProps.trackings });
