@@ -52,6 +52,7 @@ export default class CustomizeTracking extends React.Component {
     currentPage: 1,
     collapsed: false,
     trackings: [],
+    editId: -1,
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.trackings !== this.props.trackings && !this.state.tracking.id) {
@@ -90,6 +91,16 @@ export default class CustomizeTracking extends React.Component {
   handleEdit = () => {
     this.props.toggleTrackingModal(true, 'edit', this.state.tracking);
   }
+  handleEditName = (id) => {
+    this.setState({ editId: id });
+  }
+  handleSave = (id) => {
+    const tracking = this.state.trackings.find(item => item.id === id);
+    this.props.updateTracking({ id: tracking.id, name: tracking.name }).then(() => {
+      this.setState({ editId: -1 });
+      this.handleTableLoad();
+    });
+  }
   handlePageChange = (page) => {
     this.setState({ currentPage: page });
   }
@@ -104,22 +115,45 @@ export default class CustomizeTracking extends React.Component {
     this.setState({ trackings, currentPage: 1 });
   }
   render() {
-    const { tracking } = this.state;
+    const { tracking, editId } = this.state;
     const columns = [{
       dataIndex: 'name',
       key: 'name',
-      render: o => (<span className="menu-sider-item">{o}</span>),
+      render: (o, row) => {
+        if (editId === row.id) {
+          return (<Input value={o} onChange={(e) => {
+            const ts = this.state.trackings.map((item) => {
+              if (item.id === row.id) {
+                return { ...item, name: e.target.value };
+              } else {
+                return item;
+              }
+            });
+            this.setState({ trackings: ts });
+          }}
+          />);
+        }
+        return (<span className="menu-sider-item">{o}</span>);
+      },
     }, {
       title: '操作',
       dataIndex: 'id',
       key: 'id',
-      render: (_, row) => (
-        <span>
-          <Popconfirm title="确认删除?" onConfirm={() => this.handleRemove(row.id)}>
-            <a role="button"><Icon type="delete" /></a>
-          </Popconfirm>
-        </span>
-        ),
+      render: (_, row) => {
+        if (row.id === editId) {
+          return (
+            <a role="button" onClick={() => this.handleSave(row.id)}><Icon type="save" /></a>
+          );
+        }
+        return (
+          <span>
+            <a role="button" onClick={() => this.handleEditName(row.id)}><Icon type="edit" /></a>
+            <span className="ant-divider" />
+            <Popconfirm title="确认删除?" onConfirm={() => this.handleRemove(row.id)}>
+              <a role="button"><Icon type="delete" /></a>
+            </Popconfirm>
+          </span>);
+      },
     }];
     return (
       <Layout>

@@ -38,9 +38,13 @@ export default class Instance extends Component {
   state = {
     tracking: {},
   }
+  componentWillMount() {
+    this.props.loadTrackingItems(Number(this.props.params.trackingId));
+  }
   componentWillReceiveProps(nextProps) {
-    this.setState({ tracking: nextProps.trackings.find(item => item.id === nextProps.params.trackingId) });
-    this.props.loadTrackingItems(nextProps.params.trackingId);
+    if (nextProps.trackings.length > 0) {
+      this.setState({ tracking: nextProps.trackings.find(item => item.id === Number(nextProps.params.trackingId)) });
+    }
   }
   msg = key => formatMsg(this.props.intl, key)
 

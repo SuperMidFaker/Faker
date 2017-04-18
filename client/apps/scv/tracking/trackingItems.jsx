@@ -134,7 +134,7 @@ export default class TrackingItems extends React.Component {
       dataIndex: 'position',
       key: 'position',
       title: '排序',
-      width: 80,
+      width: 50,
       render: (o, row) => {
         const options = [];
         const index = trackingItems.findIndex(item => item.id === row.id);
@@ -175,7 +175,7 @@ export default class TrackingItems extends React.Component {
     return (
       <div className="page-body">
         <div className="panel-body table-panel">
-          <Table columns={columns} dataSource={trackingItems} rowKey="id" />
+          <Table columns={columns} dataSource={trackingItems} pagination={false} rowKey="id" />
         </div>
       </div>);
   }

@@ -285,8 +285,8 @@ export default class DelgDeclList extends Component {
   handleShowSendDeclModal = (record) => {
     this.props.showSendDeclModal({ visible: true, preEntrySeqNo: record.pre_entry_seq_no, delgNo: record.delg_no });
   }
-  handleShowXml = (record) => {
-    window.open(`${API_ROOTS.default}v1/cms/declare/send.xml?filename=${record.ep_send_filename}`);
+  handleShowXml = (filename) => {
+    window.open(`${API_ROOTS.default}v1/cms/declare/send.xml?filename=${filename}`);
   }
   render() {
     const { delgdeclList, listFilter } = this.props;
@@ -344,7 +344,7 @@ export default class DelgDeclList extends Component {
                 <Dropdown overlay={(
                   <Menu>
                     <Menu.Item key="edit">
-                      <a role="button" onClick={this.handleShowXml}><Icon type="eye-o" /> EDI报文</a>
+                      <a role="button" onClick={() => this.handleShowXml(record.ep_send_filename)}><Icon type="eye-o" /> EDI报文</a>
                     </Menu.Item>
                   </Menu>)}
                 >
