@@ -126,6 +126,13 @@ img {
 .ant-steps-description > .ant-card {
   margin: 16px;
 }
+.ant-switch-checked {
+  &.switch-lock {
+    border-color: #ffbf00;
+    background-color: #ffbf00;
+    transition: all ease 0.8s;
+  }
+}
 .ant-table .ant-tag {
   margin: 0;
 }
@@ -417,7 +424,7 @@ img {
     padding: 8px 0;
     display: inline-flex;
     .ant-upload.ant-upload-select,
-    span {
+    >span {
       display: inline-flex;
     }
     >.ant-btn-group {
