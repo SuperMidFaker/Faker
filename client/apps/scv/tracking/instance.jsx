@@ -27,7 +27,7 @@ const { Header, Content } = Layout;
 )
 @connectNav({
   depth: 2,
-  moduleName: 'transport',
+  moduleName: 'scv',
 })
 export default class Instance extends Component {
   static propTypes = {
