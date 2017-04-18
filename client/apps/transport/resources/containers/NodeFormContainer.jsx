@@ -19,7 +19,11 @@ function fetchData({ dispatch, params }) {
   region: state.transportResources.region,
   tenantId: state.account.tenantId,
   nodeUsers: state.transportResources.nodeUsers,
-  partners: state.shipment.partners,
+  partners: state.shipment.partners.concat([{
+    partner_code: '',
+    name: '公用',
+    partner_id: -1,
+  }]),
 }), {
   addNode, editNode, changeRegion, addNodeUser,
   editNodeUser, removeNodeUser, updateUserStatus,
@@ -62,7 +66,7 @@ export default class NodeFormConainer extends Component {
     e.preventDefault();
     const { form, params, region } = this.props;
     const nodeInfoInForm = form.getFieldsValue();
-    if (!nodeInfoInForm.ref_partner_id || nodeInfoInForm.ref_partner_id <= 0) {
+    if (nodeInfoInForm.ref_partner_id === undefined) {
       message.warn('关联方必填');
     } else {
       const refPartnerName = this.props.partners.find(item => item.partner_id === nodeInfoInForm.ref_partner_id).name;

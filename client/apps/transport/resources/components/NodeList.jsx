@@ -37,6 +37,10 @@ export default function NodeList(props) {
       title: '关联方',
       dataIndex: 'ref_partner_name',
       key: 'ref_partner_name',
+      render: (col, row) => {
+        if (row.ref_partner_id === -1) return '公用';
+        return col;
+      },
     },
     {
       title: '省/城市/县区',

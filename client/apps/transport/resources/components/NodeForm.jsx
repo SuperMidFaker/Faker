@@ -13,7 +13,11 @@ const formItemLayout = {
 };
 
 @connect(state => ({
-  partners: state.shipment.partners,
+  partners: state.shipment.partners.concat([{
+    partner_code: '',
+    name: '公用',
+    partner_id: -1,
+  }]),
 }), { })
 @withPrivilege({
   module: 'transport', feature: 'resources',

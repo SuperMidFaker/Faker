@@ -42,7 +42,7 @@ export default class NodeModal extends Component {
     const nodeInfoInForm = form.getFieldsValue();
     if (!region.province && !region.city && !region.district && !region.street) {
       message.warn('区域必填');
-    } else if (!nodeInfoInForm.ref_partner_id || nodeInfoInForm.ref_partner_id <= 0) {
+    } else if (nodeInfoInForm.ref_partner_id === undefined) {
       message.warn('关联方必填');
     } else {
       const refPartnerName = this.props.partners.find(item => item.partner_id === nodeInfoInForm.ref_partner_id).name;
