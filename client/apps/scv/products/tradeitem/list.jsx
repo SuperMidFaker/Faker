@@ -10,7 +10,7 @@ import NavLink from 'client/components/nav-link';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import { loadTradeParams } from 'common/reducers/cmsTradeitem';
-import { loadTradeItems, deleteItem, deleteSelectedItems, setItemStatus, setCompareVisible, setNominatedVisible } from 'common/reducers/scvClassification';
+import { loadTradeItems, deleteItems, setItemStatus, setCompareVisible, setNominatedVisible } from 'common/reducers/scvClassification';
 import SearchBar from 'client/components/search-bar';
 import { createFilename } from 'client/util/dataTransform';
 import { CMS_ITEM_STATUS } from 'common/constants';
@@ -58,7 +58,7 @@ function fetchData({ state, dispatch }) {
       text: tc.cntry_name_cn,
     })),
   }),
-  { loadTradeItems, deleteItem, deleteSelectedItems, setItemStatus, setCompareVisible, setNominatedVisible }
+  { loadTradeItems, deleteItems, setItemStatus, setCompareVisible, setNominatedVisible }
 )
 @connectNav({
   depth: 2,
@@ -267,7 +267,7 @@ export default class TradeItemList extends Component {
     });
   }
   handleItemDel = (id) => {
-    this.props.deleteItem(id).then((result) => {
+    this.props.deleteItems({ ids: [id] }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -290,7 +290,7 @@ export default class TradeItemList extends Component {
   }
   handleDeleteSelected = () => {
     const selectedIds = this.state.selectedRowKeys;
-    this.props.deleteSelectedItems(selectedIds).then((result) => {
+    this.props.deleteItems({ ids: selectedIds }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
