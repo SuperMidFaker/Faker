@@ -151,9 +151,9 @@ export default class NominatedImport extends React.Component {
               {this.msg('nonNominatedBroker')}
             </Radio>
           </Col>
-          <Col offset="2" span="18">
+          {!this.state.nominated && <Col offset="2" span="18">
             物料信息由我方修改审核
-          </Col>
+          </Col>}
         </FormItem>
         <Upload accept=".xls,.xlsx" onChange={this.handleImport} onRemove={this.handleRemove}
           fileList={this.state.attachments} action={`${API_ROOTS.default}v1/upload/excel/`} withCredentials

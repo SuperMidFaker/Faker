@@ -283,7 +283,7 @@ export default class TradeItemList extends Component {
   }
   handleMenuClick = (e) => {
     if (e.key === 'export') {
-      window.open(`${API_ROOTS.default}v1/scv/tradeitems/export/${createFilename('itemsExport')}.xlsx?tenantId=${this.props.tenantId}`);
+      window.open(`${API_ROOTS.default}v1/scv/tradeitems/export/${createFilename('scvItemsExport')}.xlsx?tenantId=${this.props.tenantId}`);
     } else if (e.key === 'model') {
       window.open(`${API_ROOTS.default}v1/scv/tradeitems/model/download/${createFilename('tradeItemModel')}.xlsx`);
     }
@@ -394,47 +394,51 @@ export default class TradeItemList extends Component {
       width: 150,
       fixed: 'right',
       render: (o, record) => {
-        if (record.status === CMS_ITEM_STATUS.unclassified) {
-          return (<span>
-            <NavLink to={`/scv/products/tradeitem/edit/${record.id}`}>
-              <Icon type="edit" /> {this.msg('modify')}
-            </NavLink>
-            <span className="ant-divider" />
-            <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleItemDel(record.id)}>
-              <a role="button"><Icon type="delete" /> {this.msg('delete')}</a>
-            </Popconfirm>
-          </span>);
+        if (record.contribute_tenant_id === this.props.tenantId) {
+          if (record.status === CMS_ITEM_STATUS.pending) {
+            return (
+              <span>
+                <RowUpdater onHit={this.handleItemPass} label={<span><Icon type="check-circle-o" /> {this.msg('pass')}</span>} row={record} />
+                <span className="ant-divider" />
+                <RowUpdater onHit={this.handleItemRefused} label={<span><Icon type="close-circle-o" /> {this.msg('refuse')}</span>} row={record} />
+                <span className="ant-divider" />
+                <Dropdown overlay={(
+                  <Menu>
+                    <Menu.Item key="edit">
+                      <NavLink to={`/scv/products/tradeitem/edit/${record.id}`}>
+                        <Icon type="edit" /> {this.msg('modify')}
+                      </NavLink>
+                    </Menu.Item>
+                    <Menu.Item key="delete">
+                      <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleItemDel(record.id)}>
+                        <a role="button"><Icon type="delete" /> {this.msg('delete')}</a>
+                      </Popconfirm>
+                    </Menu.Item>
+                  </Menu>)}
+                >
+                  <a><Icon type="down" /></a>
+                </Dropdown>
+              </span>
+            );
+          } else {
+            return (
+              <span>
+                <NavLink to={`/scv/products/tradeitem/edit/${record.id}`}>
+                  <Icon type="edit" /> {this.msg('modify')}
+                </NavLink>
+                <span className="ant-divider" />
+                <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleItemDel(record.id)}>
+                  <a role="button"><Icon type="delete" /> {this.msg('delete')}</a>
+                </Popconfirm>
+              </span>
+            );
+          }
         } else if (record.status === CMS_ITEM_STATUS.pending) {
           return (
             <span>
               <RowUpdater onHit={this.handleItemPass} label={<span><Icon type="check-circle-o" /> {this.msg('pass')}</span>} row={record} />
               <span className="ant-divider" />
               <RowUpdater onHit={this.handleItemRefused} label={<span><Icon type="close-circle-o" /> {this.msg('refuse')}</span>} row={record} />
-              <span className="ant-divider" />
-              <Dropdown overlay={(
-                <Menu>
-                  <Menu.Item key="edit">
-                    <NavLink to={`/scv/products/tradeitem/edit/${record.id}`}>
-                      <Icon type="edit" /> {this.msg('modify')}
-                    </NavLink>
-                  </Menu.Item>
-                  <Menu.Item key="delete">
-                    <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleItemDel(record.id)}>
-                      <a role="button"><Icon type="delete" /> {this.msg('delete')}</a>
-                    </Popconfirm>
-                  </Menu.Item>
-                </Menu>)}
-              >
-                <a><Icon type="down" /></a>
-              </Dropdown>
-            </span>
-          );
-        } else if (record.status === CMS_ITEM_STATUS.classified) {
-          return (
-            <span>
-              <NavLink to={`/scv/products/tradeitem/edit/${record.id}`}>
-                <Icon type="edit" /> {this.msg('modify')}
-              </NavLink>
             </span>
           );
         }
@@ -486,7 +490,9 @@ export default class TradeItemList extends Component {
               </div>
             </div>
             <div className="panel-body table-panel">
-              <RemoteTable loading={this.props.tradeItemsLoading} rowSelection={rowSelection} rowKey={record => record.id} columns={columns} dataSource={this.dataSource} scroll={{ x: 3800 }} />
+              <RemoteTable loading={this.props.tradeItemsLoading} rowSelection={rowSelection} rowKey={record => record.id}
+                columns={columns} dataSource={this.dataSource} scroll={{ x: 3800 }}
+              />
             </div>
             <NominatedImportModal />
             <ImportComparisonModal />
