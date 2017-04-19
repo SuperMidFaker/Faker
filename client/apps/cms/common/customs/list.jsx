@@ -283,7 +283,9 @@ export default class DelgDeclList extends Component {
     });
   }
   handleShowSendDeclModal = (record) => {
-    this.props.showSendDeclModal({ visible: true, preEntrySeqNo: record.pre_entry_seq_no, delgNo: record.delg_no });
+    this.props.showSendDeclModal({
+      visible: true, preEntrySeqNo: record.pre_entry_seq_no,
+      delgNo: record.delg_no, agentCustCo: record.agent_custco });
   }
   handleShowXml = (filename) => {
     window.open(`${API_ROOTS.default}v1/cms/declare/send.xml?filename=${filename}`);

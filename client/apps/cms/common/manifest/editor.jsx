@@ -13,6 +13,7 @@ import ManifestBodyPanel from './panel/manifestBodyPanel';
 import MergeSplitModal from './modals/mergeSplit';
 import SaveTemplateModal from './modals/saveTemplateSteps';
 import SheetExtraPanel from './panel/manifestExtraPanel';
+import { dividGrossWt } from './panel/helper';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 
@@ -136,24 +137,12 @@ export default class ManifestEditor extends React.Component {
     }
     if (wtSum > 0) {
       this.props.updateHeadNetWt(billHead.bill_seq_no, wtSum);
-      const totGrossWt = billHead.gross_wt;
-      const datas = [];
-      let wts = 0;
-      for (let i = 0; i < bodyDatas.length - 1; i++) {
+      const grossWts = dividGrossWt(bodyDatas.map(bd => bd.wet_wt || 0), billHead.gross_wt);
+      for (let i = 0; i < bodyDatas.length; i++) {
         const body = bodyDatas[i];
-        const grosswt = (totGrossWt * body.wet_wt / wtSum).toFixed(3);
-        wts += Number(grosswt);
-        const data = { ...body, gross_wt: grosswt };
-        datas.push(data);
-        if (body.gross_wt !== Number(grosswt)) {
-          this.props.editBillBody(data);
+        if (body.gross_wt !== grossWts[i]) {
+          this.props.editBillBody({ ...body, gross_wt: grossWts[i] });
         }
-      }
-      const lastwt = totGrossWt - wts;
-      const lastBody = bodyDatas[bodyDatas.length - 1];
-      datas.push({ ...lastBody, gross_wt: lastwt });
-      if (lastBody.gross_wt !== lastwt) {
-        this.props.editBillBody({ ...lastBody, gross_wt: lastwt });
       }
       this.setState({ generating: false });
       this.props.openMergeSplitModal();

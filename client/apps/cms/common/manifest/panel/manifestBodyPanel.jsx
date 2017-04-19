@@ -12,6 +12,7 @@ import AmountModel from '../modals/amountDivid';
 import RowUpdater from 'client/components/rowUpdater';
 import messages from '../../form/message.i18n';
 import RelateImportRuleModal from '../modals/relateImportRules';
+import { dividGrossWt } from './helper';
 import { loadHscodes } from 'common/reducers/cmsHsCode';
 
 const formatMsg = format(messages);
@@ -700,27 +701,15 @@ export default class ManifestBodyPanel extends React.Component {
   handleGrossWtDivid = () => {
     const totGrossWt = this.props.billHead.gross_wt;
     const bodyDatas = this.state.bodies;
-    let wtSum = 0;
-    bodyDatas.forEach((body) => {
-      if (body.wet_wt) {
-        wtSum += Number(body.wet_wt);
-      }
-    });
+    const grossWts = dividGrossWt(bodyDatas.slice(0, bodyDatas.length - 1).map(bd => bd.wet_wt || 0), totGrossWt);
     const datas = [];
-    let wts = 0;
-    for (let i = 0; i < bodyDatas.length - 2; i++) {
+    for (let i = 0; i < bodyDatas.length - 1; i++) {
       const body = bodyDatas[i];
-      const grosswt = (totGrossWt * body.wet_wt / wtSum).toFixed(3);
-      wts += Number(grosswt);
-      const data = { ...body, gross_wt: grosswt };
+      const data = { ...body, gross_wt: grossWts[i] };
       datas.push(data);
       this.props.editBillBody(data);
     }
-    const lastwt = totGrossWt - wts;
-    const lastBody = bodyDatas[bodyDatas.length - 2];
-    datas.push({ ...lastBody, gross_wt: lastwt });
-    this.props.editBillBody({ ...lastBody, gross_wt: lastwt });
-    datas.push({});
+    datas.push(bodyDatas[bodyDatas.length - 1]);
     this.setState({ bodies: datas });
     message.success(`总毛重: ${totGrossWt.toFixed(3)}千克已分摊`, 3);
   }

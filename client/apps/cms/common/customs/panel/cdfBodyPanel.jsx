@@ -2,11 +2,8 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Alert, Button, Table, Input, Select } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { updateHeadNetWt, loadBillBody, openAmountModel, deleteSelectedBodies } from 'common/reducers/cmsManifest';
-import { getItemForBody, getHscodeForBody } from 'common/reducers/cmsTradeitem';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../form/message.i18n';
-
 
 const formatMsg = format(messages);
 const Option = Select.Option;
@@ -121,8 +118,7 @@ function calculateTotal(bodies) {
     bodyItem: state.cmsTradeitem.bodyItem,
     bodyHscode: state.cmsTradeitem.bodyHscode,
     entryHead: state.cmsManifest.entryHead,
-  }),
-  { updateHeadNetWt, loadBillBody, openAmountModel, getItemForBody, getHscodeForBody, deleteSelectedBodies }
+  })
 )
 export default class CDFBodyPanel extends React.Component {
   static propTypes = {

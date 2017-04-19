@@ -18,6 +18,7 @@ const Option = Select.Option;
     visible: state.cmsDeclare.sendDeclModal.visible,
     preEntrySeqNo: state.cmsDeclare.sendDeclModal.preEntrySeqNo,
     delgNo: state.cmsDeclare.sendDeclModal.delgNo,
+    agentCustCo: state.cmsDeclare.sendDeclModal.agentCustCo,
     loginId: state.account.loginId,
     loginName: state.account.username,
   }),
@@ -41,8 +42,8 @@ export default class SendModal extends React.Component {
     easipassList: [],
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.visible === true) {
-      this.props.getEasipassList(this.props.tenantId).then((result) => {
+    if (nextProps.visible && !this.props.visible) {
+      this.props.getEasipassList(nextProps.tenantId, nextProps.agentCustCo).then((result) => {
         this.setState({ easipassList: result.data });
       });
     }

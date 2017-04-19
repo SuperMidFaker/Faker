@@ -41,6 +41,7 @@ const initialState = {
     visible: false,
     preEntrySeqNo: '',
     delgNo: '',
+    agentCustCo: '',
   },
   customsResults: [],
 };
@@ -189,14 +190,14 @@ export function sendDecl(data) {
   };
 }
 
-export function showSendDeclModal({ visible = true, preEntrySeqNo = '', delgNo = '' }) {
+export function showSendDeclModal({ visible = true, preEntrySeqNo = '', delgNo = '', agentCustCo }) {
   return {
     type: actionTypes.SHOW_SEND_DECL_MODAL,
-    data: { visible, preEntrySeqNo, delgNo },
+    data: { visible, preEntrySeqNo, delgNo, agentCustCo },
   };
 }
 
-export function getEasipassList(tenantId) {
+export function getEasipassList(tenantId, agentCustCo) {
   return {
     [CLIENT_API]: {
       types: [
@@ -206,7 +207,7 @@ export function getEasipassList(tenantId) {
       ],
       endpoint: 'v1/platform/integration/easipassList',
       method: 'get',
-      params: { tenantId },
+      params: { tenantId, agentCustCo },
     },
   };
 }
