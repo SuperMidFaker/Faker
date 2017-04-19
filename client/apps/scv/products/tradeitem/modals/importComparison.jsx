@@ -1,21 +1,16 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Modal, Popconfirm, Icon, Tooltip, Tag, message, Table, Form, Select } from 'antd';
+import { Modal, Popconfirm, Icon, Tooltip, Tag, message, Table } from 'antd';
 import RowUpdater from 'client/components/rowUpdater';
 import TrimSpan from 'client/components/trimSpan';
 import { setCompareVisible, saveComparedItemDatas, loadTradeItems } from 'common/reducers/scvClassification';
 import { loadTempItems, comparedCancel, deleteTempData } from 'common/reducers/cmsTradeitem';
-import { loadPartners } from 'common/reducers/partner';
 import { format } from 'client/common/i18n/helpers';
 import messages from './../message.i18n';
-import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES, TRADE_ITEM_STATUS } from 'common/constants';
+import { TRADE_ITEM_STATUS } from 'common/constants';
 
 const formatMsg = format(messages);
-const role = PARTNER_ROLES.SUP;
-const businessType = PARTNER_BUSINESSE_TYPES.clearance;
-const FormItem = Form.Item;
-const Option = Select.Option;
 
 @injectIntl
 @connect(
@@ -27,10 +22,10 @@ const Option = Select.Option;
     listFilter: state.scvClassification.listFilter,
     tempItems: state.cmsTradeitem.tempItems,
     visibleCompareModal: state.scvClassification.visibleCompareModal,
+    compareduuid: state.scvClassification.compareduuid,
   }),
-  { setCompareVisible, saveComparedItemDatas, loadTradeItems, loadTempItems, comparedCancel, deleteTempData, loadPartners }
+  { setCompareVisible, saveComparedItemDatas, loadTradeItems, loadTempItems, comparedCancel, deleteTempData }
 )
-@Form.create()
 export default class ImportComparisonModal extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -56,22 +51,12 @@ export default class ImportComparisonModal extends React.Component {
       uuid,
       dataSource: [],
       feedbackChanges: {},
-      brokers: [],
     };
   }
-  componentDidMount() {
-    this.props.loadPartners({
-      tenantId: this.props.tenantId,
-      role,
-      businessType,
-    }).then((result) => {
-      this.setState({ brokers: result.data.filter(item => item.partner_tenant_id !== -1) });
-    });
-  }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.data !== this.props.data) {
+    if (nextProps.compareduuid !== this.props.compareduuid) {
       this.setState({
-        uuid: nextProps.data,
+        uuid: nextProps.compareduuid,
       });
     }
     if (nextProps.visibleCompareModal && nextProps.visibleCompareModal !== this.props.visibleCompareModal) {
@@ -112,22 +97,12 @@ export default class ImportComparisonModal extends React.Component {
     const { tenantId, tenantName, loginId, loginName } = this.props;
     const { uuid, feedbackChanges } = this.state;
     const changes = JSON.stringify(feedbackChanges);
-    const val = this.props.form.getFieldValue('broker');
-    const broker = this.state.brokers.find(tr => tr.partner_tenant_id === val);
-    let baseInfo = {
+    const baseInfo = {
       owner_tenant_id: tenantId,
       owner_name: tenantName,
       creater_login_id: loginId,
       creater_name: loginName,
-      contribute_tenant_id: tenantId,
-      contribute_tenant_name: tenantName,
     };
-    if (broker) {
-      baseInfo = { ...baseInfo,
-        contribute_tenant_id: broker.partner_tenant_id,
-        contribute_tenant_name: broker.name,
-      };
-    }
     this.props.saveComparedItemDatas({ uuid, feedbackChanges: changes, baseInfo }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
@@ -281,7 +256,7 @@ export default class ImportComparisonModal extends React.Component {
     },
   }]
   render() {
-    const { visibleCompareModal, form: { getFieldDecorator } } = this.props;
+    const { visibleCompareModal } = this.props;
     const columns = [...this.columns];
     columns.push({
       title: this.msg('opColumn'),
@@ -340,23 +315,6 @@ export default class ImportComparisonModal extends React.Component {
       <Modal title={this.msg('对比结果确认')} visible={visibleCompareModal}
         onOk={this.handleOk} onCancel={this.handleCancel} width={1000}
       >
-        <FormItem label={this.msg('broker')} labelCol={{ span: 3 }} wrapperCol={{ span: 12 }}>
-          {getFieldDecorator('broker', {
-            initialValue: null }
-            )(<Select
-              showSearch
-              placeholder="选择报关行"
-              optionFilterProp="children"
-              size="large"
-              style={{ width: '100%' }}
-            >
-              {this.state.brokers.map(data => (<Option key={data.id} value={data.partner_tenant_id}
-                search={`${data.partner_code}${data.name}`}
-              >{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>)
-              )}
-            </Select>)
-          }
-        </FormItem>
         <Table rowKey={record => record.cop_product_no} columns={columns} dataSource={this.state.dataSource} pagination={this.state.pagination} scroll={{ x: 1500 }} />
       </Modal>
     );

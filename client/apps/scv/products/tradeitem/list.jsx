@@ -10,13 +10,13 @@ import NavLink from 'client/components/nav-link';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import { loadTradeParams } from 'common/reducers/cmsTradeitem';
-import { loadTradeItems, deleteItem, deleteSelectedItems, setItemStatus, setCompareVisible } from 'common/reducers/scvClassification';
+import { loadTradeItems, deleteItem, deleteSelectedItems, setItemStatus, setCompareVisible, setNominatedVisible } from 'common/reducers/scvClassification';
 import SearchBar from 'client/components/search-bar';
-import ExcelUpload from 'client/components/excelUploader';
 import { createFilename } from 'client/util/dataTransform';
 import { CMS_ITEM_STATUS } from 'common/constants';
 import RowUpdater from 'client/components/rowUpdater';
 import ImportComparisonModal from './modals/importComparison';
+import NominatedImportModal from './modals/nominatedImport';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -58,7 +58,7 @@ function fetchData({ state, dispatch }) {
       text: tc.cntry_name_cn,
     })),
   }),
-  { loadTradeItems, deleteItem, deleteSelectedItems, setItemStatus, setCompareVisible }
+  { loadTradeItems, deleteItem, deleteSelectedItems, setItemStatus, setCompareVisible, setNominatedVisible }
 )
 @connectNav({
   depth: 2,
@@ -78,7 +78,6 @@ export default class TradeItemList extends Component {
   }
   state = {
     selectedRowKeys: [],
-    compareduuid: '',
     brokers: [],
   }
   msg = key => formatMsg(this.props.intl, key);
@@ -289,10 +288,6 @@ export default class TradeItemList extends Component {
       window.open(`${API_ROOTS.default}v1/scv/tradeitems/model/download/${createFilename('tradeItemModel')}.xlsx`);
     }
   }
-  handleUploaded = (data) => {
-    this.setState({ compareduuid: data });
-    this.props.setCompareVisible(true);
-  }
   handleDeleteSelected = () => {
     const selectedIds = this.state.selectedRowKeys;
     this.props.deleteSelectedItems(selectedIds).then((result) => {
@@ -355,6 +350,9 @@ export default class TradeItemList extends Component {
   handleSearch = (value) => {
     const { listFilter } = this.props;
     this.handleItemListLoad(1, listFilter, value);
+  }
+  handleDropdownButtonClick = () => {
+    this.props.setNominatedVisible(true);
   }
   render() {
     const { tradeItemlist, listFilter } = this.props;
@@ -469,16 +467,8 @@ export default class TradeItemList extends Component {
             <RadioButton value="conflicted">{this.msg('filterConflict')}</RadioButton>
           </RadioGroup>
           <div className="top-bar-tools">
-            <Dropdown.Button overlay={importMenu}>
-              <ExcelUpload endpoint={`${API_ROOTS.default}v1/scv/tradeitems/import`}
-                formData={{
-                  data: JSON.stringify({
-                    owner_tenant_id: this.props.tenantId,
-                  }),
-                }} onUploaded={this.handleUploaded}
-              >
-                {this.msg('importItems')}
-              </ExcelUpload>
+            <Dropdown.Button onClick={this.handleDropdownButtonClick} overlay={importMenu}>
+              {this.msg('importItems')}
             </Dropdown.Button>
             <Button type="primary" size="large" icon="plus" onClick={this.handleAddItem}>
               {this.msg('addItem')}
@@ -498,7 +488,8 @@ export default class TradeItemList extends Component {
             <div className="panel-body table-panel">
               <RemoteTable loading={this.props.tradeItemsLoading} rowSelection={rowSelection} rowKey={record => record.id} columns={columns} dataSource={this.dataSource} scroll={{ x: 3800 }} />
             </div>
-            <ImportComparisonModal data={this.state.compareduuid} />
+            <NominatedImportModal />
+            <ImportComparisonModal />
           </div>
         </Content>
       </Layout>
