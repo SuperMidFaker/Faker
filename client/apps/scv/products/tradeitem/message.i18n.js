@@ -25,8 +25,8 @@ const messages = defineMessages({
     id: 'scv.products.tradeitem.filter.classified',
     defaultMessage: '已归类',
   },
-  filterConfilict: {
-    id: 'scv.products.tradeitem.filter.confilict',
+  filterConflict: {
+    id: 'scv.products.tradeitem.filter.conflict',
     defaultMessage: '归类冲突',
   },
   copProductNo: {
@@ -231,7 +231,16 @@ const messages = defineMessages({
   },
   broker: {
     id: 'scv.products.tradeitem.broker',
+    defaultMessage: '报关行',
+  },
+  nominatedBroker: {
+    id: 'scv.products.tradeitem.nominated.broker',
     defaultMessage: '指定报关行',
   },
+  nonNominatedBroker: {
+    id: 'scv.products.tradeitem.nominated.broker',
+    defaultMessage: '不指定报关行',
+  },
+
 });
 export default messages;
