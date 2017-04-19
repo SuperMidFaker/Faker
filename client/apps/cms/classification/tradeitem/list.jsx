@@ -435,7 +435,7 @@ export default class TradeItemList extends Component {
     this.setState({ repos, currentPage: 1 });
   }
   render() {
-    const { tradeItemlist, repoId, repo, listFilter } = this.props;
+    const { tradeItemlist, repoId, repo, listFilter, tenantId } = this.props;
     const selectedRows = this.state.selectedRowKeys;
     const rowSelection = {
       selectedRowKeys: selectedRows,
@@ -599,6 +599,7 @@ export default class TradeItemList extends Component {
                         formData={{
                           data: JSON.stringify({
                             repo_id: this.props.repoId,
+                            tenantId,
                           }),
                         }} onUploaded={this.handleUploaded}
                       >
