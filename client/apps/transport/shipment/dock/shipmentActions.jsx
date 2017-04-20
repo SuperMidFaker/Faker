@@ -288,7 +288,7 @@ export default class ShipmentActions extends React.Component {
             </PrivilegeCover>
           );
         }
-      } else if (dispatch.status === SHIPMENT_TRACK_STATUS.accepted) {
+      } else if (dispatch.status === SHIPMENT_TRACK_STATUS.accepted || dispatch.status === SHIPMENT_TRACK_STATUS.dispatched) {
         if (stage === 'acceptance') {
           buttons = (
             <PrivilegeCover module="transport" feature="shipment" action="edit">
