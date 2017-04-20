@@ -4,7 +4,7 @@ import { formati18n } from 'client/common/i18n/helpers';
 const messages = defineMessages({
   shipmentsTracking: {
     id: 'scv.shipments',
-    defaultMessage: '货运跟踪',
+    defaultMessage: '状态跟踪',
   },
   any: {
     id: 'scv.shipments.filter.any',

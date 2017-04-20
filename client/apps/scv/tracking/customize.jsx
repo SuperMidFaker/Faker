@@ -139,6 +139,7 @@ export default class CustomizeTracking extends React.Component {
       title: '操作',
       dataIndex: 'id',
       key: 'id',
+      width: 60,
       render: (_, row) => {
         if (row.id === editId) {
           return (

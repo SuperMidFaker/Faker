@@ -91,47 +91,55 @@ export default class MergeSplitForm extends React.Component {
             </Row>
           </Panel>
           <Panel key="split" header={this.msg('splitPrinciple')} >
-            <Row>
+            <FormItem>
+              {getFieldDecorator('split_percount', {
+                initialValue: formData.split_percount })(
+                  <Select size="large">
+                    <Option value={20}>{'按20品拆分'}</Option>
+                    <Option value={50}>{'按50品拆分'}</Option>
+                  </Select>)}
+            </FormItem>
+            <FormItem>
               {getFieldDecorator('split_hscode', { initialValue: formData.split_hscode })(
                 <Checkbox defaultChecked={formData.split_hscode}>{this.msg('specialHscodeDeclare')}</Checkbox>)
               }
-              <Col offset="1" span="20">
-                {getFieldValue('split_hscode') &&
-                <FormItem label={this.msg('specialHscodeSort')} labelCol={{ span: 4 }} wrapperCol={{ span: 20 }} >
+              {getFieldValue('split_hscode') &&
+              <div>
                   {getFieldDecorator('split_spl_category', {
                     rules: [{ type: 'array' }],
                     initialValue: formData.specialHsSortArr,
-                  })(<Select mode="multiple" style={{ width: '100%' }} >
+                  })(<Select size="large" mode="multiple" placeholder={this.msg('specialHscodeSort')} style={{ width: '100%' }} >
                     {hscodeCategories.map(ct =>
                       <Option value={ct.id} key={ct.id}>{ct.name}</Option>)}
                   </Select>)}
-                </FormItem>}
-              </Col>
-            </Row>
+              </div>}
+            </FormItem>
             <FormItem>
               {getFieldDecorator('split_curr', { initialValue: formData.split_curr })(
                 <Checkbox defaultChecked={formData.split_curr}>{this.msg('currencySplit')}</Checkbox>)}
             </FormItem>
-            {getFieldDecorator('split_percount', {
-              initialValue: formData.split_percount })(
-                <Select>
-                  <Option value={20}>{'按20品拆分'}</Option>
-                  <Option value={50}>{'按50品拆分'}</Option>
-                </Select>)}
           </Panel>
           <Panel key="sort" header={this.msg('sortPrinciple')} >
-            <FormItem>
-              {getFieldDecorator('sort_customs', { initialValue: formData.sort_customs })(
-                <Checkbox defaultChecked={formData.sort_customs}>{this.msg('customOnTop')}</Checkbox>)}
-            </FormItem>
-            <FormItem>
-              {getFieldDecorator('sort_dectotal', { initialValue: formData.sort_dectotal })(
-                <Checkbox defaultChecked={formData.sort_dectotal}>{this.msg('priceDescSort')}</Checkbox>)}
-            </FormItem>
-            <FormItem>
-              {getFieldDecorator('sort_hscode', { initialValue: formData.sort_hscode })(
-                <Checkbox defaultChecked={formData.sort_hscode}>{this.msg('hsCodeAscSort')}</Checkbox>)}
-            </FormItem>
+            <Row>
+              <Col span={8}>
+                <FormItem>
+                  {getFieldDecorator('sort_customs', { initialValue: formData.sort_customs })(
+                    <Checkbox defaultChecked={formData.sort_customs}>{this.msg('customOnTop')}</Checkbox>)}
+                </FormItem>
+              </Col>
+              <Col span={8}>
+                <FormItem>
+                  {getFieldDecorator('sort_dectotal', { initialValue: formData.sort_dectotal })(
+                    <Checkbox defaultChecked={formData.sort_dectotal}>{this.msg('priceDescSort')}</Checkbox>)}
+                </FormItem>
+              </Col>
+              <Col span={8}>
+                <FormItem>
+                  {getFieldDecorator('sort_hscode', { initialValue: formData.sort_hscode })(
+                    <Checkbox defaultChecked={formData.sort_hscode}>{this.msg('hsCodeAscSort')}</Checkbox>)}
+                </FormItem>
+              </Col>
+            </Row>
           </Panel>
         </Collapse>
       </Row>

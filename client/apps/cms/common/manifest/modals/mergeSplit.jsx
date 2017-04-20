@@ -266,38 +266,38 @@ export default class MergeSplitModal extends React.Component {
           <Col span="12">
             <Card title={this.msg('splitPrinciple')} bordered>
               <FormItem>
-                <MSCheckbox fieldOpt="splitOpt" field="byHsCode"
-                  text={this.msg('specialHscodeDeclare')}
-                  onChange={this.handleCheckChange} state={this.state}
-                />
-              </FormItem>
-              { splitOpt.byHsCode &&
-                <FormItem label={this.msg('specialHscodeSort')}>
-                  {getFieldDecorator('specialSort', {
-                    rules: [{ type: 'array' }],
-                    initialValue: splitOpt.hsCategory,
-                  })(<Select mode="multiple" style={{ width: '100%' }}>
-                    {
-                        hscodeCategories.map(ct =>
-                          <Option value={ct.id} key={ct.id}>{ct.name}</Option>
-                        )
-                      }
-                  </Select>)}
-                </FormItem>
-              }
-              <FormItem>
-                <MSCheckbox fieldOpt="splitOpt" field="tradeCurr"
-                  text={this.msg('currencySplit')}
-                  onChange={this.handleCheckChange} state={this.state}
-                />
-              </FormItem>
-              <FormItem>
                 <Select onChange={this.handleSplitSelectChange} value={this.state.splitOpt.perCount}
                   style={{ width: '100%' }}
                 >
                   <Option value="20">{'按20品拆分'}</Option>
                   <Option value="50">{'按50品拆分'}</Option>
                 </Select>
+              </FormItem>
+              <FormItem>
+                <MSCheckbox fieldOpt="splitOpt" field="byHsCode"
+                  text={this.msg('specialHscodeDeclare')}
+                  onChange={this.handleCheckChange} state={this.state}
+                />
+                { splitOpt.byHsCode &&
+                <div>
+                  {getFieldDecorator('specialSort', {
+                    rules: [{ type: 'array' }],
+                    initialValue: splitOpt.hsCategory,
+                  })(<Select size="large" mode="multiple" placeholder={this.msg('specialHscodeSort')} style={{ width: '100%' }}>
+                    {
+                        hscodeCategories.map(ct =>
+                          <Option value={ct.id} key={ct.id}>{ct.name}</Option>
+                        )
+                      }
+                  </Select>)}
+                </div>
+              }
+              </FormItem>
+              <FormItem>
+                <MSCheckbox fieldOpt="splitOpt" field="tradeCurr"
+                  text={this.msg('currencySplit')}
+                  onChange={this.handleCheckChange} state={this.state}
+                />
               </FormItem>
             </Card>
           </Col>

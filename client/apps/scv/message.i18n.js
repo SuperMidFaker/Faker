@@ -27,7 +27,7 @@ const messages = defineMessages({
   },
   customizeTracking: {
     id: 'scv.module.tracking.customize',
-    defaultMessage: '自定义追踪表',
+    defaultMessage: '自定义状态跟踪',
   },
   clearance: {
     id: 'scv.module.clearance',
