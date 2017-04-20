@@ -229,6 +229,10 @@ const messages = defineMessages({
     id: 'scv.products.tradeitem.refuse',
     defaultMessage: '拒绝',
   },
+  setStandard: {
+    id: 'scv.products.tradeitem.set.standard',
+    defaultMessage: '设为标准',
+  },
   broker: {
     id: 'scv.products.tradeitem.broker',
     defaultMessage: '报关行',
