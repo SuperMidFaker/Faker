@@ -112,7 +112,7 @@ export default class CustomsDeclEditor extends React.Component {
   }
   handleShowSendDeclModal = () => {
     const head = this.props.head;
-    this.props.showSendDeclModal({ visible: true, preEntrySeqNo: head.pre_entry_seq_no, delgNo: head.delg_no });
+    this.props.showSendDeclModal({ visible: true, preEntrySeqNo: head.pre_entry_seq_no, delgNo: head.delg_no, agentCustCo: head.agent_custco });
   }
   render() {
     const { ietype, form, head, bodies, billMeta } = this.props;

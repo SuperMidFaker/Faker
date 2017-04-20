@@ -23,7 +23,7 @@ const businessType = PARTNER_BUSINESSE_TYPES.clearance;
     tenantId: state.account.tenantId,
     tenantName: state.account.tenantName,
     loginId: state.account.loginId,
-    loginName: state.account.loginName,
+    loginName: state.account.username,
     brokers: state.partner.partners,
   }),
   { addItem, loadPartners }

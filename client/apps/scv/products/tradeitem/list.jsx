@@ -10,13 +10,14 @@ import NavLink from 'client/components/nav-link';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import { loadTradeParams } from 'common/reducers/cmsTradeitem';
-import { loadTradeItems, deleteItems, setItemStatus, setCompareVisible, setNominatedVisible } from 'common/reducers/scvClassification';
+import { loadTradeItems, deleteItems, setItemStatus, setCompareVisible, setNominatedVisible, loadConflictItems } from 'common/reducers/scvClassification';
 import SearchBar from 'client/components/search-bar';
 import { createFilename } from 'client/util/dataTransform';
-import { CMS_ITEM_STATUS } from 'common/constants';
+import { TRADE_ITEM_STATUS } from 'common/constants';
 import RowUpdater from 'client/components/rowUpdater';
 import ImportComparisonModal from './modals/importComparison';
 import NominatedImportModal from './modals/nominatedImport';
+import ConflictList from './conflictList';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -43,6 +44,7 @@ function fetchData({ state, dispatch }) {
     loginName: state.account.username,
     listFilter: state.scvClassification.listFilter,
     tradeItemlist: state.scvClassification.tradeItemlist,
+    conflictItemlist: state.scvClassification.conflictItemlist,
     visibleAddItemModal: state.scvClassification.visibleAddItemModal,
     tradeItemsLoading: state.scvClassification.tradeItemsLoading,
     units: state.cmsTradeitem.params.units.map(un => ({
@@ -58,7 +60,7 @@ function fetchData({ state, dispatch }) {
       text: tc.cntry_name_cn,
     })),
   }),
-  { loadTradeItems, deleteItems, setItemStatus, setCompareVisible, setNominatedVisible }
+  { loadTradeItems, deleteItems, setItemStatus, setCompareVisible, setNominatedVisible, loadConflictItems }
 )
 @connectNav({
   depth: 2,
@@ -78,7 +80,7 @@ export default class TradeItemList extends Component {
   }
   state = {
     selectedRowKeys: [],
-    brokers: [],
+    listView: 'noConflict',
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
@@ -253,8 +255,21 @@ export default class TradeItemList extends Component {
   })
   handleItemListLoad = (currentPage, filter, search) => {
     const { tenantId, listFilter, tradeItemlist: { pageSize, current, searchText } } = this.props;
-    this.setState({ expandedKeys: [] });
     this.props.loadTradeItems({
+      tenantId,
+      filter: JSON.stringify(filter || listFilter),
+      pageSize,
+      currentPage: currentPage || current,
+      searchText: search !== undefined ? search : searchText,
+    }).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      }
+    });
+  }
+  handleConflictListLoad = (currentPage, filter, search) => {
+    const { tenantId, listFilter, conflictItemlist: { pageSize, current, searchText } } = this.props;
+    this.props.loadConflictItems({
       tenantId,
       filter: JSON.stringify(filter || listFilter),
       pageSize,
@@ -300,52 +315,76 @@ export default class TradeItemList extends Component {
     this.setState({ selectedRowKeys: [] });
   }
   handleRadioChange = (ev) => {
-    this.setState({ selectedRowKeys: [] });
+    this.setState({ selectedRowKeys: [], listView: 'noConflict' });
     if (ev.target.value === this.props.listFilter.status) {
       return;
     }
     const filter = { ...this.props.listFilter, status: ev.target.value };
     this.handleItemListLoad(1, filter);
   }
+  handleConflictRadio = (ev) => {
+    this.setState({ selectedRowKeys: [], listView: 'conflict' });
+    if (ev.target.value === this.props.listFilter.status) {
+      return;
+    }
+    const filter = { ...this.props.listFilter, status: ev.target.value };
+    this.handleConflictListLoad(1, filter);
+  }
   handleItemPass = (row) => {
-    this.props.setItemStatus({ ids: [row.id], status: CMS_ITEM_STATUS.classified }).then((result) => {
-      if (result.error) {
-        message.error(result.error.message, 10);
-      } else {
-        message.success('归类通过');
-        this.handleItemListLoad();
-      }
-    });
+    this.props.setItemStatus({
+      ids: [row.id],
+      status: TRADE_ITEM_STATUS.classified,
+      tenantId: this.props.tenantId,
+      conflicted: false }).then((result) => {
+        if (result.error) {
+          message.error(result.error.message, 10);
+        } else {
+          message.success('归类通过');
+          this.handleItemListLoad();
+        }
+      });
   }
   handleItemRefused = (row) => {
-    this.props.setItemStatus({ ids: [row.id], status: CMS_ITEM_STATUS.unclassified }).then((result) => {
-      if (result.error) {
-        message.error(result.error.message, 10);
-      } else {
-        message.warning('归类拒绝');
-        this.handleItemListLoad();
-      }
-    });
+    this.props.setItemStatus({
+      ids: [row.id],
+      status: TRADE_ITEM_STATUS.unclassified,
+      tenantId: this.props.tenantId,
+      conflicted: false }).then((result) => {
+        if (result.error) {
+          message.error(result.error.message, 10);
+        } else {
+          message.warning('归类拒绝');
+          this.handleItemListLoad();
+        }
+      });
   }
   handleItemsPass = () => {
-    this.props.setItemStatus({ ids: this.state.selectedRowKeys, status: CMS_ITEM_STATUS.classified }).then((result) => {
-      if (result.error) {
-        message.error(result.error.message, 10);
-      } else {
-        this.setState({ selectedRowKeys: [] });
-        this.handleItemListLoad();
-      }
-    });
+    this.props.setItemStatus({
+      ids: this.state.selectedRowKeys,
+      status: TRADE_ITEM_STATUS.classified,
+      tenantId: this.props.tenantId,
+      conflicted: false }).then((result) => {
+        if (result.error) {
+          message.error(result.error.message, 10);
+        } else {
+          this.setState({ selectedRowKeys: [] });
+          this.handleItemListLoad();
+        }
+      });
   }
   handleItemsRefused = () => {
-    this.props.setItemStatus({ ids: this.state.selectedRowKeys, status: CMS_ITEM_STATUS.unclassified }).then((result) => {
-      if (result.error) {
-        message.error(result.error.message, 10);
-      } else {
-        this.setState({ selectedRowKeys: [] });
-        this.handleItemListLoad();
-      }
-    });
+    this.props.setItemStatus({
+      ids: this.state.selectedRowKeys,
+      status: TRADE_ITEM_STATUS.unclassified,
+      tenantId: this.props.tenantId,
+      conflicted: false }).then((result) => {
+        if (result.error) {
+          message.error(result.error.message, 10);
+        } else {
+          this.setState({ selectedRowKeys: [] });
+          this.handleItemListLoad();
+        }
+      });
   }
   handleSearch = (value) => {
     const { listFilter } = this.props;
@@ -395,7 +434,7 @@ export default class TradeItemList extends Component {
       fixed: 'right',
       render: (o, record) => {
         if (record.contribute_tenant_id === this.props.tenantId) {
-          if (record.status === CMS_ITEM_STATUS.pending) {
+          if (record.status === TRADE_ITEM_STATUS.pending) {
             return (
               <span>
                 <RowUpdater onHit={this.handleItemPass} label={<span><Icon type="check-circle-o" /> {this.msg('pass')}</span>} row={record} />
@@ -433,7 +472,7 @@ export default class TradeItemList extends Component {
               </span>
             );
           }
-        } else if (record.status === CMS_ITEM_STATUS.pending) {
+        } else if (record.status === TRADE_ITEM_STATUS.pending) {
           return (
             <span>
               <RowUpdater onHit={this.handleItemPass} label={<span><Icon type="check-circle-o" /> {this.msg('pass')}</span>} row={record} />
@@ -467,7 +506,7 @@ export default class TradeItemList extends Component {
             <RadioButton value="classified">{this.msg('filterClassified')}</RadioButton>
           </RadioGroup>
           <span />
-          <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">
+          <RadioGroup value={listFilter.status} onChange={this.handleConflictRadio} size="large">
             <RadioButton value="conflicted">{this.msg('filterConflict')}</RadioButton>
           </RadioGroup>
           <div className="top-bar-tools">
@@ -490,9 +529,10 @@ export default class TradeItemList extends Component {
               </div>
             </div>
             <div className="panel-body table-panel">
-              <RemoteTable loading={this.props.tradeItemsLoading} rowSelection={rowSelection} rowKey={record => record.id}
-                columns={columns} dataSource={this.dataSource} scroll={{ x: 3800 }}
-              />
+              {this.state.listView === 'noConflict' && <RemoteTable loading={this.props.tradeItemsLoading} rowSelection={rowSelection}
+                rowKey={record => record.id} columns={columns} dataSource={this.dataSource} scroll={{ x: 3800 }}
+              />}
+              {this.state.listView === 'conflict' && <ConflictList />}
             </div>
             <NominatedImportModal />
             <ImportComparisonModal />

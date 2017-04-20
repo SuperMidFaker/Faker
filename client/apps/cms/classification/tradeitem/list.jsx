@@ -19,7 +19,7 @@ import ExcelUpload from 'client/components/excelUploader';
 import { createFilename } from 'client/util/dataTransform';
 import RepoUsersPane from './panes/repoUsersPane';
 import ImportComparisonModal from './modals/importComparison';
-import { CMS_ITEM_STATUS, CMS_TRADE_REPO_PERMISSION } from 'common/constants';
+import { TRADE_ITEM_STATUS, CMS_TRADE_REPO_PERMISSION } from 'common/constants';
 import RowUpdater from 'client/components/rowUpdater';
 
 const formatMsg = format(messages);
@@ -120,9 +120,9 @@ export default class TradeItemList extends Component {
     width: 120,
     render: (o, record) => {
       switch (record.status) {
-        case CMS_ITEM_STATUS.pending:
+        case TRADE_ITEM_STATUS.pending:
           return <span>{o} <Icon type="question-circle-o" className="mdc-text-warning" /></span>;
-        case CMS_ITEM_STATUS.classified:
+        case TRADE_ITEM_STATUS.classified:
           return <span>{o} <Icon type="check-circle-o" className="mdc-text-success" /></span>;
         default:
           return o;
@@ -378,7 +378,7 @@ export default class TradeItemList extends Component {
     this.handleItemListLoad(this.props.repoId, 1, filter);
   }
   handleItemPass = (row) => {
-    this.props.setItemStatus({ repoId: this.props.repoId, ids: [row.id], status: CMS_ITEM_STATUS.classified }).then((result) => {
+    this.props.setItemStatus({ repoId: this.props.repoId, ids: [row.id], status: TRADE_ITEM_STATUS.classified }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -388,7 +388,7 @@ export default class TradeItemList extends Component {
     });
   }
   handleItemRefused = (row) => {
-    this.props.setItemStatus({ repoId: this.props.repoId, ids: [row.id], status: CMS_ITEM_STATUS.unclassified }).then((result) => {
+    this.props.setItemStatus({ repoId: this.props.repoId, ids: [row.id], status: TRADE_ITEM_STATUS.unclassified }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -398,7 +398,7 @@ export default class TradeItemList extends Component {
     });
   }
   handleItemsPass = () => {
-    this.props.setItemStatus({ repoId: this.props.repoId, ids: this.state.selectedRowKeys, status: CMS_ITEM_STATUS.classified }).then((result) => {
+    this.props.setItemStatus({ repoId: this.props.repoId, ids: this.state.selectedRowKeys, status: TRADE_ITEM_STATUS.classified }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -408,7 +408,7 @@ export default class TradeItemList extends Component {
     });
   }
   handleItemsRefused = () => {
-    this.props.setItemStatus({ repoId: this.props.repoId, ids: this.state.selectedRowKeys, status: CMS_ITEM_STATUS.unclassified }).then((result) => {
+    this.props.setItemStatus({ repoId: this.props.repoId, ids: this.state.selectedRowKeys, status: TRADE_ITEM_STATUS.unclassified }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -475,7 +475,7 @@ export default class TradeItemList extends Component {
         width: 150,
         fixed: 'right',
         render: (o, record) => {
-          if (record.status === CMS_ITEM_STATUS.unclassified) {
+          if (record.status === TRADE_ITEM_STATUS.unclassified) {
             return (<span>
               <NavLink to={`/clearance/classification/tradeitem/edit/${record.id}`}>
                 <Icon type="edit" /> {this.msg('modify')}
@@ -485,7 +485,7 @@ export default class TradeItemList extends Component {
                 <a role="button"><Icon type="delete" /> {this.msg('delete')}</a>
               </Popconfirm>
             </span>);
-          } else if (record.status === CMS_ITEM_STATUS.pending) {
+          } else if (record.status === TRADE_ITEM_STATUS.pending) {
             return (
               <span>
                 <RowUpdater onHit={this.handleItemPass} label={<span><Icon type="check-circle-o" /> {this.msg('pass')}</span>} row={record} />
@@ -510,7 +510,7 @@ export default class TradeItemList extends Component {
                 </Dropdown>
               </span>
             );
-          } else if (record.status === CMS_ITEM_STATUS.classified) {
+          } else if (record.status === TRADE_ITEM_STATUS.classified) {
             return (
               <span>
                 <NavLink to={`/clearance/classification/tradeitem/edit/${record.id}`}>

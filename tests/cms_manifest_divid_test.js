@@ -5,6 +5,10 @@ let bodyDatas = [{ a: 'aa', wet_wt: 5 }, { a: 'bb', wet_wt: 10.3 }, { a: 'cc' },
 dividGrossWt(bodyDatas.slice(0, bodyDatas.length - 1).map(bd => bd.wet_wt || 0), totGrossWt);
 // assert(wts === [5.41, 11.14, 0, 24.55]);
 
+totGrossWt = 41;
+bodyDatas = [{ a: 'aa', wet_wt: 39 }];
+console.log(dividGrossWt(bodyDatas.map(bd => bd.wet_wt || 0), totGrossWt));
+
 totGrossWt = 83.1378;
 bodyDatas = [{ a: 'aa', wet_wt: 25.35894 }, { a: 'bb', wet_wt: 20.36 }, { a: 'cc' }, { a: 'dd', wet_wt: 32.7 }];
 // dividGrossWt(bodyDatas.map(bd => bd.wet_wt || 0), totGrossWt) === [ 26.8849, 21.5852, 0, 34.6677 ];

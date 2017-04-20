@@ -3,6 +3,7 @@ import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/scv/classification/', [
   'LOAD_TRADE_ITEMS', 'LOAD_TRADE_ITEMS_SUCCEED', 'LOAD_TRADE_ITEMS_FAIL',
+  'LOAD_CONFLICT_ITEMS', 'LOAD_CONFLICT_ITEMS_SUCCEED', 'LOAD_CONFLICT_ITEMS_FAIL',
   'ADD_ITEM', 'ADD_ITEM_SUCCEED', 'ADD_ITEM_FAIL',
   'DELETE_ITEMS', 'DELETE_ITEMS_SUCCEED', 'DELETE_ITEMS_FAIL',
   'SET_ITEM_STATUS', 'SET_ITEM_STATUS_SUCCEED', 'SET_ITEM_STATUS_FAIL',
@@ -15,10 +16,19 @@ const actionTypes = createActionTypes('@@welogix/scv/classification/', [
   'COMPARED_DATAS_SAVE', 'COMPARED_DATAS_SAVE_SUCCEED', 'COMPARED_DATAS_SAVE_FAIL',
   'LOAD_MASTERCONF', 'LOAD_MASTERCONF_SUCCEED', 'LOAD_MASTERCONF_FAIL',
   'NOMINATED_IMPORT', 'NOMINATED_IMPORT_SUCCEED', 'NOMINATED_IMPORT_FAIL',
+  'ITEM_EDITED_SAVE', 'ITEM_EDITED_SAVE_SUCCEED', 'ITEM_EDITED_SAVE_FAIL',
+  'SET_STANDARD_ITEM', 'SET_STANDARD_ITEM_SUCCEED', 'SET_STANDARD_ITEM_FAIL',
 ]);
 
 const initialState = {
   tradeItemlist: {
+    totalCount: 0,
+    current: 1,
+    pageSize: 20,
+    searchText: '',
+    data: [],
+  },
+  conflictItemlist: {
     totalCount: 0,
     current: 1,
     pageSize: 20,
@@ -53,6 +63,12 @@ export default function reducer(state = initialState, action) {
       return { ...state, tradeItemlist: action.result.data, listFilter: JSON.parse(action.params.filter), tradeItemsLoading: false };
     case actionTypes.LOAD_TRADE_ITEMS_FAIL:
       return { ...state, tradeItemsLoading: false };
+    case actionTypes.LOAD_CONFLICT_ITEMS:
+      return { ...state, tradeItemsLoading: true };
+    case actionTypes.LOAD_CONFLICT_ITEMS_SUCCEED:
+      return { ...state, conflictItemlist: action.result.data, listFilter: JSON.parse(action.params.filter), tradeItemsLoading: false };
+    case actionTypes.LOAD_CONFLICT_ITEMS_FAIL:
+      return { ...state, tradeItemsLoading: false };
     case actionTypes.LOAD_TRADE_ITEM_SUCCEED:
       return { ...state, itemData: action.result.data.tradeitem };
     case actionTypes.LOAD_SYNCS_SUCCEED:
@@ -86,6 +102,21 @@ export function loadTradeItems(params) {
   };
 }
 
+export function loadConflictItems(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_CONFLICT_ITEMS,
+        actionTypes.LOAD_CONFLICT_ITEMS_SUCCEED,
+        actionTypes.LOAD_CONFLICT_ITEMS_FAIL,
+      ],
+      endpoint: 'v1/scv/tradeitem/items/conflicted/load',
+      method: 'get',
+      params,
+    },
+  };
+}
+
 export function addItem(datas) {
   return {
     [CLIENT_API]: {
@@ -95,6 +126,21 @@ export function addItem(datas) {
         actionTypes.ADD_ITEM_FAIL,
       ],
       endpoint: 'v1/scv/tradeitem/item/add',
+      method: 'post',
+      data: datas,
+    },
+  };
+}
+
+export function itemEditedSave(datas) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.ITEM_EDITED_SAVE,
+        actionTypes.ITEM_EDITED_SAVE_SUCCEED,
+        actionTypes.ITEM_EDITED_SAVE_FAIL,
+      ],
+      endpoint: 'v1/scv/tradeitem/update',
       method: 'post',
       data: datas,
     },
@@ -260,6 +306,21 @@ export function nominatedImport(datas) {
         actionTypes.NOMINATED_IMPORT_FAIL,
       ],
       endpoint: 'v1/scv/tradeitems/compared/import',
+      method: 'post',
+      data: datas,
+    },
+  };
+}
+
+export function setStandardItem(datas) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SET_STANDARD_ITEM,
+        actionTypes.SET_STANDARD_ITEM_SUCCEED,
+        actionTypes.SET_STANDARD_ITEM_FAIL,
+      ],
+      endpoint: 'v1/scv/tradeitems/set/standard',
       method: 'post',
       data: datas,
     },

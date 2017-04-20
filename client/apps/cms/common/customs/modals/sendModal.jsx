@@ -37,6 +37,7 @@ export default class SendModal extends React.Component {
     showSendDeclModal: PropTypes.func.isRequired,
     getEasipassList: PropTypes.func.isRequired,
     sendDecl: PropTypes.func.isRequired,
+    reload: PropTypes.func,
   }
   state = {
     easipassList: [],
@@ -63,6 +64,7 @@ export default class SendModal extends React.Component {
           } else {
             message.info('发送成功');
             this.props.showSendDeclModal({ visible: false });
+            this.props.reload();
           }
         });
       }

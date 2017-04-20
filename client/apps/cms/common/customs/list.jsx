@@ -209,7 +209,6 @@ export default class DelgDeclList extends Component {
     remotes: this.props.delgdeclList,
   })
   handleTableLoad = (currentPage, filter) => {
-    this.setState({ expandedKeys: [] });
     this.props.loadDelgDecls({
       ietype: this.props.ietype,
       tenantId: this.props.tenantId,
@@ -392,7 +391,7 @@ export default class DelgDeclList extends Component {
               />
             </div>
             <DeclnoFillModal reload={this.handleTableLoad} />
-            <SendModal ietype={this.props.ietype} />
+            <SendModal ietype={this.props.ietype} reload={this.handleTableLoad} />
           </div>
         </Content>
         <DelegationDockPanel ietype={this.props.ietype} />

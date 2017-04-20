@@ -288,7 +288,7 @@ export default class ShipmentActions extends React.Component {
             </PrivilegeCover>
           );
         }
-      } else if (dispatch.status === SHIPMENT_TRACK_STATUS.accepted) {
+      } else if (dispatch.status === SHIPMENT_TRACK_STATUS.accepted || dispatch.status === SHIPMENT_TRACK_STATUS.dispatched) {
         if (stage === 'acceptance') {
           buttons = (
             <PrivilegeCover module="transport" feature="shipment" action="edit">
@@ -326,7 +326,7 @@ export default class ShipmentActions extends React.Component {
                 </span>
               </PrivilegeCover>
             );
-          } else if (dispatch.disp_status > 0 && dispatch.sr_tenant_id === tenantId) {
+          } else if (dispatch.disp_status > 0 && dispatch.sp_tenant_id === tenantId) {
             if (dispatch.downstream_status === 1) {
               buttons = (
                 <PrivilegeCover module="transport" feature="dispatch" action="edit">

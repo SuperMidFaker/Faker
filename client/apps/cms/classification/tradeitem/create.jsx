@@ -18,7 +18,7 @@ const { Header, Content } = Layout;
   state => ({
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
-    loginName: state.account.loginName,
+    loginName: state.account.username,
     repoId: state.cmsTradeitem.repoId,
   }),
   { createTradeItem }
