@@ -385,7 +385,7 @@ export default class ManifestBodyPanel extends React.Component {
       className: 'cell-align-right',
       render: (o, record, index) =>
         <ColumnInput field="trade_total" inEdit={index === editIndex} record={record}
-          onChange={this.handleEditChange} edit={editBody} decimal={3}
+          onChange={this.handleEditChange} edit={editBody}
         />,
     }, {
       title: this.msg('currency'),
@@ -430,7 +430,7 @@ export default class ManifestBodyPanel extends React.Component {
       className: 'cell-align-right',
       render: (o, record, index) =>
         <ColumnInput field="gross_wt" inEdit={index === editIndex} record={record}
-          onChange={this.handleEditChange} edit={editBody} decimal={3}
+          onChange={this.handleEditChange} edit={editBody}
         />,
     }, {
       title: <div className="cell-align-right">{this.msg('netwt')}</div>,
@@ -438,7 +438,7 @@ export default class ManifestBodyPanel extends React.Component {
       className: 'cell-align-right',
       render: (o, record, index) =>
         <ColumnInput field="wet_wt" inEdit={index === editIndex} record={record}
-          onChange={this.handleEditChange} edit={editBody} decimal={3}
+          onChange={this.handleEditChange} edit={editBody}
         />,
     }, {
       title: this.msg('exemptionWay'),
@@ -700,18 +700,24 @@ export default class ManifestBodyPanel extends React.Component {
   }
   handleGrossWtDivid = () => {
     const totGrossWt = this.props.billHead.gross_wt;
-    const bodyDatas = this.state.bodies;
-    const grossWts = dividGrossWt(bodyDatas.slice(0, bodyDatas.length - 1).map(bd => bd.wet_wt || 0), totGrossWt);
-    const datas = [];
-    for (let i = 0; i < bodyDatas.length - 1; i++) {
-      const body = bodyDatas[i];
-      const data = { ...body, gross_wt: grossWts[i] };
-      datas.push(data);
-      this.props.editBillBody(data);
+    if (!totGrossWt) {
+      message.success('总毛重为空', 3);
+      return;
     }
-    datas.push(bodyDatas[bodyDatas.length - 1]);
-    this.setState({ bodies: datas });
-    message.success(`总毛重: ${totGrossWt.toFixed(3)}千克已分摊`, 3);
+    const bodyDatas = this.state.bodies;
+    if (bodyDatas.length > 1) {
+      const grossWts = dividGrossWt(bodyDatas.slice(0, bodyDatas.length - 1).map(bd => bd.wet_wt || 0), totGrossWt);
+      const datas = [];
+      for (let i = 0; i < bodyDatas.length - 1; i++) {
+        const body = bodyDatas[i];
+        const data = { ...body, gross_wt: grossWts[i] };
+        datas.push(data);
+        this.props.editBillBody(data);
+      }
+      datas.push(bodyDatas[bodyDatas.length - 1]);
+      this.setState({ bodies: datas });
+      message.success(`总毛重: ${totGrossWt.toFixed(3)}千克已分摊`, 3);
+    }
   }
   handleTotalPriceDivid = () => {
     this.props.loadBillBody(this.props.billSeqNo).then((result) => {

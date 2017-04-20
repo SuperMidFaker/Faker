@@ -298,7 +298,7 @@ export default class CDFBodyPanel extends React.Component {
       className: 'cell-align-right',
       render: (o, record, index) =>
         <ColumnInput field="dec_price" inEdit={index === editIndex} record={record}
-          edit={editBody} decimal={3}
+          edit={editBody}
         />,
     }, {
       title: <div className="cell-align-right">{this.msg('decTotal')}</div>,
@@ -306,7 +306,7 @@ export default class CDFBodyPanel extends React.Component {
       className: 'cell-align-right',
       render: (o, record, index) =>
         <ColumnInput field="trade_total" inEdit={index === editIndex} record={record}
-          edit={editBody} decimal={3}
+          edit={editBody}
         />,
     }, {
       title: this.msg('currency'),
@@ -336,7 +336,7 @@ export default class CDFBodyPanel extends React.Component {
       className: 'cell-align-right',
       render: (o, record, index) =>
         <ColumnInput field="qty_2" inEdit={index === editIndex} record={record}
-          edit={editBody} decimal={3}
+          edit={editBody}
         />,
     }, {
       title: this.msg('unit2'),
@@ -351,7 +351,7 @@ export default class CDFBodyPanel extends React.Component {
       className: 'cell-align-right',
       render: (o, record, index) =>
         <ColumnInput field="gross_wt" inEdit={index === editIndex} record={record}
-          edit={editBody} decimal={3}
+          edit={editBody}
         />,
     }, {
       title: <div className="cell-align-right">{this.msg('netwt')}</div>,
@@ -359,7 +359,7 @@ export default class CDFBodyPanel extends React.Component {
       className: 'cell-align-right',
       render: (o, record, index) =>
         <ColumnInput field="wet_wt" inEdit={index === editIndex} record={record}
-          edit={editBody} decimal={3}
+          edit={editBody}
         />,
     }, {
       title: this.msg('exemptionWay'),

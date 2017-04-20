@@ -37,13 +37,16 @@ export default class AmountModel extends React.Component {
   }
   handleOk = () => {
     const bodies = this.props.billBodies;
+    if (bodies.length === 0) {
+      return;
+    }
     const amount = this.state.amount;
     const amts = dividAmount(bodies.map(bd => bd.trade_total), amount);
     const proms = [];
     for (let i = 0; i < bodies.length; i++) {
       proms.push(this.props.editBillBody({ ...bodies[i], trade_total: amts[i] }));
     }
-    proms.then(() => {
+    Promise.all(proms).then(() => {
       this.props.loadBillBody(this.props.billMeta.bill_seq_no);
       this.props.closeAmountModel();
       message.success(`总金额: ${amount} 已平摊`, 3);
