@@ -84,7 +84,7 @@ export default class HeaderNavBar extends React.Component {
     this.props.goBackNav();
     // router.goBack on initial login next *TODO* history index
   }
-  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
+  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values);
   render() {
     const { navTitle } = this.props;
     const { intl, avatar, name, locale } = this.props;

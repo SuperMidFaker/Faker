@@ -12,6 +12,7 @@ import messages from '../message.i18n';
 import { loadCustomers } from 'common/reducers/crmCustomers';
 import { loadRepos, openAddModal, selectedRepoId, loadTradeItems, setCompareVisible,
   deleteItems, setRepo, deleteRepo, loadTradeParams, setItemStatus } from 'common/reducers/cmsTradeitem';
+import { getAuditWay } from 'common/reducers/scvClassification';
 import AddTradeRepoModal from './modals/addTradeRepo';
 import ButtonToggle from 'client/components/ButtonToggle';
 import SearchBar from 'client/components/search-bar';
@@ -67,7 +68,7 @@ function fetchData({ state, dispatch }) {
     })),
   }),
   { loadCustomers, openAddModal, selectedRepoId, loadTradeItems, setCompareVisible,
-    deleteItems, setRepo, loadRepos, deleteRepo, setItemStatus }
+    deleteItems, setRepo, loadRepos, deleteRepo, setItemStatus, getAuditWay }
 )
 @connectNav({
   depth: 2,
@@ -320,10 +321,22 @@ export default class TradeItemList extends Component {
       }
     });
   }
+  handleAuditWay = function (id) {
+    const { tenantId } = this.props;
+    this.props.getAuditWay(
+      tenantId,
+      id
+    ).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      }
+    });
+  }
   handleRowClick = (record) => {
     const repo = record;
     this.props.selectedRepoId(repo.id);
     this.handleItemListLoad(repo.id);
+    this.handleAuditWay(repo.owner_tenant_id);
     this.props.setRepo(repo);
   }
   handleAddOwener = () => {
