@@ -267,7 +267,7 @@ export default class PersonnelSetting extends React.Component {
       },
     }, {
       title: formatContainerMsg(intl, 'opColumn'),
-      width: 150,
+      width: 80,
       render: (text, record, index) => {
         if (record.role === PRESET_TENANT_ROLE.owner.name) {
           return (
@@ -322,24 +322,24 @@ export default class PersonnelSetting extends React.Component {
               {msg('members')}
             </Breadcrumb.Item>
           </Breadcrumb>
+          <div className="top-bar-tools">
+            <PrivilegeCover module="corp" feature="personnel" action="create">
+              <Button size="large" type="primary" onClick={() => this.handleNavigationTo('/corp/members/new')} icon="plus-circle-o">
+                {msg('newUser')}
+              </Button>
+            </PrivilegeCover>
+          </div>
         </Header>
         <Content className="main-content">
           <div className="page-body">
             <div className="toolbar">
-              <div className="toolbar-right">
-                <Select style={{ width: 200 }} value={`${tenant.id}`}
-                  onChange={value => this.handleTenantSwitch(value)}
-                >
-                  {
+              <Select style={{ width: 200 }} value={`${tenant.id}`}
+                onChange={value => this.handleTenantSwitch(value)}
+              >
+                {
                     branches.map(br => <Option key={br.key} value={`${br.key}`}>{br.name}</Option>)
-                  }
-                </Select>
-              </div>
-              <PrivilegeCover module="corp" feature="personnel" action="create">
-                <Button type="primary" onClick={() => this.handleNavigationTo('/corp/members/new')} icon="plus-circle-o">
-                  {msg('newUser')}
-                </Button>
-              </PrivilegeCover>
+                }
+              </Select>
             </div>
             <div className="panel-body table-panel">
               <Table rowSelection={rowSelection} columns={columns} loading={loading} dataSource={dataSource} useFixedHeader />
