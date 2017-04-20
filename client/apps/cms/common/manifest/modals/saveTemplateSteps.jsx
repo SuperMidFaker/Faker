@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Modal, Form, Mention, message, Steps, Button, Card, Input } from 'antd';
+import { Modal, Form, Mention, message, Steps, Button, Row, Col, Input } from 'antd';
 import { setStepVisible } from 'common/reducers/cmsManifest';
 import { createGeneratedTemplate, validateTempName } from 'common/reducers/cmsSettings';
 import ImportRuleForm from '../form/bodyImportRuleForm';
@@ -181,25 +181,21 @@ export default class SaveTemplateModal extends React.Component {
       title: '第三步',
       description: '确认合并拆分规则',
     }];
-    const modalTitle = (
-      <Steps current={current}>
-        {steps.map(item => <Step key={item.title} title={item.title} description={item.description} />)}
-      </Steps>
-    );
     return (
-      <Modal title={modalTitle} width={800} visible={visibleStepModal} onCancel={this.handleCancel} footer={null}>
-        <div>
+      <Modal title="保存为模板" width={800} visible={visibleStepModal} onCancel={this.handleCancel} footer={null}>
+        <Steps size="small" current={current}>
+          {steps.map(item => <Step key={item.title} title={item.title} description={item.description} />)}
+        </Steps>
+        <Form layout="horizontal" style={{ marginTop: 24 }}>
           { this.state.current === 0 &&
-            <Card>
-              <FormItem label="模板名称:" labelCol={{ span: 4 }} wrapperCol={{ span: 20 }} >
+            <FormItem label="模板名称:" labelCol={{ span: 4 }} wrapperCol={{ span: 16 }} >
                 {getFieldDecorator('template_name', {
                   initialValue: this.state.formData.template_name,
                   rules: [{ required: true, message: '模板名称必填' }],
                 })(
                   <Input />
                 )}
-              </FormItem>
-            </Card>
+            </FormItem>
           }
           {this.state.current === 1 &&
             <ImportRuleForm form={form} formData={formData} />
@@ -207,12 +203,15 @@ export default class SaveTemplateModal extends React.Component {
           {this.state.current === 2 &&
             <MergeSplitForm form={form} formData={formData} />
           }
-        </div>
-        <div>
-          {this.state.current < steps.length - 1 && <Button type="primary" onClick={this.handlenext}>下一步</Button>}
-          {this.state.current > 0 && <Button style={{ marginLeft: 8 }} onClick={this.handleprev}>上一步</Button>}
-          {this.state.current === steps.length - 1 && <Button type="primary" onClick={this.handleOk}>保存</Button>}
-        </div>
+        </Form>
+        <Row type="flex">
+          <Col className="col-flex-primary" />
+          <Col className="col-flex-secondary">
+            {this.state.current > 0 && <Button style={{ marginRight: 8 }} onClick={this.handleprev}>上一步</Button>}
+            {this.state.current < steps.length - 1 && <Button type="primary" onClick={this.handlenext}>下一步</Button>}
+            {this.state.current === steps.length - 1 && <Button type="primary" onClick={this.handleOk}>保存</Button>}
+          </Col>
+        </Row>
       </Modal>
     );
   }

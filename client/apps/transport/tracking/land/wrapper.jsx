@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { intlShape, injectIntl } from 'react-intl';
-import { Layout, Radio } from 'antd';
+import { Breadcrumb, Layout, Radio } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import ShipmentDockPanel from '../../shipment/dock/shipmentDockPanel';
 import { format } from 'client/common/i18n/helpers';
@@ -113,7 +113,11 @@ export default class TrackingLandWrapper extends React.Component {
             { opacity: [1, 0], translateY: [0, -50] }]}
       >
         <Header className="top-bar">
-          <span>{this.msg('transportTracking')}</span>
+          <Breadcrumb>
+            <Breadcrumb.Item>
+              {this.msg('transportTracking')}
+            </Breadcrumb.Item>
+          </Breadcrumb>
           <RadioGroup onChange={this.handleStatusNav} value={radioValue} size="large">
             <RadioButton value="all">{this.msg('allShipmt')}</RadioButton>
             <RadioButton value="pending">{this.msg('pendingShipmt')}</RadioButton>

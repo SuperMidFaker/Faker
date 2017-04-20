@@ -15,7 +15,7 @@ const formItemLayout = {
 @connect(state => ({
   partners: state.shipment.partners.concat([{
     partner_code: '',
-    name: '公用',
+    name: '全局',
     partner_id: -1,
   }]),
 }), { })
@@ -52,7 +52,7 @@ export default class NodeForm extends Component {
         <FormItem label="名称:" required {...formItemLayout}>
           {getFieldDecorator('name')(<Input required />)}
         </FormItem>
-        <FormItem label="关联方:" required {...formItemLayout}>
+        <FormItem label="关联客户:" required {...formItemLayout}>
           {getFieldDecorator('ref_partner_id')(
             <Select id="select"
               showSearch
@@ -75,17 +75,17 @@ export default class NodeForm extends Component {
         <FormItem label="外部代码:" {...formItemLayout}>
           {getFieldDecorator('node_code')(<Input />)}
         </FormItem>
-        <FormItem label="区域" {...formItemLayout}>
+        <FormItem label="省/市/区" required {...formItemLayout}>
           <Cascader defaultRegion={regionValues} onChange={onRegionChange} />
         </FormItem>
-        <FormItem label="具体地址:" required {...formItemLayout}>
-          {getFieldDecorator('addr')(<Input required />)}
+        <FormItem label="具体地址:" {...formItemLayout}>
+          {getFieldDecorator('addr')(<Input />)}
         </FormItem>
-        <FormItem label="联系人:" {...formItemLayout} required>
+        <FormItem label="联系人:" {...formItemLayout} >
           {getFieldDecorator('contact')(<Input />)}
         </FormItem>
-        <FormItem label="手机号:" {...formItemLayout} required>
-          {getFieldDecorator('mobile')(<Input required />)}
+        <FormItem label="手机号:" {...formItemLayout} >
+          {getFieldDecorator('mobile')(<Input />)}
         </FormItem>
         <FormItem label="邮箱:" {...formItemLayout}>
           {getFieldDecorator('email')(<Input />)}

@@ -566,15 +566,16 @@ export default class DelegationList extends Component {
           <div className="page-body">
             <div className="toolbar">
               <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} />
+              <span />
+              <Select size="large" value={listFilter.viewStatus} style={{ width: 160 }} showSearch={false}
+                onChange={this.handleViewChange}
+              >
+                <OptGroup label="常用视图">
+                  <Option value="all">全部委托</Option>
+                  <Option value="my">我负责的委托</Option>
+                </OptGroup>
+              </Select>
               <div className="toolbar-right">
-                <Select size="large" value={listFilter.viewStatus} style={{ width: 160 }} showSearch={false}
-                  onChange={this.handleViewChange}
-                >
-                  <OptGroup label="常用视图">
-                    <Option value="all">全部委托</Option>
-                    <Option value="my">我负责的委托</Option>
-                  </OptGroup>
-                </Select>
                 <Tooltip title="清关业务委托设置">
                   <Button size="large" icon="setting" />
                 </Tooltip>

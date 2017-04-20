@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Button, Radio, Icon, Layout, message, Select, Modal, Alert } from 'antd';
+import { Breadcrumb, Button, Radio, Icon, Layout, message, Select, Modal, Alert } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
@@ -1033,7 +1033,11 @@ export default class DispatchList extends React.Component {
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Header className="top-bar">
-          <span>{this.msg('transportDispatch')}</span>
+          <Breadcrumb>
+            <Breadcrumb.Item>
+              {this.msg('transportDispatch')}
+            </Breadcrumb.Item>
+          </Breadcrumb>
           <RadioGroup onChange={this.handleStatusChange} value={status} size="large">
             <RadioButton value="waiting">{this.msg('rdTextWaiting')}</RadioButton>
             <RadioButton value="dispatching">{this.msg('rdTextDispatching')}</RadioButton>

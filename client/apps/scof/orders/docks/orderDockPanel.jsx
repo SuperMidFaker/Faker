@@ -70,13 +70,13 @@ export default class OrderDockPanel extends React.Component {
   renderTabs() {
     return (
       <Tabs defaultActiveKey="order" onChange={this.handleTabChange}>
-        <TabPane tab={this.msg('order')} key="order">
+        <TabPane tab={this.msg('tabOrder')} key="order">
           <OrderPane />
         </TabPane>
-        <TabPane tab={this.msg('flow')} key="flow">
+        <TabPane tab={this.msg('tabFlow')} key="flow">
           <FlowPane />
         </TabPane>
-        <TabPane tab={this.msg('billing')} key="billing">
+        <TabPane tab={this.msg('tabBilling')} key="billing">
           <BillingPane />
         </TabPane>
       </Tabs>

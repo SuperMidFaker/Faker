@@ -64,8 +64,8 @@ export default class MergeSplitForm extends React.Component {
   render() {
     const { form: { getFieldDecorator, getFieldValue }, hscodeCategories, formData } = this.props;
     return (
-      <Row>
-        <Collapse defaultActiveKey={['merge']}>
+      <Row style={{ marginBottom: 24 }}>
+        <Collapse bordered={false} defaultActiveKey={['merge', 'split', 'sort']}>
           <Panel key="merge" header={this.msg('mergePrinciple')} >
             <Row>
               <Col span="3">

@@ -597,6 +597,18 @@ const messages = defineMessages({
     id: 'scof.orders.progress.action.shipmt.pod',
     defaultMessage: '回单',
   },
+  tabOrder: {
+    id: 'scof.orders.dock.tab.order',
+    defaultMessage: '订单',
+  },
+  tabFlow: {
+    id: 'scof.orders.dock.tab.flow',
+    defaultMessage: '流程',
+  },
+  tabBilling: {
+    id: 'scof.orders.dock.tab.billing',
+    defaultMessage: '计费',
+  },
 });
 
 export default messages;
