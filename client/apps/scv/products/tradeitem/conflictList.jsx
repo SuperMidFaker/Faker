@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Dropdown, Icon, Menu, Popconfirm, message } from 'antd';
+import { Icon, message } from 'antd';
 import RemoteTable from 'client/components/remoteAntTable';
 import NavLink from 'client/components/nav-link';
 import { format } from 'client/common/i18n/helpers';
@@ -250,24 +250,32 @@ export default class ConflictList extends Component {
     });
   }
   handleItemPass = (row) => {
-    this.props.setItemStatus({ ids: [row.id], status: TRADE_ITEM_STATUS.classified }).then((result) => {
-      if (result.error) {
-        message.error(result.error.message, 10);
-      } else {
-        message.success('归类通过');
-        this.handleItemListLoad();
-      }
-    });
+    this.props.setItemStatus({
+      ids: [row.id],
+      status: TRADE_ITEM_STATUS.classified,
+      tenantId: this.props.tenantId,
+      conflicted: true }).then((result) => {
+        if (result.error) {
+          message.error(result.error.message, 10);
+        } else {
+          message.success('归类通过');
+          this.handleItemListLoad();
+        }
+      });
   }
   handleItemRefused = (row) => {
-    this.props.setItemStatus({ ids: [row.id], status: TRADE_ITEM_STATUS.unclassified }).then((result) => {
-      if (result.error) {
-        message.error(result.error.message, 10);
-      } else {
-        message.warning('归类拒绝');
-        this.handleItemListLoad();
-      }
-    });
+    this.props.setItemStatus({
+      ids: [row.id],
+      status: TRADE_ITEM_STATUS.unclassified,
+      tenantId: this.props.tenantId,
+      conflicted: true }).then((result) => {
+        if (result.error) {
+          message.error(result.error.message, 10);
+        } else {
+          message.warning('归类拒绝');
+          this.handleItemListLoad();
+        }
+      });
   }
   handleSetStandard = (row) => {
     this.props.setStandardItem({
@@ -299,22 +307,9 @@ export default class ConflictList extends Component {
                 <span className="ant-divider" />
                 <RowUpdater onHit={this.handleItemRefused} label={<span><Icon type="close-circle-o" /> {this.msg('refuse')}</span>} row={record} />
                 <span className="ant-divider" />
-                <Dropdown overlay={(
-                  <Menu>
-                    <Menu.Item key="edit">
-                      <NavLink to={`/scv/products/tradeitem/edit/${record.id}`}>
-                        <Icon type="edit" /> {this.msg('modify')}
-                      </NavLink>
-                    </Menu.Item>
-                    <Menu.Item key="delete">
-                      <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleItemDel(record.id)}>
-                        <a role="button"><Icon type="delete" /> {this.msg('delete')}</a>
-                      </Popconfirm>
-                    </Menu.Item>
-                  </Menu>)}
-                >
-                  <a><Icon type="down" /></a>
-                </Dropdown>
+                <NavLink to={`/scv/products/tradeitem/edit/${record.id}`}>
+                  <Icon type="edit" />
+                </NavLink>
               </span>
             );
           } else {
@@ -323,10 +318,6 @@ export default class ConflictList extends Component {
                 <NavLink to={`/scv/products/tradeitem/edit/${record.id}`}>
                   <Icon type="edit" /> {this.msg('modify')}
                 </NavLink>
-                <span className="ant-divider" />
-                <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleItemDel(record.id)}>
-                  <a role="button"><Icon type="delete" /> {this.msg('delete')}</a>
-                </Popconfirm>
               </span>
             );
           }
@@ -347,22 +338,9 @@ export default class ConflictList extends Component {
             <span>
               <RowUpdater onHit={this.handleSetStandard} label={<span><Icon type="star-o" /> {this.msg('setStandard')}</span>} row={record} />
               <span className="ant-divider" />
-              <Dropdown overlay={(
-                <Menu>
-                  <Menu.Item key="edit">
-                    <NavLink to={`/scv/products/tradeitem/edit/${record.id}`}>
-                      <Icon type="edit" /> {this.msg('modify')}
-                    </NavLink>
-                  </Menu.Item>
-                  <Menu.Item key="delete">
-                    <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleItemDel(record.id)}>
-                      <a role="button"><Icon type="delete" /> {this.msg('delete')}</a>
-                    </Popconfirm>
-                  </Menu.Item>
-                </Menu>)}
-              >
-                <a><Icon type="down" /></a>
-              </Dropdown>
+              <NavLink to={`/scv/products/tradeitem/edit/${record.id}`}>
+                <Icon type="edit" /> {this.msg('modify')}
+              </NavLink>
             </span>
           );
         }

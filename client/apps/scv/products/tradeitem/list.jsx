@@ -331,44 +331,60 @@ export default class TradeItemList extends Component {
     this.handleConflictListLoad(1, filter);
   }
   handleItemPass = (row) => {
-    this.props.setItemStatus({ ids: [row.id], status: TRADE_ITEM_STATUS.classified }).then((result) => {
-      if (result.error) {
-        message.error(result.error.message, 10);
-      } else {
-        message.success('归类通过');
-        this.handleItemListLoad();
-      }
-    });
+    this.props.setItemStatus({
+      ids: [row.id],
+      status: TRADE_ITEM_STATUS.classified,
+      tenantId: this.props.tenantId,
+      conflicted: false }).then((result) => {
+        if (result.error) {
+          message.error(result.error.message, 10);
+        } else {
+          message.success('归类通过');
+          this.handleItemListLoad();
+        }
+      });
   }
   handleItemRefused = (row) => {
-    this.props.setItemStatus({ ids: [row.id], status: TRADE_ITEM_STATUS.unclassified }).then((result) => {
-      if (result.error) {
-        message.error(result.error.message, 10);
-      } else {
-        message.warning('归类拒绝');
-        this.handleItemListLoad();
-      }
-    });
+    this.props.setItemStatus({
+      ids: [row.id],
+      status: TRADE_ITEM_STATUS.unclassified,
+      tenantId: this.props.tenantId,
+      conflicted: false }).then((result) => {
+        if (result.error) {
+          message.error(result.error.message, 10);
+        } else {
+          message.warning('归类拒绝');
+          this.handleItemListLoad();
+        }
+      });
   }
   handleItemsPass = () => {
-    this.props.setItemStatus({ ids: this.state.selectedRowKeys, status: TRADE_ITEM_STATUS.classified }).then((result) => {
-      if (result.error) {
-        message.error(result.error.message, 10);
-      } else {
-        this.setState({ selectedRowKeys: [] });
-        this.handleItemListLoad();
-      }
-    });
+    this.props.setItemStatus({
+      ids: this.state.selectedRowKeys,
+      status: TRADE_ITEM_STATUS.classified,
+      tenantId: this.props.tenantId,
+      conflicted: false }).then((result) => {
+        if (result.error) {
+          message.error(result.error.message, 10);
+        } else {
+          this.setState({ selectedRowKeys: [] });
+          this.handleItemListLoad();
+        }
+      });
   }
   handleItemsRefused = () => {
-    this.props.setItemStatus({ ids: this.state.selectedRowKeys, status: TRADE_ITEM_STATUS.unclassified }).then((result) => {
-      if (result.error) {
-        message.error(result.error.message, 10);
-      } else {
-        this.setState({ selectedRowKeys: [] });
-        this.handleItemListLoad();
-      }
-    });
+    this.props.setItemStatus({
+      ids: this.state.selectedRowKeys,
+      status: TRADE_ITEM_STATUS.unclassified,
+      tenantId: this.props.tenantId,
+      conflicted: false }).then((result) => {
+        if (result.error) {
+          message.error(result.error.message, 10);
+        } else {
+          this.setState({ selectedRowKeys: [] });
+          this.handleItemListLoad();
+        }
+      });
   }
   handleSearch = (value) => {
     const { listFilter } = this.props;
