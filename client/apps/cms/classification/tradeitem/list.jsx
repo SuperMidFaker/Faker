@@ -54,6 +54,7 @@ function fetchData({ state, dispatch }) {
     repo: state.cmsTradeitem.repo,
     reposLoading: state.cmsTradeitem.reposLoading,
     tradeItemsLoading: state.cmsTradeitem.tradeItemsLoading,
+    auditWay: state.scvClassification.auditWay,
     units: state.cmsTradeitem.params.units.map(un => ({
       value: un.unit_code,
       text: un.unit_name,
@@ -86,6 +87,7 @@ export default class TradeItemList extends Component {
     listFilter: PropTypes.object.isRequired,
     reposLoading: PropTypes.bool.isRequired,
     tradeItemsLoading: PropTypes.bool.isRequired,
+    auditWay: PropTypes.string,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -321,11 +323,11 @@ export default class TradeItemList extends Component {
       }
     });
   }
-  handleAuditWay = function (id) {
+  handleAuditWay = function (masterTenantId) {
     const { tenantId } = this.props;
     this.props.getAuditWay(
       tenantId,
-      id
+      masterTenantId
     ).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
@@ -482,7 +484,7 @@ export default class TradeItemList extends Component {
     }
     this.dataSource.remotes = tradeItemlist;
     const columns = [...this.columns];
-    if (repo.permission === CMS_TRADE_REPO_PERMISSION.edit) {
+    if (repo.permission === CMS_TRADE_REPO_PERMISSION.edit && this.props.auditWay !== 'external') {
       columns.push({
         title: this.msg('opColumn'),
         width: 150,

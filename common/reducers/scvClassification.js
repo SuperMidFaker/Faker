@@ -54,6 +54,7 @@ const initialState = {
   },
   shareBrokers: [],
   compareduuid: '',
+  auditWay: '',
 };
 
 export default function reducer(state = initialState, action) {
@@ -83,6 +84,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, visibleNominatedModal: action.data };
     case actionTypes.NOMINATED_IMPORT_SUCCEED:
       return { ...state, compareduuid: action.result.data };
+    case actionTypes.GET_AUDIT_WAY_SUCCEED:
+      return { ...state, auditWay: action.result.data };
     default:
       return state;
   }
@@ -309,8 +312,8 @@ export function nominatedImport(datas) {
       endpoint: 'v1/scv/tradeitems/compared/import',
       method: 'post',
       data: datas,
-    }
-  }
+    },
+  };
 }
 
 export function getAuditWay(brokerTenantId, masterTenantId) {
