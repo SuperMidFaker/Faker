@@ -8,7 +8,7 @@ import { createRepo, setCompareVisible, loadRepos, saveComparedItemDatas,
   loadTradeItems, loadTempItems, comparedCancel, deleteTempData } from 'common/reducers/cmsTradeitem';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
-import { TRADE_ITEM_STATUS } from 'common/constants';
+import { ITEMS_STATUS } from 'common/constants';
 
 const formatMsg = format(messages);
 
@@ -251,7 +251,7 @@ export default class ImportComparisonModal extends React.Component {
     fixed: 'right',
     width: 120,
     render: (o) => {
-      const status = TRADE_ITEM_STATUS.filter(sts => sts.value === o)[0];
+      const status = ITEMS_STATUS.filter(sts => sts.value === o)[0];
       if (status) {
         return (<span>{status.text}</span>);
       } else {
