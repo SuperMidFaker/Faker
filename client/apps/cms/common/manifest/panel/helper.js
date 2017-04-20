@@ -8,6 +8,9 @@ function countDecimal(floatNum) {
 }
 
 export function dividGrossWt(netWts, totalGrossWt) {
+  if (netWts.length === 0) {
+    return [];
+  }
   const netWtSum = netWts.reduce((acc, value) => value + acc, 0);
   const grossWts = [];
   let totalRoundGrossWt = 0;
@@ -28,6 +31,9 @@ export function dividGrossWt(netWts, totalGrossWt) {
 }
 
 export function dividAmount(tradeAmounts, totalAmount) {
+  if (tradeAmounts.length === 0) {
+    return [];
+  }
   const tradeTotal = tradeAmounts.reduce((acc, value) => acc + value, 0);
   const amts = [];
   let totalRoundAmount = 0;

@@ -326,7 +326,7 @@ export default class ShipmentActions extends React.Component {
                 </span>
               </PrivilegeCover>
             );
-          } else if (dispatch.disp_status > 0 && dispatch.sr_tenant_id === tenantId) {
+          } else if (dispatch.disp_status > 0 && dispatch.sp_tenant_id === tenantId) {
             if (dispatch.downstream_status === 1) {
               buttons = (
                 <PrivilegeCover module="transport" feature="dispatch" action="edit">
