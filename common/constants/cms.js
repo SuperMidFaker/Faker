@@ -295,7 +295,7 @@ export const CMS_DECL_STATUS = [
   { value: 3, text: '已回填', badge: 'success' },
 ];
 
-export const TRADE_ITEM_STATUS = [
+export const ITEMS_STATUS = [
   { value: 0, text: '未归类' },
   { value: 1, text: '归类待定' },
   { value: 2, text: '已归类' },
@@ -341,7 +341,7 @@ export const CMS_EXPORT_DECL_TYPE = [{
   text: '通关无纸出境备案清单',
 }];
 
-export const CMS_ITEM_STATUS = {
+export const TRADE_ITEM_STATUS = {
   unclassified: 0,
   pending: 1,
   classified: 2,
