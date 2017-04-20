@@ -484,7 +484,7 @@ export default class TradeItemList extends Component {
     }
     this.dataSource.remotes = tradeItemlist;
     const columns = [...this.columns];
-    if (repo.permission === CMS_TRADE_REPO_PERMISSION.edit && this.props.auditWay !== 'external') {
+    if (repo.permission === CMS_TRADE_REPO_PERMISSION.edit) {
       columns.push({
         title: this.msg('opColumn'),
         width: 150,
@@ -500,6 +500,7 @@ export default class TradeItemList extends Component {
                 <a role="button"><Icon type="delete" /> {this.msg('delete')}</a>
               </Popconfirm>
             </span>);
+<<<<<<< HEAD
           } else if (record.status === TRADE_ITEM_STATUS.pending) {
             return (
               <span>
@@ -526,6 +527,53 @@ export default class TradeItemList extends Component {
               </span>
             );
           } else if (record.status === TRADE_ITEM_STATUS.classified) {
+=======
+          } else if (record.status === CMS_ITEM_STATUS.pending) {
+            if (this.props.auditWay === 'external') {
+              const edit = record.master_rejected === 0 ?
+                (<span>
+                  <NavLink to={`/clearance/classification/tradeitem/edit/${record.id}`}>
+                    <Icon type="edit" /> {this.msg('modify')}
+                  </NavLink>
+                  <span className="ant-divider" />
+                </span>)
+                : '';
+              return (
+                <span>
+                  {edit}
+                  <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleItemDel(record.id)}>
+                    <a role="button"><Icon type="delete" /> {this.msg('delete')}</a>
+                  </Popconfirm>
+                </span>
+              );
+            } else {
+              return (
+                <span>
+                  <RowUpdater onHit={this.handleItemPass} label={<span><Icon type="check-circle-o" /> {this.msg('pass')}</span>} row={record} />
+                  <span className="ant-divider" />
+                  <RowUpdater onHit={this.handleItemRefused} label={<span><Icon type="close-circle-o" /> {this.msg('refuse')}</span>} row={record} />
+                  <span className="ant-divider" />
+                  <Dropdown overlay={(
+                    <Menu>
+                      <Menu.Item key="edit">
+                        <NavLink to={`/clearance/classification/tradeitem/edit/${record.id}`}>
+                          <Icon type="edit" /> {this.msg('modify')}
+                        </NavLink>
+                      </Menu.Item>
+                      <Menu.Item key="delete">
+                        <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleItemDel(record.id)}>
+                          <a role="button"><Icon type="delete" /> {this.msg('delete')}</a>
+                        </Popconfirm>
+                      </Menu.Item>
+                    </Menu>)}
+                  >
+                    <a><Icon type="down" /></a>
+                  </Dropdown>
+                </span>
+              );
+            }
+          } else if (record.status === CMS_ITEM_STATUS.classified) {
+>>>>>>> 外审归类待定提交时不可修改，拒绝时可修改
             return (
               <span>
                 <NavLink to={`/clearance/classification/tradeitem/edit/${record.id}`}>
