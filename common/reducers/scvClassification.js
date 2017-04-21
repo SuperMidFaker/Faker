@@ -18,6 +18,7 @@ const actionTypes = createActionTypes('@@welogix/scv/classification/', [
   'NOMINATED_IMPORT', 'NOMINATED_IMPORT_SUCCEED', 'NOMINATED_IMPORT_FAIL',
   'ITEM_EDITED_SAVE', 'ITEM_EDITED_SAVE_SUCCEED', 'ITEM_EDITED_SAVE_FAIL',
   'SET_STANDARD_ITEM', 'SET_STANDARD_ITEM_SUCCEED', 'SET_STANDARD_ITEM_FAIL',
+  'GET_AUDIT_WAY', 'GET_AUDIT_WAY_SUCCEED', 'GET_AUDIT_WAY_FAIL',
 ]);
 
 const initialState = {
@@ -53,6 +54,7 @@ const initialState = {
   },
   slaves: [],
   compareduuid: '',
+  auditWay: '',
 };
 
 export default function reducer(state = initialState, action) {
@@ -81,6 +83,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, visibleNominatedModal: action.data };
     case actionTypes.NOMINATED_IMPORT_SUCCEED:
       return { ...state, compareduuid: action.result.data };
+    case actionTypes.GET_AUDIT_WAY_SUCCEED:
+      return { ...state, auditWay: action.result.data };
     default:
       return state;
   }
@@ -307,6 +311,24 @@ export function nominatedImport(datas) {
       endpoint: 'v1/scv/tradeitems/compared/import',
       method: 'post',
       data: datas,
+    },
+  };
+}
+
+export function getAuditWay(brokerTenantId, masterTenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.GET_AUDIT_WAY,
+        actionTypes.GET_AUDIT_WAY_SUCCEED,
+        actionTypes.GET_AUDIT_WAY_FAIL,
+      ],
+      endpoint: 'v1/svc/classification/sync/auditway',
+      method: 'get',
+      params: {
+        masterTenantId,
+        brokerTenantId,
+      },
     },
   };
 }

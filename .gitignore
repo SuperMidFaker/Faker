@@ -8,3 +8,4 @@ public/assets/langs/zh.json
 test.js
 .happypack/*
 .vscode
+.idea
