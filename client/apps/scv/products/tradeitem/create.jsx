@@ -51,8 +51,7 @@ export default class CreateTradeItem extends Component {
         const { tenantId, tenantName, loginId, loginName, slaves } = this.props;
         const item = this.props.form.getFieldsValue();
         const broker = slaves.find(tr => tr.tenant_id === item.broker);
-        let params = {
-          ...item,
+        let baseinfo = {
           owner_tenant_id: tenantId,
           owner_name: tenantName,
           creater_login_id: loginId,
@@ -61,12 +60,12 @@ export default class CreateTradeItem extends Component {
           contribute_tenant_name: tenantName,
         };
         if (broker) {
-          params = { ...params,
+          baseinfo = { ...baseinfo,
             contribute_tenant_id: broker.tenant_id,
             contribute_tenant_name: broker.name,
           };
         }
-        this.props.addItem({ params }).then((result) => {
+        this.props.addItem({ baseinfo, item }).then((result) => {
           if (result.error) {
             message.error(result.error.message, 10);
           } else {
