@@ -3,9 +3,8 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Layout, Form, Select } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { loadMasterConfig, loadClassificatonBrokers, renewSharees } from 'common/reducers/scvClassification';
+import { loadMasterConfig, loadRepoSlaves, renewSharees } from 'common/reducers/scvClassification';
 import connectNav from 'client/common/decorators/connect-nav';
-import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 import ScvClassificationWrapper from '../wrapper';
 import { formatMsg } from '../message.i18n';
 
@@ -14,9 +13,7 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 function fetchData({ state, dispatch }) {
   const proms = [
-    dispatch(loadClassificatonBrokers(
-      state.account.tenantId, PARTNER_ROLES.SUP,
-      PARTNER_BUSINESSE_TYPES.clearance)),
+    dispatch(loadRepoSlaves(state.account.tenantId)),
     dispatch(loadMasterConfig({
       tenantId: state.account.tenantId,
     }))];
@@ -29,7 +26,7 @@ function fetchData({ state, dispatch }) {
   state => ({
     tenantId: state.account.tenantId,
     masterConfig: state.scvClassification.master,
-    brokers: state.scvClassification.shareBrokers,
+    brokers: state.scvClassification.slaves,
   }),
   { renewSharees }
 )

@@ -7,16 +7,13 @@ import connectNav from 'client/common/decorators/connect-nav';
 import BasicForm from './forms/basicForm';
 import SiderForm from './forms/siderForm';
 import { loadPartners } from 'common/reducers/partner';
-import { loadScvTradeItem, itemEditedSave } from 'common/reducers/scvClassification';
+import { loadScvTradeItem, itemEditedSave, loadRepoSlaves } from 'common/reducers/scvClassification';
 import { intlShape, injectIntl } from 'react-intl';
-import messages from './message.i18n';
 import { format } from 'client/common/i18n/helpers';
-import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
+import messages from './message.i18n';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
-const role = PARTNER_ROLES.SUP;
-const businessType = PARTNER_BUSINESSE_TYPES.clearance;
 
 function fetchData({ dispatch, params }) {
   const promises = [];
@@ -32,7 +29,7 @@ function fetchData({ dispatch, params }) {
     itemData: state.scvClassification.itemData,
     tenantId: state.account.tenantId,
   }),
-  { itemEditedSave, loadPartners }
+  { itemEditedSave, loadPartners, loadRepoSlaves }
 )
 @connectNav({
   depth: 3,
@@ -49,17 +46,8 @@ export default class EditTradeItem extends Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
-  state = {
-    brokers: [],
-  };
-  componentDidMount() {
-    this.props.loadPartners({
-      tenantId: this.props.tenantId,
-      role,
-      businessType,
-    }).then((result) => {
-      this.setState({ brokers: result.data.filter(item => item.partner_tenant_id !== -1) });
-    });
+  componentWillMount() {
+    this.props.loadRepoSlaves(this.props.tenantId);
   }
   msg = key => formatMsg(this.props.intl, key);
   handleSave = () => {
@@ -82,7 +70,7 @@ export default class EditTradeItem extends Component {
   }
 
   render() {
-    const { form } = this.props;
+    const { form, slaves } = this.props;
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Header className="top-bar">
@@ -110,7 +98,7 @@ export default class EditTradeItem extends Component {
           <Form layout="vertical">
             <Row gutter={16}>
               <Col sm={24} md={16}>
-                <BasicForm form={form} action="edit" brokers={this.state.brokers} />
+                <BasicForm form={form} action="edit" brokers={slaves} />
               </Col>
               <Col sm={24} md={8}>
                 <SiderForm form={form} />

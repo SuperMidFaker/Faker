@@ -4,7 +4,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Modal, Popconfirm, Icon, Tooltip, Tag, message, Table } from 'antd';
 import RowUpdater from 'client/components/rowUpdater';
 import TrimSpan from 'client/components/trimSpan';
-import { createRepo, setCompareVisible, loadRepos, saveComparedItemDatas,
+import { setCompareVisible, saveComparedItemDatas,
   loadTradeItems, loadTempItems, comparedCancel, deleteTempData } from 'common/reducers/cmsTradeitem';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
@@ -23,7 +23,7 @@ const formatMsg = format(messages);
     tempItems: state.cmsTradeitem.tempItems,
     visibleCompareModal: state.cmsTradeitem.visibleCompareModal,
   }),
-  { createRepo, setCompareVisible, loadRepos, saveComparedItemDatas,
+  { setCompareVisible, saveComparedItemDatas,
     loadTradeItems, loadTempItems, comparedCancel, deleteTempData }
 )
 

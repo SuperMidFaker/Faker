@@ -9,7 +9,7 @@ const actionTypes = createActionTypes('@@welogix/scv/classification/', [
   'SET_ITEM_STATUS', 'SET_ITEM_STATUS_SUCCEED', 'SET_ITEM_STATUS_FAIL',
   'LOAD_TRADE_ITEM', 'LOAD_TRADE_ITEM_SUCCEED', 'LOAD_TRADE_ITEM_FAIL',
   'LOAD_SYNCS', 'LOAD_SYNCS_SUCCEED', 'LOAD_SYNCS_FAIL',
-  'LOAD_CLASBROKERS', 'LOAD_CLASBROKERS_SUCCEED', 'LOAD_CLASBROKERS_FAIL',
+  'LOAD_REPOSLAVE', 'LOAD_REPOSLAVE_SUCCEED', 'LOAD_REPOSLAVE_FAIL',
   'UPDATE_AUDIT', 'UPDATE_AUDIT_SUCCEED', 'UPDATE_AUDIT_FAIL',
   'RENEW_SHAREE', 'RENEW_SHAREE_SUCCEED', 'RENEW_SHAREE_FAIL',
   'SET_COMPARE_VISIBLE', 'SET_NOMINATED_VISIBLE',
@@ -51,7 +51,7 @@ const initialState = {
   master: {
     sharees: [],
   },
-  shareBrokers: [],
+  slaves: [],
   compareduuid: '',
 };
 
@@ -73,9 +73,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, itemData: action.result.data.tradeitem };
     case actionTypes.LOAD_SYNCS_SUCCEED:
       return { ...state, synclist: action.result.data };
-    case actionTypes.LOAD_CLASBROKERS_SUCCEED:
-      return { ...state, shareBrokers: action.result.data.filter(data => data.partner_tenant_id > 0)
-        .map(data => ({ tenant_id: data.partner_tenant_id, name: data.name })) };
+    case actionTypes.LOAD_REPOSLAVE_SUCCEED:
+      return { ...state, slaves: action.result.data };
     case actionTypes.SET_COMPARE_VISIBLE:
       return { ...state, visibleCompareModal: action.data };
     case actionTypes.SET_NOMINATED_VISIBLE:
@@ -207,17 +206,17 @@ export function loadSyncList(params) {
   };
 }
 
-export function loadClassificatonBrokers(tenantId, role, businessType) {
+export function loadRepoSlaves(tenantId) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.LOAD_CLASBROKERS,
-        actionTypes.LOAD_CLASBROKERS_SUCCEED,
-        actionTypes.LOAD_CLASBROKERS_FAIL,
+        actionTypes.LOAD_REPOSLAVE,
+        actionTypes.LOAD_REPOSLAVE_SUCCEED,
+        actionTypes.LOAD_REPOSLAVE_FAIL,
       ],
-      endpoint: 'v1/cooperation/partners',
+      endpoint: 'v1/scv/classification/repo/slaves',
       method: 'get',
-      params: { tenantId, role, businessType },
+      params: { master: tenantId },
     },
   };
 }

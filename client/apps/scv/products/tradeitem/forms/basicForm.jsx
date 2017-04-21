@@ -1,4 +1,3 @@
-/* eslint react/no-multi-comp: 0 */
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Form, Select, Input, Card, Col, Row } from 'antd';
@@ -121,9 +120,8 @@ export default class BasicForm extends Component {
                     size="large"
                     style={{ width: '100%' }}
                   >
-                    {brokers.map(data => (<Option key={data.id} value={data.partner_tenant_id}
-                      search={`${data.partner_code}${data.name}`}
-                    >{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>)
+                    {brokers.map(data => (
+                      <Option key={data.tenant_id} value={data.tenant_id} search={data.name}>{data.name}</Option>)
                     )}
                   </Select>)
                 }

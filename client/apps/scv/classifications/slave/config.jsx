@@ -3,21 +3,19 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Layout } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { loadSyncList, loadClassificatonBrokers, updateAudit, renewSharees } from 'common/reducers/scvClassification';
+import { loadSyncList, loadRepoSlaves, updateAudit, renewSharees } from 'common/reducers/scvClassification';
 import connectNav from 'client/common/decorators/connect-nav';
 import Table from 'client/components/remoteAntTable';
 import EditableCell from 'client/components/EditableCell';
 import SyncShareEditCell from './syncShareEditCell';
 import ScvClassificationWrapper from '../wrapper';
-import { SYNC_AUDIT_METHODS, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
+import { SYNC_AUDIT_METHODS } from 'common/constants';
 import { formatMsg } from '../message.i18n';
 
 const Content = Layout.Content;
 function fetchData({ state, dispatch }) {
   const proms = [
-    dispatch(loadClassificatonBrokers(
-      state.account.tenantId, PARTNER_ROLES.SUP,
-      PARTNER_BUSINESSE_TYPES.clearance)),
+    dispatch(loadRepoSlaves(state.account.tenantId)),
     dispatch(loadSyncList({
       tenantId: state.account.tenantId,
       pageSize: state.scvClassification.synclist.pageSize,
@@ -32,7 +30,7 @@ function fetchData({ state, dispatch }) {
   state => ({
     tenantId: state.account.tenantId,
     synclist: state.scvClassification.synclist,
-    brokers: state.scvClassification.shareBrokers,
+    brokers: state.scvClassification.slaves,
   }),
   { updateAudit, renewSharees }
 )
