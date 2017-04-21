@@ -20,7 +20,7 @@ import ExcelUpload from 'client/components/excelUploader';
 import { createFilename } from 'client/util/dataTransform';
 import RepoUsersPane from './panes/repoUsersPane';
 import ImportComparisonModal from './modals/importComparison';
-import { TRADE_ITEM_STATUS, CMS_TRADE_REPO_PERMISSION } from 'common/constants';
+import { TRADE_ITEM_STATUS, CMS_TRADE_REPO_PERMISSION, SYNC_AUDIT_METHODS } from 'common/constants';
 import RowUpdater from 'client/components/rowUpdater';
 
 const formatMsg = format(messages);
@@ -500,50 +500,22 @@ export default class TradeItemList extends Component {
                 <a role="button"><Icon type="delete" /> {this.msg('delete')}</a>
               </Popconfirm>
             </span>);
-<<<<<<< HEAD
           } else if (record.status === TRADE_ITEM_STATUS.pending) {
-            return (
-              <span>
-                <RowUpdater onHit={this.handleItemPass} label={<span><Icon type="check-circle-o" /> {this.msg('pass')}</span>} row={record} />
-                <span className="ant-divider" />
-                <RowUpdater onHit={this.handleItemRefused} label={<span><Icon type="close-circle-o" /> {this.msg('refuse')}</span>} row={record} />
-                <span className="ant-divider" />
-                <Dropdown overlay={(
-                  <Menu>
-                    <Menu.Item key="edit">
-                      <NavLink to={`/clearance/classification/tradeitem/edit/${record.id}`}>
-                        <Icon type="edit" /> {this.msg('modify')}
-                      </NavLink>
-                    </Menu.Item>
-                    <Menu.Item key="delete">
-                      <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleItemDel(record.id)}>
-                        <a role="button"><Icon type="delete" /> {this.msg('delete')}</a>
-                      </Popconfirm>
-                    </Menu.Item>
-                  </Menu>)}
-                >
-                  <a><Icon type="down" /></a>
-                </Dropdown>
-              </span>
-            );
-          } else if (record.status === TRADE_ITEM_STATUS.classified) {
-=======
-          } else if (record.status === CMS_ITEM_STATUS.pending) {
-            if (this.props.auditWay === 'external') {
-              const edit = record.master_rejected === 0 ?
+            if (this.props.auditWay === SYNC_AUDIT_METHODS[1].key) {
+              const options = record.master_rejected ?
                 (<span>
                   <NavLink to={`/clearance/classification/tradeitem/edit/${record.id}`}>
                     <Icon type="edit" /> {this.msg('modify')}
                   </NavLink>
                   <span className="ant-divider" />
+                  <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleItemDel(record.id)}>
+                    <a role="button"><Icon type="delete" /> {this.msg('delete')}</a>
+                  </Popconfirm>
                 </span>)
                 : '';
               return (
                 <span>
-                  {edit}
-                  <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleItemDel(record.id)}>
-                    <a role="button"><Icon type="delete" /> {this.msg('delete')}</a>
-                  </Popconfirm>
+                  {options}
                 </span>
               );
             } else {
@@ -572,8 +544,7 @@ export default class TradeItemList extends Component {
                 </span>
               );
             }
-          } else if (record.status === CMS_ITEM_STATUS.classified) {
->>>>>>> 外审归类待定提交时不可修改，拒绝时可修改
+          } else if (record.status === TRADE_ITEM_STATUS.classified) {
             return (
               <span>
                 <NavLink to={`/clearance/classification/tradeitem/edit/${record.id}`}>
