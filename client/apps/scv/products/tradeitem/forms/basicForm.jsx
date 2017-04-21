@@ -10,7 +10,7 @@ const formatMsg = format(messages);
 const FormItem = Form.Item;
 const Option = Select.Option;
 
-function getFieldInits(formData) {
+function getFieldInits(formData, tenantId) {
   const init = {};
   if (formData) {
     ['cop_product_no', 'hscode', 'g_name', 'g_model', 'element', 'g_unit_1', 'g_unit_2', 'g_unit_3',
@@ -22,7 +22,10 @@ function getFieldInits(formData) {
     ['unit_net_wt', 'unit_price', 'fixed_qty', 'pre_classify_start_date', 'pre_classify_end_date'].forEach((fd) => {
       init[fd] = formData[fd] === undefined ? null : formData[fd];
     });
-    init.broker = formData.contribute_tenant_id === undefined ? null : formData.contribute_tenant_id;
+    init.broker = null;
+    if (formData.contribute_tenant_id && formData.contribute_tenant_id !== tenantId) {
+      init.broker = formData.contribute_tenant_id;
+    }
   }
   return init;
 }
@@ -36,7 +39,7 @@ function getFieldInits(formData) {
       text: un.unit_name,
     })),
     tradeCountries: state.cmsTradeitem.params.tradeCountries,
-    fieldInits: getFieldInits(state.scvClassification.itemData),
+    fieldInits: getFieldInits(state.scvClassification.itemData, state.account.tenantId),
     hscodes: state.cmsHsCode.hscodes,
   }),
   { loadHscodes }
