@@ -245,6 +245,9 @@ const messages = defineMessages({
     id: 'scv.products.tradeitem.nominated.broker',
     defaultMessage: '不指定报关行',
   },
-
+  reason: {
+    id: 'scv.products.tradeitem.reason',
+    defaultMessage: '原因',
+  },
 });
 export default messages;
