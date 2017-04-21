@@ -210,6 +210,7 @@ export default function reducer(state = initialState, action) {
         loaded: true,
         tabKey: action.tabKey,
         params: action.params,
+        row: action.row,
       } };
     }
     case actionTypes.HIDE_PREVIWER: {
@@ -475,7 +476,7 @@ export function clearForm() {
   return clearFormC(actionTypes);
 }
 
-export function loadShipmtDetail(shipmtNo, tenantId, sourceType, tabKey) {
+export function loadShipmtDetail(shipmtNo, tenantId, sourceType, tabKey, row) {
   return {
     [CLIENT_API]: {
       types: [
@@ -486,7 +487,7 @@ export function loadShipmtDetail(shipmtNo, tenantId, sourceType, tabKey) {
       endpoint: 'v1/transport/shipment/detail',
       method: 'get',
       params: { shipmtNo, tenantId, sourceType },
-      tabKey,
+      row, tabKey,
     },
   };
 }

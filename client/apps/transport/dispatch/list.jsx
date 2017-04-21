@@ -466,7 +466,7 @@ export default class DispatchList extends React.Component {
   msgWrapper = s => this.msg(s)
 
   handleShipmtPreview = (row) => {
-    this.props.loadShipmtDetail(row.shipmt_no, this.props.tenantId, 'sp', 'detail').then((result) => {
+    this.props.loadShipmtDetail(row.shipmt_no, this.props.tenantId, 'sp', 'detail', row).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       }

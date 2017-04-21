@@ -262,7 +262,7 @@ export default class ShipmentActions extends React.Component {
     this.props.sendMessage({ module: 'transport', promptType, shipment });
   }
   render() {
-    const { tenantId, stage, sourceType, previewer: { shipmt, dispatch } } = this.props;
+    const { tenantId, stage, sourceType, previewer: { shipmt, dispatch, row } } = this.props;
     let buttons = null;
     if (sourceType === 'sp') {
       if (dispatch.status === SHIPMENT_TRACK_STATUS.unaccepted) {
@@ -313,7 +313,7 @@ export default class ShipmentActions extends React.Component {
                 </span>
               </PrivilegeCover>
             );
-          } else if (dispatch.disp_status === 0 && dispatch.sr_tenant_id === tenantId) {
+          } else if (dispatch.disp_status === 0 && row.sr_tenant_id === tenantId) {
             buttons = (
               <PrivilegeCover module="transport" feature="dispatch" action="edit">
                 <span>
@@ -326,12 +326,12 @@ export default class ShipmentActions extends React.Component {
                 </span>
               </PrivilegeCover>
             );
-          } else if (dispatch.disp_status > 0 && dispatch.sp_tenant_id === tenantId) {
+          } else if (dispatch.disp_status > 0 && row.sr_tenant_id === tenantId) {
             if (dispatch.downstream_status === 1) {
               buttons = (
                 <PrivilegeCover module="transport" feature="dispatch" action="edit">
                   <Tooltip placement="bottom" title="承运商尚未接单，可立即撤回">
-                    <Button type="ghost" onClick={() => this.handleWithDraw(shipmt.shipmt_no, dispatch.id, dispatch.parent_id)} >
+                    <Button type="ghost" onClick={() => this.handleWithDraw(shipmt.shipmt_no, row.disp_id, row.parent_id)} >
                       撤回
                     </Button>
                   </Tooltip>
