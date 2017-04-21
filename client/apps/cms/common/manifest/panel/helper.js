@@ -26,7 +26,7 @@ export function dividGrossWt(netWts, totalGrossWt) {
       maxNetWtIdx = i;
     }
   }
-  grossWts[maxNetWtIdx] += Number((totalGrossWt - totalRoundGrossWt).toFixed(fixed));
+  grossWts[maxNetWtIdx] = Number((grossWts[maxNetWtIdx] + totalGrossWt - totalRoundGrossWt).toFixed(fixed));
   return grossWts;
 }
 
@@ -49,6 +49,6 @@ export function dividAmount(tradeAmounts, totalAmount) {
       maxAmountIdx = i;
     }
   }
-  amts[maxAmountIdx] += Number((totalAmount - totalRoundAmount).toFixed(fixed));
+  amts[maxAmountIdx] = Number((amts[maxAmountIdx] + totalAmount - totalRoundAmount).toFixed(fixed));
   return amts;
 }
