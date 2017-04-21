@@ -14,7 +14,7 @@ function getFieldInits(formData) {
   const init = {};
   if (formData) {
     ['pre_classify_no', 'pre_classify_start_date', 'pre_classify_end_date', 'remark'].forEach((fd) => {
-      init[fd] = formData[fd] === undefined ? null : moment(formData[fd]);
+      init[fd] = !formData[fd] ? null : moment(formData[fd]);
     });
     ['pre_classify_no', 'remark'].forEach((fd) => {
       init[fd] = formData[fd] === undefined ? '' : formData[fd];

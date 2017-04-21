@@ -28,6 +28,7 @@ function fetchData({ dispatch, params }) {
   state => ({
     itemData: state.scvClassification.itemData,
     tenantId: state.account.tenantId,
+    slaves: state.scvClassification.slaves,
   }),
   { itemEditedSave, loadPartners, loadRepoSlaves }
 )

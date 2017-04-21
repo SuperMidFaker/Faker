@@ -4,7 +4,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Breadcrumb, Button, Layout, Radio, Dropdown, Icon, Menu, Popconfirm, message } from 'antd';
+import { Breadcrumb, Button, Layout, Radio, Dropdown, Icon, Menu, Popconfirm, message, Popover, Input, Form } from 'antd';
 import RemoteTable from 'client/components/remoteAntTable';
 import NavLink from 'client/components/nav-link';
 import { format } from 'client/common/i18n/helpers';
@@ -23,6 +23,7 @@ const formatMsg = format(messages);
 const { Header, Content } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
+const FormItem = Form.Item;
 
 function fetchData({ state, dispatch }) {
   const promises = [];
@@ -66,6 +67,7 @@ function fetchData({ state, dispatch }) {
   depth: 2,
   moduleName: 'clearance',
 })
+@Form.create()
 export default class TradeItemList extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -282,7 +284,7 @@ export default class TradeItemList extends Component {
     });
   }
   handleItemDel = (id) => {
-    this.props.deleteItems({ ids: [id] }).then((result) => {
+    this.props.deleteItems({ ids: [id], tenantId: this.props.tenantId }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -305,7 +307,7 @@ export default class TradeItemList extends Component {
   }
   handleDeleteSelected = () => {
     const selectedIds = this.state.selectedRowKeys;
-    this.props.deleteItems({ ids: selectedIds }).then((result) => {
+    this.props.deleteItems({ ids: selectedIds, tenantId: this.props.tenantId }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -345,10 +347,12 @@ export default class TradeItemList extends Component {
       });
   }
   handleItemRefused = (row) => {
+    const reason = this.props.form.getFieldValue('reason');
     this.props.setItemStatus({
       ids: [row.id],
       status: TRADE_ITEM_STATUS.unclassified,
       tenantId: this.props.tenantId,
+      reason,
       conflicted: false }).then((result) => {
         if (result.error) {
           message.error(result.error.message, 10);
@@ -394,7 +398,7 @@ export default class TradeItemList extends Component {
     this.props.setNominatedVisible(true);
   }
   render() {
-    const { tradeItemlist, listFilter } = this.props;
+    const { tradeItemlist, listFilter, form: { getFieldDecorator } } = this.props;
     const selectedRows = this.state.selectedRowKeys;
     const rowSelection = {
       selectedRowKeys: selectedRows,
@@ -477,7 +481,14 @@ export default class TradeItemList extends Component {
             <span>
               <RowUpdater onHit={this.handleItemPass} label={<span><Icon type="check-circle-o" /> {this.msg('pass')}</span>} row={record} />
               <span className="ant-divider" />
-              <RowUpdater onHit={this.handleItemRefused} label={<span><Icon type="close-circle-o" /> {this.msg('refuse')}</span>} row={record} />
+              <Popover trigger="click" content={
+                <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} label={this.msg('reason')} >
+                  {getFieldDecorator('reason')(<Input onPressEnter={() => this.handleItemRefused(record)} />)}
+                </FormItem>
+              }
+              >
+                <RowUpdater label={<span><Icon type="close-circle-o" /> {this.msg('refuse')}</span>} row={record} />
+              </Popover>
             </span>
           );
         }

@@ -544,7 +544,7 @@ export default class TradeItemList extends Component {
                 </span>
               );
             }
-          } else if (record.status === TRADE_ITEM_STATUS.classified) {
+          } else if (record.status === TRADE_ITEM_STATUS.classified && record.created_tenant_id === tenantId) {
             return (
               <span>
                 <NavLink to={`/clearance/classification/tradeitem/edit/${record.id}`}>
