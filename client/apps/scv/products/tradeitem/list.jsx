@@ -284,7 +284,7 @@ export default class TradeItemList extends Component {
     });
   }
   handleItemDel = (id) => {
-    this.props.deleteItems({ ids: [id] }).then((result) => {
+    this.props.deleteItems({ ids: [id], tenantId: this.props.tenantId }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -307,7 +307,7 @@ export default class TradeItemList extends Component {
   }
   handleDeleteSelected = () => {
     const selectedIds = this.state.selectedRowKeys;
-    this.props.deleteItems({ ids: selectedIds }).then((result) => {
+    this.props.deleteItems({ ids: selectedIds, tenantId: this.props.tenantId }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {

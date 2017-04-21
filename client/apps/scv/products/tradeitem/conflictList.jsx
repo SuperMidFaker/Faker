@@ -240,15 +240,6 @@ export default class ConflictList extends Component {
       }
     });
   }
-  handleItemDel = (id) => {
-    this.props.deleteItems({ ids: [id] }).then((result) => {
-      if (result.error) {
-        message.error(result.error.message, 10);
-      } else {
-        this.handleItemListLoad();
-      }
-    });
-  }
   handleItemPass = (row) => {
     this.props.setItemStatus({
       ids: [row.id],
