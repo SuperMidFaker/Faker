@@ -32,7 +32,7 @@ export default function connectFetch(conn = { deferred: false }) {
       render() {
         return <Wrapped {...this.props} />;
       }
-      }
+    }
     return argumentContainer(WrappedComponent, Wrapped, 'Fetch');
   };
 }

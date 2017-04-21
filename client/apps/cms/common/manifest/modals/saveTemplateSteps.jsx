@@ -69,6 +69,7 @@ function getFieldInits(formData) {
     loginId: state.account.loginId,
     loginName: state.account.username,
     tenantId: state.account.tenantId,
+    tenantName: state.account.tenantName,
     billRule: state.cmsManifest.billRule,
     billHead: state.cmsManifest.billHead,
   }),
@@ -126,10 +127,10 @@ export default class SaveTemplateModal extends React.Component {
     this.props.setStepVisible(false);
   }
   handleOk = () => {
-    const { tenantId, loginId, loginName, ietype, billHead } = this.props;
+    const { tenantId, tenantName, loginId, loginName, ietype, billHead } = this.props;
     const { formData } = this.state;
     const ieType = ietype === 'import' ? 0 : 1;
-    const params = { template_name: formData.template_name, i_e_type: ieType, tenant_id: tenantId, modify_id: loginId, modify_name: loginName };
+    const params = { template_name: formData.template_name, i_e_type: ieType, tenant_id: tenantId, tenantName, modify_id: loginId, modify_name: loginName };
     let element = formData.rule_element;
     if (typeof formData.rule_element !== 'string') {
       element = Mention.toString(formData.rule_element);

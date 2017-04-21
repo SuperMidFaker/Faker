@@ -12,6 +12,7 @@ import messages from '../message.i18n';
 import { loadCustomers } from 'common/reducers/crmCustomers';
 import { loadRepos, openAddModal, selectedRepoId, loadTradeItems, setCompareVisible,
   deleteItems, setRepo, deleteRepo, loadTradeParams, setItemStatus } from 'common/reducers/cmsTradeitem';
+import { getAuditWay } from 'common/reducers/scvClassification';
 import AddTradeRepoModal from './modals/addTradeRepo';
 import ButtonToggle from 'client/components/ButtonToggle';
 import SearchBar from 'client/components/search-bar';
@@ -19,7 +20,7 @@ import ExcelUpload from 'client/components/excelUploader';
 import { createFilename } from 'client/util/dataTransform';
 import RepoUsersPane from './panes/repoUsersPane';
 import ImportComparisonModal from './modals/importComparison';
-import { TRADE_ITEM_STATUS, CMS_TRADE_REPO_PERMISSION } from 'common/constants';
+import { TRADE_ITEM_STATUS, CMS_TRADE_REPO_PERMISSION, SYNC_AUDIT_METHODS } from 'common/constants';
 import RowUpdater from 'client/components/rowUpdater';
 
 const formatMsg = format(messages);
@@ -53,6 +54,7 @@ function fetchData({ state, dispatch }) {
     repo: state.cmsTradeitem.repo,
     reposLoading: state.cmsTradeitem.reposLoading,
     tradeItemsLoading: state.cmsTradeitem.tradeItemsLoading,
+    auditWay: state.scvClassification.auditWay,
     units: state.cmsTradeitem.params.units.map(un => ({
       value: un.unit_code,
       text: un.unit_name,
@@ -67,7 +69,7 @@ function fetchData({ state, dispatch }) {
     })),
   }),
   { loadCustomers, openAddModal, selectedRepoId, loadTradeItems, setCompareVisible,
-    deleteItems, setRepo, loadRepos, deleteRepo, setItemStatus }
+    deleteItems, setRepo, loadRepos, deleteRepo, setItemStatus, getAuditWay }
 )
 @connectNav({
   depth: 2,
@@ -85,6 +87,7 @@ export default class TradeItemList extends Component {
     listFilter: PropTypes.object.isRequired,
     reposLoading: PropTypes.bool.isRequired,
     tradeItemsLoading: PropTypes.bool.isRequired,
+    auditWay: PropTypes.string,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -320,10 +323,22 @@ export default class TradeItemList extends Component {
       }
     });
   }
+  handleAuditWay = function (masterTenantId) {
+    const { tenantId } = this.props;
+    this.props.getAuditWay(
+      tenantId,
+      masterTenantId
+    ).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      }
+    });
+  }
   handleRowClick = (record) => {
     const repo = record;
     this.props.selectedRepoId(repo.id);
     this.handleItemListLoad(repo.id);
+    this.handleAuditWay(repo.owner_tenant_id);
     this.props.setRepo(repo);
   }
   handleAddOwener = () => {
@@ -486,31 +501,50 @@ export default class TradeItemList extends Component {
               </Popconfirm>
             </span>);
           } else if (record.status === TRADE_ITEM_STATUS.pending) {
-            return (
-              <span>
-                <RowUpdater onHit={this.handleItemPass} label={<span><Icon type="check-circle-o" /> {this.msg('pass')}</span>} row={record} />
-                <span className="ant-divider" />
-                <RowUpdater onHit={this.handleItemRefused} label={<span><Icon type="close-circle-o" /> {this.msg('refuse')}</span>} row={record} />
-                <span className="ant-divider" />
-                <Dropdown overlay={(
-                  <Menu>
-                    <Menu.Item key="edit">
-                      <NavLink to={`/clearance/classification/tradeitem/edit/${record.id}`}>
-                        <Icon type="edit" /> {this.msg('modify')}
-                      </NavLink>
-                    </Menu.Item>
-                    <Menu.Item key="delete">
-                      <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleItemDel(record.id)}>
-                        <a role="button"><Icon type="delete" /> {this.msg('delete')}</a>
-                      </Popconfirm>
-                    </Menu.Item>
-                  </Menu>)}
-                >
-                  <a><Icon type="down" /></a>
-                </Dropdown>
-              </span>
-            );
-          } else if (record.status === TRADE_ITEM_STATUS.classified) {
+            if (this.props.auditWay === SYNC_AUDIT_METHODS[1].key) {
+              const options = record.master_rejected ?
+                (<span>
+                  <NavLink to={`/clearance/classification/tradeitem/edit/${record.id}`}>
+                    <Icon type="edit" /> {this.msg('modify')}
+                  </NavLink>
+                  <span className="ant-divider" />
+                  <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleItemDel(record.id)}>
+                    <a role="button"><Icon type="delete" /> {this.msg('delete')}</a>
+                  </Popconfirm>
+                </span>)
+                : '';
+              return (
+                <span>
+                  {options}
+                </span>
+              );
+            } else {
+              return (
+                <span>
+                  <RowUpdater onHit={this.handleItemPass} label={<span><Icon type="check-circle-o" /> {this.msg('pass')}</span>} row={record} />
+                  <span className="ant-divider" />
+                  <RowUpdater onHit={this.handleItemRefused} label={<span><Icon type="close-circle-o" /> {this.msg('refuse')}</span>} row={record} />
+                  <span className="ant-divider" />
+                  <Dropdown overlay={(
+                    <Menu>
+                      <Menu.Item key="edit">
+                        <NavLink to={`/clearance/classification/tradeitem/edit/${record.id}`}>
+                          <Icon type="edit" /> {this.msg('modify')}
+                        </NavLink>
+                      </Menu.Item>
+                      <Menu.Item key="delete">
+                        <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleItemDel(record.id)}>
+                          <a role="button"><Icon type="delete" /> {this.msg('delete')}</a>
+                        </Popconfirm>
+                      </Menu.Item>
+                    </Menu>)}
+                  >
+                    <a><Icon type="down" /></a>
+                  </Dropdown>
+                </span>
+              );
+            }
+          } else if (record.status === TRADE_ITEM_STATUS.classified && record.created_tenant_id === tenantId) {
             return (
               <span>
                 <NavLink to={`/clearance/classification/tradeitem/edit/${record.id}`}>

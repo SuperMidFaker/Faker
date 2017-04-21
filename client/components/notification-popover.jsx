@@ -236,7 +236,9 @@ export default class NotificationPopover extends React.Component {
     const { corps: { notReadMessagesNum } } = this.props;
     const notificationContent = (<div className="navbar-popover" style={{ width: 360 }}>
       <div className="popover-header">
-        <div className="toolbar-right"><a role="button" ><i className="zmdi zmdi-check-all zmdi-hc-lg" /></a></div>
+        <div className="toolbar-right">
+          <a role="button" ><i className="zmdi zmdi-check-all zmdi-hc-lg" /></a>
+        </div>
         <span>{this.msg('notification')}</span>
       </div>
       <div className="popover-body">
@@ -268,9 +270,12 @@ export default class NotificationPopover extends React.Component {
     </div>);
 
     return (
-      <Popover content={notificationContent} placement="bottomLeft" trigger="click"
-      >
-        <div><Badge count={notReadMessagesNum} overflowCount={99}><i className="icon s7-bell" /></Badge></div>
+      <Popover content={notificationContent} placement="bottomLeft" trigger="click">
+        <div>
+            <Badge count={notReadMessagesNum} overflowCount={99}>
+                <i className="icon s7-bell" />
+            </Badge>
+        </div>
       </Popover>
     );
   }
