@@ -41,9 +41,6 @@ export default class CreateTradeItem extends Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
-  state = {
-    brokers: [],
-  };
   componentWillMount() {
     this.props.loadRepoSlaves(this.props.tenantId);
   }

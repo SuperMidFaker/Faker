@@ -85,7 +85,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.SET_SELECTED_REPOID:
       return { ...state, repoId: action.payload.repoId };
     case actionTypes.LOAD_TRADE_ITEMS:
-      return { ...state, tradeItemsLoading: true };
+      return { ...state, tradeItemsLoading: true, itemData: initialState.itemData };
     case actionTypes.LOAD_TRADE_ITEMS_SUCCEED:
       return { ...state, tradeItemlist: action.result.data, listFilter: JSON.parse(action.params.filter), tradeItemsLoading: false };
     case actionTypes.LOAD_TRADE_ITEMS_FAIL:

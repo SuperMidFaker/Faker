@@ -91,7 +91,7 @@ export default class CreateTradeItem extends Component {
           <Form layout="vertical">
             <Row gutter={16}>
               <Col sm={24} md={16}>
-                <BasicForm form={form} />
+                <BasicForm action="create" form={form} />
               </Col>
               <Col sm={24} md={8}>
                 <SiderForm form={form} />

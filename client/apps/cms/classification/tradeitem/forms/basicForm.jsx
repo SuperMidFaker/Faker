@@ -51,6 +51,7 @@ export default class BasicForm extends Component {
     units: PropTypes.array,
     tradeCountries: PropTypes.array,
     hscodes: PropTypes.object,
+    action: PropTypes.string.isRequired,
   }
   componentWillReceiveProps(nextProps) {
     if (this.props.hscodes !== nextProps.hscodes) {
@@ -91,7 +92,7 @@ export default class BasicForm extends Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   render() {
-    const { form: { getFieldDecorator }, fieldInits, currencies, units, tradeCountries, hscodes } = this.props;
+    const { form: { getFieldDecorator }, fieldInits, currencies, units, tradeCountries, hscodes, action } = this.props;
     const currencyOptions = currencies.map(curr => ({
       value: curr.curr_code,
       text: `${curr.curr_code} | ${curr.curr_name}`,
@@ -111,7 +112,7 @@ export default class BasicForm extends Component {
                 {getFieldDecorator('cop_product_no', {
                   rules: [{ required: true, message: '商品货号必填' }],
                   initialValue: fieldInits.cop_product_no,
-                })(<Input />)}
+                })(<Input disabled={action === 'edit'} />)}
               </FormItem>
             </Col>
             <Col sm={24} lg={12}>

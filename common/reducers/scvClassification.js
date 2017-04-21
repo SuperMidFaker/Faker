@@ -66,7 +66,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_TRADE_ITEMS_FAIL:
       return { ...state, tradeItemsLoading: false };
     case actionTypes.LOAD_CONFLICT_ITEMS:
-      return { ...state, tradeItemsLoading: true };
+      return { ...state, tradeItemsLoading: true, itemData: initialState.itemData };
     case actionTypes.LOAD_CONFLICT_ITEMS_SUCCEED:
       return { ...state, conflictItemlist: action.result.data, listFilter: JSON.parse(action.params.filter), tradeItemsLoading: false };
     case actionTypes.LOAD_CONFLICT_ITEMS_FAIL:
