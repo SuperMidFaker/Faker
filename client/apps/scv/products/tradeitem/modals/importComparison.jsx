@@ -53,6 +53,14 @@ export default class ImportComparisonModal extends React.Component {
       feedbackChanges: {},
     };
   }
+  getInitialState() {
+    return { modalWidth: 1000 };
+  }
+  componentWillMount() {
+    if (typeof document !== 'undefined' && typeof window !== 'undefined') {
+      this.setState({ modalWidth: window.innerWidth - 48 });
+    }
+  }
   componentWillReceiveProps(nextProps) {
     if (nextProps.compareduuid !== this.props.compareduuid) {
       this.setState({
@@ -313,7 +321,7 @@ export default class ImportComparisonModal extends React.Component {
     });
     return (
       <Modal title={this.msg('对比结果确认')} visible={visibleCompareModal}
-        onOk={this.handleOk} onCancel={this.handleCancel} width={1000}
+        onOk={this.handleOk} onCancel={this.handleCancel} width={this.state.modalWidth} maskClosable={false} style={{ top: 24 }}
       >
         <Table rowKey={record => record.cop_product_no} columns={columns} dataSource={this.state.dataSource} pagination={this.state.pagination} scroll={{ x: 1500 }} />
       </Modal>

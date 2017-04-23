@@ -124,7 +124,7 @@ export default class TradeItemList extends Component {
     render: (o, record) => {
       switch (record.status) {
         case TRADE_ITEM_STATUS.pending:
-          return <span>{o} <Icon type="question-circle-o" className="mdc-text-warning" /></span>;
+          return <span>{o} <Icon type="pause-circle-o" className="mdc-text-warning" /></span>;
         case TRADE_ITEM_STATUS.classified:
           return <span>{o} <Icon type="check-circle-o" className="mdc-text-success" /></span>;
         default:
@@ -600,7 +600,6 @@ export default class TradeItemList extends Component {
         </Sider>
         <Layout>
           <Header className="top-bar">
-
             { this.state.collapsed && <Breadcrumb>
               <Breadcrumb.Item>
                 {this.msg('classification')}
@@ -620,15 +619,15 @@ export default class TradeItemList extends Component {
             />
             <span />
             <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">
-              <RadioButton value="unclassified"><Icon type="exclamation-circle-o" /> {this.msg('filterUnclassified')}</RadioButton>
-              <RadioButton value="pending"><Icon type="question-circle-o" /> {this.msg('filterPending')}</RadioButton>
+              <RadioButton value="unclassified"><Icon type="question-circle-o" /> {this.msg('filterUnclassified')}</RadioButton>
+              <RadioButton value="pending"><Icon type="pause-circle-o" /> {this.msg('filterPending')}</RadioButton>
               <RadioButton value="classified"><Icon type="check-circle-o" /> {this.msg('filterClassified')}</RadioButton>
             </RadioGroup>
             {repoId &&
               <div className="top-bar-tools">
                 {repo.permission === CMS_TRADE_REPO_PERMISSION.edit &&
                   (
-                    <Dropdown.Button overlay={importMenu}>
+                    <Dropdown.Button size="large" overlay={importMenu}>
                       <ExcelUpload endpoint={`${API_ROOTS.default}v1/cms/cmsTradeitem/tradeitems/import`}
                         formData={{
                           data: JSON.stringify({
@@ -637,7 +636,7 @@ export default class TradeItemList extends Component {
                           }),
                         }} onUploaded={this.handleUploaded}
                       >
-                        {this.msg('importItems')}
+                        <Icon type="upload" /> {this.msg('importItems')}
                       </ExcelUpload>
                     </Dropdown.Button>
                   )

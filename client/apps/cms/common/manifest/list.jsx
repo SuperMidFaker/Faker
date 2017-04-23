@@ -311,7 +311,7 @@ export default class ManifestList extends Component {
                     <h3>已选中{this.state.selectedRowKeys.length}项</h3>
                   </div>
                 </div>
-                <div className="panel-body table-panel expandable">
+                <div className="panel-body table-panel">
                   <Table rowSelection={rowSelection} columns={columns} rowKey="pre_entry_seq_no" dataSource={this.dataSource}
                     loading={delgBillList.loading} scroll={{ x: 1800 }}
                   />

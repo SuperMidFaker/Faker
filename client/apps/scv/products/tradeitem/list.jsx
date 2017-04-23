@@ -4,9 +4,10 @@ import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Breadcrumb, Button, Layout, Radio, Dropdown, Icon, Menu, Popconfirm, message, Popover, Input, Form } from 'antd';
+import { Breadcrumb, Button, Collapse, Layout, Radio, Dropdown, Icon, Menu, Popconfirm, message, Popover, Input, Form } from 'antd';
 import RemoteTable from 'client/components/remoteAntTable';
 import NavLink from 'client/components/nav-link';
+import ButtonToggle from 'client/components/ButtonToggle';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import { loadTradeParams } from 'common/reducers/cmsTradeitem';
@@ -20,10 +21,11 @@ import NominatedImportModal from './modals/nominatedImport';
 import ConflictList from './conflictList';
 
 const formatMsg = format(messages);
-const { Header, Content } = Layout;
+const { Header, Content, Sider } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const FormItem = Form.Item;
+const Panel = Collapse.Panel;
 
 function fetchData({ state, dispatch }) {
   const promises = [];
@@ -65,7 +67,7 @@ function fetchData({ state, dispatch }) {
 )
 @connectNav({
   depth: 2,
-  moduleName: 'clearance',
+  moduleName: 'scv',
 })
 @Form.create()
 export default class TradeItemList extends Component {
@@ -83,6 +85,7 @@ export default class TradeItemList extends Component {
   state = {
     selectedRowKeys: [],
     listView: 'noConflict',
+    rightSiderCollapsed: true,
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
@@ -255,6 +258,11 @@ export default class TradeItemList extends Component {
     },
     remotes: this.props.tradeItemlist,
   })
+  toggleRightSider = () => {
+    this.setState({
+      rightSiderCollapsed: !this.state.rightSiderCollapsed,
+    });
+  }
   handleItemListLoad = (currentPage, filter, search) => {
     const { tenantId, listFilter, tradeItemlist: { pageSize, current, searchText } } = this.props;
     this.props.loadTradeItems({
@@ -501,54 +509,79 @@ export default class TradeItemList extends Component {
       </Menu>);
     return (
       <Layout className="ant-layout-wrapper">
-        <Header className="top-bar">
-          <Breadcrumb>
-            <Breadcrumb.Item>
-              {this.msg('classification')}
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              {this.msg('tradeItemMaster')}
-            </Breadcrumb.Item>
-          </Breadcrumb>
-          <span />
-          <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">
-            <RadioButton value="unclassified">{this.msg('filterUnclassified')}</RadioButton>
-            <RadioButton value="pending">{this.msg('filterPending')}</RadioButton>
-            <RadioButton value="classified">{this.msg('filterClassified')}</RadioButton>
-          </RadioGroup>
-          <span />
-          <RadioGroup value={listFilter.status} onChange={this.handleConflictRadio} size="large">
-            <RadioButton value="conflicted">{this.msg('filterConflict')}</RadioButton>
-          </RadioGroup>
-          <div className="top-bar-tools">
-            <Dropdown.Button onClick={this.handleDropdownButtonClick} overlay={importMenu}>
-              {this.msg('importItems')}
-            </Dropdown.Button>
-            <Button type="primary" size="large" icon="plus" onClick={this.handleAddItem}>
-              {this.msg('addItem')}
-            </Button>
-          </div>
-        </Header>
-        <Content className="main-content layout-min-width layout-min-width-large">
-          <div className="page-body">
-            <div className="toolbar">
-              <SearchBar placeholder="编码/名称/描述/申报要素" onInputSearch={this.handleSearch} size="large" />
-              <span />
-              <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-                <h3>已选中{this.state.selectedRowKeys.length}项</h3>
-                {batchOperation}
+        <Layout>
+          <Header className="top-bar">
+            <Breadcrumb>
+              <Breadcrumb.Item>
+                {this.msg('classification')}
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {this.msg('tradeItemMaster')}
+              </Breadcrumb.Item>
+            </Breadcrumb>
+            <span />
+            <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">
+              <RadioButton value="unclassified"><Icon type="question-circle-o" /> {this.msg('filterUnclassified')}</RadioButton>
+              <RadioButton value="pending"><Icon type="pause-circle-o" /> {this.msg('filterPending')}</RadioButton>
+              <RadioButton value="classified"><Icon type="check-circle-o" /> {this.msg('filterClassified')}</RadioButton>
+            </RadioGroup>
+            <span />
+            <RadioGroup value={listFilter.status} onChange={this.handleConflictRadio} size="large">
+              <RadioButton value="conflicted"><Icon type="exclamation-circle-o" /> {this.msg('filterConflict')}</RadioButton>
+            </RadioGroup>
+            <div className="top-bar-tools">
+              <Dropdown.Button size="large" onClick={this.handleDropdownButtonClick} overlay={importMenu}>
+                <Icon type="upload" /> {this.msg('importItems')}
+              </Dropdown.Button>
+              <Button type="primary" size="large" icon="plus" onClick={this.handleAddItem}>
+                {this.msg('addItem')}
+              </Button>
+              <ButtonToggle size="large"
+                iconOn="setting" iconOff="setting"
+                onClick={this.toggleRightSider}
+              />
+            </div>
+          </Header>
+          <Content className="main-content layout-min-width layout-min-width-large">
+            <div className="page-body">
+              <div className="toolbar">
+                <SearchBar placeholder="编码/名称/描述/申报要素" onInputSearch={this.handleSearch} size="large" />
+                <span />
+                <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
+                  <h3>已选中{this.state.selectedRowKeys.length}项</h3>
+                  {batchOperation}
+                </div>
               </div>
+              <div className="panel-body table-panel">
+                {this.state.listView === 'noConflict' && <RemoteTable loading={this.props.tradeItemsLoading} rowSelection={rowSelection}
+                  rowKey={record => record.id} columns={columns} dataSource={this.dataSource} scroll={{ x: 3850 }}
+                />}
+                {this.state.listView === 'conflict' && <ConflictList />}
+              </div>
+              <NominatedImportModal />
+              <ImportComparisonModal />
             </div>
-            <div className="panel-body table-panel">
-              {this.state.listView === 'noConflict' && <RemoteTable loading={this.props.tradeItemsLoading} rowSelection={rowSelection}
-                rowKey={record => record.id} columns={columns} dataSource={this.dataSource} scroll={{ x: 3800 }}
-              />}
-              {this.state.listView === 'conflict' && <ConflictList />}
+          </Content>
+        </Layout>
+        <Sider
+          trigger={null}
+          defaultCollapsed
+          collapsible
+          collapsed={this.state.rightSiderCollapsed}
+          width={480}
+          collapsedWidth={0}
+          className="right-sider"
+        >
+          <div className="right-sider-panel">
+            <div className="panel-header">
+              <h3>物料库设置</h3>
             </div>
-            <NominatedImportModal />
-            <ImportComparisonModal />
+            <Collapse accordion defaultActiveKey="slave">
+              <Panel header={'从库同步'} key="slave" />
+              <Panel header={'授权共享'} key="share" />
+            </Collapse>
           </div>
-        </Content>
+        </Sider>
       </Layout>
     );
   }

@@ -26,7 +26,7 @@ const { Header, Content } = Layout;
 )
 @connectNav({
   depth: 3,
-  moduleName: 'clearance',
+  moduleName: 'scv',
 })
 @Form.create()
 export default class CreateTradeItem extends Component {

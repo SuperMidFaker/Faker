@@ -787,18 +787,9 @@ export default class ManifestBodyPanel extends React.Component {
       this.handleManifestBodyExport();
     }
   }
-  render() {
-    const { totGrossWt, totWetWt, totTrade, totPcs } = this.state;
-    const selectedRows = this.state.selectedRowKeys;
-    const disabled = this.props.readonly;
-    const rowSelection = {
-      selectedRowKeys: selectedRows,
-      onChange: (selectedRowKeys) => {
-        this.setState({ selectedRowKeys });
-      },
-      getCheckboxProps: () => ({ disabled }),
-    };
-    const columns = this.getColumns();
+  renderToolbar() {
+    const { readonly } = this.props;
+
     const handlemenu = (
       <Menu onClick={this.handleDataMenuClick}>
         <Menu.Item key="priceDivid"><Icon type="pie-chart" /> 金额平摊</Menu.Item>
@@ -823,11 +814,11 @@ export default class ManifestBodyPanel extends React.Component {
           </Popconfirm>
         </Menu.Item>
       </Menu>);
-    const billBodyToolbar = (
-      <span>
-        {this.props.readonly && <Button icon="export" onClick={this.handleManifestBodyExport}>导出</Button>}
-        {!this.props.readonly &&
-        <Dropdown.Button onClick={this.handleUnrelatedImport} overlay={unrelatedImportmenu} style={{ marginLeft: 8 }}>
+    if (readonly) {
+      return <Button icon="export" onClick={this.handleManifestBodyExport}>导出</Button>;
+    } else {
+      return (<div>
+        <Dropdown.Button onClick={this.handleUnrelatedImport} overlay={unrelatedImportmenu}>
           <ExcelUpload endpoint={`${API_ROOTS.default}v1/cms/manifest/billbody/import`}
             formData={{
               data: JSON.stringify({
@@ -840,8 +831,6 @@ export default class ManifestBodyPanel extends React.Component {
             <Icon type="upload" /> {this.msg('unrelatedImport')}
           </ExcelUpload>
         </Dropdown.Button>
-        }
-        {!this.props.readonly &&
         <Dropdown.Button onClick={this.handleRelatedImport} overlay={relatedImportmenu} style={{ marginLeft: 8 }}>
           <ExcelUpload endpoint={`${API_ROOTS.default}v1/cms/manifest/billbody/related/import`}
             formData={{
@@ -857,26 +846,31 @@ export default class ManifestBodyPanel extends React.Component {
             <Icon type="link" /> {this.msg('relatedImport')}
           </ExcelUpload>
         </Dropdown.Button>
-        }
-        {!this.props.readonly && <Dropdown overlay={handlemenu}>
+        <Dropdown overlay={handlemenu}>
           <Button onClick={this.handleButtonClick} style={{ marginLeft: 8 }}>
             {this.msg('handle')} <Icon type="down" />
           </Button>
-          </Dropdown>
-        }
-        {!this.props.readonly &&
-          <Dropdown overlay={moremenu}>
-            <Button onClick={this.handleButtonClick} style={{ marginLeft: 8 }}>
-              {this.msg('more')} <Icon type="down" />
-            </Button>
-          </Dropdown>}
-        {selectedRows.length > 0 &&
-          <Popconfirm title={'是否删除所有选择项？'} onConfirm={() => this.handleDeleteSelected()}>
-            <Button type="danger" icon="delete" style={{ marginLeft: 8 }}>
-              批量删除
-            </Button>
-          </Popconfirm>}
-      </span>);
+        </Dropdown>
+        <Dropdown overlay={moremenu}>
+          <Button onClick={this.handleButtonClick} style={{ marginLeft: 8 }}>
+            {this.msg('more')} <Icon type="down" />
+          </Button>
+        </Dropdown>
+      </div>);
+    }
+  }
+  render() {
+    const { totGrossWt, totWetWt, totTrade, totPcs } = this.state;
+    const selectedRows = this.state.selectedRowKeys;
+    const disabled = this.props.readonly;
+    const rowSelection = {
+      selectedRowKeys: selectedRows,
+      onChange: (selectedRowKeys) => {
+        this.setState({ selectedRowKeys });
+      },
+      getCheckboxProps: () => ({ disabled }),
+    };
+    const columns = this.getColumns();
     const stats = (<div><span style={{ marginLeft: 8 }}>总毛重: </span><span style={{ color: '#FF9933' }}>{totGrossWt.toFixed(3)}</span>
       <span style={{ marginLeft: 8 }}>总净重: </span><span style={{ color: '#FF9933' }}>{totWetWt.toFixed(3)}</span>
       <span style={{ marginLeft: 8 }}>总金额: </span><span style={{ color: '#FF9933' }}>{totTrade.toFixed(3)}</span>
@@ -884,7 +878,15 @@ export default class ManifestBodyPanel extends React.Component {
     return (
       <div className="pane">
         <div className="panel-header">
-          {billBodyToolbar}
+          {this.renderToolbar()}
+          <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
+            <h3>已选中{this.state.selectedRowKeys.length}项</h3>
+            <Popconfirm title={'是否删除所有选择项？'} onConfirm={() => this.handleDeleteSelected()}>
+              <Button type="danger" icon="delete" style={{ marginLeft: 8 }}>
+              批量删除
+            </Button>
+            </Popconfirm>
+          </div>
           <div className="toolbar-right">
             <Alert message={stats} type="info" />
           </div>

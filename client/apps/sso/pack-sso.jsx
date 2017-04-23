@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Layout } from 'antd';
+import { Alert, Layout } from 'antd';
 import { detectBrowser } from 'detect-browser';
 import { intlShape, injectIntl } from 'react-intl';
 import TransparentHeaderBar from 'client/components/transparentHeaderBar';
@@ -20,21 +20,27 @@ export default class SSOPack extends React.Component {
       case 'firefox':
         return (<span />);
       case 'edge':
-        return (<div className="browser-tip">
-          <p>为了您更顺畅的使用体验，推荐使用：</p>
-          <ul>
-            <li><a rel="noopener noreferrer" href="http://rj.baidu.com/soft/detail/14744.html" target="_blank">谷歌(Google Chrome)浏览器</a></li>
-            <li><a rel="noopener noreferrer" href="http://www.firefox.com.cn/download/" target="_blank">火狐(Firefox)浏览器</a></li>
-          </ul>
-        </div>);
+        return (
+          <Alert
+            description={<span>为了您更顺畅的使用体验，推荐使用：<ul>
+              <li><a rel="noopener noreferrer" href="http://rj.baidu.com/soft/detail/14744.html" target="_blank">谷歌(Google Chrome)浏览器</a></li>
+              <li><a rel="noopener noreferrer" href="http://www.firefox.com.cn/download/" target="_blank">火狐(Firefox)浏览器</a></li>
+            </ul></span>}
+            type="info"
+            showIcon
+          />
+        );
       default:
-        return (<div className="browser-tip">
-          <p>支持IE10及以上版本的浏览器。为了您更顺畅的使用体验，请选择使用：</p>
-          <ul>
+        return (<Alert
+          message="支持IE10及以上版本的浏览器"
+          description={<span>为了您更顺畅的使用体验，请选择使用：<ul>
             <li><a rel="noopener noreferrer" href="http://rj.baidu.com/soft/detail/14744.html" target="_blank">谷歌(Google Chrome)浏览器</a></li>
             <li><a rel="noopener noreferrer" href="http://www.firefox.com.cn/download/" target="_blank">火狐(Firefox)浏览器</a></li>
-          </ul>
-        </div>);
+          </ul></span>}
+          type="info"
+          showIcon
+        />
+        );
     }
   }
 
@@ -44,7 +50,7 @@ export default class SSOPack extends React.Component {
         <Header>
           <TransparentHeaderBar title="" />
         </Header>
-        <Content className="main-content">
+        <Content className="main-content layout-fixed-width layout-fixed-width-small">
           <div className="center-card-wrapper">
             {this.props.children}
           </div>

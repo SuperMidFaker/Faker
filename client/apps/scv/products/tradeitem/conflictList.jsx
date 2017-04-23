@@ -41,7 +41,7 @@ const formatMsg = format(messages);
 )
 @connectNav({
   depth: 2,
-  moduleName: 'clearance',
+  moduleName: 'scv',
 })
 export default class ConflictList extends Component {
   static propTypes = {

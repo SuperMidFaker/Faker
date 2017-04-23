@@ -110,7 +110,7 @@ export default class ManifestHeadPanel extends React.Component {
               </Button>}
             {!readonly &&
               <Popconfirm title={'是否确认重置表头数据?'} onConfirm={this.handleBillHeadReset}>
-                <Button icon="reload" style={{ marginLeft: 15 }}>重置</Button>
+                <Button icon="reload" style={{ marginLeft: 8 }}>重置</Button>
               </Popconfirm>}
           </div>
         </div>

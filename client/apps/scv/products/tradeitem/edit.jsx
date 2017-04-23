@@ -34,7 +34,7 @@ function fetchData({ dispatch, params }) {
 )
 @connectNav({
   depth: 3,
-  moduleName: 'clearance',
+  moduleName: 'scv',
 })
 @Form.create()
 export default class EditTradeItem extends Component {

@@ -380,6 +380,9 @@ img {
   &.layout-fixed-width-large {
     max-width: 1200px;
   }
+  &.layout-fixed-width-small {
+    max-width: 450px;
+  }
 }
 .layout-min-width {
   width: 100%;
@@ -588,6 +591,21 @@ img {
     .toolbar-right {
       float: none;
       margin-bottom: 10px;
+    }
+  }
+  .bulk-actions {
+    position: absolute;
+    display: inline-flex;
+    top: 0;
+    left: 0;
+    overflow: inherit;
+    width: 100%;
+    min-height: 45px;
+    padding: 8px 16px;
+    background: #fff;
+    z-index: 50;
+    &.hide {
+      display: none;
     }
   }
 }

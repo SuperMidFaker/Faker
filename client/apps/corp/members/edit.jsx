@@ -137,89 +137,88 @@ export default class CorpEdit extends React.Component {
     const disableSubmit = this.props.tenant.id === -1;
     const msg = descriptor => formatMsg(intl, descriptor);
     return (
-      <Layout>
-        <Header className="top-bar">
-          <Breadcrumb>
-            <Breadcrumb.Item>
-              {msg('members')}
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              {msg('addMember')}
-            </Breadcrumb.Item>
-          </Breadcrumb>
-          <div className="top-bar-tools">
-            <Button size="large" onClick={this.handleCancel} disabled={submitting}>
-              {formatGlobalMsg(intl, 'cancel')}
-            </Button>
-            <Button size="large" disabled={disableSubmit} htmlType="submit" type="primary" loading={submitting}
-              title={disableSubmit ? msg('nonTenantEdit') : ''}
-            >
-              {formatGlobalMsg(intl, 'ok')}
-            </Button>
-          </div>
-        </Header>
-        <Content className="main-content layout-fixed-width">
-          <Card>
-            <Form layout="horizontal" onSubmit={this.handleSubmit} >
+      <Form layout="horizontal" onSubmit={this.handleSubmit} >
+        <Layout>
+          <Header className="top-bar">
+            <Breadcrumb>
+              <Breadcrumb.Item>
+                {msg('members')}
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {msg('addMember')}
+              </Breadcrumb.Item>
+            </Breadcrumb>
+            <div className="top-bar-tools">
+              <Button size="large" onClick={this.handleCancel} disabled={submitting}>
+                {formatGlobalMsg(intl, 'cancel')}
+              </Button>
+              <Button size="large" disabled={disableSubmit} htmlType="submit" type="primary" loading={submitting}
+                title={disableSubmit ? msg('nonTenantEdit') : ''}
+              >
+                {formatGlobalMsg(intl, 'ok')}
+              </Button>
+            </div>
+          </Header>
+          <Content className="main-content layout-fixed-width">
+            <Card>
               {this.renderTextInput(
-              msg('fullName'), msg('fullNamePlaceholder'), 'name', true,
-              [{ required: true, min: 2, message: msg('fullNameMessage') }],
-              { initialValue: name }
-            )}
+                msg('fullName'), msg('fullNamePlaceholder'), 'name', true,
+                [{ required: true, min: 2, message: msg('fullNameMessage') }],
+                { initialValue: name }
+              )}
               <FormItem label={msg('username')} labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}
                 required
               >
                 {getFieldDecorator('loginName', {
                   rules: [{
                     validator: (rule, value, callback) => isLoginNameExist(
-                    value, code, this.props.formData.loginId,
-                    this.props.tenant.id, callback, message, this.props.checkLoginName,
-                    (msgs, descriptor) => format(msgs)(intl, descriptor)),
+                      value, code, this.props.formData.loginId,
+                      this.props.tenant.id, callback, message, this.props.checkLoginName,
+                      (msgs, descriptor) => format(msgs)(intl, descriptor)),
                   }],
                   initialValue: loginName,
                 })(<Input type="text" addonAfter={`@${code}`} />)}
               </FormItem>
               {
-              isCreating && this.renderTextInput(
-                msg('password'), msg('passwordPlaceholder'), 'password', true,
-                [{ required: true, min: 6, message: msg('passwordMessage') }],
-                { initialValue: password }, 'password')
-            }
+                isCreating && this.renderTextInput(
+                  msg('password'), msg('passwordPlaceholder'), 'password', true,
+                  [{ required: true, min: 6, message: msg('passwordMessage') }],
+                  { initialValue: password }, 'password')
+              }
               {this.renderTextInput(
-              msg('phone'), msg('phonePlaceholder'), 'phone', false,
+                msg('phone'), msg('phonePlaceholder'), 'phone', false,
                 [{
-                  validator: (rule, value, callback) => validatePhone(value, callback,
-                  (msgs, descriptor) => format(msgs)(intl, descriptor)),
+                  validator: (rule, value, callback) => validatePhone(value, callback, (msgs, descriptor) => format(msgs)(intl, descriptor)),
                 }],
-              { initialValue: phone }
-            )}
+                { initialValue: phone }
+              )}
               {this.renderTextInput(
-              'Email', msg('emailPlaceholder'), 'email', false,
-              [{ type: 'email', message: formatContainerMsg(intl, 'emailError') }],
-              { initialValue: email }
-            )}
+                'Email', msg('emailPlaceholder'), 'email', false,
+                [{ type: 'email', message: formatContainerMsg(intl, 'emailError') }],
+                { initialValue: email }
+              )}
               {
-              this.renderTextInput(
-                msg('position'), '', 'position', false, undefined,
-                { initialValue: position }
-              )
-            }
-              {this.props.formData.role !== PRESET_TENANT_ROLE.owner.name &&
-              <FormItem label={msg('role')} labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
-                {getFieldDecorator('role_id', {
-                  initialValue: this.props.formData.role_id,
-                  rules: [{ required: true, message: ' ', type: 'number' }],
-                })(<Select onSelect={this.handleRoleSelect}>
-                  {
-                roles.filter(rol => rol.name !== PRESET_TENANT_ROLE.owner.name).map(
-                  role => <Option value={role.id} key={role.id}>{role.name}</Option>
+                this.renderTextInput(
+                  msg('position'), '', 'position', false, undefined,
+                  { initialValue: position }
                 )
               }
-                </Select>)}
-              </FormItem>}
-            </Form>
-          </Card>
-        </Content>
-      </Layout>);
+              {this.props.formData.role !== PRESET_TENANT_ROLE.owner.name &&
+                <FormItem label={msg('role')} labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
+                  {getFieldDecorator('role_id', {
+                    initialValue: this.props.formData.role_id,
+                    rules: [{ required: true, message: ' ', type: 'number' }],
+                  })(<Select onSelect={this.handleRoleSelect}>
+                    {
+                  roles.filter(rol => rol.name !== PRESET_TENANT_ROLE.owner.name).map(
+                    role => <Option value={role.id} key={role.id}>{role.name}</Option>
+                  )
+                }
+                  </Select>)}
+                </FormItem>}
+            </Card>
+          </Content>
+        </Layout>
+      </Form>);
   }
 }
