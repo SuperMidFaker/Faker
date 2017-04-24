@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Button, Input, Layout, Tooltip } from 'antd';
-import { loadFlowList, openCreateFlowModal, openFlow, reloadFlowList, editFlow } from 'common/reducers/scofFlow';
+import { loadFlowList, loadFlowTrackingFields, openCreateFlowModal, openFlow, reloadFlowList, editFlow } from 'common/reducers/scofFlow';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import Table from 'client/components/remoteAntTable';
@@ -35,7 +35,7 @@ function fetchData({ state, dispatch }) {
     flowList: state.scofFlow.flowList,
     listCollapsed: state.scofFlow.listCollapsed,
   }),
-  { openCreateFlowModal, loadFlowList, openFlow, reloadFlowList, editFlow }
+  { openCreateFlowModal, loadFlowList, loadFlowTrackingFields, openFlow, reloadFlowList, editFlow }
 )
 @connectNav({
   depth: 2,
@@ -53,6 +53,9 @@ export default class FlowList extends React.Component {
   state = {
     selectedRowKeys: [],
     searchInput: '',
+  }
+  componentWillMount() {
+    this.props.loadFlowTrackingFields();
   }
   componentWillReceiveProps(nextProps) {
     if (!this.props.reload && nextProps.reload) {

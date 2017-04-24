@@ -2,7 +2,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Alert, Breadcrumb, Button, Card, Collapse, Popconfirm, Layout, Spin, Radio, Tooltip, message } from 'antd';
+import { Alert, Breadcrumb, Button, Card, Collapse, Popconfirm, Layout, Table, Spin, Radio, Tooltip, message } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import { toggleFlowList, loadFlowGraph, loadFlowGraphItem, saveFlowGraph, setNodeActions } from 'common/reducers/scofFlow';
 import { uuidWithoutDash } from 'client/common/uuid';
@@ -23,6 +23,7 @@ const Panel = Collapse.Panel;
 @connect(
   state => ({
     tenantId: state.account.tenantId,
+    trackingFields: state.scofFlow.trackingFields,
     flowGraph: state.scofFlow.flowGraph,
     submitting: state.scofFlow.submitting,
     graphLoading: state.scofFlow.graphLoading,
@@ -40,6 +41,7 @@ export default class FlowDesigner extends React.Component {
     submitting: PropTypes.bool,
     graphLoading: PropTypes.bool.isRequired,
     listCollapsed: PropTypes.bool.isRequired,
+    trackingFields: PropTypes.arrayOf(PropTypes.shape({ field: PropTypes.string, title: PropTypes.string })),
     currentFlow: PropTypes.shape({ id: PropTypes.number.isRequired, name: PropTypes.string.isRequired, partner_id: PropTypes.number.isRequired }).isRequired,
   }
   constructor(...args) {
@@ -51,6 +53,13 @@ export default class FlowDesigner extends React.Component {
     this.beginAdd = false;
     this.dragging = false;
     this.formhoc = null;
+    this.trackingColumns = [{
+      title: '追踪点',
+      key: 'field',
+    }, {
+      title: '来源节点',
+      key: 'node',
+    }];
   }
   componentWillMount() {
     this.props.loadFlowGraph(this.props.currentFlow.id);
@@ -428,7 +437,10 @@ export default class FlowDesigner extends React.Component {
             <div className="panel-header">
               <h3>流程设置</h3>
             </div>
-            <Collapse accordion defaultActiveKey="">
+            <Collapse accordion defaultActiveKey="tracking">
+              <Panel header={'追踪节点'} key="tracking">
+                <Table />
+              </Panel>
               <Panel header={'更多'} key="more">
                 <Alert
                   message="警告"

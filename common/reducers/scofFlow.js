@@ -17,6 +17,7 @@ const actionTypes = createActionTypes('@@welogix/scof/flow/', [
   'SAVE_GRAPH', 'SAVE_GRAPH_SUCCEED', 'SAVE_GRAPH_FAIL',
   'LOAD_PTFLOWS', 'LOAD_PTFLOWLIST_SUCCEED', 'LOAD_PTFLOWLIST_FAIL',
   'OPEN_FLOW', 'SET_NODE_ACTIONS', 'EMPTY_FLOWS',
+  'LOAD_FLTRACK', 'LOAD_FLTRACK_SUCCEED', 'LOAD_FLTRACK_FAIL',
 ]);
 
 const initialState = {
@@ -40,6 +41,7 @@ const initialState = {
   reloadFlowList: false,
   submitting: false,
   listFilter: { name: '' },
+  trackingFields: [],
   currentFlow: null,
   flowGraph: { nodes: [], edges: [] },
   nodeActions: [],
@@ -107,6 +109,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, partnerFlows: [], cmsQuotes: [] };
     case actionTypes.EDIT_FLOW_SUCCEED:
       return { ...state, currentFlow: state.currentFlow && { ...state.currentFlow, ...action.data.flow } };
+    case actionTypes.LOAD_FLTRACK_SUCCEED:
+      return { ...state, trackingFields: action.result.data };
     default:
       return state;
   }
@@ -325,4 +329,18 @@ export function saveFlowGraph(flowid, nodes, edges) {
 
 export function emptyFlows() {
   return { type: actionTypes.EMPTY_FLOWS };
+}
+
+export function loadFlowTrackingFields() {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_FLTRACK,
+        actionTypes.LOAD_FLTRACK_SUCCEED,
+        actionTypes.LOAD_FLTRACK_FAIL,
+      ],
+      endpoint: 'v1/scv/tracking/flow/fields',
+      method: 'get',
+    },
+  };
 }
