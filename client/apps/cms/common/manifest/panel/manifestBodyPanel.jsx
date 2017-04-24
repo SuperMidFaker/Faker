@@ -699,7 +699,7 @@ export default class ManifestBodyPanel extends React.Component {
     }
   }
   handleGrossWtDivid = () => {
-    const totGrossWt = this.props.billHead.gross_wt;
+    const totGrossWt = Number(this.props.billHead.gross_wt);
     if (!totGrossWt) {
       message.success('总毛重为空', 3);
       return;
@@ -715,7 +715,14 @@ export default class ManifestBodyPanel extends React.Component {
         this.props.editBillBody(data);
       }
       datas.push(bodyDatas[bodyDatas.length - 1]);
-      this.setState({ bodies: datas });
+      const calresult = calculateTotal(datas);
+      this.setState({
+        totGrossWt: calresult.totGrossWt,
+        totWetWt: calresult.totWetWt,
+        totTrade: calresult.totTrade,
+        totPcs: calresult.totPcs,
+        bodies: datas,
+      });
       message.success(`总毛重: ${totGrossWt.toFixed(3)}千克已分摊`, 3);
     }
   }
