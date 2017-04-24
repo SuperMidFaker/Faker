@@ -33,7 +33,7 @@ export default class CorpOverview extends React.Component {
         <Header className="top-bar">
           <Breadcrumb>
             <Breadcrumb.Item>
-              {this.msg('overview')}
+              {this.msg('overviewTitle')}
             </Breadcrumb.Item>
           </Breadcrumb>
         </Header>

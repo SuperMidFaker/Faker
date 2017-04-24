@@ -1,6 +1,10 @@
 import { defineMessages } from 'react-intl';
 
 const messages = defineMessages({
+  corpInfo: {
+    id: 'corp.info',
+    defaultMessage: '企业信息',
+  },
   updateSuccess: {
     id: 'corp.info.updateSuccess',
     defaultMessage: '更新成功',
@@ -39,7 +43,7 @@ const messages = defineMessages({
   },
   enterpriseCode: {
     id: 'corp.info.enterprise.code',
-    defaultMessage: '企业代码',
+    defaultMessage: '统一社会信用代码',
   },
   applyChange: {
     id: 'corp.info.apply.change',
@@ -47,15 +51,15 @@ const messages = defineMessages({
   },
   tradeCategory: {
     id: 'corp.info.trade.category',
-    defaultMessage: '行业类型',
+    defaultMessage: '所属行业',
   },
   companyAbout: {
     id: 'corp.info.company.about',
-    defaultMessage: '公司介绍',
+    defaultMessage: '企业简介',
   },
   companyWebsite: {
     id: 'corp.info.company.website',
-    defaultMessage: '公司网址',
+    defaultMessage: '企业网址',
   },
   contact: {
     id: 'corp.info.company.contact',

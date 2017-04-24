@@ -463,10 +463,22 @@ img {
   .ant-menu-submenu-title {
     font-size: 14px;
   }
+  &-head {
+    padding: 0 8px;
+  }
+  &-footer {
+    padding: 0 8px;
+    >button {
+      width: 100%;
+    }
+  }
 }
 .nav-content {
   padding: 0 24px;
   min-height: 280px;
+  &-head {
+    padding: 0 0 16px 0;
+  }
   .toolbar {
     padding: 0;
   }
@@ -474,6 +486,7 @@ img {
 .main-content {
   padding: 64px 16px 0;
   min-height:100%;
+  overflow-x: hidden;
   &.no-top-bar {
     padding: 24px 16px 0;
   }

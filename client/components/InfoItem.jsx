@@ -33,6 +33,7 @@ export default class InfoItem extends React.Component {
     size: PropTypes.oneOf(['small', 'large']),
     placeholder: PropTypes.string,
     onEdit: PropTypes.func,
+    action: PropTypes.node,
   }
   renderLabel() {
     const { prefixCls, label, labelCol, colon } = this.props;
@@ -94,7 +95,7 @@ export default class InfoItem extends React.Component {
   }
 
   render() {
-    const { prefixCls, size = '', fieldCol } = this.props;
+    const { prefixCls, size = '', fieldCol, action } = this.props;
     const sizeCls = ({
       large: 'lg',
       small: 'sm',
@@ -106,7 +107,13 @@ export default class InfoItem extends React.Component {
     return (
       <Row className={classes}>
         {this.renderLabel()}
-        <div className={fieldCls}>{this.renderField()}</div>
+        <Row type="flex">
+          <Col className={`col-flex-primary ${fieldCls}`}>{this.renderField()}</Col>
+          {action &&
+          <Col className="col-flex-secondary">
+            {action}
+          </Col>}
+        </Row>
       </Row>
     );
   }

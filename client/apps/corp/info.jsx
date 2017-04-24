@@ -5,20 +5,19 @@ import {
 } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import { intlShape, injectIntl } from 'react-intl';
-import Region from '../../components/region-cascade';
+import Avatar from 'react-avatar';
+import ChinaRegionCascader from '../../components/chinaRegionCascader';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import withPrivilege, { PrivilegeCover } from 'client/common/decorators/withPrivilege';
+import InfoItem from 'client/components/InfoItem';
 import { isFormDataLoaded, loadForm, edit } from
   'common/reducers/corps';
 import { checkCorpDomain } from 'common/reducers/corp-domain';
-import { validatePhone } from 'common/validater';
 import { TENANT_LEVEL } from '../../../common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import containerMessages from 'client/apps/message.i18n';
 
 const formatMsg = format(messages);
-const formatContainerMsg = format(containerMessages);
 const { Header, Content } = Layout;
 const Option = Select.Option;
 const FormItem = Form.Item;
@@ -160,7 +159,7 @@ export default class CorpInfo extends React.Component {
             </Col>
             <Col sm={24} md={24}>
               <FormItem label={msg('location')} >
-                <Region onChange={this.handleRegionChange} country={country} defaultRegion={[
+                <ChinaRegionCascader onChange={this.handleRegionChange} country={country} defaultRegion={[
                   province, city, district,
                 ]}
                 />
@@ -192,54 +191,35 @@ export default class CorpInfo extends React.Component {
               </FormItem>
             </Col>
           </Row>
+          <Row>
+            <PrivilegeCover module="corp" feature="info" action="edit">
+              <Button type="primary" size="large" htmlType="submit"
+                onClick={this.handleSubmit}
+              >
+                {msg('save')}
+              </Button>
+            </PrivilegeCover>
+          </Row>
         </Form>
       </Card>);
   }
-  renderContactForm() {
+  renderMoreActions() {
     const {
-      formData: { contact, phone, email },
-      form: { getFieldDecorator }, intl,
+      formData: { contact }, intl,
     } = this.props;
     const msg = (descriptor, values) => formatMsg(intl, descriptor, values);
     return (
-      <Card title={msg('contactInfo')}>
-        <Form layout="vertical">
-          <Row gutter={16}>
-            <Col sm={24} md={12}>
-              {this.renderTextInput(
-                msg('contact'), '', 'contact', true, [{
-                  required: true,
-                  message: msg('contactRequired'),
-                  type: 'string',
-                  whitespace: true,
-                }], {
-                  transform: value => (value.trim()),
-                  initialValue: contact,
-                }
-              )}
-            </Col>
-            <Col sm={24} md={12}>
-              <FormItem label={msg('position')} >
-                {getFieldDecorator('position')(<Input type="text" />)}
-              </FormItem>
-            </Col>
-            <Col sm={24} md={12}>
-              {this.renderTextInput(msg('phone'), '', 'phone', true, [{
-                validator: (rule, value, callback) => validatePhone(
-                  value, callback,
-                  (msgs, descriptor) => format(msgs)(intl, descriptor)
-                ),
-              }], { initialValue: phone })}
-            </Col>
-            <Col sm={24} md={12}>
-              {this.renderTextInput(
-                'Email', '', 'email', false,
-                [{ type: 'email', message: formatContainerMsg(intl, 'emailError') }],
-                { initialValue: email }
-              )}
-            </Col>
-          </Row>
-        </Form>
+      <Card title={msg('moreActions')}>
+        <InfoItem type="select" label="企业归属" placeholder="选择企业拥有者"
+          addonBefore={<Avatar name={contact} size={28} round />}
+          field={contact}
+          action={<Button type="primary" size="large" ghost disabled>移交</Button>}
+        />
+        {/* <InfoItem
+          label="删除企业"
+          field="一旦你删除了企业，企业内所有数据内容都将会被永久删除并不可恢复，请谨慎对待！"
+          action={<Button type="danger" size="large">删除企业</Button>}
+        />*/}
       </Card>);
   }
   renderEnterpriseForm() {
@@ -278,24 +258,16 @@ export default class CorpInfo extends React.Component {
         <Header className="top-bar">
           <Breadcrumb>
             <Breadcrumb.Item>
-              {msg('corpInfo')}
+              <i className="icon-fontello-building" /> {msg('corpInfo')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <div className="top-bar-tools">
-            <PrivilegeCover module="corp" feature="info" action="edit">
-              <Button type="primary" size="large" htmlType="submit"
-                onClick={this.handleSubmit}
-              >
-                {msg('save')}
-              </Button>
-            </PrivilegeCover>
-          </div>
+          <div className="top-bar-tools" />
         </Header>
         <Content className="main-content layout-fixed-width layout-fixed-width-large" key="main">
           <Row gutter={16}>
             <Col sm={24} md={16}>
               {this.renderBasicForm()}
-              {this.renderContactForm()}
+              {this.renderMoreActions()}
             </Col>
             <Col sm={24} md={8}>
               {this.props.formData.level === TENANT_LEVEL.ENTERPRISE && this.renderEnterpriseForm()}

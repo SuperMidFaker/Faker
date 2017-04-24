@@ -1,18 +1,19 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Menu, Layout } from 'antd';
+import { Menu, Layout, Icon } from 'antd';
 import { locationShape } from 'react-router';
 import { intlShape, injectIntl } from 'react-intl';
+import MdIcon from 'client/components/MdIcon';
 import CorpHeaderBar from 'client/components/corpHeaderBar';
 import connectNav from 'client/common/decorators/connect-nav';
 import NavLink from 'client/components/nav-link';
 import { hasPermission } from 'client/common/decorators/withPrivilege';
-import { TENANT_LEVEL } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from 'client/apps/message.i18n';
 const formatMsg = format(messages);
 const { Header, Sider } = Layout;
 const MenuItem = Menu.Item;
+const SubMenu = Menu.SubMenu;
 @injectIntl
 @connect(
   state => ({
@@ -41,56 +42,49 @@ export default class CorpPack extends React.Component {
   }
 
   render() {
-    const linkMenus = [];
-    const { intl, privileges, level } = this.props;
-    if (hasPermission(privileges, { module: 'corp', feature: 'overview' })) {
-      linkMenus.push(
-        <MenuItem key="corpsetting-0">
-          <NavLink to="/corp/overview">
-            <i className="icon-fontello-gauge" /> {formatMsg(intl, 'corpOverview')}
-          </NavLink>
-        </MenuItem>
-      );
-    }
+    const corpMenu = [];
+    const dataMenu = [];
+    const { intl, privileges } = this.props;
     if (hasPermission(privileges, { module: 'corp', feature: 'info' })) {
-      linkMenus.push(
+      corpMenu.push(
         <MenuItem key="corpsetting-1">
           <NavLink to="/corp/info">
-            <i className="icon-fontello-building" /> {formatMsg(intl, 'corpInfo')}
+            <MdIcon mode="fontello" type="building" />{formatMsg(intl, 'corpInfo')}
           </NavLink>
         </MenuItem>
       );
     }
     if (hasPermission(privileges, { module: 'corp', feature: 'personnel' })) {
-      linkMenus.push(
+      corpMenu.push(
         <MenuItem key="corpsetting-2">
           <NavLink to="/corp/members">
-            <i className="icon-ikons-users" /> {formatMsg(intl, 'personnelUser')}
-          </NavLink>
-        </MenuItem>
-      );
-    }
-    if (
-      level === TENANT_LEVEL.ENTERPRISE &&
-      hasPermission(privileges, { module: 'corp', feature: 'organization' })
-    ) {
-      linkMenus.push(
-        <MenuItem key="corpsetting-3">
-          <NavLink to="/corp/organization">
-            <i className="icon-fontello-sitemap" /> {formatMsg(intl, 'organTitle')}
+            <MdIcon mode="ikons" type="users" />{formatMsg(intl, 'personnelUser')}
           </NavLink>
         </MenuItem>
       );
     }
     if (hasPermission(privileges, { module: 'corp', feature: 'role' })) {
-      linkMenus.push(
+      corpMenu.push(
         <MenuItem key="corpsetting-4">
           <NavLink to="/corp/role">
-            <i className="zmdi zmdi-shield-check" /> {formatMsg(intl, 'roleTitle')}
+            <MdIcon type="shield-check" />{formatMsg(intl, 'roleTitle')}
           </NavLink>
         </MenuItem>
       );
     }
+    dataMenu.push(
+      <Menu.Item key="logs" disabled>
+        <NavLink to="/corp/data/logs">
+          <Icon type="exception" />操作日志
+        </NavLink>
+      </Menu.Item>
+    );
+    dataMenu.push(
+      <Menu.Item key="export" disabled>
+        <NavLink to="/corp/export">
+          <Icon type="cloud-download-o" />导出申请
+        </NavLink>
+      </Menu.Item>);
     return (
       <Layout className="layout-wrapper">
         <Header>
@@ -98,8 +92,18 @@ export default class CorpPack extends React.Component {
         </Header>
         <Layout>
           <Sider className="menu-sider">
-            <Menu defaultSelectedKeys={['corpsetting-0']} mode="inline">
-              {linkMenus}
+            <Menu defaultSelectedKeys={['corpsetting-0']} defaultOpenKeys={['corpMenu', 'dataMenu']} mode="inline">
+              <MenuItem key="corpsetting-0">
+                <NavLink to="/corp/overview">
+                  <MdIcon mode="fontello" type="gauge" />{formatMsg(intl, 'corpOverview')}
+                </NavLink>
+              </MenuItem>
+              <SubMenu key="corpMenu" title={<span><Icon type="setting" />企业设置</span>}>
+                {corpMenu}
+              </SubMenu>
+              <SubMenu key="dataMenu" title={<span><Icon type="database" />数据监控</span>}>
+                {dataMenu}
+              </SubMenu>
             </Menu>
           </Sider>
           <Layout>

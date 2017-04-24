@@ -119,7 +119,7 @@ const messages = defineMessages({
   },
   personnelUser: {
     id: 'container.personnelUser',
-    defaultMessage: '用户管理',
+    defaultMessage: '用户与部门',
   },
   organTitle: {
     id: 'container.organization',

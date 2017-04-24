@@ -156,7 +156,7 @@ export default(store, cookie) => {
           </Route>
         </Route>
         <Route path="open" component={PackOpenPlatform}>
-          <IndexRedirect to="/open/integration/apps" />
+          <IndexRedirect to="/open/integration/installed" />
           <Route path="api">
             <Route path="auth" component={OpenAPI.Auth} />
             <Route path="webhook" component={OpenAPI.Webhook} />

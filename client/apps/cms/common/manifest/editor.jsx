@@ -320,11 +320,12 @@ export default class ManifestEditor extends React.Component {
   render() {
     const { billHeadFieldsChangeTimes, ietype, form: { getFieldDecorator }, loginId, form, billHead, billBodies, billMeta, templates } = this.props;
     const { locked, lockedByOthers } = this.state;
-    const declEntryMenu = (<Menu onClick={this.handleEntryVisit}>
-      {billMeta.entries.map(bme => (<Menu.Item key={bme.pre_entry_seq_no}>
-        <Icon type="file" /> {bme.entry_id || bme.pre_entry_seq_no}</Menu.Item>)
-      )}
-    </Menu>);
+    const declEntryMenu = (
+      <Menu onClick={this.handleEntryVisit}>
+        {billMeta.entries.map(bme => (<Menu.Item key={bme.pre_entry_seq_no}>
+          <Icon type="file" /> {bme.entry_id || bme.pre_entry_seq_no}</Menu.Item>)
+        )}
+      </Menu>);
     const path = `/clearance/${ietype}/manifest/`;
     let editable = !this.props.readonly && billMeta.entries.length === 0;
     if (editable && billHead.locking_login_id && billHead.locking_login_id !== loginId) {

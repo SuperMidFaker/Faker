@@ -28,19 +28,19 @@ export default class OpenPlatformPack extends React.Component {
         <Layout>
           <Sider className="menu-sider">
             <Menu
-              defaultSelectedKeys={['apps']}
+              defaultSelectedKeys={['installed']}
               defaultOpenKeys={['integration', 'api']}
               mode="inline"
             >
               <SubMenu key="integration" title={<span><Icon type="appstore-o" /><span>应用整合</span></span>}>
-                <Menu.Item key="apps">
-                  <NavLink to="/open/integration/apps">
-                    应用中心
-                  </NavLink>
-                </Menu.Item>
                 <Menu.Item key="installed">
                   <NavLink to="/open/integration/installed">
                     已安装应用
+                  </NavLink>
+                </Menu.Item>
+                <Menu.Item key="apps">
+                  <NavLink to="/open/integration/apps">
+                    应用中心
                   </NavLink>
                 </Menu.Item>
               </SubMenu>

@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Breadcrumb, Icon, Layout } from 'antd';
+import QueueAnim from 'rc-queue-anim';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import NavLink from 'client/components/nav-link';
@@ -168,13 +169,13 @@ export default class InstalledAppsList extends React.Component {
           <div className="top-bar-tools" />
         </Header>
         <Content className="main-content">
-          <div className="page-body">
-            <div className="panel-body table-panel">
-              <Table columns={this.columns} dataSource={this.dataSource} loading={loading}
-                rowKey="id"
-              />
+          <QueueAnim type="right">
+            <div className="page-body" key="body">
+              <div className="panel-body table-panel">
+                <Table columns={this.columns} dataSource={this.dataSource} loading={loading} rowKey="id" />
+              </div>
             </div>
-          </div>
+          </QueueAnim>
         </Content>
       </div>
     );

@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import { changeInvitationType } from 'common/reducers/invitation';
 import { Breadcrumb, Icon, Radio, Layout } from 'antd';
+import QueueAnim from 'rc-queue-anim';
 import ToInviteListContainer from './ToInviteListContainer';
 import ReceiveInvitationListContainer from './ReceiveInvitationListContainer';
 import SendInvitationListContainer from './SendInvitationListContainer';
@@ -53,18 +54,20 @@ export default class MainContainer extends Component {
           <div className="toolbar-right" />
         </Header>
         <Content className="main-content">
-          <div className="page-body">
-            <div className="toolbar">
-              <RadioGroup defaultValue={invitationType} onChange={this.handleInvitationTypeChange}>
-                <RadioButton value="0">待邀请</RadioButton>
-                <RadioButton value="1">收到的邀请</RadioButton>
-                <RadioButton value="2">发出的邀请</RadioButton>
-              </RadioGroup>
+          <QueueAnim type="right">
+            <div className="page-body" key="body">
+              <div className="toolbar">
+                <RadioGroup defaultValue={invitationType} onChange={this.handleInvitationTypeChange}>
+                  <RadioButton value="0">待邀请</RadioButton>
+                  <RadioButton value="1">收到的邀请</RadioButton>
+                  <RadioButton value="2">发出的邀请</RadioButton>
+                </RadioGroup>
+              </div>
+              <div className="panel-body table-panel">
+                {content}
+              </div>
             </div>
-            <div className="panel-body table-panel">
-              {content}
-            </div>
-          </div>
+          </QueueAnim>
         </Content>
       </div>
     );

@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Alert, Breadcrumb, Button, Icon, Layout, Table } from 'antd';
+import QueueAnim from 'rc-queue-anim';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -75,7 +76,7 @@ export default class ApiAuthList extends React.Component {
         <Header className="top-bar">
           <Breadcrumb>
             <Breadcrumb.Item>
-              <Icon type="swap" /> 开放API
+              <Icon type="api" /> 开放API
             </Breadcrumb.Item>
             <Breadcrumb.Item>
               API接口授权
@@ -84,22 +85,25 @@ export default class ApiAuthList extends React.Component {
           <div className="top-bar-tools" />
         </Header>
         <Content className="main-content">
-          <Alert
-            description={this.msg('apiDesc')}
-            type="info"
-            showIcon
-            closable
-          />
-          <div className="page-body" >
-            <div className="toolbar">
-              <Button type="primary" size="large" icon="plus" onClick={this.handleAddWarehouse}>
-                {this.msg('generateAPICredential')}
-              </Button>
+          <QueueAnim type="right">
+            <Alert
+              description={this.msg('apiDesc')}
+              type="info"
+              showIcon
+              closable
+              key="alert"
+            />
+            <div className="page-body" key="body">
+              <div className="toolbar">
+                <Button type="primary" size="large" icon="plus" onClick={this.handleAddWarehouse}>
+                  {this.msg('generateAPICredential')}
+                </Button>
+              </div>
+              <div className="panel-body table-panel">
+                <Table columns={this.columns} dataSource={this.mockDataSource} />
+              </div>
             </div>
-            <div className="panel-body table-panel">
-              <Table columns={this.columns} dataSource={this.mockDataSource} />
-            </div>
-          </div>
+          </QueueAnim>
         </Content>
       </div>
     );

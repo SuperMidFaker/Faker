@@ -65,7 +65,7 @@ export default class ExportExcel extends React.Component {
   render() {
     return (
       <span>
-        <Button size="large" icon="export" onClick={this.showModal}>{this.msg('export')}</Button>
+        <Button type="primary" size="large" ghost icon="export" onClick={this.showModal}>{this.msg('export')}</Button>
         <Modal title={this.msg('exportExcel')}
           visible={this.state.visible}
           onOk={this.handleOk}

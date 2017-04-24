@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
+import Avatar from 'react-avatar';
 import { Spin, Badge, Button, Card, Col, Icon, Progress, Row, Table, Tag, Steps, message } from 'antd';
 import moment from 'moment';
 import { CMS_DECL_STATUS } from 'common/constants';
@@ -187,7 +188,7 @@ export default class CustomsDeclPane extends React.Component {
               <Card title={manifestProgress} extra={this.renderManifestAction()} bodyStyle={{ padding: 16 }}>
                 <Row gutter={8}>
                   <Col span="6">
-                    <InfoItem type="select" label="制单人" placeholder="分配制单人" addonBefore={<Icon type="user" />}
+                    <InfoItem type="select" label="制单人" placeholder="分配制单人" addonBefore={<Avatar name={bill.preparer_name} size={28} round />}
                       field={bill.preparer_name} editable={assignable}
                     />
                   </Col>

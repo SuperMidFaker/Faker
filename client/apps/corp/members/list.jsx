@@ -1,8 +1,9 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Breadcrumb, Button, Select, message, Layout } from 'antd';
+import { Breadcrumb, Button, Icon, Menu, Input, message, Layout } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
+import MdIcon from 'client/components/MdIcon';
 import { intlShape, injectIntl } from 'react-intl';
 import { loadPersonnel, loadTenantsByMaster, delPersonnel, switchTenant, switchStatus } from
  'common/reducers/personnel';
@@ -20,8 +21,9 @@ import containerMessages from 'client/apps/message.i18n';
 const formatMsg = format(messages);
 const formatGlobalMsg = format(globalMessages);
 const formatContainerMsg = format(containerMessages);
-const { Header, Content } = Layout;
-const Option = Select.Option;
+const { Header, Content, Sider } = Layout;
+const Search = Input.Search;
+const SubMenu = Menu.SubMenu;
 
 function fetchData({ state, dispatch, cookie }) {
   const promises = [];
@@ -322,28 +324,46 @@ export default class PersonnelSetting extends React.Component {
               {msg('members')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <div className="top-bar-tools">
-            <PrivilegeCover module="corp" feature="personnel" action="create">
-              <Button size="large" type="primary" onClick={() => this.handleNavigationTo('/corp/members/new')} icon="plus-circle-o">
-                {msg('newUser')}
-              </Button>
-            </PrivilegeCover>
-          </div>
         </Header>
-        <Content className="main-content">
+        <Content className="main-content" key="main">
           <div className="page-body">
-            <div className="toolbar">
-              <Select style={{ width: 200 }} value={`${tenant.id}`}
-                onChange={value => this.handleTenantSwitch(value)}
-              >
-                {
-                    branches.map(br => <Option key={br.key} value={`${br.key}`}>{br.name}</Option>)
-                }
-              </Select>
-            </div>
-            <div className="panel-body table-panel">
-              <Table rowSelection={rowSelection} columns={columns} loading={loading} dataSource={dataSource} useFixedHeader />
-            </div>
+            <Layout className="main-wrapper">
+              <Sider className="nav-sider">
+                <div className="nav-sider-head">
+                  <Search
+                    placeholder="搜索用户"
+                    onSearch={this.handleSearch} size="large"
+                  />
+                </div>
+                <Menu
+                  defaultOpenKeys={['deptMenu']}
+                  defaultSelectedKeys={['allMember']}
+                  mode="inline"
+                >
+                  <Menu.Item key="allMember"><NavLink to="/corp/members"><Icon type="team" />所有成员</NavLink></Menu.Item>
+                  <SubMenu key="deptMenu" title={<span><MdIcon mode="fontello" type="sitemap" />部门</span>}>
+                    {
+                      branches.map(br => <Menu.Item key={br.key}>{br.name}</Menu.Item>)
+                    }
+                  </SubMenu>
+                </Menu>
+                <div className="nav-sider-footer">
+                  <Button type="dashed" size="large" icon="plus-circle">创建部门</Button>
+                </div>
+              </Sider>
+              <Content className="nav-content">
+                <div className="nav-content-head">
+                  <PrivilegeCover module="corp" feature="personnel" action="create">
+                    <Button size="large" type="primary" onClick={() => this.handleNavigationTo('/corp/members/new')} icon="user-add">
+                      {msg('newUser')}
+                    </Button>
+                  </PrivilegeCover>
+                </div>
+                <div className="panel-body table-panel">
+                  <Table rowSelection={rowSelection} columns={columns} loading={loading} dataSource={dataSource} useFixedHeader />
+                </div>
+              </Content>
+            </Layout>
           </div>
         </Content>
       </QueueAnim>

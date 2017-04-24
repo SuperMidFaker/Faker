@@ -3,7 +3,7 @@ import { defineMessages } from 'react-intl';
 const messages = defineMessages({
   members: {
     id: 'corp.members',
-    defaultMessage: '用户管理',
+    defaultMessage: '用户与部门',
   },
   addMember: {
     id: 'corp.members.list.fullname',
