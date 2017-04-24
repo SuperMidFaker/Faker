@@ -117,9 +117,13 @@ export default class ManifestEditor extends React.Component {
     const billHead = this.props.billHead;
     const bodyDatas = this.props.billBodies;
     let wtSum = 0;
+    let bodyGrossWt = 0;
     bodyDatas.forEach((body) => {
       if (body.wet_wt) {
         wtSum += Number(body.wet_wt);
+      }
+      if (body.gross_wt) {
+        bodyGrossWt += Number(body.gross_wt);
       }
     });
     if (bodyDatas.length === 0) {
@@ -135,13 +139,19 @@ export default class ManifestEditor extends React.Component {
       this.setState({ generating: false });
       return message.error('毛重必须大于总净重', 3);
     }
+    if (bodyGrossWt !== 0 && bodyGrossWt !== Number(billHead.gross_wt)) {
+      this.setState({ generating: false });
+      return message.error('表体毛重总和非空且不等于表头毛重, 请手工调整', 3);
+    }
     if (wtSum > 0) {
       this.props.updateHeadNetWt(billHead.bill_seq_no, wtSum);
-      const grossWts = dividGrossWt(bodyDatas.map(bd => bd.wet_wt || 0), billHead.gross_wt);
-      for (let i = 0; i < bodyDatas.length; i++) {
-        const body = bodyDatas[i];
-        if (body.gross_wt !== grossWts[i]) {
-          this.props.editBillBody({ ...body, gross_wt: grossWts[i] });
+      if (bodyGrossWt === 0) {
+        const grossWts = dividGrossWt(bodyDatas.map(bd => bd.wet_wt || 0), Number(billHead.gross_wt));
+        for (let i = 0; i < bodyDatas.length; i++) {
+          const body = bodyDatas[i];
+          if (body.gross_wt !== grossWts[i]) {
+            this.props.editBillBody({ ...body, gross_wt: grossWts[i] });
+          }
         }
       }
       this.setState({ generating: false });
@@ -211,7 +221,6 @@ export default class ManifestEditor extends React.Component {
               }
             }
           );
-          // setTimeout(Math.random() > 0.5 ? resolve : reject, 1000);
         }).catch(() => message.error('重置失败'));
       },
       onCancel() {},

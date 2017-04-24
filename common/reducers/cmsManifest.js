@@ -135,7 +135,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_MANIFEST_BODY_SUCCEED:
       return { ...state, billBodies: action.result.data };
     case actionTypes.UPDATE_HEAD_NETWT_SUCCEED:
-      return { ...state, billHead: action.result.data };
+      return { ...state, billHead: action.result.data }; // gross_wt float is string TODO
     case actionTypes.LOAD_CUSTOMS_DECL:
       return { ...state, customsDeclLoading: true };
     case actionTypes.LOAD_CUSTOMS_DECL_FAILED:
@@ -173,7 +173,7 @@ export default function reducer(state = initialState, action) {
       return { ...state, params: { ...state.params, ...retParam } };
     }
     case actionTypes.SAVE_MANIFEST_HEAD_SUCCEED:
-      return { ...state, billHead: action.result.data, billHeadFieldsChangeTimes: 0 };
+      return { ...state, billHead: action.result.data, billHeadFieldsChangeTimes: 0 }; // float become string
     case actionTypes.OPEN_MS_MODAL:
       return { ...state, visibleMSModal: true };
     case actionTypes.CLOSE_MS_MODAL:
