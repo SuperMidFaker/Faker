@@ -85,6 +85,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, compareduuid: action.result.data };
     case actionTypes.GET_AUDIT_WAY_SUCCEED:
       return { ...state, auditWay: action.result.data };
+    case actionTypes.LOAD_MASTERCONF_SUCCEED:
+      return { ...state, master: { sharees: action.result.data.sharees } };
     default:
       return state;
   }
