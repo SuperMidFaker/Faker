@@ -139,14 +139,15 @@ export default class ManifestEditor extends React.Component {
       this.setState({ generating: false });
       return message.error('毛重必须大于总净重', 3);
     }
-    if (bodyGrossWt !== 0 && bodyGrossWt !== Number(billHead.gross_wt)) {
+    const totalGrossWt = Number(billHead.gross_wt);
+    if (bodyGrossWt !== 0 && Number(bodyGrossWt.toFixed(3)) !== Number(totalGrossWt.toFixed(3))) {
       this.setState({ generating: false });
       return message.error('表体毛重总和非空且不等于表头毛重, 请手工调整', 3);
     }
     if (wtSum > 0) {
       this.props.updateHeadNetWt(billHead.bill_seq_no, wtSum);
       if (bodyGrossWt === 0) {
-        const grossWts = dividGrossWt(bodyDatas.map(bd => bd.wet_wt || 0), Number(billHead.gross_wt));
+        const grossWts = dividGrossWt(bodyDatas.map(bd => bd.wet_wt || 0), totalGrossWt);
         for (let i = 0; i < bodyDatas.length; i++) {
           const body = bodyDatas[i];
           if (body.gross_wt !== grossWts[i]) {
