@@ -461,10 +461,10 @@ export default class DelegationList extends Component {
             return (
               <span>
                 <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-                  <RowUpdater onHit={this.handleDelegationAccept} label={this.msg('accepting')} row={record} />
+                  <RowUpdater onHit={this.handleDelegationAccept} label={<span><Icon type="check-square-o" /> {this.msg('accepting')}</span>} row={record} />
                 </PrivilegeCover>
                 <span className="ant-divider" />
-                <RowUpdater onHit={() => this.handleDelegationAssign(record)} label={this.msg('delgDistribute')} row={record} />
+                <RowUpdater onHit={() => this.handleDelegationAssign(record)} label={<span><Icon type="share-alt" /> {this.msg('delgDistribute')}</span>} row={record} />
                 <span className="ant-divider" />
                 <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
                   <Dropdown overlay={(
@@ -490,9 +490,9 @@ export default class DelegationList extends Component {
           } else if (record.status === CMS_DELEGATION_STATUS.unaccepted && record.source === DELG_SOURCE.subcontracted) {
             return (
               <span>
-                <RowUpdater onHit={this.handleDelegationAccept} label={this.msg('accepting')} row={record} />
+                <RowUpdater onHit={this.handleDelegationAccept} label={<span><Icon type="check-square-o" /> {this.msg('accepting')}</span>} row={record} />
                 <span className="ant-divider" />
-                <RowUpdater onHit={() => this.handleDelegationAssign(record)} label={this.msg('delgDistribute')} row={record} />
+                <RowUpdater onHit={() => this.handleDelegationAssign(record)} label={<span><Icon type="share-alt" /> {this.msg('delgDistribute')}</span>} row={record} />
               </span>
             );
           // 3 报关委托/分包已接单 或开始制单
@@ -508,18 +508,18 @@ export default class DelegationList extends Component {
                 </Popconfirm>);
             } else if (record.customs_tenant_id === tenantId) {
               // 3.3 当前租户未分配
-              assignOp = <RowUpdater onHit={() => this.handleDelegationAssign(record)} label={this.msg('delgDistribute')} row={record} />;
+              assignOp = <RowUpdater onHit={() => this.handleDelegationAssign(record)} label={<span><Icon type="share-alt" /> {this.msg('delgDistribute')}</span>} row={record} />;
             }
             const label = record.manifested === CMS_DELEGATION_MANIFEST.uncreated ?  // *todo* distinguish edit make bill_seq_no
               <span><Icon type="file-add" /> {this.msg('createManifest')}</span> :
               <span><Icon type="file-text" /> {this.msg('editManifest')}</span>;
             return (
               <span>
+                { assignOp }
+                { assignOp && <span className="ant-divider" />}
                 <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
                   <RowUpdater onHit={this.handleDelegationMake} label={label} row={record} />
                 </PrivilegeCover>
-                { assignOp && <span className="ant-divider" />}
-                { assignOp }
                 { recallOp && <span className="ant-divider" />}
                 { recallOp }
               </span>);

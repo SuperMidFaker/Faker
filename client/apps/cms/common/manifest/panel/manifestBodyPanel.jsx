@@ -789,7 +789,6 @@ export default class ManifestBodyPanel extends React.Component {
   }
   renderToolbar() {
     const { readonly } = this.props;
-
     const handlemenu = (
       <Menu onClick={this.handleDataMenuClick}>
         <Menu.Item key="priceDivid"><Icon type="pie-chart" /> 金额平摊</Menu.Item>
@@ -817,7 +816,7 @@ export default class ManifestBodyPanel extends React.Component {
     if (readonly) {
       return <Button icon="export" onClick={this.handleManifestBodyExport}>导出</Button>;
     } else {
-      return (<div>
+      return (<span>
         <Dropdown.Button onClick={this.handleUnrelatedImport} overlay={unrelatedImportmenu}>
           <ExcelUpload endpoint={`${API_ROOTS.default}v1/cms/manifest/billbody/import`}
             formData={{
@@ -856,7 +855,7 @@ export default class ManifestBodyPanel extends React.Component {
             {this.msg('more')} <Icon type="down" />
           </Button>
         </Dropdown>
-      </div>);
+      </span>);
     }
   }
   render() {

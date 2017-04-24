@@ -468,10 +468,10 @@ export default class TradeItemList extends Component {
         </Popconfirm>);
       } else if (listFilter.status === 'pending') {
         batchOperation = (<span>
-          <Button size="large" onClick={this.handleItemsPass} icon="check-circle-o">
+          <Button size="large" icon="check-circle-o" onClick={this.handleItemsPass}>
             批量通过
           </Button>
-          <Button size="large" onClick={this.handleItemsRefused} icon="close-circle-o">
+          <Button size="large" icon="close-circle-o" onClick={this.handleItemsRefused}>
             批量拒绝
           </Button>
           <Popconfirm title={'是否删除所有选择项？'} onConfirm={() => this.handleDeleteSelected()}>

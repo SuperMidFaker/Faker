@@ -247,7 +247,7 @@ export default defineMessages({
   },
   createManifest: {
     id: 'cms.delegation.manifest.create',
-    defaultMessage: '开始制单',
+    defaultMessage: '制单',
   },
   viewManifest: {
     id: 'cms.delegation.manifest.view',

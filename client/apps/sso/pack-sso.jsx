@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Alert, Layout } from 'antd';
+import { Alert, Icon, Layout } from 'antd';
 import { detectBrowser } from 'detect-browser';
 import { intlShape, injectIntl } from 'react-intl';
 import TransparentHeaderBar from 'client/components/transparentHeaderBar';
@@ -23,8 +23,7 @@ export default class SSOPack extends React.Component {
         return (
           <Alert
             description={<span>为了您更顺畅的使用体验，推荐使用：<ul>
-              <li><a rel="noopener noreferrer" href="http://rj.baidu.com/soft/detail/14744.html" target="_blank">谷歌(Google Chrome)浏览器</a></li>
-              <li><a rel="noopener noreferrer" href="http://www.firefox.com.cn/download/" target="_blank">火狐(Firefox)浏览器</a></li>
+              <li><a rel="noopener noreferrer" href="http://rj.baidu.com/soft/detail/14744.html" target="_blank"><Icon type="chrome" /> 谷歌(Google Chrome)浏览器</a></li>
             </ul></span>}
             type="info"
             showIcon
@@ -32,10 +31,9 @@ export default class SSOPack extends React.Component {
         );
       default:
         return (<Alert
-          message="支持IE10及以上版本的浏览器"
-          description={<span>为了您更顺畅的使用体验，请选择使用：<ul>
-            <li><a rel="noopener noreferrer" href="http://rj.baidu.com/soft/detail/14744.html" target="_blank">谷歌(Google Chrome)浏览器</a></li>
-            <li><a rel="noopener noreferrer" href="http://www.firefox.com.cn/download/" target="_blank">火狐(Firefox)浏览器</a></li>
+          message="支持现代浏览器和IE10及以上"
+          description={<span>推荐使用：<ul>
+            <li><a rel="noopener noreferrer" href="http://rj.baidu.com/soft/detail/14744.html" target="_blank"><Icon type="chrome" /> 谷歌(Google Chrome)浏览器</a></li>
           </ul></span>}
           type="info"
           showIcon
@@ -57,7 +55,9 @@ export default class SSOPack extends React.Component {
           {this.renderBrowserTip()}
         </Content>
         <Footer style={{ textAlign: 'center' }}>
-          <div><a rel="noopener noreferrer" href="https://welogix.cn" target="_blank">上海微骆信息科技有限公司</a> <a rel="noopener noreferrer" href="http://www.miitbeian.gov.cn/" target="_blank">沪ICP备16046609号-1</a></div>
+          <div>
+            <a rel="noopener noreferrer" href="https://welogix.cn" target="_blank">上海微骆信息科技有限公司</a>
+          </div>
         </Footer>
       </Layout>);
   }

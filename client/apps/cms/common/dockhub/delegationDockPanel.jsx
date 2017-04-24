@@ -135,7 +135,7 @@ export default class DelegationDockPanel extends React.Component {
     if (delgDispatch.status === CMS_DELEGATION_STATUS.unaccepted) {
       return (
         <Tabs activeKey={tabKey} onChange={this.handleTabChange}>
-          <TabPane tab="委托详情" key="basic">
+          <TabPane tab="详情" key="basic">
             <BasicPane />
           </TabPane>
           <TabPane tab="操作" key="activity">
@@ -156,7 +156,7 @@ export default class DelegationDockPanel extends React.Component {
             <TabPane tab="费用" key="expenses">
               <ExpensesPane />
             </TabPane>
-            <TabPane tab="委托详情" key="basic">
+            <TabPane tab="详情" key="basic">
               <BasicPane />
             </TabPane>
           </Tabs>
@@ -176,7 +176,7 @@ export default class DelegationDockPanel extends React.Component {
           <TabPane tab="费用" key="expenses">
             <ExpensesPane />
           </TabPane>
-          <TabPane tab="委托详情" key="basic">
+          <TabPane tab="详情" key="basic">
             <BasicPane />
           </TabPane>
         </Tabs>
@@ -197,7 +197,7 @@ export default class DelegationDockPanel extends React.Component {
             <TabPane tab="费用" key="expenses">
               <ExpensesPane />
             </TabPane>
-            <TabPane tab="委托详情" key="basic">
+            <TabPane tab="详情" key="basic">
               <BasicPane />
             </TabPane>
           </Tabs>
@@ -220,7 +220,7 @@ export default class DelegationDockPanel extends React.Component {
           <TabPane tab="费用" key="expenses">
             <ExpensesPane />
           </TabPane>
-          <TabPane tab="委托详情" key="basic">
+          <TabPane tab="详情" key="basic">
             <BasicPane />
           </TabPane>
         </Tabs>
