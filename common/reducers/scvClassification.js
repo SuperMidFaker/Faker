@@ -19,9 +19,13 @@ const actionTypes = createActionTypes('@@welogix/scv/classification/', [
   'ITEM_EDITED_SAVE', 'ITEM_EDITED_SAVE_SUCCEED', 'ITEM_EDITED_SAVE_FAIL',
   'SET_STANDARD_ITEM', 'SET_STANDARD_ITEM_SUCCEED', 'SET_STANDARD_ITEM_FAIL',
   'GET_AUDIT_WAY', 'GET_AUDIT_WAY_SUCCEED', 'GET_AUDIT_WAY_FAIL',
+  'OPEN_ADD_SLAVE_MODAL', 'CLOSE_ADD_SLAVE_MODAL',
+  'LOAD_SLAVES', 'LOAD_SLAVES_SUCCEED', 'LOAD_SLAVES_FAIL',
+  'ADD_SLAVES', 'ADD_SLAVES_SUCCEED', 'ADD_SLAVES_FAIL',
 ]);
 
 const initialState = {
+  reload: false,
   tradeItemlist: {
     totalCount: 0,
     current: 1,
@@ -55,6 +59,11 @@ const initialState = {
   slaves: [],
   compareduuid: '',
   auditWay: '',
+  addSlaveModal: {
+    visible: false,
+  },
+  slavesLoading: false,
+  slaveList: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -87,6 +96,18 @@ export default function reducer(state = initialState, action) {
       return { ...state, auditWay: action.result.data };
     case actionTypes.LOAD_MASTERCONF_SUCCEED:
       return { ...state, master: { sharees: action.result.data.sharees } };
+    case actionTypes.OPEN_ADD_SLAVE_MODAL:
+      return { ...state, addSlaveModal: { visible: true } };
+    case actionTypes.CLOSE_ADD_SLAVE_MODAL:
+      return { ...state, addSlaveModal: { visible: false } };
+    case actionTypes.LOAD_SLAVES:
+      return { ...state, slavesLoading: true };
+    case actionTypes.LOAD_SLAVES_SUCCEED:
+      return { ...state, slaveList: action.result.data };
+    case actionTypes.LOAD_SLAVES_FAIL:
+      return { ...state, slavesLoading: false };
+    case actionTypes.ADD_SLAVES_SUCCEED:
+      return { ...state, reload: true };
     default:
       return state;
   }
@@ -325,7 +346,7 @@ export function getAuditWay(brokerTenantId, masterTenantId) {
         actionTypes.GET_AUDIT_WAY_SUCCEED,
         actionTypes.GET_AUDIT_WAY_FAIL,
       ],
-      endpoint: 'v1/svc/classification/sync/auditway',
+      endpoint: 'v1/scv/classification/sync/auditway',
       method: 'get',
       params: {
         masterTenantId,
@@ -346,6 +367,52 @@ export function setStandardItem(datas) {
       endpoint: 'v1/scv/tradeitems/set/standard',
       method: 'post',
       data: datas,
+    },
+  };
+}
+
+export function openAddSlaveModal() {
+  return {
+    type: actionTypes.OPEN_ADD_SLAVE_MODAL,
+  };
+}
+
+export function closeAddSlaveModal() {
+  return {
+    type: actionTypes.CLOSE_ADD_SLAVE_MODAL,
+  };
+}
+
+export function getSlaves(tenantId, role, businessType) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_SLAVES,
+        actionTypes.LOAD_SLAVES_SUCCEED,
+        actionTypes.LOAD_SLAVES_FAIL,
+      ],
+      endpoint: 'v1/scv/classification/slaves/load',
+      method: 'get',
+      params: {
+        tenantId,
+        role,
+        businessType,
+      },
+    },
+  };
+}
+
+export function addSlaves(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.ADD_SLAVES,
+        actionTypes.ADD_SLAVES_SUCCEED,
+        actionTypes.ADD_SLAVES_FAIL,
+      ],
+      endpoint: 'v1/scv/classification/slave/add',
+      method: 'post',
+      data,
     },
   };
 }
