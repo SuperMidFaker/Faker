@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Modal, Form, message, Select, Radio, Col, Upload, Button, Icon } from 'antd';
+import { Modal, Form, message, Select, Radio, Col, Upload, Button, Icon, Alert } from 'antd';
 import { setNominatedVisible, nominatedImport, loadTradeItems, setCompareVisible, loadRepoSlaves } from 'common/reducers/scvClassification';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
@@ -133,6 +133,7 @@ export default class NominatedImport extends React.Component {
             }
           </Col>}
         </FormItem>
+        {this.state.nominated && <Alert message="需要增加新的报关行，请到归类设置 -> 从库同步中添加" type="info" showIcon />}
         <FormItem>
           <Col span="4">
             <Radio checked={!this.state.nominated} onChange={this.handleRadioChange}>

@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Form, Select, Input, Card, Col, Row } from 'antd';
+import { Form, Select, Input, Card, Col, Row, Alert } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from './../message.i18n';
@@ -150,6 +150,9 @@ export default class BasicForm extends Component {
                 </Select>
                 )}
               </FormItem>
+            </Col>
+            <Col sm={24} lg={24}>
+              <Alert message="需要增加新的报关行，请到归类设置 -> 从库同步中添加" type="info" showIcon />
             </Col>
             <Col sm={24} lg={24}>
               <FormItem label={this.msg('gName')}>

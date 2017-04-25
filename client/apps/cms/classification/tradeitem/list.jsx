@@ -4,14 +4,14 @@ import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Alert, Breadcrumb, Button, Collapse, Layout, Radio, Dropdown, Input, Icon, Menu, Popconfirm, Tooltip, Table, message } from 'antd';
+import { Alert, Breadcrumb, Button, Collapse, Layout, Radio, Dropdown, Input, Icon, Menu, Popconfirm, Tooltip, Table, message, Switch } from 'antd';
 import RemoteTable from 'client/components/remoteAntTable';
 import NavLink from 'client/components/nav-link';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { loadCustomers } from 'common/reducers/crmCustomers';
 import { loadRepos, openAddModal, selectedRepoId, loadTradeItems, setCompareVisible,
-  deleteItems, setRepo, deleteRepo, loadTradeParams, setItemStatus } from 'common/reducers/cmsTradeitem';
+  deleteItems, setRepo, deleteRepo, loadTradeParams, setItemStatus, upgradeMode, setDatasShare } from 'common/reducers/cmsTradeitem';
 import { getAuditWay } from 'common/reducers/scvClassification';
 import AddTradeRepoModal from './modals/addTradeRepo';
 import ButtonToggle from 'client/components/ButtonToggle';
@@ -69,7 +69,7 @@ function fetchData({ state, dispatch }) {
     })),
   }),
   { loadCustomers, openAddModal, selectedRepoId, loadTradeItems, setCompareVisible,
-    deleteItems, setRepo, loadRepos, deleteRepo, setItemStatus, getAuditWay }
+    deleteItems, setRepo, loadRepos, deleteRepo, setItemStatus, getAuditWay, upgradeMode, setDatasShare }
 )
 @connectNav({
   depth: 2,
@@ -99,6 +99,7 @@ export default class TradeItemList extends Component {
     compareduuid: '',
     repos: [],
     currentPage: 1,
+    protected: 1,
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.repos !== this.props.repos && nextProps.repos.length > 0) {
@@ -340,6 +341,7 @@ export default class TradeItemList extends Component {
     this.handleItemListLoad(repo.id);
     this.handleAuditWay(repo.owner_tenant_id);
     this.props.setRepo(repo);
+    this.setState({ protected: repo.protected });
   }
   handleAddOwener = () => {
     this.props.loadCustomers({
@@ -448,6 +450,19 @@ export default class TradeItemList extends Component {
       });
     }
     this.setState({ repos, currentPage: 1 });
+  }
+  handleUpgrade = (row) => {
+    this.props.upgradeMode(row).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        this.props.loadRepos({ tenantId: this.props.tenantId });
+      }
+    });
+  }
+  handleShare = () => {
+    this.props.setDatasShare({ id: this.props.repo.id, protected: !this.state.protected });
+    this.setState({ protected: !this.state.protected });
   }
   render() {
     const { tradeItemlist, repoId, repo, listFilter, tenantId } = this.props;
@@ -559,7 +574,25 @@ export default class TradeItemList extends Component {
     const repoColumns = [{
       dataIndex: 'owner_name',
       key: 'owner_name',
-      render: o => (<div style={{ paddingLeft: 15 }}>{o}</div>),
+      render: (o, record) => {
+        if (record.mode === 'slave') {
+          return <div style={{ paddingLeft: 15 }}><Icon type="link" className="mdc-text-success" />{o}</div>;
+        } else {
+          return <div style={{ paddingLeft: 15 }}>{o}</div>;
+        }
+      },
+    }, {
+      width: 40,
+      fixed: 'right',
+      render: (o, record) => {
+        if (record.mode !== 'slave' && record.owner_tenant_id !== -1) {
+          return (
+            <Tooltip placement="bottom" title="升级到主从模式">
+              <Button shape="circle" icon="to-top" onClick={() => this.handleUpgrade(record)} />
+            </Tooltip>
+          );
+        }
+      },
     }];
     const importMenu = (
       <Menu onClick={this.handleMenuClick}>
@@ -625,6 +658,15 @@ export default class TradeItemList extends Component {
             </RadioGroup>
             {repoId &&
               <div className="top-bar-tools">
+                {repo.mode === 'slave' && (
+                  <Tooltip placement="bottom" title="分享'规范申报要素'给客户">
+                    <Switch className="switch-lock" checked={!this.state.protected}
+                      checkedChildren={<Icon type="lock" />}
+                      unCheckedChildren={<Icon type="share-alt" />}
+                      onChange={this.handleShare} style={{ marginTop: 4 }}
+                    />
+                  </Tooltip>
+                )}
                 {repo.permission === CMS_TRADE_REPO_PERMISSION.edit &&
                   (
                     <Dropdown.Button size="large" overlay={importMenu}>
