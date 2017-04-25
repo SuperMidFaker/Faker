@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Breadcrumb, Button, Dropdown, Layout, Menu, Icon, Form, Modal, message, Switch, Tooltip, Tabs, Select, Spin } from 'antd';
+import { Breadcrumb, Button, Dropdown, Layout, Menu, Icon, Form, Modal, message, notification, Switch, Tooltip, Tabs, Select, Spin } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { saveBillHead, lockManifest, openMergeSplitModal, resetBill, updateHeadNetWt, editBillBody,
@@ -142,7 +142,10 @@ export default class ManifestEditor extends React.Component {
     const totalGrossWt = Number(billHead.gross_wt);
     if (bodyGrossWt !== 0 && Number(bodyGrossWt.toFixed(3)) !== Number(totalGrossWt.toFixed(3))) {
       this.setState({ generating: false });
-      return message.error('表体毛重总和非空且不等于表头毛重, 请手工调整', 3);
+      return notification.warning({
+        message: '毛重不一致',
+        description: '表头毛重的数值不等于表体毛重汇总的数值, 请进一步调整确认',
+      });
     }
     if (wtSum > 0) {
       this.props.updateHeadNetWt(billHead.bill_seq_no, wtSum);

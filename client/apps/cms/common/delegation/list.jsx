@@ -497,15 +497,17 @@ export default class DelegationList extends Component {
             );
           // 3 报关委托/分包已接单 或开始制单
           } else if (record.status === CMS_DELEGATION_STATUS.accepted || record.status === CMS_DELEGATION_STATUS.processing) {
-            let recallOp = null;
+            // let recallOp = null;
             let assignOp = null;
             if (record.customs_tenant_id === -1 || record.sub_status === CMS_DELEGATION_STATUS.unaccepted) {
               // 3.1 当前租户为发送方，且报关供应商为线下租户
               // 3.2 当前租户为发送方，且报关供应商为线上租户，但分包尚未接单
+              /*
               recallOp = (
                 <Popconfirm title="你确定撤回分配吗?" onConfirm={() => this.handleDelgAssignRecall(record)} >
                   <a role="button">{this.msg('delgRecall')}</a>
                 </Popconfirm>);
+              */
             } else if (record.customs_tenant_id === tenantId) {
               // 3.3 当前租户未分配
               assignOp = <RowUpdater onHit={() => this.handleDelegationAssign(record)} label={<span><Icon type="share-alt" /> {this.msg('delgDistribute')}</span>} row={record} />;
@@ -520,8 +522,10 @@ export default class DelegationList extends Component {
                 <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
                   <RowUpdater onHit={this.handleDelegationMake} label={label} row={record} />
                 </PrivilegeCover>
-                { recallOp && <span className="ant-divider" />}
-                { recallOp }
+                {// recallOp && <span className="ant-divider" />
+                }
+                {// recallOp
+                }
               </span>);
           } else if (record.status === CMS_DELEGATION_STATUS.declaring || record.status === CMS_DELEGATION_STATUS.released) {
             return (
