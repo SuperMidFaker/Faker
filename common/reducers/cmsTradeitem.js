@@ -24,6 +24,8 @@ const actionTypes = createActionTypes('@@welogix/cms/tradeitem/', [
   'LOAD_TEMP_ITEMS', 'LOAD_TEMP_ITEMS_SUCCEED', 'LOAD_TEMP_ITEMS_FAIL',
   'COMPARED_CANCEL', 'COMPARED_CANCEL_SUCCEED', 'COMPARED_CANCEL_FAIL',
   'DELETE_TEMP_DATA', 'DELETE_TEMP_DATA_SUCCEED', 'DELETE_TEMP_DATA_FAIL',
+  'UPGRADE_MODE', 'UPGRADE_MODE_SUCCEED', 'UPGRADE_MODE_FAIL',
+  'SET_DATA_SHARED', 'SET_DATA_SHARED_SUCCEED', 'SET_DATA_SHARED_FAIL',
 ]);
 
 const initialState = {
@@ -435,3 +437,32 @@ export function deleteTempData(id) {
   };
 }
 
+export function upgradeMode(datas) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPGRADE_MODE,
+        actionTypes.UPGRADE_MODE_SUCCEED,
+        actionTypes.UPGRADE_MODE_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/upgrade/mode',
+      method: 'post',
+      data: datas,
+    },
+  };
+}
+
+export function setDatasShare(datas) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SET_DATA_SHARED,
+        actionTypes.SET_DATA_SHARED_SUCCEED,
+        actionTypes.SET_DATA_SHARED_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/set/data/shared',
+      method: 'post',
+      data: datas,
+    },
+  };
+}
