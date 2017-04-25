@@ -1,12 +1,14 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Modal, Input, message } from 'antd';
+import { Alert, Form, Modal, InputNumber, notification } from 'antd';
 import { closeAmountModel, editBillBody, loadBillBody } from 'common/reducers/cmsManifest';
 import { dividAmount } from '../panel/helper';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
+
 const formatMsg = format(messages);
+const FormItem = Form.Item;
 
 @injectIntl
 @connect(
@@ -29,8 +31,8 @@ export default class AmountModel extends React.Component {
   state = {
     amount: null,
   }
-  handleAmountChange = (ev) => {
-    this.setState({ amount: ev.target.value });
+  handleAmountChange = (value) => {
+    this.setState({ amount: value });
   }
   handleCancel = () => {
     this.props.closeAmountModel();
@@ -41,6 +43,9 @@ export default class AmountModel extends React.Component {
       return;
     }
     const amount = this.state.amount;
+    if (amount === 0) {
+      return;
+    }
     const amts = dividAmount(bodies.map(bd => bd.trade_total), amount);
     const proms = [];
     for (let i = 0; i < bodies.length; i++) {
@@ -49,17 +54,23 @@ export default class AmountModel extends React.Component {
     Promise.all(proms).then(() => {
       this.props.loadBillBody(this.props.billMeta.bill_seq_no);
       this.props.closeAmountModel();
-      message.success(`总金额: ${amount} 已平摊`, 3);
+      notification.success({
+        message: '操作成功',
+        description: `总金额: ${amount} 已平摊`,
+      });
     });
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   render() {
     const { visibleAmtModal } = this.props;
     return (
-      <Modal title={'分摊总金额'} visible={visibleAmtModal}
+      <Modal title={'金额平摊'} visible={visibleAmtModal}
         onOk={this.handleOk} onCancel={this.handleCancel}
       >
-        <Input onChange={this.handleAmountChange} value={this.state.amount} type="number" width="80%" />
+        <Alert message="将按每项申报总价的占比重新分摊输入的总金额" type="info" showIcon />
+        <FormItem label="待分摊总金额">
+          <InputNumber min={0} onChange={this.handleAmountChange} value={this.state.amount} />
+        </FormItem>
       </Modal>
     );
   }

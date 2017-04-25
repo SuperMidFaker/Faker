@@ -258,8 +258,8 @@ export default class ManifestList extends Component {
               <span>
                 <RowUpdater onHit={this.handleDelegationView} label={<span><Icon type="eye-o" /> 查看</span>} row={record} />
                 <span className="ant-divider" />
-                <Popconfirm title="确定需要重新制单吗?" onConfirm={() => this.handleManifestRedo(record)}>
-                  <a role="button">重新制单</a>
+                <Popconfirm title="确定需要重新生成报关草单吗?" onConfirm={() => this.handleManifestRedo(record)}>
+                  <a role="button">重新生成</a>
                 </Popconfirm>
               </span>
             );

@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Alert, Button, Dropdown, Menu, Table, Icon, Tooltip, Tag, Input, Select, message, Popconfirm } from 'antd';
+import { Alert, Button, Dropdown, Menu, Table, Icon, Tooltip, Tag, Input, Select, message, notification, Popconfirm } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { addNewBillBody, delBillBody, editBillBody, updateHeadNetWt, loadBillBody, openAmountModel,
   deleteSelectedBodies, openRuleModel } from 'common/reducers/cmsManifest';
@@ -694,14 +694,17 @@ export default class ManifestBodyPanel extends React.Component {
         if (headForm) {
           headForm.setFieldsValue({ net_wt: wtSum });
         }
-        message.success(`已汇总净重: ${wtSum.toFixed(3)}千克`, 3);
+        notification.success({
+          message: '操作成功',
+          description: `已汇总净重: ${wtSum.toFixed(3)}千克`,
+        });
       });
     }
   }
   handleGrossWtDivid = () => {
     const totGrossWt = Number(this.props.billHead.gross_wt);
     if (!totGrossWt) {
-      message.success('总毛重为空', 3);
+      message.error('总毛重为空', 3);
       return;
     }
     const bodyDatas = this.state.bodies;
@@ -723,7 +726,10 @@ export default class ManifestBodyPanel extends React.Component {
         totPcs: calresult.totPcs,
         bodies: datas,
       });
-      message.success(`总毛重: ${totGrossWt.toFixed(3)}千克已分摊`, 3);
+      notification.success({
+        message: '操作成功',
+        description: `总毛重: ${totGrossWt.toFixed(3)}千克已分摊`,
+      });
     }
   }
   handleTotalPriceDivid = () => {
@@ -784,6 +790,7 @@ export default class ManifestBodyPanel extends React.Component {
         if (result.error) {
           message.error(result.error.message, 10);
         } else {
+          message.success('表体已清空');
           this.props.loadBillBody(this.props.billSeqNo);
         }
       });

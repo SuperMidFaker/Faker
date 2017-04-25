@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Modal, Card, Radio, Checkbox, Select, message, Row, Col, Form } from 'antd';
+import { Modal, Card, Radio, Checkbox, Select, message, notification, Row, Col, Form } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { closeMergeSplitModal, submitBillMegeSplit, loadBillBody } from 'common/reducers/cmsManifest';
 import { loadHsCodeCategories } from 'common/reducers/cmsHsCode';
@@ -220,6 +220,10 @@ export default class MergeSplitModal extends React.Component {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
+        notification.success({
+          message: '操作成功',
+          description: '已生成报关草单.',
+        });
         this.props.closeMergeSplitModal();
         this.props.loadBillBody(this.props.billSeqNo);
       }

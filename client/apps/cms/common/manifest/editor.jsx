@@ -4,7 +4,7 @@ import { Breadcrumb, Button, Dropdown, Layout, Menu, Icon, Form, Modal, message,
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { saveBillHead, lockManifest, openMergeSplitModal, resetBill, updateHeadNetWt, editBillBody,
-  loadBillBody, saveBillRules, setStepVisible, billHeadChange } from 'common/reducers/cmsManifest';
+  loadBillBody, saveBillRules, setStepVisible, billHeadChange, redoManifest } from 'common/reducers/cmsManifest';
 import { loadTemplateFormVals } from 'common/reducers/cmsSettings';
 import NavLink from 'client/components/nav-link';
 import ButtonToggle from 'client/components/ButtonToggle';
@@ -39,7 +39,7 @@ const confirm = Modal.confirm;
     billHeadFieldsChangeTimes: state.cmsManifest.billHeadFieldsChangeTimes,
   }),
   { saveBillHead, openMergeSplitModal, resetBill, updateHeadNetWt, loadBillBody, editBillBody,
-    loadTemplateFormVals, saveBillRules, setStepVisible, billHeadChange, lockManifest }
+    loadTemplateFormVals, saveBillRules, setStepVisible, billHeadChange, lockManifest, redoManifest }
 )
 @connectNav({
   depth: 3,
@@ -396,7 +396,7 @@ export default class ManifestEditor extends React.Component {
                 >{this.msg('generateEntry')}</Button>) }
               {billMeta.entries.length > 0 &&
                 <Dropdown overlay={declEntryMenu}>
-                  <Button size="large"><Icon type="check-circle-o" />已生成报关草单<Icon type="down" /></Button>
+                  <Button size="large"><Icon type="schedule" />已生成报关草单<Icon type="down" /></Button>
                 </Dropdown>
               }
               <ButtonToggle size="large" iconOff="folder" iconOn="folder-open" onClick={this.toggle} />
