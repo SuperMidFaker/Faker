@@ -460,6 +460,9 @@ export default class TradeItemList extends Component {
       }
     });
   }
+  handleDegrade = () => {
+
+  }
   handleShare = () => {
     this.props.setDatasShare({ id: this.props.repo.id, protected: !this.state.protected });
     this.setState({ protected: !this.state.protected });
@@ -576,7 +579,7 @@ export default class TradeItemList extends Component {
       key: 'owner_name',
       render: (o, record) => {
         if (record.mode === 'slave') {
-          return <div style={{ paddingLeft: 15 }}><Icon type="link" className="mdc-text-success" />{o}</div>;
+          return <div style={{ paddingLeft: 15 }}><Icon type="link" className="mdc-text-success" /> {o}</div>;
         } else {
           return <div style={{ paddingLeft: 15 }}>{o}</div>;
         }
@@ -589,6 +592,12 @@ export default class TradeItemList extends Component {
           return (
             <Tooltip placement="bottom" title="升级到主从模式">
               <Button shape="circle" icon="to-top" onClick={() => this.handleUpgrade(record)} />
+            </Tooltip>
+          );
+        } else if (record.mode === 'slave' && record.owner_tenant_id !== -1) {
+          return (
+            <Tooltip placement="bottom" title="切换为单库模式">
+              <Button shape="circle" icon="arrow-down" onClick={() => this.handleDegrade(record)} />
             </Tooltip>
           );
         }
