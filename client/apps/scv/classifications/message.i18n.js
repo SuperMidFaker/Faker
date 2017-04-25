@@ -30,6 +30,10 @@ const messages = defineMessages({
     id: 'scv.classification.edit',
     defaultMessage: '修改',
   },
+  addSlave: {
+    id: 'scv.classification.slave.add',
+    defaultMessage: '添加从库',
+  },
 });
 
 export default messages;

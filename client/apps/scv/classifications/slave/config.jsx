@@ -1,15 +1,16 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Layout } from 'antd';
+import { Layout, Button } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { loadSyncList, loadRepoSlaves, updateAudit, renewSharees } from 'common/reducers/scvClassification';
+import { loadSyncList, loadRepoSlaves, updateAudit, renewSharees, openAddSlaveModal } from 'common/reducers/scvClassification';
 import connectNav from 'client/common/decorators/connect-nav';
 import Table from 'client/components/remoteAntTable';
 import EditableCell from 'client/components/EditableCell';
 import SyncShareEditCell from './syncShareEditCell';
 import ScvClassificationWrapper from '../wrapper';
-import { SYNC_AUDIT_METHODS } from 'common/constants';
+import AddSlaveModal from './addSlaveModal';
+import { SYNC_AUDIT_METHODS, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 import { formatMsg } from '../message.i18n';
 
 const Content = Layout.Content;
@@ -28,11 +29,14 @@ function fetchData({ state, dispatch }) {
 @injectIntl
 @connect(
   state => ({
+    reload: state.scvClassification.reload,
     tenantId: state.account.tenantId,
+    pageSize: state.scvClassification.synclist.pageSize,
+    current: state.scvClassification.synclist.current,
     synclist: state.scvClassification.synclist,
     brokers: state.scvClassification.slaves,
   }),
-  { updateAudit, renewSharees }
+  { updateAudit, renewSharees, openAddSlaveModal, loadSyncList }
 )
 @connectNav({
   depth: 2,
@@ -89,15 +93,31 @@ export default class ScvClassificationSlaveConfig extends React.Component {
     },
     remotes: this.props.synclist,
   })
+  handleAddSlave = () => {
+    this.props.openAddSlaveModal();
+  }
+  handleSlavesReload = () => {
+    this.props.loadSyncList({
+      tenantId: this.props.tenantId,
+      pageSize: this.props.pageSize,
+      current: this.props.current,
+    });
+  }
   render() {
     const { loading, synclist } = this.props;
     this.dataSource.remotes = synclist;
     return (
       <ScvClassificationWrapper menuKey="slave">
         <Content className="nav-content">
+          <div className="toolbar">
+            <Button type="primary" size="large" icon="plus" onClick={this.handleAddSlave}>
+              {this.msg('addSlave')}
+            </Button>
+          </div>
           <div className="panel-body table-panel">
             <Table columns={this.columns} dataSource={this.dataSource} loading={loading} rowKey="id" scroll={{ x: 1200 }} />
           </div>
+          <AddSlaveModal reload={this.handleSlavesReload} />
         </Content>
       </ScvClassificationWrapper>
     );
