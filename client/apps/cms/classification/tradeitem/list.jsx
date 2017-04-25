@@ -574,7 +574,13 @@ export default class TradeItemList extends Component {
     const repoColumns = [{
       dataIndex: 'owner_name',
       key: 'owner_name',
-      render: o => (<div style={{ paddingLeft: 15 }}>{o}</div>),
+      render: (o, record) => {
+        if (record.mode === 'slave') {
+          return <div style={{ paddingLeft: 15 }}><Icon type="link" className="mdc-text-success" />{o}</div>;
+        } else {
+          return <div style={{ paddingLeft: 15 }}>{o}</div>;
+        }
+      },
     }, {
       width: 40,
       fixed: 'right',
