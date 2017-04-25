@@ -8,6 +8,7 @@ import { toggleFlowList, loadFlowGraph, loadFlowGraphItem, saveFlowGraph, setNod
 import { uuidWithoutDash } from 'client/common/uuid';
 import ButtonToggle from 'client/components/ButtonToggle';
 import MdIcon from 'client/components/MdIcon';
+import EditableCell from 'client/components/EditableCell';
 import FlowEdgePanel from './panel/flowEdgePanel';
 import BizObjCMSPanel from './panel/bizObjCMSPanel';
 import BizObjTMSPanel from './panel/bizObjTMSPanel';
@@ -41,24 +42,48 @@ export default class FlowDesigner extends React.Component {
     submitting: PropTypes.bool,
     graphLoading: PropTypes.bool.isRequired,
     listCollapsed: PropTypes.bool.isRequired,
-    trackingFields: PropTypes.arrayOf(PropTypes.shape({ field: PropTypes.string, title: PropTypes.string })),
-    currentFlow: PropTypes.shape({ id: PropTypes.number.isRequired, name: PropTypes.string.isRequired, partner_id: PropTypes.number.isRequired }).isRequired,
+    trackingFields: PropTypes.arrayOf(PropTypes.shape({ field: PropTypes.string, title: PropTypes.string, module: PropTypes.oneOf(['cms', 'tms', 'cwm']) })),
+    currentFlow: PropTypes.shape({ id: PropTypes.number.isRequired, name: PropTypes.string.isRequired,
+      partner_id: PropTypes.number.isRequired, customer_tenant_id: PropTypes.number,
+      tracking_id: PropTypes.number }).isRequired,
   }
   constructor(...args) {
     super(...args);
     this.state = {
       rightSidercollapsed: true,
       activeItem: null,
+      trackDataSource: this.props.trackingFields.map(tf => ({ title: tf.title, field: tf.field, module: tf.module, node: null })),
+    };
+    this.trackingFieldTypeMapNodeKinds = {
+      cms: ['import', 'export'],
+      tms: ['tms'],
+      cwm: ['cwm'],
     };
     this.beginAdd = false;
     this.dragging = false;
     this.formhoc = null;
     this.trackingColumns = [{
       title: '追踪点',
-      key: 'field',
+      width: 50,
+      dataIndex: 'title',
     }, {
       title: '来源节点',
-      key: 'node',
+      width: 130,
+      dataIndex: 'node',
+      render: (node, row, index) => {
+        if (this.graph) {
+          const nodekinds = this.trackingFieldTypeMapNodeKinds[row.module];
+          const nodes = this.graph.get('items').filter(item => item.get('type') === 'node' && nodekinds.indexOf(item.get('model').kind) !== -1)
+            .map(item => ({
+              key: item.get('model').id,
+              text: item.get('model').name,
+            }));
+          return (
+            <EditableCell type="select" options={nodes} value={node} placeholder="选择节点"
+              onSave={nodeId => this.handleTrackNodeChange(nodeId, index)}
+            />);
+        }
+      },
     }];
   }
   componentWillMount() {
@@ -119,13 +144,40 @@ export default class FlowDesigner extends React.Component {
         this.graph.update(target, { in_degree: target.get('model').in_degree + 1 });
       } else if (item.get('type') === 'node') {
         this.props.setNodeActions([]);
+        // 类型节点只有一个时候,该类型追踪点对应该节点
+        const ftkeys = Object.keys(this.trackingFieldTypeMapNodeKinds);
+        let fieldType;
+        let nodeKinds = [];
+        for (let i = 0; i < ftkeys.length; i++) {
+          const ftkey = ftkeys[i];
+          if (this.trackingFieldTypeMapNodeKinds[ftkey].indexOf(item.get('model').kind) !== -1) {
+            fieldType = ftkey;
+            nodeKinds = this.trackingFieldTypeMapNodeKinds[ftkey];
+            break;
+          }
+        }
+        const nodes = this.graph.get('items').filter(gitem => gitem.get('type') === 'node' && nodeKinds.indexOf(gitem.get('model').kind) !== -1);
+        if (nodes.length === 1) {
+          const nodeId = nodes[0].get('model').id;
+          const dataSource = this.state.trackDataSource.map((ds) => {
+            if (ds.module === fieldType) {
+              return { ...ds, node: nodeId };
+            } else {
+              return ds;
+            }
+          });
+          this.setState({ trackDataSource: dataSource });
+        }
       }
       this.setState({ activeItem: item });
     });
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.currentFlow.id !== this.props.currentFlow.id) {
-      this.setState({ activeItem: null });
+      this.setState({
+        activeItem: null,
+        trackDataSource: this.props.trackingFields.map(tf => ({ title: tf.title, field: tf.field, module: tf.module, node: null })),
+      });
       this.props.loadFlowGraph(nextProps.currentFlow.id);
     }
     if (nextProps.flowGraph !== this.props.flowGraph) {
@@ -134,6 +186,14 @@ export default class FlowDesigner extends React.Component {
         edges: nextProps.flowGraph.edges.map(edge => ({ ...edge, addedConds: [], delConds: [], updConds: [] })),
       };
       this.graph.changeData(data.nodes, data.edges);
+      const dataSource = [...this.state.trackDataSource];
+      for (let i = 0; i < dataSource.length; i++) {
+        const ds = dataSource[i];
+        if (nextProps.flowGraph.tracking[ds.field]) {
+          ds.node = nextProps.flowGraph.tracking[ds.field];
+        }
+      }
+      this.setState({ trackDataSource: dataSource });
     }
   }
   msg = formatMsg(this.props.intl)
@@ -176,21 +236,10 @@ export default class FlowDesigner extends React.Component {
     });
     this.graph.refresh();
   }
-  handleMenuClick = (ev) => {
-    this.beginAdd = true;
-    const activeItem = this.state.activeItem;
-    if (activeItem && this.formhoc) {
-      this.formhoc.validateFields((err, values) => {
-        if (!err) {
-          this.graph.update(activeItem, values);
-          this.addNode(ev.key);
-        } else {
-          this.beginAdd = false;
-        }
-      });
-    } else {
-      this.addNode(ev.key);
-    }
+  handleTrackNodeChange = (nodeId, index) => {
+    const dataSource = [...this.state.trackDataSource];
+    dataSource[index].node = nodeId;
+    this.setState({ trackDataSource: dataSource });
   }
   handleAddToolbarNode = (ev) => {
     this.beginAdd = true;
@@ -341,7 +390,10 @@ export default class FlowDesigner extends React.Component {
     const edges = graphItems.filter(item => item.get('type') === 'edge').map(item => item.get('model'));
     console.log(nodes, edges);
     // todo graph node edge disconnected
-    this.props.saveFlowGraph(this.props.currentFlow.id, nodes, edges).then((result) => {
+    this.props.saveFlowGraph(this.props.currentFlow.id, nodes, edges, this.state.trackDataSource.map(tds => ({
+      field: tds.field,
+      node: tds.node,
+    }))).then((result) => {
       if (!result.error) {
         this.props.loadFlowGraph(this.props.currentFlow.id);
         this.setState({ activeItem: null });
@@ -439,15 +491,10 @@ export default class FlowDesigner extends React.Component {
             </div>
             <Collapse accordion defaultActiveKey="tracking">
               <Panel header={'追踪节点'} key="tracking">
-                <Table />
+                <Table columns={this.trackingColumns} bordered={false} dataSource={this.state.trackDataSource} rowKey="field" />
               </Panel>
               <Panel header={'更多'} key="more">
-                <Alert
-                  message="警告"
-                  description="删除流程将无法恢复，请谨慎操作"
-                  type="warning"
-                  showIcon
-                />
+                <Alert message="警告" description="删除流程将无法恢复，请谨慎操作" type="warning" showIcon />
                 <Popconfirm title="是否确认删除?" onConfirm={this.handleDeleteRepo}>
                   <Button type="danger" size="large" icon="delete">删除流程</Button>
                 </Popconfirm>

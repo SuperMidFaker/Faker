@@ -70,7 +70,7 @@ export default class EditableCell extends React.Component {
         </div>);
       case 'select':
         return (<div>
-          <Select showSearch placeholder={placeholder} value={value} style={{ width: '90%' }} onChange={this.handleSelectChange}>
+          <Select showSearch placeholder={placeholder} value={value} style={{ width: '80%' }} onChange={this.handleSelectChange}>
             {options && options.map(opt => <Option key={opt.key} value={opt.key}>{opt.text}</Option>)}
           </Select>
           <Icon type="check" className="editable-cell-icon-save" onClick={this.check} />
@@ -99,7 +99,7 @@ export default class EditableCell extends React.Component {
     const { value } = this.state;
     if (type === 'select' && options) {
       const option = options.filter(opt => opt.key === value)[0];
-      return (option && <span>{addonBefore}{option.text}{addonAfter}</span>);
+      return (option ? <span>{addonBefore}{option.text}{addonAfter}</span> : <span className="editable-cell-placeholder">{placeholder}</span>);
     }
     return (value && (value.length > 0 || value !== 0)) ?
       <span>{addonBefore}{value}{addonAfter}</span> :

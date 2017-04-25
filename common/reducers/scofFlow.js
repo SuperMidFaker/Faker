@@ -18,6 +18,7 @@ const actionTypes = createActionTypes('@@welogix/scof/flow/', [
   'LOAD_PTFLOWS', 'LOAD_PTFLOWLIST_SUCCEED', 'LOAD_PTFLOWLIST_FAIL',
   'OPEN_FLOW', 'SET_NODE_ACTIONS', 'EMPTY_FLOWS',
   'LOAD_FLTRACK', 'LOAD_FLTRACK_SUCCEED', 'LOAD_FLTRACK_FAIL',
+  'LOAD_SCVTRACK', 'LOAD_SCVTRACK_SUCCEED', 'LOAD_SCVTRACK_FAIL',
 ]);
 
 const initialState = {
@@ -43,7 +44,7 @@ const initialState = {
   listFilter: { name: '' },
   trackingFields: [],
   currentFlow: null,
-  flowGraph: { nodes: [], edges: [] },
+  flowGraph: { nodes: [], edges: [], tracking: {} },
   nodeActions: [],
   cmsParams: {
     bizDelegation: { declPorts: [], customsBrokers: [], ciqBrokers: [] },
@@ -312,7 +313,7 @@ export function setNodeActions(actions) {
   };
 }
 
-export function saveFlowGraph(flowid, nodes, edges) {
+export function saveFlowGraph(flowid, nodes, edges, trackings) {
   return {
     [CLIENT_API]: {
       types: [
@@ -322,7 +323,7 @@ export function saveFlowGraph(flowid, nodes, edges) {
       ],
       endpoint: 'v1/scof/flow/update/graph',
       method: 'post',
-      data: { flowid, nodes, edges },
+      data: { flowid, nodes, edges, trackings },
     },
   };
 }
@@ -341,6 +342,21 @@ export function loadFlowTrackingFields() {
       ],
       endpoint: 'v1/scv/tracking/flow/fields',
       method: 'get',
+    },
+  };
+}
+
+export function loadScvTrackings(tenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_SCVTRACK,
+        actionTypes.LOAD_SCVTRACK_SUCCEED,
+        actionTypes.LOAD_SCVTRACK_FAIL,
+      ],
+      endpoint: 'v1/scv/tracking/load',
+      method: 'get',
+      params: { tenantId },
     },
   };
 }

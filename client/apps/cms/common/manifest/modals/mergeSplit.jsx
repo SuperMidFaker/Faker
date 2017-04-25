@@ -74,7 +74,7 @@ export default class MergeSplitModal extends React.Component {
       byHsCode: false,
       tradeCurr: false,
       hsCategory: [],
-      perCount: 20,
+      perCount: '20',
     },
     sortOpt: {
       customControl: true,
@@ -282,20 +282,19 @@ export default class MergeSplitModal extends React.Component {
                   text={this.msg('specialHscodeDeclare')}
                   onChange={this.handleCheckChange} state={this.state}
                 />
-                { splitOpt.byHsCode &&
-                <div>
-                  {getFieldDecorator('specialSort', {
-                    rules: [{ type: 'array' }],
-                    initialValue: splitOpt.hsCategory,
-                  })(<Select size="large" mode="multiple" placeholder={this.msg('specialHscodeSort')} style={{ width: '100%' }}>
-                    {
-                        hscodeCategories.map(ct =>
-                          <Option value={ct.id} key={ct.id}>{ct.name}</Option>
-                        )
-                      }
-                  </Select>)}
-                </div>
-              }
+                { splitOpt.byHsCode ?
+                  <div>
+                    {getFieldDecorator('specialSort', {
+                      rules: [{ type: 'array' }],
+                      initialValue: splitOpt.hsCategory,
+                    })(<Select size="large" mode="multiple" placeholder={this.msg('specialHscodeSort')} style={{ width: '100%' }}>
+                      {
+                          hscodeCategories.map(ct =>
+                            <Option value={ct.id} key={ct.id}>{ct.name}</Option>
+                          )
+                        }
+                    </Select>)}
+                  </div> : null}
               </FormItem>
               <FormItem>
                 <MSCheckbox fieldOpt="splitOpt" field="tradeCurr"

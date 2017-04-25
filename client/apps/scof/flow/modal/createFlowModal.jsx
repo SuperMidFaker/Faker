@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Modal, Form, Input, Select } from 'antd';
-import { closeCreateFlowModal, saveFlow } from 'common/reducers/scofFlow';
+import { closeCreateFlowModal, saveFlow, loadScvTrackings } from 'common/reducers/scofFlow';
 import { loadPartners } from 'common/reducers/partner';
 import { PARTNER_ROLES } from 'common/constants';
 import { formatMsg } from '../message.i18n';
@@ -17,7 +17,7 @@ const Option = Select.Option;
     tenantId: state.account.tenantId,
     customerPartners: state.partner.partners,
   }),
-  { closeCreateFlowModal, loadPartners, saveFlow }
+  { closeCreateFlowModal, loadPartners, saveFlow, loadScvTrackings }
 )
 @Form.create()
 export default class CreateFlowModal extends React.Component {
@@ -42,6 +42,7 @@ export default class CreateFlowModal extends React.Component {
         const customer = this.props.customerPartners.filter(pt => pt.id === fields.customer)[0];
         this.props.saveFlow({
           name: fields.name,
+          partner_tenant_id: customer.partner_tenant_id,
           partner_id: customer.id,
           partner_name: customer.name,
           tenantId: this.props.tenantId,
@@ -56,6 +57,12 @@ export default class CreateFlowModal extends React.Component {
   handleCancel = () => {
     this.props.form.resetFields();
     this.props.closeCreateFlowModal();
+  }
+  handleCustomerSelect = (customerPid) => {
+    const customer = this.props.customerPartners.filter(pt => pt.id === customerPid)[0];
+    if (customer.partner_tenant_id !== -1) {
+      this.props.loadScvTrackings(customer.partner_tenant_id);
+    }
   }
   msg = formatMsg(this.props.intl)
   render() {
@@ -77,7 +84,7 @@ export default class CreateFlowModal extends React.Component {
              getFieldDecorator('customer', {
                rules: [{ required: true, message: '流程对应客户必填' }],
              })(
-               <Select showSearch optionFilterProp="children">
+               <Select showSearch optionFilterProp="children" onSelect={this.handleCustomerSelect}>
                  {customerPartners.map(data => (
                    <Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>)
               )}
