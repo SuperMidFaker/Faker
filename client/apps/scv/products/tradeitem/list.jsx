@@ -19,6 +19,7 @@ import RowUpdater from 'client/components/rowUpdater';
 import ImportComparisonModal from './modals/importComparison';
 import NominatedImportModal from './modals/nominatedImport';
 import ConflictList from './conflictList';
+import MasterSharePane from './panes/masterSharePane';
 
 const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
@@ -578,7 +579,9 @@ export default class TradeItemList extends Component {
             </div>
             <Collapse accordion defaultActiveKey="slave">
               <Panel header={'从库同步'} key="slave" />
-              <Panel header={'授权共享'} key="share" />
+              <Panel header={'授权共享'} key="share">
+                <MasterSharePane />
+              </Panel>
             </Collapse>
           </div>
         </Sider>

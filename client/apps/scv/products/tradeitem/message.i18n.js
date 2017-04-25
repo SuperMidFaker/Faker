@@ -249,5 +249,9 @@ const messages = defineMessages({
     id: 'scv.products.tradeitem.reason',
     defaultMessage: '原因',
   },
+  classifyShareScope: {
+    id: 'scv.products.slave.share.scope',
+    defaultMessage: '共享范围',
+  },
 });
 export default messages;
