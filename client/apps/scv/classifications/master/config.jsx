@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Layout, Form, Select } from 'antd';
+import { Layout, Form, Select, Alert, Row, Col } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadMasterConfig, loadRepoSlaves, renewSharees } from 'common/reducers/scvClassification';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -71,6 +71,11 @@ export default class ScvClassificationMasterConfig extends React.Component {
                 </Select>
               </FormItem>
             </Form>
+            <Row>
+              <Col span={8} offset={4}>
+                <Alert message="如需添加新的服务商，请前往资源设置添加清关服务商" type="info" showIcon />
+              </Col>
+            </Row>
           </div>
         </Content>
       </ScvClassificationWrapper>
