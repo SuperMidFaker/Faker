@@ -3,8 +3,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Icon, message } from 'antd';
-import RemoteTable from 'client/components/remoteAntTable';
+import { Icon, message, Table } from 'antd';
 import NavLink from 'client/components/nav-link';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -54,6 +53,27 @@ export default class ConflictList extends Component {
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
+  }
+  constructor(props) {
+    super(props);
+    this.state = {
+      pagination: {
+        current: 1,
+        total: 0,
+        pageSize: 20,
+        showSizeChanger: true,
+        onChange: this.handlePageChange,
+      },
+      dataSource: [],
+    };
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.conflictItemlist !== this.props.conflictItemlist) {
+      this.setState({
+        dataSource: nextProps.conflictItemlist.data,
+        pagination: { ...this.state.pagination, total: nextProps.conflictItemlist.totalCount },
+      });
+    }
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
@@ -203,36 +223,21 @@ export default class ConflictList extends Component {
     title: this.msg('remark'),
     dataIndex: 'remark',
   }]
-  dataSource = new RemoteTable.DataSource({
-    fetcher: params => this.props.loadConflictItems(params),
-    resolve: result => result.data,
-    getPagination: (result, resolve) => ({
-      total: result.totalCount,
-      current: resolve(result.totalCount, result.current, result.pageSize),
-      showSizeChanger: true,
-      showQuickJumper: false,
-      pageSize: result.pageSize,
-    }),
-    getParams: (pagination) => {
-      const params = {
-        tenantId: this.props.tenantId,
-        pageSize: pagination.pageSize,
-        currentPage: pagination.current,
-        searchText: this.props.conflictItemlist.searchText,
-      };
-      const filter = this.props.listFilter;
-      params.filter = JSON.stringify(filter);
-      return params;
-    },
-    remotes: this.props.conflictItemlist,
-  })
+  handlePageChange = (current, pageSize) => {
+    this.setState({
+      pagination: {
+        ...this.state.pagination,
+        current,
+        pageSize,
+      },
+    });
+    this.handleItemListLoad(current);
+  }
   handleItemListLoad = (currentPage, filter, search) => {
-    const { tenantId, listFilter, conflictItemlist: { pageSize, current, searchText } } = this.props;
+    const { tenantId, listFilter, conflictItemlist: { searchText } } = this.props;
     this.props.loadConflictItems({
       tenantId,
       filter: JSON.stringify(filter || listFilter),
-      pageSize,
-      currentPage: currentPage || current,
       searchText: search !== undefined ? search : searchText,
     }).then((result) => {
       if (result.error) {
@@ -282,8 +287,6 @@ export default class ConflictList extends Component {
     });
   }
   render() {
-    const { conflictItemlist } = this.props;
-    this.dataSource.remotes = conflictItemlist;
     const columns = [...this.columns];
     columns.push({
       title: this.msg('opColumn'),
@@ -338,7 +341,7 @@ export default class ConflictList extends Component {
       },
     });
     return (
-      <RemoteTable rowKey={record => record.id} columns={columns} dataSource={this.dataSource} scroll={{ x: 3800 }} />
+      <Table rowKey={record => record.id} columns={columns} dataSource={this.state.dataSource} pagination={this.state.pagination} scroll={{ x: 3800 }} />
     );
   }
 }

@@ -35,8 +35,6 @@ const initialState = {
   },
   conflictItemlist: {
     totalCount: 0,
-    current: 1,
-    pageSize: 20,
     searchText: '',
     data: [],
   },
