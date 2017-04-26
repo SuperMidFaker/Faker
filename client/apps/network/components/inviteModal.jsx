@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { Modal, Form, Input } from 'antd';
+import { Alert, Modal, Form, Input } from 'antd';
 import { inviteOfflinePartner, showInviteModal } from 'common/reducers/invitation';
 
 const FormItem = Form.Item;
@@ -55,11 +55,12 @@ export default class InviteModal extends Component {
       wrapperCol: { span: 14 },
     };
     return (
-      <Modal visible={this.props.visible} title="该合作伙伴为线下用户,发送短信或邮件邀请他成为线上租户" onCancel={this.handleCancel} onOk={this.handleSave}>
-        <FormItem {...formItemLayout} label="电话:" required>
+      <Modal visible={this.props.visible} title="申请开通" onCancel={this.handleCancel} onOk={this.handleSave}>
+        <Alert message="该合作伙伴为线下用户，申请开通平台租户帐号" type="info" showIcon />
+        <FormItem {...formItemLayout} label="电话:">
           <Input value={phone} onChange={e => this.setState({ phone: e.target.value })} />
         </FormItem>
-        <FormItem {...formItemLayout} label="邮箱:" required>
+        <FormItem {...formItemLayout} label="邮箱:">
           <Input value={email} onChange={e => this.setState({ email: e.target.value })} />
         </FormItem>
       </Modal>

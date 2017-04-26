@@ -32,16 +32,6 @@ export default class DockPanel extends React.Component {
   state = {
     depth: this.props.currentDepth,
   }
-  componentDidMount() {
-    /*
-    window.$(document).click((event) => {
-      const dockPanelClicked = window.$(event.target).closest('#dock-panel').length > 0;
-      if (!dockPanelClicked) {
-        this.handleClose();
-      }
-    });
-    */
-  }
   componentWillUnmount() {
     window.$(document).unbind('click');
   }
@@ -74,28 +64,32 @@ export default class DockPanel extends React.Component {
       [`${prefixCls}-${sizeCls}`]: sizeCls,
       [`${prefixCls}-visible`]: visible,
     }, className);
+    const maskClasses = classNames('ant-modal-mask', { 'ant-modal-mask-hidden': !visible });
     const bodyCls = extra ? `${prefixCls}-body with-header-extra` : `${prefixCls}-body`;
     return (
-      <div className={classes} id="dock-panel">
-        <Spin spinning={loading}>
-          <div className={`${prefixCls}-head`}>
-            <div className={`${prefixCls}-head-title`}>
-              {this.state.depth > 1 && <Button icon="left" onClick={this.handleBackward} />}
-              <Breadcrumb>
-                <Breadcrumb.Item>{title}</Breadcrumb.Item>
-              </Breadcrumb>
-              {status ? <Badge status={status} text={statusText} /> : null}
-              <div className={`${prefixCls}-head-close`}>
-                <Button shape="circle" icon="close" onClick={this.handleClose} />
+      <div>
+        <div className={maskClasses} onClick={this.handleClose} />
+        <div className={classes} id="dock-panel">
+          <Spin spinning={loading}>
+            <div className={`${prefixCls}-head`}>
+              <div className={`${prefixCls}-head-title`}>
+                {this.state.depth > 1 && <Button icon="left" onClick={this.handleBackward} />}
+                <Breadcrumb>
+                  <Breadcrumb.Item>{title}</Breadcrumb.Item>
+                </Breadcrumb>
+                {status ? <Badge status={status} text={statusText} /> : null}
+                <div className={`${prefixCls}-head-close`}>
+                  <Button shape="circle" icon="close" onClick={this.handleClose} />
+                </div>
               </div>
+              {extra ? <div className={`${prefixCls}-head-extra`}>{extra}</div> : null}
             </div>
-            {extra ? <div className={`${prefixCls}-head-extra`}>{extra}</div> : null}
-          </div>
-          <div className={bodyCls}>
-            {alert ? <Alert message={alert} type={alertType} /> : null}
-            {children}
-          </div>
-        </Spin>
+            <div className={bodyCls}>
+              {alert ? <Alert message={alert} type={alertType} /> : null}
+              {children}
+            </div>
+          </Spin>
+        </div>
       </div>
     );
   }
