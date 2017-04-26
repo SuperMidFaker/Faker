@@ -20,6 +20,7 @@ import ImportComparisonModal from './modals/importComparison';
 import NominatedImportModal from './modals/nominatedImport';
 import ConflictList from './conflictList';
 import MasterSharePane from './panes/masterSharePane';
+import SlaveSyncPane from './panes/slaveSyncPane';
 
 const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
@@ -578,7 +579,9 @@ export default class TradeItemList extends Component {
               <h3>物料库设置</h3>
             </div>
             <Collapse accordion defaultActiveKey="slave">
-              <Panel header={'从库同步'} key="slave" />
+              <Panel header={'从库同步'} key="slave">
+                <SlaveSyncPane />
+              </Panel>
               <Panel header={'授权共享'} key="share">
                 <MasterSharePane />
               </Panel>
