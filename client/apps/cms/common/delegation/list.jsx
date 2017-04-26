@@ -332,6 +332,7 @@ export default class DelegationList extends Component {
       return;
     }
     const filter = { ...this.props.listFilter, status: ev.target.value };
+    this.setState({ selectedRowKeys: [] });
     this.handleDelgListLoad(1, filter);
   }
   handleCiqFilter = (ev) => {
@@ -339,6 +340,7 @@ export default class DelegationList extends Component {
       return;
     }
     const filter = { ...this.props.listFilter, status: ev.target.value };
+    this.setState({ selectedRowKeys: [] });
     this.handleCiqListLoad(1, filter);
   }
   handleDelegationMake = (row) => {

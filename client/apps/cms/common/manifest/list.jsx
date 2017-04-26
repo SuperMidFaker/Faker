@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Layout, Radio, Icon, Progress, message, Popconfirm, notification } from 'antd';
+import { Breadcrumb, Layout, Radio, Icon, Progress, message, Popconfirm, Tooltip, notification } from 'antd';
 import moment from 'moment';
 import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
@@ -220,6 +220,7 @@ export default class ManifestList extends Component {
     }
     const filter = { ...this.props.listFilter, status: ev.target.value };
     this.handleTableLoad(1, filter);
+    this.setState({ selectedRowKeys: [] });
   }
   handleDelegationMake = (row) => {
     const link = `/clearance/${this.props.ietype}/manifest/`;
@@ -260,7 +261,7 @@ export default class ManifestList extends Component {
     columns = [...this.columns];
     columns.push({
       title: this.msg('opColumn'),
-      width: 80,
+      width: 100,
       fixed: 'right',
       render: (o, record) => {
         if (record.customs_tenant_id === tenantId || record.customs_tenant_id === -1) {
@@ -273,8 +274,10 @@ export default class ManifestList extends Component {
               <span>
                 <RowUpdater onHit={this.handleDelegationView} label={<span><Icon type="eye-o" /> 查看</span>} row={record} />
                 <span className="ant-divider" />
-                <Popconfirm title="确定需要重新生成报关草单吗?" onConfirm={() => this.handleManifestRedo(record)}>
-                  <a role="button">重新生成</a>
+                <Popconfirm title="确定操作?" placement="topRight" onConfirm={() => this.handleManifestRedo(record)}>
+                  <Tooltip title="删除已生成的报关草单，重新修改" placement="bottomLeft">
+                    <a role="button"><Icon type="reload" /></a>
+                  </Tooltip>
                 </Popconfirm>
               </span>
             );
@@ -327,7 +330,7 @@ export default class ManifestList extends Component {
                   </div>
                 </div>
                 <div className="panel-body table-panel">
-                  <Table rowSelection={rowSelection} columns={columns} rowKey="pre_entry_seq_no" dataSource={this.dataSource}
+                  <Table rowSelection={rowSelection} columns={columns} rowKey="delg_no" dataSource={this.dataSource}
                     loading={delgBillList.loading} scroll={{ x: 1800 }}
                   />
                 </div>

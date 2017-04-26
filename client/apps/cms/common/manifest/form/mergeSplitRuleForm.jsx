@@ -4,6 +4,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import { Radio, Checkbox, Select, Row, Col, Form, Collapse } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { loadHsCodeCategories } from 'common/reducers/cmsHsCode';
+import { CMS_SPLIT_COUNT } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 const formatMsg = format(messages);
@@ -95,24 +96,26 @@ export default class MergeSplitForm extends React.Component {
               {getFieldDecorator('split_percount', {
                 initialValue: formData.split_percount })(
                   <Select size="large">
-                    <Option value={20}>{'按20品拆分'}</Option>
-                    <Option value={50}>{'按50品拆分'}</Option>
+                    {
+                      CMS_SPLIT_COUNT.map(sc => <Option key={sc.value} value={sc.value}>{sc.text}</Option>)
+                    }
                   </Select>)}
             </FormItem>
             <FormItem>
-              {getFieldDecorator('split_hscode', { initialValue: formData.split_hscode })(
+              {getFieldDecorator('split_hscode', { initialValue: formData.split_hscode === 1 })(
                 <Checkbox defaultChecked={formData.split_hscode}>{this.msg('specialHscodeDeclare')}</Checkbox>)
               }
               {getFieldValue('split_hscode') &&
-              <div>
-                  {getFieldDecorator('split_spl_category', {
-                    rules: [{ type: 'array' }],
-                    initialValue: formData.specialHsSortArr,
-                  })(<Select size="large" mode="multiple" placeholder={this.msg('specialHscodeSort')} style={{ width: '100%' }} >
-                    {hscodeCategories.map(ct =>
-                      <Option value={ct.id} key={ct.id}>{ct.name}</Option>)}
-                  </Select>)}
-              </div>}
+                <div>
+                    {getFieldDecorator('split_spl_category', {
+                      rules: [{ type: 'array' }],
+                      initialValue: formData.specialHsSortArr,
+                    })(<Select size="large" mode="multiple" placeholder={this.msg('specialHscodeSort')}>
+                      {hscodeCategories.map(ct =>
+                        <Option value={ct.id} key={ct.id}>{ct.name}</Option>)}
+                    </Select>)}
+                </div>
+              }
             </FormItem>
             <FormItem>
               {getFieldDecorator('split_curr', { initialValue: formData.split_curr })(

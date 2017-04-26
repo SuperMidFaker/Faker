@@ -43,6 +43,7 @@ function getFieldInits(formData) {
       init.specialHsSortArr.push(numData);
     });
   }
+  init.split_percount = formData.split_percount ? formData.split_percount.toString() : '20';
   return init;
 }
 

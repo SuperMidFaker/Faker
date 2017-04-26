@@ -56,7 +56,7 @@ function getFieldInits(formData) {
     ['sort_dectotal', 'sort_hscode', 'split_hscode', 'split_curr'].forEach((fd) => {
       init[fd] = formData[fd] ? formData[fd] : 0;
     });
-    init.split_percount = formData.split_percount ? formData.split_percount : 20;
+    init.split_percount = formData.split_percount ? formData.split_percount.toString() : '20';
   }
   return init;
 }

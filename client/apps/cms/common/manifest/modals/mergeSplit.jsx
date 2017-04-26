@@ -5,6 +5,7 @@ import { Modal, Card, Radio, Checkbox, Select, message, notification, Row, Col, 
 import { intlShape, injectIntl } from 'react-intl';
 import { closeMergeSplitModal, submitBillMegeSplit, loadBillBody } from 'common/reducers/cmsManifest';
 import { loadHsCodeCategories } from 'common/reducers/cmsHsCode';
+import { CMS_SPLIT_COUNT } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 const formatMsg = format(messages);
@@ -129,7 +130,7 @@ export default class MergeSplitModal extends React.Component {
           byHsCode: rule.split_hscode,
           tradeCurr: rule.split_curr,
           hsCategory: specialHsSortArr,
-          perCount: rule.split_percount,
+          perCount: rule.split_percount.toString(),
         },
         sortOpt: {
           customControl: rule.sort_customs,
@@ -242,7 +243,7 @@ export default class MergeSplitModal extends React.Component {
       >
         <Row gutter={16}>
           <Col span="24">
-            <Card title={this.msg('mergePrinciple')} bordered>
+            <Card title={this.msg('mergePrinciple')}>
               <FormItem>
                 <Col span="3">
                   <Radio checked={mergeOpt.checked} onChange={this.handleMergeRadioChange}>
@@ -268,13 +269,12 @@ export default class MergeSplitModal extends React.Component {
             </Card>
           </Col>
           <Col span="12">
-            <Card title={this.msg('splitPrinciple')} bordered>
+            <Card title={this.msg('splitPrinciple')}>
               <FormItem>
-                <Select onChange={this.handleSplitSelectChange} value={this.state.splitOpt.perCount}
-                  style={{ width: '100%' }}
-                >
-                  <Option value="20">{'按20品拆分'}</Option>
-                  <Option value="50">{'按50品拆分'}</Option>
+                <Select onChange={this.handleSplitSelectChange} value={this.state.splitOpt.perCount}>
+                  {
+                    CMS_SPLIT_COUNT.map(sc => <Option key={sc.value} value={sc.value}>{sc.text}</Option>)
+                  }
                 </Select>
               </FormItem>
               <FormItem>
@@ -287,7 +287,7 @@ export default class MergeSplitModal extends React.Component {
                     {getFieldDecorator('specialSort', {
                       rules: [{ type: 'array' }],
                       initialValue: splitOpt.hsCategory,
-                    })(<Select size="large" mode="multiple" placeholder={this.msg('specialHscodeSort')} style={{ width: '100%' }}>
+                    })(<Select size="large" mode="multiple" placeholder={this.msg('specialHscodeSort')}>
                       {
                           hscodeCategories.map(ct =>
                             <Option value={ct.id} key={ct.id}>{ct.name}</Option>
@@ -305,7 +305,7 @@ export default class MergeSplitModal extends React.Component {
             </Card>
           </Col>
           <Col span="12">
-            <Card title={this.msg('sortPrinciple')} bordered>
+            <Card title={this.msg('sortPrinciple')}>
               <FormItem>
                 <MSCheckbox fieldOpt="sortOpt" field="customControl"
                   text={this.msg('customOnTop')}

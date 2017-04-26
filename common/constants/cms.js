@@ -357,3 +357,8 @@ export const CMS_BILL_TEMPLATE_PERMISSION = {
   edit: 'edit',
   view: 'view',
 };
+
+export const CMS_SPLIT_COUNT = [
+  { value: '20', text: '按20品拆分' },
+  { value: '50', text: '按50品拆分' },
+];

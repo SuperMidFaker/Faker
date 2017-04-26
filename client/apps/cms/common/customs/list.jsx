@@ -252,6 +252,7 @@ export default class DelgDeclList extends Component {
       return;
     }
     const filter = { ...this.props.listFilter, status: ev.target.value };
+    this.setState({ selectedRowKeys: [] });
     this.handleTableLoad(1, filter);
   }
   handleDelete = (declId, delgNo, billNo) => {
