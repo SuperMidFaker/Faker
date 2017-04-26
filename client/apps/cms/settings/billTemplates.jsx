@@ -9,7 +9,7 @@ import NavLink from 'client/components/nav-link';
 import messages from './message.i18n';
 import { toggleBillTempModal, loadBillemplates, deleteTemplate, loadRelatedCustomers } from 'common/reducers/cmsSettings';
 import withPrivilege from 'client/common/decorators/withPrivilege';
-import BillTemplateModal from './modals/billTemplateModal';
+import BillTemplateModal from '../common/manifest/modals/billTemplateModal';
 import { loadPartners } from 'common/reducers/partner';
 import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES, CMS_BILL_TEMPLATE_PERMISSION } from 'common/constants';
 import connectFetch from 'client/common/decorators/connect-fetch';
