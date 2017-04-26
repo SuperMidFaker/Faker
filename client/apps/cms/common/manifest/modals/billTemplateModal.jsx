@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Modal, Form, Input, message, Radio } from 'antd';
 import { connect } from 'react-redux';
-import { toggleBillTempModal, createBillTemplate } from 'common/reducers/cmsSettings';
+import { toggleBillTempModal, createBillTemplate } from 'common/reducers/cmsManifest';
 
 const FormItem = Form.Item;
 const RadioButton = Radio.Button;
@@ -17,8 +17,8 @@ const formItemLayout = {
   loginId: state.account.loginId,
   loginName: state.account.username,
   tenantName: state.account.tenantName,
-  visible: state.cmsSettings.billTemplateModal.visible,
-  operation: state.cmsSettings.billTemplateModal.operation,
+  visible: state.cmsManifest.billTemplateModal.visible,
+  operation: state.cmsManifest.billTemplateModal.operation,
   partners: state.partner.partners,
 }), { toggleBillTempModal, createBillTemplate })
 @Form.create()

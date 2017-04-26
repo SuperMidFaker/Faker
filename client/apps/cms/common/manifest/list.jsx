@@ -1,20 +1,24 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Layout, Radio, Icon, Progress, message, Popconfirm, Tooltip, notification } from 'antd';
+import { Breadcrumb, Layout, Radio, Icon, Progress, message, Popconfirm, Tooltip, notification, Button } from 'antd';
 import moment from 'moment';
 import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import ButtonToggle from 'client/components/ButtonToggle';
 import connectNav from 'client/common/decorators/connect-nav';
-import { loadDelgBill, redoManifest } from 'common/reducers/cmsManifest';
 import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
+import { loadPartners } from 'common/reducers/partner';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/search-bar';
 import DelegationDockPanel from '../dockhub/delegationDockPanel';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import RowUpdater from 'client/components/rowUpdater';
+import { loadDelgBill, redoManifest, loadBillemplates, deleteTemplate, toggleBillTempModal } from 'common/reducers/cmsManifest';
+import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES, CMS_BILL_TEMPLATE_PERMISSION } from 'common/constants';
+import BillTemplateModal from './modals/billTemplateModal';
+import NavLink from 'client/components/nav-link';
 
 const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
@@ -29,6 +33,7 @@ const RadioButton = Radio.Button;
     loginName: state.account.username,
     delgBillList: state.cmsManifest.delgBillList,
     listFilter: state.cmsManifest.listFilter,
+    billtemplates: state.cmsManifest.billtemplates,
     tradeModes: state.cmsManifest.formRequire.tradeModes.map(tm => ({
       value: tm.trade_mode,
       text: `${tm.trade_abbr}`,
@@ -42,7 +47,7 @@ const RadioButton = Radio.Button;
       text: `${cus.customs_name}`,
     })),
   }),
-  { loadDelgBill, redoManifest, showPreviewer }
+  { loadDelgBill, redoManifest, showPreviewer, loadBillemplates, deleteTemplate, loadPartners, toggleBillTempModal }
 )
 @connectNav({
   depth: 2,
@@ -58,6 +63,7 @@ export default class ManifestList extends Component {
     delgBillList: PropTypes.object.isRequired,
     listFilter: PropTypes.object.isRequired,
     showPreviewer: PropTypes.func.isRequired,
+    billtemplates: PropTypes.array,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -67,7 +73,9 @@ export default class ManifestList extends Component {
     selectedRowKeys: [],
     searchInput: '',
   }
-
+  componentWillMount() {
+    this.props.loadBillemplates({ tenantId: this.props.tenantId, ietype: this.props.ietype });
+  }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
     title: this.msg('delgNo'),
@@ -254,6 +262,27 @@ export default class ManifestList extends Component {
       key,
     });
   }
+  handleEdit = (record) => {
+    this.context.router.push(`/clearance/${this.props.ietype}/manifest/billtemplates/edit/${record.id}`);
+  }
+  handleDelete = (record) => {
+    this.props.deleteTemplate(record.id).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        const ietype = record.i_e_type === 0 ? 'import' : 'export';
+        this.props.loadBillemplates({ tenantId: this.props.tenantId, ietype });
+      }
+    });
+  }
+  handleAddBtnClicked = () => {
+    this.props.loadPartners({
+      tenantId: this.props.tenantId,
+      role: PARTNER_ROLES.CUS,
+      businessType: PARTNER_BUSINESSE_TYPES.clearance,
+    });
+    this.props.toggleBillTempModal(true, 'add');
+  }
   render() {
     const { delgBillList, listFilter, tenantId } = this.props;
     this.dataSource.remotes = delgBillList;
@@ -293,6 +322,36 @@ export default class ManifestList extends Component {
         }
       },
     });
+    const billTempColumns = [
+      {
+        title: '模板名称',
+        dataIndex: 'template_name',
+        key: 'template_name',
+      }, {
+        title: '关联客户',
+        dataIndex: 'customer_name',
+        key: 'customer_name',
+      }, {
+        title: '操作',
+        dataIndex: 'status',
+        key: 'status',
+        render: (_, record) => {
+          if (record.permission === CMS_BILL_TEMPLATE_PERMISSION.edit) {
+            return (
+              <span>
+                <a onClick={() => this.handleEdit(record)}>{this.msg('edit')}</a>
+                <span className="ant-divider" />
+                <Popconfirm title="确定要删除吗？" onConfirm={() => this.handleDelete(record)}>
+                  <a>删除</a>
+                </Popconfirm>
+              </span>);
+          } else if (record.permission === CMS_BILL_TEMPLATE_PERMISSION.view) {
+            return <NavLink to={`/clearance/${this.props.ietype}/manifest/billtemplates/view/${record.id}`}>{this.msg('view')}</NavLink>;
+          }
+          return '';
+        },
+      },
+    ];
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -352,7 +411,14 @@ export default class ManifestList extends Component {
             <div className="panel-header">
               <h3>清单模板</h3>
             </div>
+            <div className="toolbar">
+              <Button type="primary" size="large" onClick={this.handleAddBtnClicked} icon="plus-circle-o">新建模板</Button>
+            </div>
+            <div className="panel-body table-panel">
+              <Table columns={billTempColumns} dataSource={this.props.billtemplates} rowKey="id" />
+            </div>
           </div>
+          <BillTemplateModal />
         </Sider>
       </Layout>
     );

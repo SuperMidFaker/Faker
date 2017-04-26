@@ -36,11 +36,17 @@ const actionTypes = createActionTypes('@@welogix/cms/manifest/', [
   'LOCK_MANIFEST', 'LOCK_MANIFEST_SUCCEED', 'LOCK_MANIFEST_FAIL',
   'SET_STEP_VISIBLE', 'BILL_HEAD_CHANGE',
   'FILL_ENTRYNO', 'FILL_ENTRYNO_SUCCEED', 'FILL_ENTRYNO_FAIL',
+  'LOAD_BILL_TEMPLATES', 'LOAD_BILL_TEMPLATES_SUCCEED', 'LOAD_BILL_TEMPLATES_FAIL',
+  'CREATE_BILL_TEMPLATE', 'CREATE_BILL_TEMPLATE_SUCCEED', 'CREATE_BILL_TEMPLATE_FAIL',
+  'DELETE_TEMPLATE', 'DELETE_TEMPLATE_SUCCEED', 'DELETE_TEMPLATE_FAIL',
+  'TOGGLE_BILL_TEMPLATE', 'OPEN_ADD_MODEL', 'CLOSE_ADD_MODEL',
 ]);
 
 const initialState = {
   manifestLoading: false,
   customsDeclLoading: false,
+  template: {},
+  billtemplates: [],
   delgBillList: {
     totalCount: 0,
     current: 1,
@@ -96,6 +102,11 @@ const initialState = {
   templates: [],
   billRule: {},
   billHeadFieldsChangeTimes: 0,
+  billTemplateModal: {
+    visible: false,
+    templateName: '',
+  },
+  visibleAddModal: false,
 };
 
 export default function reducer(state = initialState, action) {
@@ -213,6 +224,24 @@ export default function reducer(state = initialState, action) {
       return { ...state, billHeadFieldsChangeTimes: state.billHeadFieldsChangeTimes + 1 };
     case actionTypes.FILL_ENTRYNO_SUCCEED:
       return { ...state, entryHead: { ...state.entryHead, entry_id: action.data.entryNo } };
+    case actionTypes.LOAD_BILL_TEMPLATES_SUCCEED:
+      return { ...state, billtemplates: action.result.data };
+    case actionTypes.CREATE_BILL_TEMPLATE_SUCCEED: {
+      const retData = action.result.data;
+      if (retData.i_e_type === 0) {
+        retData.ietype = 'import';
+      } else if (retData.i_e_type === 1) {
+        retData.ietype = 'export';
+      }
+      return { ...state, template: { ...state.template, ...retData } };
+    }
+    case actionTypes.TOGGLE_BILL_TEMPLATE: {
+      return { ...state, billTemplateModal: { ...state.billTemplateModal, ...action.data } };
+    }
+    case actionTypes.OPEN_ADD_MODEL:
+      return { ...state, visibleAddModal: true };
+    case actionTypes.CLOSE_ADD_MODEL:
+      return { ...state, visibleAddModal: false };
     default:
       return state;
   }
@@ -709,4 +738,64 @@ export function fillEntryId({ entryNo, entryHeadId, billSeqNo, delgNo }) {
       data: { entryNo, entryHeadId, billSeqNo, delgNo },
     },
   };
+}
+
+export function loadBillemplates(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_BILL_TEMPLATES,
+        actionTypes.LOAD_BILL_TEMPLATES_SUCCEED,
+        actionTypes.LOAD_BILL_TEMPLATES_FAIL,
+      ],
+      endpoint: 'v1/cms/settings/billtemplates/load',
+      method: 'get',
+      params,
+    },
+  };
+}
+
+export function createBillTemplate(datas) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.CREATE_BILL_TEMPLATE,
+        actionTypes.CREATE_BILL_TEMPLATE_SUCCEED,
+        actionTypes.CREATE_BILL_TEMPLATE_FAIL,
+      ],
+      endpoint: 'v1/cms/settings/billtemplate/create',
+      method: 'post',
+      data: datas,
+    },
+  };
+}
+
+export function deleteTemplate(id) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DELETE_TEMPLATE,
+        actionTypes.DELETE_TEMPLATE_SUCCEED,
+        actionTypes.DELETE_TEMPLATE_FAIL,
+      ],
+      endpoint: 'v1/cms/settings/billtemplate/delete',
+      method: 'post',
+      data: { id },
+    },
+  };
+}
+
+export function toggleBillTempModal(visible, operation, templateName) {
+  return {
+    type: actionTypes.TOGGLE_BILL_TEMPLATE,
+    data: { visible, operation, templateName },
+  };
+}
+
+export function openAddModal() {
+  return { type: actionTypes.OPEN_ADD_MODEL };
+}
+
+export function closeAddModal() {
+  return { type: actionTypes.CLOSE_ADD_MODEL };
 }
