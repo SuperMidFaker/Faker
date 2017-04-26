@@ -30,6 +30,7 @@ const actionTypes = createActionTypes('@@welogix/cms/manifest/', [
   'SAVE_ENTRY_HEAD', 'SAVE_ENTRY_HEAD_SUCCEED', 'SAVE_ENTRY_HEAD_FAIL',
   'REDO_MANIFEST', 'REDO_MANIFEST_SUCCEED', 'REDO_MANIFEST_FAIL',
   'DELETE_SELECTED_BODIES', 'DELETE_SELECTED_BODIES_SUCCEED', 'DELETE_SELECTED_BODIES_FAIL',
+  'RESET_BILLBODY', 'RESET_BILLBODY_SUCCEED', 'RESET_BILLBODY_FAIL',
   'OPEN_RULE_MODEL', 'CLOSE_RULE_MODEL',
   'SAVE_BILL_RULES', 'SAVE_BILL_RULES_SUCCEED', 'SAVE_BILL_RULES_FAIL',
   'RESET_BILLHEAD', 'RESET_BILLHEAD_SUCCEED', 'RESET_BILLHEAD_FAIL',
@@ -673,9 +674,24 @@ export function deleteSelectedBodies(bodyIds) {
         actionTypes.DELETE_SELECTED_BODIES_SUCCEED,
         actionTypes.DELETE_SELECTED_BODIES_FAIL,
       ],
-      endpoint: 'v1/cms/declare/selected/bodies/delete',
+      endpoint: 'v1/cms/manifest/delete/bodies',
       method: 'post',
       data: bodyIds,
+    },
+  };
+}
+
+export function resetBillBody(billSeqNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.RESET_BILLBODY,
+        actionTypes.RESET_BILLBODY_SUCCEED,
+        actionTypes.RESET_BILLBODY_FAIL,
+      ],
+      endpoint: 'v1/cms/manifest/bill/reset/body',
+      method: 'post',
+      data: { bill_seq_no: billSeqNo },
     },
   };
 }

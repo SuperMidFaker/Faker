@@ -14,6 +14,10 @@ const messages = defineMessages({
     id: 'scof.flow.customer',
     defaultMessage: '客户',
   },
+  customerTracking: {
+    id: 'scof.flow.customer.tracking',
+    defaultMessage: '客户追踪表',
+  },
   flowRelationGraph: {
     id: 'scof.flow.relation.graph',
     defaultMessage: '流程关系图',

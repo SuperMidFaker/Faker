@@ -26,7 +26,7 @@ export default class TrackingModal extends React.Component {
     onOk: PropTypes.func,
     trackingFields: PropTypes.array.isRequired,
     trackingItems: PropTypes.array.isRequired,
-    tracking: PropTypes.string.isRequired,
+    tracking: PropTypes.shape({ name: PropTypes.string.isRequired }).isRequired,
   }
   state = {
     selectedKeys: [],

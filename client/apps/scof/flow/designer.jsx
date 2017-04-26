@@ -2,9 +2,9 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Alert, Breadcrumb, Button, Card, Collapse, Popconfirm, Layout, Table, Spin, Radio, Tooltip, message } from 'antd';
+import { Alert, Breadcrumb, Button, Card, Collapse, Form, Popconfirm, Layout, Select, Table, Spin, Radio, Tooltip, message } from 'antd';
 import QueueAnim from 'rc-queue-anim';
-import { toggleFlowList, loadFlowGraph, loadFlowGraphItem, saveFlowGraph, setNodeActions } from 'common/reducers/scofFlow';
+import { toggleFlowList, loadFlowGraph, loadFlowGraphItem, saveFlowGraph, setNodeActions, loadScvTrackings } from 'common/reducers/scofFlow';
 import { uuidWithoutDash } from 'client/common/uuid';
 import ButtonToggle from 'client/components/ButtonToggle';
 import MdIcon from 'client/components/MdIcon';
@@ -19,6 +19,8 @@ const { Header, Content, Sider } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const Panel = Collapse.Panel;
+const Option = Select.Option;
+const FormItem = Form.Item;
 
 @injectIntl
 @connect(
@@ -30,7 +32,7 @@ const Panel = Collapse.Panel;
     graphLoading: state.scofFlow.graphLoading,
     listCollapsed: state.scofFlow.listCollapsed,
   }),
-  { toggleFlowList, loadFlowGraph, loadFlowGraphItem, saveFlowGraph, setNodeActions }
+  { toggleFlowList, loadFlowGraph, loadFlowGraphItem, saveFlowGraph, setNodeActions, loadScvTrackings }
 )
 export default class FlowDesigner extends React.Component {
   static defaultProps ={
@@ -42,9 +44,10 @@ export default class FlowDesigner extends React.Component {
     submitting: PropTypes.bool,
     graphLoading: PropTypes.bool.isRequired,
     listCollapsed: PropTypes.bool.isRequired,
-    trackingFields: PropTypes.arrayOf(PropTypes.shape({ field: PropTypes.string, title: PropTypes.string, module: PropTypes.oneOf(['cms', 'tms', 'cwm']) })),
+    trackingFields: PropTypes.arrayOf(PropTypes.shape({ field: PropTypes.string,
+      title: PropTypes.string, module: PropTypes.oneOf(['cms', 'tms', 'cwm']) })),
     currentFlow: PropTypes.shape({ id: PropTypes.number.isRequired, name: PropTypes.string.isRequired,
-      partner_id: PropTypes.number.isRequired, customer_tenant_id: PropTypes.number,
+      partner_id: PropTypes.number.isRequired, customer_tenant_id: PropTypes.number.isRequired,
       tracking_id: PropTypes.number }).isRequired,
   }
   constructor(...args) {
@@ -53,6 +56,8 @@ export default class FlowDesigner extends React.Component {
       rightSidercollapsed: true,
       activeItem: null,
       trackDataSource: this.props.trackingFields.map(tf => ({ title: tf.title, field: tf.field, module: tf.module, node: null })),
+      trackings: [],
+      trackingId: null,
     };
     this.trackingFieldTypeMapNodeKinds = {
       cms: ['import', 'export'],
@@ -88,6 +93,13 @@ export default class FlowDesigner extends React.Component {
   }
   componentWillMount() {
     this.props.loadFlowGraph(this.props.currentFlow.id);
+    if (this.props.currentFlow.customer_tenant_id !== -1) {
+      this.props.loadScvTrackings(this.props.currentFlow.customer_tenant_id).then((result) => {
+        if (!result.error) {
+          this.setState({ trackings: result.data });
+        }
+      });
+    }
   }
   componentDidMount() {
     this.graph = new window.G6.Graph({
@@ -176,9 +188,21 @@ export default class FlowDesigner extends React.Component {
     if (nextProps.currentFlow.id !== this.props.currentFlow.id) {
       this.setState({
         activeItem: null,
+        trackingId: nextProps.currentFlow.tracking_id,
         trackDataSource: this.props.trackingFields.map(tf => ({ title: tf.title, field: tf.field, module: tf.module, node: null })),
       });
       this.props.loadFlowGraph(nextProps.currentFlow.id);
+    }
+    if (nextProps.currentFlow.customer_tenant_id === -1) {
+      this.setState({ trackings: [] });
+    } else if (nextProps.currentFlow.customer_tenant_id !== this.props.currentFlow.customer_tenant_id) {
+      this.props.loadScvTrackings(nextProps.currentFlow.customer_tenant_id).then((result) => {
+        if (!result.error) {
+          this.setState({ trackings: result.data });
+        } else {
+          this.setState({ trackings: [] });
+        }
+      });
     }
     if (nextProps.flowGraph !== this.props.flowGraph) {
       const data = {
@@ -378,6 +402,9 @@ export default class FlowDesigner extends React.Component {
     this.graph.update(this.state.activeItem, { actions });
     this.props.setNodeActions(actions);
   }
+  handleTrackingChange = (trackingId) => {
+    this.setState({ trackingId });
+  }
   handlePanelForm = (form) => { this.formhoc = form; }
   handleSaveBtnClick = () => {
     const activeItem = this.state.activeItem;
@@ -385,12 +412,13 @@ export default class FlowDesigner extends React.Component {
       const values = this.formhoc.getFieldsValue();
       this.graph.update(activeItem, values);
     }
+    const trackingId = this.state.trackingId !== this.props.currentFlow.tracking_id ? this.state.trackingId : null;
     const graphItems = this.graph.get('items');
     const nodes = graphItems.filter(item => item.get('type') === 'node').map(item => item.get('model'));
     const edges = graphItems.filter(item => item.get('type') === 'edge').map(item => item.get('model'));
     console.log(nodes, edges);
     // todo graph node edge disconnected
-    this.props.saveFlowGraph(this.props.currentFlow.id, nodes, edges, this.state.trackDataSource.map(tds => ({
+    this.props.saveFlowGraph(this.props.currentFlow.id, nodes, edges, trackingId, this.state.trackDataSource.map(tds => ({
       field: tds.field,
       node: tds.node,
     }))).then((result) => {
@@ -491,7 +519,16 @@ export default class FlowDesigner extends React.Component {
             </div>
             <Collapse accordion defaultActiveKey="tracking">
               <Panel header={'追踪节点'} key="tracking">
-                <Table columns={this.trackingColumns} bordered={false} dataSource={this.state.trackDataSource} rowKey="field" />
+                <FormItem label="追踪表" labelCol={{ span: 3 }} wrapperCol={{ span: 20 }}>
+                  <Select value={this.state.trackingId} style={{ width: '100%' }} onChange={this.handleTrackingChange}>
+                    {this.state.trackings.map(data => (
+                      <Option key={data.id} value={data.id}>{data.name}</Option>)
+                    )}
+                  </Select>
+                </FormItem>
+                <Table columns={this.trackingColumns} bordered={false} dataSource={this.state.trackDataSource}
+                  rowKey="field" scroll={{ y: 400 }}
+                />
               </Panel>
               <Panel header={'更多'} key="more">
                 <Alert message="警告" description="删除流程将无法恢复，请谨慎操作" type="warning" showIcon />

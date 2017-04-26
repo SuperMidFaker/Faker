@@ -21,6 +21,11 @@ const RadioGroup = Radio.Group;
 const InputGroup = Input.Group;
 const Step = Steps.Step;
 
+const SeletableKeyNameMap = {};
+GOODSTYPES.forEach((gt) => { SeletableKeyNameMap[`goods-${gt.value}`] = gt.text; });
+WRAP_TYPE.forEach((wt) => { SeletableKeyNameMap[`wrap-${wt.value}`] = wt.text; });
+SCOF_ORDER_TRANSFER.forEach((ot) => { SeletableKeyNameMap[`transfer-${ot.value}`] = ot.text; });
+
 @injectIntl
 @connect(
   state => ({
@@ -35,7 +40,6 @@ const Step = Steps.Step;
   }),
   { setClientForm, loadPartnerFlowList, loadFlowGraph, loadCustomerQuotes }
 )
-
 export default class OrderForm extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -179,6 +183,9 @@ export default class OrderForm extends Component {
       this.props.setClientForm(-1, { containers: [] });
     }
   }
+  handleKvChange = (key, value, prefix) => {
+    this.props.setClientForm(-1, { [key]: value, [`${key}_name`]: SeletableKeyNameMap[`${prefix}-${value}`] });
+  }
   renderSteps = (subOrders, shipment) => {
     const { operation } = this.props;
     const steps = [];
@@ -259,7 +266,7 @@ export default class OrderForm extends Component {
               <Row gutter={16}>
                 <Col sm={8}>
                   <FormItem label="货物流向" {...formItemLayout} required="true">
-                    <RadioGroup value={formData.cust_shipmt_transfer} onChange={ev => this.handleChange('cust_shipmt_transfer', ev.target.value)}>
+                    <RadioGroup value={formData.cust_shipmt_transfer} onChange={ev => this.handleKvChange('cust_shipmt_transfer', ev.target.value, 'transfer')}>
                       {SCOF_ORDER_TRANSFER.map(sot => <RadioButton value={sot.value}><Icon type={sot.icon} /> {sot.text}</RadioButton>)}
                     </RadioGroup>
                   </FormItem>
@@ -359,7 +366,7 @@ export default class OrderForm extends Component {
                 </Col>
                 <Col sm={8}>
                   <FormItem label="货物类型" {...formItemLayout} required="true">
-                    <RadioGroup value={formData.cust_shipmt_goods_type} onChange={ev => this.handleChange('cust_shipmt_goods_type', ev.target.value)}>
+                    <RadioGroup value={formData.cust_shipmt_goods_type} onChange={ev => this.handleKvChange('cust_shipmt_goods_type', ev.target.value, 'goods')}>
                       <RadioButton value={GOODSTYPES[0].value}>{GOODSTYPES[0].text}</RadioButton>
                       <RadioButton value={GOODSTYPES[1].value}>{GOODSTYPES[1].text}</RadioButton>
                       <RadioButton value={GOODSTYPES[2].value}>{GOODSTYPES[2].text}</RadioButton>
@@ -371,7 +378,7 @@ export default class OrderForm extends Component {
                     <InputGroup compact>
                       <Input type="number" style={{ width: '50%' }} value={formData.cust_shipmt_pieces} onChange={e => this.handleChange('cust_shipmt_pieces', e.target.value)} />
                       <Select size="large" style={{ width: '50%' }} placeholder="选择包装方式"
-                        onChange={value => this.handleChange('cust_shipmt_wrap_type', value)}
+                        onChange={value => this.handleKvChange('cust_shipmt_wrap_type', value, 'wrap')}
                         value={formData.cust_shipmt_wrap_type}
                       >
                         {

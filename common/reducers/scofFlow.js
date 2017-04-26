@@ -102,6 +102,15 @@ export default function reducer(state = initialState, action) {
       return { ...state, flowGraph: action.result.data, graphLoading: false };
     case actionTypes.LOAD_GRAPH_FAIL:
       return { ...state, graphLoading: false };
+    case actionTypes.SAVE_GRAPH_SUCCEED: {
+      let reload = false;
+      const flow = state.currentFlow;
+      if (action.data.trackingId) {
+        reload = true;
+        flow.tracking_id = action.data.trackingId;
+      }
+      return { ...state, reloadFlowList: reload, currentFlow: flow };
+    }
     case actionTypes.SET_NODE_ACTIONS:
       return { ...state, nodeActions: action.data };
     case actionTypes.LOAD_PTFLOWLIST_SUCCEED:
@@ -313,7 +322,7 @@ export function setNodeActions(actions) {
   };
 }
 
-export function saveFlowGraph(flowid, nodes, edges, trackings) {
+export function saveFlowGraph(flowid, nodes, edges, trackingId, trackings) {
   return {
     [CLIENT_API]: {
       types: [
@@ -323,7 +332,7 @@ export function saveFlowGraph(flowid, nodes, edges, trackings) {
       ],
       endpoint: 'v1/scof/flow/update/graph',
       method: 'post',
-      data: { flowid, nodes, edges, trackings },
+      data: { flowid, nodes, edges, trackings, trackingId },
     },
   };
 }
