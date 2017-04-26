@@ -274,6 +274,8 @@ export default(store, cookie) => {
                 <IndexRoute component={CMSImportManifest.List} />
                 <Route path=":billno" component={CMSImportManifest.Make} />
                 <Route path="view/:billno" component={CMSImportManifest.View} />
+                <Route path="billtemplates/edit/:id" component={CMSImportManifest.EditBillTemplate} />
+                <Route path="billtemplates/view/:id" component={CMSImportManifest.ViewBillTemplate} />
               </Route>
               <Route path="customs">
                 <IndexRoute component={CMSImportCustoms.DeclList} />
@@ -290,6 +292,8 @@ export default(store, cookie) => {
                 <IndexRoute component={CMSExportManifest.List} />
                 <Route path=":billno" component={CMSExportManifest.Make} />
                 <Route path="view/:billno" component={CMSExportManifest.View} />
+                <Route path="billtemplates/edit/:id" component={CMSImportManifest.EditBillTemplate} />
+                <Route path="billtemplates/view/:id" component={CMSImportManifest.ViewBillTemplate} />
               </Route>
               <Route path="customs">
                 <IndexRoute component={CMSExportCustoms.DeclList} />
@@ -321,13 +325,8 @@ export default(store, cookie) => {
               </Route>
             </Route>
             <Route path="settings">
-              <IndexRedirect to="/clearance/settings/billtemplates" />
+              <IndexRedirect to="/clearance/settings/quotetemplates" />
               <Route path="quotetemplates" component={CMSSettings.QuoteTemplates} />
-              <Route path="billtemplates">
-                <IndexRoute component={CMSSettings.BillTemplates} />
-                <Route path="edit/:id" component={CMSSettings.EditBillTemplate} />
-                <Route path="view/:id" component={CMSSettings.ViewBillTemplate} />
-              </Route>
             </Route>
             <Route path="classification">
               <Route path="tradeitem">

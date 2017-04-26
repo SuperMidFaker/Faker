@@ -263,7 +263,7 @@ export default class ManifestList extends Component {
     });
   }
   handleEdit = (record) => {
-    this.context.router.push(`/clearance/settings/billtemplates/edit/${record.id}`);
+    this.context.router.push(`/clearance/${this.props.ietype}/manifest/billtemplates/edit/${record.id}`);
   }
   handleDelete = (record) => {
     this.props.deleteTemplate(record.id).then((result) => {
@@ -346,7 +346,7 @@ export default class ManifestList extends Component {
                 </Popconfirm>
               </span>);
           } else if (record.permission === CMS_BILL_TEMPLATE_PERMISSION.view) {
-            return <NavLink to={`/clearance/settings/billtemplates/view/${record.id}`}>{this.msg('view')}</NavLink>;
+            return <NavLink to={`/clearance/${this.props.ietype}/manifest/billtemplates/view/${record.id}`}>{this.msg('view')}</NavLink>;
           }
           return '';
         },

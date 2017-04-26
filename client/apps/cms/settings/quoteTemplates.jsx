@@ -74,7 +74,6 @@ export default class Settings extends Component {
                   mode="inline"
                 >
                   <SubMenu key="bizdata" title={<span><Icon type="setting" /><span>业务数据</span></span>}>
-                    <Menu.Item key="billmodel"><NavLink to="/clearance/settings/billtemplates">清单模板</NavLink></Menu.Item>
                     <Menu.Item key="quotemodel"><NavLink to="/clearance/settings/quotetemplates">费用模板</NavLink></Menu.Item>
                   </SubMenu>
                   <Menu.Item key="notification"><span><Icon type="notification" /><span>通知提醒</span></span></Menu.Item>
