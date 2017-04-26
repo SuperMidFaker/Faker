@@ -1,29 +1,26 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
+import moment from 'moment';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Breadcrumb, Layout, Table } from 'antd';
-import { loadTrackingItems } from 'common/reducers/scvTracking';
+import { Breadcrumb, Layout } from 'antd';
+import Table from 'client/components/remoteAntTable';
+import { loadTrackingItems, loadTrackingOrders } from 'common/reducers/scvTracking';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-// import connectFetch from 'client/common/decorators/connect-fetch';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
 
-// function fetchData({ dispatch, state, params }) {
-//   return dispatch(loadParamVehicles(state.account.tenantId));
-// }
-
-// @connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
     tenantId: state.account.tenantId,
     trackings: state.scvTracking.trackings,
     trackingItems: state.scvTracking.trackingItems,
+    orders: state.scvTracking.orderList,
   }),
-  { loadTrackingItems }
+  { loadTrackingItems, loadTrackingOrders }
 )
 @connectNav({
   depth: 2,
@@ -40,27 +37,74 @@ export default class Instance extends Component {
   }
   componentWillMount() {
     this.props.loadTrackingItems(Number(this.props.params.trackingId));
+    this.props.loadTrackingOrders({
+      tracking_id: this.props.params.trackingId,
+      pageSize: this.props.orders.pageSize,
+      current: 1,
+    });
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.trackings.length > 0) {
-      this.setState({ tracking: nextProps.trackings.find(item => item.id === Number(nextProps.params.trackingId)) });
+    if (nextProps.params.trackingId !== this.props.params.trackingId) {
+      nextProps.loadTrackingItems(Number(nextProps.params.trackingId));
+      nextProps.loadTrackingOrders({
+        tracking_id: nextProps.params.trackingId,
+        pageSize: nextProps.orders.pageSize,
+        current: 1,
+      });
     }
-    if (this.props.params.trackingId !== nextProps.params.trackingId) {
-      this.props.loadTrackingItems(Number(nextProps.params.trackingId));
-    }
+    this.setState({ tracking: nextProps.trackings.find(item => item.id === Number(nextProps.params.trackingId)) });
   }
   msg = key => formatMsg(this.props.intl, key)
-
+  dataSource = new Table.DataSource({
+    fetcher: params => this.loadTrackingOrders({
+      tracking_id: this.props.params.trackingId,
+      pageSize: params.pageSize,
+      current: params.current,
+    }),
+    resolve: result => result.data,
+    getPagination: (result, resolve) => ({
+      total: result.totalCount,
+      current: resolve(result.totalCount, result.current, result.pageSize),
+      showSizeChanger: false,
+      showQuickJumper: false,
+      pageSize: result.pageSize,
+    }),
+    getParams: (pagination, filters, sorter) => {
+      const params = {
+        pageSize: pagination.pageSize,
+        current: pagination.current,
+        sorter: {
+          field: sorter.field,
+          order: sorter.order === 'descend' ? 'DESC' : 'ASC',
+        },
+      };
+      return params;
+    },
+    remotes: this.props.orders,
+  })
+  columns = [{
+    title: '追踪单号',
+    dataIndex: 'shipmt_order_no',
+    width: 150,
+  }]
   render() {
-    const { trackingItems } = this.props;
+    const { trackingItems, orders } = this.props;
     const { tracking } = this.state;
-    const columns = trackingItems.map(item => ({
-      dataIndex: item.field,
+    const columns = this.columns.concat(trackingItems.map(item => ({
       key: item.field,
+      dataIndex: item.field,
       title: item.custom_title,
       width: 150,
-    }));
-    const tableWidth = 150 * trackingItems.length;
+      render: (fld) => {
+        if (item.datatype === 'DATE') {
+          return fld && moment(fld).format('YY-MM-DD HH:mm');
+        } else {
+          return fld;
+        }
+      },
+    })));
+    this.dataSource.remotes = orders;
+    const tableWidth = 150 + 150 * trackingItems.length;
     return (
       <Layout>
         <Header className="top-bar">
@@ -76,7 +120,7 @@ export default class Instance extends Component {
         <Content className="main-content" key="main">
           <div className="page-body">
             <div className="panel-body table-panel">
-              <Table columns={columns} scroll={{ x: tableWidth }} />
+              <Table columns={columns} scroll={{ x: tableWidth }} dataSource={this.dataSource} rowKey="shipmt_order_no" />
             </div>
           </div>
         </Content>

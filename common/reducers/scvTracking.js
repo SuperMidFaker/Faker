@@ -13,7 +13,7 @@ const actionTypes = createActionTypes('@@welogix/scv/tracking/', [
   // 'ADD_TRACKING_ITEM', 'ADD_TRACKING_ITEM_SUCCEED', 'ADD_TRACKING_ITEM_FAIL',
   'UPDATE_TRACKING_ITEM', 'UPDATE_TRACKING_ITEM_SUCCEED', 'UPDATE_TRACKING_ITEM_FAIL',
   'REMOVE_TRACKING_ITEM', 'REMOVE_TRACKING_ITEM_SUCCEED', 'REMOVE_TRACKING_ITEM_FAIL',
-
+  'LOAD_TRORDER', 'LOAD_TRORDER_SUCCEED', 'LOAD_TRORDER_FAIL',
   'UPDATE_TRACKING_ITEM_POSITION', 'UPDATE_TRACKING_ITEM_POSITION_SUCCEED', 'UPDATE_TRACKING_ITEM_POSITION_FAIL',
   'TOGGLE_TRACKING_MODAL',
 ]);
@@ -28,6 +28,13 @@ const initialState = {
     visible: false,
     operation: 'add',
     tracking: {},
+  },
+  orderLoading: false,
+  orderList: {
+    totalCount: 0,
+    pageSize: 20,
+    current: 1,
+    data: [],
   },
 };
 
@@ -45,6 +52,12 @@ export default function reducer(state = initialState, action) {
       return { ...state, trackingItems: action.result.data };
     case actionTypes.TOGGLE_TRACKING_MODAL:
       return { ...state, trackingModal: { ...state.trackingModal, ...action.data } };
+    case actionTypes.LOAD_TRORDER:
+      return { ...state, orderLoading: true };
+    case actionTypes.LOAD_TRORDER_FAIL:
+      return { ...state, orderLoading: false };
+    case actionTypes.LOAD_TRORDER_SUCCEED:
+      return { ...state, orderList: action.result.data, orderLoading: false };
     default:
       return state;
   }
@@ -204,5 +217,20 @@ export function toggleTrackingModal(visible, operation, tracking = {}) {
   return {
     type: actionTypes.TOGGLE_TRACKING_MODAL,
     data: { visible, operation, tracking },
+  };
+}
+
+export function loadTrackingOrders(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_TRORDER,
+        actionTypes.LOAD_TRORDER_SUCCEED,
+        actionTypes.LOAD_TRORDER_FAIL,
+      ],
+      endpoint: 'v1/scv/tracking/orders',
+      method: 'get',
+      params,
+    },
   };
 }

@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import connectFetch from 'client/common/decorators/connect-fetch';
 import { locationShape } from 'react-router';
 import { loadTrackings } from 'common/reducers/scvTracking';
 import CollapsibleSiderLayout from 'client/components/CollapsibleSiderLayout';
@@ -9,15 +8,13 @@ import messages from './message.i18n';
 import { format } from 'client/common/i18n/helpers';
 
 const formatMsg = format(messages);
-function fetchData({ state, dispatch }) {
-  return dispatch(loadTrackings(state.account.tenantId));
-}
-@connectFetch()(fetchData)
+
 @connect(
   state => ({
+    tenantId: state.account.tenantId,
     trackings: state.scvTracking.trackings,
   }),
-  { }
+  { loadTrackings }
 )
 @injectIntl
 export default class ModuleSCV extends React.Component {
@@ -29,6 +26,9 @@ export default class ModuleSCV extends React.Component {
   };
   state = {
     linkMenus: [],
+  }
+  componentWillMount() {
+    this.props.loadTrackings(this.props.tenantId);
   }
   componentWillReceiveProps(nextProps) {
     let trackingSublinks = [];

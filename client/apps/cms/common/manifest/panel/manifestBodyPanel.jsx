@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Alert, Button, Dropdown, Menu, Table, Icon, Tooltip, Tag, Input, Select, message, notification, Popconfirm } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { addNewBillBody, delBillBody, editBillBody, updateHeadNetWt, loadBillBody, openAmountModel,
-  deleteSelectedBodies, openRuleModel } from 'common/reducers/cmsManifest';
+  deleteSelectedBodies, resetBillBody, openRuleModel } from 'common/reducers/cmsManifest';
 import { getItemForBody, getHscodeForBody } from 'common/reducers/cmsTradeitem';
 import { format } from 'client/common/i18n/helpers';
 import ExcelUpload from 'client/components/excelUploader';
@@ -172,7 +172,7 @@ function calculateTotal(bodies) {
     bodyHscode: state.cmsTradeitem.bodyHscode,
   }),
   { addNewBillBody, delBillBody, editBillBody, updateHeadNetWt, loadBillBody, openAmountModel,
-    getItemForBody, getHscodeForBody, deleteSelectedBodies, openRuleModel, loadHscodes }
+    getItemForBody, getHscodeForBody, deleteSelectedBodies, resetBillBody, openRuleModel, loadHscodes }
 )
 export default class ManifestBodyPanel extends React.Component {
   static propTypes = {
@@ -779,22 +779,15 @@ export default class ManifestBodyPanel extends React.Component {
     });
     this.setState({ selectedRowKeys: [] });
   }
-  handleBodyDelete = () => {
-    const ids = [];
-    for (let i = 0; i < this.state.bodies.length - 1; i++) {
-      const body = this.state.bodies[i];
-      ids.push(body.id);
-    }
-    if (ids.length > 0) {
-      this.props.deleteSelectedBodies(ids).then((result) => {
-        if (result.error) {
-          message.error(result.error.message, 10);
-        } else {
-          message.success('表体已清空');
-          this.props.loadBillBody(this.props.billSeqNo);
-        }
-      });
-    }
+  handleBodyReset = () => {
+    this.props.resetBillBody(this.props.billSeqNo).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        message.success('表体已清空');
+        this.props.loadBillBody(this.props.billSeqNo);
+      }
+    });
   }
   handleMoreMenuClick = (e) => {
     if (e.key === 'exportBody') {
@@ -822,7 +815,7 @@ export default class ManifestBodyPanel extends React.Component {
       <Menu onClick={this.handleMoreMenuClick}>
         <Menu.Item key="exportBody"><Icon type="export" /> 导出表体</Menu.Item>
         <Menu.Item key="delete">
-          <Popconfirm title="确定删除表体数据?" onConfirm={this.handleBodyDelete}>
+          <Popconfirm title="确定删除表体数据?" onConfirm={this.handleBodyReset}>
             <a> <Icon type="delete" /> 清空表体</a>
           </Popconfirm>
         </Menu.Item>

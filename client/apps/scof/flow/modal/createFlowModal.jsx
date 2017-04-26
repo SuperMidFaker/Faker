@@ -28,6 +28,7 @@ export default class CreateFlowModal extends React.Component {
     form: PropTypes.object.isRequired,
     closeCreateFlowModal: PropTypes.func.isRequired,
   }
+  state = { trackings: null }
   componentWillReceiveProps(nextProps) {
     if (nextProps.visible && !this.props.visible) {
       this.props.loadPartners({
@@ -42,6 +43,7 @@ export default class CreateFlowModal extends React.Component {
         const customer = this.props.customerPartners.filter(pt => pt.id === fields.customer)[0];
         this.props.saveFlow({
           name: fields.name,
+          tracking_id: fields.tracking,
           partner_tenant_id: customer.partner_tenant_id,
           partner_id: customer.id,
           partner_name: customer.name,
@@ -61,7 +63,13 @@ export default class CreateFlowModal extends React.Component {
   handleCustomerSelect = (customerPid) => {
     const customer = this.props.customerPartners.filter(pt => pt.id === customerPid)[0];
     if (customer.partner_tenant_id !== -1) {
-      this.props.loadScvTrackings(customer.partner_tenant_id);
+      this.props.loadScvTrackings(customer.partner_tenant_id).then((result) => {
+        if (!result.error && result.data.length > 0) {
+          this.setState({ trackings: result.data });
+        } else {
+          this.setState({ trackings: null });
+        }
+      });
     }
   }
   msg = formatMsg(this.props.intl)
@@ -91,6 +99,18 @@ export default class CreateFlowModal extends React.Component {
                </Select>)
             }
           </FormItem>
+          {this.state.trackings &&
+            <FormItem label={this.msg('customerTracking')}>
+              {
+               getFieldDecorator('tracking')(
+                 <Select>
+                   {this.state.trackings.map(data => (
+                     <Option key={data.id} value={data.id}>{data.name}</Option>)
+                )}
+                 </Select>)
+              }
+            </FormItem>
+          }
         </Form>
       </Modal>
     );
