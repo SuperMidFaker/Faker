@@ -5,9 +5,8 @@ import { Layout, Form, Select, Alert } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadMasterConfig, loadRepoSlaves, renewSharees } from 'common/reducers/scvClassification';
 import connectNav from 'client/common/decorators/connect-nav';
-import messages from './../message.i18n';
-import { format } from 'client/common/i18n/helpers';
-const formatMsg = format(messages);
+import { formatMsg } from './message.i18n';
+
 const Content = Layout.Content;
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -48,7 +47,7 @@ export default class MasterSharePane extends React.Component {
       this.setState({ value: nextProps.masterConfig.sharees.map(sh => sh.sharee_id) });
     }
   }
-  msg = descriptor => formatMsg(this.props.intl, descriptor)
+  msg = formatMsg(this.props.intl)
   handleSharesChange = (shareeIds) => {
     const { tenantId, brokers } = this.props;
     const shareeTenants = shareeIds.map(val => ({

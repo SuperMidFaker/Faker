@@ -1,0 +1,123 @@
+import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
+import { intlShape, injectIntl } from 'react-intl';
+import { Button } from 'antd';
+import connectFetch from 'client/common/decorators/connect-fetch';
+import { loadSyncList, loadRepoSlaves, updateAudit, renewSharees, openAddSlaveModal } from 'common/reducers/scvClassification';
+import connectNav from 'client/common/decorators/connect-nav';
+import Table from 'client/components/remoteAntTable';
+import EditableCell from 'client/components/EditableCell';
+import SyncShareEditCell from './syncShareEditCell';
+import { SYNC_AUDIT_METHODS } from 'common/constants';
+import { formatMsg } from './message.i18n';
+import TrimSpan from 'client/components/trimSpan';
+import AddSlaveModal from '../modals/addSlaveModal';
+
+function fetchData({ state, dispatch }) {
+  const proms = [
+    dispatch(loadRepoSlaves(state.account.tenantId)),
+    dispatch(loadSyncList({
+      tenantId: state.account.tenantId,
+      pageSize: state.scvClassification.synclist.pageSize,
+      current: state.scvClassification.synclist.current,
+    }))];
+  return Promise.all(proms);
+}
+
+@connectFetch()(fetchData)
+@injectIntl
+@connect(
+  state => ({
+    reload: state.scvClassification.reload,
+    tenantId: state.account.tenantId,
+    pageSize: state.scvClassification.synclist.pageSize,
+    current: state.scvClassification.synclist.current,
+    synclist: state.scvClassification.synclist,
+    brokers: state.scvClassification.slaves,
+  }),
+  { updateAudit, renewSharees, openAddSlaveModal, loadSyncList }
+)
+@connectNav({
+  depth: 2,
+  moduleName: 'scv',
+})
+export default class SlaveSyncPane extends React.Component {
+  static propTypes = {
+    intl: intlShape.isRequired,
+    tenantId: PropTypes.number.isRequired,
+  }
+  msg = formatMsg(this.props.intl)
+  columns = [{
+    title: this.msg('classifySourceRepo'),
+    dataIndex: 'broker_name',
+    width: 80,
+    render: o => <TrimSpan text={o} maxLen={12} />,
+  }, {
+    title: this.msg('classifyAudit'),
+    width: 80,
+    dataIndex: 'audit_way',
+    render: (aw, row) => (
+      <EditableCell value={aw} options={SYNC_AUDIT_METHODS} type="select"
+        onSave={value => this.handleAuditChange(row.id, value)}
+      />),
+  }, {
+    title: this.msg('classifyShareScope'),
+    width: 150,
+    render: (_, row) => (<SyncShareEditCell checkedBrokers={row.shares} shareBrokers={this.props.brokers}
+      onSave={this.handleShareChange} contribute={row.broker_tenant_id}
+    />),
+  }]
+  handleAuditChange = (syncId, audit) => {
+    this.props.updateAudit(syncId, audit);
+  }
+  handleShareChange = (contributeTenantId, shareeTenants) => {
+    this.props.renewSharees(contributeTenantId, shareeTenants);
+  }
+  dataSource = new Table.DataSource({
+    fetcher: params => this.props.loadSyncList(params),
+    resolve: result => result.data,
+    getPagination: (result, resolve) => ({
+      total: result.totalCount,
+      current: resolve(result.totalCount, result.current, result.pageSize),
+      showSizeChanger: true,
+      showQuickJumper: false,
+      pageSize: result.pageSize,
+    }),
+    getParams: (pagination) => {
+      const params = {
+        tenantId: this.props.tenantId,
+        pageSize: pagination.pageSize,
+        current: pagination.current,
+      };
+      return params;
+    },
+    remotes: this.props.synclist,
+  })
+  handleAddSlave = () => {
+    this.props.openAddSlaveModal();
+  }
+  handleSlavesReload = () => {
+    this.props.loadSyncList({
+      tenantId: this.props.tenantId,
+      pageSize: this.props.pageSize,
+      current: this.props.current,
+    });
+  }
+  render() {
+    const { loading, synclist } = this.props;
+    this.dataSource.remotes = synclist;
+    return (
+      <div>
+        <div className="toolbar">
+          <Button icon="plus" onClick={this.handleAddSlave}>
+            {this.msg('addSlave')}
+          </Button>
+        </div>
+        <div className="panel-body table-panel">
+          <Table columns={this.columns} dataSource={this.dataSource} loading={loading} rowKey="id" scroll={{ x: 1200 }} />
+        </div>
+        <AddSlaveModal reload={this.handleSlavesReload} />
+      </div>
+    );
+  }
+}
