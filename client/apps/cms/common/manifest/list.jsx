@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Layout, Radio, Icon, Progress, message, Popconfirm } from 'antd';
+import { Breadcrumb, Layout, Radio, Icon, Progress, message, Popconfirm, notification } from 'antd';
 import moment from 'moment';
 import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
@@ -234,8 +234,23 @@ export default class ManifestList extends Component {
       if (result.error) {
         message.error(result.error.message, 5);
       } else {
+        this.openNotification(row.delg_no, row.bill_seq_no);
         this.handleTableLoad();
       }
+    });
+  }
+  handleNotificationClose = (billSeqNo) => {
+    const link = `/clearance/${this.props.ietype}/manifest/`;
+    this.context.router.push(`${link}${billSeqNo}`);
+  }
+  openNotification = (delgNo, billSeqNo) => {
+    const key = `open${Date.now()}`;
+    notification.open({
+      message: '已经重新制单',
+      description: `${delgNo}已经重新进入制单中，如需查看请点击"进入"`,
+      icon: <Icon type="check-circle-o" style={{ color: '#5bc52f' }} />,
+      btn: <a onClick={() => { notification.close(key); this.handleNotificationClose(billSeqNo); }}>进入</a>,
+      key,
     });
   }
   render() {
