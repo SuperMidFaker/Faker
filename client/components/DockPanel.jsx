@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Alert, Badge, Breadcrumb, Button, Spin } from 'antd';
 import classNames from 'classnames';
+import './dock-panel.less';
 
 function noop() {}
 
@@ -64,7 +65,7 @@ export default class DockPanel extends React.Component {
       [`${prefixCls}-${sizeCls}`]: sizeCls,
       [`${prefixCls}-visible`]: visible,
     }, className);
-    const maskClasses = classNames('ant-modal-mask', { 'ant-modal-mask-hidden': !visible });
+    const maskClasses = classNames(`${prefixCls}-mask`, { [`${prefixCls}-mask-hidden`]: !visible });
     const bodyCls = extra ? `${prefixCls}-body with-header-extra` : `${prefixCls}-body`;
     return (
       <div>
