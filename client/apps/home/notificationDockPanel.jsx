@@ -36,7 +36,6 @@ export default class NotificationDockPanel extends React.Component {
     loadMessages: PropTypes.func.isRequired,
     markMessages: PropTypes.func.isRequired,
     markMessage: PropTypes.func.isRequired,
-    visible: PropTypes.bool.isRequired,
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
 

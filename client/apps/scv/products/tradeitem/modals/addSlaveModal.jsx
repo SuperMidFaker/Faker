@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { injectIntl, intlShape } from 'react-intl';
 import { Modal, Form, message, Select, Alert, Col, Row } from 'antd';
 import { closeAddSlaveModal, getSlaves, addSlaves } from 'common/reducers/scvClassification';
-import { formatMsg } from '../panes/message.i18n';
+import { formatMsg } from '../message.i18n';
 import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 
 const FormItem = Form.Item;

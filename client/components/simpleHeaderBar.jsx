@@ -4,7 +4,7 @@ import { Menu, Popover, Icon } from 'antd';
 import Avatar from 'react-avatar';
 import { intlShape, injectIntl } from 'react-intl';
 import NavLink from './nav-link';
-import { loadTranslation, changeUserLocale } from '../../common/reducers/intl';
+import { loadTranslation, changeUserLocale } from '../../common/reducers/preference';
 import { logout } from 'common/reducers/account';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -20,7 +20,7 @@ const MenuDivider = Menu.Divider;
     avatar: state.account.profile.avatar,
     name: state.account.profile.name,
     loginId: state.account.loginId,
-    locale: state.intl.locale,
+    locale: state.preference.locale,
   }),
   { logout, loadTranslation, changeUserLocale }
 )

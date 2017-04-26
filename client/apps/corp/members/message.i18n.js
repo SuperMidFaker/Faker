@@ -6,7 +6,7 @@ const messages = defineMessages({
     defaultMessage: '用户与部门',
   },
   addMember: {
-    id: 'corp.members.list.fullname',
+    id: 'corp.members.add',
     defaultMessage: '添加用户',
   },
   fullName: {

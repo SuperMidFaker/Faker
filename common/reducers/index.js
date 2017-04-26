@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import intl from './intl';
+import preference from './preference';
 import common from './common';
 import auth from './auth';
 import account from './account';
@@ -50,7 +50,7 @@ import crmOrders from './crmOrders';
 import crmBilling from './crmBilling';
 
 export default combineReducers({
-  intl,
+  preference,
   common,
   auth,
   account,

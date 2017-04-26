@@ -6,7 +6,7 @@ import 'moment/locale/zh-cn';
 import { LocaleProvider } from 'antd';
 import enUS from 'antd/lib/locale-provider/en_US';
 import { loadCorpByDomain } from 'common/reducers/corp-domain';
-import { loadTranslation } from 'common/reducers/intl';
+import { loadTranslation } from 'common/reducers/preference';
 import { isLoaded } from 'client/common/redux-actions';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import './root.less';
@@ -30,7 +30,7 @@ function fetchData({ state, dispatch, cookie, location }) {
   }
   if (!isLoaded(state, 'intl')) {
     // set initial locale on server render FIXME
-    const prom = dispatch(loadTranslation(state.intl.locale));
+    const prom = dispatch(loadTranslation(state.preference.locale));
     promises.push(prom);
   }
   return Promise.all(promises);
@@ -39,8 +39,8 @@ function fetchData({ state, dispatch, cookie, location }) {
 @connectFetch()(fetchData)
 @connect(
   state => ({
-    locale: state.intl.locale,
-    messages: state.intl.messages,
+    locale: state.preference.locale,
+    messages: state.preference.messages,
     isAuthed: state.auth.isAuthed,
   }),
 )

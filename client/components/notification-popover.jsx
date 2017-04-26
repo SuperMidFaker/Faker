@@ -7,7 +7,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import NavLink from './nav-link';
-import { countMessages, messageBadgeNum, getTenantUsers, recordMessages, showNotificationDock } from 'common/reducers/notification';
+import { countMessages, messageBadgeNum, recordMessages, showNotificationDock } from 'common/reducers/notification';
 import { prompt } from 'common/reducers/shipment';
 import { getDriver } from 'common/reducers/transportResources';
 import { PROMPT_TYPES } from 'common/constants';
@@ -32,7 +32,7 @@ function fetchData({ state, dispatch, cookie }) {
   unreadMessagesNum: state.notification.unreadMessagesNum,
   newMessage: state.notification.newMessage,
 }), {
-  messageBadgeNum, getTenantUsers, recordMessages, prompt, showNotificationDock
+  messageBadgeNum, recordMessages, prompt, showNotificationDock
 })
 export default class NotificationPopover extends React.Component {
   static propTypes = {
@@ -43,7 +43,6 @@ export default class NotificationPopover extends React.Component {
     tenantName: PropTypes.string.isRequired,
     logo: PropTypes.string,
     newMessage: PropTypes.object.isRequired,
-    getTenantUsers: PropTypes.func.isRequired,
     recordMessages: PropTypes.func.isRequired,
     prompt: PropTypes.func.isRequired,
   }
@@ -120,69 +119,6 @@ export default class NotificationPopover extends React.Component {
     const { tenantId, loginId, loginName, tenantName, logo } = this.props;
     if (nextProps.newMessage.count !== this.props.newMessage.count) {
       const { module, promptType, shipment } = nextProps.newMessage;
-      if (module === 'transport') {
-        this.props.prompt(shipment.disp_id, promptType);
-        let to = '';
-        const content = {
-          loginId,
-          tenantId,
-          loginName,
-          tenantName,
-          logo,
-          msg: '',
-          url: '',
-        };
-        if (promptType === PROMPT_TYPES.promptAccept) {
-          content.msg = `请尽快接单`;
-        } else if (promptType === PROMPT_TYPES.promptDispatch) {
-          content.msg = `请尽快调度`;
-        } else if (promptType === PROMPT_TYPES.promptDriverPickup) {
-          content.msg = `请尽快提货`;
-        } else if (promptType === PROMPT_TYPES.promptSpPickup) {
-          content.msg = `请尽快提货`;
-        } else if (promptType === PROMPT_TYPES.promptDriverPod) {
-          content.msg = `请尽快上传回单`;
-        } else if (promptType === PROMPT_TYPES.promptSpPod) {
-          content.msg = `请尽快上传回单`;
-        }
-        content.msg = `${tenantName}催促 ${content.msg} 运单号: ${shipment.shipmt_no}`;
-        const msgs = [];
-        if (promptType === PROMPT_TYPES.promptAccept || promptType === PROMPT_TYPES.promptDispatch ||
-          promptType === PROMPT_TYPES.promptSpPickup || promptType === PROMPT_TYPES.promptSpPod) {
-          this.props.getTenantUsers(shipment.sp_tenant_id).then(result => {
-            if (result.error) {
-              message.error(result.error.message, 10);
-            } else {
-              result.data.users.forEach(item => {
-                this.handleSendMessage({ to: `L_${item.login_id}`, content: JSON.stringify(content) });
-                msgs.push({
-                  tenantId: shipment.sp_tenant_id,
-                  loginId: item.login_id,
-                  content: content.msg,
-                  url: content.url,
-                });
-              });
-              this.handleRecordMessage({ loginId, tenantId, loginName, messages: msgs });
-            }
-          });
-        } else if (promptType === PROMPT_TYPES.promptDriverPod || promptType === PROMPT_TYPES.promptDriverPickup) {
-          this.props.getDriver(shipment.task_driver_id).then(result => {
-            if (result.error) {
-              message.error(result.error.message, 10);
-            } else {
-              const driver = result.data;
-              this.handleSendMessage({ to: `L_${driver.login_id}`, content: JSON.stringify(content) });
-              msgs.push({
-                tenantId: driver.tenant_id,
-                loginId: driver.login_id,
-                content: content.msg,
-                url: content.url,
-              });
-              this.handleRecordMessage({ loginId, tenantId, loginName, messages: msgs });
-            }
-          });
-        }
-      }
     }
   }
   handleRecordMessage({ loginId, tenantId, loginName, messages }) {

@@ -5,7 +5,7 @@ import { Layout, Form, Select, Alert } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadMasterConfig, loadRepoSlaves, renewSharees } from 'common/reducers/scvClassification';
 import connectNav from 'client/common/decorators/connect-nav';
-import { formatMsg } from './message.i18n';
+import { formatMsg } from '../message.i18n';
 
 const Content = Layout.Content;
 const FormItem = Form.Item;

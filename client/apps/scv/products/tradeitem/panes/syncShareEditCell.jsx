@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { injectIntl, intlShape } from 'react-intl';
 import { Icon, Tag, Select } from 'antd';
-import { formatMsg } from './message.i18n';
+import { formatMsg } from '../message.i18n';
 
 const Option = Select.Option;
 @injectIntl

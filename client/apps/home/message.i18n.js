@@ -33,5 +33,17 @@ const messages = defineMessages({
     id: 'container.not.found.desc',
     defaultMessage: '您访问的页面正在开发中...请耐心等待！',
   },
+  preference: {
+    id: 'container.preference',
+    defaultMessage: '偏好设置',
+  },
+  preferenceLanguage: {
+    id: 'container.preference.language',
+    defaultMessage: '语言',
+  },
+  preferenceNotification: {
+    id: 'container.preference.notification',
+    defaultMessage: '通知',
+  },
 });
 export default messages;

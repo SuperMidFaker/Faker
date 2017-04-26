@@ -7,7 +7,7 @@ const messages = defineMessages({
   },
   userAccount: {
     id: 'component.user.account',
-    defaultMessage: '个人帐号',
+    defaultMessage: '帐号设置',
   },
   userProfile: {
     id: 'component.user.profile',
@@ -16,6 +16,10 @@ const messages = defineMessages({
   securitySetting: {
     id: 'component.user.security.setting',
     defaultMessage: '安全设置',
+  },
+  userPreference: {
+    id: 'component.user.preference',
+    defaultMessage: '偏好设置',
   },
   userLogout: {
     id: 'component.user.logout',

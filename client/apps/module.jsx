@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { Alert, Layout } from 'antd';
 import { locationShape } from 'react-router';
 import NotificationDockPanel from './home/notificationDockPanel';
+import PreferenceDockPanel from './home/preferenceDockPanel';
 import HeaderNavBar from 'client/components/headerNavBar';
 
 const { Header } = Layout;
@@ -29,6 +30,7 @@ export default class Module extends React.Component {
         </Header>
         {this.props.children}
         <NotificationDockPanel />
+        <PreferenceDockPanel />
       </Layout>);
   }
 }

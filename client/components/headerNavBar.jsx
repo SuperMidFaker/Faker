@@ -6,7 +6,7 @@ import Avatar from 'react-avatar';
 import { intlShape, injectIntl } from 'react-intl';
 import NavLink from './nav-link';
 import MdIcon from './MdIcon';
-import { loadTranslation, changeUserLocale } from '../../common/reducers/intl';
+import { loadTranslation, changeUserLocale, showPreferenceDock } from '../../common/reducers/preference';
 import { logout } from 'common/reducers/account';
 import { goBackNav } from 'common/reducers/navbar';
 import NotificationPopover from './notification-popover';
@@ -29,14 +29,11 @@ const RadioButton = Radio.Button;
     avatar: state.account.profile.avatar,
     name: state.account.profile.name,
     loginId: state.account.loginId,
-    locale: state.intl.locale,
+    locale: state.preference.locale,
   }),
-  { logout, loadTranslation, changeUserLocale, goBackNav }
+  { logout, loadTranslation, changeUserLocale, goBackNav, showPreferenceDock }
 )
 export default class HeaderNavBar extends React.Component {
-  static defaultProps = {
-    locale: 'zh',
-  }
   static propTypes = {
     intl: intlShape.isRequired,
     navTitle: PropTypes.shape({
@@ -57,6 +54,7 @@ export default class HeaderNavBar extends React.Component {
   }
   state = {
     visible: false,
+    userPopoverVisible: false,
   }
   handleLanguageSetting = () => {
     this.setState({ visible: true });
@@ -68,6 +66,13 @@ export default class HeaderNavBar extends React.Component {
     this.props.loadTranslation(ev.target.value);
     this.props.changeUserLocale(this.props.loginId, ev.target.value);
     this.setState({ visible: false });
+  }
+  handleShowPreference = () => {
+    this.setState({ userPopoverVisible: false });
+    this.props.showPreferenceDock();
+  }
+  handleVisibleChange = (userPopoverVisible) => {
+    this.setState({ userPopoverVisible });
   }
   handleLogout = () => {
     this.props.logout().then((result) => {
@@ -99,9 +104,9 @@ export default class HeaderNavBar extends React.Component {
             </NavLink>
           </MenuItem>
           <MenuItem>
-            <a role="button" onClick={this.handleLanguageSetting}>
+            <a role="button" onClick={this.handleShowPreference}>
               <MdIcon type="globe" />
-              <span>{formatMsg(intl, 'userLanguage')}</span>
+              <span>{formatMsg(intl, 'userPreference')}</span>
             </a>
           </MenuItem>
           <MenuDivider />
@@ -160,15 +165,13 @@ export default class HeaderNavBar extends React.Component {
               <NotificationPopover />
             </MenuItem>
             <MenuItem>
-              <Popover content={helpcenterContent} placement="bottomRight" trigger="click"
-                onVisibleChange={this.handleVisibleChange}
-              >
+              <Popover content={helpcenterContent} placement="bottomRight" trigger="click">
                 <div><i className="icon s7-help1" /></div>
               </Popover>
             </MenuItem>
             <MenuItem>
               <Popover content={userPopoverContent} placement="bottomRight" trigger="click"
-                onVisibleChange={this.handleVisibleChange}
+                visible={this.state.userPopoverVisible} onVisibleChange={this.handleVisibleChange}
               >
                 <div>
                   {avatar ? <Avatar src={avatar} size={32} round /> : <Avatar name={name} size={32} round />}

@@ -9,7 +9,7 @@ import Table from 'client/components/remoteAntTable';
 import EditableCell from 'client/components/EditableCell';
 import SyncShareEditCell from './syncShareEditCell';
 import { SYNC_AUDIT_METHODS } from 'common/constants';
-import { formatMsg } from './message.i18n';
+import { formatMsg } from '../message.i18n';
 import TrimSpan from 'client/components/trimSpan';
 import AddSlaveModal from '../modals/addSlaveModal';
 

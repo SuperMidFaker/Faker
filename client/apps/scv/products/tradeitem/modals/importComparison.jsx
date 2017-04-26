@@ -7,7 +7,7 @@ import TrimSpan from 'client/components/trimSpan';
 import { setCompareVisible, saveComparedItemDatas, loadTradeItems } from 'common/reducers/scvClassification';
 import { loadTempItems, comparedCancel, deleteTempData } from 'common/reducers/cmsTradeitem';
 import { format } from 'client/common/i18n/helpers';
-import messages from './../message.i18n';
+import messages from '../message.i18n';
 import { ITEMS_STATUS } from 'common/constants';
 
 const formatMsg = format(messages);

@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import NavLink from './nav-link';
-import { loadTranslation, changeUserLocale } from '../../common/reducers/intl';
+import { loadTranslation, changeUserLocale } from '../../common/reducers/preference';
 import { logout } from 'common/reducers/account';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -15,7 +15,7 @@ const formatMsg = format(messages);
   state => ({
     avatar: state.account.profile.avatar,
     loginId: state.account.loginId,
-    locale: state.intl.locale,
+    locale: state.preference.locale,
     corpLogo: state.corpDomain.logo,
     corpName: state.corpDomain.name,
   }),
