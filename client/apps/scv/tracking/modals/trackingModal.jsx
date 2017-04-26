@@ -53,7 +53,8 @@ export default class TrackingModal extends React.Component {
     } else {
       this.props.form.validateFields((errors, values) => {
         if (!errors) {
-          const trackingItems = this.props.trackingFields.filter(item => targetKeys.indexOf(item.field) >= 0).map((item1, index) => ({ ...item1, position: index }));
+          const trackingItems = this.props.trackingFields.filter(item => targetKeys.indexOf(item.field) >= 0)
+            .map((item, index) => ({ title: item.title, field: item.field, datatype: item.type, position: index }));
           if (operation === 'add') {
             this.props.addTracking({
               ...values,

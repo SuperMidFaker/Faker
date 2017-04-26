@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
+import moment from 'moment';
 import connectNav from 'client/common/decorators/connect-nav';
 import { Breadcrumb, Layout } from 'antd';
 import Table from 'client/components/remoteAntTable';
@@ -94,6 +95,13 @@ export default class Instance extends Component {
       dataIndex: item.field,
       title: item.custom_title,
       width: 150,
+      render: (fld) => {
+        if (item.datatype === 'DATE') {
+          return fld && moment(fld).format('YY-MM-DD HH:mm');
+        } else {
+          return fld;
+        }
+      },
     })));
     this.dataSource.remotes = orders;
     const tableWidth = 150 + 150 * trackingItems.length;

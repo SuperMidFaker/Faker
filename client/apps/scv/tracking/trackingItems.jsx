@@ -1,14 +1,13 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Table, Input, Popconfirm, Select, Icon } from 'antd';
+import { Table, Input, Popconfirm, Icon } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import { loadTrackingItems, updateTrackingItem, removeTrackingItem, updateTrackingItemPosition } from 'common/reducers/scvTracking';
 
 const formatMsg = format(messages);
-const Option = Select.Option;
 
 @injectIntl
 @connect(
@@ -103,32 +102,6 @@ export default class TrackingItems extends React.Component {
           />);
         }
         return (<span className="menu-sider-item">{o}</span>);
-      },
-    }, {
-      dataIndex: 'filterable',
-      key: 'filterable',
-      title: '可过滤',
-      width: 50,
-      render: (o, row) => {
-        if (editId === row.id) {
-          return (<Select value={o} onChange={(value) => {
-            const tis = this.state.trackingItems.map((item) => {
-              if (item.id === row.id) {
-                return { ...item, filterable: Number(value) };
-              } else {
-                return item;
-              }
-            });
-            this.setState({ trackingItems: tis });
-          }}
-            style={{ width: '100%' }}
-          >
-            <Option value={1}>是</Option>
-            <Option value={0}>否</Option>
-          </Select>
-          );
-        }
-        return (<span className="menu-sider-item">{o === 1 ? '是' : '否'}</span>);
       },
     }, {
       dataIndex: 'position',
