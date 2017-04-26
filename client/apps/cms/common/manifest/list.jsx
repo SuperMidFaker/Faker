@@ -331,18 +331,20 @@ export default class ManifestList extends Component {
         title: '关联客户',
         dataIndex: 'customer_name',
         key: 'customer_name',
+        width: 180,
       }, {
         title: '操作',
         dataIndex: 'status',
         key: 'status',
+        width: 60,
         render: (_, record) => {
           if (record.permission === CMS_BILL_TEMPLATE_PERMISSION.edit) {
             return (
               <span>
-                <a onClick={() => this.handleEdit(record)}>{this.msg('edit')}</a>
+                <a onClick={() => this.handleEdit(record)}><Icon type="edit" /></a>
                 <span className="ant-divider" />
                 <Popconfirm title="确定要删除吗？" onConfirm={() => this.handleDelete(record)}>
-                  <a>删除</a>
+                  <a><Icon type="delete" /></a>
                 </Popconfirm>
               </span>);
           } else if (record.permission === CMS_BILL_TEMPLATE_PERMISSION.view) {

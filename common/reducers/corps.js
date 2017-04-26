@@ -15,12 +15,6 @@ const actionTypes = createActionTypes('@@welogix/corps/', [
   'CORP_SUBMIT', 'CORP_SUBMIT_SUCCEED', 'CORP_SUBMIT_FAIL',
   'CORP_DELETE', 'CORP_DELETE_SUCCEED', 'CORP_DELETE_FAIL',
   'CHECK_LOGINNAME', 'CHECK_LOGINNAME_SUCCEED', 'CHECK_LOGINNAME_FAIL',
-  'LOADCORPMESSAGES', 'LOADCORPMESSAGES_SUCCEED', 'LOADCORPMESSAGES_FAIL',
-  'MARK_MESSAGES', 'MARK_MESSAGES_SUCCEED', 'MARK_MESSAGES_FAIL',
-  'MARK_MESSAGE', 'MARK_MESSAGE_SUCCEED', 'MARK_MESSAGE_FAIL',
-  'RECORD_MESSAGES', 'RECORD_MESSAGES_SUCCEED', 'RECORD_MESSAGES_FAIL',
-  'COUNT_MESSAGES', 'COUNT_MESSAGES_SUCCEED', 'COUNT_MESSAGES_FAIL',
-  'ADD_MESSAGE_BADGE', 'SEND_MESSAGE_SUCCEED',
   'GET_TENANT_LOGINS', 'GET_TENANT_LOGINS_SUCCEED', 'GET_TENANT_LOGINS_FAIL',
 ]);
 appendFormAcitonTypes('@@welogix/corps/', actionTypes);
@@ -53,18 +47,6 @@ const initialState = {
     pageSize: INITIAL_LIST_PAGE_SIZE,
     current: 1,
     data: [], // structure see getOrganizations
-  },
-  messages: {
-    loginId: 0,
-    totalCount: 0,
-    pageSize: 20,
-    currentPage: 1,
-    status: 0,
-    data: [],
-  },
-  notReadMessagesNum: 0,
-  newMessage: {
-    count: 0,
   },
 };
 export default function reducer(state = initialState, action) {
@@ -153,26 +135,6 @@ export default function reducer(state = initialState, action) {
       corplist.totalCount--;
       return { ...state, corplist };
     }
-    case actionTypes.LOADCORPMESSAGES_SUCCEED: {
-      const messages = action.result.data;
-      return { ...state, messages };
-    }
-    case actionTypes.MARK_MESSAGE_SUCCEED: {
-      return state;
-    }
-    case actionTypes.MARK_MESSAGES_SUCCEED: {
-      return { ...state, notReadMessagesNum: 0, messages: initialState.messages };
-    }
-    case actionTypes.COUNT_MESSAGES_SUCCEED: {
-      return { ...state, ...action.result.data };
-    }
-    case actionTypes.ADD_MESSAGE_BADGE: {
-      return { ...state, ...action.data };
-    }
-    case actionTypes.SEND_MESSAGE_SUCCEED: {
-      return { ...state, newMessage: { count: state.newMessage.count + 1, ...action.data } };
-    }
-
     default:
       return formReducer(actionTypes, state, action, { key: null, country: CHINA_CODE }, 'corplist')
              || state;
@@ -316,77 +278,6 @@ export function openTenantAppsEditor(record, index) {
 export function closeTenantAppsEditor() {
   return {
     type: actionTypes.CLOSE_TENANT_APPS_EDITOR,
-  };
-}
-
-export function recordMessages({ loginId, tenantId, loginName, messages }) {
-  return {
-    [CLIENT_API]: {
-      types: [actionTypes.RECORD_MESSAGES, actionTypes.RECORD_MESSAGES_SUCCEED, actionTypes.RECORD_MESSAGES_FAIL],
-      endpoint: 'v1/user/messages/record',
-      method: 'post',
-      data: { loginId, tenantId, loginName, messages },
-    },
-  };
-}
-
-export function loadMessages(cookie, params) {
-  return {
-    [CLIENT_API]: {
-      types: [actionTypes.LOADCORPMESSAGES, actionTypes.LOADCORPMESSAGES_SUCCEED, actionTypes.LOADCORPMESSAGES_FAIL],
-      endpoint: 'v1/user/messages',
-      method: 'get',
-      params,
-      cookie,
-    },
-  };
-}
-
-export function markMessages(params) {
-  return {
-    [CLIENT_API]: {
-      types: [actionTypes.MARK_MESSAGES, actionTypes.MARK_MESSAGES_SUCCEED, actionTypes.MARK_MESSAGES_FAIL],
-      endpoint: 'v1/user/messages/status',
-      method: 'post',
-      data: params,
-    },
-  };
-}
-
-export function markMessage(params) {
-  return {
-    [CLIENT_API]: {
-      types: [actionTypes.MARK_MESSAGE, actionTypes.MARK_MESSAGE_SUCCEED, actionTypes.MARK_MESSAGE_FAIL],
-      endpoint: 'v1/user/message/status',
-      method: 'post',
-      data: params,
-    },
-  };
-}
-
-export function countMessages(cookie, params) {
-  return {
-    [CLIENT_API]: {
-      types: [actionTypes.COUNT_MESSAGES, actionTypes.COUNT_MESSAGES_SUCCEED, actionTypes.COUNT_MESSAGES_FAIL],
-      endpoint: 'v1/user/messages/count',
-      method: 'get',
-      params,
-      cookie,
-    },
-  };
-}
-
-export function sendMessage(data) {
-  return {
-    type: actionTypes.SEND_MESSAGE_SUCCEED,
-    data,
-  };
-}
-
-export function messageBadgeNum(notReadMessagesNum) {
-  return {
-    type: actionTypes.ADD_MESSAGE_BADGE,
-    data: { notReadMessagesNum },
   };
 }
 

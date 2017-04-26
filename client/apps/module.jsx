@@ -1,7 +1,8 @@
 import React, { PropTypes } from 'react';
-import { Layout } from 'antd';
+import { Alert, Layout } from 'antd';
 import { locationShape } from 'react-router';
-import HeaderNavBar from '../components/headerNavBar';
+import NotificationDockPanel from './message/notificationDockPanel';
+import HeaderNavBar from 'client/components/headerNavBar';
 
 const { Header } = Layout;
 
@@ -9,6 +10,7 @@ export default class Module extends React.Component {
   static propTypes = {
     children: PropTypes.object.isRequired,
     location: locationShape.isRequired,
+    alert: PropTypes.string,
   }
   static childContextTypes = {
     location: locationShape.isRequired,
@@ -18,12 +20,15 @@ export default class Module extends React.Component {
   }
 
   render() {
+    const { alert } = this.props;
     return (
       <Layout className="layout-wrapper">
+        {alert && <Alert message={alert} banner />}
         <Header>
           <HeaderNavBar />
         </Header>
         {this.props.children}
+        <NotificationDockPanel />
       </Layout>);
   }
 }

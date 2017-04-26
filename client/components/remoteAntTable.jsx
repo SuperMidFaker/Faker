@@ -25,6 +25,7 @@ class DataSource {
 /* eslint react/prefer-es6-class: 0 */
 const RemoteAntTable = React.createClass({
   propTypes: {
+    scrollOffset: React.PropTypes.number,
     dataSource: React.PropTypes.oneOfType([
       React.PropTypes.array,
       React.PropTypes.instanceOf(DataSource),
@@ -34,8 +35,9 @@ const RemoteAntTable = React.createClass({
     return { wlScrollY: null };
   },
   componentWillMount() {
+    const offset = this.props.scrollOffset ? this.props.scrollOffset : 300;
     if (typeof document !== 'undefined' && typeof window !== 'undefined') {
-      this.setState({ wlScrollY: window.innerHeight - 300 });
+      this.setState({ wlScrollY: window.innerHeight - offset });
     }
   },
   isLocalDataSource(dataSource) {

@@ -70,7 +70,7 @@ export default class DockPanel extends React.Component {
     return (
       <div>
         <div className={maskClasses} onClick={this.handleClose} />
-        <div className={classes} id="dock-panel">
+        <div className={classes}>
           <Spin spinning={loading}>
             <div className={`${prefixCls}-head`}>
               <div className={`${prefixCls}-head-title`}>

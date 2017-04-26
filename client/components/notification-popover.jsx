@@ -7,7 +7,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import NavLink from './nav-link';
-import { countMessages, messageBadgeNum, getTenantUsers, recordMessages } from 'common/reducers/corps';
+import { countMessages, messageBadgeNum, getTenantUsers, recordMessages, showNotificationDock } from 'common/reducers/notification';
 import { prompt } from 'common/reducers/shipment';
 import { getDriver } from 'common/reducers/transportResources';
 import { PROMPT_TYPES } from 'common/constants';
@@ -29,10 +29,10 @@ function fetchData({ state, dispatch, cookie }) {
   loginName: state.account.username,
   tenantName: state.account.tenantName,
   logo: state.account.logo,
-  corps: state.corps,
-  newMessage: state.corps.newMessage,
+  unreadMessagesNum: state.notification.unreadMessagesNum,
+  newMessage: state.notification.newMessage,
 }), {
-  messageBadgeNum, getTenantUsers, recordMessages, prompt
+  messageBadgeNum, getTenantUsers, recordMessages, prompt, showNotificationDock
 })
 export default class NotificationPopover extends React.Component {
   static propTypes = {
@@ -49,6 +49,9 @@ export default class NotificationPopover extends React.Component {
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
+  }
+  state = {
+    visible: false,
   }
   easemob = {
     conn: null,
@@ -85,7 +88,7 @@ export default class NotificationPopover extends React.Component {
             icon: data.logo,
             url: '',
           });
-          this.props.messageBadgeNum(this.props.corps.notReadMessagesNum + 1);
+          this.props.messageBadgeNum(this.props.unreadMessagesNum + 1);
         },
         onError: (msg) => { },           // 失败回调
       });
@@ -231,9 +234,16 @@ export default class NotificationPopover extends React.Component {
   handleNavigationTo = (to, query) => {
     this.context.router.push({ pathname: to, query });
   }
+  handleVisibleChange = (visible) => {
+    this.setState({ visible });
+  }
+  handleShowDock = () => {
+    this.setState({ visible: false, });
+    this.props.showNotificationDock();
+  }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
   render() {
-    const { corps: { notReadMessagesNum } } = this.props;
+    const { unreadMessagesNum } = this.props;
     const notificationContent = (<div className="navbar-popover" style={{ width: 360 }}>
       <div className="popover-header">
         <div className="toolbar-right">
@@ -243,36 +253,34 @@ export default class NotificationPopover extends React.Component {
       </div>
       <div className="popover-body">
       <Alert
-        message="Informational Notes"
-        description="Additional description and informations."
+        message="Additional description and informations."
         type="info"
         showIcon
         closable
       />
       <Alert
-        message="Warning"
-        description="This is a warning notice about copywriting."
+        message="This is a warning notice about copywriting."
         type="warning"
         showIcon
         closable
       />
       <Alert
-        message="Error"
-        description="This is an error message about copywriting."
+        message="This is an error message about copywriting."
         type="error"
         showIcon
         closable
       />
       </div>
       <div className="popover-footer">
-        <NavLink to="/message/list">{this.msg('seeAll')}</NavLink>
+        <a onClick={this.handleShowDock}>{this.msg('seeAll')}</a>
       </div>
     </div>);
 
     return (
-      <Popover content={notificationContent} placement="bottomLeft" trigger="click">
+      <Popover content={notificationContent} placement="bottomLeft" trigger="click"
+        visible={this.state.visible} onVisibleChange={this.handleVisibleChange}>
         <div>
-            <Badge count={notReadMessagesNum} overflowCount={99}>
+            <Badge count={unreadMessagesNum} overflowCount={99}>
                 <i className="icon s7-bell" />
             </Badge>
         </div>

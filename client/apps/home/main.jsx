@@ -5,6 +5,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import HeaderNavBar from 'client/components/headerNavBar';
 import NavLink from 'client/components/nav-link';
 import ModuleLayout from 'client/components/module-layout';
+import NotificationDockPanel from '../message/notificationDockPanel';
 import { findForemostRoute } from 'client/common/decorators/withPrivilege';
 import { setNavTitle } from 'common/reducers/navbar';
 import { format } from 'client/common/i18n/helpers';
@@ -113,6 +114,7 @@ export default class Home extends React.Component {
             </div>
           </div>
         </Content>
+        <NotificationDockPanel />
       </Layout>);
   }
 }

@@ -241,92 +241,94 @@ export default class MergeSplitModal extends React.Component {
       <Modal title="生成报关草单" width={800} onCancel={this.handleCancel} onOk={this.handleOk}
         visible={this.props.visible}
       >
-        <Row gutter={16}>
-          <Col span="24">
-            <Card title={this.msg('mergePrinciple')}>
-              <FormItem>
-                <Col span="3">
-                  <Radio checked={mergeOpt.checked} onChange={this.handleMergeRadioChange}>
-                    {this.msg('conditionalMerge')}
-                  </Radio>
-                </Col>
-                <Col offset="2" span="19">
-                  <CheckboxGroup options={mergeConditions} disabled={!mergeOpt.checked}
-                    onChange={this.handleMergeCheck} value={this.state.mergeOptArr}
-                  />
-                </Col>
-              </FormItem>
-              <FormItem>
-                <Col span="3">
-                  <Radio checked={!mergeOpt.checked} onChange={this.handleMergeRadioChange}>
-                    {this.msg('nonMerge')}
-                  </Radio>
-                </Col>
-                <Col offset="2" span="19">
+        <Form>
+          <Row gutter={16}>
+            <Col span="24">
+              <Card title={this.msg('mergePrinciple')}>
+                <FormItem>
+                  <Col span="3">
+                    <Radio checked={mergeOpt.checked} onChange={this.handleMergeRadioChange}>
+                      {this.msg('conditionalMerge')}
+                    </Radio>
+                  </Col>
+                  <Col offset="2" span="19">
+                    <CheckboxGroup options={mergeConditions} disabled={!mergeOpt.checked}
+                      onChange={this.handleMergeCheck} value={this.state.mergeOptArr}
+                    />
+                  </Col>
+                </FormItem>
+                <FormItem>
+                  <Col span="3">
+                    <Radio checked={!mergeOpt.checked} onChange={this.handleMergeRadioChange}>
+                      {this.msg('nonMerge')}
+                    </Radio>
+                  </Col>
+                  <Col offset="2" span="19">
                   按清单数据直接生成报关单（并按原数据排序）
                 </Col>
-              </FormItem>
-            </Card>
-          </Col>
-          <Col span="12">
-            <Card title={this.msg('splitPrinciple')}>
-              <FormItem>
-                <Select onChange={this.handleSplitSelectChange} value={this.state.splitOpt.perCount}>
-                  {
+                </FormItem>
+              </Card>
+            </Col>
+            <Col span="12">
+              <Card title={this.msg('splitPrinciple')}>
+                <FormItem>
+                  <Select onChange={this.handleSplitSelectChange} value={this.state.splitOpt.perCount}>
+                    {
                     CMS_SPLIT_COUNT.map(sc => <Option key={sc.value} value={sc.value}>{sc.text}</Option>)
                   }
-                </Select>
-              </FormItem>
-              <FormItem>
-                <MSCheckbox fieldOpt="splitOpt" field="byHsCode"
-                  text={this.msg('specialHscodeDeclare')}
-                  onChange={this.handleCheckChange} state={this.state}
-                />
-                { splitOpt.byHsCode ?
-                  <div>
-                    {getFieldDecorator('specialSort', {
-                      rules: [{ type: 'array' }],
-                      initialValue: splitOpt.hsCategory,
-                    })(<Select size="large" mode="multiple" placeholder={this.msg('specialHscodeSort')}>
-                      {
+                  </Select>
+                </FormItem>
+                <FormItem>
+                  <MSCheckbox fieldOpt="splitOpt" field="byHsCode"
+                    text={this.msg('specialHscodeDeclare')}
+                    onChange={this.handleCheckChange} state={this.state}
+                  />
+                  { splitOpt.byHsCode ?
+                    <div>
+                      {getFieldDecorator('specialSort', {
+                        rules: [{ type: 'array' }],
+                        initialValue: splitOpt.hsCategory,
+                      })(<Select size="large" mode="multiple" placeholder={this.msg('specialHscodeSort')}>
+                        {
                           hscodeCategories.map(ct =>
                             <Option value={ct.id} key={ct.id}>{ct.name}</Option>
                           )
                         }
-                    </Select>)}
-                  </div> : null}
-              </FormItem>
-              <FormItem>
-                <MSCheckbox fieldOpt="splitOpt" field="tradeCurr"
-                  text={this.msg('currencySplit')}
-                  onChange={this.handleCheckChange} state={this.state}
-                />
-              </FormItem>
-            </Card>
-          </Col>
-          <Col span="12">
-            <Card title={this.msg('sortPrinciple')}>
-              <FormItem>
-                <MSCheckbox fieldOpt="sortOpt" field="customControl"
-                  text={this.msg('customOnTop')}
-                  onChange={this.handleCheckChange} state={this.state}
-                />
-              </FormItem>
-              <FormItem>
-                <MSCheckbox fieldOpt="sortOpt" field="decTotal"
-                  text={this.msg('priceDescSort')}
-                  onChange={this.handleCheckChange} state={this.state}
-                />
-              </FormItem>
-              <FormItem>
-                <MSCheckbox fieldOpt="sortOpt" field="hsCodeAsc"
-                  text={this.msg('hsCodeAscSort')}
-                  onChange={this.handleCheckChange} state={this.state}
-                />
-              </FormItem>
-            </Card>
-          </Col>
-        </Row>
+                      </Select>)}
+                    </div> : null}
+                </FormItem>
+                <FormItem>
+                  <MSCheckbox fieldOpt="splitOpt" field="tradeCurr"
+                    text={this.msg('currencySplit')}
+                    onChange={this.handleCheckChange} state={this.state}
+                  />
+                </FormItem>
+              </Card>
+            </Col>
+            <Col span="12">
+              <Card title={this.msg('sortPrinciple')}>
+                <FormItem>
+                  <MSCheckbox fieldOpt="sortOpt" field="customControl"
+                    text={this.msg('customOnTop')}
+                    onChange={this.handleCheckChange} state={this.state}
+                  />
+                </FormItem>
+                <FormItem>
+                  <MSCheckbox fieldOpt="sortOpt" field="decTotal"
+                    text={this.msg('priceDescSort')}
+                    onChange={this.handleCheckChange} state={this.state}
+                  />
+                </FormItem>
+                <FormItem>
+                  <MSCheckbox fieldOpt="sortOpt" field="hsCodeAsc"
+                    text={this.msg('hsCodeAscSort')}
+                    onChange={this.handleCheckChange} state={this.state}
+                  />
+                </FormItem>
+              </Card>
+            </Col>
+          </Row>
+        </Form>
       </Modal>
     );
   }

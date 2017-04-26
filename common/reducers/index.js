@@ -3,6 +3,7 @@ import intl from './intl';
 import common from './common';
 import auth from './auth';
 import account from './account';
+import notification from './notification';
 import chinaRegions from './chinaRegions';
 import navbar from './navbar';
 import corpDomain from './corp-domain';
@@ -53,6 +54,7 @@ export default combineReducers({
   common,
   auth,
   account,
+  notification,
   chinaRegions,
   navbar,
   corpDomain,
