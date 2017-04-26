@@ -5,8 +5,6 @@ import * as Home from './home';
 import SSO from './sso/pack-sso';
 import Login from './sso/login';
 import Forgot from './sso/forgot';
-import PackMessage from './message/pack-message';
-import MessageList from './message/messageList';
 import PackAccount from './account/pack-account';
 import MyProfile from './account/profile';
 import Password from './account/password';
@@ -144,9 +142,6 @@ export default(store, cookie) => {
         <Route path="my" component={PackAccount}>
           <Route path="profile" component={MyProfile} />
           <Route path="password" component={Password} />
-        </Route>
-        <Route path="message" component={PackMessage}>
-          <Route path="list" component={MessageList} />
         </Route>
         <Route path="network" component={PackNetwork}>
           <Route path="partners">

@@ -108,7 +108,7 @@ export default class NotificationDockPanel extends React.Component {
       <DockPanel visible={visible} onClose={this.props.hideNotificationDock}
         title={<span>消息通知</span>}
       >
-        <Table columns={columns} dataSource={dataSource} showHeader={false} scrollOffset={170} />
+        <Table columns={columns} dataSource={dataSource} locale={{ emptyText: '没有新的消息通知' }} showHeader={false} scrollOffset={170} />
       </DockPanel>
     );
   }

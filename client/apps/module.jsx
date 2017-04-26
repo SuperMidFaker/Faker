@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Alert, Layout } from 'antd';
 import { locationShape } from 'react-router';
-import NotificationDockPanel from './message/notificationDockPanel';
+import NotificationDockPanel from './home/notificationDockPanel';
 import HeaderNavBar from 'client/components/headerNavBar';
 
 const { Header } = Layout;
