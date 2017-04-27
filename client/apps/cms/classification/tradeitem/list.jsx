@@ -4,7 +4,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Alert, Breadcrumb, Button, Collapse, Layout, Radio, Dropdown, Input, Icon, Menu, Popconfirm, Tooltip, Table, message, Switch } from 'antd';
+import { Alert, Breadcrumb, Button, Collapse, Layout, Radio, Dropdown, Input, Icon, Menu, Popconfirm, Tooltip, Table, message, Checkbox } from 'antd';
 import RemoteTable from 'client/components/remoteAntTable';
 import NavLink from 'client/components/nav-link';
 import { format } from 'client/common/i18n/helpers';
@@ -324,7 +324,7 @@ export default class TradeItemList extends Component {
       }
     });
   }
-  handleAuditWay = function (masterTenantId) {
+  handleAuditWay = (masterTenantId) => {
     const { tenantId } = this.props;
     this.props.getAuditWay(
       tenantId,
@@ -394,45 +394,41 @@ export default class TradeItemList extends Component {
     const filter = { ...this.props.listFilter, status: ev.target.value };
     this.handleItemListLoad(this.props.repoId, 1, filter);
   }
-  handleItemPass = (row) => {
-    this.props.setItemStatus({ repoId: this.props.repoId, ids: [row.id], status: TRADE_ITEM_STATUS.classified }).then((result) => {
+  handleSetItemStatus = (repoId, ids, status) => {
+    this.props.setItemStatus({ repoId, ids, status }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
-        message.success('归类通过');
+        if (status === TRADE_ITEM_STATUS.classified) {
+          message.success('归类通过');
+        } else if (status === TRADE_ITEM_STATUS.unclassified) {
+          message.warning('归类拒绝');
+        }
         this.handleItemListLoad();
       }
     });
+  }
+  handleItemPass = (row) => {
+    this.handleSetItemStatus(this.props.repoId, [row.id], TRADE_ITEM_STATUS.classified);
   }
   handleItemRefused = (row) => {
-    this.props.setItemStatus({ repoId: this.props.repoId, ids: [row.id], status: TRADE_ITEM_STATUS.unclassified }).then((result) => {
-      if (result.error) {
-        message.error(result.error.message, 10);
-      } else {
-        message.warning('归类拒绝');
-        this.handleItemListLoad();
-      }
-    });
+    this.handleSetItemStatus(this.props.repoId, [row.id], TRADE_ITEM_STATUS.unclassified);
   }
   handleItemsPass = () => {
-    this.props.setItemStatus({ repoId: this.props.repoId, ids: this.state.selectedRowKeys, status: TRADE_ITEM_STATUS.classified }).then((result) => {
-      if (result.error) {
-        message.error(result.error.message, 10);
-      } else {
-        this.setState({ selectedRowKeys: [] });
-        this.handleItemListLoad();
-      }
-    });
+    this.handleSetItemStatus(this.props.repoId, this.state.selectedRowKeys, TRADE_ITEM_STATUS.classified);
   }
   handleItemsRefused = () => {
-    this.props.setItemStatus({ repoId: this.props.repoId, ids: this.state.selectedRowKeys, status: TRADE_ITEM_STATUS.unclassified }).then((result) => {
-      if (result.error) {
-        message.error(result.error.message, 10);
-      } else {
-        this.setState({ selectedRowKeys: [] });
-        this.handleItemListLoad();
-      }
-    });
+    this.handleSetItemStatus(this.props.repoId, this.state.selectedRowKeys, TRADE_ITEM_STATUS.unclassified);
+  }
+  handlePassMenuClick = (e) => {
+    if (e.key === 'allPass') {
+      this.handleSetItemStatus(this.props.repoId, ['all'], TRADE_ITEM_STATUS.classified);
+    }
+  }
+  handleRefuseMenuClick = (e) => {
+    if (e.key === 'allRefuse') {
+      this.handleSetItemStatus(this.props.repoId, ['all'], TRADE_ITEM_STATUS.unclassified);
+    }
   }
   handleSearch = (value) => {
     const { repoId, listFilter } = this.props;
@@ -468,30 +464,40 @@ export default class TradeItemList extends Component {
     this.setState({ protected: !this.state.protected });
   }
   render() {
-    const { tradeItemlist, repoId, repo, listFilter, tenantId } = this.props;
+    const { tradeItemlist, repoId, repo, listFilter, tenantId, auditWay } = this.props;
     const selectedRows = this.state.selectedRowKeys;
     const rowSelection = {
       selectedRowKeys: selectedRows,
       onChange: (selectedRowKeys) => {
         this.setState({ selectedRowKeys });
       },
+      getCheckboxProps: record => ({ disabled: (auditWay === SYNC_AUDIT_METHODS[1].key && !record.master_rejected && listFilter.status !== 'unclassified') }),
     };
+    const itemPassmenu = (
+      <Menu onClick={this.handlePassMenuClick}>
+        <Menu.Item key="allPass"><Icon type="check-circle-o" /> 全部通过</Menu.Item>
+      </Menu>);
+    const itemRefusedmenu = (
+      <Menu onClick={this.handleRefuseMenuClick}>
+        <Menu.Item key="allRefuse"><Icon type="close-circle-o" /> 全部拒绝</Menu.Item>
+      </Menu>);
     let batchOperation = null;
     if (repo.permission === CMS_TRADE_REPO_PERMISSION.edit && selectedRows.length > 0) {
-      if (listFilter.status === 'unclassified') {
+      if (listFilter.status === 'unclassified' ||
+        (listFilter.status === 'pending' && auditWay === SYNC_AUDIT_METHODS[1].key)) {
         batchOperation = (<Popconfirm title={'是否删除所有选择项？'} onConfirm={() => this.handleDeleteSelected()}>
           <Button type="danger" size="large" icon="delete">
             批量删除
           </Button>
         </Popconfirm>);
-      } else if (listFilter.status === 'pending') {
+      } else if (listFilter.status === 'pending' && auditWay === SYNC_AUDIT_METHODS[0].key) {
         batchOperation = (<span>
-          <Button size="large" icon="check-circle-o" onClick={this.handleItemsPass}>
-            批量通过
-          </Button>
-          <Button size="large" icon="close-circle-o" onClick={this.handleItemsRefused}>
-            批量拒绝
-          </Button>
+          <Dropdown.Button size="large" onClick={this.handleItemsPass} overlay={itemPassmenu}>
+            <Icon type="check-circle-o" /> 批量通过
+          </Dropdown.Button>
+          <Dropdown.Button size="large" onClick={this.handleItemsRefused} overlay={itemRefusedmenu}>
+            <Icon type="close-circle-o" /> 批量拒绝
+          </Dropdown.Button>
           <Popconfirm title={'是否删除所有选择项？'} onConfirm={() => this.handleDeleteSelected()}>
             <Button type="danger" size="large" icon="delete">
               批量删除
@@ -667,15 +673,6 @@ export default class TradeItemList extends Component {
             </RadioGroup>
             {repoId &&
               <div className="top-bar-tools">
-                {repo.mode === 'slave' && (
-                  <Tooltip placement="bottom" title="分享'规范申报要素'给客户">
-                    <Switch className="switch-lock" checked={!this.state.protected}
-                      checkedChildren={<Icon type="lock" />}
-                      unCheckedChildren={<Icon type="share-alt" />}
-                      onChange={this.handleShare} style={{ marginTop: 4 }}
-                    />
-                  </Tooltip>
-                )}
                 {repo.permission === CMS_TRADE_REPO_PERMISSION.edit &&
                   (
                     <Dropdown.Button size="large" overlay={importMenu}>
@@ -737,6 +734,11 @@ export default class TradeItemList extends Component {
               <h3>物料库设置</h3>
             </div>
             <Collapse accordion defaultActiveKey="user">
+              {repo.mode === 'slave' &&
+                (<Panel header={'中文规格型号共享'} key="share">
+                  <Checkbox onChange={this.handleShare} checked={!this.state.protected}>共享中文规格型号</Checkbox>
+                </Panel>)
+              }
               <Panel header={'授权使用单位'} key="user">
                 <RepoUsersPane repo={repo} />
               </Panel>

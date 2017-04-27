@@ -54,7 +54,7 @@ export default class MasterSharePane extends React.Component {
       tenant_id: val,
       name: brokers.filter(sb => sb.tenant_id === val)[0].name,
     }));
-    this.props.renewSharees(tenantId, shareeTenants);
+    this.props.renewSharees(tenantId, tenantId, shareeTenants);
     this.setState({ value: shareeIds });
   }
   render() {
