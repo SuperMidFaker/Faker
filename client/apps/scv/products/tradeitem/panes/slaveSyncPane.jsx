@@ -64,14 +64,14 @@ export default class SlaveSyncPane extends React.Component {
     title: this.msg('classifyShareScope'),
     width: 150,
     render: (_, row) => (<SyncShareEditCell checkedBrokers={row.shares} shareBrokers={this.props.brokers}
-      onSave={this.handleShareChange} contribute={row.broker_tenant_id}
+      onSave={this.handleShareChange} contribute={row.broker_tenant_id} tenantId={this.props.tenantId}
     />),
   }]
   handleAuditChange = (syncId, audit) => {
     this.props.updateAudit(syncId, audit);
   }
-  handleShareChange = (contributeTenantId, shareeTenants) => {
-    this.props.renewSharees(contributeTenantId, shareeTenants);
+  handleShareChange = (masterTenantId, contributeTenantId, shareeTenants) => {
+    this.props.renewSharees(masterTenantId, contributeTenantId, shareeTenants);
   }
   dataSource = new Table.DataSource({
     fetcher: params => this.props.loadSyncList(params),

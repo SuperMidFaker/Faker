@@ -15,6 +15,7 @@ export default class SyncShareEditCell extends React.Component {
       PropTypes.shape({ tenant_id: PropTypes.number.isRequired })
     ).isRequired,
     contribute: PropTypes.number.isRequired,
+    tenantId: PropTypes.number.isRequired,
     onSave: PropTypes.func.isRequired,
   }
   state = {
@@ -49,7 +50,7 @@ export default class SyncShareEditCell extends React.Component {
         tenant_id: val,
         name: this.props.shareBrokers.filter(sb => sb.tenant_id === val)[0].name,
       }));
-      this.props.onSave(this.props.contribute, sharees);
+      this.props.onSave(this.props.tenantId, this.props.contribute, sharees);
     }
     this.setState({ editMode: false });
   }

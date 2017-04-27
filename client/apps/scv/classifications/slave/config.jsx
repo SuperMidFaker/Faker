@@ -10,7 +10,7 @@ import EditableCell from 'client/components/EditableCell';
 import SyncShareEditCell from './syncShareEditCell';
 import ScvClassificationWrapper from '../wrapper';
 import AddSlaveModal from './addSlaveModal';
-import { SYNC_AUDIT_METHODS, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
+import { SYNC_AUDIT_METHODS } from 'common/constants';
 import { formatMsg } from '../message.i18n';
 
 const Content = Layout.Content;
@@ -64,14 +64,14 @@ export default class ScvClassificationSlaveConfig extends React.Component {
     title: this.msg('classifyShareScope'),
     width: 300,
     render: (_, row) => (<SyncShareEditCell checkedBrokers={row.shares} shareBrokers={this.props.brokers}
-      onSave={this.handleShareChange} contribute={row.broker_tenant_id}
+      onSave={this.handleShareChange} contribute={row.broker_tenant_id} tenantId={this.props.tenantId}
     />),
   }]
   handleAuditChange = (syncId, audit) => {
     this.props.updateAudit(syncId, audit);
   }
-  handleShareChange = (contributeTenantId, shareeTenants) => {
-    this.props.renewSharees(contributeTenantId, shareeTenants);
+  handleShareChange = (masterTenantId, contributeTenantId, shareeTenants) => {
+    this.props.renewSharees(masterTenantId, contributeTenantId, shareeTenants);
   }
   dataSource = new Table.DataSource({
     fetcher: params => this.props.loadSyncList(params),
