@@ -97,13 +97,13 @@ export default class CustomsDeclPane extends React.Component {
     const bill = customsPanel.bill;
     if (customsPanel.accepted) {
       if (bill.bill_status === 0) {
-        return <Button type="primary" ghost icon="addfile" onClick={this.handleMake}>创建</Button>;
+        return <Button type="primary" ghost icon="addfile" onClick={this.handleMake}>创建清单</Button>;
       } else if (bill.bill_status < 100) {
         return (
-          <Button type="primary" ghost icon="edit" onClick={this.handleManfestEdit}>编辑</Button>
+          <Button type="primary" ghost icon="edit" onClick={this.handleManfestEdit}>编辑清单</Button>
         );
       } else if (bill.bill_status === 100 && bill.bill_seq_no) {
-        return <Button icon="eye" onClick={this.handleView}>查看</Button>;
+        return <Button icon="eye" onClick={this.handleView}>查看清单</Button>;
       }
     }
   }
@@ -115,7 +115,7 @@ export default class CustomsDeclPane extends React.Component {
     // const panelHeader = (
     //  <span>{declTypes.length > 0 ? declTypes[0].value : ''}：{bill.pack_count}件/{bill.gross_wt}千克</span>
     // );
-    const manifestProgress = (<div style={{ width: 220 }}><Progress strokeWidth={5} percent={bill.bill_status} /></div>);
+    const manifestProgress = (<div style={{ width: 200 }}>制单进度 <Progress strokeWidth={5} percent={bill.bill_status} /></div>);
     const columns = [{
       title: '报关单',
       dataIndex: 'customs_inspect',
@@ -123,9 +123,9 @@ export default class CustomsDeclPane extends React.Component {
         let inspectFlag = <Tag>否</Tag>;
         let sheetType = '';
         if (record.sheet_type === 'CDF') {
-          sheetType = <Tag color="blue-inverse">报关单</Tag>;
+          sheetType = <Tag color="blue">报关单</Tag>;
         } else if (record.sheet_type === 'FTZ') {
-          sheetType = <Tag color="blue">备案清单</Tag>;
+          sheetType = <Tag color="green">备案清单</Tag>;
         }
         const decl = CMS_DECL_STATUS.filter(st => st.value === record.status)[0];
         const declStatus = decl && <Badge status={decl.badge} text={decl.text} />;
@@ -163,14 +163,17 @@ export default class CustomsDeclPane extends React.Component {
           </Row>
           <div className="card-footer">
             <Steps progressDot current={step}>
-              <Step description={`录入 ${record.created_date
-                    ? moment(record.created_date).format('YYYY.MM.DD') : ''}`}
+              <Step description={`生成 ${record.created_date
+                    ? moment(record.created_date).format('MM.DD HH.MM') : ''}`}
               />
-              <Step description={`申报 ${record.d_date
-                    ? moment(record.d_date).format('YYYY.MM.DD') : ''}`}
+              <Step description={`复核 ${record.reviewed_date
+                    ? moment(record.reviewed_date).format('MM.DD HH.MM') : ''}`}
+              />
+              <Step description={`发送 ${record.epsend_date
+                    ? moment(record.epsend_date).format('MM.DD HH.MM') : ''}`}
               />
               <Step description={`放行 ${record.clear_date
-                    ? moment(record.clear_date).format('YYYY.MM.DD') : ''}`}
+                    ? moment(record.clear_date).format('MM.DD HH.MM') : ''}`}
               />
             </Steps>
           </div>
@@ -198,14 +201,14 @@ export default class CustomsDeclPane extends React.Component {
                     />
                   </Col>
                   <Col span="6">
-                    <InfoItem label="物料数量" suffix="项" field={bill.pack_count} />
+                    <InfoItem label="商品数量" suffix="项" field={bill.pack_count} />
                   </Col>
                   <Col span="6">
                     <InfoItem label="申报货值" suffix="人民币" field={bill.declValue} />
                   </Col>
                 </Row>
               </Card>
-              <Table size="middle" showHeader={false} columns={columns} pagination={false} dataSource={tableDatas} />
+              <Table size="middle" showHeader={false} columns={columns} pagination={false} dataSource={tableDatas} locale={{ emptyText: '尚未生成报关草单' }} />
             </Col>
             <Col span={6}>
               <Card bodyStyle={{ padding: 16 }} className="secondary-card">

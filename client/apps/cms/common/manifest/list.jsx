@@ -96,7 +96,7 @@ export default class ManifestList extends Component {
     render: (o, record) => (record.id ?
     record.created_date && moment(record.created_date).format('YYYY.MM.DD') : '-'),
   }, {
-    title: '清单完整度',
+    title: '制单进度',
     width: 180,
     render: (o, record) => <Progress percent={record.bill_status} strokeWidth={5} showInfo={false} />,
   }, {
@@ -139,7 +139,6 @@ export default class ManifestList extends Component {
   }, {
     title: '进出口岸',
     dataIndex: 'i_e_port',
-    width: 100,
     render: (o) => {
       const cust = this.props.customs.filter(ct => ct.value === o)[0];
       let port = '';

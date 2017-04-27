@@ -170,10 +170,10 @@ export default class DelegationList extends Component {
       const type = DECL_TYPE.filter(dl => dl.key === o)[0];
       // 0000口岸进口 0001口岸出口 0100保税区进口 0101保税区出口
       if (o === CMS_DECL_WAY_TYPE.IMPT || o === CMS_DECL_WAY_TYPE.EXPT) {
-        return (<Tag color="blue-inverse">{type.value}</Tag>);
+        return (<Tag color="blue">{type.value}</Tag>);
       // 0102保税区进境 0103保税区出境
       } else if (o === CMS_DECL_WAY_TYPE.IBND || o === CMS_DECL_WAY_TYPE.EBND) {
-        return (<Tag color="blue">{type.value}</Tag>);
+        return (<Tag color="green">{type.value}</Tag>);
       }
     },
   }, {
