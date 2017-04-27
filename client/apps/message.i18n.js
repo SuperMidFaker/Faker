@@ -111,7 +111,7 @@ const messages = defineMessages({
   },
   corpOverview: {
     id: 'container.corpOverview',
-    defaultMessage: '帐户概况',
+    defaultMessage: '概况',
   },
   corpInfo: {
     id: 'container.corpInfo',

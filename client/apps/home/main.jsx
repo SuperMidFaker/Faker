@@ -65,7 +65,7 @@ export default class Home extends React.Component {
     const { intl, logo, name } = this.props;
     const tenantMenus = [
       <MenuItem key="home">
-        <i className="zmdi zmdi-apps" /> {formatMsg(intl, 'home')}
+        <i className="zmdi zmdi-apps" /> {formatMsg(intl, 'applications')}
       </MenuItem>,
     ];
     if (this.state.corpMenuLink) {
