@@ -1,8 +1,9 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
+import moment from 'moment';
 import { Form, Modal, Input, DatePicker, message } from 'antd';
-import { closeClearModal, clearCustoms } from 'common/reducers/cmsDeclare';
+import { closeClearFillModal, clearCustoms } from 'common/reducers/cmsDeclare';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 
@@ -13,14 +14,15 @@ const FormItem = Form.Item;
 @connect(
   state => ({
     visible: state.cmsDeclare.visibleClearModal,
-    entry: state.cmsDeclare.clearModal,
+    entry: state.cmsDeclare.clearFillModal,
   }),
-  { closeClearModal, clearCustoms }
+  { closeClearFillModal, clearCustoms }
 )
 export default class DeclnoFillModal extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     visible: PropTypes.bool.isRequired,
+    entry: PropTypes.shape({ preEntrySeqNo: PropTypes.string.isRequired }),
     reload: PropTypes.func.isRequired,
   }
   state = {
@@ -29,7 +31,7 @@ export default class DeclnoFillModal extends React.Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.entry !== this.props.entry) {
-      this.setState({ entryNo: nextProps.entry_id });
+      this.setState({ entryNo: nextProps.entry.entryNo });
     }
   }
   handleEntryNoChange = (ev) => {
@@ -40,8 +42,11 @@ export default class DeclnoFillModal extends React.Component {
       this.setState({ entryNo: '' });
     }
   }
+  handleClearDateChange = (clearDt) => {
+    this.setState({ clearTime: clearDt.valueOf() });
+  }
   handleCancel = () => {
-    this.props.closeClearModal();
+    this.props.closeClearFillModal();
   }
   handleOk = () => {
     if (!this.state.entryNo || this.state.entryNo.length !== 18) {
@@ -54,8 +59,9 @@ export default class DeclnoFillModal extends React.Component {
     }
     const { entry } = this.props;
     this.props.clearCustoms({
-      entryHeadId: entry.id,
-      entryNo: this.state.entryNo,
+      delgNo: entry.delgNo,
+      preEntrySeqNo: entry.preEntrySeqNo,
+      entryNo: this.state.entryNo === entry.entryNo ? null : this.state.entryNo,
       clearTime: this.state.clearTime,
     }).then(
       (result) => {
@@ -64,24 +70,28 @@ export default class DeclnoFillModal extends React.Component {
         } else {
           this.setState({ entryNo: '', clearTime: null });
           this.handleCancel();
-          this.props.reload();
+          if (this.props.reload) {
+            this.props.reload();
+          }
         }
       });
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   render() {
-    const { visible, entry } = this.props;
+    const { visible } = this.props;
     const entryNo = this.state.entryNo;
     return (
-      <Modal title={this.msg('customsClearModal')} visible={visible}
+      <Modal title={this.msg('customsClearModalTitle')} visible={visible}
         onOk={this.handleOk} onCancel={this.handleCancel}
       >
         <Form>
           <FormItem label="海关单号" labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
-            <Input onChange={this.handleEntryNoChange} value={entryNo} size="large" disabled={entry.entry_id} />
+            <Input onChange={this.handleEntryNoChange} value={entryNo} size="large" />
           </FormItem>
           <FormItem label="放行时间" labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
-            <DatePicker onChange={this.handleClearChange} value={this.state.clearTime} />
+            <DatePicker onChange={this.handleClearDateChange} value={this.state.clearTime && moment(this.state.clearTime)}
+              style={{ width: '100%' }} format="YYYY-MM-DD"
+            />
           </FormItem>
         </Form>
       </Modal>

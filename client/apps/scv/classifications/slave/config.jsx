@@ -36,7 +36,7 @@ function fetchData({ state, dispatch }) {
     synclist: state.scvClassification.synclist,
     brokers: state.scvClassification.slaves,
   }),
-  { updateAudit, renewSharees, openAddSlaveModal, loadSyncList }
+  { updateAudit, renewSharees, openAddSlaveModal, loadSyncList, loadRepoSlaves }
 )
 @connectNav({
   depth: 2,
@@ -63,8 +63,11 @@ export default class ScvClassificationSlaveConfig extends React.Component {
   }, {
     title: this.msg('classifyShareScope'),
     width: 300,
-    render: (_, row) => (<SyncShareEditCell checkedBrokers={row.shares} shareBrokers={this.props.brokers}
-      onSave={this.handleShareChange} contribute={row.broker_tenant_id} tenantId={this.props.tenantId}
+    render: (_, row) => (<SyncShareEditCell checkedBrokers={row.shares} shareBrokers={this.props.brokers.map(brk => ({
+      tenant_id: brk.slave_tenant_id,
+      name: brk.slave_name,
+    }))}
+      onSave={this.handleShareChange} contribute={row.broker_tenant_id}
     />),
   }]
   handleAuditChange = (syncId, audit) => {
@@ -97,10 +100,12 @@ export default class ScvClassificationSlaveConfig extends React.Component {
     this.props.openAddSlaveModal();
   }
   handleSlavesReload = () => {
-    this.props.loadSyncList({
-      tenantId: this.props.tenantId,
-      pageSize: this.props.pageSize,
-      current: this.props.current,
+    this.props.loadRepoSlaves(this.props.tenantId).then(() => {
+      this.props.loadSyncList({
+        tenantId: this.props.tenantId,
+        pageSize: this.props.pageSize,
+        current: this.props.current,
+      });
     });
   }
   render() {

@@ -60,7 +60,7 @@ export default class addSlaveModal extends React.Component {
           } else {
             this.props.form.resetFields();
             this.props.closeAddSlaveModal();
-            this.props.getSlaves(this.props.tenantId, PARTNER_ROLES.SUP, PARTNER_BUSINESSE_TYPES.clearance);
+            // this.props.getSlaves(this.props.tenantId, PARTNER_ROLES.SUP, PARTNER_BUSINESSE_TYPES.clearance);
             this.props.reload();
           }
         });
@@ -72,7 +72,7 @@ export default class addSlaveModal extends React.Component {
     return (
       <Modal title={this.msg('addSlave')} visible={visible} onCancel={this.handleCancel} onOk={this.handleOk}>
         <Form>
-          <FormItem label={this.msg('classifySourceRepo')} labelCol={{ xs: { span: 24 }, sm: { span: 6 } }} wrapperCol={{ xs: { span: 24 }, sm: { span: 14 } }}>
+          <FormItem label="清关服务商" labelCol={{ xs: { span: 24 }, sm: { span: 6 } }} wrapperCol={{ xs: { span: 24 }, sm: { span: 14 } }}>
             {
               getFieldDecorator('partner_tenant_id', {
                 rules: [
