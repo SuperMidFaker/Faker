@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Collapse, Form, Row, Col, Card } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import FormInput from '../../common/form/formInput';
+import FormInput from '../../../form/formInput';
 import {
   RelationAutoCompSelect, IEPort, IEDate, DeclDate, Transport, DeclCustoms, Pieces, ContractNo, LicenseNo, TermConfirm,
   TradeRemission, CountryAttr, TradeMode, Fee, ContainerNo, PackWeight, RaDeclManulNo, StoreYard } from './headFormItems';
@@ -26,7 +26,7 @@ const CODE_AS_STATE = {
 @connect(
   state => ({
     formRequire: state.cmsManifest.params,
-    ietype: state.cmsSettings.template.ietype,
+    ietype: state.cmsManifest.template.ietype,
   }),
   { loadSearchedParam }
 )

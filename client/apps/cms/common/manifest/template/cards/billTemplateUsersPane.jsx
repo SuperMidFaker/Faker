@@ -2,10 +2,10 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Button, Icon, Table, Select, message } from 'antd';
-import { loadBillTemplateUsers, addBillTemplateUser, deleteBillTemplateUser } from 'common/reducers/cmsSettings';
+import { loadBillTemplateUsers, addBillTemplateUser, deleteBillTemplateUser } from 'common/reducers/cmsManifest';
 import { loadPartners } from 'common/reducers/partner';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
+import messages from 'client/apps/cms/message.i18n';
 import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 const role = PARTNER_ROLES.SUP;
 const businessType = PARTNER_BUSINESSE_TYPES.clearance;
@@ -19,7 +19,7 @@ const Option = Select.Option;
     tenantId: state.account.tenantId,
     tenantName: state.account.tenantName,
     loginId: state.account.loginId,
-    billTemplateUsers: state.cmsSettings.billTemplateUsers,
+    billTemplateUsers: state.cmsManifest.billTemplateUsers,
   }),
   { loadPartners, loadBillTemplateUsers, addBillTemplateUser, deleteBillTemplateUser }
 )

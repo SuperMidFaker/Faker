@@ -34,7 +34,7 @@ function getFieldInits(formData) {
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    fieldInits: getFieldInits(state.cmsSettings.formData),
+    fieldInits: getFieldInits(state.cmsManifest.formData),
   })
 )
 export default class FeesTable extends Component {

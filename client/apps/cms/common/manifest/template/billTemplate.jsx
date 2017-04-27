@@ -1,17 +1,17 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Breadcrumb, Form, Layout, Row, Col, Button, Tooltip, Table, Popconfirm, Icon, message, Mention, Collapse } from 'antd';
-import { openAddModal, deleteRelatedCustomer, loadRelatedCustomers, saveTemplateData, countFieldsChange } from 'common/reducers/cmsSettings';
+import { openAddModal, deleteRelatedCustomer, loadRelatedCustomers, saveTemplateData, countFieldsChange } from 'common/reducers/cmsManifest';
 import { intlShape, injectIntl } from 'react-intl';
-import messages from '../../../settings/message.i18n';
+import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
-import HeadForm from '../../../settings/forms/headForm';
+import HeadForm from './forms/headForm';
 import { loadCustomers } from 'common/reducers/crmCustomers';
 import ButtonToggle from 'client/components/ButtonToggle';
-import SetImportRules from '../../../settings/cards/setImportRules';
-import MergeSplitRules from '../../../settings/cards/mergeSplitRules';
-import CustomerModal from '../../../settings/modals/customerModal';
-import BillTemplateUsersPane from '../../../settings/cards/billTemplateUsersPane';
+import SetImportRules from './cards/setImportRules';
+import MergeSplitRules from './cards/mergeSplitRules';
+import CustomerModal from '../modals/customerModal';
+import BillTemplateUsersPane from './cards/billTemplateUsersPane';
 
 const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
@@ -24,12 +24,12 @@ const Panel = Collapse.Panel;
     loginId: state.account.loginId,
     username: state.account.username,
     tenantName: state.account.tenantName,
-    template: state.cmsSettings.template,
-    ietype: state.cmsSettings.template.ietype,
-    templateName: state.cmsSettings.template.template_name,
-    relatedCustomers: state.cmsSettings.relatedCustomers,
-    formData: state.cmsSettings.formData,
-    changeTimes: state.cmsSettings.changeTimes,
+    template: state.cmsManifest.template,
+    ietype: state.cmsManifest.template.ietype,
+    templateName: state.cmsManifest.template.template_name,
+    relatedCustomers: state.cmsManifest.relatedCustomers,
+    formData: state.cmsManifest.formData,
+    changeTimes: state.cmsManifest.changeTimes,
   }),
   { loadCustomers, openAddModal, deleteRelatedCustomer, loadRelatedCustomers, saveTemplateData, countFieldsChange }
 )
