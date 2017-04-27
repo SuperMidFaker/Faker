@@ -394,45 +394,41 @@ export default class TradeItemList extends Component {
     const filter = { ...this.props.listFilter, status: ev.target.value };
     this.handleItemListLoad(this.props.repoId, 1, filter);
   }
-  handleItemPass = (row) => {
-    this.props.setItemStatus({ repoId: this.props.repoId, ids: [row.id], status: TRADE_ITEM_STATUS.classified }).then((result) => {
+  handleSetItemStatus = (repoId, ids, status) => {
+    this.props.setItemStatus({ repoId, ids, status }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
-        message.success('归类通过');
+        if (status === TRADE_ITEM_STATUS.classified) {
+          message.success('归类通过');
+        } else if (status === TRADE_ITEM_STATUS.unclassified) {
+          message.warning('归类拒绝');
+        }
         this.handleItemListLoad();
       }
     });
+  }
+  handleItemPass = (row) => {
+    this.handleSetItemStatus(this.props.repoId, [row.id], TRADE_ITEM_STATUS.classified);
   }
   handleItemRefused = (row) => {
-    this.props.setItemStatus({ repoId: this.props.repoId, ids: [row.id], status: TRADE_ITEM_STATUS.unclassified }).then((result) => {
-      if (result.error) {
-        message.error(result.error.message, 10);
-      } else {
-        message.warning('归类拒绝');
-        this.handleItemListLoad();
-      }
-    });
+    this.handleSetItemStatus(this.props.repoId, [row.id], TRADE_ITEM_STATUS.unclassified);
   }
   handleItemsPass = () => {
-    this.props.setItemStatus({ repoId: this.props.repoId, ids: this.state.selectedRowKeys, status: TRADE_ITEM_STATUS.classified }).then((result) => {
-      if (result.error) {
-        message.error(result.error.message, 10);
-      } else {
-        this.setState({ selectedRowKeys: [] });
-        this.handleItemListLoad();
-      }
-    });
+    this.handleSetItemStatus(this.props.repoId, this.state.selectedRowKeys, TRADE_ITEM_STATUS.classified);
   }
   handleItemsRefused = () => {
-    this.props.setItemStatus({ repoId: this.props.repoId, ids: this.state.selectedRowKeys, status: TRADE_ITEM_STATUS.unclassified }).then((result) => {
-      if (result.error) {
-        message.error(result.error.message, 10);
-      } else {
-        this.setState({ selectedRowKeys: [] });
-        this.handleItemListLoad();
-      }
-    });
+    this.handleSetItemStatus(this.props.repoId, this.state.selectedRowKeys, TRADE_ITEM_STATUS.unclassified);
+  }
+  handlePassMenuClick = (e) => {
+    if (e.key === 'allPass') {
+      this.handleSetItemStatus(this.props.repoId, ['all'], TRADE_ITEM_STATUS.classified);
+    }
+  }
+  handleRefuseMenuClick = (e) => {
+    if (e.key === 'allRefuse') {
+      this.handleSetItemStatus(this.props.repoId, ['all'], TRADE_ITEM_STATUS.unclassified);
+    }
   }
   handleSearch = (value) => {
     const { repoId, listFilter } = this.props;
@@ -476,22 +472,31 @@ export default class TradeItemList extends Component {
         this.setState({ selectedRowKeys });
       },
     };
+    const itemPassmenu = (
+      <Menu onClick={this.handlePassMenuClick}>
+        <Menu.Item key="allPass"><Icon type="check-circle-o" /> 全部通过</Menu.Item>
+      </Menu>);
+    const itemRefusedmenu = (
+      <Menu onClick={this.handleRefuseMenuClick}>
+        <Menu.Item key="allRefuse"><Icon type="close-circle-o" /> 全部拒绝</Menu.Item>
+      </Menu>);
     let batchOperation = null;
     if (repo.permission === CMS_TRADE_REPO_PERMISSION.edit && selectedRows.length > 0) {
-      if (listFilter.status === 'unclassified') {
+      if (listFilter.status === 'unclassified' ||
+        (listFilter.status === 'pending' && this.props.auditWay === SYNC_AUDIT_METHODS[1].key)) {
         batchOperation = (<Popconfirm title={'是否删除所有选择项？'} onConfirm={() => this.handleDeleteSelected()}>
           <Button type="danger" size="large" icon="delete">
             批量删除
           </Button>
         </Popconfirm>);
-      } else if (listFilter.status === 'pending') {
+      } else if (listFilter.status === 'pending' && this.props.auditWay === SYNC_AUDIT_METHODS[0].key) {
         batchOperation = (<span>
-          <Button size="large" icon="check-circle-o" onClick={this.handleItemsPass}>
-            批量通过
-          </Button>
-          <Button size="large" icon="close-circle-o" onClick={this.handleItemsRefused}>
-            批量拒绝
-          </Button>
+          <Dropdown.Button size="large" onClick={this.handleItemsPass} overlay={itemPassmenu}>
+            <Icon type="check-circle-o" /> 批量通过
+          </Dropdown.Button>
+          <Dropdown.Button size="large" onClick={this.handleItemsRefused} overlay={itemRefusedmenu}>
+            <Icon type="close-circle-o" /> 批量拒绝
+          </Dropdown.Button>
           <Popconfirm title={'是否删除所有选择项？'} onConfirm={() => this.handleDeleteSelected()}>
             <Button type="danger" size="large" icon="delete">
               批量删除
