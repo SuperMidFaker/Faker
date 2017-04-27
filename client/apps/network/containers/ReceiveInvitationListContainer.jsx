@@ -83,6 +83,7 @@ export default class ReceiveInvitationList extends Component {
     dataIndex: 'operation',
     key: 'operation',
     render: (_, record) => {
+      console.log(record);
       if (record.status === 0) {
         return (
           <PrivilegeCover module="corp" feature="partners" action="edit">
@@ -119,21 +120,17 @@ export default class ReceiveInvitationList extends Component {
           }
         } else if (partnerships[i].role === PARTNER_ROLES.SUP) {
           let businessType = '';
-          if (partnerships[i].business_type.indexOf(PARTNER_BUSINESSE_TYPES.clearance) >= 0) {
-            businessType = PARTNER_BUSINESSE_TYPES.clearance;
-          } else if (partnerships[i].business_type.indexOf(PARTNER_BUSINESSE_TYPES.transport) >= 0) {
-            businessType = PARTNER_BUSINESSE_TYPES.transport;
-          }
-          const index = reversePartnerships.findIndex(item => item.role === PARTNER_ROLES.DCUS);
+          businessType = partnerships[i].business_type;
+          const index = reversePartnerships.findIndex(item => item.role === PARTNER_ROLES.CUS);
           if (index >= 0) {
             reversePartnerships.push({
-              role: PARTNER_ROLES.DCUS,
+              role: PARTNER_ROLES.CUS,
               business: '',
               business_type: `${reversePartnerships[index].business_type},${businessType}`,
             });
           } else {
             reversePartnerships.push({
-              role: PARTNER_ROLES.DCUS,
+              role: PARTNER_ROLES.CUS,
               business: '',
               business_type: businessType,
             });
