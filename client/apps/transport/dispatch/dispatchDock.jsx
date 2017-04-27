@@ -2,10 +2,10 @@
 import React, { PropTypes, Component } from 'react';
 import update from 'react/lib/update';
 import { intlShape, injectIntl } from 'react-intl';
-import { Icon, Tag, Button, Popover, message, Tabs }
-  from 'antd';
-import QueueAnim from 'rc-queue-anim';
+import { Badge, Tag, Button, Popover, message, Row, Col, Tabs } from 'antd';
+import DockPanel from 'client/components/DockPanel';
 import Table from 'client/components/remoteAntTable';
+import InfoItem from 'client/components/InfoItem';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadLsps, loadVehicles, doDispatch, doDispatchAndSend, showDispatchConfirmModal } from 'common/reducers/transportDispatch';
@@ -63,7 +63,7 @@ function fetch({ state, dispatch, cookie }) {
   vehicleLengths: state.transportDispatch.vehicleLengths,
   shipmts: state.transportDispatch.shipmts,
   dispatchConfirmModal: state.transportDispatch.dispatchConfirmModal,
-  show: state.transportDispatch.dispDockShow,
+  visible: state.transportDispatch.dispDockShow,
 }),
   { loadLsps, loadVehicles, doDispatch, doDispatchAndSend, addPartner, computeCostCharge, toggleCarrierModal, showDispatchConfirmModal }
 )
@@ -74,7 +74,7 @@ export default class DispatchDock extends Component {
     loginId: PropTypes.number.isRequired,
     loginName: PropTypes.string.isRequired,
     avatar: PropTypes.string.isRequired,
-    show: PropTypes.bool.isRequired,
+    visible: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     shipmts: PropTypes.array.isRequired,
     lsps: PropTypes.object.isRequired,
@@ -104,10 +104,9 @@ export default class DispatchDock extends Component {
     this.consigneeCols = [{
       title: '承运商',
       dataIndex: 'partner_name',
-      width: 180,
       render: (o, record) => (
         <span>
-          <i className={`zmdi zmdi-circle ${record.partner_tenant_id > 0 ? 'mdc-text-green' : 'mdc-text-grey'}`} />
+          {record.partner_tenant_id > 0 ? <Badge status="success" /> : <Badge status="default" />}
           {record.partner_name}
         </span>
       ),
@@ -137,7 +136,7 @@ export default class DispatchDock extends Component {
       },
     }, {
       title: this.msg('shipmtOP'),
-      width: 100,
+      width: 60,
       render: (o, record) => (
         <span>
           <a role="button" onClick={() => this.showConfirm('tenant', record)}>
@@ -589,17 +588,46 @@ export default class DispatchDock extends Component {
   handleNewVehicleClick = () => {
     this.setState({ newVehicleVisible: true });
   }
-  render() {
-    const { show, shipmts, vehicles } = this.props;
+
+  renderTabs() {
+    const { vehicles } = this.props;
     this.lspsds.remotes = this.state.lspsVar;
     this.vesds.remotes = vehicles;
-    let dock = '';
-    if (show && shipmts.length > 0) {
-      const arr = [];
+    return (<Tabs defaultActiveKey="carrier" onChange={this.handleTabChange}>
+      <TabPane tab={this.msg('tabTextCarrier')} key="carrier">
+        <div className="pane-header">
+          <div className="toolbar-right"><Button onClick={this.handleNewCarrierClick}>新增承运商</Button></div>
+          <SearchBar placeholder={this.msg('carrierSearchPlaceholder')}
+            onInputSearch={this.handleCarrierSearch} value={this.state.carrierSearch}
+          />
+        </div>
+        <div className="pane-content tab-pane">
+          <Table size="middle" columns={this.consigneeCols} dataSource={this.lspsds} loading={this.state.lspLoading} />
+        </div>
+      </TabPane>
+      <TabPane tab={this.msg('tabTextVehicle')} key="vehicle">
+        <div className="pane-header">
+          <div className="toolbar-right"><Button onClick={this.handleNewVehicleClick}>新增车辆</Button></div>
+          <SearchBar placeholder={this.msg('vehicleSearchPlaceholder')}
+            onInputSearch={this.handlePlateSearch} value={this.state.plateSearch}
+          />
+        </div>
+        <div className="pane-content tab-pane">
+          <Table size="middle" columns={this.vehicleCols} dataSource={this.vesds} />
+        </div>
+        <VehicleFormMini visible={this.state.newVehicleVisible} />
+      </TabPane>
+    </Tabs>);
+  }
+  renderExtra() {
+    const { shipmts, visible } = this.props;
+    let totalCount = 0;
+    let totalWeight = 0;
+    let totalVolume = 0;
+    const arr = [];
+    if (visible && shipmts.length > 0) {
       let close = true;
-      let totalCount = 0;
-      let totalWeight = 0;
-      let totalVolume = 0;
+
       if (shipmts.length === 1) {
         close = false;
       }
@@ -615,58 +643,43 @@ export default class DispatchDock extends Component {
           totalVolume += v.total_volume;
         }
       });
-      dock = (
-        <div className="dock-panel inside">
-          <div className="panel-content">
-            <div className="header">
-              <span className="title">分配 {shipmts.length}个运单</span>
-              <Tag>共{totalCount}件/{totalWeight}千克/{totalVolume}立方</Tag>
-              <div className="pull-right">
-                <Button type="ghost" shape="circle-outline" onClick={this.onCloseWrapper}>
-                  <Icon type="cross" />
-                </Button>
-              </div>
-            </div>
-            <div className="body">
-              <Tabs type="card" defaultActiveKey="carrier" onChange={this.handleTabChange}>
-                <TabPane tab={this.msg('tabTextCarrier')} key="carrier">
-                  <div className="pane-header">
-                    <div className="toolbar-right"><Button onClick={this.handleNewCarrierClick}>新增承运商</Button></div>
-                    <SearchBar placeholder={this.msg('carrierSearchPlaceholder')}
-                      onInputSearch={this.handleCarrierSearch} value={this.state.carrierSearch}
-                    />
-                  </div>
-                  <div className="pane-content tab-pane">
-                    <Table size="middle" columns={this.consigneeCols} dataSource={this.lspsds} loading={this.state.lspLoading} />
-                  </div>
-                </TabPane>
-                <TabPane tab={this.msg('tabTextVehicle')} key="vehicle">
-                  <div className="pane-header">
-                    <div className="toolbar-right"><Button onClick={this.handleNewVehicleClick}>新增车辆</Button></div>
-                    <SearchBar placeholder={this.msg('vehicleSearchPlaceholder')}
-                      onInputSearch={this.handlePlateSearch} value={this.state.plateSearch}
-                    />
-                  </div>
-                  <div className="pane-content tab-pane">
-                    <Table size="middle" columns={this.vehicleCols} dataSource={this.vesds} />
-                  </div>
-                  <VehicleFormMini visible={this.state.newVehicleVisible} />
-                </TabPane>
-              </Tabs>
-              <DispatchConfirmModal
-                shipmts={this.props.shipmts} onChange={this.handlePodTypeChange}
-                onDispatchAndSend={() => this.handleShipmtDispatchAndSend()}
-                onDispatch={() => this.handleShipmtDispatch()}
-              />
-              <CarrierModal onOk={this.handleCarrierLoad} />
-            </div>
-          </div>
-        </div>
-        );
     }
-
+    return (<Row>
+      <Col span="12">
+        {arr}
+      </Col>
+      <Col span="4">
+        <InfoItem label="总件数"
+          field={totalCount}
+        />
+      </Col>
+      <Col span="4">
+        <InfoItem label="总重量"
+          field={totalWeight}
+        />
+      </Col>
+      <Col span="4">
+        <InfoItem label="总体积"
+          field={totalVolume}
+        />
+      </Col>
+    </Row>);
+  }
+  render() {
+    const { shipmts, visible } = this.props;
     return (
-      <QueueAnim key="dockcontainer" animConfig={{ translateX: [0, 600], opacity: [1, 1] }}>{dock}</QueueAnim>
+      <DockPanel visible={visible} onClose={this.props.onClose}
+        title={`分配 ${shipmts.length}个运单`}
+        extra={this.renderExtra()}
+      >
+        {this.renderTabs()}
+        <DispatchConfirmModal
+          shipmts={shipmts} onChange={this.handlePodTypeChange}
+          onDispatchAndSend={() => this.handleShipmtDispatchAndSend()}
+          onDispatch={() => this.handleShipmtDispatch()}
+        />
+        <CarrierModal onOk={this.handleCarrierLoad} />
+      </DockPanel>
     );
   }
 }

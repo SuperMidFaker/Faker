@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
 import { Card, Icon, Tag, Button, Select, DatePicker, Row, Col, message, Alert, Form } from 'antd';
-import QueueAnim from 'rc-queue-anim';
+import DockPanel from 'client/components/DockPanel';
+import InfoItem from 'client/components/InfoItem';
 import { intlShape, injectIntl } from 'react-intl';
-import moment from 'moment';
 import { segmentRequest } from 'common/reducers/transportDispatch';
 import { connect } from 'react-redux';
 import { format } from 'client/common/i18n/helpers';
@@ -16,13 +16,13 @@ function noop() {}
 @connect(state => ({
   nodeLocations: state.transportDispatch.nodeLocations,
   transitModes: state.transportDispatch.transitModes,
-  show: state.transportDispatch.segDockShow,
+  visible: state.transportDispatch.segDockShow,
   shipmts: state.transportDispatch.shipmts,
 }), { segmentRequest })
 export default class SegmentDock extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    show: PropTypes.bool.isRequired,
+    visible: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     shipmts: PropTypes.array.isRequired,
     nodeLocations: PropTypes.array.isRequired,
@@ -226,16 +226,15 @@ export default class SegmentDock extends React.Component {
       }
     });
   }
-
-  render() {
-    const { show, shipmts } = this.props;
-    let dock = '';
-    if (show) {
-      const arr = [];
+  renderExtra() {
+    const { shipmts, visible } = this.props;
+    let totalCount = 0;
+    let totalWeight = 0;
+    let totalVolume = 0;
+    const arr = [];
+    if (visible && shipmts.length > 0) {
       let close = true;
-      let totalCount = 0;
-      let totalWeight = 0;
-      let totalVolume = 0;
+
       if (shipmts.length === 1) {
         close = false;
       }
@@ -251,96 +250,52 @@ export default class SegmentDock extends React.Component {
           totalVolume += v.total_volume;
         }
       });
+    }
+    return (<Row>
+      <Col span="12">
+        {arr}
+      </Col>
+      <Col span="4">
+        <InfoItem label="总件数"
+          field={totalCount}
+        />
+      </Col>
+      <Col span="4">
+        <InfoItem label="总重量"
+          field={totalWeight}
+        />
+      </Col>
+      <Col span="4">
+        <InfoItem label="总体积"
+          field={totalVolume}
+        />
+      </Col>
+    </Row>);
+  }
 
-      const sg = this.buildSegmentGroup();
-      let err = '';
-      if (this.state.errable) {
-        err = (<Alert message="分段参数错误" type="error" showIcon closable />);
-      }
-
-      /*
-      dock = (<div className="dock-container" key="dock2">
-                <div className="dock-content" style={{width: 480}}>
-                  <div className="dock-sp-line"></div>
-                  <div className="dock-sp">
-                    <div className="dock-sp-body">
-                      <div className="dock-sp-toolbar">
-                        <a onClick={ this.onCloseWrapper }><Icon type="cross" className="closable"/></a>
-                        <div className="shipno-container">
-                          <span className="detail-title">共 {shipmts.length} 订单，{totalCount}件，{totalWeight}公斤，{totalVolume}立方</span>
-                          {arr}
-                        </div>
-                      </div>
-                      <div className="dock-sp-content">
-                        <div className="segment-container">
-                          <h3>时间计划</h3>
-                          <Row type="flex" justify="start">
-                            <Col span="12">提货日期：{moment(shipmts[0].pickup_est_date).format('YYYY.MM.DD')}</Col>
-                            <Col span="12">送货日期：{moment(shipmts[0].deliver_est_date).format('YYYY.MM.DD')}</Col>
-                          </Row>
-                          <h3>分段中转</h3>
-                          {err}
-                          {sg}
-                          {this.state.segments}
-                          <div className="segment-btns">
-                            <Button type="ghost" onClick={ this.onCloseWrapper }>{this.msg('btnTextCancel')}</Button>
-                            <span className="ant-divider" style={{width: '0px'}}/>
-                            <Button type="primary" onClick={this.handleSegment }>{this.msg('btnTextOk')}</Button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>);
-              */
-      dock = (
-        <div className="dock-panel inside">
-          <div className="panel-content">
-            <div className="header">
-              <span className="title">分段 {shipmts.length}个运单</span>
-              <Tag>共{totalCount}件/{totalWeight}公斤/{totalVolume}立方</Tag>
-              <div className="pull-right">
-                <Button type="ghost" shape="circle-outline" onClick={this.onCloseWrapper}>
-                  <Icon type="cross" />
-                </Button>
-              </div>
-            </div>
-            <div className="body">
-              <div className="pane-content">
-                <Card>
-                  <Row className="pane-section" type="flex" justify="start">
-                    <Col span="12">
-                      <div className="info-item">
-                        <div className="info-label">提货日期</div>
-                        <div className="info-data"> {moment(shipmts[0].pickup_est_date).format('YYYY.MM.DD')}</div>
-                      </div>
-                    </Col>
-                    <Col span="12">
-                      <div className="info-item">
-                        <div className="info-label">送货日期</div>
-                        <div className="info-data"> {moment(shipmts[0].deliver_est_date).format('YYYY.MM.DD')}</div>
-                      </div>
-                    </Col>
-                  </Row>
-                  {err}
-                  {sg}
-                  {this.state.segments}
-                </Card>
-                <div>
-                  <Button type="ghost" onClick={this.onCloseWrapper}>{this.msg('btnTextCancel')}</Button>
-                  <span className="ant-divider" style={{ width: '0px' }} />
-                  <Button type="primary" onClick={this.handleSegment}>{this.msg('btnTextOk')}</Button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        );
+  render() {
+    const { visible, shipmts } = this.props;
+    let err = '';
+    if (this.state.errable) {
+      err = (<Alert message="分段参数错误" type="error" showIcon closable />);
     }
 
     return (
-      <QueueAnim key="dockcontainer" animConfig={{ translateX: [0, 480], opacity: [1, 1] }}>{dock}</QueueAnim>
+      <DockPanel visible={visible} onClose={this.props.onClose}
+        title={`分段 ${shipmts.length}个运单`}
+        extra={this.renderExtra()}
+      >
+        <Card>
+          {err}
+          {this.buildSegmentGroup()}
+          {this.state.segments}
+        </Card>
+        <div>
+          <Button type="ghost" onClick={this.onCloseWrapper}>{this.msg('btnTextCancel')}</Button>
+          <span className="ant-divider" style={{ width: '0px' }} />
+          <Button type="primary" onClick={this.handleSegment}>{this.msg('btnTextOk')}</Button>
+        </div>
+      </DockPanel>
     );
   }
 }

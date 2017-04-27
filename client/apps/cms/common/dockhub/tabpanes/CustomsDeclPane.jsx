@@ -115,7 +115,7 @@ export default class CustomsDeclPane extends React.Component {
     // const panelHeader = (
     //  <span>{declTypes.length > 0 ? declTypes[0].value : ''}：{bill.pack_count}件/{bill.gross_wt}千克</span>
     // );
-    const manifestProgress = (<div style={{ width: 220 }}>报关清单 <Progress strokeWidth={5} percent={bill.bill_status} /></div>);
+    const manifestProgress = (<div style={{ width: 220 }}><Progress strokeWidth={5} percent={bill.bill_status} /></div>);
     const columns = [{
       title: '报关单',
       dataIndex: 'customs_inspect',
