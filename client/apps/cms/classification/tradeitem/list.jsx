@@ -4,7 +4,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Alert, Breadcrumb, Button, Collapse, Layout, Radio, Dropdown, Input, Icon, Menu, Popconfirm, Tooltip, Table, message, Switch } from 'antd';
+import { Alert, Breadcrumb, Button, Collapse, Layout, Radio, Dropdown, Input, Icon, Menu, Popconfirm, Tooltip, Table, message, Checkbox } from 'antd';
 import RemoteTable from 'client/components/remoteAntTable';
 import NavLink from 'client/components/nav-link';
 import { format } from 'client/common/i18n/helpers';
@@ -324,7 +324,7 @@ export default class TradeItemList extends Component {
       }
     });
   }
-  handleAuditWay = function (masterTenantId) {
+  handleAuditWay = (masterTenantId) => {
     const { tenantId } = this.props;
     this.props.getAuditWay(
       tenantId,
@@ -672,15 +672,6 @@ export default class TradeItemList extends Component {
             </RadioGroup>
             {repoId &&
               <div className="top-bar-tools">
-                {repo.mode === 'slave' && (
-                  <Tooltip placement="bottom" title="分享'规范申报要素'给客户">
-                    <Switch className="switch-lock" checked={!this.state.protected}
-                      checkedChildren={<Icon type="lock" />}
-                      unCheckedChildren={<Icon type="share-alt" />}
-                      onChange={this.handleShare} style={{ marginTop: 4 }}
-                    />
-                  </Tooltip>
-                )}
                 {repo.permission === CMS_TRADE_REPO_PERMISSION.edit &&
                   (
                     <Dropdown.Button size="large" overlay={importMenu}>
@@ -742,6 +733,11 @@ export default class TradeItemList extends Component {
               <h3>物料库设置</h3>
             </div>
             <Collapse accordion defaultActiveKey="user">
+              {repo.mode === 'slave' &&
+                (<Panel header={'中文规格型号共享'} key="share">
+                  <Checkbox onChange={this.handleShare} checked={!this.state.protected}>共享中文规格型号</Checkbox>
+                </Panel>)
+              }
               <Panel header={'授权使用单位'} key="user">
                 <RepoUsersPane repo={repo} />
               </Panel>
