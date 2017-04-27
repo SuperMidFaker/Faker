@@ -1,4 +1,5 @@
 import { defineMessages } from 'react-intl';
+import { formati18n } from 'client/common/i18n/helpers';
 
 const messages = defineMessages({
   classification: {
@@ -253,5 +254,18 @@ const messages = defineMessages({
     id: 'scv.products.slave.share.scope',
     defaultMessage: '共享范围',
   },
+  classifySourceRepo: {
+    id: 'scv.products.slave.source.repo',
+    defaultMessage: '来源物料集',
+  },
+  classifyAudit: {
+    id: 'scv.products.slave.audit',
+    defaultMessage: '审核方式',
+  },
+  addSlave: {
+    id: 'scv.products.slave.add',
+    defaultMessage: '添加从库',
+  },
 });
 export default messages;
+export const formatMsg = formati18n(messages);
