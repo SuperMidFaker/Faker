@@ -25,7 +25,6 @@ export default class TodoAcceptPane extends Component {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     loginId: PropTypes.number.isRequired,
-    onShipmtPreview: PropTypes.func.isRequired,
     loadPodTable: PropTypes.func.isRequired,
     podList: PropTypes.object.isRequired,
     filter: PropTypes.object.isRequired,

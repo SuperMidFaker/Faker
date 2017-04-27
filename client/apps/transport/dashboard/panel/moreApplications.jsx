@@ -13,7 +13,7 @@ import { formatMsg } from '../message.i18n';
 
 export default class MoreApplications extends React.Component {
   static propTypes = {
-    subdomain: PropTypes.object.isRequired,
+    subdomain: PropTypes.string.isRequired,
   }
   state = {
     shipmtNo: '',

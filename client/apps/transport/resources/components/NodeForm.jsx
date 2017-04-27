@@ -48,7 +48,7 @@ export default class NodeForm extends Component {
     const getFieldDecorator = form.getFieldDecorator;
     const regionValues = region || [];
     return (
-      <Form horizontal onSubmit={onSubmitBtnClick} className={mode === 'edit' ? 'form-edit-content offset-right-col' : ''} style={this.props.style}>
+      <Form layout="horizontal" onSubmit={onSubmitBtnClick} className={mode === 'edit' ? 'form-edit-content offset-right-col' : ''} style={this.props.style}>
         <FormItem label="名称:" required {...formItemLayout}>
           {getFieldDecorator('name')(<Input required />)}
         </FormItem>

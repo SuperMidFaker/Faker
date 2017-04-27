@@ -183,7 +183,7 @@ export default class RoleForm extends React.Component {
     const { editPrivilegeMap: privileges } = this.state;
     return (
       <div className="page-body card-wrapper">
-        <Form horizontal onSubmit={this.handleSubmit}>
+        <Form layout="horizontal" onSubmit={this.handleSubmit}>
           <Row gutter={16}>
             <Col span={12}>
               <FormInputItem labelName={formatMsg(intl, 'nameColumn')} labelSpan={8} field="name" options={{

@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import connectNav from 'client/common/decorators/connect-nav';
 import { Button, Card, Upload, Form, Input, Icon, message } from 'antd';
 import Avatar from 'react-avatar';
 import { intlShape, injectIntl } from 'react-intl';
@@ -68,6 +69,10 @@ FormInput.propTypes = {
   }),
   { updateProfile }
 )
+@connectNav({
+  depth: 3,
+  jumpOut: true,
+})
 @Form.create()
 export default class MyProfile extends React.Component {
   static propTypes = {

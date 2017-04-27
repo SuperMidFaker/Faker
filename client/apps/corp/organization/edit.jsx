@@ -175,7 +175,7 @@ export default class CorpEdit extends React.Component {
     const { formData: { name, subCode }, intl, submitting } = this.props;
     return (
       <div className="page-body">
-        <Form horizontal onSubmit={this.handleSubmit}
+        <Form layout="horizontal" onSubmit={this.handleSubmit}
           className="form-edit-content offset-right-col"
         >
           {

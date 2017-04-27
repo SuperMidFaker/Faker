@@ -107,7 +107,7 @@ export default class HeaderNavBar extends React.Component {
           </MenuItem>}
           {!compact && <MenuItem>
             <a role="button" onClick={this.handleShowPreference}>
-              <MdIcon type="globe" />
+              <Icon type="tool" />
               <span>{formatMsg(intl, 'userPreference')}</span>
             </a>
           </MenuItem>}

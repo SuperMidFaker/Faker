@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import connectNav from 'client/common/decorators/connect-nav';
 import { Button, Card, Form, Input, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { changePassword } from 'common/reducers/account';
@@ -17,6 +18,10 @@ const FormItem = Form.Item;
   }),
   { changePassword }
 )
+@connectNav({
+  depth: 3,
+  jumpOut: true,
+})
 @Form.create()
 export default class ChangePassword extends React.Component {
   static propTypes = {

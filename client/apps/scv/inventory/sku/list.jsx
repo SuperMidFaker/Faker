@@ -38,9 +38,9 @@ function fetchData({ state, dispatch }) {
 )
 @connectNav({
   depth: 2,
-  moduleName: 'cwm',
+  moduleName: 'scv',
 })
-export default class CWMSkuList extends React.Component {
+export default class SCVSkuList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -121,7 +121,7 @@ export default class CWMSkuList extends React.Component {
     });
   }
   handleCreateBtnClick = () => {
-    this.context.router.push('/cwm/products/sku/create');
+    this.context.router.push('/scv/inventory/sku/create');
   }
   render() {
     const { skulist, loading } = this.props;

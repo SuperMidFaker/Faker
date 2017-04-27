@@ -198,7 +198,7 @@ export default class BillTemplate extends Component {
           </Header>
           <Content className={'main-content layout-min-width layout-min-width-large'}>
             <HeadForm ietype={ietype} form={form} formData={formData} />
-            <Form vertical>
+            <Form layout="vertical">
               <Row gutter={24}>
                 <Col sm={24} md={12}>
                   <SetImportRules form={form} formData={formData} />

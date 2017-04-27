@@ -167,7 +167,7 @@ export default class AdvancedSearchBar extends React.Component {
         <div style={{ display: fields.length === 0 ? 'none' : 'block', padding: 16 }}>
           {fields.map(item => <Tag closable color="blue" key={item.key} onClose={() => this.handleCloseTag([item.key])}>{this.format(item)}</Tag>)}
         </div>
-        <Form horizontal className="ant-advanced-search-form"
+        <Form layout="horizontal" className="ant-advanced-search-form"
           style={{ display: visible ? 'block' : 'none' }}
           onSubmit={this.handleSubmit}
         >

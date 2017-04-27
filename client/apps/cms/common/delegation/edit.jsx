@@ -111,7 +111,7 @@ export default class EditDelegation extends Component {
           </div>
         </Header>
         <Content className="main-content layout-fixed-width layout-fixed-width-lg">
-          <Form horizontal form={form}>
+          <Form layout="horizontal" form={form}>
             <Row gutter={16}>
               <Col sm={24} md={16}>
                 <MainForm form={form} ieType={type} partnershipType="CCB" />
