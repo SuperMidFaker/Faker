@@ -166,80 +166,84 @@ export default class CustomerList extends React.Component {
             </div>
           </div>
         </Sider>
-        <Layout>
-          <Header className="top-bar">
-            { this.state.collapsed && <Breadcrumb>
-              <Breadcrumb.Item>
-                {this.msg('customer')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {customer.name}
-              </Breadcrumb.Item>
-            </Breadcrumb>}
-            <ButtonToggle size="large"
-              iconOn="menu-fold" iconOff="menu-unfold"
-              onClick={this.toggle}
-              toggle
-            />
-            <div className="top-bar-tools">
-              <Button.Group size="large">
-                <Button icon="left" />
-                <Button icon="right" />
-              </Button.Group>
-              <Button size="large" type="primary" icon="save" disabled={this.state.unchanged} onClick={this.handleSaveBtnClick}>
-                {this.msg('save')}
-              </Button>
-            </div>
-          </Header>
-          <Content className="main-content layout-fixed-width layout-fixed-width-lg">
-            <Row gutter={16}>
-              <Col sm={24} md={16}>
-                <Card>
-                  <Row gutter={16}>
-                    <Col sm={24} lg={24}>
-                      <InfoItem
-                        label={this.msg('customerName')}
-                        field={customer.name}
-                      />
-                    </Col>
-                    <Col sm={24} lg={12}>
-                      <InfoItem label={this.msg('displayName')} field={customer.display_name}
-                        placeholder="添加显示名称" onEdit={this.handleInputChanged} editable
-                      />
-                      <FormItem label={this.msg('displayName')} >
-                        {getFieldDecorator('display_name', {
-                          initialValue: customer.display_name,
-                        })(<Input onChange={this.handleInputChanged} />)}
-                      </FormItem>
-                    </Col>
-                    <Col sm={24} lg={12}>
-                      <InfoItem label={this.msg('englishName')} field={customer.en_name}
-                        placeholder="添加英文名称" onEdit={this.handleInputChanged} editable
-                      />
-                      <FormItem label={this.msg('englishName')} >
-                        {getFieldDecorator('en_name', {
-                          initialValue: customer.en_name,
-                        })(<Input onChange={this.handleInputChanged} />)}
-                      </FormItem>
-                    </Col>
-                  </Row>
-                </Card>
-                <Card bodyStyle={{ padding: 0 }}>
-                  <Tabs defaultActiveKey="flowRules">
-                    <TabPane tab={<span><i className="icon icon-fontello-flow-tree" />流程规则</span>} key="flowRules" >
-                      <FlowRulesPane customer={customer} />
-                    </TabPane>
-                    <TabPane tab={<span><i className="icon icon-fontello-book" />价格协议</span>} key="tariff" />
-                    <TabPane tab={<span><i className="icon icon-fontello-doc-text" />收发货信息</span>} key="consignInfo" />
-                  </Tabs>
-                </Card>
-              </Col>
-              <Col sm={24} md={8}>
-                <ProfileForm customer={customer} />
-              </Col>
-            </Row>
-          </Content>
-        </Layout>
+        {
+          customer && (
+            <Layout>
+              <Header className="top-bar">
+                { this.state.collapsed && <Breadcrumb>
+                  <Breadcrumb.Item>
+                    {this.msg('customer')}
+                  </Breadcrumb.Item>
+                  <Breadcrumb.Item>
+                    {customer.name}
+                  </Breadcrumb.Item>
+                </Breadcrumb>}
+                <ButtonToggle size="large"
+                  iconOn="menu-fold" iconOff="menu-unfold"
+                  onClick={this.toggle}
+                  toggle
+                />
+                <div className="top-bar-tools">
+                  <Button.Group size="large">
+                    <Button icon="left" />
+                    <Button icon="right" />
+                  </Button.Group>
+                  <Button size="large" type="primary" icon="save" disabled={this.state.unchanged} onClick={this.handleSaveBtnClick}>
+                    {this.msg('save')}
+                  </Button>
+                </div>
+              </Header>
+              <Content className="main-content layout-fixed-width layout-fixed-width-lg">
+                <Row gutter={16}>
+                  <Col sm={24} md={16}>
+                    <Card>
+                      <Row gutter={16}>
+                        <Col sm={24} lg={24}>
+                          <InfoItem
+                            label={this.msg('customerName')}
+                            field={customer.name}
+                          />
+                        </Col>
+                        <Col sm={24} lg={12}>
+                          <InfoItem label={this.msg('displayName')} field={customer.display_name}
+                            placeholder="添加显示名称" onEdit={this.handleInputChanged} editable
+                          />
+                          <FormItem label={this.msg('displayName')} >
+                            {getFieldDecorator('display_name', {
+                              initialValue: customer.display_name,
+                            })(<Input onChange={this.handleInputChanged} />)}
+                          </FormItem>
+                        </Col>
+                        <Col sm={24} lg={12}>
+                          <InfoItem label={this.msg('englishName')} field={customer.en_name}
+                            placeholder="添加英文名称" onEdit={this.handleInputChanged} editable
+                          />
+                          <FormItem label={this.msg('englishName')} >
+                            {getFieldDecorator('en_name', {
+                              initialValue: customer.en_name,
+                            })(<Input onChange={this.handleInputChanged} />)}
+                          </FormItem>
+                        </Col>
+                      </Row>
+                    </Card>
+                    <Card bodyStyle={{ padding: 0 }}>
+                      <Tabs defaultActiveKey="flowRules">
+                        <TabPane tab={<span><i className="icon icon-fontello-flow-tree" />流程规则</span>} key="flowRules" >
+                          <FlowRulesPane customer={customer} />
+                        </TabPane>
+                        <TabPane tab={<span><i className="icon icon-fontello-book" />价格协议</span>} key="tariff" />
+                        <TabPane tab={<span><i className="icon icon-fontello-doc-text" />收发货信息</span>} key="consignInfo" />
+                      </Tabs>
+                    </Card>
+                  </Col>
+                  <Col sm={24} md={8}>
+                    <ProfileForm customer={customer} />
+                  </Col>
+                </Row>
+              </Content>
+            </Layout>
+          )
+        }
       </Layout>
     );
   }
