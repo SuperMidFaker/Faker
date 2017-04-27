@@ -35,6 +35,7 @@ const RadioButton = Radio.Button;
 )
 export default class HeaderNavBar extends React.Component {
   static propTypes = {
+    compact: PropTypes.bool,
     intl: intlShape.isRequired,
     navTitle: PropTypes.shape({
       depth: PropTypes.number.isRequired,
@@ -51,6 +52,9 @@ export default class HeaderNavBar extends React.Component {
   }
   static contextTypes = {
     router: routerShape.isRequired,
+  }
+  static defaultProps = {
+    compact: false,
   }
   state = {
     visible: false,
@@ -91,25 +95,23 @@ export default class HeaderNavBar extends React.Component {
   }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values);
   render() {
-    const { navTitle } = this.props;
-    const { intl, avatar, name, locale } = this.props;
-    // const defaultAvatar = `${__CDN__}/assets/img/avatar.jpg`;
+    const { intl, avatar, name, locale, compact, navTitle } = this.props;
     const userPopoverContent = (
       <div className="navbar-popover">
         <Menu>
-          <MenuItem>
+          {!compact && <MenuItem>
             <NavLink to="/my/profile">
               <Icon type="user" />
               <span>{formatMsg(intl, 'userAccount')}</span>
             </NavLink>
-          </MenuItem>
-          <MenuItem>
+          </MenuItem>}
+          {!compact && <MenuItem>
             <a role="button" onClick={this.handleShowPreference}>
               <MdIcon type="globe" />
               <span>{formatMsg(intl, 'userPreference')}</span>
             </a>
-          </MenuItem>
-          <MenuDivider />
+          </MenuItem>}
+          {!compact && <MenuDivider />}
           <MenuItem>
             <a role="button" onClick={this.handleLogout}>
               <Icon type="logout" />
@@ -161,14 +163,14 @@ export default class HeaderNavBar extends React.Component {
         </div>
         <div className="nav navbar-right">
           <Menu mode="horizontal">
-            <MenuItem>
+            {!compact && <MenuItem>
               <NotificationPopover />
-            </MenuItem>
-            <MenuItem>
+            </MenuItem>}
+            {!compact && <MenuItem>
               <Popover content={helpcenterContent} placement="bottomRight" trigger="click">
                 <div><i className="icon s7-help1" /></div>
               </Popover>
-            </MenuItem>
+            </MenuItem>}
             <MenuItem>
               <Popover content={userPopoverContent} placement="bottomRight" trigger="click"
                 visible={this.state.userPopoverVisible} onVisibleChange={this.handleVisibleChange}

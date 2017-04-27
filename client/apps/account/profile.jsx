@@ -1,17 +1,16 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Button, Card, Upload, Form, Input, Row, Col, message } from 'antd';
+import { Button, Card, Upload, Form, Input, Icon, message } from 'antd';
 import Avatar from 'react-avatar';
 import { intlShape, injectIntl } from 'react-intl';
 import { updateProfile } from 'common/reducers/account';
-import { isLoginNameExist, checkLoginName } from 'common/reducers/checker-reducer';
 import { validatePhone } from 'common/validater';
 import { getFormatMsg } from 'client/util/react-ant';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import globalMessages from 'client/common/root.i18n';
 import containerMessages from 'client/apps/message.i18n';
-import './acc.less';
+import './account.less';
 
 const formatMsg = format(messages);
 const formatGlobalMsg = format(globalMessages);
@@ -23,8 +22,18 @@ function FormInput(props) {
     label, hasFeedback, required, placeholder,
     addonAfter, getFieldDecorator, field, rules, fieldProps,
   } = props;
+  const formItemLayout = {
+    labelCol: {
+      xs: { span: 24 },
+      sm: { span: 6 },
+    },
+    wrapperCol: {
+      xs: { span: 24 },
+      sm: { span: 14 },
+    },
+  };
   return (
-    <FormItem label={label} labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}
+    <FormItem {...formItemLayout} label={label}
       hasFeedback={hasFeedback} required={required}
     >
       {
@@ -57,7 +66,7 @@ FormInput.propTypes = {
     parentTenantId: state.account.parentTenantId,
     code: state.account.code,
   }),
-  { updateProfile, checkLoginName }
+  { updateProfile }
 )
 @Form.create()
 export default class MyProfile extends React.Component {
@@ -65,8 +74,8 @@ export default class MyProfile extends React.Component {
     intl: intlShape.isRequired,
     form: PropTypes.object.isRequired,
     profile: PropTypes.shape({
+      avatar: PropTypes.string,
       name: PropTypes.string.isRequired,
-      username: PropTypes.string.isRequired,
       phone: PropTypes.string.isRequired,
       email: PropTypes.string,
     }).isRequired,
@@ -74,14 +83,13 @@ export default class MyProfile extends React.Component {
     code: PropTypes.string.isRequired,
     tenantId: PropTypes.number.isRequired,
     parentTenantId: PropTypes.number.isRequired,
-    checkLoginName: PropTypes.func.isRequired,
     updateProfile: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
   state = {
-    avatar: '',
+    avatar: this.props.profile.avatar,
   }
   msg = (key, values) => formatMsg(this.props.intl, key, values);
   handleSubmit = (ev) => {
@@ -99,7 +107,8 @@ export default class MyProfile extends React.Component {
             if (result.error) {
               message.error(getFormatMsg(result.error.message, this.msg), 10);
             } else {
-              this.context.router.goBack();
+              message.success('个人信息更新成功');
+              // this.context.router.goBack();
             }
           }
         );
@@ -124,8 +133,21 @@ export default class MyProfile extends React.Component {
     }
   }
   render() {
-    const { intl, profile, form: { getFieldDecorator }, code } = this.props;
+    const { intl, profile, form: { getFieldDecorator } } = this.props;
     const cmsg = descriptor => formatContainerMsg(intl, descriptor);
+
+    const tailFormItemLayout = {
+      wrapperCol: {
+        xs: {
+          span: 24,
+          offset: 0,
+        },
+        sm: {
+          span: 14,
+          offset: 6,
+        },
+      },
+    };
     const uploadProps = {
       action: `${API_ROOTS.default}v1/upload/img/`,
       multiple: false,
@@ -134,51 +156,34 @@ export default class MyProfile extends React.Component {
       withCredentials: true,
     };
     return (
-      <Card>
+      <Card title="个人信息">
         <Form layout="horizontal" onSubmit={this.handleSubmit}>
-          <Row>
-            <Col sm={24} md={12}>
-              <FormItem label="头像" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
-                <Upload {...uploadProps}>
-                  {this.state.avatar ? <Avatar src={this.state.avatar} size={80} round /> : <Avatar name={this.props.profile.name} size={80} round />}
-                </Upload>
-              </FormItem>
-              <FormInput label={cmsg('fullName')} field="name" required rules={
+          <FormItem {...tailFormItemLayout} style={{ marginBottom: 32 }}>
+            <Upload {...uploadProps} className="avatar-uploader">
+              {this.state.avatar ? <Avatar src={this.state.avatar} size={120} round /> : <Icon type="plus" className="avatar-uploader-trigger" />}
+            </Upload>
+          </FormItem>
+          <FormInput label={cmsg('fullName')} field="name" rules={
                   [{ required: true, min: 2, message: cmsg('fullNameMessage') }]
                 } fieldProps={{ initialValue: profile.name }} hasFeedback
-                getFieldDecorator={getFieldDecorator}
-              />
-              <FormInput label={cmsg('username')} required field="username"
-                addonAfter={`@${code}`} rules={[{
-                  validator: (rule, value, callback) => isLoginNameExist(
-                    value, code, profile.loginId,
-                    this.props.parentTenantId || this.props.tenantId,
-                    callback, message, this.props.checkLoginName,
-                    (msgs, descriptor) => format(msgs)(intl, descriptor)
-                  ),
-                }]} fieldProps={{ initialValue: profile.username }}
-                getFieldDecorator={getFieldDecorator}
-              />
-              <FormInput label={cmsg('phone')} field="phone" required hasFeedback
-                rules={[{
-                  validator: (rule, value, callback) => validatePhone(
+            getFieldDecorator={getFieldDecorator}
+          />
+          <FormInput label={cmsg('phone')} field="phone" hasFeedback
+            rules={[{
+              validator: (rule, value, callback) => validatePhone(
                     value, callback,
                     (msgs, descriptor) => format(msgs)(intl, descriptor)
                   ) }]}
-                fieldProps={{ initialValue: profile.phone }}
-                getFieldDecorator={getFieldDecorator}
-              />
-              <FormInput label="Email" field="email" getFieldDecorator={getFieldDecorator}
-                rules={[{ type: 'email', message: cmsg('emailError') }]}
-                fieldProps={{ initialValue: profile.email }}
-              />
-            </Col>
-          </Row>
-          <Row>
-            <Col span="21" offset="3">
-              <Button size="large" htmlType="submit" type="primary">{formatGlobalMsg(intl, 'ok')}</Button>
-            </Col>
-          </Row>
+            fieldProps={{ initialValue: profile.phone }}
+            getFieldDecorator={getFieldDecorator}
+          />
+          <FormInput label="Email" field="email" getFieldDecorator={getFieldDecorator}
+            rules={[{ type: 'email', message: cmsg('emailError') }]}
+            fieldProps={{ initialValue: profile.email }}
+          />
+          <FormItem {...tailFormItemLayout}>
+            <Button size="large" htmlType="submit" type="primary">{formatGlobalMsg(intl, 'save')}</Button>
+          </FormItem>
         </Form>
       </Card>
     );

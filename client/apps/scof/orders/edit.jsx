@@ -100,7 +100,7 @@ export default class EditOrder extends Component {
             </Button>
           </div>
         </Header>
-        <Content className="main-content layout-fixed-width layout-fixed-width-large">
+        <Content className="main-content layout-fixed-width layout-fixed-width-lg">
           <OrderForm operation="edit" />
         </Content>
       </div>

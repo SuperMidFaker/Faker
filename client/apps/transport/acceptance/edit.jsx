@@ -128,7 +128,7 @@ export default class ShipmentEdit extends React.Component {
             </Button>
           </div>
         </Header>
-        <Content className="main-content layout-fixed-width layout-fixed-width-large">
+        <Content className="main-content layout-fixed-width layout-fixed-width-lg">
           <Form layout="horizontal">
             <Row gutter={16}>
               <Col sm={24} md={18}>

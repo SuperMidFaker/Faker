@@ -37,7 +37,7 @@ export default class CorpOverview extends React.Component {
             </Breadcrumb.Item>
           </Breadcrumb>
         </Header>
-        <Content className="main-content layout-fixed-width layout-fixed-width-large" key="main">
+        <Content className="main-content layout-fixed-width layout-fixed-width-lg" key="main">
           <Row gutter={16}>
             <Col span={24}>
               <Card title="帐户使用">

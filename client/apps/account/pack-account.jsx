@@ -1,11 +1,11 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Menu, Icon, Layout } from 'antd';
+import { Menu, Icon, Layout, Row, Col } from 'antd';
 import NavLink from 'client/components/nav-link';
-import SimpleHeaderBar from 'client/components/simpleHeaderBar';
+import HeaderNavBar from 'client/components/headerNavBar';
 import { setNavTitle } from 'common/reducers/navbar';
 
-const { Sider, Header, Content } = Layout;
+const { Header, Content } = Layout;
 
 @connect()
 export default class AccountPack extends React.Component {
@@ -22,29 +22,29 @@ export default class AccountPack extends React.Component {
     return (
       <Layout className="layout-wrapper">
         <Header>
-          <SimpleHeaderBar title="个人设置" />
+          <HeaderNavBar title="帐号设置" compact />
         </Header>
-        <Layout>
-          <Sider className="menu-sider">
-            <Menu defaultSelectedKeys={['profile']} mode="inline">
-              <Menu.Item key="profile">
-                <NavLink to="/my/profile">
-                  <span><Icon type="user" /><span>个人资料</span></span>
-                </NavLink>
-              </Menu.Item>
-              <Menu.Item key="security">
-                <NavLink to="/my/password">
-                  <span><Icon type="lock" /><span>安全设置</span></span>
-                </NavLink>
-              </Menu.Item>
-            </Menu>
-          </Sider>
-          <Layout>
-            <Content className="main-content layout-fixed-width">
+        <Content className="main-content main-content-no-top-bar layout-fixed-width">
+          <Row gutter={16}>
+            <Col span={6}>
+              <Menu defaultSelectedKeys={['profile']} mode="inline">
+                <Menu.Item key="profile">
+                  <NavLink to="/my/profile">
+                    <span><Icon type="user" /><span>个人信息</span></span>
+                  </NavLink>
+                </Menu.Item>
+                <Menu.Item key="security">
+                  <NavLink to="/my/password">
+                    <span><Icon type="lock" /><span>修改密码</span></span>
+                  </NavLink>
+                </Menu.Item>
+              </Menu>
+            </Col>
+            <Col span={18}>
               {this.props.children}
-            </Content>
-          </Layout>
-        </Layout>
+            </Col>
+          </Row>
+        </Content>
       </Layout>
     );
   }

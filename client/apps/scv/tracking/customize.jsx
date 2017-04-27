@@ -210,7 +210,7 @@ export default class CustomizeTracking extends React.Component {
               <Button type="primary" onClick={this.handleEdit}>重新设定</Button>
             </div>
           </Header>
-          <Content className="main-content layout-fixed-width layout-fixed-width-large">
+          <Content className="main-content layout-fixed-width layout-fixed-width-lg">
             <TrackingItems tracking={tracking} />
           </Content>
         </Layout>

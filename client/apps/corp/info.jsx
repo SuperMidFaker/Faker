@@ -263,7 +263,7 @@ export default class CorpInfo extends React.Component {
           </Breadcrumb>
           <div className="top-bar-tools" />
         </Header>
-        <Content className="main-content layout-fixed-width layout-fixed-width-large" key="main">
+        <Content className="main-content layout-fixed-width layout-fixed-width-lg" key="main">
           <Row gutter={16}>
             <Col sm={24} md={16}>
               {this.renderBasicForm()}

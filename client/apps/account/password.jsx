@@ -1,13 +1,12 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Button, Card, Form, Input, Row, Col, message } from 'antd';
+import { Button, Card, Form, Input, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { changePassword } from 'common/reducers/account';
 import { getFormatMsg } from 'client/util/react-ant';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import globalMessages from 'client/common/root.i18n';
-import './acc.less';
 const formatMsg = format(messages);
 const formatGlobalMsg = format(globalMessages);
 const FormItem = Form.Item;
@@ -90,33 +89,52 @@ export default class ChangePassword extends React.Component {
   handleCancel = () => {
     this.context.router.goBack();
   }
-  renderTextInput(labelName, field, rules) {
-    const { form: { getFieldDecorator, getFieldError } } = this.props;
-    return (
-      <FormItem label={labelName} labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}
-        help={rules && getFieldError(field)} hasFeedback required
-      >
-        {getFieldDecorator(field, rules)(<Input type="password" />)}
-      </FormItem>
-    );
-  }
+
   render() {
-    const { intl } = this.props;
+    const { form: { getFieldDecorator, getFieldError }, intl } = this.props;
+    const formItemLayout = {
+      labelCol: {
+        xs: { span: 24 },
+        sm: { span: 6 },
+      },
+      wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 14 },
+      },
+    };
+    const tailFormItemLayout = {
+      wrapperCol: {
+        xs: {
+          span: 24,
+          offset: 0,
+        },
+        sm: {
+          span: 14,
+          offset: 6,
+        },
+      },
+    };
     return (
-      <Card>
-        <Form horizontal onSubmit={this.handlePasswordChange}>
-          <Row>
-            <Col sm={24} md={12}>
-              {this.renderTextInput(this.msg('oldPwd'), 'oldPwd', this.oldPwdRules)}
-              {this.renderTextInput(this.msg('newPwd'), 'newPwd', this.pwdRules)}
-              {this.renderTextInput(this.msg('confirmPwd'), 'confirmPwd', this.confirmPwdRules)}
-            </Col>
-          </Row>
-          <Row>
-            <Col span="21" offset="3">
-              <Button htmlType="submit" size="large" type="primary">{formatGlobalMsg(intl, 'ok')}</Button>
-            </Col>
-          </Row>
+      <Card title="登录密码">
+        <Form layout="horizontal" onSubmit={this.handlePasswordChange}>
+          <FormItem {...formItemLayout} label={this.msg('oldPwd')}
+            help={this.oldPwdRules && getFieldError('oldPwd')} hasFeedback required
+          >
+            {getFieldDecorator('oldPwd', this.oldPwdRules)(<Input type="password" />)}
+          </FormItem>
+          <FormItem {...formItemLayout} label={this.msg('newPwd')}
+            help={this.oldPwdRules && getFieldError('newPwd')} hasFeedback required
+          >
+            {getFieldDecorator('newPwd', this.pwdRules)(<Input type="password" />)}
+          </FormItem>
+          <FormItem {...formItemLayout} label={this.msg('confirmPwd')}
+            help={this.oldPwdRules && getFieldError('confirmPwd')} hasFeedback required
+          >
+            {getFieldDecorator('confirmPwd', this.confirmPwdRules)(<Input type="password" />)}
+          </FormItem>
+          <FormItem {...tailFormItemLayout}>
+            <Button htmlType="submit" size="large" type="primary">{formatGlobalMsg(intl, 'ok')}</Button>
+          </FormItem>
         </Form>
       </Card>
     );
