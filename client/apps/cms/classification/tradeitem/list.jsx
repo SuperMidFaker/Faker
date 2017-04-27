@@ -464,13 +464,14 @@ export default class TradeItemList extends Component {
     this.setState({ protected: !this.state.protected });
   }
   render() {
-    const { tradeItemlist, repoId, repo, listFilter, tenantId } = this.props;
+    const { tradeItemlist, repoId, repo, listFilter, tenantId, auditWay } = this.props;
     const selectedRows = this.state.selectedRowKeys;
     const rowSelection = {
       selectedRowKeys: selectedRows,
       onChange: (selectedRowKeys) => {
         this.setState({ selectedRowKeys });
       },
+      getCheckboxProps: record => ({ disabled: (auditWay === SYNC_AUDIT_METHODS[1].key && !record.master_rejected && listFilter.status !== 'unclassified') }),
     };
     const itemPassmenu = (
       <Menu onClick={this.handlePassMenuClick}>
@@ -483,13 +484,13 @@ export default class TradeItemList extends Component {
     let batchOperation = null;
     if (repo.permission === CMS_TRADE_REPO_PERMISSION.edit && selectedRows.length > 0) {
       if (listFilter.status === 'unclassified' ||
-        (listFilter.status === 'pending' && this.props.auditWay === SYNC_AUDIT_METHODS[1].key)) {
+        (listFilter.status === 'pending' && auditWay === SYNC_AUDIT_METHODS[1].key)) {
         batchOperation = (<Popconfirm title={'是否删除所有选择项？'} onConfirm={() => this.handleDeleteSelected()}>
           <Button type="danger" size="large" icon="delete">
             批量删除
           </Button>
         </Popconfirm>);
-      } else if (listFilter.status === 'pending' && this.props.auditWay === SYNC_AUDIT_METHODS[0].key) {
+      } else if (listFilter.status === 'pending' && auditWay === SYNC_AUDIT_METHODS[0].key) {
         batchOperation = (<span>
           <Dropdown.Button size="large" onClick={this.handleItemsPass} overlay={itemPassmenu}>
             <Icon type="check-circle-o" /> 批量通过
