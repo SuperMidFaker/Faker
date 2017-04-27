@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Form, Modal, Select, message } from 'antd';
-import { closeAddModal, addRelatedCusromer, loadRelatedCustomers } from 'common/reducers/cmsSettings';
+import { closeAddModal, addRelatedCusromer, loadRelatedCustomers } from 'common/reducers/cmsManifest';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 
@@ -20,10 +20,10 @@ const formItemLayout = {
   state => ({
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
-    visibleAddModal: state.cmsSettings.visibleAddModal,
+    visibleAddModal: state.cmsManifest.visibleAddModal,
     customers: state.crmCustomers.customers,
-    template: state.cmsSettings.template,
-    relatedCustomers: state.cmsSettings.relatedCustomers,
+    template: state.cmsManifest.template,
+    relatedCustomers: state.cmsManifest.relatedCustomers,
   }),
   { addRelatedCusromer, closeAddModal, loadRelatedCustomers }
 )

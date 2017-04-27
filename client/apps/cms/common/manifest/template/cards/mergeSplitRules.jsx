@@ -6,7 +6,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { loadHsCodeCategories } from 'common/reducers/cmsHsCode';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import MergeSplitForm from '../../common/manifest/form/mergeSplitRuleForm';
+import MergeSplitForm from '../../form/mergeSplitRuleForm';
 
 const formatMsg = format(messages);
 
@@ -53,7 +53,7 @@ function getFieldInits(formData) {
   state => ({
     isCustomRegisted: !!state.cmsManifest.billHead.manual_no,
     hscodeCategories: state.cmsHsCode.hscodeCategories,
-    fieldInits: getFieldInits(state.cmsSettings.formData),
+    fieldInits: getFieldInits(state.cmsManifest.formData),
   })
 )
 

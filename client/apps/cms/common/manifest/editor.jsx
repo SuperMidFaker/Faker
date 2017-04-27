@@ -4,8 +4,7 @@ import { Breadcrumb, Button, Dropdown, Layout, Menu, Icon, Form, Modal, message,
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { saveBillHead, lockManifest, openMergeSplitModal, resetBill, updateHeadNetWt, editBillBody,
-  loadBillBody, saveBillRules, setStepVisible, billHeadChange, redoManifest } from 'common/reducers/cmsManifest';
-import { loadTemplateFormVals } from 'common/reducers/cmsSettings';
+  loadBillBody, saveBillRules, setStepVisible, billHeadChange, redoManifest, loadTemplateFormVals } from 'common/reducers/cmsManifest';
 import NavLink from 'client/components/nav-link';
 import ButtonToggle from 'client/components/ButtonToggle';
 import ManifestHeadPanel from './panel/manifestHeadPanel';
@@ -34,8 +33,8 @@ const confirm = Modal.confirm;
     loginId: state.account.loginId,
     loginName: state.account.username,
     tenantId: state.account.tenantId,
-    formData: state.cmsSettings.formData,
-    templateValLoading: state.cmsSettings.templateValLoading,
+    formData: state.cmsManifest.formData,
+    templateValLoading: state.cmsManifest.templateValLoading,
     billHeadFieldsChangeTimes: state.cmsManifest.billHeadFieldsChangeTimes,
   }),
   { saveBillHead, openMergeSplitModal, resetBill, updateHeadNetWt, loadBillBody, editBillBody,

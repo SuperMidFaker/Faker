@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import { loadTemplateFormVals } from 'common/reducers/cmsSettings';
-import { loadCmsParams } from 'common/reducers/cmsManifest';
+import { loadCmsParams, loadTemplateFormVals } from 'common/reducers/cmsManifest';
 import BillTemplate from './billTemplate';
 
 function fetchData({ dispatch, state, params }) {
   const promises = [];
   promises.push(dispatch(loadCmsParams({
-    ieType: state.cmsSettings.template.ieType,
+    ieType: state.cmsManifest.template.ieType,
     tenantId: state.account.tenantId,
   })));
   promises.push(dispatch(loadTemplateFormVals(params.id)));
@@ -20,8 +19,8 @@ function fetchData({ dispatch, state, params }) {
   depth: 3,
   moduleName: 'clearance',
 })
-export default class ViewBillTemplate extends Component {
+export default class EditBillTemplate extends Component {
   render() {
-    return (<BillTemplate operation="view" />);
+    return (<BillTemplate operation="edit" />);
   }
 }
