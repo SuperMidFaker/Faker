@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { Timeline, Popover, Icon } from 'antd';
-import { loadCustomsResults, clearCustomsResults } from 'common/reducers/cmsDeclare';
+import { loadCustomsResults, cleanCustomsResults } from 'common/reducers/cmsDeclare';
 
 const TimelineItem = Timeline.Item;
 
@@ -10,7 +10,7 @@ const TimelineItem = Timeline.Item;
   state => ({
     results: state.cmsDeclare.customsResults,
   }),
-  { loadCustomsResults, clearCustomsResults })
+  { loadCustomsResults, cleanCustomsResults })
 export default class DeclStatusPopover extends React.Component {
   static propTypes = {
     results: PropTypes.arrayOf(PropTypes.shape({
@@ -26,7 +26,7 @@ export default class DeclStatusPopover extends React.Component {
     if (visible) {
       this.props.loadCustomsResults(this.props.entryId);
     } else {
-      this.props.clearCustomsResults();
+      this.props.cleanCustomsResults();
     }
   }
   render() {

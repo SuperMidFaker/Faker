@@ -10,9 +10,11 @@ const actionTypes = createActionTypes('@@welogix/cms/declaration/', [
   'DELETE_DECL', 'DELETE_DECL_SUCCEED', 'DELETE_DECL_FAIL',
   'SET_REVIEWED', 'SET_REVIEWED_SUCCEED', 'SET_REVIEWED_FAIL',
   'GET_EASIPASS_LIST', 'GET_EASIPASS_LIST_SUCCEED', 'GET_EASIPASS_LIST_FAIL',
-  'SHOW_SEND_DECL_MODAL', 'CLEAR_CUSTOMSRES',
+  'SHOW_SEND_DECL_MODAL', 'CLEAN_CUSTOMSRES',
   'SEND_DECL', 'SEND_DECL_SUCCEED', 'SEND_DECL_FAIL',
   'LOAD_CUSTOMSRES', 'LOAD_CUSTOMSRES_SUCCEED', 'LOAD_CUSTOMSRES_FAIL',
+  'OPEN_CLEARFILL_MODAL', 'CLOSE_CLEARFILL_MODAL',
+  'CLEAR_CUSTOMS', 'CLEAR_CUSTOMS_SUCCEED', 'CLEAR_CUSTOMS_FAIL',
 ]);
 
 const initialState = {
@@ -43,6 +45,11 @@ const initialState = {
     delgNo: '',
     agentCustCo: '',
   },
+  visibleClearModal: false,
+  clearFillModal: {
+    entryNo: '',
+    preEntrySeqNo: '',
+  },
   customsResults: [],
 };
 
@@ -67,8 +74,12 @@ export default function reducer(state = initialState, action) {
       return { ...state, sendDeclModal: { ...state.sendDeclModal, ...action.data } };
     case actionTypes.LOAD_CUSTOMSRES_SUCCEED:
       return { ...state, customsResults: action.result.data };
-    case actionTypes.CLEAR_CUSTOMSRES:
+    case actionTypes.CLEAN_CUSTOMSRES:
       return { ...state, customsResults: [] };
+    case actionTypes.OPEN_CLEARFILL_MODAL:
+      return { ...state, visibleClearModal: true, clearFillModal: action.data };
+    case actionTypes.CLOSE_CLEARFILL_MODAL:
+      return { ...state, visibleClearModal: false, clearFillModal: initialState.clearFillModal };
     default:
       return state;
   }
@@ -227,6 +238,34 @@ export function loadCustomsResults(entryId) {
   };
 }
 
-export function clearCustomsResults() {
-  return { type: actionTypes.CLEAR_CUSTOMSRES };
+export function cleanCustomsResults() {
+  return { type: actionTypes.CLEAN_CUSTOMSRES };
+}
+
+export function openClearFillModal(entryNo, preEntrySeqNo, delgNo) {
+  return {
+    type: actionTypes.OPEN_CLEARFILL_MODAL,
+    data: { preEntrySeqNo, entryNo, delgNo },
+  };
+}
+
+export function closeClearFillModal() {
+  return {
+    type: actionTypes.CLOSE_CLEARFILL_MODAL,
+  };
+}
+
+export function clearCustoms(clearInfo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.CLEAR_CUSTOMS,
+        actionTypes.CLEAR_CUSTOMS_SUCCEED,
+        actionTypes.CLEAR_CUSTOMS_FAIL,
+      ],
+      endpoint: 'v1/cms/customs/clear',
+      method: 'post',
+      data: clearInfo,
+    },
+  };
 }

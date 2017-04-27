@@ -7,7 +7,7 @@ import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
-import { loadDelgDecls, deleteDecl, setFilterReviewed, showSendDeclModal } from 'common/reducers/cmsDeclare';
+import { loadDelgDecls, deleteDecl, setFilterReviewed, showSendDeclModal, openClearFillModal } from 'common/reducers/cmsDeclare';
 import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
 import { openEfModal } from 'common/reducers/cmsDelegation';
 import TrimSpan from 'client/components/trimSpan';
@@ -15,6 +15,7 @@ import SearchBar from 'client/components/search-bar';
 import NavLink from 'client/components/nav-link';
 import RowUpdater from 'client/components/rowUpdater';
 import DeclnoFillModal from './modals/declNoFill';
+import ClearFillModal from './modals/customsClearFill';
 import { format } from 'client/common/i18n/helpers';
 import DeclStatusPopover from './declStatusPopover';
 import messages from './message.i18n';
@@ -37,10 +38,11 @@ const RadioButton = Radio.Button;
     listFilter: state.cmsDeclare.listFilter,
     customs: state.cmsDeclare.customs.map(cus => ({
       value: cus.customs_code,
-      text: `${cus.customs_name}`,
+      text: cus.customs_name,
     })),
   }),
-  { loadDelgDecls, openEfModal, deleteDecl, setFilterReviewed, showSendDeclModal, showPreviewer }
+  { loadDelgDecls, openEfModal, deleteDecl, setFilterReviewed,
+    showSendDeclModal, showPreviewer, openClearFillModal }
 )
 @connectNav({
   depth: 2,
@@ -290,6 +292,9 @@ export default class DelgDeclList extends Component {
   handleShowXml = (filename) => {
     window.open(`${API_ROOTS.default}v1/cms/declare/send.xml?filename=${filename}`);
   }
+  handleCustomsClearFill = (row) => {
+    this.props.openClearFillModal(row.entry_id, row.pre_entry_seq_no, row.delg_no);
+  }
   render() {
     const { delgdeclList, listFilter } = this.props;
     this.dataSource.remotes = delgdeclList;
@@ -306,7 +311,7 @@ export default class DelgDeclList extends Component {
       width: 140,
       fixed: 'right',
       render: (o, record) => {
-        if (record.status === 0) {
+        if (record.status === CMS_DECL_STATUS[0].value) {
           return (
             <span>
               <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
@@ -320,7 +325,7 @@ export default class DelgDeclList extends Component {
               </PrivilegeCover>
             </span>
           );
-        } else if (record.status === 1) {
+        } else if (record.status === CMS_DECL_STATUS[1].value) {
           return (
             <span>
               <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
@@ -332,17 +337,31 @@ export default class DelgDeclList extends Component {
               </PrivilegeCover>
             </span>
           );
-        } else if (record.status === 2) {
-          return (
-            <span>
-              {!record.entry_id &&
-              <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
+        } else {
+          const updaters = [];
+          if (!record.entry_id) {
+            updaters.push(
+              <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit" key="entry_no">
                 <RowUpdater onHit={this.handleDeclNoFill} row={record}
                   label={<span><Icon type="edit" /> 海关编号</span>}
                 />
-              </PrivilegeCover>}
-              {!record.entry_id && record.ep_send_filename && <span className="ant-divider" />}
-              {record.ep_send_filename && (
+              </PrivilegeCover>);
+          }
+          if (!record.passed) {
+            updaters.push(
+              <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit" key="clear">
+                <RowUpdater onHit={this.handleCustomsClearFill} row={record}
+                  label={<span><Icon type="edit" />标记放行</span>}
+                />
+              </PrivilegeCover>);
+          }
+          if (updaters.length === 2) {
+            updaters.splice(0, 0, <span className="ant-divider" key="divider1" />);
+          }
+          return (
+            <span>
+              {updaters}
+              {record.ep_send_filename && record.status === CMS_DECL_STATUS[2].value && (
                 <Dropdown overlay={(
                   <Menu>
                     <Menu.Item key="edit">
@@ -392,6 +411,7 @@ export default class DelgDeclList extends Component {
               />
             </div>
             <DeclnoFillModal reload={this.handleTableLoad} />
+            <ClearFillModal reload={this.handleTableLoad} />
             <SendModal ietype={this.props.ietype} reload={this.handleTableLoad} />
           </div>
         </Content>

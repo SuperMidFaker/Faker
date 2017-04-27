@@ -81,6 +81,10 @@ export default defineMessages({
     id: 'cms.customs.modal.entrynofill.title',
     defaultMessage: '回填报关单海关编号',
   },
+  customsClearModalTitle: {
+    id: 'cms.customs.modal.clear.title',
+    defaultMessage: '海关放行',
+  },
   successfulOperation: {
     id: 'cms.customs.modal.successful.operation',
     defaultMessage: '操作成功',
