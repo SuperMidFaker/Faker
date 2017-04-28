@@ -130,7 +130,7 @@ export default class MergeSplitModal extends React.Component {
           byHsCode: rule.split_hscode,
           tradeCurr: rule.split_curr,
           hsCategory: specialHsSortArr,
-          perCount: rule.split_percount.toString(),
+          perCount: rule.split_percount || '20',
         },
         sortOpt: {
           customControl: rule.sort_customs,
