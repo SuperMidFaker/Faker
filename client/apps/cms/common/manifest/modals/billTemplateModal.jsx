@@ -1,11 +1,9 @@
 import React, { PropTypes } from 'react';
-import { Modal, Form, Input, message, Radio } from 'antd';
+import { Modal, Form, Input, message } from 'antd';
 import { connect } from 'react-redux';
 import { toggleBillTempModal, createBillTemplate } from 'common/reducers/cmsManifest';
 
 const FormItem = Form.Item;
-const RadioButton = Radio.Button;
-const RadioGroup = Radio.Group;
 
 const formItemLayout = {
   labelCol: { span: 6 },
@@ -37,11 +35,12 @@ export default class BillTemplateModal extends React.Component {
   handleOk = () => {
     const formData = {};
     const field = this.props.form.getFieldsValue();
+    const ietype = this.props.ietype;
     if (field.template_name === '') {
       message.error('请填写模板名称');
     } else {
       formData.template_name = field.template_name;
-      formData.i_e_type = field.i_e_type;
+      formData.i_e_type = ietype === 'import' ? 0 : 1;
       this.handleAddNew(formData);
     }
   }
@@ -70,13 +69,6 @@ export default class BillTemplateModal extends React.Component {
           })(
             <Input />
           )}
-        </FormItem>
-        <FormItem label="进出口:" {...formItemLayout}>
-          {getFieldDecorator('i_e_type', { initialValue: 0 })(
-            <RadioGroup>
-              <RadioButton value={0}>进口</RadioButton>
-              <RadioButton value={1}>出口</RadioButton>
-            </RadioGroup>)}
         </FormItem>
       </Modal>
     );
