@@ -52,7 +52,7 @@ const initialState = {
   master: {
     sharees: [],
   },
-  shareBrokers: [],
+  slaves: [],
   compareduuid: '',
   auditWay: '',
   addSlaveModal: {
@@ -80,9 +80,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, itemData: action.result.data.tradeitem };
     case actionTypes.LOAD_SYNCS_SUCCEED:
       return { ...state, synclist: action.result.data.data };
-    case actionTypes.LOAD_CLASBROKERS_SUCCEED:
-      return { ...state, shareBrokers: action.result.data.filter(data => data.partner_tenant_id > 0)
-        .map(data => ({ tenant_id: data.partner_tenant_id, name: data.name })) };
+    case actionTypes.LOAD_REPOSLAVE_SUCCEED:
+      return { ...state, slaves: action.result.data };
     case actionTypes.SET_COMPARE_VISIBLE:
       return { ...state, visibleCompareModal: action.data };
     case actionTypes.SET_NOMINATED_VISIBLE:
@@ -102,7 +101,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_SLAVES_FAIL:
       return { ...state, slavesLoading: false };
     case actionTypes.ADD_SLAVES_SUCCEED:
-      return { ...state };
+      return { ...state, reload: true };
     default:
       return state;
   }
