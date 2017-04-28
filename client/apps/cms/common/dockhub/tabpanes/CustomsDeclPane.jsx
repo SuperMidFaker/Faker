@@ -2,14 +2,12 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import Avatar from 'react-avatar';
-import { Spin, Badge, Button, Card, Col, Icon, Progress, Row, Table, Tag, Steps, message } from 'antd';
+import { Spin, Button, Card, Col, Icon, Progress, Row, Table, message } from 'antd';
 import moment from 'moment';
-import { CMS_DECL_STATUS } from 'common/constants';
 import { openAcceptModal, ensureManifestMeta, loadDelgOperators } from 'common/reducers/cmsDelegation';
 import { loadCustPanel } from 'common/reducers/cmsDelgInfoHub';
+import CustomsDeclSheetCard from './customsDeclSheetCard';
 import InfoItem from 'client/components/InfoItem';
-
-const Step = Steps.Step;
 
 @injectIntl
 @connect(
@@ -119,66 +117,7 @@ export default class CustomsDeclPane extends React.Component {
     const columns = [{
       title: '报关单',
       dataIndex: 'customs_inspect',
-      render: (o, record) => {
-        let inspectFlag = <Tag>否</Tag>;
-        let sheetType = '';
-        if (record.sheet_type === 'CDF') {
-          sheetType = <Tag color="blue">报关单</Tag>;
-        } else if (record.sheet_type === 'FTZ') {
-          sheetType = <Tag color="green">备案清单</Tag>;
-        }
-        const decl = CMS_DECL_STATUS.filter(st => st.value === record.status)[0];
-        const declStatus = decl && <Badge status={decl.badge} text={decl.text} />;
-        const declNo = (record.entry_id) ?
-          <span>海关编号# {record.entry_id} {sheetType}</span> :
-          <span className="mdc-text-grey">预报关编号# {record.pre_entry_seq_no} {sheetType}</span>;
-        if (o === 1) {
-          inspectFlag = <Tag color="#F04134">是</Tag>;
-        } else if (o === 2) {
-          inspectFlag = <Tag color="rgba(39, 187, 71, 0.65)">通过</Tag>;
-        }
-        let step = 0;
-        if (record.status === CMS_DECL_STATUS[3].value) {
-          step = 1;
-        } else if (record.passed) {
-          step = 2;
-        }
-        return (<Card title={<span>{declNo}</span>} extra={declStatus} bodyStyle={{ paddingBottom: 56 }}>
-          <Row gutter={8}>
-            <Col span="12">
-              <InfoItem label="收发货人" field={record.trade_name} />
-            </Col>
-            <Col span="12">
-              <InfoItem label="申报单位" field={record.agent_name} />
-            </Col>
-            <Col span="8">
-              <InfoItem label="进出口岸" field={record.i_e_port} />
-            </Col>
-            <Col span="8">
-              <InfoItem label="监管方式" field={record.trade_mode} />
-            </Col>
-            <Col span="8">
-              <InfoItem label="海关查验" field={inspectFlag} />
-            </Col>
-          </Row>
-          <div className="card-footer">
-            <Steps progressDot current={step}>
-              <Step description={`生成 ${record.created_date
-                    ? moment(record.created_date).format('MM.DD HH.MM') : ''}`}
-              />
-              <Step description={`复核 ${record.reviewed_date
-                    ? moment(record.reviewed_date).format('MM.DD HH.MM') : ''}`}
-              />
-              <Step description={`发送 ${record.epsend_date
-                    ? moment(record.epsend_date).format('MM.DD HH.MM') : ''}`}
-              />
-              <Step description={`放行 ${record.clear_date
-                    ? moment(record.clear_date).format('MM.DD HH.MM') : ''}`}
-              />
-            </Steps>
-          </div>
-        </Card>);
-      },
+      render: (o, record) => <CustomsDeclSheetCard customsDecl={record} />,
     }];
     const assignable = (customsPanel.customs_tenant_id === tenantId || customsPanel.customs_tenant_id === -1);
     // const assigneeOptions = this.state.data.map(d => <Option key={d.value}>{d.text}</Option>);

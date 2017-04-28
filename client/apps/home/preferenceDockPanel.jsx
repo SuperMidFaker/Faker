@@ -1,8 +1,9 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Icon, Radio, Tabs } from 'antd';
+import { Switch, Icon, Radio, Tabs } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import DockPanel from 'client/components/DockPanel';
+import InfoItem from 'client/components/InfoItem';
 import { format } from 'client/common/i18n/helpers';
 import { hidePreferenceDock, changeUserLocale, loadTranslation } from 'common/reducers/preference';
 import messages from './message.i18n';
@@ -44,13 +45,17 @@ export default class PreferenceDockPanel extends React.Component {
       >
         <Tabs defaultActiveKey="language">
           <TabPane tab={<span><Icon type="global" />{this.msg('preferenceLanguage')}</span>} key="language">
-            <RadioGroup size="large" onChange={this.handleLocaleChange} value={locale}>
-              <RadioButton value="zh">简体中文</RadioButton>
-              <RadioButton value="en">English</RadioButton>
-            </RadioGroup>
+            <InfoItem label="选择界面语言"
+              field={<RadioGroup size="large" onChange={this.handleLocaleChange} value={locale}>
+                <RadioButton value="zh">简体中文</RadioButton>
+                <RadioButton value="en">English</RadioButton>
+              </RadioGroup>}
+            />
           </TabPane>
           <TabPane tab={<span><Icon type="bell" />{this.msg('preferenceNotification')}</span>} key="notification">
-            notification
+            <InfoItem label="桌面推送" field="开启后，有新消息时浏览器会向你推送动态通知"
+              action={<Switch defaultChecked={false} onChange={this.onChange} />}
+            />
           </TabPane>
         </Tabs>
       </DockPanel>

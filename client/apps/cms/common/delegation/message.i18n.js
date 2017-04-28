@@ -151,7 +151,7 @@ export default defineMessages({
   },
   broker: {
     id: 'cms.delegation.delg.broker',
-    defaultMessage: '申报单位',
+    defaultMessage: '报关单位',
   },
   inspbroker: {
     id: 'cms.delegation.delg.inspbroker',

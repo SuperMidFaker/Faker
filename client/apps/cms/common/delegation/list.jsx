@@ -190,7 +190,7 @@ export default class DelegationList extends Component {
     dataIndex: 'customs_name',
     render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
-    title: this.msg('declStatus'),
+    title: this.msg('status'),
     width: 130,
     dataIndex: 'status',
     render: (o, record) => {
