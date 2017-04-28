@@ -79,7 +79,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_TRADE_ITEM_SUCCEED:
       return { ...state, itemData: action.result.data.tradeitem };
     case actionTypes.LOAD_SYNCS_SUCCEED:
-      return { ...state, synclist: action.result.data.data };
+      return { ...state, synclist: action.result.data };
     case actionTypes.LOAD_REPOSLAVE_SUCCEED:
       return { ...state, slaves: action.result.data };
     case actionTypes.SET_COMPARE_VISIBLE:
