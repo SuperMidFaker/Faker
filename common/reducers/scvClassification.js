@@ -272,7 +272,7 @@ export function updateAudit(syncId, audit) {
   };
 }
 
-export function renewSharees(contribute, sharees) {
+export function renewSharees(masterTenantId, contribute, sharees) {
   return {
     [CLIENT_API]: {
       types: [
@@ -282,7 +282,7 @@ export function renewSharees(contribute, sharees) {
       ],
       endpoint: 'v1/scv/classification/sync/update/sharees',
       method: 'post',
-      data: { contribute, sharees },
+      data: { tenantId: masterTenantId, contribute, sharees },
     },
   };
 }
