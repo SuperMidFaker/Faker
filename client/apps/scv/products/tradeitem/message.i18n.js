@@ -12,7 +12,7 @@ const messages = defineMessages({
   },
   tradeItemMaster: {
     id: 'scv.products.tradeitem.master',
-    defaultMessage: '企业物料库',
+    defaultMessage: '物料归类库',
   },
   filterUnclassified: {
     id: 'scv.products.tradeitem.filter.unclassified',
