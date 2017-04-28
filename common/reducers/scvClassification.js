@@ -10,6 +10,7 @@ const actionTypes = createActionTypes('@@welogix/scv/classification/', [
   'LOAD_TRADE_ITEM', 'LOAD_TRADE_ITEM_SUCCEED', 'LOAD_TRADE_ITEM_FAIL',
   'LOAD_SYNCS', 'LOAD_SYNCS_SUCCEED', 'LOAD_SYNCS_FAIL',
   'LOAD_REPOSLAVE', 'LOAD_REPOSLAVE_SUCCEED', 'LOAD_REPOSLAVE_FAIL',
+  'LOAD_CLASBROKERS', 'LOAD_CLASBROKERS_SUCCEED', 'LOAD_CLASBROKERS_FAIL',
   'UPDATE_AUDIT', 'UPDATE_AUDIT_SUCCEED', 'UPDATE_AUDIT_FAIL',
   'RENEW_SHAREE', 'RENEW_SHAREE_SUCCEED', 'RENEW_SHAREE_FAIL',
   'SET_COMPARE_VISIBLE', 'SET_NOMINATED_VISIBLE',
@@ -35,6 +36,8 @@ const initialState = {
   },
   conflictItemlist: {
     totalCount: 0,
+    current: 1,
+    pageSize: 20,
     searchText: '',
     data: [],
   },
@@ -45,12 +48,7 @@ const initialState = {
   visibleCompareModal: false,
   visibleNominatedModal: false,
   itemData: {},
-  synclist: {
-    totalCount: 0,
-    current: 1,
-    pageSize: 20,
-    data: [],
-  },
+  synclist: [],
   master: {
     sharees: [],
   },
@@ -73,7 +71,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_TRADE_ITEMS_FAIL:
       return { ...state, tradeItemsLoading: false };
     case actionTypes.LOAD_CONFLICT_ITEMS:
-      return { ...state, tradeItemsLoading: true, itemData: initialState.itemData };
+      return { ...state, tradeItemsLoading: true };
     case actionTypes.LOAD_CONFLICT_ITEMS_SUCCEED:
       return { ...state, conflictItemlist: action.result.data, listFilter: JSON.parse(action.params.filter), tradeItemsLoading: false };
     case actionTypes.LOAD_CONFLICT_ITEMS_FAIL:
@@ -81,7 +79,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_TRADE_ITEM_SUCCEED:
       return { ...state, itemData: action.result.data.tradeitem };
     case actionTypes.LOAD_SYNCS_SUCCEED:
-      return { ...state, synclist: action.result.data };
+      return { ...state, synclist: action.result.data.data };
     case actionTypes.LOAD_REPOSLAVE_SUCCEED:
       return { ...state, slaves: action.result.data };
     case actionTypes.SET_COMPARE_VISIBLE:
@@ -92,8 +90,6 @@ export default function reducer(state = initialState, action) {
       return { ...state, compareduuid: action.result.data };
     case actionTypes.GET_AUDIT_WAY_SUCCEED:
       return { ...state, auditWay: action.result.data };
-    case actionTypes.LOAD_MASTERCONF_SUCCEED:
-      return { ...state, master: { sharees: action.result.data.sharees } };
     case actionTypes.OPEN_ADD_SLAVE_MODAL:
       return { ...state, addSlaveModal: { visible: true } };
     case actionTypes.CLOSE_ADD_SLAVE_MODAL:
@@ -246,6 +242,21 @@ export function loadRepoSlaves(tenantId) {
   };
 }
 
+export function loadClassificatonBrokers(tenantId, role, businessType) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_CLASBROKERS,
+        actionTypes.LOAD_CLASBROKERS_SUCCEED,
+        actionTypes.LOAD_CLASBROKERS_FAIL,
+      ],
+      endpoint: 'v1/cooperation/partners',
+      method: 'get',
+      params: { tenantId, role, businessType },
+    },
+  };
+}
+
 export function updateAudit(syncId, audit) {
   return {
     [CLIENT_API]: {
@@ -261,7 +272,7 @@ export function updateAudit(syncId, audit) {
   };
 }
 
-export function renewSharees(tenantId, contribute, sharees) {
+export function renewSharees(contribute, sharees) {
   return {
     [CLIENT_API]: {
       types: [
@@ -271,7 +282,7 @@ export function renewSharees(tenantId, contribute, sharees) {
       ],
       endpoint: 'v1/scv/classification/sync/update/sharees',
       method: 'post',
-      data: { tenantId, contribute, sharees },
+      data: { contribute, sharees },
     },
   };
 }
