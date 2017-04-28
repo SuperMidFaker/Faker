@@ -25,6 +25,7 @@ const SeletableKeyNameMap = {};
 GOODSTYPES.forEach((gt) => { SeletableKeyNameMap[`goods-${gt.value}`] = gt.text; });
 WRAP_TYPE.forEach((wt) => { SeletableKeyNameMap[`wrap-${wt.value}`] = wt.text; });
 SCOF_ORDER_TRANSFER.forEach((ot) => { SeletableKeyNameMap[`transfer-${ot.value}`] = ot.text; });
+SCOF_ORDER_TRANSMODES.forEach((ot) => { SeletableKeyNameMap[`transmode-${ot.value}`] = ot.text; });
 
 @injectIntl
 @connect(
@@ -273,7 +274,7 @@ export default class OrderForm extends Component {
                 </Col>
                 <Col sm={16}>
                   <FormItem label="运输方式" {...spanFormItemLayout}>
-                    <RadioGroup value={formData.cust_shipmt_trans_mode} onChange={ev => this.handleChange('cust_shipmt_trans_mode', ev.target.value)}>
+                    <RadioGroup value={formData.cust_shipmt_trans_mode} onChange={ev => this.handleKvChange('cust_shipmt_trans_mode', ev.target.value, 'transmode')}>
                       { (formData.cust_shipmt_transfer === 'IMP' || formData.cust_shipmt_transfer === 'EXP') &&
                       <RadioButton value={SCOF_ORDER_TRANSMODES[0].value}><i className={SCOF_ORDER_TRANSMODES[0].icon} /> {SCOF_ORDER_TRANSMODES[0].text}</RadioButton>
                     }

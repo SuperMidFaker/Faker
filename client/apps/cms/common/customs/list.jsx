@@ -186,6 +186,76 @@ export default class DelgDeclList extends Component {
     dataIndex: 'backfill_date',
     width: 100,
     render: backdt => (backdt ? moment(backdt).format('YYYY.MM.DD') : '-'),
+  }, {
+    title: this.msg('opColumn'),
+    width: 140,
+    fixed: 'right',
+    render: (o, record) => {
+      if (record.status === CMS_DECL_STATUS[0].value) {
+        return (
+          <span>
+            <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
+              <RowUpdater onHit={this.handleReview} label={<span><Icon type="check-circle-o" /> {this.msg('review')}</span>} row={record} />
+            </PrivilegeCover>
+            <span className="ant-divider" />
+            <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
+              <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleDelete(record.id, record.delg_no, record.bill_seq_no)}>
+                <a role="button"><Icon type="delete" /></a>
+              </Popconfirm>
+            </PrivilegeCover>
+          </span>
+        );
+      } else if (record.status === CMS_DECL_STATUS[1].value) {
+        return (
+          <span>
+            <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
+              <RowUpdater onHit={this.handleShowSendDeclModal} label={<span><Icon type="mail" /> {this.msg('sendPackets')}</span>} row={record} />
+            </PrivilegeCover>
+            <span className="ant-divider" />
+            <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
+              <RowUpdater onHit={this.handleRecall} label={<span><Icon type="left-circle-o" /> {this.msg('recall')}</span>} row={record} />
+            </PrivilegeCover>
+          </span>
+        );
+      } else {
+        const updaters = [];
+        if (!record.entry_id) {
+          updaters.push(
+            <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit" key="entry_no">
+              <RowUpdater onHit={this.handleDeclNoFill} row={record}
+                label={<span><Icon type="edit" /> 海关编号</span>}
+              />
+            </PrivilegeCover>);
+        }
+        if (!record.passed) {
+          updaters.push(
+            <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit" key="clear">
+              <RowUpdater onHit={this.handleCustomsClearFill} row={record}
+                label={<span><Icon type="edit" />标记放行</span>}
+              />
+            </PrivilegeCover>);
+        }
+        if (updaters.length === 2) {
+          updaters.splice(1, 0, <span className="ant-divider" key="divider1" />);
+        }
+        return (
+          <span>
+            {updaters}
+            {record.ep_send_filename && record.status === CMS_DECL_STATUS[2].value && (
+              <Dropdown overlay={(
+                <Menu>
+                  <Menu.Item key="edit">
+                    <a role="button" onClick={() => this.handleShowXml(record.ep_send_filename)}><Icon type="eye-o" /> EDI报文</a>
+                  </Menu.Item>
+                </Menu>)}
+              >
+                <a><Icon type="down" /></a>
+              </Dropdown>
+            )}
+          </span>
+        );
+      }
+    },
   }]
   dataSource = new Table.DataSource({
     fetcher: params => this.props.loadDelgDecls(params),
@@ -304,79 +374,6 @@ export default class DelgDeclList extends Component {
         this.setState({ selectedRowKeys });
       },
     };
-    let columns = [];
-    columns = [...this.columns];
-    columns.push({
-      title: this.msg('opColumn'),
-      width: 140,
-      fixed: 'right',
-      render: (o, record) => {
-        if (record.status === CMS_DECL_STATUS[0].value) {
-          return (
-            <span>
-              <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-                <RowUpdater onHit={this.handleReview} label={<span><Icon type="check-circle-o" /> {this.msg('review')}</span>} row={record} />
-              </PrivilegeCover>
-              <span className="ant-divider" />
-              <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-                <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleDelete(record.id, record.delg_no, record.bill_seq_no)}>
-                  <a role="button"><Icon type="delete" /></a>
-                </Popconfirm>
-              </PrivilegeCover>
-            </span>
-          );
-        } else if (record.status === CMS_DECL_STATUS[1].value) {
-          return (
-            <span>
-              <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-                <RowUpdater onHit={this.handleShowSendDeclModal} label={<span><Icon type="mail" /> {this.msg('sendPackets')}</span>} row={record} />
-              </PrivilegeCover>
-              <span className="ant-divider" />
-              <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-                <RowUpdater onHit={this.handleRecall} label={<span><Icon type="left-circle-o" /> {this.msg('recall')}</span>} row={record} />
-              </PrivilegeCover>
-            </span>
-          );
-        } else {
-          const updaters = [];
-          if (!record.entry_id) {
-            updaters.push(
-              <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit" key="entry_no">
-                <RowUpdater onHit={this.handleDeclNoFill} row={record}
-                  label={<span><Icon type="edit" /> 海关编号</span>}
-                />
-              </PrivilegeCover>);
-          }
-          if (!record.passed) {
-            updaters.push(
-              <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit" key="clear">
-                <RowUpdater onHit={this.handleCustomsClearFill} row={record}
-                  label={<span><Icon type="edit" />标记放行</span>}
-                />
-              </PrivilegeCover>);
-          }
-          if (updaters.length === 2) {
-            updaters.splice(0, 0, <span className="ant-divider" key="divider1" />);
-          }
-          return (
-            <span>
-              {updaters}
-              {record.ep_send_filename && record.status === CMS_DECL_STATUS[2].value && (
-                <Dropdown overlay={(
-                  <Menu>
-                    <Menu.Item key="edit">
-                      <a role="button" onClick={() => this.handleShowXml(record.ep_send_filename)}><Icon type="eye-o" /> EDI报文</a>
-                    </Menu.Item>
-                  </Menu>)}
-                >
-                  <a><Icon type="down" /></a>
-                  </Dropdown>
-                )}
-            </span>
-          );
-        }
-      },
-    });
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Header className="top-bar">
@@ -406,7 +403,7 @@ export default class DelgDeclList extends Component {
               </div>
             </div>
             <div className="panel-body table-panel expandable">
-              <Table rowSelection={rowSelection} columns={columns} rowKey="pre_entry_seq_no" dataSource={this.dataSource}
+              <Table rowSelection={rowSelection} columns={this.columns} rowKey="pre_entry_seq_no" dataSource={this.dataSource}
                 loading={delgdeclList.loading} scroll={{ x: 1650 }}
               />
             </div>

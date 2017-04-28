@@ -73,8 +73,8 @@ export default class ScvClassificationSlaveConfig extends React.Component {
   handleAuditChange = (syncId, audit) => {
     this.props.updateAudit(syncId, audit);
   }
-  handleShareChange = (masterTenantId, contributeTenantId, shareeTenants) => {
-    this.props.renewSharees(masterTenantId, contributeTenantId, shareeTenants);
+  handleShareChange = (contributeTenantId, shareeTenants) => {
+    this.props.renewSharees(this.props.tenantId, contributeTenantId, shareeTenants);
   }
   dataSource = new Table.DataSource({
     fetcher: params => this.props.loadSyncList(params),
