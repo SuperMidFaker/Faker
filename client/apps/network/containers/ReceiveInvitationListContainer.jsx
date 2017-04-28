@@ -7,7 +7,7 @@ import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import PartnershipsColumn from '../components/partnershipsColumn';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadReceiveInvitations, rejectInvitation, acceptInvitation } from 'common/reducers/invitation';
-import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES, PARTNER_BUSINESSES } from 'common/constants';
+import { PARTNER_ROLES } from 'common/constants';
 
 const rowSelection = {
   onChange() {},
@@ -83,7 +83,6 @@ export default class ReceiveInvitationList extends Component {
     dataIndex: 'operation',
     key: 'operation',
     render: (_, record) => {
-      console.log(record);
       if (record.status === 0) {
         return (
           <PrivilegeCover module="corp" feature="partners" action="edit">
@@ -104,34 +103,26 @@ export default class ReceiveInvitationList extends Component {
     for (let i = 0; i < partnerships.length; i++) {
       if (partnerships[i].business_type && partnerships[i].role) {
         if (partnerships[i].role === PARTNER_ROLES.CUS) {
-          if (partnerships[i].business_type.indexOf(PARTNER_BUSINESSE_TYPES.clearance) >= 0) {
-            reversePartnerships.push({
-              role: PARTNER_ROLES.SUP,
-              business: [PARTNER_BUSINESSES.CCB, PARTNER_BUSINESSES.CIB, PARTNER_BUSINESSES.ICB].join(','),
-              business_type: PARTNER_BUSINESSE_TYPES.clearance,
-            });
-          }
-          if (partnerships[i].business_type.indexOf(PARTNER_BUSINESSE_TYPES.transport) >= 0) {
-            reversePartnerships.push({
-              role: PARTNER_ROLES.SUP,
-              business: PARTNER_BUSINESSES.TRS,
-              business_type: PARTNER_BUSINESSE_TYPES.transport,
-            });
-          }
+          // 一级承运商添加客户只区分bussiness_type
+          reversePartnerships.push({
+            role: PARTNER_ROLES.SUP,
+            business_type: partnerships[i].business_type,
+            business: null,
+          });
         } else if (partnerships[i].role === PARTNER_ROLES.SUP) {
-          let businessType = '';
-          businessType = partnerships[i].business_type;
-          const index = reversePartnerships.findIndex(item => item.role === PARTNER_ROLES.CUS);
-          if (index >= 0) {
+          // 客户添加服务商没有business值/一级承运商添加供应商指定了business
+          const businessType = partnerships[i].business_type;
+          const business = partnerships[i].business;
+          if (business) {
             reversePartnerships.push({
-              role: PARTNER_ROLES.CUS,
-              business: '',
-              business_type: `${reversePartnerships[index].business_type},${businessType}`,
+              role: PARTNER_ROLES.DCUS,
+              business,
+              business_type: businessType,
             });
           } else {
             reversePartnerships.push({
               role: PARTNER_ROLES.CUS,
-              business: '',
+              business: null,
               business_type: businessType,
             });
           }
