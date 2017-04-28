@@ -342,19 +342,27 @@ export default class TradeItemList extends Component {
     const filter = { ...this.props.listFilter, status: ev.target.value };
     this.handleConflictListLoad(1, filter);
   }
-  handleItemPass = (row) => {
-    this.props.setItemStatus({
-      ids: [row.id],
-      status: TRADE_ITEM_STATUS.classified,
-      tenantId: this.props.tenantId,
-      conflicted: false }).then((result) => {
-        if (result.error) {
-          message.error(result.error.message, 10);
-        } else {
-          message.success('归类通过');
-          this.handleItemListLoad();
+  handleSetItemStatus = (ids, status, tenantId, conflicted) => {
+    this.props.setItemStatus({ ids, status, tenantId, conflicted }).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        if (status === TRADE_ITEM_STATUS.classified) {
+          if (result.data.length > 0) {
+            const msg = `货号为${result.data.join(', ')}的[中文规格型号]中的填写的项数与申报要素的项数需要一致；且以"|无其他非必报要素"结尾，请修改后重新审核`;
+            message.error(msg, 10);
+          } else {
+            message.success('归类通过');
+          }
+        } else if (status === TRADE_ITEM_STATUS.unclassified) {
+          message.warning('归类拒绝');
         }
-      });
+        this.handleItemListLoad();
+      }
+    });
+  }
+  handleItemPass = (row) => {
+    this.handleSetItemStatus([row.id], TRADE_ITEM_STATUS.classified, this.props.tenantId, false);
   }
   handleItemRefused = (row) => {
     const reason = this.props.form.getFieldValue('reason');
@@ -373,32 +381,20 @@ export default class TradeItemList extends Component {
       });
   }
   handleItemsPass = () => {
-    this.props.setItemStatus({
-      ids: this.state.selectedRowKeys,
-      status: TRADE_ITEM_STATUS.classified,
-      tenantId: this.props.tenantId,
-      conflicted: false }).then((result) => {
-        if (result.error) {
-          message.error(result.error.message, 10);
-        } else {
-          this.setState({ selectedRowKeys: [] });
-          this.handleItemListLoad();
-        }
-      });
+    this.handleSetItemStatus(this.state.selectedRowKeys, TRADE_ITEM_STATUS.classified, this.props.tenantId, false);
   }
   handleItemsRefused = () => {
-    this.props.setItemStatus({
-      ids: this.state.selectedRowKeys,
-      status: TRADE_ITEM_STATUS.unclassified,
-      tenantId: this.props.tenantId,
-      conflicted: false }).then((result) => {
-        if (result.error) {
-          message.error(result.error.message, 10);
-        } else {
-          this.setState({ selectedRowKeys: [] });
-          this.handleItemListLoad();
-        }
-      });
+    this.handleSetItemStatus(this.state.selectedRowKeys, TRADE_ITEM_STATUS.unclassified, this.props.tenantId, false);
+  }
+  handlePassMenuClick = (e) => {
+    if (e.key === 'allPass') {
+      this.handleSetItemStatus(['all'], TRADE_ITEM_STATUS.classified, this.props.tenantId, false);
+    }
+  }
+  handleRefuseMenuClick = (e) => {
+    if (e.key === 'allRefuse') {
+      this.handleSetItemStatus(['all'], TRADE_ITEM_STATUS.unclassified, this.props.tenantId, false);
+    }
   }
   handleSearch = (value) => {
     const { listFilter } = this.props;
@@ -416,23 +412,31 @@ export default class TradeItemList extends Component {
         this.setState({ selectedRowKeys });
       },
     };
+    const itemPassmenu = (
+      <Menu onClick={this.handlePassMenuClick}>
+        <Menu.Item key="allPass"><Icon type="check-circle-o" /> 全部通过</Menu.Item>
+      </Menu>);
+    const itemRefusedmenu = (
+      <Menu onClick={this.handleRefuseMenuClick}>
+        <Menu.Item key="allRefuse"><Icon type="close-circle-o" /> 全部拒绝</Menu.Item>
+      </Menu>);
     let batchOperation = null;
     if (selectedRows.length > 0) {
       if (listFilter.status === 'unclassified') {
-        batchOperation = (<Popconfirm title={'是否删除所有选择项？'} onConfirm={() => this.handleDeleteSelected()}>
+        batchOperation = (<Popconfirm title={'只能删除所选项中归类来源是当前租户的数据，确认删除？'} onConfirm={() => this.handleDeleteSelected()}>
           <Button type="danger" size="large" icon="delete">
             批量删除
           </Button>
         </Popconfirm>);
       } else if (listFilter.status === 'pending') {
         batchOperation = (<span>
-          <Button size="large" icon="check-circle-o" onClick={this.handleItemsPass}>
-            批量通过
-          </Button>
-          <Button size="large" icon="check-close-o" onClick={this.handleItemsRefused} >
-            批量拒绝
-          </Button>
-          <Popconfirm title={'是否删除所有选择项？'} onConfirm={() => this.handleDeleteSelected()}>
+          <Dropdown.Button size="large" onClick={this.handleItemsPass} overlay={itemPassmenu}>
+            <Icon type="check-circle-o" /> 批量通过
+          </Dropdown.Button>
+          <Dropdown.Button size="large" onClick={this.handleItemsRefused} overlay={itemRefusedmenu}>
+            <Icon type="close-circle-o" /> 批量拒绝
+          </Dropdown.Button>
+          <Popconfirm title={'只能删除所选项中归类来源是当前租户的数据，确认删除？'} onConfirm={() => this.handleDeleteSelected()}>
             <Button type="danger" size="large" icon="delete">
               批量删除
             </Button>
