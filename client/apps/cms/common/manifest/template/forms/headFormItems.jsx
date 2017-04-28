@@ -205,7 +205,7 @@ export class RelationAutoCompSelect extends React.Component {
     const custOpt = options.filter(op => op.custcode !== null && op.custcode.length > 0);
     const compOpt = options.filter(op => op.code !== null && op.code.length > 0);
     return (
-      <FormItem labelCol={{ span: 4 }} wrapperCol={{ span: 20 }} label={label} required>
+      <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} label={label} required>
         <Row gutter={8}>
           <Col span="6">
             <FormItem style={{ marginBottom: 0 }}>
