@@ -28,7 +28,6 @@ function fetchData({ state, dispatch }) {
     reload: state.scvClassification.reload,
     tenantId: state.account.tenantId,
     synclist: state.scvClassification.synclist,
-    brokers: state.scvClassification.slaves,
   }),
   { updateAudit, renewSharees, openAddSlaveModal, loadSyncList }
 )
@@ -58,7 +57,7 @@ export default class SlaveSyncPane extends React.Component {
   }, {
     title: this.msg('classifyShareScope'),
     width: 150,
-    render: (_, row) => (<SyncShareEditCell checkedBrokers={row.shares} shareBrokers={this.props.brokers.map(brk => ({
+    render: (_, row) => (<SyncShareEditCell checkedBrokers={row.shares} shareBrokers={this.props.synclist.map(brk => ({
       tenant_id: brk.broker_tenant_id,
       name: brk.broker_name,
     }))}
@@ -71,26 +70,6 @@ export default class SlaveSyncPane extends React.Component {
   handleShareChange = (masterTenantId, contributeTenantId, shareeTenants) => {
     this.props.renewSharees(masterTenantId, contributeTenantId, shareeTenants);
   }
-  dataSource = new Table.DataSource({
-    fetcher: params => this.props.loadSyncList(params),
-    resolve: result => result.data,
-    getPagination: (result, resolve) => ({
-      total: result.totalCount,
-      current: resolve(result.totalCount, result.current, result.pageSize),
-      showSizeChanger: true,
-      showQuickJumper: false,
-      pageSize: result.pageSize,
-    }),
-    getParams: (pagination) => {
-      const params = {
-        tenantId: this.props.tenantId,
-        pageSize: pagination.pageSize,
-        current: pagination.current,
-      };
-      return params;
-    },
-    remotes: this.props.synclist,
-  })
   handleAddSlave = () => {
     this.props.openAddSlaveModal();
   }
@@ -101,7 +80,6 @@ export default class SlaveSyncPane extends React.Component {
   }
   render() {
     const { loading, synclist } = this.props;
-    this.dataSource.remotes = synclist;
     return (
       <div>
         <div className="toolbar">
@@ -110,7 +88,7 @@ export default class SlaveSyncPane extends React.Component {
           </Button>
         </div>
         <div className="panel-body table-panel">
-          <Table columns={this.columns} dataSource={this.dataSource} loading={loading} rowKey="id" scroll={{ x: 1200 }} />
+          <Table columns={this.columns} dataSource={synclist} loading={loading} rowKey="id" scroll={{ x: 1200 }} />
         </div>
         <AddSlaveModal reload={this.handleSlavesReload} />
       </div>

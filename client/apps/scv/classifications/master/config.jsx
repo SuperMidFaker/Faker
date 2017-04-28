@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Layout, Form, Select, Alert, Row, Col } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { loadMasterConfig, loadSyncList, renewSharees } from 'common/reducers/scvClassification';
+import { loadMasterConfig, loadRepoSlaves, renewSharees } from 'common/reducers/scvClassification';
 import connectNav from 'client/common/decorators/connect-nav';
 import ScvClassificationWrapper from '../wrapper';
 import { formatMsg } from '../message.i18n';
@@ -13,7 +13,7 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 function fetchData({ state, dispatch }) {
   const proms = [
-    dispatch(loadSyncList(state.account.tenantId)),
+    dispatch(loadRepoSlaves(state.account.tenantId)),
     dispatch(loadMasterConfig({
       tenantId: state.account.tenantId,
     }))];
