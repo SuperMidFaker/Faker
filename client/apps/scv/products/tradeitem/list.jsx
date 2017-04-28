@@ -518,7 +518,7 @@ export default class TradeItemList extends Component {
                 {this.msg('classification')}
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                {this.msg('tradeItemMaster')}
+                {this.msg('productsTradeItem')}
               </Breadcrumb.Item>
             </Breadcrumb>
             <span />

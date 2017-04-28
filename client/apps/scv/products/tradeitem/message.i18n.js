@@ -266,6 +266,10 @@ const messages = defineMessages({
     id: 'scv.products.slave.add',
     defaultMessage: '添加从库',
   },
+  productsTradeItem: {
+    id: 'scv.products.trade.item',
+    defaultMessage: '物料归类库',
+  },
 });
 export default messages;
 export const formatMsg = formati18n(messages);
