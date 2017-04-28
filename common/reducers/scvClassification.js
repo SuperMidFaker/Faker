@@ -81,9 +81,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_TRADE_ITEM_SUCCEED:
       return { ...state, itemData: action.result.data.tradeitem };
     case actionTypes.LOAD_SYNCS_SUCCEED:
-      return { ...state, synclist: action.result.data };
-    case actionTypes.LOAD_REPOSLAVE_SUCCEED:
-      return { ...state, slaves: action.result.data };
+      return { ...state, synclist: action.result.data, slaves: action.result.data.data };
     case actionTypes.SET_COMPARE_VISIBLE:
       return { ...state, visibleCompareModal: action.data };
     case actionTypes.SET_NOMINATED_VISIBLE:
@@ -227,21 +225,6 @@ export function loadSyncList(params) {
       endpoint: 'v1/scv/classification/slave/config',
       method: 'get',
       params,
-    },
-  };
-}
-
-export function loadRepoSlaves(tenantId) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.LOAD_REPOSLAVE,
-        actionTypes.LOAD_REPOSLAVE_SUCCEED,
-        actionTypes.LOAD_REPOSLAVE_FAIL,
-      ],
-      endpoint: 'v1/scv/classification/repo/slaves',
-      method: 'get',
-      params: { master: tenantId },
     },
   };
 }

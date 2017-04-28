@@ -7,7 +7,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import BasicForm from './forms/basicForm';
 import SiderForm from './forms/siderForm';
 import { loadPartners } from 'common/reducers/partner';
-import { loadScvTradeItem, itemEditedSave, loadRepoSlaves } from 'common/reducers/scvClassification';
+import { loadScvTradeItem, itemEditedSave, loadSyncList } from 'common/reducers/scvClassification';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -30,7 +30,7 @@ function fetchData({ dispatch, params }) {
     tenantId: state.account.tenantId,
     slaves: state.scvClassification.slaves,
   }),
-  { itemEditedSave, loadPartners, loadRepoSlaves }
+  { itemEditedSave, loadPartners, loadSyncList }
 )
 @connectNav({
   depth: 3,
@@ -48,7 +48,7 @@ export default class EditTradeItem extends Component {
     router: PropTypes.object.isRequired,
   }
   componentWillMount() {
-    this.props.loadRepoSlaves(this.props.tenantId);
+    this.props.loadSyncList(this.props.tenantId);
   }
   msg = key => formatMsg(this.props.intl, key);
   handleSave = () => {

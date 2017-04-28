@@ -5,7 +5,7 @@ import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
 import BasicForm from './forms/basicForm';
 import SiderForm from './forms/siderForm';
-import { addItem, loadRepoSlaves } from 'common/reducers/scvClassification';
+import { addItem, loadSyncList } from 'common/reducers/scvClassification';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from './message.i18n';
 import { format } from 'client/common/i18n/helpers';
@@ -22,7 +22,7 @@ const { Header, Content } = Layout;
     loginName: state.account.username,
     slaves: state.scvClassification.slaves,
   }),
-  { addItem, loadRepoSlaves }
+  { addItem, loadSyncList }
 )
 @connectNav({
   depth: 3,
@@ -42,7 +42,7 @@ export default class CreateTradeItem extends Component {
     router: PropTypes.object.isRequired,
   }
   componentWillMount() {
-    this.props.loadRepoSlaves(this.props.tenantId);
+    this.props.loadSyncList(this.props.tenantId);
   }
   msg = key => formatMsg(this.props.intl, key)
   handleSave = () => {

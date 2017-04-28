@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Modal, Form, message, Select, Radio, Col, Upload, Button, Icon, Alert } from 'antd';
-import { setNominatedVisible, nominatedImport, loadTradeItems, setCompareVisible, loadRepoSlaves } from 'common/reducers/scvClassification';
+import { setNominatedVisible, nominatedImport, loadTradeItems, setCompareVisible, loadSyncList } from 'common/reducers/scvClassification';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 
@@ -23,7 +23,7 @@ const Option = Select.Option;
     listFilter: state.scvClassification.listFilter,
     tradeItemlist: state.scvClassification.tradeItemlist,
   }),
-  { setNominatedVisible, loadRepoSlaves, nominatedImport, loadTradeItems, setCompareVisible }
+  { setNominatedVisible, loadSyncList, nominatedImport, loadTradeItems, setCompareVisible }
 )
 export default class NominatedImport extends React.Component {
   static propTypes = {
@@ -37,7 +37,7 @@ export default class NominatedImport extends React.Component {
     attachments: [],
   }
   componentWillMount() {
-    this.props.loadRepoSlaves(this.props.tenantId);
+    this.props.loadSyncList(this.props.tenantId);
   }
   handleCancel = () => {
     this.props.setNominatedVisible(false);

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Button } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { loadSyncList, loadRepoSlaves, updateAudit, renewSharees, openAddSlaveModal } from 'common/reducers/scvClassification';
+import { loadSyncList, updateAudit, renewSharees, openAddSlaveModal } from 'common/reducers/scvClassification';
 import connectNav from 'client/common/decorators/connect-nav';
 import Table from 'client/components/remoteAntTable';
 import EditableCell from 'client/components/EditableCell';
@@ -15,11 +15,8 @@ import AddSlaveModal from '../modals/addSlaveModal';
 
 function fetchData({ state, dispatch }) {
   const proms = [
-    dispatch(loadRepoSlaves(state.account.tenantId)),
     dispatch(loadSyncList({
       tenantId: state.account.tenantId,
-      pageSize: state.scvClassification.synclist.pageSize,
-      current: state.scvClassification.synclist.current,
     }))];
   return Promise.all(proms);
 }
@@ -30,8 +27,6 @@ function fetchData({ state, dispatch }) {
   state => ({
     reload: state.scvClassification.reload,
     tenantId: state.account.tenantId,
-    pageSize: state.scvClassification.synclist.pageSize,
-    current: state.scvClassification.synclist.current,
     synclist: state.scvClassification.synclist,
     brokers: state.scvClassification.slaves,
   }),
@@ -63,7 +58,10 @@ export default class SlaveSyncPane extends React.Component {
   }, {
     title: this.msg('classifyShareScope'),
     width: 150,
-    render: (_, row) => (<SyncShareEditCell checkedBrokers={row.shares} shareBrokers={this.props.brokers}
+    render: (_, row) => (<SyncShareEditCell checkedBrokers={row.shares} shareBrokers={this.props.brokers.map(brk => ({
+      tenant_id: brk.broker_tenant_id,
+      name: brk.broker_name,
+    }))}
       onSave={this.handleShareChange} contribute={row.broker_tenant_id} tenantId={this.props.tenantId}
     />),
   }]
@@ -99,8 +97,6 @@ export default class SlaveSyncPane extends React.Component {
   handleSlavesReload = () => {
     this.props.loadSyncList({
       tenantId: this.props.tenantId,
-      pageSize: this.props.pageSize,
-      current: this.props.current,
     });
   }
   render() {
