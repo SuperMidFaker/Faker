@@ -299,7 +299,7 @@ export function loadDelgBill(params) {
   };
 }
 
-export function loadContainers(billSeqNo) {
+export function loadContainers(delgNo) {
   return {
     [CLIENT_API]: {
       types: [
@@ -309,7 +309,7 @@ export function loadContainers(billSeqNo) {
       ],
       endpoint: 'v1/cms/manifest/containers',
       method: 'get',
-      params: { billSeqNo },
+      params: { delgNo },
     },
   };
 }

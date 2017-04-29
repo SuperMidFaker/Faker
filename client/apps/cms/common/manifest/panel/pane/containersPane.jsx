@@ -47,12 +47,12 @@ export default class ContainersPane extends React.Component {
     datas: [],
   };
   componentDidMount() {
-    this.props.loadContainers(this.props.billHead.bill_seq_no);
+    this.props.loadContainers(this.props.billHead.delg_no);
   }
   componentWillReceiveProps(nextProps) {
     if (this.props.billHead !== nextProps.billHead ||
       (this.props.tabKey !== nextProps.tabKey && nextProps.tabKey === 'container')) {
-      this.props.loadContainers(nextProps.billHead.bill_seq_no);
+      this.props.loadContainers(nextProps.billHead.delg_no);
     }
     if (this.props.containers !== nextProps.containers) {
       this.setState({ datas: nextProps.containers });
