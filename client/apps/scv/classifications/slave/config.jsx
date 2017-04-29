@@ -67,7 +67,9 @@ export default class ScvClassificationSlaveConfig extends React.Component {
     this.props.updateAudit(syncId, audit);
   }
   handleShareChange = (contributeTenantId, shareeTenants) => {
-    this.props.renewSharees(this.props.tenantId, contributeTenantId, shareeTenants);
+    this.props.renewSharees(this.props.tenantId, contributeTenantId, shareeTenants).then(() => {
+      this.handleSlavesReload();
+    });
   }
   handleAddSlave = () => {
     this.props.openAddSlaveModal();

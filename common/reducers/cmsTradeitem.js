@@ -445,7 +445,7 @@ export function upgradeMode(datas) {
         actionTypes.UPGRADE_MODE_SUCCEED,
         actionTypes.UPGRADE_MODE_FAIL,
       ],
-      endpoint: 'v1/cms/tradeitem/upgrade/mode',
+      endpoint: 'v1/cms/tradeitem/upgrade/repo',
       method: 'post',
       data: datas,
     },

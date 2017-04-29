@@ -718,7 +718,7 @@ export default class TradeItemList extends Component {
                 </div>
               </div>
               <div className="panel-body table-panel">
-                <RemoteTable loading={this.props.tradeItemsLoading} rowSelection={rowSelection} rowKey={record => record.id} columns={columns} dataSource={this.dataSource} scroll={{ x: 3800 }} />
+                <RemoteTable loading={this.props.tradeItemsLoading} rowSelection={rowSelection} rowKey="id" columns={columns} dataSource={this.dataSource} scroll={{ x: 3800 }} />
               </div>
               <AddTradeRepoModal />
               <ImportComparisonModal data={this.state.compareduuid} />

@@ -77,22 +77,17 @@ export default class AddTradeRepoModal extends React.Component {
       <Modal title={this.msg('addRepo')} visible={visibleAddModal}
         onOk={this.handleOk} onCancel={this.handleCancel}
       >
-        <Form layout="vertical">
-          <FormItem label={this.msg('customer')}>
-            {getFieldDecorator('customs', { initialValue: null }
-                  )(<Select
-                    showSearch
-                    placeholder="选择客户"
-                    optionFilterProp="children"
-                    size="large"
-                    onChange={this.handleSelectChange}
-                  >
-                    {newCustomers.map(data => (<Option key={data.id} value={data.id}
-                      search={`${data.partner_code}${data.name}`}
-                    >{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>)
-                    )}
-                  </Select>)
-                }
+        <Form>
+          <FormItem label={this.msg('repoOwner')} labelCol={{ span: 3 }} wrapperCol={{ span: 19 }}>
+            {getFieldDecorator('customs')(
+              <Select showSearch placeholder="选择客户" optionFilterProp="children" size="large"
+                onChange={this.handleSelectChange}
+              >
+                {newCustomers.map(data => (<Option key={data.id} value={data.id}
+                  search={`${data.partner_code}${data.name}`}
+                >{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>)
+                )}
+              </Select>)}
           </FormItem>
         </Form>
       </Modal>

@@ -28,7 +28,7 @@ function fetchData({ state, dispatch, cookie, location }) {
     const prom = dispatch(loadCorpByDomain(cookie, query.subdomain));
     promises.push(prom);
   }
-  if (!isLoaded(state, 'intl')) {
+  if (!isLoaded(state, 'preference')) {
     // set initial locale on server render FIXME
     const prom = dispatch(loadTranslation(state.preference.locale));
     promises.push(prom);
@@ -76,7 +76,7 @@ export default class Root extends React.Component {
     const { locale, messages } = this.props;
     return (
       <LocaleProvider locale={AntdLocaleMap[locale]}>
-        <IntlProvider locale={locale} messages={messages}>
+        <IntlProvider locale={locale} messages={messages} defaultLocale={Root.defaultProps.locale}>
           {this.props.children}
         </IntlProvider>
       </LocaleProvider>);

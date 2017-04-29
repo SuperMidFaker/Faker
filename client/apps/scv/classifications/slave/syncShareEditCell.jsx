@@ -66,8 +66,12 @@ export default class SyncShareEditCell extends React.Component {
     let plainText = null;
     if (!editMode) {
       plainText = value.slice(0, 5).map((cb) => {
-        const name = shareBrokers.filter(sb => sb.tenant_id === cb)[0].name;
-        return <Tag key={`${cb}${name}`}>{name}</Tag>;
+        const shb = shareBrokers.filter(sb => sb.tenant_id === cb)[0];
+        if (shb) {
+          return <Tag key={`${cb}${shb.name}`}>{shb.name}</Tag>;
+        } else {
+          return null;
+        }
       });
       if (checkedBrokers.length > 5) {
         plainText.push('...');

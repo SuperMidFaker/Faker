@@ -137,6 +137,10 @@ const messages = defineMessages({
     id: 'cms.classificagtion.tradeitem.modal.add.owner',
     defaultMessage: '添加企业物料库',
   },
+  repoOwner: {
+    id: 'cms.classificagtion.tradeitem.modal.repo.owner',
+    defaultMessage: '货主',
+  },
   addItem: {
     id: 'cms.classificagtion.tradeitem.table.add',
     defaultMessage: '添加物料',
