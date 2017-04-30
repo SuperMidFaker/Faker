@@ -45,24 +45,19 @@ export default class MainContainer extends Component {
         <Header className="top-bar">
           <Breadcrumb>
             <Breadcrumb.Item>
-              <Icon type="team" /> 合作伙伴
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              协作邀请
+              <Icon type="team" /> 协作邀请
             </Breadcrumb.Item>
           </Breadcrumb>
+          <RadioGroup size="large" defaultValue={invitationType} onChange={this.handleInvitationTypeChange}>
+            <RadioButton value="0">待邀请</RadioButton>
+            <RadioButton value="1">收到的邀请</RadioButton>
+            <RadioButton value="2">发出的邀请</RadioButton>
+          </RadioGroup>
           <div className="toolbar-right" />
         </Header>
         <Content className="main-content">
           <QueueAnim type="right">
             <div className="page-body" key="body">
-              <div className="toolbar">
-                <RadioGroup defaultValue={invitationType} onChange={this.handleInvitationTypeChange}>
-                  <RadioButton value="0">待邀请</RadioButton>
-                  <RadioButton value="1">收到的邀请</RadioButton>
-                  <RadioButton value="2">发出的邀请</RadioButton>
-                </RadioGroup>
-              </div>
               <div className="panel-body table-panel">
                 {content}
               </div>

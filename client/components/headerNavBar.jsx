@@ -114,7 +114,7 @@ export default class HeaderNavBar extends React.Component {
           {!compact && <MenuDivider />}
           <MenuItem>
             <a role="button" onClick={this.handleLogout}>
-              <Icon type="logout" />
+              <Icon type="poweroff" />
               <span>{formatMsg(intl, 'userLogout')}</span>
             </a>
           </MenuItem>

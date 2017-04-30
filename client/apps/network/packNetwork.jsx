@@ -29,7 +29,7 @@ export default class CollabNetworkPack extends React.Component {
             <Menu defaultSelectedKeys={['partners']} mode="inline">
               <Menu.Item key="partners">
                 <NavLink to="/network/partners">
-                  <span><Icon type="team" /><span>合作伙伴</span></span>
+                  <span><Icon type="team" /><span>协作邀请</span></span>
                 </NavLink>
               </Menu.Item>
             </Menu>

@@ -1,5 +1,5 @@
 import React, { PropTypes, Component } from 'react';
-import { Table } from 'antd';
+import { Badge, Icon, Table, Tooltip } from 'antd';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { addUniqueKeys } from 'client/util/dataTransform';
@@ -41,23 +41,28 @@ export default class ToInviteList extends Component {
     title: '合作伙伴',
     dataIndex: 'name',
     key: 'name',
+    render: (o, record) => {
+      if (record.partner_tenant_id === -1) {
+        return <Tooltip title="线下企业" placement="left"><Badge status="default" />{o}</Tooltip>;
+      } else if (record.partner_tenant_id > 0) {
+        return <Tooltip title="线上租户" placement="left"><Badge status="processing" />{o}</Tooltip>;
+      }
+    },
   }, {
     title: '统一社会信用代码',
     dataIndex: 'partner_unique_code',
     key: 'partner_unique_code',
   }, {
-    title: '代码',
-    dataIndex: 'partner_code',
-    key: 'partner_code',
-  }, {
     title: '业务关系',
     dataIndex: 'partnerships',
     key: 'partnerships',
+    width: 200,
     render: o => <PartnershipsColumn partnerships={o} />,
   }, {
     title: '创建日期',
     dataIndex: 'created_date',
     key: 'created_date',
+    width: 150,
     render(_, record) {
       return (
         <span>{moment(record.created_date).format('YYYY/MM/DD HH:mm')}</span>
@@ -67,6 +72,7 @@ export default class ToInviteList extends Component {
     title: '操作',
     dataIndex: 'tenant_type',
     key: 'tenant_type',
+    width: 100,
     render: (_, record) => {
       const inviteeInfo = {
         name: record.name,
@@ -81,18 +87,18 @@ export default class ToInviteList extends Component {
         if (record.partner_tenant_id === -1) {
           return (
             <PrivilegeCover module="corp" feature="partners" action="edit">
-              <a onClick={() => this.handleShowInviteModal(inviteeInfo)}>申请开通</a>
+              <a onClick={() => this.handleShowInviteModal(inviteeInfo)}><Icon type="rocket" /> 申请开通</a>
             </PrivilegeCover>
           );
         } else {
           return (
             <PrivilegeCover module="corp" feature="partners" action="edit">
-              <a onClick={() => this.props.inviteOnlinePartner({ tenantId, inviteeInfo })}>邀请加入</a>
+              <a onClick={() => this.props.inviteOnlinePartner({ tenantId, inviteeInfo })}><Icon type="star-o" /> 邀请加入</a>
             </PrivilegeCover>
           );
         }
       } else if (record.invited === 2) {
-        return '已申请';
+        return <span><Icon type="hourglass" /> 已申请</span>;
       }
 
       return '';
@@ -108,7 +114,9 @@ export default class ToInviteList extends Component {
     const { toInvites } = this.props;
     return (
       <div>
-        <Table columns={this.columns} dataSource={addUniqueKeys(toInvites)} rowSelection={rowSelection} />
+        <Table columns={this.columns} dataSource={addUniqueKeys(toInvites)} rowSelection={rowSelection}
+          pagination={{ showSizeChanger: true, defaultPageSize: 20 }}
+        />
         <InviteModal />
       </div>
     );

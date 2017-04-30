@@ -1,5 +1,5 @@
 import React, { PropTypes, Component } from 'react';
-import { Table } from 'antd';
+import { Badge, Icon, Table, Tag, Tooltip } from 'antd';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { addUniqueKeys } from 'client/util/dataTransform';
@@ -44,19 +44,28 @@ export default class ReceiveInvitationList extends Component {
     title: '合作伙伴',
     dataIndex: 'inviter_name',
     key: 'inviter_name',
+    render: (o, record) => {
+      if (record.inviter_tenant_id === -1) {
+        return <Tooltip title="线下企业" placement="left"><Badge status="default" />{o}</Tooltip>;
+      } else if (record.inviter_tenant_id > 0) {
+        return <Tooltip title="线上租户" placement="left"><Badge status="processing" />{o}</Tooltip>;
+      }
+    },
   }, {
-    title: '代码',
-    dataIndex: 'invitee_code',
-    key: 'invitee_code',
+    title: '统一社会信用代码',
+    dataIndex: 'partner_unique_code',
+    key: 'partner_unique_code',
   }, {
     title: '业务关系',
     dataIndex: 'partnerships',
     key: 'partnerships',
+    width: 200,
     render: o => <PartnershipsColumn partnerships={o} />,
   }, {
     title: '收到时间',
     dataIndex: 'created_date',
     key: 'created_date',
+    width: 150,
     render(_, record) {
       return (
         <span>{moment(record.created_date).format('YYYY/MM/DD HH:mm')}</span>
@@ -66,14 +75,15 @@ export default class ReceiveInvitationList extends Component {
     title: '状态',
     dataIndex: 'status',
     key: 'status',
+    width: 120,
     render(_, record) {
       switch (record.status) {
         case 0:
-          return (<span>待回应</span>);
+          return (<Tag color="#ffbf00">待回应</Tag>);
         case 1:
-          return (<span>已接受</span>);
+          return (<Tag color="#00a854">已接受</Tag>);
         case 2:
-          return (<span>已拒绝</span>);
+          return (<Tag color="#f04134">已拒绝</Tag>);
         default:
           return null;
       }
@@ -82,14 +92,15 @@ export default class ReceiveInvitationList extends Component {
     title: '操作',
     dataIndex: 'operation',
     key: 'operation',
+    width: 100,
     render: (_, record) => {
       if (record.status === 0) {
         return (
           <PrivilegeCover module="corp" feature="partners" action="edit">
             <span>
-              <a onClick={() => this.handleAcceptBtnClick(record.id, record.partner_id, record.partnerships)}>接受</a>
+              <a onClick={() => this.handleAcceptBtnClick(record.id, record.partner_id, record.partnerships)}><Icon type="check-circle-o" /> 接受</a>
               <span className="ant-divider" />
-              <a onClick={() => this.handleRejectBtnClick(record.id, record.partner_id)}>拒绝</a>
+              <a onClick={() => this.handleRejectBtnClick(record.id, record.partner_id)}><Icon type="close-circle-o" /> 拒绝</a>
             </span>
           </PrivilegeCover>
         );
@@ -139,7 +150,9 @@ export default class ReceiveInvitationList extends Component {
 
     const dataSource = receiveInvitations.filter(invitation => invitation.status !== 3);
     return (
-      <Table columns={this.columns} dataSource={addUniqueKeys(dataSource)} rowSelection={rowSelection} />
+      <Table columns={this.columns} dataSource={addUniqueKeys(dataSource)} rowSelection={rowSelection}
+        pagination={{ showSizeChanger: true, defaultPageSize: 20 }}
+      />
     );
   }
 }
