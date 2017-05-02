@@ -119,9 +119,9 @@ export const CMS_DELEGATION_STATUS = {
 };
 
 export const CMS_DELEGATION_MANIFEST = {
-  uncreated: 0,
-  created: 1,
-  manifested: 2,
+  uncreated: 0,   // 未制单
+  created: 1,     // 制单中
+  manifested: 2,  // 已生成报关草单（制单完成）
 };
 
 export const CMS_BILLING_STATUS = {

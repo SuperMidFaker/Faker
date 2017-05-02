@@ -199,10 +199,10 @@ export default class DelegationList extends Component {
       } else if (record.status === CMS_DELEGATION_STATUS.processing) {
         if (record.manifested === CMS_DELEGATION_MANIFEST.uncreated) {
           return <Badge status="warning" text="未制单" />;
-        } else if (record.manifested === CMS_DELEGATION_MANIFEST.uncreated) {
+        } else if (record.manifested === CMS_DELEGATION_MANIFEST.created) {
           return <Badge status="warning" text="制单中" />;
-        } else {
-          return <Badge status="processing" text="已生成报关草单" />;
+        } else if (record.manifested === CMS_DELEGATION_MANIFEST.manifested) {
+          return <Badge status="processing" text="制单完成" />;
         }
       } else if (record.status === CMS_DELEGATION_STATUS.declaring) {
         if (record.sub_status === 1) {
@@ -476,8 +476,7 @@ export default class DelegationList extends Component {
                 <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
                   <RowUpdater onHit={this.handleDelegationAccept} label={<span><Icon type="check-square-o" /> {this.msg('accepting')}</span>} row={record} />
                 </PrivilegeCover>
-                <span className="ant-divider" />
-                <RowUpdater onHit={() => this.handleDelegationAssign(record)} label={<span><Icon type="share-alt" /> {this.msg('delgDistribute')}</span>} row={record} />
+
                 <span className="ant-divider" />
                 <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
                   <Dropdown overlay={menuOverlay}>
@@ -488,10 +487,19 @@ export default class DelegationList extends Component {
             );
           } else if (record.status === CMS_DELEGATION_STATUS.accepted) {
               // 2. 当前租户直接分配, 分配下级非线下租户且未接单
-            return (
-              <Popconfirm title="你确定撤回分配吗?" onConfirm={() => this.handleDelgAssignRecall(record)} >
-                <a role="button">{this.msg('delgRecall')}</a>
-              </Popconfirm>);
+            if (record.customs_tenant_id === tenantId) {
+              return (
+                <span>
+                  <RowUpdater onHit={this.handleManifestCreate} label={<span><Icon type="file-add" /> {this.msg('createManifest')}</span>} row={record} />
+                  <span className="ant-divider" />
+                  <RowUpdater onHit={() => this.handleDelegationAssign(record)} label={<span><Icon type="share-alt" /> {this.msg('delgDistribute')}</span>} row={record} />
+                </span>);
+            } else if (record.customs_tenant_id === -1 || record.sub_status === CMS_DELEGATION_STATUS.unaccepted) {
+              return (
+                <Popconfirm title="你确定撤回分配吗?" onConfirm={() => this.handleDelgAssignRecall(record)} >
+                  <a role="button"><Icon type="rollback" /> {this.msg('delgRecall')}</a>
+                </Popconfirm>);
+            }
           } else if (record.status === CMS_DELEGATION_STATUS.processing) {
             // 3 报关委托/分包已接单
             let menuOverlay = null;
@@ -507,17 +515,21 @@ export default class DelegationList extends Component {
               // 3.1 当前租户为发送方，且报关供应商为线下租户
               // 3.2 当前租户为发送方，且报关供应商为线上租户，但分包尚未接单
               menuOverlay = (
-                <Popconfirm title="你确定撤回分配吗?" onConfirm={() => this.handleDelgAssignRecall(record)}>
-                  <a role="button">{this.msg('delgRecall')}</a>
-                </Popconfirm>);
+                <Menu>
+                  <Menu.Item>
+                    <Popconfirm title="你确定撤回分配吗?" onConfirm={() => this.handleDelgAssignRecall(record)}>
+                      <a role="button"><Icon type="rollback" /> {this.msg('delgRecall')}</a>
+                    </Popconfirm>
+                  </Menu.Item>
+                </Menu>);
             }
             let manifestOp = <RowUpdater onHit={this.handleManifestView} label={<span><Icon type="eye-o" /> {this.msg('viewManifest')}</span>} row={record} />;
             switch (record.manifested) {
               case CMS_DELEGATION_MANIFEST.uncreated:
-                manifestOp = <RowUpdater onHit={this.handleManifestCreate} label={<span><Icon type="eye-o" /> {this.msg('createManifest')}</span>} row={record} />;
+                manifestOp = <RowUpdater onHit={this.handleManifestCreate} label={<span><Icon type="file-add" /> {this.msg('createManifest')}</span>} row={record} />;
                 break;
               case CMS_DELEGATION_MANIFEST.created:
-                manifestOp = <RowUpdater onHit={this.handleManifestMake} label={<span><Icon type="eye-o" /> {this.msg('editManifest')}</span>} row={record} />;
+                manifestOp = <RowUpdater onHit={this.handleManifestMake} label={<span><Icon type="file-text" /> {this.msg('editManifest')}</span>} row={record} />;
                 break;
               default:
                 break;
