@@ -98,7 +98,7 @@ export default class ReceiveInvitationList extends Component {
         return (
           <PrivilegeCover module="corp" feature="partners" action="edit">
             <span>
-              <a onClick={() => this.handleAcceptBtnClick(record.id, record.partner_id, record.partnerships)}><Icon type="check-circle-o" /> 接受</a>
+              <a onClick={() => this.handleAcceptBtnClick(record.id, record.partner_id, record.partnerships, record.customs_code)}><Icon type="check-circle-o" /> 接受</a>
               <span className="ant-divider" />
               <a onClick={() => this.handleRejectBtnClick(record.id, record.partner_id)}><Icon type="close-circle-o" /> 拒绝</a>
             </span>
@@ -109,7 +109,7 @@ export default class ReceiveInvitationList extends Component {
       }
     },
   }]
-  handleAcceptBtnClick = (id, partnerId, partnerships) => {
+  handleAcceptBtnClick = (id, partnerId, partnerships, customsCode) => {
     const reversePartnerships = [];
     for (let i = 0; i < partnerships.length; i++) {
       if (partnerships[i].business_type && partnerships[i].role) {
@@ -140,7 +140,7 @@ export default class ReceiveInvitationList extends Component {
         }
       }
     }
-    this.props.acceptInvitation(id, partnerId, reversePartnerships);
+    this.props.acceptInvitation(id, partnerId, reversePartnerships, customsCode);
   }
   handleRejectBtnClick = (id, partnerId) => {
     this.props.rejectInvitation(id, partnerId);

@@ -148,7 +148,7 @@ export function loadReceiveInvitations(tenantId) {
   };
 }
 
-export function acceptInvitation(id, partnerId, reversePartnerships) {
+export function acceptInvitation(id, partnerId, reversePartnerships, customsCode) {
   return {
     [CLIENT_API]: {
       types: [
@@ -160,7 +160,7 @@ export function acceptInvitation(id, partnerId, reversePartnerships) {
       method: 'post',
       id,
       status: 1,
-      data: { id, partnerId, reversePartnerships },
+      data: { id, partnerId, reversePartnerships, customsCode },
     },
   };
 }
