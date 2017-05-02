@@ -38,14 +38,17 @@ export default class ProgressColumn extends React.Component {
     });
     let progWidth = '';
     switch (progress.length) {
+      case 1:
+        progWidth = 160;
+        break;
       case 2:
-        progWidth = '25%';
+        progWidth = 160 * 2 + 100;
         break;
       case 3:
-        progWidth = '50%';
+        progWidth = 160 * 3 + 100 * 2;
         break;
       case 4:
-        progWidth = '75%';
+        progWidth = 160 * 4 + 100 * 3;
         break;
       default:
         progWidth = '100%';

@@ -251,7 +251,7 @@ export default class OrderForm extends Component {
           </Select></span>}
           bodyStyle={{ padding: 8 }}
         >
-          <Collapse bordered={false} defaultActiveKey={['trading', 'shipment', 'consignment']}>
+          <Collapse bordered={false} defaultActiveKey={['trading', 'shipment']}>
             <Panel header="贸易信息" key="trading">
               <Row gutter={16}>
                 <Col sm={8}>
@@ -410,13 +410,6 @@ export default class OrderForm extends Component {
                   </FormItem>
                 </Col>
               </Row>
-            </Panel>
-            <Panel header="收发货信息" key="consignment">
-              <Steps size="small">
-                <Step status="wait" title="发货方" icon={<Icon type="environment-o" />} />
-                <Step status="wait" title="收货方" icon={<Icon type="environment" />} />
-
-              </Steps>
             </Panel>
           </Collapse>
         </Card>

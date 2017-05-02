@@ -122,7 +122,10 @@ img {
 .ant-menu-item a {
   display: block;
 }
-
+.ant-steps .ant-steps-title,
+.ant-steps .ant-steps-head {
+  transition: all .3s;
+}
 .ant-steps-description > .ant-card {
   margin: 16px;
 }
@@ -143,6 +146,13 @@ img {
 }
 .ant-table-placeholder {
   border-bottom: none;
+}
+.ant-table-row-hover {
+  .ant-steps .ant-steps-title,
+  .ant-steps .ant-steps-head {
+    background: #ecf6fd;
+    transition: all .3s;
+  }
 }
 .ant-table-fixed-left,
 .ant-table-fixed-right {

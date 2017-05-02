@@ -4,11 +4,9 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Button, Dropdown, Menu, Icon, Radio, Popconfirm, Progress, message, Layout, Tooltip } from 'antd';
 import Table from 'client/components/remoteAntTable';
-import MdIcon from 'client/components/MdIcon';
 import { Link } from 'react-router';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/search-bar';
-import ButtonToggle from 'client/components/ButtonToggle';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -25,7 +23,6 @@ const { Header, Content } = Layout;
 const formatMsg = format(messages);
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
-const ButtonGroup = Button.Group;
 
 function fetchData({ state, dispatch }) {
   return dispatch(loadOrders({
@@ -148,7 +145,7 @@ export default class OrderList extends React.Component {
 
     const columns = [{
       title: '订单',
-      width: 250,
+      width: 200,
       fixed: 'left',
       render: (o, record) => <OrderNoColumn order={record} />,
     }, {
@@ -256,12 +253,6 @@ export default class OrderList extends React.Component {
             <RadioButton value={SCOF_ORDER_TRANSFER[1].value}><Icon type={SCOF_ORDER_TRANSFER[1].icon} /> {SCOF_ORDER_TRANSFER[1].text}</RadioButton>
             <RadioButton value={SCOF_ORDER_TRANSFER[2].value}><Icon type={SCOF_ORDER_TRANSFER[2].icon} /> {SCOF_ORDER_TRANSFER[2].text}</RadioButton>
           </RadioGroup>
-          <span />
-          <ButtonGroup>
-            <ButtonToggle size="large" toggle><MdIcon type="boat" />&nbsp;</ButtonToggle>
-            <ButtonToggle size="large" toggle>&nbsp;<MdIcon type="airplane" />&nbsp;</ButtonToggle>
-            <ButtonToggle size="large" toggle>&nbsp;<MdIcon type="truck" /></ButtonToggle>
-          </ButtonGroup>
           <div className="top-bar-tools">
             <Button type="primary" size="large" icon="plus" onClick={this.handleCreate}>
               {this.msg('new')}
@@ -277,7 +268,7 @@ export default class OrderList extends React.Component {
               </div>
             </div>
             <div className="panel-body table-panel">
-              <Table rowSelection={rowSelection} dataSource={dataSource} columns={columns} rowKey="id" loading={loading} scroll={{ x: 1800 }} />
+              <Table rowSelection={rowSelection} dataSource={dataSource} columns={columns} rowKey="id" loading={loading} scroll={{ x: 1500 }} />
             </div>
           </div>
         </Content>

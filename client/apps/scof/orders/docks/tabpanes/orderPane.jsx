@@ -33,7 +33,7 @@ export default class OrderPane extends React.Component {
     return (
       <div className="pane-content tab-pane">
         <Card bodyStyle={{ padding: 0 }}>
-          <Collapse bordered={false} defaultActiveKey={['trading', 'shipment', 'consignment']}>
+          <Collapse bordered={false} defaultActiveKey={['trading', 'shipment']}>
             <Panel header="贸易信息" key="trading">
               <Row>
                 <Col span="8">
@@ -139,7 +139,6 @@ export default class OrderPane extends React.Component {
                 </Col>
               </Row>
             </Panel>
-            <Panel header="收发货信息" key="consignment" />
           </Collapse>
 
         </Card>
