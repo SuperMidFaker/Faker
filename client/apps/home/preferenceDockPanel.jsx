@@ -45,7 +45,7 @@ export default class PreferenceDockPanel extends React.Component {
       >
         <Tabs defaultActiveKey="language">
           <TabPane tab={<span><Icon type="global" />{this.msg('preferenceLanguage')}</span>} key="language">
-            <InfoItem label="选择界面语言"
+            <InfoItem label={this.msg('labelChooseLanguage')}
               field={<RadioGroup size="large" onChange={this.handleLocaleChange} value={locale}>
                 <RadioButton value="zh">简体中文</RadioButton>
                 <RadioButton value="en">English</RadioButton>
@@ -53,7 +53,7 @@ export default class PreferenceDockPanel extends React.Component {
             />
           </TabPane>
           <TabPane tab={<span><Icon type="bell" />{this.msg('preferenceNotification')}</span>} key="notification">
-            <InfoItem label="桌面推送" field="开启后，有新消息时浏览器会向你推送动态通知"
+            <InfoItem label={this.msg('labelDesktopPush')} field={this.msg('descDesktopPush')}
               action={<Switch defaultChecked={false} onChange={this.onChange} />}
             />
           </TabPane>

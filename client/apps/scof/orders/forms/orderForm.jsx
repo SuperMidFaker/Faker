@@ -229,6 +229,14 @@ export default class OrderForm extends Component {
       cust_shipmt_wrap_type: formData.cust_shipmt_wrap_type,
     };
     const current = formData.subOrders.length || 0;
+    const cargoTransferHint = (
+      <ul>
+        根据货物是否有实际进出境运输区分
+        <li>进口:有实际进境运输</li>
+        <li>出口:有实际出境运输</li>
+        <li>境内流转:无实际进出境运输</li>
+      </ul>
+    );
     return (
       <Form layout="horizontal" className="order-flow-form">
         <Card title={<span>客户需求
@@ -266,14 +274,22 @@ export default class OrderForm extends Component {
             <Panel header="货运信息" key="shipment">
               <Row gutter={16}>
                 <Col sm={8}>
-                  <FormItem label="货物流向" {...formItemLayout} required="true">
+                  <FormItem label={(
+                    <span>
+                      货物流向&nbsp;
+                      <Popover content={cargoTransferHint} title="提示" trigger="hover">
+                        <Icon type="question-circle-o" />
+                      </Popover>
+                    </span>
+                  )} {...formItemLayout} required="true"
+                  >
                     <RadioGroup value={formData.cust_shipmt_transfer} onChange={ev => this.handleKvChange('cust_shipmt_transfer', ev.target.value, 'transfer')}>
                       {SCOF_ORDER_TRANSFER.map(sot => <RadioButton value={sot.value}><Icon type={sot.icon} /> {sot.text}</RadioButton>)}
                     </RadioGroup>
                   </FormItem>
                 </Col>
                 <Col sm={16}>
-                  <FormItem label="运输方式" {...spanFormItemLayout}>
+                  {formData.cust_shipmt_transfer && formData.cust_shipmt_transfer !== 'DOM' && <FormItem label="运输方式" {...spanFormItemLayout}>
                     <RadioGroup value={formData.cust_shipmt_trans_mode} onChange={ev => this.handleKvChange('cust_shipmt_trans_mode', ev.target.value, 'transmode')}>
                       { (formData.cust_shipmt_transfer === 'IMP' || formData.cust_shipmt_transfer === 'EXP') &&
                       <RadioButton value={SCOF_ORDER_TRANSMODES[0].value}><i className={SCOF_ORDER_TRANSMODES[0].icon} /> {SCOF_ORDER_TRANSMODES[0].text}</RadioButton>
@@ -281,11 +297,8 @@ export default class OrderForm extends Component {
                       { (formData.cust_shipmt_transfer === 'IMP' || formData.cust_shipmt_transfer === 'EXP') &&
                       <RadioButton value={SCOF_ORDER_TRANSMODES[1].value}><i className={SCOF_ORDER_TRANSMODES[1].icon} /> {SCOF_ORDER_TRANSMODES[1].text}</RadioButton>
                     }
-                      { (formData.cust_shipmt_transfer === 'DOM') &&
-                      <RadioButton value={SCOF_ORDER_TRANSMODES[2].value}><i className={SCOF_ORDER_TRANSMODES[2].icon} /> {SCOF_ORDER_TRANSMODES[2].text}</RadioButton>
-                    }
                     </RadioGroup>
-                  </FormItem>
+                  </FormItem>}
                 </Col>
                 <Col sm={8}>
                   { (formData.cust_shipmt_transfer !== 'DOM' && formData.cust_shipmt_trans_mode === '2') &&

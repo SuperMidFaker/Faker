@@ -168,6 +168,14 @@ const messages = defineMessages({
     id: 'component.popover.helpcenter.guide',
     defaultMessage: '快速上手',
   },
+  back: {
+    id: 'component.nav.back',
+    defaultMessage: '返回',
+  },
+  close: {
+    id: 'component.nav.close',
+    defaultMessage: '关闭',
+  },
 });
 
 export default messages;
