@@ -225,15 +225,13 @@ export default class TransportForm extends Component {
   }
   handleShipmentRelate = () => {
     const { shipment } = this.props;
-    if (shipment.cust_shipmt_trans_mode) {
-      const related = {
-        goods_type: shipment.cust_shipmt_goods_type,
-        gross_wt: shipment.cust_shipmt_weight,
-        package: shipment.cust_shipmt_wrap_type,
-        pack_count: shipment.cust_shipmt_pieces,
-      };
-      this.handleSetClientForm(related);
-    }
+    const related = {
+      goods_type: shipment.cust_shipmt_goods_type,
+      gross_wt: shipment.cust_shipmt_weight,
+      package: shipment.cust_shipmt_wrap_type,
+      pack_count: shipment.cust_shipmt_pieces,
+    };
+    this.handleSetClientForm(related);
   }
   renderConsign = consign => `${consign.name} | ${Location.renderLoc(consign)} | ${consign.contact || ''}`
   render() {

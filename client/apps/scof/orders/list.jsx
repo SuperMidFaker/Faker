@@ -186,8 +186,12 @@ export default class OrderList extends React.Component {
         if (record.order_status === CRM_ORDER_STATUS.created) {
           return (
             <div>
+              {record.flow_node_num > 0 &&
               <a onClick={() => this.handleAccept(record.shipmt_order_no)}><Icon type="play-circle" /></a>
+              }
+              {record.flow_node_num > 0 &&
               <span className="ant-divider" />
+              }
               <Dropdown overlay={(
                 <Menu onClick={this.handleMenuClick}>
                   <Menu.Item key="edit">
