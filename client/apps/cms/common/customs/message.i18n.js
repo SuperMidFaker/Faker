@@ -79,11 +79,11 @@ export default defineMessages({
   },
   entryNoFillModalTitle: {
     id: 'cms.customs.modal.entrynofill.title',
-    defaultMessage: '回填报关单海关编号',
+    defaultMessage: '回填海关编号',
   },
   customsClearModalTitle: {
     id: 'cms.customs.modal.clear.title',
-    defaultMessage: '海关放行',
+    defaultMessage: '标记报关单放行',
   },
   successfulOperation: {
     id: 'cms.customs.modal.successful.operation',
@@ -119,7 +119,7 @@ export default defineMessages({
   },
   filterFinalized: {
     id: 'cms.customs.filter.finalized',
-    defaultMessage: '已回填',
+    defaultMessage: '已入海关库',
   },
   deleteConfirm: {
     id: 'cms.customs.delete.confirm',

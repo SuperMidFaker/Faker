@@ -85,10 +85,10 @@ export default class DeclnoFillModal extends React.Component {
         onOk={this.handleOk} onCancel={this.handleCancel}
       >
         <Form>
-          <FormItem label="海关单号" labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
+          <FormItem label="海关编号" labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
             <Input onChange={this.handleEntryNoChange} value={entryNo} size="large" />
           </FormItem>
-          <FormItem label="放行时间" labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
+          <FormItem label="放行日期" labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
             <DatePicker onChange={this.handleClearDateChange} value={this.state.clearTime && moment(this.state.clearTime)}
               style={{ width: '100%' }} format="YYYY-MM-DD"
             />
