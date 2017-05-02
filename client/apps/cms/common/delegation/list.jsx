@@ -8,8 +8,8 @@ import Table from 'client/components/remoteAntTable';
 import TrimSpan from 'client/components/trimSpan';
 import NavLink from 'client/components/nav-link';
 import {
-  CMS_DELEGATION_STATUS, CMS_DELEGATION_MANIFEST, CMS_DELG_STATUS, CMS_SUP_STATUS,
-  DELG_SOURCE, DECL_I_TYPE, DECL_E_TYPE, TRANS_MODE, CMS_DECL_WAY_TYPE } from 'common/constants';
+  CMS_DELEGATION_STATUS, CMS_DELEGATION_MANIFEST, DELG_SOURCE, DECL_I_TYPE, DECL_E_TYPE,
+  TRANS_MODE, CMS_DECL_WAY_TYPE } from 'common/constants';
 import connectNav from 'client/common/decorators/connect-nav';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import SearchBar from 'client/components/search-bar';
@@ -39,7 +39,6 @@ const OptGroup = Select.OptGroup;
     delegationlist: state.cmsDelegation.delegationlist,
     listFilter: state.cmsDelegation.listFilter,
     saved: state.cmsDelegation.assign.saved,
-    delgDispShow: state.cmsDelegation.assign.delgDispShow,
     preStatus: state.cmsDelgInfoHub.preStatus,
     previewer: state.cmsDelgInfoHub.previewer,
     delegation: state.cmsDelgInfoHub.previewer.delegation,
@@ -73,7 +72,6 @@ export default class DelegationList extends Component {
     ensureManifestMeta: PropTypes.func.isRequired,
     acceptDelg: PropTypes.func.isRequired,
     delDelg: PropTypes.func.isRequired,
-    delgDispShow: PropTypes.bool.isRequired,
     saved: PropTypes.bool.isRequired,
     preStatus: PropTypes.string.isRequired,
     previewer: PropTypes.object.isRequired,
@@ -194,32 +192,30 @@ export default class DelegationList extends Component {
     width: 130,
     dataIndex: 'status',
     render: (o, record) => {
-      const CMS_STATUS = (record.customs_tenant_id === this.props.tenantId) ? CMS_DELG_STATUS : CMS_SUP_STATUS;
-      let status = record.status;
-      if (record.customs_tenant_id !== this.props.tenantId) {
-        if (record.status === 1 && record.sub_status === 0) {
-          status = 0;
-        } else if (record.status === 1 && record.sub_status === 1) {
-          status = 1;
+      if (record.status === CMS_DELEGATION_STATUS.unaccepted) {
+        return <Badge status="default" text="待接单" />;
+      } else if (record.status === CMS_DELEGATION_STATUS.accepted) {
+        return <Badge status="default" text="已接单" />;
+      } else if (record.status === CMS_DELEGATION_STATUS.processing) {
+        if (record.manifested === CMS_DELEGATION_MANIFEST.uncreated) {
+          return <Badge status="warning" text="未制单" />;
+        } else if (record.manifested === CMS_DELEGATION_MANIFEST.uncreated) {
+          return <Badge status="warning" text="制单中" />;
+        } else {
+          return <Badge status="processing" text="已生成报关草单" />;
         }
-      }
-      const decl = CMS_STATUS.filter(st => st.value === status)[0];
-      if (status === 1) {
-        return <Badge status="default" text={decl && decl.text} />;
-      } else if (status === 2) {
-        return <Badge status="warning" text={decl && decl.text} />;
-      } else if (status === 3) {
+      } else if (record.status === CMS_DELEGATION_STATUS.declaring) {
         if (record.sub_status === 1) {
           return <Badge status="processing" text={this.msg('declaredPart')} />;
-        } else { return <Badge status="processing" text={decl && decl.text} />; }
-      } else if (status === 4) {
+        } else {
+          return <Badge status="processing" text="已申报" />;
+        }
+      } else if (record.status === CMS_DELEGATION_STATUS.released) {
         if (record.sub_status === 1) {
           return <Badge status="success" text={this.msg('releasedPart')} />;
         } else {
-          return <Badge status="success" text={decl && decl.text} />;
+          return <Badge status="success" text="已放行" />;
         }
-      } else {
-        return <Badge status="error" text={decl && decl.text} />;
       }
     },
   }, {
@@ -343,7 +339,7 @@ export default class DelegationList extends Component {
     this.setState({ selectedRowKeys: [] });
     this.handleCiqListLoad(1, filter);
   }
-  handleDelegationMake = (row) => {
+  handleManifestCreate = (row) => {
     const { loginId, loginName } = this.props;
     this.props.ensureManifestMeta({ delg_no: row.delg_no, loginId, loginName }).then((result) => {
       if (result.error) {
@@ -356,20 +352,18 @@ export default class DelegationList extends Component {
       }
     });
   }
-  handleDelegationView = (row) => {
-    const { loginId, loginName } = this.props;
-    this.props.ensureManifestMeta({ delg_no: row.delg_no, loginId, loginName }).then((result) => {
-      if (result.error) {
-        message.error(result.error.message, 5);
-      } else {
-        const { i_e_type: ietype, bill_seq_no: seqno } = result.data;
-        const clearType = ietype === 0 ? 'import' : 'export';
-        const link = `/clearance/${clearType}/manifest/view/`;
-        this.context.router.push(`${link}${seqno}`);
-      }
-    });
+  handleManifestMake = (row) => {
+    const { ietype } = this.props;
+    const link = `/clearance/${ietype}/manifest/${row.delg_no}`;
+    this.context.router.push(link);
+  }
+  handleManifestView = (row) => {
+    const { ietype } = this.props;
+    const link = `/clearance/${ietype}/manifest/view/${row.delg_no}`;
+    this.context.router.push(link);
   }
   handleDelegationAccept = (row) => {
+    // todo split type delg / delg_no/dispid pair array
     this.props.openAcceptModal({
       tenantId: this.props.tenantId,
       dispatchIds: [row.id],
@@ -458,96 +452,90 @@ export default class DelegationList extends Component {
         width: 150,
         fixed: 'right',
         render: (o, record) => {
-          // 1. 当前租户报关委托未接单
           if (record.status === CMS_DELEGATION_STATUS.unaccepted) {
+            // 1. 当前租户委托未接单
+            let menuOverlay = null;
             if (record.source === DELG_SOURCE.consigned) {
-              return (
-                <span>
-                  <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-                    <RowUpdater onHit={this.handleDelegationAccept} label={<span><Icon type="check-square-o" /> {this.msg('accepting')}</span>} row={record} />
-                  </PrivilegeCover>
-                  <span className="ant-divider" />
-                  <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-                    <Dropdown overlay={(
-                      <Menu onClick={this.handleMenuClick}>
-                        <Menu.Item key="edit">
-                          <NavLink to={`/clearance/${this.props.ietype}/edit/${record.delg_no}`}>
-                            <Icon type="edit" /> {this.msg('modify')}
-                          </NavLink>
-                        </Menu.Item>
-                        <Menu.Item key="delete">
-                          <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleDelgDel(record.delg_no)}>
-                            <a> <Icon type="delete" /> {this.msg('delete')}</a>
-                          </Popconfirm>
-                        </Menu.Item>
-                      </Menu>)}
-                    >
-                      <a><Icon type="down" /></a>
-                    </Dropdown>
-                  </PrivilegeCover>
-                </span>
-              );
-            } else if (record.source === DELG_SOURCE.subcontracted) {
-              return (
-                <span>
-                  <RowUpdater onHit={this.handleDelegationAccept} label={<span><Icon type="check-square-o" /> {this.msg('accepting')}</span>} row={record} />
-                </span>
-              );
+              // 直接委托未接单可编辑
+              menuOverlay = (
+                <Menu>
+                  <Menu.Item key="edit">
+                    <NavLink to={`/clearance/${this.props.ietype}/edit/${record.delg_no}`}>
+                      <Icon type="edit" /> {this.msg('modify')}
+                    </NavLink>
+                  </Menu.Item>
+                  <Menu.Item key="delete">
+                    <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleDelgDel(record.delg_no)}>
+                      <a> <Icon type="delete" /> {this.msg('delete')}</a>
+                    </Popconfirm>
+                  </Menu.Item>
+                </Menu>);
             }
-          // 3 报关委托/分包已接单 或开始制单 {// <RowUpdater onHit={() => this.handleDelegationAssign(record)} label={<span><Icon type="share-alt" /> {this.msg('delgDistribute')}</span>} row={record} />}
-          } else if (record.status === CMS_DELEGATION_STATUS.accepted || record.status === CMS_DELEGATION_STATUS.processing) {
-            // let recallOp = null;
-            let assignOp = null;
+            return (
+              <span>
+                <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
+                  <RowUpdater onHit={this.handleDelegationAccept} label={<span><Icon type="check-square-o" /> {this.msg('accepting')}</span>} row={record} />
+                </PrivilegeCover>
+                <span className="ant-divider" />
+                <RowUpdater onHit={() => this.handleDelegationAssign(record)} label={<span><Icon type="share-alt" /> {this.msg('delgDistribute')}</span>} row={record} />
+                <span className="ant-divider" />
+                <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
+                  <Dropdown overlay={menuOverlay}>
+                    <a role="button"><Icon type="down" /></a>
+                  </Dropdown>
+                </PrivilegeCover>
+              </span>
+            );
+          } else if (record.status === CMS_DELEGATION_STATUS.accepted) {
+              // 2. 当前租户直接分配, 分配下级非线下租户且未接单
+            return (
+              <Popconfirm title="你确定撤回分配吗?" onConfirm={() => this.handleDelgAssignRecall(record)} >
+                <a role="button">{this.msg('delgRecall')}</a>
+              </Popconfirm>);
+          } else if (record.status === CMS_DELEGATION_STATUS.processing) {
+            // 3 报关委托/分包已接单
+            let menuOverlay = null;
             if (record.customs_tenant_id === tenantId) {
               // 3.3 当前租户未分配
-              // assignOp = <RowUpdater onHit={() => this.handleDelegationAssign(record)} label={<span><Icon type="share-alt" /> {this.msg('delgDistribute')}</span>} row={record} />;
-              assignOp = (<Dropdown overlay={(
+              menuOverlay = (
                 <Menu>
                   <Menu.Item>
                     <a onClick={() => this.handleDelegationAssign(record)}><Icon type="share-alt" /> {this.msg('delgDistribute')}</a>
                   </Menu.Item>
-                </Menu>)}
-              >
-                <a><Icon type="down" /></a>
-              </Dropdown>);
+                </Menu>);
             } else if (record.customs_tenant_id === -1 || record.sub_status === CMS_DELEGATION_STATUS.unaccepted) {
               // 3.1 当前租户为发送方，且报关供应商为线下租户
               // 3.2 当前租户为发送方，且报关供应商为线上租户，但分包尚未接单
-              /*
-              recallOp = (
-                <Popconfirm title="你确定撤回分配吗?" onConfirm={() => this.handleDelgAssignRecall(record)} >
+              menuOverlay = (
+                <Popconfirm title="你确定撤回分配吗?" onConfirm={() => this.handleDelgAssignRecall(record)}>
                   <a role="button">{this.msg('delgRecall')}</a>
                 </Popconfirm>);
-              */
             }
-            let label;
+            let manifestOp = <RowUpdater onHit={this.handleManifestView} label={<span><Icon type="eye-o" /> {this.msg('viewManifest')}</span>} row={record} />;
             switch (record.manifested) {
-              case CMS_DELEGATION_MANIFEST.created:
-                label = <span><Icon type="file-text" /> {this.msg('editManifest')}</span>;
-                break;
               case CMS_DELEGATION_MANIFEST.uncreated:
-                label = <span><Icon type="file-add" /> {this.msg('createManifest')}</span>;
+                manifestOp = <RowUpdater onHit={this.handleManifestCreate} label={<span><Icon type="eye-o" /> {this.msg('createManifest')}</span>} row={record} />;
+                break;
+              case CMS_DELEGATION_MANIFEST.created:
+                manifestOp = <RowUpdater onHit={this.handleManifestMake} label={<span><Icon type="eye-o" /> {this.msg('editManifest')}</span>} row={record} />;
                 break;
               default:
-                label = <span><Icon type="eye-o" /> {this.msg('viewManifest')}</span>;
                 break;
             }
             return (
               <span>
                 <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
-                  <RowUpdater onHit={this.handleDelegationMake} label={label} row={record} />
+                  {manifestOp}
                 </PrivilegeCover>
-                { assignOp && <span className="ant-divider" />}
-                { assignOp }
-                {// recallOp && <span className="ant-divider" />
-                }
-                {// recallOp
-                }
+                <span className="ant-divider" />
+                <Dropdown overlay={menuOverlay}>
+                  <a role="button"><Icon type="down" /></a>
+                </Dropdown>
               </span>);
           } else if (record.status === CMS_DELEGATION_STATUS.declaring || record.status === CMS_DELEGATION_STATUS.released) {
             return (
               <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
-                <RowUpdater onHit={this.handleDelegationView} label={<span><Icon type="eye-o" /> {this.msg('viewManifest')}</span>} row={record} />
+                <RowUpdater onHit={this.handleManifestView} label={<span><Icon type="eye-o" /> {this.msg('viewManifest')}</span>} row={record} />
               </PrivilegeCover>);
           }
         },

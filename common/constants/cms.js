@@ -33,14 +33,6 @@ export const SOURCE_CHOOSE = {
   import: { key: '1', value: '导入数据' },
 };
 
-export const CMS_DELG_STATUS = [
-  { value: 0, text: '待接单' },
-  { value: 1, text: '已接单' },
-  { value: 2, text: '制单中' },
-  { value: 3, text: '已申报' },
-  { value: 4, text: '已放行' },
-  { value: 5, text: '已结单' },
-];
 export const CMS_CIQ_STATUS = [
   { value: 0, text: '待接单' },
   { value: 1, text: '待报检' },
@@ -115,13 +107,6 @@ export const TRANS_MODE = [
 export const INVOICE_TYPE = [
   { value: 0, text: '增值税专用发票' },
   { value: 1, text: '增值税普通发票' },
-];
-export const CMS_SUP_STATUS = [
-  { value: 0, text: '待供应商接单' },
-  { value: 1, text: '供应商已接单' },
-  { value: 2, text: '供应商制单中' },
-  { value: 3, text: '已申报' },
-  { value: 4, text: '已放行' },
 ];
 
 export const CMS_DELEGATION_STATUS = {
