@@ -7,6 +7,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import NavLink from './nav-link';
 import MdIcon from './MdIcon';
 import { loadTranslation, changeUserLocale, showPreferenceDock } from '../../common/reducers/preference';
+import { showActivitiesDock } from '../../common/reducers/activities';
 import { logout } from 'common/reducers/account';
 import { goBackNav } from 'common/reducers/navbar';
 import NotificationPopover from './notification-popover';
@@ -31,7 +32,7 @@ const RadioButton = Radio.Button;
     loginId: state.account.loginId,
     locale: state.preference.locale,
   }),
-  { logout, loadTranslation, changeUserLocale, goBackNav, showPreferenceDock }
+  { logout, loadTranslation, changeUserLocale, goBackNav, showPreferenceDock, showActivitiesDock }
 )
 export default class HeaderNavBar extends React.Component {
   static propTypes = {
@@ -75,6 +76,10 @@ export default class HeaderNavBar extends React.Component {
     this.setState({ userPopoverVisible: false });
     this.props.showPreferenceDock();
   }
+  handleShowActivities = () => {
+    this.setState({ userPopoverVisible: false });
+    this.props.showActivitiesDock();
+  }
   handleVisibleChange = (userPopoverVisible) => {
     this.setState({ userPopoverVisible });
   }
@@ -109,6 +114,13 @@ export default class HeaderNavBar extends React.Component {
             <a role="button" onClick={this.handleShowPreference}>
               <Icon type="tool" />
               <span>{formatMsg(intl, 'userPreference')}</span>
+            </a>
+          </MenuItem>}
+          {!compact && <MenuDivider />}
+          {!compact && <MenuItem>
+            <a role="button" onClick={this.handleShowActivities}>
+              <Icon type="solution" />
+              <span>{formatMsg(intl, 'userActivities')}</span>
             </a>
           </MenuItem>}
           {!compact && <MenuDivider />}

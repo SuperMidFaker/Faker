@@ -5,10 +5,6 @@ const messages = defineMessages({
     id: 'home.applications',
     defaultMessage: '应用',
   },
-  activities: {
-    id: 'home.activities',
-    defaultMessage: '动态',
-  },
   network: {
     id: 'home.network',
     defaultMessage: '协作网络',
@@ -72,6 +68,14 @@ const messages = defineMessages({
   descDesktopPush: {
     id: 'home.preference.notification.desc.desktop.push',
     defaultMessage: '开启后，有新消息时浏览器会向你推送动态通知',
+  },
+  activities: {
+    id: 'home.activities',
+    defaultMessage: '我的动态',
+  },
+  emptyActivities: {
+    id: 'home.activities.empty',
+    defaultMessage: '没有最近的动态',
   },
 });
 export default messages;

@@ -3,6 +3,7 @@ import { Alert, Layout } from 'antd';
 import { locationShape } from 'react-router';
 import NotificationDockPanel from './home/notificationDockPanel';
 import PreferenceDockPanel from './home/preferenceDockPanel';
+import ActivitiesDockPanel from './home/activitiesDockPanel';
 import HeaderNavBar from 'client/components/headerNavBar';
 
 const { Header } = Layout;
@@ -31,6 +32,7 @@ export default class Module extends React.Component {
         {this.props.children}
         <NotificationDockPanel />
         <PreferenceDockPanel />
+        <ActivitiesDockPanel />
       </Layout>);
   }
 }

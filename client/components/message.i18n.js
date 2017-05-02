@@ -21,6 +21,10 @@ const messages = defineMessages({
     id: 'component.user.preference',
     defaultMessage: '偏好设置',
   },
+  userActivities: {
+    id: 'component.user.activities',
+    defaultMessage: '我的动态',
+  },
   userLogout: {
     id: 'component.user.logout',
     defaultMessage: '退出登录',
