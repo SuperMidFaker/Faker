@@ -476,13 +476,12 @@ export default class DelegationList extends Component {
                 <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
                   <RowUpdater onHit={this.handleDelegationAccept} label={<span><Icon type="check-square-o" /> {this.msg('accepting')}</span>} row={record} />
                 </PrivilegeCover>
-
-                <span className="ant-divider" />
-                <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
+                {menuOverlay && <span className="ant-divider" />}
+                {menuOverlay && <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
                   <Dropdown overlay={menuOverlay}>
                     <a role="button"><Icon type="down" /></a>
                   </Dropdown>
-                </PrivilegeCover>
+                </PrivilegeCover>}
               </span>
             );
           } else if (record.status === CMS_DELEGATION_STATUS.accepted) {
@@ -539,10 +538,10 @@ export default class DelegationList extends Component {
                 <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
                   {manifestOp}
                 </PrivilegeCover>
-                <span className="ant-divider" />
-                <Dropdown overlay={menuOverlay}>
+                {menuOverlay && <span className="ant-divider" />}
+                {menuOverlay && <Dropdown overlay={menuOverlay}>
                   <a role="button"><Icon type="down" /></a>
-                </Dropdown>
+                </Dropdown>}
               </span>);
           } else if (record.status === CMS_DELEGATION_STATUS.declaring || record.status === CMS_DELEGATION_STATUS.released) {
             return (
