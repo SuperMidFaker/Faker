@@ -423,6 +423,9 @@ export default class DelegationList extends Component {
       this.handleCiqListLoad(1, filters);
     }
   }
+  handleDeselectRows = () => {
+    this.setState({ selectedRowKeys: [] });
+  }
   mergeFilters(curFilters, value) {
     const newFilters = {};
     Object.keys(curFilters).forEach((key) => {
@@ -489,7 +492,7 @@ export default class DelegationList extends Component {
                 <span>
                   <RowUpdater onHit={this.handleManifestCreate} label={<span><Icon type="file-add" /> {this.msg('createManifest')}</span>} row={record} />
                   <span className="ant-divider" />
-                  <RowUpdater onHit={() => this.handleDelegationAssign(record)} label={<span><Icon type="share-alt" /> {this.msg('delgDispatch')}</span>} row={record} />
+                  <RowUpdater onHit={() => this.handleDelegationAssign(record)} label={<Icon type="share-alt" />} tooltip={this.msg('delgDispatch')} row={record} />
                 </span>);
             } else if (record.customs_tenant_id === -1 ||                   // 2.2 报关单位为线下企业(已作分配)
               record.sub_status === CMS_DELEGATION_STATUS.unaccepted) {     // 2.3 报关供应商尚未接单(已作分配)
@@ -599,6 +602,7 @@ export default class DelegationList extends Component {
               </div>
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3>
+                <a role="button" onClick={this.handleDeselectRows}>不选</a>
               </div>
             </div>
             <div className="panel-body table-panel">
