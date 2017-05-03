@@ -65,22 +65,22 @@ export default class ClearanceForm extends Component {
   }
   handleShipmentRelate = () => {
     const { shipment } = this.props;
+    const related = {
+      gross_wt: shipment.cust_shipmt_weight,
+      wrap_type: shipment.cust_shipmt_wrap_type,
+      pack_count: shipment.cust_shipmt_pieces,
+      traf_name: shipment.cust_shipmt_vessel,
+      voyage_no: shipment.cust_shipmt_voy,
+    };
     if (shipment.cust_shipmt_trans_mode) {
-      const related = {
-        trans_mode: shipment.cust_shipmt_trans_mode,
-        gross_wt: shipment.cust_shipmt_weight,
-        wrap_type: shipment.cust_shipmt_wrap_type,
-        pack_count: shipment.cust_shipmt_pieces,
-        traf_name: shipment.cust_shipmt_vessel,
-        voyage_no: shipment.cust_shipmt_voy,
-      };
+      related.trans_mode = shipment.cust_shipmt_trans_mode;
       if (related.trans_mode === '2') {
         related.bl_wb_no = shipment.cust_shipmt_bill_lading;
       } else if (related.trans_mode === '5') {
         related.bl_wb_no = shipment.cust_shipmt_hawb ? [shipment.cust_shipmt_mawb || '', shipment.cust_shipmt_hawb || ''].join('_') : shipment.cust_shipmt_mawb;
       }
-      this.handleSetClientForm(related);
     }
+    this.handleSetClientForm(related);
   }
   render() {
     const { formData, formRequires, cmsQuotes } = this.props;

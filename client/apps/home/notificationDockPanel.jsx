@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { Button, Popconfirm, Tooltip } from 'antd';
 import { connect } from 'react-redux';
 import Avatar from 'react-avatar';
 import moment from 'moment';
@@ -105,9 +106,21 @@ export default class NotificationDockPanel extends React.Component {
     });
     return (
       <DockPanel visible={visible} onClose={this.props.hideNotificationDock}
-        title={<span>消息通知</span>}
+        title={<span>{this.msg('notification')}</span>}
       >
-        <Table columns={columns} dataSource={dataSource} locale={{ emptyText: '没有新的消息通知' }} showHeader={false} scrollOffset={170} />
+        <div className="toolbar">
+          <div className="toolbar-right">
+            <Tooltip title={this.msg('markAllRead')}>
+              <Button shape="circle" icon="check" onClick={this.markAllRead} />
+            </Tooltip>
+            <Popconfirm placement="bottomRight" title={this.msg('confirmDeleteAllRead')} onConfirm={this.deleteAllRead}>
+              <Tooltip title={this.msg('deleteAllRead')}>
+                <Button shape="circle" icon="delete" />
+              </Tooltip>
+            </Popconfirm>
+          </div>
+        </div>
+        <Table columns={columns} dataSource={dataSource} locale={{ emptyText: this.msg('emptyNew') }} showHeader={false} scrollOffset={170} />
       </DockPanel>
     );
   }

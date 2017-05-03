@@ -104,6 +104,11 @@ export default class DelgDeclList extends Component {
             </span> :
             <span>
               <Tag>预</Tag> <NavLink to={`/clearance/${this.props.ietype}/customs/${record.bill_seq_no}/${record.pre_entry_seq_no}`}>{record.pre_entry_seq_no}</NavLink>
+              <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit" key="entry_no">
+                <RowUpdater onHit={this.handleDeclNoFill} row={record}
+                  label={<Icon type="edit" />} tooltip="回填海关编号"
+                />
+              </PrivilegeCover>
             </span>;
         case 3:
           return (
@@ -182,7 +187,7 @@ export default class DelgDeclList extends Component {
     dataIndex: 'epsend_login_name',
     width: 100,
   }, {
-    title: '回填日期',
+    title: '回执日期',
     dataIndex: 'backfill_date',
     width: 100,
     render: backdt => (backdt ? moment(backdt).format('YYYY.MM.DD') : '-'),
@@ -219,19 +224,11 @@ export default class DelgDeclList extends Component {
         );
       } else {
         const updaters = [];
-        if (!record.entry_id) {
-          updaters.push(
-            <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit" key="entry_no">
-              <RowUpdater onHit={this.handleDeclNoFill} row={record}
-                label={<span><Icon type="edit" /> 海关编号</span>}
-              />
-            </PrivilegeCover>);
-        }
         if (!record.passed) {
           updaters.push(
             <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit" key="clear">
               <RowUpdater onHit={this.handleCustomsClearFill} row={record}
-                label={<span><Icon type="edit" />标记放行</span>}
+                label={<span><Icon type="flag" />标记放行</span>}
               />
             </PrivilegeCover>);
         }

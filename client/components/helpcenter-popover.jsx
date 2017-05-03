@@ -40,14 +40,8 @@ export default class HelpcenterPopover extends React.Component {
                 </a>
               </MenuItem>
               <MenuItem>
-                <a role="button" onClick={this.handleFeedback}>
-                  <Icon type="solution" />
-                  <span>{this.msg('feedback')}</span>
-                </a>
-              </MenuItem>
-              <MenuItem>
                 <a role="button" onClick={this.handleGuide}>
-                  <Icon type="book" />
+                  <Icon type="bulb" />
                   <span>{this.msg('guide')}</span>
                 </a>
               </MenuItem>

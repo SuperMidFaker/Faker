@@ -50,7 +50,7 @@ export default class SendInvitation extends Component {
     },
   }, {
     title: '统一社会信用代码',
-    dataIndex: 'partner_unique_code',
+    dataIndex: 'invitee_code',
     key: 'partner_unique_code',
   }, {
     title: '业务关系',

@@ -146,6 +146,14 @@ export default class ManifestEditor extends React.Component {
         description: '表头毛重的数值不等于表体毛重汇总的数值, 请进一步调整确认',
       });
     }
+    for (let i = 0; i < bodyDatas.length; i++) {
+      const body = bodyDatas[i];
+      if (!body.cop_g_no || !body.code_t || !body.code_s || !body.g_name || !body.g_model
+       || !body.g_qty || !body.g_unit || !body.dec_price || !body.trade_total || !body.trade_curr
+       || !body.duty_mode || !body.dest_country || !body.orig_country || !body.wet_wt || !body.gross_wt) {
+        return message.error('表体数据尚未填写完整', 5);
+      }
+    }
     if (wtSum > 0) {
       this.props.updateHeadNetWt(billHead.bill_seq_no, wtSum);
       if (bodyGrossWt === 0) {

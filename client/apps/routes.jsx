@@ -1,5 +1,6 @@
 import React from 'react';
 import { Route, IndexRoute, IndexRedirect } from 'react-router';
+import warning from 'warning';
 import Root from './root';
 import * as Home from './home';
 import SSO from './sso/pack-sso';
@@ -103,6 +104,8 @@ export default(store, cookie) => {
           isAuthed,
         } } = store.getState();
       if (!isAuthed || (subdomain !== null && query && query.subdomain && query.subdomain !== subdomain)) {
+        warning(!(subdomain !== null && query && query.subdomain && query.subdomain !== subdomain),
+          'subdomain is not equal to account subdomain, maybe there are tenants with same unique code');
         const prevQuery = __DEV__ ? query : {};
         replace({
           pathname: '/login',

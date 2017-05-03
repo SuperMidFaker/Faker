@@ -36,7 +36,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_CUSTOMERS:
       return { ...state, loading: true };
     case actionTypes.LOAD_CUSTOMERS_SUCCEED: {
-      const customers = action.result.data.filter(customer => customer.parent_id === 0).map((customer) => {
+      const customers = action.result.data.filter(customer => !customer.parent_id).map((customer) => {
         const subCustomers = [...action.result.data.filter(cus => cus.parent_id === customer.id)];
         const children = subCustomers.length > 0 ? subCustomers : null;
         return { ...customer, subCustomers, children };

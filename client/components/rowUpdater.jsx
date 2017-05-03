@@ -1,7 +1,8 @@
 import React, { PropTypes } from 'react';
+import { Tooltip } from 'antd';
 
 export default function RowUpdater(props) {
-  const { label, onHit, onHover, row, index, ...extra } = props;
+  const { label, onHit, onHover, row, index, tooltip, ...extra } = props;
   function handleClick() {
     if (onHit) {
       onHit(row, index);
@@ -12,11 +13,15 @@ export default function RowUpdater(props) {
       onHover(row, index);
     }
   }
-  return (
+  return tooltip ?
+    <Tooltip title={tooltip}>
+      <a onClick={handleClick} onMouseEnter={handleHover} {...extra} role="button">
+        {label}
+      </a>
+    </Tooltip> :
     <a onClick={handleClick} onMouseEnter={handleHover} {...extra} role="button">
       {label}
-    </a>
-  );
+    </a>;
 }
 
 RowUpdater.propTypes = {
@@ -26,4 +31,5 @@ RowUpdater.propTypes = {
   row: PropTypes.object,
   index: PropTypes.number,
   extra: PropTypes.object,
+  tooltip: PropTypes.string,
 };

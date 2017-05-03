@@ -21,6 +21,10 @@ const messages = defineMessages({
     id: 'component.user.preference',
     defaultMessage: '偏好设置',
   },
+  userActivities: {
+    id: 'component.user.activities',
+    defaultMessage: '我的动态',
+  },
   userLogout: {
     id: 'component.user.logout',
     defaultMessage: '退出登录',
@@ -167,6 +171,14 @@ const messages = defineMessages({
   guide: {
     id: 'component.popover.helpcenter.guide',
     defaultMessage: '快速上手',
+  },
+  back: {
+    id: 'component.nav.back',
+    defaultMessage: '返回',
+  },
+  close: {
+    id: 'component.nav.close',
+    defaultMessage: '关闭',
   },
 });
 

@@ -11,7 +11,7 @@ import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { loadCustomers } from 'common/reducers/crmCustomers';
 import { loadRepos, openAddModal, selectedRepoId, loadTradeItems, setCompareVisible,
-  deleteItems, setRepo, deleteRepo, loadTradeParams, setItemStatus, upgradeMode, setDatasShare } from 'common/reducers/cmsTradeitem';
+  deleteItems, setRepo, deleteRepo, loadTradeParams, setItemStatus, upgradeMode, setDatasShare, copyToStage } from 'common/reducers/cmsTradeitem';
 import { getAuditWay } from 'common/reducers/scvClassification';
 import AddTradeRepoModal from './modals/addTradeRepo';
 import ButtonToggle from 'client/components/ButtonToggle';
@@ -69,7 +69,7 @@ function fetchData({ state, dispatch }) {
     })),
   }),
   { loadCustomers, openAddModal, selectedRepoId, loadTradeItems, setCompareVisible,
-    deleteItems, setRepo, loadRepos, deleteRepo, setItemStatus, getAuditWay, upgradeMode, setDatasShare }
+    deleteItems, setRepo, loadRepos, deleteRepo, setItemStatus, getAuditWay, upgradeMode, setDatasShare, copyToStage }
 )
 @connectNav({
   depth: 2,
@@ -118,6 +118,17 @@ export default class TradeItemList extends Component {
     dataIndex: 'cop_product_no',
     fixed: 'left',
     width: 150,
+    render: (o, record) => {
+      if (record.master_rejected) {
+        return (
+          <Tooltip title={record.reason}>
+            <span style={{ color: 'orange' }}>{o}</span>
+          </Tooltip>
+        );
+      } else {
+        return o;
+      }
+    },
   }, {
     title: this.msg('hscode'),
     dataIndex: 'hscode',
@@ -125,7 +136,15 @@ export default class TradeItemList extends Component {
     render: (o, record) => {
       switch (record.status) {
         case TRADE_ITEM_STATUS.pending:
-          return <span>{o} <Icon type="pause-circle-o" className="mdc-text-warning" /></span>;
+          if (record.master_rejected) {
+            return (
+              <Tooltip title={record.reason}>
+                <span style={{ color: 'orange' }}>{o} <Icon type="pause-circle-o" className="mdc-text-warning" /></span>
+              </Tooltip>
+            );
+          } else {
+            return <span>{o} <Icon type="pause-circle-o" className="mdc-text-warning" /></span>;
+          }
         case TRADE_ITEM_STATUS.classified:
           return <span>{o} <Icon type="check-circle-o" className="mdc-text-success" /></span>;
         default:
@@ -409,6 +428,7 @@ export default class TradeItemList extends Component {
         } else if (status === TRADE_ITEM_STATUS.unclassified) {
           message.warning('归类拒绝');
         }
+        this.setState({ selectedRowKeys: [] });
         this.handleItemListLoad();
       }
     });
@@ -467,6 +487,10 @@ export default class TradeItemList extends Component {
   handleShare = () => {
     this.props.setDatasShare({ id: this.props.repo.id, protected: !this.state.protected });
     this.setState({ protected: !this.state.protected });
+  }
+  handleCopyToStage = (row) => {
+    const { tenantId, loginId, loginName } = this.props;
+    this.props.copyToStage({ ...row, created_tenant_id: tenantId, stage: true, modify_id: loginId, modify_name: loginName });
   }
   render() {
     const { tradeItemlist, repoId, repo, listFilter, tenantId, auditWay } = this.props;
@@ -581,6 +605,10 @@ export default class TradeItemList extends Component {
                 </NavLink>
               </span>
             );
+          } else if (record.status === TRADE_ITEM_STATUS.classified && record.created_tenant_id !== tenantId) {
+            return (
+              <RowUpdater onHit={this.handleCopyToStage} label={<span><Icon type="copy" /> {this.msg('copyToStage')}</span>} row={record} />
+            );
           }
         },
       });
@@ -602,7 +630,7 @@ export default class TradeItemList extends Component {
         if (record.mode !== 'slave' && record.owner_tenant_id !== -1) {
           return (
             <Tooltip placement="bottom" title="升级到主从模式">
-              <Button shape="circle" icon="to-top" onClick={() => this.handleUpgrade(record)} />
+              <Button disabled={!record.upgrade} shape="circle" icon="to-top" onClick={() => this.handleUpgrade(record)} />
             </Tooltip>
           );
         } else if (record.mode === 'slave' && record.owner_tenant_id !== -1) {
@@ -676,6 +704,10 @@ export default class TradeItemList extends Component {
               <RadioButton value="pending"><Icon type="pause-circle-o" /> {this.msg('filterPending')}</RadioButton>
               <RadioButton value="classified"><Icon type="check-circle-o" /> {this.msg('filterClassified')}</RadioButton>
             </RadioGroup>
+            <span />
+            <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">
+              <RadioButton value="stage"><Icon type="plus-circle-o" /> {this.msg('stageClassified')}</RadioButton>
+            </RadioGroup>
             {repoId &&
               <div className="top-bar-tools">
                 {repo.permission === CMS_TRADE_REPO_PERMISSION.edit &&
@@ -718,7 +750,7 @@ export default class TradeItemList extends Component {
                 </div>
               </div>
               <div className="panel-body table-panel">
-                <RemoteTable loading={this.props.tradeItemsLoading} rowSelection={rowSelection} rowKey={record => record.id} columns={columns} dataSource={this.dataSource} scroll={{ x: 3800 }} />
+                <RemoteTable loading={this.props.tradeItemsLoading} rowSelection={rowSelection} rowKey="id" columns={columns} dataSource={this.dataSource} scroll={{ x: 3800 }} />
               </div>
               <AddTradeRepoModal />
               <ImportComparisonModal data={this.state.compareduuid} />

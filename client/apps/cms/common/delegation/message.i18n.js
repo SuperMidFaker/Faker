@@ -233,9 +233,9 @@ export default defineMessages({
     id: 'cms.delegation.delg.recall',
     defaultMessage: '撤回',
   },
-  delgDistribute: {
-    id: 'cms.delegation.delg.distribute',
-    defaultMessage: '分配',
+  delgDispatch: {
+    id: 'cms.delegation.delg.dispatch',
+    defaultMessage: '分配报关单位',
   },
   downloadCert: {
     id: 'cms.delegation.delg.downloadCert',
@@ -348,10 +348,6 @@ export default defineMessages({
   processDate: {
     id: 'cms.delegation.process.date',
     defaultMessage: '更新时间',
-  },
-  delgDispatch: {
-    id: 'cms.delegation.delg.dispatch',
-    defaultMessage: '分配报关业务',
   },
   ciqDispatch: {
     id: 'cms.delegation.delg.ciq.dispatch',

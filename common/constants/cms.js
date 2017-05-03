@@ -33,14 +33,6 @@ export const SOURCE_CHOOSE = {
   import: { key: '1', value: '导入数据' },
 };
 
-export const CMS_DELG_STATUS = [
-  { value: 0, text: '待接单' },
-  { value: 1, text: '已接单' },
-  { value: 2, text: '制单中' },
-  { value: 3, text: '已申报' },
-  { value: 4, text: '已放行' },
-  { value: 5, text: '已结单' },
-];
 export const CMS_CIQ_STATUS = [
   { value: 0, text: '待接单' },
   { value: 1, text: '待报检' },
@@ -116,13 +108,6 @@ export const INVOICE_TYPE = [
   { value: 0, text: '增值税专用发票' },
   { value: 1, text: '增值税普通发票' },
 ];
-export const CMS_SUP_STATUS = [
-  { value: 0, text: '待供应商接单' },
-  { value: 1, text: '供应商已接单' },
-  { value: 2, text: '供应商制单中' },
-  { value: 3, text: '已申报' },
-  { value: 4, text: '已放行' },
-];
 
 export const CMS_DELEGATION_STATUS = {
   unaccepted: 0,
@@ -134,9 +119,9 @@ export const CMS_DELEGATION_STATUS = {
 };
 
 export const CMS_DELEGATION_MANIFEST = {
-  uncreated: 0,
-  created: 1,
-  manifested: 2,
+  uncreated: 0,   // 未制单
+  created: 1,     // 制单中
+  manifested: 2,  // 已生成报关草单（制单完成）
 };
 
 export const CMS_BILLING_STATUS = {
@@ -292,7 +277,7 @@ export const CMS_DECL_STATUS = [
   { value: 0, text: '报关草单', badge: 'default' },
   { value: 1, text: '已复核', badge: 'warning' },
   { value: 2, text: '已发送', badge: 'processing' },
-  { value: 3, text: '已回填', badge: 'success' },
+  { value: 3, text: '已入海关库', badge: 'success' },
 ];
 
 export const ITEMS_STATUS = [

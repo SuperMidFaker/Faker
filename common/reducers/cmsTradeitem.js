@@ -26,6 +26,7 @@ const actionTypes = createActionTypes('@@welogix/cms/tradeitem/', [
   'DELETE_TEMP_DATA', 'DELETE_TEMP_DATA_SUCCEED', 'DELETE_TEMP_DATA_FAIL',
   'UPGRADE_MODE', 'UPGRADE_MODE_SUCCEED', 'UPGRADE_MODE_FAIL',
   'SET_DATA_SHARED', 'SET_DATA_SHARED_SUCCEED', 'SET_DATA_SHARED_FAIL',
+  'COPY_ITEM_STAGE', 'COPY_ITEM_STAGE_SUCCEED', 'COPY_ITEM_STAGE_FAIL',
 ]);
 
 const initialState = {
@@ -445,7 +446,7 @@ export function upgradeMode(datas) {
         actionTypes.UPGRADE_MODE_SUCCEED,
         actionTypes.UPGRADE_MODE_FAIL,
       ],
-      endpoint: 'v1/cms/tradeitem/upgrade/mode',
+      endpoint: 'v1/cms/tradeitem/upgrade/repo',
       method: 'post',
       data: datas,
     },
@@ -461,6 +462,21 @@ export function setDatasShare(datas) {
         actionTypes.SET_DATA_SHARED_FAIL,
       ],
       endpoint: 'v1/cms/tradeitem/set/data/shared',
+      method: 'post',
+      data: datas,
+    },
+  };
+}
+
+export function copyToStage(datas) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.COPY_ITEM_STAGE,
+        actionTypes.COPY_ITEM_STAGE_SUCCEED,
+        actionTypes.COPY_ITEM_STAGE_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/item/stage/copy',
       method: 'post',
       data: datas,
     },

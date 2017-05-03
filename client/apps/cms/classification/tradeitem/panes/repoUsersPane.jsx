@@ -154,8 +154,9 @@ export default class RepoUsersPane extends React.Component {
       });
     }
     return (
-      <Table size="middle" pagination={false} columns={columns} dataSource={this.state.datas}
-        footer={repo.permission === CMS_TRADE_REPO_PERMISSION.edit ? () => <Button type="dashed" onClick={this.handleAdd} icon="plus" style={{ width: '100%' }}>{this.msg('add')}</Button> : null}
+      <Table size="middle" pagination={false} columns={columns} dataSource={this.state.datas} rowKey="id"
+        footer={repo.permission === CMS_TRADE_REPO_PERMISSION.edit ?
+          () => <Button type="dashed" onClick={this.handleAdd} icon="plus" style={{ width: '100%' }}>{this.msg('add')}</Button> : null}
       />
     );
   }

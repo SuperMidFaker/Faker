@@ -148,7 +148,7 @@ export default class DelgDeclList extends Component {
     title: '申报人',
     dataIndex: 'creater_login_id  ',
   }, {
-    title: '回填日期',
+    title: '回执日期',
     dataIndex: 'backfill_date',
     render: (o, record) => (record.id ?
     record.backfill_date && moment(record.backfill_date).format('YYYY.MM.DD') : '-'),

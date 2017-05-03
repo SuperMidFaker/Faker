@@ -122,7 +122,10 @@ img {
 .ant-menu-item a {
   display: block;
 }
-
+.ant-steps .ant-steps-title,
+.ant-steps .ant-steps-head {
+  transition: all .3s;
+}
 .ant-steps-description > .ant-card {
   margin: 16px;
 }
@@ -143,6 +146,13 @@ img {
 }
 .ant-table-placeholder {
   border-bottom: none;
+}
+.ant-table-row-hover {
+  .ant-steps .ant-steps-title,
+  .ant-steps .ant-steps-head {
+    background: #ecf6fd;
+    transition: all .3s;
+  }
 }
 .ant-table-fixed-left,
 .ant-table-fixed-right {
@@ -203,6 +213,7 @@ img {
   color: rgba(0,0,0,.65);
   background-color: #fff;
   border-color: #d9d9d9;
+  z-index: 1;
 }
 .ant-btn-group > .btn-toggle-on {
   z-index: 2;

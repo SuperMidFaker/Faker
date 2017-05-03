@@ -2,7 +2,7 @@ import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import { Col, Modal, Select, Form, message, Switch, Radio } from 'antd';
 import { clearingOption } from 'common/constants';
-import { delgDispSave, setDispStatus, loadciqSups, acceptDelg } from 'common/reducers/cmsDelegation';
+import { delgDispSave, setDispStatus, loadciqSups } from 'common/reducers/cmsDelegation';
 import { loadBasicInfo, loadCustPanel, loadDeclCiqPanel } from 'common/reducers/cmsDelgInfoHub';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from './message.i18n';
@@ -46,7 +46,7 @@ function getFieldInits(delgDisp, dispatch) {
     tabKey: state.cmsDelgInfoHub.tabKey,
     fieldInits: getFieldInits(state.cmsDelegation.assign.delgDisp, state.cmsDelegation.assign.dispatch),
   }),
-  { delgDispSave, setDispStatus, loadciqSups, loadBasicInfo, loadCustPanel, loadDeclCiqPanel, acceptDelg }
+  { delgDispSave, setDispStatus, loadciqSups, loadBasicInfo, loadCustPanel, loadDeclCiqPanel }
 )
 @Form.create()
 export default class DelgDispModal extends Component {
@@ -70,7 +70,6 @@ export default class DelgDispModal extends Component {
   msg = key => formatMsg(this.props.intl, key);
   handleSave = () => {
     const { delgDisp, dispatch, partners, ciqSups, loginId, loginName } = this.props;
-    this.props.acceptDelg(loginId, loginName, [dispatch.id], dispatch.delg_no);
     const recv = this.props.form.getFieldsValue();
     const appointedOption = recv.appointed_option || delgDisp.appointed_option;
     let partner = {};

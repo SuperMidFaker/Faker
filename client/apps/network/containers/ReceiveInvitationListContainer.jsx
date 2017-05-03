@@ -53,7 +53,7 @@ export default class ReceiveInvitationList extends Component {
     },
   }, {
     title: '统一社会信用代码',
-    dataIndex: 'partner_unique_code',
+    dataIndex: 'code',
     key: 'partner_unique_code',
   }, {
     title: '业务关系',
@@ -98,7 +98,7 @@ export default class ReceiveInvitationList extends Component {
         return (
           <PrivilegeCover module="corp" feature="partners" action="edit">
             <span>
-              <a onClick={() => this.handleAcceptBtnClick(record.id, record.partner_id, record.partnerships)}><Icon type="check-circle-o" /> 接受</a>
+              <a onClick={() => this.handleAcceptBtnClick(record.id, record.partner_id, record.partnerships, record.customs_code)}><Icon type="check-circle-o" /> 接受</a>
               <span className="ant-divider" />
               <a onClick={() => this.handleRejectBtnClick(record.id, record.partner_id)}><Icon type="close-circle-o" /> 拒绝</a>
             </span>
@@ -109,7 +109,7 @@ export default class ReceiveInvitationList extends Component {
       }
     },
   }]
-  handleAcceptBtnClick = (id, partnerId, partnerships) => {
+  handleAcceptBtnClick = (id, partnerId, partnerships, customsCode) => {
     const reversePartnerships = [];
     for (let i = 0; i < partnerships.length; i++) {
       if (partnerships[i].business_type && partnerships[i].role) {
@@ -140,14 +140,13 @@ export default class ReceiveInvitationList extends Component {
         }
       }
     }
-    this.props.acceptInvitation(id, partnerId, reversePartnerships);
+    this.props.acceptInvitation(id, partnerId, reversePartnerships, customsCode);
   }
   handleRejectBtnClick = (id, partnerId) => {
     this.props.rejectInvitation(id, partnerId);
   }
   render() {
     const { receiveInvitations } = this.props;
-
     const dataSource = receiveInvitations.filter(invitation => invitation.status !== 3);
     return (
       <Table columns={this.columns} dataSource={addUniqueKeys(dataSource)} rowSelection={rowSelection}

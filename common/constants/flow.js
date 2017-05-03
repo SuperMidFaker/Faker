@@ -19,7 +19,6 @@ const CMS_MANIFEST_TRIGGERS = [
 ];
 
 const CMS_CUSTOMS_TRIGGERS = [
-  { key: 'created', text: 'onCreated' },
   { key: 'reviewed', text: 'onCustomsReviewed', actionText: 'customsReviewed' },
   { key: 'declared', text: 'onDelgDeclared' },
   { key: 'released', text: 'onDelgReleased' },
@@ -74,6 +73,13 @@ const cwmBizObjects = [{
 exports.NODE_BIZ_OBJECTS = {
   import: cmsBizObjects,
   export: cmsBizObjects,
+  tms: tmsBizObjects,
+  cwm: cwmBizObjects,
+};
+
+exports.NODE_CREATABLE_BIZ_OBJECTS = {
+  import: cmsBizObjects.slice(0, cmsBizObjects.length - 1),
+  export: cmsBizObjects.slice(0, cmsBizObjects.length - 1),
   tms: tmsBizObjects,
   cwm: cwmBizObjects,
 };

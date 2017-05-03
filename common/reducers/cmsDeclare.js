@@ -51,6 +51,7 @@ const initialState = {
     preEntrySeqNo: '',
   },
   customsResults: [],
+  customsResultsLoading: false,
 };
 
 export default function reducer(state = initialState, action) {
@@ -72,8 +73,12 @@ export default function reducer(state = initialState, action) {
       return { ...state, decl_heads: action.result.data };
     case actionTypes.SHOW_SEND_DECL_MODAL:
       return { ...state, sendDeclModal: { ...state.sendDeclModal, ...action.data } };
+    case actionTypes.LOAD_CUSTOMSRES:
+      return { ...state, customsResultsLoading: true };
     case actionTypes.LOAD_CUSTOMSRES_SUCCEED:
-      return { ...state, customsResults: action.result.data };
+      return { ...state, customsResultsLoading: false, customsResults: action.result.data };
+    case actionTypes.LOAD_CUSTOMSRES_FAIL:
+      return { ...state, customsResultsLoading: false };
     case actionTypes.CLEAN_CUSTOMSRES:
       return { ...state, customsResults: [] };
     case actionTypes.OPEN_CLEARFILL_MODAL:

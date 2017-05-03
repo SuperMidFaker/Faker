@@ -1,12 +1,14 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Modal, Input, message } from 'antd';
+import { Form, Modal, Input, message } from 'antd';
 import { closeEfModal } from 'common/reducers/cmsDelegation';
 import { fillEntryId } from 'common/reducers/cmsManifest';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
+
 const formatMsg = format(messages);
+const FormItem = Form.Item;
 
 @injectIntl
 @connect(
@@ -67,7 +69,11 @@ export default class DeclnoFillModal extends React.Component {
       <Modal title={this.msg('entryNoFillModalTitle')} visible={visible}
         onOk={this.handleOk} onCancel={this.handleCancel}
       >
-        <Input onChange={this.handleEntryNoChange} value={this.state.entryNo} size="large" />
+        <Form>
+          <FormItem label="海关编号" labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
+            <Input onChange={this.handleEntryNoChange} value={this.state.entryNo} size="large" />
+          </FormItem>
+        </Form>
       </Modal>
     );
   }
