@@ -271,13 +271,15 @@ export const DECL_STATUS = {
   reviewed: 1,
   declared: 2,
   finalized: 3,
+  released: 4,
 };
 
 export const CMS_DECL_STATUS = [
   { value: 0, text: '报关草单', badge: 'default' },
   { value: 1, text: '已复核', badge: 'warning' },
   { value: 2, text: '已发送', badge: 'processing' },
-  { value: 3, text: '已入海关库', badge: 'success' },
+  { value: 3, text: '已入海关库', badge: 'processing' },
+  { value: 4, text: '已放行', badge: 'success' },
 ];
 
 export const ITEMS_STATUS = [
