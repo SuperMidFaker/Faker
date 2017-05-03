@@ -38,7 +38,7 @@ const OptGroup = Select.OptGroup;
     loginName: state.account.username,
     delegationlist: state.cmsDelegation.delegationlist,
     listFilter: state.cmsDelegation.listFilter,
-    saved: state.cmsDelegation.assign.saved,
+    reload: state.cmsDelegation.delegationsReload,
     preStatus: state.cmsDelgInfoHub.preStatus,
     previewer: state.cmsDelgInfoHub.previewer,
     delegation: state.cmsDelgInfoHub.previewer.delegation,
@@ -72,7 +72,7 @@ export default class DelegationList extends Component {
     ensureManifestMeta: PropTypes.func.isRequired,
     acceptDelg: PropTypes.func.isRequired,
     delDelg: PropTypes.func.isRequired,
-    saved: PropTypes.bool.isRequired,
+    reload: PropTypes.bool.isRequired,
     preStatus: PropTypes.string.isRequired,
     previewer: PropTypes.object.isRequired,
     delegation: PropTypes.object.isRequired,
@@ -92,13 +92,10 @@ export default class DelegationList extends Component {
     this.handleDelgListLoad(1, { ...this.props.listFilter, ...filters, filterNo: '' });
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.saved !== this.props.saved) {
+    if (nextProps.reload) {
       this.handleDelgListLoad();
     }
     if (nextProps.preStatus !== this.props.preStatus) {
-      if (nextProps.preStatus === 'accepted') {
-        this.handleDelgListLoad();
-      }
       if (nextProps.preStatus === 'delgDispCancel') {
         const { delegation } = this.props;
         this.handleDelgAssignRecall(delegation);
