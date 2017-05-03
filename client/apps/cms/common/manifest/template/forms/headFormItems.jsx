@@ -223,6 +223,7 @@ export class RelationAutoCompSelect extends React.Component {
                     optionFilterProp="search"
                     placeholder={this.msg('customsCode')}
                     onSelect={this.handleSelect}
+                    dropdownMatchSelectWidth={false}
                   >
                     {
                     custOpt.map(opt => <Option key={opt.custcode} search={opt.custcode}><Tooltip placement="right" title={opt.name}>{opt.custcode}|{opt.name}</Tooltip></Option>)
@@ -245,6 +246,7 @@ export class RelationAutoCompSelect extends React.Component {
                     optionFilterProp="search"
                     placeholder={this.msg('scc')}
                     onSelect={this.handleSelect}
+                    dropdownMatchSelectWidth={false}
                   >
                     {
                     compOpt.map(opt => <Option key={opt.code} search={opt.code}><Tooltip placement="right" title={opt.name}>{opt.code}|{opt.name}</Tooltip></Option>)
