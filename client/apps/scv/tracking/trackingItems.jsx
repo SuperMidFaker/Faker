@@ -62,7 +62,12 @@ export default class TrackingItems extends React.Component {
     }
     this.setState({
       trackingItems: nextProps.trackingItems,
-      newItem: { ...this.state.newItem, position: nextProps.trackingItems.length + 1, tracking_id: nextProps.tracking.id },
+      newItem: {
+        ...this.state.newItem,
+        position: nextProps.trackingItems.length + 1,
+        tracking_id: nextProps.tracking.id,
+        field: `custom_${this.props.tenantId}_${nextProps.trackingItems.length + 1}`,
+      },
     });
   }
   msg = key => formatMsg(this.props.intl, key)
