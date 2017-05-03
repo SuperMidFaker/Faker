@@ -2,7 +2,7 @@ import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import { Col, Modal, Select, Form, message, Switch, Radio } from 'antd';
 import { clearingOption } from 'common/constants';
-import { delgDispSave, setDispStatus, loadciqSups } from 'common/reducers/cmsDelegation';
+import { delgDispSave, setDispStatus, loadciqSups, reloadDelegationList } from 'common/reducers/cmsDelegation';
 import { loadBasicInfo, loadCustPanel, loadDeclCiqPanel } from 'common/reducers/cmsDelgInfoHub';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from './message.i18n';
@@ -46,7 +46,7 @@ function getFieldInits(delgDisp, dispatch) {
     tabKey: state.cmsDelgInfoHub.tabKey,
     fieldInits: getFieldInits(state.cmsDelegation.assign.delgDisp, state.cmsDelegation.assign.dispatch),
   }),
-  { delgDispSave, setDispStatus, loadciqSups, loadBasicInfo, loadCustPanel, loadDeclCiqPanel }
+  { delgDispSave, setDispStatus, loadciqSups, loadBasicInfo, loadCustPanel, loadDeclCiqPanel, reloadDelegationList }
 )
 @Form.create()
 export default class DelgDispModal extends Component {
@@ -84,15 +84,16 @@ export default class DelgDispModal extends Component {
         ciqSup = sup[0];
       }
     }
-    const delegation = { ...delgDisp, ...{ appointed_option: appointedOption } };
+    const delegation = { ...delgDisp, appointed_option: appointedOption };
     this.props.delgDispSave(delegation, dispatch, partner, ciqSup, loginId, loginName
     ).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
-        this.props.setDispStatus({ delgDispShow: false, saved: true });
+        this.props.setDispStatus({ delgDispShow: false });
         this.props.form.resetFields();
         this.handleOnChange(this.props.fieldInits.appointed);
+        this.props.reloadDelegationList();
         if (this.props.previewer.visible) {
           this.props.loadBasicInfo(this.props.tenantId, dispatch.delg_no, this.props.tabKey);
           if (this.props.tabKey === 'customsDecl') {

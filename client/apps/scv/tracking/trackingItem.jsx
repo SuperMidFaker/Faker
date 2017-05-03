@@ -2,9 +2,9 @@
 /* eslint react/no-find-dom-node: 0 */
 import React, { Component, PropTypes } from 'react';
 import { findDOMNode } from 'react-dom';
-import { Popconfirm, Icon, Menu } from 'antd';
+import { Popconfirm, Icon } from 'antd';
 import { DragSource, DropTarget } from 'react-dnd';
-import InfoItem from 'client/components/InfoItem';
+import EditableCell from 'client/components/EditableCell';
 import { SCV_TRACKING_FIELD_SOURCES } from 'common/constants';
 const ItemTypes = {
   CARD: 'card',
@@ -96,37 +96,24 @@ export default class TrackingItem extends Component {
   render() {
     const { row, isDragging, connectDragSource, connectDropTarget } = this.props;
     const opacity = isDragging ? 0 : 1;
-    let datatype = '';
-    if (row.datatype === 'STRING') {
-      datatype = '文本';
-    } else if (row.datatype === 'INTEGER') {
-      datatype = '数字';
-    } else if (row.datatype === 'DATE') {
-      datatype = '日期';
-    }
     return connectDragSource(connectDropTarget(
       <tr style={{ ...style, opacity }} className="ant-table-row  ant-table-row-level-0">
-        <td style={{ ...colStyle, width: '30%' }}>{row.title}</td>
-        <td style={{ ...colStyle, width: '30%' }}>
-          <InfoItem field={row.custom_title}
-            onEdit={value => this.props.handleCustomTitleChange(row.id, value)} editable size="small"
+        <td style={{ ...colStyle, width: '25%' }}>{row.title}</td>
+        <td style={{ ...colStyle, width: '25%' }}>
+          <EditableCell value={row.custom_title}
+            onSave={value => this.props.handleCustomTitleChange(row.id, value)}
           />
-        </td>
-        <td style={{ ...colStyle, width: '20%' }}>
-          {SCV_TRACKING_FIELD_SOURCES[row.source]}
         </td>
         <td style={{ ...colStyle, width: '15%' }}>
-          <InfoItem field={datatype} type="dropdown"
-            editable
-            overlay={<Menu onSelect={({ key }) => this.props.handleDatatypeChange(row.id, key)}>
-              <Menu.Item key="STRING">文本</Menu.Item>
-              <Menu.Item key="INTEGER">数字</Menu.Item>
-              <Menu.Item key="DATE">日期</Menu.Item>
-            </Menu>
-                }
+          {SCV_TRACKING_FIELD_SOURCES[row.source]}
+        </td>
+        <td style={{ ...colStyle, width: '25%' }}>
+          <EditableCell value={row.datatype} type="select"
+            options={[{ key: 'STRING', text: '文本' }, { key: 'INTEGER', text: '数字' }, { key: 'DATE', text: '日期' }]}
+            onSave={value => this.props.handleDatatypeChange(row.id, value)}
           />
         </td>
-        <td style={{ ...colStyle, width: '5%' }}>
+        <td style={{ ...colStyle, width: '10%' }}>
           <Popconfirm title="确认删除?" onConfirm={() => this.props.handleRemove(row.id)}>
             <a role="button"><Icon type="delete" /></a>
           </Popconfirm>

@@ -138,15 +138,15 @@ export default class TrackingItems extends React.Component {
                     />
                   ))}
                   <tr className="ant-table-row  ant-table-row-level-0" style={{ height: 43 }}>
-                    <td style={{ ...colStyle, width: '30%' }} />
-                    <td style={{ ...colStyle, width: '30%' }}>
+                    <td style={{ ...colStyle, width: '25%' }} />
+                    <td style={{ ...colStyle, width: '25%' }}>
                       <Input
                         style={{ width: '80%' }}
                         value={newItem.custom_title}
                         onChange={e => this.setState({ newItem: { ...this.state.newItem, custom_title: e.target.value } })}
                       />
                     </td>
-                    <td style={{ ...colStyle, width: '20%' }}>
+                    <td style={{ ...colStyle, width: '15%' }}>
                       <Select
                         style={{ width: '80%' }}
                         value={this.state.newItem.source}
@@ -157,7 +157,7 @@ export default class TrackingItems extends React.Component {
                         <Option value={3}>手工录入</Option>
                       </Select>
                     </td>
-                    <td style={{ ...colStyle, width: '15%' }}>
+                    <td style={{ ...colStyle, width: '25%' }}>
                       <Select
                         style={{ width: '80%' }}
                         value={this.state.newItem.datatype}
@@ -168,7 +168,7 @@ export default class TrackingItems extends React.Component {
                         <Option value="DATE">日期</Option>
                       </Select>
                     </td>
-                    <td style={{ ...colStyle, width: '5%' }}>
+                    <td style={{ ...colStyle, width: '10%' }}>
                       <a role="button" onClick={this.handleAddItem}><Icon type="save" /></a>
                     </td>
                   </tr>
