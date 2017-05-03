@@ -29,6 +29,10 @@ const messages = defineMessages({
     id: 'cms.classificagtion.tradeitem.filter.classified',
     defaultMessage: '已归类',
   },
+  stageClassified: {
+    id: 'cms.classificagtion.tradeitem.stage.classified',
+    defaultMessage: '自留归类区',
+  },
   copProductNo: {
     id: 'cms.classificagtion.tradeitem.table.cop.product.no',
     defaultMessage: '商品货号',
@@ -228,6 +232,10 @@ const messages = defineMessages({
   refuse: {
     id: 'cms.classificagtion.tradeitem.refuse',
     defaultMessage: '拒绝',
+  },
+  copyToStage: {
+    id: 'cms.classificagtion.tradeitem.copy.stage',
+    defaultMessage: '复制到自留区',
   },
 });
 export default messages;
