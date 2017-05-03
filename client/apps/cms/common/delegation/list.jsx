@@ -490,7 +490,7 @@ export default class DelegationList extends Component {
             if (record.customs_tenant_id === tenantId) {                    // 2.1 报关单位为当前租户(未作分配)
               extraOp = (
                 <RowUpdater onHit={() => this.handleDelegationAssign(record)} row={record}
-                  label={<span><Icon type="share-alt" />{this.msg('delgDispatch')}</span>}
+                  label={<Icon type="share-alt" />} tooltip={this.msg('delgDispatch')}
                 />);
             } else if (record.customs_tenant_id === -1 ||                   // 2.2 报关单位为线下企业(已作分配)
               record.sub_status === CMS_DELEGATION_STATUS.unaccepted) {     // 2.3 报关供应商尚未接单(已作分配)
