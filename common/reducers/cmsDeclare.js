@@ -176,7 +176,7 @@ export function deleteDecl(declId, delgNo, billNo) {
   };
 }
 
-export function setFilterReviewed(declId, status) {
+export function setFilterReviewed(declIds, status) {
   return {
     [CLIENT_API]: {
       types: [
@@ -186,7 +186,7 @@ export function setFilterReviewed(declId, status) {
       ],
       endpoint: 'v1/cms/declare/set/reviewed',
       method: 'post',
-      data: { declId, status },
+      data: { declIds, status },
     },
   };
 }

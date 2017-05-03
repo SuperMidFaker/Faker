@@ -333,7 +333,7 @@ export default class DelgDeclList extends Component {
     });
   }
   handleReview = (row) => {
-    this.props.setFilterReviewed(row.id, DECL_STATUS.reviewed).then((result) => {
+    this.props.setFilterReviewed([row.id], DECL_STATUS.reviewed).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -351,7 +351,7 @@ export default class DelgDeclList extends Component {
     });
   }
   handleRecall = (row) => {
-    this.props.setFilterReviewed(row.id, DECL_STATUS.proposed).then((result) => {
+    this.props.setFilterReviewed([row.id], DECL_STATUS.proposed).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
