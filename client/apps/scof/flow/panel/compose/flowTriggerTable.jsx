@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Table } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { openAddTriggerModal } from 'common/reducers/scofFlow';
-import { NODE_TRIGGERS, NODE_CREATABLE_BIZ_OBJECTS } from 'common/constants';
+import { NODE_TRIGGERS, NODE_CREATABLE_BIZ_OBJECTS, NODE_BIZ_OBJECTS } from 'common/constants';
 import AddTriggerModal from './addTriggerModal';
 import { formatMsg } from '../../message.i18n';
 
@@ -45,9 +45,9 @@ export default class FlowTriggerTable extends React.Component {
   render() {
     const { kind, bizObj } = this.props;
     let events = [];
-    const bizObjects = NODE_CREATABLE_BIZ_OBJECTS[kind].map(nbo => ({ key: nbo.key, text: this.msg(nbo.text) }));
+    const creatableBizObjects = NODE_CREATABLE_BIZ_OBJECTS[kind].map(nbo => ({ key: nbo.key, text: this.msg(nbo.text) }));
     if (bizObj) {
-      events = NODE_CREATABLE_BIZ_OBJECTS[kind].filter(nbo => nbo.key === bizObj)[0].triggers.map(tr => ({
+      events = NODE_BIZ_OBJECTS[kind].filter(nbo => nbo.key === bizObj)[0].triggers.map(tr => ({
         key: tr.key,
         name: this.msg(tr.text),
       }));
@@ -56,7 +56,7 @@ export default class FlowTriggerTable extends React.Component {
     }
     return (<div>
       <Table size="middle" columns={this.eventColumns} dataSource={events} pagination={false} showHeader={false} />
-      <AddTriggerModal bizObjects={bizObjects} onModalOK={this.handleTriggerModalChange} />
+      <AddTriggerModal bizObjects={creatableBizObjects} onModalOK={this.handleTriggerModalChange} />
     </div>);
   }
 }
