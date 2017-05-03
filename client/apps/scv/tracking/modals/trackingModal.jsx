@@ -59,6 +59,7 @@ export default class TrackingModal extends React.Component {
             this.props.addTracking({
               ...values,
               trackingItems,
+              source: 1,
               tenant_id: this.props.tenantId,
             }).then(() => {
               if (this.props.onOk) {

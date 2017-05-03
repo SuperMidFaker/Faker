@@ -1,8 +1,11 @@
+/* eslint no-undef: 0 */
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Table, Input, Popconfirm, Icon } from 'antd';
-import connectNav from 'client/common/decorators/connect-nav';
+import update from 'react/lib/update';
+import { DragDropContext } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
+import TrackingItem from './trackingItem';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import { loadTrackingItems, updateTrackingItem, removeTrackingItem, updateTrackingItemPosition } from 'common/reducers/scvTracking';
@@ -16,10 +19,7 @@ const formatMsg = format(messages);
   }),
   { loadTrackingItems, updateTrackingItem, removeTrackingItem, updateTrackingItemPosition }
 )
-@connectNav({
-  depth: 2,
-  moduleName: 'scv',
-})
+@DragDropContext(HTML5Backend)
 export default class TrackingItems extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -30,9 +30,16 @@ export default class TrackingItems extends React.Component {
     removeTrackingItem: PropTypes.func.isRequired,
     updateTrackingItemPosition: PropTypes.func.isRequired,
   }
-  state = {
-    editId: -1,
-    trackingItems: [],
+  constructor(props) {
+    super(props);
+    this.moveCard = this.moveCard.bind(this);
+    this.state = {
+      trackingItems: [],
+    };
+  }
+  componentDidMount() {
+    $(document).unbind('dragend');
+    $(document).on('dragend', this.handleDragend);
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.tracking.id !== this.props.tracking.id) {
@@ -41,117 +48,74 @@ export default class TrackingItems extends React.Component {
     this.setState({ trackingItems: nextProps.trackingItems });
   }
   msg = key => formatMsg(this.props.intl, key)
+  moveCard(dragIndex, hoverIndex) {
+    const { trackingItems } = this.state;
+    const dragCard = trackingItems[dragIndex];
+    const state = update(this.state, {
+      trackingItems: {
+        $splice: [
+          [dragIndex, 1],
+          [hoverIndex, 0, dragCard],
+        ],
+      },
+
+    });
+    this.setState({ ...state });
+  }
   handleRemove = (id) => {
     this.props.removeTrackingItem(id).then(() => {
       this.props.loadTrackingItems(this.props.tracking.id);
     });
   }
-  handleEdit = (id) => {
-    this.setState({ editId: id });
-  }
-  handleSave = (id) => {
-    this.props.updateTrackingItem(this.state.trackingItems.find(item => item.id === id)).then(() => {
-      this.setState({ editId: -1 });
+  handleSave = (trackingItem) => {
+    this.props.updateTrackingItem(trackingItem).then(() => {
       this.props.loadTrackingItems(this.props.tracking.id);
     });
   }
-  handleMovePosition = (id, direction) => {
-    const { trackingItems } = this.state;
-    const index = trackingItems.findIndex(item => item.id === id);
-    if (direction === 'up') {
-      this.props.updateTrackingItemPosition([
-        { id: trackingItems[index].id, position: trackingItems[index - 1].position },
-        { id: trackingItems[index - 1].id, position: trackingItems[index].position },
-      ]).then(() => {
-        this.props.loadTrackingItems(this.props.tracking.id);
-      });
-    } else if (direction === 'down') {
-      this.props.updateTrackingItemPosition([
-        { id: trackingItems[index].id, position: trackingItems[index + 1].position },
-        { id: trackingItems[index + 1].id, position: trackingItems[index].position },
-      ]).then(() => {
-        this.props.loadTrackingItems(this.props.tracking.id);
-      });
-    }
+  handleDragend = () => {
+    const positions = this.state.trackingItems.map((item, index) => ({ id: item.id, position: index + 1 }));
+    this.props.updateTrackingItemPosition(positions).then(() => {
+      this.props.loadTrackingItems(this.props.tracking.id);
+    });
+  }
+  handleCustomTitleChange = (id, value) => {
+    const trackingItem = this.state.trackingItems.find(item => item.id === id);
+    this.handleSave({ ...trackingItem, custom_title: value });
+  }
+  handleDatatypeChange = (id, value) => {
+    const trackingItem = this.state.trackingItems.find(item => item.id === id);
+    this.handleSave({ ...trackingItem, datatype: value });
   }
   render() {
-    const { editId, trackingItems } = this.state;
-    const columns = [{
-      dataIndex: 'title',
-      key: 'title',
-      title: '名称',
-      width: 120,
-      render: o => (<span className="menu-sider-item">{o}</span>),
-    }, {
-      dataIndex: 'custom_title',
-      key: 'custom_title',
-      title: '自定义名称',
-      width: 200,
-      render: (o, row) => {
-        if (editId === row.id) {
-          return (<Input value={o} onChange={(e) => {
-            const tis = this.state.trackingItems.map((item) => {
-              if (item.id === row.id) {
-                return { ...item, custom_title: e.target.value };
-              } else {
-                return item;
-              }
-            });
-            this.setState({ trackingItems: tis });
-          }}
-          />);
-        }
-        return (<span className="menu-sider-item">{o}</span>);
-      },
-    }, {
-      dataIndex: 'position',
-      key: 'position',
-      title: '排序',
-      width: 50,
-      className: 'editable-row-operations',
-      render: (o, row) => {
-        const options = [];
-        const index = trackingItems.findIndex(item => item.id === row.id);
-        if (index > 0) {
-          options.push(<a role="button" onClick={() => this.handleMovePosition(row.id, 'up')}><Icon type="arrow-up" /></a>);
-        }
-        if (index < trackingItems.length - 1) {
-          options.push(<a role="button" onClick={() => this.handleMovePosition(row.id, 'down')}><Icon type="arrow-down" /></a>);
-        }
-        return (
-          <span className="menu-sider-item">
-            {options}
-          </span>
-        );
-      },
-    }, {
-      title: '操作',
-      dataIndex: 'id',
-      key: 'id',
-      width: 50,
-      className: 'editable-row-operations',
-      render: (_, row) => {
-        if (row.id === this.state.editId) {
-          return (
-            <a role="button" onClick={() => this.handleSave(row.id)}><Icon type="save" /></a>
-          );
-        }
-        return (
-          <span>
-            <a role="button" onClick={() => this.handleEdit(row.id)}><Icon type="edit" /></a>
-            <span className="ant-divider" />
-            <Popconfirm title="确认删除?" onConfirm={() => this.handleRemove(row.id)}>
-              <a role="button"><Icon type="delete" /></a>
-            </Popconfirm>
-          </span>
-        );
-      },
-    }];
+    const { trackingItems } = this.state;
     return (
       <div className="page-body">
         <div className="panel-body table-panel">
-          <Table columns={columns} dataSource={trackingItems} pagination={false} rowKey="id" />
+          <div className="ant-table-wrapper">
+            <div className="ant-table">
+              <table className="ant-table" style={{ width: '100%' }}>
+                <thead className="ant-table-thead">
+                  <tr><th>名称</th><th>自定义名称</th><th>来源</th><th>数据类型</th><th>操作</th></tr>
+                </thead>
+                <tbody className="ant-table-tbody">
+                  {trackingItems.map((row, i) => (
+                    <TrackingItem
+                      key={row.id}
+                      index={i}
+                      id={row.id}
+                      row={row}
+                      moveCard={this.moveCard}
+                      handleCustomTitleChange={this.handleCustomTitleChange}
+                      handleRemove={this.handleRemove}
+                      handleDatatypeChange={this.handleDatatypeChange}
+                    />
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
-      </div>);
+      </div>
+    );
   }
 }

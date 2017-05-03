@@ -6,9 +6,8 @@ import { Breadcrumb, Layout, Menu, Icon, Table, Popconfirm, Input, message } fro
 import { format } from 'client/common/i18n/helpers';
 import NavLink from 'client/components/nav-link';
 import messages from './message.i18n';
-import { loadTransportModes, removeTransportMode, addTransportMode, updateTransportMode } from 'common/reducers/transportSettings';
+import { loadParamContainers, removeParamContainer, addParamContainer, updateParamContainer } from 'common/reducers/transportSettings';
 import withPrivilege from 'client/common/decorators/withPrivilege';
-import { PRESET_TRANSMODES } from 'common/constants';
 import connectFetch from 'client/common/decorators/connect-fetch';
 
 const formatMsg = format(messages);
@@ -16,7 +15,7 @@ const { Header, Content, Sider } = Layout;
 const SubMenu = Menu.SubMenu;
 
 function fetchData({ dispatch, state }) {
-  return dispatch(loadTransportModes(state.account.tenantId));
+  return dispatch(loadParamContainers(state.account.tenantId));
 }
 
 @connectFetch()(fetchData)
@@ -24,38 +23,38 @@ function fetchData({ dispatch, state }) {
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    transportModes: state.transportSettings.transportModes,
+    paramContainers: state.transportSettings.paramContainers,
   }),
-  { loadTransportModes, removeTransportMode, addTransportMode, updateTransportMode }
+  { loadParamContainers, removeParamContainer, addParamContainer, updateParamContainer }
 )
 @connectNav({
   depth: 2,
   moduleName: 'transport',
 })
 @withPrivilege({ module: 'transport', feature: 'setting', action: 'edit' })
-export default class TransportModes extends Component {
+export default class ParamContainers extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
-    transportModes: PropTypes.array.isRequired,
-    loadTransportModes: PropTypes.func.isRequired,
-    removeTransportMode: PropTypes.func.isRequired,
-    addTransportMode: PropTypes.func.isRequired,
-    updateTransportMode: PropTypes.func.isRequired,
+    paramContainers: PropTypes.array.isRequired,
+    loadParamContainers: PropTypes.func.isRequired,
+    removeParamContainer: PropTypes.func.isRequired,
+    addParamContainer: PropTypes.func.isRequired,
+    updateParamContainer: PropTypes.func.isRequired,
   }
   state = {
     editId: -2,
-    transportModes: [],
+    paramContainers: [],
   }
   componentWillReceiveProps(nextProps) {
-    this.setState({ transportModes: nextProps.transportModes.concat([{ id: -1, mode_name: '', mode_code: '' }]) });
+    this.setState({ paramContainers: nextProps.paramContainers.concat([{ id: -1, name: '', code: '' }]) });
   }
   msg = key => formatMsg(this.props.intl, key)
   handleEdit = (id) => {
-    const { transportModes } = this.state;
-    const mode = transportModes.find(item => item.id === id);
-    if (mode && mode.mode_name) {
-      this.props.updateTransportMode(mode).then(() => {
+    const { paramContainers } = this.state;
+    const pack = paramContainers.find(item => item.id === id);
+    if (pack && pack.package_name) {
+      this.props.updateParamContainer(pack).then(() => {
         this.setState({ editId: -2 });
       });
     } else {
@@ -63,13 +62,13 @@ export default class TransportModes extends Component {
     }
   }
   handleAdd = () => {
-    const { transportModes } = this.state;
-    const index = transportModes.length - 1;
-    if (transportModes[index].mode_name) {
-      this.props.addTransportMode({
+    const { paramContainers } = this.state;
+    const index = paramContainers.length - 1;
+    if (paramContainers[index].name) {
+      this.props.addParamContainer({
         tenant_id: this.props.tenantId,
-        mode_code: transportModes[index].mode_code,
-        mode_name: transportModes[index].mode_name,
+        code: paramContainers[index].code,
+        name: paramContainers[index].name,
       }).then((result) => {
         if (result.error) {
           message.error(result.error.message, 10);
@@ -82,7 +81,7 @@ export default class TransportModes extends Component {
     }
   }
   handleRemove = (record) => {
-    this.props.removeTransportMode(record.id).then((result) => {
+    this.props.removeParamContainer(record.id).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       }
@@ -92,19 +91,19 @@ export default class TransportModes extends Component {
     const columns = [
       {
         title: '名称',
-        dataIndex: 'mode_name',
-        key: 'mode_name',
+        dataIndex: 'name',
+        key: 'name',
         render: (col, row) => {
           if (this.state.editId === row.id) {
             return (<Input value={col} onChange={(e) => {
-              const transportModes = this.state.transportModes.map((item) => {
+              const paramContainers = this.state.paramContainers.map((item) => {
                 if (item.id === row.id) {
-                  return { ...item, mode_name: e.target.value };
+                  return { ...item, name: e.target.value };
                 } else {
                   return item;
                 }
               });
-              this.setState({ transportModes });
+              this.setState({ paramContainers });
             }}
             />);
           } else {
@@ -113,19 +112,19 @@ export default class TransportModes extends Component {
         },
       }, {
         title: '代码',
-        dataIndex: 'mode_code',
-        key: 'mode_code',
+        dataIndex: 'code',
+        key: 'code',
         render: (col, row) => {
           if (this.state.editId === row.id) {
             return (<Input value={col} onChange={(e) => {
-              const transportModes = this.state.transportModes.map((item) => {
+              const paramContainers = this.state.paramContainers.map((item) => {
                 if (item.id === row.id) {
-                  return { ...item, mode_code: e.target.value };
+                  return { ...item, code: e.target.value };
                 } else {
                   return item;
                 }
               });
-              this.setState({ transportModes });
+              this.setState({ paramContainers });
             }}
             />);
           } else {
@@ -137,35 +136,30 @@ export default class TransportModes extends Component {
         dataIndex: 'enabled',
         key: 'enabled',
         render: (_, row) => {
-          if (row.mode_code !== PRESET_TRANSMODES.ftl && row.mode_code !== PRESET_TRANSMODES.exp &&
-            row.mode_code !== PRESET_TRANSMODES.ltl && row.mode_code !== PRESET_TRANSMODES.ctn) {
-            if (this.state.editId === row.id) {
-              if (row.id === -1) {
-                return (<a onClick={this.handleAdd}><Icon type="save" /></a>);
-              } else {
-                return (<a onClick={() => this.handleEdit(row.id)}><Icon type="save" /></a>);
-              }
-            } else if (row.id === -1) {
-              return (<a onClick={() => {
-                this.setState({ editId: row.id });
-              }}
-              ><Icon type="plus" /></a>);
+          if (this.state.editId === row.id) {
+            if (row.id === -1) {
+              return (<a onClick={this.handleAdd}><Icon type="save" /></a>);
             } else {
-              return (
-                <span>
-                  <a onClick={() => {
-                    this.setState({ editId: row.id });
-                  }}
-                  ><Icon type="edit" /></a>
-                  <span className="ant-divider" />
-                  <Popconfirm title="确认删除?" onConfirm={() => this.handleRemove(row)}>
-                    <a role="button"><Icon type="delete" /></a>
-                  </Popconfirm>
-                </span>
-              );
+              return (<a onClick={() => this.handleEdit(row.id)}><Icon type="save" /></a>);
             }
+          } else if (row.id === -1) {
+            return (<a onClick={() => {
+              this.setState({ editId: row.id });
+            }}
+            ><Icon type="plus" /></a>);
           } else {
-            return '';
+            return (
+              <span>
+                <a onClick={() => {
+                  this.setState({ editId: row.id });
+                }}
+                ><Icon type="edit" /></a>
+                <span className="ant-divider" />
+                <Popconfirm title="确认删除?" onConfirm={() => this.handleRemove(row)}>
+                  <a role="button"><Icon type="delete" /></a>
+                </Popconfirm>
+              </span>
+            );
           }
         },
       },
@@ -191,7 +185,7 @@ export default class TransportModes extends Component {
               <Sider className="nav-sider">
                 <Menu
                   defaultOpenKeys={['bizdata']}
-                  defaultSelectedKeys={['transportModes']}
+                  defaultSelectedKeys={['paramContainers']}
                   mode="inline"
                 >
                   <SubMenu key="bizdata" title={<span><Icon type="setting" /><span>业务数据</span></span>}>
@@ -204,7 +198,7 @@ export default class TransportModes extends Component {
                 </Menu>
               </Sider>
               <Content className="nav-content">
-                <Table columns={columns} dataSource={this.state.transportModes} rowKey="id" />
+                <Table columns={columns} dataSource={this.state.paramContainers} rowKey="id" />
               </Content>
             </Layout>
           </div>
