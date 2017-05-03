@@ -13,7 +13,7 @@ const actionTypes = createActionTypes('@@welogix/cms/declaration/', [
   'SHOW_SEND_DECL_MODAL', 'CLEAN_CUSTOMSRES',
   'SEND_DECL', 'SEND_DECL_SUCCEED', 'SEND_DECL_FAIL',
   'LOAD_CUSTOMSRES', 'LOAD_CUSTOMSRES_SUCCEED', 'LOAD_CUSTOMSRES_FAIL',
-  'OPEN_CLEARFILL_MODAL', 'CLOSE_CLEARFILL_MODAL',
+  'OPEN_DECL_RELEASED_MODAL', 'CLOSE_DECL_RELEASED_MODAL',
   'CLEAR_CUSTOMS', 'CLEAR_CUSTOMS_SUCCEED', 'CLEAR_CUSTOMS_FAIL',
 ]);
 
@@ -81,9 +81,9 @@ export default function reducer(state = initialState, action) {
       return { ...state, customsResultsLoading: false };
     case actionTypes.CLEAN_CUSTOMSRES:
       return { ...state, customsResults: [] };
-    case actionTypes.OPEN_CLEARFILL_MODAL:
+    case actionTypes.OPEN_DECL_RELEASED_MODAL:
       return { ...state, visibleClearModal: true, clearFillModal: action.data };
-    case actionTypes.CLOSE_CLEARFILL_MODAL:
+    case actionTypes.CLOSE_DECL_RELEASED_MODAL:
       return { ...state, visibleClearModal: false, clearFillModal: initialState.clearFillModal };
     default:
       return state;
@@ -176,7 +176,7 @@ export function deleteDecl(declId, delgNo, billNo) {
   };
 }
 
-export function setFilterReviewed(declIds, status) {
+export function setDeclReviewed(declIds, status) {
   return {
     [CLIENT_API]: {
       types: [
@@ -228,7 +228,7 @@ export function getEasipassList(tenantId, agentCustCo) {
   };
 }
 
-export function loadCustomsResults(entryId) {
+export function loadClearanceResults(entryId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -243,24 +243,24 @@ export function loadCustomsResults(entryId) {
   };
 }
 
-export function cleanCustomsResults() {
+export function clearClearanceResults() {
   return { type: actionTypes.CLEAN_CUSTOMSRES };
 }
 
-export function openClearFillModal(entryNo, preEntrySeqNo, delgNo) {
+export function openDeclReleasedModal(entryNo, preEntrySeqNo, delgNo) {
   return {
-    type: actionTypes.OPEN_CLEARFILL_MODAL,
+    type: actionTypes.OPEN_DECL_RELEASED_MODAL,
     data: { preEntrySeqNo, entryNo, delgNo },
   };
 }
 
-export function closeClearFillModal() {
+export function closeDeclReleasedModal() {
   return {
-    type: actionTypes.CLOSE_CLEARFILL_MODAL,
+    type: actionTypes.CLOSE_DECL_RELEASED_MODAL,
   };
 }
 
-export function clearCustoms(clearInfo) {
+export function setDeclReleased(clearInfo) {
   return {
     [CLIENT_API]: {
       types: [

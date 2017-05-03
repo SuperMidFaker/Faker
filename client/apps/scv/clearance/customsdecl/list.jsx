@@ -6,7 +6,7 @@ import { Breadcrumb, Layout, Radio, Tag, message, Badge } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
-import { loadDelgDecls, deleteDecl, setFilterReviewed } from 'common/reducers/cmsDeclare';
+import { loadDelgDecls, deleteDecl, setDeclReviewed } from 'common/reducers/cmsDeclare';
 import { openEfModal } from 'common/reducers/cmsDelegation';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/search-bar';
@@ -34,7 +34,7 @@ const RadioButton = Radio.Button;
       text: `${cus.customs_name}`,
     })),
   }),
-  { loadDelgDecls, openEfModal, deleteDecl, setFilterReviewed }
+  { loadDelgDecls, openEfModal, deleteDecl, setDeclReviewed }
 )
 @connectNav({
   depth: 2,
@@ -230,7 +230,7 @@ export default class DelgDeclList extends Component {
     });
   }
   handleReview = (row) => {
-    this.props.setFilterReviewed(row.id, DECL_STATUS.reviewed).then((result) => {
+    this.props.setDeclReviewed([row.id], DECL_STATUS.reviewed).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -239,7 +239,7 @@ export default class DelgDeclList extends Component {
     });
   }
   handleRecall = (row) => {
-    this.props.setFilterReviewed(row.id, DECL_STATUS.proposed).then((result) => {
+    this.props.setDeclReviewed([row.id], DECL_STATUS.proposed).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {

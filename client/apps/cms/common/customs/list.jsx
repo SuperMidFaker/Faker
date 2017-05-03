@@ -7,15 +7,15 @@ import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
-import { loadDelgDecls, deleteDecl, setFilterReviewed, showSendDeclModal, openClearFillModal } from 'common/reducers/cmsDeclare';
+import { loadDelgDecls, deleteDecl, setDeclReviewed, showSendDeclModal, openDeclReleasedModal } from 'common/reducers/cmsDeclare';
 import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
 import { openEfModal } from 'common/reducers/cmsDelegation';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/search-bar';
 import NavLink from 'client/components/nav-link';
 import RowUpdater from 'client/components/rowUpdater';
-import DeclnoFillModal from './modals/declNoFill';
-import ClearFillModal from './modals/customsClearFill';
+import FillCustomsNoModal from './modals/fillCustomsNoModal';
+import DeclReleasedModal from './modals/declReleasedModal';
 import { format } from 'client/common/i18n/helpers';
 import DeclStatusPopover from './declStatusPopover';
 import messages from './message.i18n';
@@ -41,8 +41,8 @@ const RadioButton = Radio.Button;
       text: cus.customs_name,
     })),
   }),
-  { loadDelgDecls, openEfModal, deleteDecl, setFilterReviewed,
-    showSendDeclModal, showPreviewer, openClearFillModal }
+  { loadDelgDecls, openEfModal, deleteDecl, setDeclReviewed,
+    showSendDeclModal, showPreviewer, openDeclReleasedModal }
 )
 @connectNav({
   depth: 2,
@@ -226,7 +226,7 @@ export default class DelgDeclList extends Component {
         if (!record.passed) {
           updaters.push(
             <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit" key="clear">
-              <RowUpdater onHit={this.handleCustomsClearFill} row={record}
+              <RowUpdater onHit={this.handleShowDeclReleasedModal} row={record}
                 label={<span><Icon type="flag" />标记放行</span>}
               />
             </PrivilegeCover>);
@@ -333,7 +333,7 @@ export default class DelgDeclList extends Component {
     });
   }
   handleReview = (row) => {
-    this.props.setFilterReviewed([row.id], DECL_STATUS.reviewed).then((result) => {
+    this.props.setDeclReviewed([row.id], DECL_STATUS.reviewed).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -342,7 +342,7 @@ export default class DelgDeclList extends Component {
     });
   }
   handleListsReview = (ids) => {
-    this.props.setFilterReviewed(ids, DECL_STATUS.reviewed).then((result) => {
+    this.props.setDeclReviewed(ids, DECL_STATUS.reviewed).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -351,7 +351,7 @@ export default class DelgDeclList extends Component {
     });
   }
   handleRecall = (row) => {
-    this.props.setFilterReviewed([row.id], DECL_STATUS.proposed).then((result) => {
+    this.props.setDeclReviewed([row.id], DECL_STATUS.proposed).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -367,8 +367,8 @@ export default class DelgDeclList extends Component {
   handleShowXml = (filename) => {
     window.open(`${API_ROOTS.default}v1/cms/declare/send.xml?filename=${filename}`);
   }
-  handleCustomsClearFill = (row) => {
-    this.props.openClearFillModal(row.entry_id, row.pre_entry_seq_no, row.delg_no);
+  handleShowDeclReleasedModal = (row) => {
+    this.props.openDeclReleasedModal(row.entry_id, row.pre_entry_seq_no, row.delg_no);
   }
   render() {
     const { delgdeclList, listFilter } = this.props;
@@ -421,8 +421,8 @@ export default class DelgDeclList extends Component {
                 loading={delgdeclList.loading} scroll={{ x: 1650 }}
               />
             </div>
-            <DeclnoFillModal reload={this.handleTableLoad} />
-            <ClearFillModal reload={this.handleTableLoad} />
+            <FillCustomsNoModal reload={this.handleTableLoad} />
+            <DeclReleasedModal reload={this.handleTableLoad} />
             <SendModal ietype={this.props.ietype} reload={this.handleTableLoad} />
           </div>
         </Content>
