@@ -53,7 +53,7 @@ export default class ReceiveInvitationList extends Component {
     },
   }, {
     title: '统一社会信用代码',
-    dataIndex: 'partner_unique_code',
+    dataIndex: 'code',
     key: 'partner_unique_code',
   }, {
     title: '业务关系',
@@ -147,7 +147,6 @@ export default class ReceiveInvitationList extends Component {
   }
   render() {
     const { receiveInvitations } = this.props;
-
     const dataSource = receiveInvitations.filter(invitation => invitation.status !== 3);
     return (
       <Table columns={this.columns} dataSource={addUniqueKeys(dataSource)} rowSelection={rowSelection}
