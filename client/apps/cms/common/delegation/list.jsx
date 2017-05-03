@@ -491,8 +491,8 @@ export default class DelegationList extends Component {
                   <span className="ant-divider" />
                   <RowUpdater onHit={() => this.handleDelegationAssign(record)} label={<span><Icon type="share-alt" /> {this.msg('delgDispatch')}</span>} row={record} />
                 </span>);
-            } else if (record.customs_tenant_id === -1 ||                   // 2.2 报关单位为线下企业（已作分配）
-              record.sub_status === CMS_DELEGATION_STATUS.unaccepted) {     // 2.3 报关供应商尚未接单（已作分配）
+            } else if (record.customs_tenant_id === -1 ||                   // 2.2 报关单位为线下企业(已作分配)
+              record.sub_status === CMS_DELEGATION_STATUS.unaccepted) {     // 2.3 报关供应商尚未接单(已作分配)
               return (
                 <Popconfirm title="你确定撤回分配吗?" onConfirm={() => this.handleDelgAssignRecall(record)} >
                   <a role="button"><Icon type="rollback" /> {this.msg('delgRecall')}</a>
@@ -507,8 +507,8 @@ export default class DelegationList extends Component {
                     <a onClick={() => this.handleDelegationAssign(record)}><Icon type="share-alt" /> {this.msg('delgDispatch')}</a>
                   </Menu.Item>
                 </Menu>);
-            } else if (record.customs_tenant_id === -1 ||                   // 3.2 报关单位为线下企业（已作分配）
-              record.sub_status === CMS_DELEGATION_STATUS.unaccepted) {     // 3.3 报关供应商尚未接单（已作分配）
+            } else if (record.customs_tenant_id === -1 ||                   // 3.2 报关单位为线下企业(已作分配)
+              record.sub_status === CMS_DELEGATION_STATUS.unaccepted) {     // 3.3 报关供应商尚未接单(已作分配)
               dispatchOverlay = (
                 <Menu>
                   <Menu.Item>
@@ -520,13 +520,10 @@ export default class DelegationList extends Component {
             }
             let manifestOp = null;
             switch (record.manifested) {
-              case CMS_DELEGATION_MANIFEST.uncreated:         // 未制单
-                manifestOp = <RowUpdater onHit={this.handleManifestCreate} label={<span><Icon type="file-add" /> {this.msg('createManifest')}</span>} row={record} />;
-                break;
               case CMS_DELEGATION_MANIFEST.created:           // 制单中
                 manifestOp = <RowUpdater onHit={this.handleManifestMake} label={<span><Icon type="file-text" /> {this.msg('editManifest')}</span>} row={record} />;
                 break;
-              case CMS_DELEGATION_MANIFEST.manifested:        // 制单完成（已生成报关清单）
+              case CMS_DELEGATION_MANIFEST.manifested:        // 制单完成(已生成报关清单)
                 manifestOp = <RowUpdater onHit={this.handleManifestView} label={<span><Icon type="eye-o" /> {this.msg('viewManifest')}</span>} row={record} />;
                 break;
               default:
@@ -565,7 +562,7 @@ export default class DelegationList extends Component {
           </Breadcrumb>
           <RadioGroup value={listFilter.status} onChange={this.handleDelegationFilter} size="large">
             <RadioButton value="all">{this.msg('all')}</RadioButton>
-            <RadioButton value="accept">{this.msg('accepting')}</RadioButton>
+            <RadioButton value="accepting">{this.msg('accepting')}</RadioButton>
             <RadioButton value="undeclared">{this.msg('processing')}</RadioButton>
             <RadioButton value="declared">{this.msg('declaring')}</RadioButton>
             <RadioButton value="finished">{this.msg('releasing')}</RadioButton>
