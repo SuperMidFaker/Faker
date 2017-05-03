@@ -118,6 +118,17 @@ export default class TradeItemList extends Component {
     dataIndex: 'cop_product_no',
     fixed: 'left',
     width: 150,
+    render: (o, record) => {
+      if (record.master_rejected) {
+        return (
+          <Tooltip title={record.reason}>
+            <span style={{ color: 'orange' }}>{o}</span>
+          </Tooltip>
+        );
+      } else {
+        return o;
+      }
+    },
   }, {
     title: this.msg('hscode'),
     dataIndex: 'hscode',
@@ -125,7 +136,15 @@ export default class TradeItemList extends Component {
     render: (o, record) => {
       switch (record.status) {
         case TRADE_ITEM_STATUS.pending:
-          return <span>{o} <Icon type="pause-circle-o" className="mdc-text-warning" /></span>;
+          if (record.master_rejected) {
+            return (
+              <Tooltip title={record.reason}>
+                <span style={{ color: 'orange' }}>{o} <Icon type="pause-circle-o" className="mdc-text-warning" /></span>
+              </Tooltip>
+            );
+          } else {
+            return <span>{o} <Icon type="pause-circle-o" className="mdc-text-warning" /></span>;
+          }
         case TRADE_ITEM_STATUS.classified:
           return <span>{o} <Icon type="check-circle-o" className="mdc-text-success" /></span>;
         default:
