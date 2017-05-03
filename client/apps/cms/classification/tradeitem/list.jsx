@@ -428,6 +428,7 @@ export default class TradeItemList extends Component {
         } else if (status === TRADE_ITEM_STATUS.unclassified) {
           message.warning('归类拒绝');
         }
+        this.setState({ selectedRowKeys: [] });
         this.handleItemListLoad();
       }
     });
@@ -629,7 +630,7 @@ export default class TradeItemList extends Component {
         if (record.mode !== 'slave' && record.owner_tenant_id !== -1) {
           return (
             <Tooltip placement="bottom" title="升级到主从模式">
-              <Button shape="circle" icon="to-top" onClick={() => this.handleUpgrade(record)} />
+              <Button disabled={!record.upgrade} shape="circle" icon="to-top" onClick={() => this.handleUpgrade(record)} />
             </Tooltip>
           );
         } else if (record.mode === 'slave' && record.owner_tenant_id !== -1) {

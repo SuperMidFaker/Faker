@@ -357,6 +357,7 @@ export default class TradeItemList extends Component {
         } else if (status === TRADE_ITEM_STATUS.unclassified) {
           message.warning('归类拒绝');
         }
+        this.setState({ selectedRowKeys: [] });
         this.handleItemListLoad();
       }
     });
