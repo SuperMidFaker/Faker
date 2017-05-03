@@ -10,7 +10,7 @@ const actionTypes = createActionTypes('@@welogix/scv/tracking/', [
   'REMOVE_TRACKING', 'REMOVE_TRACKING_SUCCEED', 'REMOVE_TRACKING_FAIL',
 
   'LOAD_TRACKING_ITEMS', 'LOAD_TRACKING_ITEMS_SUCCEED', 'LOAD_TRACKING_ITEMS_FAIL',
-  // 'ADD_TRACKING_ITEM', 'ADD_TRACKING_ITEM_SUCCEED', 'ADD_TRACKING_ITEM_FAIL',
+  'ADD_TRACKING_ITEM', 'ADD_TRACKING_ITEM_SUCCEED', 'ADD_TRACKING_ITEM_FAIL',
   'UPDATE_TRACKING_ITEM', 'UPDATE_TRACKING_ITEM_SUCCEED', 'UPDATE_TRACKING_ITEM_FAIL',
   'REMOVE_TRACKING_ITEM', 'REMOVE_TRACKING_ITEM_SUCCEED', 'REMOVE_TRACKING_ITEM_FAIL',
   'LOAD_TRORDER', 'LOAD_TRORDER_SUCCEED', 'LOAD_TRORDER_FAIL',
@@ -153,20 +153,20 @@ export function loadTrackingItems(trackingId) {
   };
 }
 
-// export function addTrackingItem(data) {
-//   return {
-//     [CLIENT_API]: {
-//       types: [
-//         actionTypes.ADD_TRACKING_ITEM,
-//         actionTypes.ADD_TRACKING_ITEM_SUCCEED,
-//         actionTypes.ADD_TRACKING_ITEM_FAIL,
-//       ],
-//       endpoint: 'v1/scv/tracking/item/add',
-//       method: 'post',
-//       data,
-//     },
-//   };
-// }
+export function addTrackingItem(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.ADD_TRACKING_ITEM,
+        actionTypes.ADD_TRACKING_ITEM_SUCCEED,
+        actionTypes.ADD_TRACKING_ITEM_FAIL,
+      ],
+      endpoint: 'v1/scv/tracking/item/add',
+      method: 'post',
+      data,
+    },
+  };
+}
 
 export function updateTrackingItem(data) {
   return {

@@ -131,7 +131,7 @@ export default class TrackingItem extends Component {
             <a role="button"><Icon type="delete" /></a>
           </Popconfirm>
         </td>
-      </tr>,
+      </tr>
     ));
   }
 }

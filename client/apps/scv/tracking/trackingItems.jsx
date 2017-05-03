@@ -2,39 +2,54 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
+import { Icon, Input, Select } from 'antd';
 import update from 'react/lib/update';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import TrackingItem from './trackingItem';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import { loadTrackingItems, updateTrackingItem, removeTrackingItem, updateTrackingItemPosition } from 'common/reducers/scvTracking';
+import { loadTrackingItems, addTrackingItem, updateTrackingItem, removeTrackingItem, updateTrackingItemPosition } from 'common/reducers/scvTracking';
 
 const formatMsg = format(messages);
-
+const Option = Select.Option;
+const colStyle = { paddingTop: 0, paddingBottom: 0 };
 @injectIntl
 @connect(
   state => ({
+    tenantId: state.account.tenantId,
     trackingItems: state.scvTracking.trackingItems,
   }),
-  { loadTrackingItems, updateTrackingItem, removeTrackingItem, updateTrackingItemPosition }
+  { loadTrackingItems, addTrackingItem, updateTrackingItem, removeTrackingItem, updateTrackingItemPosition }
 )
 @DragDropContext(HTML5Backend)
 export default class TrackingItems extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
+    tenantId: PropTypes.number.isRequired,
     loadTrackingItems: PropTypes.func.isRequired,
     updateTrackingItem: PropTypes.func.isRequired,
     tracking: PropTypes.object.isRequired,
     trackingItems: PropTypes.array.isRequired,
     removeTrackingItem: PropTypes.func.isRequired,
     updateTrackingItemPosition: PropTypes.func.isRequired,
+    addTrackingItem: PropTypes.func.isRequired,
   }
   constructor(props) {
     super(props);
     this.moveCard = this.moveCard.bind(this);
     this.state = {
       trackingItems: [],
+      newItem: {
+        custom_title: '',
+        datatype: null,
+        source: null,
+        tracking_id: this.props.tracking.id,
+        tenant_id: this.props.tenantId,
+        field: '',
+        title: '',
+        position: 0,
+      },
     };
   }
   componentDidMount() {
@@ -45,7 +60,10 @@ export default class TrackingItems extends React.Component {
     if (nextProps.tracking.id !== this.props.tracking.id) {
       this.props.loadTrackingItems(nextProps.tracking.id || -1);
     }
-    this.setState({ trackingItems: nextProps.trackingItems });
+    this.setState({
+      trackingItems: nextProps.trackingItems,
+      newItem: { ...this.state.newItem, position: nextProps.trackingItems.length + 1, tracking_id: nextProps.tracking.id },
+    });
   }
   msg = key => formatMsg(this.props.intl, key)
   moveCard(dragIndex, hoverIndex) {
@@ -86,8 +104,17 @@ export default class TrackingItems extends React.Component {
     const trackingItem = this.state.trackingItems.find(item => item.id === id);
     this.handleSave({ ...trackingItem, datatype: value });
   }
+  handleAddItem = () => {
+    const { newItem } = this.state;
+    this.props.addTrackingItem({ ...newItem, title: newItem.custom_title }).then(() => {
+      this.setState({
+        newItem: { ...this.state.newItem, custom_title: '', datatype: null, source: null },
+      });
+      this.props.loadTrackingItems(this.props.tracking.id);
+    });
+  }
   render() {
-    const { trackingItems } = this.state;
+    const { trackingItems, newItem } = this.state;
     return (
       <div className="page-body">
         <div className="panel-body table-panel">
@@ -110,6 +137,41 @@ export default class TrackingItems extends React.Component {
                       handleDatatypeChange={this.handleDatatypeChange}
                     />
                   ))}
+                  <tr className="ant-table-row  ant-table-row-level-0" style={{ height: 43 }}>
+                    <td style={{ ...colStyle, width: '30%' }} />
+                    <td style={{ ...colStyle, width: '30%' }}>
+                      <Input
+                        style={{ width: '80%' }}
+                        value={newItem.custom_title}
+                        onChange={e => this.setState({ newItem: { ...this.state.newItem, custom_title: e.target.value } })}
+                      />
+                    </td>
+                    <td style={{ ...colStyle, width: '20%' }}>
+                      <Select
+                        style={{ width: '80%' }}
+                        value={this.state.newItem.source}
+                        onChange={value => this.setState({ newItem: { ...this.state.newItem, source: value } })}
+                      >
+                        <Option value={1}>承运商</Option>
+                        <Option value={2}>第三方</Option>
+                        <Option value={3}>手工录入</Option>
+                      </Select>
+                    </td>
+                    <td style={{ ...colStyle, width: '15%' }}>
+                      <Select
+                        style={{ width: '80%' }}
+                        value={this.state.newItem.datatype}
+                        onChange={value => this.setState({ newItem: { ...this.state.newItem, datatype: value } })}
+                      >
+                        <Option value="STRING">文本</Option>
+                        <Option value="INTEGER">数字</Option>
+                        <Option value="DATE">日期</Option>
+                      </Select>
+                    </td>
+                    <td style={{ ...colStyle, width: '5%' }}>
+                      <a role="button" onClick={this.handleAddItem}><Icon type="save" /></a>
+                    </td>
+                  </tr>
                 </tbody>
               </table>
             </div>
