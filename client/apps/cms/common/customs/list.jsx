@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Breadcrumb, Dropdown, Menu, Icon, Layout, Radio, Tag, message, Popconfirm, Badge } from 'antd';
+import { Breadcrumb, Dropdown, Menu, Icon, Layout, Radio, Tag, message, Popconfirm, Badge, Button } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -66,7 +66,6 @@ export default class DelgDeclList extends Component {
     selectedRowKeys: [],
     searchInput: '',
   }
-
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
     title: this.msg('delgNo'),
@@ -342,6 +341,15 @@ export default class DelgDeclList extends Component {
       }
     });
   }
+  handleListsReview = (ids) => {
+    this.props.setFilterReviewed(ids, DECL_STATUS.reviewed).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        this.handleTableLoad();
+      }
+    });
+  }
   handleRecall = (row) => {
     this.props.setFilterReviewed(row.id, DECL_STATUS.proposed).then((result) => {
       if (result.error) {
@@ -371,6 +379,14 @@ export default class DelgDeclList extends Component {
         this.setState({ selectedRowKeys });
       },
     };
+    const status = this.props.listFilter.status;
+    let bulkBtns = '';
+    bulkBtns = status === 'proposed' ? (
+      <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
+        <Button type="default" onClick={() => this.handleListsReview(this.state.selectedRowKeys)}>
+          批量复核
+        </Button>
+      </PrivilegeCover>) : '';
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Header className="top-bar">
@@ -397,10 +413,11 @@ export default class DelgDeclList extends Component {
               <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} />
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3>
+                {bulkBtns}
               </div>
             </div>
             <div className="panel-body table-panel expandable">
-              <Table rowSelection={rowSelection} columns={this.columns} rowKey="pre_entry_seq_no" dataSource={this.dataSource}
+              <Table rowSelection={rowSelection} columns={this.columns} rowKey="id" dataSource={this.dataSource}
                 loading={delgdeclList.loading} scroll={{ x: 1650 }}
               />
             </div>
