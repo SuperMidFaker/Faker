@@ -194,9 +194,8 @@ export default class DelegationList extends Component {
     render: (o, record) => {
       if (record.status === CMS_DELEGATION_STATUS.unaccepted) {
         return <Badge status="default" text="待接单" />;
-      } else if (record.status === CMS_DELEGATION_STATUS.accepted) {
-        return <Badge status="default" text="已接单" />;
-      } else if (record.status === CMS_DELEGATION_STATUS.processing) {
+      } else if (record.status === CMS_DELEGATION_STATUS.accepted
+        || record.status === CMS_DELEGATION_STATUS.processing) {
         if (record.manifested === CMS_DELEGATION_MANIFEST.uncreated) {
           return <span><Badge status="warning" text="未制单" /> <Icon type="exclamation-circle-o" /></span>;
         } else if (record.manifested === CMS_DELEGATION_MANIFEST.created) {
@@ -208,7 +207,7 @@ export default class DelegationList extends Component {
         if (record.sub_status === 1) {
           return <Badge status="processing" text={this.msg('declaredPart')} />;
         } else {
-          return <Badge status="processing" text="已申报" />;
+          return <Badge status="processing" text="申报中" />;
         }
       } else if (record.status === CMS_DELEGATION_STATUS.released) {
         if (record.sub_status === 1) {
@@ -487,20 +486,25 @@ export default class DelegationList extends Component {
               </span>
             );
           } else if (record.status === CMS_DELEGATION_STATUS.accepted) {    // 2.当前租户已接单
+            let extraOp = null;
             if (record.customs_tenant_id === tenantId) {                    // 2.1 报关单位为当前租户(未作分配)
-              return (
-                <span>
-                  <RowUpdater onHit={this.handleManifestCreate} label={<span><Icon type="file-add" /> {this.msg('createManifest')}</span>} row={record} />
-                  <span className="ant-divider" />
-                  <RowUpdater onHit={() => this.handleDelegationAssign(record)} label={<Icon type="share-alt" />} tooltip={this.msg('delgDispatch')} row={record} />
-                </span>);
+              extraOp = (
+                <RowUpdater onHit={() => this.handleDelegationAssign(record)} row={record}
+                  label={<span><Icon type="share-alt" />{this.msg('delgDispatch')}</span>}
+                />);
             } else if (record.customs_tenant_id === -1 ||                   // 2.2 报关单位为线下企业(已作分配)
               record.sub_status === CMS_DELEGATION_STATUS.unaccepted) {     // 2.3 报关供应商尚未接单(已作分配)
-              return (
+              extraOp = (
                 <Popconfirm title="你确定撤回分配吗?" onConfirm={() => this.handleDelgAssignRecall(record)} >
                   <a role="button"><Icon type="rollback" /> {this.msg('delgRecall')}</a>
                 </Popconfirm>);
             }
+            return (
+              <span>
+                <RowUpdater onHit={this.handleManifestCreate} label={<span><Icon type="file-add" /> {this.msg('createManifest')}</span>} row={record} />
+                {extraOp && <span className="ant-divider" />}
+                {extraOp}
+              </span>);
           } else if (record.status === CMS_DELEGATION_STATUS.processing) {  // 3.
             let dispatchOverlay = null;
             if (record.customs_tenant_id === tenantId) {                    // 3.1 报关单位为当前租户(未作分配)
