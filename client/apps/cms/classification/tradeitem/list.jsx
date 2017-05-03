@@ -11,7 +11,7 @@ import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { loadCustomers } from 'common/reducers/crmCustomers';
 import { loadRepos, openAddModal, selectedRepoId, loadTradeItems, setCompareVisible,
-  deleteItems, setRepo, deleteRepo, loadTradeParams, setItemStatus, upgradeMode, setDatasShare } from 'common/reducers/cmsTradeitem';
+  deleteItems, setRepo, deleteRepo, loadTradeParams, setItemStatus, upgradeMode, setDatasShare, copyToStage } from 'common/reducers/cmsTradeitem';
 import { getAuditWay } from 'common/reducers/scvClassification';
 import AddTradeRepoModal from './modals/addTradeRepo';
 import ButtonToggle from 'client/components/ButtonToggle';
@@ -69,7 +69,7 @@ function fetchData({ state, dispatch }) {
     })),
   }),
   { loadCustomers, openAddModal, selectedRepoId, loadTradeItems, setCompareVisible,
-    deleteItems, setRepo, loadRepos, deleteRepo, setItemStatus, getAuditWay, upgradeMode, setDatasShare }
+    deleteItems, setRepo, loadRepos, deleteRepo, setItemStatus, getAuditWay, upgradeMode, setDatasShare, copyToStage }
 )
 @connectNav({
   depth: 2,
@@ -487,6 +487,10 @@ export default class TradeItemList extends Component {
     this.props.setDatasShare({ id: this.props.repo.id, protected: !this.state.protected });
     this.setState({ protected: !this.state.protected });
   }
+  handleCopyToStage = (row) => {
+    const { tenantId, loginId, loginName } = this.props;
+    this.props.copyToStage({ ...row, created_tenant_id: tenantId, stage: true, modify_id: loginId, modify_name: loginName });
+  }
   render() {
     const { tradeItemlist, repoId, repo, listFilter, tenantId, auditWay } = this.props;
     const selectedRows = this.state.selectedRowKeys;
@@ -600,6 +604,10 @@ export default class TradeItemList extends Component {
                 </NavLink>
               </span>
             );
+          } else if (record.status === TRADE_ITEM_STATUS.classified && record.created_tenant_id !== tenantId) {
+            return (
+              <RowUpdater onHit={this.handleCopyToStage} label={<span><Icon type="copy" /> {this.msg('copyToStage')}</span>} row={record} />
+            );
           }
         },
       });
@@ -694,6 +702,10 @@ export default class TradeItemList extends Component {
               <RadioButton value="unclassified"><Icon type="question-circle-o" /> {this.msg('filterUnclassified')}</RadioButton>
               <RadioButton value="pending"><Icon type="pause-circle-o" /> {this.msg('filterPending')}</RadioButton>
               <RadioButton value="classified"><Icon type="check-circle-o" /> {this.msg('filterClassified')}</RadioButton>
+            </RadioGroup>
+            <span />
+            <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">
+              <RadioButton value="stage"><Icon type="plus-circle-o" /> {this.msg('stageClassified')}</RadioButton>
             </RadioGroup>
             {repoId &&
               <div className="top-bar-tools">
