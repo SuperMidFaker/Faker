@@ -36,10 +36,10 @@ export default class CustomsDeclSheetCard extends React.Component {
             <InfoItem label="申报单位" field={customsDecl.agent_name} />
           </Col>
           <Col span="8">
-            <InfoItem label="进出口岸" field={customsDecl.i_e_port} />
+            <InfoItem label="进出口岸" field={customsDecl.i_e_port_text} />
           </Col>
           <Col span="8">
-            <InfoItem label="监管方式" field={customsDecl.trade_mode} />
+            <InfoItem label="监管方式" field={customsDecl.trade_mode_text} />
           </Col>
           <Col span="8">
             <InfoItem label="海关查验" field={inspectFlag} />
@@ -50,7 +50,7 @@ export default class CustomsDeclSheetCard extends React.Component {
             {Object.keys(CMS_DECL_STATUS).map((dekey) => {
               const declST = CMS_DECL_STATUS[dekey];
               const stepDate = customsDecl[declST.date] ? moment(customsDecl[declST.date]).format('MM.DD HH.MM') : '';
-              return (<Step description={`${declST.stepDesc}${stepDate}`} key={dekey} />);
+              return (<Step description={`${declST.stepDesc} ${stepDate}`} key={dekey} />);
             })}
           </Steps>
         </div>

@@ -342,7 +342,7 @@ export function ContractNo(props) {
     <FormInput {...contractNoProps} />
   );
 }
-DeclCustoms.propTypes = {
+ContractNo.propTypes = {
   intl: intlShape.isRequired,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
