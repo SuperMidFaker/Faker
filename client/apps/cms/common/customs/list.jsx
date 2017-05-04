@@ -404,6 +404,7 @@ export default class DelgDeclList extends Component {
             <RadioButton value="reviewed">{this.msg('filterReviewed')}</RadioButton>
             <RadioButton value="declared">{this.msg('filterDeclared')}</RadioButton>
             <RadioButton value="finalized">{this.msg('filterFinalized')}</RadioButton>
+            <RadioButton value="released">{this.msg('customsReleased')}</RadioButton>
           </RadioGroup>
           <div className="top-bar-tools" />
         </Header>
