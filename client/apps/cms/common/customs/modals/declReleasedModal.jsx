@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { Form, Modal, Input, DatePicker, message } from 'antd';
-import { closeClearFillModal, clearCustoms } from 'common/reducers/cmsDeclare';
+import { closeDeclReleasedModal, setDeclReleased } from 'common/reducers/cmsDeclare';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 
@@ -16,9 +16,9 @@ const FormItem = Form.Item;
     visible: state.cmsDeclare.visibleClearModal,
     entry: state.cmsDeclare.clearFillModal,
   }),
-  { closeClearFillModal, clearCustoms }
+  { closeDeclReleasedModal, setDeclReleased }
 )
-export default class DeclnoFillModal extends React.Component {
+export default class DeclReleasedModal extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     visible: PropTypes.bool.isRequired,
@@ -46,7 +46,7 @@ export default class DeclnoFillModal extends React.Component {
     this.setState({ clearTime: clearDt.valueOf() });
   }
   handleCancel = () => {
-    this.props.closeClearFillModal();
+    this.props.closeDeclReleasedModal();
   }
   handleOk = () => {
     if (!this.state.entryNo || this.state.entryNo.length !== 18) {
@@ -58,7 +58,7 @@ export default class DeclnoFillModal extends React.Component {
       return;
     }
     const { entry } = this.props;
-    this.props.clearCustoms({
+    this.props.setDeclReleased({
       delgNo: entry.delgNo,
       preEntrySeqNo: entry.preEntrySeqNo,
       entryNo: this.state.entryNo === entry.entryNo ? null : this.state.entryNo,

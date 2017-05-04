@@ -4,7 +4,7 @@ import { createActionTypes } from 'client/common/redux-actions';
 const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'LOAD_PARTNERS', 'LOAD_PARTNERS_SUCCEED', 'LOAD_PARTNERS_FAIL',
   'LOAD_ACCEPT', 'LOAD_ACCEPT_SUCCEED', 'LOAD_ACCEPT_FAIL',
-  'OPEN_ACCEPT_MODAL', 'CLOSE_ACCEPT_MODAL',
+  'OPEN_ACCEPT_MODAL', 'CLOSE_ACCEPT_MODAL', 'RELOAD_DELG_LIST',
   'LOAD_DELGOPERATOR', 'LOAD_DELGOPERATOR_SUCCEED', 'LOAD_DELGOPERATOR_FAIL',
   'ACPT_DELG', 'ACPT_DELG_SUCCEED', 'ACPT_DELG_FAIL',
   'CREATE_DELGCCB', 'CREATE_DELGCCB_SUCCEED', 'CREATE_DELGCCB_FAIL',
@@ -33,6 +33,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
 
 const initialState = {
   listView: 'delegation',
+  delegationsReload: false,
   delegationlist: {
     totalCount: 0,
     current: 1,
@@ -102,7 +103,6 @@ const initialState = {
     ciqSups: [],
     delgDispShow: false,
     ciqDispShow: false,
-    saved: false,
   },
   suppliers: [],
 };
@@ -110,13 +110,15 @@ const initialState = {
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.LOAD_ACCEPT:
-      return { ...state, delegationlist: { ...state.delegationlist, loading: true },
+      return { ...state, delegationlist: { ...state.delegationlist, loading: true }, delegationsReload: false,
         listView: 'delegation', listFilter: JSON.parse(action.params.filter) };
     case actionTypes.LOAD_ACCEPT_SUCCEED: {
       return { ...state, delegationlist: { ...action.result.data, loading: false } };
     }
     case actionTypes.LOAD_ACCEPT_FAIL:
       return { ...state, delegationlist: { ...state.delegationlist, loading: false } };
+    case actionTypes.RELOAD_DELG_LIST:
+      return { ...state, delegationsReload: true };
     case actionTypes.LOAD_CIQ:
       return { ...state, ciqlist: { ...state.ciqlist, loading: true }, listView: 'ciq',
         listFilter: JSON.parse(action.params.filter) };
@@ -152,7 +154,7 @@ export default function reducer(state = initialState, action) {
       return { ...state, assign: {
         ...state.assign, delgDisp: action.result.data.delegation,
         dispatch: action.result.data.dispatch, partners: action.result.data.partners,
-        ciqSups: action.result.data.ciqSups, delgDispShow: true, saved: false },
+        ciqSups: action.result.data.ciqSups, delgDispShow: true },
       };
     case actionTypes.OPEN_EF_MODAL:
       return { ...state, visibleEfModal: true, efModal: action.data };
@@ -267,6 +269,12 @@ export function loadAcceptanceTable(params) {
       method: 'get',
       params,
     },
+  };
+}
+
+export function reloadDelegationList() {
+  return {
+    type: actionTypes.RELOAD_DELG_LIST,
   };
 }
 

@@ -4,7 +4,7 @@ import { Badge, Form, Breadcrumb, Button, Icon, Layout, Tabs, Tooltip, message, 
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadEntry, saveEntryHead } from 'common/reducers/cmsManifest';
-import { deleteDecl, setFilterReviewed, showSendDeclModal } from 'common/reducers/cmsDeclare';
+import { deleteDecl, setDeclReviewed, showSendDeclModal } from 'common/reducers/cmsDeclare';
 import NavLink from 'client/components/nav-link';
 import ButtonToggle from 'client/components/ButtonToggle';
 import SheetHeadPanel from './panel/cdfHeadPanel';
@@ -27,7 +27,7 @@ const TabPane = Tabs.TabPane;
     bodies: state.cmsManifest.entryBodies,
     tenantId: state.account.tenantId,
   }),
-  { saveEntryHead, loadEntry, deleteDecl, setFilterReviewed, showSendDeclModal }
+  { saveEntryHead, loadEntry, deleteDecl, setDeclReviewed, showSendDeclModal }
 )
 @connectNav({
   depth: 3,
@@ -92,7 +92,7 @@ export default class CustomsDeclEditor extends React.Component {
   }
   handleReview = () => {
     const head = this.props.head;
-    this.props.setFilterReviewed(this.props.head.id, DECL_STATUS.reviewed).then((result) => {
+    this.props.setDeclReviewed([this.props.head.id], DECL_STATUS.reviewed).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -102,7 +102,7 @@ export default class CustomsDeclEditor extends React.Component {
   }
   handleRecall = () => {
     const head = this.props.head;
-    this.props.setFilterReviewed(head.id, DECL_STATUS.proposed).then((result) => {
+    this.props.setDeclReviewed([head.id], DECL_STATUS.proposed).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {

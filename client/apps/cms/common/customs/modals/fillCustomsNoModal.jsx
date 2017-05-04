@@ -20,7 +20,7 @@ const FormItem = Form.Item;
   }),
   { closeEfModal, fillEntryId }
 )
-export default class DeclnoFillModal extends React.Component {
+export default class FillCustomsNoModal extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     visible: PropTypes.bool.isRequired,

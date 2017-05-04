@@ -21,7 +21,7 @@ const formatMsg = format(messages);
     loginName: state.account.username,
     ciqlist: state.cmsDelegation.ciqlist,
     listFilter: state.cmsDelegation.listFilter,
-    saved: state.cmsDelegation.saved,
+    reload: state.cmsDelegation.delegationsReload,
     preStatus: state.cmsDelgInfoHub.preStatus,
     cMQParams: state.cmsDelegation.cMQParams,
     delgDispShow: state.cmsDelegation.delgDispShow,
@@ -37,20 +37,15 @@ export default class CiqList extends Component {
     loginName: PropTypes.string.isRequired,
     ciqlist: PropTypes.object.isRequired,
     listFilter: PropTypes.object.isRequired,
-    saved: PropTypes.bool.isRequired,
+    reload: PropTypes.bool.isRequired,
   }
   state = {
     selectedRowKeys: [],
     expandedKeys: [],
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.saved !== this.props.saved) {
+    if (nextProps.reload) {
       this.handleTableLoad();
-    }
-    if (nextProps.preStatus !== this.props.preStatus) {
-      if (nextProps.preStatus === 'ciqaccepted') {
-        this.handleTableLoad();
-      }
     }
   }
   msg = key => formatMsg(this.props.intl, key);
