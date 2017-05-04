@@ -146,12 +146,7 @@ export default function reducer(state = initialState, action) {
       return { ...state, manifestLoading: false };
     case actionTypes.LOAD_MANIFEST_SUCCEED: {
       const ports = [...state.params.ports];
-      const iePort = action.result.data.iePort;
       const destPort = action.result.data.destPort;
-      if (iePort &&
-        ports.filter(prt => prt.port_code === iePort.port_code).length === 0) {
-        ports.push(iePort);
-      }
       if (destPort &&
         ports.filter(prt => prt.port_code === destPort.port_code).length === 0) {
         ports.push(destPort);
