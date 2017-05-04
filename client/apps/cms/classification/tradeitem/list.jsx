@@ -490,7 +490,16 @@ export default class TradeItemList extends Component {
   }
   handleCopyToStage = (row) => {
     const { tenantId, loginId, loginName } = this.props;
-    this.props.copyToStage({ ...row, created_tenant_id: tenantId, stage: true, modify_id: loginId, modify_name: loginName });
+    this.props.copyToStage({ ...row, created_tenant_id: tenantId, stage: true, modify_id: loginId, modify_name: loginName }).then(
+      (result) => {
+        if (result.error) {
+          message.error(result.error.message, 5);
+        } else if (result.data === 'exist') {
+          message.error('自留区已存在该货号', 3);
+        } else {
+          message.success('复制完成');
+        }
+      });
   }
   render() {
     const { tradeItemlist, repoId, repo, listFilter, tenantId, auditWay } = this.props;
