@@ -101,7 +101,7 @@ export default class Instance extends Component {
       key: item.field,
       dataIndex: item.field,
       title: item.custom_title,
-      width: 150,
+      width: item.datatype === 'DATE' ? 200 : 150,
       render: (fld, row) => {
         if (item.source === 3) {
           if (item.datatype === 'DATE') {
@@ -125,7 +125,7 @@ export default class Instance extends Component {
       },
     })));
     this.dataSource.remotes = orders;
-    const tableWidth = 150 + 150 * trackingItems.length;
+    const tableWidth = 150 + 150 * trackingItems.length + 50;
     return (
       <Layout>
         <Header className="top-bar">
