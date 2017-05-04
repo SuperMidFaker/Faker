@@ -231,9 +231,6 @@ export default(store, cookie) => {
               <IndexRedirect to="/transport/settings/transportModes" />
               <Route path="transportModes" component={TMSSettings.TransportModes} />
               <Route path="paramVehicles" component={TMSSettings.ParamVehicles} />
-              <Route path="paramPackages" component={TMSSettings.ParamPackages} />
-              <Route path="paramGoodsTypes" component={TMSSettings.ParamGoodsTypes} />
-              <Route path="paramContainers" component={TMSSettings.ParamContainers} />
             </Route>
             <Route path="billing">
               <IndexRedirect to="/transport/billing/receivable" />

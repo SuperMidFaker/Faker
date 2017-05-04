@@ -197,9 +197,6 @@ export default class TransportModes extends Component {
                   <SubMenu key="bizdata" title={<span><Icon type="setting" /><span>业务数据</span></span>}>
                     <Menu.Item key="transportModes"><NavLink to="/transport/settings/transportModes">运输模式</NavLink></Menu.Item>
                     <Menu.Item key="paramVehicles"><NavLink to="/transport/settings/paramVehicles">车型车长</NavLink></Menu.Item>
-                    <Menu.Item key="paramPackages"><NavLink to="/transport/settings/paramPackages">包装方式</NavLink></Menu.Item>
-                    <Menu.Item key="paramGoodsTypes"><NavLink to="/transport/settings/paramGoodsTypes">货物类型</NavLink></Menu.Item>
-                    <Menu.Item key="paramContainers"><NavLink to="/transport/settings/paramContainers">集装箱类型</NavLink></Menu.Item>
                   </SubMenu>
                 </Menu>
               </Sider>
