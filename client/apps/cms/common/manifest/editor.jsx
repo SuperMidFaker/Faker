@@ -354,7 +354,7 @@ export default class ManifestEditor extends React.Component {
       </Menu>);
     let sendable = true;
     billMeta.entries.forEach((entry) => {
-      sendable = sendable && (entry.status === CMS_DECL_STATUS.reviewed);
+      sendable = sendable && (entry.status === CMS_DECL_STATUS.reviewed.value);
     });
     const path = `/clearance/${ietype}/manifest/`;
     let editable = !this.props.readonly && billMeta.entries.length === 0;
