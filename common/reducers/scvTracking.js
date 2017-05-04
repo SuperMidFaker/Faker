@@ -16,6 +16,7 @@ const actionTypes = createActionTypes('@@welogix/scv/tracking/', [
   'LOAD_TRORDER', 'LOAD_TRORDER_SUCCEED', 'LOAD_TRORDER_FAIL',
   'UPDATE_TRACKING_ITEM_POSITION', 'UPDATE_TRACKING_ITEM_POSITION_SUCCEED', 'UPDATE_TRACKING_ITEM_POSITION_FAIL',
   'TOGGLE_TRACKING_MODAL',
+  'UPSERT_TRACKING_ORDER_CUSTOM', 'UPSERT_TRACKING_ORDER_CUSTOM_SUCCEED', 'UPSERT_TRACKING_ORDER_CUSTOM_FAIL',
 ]);
 
 const initialState = {
@@ -198,7 +199,7 @@ export function updateTrackingItemPosition(data) {
   };
 }
 
-export function removeTrackingItem(id) {
+export function removeTrackingItem(id, source) {
   return {
     [CLIENT_API]: {
       types: [
@@ -208,7 +209,7 @@ export function removeTrackingItem(id) {
       ],
       endpoint: 'v1/scv/tracking/item/remove',
       method: 'post',
-      data: { id },
+      data: { id, source },
     },
   };
 }
@@ -231,6 +232,21 @@ export function loadTrackingOrders(params) {
       endpoint: 'v1/scv/tracking/orders',
       method: 'get',
       params,
+    },
+  };
+}
+
+export function upsertTrackingOrderCustom(id, field, value) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPSERT_TRACKING_ORDER_CUSTOM,
+        actionTypes.UPSERT_TRACKING_ORDER_CUSTOM_SUCCEED,
+        actionTypes.UPSERT_TRACKING_ORDER_CUSTOM_FAIL,
+      ],
+      endpoint: 'v1/scv/tracking/order/custom/upsert',
+      method: 'post',
+      data: { id, field, value },
     },
   };
 }

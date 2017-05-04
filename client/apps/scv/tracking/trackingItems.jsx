@@ -66,7 +66,7 @@ export default class TrackingItems extends React.Component {
         ...this.state.newItem,
         position: nextProps.trackingItems.length + 1,
         tracking_id: nextProps.tracking.id,
-        field: `custom_${this.props.tenantId}_${nextProps.trackingItems.length + 1}`,
+        field: `custom_${nextProps.tracking.id}_${nextProps.trackingItems.length + 1}`,
       },
     });
   }
@@ -85,8 +85,8 @@ export default class TrackingItems extends React.Component {
     });
     this.setState({ ...state });
   }
-  handleRemove = (id) => {
-    this.props.removeTrackingItem(id).then(() => {
+  handleRemove = (id, source) => {
+    this.props.removeTrackingItem(id, source).then(() => {
       this.props.loadTrackingItems(this.props.tracking.id);
     });
   }

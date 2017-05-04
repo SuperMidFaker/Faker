@@ -103,7 +103,7 @@ export default class EditableCell extends React.Component {
     }
     return (value && (value.length > 0 || value !== 0)) ?
       <span>{addonBefore}{value}{addonAfter}</span> :
-      <span>{addonBefore}<span className="editable-cell-placeholder">{placeholder}</span>{addonAfter}</span>;
+      <span style={{ display: 'inline-block' }}>{addonBefore}<span className="editable-cell-placeholder">{placeholder}</span>{addonAfter}</span>;
   }
   render() {
     const { editMode } = this.state;
