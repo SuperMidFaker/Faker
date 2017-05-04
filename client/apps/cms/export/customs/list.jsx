@@ -1,12 +1,12 @@
 import React, { PropTypes } from 'react';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import withPrivilege from 'client/common/decorators/withPrivilege';
-import { loadDelgDecls } from 'common/reducers/cmsDeclare';
+import { loadCustomsDecls } from 'common/reducers/cmsDeclare';
 import List from '../../common/customs/list';
 
 function fetchData({ state, dispatch }) {
   const newfilter = { ...state.cmsDeclare.listFilter, filterNo: '' };
-  return dispatch(loadDelgDecls({
+  return dispatch(loadCustomsDecls({
     ietype: 'export',
     tenantId: state.account.tenantId,
     filter: JSON.stringify({ newfilter }),
