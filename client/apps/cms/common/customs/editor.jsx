@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Badge, Form, Breadcrumb, Button, Icon, Layout, Tabs, Tooltip, message, Popconfirm, Spin } from 'antd';
+import { Badge, Form, Breadcrumb, Button, Icon, Layout, Tabs, Tooltip, message, Popconfirm, Spin, Dropdown, Menu } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadEntry, saveEntryHead } from 'common/reducers/cmsManifest';
@@ -114,10 +114,22 @@ export default class CustomsDeclEditor extends React.Component {
     const head = this.props.head;
     this.props.showSendDeclModal({ visible: true, preEntrySeqNo: head.pre_entry_seq_no, delgNo: head.delg_no, agentCustCo: head.agent_custco });
   }
+  handleEntryVisit = (ev) => {
+    const { ietype, billMeta } = this.props;
+    const pathname = `/clearance/${ietype}/customs/${billMeta.bill_seq_no}/${ev.key}`;
+    this.context.router.push({ pathname });
+    this.props.loadEntry(billMeta.bill_seq_no, ev.key, this.props.tenantId);
+  }
   render() {
     const { ietype, form, head, bodies, billMeta } = this.props;
     const readonly = !billMeta.editable;
     const declkey = Object.keys(CMS_DECL_STATUS).filter(stkey => CMS_DECL_STATUS[stkey].value === head.status)[0];
+    const declEntryMenu = (
+      <Menu onClick={this.handleEntryVisit}>
+        {billMeta.entries.map(bme => (<Menu.Item key={bme.pre_entry_seq_no}>
+          <Icon type="file" /> {bme.entry_id || bme.pre_entry_seq_no}</Menu.Item>)
+        )}
+      </Menu>);
     return (
       <Layout>
         <Layout>
@@ -152,7 +164,9 @@ export default class CustomsDeclEditor extends React.Component {
               { head.status === CMS_DECL_STATUS.finalized.value &&
                 <Button type="primary" ghost size="large" icon="flag" onClick={this.handleMarkReleasedModal}>{this.msg('markReleased')}</Button>
               }
-              <Button size="large" icon="file-text" onClick={this.handleManifestVisit}>查看报关清单</Button>
+              <Dropdown.Button size="large" onClick={this.handleManifestVisit} overlay={declEntryMenu}>
+                <Icon type="file-text" /> 查看报关清单
+              </Dropdown.Button>
               <ButtonToggle size="large"
                 iconOff="folder" iconOn="folder-open"
                 onClick={this.toggle}

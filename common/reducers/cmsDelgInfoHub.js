@@ -10,6 +10,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'UPDATE_CERT_PARAM', 'UPDATE_CERT_PARAM_SUCCEED', 'UPDATE_CERT_PARAM_FAIL',
   'UPDATE_BLNO', 'UPDATE_BLNO_SUCCEED', 'UPDATE_BLNO_FAIL',
   'LOAD_BASIC_INFO', 'LOAD_BASIC_INFO_SUCCEED', 'LOAD_BASIC_INFO_FAILED',
+  'SAVE_BASE_INFO', 'SAVE_BASE_INFO_SUCCEED', 'SAVE_BASE_INFO_FAIL',
 ]);
 
 const initialState = {
@@ -181,6 +182,21 @@ export function exchangeBlNo(delgNo, blNo) {
       endpoint: 'v1/cms/delegation/exchange',
       method: 'post',
       data: { delgNo, blNo },
+    },
+  };
+}
+
+export function saveBaseInfo(change, delgNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SAVE_BASE_INFO,
+        actionTypes.SAVE_BASE_INFO_SUCCEED,
+        actionTypes.SAVE_BASE_INFO_FAIL,
+      ],
+      endpoint: 'v1/cms/delegation/base/info/save',
+      method: 'post',
+      data: { change, delgNo },
     },
   };
 }

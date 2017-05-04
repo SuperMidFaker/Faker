@@ -485,4 +485,16 @@ export default defineMessages({
     id: 'cms.app.settings.add.related.customers',
     defaultMessage: '添加关联客户',
   },
+  preEntryNo: {
+    id: 'cms.manifest.customs.decl.preentry.no',
+    defaultMessage: '预录入海关编号',
+  },
+  declType: {
+    id: 'cms.manifest.customs.decl.declType',
+    defaultMessage: '单证类型',
+  },
+  sendAllPackets: {
+    id: 'cms.manifest.customs.send.all.packets',
+    defaultMessage: '批量发送报文',
+  },
 });

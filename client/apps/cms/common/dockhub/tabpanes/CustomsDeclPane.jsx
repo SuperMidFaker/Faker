@@ -121,7 +121,6 @@ export default class CustomsDeclPane extends React.Component {
     }];
     const assignable = (customsPanel.customs_tenant_id === tenantId || customsPanel.customs_tenant_id === -1);
     // const assigneeOptions = this.state.data.map(d => <Option key={d.value}>{d.text}</Option>);
-    // todo declValue
     return (
       <div className="pane-content tab-pane">
         <Spin spinning={customsSpinning}>
@@ -140,10 +139,10 @@ export default class CustomsDeclPane extends React.Component {
                     />
                   </Col>
                   <Col span="6">
-                    <InfoItem label="商品数量" suffix="项" field={bill.pack_count} />
+                    <InfoItem label="商品数量" suffix="项" field={bill.g_count} />
                   </Col>
                   <Col span="6">
-                    <InfoItem label="申报货值" suffix="人民币" field={bill.declValue} />
+                    <InfoItem label="申报货值" suffix="人民币" field={bill.total_trades} />
                   </Col>
                 </Row>
               </Card>
