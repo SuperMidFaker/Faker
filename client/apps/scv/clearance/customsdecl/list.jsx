@@ -6,15 +6,15 @@ import { Breadcrumb, Layout, Radio, Tag, message, Badge } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
-import { loadDelgDecls, deleteDecl, setDeclReviewed } from 'common/reducers/cmsDeclare';
+import { loadCustomsDecls, deleteDecl, setDeclReviewed } from 'common/reducers/cmsDeclare';
 import { openEfModal } from 'common/reducers/cmsDelegation';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/search-bar';
+import DeclStatusPopover from './declStatusPopover';
 import NavLink from 'client/components/nav-link';
 import { format } from 'client/common/i18n/helpers';
-import DeclStatusPopover from './declStatusPopover';
 import messages from '../message.i18n';
-import { DECL_STATUS, CMS_DECL_STATUS } from 'common/constants';
+import { CMS_DECL_STATUS } from 'common/constants';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -27,27 +27,27 @@ const RadioButton = Radio.Button;
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     loginName: state.account.username,
-    delgdeclList: state.cmsDeclare.delgdeclList,
+    customslist: state.cmsDeclare.customslist,
     listFilter: state.cmsDeclare.listFilter,
     customs: state.cmsDeclare.customs.map(cus => ({
       value: cus.customs_code,
       text: `${cus.customs_name}`,
     })),
   }),
-  { loadDelgDecls, openEfModal, deleteDecl, setDeclReviewed }
+  { loadCustomsDecls, openEfModal, deleteDecl, setDeclReviewed }
 )
 @connectNav({
   depth: 2,
   moduleName: 'scv',
 })
-export default class DelgDeclList extends Component {
+export default class ScvCustomsDeclList extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     ietype: PropTypes.oneOf(['import', 'export']),
     tenantId: PropTypes.number.isRequired,
     loginId: PropTypes.number.isRequired,
     loginName: PropTypes.string.isRequired,
-    delgdeclList: PropTypes.object.isRequired,
+    customslist: PropTypes.object.isRequired,
     listFilter: PropTypes.object.isRequired,
   }
   static contextTypes = {
@@ -121,10 +121,11 @@ export default class DelgDeclList extends Component {
     title: '状态',
     width: 120,
     dataIndex: 'status',
-    render: (o) => {
-      const decl = CMS_DECL_STATUS.filter(st => st.value === o)[0];
-      if (decl) {
-        return <Badge status={decl.badge} text={decl && decl.text} />;
+    render: (ost) => {
+      const declkey = Object.keys(CMS_DECL_STATUS).filter(stkey => CMS_DECL_STATUS[stkey].value === ost)[0];
+      if (declkey) {
+        const decl = CMS_DECL_STATUS[declkey];
+        return <Badge status={decl.badge} text={decl.text} />;
       } else {
         return null;
       }
@@ -154,7 +155,7 @@ export default class DelgDeclList extends Component {
     record.backfill_date && moment(record.backfill_date).format('YYYY.MM.DD') : '-'),
   }]
   dataSource = new Table.DataSource({
-    fetcher: params => this.props.loadDelgDecls(params),
+    fetcher: params => this.props.loadCustomsDecls(params),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
       total: result.totalCount,
@@ -174,16 +175,16 @@ export default class DelgDeclList extends Component {
       params.filter = JSON.stringify(filter);
       return params;
     },
-    remotes: this.props.delgdeclList,
+    remotes: this.props.customslist,
   })
   handleTableLoad = (currentPage, filter) => {
     this.setState({ expandedKeys: [] });
-    this.props.loadDelgDecls({
+    this.props.loadCustomsDecls({
       ietype: this.props.ietype,
       tenantId: this.props.tenantId,
       filter: JSON.stringify(filter || this.props.listFilter),
-      pageSize: this.props.delgdeclList.pageSize,
-      currentPage: currentPage || this.props.delgdeclList.current,
+      pageSize: this.props.customslist.pageSize,
+      currentPage: currentPage || this.props.customslist.current,
     }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 5);
@@ -230,7 +231,7 @@ export default class DelgDeclList extends Component {
     });
   }
   handleReview = (row) => {
-    this.props.setDeclReviewed([row.id], DECL_STATUS.reviewed).then((result) => {
+    this.props.setDeclReviewed([row.id], CMS_DECL_STATUS.reviewed.value).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -239,7 +240,7 @@ export default class DelgDeclList extends Component {
     });
   }
   handleRecall = (row) => {
-    this.props.setDeclReviewed([row.id], DECL_STATUS.proposed).then((result) => {
+    this.props.setDeclReviewed([row.id], CMS_DECL_STATUS.proposed.value).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -251,8 +252,8 @@ export default class DelgDeclList extends Component {
 
   }
   render() {
-    const { delgdeclList, listFilter } = this.props;
-    this.dataSource.remotes = delgdeclList;
+    const { customslist, listFilter } = this.props;
+    this.dataSource.remotes = customslist;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -296,10 +297,9 @@ export default class DelgDeclList extends Component {
           <span />
           <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">
             <RadioButton value="all">{this.msg('all')}</RadioButton>
-            <RadioButton value="proposed">{this.msg('filterProposed')}</RadioButton>
-            <RadioButton value="reviewed">{this.msg('filterReviewed')}</RadioButton>
-            <RadioButton value="declared">{this.msg('filterDeclared')}</RadioButton>
-            <RadioButton value="finalized">{this.msg('filterFinalized')}</RadioButton>
+            {Object.keys(CMS_DECL_STATUS).map(declkey =>
+              <RadioButton value={declkey} key={declkey}>{CMS_DECL_STATUS[declkey].text}</RadioButton>
+            )}
           </RadioGroup>
           <div className="top-bar-tools" />
         </Header>
@@ -313,7 +313,7 @@ export default class DelgDeclList extends Component {
             </div>
             <div className="panel-body table-panel expandable">
               <Table rowSelection={rowSelection} columns={columns} rowKey="pre_entry_seq_no" dataSource={this.dataSource}
-                loading={delgdeclList.loading} scroll={{ x: 1600 }}
+                loading={customslist.loading} scroll={{ x: 1600 }}
               />
             </div>
           </div>

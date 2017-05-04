@@ -46,7 +46,7 @@ export default class CustomsDeclPane extends React.Component {
     });
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.tabKey === 'customsDecl' && nextProps.delgNo !== this.props.delgNo) {
+    if (nextProps.tabKey === 'customsDecl') {
       nextProps.loadCustPanel({
         delgNo: nextProps.delgNo,
         tenantId: this.props.tenantId,

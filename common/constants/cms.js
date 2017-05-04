@@ -266,19 +266,13 @@ export const DELG_STATUS = {
   finished: 4,
 };
 
-export const DECL_STATUS = {
-  proposed: 0,
-  reviewed: 1,
-  declared: 2,
-  finalized: 3,
+export const CMS_DECL_STATUS = {
+  proposed: { value: 0, text: '报关草单', badge: 'default', step: 0, stepDesc: '生成', date: 'created_date' },
+  reviewed: { value: 1, text: '已复核', badge: 'warning', step: 1, stepDesc: '复核', date: 'reviewed_date' },
+  sent: { value: 2, text: '已发送', badge: 'processing', step: 2, stepDesc: '发送', date: 'epsend_date' },
+  finalized: { value: 3, text: '已入海关库', badge: 'success', step: 3, stepDesc: '回执', date: 'backfill_date' },
+  released: { value: 4, text: '已放行', badge: 'success', step: 4, stepDesc: '放行', date: 'clear_date' },
 };
-
-export const CMS_DECL_STATUS = [
-  { value: 0, text: '报关草单', badge: 'default' },
-  { value: 1, text: '已复核', badge: 'warning' },
-  { value: 2, text: '已发送', badge: 'processing' },
-  { value: 3, text: '已入海关库', badge: 'success' },
-];
 
 export const ITEMS_STATUS = [
   { value: 0, text: '未归类' },

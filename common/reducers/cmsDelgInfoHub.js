@@ -5,7 +5,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'HIDE_PREVIEWER', 'SET_PREW_STATUS',
   'SHOW_PREVIEWER',
   'SET_PREW_TABKEY',
-  'LOAD_DELG_PANEL', 'LOAD_DELG_PANEL_SUCCEED', 'LOAD_DELG_PANEL_FAILED',
+  'LOAD_CUSTOMSPANEL', 'LOAD_CUSTOMSPANEL_SUCCEED', 'LOAD_CUSTOMSPANEL_FAILED',
   'LOAD_DECLCIQ_PANEL', 'LOAD_DECLCIQ_PANEL_SUCCEED', 'LOAD_DECLCIQ_PANEL_FAIL',
   'UPDATE_CERT_PARAM', 'UPDATE_CERT_PARAM_SUCCEED', 'UPDATE_CERT_PARAM_FAIL',
   'UPDATE_BLNO', 'UPDATE_BLNO_SUCCEED', 'UPDATE_BLNO_FAIL',
@@ -62,11 +62,11 @@ export default function reducer(state = initialState, action) {
       return { ...state, ...action.data };
     case actionTypes.SET_PREW_TABKEY:
       return { ...state, tabKey: action.data };
-    case actionTypes.LOAD_DELG_PANEL:
+    case actionTypes.LOAD_CUSTOMSPANEL:
       return { ...state, customsPanelLoading: true };
-    case actionTypes.LOAD_DELG_PANEL_FAILED:
+    case actionTypes.LOAD_CUSTOMSPANEL_FAILED:
       return { ...state, customsPanelLoading: false };
-    case actionTypes.LOAD_DELG_PANEL_SUCCEED:
+    case actionTypes.LOAD_CUSTOMSPANEL_SUCCEED:
       return { ...state, customsPanel: action.result.data, customsPanelLoading: false };
     case actionTypes.LOAD_DECLCIQ_PANEL:
       return { ...state, ciqPanelLoading: true };
@@ -128,9 +128,9 @@ export function loadCustPanel(params) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.LOAD_DELG_PANEL,
-        actionTypes.LOAD_DELG_PANEL_SUCCEED,
-        actionTypes.LOAD_DELG_PANEL_FAILED,
+        actionTypes.LOAD_CUSTOMSPANEL,
+        actionTypes.LOAD_CUSTOMSPANEL_SUCCEED,
+        actionTypes.LOAD_CUSTOMSPANEL_FAILED,
       ],
       endpoint: 'v1/cms/delegate/load/custPanel',
       method: 'get',

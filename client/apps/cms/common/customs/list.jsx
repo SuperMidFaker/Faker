@@ -7,7 +7,7 @@ import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
-import { loadDelgDecls, deleteDecl, setDeclReviewed, showSendDeclModal, openDeclReleasedModal } from 'common/reducers/cmsDeclare';
+import { loadCustomsDecls, deleteDecl, setDeclReviewed, showSendDeclModal, openDeclReleasedModal } from 'common/reducers/cmsDeclare';
 import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
 import { openEfModal } from 'common/reducers/cmsDelegation';
 import TrimSpan from 'client/components/trimSpan';
@@ -16,10 +16,10 @@ import NavLink from 'client/components/nav-link';
 import RowUpdater from 'client/components/rowUpdater';
 import FillCustomsNoModal from './modals/fillCustomsNoModal';
 import DeclReleasedModal from './modals/declReleasedModal';
-import { format } from 'client/common/i18n/helpers';
 import DeclStatusPopover from './declStatusPopover';
+import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import { DECL_STATUS, CMS_DECL_STATUS } from 'common/constants';
+import { CMS_DECL_STATUS } from 'common/constants';
 import SendModal from './modals/sendModal';
 import DelegationDockPanel from '../dockhub/delegationDockPanel';
 
@@ -34,28 +34,28 @@ const RadioButton = Radio.Button;
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     loginName: state.account.username,
-    delgdeclList: state.cmsDeclare.delgdeclList,
+    customslist: state.cmsDeclare.customslist,
     listFilter: state.cmsDeclare.listFilter,
     customs: state.cmsDeclare.customs.map(cus => ({
       value: cus.customs_code,
       text: cus.customs_name,
     })),
   }),
-  { loadDelgDecls, openEfModal, deleteDecl, setDeclReviewed,
+  { loadCustomsDecls, openEfModal, deleteDecl, setDeclReviewed,
     showSendDeclModal, showPreviewer, openDeclReleasedModal }
 )
 @connectNav({
   depth: 2,
   moduleName: 'clearance',
 })
-export default class DelgDeclList extends Component {
+export default class CustomsList extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     ietype: PropTypes.oneOf(['import', 'export']),
     tenantId: PropTypes.number.isRequired,
     loginId: PropTypes.number.isRequired,
     loginName: PropTypes.string.isRequired,
-    delgdeclList: PropTypes.object.isRequired,
+    customslist: PropTypes.object.isRequired,
     listFilter: PropTypes.object.isRequired,
     showSendDeclModal: PropTypes.func.isRequired,
   }
@@ -81,39 +81,36 @@ export default class DelgDeclList extends Component {
     dataIndex: 'entry_id',
     width: 200,
     fixed: 'left',
-    render: (o, record) => {
-      const preentrySpan = (
-        <span>
-          <Tag>预</Tag>
-          <NavLink to={`/clearance/${this.props.ietype}/customs/${record.bill_seq_no}/${record.pre_entry_seq_no}`}>
-            {record.pre_entry_seq_no}
-          </NavLink>
-        </span>);
+    render: (entryNO, record) => {
+      const preEntryLink = (
+        <NavLink to={`/clearance/${this.props.ietype}/customs/${record.bill_seq_no}/${record.pre_entry_seq_no}`}>
+          {record.pre_entry_seq_no}
+        </NavLink>);
       switch (record.status) {
-        case 0:
-        case 1:
-          return preentrySpan;
-        case 2:
-          return (o) ?
+        case CMS_DECL_STATUS.proposed.value:
+        case CMS_DECL_STATUS.reviewed.value:
+          return (
             <span>
-              <DeclStatusPopover entryId={o}>
-                <Tag color={record.passed === 1 ? 'green' : 'blue'}>海关</Tag>
-              </DeclStatusPopover>
-              <NavLink to={`/clearance/${this.props.ietype}/customs/${record.bill_seq_no}/${record.pre_entry_seq_no}`}> {o}</NavLink>
-            </span> :
+              <Tag>预</Tag>
+              {preEntryLink}
+            </span>);
+        case CMS_DECL_STATUS.sent.value:
+          return (
             <span>
-              <Tag>预</Tag> <NavLink to={`/clearance/${this.props.ietype}/customs/${record.bill_seq_no}/${record.pre_entry_seq_no}`}>{record.pre_entry_seq_no}</NavLink>
+              <Tag>预</Tag>
+              {preEntryLink}
               <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit" key="entry_no">
                 <RowUpdater onHit={this.handleDeclNoFill} row={record}
                   label={<Icon type="edit" />} tooltip="回填海关编号"
                 />
               </PrivilegeCover>
-            </span>;
-        case 3:
+            </span>);
+        case CMS_DECL_STATUS.finalized.value:
+        case CMS_DECL_STATUS.released.value:
           return (
             <span>
-              <DeclStatusPopover entryId={o}><Tag color={record.passed === 1 ? 'green' : 'blue'}>海关</Tag></DeclStatusPopover>
-              <NavLink to={`/clearance/${this.props.ietype}/customs/${record.bill_seq_no}/${record.pre_entry_seq_no}`}> {o}</NavLink>
+              <DeclStatusPopover entryId={entryNO}><Tag color={record.status === CMS_DECL_STATUS.released.value ? 'green' : 'blue'}>海关</Tag></DeclStatusPopover>
+              <NavLink to={`/clearance/${this.props.ietype}/customs/${record.bill_seq_no}/${record.pre_entry_seq_no}`}>{entryNO}</NavLink>
             </span>);
         default:
           return <span />;
@@ -157,10 +154,11 @@ export default class DelgDeclList extends Component {
   }, {
     title: '状态',
     dataIndex: 'status',
-    render: (o) => {
-      const decl = CMS_DECL_STATUS.filter(st => st.value === o)[0];
-      if (decl) {
-        return <Badge status={decl.badge} text={decl && decl.text} />;
+    render: (ost) => {
+      const declkey = Object.keys(CMS_DECL_STATUS).filter(stkey => CMS_DECL_STATUS[stkey].value === ost)[0];
+      if (declkey) {
+        const decl = CMS_DECL_STATUS[declkey];
+        return <Badge status={decl.badge} text={decl.text} />;
       } else {
         return null;
       }
@@ -195,7 +193,7 @@ export default class DelgDeclList extends Component {
     width: 140,
     fixed: 'right',
     render: (o, record) => {
-      if (record.status === CMS_DECL_STATUS[0].value) {
+      if (record.status === CMS_DECL_STATUS.proposed.value) {
         return (
           <span>
             <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
@@ -209,7 +207,7 @@ export default class DelgDeclList extends Component {
             </PrivilegeCover>
           </span>
         );
-      } else if (record.status === CMS_DECL_STATUS[1].value) {
+      } else if (record.status === CMS_DECL_STATUS.reviewed.value) {
         return (
           <span>
             <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
@@ -217,27 +215,22 @@ export default class DelgDeclList extends Component {
             </PrivilegeCover>
             <span className="ant-divider" />
             <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-              <RowUpdater onHit={this.handleRecall} label={<span><Icon type="left-circle-o" /> {this.msg('recall')}</span>} row={record} />
+              <RowUpdater onHit={this.handleRecall} label={<span><Icon type="left-circle-o" />{this.msg('recall')}</span>} row={record} />
             </PrivilegeCover>
           </span>
         );
       } else {
-        const updaters = [];
-        if (!record.passed) {
-          updaters.push(
+        // todo ep_receipt_filename view
+        return (
+          <span>
+            {record.status !== CMS_DECL_STATUS.released.value &&
             <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit" key="clear">
               <RowUpdater onHit={this.handleShowDeclReleasedModal} row={record}
                 label={<span><Icon type="flag" />标记放行</span>}
               />
-            </PrivilegeCover>);
-        }
-        if (updaters.length === 2) {
-          updaters.splice(1, 0, <span className="ant-divider" key="divider1" />);
-        }
-        return (
-          <span>
-            {updaters}
-            {record.ep_send_filename && record.status === CMS_DECL_STATUS[2].value && (
+            </PrivilegeCover>}
+            {record.status !== CMS_DECL_STATUS.released.value && <span className="ant-divider" />}
+            {record.ep_send_filename && record.status === CMS_DECL_STATUS.sent.value && (
               <Dropdown overlay={(
                 <Menu>
                   <Menu.Item key="edit">
@@ -254,7 +247,7 @@ export default class DelgDeclList extends Component {
     },
   }]
   dataSource = new Table.DataSource({
-    fetcher: params => this.props.loadDelgDecls(params),
+    fetcher: params => this.props.loadCustomsDecls(params),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
       total: result.totalCount,
@@ -274,15 +267,15 @@ export default class DelgDeclList extends Component {
       params.filter = JSON.stringify(filter);
       return params;
     },
-    remotes: this.props.delgdeclList,
+    remotes: this.props.customslist,
   })
   handleTableLoad = (currentPage, filter) => {
-    this.props.loadDelgDecls({
+    this.props.loadCustomsDecls({
       ietype: this.props.ietype,
       tenantId: this.props.tenantId,
       filter: JSON.stringify(filter || this.props.listFilter),
-      pageSize: this.props.delgdeclList.pageSize,
-      currentPage: currentPage || this.props.delgdeclList.current,
+      pageSize: this.props.customslist.pageSize,
+      currentPage: currentPage || this.props.customslist.current,
     }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 5);
@@ -333,7 +326,7 @@ export default class DelgDeclList extends Component {
     });
   }
   handleReview = (row) => {
-    this.props.setDeclReviewed([row.id], DECL_STATUS.reviewed).then((result) => {
+    this.props.setDeclReviewed([row.id], CMS_DECL_STATUS.reviewed.value).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -342,7 +335,7 @@ export default class DelgDeclList extends Component {
     });
   }
   handleListsReview = (ids) => {
-    this.props.setDeclReviewed(ids, DECL_STATUS.reviewed).then((result) => {
+    this.props.setDeclReviewed(ids, CMS_DECL_STATUS.reviewed.value).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -351,7 +344,7 @@ export default class DelgDeclList extends Component {
     });
   }
   handleRecall = (row) => {
-    this.props.setDeclReviewed([row.id], DECL_STATUS.proposed).then((result) => {
+    this.props.setDeclReviewed([row.id], CMS_DECL_STATUS.proposed.value).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -371,8 +364,8 @@ export default class DelgDeclList extends Component {
     this.props.openDeclReleasedModal(row.entry_id, row.pre_entry_seq_no, row.delg_no);
   }
   render() {
-    const { delgdeclList, listFilter } = this.props;
-    this.dataSource.remotes = delgdeclList;
+    const { customslist, listFilter } = this.props;
+    this.dataSource.remotes = customslist;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -400,11 +393,9 @@ export default class DelgDeclList extends Component {
           </Breadcrumb>
           <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">
             <RadioButton value="all">{this.msg('all')}</RadioButton>
-            <RadioButton value="proposed">{this.msg('filterProposed')}</RadioButton>
-            <RadioButton value="reviewed">{this.msg('filterReviewed')}</RadioButton>
-            <RadioButton value="declared">{this.msg('filterDeclared')}</RadioButton>
-            <RadioButton value="finalized">{this.msg('filterFinalized')}</RadioButton>
-            <RadioButton value="released">{this.msg('customsReleased')}</RadioButton>
+            {Object.keys(CMS_DECL_STATUS).map(declkey =>
+              <RadioButton value={declkey} key={declkey}>{CMS_DECL_STATUS[declkey].text}</RadioButton>
+            )}
           </RadioGroup>
           <div className="top-bar-tools" />
         </Header>
@@ -419,7 +410,7 @@ export default class DelgDeclList extends Component {
             </div>
             <div className="panel-body table-panel expandable">
               <Table rowSelection={rowSelection} columns={this.columns} rowKey="id" dataSource={this.dataSource}
-                loading={delgdeclList.loading} scroll={{ x: 1650 }}
+                loading={customslist.loading} scroll={{ x: 1650 }}
               />
             </div>
             <FillCustomsNoModal reload={this.handleTableLoad} />

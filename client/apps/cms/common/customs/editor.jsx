@@ -12,7 +12,7 @@ import SheetBodyPanel from './panel/cdfBodyPanel';
 import SheetExtraPanel from './panel/cdfExtraPanel';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import { DECL_STATUS, CMS_DECL_STATUS } from 'common/constants';
+import { CMS_DECL_STATUS } from 'common/constants';
 import SendModal from './modals/sendModal';
 
 const formatMsg = format(messages);
@@ -92,7 +92,7 @@ export default class CustomsDeclEditor extends React.Component {
   }
   handleReview = () => {
     const head = this.props.head;
-    this.props.setDeclReviewed([this.props.head.id], DECL_STATUS.reviewed).then((result) => {
+    this.props.setDeclReviewed([this.props.head.id], CMS_DECL_STATUS.reviewed.value).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -102,7 +102,7 @@ export default class CustomsDeclEditor extends React.Component {
   }
   handleRecall = () => {
     const head = this.props.head;
-    this.props.setDeclReviewed([head.id], DECL_STATUS.proposed).then((result) => {
+    this.props.setDeclReviewed([head.id], CMS_DECL_STATUS.proposed.value).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -117,8 +117,7 @@ export default class CustomsDeclEditor extends React.Component {
   render() {
     const { ietype, form, head, bodies, billMeta } = this.props;
     const readonly = !billMeta.editable;
-    const path = `/clearance/${ietype}/customs/`;
-    const decl = CMS_DECL_STATUS.filter(st => st.value === head.status)[0];
+    const declkey = Object.keys(CMS_DECL_STATUS).filter(stkey => CMS_DECL_STATUS[stkey].value === head.status)[0];
     return (
       <Layout>
         <Layout>
@@ -128,23 +127,31 @@ export default class CustomsDeclEditor extends React.Component {
                 {this.props.ietype === 'import' ? this.msg('importOperation') : this.msg('exportOperation')}
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                <Icon type="file" /> <NavLink to={path}>{this.msg('customsDeclaration')}</NavLink>
+                <Icon type="file" /> <NavLink to={`/clearance/${ietype}/customs/`}>{this.msg('customsDeclaration')}</NavLink>
               </Breadcrumb.Item>
               <Breadcrumb.Item>
                 {head.entry_id || head.pre_entry_seq_no}
               </Breadcrumb.Item>
             </Breadcrumb>
-            <Badge status={decl && decl.badge} text={decl && decl.text} />
+            {declkey && <Badge status={CMS_DECL_STATUS[declkey].badge} text={CMS_DECL_STATUS[declkey].text} />}
             <div className="top-bar-tools">
-              { head.status === DECL_STATUS.proposed && <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleDelete()}>
+              { head.status === CMS_DECL_STATUS.proposed.value && <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleDelete()}>
                 <Tooltip title={this.msg('delete')} placement="bottom">
                   <Button size="large" icon="delete" />
                 </Tooltip>
               </Popconfirm> }
-              { head.status === DECL_STATUS.proposed && <Button type="primary" size="large" icon="check-circle-o" onClick={this.handleReview}>{this.msg('review')}</Button> }
-              { head.status === DECL_STATUS.reviewed && <Tooltip title={this.msg('recall')} placement="bottom"><Button size="large" icon="left-circle-o" onClick={this.handleRecall} /></Tooltip> }
-              { head.status === DECL_STATUS.reviewed && <Button type="primary" size="large" icon="mail" onClick={this.handleShowSendDeclModal}>{this.msg('sendPackets')}</Button> }
-              { head.status === DECL_STATUS.finalized && head.passed === 0 && <Button type="primary" ghost size="large" icon="flag" onClick={this.handleMarkReleasedModal}>{this.msg('markReleased')}</Button> }
+              { head.status === CMS_DECL_STATUS.proposed.value &&
+                <Button type="primary" size="large" icon="check-circle-o" onClick={this.handleReview}>{this.msg('review')}</Button>
+              }
+              { head.status === CMS_DECL_STATUS.reviewed.value &&
+                <Tooltip title={this.msg('recall')} placement="bottom"><Button size="large" icon="left-circle-o" onClick={this.handleRecall} /></Tooltip>
+              }
+              { head.status === CMS_DECL_STATUS.reviewed.value &&
+                <Button type="primary" size="large" icon="mail" onClick={this.handleShowSendDeclModal}>{this.msg('sendPackets')}</Button>
+              }
+              { head.status === CMS_DECL_STATUS.finalized.value &&
+                <Button type="primary" ghost size="large" icon="flag" onClick={this.handleMarkReleasedModal}>{this.msg('markReleased')}</Button>
+              }
               <Button size="large" icon="file-text" onClick={this.handleManifestVisit}>查看报关清单</Button>
               <ButtonToggle size="large"
                 iconOff="folder" iconOn="folder-open"
