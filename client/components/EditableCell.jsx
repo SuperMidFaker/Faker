@@ -9,6 +9,7 @@ export default class EditableCell extends React.Component {
     addonAfter: PropTypes.node,
     type: PropTypes.string,
     value: PropTypes.any,
+    field: PropTypes.string,
     placeholder: PropTypes.string,
     cellTrigger: PropTypes.bool,
     options: PropTypes.arrayOf(PropTypes.shape({ key: PropTypes.string.isRequired, text: PropTypes.string.isRequired })),
@@ -17,6 +18,7 @@ export default class EditableCell extends React.Component {
   }
   state = {
     value: this.props.value,
+    field: this.props.field,
     editMode: false,
   }
   componentWillReceiveProps(nextProps) {
@@ -33,7 +35,7 @@ export default class EditableCell extends React.Component {
       this.setState({ editMode: false });
     }, 10);
     if (this.props.onSave) {
-      this.props.onSave(this.state.value);
+      this.props.onSave(this.state.value, this.state.field);
     }
   }
   close = () => {
