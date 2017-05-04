@@ -101,7 +101,7 @@ export default class Instance extends Component {
       key: item.field,
       dataIndex: item.field,
       title: item.custom_title,
-      width: item.datatype === 'DATE' ? 200 : 150,
+      width: item.source === 3 && item.datatype === 'DATE' ? 200 : 150,
       render: (fld, row) => {
         if (item.source === 3) {
           if (item.datatype === 'DATE') {

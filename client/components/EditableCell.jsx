@@ -57,7 +57,7 @@ export default class EditableCell extends React.Component {
     this.setState({ value });
   }
   handleDatehange = (date) => {
-    this.setState({ value: date.format('YYYY-MM-DD') });
+    this.setState({ value: date ? date.format('YYYY-MM-DD') : '' });
   }
   renderControl() {
     const { type, placeholder, options, addonBefore, addonAfter } = this.props;
@@ -83,7 +83,7 @@ export default class EditableCell extends React.Component {
         </div>);
       case 'date':
         return (<div>
-          <DatePicker style={{ width: '65%' }} value={value ? moment(value) : ''} onChange={this.handleDatehange} />
+          <DatePicker style={{ width: '79%' }} value={value ? moment(value) : ''} onChange={this.handleDatehange} />
           <Icon type="check" className="editable-cell-icon-save" onClick={this.check} />
           <span className="ant-divider" />
           <Icon type="close" className="editable-cell-icon-close" onClick={this.close} />
