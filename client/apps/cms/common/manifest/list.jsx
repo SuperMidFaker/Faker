@@ -141,6 +141,29 @@ export default class ManifestList extends Component {
       }
       return <TrimSpan text={port} maxLen={14} />;
     },
+  }, {
+    title: this.msg('opColumn'),
+    width: 100,
+    fixed: 'right',
+    render: (o, record) => {
+      if (record.bill_status < 100) {
+        return (
+          <RowUpdater onHit={this.handleDelegationMake} label={<span><Icon type="edit" /> 编辑</span>} row={record} />
+        );
+      } else if (record.bill_status === 100) {
+        return (
+          <span>
+            <RowUpdater onHit={this.handleDelegationView} label={<span><Icon type="eye-o" /> 查看</span>} row={record} />
+            { record.revertable && <span className="ant-divider" />}
+            { record.revertable && (<Popconfirm title="确定操作?" placement="topRight" onConfirm={() => this.handleManifestRedo(record)}>
+              <Tooltip title="删除已生成的报关草单，重新修改" placement="bottomLeft">
+                <a role="button"><Icon type="reload" /></a>
+              </Tooltip>
+            </Popconfirm>)}
+          </span>
+        );
+      }
+    },
   }]
   dataSource = new Table.DataSource({
     fetcher: params => this.props.loadDelgBill(params),
@@ -250,32 +273,6 @@ export default class ManifestList extends Component {
   render() {
     const { delgBillList, listFilter } = this.props;
     this.dataSource.remotes = delgBillList;
-    let columns = [];
-    columns = [...this.columns];
-    columns.push({
-      title: this.msg('opColumn'),
-      width: 100,
-      fixed: 'right',
-      render: (o, record) => {
-        if (record.bill_status < 100) {
-          return (
-            <RowUpdater onHit={this.handleDelegationMake} label={<span><Icon type="edit" /> 编辑</span>} row={record} />
-          );
-        } else if (record.bill_status === 100) {
-          return (
-            <span>
-              <RowUpdater onHit={this.handleDelegationView} label={<span><Icon type="eye-o" /> 查看</span>} row={record} />
-              { record.revertable && <span className="ant-divider" />}
-              { record.revertable && (<Popconfirm title="确定操作?" placement="topRight" onConfirm={() => this.handleManifestRedo(record)}>
-                <Tooltip title="删除已生成的报关草单，重新修改" placement="bottomLeft">
-                  <a role="button"><Icon type="reload" /></a>
-                </Tooltip>
-              </Popconfirm>)}
-            </span>
-          );
-        }
-      },
-    });
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -313,7 +310,7 @@ export default class ManifestList extends Component {
                   </div>
                 </div>
                 <div className="panel-body table-panel">
-                  <Table rowSelection={rowSelection} columns={columns} rowKey="delg_no" dataSource={this.dataSource}
+                  <Table rowSelection={rowSelection} columns={this.columns} rowKey="delg_no" dataSource={this.dataSource}
                     loading={delgBillList.loading} scroll={{ x: 1800 }}
                   />
                 </div>

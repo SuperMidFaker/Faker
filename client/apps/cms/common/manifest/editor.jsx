@@ -12,7 +12,7 @@ import ManifestBodyPanel from './panel/manifestBodyPanel';
 import MergeSplitModal from './modals/mergeSplit';
 import SaveTemplateModal from './modals/saveTemplateSteps';
 import SheetExtraPanel from './panel/manifestExtraPanel';
-import { DECL_STATUS } from 'common/constants';
+import { CMS_DECL_STATUS } from 'common/constants';
 import { dividGrossWt } from './panel/helper';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -354,7 +354,7 @@ export default class ManifestEditor extends React.Component {
       </Menu>);
     let sendable = true;
     billMeta.entries.forEach((entry) => {
-      sendable = sendable && (entry.status === DECL_STATUS.reviewed);
+      sendable = sendable && (entry.status === CMS_DECL_STATUS.reviewed);
     });
     const path = `/clearance/${ietype}/manifest/`;
     let editable = !this.props.readonly && billMeta.entries.length === 0;
