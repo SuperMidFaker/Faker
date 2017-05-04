@@ -15,6 +15,7 @@ const actionTypes = createActionTypes('@@welogix/cms/declaration/', [
   'LOAD_CUSTOMSRES', 'LOAD_CUSTOMSRES_SUCCEED', 'LOAD_CUSTOMSRES_FAIL',
   'OPEN_DECL_RELEASED_MODAL', 'CLOSE_DECL_RELEASED_MODAL',
   'CLEAR_CUSTOMS', 'CLEAR_CUSTOMS_SUCCEED', 'CLEAR_CUSTOMS_FAIL',
+  'SEND_MUTI_DECL', 'SEND_MUTI_DECL_SUCCEED', 'SEND_MUTI_DECL_FAIL',
 ]);
 
 const initialState = {
@@ -200,6 +201,21 @@ export function sendDecl(data) {
         actionTypes.SEND_DECL_FAIL,
       ],
       endpoint: 'v1/cms/declare/send',
+      method: 'post',
+      data,
+    },
+  };
+}
+
+export function sendMutiDecl(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SEND_MUTI_DECL,
+        actionTypes.SEND_MUTI_DECL_SUCCEED,
+        actionTypes.SEND_MUTI_DECL_FAIL,
+      ],
+      endpoint: 'v1/cms/declare/muti/send',
       method: 'post',
       data,
     },

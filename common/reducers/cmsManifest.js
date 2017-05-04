@@ -52,6 +52,7 @@ const actionTypes = createActionTypes('@@welogix/cms/manifest/', [
   'LOAD_FORM_VALS', 'LOAD_FORM_VALS_SUCCEED', 'LOAD_FORM_VALS_FAIL',
   'SAVE_GENERATED_TEMPLATE', 'SAVE_GENERATED_TEMPLATE_SUCCEED', 'SAVE_GENERATED_TEMPLATE_FAIL',
   'VALIDATE_NAME', 'VALIDATE_NAME_SUCCEED', 'VALIDATE_NAME_FAIL',
+  'SHOW_SEND_DECLS_MODAL',
 ]);
 
 const initialState = {
@@ -124,6 +125,12 @@ const initialState = {
   formData: {},
   changeTimes: 0,
   templateValLoading: false,
+  sendDeclsModal: {
+    visible: false,
+    preEntrySeqNo: '',
+    delgNo: '',
+    agentCustCo: '',
+  },
 };
 
 export default function reducer(state = initialState, action) {
@@ -279,6 +286,8 @@ export default function reducer(state = initialState, action) {
     }
     case actionTypes.LOAD_FORM_VALS_FAIL:
       return { ...state, templateValLoading: false };
+    case actionTypes.SHOW_SEND_DECLS_MODAL:
+      return { ...state, sendDeclsModal: { ...state.sendDeclsModal, ...action.data } };
     default:
       return state;
   }
@@ -1006,5 +1015,12 @@ export function validateTempName(params) {
       method: 'get',
       params,
     },
+  };
+}
+
+export function showSendDeclsModal({ visible = true, preEntrySeqNo = '', delgNo = '', agentCustCo }) {
+  return {
+    type: actionTypes.SHOW_SEND_DECLS_MODAL,
+    data: { visible, preEntrySeqNo, delgNo, agentCustCo },
   };
 }
