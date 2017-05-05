@@ -152,7 +152,7 @@ export default class ManifestEditor extends React.Component {
       const body = bodyDatas[i];
       if (!body.cop_g_no || !body.code_t || !body.code_s || !body.g_name
        || !body.g_qty || !body.g_unit || !body.dec_price || !body.trade_total || !body.trade_curr
-       || !body.duty_mode || !body.dest_country || !body.orig_country || !body.wet_wt || !body.gross_wt) {
+       || !body.duty_mode || !body.dest_country || !body.orig_country || !body.wet_wt) {
         this.setState({ generating: false });
         return message.error('表体数据尚未填写完整', 5);
       }
