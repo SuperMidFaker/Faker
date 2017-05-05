@@ -2,8 +2,8 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Modal, Form, Mention, message } from 'antd';
-import { closeAcceptModal, acceptDelg, loadDelgOperators, setOpetaor, reloadDelegationList } from 'common/reducers/cmsDelegation';
-import { setPreviewStatus, loadCustPanel, loadDeclCiqPanel } from 'common/reducers/cmsDelgInfoHub';
+import { closeAcceptModal, acceptDelg, loadDelgOperators, reloadDelegationList } from 'common/reducers/cmsDelegation';
+import { setPreviewStatus, loadCustPanel, loadDeclCiqPanel, setOpetaor } from 'common/reducers/cmsDelgInfoHub';
 
 const FormItem = Form.Item;
 const Nav = Mention.Nav;
@@ -70,7 +70,7 @@ export default class DelgAcceptModal extends React.Component {
           });
         } else if (this.props.opt === 'operator') {
           this.props.setOpetaor(
-            operator.lid, operator.name, this.props.delgDispIds, this.props.delg_no
+            operator.lid, operator.name, this.props.delg_no
           ).then((result) => {
             if (result.error) {
               message.error(result.error.message, 10);

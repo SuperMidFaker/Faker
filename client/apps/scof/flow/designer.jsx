@@ -298,6 +298,13 @@ export default class FlowDesigner extends React.Component {
     }
   }
   handleRemoveItem = () => {
+    const item = this.state.activeItem;
+    if (item && item.get('type') === 'edge') {
+      const source = item.get('source');
+      const target = item.get('target');
+      this.graph.update(source, { out_degree: source.get('model').out_degree - 1 });
+      this.graph.update(target, { in_degree: target.get('model').in_degree - 1 });
+    }
     this.graph.del();
     this.graph.refresh();
     this.setState({ activeItem: null });
