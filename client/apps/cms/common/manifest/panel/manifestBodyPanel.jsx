@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 import { Alert, Button, Dropdown, Menu, Table, Icon, Tooltip, Tag, Input, Select, message, notification, Popconfirm } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { addNewBillBody, delBillBody, editBillBody, updateHeadNetWt, loadBillBody, openAmountModel,
-  deleteSelectedBodies, resetBillBody, openRuleModel } from 'common/reducers/cmsManifest';
-import { getItemForBody, getHscodeForBody } from 'common/reducers/cmsTradeitem';
+  deleteSelectedBodies, resetBillBody, openRuleModel, showEditBodyModal } from 'common/reducers/cmsManifest';
+import { getItemForBody } from 'common/reducers/cmsTradeitem';
 import { format } from 'client/common/i18n/helpers';
 import ExcelUpload from 'client/components/excelUploader';
 import { createFilename } from 'client/util/dataTransform';
@@ -14,6 +14,7 @@ import messages from '../../form/message.i18n';
 import RelateImportRuleModal from '../modals/relateImportRules';
 import { dividGrossWt } from './helper';
 import { loadHscodes } from 'common/reducers/cmsHsCode';
+import EditBodyModal from '../modals/editBodyModal';
 
 const formatMsg = format(messages);
 const Option = Select.Option;
@@ -28,10 +29,6 @@ function ColumnInput(props) {
   const typeStr = (!type) ? 'text' : type;
   if (inEdit) {
     return (<Input type={typeStr} autosize={autosize} value={edit[field] || ''} onChange={handleChange} />);
-  } else if (field === 'cop_g_no' && record.feedback === 'noMatch') {
-    return (<Tooltip title="物料库中未对该货号归类">
-      <Tag color="red">{record[field] || ''}</Tag>
-    </Tooltip>);
   } else if (decimal) {
     return <span>{record[field] ? parseFloat(record[field]).toFixed(decimal) : ''}</span>;
   } else {
@@ -169,10 +166,9 @@ function calculateTotal(bodies) {
     loginId: state.account.loginId,
     billHead: state.cmsManifest.billHead,
     bodyItem: state.cmsTradeitem.bodyItem,
-    bodyHscode: state.cmsTradeitem.bodyHscode,
   }),
-  { addNewBillBody, delBillBody, editBillBody, updateHeadNetWt, loadBillBody, openAmountModel,
-    getItemForBody, getHscodeForBody, deleteSelectedBodies, resetBillBody, openRuleModel, loadHscodes }
+  { addNewBillBody, delBillBody, editBillBody, updateHeadNetWt, loadBillBody, openAmountModel, showEditBodyModal,
+    getItemForBody, deleteSelectedBodies, resetBillBody, openRuleModel, loadHscodes }
 )
 export default class ManifestBodyPanel extends React.Component {
   static propTypes = {
@@ -189,7 +185,6 @@ export default class ManifestBodyPanel extends React.Component {
     exemptions: PropTypes.array,
     billHead: PropTypes.object,
     bodyItem: PropTypes.object,
-    bodyHscode: PropTypes.object,
     headForm: PropTypes.object,
     hscodes: PropTypes.object,
   }
@@ -324,10 +319,20 @@ export default class ManifestBodyPanel extends React.Component {
       title: this.msg('copGNo'),
       fixed: 'left',
       width: 150,
-      render: (o, record, index) =>
-        <ColumnInput field="cop_g_no" inEdit={index === editIndex} record={record}
-          onChange={this.handleEditChange} edit={editBody}
-        />,
+      dataIndex: 'cop_g_no',
+      render: (o, record, index) => {
+        if (index === editIndex) {
+          return (<Input onChange={this.handleCopGnoChange} />);
+        } else if (record.feedback === 'noMatch') {
+          return (<Tooltip title="物料库中未对该货号归类"><Tag color="red">
+            <a onClick={() => this.handleEditBody(record)}>{o}</a>
+          </Tag></Tooltip>);
+        } else {
+          return (
+            <a onClick={() => this.handleEditBody(record)}>{o}</a>
+          );
+        }
+      },
     }, {
       title: this.msg('emGNo'),
       width: 100,
@@ -518,7 +523,7 @@ export default class ManifestBodyPanel extends React.Component {
         } else if (index + 1 + (pagination.current - 1) * pagination.pageSize === totalCount) {
           return (
             <span>
-              <RowUpdater onHit={this.handleEdit} label={<Icon type="plus" />}
+              <RowUpdater onHit={this.handleEditBody} label={<Icon type="plus" />}
                 index={index} row={{}}
               />
             </span>
@@ -526,10 +531,6 @@ export default class ManifestBodyPanel extends React.Component {
         } else {
           return (
             <span>
-              <RowUpdater onHit={this.handleEdit} label={<Icon type="edit" />}
-                row={record} index={index}
-              />
-              <span className="ant-divider" />
               <RowUpdater onHit={this.handleDel} label={<Icon type="delete" />}
                 row={record} index={index}
               />
@@ -550,6 +551,9 @@ export default class ManifestBodyPanel extends React.Component {
       },
     });
   }
+  handleCopGnoChange = (ev) => {
+    this.handleEditChange('cop_g_no', ev.target.value);
+  }
   handleEditChange = (field, value) => {
     this.setState({
       editBody: { ...this.state.editBody, [field]: value },
@@ -564,7 +568,6 @@ export default class ManifestBodyPanel extends React.Component {
       });
     }
     if (field === 'codes') {
-      // this.props.getHscodeForBody({ hscode: value });
       const { hscodes } = this.props;
       this.props.loadHscodes({
         tenantId: this.props.tenantId,
@@ -583,6 +586,12 @@ export default class ManifestBodyPanel extends React.Component {
     } else {
       message.error(this.msg('headUncreated'), 10);
     }
+  }
+  handleEditBody = (row) => {
+    this.setState({
+      editBody: row,
+    });
+    this.props.showEditBodyModal(true);
   }
   handleSave = (row, index) => {
     const { editBody, pagination: origPagi } = this.state;
@@ -866,7 +875,7 @@ export default class ManifestBodyPanel extends React.Component {
     }
   }
   render() {
-    const { totGrossWt, totWetWt, totTrade, totPcs } = this.state;
+    const { totGrossWt, totWetWt, totTrade, totPcs, editBody } = this.state;
     const selectedRows = this.state.selectedRowKeys;
     const disabled = this.props.readonly;
     const rowSelection = {
@@ -903,6 +912,7 @@ export default class ManifestBodyPanel extends React.Component {
           />
           <AmountModel />
           <RelateImportRuleModal />
+          <EditBodyModal editBody={editBody} billSeqNo={this.props.billSeqNo} />
         </div>
       </div>);
   }
