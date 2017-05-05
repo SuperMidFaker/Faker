@@ -52,9 +52,9 @@ export default class FreightCharge extends React.Component {
       customer_partner_id, consigner_region_code, consignee_region_code,
       transport_mode_id, transport_mode_code,
     } = this.props.formData;
-    const { goods_type, package: ctn, vehicle_type_id, vehicle_length_id, total_weight, total_volume, pickup_est_date, deliver_est_date } =
+    const { goods_type, container: ctn, vehicle_type_id, vehicle_length_id, total_weight, total_volume, pickup_est_date, deliver_est_date } =
       this.props.formhoc.getFieldsValue([
-        'goods_type', 'package', 'vehicle_type_id',
+        'goods_type', 'container', 'vehicle_type_id',
         'vehicle_length_id', 'total_weight', 'total_volume',
         'pickup_est_date', 'deliver_est_date',
       ]);
