@@ -11,6 +11,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'UPDATE_BLNO', 'UPDATE_BLNO_SUCCEED', 'UPDATE_BLNO_FAIL',
   'LOAD_BASIC_INFO', 'LOAD_BASIC_INFO_SUCCEED', 'LOAD_BASIC_INFO_FAILED',
   'SAVE_BASE_INFO', 'SAVE_BASE_INFO_SUCCEED', 'SAVE_BASE_INFO_FAIL',
+  'SET_OPERATOR', 'SET_OPERATOR_SUCCEED', 'SET_OPERATOR_FAIL',
 ]);
 
 const initialState = {
@@ -79,6 +80,8 @@ export default function reducer(state = initialState, action) {
       const delg = { ...state.previewer.delegation, ...action.payload.change };
       return { ...state, previewer: { ...state.previewer, delegation: delg } };
     }
+    case actionTypes.SET_OPERATOR_SUCCEED:
+      return { ...state, customsPanel: { ...state.customsPanel, bill: { ...state.customsPanel.bill, preparer_name: action.payload.loginName } } };
     default:
       return state;
   }
@@ -202,6 +205,22 @@ export function saveBaseInfo(change, delgNo) {
       method: 'post',
       data: { change, delgNo },
       payload: { change },
+    },
+  };
+}
+
+export function setOpetaor(loginId, loginName, delgNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SET_OPERATOR,
+        actionTypes.SET_OPERATOR_SUCCEED,
+        actionTypes.SET_OPERATOR_FAIL,
+      ],
+      method: 'post',
+      endpoint: 'v1/cms/delegation/set/operator',
+      data: { loginId, loginName, delgNo },
+      payload: { loginName },
     },
   };
 }
