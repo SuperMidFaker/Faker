@@ -6,7 +6,7 @@ import { Col, Table, Steps, Card, Icon, Dropdown, Menu, Row } from 'antd';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { format } from 'client/common/i18n/helpers';
 import { renderConsignLoc } from '../../../common/consignLocation';
-import { PRESET_TRANSMODES } from 'common/constants';
+import { PRESET_TRANSMODES, TMS_SHIPMENT_STATUS_DESC } from 'common/constants';
 import ChangeShipment from '../change-shipment';
 import { showChangeShipmentModal } from 'common/reducers/shipment';
 import { showChangeDeliverPrmDateModal } from 'common/reducers/trackingLandStatus';
@@ -132,15 +132,14 @@ export default class DetailPane extends React.Component {
     }
   }
   render() {
-    const { tenantId, shipmt, goodsTypes, packagings, containerPackagings, vehicleTypes, vehicleLengths, dispatch } = this.props;
-    const apackagings = this.props.shipmt.transport_mode_code === 'CTN' ? containerPackagings : packagings.map(pk => ({
-      key: pk.package_code,
-      value: pk.package_name,
-    }));
-    const pckg = apackagings.find(item => item.key === shipmt.package);
+    const { tenantId, shipmt, goodsTypes, packagings, vehicleTypes, vehicleLengths, dispatch } = this.props;
+    const pckg = packagings.find(item => item.package_code === shipmt.package);
     const goodsType = goodsTypes.find(item => item.value === shipmt.goods_type);
     const vehicleType = vehicleTypes.find(item => item.value === shipmt.vehicle_type_id);
     const vehicleLength = vehicleLengths.find(item => item.value === shipmt.vehicle_length_id);
+    let statusDesc = TMS_SHIPMENT_STATUS_DESC;
+    if (dispatch.pod_type === 'none') statusDesc = TMS_SHIPMENT_STATUS_DESC.filter(item => item.status <= 5);
+
     let clientInfoExtra = '';
     let shipmtScheduleExtra = (<div />);
     let transitModeInfoExtra = '';
@@ -259,6 +258,16 @@ export default class DetailPane extends React.Component {
                 />
               </Steps>
             </div>
+          </div>
+          <div className="card-footer">
+            <Steps progressDot current={dispatch.status}>
+              {statusDesc.map((step) => {
+                let date = '';
+                if (step.status === 1) date = shipmt[step.date] ? moment(shipmt[step.date]).format('MM.DD HH.MM') : '';
+                else date = dispatch[step.date] ? moment(dispatch[step.date]).format('MM.DD HH.MM') : '';
+                return (<Step description={`${step.text} ${date}`} key={step.status} />);
+              })}
+            </Steps>
           </div>
         </Card>
         <Card title={this.msg('transitModeInfo')} bodyStyle={{ padding: 16 }}

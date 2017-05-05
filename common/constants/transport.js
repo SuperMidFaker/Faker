@@ -178,6 +178,16 @@ export const SHIPMENT_TRACK_STATUS = {
   podaccept: 7,
 };
 
+export const TMS_SHIPMENT_STATUS_DESC = [
+  { status: 1, text: '创建', badge: 'default', date: 'created_date' },
+  { status: 2, text: '接单', badge: 'default', date: 'acpt_time' },
+  { status: 3, text: '调度', badge: 'warning', date: 'disp_time' },
+  { status: 4, text: '提货', badge: 'processing', date: 'pickup_act_date' },
+  { status: 5, text: '送货', badge: 'success', date: 'deliver_act_date' },
+  { status: 6, text: '回单上传', badge: 'success', date: 'pod_recv_date' },
+  { status: 7, text: '回单接受', badge: 'success', date: 'pod_acpt_date' },
+];
+
 export const SHIPMENT_VEHICLE_CONNECT = {
   disconnected: 0,
   app: 1,
