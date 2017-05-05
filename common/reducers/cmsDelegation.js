@@ -26,7 +26,6 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'CIQ_FINISH_SET', 'CIQ_FINISH_SET_SUCCEED', 'CIQ_FINISH_SET_FAIL',
   // 'LOAD_CIQSUB', 'LOAD_CIQSUB_SUCCEED', 'LOAD_CIQSUB_FAIL',
   'SHOW_DISPMODAL', 'SHOW_DISPMODAL_SUCCEED', 'SHOW_DISPMODAL_FAILED',
-  'SET_OPERATOR', 'SET_OPERATOR_SUCCEED', 'SET_OPERATOR_FAIL',
   'CIQ_DISP_SAVE', 'CIQ_DISP_SAVE_SUCCEED', 'CIQ_DISP_SAVE_FAIL',
   'RECALL_DELG_ASSIGN', 'RECALL_DELG_ASSIGN_SUCCEED', 'RECALL_DELG_ASSIGN_FAILED',
 ]);
@@ -84,7 +83,7 @@ const initialState = {
     visible: false,
     tenantId: 0,
     delgDispIds: [],
-    delgOperators: [],
+    operators: [],
   },
   visibleEfModal: false,
   efModal: {
@@ -427,21 +426,6 @@ export function acceptDelg(loginId, loginName, dispIds, delgNo) {
       ],
       method: 'post',
       endpoint: 'v1/cms/delegation/accept',
-      data: { loginId, loginName, dispIds, delgNo },
-    },
-  };
-}
-
-export function setOpetaor(loginId, loginName, dispIds, delgNo) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.SET_OPERATOR,
-        actionTypes.SET_OPERATOR_SUCCEED,
-        actionTypes.SET_OPERATOR_FAIL,
-      ],
-      method: 'post',
-      endpoint: 'v1/cms/delegation/set/operator',
       data: { loginId, loginName, dispIds, delgNo },
     },
   };
