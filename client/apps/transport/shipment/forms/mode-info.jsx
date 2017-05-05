@@ -89,16 +89,10 @@ export default class ModeInfo extends React.Component {
     if (modes.length !== 1) {
       return;
     }
-    let pack = this.props.fieldDefaults.package;
-    if (modes[0].mode_code === PRESET_TRANSMODES.ctn) {
-      // 集装箱去除原来包装方式
-      pack = '';
-    }
     this.props.setConsignFields({
       transport_mode_id: id,
       transport_mode_code: modes[0].mode_code,
       transport_mode: modes[0].mode_name,
-      package: pack,
     });
   }
   handleCourierChange = (value) => {
