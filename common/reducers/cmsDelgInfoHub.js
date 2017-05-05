@@ -75,6 +75,10 @@ export default function reducer(state = initialState, action) {
       return { ...state, ciqPanelLoading: false };
     case actionTypes.LOAD_DECLCIQ_PANEL_SUCCEED:
       return { ...state, ciqPanel: action.result.data, ciqPanelLoading: false };
+    case actionTypes.SAVE_BASE_INFO_SUCCEED: {
+      const delg = { ...state.previewer.delegation, ...action.payload.change };
+      return { ...state, previewer: { ...state.previewer, delegation: delg } };
+    }
     default:
       return state;
   }
@@ -197,6 +201,7 @@ export function saveBaseInfo(change, delgNo) {
       endpoint: 'v1/cms/delegation/base/info/save',
       method: 'post',
       data: { change, delgNo },
+      payload: { change },
     },
   };
 }

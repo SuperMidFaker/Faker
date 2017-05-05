@@ -352,7 +352,7 @@ export default class ManifestEditor extends React.Component {
           <Icon type="file" /> {bme.entry_id || bme.pre_entry_seq_no}</Menu.Item>)
         )}
       </Menu>);
-    let sendable = true;
+    let sendable = billMeta.entries.length > 0;
     billMeta.entries.forEach((entry) => {
       sendable = sendable && (entry.status === CMS_DECL_STATUS.reviewed.value);
     });

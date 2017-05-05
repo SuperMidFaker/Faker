@@ -86,7 +86,7 @@ export default class BasicPane extends React.Component {
         </div>
       );
     });
-    const goods = GOODSTYPES.filter(gt => gt.value === delegation.goods_type)[0];
+    const goods = GOODSTYPES.filter(gt => gt.value === Number(delegation.goods_type))[0];
     const transMode = TRANS_MODE.filter(tm => tm.value === delegation.trans_mode)[0];
     let doAwbText = '';
     if (delegation.trans_mode === '2') {
@@ -109,7 +109,7 @@ export default class BasicPane extends React.Component {
           <Row>
             <Col span="8">
               <InfoItem label="订单号" addonBefore={<Icon type="tag-o" />} onEdit={this.handleFill}
-                field={delegation.order_no} dataIndex="order_no" placeholder="添加订单号" editable index="order_no"
+                field={delegation.order_no} dataIndex="order_no" placeholder="添加订单号" editable
               />
             </Col>
             <Col span="8">
@@ -152,7 +152,7 @@ export default class BasicPane extends React.Component {
           <Row>
             <Col span="8">
               <InfoItem type="dropdown" label="货物类型"
-                field={goods ? goods.text : ''} placeholder="选择货物类型" editable={!goods}
+                field={goods ? goods.text : ''} placeholder="选择货物类型" editable
                 overlay={<Menu onClick={this.handleMenuClick}>
                   {GOODSTYPES.map(gt => (<Menu.Item key={gt.value}>{gt.text}</Menu.Item>))}
                 </Menu>}
@@ -160,7 +160,7 @@ export default class BasicPane extends React.Component {
             </Col>
             <Col span="8">
               <InfoItem label="总件数"
-                field={delegation.pieces} addonAfter="件" editable
+                field={delegation.pieces} addonAfter="件" editable onEdit={this.handleFill} dataIndex="pieces"
               />
             </Col>
             <Col span="8">
