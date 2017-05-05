@@ -6,12 +6,11 @@ import { Col, Table, Steps, Card, Icon, Dropdown, Menu, Row } from 'antd';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { format } from 'client/common/i18n/helpers';
 import { renderConsignLoc } from '../../../common/consignLocation';
-import { PRESET_TRANSMODES, TMS_SHIPMENT_STATUS_DESC } from 'common/constants';
+import { PRESET_TRANSMODES, TMS_SHIPMENT_STATUS_DESC, SHIPMENT_TRACK_STATUS } from 'common/constants';
 import ChangeShipment from '../change-shipment';
 import { showChangeShipmentModal } from 'common/reducers/shipment';
 import { showChangeDeliverPrmDateModal } from 'common/reducers/trackingLandStatus';
 import InfoItem from 'client/components/InfoItem';
-import ActDate from '../../../common/actDate';
 import messages from '../../message.i18n';
 import './pane.less';
 
@@ -139,7 +138,7 @@ export default class DetailPane extends React.Component {
     const vehicleLength = vehicleLengths.find(item => item.value === shipmt.vehicle_length_id);
     let statusDesc = TMS_SHIPMENT_STATUS_DESC;
     if (dispatch.pod_type === 'none') statusDesc = TMS_SHIPMENT_STATUS_DESC.filter(item => item.status <= 5);
-
+    const editable = tenantId === shipmt.tenant_id && dispatch.status <= 5;
     let clientInfoExtra = '';
     let shipmtScheduleExtra = (<div />);
     let transitModeInfoExtra = '';
@@ -189,26 +188,6 @@ export default class DetailPane extends React.Component {
       transitModeInfoExtra = (<a onClick={this.handleChangeTransitMode}><Icon type="edit" /></a>);
       goodsInfoExtra = (<a onClick={this.handleChangeTransitGoodsInfo}><Icon type="edit" /></a>);
     }
-
-    let pickupDate = moment(shipmt.pickup_est_date).format('YYYY-MM-DD');
-    if (dispatch.pickup_act_date) {
-      pickupDate = (
-        <div>
-          {moment(shipmt.pickup_est_date).format('YYYY-MM-DD')}
-          <span style={{ marginLeft: 30, fontSize: '70%' }}>
-            <ActDate actDate={dispatch.pickup_act_date} estDate={shipmt.pickup_est_date} textAfter="已提货" />
-          </span>
-        </div>);
-    }
-    let deliverDate = moment(shipmt.deliver_est_date).format('YYYY-MM-DD');
-    if (dispatch.deliver_act_date) {
-      deliverDate = (<div>
-        {moment(shipmt.deliver_est_date).format('YYYY-MM-DD')}
-        <span style={{ marginLeft: 30, fontSize: '70%' }}>
-          <ActDate actDate={dispatch.deliver_act_date} estDate={shipmt.deliver_est_date} textAfter="已送货" />
-        </span>
-      </div>);
-    }
     const distanceStr = shipmt.distance ? `${shipmt.distance}${this.msg('kilometer')}` : '';
     return (
       <div className="pane-content tab-pane">
@@ -225,13 +204,18 @@ export default class DetailPane extends React.Component {
                   description={
                     <div>
                       <InfoItem label={this.msg('pickupEstDate')}
-                        field={pickupDate}
+                        type="date"
+                        field={moment(shipmt.pickup_est_date).format('YYYY-MM-DD')}
+                        editable={editable}
+                        onSave={() => {}}
                       />
                       <InfoItem label="发货地"
                         field={`${renderConsignLoc(shipmt, 'consigner')} ${shipmt.consigner_addr || ''}`}
                       />
                       <InfoItem label="联系人/电话"
                         field={`${shipmt.consigner_contact || ''} ${shipmt.consigner_mobile || ''}`}
+                        editable={editable}
+                        onSave={() => {}}
                       />
                     </div>
                 }
@@ -245,13 +229,18 @@ export default class DetailPane extends React.Component {
                   description={
                     <div>
                       <InfoItem label={this.msg('deliveryEstDate')}
-                        field={deliverDate}
+                        type="date"
+                        field={moment(shipmt.deliver_est_date).format('YYYY-MM-DD')}
+                        editable={editable}
+                        onSave={() => {}}
                       />
                       <InfoItem label="收货地"
                         field={`${renderConsignLoc(shipmt, 'consignee')} ${shipmt.consignee_addr || ''}`}
                       />
                       <InfoItem label="联系人/电话"
                         field={`${shipmt.consignee_contact || ''} ${shipmt.consignee_mobile || ''}`}
+                        editable={editable}
+                        onSave={() => {}}
                       />
                     </div>
                 }
@@ -260,12 +249,41 @@ export default class DetailPane extends React.Component {
             </div>
           </div>
           <div className="card-footer">
-            <Steps progressDot current={dispatch.status}>
+            <Steps progressDot current={dispatch.status - 2}>
               {statusDesc.map((step) => {
-                let date = '';
-                if (step.status === 1) date = shipmt[step.date] ? moment(shipmt[step.date]).format('YYYY.MM.DD') : '';
-                else date = dispatch[step.date] ? moment(dispatch[step.date]).format('YYYY.MM.DD') : '';
-                return (<Step description={`${step.text} ${date}`} key={step.status} />);
+                let desc = step.text;
+                if (step.status <= dispatch.status) {
+                  if (step.status === SHIPMENT_TRACK_STATUS.intransit) {
+                    const act = new Date(dispatch[step.date]);
+                    act.setHours(0, 0, 0, 0);
+                    const est = new Date(shipmt.pickup_est_date);
+                    est.setHours(0, 0, 0, 0);
+                    if (act.getTime() > est.getTime()) {
+                      desc = (
+                        <span className="mdc-text-red">
+                          {step.text} {moment(dispatch[step.date]).format('YYYY.MM.DD')}
+                        </span>);
+                    } else {
+                      desc = dispatch[step.date] ? `${step.text} ${moment(dispatch[step.date]).format('YYYY.MM.DD')}` : step.text;
+                    }
+                  } else if (step.status === SHIPMENT_TRACK_STATUS.delivered) {
+                    const act = new Date(dispatch[step.date]);
+                    act.setHours(0, 0, 0, 0);
+                    const est = new Date(shipmt.deliver_est_date);
+                    est.setHours(0, 0, 0, 0);
+                    if (act.getTime() > est.getTime()) {
+                      desc = (
+                        <span className="mdc-text-red">
+                          {step.text} {moment(dispatch[step.date]).format('YYYY.MM.DD')}
+                        </span>);
+                    } else {
+                      desc = dispatch[step.date] ? `${step.text} ${moment(dispatch[step.date]).format('YYYY.MM.DD')}` : step.text;
+                    }
+                  } else {
+                    desc = dispatch[step.date] ? `${step.text} ${moment(dispatch[step.date]).format('YYYY.MM.DD')}` : step.text;
+                  }
+                }
+                return (<Step description={desc} key={step.status} />);
               })}
             </Steps>
           </div>
@@ -274,34 +292,48 @@ export default class DetailPane extends React.Component {
           extra={transitModeInfoExtra}
         >
           <Row>
-            <Col span="12">
+            <Col span="8">
               <InfoItem label={this.msg('transitModeInfo')}
                 field={shipmt.transport_mode}
               />
             </Col>
             {shipmt.transport_mode_code === PRESET_TRANSMODES.ftl &&
-            <Col span="12">
+            <Col span="8">
               <InfoItem label={this.msg('vehicleType')}
                 field={vehicleType ? vehicleType.text : ''}
               />
             </Col>
             }
             {shipmt.transport_mode_code === PRESET_TRANSMODES.ftl &&
-            <Col span="12">
+            <Col span="8">
               <InfoItem label={this.msg('vehicleLength')}
                 field={vehicleLength ? vehicleLength.text : ''} addonAfter="米"
               />
             </Col>
             }
             {shipmt.transport_mode_code === PRESET_TRANSMODES.ctn &&
-            <Col span="12">
+            <Col span="8">
+              <InfoItem label={this.msg('container')}
+                field={shipmt.container}
+              />
+            </Col>
+            }
+            {shipmt.transport_mode_code === PRESET_TRANSMODES.ctn &&
+            <Col span="8">
               <InfoItem label={this.msg('containerNo')}
                 field={shipmt.container_no}
               />
             </Col>
             }
             {shipmt.transport_mode_code === PRESET_TRANSMODES.exp &&
-            <Col span="12">
+            <Col span="8">
+              <InfoItem label={this.msg('courierCompany')}
+                field={shipmt.courier}
+              />
+            </Col>
+            }
+            {shipmt.transport_mode_code === PRESET_TRANSMODES.exp &&
+            <Col span="8">
               <InfoItem label={this.msg('courierNo')}
                 field={shipmt.courier_no}
               />
@@ -315,32 +347,32 @@ export default class DetailPane extends React.Component {
           <Row>
             <Col span="8">
               <InfoItem label={this.msg('goodsType')}
-                field={goodsType ? goodsType.text : shipmt.goods_type} editable
+                field={goodsType ? goodsType.text : shipmt.goods_type} editable={editable}
               />
             </Col>
             <Col span="8">
               <InfoItem label={this.msg('goodsPackage')}
-                field={pckg ? pckg.value : shipmt.package} editable
+                field={pckg ? pckg.value : shipmt.package} editable={editable}
               />
             </Col>
             <Col span="8">
               <InfoItem label={this.msg('insuranceValue')}
-                field={shipmt.insure_value} addonAfter="元" editable
+                field={shipmt.insure_value} addonAfter="元" editable={editable}
               />
             </Col>
             <Col span="8">
               <InfoItem label={this.msg('totalCount')}
-                field={shipmt.total_count} addonAfter="件" editable
+                field={shipmt.total_count} addonAfter="件" editable={editable}
               />
             </Col>
             <Col span="8">
               <InfoItem label={this.msg('totalWeight')}
-                field={shipmt.total_weight} addonAfter={this.msg('kilogram')} editable
+                field={shipmt.total_weight} addonAfter={this.msg('kilogram')} editable={editable}
               />
             </Col>
             <Col span="8">
               <InfoItem label={this.msg('totalVolume')}
-                field={shipmt.total_volume} addonAfter={this.msg('cubicMeter')} editable
+                field={shipmt.total_volume} addonAfter={this.msg('cubicMeter')} editable={editable}
               />
             </Col>
           </Row>
@@ -352,22 +384,22 @@ export default class DetailPane extends React.Component {
           <Row>
             <Col span="8">
               <InfoItem label={this.msg('refExternalNo')} addonBefore={<Icon type="tag-o" />}
-                field={shipmt.ref_external_no} editable
+                field={shipmt.ref_external_no} editable={editable}
               />
             </Col>
             <Col span="8">
               <InfoItem label={this.msg('refWaybillNo')} addonBefore={<Icon type="tag-o" />}
-                field={shipmt.ref_waybill_no} editable
+                field={shipmt.ref_waybill_no} editable={editable}
               />
             </Col>
             <Col span="8">
               <InfoItem label={this.msg('refEntryNo')} addonBefore={<Icon type="tag-o" />}
-                field={shipmt.ref_entry_no} editable
+                field={shipmt.ref_entry_no} editable={editable}
               />
             </Col>
             <Col span="24">
               <InfoItem label={this.msg('remark')}
-                field={shipmt.remark} editable
+                field={shipmt.remark} editable={editable}
               />
             </Col>
           </Row>

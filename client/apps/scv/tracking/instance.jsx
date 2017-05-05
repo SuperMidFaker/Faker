@@ -93,6 +93,7 @@ export default class Instance extends Component {
     title: '追踪单号',
     dataIndex: 'shipmt_order_no',
     width: 150,
+    fixed: 'left',
   }]
   render() {
     const { trackingItems, orders } = this.props;

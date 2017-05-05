@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Col, Row, Tabs } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
+import moment from 'moment';
 import DetailPane from './tabpanes/detail-pane';
 import ActivityLoggerPane from './tabpanes/ActivityLoggerPane';
 import ChargePane from './tabpanes/chargePane';
@@ -15,7 +16,6 @@ import DockPanel from 'client/components/DockPanel';
 import messages from '../message.i18n';
 import ShipmentActions from './shipmentActions';
 import ShareShipmentModal from './share-shipment';
-import ShipmentSchedule from './shipmentSchedule';
 import ExceptionPane from './tabpanes/exceptionPane';
 import ChangeActDateModal from '../../tracking/land/modals/changeActDateModal';
 import ChangeDeliverPrmDateModal from '../../tracking/land/modals/changeDeliverPrmDateModal';
@@ -232,8 +232,15 @@ export default class PreviewPanel extends React.Component {
           field={shipmt.lsp_name}
         />
       </Col>
-      <Col span="12" style={{ paddingTop: 8 }}>
-        <ShipmentSchedule />
+      <Col span="6">
+        <InfoItem label="客户单号"
+          field={shipmt.ref_external_no}
+        />
+      </Col>
+      <Col span="6">
+        <InfoItem label="创建时间"
+          field={moment(shipmt.created_date).format('YYYY.MM.DD')}
+        />
       </Col>
     </Row>);
   }

@@ -179,7 +179,6 @@ export const SHIPMENT_TRACK_STATUS = {
 };
 
 export const TMS_SHIPMENT_STATUS_DESC = [
-  { status: 1, text: '创建', badge: 'default', date: 'created_date' },
   { status: 2, text: '接单', badge: 'default', date: 'acpt_time' },
   { status: 3, text: '调度', badge: 'warning', date: 'disp_time' },
   { status: 4, text: '提货', badge: 'processing', date: 'pickup_act_date' },
