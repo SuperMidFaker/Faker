@@ -59,7 +59,6 @@ export default class SendDeclsModal extends React.Component {
     delgNo: PropTypes.string.isRequired,
     showSendDeclsModal: PropTypes.func.isRequired,
     getEasipassList: PropTypes.func.isRequired,
-    sendDecl: PropTypes.func.isRequired,
     reload: PropTypes.func,
     entries: PropTypes.array,
   }

@@ -220,29 +220,44 @@ export default class CustomsList extends Component {
           </span>
         );
       } else {
-        // todo ep_receipt_filename view
-        return (
-          <span>
-            {record.status !== CMS_DECL_STATUS.released.value &&
+        const spanElems = [];
+        if (record.status !== CMS_DECL_STATUS.released.value) {
+          spanElems.push(
             <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit" key="clear">
               <RowUpdater onHit={this.handleShowDeclReleasedModal} row={record}
                 label={<span><Icon type="flag" />标记放行</span>}
               />
-            </PrivilegeCover>}
-            {record.status !== CMS_DECL_STATUS.released.value && <span className="ant-divider" />}
-            {record.ep_send_filename && record.status === CMS_DECL_STATUS.sent.value && (
-              <Dropdown overlay={(
-                <Menu>
-                  <Menu.Item key="edit">
-                    <a role="button" onClick={() => this.handleShowXml(record.ep_send_filename)}><Icon type="eye-o" /> EDI报文</a>
-                  </Menu.Item>
-                </Menu>)}
-              >
-                <a><Icon type="down" /></a>
-              </Dropdown>
-            )}
-          </span>
-        );
+            </PrivilegeCover>);
+        }
+        if (record.ep_send_filename && record.status === CMS_DECL_STATUS.sent.value) {
+          spanElems.push(
+            <Dropdown key="epsend" overlay={(
+              <Menu>
+                <Menu.Item key="edit">
+                  <a role="button" onClick={() => this.handleEpSendXmlView(record.ep_send_filename)}><Icon type="eye-o" /> EDI报文</a>
+                </Menu.Item>
+              </Menu>)}
+            >
+              <a><Icon type="down" /></a>
+            </Dropdown>);
+        } else if (record.ep_receipt_filename && record.status > CMS_DECL_STATUS.sent.value) {
+          spanElems.push(
+            <Dropdown key="receipt" overlay={(<Menu>
+              <Menu.Item key="edit">
+                <a role="button" onClick={() => this.handleEpRecvXmlView(record.ep_receipt_filename)}><Icon type="eye-o" /> EDI回执</a>
+              </Menu.Item>
+            </Menu>)}
+            >
+              <a><Icon type="down" /></a>
+            </Dropdown>);
+        }
+        if (spanElems.length === 2) {
+          spanElems.splice(1, 0, <span className="ant-divider" key="divid1" />);
+        }
+        return (
+          <span>
+            {spanElems}
+          </span>);
       }
     },
   }]
@@ -357,8 +372,11 @@ export default class CustomsList extends Component {
       visible: true, preEntrySeqNo: record.pre_entry_seq_no,
       delgNo: record.delg_no, agentCustCo: record.agent_custco });
   }
-  handleShowXml = (filename) => {
-    window.open(`${API_ROOTS.default}v1/cms/declare/send.xml?filename=${filename}`);
+  handleEpSendXmlView = (filename) => {
+    window.open(`${API_ROOTS.default}v1/cms/customs/epsend/xml?filename=${filename}`);
+  }
+  handleEpRecvXmlView = (filename) => {
+    window.open(`${API_ROOTS.default}v1/cms/customs/eprecv/xml?filename=${filename}`);
   }
   handleShowDeclReleasedModal = (row) => {
     this.props.openDeclReleasedModal(row.entry_id, row.pre_entry_seq_no, row.delg_no);

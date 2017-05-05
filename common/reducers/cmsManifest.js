@@ -79,7 +79,6 @@ const initialState = {
   billMeta: {
     bill_seq_no: '',
     entries: [],
-    editable: false,
   },
   billHead: {
   },
@@ -142,7 +141,7 @@ export default function reducer(state = initialState, action) {
       return { ...state, delgBillList: { ...state.delgBillList, loading: false, ...action.result.data },
         listFilter: JSON.parse(action.params.filter), formRequire: action.result.data.formRequire };
     case actionTypes.LOAD_MANIFEST:
-      return { ...state, manifestLoading: true };
+      return { ...state, manifestLoading: true, billMeta: initialState.billMeta };
     case actionTypes.LOAD_MANIFEST_FAILED:
       return { ...state, manifestLoading: false };
     case actionTypes.LOAD_MANIFEST_SUCCEED: {
@@ -168,7 +167,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.UPDATE_HEAD_NETWT_SUCCEED:
       return { ...state, billHead: action.result.data }; // gross_wt float is string TODO
     case actionTypes.LOAD_CUSTOMS_DECL:
-      return { ...state, customsDeclLoading: true };
+      return { ...state, customsDeclLoading: true, billMeta: initialState.billMeta };
     case actionTypes.LOAD_CUSTOMS_DECL_FAILED:
       return { ...state, customsDeclLoading: false };
     case actionTypes.LOAD_CUSTOMS_DECL_SUCCEED:

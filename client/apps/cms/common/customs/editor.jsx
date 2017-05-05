@@ -42,7 +42,6 @@ export default class CustomsDeclEditor extends React.Component {
     billMeta: PropTypes.shape({
       bill_seq_no: PropTypes.string.isRequired,
       entries: PropTypes.arrayOf(PropTypes.shape({ pre_entry_seq_no: PropTypes.string })),
-      editable: PropTypes.bool,
     }),
     declSpinning: PropTypes.bool.isRequired,
   }
@@ -64,10 +63,7 @@ export default class CustomsDeclEditor extends React.Component {
   }
   handleManifestVisit = () => {
     const { ietype, billMeta } = this.props;
-    let pathname = `/clearance/${ietype}/manifest/view/${billMeta.bill_seq_no}`;
-    if (billMeta.editable) {
-      pathname = `/clearance/${ietype}/manifest/${billMeta.bill_seq_no}`;
-    }
+    const pathname = `/clearance/${ietype}/manifest/view/${billMeta.bill_seq_no}`;
     this.context.router.push({ pathname });
   }
   handleEntryHeadSave = () => {
@@ -122,7 +118,6 @@ export default class CustomsDeclEditor extends React.Component {
   }
   render() {
     const { ietype, form, head, bodies, billMeta } = this.props;
-    const readonly = !billMeta.editable;
     const declkey = Object.keys(CMS_DECL_STATUS).filter(stkey => CMS_DECL_STATUS[stkey].value === head.status)[0];
     const declEntryMenu = (
       <Menu onClick={this.handleEntryVisit}>
@@ -173,15 +168,15 @@ export default class CustomsDeclEditor extends React.Component {
               />
             </div>
           </Header>
-          <Content className={`main-content layout-min-width layout-min-width-large ${readonly ? 'readonly' : ''}`}>
+          <Content className="main-content layout-min-width layout-min-width-large readonly">
             <Spin spinning={this.props.declSpinning}>
               <div className="page-body tabbed">
                 <Tabs defaultActiveKey="header">
                   <TabPane tab="报关单表头" key="header">
-                    <SheetHeadPanel ietype={ietype} readonly={readonly} form={form} formData={head} />
+                    <SheetHeadPanel ietype={ietype} readonly form={form} formData={head} />
                   </TabPane>
                   <TabPane tab="报关单表体" key="body">
-                    <SheetBodyPanel ietype={ietype} readonly={readonly} data={bodies} headNo={head.id} />
+                    <SheetBodyPanel ietype={ietype} readonly data={bodies} headNo={head.id} />
                   </TabPane>
                 </Tabs>
               </div>
