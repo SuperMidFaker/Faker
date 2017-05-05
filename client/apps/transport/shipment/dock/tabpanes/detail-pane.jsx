@@ -263,8 +263,8 @@ export default class DetailPane extends React.Component {
             <Steps progressDot current={dispatch.status}>
               {statusDesc.map((step) => {
                 let date = '';
-                if (step.status === 1) date = shipmt[step.date] ? moment(shipmt[step.date]).format('MM.DD HH.MM') : '';
-                else date = dispatch[step.date] ? moment(dispatch[step.date]).format('MM.DD HH.MM') : '';
+                if (step.status === 1) date = shipmt[step.date] ? moment(shipmt[step.date]).format('YYYY.MM.DD') : '';
+                else date = dispatch[step.date] ? moment(dispatch[step.date]).format('YYYY.MM.DD') : '';
                 return (<Step description={`${step.text} ${date}`} key={step.status} />);
               })}
             </Steps>
