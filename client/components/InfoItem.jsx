@@ -23,6 +23,7 @@ export default class InfoItem extends React.Component {
   static propTypes = {
     label: PropTypes.string,
     field: PropTypes.any,
+    dataIndex: PropTypes.string,
     overlay: PropTypes.object,
     labelCol: PropTypes.object,
     fieldCol: PropTypes.object,
@@ -69,19 +70,19 @@ export default class InfoItem extends React.Component {
     }
   }
   renderField() {
-    const { type, field, placeholder, editable, overlay, onEdit } = this.props;
+    const { type, field, dataIndex, placeholder, editable, overlay, onEdit } = this.props;
     if (editable) {
       if (type === 'dropdown') {
         return (<span>{this.renderAddonBefore()}
           <Dropdown overlay={overlay} trigger={['click']}>
             <span>
-              {(field && field.length > 0) ? field : placeholder } <Icon type="down" />
+              {field || placeholder } <Icon type="down" />
             </span>
           </Dropdown>
           {this.renderAddonAfter()}
         </span>);
       }
-      return (<EditableCell cellTrigger type={type} value={field} addonBefore={this.renderAddonBefore()} addonAfter={this.renderAddonAfter()} placeholder={placeholder} onSave={onEdit} />);
+      return (<EditableCell cellTrigger type={type} value={field} field={dataIndex} addonBefore={this.renderAddonBefore()} addonAfter={this.renderAddonAfter()} placeholder={placeholder} onSave={onEdit} />);
     }
     return <span>{this.renderAddonBefore()}{field}{this.renderAddonAfter()}</span>;
   }

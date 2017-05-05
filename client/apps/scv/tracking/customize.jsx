@@ -7,7 +7,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import ButtonToggle from 'client/components/ButtonToggle';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import { loadTrackings, addTracking, removeTracking, updateTracking, loadTrackingFields, toggleTrackingModal } from 'common/reducers/scvTracking';
+import { loadTrackings, addTracking, removeTracking, updateTracking, loadTrackingFields, toggleTrackingModal, loadTrackingItems } from 'common/reducers/scvTracking';
 import TrackingModal from './modals/trackingModal';
 import TrackingItems from './trackingItems';
 
@@ -28,7 +28,7 @@ function fetchData({ state, dispatch }) {
     loading: state.scvTracking.loading,
     loaded: state.scvTracking.loaded,
   }),
-  { loadTrackings, addTracking, removeTracking, updateTracking, toggleTrackingModal }
+  { loadTrackings, addTracking, removeTracking, updateTracking, toggleTrackingModal, loadTrackingItems }
 )
 @connectNav({
   depth: 2,
@@ -46,6 +46,7 @@ export default class CustomizeTracking extends React.Component {
     addTracking: PropTypes.func.isRequired,
     removeTracking: PropTypes.func.isRequired,
     updateTracking: PropTypes.func.isRequired,
+    loadTrackingItems: PropTypes.func.isRequired,
   }
   state = {
     tracking: {},
@@ -81,7 +82,9 @@ export default class CustomizeTracking extends React.Component {
     });
   }
   handleTableLoad = () => {
-    this.props.loadTrackings(this.props.tenantId);
+    this.props.loadTrackings(this.props.tenantId).then(() => {
+      this.props.loadTrackingItems(this.state.tracking.id);
+    });
   }
   handleRemove = (id) => {
     this.props.removeTracking(id).then(() => {

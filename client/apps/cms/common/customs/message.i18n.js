@@ -121,6 +121,10 @@ export default defineMessages({
     id: 'cms.customs.filter.finalized',
     defaultMessage: '已入海关库',
   },
+  customsReleased: {
+    id: 'cms.customs.status.released',
+    defaultMessage: '已放行',
+  },
   deleteConfirm: {
     id: 'cms.customs.delete.confirm',
     defaultMessage: '确认删除该报关单?',

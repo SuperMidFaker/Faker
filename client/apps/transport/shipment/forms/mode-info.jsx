@@ -18,12 +18,14 @@ const ONE_DAY_MS = 24 * 60 * 60 * 1000;
     transitModes: state.shipment.formRequire.transitModes,
     vehicleTypes: state.shipment.formRequire.vehicleTypes,
     vehicleLengths: state.shipment.formRequire.vehicleLengths,
+    containerPackagings: state.shipment.formRequire.containerPackagings,
     fieldDefaults: {
       transit_time: state.shipment.formData.transit_time,
       pickup_est_date: state.shipment.formData.pickup_est_date,
       deliver_est_date: state.shipment.formData.deliver_est_date,
       vehicle_type_id: state.shipment.formData.vehicle_type_id,
       vehicle_length_id: state.shipment.formData.vehicle_length_id,
+      container: state.shipment.formData.container,
       container_no: state.shipment.formData.container_no,
       courier_no: state.shipment.formData.courier_no,
       courier_code: state.shipment.formData.courier_code,
@@ -44,6 +46,7 @@ export default class ModeInfo extends React.Component {
     formhoc: PropTypes.object.isRequired,
     setConsignFields: PropTypes.func.isRequired,
     vertical: PropTypes.bool,
+    containerPackagings: PropTypes.array.isRequired,
     type: PropTypes.string,
   }
 
@@ -106,12 +109,12 @@ export default class ModeInfo extends React.Component {
   }
   render() {
     const {
-      transitModes, vehicleTypes, vehicleLengths,
+      transitModes, vehicleTypes, vehicleLengths, containerPackagings,
       formhoc: { getFieldDecorator },
       fieldDefaults: {
         pickup_est_date: pickupDt, transit_time,
         deliver_est_date: deliverDt, vehicle_type_id,
-        vehicle_length_id, container_no, transport_mode_code: modeCode,
+        vehicle_length_id, container, container_no, transport_mode_code: modeCode,
         transport_mode_id: modeId, courier_no, courier_code,
       },
       vertical,
@@ -150,13 +153,24 @@ export default class ModeInfo extends React.Component {
     } else if (modeCode === PRESET_TRANSMODES.ctn) {
       // 集装箱,修改箱号
       modeEditCols.push(
+        <Col key="container" sm={24} md={8} >
+          <FormItem label={this.msg('container')} required>
+            {getFieldDecorator('container', { initialValue: container,
+              rules: [{
+                required: true, message: this.msg('containerMust'), type: 'string',
+              }] })(<Select>
+                {containerPackagings.map(
+              ct => <Option value={ct.key} key={ct.key}>{ct.value}</Option>
+            )}
+              </Select>)}
+          </FormItem>
+        </Col>,
         <Col key="container_no" sm={24} md={8}>
           <InputItem labelName={this.msg('containerNo')} field="container_no"
             formhoc={this.props.formhoc}
             fieldProps={{ initialValue: container_no }}
           />
-        </Col>,
-        <Col key="container_size" sm={24} md={8} />
+        </Col>
       );
     } else if (modeCode === PRESET_TRANSMODES.exp) {
       // 集装箱,修改箱号

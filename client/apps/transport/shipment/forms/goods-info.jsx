@@ -91,7 +91,6 @@ ColumnSelect.propTypes = {
     modeCode: state.shipment.formData.transport_mode_code,
     goodsTypes: state.shipment.formRequire.goodsTypes,
     packagings: state.shipment.formRequire.packagings,
-    containerPackagings: state.shipment.formRequire.containerPackagings,
     totalWeightRequired: state.shipment.totalWeightRequired,
     totalVolumeRequired: state.shipment.totalVolumeRequired,
   }),
@@ -106,7 +105,6 @@ export default class GoodsInfo extends React.Component {
     modeCode: PropTypes.string,
     goodsTypes: PropTypes.array.isRequired,
     packagings: PropTypes.array.isRequired,
-    containerPackagings: PropTypes.array.isRequired,
     formhoc: PropTypes.object.isRequired,
     saveLocalGoods: PropTypes.func.isRequired,
     editLocalGoods: PropTypes.func.isRequired,
@@ -209,15 +207,11 @@ export default class GoodsInfo extends React.Component {
   render() {
     const {
       formhoc, goods, goodsTypes, formhoc: { getFieldDecorator },
-      packagings, containerPackagings,
+      packagings,
       fieldDefaults: { goods_type, total_count, packageform, total_weight, insure_value, total_volume },
       vertical, modeCode,
       totalWeightRequired, totalVolumeRequired,
     } = this.props;
-    const apackagings = this.props.modeCode === 'CTN' ? containerPackagings : packagings.map(pk => ({
-      key: pk.package_code,
-      value: pk.package_name,
-    }));
     const columns = [{
       title: this.msg('goodsCode'),
       dataIndex: 'goods_no',
@@ -239,10 +233,10 @@ export default class GoodsInfo extends React.Component {
       render: (text, record, index) =>
         <ColumnSelect record={record} field="package" index={index}
           state={this.state} onChange={this.handleGoodsColumnEdit}
-          options={apackagings.map(pk => ({
-            key: pk.key,
-            value: pk.key,
-            name: pk.value,
+          options={packagings.map(pk => ({
+            key: pk.package_code,
+            value: pk.package_code,
+            name: pk.package_name,
           }))}
         />,
     }, {
@@ -380,8 +374,8 @@ export default class GoodsInfo extends React.Component {
           />
           <FormItem label={this.msg('goodsPackage')}>
             {getFieldDecorator('package', { initialValue: packageform })(<Select>
-              {apackagings.map(
-                pk => <Option value={pk.key} key={pk.key}>{pk.value}</Option>
+              {packagings.map(
+                pk => <Option value={pk.package_code} key={pk.package_code}>{pk.package_name}</Option>
               )}
             </Select>)}
           </FormItem>
@@ -416,8 +410,8 @@ export default class GoodsInfo extends React.Component {
             <Col sm={24} md={8}>
               <FormItem label={this.msg('goodsPackage')} required={modeCode === PRESET_TRANSMODES.ctn}>
                 {getFieldDecorator('package', { initialValue: packageform })(<Select>
-                  {apackagings.map(
-                pk => <Option value={pk.key} key={pk.key}>{pk.value}</Option>
+                  {packagings.map(
+                pk => <Option value={pk.package_code} key={pk.package_code}>{pk.package_name}</Option>
               )}
                 </Select>)}
               </FormItem>

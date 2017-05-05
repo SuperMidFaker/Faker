@@ -141,6 +141,14 @@ export default defineMessages({
     id: 'transport.shipment.vehicle.length',
     defaultMessage: '车长',
   },
+  container: {
+    id: 'transport.shipment.container',
+    defaultMessage: '集装箱',
+  },
+  containerMust: {
+    id: 'transport.shipment.container.must',
+    defaultMessage: '集装箱必填',
+  },
   containerNo: {
     id: 'transport.shipment.container.no',
     defaultMessage: '箱号',

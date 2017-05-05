@@ -19,6 +19,7 @@ const colStyle = { paddingTop: 0, paddingBottom: 0 };
   state => ({
     tenantId: state.account.tenantId,
     trackingItems: state.scvTracking.trackingItems,
+    trackingFields: state.scvTracking.trackingFields,
   }),
   { loadTrackingItems, addTrackingItem, updateTrackingItem, removeTrackingItem, updateTrackingItemPosition }
 )
@@ -31,6 +32,7 @@ export default class TrackingItems extends React.Component {
     updateTrackingItem: PropTypes.func.isRequired,
     tracking: PropTypes.object.isRequired,
     trackingItems: PropTypes.array.isRequired,
+    trackingFields: PropTypes.array.isRequired,
     removeTrackingItem: PropTypes.func.isRequired,
     updateTrackingItemPosition: PropTypes.func.isRequired,
     addTrackingItem: PropTypes.func.isRequired,
@@ -62,7 +64,12 @@ export default class TrackingItems extends React.Component {
     }
     this.setState({
       trackingItems: nextProps.trackingItems,
-      newItem: { ...this.state.newItem, position: nextProps.trackingItems.length + 1, tracking_id: nextProps.tracking.id },
+      newItem: {
+        ...this.state.newItem,
+        position: nextProps.trackingItems.length + 1,
+        tracking_id: nextProps.tracking.id,
+        field: `custom_${nextProps.tracking.id}_${nextProps.trackingFields.length + nextProps.trackingItems.filter(item => item.source === 3).length + 1}`,
+      },
     });
   }
   msg = key => formatMsg(this.props.intl, key)
@@ -80,8 +87,8 @@ export default class TrackingItems extends React.Component {
     });
     this.setState({ ...state });
   }
-  handleRemove = (id) => {
-    this.props.removeTrackingItem(id).then(() => {
+  handleRemove = (id, source) => {
+    this.props.removeTrackingItem(id, source).then(() => {
       this.props.loadTrackingItems(this.props.tracking.id);
     });
   }

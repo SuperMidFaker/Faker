@@ -3,7 +3,7 @@ import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/cms/declaration/', [
   'LOAD_CIQ_DECLS', 'LOAD_CIQ_DECLS_SUCCEED', 'LOAD_CIQ_DECLS_FAIL',
-  'LOAD_DELG_DECLS', 'LOAD_DELG_DECLS_SUCCEED', 'LOAD_DELG_DECLS_FAIL',
+  'LOAD_CUSTOMS', 'LOAD_CUSTOMS_SUCCEED', 'LOAD_CUSTOMS_FAIL',
   'CIQ_FINISH', 'CIQ_FINISH_SUCCEED', 'CIQ_FINISH_FAIL',
   'LOAD_DECLHEAD', 'LOAD_DECLHEAD_SUCCEED', 'LOAD_DECLHEAD_FAIL',
   'SET_INSPECT', 'SET_INSPECT_SUCCEED', 'SET_INSPECT_FAIL',
@@ -15,6 +15,7 @@ const actionTypes = createActionTypes('@@welogix/cms/declaration/', [
   'LOAD_CUSTOMSRES', 'LOAD_CUSTOMSRES_SUCCEED', 'LOAD_CUSTOMSRES_FAIL',
   'OPEN_DECL_RELEASED_MODAL', 'CLOSE_DECL_RELEASED_MODAL',
   'CLEAR_CUSTOMS', 'CLEAR_CUSTOMS_SUCCEED', 'CLEAR_CUSTOMS_FAIL',
+  'SEND_MUTI_DECL', 'SEND_MUTI_DECL_SUCCEED', 'SEND_MUTI_DECL_FAIL',
 ]);
 
 const initialState = {
@@ -31,7 +32,7 @@ const initialState = {
     pageSize: 20,
     data: [],
   },
-  delgdeclList: {
+  customslist: {
     totalCount: 0,
     current: 1,
     pageSize: 20,
@@ -62,13 +63,13 @@ export default function reducer(state = initialState, action) {
       return { ...state, ciqdeclList: { ...state.ciqdeclList, loading: false, ...action.result.data } };
     case actionTypes.LOAD_CIQ_DECLS_FAIL:
       return { ...state, ciqdeclList: { ...state.ciqdeclList, loading: false } };
-    case actionTypes.LOAD_DELG_DECLS:
-      return { ...state, delgdeclList: { ...state.delgdeclList, loading: true } };
-    case actionTypes.LOAD_DELG_DECLS_SUCCEED:
-      return { ...state, delgdeclList: { ...state.delgdeclList, loading: false, ...action.result.data },
+    case actionTypes.LOAD_CUSTOMS:
+      return { ...state, customslist: { ...state.customslist, loading: true } };
+    case actionTypes.LOAD_CUSTOMS_SUCCEED:
+      return { ...state, customslist: { ...state.customslist, loading: false, ...action.result.data },
         listFilter: JSON.parse(action.params.filter), customs: action.result.data.customs };
-    case actionTypes.LOAD_DELG_DECLS_FAIL:
-      return { ...state, delgdeclList: { ...state.delgdeclList, loading: false } };
+    case actionTypes.LOAD_CUSTOMS_FAIL:
+      return { ...state, customslist: { ...state.customslist, loading: false } };
     case actionTypes.LOAD_DECLHEAD_SUCCEED:
       return { ...state, decl_heads: action.result.data };
     case actionTypes.SHOW_SEND_DECL_MODAL:
@@ -135,15 +136,15 @@ export function loadCiqDecls(params) {
   };
 }
 
-export function loadDelgDecls(params) {
+export function loadCustomsDecls(params) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.LOAD_DELG_DECLS,
-        actionTypes.LOAD_DELG_DECLS_SUCCEED,
-        actionTypes.LOAD_DELG_DECLS_FAIL,
+        actionTypes.LOAD_CUSTOMS,
+        actionTypes.LOAD_CUSTOMS_SUCCEED,
+        actionTypes.LOAD_CUSTOMS_FAIL,
       ],
-      endpoint: 'v1/cms/declare/get/delgDecls',
+      endpoint: 'v1/cms/decl/customs',
       method: 'get',
       params,
     },
@@ -200,6 +201,21 @@ export function sendDecl(data) {
         actionTypes.SEND_DECL_FAIL,
       ],
       endpoint: 'v1/cms/declare/send',
+      method: 'post',
+      data,
+    },
+  };
+}
+
+export function sendMutiDecl(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SEND_MUTI_DECL,
+        actionTypes.SEND_MUTI_DECL_SUCCEED,
+        actionTypes.SEND_MUTI_DECL_FAIL,
+      ],
+      endpoint: 'v1/cms/declare/muti/send',
       method: 'post',
       data,
     },

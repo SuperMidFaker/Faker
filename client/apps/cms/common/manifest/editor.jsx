@@ -4,7 +4,7 @@ import { Breadcrumb, Button, Dropdown, Layout, Menu, Icon, Form, Modal, message,
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { saveBillHead, lockManifest, openMergeSplitModal, resetBill, updateHeadNetWt, editBillBody,
-  loadBillBody, saveBillRules, setStepVisible, billHeadChange, redoManifest, loadTemplateFormVals } from 'common/reducers/cmsManifest';
+  loadBillBody, saveBillRules, setStepVisible, billHeadChange, redoManifest, loadTemplateFormVals, showSendDeclsModal } from 'common/reducers/cmsManifest';
 import NavLink from 'client/components/nav-link';
 import ButtonToggle from 'client/components/ButtonToggle';
 import ManifestHeadPanel from './panel/manifestHeadPanel';
@@ -12,9 +12,11 @@ import ManifestBodyPanel from './panel/manifestBodyPanel';
 import MergeSplitModal from './modals/mergeSplit';
 import SaveTemplateModal from './modals/saveTemplateSteps';
 import SheetExtraPanel from './panel/manifestExtraPanel';
+import { CMS_DECL_STATUS } from 'common/constants';
 import { dividGrossWt } from './panel/helper';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
+import SendDeclsModal from './modals/sendDeclsModal';
 
 const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
@@ -38,7 +40,7 @@ const confirm = Modal.confirm;
     billHeadFieldsChangeTimes: state.cmsManifest.billHeadFieldsChangeTimes,
   }),
   { saveBillHead, openMergeSplitModal, resetBill, updateHeadNetWt, loadBillBody, editBillBody,
-    loadTemplateFormVals, saveBillRules, setStepVisible, billHeadChange, lockManifest, redoManifest }
+    loadTemplateFormVals, saveBillRules, setStepVisible, billHeadChange, lockManifest, redoManifest, showSendDeclsModal }
 )
 @connectNav({
   depth: 3,
@@ -151,6 +153,7 @@ export default class ManifestEditor extends React.Component {
       if (!body.cop_g_no || !body.code_t || !body.code_s || !body.g_name || !body.g_model
        || !body.g_qty || !body.g_unit || !body.dec_price || !body.trade_total || !body.trade_curr
        || !body.duty_mode || !body.dest_country || !body.orig_country || !body.wet_wt || !body.gross_wt) {
+        this.setState({ generating: false });
         return message.error('表体数据尚未填写完整', 5);
       }
     }
@@ -318,7 +321,10 @@ export default class ManifestEditor extends React.Component {
       });
     }
   }
-
+  handleSendDecls = () => {
+    const head = this.props.billHead;
+    this.props.showSendDeclsModal({ visible: true, delgNo: head.delg_no, agentCustCo: head.agent_custco });
+  }
   renderOverlayMenu(editable) {
     let lockMenuItem = null;
     if (editable) {
@@ -346,6 +352,10 @@ export default class ManifestEditor extends React.Component {
           <Icon type="file" /> {bme.entry_id || bme.pre_entry_seq_no}</Menu.Item>)
         )}
       </Menu>);
+    let sendable = billMeta.entries.length > 0;
+    billMeta.entries.forEach((entry) => {
+      sendable = sendable && (entry.status === CMS_DECL_STATUS.reviewed.value);
+    });
     const path = `/clearance/${ietype}/manifest/`;
     let editable = !this.props.readonly && billMeta.entries.length === 0;
     if (editable && billHead.locking_login_id && billHead.locking_login_id !== loginId) {
@@ -401,6 +411,9 @@ export default class ManifestEditor extends React.Component {
                 (<Button type="primary" size="large" icon="addfile" disabled={billHeadFieldsChangeTimes > 0}
                   loading={this.state.generating} onClick={this.handleGenerateEntry}
                 >{this.msg('generateEntry')}</Button>) }
+              {sendable &&
+                <Button type="primary" size="large" icon="mail" onClick={this.handleSendDecls}>{this.msg('sendAllPackets')}</Button>
+              }
               {billMeta.entries.length > 0 &&
                 <Dropdown overlay={declEntryMenu}>
                   <Button size="large"><Icon type="schedule" />已生成报关草单<Icon type="down" /></Button>
@@ -444,6 +457,7 @@ export default class ManifestEditor extends React.Component {
         </Sider>
         <MergeSplitModal />
         <SaveTemplateModal ietype={ietype} />
+        <SendDeclsModal ietype={ietype} entries={billMeta.entries} />
       </Layout>
     );
   }

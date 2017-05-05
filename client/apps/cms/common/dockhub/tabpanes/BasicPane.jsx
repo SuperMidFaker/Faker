@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Button, Row, Menu, Icon, Col, Card } from 'antd';
+import { saveBaseInfo } from 'common/reducers/cmsDelgInfoHub';
 import downloadMultiple from 'client/util/multipleDownloader';
 import { GOODSTYPES, TRANS_MODE, CLAIM_DO_AWB } from 'common/constants';
 import InfoItem from 'client/components/InfoItem';
@@ -18,7 +19,8 @@ function getExtension(filename) {
   state => ({
     delegation: state.cmsDelgInfoHub.previewer.delegation,
     files: state.cmsDelgInfoHub.previewer.files,
-  })
+  }),
+  { saveBaseInfo }
 )
 export default class BasicPane extends React.Component {
   static propTypes = {
@@ -52,6 +54,14 @@ export default class BasicPane extends React.Component {
   handleFilesDownload = () => {
     downloadMultiple(this.files);
   }
+  handleFill = (val, field) => {
+    const change = {};
+    change[field] = val;
+    this.props.saveBaseInfo(change, this.props.delegation.delg_no);
+  }
+  handleMenuClick = (e) => {
+    this.handleFill(e.key, 'goods_type');
+  }
   render() {
     const { delegation } = this.props;
     let img = '';
@@ -76,7 +86,7 @@ export default class BasicPane extends React.Component {
         </div>
       );
     });
-    const goods = GOODSTYPES.filter(gt => gt.value === delegation.goods_type)[0];
+    const goods = GOODSTYPES.filter(gt => gt.value === Number(delegation.goods_type))[0];
     const transMode = TRANS_MODE.filter(tm => tm.value === delegation.trans_mode)[0];
     let doAwbText = '';
     if (delegation.trans_mode === '2') {
@@ -98,34 +108,34 @@ export default class BasicPane extends React.Component {
         <Card bodyStyle={{ padding: 16 }}>
           <Row>
             <Col span="8">
-              <InfoItem label="订单号" addonBefore={<Icon type="tag-o" />}
-                field={delegation.order_no} placeholder="添加订单号" editable
+              <InfoItem label="订单号" addonBefore={<Icon type="tag-o" />} onEdit={this.handleFill}
+                field={delegation.order_no} dataIndex="order_no" placeholder="添加订单号" editable
               />
             </Col>
             <Col span="8">
               <InfoItem label="发票号" addonBefore={<Icon type="tag-o" />}
-                field={delegation.invoice_no} placeholder="添加发票号" editable
+                field={delegation.invoice_no} dataIndex="invoice_no" placeholder="添加发票号" editable onEdit={this.handleFill}
               />
             </Col>
             <Col span="8">
               <InfoItem label="合同号" addonBefore={<Icon type="tag-o" />}
-                field={delegation.contract_no} placeholder="添加合同号" editable
+                field={delegation.contract_no} dataIndex="contract_no" placeholder="添加合同号" editable onEdit={this.handleFill}
               />
             </Col>
           </Row>
           <Row>
             <Col span="8">
               <InfoItem label="运输方式" addonBefore={transMode && <MdIcon type={transMode.icon} />}
-                field={(transMode && transMode.length > 0) ? transMode.text : ''}
+                field={transMode ? transMode.text : ''}
               />
             </Col>
             <Col span="8">
               <InfoItem label="提运单号" addonBefore={<Icon type="tag-o" />}
-                field={delegation.bl_wb_no} placeholder="添加提运单号" editable
+                field={delegation.bl_wb_no} dataIndex="bl_wb_no" placeholder="添加提运单号" editable onEdit={this.handleFill}
               />
             </Col>
             <Col span="8">
-              <InfoItem label="运输工具名称" field={delegation.traf_name} />
+              <InfoItem label="运输工具名称" field={delegation.traf_name} editable placeholder="添加运输工具名称" dataIndex="traf_name" onEdit={this.handleFill} />
             </Col>
           </Row>
           {
@@ -142,27 +152,26 @@ export default class BasicPane extends React.Component {
           <Row>
             <Col span="8">
               <InfoItem type="dropdown" label="货物类型"
-                field={(goods && goods.length > 0) ? goods.text : ''} placeholder="选择货物类型" editable
-                overlay={<Menu>
-                  <Menu.Item>Menu</Menu.Item>
-                </Menu>
-                }
+                field={goods ? goods.text : ''} placeholder="选择货物类型" editable
+                overlay={<Menu onClick={this.handleMenuClick}>
+                  {GOODSTYPES.map(gt => (<Menu.Item key={gt.value}>{gt.text}</Menu.Item>))}
+                </Menu>}
               />
             </Col>
             <Col span="8">
               <InfoItem label="总件数"
-                field={delegation.pieces} addonAfter="件" editable
+                field={delegation.pieces} addonAfter="件" editable onEdit={this.handleFill} dataIndex="pieces"
               />
             </Col>
             <Col span="8">
               <InfoItem type="number" label="总重量"
-                field={delegation.weight} addonAfter="千克" placeholder="设置总重量" editable
+                field={delegation.weight} dataIndex="weight" addonAfter="千克" placeholder="设置总重量" editable onEdit={this.handleFill}
               />
             </Col>
           </Row>
           <Row>
             <Col span="16">
-              <InfoItem type="textarea" label="备注" field={delegation.remark} placeholder="添加备注" editable />
+              <InfoItem type="textarea" dataIndex="remark" label="备注" field={delegation.remark} placeholder="添加备注" editable onEdit={this.handleFill} />
             </Col>
           </Row>
         </Card>

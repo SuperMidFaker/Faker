@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
-import { Input, Icon, Select } from 'antd';
+import { Input, Icon, Select, DatePicker } from 'antd';
+import moment from 'moment';
 
 const Option = Select.Option;
 export default class EditableCell extends React.Component {
@@ -8,6 +9,7 @@ export default class EditableCell extends React.Component {
     addonAfter: PropTypes.node,
     type: PropTypes.string,
     value: PropTypes.any,
+    field: PropTypes.string,
     placeholder: PropTypes.string,
     cellTrigger: PropTypes.bool,
     options: PropTypes.arrayOf(PropTypes.shape({ key: PropTypes.string.isRequired, text: PropTypes.string.isRequired })),
@@ -16,6 +18,7 @@ export default class EditableCell extends React.Component {
   }
   state = {
     value: this.props.value,
+    field: this.props.field,
     editMode: false,
   }
   componentWillReceiveProps(nextProps) {
@@ -32,7 +35,7 @@ export default class EditableCell extends React.Component {
       this.setState({ editMode: false });
     }, 10);
     if (this.props.onSave) {
-      this.props.onSave(this.state.value);
+      this.props.onSave(this.state.value, this.state.field);
     }
   }
   close = () => {
@@ -55,6 +58,9 @@ export default class EditableCell extends React.Component {
   handleSelectChange = (value) => {
     this.setState({ value });
   }
+  handleDatehange = (date) => {
+    this.setState({ value: date ? date.format('YYYY-MM-DD') : '' });
+  }
   renderControl() {
     const { type, placeholder, options, addonBefore, addonAfter } = this.props;
     const { value } = this.state;
@@ -73,6 +79,13 @@ export default class EditableCell extends React.Component {
           <Select showSearch placeholder={placeholder} value={value} style={{ width: '80%' }} onChange={this.handleSelectChange}>
             {options && options.map(opt => <Option key={opt.key} value={opt.key}>{opt.text}</Option>)}
           </Select>
+          <Icon type="check" className="editable-cell-icon-save" onClick={this.check} />
+          <span className="ant-divider" />
+          <Icon type="close" className="editable-cell-icon-close" onClick={this.close} />
+        </div>);
+      case 'date':
+        return (<div>
+          <DatePicker style={{ width: '79%' }} value={value ? moment(value) : ''} onChange={this.handleDatehange} />
           <Icon type="check" className="editable-cell-icon-save" onClick={this.check} />
           <span className="ant-divider" />
           <Icon type="close" className="editable-cell-icon-close" onClick={this.close} />
@@ -103,7 +116,7 @@ export default class EditableCell extends React.Component {
     }
     return (value && (value.length > 0 || value !== 0)) ?
       <span>{addonBefore}{value}{addonAfter}</span> :
-      <span>{addonBefore}<span className="editable-cell-placeholder">{placeholder}</span>{addonAfter}</span>;
+      <span style={{ display: 'inline-block' }}>{addonBefore}<span className="editable-cell-placeholder">{placeholder}</span>{addonAfter}</span>;
   }
   render() {
     const { editMode } = this.state;

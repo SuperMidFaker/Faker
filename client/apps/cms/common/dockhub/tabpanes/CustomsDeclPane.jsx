@@ -2,10 +2,10 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import Avatar from 'react-avatar';
-import { Spin, Button, Card, Col, Icon, Progress, Row, Table, message } from 'antd';
+import { Spin, Button, Card, Col, Icon, Progress, Row, Table, message, Menu } from 'antd';
 import moment from 'moment';
 import { openAcceptModal, ensureManifestMeta, loadDelgOperators } from 'common/reducers/cmsDelegation';
-import { loadCustPanel } from 'common/reducers/cmsDelgInfoHub';
+import { loadCustPanel, setOpetaor } from 'common/reducers/cmsDelgInfoHub';
 import CustomsDeclSheetCard from './customsDeclSheetCard';
 import InfoItem from 'client/components/InfoItem';
 
@@ -19,8 +19,9 @@ import InfoItem from 'client/components/InfoItem';
     customsSpinning: state.cmsDelgInfoHub.customsPanelLoading,
     loginId: state.account.loginId,
     loginName: state.account.username,
+    delgOperators: state.cmsDelegation.acceptModal.operators,
   }),
-  { loadCustPanel, openAcceptModal, ensureManifestMeta, loadDelgOperators }
+  { loadCustPanel, openAcceptModal, ensureManifestMeta, loadDelgOperators, setOpetaor }
 )
 export default class CustomsDeclPane extends React.Component {
   static propTypes = {
@@ -44,6 +45,7 @@ export default class CustomsDeclPane extends React.Component {
       delgNo: this.props.delgNo,
       tenantId: this.props.tenantId,
     });
+    this.props.loadDelgOperators(this.props.tenantId);
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.tabKey === 'customsDecl' && nextProps.delgNo !== this.props.delgNo) {
@@ -90,6 +92,12 @@ export default class CustomsDeclPane extends React.Component {
       opt: 'operator',
     });
   }
+  handleMenuClick = (e) => {
+    const operator = this.props.delgOperators.filter(dop => dop.lid === Number(e.key))[0];
+    this.props.setOpetaor(
+      operator.lid, operator.name, this.props.delgNo
+    );
+  }
   renderManifestAction() {
     const { customsPanel } = this.props;
     const bill = customsPanel.bill;
@@ -106,7 +114,7 @@ export default class CustomsDeclPane extends React.Component {
     }
   }
   render() {
-    const { customsPanel, customsSpinning, tenantId } = this.props;
+    const { customsPanel, customsSpinning, tenantId, delgOperators } = this.props;
     const bill = customsPanel.bill;
     const tableDatas = customsPanel.decls;
     // const declTypes = DECL_I_TYPE.concat(DECL_E_TYPE).filter(dt => dt.key === bill.decl_way_code);
@@ -120,8 +128,7 @@ export default class CustomsDeclPane extends React.Component {
       render: (o, record) => <CustomsDeclSheetCard customsDecl={record} />,
     }];
     const assignable = (customsPanel.customs_tenant_id === tenantId || customsPanel.customs_tenant_id === -1);
-    // const assigneeOptions = this.state.data.map(d => <Option key={d.value}>{d.text}</Option>);
-    // todo declValue
+    const operators = delgOperators.filter(op => op.name !== bill.preparer_name);
     return (
       <div className="pane-content tab-pane">
         <Spin spinning={customsSpinning}>
@@ -130,8 +137,11 @@ export default class CustomsDeclPane extends React.Component {
               <Card title={manifestProgress} extra={this.renderManifestAction()} bodyStyle={{ padding: 16 }}>
                 <Row gutter={8}>
                   <Col span="6">
-                    <InfoItem type="select" label="制单人" placeholder="分配制单人" addonBefore={<Avatar name={bill.preparer_name} size={28} round />}
-                      field={bill.preparer_name} editable={assignable}
+                    <InfoItem type="dropdown" label="制单人" addonBefore={<Avatar name={bill.preparer_name} size={28} round />}
+                      field={bill.preparer_name} placeholder="分配制单人" editable={assignable}
+                      overlay={<Menu onClick={this.handleMenuClick}>
+                        {operators.map(dg => (<Menu.Item key={dg.lid}>{dg.name}</Menu.Item>))}
+                      </Menu>}
                     />
                   </Col>
                   <Col span="6">
@@ -140,10 +150,10 @@ export default class CustomsDeclPane extends React.Component {
                     />
                   </Col>
                   <Col span="6">
-                    <InfoItem label="商品数量" suffix="项" field={bill.pack_count} />
+                    <InfoItem label="商品数量" suffix="项" field={bill.g_count} />
                   </Col>
                   <Col span="6">
-                    <InfoItem label="申报货值" suffix="人民币" field={bill.declValue} />
+                    <InfoItem label="申报货值" suffix="人民币" field={bill.total_trades} />
                   </Col>
                 </Row>
               </Card>

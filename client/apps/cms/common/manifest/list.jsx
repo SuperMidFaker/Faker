@@ -74,13 +74,7 @@ export default class ManifestList extends Component {
     dataIndex: 'delg_no',
     fixed: 'left',
     width: 120,
-    render: (o, record) =>
-      // if (record.customs_tenant_id === this.props.tenantId && record.bill_status < 5) {
-      //   return <NavLink to={`/clearance/${this.props.ietype}/manifest/${record.bill_seq_no}`}>{o}</NavLink>;
-      // } else {
-      //   return <NavLink to={`/clearance/${this.props.ietype}/manifest/view/${record.bill_seq_no}`}>{o}</NavLink>;
-      // }
-      <a onClick={() => this.handlePreview(o, record)}>{o}</a>,
+    render: (o, record) => <a onClick={() => this.handlePreview(o, record)}>{o}</a>,
   }, {
     title: '报关单位',
     dataIndex: 'customs_name',
@@ -146,6 +140,29 @@ export default class ManifestList extends Component {
         port = cust.text;
       }
       return <TrimSpan text={port} maxLen={14} />;
+    },
+  }, {
+    title: this.msg('opColumn'),
+    width: 100,
+    fixed: 'right',
+    render: (o, record) => {
+      if (record.bill_status < 100) {
+        return (
+          <RowUpdater onHit={this.handleDelegationMake} label={<span><Icon type="edit" /> 编辑</span>} row={record} />
+        );
+      } else if (record.bill_status === 100) {
+        return (
+          <span>
+            <RowUpdater onHit={this.handleDelegationView} label={<span><Icon type="eye-o" /> 查看</span>} row={record} />
+            { record.revertable && <span className="ant-divider" />}
+            { record.revertable && (<Popconfirm title="确定操作?" placement="topRight" onConfirm={() => this.handleManifestRedo(record)}>
+              <Tooltip title="删除已生成的报关草单，重新修改" placement="bottomLeft">
+                <a role="button"><Icon type="reload" /></a>
+              </Tooltip>
+            </Popconfirm>)}
+          </span>
+        );
+      }
     },
   }]
   dataSource = new Table.DataSource({
@@ -254,44 +271,8 @@ export default class ManifestList extends Component {
     });
   }
   render() {
-    const { delgBillList, listFilter, tenantId } = this.props;
+    const { delgBillList, listFilter } = this.props;
     this.dataSource.remotes = delgBillList;
-    let columns = [];
-    columns = [...this.columns];
-    columns.push({
-      title: this.msg('opColumn'),
-      width: 100,
-      fixed: 'right',
-      render: (o, record) => {
-        if (record.customs_tenant_id === tenantId || record.customs_tenant_id === -1) {
-          if (record.bill_status < 100) {
-            return (
-              <RowUpdater onHit={this.handleDelegationMake} label={<span><Icon type="edit" /> 编辑</span>} row={record} />
-            );
-          } else if (record.bill_status === 100 && record.entry_status === 0) {
-            return (
-              <span>
-                <RowUpdater onHit={this.handleDelegationView} label={<span><Icon type="eye-o" /> 查看</span>} row={record} />
-                <span className="ant-divider" />
-                <Popconfirm title="确定操作?" placement="topRight" onConfirm={() => this.handleManifestRedo(record)}>
-                  <Tooltip title="删除已生成的报关草单，重新修改" placement="bottomLeft">
-                    <a role="button"><Icon type="reload" /></a>
-                  </Tooltip>
-                </Popconfirm>
-              </span>
-            );
-          } else if (record.bill_status === 100 && record.entry_status === 1) {
-            return (
-              <RowUpdater onHit={this.handleDelegationView} label={<span><Icon type="eye-o" /> 查看</span>} row={record} />
-            );
-          }
-        } else {
-          return (
-            <RowUpdater onHit={this.handleDelegationView} label={<span><Icon type="eye-o" /> 查看</span>} row={record} />
-          );
-        }
-      },
-    });
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -329,7 +310,7 @@ export default class ManifestList extends Component {
                   </div>
                 </div>
                 <div className="panel-body table-panel">
-                  <Table rowSelection={rowSelection} columns={columns} rowKey="delg_no" dataSource={this.dataSource}
+                  <Table rowSelection={rowSelection} columns={this.columns} rowKey="delg_no" dataSource={this.dataSource}
                     loading={delgBillList.loading} scroll={{ x: 1800 }}
                   />
                 </div>
