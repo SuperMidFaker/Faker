@@ -27,6 +27,7 @@ export default class ImportCustomsDeclView extends React.Component {
     customsDeclSpinning: PropTypes.bool.isRequired,
   }
   render() {
-    return <CustomsDeclEditor ietype="import" declSpinning={this.props.customsDeclSpinning} readonly />;
+    const { customsDeclSpinning, params } = this.props;
+    return <CustomsDeclEditor ietype="import" declSpinning={customsDeclSpinning} params={params} />;
   }
 }

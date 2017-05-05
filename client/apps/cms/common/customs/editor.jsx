@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Badge, Form, Breadcrumb, Button, Icon, Layout, Tabs, Tooltip, message, Popconfirm, Spin, Dropdown, Menu } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
+import { setNavTitle } from 'common/reducers/navbar';
 import { loadEntry, saveEntryHead } from 'common/reducers/cmsManifest';
 import { deleteDecl, setDeclReviewed, showSendDeclModal } from 'common/reducers/cmsDeclare';
 import NavLink from 'client/components/nav-link';
@@ -18,6 +19,11 @@ import SendModal from './modals/sendModal';
 const formatMsg = format(messages);
 const { Sider, Header, Content } = Layout;
 const TabPane = Tabs.TabPane;
+const navObj = {
+  depth: 3,
+  moduleName: 'clearance',
+  jumpOut: true,
+};
 
 @injectIntl
 @connect(
@@ -27,13 +33,9 @@ const TabPane = Tabs.TabPane;
     bodies: state.cmsManifest.entryBodies,
     tenantId: state.account.tenantId,
   }),
-  { saveEntryHead, loadEntry, deleteDecl, setDeclReviewed, showSendDeclModal }
+  { saveEntryHead, loadEntry, deleteDecl, setDeclReviewed, showSendDeclModal, setNavTitle }
 )
-@connectNav({
-  depth: 3,
-  moduleName: 'clearance',
-  jumpOut: true,
-})
+@connectNav(navObj)
 @Form.create()
 export default class CustomsDeclEditor extends React.Component {
   static propTypes = {
@@ -51,6 +53,12 @@ export default class CustomsDeclEditor extends React.Component {
   state = {
     visible: false,
     collapsed: true,
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.params.preEntrySeqNo !== this.props.params.preEntrySeqNo) {
+      this.props.loadEntry(nextProps.params.billseqno, nextProps.params.preEntrySeqNo, nextProps.tenantId);
+      this.props.setNavTitle(navObj);
+    }
   }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
   toggle = () => {
@@ -114,7 +122,6 @@ export default class CustomsDeclEditor extends React.Component {
     const { ietype, billMeta } = this.props;
     const pathname = `/clearance/${ietype}/customs/${billMeta.bill_seq_no}/${ev.key}`;
     this.context.router.push({ pathname });
-    this.props.loadEntry(billMeta.bill_seq_no, ev.key, this.props.tenantId);
   }
   render() {
     const { ietype, form, head, bodies, billMeta } = this.props;
@@ -173,10 +180,10 @@ export default class CustomsDeclEditor extends React.Component {
               <div className="page-body tabbed">
                 <Tabs defaultActiveKey="header">
                   <TabPane tab="报关单表头" key="header">
-                    <SheetHeadPanel ietype={ietype} readonly form={form} formData={head} />
+                    <SheetHeadPanel ietype={ietype} form={form} formData={head} />
                   </TabPane>
                   <TabPane tab="报关单表体" key="body">
-                    <SheetBodyPanel ietype={ietype} readonly data={bodies} headNo={head.id} />
+                    <SheetBodyPanel ietype={ietype} data={bodies} headNo={head.id} />
                   </TabPane>
                 </Tabs>
               </div>

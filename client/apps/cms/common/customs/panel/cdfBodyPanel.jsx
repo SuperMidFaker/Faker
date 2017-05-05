@@ -125,7 +125,6 @@ export default class CDFBodyPanel extends React.Component {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     ietype: PropTypes.oneOf(['import', 'export']),
-    readonly: PropTypes.bool,
     data: PropTypes.array.isRequired,
     headNo: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     loginId: PropTypes.number.isRequired,
@@ -158,7 +157,6 @@ export default class CDFBodyPanel extends React.Component {
         showQuickJumper: true,
         onChange: this.handlePageChange,
       },
-      selectedRowKeys: [],
     };
   }
   componentWillMount() {
@@ -446,15 +444,6 @@ export default class CDFBodyPanel extends React.Component {
 
   render() {
     const { totGrossWt, totWetWt, totTrade } = this.state;
-    const selectedRows = this.state.selectedRowKeys;
-    const disabled = this.props.readonly;
-    const rowSelection = {
-      selectedRowKeys: selectedRows,
-      onChange: (selectedRowKeys) => {
-        this.setState({ selectedRowKeys });
-      },
-      getCheckboxProps: () => ({ disabled }),
-    };
     const columns = this.getColumns();
     const stats = (<div><span style={{ marginLeft: 8 }}>总毛重: </span><span style={{ color: '#FF9933' }}>{totGrossWt.toFixed(3)}</span>
       <span style={{ marginLeft: 8 }}>总净重: </span><span style={{ color: '#FF9933' }}>{totWetWt.toFixed(3)}</span>
@@ -469,7 +458,7 @@ export default class CDFBodyPanel extends React.Component {
         </div>
         <div className="panel-body table-panel">
           <Table rowKey="id" columns={columns} dataSource={this.state.bodies}
-            scroll={{ x: 2800, y: this.state.wlScrollY }} pagination={this.state.pagination} rowSelection={rowSelection}
+            scroll={{ x: 2800, y: this.state.wlScrollY }} pagination={this.state.pagination}
           />
         </div>
       </div>);

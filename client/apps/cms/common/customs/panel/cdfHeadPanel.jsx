@@ -26,7 +26,6 @@ export default class CDFHeadPanel extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     ietype: PropTypes.string.isRequired,
-    readonly: PropTypes.bool,
     form: PropTypes.object.isRequired,
     formData: PropTypes.object.isRequired,
     formRequire: PropTypes.object.isRequired,
