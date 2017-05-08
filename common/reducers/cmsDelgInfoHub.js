@@ -55,7 +55,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_BASIC_INFO_FAILED:
       return { ...state, basicPreviewLoading: false };
     case actionTypes.LOAD_BASIC_INFO_SUCCEED: {
-      return { ...state, previewer: { ...state.previewer, ...action.result.data },
+      return { ...state, previewer: { ...state.previewer, ...action.result.data, delgNo: action.result.data.delegation.delg_no },
         preStatus: '', basicPreviewLoading: false, tabKey: action.payload.tabKey };
     }
     case actionTypes.HIDE_PREVIEWER:

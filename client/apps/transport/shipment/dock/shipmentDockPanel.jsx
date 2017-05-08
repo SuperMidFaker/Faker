@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Col, Row, Tabs } from 'antd';
+import { Col, Row, Tabs, Button } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import DetailPane from './tabpanes/detail-pane';
@@ -22,6 +22,7 @@ import ChangeDeliverPrmDateModal from '../../tracking/land/modals/changeDeliverP
 import ShipmentAdvanceModal from '../../tracking/land/modals/shipment-advance-modal';
 import CreateSpecialCharge from '../../tracking/land/modals/create-specialCharge';
 import VehicleModal from '../../tracking/land/modals/vehicle-updater';
+import { showDock } from 'common/reducers/crmOrders';
 
 const formatMsg = format(messages);
 const TabPane = Tabs.TabPane;
@@ -64,7 +65,7 @@ function getTrackStatusMsg(status, eff) {
     shipmt: state.shipment.previewer.shipmt,
     previewer: state.shipment.previewer,
   }),
-  { hidePreviewer, sendTrackingDetailSMSMessage, changePreviewerTab, loadShipmtDetail }
+  { hidePreviewer, sendTrackingDetailSMSMessage, changePreviewerTab, loadShipmtDetail, showDock }
 )
 export default class PreviewPanel extends React.Component {
   static propTypes = {
@@ -101,6 +102,9 @@ export default class PreviewPanel extends React.Component {
       this.props.loadShipmtDetail(shipmtNo, tenantId, sourceType, tabKey);
     }
   }
+  componentWillUnmount() {
+    this.props.hidePreviewer();
+  }
   viewStages = ['billing', 'dashboard'];
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   handleTabChange = (tabKey) => {
@@ -127,6 +131,10 @@ export default class PreviewPanel extends React.Component {
       case SHIPMENT_TRACK_STATUS.podsubmit: return 'success';
       default: return 'success';
     }
+  }
+  goBack = () => {
+    this.props.hidePreviewer();
+    this.props.showDock();
   }
   renderTabs(status, stage, sourceType) {
     if (status === SHIPMENT_TRACK_STATUS.unaccepted) {
@@ -244,12 +252,18 @@ export default class PreviewPanel extends React.Component {
       </Col>
     </Row>);
   }
+  renderTitle = () => {
+    const { shipmtNo } = this.props;
+    return (
+      <span><Button shape="circle" icon="left" onClick={this.goBack} /><span>{shipmtNo}</span></span>
+    );
+  }
   render() {
     const { shipmt, visible, shipmtNo, dispatch, effective, stage, previewer: { params: { sourceType } } } = this.props;
     return (
       shipmtNo ?
         <DockPanel size="large" visible={visible} onClose={this.handleClose}
-          title={shipmtNo}
+          title={this.renderTitle()}
           status={this.transformBadgeColor(dispatch.status)} statusText={this.msg(getTrackStatusMsg(dispatch.status, effective))}
           extra={this.renderExtra()}
           alert={this.viewStages.indexOf(this.props.stage) === -1 && <ShipmentActions stage={stage} sourceType={sourceType} onShowShareShipmentModal={this.handleShowShareShipmentModal} />}
