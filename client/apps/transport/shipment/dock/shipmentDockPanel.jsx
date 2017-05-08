@@ -9,7 +9,7 @@ import ChargePane from './tabpanes/chargePane';
 import PodPane from './tabpanes/podPane';
 import TrackingPane from './tabpanes/trackingPane';
 import { SHIPMENT_TRACK_STATUS, SHIPMENT_EFFECTIVES } from 'common/constants';
-import { hidePreviewer, sendTrackingDetailSMSMessage, changePreviewerTab, loadShipmtDetail } from 'common/reducers/shipment';
+import { hidePreviewer, sendTrackingDetailSMSMessage, changePreviewerTab, loadShipmtDetail, loadForm } from 'common/reducers/shipment';
 import { format } from 'client/common/i18n/helpers';
 import InfoItem from 'client/components/InfoItem';
 import DockPanel from 'client/components/DockPanel';
@@ -64,7 +64,7 @@ function getTrackStatusMsg(status, eff) {
     shipmt: state.shipment.previewer.shipmt,
     previewer: state.shipment.previewer,
   }),
-  { hidePreviewer, sendTrackingDetailSMSMessage, changePreviewerTab, loadShipmtDetail }
+  { hidePreviewer, sendTrackingDetailSMSMessage, changePreviewerTab, loadShipmtDetail, loadForm }
 )
 export default class PreviewPanel extends React.Component {
   static propTypes = {
@@ -88,6 +88,7 @@ export default class PreviewPanel extends React.Component {
     previewer: PropTypes.object.isRequired,
     stage: PropTypes.oneOf(['acceptance', 'dispatch', 'tracking', 'pod', 'exception', 'billing', 'dashboard', 'todo']),
     loadShipmtDetail: PropTypes.func.isRequired,
+    loadForm: PropTypes.func.isRequired,
   }
   constructor(props) {
     super(props);
@@ -99,6 +100,10 @@ export default class PreviewPanel extends React.Component {
     const { previewer: { visible, loaded, params: { shipmtNo, tenantId, sourceType }, tabKey } } = nextProps;
     if (!loaded && visible) {
       this.props.loadShipmtDetail(shipmtNo, tenantId, sourceType, tabKey);
+      this.props.loadForm(null, {
+        tenantId,
+        shipmtNo,
+      });
     }
   }
   viewStages = ['billing', 'dashboard'];
