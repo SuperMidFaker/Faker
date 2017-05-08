@@ -26,7 +26,7 @@ function fetchData({ state, dispatch }) {
   state => ({
     tenantId: state.account.tenantId,
     masterConfig: state.scvClassification.master,
-    brokers: state.scvClassification.slaves,
+    brokers: state.scvClassification.synclist,
   }),
   { renewSharees }
 )
@@ -53,7 +53,7 @@ export default class ScvClassificationMasterConfig extends React.Component {
     const { tenantId, brokers } = this.props;
     const shareeTenants = shareeIds.map(val => ({
       tenant_id: val,
-      name: brokers.filter(sb => sb.tenant_id === val)[0].name,
+      name: brokers.filter(sb => sb.broker_tenant_id === val)[0].broker_name,
     }));
     this.props.renewSharees(tenantId, tenantId, shareeTenants);
     this.setState({ value: shareeIds });
@@ -67,7 +67,7 @@ export default class ScvClassificationMasterConfig extends React.Component {
             <Form>
               <FormItem label={this.msg('classifyShareScope')} labelCol={{ span: 4 }} wrapperCol={{ span: 18 }}>
                 <Select mode="tags" value={this.state.value} style={{ width: '90%' }} onChange={this.handleSharesChange}>
-                  {brokers.map(opt => <Option key={opt.tenant_id} value={opt.tenant_id}>{opt.name}</Option>)}
+                  {brokers.map(opt => <Option key={opt.broker_tenant_id} value={opt.broker_tenant_id}>{opt.broker_name}</Option>)}
                 </Select>
               </FormItem>
             </Form>

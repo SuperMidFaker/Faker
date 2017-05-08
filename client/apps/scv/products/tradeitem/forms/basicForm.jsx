@@ -124,7 +124,7 @@ export default class BasicForm extends Component {
                     style={{ width: '100%' }}
                   >
                     {brokers.map(data => (
-                      <Option key={data.tenant_id} value={data.tenant_id} search={data.name}>{data.name}</Option>)
+                      <Option key={data.broker_tenant_id} value={data.broker_tenant_id} search={data.broker_name}>{data.broker_name}</Option>)
                     )}
                   </Select>)
                 }

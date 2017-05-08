@@ -20,7 +20,7 @@ const { Header, Content } = Layout;
     tenantName: state.account.tenantName,
     loginId: state.account.loginId,
     loginName: state.account.username,
-    slaves: state.scvClassification.slaves,
+    slaves: state.scvClassification.synclist,
   }),
   { addItem, loadSyncList }
 )
@@ -42,7 +42,7 @@ export default class CreateTradeItem extends Component {
     router: PropTypes.object.isRequired,
   }
   componentWillMount() {
-    this.props.loadSyncList(this.props.tenantId);
+    this.props.loadSyncList({ tenantId: this.props.tenantId });
   }
   msg = key => formatMsg(this.props.intl, key)
   handleSave = () => {
@@ -50,7 +50,7 @@ export default class CreateTradeItem extends Component {
       if (!errors) {
         const { tenantId, tenantName, loginId, loginName, slaves } = this.props;
         const item = this.props.form.getFieldsValue();
-        const broker = slaves.find(tr => tr.tenant_id === item.broker);
+        const broker = slaves.find(tr => tr.broker_tenant_id === item.broker);
         let baseinfo = {
           owner_tenant_id: tenantId,
           owner_name: tenantName,
@@ -61,8 +61,8 @@ export default class CreateTradeItem extends Component {
         };
         if (broker) {
           baseinfo = { ...baseinfo,
-            contribute_tenant_id: broker.tenant_id,
-            contribute_tenant_name: broker.name,
+            contribute_tenant_id: broker.broker_tenant_id,
+            contribute_tenant_name: broker.broker_name,
           };
         }
         this.props.addItem({ baseinfo, item }).then((result) => {
