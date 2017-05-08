@@ -57,12 +57,6 @@ export default function reducer(state = initialState, action) {
     }
     case actionTypes.LOAD_EXCEPTIONS_SUCCEED:
       return { ...state, exceptions: action.result.data };
-    case actionTypes.CREATE_EXCEPTION_SUCCEED: {
-      return { ...state };
-    }
-    case actionTypes.DEAL_EXCEPTION_SUCCEED: {
-      return { ...state };
-    }
     case actionTypes.SHOW_DEAL_EXCEPTION_MODAL:
       return { ...state, dealExcpModal: action.data };
     default:
@@ -130,7 +124,7 @@ export function showDealExcpModal({ visible, shipmtNo = '', exception = {} }) {
   };
 }
 
-export function dealException({ excpId, solution, solver }) {
+export function dealException({ shipmtNo, excpId, solution, solver }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -140,7 +134,7 @@ export function dealException({ excpId, solution, solver }) {
       ],
       endpoint: 'v1/transport/tracking/dealException',
       method: 'post',
-      data: { excpId, solution, solver },
+      data: { shipmtNo, excpId, solution, solver },
     },
   };
 }

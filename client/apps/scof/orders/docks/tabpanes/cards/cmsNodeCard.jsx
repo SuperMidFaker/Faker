@@ -14,7 +14,7 @@ const Step = Steps.Step;
 
 export default class CMSNodeCard extends React.Component {
   static propTypes = {
-    title: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
     field: PropTypes.string,
     children: PropTypes.any,
   }
@@ -46,7 +46,7 @@ export default class CMSNodeCard extends React.Component {
     }
   }
   triggerStepMap = {
-    [NODE_BIZ_OBJECTS[this.props.kind][1].triggers[0].key]: 0,
+    [NODE_BIZ_OBJECTS[this.props.kind][1].triggers[0].key]: 0, // todo wrong triger
     [NODE_BIZ_OBJECTS[this.props.kind][1].triggers[1].key]: 1,
     [NODE_BIZ_OBJECTS[this.props.kind][2].triggers[1].key]: 2,
     [NODE_BIZ_OBJECTS[this.props.kind][2].triggers[2].key]: 3,

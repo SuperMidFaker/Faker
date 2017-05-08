@@ -48,7 +48,8 @@ export default class CustomsDeclPane extends React.Component {
     this.props.loadDelgOperators(this.props.tenantId);
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.tabKey === 'customsDecl' && nextProps.delgNo !== this.props.delgNo) {
+    // todo differantiate delgNo and prevewer NO
+    if (nextProps.delgNo.slice(0, 2) === 'ID' && nextProps.delgNo !== this.props.delgNo) {
       nextProps.loadCustPanel({
         delgNo: nextProps.delgNo,
         tenantId: this.props.tenantId,

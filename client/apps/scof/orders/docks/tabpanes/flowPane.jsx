@@ -48,19 +48,19 @@ export default class FlowPane extends React.Component {
               this.props.kinds.map((item, index) => {
                 if (item.kind === 'import' || item.kind === 'export') {
                   return (
-                    <Timeline.Item dot={<MdIcon mode="ikons" type="login" key={index} />}>
+                    <Timeline.Item dot={<MdIcon mode="ikons" type="login" key={index} />} key={item.name}>
                       <CMSNodeCard {...item} />
                     </Timeline.Item>
                   );
                 } else if (item.kind === 'tms') {
                   return (
-                    <Timeline.Item dot={<MdIcon type="truck" key={index} />}>
+                    <Timeline.Item dot={<MdIcon type="truck" key={index} />} key={item.name}>
                       <TMSNodeCard {...item} />
                     </Timeline.Item>
                   );
                 } else {
                   return (
-                    <Timeline.Item dot={<MdIcon type="layers" key={index} />}>
+                    <Timeline.Item dot={<MdIcon type="layers" key={index} />} key={item.name}>
                       <CWMNodeCard uuid={item.uuid} title={item.name} />
                     </Timeline.Item>
                   );

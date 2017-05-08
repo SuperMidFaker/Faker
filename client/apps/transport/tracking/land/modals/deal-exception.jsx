@@ -43,7 +43,7 @@ export default class DealException extends React.Component {
     const fieldsValue = form.getFieldsValue();
     const solution = fieldsValue.solution;
     const excpId = exception.id;
-    this.props.dealException({ excpId, solution, solver: loginName }).then((result) => {
+    this.props.dealException({ shipmtNo, excpId, solution, solver: loginName }).then((result) => {
       if (result.error) {
         message.error(result.error);
       } else {
