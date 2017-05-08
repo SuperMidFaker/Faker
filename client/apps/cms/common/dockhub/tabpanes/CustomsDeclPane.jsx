@@ -151,10 +151,10 @@ export default class CustomsDeclPane extends React.Component {
                     />
                   </Col>
                   <Col span="6">
-                    <InfoItem label="商品数量" suffix="项" field={bill.g_count} />
+                    <InfoItem label="明细记录数" suffix="项" field={bill.g_count} />
                   </Col>
                   <Col span="6">
-                    <InfoItem label="申报货值" suffix="人民币" field={bill.total_trades} />
+                    <InfoItem label="申报货值" suffix="美元" field={bill.total_trades} />
                   </Col>
                 </Row>
               </Card>

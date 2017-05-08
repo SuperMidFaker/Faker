@@ -433,7 +433,7 @@ export default class CustomsList extends Component {
             </div>
             <div className="panel-body table-panel expandable">
               <Table rowSelection={rowSelection} columns={this.columns} rowKey="id" dataSource={this.dataSource}
-                loading={customslist.loading} scroll={{ x: 1650 }}
+                loading={customslist.loading} scroll={{ x: 1750 }}
               />
             </div>
             <FillCustomsNoModal reload={this.handleTableLoad} />
