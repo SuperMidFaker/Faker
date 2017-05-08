@@ -1,9 +1,10 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Modal, Popconfirm, Icon, Tooltip, Tag, message, Table } from 'antd';
+import { Modal, Popconfirm, Icon, Tooltip, Tag, message, Table, Button } from 'antd';
 import RowUpdater from 'client/components/rowUpdater';
 import TrimSpan from 'client/components/trimSpan';
+import { createFilename } from 'client/util/dataTransform';
 import { setCompareVisible, saveComparedItemDatas,
   loadTradeItems, loadTempItems, comparedCancel, deleteTempData } from 'common/reducers/cmsTradeitem';
 import { format } from 'client/common/i18n/helpers';
@@ -152,6 +153,9 @@ export default class ImportComparisonModal extends React.Component {
     change[row.id] = feedback;
     dataSource[index] = { ...row, feedback };
     this.setState({ dataSource, feedbackChanges: { ...this.state.feedbackChanges, ...change } });
+  }
+  handleExportUnclassified = () => {
+    window.open(`${API_ROOTS.default}v1/cms/cmsTradeitem/tempitems/export/${createFilename('unclassifiedItems')}.xlsx?uuid=${this.state.uuid}`);
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   columns = [{
@@ -319,7 +323,14 @@ export default class ImportComparisonModal extends React.Component {
       <Modal title={this.msg('对比结果确认')} visible={visibleCompareModal}
         onOk={this.handleOk} onCancel={this.handleCancel} width={this.state.modalWidth} maskClosable={false} style={{ top: 24 }}
       >
-        <Table size="middle" rowKey={record => record.cop_product_no} columns={columns} dataSource={this.state.dataSource} pagination={this.state.pagination} scroll={{ x: 1500 }} />
+        <div className="pane">
+          <div className="panel-header">
+            <Button onClick={this.handleExportUnclassified}>{this.msg('exportUnclassified')}</Button>
+          </div>
+          <div className="panel-body table-panel">
+            <Table size="middle" rowKey={record => record.cop_product_no} columns={columns} dataSource={this.state.dataSource} pagination={this.state.pagination} scroll={{ x: 1500 }} />
+          </div>
+        </div>
       </Modal>
     );
   }
