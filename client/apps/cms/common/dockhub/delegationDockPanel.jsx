@@ -7,7 +7,6 @@ import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { CMS_DELEGATION_STATUS } from 'common/constants';
 import InfoItem from 'client/components/InfoItem';
 import DockPanel from 'client/components/DockPanel';
-import MdIcon from 'client/components/MdIcon';
 import BasicPane from './tabpanes/BasicPane';
 import CustomsDeclPane from './tabpanes/CustomsDeclPane';
 import CiqDeclPane from './tabpanes/CiqDeclPane';
@@ -18,6 +17,7 @@ import AcceptModal from './acceptModal';
 import DelgDispModal from './delgDispModal';
 import { openAcceptModal, showDispModal } from 'common/reducers/cmsDelegation';
 import { setPreviewStatus, hidePreviewer, setPreviewTabkey, loadBasicInfo } from 'common/reducers/cmsDelgInfoHub';
+import { showDock } from 'common/reducers/crmOrders';
 
 const TabPane = Tabs.TabPane;
 
@@ -31,7 +31,7 @@ const TabPane = Tabs.TabPane;
     delgNo: state.cmsDelgInfoHub.previewer.delgNo,
     delegateListFilter: state.cmsDelegation.delegateListFilter,
   }),
-  { hidePreviewer, setPreviewStatus, setPreviewTabkey, openAcceptModal, showDispModal, loadBasicInfo }
+  { hidePreviewer, setPreviewStatus, setPreviewTabkey, openAcceptModal, showDispModal, loadBasicInfo, showDock }
 )
 export default class DelegationDockPanel extends React.Component {
   static propTypes = {
@@ -53,6 +53,9 @@ export default class DelegationDockPanel extends React.Component {
         nextProps.tabKey,
       );
     }
+  }
+  componentWillUnmount() {
+    this.props.hidePreviewer();
   }
   handleTabChange = (tabKey) => {
     this.props.setPreviewTabkey(tabKey);
@@ -128,6 +131,10 @@ export default class DelegationDockPanel extends React.Component {
         }
       default: return '';
     }
+  }
+  goBack = () => {
+    this.props.hidePreviewer();
+    this.props.showDock();
   }
   renderTabs() {
     const { previewer, tabKey } = this.props;
@@ -227,12 +234,12 @@ export default class DelegationDockPanel extends React.Component {
       );
     }
   }
-  renderTitle() {
-    const { ietype, previewer } = this.props;
+  renderTitle = () => {
+    const { previewer } = this.props;
     const { delegation } = previewer;
-    return ietype === 'import' ?
-      <span><MdIcon mode="ikons" type="login" tagWrapped />{delegation.delg_no}</span> :
-      <span><MdIcon mode="ikons" type="logout" tagWrapped />{delegation.delg_no}</span>;
+    return (
+      <span><Button shape="circle" icon="left" onClick={this.goBack} /><span>{delegation.delg_no}</span></span>
+    );
   }
   renderBtns() {
     const { previewer } = this.props;
