@@ -87,7 +87,7 @@ export default class DelegationList extends Component {
     searchInput: '',
     expandedKeys: [],
   }
-  componentWillMount() {
+  componentDidMount() {
     const filters = this.initializeFilters();
     this.handleDelgListLoad(this.props.delegationlist.current, { ...this.props.listFilter, ...filters, filterNo: '' });
   }
