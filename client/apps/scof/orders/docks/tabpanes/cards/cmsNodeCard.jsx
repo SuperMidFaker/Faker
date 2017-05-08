@@ -56,12 +56,12 @@ export default class CMSNodeCard extends React.Component {
     this.props.hideDock();
   }
   render() {
-    const { title, children } = this.props;
+    const { name, children } = this.props;
     let declWayCode = '';
     const declWayMap = this.props.kind === 'import' ? DECL_I_TYPE : DECL_E_TYPE;
     declWayCode = declWayMap.find(item => item.key === this.props.decl_way_code).value;
     return (
-      <Card title={<span>{title}</span>} extra={
+      <Card title={<span>{name}</span>} extra={
         <Tooltip title="进入详情">
           <Button size="small" shape="circle" icon="right" onClick={() => this.handlePreview(this.props.uuid)} />
         </Tooltip>} bodyStyle={{ padding: 8, paddingBottom: 56 }}

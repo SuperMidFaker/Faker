@@ -67,9 +67,9 @@ export default class TMSNodeCard extends React.Component {
     );
   }
   render() {
-    const { title, children } = this.props;
+    const { name, children } = this.props;
     return (
-      <Card title={<span>{title}</span>} extra={
+      <Card title={<span>{name}</span>} extra={
         <Tooltip title="进入详情">
           <Button size="small" shape="circle" icon="right" onClick={() => this.handleShipmtPreview(this.props.uuid)} />
         </Tooltip>} bodyStyle={{ padding: 8, paddingBottom: 56 }}
