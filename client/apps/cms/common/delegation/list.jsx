@@ -89,7 +89,7 @@ export default class DelegationList extends Component {
   }
   componentDidMount() {
     const filters = this.initializeFilters();
-    this.handleDelgListLoad(1, { ...this.props.listFilter, ...filters, filterNo: '' });
+    this.handleDelgListLoad(this.props.delegationlist.current, { ...this.props.listFilter, ...filters, filterNo: '' });
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.reload) {

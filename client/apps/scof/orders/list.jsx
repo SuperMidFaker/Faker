@@ -10,13 +10,15 @@ import SearchBar from 'client/components/search-bar';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import { loadOrders, removeOrder, setClientForm, acceptOrder } from 'common/reducers/crmOrders';
+import { loadOrders, removeOrder, setClientForm, acceptOrder, hideDock } from 'common/reducers/crmOrders';
 import { emptyFlows } from 'common/reducers/scofFlow';
 import moment from 'moment';
 import OrderDockPanel from './docks/orderDockPanel';
 import OrderNoColumn from './columndef/orderNoColumn';
 import ShipmentColumn from './columndef/shipmentColumn';
 import ProgressColumn from './columndef/progressColumn';
+import DelegationDockPanel from '../../cms/common/dockhub/delegationDockPanel';
+import ShipmentDockPanel from '../../transport/shipment/dock/shipmentDockPanel';
 import { SCOF_ORDER_TRANSFER, CRM_ORDER_STATUS } from 'common/constants';
 
 const { Header, Content } = Layout;
@@ -44,7 +46,7 @@ function fetchData({ state, dispatch }) {
     loading: state.crmOrders.loading,
     orders: state.crmOrders.orders,
     filters: state.crmOrders.orderFilters,
-  }), { loadOrders, removeOrder, setClientForm, acceptOrder, emptyFlows }
+  }), { loadOrders, removeOrder, setClientForm, acceptOrder, emptyFlows, hideDock }
 )
 @connectNav({
   depth: 2,
@@ -70,6 +72,9 @@ export default class OrderList extends React.Component {
   }
   state = {
     selectedRowKeys: [],
+  }
+  componentWillMount() {
+    this.props.hideDock();
   }
   msg = key => formatMsg(this.props.intl, key)
   handleCreate = () => {
@@ -273,6 +278,8 @@ export default class OrderList extends React.Component {
           </div>
         </Content>
         <OrderDockPanel />
+        <DelegationDockPanel />
+        <ShipmentDockPanel />
       </QueueAnim>
     );
   }

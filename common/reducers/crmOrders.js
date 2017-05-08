@@ -6,7 +6,7 @@ const actionTypes = createActionTypes('@@welogix/crm/orders/', [
   'LOAD_ORDERS', 'LOAD_ORDERS_SUCCEED', 'LOAD_ORDERS_FAIL',
   'LOAD_ORDER', 'LOAD_ORDER_SUCCEED', 'LOAD_ORDER_FAIL',
   'SUBMIT_ORDER', 'SUBMIT_ORDER_SUCCEED', 'SUBMIT_ORDER_FAIL',
-  'SET_CLIENT_FORM', 'HIDE_DOCK', 'CHANGE_DOCK_TAB',
+  'SET_CLIENT_FORM', 'HIDE_DOCK', 'SHOW_DOCK', 'CHANGE_DOCK_TAB',
   'REMOVE_ORDER', 'REMOVE_ORDER_SUCCEED', 'REMOVE_ORDER_FAIL',
   'EDIT_ORDER', 'EDIT_ORDER_SUCCEED', 'EDIT_ORDER_FAIL',
   'ACCEPT_ORDER', 'ACCEPT_ORDER_SUCCEED', 'ACCEPT_ORDER_FAIL',
@@ -16,6 +16,8 @@ const actionTypes = createActionTypes('@@welogix/crm/orders/', [
   'LOAD_CLEARANCE_FEES', 'LOAD_CLEARANCE_FEES_SUCCEED', 'LOAD_CLEARANCE_FEES_FAIL',
   'LOAD_FLOWNODE', 'LOAD_FLOWNODE_SUCCEED', 'LOAD_FLOWNODE_FAILED',
   'LOAD_ORDERPROG', 'LOAD_ORDERPROG_SUCCEED', 'LOAD_ORDERPROG_FAILED',
+  'LOAD_ORDER_NODES', 'LOAD_ORDER_NODES_SUCCEED', 'LOAD_ORDER_NODES_FAIL',
+  'LOAD_ORDER_NODES_TRIGGERS', 'LOAD_ORDER_NODES_TRIGGERS_SUCCEED', 'LOAD_ORDER_NODES_TRIGGERS_FAIL',
 ]);
 
 const initialState = {
@@ -74,7 +76,7 @@ const initialState = {
     data: [],
   },
   orderFilters: { progress: 'active', transfer: 'all' },
-
+  kinds: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -127,9 +129,14 @@ export default function reducer(state = initialState, action) {
     case actionTypes.HIDE_DOCK: {
       return { ...state, dock: { ...state.dock, visible: false } };
     }
+    case actionTypes.SHOW_DOCK: {
+      return { ...state, dock: { ...state.dock, visible: true } };
+    }
     case actionTypes.CHANGE_dock_TAB: {
       return { ...state, dock: { ...state.dock, tabKey: action.data.tabKey } };
     }
+    case actionTypes.LOAD_ORDER_NODES_SUCCEED:
+      return { ...state, kinds: action.result.data };
     default:
       return state;
   }
@@ -322,6 +329,12 @@ export function hideDock() {
   };
 }
 
+export function showDock() {
+  return {
+    type: actionTypes.SHOW_DOCK,
+  };
+}
+
 export function loadFlowNodeData(nodeuuid, kind) {
   return {
     [CLIENT_API]: {
@@ -348,6 +361,36 @@ export function loadOrderProgress(orderNo) {
       endpoint: 'v1/crm/order/flow/progress',
       method: 'get',
       params: { order_no: orderNo },
+    },
+  };
+}
+
+export function loadOrderNodes(orderNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_ORDER_NODES,
+        actionTypes.LOAD_ORDER_NODES_SUCCEED,
+        actionTypes.LOAD_ORDER_NODES_FAIL,
+      ],
+      endpoint: 'v1/scof/order/instance/nodes',
+      method: 'get',
+      params: { orderNo },
+    },
+  };
+}
+
+export function loadOrderNodesTriggers(uuid, ...rest) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_ORDER_NODES_TRIGGERS,
+        actionTypes.LOAD_ORDER_NODES_TRIGGERS_SUCCEED,
+        actionTypes.LOAD_ORDER_NODES_TRIGGERS_FAIL,
+      ],
+      endpoint: 'v1/scof/order/nodes/triggers/load',
+      method: 'post',
+      data: { uuid, bizObjects: [...rest] },
     },
   };
 }

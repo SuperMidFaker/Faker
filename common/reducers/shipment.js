@@ -476,7 +476,7 @@ export function clearForm() {
   return clearFormC(actionTypes);
 }
 
-export function loadShipmtDetail(shipmtNo, tenantId, sourceType, tabKey, row) {
+export function loadShipmtDetail(No, tenantId, sourceType, tabKey, row) {
   return {
     [CLIENT_API]: {
       types: [
@@ -486,7 +486,7 @@ export function loadShipmtDetail(shipmtNo, tenantId, sourceType, tabKey, row) {
       ],
       endpoint: 'v1/transport/shipment/detail',
       method: 'get',
-      params: { shipmtNo, tenantId, sourceType },
+      params: { No, tenantId, sourceType },
       row, tabKey,
     },
   };
