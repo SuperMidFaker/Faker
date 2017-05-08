@@ -98,7 +98,7 @@ export default class PreviewPanel extends React.Component {
     };
   }
   componentWillReceiveProps(nextProps) {
-    const { previewer: { visible, loaded, params: { shipmtNo, tenantId, sourceType }, tabKey } } = nextProps;
+    const { previewer: { visible, loaded, params: { No: shipmtNo, tenantId, sourceType }, tabKey } } = nextProps;
     if (!loaded && visible) {
       this.props.loadShipmtDetail(shipmtNo, tenantId, sourceType, tabKey);
       this.props.loadForm(null, {
