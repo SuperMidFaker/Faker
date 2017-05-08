@@ -313,6 +313,8 @@ export default class TradeItemList extends Component {
       window.open(`${API_ROOTS.default}v1/scv/tradeitems/export/${createFilename('scvItemsExport')}.xlsx?tenantId=${this.props.tenantId}`);
     } else if (e.key === 'model') {
       window.open(`${API_ROOTS.default}v1/scv/tradeitems/model/download/${createFilename('tradeItemModel')}.xlsx`);
+    } else if (e.key === 'exportEditable') {
+      window.open(`${API_ROOTS.default}v1/scv/edited/tradeitems/export/${createFilename('editedScvItems')}.xlsx?tenantId=${this.props.tenantId}`);
     }
   }
   handleDeleteSelected = () => {
@@ -513,6 +515,7 @@ export default class TradeItemList extends Component {
       <Menu onClick={this.handleMenuClick}>
         <Menu.Item key="export"><Icon type="export" /> 导出物料表</Menu.Item>
         <Menu.Item key="model"><Icon type="download" /> 下载模板</Menu.Item>
+        <Menu.Item key="exportEditable"><Icon type="export" /> 导出可编辑物料</Menu.Item>
       </Menu>);
     return (
       <Layout className="ant-layout-wrapper">

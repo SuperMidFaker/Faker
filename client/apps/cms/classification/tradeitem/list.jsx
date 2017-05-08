@@ -379,6 +379,8 @@ export default class TradeItemList extends Component {
       window.open(`${API_ROOTS.default}v1/cms/cmsTradeitem/tradeitems/export/${createFilename('itemsExport')}.xlsx?repoId=${this.props.repoId}`);
     } else if (e.key === 'model') {
       window.open(`${API_ROOTS.default}v1/cms/cmsTradeitem/tradeitems/model/download/${createFilename('tradeItemModel')}.xlsx`);
+    } else if (e.key === 'exportEditable') {
+      window.open(`${API_ROOTS.default}v1/cms/cmsTradeitem/edited/tradeitems/export/${createFilename('editedCmsItems')}.xlsx?repoId=${this.props.repoId}&tenantId=${this.props.tenantId}`);
     }
   }
   handleUploaded = (data) => {
@@ -655,6 +657,7 @@ export default class TradeItemList extends Component {
       <Menu onClick={this.handleMenuClick}>
         <Menu.Item key="export"><Icon type="export" /> 导出物料表</Menu.Item>
         <Menu.Item key="model"><Icon type="download" /> 下载模板</Menu.Item>
+        <Menu.Item key="exportEditable"><Icon type="export" /> 导出可编辑物料</Menu.Item>
       </Menu>);
     return (
       <Layout className="ant-layout-wrapper">

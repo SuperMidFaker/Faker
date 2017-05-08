@@ -18,7 +18,7 @@ const Option = Select.Option;
     tenantName: state.account.tenantName,
     loginId: state.account.loginId,
     loginName: state.account.username,
-    slaves: state.scvClassification.slaves,
+    slaves: state.scvClassification.synclist,
     visibleNominatedModal: state.scvClassification.visibleNominatedModal,
     listFilter: state.scvClassification.listFilter,
     tradeItemlist: state.scvClassification.tradeItemlist,
@@ -37,7 +37,7 @@ export default class NominatedImport extends React.Component {
     attachments: [],
   }
   componentWillMount() {
-    this.props.loadSyncList(this.props.tenantId);
+    this.props.loadSyncList({ tenantId: this.props.tenantId });
   }
   handleCancel = () => {
     this.props.setNominatedVisible(false);
@@ -56,10 +56,10 @@ export default class NominatedImport extends React.Component {
       file: this.state.attachments[0],
     };
     if (this.state.nominated) {
-      const broker = slaves.filter(tr => tr.tenant_id === val.broker)[0];
+      const broker = slaves.filter(tr => tr.broker_tenant_id === val.broker)[0];
       params = { ...params,
-        contributeTenantId: broker.tenant_id,
-        contributeTenantName: broker.name,
+        contributeTenantId: broker.broker_tenant_id,
+        contributeTenantName: broker.broker_name,
       };
     }
     this.props.nominatedImport(params).then((result) => {
@@ -127,7 +127,7 @@ export default class NominatedImport extends React.Component {
                 style={{ width: '90%' }}
               >
                 {slaves.map(data => (
-                  <Option key={data.tenant_id} value={data.tenant_id} >{data.name}</Option>)
+                  <Option key={data.broker_tenant_id} value={data.broker_tenant_id} >{data.broker_name}</Option>)
                 )}
               </Select>)
             }

@@ -237,5 +237,9 @@ const messages = defineMessages({
     id: 'cms.classificagtion.tradeitem.copy.stage',
     defaultMessage: '复制到自留区',
   },
+  exportUnclassified: {
+    id: 'cms.classificagtion.tradeitem.export.unclassified',
+    defaultMessage: '导出未归类物料',
+  },
 });
 export default messages;

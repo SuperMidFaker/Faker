@@ -270,6 +270,10 @@ const messages = defineMessages({
     id: 'scv.products.trade.item',
     defaultMessage: '物料归类库',
   },
+  exportUnclassified: {
+    id: 'scv.products.tradeitem.export.unclassified',
+    defaultMessage: '导出未归类物料',
+  },
 });
 export default messages;
 export const formatMsg = formati18n(messages);

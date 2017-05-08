@@ -28,7 +28,7 @@ function fetchData({ dispatch, params }) {
   state => ({
     itemData: state.scvClassification.itemData,
     tenantId: state.account.tenantId,
-    slaves: state.scvClassification.slaves,
+    slaves: state.scvClassification.synclist,
   }),
   { itemEditedSave, loadPartners, loadSyncList }
 )
@@ -48,7 +48,7 @@ export default class EditTradeItem extends Component {
     router: PropTypes.object.isRequired,
   }
   componentWillMount() {
-    this.props.loadSyncList(this.props.tenantId);
+    this.props.loadSyncList({ tenantId: this.props.tenantId });
   }
   msg = key => formatMsg(this.props.intl, key);
   handleSave = () => {
