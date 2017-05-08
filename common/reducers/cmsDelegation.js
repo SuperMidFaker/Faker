@@ -64,11 +64,6 @@ const initialState = {
     create_time: null,
   },
   delgFiles: [],
-  delgBill: {
-    decl_way_code: '',
-    pack_count: null,
-    gross_wt: null,
-  },
   submitting: false,
   delegateListFilter: {
     sortField: '',
@@ -130,7 +125,7 @@ export default function reducer(state = initialState, action) {
       return { ...state, formData: initialState.formData, delgFiles: [] };
     case actionTypes.LOAD_DELG_SUCCEED:
       return { ...state, formData: action.result.data.delegation,
-        delgFiles: action.result.data.files, delgBill: action.result.data.delgBill, formRequire: action.result.data.formRequire,
+        delgFiles: action.result.data.files, formRequire: action.result.data.formRequire,
       };
     // case actionTypes.SEARCH_PARAM_SUCCEED:
     //   return { ...state, formRequire: { ...state.formRequire, ...action.result.data } };
@@ -140,7 +135,7 @@ export default function reducer(state = initialState, action) {
       return { ...state, formData: { ...initialState.formData, create_time: new Date() } };
     case actionTypes.LOAD_REQUIRE_SUCCEED:
       return { ...state, formRequire: action.result.data, formData: initialState.formData,
-        delgFiles: initialState.delgFiles, delgBill: initialState.delgBill };
+        delgFiles: initialState.delgFiles };
     case actionTypes.CREATE_DELGCCB:
     case actionTypes.EDIT_DELGCCB:
       return { ...state, submitting: true };

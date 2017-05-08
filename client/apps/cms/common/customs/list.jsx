@@ -117,6 +117,11 @@ export default class CustomsList extends Component {
       }
     },
   }, {
+    title: '明细记录数',
+    dataIndex: 'detail_count',
+    width: 100,
+    render: dc => !isNaN(dc) ? dc : null,
+  }, {
     title: '收发货人',
     dataIndex: 'trade_name',
     width: 160,
