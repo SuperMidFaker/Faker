@@ -16,7 +16,7 @@ const formatMsg = format(messages);
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     editBodyVisible: state.cmsManifest.editBodyVisible,
-    billMeta: state.cmsManifest.billMeta,
+    billBodies: state.cmsManifest.billBodies,
   }),
   { showEditBodyModal, editBillBody, loadBillBody, addNewBillBody }
 )
@@ -44,15 +44,22 @@ export default class EditBodyModal extends React.Component {
             } else {
               this.props.loadBillBody(billSeqNo);
               this.props.showEditBodyModal(false);
+              this.props.form.resetFields();
             }
           });
         } else {
-          this.props.addNewBillBody({ billSeqNo, body: values, loginId, tenantId }).then((result) => {
+          let gNO = 1;
+          if (this.props.billBodies.length > 1) {
+            gNO += this.props.billBodies[this.props.billBodies.length - 2].g_no;
+          }
+          const body = { ...values, g_no: gNO };
+          this.props.addNewBillBody({ billSeqNo, body, loginId, tenantId }).then((result) => {
             if (result.error) {
               message.error(result.error.message, 10);
             } else {
               this.props.loadBillBody(billSeqNo);
               this.props.showEditBodyModal(false);
+              this.props.form.resetFields();
             }
           });
         }

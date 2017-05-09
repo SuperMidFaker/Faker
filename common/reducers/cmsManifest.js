@@ -53,6 +53,7 @@ const actionTypes = createActionTypes('@@welogix/cms/manifest/', [
   'SAVE_GENERATED_TEMPLATE', 'SAVE_GENERATED_TEMPLATE_SUCCEED', 'SAVE_GENERATED_TEMPLATE_FAIL',
   'VALIDATE_NAME', 'VALIDATE_NAME_SUCCEED', 'VALIDATE_NAME_FAIL',
   'SHOW_SEND_DECLS_MODAL', 'SHOW_EDIT_BODY_MODAL',
+  'VALIDATE_BILL_DATAS', 'VALIDATE_BILL_DATAS_SUCCEED', 'VALIDATE_BILL_DATAS_FAIL',
 ]);
 
 const initialState = {
@@ -1026,5 +1027,20 @@ export function showEditBodyModal(val) {
   return {
     type: actionTypes.SHOW_EDIT_BODY_MODAL,
     data: val,
+  };
+}
+
+export function validateBillDatas(datas) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.VALIDATE_BILL_DATAS,
+        actionTypes.VALIDATE_BILL_DATAS_SUCCEED,
+        actionTypes.VALIDATE_BILL_DATAS_FAIL,
+      ],
+      endpoint: 'v1/cms/manifest/bill/datas/validate',
+      method: 'post',
+      data: datas,
+    },
   };
 }

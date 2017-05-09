@@ -165,7 +165,6 @@ function calculateTotal(bodies) {
     })),
     loginId: state.account.loginId,
     billHead: state.cmsManifest.billHead,
-    bodyItem: state.cmsTradeitem.bodyItem,
   }),
   { addNewBillBody, delBillBody, editBillBody, updateHeadNetWt, loadBillBody, openAmountModel, showEditBodyModal,
     getItemForBody, deleteSelectedBodies, resetBillBody, openRuleModel, loadHscodes }
@@ -184,7 +183,6 @@ export default class ManifestBodyPanel extends React.Component {
     currencies: PropTypes.array,
     exemptions: PropTypes.array,
     billHead: PropTypes.object,
-    bodyItem: PropTypes.object,
     headForm: PropTypes.object,
     hscodes: PropTypes.object,
   }
@@ -233,76 +231,6 @@ export default class ManifestBodyPanel extends React.Component {
         totPcs: calresult.totPcs,
         pagination: { ...this.state.pagination, total: bodies.length },
       });
-    }
-    if (nextProps.bodyItem !== this.props.bodyItem) {
-      const item = nextProps.bodyItem;
-      if (item) {
-        const unit1 = this.props.units.filter(unit => unit.value === item.unit_1)[0];
-        const unit1Val = unit1 ? unit1.value : '';
-        const unit2 = this.props.units.filter(unit => unit.value === item.unit_2)[0];
-        const unit2Val = unit2 ? unit2.value : '';
-        const unitg = this.props.units.filter(unit => unit.value === item.g_unit)[0];
-        const gunitVal = unitg ? unitg.value : '';
-        this.setState({
-          editBody: {
-            ...this.state.editBody,
-            codes: item.hscode,
-            g_name: item.g_name,
-            g_model: item.g_model,
-            element: item.element,
-            g_unit: gunitVal,
-            unit_1: unit1Val,
-            unit_2: unit2Val,
-            trade_curr: item.trade_curr,
-            orig_country: item.orig_country,
-            fixed_unit: item.fixed_unit,
-            fixed_qty: item.fixed_qty,
-          },
-        });
-      } else {
-        this.setState({
-          editBody: {
-            ...this.state.editBody,
-            codes: '',
-            g_name: '',
-            g_model: '',
-            element: '',
-            g_unit: '',
-            unit_1: '',
-            unit_2: '',
-            trade_curr: '',
-            orig_country: '',
-          },
-        });
-      }
-    }
-    if (nextProps.hscodes !== this.props.hscodes) {
-      if (nextProps.hscodes.data.length === 1) {
-        const hscode = nextProps.hscodes.data[0];
-        const unit1 = this.props.units.filter(unit => unit.text === hscode.first_unit)[0];
-        const unit1Val = unit1 ? unit1.value : '';
-        const unit2 = this.props.units.filter(unit => unit.text === hscode.second_unit)[0];
-        const unit2Val = unit2 ? unit2.value : '';
-        this.setState({
-          editBody: {
-            ...this.state.editBody,
-            g_name: hscode.product_name,
-            element: hscode.declared_elements,
-            unit_1: unit1Val,
-            unit_2: unit2Val,
-          },
-        });
-      } else {
-        this.setState({
-          editBody: {
-            ...this.state.editBody,
-            g_name: '',
-            element: '',
-            unit_1: '',
-            unit_2: '',
-          },
-        });
-      }
     }
   }
 
