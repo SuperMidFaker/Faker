@@ -10,6 +10,7 @@ const actionTypes = createActionTypes('@@welogix/crm/customers/', [
   'LOAD_SUB_CUSTOMERS', 'LOAD_SUB_CUSTOMERS_FAIL', 'LOAD_SUB_CUSTOMERS_SUCCEED',
   'SHOW_SUB_CUSTOMER_MODAL', 'HIDE_SUB_CUSTOMER_MODAL',
   'UPDATE_CUSTOMER_NAMES', 'UPDATE_CUSTOMER_NAMES_SUCCEED', 'UPDATE_CUSTOMER_NAMES_FAIL',
+  'LOAD_CUSTOMER_FLOWS', 'LOAD_CUSTOMER_FLOWS_FAIL', 'LOAD_CUSTOMER_FLOWS_SUCCEED',
 ]);
 
 const initialState = {
@@ -195,6 +196,21 @@ export function updateCustomerNames(data) {
       endpoint: 'v1/crm/customerNames/edit',
       method: 'post',
       data,
+    },
+  };
+}
+
+export function loadCustomerFlows(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_CUSTOMER_FLOWS,
+        actionTypes.LOAD_CUSTOMER_FLOWS_SUCCEED,
+        actionTypes.LOAD_CUSTOMER_FLOWS_FAIL,
+      ],
+      endpoint: 'v1/scof/customer/list/flows',
+      method: 'get',
+      params,
     },
   };
 }
