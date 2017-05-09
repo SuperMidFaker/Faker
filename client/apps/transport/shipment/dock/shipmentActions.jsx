@@ -14,7 +14,6 @@ import { doSend,
          withDraw } from 'common/reducers/transportDispatch';
 import { showVehicleModal, showChangeActDateModal }
 from 'common/reducers/trackingLandStatus';
-import { showAdvanceModal, showSpecialChargeModal } from 'common/reducers/transportBilling';
 import { passAudit, returnAudit } from 'common/reducers/trackingLandPod';
 import { createFilename } from 'client/util/dataTransform';
 import { sendMessage } from 'common/reducers/corps';
@@ -43,8 +42,6 @@ const formatMsg = format(messages);
     returnAudit,
     withDraw,
     returnShipment,
-    showAdvanceModal,
-    showSpecialChargeModal,
     sendMessage,
     showChangeActDateModal,
   }
@@ -71,8 +68,6 @@ export default class ShipmentActions extends React.Component {
     withDraw: PropTypes.func.isRequired,
     hidePreviewer: PropTypes.func.isRequired,
     returnShipment: PropTypes.func.isRequired,
-    showAdvanceModal: PropTypes.func.isRequired,
-    showSpecialChargeModal: PropTypes.func.isRequired,
     sendMessage: PropTypes.func.isRequired,
     showChangeActDateModal: PropTypes.func.isRequired,
     stage: PropTypes.string.isRequired,
@@ -198,13 +193,6 @@ export default class ShipmentActions extends React.Component {
   }
   handleShowVehicleModal = (dispId, shipmtNo) => {
     this.props.showVehicleModal(dispId, shipmtNo);
-  }
-  handleShowShipmentAdvanceModal = (shipmtNo, dispId, transportModeId, goodsType) => {
-    // todo 取parentDisp sr_tenant_id
-    this.props.showAdvanceModal({ visible: true, dispId, shipmtNo, transportModeId, goodsType });
-  }
-  handleShowSpecialChargeModal = (shipmtNo, dispId, parentDispId, spTenantId) => {
-    this.props.showSpecialChargeModal({ visible: true, dispId, shipmtNo, parentDispId, spTenantId, type: -2 });
   }
   handleShowChangeActDateModal = (shipmtNo, dispId, pickupActDate, deliverActDate) => {
     this.props.showChangeActDateModal({ visible: true, dispId, shipmtNo,
@@ -408,85 +396,19 @@ export default class ShipmentActions extends React.Component {
       } else if (dispatch.status === SHIPMENT_TRACK_STATUS.intransit) {
         if (dispatch.sp_tenant_id === -1) {
           buttons = null;
-          /*
-          buttons = (
-            <PrivilegeCover module="transport" feature="tracking" action="edit">
-              <span>
-                <Button type="ghost" onClick={() => this.handleShowShipmentAdvanceModal(shipmt.shipmt_no, dispatch.id, shipmt.transport_mode_id, shipmt.goods_type)} >
-                  添加垫付费用
-                </Button>
-                <Button type="ghost" onClick={() => this.handleShowSpecialChargeModal(shipmt.shipmt_no, dispatch.id, dispatch.parent_id, dispatch.sp_tenant_id)} >
-                  添加特殊费用
-                </Button>
-              </span>
-            </PrivilegeCover>
-          );
-          */
         } else if (dispatch.sp_tenant_id === 0) {
           if (dispatch.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
             buttons = null;
-            /*
-            buttons = (
-              <PrivilegeCover module="transport" feature="tracking" action="edit">
-                <span>
-                  <Button type="ghost" onClick={() => this.handleShowShipmentAdvanceModal(shipmt.shipmt_no, dispatch.id, shipmt.transport_mode_id, shipmt.goods_type)} >
-                    添加垫付费用
-                  </Button>
-                  <Button type="ghost" onClick={() => this.handleShowSpecialChargeModal(shipmt.shipmt_no, dispatch.id, dispatch.parent_id, dispatch.sp_tenant_id)} >
-                    添加特殊费用
-                  </Button>
-                </span>
-              </PrivilegeCover>
-            );*/
           } else {
             // 司机更新
             buttons = null;
-            /*
-            buttons = (
-              <PrivilegeCover module="transport" feature="tracking" action="edit">
-                <span>
-                  <Button type="ghost" onClick={() => this.handleShowShipmentAdvanceModal(shipmt.shipmt_no, dispatch.id, shipmt.transport_mode_id, shipmt.goods_type)} >
-                    添加代垫费用
-                  </Button>
-                  <Button type="ghost" onClick={() => this.handleShowSpecialChargeModal(shipmt.shipmt_no, dispatch.id, dispatch.parent_id, dispatch.sp_tenant_id)} >
-                    添加特殊费用
-                  </Button>
-                </span>
-              </PrivilegeCover>
-            );
-            */
           }
         } else {
           // 承运商更新
           buttons = null;
-          /*
-          buttons = (
-            <PrivilegeCover module="transport" feature="tracking" action="edit">
-              <span>
-                <Button type="ghost" onClick={() => this.handleShowShipmentAdvanceModal(shipmt.shipmt_no, dispatch.id, shipmt.transport_mode_id, shipmt.goods_type)} >
-                  添加代垫费用
-                </Button>
-                <Button type="ghost" onClick={() => this.handleShowSpecialChargeModal(shipmt.shipmt_no, dispatch.id, dispatch.parent_id, dispatch.sp_tenant_id)} >
-                  添加特殊费用
-                </Button>
-              </span>
-            </PrivilegeCover>
-          );
-          */
         }
       } else if (dispatch.status === SHIPMENT_TRACK_STATUS.delivered) {
         buttons = null;
-        /*
-        buttons = (
-          <PrivilegeCover module="transport" feature="tracking" action="edit">
-            <span>
-              <Button type="ghost" onClick={() => this.handleShowSpecialChargeModal(shipmt.shipmt_no, dispatch.id, dispatch.parent_id, dispatch.sp_tenant_id)} >
-                添加特殊费用
-              </Button>
-            </span>
-          </PrivilegeCover>
-        );
-        */
       }
 
       if (dispatch.status >= SHIPMENT_TRACK_STATUS.delivered && (stage === 'pod' || stage === 'todo')) {

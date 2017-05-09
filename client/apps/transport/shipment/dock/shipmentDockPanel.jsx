@@ -19,8 +19,6 @@ import ShareShipmentModal from './share-shipment';
 import ExceptionPane from './tabpanes/exceptionPane';
 import ChangeActDateModal from '../../tracking/land/modals/changeActDateModal';
 import ChangeDeliverPrmDateModal from '../../tracking/land/modals/changeDeliverPrmDateModal';
-import ShipmentAdvanceModal from '../../tracking/land/modals/shipment-advance-modal';
-import CreateSpecialCharge from '../../tracking/land/modals/create-specialCharge';
 import VehicleModal from '../../tracking/land/modals/vehicle-updater';
 import { showDock } from 'common/reducers/crmOrders';
 
@@ -277,8 +275,6 @@ export default class PreviewPanel extends React.Component {
           <ShareShipmentModal visible={this.state.shareShipmentModalVisible} shipmt={shipmt} />
           <ChangeActDateModal />
           <ChangeDeliverPrmDateModal />
-          <ShipmentAdvanceModal />
-          <CreateSpecialCharge />
           <VehicleModal onOK={() => {}} />
         </DockPanel>
       : null

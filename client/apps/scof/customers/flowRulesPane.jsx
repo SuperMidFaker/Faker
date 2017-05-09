@@ -28,7 +28,6 @@ export default class FlowRulesPane extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (this.props.customer && this.props.customer.id !== nextProps.customer.id) {
       nextProps.loadCustomerFlows({ customerPartnerId: nextProps.customer.id, tenantId: nextProps.tenantId }).then((result) => {
-        console.log(result);
         this.setState({ flows: result.data });
       });
     }

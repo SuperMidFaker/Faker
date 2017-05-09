@@ -1,8 +1,11 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Row, Col, Card, Table, Tag, Collapse, Badge } from 'antd';
-import { EXPENSE_CATEGORIES } from 'common/constants';
+import { Row, Col, Card, Table, Tag, Collapse, Badge, Dropdown, Menu, Icon } from 'antd';
+import { EXPENSE_CATEGORIES, SHIPMENT_TRACK_STATUS } from 'common/constants';
+import ShipmentAdvanceModal from '../../../tracking/land/modals/shipment-advance-modal';
+import CreateSpecialCharge from '../../../tracking/land/modals/create-specialCharge';
+import { showAdvanceModal, showSpecialChargeModal } from 'common/reducers/transportBilling';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 const formatMsg = format(messages);
@@ -33,21 +36,28 @@ const typeKeys = EXPENSE_TYPES.map(ec => ec.key);
   state => ({
     shipmt: state.shipment.previewer.shipmt,
     charges: state.shipment.previewer.charges,
+    previewer: state.shipment.previewer,
     pAdvanceCharges: state.shipment.previewer.pAdvanceCharges,
     advanceCharges: state.shipment.previewer.advanceCharges,
     pSpecialCharges: state.shipment.previewer.pSpecialCharges,
     specialCharges: state.shipment.previewer.specialCharges,
-  })
+  }), {
+    showAdvanceModal,
+    showSpecialChargeModal,
+  }
 )
 export default class ChargePanel extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     shipmt: PropTypes.object.isRequired,
+    previewer: PropTypes.object.isRequired,
     charges: PropTypes.object.isRequired,
     pAdvanceCharges: PropTypes.array.isRequired,
     advanceCharges: PropTypes.array.isRequired,
     pSpecialCharges: PropTypes.array.isRequired,
     specialCharges: PropTypes.array.isRequired,
+    showAdvanceModal: PropTypes.func.isRequired,
+    showSpecialChargeModal: PropTypes.func.isRequired,
   }
   state = {
     checkedExpCates: categoryKeys,
@@ -106,6 +116,48 @@ export default class ChargePanel extends React.Component {
     dataIndex: 'total_volume',
     render: col => col ? `${col} ${this.msg('cubicMeter')}` : '',
   }]
+  handleRevenueMenuClick = (e) => {
+    const { shipmt, previewer: { dispatch } } = this.props;
+    if (e.key === 'advanceCharge') {
+      this.props.showAdvanceModal({
+        visible: true,
+        dispId: dispatch.parent_id,
+        shipmtNo: shipmt.shipmt_no,
+        transportModeId: shipmt.transport_mode_id,
+        goodsType: shipmt.goods_type,
+      });
+    } else if (e.key === 'specialCharge') {
+      this.props.showSpecialChargeModal({
+        visible: true,
+        dispId: dispatch.id,
+        shipmtNo: shipmt.shipmt_no,
+        parentDispId: dispatch.parent_id,
+        spTenantId: dispatch.sp_tenant_id,
+        type: 1,
+      });
+    }
+  }
+  handleExpenseMenuClick = (e) => {
+    const { shipmt, previewer: { dispatch } } = this.props;
+    if (e.key === 'advanceCharge') {
+      this.props.showAdvanceModal({
+        visible: true,
+        dispId: dispatch.id,
+        shipmtNo: shipmt.shipmt_no,
+        transportModeId: shipmt.transport_mode_id,
+        goodsType: shipmt.goods_type,
+      });
+    } else if (e.key === 'specialCharge') {
+      this.props.showSpecialChargeModal({
+        visible: true,
+        dispId: dispatch.id,
+        shipmtNo: shipmt.shipmt_no,
+        parentDispId: dispatch.parent_id,
+        spTenantId: dispatch.sp_tenant_id,
+        type: -1,
+      });
+    }
+  }
   assembleChargeItems(charge, outDs) {
     if (charge.freight_charge) {
       outDs.push({
@@ -221,7 +273,7 @@ export default class ChargePanel extends React.Component {
   }
 
   render() {
-    const { charges, intl, shipmt, pAdvanceCharges, advanceCharges, pSpecialCharges, specialCharges } = this.props;
+    const { charges, intl, shipmt, pAdvanceCharges, advanceCharges, pSpecialCharges, specialCharges, previewer: { dispatch } } = this.props;
     const { checkedExpCates, checkedExpTypes } = this.state;
 
     let revenueds = [];
@@ -311,6 +363,33 @@ export default class ChargePanel extends React.Component {
         </Card>
         <div className="pane-header">
           {checkedTags}
+          {dispatch.status >= SHIPMENT_TRACK_STATUS.intransit &&
+          <div style={{ float: 'right' }}>
+            <Dropdown overlay={
+              <Menu onClick={this.handleRevenueMenuClick}>
+                <Menu.Item key="advanceCharge">代垫费用</Menu.Item>
+                <Menu.Item key="specialCharge">特殊费用</Menu.Item>
+              </Menu>
+            }
+            >
+              <a >
+                <Icon type="plus-circle-o" /> 收入 <Icon type="down" />
+              </a>
+            </Dropdown>
+            <Dropdown overlay={
+              <Menu onClick={this.handleExpenseMenuClick}>
+                <Menu.Item key="advanceCharge">代垫费用</Menu.Item>
+                <Menu.Item key="specialCharge">特殊费用</Menu.Item>
+              </Menu>
+            }
+            >
+              <a style={{ marginLeft: 30 }}>
+                <Icon type="plus-circle-o" /> 成本 <Icon type="down" />
+              </a>
+            </Dropdown>
+            <ShipmentAdvanceModal />
+            <CreateSpecialCharge />
+          </div>}
         </div>
         <Card bodyStyle={{ padding: 0 }}>
           <Collapse defaultActiveKey={['revenue', 'cost']}>
