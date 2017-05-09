@@ -40,7 +40,7 @@ export default class ChangeDeliverPrmDateModal extends React.Component {
   }
   componentWillReceiveProps(nextProps) {
     this.setState({
-      deliverPrmDate: nextProps.deliverPrmDate || new Date(),
+      deliverPrmDate: nextProps.deliverPrmDate,
     });
   }
   handleOk = () => {
@@ -71,7 +71,7 @@ export default class ChangeDeliverPrmDateModal extends React.Component {
         visible={this.props.visible} maskClosable={false}
       >
         <FormItem label="承诺送货时间" labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }} >
-          <DatePicker value={moment(this.state.deliverPrmDate)} onChange={this.handleDeliverPrmDateChange} />
+          <DatePicker value={this.state.deliverPrmDate ? moment(this.state.deliverPrmDate) : ''} onChange={this.handleDeliverPrmDateChange} />
         </FormItem>
       </Modal>
     );

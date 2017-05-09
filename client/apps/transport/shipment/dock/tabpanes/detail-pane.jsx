@@ -102,16 +102,6 @@ export default class DetailPane extends React.Component {
     dataIndex: 'remark',
   }]
 
-  handleChangeTransitMode = (e) => {
-    e.stopPropagation();
-    const { shipmt } = this.props;
-    this.props.showChangeShipmentModal({ visible: true, shipmtNo: shipmt.shipmt_no, type: 'transitModeChanged' });
-  }
-  handleChangeTransitTime = (e) => {
-    e.stopPropagation();
-    const { shipmt } = this.props;
-    this.props.showChangeShipmentModal({ visible: true, shipmtNo: shipmt.shipmt_no, type: 'timeInfoChanged' });
-  }
   handleChangeDeliverPrmDate = (e) => {
     e.stopPropagation();
     const { shipmt, dispatch } = this.props;
@@ -127,25 +117,10 @@ export default class DetailPane extends React.Component {
     const { shipmt } = this.props;
     this.props.showChangeShipmentModal({ visible: true, shipmtNo: shipmt.shipmt_no, type: 'consignerInfoChanged' });
   }
-  handleChangeCorrelInfo = (e) => {
-    e.stopPropagation();
-    const { shipmt } = this.props;
-    this.props.showChangeShipmentModal({ visible: true, shipmtNo: shipmt.shipmt_no, type: 'correlInfoChanged' });
-  }
-  handleChangeClientInfo = (e) => {
-    e.stopPropagation();
-    const { shipmt } = this.props;
-    this.props.showChangeShipmentModal({ visible: true, shipmtNo: shipmt.shipmt_no, type: 'clientInfoChanged' });
-  }
   handleChangeTransitConsignee = (e) => {
     e.stopPropagation();
     const { shipmt } = this.props;
     this.props.showChangeShipmentModal({ visible: true, shipmtNo: shipmt.shipmt_no, type: 'consigneeInfoChanged' });
-  }
-  handleChangeTransitGoodsInfo = (e) => {
-    e.stopPropagation();
-    const { shipmt } = this.props;
-    this.props.showChangeShipmentModal({ visible: true, shipmtNo: shipmt.shipmt_no, type: 'goodsInfoChanged' });
   }
 
   handleSave = (shipment, type) => {
@@ -222,27 +197,8 @@ export default class DetailPane extends React.Component {
     if (dispatch.pod_type === 'none') statusDesc = TMS_SHIPMENT_STATUS_DESC.filter(item => item.status <= 5);
     const editable = tenantId === shipmt.tenant_id && dispatch.status <= SHIPMENT_TRACK_STATUS.delivered;
     const terminable = tenantId === shipmt.tenant_id && dispatch.status < SHIPMENT_TRACK_STATUS.intransit;
-    let clientInfoExtra = '';
     let shipmtScheduleExtra = (<div />);
-    let transitModeInfoExtra = '';
-    let goodsInfoExtra = '';
     if (tenantId === shipmt.tenant_id && dispatch.status <= 5) {
-      clientInfoExtra = (
-        <Dropdown overlay={(
-          <Menu>
-            <Menu.Item>
-              <a onClick={this.handleChangeClientInfo}>修改客户单号</a>
-            </Menu.Item>
-            <Menu.Item>
-              <a onClick={this.handleChangeCorrelInfo}>修改其他单号</a>
-            </Menu.Item>
-          </Menu>)}
-        >
-          <a className="ant-dropdown-link">
-            <Icon type="edit" />
-          </a>
-        </Dropdown>
-      );
       shipmtScheduleExtra = (
         <Dropdown overlay={(
           <Menu>
@@ -251,9 +207,6 @@ export default class DetailPane extends React.Component {
             </Menu.Item>
             <Menu.Item>
               <a onClick={this.handleChangeTransitConsignee}>修改收货信息</a>
-            </Menu.Item>
-            <Menu.Item>
-              <a onClick={this.handleChangeTransitTime}>修改计划时间信息</a>
             </Menu.Item>
             <Menu.Item>
               <a onClick={this.handleChangeDeliverPrmDate}>修改承诺送货时间</a>
@@ -268,8 +221,6 @@ export default class DetailPane extends React.Component {
           </a>
         </Dropdown>
       );
-      transitModeInfoExtra = (<a onClick={this.handleChangeTransitMode}><Icon type="edit" /></a>);
-      goodsInfoExtra = (<a onClick={this.handleChangeTransitGoodsInfo}><Icon type="edit" /></a>);
     }
     const distanceStr = shipmt.distance ? `${shipmt.distance}${this.msg('kilometer')}` : '';
     return (
@@ -401,9 +352,7 @@ export default class DetailPane extends React.Component {
             </Steps>
           </div>
         </Card>
-        <Card title={this.msg('transitModeInfo')} bodyStyle={{ padding: 16 }}
-          extra={transitModeInfoExtra}
-        >
+        <Card title={this.msg('transitModeInfo')} bodyStyle={{ padding: 16 }}>
           <Row>
             <Col span="8">
               <InfoItem label={this.msg('transitModeInfo')}
@@ -483,9 +432,7 @@ export default class DetailPane extends React.Component {
             }
           </Row>
         </Card>
-        <Card title={this.msg('goodsInfo')} bodyStyle={{ padding: 16 }}
-          extra={goodsInfoExtra}
-        >
+        <Card title={this.msg('goodsInfo')} bodyStyle={{ padding: 16 }}>
           <Row>
             <Col span="8">
               <InfoItem label={this.msg('goodsType')}
@@ -534,7 +481,7 @@ export default class DetailPane extends React.Component {
             dataSource={shipmt.goodslist}
           />
         </Card>
-        <Card title={this.msg('customerInfo')} bodyStyle={{ padding: 16 }} extra={clientInfoExtra}>
+        <Card title={this.msg('customerInfo')} bodyStyle={{ padding: 16 }}>
           <Row>
             <Col span="8">
               <InfoItem label={this.msg('refExternalNo')} addonBefore={<Icon type="tag-o" />}
