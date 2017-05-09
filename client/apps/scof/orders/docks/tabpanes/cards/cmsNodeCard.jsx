@@ -15,8 +15,11 @@ const Step = Steps.Step;
 export default class CMSNodeCard extends React.Component {
   static propTypes = {
     name: PropTypes.string.isRequired,
-    field: PropTypes.string,
     children: PropTypes.any,
+    declWayCode: PropTypes.string,
+    transMode: PropTypes.string,
+    blWbNo: PropTypes.string,
+    uuid: PropTypes.string,
   }
   state = {
     trigger: -1,
@@ -46,20 +49,20 @@ export default class CMSNodeCard extends React.Component {
     }
   }
   triggerStepMap = {
-    [NODE_BIZ_OBJECTS[this.props.kind][1].triggers[0].key]: 0, // todo wrong triger
+    [NODE_BIZ_OBJECTS[this.props.kind][0].triggers[0].key]: 0,
     [NODE_BIZ_OBJECTS[this.props.kind][1].triggers[1].key]: 1,
-    [NODE_BIZ_OBJECTS[this.props.kind][2].triggers[1].key]: 2,
-    [NODE_BIZ_OBJECTS[this.props.kind][2].triggers[2].key]: 3,
+    [NODE_BIZ_OBJECTS[this.props.kind][0].triggers[1].key]: 2,
+    [NODE_BIZ_OBJECTS[this.props.kind][0].triggers[3].key]: 3,
   }
   handlePreview = (No) => {
     this.props.showPreviewer(No, 'basic');
     this.props.hideDock();
   }
   render() {
-    const { name, children } = this.props;
-    let declWayCode = '';
+    const { name, children, declWayCode, transMode, blWbNo } = this.props;
+    let declWay = '';
     const declWayMap = this.props.kind === 'import' ? DECL_I_TYPE : DECL_E_TYPE;
-    declWayCode = declWayMap.find(item => item.key === this.props.decl_way_code).value;
+    declWay = declWayMap.find(item => item.key === declWayCode).value;
     return (
       <Card title={<span>{name}</span>} extra={
         <Tooltip title="进入详情">
@@ -70,18 +73,18 @@ export default class CMSNodeCard extends React.Component {
           <Col span="8">
             <InfoItem label="运输方式" addonBefore={<Icon type="tag-o" />}
               field={
-                TRANS_MODE.map(item => item.value === this.props.trans_mode ? item.text : '')
+                TRANS_MODE.map(item => item.value === transMode ? item.text : '')
               } placeholder="添加运输方式"
             />
           </Col>
           <Col span="8">
             <InfoItem label="提运单号" addonBefore={<Icon type="tag-o" />}
-              field={this.props.bl_wb_no} placeholder="添加提运单号"
+              field={blWbNo} placeholder="添加提运单号"
             />
           </Col>
           <Col span="8">
             <InfoItem label="报关类型" addonBefore={<Icon type="tag-o" />}
-              field={declWayCode} placeholder="添加报关类型"
+              field={declWay} placeholder="添加报关类型"
             />
           </Col>
         </Row>

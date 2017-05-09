@@ -15,8 +15,12 @@ const Step = Steps.Step;
 )
 export default class TMSNodeCard extends React.Component {
   static propTypes = {
-    title: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
     children: PropTypes.any,
+    consinerName: PropTypes.string,
+    consigneeName: PropTypes.string,
+    trsMode: PropTypes.string,
+    uuid: PropTypes.string,
   }
   state = {
     trigger: -1,
@@ -67,7 +71,7 @@ export default class TMSNodeCard extends React.Component {
     );
   }
   render() {
-    const { name, children } = this.props;
+    const { name, children, consinerName, consigneeName, trsMode } = this.props;
     return (
       <Card title={<span>{name}</span>} extra={
         <Tooltip title="进入详情">
@@ -77,17 +81,17 @@ export default class TMSNodeCard extends React.Component {
         <Row>
           <Col span="8">
             <InfoItem label="发货方" addonBefore={<Icon type="tag-o" />}
-              field={this.props.consiner_name} placeholder="添加发货方"
+              field={consinerName} placeholder="添加发货方"
             />
           </Col>
           <Col span="8">
             <InfoItem label="收货方" addonBefore={<Icon type="tag-o" />}
-              field={this.props.consignee_name} placeholder="添加收货方"
+              field={consigneeName} placeholder="添加收货方"
             />
           </Col>
           <Col span="8">
             <InfoItem label="运输方式" addonBefore={<Icon type="tag-o" />}
-              field={this.props.trs_mode} placeholder="添加运输方式"
+              field={trsMode} placeholder="添加运输方式"
             />
           </Col>
         </Row>
