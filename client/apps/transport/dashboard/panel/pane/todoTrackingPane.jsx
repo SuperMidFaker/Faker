@@ -8,6 +8,7 @@ import { renderLoc } from '../../../common/consignLocation';
 import { SHIPMENT_TRACK_STATUS, PROMPT_TYPES, SHIPMENT_VEHICLE_CONNECT } from 'common/constants';
 import { formatMsg } from '../../message.i18n';
 import { loadTransitTable, loadShipmtDetail, hidePreviewer } from 'common/reducers/shipment';
+import RevokejectModal from '../../../shipment/dock/revoke-reject';
 import { columnDef } from './columnDef';
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
@@ -54,6 +55,9 @@ export default class TodoAcceptPane extends Component {
       pageSize: this.props.trackingList.pageSize,
       currentPage: 1,
     });
+  }
+  handleTableReload = () => {
+    this.handleTableLoad(this.props);
   }
   msg = formatMsg(this.props.intl)
   handleLoadShipmtDetail = (record) => {
@@ -229,6 +233,7 @@ export default class TodoAcceptPane extends Component {
           <Table size="middle" dataSource={dataSource} columns={columns} showHeader={false}
             locale={{ emptyText: '没有待办事项' }} rowKey="id" loading={this.props.trackingList.loading}
           />
+          <RevokejectModal reload={this.handleTableReload} />
         </div>
       </div>
 
