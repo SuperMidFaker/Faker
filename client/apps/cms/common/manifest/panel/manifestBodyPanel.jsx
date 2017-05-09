@@ -321,7 +321,9 @@ export default class ManifestBodyPanel extends React.Component {
       width: 150,
       dataIndex: 'cop_g_no',
       render: (o, record, index) => {
-        if (index === editIndex) {
+        if (readonly) {
+          return <span>{o}</span>;
+        } else if (index === editIndex) {
           return (<Input onChange={this.handleCopGnoChange} />);
         } else if (record.feedback === 'noMatch') {
           return (<Tooltip title="物料库中未对该货号归类"><Tag color="red">
