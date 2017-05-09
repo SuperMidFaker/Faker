@@ -19,6 +19,7 @@ const initialState = {
   basicPreviewLoading: false,
   ciqPanelLoading: false,
   customsPanelLoading: false,
+  previewKey: '',
   previewer: {
     visible: false,
     delegation: {},
@@ -43,19 +44,15 @@ const initialState = {
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.SHOW_PREVIEWER:
-      return { ...state,
-        previewer: {
-          ...state.previewer,
-          visible: true,
-          delgNo: action.payload.delgNo },
-        tabKey: action.payload.tabKey,
+      return { ...state, previewer: { ...state.previewer, visible: true },
+        previewKey: action.payload.previewKey, tabKey: action.payload.tabKey,
       };
     case actionTypes.LOAD_BASIC_INFO:
       return { ...state, basicPreviewLoading: true };
     case actionTypes.LOAD_BASIC_INFO_FAILED:
       return { ...state, basicPreviewLoading: false };
     case actionTypes.LOAD_BASIC_INFO_SUCCEED: {
-      return { ...state, previewer: { ...state.previewer, ...action.result.data, delgNo: action.result.data.delegation.delg_no },
+      return { ...state, previewer: { ...state.previewer, ...action.result.data },
         preStatus: '', basicPreviewLoading: false, tabKey: action.payload.tabKey };
     }
     case actionTypes.HIDE_PREVIEWER:
@@ -87,10 +84,10 @@ export default function reducer(state = initialState, action) {
   }
 }
 
-export function showPreviewer(delgNo, tabKey) {
+export function showPreviewer(previewKey, tabKey) {
   return {
     type: actionTypes.SHOW_PREVIEWER,
-    payload: { delgNo, tabKey },
+    payload: { previewKey, tabKey },
   };
 }
 

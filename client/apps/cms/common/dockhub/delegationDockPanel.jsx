@@ -28,7 +28,7 @@ const TabPane = Tabs.TabPane;
     visible: state.cmsDelgInfoHub.previewer.visible,
     previewer: state.cmsDelgInfoHub.previewer,
     tabKey: state.cmsDelgInfoHub.tabKey,
-    delgNo: state.cmsDelgInfoHub.previewer.delgNo,
+    previewKey: state.cmsDelgInfoHub.previewKey,
     delegateListFilter: state.cmsDelegation.delegateListFilter,
   }),
   { hidePreviewer, setPreviewStatus, setPreviewTabkey, openAcceptModal, showDispModal, loadBasicInfo, showDock }
@@ -39,19 +39,15 @@ export default class DelegationDockPanel extends React.Component {
     ietype: PropTypes.oneOf(['import', 'export']),
     tenantId: PropTypes.number.isRequired,
     tabKey: PropTypes.string,
-    delgNo: PropTypes.string,
+    previewKey: PropTypes.string,
     hidePreviewer: PropTypes.func.isRequired,
     previewer: PropTypes.object.isRequired,
     delegateListFilter: PropTypes.object.isRequired,
     setPreviewStatus: PropTypes.func.isRequired,
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.delgNo !== this.props.delgNo) {
-      nextProps.loadBasicInfo(
-        this.props.tenantId,
-        nextProps.delgNo,
-        nextProps.tabKey,
-      );
+    if (nextProps.previewKey !== this.props.previewKey) {
+      nextProps.loadBasicInfo(this.props.tenantId, nextProps.previewKey, nextProps.tabKey);
     }
   }
   componentWillUnmount() {
@@ -65,14 +61,14 @@ export default class DelegationDockPanel extends React.Component {
       tenantId: this.props.tenantId,
       dispatchIds: [this.props.previewer.delgDispatch.id],
       type: 'delg',
-      delg_no: this.props.previewer.delgNo,
+      delg_no: this.props.previewer.delegation.delg_no,
       opt: 'accept',
     });
     this.props.setPreviewStatus({ preStatus: 'accept' });
     // this.props.hidePreviewer();
   }
   handleAssign = () => {
-    this.props.showDispModal(this.props.previewer.delgNo, this.props.tenantId);
+    this.props.showDispModal(this.props.previewer.delegation.delg_no, this.props.tenantId);
   }
   handleDispCancel = () => {
     this.props.setPreviewStatus({ preStatus: 'delgDispCancel' });

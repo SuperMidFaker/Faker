@@ -11,7 +11,6 @@ import CiqDispModal from '../ciqDispModal';
 @injectIntl
 @connect(
   state => ({
-    delgNo: state.cmsDelgInfoHub.previewer.delgNo,
     ciqPanel: state.cmsDelgInfoHub.ciqPanel,
     tenantId: state.account.tenantId,
     tabKey: state.cmsDelgInfoHub.tabKey,
@@ -23,7 +22,6 @@ import CiqDispModal from '../ciqDispModal';
 export default class CiqDeclPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    delgNo: PropTypes.string.isRequired,
     tenantId: PropTypes.number.isRequired,
     delegation: PropTypes.object,
     ciqPanel: PropTypes.shape({
@@ -38,19 +36,18 @@ export default class CiqDeclPane extends React.Component {
     }),
   }
   componentDidMount() {
-    this.props.loadDeclCiqPanel(this.props.delgNo, this.props.tenantId);
+    this.props.loadDeclCiqPanel(this.props.delegation.delg_no, this.props.tenantId);
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.tabKey === 'ciqDecl' &&
-      nextProps.tabKey !== this.props.tabKey) {
-      this.props.loadDeclCiqPanel(nextProps.delgNo, this.props.tenantId);
+    if (nextProps.tabKey === 'ciqDecl' && nextProps.delegation.delg_no !== this.props.delegation.delg_no) {
+      this.props.loadDeclCiqPanel(nextProps.delegation.delg_no, this.props.tenantId);
     }
   }
   handleOperatorAssign = () => {
     this.props.openAcceptModal({
       tenantId: this.props.tenantId,
       dispatchIds: [this.props.ciqPanel.id],
-      delg_no: this.props.delgNo,
+      delg_no: this.props.delegation.delg_no,
       type: 'ciq',
       opt: 'operator',
     });

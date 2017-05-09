@@ -62,7 +62,7 @@ export default class ActivityLoggerPane extends React.Component {
     filterActivities: null,
   }
   handleTabChange = (tabKey) => {
-    const delgNo = this.props.previewer.delgNo;
+    const delgNo = this.props.previewer.delegation.delg_no;
     this.setState({ tabKey });
     if (tabKey === 'inspect') {
       this.props.loadDeclHead(delgNo);
@@ -89,27 +89,27 @@ export default class ActivityLoggerPane extends React.Component {
         message.info('保存成功', 5);
         this.props.loadBasicInfo(
             this.props.tenantId,
-            this.props.previewer.delgNo,
+            this.props.previewer.delegation.delg_no,
             this.props.tabKey
           );
         if (enabled === true || enabled === false) {
-          this.props.loadPaneExp(this.props.previewer.delgNo, this.props.tenantId);
+          this.props.loadPaneExp(this.props.previewer.delegation.delg_no, this.props.tenantId);
         }
         if (field === 'hgcy' && this.props.tabKey === 'customsDecl') {
           this.props.loadCustPanel({
-            delgNo: this.props.previewer.delgNo,
+            delgNo: this.props.previewer.delegation.delg_no,
             tenantId: this.props.tenantId,
           });
         }
         if ((field === 'pzcy' || field === 'djcy') && this.props.tabKey === 'ciqDecl') {
-          this.props.loadDeclCiqPanel(this.props.previewer.delgNo, this.props.tenantId);
+          this.props.loadDeclCiqPanel(this.props.previewer.delegation.delg_no, this.props.tenantId);
         }
       }
     });
   }
   handleSaveCert = ({ field, value }) => {
     const certQty = value || null;
-    this.props.updateCertParam(this.props.previewer.delgNo, this.props.previewer.delgDispatch.id, field, certQty).then((result) => {
+    this.props.updateCertParam(this.props.previewer.delegation.delg_no, this.props.previewer.delgDispatch.id, field, certQty).then((result) => {
       if (result.error) {
         if (result.error.message === 'repeated') {
           if (certQty === null) {
@@ -122,20 +122,20 @@ export default class ActivityLoggerPane extends React.Component {
         message.info('保存成功', 5);
         this.props.loadBasicInfo(
           this.props.tenantId,
-          this.props.previewer.delgNo,
+          this.props.previewer.delegation.delg_no,
           this.props.tabKey
         );
       }
     });
   }
   handleBlNoExchange = ({ value }) => {
-    this.props.exchangeBlNo(this.props.previewer.delgNo, value).then((result) => {
+    this.props.exchangeBlNo(this.props.previewer.delegation.delg_no, value).then((result) => {
       if (result.error) {
         message.error(result.error.message, 5);
       } else {
         this.props.loadBasicInfo(
           this.props.tenantId,
-          this.props.previewer.delgNo,
+          this.props.previewer.delegation.delg_no,
           this.props.tabKey
         );
       }
@@ -180,7 +180,7 @@ export default class ActivityLoggerPane extends React.Component {
     } else if (key === 'inspect') {
       this.handleInspectSave({
         preEntrySeqNo: formVals.pre_entry_no,
-        delgNo: previewer.delgNo,
+        delgNo: previewer.delegation.delg_no,
         field: formVals.inspect_field,
         enabled: true,
       });
@@ -334,7 +334,7 @@ export default class ActivityLoggerPane extends React.Component {
                             {inspect !== INSPECT_STATUS.finish &&
                             <Tooltip title="标记查验通过" placement="left">
                               <Button type="primary" shape="circle" size="small" icon="check" onClick={() => this.handleInspectSave({
-                                preEntrySeqNo: activity.field, delgNo: previewer.delgNo, enabled: 'passed', field: activity.type,
+                                preEntrySeqNo: activity.field, delgNo: delegation.delg_no, enabled: 'passed', field: activity.type,
                               })}
                               />
                             </Tooltip>
@@ -342,7 +342,7 @@ export default class ActivityLoggerPane extends React.Component {
                             <Popover trigger="click" content={
                               <div>
                                 <a className="mdc-text-red" onClick={() =>
-                                  this.handleInspectSave({ preEntrySeqNo: activity.field, delgNo: previewer.delgNo,
+                                  this.handleInspectSave({ preEntrySeqNo: activity.field, delgNo: delegation.delg_no,
                                     enabled: false, field: activity.type })}
                                 >
                                   删除

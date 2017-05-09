@@ -25,7 +25,7 @@ const typeKeys = EXPENSE_TYPES.map(ec => ec.key);
   state => ({
     expensesLoading: state.cmsExpense.expensesLoading,
     expenses: state.cmsExpense.expenses,
-    delgNo: state.cmsDelgInfoHub.previewer.delgNo,
+    delgNo: state.cmsDelgInfoHub.previewer.delegation.delg_no,
     tenantId: state.account.tenantId,
   }),
   { loadPaneExp }
