@@ -4,7 +4,8 @@ import { Breadcrumb, Button, Dropdown, Layout, Menu, Icon, Form, Modal, message,
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { saveBillHead, lockManifest, openMergeSplitModal, resetBill, updateHeadNetWt, editBillBody,
-  loadBillBody, saveBillRules, setStepVisible, billHeadChange, redoManifest, loadTemplateFormVals, showSendDeclsModal } from 'common/reducers/cmsManifest';
+  loadBillBody, saveBillRules, setStepVisible, billHeadChange, redoManifest, loadTemplateFormVals,
+  showSendDeclsModal, validateBillDatas } from 'common/reducers/cmsManifest';
 import NavLink from 'client/components/nav-link';
 import ButtonToggle from 'client/components/ButtonToggle';
 import ManifestHeadPanel from './panel/manifestHeadPanel';
@@ -13,7 +14,6 @@ import MergeSplitModal from './modals/mergeSplit';
 import SaveTemplateModal from './modals/saveTemplateSteps';
 import SheetExtraPanel from './panel/manifestExtraPanel';
 import { CMS_DECL_STATUS } from 'common/constants';
-import { dividGrossWt } from './panel/helper';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import SendDeclsModal from './modals/sendDeclsModal';
@@ -40,7 +40,8 @@ const confirm = Modal.confirm;
     billHeadFieldsChangeTimes: state.cmsManifest.billHeadFieldsChangeTimes,
   }),
   { saveBillHead, openMergeSplitModal, resetBill, updateHeadNetWt, loadBillBody, editBillBody,
-    loadTemplateFormVals, saveBillRules, setStepVisible, billHeadChange, lockManifest, redoManifest, showSendDeclsModal }
+    loadTemplateFormVals, saveBillRules, setStepVisible, billHeadChange, lockManifest,
+    redoManifest, showSendDeclsModal, validateBillDatas }
 )
 @connectNav({
   depth: 3,
@@ -95,22 +96,15 @@ export default class ManifestEditor extends React.Component {
   }
   handleGenerateEntry = () => {
     this.setState({ generating: true });
-    this.props.loadBillBody(this.props.billHead.bill_seq_no).then((result) => {
-      if (result.error) {
-        this.setState({ generating: false });
-        message.error(result.error.message, 10);
+    this.props.form.validateFields((errors) => {
+      if (!errors) {
+        const { billHead, ietype, loginId, tenantId } = this.props;
+        const head = { ...billHead, ...this.props.form.getFieldsValue() };
+        this.props.saveBillHead({ head, ietype, loginId, tenantId });
+        this.generateEntry();
       } else {
-        this.props.form.validateFields((errors) => {
-          if (!errors) {
-            const { billHead, ietype, loginId, tenantId } = this.props;
-            const head = { ...billHead, ...this.props.form.getFieldsValue() };
-            this.props.saveBillHead({ head, ietype, loginId, tenantId });
-            this.generateEntry();
-          } else {
-            this.setState({ generating: false });
-            message.error('清单表头尚未填写完整', 3);
-          }
-        });
+        this.setState({ generating: false });
+        message.error('清单表头尚未填写完整', 3);
       }
     });
   }
@@ -148,29 +142,18 @@ export default class ManifestEditor extends React.Component {
         description: '表头毛重的数值不等于表体毛重汇总的数值, 请进一步调整确认',
       });
     }
-    for (let i = 0; i < bodyDatas.length; i++) {
-      const body = bodyDatas[i];
-      if (!body.cop_g_no || !body.code_t || !body.code_s || !body.g_name
-       || !body.g_qty || !body.g_unit || !body.dec_price || !body.trade_total || !body.trade_curr
-       || !body.duty_mode || !body.dest_country || !body.orig_country || !body.wet_wt) {
+    this.props.validateBillDatas({ billSeqNo: this.props.billHead.bill_seq_no, delgNo: billHead.delg_no, totalGrossWt }).then(
+    (result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else if (result.data) {
         this.setState({ generating: false });
-        return message.error('表体数据尚未填写完整', 5);
+        message.error(`表体数据尚未填写完整,序号${result.data}`, 5);
+      } else {
+        this.setState({ generating: false });
+        this.props.openMergeSplitModal();
       }
-    }
-    if (wtSum > 0) {
-      this.props.updateHeadNetWt(billHead.bill_seq_no, wtSum);
-      if (bodyGrossWt === 0) {
-        const grossWts = dividGrossWt(bodyDatas.map(bd => bd.wet_wt || 0), totalGrossWt);
-        for (let i = 0; i < bodyDatas.length; i++) {
-          const body = bodyDatas[i];
-          if (body.gross_wt !== grossWts[i]) {
-            this.props.editBillBody({ ...body, gross_wt: grossWts[i] });
-          }
-        }
-      }
-      this.setState({ generating: false });
-      this.props.openMergeSplitModal();
-    }
+    });
   }
   handleEntryVisit = (ev) => {
     const { ietype, billMeta } = this.props;

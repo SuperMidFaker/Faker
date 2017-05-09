@@ -49,13 +49,17 @@ export default class FlowPane extends React.Component {
                 if (item.kind === 'import' || item.kind === 'export') {
                   return (
                     <Timeline.Item dot={<MdIcon mode="ikons" type="login" key={index} />} key={item.name}>
-                      <CMSNodeCard {...item} />
+                      <CMSNodeCard uuid={item.uuid} name={item.name} declWayCode={item.decl_way_code}
+                        kind={item.kind} transMode={item.trans_mode} blWbNo={item.bl_wb_no}
+                      />
                     </Timeline.Item>
                   );
                 } else if (item.kind === 'tms') {
                   return (
                     <Timeline.Item dot={<MdIcon type="truck" key={index} />} key={item.name}>
-                      <TMSNodeCard {...item} />
+                      <TMSNodeCard uuid={item.uuid} name={item.name} consigneeName={item.consignee_name}
+                        consinerName={item.consiner_name} trsMode={item.trs_mode}
+                      />
                     </Timeline.Item>
                   );
                 } else {

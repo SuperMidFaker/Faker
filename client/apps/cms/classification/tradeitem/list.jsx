@@ -503,6 +503,10 @@ export default class TradeItemList extends Component {
         }
       });
   }
+  handleExportSelected = () => {
+    const selectedIds = this.state.selectedRowKeys;
+    window.open(`${API_ROOTS.default}v1/cms/tradeitems/selected/export/${createFilename('selectedItemsExport')}.xlsx?selectedIds=${selectedIds}`);
+  }
   render() {
     const { tradeItemlist, repoId, repo, listFilter, tenantId, auditWay } = this.props;
     const selectedRows = this.state.selectedRowKeys;
@@ -525,11 +529,15 @@ export default class TradeItemList extends Component {
     if (repo.permission === CMS_TRADE_REPO_PERMISSION.edit && selectedRows.length > 0) {
       if (listFilter.status === 'unclassified' ||
         (listFilter.status === 'pending' && auditWay === SYNC_AUDIT_METHODS[1].key)) {
-        batchOperation = (<Popconfirm title={'是否删除所有选择项？'} onConfirm={() => this.handleDeleteSelected()}>
-          <Button type="danger" size="large" icon="delete">
-            批量删除
+        batchOperation = (<span>
+          <Button size="large" icon="export" onClick={this.handleExportSelected} >
+            批量导出
           </Button>
-        </Popconfirm>);
+          <Popconfirm title={'是否删除所有选择项？'} onConfirm={() => this.handleDeleteSelected()}>
+            <Button type="danger" size="large" icon="delete">
+              批量删除
+            </Button>
+          </Popconfirm></span>);
       } else if (listFilter.status === 'pending' && auditWay === SYNC_AUDIT_METHODS[0].key) {
         batchOperation = (<span>
           <Dropdown.Button size="large" onClick={this.handleItemsPass} overlay={itemPassmenu}>
@@ -538,6 +546,9 @@ export default class TradeItemList extends Component {
           <Dropdown.Button size="large" onClick={this.handleItemsRefused} overlay={itemRefusedmenu}>
             <Icon type="close-circle-o" /> 批量拒绝
           </Dropdown.Button>
+          <Button size="large" icon="export" onClick={this.handleExportSelected} >
+            批量导出
+          </Button>
           <Popconfirm title={'是否删除所有选择项？'} onConfirm={() => this.handleDeleteSelected()}>
             <Button type="danger" size="large" icon="delete">
               批量删除
