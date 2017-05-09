@@ -13,7 +13,7 @@ import InfoItem from 'client/components/InfoItem';
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    delgNo: state.cmsDelgInfoHub.previewer.delgNo,
+    delgNo: state.cmsDelgInfoHub.previewer.delegation.delg_no,
     customsPanel: state.cmsDelgInfoHub.customsPanel,
     tabKey: state.cmsDelgInfoHub.tabKey,
     customsSpinning: state.cmsDelgInfoHub.customsPanelLoading,
@@ -48,8 +48,7 @@ export default class CustomsDeclPane extends React.Component {
     this.props.loadDelgOperators(this.props.tenantId);
   }
   componentWillReceiveProps(nextProps) {
-    // todo differantiate delgNo and prevewer NO
-    if (nextProps.delgNo.slice(0, 2) === 'ID' && nextProps.delgNo !== this.props.delgNo) {
+    if (nextProps.delgNo !== this.props.delgNo) {  // fixme 已经翻到当前tab页, 关闭panel再打开, receive在翻到tab页前就会产生
       nextProps.loadCustPanel({
         delgNo: nextProps.delgNo,
         tenantId: this.props.tenantId,
