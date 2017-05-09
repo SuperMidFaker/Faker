@@ -7,7 +7,7 @@ import { SHIPMENT_TRACK_STATUS } from 'common/constants';
 import { hidePreviewer } from 'common/reducers/shipment';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
-import { loadAcceptDispatchers, revokeOrReject, returnShipment } from 'common/reducers/transport-acceptance';
+import { loadAcceptDispatchers, returnShipment } from 'common/reducers/transport-acceptance';
 import { doSend,
          doReturn,
          changeDockStatus,
@@ -36,7 +36,6 @@ const MenuItem = Menu.Item;
   }),
   { hidePreviewer,
     loadAcceptDispatchers,
-    revokeOrReject,
     changeDockStatus,
     doReturn,
     doSend,
@@ -61,7 +60,6 @@ export default class ShipmentActions extends React.Component {
     previewer: PropTypes.object.isRequired,
     onShowShareShipmentModal: PropTypes.func.isRequired,
     loadAcceptDispatchers: PropTypes.func.isRequired,
-    revokeOrReject: PropTypes.func.isRequired,
     filters: PropTypes.object.isRequired,
     expandList: PropTypes.object.isRequired,
     changeDockStatus: PropTypes.func.isRequired,
@@ -100,8 +98,6 @@ export default class ShipmentActions extends React.Component {
       }, 200);
     } else if (e.key === 'shareShipment') {
       this.props.onShowShareShipmentModal();
-    } else if (e.key === 'terminateShipment') {
-      this.handleShipmtRevoke(shipmt.shipmt_no, dispatch.id);
     } else if (e.key === 'changeActDate') {
       this.handleShowChangeActDateModal(shipmt.shipmt_no, dispatch.id, dispatch.pickup_act_date, dispatch.deliver_act_date);
     }
@@ -121,9 +117,6 @@ export default class ShipmentActions extends React.Component {
         message.error(result.error.message, 10);
       }
     });
-  }
-  handleShipmtRevoke = (shipmtNo, dispId) => {
-    this.props.revokeOrReject('revoke', shipmtNo, dispId);
   }
   handleShipmtSend = () => {
     const { tenantId, loginId, avatar, loginName, previewer: { shipmt, dispatch } } = this.props;
@@ -276,7 +269,6 @@ export default class ShipmentActions extends React.Component {
         <Menu onClick={this.handleMenuClick}>
           <MenuItem key="exportShipment"><Icon type="export" /> 导出运单</MenuItem>
           <MenuItem key="shareShipment"><Icon type="share-alt" /> 共享运单</MenuItem>
-          <MenuItem key="terminateShipment"><Icon type="delete" /> 终止运单</MenuItem>
         </Menu>
       );
     } else if (sourceType === 'sr') {
@@ -285,7 +277,6 @@ export default class ShipmentActions extends React.Component {
           <Menu onClick={this.handleMenuClick}>
             <MenuItem key="exportShipment"><Icon type="export" /> 导出运单</MenuItem>
             <MenuItem key="shareShipment"><Icon type="share-alt" /> 共享运单</MenuItem>
-            <MenuItem key="terminateShipment"><Icon type="delete" /> 终止运单</MenuItem>
           </Menu>
         );
       } else if (dispatch.status === SHIPMENT_TRACK_STATUS.accepted) {
@@ -293,7 +284,6 @@ export default class ShipmentActions extends React.Component {
           <Menu onClick={this.handleMenuClick}>
             <MenuItem key="exportShipment"><Icon type="export" /> 导出运单</MenuItem>
             <MenuItem key="shareShipment"><Icon type="share-alt" /> 共享运单</MenuItem>
-            <MenuItem key="terminateShipment"><Icon type="delete" /> 终止运单</MenuItem>
           </Menu>
         );
       } else if (dispatch.status === SHIPMENT_TRACK_STATUS.dispatched) {
@@ -301,7 +291,6 @@ export default class ShipmentActions extends React.Component {
           <Menu onClick={this.handleMenuClick}>
             <MenuItem key="exportShipment"><Icon type="export" /> 导出运单</MenuItem>
             <MenuItem key="shareShipment"><Icon type="share-alt" /> 共享运单</MenuItem>
-            <MenuItem key="terminateShipment"><Icon type="delete" /> 终止运单</MenuItem>
           </Menu>
         );
       } else if (dispatch.status === SHIPMENT_TRACK_STATUS.intransit) {
@@ -309,7 +298,6 @@ export default class ShipmentActions extends React.Component {
           menu = (
             <Menu onClick={this.handleMenuClick}>
               <MenuItem key="shareShipment">共享运单</MenuItem>
-              <MenuItem key="terminateShipment">终止运单</MenuItem>
               <MenuItem key="changeActDate">纠正节点时间</MenuItem>
             </Menu>
           );
@@ -317,7 +305,6 @@ export default class ShipmentActions extends React.Component {
           menu = (
             <Menu onClick={this.handleMenuClick}>
               <MenuItem key="shareShipment">共享运单</MenuItem>
-              <MenuItem key="terminateShipment">终止运单</MenuItem>
               <MenuItem key="changeActDate">纠正节点时间</MenuItem>
             </Menu>
           );
@@ -326,7 +313,6 @@ export default class ShipmentActions extends React.Component {
         menu = (
           <Menu onClick={this.handleMenuClick}>
             <MenuItem key="shareShipment">共享运单</MenuItem>
-            <MenuItem key="terminateShipment">终止运单</MenuItem>
             <MenuItem key="changeActDate">纠正节点时间</MenuItem>
           </Menu>
         );

@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Col, Table, Steps, Card, Icon, Dropdown, Menu, Row, message } from 'antd';
+import { Col, Table, Steps, Card, Icon, Dropdown, Menu, Row, Button, message } from 'antd';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { format } from 'client/common/i18n/helpers';
 import { renderConsignLoc } from '../../../common/consignLocation';
@@ -10,7 +10,7 @@ import { PRESET_TRANSMODES, TMS_SHIPMENT_STATUS_DESC, SHIPMENT_TRACK_STATUS, COU
 import ChangeShipment from '../change-shipment';
 import { showChangeShipmentModal, loadForm } from 'common/reducers/shipment';
 import { showChangeDeliverPrmDateModal } from 'common/reducers/trackingLandStatus';
-import { saveEdit } from 'common/reducers/transport-acceptance';
+import { saveEdit, revokeOrReject } from 'common/reducers/transport-acceptance';
 import InfoItem from 'client/components/InfoItem';
 import messages from '../../message.i18n';
 import './pane.less';
@@ -33,7 +33,7 @@ const Step = Steps.Step;
     dispatch: state.shipment.previewer.dispatch,
     formData: state.shipment.formData,
   }),
-  { showChangeShipmentModal, showChangeDeliverPrmDateModal, loadForm, saveEdit }
+  { showChangeShipmentModal, showChangeDeliverPrmDateModal, loadForm, saveEdit, revokeOrReject }
 )
 export default class DetailPane extends React.Component {
   static propTypes = {
@@ -53,6 +53,7 @@ export default class DetailPane extends React.Component {
     loadForm: PropTypes.func.isRequired,
     formData: PropTypes.object.isRequired,
     saveEdit: PropTypes.func.isRequired,
+    revokeOrReject: PropTypes.func.isRequired,
   }
   componentDidMount() {
     this.props.loadForm(null, {
@@ -219,7 +220,8 @@ export default class DetailPane extends React.Component {
     const vehicleLength = vehicleLengths.find(item => item.value === shipmt.vehicle_length_id);
     let statusDesc = TMS_SHIPMENT_STATUS_DESC;
     if (dispatch.pod_type === 'none') statusDesc = TMS_SHIPMENT_STATUS_DESC.filter(item => item.status <= 5);
-    const editable = tenantId === shipmt.tenant_id && dispatch.status <= 5;
+    const editable = tenantId === shipmt.tenant_id && dispatch.status <= SHIPMENT_TRACK_STATUS.delivered;
+    const terminable = tenantId === shipmt.tenant_id && dispatch.status < SHIPMENT_TRACK_STATUS.intransit;
     let clientInfoExtra = '';
     let shipmtScheduleExtra = (<div />);
     let transitModeInfoExtra = '';
@@ -560,6 +562,13 @@ export default class DetailPane extends React.Component {
             </Col>
           </Row>
         </Card>
+        <div>
+          {terminable &&
+          (<Button type="danger" size="large" icon="delete" onClick={() => this.props.revokeOrReject('revoke', shipmt.shipmt_no, dispatch.id)}>
+            终止运单
+          </Button>)}
+
+        </div>
         <PrivilegeCover module="transport" feature="shipment" action="edit">
           <ChangeShipment />
         </PrivilegeCover>
