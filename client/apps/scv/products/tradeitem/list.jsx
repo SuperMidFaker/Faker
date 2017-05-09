@@ -317,6 +317,10 @@ export default class TradeItemList extends Component {
       window.open(`${API_ROOTS.default}v1/scv/edited/tradeitems/export/${createFilename('editedScvItems')}.xlsx?tenantId=${this.props.tenantId}`);
     }
   }
+  handleExportSelected = () => {
+    const selectedIds = this.state.selectedRowKeys;
+    window.open(`${API_ROOTS.default}v1/scv/tradeitems/selected/export/${createFilename('selectedScvItemsExport')}.xlsx?selectedIds=${selectedIds}`);
+  }
   handleDeleteSelected = () => {
     const selectedIds = this.state.selectedRowKeys;
     this.props.deleteItems({ ids: selectedIds, tenantId: this.props.tenantId }).then((result) => {
@@ -426,11 +430,15 @@ export default class TradeItemList extends Component {
     let batchOperation = null;
     if (selectedRows.length > 0) {
       if (listFilter.status === 'unclassified') {
-        batchOperation = (<Popconfirm title={'只能删除所选项中归类来源是当前租户的数据，确认删除？'} onConfirm={() => this.handleDeleteSelected()}>
-          <Button type="danger" size="large" icon="delete">
+        batchOperation = (<span>
+          <Button size="large" icon="export" onClick={this.handleExportSelected} >
+            批量导出
+          </Button>
+          <Popconfirm title={'只能删除所选项中归类来源是当前租户的数据，确认删除？'} onConfirm={() => this.handleDeleteSelected()}>
+            <Button type="danger" size="large" icon="delete">
             批量删除
           </Button>
-        </Popconfirm>);
+          </Popconfirm></span>);
       } else if (listFilter.status === 'pending') {
         batchOperation = (<span>
           <Dropdown.Button size="large" onClick={this.handleItemsPass} overlay={itemPassmenu}>
@@ -439,6 +447,9 @@ export default class TradeItemList extends Component {
           <Dropdown.Button size="large" onClick={this.handleItemsRefused} overlay={itemRefusedmenu}>
             <Icon type="close-circle-o" /> 批量拒绝
           </Dropdown.Button>
+          <Button size="large" icon="export" onClick={this.handleExportSelected} >
+            批量导出
+          </Button>
           <Popconfirm title={'只能删除所选项中归类来源是当前租户的数据，确认删除？'} onConfirm={() => this.handleDeleteSelected()}>
             <Button type="danger" size="large" icon="delete">
               批量删除
