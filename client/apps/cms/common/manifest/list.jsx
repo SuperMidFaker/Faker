@@ -101,16 +101,16 @@ export default class ManifestList extends Component {
   }, {
     title: '委托方',
     dataIndex: 'send_name',
-    width: 180,
-    render: o => <TrimSpan text={o} maxLen={12} />,
+    width: 220,
+    render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: '提运单号',
     dataIndex: 'bl_wb_no',
     width: 220,
   }, {
     title: '订单号',
-    width: 220,
-    dataIndex: 'invoice_no',
+    width: 140,
+    dataIndex: 'order_no',
   }, {
     title: '监管方式',
     dataIndex: 'trade_mode',

@@ -127,18 +127,13 @@ export default class DelegationList extends Component {
       </a>),
   }, {
     title: this.msg('delgClient'),
-    width: 200,
+    width: 220,
     dataIndex: 'send_name',
-    render: o => <TrimSpan text={o} maxLen={12} />,
+    render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: this.msg('waybillLadingNo'),
-    width: 240,
+    width: 220,
     dataIndex: 'bl_wb_no',
-  }, {
-    title: this.msg('invoiceNo'),
-    width: 140,
-    dataIndex: 'invoice_no',
-    render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: this.msg('orderNo'),
     width: 140,
@@ -158,7 +153,7 @@ export default class DelegationList extends Component {
     },
   }, {
     title: this.msg('declareWay'),
-    width: 80,
+    width: 100,
     dataIndex: 'decl_way_code',
     render: (o) => {
       const DECL_TYPE = this.props.ietype === 'import' ? DECL_I_TYPE : DECL_E_TYPE;
@@ -228,7 +223,6 @@ export default class DelegationList extends Component {
     },
   }, {
     title: this.msg('lastActTime'),
-    width: 150,
     dataIndex: 'last_act_time',
     render: (o, record) => {
       if (record.status === CMS_DELEGATION_STATUS.unaccepted && record.last_act_time) {
@@ -610,7 +604,7 @@ export default class DelegationList extends Component {
               {
                 listView === 'delegation' &&
                 <Table rowSelection={rowSelection} columns={columns} dataSource={this.dataSource} loading={delegationlist.loading}
-                  rowKey="delg_no" scroll={{ x: 1900 }}
+                  rowKey="delg_no" scroll={{ x: 1800 }}
                 />
               }
               {

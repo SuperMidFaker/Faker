@@ -303,8 +303,8 @@ export default class DelegationDockPanel extends React.Component {
           />
         </Col>
         <Col span="6">
-          <InfoItem label="发票号"
-            field={delegation.invoice_no}
+          <InfoItem label="订单号"
+            field={delegation.order_no}
           />
         </Col>
         <Col span="4">
