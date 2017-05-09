@@ -1,12 +1,13 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Layout, message, Progress } from 'antd';
+import { Breadcrumb, Layout, Radio, message, Progress } from 'antd';
 import moment from 'moment';
-import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
+import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import { loadDelgBill } from 'common/reducers/cmsManifest';
+import Table from 'client/components/remoteAntTable';
+import { loadManifests } from 'common/reducers/scvClearance';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/search-bar';
 import NavLink from 'client/components/nav-link';
@@ -15,17 +16,31 @@ import messages from '../message.i18n';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
+const RadioGroup = Radio.Group;
+const RadioButton = Radio.Button;
 
+function fetchData({ state, dispatch }) {
+  return dispatch(loadManifests({
+    tenantId: state.account.tenantId,
+    loginId: state.account.loginId,
+    filter: JSON.stringify(state.scvClearance.manifestFilters),
+    pageSize: state.scvClearance.manifestFilters.pageSize,
+    currentPage: state.scvClearance.manifestFilters.current,
+  }));
+}
+
+@connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     loginName: state.account.username,
-    delgBillList: state.cmsManifest.delgBillList,
-    listFilter: state.cmsManifest.listFilter,
+    loading: state.scvClearance.manifestLoading,
+    manifestList: state.scvClearance.manifestList,
+    filters: state.scvClearance.manifestFilters,
   }),
-  { loadDelgBill }
+  { loadManifests }
 )
 @connectNav({
   depth: 2,
@@ -38,11 +53,8 @@ export default class SCVManifestList extends Component {
     tenantId: PropTypes.number.isRequired,
     loginId: PropTypes.number.isRequired,
     loginName: PropTypes.string.isRequired,
-    delgBillList: PropTypes.object.isRequired,
+    manifestList: PropTypes.object.isRequired,
     listFilter: PropTypes.object.isRequired,
-  }
-  static contextTypes = {
-    router: PropTypes.object.isRequired,
   }
   state = {
     selectedRowKeys: [],
@@ -55,13 +67,7 @@ export default class SCVManifestList extends Component {
     dataIndex: 'bill_seq_no',
     fixed: 'left',
     width: 110,
-    render: (o, record) => {
-      if (record.customs_tenant_id === this.props.tenantId && record.bill_status < 5) {
-        return <NavLink to={`/scv/manifest/${record.bill_seq_no}`}>{o}</NavLink>;
-      } else {
-        return <NavLink to={`/clearance/manifest/view/${record.bill_seq_no}`}>{o}</NavLink>;
-      }
-    },
+    render: (o, record) => <NavLink to={`/clearance/manifest/view/${record.bill_seq_no}`}>{o}</NavLink>,
   }, {
     title: '申报单位',
     dataIndex: 'customs_name',
@@ -144,7 +150,7 @@ export default class SCVManifestList extends Component {
       params.filter = JSON.stringify(filter);
       return params;
     },
-    remotes: this.props.delgBillList,
+    remotes: this.props.manifestList,
   })
   handleTableLoad = (currentPage, filter) => {
     this.setState({ expandedKeys: [] });
@@ -152,8 +158,8 @@ export default class SCVManifestList extends Component {
       ietype: this.props.ietype,
       tenantId: this.props.tenantId,
       filter: JSON.stringify(filter || this.props.listFilter),
-      pageSize: this.props.delgBillList.pageSize,
-      currentPage: currentPage || this.props.delgBillList.current,
+      pageSize: this.props.manifestList.pageSize,
+      currentPage: currentPage || this.props.manifestList.current,
     }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 5);
@@ -177,8 +183,8 @@ export default class SCVManifestList extends Component {
     return newFilters;
   }
   render() {
-    const { delgBillList } = this.props;
-    this.dataSource.remotes = delgBillList;
+    const { manifestList, filters, loading } = this.props;
+    this.dataSource.remotes = manifestList;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -196,6 +202,15 @@ export default class SCVManifestList extends Component {
               {this.msg('declManifest')}
             </Breadcrumb.Item>
           </Breadcrumb>
+          <RadioGroup onChange={this.handleProgressChange} size="large" value={filters.ietype}>
+            <RadioButton value="import">进口</RadioButton>
+            <RadioButton value="export">出口</RadioButton>
+          </RadioGroup>
+          <RadioGroup value={filters.status} onChange={this.handleRadioChange} size="large">
+            <RadioButton value="all">{this.msg('all')}</RadioButton>
+            <RadioButton value="wip">{this.msg('filterWIP')}</RadioButton>
+            <RadioButton value="generated">{this.msg('filterGenerated')}</RadioButton>
+          </RadioGroup>
         </Header>
         <Content className="main-content" key="main">
           <div className="page-body">
@@ -207,7 +222,7 @@ export default class SCVManifestList extends Component {
             </div>
             <div className="panel-body table-panel expandable">
               <Table rowSelection={rowSelection} columns={this.columns} rowKey="pre_entry_seq_no" dataSource={this.dataSource}
-                loading={delgBillList.loading} scroll={{ x: 1400 }}
+                loading={loading} scroll={{ x: 1400 }}
               />
             </div>
           </div>
