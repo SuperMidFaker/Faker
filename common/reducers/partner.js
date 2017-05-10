@@ -12,7 +12,7 @@ const actionTypes = createActionTypes('@@welogix/partner/', [
   'INVITE_PARTNER', 'OPEN_SPMODAL', 'CLOSE_SPMODAL',
   'ADD_SP', 'ADD_SP_SUCCEED', 'ADD_SP_FAIL',
   'EDIT_SP', 'EDIT_SP_SUCCEED', 'EDIT_SP_FAIL',
-  'MATCH_TENANTS', 'MATCH_TENANTS_SUCCEED', 'MATCH_TENANTS_FAIL',
+  'MATCH_TENANT', 'MATCH_TENANT_SUCCEED', 'MATCH_TENANT_FAIL',
 ]);
 // *TODO* customerModal brokerModal group together
 const initialState = {
@@ -29,7 +29,6 @@ const initialState = {
   providerType: 'ALL',        // 记录当前被选中的物流供应商, 值对应为:['ALL', 'FWD', 'CCB', 'TRS', 'WHS']
   visibleSpModal: false,
   spModal: { partner: {} },
-  matchedPartners: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -57,8 +56,6 @@ export default function reducer(state = initialState, action) {
       return { ...state, visibleSpModal: false, spModal: initialState.spModal, matchedPartners: [] };
     case actionTypes.OPEN_SPMODAL:
       return { ...state, spModal: action.data, visibleSpModal: true };
-    case actionTypes.MATCH_TENANTS_SUCCEED:
-      return { ...state, matchedPartners: action.result.data };
     default:
       return state;
   }
@@ -224,17 +221,17 @@ export function editSp(sp) {
   };
 }
 
-export function matchTenants(tenantId, name) {
+export function matchTenant(name) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.MATCH_TENANTS,
-        actionTypes.MATCH_TENANTS_SUCCEED,
-        actionTypes.MATCH_TENANTS_FAIL,
+        actionTypes.MATCH_TENANT,
+        actionTypes.MATCH_TENANT_SUCCEED,
+        actionTypes.MATCH_TENANT_FAIL,
       ],
-      endpoint: 'v1/cooperation/match/tenants',
+      endpoint: 'v1/cooperation/match/tenant',
       method: 'get',
-      params: { tenantId, name },
+      params: { name },
     },
   };
 }
