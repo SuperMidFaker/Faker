@@ -75,7 +75,7 @@ export default class FlowDesigner extends React.Component {
       title: '来源节点',
       width: 130,
       dataIndex: 'node',
-      render: (node, row, index) => {
+      render: (node, row) => {
         if (this.graph) {
           const nodekinds = this.trackingFieldTypeMapNodeKinds[row.module];
           const nodes = this.graph.get('items').filter(item => item.get('type') === 'node' && nodekinds.indexOf(item.get('model').kind) !== -1)
@@ -85,7 +85,7 @@ export default class FlowDesigner extends React.Component {
             }));
           return (
             <EditableCell type="select" options={nodes} value={node} placeholder="选择节点"
-              onSave={nodeId => this.handleTrackNodeChange(nodeId, index)}
+              onSave={nodeId => this.handleTrackNodeChange(nodeId, row.field)}
             />);
         }
       },
@@ -260,9 +260,14 @@ export default class FlowDesigner extends React.Component {
     });
     this.graph.refresh();
   }
-  handleTrackNodeChange = (nodeId, index) => {
+  handleTrackNodeChange = (nodeId, field) => {
     const dataSource = [...this.state.trackDataSource];
-    dataSource[index].node = nodeId;
+    for (let i = 0; i < dataSource.length; i++) {
+      if (dataSource[i].field === field) {
+        dataSource[i].node = nodeId;
+        break;
+      }
+    }
     this.setState({ trackDataSource: dataSource });
   }
   handleAddToolbarNode = (ev) => {
