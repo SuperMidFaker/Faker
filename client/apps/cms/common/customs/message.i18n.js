@@ -107,7 +107,7 @@ export default defineMessages({
   },
   filterProposed: {
     id: 'cms.customs.filter.proposed',
-    defaultMessage: '报关草单',
+    defaultMessage: '报关建议书',
   },
   filterReviewed: {
     id: 'cms.customs.filter.reviewed',
@@ -119,7 +119,7 @@ export default defineMessages({
   },
   filterFinalized: {
     id: 'cms.customs.filter.finalized',
-    defaultMessage: '已入海关库',
+    defaultMessage: '已回执',
   },
   customsReleased: {
     id: 'cms.customs.status.released',

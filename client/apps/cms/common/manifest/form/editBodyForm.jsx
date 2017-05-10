@@ -139,7 +139,7 @@ export default class EditBodyForm extends Component {
   render() {
     const { form: { getFieldDecorator }, editBody, currencies, units, tradeCountries, hscodes, exemptions } = this.props;
     return (
-      <div>
+      <div className="form-layout-compact">
         <Row gutter={16}>
           <Col sm={24} lg={8}>
             <FormItem label={this.msg('copGNo')}>
@@ -231,81 +231,6 @@ export default class EditBodyForm extends Component {
             </FormItem>
           </Col>
           <Col sm={24} lg={6}>
-            <FormItem label={this.msg('qty1')}>
-              {getFieldDecorator('qty_1', {
-                initialValue: editBody.qty_1,
-              })(<Input />)}
-            </FormItem>
-          </Col>
-          <Col sm={24} lg={6}>
-            <FormItem label={this.msg('unit1')}>
-              {getFieldDecorator('unit_1', {
-                initialValue: editBody.unit_1,
-              })(<Select showSearch showArrow optionFilterProp="search" style={{ width: '100%' }}>
-                {
-                  units.map(gt =>
-                    <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>
-                  )
-                }
-              </Select>)}
-            </FormItem>
-          </Col>
-          <Col sm={24} lg={6}>
-            <FormItem label={this.msg('qty2')}>
-              {getFieldDecorator('qty_2', {
-                initialValue: editBody.qty_2,
-              })(<Input />)}
-            </FormItem>
-          </Col>
-          <Col sm={24} lg={6}>
-            <FormItem label={this.msg('unit2')}>
-              {getFieldDecorator('unit_2', {
-                initialValue: editBody.unit_2,
-              })(<Select showSearch showArrow optionFilterProp="search" style={{ width: '100%' }}>
-                {
-                  units.map(gt =>
-                    <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>
-                  )
-                }
-              </Select>)}
-            </FormItem>
-          </Col>
-          <Col sm={24} lg={6}>
-            <FormItem label={this.msg('qtyPcs')}>
-              {getFieldDecorator('qty_pcs', {
-                initialValue: editBody.qty_pcs,
-              })(<Input />)}
-            </FormItem>
-          </Col>
-          <Col sm={24} lg={6}>
-            <FormItem label={this.msg('unitPcs')}>
-              {getFieldDecorator('unit_pcs', {
-                initialValue: editBody.unit_pcs,
-              })(<Select showSearch showArrow optionFilterProp="search" style={{ width: '100%' }}>
-                {
-                  units.map(gt =>
-                    <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>
-                  )
-                }
-              </Select>)}
-            </FormItem>
-          </Col>
-          <Col sm={24} lg={6}>
-            <FormItem label={this.msg('grosswt')}>
-              {getFieldDecorator('gross_wt', {
-                initialValue: editBody.gross_wt,
-              })(<Input />)}
-            </FormItem>
-          </Col>
-          <Col sm={24} lg={6}>
-            <FormItem label={this.msg('netwt')}>
-              {getFieldDecorator('wet_wt', {
-                rules: [{ required: true, message: '净重必填' }],
-                initialValue: editBody.wet_wt,
-              })(<Input />)}
-            </FormItem>
-          </Col>
-          <Col sm={24} lg={6}>
             <FormItem label={this.msg('currency')}>
               {getFieldDecorator('trade_curr', {
                 rules: [{ required: true, message: '币制必填' }],
@@ -371,6 +296,81 @@ export default class EditBodyForm extends Component {
                     )}
                 </Select>
                 )}
+            </FormItem>
+          </Col>
+          <Col sm={24} lg={6}>
+            <FormItem label={this.msg('grosswt')}>
+              {getFieldDecorator('gross_wt', {
+                initialValue: editBody.gross_wt,
+              })(<Input />)}
+            </FormItem>
+          </Col>
+          <Col sm={24} lg={6}>
+            <FormItem label={this.msg('netwt')}>
+              {getFieldDecorator('wet_wt', {
+                rules: [{ required: true, message: '净重必填' }],
+                initialValue: editBody.wet_wt,
+              })(<Input />)}
+            </FormItem>
+          </Col>
+          <Col sm={24} lg={6}>
+            <FormItem label={this.msg('qtyPcs')}>
+              {getFieldDecorator('qty_pcs', {
+                initialValue: editBody.qty_pcs,
+              })(<Input />)}
+            </FormItem>
+          </Col>
+          <Col sm={24} lg={6}>
+            <FormItem label={this.msg('unitPcs')}>
+              {getFieldDecorator('unit_pcs', {
+                initialValue: editBody.unit_pcs,
+              })(<Select showSearch showArrow optionFilterProp="search" style={{ width: '100%' }}>
+                {
+                  units.map(gt =>
+                    <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>
+                  )
+                }
+              </Select>)}
+            </FormItem>
+          </Col>
+          <Col sm={24} lg={6}>
+            <FormItem label={this.msg('qty1')}>
+              {getFieldDecorator('qty_1', {
+                initialValue: editBody.qty_1,
+              })(<Input />)}
+            </FormItem>
+          </Col>
+          <Col sm={24} lg={6}>
+            <FormItem label={this.msg('unit1')}>
+              {getFieldDecorator('unit_1', {
+                initialValue: editBody.unit_1,
+              })(<Select showSearch showArrow optionFilterProp="search" style={{ width: '100%' }}>
+                {
+                  units.map(gt =>
+                    <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>
+                  )
+                }
+              </Select>)}
+            </FormItem>
+          </Col>
+          <Col sm={24} lg={6}>
+            <FormItem label={this.msg('qty2')}>
+              {getFieldDecorator('qty_2', {
+                initialValue: editBody.qty_2,
+              })(<Input />)}
+            </FormItem>
+          </Col>
+          <Col sm={24} lg={6}>
+            <FormItem label={this.msg('unit2')}>
+              {getFieldDecorator('unit_2', {
+                initialValue: editBody.unit_2,
+              })(<Select showSearch showArrow optionFilterProp="search" style={{ width: '100%' }}>
+                {
+                  units.map(gt =>
+                    <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>
+                  )
+                }
+              </Select>)}
             </FormItem>
           </Col>
           <Col sm={24} lg={12}>

@@ -163,7 +163,7 @@ export default class ManifestList extends Component {
             <RowUpdater onHit={this.handleDelegationView} label={<span><Icon type="eye-o" /> 查看</span>} row={record} />
             { record.revertable && <span className="ant-divider" />}
             { record.revertable && (<Popconfirm title="确定操作?" placement="topRight" onConfirm={() => this.handleManifestRedo(record)}>
-              <Tooltip title="删除已生成的报关草单，重新修改" placement="bottomLeft">
+              <Tooltip title="删除已生成的报关建议书，重新修改" placement="bottomLeft">
                 <a role="button"><Icon type="reload" /></a>
               </Tooltip>
             </Popconfirm>)}
