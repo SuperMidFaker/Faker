@@ -7,12 +7,12 @@ import { SHIPMENT_TRACK_STATUS, SHIPMENT_POD_STATUS, SHIPMENT_SOURCE, SHIPMENT_V
 import { hidePreviewer } from 'common/reducers/shipment';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
-import { loadAcceptDispatchers, revokeOrReject, returnShipment } from 'common/reducers/transport-acceptance';
+import { loadAcceptDispatchers, returnShipment } from 'common/reducers/transport-acceptance';
 import { doSend,
          doReturn,
          changeDockStatus,
          withDraw } from 'common/reducers/transportDispatch';
-import { showVehicleModal, showChangeActDateModal }
+import { showVehicleModal }
 from 'common/reducers/trackingLandStatus';
 import { passAudit, returnAudit } from 'common/reducers/trackingLandPod';
 import { createFilename } from 'client/util/dataTransform';
@@ -33,7 +33,6 @@ const formatMsg = format(messages);
   }),
   { hidePreviewer,
     loadAcceptDispatchers,
-    revokeOrReject,
     changeDockStatus,
     doReturn,
     doSend,
@@ -43,7 +42,6 @@ const formatMsg = format(messages);
     withDraw,
     returnShipment,
     sendMessage,
-    showChangeActDateModal,
   }
 )
 export default class ShipmentActions extends React.Component {
@@ -54,9 +52,7 @@ export default class ShipmentActions extends React.Component {
     avatar: PropTypes.string.isRequired,
     loginName: PropTypes.string.isRequired,
     previewer: PropTypes.object.isRequired,
-    onShowShareShipmentModal: PropTypes.func.isRequired,
     loadAcceptDispatchers: PropTypes.func.isRequired,
-    revokeOrReject: PropTypes.func.isRequired,
     filters: PropTypes.object.isRequired,
     expandList: PropTypes.object.isRequired,
     changeDockStatus: PropTypes.func.isRequired,
@@ -69,35 +65,16 @@ export default class ShipmentActions extends React.Component {
     hidePreviewer: PropTypes.func.isRequired,
     returnShipment: PropTypes.func.isRequired,
     sendMessage: PropTypes.func.isRequired,
-    showChangeActDateModal: PropTypes.func.isRequired,
     stage: PropTypes.string.isRequired,
     sourceType: PropTypes.string.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
-  state = {
-    exportPDFvisible: false,
-  }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
 
   handleNavigationTo = (to, query) => {
     this.context.router.push({ pathname: to, query });
-  }
-  handleMenuClick = (e) => {
-    const { previewer: { shipmt, dispatch } } = this.props;
-    if (e.key === 'exportShipment') {
-      this.setState({ exportPDFvisible: true });
-      setTimeout(() => {
-        this.setState({ exportPDFvisible: false });
-      }, 200);
-    } else if (e.key === 'shareShipment') {
-      this.props.onShowShareShipmentModal();
-    } else if (e.key === 'terminateShipment') {
-      this.handleShipmtRevoke(shipmt.shipmt_no, dispatch.id);
-    } else if (e.key === 'changeActDate') {
-      this.handleShowChangeActDateModal(shipmt.shipmt_no, dispatch.id, dispatch.pickup_act_date, dispatch.deliver_act_date);
-    }
   }
   handleShowExportShipment = () => {
   }
@@ -114,9 +91,6 @@ export default class ShipmentActions extends React.Component {
         message.error(result.error.message, 10);
       }
     });
-  }
-  handleShipmtRevoke = (shipmtNo, dispId) => {
-    this.props.revokeOrReject('revoke', shipmtNo, dispId);
   }
   handleShipmtSend = () => {
     const { tenantId, loginId, avatar, loginName, previewer: { shipmt, dispatch } } = this.props;
@@ -194,10 +168,6 @@ export default class ShipmentActions extends React.Component {
   handleShowVehicleModal = (dispId, shipmtNo) => {
     this.props.showVehicleModal(dispId, shipmtNo);
   }
-  handleShowChangeActDateModal = (shipmtNo, dispId, pickupActDate, deliverActDate) => {
-    this.props.showChangeActDateModal({ visible: true, dispId, shipmtNo,
-      pickupActDate, deliverActDate });
-  }
   handleAuditPass = (podId, dispId, parentId) => {
     const { loginName, tenantId, loginId } = this.props;
     this.props.passAudit(podId, dispId, parentId, loginName, tenantId, loginId).then((result) => {
@@ -261,7 +231,7 @@ export default class ShipmentActions extends React.Component {
                 <Button onClick={() => this.context.router.push(`/transport/shipment/edit/${shipmt.shipmt_no}`)}>
                   修改
                 </Button>
-                <Button type="primary" icon="check" onClick={() => this.handleShipmtAccept(dispatch.id)} >
+                <Button type="primary" icon="check" onClick={() => this.handleShipmtAccept(dispatch.id)} style={{ marginLeft: 8 }}>
                   接单
                 </Button>
               </span>
@@ -295,7 +265,7 @@ export default class ShipmentActions extends React.Component {
                   <Button onClick={() => this.handleSegmentDockShow()} >
                     分段
                   </Button>
-                  <Button type="primary" onClick={() => this.handleDispatchDockShow()} >
+                  <Button type="primary" onClick={() => this.handleDispatchDockShow()} style={{ marginLeft: 8 }} >
                     分配
                   </Button>
                 </span>
@@ -308,7 +278,7 @@ export default class ShipmentActions extends React.Component {
                   <Button type="ghost" onClick={() => this.handleShipmtReturn()}>
                     退回
                   </Button>
-                  <Button type="primary" onClick={() => this.handleShipmtSend()} >
+                  <Button type="primary" onClick={() => this.handleShipmtSend()} style={{ marginLeft: 8 }} >
                     发送
                   </Button>
                 </span>
@@ -455,7 +425,7 @@ export default class ShipmentActions extends React.Component {
                 <Button type="ghost" onClick={() => this.handleAuditPass(dispatch.pod_id, dispatch.id, dispatch.parent_id)} >
                     接受
                   </Button>
-                <Button type="ghost" onClick={() => this.handleAuditReturn(dispatch.id)} >
+                <Button type="ghost" onClick={() => this.handleAuditReturn(dispatch.id)} style={{ marginLeft: 8 }} >
                     拒绝
                 </Button>
               </span>

@@ -275,7 +275,7 @@ export default class PreviewPanel extends React.Component {
           title={this.renderTitle()}
           status={this.transformBadgeColor(dispatch.status)} statusText={this.msg(getTrackStatusMsg(dispatch.status, effective))}
           extra={this.renderExtra()}
-          alert={this.viewStages.indexOf(this.props.stage) === -1 && <ShipmentActions stage={stage} sourceType={sourceType} onShowShareShipmentModal={this.handleShowShareShipmentModal} />}
+          alert={this.viewStages.indexOf(this.props.stage) === -1 && <ShipmentActions stage={stage} sourceType={sourceType} />}
         >
           {this.renderTabs(dispatch.status, stage, sourceType)}
           <ShareShipmentModal visible={this.state.shareShipmentModalVisible} shipmt={shipmt} />
