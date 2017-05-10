@@ -75,10 +75,7 @@ const initialState = {
       id: -1,
       shipmt_no: '',
     },
-    pod: {
-    },
     logs: [],
-    points: [],
   },
   shipmtDetail: {
     shipmt: {},
@@ -194,9 +191,7 @@ export default function reducer(state = initialState, action) {
       return { ...state, previewer: {
         shipmt: action.result.data.shipmt,
         dispatch: action.result.data.dispatch,
-        pod: action.result.data.pod,
         logs: action.result.data.logs,
-        points: action.result.data.points,
         visible: true,
         loaded: true,
         tabKey: action.tabKey,

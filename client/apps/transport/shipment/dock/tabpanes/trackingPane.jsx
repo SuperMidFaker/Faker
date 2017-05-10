@@ -6,32 +6,43 @@ import moment from 'moment';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 import { renderLoc } from '../../../common/consignLocation';
-import { removeShipmtPoint } from 'common/reducers/shipment';
+import { removeShipmtPoint, loadShipmtPoints } from 'common/reducers/shipment';
 import './pane.less';
 const formatMsg = format(messages);
 
 @injectIntl
 @connect(
   state => ({
-    points: state.shipment.previewer.points,
+    shipmtNo: state.shipment.previewer.shipmt.shipmt_no,
     dispatch: state.shipment.previewer.dispatch,
   }),
-  { removeShipmtPoint }
+  { removeShipmtPoint, loadShipmtPoints }
 )
 export default class TrackingPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
+    shipmtNo: PropTypes.string,
     removeShipmtPoint: PropTypes.func.isRequired,
+    loadShipmtPoints: PropTypes.func.isRequired,
     dispatch: PropTypes.object.isRequired,
   }
-
+  state = {
+    points: [],
+  }
+  componentWillReceiveProps(nextProps) {
+    if (this.props.shipmtNo !== nextProps.shipmtNo && nextProps.shipmtNo !== '') {
+      this.props.loadShipmtPoints(nextProps.shipmtNo).then((result) => {
+        this.setState({ points: result.data.points });
+      });
+    }
+  }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   handleRemovePoint = (pointId, content) => {
     this.props.removeShipmtPoint(pointId, content, this.props.dispatch.id);
   }
   render() {
     const points = [];
-    this.props.points.forEach((item) => {
+    this.state.points.forEach((item) => {
       points.push({
         ...item,
         date: `${moment(item.location_time || item.created_date).format('YYYY-MM-DD')}`,

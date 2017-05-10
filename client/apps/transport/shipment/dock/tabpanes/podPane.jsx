@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Card, Carousel, Tag } from 'antd';
+import { loadPod } from 'common/reducers/trackingLandPod';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 const formatMsg = format(messages);
@@ -10,17 +11,28 @@ const formatMsg = format(messages);
 @injectIntl
 @connect(
   state => ({
-    pod: state.shipment.previewer.pod,
-  })
+    podId: state.shipment.previewer.dispatch.pod_id,
+  }), { loadPod }
 )
 export default class PodPanel extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    pod: PropTypes.object.isRequired,
+    podId: PropTypes.number.isRequired,
+    loadPod: PropTypes.func.isRequired,
+  }
+  state = {
+    pod: {},
+  }
+  componentWillReceiveProps(nextProps) {
+    if (this.props.podId !== nextProps.podId && nextProps.podId) {
+      this.props.loadPod(nextProps.podId).then((result) => {
+        this.setState({ pod: result.data });
+      });
+    }
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   renderPhotos() {
-    const pod = this.props.pod;
+    const pod = this.state.pod;
     if (pod.photos && pod.photos !== '') {
       return (
         <div style={{ margin: '-24px' }}>
@@ -36,7 +48,7 @@ export default class PodPanel extends React.Component {
   render() {
     let tagColor = '';
     let signStatusDescription = '状态未知';
-    const pod = this.props.pod;
+    const pod = this.state.pod;
     if (pod.sign_status === 1) {
       signStatusDescription = '正常签收';
       tagColor = 'green';
