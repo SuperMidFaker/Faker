@@ -109,25 +109,27 @@ export default class Clearance extends React.Component {
         }],
       });
     }
-    linkMenus.push({
-      single: false,
-      key: 'cms-4',
-      icon: 'icon-fontello-database',
-      text: formatMsg(intl, 'classification'),
-      sublinks: [{
-        key: 'cms-4-0',
-        path: '/clearance/classification/tradeitem',
-        text: formatMsg(intl, 'tradeItem'),
-      }, {
-        key: 'cms-4-1',
-        path: '/clearance/classification/hscode',
-        text: formatMsg(intl, 'hscode'),
-      }, {
-        key: 'cms-4-2',
-        path: '/clearance/classification/special',
-        text: formatMsg(intl, 'specialCategory'),
-      }],
-    });
+    if (hasPermission(privileges, { module: 'clearance', feature: 'import' })) {
+      linkMenus.push({
+        single: false,
+        key: 'cms-4',
+        icon: 'icon-fontello-database',
+        text: formatMsg(intl, 'classification'),
+        sublinks: [{
+          key: 'cms-4-0',
+          path: '/clearance/classification/tradeitem',
+          text: formatMsg(intl, 'tradeItem'),
+        }, {
+          key: 'cms-4-1',
+          path: '/clearance/classification/hscode',
+          text: formatMsg(intl, 'hscode'),
+        }, {
+          key: 'cms-4-2',
+          path: '/clearance/classification/special',
+          text: formatMsg(intl, 'specialCategory'),
+        }],
+      });
+    }
     if (hasPermission(privileges, { module: 'clearance', feature: 'billing' })) {
       linkMenus.push({
         single: false,
@@ -158,18 +160,20 @@ export default class Clearance extends React.Component {
         }],
       });
     }
-    linkMenus.push({
-      single: false,
-      key: 'cms-5',
-      disabled: true,
-      icon: 'icon-ikons-bar-chart-2',
-      text: formatMsg(intl, 'analytics'),
-      sublinks: [{
-        key: 'cms-5-0',
-        path: '/clearance/analytics/kpi',
-        text: formatMsg(intl, 'analyticsKPI'),
-      }],
-    });
+    if (hasPermission(privileges, { module: 'clearance', feature: 'import' })) {
+      linkMenus.push({
+        single: false,
+        key: 'cms-5',
+        disabled: true,
+        icon: 'icon-ikons-bar-chart-2',
+        text: formatMsg(intl, 'analytics'),
+        sublinks: [{
+          key: 'cms-5-0',
+          path: '/clearance/analytics/kpi',
+          text: formatMsg(intl, 'analyticsKPI'),
+        }],
+      });
+    }
     if (hasPermission(privileges, { module: 'clearance', feature: 'settings' })) {
       linkMenus.push({
         single: false,

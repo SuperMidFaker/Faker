@@ -7,26 +7,25 @@ import QueueAnim from 'rc-queue-anim';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import Table from 'client/components/remoteAntTable';
-import { loadManifests } from 'common/reducers/scvClearance';
+import { loadManifests, loadManifestTableParams } from 'common/reducers/scvClearance';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/search-bar';
 import NavLink from 'client/components/nav-link';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
+import { formatMsg } from '../message.i18n';
 
-const formatMsg = format(messages);
 const { Header, Content } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 
 function fetchData({ state, dispatch }) {
-  return dispatch(loadManifests({
-    tenantId: state.account.tenantId,
-    loginId: state.account.loginId,
-    filter: JSON.stringify(state.scvClearance.manifestFilters),
-    pageSize: state.scvClearance.manifestFilters.pageSize,
-    currentPage: state.scvClearance.manifestFilters.current,
-  }));
+  return [
+    dispatch(loadManifestTableParams()),
+    dispatch(loadManifests({
+      tenantId: state.account.tenantId,
+      filter: JSON.stringify(state.scvClearance.manifestFilters),
+      pageSize: state.scvClearance.manifestList.pageSize,
+      current: state.scvClearance.manifestList.current,
+    }))];
 }
 
 @connectFetch()(fetchData)
@@ -34,11 +33,12 @@ function fetchData({ state, dispatch }) {
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    loginId: state.account.loginId,
-    loginName: state.account.username,
     loading: state.scvClearance.manifestLoading,
     manifestList: state.scvClearance.manifestList,
     filters: state.scvClearance.manifestFilters,
+    tradeModes: state.scvClearance.manifestParams.tradeModes,
+    transModes: state.cmsManifest.formRequire.transModes,
+    customs: state.cmsManifest.formRequire.customs,
   }),
   { loadManifests }
 )
@@ -51,8 +51,6 @@ export default class SCVManifestList extends Component {
     intl: intlShape.isRequired,
     ietype: PropTypes.oneOf(['import', 'export']),
     tenantId: PropTypes.number.isRequired,
-    loginId: PropTypes.number.isRequired,
-    loginName: PropTypes.string.isRequired,
     manifestList: PropTypes.object.isRequired,
     listFilter: PropTypes.object.isRequired,
   }
@@ -61,17 +59,20 @@ export default class SCVManifestList extends Component {
     searchInput: '',
   }
 
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   columns = [{
-    title: this.msg('billNo'),
+    title: this.msg('billSeqNo'),
     dataIndex: 'bill_seq_no',
     fixed: 'left',
-    width: 110,
-    render: (o, record) => <NavLink to={`/clearance/manifest/view/${record.bill_seq_no}`}>{o}</NavLink>,
+    width: 160,
+    render: (o, record) => {
+      const iePath = record.i_e_type === 0 ? 'import' : 'export';
+      return <NavLink to={`/clearance/${iePath}/manifest/view/${record.bill_seq_no}`}>{o}</NavLink>;
+    },
   }, {
     title: '申报单位',
-    dataIndex: 'customs_name',
-    width: 160,
+    dataIndex: 'ccb_name',
+    width: 180,
     render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
     title: '制单日期',
@@ -81,10 +82,8 @@ export default class SCVManifestList extends Component {
   }, {
     title: '进度',
     width: 180,
-    render: (o, record) => {
-      const perVal = (record.bill_status * 20);
-      return (<Progress percent={perVal} strokeWidth={5} showInfo={false} />);
-    },
+    dataIndex: 'bill_status',
+    render: progress => <Progress percent={progress} strokeWidth={5} showInfo={false} />,
   }, {
     title: '提运单号',
     dataIndex: 'bl_wb_no',
@@ -92,6 +91,7 @@ export default class SCVManifestList extends Component {
   }, {
     title: '发票号',
     dataIndex: 'invoice_no',
+    width: 180,
   }, {
     title: '监管方式',
     dataIndex: 'trade_mode',
@@ -130,7 +130,7 @@ export default class SCVManifestList extends Component {
     },
   }]
   dataSource = new Table.DataSource({
-    fetcher: params => this.props.loadDelgBill(params),
+    fetcher: params => this.props.loadManifests(params),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
       total: result.totalCount,
@@ -141,12 +141,11 @@ export default class SCVManifestList extends Component {
     }),
     getParams: (pagination) => {
       const params = {
-        ietype: this.props.ietype,
         tenantId: this.props.tenantId,
         pageSize: pagination.pageSize,
-        currentPage: pagination.current,
+        current: pagination.current,
       };
-      const filter = { ...this.props.listFilter };
+      const filter = { ...this.props.filters };
       params.filter = JSON.stringify(filter);
       return params;
     },
@@ -154,33 +153,28 @@ export default class SCVManifestList extends Component {
   })
   handleTableLoad = (currentPage, filter) => {
     this.setState({ expandedKeys: [] });
-    this.props.loadDelgBill({
-      ietype: this.props.ietype,
+    this.props.loadManifests({
       tenantId: this.props.tenantId,
       filter: JSON.stringify(filter || this.props.listFilter),
       pageSize: this.props.manifestList.pageSize,
-      currentPage: currentPage || this.props.manifestList.current,
+      current: currentPage || this.props.manifestList.current,
     }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 5);
       }
     });
   }
-  handleSearch = (searchVal) => {
-    const filters = this.mergeFilters(this.props.listFilter, searchVal);
+  handleIeChange = (ev) => {
+    const filters = { ...this.props.filters, ietype: ev.target.value };
     this.handleTableLoad(1, filters);
   }
-  mergeFilters(curFilters, value) {
-    const newFilters = {};
-    Object.keys(curFilters).forEach((key) => {
-      if (key !== 'filterNo') {
-        newFilters[key] = curFilters[key];
-      }
-    });
-    if (value !== null && value !== undefined && value !== '') {
-      newFilters.filterNo = value;
-    }
-    return newFilters;
+  handleStatusChange = (ev) => {
+    const filters = { ...this.props.filters, status: ev.target.value };
+    this.handleTableLoad(1, filters);
+  }
+  handleSearch = (searchVal) => {
+    const filters = { ...this.props.filters, filterNo: searchVal };
+    this.handleTableLoad(1, filters);
   }
   render() {
     const { manifestList, filters, loading } = this.props;
@@ -202,12 +196,14 @@ export default class SCVManifestList extends Component {
               {this.msg('declManifest')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <RadioGroup onChange={this.handleProgressChange} size="large" value={filters.ietype}>
+          <RadioGroup onChange={this.handleIeChange} size="large" value={filters.ietype}>
+            <RadioButton value="all">{this.msg('filterAll')}</RadioButton>
             <RadioButton value="import">进口</RadioButton>
             <RadioButton value="export">出口</RadioButton>
           </RadioGroup>
-          <RadioGroup value={filters.status} onChange={this.handleRadioChange} size="large">
-            <RadioButton value="all">{this.msg('all')}</RadioButton>
+          <span />
+          <RadioGroup value={filters.status} onChange={this.handleStatusChange} size="large">
+            <RadioButton value="all">{this.msg('filterAll')}</RadioButton>
             <RadioButton value="wip">{this.msg('filterWIP')}</RadioButton>
             <RadioButton value="generated">{this.msg('filterGenerated')}</RadioButton>
           </RadioGroup>
@@ -215,13 +211,13 @@ export default class SCVManifestList extends Component {
         <Content className="main-content" key="main">
           <div className="page-body">
             <div className="toolbar">
-              <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} />
+              <SearchBar placeholder={this.msg('maniSearchPlaceholder')} size="large" onInputSearch={this.handleSearch} />
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3>
               </div>
             </div>
             <div className="panel-body table-panel expandable">
-              <Table rowSelection={rowSelection} columns={this.columns} rowKey="pre_entry_seq_no" dataSource={this.dataSource}
+              <Table rowSelection={rowSelection} columns={this.columns} rowKey="id" dataSource={this.dataSource}
                 loading={loading} scroll={{ x: 1400 }}
               />
             </div>

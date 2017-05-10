@@ -422,7 +422,7 @@ export default class TradeItemList extends Component {
       } else {
         if (status === TRADE_ITEM_STATUS.classified) {
           if (result.data.length > 0) {
-            const msg = `货号为${result.data.join(', ')}的[中文规格型号]中的填写的项数与申报要素的项数需要一致；且以"|无其他非必报要素"结尾，请修改后重新审核`;
+            const msg = `货号为${result.data.join(', ')}的[中文规格型号]中的填写的项数与申报要素的项数需要一致，请修改后重新审核`;
             message.error(msg, 10);
           } else {
             message.success('归类通过');
