@@ -41,6 +41,7 @@ const actionTypes = createActionTypes('@@welogix/transport/shipment/', [
   'LOAD_TRANSHIPMT', 'LOAD_TRANSHIPMT_FAIL', 'LOAD_TRANSHIPMT_SUCCEED',
   'LOAD_PODSHIPMT', 'LOAD_PODSHIPMT_FAIL', 'LOAD_PODSHIPMT_SUCCEED',
   'COUNT_TOTAL', 'COUNT_TOTAL_SUCCEED', 'COUNT_TOTAL_FAIL',
+  'GET_SHIPMT_ORDER_NO', 'GET_SHIPMT_ORDER_NO_SUCCEED', 'GET_SHIPMT_ORDER_NO_FAIL',
 ]);
 appendFormAcitonTypes('@@welogix/transport/shipment/', actionTypes);
 
@@ -824,6 +825,21 @@ export function prompt(dispId, promptLastAction) {
       endpoint: 'v1/transport/shipment/prompt',
       method: 'post',
       data: { dispId, promptLastAction },
+    },
+  };
+}
+
+export function getShipmtOrderNo(uuid) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.GET_SHIPMT_ORDER_NO,
+        actionTypes.GET_SHIPMT_ORDER_NO_SUCCEED,
+        actionTypes.GET_SHIPMT_ORDER_NO_FAIL,
+      ],
+      endpoint: 'v1/transport/get/shipmt/order/no',
+      method: 'get',
+      params: { uuid },
     },
   };
 }

@@ -16,6 +16,8 @@ import messages from './message.i18n';
 import RowUpdater from 'client/components/rowUpdater';
 import { loadDelgBill, redoManifest } from 'common/reducers/cmsManifest';
 import Templates from './template/templates';
+import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
+import ShipmentDockPanel from '../../../transport/shipment/dock/shipmentDockPanel';
 
 const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
@@ -323,6 +325,8 @@ export default class ManifestList extends Component {
             </QueueAnim>
           </Content>
           <DelegationDockPanel ietype={this.props.ietype} />
+          <OrderDockPanel />
+          <ShipmentDockPanel />
         </Layout>
         <Sider
           trigger={null}

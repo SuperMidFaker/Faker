@@ -22,6 +22,8 @@ import messages from './message.i18n';
 import { CMS_DECL_STATUS } from 'common/constants';
 import SendModal from './modals/sendModal';
 import DelegationDockPanel from '../dockhub/delegationDockPanel';
+import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
+import ShipmentDockPanel from '../../../transport/shipment/dock/shipmentDockPanel';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -442,6 +444,8 @@ export default class CustomsList extends Component {
           </div>
         </Content>
         <DelegationDockPanel ietype={this.props.ietype} />
+        <OrderDockPanel />
+        <ShipmentDockPanel />
       </QueueAnim>
     );
   }

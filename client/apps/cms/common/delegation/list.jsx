@@ -22,6 +22,8 @@ import DelegationDockPanel from '../dockhub/delegationDockPanel';
 import CiqList from './ciqList';
 import messages from './message.i18n';
 import { format } from 'client/common/i18n/helpers';
+import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
+import ShipmentDockPanel from '../../../transport/shipment/dock/shipmentDockPanel';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -615,6 +617,8 @@ export default class DelegationList extends Component {
           </div>
         </Content>
         <DelegationDockPanel ietype={this.props.ietype} />
+        <OrderDockPanel />
+        <ShipmentDockPanel />
       </QueueAnim>
     );
   }
