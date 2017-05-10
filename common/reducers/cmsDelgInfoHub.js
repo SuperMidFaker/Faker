@@ -233,8 +233,8 @@ export function getShipmtOrderNo(uuid) {
         actionTypes.GET_SHIPMT_ORDER_NO_FAIL,
       ],
       method: 'get',
-      endpoint: 'v1/cms/get/shipmt/order/no',
-      params: { uuid },
+      endpoint: 'v1/crm/get/shipmt/order/no',
+      params: { uuid, type: 'cms' },
     },
   };
 }

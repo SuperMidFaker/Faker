@@ -821,9 +821,9 @@ export function getShipmtOrderNo(uuid) {
         actionTypes.GET_SHIPMT_ORDER_NO_SUCCEED,
         actionTypes.GET_SHIPMT_ORDER_NO_FAIL,
       ],
-      endpoint: 'v1/transport/get/shipmt/order/no',
+      endpoint: 'v1/crm/get/shipmt/order/no',
       method: 'get',
-      params: { uuid },
+      params: { uuid, type: 'tms' },
     },
   };
 }

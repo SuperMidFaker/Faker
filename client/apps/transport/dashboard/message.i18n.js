@@ -167,6 +167,10 @@ const messages = defineMessages({
     id: 'transport.dashboard.todo.accept.prompt',
     defaultMessage: '客户催促',
   },
+  export: {
+    id: 'transport.dashboard.export',
+    defaultMessage: '导出',
+  },
 });
 
 export default messages;

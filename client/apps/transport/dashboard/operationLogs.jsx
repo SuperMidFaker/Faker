@@ -5,7 +5,7 @@ import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege from 'client/common/decorators/withPrivilege';
-import { Tag, Layout, Radio } from 'antd';
+import { Tag, Layout, Radio, Button } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { loadShipmentEvents, loadShipmtDetail } from 'common/reducers/shipment';
 import TrimSpan from 'client/components/trimSpan';
@@ -19,6 +19,8 @@ import ActDate from '../common/actDate';
 import ExceptionListPopover from '../tracking/land/modals/exception-list-popover';
 import OrderDockPanel from '../../scof/orders/docks/orderDockPanel';
 import DelegationDockPanel from '../../cms/common/dockhub/delegationDockPanel';
+import { createFilename } from 'client/util/dataTransform';
+
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -75,6 +77,12 @@ export default class Dashboard extends React.Component {
       currentPage: 1,
       filters: { ...filters, statusType: e.target.value },
     });
+  }
+  handleExportExcel = () => {
+    const { startDate, endDate, type } = this.props.location.query;
+    const { tenantId } = this.props;
+    const filters = JSON.stringify(this.props.filters);
+    window.open(`${API_ROOTS.default}v1/transport/dashboard/exportOperationExcel/${createFilename('operation')}.xlsx?tenantId=${tenantId}&startDate=${startDate}&endDate=${endDate}&type=${type}&currentPage=1&pageSize=999999&filters=${filters}`);
   }
   render() {
     const { startDate, endDate, type } = this.props.location.query;
@@ -216,6 +224,9 @@ export default class Dashboard extends React.Component {
         <Header className="top-bar">
           <span>{this.msg(type)}</span>
           {radio}
+          <div className="top-bar-tools">
+            <Button type="primary" size="large" ghost icon="export" onClick={this.handleExportExcel}>{this.msg('export')}</Button>
+          </div>
         </Header>
         <Content className="main-content">
           <div className="page-body">
