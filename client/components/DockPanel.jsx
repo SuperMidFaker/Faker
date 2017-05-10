@@ -57,7 +57,6 @@ export default class DockPanel extends React.Component {
 
   render() {
     const { prefixCls, size = '', className, visible, title, status, statusText, extra, loading, alert, alertType, children } = this.props;
-    console.log(alert);
     const sizeCls = ({
       large: 'lg',
       small: 'sm',
