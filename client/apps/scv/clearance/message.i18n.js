@@ -1,4 +1,5 @@
 import { defineMessages } from 'react-intl';
+import { formati18n } from 'client/common/i18n/helpers';
 
 const messages = defineMessages({
   clearance: {
@@ -29,6 +30,27 @@ const messages = defineMessages({
     id: 'scv.clearance.customs.decl',
     defaultMessage: '报关单管理',
   },
+  filterAll: {
+    id: 'cms.clearance.filter.all',
+    defaultMessage: '全部',
+  },
+  filterWIP: {
+    id: 'cms.clearance.filter.manifest.wip',
+    defaultMessage: '制单中',
+  },
+  filterGenerated: {
+    id: 'cms.clearance.filter.manifest.generated',
+    defaultMessage: '制单完成',
+  },
+  maniSearchPlaceholder: {
+    id: 'scv.clearance.manifest.search.placeholder',
+    defaultMessage: '搜索委托号',
+  },
+  billSeqNo: {
+    id: 'scv.clearance.manifest.bill.seqno',
+    defaultMessage: '清单编号',
+  },
 });
 
 export default messages;
+export const formatMsg = formati18n(messages);

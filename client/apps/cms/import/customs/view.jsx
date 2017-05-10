@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import withPrivilege from 'client/common/decorators/withPrivilege';
 import { loadEntry, loadCmsParams } from 'common/reducers/cmsManifest';
 import CustomsDeclEditor from '../../common/customs/editor';
 
@@ -14,14 +13,13 @@ function fetchData({ dispatch, params, state }) {
   })));
   return Promise.all(promises);
 }
+
 @connect(
   state => ({
     customsDeclSpinning: state.cmsManifest.customsDeclLoading,
-  }),
-  { }
+  })
 )
 @connectFetch()(fetchData)
-@withPrivilege({ module: 'clearance', feature: 'import' })
 export default class ImportCustomsDeclView extends React.Component {
   static propTypes = {
     customsDeclSpinning: PropTypes.bool.isRequired,

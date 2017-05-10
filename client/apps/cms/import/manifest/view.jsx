@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import withPrivilege from 'client/common/decorators/withPrivilege';
 import { loadBill, loadCmsParams } from 'common/reducers/cmsManifest';
 import ManifestEditor from '../../common/manifest/editor';
 
@@ -17,11 +16,9 @@ function fetchData({ dispatch, params, state }) {
 @connect(
   state => ({
     manifestSpinning: state.cmsManifest.manifestLoading,
-  }),
-  { }
+  })
 )
 @connectFetch()(fetchData)
-@withPrivilege({ module: 'clearance', feature: 'import' })
 export default class ImportManifestView extends React.Component {
   static propTypes = {
     params: PropTypes.object,

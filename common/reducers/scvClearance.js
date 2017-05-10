@@ -3,13 +3,14 @@ import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/scv/clearance/', [
   'LOAD_MANIFESTS', 'LOAD_MANIFESTS_SUCCEED', 'LOAD_MANIFESTS_FAIL',
+  'LOAD_MANIFESTTP', 'LOAD_MANIFESTTP_SUCCEED', 'LOAD_MANIFESTTP_FAIL',
 ]);
 
 const initialState = {
   manifestLoading: false,
   customsDeclLoading: false,
-  manifestFilters: { ietype: 'import', status: 'all' },
-  customsFilters: { ietype: 'import', status: 'all' },
+  manifestFilters: { ietype: 'all', status: 'all' },
+  customsFilters: { ietype: 'all', status: 'all' },
   manifestList: {
     totalCount: 0,
     current: 1,
@@ -22,6 +23,7 @@ const initialState = {
     pageSize: 20,
     data: [],
   },
+  manifestParams: { customs: [], tradeModes: [], transModes: [] },
 };
 
 export default function reducer(state = initialState, action) {
@@ -34,6 +36,8 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_MANIFESTS_SUCCEED:
       return { ...state, manifestList: { ...state.manifestList, manifestLoading: false, ...action.result.data },
         formRequire: action.result.data.formRequire };
+    case actionTypes.LOAD_MANIFESTTP_SUCCEED:
+      return { ...state, manifestParams: action.result.data };
     default:
       return state;
   }
@@ -50,6 +54,20 @@ export function loadManifests(params) {
       endpoint: 'v1/scv/manifests',
       method: 'get',
       params,
+    },
+  };
+}
+
+export function loadManifestTableParams() {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_MANIFESTTP,
+        actionTypes.LOAD_MANIFESTTP_SUCCEED,
+        actionTypes.LOAD_MANIFESTTP_FAIL,
+      ],
+      endpoint: 'v1/cms/manifests/table/params',
+      method: 'get',
     },
   };
 }

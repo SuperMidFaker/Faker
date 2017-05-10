@@ -299,7 +299,7 @@ export function loadDelgBill(params) {
         actionTypes.LOAD_DELG_MANIFEST_SUCCEED,
         actionTypes.LOAD_DELG_MANIFEST_FAIL,
       ],
-      endpoint: 'v1/cms/manifest/delgBill',
+      endpoint: 'v1/cms/manifests',
       method: 'get',
       params,
     },
