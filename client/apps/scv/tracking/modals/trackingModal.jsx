@@ -31,6 +31,7 @@ export default class TrackingModal extends React.Component {
   state = {
     selectedKeys: [],
     targetKeys: [],
+    name: '',
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.operation === 'edit') {
@@ -44,43 +45,44 @@ export default class TrackingModal extends React.Component {
         targetKeys: [],
       });
     }
+    this.setState({
+      name: nextProps.tracking.name,
+    });
   }
   handleOk = () => {
-    const { targetKeys } = this.state;
+    const { targetKeys, name } = this.state;
     const { operation, tracking } = this.props;
     if (targetKeys.length === 0) {
       message.warning('请选择追踪项');
+    } else if (!name) {
+      message.warning('请填写追踪名称');
     } else {
-      this.props.form.validateFields((errors, values) => {
-        if (!errors) {
-          const trackingItems = this.props.trackingFields.filter(item => targetKeys.indexOf(item.field) >= 0)
-            .map((item, index) => ({ title: item.title, field: item.field, datatype: item.type, position: index, source: 1 }));
-          if (operation === 'add') {
-            this.props.addTracking({
-              ...values,
-              trackingItems,
-              tenant_id: this.props.tenantId,
-            }).then(() => {
-              if (this.props.onOk) {
-                this.props.toggleTrackingModal(false);
-                this.props.onOk();
-              }
-            });
-          } else if (operation === 'edit') {
-            this.props.updateTracking({
-              ...values,
-              trackingItems,
-              tenant_id: this.props.tenantId,
-              id: tracking.id,
-            }).then(() => {
-              if (this.props.onOk) {
-                this.props.toggleTrackingModal(false);
-                this.props.onOk();
-              }
-            });
+      const trackingItems = this.props.trackingFields.filter(item => targetKeys.indexOf(item.field) >= 0)
+          .map((item, index) => ({ title: item.title, field: item.field, datatype: item.type, position: index, source: 1 }));
+      if (operation === 'add') {
+        this.props.addTracking({
+          name,
+          trackingItems,
+          tenant_id: this.props.tenantId,
+        }).then(() => {
+          if (this.props.onOk) {
+            this.props.toggleTrackingModal(false);
+            this.props.onOk();
           }
-        }
-      });
+        });
+      } else if (operation === 'edit') {
+        this.props.updateTracking({
+          name,
+          trackingItems,
+          tenant_id: this.props.tenantId,
+          id: tracking.id,
+        }).then(() => {
+          if (this.props.onOk) {
+            this.props.toggleTrackingModal(false);
+            this.props.onOk();
+          }
+        });
+      }
     }
   }
   handleChange = (keys) => {
@@ -97,16 +99,12 @@ export default class TrackingModal extends React.Component {
     return reg.test(inputValue);
   }
   render() {
-    const { visible, operation, tracking, form: { getFieldDecorator } } = this.props;
+    const { visible, operation } = this.props;
     const { selectedKeys, targetKeys } = this.state;
     return (
       <Modal title={operation === 'add' ? '新增追踪' : '修改追踪'} visible={visible} onOk={this.handleOk} onCancel={this.handleCancel} width={680}>
         <FormItem label="追踪名称:" required>
-          {getFieldDecorator('name', {
-            initialValue: tracking.name || '',
-            rules: [{ required: true, message: '请填写追踪名称' }],
-          })(<Input placeholder="追踪名称" />)
-          }
+          <Input placeholder="追踪名称" value={this.state.name} onChange={e => this.setState({ name: e.target.value })} />
         </FormItem>
         <FormItem label="追踪项:" required>
           <Transfer
