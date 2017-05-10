@@ -12,6 +12,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'LOAD_BASIC_INFO', 'LOAD_BASIC_INFO_SUCCEED', 'LOAD_BASIC_INFO_FAILED',
   'SAVE_BASE_INFO', 'SAVE_BASE_INFO_SUCCEED', 'SAVE_BASE_INFO_FAIL',
   'SET_OPERATOR', 'SET_OPERATOR_SUCCEED', 'SET_OPERATOR_FAIL',
+  'GET_SHIPMT_ORDER_NO', 'GET_SHIPMT_ORDER_NO_SUCCEED', 'GET_SHIPMT_ORDER_NO_FAIL',
 ]);
 
 const initialState = {
@@ -39,6 +40,7 @@ const initialState = {
     bill: {},
   },
   preStatus: '',
+  shipmtOrderNo: '',
 };
 
 export default function reducer(state = initialState, action) {
@@ -218,6 +220,21 @@ export function setOpetaor(loginId, loginName, delgNo) {
       endpoint: 'v1/cms/delegation/set/operator',
       data: { loginId, loginName, delgNo },
       payload: { loginName },
+    },
+  };
+}
+
+export function getShipmtOrderNo(uuid) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.GET_SHIPMT_ORDER_NO,
+        actionTypes.GET_SHIPMT_ORDER_NO_SUCCEED,
+        actionTypes.GET_SHIPMT_ORDER_NO_FAIL,
+      ],
+      method: 'get',
+      endpoint: 'v1/cms/get/shipmt/order/no',
+      params: { uuid },
     },
   };
 }

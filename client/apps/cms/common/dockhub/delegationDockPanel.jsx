@@ -16,8 +16,8 @@ import ActivityLoggerPane from './tabpanes/ActivityLoggerPane';
 import AcceptModal from './acceptModal';
 import DelgDispModal from './delgDispModal';
 import { openAcceptModal, showDispModal } from 'common/reducers/cmsDelegation';
-import { setPreviewStatus, hidePreviewer, setPreviewTabkey, loadBasicInfo } from 'common/reducers/cmsDelgInfoHub';
-import { showDock } from 'common/reducers/crmOrders';
+import { setPreviewStatus, hidePreviewer, setPreviewTabkey, loadBasicInfo, getShipmtOrderNo } from 'common/reducers/cmsDelgInfoHub';
+import { loadOrderDetail } from 'common/reducers/crmOrders';
 
 const TabPane = Tabs.TabPane;
 
@@ -31,7 +31,7 @@ const TabPane = Tabs.TabPane;
     previewKey: state.cmsDelgInfoHub.previewKey,
     delegateListFilter: state.cmsDelegation.delegateListFilter,
   }),
-  { hidePreviewer, setPreviewStatus, setPreviewTabkey, openAcceptModal, showDispModal, loadBasicInfo, showDock }
+  { hidePreviewer, setPreviewStatus, setPreviewTabkey, openAcceptModal, showDispModal, loadBasicInfo, loadOrderDetail, getShipmtOrderNo }
 )
 export default class DelegationDockPanel extends React.Component {
   static propTypes = {
@@ -128,9 +128,14 @@ export default class DelegationDockPanel extends React.Component {
       default: return '';
     }
   }
-  goBack = () => {
-    this.props.hidePreviewer();
-    this.props.showDock();
+  goHomeDock = () => {
+    const { previewer } = this.props;
+    this.props.getShipmtOrderNo(previewer.delegation.instance_uuid).then(
+      (result) => {
+        this.props.loadOrderDetail(result.data.order_no, this.props.tenantId);
+        this.props.hidePreviewer();
+      }
+    );
   }
   renderTabs() {
     const { previewer, tabKey } = this.props;
@@ -233,8 +238,9 @@ export default class DelegationDockPanel extends React.Component {
   renderTitle = () => {
     const { previewer } = this.props;
     const { delegation } = previewer;
+    const button = delegation.instance_uuid ? <Button shape="circle" icon="home" onClick={this.goHomeDock} /> : '';
     return (
-      <span><Button shape="circle" icon="left" onClick={this.goBack} /><span>{delegation.delg_no}</span></span>
+      <span>{button}<span>{delegation.delg_no}</span></span>
     );
   }
   renderBtns() {

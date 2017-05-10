@@ -33,6 +33,8 @@ import RevokejectModal from '../shipment/dock/revoke-reject';
 import SearchBar from 'client/components/search-bar';
 import AdvancedSearchBar from '../common/advanced-search-bar';
 import MyShipmentsSelect from '../common/myShipmentsSelect';
+import OrderDockPanel from '../../scof/orders/docks/orderDockPanel';
+import DelegationDockPanel from '../../cms/common/dockhub/delegationDockPanel';
 
 const { Header, Content } = Layout;
 const RadioButton = Radio.Button;
@@ -1066,6 +1068,8 @@ export default class DispatchList extends React.Component {
           </div>
         </Content>
         <ShipmentDockPanel stage="dispatch" />
+        <OrderDockPanel />
+        <DelegationDockPanel />
         <DispatchDock
           shipmts={this.props.shipmts}
           onClose={this.handleDispatchDockClose}

@@ -14,6 +14,8 @@ import ShipmentDockPanel from '../shipment/dock/shipmentDockPanel';
 import DispatchDock from '../dispatch/dispatchDock';
 import SegmentDock from '../dispatch/segmentDock';
 import { formatMsg } from './message.i18n';
+import OrderDockPanel from '../../scof/orders/docks/orderDockPanel';
+import DelegationDockPanel from '../../cms/common/dockhub/delegationDockPanel';
 
 const { Header, Content, Sider } = Layout;
 
@@ -72,6 +74,8 @@ export default class Dashboard extends React.Component {
               </Row>
             </Content>
             <ShipmentDockPanel stage="todo" />
+            <OrderDockPanel />
+            <DelegationDockPanel />
             <DispatchDock
               onClose={this.handleDispatchDockClose}
             />

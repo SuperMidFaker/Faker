@@ -17,6 +17,8 @@ import '../index.less';
 import ShipmentDockPanel from '../shipment/dock/shipmentDockPanel';
 import ActDate from '../common/actDate';
 import ExceptionListPopover from '../tracking/land/modals/exception-list-popover';
+import OrderDockPanel from '../../scof/orders/docks/orderDockPanel';
+import DelegationDockPanel from '../../cms/common/dockhub/delegationDockPanel';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -223,6 +225,8 @@ export default class Dashboard extends React.Component {
           </div>
         </Content>
         <ShipmentDockPanel stage="dashboard" />
+        <OrderDockPanel />
+        <DelegationDockPanel />
       </div>
     );
   }
