@@ -258,7 +258,7 @@ export default class DetailPane extends React.Component {
                         />
                       </Row>
                       <Row gutter={10}>
-                        <Col span={12}>
+                        <Col span={10}>
                           <InfoItem label="发货地"
                             type="regionCascade"
                             editable={editable}
@@ -271,7 +271,7 @@ export default class DetailPane extends React.Component {
                             onEdit={value => this.handleSaveConsign(value, 'consigner', 'consignerInfoChanged')}
                           />
                         </Col>
-                        <Col span={12}>
+                        <Col span={14}>
                           <InfoItem label="详细地址"
                             editable={editable}
                             field={shipmt.consigner_addr}
@@ -280,14 +280,14 @@ export default class DetailPane extends React.Component {
                         </Col>
                       </Row>
                       <Row gutter={10}>
-                        <Col span={12}>
+                        <Col span={10}>
                           <InfoItem label="联系人"
                             field={shipmt.consigner_contact}
                             editable={editable}
                             onEdit={value => this.handleSaveShipment('consigner_contact', value, 'consignerInfoChanged')}
                           />
                         </Col>
-                        <Col span={12}>
+                        <Col span={14}>
                           <InfoItem label="电话"
                             field={shipmt.consigner_mobile}
                             editable={editable}
@@ -315,7 +315,7 @@ export default class DetailPane extends React.Component {
                         />
                       </Row>
                       <Row gutter={10}>
-                        <Col span={12}>
+                        <Col span={10}>
                           <InfoItem label="收货地"
                             type="regionCascade"
                             editable={editable}
@@ -328,7 +328,7 @@ export default class DetailPane extends React.Component {
                             onEdit={value => this.handleSaveConsign(value, 'consignee', 'consigneeInfoChanged')}
                           />
                         </Col>
-                        <Col span={12}>
+                        <Col span={14}>
                           <InfoItem label="详细地址"
                             editable={editable}
                             field={shipmt.consignee_addr}
@@ -337,14 +337,14 @@ export default class DetailPane extends React.Component {
                         </Col>
                       </Row>
                       <Row gutter={10}>
-                        <Col span={12}>
+                        <Col span={10}>
                           <InfoItem label="联系人"
                             field={shipmt.consignee_contact}
                             editable={editable}
                             onEdit={value => this.handleSaveShipment('consignee_contact', value, 'consigneeInfoChanged')}
                           />
                         </Col>
-                        <Col span={12}>
+                        <Col span={14}>
                           <InfoItem label="电话"
                             field={shipmt.consignee_mobile}
                             editable={editable}
