@@ -115,8 +115,8 @@ export default class ManifestEditor extends React.Component {
       } else if (result.data.length > 0) {
         notification.warning({
           message: '表体数据不完整',
-          description: `序号为 ${result.data} 的表体数据尚未填写完整`,
           duration: null,
+          description: `序号为 ${result.data.join(',')} 的表体数据尚未填写完整`,
         });
         this.setState({ generating: false });
         this.props.openMergeSplitModal();
