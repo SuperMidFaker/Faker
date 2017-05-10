@@ -109,47 +109,20 @@ export default class ManifestEditor extends React.Component {
     });
   }
   generateEntry = () => {
-    const billHead = this.props.billHead;
-    const bodyDatas = this.props.billBodies;
-    let wtSum = 0;
-    let bodyGrossWt = 0;
-    bodyDatas.forEach((body) => {
-      if (body.wet_wt) {
-        wtSum += Number(body.wet_wt);
-      }
-      if (body.gross_wt) {
-        bodyGrossWt += Number(body.gross_wt);
-      }
-    });
-    if (bodyDatas.length === 0) {
-      this.setState({ generating: false });
-      return message.error('尚未录入表体数据', 3);
-    }
-    if (wtSum === 0) {
-      this.setState({ generating: false });
-      return message.error('表体数据总净重为零', 3);
-    }
-    if (wtSum > billHead.gross_wt) {
-      this.props.updateHeadNetWt(billHead.bill_seq_no, wtSum);
-      this.setState({ generating: false });
-      return message.error('毛重必须大于总净重', 3);
-    }
-    const totalGrossWt = Number(billHead.gross_wt);
-    if (bodyGrossWt !== 0 && Number(bodyGrossWt.toFixed(3)) !== Number(totalGrossWt.toFixed(3))) {
-      this.setState({ generating: false });
-      return notification.warning({
-        message: '毛重不一致',
-        description: '表头毛重的数值不等于表体毛重汇总的数值, 请进一步调整确认',
-      });
-    }
-    this.props.validateBillDatas({ billSeqNo: this.props.billHead.bill_seq_no, delgNo: billHead.delg_no, totalGrossWt }).then(
+    const { billHead } = this.props;
+    this.props.validateBillDatas({ billSeqNo: this.props.billHead.bill_seq_no, delgNo: billHead.delg_no }).then(
     (result) => {
       if (result.error) {
-        message.error(result.error.message, 10);
-      } else if (result.data) {
         this.setState({ generating: false });
-        message.error(`表体数据尚未填写完整,序号${result.data}`, 5);
-      } else {
+        message.error(result.error.message, 10);
+      } else if (result.data.length > 0) {
+        notification.warning({
+          message: '表体数据不完整',
+          description: `序号为 ${result.data} 的表体数据尚未填写完整`,
+        });
+        this.setState({ generating: false });
+        this.props.openMergeSplitModal();
+      } else if (result.data.length === 0) {
         this.setState({ generating: false });
         this.props.openMergeSplitModal();
       }
