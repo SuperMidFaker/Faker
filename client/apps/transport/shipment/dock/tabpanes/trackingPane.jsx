@@ -29,12 +29,18 @@ export default class TrackingPane extends React.Component {
   state = {
     points: [],
   }
+  componentDidMount() {
+    this.handleLoad(this.props);
+  }
   componentWillReceiveProps(nextProps) {
     if (this.props.shipmtNo !== nextProps.shipmtNo && nextProps.shipmtNo !== '') {
-      this.props.loadShipmtPoints(nextProps.shipmtNo).then((result) => {
-        this.setState({ points: result.data.points });
-      });
+      this.handleLoad(nextProps);
     }
+  }
+  handleLoad = (props) => {
+    this.props.loadShipmtPoints(props.shipmtNo).then((result) => {
+      this.setState({ points: result.data.points });
+    });
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   handleRemovePoint = (pointId, content) => {
