@@ -78,8 +78,8 @@ export default class FlowList extends React.Component {
       <EditableCell value={record.name} cellTrigger={false} onSave={name => this.handleFlowNameChange(record.id, name)} />
       <div className="mdc-text-grey">
         {record.customer_tenant_id === -1 ?
-          <Tooltip title="线上租户" placement="left"><Badge status="default" />{record.customer}</Tooltip> :
-          <Tooltip title="线下企业" placement="left"><Badge status="success" />{record.customer}</Tooltip>}
+          <Tooltip title="线下企业" placement="left"><Badge status="default" />{record.customer}</Tooltip> :
+          <Tooltip title="线上租户" placement="left"><Badge status="success" />{record.customer}</Tooltip>}
       </div>
     </div>),
   }]
