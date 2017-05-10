@@ -1,13 +1,12 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Modal, Form, Input, Checkbox, message, Select } from 'antd';
-import { addSp, editSp, closeSpModal, checkPartner, matchTenants } from 'common/reducers/partner';
+import { Modal, Form, Input, Checkbox, message } from 'antd';
+import { addSp, editSp, closeSpModal, checkPartner, matchTenant } from 'common/reducers/partner';
 import { CUSTOMER_TYPES } from 'common/constants';
 
 const FormItem = Form.Item;
 const CheckboxGroup = Checkbox.Group;
-const Option = Select.Option;
 
 @injectIntl
 @connect(
@@ -18,7 +17,7 @@ const Option = Select.Option;
     operation: state.partner.spModal.operation,
     matchedPartners: state.partner.matchedPartners,
   }),
-  { addSp, editSp, checkPartner, closeSpModal, matchTenants }
+  { addSp, editSp, checkPartner, closeSpModal, matchTenant }
 )
 
 export default class SpModal extends React.Component {
@@ -33,7 +32,6 @@ export default class SpModal extends React.Component {
     editSp: PropTypes.func.isRequired,
     spPartner: PropTypes.object.isRequired,
     reload: PropTypes.func,
-    matchedPartners: PropTypes.array,
   }
   state = {
     id: -1,
@@ -152,21 +150,17 @@ export default class SpModal extends React.Component {
       }
     });
   }
-  handleChange = (value) => {
-    this.props.matchTenants(this.props.tenantId, value);
-    this.setState({
-      name: value,
-    });
-  }
-  handleSelect = (value) => {
-    const selectedOpt = this.props.matchedPartners.find(item => item.name === value);
-    this.setState({
-      partnerUniqueCode: selectedOpt.code,
-      customsCode: selectedOpt.customs_code,
-    });
+  handleBlur = () => {
+    const name = this.state.name;
+    this.props.matchTenant(name).then(
+      result => this.setState({
+        partnerUniqueCode: result.data.code,
+        customsCode: result.data.customs_code,
+      })
+    );
   }
   render() {
-    const { visible, operation, matchedPartners } = this.props;
+    const { visible, operation } = this.props;
     const { businessType } = this.state;
     const businessArray = businessType !== '' ? businessType.split(',') : [];
     const formItemLayout = {
@@ -188,11 +182,7 @@ export default class SpModal extends React.Component {
             hasFeedback
             required
           >
-            <Select mode="combobox" value={this.state.name} onChange={this.handleChange} onSelect={this.handleSelect}>
-              {
-                matchedPartners && matchedPartners.map(item => <Option key={item.code} value={item.name}>{item.name}</Option>)
-              }
-            </Select>
+            <Input value={this.state.name} onBlur={this.handleBlur} onChange={(e) => { this.setState({ name: e.target.value }); }} />
           </FormItem>
           <FormItem
             {...formItemLayout}
