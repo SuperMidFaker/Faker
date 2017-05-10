@@ -32,7 +32,6 @@ const Search = Input.Search;
 
 function fetchData({ state, dispatch }) {
   const promises = [];
-
   promises.push(dispatch(loadRepos({
     tenantId: state.account.tenantId,
   })));
@@ -100,6 +99,7 @@ export default class TradeItemList extends Component {
     repos: [],
     currentPage: 1,
     protected: 1,
+    searchVal: '',
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.repos !== this.props.repos && nextProps.repos.length > 0) {
@@ -357,7 +357,7 @@ export default class TradeItemList extends Component {
   handleRowClick = (record) => {
     const repo = record;
     this.props.selectedRepoId(repo.id);
-    this.handleItemListLoad(repo.id);
+    this.handleItemListLoad(repo.id, 1, this.props.listFilter, this.state.searchVal);
     this.handleAuditWay(repo.owner_tenant_id);
     this.props.setRepo(repo);
     this.setState({ protected: repo.protected });
@@ -459,6 +459,7 @@ export default class TradeItemList extends Component {
   }
   handleSearch = (value) => {
     const { repoId, listFilter } = this.props;
+    this.setState({ searchVal: value });
     this.handleItemListLoad(repoId, 1, listFilter, value);
   }
   handlePageChange = (page) => {
