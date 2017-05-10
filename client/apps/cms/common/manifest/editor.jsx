@@ -95,12 +95,8 @@ export default class ManifestEditor extends React.Component {
     });
   }
   handleGenerateEntry = () => {
-    this.setState({ generating: true });
     this.props.form.validateFields((errors) => {
       if (!errors) {
-        const { billHead, ietype, loginId, tenantId } = this.props;
-        const head = { ...billHead, ...this.props.form.getFieldsValue() };
-        this.props.saveBillHead({ head, ietype, loginId, tenantId });
         this.generateEntry();
       } else {
         this.setState({ generating: false });
@@ -110,6 +106,7 @@ export default class ManifestEditor extends React.Component {
   }
   generateEntry = () => {
     const { billHead } = this.props;
+    this.setState({ generating: true });
     this.props.validateBillDatas({ billSeqNo: this.props.billHead.bill_seq_no, delgNo: billHead.delg_no }).then(
     (result) => {
       if (result.error) {
