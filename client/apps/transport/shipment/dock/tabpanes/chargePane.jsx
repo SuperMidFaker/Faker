@@ -62,6 +62,9 @@ export default class ChargePanel extends React.Component {
     pSpecialCharges: [],
     specialCharges: [],
   }
+  componentDidMount() {
+    this.handleLoad(this.props);
+  }
   componentWillReceiveProps(nextProps) {
     if (nextProps.previewer.dispatch.id !== this.props.previewer.dispatch.id || !nextProps.previewer.loaded) {
       this.handleLoad(nextProps);
