@@ -12,6 +12,8 @@ import ExceptionListPopover from '../../tracking/land/modals/exception-list-popo
 import ShipmentDockPanel from '../../shipment/dock/shipmentDockPanel';
 import { loadShipmtDetail } from 'common/reducers/shipment';
 import ActDate from '../../common/actDate';
+import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
+import DelegationDockPanel from '../../../cms/common/dockhub/delegationDockPanel';
 
 const formatMsg = format(messages);
 
@@ -180,6 +182,8 @@ export default class BeforeFeesModal extends React.Component {
       <Modal visible={this.props.visible} width="85%" title="未入账运单" onOk={this.props.toggle} onCancel={this.props.toggle}>
         <Table dataSource={this.state.dataSource} columns={columns} rowKey="id" />
         <ShipmentDockPanel stage="billing" />
+        <OrderDockPanel />
+        <DelegationDockPanel />
       </Modal>
     );
   }

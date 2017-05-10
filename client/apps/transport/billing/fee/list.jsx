@@ -21,6 +21,8 @@ import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 import SpecialChargePopover from './specialChargePopover';
 import ShipmentAdvanceModal from '../../tracking/land/modals/shipment-advance-modal';
 import CreateSpecialCharge from '../../tracking/land/modals/create-specialCharge';
+import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
+import DelegationDockPanel from '../../../cms/common/dockhub/delegationDockPanel';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -499,6 +501,8 @@ export default class FeesList extends React.Component {
           </div>
         </Content>
         <ShipmentDockPanel stage="billing" />
+        <OrderDockPanel />
+        <DelegationDockPanel />
         <ShipmentAdvanceModal />
         <CreateSpecialCharge />
       </div>

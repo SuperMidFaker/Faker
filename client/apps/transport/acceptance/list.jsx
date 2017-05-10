@@ -25,6 +25,8 @@ import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import containerMessages from 'client/apps/message.i18n';
 import globalMessages from 'client/common/root.i18n';
+import OrderDockPanel from '../../scof/orders/docks/orderDockPanel';
+import DelegationDockPanel from '../../cms/common/dockhub/delegationDockPanel';
 
 const formatMsg = format(messages);
 const formatContainerMsg = format(containerMessages);
@@ -517,6 +519,8 @@ export default class AcceptList extends React.Component {
         <AccepterModal reload={this.handleTableLoad} clearSelection={this.handleSelectionClear} />
         <RevokejectModal reload={this.handleTableLoad} />
         <ShipmentDockPanel stage="acceptance" />
+        <OrderDockPanel />
+        <DelegationDockPanel />
       </QueueAnim>
     );
   }

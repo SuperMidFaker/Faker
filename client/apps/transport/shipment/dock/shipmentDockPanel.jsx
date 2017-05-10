@@ -9,7 +9,7 @@ import ChargePane from './tabpanes/chargePane';
 import PodPane from './tabpanes/podPane';
 import TrackingPane from './tabpanes/trackingPane';
 import { SHIPMENT_TRACK_STATUS, SHIPMENT_EFFECTIVES } from 'common/constants';
-import { hidePreviewer, sendTrackingDetailSMSMessage, changePreviewerTab, loadShipmtDetail, loadForm } from 'common/reducers/shipment';
+import { hidePreviewer, sendTrackingDetailSMSMessage, changePreviewerTab, loadShipmtDetail, loadForm, getShipmtOrderNo } from 'common/reducers/shipment';
 import { format } from 'client/common/i18n/helpers';
 import InfoItem from 'client/components/InfoItem';
 import DockPanel from 'client/components/DockPanel';
@@ -20,7 +20,7 @@ import ExceptionPane from './tabpanes/exceptionPane';
 import ChangeActDateModal from '../../tracking/land/modals/changeActDateModal';
 import ChangeDeliverPrmDateModal from '../../tracking/land/modals/changeDeliverPrmDateModal';
 import VehicleModal from '../../tracking/land/modals/vehicle-updater';
-import { showDock } from 'common/reducers/crmOrders';
+import { loadOrderDetail } from 'common/reducers/crmOrders';
 
 const formatMsg = format(messages);
 const TabPane = Tabs.TabPane;
@@ -63,7 +63,7 @@ function getTrackStatusMsg(status, eff) {
     shipmt: state.shipment.previewer.shipmt,
     previewer: state.shipment.previewer,
   }),
-  { hidePreviewer, sendTrackingDetailSMSMessage, changePreviewerTab, loadShipmtDetail, loadForm, showDock }
+  { hidePreviewer, sendTrackingDetailSMSMessage, changePreviewerTab, loadShipmtDetail, loadForm, loadOrderDetail, getShipmtOrderNo }
 )
 export default class PreviewPanel extends React.Component {
   static propTypes = {
@@ -135,9 +135,14 @@ export default class PreviewPanel extends React.Component {
       default: return 'success';
     }
   }
-  goBack = () => {
-    this.props.hidePreviewer();
-    this.props.showDock();
+  goHomeDock = () => {
+    const { shipmt } = this.props;
+    this.props.getShipmtOrderNo(shipmt.flow_instance_uuid).then(
+      (result) => {
+        this.props.loadOrderDetail(result.data.order_no, this.props.tenantId);
+        this.props.hidePreviewer();
+      }
+    );
   }
   renderTabs(status, stage, sourceType) {
     if (status === SHIPMENT_TRACK_STATUS.unaccepted) {
@@ -256,9 +261,10 @@ export default class PreviewPanel extends React.Component {
     </Row>);
   }
   renderTitle = () => {
-    const { shipmtNo } = this.props;
+    const { shipmtNo, shipmt } = this.props;
+    const button = shipmt.flow_instance_uuid ? <Button shape="circle" icon="home" onClick={this.goHomeDock} /> : '';
     return (
-      <span><Button shape="circle" icon="left" onClick={this.goBack} /><span>{shipmtNo}</span></span>
+      <span>{button}<span>{shipmtNo}</span></span>
     );
   }
   render() {

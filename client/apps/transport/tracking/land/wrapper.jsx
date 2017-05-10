@@ -5,6 +5,8 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Layout, Radio } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import ShipmentDockPanel from '../../shipment/dock/shipmentDockPanel';
+import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
+import DelegationDockPanel from '../../../cms/common/dockhub/delegationDockPanel';
 import { format } from 'client/common/i18n/helpers';
 import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege, { PrivilegeCover } from 'client/common/decorators/withPrivilege';
@@ -147,6 +149,8 @@ export default class TrackingLandWrapper extends React.Component {
           {this.props.children}
         </Content>
         <ShipmentDockPanel stage={stage} />
+        <OrderDockPanel />
+        <DelegationDockPanel />
       </QueueAnim>
     );
   }
