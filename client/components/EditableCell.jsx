@@ -1,6 +1,8 @@
 import React, { PropTypes } from 'react';
 import { Input, Icon, Select, DatePicker } from 'antd';
+import RegionCascade from 'client/components/region-cascade';
 import moment from 'moment';
+import * as location from 'client/common/location';
 
 const Option = Select.Option;
 export default class EditableCell extends React.Component {
@@ -20,10 +22,11 @@ export default class EditableCell extends React.Component {
     value: this.props.value,
     field: this.props.field,
     editMode: false,
+    region: [],
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.value !== this.props.value) {
-      this.setState({ value: nextProps.value });
+      this.setState({ value: nextProps.value, region: nextProps.value });
     }
   }
   handleChange = (e) => {
@@ -58,12 +61,16 @@ export default class EditableCell extends React.Component {
   handleSelectChange = (value) => {
     this.setState({ value });
   }
-  handleDatehange = (date) => {
+  handleDateChange = (date) => {
     this.setState({ value: date ? date.format('YYYY-MM-DD') : '' });
+  }
+  handleRegionValueChange = (region) => {
+    const [code, province, city, district, street] = region; // eslint-disable-line no-unused-vars
+    this.setState({ value: region, region: [province, city, district, street] });
   }
   renderControl() {
     const { type, placeholder, options, addonBefore, addonAfter } = this.props;
-    const { value } = this.state;
+    const { value, region } = this.state;
     switch (type) {
       case 'textarea':
         return (<div>
@@ -85,7 +92,14 @@ export default class EditableCell extends React.Component {
         </div>);
       case 'date':
         return (<div>
-          <DatePicker style={{ width: '79%' }} value={value ? moment(value) : ''} onChange={this.handleDatehange} />
+          <DatePicker style={{ width: '79%' }} value={value ? moment(value) : ''} onChange={this.handleDateChange} />
+          <Icon type="check" className="editable-cell-icon-save" onClick={this.check} />
+          <span className="ant-divider" />
+          <Icon type="close" className="editable-cell-icon-close" onClick={this.close} />
+        </div>);
+      case 'regionCascade':
+        return (<div>
+          <div style={{ width: '78%', display: 'inline-block' }}><RegionCascade region={region} onChange={this.handleRegionValueChange} /></div>
           <Icon type="check" className="editable-cell-icon-save" onClick={this.check} />
           <span className="ant-divider" />
           <Icon type="close" className="editable-cell-icon-close" onClick={this.close} />
@@ -113,6 +127,14 @@ export default class EditableCell extends React.Component {
     if (type === 'select' && options) {
       const option = options.filter(opt => opt.key === value)[0];
       return (option ? <span>{addonBefore}{option.text}{addonAfter}</span> : <span className="editable-cell-placeholder">{placeholder}</span>);
+    } else if (type === 'regionCascade') {
+      return value ?
+        <span>{addonBefore}{location.renderLoc({
+          province: value[0],
+          city: value[1],
+          district: value[2],
+        }, 'province', 'city', 'district')}{addonAfter}</span> :
+        <span style={{ display: 'inline-block' }}>{addonBefore}<span className="editable-cell-placeholder">{placeholder}</span>{addonAfter}</span>;
     }
     return (value && (value.length > 0 || value !== 0)) ?
       <span>{addonBefore}{value}{addonAfter}</span> :

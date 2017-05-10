@@ -16,7 +16,7 @@ import { showVehicleModal }
 from 'common/reducers/trackingLandStatus';
 import { passAudit, returnAudit } from 'common/reducers/trackingLandPod';
 import { createFilename } from 'client/util/dataTransform';
-import { sendMessage } from 'common/reducers/corps';
+import { sendMessage } from 'common/reducers/notification';
 
 const formatMsg = format(messages);
 

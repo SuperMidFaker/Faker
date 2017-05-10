@@ -5,7 +5,6 @@ import moment from 'moment';
 import { Col, Table, Steps, Card, Icon, Dropdown, Menu, Row, Button, message } from 'antd';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { format } from 'client/common/i18n/helpers';
-import { renderConsignLoc } from '../../../common/consignLocation';
 import { PRESET_TRANSMODES, TMS_SHIPMENT_STATUS_DESC, SHIPMENT_TRACK_STATUS, COURIERS } from 'common/constants';
 import ChangeShipment from '../change-shipment';
 import { showChangeShipmentModal, loadForm } from 'common/reducers/shipment';
@@ -180,6 +179,19 @@ export default class DetailPane extends React.Component {
     };
     this.handleSave(form, type);
   }
+  handleSaveConsign = (value, consignType, type = '') => {
+    const { formData } = this.props;
+    const [code, province, city, district, street] = value;
+    const form = {
+      ...formData,
+      [`${consignType}_region_code`]: code,
+      [`${consignType}_province`]: province,
+      [`${consignType}_city`]: city,
+      [`${consignType}_district`]: district,
+      [`${consignType}_street`]: street,
+    };
+    this.handleSave(form, type);
+  }
   renderConsignPort(province, city, district) {
     if (city === '市辖区' || city === '县') {
       return `${province},${district}`;
@@ -245,20 +257,37 @@ export default class DetailPane extends React.Component {
                           onEdit={value => this.handleSaveShipment('pickup_est_date', new Date(value), 'timeInfoChanged')}
                         />
                       </Row>
-                      <Row>
-                        <InfoItem label="发货地"
-                          field={`${renderConsignLoc(shipmt, 'consigner')} ${shipmt.consigner_addr || ''}`}
-                        />
+                      <Row gutter={10}>
+                        <Col span={12}>
+                          <InfoItem label="发货地"
+                            type="regionCascade"
+                            editable={editable}
+                            field={[
+                              shipmt.consigner_province,
+                              shipmt.consigner_city,
+                              shipmt.consigner_district,
+                              shipmt.consigner_street,
+                            ]}
+                            onEdit={value => this.handleSaveConsign(value, 'consigner', 'consignerInfoChanged')}
+                          />
+                        </Col>
+                        <Col span={12}>
+                          <InfoItem label="详细地址"
+                            editable={editable}
+                            field={shipmt.consigner_addr}
+                            onEdit={value => this.handleSaveShipment('consigner_addr', value, 'consignerInfoChanged')}
+                          />
+                        </Col>
                       </Row>
-                      <Row gutter={16}>
-                        <Col span={8}>
+                      <Row gutter={10}>
+                        <Col span={12}>
                           <InfoItem label="联系人"
                             field={shipmt.consigner_contact}
                             editable={editable}
                             onEdit={value => this.handleSaveShipment('consigner_contact', value, 'consignerInfoChanged')}
                           />
                         </Col>
-                        <Col span={16}>
+                        <Col span={12}>
                           <InfoItem label="电话"
                             field={shipmt.consigner_mobile}
                             editable={editable}
@@ -285,20 +314,37 @@ export default class DetailPane extends React.Component {
                           onEdit={value => this.handleSaveShipment('deliver_est_date', new Date(value), 'timeInfoChanged')}
                         />
                       </Row>
-                      <Row>
-                        <InfoItem label="收货地"
-                          field={`${renderConsignLoc(shipmt, 'consignee')} ${shipmt.consignee_addr || ''}`}
-                        />
+                      <Row gutter={10}>
+                        <Col span={12}>
+                          <InfoItem label="收货地"
+                            type="regionCascade"
+                            editable={editable}
+                            field={[
+                              shipmt.consignee_province,
+                              shipmt.consignee_city,
+                              shipmt.consignee_district,
+                              shipmt.consigneestreet,
+                            ]}
+                            onEdit={value => this.handleSaveConsign(value, 'consignee', 'consigneeInfoChanged')}
+                          />
+                        </Col>
+                        <Col span={12}>
+                          <InfoItem label="详细地址"
+                            editable={editable}
+                            field={shipmt.consignee_addr}
+                            onEdit={value => this.handleSaveShipment('consignee_addr', value, 'consigneeInfoChanged')}
+                          />
+                        </Col>
                       </Row>
-                      <Row gutter={16}>
-                        <Col span={8}>
+                      <Row gutter={10}>
+                        <Col span={12}>
                           <InfoItem label="联系人"
                             field={shipmt.consignee_contact}
                             editable={editable}
                             onEdit={value => this.handleSaveShipment('consignee_contact', value, 'consigneeInfoChanged')}
                           />
                         </Col>
-                        <Col span={16}>
+                        <Col span={12}>
                           <InfoItem label="电话"
                             field={shipmt.consignee_mobile}
                             editable={editable}

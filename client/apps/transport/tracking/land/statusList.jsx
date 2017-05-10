@@ -21,7 +21,7 @@ import makeColumns from './columnDef';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import RevokejectModal from '../../shipment/dock/revoke-reject';
-import { sendMessage } from 'common/reducers/corps';
+import { sendMessage } from 'common/reducers/notification';
 import AdvancedSearchBar from '../../common/advanced-search-bar';
 import MyShipmentsSelect from '../../common/myShipmentsSelect';
 import { SHIPMENT_VEHICLE_CONNECT } from 'common/constants';
