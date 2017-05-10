@@ -46,6 +46,7 @@ export default class ShipmentAdvanceModal extends React.Component {
     getTariffByTransportInfo: PropTypes.func.isRequired,
     loadShipmtDispatch: PropTypes.func.isRequired,
     advances: PropTypes.array.isRequired,
+    onOk: PropTypes.func,
   }
   state = {
     advances: [],
@@ -148,6 +149,9 @@ export default class ShipmentAdvanceModal extends React.Component {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
+        if (this.props.onOk) {
+          this.props.onOk();
+        }
         message.info('添加成功');
       }
     });

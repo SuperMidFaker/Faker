@@ -37,6 +37,7 @@ export default class CreateSpecialCharge extends React.Component {
     visible: PropTypes.bool.isRequired,
     showSpecialChargeModal: PropTypes.func.isRequired,
     type: PropTypes.number.isRequired,
+    onOk: PropTypes.func,
   }
   handleOk = () => {
     const { form, dispId, parentDispId, shipmtNo, loginName, loginId, tenantId } = this.props;
@@ -62,6 +63,9 @@ export default class CreateSpecialCharge extends React.Component {
         if (result.error) {
           message.error(result.error);
         } else {
+          if (this.props.onOk) {
+            this.props.onOk();
+          }
           message.info('添加成功');
         }
       });

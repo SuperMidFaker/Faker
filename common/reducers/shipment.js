@@ -75,15 +75,9 @@ const initialState = {
       id: -1,
       shipmt_no: '',
     },
-    charges: {
-    },
     pod: {
     },
     logs: [],
-    pAdvanceCharges: [],
-    advanceCharges: [],
-    pSpecialCharges: [],
-    specialCharges: [],
     points: [],
   },
   shipmtDetail: {
@@ -200,13 +194,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, previewer: {
         shipmt: action.result.data.shipmt,
         dispatch: action.result.data.dispatch,
-        charges: action.result.data.charges,
         pod: action.result.data.pod,
         logs: action.result.data.logs,
-        pAdvanceCharges: action.result.data.pAdvanceCharges,
-        advanceCharges: action.result.data.advanceCharges,
-        pSpecialCharges: action.result.data.pSpecialCharges,
-        specialCharges: action.result.data.specialCharges,
         points: action.result.data.points,
         visible: true,
         loaded: true,
@@ -494,7 +483,7 @@ export function loadShipmtDetail(No, tenantId, sourceType, tabKey, row) {
   };
 }
 
-export function loadShipmtCharges(shipmtNo, tenantId) {
+export function loadShipmtCharges(dispId, tenantId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -504,7 +493,7 @@ export function loadShipmtCharges(shipmtNo, tenantId) {
       ],
       endpoint: 'v1/transport/shipment/charges',
       method: 'get',
-      params: { shipmtNo, tenantId },
+      params: { dispId, tenantId },
     },
   };
 }

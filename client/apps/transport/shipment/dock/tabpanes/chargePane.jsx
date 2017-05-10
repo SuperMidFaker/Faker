@@ -35,13 +35,9 @@ const typeKeys = EXPENSE_TYPES.map(ec => ec.key);
 @injectIntl
 @connect(
   state => ({
+    tenantId: state.account.tenantId,
     shipmt: state.shipment.previewer.shipmt,
-    charges: state.shipment.previewer.charges,
     previewer: state.shipment.previewer,
-    pAdvanceCharges: state.shipment.previewer.pAdvanceCharges,
-    advanceCharges: state.shipment.previewer.advanceCharges,
-    pSpecialCharges: state.shipment.previewer.pSpecialCharges,
-    specialCharges: state.shipment.previewer.specialCharges,
   }), {
     showAdvanceModal,
     showSpecialChargeModal,
@@ -51,13 +47,9 @@ const typeKeys = EXPENSE_TYPES.map(ec => ec.key);
 export default class ChargePanel extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
+    tenantId: PropTypes.number.isRequired,
     shipmt: PropTypes.object.isRequired,
     previewer: PropTypes.object.isRequired,
-    charges: PropTypes.object.isRequired,
-    pAdvanceCharges: PropTypes.array.isRequired,
-    advanceCharges: PropTypes.array.isRequired,
-    pSpecialCharges: PropTypes.array.isRequired,
-    specialCharges: PropTypes.array.isRequired,
     showAdvanceModal: PropTypes.func.isRequired,
     showSpecialChargeModal: PropTypes.func.isRequired,
     loadShipmtCharges: PropTypes.func.isRequired,
@@ -65,8 +57,28 @@ export default class ChargePanel extends React.Component {
   state = {
     checkedExpCates: categoryKeys,
     checkedExpTypes: typeKeys,
-  }
 
+    charges: {},
+    pAdvanceCharges: [],
+    advanceCharges: [],
+    pSpecialCharges: [],
+    specialCharges: [],
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.previewer.dispatch.id !== this.props.previewer.dispatch.id) {
+      this.handleLoad(nextProps);
+    }
+  }
+  handleLoad = (props) => {
+    this.props.loadShipmtCharges(props.previewer.dispatch.id, props.tenantId).then((result) => {
+      if (!result.error) {
+        this.setState({ ...result.data });
+      }
+    });
+  }
+  handleReload = () => {
+    this.handleLoad(this.props);
+  }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   currency = (number) => {
     if (typeof number === 'string') return number;
@@ -279,8 +291,8 @@ export default class ChargePanel extends React.Component {
   }
 
   render() {
-    const { charges, intl, shipmt, pAdvanceCharges, advanceCharges, pSpecialCharges, specialCharges, previewer: { dispatch } } = this.props;
-    const { checkedExpCates, checkedExpTypes } = this.state;
+    const { intl, shipmt, previewer: { dispatch } } = this.props;
+    const { checkedExpCates, checkedExpTypes, charges, pAdvanceCharges, advanceCharges, pSpecialCharges, specialCharges } = this.state;
 
     let revenueds = [];
     let expenseds = [];
@@ -372,7 +384,7 @@ export default class ChargePanel extends React.Component {
           {dispatch.status >= SHIPMENT_TRACK_STATUS.intransit &&
           <div style={{ float: 'right' }}>
             <Dropdown overlay={
-              <Menu onClick={this.handleRevenueMenuClick}>
+              <Menu selectedKeys={[]} onClick={this.handleRevenueMenuClick}>
                 <Menu.Item key="advanceCharge">代垫费用</Menu.Item>
                 <Menu.Item key="specialCharge">特殊费用</Menu.Item>
               </Menu>
@@ -383,7 +395,7 @@ export default class ChargePanel extends React.Component {
               </a>
             </Dropdown>
             <Dropdown overlay={
-              <Menu onClick={this.handleExpenseMenuClick}>
+              <Menu selectedKeys={[]} onClick={this.handleExpenseMenuClick}>
                 <Menu.Item key="advanceCharge">代垫费用</Menu.Item>
                 <Menu.Item key="specialCharge">特殊费用</Menu.Item>
               </Menu>
@@ -393,8 +405,8 @@ export default class ChargePanel extends React.Component {
                 <Icon type="plus-circle-o" /> 成本 <Icon type="down" />
               </a>
             </Dropdown>
-            <ShipmentAdvanceModal />
-            <CreateSpecialCharge />
+            <ShipmentAdvanceModal onOk={this.handleReload} />
+            <CreateSpecialCharge onOk={this.handleReload} />
           </div>}
         </div>
         <Card bodyStyle={{ padding: 0 }}>
