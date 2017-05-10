@@ -405,7 +405,11 @@ export default class TradeItemList extends Component {
   }
   handleSearch = (value) => {
     const { listFilter } = this.props;
-    this.handleItemListLoad(1, listFilter, value);
+    if (this.state.listView === 'conflict') {
+      this.handleConflictListLoad(1, listFilter, value);
+    } else {
+      this.handleItemListLoad(1, listFilter, value);
+    }
   }
   handleDropdownButtonClick = () => {
     this.props.setNominatedVisible(true);
