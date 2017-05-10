@@ -37,14 +37,13 @@ export default class CreateSpecialCharge extends React.Component {
     visible: PropTypes.bool.isRequired,
     showSpecialChargeModal: PropTypes.func.isRequired,
     type: PropTypes.number.isRequired,
-    onOk: PropTypes.func,
   }
   handleOk = () => {
     const { form, dispId, parentDispId, shipmtNo, loginName, loginId, tenantId } = this.props;
     // console.log(dispId, parentDispId, shipmtNo, loginName, loginId, tenantId);
     const fieldsValue = form.getFieldsValue();
     if (fieldsValue && fieldsValue.charge) {
-      this.props.form.setFieldsValue({ charge: '', remark: '', type: '1' });
+      this.props.form.setFieldsValue({ charge: '', remark: '', type: 1 });
       let type = this.props.type;
       if (this.props.type !== -1 && this.props.type !== 1) {
         type = Number(fieldsValue.type);
@@ -63,9 +62,6 @@ export default class CreateSpecialCharge extends React.Component {
         if (result.error) {
           message.error(result.error);
         } else {
-          if (this.props.onOk) {
-            this.props.onOk();
-          }
           message.info('添加成功');
         }
       });
@@ -74,7 +70,7 @@ export default class CreateSpecialCharge extends React.Component {
     }
   }
   handleCancel = () => {
-    this.props.showSpecialChargeModal({ visible: false, type: '', dispId: -1, shipmtNo: '', parentDispId: -1, spTenantId: -2 });
+    this.props.showSpecialChargeModal({ visible: false, type: -1, dispId: -1, shipmtNo: '', parentDispId: -1, spTenantId: -2 });
   }
   render() {
     const { form: { getFieldDecorator }, spTenantId, type } = this.props;
@@ -89,10 +85,10 @@ export default class CreateSpecialCharge extends React.Component {
             (
               <FormItem label="类型" labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }} required >
                 {getFieldDecorator('type', {
-                  initialValue: '1',
+                  initialValue: 1,
                 })(<RadioGroup>
-                  <RadioButton value="1">向客户收取</RadioButton>
-                  {spTenantId !== 0 && spTenantId !== -1 ? (<RadioButton value="-1">向承运商支付</RadioButton>) : ''}
+                  <RadioButton value={1}>向客户收取</RadioButton>
+                  {spTenantId !== 0 && spTenantId !== -1 ? (<RadioButton value={-1}>向承运商支付</RadioButton>) : ''}
                 </RadioGroup>)}
               </FormItem>
             ) : null

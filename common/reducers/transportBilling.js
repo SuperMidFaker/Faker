@@ -135,7 +135,7 @@ function calculateBillingCharges(fees) {
   };
 }
 
-export const { LOAD_FEES } = actionTypes;
+export const { LOAD_FEES, CREATE_ADVANCE_SUCCEED, CREATE_SPECIALCHARGE_SUCCEED } = actionTypes;
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.UPDATE_BILLINGFEES: {

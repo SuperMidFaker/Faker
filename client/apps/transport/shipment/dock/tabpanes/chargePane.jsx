@@ -3,8 +3,6 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Row, Col, Card, Table, Tag, Collapse, Badge, Dropdown, Menu, Icon } from 'antd';
 import { EXPENSE_CATEGORIES, SHIPMENT_TRACK_STATUS } from 'common/constants';
-import ShipmentAdvanceModal from '../../../tracking/land/modals/shipment-advance-modal';
-import CreateSpecialCharge from '../../../tracking/land/modals/create-specialCharge';
 import { showAdvanceModal, showSpecialChargeModal } from 'common/reducers/transportBilling';
 import { loadShipmtCharges } from 'common/reducers/shipment';
 import { format } from 'client/common/i18n/helpers';
@@ -65,7 +63,7 @@ export default class ChargePanel extends React.Component {
     specialCharges: [],
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.previewer.dispatch.id !== this.props.previewer.dispatch.id) {
+    if (nextProps.previewer.dispatch.id !== this.props.previewer.dispatch.id || !nextProps.previewer.loaded) {
       this.handleLoad(nextProps);
     }
   }
@@ -405,8 +403,6 @@ export default class ChargePanel extends React.Component {
                 <Icon type="plus-circle-o" /> 成本 <Icon type="down" />
               </a>
             </Dropdown>
-            <ShipmentAdvanceModal onOk={this.handleReload} />
-            <CreateSpecialCharge onOk={this.handleReload} />
           </div>}
         </div>
         <Card bodyStyle={{ padding: 0 }}>

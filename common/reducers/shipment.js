@@ -11,7 +11,7 @@ import { CREATE_EXCEPTION_SUCCEED, LOAD_EXCPSHIPMT } from './trackingLandExcepti
 import { LOAD_PODSHIPMT, SAVE_POD_SUCCEED } from './trackingLandPod';
 import { LOAD_DISPSHIPMENT } from './transportDispatch';
 import { LOAD_APTSHIPMENT, SAVE_EDIT_SUCCEED } from './transport-acceptance';
-import { LOAD_FEES } from './transportBilling';
+import { LOAD_FEES, CREATE_ADVANCE_SUCCEED, CREATE_SPECIALCHARGE_SUCCEED } from './transportBilling';
 const actionTypes = createActionTypes('@@welogix/transport/shipment/', [
   'SET_CONSIGN_FIELDS', 'SAVE_LOCAL_GOODS', 'EDIT_LOCAL_GOODS',
   'REM_LOCAL_GOODS', 'SHOW_PREVIWER', 'HIDE_PREVIWER',
@@ -267,6 +267,12 @@ export default function reducer(state = initialState, action) {
       return { ...state, previewer: { ...state.previewer, loaded: false, visible: false } };
     }
     case SAVE_EDIT_SUCCEED: {
+      return { ...state, previewer: { ...state.previewer, loaded: false } };
+    }
+    case CREATE_ADVANCE_SUCCEED: {
+      return { ...state, previewer: { ...state.previewer, loaded: false } };
+    }
+    case CREATE_SPECIALCHARGE_SUCCEED: {
       return { ...state, previewer: { ...state.previewer, loaded: false } };
     }
     case actionTypes.UPDATE_FORM_REQUIRE_PARAMS: {
