@@ -223,7 +223,7 @@ export default class MergeSplitModal extends React.Component {
       } else {
         notification.success({
           message: '操作成功',
-          description: '已生成报关草单.',
+          description: '已生成报关建议书.',
         });
         this.props.closeMergeSplitModal();
         this.props.loadBillBody(this.props.billSeqNo);
@@ -238,7 +238,7 @@ export default class MergeSplitModal extends React.Component {
       mergeConditions = [...mergeConditions, { label: this.msg('emGNo'), value: 'byEmGNo' }];
     }
     return (
-      <Modal title="生成报关草单" width={800} onCancel={this.handleCancel} onOk={this.handleOk}
+      <Modal title="生成报关建议书" width={800} onCancel={this.handleCancel} onOk={this.handleOk}
         visible={this.props.visible}
       >
         <Form>
@@ -264,7 +264,7 @@ export default class MergeSplitModal extends React.Component {
                     </Radio>
                   </Col>
                   <Col offset="2" span="19">
-                  按清单数据直接生成报关单（并按原数据排序）
+                  按清单数据直接生成报关建议书（并按原数据排序）
                 </Col>
                 </FormItem>
               </Card>

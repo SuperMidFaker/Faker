@@ -86,7 +86,7 @@ export default class MergeSplitForm extends React.Component {
                   />)}
                 </Row>
                 <Row style={{ padding: 8 }}>
-                  按清单数据直接生成报关单
+                  按清单数据直接生成报关建议书
                 </Row>
               </Col>
             </Row>

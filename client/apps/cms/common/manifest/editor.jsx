@@ -95,12 +95,8 @@ export default class ManifestEditor extends React.Component {
     });
   }
   handleGenerateEntry = () => {
-    this.setState({ generating: true });
     this.props.form.validateFields((errors) => {
       if (!errors) {
-        const { billHead, ietype, loginId, tenantId } = this.props;
-        const head = { ...billHead, ...this.props.form.getFieldsValue() };
-        this.props.saveBillHead({ head, ietype, loginId, tenantId });
         this.generateEntry();
       } else {
         this.setState({ generating: false });
@@ -110,6 +106,7 @@ export default class ManifestEditor extends React.Component {
   }
   generateEntry = () => {
     const { billHead } = this.props;
+    this.setState({ generating: true });
     this.props.validateBillDatas({ billSeqNo: this.props.billHead.bill_seq_no, delgNo: billHead.delg_no }).then(
     (result) => {
       if (result.error) {
@@ -119,6 +116,7 @@ export default class ManifestEditor extends React.Component {
         notification.warning({
           message: '表体数据不完整',
           description: `序号为 ${result.data} 的表体数据尚未填写完整`,
+          duration: null,
         });
         this.setState({ generating: false });
         this.props.openMergeSplitModal();
@@ -372,7 +370,7 @@ export default class ManifestEditor extends React.Component {
               }
               {billMeta.entries.length > 0 &&
                 <Dropdown overlay={declEntryMenu}>
-                  <Button size="large"><Icon type="schedule" />已生成报关草单<Icon type="down" /></Button>
+                  <Button size="large"><Icon type="schedule" />已生成报关建议书<Icon type="down" /></Button>
                 </Dropdown>
               }
               <ButtonToggle size="large" iconOff="folder" iconOn="folder-open" onClick={this.toggle} />

@@ -157,7 +157,7 @@ export default class CustomsDeclPane extends React.Component {
                   </Col>
                 </Row>
               </Card>
-              <Table size="middle" showHeader={false} columns={columns} pagination={false} dataSource={tableDatas} locale={{ emptyText: '尚未生成报关草单' }} />
+              <Table size="middle" showHeader={false} columns={columns} pagination={false} dataSource={tableDatas} locale={{ emptyText: '尚未生成报关建议书' }} />
             </Col>
             <Col span={6}>
               <Card bodyStyle={{ padding: 16 }} className="secondary-card">

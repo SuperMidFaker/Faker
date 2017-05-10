@@ -127,7 +127,7 @@ export default defineMessages({
   },
   generateEntry: {
     id: 'cms.manifest.generate.entry',
-    defaultMessage: '生成报关单',
+    defaultMessage: '生成报关建议书',
   },
   saveAsTemplate: {
     id: 'cms.manifest.saveas.template',

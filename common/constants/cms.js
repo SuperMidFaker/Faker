@@ -121,7 +121,7 @@ export const CMS_DELEGATION_STATUS = {
 export const CMS_DELEGATION_MANIFEST = {
   uncreated: 0,   // 未制单
   created: 1,     // 制单中
-  manifested: 2,  // 已生成报关草单（制单完成）
+  manifested: 2,  // 已生成报关建议书（制单完成）
 };
 
 export const CMS_BILLING_STATUS = {
@@ -267,10 +267,10 @@ export const DELG_STATUS = {
 };
 
 export const CMS_DECL_STATUS = {
-  proposed: { value: 0, text: '报关草单', badge: 'default', step: 0, stepDesc: '生成', date: 'created_date' },
+  proposed: { value: 0, text: '报关建议书', badge: 'default', step: 0, stepDesc: '生成', date: 'created_date' },
   reviewed: { value: 1, text: '已复核', badge: 'warning', step: 1, stepDesc: '复核', date: 'reviewed_date' },
   sent: { value: 2, text: '已发送', badge: 'processing', step: 2, stepDesc: '发送', date: 'epsend_date' },
-  finalized: { value: 3, text: '已入海关库', badge: 'success', step: 3, stepDesc: '回执', date: 'backfill_date' },
+  finalized: { value: 3, text: '已回执', badge: 'success', step: 3, stepDesc: '回执', date: 'backfill_date' },
   released: { value: 4, text: '已放行', badge: 'success', step: 4, stepDesc: '放行', date: 'clear_date' },
 };
 

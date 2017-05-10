@@ -184,7 +184,7 @@ const messages = defineMessages({
   },
   onManifestGenerated: {
     id: 'scof.flow.biz.event.cms.manifest.generated',
-    defaultMessage: '已生成报关单',
+    defaultMessage: '已生成报关建议书',
   },
   onCustomsReviewed: {
     id: 'scof.flow.biz.event.cms.customs.reviewed',
