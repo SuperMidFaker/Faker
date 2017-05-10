@@ -20,6 +20,7 @@ const actionTypes = createActionTypes('@@welogix/transport/shipment/', [
   'LOAD_FORM', 'LOAD_FORM_SUCCEED', 'LOAD_FORM_FAIL',
   'LOAD_DRAFTFORM', 'LOAD_DRAFTFORM_SUCCEED', 'LOAD_DRAFTFORM_FAIL',
   'LOAD_DETAIL', 'LOAD_DETAIL_SUCCEED', 'LOAD_DETAIL_FAIL',
+  'LOAD_CHARGES', 'LOAD_CHARGES_SUCCEED', 'LOAD_CHARGES_FAIL',
   'LOAD_PUB_DETAIL', 'LOAD_PUB_DETAIL_SUCCEED', 'LOAD_PUB_DETAIL_FAIL',
   'SEND_SMS_MESSAGE', 'SEND_SMS_MESSAGE_SUCCEED', 'SEND_SMS_MESSAGE_FAIL',
   'SHIPMENT_STATISTICS', 'SHIPMENT_STATISTICS_SUCCEED', 'SHIPMENT_STATISTICS_FAIL',
@@ -488,6 +489,21 @@ export function loadShipmtDetail(No, tenantId, sourceType, tabKey, row) {
       method: 'get',
       params: { No, tenantId, sourceType },
       row, tabKey,
+    },
+  };
+}
+
+export function loadShipmtCharges(shipmtNo, tenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_CHARGES,
+        actionTypes.LOAD_CHARGES_SUCCEED,
+        actionTypes.LOAD_CHARGES_FAIL,
+      ],
+      endpoint: 'v1/transport/shipment/charges',
+      method: 'get',
+      params: { shipmtNo, tenantId },
     },
   };
 }

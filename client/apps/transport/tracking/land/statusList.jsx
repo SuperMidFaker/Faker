@@ -318,7 +318,7 @@ export default class LandStatusList extends React.Component {
     });
   }
   handleShipmtPreview = (row) => {
-    this.props.loadShipmtDetail(row.shipmt_no, this.props.tenantId, 'sr', 'detail').then((result) => {
+    this.props.loadShipmtDetail(row.shipmt_no, this.props.tenantId, 'sr', 'activity').then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       }

@@ -6,6 +6,7 @@ import { EXPENSE_CATEGORIES, SHIPMENT_TRACK_STATUS } from 'common/constants';
 import ShipmentAdvanceModal from '../../../tracking/land/modals/shipment-advance-modal';
 import CreateSpecialCharge from '../../../tracking/land/modals/create-specialCharge';
 import { showAdvanceModal, showSpecialChargeModal } from 'common/reducers/transportBilling';
+import { loadShipmtCharges } from 'common/reducers/shipment';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 const formatMsg = format(messages);
@@ -44,6 +45,7 @@ const typeKeys = EXPENSE_TYPES.map(ec => ec.key);
   }), {
     showAdvanceModal,
     showSpecialChargeModal,
+    loadShipmtCharges,
   }
 )
 export default class ChargePanel extends React.Component {
@@ -58,11 +60,13 @@ export default class ChargePanel extends React.Component {
     specialCharges: PropTypes.array.isRequired,
     showAdvanceModal: PropTypes.func.isRequired,
     showSpecialChargeModal: PropTypes.func.isRequired,
+    loadShipmtCharges: PropTypes.func.isRequired,
   }
   state = {
     checkedExpCates: categoryKeys,
     checkedExpTypes: typeKeys,
   }
+
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   currency = (number) => {
     if (typeof number === 'string') return number;
@@ -125,6 +129,7 @@ export default class ChargePanel extends React.Component {
         shipmtNo: shipmt.shipmt_no,
         transportModeId: shipmt.transport_mode_id,
         goodsType: shipmt.goods_type,
+        type: 1,
       });
     } else if (e.key === 'specialCharge') {
       this.props.showSpecialChargeModal({
@@ -146,6 +151,7 @@ export default class ChargePanel extends React.Component {
         shipmtNo: shipmt.shipmt_no,
         transportModeId: shipmt.transport_mode_id,
         goodsType: shipmt.goods_type,
+        type: -1,
       });
     } else if (e.key === 'specialCharge') {
       this.props.showSpecialChargeModal({
