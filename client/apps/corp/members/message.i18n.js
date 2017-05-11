@@ -1,4 +1,5 @@
 import { defineMessages } from 'react-intl';
+import { formati18n } from 'client/common/i18n/helpers';
 
 const messages = defineMessages({
   members: {
@@ -25,6 +26,10 @@ const messages = defineMessages({
     id: 'corp.members.list.email',
     defaultMessage: '邮箱',
   },
+  department: {
+    id: 'corp.members.list.department',
+    defaultMessage: '部门',
+  },
   position: {
     id: 'corp.members.list.position',
     defaultMessage: '职位',
@@ -44,6 +49,10 @@ const messages = defineMessages({
   newUser: {
     id: 'corp.members.list.newUser',
     defaultMessage: '添加用户',
+  },
+  newDeptMember: {
+    id: 'corp.members.list.new.dept.member',
+    defaultMessage: '添加部门成员',
   },
   user: {
     id: 'corp.members.edit.user',
@@ -84,3 +93,4 @@ const messages = defineMessages({
 });
 
 export default messages;
+export const formatMsg = formati18n(messages);

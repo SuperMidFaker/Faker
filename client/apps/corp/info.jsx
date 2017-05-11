@@ -175,7 +175,7 @@ export default class CorpInfo extends React.Component {
             </Col>
             <Col sm={24} md={12}>
               <FormItem label={msg('tradeCategory')} >
-                {getFieldDecorator('type', { initialValue: type })(<Select defaultValue="lucy" style={{ width: '100%' }}>
+                {getFieldDecorator('type', { initialValue: type })(<Select style={{ width: '100%' }}>
                   <Option value="freight">货代</Option>
                 </Select>)}
               </FormItem>
