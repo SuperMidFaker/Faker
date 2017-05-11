@@ -2,12 +2,11 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Breadcrumb, Layout, Radio, Tag, message, Badge } from 'antd';
+import { Breadcrumb, Layout, Radio, Tag, message, Badge, Icon } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
-import { loadCustomsDecls, deleteDecl, setDeclReviewed } from 'common/reducers/cmsDeclare';
-import { openEfModal } from 'common/reducers/cmsDelegation';
+import { loadCustomsDecls } from 'common/reducers/scvClearance';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/search-bar';
 import DeclStatusPopover from './declStatusPopover';
@@ -15,26 +14,39 @@ import NavLink from 'client/components/nav-link';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { CMS_DECL_STATUS } from 'common/constants';
+import connectFetch from 'client/common/decorators/connect-fetch';
+import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
+import RowUpdater from 'client/components/rowUpdater';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 
+function fetchData({ state, dispatch }) {
+  return dispatch(loadCustomsDecls({
+    tenantId: state.account.tenantId,
+    filter: JSON.stringify(state.scvClearance.customsFilters),
+    pageSize: state.scvClearance.customsList.pageSize,
+    current: state.scvClearance.customsList.current,
+  }));
+}
+@connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     loginName: state.account.username,
-    customslist: state.cmsDeclare.customslist,
-    listFilter: state.cmsDeclare.listFilter,
-    customs: state.cmsDeclare.customs.map(cus => ({
+    customsList: state.scvClearance.customsList,
+    customs: state.scvClearance.customsDeclParams.customs.map(cus => ({
       value: cus.customs_code,
       text: `${cus.customs_name}`,
     })),
+    customsFilters: state.scvClearance.customsFilters,
+    loading: state.scvClearance.customsDeclLoading,
   }),
-  { loadCustomsDecls, openEfModal, deleteDecl, setDeclReviewed }
+  { loadCustomsDecls }
 )
 @connectNav({
   depth: 2,
@@ -47,8 +59,8 @@ export default class ScvCustomsDeclList extends Component {
     tenantId: PropTypes.number.isRequired,
     loginId: PropTypes.number.isRequired,
     loginName: PropTypes.string.isRequired,
-    customslist: PropTypes.object.isRequired,
-    listFilter: PropTypes.object.isRequired,
+    customsList: PropTypes.object.isRequired,
+    customsFilters: PropTypes.object.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -60,36 +72,70 @@ export default class ScvCustomsDeclList extends Component {
 
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
-    title: this.msg('preEntryNo'),
-    dataIndex: 'pre_entry_seq_no',
-    fixed: 'left',
+    title: this.msg('delgNo'),
+    dataIndex: 'delg_no',
     width: 160,
-    render: o => <NavLink to={`/scv/clearance/cds/${o}`}>{o}</NavLink>,
   }, {
-    title: this.msg('entryId'),
+    title: this.msg('declNo'),
     dataIndex: 'entry_id',
-    width: 160,
-    fixed: 'left',
-    render: (o, record) => {
-      // 用id字段表示为children数据
-      if (record.id) {
-        if (o) {
+    width: 200,
+    render: (entryNO, record) => {
+      const ietype = record.i_e_type === 0 ? 'import' : 'export';
+      const preEntryLink = (
+        <NavLink to={`/clearance/${ietype}/customs/${record.bill_seq_no}/${record.pre_entry_seq_no}`}>
+          {record.pre_entry_seq_no}
+        </NavLink>);
+      switch (record.status) {
+        case CMS_DECL_STATUS.proposed.value:
+        case CMS_DECL_STATUS.reviewed.value:
           return (
-            <DeclStatusPopover results={record.results} entryId={o}>
-              {o}
-            </DeclStatusPopover>
-          );
-        }
+            <span>
+              <Tag>预</Tag>
+              {preEntryLink}
+            </span>);
+        case CMS_DECL_STATUS.sent.value:
+          return (
+            <span>
+              <Tag>预</Tag>
+              {preEntryLink}
+              <PrivilegeCover module="clearance" feature={ietype} action="edit" key="entry_no">
+                <RowUpdater onHit={this.handleDeclNoFill} row={record}
+                  label={<Icon type="edit" />} tooltip="回填海关编号"
+                />
+              </PrivilegeCover>
+            </span>);
+        case CMS_DECL_STATUS.finalized.value:
+        case CMS_DECL_STATUS.released.value:
+          return (
+            <span>
+              <DeclStatusPopover entryId={entryNO}><Tag color={record.status === CMS_DECL_STATUS.released.value ? 'green' : 'blue'}>海关</Tag></DeclStatusPopover>
+              <NavLink to={`/clearance/${ietype}/customs/${record.bill_seq_no}/${record.pre_entry_seq_no}`}>{entryNO}</NavLink>
+            </span>);
+        default:
+          return <span />;
       }
     },
   }, {
-    title: '收发货人',
-    dataIndex: 'trade_name',
+    title: '报关单位',
+    dataIndex: 'ccb_name',
     width: 160,
     render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
-    title: this.msg('agent'),
-    dataIndex: 'customs_name',
+    title: '提运单号',
+    dataIndex: 'bl_wb_no',
+    width: 160,
+  }, {
+    title: '订单号',
+    dataIndex: 'order_no',
+    width: 160,
+  }, {
+    title: '明细记录数',
+    dataIndex: 'detail_count',
+    width: 100,
+    render: dc => !isNaN(dc) ? dc : null,
+  }, {
+    title: '收发货人',
+    dataIndex: 'trade_name',
     width: 160,
     render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
@@ -133,24 +179,29 @@ export default class ScvCustomsDeclList extends Component {
   }, {
     title: '进出口日期',
     dataIndex: 'i_e_date',
+    width: 100,
     render: (o, record) => (record.id ?
       record.i_e_date && moment(record.i_e_date).format('YYYY.MM.DD') : '-'),
   }, {
     title: '创建时间',
     dataIndex: 'created_date',
+    width: 100,
     render: (o, record) => (record.id ?
     record.created_date && moment(record.created_date).format('MM.DD HH:mm') : '-'),
   }, {
     title: '申报时间',
-    dataIndex: 'd_date',
+    dataIndex: 'epsend_date',
+    width: 100,
     render: (o, record) => (record.id ?
     record.d_date && moment(record.d_date).format('MM.DD HH:mm') : '-'),
   }, {
     title: '申报人',
-    dataIndex: 'creater_login_id  ',
+    dataIndex: 'epsend_login_name  ',
+    width: 100,
   }, {
     title: '回执日期',
     dataIndex: 'backfill_date',
+    width: 100,
     render: (o, record) => (record.id ?
     record.backfill_date && moment(record.backfill_date).format('YYYY.MM.DD') : '-'),
   }]
@@ -172,35 +223,28 @@ export default class ScvCustomsDeclList extends Component {
         pageSize: pagination.pageSize,
         currentPage: pagination.current,
       };
-      const filter = { ...this.props.listFilter };
+      const filter = { ...this.props.customsFilters };
       params.filter = JSON.stringify(filter);
       return params;
     },
-    remotes: this.props.customslist,
+    remotes: this.props.customsList,
   })
   handleTableLoad = (currentPage, filter) => {
     this.setState({ expandedKeys: [] });
     this.props.loadCustomsDecls({
       ietype: this.props.ietype,
       tenantId: this.props.tenantId,
-      filter: JSON.stringify(filter || this.props.listFilter),
-      pageSize: this.props.customslist.pageSize,
-      currentPage: currentPage || this.props.customslist.current,
+      filter: JSON.stringify(filter || this.props.customsFilters),
+      pageSize: this.props.customsList.pageSize,
+      current: currentPage || this.props.customsList.current,
     }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 5);
       }
     });
   }
-  handleDeclNoFill = (row) => {
-    this.props.openEfModal({
-      entryHeadId: row.id,
-      billSeqNo: row.bill_seq_no,
-      delgNo: row.delg_no,
-    });
-  }
   handleSearch = (searchVal) => {
-    const filters = this.mergeFilters(this.props.listFilter, searchVal);
+    const filters = this.mergeFilters(this.props.customsFilters, searchVal);
     this.handleTableLoad(1, filters);
   }
   mergeFilters(curFilters, value) {
@@ -216,69 +260,28 @@ export default class ScvCustomsDeclList extends Component {
     return newFilters;
   }
   handleRadioChange = (ev) => {
-    if (ev.target.value === this.props.listFilter.status) {
+    if (ev.target.value === this.props.customsFilters.status) {
       return;
     }
-    const filter = { ...this.props.listFilter, status: ev.target.value };
+    const filter = { ...this.props.customsFilters, status: ev.target.value };
     this.handleTableLoad(1, filter);
   }
-  handleDelete = (declId, billNo) => {
-    this.props.deleteDecl(declId, billNo).then((result) => {
-      if (result.error) {
-        message.error(result.error.message, 10);
-      } else {
-        this.handleTableLoad();
-      }
-    });
-  }
-  handleReview = (row) => {
-    this.props.setDeclReviewed([row.id], CMS_DECL_STATUS.reviewed.value).then((result) => {
-      if (result.error) {
-        message.error(result.error.message, 10);
-      } else {
-        this.handleTableLoad();
-      }
-    });
-  }
-  handleRecall = (row) => {
-    this.props.setDeclReviewed([row.id], CMS_DECL_STATUS.proposed.value).then((result) => {
-      if (result.error) {
-        message.error(result.error.message, 10);
-      } else {
-        this.handleTableLoad();
-      }
-    });
-  }
-  handleSend = () => {
-
+  handleIEChange = (e) => {
+    if (e.target.value === this.props.customsFilters.ietype) {
+      return;
+    }
+    const filter = { ...this.props.customsFilters, ietype: e.target.value };
+    this.handleTableLoad(1, filter);
   }
   render() {
-    const { customslist, listFilter } = this.props;
-    this.dataSource.remotes = customslist;
+    const { customsList, customsFilters, loading } = this.props;
+    this.dataSource.remotes = customsList;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
         this.setState({ selectedRowKeys });
       },
     };
-    let columns = [];
-    columns = [...this.columns];
-    columns.push({
-      title: this.msg('opColumn'),
-      width: 130,
-      fixed: 'right',
-      render: (o, record) => {
-        if (record.status === 0) {
-          return (
-            <span />
-          );
-        } else if (record.status === 1) {
-          return (
-            <span />
-          );
-        }
-      },
-    });
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Header className="top-bar">
@@ -290,13 +293,13 @@ export default class ScvCustomsDeclList extends Component {
               {this.msg('customsDecl')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <RadioGroup onChange={this.handleIEChange} size="large">
+          <RadioGroup value={customsFilters.ietype} onChange={this.handleIEChange} size="large">
             <RadioButton value="all">{this.msg('all')}</RadioButton>
             <RadioButton value="import">{this.msg('clearanceImport')}</RadioButton>
             <RadioButton value="export">{this.msg('clearanceExport')}</RadioButton>
           </RadioGroup>
           <span />
-          <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">
+          <RadioGroup value={customsFilters.status} onChange={this.handleRadioChange} size="large">
             <RadioButton value="all">{this.msg('all')}</RadioButton>
             {Object.keys(CMS_DECL_STATUS).map(declkey =>
               <RadioButton value={declkey} key={declkey}>{CMS_DECL_STATUS[declkey].text}</RadioButton>
@@ -307,14 +310,14 @@ export default class ScvCustomsDeclList extends Component {
         <Content className="main-content" key="main">
           <div className="page-body">
             <div className="toolbar">
-              <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} />
+              <SearchBar placeholder={this.msg('maniSearchPlaceholder')} size="large" onInputSearch={this.handleSearch} />
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3>
               </div>
             </div>
             <div className="panel-body table-panel expandable">
-              <Table rowSelection={rowSelection} columns={columns} rowKey="pre_entry_seq_no" dataSource={this.dataSource}
-                loading={customslist.loading} scroll={{ x: 1600 }}
+              <Table rowSelection={rowSelection} columns={this.columns} rowKey="pre_entry_seq_no" dataSource={this.dataSource}
+                loading={loading} scroll={{ x: 1600 }}
               />
             </div>
           </div>
