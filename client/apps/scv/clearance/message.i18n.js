@@ -44,11 +44,19 @@ const messages = defineMessages({
   },
   maniSearchPlaceholder: {
     id: 'scv.clearance.manifest.search.placeholder',
-    defaultMessage: '搜索委托号',
+    defaultMessage: '委托编号/提运单号/订单号/发票号',
   },
   billSeqNo: {
     id: 'scv.clearance.manifest.bill.seqno',
     defaultMessage: '清单编号',
+  },
+  delgNo: {
+    id: 'scv.clearance.delgNo',
+    defaultMessage: '委托编号',
+  },
+  declNo: {
+    id: 'scv.clearance.declNo',
+    defaultMessage: '报关单号',
   },
 });
 
