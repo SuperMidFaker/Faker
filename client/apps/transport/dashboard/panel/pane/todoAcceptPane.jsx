@@ -86,6 +86,7 @@ export default class TodoAcceptPane extends Component {
         showSizeChanger: true,
         showQuickJumper: false,
         pageSize: result.pageSize,
+        showTotal: total => `共 ${total} 条`,
       }),
       getParams: (pagination, filters, sorter) => {
         const params = {

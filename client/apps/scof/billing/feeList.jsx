@@ -232,6 +232,7 @@ export default class FeesList extends React.Component {
         showSizeChanger: true,
         showQuickJumper: false,
         pageSize: result.pageSize,
+        showTotal: total => `共 ${total} 条`,
       }),
       getParams: (pagination, filters) => {
         const { searchValue, startDate, endDate } = this.props.fees;
