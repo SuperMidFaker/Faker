@@ -295,6 +295,9 @@ export default class DispatchDock extends Component {
           })(index, j);
         }
       }
+      if (lspsVar.data.length === 0) {
+        this.setState({ lspsVar, lspLoading: false });
+      }
     }
   }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values);

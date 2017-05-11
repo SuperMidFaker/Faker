@@ -59,6 +59,7 @@ export default class CreateFlowModal extends React.Component {
   handleCancel = () => {
     this.props.form.resetFields();
     this.props.closeCreateFlowModal();
+    this.setState({ trackings: null });
   }
   handleCustomerSelect = (customerPid) => {
     const customer = this.props.customerPartners.filter(pt => pt.id === customerPid)[0];
@@ -70,6 +71,8 @@ export default class CreateFlowModal extends React.Component {
           this.setState({ trackings: null });
         }
       });
+    } else {
+      this.setState({ trackings: null });
     }
   }
   msg = formatMsg(this.props.intl)
