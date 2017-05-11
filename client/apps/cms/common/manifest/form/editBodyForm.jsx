@@ -135,6 +135,20 @@ export default class EditBodyForm extends Component {
       copProdNo: ev.target.value,
     });
   }
+  handleTradeTotChange = (ev) => {
+    const qty = this.props.form.getFieldValue('g_qty');
+    if (!isNaN(qty) && qty > 0) {
+      const decPrice = Number(ev.target.value / qty);
+      this.props.form.setFieldsValue({ dec_price: decPrice });
+    }
+  }
+  handleDecPriceChange = (ev) => {
+    const qty = this.props.form.getFieldValue('g_qty');
+    if (!isNaN(qty)) {
+      const tradeTot = Number(ev.target.value * qty);
+      this.props.form.setFieldsValue({ trade_total: tradeTot });
+    }
+  }
   msg = key => formatMsg(this.props.intl, key);
   render() {
     const { form: { getFieldDecorator }, editBody, currencies, units, tradeCountries, hscodes, exemptions } = this.props;
@@ -218,8 +232,9 @@ export default class EditBodyForm extends Component {
           <Col sm={24} lg={6}>
             <FormItem label={this.msg('decPrice')}>
               {getFieldDecorator('dec_price', {
+                rules: [{ required: true, message: '申报单价必填' }],
                 initialValue: editBody.dec_price,
-              })(<Input />)}
+              })(<Input onChange={this.handleDecPriceChange} />)}
             </FormItem>
           </Col>
           <Col sm={24} lg={6}>
@@ -227,7 +242,7 @@ export default class EditBodyForm extends Component {
               {getFieldDecorator('trade_total', {
                 rules: [{ required: true, message: '申报总价必填' }],
                 initialValue: editBody.trade_total,
-              })(<Input />)}
+              })(<Input onChange={this.handleTradeTotChange} />)}
             </FormItem>
           </Col>
           <Col sm={24} lg={6}>
