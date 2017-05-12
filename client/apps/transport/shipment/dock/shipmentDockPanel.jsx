@@ -9,7 +9,8 @@ import ChargePane from './tabpanes/chargePane';
 import PodPane from './tabpanes/podPane';
 import TrackingPane from './tabpanes/trackingPane';
 import { SHIPMENT_TRACK_STATUS, SHIPMENT_EFFECTIVES } from 'common/constants';
-import { hidePreviewer, sendTrackingDetailSMSMessage, changePreviewerTab, loadShipmtDetail, loadForm, getShipmtOrderNo } from 'common/reducers/shipment';
+import { hidePreviewer, sendTrackingDetailSMSMessage, changePreviewerTab, loadShipmtDetail, loadForm,
+  getShipmtOrderNo, loadShipmtCharges } from 'common/reducers/shipment';
 import { format } from 'client/common/i18n/helpers';
 import InfoItem from 'client/components/InfoItem';
 import DockPanel from 'client/components/DockPanel';
@@ -19,6 +20,7 @@ import ShareShipmentModal from './share-shipment';
 import ExceptionPane from './tabpanes/exceptionPane';
 import ChangeActDateModal from '../../tracking/land/modals/changeActDateModal';
 import ChangeDeliverPrmDateModal from '../../tracking/land/modals/changeDeliverPrmDateModal';
+import RecalculateChargeModal from '../../tracking/land/modals/recalculateChargeModal';
 import VehicleModal from '../../tracking/land/modals/vehicle-updater';
 import { loadOrderDetail } from 'common/reducers/crmOrders';
 
@@ -63,7 +65,8 @@ function getTrackStatusMsg(status, eff) {
     shipmt: state.shipment.previewer.shipmt,
     previewer: state.shipment.previewer,
   }),
-  { hidePreviewer, sendTrackingDetailSMSMessage, changePreviewerTab, loadShipmtDetail, loadForm, loadOrderDetail, getShipmtOrderNo }
+  { hidePreviewer, sendTrackingDetailSMSMessage, changePreviewerTab, loadShipmtDetail, loadForm, loadOrderDetail,
+    getShipmtOrderNo, loadShipmtCharges }
 )
 export default class PreviewPanel extends React.Component {
   static propTypes = {
@@ -88,6 +91,7 @@ export default class PreviewPanel extends React.Component {
     stage: PropTypes.oneOf(['acceptance', 'dispatch', 'tracking', 'pod', 'exception', 'billing', 'dashboard', 'todo']),
     loadShipmtDetail: PropTypes.func.isRequired,
     loadForm: PropTypes.func.isRequired,
+    loadShipmtCharges: PropTypes.func.isRequired,
   }
   constructor(props) {
     super(props);
@@ -103,6 +107,9 @@ export default class PreviewPanel extends React.Component {
         tenantId,
         shipmtNo,
       });
+    }
+    if (nextProps.dispatch.id !== this.props.dispatch.id) {
+      this.props.loadShipmtCharges(nextProps.dispatch.id, nextProps.tenantId);
     }
   }
   componentWillUnmount() {
@@ -282,6 +289,7 @@ export default class PreviewPanel extends React.Component {
           <ChangeActDateModal />
           <ChangeDeliverPrmDateModal />
           <VehicleModal onOK={() => {}} />
+          <RecalculateChargeModal />
         </DockPanel>
       : null
     );

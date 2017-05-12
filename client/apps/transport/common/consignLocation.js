@@ -11,12 +11,16 @@ export function renderLoc(shipmt, provinceFd, cityFd, countyFd) {
   } else if (shipmt[countyFd] && (shipmt[countyFd] === '市辖区' || shipmt[countyFd] === '县' || shipmt[cityFd] === '省直辖县市')) {
     return shipmt[cityFd] || '';
   } else {
+    if (shipmt[provinceFd]) {
+      names.push(shipmt[provinceFd]);
+    }
     if (shipmt[cityFd]) {
       names.push(shipmt[cityFd]);
     }
     if (shipmt[countyFd]) {
       names.push(shipmt[countyFd]);
     }
+    if (names.length > 2) names.shift();
     return names.join('-');
   }
 }

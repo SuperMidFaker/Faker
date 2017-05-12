@@ -2,14 +2,15 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Col, Table, Steps, Card, Icon, Dropdown, Menu, Row, Button, message } from 'antd';
+import { Col, Table, Steps, Card, Icon, Dropdown, Menu, Row, Button, message, notification } from 'antd';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { format } from 'client/common/i18n/helpers';
 import { PRESET_TRANSMODES, TMS_SHIPMENT_STATUS_DESC, SHIPMENT_TRACK_STATUS, COURIERS } from 'common/constants';
 import ChangeShipment from '../change-shipment';
-import { showChangeShipmentModal, loadForm } from 'common/reducers/shipment';
+import { showChangeShipmentModal, loadForm, computeSaleCharge, updateFee } from 'common/reducers/shipment';
 import { showChangeDeliverPrmDateModal } from 'common/reducers/trackingLandStatus';
 import { saveEdit, revokeOrReject } from 'common/reducers/transport-acceptance';
+import { createSpecialCharge } from 'common/reducers/transportBilling';
 import InfoItem from 'client/components/InfoItem';
 import messages from '../../message.i18n';
 import './pane.less';
@@ -22,6 +23,7 @@ const Step = Steps.Step;
   state => ({
     loginId: state.account.loginId,
     tenantId: state.account.tenantId,
+    loginName: state.account.username,
     shipmt: state.shipment.previewer.shipmt,
     goodsTypes: state.shipment.formRequire.goodsTypes,
     packagings: state.shipment.formRequire.packagings,
@@ -30,15 +32,20 @@ const Step = Steps.Step;
     vehicleLengths: state.shipment.formRequire.vehicleLengths,
     containerPackagings: state.shipment.formRequire.containerPackagings,
     dispatch: state.shipment.previewer.dispatch,
+    upstream: state.shipment.previewer.upstream,
+    downstream: state.shipment.previewer.downstream,
     formData: state.shipment.formData,
+    charges: state.shipment.charges,
   }),
-  { showChangeShipmentModal, showChangeDeliverPrmDateModal, loadForm, saveEdit, revokeOrReject }
+  { showChangeShipmentModal, showChangeDeliverPrmDateModal, loadForm, saveEdit, revokeOrReject, computeSaleCharge,
+    createSpecialCharge, updateFee }
 )
 export default class DetailPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     loginId: PropTypes.number.isRequired,
     tenantId: PropTypes.number.isRequired,
+    loginName: PropTypes.string.isRequired,
     shipmt: PropTypes.object.isRequired,
     goodsTypes: PropTypes.array.isRequired,
     packagings: PropTypes.array.isRequired,
@@ -48,11 +55,17 @@ export default class DetailPane extends React.Component {
     vehicleLengths: PropTypes.array.isRequired,
     containerPackagings: PropTypes.array.isRequired,
     dispatch: PropTypes.object.isRequired,
+    upstream: PropTypes.object.isRequired,
+    downstream: PropTypes.object.isRequired,
     showChangeDeliverPrmDateModal: PropTypes.func.isRequired,
     loadForm: PropTypes.func.isRequired,
     formData: PropTypes.object.isRequired,
     saveEdit: PropTypes.func.isRequired,
     revokeOrReject: PropTypes.func.isRequired,
+    computeSaleCharge: PropTypes.func.isRequired,
+    createSpecialCharge: PropTypes.func.isRequired,
+    updateFee: PropTypes.func.isRequired,
+    charges: PropTypes.object.isRequired,
   }
   componentDidMount() {
     this.props.loadForm(null, {
@@ -100,7 +113,98 @@ export default class DetailPane extends React.Component {
     title: this.msg('goodsRemark'),
     dataIndex: 'remark',
   }]
+  computeSaleCharge = (changedData, form, type, msg) => {
+    const { shipmt, upstream, downstream, loginId, tenantId, loginName, charges } = this.props;
+    const promises = [];
+    const {
+      customer_partner_id, consigner_region_code, consignee_region_code,
+      transport_mode_id, transport_mode_code, goods_type, container: ctn,
+      vehicle_type_id, vehicle_length_id, total_weight, total_volume, pickup_est_date, deliver_est_date,
+    } = this.props.formData;
+    const created = this.props.formData.created_date || Date.now();
+    if (charges.revenue.id) {
+      const data = {
+        partner_id: customer_partner_id, consigner_region_code, consignee_region_code,
+        goods_type, trans_mode: transport_mode_id, transport_mode_code, ctn,
+        tenant_id: this.props.tenantId, created_date: created,
+        vehicle_type_id, vehicle_length_id, total_weight, total_volume,
+        pickup_est_date, deliver_est_date, tariffType: 'normal',
+        ...changedData,
+      };
+      promises.push(this.props.computeSaleCharge(data));
+    }
+    if (charges.expense.id) {
+      const data = {
+        partner_id: downstream.sp_partner_id, consigner_region_code, consignee_region_code,
+        goods_type, trans_mode: transport_mode_id, transport_mode_code, ctn,
+        tenant_id: tenantId, created_date: created,
+        vehicle_type_id, vehicle_length_id, total_weight, total_volume,
+        pickup_est_date, deliver_est_date, tariffType: 'normal',
+        ...changedData,
+      };
+      promises.push(this.props.computeSaleCharge(data));
+    }
+    Promise.all(promises).then((result) => {
+      if (result[0]) {
+        const charge = result[0].data;
+        if (charge.freight >= 0) {
+          if (charge.freight !== charges.revenue.freight_charge) {
+            notification.warn({
+              message: msg,
+              description: `原收入：${charges.revenue.freight_charge}, 现收入：${charge.freight}`,
+            });
+            const specialCharge = charge.freight - charges.revenue.freight_charge;
+            this.props.createSpecialCharge({
+              shipmtNo: shipmt.shipmt_no,
+              dispId: upstream.id,
+              type: 1,
+              remark: msg,
+              submitter: loginName,
+              charge: specialCharge,
+              loginId,
+              tenantId,
+            });
+          }
+        } else {
+          notification.warn({
+            message: msg,
+            description: '根据当前已有报价协议未计算出收入，您可以手动重新计算',
+          });
+          this.props.updateFee(upstream.id, { need_recalculate: 1 });
+        }
+      }
+      if (result[1]) {
+        const charge = result[1].data;
+        if (charge.freight >= 0) {
+          if (charge.freight !== charges.expense.freight_charge) {
+            notification.warn({
+              message: msg,
+              description: `原成本：${charges.expense.freight_charge}, 现成本：${charge.freight}`,
+            });
+            const specialCharge = charge.freight - charges.expense.freight_charge;
+            this.props.createSpecialCharge({
+              shipmtNo: shipmt.shipmt_no,
+              dispId: downstream.id,
+              type: -1,
+              remark: msg,
+              submitter: loginName,
+              charge: specialCharge,
+              loginId,
+              tenantId,
+            });
+          }
+        } else {
+          notification.warn({
+            message: msg,
+            description: '根据当前已有报价协议未计算出成本，您可以手动重新计算',
+          });
+          this.props.updateFee(downstream.id, { need_recalculate: 1 });
+        }
+      }
 
+      this.handleSave(form, type);
+    });
+  }
   handleChangeDeliverPrmDate = (e) => {
     e.stopPropagation();
     const { shipmt, dispatch } = this.props;
@@ -134,9 +238,25 @@ export default class DetailPane extends React.Component {
     });
   }
   handleSaveShipment = (field, value, type = '') => {
-    const { formData } = this.props;
+    const { formData, goodsTypes } = this.props;
     const form = { ...formData, [field]: value };
-    this.handleSave(form, type);
+    if (field === 'container') {
+      const msg = `集装箱：${formData.container} 变更为 ${value}`;
+      this.computeSaleCharge({ [field]: value }, form, type, msg);
+    } else if (field === 'goods_type') {
+      const oldGoodsType = goodsTypes.find(item => item.value === formData.goods_type);
+      const newGoodsType = goodsTypes.find(item => item.value === Number(value));
+      const msg = `货物类型：${oldGoodsType.text} 变更为 ${newGoodsType.text}`;
+      this.computeSaleCharge({ [field]: value }, form, type, msg);
+    } else if (field === 'total_weight') {
+      const msg = `总重量：${formData.total_weight} 变更为 ${value}`;
+      this.computeSaleCharge({ [field]: value }, form, type, msg);
+    } else if (field === 'total_volume') {
+      const msg = `总体积：${formData.total_volume} 变更为 ${value}`;
+      this.computeSaleCharge({ [field]: value }, form, type, msg);
+    } else {
+      this.handleSave(form, type);
+    }
   }
   handleSaveTransMode = (value, type = '') => {
     const { formData, transitModes } = this.props;
@@ -147,7 +267,8 @@ export default class DetailPane extends React.Component {
       transport_mode_code: mode.mode_code,
       transport_mode: mode.mode_name,
     };
-    this.handleSave(form, type);
+    const msg = `运输模式：${formData.transport_mode} 变更为 ${mode.mode_name}`;
+    this.computeSaleCharge({ trans_mode: mode.id }, form, type, msg);
   }
   handleSaveVehicleType = (value, type = '') => {
     const { formData, vehicleTypes } = this.props;
@@ -157,7 +278,8 @@ export default class DetailPane extends React.Component {
       vehicle_type_id: vehicle.value,
       vehicle_type: vehicle.text,
     };
-    this.handleSave(form, type);
+    const msg = `车辆类型：${formData.vehicle_type} 变更为 ${vehicle.text}`;
+    this.computeSaleCharge({ vehicle_type_id: vehicle.value }, form, type, msg);
   }
   handleSaveVehicleLength = (value, type = '') => {
     const { formData, vehicleLengths } = this.props;
@@ -167,7 +289,8 @@ export default class DetailPane extends React.Component {
       vehicle_length_id: vehicle.value,
       vehicle_length: vehicle.text,
     };
-    this.handleSave(form, type);
+    const msg = `车长：${formData.vehicle_length} 变更为 ${vehicle.text}`;
+    this.computeSaleCharge({ vehicle_length_id: vehicle.value }, form, type, msg);
   }
   handleSaveCourier = (value, type = '') => {
     const { formData } = this.props;
@@ -182,21 +305,30 @@ export default class DetailPane extends React.Component {
   handleSaveConsign = (value, consignType, type = '') => {
     const { formData } = this.props;
     const [code, province, city, district, street] = value;
-    const form = {
-      ...formData,
-      [`${consignType}_region_code`]: code,
-      [`${consignType}_province`]: province,
-      [`${consignType}_city`]: city,
-      [`${consignType}_district`]: district,
-      [`${consignType}_street`]: street,
-    };
-    this.handleSave(form, type);
-  }
-  renderConsignPort(province, city, district) {
-    if (city === '市辖区' || city === '县') {
-      return `${province},${district}`;
-    } else {
-      return `${province},${city}`;
+    if (typeof code === 'number') {
+      const changedData = {
+        [`${consignType}_region_code`]: code,
+        [`${consignType}_province`]: province || '',
+        [`${consignType}_city`]: city || '',
+        [`${consignType}_district`]: district || '',
+        [`${consignType}_street`]: street || '',
+      };
+      const form = {
+        ...formData,
+        ...changedData,
+      };
+      const oldAddr = [];
+      if (formData[`${consignType}_province`]) oldAddr.push(formData[`${consignType}_province`]);
+      if (formData[`${consignType}_city`]) oldAddr.push(formData[`${consignType}_city`]);
+      if (formData[`${consignType}_district`]) oldAddr.push(formData[`${consignType}_district`]);
+      if (formData[`${consignType}_street`]) oldAddr.push(formData[`${consignType}_street`]);
+      const newAddr = [];
+      if (province) newAddr.push(province);
+      if (city) newAddr.push(city);
+      if (district) newAddr.push(district);
+      if (street) newAddr.push(street);
+      const msg = `${consignType === 'consigner' ? '发货' : '收货'}地址：${oldAddr.join('-')} 变更为 ${newAddr.join('-')}`;
+      this.computeSaleCharge({ [`${consignType}_region_code`]: code }, form, type, msg);
     }
   }
   render() {

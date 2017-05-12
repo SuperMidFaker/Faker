@@ -26,7 +26,7 @@ export default class PickupDeliverUpdaterPopover extends React.Component {
     intl: intlShape.isRequired,
     dispId: PropTypes.number.isRequired,
     shipmtNo: PropTypes.string.isRequired,
-    parentNo: PropTypes.string.isRequired,
+    parentNo: PropTypes.string,
     estDate: PropTypes.string.isRequired,
     type: PropTypes.string.isRequired,
     form: PropTypes.object.isRequired,
