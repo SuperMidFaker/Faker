@@ -4,7 +4,7 @@ import { Button, Modal, Tooltip, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { SHIPMENT_TRACK_STATUS, SHIPMENT_POD_STATUS, SHIPMENT_SOURCE, SHIPMENT_VEHICLE_CONNECT, PROMPT_TYPES } from 'common/constants';
-import { hidePreviewer } from 'common/reducers/shipment';
+import { hidePreviewer, toggleRecalculateChargeModal } from 'common/reducers/shipment';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { loadAcceptDispatchers, returnShipment } from 'common/reducers/transport-acceptance';
@@ -30,6 +30,7 @@ const formatMsg = format(messages);
     previewer: state.shipment.previewer,
     filters: state.transportDispatch.filters,
     expandList: state.transportDispatch.expandList,
+    charges: state.shipment.charges,
   }),
   { hidePreviewer,
     loadAcceptDispatchers,
@@ -42,6 +43,7 @@ const formatMsg = format(messages);
     withDraw,
     returnShipment,
     sendMessage,
+    toggleRecalculateChargeModal,
   }
 )
 export default class ShipmentActions extends React.Component {
@@ -67,6 +69,8 @@ export default class ShipmentActions extends React.Component {
     sendMessage: PropTypes.func.isRequired,
     stage: PropTypes.string.isRequired,
     sourceType: PropTypes.string.isRequired,
+    charges: PropTypes.object.isRequired,
+    toggleRecalculateChargeModal: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -220,27 +224,26 @@ export default class ShipmentActions extends React.Component {
     this.props.sendMessage({ module: 'transport', promptType, shipment });
   }
   render() {
-    const { tenantId, stage, sourceType, previewer: { shipmt, dispatch, row } } = this.props;
-    let buttons = null;
+    const { tenantId, stage, sourceType, previewer: { shipmt, dispatch, row }, charges } = this.props;
+    const needRecalculate = charges.revenue.need_recalculate === 1 || charges.expense.need_recalculate === 1;
+    let buttons = [];
     if (sourceType === 'sp') {
       if (dispatch.status === SHIPMENT_TRACK_STATUS.unaccepted) {
         if (dispatch.source === SHIPMENT_SOURCE.consigned) {
-          buttons = (
-            <PrivilegeCover module="transport" feature="shipment" action="edit">
-              <span>
-                <Button onClick={() => this.context.router.push(`/transport/shipment/edit/${shipmt.shipmt_no}`)}>
+          buttons.push(<PrivilegeCover module="transport" feature="shipment" action="edit">
+            <Button key="change" onClick={() => this.context.router.push(`/transport/shipment/edit/${shipmt.shipmt_no}`)}>
                   修改
                 </Button>
-                <Button type="primary" icon="check" onClick={() => this.handleShipmtAccept(dispatch.id)} style={{ marginLeft: 8 }}>
-                  接单
-                </Button>
-              </span>
-            </PrivilegeCover>
-          );
-        } else if (dispatch.source === SHIPMENT_SOURCE.subcontracted) {
-          buttons = (
+          </PrivilegeCover>,
             <PrivilegeCover module="transport" feature="shipment" action="edit">
-              <Button type="primary" icon="check" onClick={() => this.handleShipmtAccept(dispatch.id)} >
+              <Button key="accept" type="primary" icon="check" onClick={() => this.handleShipmtAccept(dispatch.id)} style={{ marginLeft: 8 }}>
+                    接单
+                  </Button>
+            </PrivilegeCover>);
+        } else if (dispatch.source === SHIPMENT_SOURCE.subcontracted) {
+          buttons.push(
+            <PrivilegeCover module="transport" feature="shipment" action="edit">
+              <Button key="accept" type="primary" icon="check" onClick={() => this.handleShipmtAccept(dispatch.id)} >
                 接单
               </Button>
             </PrivilegeCover>
@@ -248,10 +251,10 @@ export default class ShipmentActions extends React.Component {
         }
       } else if (dispatch.status === SHIPMENT_TRACK_STATUS.accepted || dispatch.status === SHIPMENT_TRACK_STATUS.dispatched) {
         if (stage === 'acceptance') {
-          buttons = (
+          buttons.push(
             <PrivilegeCover module="transport" feature="shipment" action="edit">
               <Tooltip placement="bottom" title="退回至未接单状态">
-                <Button type="ghost" onClick={() => this.handleReturn(dispatch.id)}>
+                <Button key="return" type="ghost" onClick={() => this.handleReturn(dispatch.id)}>
                   退回
                 </Button>
               </Tooltip>
@@ -259,37 +262,37 @@ export default class ShipmentActions extends React.Component {
           );
         } else if (stage === 'dispatch' || stage === 'todo') {
           if (dispatch.child_send_status === 0 && dispatch.status === 2 && dispatch.disp_status === 1 && dispatch.sp_tenant_id === tenantId) {
-            buttons = (
+            buttons.push(
               <PrivilegeCover module="transport" feature="dispatch" action="create">
-                <span>
-                  <Button onClick={() => this.handleSegmentDockShow()} >
-                    分段
-                  </Button>
-                  <Button type="primary" onClick={() => this.handleDispatchDockShow()} style={{ marginLeft: 8 }} >
-                    分配
-                  </Button>
-                </span>
+                <Button key="segment" onClick={() => this.handleSegmentDockShow()} >
+                  分段
+                </Button>
+              </PrivilegeCover>,
+              <PrivilegeCover module="transport" feature="dispatch" action="create">
+                <Button key="dispatch" type="primary" onClick={() => this.handleDispatchDockShow()} style={{ marginLeft: 8 }} >
+                  分配
+                </Button>
               </PrivilegeCover>
             );
           } else if (dispatch.disp_status === 0 && row.sr_tenant_id === tenantId) {
-            buttons = (
+            buttons.push(
               <PrivilegeCover module="transport" feature="dispatch" action="edit">
-                <span>
-                  <Button type="ghost" onClick={() => this.handleShipmtReturn()}>
-                    退回
-                  </Button>
-                  <Button type="primary" onClick={() => this.handleShipmtSend()} style={{ marginLeft: 8 }} >
-                    发送
-                  </Button>
-                </span>
+                <Button key="return" type="ghost" onClick={() => this.handleShipmtReturn()}>
+                  退回
+                </Button>
+              </PrivilegeCover>,
+              <PrivilegeCover module="transport" feature="dispatch" action="edit">
+                <Button key="send" type="primary" onClick={() => this.handleShipmtSend()} style={{ marginLeft: 8 }} >
+                  发送
+                </Button>
               </PrivilegeCover>
             );
           } else if (dispatch.disp_status > 0 && row.sr_tenant_id === tenantId) {
             if (dispatch.downstream_status === 1) {
-              buttons = (
+              buttons.push(
                 <PrivilegeCover module="transport" feature="dispatch" action="edit">
                   <Tooltip placement="bottom" title="承运商尚未接单，可立即撤回">
-                    <Button type="ghost" onClick={() => this.handleWithDraw(shipmt.shipmt_no, row.disp_id, row.parent_id)} >
+                    <Button key="withDraw" type="ghost" onClick={() => this.handleWithDraw(shipmt.shipmt_no, row.disp_id, row.parent_id)} >
                       撤回
                     </Button>
                   </Tooltip>
@@ -301,9 +304,9 @@ export default class ShipmentActions extends React.Component {
       }
     } else if (sourceType === 'sr') {
       if (dispatch.status === SHIPMENT_TRACK_STATUS.unaccepted) {
-        buttons = (
+        buttons.push(
           <PrivilegeCover module="transport" feature="tracking" action="create">
-            <Button type="ghost" onClick={() => this.handlePrompt(PROMPT_TYPES.promptAccept)}>
+            <Button key="promptAccept" type="ghost" onClick={() => this.handlePrompt(PROMPT_TYPES.promptAccept)}>
               催促接单
             </Button>
           </PrivilegeCover>
@@ -311,17 +314,17 @@ export default class ShipmentActions extends React.Component {
       } else if (dispatch.status === SHIPMENT_TRACK_STATUS.accepted) {
         if (dispatch.sp_tenant_id === -1) {
             // 线下客户手动更新
-          buttons = (
+          buttons.push(
             <PrivilegeCover module="transport" feature="tracking" action="edit">
-              <Button type="ghost" onClick={() => this.handleShowVehicleModal(dispatch.id, shipmt.shipmt_no)} >
+              <Button key="updateDriver" type="ghost" onClick={() => this.handleShowVehicleModal(dispatch.id, shipmt.shipmt_no)} >
                 更新车辆司机
               </Button>
             </PrivilegeCover>
           );
         } else {
-          buttons = (
+          buttons.push(
             <PrivilegeCover module="transport" feature="tracking" action="create">
-              <Button type="ghost" onClick={() => this.handlePrompt(PROMPT_TYPES.promptDispatch)} >
+              <Button key="promptDispatch" type="ghost" onClick={() => this.handlePrompt(PROMPT_TYPES.promptDispatch)} >
                 催促调度
               </Button>
             </PrivilegeCover>
@@ -329,73 +332,66 @@ export default class ShipmentActions extends React.Component {
         }
       } else if (dispatch.status === SHIPMENT_TRACK_STATUS.dispatched) {
         if (dispatch.sp_tenant_id === -1) {
-          buttons = null;
+          buttons = [];
         } else if (dispatch.sp_tenant_id === 0) {
             // 已分配给车队
           if (dispatch.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
               // 线下司机
-            buttons = null;
+            buttons = [];
           } else {
             // 司机更新
-            buttons = (
+            buttons.push(
               <PrivilegeCover module="transport" feature="tracking" action="create">
-                <span>
-                  <Button type="ghost"
-                    onClick={() => this.handlePrompt(PROMPT_TYPES.promptDriverPickup)}
-                  >
+                <Button key="promptPickup" type="ghost"
+                  onClick={() => this.handlePrompt(PROMPT_TYPES.promptDriverPickup)}
+                >
                     催促提货
                   </Button>
-                </span>
               </PrivilegeCover>
             );
           }
         } else {
-          buttons = (
+          buttons.push(
             <PrivilegeCover module="transport" feature="tracking" action="create">
-              <span>
-                <Button type="ghost" onClick={
-                    () => this.handlePrompt(PROMPT_TYPES.promptSpPickup)
-                  }
-                >
-                  催促提货
-                </Button>
-              </span>
+              <Button key="promptPickup" type="ghost" onClick={
+                  () => this.handlePrompt(PROMPT_TYPES.promptSpPickup)
+                }
+              >
+                催促提货
+              </Button>
             </PrivilegeCover>
           );
         }
       } else if (dispatch.status === SHIPMENT_TRACK_STATUS.intransit) {
         if (dispatch.sp_tenant_id === -1) {
-          buttons = null;
+          buttons = [];
         } else if (dispatch.sp_tenant_id === 0) {
           if (dispatch.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
-            buttons = null;
+            buttons = [];
           } else {
             // 司机更新
-            buttons = null;
+            buttons = [];
           }
         } else {
           // 承运商更新
-          buttons = null;
+          buttons = [];
         }
       } else if (dispatch.status === SHIPMENT_TRACK_STATUS.delivered) {
-        buttons = null;
+        buttons = [];
       }
 
       if (dispatch.status >= SHIPMENT_TRACK_STATUS.delivered && (stage === 'pod' || stage === 'todo')) {
         if (!dispatch.pod_status || dispatch.pod_status === SHIPMENT_POD_STATUS.unsubmit) {
           if (dispatch.sp_tenant_id === -1) {
-            buttons = null;
+            buttons = [];
           } else if (dispatch.sp_tenant_id === 0) {
             if (dispatch.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
-              buttons = null;
+              buttons = [];
             } else {
               // 司机上传
-              buttons = (
+              buttons.push(
                 <PrivilegeCover module="transport" feature="tracking" action="create">
-                  <Button type="ghost" onClick={
-                      () => this.handlePrompt(PROMPT_TYPES.promptDriverPod)
-                    }
-                  >
+                  <Button key="promptPod" type="ghost" onClick={() => this.handlePrompt(PROMPT_TYPES.promptDriverPod)}>
                     催促回单
                   </Button>
                 </PrivilegeCover>
@@ -403,12 +399,9 @@ export default class ShipmentActions extends React.Component {
             }
           } else {
             // 承运商上传
-            buttons = (
+            buttons.push(
               <PrivilegeCover module="transport" feature="tracking" action="create">
-                <Button type="ghost" onClick={
-                    () => this.handlePrompt(PROMPT_TYPES.promptSpPod)
-                  }
-                >
+                <Button key="promptPod" type="ghost" onClick={() => this.handlePrompt(PROMPT_TYPES.promptSpPod)}>
                   催促回单
                 </Button>
               </PrivilegeCover>
@@ -416,35 +409,39 @@ export default class ShipmentActions extends React.Component {
           }
         } else if (dispatch.pod_status === SHIPMENT_POD_STATUS.rejectByClient) {
           // 重新上传
-          buttons = null;
+          buttons = [];
         } else if (dispatch.pod_status === SHIPMENT_POD_STATUS.pending) {
           // 审核回单
-          buttons = (
+          buttons.push(
             <PrivilegeCover module="transport" feature="tracking" action="edit">
-              <span>
-                <Button type="ghost" onClick={() => this.handleAuditPass(dispatch.pod_id, dispatch.id, dispatch.parent_id)} >
-                    接受
-                  </Button>
-                <Button type="ghost" onClick={() => this.handleAuditReturn(dispatch.id)} style={{ marginLeft: 8 }} >
-                    拒绝
-                </Button>
-              </span>
+              <Button key="accepte" type="ghost" onClick={() => this.handleAuditPass(dispatch.pod_id, dispatch.id, dispatch.parent_id)} >
+                接受
+              </Button>
+            </PrivilegeCover>,
+            <PrivilegeCover module="transport" feature="tracking" action="edit">
+              <Button key="refuse" type="ghost" onClick={() => this.handleAuditReturn(dispatch.id)} style={{ marginLeft: 8 }} >
+                拒绝
+              </Button>
             </PrivilegeCover>
           );
         } else if (dispatch.pod_status === SHIPMENT_POD_STATUS.rejectByUs) {
           // 我方拒绝
-          buttons = null;
+          buttons = [];
         } else if (dispatch.pod_status === SHIPMENT_POD_STATUS.acceptByUs) {
           // 提交给上游客户
-          buttons = null;
+          buttons = [];
         } else if (dispatch.pod_status === SHIPMENT_POD_STATUS.acceptByClient) {
           // 上游客户已接受
-          buttons = null;
+          buttons = [];
         }
       }
     }
-    return (
-      buttons
-    );
+    if (needRecalculate) {
+      buttons.push(
+        <Button key="recalculateCharges" type="ghost" style={{ marginLeft: 8 }} onClick={() => this.props.toggleRecalculateChargeModal(true, shipmt.shipmt_no)} >
+          重新计算费用
+        </Button>);
+    }
+    return (<span>{buttons}</span>);
   }
 }

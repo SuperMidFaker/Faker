@@ -131,10 +131,10 @@ export default class ConsignInfo extends React.Component {
   handleRegionValue = (region) => {
     const [code, province, city, district, street] = region;
     this.props.setConsignFields({
-      [this.renderFields.province]: province,
-      [this.renderFields.city]: city,
-      [this.renderFields.district]: district,
-      [this.renderFields.street]: street,
+      [this.renderFields.province]: province || '',
+      [this.renderFields.city]: city || '',
+      [this.renderFields.district]: district || '',
+      [this.renderFields.street]: street || '',
       [this.renderFields.regionCode]: code,
     });
   }

@@ -42,6 +42,8 @@ const actionTypes = createActionTypes('@@welogix/transport/shipment/', [
   'LOAD_PODSHIPMT', 'LOAD_PODSHIPMT_FAIL', 'LOAD_PODSHIPMT_SUCCEED',
   'COUNT_TOTAL', 'COUNT_TOTAL_SUCCEED', 'COUNT_TOTAL_FAIL',
   'GET_SHIPMT_ORDER_NO', 'GET_SHIPMT_ORDER_NO_SUCCEED', 'GET_SHIPMT_ORDER_NO_FAIL',
+  'UPDATE_FEE', 'UPDATE_FEE_SUCCEED', 'UPDATE_FEE_FAIL',
+  'TOGGLE_RECALCULATE_CHARGE',
 ]);
 appendFormAcitonTypes('@@welogix/transport/shipment/', actionTypes);
 
@@ -75,8 +77,24 @@ const initialState = {
       id: -1,
       shipmt_no: '',
     },
+    upstream: {
+      id: -1,
+      shipmt_no: '',
+    },
+    downstream: {
+      id: -1,
+      shipmt_no: '',
+    },
     logs: [],
   },
+  charges: {
+    revenue: {},
+    expense: {},
+  },
+  pAdvanceCharges: [],
+  advanceCharges: [],
+  pSpecialCharges: [],
+  specialCharges: [],
   shipmtDetail: {
     shipmt: {},
     tracking: {
@@ -150,6 +168,10 @@ const initialState = {
   totalWeightRequired: false,
   totalVolumeRequired: false,
   partners: [],
+  recalculateChargeModal: {
+    visible: false,
+    shipmtNo: '',
+  },
 };
 
 export default function reducer(state = initialState, action) {
@@ -191,6 +213,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, previewer: {
         shipmt: action.result.data.shipmt,
         dispatch: action.result.data.dispatch,
+        upstream: action.result.data.upstream,
+        downstream: action.result.data.downstream,
         logs: action.result.data.logs,
         visible: true,
         loaded: true,
@@ -198,6 +222,9 @@ export default function reducer(state = initialState, action) {
         params: action.params,
         row: action.row,
       } };
+    }
+    case actionTypes.LOAD_CHARGES_SUCCEED: {
+      return { ...state, ...action.result.data };
     }
     case actionTypes.HIDE_PREVIWER: {
       return { ...state, previewer: { ...state.previewer, visible: false } };
@@ -370,6 +397,12 @@ export default function reducer(state = initialState, action) {
           },
         },
       };
+    case actionTypes.UPDATE_FEE_SUCCEED: {
+      return { ...state, previewer: { ...state.previewer, loaded: false } };
+    }
+    case actionTypes.TOGGLE_RECALCULATE_CHARGE: {
+      return { ...state, recalculateChargeModal: action.data };
+    }
     default:
       return formReducer(actionTypes, state, action, { key: null }, 'shipmentlist')
              || state;
@@ -831,5 +864,27 @@ export function getShipmtOrderNo(uuid) {
       method: 'get',
       params: { uuid, type: 'tms' },
     },
+  };
+}
+
+export function updateFee(dispId, fee) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_FEE,
+        actionTypes.UPDATE_FEE_SUCCEED,
+        actionTypes.UPDATE_FEE_FAIL,
+      ],
+      endpoint: 'v1/transport/fee/update',
+      method: 'post',
+      data: { dispId, fee },
+    },
+  };
+}
+
+export function toggleRecalculateChargeModal(visible, shipmtNo = '') {
+  return {
+    type: actionTypes.TOGGLE_RECALCULATE_CHARGE,
+    data: { visible, shipmtNo },
   };
 }

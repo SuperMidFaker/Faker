@@ -36,6 +36,11 @@ const typeKeys = EXPENSE_TYPES.map(ec => ec.key);
     tenantId: state.account.tenantId,
     shipmt: state.shipment.previewer.shipmt,
     previewer: state.shipment.previewer,
+    charges: state.shipment.charges,
+    pAdvanceCharges: state.shipment.pAdvanceCharges,
+    advanceCharges: state.shipment.advanceCharges,
+    pSpecialCharges: state.shipment.pSpecialCharges,
+    specialCharges: state.shipment.specialCharges,
   }), {
     showAdvanceModal,
     showSpecialChargeModal,
@@ -51,35 +56,30 @@ export default class ChargePanel extends React.Component {
     showAdvanceModal: PropTypes.func.isRequired,
     showSpecialChargeModal: PropTypes.func.isRequired,
     loadShipmtCharges: PropTypes.func.isRequired,
+    charges: PropTypes.object.isRequired,
+    pAdvanceCharges: PropTypes.array.isRequired,
+    advanceCharges: PropTypes.array.isRequired,
+    pSpecialCharges: PropTypes.array.isRequired,
+    specialCharges: PropTypes.array.isRequired,
   }
   state = {
     checkedExpCates: categoryKeys,
     checkedExpTypes: typeKeys,
-
-    charges: {},
-    pAdvanceCharges: [],
-    advanceCharges: [],
-    pSpecialCharges: [],
-    specialCharges: [],
   }
-  componentDidMount() {
-    this.handleLoad(this.props);
-  }
+  // componentDidMount() {
+  //   this.handleLoad(this.props);
+  // }
   componentWillReceiveProps(nextProps) {
     if (nextProps.previewer.dispatch.id !== this.props.previewer.dispatch.id || !nextProps.previewer.loaded) {
       this.handleLoad(nextProps);
     }
   }
   handleLoad = (props) => {
-    this.props.loadShipmtCharges(props.previewer.dispatch.id, props.tenantId).then((result) => {
-      if (!result.error) {
-        this.setState({ ...result.data });
-      }
-    });
+    this.props.loadShipmtCharges(props.previewer.dispatch.id, props.tenantId);
   }
-  handleReload = () => {
-    this.handleLoad(this.props);
-  }
+  // handleReload = () => {
+  //   this.handleLoad(this.props);
+  // }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   currency = (number) => {
     if (typeof number === 'string') return number;
@@ -292,8 +292,8 @@ export default class ChargePanel extends React.Component {
   }
 
   render() {
-    const { intl, shipmt, previewer: { dispatch } } = this.props;
-    const { checkedExpCates, checkedExpTypes, charges, pAdvanceCharges, advanceCharges, pSpecialCharges, specialCharges } = this.state;
+    const { intl, shipmt, previewer: { dispatch }, charges, pAdvanceCharges, advanceCharges, pSpecialCharges, specialCharges } = this.props;
+    const { checkedExpCates, checkedExpTypes } = this.state;
 
     let revenueds = [];
     let expenseds = [];
