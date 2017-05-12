@@ -660,7 +660,7 @@ export default class TradeItemList extends Component {
         } else if (record.mode === 'slave' && record.owner_tenant_id !== -1) {
           return (
             <Tooltip placement="bottom" title="切换为单库模式">
-              <Button shape="circle" icon="arrow-down" onClick={() => this.handleDegrade(record)} />
+              <Button disabled shape="circle" icon="arrow-down" onClick={() => this.handleDegrade(record)} />
             </Tooltip>
           );
         }
@@ -730,9 +730,11 @@ export default class TradeItemList extends Component {
               <RadioButton value="classified"><Icon type="check-circle-o" /> {this.msg('filterClassified')}</RadioButton>
             </RadioGroup>
             <span />
-            <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">
-              <RadioButton value="stage"><Icon type="plus-circle-o" /> {this.msg('stageClassified')}</RadioButton>
-            </RadioGroup>
+            {repo.mode === 'slave' &&
+              <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">
+                <RadioButton value="stage"><Icon type="plus-circle-o" /> {this.msg('stageClassified')}</RadioButton>
+              </RadioGroup>
+            }
             {repoId &&
               <div className="top-bar-tools">
                 {repo.permission === CMS_TRADE_REPO_PERMISSION.edit &&
