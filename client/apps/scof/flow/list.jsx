@@ -84,7 +84,7 @@ export default class FlowList extends React.Component {
     </div>),
   }]
   dataSource = new Table.DataSource({
-    fetcher: params => this.loadFlowList({
+    fetcher: params => this.props.loadFlowList({
       tenantId: this.props.tenantId,
       filter: JSON.stringify(this.props.listFilter),
       pageSize: params.pageSize,

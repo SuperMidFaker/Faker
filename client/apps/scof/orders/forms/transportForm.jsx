@@ -105,12 +105,13 @@ export default class TransportForm extends Component {
     if (typeof value !== 'string') {
       return;
     }
-    const { tmsParams: { consigners, consignees } } = this.props;
+    const { tmsParams: { consigners, consignees }, customerPartnerId } = this.props;
     const consignForm = {};
     if (key === 'consigner_name') {
-      const consign = consigners.find(item => item.name === value);
+      consignForm.consigner_name = value;
+      const consign = consigners.filter(cl => cl.ref_partner_id === customerPartnerId || cl.ref_partner_id === -1).find(item => item.name === value);
       if (consign) {
-        consignForm.consigner_name = consign.name;
+        consignForm.consigner_id = consign.node_id;
         consignForm.consigner_province = consign.province;
         consignForm.consigner_city = consign.city;
         consignForm.consigner_district = consign.district;
@@ -136,9 +137,10 @@ export default class TransportForm extends Component {
         consignForm.consigner_id = null;
       }
     } else if (key === 'consignee_name') {
-      const consign = consignees.find(item => item.name === value);
+      consignForm.consignee_name = value;
+      const consign = consignees.filter(cl => cl.ref_partner_id === customerPartnerId || cl.ref_partner_id === -1).find(item => item.name === value);
       if (consign) {
-        consignForm.consignee_name = consign.name;
+        consignForm.consignee_id = consign.node_id;
         consignForm.consignee_province = consign.province;
         consignForm.consignee_city = consign.city;
         consignForm.consignee_district = consign.district;
