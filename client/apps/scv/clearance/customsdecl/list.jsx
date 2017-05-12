@@ -310,7 +310,7 @@ export default class ScvCustomsDeclList extends Component {
         <Content className="main-content" key="main">
           <div className="page-body">
             <div className="toolbar">
-              <SearchBar placeholder={this.msg('maniSearchPlaceholder')} size="large" onInputSearch={this.handleSearch} />
+              <SearchBar placeholder={this.msg('customsSearchPlaceholder')} size="large" onInputSearch={this.handleSearch} />
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3>
               </div>
