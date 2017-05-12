@@ -159,7 +159,7 @@ export default class TrackingItems extends React.Component {
                         value={this.state.newItem.source}
                         onChange={value => this.setState({ newItem: { ...this.state.newItem, source: value } })}
                       >
-                        <Option value={1}>承运商</Option>
+                        <Option value={1}>物流服务商</Option>
                         <Option value={2}>第三方</Option>
                         <Option value={3}>手工录入</Option>
                       </Select>
@@ -175,7 +175,7 @@ export default class TrackingItems extends React.Component {
                         <Option value="DATE">日期</Option>
                       </Select>
                     </td>
-                    <td style={{ ...colStyle, width: '10%' }}>
+                    <td style={{ ...colStyle, width: 60 }} className="editable-row-operations">
                       <a role="button" onClick={this.handleAddItem}><Icon type="save" /></a>
                     </td>
                   </tr>

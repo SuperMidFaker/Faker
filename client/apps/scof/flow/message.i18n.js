@@ -92,11 +92,11 @@ const messages = defineMessages({
   },
   cwmReceiving: {
     id: 'scof.flow.biz.cwm.receiving',
-    defaultMessage: '收货通知',
+    defaultMessage: '入库单',
   },
   cwmShipping: {
     id: 'scof.flow.biz.cwm.shipping',
-    defaultMessage: '出货订单',
+    defaultMessage: '出库单',
   },
   declCustoms: {
     id: 'scof.flow.biz.cms.declcustoms',
