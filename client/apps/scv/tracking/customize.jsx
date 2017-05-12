@@ -174,7 +174,7 @@ export default class CustomizeTracking extends React.Component {
                 </Breadcrumb.Item>
               </Breadcrumb>
               <div className="pull-right">
-                <Tooltip placement="bottom" title="新增追踪表">
+                <Tooltip placement="bottom" title="新增跟踪表">
                   <Button type="primary" shape="circle" icon="plus" onClick={() => this.handleShowTrackingModal()} />
                 </Tooltip>
               </div>
@@ -210,11 +210,11 @@ export default class CustomizeTracking extends React.Component {
               toggle
             />
             <div className="top-bar-tools">
-              <Button type="primary" onClick={this.handleEdit}>重新设定</Button>
+              <Button type="primary" size="large" ghost disabled={this.state.trackings.length === 0} onClick={this.handleEdit}>跟踪表设置</Button>
             </div>
           </Header>
-          <Content className="main-content layout-fixed-width layout-fixed-width-lg">
-            <TrackingItems tracking={tracking} />
+          <Content className="main-content layout-fixed-width">
+            {this.state.trackings.length > 0 && <TrackingItems tracking={tracking} />}
           </Content>
         </Layout>
       </Layout>

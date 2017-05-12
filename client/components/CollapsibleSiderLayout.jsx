@@ -59,7 +59,7 @@ export default class CollapsibleSiderLayout extends React.Component {
       this.setState({ menuMode: 'vertical' });
     } else {
       // TODO inline mode
-      this.setState({ menuMode: 'vertical' });
+      this.setState({ menuMode: 'inline' });
     }
   }
   setOpenSelectedKeys(path) {
@@ -110,7 +110,9 @@ export default class CollapsibleSiderLayout extends React.Component {
           className="left-sider"
         >
           {showLogo ? <div className="layout-logo" /> : ''}
-          <Menu mode={this.state.menuMode} theme="dark" onSelect={this.handleMenuSelect} selectedKeys={this.state.selectedKeys}
+          <Menu mode={this.state.menuMode} theme="dark" onSelect={this.handleMenuSelect}
+            selectedKeys={this.state.selectedKeys}
+            defaultOpenKeys={this.state.openedKey}
             onClick={this.handleClick}
           >
             {

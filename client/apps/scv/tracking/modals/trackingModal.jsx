@@ -32,17 +32,20 @@ export default class TrackingModal extends React.Component {
     selectedKeys: [],
     targetKeys: [],
     name: '',
+    title: '',
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.operation === 'edit') {
       this.setState({
         selectedKeys: [],
         targetKeys: nextProps.trackingItems.map(item => item.field),
+        title: '跟踪表设置',
       });
     } else if (nextProps.operation === 'add') {
       this.setState({
         selectedKeys: [],
         targetKeys: [],
+        title: '新增跟踪表',
       });
     }
     this.setState({
@@ -99,14 +102,14 @@ export default class TrackingModal extends React.Component {
     return reg.test(inputValue);
   }
   render() {
-    const { visible, operation } = this.props;
+    const { visible } = this.props;
     const { selectedKeys, targetKeys } = this.state;
     return (
-      <Modal title={operation === 'add' ? '新增追踪' : '修改追踪'} visible={visible} onOk={this.handleOk} onCancel={this.handleCancel} width={680}>
-        <FormItem label="追踪名称:" required>
-          <Input placeholder="追踪名称" value={this.state.name} onChange={e => this.setState({ name: e.target.value })} />
+      <Modal title={this.state.title} visible={visible} onOk={this.handleOk} onCancel={this.handleCancel} width={680}>
+        <FormItem label="跟踪表名称:" required>
+          <Input value={this.state.name} onChange={e => this.setState({ name: e.target.value })} />
         </FormItem>
-        <FormItem label="追踪项:" required>
+        <FormItem label="跟踪项:" required>
           <Transfer
             dataSource={this.props.trackingFields}
             titles={['', '']}

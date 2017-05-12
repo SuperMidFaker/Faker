@@ -9,7 +9,7 @@ const messages = defineMessages({
     id: 'scv.module.orders',
     defaultMessage: '订单',
   },
-  shipmentsTracking: {
+  tracking: {
     id: 'scv.module.shipments.tracking',
     defaultMessage: '状态跟踪',
   },
@@ -27,7 +27,7 @@ const messages = defineMessages({
   },
   customizeTracking: {
     id: 'scv.module.tracking.customize',
-    defaultMessage: '自定义状态跟踪',
+    defaultMessage: '自定义跟踪表',
   },
   clearance: {
     id: 'scv.module.clearance',
