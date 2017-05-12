@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Form, Modal, Input } from 'antd';
+import { Form, Modal, Input, Alert } from 'antd';
 import { updateFee, toggleRecalculateChargeModal } from 'common/reducers/shipment';
 import { createSpecialCharge } from 'common/reducers/transportBilling';
 const FormItem = Form.Item;
@@ -46,7 +46,7 @@ export default class RecalculateChargeModal extends React.Component {
         type: 1,
         remark: `手动修改成本：${charges.revenue.freight_charge} 改为 ${revenue}`,
         submitter: loginName,
-        charge: revenue - charges.revenue.freight_charge,
+        charge: revenue + charges.revenue.excp_charge - charges.revenue.freight_charge,
         loginId,
         tenantId,
       }).then(() => {
@@ -61,7 +61,7 @@ export default class RecalculateChargeModal extends React.Component {
         type: -1,
         remark: `手动修改成本：${charges.expense.freight_charge} 改为 ${expense}`,
         submitter: loginName,
-        charge: expense - charges.expense.freight_charge,
+        charge: expense + charges.expense.excp_charge - charges.expense.freight_charge,
         loginId,
         tenantId,
       }).then(() => {
@@ -80,8 +80,9 @@ export default class RecalculateChargeModal extends React.Component {
       <Modal title="修改费用" onCancel={this.handleCancel} onOk={this.handleOk}
         visible={this.props.visible} maskClosable={false}
       >
+        <Alert type="info" message="代垫费用需单独添加" />
         {revenue.id &&
-          <FormItem label={`原收入${intl.formatNumber(revenue.freight_charge.toFixed(2), { style: 'currency', currency: 'cny' })}`} >
+          <FormItem label={`原收入${intl.formatNumber((revenue.freight_charge + revenue.excp_charge).toFixed(2), { style: 'currency', currency: 'cny' })}`} >
             <Input
               type="number"
               placeholder="请填写收入"
@@ -89,7 +90,7 @@ export default class RecalculateChargeModal extends React.Component {
             />
           </FormItem>}
         {expense.id &&
-          <FormItem label={`原成本${intl.formatNumber(expense.freight_charge.toFixed(2), { style: 'currency', currency: 'cny' })}`} >
+          <FormItem label={`原成本${intl.formatNumber((expense.freight_charge + expense.excp_charge).toFixed(2), { style: 'currency', currency: 'cny' })}`} >
             <Input
               type="number"
               placeholder="请填写成本"

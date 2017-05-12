@@ -107,7 +107,7 @@ export default class PreviewPanel extends React.Component {
         shipmtNo,
       });
     }
-    if (nextProps.dispatch.id !== this.props.dispatch.id) {
+    if (nextProps.dispatch.id !== this.props.dispatch.id || !loaded) {
       this.props.loadShipmtCharges(nextProps.dispatch.id, nextProps.tenantId);
     }
   }
