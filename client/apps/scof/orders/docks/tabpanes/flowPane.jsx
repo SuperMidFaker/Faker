@@ -58,7 +58,7 @@ export default class FlowPane extends React.Component {
                   return (
                     <Timeline.Item dot={<MdIcon type="truck" key={index} />} key={item.name}>
                       <TMSNodeCard uuid={item.uuid} name={item.name} consigneeName={item.consignee_name}
-                        consinerName={item.consigner_name} trsMode={item.trs_mode}
+                        consignerName={item.consigner_name} trsMode={item.trs_mode}
                       />
                     </Timeline.Item>
                   );
