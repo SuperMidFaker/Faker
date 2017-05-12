@@ -130,7 +130,7 @@ export default class HeadForm extends React.Component {
                   </Col>
                   <TradeRemission {...formProps} intl={intl} formRequire={formRequire} />
                 </Row>
-                <CountryAttr {...formProps} intl={intl} formRequire={formRequire} ietype={ietype} />
+                <CountryAttr {...formProps} intl={intl} formRequire={formRequire} ietype={ietype} onSearch={this.handlePortSearch} />
                 <Row>
                   <Col span="5">
                     <LicenseNo {...formProps} intl={intl} formRequire={formRequire} />

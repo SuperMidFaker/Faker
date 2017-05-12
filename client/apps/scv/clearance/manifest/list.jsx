@@ -63,7 +63,7 @@ export default class SCVManifestList extends Component {
   columns = [{
     title: this.msg('billSeqNo'),
     dataIndex: 'bill_seq_no',
-    fixed: 'left',
+    // fixed: 'left',
     width: 160,
     render: (o, record) => {
       const iePath = record.i_e_type === 0 ? 'import' : 'export';
@@ -75,6 +75,19 @@ export default class SCVManifestList extends Component {
     width: 180,
     render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
+    title: '提运单号',
+    dataIndex: 'bl_wb_no',
+    width: 100,
+  }, {
+    title: '订单号',
+    dataIndex: 'order_no',
+    width: 100,
+  }, {
+    title: '明细记录数',
+    dataIndex: 'detail_count',
+    width: 100,
+    render: dc => !isNaN(dc) ? dc : null,
+  }, {
     title: '制单日期',
     width: 90,
     render: (o, record) => (record.id ?
@@ -84,10 +97,6 @@ export default class SCVManifestList extends Component {
     width: 180,
     dataIndex: 'bill_status',
     render: progress => <Progress percent={progress} strokeWidth={5} showInfo={false} />,
-  }, {
-    title: '提运单号',
-    dataIndex: 'bl_wb_no',
-    width: 220,
   }, {
     title: '发票号',
     dataIndex: 'invoice_no',
@@ -138,6 +147,7 @@ export default class SCVManifestList extends Component {
       showSizeChanger: true,
       showQuickJumper: false,
       pageSize: result.pageSize,
+      showTotal: total => `共 ${total} 条`,
     }),
     getParams: (pagination) => {
       const params = {
@@ -218,7 +228,7 @@ export default class SCVManifestList extends Component {
             </div>
             <div className="panel-body table-panel expandable">
               <Table rowSelection={rowSelection} columns={this.columns} rowKey="id" dataSource={this.dataSource}
-                loading={loading} scroll={{ x: 1400 }}
+                loading={loading} scroll={{ x: 1630 }}
               />
             </div>
           </div>

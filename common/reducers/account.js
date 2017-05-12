@@ -9,6 +9,7 @@ const initialState = {
   customsCode: '',
   subdomain: '',
   tenantId: 0,
+  parentTenantId: null,
   aspect: 0,
   categoryId: 0,
   tenantName: '',

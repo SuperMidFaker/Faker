@@ -47,7 +47,8 @@ function goBack(router) {
     formData: state.personnel.formData,
     submitting: state.personnel.submitting,
     code: state.account.code,
-    tenant: state.personnel.tenant,
+    tenantId: state.account.tenantId,
+    parentTenantId: state.account.parentTenantId,
     roles: state.personnel.roles, // .filter(rol => rol.name !== PRESET_TENANT_ROLE.owner.name),
   }),
   { edit, submit, checkLoginName })
@@ -65,7 +66,8 @@ export default class CorpEdit extends React.Component {
       name: PropTypes.string.isRequired,
     })).isRequired,
     code: PropTypes.string.isRequired,
-    tenant: PropTypes.object.isRequired,
+    tenantId: PropTypes.number.isRequired,
+    parentTenantId: PropTypes.number.isRequired,
     form: PropTypes.object.isRequired,
     formData: PropTypes.object.isRequired,
     submitting: PropTypes.bool.isRequired,
@@ -102,11 +104,11 @@ export default class CorpEdit extends React.Component {
           role: this.state.role || this.props.formData.role,
         };
         if (this.props.formData.key) {
-          this.props.edit(form, this.props.code, this.props.tenant.id).then(
+          this.props.edit(form, this.props.code, this.props.tenantId).then(
             result => this.onSubmitReturn(result.error)
           );
         } else {
-          this.props.submit(form, this.props.code, this.props.tenant).then(
+          this.props.submit(form, this.props.code, this.props.tenantId, this.props.parentTenantId).then(
             result => this.onSubmitReturn(result.error)
           );
         }
@@ -130,11 +132,10 @@ export default class CorpEdit extends React.Component {
   }
   render() {
     const {
-      formData: { name, loginName, password, phone, email, position },
+      formData: { name, username, password, phone, email, position },
       submitting, intl, form: { getFieldDecorator }, code, roles,
     } = this.props;
     const isCreating = this.props.formData.key === null;
-    const disableSubmit = this.props.tenant.id === -1;
     const msg = descriptor => formatMsg(intl, descriptor);
     return (
       <Form layout="horizontal" onSubmit={this.handleSubmit} >
@@ -152,8 +153,8 @@ export default class CorpEdit extends React.Component {
               <Button size="large" onClick={this.handleCancel} disabled={submitting}>
                 {formatGlobalMsg(intl, 'cancel')}
               </Button>
-              <Button size="large" disabled={disableSubmit} htmlType="submit" type="primary" loading={submitting}
-                title={disableSubmit ? msg('nonTenantEdit') : ''}
+              <Button size="large" htmlType="submit" type="primary" loading={submitting}
+                title={msg('nonTenantEdit')}
               >
                 {formatGlobalMsg(intl, 'ok')}
               </Button>
@@ -169,14 +170,14 @@ export default class CorpEdit extends React.Component {
               <FormItem label={msg('username')} labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}
                 required
               >
-                {getFieldDecorator('loginName', {
+                {getFieldDecorator('username', {
                   rules: [{
                     validator: (rule, value, callback) => isLoginNameExist(
-                      value, code, this.props.formData.loginId,
-                      this.props.tenant.id, callback, message, this.props.checkLoginName,
+                      value, code, this.props.formData.login_id,
+                      this.props.tenantId, callback, message, this.props.checkLoginName,
                       (msgs, descriptor) => format(msgs)(intl, descriptor)),
                   }],
-                  initialValue: loginName,
+                  initialValue: username && username.split('@')[0],
                 })(<Input type="text" addonAfter={`@${code}`} />)}
               </FormItem>
               {

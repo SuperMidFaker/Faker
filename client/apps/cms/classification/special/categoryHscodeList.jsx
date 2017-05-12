@@ -90,6 +90,7 @@ export default class SpecialCategoryHsCodeList extends React.Component {
         showSizeChanger: true,
         showQuickJumper: false,
         pageSize: result.pageSize,
+        showTotal: total => `共 ${total} 条`,
       }),
       getParams: (pagination) => {
         const params = {

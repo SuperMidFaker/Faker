@@ -48,12 +48,7 @@ export default class EditBodyModal extends React.Component {
             }
           });
         } else {
-          let gNO = 1;
-          if (this.props.billBodies.length > 1) {
-            gNO += this.props.billBodies[this.props.billBodies.length - 2].g_no;
-          }
-          const body = { ...values, g_no: gNO };
-          this.props.addNewBillBody({ billSeqNo, body, loginId, tenantId }).then((result) => {
+          this.props.addNewBillBody({ billSeqNo, body: values, loginId, tenantId }).then((result) => {
             if (result.error) {
               message.error(result.error.message, 10);
             } else {

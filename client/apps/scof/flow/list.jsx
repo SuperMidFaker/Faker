@@ -97,6 +97,7 @@ export default class FlowList extends React.Component {
       showSizeChanger: false,
       showQuickJumper: false,
       pageSize: result.pageSize,
+      showTotal: total => `共 ${total} 条`,
     }),
     getParams: (pagination, filters, sorter) => {
       const params = {

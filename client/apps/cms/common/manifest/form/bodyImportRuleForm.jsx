@@ -64,7 +64,7 @@ export default class ImportRuleForm extends React.Component {
   render() {
     const { form: { getFieldDecorator }, formData } = this.props;
     return (
-      <Row>
+      <div className="form-layout-compact">
         <Row>
           <Col sm={24} lg={12}>
             <FormItem label={'商品名称'} {...formItemLayout} >
@@ -128,7 +128,7 @@ export default class ImportRuleForm extends React.Component {
             </FormItem>
           </Col>
         </Row>
-      </Row>
+      </div>
     );
   }
 }

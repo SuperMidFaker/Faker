@@ -126,6 +126,7 @@ export default class CorpList extends React.Component {
         showQuickJumper: false,
         pageSizeOptions: [`${INITIAL_LIST_PAGE_SIZE}`, `${INITIAL_LIST_PAGE_SIZE * 2}`],
         pageSize: result.pageSize,
+        showTotal: total => `共 ${total} 条`,
       }),
       getParams: (pagination, filters, sorter) => {
         const params = {

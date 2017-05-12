@@ -392,6 +392,7 @@ export function Transport(props) {
     formData,
     rules: [{ required }],
     getFieldDecorator,
+    searchKeyFn: opt => opt.value,
   };
   const modeNameProps = {
     outercol: 24,
