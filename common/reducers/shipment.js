@@ -7,7 +7,7 @@ import {
 import { TARIFF_METER_METHODS } from 'common/constants';
 
 import { REPORT_LOC_SUCCEED, LOAD_TRANSHIPMT } from './trackingLandStatus';
-import { CREATE_EXCEPTION_SUCCEED, LOAD_EXCPSHIPMT } from './trackingLandException';
+import { CREATE_EXCEPTION_SUCCEED, LOAD_EXCPSHIPMT, DEAL_EXCEPTION_SUCCEED } from './trackingLandException';
 import { LOAD_PODSHIPMT, SAVE_POD_SUCCEED } from './trackingLandPod';
 import { LOAD_DISPSHIPMENT } from './transportDispatch';
 import { LOAD_APTSHIPMENT, SAVE_EDIT_SUCCEED } from './transport-acceptance';
@@ -270,6 +270,9 @@ export default function reducer(state = initialState, action) {
       return { ...state, previewer: { ...state.previewer, loaded: false } };
     }
     case CREATE_EXCEPTION_SUCCEED: {
+      return { ...state, previewer: { ...state.previewer, loaded: false } };
+    }
+    case DEAL_EXCEPTION_SUCCEED: {
       return { ...state, previewer: { ...state.previewer, loaded: false } };
     }
     case SAVE_POD_SUCCEED: {

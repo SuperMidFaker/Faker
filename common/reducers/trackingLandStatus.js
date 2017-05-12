@@ -5,7 +5,6 @@ const actionTypes = createActionTypes('@@welogix/transport/tracking/land/status/
   'SHOW_VEHICLE_MODAL', 'SHOW_DATE_MODAL',
   'HIDE_VEHICLE_MODAL', 'HIDE_DATE_MODAL',
   'SHOW_CHANGE_ACTDATE_MODAL',
-  'SHOW_CHANGE_DELIVER_PRM_DATE_MODAL',
   'SHOW_LOC_MODAL', 'HIDE_LOC_MODAL', 'CHANGE_FILTER',
   'REPORT_LOC', 'REPORT_LOC_SUCCEED', 'REPORT_LOC_FAIL',
   'LOAD_LASTPOINT', 'LOAD_LASTPOINT_SUCCEED', 'LOAD_LASTPOINT_FAIL',
@@ -52,12 +51,6 @@ const initialState = {
     shipmtNo: '',
     pickupActDate: '',
     deliverActDate: '',
-  },
-  changeDeliverPrmDateModal: {
-    visible: false,
-    dispId: -1,
-    shipmtNo: '',
-    deliverPrmDate: '',
   },
   locModal: {
     visible: false,
@@ -127,10 +120,6 @@ export default function reducer(state = initialState, action) {
     case actionTypes.SHOW_CHANGE_ACTDATE_MODAL:
       return {
         ...state, changeActDateModal: { ...state.changeActDateModal, ...action.data },
-      };
-    case actionTypes.SHOW_CHANGE_DELIVER_PRM_DATE_MODAL:
-      return {
-        ...state, changeDeliverPrmDateModal: { ...state.changeDeliverPrmDateModal, ...action.data },
       };
     case actionTypes.DELIVER_CONFIRM_SUCCEED:
       return {
@@ -286,13 +275,6 @@ export function showChangeActDateModal({ visible, dispId = -1, shipmtNo = '', pi
   return {
     type: actionTypes.SHOW_CHANGE_ACTDATE_MODAL,
     data: { visible, dispId, shipmtNo, pickupActDate, deliverActDate },
-  };
-}
-
-export function showChangeDeliverPrmDateModal({ visible, dispId = -1, shipmtNo = '', deliverPrmDate }) {
-  return {
-    type: actionTypes.SHOW_CHANGE_DELIVER_PRM_DATE_MODAL,
-    data: { visible, dispId, shipmtNo, deliverPrmDate },
   };
 }
 

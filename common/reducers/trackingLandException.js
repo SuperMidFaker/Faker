@@ -36,7 +36,7 @@ const initialState = {
   },
 };
 
-export const { CREATE_EXCEPTION_SUCCEED, LOAD_EXCPSHIPMT } = actionTypes;
+export const { CREATE_EXCEPTION_SUCCEED, LOAD_EXCPSHIPMT, DEAL_EXCEPTION_SUCCEED } = actionTypes;
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.LOAD_EXCPSHIPMT:
