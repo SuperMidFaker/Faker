@@ -2,12 +2,13 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Breadcrumb, Button, Icon, Menu, Input, Popover, message, Layout } from 'antd';
 import QueueAnim from 'rc-queue-anim';
+import connectFetch from 'client/common/decorators/connect-fetch';
 import Table from 'client/components/remoteAntTable';
 import MdIcon from 'client/components/MdIcon';
+import AddMemberModal from './addMemberModal';
 import { intlShape, injectIntl } from 'react-intl';
-import { loadMembers, loadDepartments, delPersonnel, createDepartment, switchStatus } from 'common/reducers/personnel';
+import { loadMembers, loadDepartments, delMember, createDepartment, switchStatus, openMemberModal } from 'common/reducers/personnel';
 import NavLink from 'client/components/nav-link';
-import connectFetch from 'client/common/decorators/connect-fetch';
 import withPrivilege, { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { resolveCurrentPageNumber } from 'client/util/react-ant';
 import { ACCOUNT_STATUS, PRESET_TENANT_ROLE, PRESET_ROLE_NAME_KEYS } from 'common/constants';
@@ -45,7 +46,7 @@ function fetchData({ state, dispatch }) {
     tenantId: state.account.tenantId,
     loading: state.personnel.loading,
   }),
-  { delPersonnel, switchStatus, loadDepartments, createDepartment, loadMembers })
+  { delMember, switchStatus, loadDepartments, createDepartment, loadMembers, openMemberModal })
 @withPrivilege({ module: 'corp', feature: 'personnel' })
 export default class MemberDepartmentView extends React.Component {
   static propTypes = {
@@ -59,7 +60,7 @@ export default class MemberDepartmentView extends React.Component {
     tenantId: PropTypes.number.isRequired,
     loadMembers: PropTypes.func.isRequired,
     switchStatus: PropTypes.func.isRequired,
-    delPersonnel: PropTypes.func.isRequired,
+    delMember: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: React.PropTypes.object.isRequired,
@@ -233,30 +234,6 @@ export default class MemberDepartmentView extends React.Component {
       });
     }
   }
-  handleTenantSwitch(val) {
-    const { personnelist, filters } = this.props;
-    this.props.loadPersonnel(null, {
-      tenantId: val,
-      pageSize: personnelist.pageSize,
-      filters: JSON.stringify(filters),
-      currentPage: 1,
-    }).then((result) => {
-      if (result.error) {
-        message.error(result.error.message, 10);
-      } else {
-        let tenant;
-        this.props.departments.forEach((br) => {
-          if (`${br.key}` === val) {
-            tenant = {
-              id: br.key,
-              parentId: br.parentId,
-            };
-          }
-        });
-        this.props.switchTenant(tenant);
-      }
-    });
-  }
   handleNavigationTo(to, query) {
     this.context.router.push({ pathname: to, query });
   }
@@ -269,16 +246,16 @@ export default class MemberDepartmentView extends React.Component {
       });
   }
   handlePersonnelDel(record) {
-    const { tenant, filters, personnelist: { totalCount, current, pageSize } } = this.props;
-    this.props.delPersonnel(record.key, record.login_id, tenant).then((result) => {
+    const { tenantId, filters, personnelist: { totalCount, current, pageSize } } = this.props;
+    this.props.delMember(record.key, record.login_id, tenantId).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
-        this.props.loadPersonnel(null, {
-          tenantId: tenant.id,
+        this.props.loadMembers({
+          tenantId,
           pageSize,
           filters: JSON.stringify(filters),
-          currentPage: resolveCurrentPageNumber(totalCount - 1, current, pageSize),
+          current: resolveCurrentPageNumber(totalCount - 1, current, pageSize),
         });
       }
     });
@@ -306,6 +283,19 @@ export default class MemberDepartmentView extends React.Component {
       current: 1,
       filters: JSON.stringify(filters),
     });
+  }
+  handleAddDepartMember = () => {
+    this.props.openMemberModal();
+  }
+  handleDepartMembersLoad = () => {
+    if (this.props.filters.dept_id && this.props.personnelist.data.length < this.props.personnelist.pageSize) {
+      this.props.loadMembers({
+        tenantId: this.props.tenantId,
+        pageSize: this.props.personnelist.pageSize,
+        current: this.props.personnelist.current,
+        filters: JSON.stringify(this.props.filters),
+      });
+    }
   }
   renderColumnText(status, text) {
     let style = {};
@@ -385,6 +375,7 @@ export default class MemberDepartmentView extends React.Component {
               </Content>
             </Layout>
           </div>
+          <AddMemberModal reload={this.handleDepartMembersLoad} />
         </Content>
       </QueueAnim>
     );

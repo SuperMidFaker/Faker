@@ -7,24 +7,22 @@ const actionTypes = createActionTypes('@@welogix/personnel/', [
   'LOAD_DEPARTMENTS', 'LOAD_DEPARTMENTS_SUCCEED', 'LOAD_DEPARTMENTS_FAIL',
   'CREATE_DEPT', 'CREATE_DEPT_SUCCEED', 'CREATE_DEPT_FAIL',
   'SWITCH_STATUS', 'SWITCH_STATUS_SUCCEED', 'SWITCH_STATUS_FAIL',
-  'PERSONNEL_SUBMIT', 'PERSONNEL_SUBMIT_SUCCEED', 'PERSONNEL_SUBMIT_FAIL',
-  'PERSONNEL_DELETE', 'PERSONNEL_DELETE_SUCCEED', 'PERSONNEL_DELETE_FAIL',
-  'PERSONNEL_EDIT', 'PERSONNEL_EDIT_SUCCEED', 'PERSONNEL_EDIT_FAIL',
+  'SUBMIT_MEMBER', 'SUBMIT_MEMBER_SUCCEED', 'SUBMIT_MEMBER_FAIL',
+  'DEL_MEMBER', 'DEL_MEMBER_SUCCEED', 'DEL_MEMBER_FAIL',
+  'EDIT_MEMBER', 'EDIT_MEMBER_SUCCEED', 'EDIT_MEMBER_FAIL',
   'LOAD_MEMBERS', 'LOAD_MEMBERS_SUCCEED', 'LOAD_MEMBERS_FAIL',
   'LOAD_ROLES', 'LOAD_ROLES_SUCCEED', 'LOAD_ROLES_FAIL',
+  'SAVE_DEPM', 'SAVE_DEPM_SUCCEED', 'SAVE_DEPM_FAIL',
+  'LOAD_NONDEPTM', 'LOAD_NONDEPTM_SUCCEED', 'LOAD_NONDEPTM_FAIL',
+  'OPEN_AMM', 'CLOSE_AMM',
 ]);
 appendFormAcitonTypes('@@welogix/personnel/', actionTypes);
 
-export const PERSONNEL_EDIT_SUCCEED = actionTypes.PERSONNEL_EDIT_SUCCEED;
 const initialState = {
   loading: false,
   submitting: false,
   selectedIndex: -1,
   departments: [],
-  tenant: {
-    id: -1,
-    parentId: -1,
-  },
   formData: {
     key: -1,
   },
@@ -52,37 +50,27 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_DEPARTMENTS_SUCCEED:
       return { ...state, departments: action.result.data };
     case actionTypes.SWITCH_STATUS_SUCCEED: {
-      const personnelist = { ...state.personnelist };
-      personnelist.data[action.index].status = action.data.status;
-      return { ...state, personnelist };
+      const memberlist = { ...state.memberlist };
+      memberlist.data[action.index].status = action.data.status;
+      return { ...state, memberlist };
     }
-    case actionTypes.PERSONNEL_SUBMIT:
-    case actionTypes.PERSONNEL_EDIT:
+    case actionTypes.SUBMIT_MEMBER:
+    case actionTypes.EDIT_MEMBER:
       return { ...state, submitting: true };
-    case actionTypes.PERSONNEL_SUBMIT_FAIL:
-    case actionTypes.PERSONNEL_EDIT_FAIL:
+    case actionTypes.SUBMIT_MEMBER_FAIL:
+    case actionTypes.EDIT_MEMBER_FAIL:
+    case actionTypes.EDIT_MEMBER_SUCCEED:
+    case actionTypes.SUBMIT_MEMBER_SUCCEED:
       return { ...state, submitting: false };
-    case actionTypes.PERSONNEL_EDIT_SUCCEED: {
-      const personnelist = { ...state.personnelist };
-      personnelist.data[state.selectedIndex] = action.data.personnel;
-      return { ...state, personnelist, selectedIndex: -1, submitting: false };
-    }
-    case actionTypes.PERSONNEL_SUBMIT_SUCCEED: {
-      const personnelist = { ...state.personnelist };
-      if (personnelist.current * personnelist.pageSize > personnelist.totalCount) {
-        personnelist.data.push({
-          ...action.data.personnel, key: action.result.data.pid,
-          loginId: action.result.data.loginId, status: action.result.data.status,
-        });
-      }
-      personnelist.totalCount++;
-      return { ...state, personnelist, submitting: false };
-    }
+    case actionTypes.OPEN_AMM:
+      return { ...state, visibleMemberModal: true };
+    case actionTypes.CLOSE_AMM:
+      return { ...state, visibleMemberModal: false };
     case actionTypes.LOAD_ROLES_SUCCEED:
       return { ...state, roles: action.result.data };
     default:
       return formReducer(actionTypes, state, action, { key: null },
-                         'personnelist') || state;
+                         'memberlist') || state;
   }
 }
 
@@ -119,13 +107,13 @@ export function createDepartment(tenantId, name) {
   };
 }
 
-export function delPersonnel(pid, loginId, tenant) {
+export function delMember(pid, loginId, tenantId) {
   return {
     [CLIENT_API]: {
-      types: [actionTypes.PERSONNEL_DELETE, actionTypes.PERSONNEL_DELETE_SUCCEED, actionTypes.PERSONNEL_DELETE_FAIL],
-      endpoint: 'v1/user/personnel',
+      types: [actionTypes.DEL_MEMBER, actionTypes.DEL_MEMBER_SUCCEED, actionTypes.DEL_MEMBER_FAIL],
+      endpoint: 'v1/personnel/del/member',
       method: 'del',
-      data: { pid, loginId, tenant },
+      data: { pid, loginId, tenantId },
     },
   };
 }
@@ -133,34 +121,34 @@ export function delPersonnel(pid, loginId, tenant) {
 export function edit(personnel, code, tenantId) {
   return {
     [CLIENT_API]: {
-      types: [actionTypes.PERSONNEL_EDIT, actionTypes.PERSONNEL_EDIT_SUCCEED, actionTypes.PERSONNEL_EDIT_FAIL],
-      endpoint: 'v1/user/personnel',
+      types: [actionTypes.EDIT_MEMBER, actionTypes.EDIT_MEMBER_SUCCEED, actionTypes.EDIT_MEMBER_FAIL],
+      endpoint: 'v1/personnel/edit/member',
       method: 'put',
       data: { personnel, code, tenantId },
     },
   };
 }
 
-export function submit(personnel, code, tenant) {
+export function submit(personnel, code, tenantId, parentTenantId) {
   return {
     [CLIENT_API]: {
-      types: [actionTypes.PERSONNEL_SUBMIT, actionTypes.PERSONNEL_SUBMIT_SUCCEED, actionTypes.PERSONNEL_SUBMIT_FAIL],
-      endpoint: 'v1/user/personnel',
+      types: [actionTypes.SUBMIT_MEMBER, actionTypes.SUBMIT_MEMBER_SUCCEED, actionTypes.SUBMIT_MEMBER_FAIL],
+      endpoint: 'v1/personnel/new/member',
       method: 'post',
-      data: { personnel, code, tenant },
+      data: { personnel, code, tenantId, parentTenantId },
     },
   };
 }
 export function isFormDataLoaded(personnelState, persId) {
-  return isFormDataLoadedC(persId, personnelState, 'personnelist');
+  return isFormDataLoadedC(persId, personnelState, 'memberlist');
 }
 
 export function loadForm(cookie, persId) {
-  return loadFormC(cookie, 'v1/user/personnel', { pid: persId }, actionTypes);
+  return loadFormC(cookie, 'v1/personnel/member', { pid: persId }, actionTypes);
 }
 
 export function assignForm(personnelState, persId) {
-  return assignFormC(persId, personnelState, 'personnelist', actionTypes);
+  return assignFormC(persId, personnelState, 'memberlist', actionTypes);
 }
 
 export function clearForm() {
@@ -171,7 +159,7 @@ export function switchStatus(index, pid, status) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.SWITCH_STATUS, actionTypes.SWITCH_STATUS_SUCCEED, actionTypes.SWITCH_STATUS_FAIL],
-      endpoint: 'v1/user/personnel/status',
+      endpoint: 'v1/personnel/member/status',
       method: 'put',
       index,
       data: { status, pid },
@@ -186,6 +174,36 @@ export function loadRoles(tenantId) {
       endpoint: 'v1/user/roles',
       method: 'get',
       params: { tenantId },
+    },
+  };
+}
+
+export function openMemberModal() {
+  return { type: actionTypes.OPEN_AMM };
+}
+
+export function closeMemberModal() {
+  return { type: actionTypes.CLOSE_AMM };
+}
+
+export function loadNonDepartmentMembers(deptId, tenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [actionTypes.LOAD_NONDEPTM, actionTypes.LOAD_NONDEPTM_SUCCEED, actionTypes.LOAD_NONDEPTM_FAIL],
+      endpoint: 'v1/personnel/nondepartment/members',
+      method: 'get',
+      params: { deptId, tenantId },
+    },
+  };
+}
+
+export function saveDepartMember(deptId, userId) {
+  return {
+    [CLIENT_API]: {
+      types: [actionTypes.SAVE_DEPM, actionTypes.SAVE_DEPM_SUCCEED, actionTypes.SAVE_DEPM_FAIL],
+      endpoint: 'v1/personnel/add/department/member',
+      method: 'post',
+      data: { deptId, userId },
     },
   };
 }

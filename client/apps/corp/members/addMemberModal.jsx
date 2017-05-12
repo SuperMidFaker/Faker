@@ -1,33 +1,41 @@
 import React, { Component, PropTypes } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { Table, Modal, Button } from 'antd';
-import { loadNonDepartmentMembers, closeMemberModal } from 'common/reducers/personnel';
+import { Table, Modal, Input, Button } from 'antd';
+import { loadNonDepartmentMembers, saveDepartMember, closeMemberModal } from 'common/reducers/personnel';
+
+const Search = Input.Search;
 
 @injectIntl
 @connect(
   state => ({
     tenantId: state.account.tenantId,
     visible: state.personnel.visibleMemberModal,
-    dept_id: state.personnel.memberFilters.dept_id,
+    deptId: state.personnel.memberFilters.dept_id,
   }),
-  { loadNonDepartmentMembers, closeMemberModal }
+  { loadNonDepartmentMembers, saveDepartMember, closeMemberModal }
 )
 export default class AddMemberModal extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    inviteOfflinePartner: PropTypes.func.isRequired,
-    showInviteModal: PropTypes.func.isRequired,
-    inviteeInfo: PropTypes.object.isRequired,
+    tenantId: PropTypes.number.isRequired,
+    deptId: PropTypes.oneOfType([PropTypes.oneOf([undefined]), PropTypes.number.isRequired]),
+    loadNonDepartmentMembers: PropTypes.func.isRequired,
+    saveDepartMember: PropTypes.func.isRequired,
+    closeMemberModal: PropTypes.func.isRequired,
+    reload: PropTypes.func.isRequired,
   }
   state = {
+    added: false,
+    allMembers: [],
     members: [],
+    searchValue: '',
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.dept_id !== this.props.dept_id) {
-      this.props.loadNonDepartmentMembers(nextProps.dept_id).then((result) => {
+    if (nextProps.visible && nextProps.deptId !== undefined) {
+      this.props.loadNonDepartmentMembers(nextProps.deptId, nextProps.tenantId).then((result) => {
         if (!result.error) {
-          this.setState({ members: result.data });
+          this.setState({ allMembers: result.data, members: result.data });
         }
       });
     }
@@ -35,32 +43,50 @@ export default class AddMemberModal extends Component {
 
   handleCancel = () => {
     this.props.closeMemberModal();
-    this.setState({ members: [] });
+    if (this.state.added) {
+      this.props.reload();
+    }
+    this.setState({ allMembers: [], members: [], added: false, searchValue: '' });
   }
-  handleAddMember = () => {
-    const { inviteeInfo } = this.props;
-    const { phone, email } = this.state;
-    this.props.inviteOfflinePartner({ contactInfo: {
-      phone, email,
-    }, inviteeInfo }).then(() => {
-      this.handleCancel();
+  handleAddMember = (userId) => {
+    this.props.saveDepartMember(this.props.deptId, userId).then((result) => {
+      if (!result.error) {
+        const members = this.state.members.filter(mem => mem.user_id !== userId);
+        const allMembers = this.state.allMembers.filter(mem => mem.user_id !== userId);
+        this.setState({ members, allMembers, added: true });
+      }
     });
   }
+  handleSearchChange = (ev) => {
+    this.setState({ searchValue: ev.target.value });
+  }
+  handleMemberSearch = (searched) => {
+    console.log(searched);
+    if (searched) {
+      const members = this.state.allMembers.filter(mem => mem.name.indexOf(searched) >= 0);
+      this.setState({ members });
+    } else {
+      this.setState({ members: this.state.allMembers });
+    }
+  }
   columns = [{
-    title: this.msg('fullName'),
     dataIndex: 'name',
-    width: 100,
+    width: '90%',
   }, {
-    title: '操作',
-    width: 80,
-    render: () => <Button onClick={this.handleAddMember}>添加</Button>,
+    width: '10%',
+    render: (_, row) => <Button onClick={() => this.handleAddMember(row.user_id)}>添加</Button>,
   }]
   render() {
-    const { members } = this.state;
+    const { members, searchValue } = this.state;
     const { visible } = this.props;
     return (
-      <Modal visible={visible} title="添加成员" onCancel={this.handleCancel} onOk={this.handleCancel}>
-        <Table dataSource={members} columns={this.columns} />
+      <Modal visible={visible} title="添加成员到部门" onCancel={this.handleCancel} footer={null}>
+        <Search placeholder="搜索成员" style={{ width: 480, marginBottom: 5, borderBottom: '1px solid #F1F1F1' }}
+          onSearch={this.handleMemberSearch} value={searchValue} onChange={this.handleSearchChange}
+        />
+        <Table dataSource={members} columns={this.columns} showHeader={false} scroll={{ y: 500 }} pagination={false}
+          rowKey="user_id"
+        />
       </Modal>
     );
   }
