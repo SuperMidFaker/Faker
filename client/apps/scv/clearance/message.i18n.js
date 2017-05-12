@@ -44,7 +44,11 @@ const messages = defineMessages({
   },
   maniSearchPlaceholder: {
     id: 'scv.clearance.manifest.search.placeholder',
-    defaultMessage: '委托编号/提运单号/订单号/发票号',
+    defaultMessage: '清单编号/提运单号/订单号',
+  },
+  customsSearchPlaceholder: {
+    id: 'scv.clearance.customs.search.placeholder',
+    defaultMessage: '委托编号/提运单号/订单号/报关单号',
   },
   billSeqNo: {
     id: 'scv.clearance.manifest.bill.seqno',
@@ -57,6 +61,10 @@ const messages = defineMessages({
   declNo: {
     id: 'scv.clearance.declNo',
     defaultMessage: '报关单号',
+  },
+  all: {
+    id: 'scv.clearance.filter.all',
+    defaultMessage: '全部',
   },
 });
 
