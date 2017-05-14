@@ -10,6 +10,7 @@ const MODULE_CLEARANCE = {
   id: 'clearance',
   text: 'moduleClearance',
   defaultText: '清关管理',
+  status: null,
   features: [
     {
       id: 'import',
@@ -132,6 +133,7 @@ const MODULE_TRANSPORT = {
   id: 'transport',
   text: 'moduleTransport',
   defaultText: '国内运输',
+  status: null,
   features: [
     {
       id: 'dashboard',
@@ -258,6 +260,7 @@ const MODULE_SCV = {
 const MODULE_CORPORATION = {
   id: 'corp',
   text: 'moduleCorporation',
+  status: null,
   features: [
     {
       id: 'overview',
