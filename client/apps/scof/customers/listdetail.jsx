@@ -18,7 +18,6 @@ const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
 const Search = Input.Search;
 const TabPane = Tabs.TabPane;
-const FormItem = Form.Item;
 
 function fetchData({ state, dispatch }) {
   return dispatch(loadCustomers({
@@ -125,7 +124,6 @@ export default class CustomerList extends React.Component {
   }
   render() {
     const { customer } = this.state;
-    const { form: { getFieldDecorator } } = this.props;
     const columns = [{
       dataIndex: 'name',
       key: 'name',
@@ -206,21 +204,11 @@ export default class CustomerList extends React.Component {
                       <InfoItem label={this.msg('displayName')} field={customer.display_name}
                         placeholder="添加显示名称" onEdit={this.handleInputChanged} editable
                       />
-                      <FormItem label={this.msg('displayName')} >
-                        {getFieldDecorator('display_name', {
-                          initialValue: customer.display_name,
-                        })(<Input onChange={this.handleInputChanged} />)}
-                      </FormItem>
                     </Col>
                     <Col sm={24} lg={12}>
                       <InfoItem label={this.msg('englishName')} field={customer.en_name}
                         placeholder="添加英文名称" onEdit={this.handleInputChanged} editable
                       />
-                      <FormItem label={this.msg('englishName')} >
-                        {getFieldDecorator('en_name', {
-                          initialValue: customer.en_name,
-                        })(<Input onChange={this.handleInputChanged} />)}
-                      </FormItem>
                     </Col>
                   </Row>
                 </Card>
