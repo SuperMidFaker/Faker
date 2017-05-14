@@ -56,7 +56,7 @@ export default class CWMDashboard extends React.Component {
         <Content className="main-content" key="main">
           <Row gutter={16}>
             <Col sm={24} md={16}>
-              <Card loading title={this.msg('volumeToday')}>
+              <Card title={this.msg('volumeToday')}>
                 <ul className="statistics-columns">
                   <li className="col-6">
                     <div className="statistics-cell">
@@ -86,15 +86,15 @@ export default class CWMDashboard extends React.Component {
               </Card>
               <Row gutter={16}>
                 <Col sm={24} md={12}>
-                  <Card loading title={this.msg('inventoryByCategories')} />
+                  <Card title={this.msg('inventoryByCategories')} />
                 </Col>
                 <Col sm={24} md={12}>
-                  <Card loading title={this.msg('inventoryByCustomers')} />
+                  <Card title={this.msg('inventoryByCustomers')} />
                 </Col>
               </Row>
             </Col>
             <Col sm={24} md={8}>
-              <Card loading title={this.msg('inventoryAlerts')} >
+              <Card title={this.msg('inventoryAlerts')} >
                 <Alert message="221020161109715501 低于安全库存" type="warning" showIcon />
               </Card>
             </Col>

@@ -78,15 +78,15 @@ export default class DockPanel extends React.Component {
                 <Breadcrumb>
                   <Breadcrumb.Item>{title}</Breadcrumb.Item>
                 </Breadcrumb>
-                {status && <Badge status={status} text={statusText} />}
+                {status ? <Badge status={status} text={statusText} /> : null}
                 <div className={`${prefixCls}-head-close`}>
                   <Button shape="circle" icon="close" onClick={this.handleClose} />
                 </div>
               </div>
-              {extra && <div className={`${prefixCls}-head-extra`}>{extra}</div>}
+              {extra ? <div className={`${prefixCls}-head-extra`}>{extra}</div> : null}
             </div>
             <div className={bodyCls}>
-              {alert && <Alert message={alert} type={alertType} />}
+              {alert ? <Alert message={alert} type={alertType} /> : null}
               {children}
             </div>
           </Spin>
