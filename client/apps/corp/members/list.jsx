@@ -74,12 +74,12 @@ export default class MemberDepartmentView extends React.Component {
   columns = [{
     title: this.msg('fullName'),
     dataIndex: 'name',
-    width: 100,
+    width: 80,
     sorter: true,
     render: (o, record) => this.renderColumnText(record.status, record.name),
   }, {
     title: this.msg('username'),
-    width: 150,
+    width: 100,
     render: (o, record) => this.renderColumnText(record.status,
       record.username && record.username.split('@')[0]),
   }, {
@@ -89,7 +89,7 @@ export default class MemberDepartmentView extends React.Component {
   }, {
     title: this.msg('email'),
     dataIndex: 'email',
-    width: 100,
+    width: 150,
     sorter: true,
     render: (o, record) => this.renderColumnText(record.status, record.email),
   }, {

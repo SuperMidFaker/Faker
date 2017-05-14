@@ -111,7 +111,7 @@ export default class ManifestList extends Component {
     width: 220,
   }, {
     title: '订单号',
-    width: 140,
+    width: 160,
     dataIndex: 'order_no',
   }, {
     title: '监管方式',
