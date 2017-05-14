@@ -63,6 +63,7 @@ export default class ModuleMenu extends React.Component {
               <MenuItem key={mod.id}>
                 <NavLink to={`${emod.url}/`}>
                   {formatMsg(this.props.intl, emod.text)}
+                  {emod.status && <sup className={emod.status}>{emod.status}</sup>}
                 </NavLink>
               </MenuItem>
             );

@@ -78,9 +78,9 @@ export default class ManifestList extends Component {
     width: 120,
     render: (o, record) => <a onClick={() => this.handlePreview(o, record)}>{o}</a>,
   }, {
-    title: '明细记录数',
+    title: <Tooltip title="明细记录数"><Icon type="bars" /></Tooltip>,
     dataIndex: 'detail_count',
-    width: 100,
+    width: 50,
     render: dc => !isNaN(dc) ? dc : null,
   }, {
     title: '报关单位',

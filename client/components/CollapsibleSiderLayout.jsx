@@ -112,7 +112,6 @@ export default class CollapsibleSiderLayout extends React.Component {
           {showLogo ? <div className="layout-logo" /> : ''}
           <Menu mode={this.state.menuMode} theme="dark" onSelect={this.handleMenuSelect}
             selectedKeys={this.state.selectedKeys}
-            defaultOpenKeys={this.state.openedKey}
             onClick={this.handleClick}
           >
             {

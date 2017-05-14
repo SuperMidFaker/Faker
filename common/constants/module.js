@@ -242,6 +242,7 @@ const MODULE_CWM = {
   id: 'cwm',
   text: 'moduleCWM',
   defaultText: '仓储协同',
+  status: 'alpha',
   features: [
   ],
 };
@@ -250,6 +251,7 @@ const MODULE_SCV = {
   id: 'scv',
   text: 'moduleSCV',
   defaultText: 'SCV',
+  status: 'beta',
   features: [],
 };
 
@@ -374,6 +376,7 @@ appModules.forEach((mod, index) => {
     cls: mod.id,
     url: `/${mod.id}`,
     text: mod.text,
+    status: mod.status,
     defaultText: mod.defaultText,
     index,
   };

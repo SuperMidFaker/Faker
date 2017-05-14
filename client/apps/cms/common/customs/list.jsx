@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Breadcrumb, Dropdown, Menu, Icon, Layout, Radio, Tag, message, Popconfirm, Badge, Button } from 'antd';
+import { Breadcrumb, Dropdown, Menu, Icon, Layout, Radio, Tag, Tooltip, message, Popconfirm, Badge, Button } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -119,9 +119,9 @@ export default class CustomsList extends Component {
       }
     },
   }, {
-    title: '明细记录数',
+    title: <Tooltip title="明细记录数"><Icon type="bars" /></Tooltip>,
     dataIndex: 'detail_count',
-    width: 100,
+    width: 50,
     render: dc => !isNaN(dc) ? dc : null,
   }, {
     title: '收发货人',
