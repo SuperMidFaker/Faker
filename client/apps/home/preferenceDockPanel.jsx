@@ -54,7 +54,7 @@ export default class PreferenceDockPanel extends React.Component {
           </TabPane>
           <TabPane tab={<span><Icon type="bell" />{this.msg('preferenceNotification')}</span>} key="notification">
             <InfoItem label={this.msg('labelDesktopPush')} field={this.msg('descDesktopPush')}
-              action={<Switch defaultChecked={Notification.permission === 'granted'} onChange={this.onChange} />}
+              action={<Switch defaultChecked={false} onChange={this.onChange} />}
             />
           </TabPane>
         </Tabs>

@@ -570,7 +570,7 @@ export default class DelegationList extends Component {
           </RadioGroup>
           <span />
           <RadioGroup value={listFilter.status} onChange={this.handleCiqFilter} size="large">
-            <RadioButton value="ciqPending">{this.msg('ciq')}</RadioButton>
+            <RadioButton value="ciqPending" disabled>{this.msg('ciq')}</RadioButton>
           </RadioGroup>
           <div className="top-bar-tools">
             <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
