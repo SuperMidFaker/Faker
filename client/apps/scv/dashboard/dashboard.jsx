@@ -48,7 +48,7 @@ export default class SCVDashboard extends React.Component {
         <Content className="main-content" key="main">
           <Row gutter={16}>
             <Col sm={24} md={16}>
-              <Card loading title={this.msg('shipmentsStatus')}>
+              <Card title={this.msg('shipmentsStatus')}>
                 <ul className="statistics-columns">
                   <li className="col-4">
                     <div className="statistics-cell">
@@ -88,7 +88,7 @@ export default class SCVDashboard extends React.Component {
                   </li>
                 </ul>
               </Card>
-              <Card loading title={this.msg('payments')}>
+              <Card title={this.msg('payments')}>
                 <ul className="statistics-columns">
                   <li className="col-8">
                     <div className="statistics-cell">
@@ -110,12 +110,12 @@ export default class SCVDashboard extends React.Component {
                   </li>
                 </ul>
               </Card>
-              <Card loading title={this.msg('statistics')}>
+              <Card title={this.msg('statistics')}>
                 <div id="c1" />
               </Card>
             </Col>
             <Col sm={24} md={8}>
-              <Card loading title={this.msg('alerts')} >
+              <Card title={this.msg('alerts')} >
                 <Alert message="报关单221020161109715501 海关查验" type="warning" showIcon />
                 <Alert message="1067172 送货延迟：收货人外地出差，18号以后送货" type="warning" showIcon />
               </Card>

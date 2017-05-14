@@ -8,8 +8,12 @@ import { hidePreviewer, toggleRecalculateChargeModal } from 'common/reducers/shi
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { loadAcceptDispatchers, returnShipment } from 'common/reducers/transport-acceptance';
-import { doSend, doReturn, changeDockStatus, withDraw } from 'common/reducers/transportDispatch';
-import { showVehicleModal } from 'common/reducers/trackingLandStatus';
+import { doSend,
+         doReturn,
+         changeDockStatus,
+         withDraw } from 'common/reducers/transportDispatch';
+import { showVehicleModal }
+from 'common/reducers/trackingLandStatus';
 import { passAudit, returnAudit } from 'common/reducers/trackingLandPod';
 import { createFilename } from 'client/util/dataTransform';
 import { sendMessage } from 'common/reducers/notification';
@@ -438,6 +442,6 @@ export default class ShipmentActions extends React.Component {
           重新计算费用
         </Button>);
     }
-    return buttons.length > 0 ? (<span>{buttons}</span>) : null;
+    return (<span>{buttons}</span>);
   }
 }
