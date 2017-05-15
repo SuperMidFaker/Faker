@@ -55,11 +55,14 @@ export default class OrderPane extends React.Component {
             </Panel>
             <Panel header="货运信息" key="shipment">
               <Row>
+                {
+                (order.cust_shipmt_transfer !== 'DOM') &&
                 <Col span="8">
                   <InfoItem label="运输方式" addonBefore={transMode && <MdIcon type={transMode.icon} />}
                     field={transMode ? transMode.text : ''}
                   />
                 </Col>
+                }
                 {
                 (order.cust_shipmt_transfer !== 'DOM' && order.cust_shipmt_trans_mode === '2') &&
                 <Col span="8">
