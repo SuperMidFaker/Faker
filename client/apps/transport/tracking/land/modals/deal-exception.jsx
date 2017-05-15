@@ -67,7 +67,7 @@ export default class DealException extends React.Component {
           } else {
             this.handleCancel();
             this.props.loadExceptions({
-              dispId: dispatch.id,
+              shipmtNo,
               pageSize: this.props.exceptions.pageSize,
               currentPage: this.props.exceptions.current,
             });
