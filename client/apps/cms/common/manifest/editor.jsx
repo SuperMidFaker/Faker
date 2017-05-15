@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Breadcrumb, Button, Dropdown, Layout, Menu, Icon, Form, Modal, message, notification, Switch, Tooltip, Tabs, Select, Spin } from 'antd';
+import { Breadcrumb, Button, Dropdown, Layout, Menu, Icon, Form, Modal, message, notification, Switch, Tooltip, Tabs, Select, Spin, Popconfirm } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { saveBillHead, lockManifest, openMergeSplitModal, resetBill, updateHeadNetWt, editBillBody,
@@ -279,6 +279,14 @@ export default class ManifestEditor extends React.Component {
     const head = this.props.billHead;
     this.props.showSendDeclsModal({ visible: true, delgNo: head.delg_no, agentCustCo: head.agent_custco });
   }
+  handleManifestRedo = () => {
+    const head = this.props.billHead;
+    this.props.redoManifest(head.delg_no, head.bill_seq_no).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 5);
+      }
+    });
+  }
   renderOverlayMenu(editable) {
     let lockMenuItem = null;
     if (editable) {
@@ -307,8 +315,10 @@ export default class ManifestEditor extends React.Component {
         )}
       </Menu>);
     let sendable = billMeta.entries.length > 0;
+    let revertable = billMeta.entries.length > 0;
     billMeta.entries.forEach((entry) => {
       sendable = sendable && (entry.status === CMS_DECL_STATUS.reviewed.value);
+      revertable = revertable && (entry.status === CMS_DECL_STATUS.proposed.value);
     });
     const path = `/clearance/${ietype}/manifest/`;
     let editable = !this.props.readonly && billMeta.entries.length === 0;
@@ -372,6 +382,13 @@ export default class ManifestEditor extends React.Component {
                 <Dropdown overlay={declEntryMenu}>
                   <Button size="large"><Icon type="schedule" />已生成报关建议书<Icon type="down" /></Button>
                 </Dropdown>
+              }
+              {revertable &&
+                <Popconfirm title="确定操作?" placement="topRight" onConfirm={this.handleManifestRedo}>
+                  <Tooltip title="删除已生成的报关建议书，重新修改" placement="bottomLeft">
+                    <Button size="large"><Icon type="reload" /></Button>
+                  </Tooltip>
+                </Popconfirm>
               }
               <ButtonToggle size="large" iconOff="folder" iconOn="folder-open" onClick={this.toggle} />
             </div>
