@@ -465,4 +465,8 @@ export default defineMessages({
     id: 'cms.delegation.certTotal',
     defaultMessage: '总金额',
   },
+  allocateOriginator: {
+    id: 'cms.delegation.allocate.originator',
+    defaultMessage: '指定制单人',
+  },
 });
