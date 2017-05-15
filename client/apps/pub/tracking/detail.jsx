@@ -37,6 +37,7 @@ export default class TrackingDetail extends React.Component {
     exceptions: [],
   }
   componentDidMount() {
+    this.loadExceptions();
     this.resize();
     $(window).resize(() => {
       this.resize();
