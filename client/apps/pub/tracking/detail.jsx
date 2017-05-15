@@ -1,10 +1,11 @@
 /* eslint no-undef: 0 */
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Steps, Card, Collapse, Row, Col, Layout } from 'antd';
+import { Steps, Card, Collapse, Row, Col, Layout, Alert } from 'antd';
 import { loadPubShipmtDetail } from 'common/reducers/shipment';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { renderConsignLoc, renderLoc } from '../../transport/common/consignLocation';
+import { loadExceptions } from 'common/reducers/trackingLandException';
 import TrackingTimeline from '../../transport/common/trackingTimeline';
 import moment from 'moment';
 const Step = Steps.Step;
@@ -21,17 +22,19 @@ function fetchData({ dispatch, params }) {
   state => ({
     shipmtDetail: state.shipment.shipmtDetail,
   }),
-  { }
+  { loadExceptions }
 )
 export default class TrackingDetail extends React.Component {
   static propTypes = {
     shipmtDetail: PropTypes.object.isRequired,
+    loadExceptions: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
   state = {
     stepsDirection: 'horizontal',
+    exceptions: [],
   }
   componentDidMount() {
     this.resize();
@@ -171,6 +174,16 @@ export default class TrackingDetail extends React.Component {
     }
     $('#map').height($(window).height() - 50);
   }
+  loadExceptions = () => {
+    const { shipmt } = this.props.shipmtDetail;
+    this.props.loadExceptions({
+      dispId: shipmt.disp_id,
+      pageSize: 999999,
+      currentPage: 1,
+    }).then((result) => {
+      this.setState({ exceptions: result.data.data });
+    });
+  }
   render() {
     const { shipmt, tracking } = this.props.shipmtDetail;
     let latestPoint = {
@@ -259,6 +272,7 @@ export default class TrackingDetail extends React.Component {
     if (shipmt.ref_external_no && shipmt.ref_external_no !== '') {
       refExternalNo = `(${shipmt.ref_external_no})`;
     }
+    const deliverDelayException = this.state.exceptions.find(item => item.type === 11013);
     return (
       <div className="panel-body">
         <nav className="detail-nav"><strong>运单号: {shipmt.shipmt_no} {refExternalNo}</strong></nav>
@@ -267,6 +281,13 @@ export default class TrackingDetail extends React.Component {
             <Content className="main-content">
               <Card title="运输进度" style={{ width: '100%' }}>
                 <Steps direction={this.state.stepsDirection} current={statusPos}>{steps}</Steps>
+                {deliverDelayException &&
+                  <Alert
+                    message="送货超时"
+                    description={`承诺送货时间:${moment(shipmt.pickup_act_date).format('YYYY-MM-DD')}`}
+                    type="warning"
+                    showIcon
+                  />}
               </Card>
               <Row>
                 <Col lg={12} sm={24}>
