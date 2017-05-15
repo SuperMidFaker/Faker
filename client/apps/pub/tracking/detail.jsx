@@ -178,7 +178,7 @@ export default class TrackingDetail extends React.Component {
   loadExceptions = () => {
     const { shipmt } = this.props.shipmtDetail;
     this.props.loadExceptions({
-      dispId: shipmt.disp_id,
+      shipmtNo: shipmt.shipmt_no,
       pageSize: 999999,
       currentPage: 1,
     }).then((result) => {
