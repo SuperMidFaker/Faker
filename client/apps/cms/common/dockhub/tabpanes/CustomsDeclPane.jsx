@@ -4,7 +4,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import Avatar from 'react-avatar';
 import { Spin, Button, Card, Col, Icon, Progress, Row, Table, message, Menu } from 'antd';
 import moment from 'moment';
-import { openAcceptModal, ensureManifestMeta, loadDelgOperators } from 'common/reducers/cmsDelegation';
+import { ensureManifestMeta, loadDelgOperators } from 'common/reducers/cmsDelegation';
 import { loadCustPanel, setOpetaor } from 'common/reducers/cmsDelgInfoHub';
 import CustomsDeclSheetCard from './customsDeclSheetCard';
 import InfoItem from 'client/components/InfoItem';
@@ -19,9 +19,9 @@ import InfoItem from 'client/components/InfoItem';
     customsSpinning: state.cmsDelgInfoHub.customsPanelLoading,
     loginId: state.account.loginId,
     loginName: state.account.username,
-    delgOperators: state.cmsDelegation.acceptModal.operators,
+    delgOperators: state.cmsDelegation.operators,
   }),
-  { loadCustPanel, openAcceptModal, ensureManifestMeta, loadDelgOperators, setOpetaor }
+  { loadCustPanel, ensureManifestMeta, loadDelgOperators, setOpetaor }
 )
 export default class CustomsDeclPane extends React.Component {
   static propTypes = {
@@ -82,15 +82,6 @@ export default class CustomsDeclPane extends React.Component {
     const clearType = customsPanel.bill.i_e_type === 0 ? 'import' : 'export';
     const link = `/clearance/${clearType}/manifest/`;
     this.context.router.push(`${link}${customsPanel.bill.bill_seq_no}`);
-  }
-  handleOperatorAssign = () => {
-    this.props.openAcceptModal({
-      tenantId: this.props.tenantId,
-      dispatchIds: [this.props.customsPanel.id],
-      delg_no: this.props.delgNo,
-      type: 'delg',
-      opt: 'operator',
-    });
   }
   handleMenuClick = (e) => {
     const operator = this.props.delgOperators.filter(dop => dop.lid === Number(e.key))[0];

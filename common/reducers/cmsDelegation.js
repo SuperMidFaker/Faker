@@ -4,7 +4,7 @@ import { createActionTypes } from 'client/common/redux-actions';
 const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'LOAD_PARTNERS', 'LOAD_PARTNERS_SUCCEED', 'LOAD_PARTNERS_FAIL',
   'LOAD_ACCEPT', 'LOAD_ACCEPT_SUCCEED', 'LOAD_ACCEPT_FAIL',
-  'OPEN_ACCEPT_MODAL', 'CLOSE_ACCEPT_MODAL', 'RELOAD_DELG_LIST',
+  'RELOAD_DELG_LIST',
   'LOAD_DELGOPERATOR', 'LOAD_DELGOPERATOR_SUCCEED', 'LOAD_DELGOPERATOR_FAIL',
   'ACPT_DELG', 'ACPT_DELG_SUCCEED', 'ACPT_DELG_FAIL',
   'CREATE_DELGCCB', 'CREATE_DELGCCB_SUCCEED', 'CREATE_DELGCCB_FAIL',
@@ -74,12 +74,7 @@ const initialState = {
     visible: false,
     delegations: [],
   },
-  acceptModal: {
-    visible: false,
-    tenantId: 0,
-    delgDispIds: [],
-    operators: [],
-  },
+  operators: [],
   visibleEfModal: false,
   efModal: {
     entryHeadId: -1,
@@ -171,12 +166,8 @@ export default function reducer(state = initialState, action) {
     //     dispatch: action.result.data.dispatch, delgDispShow: true, saved: true } };
     // case actionTypes.BROKERS_LOAD_SUCCEED:
     //   return { ...state, brokers: action.result.data.brokers };
-    case actionTypes.OPEN_ACCEPT_MODAL:
-      return { ...state, acceptModal: { visible: true, ...action.data } };
-    case actionTypes.CLOSE_ACCEPT_MODAL:
-      return { ...state, acceptModal: { visible: false } };
     case actionTypes.LOAD_DELGOPERATOR_SUCCEED:
-      return { ...state, acceptModal: { ...state.acceptModal, operators: action.result.data } };
+      return { ...state, operators: action.result.data };
     case actionTypes.LOAD_PARTNERS_SUCCEED:
       return { ...state, assign: { ...state.assign, ciqSups: action.result.data } };
     default:
@@ -395,19 +386,6 @@ export function loadDelgOperators(tenantId) {
       method: 'get',
       params: { tenantId },
     },
-  };
-}
-
-export function openAcceptModal(modal) {
-  return {
-    type: actionTypes.OPEN_ACCEPT_MODAL,
-    data: modal,
-  };
-}
-
-export function closeAcceptModal() {
-  return {
-    type: actionTypes.CLOSE_ACCEPT_MODAL,
   };
 }
 

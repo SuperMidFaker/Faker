@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Spin, Badge, Button, Card, Col, Icon, Row, Table, Tag, Tooltip } from 'antd';
 import moment from 'moment';
-import { openAcceptModal, loadciqSups, setDispStatus } from 'common/reducers/cmsDelegation';
+import { loadciqSups, setDispStatus } from 'common/reducers/cmsDelegation';
 import { loadDeclCiqPanel } from 'common/reducers/cmsDelgInfoHub';
 import InfoItem from 'client/components/InfoItem';
 import CiqDispModal from '../ciqDispModal';
@@ -17,7 +17,7 @@ import CiqDispModal from '../ciqDispModal';
     ciqSpinning: state.cmsDelgInfoHub.ciqPanelLoading,
     delegation: state.cmsDelgInfoHub.previewer.delegation,
   }),
-  { loadDeclCiqPanel, openAcceptModal, loadciqSups, setDispStatus }
+  { loadDeclCiqPanel, loadciqSups, setDispStatus }
 )
 export default class CiqDeclPane extends React.Component {
   static propTypes = {
@@ -42,15 +42,6 @@ export default class CiqDeclPane extends React.Component {
     if (nextProps.tabKey === 'ciqDecl' && nextProps.delegation.delg_no !== this.props.delegation.delg_no) {
       this.props.loadDeclCiqPanel(nextProps.delegation.delg_no, this.props.tenantId);
     }
-  }
-  handleOperatorAssign = () => {
-    this.props.openAcceptModal({
-      tenantId: this.props.tenantId,
-      dispatchIds: [this.props.ciqPanel.id],
-      delg_no: this.props.delegation.delg_no,
-      type: 'ciq',
-      opt: 'operator',
-    });
   }
   handleCiqAssign = () => {
     this.props.loadciqSups(this.props.tenantId, 'CIB');
@@ -124,10 +115,12 @@ export default class CiqDeclPane extends React.Component {
                     <Tooltip title="分配报检供应商">
                       <Button type="ghost" onClick={this.handleCiqAssign}><Icon type="share-alt" /> 分配</Button>
                     </Tooltip>}
+                    {/*
                     {(ciqPanel.type === 1 || ciqPanel.ciq_tenant_id === -1) &&
                     <Tooltip title="指派操作人员">
                       <Button type="ghost" shape="circle" onClick={this.handleOperatorAssign}><Icon type="user" /></Button>
                     </Tooltip>}
+                  */}
                   </div>
                 </div>
               </Card>
