@@ -10,7 +10,7 @@ import PodPane from './tabpanes/podPane';
 import TrackingPane from './tabpanes/trackingPane';
 import { SHIPMENT_TRACK_STATUS, SHIPMENT_EFFECTIVES } from 'common/constants';
 import { hidePreviewer, sendTrackingDetailSMSMessage, changePreviewerTab, loadShipmtDetail, loadForm,
-  getShipmtOrderNo, loadShipmtCharges } from 'common/reducers/shipment';
+  getShipmtOrderNo } from 'common/reducers/shipment';
 import { format } from 'client/common/i18n/helpers';
 import InfoItem from 'client/components/InfoItem';
 import DockPanel from 'client/components/DockPanel';
@@ -65,7 +65,7 @@ function getTrackStatusMsg(status, eff) {
     previewer: state.shipment.previewer,
   }),
   { hidePreviewer, sendTrackingDetailSMSMessage, changePreviewerTab, loadShipmtDetail, loadForm, loadOrderDetail,
-    getShipmtOrderNo, loadShipmtCharges }
+    getShipmtOrderNo }
 )
 export default class PreviewPanel extends React.Component {
   static propTypes = {
@@ -90,7 +90,6 @@ export default class PreviewPanel extends React.Component {
     stage: PropTypes.oneOf(['acceptance', 'dispatch', 'tracking', 'pod', 'exception', 'billing', 'dashboard', 'todo']),
     loadShipmtDetail: PropTypes.func.isRequired,
     loadForm: PropTypes.func.isRequired,
-    loadShipmtCharges: PropTypes.func.isRequired,
   }
   constructor(props) {
     super(props);
@@ -106,9 +105,6 @@ export default class PreviewPanel extends React.Component {
         tenantId,
         shipmtNo,
       });
-    }
-    if (nextProps.dispatch.id !== this.props.dispatch.id || !loaded) {
-      this.props.loadShipmtCharges(nextProps.dispatch.id, nextProps.tenantId);
     }
   }
   componentWillUnmount() {

@@ -8,7 +8,6 @@ import { format } from 'client/common/i18n/helpers';
 import { PRESET_TRANSMODES, TMS_SHIPMENT_STATUS_DESC, SHIPMENT_TRACK_STATUS, COURIERS } from 'common/constants';
 import ChangeShipment from '../change-shipment';
 import { showChangeShipmentModal, loadForm, computeSaleCharge, updateFee } from 'common/reducers/shipment';
-import { showChangeDeliverPrmDateModal } from 'common/reducers/trackingLandStatus';
 import { saveEdit, revokeOrReject } from 'common/reducers/transport-acceptance';
 import { createSpecialCharge } from 'common/reducers/transportBilling';
 import InfoItem from 'client/components/InfoItem';
@@ -37,7 +36,7 @@ const Step = Steps.Step;
     formData: state.shipment.formData,
     charges: state.shipment.charges,
   }),
-  { showChangeShipmentModal, showChangeDeliverPrmDateModal, loadForm, saveEdit, revokeOrReject, computeSaleCharge,
+  { showChangeShipmentModal, loadForm, saveEdit, revokeOrReject, computeSaleCharge,
     createSpecialCharge, updateFee }
 )
 export default class DetailPane extends React.Component {
@@ -57,7 +56,6 @@ export default class DetailPane extends React.Component {
     dispatch: PropTypes.object.isRequired,
     upstream: PropTypes.object.isRequired,
     downstream: PropTypes.object.isRequired,
-    showChangeDeliverPrmDateModal: PropTypes.func.isRequired,
     loadForm: PropTypes.func.isRequired,
     formData: PropTypes.object.isRequired,
     saveEdit: PropTypes.func.isRequired,
@@ -205,11 +203,6 @@ export default class DetailPane extends React.Component {
       this.handleSave(form, type, msg);
     });
   }
-  handleChangeDeliverPrmDate = (e) => {
-    e.stopPropagation();
-    const { shipmt, dispatch } = this.props;
-    this.props.showChangeDeliverPrmDateModal({ visible: true, shipmtNo: shipmt.shipmt_no, dispId: dispatch.id, deliverPrmDate: dispatch.deliver_prm_date });
-  }
   handleChangeDistance = (e) => {
     e.stopPropagation();
     const { shipmt } = this.props;
@@ -351,9 +344,6 @@ export default class DetailPane extends React.Component {
             </Menu.Item>
             <Menu.Item>
               <a onClick={this.handleChangeTransitConsignee}>修改收货信息</a>
-            </Menu.Item>
-            <Menu.Item>
-              <a onClick={this.handleChangeDeliverPrmDate}>修改承诺送货时间</a>
             </Menu.Item>
             <Menu.Item>
               <a onClick={this.handleChangeDistance}>修改路程</a>
@@ -664,25 +654,25 @@ export default class DetailPane extends React.Component {
             <Col span="8">
               <InfoItem label={this.msg('refExternalNo')} addonBefore={<Icon type="tag-o" />}
                 field={shipmt.ref_external_no} editable={editable}
-                onEdit={value => this.handleSaveShipment('ref_external_no', value, 'clientInfoChanged')}
+                onEdit={value => this.handleSaveShipment('ref_external_no', value, 'correlInfoChanged')}
               />
             </Col>
             <Col span="8">
               <InfoItem label={this.msg('refWaybillNo')} addonBefore={<Icon type="tag-o" />}
                 field={shipmt.ref_waybill_no} editable={editable}
-                onEdit={value => this.handleSaveShipment('ref_waybill_no', value, 'clientInfoChanged')}
+                onEdit={value => this.handleSaveShipment('ref_waybill_no', value, 'correlInfoChanged')}
               />
             </Col>
             <Col span="8">
               <InfoItem label={this.msg('refEntryNo')} addonBefore={<Icon type="tag-o" />}
                 field={shipmt.ref_entry_no} editable={editable}
-                onEdit={value => this.handleSaveShipment('ref_entry_no', value, 'clientInfoChanged')}
+                onEdit={value => this.handleSaveShipment('ref_entry_no', value, 'correlInfoChanged')}
               />
             </Col>
             <Col span="24">
               <InfoItem label={this.msg('remark')}
                 field={shipmt.remark} editable={editable}
-                onEdit={value => this.handleSaveShipment('remark', value, 'clientInfoChanged')}
+                onEdit={value => this.handleSaveShipment('remark', value, 'remarkChanged')}
               />
             </Col>
           </Row>

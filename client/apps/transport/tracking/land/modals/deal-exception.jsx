@@ -57,9 +57,9 @@ export default class DealException extends React.Component {
         const data = { dispId: dispatch.id, shipmtNo, loginName, loginId, tenantId, tenantName,
           deliverPrmDate: moment(fieldsValue.deliver_prm_date).format('YYYY-MM-DD HH:mm:ss'),
         };
-        const promises = [this.props.changeDeliverPrmDate(data)];
+        const promises = [this.props.dealException({ shipmtNo, excpId, solution, solver: loginName })];
         if (exception.type === delay.code) {
-          promises.push(this.props.dealException({ shipmtNo, excpId, solution, solver: loginName }));
+          promises.push(this.props.changeDeliverPrmDate(data));
         }
         Promise.all(promises).then((result) => {
           if (result[0].error) {
@@ -67,7 +67,7 @@ export default class DealException extends React.Component {
           } else {
             this.handleCancel();
             this.props.loadExceptions({
-              shipmtNo,
+              dispId: dispatch.id,
               pageSize: this.props.exceptions.pageSize,
               currentPage: this.props.exceptions.current,
             });

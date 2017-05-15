@@ -66,11 +66,11 @@ export default class ChargePanel extends React.Component {
     checkedExpCates: categoryKeys,
     checkedExpTypes: typeKeys,
   }
-  // componentDidMount() {
-  //   this.handleLoad(this.props);
-  // }
+  componentDidMount() {
+    this.handleLoad(this.props);
+  }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.previewer.dispatch.id !== this.props.previewer.dispatch.id || !nextProps.previewer.loaded) {
+    if (nextProps.previewer.visible && (nextProps.previewer.dispatch.id !== this.props.previewer.dispatch.id || !nextProps.previewer.loaded)) {
       this.handleLoad(nextProps);
     }
   }

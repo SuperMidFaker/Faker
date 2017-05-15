@@ -15,6 +15,7 @@ const formatMsg = format(messages);
 @connect(
   state => ({
     shipmtNo: state.shipment.previewer.shipmt.shipmt_no,
+    dispId: state.shipment.previewer.dispatch.id,
     exceptions: state.trackingLandException.exceptions,
     previewer: state.shipment.previewer,
   }),
@@ -24,23 +25,24 @@ export default class ExceptionPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     shipmtNo: PropTypes.string,
+    dispId: PropTypes.number,
     exceptions: PropTypes.object.isRequired,
     showDealExcpModal: PropTypes.func.isRequired,
     previewer: PropTypes.object.isRequired,
   }
   componentDidMount() {
-    if (this.props.shipmtNo) {
+    if (this.props.dispId) {
       this.props.loadExceptions({
-        shipmtNo: this.props.shipmtNo,
+        dispId: this.props.dispId,
         pageSize: this.props.exceptions.pageSize,
         currentPage: this.props.exceptions.current,
       });
     }
   }
   componentWillReceiveProps(nextProps) {
-    if (this.props.shipmtNo !== nextProps.shipmtNo && nextProps.shipmtNo !== '' || nextProps.previewer.visible && !nextProps.previewer.loaded) {
+    if (this.props.dispId !== nextProps.dispId && nextProps.dispId !== '' || nextProps.previewer.visible && !nextProps.previewer.loaded) {
       this.props.loadExceptions({
-        shipmtNo: nextProps.shipmtNo,
+        dispId: nextProps.dispId,
         pageSize: nextProps.exceptions.pageSize,
         currentPage: nextProps.exceptions.current,
       });
@@ -60,7 +62,7 @@ export default class ExceptionPane extends React.Component {
     }),
     getParams: (pagination, filters, sorter) => {
       const params = {
-        shipmtNo: this.props.shipmtNo,
+        dispId: this.props.dispId,
         pageSize: pagination.pageSize,
         currentPage: pagination.current,
         sortField: sorter.field,

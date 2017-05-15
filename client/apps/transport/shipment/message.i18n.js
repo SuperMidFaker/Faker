@@ -377,6 +377,10 @@ export default defineMessages({
     id: 'transport.shipment.log.correlInfoChanged',
     defaultMessage: '相关单号变更',
   },
+  remarkChanged: {
+    id: 'transport.shipment.log.correlInfoChanged',
+    defaultMessage: '备注信息变更',
+  },
   consignerInfoChanged: {
     id: 'transport.shipment.log.consignerInfoChanged',
     defaultMessage: '发货信息变更',
