@@ -380,7 +380,7 @@ export function loadOrderNodes(orderNo) {
   };
 }
 
-export function loadOrderNodesTriggers(uuid, ...rest) {
+export function loadOrderNodesTriggers(uuid, bizObjects) {
   return {
     [CLIENT_API]: {
       types: [
@@ -390,7 +390,7 @@ export function loadOrderNodesTriggers(uuid, ...rest) {
       ],
       endpoint: 'v1/scof/order/nodes/triggers/load',
       method: 'post',
-      data: { uuid, bizObjects: [...rest] },
+      data: { uuid, bizObjects },
     },
   };
 }

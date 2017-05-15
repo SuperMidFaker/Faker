@@ -21,13 +21,14 @@ export default class TMSNodeCard extends React.Component {
     consigneeName: PropTypes.string,
     trsMode: PropTypes.string,
     uuid: PropTypes.string,
+    in_degree: PropTypes.number.isRequired,
   }
   state = {
     trigger: -1,
   }
   componentWillMount = () => {
     const { uuid } = this.props;
-    this.props.loadOrderNodesTriggers(uuid, NODE_BIZ_OBJECTS.tms[0].key).then(
+    this.props.loadOrderNodesTriggers(uuid, [NODE_BIZ_OBJECTS.tms[0].key]).then(
       (result) => {
         if (!result.data) return;
         this.setState({
@@ -38,7 +39,7 @@ export default class TMSNodeCard extends React.Component {
   }
   componentWillReceiveProps = (nextProps) => {
     if (nextProps.uuid !== this.props.uuid) {
-      this.props.loadOrderNodesTriggers(nextProps.uuid, NODE_BIZ_OBJECTS.tms[0].key).then(
+      this.props.loadOrderNodesTriggers(nextProps.uuid, [NODE_BIZ_OBJECTS.tms[0].key]).then(
         (result) => {
           if (!result.data) {
             this.setState({
@@ -71,13 +72,13 @@ export default class TMSNodeCard extends React.Component {
     );
   }
   render() {
-    const { name, children, consignerName, consigneeName, trsMode } = this.props;
-    return (
-      <Card title={<span>{name}</span>} extra={
-        <Tooltip title="进入详情">
+    const { name, children, consignerName, consigneeName, trsMode, in_degree: indegree } = this.props;
+    const previewer = indegree === 0 ?
+        (<Tooltip title="进入详情">
           <Button size="small" shape="circle" icon="right" onClick={() => this.handleShipmtPreview(this.props.uuid)} />
-        </Tooltip>} bodyStyle={{ padding: 8, paddingBottom: 56 }}
-      >
+        </Tooltip>) : null;
+    return (
+      <Card title={<span>{name}</span>} extra={previewer} bodyStyle={{ padding: 8, paddingBottom: 56 }}>
         <Row>
           <Col span="8">
             <InfoItem label="发货方" addonBefore={<Icon type="tag-o" />}

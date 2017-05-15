@@ -50,7 +50,7 @@ export default class FlowPane extends React.Component {
                   return (
                     <Timeline.Item dot={<MdIcon mode="ikons" type="login" key={index} />} key={item.name}>
                       <CMSNodeCard uuid={item.uuid} name={item.name} declWayCode={item.decl_way_code}
-                        kind={item.kind} transMode={item.trans_mode} blWbNo={item.bl_wb_no}
+                        kind={item.kind} transMode={item.trans_mode} blWbNo={item.bl_wb_no} in_degree={item.in_degree}
                       />
                     </Timeline.Item>
                   );
@@ -58,14 +58,14 @@ export default class FlowPane extends React.Component {
                   return (
                     <Timeline.Item dot={<MdIcon type="truck" key={index} />} key={item.name}>
                       <TMSNodeCard uuid={item.uuid} name={item.name} consigneeName={item.consignee_name}
-                        consignerName={item.consigner_name} trsMode={item.trs_mode}
+                        consignerName={item.consigner_name} trsMode={item.trs_mode} in_degree={item.in_degree}
                       />
                     </Timeline.Item>
                   );
                 } else {
                   return (
                     <Timeline.Item dot={<MdIcon type="layers" key={index} />} key={item.name}>
-                      <CWMNodeCard uuid={item.uuid} title={item.name} />
+                      <CWMNodeCard uuid={item.uuid} title={item.name} in_degree={item.in_degree} />
                     </Timeline.Item>
                   );
                 }

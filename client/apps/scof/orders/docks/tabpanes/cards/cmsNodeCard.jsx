@@ -20,13 +20,15 @@ export default class CMSNodeCard extends React.Component {
     transMode: PropTypes.string,
     blWbNo: PropTypes.string,
     uuid: PropTypes.string,
+    kind: PropTypes.oneOf(['import', 'export']),
+    in_degree: PropTypes.number.isRequired,
   }
   state = {
     trigger: -1,
   }
   componentWillMount() {
     const { uuid, kind } = this.props;
-    this.props.loadOrderNodesTriggers(uuid, NODE_BIZ_OBJECTS[kind][0].key, NODE_BIZ_OBJECTS[kind][1].key).then(
+    this.props.loadOrderNodesTriggers(uuid, [NODE_BIZ_OBJECTS[kind][0].key, NODE_BIZ_OBJECTS[kind][1].key]).then(
       (result) => {
         if (!result.data) return;
         this.setState({
@@ -38,7 +40,7 @@ export default class CMSNodeCard extends React.Component {
   componentWillReceiveProps(nextProps) {
     const { uuid, kind } = nextProps;
     if (uuid !== this.props.uuid) {
-      this.props.loadOrderNodesTriggers(uuid, NODE_BIZ_OBJECTS[kind][0].key, NODE_BIZ_OBJECTS[kind][1].key).then(
+      this.props.loadOrderNodesTriggers(uuid, [NODE_BIZ_OBJECTS[kind][0].key, NODE_BIZ_OBJECTS[kind][1].key]).then(
         (result) => {
           if (!result.data) return;
           this.setState({
@@ -59,16 +61,16 @@ export default class CMSNodeCard extends React.Component {
     this.props.hideDock();
   }
   render() {
-    const { name, children, declWayCode, transMode, blWbNo } = this.props;
+    const { name, children, declWayCode, transMode, blWbNo, in_degree: indegree } = this.props;
     let declWay = '';
     const declWayMap = this.props.kind === 'import' ? DECL_I_TYPE : DECL_E_TYPE;
     declWay = declWayMap.find(item => item.key === declWayCode).value;
-    return (
-      <Card title={<span>{name}</span>} extra={
-        <Tooltip title="进入详情">
+    const preview = indegree === 0 ?
+        (<Tooltip title="进入详情">
           <Button size="small" shape="circle" icon="right" onClick={() => this.handlePreview(this.props.uuid)} />
-        </Tooltip>} bodyStyle={{ padding: 8, paddingBottom: 56 }}
-      >
+        </Tooltip>) : null;
+    return (
+      <Card title={<span>{name}</span>} extra={preview} bodyStyle={{ padding: 8, paddingBottom: 56 }}>
         <Row>
           <Col span="8">
             <InfoItem label="运输方式" addonBefore={<Icon type="tag-o" />}

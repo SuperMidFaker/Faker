@@ -7,8 +7,8 @@ import { Breadcrumb, Button, message, Layout } from 'antd';
 import OrderForm from './forms/orderForm';
 import { loadFormRequires, loadOrder, editOrder } from 'common/reducers/crmOrders';
 import { loadPartnerFlowList, loadCustomerQuotes } from 'common/reducers/scofFlow';
-import messages from './message.i18n';
 import { format } from 'client/common/i18n/helpers';
+import messages from './message.i18n';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -72,6 +72,7 @@ export default class EditOrder extends Component {
           message.error(result.error.message, 10);
         } else {
           message.info('保存成功');
+          this.context.router.push('/scof/orders');
         }
       });
     }
