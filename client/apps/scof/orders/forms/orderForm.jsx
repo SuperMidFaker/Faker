@@ -59,10 +59,12 @@ export default class OrderForm extends Component {
     const client = this.props.formRequires.clients.find(cl => cl.partner_id === selPartnerId);
     if (client) {
       this.props.setClientForm(-1, {
+        flow_id: null,
         customer_name: client.name,
         customer_tenant_id: client.tid,
         customer_partner_id: selPartnerId,
         customer_partner_code: client.partner_code,
+        subOrders: [],
       });
       this.props.loadPartnerFlowList({
         partnerId: selPartnerId,
