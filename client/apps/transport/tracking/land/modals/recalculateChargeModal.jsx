@@ -44,7 +44,7 @@ export default class RecalculateChargeModal extends React.Component {
         shipmtNo,
         dispId: charges.revenue.disp_id,
         type: 1,
-        remark: `手动修改成本：${charges.revenue.freight_charge} 改为 ${revenue}`,
+        remark: `手动修改收入：${charges.revenue.freight_charge} 改为 ${revenue}`,
         submitter: loginName,
         charge: revenue + charges.revenue.excp_charge - charges.revenue.freight_charge,
         loginId,
@@ -81,7 +81,7 @@ export default class RecalculateChargeModal extends React.Component {
         visible={this.props.visible} maskClosable={false}
       >
         <Alert type="info" message="代垫费用需单独添加" />
-        {revenue.id &&
+        {revenue.need_recalculate === 1 &&
           <FormItem label={`原收入${intl.formatNumber((revenue.freight_charge + revenue.excp_charge).toFixed(2), { style: 'currency', currency: 'cny' })}`} >
             <Input
               type="number"
@@ -89,7 +89,7 @@ export default class RecalculateChargeModal extends React.Component {
               value={this.state.revenue} onChange={e => this.setState({ revenue: Number(e.target.value) })}
             />
           </FormItem>}
-        {expense.id &&
+        {expense.need_recalculate === 1 &&
           <FormItem label={`原成本${intl.formatNumber((expense.freight_charge + expense.excp_charge).toFixed(2), { style: 'currency', currency: 'cny' })}`} >
             <Input
               type="number"
