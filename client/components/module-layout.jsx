@@ -43,7 +43,7 @@ export default class ModuleLayout extends React.Component {
                     <span className="module-text">
                       {formatMsg(this.props.intl, emod.text)}
                       {
-                        // emod.status && <sup className={emod.status}>{emod.status}</sup>
+                        emod.status && <sup className={emod.status}>{emod.status}</sup>
                       }
                     </span>
                   </div>

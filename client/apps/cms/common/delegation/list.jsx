@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Badge, Breadcrumb, Button, Layout, Icon, Popconfirm, Radio, Select, Tag, Tooltip, message, Menu, Dropdown } from 'antd';
+import { Badge, Breadcrumb, Button, Layout, Icon, Popconfirm, Radio, Select, Tag, Tooltip, message, Menu, Dropdown, Form, Popover } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import TrimSpan from 'client/components/trimSpan';
@@ -16,7 +16,7 @@ import SearchBar from 'client/components/search-bar';
 import RowUpdater from 'client/components/rowUpdater';
 import MdIcon from 'client/components/MdIcon';
 import { loadAcceptanceTable, acceptDelg, delDelg, setDispStatus, loadCiqTable, delgAssignRecall,
-  ensureManifestMeta, openAcceptModal, showDispModal } from 'common/reducers/cmsDelegation';
+  ensureManifestMeta, showDispModal, loadDelgOperators } from 'common/reducers/cmsDelegation';
 import { showPreviewer, loadBasicInfo, loadCustPanel, loadDeclCiqPanel } from 'common/reducers/cmsDelgInfoHub';
 import DelegationDockPanel from '../dockhub/delegationDockPanel';
 import CiqList from './ciqList';
@@ -31,6 +31,7 @@ const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const Option = Select.Option;
 const OptGroup = Select.OptGroup;
+const FormItem = Form.Item;
 
 @injectIntl
 @connect(
@@ -50,16 +51,18 @@ const OptGroup = Select.OptGroup;
       value: cus.customs_code,
       text: `${cus.customs_name}`,
     })),
+    delgOperators: state.cmsDelegation.operators,
   }),
   { loadAcceptanceTable, acceptDelg, delDelg, showPreviewer,
     setDispStatus, delgAssignRecall, ensureManifestMeta,
-    loadCiqTable, openAcceptModal, showDispModal, loadBasicInfo,
-    loadCustPanel, loadDeclCiqPanel }
+    loadCiqTable, showDispModal, loadBasicInfo,
+    loadCustPanel, loadDeclCiqPanel, loadDelgOperators }
 )
 @connectNav({
   depth: 2,
   moduleName: 'clearance',
 })
+@Form.create()
 export default class DelegationList extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -88,10 +91,12 @@ export default class DelegationList extends Component {
     selectedRowKeys: [],
     searchInput: '',
     expandedKeys: [],
+    popoverVisible: false,
   }
   componentDidMount() {
     const filters = this.initializeFilters();
     this.handleDelgListLoad(this.props.delegationlist.current, { ...this.props.listFilter, ...filters, filterNo: '' });
+    this.props.loadDelgOperators(this.props.tenantId);
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.reload) {
@@ -356,13 +361,16 @@ export default class DelegationList extends Component {
     this.context.router.push(link);
   }
   handleDelegationAccept = (row) => {
-    // todo split type delg / delg_no/dispid pair array
-    this.props.openAcceptModal({
-      tenantId: this.props.tenantId,
-      dispatchIds: [row.id],
-      type: 'delg',
-      delg_no: row.delg_no,
-      opt: 'accept',
+    const val = this.props.form.getFieldValue('operator');
+    const operator = this.props.delgOperators.filter(dop => dop.lid === val)[0];
+    this.props.acceptDelg(
+      operator.lid, operator.name, [row.id], row.delg_no
+    ).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        this.handleDelgListLoad();
+      }
     });
   }
   handleDelegationAssign = (row) => {
@@ -431,8 +439,14 @@ export default class DelegationList extends Component {
     }
     return newFilters;
   }
+  handlePopVisibleChange = (visible) => {
+    this.setState({ popoverVisible: visible });
+  }
+  handlePopSelect = () => {
+    this.setState({ popoverVisible: true });
+  }
   render() {
-    const { delegationlist, listFilter, listView, tenantId } = this.props;
+    const { delegationlist, listFilter, listView, tenantId, delgOperators, form: { getFieldDecorator } } = this.props;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -469,7 +483,20 @@ export default class DelegationList extends Component {
             return (
               <span>
                 <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-                  <RowUpdater onHit={this.handleDelegationAccept} label={<span><Icon type="check-square-o" /> {this.msg('accepting')}</span>} row={record} />
+                  <Popover visible={this.state.popoverVisible} onVisibleChange={this.handlePopVisibleChange} content={
+                    <div style={{ width: 120 }}>
+                      <FormItem label={this.msg('allocateOriginator')} >
+                        {getFieldDecorator('operator', { rules: [{ required: true, message: '必须选定制单人' }] })(
+                          <Select style={{ width: '100%' }} onSelect={this.handlePopVisibleChange}>
+                            {delgOperators.map(op => <Option value={op.lid} key={op.lid}>{op.name}</Option>)}
+                          </Select>)}
+                      </FormItem>
+                      <Button type="primary" onClick={() => this.handleDelegationAccept(record)} >确定</Button>
+                    </div>
+                  }
+                  >
+                    <RowUpdater label={<span><Icon type="check-square-o" /> {this.msg('accepting')}</span>} />
+                  </Popover>
                 </PrivilegeCover>
                 {editOverlay && <span className="ant-divider" />}
                 {editOverlay && <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
