@@ -264,7 +264,7 @@ export default class MergeSplitModal extends React.Component {
                     </Radio>
                   </Col>
                   <Col offset="2" span="19">
-                  按清单数据直接生成报关建议书（并按原数据排序）
+                  按清单数据直接生成报关建议书
                 </Col>
                 </FormItem>
               </Card>

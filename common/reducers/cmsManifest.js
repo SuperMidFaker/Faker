@@ -221,6 +221,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, visibleStepModal: action.data };
     case actionTypes.SUBMIT_MERGESPLIT_SUCCEED:
       return { ...state, billMeta: { ...state.billMeta, entries: action.result.data } };
+    case actionTypes.REDO_MANIFEST_SUCCEED:
+      return { ...state, billMeta: { ...state.billMeta, entries: [] } };
     case actionTypes.SET_PANE_TABKEY:
       return { ...state, tabKey: action.data };
     case actionTypes.LOAD_CERT_MARKS_SUCCEED:

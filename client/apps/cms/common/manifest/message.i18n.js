@@ -447,7 +447,7 @@ export default defineMessages({
   },
   customOnTop: {
     id: 'cms.manifest.modal.sort.custom.ontop',
-    defaultMessage: '海关监管项置顶',
+    defaultMessage: '海关监管、检验检疫、能效置顶',
   },
   inspectOnTop: {
     id: 'cms.manifest.modal.sort.inspect.ontop',

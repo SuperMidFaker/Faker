@@ -63,7 +63,7 @@ export default defineMessages({
   },
   customOnTop: {
     id: 'cms.settings.sort.custom.ontop',
-    defaultMessage: '海关监管项置顶',
+    defaultMessage: '海关监管、检验检疫、能效置顶',
   },
   inspectOnTop: {
     id: 'cms.settings.sort.inspect.ontop',
