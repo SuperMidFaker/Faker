@@ -86,6 +86,7 @@ export default class ShipmentEdit extends React.Component {
       } else {
         const { formData, tenantId, loginId } = this.props;
         const form = { ...formData, ...this.props.form.getFieldsValue() };
+        form.deliver_prm_date = form.deliver_est_date;
         this.props.saveEdit(form, tenantId, loginId)
         .then((result) => {
           if (result.error) {
