@@ -124,7 +124,7 @@ export function loadTable(cookie, params) {
   };
 }
 
-export function saveEdit(shipment, tenantId, loginId, type = '') {
+export function saveEdit(shipment, tenantId, loginId, type = '', msg = '') {
   return {
     [CLIENT_API]: {
       types: [
@@ -134,7 +134,7 @@ export function saveEdit(shipment, tenantId, loginId, type = '') {
       ],
       endpoint: 'v1/transport/shipment/save_edit',
       method: 'post',
-      data: { shipment, tenantId, loginId, type },
+      data: { shipment, tenantId, loginId, type, message: msg },
     },
   };
 }

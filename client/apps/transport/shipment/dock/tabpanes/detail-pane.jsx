@@ -202,7 +202,7 @@ export default class DetailPane extends React.Component {
         }
       }
 
-      this.handleSave(form, type);
+      this.handleSave(form, type, msg);
     });
   }
   handleChangeDeliverPrmDate = (e) => {
@@ -226,9 +226,9 @@ export default class DetailPane extends React.Component {
     this.props.showChangeShipmentModal({ visible: true, shipmtNo: shipmt.shipmt_no, type: 'consigneeInfoChanged' });
   }
 
-  handleSave = (shipment, type) => {
+  handleSave = (shipment, type, msg = '') => {
     const { tenantId, loginId } = this.props;
-    this.props.saveEdit(shipment, tenantId, loginId, type)
+    this.props.saveEdit(shipment, tenantId, loginId, type, msg)
     .then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
