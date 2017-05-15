@@ -284,8 +284,7 @@ export default class TrackingDetail extends React.Component {
                 <Steps direction={this.state.stepsDirection} current={statusPos}>{steps}</Steps>
                 {deliverDelayException &&
                   <Alert
-                    message="送货超时"
-                    description={`承诺送货时间:${moment(shipmt.pickup_act_date).format('YYYY-MM-DD')}`}
+                    description={`承诺送货时间:${moment(shipmt.deliver_prm_date).format('YYYY-MM-DD')}, 原因：${deliverDelayException.solution}`}
                     type="warning"
                     showIcon
                   />}
