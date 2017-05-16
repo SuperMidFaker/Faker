@@ -38,18 +38,19 @@ export default class ServiceTeam extends React.Component {
     if (partnerId !== this.props.customer.id) {
       this.props.loadServiceTeamMembers(partnerId);
     }
+    if (nextProps.serviceTeamMembers !== this.props.serviceTeamMembers) {
+      const selectedUserIds = [];
+      nextProps.serviceTeamMembers.map(item => selectedUserIds.push(Number(item.user_id)));
+      this.setState({
+        selectedRowKeys: selectedUserIds,
+      });
+    }
   }
   msg = key => formatMsg(this.props.intl, key);
   render() {
     const { customer, departments, serviceTeamMembers } = this.props;
-    const selectedUserIds = [];
-    for (let i = 0; i < serviceTeamMembers.length; i++) {
-      selectedUserIds.push(Number(serviceTeamMembers[i].user_id));
-    }
     const filters = [];
-    for (let i = 0; i < departments.length; i++) {
-      filters.push({ text: departments[i].name, value: departments[i].name });
-    }
+    departments.map(item => filters.push({ text: item.name, value: item.name }));
     const column = [{
       title: '姓名',
       dataIndex: 'name',
@@ -70,7 +71,7 @@ export default class ServiceTeam extends React.Component {
     return (
       <Card bodyStyle={{ padding: 0, backgroundColor: '#fff' }} className="secondary-card" title={this.msg('serviceTeam')} extra={<a href="#" onClick={() => this.props.showServiceTeamModal()}>添加成员</a>} >
         <Table columns={column} dataSource={serviceTeamMembers} pagination={false} rowKey="id" />
-        <ServiceTeamModal customer={customer} filters={filters} selectedUserIds={selectedUserIds} />
+        <ServiceTeamModal customer={customer} filters={filters} selectedUserIds={this.state.selectedRowKeys} />
       </Card>
     );
   }
