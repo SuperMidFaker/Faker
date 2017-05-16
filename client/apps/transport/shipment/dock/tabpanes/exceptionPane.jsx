@@ -55,10 +55,9 @@ export default class ExceptionPane extends React.Component {
     getPagination: (result, resolve) => ({
       total: result.totalCount,
       current: resolve(result.totalCount, result.current, result.pageSize),
-      showSizeChanger: true,
+      showSizeChanger: false,
       showQuickJumper: false,
       pageSize: result.pageSize,
-      showTotal: total => `共 ${total} 条`,
     }),
     getParams: (pagination, filters, sorter) => {
       const params = {
@@ -134,10 +133,8 @@ export default class ExceptionPane extends React.Component {
 
     return (
       <div className="pane-content tab-pane">
-        <Card bodyStyle={{ padding: 0 }}>
-          <Table columns={this.columns}
-            dataSource={this.dataSource} rowKey="id" size="small" pagination={false}
-          />
+        <Card bodyStyle={{ padding: 8 }}>
+          <Table columns={this.columns} dataSource={this.dataSource} rowKey="id" size="small" pagination={false} />
           <DealException />
         </Card>
       </div>

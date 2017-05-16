@@ -5,7 +5,7 @@ import { Spin, Card, Collapse, Table, Tag } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { loadPaneExp } from 'common/reducers/cmsExpense';
-import { EXPENSE_CATEGORIES, EXPENSE_TYPES } from 'common/constants';
+import { EXPENSE_CATEGORIES, CMS_EXPENSE_TYPES } from 'common/constants';
 
 const formatMsg = format(messages);
 const Column = Table.Column;
@@ -18,7 +18,7 @@ const SERVER_CATEGORY_MAP = {
   certs_expenses: 'cert',
 };
 const categoryKeys = EXPENSE_CATEGORIES.filter(ec => ec.key !== 'all').map(ec => ec.key);
-const typeKeys = EXPENSE_TYPES.map(ec => ec.key);
+const typeKeys = CMS_EXPENSE_TYPES.map(ec => ec.key);
 
 @injectIntl
 @connect(
@@ -186,7 +186,7 @@ export default class ExpensePane extends React.Component {
     const checkedTags = EXPENSE_CATEGORIES.map((ec) => {
       let checked = false;
       if (ec.key === 'all') {
-        checked = checkedExpCates.length + checkedExpTypes.length + 1 === EXPENSE_TYPES.length + EXPENSE_CATEGORIES.length;
+        checked = checkedExpCates.length + checkedExpTypes.length + 1 === CMS_EXPENSE_TYPES.length + EXPENSE_CATEGORIES.length;
       } else {
         checked = checkedExpCates.indexOf(ec.key) !== -1;
       }
@@ -199,7 +199,7 @@ export default class ExpensePane extends React.Component {
           onChange={chked => this.handleCateTagChange(ec.key, chked)}
         >{ec.text}</CheckableTag>);
     }).concat(
-      EXPENSE_TYPES.map(et => (
+      CMS_EXPENSE_TYPES.map(et => (
         <CheckableTag key={et.key} checked={checkedExpTypes.indexOf(et.key) !== -1}
           onChange={chked => this.handleTypeTagChange(et.key, chked)}
         >{et.text}</CheckableTag>))

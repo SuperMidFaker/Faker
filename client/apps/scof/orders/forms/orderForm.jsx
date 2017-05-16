@@ -241,7 +241,7 @@ export default class OrderForm extends Component {
     );
     return (
       <Form layout="horizontal" className="order-flow-form">
-        <Card title={<span>客户需求
+        <Card title={<span>客户
           <Select size="large" placeholder="请选择客户" showSearch optionFilterProp="children"
             value={formData.customer_partner_id}
             onChange={value => this.handleClientChange(value)}
@@ -415,7 +415,7 @@ export default class OrderForm extends Component {
             </Panel>
           </Collapse>
         </Card>
-        <Card title={<span>订单流程
+        <Card title={<span>流程
           <Select size="large" placeholder="请选择流程规则" showSearch allowClear optionFilterProp="children"
             value={formData.flow_id} onChange={this.handleFlowChange} style={{ width: '50%', marginLeft: 24 }}
           >

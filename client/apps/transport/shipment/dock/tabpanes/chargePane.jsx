@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Row, Col, Card, Table, Tag, Collapse, Badge, Dropdown, Menu, Icon } from 'antd';
-import { EXPENSE_CATEGORIES, SHIPMENT_TRACK_STATUS } from 'common/constants';
+import { EXPENSE_CATEGORIES, TMS_EXPENSE_TYPES, SHIPMENT_TRACK_STATUS } from 'common/constants';
 import { showAdvanceModal, showSpecialChargeModal } from 'common/reducers/transportBilling';
 import { loadShipmtCharges } from 'common/reducers/shipment';
 import { format } from 'client/common/i18n/helpers';
@@ -12,23 +12,8 @@ const formatMsg = format(messages);
 const Panel = Collapse.Panel;
 const CheckableTag = Tag.CheckableTag;
 const categoryKeys = EXPENSE_CATEGORIES.filter(ec => ec.key !== 'all').map(ec => ec.key);
-const EXPENSE_TYPES = [{
-  key: 'transport_expenses',
-  text: '运输',
-}, {
-  key: 'customs_expenses',
-  text: '报关',
-}, {
-  key: 'ciq_expenses',
-  text: '报检',
-}, {
-  key: 'misc_expenses',
-  text: '杂项',
-}, {
-  key: 'custom',
-  text: '自定义',
-}];
-const typeKeys = EXPENSE_TYPES.map(ec => ec.key);
+
+const typeKeys = TMS_EXPENSE_TYPES.map(ec => ec.key);
 
 @injectIntl
 @connect(
@@ -337,7 +322,7 @@ export default class ChargePanel extends React.Component {
     const checkedTags = EXPENSE_CATEGORIES.map((ec) => {
       let checked = false;
       if (ec.key === 'all') {
-        checked = checkedExpCates.length + checkedExpTypes.length + 1 === EXPENSE_TYPES.length + EXPENSE_CATEGORIES.length;
+        checked = checkedExpCates.length + checkedExpTypes.length + 1 === TMS_EXPENSE_TYPES.length + EXPENSE_CATEGORIES.length;
       } else {
         checked = checkedExpCates.indexOf(ec.key) !== -1;
       }
@@ -350,7 +335,7 @@ export default class ChargePanel extends React.Component {
           onChange={chked => this.handleCateTagChange(ec.key, chked)}
         >{ec.text}</CheckableTag>);
     }).concat(
-      EXPENSE_TYPES.map(et => (
+      TMS_EXPENSE_TYPES.map(et => (
         <CheckableTag key={et.key} checked={checkedExpTypes.indexOf(et.key) !== -1}
           onChange={chked => this.handleTypeTagChange(et.key, chked)}
         >{et.text}</CheckableTag>))

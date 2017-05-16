@@ -69,18 +69,26 @@ export const EXPENSE_CATEGORIES = [{
 }];
 
 
-export const EXPENSE_TYPES = [{
+export const CMS_EXPENSE_TYPES = [{
   key: 'customdecl',
   text: '报关',
 }, {
   key: 'ciqdecl',
   text: '报检',
 }, {
-  key: 'transport',
-  text: '运输',
-}, {
   key: 'cert',
   text: '鉴定办证',
+}];
+
+export const TMS_EXPENSE_TYPES = [{
+  key: 'transport_expenses',
+  text: '运费',
+}, {
+  key: 'misc_expenses',
+  text: '杂项',
+}, {
+  key: 'custom',
+  text: '自定义',
 }];
 
 export const CMS_DELG_EXPENSE_STATUS = {
