@@ -114,7 +114,7 @@ export default class Instance extends Component {
             );
           }
         } else if (item.datatype === 'DATE') {
-          return fld && moment(fld).format('YY-MM-DD HH:mm');
+          return fld && moment(fld).format('YYYY-MM-DD');
         } else {
           return fld;
         }

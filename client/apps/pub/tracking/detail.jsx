@@ -240,7 +240,7 @@ export default class TrackingDetail extends React.Component {
         />
         <Step key="2" status="process" title="运输中"
           description={<span>
-            <p>最新位置: {renderLoc(latestPoint, 'province', 'city', 'district') || ''} ${latestPoint.address || ''}</p>
+            <p>最新位置: {renderLoc(latestPoint, 'province', 'city', 'district') || ''} {latestPoint.address || ''}</p>
             <p>{ latestPoint.location_time || latestPoint.created_date ? moment(latestPoint.location_time || latestPoint.created_date).format('YYYY-MM-DD HH:mm') : ''}</p>
           </span>}
         />

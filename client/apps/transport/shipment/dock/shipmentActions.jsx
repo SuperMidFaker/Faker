@@ -442,6 +442,6 @@ export default class ShipmentActions extends React.Component {
           重新计算费用
         </Button>);
     }
-    return (<span>{buttons}</span>);
+    return buttons.length > 0 ? (<span>{buttons}</span>) : null;
   }
 }

@@ -127,9 +127,9 @@ export default class TrackingItems extends React.Component {
         <div className="panel-body table-panel">
           <div className="ant-table-wrapper">
             <div className="ant-table">
-              <table className="ant-table" style={{ width: '100%' }}>
+              <table className="ant-table" style={{ width: '100%', fontSize: 14 }}>
                 <thead className="ant-table-thead">
-                  <tr><th>名称</th><th>自定义名称</th><th>来源</th><th>数据类型</th><th>操作</th></tr>
+                  <tr><th>追踪数据列</th><th>显示名称</th><th>数据来源</th><th>数据类型</th><th>操作</th></tr>
                 </thead>
                 <tbody className="ant-table-tbody">
                   {trackingItems.map((row, i) => (
@@ -146,14 +146,14 @@ export default class TrackingItems extends React.Component {
                   ))}
                   <tr className="ant-table-row  ant-table-row-level-0" style={{ height: 43 }}>
                     <td style={{ ...colStyle, width: '25%' }} />
-                    <td style={{ ...colStyle, width: '25%' }}>
+                    <td style={{ ...colStyle }}>
                       <Input
                         style={{ width: '80%' }}
                         value={newItem.custom_title}
                         onChange={e => this.setState({ newItem: { ...this.state.newItem, custom_title: e.target.value } })}
                       />
                     </td>
-                    <td style={{ ...colStyle, width: '15%' }}>
+                    <td style={{ ...colStyle, width: 150 }}>
                       <Select
                         style={{ width: '80%' }}
                         value={this.state.newItem.source}
@@ -164,7 +164,7 @@ export default class TrackingItems extends React.Component {
                         <Option value={3}>手工录入</Option>
                       </Select>
                     </td>
-                    <td style={{ ...colStyle, width: '25%' }}>
+                    <td style={{ ...colStyle, width: 150 }}>
                       <Select
                         style={{ width: '80%' }}
                         value={this.state.newItem.datatype}

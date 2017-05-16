@@ -213,7 +213,7 @@ export default class CustomizeTracking extends React.Component {
               <Button type="primary" size="large" ghost disabled={this.state.trackings.length === 0} onClick={this.handleEdit}>跟踪表设置</Button>
             </div>
           </Header>
-          <Content className="main-content layout-fixed-width">
+          <Content className="main-content layout-fixed-width layout-fixed-width-lg">
             {this.state.trackings.length > 0 && <TrackingItems tracking={tracking} />}
           </Content>
         </Layout>

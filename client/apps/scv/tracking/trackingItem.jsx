@@ -99,21 +99,21 @@ export default class TrackingItem extends Component {
     return connectDragSource(connectDropTarget(
       <tr style={{ ...style, opacity }} className="ant-table-row  ant-table-row-level-0">
         <td style={{ ...colStyle, width: '25%' }}>{row.title}</td>
-        <td style={{ ...colStyle, width: '25%' }}>
+        <td style={{ ...colStyle }}>
           <EditableCell value={row.custom_title}
             onSave={value => this.props.handleCustomTitleChange(row.id, value)}
           />
         </td>
-        <td style={{ ...colStyle, width: '15%' }}>
+        <td style={{ ...colStyle, width: 150 }}>
           {SCV_TRACKING_FIELD_SOURCES[row.source]}
         </td>
-        <td style={{ ...colStyle, width: '25%' }}>
+        <td style={{ ...colStyle, width: 150 }}>
           <EditableCell value={row.datatype} type="select"
             options={[{ key: 'STRING', text: '文本' }, { key: 'INTEGER', text: '数字' }, { key: 'DATE', text: '日期' }]}
             onSave={value => this.props.handleDatatypeChange(row.id, value)}
           />
         </td>
-        <td style={{ ...colStyle, width: '10%' }}>
+        <td style={{ ...colStyle, width: 60 }}>
           <Popconfirm title="确认删除?" onConfirm={() => this.props.handleRemove(row.id, row.source)}>
             <a role="button"><Icon type="delete" /></a>
           </Popconfirm>
