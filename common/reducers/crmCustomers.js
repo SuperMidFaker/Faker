@@ -11,6 +11,10 @@ const actionTypes = createActionTypes('@@welogix/crm/customers/', [
   'SHOW_SUB_CUSTOMER_MODAL', 'HIDE_SUB_CUSTOMER_MODAL',
   'UPDATE_CUSTOMER_NAMES', 'UPDATE_CUSTOMER_NAMES_SUCCEED', 'UPDATE_CUSTOMER_NAMES_FAIL',
   'LOAD_CUSTOMER_FLOWS', 'LOAD_CUSTOMER_FLOWS_FAIL', 'LOAD_CUSTOMER_FLOWS_SUCCEED',
+  'HIDE_SERVICETEAM_MODAL', 'SHOW_SERVICETEAM_MODAL',
+  'LOAD_SERVICETEAM_MEMBERS', 'LOAD_SERVICETEAM_MEMBERS_SUCCEED', 'LOAD_SERVICETEAM_MEMBERS_FAIL',
+  'ADD_SERVICETEAM_MEMBERS', 'ADD_SERVICETEAM_MEMBERS_SUCCEED', 'ADD_SERVICETEAM_MEMBERS_FAIL',
+  'LOAD_TENANT_USERS', 'LOAD_TENANT_USERS_SUCCEED', 'LOAD_TENANT_USERS_FAIL',
 ]);
 
 const initialState = {
@@ -18,6 +22,7 @@ const initialState = {
   loading: false,
   customers: [],
   subCustomers: [],
+  serviceTeamMembers: [],
   formData: {
   },
   customerModal: {
@@ -29,6 +34,10 @@ const initialState = {
     visible: false,
     operation: '',
     customer: {},
+  },
+  serviceTeamModal: {
+    visible: false,
+    tenantUsers: [],
   },
 };
 
@@ -85,6 +94,29 @@ export default function reducer(state = initialState, action) {
     }
     case actionTypes.UPDATE_CUSTOMER_NAMES_SUCCEED: {
       return { ...state, loaded: false };
+    }
+    case actionTypes.HIDE_SERVICETEAM_MODAL: {
+      return { ...state, serviceTeamModal: {
+        ...state.serviceTeamModal,
+        visible: false,
+      },
+      };
+    }
+    case actionTypes.SHOW_SERVICETEAM_MODAL: {
+      return { ...state, serviceTeamModal: {
+        ...state.serviceTeamModal,
+        visible: true,
+      } };
+    }
+    case actionTypes.LOAD_TENANT_USERS_SUCCEED: {
+      return { ...state, serviceTeamModal: {
+        ...state.serviceTeamModal,
+        tenantUsers: action.result.data.tenantUsers,
+      },
+      };
+    }
+    case actionTypes.LOAD_SERVICETEAM_MEMBERS_SUCCEED: {
+      return { ...state, serviceTeamMembers: action.result.data };
     }
     default:
       return state;
@@ -211,6 +243,59 @@ export function loadCustomerFlows(params) {
       endpoint: 'v1/scof/customer/list/flows',
       method: 'get',
       params,
+    },
+  };
+}
+
+export function showServiceTeamModal() {
+  return { type: actionTypes.SHOW_SERVICETEAM_MODAL };
+}
+
+export function loadTenantUsers(tenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_TENANT_USERS,
+        actionTypes.LOAD_TENANT_USERS_SUCCEED,
+        actionTypes.LOAD_TENANT_USERS_FAIL,
+      ],
+      endpoint: 'v1/scof/customer/load/tenant/users',
+      method: 'get',
+      params: { tenantId },
+    },
+  };
+}
+
+export function hideServiceTeamModal() {
+  return { type: actionTypes.HIDE_SERVICETEAM_MODAL };
+}
+
+export function loadServiceTeamMembers(partnerId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_SERVICETEAM_MEMBERS,
+        actionTypes.LOAD_SERVICETEAM_MEMBERS_SUCCEED,
+        actionTypes.LOAD_SERVICETEAM_MEMBERS_FAIL,
+      ],
+      endpoint: 'v1/scof/customer/load/serviceTeam/members',
+      method: 'get',
+      params: { partnerId },
+    },
+  };
+}
+
+export function addServiceTeamMembers(partnerId, userIds) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.ADD_SERVICETEAM_MEMBERS,
+        actionTypes.ADD_SERVICETEAM_MEMBERS_SUCCEED,
+        actionTypes.ADD_SERVICETEAM_MEMBERS_FAIL,
+      ],
+      endpoint: 'v1/scof/customer/add/serviceTeam/members',
+      method: 'post',
+      data: { partnerId, userIds },
     },
   };
 }

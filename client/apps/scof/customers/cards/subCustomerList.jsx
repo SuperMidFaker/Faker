@@ -4,8 +4,8 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Card, Table } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
-import messages from './message.i18n';
-import SubCustomerModal from './modals/subCustomerModal';
+import messages from '../message.i18n';
+import SubCustomerModal from '../modals/subCustomerModal';
 import { showSubCustomerModal } from 'common/reducers/crmCustomers';
 
 const formatMsg = format(messages);
@@ -39,7 +39,6 @@ export default class SubCustomerList extends React.Component {
   }
   render() {
     const { customer } = this.props;
-
     const columns = [{
       dataIndex: 'name',
       key: 'name',

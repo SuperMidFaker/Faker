@@ -173,7 +173,7 @@ export default class SubCustomerModal extends React.Component {
                 />
               </Col>
               <Col span={2}>
-                <Button size="middle" onClick={() => this.setState({ partnerUniqueCode: customer.partner_unique_code })}>
+                <Button size="default" onClick={() => this.setState({ partnerUniqueCode: customer.partner_unique_code })}>
                   <Icon type="left" />
                 </Button>
               </Col>
@@ -192,7 +192,7 @@ export default class SubCustomerModal extends React.Component {
                 />
               </Col>
               <Col span={2}>
-                <Button size="middle" onClick={() => this.setState({ customsCode: customer.customs_code })}>
+                <Button size="default" onClick={() => this.setState({ customsCode: customer.customs_code })}>
                   <Icon type="left" />
                 </Button>
               </Col>

@@ -1,0 +1,37 @@
+import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
+import { intlShape, injectIntl } from 'react-intl';
+import { Card, Tabs } from 'antd';
+import FlowRulesPane from '../flowRulesPane';
+import { format } from 'client/common/i18n/helpers';
+import messages from '../message.i18n';
+const formatMsg = format(messages);
+const TabPane = Tabs.TabPane;
+
+@injectIntl
+@connect(
+  () => ({}),
+  {},
+)
+
+export default class CustomerMajor extends React.Component {
+  static propTypes = {
+    intl: intlShape.isRequired,
+    customer: PropTypes.object.isRequired,
+  }
+  msg = key => formatMsg(this.props.intl, key);
+  render() {
+    const { customer } = this.props;
+    return (
+      <Card bodyStyle={{ padding: 0 }}>
+        <Tabs defaultActiveKey="flowRules">
+          <TabPane tab={<span><i className="icon icon-fontello-flow-tree" />流程规则</span>} key="flowRules" >
+            <FlowRulesPane customer={customer} />
+          </TabPane>
+          <TabPane tab={<span><i className="icon icon-fontello-book" />价格协议</span>} key="tariff" />
+          <TabPane tab={<span><i className="icon icon-fontello-doc-text" />收发货信息</span>} key="consignInfo" />
+        </Tabs>
+      </Card>
+    );
+  }
+}
