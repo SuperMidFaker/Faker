@@ -1,24 +1,22 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Card, Form, Input, Row, Col, Tabs, Table, Tooltip, Layout, message } from 'antd';
+import { Breadcrumb, Button, Form, Input, Row, Col, Table, Tooltip, Layout } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import InfoItem from 'client/components/InfoItem';
 import ButtonToggle from 'client/components/ButtonToggle';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import ProfileForm from './forms/profileForm';
-import FlowRulesPane from './flowRulesPane';
 import CustomerModal from './modals/customerModal';
-import { loadCustomers, showCustomerModal, deleteCustomer, updateCustomerNames } from 'common/reducers/crmCustomers';
+import { loadCustomers, showCustomerModal, deleteCustomer } from 'common/reducers/crmCustomers';
 import { PARTNER_ROLES } from 'common/constants';
+import CustomerName from './cards/customerName';
+import CustomerMajor from './cards/customerMajor';
 
 const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
 const Search = Input.Search;
-const TabPane = Tabs.TabPane;
-const FormItem = Form.Item;
 
 function fetchData({ state, dispatch }) {
   return dispatch(loadCustomers({
@@ -34,7 +32,7 @@ function fetchData({ state, dispatch }) {
     loading: state.crmCustomers.loading,
     loaded: state.crmCustomers.loaded,
   }),
-  { loadCustomers, deleteCustomer, showCustomerModal, updateCustomerNames }
+  { loadCustomers, deleteCustomer, showCustomerModal }
 )
 @connectNav({
   depth: 2,
@@ -113,19 +111,9 @@ export default class CustomerList extends React.Component {
     this.setState({ customers, currentPage: 1 });
   }
   handleSaveBtnClick = () => {
-    const fieldsValue = this.props.form.getFieldsValue();
-    const data = { ...fieldsValue, id: this.state.customer.id };
-    this.props.updateCustomerNames(data).then((result) => {
-      if (result.error) {
-        message.error(result.error.message, 10);
-      } else {
-        message.info('修改成功');
-      }
-    });
   }
   render() {
     const { customer } = this.state;
-    const { form: { getFieldDecorator } } = this.props;
     const columns = [{
       dataIndex: 'name',
       key: 'name',
@@ -194,45 +182,8 @@ export default class CustomerList extends React.Component {
           <Content className="main-content layout-fixed-width layout-fixed-width-lg">
             <Row gutter={16}>
               <Col sm={24} md={16}>
-                <Card>
-                  <Row gutter={16}>
-                    <Col sm={24} lg={24}>
-                      <InfoItem
-                        label={this.msg('customerName')}
-                        field={customer.name}
-                      />
-                    </Col>
-                    <Col sm={24} lg={12}>
-                      <InfoItem label={this.msg('displayName')} field={customer.display_name}
-                        placeholder="添加显示名称" onEdit={this.handleInputChanged} editable
-                      />
-                      <FormItem label={this.msg('displayName')} >
-                        {getFieldDecorator('display_name', {
-                          initialValue: customer.display_name,
-                        })(<Input onChange={this.handleInputChanged} />)}
-                      </FormItem>
-                    </Col>
-                    <Col sm={24} lg={12}>
-                      <InfoItem label={this.msg('englishName')} field={customer.en_name}
-                        placeholder="添加英文名称" onEdit={this.handleInputChanged} editable
-                      />
-                      <FormItem label={this.msg('englishName')} >
-                        {getFieldDecorator('en_name', {
-                          initialValue: customer.en_name,
-                        })(<Input onChange={this.handleInputChanged} />)}
-                      </FormItem>
-                    </Col>
-                  </Row>
-                </Card>
-                <Card bodyStyle={{ padding: 0 }}>
-                  <Tabs defaultActiveKey="flowRules">
-                    <TabPane tab={<span><i className="icon icon-fontello-flow-tree" />流程规则</span>} key="flowRules" >
-                      <FlowRulesPane customer={customer} />
-                    </TabPane>
-                    <TabPane tab={<span><i className="icon icon-fontello-book" />价格协议</span>} key="tariff" />
-                    <TabPane tab={<span><i className="icon icon-fontello-doc-text" />收发货信息</span>} key="consignInfo" />
-                  </Tabs>
-                </Card>
+                <CustomerName customer={customer} />
+                <CustomerMajor customer={customer} />
               </Col>
               <Col sm={24} md={8}>
                 <ProfileForm customer={customer} />
