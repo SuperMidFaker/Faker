@@ -95,7 +95,7 @@ export function loadExceptions(params) {
         actionTypes.LOAD_EXCEPTIONS_SUCCEED,
         actionTypes.LOAD_EXCEPTIONS_FAIL,
       ],
-      endpoint: 'v1/transport/tracking/exceptions',
+      endpoint: 'public/v1/transport/tracking/exceptions',
       method: 'get',
       params,
     },
