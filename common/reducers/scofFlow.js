@@ -11,6 +11,7 @@ const actionTypes = createActionTypes('@@welogix/scof/flow/', [
   'LOAD_CUSTOMERQUOTES', 'LOAD_CUSTOMERQUOTES_SUCCEED', 'LOAD_CUSTOMERQUOTES_FAIL',
   'SAVE_FLOW', 'SAVE_FLOW_SUCCEED', 'SAVE_FLOW_FAIL',
   'EDIT_FLOW', 'EDIT_FLOW_SUCCEED', 'EDIT_FLOW_FAIL',
+  'DEL_FLOW', 'DEL_FLOW_SUCCEED', 'DEL_FLOW_FAIL',
   'RELOAD_FLOWLIST', 'RELOAD_FLOWLIST_SUCCEED', 'RELOAD_FLOWLIST_FAIL',
   'LOAD_GRAPH', 'LOAD_GRAPH_SUCCEED', 'LOAD_GRAPH_FAIL',
   'LOAD_GRAPHITEM', 'LOAD_GRAPHITEM_SUCCEED', 'LOAD_GRAPHITEM_FAIL',
@@ -215,6 +216,21 @@ export function editFlow(flowid, newflow) {
       endpoint: 'v1/scof/edit/flow',
       method: 'post',
       data: { flowid, flow: newflow },
+    },
+  };
+}
+
+export function delFlow(flowId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DEL_FLOW,
+        actionTypes.DEL_FLOW_SUCCEED,
+        actionTypes.DEL_FLOW_FAIL,
+      ],
+      endpoint: 'v1/scof/del/flow',
+      method: 'post',
+      data: { flow_id: flowId },
     },
   };
 }

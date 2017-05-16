@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Alert, Breadcrumb, Button, Card, Collapse, Form, Popconfirm, Layout, Select, Table, Spin, Radio, Tooltip, message } from 'antd';
 import QueueAnim from 'rc-queue-anim';
-import { toggleFlowList, loadFlowGraph, loadFlowGraphItem, saveFlowGraph, setNodeActions, loadScvTrackings } from 'common/reducers/scofFlow';
+import { toggleFlowList, delFlow, loadFlowGraph, loadFlowGraphItem, saveFlowGraph, setNodeActions, loadScvTrackings } from 'common/reducers/scofFlow';
 import { uuidWithoutDash } from 'client/common/uuid';
 import ButtonToggle from 'client/components/ButtonToggle';
 import MdIcon from 'client/components/MdIcon';
@@ -32,7 +32,7 @@ const FormItem = Form.Item;
     graphLoading: state.scofFlow.graphLoading,
     listCollapsed: state.scofFlow.listCollapsed,
   }),
-  { toggleFlowList, loadFlowGraph, loadFlowGraphItem, saveFlowGraph, setNodeActions, loadScvTrackings }
+  { toggleFlowList, delFlow, loadFlowGraph, loadFlowGraphItem, saveFlowGraph, setNodeActions, loadScvTrackings }
 )
 export default class FlowDesigner extends React.Component {
   static defaultProps ={
@@ -44,6 +44,7 @@ export default class FlowDesigner extends React.Component {
     submitting: PropTypes.bool,
     graphLoading: PropTypes.bool.isRequired,
     listCollapsed: PropTypes.bool.isRequired,
+    reloadOnDel: PropTypes.func.isRequired,
     trackingFields: PropTypes.arrayOf(PropTypes.shape({ field: PropTypes.string,
       title: PropTypes.string, module: PropTypes.oneOf(['cms', 'tms', 'cwm']) })),
     currentFlow: PropTypes.shape({ id: PropTypes.number.isRequired, name: PropTypes.string.isRequired,
@@ -417,6 +418,13 @@ export default class FlowDesigner extends React.Component {
   handleTrackingChange = (trackingId) => {
     this.setState({ trackingId });
   }
+  handleDeleteFlow = () => {
+    this.props.delFlow(this.props.currentFlow.id).then((result) => {
+      if (!result.error) {
+        this.props.reloadOnDel();
+      }
+    });
+  }
   handlePanelForm = (form) => { this.formhoc = form; }
   handleSaveBtnClick = () => {
     const activeItem = this.state.activeItem;
@@ -544,7 +552,7 @@ export default class FlowDesigner extends React.Component {
               </Panel>
               <Panel header={'更多'} key="more">
                 <Alert message="警告" description="删除流程将无法恢复，请谨慎操作" type="warning" showIcon />
-                <Popconfirm title="是否确认删除?" onConfirm={this.handleDeleteRepo}>
+                <Popconfirm title="是否确认删除?" onConfirm={this.handleDeleteFlow}>
                   <Button type="danger" size="large" icon="delete">删除流程</Button>
                 </Popconfirm>
               </Panel>

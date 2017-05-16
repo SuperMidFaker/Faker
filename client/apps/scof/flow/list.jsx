@@ -130,6 +130,18 @@ export default class FlowList extends React.Component {
   handleFlowNameChange = (flowid, name) => {
     this.props.editFlow(flowid, { name });
   }
+  handleDelReload = () => {
+    let current = this.props.flowList.current;
+    if (this.props.flowList.data.length === 1 && this.props.flowList.current > 1) {
+      current -= 1;
+    }
+    this.props.loadFlowList({
+      tenantId: this.props.tenantId,
+      filter: JSON.stringify(this.props.listFilter),
+      pageSize: this.props.flowList.pageSize,
+      current,
+    });
+  }
   render() {
     const { thisFlow, flowList, loading, listCollapsed } = this.props;
     this.dataSource.remotes = flowList;
@@ -162,7 +174,7 @@ export default class FlowList extends React.Component {
         </Sider>
         <CreateFlowModal />
         {thisFlow &&
-        <FlowDesigner currentFlow={thisFlow} />
+        <FlowDesigner currentFlow={thisFlow} reloadOnDel={this.handleDelReload} />
         }
       </Layout>
     );
