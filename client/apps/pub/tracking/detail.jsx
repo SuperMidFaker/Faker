@@ -214,59 +214,59 @@ export default class TrackingDetail extends React.Component {
     if (shipmt.status < 4) {
       statusPos = 0;
       return (<Steps direction={this.state.stepsDirection} current={statusPos}>
-        <Step key="1" status="wait" title="未提货"
+        <Step key="1" status="wait" title="未起运"
           description={<span>
-            <p>始发地: ${renderConsignLoc(shipmt, 'consigner')}</p>
-            <p>预计提货时间:${shipmt.pickup_est_date ? moment(shipmt.pickup_est_date).format('YYYY-MM-DD') : ''}</p>
+            <p>{renderConsignLoc(shipmt, 'consigner')}</p>
+            <p>计划:{shipmt.pickup_est_date ? moment(shipmt.pickup_est_date).format('YYYY-MM-DD') : ''}</p>
           </span>}
         />
         <Step key="2" status="wait" title="待运输" description="" />
-        <Step key="3" status="wait" title="未送货"
+        <Step key="3" status="wait" title="未到达"
           description={<span>
-            <p>目的地: ${renderConsignLoc(shipmt, 'consignee')}</p>
-            <p>标准到货时间:${shipmt.deliver_est_date ? moment(shipmt.deliver_est_date).format('YYYY-MM-DD') : ''}</p>
+            <p>{renderConsignLoc(shipmt, 'consignee')}</p>
+            <p>预计:{shipmt.deliver_prm_date ? moment(shipmt.deliver_prm_date).format('YYYY-MM-DD') : ''}</p>
           </span>}
         />
       </Steps>);
     } else if (shipmt.status === 4) {
       statusPos = 1;
       return (<Steps direction={this.state.stepsDirection} current={statusPos}>
-        <Step key="1" status="finish" title="已提货"
+        <Step key="1" status="finish" title="已起运"
           description={<span>
-            <p>始发地: ${renderConsignLoc(shipmt, 'consigner')}</p>
-            <p>预计提货时间:${shipmt.pickup_est_date ? moment(shipmt.pickup_est_date).format('YYYY-MM-DD') : ''}</p>
-            <p>实际提货时间:${shipmt.pickup_act_date ? moment(shipmt.pickup_act_date).format('YYYY-MM-DD') : ''}</p>
+            <p>{renderConsignLoc(shipmt, 'consigner')}</p>
+            <p>计划:{shipmt.pickup_est_date ? moment(shipmt.pickup_est_date).format('YYYY-MM-DD') : ''}</p>
+            <p>实际:{shipmt.pickup_act_date ? moment(shipmt.pickup_act_date).format('YYYY-MM-DD') : ''}</p>
           </span>}
         />
         <Step key="2" status="process" title="运输中"
           description={<span>
-            <p>最新位置: ${renderLoc(latestPoint, 'province', 'city', 'district') || ''} ${latestPoint.address || ''}</p>
-            <p>${ latestPoint.location_time || latestPoint.created_date ? moment(latestPoint.location_time || latestPoint.created_date).format('YYYY-MM-DD HH:mm') : ''}</p>
+            <p>最新位置: {renderLoc(latestPoint, 'province', 'city', 'district') || ''} ${latestPoint.address || ''}</p>
+            <p>{ latestPoint.location_time || latestPoint.created_date ? moment(latestPoint.location_time || latestPoint.created_date).format('YYYY-MM-DD HH:mm') : ''}</p>
           </span>}
         />
-        <Step key="3" status="wait" title="未送货"
+        <Step key="3" status="wait" title="未到达"
           description={<span>
-            <p>目的地: ${renderConsignLoc(shipmt, 'consignee')}</p>
-            <p>标准到货时间:${shipmt.deliver_est_date ? moment(shipmt.deliver_est_date).format('YYYY-MM-DD') : ''}</p>
+            <p>{renderConsignLoc(shipmt, 'consignee')}</p>
+            <p>预计:{shipmt.deliver_prm_date ? moment(shipmt.deliver_prm_date).format('YYYY-MM-DD') : ''}</p>
           </span>}
         />
       </Steps>);
     } else if (shipmt.status > 4) {
       statusPos = 2;
       return (<Steps direction={this.state.stepsDirection} current={statusPos}>
-        <Step key="1" status="finish" title="已提货"
+        <Step key="1" status="finish" title="已起运"
           description={<span>
-            <p>始发地: ${renderConsignLoc(shipmt, 'consigner')}</p>
-            <p>标准提货时间:${shipmt.pickup_est_date ? moment(shipmt.pickup_est_date).format('YYYY-MM-DD') : ''}</p>
-            <p>实际提货时间:${shipmt.pickup_act_date ? moment(shipmt.pickup_act_date).format('YYYY-MM-DD') : ''}</p>
+            <p>{renderConsignLoc(shipmt, 'consigner')}</p>
+            <p>计划:{shipmt.pickup_est_date ? moment(shipmt.pickup_est_date).format('YYYY-MM-DD') : ''}</p>
+            <p>实际:{shipmt.pickup_act_date ? moment(shipmt.pickup_act_date).format('YYYY-MM-DD') : ''}</p>
           </span>}
         />
         <Step key="2" status="finish" title="运输完成" description="" />
-        <Step key="3" status="finish" title="已送货"
+        <Step key="3" status="finish" title="已到达"
           description={<span>
-            <p>目的地: ${renderConsignLoc(shipmt, 'consignee')}</p>
-            <p>预计到货时间:${shipmt.deliver_est_date ? moment(shipmt.deliver_est_date).format('YYYY-MM-DD') : ''}</p>
-            <p>实际到货时间:${shipmt.deliver_act_date ? moment(shipmt.deliver_act_date).format('YYYY-MM-DD') : ''}</p>
+            <p>{renderConsignLoc(shipmt, 'consignee')}</p>
+            <p>预计:{shipmt.deliver_prm_date ? moment(shipmt.deliver_prm_date).format('YYYY-MM-DD') : ''}</p>
+            <p>实际:{shipmt.deliver_act_date ? moment(shipmt.deliver_act_date).format('YYYY-MM-DD') : ''}</p>
           </span>}
         />
       </Steps>);
@@ -289,7 +289,7 @@ export default class TrackingDetail extends React.Component {
                 {this.renderSteps()}
                 {deliverDelayException &&
                   <Alert
-                    message={`预计到货时间:${moment(shipmt.deliver_prm_date).format('YYYY-MM-DD')}`}
+                    message={`标准到达时间:${moment(shipmt.deliver_est_date).format('YYYY-MM-DD')} 预计到达时间:${moment(shipmt.deliver_prm_date).format('YYYY-MM-DD')}`}
                     description={`延误原因:${deliverDelayException.solution ? deliverDelayException.solution : '未知，请联系承运商'}`}
                     type="warning"
                     showIcon
