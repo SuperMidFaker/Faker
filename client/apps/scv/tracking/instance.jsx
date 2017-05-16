@@ -91,7 +91,7 @@ export default class Instance extends Component {
     remotes: this.props.orders,
   })
   columns = [{
-    title: '追踪单号',
+    title: '追踪编号',
     dataIndex: 'shipmt_order_no',
     width: 150,
     fixed: 'left',

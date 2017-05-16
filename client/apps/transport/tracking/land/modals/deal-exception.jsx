@@ -103,12 +103,12 @@ export default class DealException extends React.Component {
           {this.renderException()}
         </Card>
         <Form className="row">
-          <FormItem label={<strong style={{ lineHeight: 2.4, fontSize: 14 }}>解决方案:</strong>}>
+          <FormItem label="备注">
             {getFieldDecorator('solution', {
               initialValue: '',
-              rules: [{ type: 'string', message: '请填写解决方案' }],
+              rules: [{ type: 'string', message: '请填写异常原因或解决方案' }],
             })(
-              <Input type="textarea" id="control-textarea" rows="5" placeholder="请填写解决方案" />
+              <Input type="textarea" id="control-textarea" rows="5" placeholder="请填写异常原因或解决方案" />
             )}
           </FormItem>
 
