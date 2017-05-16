@@ -190,6 +190,14 @@ const messages = defineMessages({
     id: 'scof.flow.biz.event.cms.customs.reviewed',
     defaultMessage: '已审核',
   },
+  onShipmtAccepted: {
+    id: 'scof.flow.biz.event.tms.shipmt.accepted',
+    defaultMessage: '已接单',
+  },
+  onShipmtDispatched: {
+    id: 'scof.flow.biz.event.tms.shipmt.dispatched',
+    defaultMessage: '已调度',
+  },
   onPickedUp: {
     id: 'scof.flow.biz.event.tms.shipment.pickedup',
     defaultMessage: '已提货',

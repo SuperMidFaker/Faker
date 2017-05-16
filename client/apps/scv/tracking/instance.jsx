@@ -90,16 +90,10 @@ export default class Instance extends Component {
     },
     remotes: this.props.orders,
   })
-  columns = [{
-    title: '追踪编号',
-    dataIndex: 'shipmt_order_no',
-    width: 150,
-    fixed: 'left',
-  }]
   render() {
     const { trackingItems, orders } = this.props;
     const { tracking } = this.state;
-    const columns = this.columns.concat(trackingItems.map(item => ({
+    const columns = trackingItems.map(item => ({
       key: item.field,
       dataIndex: item.field,
       title: item.custom_title,
@@ -125,7 +119,7 @@ export default class Instance extends Component {
           return fld;
         }
       },
-    })));
+    }));
     this.dataSource.remotes = orders;
     const tableWidth = 150 + 150 * trackingItems.length + 50;
     return (
