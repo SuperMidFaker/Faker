@@ -26,6 +26,7 @@ const Option = Select.Option;
   state => ({
     tenantId: state.account.tenantId,
     visible: state.cmsDelgInfoHub.previewer.visible,
+    previewLoading: state.cmsDelgInfoHub.basicPreviewLoading,
     previewer: state.cmsDelgInfoHub.previewer,
     tabKey: state.cmsDelgInfoHub.tabKey,
     previewKey: state.cmsDelgInfoHub.previewKey,
@@ -331,12 +332,13 @@ export default class DelegationDockPanel extends React.Component {
       </Row>);
   }
   render() {
-    const { visible } = this.props;
+    const { visible, previewLoading } = this.props;
     return (
       <DockPanel size="large" visible={visible} onClose={this.props.hidePreviewer}
         title={this.renderTitle()}
         extra={this.renderExtra()}
         alert={this.renderBtns()}
+        loading={previewLoading}
       >
         {this.renderTabs()}
         <DelgDispModal />
