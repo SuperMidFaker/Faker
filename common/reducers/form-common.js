@@ -12,7 +12,7 @@ export function appendFormAcitonTypes(domain, actypes) {
 
 export function formReducer(actionTypes, state, action, defaultForm, stateFormName) {
   if (__DEV__) {
-    const excepts = ['idlist', 'shipmentlist', 'personnelist', 'corplist'];
+    const excepts = ['shipmentlist', 'memberlist', 'corplist'];
     if (excepts.indexOf(stateFormName) === -1) {
       console.warn('formReducer DEPRECATED, write form action directly'); // eslint-disable-line no-console
     }

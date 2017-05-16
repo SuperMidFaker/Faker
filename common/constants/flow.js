@@ -46,6 +46,14 @@ const tmsBizObjects = [{
     text: 'onCreated',
     actionText: 'shipmtCreate',
   }, {
+    key: 'shipmtAccepted',
+    text: 'onShipmtAccepted',
+    actionText: 'shipmtAccept',
+  }, {
+    key: 'shipmtDispatched',
+    text: 'onShipmtDispatched',
+    actionText: 'shipmtDispatch',
+  }, {
     key: 'shipmtPickedUp',
     text: 'onPickedUp',
     actionText: 'shipmtPickup',

@@ -55,10 +55,11 @@ export default class TMSNodeCard extends React.Component {
     }
   }
   triggerStepMap = {
-    [NODE_BIZ_OBJECTS.tms[0].triggers[0].key]: 0,
-    [NODE_BIZ_OBJECTS.tms[0].triggers[1].key]: 1,
-    [NODE_BIZ_OBJECTS.tms[0].triggers[2].key]: 3,
-    [NODE_BIZ_OBJECTS.tms[0].triggers[3].key]: 4,
+    [NODE_BIZ_OBJECTS.tms[0].triggers[1].key]: 0,
+    [NODE_BIZ_OBJECTS.tms[0].triggers[2].key]: 1,
+    [NODE_BIZ_OBJECTS.tms[0].triggers[3].key]: 2,
+    [NODE_BIZ_OBJECTS.tms[0].triggers[4].key]: 3,
+    [NODE_BIZ_OBJECTS.tms[0].triggers[5].key]: 4,
   }
   handleShipmtPreview = (No) => {
     this.props.loadShipmtDetail(No, this.props.tenantId, 'sr', 'exception').then(
