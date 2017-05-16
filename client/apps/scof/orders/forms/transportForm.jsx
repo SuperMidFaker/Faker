@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Button, Form, Row, Col, Card, Input, Select, Icon } from 'antd';
 import RegionCascader from 'client/components/chinaRegionCascader';
-import { loadTmsBizParams } from 'common/reducers/scofFlow';
 import { setClientForm, loadFlowNodeData } from 'common/reducers/crmOrders';
 import { uuidWithoutDash } from 'client/common/uuid';
 import { GOODS_TYPES } from 'common/constants';
@@ -24,11 +23,10 @@ const formItemLayout = {
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
-    tmsParams: state.scofFlow.tmsParams,
+    formRequires: state.crmOrders.formRequires,
     customerPartnerId: state.crmOrders.formData.customer_partner_id,
   }),
-  { setClientForm, loadFlowNodeData, loadTmsBizParams }
+  { setClientForm, loadFlowNodeData }
 )
 export default class TransportForm extends Component {
   static propTypes = {
@@ -46,16 +44,15 @@ export default class TransportForm extends Component {
     }),
   }
   componentDidMount() {
-    this.props.loadTmsBizParams(this.props.tenantId);
-    const { formData, tmsParams: { consigners, consignees, transitModes } } = this.props;
+    const { formData, formRequires } = this.props;
     const node = formData.node;
     if (!node.uuid && node.node_uuid) {
       this.props.loadFlowNodeData(node.node_uuid, node.kind).then((result) => {
         if (!result.error) {
           const nodedata = result.data;
-          const consigner = consigners.filter(cl => cl.node_id === nodedata.consigner_id)[0];
-          const consignee = consignees.filter(cl => cl.node_id === nodedata.consignee_id)[0];
-          const transitMode = transitModes.filter(tm => tm.mode_code === nodedata.transit_mode)[0];
+          const consigner = formRequires.consignerLocations.filter(cl => cl.node_id === nodedata.consigner_id)[0];
+          const consignee = formRequires.consigneeLocations.filter(cl => cl.node_id === nodedata.consignee_id)[0];
+          const transitMode = formRequires.transitModes.filter(tm => tm.mode_code === nodedata.transit_mode)[0];
           this.handleSetClientForm({
             consigner_id: nodedata.consigner_id,
             consigner_name: consigner && consigner.name,
@@ -105,11 +102,12 @@ export default class TransportForm extends Component {
     if (typeof value !== 'string') {
       return;
     }
-    const { tmsParams: { consigners, consignees }, customerPartnerId } = this.props;
+    const { formRequires } = this.props;
     const consignForm = {};
     if (key === 'consigner_name') {
       consignForm.consigner_name = value;
-      const consign = consigners.filter(cl => cl.ref_partner_id === customerPartnerId || cl.ref_partner_id === -1).find(item => item.name === value);
+      const consign = formRequires.consignerLocations.find(item => item.name === value);
+      console.log(consign);
       if (consign) {
         consignForm.consigner_id = consign.node_id;
         consignForm.consigner_province = consign.province;
@@ -138,7 +136,7 @@ export default class TransportForm extends Component {
       }
     } else if (key === 'consignee_name') {
       consignForm.consignee_name = value;
-      const consign = consignees.filter(cl => cl.ref_partner_id === customerPartnerId || cl.ref_partner_id === -1).find(item => item.name === value);
+      const consign = formRequires.consigneeLocations.find(item => item.name === value);
       if (consign) {
         consignForm.consignee_id = consign.node_id;
         consignForm.consignee_province = consign.province;
@@ -170,9 +168,9 @@ export default class TransportForm extends Component {
   }
   handleConsignSelect = (key, value) => {
     const consignForm = {};
-    const { tmsParams: { consigners, consignees } } = this.props;
+    const formRequires = this.props.formRequires;
     if (key === 'consigner_name') {
-      const consign = consigners.find(item => item.node_id === value);
+      const consign = formRequires.consignerLocations.find(item => item.node_id === value);
       if (consign) {
         consignForm.consigner_id = consign.node_id;
         consignForm.consigner_name = consign.name;
@@ -187,7 +185,7 @@ export default class TransportForm extends Component {
         consignForm.consigner_mobile = consign.mobile;
       }
     } else if (key === 'consignee_name') {
-      const consign = consignees.find(item => item.node_id === value);
+      const consign = formRequires.consigneeLocations.find(item => item.node_id === value);
       if (consign) {
         consignForm.consignee_id = consign.node_id;
         consignForm.consignee_name = consign.name;
@@ -215,7 +213,7 @@ export default class TransportForm extends Component {
     this.handleSetClientForm(consign);
   }
   handleTransmodeChange = (value) => {
-    const transportMode = this.props.tmsParams.transitModes.find(item => item.id === value);
+    const transportMode = this.props.formRequires.transitModes.find(item => item.id === value);
     this.handleSetClientForm({
       trs_mode_id: transportMode.id,
       trs_mode_code: transportMode.mode_code,
@@ -237,7 +235,8 @@ export default class TransportForm extends Component {
   }
   renderConsign = consign => `${consign.name} | ${Location.renderLoc(consign)} | ${consign.contact || ''}`
   render() {
-    const { formData, tmsParams: { consigners, consignees, transitModes, packagings }, customerPartnerId } = this.props;
+    const { formData, formRequires: { consignerLocations, consigneeLocations, transitModes, packagings }, customerPartnerId } = this.props;
+    // todo consigner consignee by customer partner id
     const node = formData.node;
     const consignerRegion = [
       node.consigner_province, node.consigner_city,
@@ -259,7 +258,7 @@ export default class TransportForm extends Component {
                   dropdownMatchSelectWidth={false}
                   dropdownStyle={{ width: 400 }}
                 >
-                  {consigners.filter(cl => cl.ref_partner_id === customerPartnerId || cl.ref_partner_id === -1).map(dw =>
+                  {consignerLocations.filter(cl => cl.ref_partner_id === customerPartnerId || cl.ref_partner_id === -1).map(dw =>
                     <Option value={dw.node_id} key={dw.node_id}>{this.renderConsign(dw)}</Option>)
                 }
                 </Select>
@@ -307,7 +306,7 @@ export default class TransportForm extends Component {
                   dropdownMatchSelectWidth={false}
                   dropdownStyle={{ width: 400 }}
                 >
-                  {consignees.filter(cl => cl.ref_partner_id === customerPartnerId || cl.ref_partner_id === -1).map(dw =>
+                  {consigneeLocations.filter(cl => cl.ref_partner_id === customerPartnerId || cl.ref_partner_id === -1).map(dw =>
                     <Option value={dw.node_id} key={dw.node_id}>{this.renderConsign(dw)}</Option>)
                 }
                 </Select>
