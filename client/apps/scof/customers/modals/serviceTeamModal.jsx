@@ -50,6 +50,10 @@ export default class ServiceTeamModal extends React.Component {
   }
   msg = key => formatMsg(this.props.intl, key)
   handleCancel = () => {
+    const { selectedUserIds } = this.props;
+    this.setState({
+      selectedRowKeys: selectedUserIds,
+    });
     this.props.hideServiceTeamModal();
   }
   handleAdd = () => {
