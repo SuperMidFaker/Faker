@@ -31,6 +31,7 @@ export default class TrackingModal extends React.Component {
     tracking: PropTypes.shape({ name: PropTypes.string.isRequired }).isRequired,
   }
   state = {
+    dataSource: [],
     selectedKeys: [],
     targetKeys: [],
     name: '',
@@ -53,6 +54,7 @@ export default class TrackingModal extends React.Component {
     }
     this.setState({
       name: nextProps.tracking.name,
+      dataSource: this.props.trackingFields,
     });
   }
   handleOk = () => {
@@ -106,14 +108,17 @@ export default class TrackingModal extends React.Component {
   }
   render() {
     const { visible } = this.props;
-    const { selectedKeys, targetKeys, leftSelectedKey } = this.state;
+    const { selectedKeys, targetKeys, leftSelectedKey, dataSource } = this.state;
     const modules = [...SCV_TRACKING_FIELD_MODELES].concat([{ key: '_all', text: '全部' }]);
     const leftTitle = (
       <Select
         value={leftSelectedKey}
         size="small"
         style={{ width: 90 }}
-        onChange={value => this.setState({ leftSelectedKey: value })}
+        onChange={value => this.setState({
+          leftSelectedKey: value,
+          dataSource: this.props.trackingFields.filter(item => value === '_all' ? true : value === item.module).concat(this.props.trackingFields.filter(item => targetKeys.indexOf(item.field) >= 0)),
+        })}
       >
         {modules.map(item => (
           <Option value={item.key}>{item.text}</Option>
@@ -127,7 +132,7 @@ export default class TrackingModal extends React.Component {
         </FormItem>
         <FormItem label="跟踪项:" required>
           <Transfer
-            dataSource={this.props.trackingFields.filter(item => leftSelectedKey === '_all' ? true : leftSelectedKey === item.module)}
+            dataSource={dataSource}
             titles={[leftTitle, '']}
             targetKeys={targetKeys}
             selectedKeys={selectedKeys}
