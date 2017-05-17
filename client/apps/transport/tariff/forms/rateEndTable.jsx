@@ -81,9 +81,12 @@ export default class RateEndTable extends React.Component {
   columns = [{
     title: '目的地',
     dataIndex: 'end',
-    width: 240,
-    fixed: 'left',
+    width: 200,
     render: (o, record) => renderRegion(record.end),
+  }, {
+    title: '目的地别名',
+    width: 100,
+    dataIndex: 'end.name',
   }, {
     title: '运输时间',
     width: 80,
@@ -126,6 +129,7 @@ export default class RateEndTable extends React.Component {
               time: formValues.time,
               flare: formValues.flare,
               gradients: this.state.editEnd.gradients,
+              name: formValues.name,
             });
           } else {
             prom = this.props.submitRateEnd({
@@ -136,6 +140,7 @@ export default class RateEndTable extends React.Component {
               time: formValues.time,
               flare: formValues.flare,
               gradients: this.state.editEnd.gradients,
+              name: formValues.name,
             });
           }
           prom.then((result) => {
@@ -193,6 +198,7 @@ export default class RateEndTable extends React.Component {
         time: row.time,
         km: row.km,
         flare: row.flare,
+        name: row.end.name,
       },
       editRegionCode: code,
       editRegion: [province, city, district, street],
@@ -252,7 +258,6 @@ export default class RateEndTable extends React.Component {
       columns.push({
         title: '操作',
         width: 120,
-        fixed: 'right',
         render: (o, record) => (
           <span>
             <RowClick text="编辑" onHit={this.handleEdit} row={record} />
@@ -264,12 +269,18 @@ export default class RateEndTable extends React.Component {
     return (
       <div>
         <Table size="middle" rowSelection={rowSelection} columns={columns} loading={loading}
-          dataSource={this.dataSource} scroll={{ x: 1000 }}
+          dataSource={this.dataSource}
         />
         <Modal visible={visibleModal} onOk={this.handleSave} onCancel={this.handleCancel}>
           <Form layout="horizontal">
             <FormItem label="目的地" labelCol={{ span: 4 }} wrapperCol={{ span: 16 }}>
               <RegionCascader defaultRegion={editRegion} onChange={this.handleRegionChange} />
+            </FormItem>
+            <FormItem label="目的地别名" labelCol={{ span: 4 }} wrapperCol={{ span: 16 }}>
+              {getFieldDecorator('name', {
+                initialValue: editEnd.name,
+                rules: [{ type: 'string' }],
+              })(<Input />)}
             </FormItem>
             <FormItem label="运输时间" labelCol={{ span: 4 }} wrapperCol={{ span: 16 }}>
               {getFieldDecorator('time', {
