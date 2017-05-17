@@ -5,11 +5,17 @@ import RateSourceTable from './rateSourceTable';
 import RateEndTable from './rateEndTable';
 import { loadRateEnds } from 'common/reducers/transportTariff';
 import SearchBar from 'client/components/search-bar';
+import { getEndTableVarColumns } from './commodity';
+import { createFilename } from 'client/util/dataTransform';
 
 @connect(
   state => ({
     rateId: state.transportTariff.rateId,
     ratesEndList: state.transportTariff.ratesEndList,
+    agreementRef: state.transportTariff.ratesRefAgreement,
+    transModes: state.transportTariff.formParams.transModes,
+    vehicleTypeParams: state.transportTariff.formParams.vehicleTypeParams,
+    vehicleLengthParams: state.transportTariff.formParams.vehicleLengthParams,
   }),
   { loadRateEnds }
 )
@@ -62,6 +68,13 @@ export default class TariffRatesForm extends React.Component {
       this.state.uploadChangeCount = 0;
     }
   }
+  handleEndExport = () => {
+    if (this.props.rateId) {
+      const { agreementRef, transModes, vehicleTypeParams, vehicleLengthParams, rateId } = this.props;
+      const varColumns = getEndTableVarColumns(agreementRef, transModes, vehicleTypeParams, vehicleLengthParams).map(vc => vc.title);
+      window.open(`${API_ROOTS.mongo}v1/transport/tariff/export/ratends/${createFilename('rate-ends')}.xlsx?rateId=${rateId}&columns=${JSON.stringify(varColumns)}`);
+    }
+  }
   handleSearch = (value) => {
     this.props.loadRateEnds({
       rateId: this.props.rateId,
@@ -91,29 +104,27 @@ export default class TariffRatesForm extends React.Component {
             </Col>
             <Col sm={18}>
               <Card bodyStyle={{ padding: 0, textAlign: 'right' }}>
-                {(type === 'create' || type === 'edit') && (
-                  <div style={{ padding: 8, textAlign: 'left' }}>
-                    <Button icon="plus-circle-o"
-                      onClick={this.handleEndAdd} disabled={!this.props.rateId}
+                <div style={{ padding: 8, textAlign: 'left' }}>
+                  {(type === 'create' || type === 'edit') &&
+                  <Button icon="plus-circle-o" onClick={this.handleEndAdd} disabled={!this.props.rateId}>
+                    添加
+                  </Button>}
+                  {(type === 'create' || type === 'edit') &&
+                  <span style={{ marginLeft: 8 }}>
+                    <Upload accept=".xls,.xlsx" action={`${API_ROOTS.mongo}v1/transport/tariff/import/ratends`}
+                      data={{ rateId: this.props.rateId }} onChange={this.handleImport}
+                      showUploadList={false} withCredentials
                     >
-                      添加
-                    </Button>
-                    <span style={{ marginLeft: 8 }}>
-                      <Upload accept=".xls,.xlsx" action={`${API_ROOTS.mongo}v1/transport/tariff/import/ratends`}
-                        data={{ rateId: this.props.rateId }} onChange={this.handleImport}
-                        showUploadList={false} withCredentials
-                      >
-                        <Button icon="upload" type="ghost">导入费率表</Button>
-                      </Upload>
-                    </span>
-                    <span style={{ float: 'right', marginRight: 20 }}>
-                      <SearchBar placeholder="目的地" onInputSearch={this.handleSearch} />
-                    </span>
-                  </div>)}
-                {(type === 'view') && (
-                  <div style={{ padding: 8, marginRight: 20, display: 'inline-block' }}>
+                      <Button icon="upload" type="ghost">导入费率表</Button>
+                    </Upload>
+                  </span>}
+                  <Button icon="plus-circle-o" onClick={this.handleEndExport} style={{ marginLeft: 8 }}>
+                    导出费率表
+                  </Button>
+                  <span style={{ float: 'right', marginRight: 20 }}>
                     <SearchBar placeholder="目的地" onInputSearch={this.handleSearch} />
-                  </div>)}
+                  </span>
+                </div>
                 {
                   this.props.rateId &&
                   <RateEndTable visibleModal={endModal} onChangeVisible={this.handleVisibleChange} type={type} />
