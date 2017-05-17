@@ -102,13 +102,13 @@ export default class Instance extends Component {
         if (item.editable === 1) {
           if (item.datatype === 'DATE') {
             return (
-              <EditableCell value={fld} type="date"
+              <EditableCell value={fld} type="date" cellTrigger
                 onSave={value => this.handleSave(row.id, item.field, value, row.source)}
               />
             );
           } else {
             return (
-              <EditableCell value={fld}
+              <EditableCell value={fld} cellTrigger
                 onSave={value => this.handleSave(row.id, item.field, value, row.source)}
               />
             );

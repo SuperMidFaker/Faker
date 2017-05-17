@@ -1,9 +1,11 @@
 import React, { PropTypes } from 'react';
-import { Modal, Form, Input, Transfer, message } from 'antd';
+import { Modal, Form, Input, Transfer, Select, message } from 'antd';
 import { connect } from 'react-redux';
 import { addTracking, updateTracking, toggleTrackingModal } from 'common/reducers/scvTracking';
+import { SCV_TRACKING_FIELD_MODELES } from 'common/constants';
 
 const FormItem = Form.Item;
+const Option = Select.Option;
 
 @connect(state => ({
   tenantId: state.account.tenantId,
@@ -33,6 +35,7 @@ export default class TrackingModal extends React.Component {
     targetKeys: [],
     name: '',
     title: '',
+    leftSelectedKey: '_all',
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.operation === 'edit') {
@@ -103,7 +106,20 @@ export default class TrackingModal extends React.Component {
   }
   render() {
     const { visible } = this.props;
-    const { selectedKeys, targetKeys } = this.state;
+    const { selectedKeys, targetKeys, leftSelectedKey } = this.state;
+    const modules = [...SCV_TRACKING_FIELD_MODELES].concat([{ key: '_all', text: '全部' }]);
+    const leftTitle = (
+      <Select
+        value={leftSelectedKey}
+        size="small"
+        style={{ width: 90 }}
+        onChange={value => this.setState({ leftSelectedKey: value })}
+      >
+        {modules.map(item => (
+          <Option value={item.key}>{item.text}</Option>
+        ))}
+      </Select>
+    );
     return (
       <Modal title={this.state.title} visible={visible} onOk={this.handleOk} onCancel={this.handleCancel} width={680}>
         <FormItem label="跟踪表名称:" required>
@@ -111,14 +127,17 @@ export default class TrackingModal extends React.Component {
         </FormItem>
         <FormItem label="跟踪项:" required>
           <Transfer
-            dataSource={this.props.trackingFields}
-            titles={['', '']}
+            dataSource={this.props.trackingFields.filter(item => leftSelectedKey === '_all' ? true : leftSelectedKey === item.module)}
+            titles={[leftTitle, '']}
             targetKeys={targetKeys}
             selectedKeys={selectedKeys}
             onChange={this.handleChange}
             onSelectChange={this.handleSelectChange}
             filterOption={this.filterOption}
-            render={item => item.title}
+            render={item => (<span>
+              <div style={{ width: '45%', display: 'inline-block' }}>{item.title}</div>
+              <div style={{ width: '45%', display: 'inline-block' }} className="mdc-text-grey">{SCV_TRACKING_FIELD_MODELES.find(m => m.key === item.module).text}</div>
+            </span>)}
             rowKey={item => item.field}
             showSearch
             listStyle={{
