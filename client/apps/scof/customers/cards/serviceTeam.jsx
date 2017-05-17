@@ -7,6 +7,7 @@ import { showServiceTeamModal, loadServiceTeamMembers } from 'common/reducers/cr
 import { loadDepartments } from 'common/reducers/personnel';
 import messages from '../message.i18n';
 import ServiceTeamModal from '../modals/serviceTeamModal';
+import '../index.less';
 
 const formatMsg = format(messages);
 
@@ -39,8 +40,7 @@ export default class ServiceTeam extends React.Component {
       this.props.loadServiceTeamMembers(partnerId);
     }
     if (nextProps.serviceTeamMembers !== this.props.serviceTeamMembers) {
-      const selectedUserIds = [];
-      nextProps.serviceTeamMembers.map(item => selectedUserIds.push(Number(item.user_id)));
+      const selectedUserIds = nextProps.serviceTeamMembers.map(item => Number(item.user_id));
       this.setState({
         selectedRowKeys: selectedUserIds,
       });
@@ -49,12 +49,13 @@ export default class ServiceTeam extends React.Component {
   msg = key => formatMsg(this.props.intl, key);
   render() {
     const { customer, departments, serviceTeamMembers } = this.props;
-    const filters = [];
-    departments.map(item => filters.push({ text: item.name, value: item.name }));
+    const filters = departments.map(item => ({ text: item.name, value: item.name }));
     const column = [{
       title: '姓名',
       dataIndex: 'name',
       key: 'name',
+      className: 'service-team-th-name',
+      render: o => (<div style={{ paddingLeft: 15 }}>{o}</div>),
     }, {
       title: '部门',
       dataIndex: 'department',
