@@ -47,6 +47,7 @@ const FormItem = Form.Item;
     delegation: state.cmsDelgInfoHub.previewer.delegation,
     listView: state.cmsDelegation.listView,
     tabKey: state.cmsDelgInfoHub.tabKey,
+    clients: state.cmsDelegation.formRequire.clients,
     customs: state.cmsDelegation.formRequire.customs.map(cus => ({
       value: cus.customs_code,
       text: `${cus.customs_name}`,
@@ -95,7 +96,7 @@ export default class DelegationList extends Component {
   }
   componentDidMount() {
     const filters = this.initializeFilters();
-    this.handleDelgListLoad(this.props.delegationlist.current, { ...this.props.listFilter, ...filters, filterNo: '' });
+    this.handleDelgListLoad(this.props.delegationlist.current, { ...this.props.listFilter, ...filters, filterNo: '', clientView: { tenantIds: [], partnerIds: [] } });
     this.props.loadDelgOperators(this.props.tenantId);
   }
   componentWillReceiveProps(nextProps) {
@@ -416,6 +417,23 @@ export default class DelegationList extends Component {
     }
     this.saveFilters({ viewStatus: value });
   }
+  handleClientSelectChange = (value) => {
+    const clientView = { tenantIds: [], partnerIds: [] };
+    if (value !== 'all') {
+      const client = this.props.clients.find(clt => clt.partner_id === value);
+      if (client.tid !== -1) {
+        clientView.tenantIds.push(client.tid);
+      } else {
+        clientView.partnerIds.push(client.partner_id);
+      }
+    }
+    const filter = { ...this.props.listFilter, clientView };
+    if (this.props.listView === 'ciq') {
+      this.handleCiqListLoad(1, filter);
+    } else if (this.props.listView === 'delegation') {
+      this.handleDelgListLoad(1, filter);
+    }
+  }
   handleSearch = (searchVal) => {
     const filters = this.mergeFilters(this.props.listFilter, searchVal);
     if (this.props.listView === 'delegation') {
@@ -446,7 +464,7 @@ export default class DelegationList extends Component {
     this.setState({ popoverVisible: true });
   }
   render() {
-    const { delegationlist, listFilter, listView, tenantId, delgOperators, form: { getFieldDecorator } } = this.props;
+    const { delegationlist, listFilter, listView, tenantId, delgOperators, form: { getFieldDecorator }, clients } = this.props;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -611,6 +629,18 @@ export default class DelegationList extends Component {
           <div className="page-body">
             <div className="toolbar">
               <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} />
+              <span />
+              <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
+                onChange={this.handleClientSelectChange} defaultValue="all"
+              >
+                <OptGroup>
+                  <Option value="all">全部客户</Option>
+                  {clients.map(data => (<Option key={data.partner_id} value={data.partner_id}
+                    search={`${data.partner_code}${data.name}`}
+                  >{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>)
+                  )}
+                </OptGroup>
+              </Select>
               <span />
               <Select size="large" value={listFilter.viewStatus} style={{ width: 160 }} showSearch={false}
                 onChange={this.handleViewChange}

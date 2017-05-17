@@ -5,7 +5,7 @@ import { loadDelgBill } from 'common/reducers/cmsManifest';
 import ManifestList from '../../common/manifest/list';
 
 function fetchData({ state, dispatch }) {
-  const newfilter = { ...state.cmsManifest.listFilter, filterNo: '' };
+  const newfilter = { ...state.cmsManifest.listFilter, filterNo: '', clientView: { tenantIds: [], partnerIds: [] } };
   return dispatch(loadDelgBill({
     ietype: 'export',
     tenantId: state.account.tenantId,

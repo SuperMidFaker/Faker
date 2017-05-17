@@ -50,6 +50,7 @@ const initialState = {
     sortOrder: '',
     status: 'all',
     viewStatus: 'all',
+    clientView: { tenantIds: [], partnerIds: [] },
   },
   formRequire: {
     clients: [],

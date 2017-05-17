@@ -5,7 +5,7 @@ import { loadCustomsDecls } from 'common/reducers/cmsDeclare';
 import List from '../../common/customs/list';
 
 function fetchData({ state, dispatch }) {
-  const newfilter = { ...state.cmsDeclare.listFilter, filterNo: '' };
+  const newfilter = { ...state.cmsDeclare.listFilter, filterNo: '', tradesView: {} };
   return dispatch(loadCustomsDecls({
     ietype: 'import',
     tenantId: state.account.tenantId,
