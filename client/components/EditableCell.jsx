@@ -83,7 +83,7 @@ export default class EditableCell extends React.Component {
         </div>);
       case 'select':
         return (<div>
-          <Select showSearch placeholder={placeholder} value={value} style={{ width: '80%' }} onChange={this.handleSelectChange}>
+          <Select showSearch placeholder={placeholder} value={value} style={{ width: '69%' }} onChange={this.handleSelectChange}>
             {options && options.map(opt => <Option key={opt.key} value={opt.key}>{opt.text}</Option>)}
           </Select>
           <Icon type="check" className="editable-cell-icon-save" onClick={this.check} />
@@ -134,6 +134,10 @@ export default class EditableCell extends React.Component {
           city: value[1],
           district: value[2],
         }, 'province', 'city', 'district')}{addonAfter}</span> :
+        <span style={{ display: 'inline-block' }}>{addonBefore}<span className="editable-cell-placeholder">{placeholder}</span>{addonAfter}</span>;
+    } else if (type === 'date') {
+      return (value) ?
+        <span>{addonBefore}{moment(value).format('YYYY.MM.DD')}{addonAfter}</span> :
         <span style={{ display: 'inline-block' }}>{addonBefore}<span className="editable-cell-placeholder">{placeholder}</span>{addonAfter}</span>;
     }
     return (value && (value.length > 0 || value !== 0)) ?

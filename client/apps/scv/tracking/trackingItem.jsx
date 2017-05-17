@@ -89,6 +89,8 @@ export default class TrackingItem extends Component {
     row: PropTypes.object.isRequired,
     moveCard: PropTypes.func.isRequired,
     handleCustomTitleChange: PropTypes.func.isRequired,
+    handleWidthChange: PropTypes.func.isRequired,
+    handleEditableChange: PropTypes.func.isRequired,
     handleRemove: PropTypes.func.isRequired,
     handleDatatypeChange: PropTypes.func.isRequired,
   };
@@ -104,6 +106,11 @@ export default class TrackingItem extends Component {
             onSave={value => this.props.handleCustomTitleChange(row.id, value)}
           />
         </td>
+        <td style={{ ...colStyle }}>
+          <EditableCell value={row.width}
+            onSave={value => this.props.handleWidthChange(row.id, value)}
+          />
+        </td>
         <td style={{ ...colStyle, width: 150 }}>
           {SCV_TRACKING_FIELD_SOURCES[row.source]}
         </td>
@@ -111,6 +118,12 @@ export default class TrackingItem extends Component {
           <EditableCell value={row.datatype} type="select"
             options={[{ key: 'STRING', text: '文本' }, { key: 'INTEGER', text: '数字' }, { key: 'DATE', text: '日期' }]}
             onSave={value => this.props.handleDatatypeChange(row.id, value)}
+          />
+        </td>
+        <td style={{ ...colStyle, width: 150 }}>
+          <EditableCell value={String(row.editable)} type="select"
+            options={[{ key: '0', text: '否' }, { key: '1', text: '是' }]}
+            onSave={value => this.props.handleEditableChange(row.id, value)}
           />
         </td>
         <td style={{ ...colStyle, width: 60 }}>

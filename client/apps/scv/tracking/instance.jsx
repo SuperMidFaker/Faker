@@ -59,8 +59,8 @@ export default class Instance extends Component {
     this.setState({ tracking: nextProps.trackings.find(item => item.id === Number(nextProps.params.trackingId)) });
   }
   msg = key => formatMsg(this.props.intl, key)
-  handleSave = (id, field, value) => {
-    this.props.upsertTrackingOrderCustom(id, field, value);
+  handleSave = (id, field, value, source) => {
+    this.props.upsertTrackingOrderCustom(id, field, value, source);
   }
   dataSource = new Table.DataSource({
     fetcher: params => this.props.loadTrackingOrders({
@@ -97,31 +97,31 @@ export default class Instance extends Component {
       key: item.field,
       dataIndex: item.field,
       title: item.custom_title,
-      width: item.source === 3 && item.datatype === 'DATE' ? 200 : 150,
+      width: item.width,
       render: (fld, row) => {
-        if (item.source === 3) {
+        if (item.editable === 1) {
           if (item.datatype === 'DATE') {
             return (
               <EditableCell value={fld} type="date"
-                onSave={value => this.handleSave(row.id, item.field, value)}
+                onSave={value => this.handleSave(row.id, item.field, value, row.source)}
               />
             );
           } else {
             return (
               <EditableCell value={fld}
-                onSave={value => this.handleSave(row.id, item.field, value)}
+                onSave={value => this.handleSave(row.id, item.field, value, row.source)}
               />
             );
           }
         } else if (item.datatype === 'DATE') {
-          return fld && moment(fld).format('YYYY-MM-DD');
+          return fld && moment(fld).format('YYYY.MM.DD');
         } else {
           return fld;
         }
       },
     }));
     this.dataSource.remotes = orders;
-    const tableWidth = 150 + 150 * trackingItems.length + 50;
+    const tableWidth = trackingItems.map(item => item.width).reduce((a, b) => a + b, 0);
     return (
       <Layout>
         <Header className="top-bar">
