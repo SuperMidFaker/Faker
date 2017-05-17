@@ -63,7 +63,7 @@ export default class Instance extends Component {
     this.props.upsertTrackingOrderCustom(id, field, value);
   }
   dataSource = new Table.DataSource({
-    fetcher: params => this.loadTrackingOrders({
+    fetcher: params => this.props.loadTrackingOrders({
       tracking_id: this.props.params.trackingId,
       pageSize: params.pageSize,
       current: params.current,
