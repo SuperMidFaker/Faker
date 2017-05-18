@@ -31,7 +31,7 @@ const Option = Select.Option;
     tabKey: state.cmsDelgInfoHub.tabKey,
     previewKey: state.cmsDelgInfoHub.previewKey,
     delegateListFilter: state.cmsDelegation.delegateListFilter,
-    delgOperators: state.cmsDelegation.operators,
+    serviceTeamMembers: state.crmCustomers.serviceTeamMembers,
   }),
   { hidePreviewer, setPreviewStatus, setPreviewTabkey, showDispModal, loadBasicInfo, loadOrderDetail, getShipmtOrderNo, acceptDelg, reloadDelegationList }
 )
@@ -65,7 +65,7 @@ export default class DelegationDockPanel extends React.Component {
     this.props.setPreviewStatus({ preStatus: 'delgDispCancel' });
   }
   handleDelegationAccept = (value) => {
-    const operator = this.props.delgOperators.filter(dop => dop.lid === value)[0];
+    const operator = this.props.serviceTeamMembers.filter(dop => dop.lid === value)[0];
     this.props.acceptDelg(
       operator.lid, operator.name, [this.props.previewer.delgDispatch.id], this.props.previewer.delegation.delg_no
     ).then((result) => {
@@ -248,7 +248,7 @@ export default class DelegationDockPanel extends React.Component {
     );
   }
   renderBtns() {
-    const { previewer, delgOperators } = this.props;
+    const { previewer, serviceTeamMembers } = this.props;
     const { delgDispatch } = previewer;
     if (delgDispatch.recv_tenant_id === delgDispatch.customs_tenant_id) {
       if (delgDispatch.status === CMS_DELEGATION_STATUS.unaccepted) {
@@ -257,7 +257,7 @@ export default class DelegationDockPanel extends React.Component {
             <Popover content={
               <div style={{ width: 120 }}>
                 <Select style={{ width: '100%' }} onChange={this.handleDelegationAccept} placeholder="必须选定制单人">
-                  {delgOperators.map(op => <Option value={op.lid} key={op.lid}>{op.name}</Option>)}
+                  {serviceTeamMembers.map(op => <Option value={op.lid} key={op.lid}>{op.name}</Option>)}
                 </Select>
               </div>
             }

@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Badge, Breadcrumb, Button, Layout, Icon, Popconfirm, Radio, Select, Tag, Tooltip, message, Menu, Dropdown, Form, Popover } from 'antd';
+import { Badge, Breadcrumb, Button, Layout, Icon, Popconfirm, Radio, Select, Tag, Tooltip, message, Menu, Dropdown } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import TrimSpan from 'client/components/trimSpan';
@@ -16,7 +16,7 @@ import SearchBar from 'client/components/search-bar';
 import RowUpdater from 'client/components/rowUpdater';
 import MdIcon from 'client/components/MdIcon';
 import { loadAcceptanceTable, acceptDelg, delDelg, setDispStatus, loadCiqTable, delgAssignRecall,
-  ensureManifestMeta, showDispModal, loadDelgOperators } from 'common/reducers/cmsDelegation';
+  ensureManifestMeta, showDispModal } from 'common/reducers/cmsDelegation';
 import { showPreviewer, loadBasicInfo, loadCustPanel, loadDeclCiqPanel } from 'common/reducers/cmsDelgInfoHub';
 import DelegationDockPanel from '../dockhub/delegationDockPanel';
 import CiqList from './ciqList';
@@ -24,6 +24,7 @@ import messages from './message.i18n';
 import { format } from 'client/common/i18n/helpers';
 import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
 import ShipmentDockPanel from '../../../transport/shipment/dock/shipmentDockPanel';
+import OperatorPopover from 'client/common/operatorsPopover';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -31,7 +32,6 @@ const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const Option = Select.Option;
 const OptGroup = Select.OptGroup;
-const FormItem = Form.Item;
 
 @injectIntl
 @connect(
@@ -52,18 +52,17 @@ const FormItem = Form.Item;
       value: cus.customs_code,
       text: `${cus.customs_name}`,
     })),
-    delgOperators: state.cmsDelegation.operators,
+    serviceTeamMembers: state.crmCustomers.serviceTeamMembers,
   }),
   { loadAcceptanceTable, acceptDelg, delDelg, showPreviewer,
     setDispStatus, delgAssignRecall, ensureManifestMeta,
     loadCiqTable, showDispModal, loadBasicInfo,
-    loadCustPanel, loadDeclCiqPanel, loadDelgOperators }
+    loadCustPanel, loadDeclCiqPanel }
 )
 @connectNav({
   depth: 2,
   moduleName: 'clearance',
 })
-@Form.create()
 export default class DelegationList extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -97,7 +96,6 @@ export default class DelegationList extends Component {
   componentDidMount() {
     const filters = this.initializeFilters();
     this.handleDelgListLoad(this.props.delegationlist.current, { ...this.props.listFilter, ...filters, filterNo: '', clientView: { tenantIds: [], partnerIds: [] } });
-    this.props.loadDelgOperators(this.props.tenantId);
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.reload) {
@@ -361,9 +359,12 @@ export default class DelegationList extends Component {
     const link = `/clearance/${ietype}/manifest/view/${row.delg_no}`;
     this.context.router.push(link);
   }
-  handleDelegationAccept = (row) => {
-    const val = this.props.form.getFieldValue('operator');
-    const operator = this.props.delgOperators.filter(dop => dop.lid === val)[0];
+  handleDelegationAccept = (row, lid) => {
+    if (!lid) {
+      message.info('制单人不能为空');
+      return;
+    }
+    const operator = this.props.serviceTeamMembers.filter(dop => dop.lid === lid)[0];
     this.props.acceptDelg(
       operator.lid, operator.name, [row.id], row.delg_no
     ).then((result) => {
@@ -457,14 +458,8 @@ export default class DelegationList extends Component {
     }
     return newFilters;
   }
-  handlePopVisibleChange = (visible) => {
-    this.setState({ popoverVisible: visible });
-  }
-  handlePopSelect = () => {
-    this.setState({ popoverVisible: true });
-  }
   render() {
-    const { delegationlist, listFilter, listView, tenantId, delgOperators, form: { getFieldDecorator }, clients } = this.props;
+    const { delegationlist, listFilter, listView, tenantId, clients } = this.props;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -501,20 +496,7 @@ export default class DelegationList extends Component {
             return (
               <span>
                 <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-                  <Popover visible={this.state.popoverVisible} onVisibleChange={this.handlePopVisibleChange} content={
-                    <div style={{ width: 120 }}>
-                      <FormItem label={this.msg('allocateOriginator')} >
-                        {getFieldDecorator('operator', { rules: [{ required: true, message: '必须选定制单人' }] })(
-                          <Select style={{ width: '100%' }} onSelect={this.handlePopVisibleChange}>
-                            {delgOperators.map(op => <Option value={op.lid} key={op.lid}>{op.name}</Option>)}
-                          </Select>)}
-                      </FormItem>
-                      <Button type="primary" onClick={() => this.handleDelegationAccept(record)} >确定</Button>
-                    </div>
-                  }
-                  >
-                    <RowUpdater label={<span><Icon type="check-square-o" /> {this.msg('accepting')}</span>} />
-                  </Popover>
+                  <OperatorPopover record={record} handleAccept={this.handleDelegationAccept} />
                 </PrivilegeCover>
                 {editOverlay && <span className="ant-divider" />}
                 {editOverlay && <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
