@@ -35,6 +35,8 @@ import AdvancedSearchBar from '../common/advanced-search-bar';
 import MyShipmentsSelect from '../common/myShipmentsSelect';
 import OrderDockPanel from '../../scof/orders/docks/orderDockPanel';
 import DelegationDockPanel from '../../cms/common/dockhub/delegationDockPanel';
+import ShipmentAdvanceModal from 'client/apps/transport/tracking/land/modals/shipment-advance-modal';
+import CreateSpecialCharge from 'client/apps/transport/tracking/land/modals/create-specialCharge';
 
 const { Header, Content } = Layout;
 const RadioButton = Radio.Button;
@@ -469,7 +471,11 @@ export default class DispatchList extends React.Component {
   msgWrapper = s => this.msg(s)
 
   handleShipmtPreview = (row) => {
-    this.props.loadShipmtDetail(row.shipmt_no, this.props.tenantId, 'sp', 'detail', row).then((result) => {
+    const { status } = this.props.filters;
+    let sourceType = 'sp';
+    if (status === 'dispatched') sourceType = 'sr';
+    else sourceType = 'sp';
+    this.props.loadShipmtDetail(row.shipmt_no, this.props.tenantId, sourceType, 'detail', row).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       }
@@ -1068,7 +1074,7 @@ export default class DispatchList extends React.Component {
             </div>
           </div>
         </Content>
-        <ShipmentDockPanel stage="dispatch" />
+        <ShipmentDockPanel />
         <OrderDockPanel />
         <DelegationDockPanel />
         <DispatchDock
@@ -1080,6 +1086,8 @@ export default class DispatchList extends React.Component {
           onClose={this.handleSegmentDockClose}
         />
         <RevokejectModal reload={this.handleTableLoad} />
+        <ShipmentAdvanceModal />
+        <CreateSpecialCharge />
       </QueueAnim>
     );
   }

@@ -87,7 +87,6 @@ export default class PreviewPanel extends React.Component {
     changePreviewerTab: PropTypes.func.isRequired,
     shipmt: PropTypes.object.isRequired,
     previewer: PropTypes.object.isRequired,
-    stage: PropTypes.oneOf(['acceptance', 'dispatch', 'tracking', 'pod', 'exception', 'billing', 'dashboard', 'todo']),
     loadShipmtDetail: PropTypes.func.isRequired,
     loadForm: PropTypes.func.isRequired,
   }
@@ -110,7 +109,6 @@ export default class PreviewPanel extends React.Component {
   componentWillUnmount() {
     this.props.hidePreviewer();
   }
-  viewStages = ['billing', 'dashboard'];
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   handleTabChange = (tabKey) => {
     this.props.changePreviewerTab(tabKey);
@@ -146,7 +144,7 @@ export default class PreviewPanel extends React.Component {
       }
     );
   }
-  renderTabs(status, stage, sourceType) {
+  renderTabs(status, sourceType) {
     if (status === SHIPMENT_TRACK_STATUS.unaccepted) {
       return (
         <Tabs activeKey={this.props.tabKey} onChange={this.handleTabChange}>
@@ -154,7 +152,7 @@ export default class PreviewPanel extends React.Component {
             <DetailPane />
           </TabPane>
           <TabPane tab={this.msg('shipmtActivity')} key="activity">
-            <ActivityLoggerPane stage={stage} sourceType={sourceType} />
+            <ActivityLoggerPane sourceType={sourceType} />
           </TabPane>
         </Tabs>
       );
@@ -165,7 +163,7 @@ export default class PreviewPanel extends React.Component {
             <DetailPane />
           </TabPane>
           <TabPane tab={this.msg('shipmtActivity')} key="activity">
-            <ActivityLoggerPane stage={stage} sourceType={sourceType} />
+            <ActivityLoggerPane sourceType={sourceType} />
           </TabPane>
           <TabPane tab={this.msg('shipmtCharge')} key="charge">
             <ChargePane />
@@ -176,7 +174,7 @@ export default class PreviewPanel extends React.Component {
       return (
         <Tabs activeKey={this.props.tabKey} onChange={this.handleTabChange}>
           <TabPane tab={this.msg('shipmtActivity')} key="activity">
-            <ActivityLoggerPane stage={stage} sourceType={sourceType} />
+            <ActivityLoggerPane sourceType={sourceType} />
           </TabPane>
           <TabPane tab={this.msg('shipmtDetail')} key="detail">
             <DetailPane />
@@ -196,7 +194,7 @@ export default class PreviewPanel extends React.Component {
       return (
         <Tabs activeKey={this.props.tabKey} onChange={this.handleTabChange}>
           <TabPane tab={this.msg('shipmtActivity')} key="activity">
-            <ActivityLoggerPane stage={stage} sourceType={sourceType} />
+            <ActivityLoggerPane sourceType={sourceType} />
           </TabPane>
           <TabPane tab={this.msg('shipmtDetail')} key="detail">
             <DetailPane />
@@ -219,7 +217,7 @@ export default class PreviewPanel extends React.Component {
       return (
         <Tabs activeKey={this.props.tabKey} onChange={this.handleTabChange}>
           <TabPane tab={this.msg('shipmtActivity')} key="activity">
-            <ActivityLoggerPane stage={stage} sourceType={sourceType} />
+            <ActivityLoggerPane sourceType={sourceType} />
           </TabPane>
           <TabPane tab={this.msg('shipmtDetail')} key="detail">
             <DetailPane />
@@ -270,16 +268,16 @@ export default class PreviewPanel extends React.Component {
     );
   }
   render() {
-    const { shipmt, visible, shipmtNo, dispatch, effective, stage, previewer: { params: { sourceType } } } = this.props;
+    const { shipmt, visible, shipmtNo, dispatch, effective, previewer: { params: { sourceType } } } = this.props;
     return (
       shipmtNo ?
         <DockPanel size="large" visible={visible} onClose={this.handleClose}
           title={this.renderTitle()}
           status={this.transformBadgeColor(dispatch.status)} statusText={this.msg(getTrackStatusMsg(dispatch.status, effective))}
           extra={this.renderExtra()}
-          alert={this.viewStages.indexOf(this.props.stage) === -1 && <ShipmentActions stage={stage} sourceType={sourceType} />}
+          alert={<ShipmentActions sourceType={sourceType} />}
         >
-          {this.renderTabs(dispatch.status, stage, sourceType)}
+          {this.renderTabs(dispatch.status, sourceType)}
           <ShareShipmentModal visible={this.state.shareShipmentModalVisible} shipmt={shipmt} />
           <ChangeActDateModal />
           <VehicleModal onOK={() => {}} />

@@ -93,7 +93,6 @@ const initialState = {
   specialChargeModal: {
     visible: false,
     dispId: -1,
-    parentDispId: -1,
     spTenantId: -2,
     shipmtNo: '',
     type: -2,
@@ -521,10 +520,10 @@ export function showAdvanceModal({ visible, dispId, shipmtNo, transportModeId, g
   }
 }
 
-export function showSpecialChargeModal({ visible, dispId, shipmtNo, parentDispId, spTenantId, type }) {
+export function showSpecialChargeModal({ visible, dispId, shipmtNo, spTenantId, type }) {
   return {
     type: actionTypes.SHOW_SPECIAL_CHARGE_MODAL,
-    data: { visible, dispId, shipmtNo, parentDispId, spTenantId, type },
+    data: { visible, dispId, shipmtNo, spTenantId, type },
   };
 }
 

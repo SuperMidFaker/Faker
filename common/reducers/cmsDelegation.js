@@ -5,7 +5,6 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'LOAD_PARTNERS', 'LOAD_PARTNERS_SUCCEED', 'LOAD_PARTNERS_FAIL',
   'LOAD_ACCEPT', 'LOAD_ACCEPT_SUCCEED', 'LOAD_ACCEPT_FAIL',
   'RELOAD_DELG_LIST',
-  'LOAD_DELGOPERATOR', 'LOAD_DELGOPERATOR_SUCCEED', 'LOAD_DELGOPERATOR_FAIL',
   'ACPT_DELG', 'ACPT_DELG_SUCCEED', 'ACPT_DELG_FAIL',
   'CREATE_DELGCCB', 'CREATE_DELGCCB_SUCCEED', 'CREATE_DELGCCB_FAIL',
   'LOAD_DELG', 'LOAD_DELG_SUCCEED', 'LOAD_DELG_FAIL',
@@ -50,6 +49,7 @@ const initialState = {
     sortOrder: '',
     status: 'all',
     viewStatus: 'all',
+    clientView: { tenantIds: [], partnerIds: [] },
   },
   formRequire: {
     clients: [],
@@ -74,7 +74,6 @@ const initialState = {
     visible: false,
     delegations: [],
   },
-  operators: [],
   visibleEfModal: false,
   efModal: {
     entryHeadId: -1,
@@ -166,8 +165,6 @@ export default function reducer(state = initialState, action) {
     //     dispatch: action.result.data.dispatch, delgDispShow: true, saved: true } };
     // case actionTypes.BROKERS_LOAD_SUCCEED:
     //   return { ...state, brokers: action.result.data.brokers };
-    case actionTypes.LOAD_DELGOPERATOR_SUCCEED:
-      return { ...state, operators: action.result.data };
     case actionTypes.LOAD_PARTNERS_SUCCEED:
       return { ...state, assign: { ...state.assign, ciqSups: action.result.data } };
     default:
@@ -370,21 +367,6 @@ export function delDisp(delgDisp, dispatch, tenantId) {
       endpoint: 'v1/cms/dispatch/del',
       method: 'post',
       data: { delgDisp, dispatch, tenantId },
-    },
-  };
-}
-
-export function loadDelgOperators(tenantId) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.LOAD_DELGOPERATOR,
-        actionTypes.LOAD_DELGOPERATOR_SUCCEED,
-        actionTypes.LOAD_DELGOPERATOR_FAIL,
-      ],
-      endpoint: 'v1/cms/delegate/operators',
-      method: 'get',
-      params: { tenantId },
     },
   };
 }

@@ -2,11 +2,12 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Icon, Input, Select } from 'antd';
+import { Icon, Input, Select, message } from 'antd';
 import update from 'react/lib/update';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import TrackingItem from './trackingItem';
+import { SCV_TRACKING_FIELD_SOURCES } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import { loadTrackingItems, addTrackingItem, updateTrackingItem, removeTrackingItem, updateTrackingItemPosition } from 'common/reducers/scvTracking';
@@ -45,12 +46,14 @@ export default class TrackingItems extends React.Component {
       newItem: {
         custom_title: '',
         datatype: null,
-        source: null,
+        source: 3,
         tracking_id: this.props.tracking.id,
         tenant_id: this.props.tenantId,
         field: '',
         title: '',
         position: 0,
+        width: 150,
+        editable: 1,
       },
     };
   }
@@ -107,18 +110,32 @@ export default class TrackingItems extends React.Component {
     const trackingItem = this.state.trackingItems.find(item => item.id === id);
     this.handleSave({ ...trackingItem, custom_title: value });
   }
+  handleWidthChange = (id, value) => {
+    const trackingItem = this.state.trackingItems.find(item => item.id === id);
+    this.handleSave({ ...trackingItem, width: Number(value) });
+  }
   handleDatatypeChange = (id, value) => {
     const trackingItem = this.state.trackingItems.find(item => item.id === id);
     this.handleSave({ ...trackingItem, datatype: value });
   }
+  handleEditableChange = (id, value) => {
+    const trackingItem = this.state.trackingItems.find(item => item.id === id);
+    this.handleSave({ ...trackingItem, editable: Number(value) });
+  }
   handleAddItem = () => {
     const { newItem } = this.state;
-    this.props.addTrackingItem({ ...newItem, title: newItem.custom_title }).then(() => {
-      this.setState({
-        newItem: { ...this.state.newItem, custom_title: '', datatype: null, source: null },
+    if (!newItem.datatype) {
+      message.warn('请选择数据类型');
+    } else if (!newItem.custom_title) {
+      message.warn('请填写显示名称');
+    } else {
+      this.props.addTrackingItem({ ...newItem, title: newItem.custom_title }).then(() => {
+        this.setState({
+          newItem: { ...this.state.newItem, custom_title: '', datatype: null },
+        });
+        this.props.loadTrackingItems(this.props.tracking.id);
       });
-      this.props.loadTrackingItems(this.props.tracking.id);
-    });
+    }
   }
   render() {
     const { trackingItems, newItem } = this.state;
@@ -129,7 +146,7 @@ export default class TrackingItems extends React.Component {
             <div className="ant-table">
               <table className="ant-table" style={{ width: '100%', fontSize: 14 }}>
                 <thead className="ant-table-thead">
-                  <tr><th>追踪数据列</th><th>显示名称</th><th>数据来源</th><th>数据类型</th><th>操作</th></tr>
+                  <tr><th>追踪数据列</th><th>显示名称</th><th>显示宽度</th><th>数据来源</th><th>数据类型</th><th>可编辑</th><th>操作</th></tr>
                 </thead>
                 <tbody className="ant-table-tbody">
                   {trackingItems.map((row, i) => (
@@ -140,6 +157,8 @@ export default class TrackingItems extends React.Component {
                       row={row}
                       moveCard={this.moveCard}
                       handleCustomTitleChange={this.handleCustomTitleChange}
+                      handleWidthChange={this.handleWidthChange}
+                      handleEditableChange={this.handleEditableChange}
                       handleRemove={this.handleRemove}
                       handleDatatypeChange={this.handleDatatypeChange}
                     />
@@ -150,30 +169,32 @@ export default class TrackingItems extends React.Component {
                       <Input
                         style={{ width: '80%' }}
                         value={newItem.custom_title}
-                        onChange={e => this.setState({ newItem: { ...this.state.newItem, custom_title: e.target.value } })}
+                        onChange={e => this.setState({ newItem: { ...newItem, custom_title: e.target.value } })}
+                      />
+                    </td>
+                    <td style={{ ...colStyle }}>
+                      <Input
+                        style={{ width: '80%' }}
+                        value={newItem.width}
+                        onChange={e => this.setState({ newItem: { ...newItem, width: Number(e.target.value) } })}
                       />
                     </td>
                     <td style={{ ...colStyle, width: 150 }}>
-                      <Select
-                        style={{ width: '80%' }}
-                        value={this.state.newItem.source}
-                        onChange={value => this.setState({ newItem: { ...this.state.newItem, source: value } })}
-                      >
-                        <Option value={1}>物流服务商</Option>
-                        <Option value={2}>第三方</Option>
-                        <Option value={3}>手工录入</Option>
-                      </Select>
+                      {SCV_TRACKING_FIELD_SOURCES[newItem.source]}
                     </td>
                     <td style={{ ...colStyle, width: 150 }}>
                       <Select
                         style={{ width: '80%' }}
                         value={this.state.newItem.datatype}
-                        onChange={value => this.setState({ newItem: { ...this.state.newItem, datatype: value } })}
+                        onChange={value => this.setState({ newItem: { ...newItem, datatype: value } })}
                       >
                         <Option value="STRING">文本</Option>
                         <Option value="INTEGER">数字</Option>
                         <Option value="DATE">日期</Option>
                       </Select>
+                    </td>
+                    <td style={{ ...colStyle, width: 50 }}>
+                      是
                     </td>
                     <td style={{ ...colStyle, width: 60 }} className="editable-row-operations">
                       <a role="button" onClick={this.handleAddItem}><Icon type="save" /></a>

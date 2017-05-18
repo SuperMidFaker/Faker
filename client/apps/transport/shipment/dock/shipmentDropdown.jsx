@@ -39,7 +39,6 @@ export default class ShipmentActions extends React.Component {
     onShowShareShipmentModal: PropTypes.func.isRequired,
     hidePreviewer: PropTypes.func.isRequired,
     showChangeActDateModal: PropTypes.func.isRequired,
-    stage: PropTypes.string.isRequired,
     sourceType: PropTypes.string.isRequired,
   }
   static contextTypes = {

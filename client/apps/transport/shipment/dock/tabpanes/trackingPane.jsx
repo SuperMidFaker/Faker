@@ -80,7 +80,8 @@ export default class TrackingPane extends React.Component {
 
     return (
       <Card>
-        <Timeline style={{ marginLeft: 100 }}>{trackingSteps}</Timeline>
+        {trackingSteps.length > 0 ?
+          (<Timeline style={{ marginLeft: 100 }}>{trackingSteps}</Timeline>) : '暂无追踪信息'}
       </Card>
     );
   }

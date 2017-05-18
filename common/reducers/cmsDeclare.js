@@ -40,6 +40,7 @@ const initialState = {
   },
   decl_heads: [],
   customs: [],
+  trades: [],
   sendDeclModal: {
     visible: false,
     preEntrySeqNo: '',
@@ -67,7 +68,7 @@ export default function reducer(state = initialState, action) {
       return { ...state, customslist: { ...state.customslist, loading: true } };
     case actionTypes.LOAD_CUSTOMS_SUCCEED:
       return { ...state, customslist: { ...state.customslist, loading: false, ...action.result.data },
-        listFilter: JSON.parse(action.params.filter), customs: action.result.data.customs };
+        listFilter: JSON.parse(action.params.filter), customs: action.result.data.customs, trades: action.result.data.trades };
     case actionTypes.LOAD_CUSTOMS_FAIL:
       return { ...state, customslist: { ...state.customslist, loading: false } };
     case actionTypes.LOAD_DECLHEAD_SUCCEED:

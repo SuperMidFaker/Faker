@@ -16,7 +16,6 @@ const RadioGroup = Radio.Group;
     visible: state.transportBilling.specialChargeModal.visible,
     dispId: state.transportBilling.specialChargeModal.dispId,
     spTenantId: state.transportBilling.specialChargeModal.spTenantId,
-    parentDispId: state.transportBilling.specialChargeModal.parentDispId,
     shipmtNo: state.transportBilling.specialChargeModal.shipmtNo,
     type: state.transportBilling.specialChargeModal.type,
   }),
@@ -31,7 +30,6 @@ export default class CreateSpecialCharge extends React.Component {
     loginName: PropTypes.string.isRequired,
     dispId: PropTypes.number.isRequired,
     spTenantId: PropTypes.number.isRequired,
-    parentDispId: PropTypes.number.isRequired,
     shipmtNo: PropTypes.string.isRequired,
     createSpecialCharge: PropTypes.func.isRequired,
     visible: PropTypes.bool.isRequired,
@@ -39,8 +37,8 @@ export default class CreateSpecialCharge extends React.Component {
     type: PropTypes.number.isRequired,
   }
   handleOk = () => {
-    const { form, dispId, parentDispId, shipmtNo, loginName, loginId, tenantId } = this.props;
-    // console.log(dispId, parentDispId, shipmtNo, loginName, loginId, tenantId);
+    const { form, dispId, shipmtNo, loginName, loginId, tenantId } = this.props;
+    // console.log(dispId, shipmtNo, loginName, loginId, tenantId);
     const fieldsValue = form.getFieldsValue();
     if (fieldsValue && fieldsValue.charge) {
       this.props.form.setFieldsValue({ charge: '', remark: '', type: 1 });
@@ -50,7 +48,7 @@ export default class CreateSpecialCharge extends React.Component {
       }
       this.props.createSpecialCharge({
         shipmtNo,
-        dispId: type === 1 ? parentDispId : dispId,
+        dispId,
         type,
         remark: fieldsValue.remark,
         submitter: loginName,
@@ -70,7 +68,7 @@ export default class CreateSpecialCharge extends React.Component {
     }
   }
   handleCancel = () => {
-    this.props.showSpecialChargeModal({ visible: false, type: -1, dispId: -1, shipmtNo: '', parentDispId: -1, spTenantId: -2 });
+    this.props.showSpecialChargeModal({ visible: false, type: -1, dispId: -1, shipmtNo: '', spTenantId: -2 });
   }
   render() {
     const { form: { getFieldDecorator }, spTenantId, type } = this.props;

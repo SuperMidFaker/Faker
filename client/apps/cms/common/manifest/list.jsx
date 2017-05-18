@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Layout, Radio, Icon, Progress, message, Popconfirm, Tooltip, notification } from 'antd';
+import { Breadcrumb, Layout, Radio, Icon, Progress, message, Popconfirm, Tooltip, notification, Select } from 'antd';
 import moment from 'moment';
 import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
@@ -23,6 +23,8 @@ const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
+const Option = Select.Option;
+const OptGroup = Select.OptGroup;
 
 @injectIntl
 @connect(
@@ -32,6 +34,7 @@ const RadioButton = Radio.Button;
     loginName: state.account.username,
     delgBillList: state.cmsManifest.delgBillList,
     listFilter: state.cmsManifest.listFilter,
+    clients: state.cmsManifest.formRequire.clients,
     tradeModes: state.cmsManifest.formRequire.tradeModes.map(tm => ({
       value: tm.trade_mode,
       text: `${tm.trade_abbr}`,
@@ -238,6 +241,19 @@ export default class ManifestList extends Component {
     }
     return newFilters;
   }
+  handleClientSelectChange = (value) => {
+    const clientView = { tenantIds: [], partnerIds: [] };
+    if (value !== 'all') {
+      const client = this.props.clients.find(clt => clt.partner_id === value);
+      if (client.tid !== -1) {
+        clientView.tenantIds.push(client.tid);
+      } else {
+        clientView.partnerIds.push(client.partner_id);
+      }
+    }
+    const filters = { ...this.props.listFilter, clientView };
+    this.handleTableLoad(1, filters);
+  }
   handleRadioChange = (ev) => {
     if (ev.target.value === this.props.listFilter.status) {
       return;
@@ -279,7 +295,7 @@ export default class ManifestList extends Component {
     });
   }
   render() {
-    const { delgBillList, listFilter } = this.props;
+    const { delgBillList, listFilter, clients } = this.props;
     this.dataSource.remotes = delgBillList;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -313,6 +329,18 @@ export default class ManifestList extends Component {
               <div className="page-body" key="body">
                 <div className="toolbar">
                   <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} />
+                  <span />
+                  <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
+                    onChange={this.handleClientSelectChange} defaultValue="all"
+                  >
+                    <OptGroup>
+                      <Option value="all">全部客户</Option>
+                      {clients.map(data => (<Option key={data.partner_id} value={data.partner_id}
+                        search={`${data.partner_code}${data.name}`}
+                      >{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>)
+                      )}
+                    </OptGroup>
+                  </Select>
                   <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                     <h3>已选中{this.state.selectedRowKeys.length}项</h3>
                   </div>

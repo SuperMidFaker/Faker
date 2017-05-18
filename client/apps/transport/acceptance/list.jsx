@@ -12,7 +12,7 @@ import AdvancedSearchBar from '../common/advanced-search-bar';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege, { PrivilegeCover } from 'client/common/decorators/withPrivilege';
-import { loadTable, loadAcceptDispatchers, revokeOrReject, delDraft } from
+import { loadTable, loadAcceptDispatchers, revokeOrReject, delDraft, acceptDispShipment } from
 'common/reducers/transport-acceptance';
 import { loadShipmtDetail } from 'common/reducers/shipment';
 import { SHIPMENT_SOURCE, SHIPMENT_EFFECTIVES, DEFAULT_MODULES } from 'common/constants';
@@ -27,6 +27,9 @@ import containerMessages from 'client/apps/message.i18n';
 import globalMessages from 'client/common/root.i18n';
 import OrderDockPanel from '../../scof/orders/docks/orderDockPanel';
 import DelegationDockPanel from '../../cms/common/dockhub/delegationDockPanel';
+import ShipmentAdvanceModal from 'client/apps/transport/tracking/land/modals/shipment-advance-modal';
+import CreateSpecialCharge from 'client/apps/transport/tracking/land/modals/create-specialCharge';
+import OperatorsPopover from 'client/common/operatorsPopover';
 
 const formatMsg = format(messages);
 const formatContainerMsg = format(containerMessages);
@@ -67,6 +70,8 @@ function fetchData({ state, dispatch, cookie }) {
 @connect(
   state => ({
     tenantId: state.account.tenantId,
+    acpterId: state.account.loginId,
+    acpterName: state.account.username,
     shipmentlist: state.transportAcceptance.table.shipmentlist,
     filters: state.transportAcceptance.table.filters,
     loading: state.transportAcceptance.table.loading,
@@ -74,7 +79,7 @@ function fetchData({ state, dispatch, cookie }) {
     sortOrder: state.transportAcceptance.table.sortOrder,
     todos: state.shipment.statistics.todos,
   }),
-  { loadTable, loadAcceptDispatchers, revokeOrReject, loadShipmtDetail, delDraft })
+  { loadTable, loadAcceptDispatchers, revokeOrReject, loadShipmtDetail, delDraft, acceptDispShipment })
 @connectNav({
   depth: 2,
   text: DEFAULT_MODULES.transport.text,
@@ -103,6 +108,7 @@ export default class AcceptList extends React.Component {
     selectedRowKeys: [],
     advancedSearchVisible: false,
     searchValue: '',
+    selectedPartnerId: '',
   }
   componentWillMount() {
     const { filters } = this.props;
@@ -263,7 +269,10 @@ export default class AcceptList extends React.Component {
     });
   }
   handleSelectionClear = () => {
-    this.setState({ selectedRowKeys: [] });
+    this.setState({
+      selectedRowKeys: [],
+      selectedPartnerId: '',
+    });
   }
   handleSearch = (searchVal) => {
     const filters = this.mergeFilters(this.props.filters, 'name', searchVal);
@@ -295,21 +304,18 @@ export default class AcceptList extends React.Component {
     return shipmt.consigner_name && shipmt.consignee_province &&
       shipmt.deliver_est_date && shipmt.pickup_est_date;
   }
-  handleShipmtAccept(row, ev) {
-    ev.preventDefault();
-    ev.stopPropagation();
+  handleShipmtAccept = (row, lid, name) => {
     if (!this.isCompleteShipment(row)) {
       message.error('运单信息未完整, 请完善');
       return;
     }
-    this.props.loadAcceptDispatchers(
-      this.props.tenantId, [row.key]
-    ).then((result) => {
+    this.props.acceptDispShipment([row.key], this.props.acpterId, this.props.acpterName, lid, name).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
+      } else {
+        this.handleTableLoad();
       }
     });
-    this.setState({ selectedRowKeys: [row.key] });
   }
   handleShipmtsAccept(dispIds, ev) {
     ev.preventDefault();
@@ -325,13 +331,7 @@ export default class AcceptList extends React.Component {
     if (!valid) {
       return;
     }
-    this.props.loadAcceptDispatchers(
-      this.props.tenantId, dispIds
-    ).then((result) => {
-      if (result.error) {
-        message.error(result.error.message, 10);
-      }
-    });
+    this.props.loadAcceptDispatchers(dispIds);
   }
   handleShipmtRevoke(shipmtNo, dispId, ev) {
     ev.preventDefault();
@@ -383,6 +383,17 @@ export default class AcceptList extends React.Component {
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
+        if (selectedRowKeys.length === 0) this.setState({ selectedPartnerId: '' });
+        for (let i = 0; i < selectedRowKeys.length; i++) {
+          const partnerId = shipmentlist.data.find(item => item.key === selectedRowKeys[i]).partnerId;
+          if (this.state.selectedPartnerId && this.state.selectedPartnerId !== partnerId) {
+            message.info('批量接单需选择同一客户');
+            return;
+          }
+          this.setState({
+            selectedPartnerId: partnerId,
+          });
+        }
         this.setState({ selectedRowKeys });
       },
     };
@@ -397,7 +408,7 @@ export default class AcceptList extends React.Component {
       columns = [...columns, {
         title: formatContainerMsg(intl, 'opColumn'),
         fixed: 'right',
-        width: 80,
+        width: 100,
         render: (o, record) => {
           if (record.effective === SHIPMENT_EFFECTIVES.cancelled) {
             return (<span />);
@@ -405,9 +416,7 @@ export default class AcceptList extends React.Component {
             return (
               <PrivilegeCover module="transport" feature="shipment" action="edit">
                 <span>
-                  <a role="button" onClick={ev => this.handleShipmtAccept(record, ev)}>
-                    {this.msg('shipmtAccept')}
-                  </a>
+                  <OperatorsPopover record={record} handleAccept={this.handleShipmtAccept} />
                   <span className="ant-divider" />
                   <Dropdown overlay={(
                     <Menu onClick={this.handleMenuClick}>
@@ -434,9 +443,7 @@ export default class AcceptList extends React.Component {
             return (
               <span>
                 <PrivilegeCover module="transport" feature="shipment" action="edit">
-                  <a role="button" onClick={ev => this.handleShipmtAccept(record, ev)}>
-                    {this.msg('shipmtAccept')}
-                  </a>
+                  <OperatorsPopover record={record} handleAccept={this.handleShipmtAccept} />
                 </PrivilegeCover>
               </span>
             );
@@ -517,11 +524,13 @@ export default class AcceptList extends React.Component {
             </div>
           </div>
         </Content>
-        <AccepterModal reload={this.handleTableLoad} clearSelection={this.handleSelectionClear} />
+        <AccepterModal reload={this.handleTableLoad} clearSelection={this.handleSelectionClear} partnerId={this.state.selectedPartnerId} />
         <RevokejectModal reload={this.handleTableLoad} />
-        <ShipmentDockPanel stage="acceptance" />
+        <ShipmentDockPanel />
         <OrderDockPanel />
         <DelegationDockPanel />
+        <ShipmentAdvanceModal />
+        <CreateSpecialCharge />
       </QueueAnim>
     );
   }

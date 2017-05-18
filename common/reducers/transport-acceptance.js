@@ -3,7 +3,7 @@ import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/transport/acceptance/', [
   'HIDE_ACCEPT_MODAL', 'REVOKE_OR_REJECT', 'CLOSE_RE_MODAL',
-  'LOAD_DISPATCHERS', 'LOAD_DISPATCHERS_SUCCEED', 'LOAD_DISPATCHERS_FAIL',
+  'LOAD_DISPATCHERS',
   'SAVE_SHIPMT', 'SAVE_SHIPMT_FAIL', 'SAVE_SHIPMT_SUCCEED',
   'SAVE_PENDING', 'SAVE_PENDING_SUCCEED', 'SAVE_PENDING_FAIL',
   'SAVE_DRAFT', 'SAVE_DRAFT_FAIL', 'SAVE_DRAFT_SUCCEED',
@@ -38,7 +38,6 @@ const initialState = {
   acceptModal: {
     visible: false,
     dispatchIds: [],
-    dispatchers: [],
   },
   revokejectModal: {
     type: '',
@@ -77,9 +76,7 @@ export default function reducer(state = initialState, action) {
       return { ...state, acceptModal: { ...state.acceptModal, visible: false } };
     case actionTypes.LOAD_DISPATCHERS:
       return { ...state, acceptModal: { ...state.acceptModal, visible: true,
-        dispatchIds: action.modal.dispIds } };
-    case actionTypes.LOAD_DISPATCHERS_SUCCEED:
-      return { ...state, acceptModal: { ...state.acceptModal, dispatchers: action.result.data } };
+        dispatchIds: action.data } };
     case actionTypes.ACCP_DISP_SUCCEED:
       return { ...state, acceptModal: { ...state.acceptModal, visible: false } };
     case actionTypes.CLOSE_RE_MODAL:
@@ -214,19 +211,10 @@ export function delDraft(shipmtno) {
   };
 }
 
-export function loadAcceptDispatchers(tenantId, dispIds) {
+export function loadAcceptDispatchers(dispIds) {
   return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.LOAD_DISPATCHERS,
-        actionTypes.LOAD_DISPATCHERS_SUCCEED,
-        actionTypes.LOAD_DISPATCHERS_FAIL,
-      ],
-      method: 'get',
-      endpoint: 'v1/transport/shipment/dispatchers',
-      params: { tenantId },
-      modal: { dispIds },
-    },
+    type: actionTypes.LOAD_DISPATCHERS,
+    data: dispIds,
   };
 }
 

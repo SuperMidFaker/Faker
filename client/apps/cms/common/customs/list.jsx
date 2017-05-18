@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Breadcrumb, Dropdown, Menu, Icon, Layout, Radio, Tag, Tooltip, message, Popconfirm, Badge, Button } from 'antd';
+import { Breadcrumb, Dropdown, Menu, Icon, Layout, Radio, Tag, Tooltip, message, Popconfirm, Badge, Button, Select } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -29,6 +29,8 @@ const formatMsg = format(messages);
 const { Header, Content } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
+const Option = Select.Option;
+const OptGroup = Select.OptGroup;
 
 @injectIntl
 @connect(
@@ -42,6 +44,7 @@ const RadioButton = Radio.Button;
       value: cus.customs_code,
       text: cus.customs_name,
     })),
+    trades: state.cmsDeclare.trades,
   }),
   { loadCustomsDecls, openEfModal, deleteDecl, setDeclReviewed,
     showSendDeclModal, showPreviewer, openDeclReleasedModal }
@@ -389,8 +392,16 @@ export default class CustomsList extends Component {
   handleShowDeclReleasedModal = (row) => {
     this.props.openDeclReleasedModal(row.entry_id, row.pre_entry_seq_no, row.delg_no);
   }
+  handleTradesSelectChange = (value) => {
+    let tradesView = {};
+    if (value !== 'all') {
+      tradesView = this.props.trades.find(data => data.id === value);
+    }
+    const filter = { ...this.props.listFilter, tradesView };
+    this.handleTableLoad(1, filter);
+  }
   render() {
-    const { customslist, listFilter } = this.props;
+    const { customslist, listFilter, trades } = this.props;
     this.dataSource.remotes = customslist;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -429,6 +440,18 @@ export default class CustomsList extends Component {
           <div className="page-body">
             <div className="toolbar">
               <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} />
+              <span />
+              <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
+                onChange={this.handleTradesSelectChange} defaultValue="all"
+              >
+                <OptGroup>
+                  <Option value="all">全部收发货人</Option>
+                  {trades.map(data => (<Option key={data.id} value={data.id}
+                    search={`${data.code}${data.name}`}
+                  >{data.name}</Option>)
+                  )}
+                </OptGroup>
+              </Select>
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3>
                 {bulkBtns}

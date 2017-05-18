@@ -181,7 +181,7 @@ export default class BeforeFeesModal extends React.Component {
     return (
       <Modal visible={this.props.visible} width="85%" title="未入账运单" onOk={this.props.toggle} onCancel={this.props.toggle}>
         <Table dataSource={this.state.dataSource} columns={columns} rowKey="id" />
-        <ShipmentDockPanel stage="billing" />
+        <ShipmentDockPanel />
         <OrderDockPanel />
         <DelegationDockPanel />
       </Modal>

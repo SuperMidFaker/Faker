@@ -28,7 +28,7 @@ const initialState = {
   trackingModal: {
     visible: false,
     operation: 'add',
-    tracking: {},
+    tracking: { name: '' },
   },
   orderLoading: false,
   orderList: {
@@ -214,7 +214,7 @@ export function removeTrackingItem(id, source) {
   };
 }
 
-export function toggleTrackingModal(visible, operation, tracking = {}) {
+export function toggleTrackingModal(visible, operation, tracking = { name: '' }) {
   return {
     type: actionTypes.TOGGLE_TRACKING_MODAL,
     data: { visible, operation, tracking },
@@ -236,7 +236,7 @@ export function loadTrackingOrders(params) {
   };
 }
 
-export function upsertTrackingOrderCustom(id, field, value) {
+export function upsertTrackingOrderCustom(id, field, value, source) {
   return {
     [CLIENT_API]: {
       types: [
@@ -246,7 +246,7 @@ export function upsertTrackingOrderCustom(id, field, value) {
       ],
       endpoint: 'v1/scv/tracking/order/custom/upsert',
       method: 'post',
-      data: { id, field, value },
+      data: { id, field, value, source },
     },
   };
 }

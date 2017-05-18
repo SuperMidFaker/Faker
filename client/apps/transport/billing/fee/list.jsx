@@ -134,9 +134,8 @@ export default class FeesList extends React.Component {
     // todo 取parentDisp sr_tenant_id
     this.props.showAdvanceModal({ visible, dispId, shipmtNo, transportModeId, goodsType, type });
   }
-  handleShowSpecialChargeModal = (row, type) => {
-    this.props.showSpecialChargeModal({ visible: true, dispId: row.disp_id, shipmtNo: row.shipmt_no,
-      parentDispId: row.parent_id, spTenantId: row.sp_tenant_id, type });
+  handleShowSpecialChargeModal = (row, dispId, type) => {
+    this.props.showSpecialChargeModal({ visible: true, dispId, shipmtNo: row.shipmt_no, spTenantId: row.sp_tenant_id, type });
   }
   handleBillingTypeChange = (value) => {
     this.setState({ billingType: value });
@@ -204,7 +203,7 @@ export default class FeesList extends React.Component {
         render: (o, row) => {
           if (row.p_sr_name) {
             return (
-              <span onClick={() => this.handleShowSpecialChargeModal(row, 1)}>
+              <span onClick={() => this.handleShowSpecialChargeModal(row, row.parent_id, 1)}>
                 <SpecialChargePopover dispId={row.parent_id} shipmtNo={row.shipmt_no}>
                   {o ? o.toFixed(2) : '0.00'}
                   <Icon type="edit" />
@@ -302,7 +301,7 @@ export default class FeesList extends React.Component {
         render: (o, row) => {
           if (row.sp_name) {
             return (
-              <span onClick={() => this.handleShowSpecialChargeModal(row, -1)}>
+              <span onClick={() => this.handleShowSpecialChargeModal(row, row.disp_id, -1)}>
                 <SpecialChargePopover dispId={row.disp_id} shipmtNo={row.shipmt_no}>
                   {o ? o.toFixed(2) : '0.00'}
                   <Icon type="edit" />
@@ -501,7 +500,7 @@ export default class FeesList extends React.Component {
             </div>
           </div>
         </Content>
-        <ShipmentDockPanel stage="billing" />
+        <ShipmentDockPanel />
         <OrderDockPanel />
         <DelegationDockPanel />
         <ShipmentAdvanceModal />

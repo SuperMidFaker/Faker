@@ -89,6 +89,8 @@ export default class TrackingItem extends Component {
     row: PropTypes.object.isRequired,
     moveCard: PropTypes.func.isRequired,
     handleCustomTitleChange: PropTypes.func.isRequired,
+    handleWidthChange: PropTypes.func.isRequired,
+    handleEditableChange: PropTypes.func.isRequired,
     handleRemove: PropTypes.func.isRequired,
     handleDatatypeChange: PropTypes.func.isRequired,
   };
@@ -100,17 +102,28 @@ export default class TrackingItem extends Component {
       <tr style={{ ...style, opacity }} className="ant-table-row  ant-table-row-level-0">
         <td style={{ ...colStyle, width: '25%' }}>{row.title}</td>
         <td style={{ ...colStyle }}>
-          <EditableCell value={row.custom_title}
+          <EditableCell value={row.custom_title} cellTrigger
             onSave={value => this.props.handleCustomTitleChange(row.id, value)}
+          />
+        </td>
+        <td style={{ ...colStyle }}>
+          <EditableCell value={row.width} cellTrigger
+            onSave={value => this.props.handleWidthChange(row.id, value)}
           />
         </td>
         <td style={{ ...colStyle, width: 150 }}>
           {SCV_TRACKING_FIELD_SOURCES[row.source]}
         </td>
         <td style={{ ...colStyle, width: 150 }}>
-          <EditableCell value={row.datatype} type="select"
+          <EditableCell value={row.datatype} type="select" cellTrigger
             options={[{ key: 'STRING', text: '文本' }, { key: 'INTEGER', text: '数字' }, { key: 'DATE', text: '日期' }]}
             onSave={value => this.props.handleDatatypeChange(row.id, value)}
+          />
+        </td>
+        <td style={{ ...colStyle, width: 150 }}>
+          <EditableCell value={String(row.editable)} type="select" cellTrigger
+            options={[{ key: '0', text: '否' }, { key: '1', text: '是' }]}
+            onSave={value => this.props.handleEditableChange(row.id, value)}
           />
         </td>
         <td style={{ ...colStyle, width: 60 }}>

@@ -25,7 +25,6 @@ export default class ActivityOperation extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
-    stage: PropTypes.string.isRequired,
     disp: PropTypes.object.isRequired,
     shipmt: PropTypes.object.isRequired,
     sourceType: PropTypes.string.isRequired,
@@ -40,7 +39,7 @@ export default class ActivityOperation extends React.Component {
     this.initializeActiveKey(nextProps);
   }
   initializeActiveKey = (props) => {
-    const { stage, disp, sourceType } = props;
+    const { disp, sourceType } = props;
     let { activeKey } = this.state;
     if (sourceType === 'sr') {
       if (disp.status === SHIPMENT_TRACK_STATUS.unaccepted || disp.status === SHIPMENT_TRACK_STATUS.accepted) {
@@ -102,11 +101,6 @@ export default class ActivityOperation extends React.Component {
     } else if (sourceType === 'sp') {
       activeKey = 'log';
     }
-    if (stage === 'exception') {
-      activeKey = 'exception';
-    } else if (stage === 'dashboard') {
-      activeKey = 'log';
-    }
     this.setState({ activeKey });
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
@@ -114,7 +108,7 @@ export default class ActivityOperation extends React.Component {
     this.setState({ activeKey });
   }
   render() {
-    const { disp, shipmt, sourceType, stage, tenantId } = this.props;
+    const { disp, shipmt, sourceType, tenantId } = this.props;
     const { activeKey } = this.state;
     let tabs = [
       <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>,
@@ -245,16 +239,6 @@ export default class ActivityOperation extends React.Component {
           ];
         }
       }
-    }
-    if (stage === 'exception') {
-      tabs = [
-        <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>,
-        <TabPane tab={<span><Icon type="exception" />异常</span>} key="exception"><CreateExceptionPane /></TabPane>,
-      ];
-    } else if (stage === 'dashboard') {
-      tabs = [
-        <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>,
-      ];
     }
     return (
       <div className="activity-wrapper">

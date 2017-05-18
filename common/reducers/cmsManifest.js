@@ -68,6 +68,7 @@ const initialState = {
     data: [],
   },
   formRequire: {
+    clients: [],
     tradeModes: [],
     transModes: [],
     customs: [],
@@ -76,6 +77,7 @@ const initialState = {
     status: 'all',
     sortField: '',
     sortOrder: '',
+    clientView: { tenantIds: [], partnerIds: [] },
   },
   billMeta: {
     bill_seq_no: '',
