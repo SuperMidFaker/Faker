@@ -16,6 +16,8 @@ import SegmentDock from '../dispatch/segmentDock';
 import { formatMsg } from './message.i18n';
 import OrderDockPanel from '../../scof/orders/docks/orderDockPanel';
 import DelegationDockPanel from '../../cms/common/dockhub/delegationDockPanel';
+import ShipmentAdvanceModal from 'client/apps/transport/tracking/land/modals/shipment-advance-modal';
+import CreateSpecialCharge from 'client/apps/transport/tracking/land/modals/create-specialCharge';
 
 const { Header, Content, Sider } = Layout;
 
@@ -73,7 +75,7 @@ export default class Dashboard extends React.Component {
                 </Col>
               </Row>
             </Content>
-            <ShipmentDockPanel stage="todo" />
+            <ShipmentDockPanel />
             <OrderDockPanel />
             <DelegationDockPanel />
             <DispatchDock
@@ -82,6 +84,8 @@ export default class Dashboard extends React.Component {
             <SegmentDock
               onClose={this.handleSegmentDockClose}
             />
+            <ShipmentAdvanceModal />
+            <CreateSpecialCharge />
           </Layout>
           <Sider width={320} className="menu-sider" key="sider" trigger={null}
             collapsible

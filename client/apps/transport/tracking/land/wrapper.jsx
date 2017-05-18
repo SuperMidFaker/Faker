@@ -53,7 +53,6 @@ export default class TrackingLandWrapper extends React.Component {
   }
   state = {
     radioValue: '',
-    stage: 'tracking',
   }
   componentWillMount() {
     const locName = this.props.location.pathname.split('/')[4];
@@ -75,23 +74,19 @@ export default class TrackingLandWrapper extends React.Component {
   componentWillReceiveProps(nextProps) {
     const locName = nextProps.location.pathname.split('/')[4];
     let propFilters = [];
-    let stage = '';
     if (locName === 'status') {
       propFilters = nextProps.statusfilters;
-      stage = 'tracking';
     } else if (locName === 'pod') {
       propFilters = nextProps.podfilters;
-      stage = 'pod';
     } else if (locName === 'exception') {
       propFilters = nextProps.excpfilters;
-      stage = 'exception';
     }
     let radioValue;
     const types = propFilters.filter(flt => flt.name === 'type');
     if (types.length === 1) {
       radioValue = types[0].value;
     }
-    this.setState({ radioValue, stage });
+    this.setState({ radioValue });
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   handleStatusNav = (ev) => {
@@ -111,7 +106,7 @@ export default class TrackingLandWrapper extends React.Component {
   }
 
   render() {
-    const { radioValue, stage } = this.state;
+    const { radioValue } = this.state;
     return (
       <QueueAnim animConfig={[{ opacity: [1, 0], translateY: [0, 50] },
             { opacity: [1, 0], translateY: [0, -50] }]}
@@ -150,7 +145,7 @@ export default class TrackingLandWrapper extends React.Component {
         <Content className="main-content" key="main">
           {this.props.children}
         </Content>
-        <ShipmentDockPanel stage={stage} />
+        <ShipmentDockPanel />
         <OrderDockPanel />
         <DelegationDockPanel />
         <ShipmentAdvanceModal />

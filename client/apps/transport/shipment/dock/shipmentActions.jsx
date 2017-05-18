@@ -67,7 +67,6 @@ export default class ShipmentActions extends React.Component {
     hidePreviewer: PropTypes.func.isRequired,
     returnShipment: PropTypes.func.isRequired,
     sendMessage: PropTypes.func.isRequired,
-    stage: PropTypes.string.isRequired,
     sourceType: PropTypes.string.isRequired,
     charges: PropTypes.object.isRequired,
     toggleRecalculateChargeModal: PropTypes.func.isRequired,
@@ -224,7 +223,7 @@ export default class ShipmentActions extends React.Component {
     this.props.sendMessage({ module: 'transport', promptType, shipment });
   }
   render() {
-    const { tenantId, stage, sourceType, previewer: { shipmt, dispatch, row }, charges } = this.props;
+    const { tenantId, sourceType, previewer: { shipmt, dispatch, downstream, row }, charges } = this.props;
     const needRecalculate = charges.revenue.need_recalculate === 1 || charges.expense.need_recalculate === 1;
     let buttons = [];
     if (sourceType === 'sp') {
@@ -249,8 +248,8 @@ export default class ShipmentActions extends React.Component {
             </PrivilegeCover>
           );
         }
-      } else if (dispatch.status === SHIPMENT_TRACK_STATUS.accepted || dispatch.status === SHIPMENT_TRACK_STATUS.dispatched) {
-        if (stage === 'acceptance') {
+      } else if (dispatch.status === SHIPMENT_TRACK_STATUS.accepted) {
+        if (dispatch.child_send_status === 0 && dispatch.disp_status === 1 && dispatch.sp_tenant_id === tenantId) {
           buttons.push(
             <PrivilegeCover module="transport" feature="shipment" action="edit">
               <Tooltip placement="bottom" title="退回至未接单状态">
@@ -260,45 +259,46 @@ export default class ShipmentActions extends React.Component {
               </Tooltip>
             </PrivilegeCover>
           );
-        } else if (stage === 'dispatch' || stage === 'todo') {
-          if (dispatch.child_send_status === 0 && dispatch.status === 2 && dispatch.disp_status === 1 && dispatch.sp_tenant_id === tenantId) {
-            buttons.push(
-              <PrivilegeCover module="transport" feature="dispatch" action="create">
-                <Button key="segment" onClick={() => this.handleSegmentDockShow()} >
-                  分段
-                </Button>
-              </PrivilegeCover>,
-              <PrivilegeCover module="transport" feature="dispatch" action="create">
-                <Button key="dispatch" type="primary" onClick={() => this.handleDispatchDockShow()} style={{ marginLeft: 8 }} >
-                  分配
-                </Button>
-              </PrivilegeCover>
-            );
-          } else if (dispatch.disp_status === 0 && row.sr_tenant_id === tenantId) {
+        }
+        if (dispatch.child_send_status === 0 && dispatch.disp_status === 1 && dispatch.sp_tenant_id === tenantId) {
+          buttons.push(
+            <PrivilegeCover module="transport" feature="dispatch" action="create">
+              <Button key="segment" onClick={() => this.handleSegmentDockShow()} >
+                分段
+              </Button>
+            </PrivilegeCover>,
+            <PrivilegeCover module="transport" feature="dispatch" action="create">
+              <Button key="dispatch" type="primary" onClick={() => this.handleDispatchDockShow()} style={{ marginLeft: 8 }} >
+                分配
+              </Button>
+            </PrivilegeCover>
+          );
+        } else if (dispatch.disp_status === 0 && row.sr_tenant_id === tenantId) {
+          buttons.push(
+            <PrivilegeCover module="transport" feature="dispatch" action="edit">
+              <Button key="return" type="ghost" onClick={() => this.handleShipmtReturn()}>
+                退回
+              </Button>
+            </PrivilegeCover>,
+            <PrivilegeCover module="transport" feature="dispatch" action="edit">
+              <Button key="send" type="primary" onClick={() => this.handleShipmtSend()} style={{ marginLeft: 8 }} >
+                发送
+              </Button>
+            </PrivilegeCover>
+          );
+        }
+      } else if (dispatch.status === SHIPMENT_TRACK_STATUS.dispatched) {
+        if (dispatch.disp_status > 0 && row.sr_tenant_id === tenantId) {
+          if (downstream.status === 1) {
             buttons.push(
               <PrivilegeCover module="transport" feature="dispatch" action="edit">
-                <Button key="return" type="ghost" onClick={() => this.handleShipmtReturn()}>
-                  退回
-                </Button>
-              </PrivilegeCover>,
-              <PrivilegeCover module="transport" feature="dispatch" action="edit">
-                <Button key="send" type="primary" onClick={() => this.handleShipmtSend()} style={{ marginLeft: 8 }} >
-                  发送
-                </Button>
+                <Tooltip placement="bottom" title="承运商尚未接单，可立即撤回">
+                  <Button key="withDraw" type="ghost" onClick={() => this.handleWithDraw(shipmt.shipmt_no, row.disp_id, row.parent_id)} >
+                    撤回
+                  </Button>
+                </Tooltip>
               </PrivilegeCover>
             );
-          } else if (dispatch.disp_status > 0 && row.sr_tenant_id === tenantId) {
-            if (dispatch.downstream_status === 1) {
-              buttons.push(
-                <PrivilegeCover module="transport" feature="dispatch" action="edit">
-                  <Tooltip placement="bottom" title="承运商尚未接单，可立即撤回">
-                    <Button key="withDraw" type="ghost" onClick={() => this.handleWithDraw(shipmt.shipmt_no, row.disp_id, row.parent_id)} >
-                      撤回
-                    </Button>
-                  </Tooltip>
-                </PrivilegeCover>
-              );
-            }
           }
         }
       }
@@ -380,7 +380,7 @@ export default class ShipmentActions extends React.Component {
         buttons = [];
       }
 
-      if (dispatch.status >= SHIPMENT_TRACK_STATUS.delivered && (stage === 'pod' || stage === 'todo')) {
+      if (dispatch.status >= SHIPMENT_TRACK_STATUS.delivered) {
         if (!dispatch.pod_status || dispatch.pod_status === SHIPMENT_POD_STATUS.unsubmit) {
           if (dispatch.sp_tenant_id === -1) {
             buttons = [];

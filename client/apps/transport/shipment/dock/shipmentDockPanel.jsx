@@ -87,7 +87,6 @@ export default class PreviewPanel extends React.Component {
     changePreviewerTab: PropTypes.func.isRequired,
     shipmt: PropTypes.object.isRequired,
     previewer: PropTypes.object.isRequired,
-    stage: PropTypes.oneOf(['acceptance', 'dispatch', 'tracking', 'pod', 'exception', 'billing', 'dashboard', 'todo']),
     loadShipmtDetail: PropTypes.func.isRequired,
     loadForm: PropTypes.func.isRequired,
   }
@@ -269,14 +268,14 @@ export default class PreviewPanel extends React.Component {
     );
   }
   render() {
-    const { shipmt, visible, shipmtNo, dispatch, effective, stage, previewer: { params: { sourceType } } } = this.props;
+    const { shipmt, visible, shipmtNo, dispatch, effective, previewer: { params: { sourceType } } } = this.props;
     return (
       shipmtNo ?
         <DockPanel size="large" visible={visible} onClose={this.handleClose}
           title={this.renderTitle()}
           status={this.transformBadgeColor(dispatch.status)} statusText={this.msg(getTrackStatusMsg(dispatch.status, effective))}
           extra={this.renderExtra()}
-          alert={<ShipmentActions stage={stage} sourceType={sourceType} />}
+          alert={<ShipmentActions sourceType={sourceType} />}
         >
           {this.renderTabs(dispatch.status, sourceType)}
           <ShareShipmentModal visible={this.state.shareShipmentModalVisible} shipmt={shipmt} />

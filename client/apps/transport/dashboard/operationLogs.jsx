@@ -20,7 +20,8 @@ import ExceptionListPopover from '../tracking/land/modals/exception-list-popover
 import OrderDockPanel from '../../scof/orders/docks/orderDockPanel';
 import DelegationDockPanel from '../../cms/common/dockhub/delegationDockPanel';
 import { createFilename } from 'client/util/dataTransform';
-
+import ShipmentAdvanceModal from 'client/apps/transport/tracking/land/modals/shipment-advance-modal';
+import CreateSpecialCharge from 'client/apps/transport/tracking/land/modals/create-specialCharge';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -236,9 +237,11 @@ export default class Dashboard extends React.Component {
             </div>
           </div>
         </Content>
-        <ShipmentDockPanel stage="dashboard" />
+        <ShipmentDockPanel />
         <OrderDockPanel />
         <DelegationDockPanel />
+        <ShipmentAdvanceModal />
+        <CreateSpecialCharge />
       </div>
     );
   }

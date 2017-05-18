@@ -261,7 +261,7 @@ export default class CreateBilling extends React.Component {
             <BeforeFeesModal type={type} visible={this.state.beforeFeesModalVisible} toggle={this.toggleBeforeFeesModal} />
           </div>
         </Content>
-        <ShipmentDockPanel stage="billing" />
+        <ShipmentDockPanel />
         <OrderDockPanel />
         <DelegationDockPanel />
       </div>

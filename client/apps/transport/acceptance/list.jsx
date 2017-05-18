@@ -27,6 +27,8 @@ import containerMessages from 'client/apps/message.i18n';
 import globalMessages from 'client/common/root.i18n';
 import OrderDockPanel from '../../scof/orders/docks/orderDockPanel';
 import DelegationDockPanel from '../../cms/common/dockhub/delegationDockPanel';
+import ShipmentAdvanceModal from 'client/apps/transport/tracking/land/modals/shipment-advance-modal';
+import CreateSpecialCharge from 'client/apps/transport/tracking/land/modals/create-specialCharge';
 
 const formatMsg = format(messages);
 const formatContainerMsg = format(containerMessages);
@@ -519,9 +521,11 @@ export default class AcceptList extends React.Component {
         </Content>
         <AccepterModal reload={this.handleTableLoad} clearSelection={this.handleSelectionClear} />
         <RevokejectModal reload={this.handleTableLoad} />
-        <ShipmentDockPanel stage="acceptance" />
+        <ShipmentDockPanel />
         <OrderDockPanel />
         <DelegationDockPanel />
+        <ShipmentAdvanceModal />
+        <CreateSpecialCharge />
       </QueueAnim>
     );
   }

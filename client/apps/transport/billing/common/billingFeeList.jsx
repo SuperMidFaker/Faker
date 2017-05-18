@@ -302,7 +302,7 @@ export default class BillingFeeList extends React.Component {
             </div>
           </div>
         </Content>
-        <ShipmentDockPanel stage="billing" />
+        <ShipmentDockPanel />
         <OrderDockPanel />
         <DelegationDockPanel />
       </div>

@@ -119,11 +119,13 @@ export default class ChargePanel extends React.Component {
     render: col => col ? `${col} ${this.msg('cubicMeter')}` : '',
   }]
   handleRevenueMenuClick = (e) => {
-    const { shipmt, previewer: { dispatch } } = this.props;
+    const { shipmt, previewer: { dispatch, upstream, downstream } } = this.props;
+    const dispId = dispatch.id === downstream.id ? upstream.id : dispatch.id;
+    const parentDispId = dispatch.id === downstream.id ? upstream.id : -1;
     if (e.key === 'advanceCharge') {
       this.props.showAdvanceModal({
         visible: true,
-        dispId: dispatch.parent_id,
+        dispId,
         shipmtNo: shipmt.shipmt_no,
         transportModeId: shipmt.transport_mode_id,
         goodsType: shipmt.goods_type,
@@ -132,20 +134,22 @@ export default class ChargePanel extends React.Component {
     } else if (e.key === 'specialCharge') {
       this.props.showSpecialChargeModal({
         visible: true,
-        dispId: dispatch.id,
+        dispId,
         shipmtNo: shipmt.shipmt_no,
-        parentDispId: dispatch.parent_id,
+        parentDispId,
         spTenantId: dispatch.sp_tenant_id,
         type: 1,
       });
     }
   }
   handleExpenseMenuClick = (e) => {
-    const { shipmt, previewer: { dispatch } } = this.props;
+    const { shipmt, previewer: { dispatch, upstream, downstream } } = this.props;
+    const dispId = dispatch.id === downstream.id ? downstream.id : -1;
+    const parentDispId = dispatch.id === downstream.id ? upstream.id : -1;
     if (e.key === 'advanceCharge') {
       this.props.showAdvanceModal({
         visible: true,
-        dispId: dispatch.id,
+        dispId,
         shipmtNo: shipmt.shipmt_no,
         transportModeId: shipmt.transport_mode_id,
         goodsType: shipmt.goods_type,
@@ -154,9 +158,9 @@ export default class ChargePanel extends React.Component {
     } else if (e.key === 'specialCharge') {
       this.props.showSpecialChargeModal({
         visible: true,
-        dispId: dispatch.id,
+        dispId,
         shipmtNo: shipmt.shipmt_no,
-        parentDispId: dispatch.parent_id,
+        parentDispId,
         spTenantId: dispatch.sp_tenant_id,
         type: -1,
       });
