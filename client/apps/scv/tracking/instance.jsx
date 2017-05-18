@@ -137,10 +137,11 @@ export default class Instance extends Component {
     }).then((result) => {
       const table = [];
       const head = this.columns.map(item => item.title);
+      head.push('追踪单号');
       table.push(head);
       result.data.data.forEach((items) => {
         const row = this.columns.map(item => item.renderExcelCell(items[item.dataIndex], items));
-        table.push(row);
+        table.push([...row, items.shipmt_order_no]);
       });
       const sheets = [{ name: 'sheet1', data: table }];
       this.props.makeExcel(sheets, `${createFilename('scvTracking')}.xlsx`).then((result1) => {
