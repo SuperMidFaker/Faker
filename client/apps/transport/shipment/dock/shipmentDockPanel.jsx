@@ -110,7 +110,6 @@ export default class PreviewPanel extends React.Component {
   componentWillUnmount() {
     this.props.hidePreviewer();
   }
-  viewStages = ['billing', 'dashboard'];
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   handleTabChange = (tabKey) => {
     this.props.changePreviewerTab(tabKey);
@@ -146,7 +145,7 @@ export default class PreviewPanel extends React.Component {
       }
     );
   }
-  renderTabs(status, stage, sourceType) {
+  renderTabs(status, sourceType) {
     if (status === SHIPMENT_TRACK_STATUS.unaccepted) {
       return (
         <Tabs activeKey={this.props.tabKey} onChange={this.handleTabChange}>
@@ -154,7 +153,7 @@ export default class PreviewPanel extends React.Component {
             <DetailPane />
           </TabPane>
           <TabPane tab={this.msg('shipmtActivity')} key="activity">
-            <ActivityLoggerPane stage={stage} sourceType={sourceType} />
+            <ActivityLoggerPane sourceType={sourceType} />
           </TabPane>
         </Tabs>
       );
@@ -165,7 +164,7 @@ export default class PreviewPanel extends React.Component {
             <DetailPane />
           </TabPane>
           <TabPane tab={this.msg('shipmtActivity')} key="activity">
-            <ActivityLoggerPane stage={stage} sourceType={sourceType} />
+            <ActivityLoggerPane sourceType={sourceType} />
           </TabPane>
           <TabPane tab={this.msg('shipmtCharge')} key="charge">
             <ChargePane />
@@ -176,7 +175,7 @@ export default class PreviewPanel extends React.Component {
       return (
         <Tabs activeKey={this.props.tabKey} onChange={this.handleTabChange}>
           <TabPane tab={this.msg('shipmtActivity')} key="activity">
-            <ActivityLoggerPane stage={stage} sourceType={sourceType} />
+            <ActivityLoggerPane sourceType={sourceType} />
           </TabPane>
           <TabPane tab={this.msg('shipmtDetail')} key="detail">
             <DetailPane />
@@ -196,7 +195,7 @@ export default class PreviewPanel extends React.Component {
       return (
         <Tabs activeKey={this.props.tabKey} onChange={this.handleTabChange}>
           <TabPane tab={this.msg('shipmtActivity')} key="activity">
-            <ActivityLoggerPane stage={stage} sourceType={sourceType} />
+            <ActivityLoggerPane sourceType={sourceType} />
           </TabPane>
           <TabPane tab={this.msg('shipmtDetail')} key="detail">
             <DetailPane />
@@ -219,7 +218,7 @@ export default class PreviewPanel extends React.Component {
       return (
         <Tabs activeKey={this.props.tabKey} onChange={this.handleTabChange}>
           <TabPane tab={this.msg('shipmtActivity')} key="activity">
-            <ActivityLoggerPane stage={stage} sourceType={sourceType} />
+            <ActivityLoggerPane sourceType={sourceType} />
           </TabPane>
           <TabPane tab={this.msg('shipmtDetail')} key="detail">
             <DetailPane />
@@ -277,9 +276,9 @@ export default class PreviewPanel extends React.Component {
           title={this.renderTitle()}
           status={this.transformBadgeColor(dispatch.status)} statusText={this.msg(getTrackStatusMsg(dispatch.status, effective))}
           extra={this.renderExtra()}
-          alert={this.viewStages.indexOf(this.props.stage) === -1 && <ShipmentActions stage={stage} sourceType={sourceType} />}
+          alert={<ShipmentActions stage={stage} sourceType={sourceType} />}
         >
-          {this.renderTabs(dispatch.status, stage, sourceType)}
+          {this.renderTabs(dispatch.status, sourceType)}
           <ShareShipmentModal visible={this.state.shareShipmentModalVisible} shipmt={shipmt} />
           <ChangeActDateModal />
           <VehicleModal onOK={() => {}} />

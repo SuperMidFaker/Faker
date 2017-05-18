@@ -65,7 +65,7 @@ export default class Instance extends Component {
   handleSave = (id, field, value, source) => {
     this.props.upsertTrackingOrderCustom(id, field, value, source);
   }
-  columns = this.props.trackingItems.map(item => ({
+  makeColumns = () => this.props.trackingItems.map(item => ({
     key: item.field,
     dataIndex: item.field,
     title: item.custom_title,
@@ -136,11 +136,12 @@ export default class Instance extends Component {
       current: 1,
     }).then((result) => {
       const table = [];
-      const head = this.columns.map(item => item.title);
+      const columns = this.makeColumns();
+      const head = columns.map(item => item.title);
       head.push('追踪单号');
       table.push(head);
       result.data.data.forEach((items) => {
-        const row = this.columns.map(item => item.renderExcelCell(items[item.dataIndex], items));
+        const row = columns.map(item => item.renderExcelCell(items[item.dataIndex], items));
         table.push([...row, items.shipmt_order_no]);
       });
       const sheets = [{ name: 'sheet1', data: table }];
@@ -172,7 +173,7 @@ export default class Instance extends Component {
         <Content className="main-content" key="main">
           <div className="page-body">
             <div className="panel-body table-panel">
-              <Table columns={this.columns} scroll={{ x: tableWidth }} dataSource={this.dataSource} rowKey="shipmt_order_no" />
+              <Table columns={this.makeColumns()} scroll={{ x: tableWidth }} dataSource={this.dataSource} rowKey="shipmt_order_no" />
             </div>
           </div>
         </Content>
