@@ -197,5 +197,13 @@ const messages = defineMessages({
     id: 'component.action.delete',
     defaultMessage: '删除',
   },
+  allocateOriginator: {
+    id: 'component.operators.title',
+    defaultMessage: '指定制单人',
+  },
+  accepting: {
+    id: 'component.operate.accept',
+    defaultMessage: '接单',
+  },
 });
 export default messages;
