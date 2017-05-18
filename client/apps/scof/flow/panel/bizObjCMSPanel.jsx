@@ -29,20 +29,22 @@ export default class FlowCmsNodePanel extends Component {
     onNodeActionsChange: PropTypes.func.isRequired,
   }
   componentDidMount() {
-    this.props.loadCmsBizParams(this.props.tenantId, this.props.partnerId, this.props.model.kind);
+    const model = this.props.node.get('model');
+    this.props.loadCmsBizParams(this.props.tenantId, this.props.partnerId, model.kind);
     this.props.loadCustomerQuotes(this.props.tenantId, this.props.partnerId);
     this.props.onFormInit(this.props.form);
   }
   msg = formatMsg(this.props.intl)
   render() {
-    const { form, model, onNodeActionsChange } = this.props;
+    const { form, node, onNodeActionsChange, graph } = this.props;
+    const model = node.get('model');
     const title = model.kind === 'export' ? this.msg('flowNodeExport') : this.msg('flowNodeImport');
     return (
       <Form layout="vertical">
         <Row gutter={16}>
           <Col sm={24} md={8}>
             <Card title={title} bodyStyle={{ padding: 0 }}>
-              <FlowNodePanel form={form} model={model} onNodeActionsChange={onNodeActionsChange} />
+              <FlowNodePanel form={form} node={node} onNodeActionsChange={onNodeActionsChange} graph={graph} />
             </Card>
           </Col>
           <Col sm={24} md={16}>

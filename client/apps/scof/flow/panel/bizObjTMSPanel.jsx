@@ -23,7 +23,6 @@ export default class FlowTmsNodePanel extends Component {
     form: PropTypes.object.isRequired,
     onFormInit: PropTypes.func.isRequired,
     onNodeActionsChange: PropTypes.func.isRequired,
-    currentFlow: PropTypes.object.isRequired,
   }
   componentDidMount() {
     this.props.loadTmsBizParams(this.props.tenantId);
@@ -31,20 +30,21 @@ export default class FlowTmsNodePanel extends Component {
   }
   msg = formatMsg(this.props.intl)
   render() {
-    const { form, model, onNodeActionsChange, currentFlow } = this.props;
+    const { form, node, graph, onNodeActionsChange } = this.props;
+    const model = node.get('model');
     return (
       <Form layout="vertical">
         <Row gutter={16}>
           <Col sm={24} md={8}>
             <Card title={this.msg('flowNodeTMS')} bodyStyle={{ padding: 0 }}>
-              <FlowNodePanel form={form} model={model} onNodeActionsChange={onNodeActionsChange} />
+              <FlowNodePanel form={form} node={node} onNodeActionsChange={onNodeActionsChange} graph={graph} />
             </Card>
           </Col>
           <Col sm={24} md={16}>
             <Card title={this.msg('bizObject')} bodyStyle={{ padding: 0 }}>
               <Tabs defaultActiveKey="tmsShipment">
                 <TabPane tab={this.msg('tmsShipment')} key="tmsShipment">
-                  <ShipmentPane form={form} model={model} onNodeActionsChange={onNodeActionsChange} currentFlow={currentFlow} />
+                  <ShipmentPane form={form} model={model} onNodeActionsChange={onNodeActionsChange} />
                 </TabPane>
               </Tabs>
             </Card>

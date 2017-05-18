@@ -146,6 +146,10 @@ const messages = defineMessages({
     id: 'scof.flow.biz.node.name',
     defaultMessage: '节点名称',
   },
+  nodeResponsible: {
+    id: 'scof.flow.biz.node.responsible',
+    defaultMessage: '责任人',
+  },
   bizProperties: {
     id: 'scof.flow.biz.properites',
     defaultMessage: '属性',

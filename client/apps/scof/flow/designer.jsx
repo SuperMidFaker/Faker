@@ -22,6 +22,13 @@ const Panel = Collapse.Panel;
 const Option = Select.Option;
 const FormItem = Form.Item;
 
+const NodeKindPanelMap = {
+  import: BizObjCMSPanel,
+  export: BizObjCMSPanel,
+  tms: BizObjTMSPanel,
+  cwm: BizObjCWMPanel,
+};
+
 @injectIntl
 @connect(
   state => ({
@@ -464,6 +471,7 @@ export default class FlowDesigner extends React.Component {
   render() {
     const { submitting, listCollapsed, currentFlow } = this.props;
     const { activeItem } = this.state;
+    const NodePanel = activeItem && NodeKindPanelMap[activeItem.get('model').kind];
     return (
       <Layout>
         <Layout>
@@ -510,14 +518,10 @@ export default class FlowDesigner extends React.Component {
                   { opacity: [1, 0], translateY: [0, -50] },
                 ]}
                 >
-                  {activeItem.get('type') === 'node' && (activeItem.get('model').kind === 'import' || activeItem.get('model').kind === 'export') &&
-                  <BizObjCMSPanel onFormInit={this.handlePanelForm} model={activeItem.get('model')} onNodeActionsChange={this.handleNodeActionsChange} key="cms" />
-                  }
-                  {activeItem.get('type') === 'node' && (activeItem.get('model').kind === 'tms') &&
-                  <BizObjTMSPanel onFormInit={this.handlePanelForm} model={activeItem.get('model')} onNodeActionsChange={this.handleNodeActionsChange} key="tms" currentFlow={currentFlow} />
-                  }
-                  {activeItem.get('type') === 'node' && (activeItem.get('model').kind === 'cwm') &&
-                  <BizObjCWMPanel onFormInit={this.handlePanelForm} model={activeItem.get('model')} onNodeActionsChange={this.handleNodeActionsChange} key="cwm" />
+                  {activeItem.get('type') === 'node' &&
+                    <NodePanel onFormInit={this.handlePanelForm} node={activeItem} graph={this.graph}
+                      onNodeActionsChange={this.handleNodeActionsChange} key={activeItem.get('model').kind}
+                    />
                   }
                   {activeItem.get('type') === 'edge' &&
                     <FlowEdgePanel model={activeItem.get('model')} source={activeItem.get('source').get('model')}

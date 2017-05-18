@@ -15,18 +15,19 @@ const Option = Select.Option;
 @connect(
   state => ({
     tmsParams: state.scofFlow.tmsParams,
+    partnerId: state.scofFlow.currentFlow.partner_id,
   })
 )
 export default class TMSShipmentPane extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     form: PropTypes.object.isRequired,
-    currentFlow: PropTypes.object.isRequired,
+    partnerId: PropTypes.number.isRequired,
   }
   msg = formatMsg(this.props.intl)
   renderConsign = consign => `${consign.name} | ${Location.renderLoc(consign)} | ${consign.contact || ''} | ${consign.mobile || ''}`
   render() {
-    const { form: { getFieldDecorator }, onNodeActionsChange, model, tmsParams: { consigners, consignees, transitModes }, currentFlow } = this.props;
+    const { form: { getFieldDecorator }, onNodeActionsChange, model, tmsParams: { consigners, consignees, transitModes }, partnerId } = this.props;
     return (
       <Collapse bordered={false} defaultActiveKey={['properties', 'events']}>
         <Panel header={this.msg('bizProperties')} key="properties">
@@ -43,7 +44,7 @@ export default class TMSShipmentPane extends Component {
                     showSearch
                   >
                     {
-                      consigners.filter(cl => cl.ref_partner_id === currentFlow.partner_id || cl.ref_partner_id === -1).map(cg => <Option value={cg.node_id} key={cg.node_id}>{this.renderConsign(cg)}</Option>)
+                      consigners.filter(cl => cl.ref_partner_id === partnerId || cl.ref_partner_id === -1).map(cg => <Option value={cg.node_id} key={cg.node_id}>{this.renderConsign(cg)}</Option>)
                     }
                   </Select>)}
               </FormItem>
@@ -60,7 +61,7 @@ export default class TMSShipmentPane extends Component {
                     showSearch
                   >
                     {
-                      consignees.filter(cl => cl.ref_partner_id === currentFlow.partner_id || cl.ref_partner_id === -1).map(cg => <Option value={cg.node_id} key={cg.node_id}>{this.renderConsign(cg)}</Option>)
+                      consignees.filter(cl => cl.ref_partner_id === partnerId || cl.ref_partner_id === -1).map(cg => <Option value={cg.node_id} key={cg.node_id}>{this.renderConsign(cg)}</Option>)
                     }
                   </Select>)}
               </FormItem>

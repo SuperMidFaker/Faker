@@ -30,13 +30,14 @@ export default class FlowCwmNodePanel extends Component {
   }
   msg = formatMsg(this.props.intl)
   render() {
-    const { form, model, onNodeActionsChange } = this.props;
+    const { form, node, graph, onNodeActionsChange } = this.props;
+    const model = node.get('model');
     return (
       <Form layout="vertical">
         <Row gutter={16}>
           <Col sm={24} md={8}>
             <Card title={this.msg('flowNodeCWM')} bodyStyle={{ padding: 0 }}>
-              <FlowNodePanel form={form} model={model} onNodeActionsChange={onNodeActionsChange} />
+              <FlowNodePanel form={form} model={node} onNodeActionsChange={onNodeActionsChange} graph={graph} />
             </Card>
           </Col>
           <Col sm={24} md={16}>
