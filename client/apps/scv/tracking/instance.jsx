@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Breadcrumb, Layout, Button } from 'antd';
+import { Breadcrumb, Layout, Button, Input } from 'antd';
 import EditableCell from 'client/components/EditableCell';
 import Table from 'client/components/remoteAntTable';
 import { loadTrackingItems, loadTrackingOrders, upsertTrackingOrderCustom } from 'common/reducers/scvTracking';
@@ -14,6 +14,7 @@ import messages from './message.i18n';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
+const Search = Input.Search;
 
 @injectIntl
 @connect(
@@ -45,6 +46,7 @@ export default class Instance extends Component {
   componentWillMount() {
     this.props.loadTrackingItems(Number(this.props.params.trackingId));
     this.props.loadTrackingOrders({
+      searchValue: this.props.orders.searchValue,
       tracking_id: this.props.params.trackingId,
       pageSize: this.props.orders.pageSize,
       current: 1,
@@ -54,6 +56,7 @@ export default class Instance extends Component {
     if (nextProps.params.trackingId !== this.props.params.trackingId) {
       nextProps.loadTrackingItems(Number(nextProps.params.trackingId));
       nextProps.loadTrackingOrders({
+        searchValue: nextProps.orders.searchValue,
         tracking_id: nextProps.params.trackingId,
         pageSize: nextProps.orders.pageSize,
         current: 1,
@@ -103,6 +106,7 @@ export default class Instance extends Component {
   }))
   dataSource = new Table.DataSource({
     fetcher: params => this.props.loadTrackingOrders({
+      searchValue: this.props.orders.searchValue,
       tracking_id: this.props.params.trackingId,
       pageSize: params.pageSize,
       current: params.current,
@@ -131,6 +135,7 @@ export default class Instance extends Component {
   })
   handleExport = () => {
     this.props.loadTrackingOrders({
+      searchValue: '',
       tracking_id: this.props.params.trackingId,
       pageSize: 99999999,
       current: 1,
@@ -148,6 +153,15 @@ export default class Instance extends Component {
       this.props.makeExcel(sheets, `${createFilename('scvTracking')}.xlsx`).then((result1) => {
         window.open(`${API_ROOTS.default}v1/common/excel/${result1.data.filename}`);
       });
+    });
+  }
+  handleSearch = (value) => {
+    console.log(value);
+    this.props.loadTrackingOrders({
+      searchValue: value,
+      tracking_id: this.props.params.trackingId,
+      pageSize: this.props.orders.pageSize,
+      current: 1,
     });
   }
   render() {
@@ -172,6 +186,13 @@ export default class Instance extends Component {
         </Header>
         <Content className="main-content" key="main">
           <div className="page-body">
+            <div className="toolbar">
+              <Search
+                style={{ width: 240 }}
+                placeholder="搜索"
+                onSearch={this.handleSearch} size="large"
+              />
+            </div>
             <div className="panel-body table-panel">
               <Table columns={this.makeColumns()} scroll={{ x: tableWidth }} dataSource={this.dataSource} rowKey="shipmt_order_no" />
             </div>

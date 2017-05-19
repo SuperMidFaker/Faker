@@ -36,6 +36,7 @@ const initialState = {
     pageSize: 20,
     current: 1,
     data: [],
+    searchValue: '',
   },
 };
 
