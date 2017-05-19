@@ -15,11 +15,12 @@ const FormItem = Form.Item;
     tenantName: state.account.tenantName,
     loginName: state.account.username,
     visible: state.trackingLandStatus.changeActDateModal.visible,
-    dispId: state.trackingLandStatus.changeActDateModal.dispId,
-    shipmtNo: state.trackingLandStatus.changeActDateModal.shipmtNo,
+    type: state.trackingLandStatus.changeActDateModal.type,
+    dispId: state.shipment.previewer.dispatch.id,
+    shipmtNo: state.shipment.previewer.dispatch.shipmt_no,
     status: state.shipment.previewer.dispatch.status,
-    pickupActDate: state.trackingLandStatus.changeActDateModal.pickupActDate,
-    deliverActDate: state.trackingLandStatus.changeActDateModal.deliverActDate,
+    pickupActDate: state.shipment.previewer.dispatch.pickup_act_date,
+    deliverActDate: state.shipment.previewer.dispatch.deliver_act_date,
   }),
   { showChangeActDateModal, changePickDeliverDate }
 )
@@ -36,6 +37,7 @@ export default class ChangeActDateModal extends React.Component {
     deliverActDate: PropTypes.string,
     shipmtNo: PropTypes.string.isRequired,
     visible: PropTypes.bool.isRequired,
+    type: PropTypes.string.isRequired,
     showChangeActDateModal: PropTypes.func.isRequired,
     changePickDeliverDate: PropTypes.func.isRequired,
     status: PropTypes.number.isRequired,
@@ -75,7 +77,7 @@ export default class ChangeActDateModal extends React.Component {
     this.setState({ deliverActDate: value });
   }
   handleCancel = () => {
-    this.props.showChangeActDateModal({ visible: false });
+    this.props.showChangeActDateModal(false);
   }
   render() {
     const colSpan = 10;
@@ -83,13 +85,13 @@ export default class ChangeActDateModal extends React.Component {
       <Modal title="纠正节点时间" onCancel={this.handleCancel} onOk={this.handleOk}
         visible={this.props.visible} maskClosable={false}
       >
-        <FormItem label="实际提货时间" labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }} >
+        {this.props.type === 'pickupActDate' && <FormItem label="实际提货时间" labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }} >
           <DatePicker value={this.state.pickupActDate} onChange={this.handlePickupActDateChange} />
-        </FormItem>
-        {this.props.status === SHIPMENT_TRACK_STATUS.delivered ? (
+        </FormItem>}
+        {this.props.type === 'deliverActDate' && (
           <FormItem label="实际送货时间" labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }} >
             <DatePicker value={this.state.deliverActDate} onChange={this.handleDeliverActDateChange} />
-          </FormItem>) : ''}
+          </FormItem>)}
       </Modal>
     );
   }

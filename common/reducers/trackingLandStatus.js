@@ -47,10 +47,7 @@ const initialState = {
   },
   changeActDateModal: {
     visible: false,
-    dispId: -1,
-    shipmtNo: '',
-    pickupActDate: '',
-    deliverActDate: '',
+    type: '',
   },
   locModal: {
     visible: false,
@@ -271,10 +268,10 @@ export function changeStatusFilter(field, value) {
   };
 }
 
-export function showChangeActDateModal({ visible, dispId = -1, shipmtNo = '', pickupActDate, deliverActDate }) {
+export function showChangeActDateModal(visible, type = 'pickupActDate') {
   return {
     type: actionTypes.SHOW_CHANGE_ACTDATE_MODAL,
-    data: { visible, dispId, shipmtNo, pickupActDate, deliverActDate },
+    data: { visible, type },
   };
 }
 

@@ -7,8 +7,6 @@ import { SHIPMENT_TRACK_STATUS } from 'common/constants';
 import { hidePreviewer } from 'common/reducers/shipment';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
-import { showChangeActDateModal }
-from 'common/reducers/trackingLandStatus';
 import ExportPDF from '../../tracking/land/modals/export-pdf';
 import { createFilename } from 'client/util/dataTransform';
 
@@ -24,9 +22,7 @@ const MenuItem = Menu.Item;
     loginName: state.account.username,
     previewer: state.shipment.previewer,
   }),
-  { hidePreviewer,
-    showChangeActDateModal,
-  }
+  { hidePreviewer }
 )
 export default class ShipmentActions extends React.Component {
   static propTypes = {
@@ -38,7 +34,6 @@ export default class ShipmentActions extends React.Component {
     previewer: PropTypes.object.isRequired,
     onShowShareShipmentModal: PropTypes.func.isRequired,
     hidePreviewer: PropTypes.func.isRequired,
-    showChangeActDateModal: PropTypes.func.isRequired,
     sourceType: PropTypes.string.isRequired,
   }
   static contextTypes = {
@@ -53,7 +48,6 @@ export default class ShipmentActions extends React.Component {
     this.context.router.push({ pathname: to, query });
   }
   handleMenuClick = (e) => {
-    const { previewer: { shipmt, dispatch } } = this.props;
     if (e.key === 'exportShipment') {
       this.setState({ exportPDFvisible: true });
       setTimeout(() => {
@@ -61,8 +55,6 @@ export default class ShipmentActions extends React.Component {
       }, 200);
     } else if (e.key === 'shareShipment') {
       this.props.onShowShareShipmentModal();
-    } else if (e.key === 'changeActDate') {
-      this.handleShowChangeActDateModal(shipmt.shipmt_no, dispatch.id, dispatch.pickup_act_date, dispatch.deliver_act_date);
     }
   }
   handleShowExportShipment = () => {
@@ -71,10 +63,6 @@ export default class ShipmentActions extends React.Component {
     const { previewer: { shipmt, dispatch } } = this.props;
     const domain = window.location.host;
     window.open(`${API_ROOTS.default}v1/transport/tracking/exportShipmentPodPDF/${createFilename('pod')}.pdf?shipmtNo=${shipmt.shipmt_no}&podId=${dispatch.pod_id}&publickKey=${shipmt.public_key}&domain=${domain}`);
-  }
-  handleShowChangeActDateModal = (shipmtNo, dispId, pickupActDate, deliverActDate) => {
-    this.props.showChangeActDateModal({ visible: true, dispId, shipmtNo,
-      pickupActDate, deliverActDate });
   }
   render() {
     const { sourceType, previewer: { shipmt, dispatch } } = this.props;
@@ -118,14 +106,12 @@ export default class ShipmentActions extends React.Component {
           menu = (
             <Menu onClick={this.handleMenuClick}>
               <MenuItem key="shareShipment">共享运单</MenuItem>
-              <MenuItem key="changeActDate">纠正节点时间</MenuItem>
             </Menu>
           );
         } else if (dispatch.sp_tenant_id === 0) {
           menu = (
             <Menu onClick={this.handleMenuClick}>
               <MenuItem key="shareShipment">共享运单</MenuItem>
-              <MenuItem key="changeActDate">纠正节点时间</MenuItem>
             </Menu>
           );
         }
@@ -133,7 +119,6 @@ export default class ShipmentActions extends React.Component {
         menu = (
           <Menu onClick={this.handleMenuClick}>
             <MenuItem key="shareShipment">共享运单</MenuItem>
-            <MenuItem key="changeActDate">纠正节点时间</MenuItem>
           </Menu>
         );
       }

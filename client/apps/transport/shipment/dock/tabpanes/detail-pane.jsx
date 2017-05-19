@@ -10,6 +10,7 @@ import ChangeShipment from '../change-shipment';
 import { showChangeShipmentModal, loadForm, computeSaleCharge, updateFee } from 'common/reducers/shipment';
 import { saveEdit, revokeOrReject } from 'common/reducers/transport-acceptance';
 import { createSpecialCharge } from 'common/reducers/transportBilling';
+import { showChangeActDateModal } from 'common/reducers/trackingLandStatus';
 import InfoItem from 'client/components/InfoItem';
 import messages from '../../message.i18n';
 import './pane.less';
@@ -37,7 +38,7 @@ const Step = Steps.Step;
     charges: state.shipment.charges,
   }),
   { showChangeShipmentModal, loadForm, saveEdit, revokeOrReject, computeSaleCharge,
-    createSpecialCharge, updateFee }
+    createSpecialCharge, updateFee, showChangeActDateModal }
 )
 export default class DetailPane extends React.Component {
   static propTypes = {
@@ -64,6 +65,7 @@ export default class DetailPane extends React.Component {
     createSpecialCharge: PropTypes.func.isRequired,
     updateFee: PropTypes.func.isRequired,
     charges: PropTypes.object.isRequired,
+    showChangeActDateModal: PropTypes.func.isRequired,
   }
   componentDidMount() {
     this.props.loadForm(null, {
@@ -324,6 +326,9 @@ export default class DetailPane extends React.Component {
       this.computeSaleCharge({ [`${consignType}_region_code`]: code }, form, type, msg);
     }
   }
+  handleShowChangeActDateModal = (type) => {
+    this.props.showChangeActDateModal(true, type);
+  }
   render() {
     const { tenantId, shipmt, goodsTypes, packagings, vehicleTypes, vehicleLengths, dispatch, transitModes, containerPackagings } = this.props;
     const pckg = packagings.find(item => item.package_code === shipmt.package);
@@ -498,6 +503,7 @@ export default class DetailPane extends React.Component {
                     } else {
                       desc = dispatch[step.date] ? `${step.text} ${moment(dispatch[step.date]).format('YYYY.MM.DD')}` : step.text;
                     }
+                    desc = <span>{desc} <a><Icon type="edit" onClick={() => this.handleShowChangeActDateModal('pickupActDate')} /></a></span>;
                   } else if (step.status === SHIPMENT_TRACK_STATUS.delivered) {
                     const act = new Date(dispatch[step.date]);
                     act.setHours(0, 0, 0, 0);
@@ -511,6 +517,7 @@ export default class DetailPane extends React.Component {
                     } else {
                       desc = dispatch[step.date] ? `${step.text} ${moment(dispatch[step.date]).format('YYYY.MM.DD')}` : step.text;
                     }
+                    desc = <span>{desc} <a><Icon type="edit" onClick={() => this.handleShowChangeActDateModal('deliverActDate')} /></a></span>;
                   } else {
                     desc = dispatch[step.date] ? `${step.text} ${moment(dispatch[step.date]).format('YYYY.MM.DD')}` : step.text;
                   }
