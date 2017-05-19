@@ -245,6 +245,10 @@ const messages = defineMessages({
     id: 'scof.orders.delg.weight',
     defaultMessage: '总毛重',
   },
+  personResponsible: {
+    id: 'scof.orders.responsible.person',
+    defaultMessage: '责任人',
+  },
   addMore: {
     id: 'scof.orders.delg.addMore',
     defaultMessage: '添加',

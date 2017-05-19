@@ -4,7 +4,8 @@ import { Collapse, Form, Row, Col, Card, Input, Radio, Select, Steps, Popover, I
 import { intlShape, injectIntl } from 'react-intl';
 import { GOODSTYPES, WRAP_TYPE, SCOF_CONTAINER_TYPE, SCOF_ORDER_TRANSFER, SCOF_ORDER_TRANSMODES } from 'common/constants';
 import { setClientForm } from 'common/reducers/crmOrders';
-import { loadPartnerFlowList, loadFlowGraph, loadCustomerQuotes } from 'common/reducers/scofFlow';
+import { loadPartnerFlowList, loadFlowGraph, loadCustomerCmsQuotes } from 'common/reducers/scofFlow';
+import { loadOperators } from 'common/reducers/crmCustomers';
 import Container from './container';
 import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
@@ -39,7 +40,7 @@ SCOF_ORDER_TRANSMODES.forEach((ot) => { SeletableKeyNameMap[`transmode-${ot.valu
     flows: state.scofFlow.partnerFlows,
     graphLoading: state.scofFlow.graphLoading,
   }),
-  { setClientForm, loadPartnerFlowList, loadFlowGraph, loadCustomerQuotes }
+  { setClientForm, loadPartnerFlowList, loadFlowGraph, loadCustomerCmsQuotes, loadOperators }
 )
 export default class OrderForm extends Component {
   static propTypes = {
@@ -70,7 +71,8 @@ export default class OrderForm extends Component {
         partnerId: selPartnerId,
         tenantId,
       });
-      this.props.loadCustomerQuotes(tenantId, selPartnerId);
+      this.props.loadCustomerCmsQuotes(tenantId, selPartnerId);
+      this.props.loadOperators(selPartnerId, tenantId);
     }
   }
   handleFlowChange = (value) => {
@@ -124,6 +126,8 @@ export default class OrderForm extends Component {
                   name: node.name,
                   in_degree: node.in_degree,
                   out_degree: node.out_degree,
+                  person_id: node.person_id,
+                  person: node.person,
                   level,
                   consigner_id: null,
                   consignee_id: null,
@@ -144,6 +148,8 @@ export default class OrderForm extends Component {
                   name: node.name,
                   in_degree: node.in_degree,
                   out_degree: node.out_degree,
+                  person_id: node.person_id,
+                  person: node.person,
                   level,
                   pack_count: null,
                   gross_wt: null,
@@ -160,6 +166,8 @@ export default class OrderForm extends Component {
                   name: node.name,
                   in_degree: node.in_degree,
                   out_degree: node.out_degree,
+                  person_id: node.person_id,
+                  person: node.person,
                   level,
                 },
               });

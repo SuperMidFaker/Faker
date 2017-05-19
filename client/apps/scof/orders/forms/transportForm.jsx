@@ -25,6 +25,7 @@ const formItemLayout = {
   state => ({
     formRequires: state.crmOrders.formRequires,
     customerPartnerId: state.crmOrders.formData.customer_partner_id,
+    serviceTeam: state.crmCustomers.operators,
   }),
   { setClientForm, loadFlowNodeData }
 )
@@ -36,6 +37,9 @@ export default class TransportForm extends Component {
     formData: PropTypes.object.isRequired,
     setClientForm: PropTypes.func.isRequired,
     customerPartnerId: PropTypes.number,
+    serviceTeam: PropTypes.arrayOf(PropTypes.shape({
+      lid: PropTypes.number.isRequired, name: PropTypes.string.isRequired,
+    })),
     shipment: PropTypes.shape({
       cust_shipmt_pieces: PropTypes.string,
       cust_shipmt_weight: PropTypes.string,
@@ -220,6 +224,12 @@ export default class TransportForm extends Component {
       trs_mode: transportMode.mode_name,
     });
   }
+  handlePersonChange = (value) => {
+    const person = this.props.serviceTeam.filter(st => st.lid === value)[0];
+    if (person) {
+      this.handleSetClientForm({ person_id: value, person: person.name });
+    }
+  }
   handleCommonFieldChange = (filed, value) => {
     this.handleSetClientForm({ [filed]: value });
   }
@@ -235,7 +245,8 @@ export default class TransportForm extends Component {
   }
   renderConsign = consign => `${consign.name} | ${Location.renderLoc(consign)} | ${consign.contact || ''}`
   render() {
-    const { formData, formRequires: { consignerLocations, consigneeLocations, transitModes, packagings }, customerPartnerId } = this.props;
+    const { formData, serviceTeam, formRequires: { consignerLocations, consigneeLocations,
+      transitModes, packagings }, customerPartnerId } = this.props;
     // todo consigner consignee by customer partner id
     const node = formData.node;
     const consignerRegion = [
@@ -385,6 +396,13 @@ export default class TransportForm extends Component {
               <Input value={node.gross_wt} addonAfter="千克" type="number"
                 onChange={e => this.handleCommonFieldChange('gross_wt', e.target.value)}
               />
+            </FormItem>
+          </Col>
+          <Col span={8}>
+            <FormItem label={this.msg('personResponsible')} {...formItemLayout}>
+              <Select size="large" value={node.person_id} onChange={value => this.handlePersonChange(value)}>
+                {serviceTeam.map(st => <Option value={st.lid} key={st.lid}>{st.name}</Option>)}
+              </Select>
             </FormItem>
           </Col>
         </Row>

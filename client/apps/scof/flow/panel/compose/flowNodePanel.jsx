@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Collapse, Form, Input, Select } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import FlowTriggerTable from './flowTriggerTable';
-import { loadServiceTeamMembers } from 'common/reducers/crmCustomers';
+import { loadOperators } from 'common/reducers/crmCustomers';
 import { formatMsg } from '../../message.i18n';
 
 const FormItem = Form.Item;
@@ -13,10 +13,11 @@ const Option = Select.Option;
 @injectIntl
 @connect(
   state => ({
+    tenantId: state.account.tenantId,
     partnerId: state.scofFlow.currentFlow.partner_id,
-    serviceTeam: state.crmCustomers.serviceTeamMembers,
+    serviceTeam: state.crmCustomers.operators,
   }),
-  { loadServiceTeamMembers }
+  { loadOperators }
 )
 export default class FlowNodePanel extends Component {
   static propTypes = {
@@ -27,7 +28,7 @@ export default class FlowNodePanel extends Component {
     })),
   }
   componentDidMount() {
-    this.props.loadServiceTeamMembers(this.props.partnerId);
+    this.props.loadOperators(this.props.partnerId, this.props.tenantId);
   }
   msg = formatMsg(this.props.intl)
   handleResponsiblerSelect = (lid) => {

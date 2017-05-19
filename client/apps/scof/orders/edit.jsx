@@ -6,7 +6,8 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { Breadcrumb, Button, message, Layout } from 'antd';
 import OrderForm from './forms/orderForm';
 import { loadFormRequires, loadOrder, editOrder } from 'common/reducers/crmOrders';
-import { loadPartnerFlowList, loadCustomerQuotes } from 'common/reducers/scofFlow';
+import { loadPartnerFlowList, loadCustomerCmsQuotes } from 'common/reducers/scofFlow';
+import { loadOperators } from 'common/reducers/crmCustomers';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 
@@ -35,7 +36,7 @@ function fetchData({ state, location, dispatch }) {
     tenantName: state.account.tenantName,
     formData: state.crmOrders.formData,
   }),
-  { editOrder, loadPartnerFlowList, loadCustomerQuotes }
+  { editOrder, loadPartnerFlowList, loadCustomerCmsQuotes, loadOperators }
 )
 export default class EditOrder extends Component {
   static propTypes = {
@@ -56,7 +57,8 @@ export default class EditOrder extends Component {
         partnerId: nextProps.formData.customer_partner_id,
         tenantId: nextProps.tenantId,
       });
-      this.props.loadCustomerQuotes(nextProps.tenantId, nextProps.formData.customer_partner_id);
+      this.props.loadCustomerCmsQuotes(nextProps.tenantId, nextProps.formData.customer_partner_id);
+      this.props.loadOperators(nextProps.formData.customer_partner_id, nextProps.tenantId);
     }
   }
   msg = key => formatMsg(this.props.intl, key)

@@ -21,6 +21,7 @@ const InputGroup = Input.Group;
   state => ({
     formRequires: state.crmOrders.formRequires,
     cmsQuotes: state.scofFlow.cmsQuotes,
+    serviceTeam: state.crmCustomers.operators,
   }),
   { setClientForm, loadFlowNodeData }
 )
@@ -31,6 +32,9 @@ export default class ClearanceForm extends Component {
     operation: PropTypes.oneOf(['view', 'edit', 'create']),
     formData: PropTypes.object.isRequired,
     formRequires: PropTypes.object.isRequired,
+    serviceTeam: PropTypes.arrayOf(PropTypes.shape({
+      lid: PropTypes.number.isRequired, name: PropTypes.string.isRequired,
+    })),
     shipment: PropTypes.shape({
       cust_shipmt_trans_mode: PropTypes.string.isRequired,
       cust_shipmt_mawb: PropTypes.string,
@@ -63,6 +67,12 @@ export default class ClearanceForm extends Component {
   handleChange = (key, value) => {
     this.handleSetClientForm({ [key]: value });
   }
+  handlePersonChange = (value) => {
+    const person = this.props.serviceTeam.filter(st => st.lid === value)[0];
+    if (person) {
+      this.handleSetClientForm({ person_id: value, person: person.name });
+    }
+  }
   handleShipmentRelate = () => {
     const { shipment } = this.props;
     const related = {
@@ -83,7 +93,7 @@ export default class ClearanceForm extends Component {
     this.handleSetClientForm(related);
   }
   render() {
-    const { formData, formRequires, cmsQuotes } = this.props;
+    const { formData, formRequires, serviceTeam, cmsQuotes } = this.props;
     const formItemLayout = {
       labelCol: { span: 6 },
       wrapperCol: { span: 18 },
@@ -195,6 +205,13 @@ export default class ClearanceForm extends Component {
                     <Option value={cb.partner_id} key={cb.partner_id}>{cb.partner_code}|{cb.name}</Option>
                   )
                 }
+              </Select>
+            </FormItem>
+          </Col>
+          <Col sm={24} lg={8}>
+            <FormItem label={this.msg('personResponsible')} {...formItemLayout}>
+              <Select size="large" value={node.person_id} onChange={value => this.handlePersonChange(value)}>
+                {serviceTeam.map(st => <Option value={st.lid} key={st.lid}>{st.name}</Option>)}
               </Select>
             </FormItem>
           </Col>

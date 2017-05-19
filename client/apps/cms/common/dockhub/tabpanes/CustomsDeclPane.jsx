@@ -57,7 +57,7 @@ export default class CustomsDeclPane extends React.Component {
       });
     }
     if (nextProps.partnerId !== this.props.partnerId) {
-      this.props.loadOperators(nextProps.partnerId, this.props.tenantId);
+      this.props.loadOperators(nextProps.partnerId, nextProps.tenantId);
     }
   }
   handleView = (ev) => {

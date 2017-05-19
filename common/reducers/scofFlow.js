@@ -270,7 +270,7 @@ export function loadCmsBizParams(tenantId, partnerId, ietype) {
   };
 }
 
-export function loadCustomerQuotes(tenantId, customerPartnerId) {
+export function loadCustomerCmsQuotes(tenantId, customerPartnerId) {
   return {
     [CLIENT_API]: {
       types: [
