@@ -86,8 +86,13 @@ export default class SendDeclsModal extends React.Component {
   }
   handleOk = () => {
     const { delgNo, subdomain, loginId, loginName } = this.props;
-    const values = this.state.bodies;
-    this.props.sendMutiDecl({ values, delgNo, subdomain, loginId, username: loginName }).then((result) => {
+    const values = this.state.bodies.map(val => ({
+      delg_no: delgNo,
+      pre_entry_seq_no: val.pre_entry_seq_no,
+      easipass: val.easipass,
+      declType: val.declType,
+    }));
+    this.props.sendMutiDecl({ values, subdomain, loginId, username: loginName }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {

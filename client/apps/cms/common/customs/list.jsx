@@ -7,7 +7,7 @@ import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
-import { loadCustomsDecls, deleteDecl, setDeclReviewed, showSendDeclModal, openDeclReleasedModal } from 'common/reducers/cmsDeclare';
+import { loadCustomsDecls, deleteDecl, setDeclReviewed, showSendDeclModal, openDeclReleasedModal, showBatchSendModal } from 'common/reducers/cmsDeclare';
 import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
 import { openEfModal } from 'common/reducers/cmsDelegation';
 import TrimSpan from 'client/components/trimSpan';
@@ -24,6 +24,7 @@ import SendModal from './modals/sendModal';
 import DelegationDockPanel from '../dockhub/delegationDockPanel';
 import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
 import ShipmentDockPanel from '../../../transport/shipment/dock/shipmentDockPanel';
+import BatchSendModal from './modals/batchSendModal';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -47,7 +48,7 @@ const OptGroup = Select.OptGroup;
     trades: state.cmsDeclare.trades,
   }),
   { loadCustomsDecls, openEfModal, deleteDecl, setDeclReviewed,
-    showSendDeclModal, showPreviewer, openDeclReleasedModal }
+    showSendDeclModal, showPreviewer, openDeclReleasedModal, showBatchSendModal }
 )
 @connectNav({
   depth: 2,
@@ -369,6 +370,9 @@ export default class CustomsList extends Component {
       }
     });
   }
+  handleListsSend = (ids) => {
+    this.props.showBatchSendModal({ tenantId: this.props.tenantId, ids });
+  }
   handleRecall = (row) => {
     this.props.setDeclReviewed([row.id], CMS_DECL_STATUS.proposed.value).then((result) => {
       if (result.error) {
@@ -415,6 +419,12 @@ export default class CustomsList extends Component {
       <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
         <Button type="default" onClick={() => this.handleListsReview(this.state.selectedRowKeys)}>
           批量复核
+        </Button>
+      </PrivilegeCover>) : '';
+    bulkBtns = status === 'reviewed' ? (
+      <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
+        <Button type="default" onClick={() => this.handleListsSend(this.state.selectedRowKeys)}>
+          批量发送
         </Button>
       </PrivilegeCover>) : '';
     return (
@@ -465,6 +475,7 @@ export default class CustomsList extends Component {
             <FillCustomsNoModal reload={this.handleTableLoad} />
             <DeclReleasedModal reload={this.handleTableLoad} />
             <SendModal ietype={this.props.ietype} reload={this.handleTableLoad} />
+            <BatchSendModal ietype={this.props.ietype} reload={this.handleTableLoad} />
           </div>
         </Content>
         <DelegationDockPanel ietype={this.props.ietype} />

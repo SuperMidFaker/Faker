@@ -249,4 +249,12 @@ export default defineMessages({
     id: 'cms.customs.table.exemptionway',
     defaultMessage: '征免方式',
   },
+  sendAllPackets: {
+    id: 'cms.customs.send.all.packets',
+    defaultMessage: '批量发送报文',
+  },
+  trafMode: {
+    id: 'cms.customs.traf.mode',
+    defaultMessage: '运输方式',
+  },
 });
