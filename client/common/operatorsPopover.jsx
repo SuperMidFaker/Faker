@@ -1,9 +1,9 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Popover, Form, Select, Button, Icon } from 'antd';
+import { Popover, Form, Select, Button, Icon, message } from 'antd';
 import RowUpdater from 'client/components/rowUpdater';
-import { loadServiceTeamMembers } from 'common/reducers/crmCustomers';
+import { loadOperators } from 'common/reducers/crmCustomers';
 import messages from './root.i18n';
 import { format } from './i18n/helpers';
 const formatMsg = format(messages);
@@ -13,16 +13,20 @@ const Option = Select.Option;
 @injectIntl
 @connect(
   state => ({
-    serviceTeamMembers: state.crmCustomers.serviceTeamMembers,
+    tenantId: state.account.tenantId,
+    operators: state.crmCustomers.operators,
   }),
-  { loadServiceTeamMembers }
+  { loadOperators }
 )
 
 export default class OperatorPopover extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    record: PropTypes.object.isRequired,
+    record: PropTypes.object,
     handleAccept: PropTypes.func.isRequired,
+    module: PropTypes.string.isRequired,
+    partnerIds: PropTypes.array,
+    partnerId: PropTypes.number.isRequired,
   }
   state = {
     visible: false,
@@ -31,8 +35,18 @@ export default class OperatorPopover extends React.Component {
   msg = key => formatMsg(this.props.intl, key);
   handlePopVisibleChange = (visible) => {
     if (visible === true) {
-      const partnerId = this.props.record.partnerId;
-      this.props.loadServiceTeamMembers(partnerId);
+      if (this.props.module === 'multiple') {
+        const partnerIds = this.props.partnerIds;
+        for (let i = 0; i < partnerIds.length; i++) {
+          for (let j = 0; j < partnerIds.length; j++) {
+            if (partnerIds[i] !== partnerIds[j]) {
+              message.info('批量接单需选择同一客户');
+              return false;
+            }
+          }
+        }
+      }
+      this.props.loadOperators(this.props.partnerId, this.props.tenantId);
     }
     this.setState({ visible });
   }
@@ -44,21 +58,34 @@ export default class OperatorPopover extends React.Component {
     });
   }
   render() {
-    const { serviceTeamMembers, record, handleAccept } = this.props;
+    const { operators, record, handleAccept, module } = this.props;
     const visible = this.state.visible;
+    const label = module === 'clearance' ? 'allocateOriginator' : 'allocateOperator';
+    let button = '';
+    if (module === 'multiple') {
+      button = (<Button type="default">
+        批量接单
+      </Button>);
+    } else if (module === 'shipment' || module === 'delegation') {
+      button = (<Button key="accept" type="primary" icon="check" >
+          接单
+        </Button>);
+    } else {
+      button = (<RowUpdater label={<span><Icon type="check-square-o" /> {this.msg('accepting')}</span>} />);
+    }
     return (
       <Popover visible={visible} onVisibleChange={this.handlePopVisibleChange} content={
         <div style={{ width: 120 }}>
-          <FormItem label={this.msg('allocateOriginator')} >
+          <FormItem label={this.msg(label)} >
             <Select labelInValue style={{ width: '100%' }} onSelect={this.handleSelect}>
-              {serviceTeamMembers.map(op => <Option key={`${op.lid}${op.name}`} value={op.lid}>{op.name}</Option>)}
+              {operators.map(op => <Option key={`${op.lid}${op.name}`} value={op.lid}>{op.name}</Option>)}
             </Select>
           </FormItem>
-          <Button type="primary" onClick={() => handleAccept(record, this.state.lid, this.state.name)} >确定</Button>
+          <Button type="primary" onClick={() => { handleAccept(record, this.state.lid, this.state.name); this.setState({ visible: false }); }} >确定</Button>
         </div>
       }
       >
-        <RowUpdater label={<span><Icon type="check-square-o" /> {this.msg('accepting')}</span>} />
+        {button}
       </Popover>
     );
   }

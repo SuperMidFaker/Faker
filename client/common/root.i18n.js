@@ -198,8 +198,12 @@ const messages = defineMessages({
     defaultMessage: '删除',
   },
   allocateOriginator: {
-    id: 'component.operators.title',
+    id: 'component.operators.cms.title',
     defaultMessage: '指定制单人',
+  },
+  allocateOperator: {
+    id: 'component.operators.tms.title',
+    defaultMessage: '指定接单人',
   },
   accepting: {
     id: 'component.operate.accept',

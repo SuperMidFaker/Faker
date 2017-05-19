@@ -21,7 +21,7 @@ import ChangeActDateModal from '../../tracking/land/modals/changeActDateModal';
 import RecalculateChargeModal from '../../tracking/land/modals/recalculateChargeModal';
 import VehicleModal from '../../tracking/land/modals/vehicle-updater';
 import { loadOrderDetail } from 'common/reducers/crmOrders';
-import { loadAcceptDispatchers, returnShipment } from 'common/reducers/transport-acceptance';
+import { returnShipment, acceptDispShipment } from 'common/reducers/transport-acceptance';
 import { doSend,
          doReturn,
          changeDockStatus,
@@ -30,6 +30,7 @@ import { showVehicleModal } from 'common/reducers/trackingLandStatus';
 import { passAudit, returnAudit } from 'common/reducers/trackingLandPod';
 import { createFilename } from 'client/util/dataTransform';
 import { sendMessage } from 'common/reducers/notification';
+import OperatorsPopover from 'client/common/operatorsPopover';
 import messages from '../message.i18n';
 
 const formatMsg = format(messages);
@@ -78,10 +79,11 @@ function getTrackStatusMsg(status, eff) {
     filters: state.transportDispatch.filters,
     expandList: state.transportDispatch.expandList,
     charges: state.shipment.charges,
+    partnerId: state.shipment.previewer.dispatch.sr_partner_id,
   }),
   { hidePreviewer, sendTrackingDetailSMSMessage, changePreviewerTab, loadShipmtDetail, loadForm, loadOrderDetail,
-    getShipmtOrderNo, toggleRecalculateChargeModal, loadAcceptDispatchers, returnShipment, doSend, doReturn,
-    changeDockStatus, withDraw, showVehicleModal, passAudit, returnAudit, sendMessage }
+    getShipmtOrderNo, toggleRecalculateChargeModal, returnShipment, doSend, doReturn,
+    changeDockStatus, withDraw, showVehicleModal, passAudit, returnAudit, sendMessage, acceptDispShipment }
 )
 export default class PreviewPanel extends React.Component {
   static propTypes = {
@@ -112,7 +114,6 @@ export default class PreviewPanel extends React.Component {
     loadShipmtDetail: PropTypes.func.isRequired,
     loadForm: PropTypes.func.isRequired,
     toggleRecalculateChargeModal: PropTypes.func.isRequired,
-    loadAcceptDispatchers: PropTypes.func.isRequired,
     returnShipment: PropTypes.func.isRequired,
     doSend: PropTypes.func.isRequired,
     doReturn: PropTypes.func.isRequired,
@@ -157,14 +158,15 @@ export default class PreviewPanel extends React.Component {
     const domain = window.location.host;
     window.open(`${API_ROOTS.default}v1/transport/tracking/exportShipmentPodPDF/${createFilename('pod')}.pdf?shipmtNo=${shipmt.shipmt_no}&podId=${dispatch.pod_id}&publickKey=${shipmt.public_key}&domain=${domain}`);
   }
-  handleShipmtAccept = (dispId) => {
-    this.props.loadAcceptDispatchers(
-      this.props.tenantId, [dispId]
-    ).then((result) => {
-      if (result.error) {
-        message.error(result.error.message, 10);
+  handleShipmtAccept = (record, lid, name) => {
+    const dispId = this.props.previewer.dispatch.id;
+    this.props.acceptDispShipment([dispId], this.props.loginId, this.props.loginName, lid, name).then(
+      (result) => {
+        if (!result.error) {
+          return this.props.reload && this.props.reload();
+        }
       }
-    });
+    );
   }
   handleShipmtSend = () => {
     const { tenantId, loginId, avatar, loginName, previewer: { shipmt, dispatch } } = this.props;
@@ -329,28 +331,24 @@ export default class PreviewPanel extends React.Component {
     );
   }
   renderButtons = () => {
-    const { tenantId, previewer: { shipmt, dispatch, downstream, row, params: { sourceType } }, charges } = this.props;
+    const { tenantId, previewer: { shipmt, dispatch, downstream, row, params: { sourceType } }, charges, partnerId } = this.props;
     const needRecalculate = charges.revenue.need_recalculate === 1 || charges.expense.need_recalculate === 1;
     let buttons = [];
     if (sourceType === 'sp') {
       if (dispatch.status === SHIPMENT_TRACK_STATUS.unaccepted) {
         if (dispatch.source === SHIPMENT_SOURCE.consigned) {
           buttons.push(<PrivilegeCover module="transport" feature="shipment" action="edit">
-            <Button key="change" onClick={() => this.context.router.push(`/transport/shipment/edit/${shipmt.shipmt_no}`)}>
+            <Button key="change" onClick={() => this.context.router.push(`/transport/shipment/edit/${shipmt.shipmt_no}`)} style={{ marginRight: 8 }}>
                   修改
                 </Button>
           </PrivilegeCover>,
             <PrivilegeCover module="transport" feature="shipment" action="edit">
-              <Button key="accept" type="primary" icon="check" onClick={() => this.handleShipmtAccept(dispatch.id)} style={{ marginLeft: 8 }}>
-                    接单
-                  </Button>
+              <OperatorsPopover partnerId={partnerId} module="shipment" handleAccept={this.handleShipmtAccept} />
             </PrivilegeCover>);
         } else if (dispatch.source === SHIPMENT_SOURCE.subcontracted) {
           buttons.push(
             <PrivilegeCover module="transport" feature="shipment" action="edit">
-              <Button key="accept" type="primary" icon="check" onClick={() => this.handleShipmtAccept(dispatch.id)} >
-                接单
-              </Button>
+              <OperatorsPopover partnerId={partnerId} module="shipment" handleAccept={this.handleShipmtAccept} />
             </PrivilegeCover>
           );
         }

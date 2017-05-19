@@ -15,6 +15,7 @@ const actionTypes = createActionTypes('@@welogix/crm/customers/', [
   'LOAD_SERVICETEAM_MEMBERS', 'LOAD_SERVICETEAM_MEMBERS_SUCCEED', 'LOAD_SERVICETEAM_MEMBERS_FAIL',
   'ADD_SERVICETEAM_MEMBERS', 'ADD_SERVICETEAM_MEMBERS_SUCCEED', 'ADD_SERVICETEAM_MEMBERS_FAIL',
   'LOAD_TENANT_USERS', 'LOAD_TENANT_USERS_SUCCEED', 'LOAD_TENANT_USERS_FAIL',
+  'LOAD_OPERATORS', 'LOAD_OPERATORS_SUCCEED', 'LOAD_OPERATORS_FAIL',
 ]);
 
 const initialState = {
@@ -23,6 +24,7 @@ const initialState = {
   customers: [],
   subCustomers: [],
   serviceTeamMembers: [],
+  operators: [],
   formData: {
   },
   customerModal: {
@@ -117,6 +119,9 @@ export default function reducer(state = initialState, action) {
     }
     case actionTypes.LOAD_SERVICETEAM_MEMBERS_SUCCEED: {
       return { ...state, serviceTeamMembers: action.result.data };
+    }
+    case actionTypes.LOAD_OPERATORS_SUCCEED: {
+      return { ...state, operators: action.result.data };
     }
     default:
       return state;
@@ -296,6 +301,21 @@ export function addServiceTeamMembers(partnerId, userIds) {
       endpoint: 'v1/scof/customer/add/serviceTeam/members',
       method: 'post',
       data: { partnerId, userIds },
+    },
+  };
+}
+
+export function loadOperators(partnerId, tenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_OPERATORS,
+        actionTypes.LOAD_OPERATORS_SUCCEED,
+        actionTypes.LOAD_OPERATORS_FAIL,
+      ],
+      endpoint: 'v1/scof/customer/operators',
+      method: 'get',
+      params: { partnerId, tenantId },
     },
   };
 }

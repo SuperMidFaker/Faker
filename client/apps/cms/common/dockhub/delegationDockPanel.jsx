@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Badge, Button, Col, Icon, Row, Tabs, Tag, Popconfirm, Popover, Select, message } from 'antd';
+import { Badge, Button, Col, Icon, Row, Tabs, Tag, Popconfirm, message } from 'antd';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
@@ -17,9 +17,9 @@ import DelgDispModal from './delgDispModal';
 import { showDispModal, acceptDelg, reloadDelegationList } from 'common/reducers/cmsDelegation';
 import { setPreviewStatus, hidePreviewer, setPreviewTabkey, loadBasicInfo, getShipmtOrderNo } from 'common/reducers/cmsDelgInfoHub';
 import { loadOrderDetail } from 'common/reducers/crmOrders';
+import OperatorsPopover from 'client/common/operatorsPopover';
 
 const TabPane = Tabs.TabPane;
-const Option = Select.Option;
 
 @injectIntl
 @connect(
@@ -31,7 +31,8 @@ const Option = Select.Option;
     tabKey: state.cmsDelgInfoHub.tabKey,
     previewKey: state.cmsDelgInfoHub.previewKey,
     delegateListFilter: state.cmsDelegation.delegateListFilter,
-    serviceTeamMembers: state.crmCustomers.serviceTeamMembers,
+    operators: state.crmCustomers.operators,
+    partnerId: state.cmsDelgInfoHub.previewer.delgDispatch.send_partner_id,
   }),
   { hidePreviewer, setPreviewStatus, setPreviewTabkey, showDispModal, loadBasicInfo, loadOrderDetail, getShipmtOrderNo, acceptDelg, reloadDelegationList }
 )
@@ -64,10 +65,9 @@ export default class DelegationDockPanel extends React.Component {
   handleDispCancel = () => {
     this.props.setPreviewStatus({ preStatus: 'delgDispCancel' });
   }
-  handleDelegationAccept = (value) => {
-    const operator = this.props.serviceTeamMembers.filter(dop => dop.lid === value)[0];
+  handleDelegationAccept = (record, lid, name) => {
     this.props.acceptDelg(
-      operator.lid, operator.name, [this.props.previewer.delgDispatch.id], this.props.previewer.delegation.delg_no
+      lid, name, [this.props.previewer.delgDispatch.id], this.props.previewer.delegation.delg_no
     ).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
@@ -248,22 +248,13 @@ export default class DelegationDockPanel extends React.Component {
     );
   }
   renderBtns() {
-    const { previewer, serviceTeamMembers } = this.props;
+    const { previewer, partnerId } = this.props;
     const { delgDispatch } = previewer;
     if (delgDispatch.recv_tenant_id === delgDispatch.customs_tenant_id) {
       if (delgDispatch.status === CMS_DELEGATION_STATUS.unaccepted) {
         return (
           <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-            <Popover content={
-              <div style={{ width: 120 }}>
-                <Select style={{ width: '100%' }} onChange={this.handleDelegationAccept} placeholder="必须选定制单人">
-                  {serviceTeamMembers.map(op => <Option value={op.lid} key={op.lid}>{op.name}</Option>)}
-                </Select>
-              </div>
-            }
-            >
-              <Button type="primary">接单</Button>
-            </Popover>
+            <OperatorsPopover module="delegation" partnerId={partnerId} handleAccept={this.handleDelegationAccept} />
           </PrivilegeCover>
         );
       } else if (delgDispatch.status === CMS_DELEGATION_STATUS.accepted) {
