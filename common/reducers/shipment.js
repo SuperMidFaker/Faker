@@ -6,7 +6,7 @@ import {
 } from './form-common';
 import { TARIFF_METER_METHODS } from 'common/constants';
 
-import { REPORT_LOC_SUCCEED, LOAD_TRANSHIPMT } from './trackingLandStatus';
+import { REPORT_LOC_SUCCEED, LOAD_TRANSHIPMT, CHANGE_ACT_DATE_SUCCEED } from './trackingLandStatus';
 import { CREATE_EXCEPTION_SUCCEED, LOAD_EXCPSHIPMT, DEAL_EXCEPTION_SUCCEED } from './trackingLandException';
 import { LOAD_PODSHIPMT, SAVE_POD_SUCCEED } from './trackingLandPod';
 import { LOAD_DISPSHIPMENT } from './transportDispatch';
@@ -401,6 +401,9 @@ export default function reducer(state = initialState, action) {
         },
       };
     case actionTypes.UPDATE_FEE_SUCCEED: {
+      return { ...state, previewer: { ...state.previewer, loaded: false } };
+    }
+    case CHANGE_ACT_DATE_SUCCEED: {
       return { ...state, previewer: { ...state.previewer, loaded: false } };
     }
     case actionTypes.TOGGLE_RECALCULATE_CHARGE: {

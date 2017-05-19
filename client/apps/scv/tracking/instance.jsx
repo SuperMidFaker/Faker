@@ -156,7 +156,6 @@ export default class Instance extends Component {
     });
   }
   handleSearch = (value) => {
-    console.log(value);
     this.props.loadTrackingOrders({
       searchValue: value,
       tracking_id: this.props.params.trackingId,

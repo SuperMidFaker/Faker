@@ -60,7 +60,7 @@ const initialState = {
   locReportedShipments: [],
 };
 
-export const { REPORT_LOC_SUCCEED, LOAD_TRANSHIPMT } = actionTypes;
+export const { REPORT_LOC_SUCCEED, LOAD_TRANSHIPMT, CHANGE_ACT_DATE_SUCCEED } = actionTypes;
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.LOAD_TRANSHIPMT:
