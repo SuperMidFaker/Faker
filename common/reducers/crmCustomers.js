@@ -17,6 +17,7 @@ const actionTypes = createActionTypes('@@welogix/crm/customers/', [
   'LOAD_TENANT_USERS', 'LOAD_TENANT_USERS_SUCCEED', 'LOAD_TENANT_USERS_FAIL',
   'LOAD_TRANSPORT_TRAIFFS', 'LOAD_TRANSPORT_TRAIFFS_SUCCEED', 'LOAD_TRANSPORT_TRAIFFS_FAIL',
   'LOAD_CMS_QUOTES', 'LOAD_CMS_QUOTES_SUCCEED', 'LOAD_CMS_QUOTES_FAIL',
+  'LOAD_OPERATORS', 'LOAD_OPERATORS_SUCCEED', 'LOAD_OPERATORS_FAIL',
 ]);
 
 const initialState = {
@@ -25,6 +26,7 @@ const initialState = {
   customers: [],
   subCustomers: [],
   serviceTeamMembers: [],
+  operators: [],
   formData: {
   },
   customerModal: {
@@ -119,6 +121,9 @@ export default function reducer(state = initialState, action) {
     }
     case actionTypes.LOAD_SERVICETEAM_MEMBERS_SUCCEED: {
       return { ...state, serviceTeamMembers: action.result.data };
+    }
+    case actionTypes.LOAD_OPERATORS_SUCCEED: {
+      return { ...state, operators: action.result.data };
     }
     default:
       return state;
@@ -330,6 +335,21 @@ export function loadCmsQuotes(tenantId) {
       method: 'get',
       params: { tenantId },
       origin: 'mongo',
+    },
+  };
+}
+
+export function loadOperators(partnerId, tenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_OPERATORS,
+        actionTypes.LOAD_OPERATORS_SUCCEED,
+        actionTypes.LOAD_OPERATORS_FAIL,
+      ],
+      endpoint: 'v1/scof/customer/operators',
+      method: 'get',
+      params: { partnerId, tenantId },
     },
   };
 }
