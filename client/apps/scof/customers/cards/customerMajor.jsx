@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Card, Tabs } from 'antd';
 import FlowRulesPane from '../flowRulesPane';
+import ConsignInfoPane from '../consignInfoPane';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 const formatMsg = format(messages);
@@ -29,7 +30,9 @@ export default class CustomerMajor extends React.Component {
             <FlowRulesPane customer={customer} />
           </TabPane>
           <TabPane tab={<span><i className="icon icon-fontello-book" />价格协议</span>} key="tariff" />
-          <TabPane tab={<span><i className="icon icon-fontello-doc-text" />收发货信息</span>} key="consignInfo" />
+          <TabPane tab={<span><i className="icon icon-fontello-doc-text" />收发货信息</span>} key="consignInfo">
+            <ConsignInfoPane customer={customer} />
+          </TabPane>
         </Tabs>
       </Card>
     );
