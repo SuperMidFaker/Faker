@@ -54,6 +54,7 @@ const actionTypes = createActionTypes('@@welogix/cms/manifest/', [
   'VALIDATE_NAME', 'VALIDATE_NAME_SUCCEED', 'VALIDATE_NAME_FAIL',
   'SHOW_SEND_DECLS_MODAL', 'SHOW_EDIT_BODY_MODAL',
   'VALIDATE_BILL_DATAS', 'VALIDATE_BILL_DATAS_SUCCEED', 'VALIDATE_BILL_DATAS_FAIL',
+  'LOAD_BILL_META', 'LOAD_BILL_META_SUCCEED', 'LOAD_BILL_META_FAIL',
 ]);
 
 const initialState = {
@@ -290,6 +291,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, sendDeclsModal: { ...state.sendDeclsModal, ...action.data } };
     case actionTypes.SHOW_EDIT_BODY_MODAL:
       return { ...state, editBodyVisible: action.data };
+    case actionTypes.LOAD_BILL_META_SUCCEED:
+      return { ...state, billMeta: action.result.data };
     default:
       return state;
   }
@@ -476,6 +479,21 @@ export function loadBillBody(billSeqNo) {
         actionTypes.LOAD_MANIFEST_BODY_FAIL,
       ],
       endpoint: 'v1/cms/manifest/bill/body',
+      method: 'get',
+      params: { billSeqNo },
+    },
+  };
+}
+
+export function loadBillMeta(billSeqNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_BILL_META,
+        actionTypes.LOAD_BILL_META_SUCCEED,
+        actionTypes.LOAD_BILL_META_FAIL,
+      ],
+      endpoint: 'v1/cms/manifests/billMeta/load',
       method: 'get',
       params: { billSeqNo },
     },

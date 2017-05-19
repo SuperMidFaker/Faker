@@ -16,6 +16,8 @@ const actionTypes = createActionTypes('@@welogix/cms/declaration/', [
   'OPEN_DECL_RELEASED_MODAL', 'CLOSE_DECL_RELEASED_MODAL',
   'CLEAR_CUSTOMS', 'CLEAR_CUSTOMS_SUCCEED', 'CLEAR_CUSTOMS_FAIL',
   'SEND_MUTI_DECL', 'SEND_MUTI_DECL_SUCCEED', 'SEND_MUTI_DECL_FAIL',
+  'SHOW_BATCH_SEND_MODAL', 'SHOW_BATCH_SEND_MODAL_SUCCEED', 'SHOW_BATCH_SEND_MODAL_FAIL',
+  'CLOSE_BATCH_SEND_MODAL',
 ]);
 
 const initialState = {
@@ -46,6 +48,11 @@ const initialState = {
     preEntrySeqNo: '',
     delgNo: '',
     agentCustCo: '',
+  },
+  batchSendModal: {
+    visible: false,
+    data: {},
+    easilist: {},
   },
   visibleClearModal: false,
   clearFillModal: {
@@ -87,6 +94,12 @@ export default function reducer(state = initialState, action) {
       return { ...state, visibleClearModal: true, clearFillModal: action.data };
     case actionTypes.CLOSE_DECL_RELEASED_MODAL:
       return { ...state, visibleClearModal: false, clearFillModal: initialState.clearFillModal };
+    case actionTypes.SHOW_BATCH_SEND_MODAL:
+      return { ...state, batchSendModal: { ...state.batchSendModal, visible: true } };
+    case actionTypes.SHOW_BATCH_SEND_MODAL_SUCCEED:
+      return { ...state, batchSendModal: { ...state.batchSendModal, data: action.result.data.custG, easilist: action.result.data.easilist } };
+    case actionTypes.CLOSE_BATCH_SEND_MODAL:
+      return { ...state, batchSendModal: { ...state.batchSendModal, visible: false } };
     default:
       return state;
   }
@@ -289,5 +302,26 @@ export function setDeclReleased(clearInfo) {
       method: 'post',
       data: clearInfo,
     },
+  };
+}
+
+export function showBatchSendModal(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SHOW_BATCH_SEND_MODAL,
+        actionTypes.SHOW_BATCH_SEND_MODAL_SUCCEED,
+        actionTypes.SHOW_BATCH_SEND_MODAL_FAIL,
+      ],
+      endpoint: 'v1/cms/declare/batch/send/datas/load',
+      method: 'post',
+      data,
+    },
+  };
+}
+
+export function closeBatchSendModal() {
+  return {
+    type: actionTypes.CLOSE_BATCH_SEND_MODAL,
   };
 }
