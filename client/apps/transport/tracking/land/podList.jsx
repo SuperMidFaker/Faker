@@ -16,7 +16,7 @@ import SearchBar from 'client/components/search-bar';
 import AdvancedSearchBar from '../../common/advanced-search-bar';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import { sendMessage } from 'common/reducers/corps';
+import { sendMessage } from 'common/reducers/notification';
 const formatMsg = format(messages);
 
 function fetchData({ state, dispatch, params, cookie }) {

@@ -77,7 +77,7 @@ export default class ActivityOperation extends React.Component {
           activeKey = 'log';
         }
       } else if (disp.status >= SHIPMENT_TRACK_STATUS.delivered) {
-        if (!disp.pod_status || disp.pod_status === SHIPMENT_POD_STATUS.unsubmit) {
+        if (disp.pod_type !== 'none' && (disp.pod_status === SHIPMENT_POD_STATUS.unsubmit || !disp.pod_status)) {
           if (disp.sp_tenant_id === -1) {
             activeKey = 'pod';
           } else if (disp.sp_tenant_id === 0) {
@@ -197,7 +197,7 @@ export default class ActivityOperation extends React.Component {
           ];
         }
       } else if (disp.status >= SHIPMENT_TRACK_STATUS.delivered) {
-        if (!disp.pod_status || disp.pod_status === SHIPMENT_POD_STATUS.unsubmit) {
+        if (disp.pod_type !== 'none' && (disp.pod_status === SHIPMENT_POD_STATUS.unsubmit || !disp.pod_status)) {
           if (disp.sp_tenant_id === -1 || tenantId === shipmt.tenant_id) {
             tabs = [
               <TabPane tab={<span><Icon type="tags" />回单</span>} key="pod"><SubmitPodPane /></TabPane>,
