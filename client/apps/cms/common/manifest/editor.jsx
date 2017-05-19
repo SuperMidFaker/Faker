@@ -5,7 +5,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { saveBillHead, lockManifest, openMergeSplitModal, resetBill, updateHeadNetWt, editBillBody,
   loadBillBody, saveBillRules, setStepVisible, billHeadChange, redoManifest, loadTemplateFormVals,
-  showSendDeclsModal, validateBillDatas } from 'common/reducers/cmsManifest';
+  showSendDeclsModal, validateBillDatas, loadBillMeta } from 'common/reducers/cmsManifest';
 import NavLink from 'client/components/nav-link';
 import ButtonToggle from 'client/components/ButtonToggle';
 import ManifestHeadPanel from './panel/manifestHeadPanel';
@@ -41,7 +41,7 @@ const confirm = Modal.confirm;
   }),
   { saveBillHead, openMergeSplitModal, resetBill, updateHeadNetWt, loadBillBody, editBillBody,
     loadTemplateFormVals, saveBillRules, setStepVisible, billHeadChange, lockManifest,
-    redoManifest, showSendDeclsModal, validateBillDatas }
+    redoManifest, showSendDeclsModal, validateBillDatas, loadBillMeta }
 )
 @connectNav({
   depth: 3,
@@ -287,6 +287,9 @@ export default class ManifestEditor extends React.Component {
       }
     });
   }
+  handleMetaLoad = () => {
+    this.props.loadBillMeta(this.props.billHead.bill_seq_no);
+  }
   renderOverlayMenu(editable) {
     let lockMenuItem = null;
     if (editable) {
@@ -428,7 +431,7 @@ export default class ManifestEditor extends React.Component {
         </Sider>
         <MergeSplitModal />
         <SaveTemplateModal ietype={ietype} />
-        <SendDeclsModal ietype={ietype} entries={billMeta.entries} />
+        <SendDeclsModal ietype={ietype} entries={billMeta.entries} reload={this.handleMetaLoad} />
       </Layout>
     );
   }
