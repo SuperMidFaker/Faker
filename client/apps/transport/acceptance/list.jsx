@@ -12,11 +12,10 @@ import AdvancedSearchBar from '../common/advanced-search-bar';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege, { PrivilegeCover } from 'client/common/decorators/withPrivilege';
-import { loadTable, loadAcceptDispatchers, revokeOrReject, delDraft, acceptDispShipment } from
+import { loadTable, revokeOrReject, delDraft, acceptDispShipment } from
 'common/reducers/transport-acceptance';
 import { loadShipmtDetail } from 'common/reducers/shipment';
 import { SHIPMENT_SOURCE, SHIPMENT_EFFECTIVES, DEFAULT_MODULES } from 'common/constants';
-import AccepterModal from '../shipment/dock/accepter';
 import RevokejectModal from '../shipment/dock/revoke-reject';
 import ShipmentDockPanel from '../shipment/dock/shipmentDockPanel';
 import ShipmtnoColumn from '../common/shipmtnoColumn';
@@ -79,7 +78,7 @@ function fetchData({ state, dispatch, cookie }) {
     sortOrder: state.transportAcceptance.table.sortOrder,
     todos: state.shipment.statistics.todos,
   }),
-  { loadTable, loadAcceptDispatchers, revokeOrReject, loadShipmtDetail, delDraft, acceptDispShipment })
+  { loadTable, revokeOrReject, loadShipmtDetail, delDraft, acceptDispShipment })
 @connectNav({
   depth: 2,
   text: DEFAULT_MODULES.transport.text,
@@ -98,7 +97,6 @@ export default class AcceptList extends React.Component {
     delDraft: PropTypes.func.isRequired,
     revokeOrReject: PropTypes.func.isRequired,
     loadShipmtDetail: PropTypes.func.isRequired,
-    loadAcceptDispatchers: PropTypes.func.isRequired,
     loadTable: PropTypes.func.isRequired,
   }
   static contextTypes = {
@@ -108,7 +106,7 @@ export default class AcceptList extends React.Component {
     selectedRowKeys: [],
     advancedSearchVisible: false,
     searchValue: '',
-    selectedPartnerId: '',
+    selectedPartnerIds: [],
   }
   componentWillMount() {
     const { filters } = this.props;
@@ -271,7 +269,6 @@ export default class AcceptList extends React.Component {
   handleSelectionClear = () => {
     this.setState({
       selectedRowKeys: [],
-      selectedPartnerId: '',
     });
   }
   handleSearch = (searchVal) => {
@@ -314,16 +311,17 @@ export default class AcceptList extends React.Component {
         message.error(result.error.message, 10);
       } else {
         this.handleTableLoad();
+        this.handleSelectionClear();
       }
     });
   }
-  handleShipmtsAccept(dispIds, ev) {
-    ev.preventDefault();
-    ev.stopPropagation();
+  handleShipmtsAccept = (row, lid, name) => {
+    const dispIds = this.state.selectedRowKeys;
     let valid = true;
     for (let i = 0; i < dispIds.length; i++) {
       const shipmt = this.props.shipmentlist.data.filter(shl => shl.key === dispIds[i])[0];
       if (!this.isCompleteShipment(shipmt)) {
+        message.error('运单信息未完整, 请完善');
         valid = false;
         break;
       }
@@ -331,7 +329,14 @@ export default class AcceptList extends React.Component {
     if (!valid) {
       return;
     }
-    this.props.loadAcceptDispatchers(dispIds);
+    this.props.acceptDispShipment(dispIds, this.props.acpterId, this.props.acpterName, lid, name).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        this.handleTableLoad();
+        this.handleSelectionClear();
+      }
+    });
   }
   handleShipmtRevoke(shipmtNo, dispId, ev) {
     ev.preventDefault();
@@ -383,18 +388,15 @@ export default class AcceptList extends React.Component {
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
-        if (selectedRowKeys.length === 0) this.setState({ selectedPartnerId: '' });
+        const partnerIds = [];
         for (let i = 0; i < selectedRowKeys.length; i++) {
           const partnerId = shipmentlist.data.find(item => item.key === selectedRowKeys[i]).partnerId;
-          if (this.state.selectedPartnerId && this.state.selectedPartnerId !== partnerId) {
-            message.info('批量接单需选择同一客户');
-            return;
-          }
-          this.setState({
-            selectedPartnerId: partnerId,
-          });
+          partnerIds.push(partnerId);
         }
-        this.setState({ selectedRowKeys });
+        this.setState({
+          selectedRowKeys,
+          selectedPartnerIds: partnerIds,
+        });
       },
     };
     let radioValue;
@@ -416,7 +418,7 @@ export default class AcceptList extends React.Component {
             return (
               <PrivilegeCover module="transport" feature="shipment" action="edit">
                 <span>
-                  <OperatorsPopover record={record} handleAccept={this.handleShipmtAccept} />
+                  <OperatorsPopover partnerId={record.partnerId} record={record} handleAccept={this.handleShipmtAccept} module="transport" />
                   <span className="ant-divider" />
                   <Dropdown overlay={(
                     <Menu onClick={this.handleMenuClick}>
@@ -443,7 +445,7 @@ export default class AcceptList extends React.Component {
             return (
               <span>
                 <PrivilegeCover module="transport" feature="shipment" action="edit">
-                  <OperatorsPopover record={record} handleAccept={this.handleShipmtAccept} />
+                  <OperatorsPopover partnerId={record.partnerId} record={record} handleAccept={this.handleShipmtAccept} />
                 </PrivilegeCover>
               </span>
             );
@@ -452,9 +454,7 @@ export default class AcceptList extends React.Component {
       }];
       bulkBtns = (
         <PrivilegeCover module="transport" feature="shipment" action="edit">
-          <Button type="default" onClick={ev => this.handleShipmtsAccept(this.state.selectedRowKeys, ev)}>
-          批量接单
-          </Button>
+          <OperatorsPopover partnerId={this.state.selectedPartnerIds[0]} partnerIds={this.state.selectedPartnerIds} handleAccept={this.handleShipmtsAccept} module="multiple" />
         </PrivilegeCover>
       );
     } else if (radioValue === 'draft') {
@@ -524,9 +524,8 @@ export default class AcceptList extends React.Component {
             </div>
           </div>
         </Content>
-        <AccepterModal reload={this.handleTableLoad} clearSelection={this.handleSelectionClear} partnerId={this.state.selectedPartnerId} />
         <RevokejectModal reload={this.handleTableLoad} />
-        <ShipmentDockPanel />
+        <ShipmentDockPanel reload={this.handleTableLoad} />
         <OrderDockPanel />
         <DelegationDockPanel />
         <ShipmentAdvanceModal />

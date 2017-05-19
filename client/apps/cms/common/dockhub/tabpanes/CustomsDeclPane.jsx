@@ -6,7 +6,7 @@ import { Spin, Button, Card, Col, Icon, Progress, Row, Table, message, Menu } fr
 import moment from 'moment';
 import { ensureManifestMeta } from 'common/reducers/cmsDelegation';
 import { loadCustPanel, setOpetaor } from 'common/reducers/cmsDelgInfoHub';
-import { loadServiceTeamMembers } from 'common/reducers/crmCustomers';
+import { loadOperators } from 'common/reducers/crmCustomers';
 import CustomsDeclSheetCard from './customsDeclSheetCard';
 import InfoItem from 'client/components/InfoItem';
 
@@ -20,9 +20,10 @@ import InfoItem from 'client/components/InfoItem';
     customsSpinning: state.cmsDelgInfoHub.customsPanelLoading,
     loginId: state.account.loginId,
     loginName: state.account.username,
-    serviceTeamMembers: state.crmCustomers.serviceTeamMembers,
+    partnerId: state.cmsDelgInfoHub.previewer.delgDispatch.send_partner_id,
+    operators: state.crmCustomers.operators,
   }),
-  { loadCustPanel, ensureManifestMeta, setOpetaor, loadServiceTeamMembers }
+  { loadCustPanel, ensureManifestMeta, setOpetaor, loadOperators }
 )
 export default class CustomsDeclPane extends React.Component {
   static propTypes = {
@@ -46,7 +47,7 @@ export default class CustomsDeclPane extends React.Component {
       delgNo: this.props.delgNo,
       tenantId: this.props.tenantId,
     });
-    this.props.loadServiceTeamMembers(this.props.customsPanel.partnerId);
+    this.props.loadOperators(this.props.partnerId, this.props.tenantId);
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.delgNo !== this.props.delgNo) {  // fixme 已经翻到当前tab页, 关闭panel再打开, receive在翻到tab页前就会产生
@@ -55,8 +56,8 @@ export default class CustomsDeclPane extends React.Component {
         tenantId: this.props.tenantId,
       });
     }
-    if (nextProps.customsPanel.partnerId !== this.props.customsPanel.partnerId) {
-      this.props.loadServiceTeamMembers(nextProps.customsPanel.partnerId);
+    if (nextProps.partnerId !== this.props.partnerId) {
+      this.props.loadOperators(nextProps.partnerId, this.props.tenantId);
     }
   }
   handleView = (ev) => {
@@ -109,7 +110,7 @@ export default class CustomsDeclPane extends React.Component {
     }
   }
   render() {
-    const { customsPanel, customsSpinning, tenantId, serviceTeamMembers } = this.props;
+    const { customsPanel, customsSpinning, tenantId, operators } = this.props;
     const bill = customsPanel.bill;
     const tableDatas = customsPanel.decls;
     // const declTypes = DECL_I_TYPE.concat(DECL_E_TYPE).filter(dt => dt.key === bill.decl_way_code);
@@ -123,7 +124,7 @@ export default class CustomsDeclPane extends React.Component {
       render: (o, record) => <CustomsDeclSheetCard customsDecl={record} />,
     }];
     const assignable = (customsPanel.customs_tenant_id === tenantId || customsPanel.customs_tenant_id === -1);
-    const operators = serviceTeamMembers.filter(op => op.name !== bill.preparer_name);
+    const filterOperators = operators.filter(op => op.name !== bill.preparer_name);
     return (
       <div className="pane-content tab-pane">
         <Spin spinning={customsSpinning}>
@@ -135,7 +136,7 @@ export default class CustomsDeclPane extends React.Component {
                     <InfoItem type="dropdown" label="制单人" addonBefore={<Avatar name={bill.preparer_name} size={28} round />}
                       field={bill.preparer_name} placeholder="分配制单人" editable={assignable}
                       overlay={<Menu onClick={this.handleMenuClick}>
-                        {operators.map(dg => (<Menu.Item key={dg.lid}>{dg.name}</Menu.Item>))}
+                        {filterOperators.map(dg => (<Menu.Item key={dg.lid}>{dg.name}</Menu.Item>))}
                       </Menu>}
                     />
                   </Col>

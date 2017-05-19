@@ -52,7 +52,7 @@ const OptGroup = Select.OptGroup;
       value: cus.customs_code,
       text: `${cus.customs_name}`,
     })),
-    serviceTeamMembers: state.crmCustomers.serviceTeamMembers,
+    operators: state.crmCustomers.operators,
   }),
   { loadAcceptanceTable, acceptDelg, delDelg, showPreviewer,
     setDispStatus, delgAssignRecall, ensureManifestMeta,
@@ -364,7 +364,7 @@ export default class DelegationList extends Component {
       message.info('制单人不能为空');
       return;
     }
-    const operator = this.props.serviceTeamMembers.filter(dop => dop.lid === lid)[0];
+    const operator = this.props.operators.filter(dop => dop.lid === lid)[0];
     this.props.acceptDelg(
       operator.lid, operator.name, [row.id], row.delg_no
     ).then((result) => {
@@ -496,7 +496,7 @@ export default class DelegationList extends Component {
             return (
               <span>
                 <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-                  <OperatorPopover record={record} handleAccept={this.handleDelegationAccept} />
+                  <OperatorPopover partenrId={record.partnerId} record={record} handleAccept={this.handleDelegationAccept} module="clearance" />
                 </PrivilegeCover>
                 {editOverlay && <span className="ant-divider" />}
                 {editOverlay && <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
