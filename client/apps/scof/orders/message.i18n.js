@@ -245,6 +245,18 @@ const messages = defineMessages({
     id: 'scof.orders.delg.weight',
     defaultMessage: '总毛重',
   },
+  pickupEstDate: {
+    id: 'scof.order.shipment.pickup.est.date',
+    defaultMessage: '计划提货日期',
+  },
+  shipmtTransit: {
+    id: 'scof.order.shipment.transit.time',
+    defaultMessage: '时效(天)',
+  },
+  deliveryEstDate: {
+    id: 'scof.order.shipment.delivery.est.date',
+    defaultMessage: '计划送货日期',
+  },
   personResponsible: {
     id: 'scof.orders.responsible.person',
     defaultMessage: '责任人',
@@ -309,14 +321,6 @@ const messages = defineMessages({
   refEntryNo: {
     id: 'scof.orders.previewer.ref.entryno',
     defaultMessage: '关联报关单号',
-  },
-  pickupEstDate: {
-    id: 'scof.orders.previewer.pickup.est.date',
-    defaultMessage: '预计提货日期',
-  },
-  deliveryEstDate: {
-    id: 'scof.orders.previewer.delivery.est.date',
-    defaultMessage: '预计送货日期',
   },
   day: {
     id: 'scof.orders.previewer.day',
@@ -407,16 +411,28 @@ const messages = defineMessages({
     defaultMessage: '备注',
   },
   vehicleType: {
-    id: 'scof.orders.previewer.vehicle.type',
+    id: 'scof.orders.shipment.vehicle.type',
     defaultMessage: '车型',
   },
   vehicleLength: {
-    id: 'scof.orders.previewer.vehicle.length',
+    id: 'scof.orders.shipment.vehicle.length',
     defaultMessage: '车长',
   },
+  containerPack: {
+    id: 'scof.order.shipment.container.pack',
+    defaultMessage: '集装箱',
+  },
   containerNo: {
-    id: 'scof.orders.previewer.container.no',
+    id: 'scof.orders.shipment.container.no',
     defaultMessage: '箱号',
+  },
+  expressNo: {
+    id: 'scof.order.shipment.express.no',
+    defaultMessage: '快递单号',
+  },
+  expressVendor: {
+    id: 'scof.order.shipment.express.vendor',
+    defaultMessage: '快递公司',
   },
   basicCharge: {
     id: 'scof.orders.previewer.basic.charge',

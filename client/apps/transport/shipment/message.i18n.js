@@ -77,10 +77,6 @@ export default defineMessages({
     id: 'transport.shipment.schedule.info',
     defaultMessage: '时间与模式',
   },
-  pickupDate: {
-    id: 'transport.shipment.pickup.date',
-    defaultMessage: '计划提货日期',
-  },
   pickupEstDate: {
     id: 'transport.shipment.pickup.est.date',
     defaultMessage: '计划提货日期',
@@ -104,10 +100,6 @@ export default defineMessages({
   day: {
     id: 'transport.shipment.day',
     defaultMessage: '天',
-  },
-  deliveryDate: {
-    id: 'transport.shipment.delivery.date',
-    defaultMessage: '计划送货日期',
   },
   deliveryEstDate: {
     id: 'transport.shipment.delivery.est.date',

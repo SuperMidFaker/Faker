@@ -167,7 +167,7 @@ export default class ModeInfo extends React.Component {
         </Col>
       );
     } else if (modeCode === PRESET_TRANSMODES.exp) {
-      // 集装箱,修改箱号
+      // 快递公司
       modeEditCols.push(
         <Col key="courier_code" sm={24} md={8}>
           <FormItem label={this.msg('courierCompany')}>
@@ -194,7 +194,7 @@ export default class ModeInfo extends React.Component {
     } else if (vertical && type === 'schedule') {
       content = (
         <div>
-          <FormItem label={this.msg('pickupDate')} required>
+          <FormItem label={this.msg('pickupEstDate')} required>
             {getFieldDecorator(
                 'pickup_est_date', {
                   onChange: this.handlePickupChange,
@@ -215,7 +215,7 @@ export default class ModeInfo extends React.Component {
                   initialValue: transit_time,
                 })(<InputNumber style={{ width: '100%' }} min={0} />)}
           </FormItem>
-          <FormItem label={this.msg('deliveryDate')} required>
+          <FormItem label={this.msg('deliveryEstDate')} required>
             {getFieldDecorator(
                 'deliver_est_date', {
                   onChange: this.handleDeliveryChange,
@@ -233,7 +233,7 @@ export default class ModeInfo extends React.Component {
         <div>
           <Row gutter={16}>
             <Col sm={24} md={8}>
-              <FormItem label={this.msg('pickupDate')} required>
+              <FormItem label={this.msg('pickupEstDate')} required>
                 {getFieldDecorator(
                 'pickup_est_date', {
                   onChange: this.handlePickupChange,
@@ -258,7 +258,7 @@ export default class ModeInfo extends React.Component {
               </FormItem>
             </Col>
             <Col sm={24} md={8}>
-              <FormItem label={this.msg('deliveryDate')} required>
+              <FormItem label={this.msg('deliveryEstDate')} required>
                 {getFieldDecorator(
                 'deliver_est_date', {
                   onChange: this.handleDeliveryChange,

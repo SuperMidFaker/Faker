@@ -1,15 +1,17 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Form, Row, Col, Card, Input, Select, Icon } from 'antd';
+import moment from 'moment';
+import { Button, DatePicker, InputNumber, Form, Row, Col, Card, Input, Select, Icon } from 'antd';
 import RegionCascader from 'client/components/chinaRegionCascader';
 import { setClientForm, loadFlowNodeData } from 'common/reducers/crmOrders';
 import { uuidWithoutDash } from 'client/common/uuid';
-import { GOODS_TYPES } from 'common/constants';
+import { GOODS_TYPES, PRESET_TRANSMODES, CONTAINER_PACKAGE_TYPE, COURIERS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import * as Location from 'client/util/location';
 import messages from '../message.i18n';
 
+const ONE_DAY_MS = 24 * 60 * 60 * 1000;
 const formatMsg = format(messages);
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -224,6 +226,75 @@ export default class TransportForm extends Component {
       trs_mode: transportMode.mode_name,
     });
   }
+  handlePickupChange = (pickupDt) => {
+    if (pickupDt) {
+      const transitTime = this.props.formData.node.transit_time || 0;
+      const deliverDate = new Date(
+        pickupDt.valueOf() + transitTime * ONE_DAY_MS
+      );
+      this.handleSetClientForm({
+        pickup_est_date: pickupDt,
+        deliver_est_date: moment(deliverDate),
+      });
+    }
+  }
+  handleTransitChange = (value) => {
+    const pickupDt = this.props.formData.node.pickup_est_date;
+    if (typeof value === 'number') {
+      if (pickupDt) {
+        const deliverDate = new Date(
+          pickupDt.valueOf() + value * ONE_DAY_MS
+        );
+        this.handleSetClientForm({
+          deliver_est_date: moment(deliverDate),
+          transit_time: value,
+        });
+      } else {
+        this.handleSetClientForm({
+          transit_time: value,
+        });
+      }
+    }
+  }
+  handleDeliveryChange = (deliverDt) => {
+    if (deliverDt) {
+      const transitTime = this.props.formData.node.transit_time || 0;
+      const pickupDt = new Date(
+        deliverDt.valueOf() - transitTime * ONE_DAY_MS
+      );
+      this.handleSetClientForm({
+        deliver_est_date: deliverDt,
+        pickup_est_date: moment(pickupDt, 'YYYY-MM-DD'),
+      });
+    }
+  }
+  handelVehicleTypeSelect = (value) => {
+    const vt = this.props.formRequires.vehicleTypes.filter(vht => vht.value === value)[0];
+    if (vt) {
+      this.handleSetClientForm({
+        vehicle_type_id: vt.value,
+        vehicle_type: vt.text,
+      });
+    }
+  }
+  handelVehicleLengthSelect = (value) => {
+    const vl = this.props.formRequires.vehicleLengths.filter(vhl => vhl.value === value)[0];
+    if (vl) {
+      this.handleSetClientForm({
+        vehicle_length_id: vl.value,
+        vehicle_length: vl.text,
+      });
+    }
+  }
+  handleExpressChange = (value) => {
+    const exp = COURIERS.filter(cur => cur.code === value)[0];
+    if (exp) {
+      this.handleSetClientForm({
+        express_code: exp.code,
+        express_vendor: exp.name,
+      });
+    }
+  }
   handlePersonChange = (value) => {
     const person = this.props.serviceTeam.filter(st => st.lid === value)[0];
     if (person) {
@@ -246,7 +317,7 @@ export default class TransportForm extends Component {
   renderConsign = consign => `${consign.name} | ${Location.renderLoc(consign)} | ${consign.contact || ''}`
   render() {
     const { formData, serviceTeam, formRequires: { consignerLocations, consigneeLocations,
-      transitModes, packagings }, customerPartnerId } = this.props;
+      transitModes, packagings, vehicleTypes, vehicleLengths }, customerPartnerId } = this.props;
     // todo consigner consignee by customer partner id
     const node = formData.node;
     const consignerRegion = [
@@ -257,6 +328,65 @@ export default class TransportForm extends Component {
       node.consignee_province, node.consignee_city,
       node.consignee_district, node.consignee_street,
     ];
+    const transModeExtras = [];
+    const modeCode = node.trs_mode_code;
+    if (modeCode === PRESET_TRANSMODES.ftl) {
+      // 整车,修改车型,车长
+      transModeExtras.push(
+        <Col key="vehicle_type" sm={24} md={8}>
+          <FormItem label={this.msg('vehicleType')} {...formItemLayout}>
+            <Select onSelect={this.handelVehicleTypeSelect} value={node.vehicle_type_id}>
+              {vehicleTypes.map(
+                vt => <Option value={vt.value} key={`${vt.text}${vt.value}`}>{vt.text}</Option>
+              )}
+            </Select>
+          </FormItem>
+        </Col>,
+        <Col key="vehicle_length" sm={24} md={8}>
+          <FormItem label={this.msg('vehicleLength')} {...formItemLayout}>
+            <Select onSelect={this.handelVehicleLengthSelect} value={node.vehicle_length_id}>
+              {vehicleLengths.map(
+                vl => <Option value={vl.value} key={`${vl.text}${vl.value}`}>{vl.text}</Option>
+              )}
+            </Select>
+          </FormItem>
+        </Col>
+      );
+    } else if (modeCode === PRESET_TRANSMODES.ctn) {
+      // 集装箱,修改箱号
+      transModeExtras.push(
+        <Col key="container" sm={24} md={8} >
+          <FormItem label={this.msg('containerPack')} {...formItemLayout}>
+            <Select onSelect={value => this.handleCommonFieldChange('container', value)} value={node.container}>
+              {CONTAINER_PACKAGE_TYPE.map(
+                ct => <Option value={ct.key} key={ct.key}>{ct.value}</Option>
+              )}
+            </Select>
+          </FormItem>
+        </Col>,
+        <Col key="container_no" sm={24} md={8}>
+          <FormItem label={this.msg('containerNo')} {...formItemLayout}>
+            <Input value={node.container_no} onChange={ev => this.handleCommonFieldChange('container_no', ev.target.value)} />
+          </FormItem>
+        </Col>
+      );
+    } else if (modeCode === PRESET_TRANSMODES.exp) {
+      // 快递公司
+      transModeExtras.push(
+        <Col key="courier_code" sm={24} md={8}>
+          <FormItem label={this.msg('expressVendor')} {...formItemLayout}>
+            <Select onSelect={this.handleExpressChange} value={node.express_code}>
+              {COURIERS.map(cr => <Option value={cr.code} key={cr.code}>{cr.name}</Option>)}
+            </Select>
+          </FormItem>
+        </Col>,
+        <Col key="courier_no" sm={24} md={8}>
+          <FormItem label={this.msg('expressNo')} {...formItemLayout}>
+            <Input value={node.express_no} onChange={ev => this.handleCommonFieldChange('express_no', ev.target.value)} />
+          </FormItem>
+        </Col>
+      );
+    }
     return (
       <Card extra={<a role="button" onClick={this.handleShipmentRelate}><Icon type="sync" /> 提取货运信息</a>} bodyStyle={{ paddingTop: 40 }}>
         <Row>
@@ -356,7 +486,32 @@ export default class TransportForm extends Component {
               </Col>
             </FormItem>
           </Col>
-          <Col span={8}>
+        </Row>
+        <Row>
+          <Col sm={24} md={8}>
+            <FormItem label={this.msg('pickupEstDate')} {...formItemLayout}>
+              <DatePicker style={{ width: '100%' }} value={node.pickup_est_date && moment(new Date(node.pickup_est_date), 'YYYY-MM-DD')}
+                onChange={this.handlePickupChange}
+              />
+            </FormItem>
+          </Col>
+          <Col sm={24} md={8}>
+            <FormItem label={this.msg('shipmtTransit')} {...formItemLayout}>
+              <InputNumber style={{ width: '100%' }} min={0} value={node.transit_time}
+                onChange={this.handleTransitChange}
+              />
+            </FormItem>
+          </Col>
+          <Col sm={24} md={8}>
+            <FormItem label={this.msg('deliveryEstDate')} {...formItemLayout}>
+              <DatePicker style={{ width: '100%' }} value={node.deliver_est_date && moment(new Date(node.deliver_est_date), 'YYYY-MM-DD')}
+                onChange={this.handleDeliveryChange}
+              />
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col sm={24} md={8}>
             <FormItem label="运输模式" {...formItemLayout} required="true">
               <Select value={node.trs_mode_id} onChange={this.handleTransmodeChange}>
                 {transitModes.map(
@@ -365,19 +520,17 @@ export default class TransportForm extends Component {
               </Select>
             </FormItem>
           </Col>
-          <Col span={8}>
+          {transModeExtras}
+        </Row>
+        <Row>
+          <Col sm={24} md={8}>
             <FormItem label="货物类型" {...formItemLayout}>
               <Select value={node.goods_type} onChange={value => this.handleCommonFieldChange('goods_type', value)}>
                 {GOODS_TYPES.map(gt => <Option value={gt.value} key={gt.value}>{gt.text}</Option>)}
               </Select>
             </FormItem>
           </Col>
-          <Col span={8}>
-            <FormItem label="备注" {...formItemLayout}>
-              <Input value={node.remark} onChange={e => this.handleCommonFieldChange('remark', e.target.value)} />
-            </FormItem>
-          </Col>
-          <Col span={8}>
+          <Col sm={24} md={8}>
             <FormItem label={this.msg('packageNum')} {...formItemLayout}>
               <InputGroup compact>
                 <Input type="number" style={{ width: '50%' }} value={node.pack_count} onChange={e => this.handleChange('pack_count', e.target.value)} />
@@ -391,18 +544,25 @@ export default class TransportForm extends Component {
               </InputGroup>
             </FormItem>
           </Col>
-          <Col span={8}>
+          <Col sm={24} md={8}>
             <FormItem label={this.msg('delgGrossWt')} {...formItemLayout}>
               <Input value={node.gross_wt} addonAfter="千克" type="number"
                 onChange={e => this.handleCommonFieldChange('gross_wt', e.target.value)}
               />
             </FormItem>
           </Col>
-          <Col span={8}>
+        </Row>
+        <Row>
+          <Col sm={24} md={8}>
             <FormItem label={this.msg('personResponsible')} {...formItemLayout}>
-              <Select size="large" value={node.person_id} onChange={value => this.handlePersonChange(value)}>
+              <Select size="large" value={node.person_id} onChange={this.handlePersonChange}>
                 {serviceTeam.map(st => <Option value={st.lid} key={st.lid}>{st.name}</Option>)}
               </Select>
+            </FormItem>
+          </Col>
+          <Col sm={24} md={8}>
+            <FormItem label="备注" {...formItemLayout}>
+              <Input value={node.remark} onChange={e => this.handleCommonFieldChange('remark', e.target.value)} />
             </FormItem>
           </Col>
         </Row>
