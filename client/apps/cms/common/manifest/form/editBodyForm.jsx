@@ -145,7 +145,9 @@ export default class EditBodyForm extends Component {
   handleDecPriceChange = (ev) => {
     const qty = this.props.form.getFieldValue('g_qty');
     if (!isNaN(qty)) {
-      const tradeTot = Number(ev.target.value * qty);
+      const digits = ev.target.value.toString().split('.')[1];
+      const decimal = digits ? digits.length : 0;
+      const tradeTot = Number(ev.target.value * qty).toFixed(decimal);
       this.props.form.setFieldsValue({ trade_total: tradeTot });
     }
   }
