@@ -24,7 +24,7 @@ const formatMsg = format(messages);
 export default class ServiceTeam extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenanId: PropTypes.number.isRequired,
+    tenantId: PropTypes.number.isRequired,
     serviceTeamMembers: PropTypes.array,
   }
   state = {

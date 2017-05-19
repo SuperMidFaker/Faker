@@ -15,6 +15,8 @@ const actionTypes = createActionTypes('@@welogix/crm/customers/', [
   'LOAD_SERVICETEAM_MEMBERS', 'LOAD_SERVICETEAM_MEMBERS_SUCCEED', 'LOAD_SERVICETEAM_MEMBERS_FAIL',
   'ADD_SERVICETEAM_MEMBERS', 'ADD_SERVICETEAM_MEMBERS_SUCCEED', 'ADD_SERVICETEAM_MEMBERS_FAIL',
   'LOAD_TENANT_USERS', 'LOAD_TENANT_USERS_SUCCEED', 'LOAD_TENANT_USERS_FAIL',
+  'LOAD_TRANSPORT_TRAIFFS', 'LOAD_TRANSPORT_TRAIFFS_SUCCEED', 'LOAD_TRANSPORT_TRAIFFS_FAIL',
+  'LOAD_CMS_QUOTES', 'LOAD_CMS_QUOTES_SUCCEED', 'LOAD_CMS_QUOTES_FAIL',
 ]);
 
 const initialState = {
@@ -296,6 +298,38 @@ export function addServiceTeamMembers(partnerId, userIds) {
       endpoint: 'v1/scof/customer/add/serviceTeam/members',
       method: 'post',
       data: { partnerId, userIds },
+    },
+  };
+}
+
+export function loadTransportTariffs(tenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_TRANSPORT_TRAIFFS,
+        actionTypes.LOAD_TRANSPORT_TRAIFFS_SUCCEED,
+        actionTypes.LOAD_TRANSPORT_TRAIFFS_FAIL,
+      ],
+      endpoint: 'v1/scof/transport/tariffs',
+      method: 'get',
+      params: { tenantId },
+      origin: 'mongo',
+    },
+  };
+}
+
+export function loadCmsQuotes(tenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_CMS_QUOTES,
+        actionTypes.LOAD_CMS_QUOTES_SUCCEED,
+        actionTypes.LOAD_CMS_QUOTES_FAIL,
+      ],
+      endpoint: 'v1/scof/cms/quotes',
+      method: 'get',
+      params: { tenantId },
+      origin: 'mongo',
     },
   };
 }
