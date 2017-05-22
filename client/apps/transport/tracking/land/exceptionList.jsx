@@ -137,12 +137,6 @@ export default class LandStatusList extends React.Component {
            */
       });
     }
-    let searchInput;
-    const nos = this.props.filters.filter(flt => flt.name === 'shipmt_no');
-    if (nos.length === 1) {
-      searchInput = nos[0].value;
-    }
-    this.setState({ searchInput });
   }
   dataSource = new Table.DataSource({
     fetcher: params => this.props.loadExcpShipments(null, params),

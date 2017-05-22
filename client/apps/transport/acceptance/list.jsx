@@ -8,7 +8,6 @@ import moment from 'moment';
 import NavLink from 'client/components/nav-link';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/search-bar';
-import AdvancedSearchBar from '../common/advanced-search-bar';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege, { PrivilegeCover } from 'client/common/decorators/withPrivilege';
@@ -102,7 +101,6 @@ export default class AcceptList extends React.Component {
   }
   state = {
     selectedRowKeys: [],
-    advancedSearchVisible: false,
     searchValue: '',
     selectedPartnerIds: [],
   }
@@ -274,14 +272,6 @@ export default class AcceptList extends React.Component {
     this.handleTableLoad(filters, 1);
     this.setState({ searchValue: searchVal });
   }
-  handleAdvancedSearch = (searchVals) => {
-    let filters = this.props.filters;
-    Object.keys(searchVals).forEach((key) => {
-      filters = this.mergeFilters(filters, key, searchVals[key]);
-    });
-    this.handleTableLoad(filters, 1);
-    this.showAdvancedSearch(false);
-  }
   handleCreateBtnClick = () => {
     this.context.router.push('/transport/shipment/create');
   }
@@ -374,12 +364,6 @@ export default class AcceptList extends React.Component {
       });
     }
     return merged;
-  }
-  toggleAdvancedSearch = () => {
-    this.setState({ advancedSearchVisible: !this.state.advancedSearchVisible });
-  }
-  showAdvancedSearch = (advancedSearchVisible) => {
-    this.setState({ advancedSearchVisible });
   }
   render() {
     const { shipmentlist, loading, intl } = this.props;
@@ -485,14 +469,10 @@ export default class AcceptList extends React.Component {
             <div className="toolbar">
               <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} value={this.state.searchValue} />
               <span />
-              <a onClick={this.toggleAdvancedSearch}>过滤选项</a>
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3> {bulkBtns}
               </div>
             </div>
-            <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch}
-              toggle={this.toggleAdvancedSearch}
-            />
             <div className="panel-body table-panel">
               <Table rowSelection={rowSelection} columns={columns} loading={loading}
                 dataSource={this.dataSource} scroll={{ x: 2300 }}
