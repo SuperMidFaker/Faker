@@ -15,6 +15,7 @@ import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import { CMS_DECL_STATUS } from 'common/constants';
 import SendModal from './modals/sendModal';
+import LegalInspectionPanel from './panel/legaInspectionPanel';
 
 const formatMsg = format(messages);
 const { Sider, Header, Content } = Layout;
@@ -184,6 +185,9 @@ export default class CustomsDeclEditor extends React.Component {
                   </TabPane>
                   <TabPane tab="报关单表体" key="body">
                     <SheetBodyPanel ietype={ietype} data={bodies} headNo={head.id} />
+                  </TabPane>
+                  <TabPane tab="法检物料" key="legalInspection">
+                    <LegalInspectionPanel ietype={ietype} data={bodies} />
                   </TabPane>
                 </Tabs>
               </div>
