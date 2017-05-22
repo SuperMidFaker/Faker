@@ -367,11 +367,13 @@ export default class CustomsList extends Component {
         message.error(result.error.message, 10);
       } else {
         this.handleTableLoad();
+        this.setState({ selectedRowKeys: [] });
       }
     });
   }
   handleListsSend = (ids) => {
     this.props.showBatchSendModal({ tenantId: this.props.tenantId, ids });
+    this.setState({ selectedRowKeys: [] });
   }
   handleRecall = (row) => {
     this.props.setDeclReviewed([row.id], CMS_DECL_STATUS.proposed.value).then((result) => {
@@ -379,6 +381,16 @@ export default class CustomsList extends Component {
         message.error(result.error.message, 10);
       } else {
         this.handleTableLoad();
+      }
+    });
+  }
+  handleListsRecall = (ids) => {
+    this.props.setDeclReviewed(ids, CMS_DECL_STATUS.proposed.value).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        this.handleTableLoad();
+        this.setState({ selectedRowKeys: [] });
       }
     });
   }
@@ -415,18 +427,28 @@ export default class CustomsList extends Component {
     };
     const status = this.props.listFilter.status;
     let bulkBtns = '';
-    bulkBtns = status === 'proposed' ? (
-      <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-        <Button type="default" onClick={() => this.handleListsReview(this.state.selectedRowKeys)}>
+    if (status === 'proposed') {
+      bulkBtns = (
+        <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
+          <Button type="default" size="large" onClick={() => this.handleListsReview(this.state.selectedRowKeys)}>
           批量复核
         </Button>
-      </PrivilegeCover>) : '';
-    bulkBtns = status === 'reviewed' ? (
-      <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-        <Button type="default" onClick={() => this.handleListsSend(this.state.selectedRowKeys)}>
-          批量发送
-        </Button>
-      </PrivilegeCover>) : '';
+        </PrivilegeCover>);
+    } else if (status === 'reviewed') {
+      bulkBtns = (
+        <span>
+          <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
+            <Button type="primary" size="large" onClick={() => this.handleListsSend(this.state.selectedRowKeys)}>
+            批量发送
+          </Button>
+          </PrivilegeCover>
+          <Popconfirm title={'是否退回所有选择项？'} onConfirm={() => this.handleListsRecall(this.state.selectedRowKeys)}>
+            <Button size="large">
+            批量退回
+          </Button>
+          </Popconfirm>
+        </span>);
+    }
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Header className="top-bar">

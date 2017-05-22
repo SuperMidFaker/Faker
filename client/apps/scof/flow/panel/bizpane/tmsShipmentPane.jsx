@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Collapse, Form, Col, Row, Select } from 'antd';
+import { Collapse, Form, Col, Row, Switch, Select } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { GOODS_TYPES } from 'common/constants';
 import FlowTriggerTable from '../compose/flowTriggerTable';
@@ -71,11 +71,7 @@ export default class TMSShipmentPane extends Component {
                 {getFieldDecorator('transit_mode', {
                   initialValue: model.transit_mode,
                 })(<Select allowClear>
-                  {
-                    transitModes.map(tr =>
-                      <Option value={tr.mode_code} key={tr.mode_code}>{tr.mode_name}</Option>
-                    )
-                  }
+                  { transitModes.map(tr => <Option value={tr.mode_code} key={tr.mode_code}>{tr.mode_name}</Option>) }
                 </Select>)}
               </FormItem>
             </Col>
@@ -84,10 +80,16 @@ export default class TMSShipmentPane extends Component {
                 {getFieldDecorator('goods_type', {
                   initialValue: model.goods_type,
                 })(<Select allowClear>
-                  {
-                    GOODS_TYPES.map(gt => <Option value={gt.value} key={gt.value}>{gt.text}</Option>)
-                  }
+                  { GOODS_TYPES.map(gt => <Option value={gt.value} key={gt.value}>{gt.text}</Option>) }
                 </Select>)}
+              </FormItem>
+            </Col>
+            <Col sm={24} lg={12}>
+              <FormItem label={this.msg('podType')}>
+                {getFieldDecorator('pod', {
+                  valuePropName: 'checked',
+                  initialValue: model.pod,
+                })(<Switch />)}
               </FormItem>
             </Col>
           </Row>

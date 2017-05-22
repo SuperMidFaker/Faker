@@ -22,6 +22,7 @@ export default class TMSNodeCard extends React.Component {
     trsMode: PropTypes.string,
     uuid: PropTypes.string,
     in_degree: PropTypes.number.isRequired,
+    pod: PropTypes.bool.isRequired,
   }
   state = {
     trigger: -1,
@@ -73,11 +74,20 @@ export default class TMSNodeCard extends React.Component {
     );
   }
   render() {
-    const { name, children, consignerName, consigneeName, trsMode, in_degree: indegree } = this.props;
+    const { name, children, consignerName, consigneeName, trsMode, in_degree: indegree, pod } = this.props;
     const previewer = indegree === 0 ?
         (<Tooltip title="进入详情">
           <Button size="small" shape="circle" icon="right" onClick={() => this.handleShipmtPreview(this.props.uuid)} />
         </Tooltip>) : null;
+    const steps = [
+      <Step description="接单" key="accept" />,
+      <Step description="调度" key="dispatch" />,
+      <Step description="提货" key="pickup" />,
+      <Step description="送货" key="deliver" />,
+    ];
+    if (pod) {
+      steps.push(<Step description="回单" key="pod" />);
+    }
     return (
       <Card title={<span>{name}</span>} extra={previewer} bodyStyle={{ padding: 8, paddingBottom: 56 }}>
         <Row>
@@ -100,11 +110,7 @@ export default class TMSNodeCard extends React.Component {
         {children}
         <div className="card-footer">
           <Steps current={this.state.trigger} progressDot>
-            <Step description="接单" />
-            <Step description="调度" />
-            <Step description="提货" />
-            <Step description="送货" />
-            <Step description="回单" />
+            {steps}
           </Steps>
         </div>
       </Card>

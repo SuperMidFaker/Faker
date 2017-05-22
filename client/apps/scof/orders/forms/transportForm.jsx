@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Button, DatePicker, InputNumber, Form, Row, Col, Card, Input, Select, Icon } from 'antd';
+import { Button, DatePicker, InputNumber, Form, Row, Col, Card, Input, Switch, Select, Icon } from 'antd';
 import RegionCascader from 'client/components/chinaRegionCascader';
 import { setClientForm, loadFlowNodeData } from 'common/reducers/crmOrders';
 import { uuidWithoutDash } from 'client/common/uuid';
@@ -88,6 +88,7 @@ export default class TransportForm extends Component {
             trs_mode_id: transitMode && transitMode.id,
             trs_mode_code: nodedata.transit_mode,
             trs_mode: transitMode && transitMode.mode_name,
+            pod: nodedata.pod,
             remark: '',
             package: '',
             uuid: uuidWithoutDash() });
@@ -563,6 +564,11 @@ export default class TransportForm extends Component {
           <Col sm={24} md={8}>
             <FormItem label="备注" {...formItemLayout}>
               <Input value={node.remark} onChange={e => this.handleCommonFieldChange('remark', e.target.value)} />
+            </FormItem>
+          </Col>
+          <Col sm={24} md={8}>
+            <FormItem label="回单" {...formItemLayout}>
+              <Switch checked={node.pod} onChange={checked => this.handleCommonFieldChange('pod', checked)} />
             </FormItem>
           </Col>
         </Row>
