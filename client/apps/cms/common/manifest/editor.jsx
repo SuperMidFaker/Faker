@@ -317,7 +317,7 @@ export default class ManifestEditor extends React.Component {
         <Menu.Item key="template"><Icon type="book" /> {this.msg('saveAsTemplate')}</Menu.Item>
         {editable && lockMenuItem}
         {editable && <Menu.Item key="reset">
-          <a href onClick={this.handleBillReset}> <Icon type="reload" /> 重置清单</a>
+          <a role="presentation" onClick={this.handleBillReset}> <Icon type="reload" /> 重置清单</a>
         </Menu.Item>}
       </Menu>);
   }

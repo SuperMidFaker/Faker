@@ -160,7 +160,7 @@ export default class SpecialCategories extends React.Component {
               ><Icon type="edit" /></a>
               <span className="ant-divider" />
               <Popconfirm title="确认删除该分类?" onConfirm={() => this.handleRemove(row.id)}>
-                <a href><Icon type="delete" /></a>
+                <a role="presentation"><Icon type="delete" /></a>
               </Popconfirm>
             </span>
           );

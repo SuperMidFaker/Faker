@@ -509,7 +509,7 @@ export default class DelegationList extends Component {
                 {editOverlay && <span className="ant-divider" />}
                 {editOverlay && <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
                   <Dropdown overlay={editOverlay}>
-                    <a href><Icon type="down" /></a>
+                    <a role="presentation"><Icon type="down" /></a>
                   </Dropdown>
                 </PrivilegeCover>}
               </span>
@@ -525,7 +525,7 @@ export default class DelegationList extends Component {
               record.sub_status === CMS_DELEGATION_STATUS.unaccepted) {     // 2.3 报关供应商尚未接单(已作分配)
               extraOp = (
                 <Popconfirm title="你确定撤回分配吗?" onConfirm={() => this.handleDelgAssignRecall(record)} >
-                  <a href><Icon type="rollback" /> {this.msg('delgRecall')}</a>
+                  <a role="presentation"><Icon type="rollback" /> {this.msg('delgRecall')}</a>
                 </Popconfirm>);
             }
             return (
@@ -549,7 +549,7 @@ export default class DelegationList extends Component {
                 <Menu>
                   <Menu.Item>
                     <Popconfirm title="你确定撤回分配吗?" onConfirm={() => this.handleDelgAssignRecall(record)}>
-                      <a href><Icon type="rollback" /> {this.msg('delgRecall')}</a>
+                      <a role="presentation"><Icon type="rollback" /> {this.msg('delgRecall')}</a>
                     </Popconfirm>
                   </Menu.Item>
                 </Menu>);
@@ -572,7 +572,7 @@ export default class DelegationList extends Component {
                 </PrivilegeCover>
                 {dispatchOverlay && <span className="ant-divider" />}
                 {dispatchOverlay && <Dropdown overlay={dispatchOverlay}>
-                  <a href><Icon type="down" /></a>
+                  <a role="presentation"><Icon type="down" /></a>
                 </Dropdown>}
               </span>);
           } else if (record.status === CMS_DELEGATION_STATUS.declaring ||   // 4. 申报
@@ -647,7 +647,7 @@ export default class DelegationList extends Component {
               </div>
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3>
-                <a href onClick={this.handleDeselectRows}>不选</a>
+                <a role="presentation" onClick={this.handleDeselectRows}>不选</a>
               </div>
             </div>
             <div className="panel-body table-panel">

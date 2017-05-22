@@ -28,7 +28,7 @@ export function RowClick(props) {
   function handleClick(ev) {
     onHit(ev, row, index);
   }
-  return <a href onClick={handleClick}>{text}</a>;
+  return <a role="presentation" onClick={handleClick}>{text}</a>;
 }
 
 RowClick.propTypes = {
@@ -64,7 +64,14 @@ function fetch({ state, dispatch, cookie }) {
   dispatchConfirmModal: state.transportDispatch.dispatchConfirmModal,
   visible: state.transportDispatch.dispDockShow,
 }),
-  { loadLsps, loadVehicles, doDispatch, doDispatchAndSend, addPartner, computeCostCharge, toggleCarrierModal, showDispatchConfirmModal,
+  { loadLsps,
+    loadVehicles,
+    doDispatch,
+    doDispatchAndSend,
+    addPartner,
+    computeCostCharge,
+    toggleCarrierModal,
+    showDispatchConfirmModal,
     changeDockStatus }
 )
 export default class DispatchDock extends Component {
@@ -141,7 +148,7 @@ export default class DispatchDock extends Component {
       width: 60,
       render: (o, record) => (
         <span>
-          <a href onClick={() => this.showConfirm('tenant', record)}>
+          <a role="presentation" onClick={() => this.showConfirm('tenant', record)}>
             {this.msg('btnTextDispatch')}
           </a>
         </span>
@@ -196,7 +203,7 @@ export default class DispatchDock extends Component {
       width: 50,
       render: (o, record) => (
         <span>
-          <a href onClick={() => this.showConfirm('vehicle', record)}>
+          <a role="presentation" onClick={() => this.showConfirm('vehicle', record)}>
             {this.msg('btnTextDispatch')}
           </a>
         </span>

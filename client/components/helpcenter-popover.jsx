@@ -34,13 +34,13 @@ export default class HelpcenterPopover extends React.Component {
           <div className="navbar-popover">
             <Menu>
               <MenuItem>
-                <a href onClick={this.handleOnlineService}>
+                <a role="presentation" onClick={this.handleOnlineService}>
                   <Icon type="customerservice" />
                   <span>{this.msg('online')}</span>
                 </a>
               </MenuItem>
               <MenuItem>
-                <a href onClick={this.handleGuide}>
+                <a role="presentation" onClick={this.handleGuide}>
                   <Icon type="bulb" />
                   <span>{this.msg('guide')}</span>
                 </a>

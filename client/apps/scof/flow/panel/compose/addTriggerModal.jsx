@@ -29,7 +29,7 @@ function CreateActionForm(props) {
   return (
     <Card extra={(
       <Popconfirm title={msg('deleteConfirm')} onConfirm={handleDel}>
-        <a href><Icon type="delete" /></a>
+        <a role="presentation"><Icon type="delete" /></a>
       </Popconfirm>)}
     >
       <Row gutter={16}>
@@ -87,7 +87,7 @@ function NotifyActionForm(props) {
   return (
     <Card extra={(
       <Popconfirm title={msg('deleteConfirm')} onConfirm={handleDel}>
-        <a href><Icon type="delete" /></a>
+        <a role="presentation"><Icon type="delete" /></a>
       </Popconfirm>)}
     >
       <Row gutter={16}>

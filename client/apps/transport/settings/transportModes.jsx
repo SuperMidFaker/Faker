@@ -159,7 +159,7 @@ export default class TransportModes extends Component {
                   ><Icon type="edit" /></a>
                   <span className="ant-divider" />
                   <Popconfirm title="确认删除?" onConfirm={() => this.handleRemove(row)}>
-                    <a href><Icon type="delete" /></a>
+                    <a role="presentation"><Icon type="delete" /></a>
                   </Popconfirm>
                 </span>
               );

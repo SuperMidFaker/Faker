@@ -228,7 +228,7 @@ export default class CorpList extends React.Component {
                   {formatGlobalMsg(intl, 'modify')}
                 </NavLink>
                 <span className="ant-divider" />
-                <a href onClick={() => this.handleStatusSwitch(record, index)}>
+                <a role="presentation" onClick={() => this.handleStatusSwitch(record, index)}>
                   {formatContainerMsg(intl, 'disableOp')}
                 </a>
               </span>
@@ -237,13 +237,13 @@ export default class CorpList extends React.Component {
           return (
             <span>
               <PrivilegeCover module="corp" feature="organization" action="delete">
-                <a href onClick={() => this.handleCorpDel(record.key)}>
+                <a role="presentation" onClick={() => this.handleCorpDel(record.key)}>
                   {formatGlobalMsg(intl, 'delete')}
                 </a>
               </PrivilegeCover>
               <span className="ant-divider" />
               <PrivilegeCover module="corp" feature="organization" action="edit">
-                <a href onClick={() => this.handleStatusSwitch(record, index)}>
+                <a role="presentation" onClick={() => this.handleStatusSwitch(record, index)}>
                   {formatContainerMsg(intl, 'enableOp')}
                 </a>
               </PrivilegeCover>

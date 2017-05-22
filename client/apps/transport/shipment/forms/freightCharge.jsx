@@ -376,7 +376,7 @@ export default class FreightCharge extends React.Component {
     >{tariff.quoteNo ? tariff.quoteNo : ''}</a></span>);
     return (
       <Card title={title} bodyStyle={{ padding: 16 }}
-        extra={computed ? <a href onClick={this.handleReset}>重置</a> : <Button type="primary" icon="calculator"
+        extra={computed ? <a role="presentation" onClick={this.handleReset}>重置</a> : <Button type="primary" icon="calculator"
           onClick={() => this.handleCompute('normal')}
         >{this.msg('computeCharge')}</Button>}
       >

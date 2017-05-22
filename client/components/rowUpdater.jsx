@@ -3,7 +3,8 @@ import { Tooltip } from 'antd';
 
 export default function RowUpdater(props) {
   const { label, onHit, onHover, row, index, tooltip, ...extra } = props;
-  function handleClick() {
+  function handleClick(ev) {
+    ev.preventDefault();
     if (onHit) {
       onHit(row, index);
     }

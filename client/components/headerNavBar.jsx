@@ -111,21 +111,21 @@ export default class HeaderNavBar extends React.Component {
             </NavLink>
           </MenuItem>}
           {!compact && <MenuItem>
-            <a href onClick={this.handleShowPreference}>
+            <a role="presentation" onClick={this.handleShowPreference}>
               <Icon type="tool" />
               <span>{formatMsg(intl, 'userPreference')}</span>
             </a>
           </MenuItem>}
           {!compact && <MenuDivider />}
           {!compact && <MenuItem>
-            <a href onClick={this.handleShowActivities}>
+            <a role="presentation" onClick={this.handleShowActivities}>
               <Icon type="solution" />
               <span>{formatMsg(intl, 'userActivities')}</span>
             </a>
           </MenuItem>}
           {!compact && <MenuDivider />}
           <MenuItem>
-            <a href onClick={this.handleLogout}>
+            <a role="presentation" onClick={this.handleLogout}>
               <Icon type="poweroff" />
               <span>{formatMsg(intl, 'userLogout')}</span>
             </a>
@@ -152,14 +152,14 @@ export default class HeaderNavBar extends React.Component {
     } else if (navTitle.depth === 3) {
       brandNav = [(
         <Tooltip placement="bottomLeft" arrowPointAtCenter mouseEnterDelay={2} title={this.msg('back')} key="back" >
-          <a href className="navbar-anchor" key="back" onClick={this.handleGoBack}>
+          <a role="presentation" className="navbar-anchor" key="back" onClick={this.handleGoBack}>
             <MdIcon type="arrow-left" />
           </a>
         </Tooltip>)];
       if (navTitle.jumpOut && this.props.navTitle.stack > 1) {
         brandNav.push(
           <Tooltip placement="bottomLeft" arrowPointAtCenter mouseEnterDelay={2} title={this.msg('close')} key="close" >
-            <a href className="navbar-anchor" key="close" onClick={this.handleGoDepth2}>
+            <a role="presentation" className="navbar-anchor" key="close" onClick={this.handleGoDepth2}>
               <MdIcon type="close" />
             </a>
           </Tooltip>);

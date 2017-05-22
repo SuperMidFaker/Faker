@@ -416,7 +416,7 @@ export default class AcceptList extends React.Component {
                       </Menu.Item>
                       <Menu.Item key="delete">
                         <Popconfirm title={this.msg('deleteConfirm')} onConfirm={ev => this.handleShipmtRevoke(record.shipmt_no, record.key, ev)}>
-                          <a href>
+                          <a role="presentation">
                             {this.msg('shipmtRevoke')}
                           </a>
                         </Popconfirm>
@@ -442,7 +442,7 @@ export default class AcceptList extends React.Component {
             <span>
               <PrivilegeCover module="transport" feature="shipment" action="edit">
                 <Popconfirm title="退回至未接单状态" onConfirm={() => this.handleReturn(record.disp_id)}>
-                  <a role="button">
+                  <a role="presentation">
                     退回
                   </a>
                 </Popconfirm>

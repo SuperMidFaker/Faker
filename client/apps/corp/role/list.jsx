@@ -153,7 +153,7 @@ export default class RoleList extends React.Component {
                   {formatGlobalMsg(intl, 'modify')}
                 </NavLink>
                 <span className="ant-divider" />
-                <a href onClick={() => this.handleDisable(record, index)}>
+                <a role="presentation" onClick={() => this.handleDisable(record, index)}>
                   {formatContainerMsg(intl, 'disableOp')}
                 </a>
               </span>
@@ -162,7 +162,7 @@ export default class RoleList extends React.Component {
           return (
             <span>
               <PrivilegeCover module="corp" feature="role" action="edit">
-                <a href onClick={() => this.handleEnable(record, index)}>
+                <a role="presentation" onClick={() => this.handleEnable(record, index)}>
                   {formatContainerMsg(intl, 'enableOp')}
                 </a>
               </PrivilegeCover>

@@ -183,7 +183,7 @@ export default class NotificationPopover extends React.Component {
     const notificationContent = (<div className="navbar-popover" style={{ width: 360 }}>
       <div className="popover-header">
         <div className="toolbar-right">
-          <a href ><i className="zmdi zmdi-check-all zmdi-hc-lg" /></a>
+          <a role="presentation" ><i className="zmdi zmdi-check-all zmdi-hc-lg" /></a>
         </div>
         <span>{this.msg('notification')}</span>
       </div>

@@ -5,12 +5,13 @@ import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';
 import { loadEntry, saveEntryHead } from 'common/reducers/cmsManifest';
-import { deleteDecl, setDeclReviewed, showSendDeclModal } from 'common/reducers/cmsDeclare';
+import { deleteDecl, setDeclReviewed, openDeclReleasedModal, showSendDeclModal } from 'common/reducers/cmsDeclare';
 import NavLink from 'client/components/nav-link';
 import ButtonToggle from 'client/components/ButtonToggle';
 import SheetHeadPanel from './panel/cdfHeadPanel';
 import SheetBodyPanel from './panel/cdfBodyPanel';
 import SheetExtraPanel from './panel/cdfExtraPanel';
+import DeclReleasedModal from './modals/declReleasedModal';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import { CMS_DECL_STATUS } from 'common/constants';
@@ -34,7 +35,7 @@ const navObj = {
     bodies: state.cmsManifest.entryBodies,
     tenantId: state.account.tenantId,
   }),
-  { saveEntryHead, loadEntry, deleteDecl, setDeclReviewed, showSendDeclModal, setNavTitle }
+  { saveEntryHead, loadEntry, deleteDecl, setDeclReviewed, openDeclReleasedModal, showSendDeclModal, setNavTitle }
 )
 @connectNav(navObj)
 @Form.create()
@@ -119,6 +120,13 @@ export default class CustomsDeclEditor extends React.Component {
     const head = this.props.head;
     this.props.showSendDeclModal({ visible: true, preEntrySeqNo: head.pre_entry_seq_no, delgNo: head.delg_no, agentCustCo: head.agent_custco });
   }
+  handleMarkReleasedModal = () => {
+    const head = this.props.head;
+    this.props.openDeclReleasedModal(head.entry_id, head.pre_entry_seq_no, head.delg_no);
+  }
+  reloadEntry = () => {
+    this.props.loadEntry(this.props.head.bill_seq_no, this.props.head.pre_entry_seq_no, this.props.tenantId);
+  }
   handleEntryVisit = (ev) => {
     const { ietype, billMeta } = this.props;
     const pathname = `/clearance/${ietype}/customs/${billMeta.bill_seq_no}/${ev.key}`;
@@ -164,7 +172,7 @@ export default class CustomsDeclEditor extends React.Component {
               { head.status === CMS_DECL_STATUS.reviewed.value &&
                 <Button type="primary" size="large" icon="mail" onClick={this.handleShowSendDeclModal}>{this.msg('sendPackets')}</Button>
               }
-              { head.status === CMS_DECL_STATUS.finalized.value &&
+              { (head.status === CMS_DECL_STATUS.finalized.value || head.status === CMS_DECL_STATUS.sent.value) &&
                 <Button type="primary" ghost size="large" icon="flag" onClick={this.handleMarkReleasedModal}>{this.msg('markReleased')}</Button>
               }
               <Dropdown.Button size="large" onClick={this.handleManifestVisit} overlay={declEntryMenu}>
@@ -208,9 +216,10 @@ export default class CustomsDeclEditor extends React.Component {
               <h3>附加资料</h3>
             </div>
             <SheetExtraPanel type="entry" />
-            <SendModal ietype={ietype} />
           </div>
         </Sider>
+        <SendModal ietype={ietype} reload={this.reloadEntry} />
+        <DeclReleasedModal reload={this.reloadEntry} />
       </Layout>
     );
   }

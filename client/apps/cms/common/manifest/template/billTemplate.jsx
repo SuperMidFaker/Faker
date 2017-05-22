@@ -136,7 +136,7 @@ export default class BillTemplate extends Component {
         fixed: 'right',
         render: (o, record) => (
           <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleCustDel(record.id)}>
-            <a href><Icon type="delete" /></a>
+            <a role="presentation"><Icon type="delete" /></a>
           </Popconfirm>
         ),
       });

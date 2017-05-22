@@ -37,7 +37,7 @@ export default class SendModal extends React.Component {
     showSendDeclModal: PropTypes.func.isRequired,
     getEasipassList: PropTypes.func.isRequired,
     sendDecl: PropTypes.func.isRequired,
-    reload: PropTypes.func,
+    reload: PropTypes.func.isRequired,
   }
   state = {
     easipassList: [],

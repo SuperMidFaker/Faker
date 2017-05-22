@@ -149,7 +149,7 @@ export default class MemberDepartmentView extends React.Component {
                 {formatGlobalMsg(this.props.intl, 'modify')}
               </NavLink>
               <span className="ant-divider" />
-              <a href onClick={() => this.handleStatusSwitch(record, index)}>
+              <a role="presentation" onClick={() => this.handleStatusSwitch(record, index)}>
                 {formatContainerMsg(this.props.intl, 'disableOp')}
               </a>
             </span>
@@ -159,13 +159,13 @@ export default class MemberDepartmentView extends React.Component {
         return (
           <span>
             <PrivilegeCover module="corp" feature="personnel" action="delete">
-              <a href onClick={() => this.handlePersonnelDel(record)}>
+              <a role="presentation" onClick={() => this.handlePersonnelDel(record)}>
                 {formatGlobalMsg(this.props.intl, 'delete')}
               </a>
             </PrivilegeCover>
             <span className="ant-divider" />
             <PrivilegeCover module="corp" feature="personnel" action="edit">
-              <a href onClick={() => this.handleStatusSwitch(record, index)}>
+              <a role="presentation" onClick={() => this.handleStatusSwitch(record, index)}>
                 {formatContainerMsg(this.props.intl, 'enableOp')}
               </a>
             </PrivilegeCover>

@@ -487,7 +487,7 @@ export default class TradeItemList extends Component {
                     </Menu.Item>
                     <Menu.Item key="delete">
                       <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleItemDel(record.id)}>
-                        <a href><Icon type="delete" /> {this.msg('delete')}</a>
+                        <a role="presentation"><Icon type="delete" /> {this.msg('delete')}</a>
                       </Popconfirm>
                     </Menu.Item>
                   </Menu>)}
@@ -504,7 +504,7 @@ export default class TradeItemList extends Component {
                 </NavLink>
                 <span className="ant-divider" />
                 <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleItemDel(record.id)}>
-                  <a href><Icon type="delete" /> {this.msg('delete')}</a>
+                  <a role="presentation"><Icon type="delete" /> {this.msg('delete')}</a>
                 </Popconfirm>
               </span>
             );

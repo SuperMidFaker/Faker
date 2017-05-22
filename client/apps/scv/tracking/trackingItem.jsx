@@ -128,7 +128,7 @@ export default class TrackingItem extends Component {
         </td>
         <td style={{ ...colStyle, width: 60 }}>
           <Popconfirm title="确认删除?" onConfirm={() => this.props.handleRemove(row.id, row.source)}>
-            <a href><Icon type="delete" /></a>
+            <a role="presentation"><Icon type="delete" /></a>
           </Popconfirm>
         </td>
       </tr>

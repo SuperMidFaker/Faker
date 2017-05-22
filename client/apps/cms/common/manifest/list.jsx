@@ -167,7 +167,7 @@ export default class ManifestList extends Component {
             { record.revertable && <span className="ant-divider" />}
             { record.revertable && (<Popconfirm title="确定操作?" placement="topRight" onConfirm={() => this.handleManifestRedo(record)}>
               <Tooltip title="删除已生成的报关建议书，重新修改" placement="bottomLeft">
-                <a href><Icon type="reload" /></a>
+                <a role="presentation"><Icon type="reload" /></a>
               </Tooltip>
             </Popconfirm>)}
           </span>

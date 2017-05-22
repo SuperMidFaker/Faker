@@ -121,7 +121,7 @@ export default class NotificationDockPanel extends React.Component {
             </Popconfirm>
           </div>
         </div>
-        <Table columns={columns} dataSource={dataSource} locale={{ emptyText: this.msg('emptyNew') }} showHeader={false} scrollOffset={170} />
+        <Table columns={columns} dataSource={dataSource} rowKey="id" locale={{ emptyText: this.msg('emptyNew') }} showHeader={false} scrollOffset={170} />
       </DockPanel>
     );
   }

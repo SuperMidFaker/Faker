@@ -197,7 +197,7 @@ export default class TrackingItems extends React.Component {
                       是
                     </td>
                     <td style={{ ...colStyle, width: 60 }} className="editable-row-operations">
-                      <a href onClick={this.handleAddItem}><Icon type="save" /></a>
+                      <a role="presentation" onClick={this.handleAddItem}><Icon type="save" /></a>
                     </td>
                   </tr>
                 </tbody>

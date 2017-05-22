@@ -281,7 +281,7 @@ export default class ImportComparisonModal extends React.Component {
               <RowUpdater onHit={this.handleCodeChoose} label="使用新编码" row={record} index={index} />
               <span className="ant-divider" />
               <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleRowDel(record.id)}>
-                <a href><Icon type="delete" /></a>
+                <a role="presentation"><Icon type="delete" /></a>
               </Popconfirm>
             </span>
           );
@@ -291,7 +291,7 @@ export default class ImportComparisonModal extends React.Component {
               <RowUpdater onHit={this.handleCodeChoose} label="使用原编码" row={record} index={index} />
               <span className="ant-divider" />
               <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleRowDel(record.id)}>
-                <a href><Icon type="delete" /></a>
+                <a role="presentation"><Icon type="delete" /></a>
               </Popconfirm>
             </span>
           );
@@ -301,7 +301,7 @@ export default class ImportComparisonModal extends React.Component {
               <RowUpdater onHit={this.handleCodeChoose} label="使用新规格型号" row={record} index={index} />
               <span className="ant-divider" />
               <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleRowDel(record.id)}>
-                <a href><Icon type="delete" /></a>
+                <a role="presentation"><Icon type="delete" /></a>
               </Popconfirm>
             </span>
           );
@@ -311,14 +311,14 @@ export default class ImportComparisonModal extends React.Component {
               <RowUpdater onHit={this.handleCodeChoose} label="使用原规格型号" row={record} index={index} />
               <span className="ant-divider" />
               <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleRowDel(record.id)}>
-                <a href><Icon type="delete" /></a>
+                <a role="presentation"><Icon type="delete" /></a>
               </Popconfirm>
             </span>
           );
         } else {
           return (
             <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleRowDel(record.id)}>
-              <a href><Icon type="delete" /></a>
+              <a role="presentation"><Icon type="delete" /></a>
             </Popconfirm>);
         }
       },

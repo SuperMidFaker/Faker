@@ -70,9 +70,7 @@ export default class DeclReleasedModal extends React.Component {
         } else {
           this.setState({ entryNo: '', clearTime: null });
           this.handleCancel();
-          if (this.props.reload) {
-            this.props.reload();
-          }
+          this.props.reload();
         }
       });
   }
