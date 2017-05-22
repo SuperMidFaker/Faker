@@ -3,7 +3,7 @@ import { defineMessages } from 'react-intl';
 export default defineMessages({
   transportShipment: {
     id: 'transport.shipment',
-    defaultMessage: '运单',
+    defaultMessage: '运输计划',
   },
   shipNo: {
     id: 'transport.acceptance.ship.no',

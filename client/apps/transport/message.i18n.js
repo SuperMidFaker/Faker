@@ -7,7 +7,7 @@ export default defineMessages({
   },
   shipment: {
     id: 'tms.module.shipment',
-    defaultMessage: '运单',
+    defaultMessage: '运输计划',
   },
   dispatch: {
     id: 'tms.module.dispatch',

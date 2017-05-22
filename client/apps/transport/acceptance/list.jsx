@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Breadcrumb, Button, Dropdown, Menu, Icon, Radio, Layout, message, Popconfirm } from 'antd';
+import { Breadcrumb, Button, Dropdown, Menu, Icon, Layout, message, Popconfirm } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
@@ -12,10 +12,10 @@ import AdvancedSearchBar from '../common/advanced-search-bar';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege, { PrivilegeCover } from 'client/common/decorators/withPrivilege';
-import { loadTable, revokeOrReject, delDraft, acceptDispShipment } from
+import { loadTable, revokeOrReject, delDraft, acceptDispShipment, returnShipment } from
 'common/reducers/transport-acceptance';
 import { loadShipmtDetail } from 'common/reducers/shipment';
-import { SHIPMENT_SOURCE, SHIPMENT_EFFECTIVES, DEFAULT_MODULES } from 'common/constants';
+import { SHIPMENT_SOURCE, SHIPMENT_EFFECTIVES, DEFAULT_MODULES, SHIPMENT_TRACK_STATUS } from 'common/constants';
 import RevokejectModal from '../shipment/dock/revoke-reject';
 import ShipmentDockPanel from '../shipment/dock/shipmentDockPanel';
 import ShipmtnoColumn from '../common/shipmtnoColumn';
@@ -34,9 +34,6 @@ const formatMsg = format(messages);
 const formatContainerMsg = format(containerMessages);
 const formatGlobalMsg = format(globalMessages);
 const { Header, Content } = Layout;
-
-const RadioButton = Radio.Button;
-const RadioGroup = Radio.Group;
 
 function TransitTimeLabel(props) {
   const { time, tformat } = props;
@@ -78,7 +75,7 @@ function fetchData({ state, dispatch, cookie }) {
     sortOrder: state.transportAcceptance.table.sortOrder,
     todos: state.shipment.statistics.todos,
   }),
-  { loadTable, revokeOrReject, loadShipmtDetail, delDraft, acceptDispShipment })
+  { loadTable, revokeOrReject, loadShipmtDetail, delDraft, acceptDispShipment, returnShipment })
 @connectNav({
   depth: 2,
   text: DEFAULT_MODULES.transport.text,
@@ -98,6 +95,7 @@ export default class AcceptList extends React.Component {
     revokeOrReject: PropTypes.func.isRequired,
     loadShipmtDetail: PropTypes.func.isRequired,
     loadTable: PropTypes.func.isRequired,
+    returnShipment: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -284,16 +282,6 @@ export default class AcceptList extends React.Component {
     this.handleTableLoad(filters, 1);
     this.showAdvancedSearch(false);
   }
-  handleShipmentFilter = (ev) => {
-    const targetVal = ev.target.value;
-    const filterArray = this.mergeFilters(this.props.filters, 'type', targetVal);
-    const sortOrder = 'desc';
-    let sortField = 'created_date';
-    if (targetVal === 'accepted') {
-      sortField = 'acpt_date';
-    }
-    this.handleTableLoad(filterArray, 1, sortField, sortOrder);
-  }
   handleCreateBtnClick = () => {
     this.context.router.push('/transport/shipment/create');
   }
@@ -348,6 +336,17 @@ export default class AcceptList extends React.Component {
   //   ev.stopPropagation();
   //   this.props.revokeOrReject('reject', dispId);
   // }
+  handleReturn = (dispId) => {
+    const { tenantId, loginId, loginName } = this.props;
+    const shipmtDispIds = [dispId];
+    this.props.returnShipment({ shipmtDispIds, tenantId, loginId, loginName }).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        this.handleTableLoad();
+      }
+    });
+  }
   handleShipmtDraftDel(shipmtNo, ev) {
     ev.preventDefault();
     ev.stopPropagation();
@@ -399,19 +398,14 @@ export default class AcceptList extends React.Component {
         });
       },
     };
-    let radioValue;
-    const types = this.props.filters.filter(flt => flt.name === 'type');
-    if (types.length === 1) {
-      radioValue = types[0].value;
-    }
     let columns = this.columns;
     let bulkBtns = '';
-    if (radioValue === 'unaccepted') {
-      columns = [...columns, {
-        title: formatContainerMsg(intl, 'opColumn'),
-        fixed: 'right',
-        width: 100,
-        render: (o, record) => {
+    columns = [...columns, {
+      title: formatContainerMsg(intl, 'opColumn'),
+      fixed: 'right',
+      width: 100,
+      render: (o, record) => {
+        if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {
           if (record.effective === SHIPMENT_EFFECTIVES.cancelled) {
             return (<span />);
           } else if (record.source === SHIPMENT_SOURCE.consigned) {
@@ -450,39 +444,26 @@ export default class AcceptList extends React.Component {
               </span>
             );
           }
-        },
-      }];
-      bulkBtns = (
-        <PrivilegeCover module="transport" feature="shipment" action="edit">
-          <OperatorsPopover partnerId={this.state.selectedPartnerIds[0]} partnerIds={this.state.selectedPartnerIds} handleAccept={this.handleShipmtsAccept} module="multiple" />
-        </PrivilegeCover>
-      );
-    } else if (radioValue === 'draft') {
-      columns = [...columns, {
-        title: formatContainerMsg(intl, 'opColumn'),
-        width: 110,
-        fixed: 'right',
-        render: (o, record) => (
-          <span>
-            <PrivilegeCover module="transport" feature="shipment" action="edit">
-              <NavLink to={`/transport/shipment/draft/${record.shipmt_no}`}>
-                {formatGlobalMsg(intl, 'modify')}
-              </NavLink>
-            </PrivilegeCover>
-            <span className="ant-divider" />
-            <PrivilegeCover module="transport" feature="shipment" action="delete">
-              <Popconfirm placement="topRight" title="确定要删除吗？"
-                onConfirm={ev => this.handleShipmtDraftDel(record.shipmt_no, ev)}
-              >
-                <a role="button">
-                  {formatGlobalMsg(intl, 'delete')}
-                </a>
-              </Popconfirm>
-            </PrivilegeCover>
-          </span>
-          ),
-      }];
-    }
+        } else if (record.status === SHIPMENT_TRACK_STATUS.accepted) {
+          return (
+            <span>
+              <PrivilegeCover module="transport" feature="shipment" action="edit">
+                <Popconfirm title="退回至未接单状态" onConfirm={() => this.handleReturn(record.disp_id)}>
+                  <a role="button">
+                    退回
+                  </a>
+                </Popconfirm>
+              </PrivilegeCover>
+            </span>
+          );
+        }
+      },
+    }];
+    bulkBtns = (
+      <PrivilegeCover module="transport" feature="shipment" action="edit">
+        <OperatorsPopover partnerId={this.state.selectedPartnerIds[0]} partnerIds={this.state.selectedPartnerIds} handleAccept={this.handleShipmtsAccept} module="multiple" />
+      </PrivilegeCover>
+    );
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Header className="top-bar">
@@ -491,11 +472,6 @@ export default class AcceptList extends React.Component {
               {this.msg('transportShipment')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <RadioGroup onChange={this.handleShipmentFilter} value={radioValue} size="large">
-            <RadioButton value="draft">{this.msg('draftShipmt')}</RadioButton>
-            <RadioButton value="unaccepted">{this.msg('unacceptedShipmt')}</RadioButton>
-            <RadioButton value="accepted">{this.msg('acceptedShipmt')}</RadioButton>
-          </RadioGroup>
           <div className="top-bar-tools">
             <PrivilegeCover module="transport" feature="shipment" action="create">
               <Button type="primary" size="large" icon="plus" onClick={this.handleCreateBtnClick}>

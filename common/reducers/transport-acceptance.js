@@ -22,7 +22,6 @@ const initialState = {
     loaded: true,
     loading: false,
     filters: [
-      { name: 'type', value: 'unaccepted' },
       /* { name: 'shipmt_no', value: ''} */
     ],
     sortField: 'created_date',
