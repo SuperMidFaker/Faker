@@ -254,6 +254,11 @@ export default class CDFBodyPanel extends React.Component {
       fixed: 'left',
       width: 45,
     }, {
+      title: this.msg('copGNo'),
+      fixed: 'left',
+      width: 150,
+      dataIndex: 'cop_g_no',
+    }, {
       title: this.msg('codeT'),
       width: 110,
       fixed: 'left',

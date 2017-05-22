@@ -17,6 +17,7 @@ import { CMS_DECL_STATUS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import SendDeclsModal from './modals/sendDeclsModal';
+import ManifestLegalInspectionPanel from './panel/manifestLegalInspectionPanel';
 
 const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
@@ -407,6 +408,9 @@ export default class ManifestEditor extends React.Component {
                   </TabPane>
                   <TabPane tab="清单表体" key="body">
                     <ManifestBodyPanel ietype={ietype} readonly={!editable} headForm={form} data={billBodies} billSeqNo={billHead.bill_seq_no} />
+                  </TabPane>
+                  <TabPane tab="法检物料" key="legalInspection">
+                    <ManifestLegalInspectionPanel ietype={ietype} />
                   </TabPane>
                 </Tabs>
               </div>
