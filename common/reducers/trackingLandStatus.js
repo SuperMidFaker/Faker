@@ -64,14 +64,17 @@ export const { REPORT_LOC_SUCCEED, LOAD_TRANSHIPMT, CHANGE_ACT_DATE_SUCCEED } = 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.LOAD_TRANSHIPMT:
-      return { ...state, loading: true,
+      return { ...state,
+        loading: true,
         filters: JSON.parse(action.params.filters),
       };
     case actionTypes.LOAD_TRANSHIPMT_FAIL:
       return { ...state, loading: false };
     case actionTypes.LOAD_TRANSHIPMT_SUCCEED:
-      return { ...state, loading: false,
-        loaded: true, shipmentlist: action.result.data,
+      return { ...state,
+        loading: false,
+        loaded: true,
+        shipmentlist: action.result.data,
       };
     case actionTypes.SHOW_VEHICLE_MODAL:
       return { ...state,
@@ -91,19 +94,22 @@ export default function reducer(state = initialState, action) {
       return { ...state, dateModal: initialState.dateModal };
     case actionTypes.SHOW_LOC_MODAL:
       return {
-        ...state, locModal: {
+        ...state,
+        locModal: {
           visible: true, transit: action.data,
         },
       };
     case actionTypes.HIDE_LOC_MODAL:
       return {
-        ...state, locModal: {
+        ...state,
+        locModal: {
           visible: false, transit: {},
         },
       };
     case actionTypes.REPORT_LOC_SUCCEED:
       return {
-        ...state, locReportedShipments: [
+        ...state,
+        locReportedShipments: [
           ...state.locReportedShipments, action.data.shipmtNo,
         ],
       };

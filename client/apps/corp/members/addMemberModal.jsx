@@ -61,7 +61,6 @@ export default class AddMemberModal extends Component {
     this.setState({ searchValue: ev.target.value });
   }
   handleMemberSearch = (searched) => {
-    console.log(searched);
     if (searched) {
       const members = this.state.allMembers.filter(mem => mem.name.indexOf(searched) >= 0);
       this.setState({ members });

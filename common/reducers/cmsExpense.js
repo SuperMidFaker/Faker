@@ -110,8 +110,10 @@ export default function reducer(state = initialState, action) {
       exps.data.forEach((exp) => {
         expFeesMap[exp.delg_no] = {};
       });
-      return { ...state, expslist: { ...state.expslist, ...exps, loading: false },
-        expFeesMap, listFilter: JSON.parse(action.params.filter) };
+      return { ...state,
+        expslist: { ...state.expslist, ...exps, loading: false },
+        expFeesMap,
+        listFilter: JSON.parse(action.params.filter) };
     }
     case actionTypes.DECL_EXPS_LOAD:
       return { ...state, declexps: { ...state.declexps, loading: true }, saved: false };
@@ -162,10 +164,14 @@ export default function reducer(state = initialState, action) {
     case actionTypes.CLOSE_ADVFEE_MODAL:
       return { ...state, advanceFeeModal: { ...state.advanceFeeModal, visible: false } };
     case actionTypes.LOAD_ADVPARTIES_SUCCEED:
-      return { ...state, advanceParties: action.result.data, advanceFeeModal: {
-        ...state.advanceFeeModal, visible: true, direction: action.params.direction,
-        delg_no: action.params.delgNo,
-      } };
+      return { ...state,
+        advanceParties: action.result.data,
+        advanceFeeModal: {
+          ...state.advanceFeeModal,
+          visible: true,
+          direction: action.params.direction,
+          delg_no: action.params.delgNo,
+        } };
         /*
     case actionTypes.SHOW_PREVIEWER:
       return { ...state, previewer: {

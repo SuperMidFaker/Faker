@@ -102,29 +102,33 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_ORDER_SUCCEED:
       return { ...state, formData: action.result.data };
     case actionTypes.LOAD_DETAIL_SUCCEED: {
-      return { ...state, dock: {
-        ...state.dock,
-        visible: true,
-        tabKey: action.tabKey,
-        ...action.result.data,
-      } };
+      return { ...state,
+        dock: {
+          ...state.dock,
+          visible: true,
+          tabKey: action.tabKey,
+          ...action.result.data,
+        } };
     }
     case actionTypes.LOAD_CLEARANCE_DETAIL_SUCCEED: {
-      return { ...state, dock: {
-        ...state.dock,
-        clearances: action.result.data,
-      } };
+      return { ...state,
+        dock: {
+          ...state.dock,
+          clearances: action.result.data,
+        } };
     }
     case actionTypes.LOAD_CLEARANCE_FEES_SUCCEED:
-      return { ...state, dock: {
-        ...state.dock,
-        clearanceFees: action.result.data || initialState.dock.clearanceFees,
-      } };
+      return { ...state,
+        dock: {
+          ...state.dock,
+          clearanceFees: action.result.data || initialState.dock.clearanceFees,
+        } };
     case actionTypes.LOAD_TRANSPORT_DETAIL_SUCCEED: {
-      return { ...state, dock: {
-        ...state.dock,
-        transports: action.result.data,
-      } };
+      return { ...state,
+        dock: {
+          ...state.dock,
+          transports: action.result.data,
+        } };
     }
     case actionTypes.HIDE_DOCK: {
       return { ...state, dock: { ...state.dock, visible: false } };

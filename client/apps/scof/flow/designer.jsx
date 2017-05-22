@@ -53,9 +53,12 @@ export default class FlowDesigner extends React.Component {
     listCollapsed: PropTypes.bool.isRequired,
     reloadOnDel: PropTypes.func.isRequired,
     trackingFields: PropTypes.arrayOf(PropTypes.shape({ field: PropTypes.string,
-      title: PropTypes.string, module: PropTypes.oneOf(['cms', 'tms', 'cwm']) })),
-    currentFlow: PropTypes.shape({ id: PropTypes.number.isRequired, name: PropTypes.string.isRequired,
-      partner_id: PropTypes.number.isRequired, customer_tenant_id: PropTypes.number.isRequired,
+      title: PropTypes.string,
+      module: PropTypes.oneOf(['cms', 'tms', 'cwm']) })),
+    currentFlow: PropTypes.shape({ id: PropTypes.number.isRequired,
+      name: PropTypes.string.isRequired,
+      partner_id: PropTypes.number.isRequired,
+      customer_tenant_id: PropTypes.number.isRequired,
       tracking_id: PropTypes.number }).isRequired,
   }
   constructor(...args) {
@@ -254,7 +257,11 @@ export default class FlowDesigner extends React.Component {
     }
     if (kind) {
       this.graph.beginAdd('node', {
-        id, kind, actions: [], in_degree: 0, out_degree: 0,
+        id,
+        kind,
+        actions: [],
+        in_degree: 0,
+        out_degree: 0,
         name: kind !== 'terminal' ? `节点${this.graph.get('items').filter(item => item.get('type') === 'node').length + 1}` : undefined,
       });
       this.graph.refresh();

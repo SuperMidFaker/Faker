@@ -151,7 +151,9 @@ export default class CorpInfo extends React.Component {
               {this.renderTextInput(
                 msg('companyShortName'), '', 'short_name', false,
                 [{
-                  type: 'string', min: 2, pattern: /^[\u4e00-\u9fa5_a-zA-Z0-9]+$/,
+                  type: 'string',
+                  min: 2,
+                  pattern: /^[\u4e00-\u9fa5_a-zA-Z0-9]+$/,
                   message: msg('shortNameMessage'),
                 }],
                 { initialValue: short_name }
@@ -232,8 +234,11 @@ export default class CorpInfo extends React.Component {
             <Col sm={24} md={24}>
               <FormItem label="LOGO">
                 <img src={this.state.logo || '/assets/img/wetms.png'} style={{
-                  height: 120, width: 120, margin: 10,
-                  border: '1px solid #e0e0e0', borderRadius: 60,
+                  height: 120,
+                  width: 120,
+                  margin: 10,
+                  border: '1px solid #e0e0e0',
+                  borderRadius: 60,
                 }} alt="logo"
                 />
                 <div title={msg('dragHint')} style={{ height: 140, marginTop: 20 }}>

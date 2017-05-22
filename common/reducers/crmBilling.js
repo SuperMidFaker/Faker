@@ -306,23 +306,25 @@ export default function reducer(state = initialState, action) {
     }
     case actionTypes.LOAD_FEES_BYBILLINGID_SUCCEED: {
       const billing = action.result.data.billing;
-      return { ...state, billingFees: action.result.data, billing: {
-        id: billing.id,
-        beginDate: billing.begin_date,
-        endDate: billing.end_date,
-        name: billing.name,
+      return { ...state,
+        billingFees: action.result.data,
+        billing: {
+          id: billing.id,
+          beginDate: billing.begin_date,
+          endDate: billing.end_date,
+          name: billing.name,
 
-        customerName: billing.customer_name,
-        customerCode: billing.customer_code,
-        customerTenantId: billing.customer_tenant_id,
-        customerPartnerId: billing.customer_partner_id,
+          customerName: billing.customer_name,
+          customerCode: billing.customer_code,
+          customerTenantId: billing.customer_tenant_id,
+          customerPartnerId: billing.customer_partner_id,
 
-        ccbCharge: billing.ccb_charge,
-        trsCharge: billing.trs_charge,
-        adjustCharge: billing.adjust_charge,
-        totalCharge: billing.total_charge,
-        modifyTimes: billing.modify_times,
-      },
+          ccbCharge: billing.ccb_charge,
+          trsCharge: billing.trs_charge,
+          adjustCharge: billing.adjust_charge,
+          totalCharge: billing.total_charge,
+          modifyTimes: billing.modify_times,
+        },
         loading: false };
     }
     default:
@@ -536,10 +538,22 @@ export function createBilling({ tenantId, loginId, loginName, name, beginDate, e
       endpoint: 'v1/crm/billing/create',
       method: 'post',
       data: {
-        tenantId, loginId, loginName, name, beginDate, endDate,
-        ccbCharge, trsCharge, adjustCharge, totalCharge,
-        customerTenantId, customerPartnerId, customerName, customerCode,
-        shipmtCount, fees,
+        tenantId,
+        loginId,
+        loginName,
+        name,
+        beginDate,
+        endDate,
+        ccbCharge,
+        trsCharge,
+        adjustCharge,
+        totalCharge,
+        customerTenantId,
+        customerPartnerId,
+        customerName,
+        customerCode,
+        shipmtCount,
+        fees,
       },
     },
   };

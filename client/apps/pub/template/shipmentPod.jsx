@@ -82,7 +82,7 @@ export default class ShipmentPod extends React.Component {
           <div><Tag color={tagColor}>{signStatusDescription}</Tag> <span>{pod.sign_remark}</span></div>
         </Row>
         <Row style={{ paddingLeft: contentTab, marginTop: 8 }}>
-          {pod.photos ? pod.photos.split(',').map((item, index) => (<div key={index} style={{ display: 'inline-block', marginRight: 20 }}><img style={{ width: 250, height: 'auto' }} src={item} alt="照片加载中..." /></div>)) : '此回单没有照片'}
+          {pod.photos ? pod.photos.split(',').map(item => (<div key={item} style={{ display: 'inline-block', marginRight: 20 }}><img style={{ width: 250, height: 'auto' }} src={item} alt="照片加载中..." /></div>)) : '此回单没有照片'}
         </Row>
       </div>
     );

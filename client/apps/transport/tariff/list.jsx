@@ -167,7 +167,8 @@ export default class TariffList extends React.Component {
   }
   handleEdit = (quoteNo, version) => {
     this.props.createTariffByNextVersion({
-      quoteNo, version,
+      quoteNo,
+      version,
       tenantId: this.props.tenantId,
     }).then((result) => {
       if (result.error) {

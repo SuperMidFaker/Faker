@@ -142,8 +142,10 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_DELG_MANIFEST:
       return { ...state, delgBillList: { ...state.delgBillList, loading: true } };
     case actionTypes.LOAD_DELG_MANIFEST_SUCCEED:
-      return { ...state, delgBillList: { ...state.delgBillList, loading: false, ...action.result.data },
-        listFilter: JSON.parse(action.params.filter), formRequire: action.result.data.formRequire };
+      return { ...state,
+        delgBillList: { ...state.delgBillList, loading: false, ...action.result.data },
+        listFilter: JSON.parse(action.params.filter),
+        formRequire: action.result.data.formRequire };
     case actionTypes.LOAD_MANIFEST:
       return { ...state, manifestLoading: true, billMeta: initialState.billMeta };
     case actionTypes.LOAD_MANIFEST_FAILED:
@@ -156,9 +158,13 @@ export default function reducer(state = initialState, action) {
         ports.push(destPort);
       }
       return {
-        ...state, billHead: action.result.data.head, billMeta: action.result.data.meta,
-        billBodies: action.result.data.hbodies, params: { ...state.params, ports },
-        templates: action.result.data.templates, billRule: action.result.data.billRule,
+        ...state,
+        billHead: action.result.data.head,
+        billMeta: action.result.data.meta,
+        billBodies: action.result.data.hbodies,
+        params: { ...state.params, ports },
+        templates: action.result.data.templates,
+        billRule: action.result.data.billRule,
         manifestLoading: false,
       };
     }
@@ -175,8 +181,11 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_CUSTOMS_DECL_FAILED:
       return { ...state, customsDeclLoading: false };
     case actionTypes.LOAD_CUSTOMS_DECL_SUCCEED:
-      return { ...state, entryHead: action.result.data.head, entryBodies: action.result.data.hbodies,
-        billMeta: action.result.data.meta, customsDeclLoading: false };
+      return { ...state,
+        entryHead: action.result.data.head,
+        entryBodies: action.result.data.hbodies,
+        billMeta: action.result.data.meta,
+        customsDeclLoading: false };
     case actionTypes.LOAD_PARAMS_SUCCEED: {
       const retParams = action.result.data;
       const retPorts = retParams.ports;
@@ -243,8 +252,10 @@ export default function reducer(state = initialState, action) {
     case actionTypes.SAVE_BILL_RULES_SUCCEED:
       return { ...state, billRule: action.payload.rules };
     case actionTypes.LOCK_MANIFEST_SUCCEED:
-      return { ...state, billHead: { ...state.billHead, locking_login_id: action.data.loginId,
-        locking_name: action.data.loginName } };
+      return { ...state,
+        billHead: { ...state.billHead,
+          locking_login_id: action.data.loginId,
+          locking_name: action.data.loginName } };
     case actionTypes.BILL_HEAD_CHANGE:
       return { ...state, billHeadFieldsChangeTimes: state.billHeadFieldsChangeTimes + 1 };
     case actionTypes.FILL_ENTRYNO_SUCCEED:
@@ -282,8 +293,12 @@ export default function reducer(state = initialState, action) {
       } else if (retData.i_e_type === 1) {
         retData.ietype = 'export';
       }
-      return { ...state, template: { ...state.template, ...retData }, relatedCustomers: action.result.data.customers,
-        formData: action.result.data.formData, billTemplateUsers: action.result.data.users, templateValLoading: false };
+      return { ...state,
+        template: { ...state.template, ...retData },
+        relatedCustomers: action.result.data.customers,
+        formData: action.result.data.formData,
+        billTemplateUsers: action.result.data.users,
+        templateValLoading: false };
     }
     case actionTypes.LOAD_FORM_VALS_FAIL:
       return { ...state, templateValLoading: false };

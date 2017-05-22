@@ -49,8 +49,11 @@ export default class CreatePointPane extends React.Component {
       this.props.reportLoc(
         tenantId, shipmtNo, parentNo, dispId,
         {
-          province, city, district,
-          location_time: locationTime, address,
+          province,
+          city,
+          district,
+          location_time: locationTime,
+          address,
           from: TRACKING_POINT_FROM_TYPE.manual,
         }).then((result) => {
           if (result.error) {
@@ -90,7 +93,8 @@ export default class CreatePointPane extends React.Component {
           {getFieldDecorator('locationTime', {
             rules: [{
               type: 'object',
-              required: true, message: '请选择时间',
+              required: true,
+              message: '请选择时间',
             }],
           })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
         </Row>

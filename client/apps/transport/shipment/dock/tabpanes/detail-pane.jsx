@@ -37,8 +37,14 @@ const Step = Steps.Step;
     formData: state.shipment.formData,
     charges: state.shipment.charges,
   }),
-  { showChangeShipmentModal, loadForm, saveEdit, revokeOrReject, computeSaleCharge,
-    createSpecialCharge, updateFee, showChangeActDateModal }
+  { showChangeShipmentModal,
+    loadForm,
+    saveEdit,
+    revokeOrReject,
+    computeSaleCharge,
+    createSpecialCharge,
+    updateFee,
+    showChangeActDateModal }
 )
 export default class DetailPane extends React.Component {
   static propTypes = {
@@ -124,22 +130,44 @@ export default class DetailPane extends React.Component {
     const created = this.props.formData.created_date || Date.now();
     if (charges.revenue.id) {
       const data = {
-        partner_id: customer_partner_id, consigner_region_code, consignee_region_code,
-        goods_type, trans_mode: transport_mode_id, transport_mode_code, ctn,
-        tenant_id: this.props.tenantId, created_date: created,
-        vehicle_type_id, vehicle_length_id, total_weight, total_volume,
-        pickup_est_date, deliver_est_date, tariffType: 'normal',
+        partner_id: customer_partner_id,
+        consigner_region_code,
+        consignee_region_code,
+        goods_type,
+        trans_mode: transport_mode_id,
+        transport_mode_code,
+        ctn,
+        tenant_id: this.props.tenantId,
+        created_date: created,
+        vehicle_type_id,
+        vehicle_length_id,
+        total_weight,
+        total_volume,
+        pickup_est_date,
+        deliver_est_date,
+        tariffType: 'normal',
         ...changedData,
       };
       promises.push(this.props.computeSaleCharge(data));
     }
     if (charges.expense.id) {
       const data = {
-        partner_id: downstream.sp_partner_id, consigner_region_code, consignee_region_code,
-        goods_type, trans_mode: transport_mode_id, transport_mode_code, ctn,
-        tenant_id: tenantId, created_date: created,
-        vehicle_type_id, vehicle_length_id, total_weight, total_volume,
-        pickup_est_date, deliver_est_date, tariffType: 'normal',
+        partner_id: downstream.sp_partner_id,
+        consigner_region_code,
+        consignee_region_code,
+        goods_type,
+        trans_mode: transport_mode_id,
+        transport_mode_code,
+        ctn,
+        tenant_id: tenantId,
+        created_date: created,
+        vehicle_type_id,
+        vehicle_length_id,
+        total_weight,
+        total_volume,
+        pickup_est_date,
+        deliver_est_date,
+        tariffType: 'normal',
         ...changedData,
       };
       promises.push(this.props.computeSaleCharge(data));

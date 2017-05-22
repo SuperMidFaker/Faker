@@ -16,8 +16,10 @@ const actionTypes = createActionTypes('@@welogix/preference/', [
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.TRANSLATION_LOAD_SUCCEED:
-      return { ...state, locale: action.params.locale,
-        messages: action.result.data, loaded: true };
+      return { ...state,
+        locale: action.params.locale,
+        messages: action.result.data,
+        loaded: true };
     case actionTypes.SHOW_PREFERENCE_DOCK: {
       return { ...state, dockVisible: true };
     }

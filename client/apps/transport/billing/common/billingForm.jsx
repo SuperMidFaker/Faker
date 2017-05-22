@@ -71,7 +71,9 @@ export default class BillingForm extends React.Component {
       this.context.router.push({
         pathname: `/transport/billing/${this.props.type}/create`,
         query: {
-          ...fieldsValue, partnerName, partnerTenantId,
+          ...fieldsValue,
+          partnerName,
+          partnerTenantId,
           beginDate: moment(beginDate).format('YYYY-MM-DD 00:00:00'),
           endDate: moment(endDate).format('YYYY-MM-DD 23:59:59'),
         },

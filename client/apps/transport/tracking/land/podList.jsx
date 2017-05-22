@@ -56,8 +56,12 @@ function fetchData({ state, dispatch, params, cookie }) {
     clients: state.shipment.formRequire.clients,
     carriers: state.shipment.partners,
   }),
-  { loadPodTable, loadShipmtDetail, showAuditModal,
-    sendMessage, changePodFilter, deliverConfirm })
+  { loadPodTable,
+    loadShipmtDetail,
+    showAuditModal,
+    sendMessage,
+    changePodFilter,
+    deliverConfirm })
 export default class LandStatusList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,

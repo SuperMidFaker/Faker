@@ -26,7 +26,8 @@ const formItemLayout = {
   { loadVehicleParams, loadDriverList, toggleVehicleModal, validateVehicle, addVehicle, editVehicle }
 )
 @withPrivilege({
-  module: 'transport', feature: 'resources',
+  module: 'transport',
+  feature: 'resources',
   action: props => props.mode === 'edit' ? 'edit' : 'create',
 })
 @Form.create()

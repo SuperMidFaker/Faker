@@ -75,8 +75,8 @@ export default class ModuleEditor extends React.Component {
         </Row>
         <Row className="module-editor">
           {
-          this.props.appPackage.map((ap, idx) => (
-            <div className="form-group clearfix" key={`modeditor${idx}`}>
+          this.props.appPackage.map(ap => (
+            <div className="form-group clearfix" key={ap.id}>
               <Col span="8">
                 <h4>{formatGlobalMsg(intl, DEFAULT_MODULES[ap.id].text)}</h4>
               </Col>

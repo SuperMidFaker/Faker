@@ -44,9 +44,10 @@ export default class InviteModal extends Component {
     const { phone, email } = this.state;
     this.props.inviteOfflinePartner({ contactInfo: {
       phone, email,
-    }, inviteeInfo }).then(() => {
-      this.handleCancel();
-    });
+    },
+      inviteeInfo }).then(() => {
+        this.handleCancel();
+      });
   }
   render() {
     const { phone, email } = this.state;

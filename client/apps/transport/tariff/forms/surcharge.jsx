@@ -188,7 +188,7 @@ export default class SurchargeForm extends React.Component {
             return (
               <Select value={o} style={{ width: '100%' }} onChange={e => this.handleCategoryChange(index, e)} >
                 {
-                  FEE_CATEGORY.map((opt, idx) => <Option value={opt.value} key={`${opt.value}${idx}`}>{opt.text}</Option>)
+                  FEE_CATEGORY.map(opt => <Option value={opt.value} key={opt.value}>{opt.text}</Option>)
                 }
               </Select>
             );
@@ -206,7 +206,7 @@ export default class SurchargeForm extends React.Component {
             return (
               <Select value={o} style={{ width: '100%' }} onChange={e => this.handleFeeStyleChange(index, e)} >
                 {
-                  FEE_STYLE.map((opt, idx) => <Option value={opt.value} key={`${opt.value}${idx}`}>{opt.text}</Option>)
+                  FEE_STYLE.map(opt => <Option value={opt.value} key={opt.value}>{opt.text}</Option>)
                 }
               </Select>
             );

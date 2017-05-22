@@ -292,8 +292,10 @@ export default class RateEndTable extends React.Component {
               <FormItem label="公里数" labelCol={{ span: 4 }} wrapperCol={{ span: 16 }}>
                 {getFieldDecorator('km', {
                   initialValue: editEnd.km,
-                  rules: [{ required: true, type: 'number',
-                    message: '公里数必填', transform: v => Number(v) }],
+                  rules: [{ required: true,
+                    type: 'number',
+                    message: '公里数必填',
+                    transform: v => Number(v) }],
                 })(<Input />)}
               </FormItem>
             }
@@ -302,8 +304,10 @@ export default class RateEndTable extends React.Component {
               <FormItem label="起步价" labelCol={{ span: 4 }} wrapperCol={{ span: 16 }}>
                 {getFieldDecorator('flare', {
                   initialValue: editEnd.flare,
-                  rules: [{ required: true, type: 'number',
-                    message: '起步价必填', transform: v => Number(v) }],
+                  rules: [{ required: true,
+                    type: 'number',
+                    message: '起步价必填',
+                    transform: v => Number(v) }],
                 })(<Input />)}
               </FormItem>
             }
@@ -313,8 +317,10 @@ export default class RateEndTable extends React.Component {
                   {getFieldDecorator(`gradient${idx}`, {
                     initialValue: editEnd.gradients[vc.index] || '',
                     onChange: ev => this.handleGradientChange(idx, ev.target.value),
-                    rules: [{ required: true, message: '梯度费率必填',
-                      type: 'number', transform: v => Number(v) }],
+                    rules: [{ required: true,
+                      message: '梯度费率必填',
+                      type: 'number',
+                      transform: v => Number(v) }],
                   })(<Input />)}
                 </FormItem>
               ))

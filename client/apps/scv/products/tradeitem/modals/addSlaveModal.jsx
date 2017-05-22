@@ -79,7 +79,7 @@ export default class addSlaveModal extends React.Component {
                   { required: true, message: this.msg('sourceRepoRequired') },
                 ],
               })(<Select>
-                {this.props.slaveList.map((item, index) => (<Option value={item.partner_tenant_id} key={index}>{item.name}</Option>))}
+                {this.props.slaveList.map(item => (<Option value={item.partner_tenant_id} key={item.name}>{item.name}</Option>))}
               </Select>)
             }
           </FormItem>

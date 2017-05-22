@@ -50,8 +50,12 @@ export default class EditDelegation extends Component {
         const { addedFiles, removedFiles } = this.state;
         const delegation = { ...formData, ...this.props.form.getFieldsValue() };
         this.props.editDelegation({
-          delegation, addedFiles, removedFiles, patnershipType: 'CCB',
-          accepted: isAccepted, ietype: type === 'import' ? 0 : 1,
+          delegation,
+          addedFiles,
+          removedFiles,
+          patnershipType: 'CCB',
+          accepted: isAccepted,
+          ietype: type === 'import' ? 0 : 1,
         }).then((result) => {
           if (result.error) {
             message.error(result.error.message, 10);

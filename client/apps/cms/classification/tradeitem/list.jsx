@@ -67,8 +67,20 @@ function fetchData({ state, dispatch }) {
       text: tc.cntry_name_cn,
     })),
   }),
-  { loadCustomers, openAddModal, selectedRepoId, loadTradeItems, setCompareVisible,
-    deleteItems, setRepo, loadRepos, deleteRepo, setItemStatus, getAuditWay, upgradeMode, setDatasShare, copyToStage }
+  { loadCustomers,
+    openAddModal,
+    selectedRepoId,
+    loadTradeItems,
+    setCompareVisible,
+    deleteItems,
+    setRepo,
+    loadRepos,
+    deleteRepo,
+    setItemStatus,
+    getAuditWay,
+    upgradeMode,
+    setDatasShare,
+    copyToStage }
 )
 @connectNav({
   depth: 2,
@@ -574,7 +586,7 @@ export default class TradeItemList extends Component {
               </NavLink>
               <span className="ant-divider" />
               <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleItemDel(record.id)}>
-                <a role="button"><Icon type="delete" /> {this.msg('delete')}</a>
+                <a href><Icon type="delete" /> {this.msg('delete')}</a>
               </Popconfirm>
             </span>);
           } else if (record.status === TRADE_ITEM_STATUS.pending) {
@@ -586,7 +598,7 @@ export default class TradeItemList extends Component {
                   </NavLink>
                   <span className="ant-divider" />
                   <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleItemDel(record.id)}>
-                    <a role="button"><Icon type="delete" /> {this.msg('delete')}</a>
+                    <a href><Icon type="delete" /> {this.msg('delete')}</a>
                   </Popconfirm>
                 </span>)
                 : '';
@@ -611,7 +623,7 @@ export default class TradeItemList extends Component {
                       </Menu.Item>
                       <Menu.Item key="delete">
                         <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleItemDel(record.id)}>
-                          <a role="button"><Icon type="delete" /> {this.msg('delete')}</a>
+                          <a href><Icon type="delete" /> {this.msg('delete')}</a>
                         </Popconfirm>
                       </Menu.Item>
                     </Menu>)}

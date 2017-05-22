@@ -95,9 +95,9 @@ export default class Expander extends Component {
       title: this.msg('declType'),
       width: 150,
       render: (o, record, index) =>
-        <ColumnSelect field="declType"
+        (<ColumnSelect field="declType"
           onChange={this.handleEditChange} options={this.props.declList} record={record} index={index}
-        />,
+        />),
     }, {
       title: 'EDI',
       width: 150,

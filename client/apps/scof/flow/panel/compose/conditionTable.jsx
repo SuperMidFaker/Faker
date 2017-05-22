@@ -36,7 +36,8 @@ export default class ConditionTable extends React.Component {
     intl: intlShape.isRequired,
     bizObjects: PropTypes.arrayOf(PropTypes.shape({ key: PropTypes.string.isRequired })),
     conditions: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.number.isRequired,
-      biz_object: PropTypes.string.isRequired, event: PropTypes.string.isRequired })),
+      biz_object: PropTypes.string.isRequired,
+      event: PropTypes.string.isRequired })),
     onAdd: PropTypes.func.isRequired,
     onDel: PropTypes.func.isRequired,
     onUpdate: PropTypes.func.isRequired,
@@ -76,16 +77,24 @@ export default class ConditionTable extends React.Component {
         </div>),
     }];
     const data = props.conditions.map(cond => ({
-      editable: false, key: cond.id, biz_object: cond.biz_object, event: cond.event,
-      pending: {}, id: cond.id,
+      editable: false,
+      key: cond.id,
+      biz_object: cond.biz_object,
+      event: cond.event,
+      pending: {},
+      id: cond.id,
     }));
     this.state = { data };
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.conditions !== this.props.conditions) {
       const data = nextProps.conditions.map(cond => ({
-        editable: false, key: cond.id, biz_object: cond.biz_object, event: cond.event,
-        pending: {}, id: cond.id,
+        editable: false,
+        key: cond.id,
+        biz_object: cond.biz_object,
+        event: cond.event,
+        pending: {},
+        id: cond.id,
       }));
       this.setState({ data });
     }

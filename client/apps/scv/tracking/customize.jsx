@@ -146,15 +146,15 @@ export default class CustomizeTracking extends React.Component {
       render: (_, row) => {
         if (row.id === editId) {
           return (
-            <a role="button" onClick={() => this.handleSave(row.id)}><Icon type="save" /></a>
+            <a href onClick={() => this.handleSave(row.id)}><Icon type="save" /></a>
           );
         }
         return (
           <span>
-            <a role="button" onClick={() => this.handleEditName(row.id)}><Icon type="edit" /></a>
+            <a href onClick={() => this.handleEditName(row.id)}><Icon type="edit" /></a>
             <span className="ant-divider" />
             <Popconfirm title="确认删除?" onConfirm={() => this.handleRemove(row.id)}>
-              <a role="button"><Icon type="delete" /></a>
+              <a href><Icon type="delete" /></a>
             </Popconfirm>
           </span>);
       },

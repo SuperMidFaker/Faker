@@ -184,8 +184,9 @@ export default function reducer(state = initialState, action) {
     case actionTypes.SET_CONSIGN_FIELDS:
       return { ...state, formData: { ...state.formData, ...action.data } };
     case actionTypes.SAVE_LOCAL_GOODS:
-      return { ...state, formData: { ...state.formData,
-        goodslist: [...state.formData.goodslist, action.data.goods] } };
+      return { ...state,
+        formData: { ...state.formData,
+          goodslist: [...state.formData.goodslist, action.data.goods] } };
     case actionTypes.EDIT_LOCAL_GOODS: {
       const goodslist = [...state.formData.goodslist];
       goodslist[action.data.index] = action.data.goods;
@@ -206,22 +207,24 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_DRAFTFORM:
       return { ...state, formData: initialState.formData };
     case actionTypes.LOAD_DRAFTFORM_SUCCEED:
-      return { ...state, formData: {
-        ...state.formData, ...action.result.data.shipmt, goodslist: action.result.data.goodslist,
-      } };
+      return { ...state,
+        formData: {
+          ...state.formData, ...action.result.data.shipmt, goodslist: action.result.data.goodslist,
+        } };
     case actionTypes.LOAD_DETAIL_SUCCEED: {
-      return { ...state, previewer: {
-        shipmt: action.result.data.shipmt,
-        dispatch: action.result.data.dispatch,
-        upstream: action.result.data.upstream,
-        downstream: action.result.data.downstream,
-        logs: action.result.data.logs,
-        visible: true,
-        loaded: true,
-        tabKey: action.tabKey,
-        params: action.params,
-        row: action.row,
-      } };
+      return { ...state,
+        previewer: {
+          shipmt: action.result.data.shipmt,
+          dispatch: action.result.data.dispatch,
+          upstream: action.result.data.upstream,
+          downstream: action.result.data.downstream,
+          logs: action.result.data.logs,
+          visible: true,
+          loaded: true,
+          tabKey: action.tabKey,
+          params: action.params,
+          row: action.row,
+        } };
     }
     case actionTypes.LOAD_CHARGES_SUCCEED: {
       return { ...state, ...action.result.data };
@@ -321,11 +324,15 @@ export default function reducer(state = initialState, action) {
           totalVolumeRequired = true;
         }
       }
-      return { ...state, totalWeightRequired, totalVolumeRequired,
+      return { ...state,
+        totalWeightRequired,
+        totalVolumeRequired,
         formRequireJudgeParams: { ...state.formRequireJudgeParams, ...action.formRequireJudgeParams } };
     }
     case actionTypes.LOAD_TARIFF_BY_TRANSPORTINFO_FAIL: {
-      return { ...state, totalWeightRequired: false, totalVolumeRequired: false,
+      return { ...state,
+        totalWeightRequired: false,
+        totalVolumeRequired: false,
         formRequireJudgeParams: { ...state.formRequireJudgeParams, ...action.formRequireJudgeParams } };
     }
     case actionTypes.LOAD_PARTNERS_SUCCEED:
@@ -518,7 +525,8 @@ export function loadShipmtDetail(No, tenantId, sourceType, tabKey, row) {
       endpoint: 'v1/transport/shipment/detail',
       method: 'get',
       params: { No, tenantId, sourceType },
-      row, tabKey,
+      row,
+      tabKey,
     },
   };
 }

@@ -16,8 +16,11 @@ const FormItem = Form.Item;
     loading: state.transportTariff.ratesSourceLoading,
     ratesSourceList: state.transportTariff.ratesSourceList,
   }),
-  { submitRateSource, loadRatesSources, updateRateSource,
-    delRateSource, loadRateEnds }
+  { submitRateSource,
+    loadRatesSources,
+    updateRateSource,
+    delRateSource,
+    loadRateEnds }
 )
 @Form.create()
 export default class RateSourceTable extends React.Component {

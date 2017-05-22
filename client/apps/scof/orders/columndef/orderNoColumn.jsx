@@ -26,7 +26,7 @@ export default class OrderNoColumn extends React.Component {
         const noArray = order.cust_invoice_no.split(',');
         content = (
           <div>
-            {noArray.map((item, index) => <p key={index}>{item}</p>)}
+            {noArray.map(item => <p key={item}>{item}</p>)}
           </div>
         );
       }

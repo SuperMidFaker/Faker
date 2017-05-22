@@ -106,25 +106,25 @@ export default class ContainersPane extends React.Component {
       dataIndex: 'container_id',
       width: 100,
       render: (o, record) =>
-        <ColumnInput field="container_id" inEdit={!record.id} record={record}
+        (<ColumnInput field="container_id" inEdit={!record.id} record={record}
           onChange={this.handleEditChange}
-        />,
+        />),
     }, {
       title: this.msg('containerWt'),
       dataIndex: 'container_wt',
       width: 100,
       render: (o, record) =>
-        <ColumnInput field="container_wt" inEdit={!record.id} record={record}
+        (<ColumnInput field="container_wt" inEdit={!record.id} record={record}
           onChange={this.handleEditChange}
-        />,
+        />),
     }, {
       title: this.msg('containerSpec'),
       dataIndex: 'container_spec',
       width: 100,
       render: (o, record) =>
-        <ColumnInput field="container_spec" inEdit={!record.id} record={record}
+        (<ColumnInput field="container_spec" inEdit={!record.id} record={record}
           onChange={this.handleEditChange}
-        />,
+        />),
     }, {
       width: 40,
       render: (o, record, index) => {

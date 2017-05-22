@@ -65,7 +65,7 @@ export default class BasicPane extends React.Component {
   render() {
     const { delegation } = this.props;
     let img = '';
-    const filenames = this.state.sortedFiles.map((fl, index) => {
+    const filenames = this.state.sortedFiles.map((fl) => {
       if (fl.type === 'doc') {
         img = 'word.png';
       }
@@ -79,10 +79,9 @@ export default class BasicPane extends React.Component {
         img = 'pdf.png';
       }
       return (
-        <div key={index} className="filebox">
-          <img id="img" role="presentation"
-            src={`${__CDN__}/assets/img/${img}`}
-          />{fl.name}
+        <div key={fl.name} className="filebox">
+          <img id="img" alt={img} src={`${__CDN__}/assets/img/${img}`} />
+          {fl.name}
         </div>
       );
     });

@@ -55,7 +55,12 @@ export default class ChangeActDateModal extends React.Component {
   handleOk = () => {
     const { dispId, shipmtNo, loginName, loginId, tenantId, tenantName } = this.props;
     const { pickupActDate, deliverActDate } = this.state;
-    const data = { dispId, shipmtNo, loginName, loginId, tenantId, tenantName,
+    const data = { dispId,
+      shipmtNo,
+      loginName,
+      loginId,
+      tenantId,
+      tenantName,
       pickupActDate: moment(pickupActDate).format('YYYY-MM-DD HH:mm:ss'),
     };
     if (this.props.status === SHIPMENT_TRACK_STATUS.delivered) {

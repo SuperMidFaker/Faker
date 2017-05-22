@@ -156,13 +156,13 @@ export default class PricingLTL extends React.Component {
             <FormItem label="价格区间" {...formItemLayout}>
               {
                 intervals.map((limit, index) =>
-                  <IntervalInput index={index} intervals={intervals}
+                  (<IntervalInput index={index} intervals={intervals}
                     readonly={readonly}
                     onRemove={this.handleLimitRemove}
                     onChange={this.handleLimitChange}
                     unit={unit}
-                    key={`${limit}${index}`}
-                  />)
+                    key={limit}
+                  />))
               }
               {
                 !readonly &&

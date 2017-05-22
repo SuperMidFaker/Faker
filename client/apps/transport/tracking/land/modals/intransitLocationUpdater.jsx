@@ -62,8 +62,11 @@ export default class LocationUpdater extends React.Component {
         this.props.reportLoc(
           tenantId, transit.shipmt_no, transit.parent_no, transit.disp_id,
           {
-            province, city, district,
-            location_time, address,
+            province,
+            city,
+            district,
+            location_time,
+            address,
             from: TRACKING_POINT_FROM_TYPE.manual,
           }).then((result) => {
             if (result.error) {
@@ -89,7 +92,8 @@ export default class LocationUpdater extends React.Component {
             {getFieldDecorator('location_time', {
               rules: [{
                 type: 'object',
-                required: true, message: this.msg('reportTimeMust'),
+                required: true,
+                message: this.msg('reportTimeMust'),
               }],
             })(<DatePicker style={{ width: '100%' }} showTime format="YYYY-MM-DD HH:mm:ss" />)}
           </FormItem>

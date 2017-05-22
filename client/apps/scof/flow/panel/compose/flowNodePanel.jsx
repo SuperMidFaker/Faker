@@ -34,7 +34,6 @@ export default class FlowNodePanel extends Component {
   handleResponsiblerSelect = (lid) => {
     const person = this.props.serviceTeam.filter(st => st.lid === lid)[0];
     if (person) {
-      console.log(person);
       this.props.graph.update(this.props.node, { person: person.name });
     }
   }

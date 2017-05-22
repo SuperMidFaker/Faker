@@ -49,8 +49,10 @@ export default class FillCustomsNoModal extends React.Component {
       return;
     }
     this.props.fillEntryId({
-      entryHeadId: this.props.entryHeadId, entryNo: this.state.entryNo,
-      billSeqNo: this.props.billSeqNo, delgNo: this.props.delgNo,
+      entryHeadId: this.props.entryHeadId,
+      entryNo: this.state.entryNo,
+      billSeqNo: this.props.billSeqNo,
+      delgNo: this.props.delgNo,
     }).then(
       (result) => {
         if (result.error) {

@@ -114,7 +114,6 @@ export default class TransportForm extends Component {
     if (key === 'consigner_name') {
       consignForm.consigner_name = value;
       const consign = formRequires.consignerLocations.find(item => item.name === value);
-      console.log(consign);
       if (consign) {
         consignForm.consigner_id = consign.node_id;
         consignForm.consigner_province = consign.province;
@@ -389,7 +388,7 @@ export default class TransportForm extends Component {
       );
     }
     return (
-      <Card extra={<a role="button" onClick={this.handleShipmentRelate}><Icon type="sync" /> 提取货运信息</a>} bodyStyle={{ paddingTop: 40 }}>
+      <Card extra={<a href onClick={this.handleShipmentRelate}><Icon type="sync" /> 提取货运信息</a>} bodyStyle={{ paddingTop: 40 }}>
         <Row>
           <Col sm={24}>
             <FormItem label="发货方">

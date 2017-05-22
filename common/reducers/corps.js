@@ -102,7 +102,10 @@ export default function reducer(state = initialState, action) {
         corplist.data[action.index].apps = corplist.data[action.index].apps.filter(
           app => app.id !== action.data.app.id);
       }
-      return { ...state, corplist, appEditor: { ...state.appEditor, tenantApps:
+      return { ...state,
+        corplist,
+        appEditor: { ...state.appEditor,
+          tenantApps:
         corplist.data[action.index].apps } };
     }
     case actionTypes.OPEN_TENANT_APPS_EDITOR:
@@ -115,8 +118,11 @@ export default function reducer(state = initialState, action) {
     case actionTypes.ORGAN_EDIT_SUCCEED: {
       const corps = state.corplist.data.map(corp => corp.key === action.data.corp.key ?
         { ...corp, ...action.result.data } : corp);
-      return { ...state, corplist: { ...state.corplist, data: corps },
-        formData: initialState.formData, corpUsers: [], submitting: false };
+      return { ...state,
+        corplist: { ...state.corplist, data: corps },
+        formData: initialState.formData,
+        corpUsers: [],
+        submitting: false };
     }
     case actionTypes.CORP_SUBMIT_SUCCEED: {
       const corplist = { ...state.corplist };

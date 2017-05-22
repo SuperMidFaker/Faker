@@ -38,7 +38,7 @@ function ColumnSelect(props) {
     return (
       <Select value={record[field] || ''} onChange={handleChange} style={{ width: '100%' }}>
         {
-          options.map((opt, idx) => <Option value={opt.text} key={`${opt.value}${idx}`}>{opt.text}</Option>)
+          options.map(opt => <Option value={opt.text} key={opt.value}>{opt.text}</Option>)
         }
       </Select>
     );
@@ -134,16 +134,16 @@ export default class DocuMarkPane extends React.Component {
       title: this.msg('docuSpec'),
       dataIndex: 'docu_spec',
       render: (o, record) =>
-        <ColumnSelect field="docu_spec" inEdit={!record.id} record={record}
+        (<ColumnSelect field="docu_spec" inEdit={!record.id} record={record}
           onChange={this.handleEditChange} options={CMS_DECL_DOCU}
-        />,
+        />),
     }, {
       title: this.msg('docuCode'),
       dataIndex: 'docu_code',
       render: (o, record) =>
-        <ColumnInput field="docu_code" inEdit={!record.id} record={record}
+        (<ColumnInput field="docu_code" inEdit={!record.id} record={record}
           onChange={this.handleEditChange}
-        />,
+        />),
     }, {
       width: 60,
       render: (o, record, index) => {

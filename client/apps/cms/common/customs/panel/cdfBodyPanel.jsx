@@ -46,7 +46,7 @@ function ColumnSelect(props) {
     return (
       <Select showSearch showArrow optionFilterProp="search" value={edit[field] || ''} onChange={handleChange} style={{ width: '100%' }}>
         {
-          options.map((opt, idx) => <Option search={`${opt.search}`} value={opt.value} key={`${opt.value}${idx}`}>{`${opt.value}|${opt.text}`}</Option>)
+          options.map(opt => <Option search={opt.search} value={opt.value} key={opt.value}>{`${opt.value}|${opt.text}`}</Option>)
         }
       </Select>
     );
@@ -263,143 +263,143 @@ export default class CDFBodyPanel extends React.Component {
       width: 110,
       fixed: 'left',
       render: (o, record, index) =>
-        <ColumnInput field="codes" inEdit={index === editIndex} record={record}
+        (<ColumnInput field="codes" inEdit={index === editIndex} record={record}
           edit={editBody}
-        />,
+        />),
     }, {
       title: this.msg('gName'),
       width: 200,
       render: (o, record, index) =>
-        <ColumnInput field="g_name" inEdit={index === editIndex} record={record}
+        (<ColumnInput field="g_name" inEdit={index === editIndex} record={record}
           edit={editBody}
-        />,
+        />),
     }, {
       title: this.msg('gModel'),
       width: 300,
       render: (o, record, index) =>
-        <ColumnInput field="g_model" inEdit={index === editIndex} record={record}
+        (<ColumnInput field="g_model" inEdit={index === editIndex} record={record}
           edit={editBody}
-        />,
+        />),
     }, {
       title: <div className="cell-align-right">{this.msg('quantity')}</div>,
       width: 80,
       className: 'cell-align-right',
       render: (o, record, index) =>
-        <ColumnInput field="g_qty" inEdit={index === editIndex} record={record}
+        (<ColumnInput field="g_qty" inEdit={index === editIndex} record={record}
           edit={editBody}
-        />,
+        />),
     }, {
       title: this.msg('unit'),
       width: 80,
       className: 'cell-align-right',
       render: (o, record, index) =>
-        <ColumnSelect field="g_unit" inEdit={index === editIndex} record={record}
+        (<ColumnSelect field="g_unit" inEdit={index === editIndex} record={record}
           options={units} edit={editBody}
-        />,
+        />),
     }, {
       title: <div className="cell-align-right">{this.msg('decPrice')}</div>,
       width: 100,
       className: 'cell-align-right',
       render: (o, record, index) =>
-        <ColumnInput field="dec_price" inEdit={index === editIndex} record={record}
+        (<ColumnInput field="dec_price" inEdit={index === editIndex} record={record}
           edit={editBody}
-        />,
+        />),
     }, {
       title: <div className="cell-align-right">{this.msg('decTotal')}</div>,
       width: 100,
       className: 'cell-align-right',
       render: (o, record, index) =>
-        <ColumnInput field="trade_total" inEdit={index === editIndex} record={record}
+        (<ColumnInput field="trade_total" inEdit={index === editIndex} record={record}
           edit={editBody}
-        />,
+        />),
     }, {
       title: this.msg('currency'),
       width: 100,
       render: (o, record, index) =>
-        <ColumnSelect field="trade_curr" inEdit={index === editIndex} record={record}
+        (<ColumnSelect field="trade_curr" inEdit={index === editIndex} record={record}
           options={currencies} edit={editBody}
-        />,
+        />),
     }, {
       title: <div className="cell-align-right">{this.msg('grosswt')}</div>,
       width: 80,
       className: 'cell-align-right',
       render: (o, record, index) =>
-        <ColumnInput field="gross_wt" inEdit={index === editIndex} record={record}
+        (<ColumnInput field="gross_wt" inEdit={index === editIndex} record={record}
           edit={editBody}
-        />,
+        />),
     }, {
       title: <div className="cell-align-right">{this.msg('netwt')}</div>,
       width: 80,
       className: 'cell-align-right',
       render: (o, record, index) =>
-        <ColumnInput field="wet_wt" inEdit={index === editIndex} record={record}
+        (<ColumnInput field="wet_wt" inEdit={index === editIndex} record={record}
           edit={editBody}
-        />,
+        />),
     }, {
       title: <div className="cell-align-right">{this.msg('qty1')}</div>,
       width: 80,
       className: 'cell-align-right',
       render: (o, record, index) =>
-        <ColumnInput field="qty_1" inEdit={index === editIndex} record={record}
+        (<ColumnInput field="qty_1" inEdit={index === editIndex} record={record}
           edit={editBody}
-        />,
+        />),
     }, {
       title: this.msg('unit1'),
       width: 80,
       render: (o, record, index) =>
-        <ColumnSelect field="unit_1" inEdit={index === editIndex} record={record}
+        (<ColumnSelect field="unit_1" inEdit={index === editIndex} record={record}
           options={units} edit={editBody}
-        />,
+        />),
     }, {
       title: <div className="cell-align-right">{this.msg('qty2')}</div>,
       width: 80,
       className: 'cell-align-right',
       render: (o, record, index) =>
-        <ColumnInput field="qty_2" inEdit={index === editIndex} record={record}
+        (<ColumnInput field="qty_2" inEdit={index === editIndex} record={record}
           edit={editBody}
-        />,
+        />),
     }, {
       title: this.msg('unit2'),
       width: 80,
       render: (o, record, index) =>
-        <ColumnSelect field="unit_2" inEdit={index === editIndex} record={record}
+        (<ColumnSelect field="unit_2" inEdit={index === editIndex} record={record}
           options={units} edit={editBody}
-        />,
+        />),
     }, {
       title: this.msg('exemptionWay'),
       width: 80,
       render: (o, record, index) =>
-        <ColumnSelect field="duty_mode" inEdit={index === editIndex} record={record}
+        (<ColumnSelect field="duty_mode" inEdit={index === editIndex} record={record}
           options={exemptions} edit={editBody}
-        />,
+        />),
     }, {
       title: this.msg('ecountry'),
       width: 120,
       render: (o, record, index) =>
-        <ColumnSelect field="dest_country" inEdit={index === editIndex} record={record}
+        (<ColumnSelect field="dest_country" inEdit={index === editIndex} record={record}
           options={countries} edit={editBody}
-        />,
+        />),
     }, {
       title: this.msg('icountry'),
       width: 120,
       render: (o, record, index) =>
-        <ColumnSelect field="orig_country" inEdit={index === editIndex} record={record}
+        (<ColumnSelect field="orig_country" inEdit={index === editIndex} record={record}
           options={countries} edit={editBody}
-        />,
+        />),
     }, {
       title: this.msg('qtyPcs'),
       width: 100,
       render: (o, record, index) =>
-        <ColumnInput field="qty_pcs" inEdit={index === editIndex} record={record}
+        (<ColumnInput field="qty_pcs" inEdit={index === editIndex} record={record}
           edit={editBody}
-        />,
+        />),
     }, {
       title: this.msg('unitPcs'),
       width: 100,
       render: (o, record, index) =>
-        <ColumnSelect field="unit_pcs" inEdit={index === editIndex} record={record}
+        (<ColumnSelect field="unit_pcs" inEdit={index === editIndex} record={record}
           options={units} edit={editBody}
-        />,
+        />),
     }, {
       title: this.msg('customs'),
       width: 100,
@@ -411,24 +411,24 @@ export default class CDFBodyPanel extends React.Component {
     }, {
       title: this.msg('element'),
       render: (o, record, index) =>
-        <ColumnInput field="element" inEdit={index === editIndex} record={record}
+        (<ColumnInput field="element" inEdit={index === editIndex} record={record}
           edit={editBody}
-        />,
+        />),
     }, {
       title: this.msg('versionNo'),
       width: 80,
       render: (o, record, index) =>
-        <ColumnInput field="version_no" inEdit={index === editIndex} record={record}
+        (<ColumnInput field="version_no" inEdit={index === editIndex} record={record}
           edit={editBody}
-        />,
+        />),
     }, {
       title: this.msg('processingFees'),
       width: 80,
       className: 'cell-align-right',
       render: (o, record, index) =>
-        <ColumnInput field="processing_fees" inEdit={index === editIndex} record={record}
+        (<ColumnInput field="processing_fees" inEdit={index === editIndex} record={record}
           edit={editBody} decimal={3}
-        />,
+        />),
     }];
     return columns;
   }

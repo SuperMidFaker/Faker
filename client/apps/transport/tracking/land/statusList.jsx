@@ -67,9 +67,15 @@ function fetchData({ state, dispatch, params, cookie }) {
     carriers: state.shipment.partners,
   }),
   {
-    loadTransitTable, loadShipmtDetail, showDateModal,
-    showVehicleModal, showLocModal, loadShipmtLastPoint, sendMessage,
-    deliverConfirm, changeStatusFilter,
+    loadTransitTable,
+    loadShipmtDetail,
+    showDateModal,
+    showVehicleModal,
+    showLocModal,
+    loadShipmtLastPoint,
+    sendMessage,
+    deliverConfirm,
+    changeStatusFilter,
   }
 )
 export default class LandStatusList extends React.Component {

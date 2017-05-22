@@ -36,8 +36,10 @@ export default class CDFHeadPanel extends React.Component {
   handleEntryFill = (entryNo) => {
     const { formData } = this.props;
     this.props.fillEntryId({
-      entryNo, entryHeadId: formData.id,
-      billSeqNo: formData.bill_seq_no, delgNo: formData.delg_no,
+      entryNo,
+      entryHeadId: formData.id,
+      billSeqNo: formData.bill_seq_no,
+      delgNo: formData.delg_no,
     }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);

@@ -45,8 +45,14 @@ const ACTIVITY_DESC_MAP = {
     tabKey: state.cmsDelgInfoHub.tabKey,
     declHeadsPane: state.cmsDeclare.decl_heads,
   }), {
-    exchangeBlNo, loadDeclHead, setInspect, loadCustPanel, loadBasicInfo, updateCertParam,
-    loadDeclCiqPanel, loadPaneExp,
+    exchangeBlNo,
+    loadDeclHead,
+    setInspect,
+    loadCustPanel,
+    loadBasicInfo,
+    updateCertParam,
+    loadDeclCiqPanel,
+    loadPaneExp,
   }
 )
 @Form.create()
@@ -151,7 +157,8 @@ export default class ActivityLoggerPane extends React.Component {
       } else if (this.state.filterKey !== '' && this.state.filterKey !== filterKey) {
         this.setState({ filterKey: 'all', filterActivities: null });
       } else {
-        this.setState({ filterKey, filterActivities:
+        this.setState({ filterKey,
+          filterActivities:
             this.props.previewer.activities.filter(acty => acty.category === filterKey) });
       }
     } else if (filterKey === 'all') {
@@ -342,8 +349,10 @@ export default class ActivityLoggerPane extends React.Component {
                             <Popover trigger="click" content={
                               <div>
                                 <a className="mdc-text-red" onClick={() =>
-                                  this.handleInspectSave({ preEntrySeqNo: activity.field, delgNo: delegation.delg_no,
-                                    enabled: false, field: activity.type })}
+                                  this.handleInspectSave({ preEntrySeqNo: activity.field,
+                                    delgNo: delegation.delg_no,
+                                    enabled: false,
+                                    field: activity.type })}
                                 >
                                   删除
                                 </a>

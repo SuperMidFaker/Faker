@@ -164,8 +164,10 @@ export default class InventoryTransactionList extends React.Component {
   }
   handleSearch = (searchForm, checkLotProperty) => {
     const filter = {
-      wh_no: this.props.listFilter.wh_no, pageSize: this.props.listFilter.pageSize,
-      current: this.props.listFilter.current, ...searchForm,
+      wh_no: this.props.listFilter.wh_no,
+      pageSize: this.props.listFilter.pageSize,
+      current: this.props.listFilter.current,
+      ...searchForm,
       start_date: this.props.listFilter.start_date,
       end_date: this.props.listFilter.end_date };
     this.setState({ lot_query: checkLotProperty });
@@ -176,7 +178,8 @@ export default class InventoryTransactionList extends React.Component {
     this.handleStockQuery(filter);
   }
   handleRangeChange = (newdates) => {
-    const filter = { ...this.props.listFilter, start_date: newdates[0].unix(),
+    const filter = { ...this.props.listFilter,
+      start_date: newdates[0].unix(),
       end_date: newdates[1].unix() };
     this.handleStockQuery(filter);
   }

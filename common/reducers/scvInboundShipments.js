@@ -48,7 +48,8 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_INBOUND_FAIL:
       return { ...state, loading: false };
     case actionTypes.LOAD_PARTNERS_SUCCEED:
-      return { ...state, brokerPartners: action.result.data.brokers,
+      return { ...state,
+        brokerPartners: action.result.data.brokers,
         transpPartners: action.result.data.transps };
     case actionTypes.OPEN_MODAL:
       return { ...state, sendModal: { visible: true, shipment: action.data } };

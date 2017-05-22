@@ -43,7 +43,11 @@ function fetchData({ state, dispatch, cookie }) {
     tenantId: state.account.tenantId,
   }),
   {
-    loadOrgans, delCorp, switchStatus, switchTenantApp, openTenantAppsEditor,
+    loadOrgans,
+    delCorp,
+    switchStatus,
+    switchTenantApp,
+    openTenantAppsEditor,
     closeTenantAppsEditor,
   }
 )
@@ -182,13 +186,13 @@ export default class CorpList extends React.Component {
       width: 200,
       render: (o, record, index) => {
         const modComp = [];
-        (record.apps || []).forEach((mod, idx) => {
+        (record.apps || []).forEach((mod) => {
           modComp.push(
             <NavLink key={mod.id} to={DEFAULT_MODULES[mod.id].url}>
               {formatGlobalMsg(intl, DEFAULT_MODULES[mod.id].text)}
             </NavLink>
           );
-          modComp.push(<span className="ant-divider" key={`divider${idx}`} />);
+          modComp.push(<span className="ant-divider" key={`divider${mod.id}`} />);
         });
         return (
           <span>
@@ -224,7 +228,7 @@ export default class CorpList extends React.Component {
                   {formatGlobalMsg(intl, 'modify')}
                 </NavLink>
                 <span className="ant-divider" />
-                <a role="button" onClick={() => this.handleStatusSwitch(record, index)}>
+                <a href onClick={() => this.handleStatusSwitch(record, index)}>
                   {formatContainerMsg(intl, 'disableOp')}
                 </a>
               </span>
@@ -233,13 +237,13 @@ export default class CorpList extends React.Component {
           return (
             <span>
               <PrivilegeCover module="corp" feature="organization" action="delete">
-                <a role="button" onClick={() => this.handleCorpDel(record.key)}>
+                <a href onClick={() => this.handleCorpDel(record.key)}>
                   {formatGlobalMsg(intl, 'delete')}
                 </a>
               </PrivilegeCover>
               <span className="ant-divider" />
               <PrivilegeCover module="corp" feature="organization" action="edit">
-                <a role="button" onClick={() => this.handleStatusSwitch(record, index)}>
+                <a href onClick={() => this.handleStatusSwitch(record, index)}>
                   {formatContainerMsg(intl, 'enableOp')}
                 </a>
               </PrivilegeCover>

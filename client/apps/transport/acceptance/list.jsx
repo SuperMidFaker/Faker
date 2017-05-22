@@ -416,7 +416,7 @@ export default class AcceptList extends React.Component {
                       </Menu.Item>
                       <Menu.Item key="delete">
                         <Popconfirm title={this.msg('deleteConfirm')} onConfirm={ev => this.handleShipmtRevoke(record.shipmt_no, record.key, ev)}>
-                          <a role="button">
+                          <a href>
                             {this.msg('shipmtRevoke')}
                           </a>
                         </Popconfirm>

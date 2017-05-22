@@ -79,9 +79,9 @@ export default class AccepterModal extends React.Component {
               {
                 serviceTeamMembers.map(
                 member =>
-                  <Option key={`${member.lid}${member.name}`} value={member.lid}>
+                  (<Option key={`${member.lid}${member.name}`} value={member.lid}>
                     {member.name}
-                  </Option>
+                  </Option>)
               )
             }
             </Select>

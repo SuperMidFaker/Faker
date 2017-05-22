@@ -85,9 +85,7 @@ const wpConfig = {
     { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=image/svg+xml' },
     ],
   },
-  postcss: function postcss() {
-    return [autoprefixer];
-  },
+  postcss: () => [autoprefixer],
 };
 
 module.exports = wpConfig;

@@ -55,9 +55,9 @@ export default class ImportRuleForm extends React.Component {
       item.value.toLowerCase().indexOf(searchValue) !== -1
     );
     const suggestions = filtered.map(suggestion =>
-      <Nav value={suggestion.value} data={suggestion}>
+      (<Nav value={suggestion.value} data={suggestion}>
         <span>{suggestion.text} - {suggestion.value} </span>
-      </Nav>);
+      </Nav>));
     this.setState({ suggestions });
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)

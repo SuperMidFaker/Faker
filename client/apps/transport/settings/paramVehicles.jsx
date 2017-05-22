@@ -166,7 +166,7 @@ export default class ParamVehicles extends Component {
                 ><Icon type="edit" /></a>
                 <span className="ant-divider" />
                 <Popconfirm title="确认删除?" onConfirm={() => this.handleRemove(row)}>
-                  <a role="button"><Icon type="delete" /></a>
+                  <a href><Icon type="delete" /></a>
                 </Popconfirm>
               </span>
             );

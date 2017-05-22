@@ -157,8 +157,10 @@ export default class ExpenseList extends Component {
           }
         });
       }
-      const filter = { ...this.props.listFilter, enFilter,
-        sortField: sorter.field, sortOrder: sorter.order };
+      const filter = { ...this.props.listFilter,
+        enFilter,
+        sortField: sorter.field,
+        sortOrder: sorter.order };
       params.filter = JSON.stringify(filter);
       return params;
     },
@@ -230,7 +232,9 @@ export default class ExpenseList extends Component {
     };
     const { sortedInfo } = this.state;
     const filter = { ...this.props.listFilter,
-      sortField: sortedInfo.field, sortOrder: sortedInfo.order, acptDate };
+      sortField: sortedInfo.field,
+      sortOrder: sortedInfo.order,
+      acptDate };
     this.handleExpListLoad(1, filter);
   }
   handleCleanDateChange = (dates) => {
@@ -241,7 +245,9 @@ export default class ExpenseList extends Component {
     };
     const { sortedInfo } = this.state;
     const filter = { ...this.props.listFilter,
-      sortField: sortedInfo.field, sortOrder: sortedInfo.order, cleanDate };
+      sortField: sortedInfo.field,
+      sortOrder: sortedInfo.order,
+      cleanDate };
     this.handleExpListLoad(1, filter);
   }
   handleViewChange = (value) => {

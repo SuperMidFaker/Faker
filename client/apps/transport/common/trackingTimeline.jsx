@@ -23,9 +23,9 @@ export default class TrackingTimeline extends React.Component {
     const trackingSteps = points.map((s, i) => {
       if (type === 'small') {
         if (i === 0) {
-          return (<TimelineItem key={i} color="green">{s.title} {s.description}</TimelineItem>);
+          return (<TimelineItem key={s.title} color="green">{s.title} {s.description}</TimelineItem>);
         } else {
-          return (<TimelineItem key={i}>{s.title} {s.description}</TimelineItem>);
+          return (<TimelineItem key={s.title}>{s.title} {s.description}</TimelineItem>);
         }
       } else {
         let color = 'green';
@@ -35,7 +35,7 @@ export default class TrackingTimeline extends React.Component {
           dotType = (<Icon type="environment" style={{ fontSize: '20px', backgroundColor: '#fff' }} />);
         }
         return (
-          <TimelineItem dot={dotType} key={i} color={color}>
+          <TimelineItem dot={dotType} key={s.title} color={color}>
             <span style={{ marginLeft: -100 }}>{s.date}</span>
             <span style={{ marginLeft: 34 }}>
               {s.title}

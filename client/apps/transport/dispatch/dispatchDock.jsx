@@ -28,7 +28,7 @@ export function RowClick(props) {
   function handleClick(ev) {
     onHit(ev, row, index);
   }
-  return <a role="button" onClick={handleClick}>{text}</a>;
+  return <a href onClick={handleClick}>{text}</a>;
 }
 
 RowClick.propTypes = {
@@ -141,7 +141,7 @@ export default class DispatchDock extends Component {
       width: 60,
       render: (o, record) => (
         <span>
-          <a role="button" onClick={() => this.showConfirm('tenant', record)}>
+          <a href onClick={() => this.showConfirm('tenant', record)}>
             {this.msg('btnTextDispatch')}
           </a>
         </span>
@@ -196,7 +196,7 @@ export default class DispatchDock extends Component {
       width: 50,
       render: (o, record) => (
         <span>
-          <a role="button" onClick={() => this.showConfirm('vehicle', record)}>
+          <a href onClick={() => this.showConfirm('vehicle', record)}>
             {this.msg('btnTextDispatch')}
           </a>
         </span>
@@ -247,11 +247,22 @@ export default class DispatchDock extends Component {
               pickup_est_date, deliver_est_date,
             } = shipmts[cj];
             this.props.computeCostCharge({
-              tenant_id: this.props.tenantId, created_date: created,
-              partner_id: row.partner_id, consigner_region_code, consignee_region_code,
-              goods_type, trans_mode: transport_mode_id, transport_mode_code, ctn,
-              vehicle_type_id, vehicle_length_id, total_weight, total_volume,
-              pickup_est_date, deliver_est_date, tariffType: 'all',
+              tenant_id: this.props.tenantId,
+              created_date: created,
+              partner_id: row.partner_id,
+              consigner_region_code,
+              consignee_region_code,
+              goods_type,
+              trans_mode: transport_mode_id,
+              transport_mode_code,
+              ctn,
+              vehicle_type_id,
+              vehicle_length_id,
+              total_weight,
+              total_volume,
+              pickup_est_date,
+              deliver_est_date,
+              tariffType: 'all',
             }).then((result) => {
               if (result.error || result.data.freight < 0) {
                 const charge = {
@@ -551,10 +562,19 @@ export default class DispatchDock extends Component {
       vehicle_type_id, vehicle_length_id, total_weight, total_volume,
     } = this.props.shipmts[0];
     this.props.computeCostCharge({
-      tenant_id: this.props.tenantId, created_date: created,
-      partner_id: row.partner_id, consigner_region_code, consignee_region_code,
-      goods_type, trans_mode: transport_mode_id, transport_mode_code, ctn,
-      vehicle_type_id, vehicle_length_id, total_weight, total_volume,
+      tenant_id: this.props.tenantId,
+      created_date: created,
+      partner_id: row.partner_id,
+      consigner_region_code,
+      consignee_region_code,
+      goods_type,
+      trans_mode: transport_mode_id,
+      transport_mode_code,
+      ctn,
+      vehicle_type_id,
+      vehicle_length_id,
+      total_weight,
+      total_volume,
     }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);

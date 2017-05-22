@@ -45,19 +45,25 @@ export const { LOAD_PODSHIPMT, SAVE_POD_SUCCEED } = actionTypes;
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.LOAD_PODSHIPMT:
-      return { ...state, loading: true,
+      return { ...state,
+        loading: true,
         filters: JSON.parse(action.params.filters),
       };
     case actionTypes.LOAD_PODSHIPMT_FAIL:
       return { ...state, loading: false };
     case actionTypes.LOAD_PODSHIPMT_SUCCEED:
-      return { ...state, loading: false,
-        loaded: true, shipmentlist: action.result.data,
+      return { ...state,
+        loading: false,
+        loaded: true,
+        shipmentlist: action.result.data,
       };
     case actionTypes.SHOW_AUDIT_MODAL_SUCCEED:
       return { ...state,
         auditModal: {
-          ...state.auditModal, visible: true, ...action.data, readonly: true,
+          ...state.auditModal,
+          visible: true,
+          ...action.data,
+          readonly: true,
           ...action.result.data,
         },
       };

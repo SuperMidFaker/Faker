@@ -15,7 +15,7 @@ export default class CcbDelgNoColumn extends React.Component {
       const noArray = nos.split(',');
       const content = (
         <div>
-          {noArray.map((item, index) => <p key={index}>{item}</p>)}
+          {noArray.map(item => <p key={item}>{item}</p>)}
         </div>
       );
       return (

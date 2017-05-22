@@ -82,7 +82,10 @@ export default function reducer(state = initialState, action) {
         corplist.data[action.index].apps = corplist.data[action.index].apps.filter(
           app => app.id !== action.data.app.id);
       }
-      return { ...state, corplist, appEditor: { ...state.appEditor, tenantApps:
+      return { ...state,
+        corplist,
+        appEditor: { ...state.appEditor,
+          tenantApps:
         corplist.data[action.index].apps } };
     }
     case actionTypes.TENANT_NEW: {

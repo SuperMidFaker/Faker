@@ -76,7 +76,7 @@ export function ConfirmDel(props) {
   }
   return (
     <Popconfirm title="确认删除?" onConfirm={handleConfirm}>
-      <a role="button" onClick={handleClick}>{text}</a>
+      <a href onClick={handleClick}>{text}</a>
     </Popconfirm>
   );
 }
@@ -92,7 +92,7 @@ export function RowClick(props) {
   function handleClick(ev) {
     onHit(row, ev);
   }
-  return <a role="button" onClick={handleClick}>{text}</a>;
+  return <a href onClick={handleClick}>{text}</a>;
 }
 
 RowClick.propTypes = {

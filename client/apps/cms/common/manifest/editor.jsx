@@ -40,9 +40,21 @@ const confirm = Modal.confirm;
     templateValLoading: state.cmsManifest.templateValLoading,
     billHeadFieldsChangeTimes: state.cmsManifest.billHeadFieldsChangeTimes,
   }),
-  { saveBillHead, openMergeSplitModal, resetBill, updateHeadNetWt, loadBillBody, editBillBody,
-    loadTemplateFormVals, saveBillRules, setStepVisible, billHeadChange, lockManifest,
-    redoManifest, showSendDeclsModal, validateBillDatas, loadBillMeta }
+  { saveBillHead,
+    openMergeSplitModal,
+    resetBill,
+    updateHeadNetWt,
+    loadBillBody,
+    editBillBody,
+    loadTemplateFormVals,
+    saveBillRules,
+    setStepVisible,
+    billHeadChange,
+    lockManifest,
+    redoManifest,
+    showSendDeclsModal,
+    validateBillDatas,
+    loadBillMeta }
 )
 @connectNav({
   depth: 3,
@@ -305,7 +317,7 @@ export default class ManifestEditor extends React.Component {
         <Menu.Item key="template"><Icon type="book" /> {this.msg('saveAsTemplate')}</Menu.Item>
         {editable && lockMenuItem}
         {editable && <Menu.Item key="reset">
-          <a role="button" onClick={this.handleBillReset}> <Icon type="reload" /> 重置清单</a>
+          <a href onClick={this.handleBillReset}> <Icon type="reload" /> 重置清单</a>
         </Menu.Item>}
       </Menu>);
   }

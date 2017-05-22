@@ -169,8 +169,13 @@ export default class MergeSplitModal extends React.Component {
   }
   handleMergeCheck = (checkeds) => {
     const opt = {
-      checked: this.state.mergeOpt.checked, byHsCode: false, byGName: false,
-      byCurr: false, byCountry: false, byCopGNo: false, byEmGNo: false,
+      checked: this.state.mergeOpt.checked,
+      byHsCode: false,
+      byGName: false,
+      byCurr: false,
+      byCountry: false,
+      byCopGNo: false,
+      byEmGNo: false,
     };
     checkeds.forEach((chk) => {
       opt[chk] = true;

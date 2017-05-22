@@ -216,84 +216,84 @@ export default class GoodsInfo extends React.Component {
       title: this.msg('goodsCode'),
       dataIndex: 'goods_no',
       render: (text, record, index) =>
-        <ColumnInput record={record} field="goods_no" index={index}
+        (<ColumnInput record={record} field="goods_no" index={index}
           state={this.state} onChange={this.handleGoodsColumnEdit}
-        />,
+        />),
     }, {
       title: this.msg('goodsName'),
       dataIndex: 'name',
       render: (text, record, index) =>
-        <ColumnInput record={record} field="name" index={index}
+        (<ColumnInput record={record} field="name" index={index}
           state={this.state} onChange={this.handleGoodsColumnEdit}
-        />,
+        />),
     }, {
       title: this.msg('goodsPackage'),
       dataIndex: 'package',
       width: 90,
       render: (text, record, index) =>
-        <ColumnSelect record={record} field="package" index={index}
+        (<ColumnSelect record={record} field="package" index={index}
           state={this.state} onChange={this.handleGoodsColumnEdit}
           options={packagings.map(pk => ({
             key: pk.package_code,
             value: pk.package_code,
             name: pk.package_name,
           }))}
-        />,
+        />),
     }, {
       title: this.msg('goodsCount'),
       dataIndex: 'count',
       width: 60,
       render: (text, record, index) =>
-        <ColumnInput record={record} field="count" index={index}
+        (<ColumnInput record={record} field="count" index={index}
           state={this.state} onChange={this.handleGoodsColumnEdit}
-        />,
+        />),
     }, {
       title: this.msg('goodsWeight'),
       dataIndex: 'weight',
       width: 80,
       render: (text, record, index) =>
-        <ColumnInput record={record} field="weight" index={index}
+        (<ColumnInput record={record} field="weight" index={index}
           state={this.state} onChange={this.handleGoodsColumnEdit}
-        />,
+        />),
     }, {
       title: this.msg('goodsVolume'),
       dataIndex: 'volume',
       width: 90,
       render: (text, record, index) =>
-        <ColumnInput record={record} field="volume" index={index}
+        (<ColumnInput record={record} field="volume" index={index}
           state={this.state} onChange={this.handleGoodsColumnEdit}
-        />,
+        />),
     }, {
       title: this.msg('goodsLength'),
       dataIndex: 'length',
       width: 60,
       render: (text, record, index) =>
-        <ColumnInput record={record} field="length" index={index}
+        (<ColumnInput record={record} field="length" index={index}
           state={this.state} onChange={this.handleGoodsColumnEdit}
-        />,
+        />),
     }, {
       title: this.msg('goodsWidth'),
       dataIndex: 'width',
       width: 60,
       render: (text, record, index) =>
-        <ColumnInput record={record} field="width" index={index}
+        (<ColumnInput record={record} field="width" index={index}
           state={this.state} onChange={this.handleGoodsColumnEdit}
-        />,
+        />),
     }, {
       title: this.msg('goodsHeight'),
       dataIndex: 'height',
       width: 60,
       render: (text, record, index) =>
-        <ColumnInput record={record} field="height" index={index}
+        (<ColumnInput record={record} field="height" index={index}
           state={this.state} onChange={this.handleGoodsColumnEdit}
-        />,
+        />),
     }, {
       title: this.msg('goodsRemark'),
       dataIndex: 'remark',
       render: (text, record, index) =>
-        <ColumnInput record={record} field="remark" index={index}
+        (<ColumnInput record={record} field="remark" index={index}
           state={this.state} onChange={this.handleGoodsColumnEdit}
-        />,
+        />),
     }, {
       title: this.msg('goodsOp'),
       width: 80,
@@ -316,14 +316,14 @@ export default class GoodsInfo extends React.Component {
             (op, idx) => {
               if (idx !== record.__ops.length - 1) {
                 opRendered.push(
-                  <a key={`__ops0${idx}`} onClick={op.handler}>{op.name}</a>
+                  <a key={`__ops0${op.name}`} onClick={op.handler}>{op.name}</a>
                 );
                 opRendered.push(
-                  <span key={`__ops1${idx}`} className="ant-divider" />
+                  <span key="__ops1divider" className="ant-divider" />
                 );
               } else {
                 opRendered.push(
-                  <a key={`__ops2${idx}`} onClick={op.handler}>{op.name}</a>
+                  <a key={`__ops2${op.name}`} onClick={op.handler}>{op.name}</a>
                 );
               }
             }
@@ -434,7 +434,8 @@ export default class GoodsInfo extends React.Component {
           <Row>
             <Col span="24">
               <Table size="small" columns={columns} dataSource={[...goods, {
-                key: 'goodsinfinity', __ops: [{
+                key: 'goodsinfinity',
+                __ops: [{
                   name: formatGlobalMsg(this.props.intl, 'add'),
                   handler: this.handleGoodsAdd,
                 }, {

@@ -156,8 +156,12 @@ export default class SaveTemplateModal extends React.Component {
     if (specialHsSortArr) {
       specialHsSorts = specialHsSortArr.join(',');
     }
-    const ruleDatas = { ...billHead, ...formData, ...this.props.form.getFieldsValue(),
-      ...mergeObj, rule_element: element, split_spl_category: specialHsSorts };
+    const ruleDatas = { ...billHead,
+      ...formData,
+      ...this.props.form.getFieldsValue(),
+      ...mergeObj,
+      rule_element: element,
+      split_spl_category: specialHsSorts };
     this.props.createGeneratedTemplate({ params, ruleDatas }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);

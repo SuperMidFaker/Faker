@@ -24,8 +24,12 @@ const formatMsg = format(messages);
     tempItems: state.cmsTradeitem.tempItems,
     visibleCompareModal: state.cmsTradeitem.visibleCompareModal,
   }),
-  { setCompareVisible, saveComparedItemDatas,
-    loadTradeItems, loadTempItems, comparedCancel, deleteTempData }
+  { setCompareVisible,
+    saveComparedItemDatas,
+    loadTradeItems,
+    loadTempItems,
+    comparedCancel,
+    deleteTempData }
 )
 
 export default class ImportComparisonModal extends React.Component {
@@ -277,7 +281,7 @@ export default class ImportComparisonModal extends React.Component {
               <RowUpdater onHit={this.handleCodeChoose} label="使用新编码" row={record} index={index} />
               <span className="ant-divider" />
               <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleRowDel(record.id)}>
-                <a role="button"><Icon type="delete" /></a>
+                <a href><Icon type="delete" /></a>
               </Popconfirm>
             </span>
           );
@@ -287,7 +291,7 @@ export default class ImportComparisonModal extends React.Component {
               <RowUpdater onHit={this.handleCodeChoose} label="使用原编码" row={record} index={index} />
               <span className="ant-divider" />
               <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleRowDel(record.id)}>
-                <a role="button"><Icon type="delete" /></a>
+                <a href><Icon type="delete" /></a>
               </Popconfirm>
             </span>
           );
@@ -297,7 +301,7 @@ export default class ImportComparisonModal extends React.Component {
               <RowUpdater onHit={this.handleCodeChoose} label="使用新规格型号" row={record} index={index} />
               <span className="ant-divider" />
               <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleRowDel(record.id)}>
-                <a role="button"><Icon type="delete" /></a>
+                <a href><Icon type="delete" /></a>
               </Popconfirm>
             </span>
           );
@@ -307,14 +311,14 @@ export default class ImportComparisonModal extends React.Component {
               <RowUpdater onHit={this.handleCodeChoose} label="使用原规格型号" row={record} index={index} />
               <span className="ant-divider" />
               <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleRowDel(record.id)}>
-                <a role="button"><Icon type="delete" /></a>
+                <a href><Icon type="delete" /></a>
               </Popconfirm>
             </span>
           );
         } else {
           return (
             <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleRowDel(record.id)}>
-              <a role="button"><Icon type="delete" /></a>
+              <a href><Icon type="delete" /></a>
             </Popconfirm>);
         }
       },

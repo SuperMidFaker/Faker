@@ -29,10 +29,10 @@ export default class ModuleLayout extends React.Component {
     return (
       <QueueAnim type="bottom">
         {
-          this.props.enabledmods.map((mod, idx) => {
+          this.props.enabledmods.map((mod) => {
             const emod = DEFAULT_MODULES[mod];
             return (
-              <Col span="8" key={`mod-${idx}`}>
+              <Col span="8" key={mod}>
                 <NavLink to={`${emod.url}/`}>
                   <div className={containerCls}>
                     <div className={`module-icon-bg ${emod.cls}`}>

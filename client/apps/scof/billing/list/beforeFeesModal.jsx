@@ -23,7 +23,11 @@ const formatMsg = format(messages);
     visible: state.crmBilling.beforeFeesModal.visible,
     beforeFees: state.crmBilling.beforeFeesModal.data,
   }),
-  { loadFeesBeforeTime, alterBillingFees, loadOrderDetail, loadClearanceFeesBeforeTime, loadTransportFeesBeforeTime,
+  { loadFeesBeforeTime,
+    alterBillingFees,
+    loadOrderDetail,
+    loadClearanceFeesBeforeTime,
+    loadTransportFeesBeforeTime,
     showBeforeFeesModal }
 )
 

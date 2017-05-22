@@ -276,7 +276,8 @@ export default class ModeInfo extends React.Component {
                 'transport_mode_id', {
                   rules: [{
                     type: 'number',
-                    required: true, message: this.msg('transitModeMust'),
+                    required: true,
+                    message: this.msg('transitModeMust'),
                   }],
                   initialValue: modeId,
                   onChange: this.handleModeChange,

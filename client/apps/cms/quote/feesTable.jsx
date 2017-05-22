@@ -121,7 +121,7 @@ function ColumnSelect(props) {
     return (
       <Select value={record[field]} disabled={!record.enabled} onChange={handleChange} style={{ width: '100%' }}>
         {
-          options.map((opt, idx) => <Option value={opt.value} key={`${opt.value}${idx}`}>{opt.text}</Option>)
+          options.map(opt => <Option value={opt.value} key={opt.value}>{opt.text}</Option>)
         }
       </Select>
     );
@@ -419,9 +419,9 @@ export default class FeesTable extends Component {
       item.value.toLowerCase().indexOf(searchValue) !== -1
     );
     const suggestions = filtered.map(suggestion =>
-      <Nav value={suggestion.value} data={suggestion}>
+      (<Nav value={suggestion.value} data={suggestion}>
         <span>{suggestion.text} - {suggestion.value} </span>
-      </Nav>);
+      </Nav>));
     this.setState({ suggestions });
   }
   handleonChange = (record, editorState) => {
@@ -460,9 +460,9 @@ export default class FeesTable extends Component {
         ],
         width: 150,
         render: (o, record, index) =>
-          <ColumnSelect field="category" inEdit={editable || (index === editIndex)} record={record}
+          (<ColumnSelect field="category" inEdit={editable || (index === editIndex)} record={record}
             onChange={this.handleEditChange} options={FEE_CATEGORY}
-          />,
+          />),
       }, {
         title: msg('feeStyle'),
         dataIndex: 'fee_style',
@@ -472,17 +472,17 @@ export default class FeesTable extends Component {
         ],
         width: 150,
         render: (o, record, index) =>
-          <ColumnSelect field="fee_style" inEdit={editable || (index === editIndex)} record={record}
+          (<ColumnSelect field="fee_style" inEdit={editable || (index === editIndex)} record={record}
             onChange={this.handleEditChange} options={FEE_STYLE}
-          />,
+          />),
       }, {
         title: msg('chargeParam'),
         dataIndex: 'charge_param',
         width: 150,
         render: (o, record, index) =>
-          <ColumnSelect field="charge_param" inEdit={editable || (index === editIndex)} record={record}
+          (<ColumnSelect field="charge_param" inEdit={editable || (index === editIndex)} record={record}
             onChange={this.handleEditChange} options={CHARGE_PARAM}
-          />,
+          />),
       }, {
         title: msg('formulaFactor'),
         dataIndex: 'formula_factor',

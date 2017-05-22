@@ -224,7 +224,8 @@ export default class InventoryStockList extends React.Component {
     this.handleStockQuery(filter);
   }
   handleWarehouseSelect = (whno) => {
-    const filter = { ...this.props.listFilter, wh_no: whno,
+    const filter = { ...this.props.listFilter,
+      wh_no: whno,
       group_by_sku: whno !== '_all_' ? false : this.props.listFilter.group_by_sku };
     this.handleStockQuery(filter);
   }

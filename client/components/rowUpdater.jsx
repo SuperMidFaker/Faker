@@ -15,11 +15,11 @@ export default function RowUpdater(props) {
   }
   return tooltip ?
     <Tooltip title={tooltip}>
-      <a onClick={handleClick} onMouseEnter={handleHover} {...extra} role="button">
+      <a onClick={handleClick} onMouseEnter={handleHover} {...extra} href>
         {label}
       </a>
     </Tooltip> :
-    <a onClick={handleClick} onMouseEnter={handleHover} {...extra} role="button">
+    <a onClick={handleClick} onMouseEnter={handleHover} {...extra} href>
       {label}
     </a>;
 }

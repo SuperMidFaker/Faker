@@ -81,12 +81,27 @@ export default class CreateBilling extends React.Component {
       const shipmtCount = fees.filter(item => item.status === 1).length;
       const fee = fees[0];
       this.props.createBilling({
-        tenantId, loginId, loginName, name, chooseModel, beginDate,
-        endDate, freightCharge,
-        advanceCharge, excpCharge, adjustCharge, totalCharge,
-        srTenantId: fee.sr_tenant_id, srPartnerId: fee.sr_partner_id, srName: fee.sr_name,
-        spTenantId: fee.sp_tenant_id, spPartnerId: fee.sp_partner_id, spName: fee.sp_name,
-        toTenantId: partnerTenantId, shipmtCount, fees,
+        tenantId,
+        loginId,
+        loginName,
+        name,
+        chooseModel,
+        beginDate,
+        endDate,
+        freightCharge,
+        advanceCharge,
+        excpCharge,
+        adjustCharge,
+        totalCharge,
+        srTenantId: fee.sr_tenant_id,
+        srPartnerId: fee.sr_partner_id,
+        srName: fee.sr_name,
+        spTenantId: fee.sp_tenant_id,
+        spPartnerId: fee.sp_partner_id,
+        spName: fee.sp_name,
+        toTenantId: partnerTenantId,
+        shipmtCount,
+        fees,
       }).then((result) => {
         if (result.error) {
           message.error(result.error.message, 10);

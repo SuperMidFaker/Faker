@@ -109,7 +109,7 @@ export default class BillTemplateUsersPane extends React.Component {
           return (
             <Select value={record.tenant_id || ''} onChange={value => this.handleTradeSel(record, value)} style={{ width: '100%' }}>
               {
-                brokers.map((opt, idx) => <Option value={opt.partner_tenant_id} key={`${opt.name}${idx}`}>{opt.name}</Option>)
+                brokers.map(opt => <Option value={opt.partner_tenant_id} key={opt.name}>{opt.name}</Option>)
               }
             </Select>
           );

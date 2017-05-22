@@ -54,9 +54,14 @@ export default class CreateDelegation extends Component {
         const { type, tenantId, loginId, username, tenantName, formData } = this.props;
         const delegation = { ...formData, ...this.props.form.getFieldsValue() };
         this.props.createDelegationByCCB({
-          delegation, tenantId, loginId, username,
-          ietype: type === 'import' ? 0 : 1, source: DELG_SOURCE.consigned,
-          attachments: this.state.attachments, tenantName,
+          delegation,
+          tenantId,
+          loginId,
+          username,
+          ietype: type === 'import' ? 0 : 1,
+          source: DELG_SOURCE.consigned,
+          attachments: this.state.attachments,
+          tenantName,
           accepted,
         }).then((result) => {
           if (result.error) {

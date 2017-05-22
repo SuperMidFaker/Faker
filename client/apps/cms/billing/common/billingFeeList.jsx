@@ -57,8 +57,14 @@ export default class BillingFeeList extends React.Component {
     const modifyTimes = billing.modifyTimes || 0 + 1;
     if (this.state.changed) {
       this.props.checkBilling({
-        tenantId, loginId, loginName, billingId, adjustCharge, totalCharge,
-        modifyTimes, fees,
+        tenantId,
+        loginId,
+        loginName,
+        billingId,
+        adjustCharge,
+        totalCharge,
+        modifyTimes,
+        fees,
       }).then((result) => {
         if (result.error) {
           message.error(result.error.message, 10);

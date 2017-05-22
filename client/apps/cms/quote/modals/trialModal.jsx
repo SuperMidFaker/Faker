@@ -74,8 +74,10 @@ export default class TrialModal extends React.Component {
             this.setState({ progressStatus: 'exception', progressPercent: 70 });
           } else {
             this.setState({
-              progressStatus: 'success', progressPercent: 100,
-              trialFilename: result.data.filename, trialFileurl: result.data.fileurl,
+              progressStatus: 'success',
+              progressPercent: 100,
+              trialFilename: result.data.filename,
+              trialFileurl: result.data.fileurl,
             });
           }
         });

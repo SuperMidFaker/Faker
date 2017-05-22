@@ -61,8 +61,17 @@ export default class BillingFeeList extends React.Component {
     const shipmtCount = fees.filter(item => item.status === 1).length;
     if (this.state.changed) {
       this.props.checkBilling({
-        tenantId, loginId, loginName, billingId, ccbCharge, trsCharge, adjustCharge, totalCharge,
-        modifyTimes, shipmtCount, fees,
+        tenantId,
+        loginId,
+        loginName,
+        billingId,
+        ccbCharge,
+        trsCharge,
+        adjustCharge,
+        totalCharge,
+        modifyTimes,
+        shipmtCount,
+        fees,
       }).then((result) => {
         if (result.error) {
           message.error(result.error.message, 10);
@@ -87,8 +96,16 @@ export default class BillingFeeList extends React.Component {
     const shipmtCount = fees.filter(item => item.status === 1).length;
     if (this.state.changed) {
       this.props.editBilling({
-        tenantId, loginId, loginName, billingId, ccbCharge, trsCharge, adjustCharge, totalCharge,
-        shipmtCount, fees,
+        tenantId,
+        loginId,
+        loginName,
+        billingId,
+        ccbCharge,
+        trsCharge,
+        adjustCharge,
+        totalCharge,
+        shipmtCount,
+        fees,
       }).then((result) => {
         if (result.error) {
           message.error(result.error.message, 10);

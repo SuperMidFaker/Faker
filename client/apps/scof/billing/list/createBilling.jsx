@@ -28,8 +28,13 @@ const { Header, Content } = Layout;
     billing: state.crmBilling.billing,
     billingFees: state.crmBilling.billingFees,
   }),
-  { loadFeesByChooseModal, loadClearanceFeesByChooseModal, loadTransportFeesByChooseModal,
-    createBilling, updateBillingFees, loadOrderDetail, showBeforeFeesModal }
+  { loadFeesByChooseModal,
+    loadClearanceFeesByChooseModal,
+    loadTransportFeesByChooseModal,
+    createBilling,
+    updateBillingFees,
+    loadOrderDetail,
+    showBeforeFeesModal }
 )
 export default class CreateBilling extends React.Component {
   static propTypes = {
@@ -94,11 +99,22 @@ export default class CreateBilling extends React.Component {
     } else {
       const shipmtCount = fees.filter(item => item.status === 1).length;
       this.props.createBilling({
-        tenantId, loginId, loginName, name,
-        beginDate, endDate,
-        ccbCharge, trsCharge, adjustCharge, totalCharge,
-        customerTenantId: Number(partnerTenantId), customerPartnerId: Number(partnerId), customerName: partnerName, customerCode: partnerCode,
-        shipmtCount, fees,
+        tenantId,
+        loginId,
+        loginName,
+        name,
+        beginDate,
+        endDate,
+        ccbCharge,
+        trsCharge,
+        adjustCharge,
+        totalCharge,
+        customerTenantId: Number(partnerTenantId),
+        customerPartnerId: Number(partnerId),
+        customerName: partnerName,
+        customerCode: partnerCode,
+        shipmtCount,
+        fees,
       }).then((result) => {
         if (result.error) {
           message.error(result.error.message, 10);

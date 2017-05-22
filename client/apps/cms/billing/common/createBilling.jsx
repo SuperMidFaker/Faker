@@ -82,11 +82,19 @@ export default class CreateBilling extends React.Component {
       message.error('没有费用');
     } else {
       this.props.createBilling({
-        tenantId, loginId, loginName, name, chooseModel,
+        tenantId,
+        loginId,
+        loginName,
+        name,
+        chooseModel,
         beginDate: moment(beginDate).format('YYYY-MM-DD 00:00:00'),
         endDate: moment(endDate).format('YYYY-MM-DD 23:59:59'),
-        advanceCharge, servCharge, adjustCharge, totalCharge,
-        toTenantId: partnerTenantId, fees,
+        advanceCharge,
+        servCharge,
+        adjustCharge,
+        totalCharge,
+        toTenantId: partnerTenantId,
+        fees,
       }).then((result) => {
         if (result.error) {
           message.error(result.error.message, 10);

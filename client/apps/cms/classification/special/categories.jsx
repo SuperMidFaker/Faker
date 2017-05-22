@@ -27,8 +27,13 @@ function fetchData({ state, dispatch }) {
     hscodeCategories: state.cmsHsCode.hscodeCategories,
     categoryHscodes: state.cmsHsCode.categoryHscodes,
   }),
-  { loadHsCodeCategories, addHsCodeCategory, removeHsCodeCategory, updateHsCodeCategory,
-    loadCategoryHsCode, addCategoryHsCode, removeCategoryHsCode }
+  { loadHsCodeCategories,
+    addHsCodeCategory,
+    removeHsCodeCategory,
+    updateHsCodeCategory,
+    loadCategoryHsCode,
+    addCategoryHsCode,
+    removeCategoryHsCode }
 )
 @connectNav({
   depth: 2,
@@ -155,7 +160,7 @@ export default class SpecialCategories extends React.Component {
               ><Icon type="edit" /></a>
               <span className="ant-divider" />
               <Popconfirm title="确认删除该分类?" onConfirm={() => this.handleRemove(row.id)}>
-                <a role="button"><Icon type="delete" /></a>
+                <a href><Icon type="delete" /></a>
               </Popconfirm>
             </span>
           );

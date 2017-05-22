@@ -55,8 +55,12 @@ export default class MergeSplitForm extends React.Component {
   }]
   handleMergeCheck = (checkeds) => {
     const opt = {
-      byHsCode: false, byGName: false,
-      byCurr: false, byCountry: false, byCopGNo: false, byEmGNo: false,
+      byHsCode: false,
+      byGName: false,
+      byCurr: false,
+      byCountry: false,
+      byCopGNo: false,
+      byEmGNo: false,
     };
     checkeds.forEach((chk) => {
       opt[chk] = true;

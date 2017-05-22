@@ -81,9 +81,24 @@ function getTrackStatusMsg(status, eff) {
     charges: state.shipment.charges,
     partnerId: state.shipment.previewer.dispatch.sr_partner_id,
   }),
-  { hidePreviewer, sendTrackingDetailSMSMessage, changePreviewerTab, loadShipmtDetail, loadForm, loadOrderDetail,
-    getShipmtOrderNo, toggleRecalculateChargeModal, returnShipment, doSend, doReturn,
-    changeDockStatus, withDraw, showVehicleModal, passAudit, returnAudit, sendMessage, acceptDispShipment }
+  { hidePreviewer,
+    sendTrackingDetailSMSMessage,
+    changePreviewerTab,
+    loadShipmtDetail,
+    loadForm,
+    loadOrderDetail,
+    getShipmtOrderNo,
+    toggleRecalculateChargeModal,
+    returnShipment,
+    doSend,
+    doReturn,
+    changeDockStatus,
+    withDraw,
+    showVehicleModal,
+    passAudit,
+    returnAudit,
+    sendMessage,
+    acceptDispShipment }
 )
 export default class PreviewPanel extends React.Component {
   static propTypes = {

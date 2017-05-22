@@ -47,8 +47,14 @@ const OptGroup = Select.OptGroup;
     })),
     trades: state.cmsDeclare.trades,
   }),
-  { loadCustomsDecls, openEfModal, deleteDecl, setDeclReviewed,
-    showSendDeclModal, showPreviewer, openDeclReleasedModal, showBatchSendModal }
+  { loadCustomsDecls,
+    openEfModal,
+    deleteDecl,
+    setDeclReviewed,
+    showSendDeclModal,
+    showPreviewer,
+    openDeclReleasedModal,
+    showBatchSendModal }
 )
 @connectNav({
   depth: 2,
@@ -213,7 +219,7 @@ export default class CustomsList extends Component {
             <span className="ant-divider" />
             <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
               <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleDelete(record.id, record.delg_no, record.bill_seq_no)}>
-                <a role="button"><Icon type="delete" /></a>
+                <a href><Icon type="delete" /></a>
               </Popconfirm>
             </PrivilegeCover>
           </span>
@@ -245,7 +251,7 @@ export default class CustomsList extends Component {
             <Dropdown key="epsend" overlay={(
               <Menu>
                 <Menu.Item key="edit">
-                  <a role="button" onClick={() => this.handleEpSendXmlView(record.ep_send_filename)}><Icon type="eye-o" /> EDI报文</a>
+                  <a href onClick={() => this.handleEpSendXmlView(record.ep_send_filename)}><Icon type="eye-o" /> EDI报文</a>
                 </Menu.Item>
               </Menu>)}
             >
@@ -255,7 +261,7 @@ export default class CustomsList extends Component {
           spanElems.push(
             <Dropdown key="receipt" overlay={(<Menu>
               <Menu.Item key="edit">
-                <a role="button" onClick={() => this.handleEpRecvXmlView(record.ep_receipt_filename)}><Icon type="eye-o" /> EDI回执</a>
+                <a href onClick={() => this.handleEpRecvXmlView(record.ep_receipt_filename)}><Icon type="eye-o" /> EDI回执</a>
               </Menu.Item>
             </Menu>)}
             >
@@ -396,8 +402,10 @@ export default class CustomsList extends Component {
   }
   handleShowSendDeclModal = (record) => {
     this.props.showSendDeclModal({
-      visible: true, preEntrySeqNo: record.pre_entry_seq_no,
-      delgNo: record.delg_no, agentCustCo: record.agent_custco });
+      visible: true,
+      preEntrySeqNo: record.pre_entry_seq_no,
+      delgNo: record.delg_no,
+      agentCustCo: record.agent_custco });
   }
   handleEpSendXmlView = (filename) => {
     window.open(`${API_ROOTS.default}v1/cms/customs/epsend/xml?filename=${filename}`);

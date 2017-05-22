@@ -40,8 +40,11 @@ const initialState = {
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.LOAD_WAREHOUSES:
-      return { ...state, listFilter: JSON.parse(action.params.filter), reload: false,
-        sortFilter: JSON.parse(action.params.sorter), loading: true };
+      return { ...state,
+        listFilter: JSON.parse(action.params.filter),
+        reload: false,
+        sortFilter: JSON.parse(action.params.sorter),
+        loading: true };
     case actionTypes.LOAD_WAREHOUSES_FAIL:
       return { ...state, loading: false };
     case actionTypes.LOAD_WAREHOUSES_SUCCEED:

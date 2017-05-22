@@ -225,7 +225,7 @@ export default class RoleForm extends React.Component {
                   </Row>
                   {
                       tnm.features.map(feat =>
-                        <Row key={feat.text} style={{ paddingBottom: 10 }}>
+                        (<Row key={feat.text} style={{ paddingBottom: 10 }}>
                           <Col span={4} offset={2}>
                             {formatGlobalMsg(intl, feat.text)}
                           </Col>
@@ -245,7 +245,7 @@ export default class RoleForm extends React.Component {
                               onChange={checkeds => this.handleActionCheck(tnm.id, feat.id, checkeds)}
                             />
                           </Col>
-                        </Row>
+                        </Row>)
                       )
                     }
                 </Card>

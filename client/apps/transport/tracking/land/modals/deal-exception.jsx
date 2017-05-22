@@ -54,7 +54,12 @@ export default class DealException extends React.Component {
     const excpId = exception.id;
     form.validateFields((errors) => {
       if (!errors) {
-        const data = { dispId: dispatch.id, shipmtNo, loginName, loginId, tenantId, tenantName,
+        const data = { dispId: dispatch.id,
+          shipmtNo,
+          loginName,
+          loginId,
+          tenantId,
+          tenantName,
           deliverPrmDate: moment(fieldsValue.deliver_prm_date).format('YYYY-MM-DD HH:mm:ss'),
         };
         const promises = [this.props.dealException({ shipmtNo, excpId, solution, solver: loginName })];

@@ -182,7 +182,7 @@ export default class TMSStatus extends React.Component {
       }];
       statusPos = -1;
     }
-    const steps = statusDes.map((s, i) => <Step key={i} status={s.status} description={s.title} />);
+    const steps = statusDes.map(sd => <Step key={sd.title} status={sd.status} description={sd.title} />);
     return (
       <Steps current={statusPos} progressDot>{steps}</Steps>
     );

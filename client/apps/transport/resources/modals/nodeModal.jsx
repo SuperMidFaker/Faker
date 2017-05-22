@@ -14,7 +14,8 @@ import NodeForm from '../components/NodeForm';
   addNode, toggleNodeModal,
 })
 @withPrivilege({
-  module: 'transport', feature: 'resources',
+  module: 'transport',
+  feature: 'resources',
   action: () => 'create',
 })
 @Form.create()

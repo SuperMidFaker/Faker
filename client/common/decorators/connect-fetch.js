@@ -24,8 +24,10 @@ export default function connectFetch(conn = { deferred: false }) {
         const { store } = this.context;
         const { location, params } = this.props;
         const promises = fetchers.map(fetcher => fetcher({
-          state: store.getState(), dispatch: store.dispatch,
-          location, params }));
+          state: store.getState(),
+          dispatch: store.dispatch,
+          location,
+          params }));
         Promise.all(promises);
       }
 

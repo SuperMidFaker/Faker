@@ -91,8 +91,10 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_TARIFFS_FAIL:
       return { ...state, loading: false };
     case actionTypes.LOAD_TARIFFS_SUCCEED:
-      return { ...state, loading: false,
-        loaded: true, tarifflist: action.result.data,
+      return { ...state,
+        loading: false,
+        loaded: true,
+        tarifflist: action.result.data,
         filters: JSON.parse(action.params.filters),
       };
     case actionTypes.LOAD_NEW_FORM:
@@ -130,8 +132,12 @@ export default function reducer(state = initialState, action) {
         taxrate: res.taxrate || initialState.agreement.taxrate,
       };
       const partners = res.partnerId ? [{ partner_code: '',
-        partner_id: res.partnerId, name: res.partnerName, tid: 0 }] : [];
-      return { ...state, agreement, partners,
+        partner_id: res.partnerId,
+        name: res.partnerName,
+        tid: 0 }] : [];
+      return { ...state,
+        agreement,
+        partners,
         ratesRefAgreement: agreement,
         tariffId: action.result.data.tariff._id,
         ratesSourceList: { ...state.ratesSourceList,
@@ -147,14 +153,19 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_FORMPARAMS_SUCCEED:
       return { ...state, formParams: action.result.data };
     case actionTypes.SUBMIT_AGREEMENT_SUCCEED:
-      return { ...state, tariffId: action.result.data.tariffId, fees: action.result.data.fees,
+      return { ...state,
+        tariffId: action.result.data.tariffId,
+        fees: action.result.data.fees,
         ratesRefAgreement: action.data,
         agreement: { ...state.agreement, quoteNo: action.result.data.quoteNo } };
     case actionTypes.LOAD_RATESRC:
       return { ...state, ratesSourceLoading: true };
     case actionTypes.LOAD_RATESRC_SUCCEED:
-      return { ...state, ratesSourceLoading: false, ratesSourceList: action.result.data,
-        rateId: '', ratesEndList: initialState.ratesEndList };
+      return { ...state,
+        ratesSourceLoading: false,
+        ratesSourceList: action.result.data,
+        rateId: '',
+        ratesEndList: initialState.ratesEndList };
     case actionTypes.LOAD_RATESRC_FAIL:
       return { ...state, ratesSourceLoading: false };
     case actionTypes.SUBMIT_RATESRC_SUCCEED:
@@ -164,7 +175,9 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_RATENDS:
       return { ...state, ratesEndLoading: true };
     case actionTypes.LOAD_RATENDS_SUCCEED:
-      return { ...state, ratesEndLoading: false, rateId: action.params.rateId,
+      return { ...state,
+        ratesEndLoading: false,
+        rateId: action.params.rateId,
         ratesEndList: action.result.data };
     case actionTypes.LOAD_RATENDS_FAIL:
       return { ...state, ratesEndLoading: false };

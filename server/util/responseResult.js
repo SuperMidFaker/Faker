@@ -154,7 +154,7 @@ export default {
 };
 
 export function patch(app) {
-  /* eslint-disable no-param-reassign */
+  /* eslint-disable no-param-reassign, no-multi-assign */
   app.context.json = app.response.json = function json(obj) {
     this.charset = this.charset || 'utf-8';
     this.set('Content-Type', `application/json; charset=${this.charset}`);

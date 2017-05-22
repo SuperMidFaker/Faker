@@ -37,7 +37,7 @@ function ColumnSelect(props) {
     return (
       <Select value={record[field] || ''} onChange={handleChange} style={{ width: '100%' }}>
         {
-          options.map((opt, idx) => <Option value={opt.key} key={`${opt.value}${idx}`}>{opt.text}</Option>)
+          options.map(opt => <Option value={opt.key} key={opt.key}>{opt.text}</Option>)
         }
       </Select>
     );
@@ -147,17 +147,17 @@ export default class CertMarkPane extends React.Component {
       dataIndex: 'cert_spec',
       width: 200,
       render: (o, record) =>
-        <ColumnSelect field="cert_spec" inEdit={!record.id} record={record}
+        (<ColumnSelect field="cert_spec" inEdit={!record.id} record={record}
           onChange={this.handleEditChange} options={option}
-        />,
+        />),
     }, {
       title: this.msg('certNum'),
       dataIndex: 'cert_num',
       width: 200,
       render: (o, record) =>
-        <ColumnInput field="cert_num" inEdit={!record.id} record={record}
+        (<ColumnInput field="cert_num" inEdit={!record.id} record={record}
           onChange={this.handleEditChange}
-        />,
+        />),
     }, {
       width: 80,
       render: (o, record, index) => {

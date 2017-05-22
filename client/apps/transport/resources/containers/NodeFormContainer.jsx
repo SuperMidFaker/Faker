@@ -25,8 +25,13 @@ function fetchData({ dispatch, params }) {
     partner_id: -1,
   }]),
 }), {
-  addNode, editNode, changeRegion, addNodeUser,
-  editNodeUser, removeNodeUser, updateUserStatus,
+  addNode,
+  editNode,
+  changeRegion,
+  addNodeUser,
+  editNodeUser,
+  removeNodeUser,
+  updateUserStatus,
 })
 @connectNav({
   depth: 3,

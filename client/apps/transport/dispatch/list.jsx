@@ -269,14 +269,14 @@ export default class DispatchList extends React.Component {
         fixed: fixedRight,
         render: (o, record) => {
           if (sub === 'merge') {
-            return (<span><a role="button" onClick={() => this.handleRemoveShipmt(record)}>
+            return (<span><a href onClick={() => this.handleRemoveShipmt(record)}>
               {this.msg('btnTextRemove')}
             </a></span>);
           }
           if (origin) {
             if (record.segmented === 1 && sub !== 'sub') {
               return (<span>
-                <a role="button" onClick={ev => this.handleSegmentCancelConfirm(record, ev)}>
+                <a href onClick={ev => this.handleSegmentCancelConfirm(record, ev)}>
                   {this.msg('btnTextSegmentCancel')}
                 </a></span>);
             } else {
@@ -286,11 +286,11 @@ export default class DispatchList extends React.Component {
           return (
             <PrivilegeCover module="transport" feature="dispatch" action="create">
               <span>
-                <a role="button" onClick={ev => this.handleDispatchDockShow(record, ev)}>
+                <a href onClick={ev => this.handleDispatchDockShow(record, ev)}>
                   {this.msg('btnTextDispatch')}
                 </a>
                 <span className="ant-divider" />
-                <a role="button" onClick={ev => this.handleSegmentDockShow(record, ev)}>
+                <a href onClick={ev => this.handleSegmentDockShow(record, ev)}>
                   {this.msg('btnTextSegment')}
                 </a>
               </span>
@@ -383,7 +383,7 @@ export default class DispatchList extends React.Component {
                 return (
                   <PrivilegeCover module="transport" feature="dispatch" action="edit">
                     <span>
-                      <a role="button" onClick={ev => this.handleShipmtReturn(record, ev)}>
+                      <a href onClick={ev => this.handleShipmtReturn(record, ev)}>
                         {this.msg('btnTextReturn')}
                       </a>
                     </span>
@@ -395,11 +395,11 @@ export default class DispatchList extends React.Component {
             return (
               <PrivilegeCover module="transport" feature="dispatch" action="edit">
                 <span>
-                  <a role="button" onClick={ev => this.handleShipmtSend(record, ev)}>
+                  <a href onClick={ev => this.handleShipmtSend(record, ev)}>
                     {this.msg('btnTextSend')}
                   </a>
                   <span className="ant-divider" />
-                  <a role="button" onClick={ev => this.handleShipmtReturn(record, ev)}>
+                  <a href onClick={ev => this.handleShipmtReturn(record, ev)}>
                     {this.msg('btnTextReturn')}
                   </a>
                 </span>
@@ -447,11 +447,11 @@ export default class DispatchList extends React.Component {
       render: (o, record) => (
         <PrivilegeCover module="transport" feature="dispatch" action="create">
           <span>
-            <a role="button" onClick={ev => this.handleCondDispatchDockShow(record, ev)}>
+            <a href onClick={ev => this.handleCondDispatchDockShow(record, ev)}>
               {this.msg('btnTextDispatch')}
             </a>
             <span className="ant-divider" />
-            <a role="button" onClick={ev => this.handleCondSegmentDockShow(record, ev)}>
+            <a href onClick={ev => this.handleCondSegmentDockShow(record, ev)}>
               {this.msg('btnTextSegment')}
             </a>
           </span>

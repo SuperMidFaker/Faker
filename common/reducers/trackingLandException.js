@@ -44,8 +44,10 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_EXCPSHIPMT_FAIL:
       return { ...state, loading: false };
     case actionTypes.LOAD_EXCPSHIPMT_SUCCEED:
-      return { ...state, loading: false,
-        loaded: true, shipmentlist: action.result.data,
+      return { ...state,
+        loading: false,
+        loaded: true,
+        shipmentlist: action.result.data,
         filters: JSON.parse(action.params.filters),
       };
     case actionTypes.CHANGE_FILTER: {

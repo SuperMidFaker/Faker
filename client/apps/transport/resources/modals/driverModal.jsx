@@ -18,7 +18,8 @@ const formItemLayout = {
   operation: state.transportResources.driverModal.operation,
 }), { addDriver, editDriver, toggleDriverModal })
 @withPrivilege({
-  module: 'transport', feature: 'resources',
+  module: 'transport',
+  feature: 'resources',
   action: props => props.operation === 'edit' ? 'edit' : 'create',
 })
 @Form.create()

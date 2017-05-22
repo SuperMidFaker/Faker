@@ -79,7 +79,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, loading: false, dispatched: false };
     case actionTypes.LOAD_DISPSHIPMENT_SUCCEED: {
       const filters = JSON.parse(action.params.filters);
-      return { ...state, loading: false,
+      return { ...state,
+        loading: false,
         shipmentlist: action.result.data,
         filters,
         cond: { type: 'none' },
@@ -97,7 +98,8 @@ export default function reducer(state = initialState, action) {
     case actionTypes.DO_DISPATCH_SUCCEED:
       return { ...state, dispatched: true, loaded: false };
     case actionTypes.LOAD_SEGMENT_RQ_SUCCEED:
-      return { ...state, nodeLocations: action.result.data.nodeLocations,
+      return { ...state,
+        nodeLocations: action.result.data.nodeLocations,
         transitModes: action.result.data.transitModes,
         vehicleLengths: action.result.data.vehicleLengths,
         vehicleTypes: action.result.data.vehicleTypes,
@@ -113,8 +115,10 @@ export default function reducer(state = initialState, action) {
       const { shipmentlist } = { ...state };
       shipmentlist.data = action.result.data;
       shipmentlist.totalCount = shipmentlist.data.length;
-      return { ...state, loading: false,
-        loaded: true, shipmentlist,
+      return { ...state,
+        loading: false,
+        loaded: true,
+        shipmentlist,
         cond: JSON.parse(action.params.filters),
         dispatched: false,
         segmented: false,

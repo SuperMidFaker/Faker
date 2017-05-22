@@ -21,7 +21,8 @@ export function formReducer(actionTypes, state, action, defaultForm, stateFormNa
     case actionTypes.FORM_ASSIGN: {
       if (action.index !== -1) {
         return {
-          ...state, selectedIndex: action.index,
+          ...state,
+          selectedIndex: action.index,
           formData: state[stateFormName].data[action.index],
         };
       } else {

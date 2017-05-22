@@ -29,7 +29,7 @@ function CreateActionForm(props) {
   return (
     <Card extra={(
       <Popconfirm title={msg('deleteConfirm')} onConfirm={handleDel}>
-        <a role="button"><Icon type="delete" /></a>
+        <a href><Icon type="delete" /></a>
       </Popconfirm>)}
     >
       <Row gutter={16}>
@@ -87,7 +87,7 @@ function NotifyActionForm(props) {
   return (
     <Card extra={(
       <Popconfirm title={msg('deleteConfirm')} onConfirm={handleDel}>
-        <a role="button"><Icon type="delete" /></a>
+        <a href><Icon type="delete" /></a>
       </Popconfirm>)}
     >
       <Row gutter={16}>
@@ -204,12 +204,12 @@ export default class AddTriggerModal extends React.Component {
             let actionForm = null;
             switch (action.type) {
               case 'CREATE': actionForm = (
-                <CreateActionForm key={`${action.type}${index}`} action={action} onDel={this.handleActionDel}
+                <CreateActionForm key={action.id} action={action} onDel={this.handleActionDel}
                   index={index} bizObjectOptions={bizObjects} onChange={this.handleFormChange} msg={this.msg}
                 />);
                 break;
               case 'NOTIFY': actionForm = (
-                <NotifyActionForm key={`${action.type}${index}`} action={action} onDel={this.handleActionDel}
+                <NotifyActionForm key={action.id} action={action} onDel={this.handleActionDel}
                   index={index} onChange={this.handleFormChange} msg={this.msg}
                 />);
                 break;

@@ -65,7 +65,7 @@ export default class TrackingPane extends React.Component {
         dotType = (<Icon type="environment" style={{ fontSize: '20px', backgroundColor: '#fff' }} />);
       }
       return (
-        <Timeline.Item dot={dotType} key={i} color={color}>
+        <Timeline.Item dot={dotType} key={s.id} color={color}>
           <span style={{ marginLeft: -100 }}>{s.date}</span>
           <span style={{ marginLeft: 34 }}>
             {s.title}

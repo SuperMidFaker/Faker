@@ -43,7 +43,8 @@ function goBack(router) {
   }),
   { editOrganization, submit, checkLoginName })
 @withPrivilege({
-  module: 'corp', feature: 'organization',
+  module: 'corp',
+  feature: 'organization',
   action: props => props.formData.key === null ? 'create' : 'edit',
 })
 @Form.create()

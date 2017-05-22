@@ -60,11 +60,22 @@ export default class FreightCharge extends React.Component {
       ]);
     const created = this.props.formData.created_date || Date.now();
     const data = {
-      partner_id: customer_partner_id, consigner_region_code, consignee_region_code,
-      goods_type, trans_mode: transport_mode_id, transport_mode_code, ctn,
-      tenant_id: this.props.tenantId, created_date: created,
-      vehicle_type_id, vehicle_length_id, total_weight, total_volume,
-      pickup_est_date, deliver_est_date, tariffType,
+      partner_id: customer_partner_id,
+      consigner_region_code,
+      consignee_region_code,
+      goods_type,
+      trans_mode: transport_mode_id,
+      transport_mode_code,
+      ctn,
+      tenant_id: this.props.tenantId,
+      created_date: created,
+      vehicle_type_id,
+      vehicle_length_id,
+      total_weight,
+      total_volume,
+      pickup_est_date,
+      deliver_est_date,
+      tariffType,
     };
 
     if (customer_partner_id === undefined) {
@@ -365,7 +376,7 @@ export default class FreightCharge extends React.Component {
     >{tariff.quoteNo ? tariff.quoteNo : ''}</a></span>);
     return (
       <Card title={title} bodyStyle={{ padding: 16 }}
-        extra={computed ? <a role="button" onClick={this.handleReset}>重置</a> : <Button type="primary" icon="calculator"
+        extra={computed ? <a href onClick={this.handleReset}>重置</a> : <Button type="primary" icon="calculator"
           onClick={() => this.handleCompute('normal')}
         >{this.msg('computeCharge')}</Button>}
       >
@@ -429,7 +440,8 @@ export default class FreightCharge extends React.Component {
           field="total_charge" fieldProps={{ initialValue: formData.total_charge,
             onChange: this.handleTotalChange,
           }}
-          rules={[{ type: 'number', transform: v => Number(v),
+          rules={[{ type: 'number',
+            transform: v => Number(v),
             message: this.msg('totalChargeMustBeNumber') }]}
           colSpan={8} readOnly={computed}
         />

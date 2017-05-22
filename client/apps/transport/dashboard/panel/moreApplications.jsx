@@ -50,12 +50,12 @@ export default class MoreApplications extends React.Component {
           <br />
           <Row className="mdc-text-grey">
             <Col span={12}>
-              <img style={{ width: 50, height: 'auto', marginBottom: 20 }} role="presentation" src={`${__CDN__}/assets/img/apple.png`} />
+              <img style={{ width: 50, height: 'auto', marginBottom: 20 }} alt="apple" src={`${__CDN__}/assets/img/apple.png`} />
               <br />
               <Button onClick={() => window.open('https://fir.im/welogixios')}>直接下载</Button>
             </Col>
             <Col span={12}>
-              <img style={{ width: 50, height: 'auto', marginBottom: 20 }} role="presentation" src={`${__CDN__}/assets/img/android.png`} />
+              <img style={{ width: 50, height: 'auto', marginBottom: 20 }} alt="android" src={`${__CDN__}/assets/img/android.png`} />
               <br />
               <Button onClick={() => window.open('https://fir.im/welogixApp')}>直接下载</Button>
             </Col>
@@ -67,7 +67,7 @@ export default class MoreApplications extends React.Component {
           <br />
           <Row className="mdc-text-grey"><h3 style={{ fontWeight: 'normal' }}>微信服务号</h3></Row>
           <br />
-          <Row className="mdc-text-grey"><img style={{ width: 180, height: 'auto' }} role="presentation" src={`${__CDN__}/assets/img/qrcode_for_gh_4460c1f1985e_258.jpg`} /></Row>
+          <Row className="mdc-text-grey"><img style={{ width: 180, height: 'auto' }} alt="qrcode" src={`${__CDN__}/assets/img/qrcode_for_gh_4460c1f1985e_258.jpg`} /></Row>
           <br />
           <Row className="mdc-text-grey"><h5 style={{ fontWeight: 'normal' }}>直接扫描二维码</h5></Row>
           <br />

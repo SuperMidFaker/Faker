@@ -20,7 +20,8 @@ const formItemLayout = {
   }]),
 }), { })
 @withPrivilege({
-  module: 'transport', feature: 'resources',
+  module: 'transport',
+  feature: 'resources',
   action: props => props.mode === 'edit' ? 'edit' : 'create',
 })
 export default class NodeForm extends Component {

@@ -43,7 +43,8 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_ROLE_SUCCEED:
       return { ...state, formData: action.result.data };
     case actionTypes.LOAD_MODULES_SUCCEED:
-      return { ...state, modules: INTRINSIC_MODULE_FEATURES.filter(
+      return { ...state,
+        modules: INTRINSIC_MODULE_FEATURES.filter(
         imf => action.result.data.indexOf(imf.id) >= 0
       ) };
     case actionTypes.EDIT_ROLE:
