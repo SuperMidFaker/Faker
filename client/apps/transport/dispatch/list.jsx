@@ -64,7 +64,6 @@ function fetch({ state, dispatch, cookie }) {
     dispatched: state.transportDispatch.dispatched,
     expandList: state.transportDispatch.expandList,
     cond: state.transportDispatch.cond,
-    shipmts: state.transportDispatch.shipmts,
     loaded: state.transportDispatch.loaded,
   }),
   { loadTable,
@@ -107,7 +106,6 @@ export default class DispatchList extends React.Component {
     cond: PropTypes.object.isRequired,
     loadShipmtDetail: PropTypes.func.isRequired,
     changeDockStatus: PropTypes.func.isRequired,
-    shipmts: PropTypes.array.isRequired,
     loaded: PropTypes.bool.isRequired,
   }
   state = {
@@ -608,29 +606,11 @@ export default class DispatchList extends React.Component {
     }
   }
 
-  handleDispatchDockClose = (reload) => {
-    if (typeof reload === 'boolean') {
-      this.handleStatusChange({ target: { value: 'waiting' } });
-    } else {
-      this.setState({ selectedRowKeys: [] });
-      this.props.changeDockStatus({ dispDockShow: false, shipmts: [] });
-    }
-  }
-
   handleSegmentDockShow(shipmt, ev) {
     ev.preventDefault();
     ev.stopPropagation();
     this.setState({ selectedRowKeys: [shipmt.key] });
     this.props.changeDockStatus({ segDockShow: true, shipmts: [shipmt] });
-  }
-
-  handleSegmentDockClose = (reload) => {
-    if (typeof reload === 'boolean') {
-      this.handleStatusChange({ target: { value: 'waiting' } });
-    } else {
-      this.setState({ selectedRowKeys: [] });
-      this.props.changeDockStatus({ segDockShow: false, shipmts: [] });
-    }
   }
 
   handleSegmentCancelConfirm = (shipmt, ev) => {
@@ -1077,14 +1057,8 @@ export default class DispatchList extends React.Component {
         <ShipmentDockPanel />
         <OrderDockPanel />
         <DelegationDockPanel />
-        <DispatchDock
-          shipmts={this.props.shipmts}
-          onClose={this.handleDispatchDockClose}
-        />
-        <SegmentDock
-          shipmts={this.props.shipmts}
-          onClose={this.handleSegmentDockClose}
-        />
+        <DispatchDock />
+        <SegmentDock />
         <RevokejectModal reload={this.handleTableLoad} />
         <ShipmentAdvanceModal />
         <CreateSpecialCharge />

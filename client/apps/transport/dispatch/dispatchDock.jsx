@@ -8,7 +8,7 @@ import Table from 'client/components/remoteAntTable';
 import InfoItem from 'client/components/InfoItem';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { loadLsps, loadVehicles, doDispatch, doDispatchAndSend, showDispatchConfirmModal } from 'common/reducers/transportDispatch';
+import { loadLsps, loadVehicles, doDispatch, doDispatchAndSend, showDispatchConfirmModal, changeDockStatus } from 'common/reducers/transportDispatch';
 import { addPartner } from 'common/reducers/partner';
 import { computeCostCharge } from 'common/reducers/shipment';
 import { getChargeAmountExpression } from '../common/charge';
@@ -37,7 +37,6 @@ RowClick.propTypes = {
   text: PropTypes.string.isRequired,
   onHit: PropTypes.func.isRequired,
 };
-function noop() {}
 
 function fetch({ state, dispatch, cookie }) {
   return dispatch(loadLsps(cookie, {
@@ -65,7 +64,8 @@ function fetch({ state, dispatch, cookie }) {
   dispatchConfirmModal: state.transportDispatch.dispatchConfirmModal,
   visible: state.transportDispatch.dispDockShow,
 }),
-  { loadLsps, loadVehicles, doDispatch, doDispatchAndSend, addPartner, computeCostCharge, toggleCarrierModal, showDispatchConfirmModal }
+  { loadLsps, loadVehicles, doDispatch, doDispatchAndSend, addPartner, computeCostCharge, toggleCarrierModal, showDispatchConfirmModal,
+    changeDockStatus }
 )
 export default class DispatchDock extends Component {
   static propTypes = {
@@ -75,7 +75,6 @@ export default class DispatchDock extends Component {
     loginName: PropTypes.string.isRequired,
     avatar: PropTypes.string.isRequired,
     visible: PropTypes.bool.isRequired,
-    onClose: PropTypes.func.isRequired,
     shipmts: PropTypes.array.isRequired,
     lsps: PropTypes.object.isRequired,
     loadLsps: PropTypes.func.isRequired,
@@ -92,11 +91,14 @@ export default class DispatchDock extends Component {
     toggleCarrierModal: PropTypes.func.isRequired,
     showDispatchConfirmModal: PropTypes.func.isRequired,
     dispatchConfirmModal: PropTypes.object.isRequired,
+    changeDockStatus: PropTypes.func.isRequired,
   }
 
   constructor(props) {
     super(props);
-    this.onClose = this.props.onClose || noop;
+    this.onClose = () => {
+      this.props.changeDockStatus({ dispDockShow: false, shipmts: [] });
+    };
     this.onCloseWrapper = (reload) => {
       this.setState({ quotation: 0, podType: 'ePOD' });
       this.onClose(reload);
@@ -673,7 +675,7 @@ export default class DispatchDock extends Component {
   render() {
     const { shipmts, visible } = this.props;
     return (
-      <DockPanel visible={visible} onClose={this.props.onClose}
+      <DockPanel visible={visible} onClose={this.onClose}
         title={`分配 ${shipmts.length}个运单`}
         extra={this.renderExtra()}
       >

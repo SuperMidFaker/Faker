@@ -28,6 +28,8 @@ import DelegationDockPanel from '../../cms/common/dockhub/delegationDockPanel';
 import ShipmentAdvanceModal from 'client/apps/transport/tracking/land/modals/shipment-advance-modal';
 import CreateSpecialCharge from 'client/apps/transport/tracking/land/modals/create-specialCharge';
 import OperatorsPopover from 'client/common/operatorsPopover';
+import DispatchDock from '../dispatch/dispatchDock';
+import SegmentDock from '../dispatch/segmentDock';
 
 const formatMsg = format(messages);
 const formatContainerMsg = format(containerMessages);
@@ -70,6 +72,7 @@ function fetchData({ state, dispatch, cookie }) {
     shipmentlist: state.transportAcceptance.table.shipmentlist,
     filters: state.transportAcceptance.table.filters,
     loading: state.transportAcceptance.table.loading,
+    loaded: state.transportAcceptance.table.loaded,
     sortField: state.transportAcceptance.table.sortField,
     sortOrder: state.transportAcceptance.table.sortOrder,
     todos: state.shipment.statistics.todos,
@@ -89,6 +92,7 @@ export default class AcceptList extends React.Component {
     sortField: PropTypes.string.isRequired,
     sortOrder: PropTypes.string.isRequired,
     loading: PropTypes.bool.isRequired,
+    loaded: PropTypes.bool.isRequired,
     shipmentlist: PropTypes.object.isRequired,
     delDraft: PropTypes.func.isRequired,
     revokeOrReject: PropTypes.func.isRequired,
@@ -108,6 +112,11 @@ export default class AcceptList extends React.Component {
     const { filters } = this.props;
     const filter = filters.find(item => item.name === 'name');
     this.setState({ searchValue: filter ? filter.value : '' });
+  }
+  componentWillReceiveProps(nextProps) {
+    if (!nextProps.loaded && !nextProps.loading) {
+      this.handleTableLoad();
+    }
   }
   dataSource = new Table.DataSource({
     fetcher: params => this.props.loadTable(null, params),
@@ -486,6 +495,8 @@ export default class AcceptList extends React.Component {
         <DelegationDockPanel />
         <ShipmentAdvanceModal />
         <CreateSpecialCharge />
+        <DispatchDock />
+        <SegmentDock />
       </QueueAnim>
     );
   }

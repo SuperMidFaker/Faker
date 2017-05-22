@@ -70,7 +70,7 @@ const initialState = {
     visible: false,
   },
 };
-export const { LOAD_DISPSHIPMENT } = actionTypes;
+export const { LOAD_DISPSHIPMENT, DO_DISPATCH_SUCCEED, DO_DISPATCH_SEND_SUCCEED, SEGMENT_SUCCEED } = actionTypes;
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.LOAD_DISPSHIPMENT:

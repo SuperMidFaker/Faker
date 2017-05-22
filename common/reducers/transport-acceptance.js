@@ -1,6 +1,6 @@
 import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
-
+import { DO_DISPATCH_SUCCEED, DO_DISPATCH_SEND_SUCCEED, SEGMENT_SUCCEED } from './transportDispatch';
 const actionTypes = createActionTypes('@@welogix/transport/acceptance/', [
   'REVOKE_OR_REJECT', 'CLOSE_RE_MODAL',
   'SAVE_SHIPMT', 'SAVE_SHIPMT_FAIL', 'SAVE_SHIPMT_SUCCEED',
@@ -19,7 +19,7 @@ const actionTypes = createActionTypes('@@welogix/transport/acceptance/', [
 const initialState = {
   submitting: false,
   table: {
-    loaded: true,
+    loaded: false,
     loading: false,
     filters: [
       /* { name: 'shipmt_no', value: ''} */
@@ -86,6 +86,15 @@ export default function reducer(state = initialState, action) {
       const shipmentlist = { ...state.table.shipmentlist, data };
       const table = { ...state.table, shipmentlist };
       return { ...state, table };
+    }
+    case DO_DISPATCH_SUCCEED: {
+      return { ...state, table: { ...state.table, loaded: false } };
+    }
+    case DO_DISPATCH_SEND_SUCCEED: {
+      return { ...state, table: { ...state.table, loaded: false } };
+    }
+    case SEGMENT_SUCCEED: {
+      return { ...state, table: { ...state.table, loaded: false } };
     }
     default:
       return state;

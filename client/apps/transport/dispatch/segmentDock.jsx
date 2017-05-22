@@ -3,7 +3,7 @@ import { Card, Icon, Tag, Button, Select, DatePicker, Row, Col, message, Alert, 
 import DockPanel from 'client/components/DockPanel';
 import InfoItem from 'client/components/InfoItem';
 import { intlShape, injectIntl } from 'react-intl';
-import { segmentRequest } from 'common/reducers/transportDispatch';
+import { segmentRequest, changeDockStatus } from 'common/reducers/transportDispatch';
 import { connect } from 'react-redux';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -11,14 +11,13 @@ const Option = Select.Option;
 const FormItem = Form.Item;
 const formatMsg = format(messages);
 
-function noop() {}
 @injectIntl
 @connect(state => ({
   nodeLocations: state.transportDispatch.nodeLocations,
   transitModes: state.transportDispatch.transitModes,
   visible: state.transportDispatch.segDockShow,
   shipmts: state.transportDispatch.shipmts,
-}), { segmentRequest })
+}), { segmentRequest, changeDockStatus })
 export default class SegmentDock extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -28,11 +27,14 @@ export default class SegmentDock extends React.Component {
     nodeLocations: PropTypes.array.isRequired,
     transitModes: PropTypes.array.isRequired,
     segmentRequest: PropTypes.func.isRequired,
+    changeDockStatus: PropTypes.func.isRequired,
   }
 
   constructor(props) {
     super(props);
-    this.onClose = this.props.onClose || noop;
+    this.onClose = () => {
+      this.props.changeDockStatus({ segDockShow: false, shipmts: [] });
+    };
     this.onCloseWrapper = (reload) => {
       this.setState({
         segments: [(<Button type="dashed" style={{ width: 400 }} onClick={() => this.handleAddSegment(true)}><Icon type="plus" />添加中转站</Button>)],
@@ -281,7 +283,7 @@ export default class SegmentDock extends React.Component {
     }
 
     return (
-      <DockPanel visible={visible} onClose={this.props.onClose}
+      <DockPanel visible={visible} onClose={this.onClose}
         title={`分段 ${shipmts.length}个运单`}
         extra={this.renderExtra()}
       >
