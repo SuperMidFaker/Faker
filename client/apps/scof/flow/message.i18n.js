@@ -142,6 +142,10 @@ const messages = defineMessages({
     id: 'scof.flow.biz.tms.cargo.type',
     defaultMessage: '货物类型',
   },
+  podType: {
+    id: 'scof.flow.biz.tms.pod.type',
+    defaultMessage: '回单',
+  },
   nodeName: {
     id: 'scof.flow.biz.node.name',
     defaultMessage: '节点名称',
