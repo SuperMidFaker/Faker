@@ -1,10 +1,10 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Breadcrumb, Form, Layout, Row, Col, Button } from 'antd';
+import { Breadcrumb, Form, Layout, Row, Button } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
-import MainForm from './forms/mainForm';
-import SiderForm from './forms/siderForm';
+import HeadForm from './forms/headForm';
+import DetailForm from './forms/detailForm';
 import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
 
@@ -24,13 +24,12 @@ const { Header, Content } = Layout;
 )
 @connectNav({
   depth: 3,
-  moduleName: 'scv',
+  moduleName: 'cwm',
 })
 @Form.create()
-export default class ViewReceivingNotice extends Component {
+export default class ReceiveStockInbound extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    type: PropTypes.oneOf(['import', 'export']),
     form: PropTypes.object.isRequired,
     tenantName: PropTypes.string.isRequired,
     formData: PropTypes.object.isRequired,
@@ -76,7 +75,7 @@ export default class ViewReceivingNotice extends Component {
               {this.msg('receivingNotice')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              asnNo
+              {this.msg('createRN')}
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="top-bar-tools">
@@ -91,12 +90,8 @@ export default class ViewReceivingNotice extends Component {
         <Content className="main-content layout-fixed-width layout-fixed-width-lg">
           <Form layout="vertical">
             <Row gutter={16}>
-              <Col sm={24} md={16}>
-                <MainForm form={form} />
-              </Col>
-              <Col sm={24} md={8}>
-                <SiderForm form={form} />
-              </Col>
+              <HeadForm form={form} />
+              <DetailForm form={form} />
             </Row>
           </Form>
         </Content>

@@ -39,7 +39,7 @@ export default class ModuleCWM extends React.Component {
         text: formatMsg(intl, 'receivingNotice'),
       }, {
         key: 'cwm-1-1',
-        path: '/cwm/inbound',
+        path: '/cwm/inbound/stock',
         text: formatMsg(intl, 'inboundTransactions'),
       },
       ],
@@ -70,14 +70,37 @@ export default class ModuleCWM extends React.Component {
     linkMenus.push({
       single: false,
       key: 'cwm-4',
+      icon: 'icon-fontello-feather',
+      text: formatMsg(intl, 'ftzSupervision'),
+      sublinks: [{
+        key: 'cwm-4-0',
+        group: '上海自贸区',
+        path: '/cwm/ftz/inbound',
+        text: formatMsg(intl, 'ftzInbound'),
+      }, {
+        key: 'cwm-4-1',
+        group: '上海自贸区',
+        path: '/cwm/ftz/outbound',
+        text: formatMsg(intl, 'ftzOutbound'),
+      }, {
+        key: 'cwm-4-2',
+        group: '上海自贸区',
+        path: '/cwm/ftz/movement',
+        text: formatMsg(intl, 'ftzMovement'),
+      },
+      ],
+    });
+    linkMenus.push({
+      single: false,
+      key: 'cwm-5',
       icon: 'icon-fontello-box',
       text: formatMsg(intl, 'products'),
       sublinks: [{
-        key: 'cwm-4-0',
+        key: 'cwm-5-0',
         path: '/cwm/products/sku',
         text: formatMsg(intl, 'productsSku'),
       }, {
-        key: 'cwm-4-1',
+        key: 'cwm-5-1',
         disabled: true,
         path: '/cwm/products/lot',
         text: formatMsg(intl, 'productsLot'),
@@ -86,15 +109,15 @@ export default class ModuleCWM extends React.Component {
     });
     linkMenus.push({
       single: false,
-      key: 'cwm-5',
+      key: 'cwm-6',
       icon: 'zmdi zmdi-settings',
       text: formatMsg(intl, 'settings'),
       sublinks: [{
-        key: 'cwm-5-0',
+        key: 'cwm-6-0',
         path: '/cwm/resources',
         text: formatMsg(intl, 'resources'),
       }, {
-        key: 'cwm-5-1',
+        key: 'cwm-6-1',
         disabled: true,
         path: '/cwm/settings',
         text: formatMsg(intl, 'settingsApp'),

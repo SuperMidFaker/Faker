@@ -55,7 +55,7 @@ import * as CMSClassificationHsCode from './cms/classification/hscode';
 import * as CMSClassificationSpecial from './cms/classification/special';
 import CWM from './cwm/module-cwm';
 import * as CWMDashboard from './cwm/dashboard';
-import * as CWMInbound from './cwm/inbound';
+import * as CWMStockInbound from './cwm/inbound/stock';
 import * as CWMReceivingNotice from './cwm/inbound/receiving';
 import * as CWMOutbound from './cwm/outbound';
 import * as CWMShippingOrder from './cwm/outbound/shipping';
@@ -414,7 +414,10 @@ export default(store, cookie) => {
             <IndexRedirect to="/cwm/dashboard" />
             <Route path="dashboard" component={CWMDashboard.Index} />
             <Route path="inbound">
-              <IndexRoute component={CWMInbound.List} />
+              <Route path="stock">
+                <IndexRoute component={CWMStockInbound.List} />
+                <Route path="receive/:asnNo" component={CWMStockInbound.Receive} />
+              </Route>
               <Route path="receiving">
                 <IndexRoute component={CWMReceivingNotice.List} />
                 <Route path="create" component={CWMReceivingNotice.Create} />

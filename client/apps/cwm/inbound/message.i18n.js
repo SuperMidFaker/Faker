@@ -3,15 +3,19 @@ import { defineMessages } from 'react-intl';
 const messages = defineMessages({
   inbound: {
     id: 'cwm.inbound',
-    defaultMessage: '入库管理',
+    defaultMessage: '入库',
   },
   receivingNotice: {
     id: 'cwm.inbound.receiving',
-    defaultMessage: '收货通知',
+    defaultMessage: '收货预告',
+  },
+  createRN: {
+    id: 'cwm.inbound.receiving.create',
+    defaultMessage: '新建收货预告',
   },
   inboundTransactions: {
     id: 'cwm.inbound.transactions',
-    defaultMessage: '入库记录',
+    defaultMessage: '入库操作',
   },
   inboundListSearchPlaceholder: {
     id: 'cwm.inbound.list.placeholder',
@@ -23,7 +27,7 @@ const messages = defineMessages({
   },
   inboundNo: {
     id: 'cwm.inbound.transactions.inboundNo',
-    defaultMessage: '入库流水号',
+    defaultMessage: '入库单号',
   },
   inboundDate: {
     id: 'cwm.inbound.transactions.inboundDate',
