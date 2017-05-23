@@ -42,6 +42,7 @@ const initialState = {
     totalCharge: 0,
     modifyTimes: 0,
   },
+  billingSaving: false,
   dispIds: [],
   BfdispIds: [],
   billingFees: {
@@ -136,8 +137,21 @@ export default function reducer(state = initialState, action) {
           modifyTenantId: billing.modify_tenant_id,
         } };
     }
+    case actionTypes.CREATE_BILLING:
+    case actionTypes.ACCEPT_BILLING:
+    case actionTypes.EDIT_BILLING:
+    case actionTypes.CHECK_BILLING:
+      return { ...state, billingSaving: true };
+    case actionTypes.CREATE_BILLING_SUCCEED:
+    case actionTypes.CREATE_BILLING_FAIL:
+    case actionTypes.ACCEPT_BILLING_SUCCEED:
+    case actionTypes.ACCEPT_BILLING_FAIL:
+    case actionTypes.EDIT_BILLING_SUCCEED:
+    case actionTypes.EDIT_BILLING_FAIL:
+    case actionTypes.CHECK_BILLING_FAIL:
+      return { ...state, billingSaving: false };
     case actionTypes.CHECK_BILLING_SUCCEED:
-      return { ...state, billingFees: initialState.billingFees };
+      return { ...state, billingSaving: false, billingFees: initialState.billingFees };
     case actionTypes.LOAD_DISPS_BEFORETIME_SUCCEED:
       return { ...state, BfdispIds: action.result.data };
     case actionTypes.ALTER_BILLINGFEES: {

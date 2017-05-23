@@ -35,6 +35,7 @@ function fetchData({ state, location, dispatch }) {
     username: state.account.username,
     tenantName: state.account.tenantName,
     formData: state.crmOrders.formData,
+    saving: state.crmOrders.orderSaving,
   }),
   { editOrder, loadPartnerFlowList, loadCustomerCmsQuotes, loadOperators }
 )
@@ -98,7 +99,7 @@ export default class EditOrder extends Component {
             <Button size="large" type="ghost" onClick={this.handleCancelBtnClick}>
               {this.msg('cancel')}
             </Button>
-            <Button size="large" type="primary" onClick={this.handleSave}>
+            <Button size="large" type="primary" onClick={this.handleSave} loading={this.props.saving}>
               {this.msg('save')}
             </Button>
           </div>

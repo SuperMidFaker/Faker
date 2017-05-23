@@ -41,6 +41,7 @@ const initialState = {
     data: [],
   },
   tariffId: '',
+  tariffSaving: false,
   agreement: {
     quoteNo: '',
     version: 0,
@@ -152,11 +153,19 @@ export default function reducer(state = initialState, action) {
       return { ...state, partners: action.result.data };
     case actionTypes.LOAD_FORMPARAMS_SUCCEED:
       return { ...state, formParams: action.result.data };
+    case actionTypes.SUBMIT_AGREEMENT:
+    case actionTypes.UPDATE_AGREEMENT:
+      return { ...state, tariffSaving: true };
+    case actionTypes.SUBMIT_AGREEMENT_FAIL:
+    case actionTypes.UPDATE_AGREEMENT_SUCCEED:
+    case actionTypes.UPDATE_AGREEMENT_FAIL:
+      return { ...state, tariffSaving: false };
     case actionTypes.SUBMIT_AGREEMENT_SUCCEED:
       return { ...state,
         tariffId: action.result.data.tariffId,
         fees: action.result.data.fees,
         ratesRefAgreement: action.data,
+        tariffSaving: false,
         agreement: { ...state.agreement, quoteNo: action.result.data.quoteNo } };
     case actionTypes.LOAD_RATESRC:
       return { ...state, ratesSourceLoading: true };

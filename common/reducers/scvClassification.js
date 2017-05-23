@@ -27,6 +27,7 @@ const actionTypes = createActionTypes('@@welogix/scv/classification/', [
 
 const initialState = {
   reload: false,
+  tradeItemSaving: false,
   tradeItemlist: {
     totalCount: 0,
     current: 1,
@@ -76,6 +77,14 @@ export default function reducer(state = initialState, action) {
       return { ...state, conflictItemlist: action.result.data, listFilter: JSON.parse(action.params.filter), tradeItemsLoading: false };
     case actionTypes.LOAD_CONFLICT_ITEMS_FAIL:
       return { ...state, tradeItemsLoading: false };
+    case actionTypes.ADD_ITEM:
+    case actionTypes.ITEM_EDITED_SAVE:
+      return { ...state, tradeItemSaving: true };
+    case actionTypes.ADD_ITEM_SUCCEED:
+    case actionTypes.ADD_ITEM_FAIL:
+    case actionTypes.ITEM_EDITED_SAVE_SUCCEED:
+    case actionTypes.ITEM_EDITED_SAVE_FAIL:
+      return { ...state, tradeItemSaving: false };
     case actionTypes.LOAD_TRADE_ITEM_SUCCEED:
       return { ...state, itemData: action.result.data.tradeitem };
     case actionTypes.LOAD_SYNCS_SUCCEED:

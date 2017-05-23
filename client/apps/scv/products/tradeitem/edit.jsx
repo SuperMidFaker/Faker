@@ -29,6 +29,7 @@ function fetchData({ dispatch, params }) {
     itemData: state.scvClassification.itemData,
     tenantId: state.account.tenantId,
     slaves: state.scvClassification.synclist,
+    saving: state.scvClassification.tradeItemSaving,
   }),
   { itemEditedSave, loadPartners, loadSyncList }
 )
@@ -71,7 +72,7 @@ export default class EditTradeItem extends Component {
   }
 
   render() {
-    const { form, slaves } = this.props;
+    const { form, slaves, saving } = this.props;
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Header className="top-bar">
@@ -90,7 +91,7 @@ export default class EditTradeItem extends Component {
             <Button size="large" onClick={this.handleCancel}>
               {this.msg('cancel')}
             </Button>
-            <Button size="large" type="primary" icon="save" onClick={this.handleSave}>
+            <Button size="large" type="primary" icon="save" onClick={this.handleSave} loading={saving}>
               {this.msg('save')}
             </Button>
           </div>

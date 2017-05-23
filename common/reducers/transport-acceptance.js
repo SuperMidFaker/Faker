@@ -61,14 +61,19 @@ export default function reducer(state = initialState, action) {
     case actionTypes.SAVE_PENDING:
     case actionTypes.SAVE_SHIPMT:
     case actionTypes.SAVE_DRAFT:
+    case actionTypes.SAVE_EDIT:
+    case actionTypes.ACCEPT_DRAFT:
       return { ...state, submitting: true };
     case actionTypes.SAVE_PENDING_FAIL:
     case actionTypes.SAVE_SHIPMT_FAIL:
     case actionTypes.SAVE_DRAFT_FAIL:
-      return { ...state, submitting: false };
     case actionTypes.SAVE_PENDING_SUCCEED:
     case actionTypes.SAVE_SHIPMT_SUCCEED:
     case actionTypes.SAVE_DRAFT_SUCCEED:
+    case actionTypes.SAVE_EDIT_SUCCEED:
+    case actionTypes.SAVE_EDIT_FAIL:
+    case actionTypes.ACCEPT_DRAFT_SUCCEED:
+    case actionTypes.ACCEPT_DRAFT_FAIL:
       return { ...state, submitting: false };
     case actionTypes.CLOSE_RE_MODAL:
       return { ...state, revokejectModal: { ...state.revokejectModal, visible: false } };

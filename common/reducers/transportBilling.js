@@ -76,6 +76,7 @@ const initialState = {
     totalCharge: 0,
     modifyTimes: 0,
   },
+  billingSaving: false,
   billingFees: {
     data: [],
   },
@@ -213,10 +214,22 @@ export default function reducer(state = initialState, action) {
       return { ...state, billings: { ...state.billings, ...action.result.data }, billingFees: initialState.billingFees, loading: false };
     case actionTypes.LOAD_BILLINGS_FAIL:
       return { ...state, loading: false };
+    case actionTypes.CREATE_BILLING:
+    case actionTypes.CHECK_BILLING:
+    case actionTypes.EDIT_BILLING:
+    case actionTypes.ACCEPT_BILLING:
+      return { ...state, billingSaving: true };
+    case actionTypes.CREATE_BILLING_FAIL:
+    case actionTypes.CHECK_BILLING_FAIL:
+    case actionTypes.EDIT_BILLING_SUCCEED:
+    case actionTypes.EDIT_BILLING_FAIL:
+    case actionTypes.ACCEPT_BILLING_SUCCEED:
+    case actionTypes.ACCEPT_BILLING_FAIL:
+      return { ...state, billingSaving: false };
     case actionTypes.CREATE_BILLING_SUCCEED:
-      return { ...state, billingFees: initialState.billingFees };
+      return { ...state, billingFees: initialState.billingFees, billingSaving: false };
     case actionTypes.CHECK_BILLING_SUCCEED:
-      return { ...state, billingFees: initialState.billingFees };
+      return { ...state, billingFees: initialState.billingFees, billingSaving: false };
     case actionTypes.CHANGE_FEES_FILTER: {
       const fees = { ...state.fees, [action.data.key]: action.data.value };
       return { ...state, fees, loaded: false };

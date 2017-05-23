@@ -4,7 +4,7 @@ import { Button, Icon, Col, Row, Tabs } from 'antd';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { CRM_ORDER_STATUS, SCOF_ORDER_TRANSFER, TRANS_MODE } from 'common/constants';
-import { hideDock, changeDockTab, loadClearanceDetail, loadTransportDetail } from 'common/reducers/crmOrders';
+import { hideDock, changeDockTab } from 'common/reducers/crmOrders';
 import InfoItem from 'client/components/InfoItem';
 import MdIcon from 'client/components/MdIcon';
 import DockPanel from 'client/components/DockPanel';
@@ -24,10 +24,8 @@ const TabPane = Tabs.TabPane;
     visible: state.crmOrders.dock.visible,
     tabKey: state.crmOrders.dock.tabKey,
     order: state.crmOrders.dock.order,
-    delgNos: state.crmOrders.dock.order.ccb_delg_no || '',
-    shipmtNos: state.crmOrders.dock.order.trs_shipmt_no || '',
   }),
-  { hideDock, changeDockTab, loadClearanceDetail, loadTransportDetail }
+  { hideDock, changeDockTab }
 )
 export default class OrderDockPanel extends React.Component {
   static propTypes = {
@@ -39,10 +37,6 @@ export default class OrderDockPanel extends React.Component {
     hideDock: PropTypes.func.isRequired,
     changeDockTab: PropTypes.func.isRequired,
     order: PropTypes.object.isRequired,
-    delgNos: PropTypes.string.isRequired,
-    shipmtNos: PropTypes.string.isRequired,
-    loadClearanceDetail: PropTypes.func.isRequired,
-    loadTransportDetail: PropTypes.func.isRequired,
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   handleTabChange = (tabKey) => {

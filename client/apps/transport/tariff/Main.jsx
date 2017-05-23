@@ -21,6 +21,7 @@ const TabPane = Tabs.TabPane;
   tariffId: state.transportTariff.tariffId,
   formData: state.transportTariff.agreement,
   formParams: state.transportTariff.formParams,
+  saving: state.transportTariff.tariffSaving,
 }), { showPublishTariffModal, submitAgreement, updateAgreement, loadTariff })
 @connectNav({
   depth: 3,
@@ -114,7 +115,7 @@ export default class Main extends Component {
     }
   }
   render() {
-    const { type, tariffId, formData } = this.props;
+    const { type, tariffId, formData, saving } = this.props;
     const { selectedKey } = this.state;
     let content = [
       <TabPane tab="报价设置" key="0"><AgreementForm form={this.props.form} type={type} /></TabPane>,
@@ -146,14 +147,14 @@ export default class Main extends Component {
           <span>{`${formData.quoteNo} - ${formData.partnerName ? formData.partnerName : ''} - ${kindText}`}</span>
           { type === 'edit' && (
             <div className="top-bar-tools">
-              <Button type="default" size="large" onClick={this.handleSubmit}>保存</Button>
+              <Button type="default" size="large" onClick={this.handleSubmit} loading={saving}>保存</Button>
               <Button type="primary" size="large" onClick={() => this.props.showPublishTariffModal(true)}>发布</Button>
               <PublishTariffModal tariffForm={this.props.form} />
             </div>
             )}
           { (type === 'create') && (
             <div className="top-bar-tools">
-              <Button type="default" size="large" onClick={this.handleSubmit}>保存</Button>
+              <Button type="default" size="large" onClick={this.handleSubmit} loading={saving}>保存</Button>
             </div>
           )}
         </Header>

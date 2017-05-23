@@ -21,6 +21,7 @@ const { Header, Content } = Layout;
     loginId: state.account.loginId,
     loginName: state.account.username,
     slaves: state.scvClassification.synclist,
+    saving: state.scvClassification.tradeItemSaving,
   }),
   { addItem, loadSyncList }
 )
@@ -80,7 +81,7 @@ export default class CreateTradeItem extends Component {
   }
 
   render() {
-    const { form, slaves } = this.props;
+    const { form, slaves, saving } = this.props;
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Header className="top-bar">
@@ -99,7 +100,7 @@ export default class CreateTradeItem extends Component {
             <Button size="large" onClick={this.handleCancel}>
               {this.msg('cancel')}
             </Button>
-            <Button size="large" type="primary" icon="save" onClick={this.handleSave}>
+            <Button size="large" type="primary" icon="save" onClick={this.handleSave} loading={saving}>
               {this.msg('save')}
             </Button>
           </div>

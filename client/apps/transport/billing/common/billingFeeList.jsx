@@ -25,6 +25,7 @@ const { Header, Content } = Layout;
     loginName: state.account.username,
     billing: state.transportBilling.billing,
     billingFees: state.transportBilling.billingFees,
+    saving: state.transportBilling.billingSaving,
   }),
   { loadFeesByBillingId, updateBillingFees, checkBilling, acceptBilling, editBilling, loadShipmtDetail }
 )
@@ -148,14 +149,14 @@ export default class BillingFeeList extends React.Component {
     this.props.updateBillingFees(tenantId, feeId, 'status', s);
   }
   renderOperation() {
-    const { operation } = this.props;
+    const { operation, saving } = this.props;
     if (operation === 'check') {
       return (
-        <Button type="primary" onClick={this.handleAccept}>{this.msg('accept')}</Button>
+        <Button type="primary" onClick={this.handleAccept} loading={saving}>{this.msg('accept')}</Button>
       );
     } else if (operation === 'edit') {
       return (
-        <Button type="primary" onClick={this.handleEdit}>{this.msg('save')}</Button>
+        <Button type="primary" onClick={this.handleEdit} loading={saving}>{this.msg('save')}</Button>
       );
     }
     return '';
