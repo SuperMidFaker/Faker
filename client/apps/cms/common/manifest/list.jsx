@@ -86,7 +86,7 @@ export default class ManifestList extends Component {
     width: 50,
     render: dc => !isNaN(dc) ? dc : null,
   }, {
-    title: '报关单位',
+    title: '报关服务商',
     dataIndex: 'customs_name',
     width: 160,
     render: o => <TrimSpan text={o} maxLen={10} />,
