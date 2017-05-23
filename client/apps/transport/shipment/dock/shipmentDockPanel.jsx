@@ -346,7 +346,7 @@ export default class PreviewPanel extends React.Component {
     );
   }
   renderButtons = () => {
-    const { tenantId, previewer: { shipmt, dispatch, row, params: { sourceType } }, charges, partnerId } = this.props;
+    const { tenantId, previewer: { shipmt, dispatch, upstream, downstream, params: { sourceType } }, charges, partnerId } = this.props;
     const needRecalculate = charges.revenue.need_recalculate === 1 || charges.expense.need_recalculate === 1;
     let buttons = [];
     if (sourceType === 'sp') {
@@ -392,7 +392,7 @@ export default class PreviewPanel extends React.Component {
               </Button>
             </PrivilegeCover>
           );
-        } else if (dispatch.disp_status === 0 && row.sr_tenant_id === tenantId) {
+        } else if (dispatch.disp_status === 0 && upstream.sr_tenant_id === tenantId) {
           buttons.push(
             <PrivilegeCover module="transport" feature="dispatch" action="edit">
               <Button key="return" type="ghost" onClick={() => this.handleShipmtReturn()}>
@@ -416,11 +416,11 @@ export default class PreviewPanel extends React.Component {
             </Button>
           </PrivilegeCover>
         );
-        if (row.sr_tenant_id === tenantId) {
+        if (downstream.sr_tenant_id === tenantId) {
           buttons.push(
             <PrivilegeCover module="transport" feature="dispatch" action="edit">
               <Tooltip placement="bottom" title="承运商尚未接单，可立即撤回">
-                <Button key="withDraw" type="ghost" onClick={() => this.handleWithDraw(shipmt.shipmt_no, row.disp_id, row.parent_id)} style={{ marginLeft: 8 }} >
+                <Button key="withDraw" type="ghost" onClick={() => this.handleWithDraw(shipmt.shipmt_no, downstream.disp_id, downstream.parent_id)} style={{ marginLeft: 8 }} >
                   撤回
                 </Button>
               </Tooltip>

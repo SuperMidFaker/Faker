@@ -12,6 +12,7 @@ import ShipmtnoColumn from '../../common/shipmtnoColumn';
 import AddressColumn from '../../common/addressColumn';
 import ExceptionListPopover from './modals/exception-list-popover';
 import MyShipmentsSelect from '../../common/myShipmentsSelect';
+import CustomerSelect from '../../common/customerSelect';
 import AdvancedSearchBar from '../../common/advanced-search-bar';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/search-bar';
@@ -151,15 +152,7 @@ export default class LandStatusList extends React.Component {
     }),
     getParams: (pagination, filters, sorter) => {
       const newFilters = [...this.props.filters];
-      let index = newFilters.findIndex(item => item.name === 'customer_name');
-      if (index >= 0) {
-        newFilters.splice(index, 1);
-      }
-      if (filters.customer_name && filters.customer_name.length > 0) {
-        newFilters.push({ name: 'customer_name', value: filters.customer_name });
-      }
-
-      index = newFilters.findIndex(item => item.name === 'sp_name');
+      const index = newFilters.findIndex(item => item.name === 'sp_name');
       if (index >= 0) {
         newFilters.splice(index, 1);
       }
@@ -307,11 +300,10 @@ export default class LandStatusList extends React.Component {
     dataIndex: 'total_volume',
     width: 70,
   }, {
-    title: this.msg('shipmtCustomer'),
-    dataIndex: 'customer_name',
+    title: this.msg('srName'),
+    dataIndex: 'p_sr_name',
     width: 180,
     render: o => <TrimSpan text={o} maxLen={10} />,
-    filters: this.props.clients.map(item => ({ text: item.partner_code ? `${item.partner_code} | ${item.name}` : item.name, value: item.partner_id })),
   }, {
     title: this.msg('departurePlace'),
     width: 140,
@@ -445,6 +437,14 @@ export default class LandStatusList extends React.Component {
     this.showAdvancedSearch(false);
   }
 
+  handleCustomerChange = (partnerId) => {
+    let value;
+    if (partnerId !== -1) {
+      value = partnerId;
+    }
+    this.props.changeExcpFilter('sr_partner_id', value);
+  }
+
   render() {
     const { shipmentlist, loading } = this.props;
     this.dataSource.remotes = shipmentlist;
@@ -467,6 +467,8 @@ export default class LandStatusList extends React.Component {
             <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
               <h3>已选中{this.state.selectedRowKeys.length}项</h3>
             </div>
+            <span />
+            <CustomerSelect onChange={value => this.handleCustomerChange(value)} />
             <div className="toolbar-right">
               <MyShipmentsSelect onChange={this.handleShipmentViewSelect} size="large" />
             </div>

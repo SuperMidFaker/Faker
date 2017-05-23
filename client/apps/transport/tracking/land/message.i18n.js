@@ -153,9 +153,9 @@ export default defineMessages({
     id: 'transport.tracking.shipment.volume',
     defaultMessage: '体积',
   },
-  shipmtCustomer: {
-    id: 'transport.tracking.shipmt.customer',
-    defaultMessage: '托运客户',
+  srName: {
+    id: 'transport.tracking.shipmt.srName',
+    defaultMessage: '委托客户',
   },
   departurePlace: {
     id: 'transport.tracking.departure.place',

@@ -30,6 +30,7 @@ import CreateSpecialCharge from 'client/apps/transport/tracking/land/modals/crea
 import OperatorsPopover from 'client/common/operatorsPopover';
 import DispatchDock from '../dispatch/dispatchDock';
 import SegmentDock from '../dispatch/segmentDock';
+import CustomerSelect from '../common/customerSelect';
 
 const formatMsg = format(messages);
 const formatContainerMsg = format(containerMessages);
@@ -281,6 +282,14 @@ export default class AcceptList extends React.Component {
     this.handleTableLoad(filters, 1);
     this.setState({ searchValue: searchVal });
   }
+  handleCustomerChange = (partnerId) => {
+    let value;
+    if (partnerId !== -1) {
+      value = partnerId;
+    }
+    const filters = this.mergeFilters(this.props.filters, 'sr_partner_id', value);
+    this.handleTableLoad(filters, 1);
+  }
   handleCreateBtnClick = () => {
     this.context.router.push('/transport/shipment/create');
   }
@@ -481,6 +490,8 @@ export default class AcceptList extends React.Component {
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3> {bulkBtns}
               </div>
+              <span />
+              <CustomerSelect onChange={value => this.handleCustomerChange(value)} />
             </div>
             <div className="panel-body table-panel">
               <Table rowSelection={rowSelection} columns={columns} loading={loading}

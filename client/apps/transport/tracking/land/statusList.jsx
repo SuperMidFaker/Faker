@@ -24,6 +24,7 @@ import RevokejectModal from '../../shipment/dock/revoke-reject';
 import { sendMessage } from 'common/reducers/notification';
 import AdvancedSearchBar from '../../common/advanced-search-bar';
 import MyShipmentsSelect from '../../common/myShipmentsSelect';
+import CustomerSelect from '../../common/customerSelect';
 import { SHIPMENT_VEHICLE_CONNECT } from 'common/constants';
 
 const formatMsg = format(messages);
@@ -63,7 +64,6 @@ function fetchData({ state, dispatch, params, cookie }) {
     loading: state.trackingLandStatus.loading,
     reportedShipmts: state.trackingLandStatus.locReportedShipments,
     loaded: state.trackingLandStatus.loaded,
-    clients: state.shipment.formRequire.clients,
     carriers: state.shipment.partners,
   }),
   {
@@ -99,7 +99,6 @@ export default class LandStatusList extends React.Component {
     loadShipmtLastPoint: PropTypes.func.isRequired,
     sendMessage: PropTypes.func.isRequired,
     deliverConfirm: PropTypes.func.isRequired,
-    clients: PropTypes.array.isRequired,
     changeStatusFilter: PropTypes.func.isRequired,
     carriers: PropTypes.array.isRequired,
   }
@@ -160,15 +159,7 @@ export default class LandStatusList extends React.Component {
     }),
     getParams: (pagination, filters, sorter) => {
       const newFilters = [...this.props.filters];
-      let index = newFilters.findIndex(item => item.name === 'customer_name');
-      if (index >= 0) {
-        newFilters.splice(index, 1);
-      }
-      if (filters.customer_name && filters.customer_name.length > 0) {
-        newFilters.push({ name: 'customer_name', value: filters.customer_name });
-      }
-
-      index = newFilters.findIndex(item => item.name === 'sp_name');
+      const index = newFilters.findIndex(item => item.name === 'sp_name');
       if (index >= 0) {
         newFilters.splice(index, 1);
       }
@@ -376,6 +367,14 @@ export default class LandStatusList extends React.Component {
     this.showAdvancedSearch(false);
   }
 
+  handleCustomerChange = (partnerId) => {
+    let value;
+    if (partnerId !== -1) {
+      value = partnerId;
+    }
+    this.props.changeStatusFilter('sr_partner_id', value);
+  }
+
   renderIntransitUpdater = (record) => {
     const reported = this.props.reportedShipmts.indexOf(record.shipmt_no) >= 0;
     const ttMsg = this.state.lastLocReportTime ?
@@ -445,7 +444,6 @@ export default class LandStatusList extends React.Component {
       sendMessage: this.props.sendMessage,
       deliverConfirm: this.handleDeliverConfirm,
       tenantId: this.props.tenantId,
-      clients: this.props.clients,
       carriers: this.props.carriers,
     }, this.msg);
     return (
@@ -460,6 +458,8 @@ export default class LandStatusList extends React.Component {
             <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
               <h3>已选中{this.state.selectedRowKeys.length}项</h3> {this.renderBatchOperationButtons()}
             </div>
+            <span />
+            <CustomerSelect onChange={value => this.handleCustomerChange(value)} />
             <div className="toolbar-right">
               <MyShipmentsSelect onChange={this.handleShipmentViewSelect} size="large" />
             </div>

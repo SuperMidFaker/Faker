@@ -33,6 +33,7 @@ import RevokejectModal from '../shipment/dock/revoke-reject';
 import SearchBar from 'client/components/search-bar';
 import AdvancedSearchBar from '../common/advanced-search-bar';
 import MyShipmentsSelect from '../common/myShipmentsSelect';
+import CustomerSelect from '../common/customerSelect';
 import OrderDockPanel from '../../scof/orders/docks/orderDockPanel';
 import DelegationDockPanel from '../../cms/common/dockhub/delegationDockPanel';
 import ShipmentAdvanceModal from 'client/apps/transport/tracking/land/modals/shipment-advance-modal';
@@ -569,7 +570,14 @@ export default class DispatchList extends React.Component {
     this.handleTableLoad(filters);
     this.showAdvancedSearch(false);
   }
-
+  handleCustomerChange = (partnerId) => {
+    let value;
+    if (partnerId !== -1) {
+      value = partnerId;
+    }
+    const filters = this.mergeFilters(this.props.filters, 'sr_partner_id', value);
+    this.handleTableLoad(filters);
+  }
   mergeFilters(curFilters, name, value) {
     const newFilters = {};
     Object.keys(curFilters).forEach((key) => {
@@ -1042,6 +1050,8 @@ export default class DispatchList extends React.Component {
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3> {bulkBtns}
               </div>
+              <span />
+              <CustomerSelect onChange={value => this.handleCustomerChange(value)} />
               <div className="toolbar-right">
                 <MyShipmentsSelect onChange={this.handleAdvancedSearch} size="large" />
               </div>

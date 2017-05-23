@@ -292,11 +292,10 @@ export default function makeColumns(type, handlers, msg) {
     dataIndex: 'total_volume',
     width: 60,
   }, {
-    title: msg('shipmtCustomer'),
-    dataIndex: 'customer_name',
+    title: msg('srName'),
+    dataIndex: 'p_sr_name',
     width: 180,
     render: o => <TrimSpan text={o} maxLen={10} />,
-    filters: handlers.clients.map(item => ({ text: item.partner_code ? `${item.partner_code} | ${item.name}` : item.name, value: item.partner_id })),
   }, {
     title: msg('shipmtMode'),
     dataIndex: 'transport_mode',

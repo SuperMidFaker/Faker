@@ -12,6 +12,7 @@ import PodAuditModal from './modals/pod-audit';
 import makeColumns from './columnDef';
 import { SHIPMENT_TRACK_STATUS } from 'common/constants';
 import MyShipmentsSelect from '../../common/myShipmentsSelect';
+import CustomerSelect from '../../common/customerSelect';
 import SearchBar from 'client/components/search-bar';
 import AdvancedSearchBar from '../../common/advanced-search-bar';
 import { format } from 'client/common/i18n/helpers';
@@ -53,7 +54,6 @@ function fetchData({ state, dispatch, params, cookie }) {
     filters: state.trackingLandPod.filters,
     loading: state.trackingLandPod.loading,
     loaded: state.trackingLandPod.loaded,
-    clients: state.shipment.formRequire.clients,
     carriers: state.shipment.partners,
   }),
   { loadPodTable,
@@ -78,7 +78,6 @@ export default class LandStatusList extends React.Component {
     loadShipmtDetail: PropTypes.func.isRequired,
     loadPodTable: PropTypes.func.isRequired,
     sendMessage: PropTypes.func.isRequired,
-    clients: PropTypes.array.isRequired,
     changePodFilter: PropTypes.func.isRequired,
     deliverConfirm: PropTypes.func.isRequired,
     carriers: PropTypes.array.isRequired,
@@ -141,15 +140,7 @@ export default class LandStatusList extends React.Component {
     }),
     getParams: (pagination, filters, sorter) => {
       const newFilters = [...this.props.filters];
-      let index = newFilters.findIndex(item => item.name === 'customer_name');
-      if (index >= 0) {
-        newFilters.splice(index, 1);
-      }
-      if (filters.customer_name && filters.customer_name.length > 0) {
-        newFilters.push({ name: 'customer_name', value: filters.customer_name });
-      }
-
-      index = newFilters.findIndex(item => item.name === 'sp_name');
+      const index = newFilters.findIndex(item => item.name === 'sp_name');
       if (index >= 0) {
         newFilters.splice(index, 1);
       }
@@ -246,6 +237,14 @@ export default class LandStatusList extends React.Component {
     this.showAdvancedSearch(false);
   }
 
+  handleCustomerChange = (partnerId) => {
+    let value;
+    if (partnerId !== -1) {
+      value = partnerId;
+    }
+    this.props.changePodFilter('sr_partner_id', value);
+  }
+
   render() {
     const { shipmentlist, loading } = this.props;
     this.dataSource.remotes = shipmentlist;
@@ -260,7 +259,6 @@ export default class LandStatusList extends React.Component {
       onShowAuditModal: this.handleShowAuditModal,
       tenantId: this.props.tenantId,
       sendMessage: this.props.sendMessage,
-      clients: this.props.clients,
       deliverConfirm: this.handleDeliverConfirm,
       carriers: this.props.carriers,
     }, this.msg);
@@ -276,6 +274,8 @@ export default class LandStatusList extends React.Component {
             <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
               <h3>已选中{this.state.selectedRowKeys.length}项</h3>
             </div>
+            <span />
+            <CustomerSelect onChange={value => this.handleCustomerChange(value)} />
             <div className="toolbar-right">
               <MyShipmentsSelect onChange={this.handleShipmentViewSelect} size="large" />
             </div>
