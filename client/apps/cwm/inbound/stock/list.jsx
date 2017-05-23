@@ -25,7 +25,7 @@ const Option = Select.Option;
   depth: 2,
   moduleName: 'cwm',
 })
-export default class ReceivingNoticeList extends React.Component {
+export default class StockInboundList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -192,7 +192,7 @@ export default class ReceivingNoticeList extends React.Component {
               {this.msg('receivingNotice')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <RadioGroup onChange={this.handleBondedChange} size="large">
+          <RadioGroup onChange={this.handleStatusChange} size="large">
             <RadioButton value="bonded">保税</RadioButton>
             <RadioButton value="nonbonded">非保税</RadioButton>
           </RadioGroup>

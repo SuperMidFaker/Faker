@@ -39,6 +39,7 @@ const initialState = {
     valid: true,
     fees: [],
   },
+  quoteSaving: false,
   quoteRevisions: [],
   quotesList: {
     totalCount: 0,
@@ -76,8 +77,12 @@ export default function reducer(state = initialState, action) {
       return { ...state, quotesList: { ...state.quotesList, ...action.result.data, quotesLoading: false } };
     case actionTypes.EDITQUOTE_LOAD_SUCCEED:
       return { ...state, quoteData: action.result.data.quoteData };
+    case actionTypes.REVISE_QUOTE:
+      return { ...state, quoteSaving: true };
+    case actionTypes.REVISE_QUOTE_FAIL:
+      return { ...state, quoteSaving: false };
     case actionTypes.REVISE_QUOTE_SUCCEED:
-      return { ...state, quoteData: action.data.quote };
+      return { ...state, quoteData: action.data.quote, quoteSaving: false };
     case actionTypes.QUOTE_COPY:
       return { ...state, quoteData: { ...state.quoteData, loading: true } };
     case actionTypes.QUOTE_COPY_SUCCEED:

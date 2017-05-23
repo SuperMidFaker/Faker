@@ -27,6 +27,7 @@ const { Header, Content } = Layout;
     loginName: state.account.username,
     billing: state.transportBilling.billing,
     billingFees: state.transportBilling.billingFees,
+    saving: state.transportBilling.billingSaving,
   }),
   { loadFeesByChooseModal, createBilling, updateBillingFees, loadShipmtDetail }
 )
@@ -139,7 +140,7 @@ export default class CreateBilling extends React.Component {
     );
   }
   render() {
-    const { type } = this.props;
+    const { type, saving } = this.props;
     const { beginDate, endDate, chooseModel, partnerName } = this.context.location.query;
     const handleLableStyle = {
       marginRight: 30,
@@ -259,7 +260,7 @@ export default class CreateBilling extends React.Component {
         <Header className="top-bar">
           <span>{this.msg('createBilling')}</span>
           <div className="top-bar-tools">
-            <Button type="primary" onClick={this.handleSave}>{this.msg('save')}</Button>
+            <Button type="primary" onClick={this.handleSave} loading={saving}>{this.msg('save')}</Button>
           </div>
         </Header>
         <Content className="main-content">

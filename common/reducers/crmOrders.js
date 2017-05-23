@@ -11,8 +11,6 @@ const actionTypes = createActionTypes('@@welogix/crm/orders/', [
   'EDIT_ORDER', 'EDIT_ORDER_SUCCEED', 'EDIT_ORDER_FAIL',
   'ACCEPT_ORDER', 'ACCEPT_ORDER_SUCCEED', 'ACCEPT_ORDER_FAIL',
   'LOAD_DETAIL', 'LOAD_DETAIL_SUCCEED', 'LOAD_DETAIL_FAIL',
-  'LOAD_CLEARANCE_DETAIL', 'LOAD_CLEARANCE_DETAIL_SUCCEED', 'LOAD_CLEARANCE_DETAIL_FAILED',
-  'LOAD_TRANSPORT_DETAIL', 'LOAD_TRANSPORT_DETAIL_SUCCEED', 'LOAD_TRANSPORT_DETAIL_FAILED',
   'LOAD_CLEARANCE_FEES', 'LOAD_CLEARANCE_FEES_SUCCEED', 'LOAD_CLEARANCE_FEES_FAIL',
   'LOAD_FLOWNODE', 'LOAD_FLOWNODE_SUCCEED', 'LOAD_FLOWNODE_FAILED',
   'LOAD_ORDERPROG', 'LOAD_ORDERPROG_SUCCEED', 'LOAD_ORDERPROG_FAILED',
@@ -23,6 +21,7 @@ const actionTypes = createActionTypes('@@welogix/crm/orders/', [
 const initialState = {
   loaded: true,
   loading: false,
+  orderSaving: false,
   dock: {
     visible: false,
     tabKey: null,
@@ -75,7 +74,7 @@ const initialState = {
     current: 1,
     data: [],
   },
-  orderFilters: { progress: 'active', transfer: 'all' },
+  orderFilters: { progress: 'all', transfer: 'all', partnerId: '' },
   kinds: [],
 };
 
@@ -101,6 +100,14 @@ export default function reducer(state = initialState, action) {
       return { ...state, orders: action.result.data, loading: false };
     case actionTypes.LOAD_ORDER_SUCCEED:
       return { ...state, formData: action.result.data };
+    case actionTypes.SUBMIT_ORDER:
+    case actionTypes.EDIT_ORDER:
+      return { ...state, orderSaving: true };
+    case actionTypes.EDIT_ORDER_SUCCEED:
+    case actionTypes.EDIT_ORDER_FAIL:
+    case actionTypes.SUBMIT_ORDER_SUCCEED:
+    case actionTypes.SUBMIT_ORDER_FAIL:
+      return { ...state, orderSaving: false };
     case actionTypes.LOAD_DETAIL_SUCCEED: {
       return { ...state,
         dock: {
@@ -110,26 +117,12 @@ export default function reducer(state = initialState, action) {
           ...action.result.data,
         } };
     }
-    case actionTypes.LOAD_CLEARANCE_DETAIL_SUCCEED: {
-      return { ...state,
-        dock: {
-          ...state.dock,
-          clearances: action.result.data,
-        } };
-    }
     case actionTypes.LOAD_CLEARANCE_FEES_SUCCEED:
       return { ...state,
         dock: {
           ...state.dock,
           clearanceFees: action.result.data || initialState.dock.clearanceFees,
         } };
-    case actionTypes.LOAD_TRANSPORT_DETAIL_SUCCEED: {
-      return { ...state,
-        dock: {
-          ...state.dock,
-          transports: action.result.data,
-        } };
-    }
     case actionTypes.HIDE_DOCK: {
       return { ...state, dock: { ...state.dock, visible: false } };
     }
@@ -301,21 +294,6 @@ export function loadClearanceFees(delgNos) {
       method: 'get',
       params: { delgNos },
       origin: 'mongo',
-    },
-  };
-}
-
-export function loadTransportDetail({ shipmtNos, tenantId }) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.LOAD_TRANSPORT_DETAIL,
-        actionTypes.LOAD_TRANSPORT_DETAIL_SUCCEED,
-        actionTypes.LOAD_TRANSPORT_DETAIL_FAILED,
-      ],
-      endpoint: 'v1/crm/transport/shipment/detail',
-      method: 'get',
-      params: { shipmtNos, tenantId },
     },
   };
 }

@@ -3,7 +3,6 @@ import { Button, InputNumber, Layout, Checkbox, Table, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
-
 import { loadFeesByChooseModal, loadClearanceFeesByChooseModal, loadTransportFeesByChooseModal,
   createBilling, updateBillingFees, showBeforeFeesModal } from 'common/reducers/crmBilling';
 import { loadOrderDetail } from 'common/reducers/crmOrders';

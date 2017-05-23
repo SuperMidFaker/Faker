@@ -26,6 +26,7 @@ const { Header, Content } = Layout;
     billing: state.cmsBilling.billing,
     dispIds: state.cmsBilling.dispIds,
     billingFees: state.cmsBilling.billingFees,
+    saving: state.cmsBilling.billingSaving,
   }),
   { loadDispsByChooseModal, loadExpsByDisp, createBilling, updateBillingFees }
 )
@@ -137,7 +138,7 @@ export default class CreateBilling extends React.Component {
     );
   }
   render() {
-    const { type, billing } = this.props;
+    const { type, billing, saving } = this.props;
     const handleLableStyle = {
       marginRight: 30,
       lineHeight: 2,
@@ -211,7 +212,7 @@ export default class CreateBilling extends React.Component {
         <Header className="top-bar">
           <span>{this.msg('createBilling')}</span>
           <div className="top-bar-tools">
-            <Button type="primary" size="large" onClick={this.handleSave}>{this.msg('save')}</Button>
+            <Button type="primary" size="large" onClick={this.handleSave} loading={saving}>{this.msg('save')}</Button>
           </div>
         </Header>
         <Content className="main-content">

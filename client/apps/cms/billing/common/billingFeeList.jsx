@@ -24,6 +24,7 @@ const { Header, Content } = Layout;
     loginName: state.account.username,
     billing: state.cmsBilling.billing,
     billingFees: state.cmsBilling.billingFees,
+    saving: state.cmsBilling.billingSaving,
   }),
   { updateBillingFees, checkBilling, acceptBilling, editBilling }
 )
@@ -132,17 +133,17 @@ export default class BillingFeeList extends React.Component {
     }
   }
   renderOperation() {
-    const { operation } = this.props;
+    const { operation, saving } = this.props;
     if (operation === 'check') {
       return (
         <div className="top-bar-tools">
-          <Button type="primary" size="large" onClick={this.handleAccept}>{this.msg('accept')}</Button>
+          <Button type="primary" size="large" onClick={this.handleAccept} loading={saving}>{this.msg('accept')}</Button>
         </div>
       );
     } else if (operation === 'edit') {
       return (
         <div className="top-bar-tools">
-          <Button type="primary" size="large" onClick={this.handleEdit}>{this.msg('save')}</Button>
+          <Button type="primary" size="large" onClick={this.handleEdit} loading={saving}>{this.msg('save')}</Button>
         </div>
       );
     }

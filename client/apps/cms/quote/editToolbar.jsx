@@ -14,6 +14,7 @@ const formatMsg = format(messages);
 @connect(
   state => ({
     quoteData: state.cmsQuote.quoteData,
+    saving: state.cmsQuote.quoteSaving,
     loginId: state.account.loginId,
     loginName: state.account.username,
   }),
@@ -103,6 +104,7 @@ export default class EditToolbar extends Component {
   }
   msg = key => formatMsg(this.props.intl, key)
   render() {
+    const { saving } = this.props;
     const menu = (
       <Menu onClick={this.handleMenuClick}>
         <Menu.Item key="trial">{this.msg('trial')}</Menu.Item>
@@ -114,7 +116,7 @@ export default class EditToolbar extends Component {
         <Dropdown overlay={menu}>
           <Button size="large">{this.msg('more')} <Icon type="down" /></Button>
         </Dropdown>
-        <Button type="default" size="large" icon="save" onClick={this.handleSave}>{this.msg('save')}</Button>
+        <Button type="default" size="large" icon="save" onClick={this.handleSave} loading={saving}>{this.msg('save')}</Button>
         <Button type="primary" size="large" icon="book" onClick={this.handlePublish}>{this.msg('publish')}</Button>
         <PublishModal quoteForm={this.props.form} />
         <TrialModal quoteForm={this.props.form} />

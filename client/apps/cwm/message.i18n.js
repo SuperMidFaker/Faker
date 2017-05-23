@@ -7,39 +7,51 @@ const messages = defineMessages({
   },
   inbound: {
     id: 'cwm.module.inbound',
-    defaultMessage: '入库管理',
+    defaultMessage: '入库',
   },
   receivingNotice: {
-    id: 'cwm.module.inbound.receiving.notice',
-    defaultMessage: '收货通知',
+    id: 'cwm.module.receiving.notice',
+    defaultMessage: '收货预告',
   },
   inboundTransactions: {
-    id: 'cwm.module.inbound.transactions',
-    defaultMessage: '入库记录',
+    id: 'cwm.module.inbound.transaction',
+    defaultMessage: '入库操作',
   },
   inventory: {
     id: 'cwm.module.inventory',
-    defaultMessage: '在库管理',
+    defaultMessage: '库存',
   },
   outbound: {
     id: 'cwm.module.outbound',
-    defaultMessage: '出库管理',
+    defaultMessage: '出库',
   },
   shippingOrder: {
-    id: 'cwm.module.outbound.shipping.order',
+    id: 'cwm.module.shipping.order',
     defaultMessage: '出货订单',
   },
   outboundTransactions: {
-    id: 'cwm.module.outbound.transactions',
-    defaultMessage: '出库记录',
+    id: 'cwm.module.outbound.transaction',
+    defaultMessage: '出库操作',
+  },
+  ftzSupervision: {
+    id: 'cwm.module.ftz.supervision',
+    defaultMessage: '保税监管',
+  },
+  ftzInbound: {
+    id: 'cwm.module.ftz.inbound',
+    defaultMessage: '进区备案',
+  },
+  ftzOutbound: {
+    id: 'cwm.module.ftz.outbound',
+    defaultMessage: '出区备案',
+  },
+  ftzMovement: {
+    id: 'cwm.module.ftz.movement',
+    defaultMessage: '区内移库',
   },
   products: {
     id: 'cwm.module.products',
-    defaultMessage: '货品管理',
-  },
-  productsMaterial: {
-    id: 'cwm.module.products.material',
-    defaultMessage: '商品物料',
+    defaultMessage: '货品',
   },
   productsSku: {
     id: 'cwm.module.products.sku',

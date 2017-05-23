@@ -521,8 +521,7 @@ export default class FlowDesigner extends React.Component {
               </Card>
               {activeItem &&
                 <QueueAnim animConfig={[
-                  { opacity: [1, 0], translateY: [0, 50] },
-                  { opacity: [1, 0], translateY: [0, -50] },
+                  { opacity: [0, 1], translateY: [0, 50] },
                 ]}
                 >
                   {activeItem.get('type') === 'node' &&
