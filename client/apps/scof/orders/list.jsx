@@ -10,7 +10,8 @@ import SearchBar from 'client/components/search-bar';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import { loadOrders, removeOrder, setClientForm, acceptOrder, hideDock, loadFormRequires } from 'common/reducers/crmOrders';
+import { loadOrders, removeOrder, setClientForm, acceptOrder, hideDock } from 'common/reducers/crmOrders';
+import { loadPartners } from 'common/reducers/partner';
 import { emptyFlows } from 'common/reducers/scofFlow';
 import moment from 'moment';
 import OrderDockPanel from './docks/orderDockPanel';
@@ -19,7 +20,7 @@ import ShipmentColumn from './columndef/shipmentColumn';
 import ProgressColumn from './columndef/progressColumn';
 import DelegationDockPanel from '../../cms/common/dockhub/delegationDockPanel';
 import ShipmentDockPanel from '../../transport/shipment/dock/shipmentDockPanel';
-import { SCOF_ORDER_TRANSFER, CRM_ORDER_STATUS } from 'common/constants';
+import { SCOF_ORDER_TRANSFER, CRM_ORDER_STATUS, PARTNER_ROLES } from 'common/constants';
 
 const { Header, Content } = Layout;
 const formatMsg = format(messages);
@@ -35,8 +36,9 @@ function fetchData({ state, dispatch }) {
       pageSize: state.crmOrders.orders.pageSize,
       current: state.crmOrders.orders.current,
       filters: state.crmOrders.orderFilters,
+      partners: state.partner.partners,
     })),
-    dispatch(loadFormRequires({ tenantId: state.account.tenantId })),
+    dispatch(loadPartners({ tenantId: state.account.tenantId, role: PARTNER_ROLES.CUS })),
   ];
   return Promise.all(promises);
 }
@@ -52,8 +54,8 @@ function fetchData({ state, dispatch }) {
     loading: state.crmOrders.loading,
     orders: state.crmOrders.orders,
     filters: state.crmOrders.orderFilters,
-    clients: state.crmOrders.formRequires.clients,
-  }), { loadOrders, removeOrder, setClientForm, acceptOrder, emptyFlows, hideDock }
+    partners: state.partner.partners,
+  }), { loadOrders, removeOrder, setClientForm, acceptOrder, emptyFlows, hideDock, loadPartners }
 )
 @connectNav({
   depth: 2,
@@ -156,7 +158,7 @@ export default class OrderList extends React.Component {
     });
   }
   render() {
-    const { loading, filters, clients } = this.props;
+    const { loading, filters, partners } = this.props;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -292,7 +294,7 @@ export default class OrderList extends React.Component {
               >
                 <OptGroup>
                   <Option value="all">全部客户</Option>
-                  {clients.map(data => (<Option key={data.partner_id} value={data.partner_id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>)
+                  {partners.map(data => (<Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>)
                   )}
                 </OptGroup>
               </Select>
