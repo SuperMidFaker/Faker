@@ -75,7 +75,7 @@ const initialState = {
     current: 1,
     data: [],
   },
-  orderFilters: { progress: 'active', transfer: 'all' },
+  orderFilters: { progress: 'all', transfer: 'all', partnerId: '' },
   kinds: [],
 };
 

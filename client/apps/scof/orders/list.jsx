@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Dropdown, Menu, Icon, Radio, Popconfirm, Progress, message, Layout, Tooltip } from 'antd';
+import { Breadcrumb, Button, Dropdown, Menu, Icon, Radio, Popconfirm, Progress, message, Layout, Tooltip, Select } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { Link } from 'react-router';
 import QueueAnim from 'rc-queue-anim';
@@ -10,7 +10,7 @@ import SearchBar from 'client/components/search-bar';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import { loadOrders, removeOrder, setClientForm, acceptOrder, hideDock } from 'common/reducers/crmOrders';
+import { loadOrders, removeOrder, setClientForm, acceptOrder, hideDock, loadFormRequires } from 'common/reducers/crmOrders';
 import { emptyFlows } from 'common/reducers/scofFlow';
 import moment from 'moment';
 import OrderDockPanel from './docks/orderDockPanel';
@@ -25,14 +25,20 @@ const { Header, Content } = Layout;
 const formatMsg = format(messages);
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
+const Option = Select.Option;
+const OptGroup = Select.OptGroup;
 
 function fetchData({ state, dispatch }) {
-  return dispatch(loadOrders({
-    tenantId: state.account.tenantId,
-    pageSize: state.crmOrders.orders.pageSize,
-    current: state.crmOrders.orders.current,
-    filters: state.crmOrders.orderFilters,
-  }));
+  const promises = [
+    dispatch(loadOrders({
+      tenantId: state.account.tenantId,
+      pageSize: state.crmOrders.orders.pageSize,
+      current: state.crmOrders.orders.current,
+      filters: state.crmOrders.orderFilters,
+    })),
+    dispatch(loadFormRequires({ tenantId: state.account.tenantId })),
+  ];
+  return Promise.all(promises);
 }
 
 @connectFetch()(fetchData)
@@ -46,6 +52,7 @@ function fetchData({ state, dispatch }) {
     loading: state.crmOrders.loading,
     orders: state.crmOrders.orders,
     filters: state.crmOrders.orderFilters,
+    clients: state.crmOrders.formRequires.clients,
   }), { loadOrders, removeOrder, setClientForm, acceptOrder, emptyFlows, hideDock }
 )
 @connectNav({
@@ -139,8 +146,17 @@ export default class OrderList extends React.Component {
       filters,
     });
   }
+  handleClientSelectChange = (value) => {
+    const filters = { ...this.props.filters, partnerId: value };
+    this.props.loadOrders({
+      tenantId: this.props.tenantId,
+      pageSize: this.props.orders.pageSize,
+      current: this.props.orders.current,
+      filters,
+    });
+  }
   render() {
-    const { loading, filters } = this.props;
+    const { loading, filters, clients } = this.props;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -249,6 +265,7 @@ export default class OrderList extends React.Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <RadioGroup onChange={this.handleProgressChange} size="large" value={filters.progress}>
+            <RadioButton value="all">全部</RadioButton>
             <RadioButton value="active">进行中</RadioButton>
             <RadioButton value="completed">已完成</RadioButton>
           </RadioGroup>
@@ -269,6 +286,16 @@ export default class OrderList extends React.Component {
           <div className="page-body">
             <div className="toolbar">
               <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} size="large" />
+              <span />
+              <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
+                onChange={this.handleClientSelectChange} value={filters.partnerId ? filters.partnerId : 'all'}
+              >
+                <OptGroup>
+                  <Option value="all">全部客户</Option>
+                  {clients.map(data => (<Option key={data.partner_id} value={data.partner_id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>)
+                  )}
+                </OptGroup>
+              </Select>
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3>
               </div>
