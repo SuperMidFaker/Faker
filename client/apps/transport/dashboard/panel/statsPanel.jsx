@@ -6,6 +6,7 @@ import { loadShipmentStatistics, loadFormRequire } from 'common/reducers/shipmen
 import connectFetch from 'client/common/decorators/connect-fetch';
 import moment from 'moment';
 import { Link } from 'react-router';
+import CustomerSelect from '../../common/customerSelect';
 import { formatMsg } from '../message.i18n';
 
 const RangePicker = DatePicker.RangePicker;
@@ -33,19 +34,25 @@ export default class StatsPanel extends Component {
     children: PropTypes.object,
   }
   onDateChange = (value, dateString) => {
-    this.props.loadShipmentStatistics(null, this.props.tenantId, `${dateString[0]} 00:00:00`, `${dateString[1]} 23:59:59`);
+    const { srPartnerId } = this.props.statistics;
+    this.props.loadShipmentStatistics(null, this.props.tenantId, `${dateString[0]} 00:00:00`, `${dateString[1]} 23:59:59`, srPartnerId);
+  }
+  handleCustomerChange = (value) => {
+    const { startDate, endDate } = this.props.statistics;
+    this.props.loadShipmentStatistics(null, this.props.tenantId, startDate, endDate, value);
   }
   logsLocation = (type) => {
-    const { startDate, endDate } = this.props.statistics;
-    return `/transport/dashboard/operationLogs?type=${type}&startDate=${startDate}&endDate=${endDate}`;
+    const { startDate, endDate, srPartnerId } = this.props.statistics;
+    return `/transport/dashboard/operationLogs?type=${type}&startDate=${startDate}&endDate=${endDate}&srPartnerId=${srPartnerId}`;
   }
   msg = formatMsg(this.props.intl)
   render() {
     const { startDate, endDate, total, atOrigin, overtime, intransit, exception, arrival } = this.props.statistics;
     const datePicker = (
       <div>
-        <RangePicker style={{ width: 200 }} value={[moment(startDate), moment(endDate)]}
-          onChange={this.onDateChange}
+        <CustomerSelect onChange={value => this.handleCustomerChange(value)} />
+        <RangePicker style={{ width: 200, marginLeft: 20 }} value={[moment(startDate), moment(endDate)]}
+          onChange={this.onDateChange} allowClear={false}
         />
       </div>);
     return (

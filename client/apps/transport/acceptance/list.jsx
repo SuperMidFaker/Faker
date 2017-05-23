@@ -282,12 +282,13 @@ export default class AcceptList extends React.Component {
     this.handleTableLoad(filters, 1);
     this.setState({ searchValue: searchVal });
   }
-  handleCustomerChange = (partnerId) => {
+  handleCustomerChange = (srPartnerId, srTenantId) => {
     let value;
-    if (partnerId !== -1) {
-      value = partnerId;
+    if (srPartnerId !== -1) {
+      value = srPartnerId;
     }
-    const filters = this.mergeFilters(this.props.filters, 'sr_partner_id', value);
+    let filters = this.mergeFilters(this.props.filters, 'sr_partner_id', value);
+    filters = this.mergeFilters(this.props.filters, 'sr_tenant_id', srTenantId);
     this.handleTableLoad(filters, 1);
   }
   handleCreateBtnClick = () => {
@@ -491,7 +492,9 @@ export default class AcceptList extends React.Component {
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3> {bulkBtns}
               </div>
               <span />
-              <CustomerSelect onChange={value => this.handleCustomerChange(value)} />
+              <div className="toolbar-right">
+                <CustomerSelect onChange={this.handleCustomerChange} />
+              </div>
             </div>
             <div className="panel-body table-panel">
               <Table rowSelection={rowSelection} columns={columns} loading={loading}

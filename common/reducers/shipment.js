@@ -103,6 +103,7 @@ const initialState = {
     pod: {},
   },
   statistics: {
+    srPartnerId: -1,
     startDate: null,
     endDate: null,
     logs: {
@@ -597,8 +598,8 @@ export function sendTrackingDetailSMSMessage(data) {
   };
 }
 
-export function loadShipmentStatistics(cookie, tenantId, sDate, eDate) {
-  const params = { tenantId, startDate: sDate.toString(), endDate: eDate.toString() };
+export function loadShipmentStatistics(cookie, tenantId, sDate, eDate, srPartnerId) {
+  const params = { tenantId, startDate: sDate.toString(), endDate: eDate.toString(), srPartnerId };
   return {
     [CLIENT_API]: {
       types: [

@@ -570,12 +570,13 @@ export default class DispatchList extends React.Component {
     this.handleTableLoad(filters);
     this.showAdvancedSearch(false);
   }
-  handleCustomerChange = (partnerId) => {
+  handleCustomerChange = (srPartnerId, srTenantId) => {
     let value;
-    if (partnerId !== -1) {
-      value = partnerId;
+    if (srPartnerId !== -1) {
+      value = srPartnerId;
     }
-    const filters = this.mergeFilters(this.props.filters, 'sr_partner_id', value);
+    let filters = this.mergeFilters(this.props.filters, 'sr_partner_id', value);
+    filters = this.mergeFilters(this.props.filters, 'sr_tenant_id', srTenantId);
     this.handleTableLoad(filters);
   }
   mergeFilters(curFilters, name, value) {
@@ -1050,9 +1051,9 @@ export default class DispatchList extends React.Component {
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3> {bulkBtns}
               </div>
-              <span />
-              <CustomerSelect onChange={value => this.handleCustomerChange(value)} />
               <div className="toolbar-right">
+                <CustomerSelect onChange={this.handleCustomerChange} />
+                <span />
                 <MyShipmentsSelect onChange={this.handleAdvancedSearch} size="large" />
               </div>
             </div>
