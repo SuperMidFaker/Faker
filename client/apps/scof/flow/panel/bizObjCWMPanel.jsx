@@ -37,7 +37,7 @@ export default class FlowCwmNodePanel extends Component {
         <Row gutter={16}>
           <Col sm={24} md={8}>
             <Card title={this.msg('flowNodeCWM')} bodyStyle={{ padding: 0 }}>
-              <FlowNodePanel form={form} model={node} onNodeActionsChange={onNodeActionsChange} graph={graph} />
+              <FlowNodePanel form={form} node={node} onNodeActionsChange={onNodeActionsChange} graph={graph} />
             </Card>
           </Col>
           <Col sm={24} md={16}>
