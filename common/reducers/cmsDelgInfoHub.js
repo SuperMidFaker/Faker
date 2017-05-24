@@ -13,6 +13,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'SAVE_BASE_INFO', 'SAVE_BASE_INFO_SUCCEED', 'SAVE_BASE_INFO_FAIL',
   'SET_OPERATOR', 'SET_OPERATOR_SUCCEED', 'SET_OPERATOR_FAIL',
   'GET_SHIPMT_ORDER_NO', 'GET_SHIPMT_ORDER_NO_SUCCEED', 'GET_SHIPMT_ORDER_NO_FAIL',
+  'TAX_PANE_LOAD', 'TAX_PANE_LOAD_SUCCEED', 'TAX_PANE_LOAD_FAIL',
 ]);
 
 const initialState = {
@@ -41,6 +42,11 @@ const initialState = {
   },
   preStatus: '',
   shipmtOrderNo: '',
+  params: {
+    trxModes: [],
+  },
+  taxTots: [],
+  taxMaps: {},
 };
 
 export default function reducer(state = initialState, action) {
@@ -86,6 +92,8 @@ export default function reducer(state = initialState, action) {
     }
     case actionTypes.SET_OPERATOR_SUCCEED:
       return { ...state, customsPanel: { ...state.customsPanel, bill: { ...state.customsPanel.bill, preparer_name: action.payload.loginName } } };
+    case actionTypes.TAX_PANE_LOAD_SUCCEED:
+      return { ...state, taxTots: action.result.data.taxTots, taxMaps: action.result.data.taxG, params: action.result.data.params };
     default:
       return state;
   }
@@ -238,6 +246,21 @@ export function getShipmtOrderNo(uuid) {
       method: 'get',
       endpoint: 'v1/crm/get/shipmt/order/no',
       params: { uuid, type: 'cms' },
+    },
+  };
+}
+
+export function loadPaneTax(delgNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.TAX_PANE_LOAD,
+        actionTypes.TAX_PANE_LOAD_SUCCEED,
+        actionTypes.TAX_PANE_LOAD_FAIL,
+      ],
+      endpoint: 'v1/cms/declare/tax/paneload',
+      method: 'get',
+      params: { delgNo },
     },
   };
 }
