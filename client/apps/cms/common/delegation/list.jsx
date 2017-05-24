@@ -175,12 +175,16 @@ export default class DelegationList extends Component {
     render: (o) => {
       const DECL_TYPE = this.props.ietype === 'import' ? DECL_I_TYPE : DECL_E_TYPE;
       const type = DECL_TYPE.filter(dl => dl.key === o)[0];
-      // 0000口岸进口 0001口岸出口 0100保税区进口 0101保税区出口
-      if (o === CMS_DECL_WAY_TYPE.IMPT || o === CMS_DECL_WAY_TYPE.EXPT) {
-        return (<Tag color="blue">{type.value}</Tag>);
-      // 0102保税区进境 0103保税区出境
-      } else if (o === CMS_DECL_WAY_TYPE.IBND || o === CMS_DECL_WAY_TYPE.EBND) {
-        return (<Tag color="green">{type.value}</Tag>);
+      if (type) {
+        // 0000口岸进口 0001口岸出口 0100保税区进口 0101保税区出口
+        if (o === CMS_DECL_WAY_TYPE.IMPT || o === CMS_DECL_WAY_TYPE.EXPT) {
+          return (<Tag color="blue">{type.value}</Tag>);
+          // 0102保税区进境 0103保税区出境
+        } else if (o === CMS_DECL_WAY_TYPE.IBND || o === CMS_DECL_WAY_TYPE.EBND) {
+          return (<Tag color="green">{type.value}</Tag>);
+        }
+      } else {
+        return <span />;
       }
     },
   }, {
