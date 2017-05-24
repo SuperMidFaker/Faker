@@ -1,6 +1,6 @@
 /* eslint react/no-multi-comp: 0 */
 import React, { Component, PropTypes } from 'react';
-import { Button, Card, Table } from 'antd';
+import { Card, Table } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
@@ -43,7 +43,6 @@ export default class DetailForm extends Component {
   render() {
     return (
       <Card>
-        <Button type="primary">添加</Button><Button>导入</Button>
         <Table columns={this.columns} rowKey="id" />
       </Card>
     );

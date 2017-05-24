@@ -27,7 +27,7 @@ const { Header, Content } = Layout;
   moduleName: 'cwm',
 })
 @Form.create()
-export default class ReceiveStockInbound extends Component {
+export default class ReceiveInbound extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     form: PropTypes.object.isRequired,
@@ -69,21 +69,21 @@ export default class ReceiveStockInbound extends Component {
         <Header className="top-bar">
           <Breadcrumb>
             <Breadcrumb.Item>
-              {this.msg('inbound')}
+              {this.msg('receiving')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              {this.msg('receivingNotice')}
+              {this.msg('receivingInound')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              {this.msg('createRN')}
+              {this.msg('receive')}
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="top-bar-tools">
             <Button size="large" type="ghost" onClick={this.handleCancelBtnClick}>
               {this.msg('cancel')}
             </Button>
-            <Button size="large" type="primary" icon="save" loading={submitting} onClick={this.handleSaveBtnClick}>
-              {this.msg('save')}
+            <Button size="large" type="primary" loading={submitting} onClick={this.handleSaveBtnClick}>
+              {this.msg('confirm')}
             </Button>
           </div>
         </Header>

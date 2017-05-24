@@ -5,16 +5,16 @@ const messages = defineMessages({
     id: 'cwm.module.dashboard',
     defaultMessage: '工作台',
   },
-  inbound: {
-    id: 'cwm.module.inbound',
+  receiving: {
+    id: 'cwm.module.receiving',
     defaultMessage: '入库',
   },
-  receivingNotice: {
-    id: 'cwm.module.receiving.notice',
-    defaultMessage: '收货预告',
+  receivingASN: {
+    id: 'cwm.module.receiving.asn',
+    defaultMessage: '收货通知ASN',
   },
-  inboundTransactions: {
-    id: 'cwm.module.inbound.transaction',
+  receivingInbound: {
+    id: 'cwm.module.receiving.inbound',
     defaultMessage: '入库操作',
   },
   inventory: {
@@ -27,7 +27,7 @@ const messages = defineMessages({
   },
   shippingOrder: {
     id: 'cwm.module.shipping.order',
-    defaultMessage: '出货订单',
+    defaultMessage: '出货订单SO',
   },
   outboundTransactions: {
     id: 'cwm.module.outbound.transaction',

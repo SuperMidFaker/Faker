@@ -55,8 +55,8 @@ import * as CMSClassificationHsCode from './cms/classification/hscode';
 import * as CMSClassificationSpecial from './cms/classification/special';
 import CWM from './cwm/module-cwm';
 import * as CWMDashboard from './cwm/dashboard';
-import * as CWMStockInbound from './cwm/inbound/stock';
-import * as CWMReceivingNotice from './cwm/inbound/receiving';
+import * as CWMReceivingASN from './cwm/receiving/asn';
+import * as CWMReceivingInbound from './cwm/receiving/inbound';
 import * as CWMOutbound from './cwm/outbound';
 import * as CWMShippingOrder from './cwm/outbound/shipping';
 import * as CWMInventory from './cwm/inventory';
@@ -413,15 +413,15 @@ export default(store, cookie) => {
           <Route path={DEFAULT_MODULES.cwm.id} component={CWM}>
             <IndexRedirect to="/cwm/dashboard" />
             <Route path="dashboard" component={CWMDashboard.Index} />
-            <Route path="inbound">
-              <Route path="stock">
-                <IndexRoute component={CWMStockInbound.List} />
-                <Route path="receive/:asnNo" component={CWMStockInbound.Receive} />
+            <Route path="receiving">
+              <Route path="inbound">
+                <IndexRoute component={CWMReceivingInbound.List} />
+                <Route path="receive/:asnNo" component={CWMReceivingInbound.Receive} />
               </Route>
-              <Route path="receiving">
-                <IndexRoute component={CWMReceivingNotice.List} />
-                <Route path="create" component={CWMReceivingNotice.Create} />
-                <Route path=":asnNo" component={CWMReceivingNotice.View} />
+              <Route path="asn">
+                <IndexRoute component={CWMReceivingASN.List} />
+                <Route path="create" component={CWMReceivingASN.Create} />
+                <Route path=":asnNo" component={CWMReceivingASN.View} />
               </Route>
             </Route>
             <Route path="outbound">

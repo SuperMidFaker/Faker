@@ -30,17 +30,16 @@ export default class ModuleCWM extends React.Component {
     linkMenus.push({
       single: false,
       key: 'cwm-1',
-      path: '/cwm/inbound',
       icon: 'icon-fontello-download',
-      text: formatMsg(intl, 'inbound'),
+      text: formatMsg(intl, 'receiving'),
       sublinks: [{
         key: 'cwm-1-0',
-        path: '/cwm/inbound/receiving',
-        text: formatMsg(intl, 'receivingNotice'),
+        path: '/cwm/receiving/asn',
+        text: formatMsg(intl, 'receivingASN'),
       }, {
         key: 'cwm-1-1',
-        path: '/cwm/inbound/stock',
-        text: formatMsg(intl, 'inboundTransactions'),
+        path: '/cwm/receiving/inbound',
+        text: formatMsg(intl, 'receivingInbound'),
       },
       ],
     });

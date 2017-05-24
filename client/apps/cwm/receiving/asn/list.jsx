@@ -25,7 +25,7 @@ const Option = Select.Option;
   depth: 2,
   moduleName: 'cwm',
 })
-export default class StockInboundList extends React.Component {
+export default class ReceivingNoticeList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -39,7 +39,7 @@ export default class StockInboundList extends React.Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
-    title: '收货预告编号',
+    title: 'ANS编号',
     dataIndex: 'asn_no',
     width: 160,
   }, {
@@ -74,9 +74,9 @@ export default class StockInboundList extends React.Component {
     width: 100,
     render: (o) => {
       if (o === 0) {
-        return (<Tag>未确认</Tag>);
+        return (<Tag>未释放</Tag>);
       } else if (o === 1) {
-        return (<Tag color="#108ee9">已确认</Tag>);
+        return (<Tag color="#108ee9">已释放</Tag>);
       } else if (o === 2) {
         return (<Tag color="#87d068">已入库</Tag>);
       }
@@ -112,12 +112,12 @@ export default class StockInboundList extends React.Component {
     width: 150,
     render: (o, record) => {
       if (record.status === 0) {
-        return (<span><RowUpdater label="确认" row={record} /><span className="ant-divider" /><RowUpdater label="修改" row={record} /></span>);
+        return (<span><RowUpdater label="释放" row={record} /><span className="ant-divider" /><RowUpdater label="修改" row={record} /></span>);
       } else if (record.status === 1) {
         if (record.bonded === 1 && record.reg_status === 0) {
-          return (<span><RowUpdater label="入库" row={record} /><span className="ant-divider" /><RowUpdater label="备案" row={record} /></span>);
+          return (<span><RowUpdater onHit={this.handleReceive} label="收货" row={record} /><span className="ant-divider" /><RowUpdater label="备案" row={record} /></span>);
         } else {
-          return (<span><RowUpdater label="入库" row={record} /></span>);
+          return (<span><RowUpdater onHit={this.handleReceive} label="收货" row={record} /></span>);
         }
       }
     },
@@ -178,7 +178,11 @@ export default class StockInboundList extends React.Component {
     }
   }
   handleCreateBtnClick = () => {
-    this.context.router.push('/cwm/inbound/receiving/create');
+    this.context.router.push('/cwm/receiving/asn/create');
+  }
+  handleReceive = (row) => {
+    const link = `/cwm/receiving/inbound/receive/${row.asn_no}`;
+    this.context.router.push(link);
   }
   render() {
     return (
@@ -186,19 +190,19 @@ export default class StockInboundList extends React.Component {
         <Header className="top-bar">
           <Breadcrumb>
             <Breadcrumb.Item>
-              {this.msg('inbound')}
+              {this.msg('receiving')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              {this.msg('receivingNotice')}
+              {this.msg('receivingASN')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <RadioGroup onChange={this.handleStatusChange} size="large">
+          <RadioGroup onChange={this.handleBondedChange} size="large">
             <RadioButton value="bonded">保税</RadioButton>
             <RadioButton value="nonbonded">非保税</RadioButton>
           </RadioGroup>
           <div className="top-bar-tools">
             <Button type="primary" size="large" icon="plus" onClick={this.handleCreateBtnClick}>
-              {this.msg('createRN')}
+              {this.msg('createASN')}
             </Button>
           </div>
         </Header>
@@ -223,8 +227,8 @@ export default class StockInboundList extends React.Component {
                 onChange={this.handleClientSelectChange} defaultValue="all"
               >
                 <Option value="all">所有状态</Option>
-                <Option value="pending">未确认</Option>
-                <Option value="confirmed">已确认</Option>
+                <Option value="pending">未释放</Option>
+                <Option value="confirmed">已释放</Option>
                 <Option value="completed">已入库</Option>
               </Select>
               <div className="toolbar-right" />
