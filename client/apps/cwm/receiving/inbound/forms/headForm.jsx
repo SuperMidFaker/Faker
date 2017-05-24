@@ -1,12 +1,10 @@
 /* eslint react/no-multi-comp: 0 */
 import React, { Component, PropTypes } from 'react';
-import { Form, Input, Select, DatePicker, Card, Col, Row } from 'antd';
-import moment from 'moment';
+import { Form, Input, Select, Progress, Card, Col, Row } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 
-const dateFormat = 'YYYY/MM/DD';
 const formatMsg = format(messages);
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -85,11 +83,8 @@ export default class HeadForm extends Component {
                   )}
             </FormItem>
           </Col>
-          <Col sm={24} lg={8}>
-            <FormItem label="到货日期" >
-              {getFieldDecorator('est_receive_date', {
-              })(<DatePicker defaultValue={moment('2015/01/01', dateFormat)} format={dateFormat} style={{ width: '100%' }} />)}
-            </FormItem>
+          <Col sm={24} lg={24}>
+            <Progress percent={50} status="active" />
           </Col>
         </Row>
       </Card>
