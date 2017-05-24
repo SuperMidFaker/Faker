@@ -82,9 +82,9 @@ const messages = defineMessages({
     id: 'transport.dashboard.log.shipmt.status',
     defaultMessage: '当前状态',
   },
-  shipmtCustomer: {
-    id: 'transport.dashboard.log.shipmt.customer',
-    defaultMessage: '托运客户',
+  srName: {
+    id: 'transport.dashboard.log.shipmt.srName',
+    defaultMessage: '委托客户',
   },
   shipmtMode: {
     id: 'transport.dashboard.log.shipment.mode',

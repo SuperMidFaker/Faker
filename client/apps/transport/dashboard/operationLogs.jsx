@@ -29,7 +29,7 @@ const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
 function fetchData({ state, dispatch, cookie, location }) {
-  const { startDate, endDate, type } = location.query;
+  const { startDate, endDate, type, srPartnerId, srTenantId } = location.query;
   const { pageSize, filters } = state.shipment.statistics.logs;
   return dispatch(loadShipmentEvents(cookie, {
     tenantId: state.account.tenantId,
@@ -38,7 +38,7 @@ function fetchData({ state, dispatch, cookie, location }) {
     type,
     pageSize,
     currentPage: 1,
-    filters,
+    filters: { ...filters, srPartnerId: Number(srPartnerId), srTenantId: Number(srTenantId) },
   }));
 }
 @connectFetch()(fetchData)
@@ -177,8 +177,8 @@ export default class Dashboard extends React.Component {
         }
       },
     }, {
-      title: this.msg('shipmtCustomer'),
-      dataIndex: 'customer_name',
+      title: this.msg('srName'),
+      dataIndex: 'p_sr_name',
       width: 180,
       render: o => <TrimSpan text={o} maxLen={10} />,
     }, {

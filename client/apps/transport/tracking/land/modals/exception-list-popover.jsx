@@ -21,7 +21,6 @@ export default class ExceptionListPopover extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     excpCount: PropTypes.number,
-    dispId: PropTypes.number.isRequired,
     shipmtNo: PropTypes.string.isRequired,
     loadExceptions: PropTypes.func.isRequired,
   }
