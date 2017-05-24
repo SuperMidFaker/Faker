@@ -447,7 +447,7 @@ export default class DelegationList extends Component {
     }
   }
   handleSearch = (searchVal) => {
-    const filters = this.mergeFilters(this.props.listFilter, searchVal);
+    const filters = { ...this.props.listFilter, filterNo: searchVal };
     if (this.props.listView === 'delegation') {
       this.handleDelgListLoad(1, filters);
     } else if (this.props.listView === 'ciq') {
@@ -456,18 +456,6 @@ export default class DelegationList extends Component {
   }
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
-  }
-  mergeFilters(curFilters, value) {
-    const newFilters = {};
-    Object.keys(curFilters).forEach((key) => {
-      if (key !== 'filterNo') {
-        newFilters[key] = curFilters[key];
-      }
-    });
-    if (value !== null && value !== undefined && value !== '') {
-      newFilters.filterNo = value;
-    }
-    return newFilters;
   }
   render() {
     const { delegationlist, listFilter, listView, tenantId, clients } = this.props;
@@ -621,7 +609,9 @@ export default class DelegationList extends Component {
         <Content className="main-content" key="main">
           <div className="page-body">
             <div className="toolbar">
-              <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} />
+              <SearchBar placeholder={this.msg('searchPlaceholder')} size="large"
+                onInputSearch={this.handleSearch} value={listFilter.filterNo}
+              />
               <span />
               <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
                 onChange={this.handleClientSelectChange} defaultValue="all"

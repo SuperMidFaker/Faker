@@ -217,20 +217,8 @@ export default class ManifestList extends Component {
     });
   }
   handleSearch = (searchVal) => {
-    const filters = this.mergeFilters(this.props.listFilter, searchVal);
+    const filters = { ...this.props.listFilter, filterNo: searchVal };
     this.handleTableLoad(1, filters);
-  }
-  mergeFilters(curFilters, value) {
-    const newFilters = {};
-    Object.keys(curFilters).forEach((key) => {
-      if (key !== 'filterNo') {
-        newFilters[key] = curFilters[key];
-      }
-    });
-    if (value !== null && value !== undefined && value !== '') {
-      newFilters.filterNo = value;
-    }
-    return newFilters;
   }
   handleClientSelectChange = (value) => {
     const clientView = { tenantIds: [], partnerIds: [] };
@@ -319,7 +307,7 @@ export default class ManifestList extends Component {
             <QueueAnim type={['bottom', 'up']}>
               <div className="page-body" key="body">
                 <div className="toolbar">
-                  <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} />
+                  <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} value={listFilter.filterNo} />
                   <span />
                   <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
                     onChange={this.handleClientSelectChange} defaultValue="all"

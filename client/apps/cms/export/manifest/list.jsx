@@ -14,7 +14,7 @@ function fetchData({ state, dispatch }) {
       ietype: 'export',
       tenantId: state.account.tenantId,
       loginId: state.account.loginId,
-      filter: JSON.stringify(state.cmsManifest.listFilter),
+      filter: JSON.stringify({ ...state.cmsManifest.listFilter, clientView: { tenantIds: [], partnerIds: [] } }),
       pageSize: state.cmsManifest.delgBillList.pageSize,
       currentPage: state.cmsManifest.delgBillList.current,
     }))];
