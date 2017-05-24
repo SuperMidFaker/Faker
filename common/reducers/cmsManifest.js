@@ -4,6 +4,7 @@ import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/cms/manifest/', [
   'LOAD_DELG_MANIFEST', 'LOAD_DELG_MANIFEST_SUCCEED', 'LOAD_DELG_MANIFEST_FAIL',
+  'LOAD_MANIFESTTP', 'LOAD_MANIFESTTP_SUCCEED', 'LOAD_MANIFESTTP_FAIL',
   'LOAD_MANIFEST', 'LOAD_MANIFEST_SUCCEED', 'LOAD_MANIFEST_FAIL',
   'LOAD_MANIFEST_BODY', 'LOAD_MANIFEST_BODY_SUCCEED', 'LOAD_MANIFEST_BODY_FAIL',
   'LOAD_CUSTOMS_DECL', 'LOAD_CUSTOMS_DECL_SUCCEED', 'LOAD_CUSTOMS_DECL_FAIL',
@@ -69,7 +70,6 @@ const initialState = {
     data: [],
   },
   formRequire: {
-    clients: [],
     tradeModes: [],
     transModes: [],
     customs: [],
@@ -78,6 +78,7 @@ const initialState = {
     status: 'all',
     sortField: '',
     sortOrder: '',
+    filterNo: '',
     clientView: { tenantIds: [], partnerIds: [] },
   },
   billMeta: {
@@ -144,8 +145,9 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_DELG_MANIFEST_SUCCEED:
       return { ...state,
         delgBillList: { ...state.delgBillList, loading: false, ...action.result.data },
-        listFilter: JSON.parse(action.params.filter),
-        formRequire: action.result.data.formRequire };
+        listFilter: JSON.parse(action.params.filter) };
+    case actionTypes.LOAD_MANIFESTTP_SUCCEED:
+      return { ...state, formRequire: action.result.data };
     case actionTypes.LOAD_MANIFEST:
       return { ...state, manifestLoading: true, billMeta: initialState.billMeta };
     case actionTypes.LOAD_MANIFEST_FAILED:
@@ -324,6 +326,20 @@ export function loadDelgBill(params) {
       endpoint: 'v1/cms/manifests',
       method: 'get',
       params,
+    },
+  };
+}
+
+export function loadManifestTableParams() {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_MANIFESTTP,
+        actionTypes.LOAD_MANIFESTTP_SUCCEED,
+        actionTypes.LOAD_MANIFESTTP_FAIL,
+      ],
+      endpoint: 'v1/cms/manifests/table/params',
+      method: 'get',
     },
   };
 }

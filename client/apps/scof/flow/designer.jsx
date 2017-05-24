@@ -521,20 +521,21 @@ export default class FlowDesigner extends React.Component {
               </Card>
               {activeItem &&
                 <QueueAnim animConfig={[
-                  { opacity: [0, 1], translateY: [0, 50] },
+                  { opacity: [1, 0], translateY: [0, 50] },
+                  { opacity: [1, 0], translateY: [0, -50] },
                 ]}
                 >
                   {activeItem.get('type') === 'node' &&
-                    <NodePanel onFormInit={this.handlePanelForm} node={activeItem} graph={this.graph}
-                      onNodeActionsChange={this.handleNodeActionsChange} key={activeItem.get('model').kind}
-                    />
-                  }
+                  <NodePanel onFormInit={this.handlePanelForm} node={activeItem} graph={this.graph}
+                    onNodeActionsChange={this.handleNodeActionsChange} key={activeItem.get('model').kind}
+                  />
+                }
                   {activeItem.get('type') === 'edge' &&
-                    <FlowEdgePanel model={activeItem.get('model')} source={activeItem.get('source').get('model')}
-                      target={activeItem.get('target').get('model')} onAdd={this.handleCondAdd} onUpdate={this.handleCondUpdate}
-                      onDel={this.handleCondDel} key="edge"
-                    />
-                  }
+                  <FlowEdgePanel model={activeItem.get('model')} source={activeItem.get('source').get('model')}
+                    target={activeItem.get('target').get('model')} onAdd={this.handleCondAdd} onUpdate={this.handleCondUpdate}
+                    onDel={this.handleCondDel} key="edge"
+                  />
+                }
                 </QueueAnim>
               }
             </Spin>

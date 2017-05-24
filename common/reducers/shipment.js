@@ -103,6 +103,8 @@ const initialState = {
     pod: {},
   },
   statistics: {
+    srPartnerId: -1,
+    srTenantId: -1,
     startDate: null,
     endDate: null,
     logs: {
@@ -246,8 +248,7 @@ export default function reducer(state = initialState, action) {
         statistics: {
           ...state.statistics,
           ...action.result.data,
-          startDate: action.params.startDate,
-          endDate: action.params.endDate,
+          ...action.params,
         },
       };
     }
@@ -597,8 +598,8 @@ export function sendTrackingDetailSMSMessage(data) {
   };
 }
 
-export function loadShipmentStatistics(cookie, tenantId, sDate, eDate) {
-  const params = { tenantId, startDate: sDate.toString(), endDate: eDate.toString() };
+export function loadShipmentStatistics(cookie, tenantId, sDate, eDate, srPartnerId, srTenantId) {
+  const params = { tenantId, startDate: sDate.toString(), endDate: eDate.toString(), srPartnerId, srTenantId };
   return {
     [CLIENT_API]: {
       types: [

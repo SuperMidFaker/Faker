@@ -7,11 +7,11 @@ import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { format } from 'client/common/i18n/helpers';
 import { PRESET_TRANSMODES, TMS_SHIPMENT_STATUS_DESC, SHIPMENT_TRACK_STATUS, COURIERS } from 'common/constants';
 import ChangeShipment from '../change-shipment';
-import { showChangeShipmentModal, loadForm, computeSaleCharge, updateFee } from 'common/reducers/shipment';
+import { showChangeShipmentModal, loadForm, computeSaleCharge, updateFee, loadShipmtCharges } from 'common/reducers/shipment';
 import { saveEdit, revokeOrReject } from 'common/reducers/transport-acceptance';
-import { createSpecialCharge } from 'common/reducers/transportBilling';
 import { showChangeActDateModal } from 'common/reducers/trackingLandStatus';
 import InfoItem from 'client/components/InfoItem';
+import { getChargeAmountExpression } from '../../../common/charge';
 import messages from '../../message.i18n';
 import './pane.less';
 
@@ -42,9 +42,9 @@ const Step = Steps.Step;
     saveEdit,
     revokeOrReject,
     computeSaleCharge,
-    createSpecialCharge,
     updateFee,
-    showChangeActDateModal }
+    showChangeActDateModal,
+    loadShipmtCharges }
 )
 export default class DetailPane extends React.Component {
   static propTypes = {
@@ -68,16 +68,17 @@ export default class DetailPane extends React.Component {
     saveEdit: PropTypes.func.isRequired,
     revokeOrReject: PropTypes.func.isRequired,
     computeSaleCharge: PropTypes.func.isRequired,
-    createSpecialCharge: PropTypes.func.isRequired,
     updateFee: PropTypes.func.isRequired,
     charges: PropTypes.object.isRequired,
     showChangeActDateModal: PropTypes.func.isRequired,
+    loadShipmtCharges: PropTypes.func.isRequired,
   }
   componentDidMount() {
     this.props.loadForm(null, {
       tenantId: this.props.tenantId,
       shipmtNo: this.props.shipmt.shipmt_no,
     });
+    this.props.loadShipmtCharges(this.props.dispatch.id, this.props.tenantId);
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.shipmt.shipmt_no !== this.props.shipmt.shipmt_no) {
@@ -120,7 +121,7 @@ export default class DetailPane extends React.Component {
     dataIndex: 'remark',
   }]
   computeSaleCharge = (changedData, form, type, msg) => {
-    const { shipmt, upstream, downstream, loginId, tenantId, loginName, charges } = this.props;
+    const { upstream, downstream, tenantId, charges } = this.props;
     const promises = [];
     const {
       customer_partner_id, consigner_region_code, consignee_region_code,
@@ -181,16 +182,21 @@ export default class DetailPane extends React.Component {
               message: msg,
               description: `原收入：${charges.revenue.freight_charge}, 现收入：${charge.freight}`,
             });
-            const specialCharge = charge.freight - charges.revenue.freight_charge;
-            this.props.createSpecialCharge({
-              shipmtNo: shipmt.shipmt_no,
-              dispId: upstream.id,
-              type: 1,
-              remark: msg,
-              submitter: loginName,
-              charge: specialCharge,
-              loginId,
-              tenantId,
+            const { meter, gradient, miles, quantity, unitRatio, coefficient } = charge;
+            this.props.updateFee(upstream.id, {
+              freight_charge: charge.freight,
+              quote_no: charge.quoteNo,
+              pickup_charge: charge.pickup,
+              deliver_charge: charge.deliver,
+              meter: charge.meter,
+              quantity: charge.quantity,
+              unit_ratio: charge.unitRatio,
+              miles: charge.miles,
+              charge_gradient: charge.gradient,
+              adjust_coefficient: charge.coefficient,
+              total_charge: charges.revenue.total_charge + (charge.freight - charges.revenue.freight_charge),
+              charge_amount: getChargeAmountExpression(meter, gradient, miles, quantity,
+              unitRatio, coefficient),
             });
           }
         } else {
@@ -209,16 +215,21 @@ export default class DetailPane extends React.Component {
               message: msg,
               description: `原成本：${charges.expense.freight_charge}, 现成本：${charge.freight}`,
             });
-            const specialCharge = charge.freight - charges.expense.freight_charge;
-            this.props.createSpecialCharge({
-              shipmtNo: shipmt.shipmt_no,
-              dispId: downstream.id,
-              type: -1,
-              remark: msg,
-              submitter: loginName,
-              charge: specialCharge,
-              loginId,
-              tenantId,
+            const { meter, gradient, miles, quantity, unitRatio, coefficient } = charge;
+            this.props.updateFee(downstream.id, {
+              freight_charge: charge.freight,
+              quote_no: charge.quoteNo,
+              pickup_charge: charge.pickup,
+              deliver_charge: charge.deliver,
+              meter: charge.meter,
+              quantity: charge.quantity,
+              unit_ratio: charge.unitRatio,
+              miles: charge.miles,
+              charge_gradient: charge.gradient,
+              adjust_coefficient: charge.coefficient,
+              total_charge: charges.expense.total_charge + (charge.freight - charges.expense.freight_charge),
+              charge_amount: getChargeAmountExpression(meter, gradient, miles, quantity,
+              unitRatio, coefficient),
             });
           }
         } else {

@@ -5,6 +5,7 @@ export default function RowUpdater(props) {
   const { label, onHit, onHover, row, index, tooltip, ...extra } = props;
   function handleClick(ev) {
     ev.preventDefault();
+    ev.stopPropagation();
     if (onHit) {
       onHit(row, index);
     }

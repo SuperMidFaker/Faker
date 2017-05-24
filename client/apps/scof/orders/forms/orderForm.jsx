@@ -53,10 +53,19 @@ export default class OrderForm extends Component {
     setClientForm: PropTypes.func.isRequired,
     graphLoading: PropTypes.bool.isRequired,
   }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.formData.customer_partner_id !== this.props.formData.customer_partner_id) {
+      this.props.loadPartnerFlowList({
+        partnerId: nextProps.formData.customer_partner_id,
+        tenantId: nextProps.tenantId,
+      });
+      this.props.loadCustomerCmsQuotes(nextProps.tenantId, nextProps.formData.customer_partner_id);
+      this.props.loadOperators(nextProps.formData.customer_partner_id, nextProps.tenantId);
+    }
+  }
   msg = key => formatMsg(this.props.intl, key)
   handleClientChange = (value) => {
     const selPartnerId = Number(value);
-    const { tenantId } = this.props;
     const client = this.props.formRequires.clients.find(cl => cl.partner_id === selPartnerId);
     if (client) {
       this.props.setClientForm(-1, {
@@ -67,12 +76,6 @@ export default class OrderForm extends Component {
         customer_partner_code: client.partner_code,
         subOrders: [],
       });
-      this.props.loadPartnerFlowList({
-        partnerId: selPartnerId,
-        tenantId,
-      });
-      this.props.loadCustomerCmsQuotes(tenantId, selPartnerId);
-      this.props.loadOperators(selPartnerId, tenantId);
     }
   }
   handleFlowChange = (value) => {

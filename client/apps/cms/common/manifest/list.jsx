@@ -34,19 +34,10 @@ const OptGroup = Select.OptGroup;
     loginName: state.account.username,
     delgBillList: state.cmsManifest.delgBillList,
     listFilter: state.cmsManifest.listFilter,
-    clients: state.cmsManifest.formRequire.clients,
-    tradeModes: state.cmsManifest.formRequire.tradeModes.map(tm => ({
-      value: tm.trade_mode,
-      text: `${tm.trade_abbr}`,
-    })),
-    transModes: state.cmsManifest.formRequire.transModes.map(tm => ({
-      value: tm.trans_code,
-      text: `${tm.trans_spec}`,
-    })),
-    customs: state.cmsManifest.formRequire.customs.map(cus => ({
-      value: cus.customs_code,
-      text: `${cus.customs_name}`,
-    })),
+    clients: state.partner.partners,
+    tradeModes: state.cmsManifest.formRequire.tradeModes,
+    transModes: state.cmsManifest.formRequire.transModes,
+    customs: state.cmsManifest.formRequire.customs,
   }),
   { loadDelgBill, redoManifest, showPreviewer }
 )
@@ -226,20 +217,8 @@ export default class ManifestList extends Component {
     });
   }
   handleSearch = (searchVal) => {
-    const filters = this.mergeFilters(this.props.listFilter, searchVal);
+    const filters = { ...this.props.listFilter, filterNo: searchVal };
     this.handleTableLoad(1, filters);
-  }
-  mergeFilters(curFilters, value) {
-    const newFilters = {};
-    Object.keys(curFilters).forEach((key) => {
-      if (key !== 'filterNo') {
-        newFilters[key] = curFilters[key];
-      }
-    });
-    if (value !== null && value !== undefined && value !== '') {
-      newFilters.filterNo = value;
-    }
-    return newFilters;
   }
   handleClientSelectChange = (value) => {
     const clientView = { tenantIds: [], partnerIds: [] };
@@ -328,7 +307,7 @@ export default class ManifestList extends Component {
             <QueueAnim type={['bottom', 'up']}>
               <div className="page-body" key="body">
                 <div className="toolbar">
-                  <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} />
+                  <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} value={listFilter.filterNo} />
                   <span />
                   <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
                     onChange={this.handleClientSelectChange} defaultValue="all"

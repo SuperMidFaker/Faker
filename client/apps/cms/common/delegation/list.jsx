@@ -9,7 +9,7 @@ import TrimSpan from 'client/components/trimSpan';
 import NavLink from 'client/components/nav-link';
 import {
   CMS_DELEGATION_STATUS, CMS_DELEGATION_MANIFEST, DELG_SOURCE, DECL_I_TYPE, DECL_E_TYPE,
-  TRANS_MODE, CMS_DECL_WAY_TYPE } from 'common/constants';
+  TRANS_MODE, CMS_DECL_WAY_TYPE, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 import connectNav from 'client/common/decorators/connect-nav';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import SearchBar from 'client/components/search-bar';
@@ -18,6 +18,7 @@ import MdIcon from 'client/components/MdIcon';
 import { loadAcceptanceTable, acceptDelg, delDelg, setDispStatus, loadCiqTable, delgAssignRecall,
   ensureManifestMeta, showDispModal } from 'common/reducers/cmsDelegation';
 import { showPreviewer, loadBasicInfo, loadCustPanel, loadDeclCiqPanel } from 'common/reducers/cmsDelgInfoHub';
+import { loadPartnersByTypes } from 'common/reducers/partner';
 import DelegationDockPanel from '../dockhub/delegationDockPanel';
 import CiqList from './ciqList';
 import messages from './message.i18n';
@@ -47,7 +48,7 @@ const OptGroup = Select.OptGroup;
     delegation: state.cmsDelgInfoHub.previewer.delegation,
     listView: state.cmsDelegation.listView,
     tabKey: state.cmsDelgInfoHub.tabKey,
-    clients: state.cmsDelegation.formRequire.clients,
+    clients: state.partner.partners,
     customs: state.cmsDelegation.formRequire.customs.map(cus => ({
       value: cus.customs_code,
       text: `${cus.customs_name}`,
@@ -63,6 +64,7 @@ const OptGroup = Select.OptGroup;
     ensureManifestMeta,
     loadCiqTable,
     showDispModal,
+    loadPartnersByTypes,
     loadBasicInfo,
     loadCustPanel,
     loadDeclCiqPanel }
@@ -103,6 +105,7 @@ export default class DelegationList extends Component {
   }
   componentDidMount() {
     const filters = this.initializeFilters();
+    this.props.loadPartnersByTypes(this.props.tenantId, [PARTNER_ROLES.CUS, PARTNER_ROLES.DCUS], PARTNER_BUSINESSE_TYPES.clearance);
     this.handleDelgListLoad(this.props.delegationlist.current, { ...this.props.listFilter, ...filters, filterNo: '', clientView: { tenantIds: [], partnerIds: [] } });
   }
   componentWillReceiveProps(nextProps) {
@@ -172,12 +175,16 @@ export default class DelegationList extends Component {
     render: (o) => {
       const DECL_TYPE = this.props.ietype === 'import' ? DECL_I_TYPE : DECL_E_TYPE;
       const type = DECL_TYPE.filter(dl => dl.key === o)[0];
-      // 0000口岸进口 0001口岸出口 0100保税区进口 0101保税区出口
-      if (o === CMS_DECL_WAY_TYPE.IMPT || o === CMS_DECL_WAY_TYPE.EXPT) {
-        return (<Tag color="blue">{type.value}</Tag>);
-      // 0102保税区进境 0103保税区出境
-      } else if (o === CMS_DECL_WAY_TYPE.IBND || o === CMS_DECL_WAY_TYPE.EBND) {
-        return (<Tag color="green">{type.value}</Tag>);
+      if (type) {
+        // 0000口岸进口 0001口岸出口 0100保税区进口 0101保税区出口
+        if (o === CMS_DECL_WAY_TYPE.IMPT || o === CMS_DECL_WAY_TYPE.EXPT) {
+          return (<Tag color="blue">{type.value}</Tag>);
+          // 0102保税区进境 0103保税区出境
+        } else if (o === CMS_DECL_WAY_TYPE.IBND || o === CMS_DECL_WAY_TYPE.EBND) {
+          return (<Tag color="green">{type.value}</Tag>);
+        }
+      } else {
+        return <span />;
       }
     },
   }, {
@@ -444,7 +451,7 @@ export default class DelegationList extends Component {
     }
   }
   handleSearch = (searchVal) => {
-    const filters = this.mergeFilters(this.props.listFilter, searchVal);
+    const filters = { ...this.props.listFilter, filterNo: searchVal };
     if (this.props.listView === 'delegation') {
       this.handleDelgListLoad(1, filters);
     } else if (this.props.listView === 'ciq') {
@@ -453,18 +460,6 @@ export default class DelegationList extends Component {
   }
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
-  }
-  mergeFilters(curFilters, value) {
-    const newFilters = {};
-    Object.keys(curFilters).forEach((key) => {
-      if (key !== 'filterNo') {
-        newFilters[key] = curFilters[key];
-      }
-    });
-    if (value !== null && value !== undefined && value !== '') {
-      newFilters.filterNo = value;
-    }
-    return newFilters;
   }
   render() {
     const { delegationlist, listFilter, listView, tenantId, clients } = this.props;
@@ -618,7 +613,9 @@ export default class DelegationList extends Component {
         <Content className="main-content" key="main">
           <div className="page-body">
             <div className="toolbar">
-              <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} />
+              <SearchBar placeholder={this.msg('searchPlaceholder')} size="large"
+                onInputSearch={this.handleSearch} value={listFilter.filterNo}
+              />
               <span />
               <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
                 onChange={this.handleClientSelectChange} defaultValue="all"

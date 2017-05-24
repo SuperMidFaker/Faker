@@ -14,7 +14,12 @@ export default class CustomerSelect extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     onChange: PropTypes.func.isRequired,
+    clients: PropTypes.array.isRequired,
     style: PropTypes.object,
+  }
+  handleChange = (value) => {
+    const client = this.props.clients.find(item => item.partner_id === Number(value));
+    this.props.onChange(value, client ? client.tid : -2);
   }
   render() {
     const clients = [{
@@ -24,7 +29,7 @@ export default class CustomerSelect extends React.Component {
     return (
       <Select
         defaultValue={-1}
-        onChange={this.props.onChange}
+        onChange={this.handleChange}
         style={{ ...this.props.style, width: 160 }}
         showSearch
         placeholder=""

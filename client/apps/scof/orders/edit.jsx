@@ -6,8 +6,6 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { Breadcrumb, Button, message, Layout } from 'antd';
 import OrderForm from './forms/orderForm';
 import { loadFormRequires, loadOrder, editOrder } from 'common/reducers/crmOrders';
-import { loadPartnerFlowList, loadCustomerCmsQuotes } from 'common/reducers/scofFlow';
-import { loadOperators } from 'common/reducers/crmCustomers';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 
@@ -37,7 +35,7 @@ function fetchData({ state, location, dispatch }) {
     formData: state.crmOrders.formData,
     saving: state.crmOrders.orderSaving,
   }),
-  { editOrder, loadPartnerFlowList, loadCustomerCmsQuotes, loadOperators }
+  { editOrder }
 )
 export default class EditOrder extends Component {
   static propTypes = {
@@ -51,16 +49,6 @@ export default class EditOrder extends Component {
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
-  }
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.formData.customer_partner_id !== this.props.formData.customer_partner_id) {
-      this.props.loadPartnerFlowList({
-        partnerId: nextProps.formData.customer_partner_id,
-        tenantId: nextProps.tenantId,
-      });
-      this.props.loadCustomerCmsQuotes(nextProps.tenantId, nextProps.formData.customer_partner_id);
-      this.props.loadOperators(nextProps.formData.customer_partner_id, nextProps.tenantId);
-    }
   }
   msg = key => formatMsg(this.props.intl, key)
   handleSave = () => {

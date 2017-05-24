@@ -6,6 +6,7 @@ import { loadShipmentStatistics, loadFormRequire } from 'common/reducers/shipmen
 import connectFetch from 'client/common/decorators/connect-fetch';
 import moment from 'moment';
 import { Link } from 'react-router';
+import CustomerSelect from '../../common/customerSelect';
 import { formatMsg } from '../message.i18n';
 
 const RangePicker = DatePicker.RangePicker;
@@ -15,7 +16,7 @@ function fetchData({ state, dispatch, cookie }) {
   firstDay.setDate(1);
   const startDate = `${moment(state.shipment.statistics.startDate || firstDay).format('YYYY-MM-DD')} 00:00:00`;
   const endDate = `${moment(state.shipment.statistics.endDate || new Date()).format('YYYY-MM-DD')} 23:59:59`;
-  const promises = [dispatch(loadShipmentStatistics(cookie, state.account.tenantId, startDate, endDate)),
+  const promises = [dispatch(loadShipmentStatistics(cookie, state.account.tenantId, startDate, endDate, -1, -1)),
     dispatch(loadFormRequire(cookie, state.account.tenantId))];
   return Promise.all(promises);
 }
@@ -33,19 +34,25 @@ export default class StatsPanel extends Component {
     children: PropTypes.object,
   }
   onDateChange = (value, dateString) => {
-    this.props.loadShipmentStatistics(null, this.props.tenantId, `${dateString[0]} 00:00:00`, `${dateString[1]} 23:59:59`);
+    const { srPartnerId, srTenantId } = this.props.statistics;
+    this.props.loadShipmentStatistics(null, this.props.tenantId, `${dateString[0]} 00:00:00`, `${dateString[1]} 23:59:59`, srPartnerId, srTenantId);
+  }
+  handleCustomerChange = (srPartnerId, srTenantId) => {
+    const { startDate, endDate } = this.props.statistics;
+    this.props.loadShipmentStatistics(null, this.props.tenantId, startDate, endDate, srPartnerId, srTenantId);
   }
   logsLocation = (type) => {
-    const { startDate, endDate } = this.props.statistics;
-    return `/transport/dashboard/operationLogs?type=${type}&startDate=${startDate}&endDate=${endDate}`;
+    const { startDate, endDate, srPartnerId, srTenantId } = this.props.statistics;
+    return `/transport/dashboard/operationLogs?type=${type}&startDate=${startDate}&endDate=${endDate}&srPartnerId=${srPartnerId}&srTenantId=${srTenantId}`;
   }
   msg = formatMsg(this.props.intl)
   render() {
     const { startDate, endDate, total, atOrigin, overtime, intransit, exception, arrival } = this.props.statistics;
     const datePicker = (
       <div>
-        <RangePicker style={{ width: 200 }} value={[moment(startDate), moment(endDate)]}
-          onChange={this.onDateChange}
+        <CustomerSelect onChange={this.handleCustomerChange} />
+        <RangePicker style={{ width: 200, marginLeft: 20 }} value={[moment(startDate), moment(endDate)]}
+          onChange={this.onDateChange} allowClear={false}
         />
       </div>);
     return (

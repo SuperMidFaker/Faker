@@ -49,6 +49,7 @@ const initialState = {
     sortOrder: '',
     status: 'all',
     viewStatus: 'all',
+    filterNo: '',
     clientView: { tenantIds: [], partnerIds: [] },
   },
   formRequire: {

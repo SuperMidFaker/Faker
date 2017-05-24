@@ -437,11 +437,12 @@ export default class LandStatusList extends React.Component {
     this.showAdvancedSearch(false);
   }
 
-  handleCustomerChange = (partnerId) => {
+  handleCustomerChange = (srPartnerId, srTenantId) => {
     let value;
-    if (partnerId !== -1) {
-      value = partnerId;
+    if (srPartnerId !== -1) {
+      value = srPartnerId;
     }
+    this.props.changeExcpFilter('sr_tenant_id', srTenantId);
     this.props.changeExcpFilter('sr_partner_id', value);
   }
 
@@ -467,9 +468,9 @@ export default class LandStatusList extends React.Component {
             <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
               <h3>已选中{this.state.selectedRowKeys.length}项</h3>
             </div>
-            <span />
-            <CustomerSelect onChange={value => this.handleCustomerChange(value)} />
             <div className="toolbar-right">
+              <CustomerSelect onChange={this.handleCustomerChange} />
+              <span />
               <MyShipmentsSelect onChange={this.handleShipmentViewSelect} size="large" />
             </div>
           </div>
