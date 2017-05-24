@@ -3,6 +3,7 @@ import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/partner/', [
   'LOAD_PARTNERS', 'LOAD_PARTNERS_SUCCEED', 'LOAD_PARTNERS_FAIL',
+  'LOAD_TYPEPARTNERS', 'LOAD_TYPEPARTNERS_SUCCEED', 'LOAD_TYPEPARTNERS_FAIL',
   'EDIT_PROVIDER_TYPES', 'EDIT_PROVIDER_TYPES_SUCCEED', 'EDIT_PROVIDER_TYPES_FAIL',
   'ADD_PARTNER', 'ADD_PARTNER_SUCCEED', 'ADD_PARTNER_FAIL',
   'CHECK_PARTNER', 'CHECK_PARTNER_SUCCEED', 'CHECK_PARTNER_FAIL',
@@ -36,6 +37,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_PARTNERS:
       return { ...state, loading: true };
     case actionTypes.LOAD_PARTNERS_SUCCEED:
+    case actionTypes.LOAD_TYPEPARTNERS_SUCCEED:
       return { ...state, partners: action.result.data, loaded: true, loading: false };
     case actionTypes.SET_PROVIDER_TYPE:
       return { ...state, providerType: action.providerType };
@@ -61,7 +63,7 @@ export default function reducer(state = initialState, action) {
   }
 }
 
-export function loadPartners(params) {
+export function loadPartners(params) { // tenantId role businessType
   return {
     [CLIENT_API]: {
       types: [
@@ -72,6 +74,21 @@ export function loadPartners(params) {
       endpoint: 'v1/cooperation/partners',
       method: 'get',
       params,
+    },
+  };
+}
+
+export function loadPartnersByTypes(tenantId, roles, businessTypes) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_TYPEPARTNERS,
+        actionTypes.LOAD_TYPEPARTNERS_SUCCEED,
+        actionTypes.LOAD_TYPEPARTNERS_FAIL,
+      ],
+      endpoint: 'v1/cooperation/type/partners',
+      method: 'get',
+      params: { tenantId, roles: JSON.stringify(roles), businessTypes: JSON.stringify(businessTypes) },
     },
   };
 }

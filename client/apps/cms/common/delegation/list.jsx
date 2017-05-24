@@ -9,7 +9,7 @@ import TrimSpan from 'client/components/trimSpan';
 import NavLink from 'client/components/nav-link';
 import {
   CMS_DELEGATION_STATUS, CMS_DELEGATION_MANIFEST, DELG_SOURCE, DECL_I_TYPE, DECL_E_TYPE,
-  TRANS_MODE, CMS_DECL_WAY_TYPE } from 'common/constants';
+  TRANS_MODE, CMS_DECL_WAY_TYPE, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 import connectNav from 'client/common/decorators/connect-nav';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import SearchBar from 'client/components/search-bar';
@@ -18,6 +18,7 @@ import MdIcon from 'client/components/MdIcon';
 import { loadAcceptanceTable, acceptDelg, delDelg, setDispStatus, loadCiqTable, delgAssignRecall,
   ensureManifestMeta, showDispModal } from 'common/reducers/cmsDelegation';
 import { showPreviewer, loadBasicInfo, loadCustPanel, loadDeclCiqPanel } from 'common/reducers/cmsDelgInfoHub';
+import { loadPartnersByTypes } from 'common/reducers/partner';
 import DelegationDockPanel from '../dockhub/delegationDockPanel';
 import CiqList from './ciqList';
 import messages from './message.i18n';
@@ -47,7 +48,7 @@ const OptGroup = Select.OptGroup;
     delegation: state.cmsDelgInfoHub.previewer.delegation,
     listView: state.cmsDelegation.listView,
     tabKey: state.cmsDelgInfoHub.tabKey,
-    clients: state.cmsDelegation.formRequire.clients,
+    clients: state.partner.partners,
     customs: state.cmsDelegation.formRequire.customs.map(cus => ({
       value: cus.customs_code,
       text: `${cus.customs_name}`,
@@ -63,6 +64,7 @@ const OptGroup = Select.OptGroup;
     ensureManifestMeta,
     loadCiqTable,
     showDispModal,
+    loadPartnersByTypes,
     loadBasicInfo,
     loadCustPanel,
     loadDeclCiqPanel }
@@ -103,6 +105,7 @@ export default class DelegationList extends Component {
   }
   componentDidMount() {
     const filters = this.initializeFilters();
+    this.props.loadPartnersByTypes(this.props.tenantId, [PARTNER_ROLES.CUS, PARTNER_ROLES.DCUS], PARTNER_BUSINESSE_TYPES.clearance);
     this.handleDelgListLoad(this.props.delegationlist.current, { ...this.props.listFilter, ...filters, filterNo: '', clientView: { tenantIds: [], partnerIds: [] } });
   }
   componentWillReceiveProps(nextProps) {

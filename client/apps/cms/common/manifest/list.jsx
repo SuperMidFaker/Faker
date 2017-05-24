@@ -34,19 +34,10 @@ const OptGroup = Select.OptGroup;
     loginName: state.account.username,
     delgBillList: state.cmsManifest.delgBillList,
     listFilter: state.cmsManifest.listFilter,
-    clients: state.cmsManifest.formRequire.clients,
-    tradeModes: state.cmsManifest.formRequire.tradeModes.map(tm => ({
-      value: tm.trade_mode,
-      text: `${tm.trade_abbr}`,
-    })),
-    transModes: state.cmsManifest.formRequire.transModes.map(tm => ({
-      value: tm.trans_code,
-      text: `${tm.trans_spec}`,
-    })),
-    customs: state.cmsManifest.formRequire.customs.map(cus => ({
-      value: cus.customs_code,
-      text: `${cus.customs_name}`,
-    })),
+    clients: state.partner.partners,
+    tradeModes: state.cmsManifest.formRequire.tradeModes,
+    transModes: state.cmsManifest.formRequire.transModes,
+    customs: state.cmsManifest.formRequire.customs,
   }),
   { loadDelgBill, redoManifest, showPreviewer }
 )

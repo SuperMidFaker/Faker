@@ -1,19 +1,24 @@
 import React, { PropTypes } from 'react';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import withPrivilege from 'client/common/decorators/withPrivilege';
-import { loadDelgBill } from 'common/reducers/cmsManifest';
+import { loadDelgBill, loadManifestTableParams } from 'common/reducers/cmsManifest';
+import { loadPartnersByTypes } from 'common/reducers/partner';
 import ManifestList from '../../common/manifest/list';
+import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 
 function fetchData({ state, dispatch }) {
-  const newfilter = { ...state.cmsManifest.listFilter, filterNo: '', clientView: { tenantIds: [], partnerIds: [] } };
-  return dispatch(loadDelgBill({
-    ietype: 'export',
-    tenantId: state.account.tenantId,
-    loginId: state.account.loginId,
-    filter: JSON.stringify(newfilter),
-    pageSize: state.cmsManifest.delgBillList.pageSize,
-    currentPage: state.cmsManifest.delgBillList.current,
-  }));
+  const proms = [
+    dispatch(loadManifestTableParams()),
+    dispatch(loadPartnersByTypes(state.account.tenantId, [PARTNER_ROLES.CUS, PARTNER_ROLES.DCUS], PARTNER_BUSINESSE_TYPES.clearance)),
+    dispatch(loadDelgBill({
+      ietype: 'export',
+      tenantId: state.account.tenantId,
+      loginId: state.account.loginId,
+      filter: JSON.stringify(state.cmsManifest.listFilter),
+      pageSize: state.cmsManifest.delgBillList.pageSize,
+      currentPage: state.cmsManifest.delgBillList.current,
+    }))];
+  return Promise.all(proms);
 }
 
 @connectFetch()(fetchData)

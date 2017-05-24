@@ -29,13 +29,11 @@ function fetchData({ state, dispatch }) {
 }
 
 @connectFetch()(fetchData)
-
 @connectNav({
   depth: 2,
   moduleName: 'scof',
 })
 @injectIntl
-
 @connect(
   state => ({
     tenantId: state.account.tenantId,
@@ -46,7 +44,6 @@ function fetchData({ state, dispatch }) {
   }),
   { loadBillings, sendBilling, changeBillingsFilter, removeBilling, loadPartners }
 )
-
 export default class BillingList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -75,11 +72,9 @@ export default class BillingList extends React.Component {
     selectedRowKeys: [],
   }
   componentWillMount() {
-    this.props.loadPartners(this.props.tenantId,
-      [PARTNER_ROLES.CUS],
-      [PARTNER_BUSINESSE_TYPES.clearance, PARTNER_BUSINESSE_TYPES.transport]).then((result) => {
-        this.setState({ customers: result.data });
-      });
+    this.props.loadPartners(this.props.tenantId, [PARTNER_ROLES.CUS], [PARTNER_BUSINESSE_TYPES.clearance, PARTNER_BUSINESSE_TYPES.transport]).then((result) => {
+      this.setState({ customers: result.data });
+    });
   }
   componentDidMount() {
     // this.handleTableLoad();

@@ -37,8 +37,8 @@ function fetchData({ state, dispatch }) {
     manifestList: state.scvClearance.manifestList,
     filters: state.scvClearance.manifestFilters,
     tradeModes: state.scvClearance.manifestParams.tradeModes,
-    transModes: state.cmsManifest.formRequire.transModes,
-    customs: state.cmsManifest.formRequire.customs,
+    transModes: state.scvClearance.manifestParams.transModes,
+    customs: state.scvClearance.manifestParams.customs,
   }),
   { loadManifests }
 )

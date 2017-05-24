@@ -2,10 +2,10 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Popover, Form, Select, Button, Icon, message } from 'antd';
-import RowUpdater from 'client/components/rowUpdater';
 import { loadOperators } from 'common/reducers/crmCustomers';
 import messages from './root.i18n';
 import { format } from './i18n/helpers';
+
 const formatMsg = format(messages);
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -18,8 +18,7 @@ const Option = Select.Option;
   }),
   { loadOperators }
 )
-
-export default class OperatorPopover extends React.Component {
+export default class OperatorsPopover extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     record: PropTypes.object,
@@ -71,7 +70,7 @@ export default class OperatorPopover extends React.Component {
           接单
         </Button>);
     } else {
-      button = (<RowUpdater label={<span><Icon type="check-square-o" /> {this.msg('accepting')}</span>} />);
+      button = (<span style={{ color: '#108ee9', background: 'transparent' }}><Icon type="check-square-o" />{this.msg('accepting')}</span>);
     }
     return (
       <Popover visible={visible} onVisibleChange={this.handlePopVisibleChange} content={
