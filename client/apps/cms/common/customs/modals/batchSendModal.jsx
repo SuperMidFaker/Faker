@@ -71,7 +71,7 @@ export default class BatchSendModal extends React.Component {
     if (nextProps.data !== this.props.data) {
       const custNames = Object.keys(nextProps.data);
       const bodies = custNames.map(value => ({
-        customs_name: value,
+        agent_name: value,
         agent_custco: nextProps.data[value][0].agent_custco,
         declType: '',
         easipass: '',
@@ -114,11 +114,11 @@ export default class BatchSendModal extends React.Component {
     bodies[index][field] = value;
     const row = bodies[index];
     const expandDatas = this.state.expandDatas;
-    const expDatas = [...expandDatas[row.customs_name]];
+    const expDatas = [...expandDatas[row.agent_name]];
     for (let i = 0; i < expDatas.length; i++) {
       expDatas[i][field] = value;
     }
-    expandDatas[row.customs_name] = expDatas;
+    expandDatas[row.agent_name] = expDatas;
     this.setState({ bodies, expandDatas });
   }
   handleExpChange = (value) => {
@@ -133,8 +133,8 @@ export default class BatchSendModal extends React.Component {
     } else if (this.props.ietype === 'export') {
       declList = CMS_EXPORT_DECL_TYPE;
     }
-    const subData = this.state.expandDatas[row.customs_name];
-    return (<Expander custkey={row.customs_name} subData={subData} declList={declList} onchange={this.handleExpChange} />);
+    const subData = this.state.expandDatas[row.agent_name];
+    return (<Expander custkey={row.agent_name} subData={subData} declList={declList} onchange={this.handleExpChange} />);
   };
   render() {
     const { visible, ietype, easilist } = this.props;
@@ -147,7 +147,7 @@ export default class BatchSendModal extends React.Component {
     const columns = [{
       title: this.msg('agent'),
       width: 150,
-      dataIndex: 'customs_name',
+      dataIndex: 'agent_name',
     }, {
       title: this.msg('declType'),
       width: 150,
@@ -176,7 +176,7 @@ export default class BatchSendModal extends React.Component {
       <Modal title={this.msg('sendAllPackets')} visible={visible} width={800}
         onOk={this.handleOk} onCancel={this.handleCancel}
       >
-        <Table rowKey="customs_name" columns={columns} dataSource={this.state.bodies}
+        <Table rowKey="agent_name" columns={columns} dataSource={this.state.bodies}
           expandedRowRender={this.handleExpandDetail}
         />
       </Modal>

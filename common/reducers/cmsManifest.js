@@ -309,7 +309,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.SHOW_EDIT_BODY_MODAL:
       return { ...state, editBodyVisible: action.data };
     case actionTypes.LOAD_BILL_META_SUCCEED:
-      return { ...state, billMeta: action.result.data };
+      return { ...state, billMeta: action.result.data.meta };
     default:
       return state;
   }

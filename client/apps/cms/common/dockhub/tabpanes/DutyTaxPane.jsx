@@ -200,7 +200,7 @@ export default class DutyTaxPane extends React.Component {
           <Table pagination={false} dataSource={this.state.sumval}>
             <Column dataIndex="total" width={230} />
             <Column dataIndex="duty_paid" width={110} render={this.renderValFixed} />
-            <Column dataIndex="trxn_mode" width={110} render={this.renderValFixed} />
+            <Column dataIndex="trxn_mode" width={110} />
             <Column dataIndex="duty_tax" width={110} render={this.renderValFixed} />
             <Column dataIndex="vat_tax" width={110} render={this.renderValFixed} />
             <Column dataIndex="excise_tax" width={110} render={this.renderValFixed} />
