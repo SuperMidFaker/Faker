@@ -110,7 +110,7 @@ ColumnSearchSelect.proptypes = {
   options: PropTypes.array.isRequired,
 };
 
-function calculateTotal(bodies) {
+function calculateTotal(bodies, currencies) {
   let totGrossWt = 0;
   let totWetWt = 0;
   let totTrade = 0;
@@ -124,7 +124,9 @@ function calculateTotal(bodies) {
       totWetWt += Number(body.wet_wt);
     }
     if (body.trade_total) {
-      totTrade += Number(body.trade_total);
+      const currency = currencies.find(curr => curr.value === body.trade_curr);
+      const rate = currency ? currency.rate_cny : 1;
+      totTrade += Number(body.trade_total * rate);
     }
     if (body.qty_pcs) {
       totPcs += Number(body.qty_pcs);
@@ -151,6 +153,7 @@ function calculateTotal(bodies) {
       value: cr.curr_code,
       text: cr.curr_name,
       search: `${cr.curr_code}${cr.curr_symb}${cr.curr_name}`,
+      rate_cny: cr.rate_CNY,
     })),
     exemptions: state.cmsManifest.params.exemptionWays.map(ep => ({
       value: ep.value,
@@ -202,7 +205,7 @@ export default class ManifestBodyPanel extends React.Component {
     if (!props.readonly) {
       bodies.push({ id: '__ops' });
     }
-    const calresult = calculateTotal(bodies);
+    const calresult = calculateTotal(bodies, props.currencies);
     this.state = {
       editIndex: -1,
       editBody: {},
@@ -232,7 +235,7 @@ export default class ManifestBodyPanel extends React.Component {
       if (!nextProps.readonly) {
         bodies.push({ id: '__ops' });
       }
-      const calresult = calculateTotal(bodies);
+      const calresult = calculateTotal(bodies, this.props.currencies);
       this.setState({
         bodies,
         totGrossWt: calresult.totGrossWt,
@@ -560,7 +563,7 @@ export default class ManifestBodyPanel extends React.Component {
           if (bodies.length > pagination.current * pagination.pageSize) {
             pagination.current += 1;
           }
-          const calresult = calculateTotal(bodies);
+          const calresult = calculateTotal(bodies, this.props.currencies);
           this.setState({
             editIndex: -1,
             editBody: {},
@@ -580,7 +583,7 @@ export default class ManifestBodyPanel extends React.Component {
         } else {
           const bodies = [...this.state.bodies];
           bodies[recordIdx] = editBody;
-          const calresult = calculateTotal(bodies);
+          const calresult = calculateTotal(bodies, this.props.currencies);
           this.setState({
             editIndex: -1,
             editBody: {},
@@ -606,7 +609,7 @@ export default class ManifestBodyPanel extends React.Component {
         if (pagination.current > 1 && (pagination.current - 1) * pagination.pageSize === pagination.total) {
           pagination.current -= 1;
         }
-        const calresult = calculateTotal(bodies);
+        const calresult = calculateTotal(bodies, this.props.currencies);
         this.setState({
           bodies,
           totGrossWt: calresult.totGrossWt,
@@ -668,7 +671,7 @@ export default class ManifestBodyPanel extends React.Component {
         this.props.editBillBody(data);
       }
       datas.push(bodyDatas[bodyDatas.length - 1]);
-      const calresult = calculateTotal(datas);
+      const calresult = calculateTotal(datas, this.props.currencies);
       this.setState({
         totGrossWt: calresult.totGrossWt,
         totWetWt: calresult.totWetWt,
@@ -829,7 +832,7 @@ export default class ManifestBodyPanel extends React.Component {
     const columns = this.getColumns();
     const stats = (<div><span style={{ marginLeft: 8 }}>总毛重: </span><span style={{ color: '#FF9933' }}>{totGrossWt.toFixed(3)}</span>
       <span style={{ marginLeft: 8 }}>总净重: </span><span style={{ color: '#FF9933' }}>{totWetWt.toFixed(3)}</span>
-      <span style={{ marginLeft: 8 }}>总金额: </span><span style={{ color: '#FF9933' }}>{totTrade.toFixed(3)}</span>
+      <span style={{ marginLeft: 8 }}>总金额(元): </span><span style={{ color: '#FF9933' }}>{totTrade.toFixed(3)}</span>
       <span style={{ marginLeft: 8 }}>总个数: </span><span style={{ color: '#FF9933' }}>{totPcs.toFixed(3)}</span></div>);
     return (
       <div className="pane">
