@@ -288,7 +288,7 @@ export default class AcceptList extends React.Component {
       value = srPartnerId;
     }
     let filters = this.mergeFilters(this.props.filters, 'sr_partner_id', value);
-    filters = this.mergeFilters(this.props.filters, 'sr_tenant_id', srTenantId);
+    filters = this.mergeFilters(filters, 'sr_tenant_id', srTenantId);
     this.handleTableLoad(filters, 1);
   }
   handleCreateBtnClick = () => {
