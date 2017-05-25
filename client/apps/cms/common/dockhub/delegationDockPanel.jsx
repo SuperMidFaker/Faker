@@ -4,7 +4,7 @@ import { Badge, Button, Col, Icon, Row, Tabs, Tag, Popconfirm, message } from 'a
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
-import { CMS_DELEGATION_STATUS } from 'common/constants';
+import { CMS_DELEGATION_STATUS, CMS_DELEGATION_MANIFEST } from 'common/constants';
 import InfoItem from 'client/components/InfoItem';
 import DockPanel from 'client/components/DockPanel';
 import BasicPane from './tabpanes/BasicPane';
@@ -143,7 +143,7 @@ export default class DelegationDockPanel extends React.Component {
   }
   renderTabs() {
     const { previewer, tabKey } = this.props;
-    const { delgDispatch } = previewer;
+    const { delgDispatch, delegation } = previewer;
     if (delgDispatch.status === CMS_DELEGATION_STATUS.unaccepted) {
       return (
         <Tabs activeKey={tabKey} onChange={this.handleTabChange}>
@@ -155,7 +155,8 @@ export default class DelegationDockPanel extends React.Component {
           </TabPane>
         </Tabs>
       );
-    } else if (delgDispatch.status === CMS_DELEGATION_STATUS.accepted || delgDispatch.status === CMS_DELEGATION_STATUS.processing) {
+    } else if (delgDispatch.status === CMS_DELEGATION_STATUS.accepted ||
+      (delgDispatch.status === CMS_DELEGATION_STATUS.processing && delegation.manifested !== CMS_DELEGATION_MANIFEST.manifested)) {
       if (delgDispatch.recv_services.indexOf('ciq') === -1) {
         return (
           <Tabs activeKey={tabKey} onChange={this.handleTabChange}>
@@ -193,7 +194,8 @@ export default class DelegationDockPanel extends React.Component {
           </TabPane>
         </Tabs>
       );
-    } else if (delgDispatch.status === CMS_DELEGATION_STATUS.declaring || delgDispatch.status === CMS_DELEGATION_STATUS.released) {
+    } else if (delgDispatch.status > CMS_DELEGATION_STATUS.processing ||
+      (delgDispatch.status === CMS_DELEGATION_STATUS.processing) && delegation.manifested === CMS_DELEGATION_MANIFEST.manifested) {
       if (delgDispatch.recv_services.indexOf('ciq') === -1) {
         return (
           <Tabs activeKey={tabKey} onChange={this.handleTabChange}>
