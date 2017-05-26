@@ -139,7 +139,7 @@ export default class CustomsList extends Component {
     width: 160,
     render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
-    title: '报关单位',
+    title: '申报单位',
     dataIndex: 'agent_name',
     width: 160,
     render: o => <TrimSpan text={o} maxLen={10} />,
