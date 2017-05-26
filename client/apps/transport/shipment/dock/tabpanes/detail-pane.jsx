@@ -379,7 +379,7 @@ export default class DetailPane extends React.Component {
     const editable = tenantId === shipmt.tenant_id && dispatch.status <= SHIPMENT_TRACK_STATUS.delivered;
     const terminable = tenantId === shipmt.tenant_id && dispatch.status < SHIPMENT_TRACK_STATUS.intransit;
     let shipmtScheduleExtra = (<div />);
-    if (tenantId === shipmt.tenant_id && dispatch.status <= 5) {
+    if (tenantId === shipmt.tenant_id) {
       shipmtScheduleExtra = (
         <Dropdown overlay={(
           <Menu>
