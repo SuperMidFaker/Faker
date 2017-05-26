@@ -1,8 +1,9 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Card, Table, Tag } from 'antd';
-import { loadPaneTax } from 'common/reducers/cmsDelgInfoHub';
+import { Card, Table, Tag, Popconfirm, message, Button } from 'antd';
+import { loadPaneTax, taxRecalculate } from 'common/reducers/cmsDelgInfoHub';
+import { CMS_FEE_UNIT } from 'common/constants';
 
 const Column = Table.Column;
 
@@ -17,7 +18,7 @@ const Column = Table.Column;
       text: `${tm.trx_spec}`,
     })),
   }),
-  { loadPaneTax }
+  { loadPaneTax, taxRecalculate }
 )
 export default class DutyTaxPane extends React.Component {
   static propTypes = {
@@ -29,6 +30,7 @@ export default class DutyTaxPane extends React.Component {
   }
   state = {
     sumval: [],
+    recalLoading: false,
   }
   componentDidMount() {
     this.props.loadPaneTax(this.props.delgNo);
@@ -139,25 +141,40 @@ export default class DutyTaxPane extends React.Component {
       return o ? o.toFixed(3) : '';
     },
   }, {
-    title: '运费',
+    title: '运费/率',
     dataIndex: 'ship_fee',
     key: 'ship_fee',
-    render(o) {
-      return o ? o.toFixed(3) : '';
+    render(o, record) {
+      if (record.ship_mark === CMS_FEE_UNIT[1].value) {
+        const val = o ? o * 100 : 0;
+        return val ? `${val}%` : '';
+      } else {
+        return o ? o.toFixed(3) : '';
+      }
     },
   }, {
-    title: '保费',
+    title: '保费/率',
     dataIndex: 'insur_fee',
     key: 'insur_fee',
-    render(o) {
-      return o ? o.toFixed(3) : '';
+    render(o, record) {
+      if (record.insur_mark === CMS_FEE_UNIT[1].value) {
+        const val = o ? o * 100 : 0;
+        return val ? `${val}%` : '';
+      } else {
+        return o ? o.toFixed(3) : '';
+      }
     },
   }, {
-    title: '杂费',
+    title: '杂费/率',
     dataIndex: 'other_fee',
     key: 'other_fee',
-    render(o) {
-      return o ? o.toFixed(3) : '';
+    render(o, record) {
+      if (record.other_mark === CMS_FEE_UNIT[1].value) {
+        const val = o ? o * 100 : 0;
+        return val ? `${val}%` : '';
+      } else {
+        return o ? o.toFixed(3) : '';
+      }
     },
   }, {
     title: '关税率',
@@ -189,10 +206,26 @@ export default class DutyTaxPane extends React.Component {
       />
     );
   }
+  handleRecalculation = () => {
+    this.setState({ recalLoading: true });
+    this.props.taxRecalculate(this.props.delgNo).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        this.setState({ sumval: [], recalLoading: false });
+        this.props.loadPaneTax(this.props.delgNo);
+      }
+    });
+  }
   renderValFixed = o => o ? o.toFixed(3) : ''
   render() {
     return (
       <div className="pane-content tab-pane">
+        <div className="pane-header">
+          <Popconfirm title="确定重新计算税费?" onConfirm={this.handleRecalculation}>
+            <Button type="primary" icon="reload" loading={this.state.recalLoading}>重算</Button>
+          </Popconfirm>
+        </div>
         <Card bodyStyle={{ padding: 8 }}>
           <Table columns={this.columns} pagination={false} dataSource={this.props.taxTots}
             rowKey="pre_entry_seq_no" expandedRowRender={this.handleExpandDetail}

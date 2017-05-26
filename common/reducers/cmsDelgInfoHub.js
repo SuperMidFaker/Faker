@@ -14,6 +14,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'SET_OPERATOR', 'SET_OPERATOR_SUCCEED', 'SET_OPERATOR_FAIL',
   'GET_SHIPMT_ORDER_NO', 'GET_SHIPMT_ORDER_NO_SUCCEED', 'GET_SHIPMT_ORDER_NO_FAIL',
   'TAX_PANE_LOAD', 'TAX_PANE_LOAD_SUCCEED', 'TAX_PANE_LOAD_FAIL',
+  'TAX_RECALCULATE', 'TAX_RECALCULATE_SUCCEED', 'TAX_RECALCULATE_FAIL',
 ]);
 
 const initialState = {
@@ -264,3 +265,19 @@ export function loadPaneTax(delgNo) {
     },
   };
 }
+
+export function taxRecalculate(delgNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.TAX_RECALCULATE,
+        actionTypes.TAX_RECALCULATE_SUCCEED,
+        actionTypes.TAX_RECALCULATE_FAIL,
+      ],
+      method: 'post',
+      endpoint: 'v1/cms/declare/tax/recalculate',
+      data: { delgNo },
+    },
+  };
+}
+
