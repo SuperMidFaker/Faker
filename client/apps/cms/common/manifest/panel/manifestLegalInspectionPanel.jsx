@@ -5,6 +5,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import messages from '../../form/message.i18n';
 import { format } from 'client/common/i18n/helpers';
 const formatMsg = format(messages);
+import { buildTipItems } from 'client/common/customs';
 
 @injectIntl
 @connect(
@@ -131,6 +132,16 @@ export default class ManifestLegalInspection extends React.Component {
       title: this.msg('element'),
       width: 380,
       dataIndex: 'element',
+    }, {
+      title: '海关监管条件',
+      dataIndex: 'customs',
+      width: 180,
+      render: col => buildTipItems(col),
+    }, {
+      title: '检验检疫类别',
+      dataIndex: 'inspection',
+      width: 180,
+      render: col => buildTipItems(col, true),
     }, {
       title: this.msg('versionNo'),
       width: 80,

@@ -4,6 +4,7 @@ import { Alert, Button, Table, Input, Select } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../form/message.i18n';
+import { buildTipItems } from 'client/common/customs';
 
 const formatMsg = format(messages);
 const Option = Select.Option;
@@ -407,10 +408,12 @@ export default class CDFBodyPanel extends React.Component {
       title: this.msg('customs'),
       width: 100,
       dataIndex: 'customs',
+      render: col => buildTipItems(col),
     }, {
       title: this.msg('inspection'),
       width: 100,
       dataIndex: 'inspection',
+      render: col => buildTipItems(col, true),
     }, {
       title: this.msg('element'),
       render: (o, record, index) =>
