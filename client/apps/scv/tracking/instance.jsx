@@ -6,6 +6,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { Breadcrumb, Layout, Button, Input } from 'antd';
 import EditableCell from 'client/components/EditableCell';
 import Table from 'client/components/remoteAntTable';
+import RangePickerPopover from './modals/rangePickerPopover';
 import { loadTrackingItems, loadTrackingOrders, upsertTrackingOrderCustom } from 'common/reducers/scvTracking';
 import { makeExcel } from 'common/reducers/common';
 import { createFilename } from 'client/util/dataTransform';
@@ -43,78 +44,97 @@ export default class Instance extends Component {
   state = {
     tracking: {},
     sorter: { field: '', order: '' },
+    filters: {},
   }
   componentWillMount() {
     this.props.loadTrackingItems(Number(this.props.params.trackingId));
-    this.props.loadTrackingOrders({
-      searchValue: this.props.orders.searchValue,
-      tracking_id: this.props.params.trackingId,
-      pageSize: this.props.orders.pageSize,
+    this.handleTableload(this.props);
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.params.trackingId !== this.props.params.trackingId) {
+      nextProps.loadTrackingItems(Number(nextProps.params.trackingId));
+      this.handleTableload(nextProps);
+    }
+    this.setState({ tracking: nextProps.trackings.find(item => item.id === Number(nextProps.params.trackingId)) });
+  }
+  handleTableload = (props) => {
+    props.loadTrackingOrders({
+      searchValue: props.orders.searchValue,
+      tracking_id: props.params.trackingId,
+      pageSize: props.orders.pageSize,
       current: 1,
       sorter: JSON.stringify({
         field: this.state.sorter.field,
         order: this.state.sorter.order === 'descend' ? 'DESC' : 'ASC',
       }),
+      filters: JSON.stringify(this.state.filters),
     });
-  }
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.params.trackingId !== this.props.params.trackingId) {
-      nextProps.loadTrackingItems(Number(nextProps.params.trackingId));
-      nextProps.loadTrackingOrders({
-        searchValue: nextProps.orders.searchValue,
-        tracking_id: nextProps.params.trackingId,
-        pageSize: nextProps.orders.pageSize,
-        current: 1,
-        sorter: JSON.stringify({
-          field: this.state.sorter.field,
-          order: this.state.sorter.order === 'descend' ? 'DESC' : 'ASC',
-        }),
-      });
-    }
-    this.setState({ tracking: nextProps.trackings.find(item => item.id === Number(nextProps.params.trackingId)) });
   }
   msg = key => formatMsg(this.props.intl, key)
   handleSave = (id, field, value, source) => {
     this.props.upsertTrackingOrderCustom(id, field, value, source);
   }
-  makeColumns = () => this.props.trackingItems.map(item => ({
-    key: item.field,
-    dataIndex: item.field,
-    title: item.custom_title,
-    width: item.width,
-    sorter: item.source !== 3,
-    sortOrder: this.state.sorter.columnKey === item.field && this.state.sorter.order,
-    render: (fld, row) => {
-      if (item.editable === 1) {
-        if (item.datatype === 'DATE') {
-          return (
-            <EditableCell value={fld} type="date" cellTrigger
-              onSave={value => this.handleSave(row.id, item.field, value, item.source)}
-            />
-          );
+  handleDateFilter = (field, values) => {
+    if (values.length > 0) {
+      this.setState({ filters: { ...this.state.filters, [field]: [values[0].toString(), values[1].toString()] } }, () => {
+        this.handleTableload(this.props);
+      });
+    } else {
+      const filters = { ...this.state.filters };
+      delete filters[field];
+      this.setState({ filters }, () => {
+        this.handleTableload(this.props);
+      });
+    }
+  }
+  makeColumns = () => this.props.trackingItems.map((item) => {
+    let title = item.custom_title;
+    if (item.source !== 3 && item.datatype === 'DATE') {
+      title = (
+        <span>
+          {item.custom_title}
+          <RangePickerPopover onChange={value => this.handleDateFilter(item.field, value)} />
+        </span>);
+    }
+    return {
+      key: item.field,
+      dataIndex: item.field,
+      title,
+      width: item.width,
+      sorter: item.source !== 3,
+      sortOrder: this.state.sorter.columnKey === item.field && this.state.sorter.order,
+      render: (fld, row) => {
+        if (item.editable === 1) {
+          if (item.datatype === 'DATE') {
+            return (
+              <EditableCell value={fld} type="date" cellTrigger
+                onSave={value => this.handleSave(row.id, item.field, value, item.source)}
+              />
+            );
+          } else {
+            return (
+              <EditableCell value={fld} cellTrigger
+                onSave={value => this.handleSave(row.id, item.field, value, item.source)}
+              />
+            );
+          }
+        } else if (item.datatype === 'DATE') {
+          return fld && moment(fld).format('YYYY.MM.DD');
         } else {
-          return (
-            <EditableCell value={fld} cellTrigger
-              onSave={value => this.handleSave(row.id, item.field, value, item.source)}
-            />
-          );
+          return fld;
         }
-      } else if (item.datatype === 'DATE') {
-        return fld && moment(fld).format('YYYY.MM.DD');
-      } else {
-        return fld;
-      }
-    },
-    renderExcelCell: (fld) => {
-      if (item.source === 3) {
-        return fld;
-      } else if (item.datatype === 'DATE') {
-        return fld ? moment(fld).format('YYYY-MM-DD') : '';
-      } else {
-        return fld;
-      }
-    },
-  }))
+      },
+      renderExcelCell: (fld) => {
+        if (item.source === 3) {
+          return fld;
+        } else if (item.datatype === 'DATE') {
+          return fld ? moment(fld).format('YYYY-MM-DD') : '';
+        } else {
+          return fld;
+        }
+      },
+    };
+  })
   dataSource = new Table.DataSource({
     fetcher: params => this.props.loadTrackingOrders({
       searchValue: this.props.orders.searchValue,
@@ -122,6 +142,7 @@ export default class Instance extends Component {
       pageSize: params.pageSize,
       current: params.current,
       sorter: JSON.stringify(params.sorter),
+      filters: JSON.stringify(this.state.filters),
     }),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
@@ -152,6 +173,10 @@ export default class Instance extends Component {
       tracking_id: this.props.params.trackingId,
       pageSize: 99999999,
       current: 1,
+      sorter: JSON.stringify({
+        field: this.state.sorter.field,
+        order: this.state.sorter.order === 'descend' ? 'DESC' : 'ASC',
+      }),
     }).then((result) => {
       const table = [];
       const columns = this.makeColumns();
@@ -174,6 +199,10 @@ export default class Instance extends Component {
       tracking_id: this.props.params.trackingId,
       pageSize: this.props.orders.pageSize,
       current: 1,
+      sorter: JSON.stringify({
+        field: this.state.sorter.field,
+        order: this.state.sorter.order === 'descend' ? 'DESC' : 'ASC',
+      }),
     });
   }
   render() {
