@@ -37,6 +37,7 @@ export default class DutyTaxPane extends React.Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.delgNo !== this.props.delgNo) {
+      this.setState({ sumval: [] });
       nextProps.loadPaneTax(nextProps.delgNo);
     }
     if (nextProps.taxTots !== this.props.taxTots && nextProps.taxTots.length > 0) {
@@ -225,6 +226,9 @@ export default class DutyTaxPane extends React.Component {
           <Popconfirm title="确定重新计算税费?" onConfirm={this.handleRecalculation}>
             <Button type="primary" icon="reload" loading={this.state.recalLoading}>重算</Button>
           </Popconfirm>
+          <div style={{ float: 'right' }}>
+            <span style={{ color: '#FF9933' }}>单位：元</span>
+          </div>
         </div>
         <Card bodyStyle={{ padding: 8 }}>
           <Table columns={this.columns} pagination={false} dataSource={this.props.taxTots}
