@@ -140,10 +140,14 @@ export default class ReceiveInvitationList extends Component {
         }
       }
     }
-    this.props.acceptInvitation(id, partnerId, reversePartnerships, customsCode);
+    this.props.acceptInvitation(id, partnerId, reversePartnerships, customsCode).then(() => {
+      this.handleTableLoad();
+    });
   }
   handleRejectBtnClick = (id, partnerId) => {
-    this.props.rejectInvitation(id, partnerId);
+    this.props.rejectInvitation(id, partnerId).then(() => {
+      this.handleTableLoad();
+    });
   }
   render() {
     const { receiveInvitations } = this.props;
