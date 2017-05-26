@@ -42,6 +42,7 @@ export default class Instance extends Component {
   }
   state = {
     tracking: {},
+    sorter: { field: '', order: '' },
   }
   componentWillMount() {
     this.props.loadTrackingItems(Number(this.props.params.trackingId));
@@ -50,6 +51,10 @@ export default class Instance extends Component {
       tracking_id: this.props.params.trackingId,
       pageSize: this.props.orders.pageSize,
       current: 1,
+      sorter: JSON.stringify({
+        field: this.state.sorter.field,
+        order: this.state.sorter.order === 'descend' ? 'DESC' : 'ASC',
+      }),
     });
   }
   componentWillReceiveProps(nextProps) {
@@ -60,6 +65,10 @@ export default class Instance extends Component {
         tracking_id: nextProps.params.trackingId,
         pageSize: nextProps.orders.pageSize,
         current: 1,
+        sorter: JSON.stringify({
+          field: this.state.sorter.field,
+          order: this.state.sorter.order === 'descend' ? 'DESC' : 'ASC',
+        }),
       });
     }
     this.setState({ tracking: nextProps.trackings.find(item => item.id === Number(nextProps.params.trackingId)) });
@@ -73,6 +82,8 @@ export default class Instance extends Component {
     dataIndex: item.field,
     title: item.custom_title,
     width: item.width,
+    sorter: item.source !== 3,
+    sortOrder: this.state.sorter.columnKey === item.field && this.state.sorter.order,
     render: (fld, row) => {
       if (item.editable === 1) {
         if (item.datatype === 'DATE') {
@@ -110,6 +121,7 @@ export default class Instance extends Component {
       tracking_id: this.props.params.trackingId,
       pageSize: params.pageSize,
       current: params.current,
+      sorter: JSON.stringify(params.sorter),
     }),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
@@ -121,6 +133,7 @@ export default class Instance extends Component {
       showTotal: total => `共 ${total} 条`,
     }),
     getParams: (pagination, filters, sorter) => {
+      this.setState({ sorter });
       const params = {
         pageSize: pagination.pageSize,
         current: pagination.current,
