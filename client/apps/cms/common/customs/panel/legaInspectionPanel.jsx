@@ -5,6 +5,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import messages from '../../form/message.i18n';
 import { format } from 'client/common/i18n/helpers';
 const formatMsg = format(messages);
+import { buildTipItems } from 'client/common/customs';
 
 @injectIntl
 @connect(
@@ -126,6 +127,16 @@ export default class LegalInspectionPanel extends React.Component {
       title: this.msg('element'),
       width: 380,
       dataIndex: 'element',
+    }, {
+      title: this.msg('customs'),
+      width: 100,
+      dataIndex: 'customs',
+      render: col => buildTipItems(col),
+    }, {
+      title: this.msg('inspection'),
+      width: 100,
+      dataIndex: 'inspection',
+      render: col => buildTipItems(col, true),
     }, {
       title: this.msg('versionNo'),
       width: 80,
