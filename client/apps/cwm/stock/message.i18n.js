@@ -1,9 +1,9 @@
 import { defineMessages } from 'react-intl';
 
 const messages = defineMessages({
-  inventoryManagement: {
-    id: 'cwm.inventory',
-    defaultMessage: '在库管理',
+  stock: {
+    id: 'cwm.stock',
+    defaultMessage: '库存管理',
   },
 });
 

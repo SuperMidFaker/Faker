@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Layout, Radio, Table } from 'antd';
+import { Breadcrumb, Layout, Radio, Select, Table } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/search-bar';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -12,6 +12,7 @@ const formatMsg = format(messages);
 const { Header, Content } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
+const Option = Select.Option;
 
 @injectIntl
 @connect(
@@ -87,15 +88,25 @@ export default class ShippingOrderList extends React.Component {
         <Header className="top-bar">
           <Breadcrumb>
             <Breadcrumb.Item>
-              {this.msg('outbound')}
+              <Select
+                size="large"
+                defaultValue="0960"
+                placeholder="选择仓库"
+                style={{ width: 160 }}
+              >
+                <Option value="0960">物流大道仓库</Option>
+                <Option value="0961">希雅路仓库</Option>
+                <Option value="0962">富特路仓库</Option>
+              </Select>
             </Breadcrumb.Item>
             <Breadcrumb.Item>
               {this.msg('shippingOrder')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <RadioGroup onChange={this.handleStatusChange} size="large">
-            <RadioButton value="pending">{this.msg('pending')}</RadioButton>
-            <RadioButton value="shipped">{this.msg('shipped')}</RadioButton>
+          <RadioGroup defaultValue="pending" onChange={this.handleStatusChange} size="large">
+            <RadioButton value="pending">待出货</RadioButton>
+            <RadioButton value="outbound">出库中</RadioButton>
+            <RadioButton value="shipped">出货完成</RadioButton>
           </RadioGroup>
           <div className="top-bar-tools" />
         </Header>
