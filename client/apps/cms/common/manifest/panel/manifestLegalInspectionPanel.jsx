@@ -25,9 +25,9 @@ export default class ManifestLegalInspection extends React.Component {
     const { billBodies, ietype } = this.props;
     let filterProducts = [];
     if (ietype === 'import') {
-      filterProducts = billBodies.filter(item => item.customs.indexOf('A') !== -1);
+      filterProducts = billBodies.filter(item => item.customs && item.customs.indexOf('A') !== -1);
     } else {
-      filterProducts = billBodies.filter(item => item.customs.indexOf('B') !== -1);
+      filterProducts = billBodies.filter(item => item.customs && item.customs.indexOf('B') !== -1);
     }
 
     const columns = [{
