@@ -25,9 +25,9 @@ export default class ManifestLegalInspection extends React.Component {
     const { billBodies, ietype } = this.props;
     let filterProducts = [];
     if (ietype === 'import') {
-      filterProducts = billBodies.filter(item => item.customs.indexOf('A') !== -1);
+      filterProducts = billBodies.filter(item => item.customs && item.customs.indexOf('A') !== -1);
     } else {
-      filterProducts = billBodies.filter(item => item.customs.indexOf('B') !== -1);
+      filterProducts = billBodies.filter(item => item.customs && item.customs.indexOf('B') !== -1);
     }
 
     const columns = [{
@@ -52,6 +52,16 @@ export default class ManifestLegalInspection extends React.Component {
       title: this.msg('gName'),
       width: 200,
       dataIndex: 'g_name',
+    }, {
+      title: '海关监管条件',
+      dataIndex: 'customs',
+      width: 180,
+      render: col => buildTipItems(col),
+    }, {
+      title: '检验检疫类别',
+      dataIndex: 'inspection',
+      width: 180,
+      render: col => buildTipItems(col, true),
     }, {
       title: this.msg('gModel'),
       width: 300,
@@ -132,16 +142,6 @@ export default class ManifestLegalInspection extends React.Component {
       title: this.msg('element'),
       width: 380,
       dataIndex: 'element',
-    }, {
-      title: '海关监管条件',
-      dataIndex: 'customs',
-      width: 180,
-      render: col => buildTipItems(col),
-    }, {
-      title: '检验检疫类别',
-      dataIndex: 'inspection',
-      width: 180,
-      render: col => buildTipItems(col, true),
     }, {
       title: this.msg('versionNo'),
       width: 80,
