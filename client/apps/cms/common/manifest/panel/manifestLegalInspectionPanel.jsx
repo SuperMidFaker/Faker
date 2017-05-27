@@ -53,6 +53,16 @@ export default class ManifestLegalInspection extends React.Component {
       width: 200,
       dataIndex: 'g_name',
     }, {
+      title: '海关监管条件',
+      dataIndex: 'customs',
+      width: 180,
+      render: col => buildTipItems(col),
+    }, {
+      title: '检验检疫类别',
+      dataIndex: 'inspection',
+      width: 180,
+      render: col => buildTipItems(col, true),
+    }, {
       title: this.msg('gModel'),
       width: 300,
       dataIndex: 'g_model',
@@ -132,16 +142,6 @@ export default class ManifestLegalInspection extends React.Component {
       title: this.msg('element'),
       width: 380,
       dataIndex: 'element',
-    }, {
-      title: '海关监管条件',
-      dataIndex: 'customs',
-      width: 180,
-      render: col => buildTipItems(col),
-    }, {
-      title: '检验检疫类别',
-      dataIndex: 'inspection',
-      width: 180,
-      render: col => buildTipItems(col, true),
     }, {
       title: this.msg('versionNo'),
       width: 80,

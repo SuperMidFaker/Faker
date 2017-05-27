@@ -25,9 +25,9 @@ export default class LegalInspectionPanel extends React.Component {
     const { bodies, ietype } = this.props;
     let filterProducts = [];
     if (ietype === 'import') {
-      filterProducts = bodies.filter(item => item.customs.indexOf('A') !== -1);
+      filterProducts = bodies.filter(item => item.customs && item.customs.indexOf('A') !== -1);
     } else {
-      filterProducts = bodies.filter(item => item.customs.indexOf('B') !== -1);
+      filterProducts = bodies.filter(item => item.customs && item.customs.indexOf('B') !== -1);
     }
     const columns = [{
       title: this.msg('seqNumber'),
@@ -47,6 +47,16 @@ export default class LegalInspectionPanel extends React.Component {
       title: this.msg('gName'),
       width: 200,
       dataIndex: 'g_name',
+    }, {
+      title: this.msg('customs'),
+      width: 100,
+      dataIndex: 'customs',
+      render: col => buildTipItems(col),
+    }, {
+      title: this.msg('inspection'),
+      width: 100,
+      dataIndex: 'inspection',
+      render: col => buildTipItems(col, true),
     }, {
       title: this.msg('gModel'),
       width: 300,
@@ -127,16 +137,6 @@ export default class LegalInspectionPanel extends React.Component {
       title: this.msg('element'),
       width: 380,
       dataIndex: 'element',
-    }, {
-      title: this.msg('customs'),
-      width: 100,
-      dataIndex: 'customs',
-      render: col => buildTipItems(col),
-    }, {
-      title: this.msg('inspection'),
-      width: 100,
-      dataIndex: 'inspection',
-      render: col => buildTipItems(col, true),
     }, {
       title: this.msg('versionNo'),
       width: 80,
