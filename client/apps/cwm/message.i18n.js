@@ -7,7 +7,7 @@ const messages = defineMessages({
   },
   receiving: {
     id: 'cwm.module.receiving',
-    defaultMessage: '入库',
+    defaultMessage: '收货管理',
   },
   receivingASN: {
     id: 'cwm.module.receiving.asn',
@@ -17,21 +17,21 @@ const messages = defineMessages({
     id: 'cwm.module.receiving.inbound',
     defaultMessage: '入库操作',
   },
-  inventory: {
-    id: 'cwm.module.inventory',
-    defaultMessage: '库存',
-  },
-  outbound: {
-    id: 'cwm.module.outbound',
-    defaultMessage: '出库',
+  shipping: {
+    id: 'cwm.module.shipping',
+    defaultMessage: '发货管理',
   },
   shippingOrder: {
-    id: 'cwm.module.shipping.order',
+    id: 'cwm.module.shipping.so',
     defaultMessage: '出货订单SO',
   },
-  outboundTransactions: {
-    id: 'cwm.module.outbound.transaction',
+  shippingOutbound: {
+    id: 'cwm.module.shipping.outbound',
     defaultMessage: '出库操作',
+  },
+  stock: {
+    id: 'cwm.module.stock',
+    defaultMessage: '库存管理',
   },
   ftzSupervision: {
     id: 'cwm.module.ftz.supervision',

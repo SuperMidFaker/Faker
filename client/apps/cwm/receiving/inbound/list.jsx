@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Icon, Breadcrumb, Layout, Select, Table, Tag, Tooltip } from 'antd';
+import { Icon, Breadcrumb, Layout, Radio, Select, Table, Tag, Tooltip } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/search-bar';
 import RowUpdater from 'client/components/rowUpdater';
@@ -12,6 +12,8 @@ import messages from '../message.i18n';
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
 const Option = Select.Option;
+const RadioGroup = Radio.Group;
+const RadioButton = Radio.Button;
 
 @injectIntl
 @connect(
@@ -168,12 +170,27 @@ export default class ReceivingInboundList extends React.Component {
         <Header className="top-bar">
           <Breadcrumb>
             <Breadcrumb.Item>
-              {this.msg('receiving')}
+              <Select
+                size="large"
+                defaultValue="0960"
+                placeholder="选择仓库"
+                style={{ width: 160 }}
+              >
+                <Option value="0960">物流大道仓库</Option>
+                <Option value="0961">希雅路仓库</Option>
+                <Option value="0962">富特路仓库</Option>
+              </Select>
             </Breadcrumb.Item>
             <Breadcrumb.Item>
               {this.msg('receivingInound')}
             </Breadcrumb.Item>
           </Breadcrumb>
+          <RadioGroup defaultValue="all" onChange={this.handleBondedChange} size="large">
+            <RadioButton value="all">全部</RadioButton>
+            <RadioButton value="receive">收货</RadioButton>
+            <RadioButton value="putaway">上架</RadioButton>
+            <RadioButton value="completed">入库完成</RadioButton>
+          </RadioGroup>
         </Header>
         <Content className="main-content" key="main">
           <div className="page-body">
@@ -183,22 +200,7 @@ export default class ReceivingInboundList extends React.Component {
               <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
                 onChange={this.handleClientSelectChange} defaultValue="all"
               >
-                <Option value="all">全部仓库</Option>
-              </Select>
-              <span />
-              <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
-                onChange={this.handleClientSelectChange} defaultValue="all"
-              >
                 <Option value="all">全部货主</Option>
-              </Select>
-              <span />
-              <Select showSearch optionFilterProp="children" size="large" style={{ width: 100 }}
-                onChange={this.handleClientSelectChange} defaultValue="all"
-              >
-                <Option value="all">所有状态</Option>
-                <Option value="pending">未确认</Option>
-                <Option value="confirmed">已确认</Option>
-                <Option value="completed">已入库</Option>
               </Select>
               <div className="toolbar-right" />
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>

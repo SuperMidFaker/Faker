@@ -70,9 +70,6 @@ export default class CreateReceivingNotice extends Component {
         <Header className="top-bar">
           <Breadcrumb>
             <Breadcrumb.Item>
-              {this.msg('inbound')}
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
               {this.msg('receivingNotice')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>

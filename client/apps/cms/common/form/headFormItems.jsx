@@ -631,7 +631,8 @@ function FeeFormItem(props) {
   } else if (currencyField === 'insur_curr') {
     currReq = insurCurrReq && require;
   }
-  formRequire.currencies.unshift({ curr_code: -1, curr_name: '[空]' });
+  let currencies = [{ curr_code: -1, curr_name: '[空]' }];
+  currencies = currencies.concat(formRequire.currencies);
   const feeProps = {
     field: feeField,
     disabled,
@@ -641,7 +642,7 @@ function FeeFormItem(props) {
   };
   const currencyProps = {
     field: currencyField,
-    options: formRequire.currencies.map(curr => ({
+    options: currencies.map(curr => ({
       value: curr.curr_code,
       text: `${curr.curr_code} | ${curr.curr_name}`,
       search: `${curr.curr_code}${curr.curr_symb}${curr.curr_name}`,

@@ -3,15 +3,16 @@ import { connect } from 'react-redux';
 import { Card, Form, Row, Col, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import InfoItem from 'client/components/InfoItem';
-import FormInput from '../../form/formInput';
 import {
   RelationAutoCompSelect, IEPort, IEDate, DeclDate, Transport, ContractNo, LicenseNo, TermConfirm,
   TradeRemission, CountryAttr, TradeMode, Fee, ContainerNo, PackWeight, Pieces,
   RaDeclManulNo, StoreYard,
 } from '../../form/headFormItems';
 import { fillEntryId } from 'common/reducers/cmsManifest';
+import { updateMark } from 'common/reducers/cmsDeclare';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
+import { CMS_DECL_STATUS } from 'common/constants';
 
 const formatMsg = format(messages);
 
@@ -20,7 +21,7 @@ const formatMsg = format(messages);
   state => ({
     formRequire: state.cmsManifest.params,
   }),
-  { fillEntryId }
+  { fillEntryId, updateMark }
 )
 export default class CDFHeadPanel extends React.Component {
   static propTypes = {
@@ -30,6 +31,7 @@ export default class CDFHeadPanel extends React.Component {
     formData: PropTypes.object.isRequired,
     formRequire: PropTypes.object.isRequired,
     fillEntryId: PropTypes.func.isRequired,
+    updateMark: PropTypes.func.isRequired,
   }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
 
@@ -46,6 +48,11 @@ export default class CDFHeadPanel extends React.Component {
       }
     });
   }
+  handleMarkFill = (val, field) => {
+    const change = {};
+    change[field] = val;
+    this.props.updateMark(change, this.props.formData.id);
+  }
   render() {
     const { form, formData, formRequire, ietype, intl } = this.props;
     const formProps = {
@@ -55,6 +62,7 @@ export default class CDFHeadPanel extends React.Component {
       formData,
       required: false,
     };
+    const editable = formData.status < CMS_DECL_STATUS.sent.value;
     return (
       <div className="pane">
         <Form layout="horizontal">
@@ -138,16 +146,16 @@ export default class CDFHeadPanel extends React.Component {
                 <Col span={8}>
                   <ContainerNo {...formProps} intl={intl} formRequire={formRequire} />
                 </Col>
-                <Col span={16}>
-                  <FormInput field="cert_mark" outercol={24} col={4}
-                    label={this.msg('certMark')} {...formProps}
+                <Col span={15} offset={1}>
+                  <InfoItem size="small" field={formData.cert_mark} placeholder="点击回填" dataIndex="cert_mark"
+                    addonBefore={this.msg('certMark')} editable={editable} onEdit={this.handleMarkFill}
                   />
                 </Col>
               </Row>
               <Row>
-                <Col span={16} offset={8}>
-                  <FormInput field="note" outercol={24} col={4}
-                    label={this.msg('markNotes')} {...formProps}
+                <Col span={15} offset={9}>
+                  <InfoItem size="small" field={formData.note} placeholder="点击回填" dataIndex="note"
+                    addonBefore={this.msg('markNotes')} editable={editable} onEdit={this.handleMarkFill}
                   />
                 </Col>
               </Row>

@@ -33,25 +33,21 @@ export default class CWMDashboard extends React.Component {
         <Header className="top-bar">
           <Breadcrumb>
             <Breadcrumb.Item>
+              <Select
+                size="large"
+                defaultValue="0960"
+                placeholder="选择仓库"
+                style={{ width: 160 }}
+              >
+                <Option value="0960">物流大道仓库</Option>
+                <Option value="0961">希雅路仓库</Option>
+                <Option value="0962">富特路仓库</Option>
+              </Select>
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
               {this.msg('dashboardTitle')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <div className="top-bar-tools">
-            <Select
-              size="large"
-              showSearch
-              defaultActiveFirstOption
-              placeholder="选择仓库"
-              optionFilterProp="children"
-              filterOption={(input, option) => option.props.value.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-              style={{ width: 240 }}
-            >
-              <Option value="all">全部仓库</Option>
-              <Option value="jack">物流大道仓库</Option>
-              <Option value="lucy">希雅路仓库</Option>
-              <Option value="tom">富特路仓库</Option>
-            </Select>
-          </div>
         </Header>
         <Content className="main-content" key="main">
           <Row gutter={16}>

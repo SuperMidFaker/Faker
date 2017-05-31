@@ -49,7 +49,15 @@ export default class DutyTaxPane extends React.Component {
         excise_tax: a.excise_tax + b.excise_tax,
         vat_tax: a.vat_tax + b.vat_tax,
         total_tax: a.total_tax + b.total_tax,
-      }));
+      }), {
+        total: '合计',
+        trxn_mode: '',
+        duty_paid: 0,
+        duty_tax: 0,
+        excise_tax: 0,
+        vat_tax: 0,
+        total_tax: 0,
+      });
       this.setState({ sumval: [sumval] });
     }
   }

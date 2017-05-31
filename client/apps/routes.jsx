@@ -57,9 +57,9 @@ import CWM from './cwm/module-cwm';
 import * as CWMDashboard from './cwm/dashboard';
 import * as CWMReceivingASN from './cwm/receiving/asn';
 import * as CWMReceivingInbound from './cwm/receiving/inbound';
-import * as CWMOutbound from './cwm/outbound';
-import * as CWMShippingOrder from './cwm/outbound/shipping';
-import * as CWMInventory from './cwm/inventory';
+import * as CWMShippingOrder from './cwm/shipping/order';
+import * as CWMShippingOutbound from './cwm/shipping/outbound';
+import * as CWMStock from './cwm/stock';
 import * as CWMProductsSku from './cwm/products/sku';
 import * as CWMWarehouse from './cwm/resources/warehouse';
 import * as CWMSettings from './cwm/settings';
@@ -414,24 +414,26 @@ export default(store, cookie) => {
             <IndexRedirect to="/cwm/dashboard" />
             <Route path="dashboard" component={CWMDashboard.Index} />
             <Route path="receiving">
-              <Route path="inbound">
-                <IndexRoute component={CWMReceivingInbound.List} />
-                <Route path="receive/:asnNo" component={CWMReceivingInbound.Receive} />
-              </Route>
               <Route path="asn">
                 <IndexRoute component={CWMReceivingASN.List} />
                 <Route path="create" component={CWMReceivingASN.Create} />
                 <Route path=":asnNo" component={CWMReceivingASN.View} />
               </Route>
+              <Route path="inbound">
+                <IndexRoute component={CWMReceivingInbound.List} />
+                <Route path="receive/:asnNo" component={CWMReceivingInbound.Receive} />
+              </Route>
             </Route>
-            <Route path="outbound">
-              <IndexRoute component={CWMOutbound.List} />
-              <Route path="shipping">
+            <Route path="shipping">
+              <Route path="order">
                 <IndexRoute component={CWMShippingOrder.List} />
                 <Route path=":shippingNo" component={CWMShippingOrder.View} />
               </Route>
+              <Route path="outbound">
+                <IndexRoute component={CWMShippingOutbound.List} />
+              </Route>
             </Route>
-            <Route path="inventory" component={CWMInventory.List} />
+            <Route path="stock" component={CWMStock.List} />
             <Route path="products">
               <Route path="sku">
                 <IndexRoute component={CWMProductsSku.List} />

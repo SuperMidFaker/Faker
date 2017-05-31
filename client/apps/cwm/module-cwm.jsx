@@ -44,27 +44,27 @@ export default class ModuleCWM extends React.Component {
       ],
     });
     linkMenus.push({
-      single: true,
-      key: 'cwm-2',
-      path: '/cwm/inventory',
-      icon: 'icon-fontello-warehouse',
-      text: formatMsg(intl, 'inventory'),
-    });
-    linkMenus.push({
       single: false,
-      key: 'cwm-3',
+      key: 'cwm-2',
       icon: 'icon-fontello-upload',
-      text: formatMsg(intl, 'outbound'),
+      text: formatMsg(intl, 'shipping'),
       sublinks: [{
-        key: 'cwm-3-0',
-        path: '/cwm/outbound/shipping',
+        key: 'cwm-2-0',
+        path: '/cwm/shipping/order',
         text: formatMsg(intl, 'shippingOrder'),
       }, {
-        key: 'cwm-3-1',
-        path: '/cwm/outbound',
-        text: formatMsg(intl, 'outboundTransactions'),
+        key: 'cwm-2-1',
+        path: '/cwm/shipping/outbound',
+        text: formatMsg(intl, 'shippingOutbound'),
       },
       ],
+    });
+    linkMenus.push({
+      single: true,
+      key: 'cwm-3',
+      path: '/cwm/stock',
+      icon: 'icon-fontello-warehouse',
+      text: formatMsg(intl, 'stock'),
     });
     linkMenus.push({
       single: false,

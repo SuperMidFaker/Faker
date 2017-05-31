@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Layout } from 'antd';
+import { Breadcrumb, Select, Layout } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/search-bar';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -10,6 +10,7 @@ import messages from './message.i18n';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
+const Option = Select.Option;
 
 @injectIntl
 @connect(
@@ -21,7 +22,7 @@ const { Header, Content } = Layout;
   depth: 2,
   moduleName: 'cwm',
 })
-export default class CWMInventoryList extends React.Component {
+export default class CWMStockList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -39,14 +40,22 @@ export default class CWMInventoryList extends React.Component {
         <Header className="top-bar">
           <Breadcrumb>
             <Breadcrumb.Item>
-              {this.msg('inventoryManagement')}
+              <Select
+                size="large"
+                defaultValue="0960"
+                placeholder="选择仓库"
+                style={{ width: 160 }}
+              >
+                <Option value="0960">物流大道仓库</Option>
+                <Option value="0961">希雅路仓库</Option>
+                <Option value="0962">富特路仓库</Option>
+              </Select>
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              {this.msg('stock')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <div className="top-bar-tools">
-            <Button type="primary" size="large" icon="plus">
-              {this.msg('importShipments')}
-            </Button>
-          </div>
+          <div className="top-bar-tools" />
         </Header>
         <Content className="main-content" key="main">
           <div className="page-body">
