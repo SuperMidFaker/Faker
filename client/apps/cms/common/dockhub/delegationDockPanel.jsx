@@ -156,7 +156,8 @@ export default class DelegationDockPanel extends React.Component {
         </Tabs>
       );
     } else if (delgDispatch.status === CMS_DELEGATION_STATUS.accepted ||
-      (delgDispatch.status === CMS_DELEGATION_STATUS.processing && delegation.manifested !== CMS_DELEGATION_MANIFEST.manifested)) {
+      (delgDispatch.status === CMS_DELEGATION_STATUS.processing && delegation.manifested !== CMS_DELEGATION_MANIFEST.manifested) ||
+      (delgDispatch.status >= CMS_DELEGATION_STATUS.processing && (delegation.decl_way_code === 'IBND' || delegation.decl_way_code === 'EBND'))) {
       if (delgDispatch.recv_services.indexOf('ciq') === -1) {
         return (
           <Tabs activeKey={tabKey} onChange={this.handleTabChange}>
@@ -195,7 +196,8 @@ export default class DelegationDockPanel extends React.Component {
         </Tabs>
       );
     } else if (delgDispatch.status > CMS_DELEGATION_STATUS.processing ||
-      (delgDispatch.status === CMS_DELEGATION_STATUS.processing) && delegation.manifested === CMS_DELEGATION_MANIFEST.manifested) {
+      (delgDispatch.status === CMS_DELEGATION_STATUS.processing && delegation.manifested === CMS_DELEGATION_MANIFEST.manifested) &&
+        delegation.decl_way_code !== 'IBND' && delegation.decl_way_code !== 'EBND') {
       if (delgDispatch.recv_services.indexOf('ciq') === -1) {
         return (
           <Tabs activeKey={tabKey} onChange={this.handleTabChange}>
