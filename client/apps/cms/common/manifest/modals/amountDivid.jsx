@@ -96,7 +96,8 @@ export default class AmountModel extends React.Component {
     }
     const proms = [];
     for (let i = 0; i < bodies.length; i++) {
-      proms.push(this.props.editBillBody({ ...bodies[i], trade_total: amts[i] }));
+      const decPrice = amts[i] / bodies[i].g_qty;
+      proms.push(this.props.editBillBody({ ...bodies[i], trade_total: amts[i], dec_price: decPrice }));
     }
     Promise.all(proms).then(() => {
       this.props.loadBillBody(this.props.billMeta.bill_seq_no);
