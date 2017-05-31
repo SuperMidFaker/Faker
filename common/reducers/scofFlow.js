@@ -21,6 +21,8 @@ const actionTypes = createActionTypes('@@welogix/scof/flow/', [
   'LOAD_FLTRACK', 'LOAD_FLTRACK_SUCCEED', 'LOAD_FLTRACK_FAIL',
   'LOAD_SCVTRACK', 'LOAD_SCVTRACK_SUCCEED', 'LOAD_SCVTRACK_FAIL',
   'LOAD_TRANSPORT_TRAIFFS_BY_TRANSPORTINFO', 'LOAD_TRANSPORT_TRAIFFS_BY_TRANSPORTINFO_SUCCEED', 'LOAD_TRANSPORT_TRAIFFS_BY_TRANSPORTINFO_FAIL',
+  'VALIDATE_TARIFFSOURCE', 'VALIDATE_TARIFFSOURCE_SUCCEED', 'VALIDATE_TARIFFSOURCE_FAIL',
+  'VALIDATE_TARIFFEND', 'VALIDATE_TARIFFEND_SUCCEED', 'VALIDATE_TARIFFEND_FAIL',
 ]);
 
 const initialState = {
@@ -396,9 +398,41 @@ export function loadTariffsByTransportInfo(partnerId, transitMode, goodsType) {
         actionTypes.LOAD_TRANSPORT_TRAIFFS_BY_TRANSPORTINFO_FAIL,
       ],
       endpoint: 'v1/scof/transport/tariffs/byTransportInfo',
+      origin: 'mongo',
       method: 'get',
       params: { partnerId, transitMode, goodsType },
+    },
+  };
+}
+
+export function validateTariffSource(tariffId, regionCode) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.VALIDATE_TARIFFSOURCE,
+        actionTypes.VALIDATE_TARIFFSOURCE_SUCCEED,
+        actionTypes.VALIDATE_TARIFFSOURCE_FAIL,
+      ],
+      endpoint: 'v1/transport/tariff/validate/source',
       origin: 'mongo',
+      method: 'post',
+      data: { tariffId, regionCode },
+    },
+  };
+}
+
+export function validateTariffEnd(tariffId, regionCode) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.VALIDATE_TARIFFEND,
+        actionTypes.VALIDATE_TARIFFEND_SUCCEED,
+        actionTypes.VALIDATE_TARIFFEND_FAIL,
+      ],
+      endpoint: 'v1/transport/tariff/validate/end',
+      origin: 'mongo',
+      method: 'post',
+      data: { tariffId, regionCode },
     },
   };
 }
