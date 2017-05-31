@@ -297,6 +297,9 @@ export default class ManifestEditor extends React.Component {
     this.props.redoManifest(head.delg_no, head.bill_seq_no).then((result) => {
       if (result.error) {
         message.error(result.error.message, 5);
+      } else {
+        const link = `/clearance/${this.props.ietype}/manifest/`;
+        this.context.router.push(`${link}${head.bill_seq_no}`);
       }
     });
   }
