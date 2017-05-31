@@ -20,6 +20,7 @@ const actionTypes = createActionTypes('@@welogix/scof/flow/', [
   'OPEN_FLOW', 'SET_NODE_ACTIONS', 'EMPTY_FLOWS',
   'LOAD_FLTRACK', 'LOAD_FLTRACK_SUCCEED', 'LOAD_FLTRACK_FAIL',
   'LOAD_SCVTRACK', 'LOAD_SCVTRACK_SUCCEED', 'LOAD_SCVTRACK_FAIL',
+  'LOAD_TRANSPORT_TRAIFFS_BY_TRANSPORTINFO', 'LOAD_TRANSPORT_TRAIFFS_BY_TRANSPORTINFO_SUCCEED', 'LOAD_TRANSPORT_TRAIFFS_BY_TRANSPORTINFO_FAIL',
 ]);
 
 const initialState = {
@@ -382,6 +383,22 @@ export function loadScvTrackings(tenantId) {
       endpoint: 'v1/scv/tracking/load',
       method: 'get',
       params: { tenantId },
+    },
+  };
+}
+
+export function loadTariffsByTransportInfo(partnerId, transitMode, goodsType) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_TRANSPORT_TRAIFFS_BY_TRANSPORTINFO,
+        actionTypes.LOAD_TRANSPORT_TRAIFFS_BY_TRANSPORTINFO_SUCCEED,
+        actionTypes.LOAD_TRANSPORT_TRAIFFS_BY_TRANSPORTINFO_FAIL,
+      ],
+      endpoint: 'v1/scof/transport/tariffs/byTransportInfo',
+      method: 'get',
+      params: { partnerId, transitMode, goodsType },
+      origin: 'mongo',
     },
   };
 }

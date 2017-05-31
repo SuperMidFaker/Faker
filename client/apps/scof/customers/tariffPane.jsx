@@ -47,7 +47,7 @@ export default class TariffPane extends React.Component {
         sendPartnerId: item.sendPartnerId,
         valid: item.valid,
         transModeCode: item.transModeCode,
-        condition: this.renderTransportTariffCondition(item),
+        condition: this.renderTmsTariffCondition(item),
       }));
       this.setState({ data: [...this.state.data, ...d] });
     });
@@ -66,7 +66,7 @@ export default class TariffPane extends React.Component {
     });
   }
   msg = key => formatMsg(this.props.intl, key)
-  renderTransportTariffCondition = (row) => {
+  renderTmsTariffCondition = (row) => {
     let text = '';
     const tms = this.props.transitModes.find(tm => tm.id === Number(row.transModeCode));
     const meter = TARIFF_METER_METHODS.find(m => m.value === row.meter);
