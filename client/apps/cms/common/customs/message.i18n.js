@@ -179,11 +179,11 @@ export default defineMessages({
   },
   certMark: {
     id: 'cms.customs.form.cert.mark',
-    defaultMessage: '随附单证',
+    defaultMessage: '随附单证：',
   },
   markNotes: {
     id: 'cms.customs.form.mark.notes',
-    defaultMessage: '唛码备注',
+    defaultMessage: '唛码备注：',
   },
   seqNumber: {
     id: 'cms.customs.table.seq.number',
