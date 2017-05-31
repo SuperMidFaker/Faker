@@ -147,14 +147,14 @@ export default class CDFHeadPanel extends React.Component {
                   <ContainerNo {...formProps} intl={intl} formRequire={formRequire} />
                 </Col>
                 <Col span={15} offset={1}>
-                  <InfoItem size="small" field={formData.cert_mark} placeholder="点击回填" dataIndex="cert_mark"
+                  <InfoItem size="small" field={formData.cert_mark} placeholder="点击输入" dataIndex="cert_mark"
                     addonBefore={this.msg('certMark')} editable={editable} onEdit={this.handleMarkFill}
                   />
                 </Col>
               </Row>
               <Row>
                 <Col span={15} offset={9}>
-                  <InfoItem size="small" field={formData.note} placeholder="点击回填" dataIndex="note"
+                  <InfoItem size="small" field={formData.note} placeholder="点击输入" dataIndex="note"
                     addonBefore={this.msg('markNotes')} editable={editable} onEdit={this.handleMarkFill}
                   />
                 </Col>
