@@ -1,6 +1,7 @@
 /* eslint no-console: 0 */
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import connectFetch from 'client/common/decorators/connect-fetch';
 import { intlShape, injectIntl } from 'react-intl';
 import { Alert, Breadcrumb, Button, Card, Collapse, Form, Popconfirm, Layout, Select, Table, Spin, Radio, Tooltip, message } from 'antd';
 import QueueAnim from 'rc-queue-anim';
@@ -13,6 +14,7 @@ import FlowEdgePanel from './panel/flowEdgePanel';
 import BizObjCMSPanel from './panel/bizObjCMSPanel';
 import BizObjTMSPanel from './panel/bizObjTMSPanel';
 import BizObjCWMPanel from './panel/bizObjCWMPanel';
+import { loadFormRequires } from 'common/reducers/crmOrders';
 import { formatMsg } from './message.i18n';
 
 const { Header, Content, Sider } = Layout;
@@ -29,6 +31,11 @@ const NodeKindPanelMap = {
   cwm: BizObjCWMPanel,
 };
 
+function fetchData({ state, dispatch }) {
+  return dispatch(loadFormRequires({ tenantId: state.account.tenantId }));
+}
+
+@connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({

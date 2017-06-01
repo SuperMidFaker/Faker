@@ -18,6 +18,7 @@ const actionTypes = createActionTypes('@@welogix/cms/declaration/', [
   'SEND_MUTI_DECL', 'SEND_MUTI_DECL_SUCCEED', 'SEND_MUTI_DECL_FAIL',
   'SHOW_BATCH_SEND_MODAL', 'SHOW_BATCH_SEND_MODAL_SUCCEED', 'SHOW_BATCH_SEND_MODAL_FAIL',
   'CLOSE_BATCH_SEND_MODAL',
+  'UPDATE_MARK', 'UPDATE_MARK_SUCCEED', 'UPDATE_MARK_FAIL',
 ]);
 
 const initialState = {
@@ -328,3 +329,19 @@ export function closeBatchSendModal() {
     type: actionTypes.CLOSE_BATCH_SEND_MODAL,
   };
 }
+
+export function updateMark(changeVal, entryHeadId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_MARK,
+        actionTypes.UPDATE_MARK_SUCCEED,
+        actionTypes.UPDATE_MARK_FAIL,
+      ],
+      endpoint: 'v1/cms/update/mark',
+      method: 'post',
+      data: { changeVal, entryHeadId },
+    },
+  };
+}
+

@@ -144,102 +144,28 @@ export default class DelegationDockPanel extends React.Component {
   renderTabs() {
     const { previewer, tabKey } = this.props;
     const { delgDispatch, delegation } = previewer;
-    if (delgDispatch.status === CMS_DELEGATION_STATUS.unaccepted) {
-      return (
-        <Tabs activeKey={tabKey} onChange={this.handleTabChange}>
-          <TabPane tab="详情" key="basic">
-            <BasicPane />
-          </TabPane>
-          <TabPane tab="操作" key="activity">
-            <ActivityLoggerPane />
-          </TabPane>
-        </Tabs>
-      );
-    } else if (delgDispatch.status === CMS_DELEGATION_STATUS.accepted ||
-      (delgDispatch.status === CMS_DELEGATION_STATUS.processing && delegation.manifested !== CMS_DELEGATION_MANIFEST.manifested)) {
-      if (delgDispatch.recv_services.indexOf('ciq') === -1) {
-        return (
-          <Tabs activeKey={tabKey} onChange={this.handleTabChange}>
-            <TabPane tab="操作" key="activity">
-              <ActivityLoggerPane />
-            </TabPane>
-            <TabPane tab="报关" key="customsDecl">
-              <CustomsDeclPane />
-            </TabPane>
-            <TabPane tab="费用" key="expenses">
-              <ExpensesPane />
-            </TabPane>
-            <TabPane tab="详情" key="basic">
-              <BasicPane />
-            </TabPane>
-          </Tabs>
-        );
+    const tabs = [];
+    tabs.push(<TabPane tab="操作" key="activity"><ActivityLoggerPane /></TabPane>);
+    if (delgDispatch.status >= CMS_DELEGATION_STATUS.accepted) {
+      tabs.push(<TabPane tab="报关" key="customsDecl"><CustomsDeclPane /></TabPane>);
+      if (delgDispatch.recv_services.indexOf('ciq') !== -1) {
+        tabs.push(<TabPane tab="报检" key="ciqDecl"><CiqDeclPane /></TabPane>);
       }
-      return (
-        <Tabs activeKey={tabKey} onChange={this.handleTabChange}>
-          <TabPane tab="操作" key="activity">
-            <ActivityLoggerPane />
-          </TabPane>
-          <TabPane tab="报关" key="customsDecl">
-            <CustomsDeclPane />
-          </TabPane>
-          <TabPane tab="报检" key="ciqDecl">
-            <CiqDeclPane />
-          </TabPane>
-          <TabPane tab="费用" key="expenses">
-            <ExpensesPane />
-          </TabPane>
-          <TabPane tab="详情" key="basic">
-            <BasicPane />
-          </TabPane>
-        </Tabs>
-      );
-    } else if (delgDispatch.status > CMS_DELEGATION_STATUS.processing ||
-      (delgDispatch.status === CMS_DELEGATION_STATUS.processing) && delegation.manifested === CMS_DELEGATION_MANIFEST.manifested) {
-      if (delgDispatch.recv_services.indexOf('ciq') === -1) {
-        return (
-          <Tabs activeKey={tabKey} onChange={this.handleTabChange}>
-            <TabPane tab="操作" key="activity">
-              <ActivityLoggerPane />
-            </TabPane>
-            <TabPane tab="报关" key="customsDecl">
-              <CustomsDeclPane />
-            </TabPane>
-            <TabPane tab="缴税" key="taxes">
-              <DutyTaxPane />
-            </TabPane>
-            <TabPane tab="费用" key="expenses">
-              <ExpensesPane />
-            </TabPane>
-            <TabPane tab="详情" key="basic">
-              <BasicPane />
-            </TabPane>
-          </Tabs>
-        );
-      }
-      return (
-        <Tabs activeKey={tabKey} onChange={this.handleTabChange}>
-          <TabPane tab="操作" key="activity">
-            <ActivityLoggerPane />
-          </TabPane>
-          <TabPane tab="报关" key="customsDecl">
-            <CustomsDeclPane />
-          </TabPane>
-          <TabPane tab="报检" key="ciqDecl">
-            <CiqDeclPane />
-          </TabPane>
-          <TabPane tab="缴税" key="taxes">
-            <DutyTaxPane />
-          </TabPane>
-          <TabPane tab="费用" key="expenses">
-            <ExpensesPane />
-          </TabPane>
-          <TabPane tab="详情" key="basic">
-            <BasicPane />
-          </TabPane>
-        </Tabs>
-      );
     }
+    if (delegation.decl_way_code !== 'IBND' && delegation.decl_way_code !== 'EBND' &&
+      ((delgDispatch.status === CMS_DELEGATION_STATUS.processing && delegation.manifested === CMS_DELEGATION_MANIFEST.manifested) ||
+      delgDispatch.status > CMS_DELEGATION_STATUS.processing)) {
+      tabs.push(<TabPane tab="缴税" key="taxes"><DutyTaxPane /></TabPane>);
+    }
+    if (delgDispatch.status >= CMS_DELEGATION_STATUS.accepted) {
+      tabs.push(<TabPane tab="费用" key="expenses"><ExpensesPane /></TabPane>);
+    }
+    tabs.push(<TabPane tab="详情" key="basic"><BasicPane /></TabPane>);
+    return (
+      <Tabs activeKey={tabKey} onChange={this.handleTabChange}>
+        {tabs}
+      </Tabs>
+    );
   }
   renderTitle = () => {
     const { previewer } = this.props;
