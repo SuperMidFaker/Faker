@@ -15,7 +15,7 @@ export default class DetailForm extends Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
-    title: '行序号',
+    title: '序号',
     width: 80,
   }, {
     title: '商品货号',
@@ -25,10 +25,6 @@ export default class DetailForm extends Component {
     title: '中文品名',
     dataIndex: 'product_no',
     width: 200,
-  }, {
-    title: '包装代码',
-    width: 100,
-    dataIndex: 'unit',
   }, {
     title: '预期数量',
     width: 100,

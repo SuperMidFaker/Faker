@@ -18,27 +18,31 @@ export default class DetailForm extends Component {
     title: '序号',
     width: 50,
   }, {
-    title: this.msg('opColumn'),
-    width: 80,
-  }, {
     title: '商品货号',
     dataIndex: 'product_no',
-    width: 200,
+    width: 120,
   }, {
-    title: '品名',
+    title: '中文品名',
     dataIndex: 'product_no',
     width: 200,
   }, {
-    title: '计量单位',
-    width: 100,
+    title: '订单数量',
+    dataIndex: 'order_qty',
+  }, {
+    title: '单位',
     dataIndex: 'unit',
   }, {
-    title: '数量',
-    width: 100,
-    dataIndex: 'qty',
+    title: '包装代码',
+    dataIndex: 'pack_code',
   }, {
-    title: this.msg('remark'),
-    dataIndex: 'remark',
+    title: '收货包装',
+    dataIndex: 'receive_pack',
+  }, {
+    title: '预期数量',
+    dataIndex: 'receive_pack_qty',
+  }, {
+    title: '已收数量',
+    dataIndex: 'received_pack_qty',
   }]
   render() {
     return (
