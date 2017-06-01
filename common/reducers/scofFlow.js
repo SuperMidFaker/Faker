@@ -21,6 +21,8 @@ const actionTypes = createActionTypes('@@welogix/scof/flow/', [
   'LOAD_FLTRACK', 'LOAD_FLTRACK_SUCCEED', 'LOAD_FLTRACK_FAIL',
   'LOAD_SCVTRACK', 'LOAD_SCVTRACK_SUCCEED', 'LOAD_SCVTRACK_FAIL',
   'LOAD_TRANSPORT_TRAIFFS_BY_TRANSPORTINFO', 'LOAD_TRANSPORT_TRAIFFS_BY_TRANSPORTINFO_SUCCEED', 'LOAD_TRANSPORT_TRAIFFS_BY_TRANSPORTINFO_FAIL',
+  'LOAD_RATESRC', 'LOAD_RATESRC_SUCCEED', 'LOAD_RATESRC_FAIL',
+  'LOAD_RATENDS', 'LOAD_RATENDS_SUCCEED', 'LOAD_RATENDS_FAIL',
 ]);
 
 const initialState = {
@@ -399,6 +401,38 @@ export function loadTariffsByTransportInfo(partnerId, transitMode, goodsType) {
       origin: 'mongo',
       method: 'get',
       params: { partnerId, transitMode, goodsType },
+    },
+  };
+}
+
+export function loadRatesSources(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_RATESRC,
+        actionTypes.LOAD_RATESRC_SUCCEED,
+        actionTypes.LOAD_RATESRC_FAIL,
+      ],
+      endpoint: 'v1/transport/tariff/ratesources',
+      method: 'get',
+      params,
+      origin: 'mongo',
+    },
+  };
+}
+
+export function loadRateEnds({ rateId, pageSize, current, searchValue }) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_RATENDS,
+        actionTypes.LOAD_RATENDS_SUCCEED,
+        actionTypes.LOAD_RATENDS_FAIL,
+      ],
+      endpoint: 'v1/transport/tariff/ratends',
+      method: 'get',
+      params: { rateId, pageSize, current, searchValue },
+      origin: 'mongo',
     },
   };
 }

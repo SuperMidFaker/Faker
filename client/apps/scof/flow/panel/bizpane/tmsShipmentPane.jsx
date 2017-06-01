@@ -4,7 +4,7 @@ import { Collapse, Form, Col, Row, Switch, Select } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { TARIFF_METER_METHODS, GOODS_TYPES } from 'common/constants';
 import FlowTriggerTable from '../compose/flowTriggerTable';
-import { loadTariffsByTransportInfo } from 'common/reducers/scofFlow';
+import { loadTariffsByTransportInfo, loadRatesSources, loadRateEnds } from 'common/reducers/scofFlow';
 import * as Location from 'client/util/location';
 import { formatMsg } from '../../message.i18n';
 
@@ -18,7 +18,7 @@ const Option = Select.Option;
     tmsParams: state.scofFlow.tmsParams,
     partnerId: state.scofFlow.currentFlow.partner_id,
     transitModes: state.crmOrders.formRequires.transitModes,
-  }), { loadTariffsByTransportInfo }
+  }), { loadTariffsByTransportInfo, loadRatesSources, loadRateEnds }
 )
 export default class TMSShipmentPane extends Component {
   static propTypes = {
@@ -27,19 +27,49 @@ export default class TMSShipmentPane extends Component {
     partnerId: PropTypes.number.isRequired,
     loadTariffsByTransportInfo: PropTypes.func.isRequired,
     transitModes: PropTypes.array.isRequired,
+    loadRatesSources: PropTypes.func.isRequired,
+    loadRateEnds: PropTypes.func.isRequired,
   }
   state = {
     transitMode: -1,
     goodsType: -1,
     tariffs: [],
+    rateSources: [],
+    rateEnds: [],
   }
   componentWillReceiveProps(nextProps) {
-    const { partnerId, model, tmsParams: { transitModes } } = nextProps;
+    const { partnerId, model, tmsParams: { transitModes, consigners } } = nextProps;
     const mode = transitModes.find(item => item.mode_code === model.transit_mode);
     const transitMode = mode ? mode.id : -1;
-    if (transitMode !== -1) {
+    const consigner = consigners.find(item => item.node_id === model.consigner_id);
+    console.log(`componentWillReceiveProps: ${transitMode}`);
+    if (transitMode !== -1 && this.state.tariffs.length === 0) {
       this.props.loadTariffsByTransportInfo(partnerId, transitMode, model.goods_type).then((result) => {
-        this.setState({ tariffs: result.data });
+        this.setState({ tariffs: result.data || [] });
+        if (result.data) {
+          const tariff = result.data.find(item => item.quoteNo === model.quote_no);
+          if (tariff) {
+            this.props.loadRatesSources({
+              tariffId: tariff._id,
+              pageSize: 999999,
+              currentPage: 1,
+            }).then((result1) => {
+              this.setState({ rateSources: result1.data.data || [] });
+              if (result1.data.data) {
+                const rss = result1.data.data.filter(item => item.source.province === consigner.province);
+                const promises = rss.map(item => this.props.loadRateEnds({ rateId: item._id, pageSize: 99999999, current: 1 }));
+                Promise.all(promises).then((results) => {
+                  let rateEnds = [];
+                  results.forEach((item) => {
+                    rateEnds = rateEnds.concat(item.data.data);
+                  });
+                  console.log(rateEnds);
+                  this.setState({ rateEnds });
+                });
+              }
+            });
+          }
+        }
       });
     }
     if (this.state.transitMode === -1) {
@@ -68,6 +98,49 @@ export default class TMSShipmentPane extends Component {
   handleCargoTypeSelect = (value) => {
     this.setState({ goodsType: value }, this.handleLoadTariff);
   }
+  handleConsignerSelect = (value) => {
+    const { tmsParams: { consigners } } = this.props;
+    const consigner = consigners.find(item => item.node_id === value);
+    const { rateSources } = this.state;
+    const rss = rateSources.filter(item => item.source.province === consigner.province);
+
+    const promises = rss.map(item => this.props.loadRateEnds({ rateId: item._id, pageSize: 99999999, current: 1 }));
+    Promise.all(promises).then((results) => {
+      let rateEnds = [];
+      results.forEach((item) => {
+        rateEnds = rateEnds.concat(item.data.data);
+      });
+      console.log(rateEnds);
+      this.setState({ rateEnds });
+    });
+  }
+  handleTariffSelect = (quoteNo) => {
+    console.log(quoteNo);
+    const { tmsParams: { consigners } } = this.props;
+    const consigner = consigners.find(item => item.node_id === this.props.form.getFieldValue('consigner_id'));
+    const tariff = this.state.tariffs.find(item => item.quoteNo === quoteNo);
+    if (tariff) {
+      this.props.loadRatesSources({
+        tariffId: tariff._id,
+        pageSize: 999999,
+        currentPage: 1,
+      }).then((result1) => {
+        this.setState({ rateSources: result1.data.data || [] });
+        if (result1.data.data) {
+          const rss = result1.data.data.filter(item => item.source.province === consigner.province);
+          const promises = rss.map(item => this.props.loadRateEnds({ rateId: item._id, pageSize: 99999999, current: 1 }));
+          Promise.all(promises).then((results) => {
+            let rateEnds = [];
+            results.forEach((item) => {
+              rateEnds = rateEnds.concat(item.data.data);
+            });
+            console.log(rateEnds);
+            this.setState({ rateEnds });
+          });
+        }
+      });
+    }
+  }
   renderTmsTariffCondition = (row) => {
     let text = row.quoteNo;
     const tms = this.props.transitModes.find(tm => tm.id === Number(row.transModeCode));
@@ -81,6 +154,8 @@ export default class TMSShipmentPane extends Component {
   renderConsign = consign => `${consign.name} | ${Location.renderLoc(consign)} | ${consign.contact || ''} | ${consign.mobile || ''}`
   render() {
     const { form: { getFieldDecorator }, onNodeActionsChange, model, tmsParams: { consigners, consignees, transitModes }, partnerId } = this.props;
+    const { rateSources, rateEnds } = this.state;
+    console.log(rateSources);
     return (
       <Collapse bordered={false} defaultActiveKey={['properties', 'events']}>
         <Panel header={this.msg('bizProperties')} key="properties">
@@ -107,7 +182,7 @@ export default class TMSShipmentPane extends Component {
               <FormItem label={this.msg('quoteNo')}>
                 {getFieldDecorator('quote_no', {
                   initialValue: model.quote_no,
-                })(<Select allowClear>
+                })(<Select allowClear onSelect={this.handleTariffSelect}>
                   { this.state.tariffs.map(t => <Option value={t.quoteNo} key={t.quoteNo}>{this.renderTmsTariffCondition(t)}</Option>) }
                 </Select>)}
               </FormItem>
@@ -123,9 +198,12 @@ export default class TMSShipmentPane extends Component {
                     dropdownStyle={{ width: 400 }}
                     optionFilterProp="children"
                     showSearch
+                    onSelect={this.handleConsignerSelect}
                   >
                     {
-                      consigners.filter(cl => cl.ref_partner_id === partnerId || cl.ref_partner_id === -1).map(cg => <Option value={cg.node_id} key={cg.node_id}>{this.renderConsign(cg)}</Option>)
+                      consigners.filter(cl => cl.ref_partner_id === partnerId || cl.ref_partner_id === -1)
+                      .filter(cl => rateSources.find(rs => rs.source.province === cl.province))
+                      .map(cg => <Option value={cg.node_id} key={cg.node_id}>{this.renderConsign(cg)}</Option>)
                     }
                   </Select>)}
               </FormItem>
@@ -142,7 +220,10 @@ export default class TMSShipmentPane extends Component {
                     showSearch
                   >
                     {
-                      consignees.filter(cl => cl.ref_partner_id === partnerId || cl.ref_partner_id === -1).map(cg => <Option value={cg.node_id} key={cg.node_id}>{this.renderConsign(cg)}</Option>)
+                      consignees.filter(cl => cl.ref_partner_id === partnerId || cl.ref_partner_id === -1)
+                      .filter(cl => rateEnds.find(rs => rs.end.province === cl.province && rs.end.city === cl.city &&
+                        rs.end.district === cl.district && rs.end.street === cl.street))
+                      .map(cg => <Option value={cg.node_id} key={cg.node_id}>{this.renderConsign(cg)}</Option>)
                     }
                   </Select>)}
               </FormItem>
