@@ -60,11 +60,32 @@ export default class ModuleCWM extends React.Component {
       ],
     });
     linkMenus.push({
-      single: true,
+      single: false,
       key: 'cwm-3',
       path: '/cwm/stock',
       icon: 'icon-fontello-warehouse',
       text: formatMsg(intl, 'stock'),
+      sublinks: [{
+        key: 'cwm-3-0',
+        path: '/cwm/stock/enquiry',
+        text: formatMsg(intl, 'enquiry'),
+      }, {
+        key: 'cwm-3-1',
+        disabled: true,
+        path: '/cwm/stock/movement',
+        text: formatMsg(intl, 'movement'),
+      }, {
+        key: 'cwm-3-2',
+        disabled: true,
+        path: '/cwm/stock/replishment',
+        text: formatMsg(intl, 'replishment'),
+      }, {
+        key: 'cwm-3-3',
+        disabled: true,
+        path: '/cwm/stock/counting',
+        text: formatMsg(intl, 'counting'),
+      },
+      ],
     });
     linkMenus.push({
       single: false,
@@ -73,19 +94,16 @@ export default class ModuleCWM extends React.Component {
       text: formatMsg(intl, 'ftzReg'),
       sublinks: [{
         key: 'cwm-4-0',
-        group: '上海自贸区',
         path: '/cwm/ftz/receive',
-        text: formatMsg(intl, 'ftzReceive'),
+        text: formatMsg(intl, 'ftzInbound'),
       }, {
         key: 'cwm-4-1',
-        group: '上海自贸区',
         path: '/cwm/ftz/release',
-        text: formatMsg(intl, 'ftzRelease'),
+        text: formatMsg(intl, 'ftzOutbound'),
       }, {
         key: 'cwm-4-2',
-        group: '上海自贸区',
         path: '/cwm/ftz/transfer',
-        text: formatMsg(intl, 'ftzTransfer'),
+        text: formatMsg(intl, 'ftzMovement'),
       },
       ],
     });
@@ -100,9 +118,21 @@ export default class ModuleCWM extends React.Component {
         text: formatMsg(intl, 'productsSku'),
       }, {
         key: 'cwm-5-1',
-        disabled: true,
+        path: '/cwm/products/packing',
+        text: formatMsg(intl, 'packing'),
+      }, {
+        key: 'cwm-5-2',
+        path: '/cwm/products/mapping',
+        text: formatMsg(intl, 'mapping'),
+      }, {
+        key: 'cwm-5-3',
         path: '/cwm/products/lot',
         text: formatMsg(intl, 'productsLot'),
+      }, {
+        key: 'cwm-5-4',
+        disabled: true,
+        path: '/cwm/products/kitting',
+        text: formatMsg(intl, 'kitting'),
       },
       ],
     });
@@ -113,13 +143,16 @@ export default class ModuleCWM extends React.Component {
       text: formatMsg(intl, 'settings'),
       sublinks: [{
         key: 'cwm-6-0',
-        path: '/cwm/resources',
-        text: formatMsg(intl, 'resources'),
+        path: '/cwm/warehouse',
+        text: formatMsg(intl, 'warehouse'),
       }, {
         key: 'cwm-6-1',
-        disabled: true,
-        path: '/cwm/settings',
-        text: formatMsg(intl, 'settingsApp'),
+        path: '/cwm/rules',
+        text: formatMsg(intl, 'rules'),
+      }, {
+        key: 'cwm-6-2',
+        path: '/cwm/tools',
+        text: formatMsg(intl, 'tools'),
       }],
     });
     this.setState({ linkMenus });
