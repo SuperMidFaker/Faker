@@ -42,7 +42,6 @@ export default class TMSShipmentPane extends Component {
     const mode = transitModes.find(item => item.mode_code === model.transit_mode);
     const transitMode = mode ? mode.id : -1;
     const consigner = consigners.find(item => item.node_id === model.consigner_id);
-    console.log(`componentWillReceiveProps: ${transitMode}`);
     if (transitMode !== -1 && this.state.tariffs.length === 0) {
       this.props.loadTariffsByTransportInfo(partnerId, transitMode, model.goods_type).then((result) => {
         this.setState({ tariffs: result.data || [] });
@@ -63,7 +62,6 @@ export default class TMSShipmentPane extends Component {
                   results.forEach((item) => {
                     rateEnds = rateEnds.concat(item.data.data);
                   });
-                  console.log(rateEnds);
                   this.setState({ rateEnds });
                 });
               }
@@ -110,12 +108,10 @@ export default class TMSShipmentPane extends Component {
       results.forEach((item) => {
         rateEnds = rateEnds.concat(item.data.data);
       });
-      console.log(rateEnds);
       this.setState({ rateEnds });
     });
   }
   handleTariffSelect = (quoteNo) => {
-    console.log(quoteNo);
     const { tmsParams: { consigners } } = this.props;
     const consigner = consigners.find(item => item.node_id === this.props.form.getFieldValue('consigner_id'));
     const tariff = this.state.tariffs.find(item => item.quoteNo === quoteNo);
@@ -134,7 +130,6 @@ export default class TMSShipmentPane extends Component {
             results.forEach((item) => {
               rateEnds = rateEnds.concat(item.data.data);
             });
-            console.log(rateEnds);
             this.setState({ rateEnds });
           });
         }
@@ -155,7 +150,6 @@ export default class TMSShipmentPane extends Component {
   render() {
     const { form: { getFieldDecorator }, onNodeActionsChange, model, tmsParams: { consigners, consignees, transitModes }, partnerId } = this.props;
     const { rateSources, rateEnds } = this.state;
-    console.log(rateSources);
     return (
       <Collapse bordered={false} defaultActiveKey={['properties', 'events']}>
         <Panel header={this.msg('bizProperties')} key="properties">
