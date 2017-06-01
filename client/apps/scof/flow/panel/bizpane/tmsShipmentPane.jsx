@@ -37,55 +37,50 @@ export default class TMSShipmentPane extends Component {
     rateSources: [],
     rateEnds: [],
   }
-  componentWillReceiveProps(nextProps) {
-    const { partnerId, model, tmsParams: { transitModes, consigners } } = nextProps;
+  componentDidMount() {
+    const { partnerId, model, tmsParams: { transitModes, consigners } } = this.props;
     const mode = transitModes.find(item => item.mode_code === model.transit_mode);
     const transitMode = mode ? mode.id : -1;
     const consigner = consigners.find(item => item.node_id === model.consigner_id);
-    if (transitMode !== -1 && this.state.tariffs.length === 0) {
-      this.props.loadTariffsByTransportInfo(partnerId, transitMode, model.goods_type).then((result) => {
-        this.setState({ tariffs: result.data || [] });
-        if (result.data) {
-          const tariff = result.data.find(item => item.quoteNo === model.quote_no);
-          if (tariff) {
-            this.props.loadRatesSources({
-              tariffId: tariff._id,
-              pageSize: 999999,
-              currentPage: 1,
-            }).then((result1) => {
-              this.setState({ rateSources: result1.data.data || [] });
-              if (result1.data.data) {
-                const rss = result1.data.data.filter(item => item.source.province === consigner.province);
-                const promises = rss.map(item => this.props.loadRateEnds({ rateId: item._id, pageSize: 99999999, current: 1 }));
-                Promise.all(promises).then((results) => {
-                  let rateEnds = [];
-                  results.forEach((item) => {
-                    rateEnds = rateEnds.concat(item.data.data);
-                  });
-                  this.setState({ rateEnds });
-                });
-              }
-            });
-          }
-        }
+
+    this.props.loadTariffsByTransportInfo(partnerId, transitMode, model.goods_type).then((result) => {
+      this.setState({
+        tariffs: result.data || [],
+        transitMode,
+        goodsType: model.goods_type,
       });
-    }
-    if (this.state.transitMode === -1) {
-      this.setState({ transitMode });
-    }
-    if (this.state.goodsType === -1) {
-      this.setState({ goodsType: model.goods_type });
-    }
+      if (result.data) {
+        const tariff = result.data.find(item => item.quoteNo === model.quote_no);
+        if (tariff) {
+          this.props.loadRatesSources({
+            tariffId: tariff._id,
+            pageSize: 999999,
+            currentPage: 1,
+          }).then((result1) => {
+            this.setState({ rateSources: result1.data.data || [] });
+            if (result1.data.data) {
+              const rss = result1.data.data.filter(item => item.source.province === consigner.province);
+              const promises = rss.map(item => this.props.loadRateEnds({ rateId: item._id, pageSize: 99999999, current: 1 }));
+              Promise.all(promises).then((results) => {
+                let rateEnds = [];
+                results.forEach((item) => {
+                  rateEnds = rateEnds.concat(item.data.data);
+                });
+                this.setState({ rateEnds });
+              });
+            }
+          });
+        }
+      }
+    });
   }
   msg = formatMsg(this.props.intl)
   handleLoadTariff = () => {
     const { partnerId } = this.props;
     const { transitMode, goodsType } = this.state;
-    if (transitMode > -1 && goodsType > -1) {
-      this.props.loadTariffsByTransportInfo(partnerId, transitMode, goodsType).then((result) => {
-        this.setState({ tariffs: result.data });
-      });
-    }
+    this.props.loadTariffsByTransportInfo(partnerId, transitMode, goodsType).then((result) => {
+      this.setState({ tariffs: result.data });
+    });
   }
   handleTransitModeSelect = (value) => {
     const { tmsParams: { transitModes } } = this.props;
