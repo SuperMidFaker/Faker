@@ -106,7 +106,8 @@ export default class ShippingOrderList extends React.Component {
           <RadioGroup defaultValue="pending" onChange={this.handleStatusChange} size="large">
             <RadioButton value="pending">待出货</RadioButton>
             <RadioButton value="outbound">出库中</RadioButton>
-            <RadioButton value="shipped">出货完成</RadioButton>
+            <RadioButton value="partial">部分出货</RadioButton>
+            <RadioButton value="completed">出货完成</RadioButton>
           </RadioGroup>
           <div className="top-bar-tools" />
         </Header>
