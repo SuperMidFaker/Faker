@@ -43,8 +43,45 @@ export default class ReceivingNoticeList extends React.Component {
     dataIndex: 'asn_no',
     width: 160,
   }, {
+    title: '货主',
+    width: 200,
+    dataIndex: 'owner_code',
+  }, {
+    title: '关联订单号',
+    width: 200,
+    dataIndex: 'ref_order_no',
+  }, {
+    title: '预期到货时间',
+    width: 120,
+    dataIndex: 'expect_receive_date',
+  }, {
+    title: '通知时间',
+    width: 120,
+    dataIndex: 'created_date',
+  }, {
+    title: '预期收货数量',
+    dataIndex: 'order_qty',
+  }, {
+    title: '实际收货数量',
+    dataIndex: 'received_qty',
+  }, {
+    title: '状态',
+    dataIndex: 'status',
+    width: 120,
+    render: (o) => {
+      if (o === 0) {
+        return (<Badge status="default" text="待收货" />);
+      } else if (o === 1) {
+        return (<Badge status="processing" text="入库中" />);
+      } else if (o === 2) {
+        return (<Badge status="warning" text="部分收货" />);
+      } else if (o === 3) {
+        return (<Badge status="success" text="收货完成" />);
+      }
+    },
+  }, {
     title: '货物属性',
-    width: 90,
+    width: 100,
     dataIndex: 'bonded',
     render: (o) => {
       if (o === 1) {
@@ -54,37 +91,9 @@ export default class ReceivingNoticeList extends React.Component {
       }
     },
   }, {
-    title: '仓库',
-    width: 200,
-    dataIndex: 'whse_code',
-  }, {
-    title: '货主',
-    width: 200,
-    dataIndex: 'owner_code',
-  }, {
-    title: '关联订单号',
-    width: 200,
-    dataIndex: 'ref_order_no',
-  }, {
-    title: '预定到货日期',
-    dataIndex: 'expect_receive_date',
-  }, {
-    title: '收货状态',
-    dataIndex: 'status',
-    width: 100,
-    render: (o) => {
-      if (o === 0) {
-        return (<Badge status="default" />);
-      } else if (o === 1) {
-        return (<Badge status="processing" />);
-      } else if (o === 2) {
-        return (<Badge status="success" />);
-      }
-    },
-  }, {
     title: '监管备案',
     dataIndex: 'reg_status',
-    width: 100,
+    width: 120,
     render: (o) => {
       if (o === 0) {
         return (<Badge status="default" />);
@@ -96,7 +105,7 @@ export default class ReceivingNoticeList extends React.Component {
     },
   }, {
     title: '操作',
-    width: 150,
+    width: 120,
     render: (o, record) => {
       if (record.status === 0) {
         return (<span><RowUpdater label="释放" row={record} /><span className="ant-divider" /><RowUpdater label="修改" row={record} /></span>);
@@ -126,7 +135,6 @@ export default class ReceivingNoticeList extends React.Component {
     owner_code: '03701|西门子国际贸易',
     ref_order_no: 'NUE0394488',
     status: 1,
-    inbound_status: 0,
   }, {
     id: '3',
     asn_no: 'N04601170546',
@@ -135,7 +143,6 @@ export default class ReceivingNoticeList extends React.Component {
     owner_code: '04601|米思米(中国)精密机械贸易',
     ref_order_no: '7FJ1787',
     status: 1,
-    inbound_status: 0,
     reg_status: 0,
   }, {
     id: '4',
@@ -144,8 +151,7 @@ export default class ReceivingNoticeList extends React.Component {
     whse_code: '0962|富特路仓库',
     owner_code: '04601|米思米(中国)精密机械贸易',
     ref_order_no: '7FJ1787',
-    status: 1,
-    inbound_status: 0,
+    status: 2,
     reg_status: 1,
   }, {
     id: '5',
@@ -154,8 +160,7 @@ export default class ReceivingNoticeList extends React.Component {
     whse_code: '0962|富特路仓库',
     owner_code: '04601|米思米(中国)精密机械贸易',
     ref_order_no: '7FJ1787',
-    status: 2,
-    inbound_status: 2,
+    status: 3,
     reg_status: 2,
   }];
 
@@ -196,7 +201,7 @@ export default class ReceivingNoticeList extends React.Component {
             <RadioButton value="pending">待收货</RadioButton>
             <RadioButton value="inbound">入库中</RadioButton>
             <RadioButton value="partial">部分收货</RadioButton>
-            <RadioButton value="received">全部收货</RadioButton>
+            <RadioButton value="completed">收货完成</RadioButton>
           </RadioGroup>
           <div className="top-bar-tools">
             <Button type="primary" size="large" icon="plus" onClick={this.handleCreateBtnClick}>
@@ -220,7 +225,7 @@ export default class ReceivingNoticeList extends React.Component {
               </div>
             </div>
             <div className="panel-body table-panel">
-              <Table columns={this.columns} dataSource={this.dataSource} rowKey="id" scroll={{ x: 1200 }} />
+              <Table columns={this.columns} dataSource={this.dataSource} rowKey="id" scroll={{ x: 1400 }} />
             </div>
           </div>
         </Content>

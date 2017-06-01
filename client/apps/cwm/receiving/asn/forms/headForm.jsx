@@ -48,44 +48,6 @@ export default class HeadForm extends Component {
       <Card>
         <Row gutter={16}>
           <Col sm={24} lg={8}>
-            <FormItem label="仓库">
-              {getFieldDecorator('whse_code', {
-              })(
-                <Select mode="combobox"
-                  optionFilterProp="search"
-                  placeholder="选择仓库"
-                >
-                  <Option value="0961">物流大道仓库</Option>
-                  <Option value="0962">希雅路仓库</Option>
-                  <Option value="0963">富特路仓库</Option>
-                </Select>
-                  )}
-            </FormItem>
-          </Col>
-          <Col sm={24} lg={8}>
-            <FormItem label="入库货物属性">
-              {getFieldDecorator('bonded', {
-              })(
-                <RadioGroup>
-                  <RadioButton value={0}>非保税</RadioButton>
-                  <RadioButton value={1}>保税</RadioButton>
-                </RadioGroup>
-                  )}
-            </FormItem>
-          </Col>
-          <Col sm={24} lg={8}>
-            <FormItem label="入库类型">
-              {getFieldDecorator('reg_type', {
-              })(
-                <RadioGroup>
-                  <RadioButton value={0}>先报关后入库</RadioButton>
-                  <RadioButton value={1}>先入库后报关</RadioButton>
-                  <RadioButton value={2}>区内转入</RadioButton>
-                </RadioGroup>
-                  )}
-            </FormItem>
-          </Col>
-          <Col sm={24} lg={8}>
             <FormItem label="货主">
               {getFieldDecorator('owner_code', {
               })(
@@ -109,9 +71,49 @@ export default class HeadForm extends Component {
             </FormItem>
           </Col>
           <Col sm={24} lg={8}>
-            <FormItem label="到货日期" >
+            <FormItem label="预期到货日期" >
               {getFieldDecorator('est_receive_date', {
               })(<DatePicker defaultValue={moment('2015/01/01', dateFormat)} format={dateFormat} style={{ width: '100%' }} />)}
+            </FormItem>
+          </Col>
+          <Col sm={24} lg={8}>
+            <FormItem label="仓库">
+              {getFieldDecorator('whse_code', {
+              })(
+                <Select mode="combobox"
+                  optionFilterProp="search"
+                  placeholder="选择仓库"
+                  defaultValue="0961"
+                  disabled
+                >
+                  <Option value="0961">物流大道仓库</Option>
+                  <Option value="0962">希雅路仓库</Option>
+                  <Option value="0963">富特路仓库</Option>
+                </Select>
+                  )}
+            </FormItem>
+          </Col>
+          <Col sm={24} lg={8}>
+            <FormItem label="货物属性">
+              {getFieldDecorator('bonded', {
+              })(
+                <RadioGroup defaultValue={0}>
+                  <RadioButton value={0}>非保税</RadioButton>
+                  <RadioButton value={1}>保税</RadioButton>
+                </RadioGroup>
+                  )}
+            </FormItem>
+          </Col>
+          <Col sm={24} lg={8}>
+            <FormItem label="保税入库类型">
+              {getFieldDecorator('reg_type', {
+              })(
+                <RadioGroup>
+                  <RadioButton value={0}>先报关后入库</RadioButton>
+                  <RadioButton value={1}>先入库后报关</RadioButton>
+                  <RadioButton value={2}>不报关</RadioButton>
+                </RadioGroup>
+                  )}
             </FormItem>
           </Col>
         </Row>

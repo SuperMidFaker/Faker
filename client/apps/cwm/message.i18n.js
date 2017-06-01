@@ -33,21 +33,37 @@ const messages = defineMessages({
     id: 'cwm.module.stock',
     defaultMessage: '库存管理',
   },
+  enquiry: {
+    id: 'cwm.module.stock.enquiry',
+    defaultMessage: '库存查询',
+  },
+  movement: {
+    id: 'cwm.module.stock.movement',
+    defaultMessage: '移位管理',
+  },
+  replishment: {
+    id: 'cwm.module.stock.replishment',
+    defaultMessage: '补货管理',
+  },
+  counting: {
+    id: 'cwm.module.stock.counting',
+    defaultMessage: '库存盘点',
+  },
   ftzSupervision: {
     id: 'cwm.module.ftz.supervision',
     defaultMessage: '保税监管',
   },
   ftzInbound: {
     id: 'cwm.module.ftz.inbound',
-    defaultMessage: '进区备案',
+    defaultMessage: '进库备案',
   },
   ftzOutbound: {
     id: 'cwm.module.ftz.outbound',
-    defaultMessage: '出区备案',
+    defaultMessage: '出库备案',
   },
   ftzMovement: {
     id: 'cwm.module.ftz.movement',
-    defaultMessage: '区内移库',
+    defaultMessage: '移库备案',
   },
   products: {
     id: 'cwm.module.products',
@@ -60,6 +76,14 @@ const messages = defineMessages({
   productsLot: {
     id: 'cwm.module.products.lot',
     defaultMessage: '批次管理',
+  },
+  packing: {
+    id: 'cwm.module.products.packing',
+    defaultMessage: '包装',
+  },
+  mapping: {
+    id: 'cwm.module.products.mapping',
+    defaultMessage: '对应备案料号',
   },
   resources: {
     id: 'cwm.module.resources',
@@ -92,6 +116,18 @@ const messages = defineMessages({
   settingsApp: {
     id: 'cwm.module.settings.app',
     defaultMessage: '应用设置',
+  },
+  warehouse: {
+    id: 'cwm.module.settings.warehouse',
+    defaultMessage: '仓库',
+  },
+  rules: {
+    id: 'cwm.module.settings.rules',
+    defaultMessage: '业务规则',
+  },
+  tools: {
+    id: 'cwm.module.settings.tools',
+    defaultMessage: '管理工具',
   },
 });
 

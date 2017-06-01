@@ -427,6 +427,7 @@ export default(store, cookie) => {
             <Route path="shipping">
               <Route path="order">
                 <IndexRoute component={CWMShippingOrder.List} />
+                <Route path="create" component={CWMReceivingASN.Create} />
                 <Route path=":shippingNo" component={CWMShippingOrder.View} />
               </Route>
               <Route path="outbound">
