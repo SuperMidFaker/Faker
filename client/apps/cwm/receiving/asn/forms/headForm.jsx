@@ -105,13 +105,13 @@ export default class HeadForm extends Component {
             </FormItem>
           </Col>
           <Col sm={24} lg={8}>
-            <FormItem label="保税入库模式">
+            <FormItem label="保税入库类型">
               {getFieldDecorator('reg_type', {
               })(
                 <RadioGroup>
                   <RadioButton value={0}>先报关后入库</RadioButton>
                   <RadioButton value={1}>先入库后报关</RadioButton>
-                  <RadioButton value={2}>区内转入</RadioButton>
+                  <RadioButton value={2}>不报关</RadioButton>
                 </RadioGroup>
                   )}
             </FormItem>
