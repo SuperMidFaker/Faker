@@ -15,35 +15,35 @@ export default class DetailForm extends Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
-    title: '序号',
-    width: 50,
-  }, {
-    title: this.msg('opColumn'),
+    title: '行序号',
     width: 80,
   }, {
     title: '商品货号',
     dataIndex: 'product_no',
     width: 200,
   }, {
-    title: '品名',
+    title: '中文品名',
     dataIndex: 'product_no',
     width: 200,
   }, {
-    title: '计量单位',
+    title: '包装代码',
     width: 100,
     dataIndex: 'unit',
   }, {
-    title: '数量',
+    title: '预期数量',
     width: 100,
     dataIndex: 'qty',
   }, {
-    title: this.msg('remark'),
+    title: '计量单位',
     dataIndex: 'remark',
   }]
   render() {
     return (
       <Card>
-        <Button type="primary">添加</Button><Button>导入</Button>
+        <div className="toolbar">
+          <Button type="primary" style={{ marginRight: 8 }}>添加</Button>
+          <Button>导入</Button>
+        </div>
         <Table columns={this.columns} rowKey="id" />
       </Card>
     );
