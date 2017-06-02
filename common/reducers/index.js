@@ -50,6 +50,7 @@ import crmCustomers from './crmCustomers';
 import crmOrders from './crmOrders';
 import crmBilling from './crmBilling';
 import cwmReceive from './cwmReceive';
+import cwmWarehouse from './cwmWarehouse';
 
 export default combineReducers({
   activities,
@@ -103,4 +104,5 @@ export default combineReducers({
   crmOrders,
   crmBilling,
   cwmReceive,
+  cwmWarehouse,
 });
