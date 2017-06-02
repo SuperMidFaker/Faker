@@ -70,10 +70,10 @@ export default class CreateReceivingNotice extends Component {
         <Header className="top-bar">
           <Breadcrumb>
             <Breadcrumb.Item>
-              {this.msg('receivingNotice')}
+              {this.msg('receivingASN')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              {this.msg('createRN')}
+              {this.msg('createASN')}
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="top-bar-tools">

@@ -74,11 +74,11 @@ export default class DetailForm extends Component {
     title: '操作',
     render: (o, record) => {
       if (record.status === 0 && record.receiving_lock === 0) {
-        return (<span><RowUpdater onHit={this.handleReceive} label="收货" row={record} /><span className="ant-divider" /><RowUpdater label="派单" row={record} /></span>);
+        return (<span><span className="ant-divider" /><RowUpdater label="派单" row={record} /></span>);
       } else if (record.status === 0 && record.receiving_lock === 2) {
         return (<span><RowUpdater label="撤回" row={record} /></span>);
-      } else if (record.status === 1) {
-
+      } else {
+        return (<RowUpdater onHit={this.handleReceive} label="收货" row={record} />);
       }
     },
   }]

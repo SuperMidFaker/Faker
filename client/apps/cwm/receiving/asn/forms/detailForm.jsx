@@ -16,22 +16,23 @@ export default class DetailForm extends Component {
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
     title: '序号',
-    width: 80,
+    dataIndex: 'seq_no',
+    width: 50,
   }, {
     title: '商品货号',
     dataIndex: 'product_no',
     width: 200,
   }, {
     title: '中文品名',
-    dataIndex: 'product_no',
+    dataIndex: 'desc_cn',
     width: 200,
   }, {
-    title: '预期数量',
+    title: '订单数量',
     width: 100,
     dataIndex: 'qty',
   }, {
-    title: '计量单位',
-    dataIndex: 'remark',
+    title: '主单位',
+    dataIndex: 'unit',
   }]
   render() {
     return (
