@@ -6,10 +6,8 @@ import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/search-bar';
 import RowUpdater from 'client/components/rowUpdater';
 import connectNav from 'client/common/decorators/connect-nav';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
+import { formatMsg } from '../message.i18n';
 
-const formatMsg = format(messages);
 const { Header, Content } = Layout;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
@@ -37,7 +35,7 @@ export default class ReceivingNoticeList extends React.Component {
     selectedRowKeys: [],
     searchInput: '',
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl);
   columns = [{
     title: 'ANS编号',
     dataIndex: 'asn_no',

@@ -76,16 +76,6 @@ export default class CustomsDeclEditor extends React.Component {
     const pathname = `/clearance/${ietype}/manifest/view/${billMeta.bill_seq_no}`;
     this.context.router.push({ pathname });
   }
-  handleEntryHeadSave = () => {
-    const formVals = this.props.form.getFieldsValue(); // *todo* save entry mark/note
-    this.props.saveEntryHead({ formVals, entryHeadId: this.props.head.id }).then((result) => {
-      if (result.error) {
-        message.error(result.error.message, 10);
-      } else {
-        message.info('保存成功');
-      }
-    });
-  }
   handleDelete = () => {
     const head = this.props.head;
     this.props.deleteDecl(head.id, head.bill_seq_no).then((result) => {
