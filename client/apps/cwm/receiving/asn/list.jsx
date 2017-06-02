@@ -35,7 +35,7 @@ export default class ReceivingNoticeList extends React.Component {
     selectedRowKeys: [],
     searchInput: '',
   }
-  msg = formatMsg(this.props.intl);
+  msg = formatMsg(this.props.intl)
   columns = [{
     title: 'ANS编号',
     dataIndex: 'asn_no',
