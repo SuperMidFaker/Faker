@@ -16,6 +16,8 @@ const actionTypes = createActionTypes('@@welogix/crm/orders/', [
   'LOAD_ORDERPROG', 'LOAD_ORDERPROG_SUCCEED', 'LOAD_ORDERPROG_FAILED',
   'LOAD_ORDER_NODES', 'LOAD_ORDER_NODES_SUCCEED', 'LOAD_ORDER_NODES_FAIL',
   'LOAD_ORDER_NODES_TRIGGERS', 'LOAD_ORDER_NODES_TRIGGERS_SUCCEED', 'LOAD_ORDER_NODES_TRIGGERS_FAIL',
+  'CANCEL_ORDER', 'CANCEL_ORDER_SUCCEED', 'CANCEL_ORDER_FAIL',
+  'CLOSE_ORDER', 'CLOSE_ORDER_SUCCEED', 'CLOSE_ORDER_FAIL',
 ]);
 
 const initialState = {
@@ -373,6 +375,36 @@ export function loadOrderNodesTriggers(uuid, bizObjects) {
       endpoint: 'v1/scof/order/nodes/triggers/load',
       method: 'post',
       data: { uuid, bizObjects },
+    },
+  };
+}
+
+export function cancelOrder(orderNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.CANCEL_ORDER,
+        actionTypes.CANCEL_ORDER_SUCCEED,
+        actionTypes.CANCEL_ORDER_FAIL,
+      ],
+      endpoint: 'v1/crm/cancel/order',
+      method: 'get',
+      params: { orderNo },
+    },
+  };
+}
+
+export function closeOrder(orderNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.CLOSE_ORDER,
+        actionTypes.CLOSE_ORDER_SUCCEED,
+        actionTypes.CLOSE_ORDER_FAIL,
+      ],
+      endpoint: 'v1/crm/close/order',
+      method: 'get',
+      params: { orderNo },
     },
   };
 }
