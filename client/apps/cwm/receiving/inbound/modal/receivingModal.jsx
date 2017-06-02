@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Table, Icon, Modal, Input, Tooltip, Row, Col, Select } from 'antd';
@@ -19,6 +19,7 @@ const formatMsg = format(messages);
 export default class ReceivingModal extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
+    receivingMode: PropTypes.string.isRequired,
   }
   msg = key => formatMsg(this.props.intl, key);
   handleCancel = () => {
@@ -33,28 +34,28 @@ export default class ReceivingModal extends Component {
     title: '箱/托盘编号',
     dataIndex: 'convey_no',
     width: 180,
-    render: o => (<Input value={o} />),
+    render: o => (<Input className="readonly" value={o} />),
   }, {
     title: '库位',
     dataIndex: 'location',
     width: 180,
-    render: o => (<Select defaultValue={o} showSearch style={{ width: 180 }} />),
+    render: o => (<Select defaultValue={o} showSearch style={{ width: 180 }} disabled />),
   }, {
     title: '收货数量',
     dataIndex: 'received_qty',
     render: (o, record) => {
       if (record.expect_pack_qty === record.received_pack_qty) {
-        return (<span className="mdc-text-green"><Tooltip title="包装单位数量"><Input style={{ width: 80 }} /></Tooltip>
+        return (<span className="mdc-text-green"><Tooltip title="包装单位数量"><Input className="readonly" style={{ width: 80 }} /></Tooltip>
           <Tooltip title="主单位数量"><Input value={record.received_qty} style={{ width: 80 }} disabled /></Tooltip></span>);
       } else {
-        return (<span className="mdc-text-red"><Tooltip title="包装单位数量"><Input style={{ width: 80 }} /></Tooltip>
+        return (<span className="mdc-text-red"><Tooltip title="包装单位数量"><Input className="readonly" style={{ width: 80 }} /></Tooltip>
           <Tooltip title="主单位数量"><Input value={record.received_qty} style={{ width: 80 }} disabled /></Tooltip></span>);
       }
     },
   }, {
     title: '收货状态',
     dataIndex: 'packing_code',
-    render: o => (<Select defaultValue={o} style={{ width: 60 }} />),
+    render: o => (<Select defaultValue={o} style={{ width: 60 }} disabled />),
   }]
   dataSource = [{
     trace_id: 'T04601170548',
@@ -94,6 +95,7 @@ export default class ReceivingModal extends Component {
     received_qty: 0,
   }];
   render() {
+    const { receivingMode } = this.props;
     return (
       <Modal title="收货" width={900} maskClosable={false} onCancel={this.handleCancel} visible={this.props.visible}>
         <Row gutter={16}>
@@ -113,7 +115,7 @@ export default class ReceivingModal extends Component {
             />
           </Col>
         </Row>
-        <Table size="middle" columns={this.columns} dataSource={this.dataSource} rowKey="trace_id" />
+        <Table size="middle" columns={this.columns} dataSource={receivingMode === 'scan' ? this.dataSource : null} rowKey="trace_id" />
       </Modal>
     );
   }
