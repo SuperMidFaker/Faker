@@ -41,7 +41,7 @@ export default class ReceivingNoticeList extends React.Component {
   columns = [{
     title: 'ANS编号',
     dataIndex: 'asn_no',
-    width: 160,
+    width: 120,
     fixed: 'left',
   }, {
     title: '货主',
@@ -54,13 +54,17 @@ export default class ReceivingNoticeList extends React.Component {
     title: '供应商',
     dataIndex: 'seller_name',
   }, {
+    title: '通知日期',
+    width: 120,
+    dataIndex: 'created_date',
+  }, {
     title: '预期到货时间',
     width: 120,
     dataIndex: 'expect_receive_date',
   }, {
-    title: '通知时间',
+    title: '收货时间',
     width: 120,
-    dataIndex: 'created_date',
+    dataIndex: 'received_date',
   }, {
     title: '状态',
     dataIndex: 'status',
@@ -112,9 +116,9 @@ export default class ReceivingNoticeList extends React.Component {
         return (<span><RowUpdater label="释放" row={record} /><span className="ant-divider" /><RowUpdater label="修改" row={record} /></span>);
       } else if (record.status === 1) {
         if (record.bonded === 1 && record.reg_status === 0) {
-          return (<span><RowUpdater onHit={this.handleReceive} label="收货" row={record} /><span className="ant-divider" /><RowUpdater label="备案" row={record} /></span>);
+          return (<span><RowUpdater onHit={this.handleReceive} label="入库" row={record} /><span className="ant-divider" /><RowUpdater label="备案" row={record} /></span>);
         } else {
-          return (<span><RowUpdater onHit={this.handleReceive} label="收货" row={record} /></span>);
+          return (<span><RowUpdater onHit={this.handleReceive} label="入库" row={record} /></span>);
         }
       }
     },
@@ -178,6 +182,12 @@ export default class ReceivingNoticeList extends React.Component {
     this.context.router.push(link);
   }
   render() {
+    const rowSelection = {
+      selectedRowKeys: this.state.selectedRowKeys,
+      onChange: (selectedRowKeys) => {
+        this.setState({ selectedRowKeys });
+      },
+    };
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Header className="top-bar">
@@ -226,7 +236,7 @@ export default class ReceivingNoticeList extends React.Component {
               </div>
             </div>
             <div className="panel-body table-panel">
-              <Table columns={this.columns} dataSource={this.dataSource} rowKey="id" scroll={{ x: 1300 }} />
+              <Table columns={this.columns} rowSelection={rowSelection} dataSource={this.dataSource} rowKey="id" scroll={{ x: 1400 }} />
             </div>
           </div>
         </Content>

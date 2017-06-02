@@ -22,6 +22,9 @@ export default class DetailForm extends Component {
     intl: intlShape.isRequired,
     form: PropTypes.object.isRequired,
   }
+  state = {
+    selectedRowKeys: [],
+  }
   msg = key => formatMsg(this.props.intl, key);
   handleReceive = () => {
     this.props.loadReceiveModal();
@@ -144,12 +147,21 @@ export default class DetailForm extends Component {
     received_qty: 0,
   }];
   render() {
+    const rowSelection = {
+      selectedRowKeys: this.state.selectedRowKeys,
+      onChange: (selectedRowKeys) => {
+        this.setState({ selectedRowKeys });
+      },
+    };
     return (
       <Card bodyStyle={{ padding: 0 }}>
         <div className="toolbar">
           <Button>快捷收货</Button>
+          <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
+            <h3>已选中{this.state.selectedRowKeys.length}项</h3><Button>分批收货</Button>
+          </div>
         </div>
-        <Table columns={this.columns} dataSource={this.dataSource} rowKey="seq_no" />
+        <Table columns={this.columns} rowSelection={rowSelection} dataSource={this.dataSource} rowKey="seq_no" />
         <ReceivingModal />
       </Card>
     );
