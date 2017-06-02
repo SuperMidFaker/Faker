@@ -92,7 +92,7 @@ export default class ReceiveInbound extends Component {
               {this.msg('receivingInound')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              ASNno
+              ASN096120170603223
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="top-bar-tools">
@@ -112,7 +112,7 @@ export default class ReceiveInbound extends Component {
             </Button>
           </div>
         </Header>
-        <Content className="main-content">
+        <Content className="main-content layout-fixed-width layout-fixed-width-lg">
           <Form layout="vertical">
             <HeadForm form={form} />
             <DetailForm form={form} />

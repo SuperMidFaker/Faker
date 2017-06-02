@@ -98,6 +98,10 @@ img {
 .ant-form-vertical .ant-form-item-label {
   padding: 0;
 }
+.ant-input.readonly {
+  background-color: #f7f7f7;
+  cursor: not-allowed;
+}
 .ant-input-group {
   .ant-input-number {
     margin-top: 0;
@@ -227,6 +231,9 @@ form .ant-cascader-picker:only-child, form .ant-select:only-child {
 .mdc-text-green,
 .mdc-text-green:hover {
   color: #4caf50;
+  .ant-input:not([disabled]) {
+    color: #4caf50;
+  }
 }
 .mdc-text-grey {
   color: #9e9e9e;
@@ -234,6 +241,9 @@ form .ant-cascader-picker:only-child, form .ant-select:only-child {
 .mdc-text-red,
 .mdc-text-red:hover {
   color: #f50;
+  .ant-input:not([disabled]) {
+    color: #f50;
+  }
 }
 .mdc-text-success {
   color: #87d068;
