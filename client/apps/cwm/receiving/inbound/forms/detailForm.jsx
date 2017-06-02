@@ -1,6 +1,6 @@
 /* eslint react/no-multi-comp: 0 */
 import React, { Component, PropTypes } from 'react';
-import { Button, Card, Input, Table, Tag, Tooltip } from 'antd';
+import { Button, Card, Icon, Input, Table, Tag, Tooltip } from 'antd';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
@@ -76,8 +76,8 @@ export default class DetailForm extends Component {
   }, {
     title: '操作',
     render: (o, record) => {
-      if (record.status === 0 && record.receiving_lock === 0) {
-        return (<span><span className="ant-divider" /><RowUpdater label="派单" row={record} /></span>);
+      if (record.expect_qty === record.received_qty) {
+        return (<RowUpdater onHit={this.handleReceive} label={<Icon type="check-circle-o" />} row={record} />);
       } else if (record.status === 0 && record.receiving_lock === 2) {
         return (<span><RowUpdater label="撤回" row={record} /></span>);
       } else {

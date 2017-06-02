@@ -60,6 +60,7 @@ import * as CWMReceivingInbound from './cwm/receiving/inbound';
 import * as CWMShippingOrder from './cwm/shipping/order';
 import * as CWMShippingOutbound from './cwm/shipping/outbound';
 import * as CWMStock from './cwm/stock';
+import * as CWMFTZReceive from './cwm/ftz/receive';
 import * as CWMProductsSku from './cwm/products/sku';
 import * as CWMWarehouse from './cwm/resources/warehouse';
 import * as CWMSettings from './cwm/settings';
@@ -435,6 +436,12 @@ export default(store, cookie) => {
               </Route>
             </Route>
             <Route path="stock" component={CWMStock.List} />
+            <Route path="ftz">
+              <Route path="receive">
+                <IndexRoute component={CWMFTZReceive.List} />
+                <Route path="reg/:asnNo" component={CWMFTZReceive.Reg} />
+              </Route>
+            </Route>
             <Route path="products">
               <Route path="sku">
                 <IndexRoute component={CWMProductsSku.List} />

@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Badge, Button, Breadcrumb, Layout, Radio, Select, Table, Tag, notification } from 'antd';
+import { Badge, Button, Breadcrumb, Layout, Radio, Select, Table, Tag } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/search-bar';
 import RowUpdater from 'client/components/rowUpdater';
@@ -116,7 +116,7 @@ export default class ReceivingNoticeList extends React.Component {
         return (<span><RowUpdater label="释放" row={record} /><span className="ant-divider" /><RowUpdater label="修改" row={record} /></span>);
       } else if (record.status === 1) {
         if (record.bonded === 1 && record.reg_status === 0) {
-          return (<span><RowUpdater onHit={this.handleReceive} label="入库" row={record} /><span className="ant-divider" /><RowUpdater onHit={this.handleFTZReg} label="备案" row={record} /></span>);
+          return (<span><RowUpdater onHit={this.handleReceive} label="入库" row={record} /><span className="ant-divider" /><RowUpdater label="备案" row={record} /></span>);
         } else {
           return (<span><RowUpdater onHit={this.handleReceive} label="入库" row={record} /></span>);
         }
@@ -175,19 +175,11 @@ export default class ReceivingNoticeList extends React.Component {
     }
   }
   handleCreateBtnClick = () => {
-    this.context.router.push('/cwm/receiving/asn/create');
-  }
-  handleReceive = (row) => {
-    const link = `/cwm/receiving/inbound/receive/${row.asn_no}`;
-    this.context.router.push(link);
+    this.context.router.push('/cwm/ftz/receive/reg');
   }
   handleFTZReg = (row) => {
-    notification.success({
-      message: '操作成功',
-      description: `${row.asn_no} 进库备案信息已发送至监管信息系统`,
-    });
-    // const link = `/cwm/ftz/receive/reg/${row.asn_no}`;
-    // this.context.router.push(link);
+    const link = `/cwm/ftz/receive/reg/${row.asn_no}`;
+    this.context.router.push(link);
   }
   render() {
     const rowSelection = {
@@ -213,14 +205,13 @@ export default class ReceivingNoticeList extends React.Component {
               </Select>
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              {this.msg('receivingASN')}
+              {this.msg('ftzReceiveReg')}
             </Breadcrumb.Item>
           </Breadcrumb>
           <RadioGroup defaultValue="pending" onChange={this.handleBondedChange} size="large">
-            <RadioButton value="pending">待收货</RadioButton>
-            <RadioButton value="inbound">入库中</RadioButton>
-            <RadioButton value="partial">部分收货</RadioButton>
-            <RadioButton value="completed">收货完成</RadioButton>
+            <RadioButton value="pending">未备案</RadioButton>
+            <RadioButton value="sent">已发送</RadioButton>
+            <RadioButton value="completed">已备案</RadioButton>
           </RadioGroup>
           <div className="top-bar-tools">
             <Button type="primary" size="large" icon="plus" onClick={this.handleCreateBtnClick}>

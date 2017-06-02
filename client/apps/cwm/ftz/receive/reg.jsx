@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Breadcrumb, Icon, Dropdown, Form, Layout, Menu, Button, Select } from 'antd';
+import { Breadcrumb, Form, Layout, Row, Button } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import HeadForm from './forms/headForm';
@@ -10,7 +10,6 @@ import { format } from 'client/common/i18n/helpers';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
-const Option = Select.Option;
 
 @injectIntl
 @connect(
@@ -28,7 +27,7 @@ const Option = Select.Option;
   moduleName: 'cwm',
 })
 @Form.create()
-export default class ReceiveInbound extends Component {
+export default class CreateFTZReceive extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     form: PropTypes.object.isRequired,
@@ -65,57 +64,32 @@ export default class ReceiveInbound extends Component {
 
   render() {
     const { form, submitting } = this.props;
-    const menu = (
-      <Menu>
-        <Menu.Item key="1">打印追踪标签</Menu.Item>
-        <Menu.Item key="2">打印箱/托标签</Menu.Item>
-      </Menu>
-    );
     return (
       <div>
         <Header className="top-bar">
           <Breadcrumb>
             <Breadcrumb.Item>
-              <Select
-                size="large"
-                defaultValue="0960"
-                placeholder="选择仓库"
-                style={{ width: 160 }}
-                disabled
-              >
-                <Option value="0960">物流大道仓库</Option>
-                <Option value="0961">希雅路仓库</Option>
-                <Option value="0962">富特路仓库</Option>
-              </Select>
+              {this.msg('receivingASN')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              {this.msg('receivingInound')}
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              ASN096120170603223
+              {this.msg('createASN')}
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="top-bar-tools">
-            <Button size="large" icon="printer" onClick={this.handlePrint} >
-              打印入库清单
+            <Button size="large" type="ghost" onClick={this.handleCancelBtnClick}>
+              {this.msg('cancel')}
             </Button>
-            <Dropdown overlay={menu}>
-              <Button size="large" onClick={this.handlePrint}>
-                <Icon type="barcode" />打印标签 <Icon type="down" />
-              </Button>
-            </Dropdown>
-            <Button size="large" icon="tablet" onClick={this.handlePush} >
-              推送收货任务
-            </Button>
-            <Button size="large" type="primary" loading={submitting} onClick={this.handleSaveBtnClick} disabled>
-              入库完成
+            <Button size="large" type="primary" icon="save" loading={submitting} onClick={this.handleSaveBtnClick}>
+              {this.msg('save')}
             </Button>
           </div>
         </Header>
         <Content className="main-content layout-fixed-width layout-fixed-width-lg">
           <Form layout="vertical">
-            <HeadForm form={form} />
-            <DetailForm form={form} />
+            <Row gutter={16}>
+              <HeadForm form={form} />
+              <DetailForm form={form} />
+            </Row>
           </Form>
         </Content>
       </div>
