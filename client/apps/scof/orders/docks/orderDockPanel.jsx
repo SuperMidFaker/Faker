@@ -13,9 +13,10 @@ import FlowPane from './tabpanes/flowPane';
 import BillingPane from './tabpanes/billingPane';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
+import '../orders.less';
+
 const formatMsg = format(messages);
 const TabPane = Tabs.TabPane;
-import '../orders.less';
 
 @injectIntl
 @connect(
@@ -46,8 +47,8 @@ export default class OrderDockPanel extends React.Component {
   handleClose = () => {
     this.props.hideDock();
   }
-  handleCancelOrder = (orderNo) => {
-    this.props.cancelOrder(orderNo).then(
+  handleCancelOrder = () => {
+    this.props.cancelOrder(this.props.order.shipmt_order_no).then(
       (result) => {
         if (!result.error) {
           message.info('订单已取消');
@@ -59,8 +60,8 @@ export default class OrderDockPanel extends React.Component {
       }
     );
   }
-  handleCloseOrder = (orderNo) => {
-    this.props.closeOrder(orderNo).then(
+  handleCloseOrder = () => {
+    this.props.closeOrder(this.props.order.shipmt_order_no).then(
       (result) => {
         if (!result.error) {
           message.info('订单已关闭');
@@ -92,16 +93,15 @@ export default class OrderDockPanel extends React.Component {
         <TabPane tab={this.msg('tabOrder')} key="order">
           <OrderPane />
           {
-            order.finish_num !== order.flow_node_num ? (
-              <div>
+            order.order_status === CRM_ORDER_STATUS.processing ? (
+              <div className="pane-content order-action-btn">
                 <Tooltip title="取消订单">
-                  <Button className="order-cancel" onClick={() => this.handleCancelOrder(order.shipmt_order_no)}>取消</Button>
+                  <Button size="large" onClick={this.handleCancelOrder}>取消</Button>
                 </Tooltip>
                 <Tooltip title="关闭订单">
-                  <Button className="order-close" onClick={() => this.handleCloseOrder(order.shipmt_order_no)}>关闭</Button>
+                  <Button size="large" onClick={this.handleCloseOrder}>关闭</Button>
                 </Tooltip>
-              </div>
-              ) : ''
+              </div>) : null
           }
         </TabPane>
         <TabPane tab={this.msg('tabFlow')} key="flow">
