@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Icon, Breadcrumb, Layout, Radio, Select, Table, Tag, Tooltip } from 'antd';
+import { Badge, Icon, Breadcrumb, Layout, Radio, Select, Table, Tag, Tooltip } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/search-bar';
 import RowUpdater from 'client/components/rowUpdater';
@@ -43,6 +43,10 @@ export default class ReceivingInboundList extends React.Component {
     dataIndex: 'rn_no',
     width: 160,
   }, {
+    title: '货主',
+    width: 200,
+    dataIndex: 'owner_code',
+  }, {
     title: '货物属性',
     width: 90,
     dataIndex: 'bonded',
@@ -54,35 +58,32 @@ export default class ReceivingInboundList extends React.Component {
       }
     },
   }, {
-    title: '仓库',
-    width: 200,
-    dataIndex: 'whse_code',
-  }, {
-    title: '货主',
-    width: 200,
-    dataIndex: 'owner_code',
-  }, {
-    title: '关联订单号',
-    width: 200,
-    dataIndex: 'ref_order_no',
-  }, {
     title: '入库单号',
     width: 200,
-    dataIndex: 'stock_in_no',
+    dataIndex: 'inbound_no',
   }, {
-    title: '入库日期',
-    dataIndex: 'stock_in_date',
-  }, {
-    title: '状态',
+    title: '入库状态',
     dataIndex: 'status',
     width: 100,
     render: (o) => {
       if (o === 0) {
-        return (<Tag>未入库</Tag>);
+        return (<Badge status="default" text="创建" />);
       } else if (o === 1) {
-        return (<Tag color="#87d068">已入库</Tag>);
+        return (<Badge status="processing" text="收货" />);
+      } else if (o === 2) {
+        return (<Badge status="processing" text="上架" />);
+      } else if (o === 3) {
+        return (<Badge status="success" text="入库完成" />);
       }
     },
+  }, {
+    title: '入库日期',
+    dataIndex: 'inbound_date',
+    width: 200,
+  }, {
+    title: '操作人员',
+    width: 200,
+    dataIndex: 'operater',
   }, {
     title: '收货锁定',
     dataIndex: 'receiving_lock',
@@ -124,7 +125,7 @@ export default class ReceivingInboundList extends React.Component {
     whse_code: '0086|物流大道仓库',
     owner_code: '03701|西门子国际贸易',
     ref_order_no: 'NUE0394488',
-    status: 0,
+    status: 1,
     receiving_lock: 1,
   }, {
     id: '3',
@@ -133,7 +134,7 @@ export default class ReceivingInboundList extends React.Component {
     whse_code: '0962|富特路仓库',
     owner_code: '04601|米思米(中国)精密机械贸易',
     ref_order_no: '7FJ1787',
-    status: 0,
+    status: 2,
     receiving_lock: 2,
   }, {
     id: '4',
@@ -142,7 +143,7 @@ export default class ReceivingInboundList extends React.Component {
     whse_code: '0962|富特路仓库',
     owner_code: '04601|米思米(中国)精密机械贸易',
     ref_order_no: '7FJ1787',
-    status: 1,
+    status: 2,
     receiving_lock: 0,
   }, {
     id: '5',
@@ -151,7 +152,7 @@ export default class ReceivingInboundList extends React.Component {
     whse_code: '0962|富特路仓库',
     owner_code: '04601|米思米(中国)精密机械贸易',
     ref_order_no: '7FJ1787',
-    status: 1,
+    status: 3,
     receiving_lock: 0,
   }];
 

@@ -42,14 +42,17 @@ export default class ReceivingNoticeList extends React.Component {
     title: 'ANS编号',
     dataIndex: 'asn_no',
     width: 160,
+    fixed: 'left',
   }, {
     title: '货主',
     width: 200,
     dataIndex: 'owner_code',
   }, {
-    title: '关联订单号',
-    width: 200,
+    title: '采购订单号',
     dataIndex: 'ref_order_no',
+  }, {
+    title: '供应商',
+    dataIndex: 'seller_name',
   }, {
     title: '预期到货时间',
     width: 120,
@@ -59,14 +62,9 @@ export default class ReceivingNoticeList extends React.Component {
     width: 120,
     dataIndex: 'created_date',
   }, {
-    title: '预期收货数量',
-    dataIndex: 'order_qty',
-  }, {
-    title: '实际收货数量',
-    dataIndex: 'received_qty',
-  }, {
     title: '状态',
     dataIndex: 'status',
+    fixed: 'right',
     width: 120,
     render: (o) => {
       if (o === 0) {
@@ -83,6 +81,7 @@ export default class ReceivingNoticeList extends React.Component {
     title: '货物属性',
     width: 100,
     dataIndex: 'bonded',
+    fixed: 'right',
     render: (o) => {
       if (o === 1) {
         return (<Tag color="blue">保税</Tag>);
@@ -94,6 +93,7 @@ export default class ReceivingNoticeList extends React.Component {
     title: '监管备案',
     dataIndex: 'reg_status',
     width: 120,
+    fixed: 'right',
     render: (o) => {
       if (o === 0) {
         return (<Badge status="default" />);
@@ -106,6 +106,7 @@ export default class ReceivingNoticeList extends React.Component {
   }, {
     title: '操作',
     width: 120,
+    fixed: 'right',
     render: (o, record) => {
       if (record.status === 0) {
         return (<span><RowUpdater label="释放" row={record} /><span className="ant-divider" /><RowUpdater label="修改" row={record} /></span>);
@@ -225,7 +226,7 @@ export default class ReceivingNoticeList extends React.Component {
               </div>
             </div>
             <div className="panel-body table-panel">
-              <Table columns={this.columns} dataSource={this.dataSource} rowKey="id" scroll={{ x: 1400 }} />
+              <Table columns={this.columns} dataSource={this.dataSource} rowKey="id" scroll={{ x: 1300 }} />
             </div>
           </div>
         </Content>

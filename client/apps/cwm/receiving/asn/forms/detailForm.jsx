@@ -15,7 +15,7 @@ export default class DetailForm extends Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
-    title: '行序号',
+    title: '序号',
     width: 80,
   }, {
     title: '商品货号',
@@ -26,10 +26,6 @@ export default class DetailForm extends Component {
     dataIndex: 'product_no',
     width: 200,
   }, {
-    title: '包装代码',
-    width: 100,
-    dataIndex: 'unit',
-  }, {
     title: '预期数量',
     width: 100,
     dataIndex: 'qty',
@@ -39,7 +35,7 @@ export default class DetailForm extends Component {
   }]
   render() {
     return (
-      <Card>
+      <Card bodyStyle={{ padding: 0 }}>
         <div className="toolbar">
           <Button type="primary" style={{ marginRight: 8 }}>添加</Button>
           <Button>导入</Button>

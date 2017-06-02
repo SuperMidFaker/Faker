@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Breadcrumb, Form, Layout, Row, Button, Select } from 'antd';
+import { Breadcrumb, Icon, Dropdown, Form, Layout, Menu, Button, Select } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import HeadForm from './forms/headForm';
@@ -65,6 +65,12 @@ export default class ReceiveInbound extends Component {
 
   render() {
     const { form, submitting } = this.props;
+    const menu = (
+      <Menu>
+        <Menu.Item key="1">打印追踪标签</Menu.Item>
+        <Menu.Item key="2">打印箱/托标签</Menu.Item>
+      </Menu>
+    );
     return (
       <div>
         <Header className="top-bar">
@@ -90,19 +96,26 @@ export default class ReceiveInbound extends Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="top-bar-tools">
-            <Button size="large" icon="printer" onClick={this.handlePrint} />
-            <Button size="large" icon="tablet" onClick={this.handlePush} />
-            <Button size="large" type="primary" loading={submitting} onClick={this.handleSaveBtnClick}>
-              {this.msg('confirm')}
+            <Button size="large" icon="printer" onClick={this.handlePrint} >
+              打印入库清单
+            </Button>
+            <Dropdown overlay={menu}>
+              <Button size="large" onClick={this.handlePrint}>
+                <Icon type="barcode" />打印标签 <Icon type="down" />
+              </Button>
+            </Dropdown>
+            <Button size="large" icon="tablet" onClick={this.handlePush} >
+              推送收货任务
+            </Button>
+            <Button size="large" type="primary" loading={submitting} onClick={this.handleSaveBtnClick} disabled>
+              确认收货
             </Button>
           </div>
         </Header>
-        <Content className="main-content layout-fixed-width layout-fixed-width-lg">
+        <Content className="main-content">
           <Form layout="vertical">
-            <Row gutter={16}>
-              <HeadForm form={form} />
-              <DetailForm form={form} />
-            </Row>
+            <HeadForm form={form} />
+            <DetailForm form={form} />
           </Form>
         </Content>
       </div>
