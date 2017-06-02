@@ -2,7 +2,6 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Form, Row, Col, Card, Tabs } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { loadTmsBizParams } from 'common/reducers/scofFlow';
 import FlowNodePanel from './compose/flowNodePanel';
 import ShipmentPane from './bizpane/tmsShipmentPane';
 import { formatMsg } from '../message.i18n';
@@ -13,8 +12,7 @@ const TabPane = Tabs.TabPane;
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-  }),
-  { loadTmsBizParams }
+  })
 )
 @Form.create()
 export default class FlowTmsNodePanel extends Component {
@@ -25,7 +23,6 @@ export default class FlowTmsNodePanel extends Component {
     onNodeActionsChange: PropTypes.func.isRequired,
   }
   componentDidMount() {
-    this.props.loadTmsBizParams(this.props.tenantId);
     this.props.onFormInit(this.props.form);
   }
   msg = formatMsg(this.props.intl)

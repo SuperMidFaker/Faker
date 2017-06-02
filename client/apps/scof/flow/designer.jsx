@@ -5,7 +5,8 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import { intlShape, injectIntl } from 'react-intl';
 import { Alert, Breadcrumb, Button, Card, Collapse, Form, Popconfirm, Layout, Select, Table, Spin, Radio, Tooltip, message } from 'antd';
 import QueueAnim from 'rc-queue-anim';
-import { toggleFlowList, delFlow, loadFlowGraph, loadFlowGraphItem, saveFlowGraph, setNodeActions, loadScvTrackings } from 'common/reducers/scofFlow';
+import { toggleFlowList, delFlow, loadFlowGraph, loadFlowGraphItem, saveFlowGraph, setNodeActions,
+  loadScvTrackings, loadTmsBizParams } from 'common/reducers/scofFlow';
 import { uuidWithoutDash } from 'client/common/uuid';
 import ButtonToggle from 'client/components/ButtonToggle';
 import MdIcon from 'client/components/MdIcon';
@@ -32,7 +33,11 @@ const NodeKindPanelMap = {
 };
 
 function fetchData({ state, dispatch }) {
-  return dispatch(loadFormRequires({ tenantId: state.account.tenantId }));
+  const promises = [
+    dispatch(loadFormRequires({ tenantId: state.account.tenantId })),
+    dispatch(loadTmsBizParams(state.account.tenantId)),
+  ];
+  return Promise.all(promises);
 }
 
 @connectFetch()(fetchData)

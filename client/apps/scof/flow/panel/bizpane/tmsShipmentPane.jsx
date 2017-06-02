@@ -17,7 +17,6 @@ const Option = Select.Option;
   state => ({
     tmsParams: state.scofFlow.tmsParams,
     partnerId: state.scofFlow.currentFlow.partner_id,
-    transitModes: state.crmOrders.formRequires.transitModes,
   }), { loadTariffsByTransportInfo, loadRatesSources, loadRateEnds }
 )
 export default class TMSShipmentPane extends Component {
@@ -26,7 +25,6 @@ export default class TMSShipmentPane extends Component {
     form: PropTypes.object.isRequired,
     partnerId: PropTypes.number.isRequired,
     loadTariffsByTransportInfo: PropTypes.func.isRequired,
-    transitModes: PropTypes.array.isRequired,
     loadRatesSources: PropTypes.func.isRequired,
     loadRateEnds: PropTypes.func.isRequired,
   }
@@ -37,7 +35,7 @@ export default class TMSShipmentPane extends Component {
     rateSources: [],
     rateEnds: [],
   }
-  componentDidMount() {
+  componentWillMount() {
     const { partnerId, model, tmsParams: { transitModes, consigners } } = this.props;
     const mode = transitModes.find(item => item.mode_code === model.transit_mode);
     const transitMode = mode ? mode.id : -1;
@@ -58,7 +56,7 @@ export default class TMSShipmentPane extends Component {
             currentPage: 1,
           }).then((result1) => {
             this.setState({ rateSources: result1.data.data || [] });
-            if (result1.data.data) {
+            if (result1.data.data && consigner) {
               const rss = result1.data.data.filter(item => item.source.province === consigner.province);
               const promises = rss.map(item => this.props.loadRateEnds({ rateId: item._id, pageSize: 99999999, current: 1 }));
               Promise.all(promises).then((results) => {
@@ -133,7 +131,7 @@ export default class TMSShipmentPane extends Component {
   }
   renderTmsTariffCondition = (row) => {
     let text = row.quoteNo;
-    const tms = this.props.transitModes.find(tm => tm.id === Number(row.transModeCode));
+    const tms = this.props.tmsParams.transitModes.find(tm => tm.id === Number(row.transModeCode));
     const meter = TARIFF_METER_METHODS.find(m => m.value === row.meter);
     const goodType = GOODS_TYPES.find(m => m.value === row.goodsType);
     if (tms) text = `${text}-${tms.mode_name}`;
@@ -191,7 +189,7 @@ export default class TMSShipmentPane extends Component {
                   >
                     {
                       consigners.filter(cl => cl.ref_partner_id === partnerId || cl.ref_partner_id === -1)
-                      .filter(cl => rateSources.find(rs => rs.source.province === cl.province))
+                      .filter(cl => rateSources.length === 0 || rateSources.find(rs => rs.source.province === cl.province))
                       .map(cg => <Option value={cg.node_id} key={cg.node_id}>{this.renderConsign(cg)}</Option>)
                     }
                   </Select>)}
@@ -210,7 +208,7 @@ export default class TMSShipmentPane extends Component {
                   >
                     {
                       consignees.filter(cl => cl.ref_partner_id === partnerId || cl.ref_partner_id === -1)
-                      .filter(cl => rateEnds.find(rs => rs.end.province === cl.province && rs.end.city === cl.city &&
+                      .filter(cl => rateEnds.length === 0 || rateEnds.find(rs => rs.end.province === cl.province && rs.end.city === cl.city &&
                         rs.end.district === cl.district && rs.end.street === cl.street))
                       .map(cg => <Option value={cg.node_id} key={cg.node_id}>{this.renderConsign(cg)}</Option>)
                     }
