@@ -1,20 +1,31 @@
 /* eslint react/no-multi-comp: 0 */
 import React, { Component, PropTypes } from 'react';
 import { Button, Card, Input, Table, Tag, Tooltip } from 'antd';
+import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import RowUpdater from 'client/components/rowUpdater';
 import messages from '../../message.i18n';
+import PackagePopover from '../popover/packagePopover';
+import ReceivingModal from '../modal/receivingModal';
+import { loadReceiveModal } from 'common/reducers/cwmReceive';
 
 const formatMsg = format(messages);
 
 @injectIntl
+@connect(
+  () => ({}),
+  { loadReceiveModal }
+)
 export default class DetailForm extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     form: PropTypes.object.isRequired,
   }
   msg = key => formatMsg(this.props.intl, key);
+  handleReceive = () => {
+    this.props.loadReceiveModal();
+  }
   columns = [{
     title: '序号',
     dataIndex: 'seq_no',
@@ -37,6 +48,9 @@ export default class DetailForm extends Component {
   }, {
     title: '包装代码',
     dataIndex: 'packing_code',
+    render: o => (
+      <PackagePopover data={o} />
+      ),
   }, {
     title: '收货包装',
     dataIndex: 'receive_pack',
@@ -136,6 +150,7 @@ export default class DetailForm extends Component {
           <Button>快捷收货</Button>
         </div>
         <Table columns={this.columns} dataSource={this.dataSource} rowKey="seq_no" />
+        <ReceivingModal />
       </Card>
     );
   }
