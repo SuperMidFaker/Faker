@@ -49,6 +49,7 @@ import cmsHsCode from './cmsHsCode';
 import crmCustomers from './crmCustomers';
 import crmOrders from './crmOrders';
 import crmBilling from './crmBilling';
+import cwmReceive from './cwmReceive';
 
 export default combineReducers({
   activities,
@@ -101,4 +102,5 @@ export default combineReducers({
   crmCustomers,
   crmOrders,
   crmBilling,
+  cwmReceive,
 });
