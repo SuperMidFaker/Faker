@@ -307,7 +307,7 @@ export default class OrderList extends React.Component {
             </div>
           </div>
         </Content>
-        <OrderDockPanel />
+        <OrderDockPanel reload={this.handleTableLoad} />
         <DelegationDockPanel />
         <ShipmentDockPanel />
       </QueueAnim>
