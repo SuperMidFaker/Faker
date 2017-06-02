@@ -449,6 +449,7 @@ export default(store, cookie) => {
             <Route path="settings">
               <IndexRedirect to="/cwm/settings/openapi" />
               <Route path="openapi" component={CWMSettings.OpenApi} />
+              <Route path="warehouse" component={CWMSettings.WareHouse} />
             </Route>
           </Route>
           <Route path={DEFAULT_MODULES.scof.id} component={SCOF}>
