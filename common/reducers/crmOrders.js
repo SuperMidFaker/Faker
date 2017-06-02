@@ -388,8 +388,8 @@ export function cancelOrder(orderNo) {
         actionTypes.CANCEL_ORDER_FAIL,
       ],
       endpoint: 'v1/crm/cancel/order',
-      method: 'get',
-      params: { orderNo },
+      method: 'post',
+      data: { order_no: orderNo },
     },
   };
 }
@@ -403,8 +403,8 @@ export function closeOrder(orderNo) {
         actionTypes.CLOSE_ORDER_FAIL,
       ],
       endpoint: 'v1/crm/close/order',
-      method: 'get',
-      params: { orderNo },
+      method: 'post',
+      data: { order_no: orderNo },
     },
   };
 }
