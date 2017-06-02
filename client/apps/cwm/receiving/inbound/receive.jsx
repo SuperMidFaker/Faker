@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Breadcrumb, Icon, Dropdown, Form, Layout, Menu, Row, Button, Select } from 'antd';
+import { Breadcrumb, Icon, Dropdown, Form, Layout, Menu, Button, Select } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import HeadForm from './forms/headForm';
@@ -112,12 +112,10 @@ export default class ReceiveInbound extends Component {
             </Button>
           </div>
         </Header>
-        <Content className="main-content layout-fixed-width layout-fixed-width-lg">
+        <Content className="main-content">
           <Form layout="vertical">
-            <Row gutter={16}>
-              <HeadForm form={form} />
-              <DetailForm form={form} />
-            </Row>
+            <HeadForm form={form} />
+            <DetailForm form={form} />
           </Form>
         </Content>
       </div>

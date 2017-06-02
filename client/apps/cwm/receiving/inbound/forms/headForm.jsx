@@ -42,7 +42,7 @@ export default class HeadForm extends Component {
     return (
       <Card>
         <Row gutter={16}>
-          <Col sm={24} lg={8}>
+          <Col sm={24} lg={6}>
             <FormItem label="入库单号">
               {getFieldDecorator('inbound_no', {
               })(
@@ -50,7 +50,7 @@ export default class HeadForm extends Component {
                   )}
             </FormItem>
           </Col>
-          <Col sm={24} lg={8}>
+          <Col sm={24} lg={6}>
             <FormItem label="入库状态">
               {getFieldDecorator('inbound_status', {
               })(
@@ -58,9 +58,25 @@ export default class HeadForm extends Component {
                   )}
             </FormItem>
           </Col>
-          <Col sm={24} lg={8}>
+          <Col sm={24} lg={6}>
             <FormItem label="操作人员">
               {getFieldDecorator('inbound_type', {
+              })(
+                <Input />
+                  )}
+            </FormItem>
+          </Col>
+          <Col sm={24} lg={3}>
+            <FormItem label="预计箱数">
+              {getFieldDecorator('convey_box_qty', {
+              })(
+                <Input />
+                  )}
+            </FormItem>
+          </Col>
+          <Col sm={24} lg={3}>
+            <FormItem label="预计托盘数">
+              {getFieldDecorator('convey_pallet_qty', {
               })(
                 <Input />
                   )}

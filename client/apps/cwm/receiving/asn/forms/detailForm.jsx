@@ -35,7 +35,7 @@ export default class DetailForm extends Component {
   }]
   render() {
     return (
-      <Card>
+      <Card bodyStyle={{ padding: 0 }}>
         <div className="toolbar">
           <Button type="primary" style={{ marginRight: 8 }}>添加</Button>
           <Button>导入</Button>
