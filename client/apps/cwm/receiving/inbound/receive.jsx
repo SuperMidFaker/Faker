@@ -48,7 +48,7 @@ export default class ReceiveInbound extends Component {
   }
   state = {
     selectedRowKeys: [],
-    receivingMode: '',
+    receivingMode: 'scan',
   }
   msg = key => formatMsg(this.props.intl, key);
   handleSave = () => {
@@ -122,9 +122,12 @@ export default class ReceiveInbound extends Component {
   }, {
     title: '操作',
     render: (o, record) => {
-      if (record.expect_qty === record.received_qty || this.state.receivingMode === 'scan') {
+      if (this.state.receivingMode === 'scan' || this.state.receivingMode === 'api') {
         return (<RowUpdater onHit={this.handleReceive} label={<Icon type="eye-o" />} row={record} />);
       } else if (this.state.receivingMode === 'manual') {
+        if (record.expect_qty === record.received_qty) {
+          return (<RowUpdater onHit={this.handleReceive} label={<Icon type="check-circle" />} row={record} />);
+        }
         return (<RowUpdater onHit={this.handleReceive} label="收货" row={record} />);
       }
     },
@@ -235,7 +238,13 @@ export default class ReceiveInbound extends Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="top-bar-tools">
+            {(this.state.receivingMode === 'manual' || this.state.receivingMode === 'api') && <Dropdown overlay={tagMenu}>
+              <Button size="large" onClick={this.handlePrint}>
+                <Icon type="barcode" /> <Icon type="down" />
+              </Button>
+            </Dropdown>}
             {this.state.receivingMode === 'manual' && <Button type="primary" size="large" icon="printer" onClick={this.handlePrint} >打印入库请单</Button>}
+            {(this.state.receivingMode === 'scan' || this.state.receivingMode === 'api') && <Button size="large" icon="printer" onClick={this.handlePrint} />}
             {this.state.receivingMode === 'scan' && <Dropdown overlay={tagMenu}>
               <Button type="primary" size="large" onClick={this.handlePrint}>
                 <Icon type="barcode" />标签 <Icon type="down" />
@@ -244,6 +253,7 @@ export default class ReceiveInbound extends Component {
             <RadioGroup defaultValue={this.state.receivingMode} onChange={this.handleReceivingModeChange} size="large">
               <RadioButton value="scan"><Icon type="scan" /> 扫描收货</RadioButton>
               <RadioButton value="manual"><Icon type="user" /> 人工收货</RadioButton>
+              <RadioButton value="api"><Icon type="api" /> 接口收货</RadioButton>
             </RadioGroup>
             <Button size="large" type="primary" loading={submitting} onClick={this.handleSaveBtnClick} disabled>
               入库完成
@@ -278,7 +288,9 @@ export default class ReceiveInbound extends Component {
             </Card>
             <Card bodyStyle={{ padding: 0 }}>
               <div className="toolbar">
-                {this.state.receivingMode === 'manual' && <Button>快捷收货</Button>}
+                {this.state.receivingMode === 'scan' && <Button type="primary" ghost size="large" icon="tablet">推送任务</Button>}
+                {this.state.receivingMode === 'manual' && <Button type="primary" ghost size="large">收货确认</Button>}
+                {this.state.receivingMode === 'api' && <Button type="primary" ghost size="large" icon="sync">同步数据</Button>}
                 <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                   <h3>已选中{this.state.selectedRowKeys.length}项</h3><Button>分批收货</Button>
                 </div>

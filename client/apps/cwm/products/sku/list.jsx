@@ -1,8 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Layout, message } from 'antd';
-import QueueAnim from 'rc-queue-anim';
+import { Breadcrumb, Button, Input, Layout, message } from 'antd';
 import { loadSkusByWarehouse } from 'common/reducers/cwmSku';
 import Table from 'client/components/remoteAntTable';
 import SearchBar from 'client/components/search-bar';
@@ -12,7 +11,8 @@ import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 
 const formatMsg = format(messages);
-const { Header, Content } = Layout;
+const { Header, Content, Sider } = Layout;
+const Search = Input.Search;
 
 function fetchData({ state, dispatch }) {
   return dispatch(loadSkusByWarehouse({
@@ -127,39 +127,61 @@ export default class CWMSkuList extends React.Component {
   render() {
     const { skulist, loading } = this.props;
     this.dataSource.remotes = skulist;
+    const columns = [{
+      dataIndex: 'owner_code',
+      key: 'owner_name',
+    }];
     return (
-      <QueueAnim type={['bottom', 'up']}>
-        <Header className="top-bar">
-          <Breadcrumb>
-            <Breadcrumb.Item>
-              {this.msg('products')}
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              {this.msg('productsSku')}
-            </Breadcrumb.Item>
-          </Breadcrumb>
-          <div className="top-bar-tools">
-            <Button size="large" icon="cloud-upload">
-              {this.msg('productImport')}
-            </Button>
-            <Button type="primary" size="large" icon="plus" onClick={this.handleCreateBtnClick}>
-              {this.msg('createSKU')}
-            </Button>
-          </div>
-        </Header>
-        <Content className="main-content" key="main">
-          <div className="page-body">
-            <div className="toolbar">
-              <SearchBar size="large" placeholder={this.msg('productSearchPlaceholder')} onInputSearch={this.handleSearch} />
+      <Layout>
+        <Sider width={320} className="menu-sider" key="sider" >
+          <div className="left-sider-panel">
+            <div className="top-bar">
+              <Breadcrumb>
+                <Breadcrumb.Item>
+                  {this.msg('products')}
+                </Breadcrumb.Item>
+                <Breadcrumb.Item>
+                  {this.msg('productsSku')}
+                </Breadcrumb.Item>
+              </Breadcrumb>
             </div>
-            <div className="panel-body table-panel">
-              <Table columns={this.columns} dataSource={this.dataSource} rowKey="id"
-                scroll={{ x: 1400 }} loading={loading}
-              />
+            <div className="left-sider-panel">
+              <div className="toolbar">
+                <Search
+                  placeholder={this.msg('searchPlaceholder')}
+                  size="large"
+                />
+              </div>
+              <Table columns={columns} showHeader={false} />
             </div>
           </div>
-        </Content>
-      </QueueAnim>
+        </Sider>
+        <Layout>
+          <Header className="top-bar">
+
+            <div className="top-bar-tools">
+              <Button size="large" icon="cloud-upload">
+                {this.msg('productImport')}
+              </Button>
+              <Button type="primary" size="large" icon="plus" onClick={this.handleCreateBtnClick}>
+                {this.msg('createSKU')}
+              </Button>
+            </div>
+          </Header>
+          <Content className="main-content" key="main">
+            <div className="page-body">
+              <div className="toolbar">
+                <SearchBar size="large" placeholder={this.msg('productSearchPlaceholder')} onInputSearch={this.handleSearch} />
+              </div>
+              <div className="panel-body table-panel">
+                <Table columns={this.columns} dataSource={this.dataSource} rowKey="id"
+                  scroll={{ x: 1400 }} loading={loading}
+                />
+              </div>
+            </div>
+          </Content>
+        </Layout>
+      </Layout>
     );
   }
 }

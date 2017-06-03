@@ -67,8 +67,8 @@ export default class ModuleCWM extends React.Component {
       text: formatMsg(intl, 'stock'),
       sublinks: [{
         key: 'cwm-3-0',
-        path: '/cwm/stock/enquiry',
-        text: formatMsg(intl, 'enquiry'),
+        path: '/cwm/stock/inventory',
+        text: formatMsg(intl, 'inventory'),
       }, {
         key: 'cwm-3-1',
         disabled: true,
@@ -91,19 +91,11 @@ export default class ModuleCWM extends React.Component {
       single: false,
       key: 'cwm-4',
       icon: 'icon-fontello-feather',
-      text: formatMsg(intl, 'ftzReg'),
+      text: formatMsg(intl, 'supervision'),
       sublinks: [{
         key: 'cwm-4-0',
-        path: '/cwm/ftz/receive',
-        text: formatMsg(intl, 'ftzInbound'),
-      }, {
-        key: 'cwm-4-1',
-        path: '/cwm/ftz/release',
-        text: formatMsg(intl, 'ftzOutbound'),
-      }, {
-        key: 'cwm-4-2',
-        path: '/cwm/ftz/transfer',
-        text: formatMsg(intl, 'ftzMovement'),
+        path: '/cwm/supervision/shftz',
+        text: formatMsg(intl, 'supervisionSHFTZ'),
       },
       ],
     });

@@ -59,11 +59,11 @@ import * as CWMReceivingASN from './cwm/receiving/asn';
 import * as CWMReceivingInbound from './cwm/receiving/inbound';
 import * as CWMShippingOrder from './cwm/shipping/order';
 import * as CWMShippingOutbound from './cwm/shipping/outbound';
-import * as CWMStock from './cwm/stock';
-import * as CWMFTZReceive from './cwm/ftz/receive';
+import * as CWMStockInventory from './cwm/stock/inventory';
 import * as CWMProductsSku from './cwm/products/sku';
 import * as CWMWarehouse from './cwm/resources/warehouse';
 import * as CWMSettings from './cwm/settings';
+import * as CWMSupervisionSHFTZ from './cwm/supervision/shftz';
 import SCV from './scv/module-scv';
 import * as SCVDashboard from './scv/dashboard';
 import * as SCVOrders from './scv/orders';
@@ -435,11 +435,12 @@ export default(store, cookie) => {
                 <IndexRoute component={CWMShippingOutbound.List} />
               </Route>
             </Route>
-            <Route path="stock" component={CWMStock.List} />
-            <Route path="ftz">
-              <Route path="receive">
-                <IndexRoute component={CWMFTZReceive.List} />
-                <Route path="reg/:asnNo" component={CWMFTZReceive.Reg} />
+            <Route path="stock">
+              <Route path="inventory" component={CWMStockInventory.List} />
+            </Route>
+            <Route path="supervision">
+              <Route path="shftz">
+                <IndexRoute component={CWMSupervisionSHFTZ.List} />
               </Route>
             </Route>
             <Route path="products">

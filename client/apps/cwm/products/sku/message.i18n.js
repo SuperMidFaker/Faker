@@ -3,15 +3,15 @@ import { defineMessages } from 'react-intl';
 const messages = defineMessages({
   products: {
     id: 'cwm.products.products',
-    defaultMessage: '商品管理',
+    defaultMessage: '货品管理',
   },
   productsSku: {
     id: 'cwm.products.sku',
-    defaultMessage: 'SKU管理',
+    defaultMessage: 'SKU',
   },
   productImport: {
     id: 'cwm.products.import',
-    defaultMessage: '商品导入',
+    defaultMessage: '货品导入',
   },
   createSKU: {
     id: 'cwm.products.product.sku.create',

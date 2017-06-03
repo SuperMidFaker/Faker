@@ -7,7 +7,7 @@ const messages = defineMessages({
   },
   receiving: {
     id: 'cwm.module.receiving',
-    defaultMessage: '收货管理',
+    defaultMessage: '收货',
   },
   receivingASN: {
     id: 'cwm.module.receiving.asn',
@@ -19,7 +19,7 @@ const messages = defineMessages({
   },
   shipping: {
     id: 'cwm.module.shipping',
-    defaultMessage: '发货管理',
+    defaultMessage: '发货',
   },
   shippingOrder: {
     id: 'cwm.module.shipping.so',
@@ -31,10 +31,10 @@ const messages = defineMessages({
   },
   stock: {
     id: 'cwm.module.stock',
-    defaultMessage: '库存管理',
+    defaultMessage: '库存',
   },
-  enquiry: {
-    id: 'cwm.module.stock.enquiry',
+  inventory: {
+    id: 'cwm.module.stock.inventory',
     defaultMessage: '库存查询',
   },
   movement: {
@@ -49,21 +49,13 @@ const messages = defineMessages({
     id: 'cwm.module.stock.counting',
     defaultMessage: '库存盘点',
   },
-  ftzSupervision: {
-    id: 'cwm.module.ftz.supervision',
+  supervision: {
+    id: 'cwm.module.supervision',
     defaultMessage: '保税监管',
   },
-  ftzInbound: {
-    id: 'cwm.module.ftz.inbound',
-    defaultMessage: '进库备案',
-  },
-  ftzOutbound: {
-    id: 'cwm.module.ftz.outbound',
-    defaultMessage: '出库备案',
-  },
-  ftzMovement: {
-    id: 'cwm.module.ftz.movement',
-    defaultMessage: '移库备案',
+  supervisionSHFTZ: {
+    id: 'cwm.module.supervision.shftz',
+    defaultMessage: '上海自贸区',
   },
   products: {
     id: 'cwm.module.products',
@@ -83,7 +75,7 @@ const messages = defineMessages({
   },
   mapping: {
     id: 'cwm.module.products.mapping',
-    defaultMessage: '对应备案料号',
+    defaultMessage: '备案料号',
   },
   resources: {
     id: 'cwm.module.resources',
