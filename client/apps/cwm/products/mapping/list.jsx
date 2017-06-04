@@ -40,7 +40,7 @@ function fetchData({ state, dispatch }) {
   depth: 2,
   moduleName: 'cwm',
 })
-export default class CWMSkuList extends React.Component {
+export default class ProductMappingList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -141,7 +141,7 @@ export default class CWMSkuList extends React.Component {
                   {this.msg('products')}
                 </Breadcrumb.Item>
                 <Breadcrumb.Item>
-                  {this.msg('productsSku')}
+                  {this.msg('productsMapping')}
                 </Breadcrumb.Item>
               </Breadcrumb>
             </div>
@@ -158,13 +158,9 @@ export default class CWMSkuList extends React.Component {
         </Sider>
         <Layout>
           <Header className="top-bar">
-
             <div className="top-bar-tools">
-              <Button size="large" icon="cloud-upload">
-                {this.msg('productImport')}
-              </Button>
               <Button type="primary" size="large" icon="plus" onClick={this.handleCreateBtnClick}>
-                {this.msg('createSKU')}
+                {this.msg('createMapping')}
               </Button>
             </div>
           </Header>

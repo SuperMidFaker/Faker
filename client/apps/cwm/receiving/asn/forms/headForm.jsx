@@ -77,18 +77,16 @@ export default class HeadForm extends Component {
             </FormItem>
           </Col>
           <Col sm={24} lg={8}>
-            <FormItem label="仓库">
-              {getFieldDecorator('whse_code', {
+            <FormItem label="ASN类型">
+              {getFieldDecorator('asn_type', {
               })(
-                <Select mode="combobox"
-                  optionFilterProp="search"
-                  placeholder="选择仓库"
+                <Select
+                  placeholder="ASN类型"
                   defaultValue="0961"
-                  disabled
                 >
-                  <Option value="0961">物流大道仓库</Option>
-                  <Option value="0962">希雅路仓库</Option>
-                  <Option value="0963">富特路仓库</Option>
+                  <Option value="0961">采购入库</Option>
+                  <Option value="0962">调拨入库</Option>
+                  <Option value="0963">退货入库</Option>
                 </Select>
                   )}
             </FormItem>

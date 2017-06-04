@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { Popconfirm } from 'antd';
 import { PRESET_TRANSMODES, CONTAINER_PACKAGE_TYPE } from 'common/constants';
 

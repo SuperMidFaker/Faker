@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import { routerShape } from 'react-router';
 import { setNavTitle } from 'common/reducers/navbar';
 import { argumentContainer } from '../util';

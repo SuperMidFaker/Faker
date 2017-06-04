@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Breadcrumb, Icon, Dropdown, Form, Radio, Layout, Menu, Button, Select, Card, Col, Row, Tag, Table, Input, Tooltip } from 'antd';
+import { Breadcrumb, Icon, Dropdown, Form, Radio, Layout, Menu, Popconfirm, Steps, Button, Select, Card, Col, Row, Tag, Table, Input, Tooltip } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import Avatar from 'react-avatar';
@@ -17,6 +17,7 @@ const { Header, Content } = Layout;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
+const Step = Steps.Step;
 
 @injectIntl
 @connect(
@@ -255,28 +256,25 @@ export default class ReceiveInbound extends Component {
               <RadioButton value="manual"><Icon type="user" /> 人工收货</RadioButton>
               <RadioButton value="api"><Icon type="api" /> 接口收货</RadioButton>
             </RadioGroup>
-            <Button size="large" type="primary" loading={submitting} onClick={this.handleSaveBtnClick} disabled>
-              入库完成
-            </Button>
           </div>
         </Header>
         <Content className="main-content layout-fixed-width layout-fixed-width-lg">
           <Form layout="vertical">
-            <Card>
-              <Row gutter={16}>
-                <Col sm={24} lg={8}>
+            <Card bodyStyle={{ paddingBottom: 56 }}>
+              <Row>
+                <Col sm={24} lg={6}>
+                  <InfoItem label="货主" field="04601|米思米(中国)精密机械贸易" />
+                </Col>
+                <Col sm={24} lg={6}>
                   <InfoItem label="入库单号" field="I096120170603223-01" />
                 </Col>
-                <Col sm={24} lg={4}>
-                  <InfoItem label="入库状态" field={<Tag color="blue">上架</Tag>} />
-                </Col>
-                <Col sm={24} lg={4}>
+                <Col sm={24} lg={3}>
                   <InfoItem label="预计箱数" addonBefore={<Icon type="inbox" />} field={10} />
                 </Col>
-                <Col sm={24} lg={4}>
+                <Col sm={24} lg={3}>
                   <InfoItem label="预计托盘数" addonBefore={<Icon type="appstore-o" />} field={2} />
                 </Col>
-                <Col sm={24} lg={4}>
+                <Col sm={24} lg={6}>
                   <InfoItem type="dropdown" label="操作人员" addonBefore={<Avatar name="未分配" size={28} round />}
                     placeholder="分配操作人员" editable
                     overlay={<Menu onClick={this.handleMenuClick}>
@@ -285,14 +283,30 @@ export default class ReceiveInbound extends Component {
                   />
                 </Col>
               </Row>
+              <div className="card-footer">
+                <Steps progressDot current={1}>
+                  <Step description="创建入库" />
+                  <Step description="收货" />
+                  <Step description="上架" />
+                  <Step description="入库完成" />
+                </Steps>
+              </div>
             </Card>
             <Card bodyStyle={{ padding: 0 }}>
               <div className="toolbar">
-                {this.state.receivingMode === 'scan' && <Button type="primary" ghost size="large" icon="tablet">推送任务</Button>}
-                {this.state.receivingMode === 'manual' && <Button type="primary" ghost size="large">收货确认</Button>}
-                {this.state.receivingMode === 'api' && <Button type="primary" ghost size="large" icon="sync">同步数据</Button>}
                 <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                   <h3>已选中{this.state.selectedRowKeys.length}项</h3><Button>分批收货</Button>
+                </div>
+                <div className="toolbar-right">
+                  {this.state.receivingMode === 'scan' && <Button type="primary" ghost icon="tablet">推送任务</Button>}
+                  {this.state.receivingMode === 'manual' &&
+                  <Popconfirm title="确定此次入库操作已完成?" okText="确认" cancelText="取消">
+                    <Button type="primary" ghost icon="check" loading={submitting} onClick={this.handleSaveBtnClick}>
+                      入库完成
+                    </Button>
+                  </Popconfirm>
+                  }
+                  {this.state.receivingMode === 'api' && <Button type="primary" ghost icon="sync">同步数据</Button>}
                 </div>
               </div>
               <Table columns={this.columns} rowSelection={rowSelection} dataSource={this.mockData} rowKey="seq_no" />

@@ -1,15 +1,17 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Breadcrumb, Form, Layout, Row, Button } from 'antd';
+import { Breadcrumb, Form, Layout, Row, Col, Button, Select } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import HeadForm from './forms/headForm';
 import DetailForm from './forms/detailForm';
+import SiderForm from './forms/siderForm';
 import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
+const Option = Select.Option;
 
 @injectIntl
 @connect(
@@ -70,6 +72,19 @@ export default class CreateReceivingNotice extends Component {
         <Header className="top-bar">
           <Breadcrumb>
             <Breadcrumb.Item>
+              <Select
+                size="large"
+                defaultValue="0960"
+                placeholder="选择仓库"
+                style={{ width: 160 }}
+                disabled
+              >
+                <Option value="0960">物流大道仓库</Option>
+                <Option value="0961">希雅路仓库</Option>
+                <Option value="0962">富特路仓库</Option>
+              </Select>
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
               {this.msg('receivingASN')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
@@ -87,9 +102,14 @@ export default class CreateReceivingNotice extends Component {
         </Header>
         <Content className="main-content layout-fixed-width layout-fixed-width-lg">
           <Form layout="vertical">
+            <HeadForm form={form} />
             <Row gutter={16}>
-              <HeadForm form={form} />
-              <DetailForm form={form} />
+              <Col span={18}>
+                <DetailForm form={form} />
+              </Col>
+              <Col span={6}>
+                <SiderForm form={form} />
+              </Col>
             </Row>
           </Form>
         </Content>

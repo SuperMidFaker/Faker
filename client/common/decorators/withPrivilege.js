@@ -1,5 +1,6 @@
+import PropTypes from 'prop-types';
 /* eslint react/no-multi-comp: 0 */
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { argumentContainer } from '../util';
 
 export function hasPermission(privileges, { module, feature, action }) {
@@ -34,7 +35,7 @@ export default function withPrivilege({ module, feature, action }) {
   return (Wrapped) => {
     class WrappedComponent extends Component {
       static contextTypes = {
-        router: React.PropTypes.object.isRequired,
+        router: PropTypes.object.isRequired,
         store: PropTypes.object.isRequired,
       }
       componentWillMount() {
