@@ -101,6 +101,34 @@ export default class MainForm extends Component {
                 })(<Input />)}
               </FormItem>
             </Col>
+            <Col sm={24} lg={12}>
+              <FormItem label={this.msg('unitMeasure')}>
+                {getFieldDecorator('unit', {
+                })(
+                  <Select
+                    optionFilterProp="search"
+                    placeholder="选择计量主单位"
+                  >
+                    <Option value="Ballo">个</Option>
+                    <Option value="CPU">件</Option>
+                    <Option value="CPU">套</Option>
+                    <Option value="Float">公斤</Option>
+                  </Select>
+                  )}
+              </FormItem>
+            </Col>
+            <Col sm={24} lg={12}>
+              <FormItem label={this.msg('unitPrice')} >
+                {getFieldDecorator('unit_price', {
+                })(<InputGroup compact>
+                  <Select size="large" style={{ width: '30%' }} defaultValue="RMB">
+                    <Option value="RMB">人民币</Option>
+                    <Option value="USD">美元</Option>
+                  </Select>
+                  <Input style={{ width: '70%' }} />
+                </InputGroup>)}
+              </FormItem>
+            </Col>
             <Col sm={24} lg={8}>
               <FormItem label={this.msg('alias1')}>
                 {getFieldDecorator('alias1', {
@@ -138,30 +166,25 @@ export default class MainForm extends Component {
               </FormItem>
             </Col>
             <Col sm={24} lg={8}>
-              <FormItem label={this.msg('unitMeasure')}>
+              <FormItem label={this.msg('perUnitQty')}>
+                {getFieldDecorator('per_unit_qty', {
+                })(<Input />)}
+              </FormItem>
+            </Col>
+            <Col sm={24} lg={8}>
+              <FormItem label={this.msg('unit')}>
                 {getFieldDecorator('unit', {
                 })(
                   <Select
                     optionFilterProp="search"
-                    placeholder="选择计量主单位"
+                    placeholder="选择SKU包装单位"
                   >
-                    <Option value="Ballo">个</Option>
-                    <Option value="CPU">箱</Option>
-                    <Option value="Float">公斤</Option>
+                    <Option value="Ballo">木箱</Option>
+                    <Option value="CPU">纸箱</Option>
+                    <Option value="Float">包</Option>
+                    <Option value="Float">托盘</Option>
                   </Select>
                   )}
-              </FormItem>
-            </Col>
-            <Col sm={24} lg={8}>
-              <FormItem label={this.msg('unitPrice')} >
-                {getFieldDecorator('unit_price', {
-                })(<InputGroup compact>
-                  <Select size="large" style={{ width: '30%' }} defaultValue="RMB">
-                    <Option value="RMB">人民币</Option>
-                    <Option value="USD">美元</Option>
-                  </Select>
-                  <Input style={{ width: '70%' }} />
-                </InputGroup>)}
               </FormItem>
             </Col>
             <Col sm={24} lg={6}>
