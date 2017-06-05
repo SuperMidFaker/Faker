@@ -232,7 +232,7 @@ export default class DutyTaxPane extends React.Component {
       <div className="pane-content tab-pane">
         <div className="pane-header">
           <Popconfirm title="确定重新计算税费?" onConfirm={this.handleRecalculation}>
-            <Button type="primary" icon="reload" loading={this.state.recalLoading}>重算</Button>
+            <Button icon="reload" loading={this.state.recalLoading}>重算</Button>
           </Popconfirm>
           <div style={{ float: 'right' }}>
             <span style={{ color: '#FF9933' }}>单位：元</span>
@@ -242,7 +242,7 @@ export default class DutyTaxPane extends React.Component {
           <Table columns={this.columns} pagination={false} dataSource={this.props.taxTots}
             rowKey="pre_entry_seq_no" expandedRowRender={this.handleExpandDetail}
           />
-          <Table pagination={false} dataSource={this.state.sumval}>
+          <Table showHeader={false} pagination={false} dataSource={this.state.sumval}>
             <Column dataIndex="total" width={230} />
             <Column dataIndex="duty_paid" width={110} render={this.renderValFixed} />
             <Column dataIndex="trxn_mode" width={110} />

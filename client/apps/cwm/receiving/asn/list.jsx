@@ -1,15 +1,13 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Badge, Button, Breadcrumb, Layout, Radio, Select, Table, Tag } from 'antd';
+import { Badge, Button, Breadcrumb, Layout, Radio, Select, Table, Tag, notification } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/search-bar';
 import RowUpdater from 'client/components/rowUpdater';
 import connectNav from 'client/common/decorators/connect-nav';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
+import { formatMsg } from '../message.i18n';
 
-const formatMsg = format(messages);
 const { Header, Content } = Layout;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
@@ -37,11 +35,11 @@ export default class ReceivingNoticeList extends React.Component {
     selectedRowKeys: [],
     searchInput: '',
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   columns = [{
     title: 'ANS编号',
     dataIndex: 'asn_no',
-    width: 160,
+    width: 120,
     fixed: 'left',
   }, {
     title: '货主',
@@ -54,13 +52,17 @@ export default class ReceivingNoticeList extends React.Component {
     title: '供应商',
     dataIndex: 'seller_name',
   }, {
+    title: '通知日期',
+    width: 120,
+    dataIndex: 'created_date',
+  }, {
     title: '预期到货时间',
     width: 120,
     dataIndex: 'expect_receive_date',
   }, {
-    title: '通知时间',
+    title: '收货时间',
     width: 120,
-    dataIndex: 'created_date',
+    dataIndex: 'received_date',
   }, {
     title: '状态',
     dataIndex: 'status',
@@ -90,13 +92,13 @@ export default class ReceivingNoticeList extends React.Component {
       }
     },
   }, {
-    title: '监管备案',
+    title: '备案状态',
     dataIndex: 'reg_status',
     width: 120,
     fixed: 'right',
     render: (o) => {
       if (o === 0) {
-        return (<Badge status="default" />);
+        return (<Badge status="default" text="未备案" />);
       } else if (o === 1) {
         return (<Badge status="processing" text="已发送" />);
       } else if (o === 2) {
@@ -105,16 +107,16 @@ export default class ReceivingNoticeList extends React.Component {
     },
   }, {
     title: '操作',
-    width: 120,
+    width: 150,
     fixed: 'right',
     render: (o, record) => {
       if (record.status === 0) {
-        return (<span><RowUpdater label="释放" row={record} /><span className="ant-divider" /><RowUpdater label="修改" row={record} /></span>);
+        return (<span><RowUpdater label="释放" row={record} /><span className="ant-divider" /><RowUpdater label="修改" row={record} /><span className="ant-divider" /><RowUpdater label="取消" row={record} /></span>);
       } else if (record.status === 1) {
         if (record.bonded === 1 && record.reg_status === 0) {
-          return (<span><RowUpdater onHit={this.handleReceive} label="收货" row={record} /><span className="ant-divider" /><RowUpdater label="备案" row={record} /></span>);
+          return (<span><RowUpdater onHit={this.handleReceive} label="入库操作" row={record} /><span className="ant-divider" /><RowUpdater onHit={this.handleFTZReg} label="发送备案" row={record} /></span>);
         } else {
-          return (<span><RowUpdater onHit={this.handleReceive} label="收货" row={record} /></span>);
+          return (<span><RowUpdater onHit={this.handleReceive} label="入库操作" row={record} /></span>);
         }
       }
     },
@@ -177,7 +179,21 @@ export default class ReceivingNoticeList extends React.Component {
     const link = `/cwm/receiving/inbound/receive/${row.asn_no}`;
     this.context.router.push(link);
   }
+  handleFTZReg = (row) => {
+    notification.success({
+      message: '操作成功',
+      description: `${row.asn_no} 已发送至 上海自贸区海关监管系统 一二线先报关后入库`,
+    });
+    // const link = `/cwm/ftz/receive/reg/${row.asn_no}`;
+    // this.context.router.push(link);
+  }
   render() {
+    const rowSelection = {
+      selectedRowKeys: this.state.selectedRowKeys,
+      onChange: (selectedRowKeys) => {
+        this.setState({ selectedRowKeys });
+      },
+    };
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Header className="top-bar">
@@ -226,7 +242,7 @@ export default class ReceivingNoticeList extends React.Component {
               </div>
             </div>
             <div className="panel-body table-panel">
-              <Table columns={this.columns} dataSource={this.dataSource} rowKey="id" scroll={{ x: 1300 }} />
+              <Table columns={this.columns} rowSelection={rowSelection} dataSource={this.dataSource} rowKey="id" scroll={{ x: 1400 }} />
             </div>
           </div>
         </Content>

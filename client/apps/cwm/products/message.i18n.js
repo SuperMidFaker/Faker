@@ -2,23 +2,23 @@ import { defineMessages } from 'react-intl';
 
 const messages = defineMessages({
   products: {
-    id: 'cwm.products.products',
-    defaultMessage: '商品管理',
+    id: 'cwm.products',
+    defaultMessage: '货品',
   },
   productsSku: {
     id: 'cwm.products.sku',
-    defaultMessage: 'SKU管理',
+    defaultMessage: 'SKU',
   },
   productImport: {
     id: 'cwm.products.import',
-    defaultMessage: '商品导入',
+    defaultMessage: '货品',
   },
   createSKU: {
-    id: 'cwm.products.product.sku.create',
-    defaultMessage: 'SKU创建',
+    id: 'cwm.products.sku.create',
+    defaultMessage: '新建货品',
   },
   productSearchPlaceholder: {
-    id: 'cwm.products.product.search.placeholder',
+    id: 'cwm.products.search.placeholder',
     defaultMessage: 'SKU号或者货号',
   },
   shipperOwner: {

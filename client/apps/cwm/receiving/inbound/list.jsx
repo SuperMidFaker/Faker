@@ -41,7 +41,8 @@ export default class ReceivingInboundList extends React.Component {
   columns = [{
     title: '收货通知单号',
     dataIndex: 'rn_no',
-    width: 160,
+    width: 120,
+    fixed: 'left',
   }, {
     title: '货主',
     width: 200,
@@ -59,7 +60,7 @@ export default class ReceivingInboundList extends React.Component {
     },
   }, {
     title: '入库单号',
-    width: 200,
+    width: 120,
     dataIndex: 'inbound_no',
   }, {
     title: '入库状态',
@@ -77,34 +78,40 @@ export default class ReceivingInboundList extends React.Component {
       }
     },
   }, {
-    title: '入库日期',
-    dataIndex: 'inbound_date',
-    width: 200,
-  }, {
     title: '操作人员',
-    width: 200,
-    dataIndex: 'operater',
+    dataIndex: 'operator',
   }, {
-    title: '收货锁定',
-    dataIndex: 'receiving_lock',
+    title: '开始时间',
+    dataIndex: 'inbound_start_date',
+    width: 120,
+  }, {
+    title: '完成时间',
+    dataIndex: 'inbound_finish_date',
+    width: 120,
+  }, {
+    title: '收货方式',
+    dataIndex: 'receiving_mode',
     width: 80,
     render: (o) => {
-      if (o === 1) {
-        return (<Tooltip title="由WMS上传实际收货记录"><Icon type="lock" /></Tooltip>);
-      } else if (o === 2) {
-        return (<Tooltip title="已指派APP收货"><Icon type="lock" /></Tooltip>);
+      if (o === 'api') {
+        return (<Tooltip title="接口收货"><Icon type="api" /></Tooltip>);
+      } else if (o === 'scan') {
+        return (<Tooltip title="扫码收货"><Icon type="scan" /></Tooltip>);
+      } else if (o === 'manual') {
+        return (<Tooltip title="人工收货"><Icon type="user" /></Tooltip>);
       }
     },
   }, {
     title: '操作',
     width: 100,
+    fixed: 'right',
     render: (o, record) => {
-      if (record.status === 0 && record.receiving_lock === 0) {
-        return (<span><RowUpdater onHit={this.handleReceive} label="收货" row={record} /><span className="ant-divider" /><RowUpdater label="派单" row={record} /></span>);
+      if (record.status === 0) {
+        return (<span><RowUpdater onHit={this.handleReceive} label="入库操作" row={record} /> </span>);
       } else if (record.status === 0 && record.receiving_lock === 2) {
         return (<span><RowUpdater label="撤回" row={record} /></span>);
-      } else if (record.status === 1) {
-
+      } else {
+        return (<span><RowUpdater onHit={this.handleReceive} label="入库操作" row={record} /> </span>);
       }
     },
   }]
@@ -117,7 +124,7 @@ export default class ReceivingInboundList extends React.Component {
     owner_code: '04601|米思米(中国)精密机械贸易',
     ref_order_no: '7IR2730',
     status: 0,
-    receiving_lock: 0,
+    receiving_mode: 'scan',
   }, {
     id: '2',
     rn_no: 'N04601170547',
@@ -126,7 +133,7 @@ export default class ReceivingInboundList extends React.Component {
     owner_code: '03701|西门子国际贸易',
     ref_order_no: 'NUE0394488',
     status: 1,
-    receiving_lock: 1,
+    receiving_mode: 'api',
   }, {
     id: '3',
     rn_no: 'N04601170546',
@@ -135,7 +142,7 @@ export default class ReceivingInboundList extends React.Component {
     owner_code: '04601|米思米(中国)精密机械贸易',
     ref_order_no: '7FJ1787',
     status: 2,
-    receiving_lock: 2,
+    receiving_mode: 'manual',
   }, {
     id: '4',
     rn_no: 'N04601170546',
@@ -144,7 +151,7 @@ export default class ReceivingInboundList extends React.Component {
     owner_code: '04601|米思米(中国)精密机械贸易',
     ref_order_no: '7FJ1787',
     status: 2,
-    receiving_lock: 0,
+    receiving_mode: 'scan',
   }, {
     id: '5',
     rn_no: 'N04601170546',
@@ -153,7 +160,7 @@ export default class ReceivingInboundList extends React.Component {
     owner_code: '04601|米思米(中国)精密机械贸易',
     ref_order_no: '7FJ1787',
     status: 3,
-    receiving_lock: 0,
+    receiving_mode: 'scan',
   }];
 
   handleStatusChange = (ev) => {
@@ -166,6 +173,12 @@ export default class ReceivingInboundList extends React.Component {
     this.context.router.push(link);
   }
   render() {
+    const rowSelection = {
+      selectedRowKeys: this.state.selectedRowKeys,
+      onChange: (selectedRowKeys) => {
+        this.setState({ selectedRowKeys });
+      },
+    };
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Header className="top-bar">
@@ -209,7 +222,7 @@ export default class ReceivingInboundList extends React.Component {
               </div>
             </div>
             <div className="panel-body table-panel">
-              <Table columns={this.columns} dataSource={this.dataSource} rowKey="id" scroll={{ x: 1200 }} />
+              <Table columns={this.columns} rowSelection={rowSelection} dataSource={this.dataSource} rowKey="id" scroll={{ x: 1200 }} />
             </div>
           </div>
         </Content>

@@ -108,6 +108,9 @@ img {
     margin-right: 0; 
   }
 }
+.ant-input-group-wrapper {
+  width: 100%;
+}
 .ant-layout-header {
   background: transparent;
 }
@@ -457,9 +460,14 @@ form .ant-cascader-picker:only-child, form .ant-select:only-child {
     >span {
       display: inline-flex;
     }
+    >.ant-radio-group,
     >.ant-btn-group {
       display: inline-flex;
       margin-left: 8px;
+    }
+    .ant-radio-group-large .ant-radio-button-wrapper {
+      font-size: 14px;
+      font-weight: 500;
     }
     .ant-select,
     >button,
@@ -658,6 +666,7 @@ form .ant-cascader-picker:only-child, form .ant-select:only-child {
   padding: 8px 16px;
   min-height: 46px;
   border-bottom: 1px solid #e9e9e9;
+  >button,
   >span {
     margin-right: 8px;
   }

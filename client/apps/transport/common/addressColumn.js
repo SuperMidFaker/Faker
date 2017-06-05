@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { Tooltip } from 'antd';
 import TrimSpan from 'client/components/trimSpan';
 import { renderConsignLoc } from './consignLocation';

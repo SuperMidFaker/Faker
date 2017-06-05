@@ -67,8 +67,8 @@ export default class ModuleCWM extends React.Component {
       text: formatMsg(intl, 'stock'),
       sublinks: [{
         key: 'cwm-3-0',
-        path: '/cwm/stock/enquiry',
-        text: formatMsg(intl, 'enquiry'),
+        path: '/cwm/stock/inventory',
+        text: formatMsg(intl, 'inventory'),
       }, {
         key: 'cwm-3-1',
         disabled: true,
@@ -91,19 +91,11 @@ export default class ModuleCWM extends React.Component {
       single: false,
       key: 'cwm-4',
       icon: 'icon-fontello-feather',
-      text: formatMsg(intl, 'ftzReg'),
+      text: formatMsg(intl, 'supervision'),
       sublinks: [{
         key: 'cwm-4-0',
-        path: '/cwm/ftz/receive',
-        text: formatMsg(intl, 'ftzInbound'),
-      }, {
-        key: 'cwm-4-1',
-        path: '/cwm/ftz/release',
-        text: formatMsg(intl, 'ftzOutbound'),
-      }, {
-        key: 'cwm-4-2',
-        path: '/cwm/ftz/transfer',
-        text: formatMsg(intl, 'ftzMovement'),
+        path: '/cwm/supervision/shftz',
+        text: formatMsg(intl, 'supervisionSHFTZ'),
       },
       ],
     });
@@ -117,22 +109,18 @@ export default class ModuleCWM extends React.Component {
         path: '/cwm/products/sku',
         text: formatMsg(intl, 'productsSku'),
       }, {
-        key: 'cwm-5-1',
-        path: '/cwm/products/packing',
-        text: formatMsg(intl, 'packing'),
-      }, {
         key: 'cwm-5-2',
         path: '/cwm/products/mapping',
-        text: formatMsg(intl, 'mapping'),
+        text: formatMsg(intl, 'productsMapping'),
       }, {
         key: 'cwm-5-3',
-        path: '/cwm/products/lot',
-        text: formatMsg(intl, 'productsLot'),
+        path: '/cwm/products/lotting',
+        text: formatMsg(intl, 'productsLotting'),
       }, {
         key: 'cwm-5-4',
         disabled: true,
         path: '/cwm/products/kitting',
-        text: formatMsg(intl, 'kitting'),
+        text: formatMsg(intl, 'productsKitting'),
       },
       ],
     });
@@ -143,15 +131,15 @@ export default class ModuleCWM extends React.Component {
       text: formatMsg(intl, 'settings'),
       sublinks: [{
         key: 'cwm-6-0',
-        path: '/cwm/warehouse',
+        path: '/cwm/settings/warehouse',
         text: formatMsg(intl, 'warehouse'),
       }, {
         key: 'cwm-6-1',
-        path: '/cwm/rules',
+        path: '/cwm/settings/rules',
         text: formatMsg(intl, 'rules'),
       }, {
         key: 'cwm-6-2',
-        path: '/cwm/tools',
+        path: '/cwm/settings/tools',
         text: formatMsg(intl, 'tools'),
       }],
     });

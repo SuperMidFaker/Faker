@@ -154,7 +154,7 @@ export default class ManifestLegalInspection extends React.Component {
     }];
     return (
       <div className="panel-body table-panel">
-        <Table columns={columns} dataSource={filterProducts} scroll={{ x: 3000 }} />
+        <Table columns={columns} dataSource={filterProducts} scroll={{ x: 3200 }} />
       </div>
     );
   }

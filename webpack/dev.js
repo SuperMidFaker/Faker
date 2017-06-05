@@ -19,6 +19,9 @@ wpConfig.devServer = {
   stats: {
     colors: true,
   },
+  headers: {
+    'Access-Control-Allow-Origin': '*',
+  },
   host: '0.0.0.0',
   port: config.get('webpack_port'),
 };

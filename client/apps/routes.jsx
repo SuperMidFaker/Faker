@@ -59,10 +59,12 @@ import * as CWMReceivingASN from './cwm/receiving/asn';
 import * as CWMReceivingInbound from './cwm/receiving/inbound';
 import * as CWMShippingOrder from './cwm/shipping/order';
 import * as CWMShippingOutbound from './cwm/shipping/outbound';
-import * as CWMStock from './cwm/stock';
+import * as CWMStockInventory from './cwm/stock/inventory';
 import * as CWMProductsSku from './cwm/products/sku';
+import * as CWMProductsMapping from './cwm/products/mapping';
 import * as CWMWarehouse from './cwm/resources/warehouse';
 import * as CWMSettings from './cwm/settings';
+import * as CWMSupervisionSHFTZ from './cwm/supervision/shftz';
 import SCV from './scv/module-scv';
 import * as SCVDashboard from './scv/dashboard';
 import * as SCVOrders from './scv/orders';
@@ -434,13 +436,21 @@ export default(store, cookie) => {
                 <IndexRoute component={CWMShippingOutbound.List} />
               </Route>
             </Route>
-            <Route path="stock" component={CWMStock.List} />
+            <Route path="stock">
+              <Route path="inventory" component={CWMStockInventory.List} />
+            </Route>
+            <Route path="supervision">
+              <Route path="shftz">
+                <IndexRoute component={CWMSupervisionSHFTZ.List} />
+              </Route>
+            </Route>
             <Route path="products">
               <Route path="sku">
                 <IndexRoute component={CWMProductsSku.List} />
                 <Route path="create" component={CWMProductsSku.Create} />
                 <Route path=":sku" component={CWMProductsSku.Edit} />
               </Route>
+              <Route path="mapping" component={CWMProductsMapping.List} />
             </Route>
             <Route path="resources">
               <IndexRedirect to="/cwm/resources/warehouse" />
@@ -449,6 +459,7 @@ export default(store, cookie) => {
             <Route path="settings">
               <IndexRedirect to="/cwm/settings/openapi" />
               <Route path="openapi" component={CWMSettings.OpenApi} />
+              <Route path="warehouse" component={CWMSettings.WareHouse} />
             </Route>
           </Route>
           <Route path={DEFAULT_MODULES.scof.id} component={SCOF}>

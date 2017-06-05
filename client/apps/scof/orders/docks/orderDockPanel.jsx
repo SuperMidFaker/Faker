@@ -1,10 +1,10 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Button, Icon, Col, Row, Tabs } from 'antd';
+import { Button, Icon, Col, Row, Tabs, Tooltip, message } from 'antd';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { CRM_ORDER_STATUS, SCOF_ORDER_TRANSFER, TRANS_MODE } from 'common/constants';
-import { hideDock, changeDockTab } from 'common/reducers/crmOrders';
+import { hideDock, changeDockTab, cancelOrder, closeOrder } from 'common/reducers/crmOrders';
 import InfoItem from 'client/components/InfoItem';
 import MdIcon from 'client/components/MdIcon';
 import DockPanel from 'client/components/DockPanel';
@@ -13,6 +13,8 @@ import FlowPane from './tabpanes/flowPane';
 import BillingPane from './tabpanes/billingPane';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
+import '../orders.less';
+
 const formatMsg = format(messages);
 const TabPane = Tabs.TabPane;
 
@@ -25,7 +27,7 @@ const TabPane = Tabs.TabPane;
     tabKey: state.crmOrders.dock.tabKey,
     order: state.crmOrders.dock.order,
   }),
-  { hideDock, changeDockTab }
+  { hideDock, changeDockTab, cancelOrder, closeOrder }
 )
 export default class OrderDockPanel extends React.Component {
   static propTypes = {
@@ -45,6 +47,29 @@ export default class OrderDockPanel extends React.Component {
   handleClose = () => {
     this.props.hideDock();
   }
+  handleCancelOrder = () => {
+    this.props.cancelOrder(this.props.order.shipmt_order_no).then(
+      (result) => {
+        if (!result.error) {
+          message.info('订单已取消');
+          this.props.hideDock();
+          if (this.props.reload) {
+            this.props.reload();
+          }
+        }
+      }
+    );
+  }
+  handleCloseOrder = () => {
+    this.props.closeOrder(this.props.order.shipmt_order_no).then(
+      (result) => {
+        if (!result.error) {
+          message.info('订单已关闭');
+          this.props.hideDock();
+        }
+      }
+    );
+  }
   renderStatus(status) {
     switch (status) {
       case CRM_ORDER_STATUS.created: return 'default';
@@ -62,10 +87,22 @@ export default class OrderDockPanel extends React.Component {
     }
   }
   renderTabs() {
+    const { order } = this.props;
     return (
       <Tabs defaultActiveKey="order" onChange={this.handleTabChange}>
         <TabPane tab={this.msg('tabOrder')} key="order">
           <OrderPane />
+          {
+            order.order_status === CRM_ORDER_STATUS.processing ? (
+              <div className="pane-content order-action-btn">
+                <Tooltip title="取消订单">
+                  <Button size="large" onClick={this.handleCancelOrder}>取消</Button>
+                </Tooltip>
+                <Tooltip title="关闭订单">
+                  <Button size="large" onClick={this.handleCloseOrder}>关闭</Button>
+                </Tooltip>
+              </div>) : null
+          }
         </TabPane>
         <TabPane tab={this.msg('tabFlow')} key="flow">
           <FlowPane />

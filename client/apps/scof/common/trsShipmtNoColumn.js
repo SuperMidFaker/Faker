@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import { Popover } from 'antd';
 

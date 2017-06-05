@@ -3,7 +3,7 @@ import React, { Component, PropTypes } from 'react';
 import { Form, Select, Card, Col, Icon, Input, Row, Tooltip } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
+import messages from '../../message.i18n';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
@@ -43,15 +43,24 @@ export default class MainForm extends Component {
     const { form: { getFieldDecorator } } = this.props;
     return (
       <div>
-        <Card>
+        <Card title="产品属性">
           <Row gutter={16}>
-            <Col sm={24} lg={24}>
-              <FormItem label={this.msg('productName')}>
-                {getFieldDecorator('product_name', {
-                })(<Input />)}
+            <Col sm={24} lg={8}>
+              <FormItem label="货主">
+                {getFieldDecorator('owner_name', {
+                })(
+                  <Select mode="combobox"
+                    optionFilterProp="search"
+                    placeholder="选择货主"
+                  >
+                    <Option value="04601">04601|米思米(中国)精密机械贸易</Option>
+                    <Option value="0962">希雅路仓库</Option>
+                    <Option value="0963">富特路仓库</Option>
+                  </Select>
+                    )}
               </FormItem>
             </Col>
-            <Col sm={24} lg={12}>
+            <Col sm={24} lg={8}>
               <FormItem label={this.msg('productNo')}>
                 {getFieldDecorator('product_no', {
                 })(
@@ -65,7 +74,7 @@ export default class MainForm extends Component {
                   )}
               </FormItem>
             </Col>
-            <Col sm={24} lg={12}>
+            <Col sm={24} lg={8}>
               <FormItem label={this.msg('category')}>
                 {getFieldDecorator('product_category', {
                 })(
@@ -80,22 +89,30 @@ export default class MainForm extends Component {
                   )}
               </FormItem>
             </Col>
-            <Col sm={24} lg={24}>
-              <FormItem label={this.msg('description')}>
-                {getFieldDecorator('product_desc', {
-                })(<Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />)}
+            <Col sm={24} lg={12}>
+              <FormItem label={this.msg('descCN')}>
+                {getFieldDecorator('desc_cn', {
+                })(<Input />)}
               </FormItem>
             </Col>
             <Col sm={24} lg={12}>
-              <FormItem label={this.msg('type')}>
-                {getFieldDecorator('product_type', {
+              <FormItem label={this.msg('descEN')}>
+                {getFieldDecorator('desc_en', {
+                })(<Input />)}
+              </FormItem>
+            </Col>
+            <Col sm={24} lg={12}>
+              <FormItem label={this.msg('unitMeasure')}>
+                {getFieldDecorator('unit', {
                 })(
                   <Select
-                    placeholder="选择类型"
+                    optionFilterProp="search"
+                    placeholder="选择计量主单位"
                   >
-                    <Option value="RM">Raw Material</Option>
-                    <Option value="HP">Half Product</Option>
-                    <Option value="FP">Finished Product</Option>
+                    <Option value="Ballo">个</Option>
+                    <Option value="CPU">件</Option>
+                    <Option value="CPU">套</Option>
+                    <Option value="Float">公斤</Option>
                   </Select>
                   )}
               </FormItem>
@@ -104,17 +121,35 @@ export default class MainForm extends Component {
               <FormItem label={this.msg('unitPrice')} >
                 {getFieldDecorator('unit_price', {
                 })(<InputGroup compact>
-                  <Select size="large" style={{ width: '20%' }} defaultValue="RMB">
+                  <Select size="large" style={{ width: '30%' }} defaultValue="RMB">
                     <Option value="RMB">人民币</Option>
                     <Option value="USD">美元</Option>
                   </Select>
-                  <Input style={{ width: '80%' }} />
+                  <Input style={{ width: '70%' }} />
                 </InputGroup>)}
+              </FormItem>
+            </Col>
+            <Col sm={24} lg={8}>
+              <FormItem label={this.msg('alias1')}>
+                {getFieldDecorator('alias1', {
+                })(<Input />)}
+              </FormItem>
+            </Col>
+            <Col sm={24} lg={8}>
+              <FormItem label={this.msg('alias2')}>
+                {getFieldDecorator('alias2', {
+                })(<Input />)}
+              </FormItem>
+            </Col>
+            <Col sm={24} lg={8}>
+              <FormItem label={this.msg('alias3')}>
+                {getFieldDecorator('alias3', {
+                })(<Input />)}
               </FormItem>
             </Col>
           </Row>
         </Card>
-        <Card title="Inventory" extra={<a href="#">Add variant</a>}>
+        <Card title="SKU属性" extra={<a href="#">Add variant</a>}>
           <Row gutter={16}>
             <Col sm={24} lg={8}>
               <FormItem label={(
@@ -126,65 +161,126 @@ export default class MainForm extends Component {
                 </span>
                 )}
               >
-                {getFieldDecorator('sku_no', {
+                {getFieldDecorator('sku', {
                 })(<Input />)}
               </FormItem>
             </Col>
             <Col sm={24} lg={8}>
-              <FormItem label={this.msg('unitMeasure')}>
-                {getFieldDecorator('product_um', {
+              <FormItem label={this.msg('unit')}>
+                {getFieldDecorator('unit', {
                 })(
                   <Select
                     optionFilterProp="search"
-                    placeholder="选择计量单位"
+                    placeholder="选择SKU包装单位"
                   >
-                    <Option value="Ballo">个</Option>
-                    <Option value="CPU">箱</Option>
-                    <Option value="Float">公斤</Option>
+                    <Option value="Float">包</Option>
+                    <Option value="Ballo">木箱</Option>
+                    <Option value="CPU">纸箱</Option>
+                    <Option value="Float">托盘</Option>
                   </Select>
                   )}
               </FormItem>
             </Col>
             <Col sm={24} lg={8}>
-              <FormItem label={this.msg('safetyStock')}>
-                {getFieldDecorator('safety_stock', {
-                })(<Input />)}
+              <FormItem label={this.msg('perUnitQty')}>
+                {getFieldDecorator('per_unit_qty', {
+                })(<InputGroup compact>
+                  <Input style={{ width: '50%' }} />
+                  <Select size="large" style={{ width: '50%' }} disabled>
+                    <Option value="Ballo">个</Option>
+                    <Option value="CPU">件</Option>
+                    <Option value="CPU">套</Option>
+                    <Option value="Float">公斤</Option>
+                  </Select>
+                </InputGroup>)}
               </FormItem>
             </Col>
-            <Col sm={24} lg={4}>
+            <Col sm={24} lg={6}>
               <FormItem label={this.msg('length')}>
                 {getFieldDecorator('length', {
                 })(<Input addonAfter="mm" />)}
               </FormItem>
             </Col>
-            <Col sm={24} lg={4}>
+            <Col sm={24} lg={6}>
               <FormItem label={this.msg('width')}>
                 {getFieldDecorator('width', {
                 })(<Input addonAfter="mm" />)}
               </FormItem>
             </Col>
-            <Col sm={24} lg={4}>
+            <Col sm={24} lg={6}>
               <FormItem label={this.msg('height')}>
                 {getFieldDecorator('height', {
                 })(<Input addonAfter="mm" />)}
               </FormItem>
             </Col>
-            <Col sm={24} lg={4}>
+            <Col sm={24} lg={6}>
               <FormItem label={this.msg('unitCBM')}>
                 {getFieldDecorator('unit_cbm', {
                 })(<Input />)}
               </FormItem>
             </Col>
-            <Col sm={24} lg={4}>
+            <Col sm={24} lg={8}>
               <FormItem label={this.msg('grossWeight')}>
                 {getFieldDecorator('gross_weight', {
                 })(<Input addonAfter="KG" />)}
               </FormItem>
             </Col>
-            <Col sm={24} lg={4}>
+            <Col sm={24} lg={8}>
               <FormItem label={this.msg('netWeight')}>
                 {getFieldDecorator('net_weight', {
                 })(<Input addonAfter="KG" />)}
+              </FormItem>
+            </Col>
+            <Col sm={24} lg={8}>
+              <FormItem label={this.msg('tareWeight')}>
+                {getFieldDecorator('tare_weight', {
+                })(<Input addonAfter="KG" />)}
+              </FormItem>
+            </Col>
+          </Row>
+        </Card>
+        <Card title="海关归类属性" extra={<a href="#">同步归类</a>}>
+          <Row gutter={16}>
+            <Col sm={24} lg={8}>
+              <FormItem label={this.msg('HSCode')}>
+                {getFieldDecorator('product_no', {
+                })(
+                  <Select mode="combobox"
+                    optionFilterProp="search" disabled
+                  >
+                    <Option value="B10EW">Ballo Green Dome Standard</Option>
+                    <Option value="CPU200">CPU200 Assembly</Option>
+                    <Option value="CPU600">CPU600</Option>
+                  </Select>
+                  )}
+              </FormItem>
+            </Col>
+            <Col sm={24} lg={8}>
+              <FormItem label="品名">
+                {getFieldDecorator('product_no', {
+                })(
+                  <Select mode="combobox"
+                    optionFilterProp="search" disabled
+                  >
+                    <Option value="B10EW">Ballo Green Dome Standard</Option>
+                    <Option value="CPU200">CPU200 Assembly</Option>
+                    <Option value="CPU600">CPU600</Option>
+                  </Select>
+                  )}
+              </FormItem>
+            </Col>
+            <Col sm={24} lg={8}>
+              <FormItem label="原产国">
+                {getFieldDecorator('product_no', {
+                })(
+                  <Select mode="combobox"
+                    optionFilterProp="search" disabled
+                  >
+                    <Option value="B10EW">Ballo Green Dome Standard</Option>
+                    <Option value="CPU200">CPU200 Assembly</Option>
+                    <Option value="CPU600">CPU600</Option>
+                  </Select>
+                  )}
               </FormItem>
             </Col>
           </Row>
