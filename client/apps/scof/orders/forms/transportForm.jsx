@@ -5,7 +5,7 @@ import moment from 'moment';
 import { Button, DatePicker, InputNumber, Form, Row, Col, Card, Input, Switch, Select, Icon } from 'antd';
 import RegionCascader from 'client/components/chinaRegionCascader';
 import { setClientForm, loadFlowNodeData } from 'common/reducers/crmOrders';
-import { loadTariffsByTransportInfo } from 'common/reducers/scofFlow';
+import { loadTariffsByTransportInfo, loadRatesSources, loadRateEnds } from 'common/reducers/scofFlow';
 import { uuidWithoutDash } from 'client/common/uuid';
 import { GOODS_TYPES, PRESET_TRANSMODES, CONTAINER_PACKAGE_TYPE, COURIERS, TARIFF_METER_METHODS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
@@ -30,7 +30,7 @@ const formItemLayout = {
     customerPartnerId: state.crmOrders.formData.customer_partner_id,
     serviceTeam: state.crmCustomers.operators,
   }),
-  { setClientForm, loadFlowNodeData, loadTariffsByTransportInfo }
+  { setClientForm, loadFlowNodeData, loadTariffsByTransportInfo, loadRatesSources, loadRateEnds }
 )
 export default class TransportForm extends Component {
   static propTypes = {
@@ -50,9 +50,13 @@ export default class TransportForm extends Component {
       cust_shipmt_wrap_type: PropTypes.string,
     }),
     loadTariffsByTransportInfo: PropTypes.func.isRequired,
+    loadRatesSources: PropTypes.func.isRequired,
+    loadRateEnds: PropTypes.func.isRequired,
   }
   state = {
     tariffs: [],
+    rateSources: [],
+    rateEnds: [],
   }
   componentDidMount() {
     const { formData, formRequires, customerPartnerId } = this.props;
@@ -102,6 +106,29 @@ export default class TransportForm extends Component {
             this.setState({
               tariffs: result1.data || [],
             });
+            if (result1.data) {
+              const tariff = result1.data.find(item => item.quoteNo === nodedata.quote_no);
+              if (tariff) {
+                this.props.loadRatesSources({
+                  tariffId: tariff._id,
+                  pageSize: 999999,
+                  currentPage: 1,
+                }).then((result2) => {
+                  this.setState({ rateSources: result2.data.data || [] });
+                  if (result2.data.data && consigner) {
+                    const rss = result2.data.data.filter(item => item.source.province === consigner.province);
+                    const promises = rss.map(item => this.props.loadRateEnds({ rateId: item._id, pageSize: 99999999, current: 1 }));
+                    Promise.all(promises).then((results) => {
+                      let rateEnds = [];
+                      results.forEach((item) => {
+                        rateEnds = rateEnds.concat(item.data.data);
+                      });
+                      this.setState({ rateEnds });
+                    });
+                  }
+                });
+              }
+            }
           });
         }
       });
@@ -110,6 +137,30 @@ export default class TransportForm extends Component {
         this.setState({
           tariffs: result1.data || [],
         });
+        if (result1.data) {
+          const tariff = result1.data.find(item => item.quoteNo === node.quote_no);
+          if (tariff) {
+            this.props.loadRatesSources({
+              tariffId: tariff._id,
+              pageSize: 999999,
+              currentPage: 1,
+            }).then((result2) => {
+              this.setState({ rateSources: result2.data.data || [] });
+              const consigner = formRequires.consignerLocations.find(cl => cl.node_id === node.consigner_id);
+              if (result2.data.data && consigner) {
+                const rss = result2.data.data.filter(item => item.source.province === consigner.province);
+                const promises = rss.map(item => this.props.loadRateEnds({ rateId: item._id, pageSize: 99999999, current: 1 }));
+                Promise.all(promises).then((results) => {
+                  let rateEnds = [];
+                  results.forEach((item) => {
+                    rateEnds = rateEnds.concat(item.data.data);
+                  });
+                  this.setState({ rateEnds });
+                });
+              }
+            });
+          }
+        }
       });
     }
   }
@@ -121,6 +172,31 @@ export default class TransportForm extends Component {
   }
   handleChange = (key, value) => {
     this.handleSetClientForm({ [key]: value });
+    if (key === 'quote_no' && value) {
+      const { formRequires: { consignerLocations } } = this.props;
+      const consigner = consignerLocations.find(item => item.node_id === this.props.formData.node.consigner_id);
+      const tariff = this.state.tariffs.find(item => item.quoteNo === value);
+      if (tariff) {
+        this.props.loadRatesSources({
+          tariffId: tariff._id,
+          pageSize: 999999,
+          currentPage: 1,
+        }).then((result1) => {
+          this.setState({ rateSources: result1.data.data || [] });
+          if (result1.data.data) {
+            const rss = result1.data.data.filter(item => item.source.province === consigner.province);
+            const promises = rss.map(item => this.props.loadRateEnds({ rateId: item._id, pageSize: 99999999, current: 1 }));
+            Promise.all(promises).then((results) => {
+              let rateEnds = [];
+              results.forEach((item) => {
+                rateEnds = rateEnds.concat(item.data.data);
+              });
+              this.setState({ rateEnds });
+            });
+          }
+        });
+      }
+    }
   }
   handleConsignChange = (key, value) => {
     if (typeof value !== 'string') {
@@ -206,6 +282,17 @@ export default class TransportForm extends Component {
         consignForm.consigner_email = consign.email;
         consignForm.consigner_contact = consign.contact;
         consignForm.consigner_mobile = consign.mobile;
+
+        const { rateSources } = this.state;
+        const rss = rateSources.filter(item => item.source.province === consign.province);
+        const promises = rss.map(item => this.props.loadRateEnds({ rateId: item._id, pageSize: 99999999, current: 1 }));
+        Promise.all(promises).then((results) => {
+          let rateEnds = [];
+          results.forEach((item) => {
+            rateEnds = rateEnds.concat(item.data.data);
+          });
+          this.setState({ rateEnds });
+        });
       }
     } else if (key === 'consignee_name') {
       const consign = formRequires.consigneeLocations.find(item => item.node_id === value);
@@ -355,6 +442,7 @@ export default class TransportForm extends Component {
   render() {
     const { formData, serviceTeam, formRequires: { consignerLocations, consigneeLocations,
       transitModes, packagings, vehicleTypes, vehicleLengths }, customerPartnerId } = this.props;
+    const { rateSources, rateEnds } = this.state;
     // todo consigner consignee by customer partner id
     const node = formData.node;
     const consignerRegion = [
@@ -496,8 +584,9 @@ export default class TransportForm extends Component {
                   dropdownMatchSelectWidth={false}
                   dropdownStyle={{ width: 400 }}
                 >
-                  {consignerLocations.filter(cl => cl.ref_partner_id === customerPartnerId || cl.ref_partner_id === -1).map(dw =>
-                    <Option value={dw.node_id} key={dw.node_id}>{this.renderConsign(dw)}</Option>)
+                  {consignerLocations.filter(cl => cl.ref_partner_id === customerPartnerId || cl.ref_partner_id === -1)
+                    .filter(cl => rateSources.length === 0 || rateSources.find(rs => rs.source.province === cl.province))
+                    .map(dw => <Option value={dw.node_id} key={dw.node_id}>{this.renderConsign(dw)}</Option>)
                 }
                 </Select>
               </Col>
@@ -544,8 +633,10 @@ export default class TransportForm extends Component {
                   dropdownMatchSelectWidth={false}
                   dropdownStyle={{ width: 400 }}
                 >
-                  {consigneeLocations.filter(cl => cl.ref_partner_id === customerPartnerId || cl.ref_partner_id === -1).map(dw =>
-                    <Option value={dw.node_id} key={dw.node_id}>{this.renderConsign(dw)}</Option>)
+                  {consigneeLocations.filter(cl => cl.ref_partner_id === customerPartnerId || cl.ref_partner_id === -1)
+                    .filter(cl => rateEnds.length === 0 || rateEnds.find(rs => rs.end.province === cl.province && rs.end.city === cl.city &&
+                        rs.end.district === cl.district && rs.end.street === cl.street))
+                    .map(dw => <Option value={dw.node_id} key={dw.node_id}>{this.renderConsign(dw)}</Option>)
                 }
                 </Select>
               </Col>
