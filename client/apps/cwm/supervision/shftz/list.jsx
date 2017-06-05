@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Badge, Button, Breadcrumb, Layout, Radio, Menu, Select, Icon, Table, Tag } from 'antd';
+import { Badge, Button, Breadcrumb, Layout, Radio, Menu, Select, Table, Tag } from 'antd';
 import NavLink from 'client/components/nav-link';
 import SearchBar from 'client/components/search-bar';
 import RowUpdater from 'client/components/rowUpdater';
@@ -202,36 +202,41 @@ export default class SupervisionSHFTZList extends React.Component {
             </div>
             <div className="left-sider-panel">
               <Menu
-                defaultSelectedKeys={['installed']}
-                defaultOpenKeys={['integration', 'api']}
+                defaultSelectedKeys={['inboundAfterDecl']}
+                defaultOpenKeys={['receive', 'release', 'transfer']}
                 mode="inline"
               >
-                <SubMenu key="integration" title={<span><Icon type="appstore-o" /><span>应用整合</span></span>}>
-                  <Menu.Item key="installed">
-                    <NavLink to="/open/integration/installed">
-                    已安装应用
+                <SubMenu key="receive" title={<span>进库备案</span>}>
+                  <Menu.Item key="inboundAfterDecl">
+                    <NavLink to="/cwm/supervision/shftz/receive">
+                    一二线进境
                   </NavLink>
                   </Menu.Item>
-                  <Menu.Item key="apps">
-                    <NavLink to="/open/integration/apps">
-                    应用中心
-                  </NavLink>
-                  </Menu.Item>
-                </SubMenu>
-                <SubMenu key="api" title={<span><Icon type="api" /><span>开放API接口</span></span>}>
-                  <Menu.Item key="auth">
-                    <NavLink to="/open/api/auth">
-                    API接口授权
-                  </NavLink>
-                  </Menu.Item>
-                  <Menu.Item key="webhook">
-                    <NavLink to="/open/api/webhook">
-                    提醒目标Webhook
+                  <Menu.Item key="inboundBeforeDecl" disabled>
+                    <NavLink to="/cwm/supervision/shftz/receive">
+                    二线视同出口
                   </NavLink>
                   </Menu.Item>
                 </SubMenu>
-                <Menu.Item key="docs" disabled>
-                  <span><Icon type="book" /><span>开发文档</span></span>
+                <SubMenu key="release" title={<span>出库备案</span>}>
+                  <Menu.Item key="outboundAfterDecl">
+                    <NavLink to="/cwm/supervision/shftz/release">
+                    普通出库
+                  </NavLink>
+                  </Menu.Item>
+                  <Menu.Item key="outboundBeforeDecl">
+                    <NavLink to="/cwm/supervision/shftz/release">
+                    分拨出库
+                  </NavLink>
+                  </Menu.Item>
+                  <Menu.Item key="applyBatchDecl">
+                    <NavLink to="/cwm/supervision/shftz/release">
+                    集中报关申请
+                  </NavLink>
+                  </Menu.Item>
+                </SubMenu>
+                <Menu.Item key="transfer">
+                  <span>移库备案</span>
                 </Menu.Item>
               </Menu>
 

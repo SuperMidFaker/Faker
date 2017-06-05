@@ -269,10 +269,10 @@ export default class ReceiveInbound extends Component {
                   <InfoItem label="入库单号" field="I096120170603223-01" />
                 </Col>
                 <Col sm={24} lg={3}>
-                  <InfoItem label="预计箱数" addonBefore={<Icon type="inbox" />} field={10} />
+                  <InfoItem label="预计箱数" addonBefore={<Icon type="inbox" />} field={10} editable />
                 </Col>
                 <Col sm={24} lg={3}>
-                  <InfoItem label="预计托盘数" addonBefore={<Icon type="appstore-o" />} field={2} />
+                  <InfoItem label="预计托盘数" addonBefore={<Icon type="appstore-o" />} field={2} editable />
                 </Col>
                 <Col sm={24} lg={6}>
                   <InfoItem type="dropdown" label="操作人员" addonBefore={<Avatar name="未分配" size={28} round />}
