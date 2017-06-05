@@ -21,6 +21,9 @@ const initialState = {
   listFilter: {
     sku: '',
   },
+  params: {
+    units: [],
+  },
 };
 
 export default function reducer(state = initialState, action) {
@@ -40,6 +43,21 @@ export default function reducer(state = initialState, action) {
     default:
       return state;
   }
+}
+
+export function loadSkuParams(tenantId, whse) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_SKUPARAMS,
+        actionTypes.LOAD_SKUPARAMS_SUCCEED,
+        actionTypes.LOAD_SKUPARAMS_FAIL,
+      ],
+      endpoint: 'v1/cwm/sku/params',
+      method: 'get',
+      params: { tenantId, whse },
+    },
+  };
 }
 
 export function loadSkusByWarehouse(params) {

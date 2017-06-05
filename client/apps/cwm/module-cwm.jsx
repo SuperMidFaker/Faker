@@ -1,13 +1,21 @@
 import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { locationShape } from 'react-router';
 import CollapsibleSiderLayout from 'client/components/CollapsibleSiderLayout';
+import { loadWhse } from 'common/reducers/cwmContext';
 import messages from './message.i18n';
 import { format } from 'client/common/i18n/helpers';
 
 const formatMsg = format(messages);
 
 @injectIntl
+@connect(
+  state => ({
+    whse: state.cwmContext.defaultWhse,
+  }),
+  { loadWhse }
+)
 export default class ModuleCWM extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -19,6 +27,7 @@ export default class ModuleCWM extends React.Component {
   }
   componentWillMount() {
     const { intl } = this.props;
+    this.props.loadWhse(this.props.whse.code);
     const linkMenus = [];
     linkMenus.push({
       single: true,
@@ -144,6 +153,11 @@ export default class ModuleCWM extends React.Component {
       }],
     });
     this.setState({ linkMenus });
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.whse.code !== this.props.whse.code) {
+      nextProps.loadWhse(nextProps.whse.code);
+    }
   }
   render() {
     return (

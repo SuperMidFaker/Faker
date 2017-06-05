@@ -40,6 +40,7 @@ import scvWarehouse from './scvWarehouse';
 import scvTracking from './scvTracking';
 import scvClassification from './scvClassification';
 import scvClearance from './scvClearance';
+import cwmContext from './cwmContext';
 import cwmTransaction from './cwmTransaction';
 import cwmSku from './cwmSku';
 import cmsExpense from './cmsExpense';
@@ -94,8 +95,6 @@ export default combineReducers({
   scvTracking,
   scvClassification,
   scvClearance,
-  cwmTransaction,
-  cwmSku,
   cmsExpense,
   cmsBilling,
   cmsTradeitem,
@@ -105,4 +104,7 @@ export default combineReducers({
   crmBilling,
   cwmReceive,
   cwmWarehouse,
+  cwmContext,
+  cwmTransaction,
+  cwmSku,
 });

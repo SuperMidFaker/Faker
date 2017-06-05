@@ -111,10 +111,7 @@ export default class MainForm extends Component {
               <FormItem label={this.msg('measureUnit')}>
                 {getFieldDecorator('unit', {
                 })(
-                  <Select
-                    optionFilterProp="search"
-                    placeholder="选择计量主单位"
-                  >
+                  <Select optionFilterProp="search" placeholder="选择计量主单位">
                     <Option value="001">个</Option>
                     <Option value="002">件</Option>
                     <Option value="003">套</Option>
@@ -196,8 +193,8 @@ export default class MainForm extends Component {
               <FormItem label={this.msg('perSKUQty')}>
                 {getFieldDecorator('per_sku_qty', {
                 })(<InputGroup compact>
-                  <Input style={{ width: '50%' }} />
-                  <Select defaultValue="001" size="large" style={{ width: '50%' }} disabled>
+                  <Input style={{ width: '70%' }} />
+                  <Select defaultValue="001" size="large" style={{ width: '30%' }} disabled>
                     <Option value="001">个</Option>
                     <Option value="002">件</Option>
                     <Option value="003">套</Option>
@@ -226,25 +223,25 @@ export default class MainForm extends Component {
             </Col>
             <Col sm={24} lg={6}>
               <FormItem label={this.msg('unitCBM')}>
-                {getFieldDecorator('unit_cbm', {
+                {getFieldDecorator('cbm', {
                 })(<Input />)}
               </FormItem>
             </Col>
             <Col sm={24} lg={8}>
               <FormItem label={this.msg('grossWeight')}>
-                {getFieldDecorator('gross_weight', {
+                {getFieldDecorator('gross_wt', {
                 })(<Input addonAfter="KG" />)}
               </FormItem>
             </Col>
             <Col sm={24} lg={8}>
               <FormItem label={this.msg('netWeight')}>
-                {getFieldDecorator('net_weight', {
+                {getFieldDecorator('net_wt', {
                 })(<Input addonAfter="KG" />)}
               </FormItem>
             </Col>
             <Col sm={24} lg={8}>
               <FormItem label={this.msg('tareWeight')}>
-                {getFieldDecorator('tare_weight', {
+                {getFieldDecorator('tare_wt', {
                 })(<Input addonAfter="KG" />)}
               </FormItem>
             </Col>

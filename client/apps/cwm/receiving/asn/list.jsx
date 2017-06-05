@@ -199,12 +199,7 @@ export default class ReceivingNoticeList extends React.Component {
         <Header className="top-bar">
           <Breadcrumb>
             <Breadcrumb.Item>
-              <Select
-                size="large"
-                defaultValue="0960"
-                placeholder="选择仓库"
-                style={{ width: 160 }}
-              >
+              <Select size="large" defaultValue="0960" placeholder="选择仓库" style={{ width: 160 }}>
                 <Option value="0960">物流大道仓库</Option>
                 <Option value="0961">希雅路仓库</Option>
                 <Option value="0962">富特路仓库</Option>
