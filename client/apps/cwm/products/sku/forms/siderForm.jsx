@@ -74,7 +74,7 @@ export default class SiderForm extends Component {
             <Col sm={24}>
               <FormItem label={this.msg('默认入库包装')}>
                 {getFieldDecorator('inbound_pack', {
-                })(<RadioGroup size="large">
+                })(<RadioGroup defaultValue="PCS" size="large">
                   <RadioButton value="PCS">单件(散装)</RadioButton>
                   <RadioButton value="INP">内包装</RadioButton>
                   <RadioButton value="BOX">箱</RadioButton>
@@ -96,7 +96,7 @@ export default class SiderForm extends Component {
             <Col sm={24}>
               <FormItem label={this.msg('默认出库包装')}>
                 {getFieldDecorator('outbound_pack', {
-                })(<RadioGroup size="large">
+                })(<RadioGroup defaultValue="PCS" size="large">
                   <RadioButton value="PCS">单件(散装)</RadioButton>
                   <RadioButton value="INP">内包装</RadioButton>
                   <RadioButton value="BOX">箱</RadioButton>

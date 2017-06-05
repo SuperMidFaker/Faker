@@ -203,7 +203,7 @@ export default class SupervisionSHFTZList extends React.Component {
             <div className="left-sider-panel">
               <Menu
                 defaultSelectedKeys={['inboundAfterDecl']}
-                defaultOpenKeys={['receive', 'release', 'transfer']}
+                defaultOpenKeys={['receive', 'release', 'cargo']}
                 mode="inline"
               >
                 <SubMenu key="receive" title={<span>进库备案</span>}>
@@ -215,6 +215,11 @@ export default class SupervisionSHFTZList extends React.Component {
                   <Menu.Item key="inboundBeforeDecl" disabled>
                     <NavLink to="/cwm/supervision/shftz/receive">
                     二线视同出口
+                  </NavLink>
+                  </Menu.Item>
+                  <Menu.Item key="inboundTransfer" disabled>
+                    <NavLink to="/cwm/supervision/shftz/receive">
+                    移库转入
                   </NavLink>
                   </Menu.Item>
                 </SubMenu>
@@ -234,12 +239,18 @@ export default class SupervisionSHFTZList extends React.Component {
                     集中报关申请
                   </NavLink>
                   </Menu.Item>
+                  <Menu.Item key="outboundTransfer">
+                    <NavLink to="/cwm/supervision/shftz/release">
+                    移库转出
+                  </NavLink>
+                  </Menu.Item>
                 </SubMenu>
-                <Menu.Item key="transfer">
-                  <span>移库备案</span>
+                <Menu.Item key="cargo">
+                  <NavLink to="/cwm/supervision/shftz/cargo">
+                    <span>货物备案</span>
+                  </NavLink>
                 </Menu.Item>
               </Menu>
-
             </div>
           </div>
         </Sider>
@@ -249,9 +260,10 @@ export default class SupervisionSHFTZList extends React.Component {
               <Breadcrumb.Item>
                 <Select
                   size="large"
-                  defaultValue="0960"
+                  defaultValue="0961"
                   placeholder="选择仓库"
                   style={{ width: 160 }}
+                  disabled
                 >
                   <Option value="0960">物流大道仓库</Option>
                   <Option value="0961">希雅路仓库</Option>

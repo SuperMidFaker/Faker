@@ -67,11 +67,7 @@ const messages = defineMessages({
   },
   productsLotting: {
     id: 'cwm.module.products.lotting',
-    defaultMessage: '批次管理',
-  },
-  productsMapping: {
-    id: 'cwm.module.products.mapping',
-    defaultMessage: '备案料号',
+    defaultMessage: '批次属性',
   },
   productsKitting: {
     id: 'cwm.module.products.kitting',

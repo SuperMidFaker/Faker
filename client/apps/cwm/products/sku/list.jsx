@@ -182,10 +182,10 @@ export default class CWMSkuList extends React.Component {
                 {this.msg('createSKU')}
               </Button>
               <ButtonToggle size="large"
-                iconOn="inbox" iconOff="inbox"
+                iconOn="setting" iconOff="setting"
                 onClick={this.toggleRightSider}
               >
-                包装
+                规则设置
               </ButtonToggle>
             </div>
           </Header>
