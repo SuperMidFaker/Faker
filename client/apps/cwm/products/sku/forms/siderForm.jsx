@@ -20,42 +20,58 @@ export default class SiderForm extends Component {
     const { form: { getFieldDecorator } } = this.props;
     return (
       <div>
-        <Card>
-          <Col sm={24}>
-            <FormItem label={this.msg('owner')}>
-              {getFieldDecorator('owner_code', {
-              })(
-                <Select showSearch
-                  optionFilterProp="search"
-                  placeholder="选择所属货主"
-                >
-                  <Option value="HumanScale">HumanScale</Option>
-                </Select>
-                )}
-            </FormItem>
-          </Col>
-        </Card>
-        <Card title="Trade Classification" className="secondary-card">
+        <Card title="仓库控制属性" className="secondary-card">
           <Row gutter={16}>
             <Col sm={24}>
-              <FormItem label={this.msg('hsCode')} >
-                {getFieldDecorator('hs_code', {
-                })(<Input />)}
+              <FormItem label={this.msg('packingCode')}>
+                {getFieldDecorator('packing_code', {
+                })(
+                  <Select showSearch
+                    optionFilterProp="search"
+                    placeholder="选择包装代码"
+                  >
+                    <Option value="HumanScale">HumanScale</Option>
+                  </Select>
+                  )}
               </FormItem>
             </Col>
             <Col sm={24}>
-              <FormItem label={this.msg('chineseDescription')} >
-                {getFieldDecorator('chinese_desc', {
-                })(<Input />)}
+              <FormItem label={this.msg('lottingRule')}>
+                {getFieldDecorator('lotting_rule', {
+                })(
+                  <Select showSearch
+                    optionFilterProp="search"
+                    placeholder="选择批次属性"
+                  >
+                    <Option value="HumanScale">HumanScale</Option>
+                  </Select>
+                  )}
               </FormItem>
             </Col>
             <Col sm={24}>
-              <FormItem label={this.msg('model')} >
-                {getFieldDecorator('model', {
-                })(<Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />)}
+              <FormItem label={this.msg('ftzMappingRule')}>
+                {getFieldDecorator('ftz_mapping_rule', {
+                })(
+                  <Select showSearch
+                    optionFilterProp="search"
+                    placeholder="选择保税备案映射规则"
+                  >
+                    <Option value="HumanScale">HumanScale</Option>
+                  </Select>
+                  )}
               </FormItem>
             </Col>
           </Row>
+        </Card>
+        <Card title="海关归类属性" className="secondary-card">
+          <Col sm={24}>
+            <FormItem label={this.msg('classification')}>
+              {getFieldDecorator('hs_code', {
+              })(
+                <Input placeholder="海关商品编码" />
+                )}
+            </FormItem>
+          </Col>
         </Card>
       </div>
     );

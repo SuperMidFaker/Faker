@@ -11,11 +11,11 @@ const messages = defineMessages({
   },
   productImport: {
     id: 'cwm.products.import',
-    defaultMessage: '货品导入',
+    defaultMessage: '货品',
   },
   createSKU: {
     id: 'cwm.products.sku.create',
-    defaultMessage: 'SKU创建',
+    defaultMessage: '新建货品',
   },
   productSearchPlaceholder: {
     id: 'cwm.products.search.placeholder',

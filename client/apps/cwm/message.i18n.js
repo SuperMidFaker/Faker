@@ -65,17 +65,17 @@ const messages = defineMessages({
     id: 'cwm.module.products.sku',
     defaultMessage: 'SKU管理',
   },
-  productsLot: {
-    id: 'cwm.module.products.lot',
+  productsLotting: {
+    id: 'cwm.module.products.lotting',
     defaultMessage: '批次管理',
   },
-  packing: {
-    id: 'cwm.module.products.packing',
-    defaultMessage: '包装',
-  },
-  mapping: {
+  productsMapping: {
     id: 'cwm.module.products.mapping',
     defaultMessage: '备案料号',
+  },
+  productsKitting: {
+    id: 'cwm.module.products.kitting',
+    defaultMessage: '组件管理',
   },
   resources: {
     id: 'cwm.module.resources',

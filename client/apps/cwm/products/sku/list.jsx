@@ -5,6 +5,7 @@ import { Breadcrumb, Button, Input, Layout, message } from 'antd';
 import { loadSkusByWarehouse } from 'common/reducers/cwmSku';
 import Table from 'client/components/remoteAntTable';
 import SearchBar from 'client/components/search-bar';
+import ButtonToggle from 'client/components/ButtonToggle';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
@@ -47,6 +48,11 @@ export default class CWMSkuList extends React.Component {
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
+  }
+  state = {
+    collapsed: false,
+    rightSiderCollapsed: true,
+    selectedRowKeys: [],
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
@@ -107,6 +113,16 @@ export default class CWMSkuList extends React.Component {
     },
     remotes: this.props.skulist,
   })
+  toggle = () => {
+    this.setState({
+      collapsed: !this.state.collapsed,
+    });
+  }
+  toggleRightSider = () => {
+    this.setState({
+      rightSiderCollapsed: !this.state.rightSiderCollapsed,
+    });
+  }
   handleSearch = (value) => {
     const filter = { ...this.props.listFilter, sku: value };
     this.props.loadSkusByWarehouse({
@@ -158,7 +174,6 @@ export default class CWMSkuList extends React.Component {
         </Sider>
         <Layout>
           <Header className="top-bar">
-
             <div className="top-bar-tools">
               <Button size="large" icon="cloud-upload">
                 {this.msg('productImport')}
@@ -166,6 +181,12 @@ export default class CWMSkuList extends React.Component {
               <Button type="primary" size="large" icon="plus" onClick={this.handleCreateBtnClick}>
                 {this.msg('createSKU')}
               </Button>
+              <ButtonToggle size="large"
+                iconOn="inbox" iconOff="inbox"
+                onClick={this.toggleRightSider}
+              >
+                包装
+              </ButtonToggle>
             </div>
           </Header>
           <Content className="main-content" key="main">
@@ -181,6 +202,21 @@ export default class CWMSkuList extends React.Component {
             </div>
           </Content>
         </Layout>
+        <Sider
+          trigger={null}
+          defaultCollapsed
+          collapsible
+          collapsed={this.state.rightSiderCollapsed}
+          width={480}
+          collapsedWidth={0}
+          className="right-sider"
+        >
+          <div className="right-sider-panel">
+            <div className="panel-header">
+              <h3>包装代码</h3>
+            </div>
+          </div>
+        </Sider>
       </Layout>
     );
   }

@@ -109,22 +109,18 @@ export default class ModuleCWM extends React.Component {
         path: '/cwm/products/sku',
         text: formatMsg(intl, 'productsSku'),
       }, {
-        key: 'cwm-5-1',
-        path: '/cwm/products/packing',
-        text: formatMsg(intl, 'packing'),
-      }, {
         key: 'cwm-5-2',
         path: '/cwm/products/mapping',
-        text: formatMsg(intl, 'mapping'),
+        text: formatMsg(intl, 'productsMapping'),
       }, {
         key: 'cwm-5-3',
-        path: '/cwm/products/lot',
-        text: formatMsg(intl, 'productsLot'),
+        path: '/cwm/products/lotting',
+        text: formatMsg(intl, 'productsLotting'),
       }, {
         key: 'cwm-5-4',
         disabled: true,
         path: '/cwm/products/kitting',
-        text: formatMsg(intl, 'kitting'),
+        text: formatMsg(intl, 'productsKitting'),
       },
       ],
     });
