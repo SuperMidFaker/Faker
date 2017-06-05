@@ -149,7 +149,7 @@ export default class MainForm extends Component {
             </Col>
           </Row>
         </Card>
-        <Card title="SKU" extra={<a href="#">Add variant</a>}>
+        <Card title="SKU属性" extra={<a href="#">Add variant</a>}>
           <Row gutter={16}>
             <Col sm={24} lg={8}>
               <FormItem label={(
@@ -173,9 +173,9 @@ export default class MainForm extends Component {
                     optionFilterProp="search"
                     placeholder="选择SKU包装单位"
                   >
+                    <Option value="Float">包</Option>
                     <Option value="Ballo">木箱</Option>
                     <Option value="CPU">纸箱</Option>
-                    <Option value="Float">包</Option>
                     <Option value="Float">托盘</Option>
                   </Select>
                   )}
@@ -235,6 +235,52 @@ export default class MainForm extends Component {
               <FormItem label={this.msg('tareWeight')}>
                 {getFieldDecorator('tare_weight', {
                 })(<Input addonAfter="KG" />)}
+              </FormItem>
+            </Col>
+          </Row>
+        </Card>
+        <Card title="海关归类属性" extra={<a href="#">同步归类</a>}>
+          <Row gutter={16}>
+            <Col sm={24} lg={8}>
+              <FormItem label={this.msg('HSCode')}>
+                {getFieldDecorator('product_no', {
+                })(
+                  <Select mode="combobox"
+                    optionFilterProp="search" disabled
+                  >
+                    <Option value="B10EW">Ballo Green Dome Standard</Option>
+                    <Option value="CPU200">CPU200 Assembly</Option>
+                    <Option value="CPU600">CPU600</Option>
+                  </Select>
+                  )}
+              </FormItem>
+            </Col>
+            <Col sm={24} lg={8}>
+              <FormItem label="品名">
+                {getFieldDecorator('product_no', {
+                })(
+                  <Select mode="combobox"
+                    optionFilterProp="search" disabled
+                  >
+                    <Option value="B10EW">Ballo Green Dome Standard</Option>
+                    <Option value="CPU200">CPU200 Assembly</Option>
+                    <Option value="CPU600">CPU600</Option>
+                  </Select>
+                  )}
+              </FormItem>
+            </Col>
+            <Col sm={24} lg={8}>
+              <FormItem label="原产国">
+                {getFieldDecorator('product_no', {
+                })(
+                  <Select mode="combobox"
+                    optionFilterProp="search" disabled
+                  >
+                    <Option value="B10EW">Ballo Green Dome Standard</Option>
+                    <Option value="CPU200">CPU200 Assembly</Option>
+                    <Option value="CPU600">CPU600</Option>
+                  </Select>
+                  )}
               </FormItem>
             </Col>
           </Row>

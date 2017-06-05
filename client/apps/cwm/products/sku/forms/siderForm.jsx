@@ -1,6 +1,6 @@
 /* eslint react/no-multi-comp: 0 */
 import React, { Component, PropTypes } from 'react';
-import { Form, Card, Col, Row, Input, Select, Checkbox } from 'antd';
+import { Form, Card, Col, Row, Input, Select, Checkbox, Radio } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
@@ -9,6 +9,8 @@ const formatMsg = format(messages);
 const FormItem = Form.Item;
 const Option = Select.Option;
 const InputGroup = Input.Group;
+const RadioButton = Radio.Button;
+const RadioGroup = Radio.Group;
 
 @injectIntl
 export default class SiderForm extends Component {
@@ -81,6 +83,26 @@ export default class SiderForm extends Component {
               </FormItem>
             </Col>
             <Col sm={24}>
+              <FormItem label={this.msg('默认ASN收货单位')}>
+                {getFieldDecorator('receiving_unit', {
+                })(<RadioGroup defaultValue="a" size="large">
+                  <RadioButton value="a">计量主单位</RadioButton>
+                  <RadioButton value="b">SKU包装单位</RadioButton>
+                </RadioGroup>
+                  )}
+              </FormItem>
+            </Col>
+            <Col sm={24}>
+              <FormItem label={this.msg('默认SO发货单位')}>
+                {getFieldDecorator('shipping_unit', {
+                })(<RadioGroup defaultValue="a" size="large">
+                  <RadioButton value="a">计量主单位</RadioButton>
+                  <RadioButton value="b">SKU包装单位</RadioButton>
+                </RadioGroup>
+                  )}
+              </FormItem>
+            </Col>
+            <Col sm={24}>
               <FormItem label={this.msg('lottingRule')}>
                 {getFieldDecorator('lotting_rule', {
                 })(
@@ -107,16 +129,6 @@ export default class SiderForm extends Component {
               </FormItem>
             </Col>
           </Row>
-        </Card>
-        <Card title="海关归类属性" className="secondary-card">
-          <Col sm={24}>
-            <FormItem label={this.msg('classification')}>
-              {getFieldDecorator('hs_code', {
-              })(
-                <Input placeholder="海关商品编码" />
-                )}
-            </FormItem>
-          </Col>
         </Card>
       </div>
     );
