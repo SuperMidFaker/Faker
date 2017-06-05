@@ -166,12 +166,6 @@ export default class MainForm extends Component {
               </FormItem>
             </Col>
             <Col sm={24} lg={8}>
-              <FormItem label={this.msg('perUnitQty')}>
-                {getFieldDecorator('per_unit_qty', {
-                })(<Input />)}
-              </FormItem>
-            </Col>
-            <Col sm={24} lg={8}>
               <FormItem label={this.msg('unit')}>
                 {getFieldDecorator('unit', {
                 })(
@@ -185,6 +179,20 @@ export default class MainForm extends Component {
                     <Option value="Float">托盘</Option>
                   </Select>
                   )}
+              </FormItem>
+            </Col>
+            <Col sm={24} lg={8}>
+              <FormItem label={this.msg('perUnitQty')}>
+                {getFieldDecorator('per_unit_qty', {
+                })(<InputGroup compact>
+                  <Input style={{ width: '50%' }} />
+                  <Select size="large" style={{ width: '50%' }} disabled>
+                    <Option value="Ballo">个</Option>
+                    <Option value="CPU">件</Option>
+                    <Option value="CPU">套</Option>
+                    <Option value="Float">公斤</Option>
+                  </Select>
+                </InputGroup>)}
               </FormItem>
             </Col>
             <Col sm={24} lg={6}>
