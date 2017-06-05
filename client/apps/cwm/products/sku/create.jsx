@@ -1,16 +1,23 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Breadcrumb, Form, Layout, Row, Col, Button } from 'antd';
-import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
+import { Breadcrumb, Form, Layout, Row, Col, Button } from 'antd';
+import connectFetch from 'client/common/decorators/connect-fetch';
+import connectNav from 'client/common/decorators/connect-nav';
+import { loadSkuParams } from 'common/reducers/cwmSku';
 import MainForm from './forms/mainForm';
 import SiderForm from './forms/siderForm';
-import messages from '../message.i18n';
-import { format } from 'client/common/i18n/helpers';
+import { formatMsg } from '../message.i18n';
 
-const formatMsg = format(messages);
 const { Header, Content } = Layout;
 
+function fetchData({ state, dispatch }) {
+  return dispatch(loadSkuParams({
+    tenantId: state.account.tenantId,
+  }));
+}
+
+@connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
@@ -35,7 +42,7 @@ export default class CreateProductSku extends Component {
     router: PropTypes.object.isRequired,
   }
 
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   handleSave = () => {
     this.props.form.validateFields((errors) => {
       if (!errors) {

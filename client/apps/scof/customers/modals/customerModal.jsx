@@ -152,6 +152,11 @@ export default class CustomerModal extends React.Component {
       }
     });
   }
+  handleCustomerTypesChange = (value) => {
+    if (value.length !== 0) {
+      this.setState({ businessType: value.join(',') });
+    }
+  }
   render() {
     const { visible, operation } = this.props;
     const { businessType } = this.state;
@@ -203,13 +208,7 @@ export default class CustomerModal extends React.Component {
             label="业务类型"
             hasFeedback
           >
-            <CheckboxGroup options={CUSTOMER_TYPES} value={businessArray}
-              onChange={(value) => {
-                if (value !== []) {
-                  this.setState({ businessType: value.join(',') });
-                }
-              }}
-            />
+            <CheckboxGroup options={CUSTOMER_TYPES} value={businessArray} onChange={this.handleCustomerTypesChange} />
           </FormItem>
           <FormItem
             {...formItemLayout}

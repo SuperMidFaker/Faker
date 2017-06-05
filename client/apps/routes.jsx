@@ -91,6 +91,7 @@ import * as SCOFCustomers from './scof/customers';
 import * as SCOFFlow from './scof/flow';
 import * as SCOFBilling from './scof/billing';
 import { loadAccount } from 'common/reducers/account';
+import { loadWhseContext } from 'common/reducers/cwmContext';
 import { isLoaded } from 'client/common/redux-actions';
 import { DEFAULT_MODULES } from 'common/constants/module';
 
@@ -122,6 +123,14 @@ export default(store, cookie) => {
       store.dispatch(loadAccount(cookie)).then(checkAuth);
     } else {
       checkAuth();
+    }
+  };
+  const ensureCwmContext = (nextState, replace, cb) => {
+    const storeState = store.getState();
+    if (!storeState.cwmContext.loaded) {
+      store.dispatch(loadWhseContext(storeState.account.tenantId)).then(() => cb());
+    } else {
+      cb();
     }
   };
   return (
@@ -411,7 +420,7 @@ export default(store, cookie) => {
               <Route path="openapi" component={SCVSettings.OpenApi} />
             </Route>
           </Route>
-          <Route path={DEFAULT_MODULES.cwm.id} component={CWM}>
+          <Route path={DEFAULT_MODULES.cwm.id} component={CWM} onEnter={ensureCwmContext}>
             <IndexRedirect to="/cwm/dashboard" />
             <Route path="dashboard" component={CWMDashboard.Index} />
             <Route path="receiving">
@@ -448,7 +457,7 @@ export default(store, cookie) => {
               <Route path="sku">
                 <IndexRoute component={CWMProductsSku.List} />
                 <Route path="create" component={CWMProductsSku.Create} />
-                <Route path=":sku" component={CWMProductsSku.Edit} />
+                <Route path="edit/:sku" component={CWMProductsSku.Edit} />
               </Route>
             </Route>
             <Route path="resources">

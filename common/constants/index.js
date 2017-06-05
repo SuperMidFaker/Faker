@@ -45,6 +45,7 @@ export const PARTNER_BUSINESSES = {
 export const PARTNER_BUSINESSE_TYPES = {
   clearance: 'clearance',
   transport: 'transport',
+  warehousing: 'warehousing',
 };
 
 export const KPI_CHART_COLORS = ['#CB809A', '#26B68E', '#109FDE', '#FFCE3B', '#8AC9D2', '#CB809A'];
