@@ -29,6 +29,7 @@ import cmsDelegation from './cmsDelegation';
 import cmsDelgInfoHub from './cmsDelgInfoHub';
 import cmsDeclare from './cmsDeclare';
 import cmsManifest from './cmsManifest';
+import cmsInvoice from './cmsInvoice';
 import cmsQuote from './cmsQuote';
 import cmsResources from './cmsResources';
 import scofFlow from './scofFlow';
@@ -84,6 +85,7 @@ export default combineReducers({
   cmsDelgInfoHub,
   cmsDeclare,
   cmsManifest,
+  cmsInvoice,
   cmsQuote,
   cmsResources,
   scofFlow,
