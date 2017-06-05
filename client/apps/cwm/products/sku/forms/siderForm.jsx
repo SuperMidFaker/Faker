@@ -1,6 +1,6 @@
 /* eslint react/no-multi-comp: 0 */
 import React, { Component, PropTypes } from 'react';
-import { Form, Card, Col, Row, Input, Select, Checkbox, Radio } from 'antd';
+import { Form, Card, Col, Row, Input, Select, Radio } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
@@ -41,44 +41,65 @@ export default class SiderForm extends Component {
             <Col sm={24}>
               <FormItem label={this.msg('内包装量')}>
                 {getFieldDecorator('inner_pack_qty', {
-                })(<span>
+                })(
                   <InputGroup compact>
                     <Input style={{ width: '50%' }} placeholder="SKU包装单位数量" />
                     <Input style={{ width: '50%' }} placeholder="主单位数量" disabled />
                   </InputGroup>
-                  <Checkbox>入库</Checkbox>
-                  <Checkbox>出库</Checkbox>
-                </span>
                   )}
               </FormItem>
             </Col>
             <Col sm={24}>
               <FormItem label={this.msg('装箱量')}>
                 {getFieldDecorator('box_pack_qty', {
-                })(<span>
+                })(
                   <InputGroup compact>
                     <Input style={{ width: '50%' }} placeholder="SKU包装单位数量" />
                     <Input style={{ width: '50%' }} placeholder="主单位数量" disabled />
                   </InputGroup>
-                  <Checkbox>入库</Checkbox>
-                  <Checkbox>补货</Checkbox>
-                  <Checkbox>出库</Checkbox>
-                </span>
                   )}
               </FormItem>
             </Col>
             <Col sm={24}>
               <FormItem label={this.msg('码盘量')}>
                 {getFieldDecorator('pallet_pack_qty', {
-                })(<span>
+                })(
                   <InputGroup compact>
                     <Input style={{ width: '50%' }} placeholder="SKU包装单位数量" />
                     <Input style={{ width: '50%' }} placeholder="主单位数量" disabled />
                   </InputGroup>
-                  <Checkbox>入库</Checkbox>
-                  <Checkbox>补货</Checkbox>
-                  <Checkbox>出库</Checkbox>
-                </span>
+                  )}
+              </FormItem>
+            </Col>
+            <Col sm={24}>
+              <FormItem label={this.msg('默认入库包装')}>
+                {getFieldDecorator('inbound_pack', {
+                })(<RadioGroup size="large">
+                  <RadioButton value="IP">内包装</RadioButton>
+                  <RadioButton value="BOX">箱</RadioButton>
+                  <RadioButton value="PALLET">托盘</RadioButton>
+                </RadioGroup>
+                  )}
+              </FormItem>
+            </Col>
+            <Col sm={24}>
+              <FormItem label={this.msg('默认补货包装')}>
+                {getFieldDecorator('replenish_pack', {
+                })(<RadioGroup size="large">
+                  <RadioButton value="BOX">箱</RadioButton>
+                  <RadioButton value="PALLET">托盘</RadioButton>
+                </RadioGroup>
+                  )}
+              </FormItem>
+            </Col>
+            <Col sm={24}>
+              <FormItem label={this.msg('默认出库包装')}>
+                {getFieldDecorator('outbound_pack', {
+                })(<RadioGroup size="large">
+                  <RadioButton value="IP">内包装</RadioButton>
+                  <RadioButton value="BOX">箱</RadioButton>
+                  <RadioButton value="PALLET">托盘</RadioButton>
+                </RadioGroup>
                   )}
               </FormItem>
             </Col>
