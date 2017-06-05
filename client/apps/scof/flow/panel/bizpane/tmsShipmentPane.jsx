@@ -129,7 +129,7 @@ export default class TMSShipmentPane extends Component {
       });
     }
   }
-  renderTmsTariffCondition = (row) => {
+  renderTmsTariff = (row) => {
     let text = row.quoteNo;
     const tms = this.props.tmsParams.transitModes.find(tm => tm.id === Number(row.transModeCode));
     const meter = TARIFF_METER_METHODS.find(m => m.value === row.meter);
@@ -170,7 +170,7 @@ export default class TMSShipmentPane extends Component {
                 {getFieldDecorator('quote_no', {
                   initialValue: model.quote_no,
                 })(<Select allowClear onSelect={this.handleTariffSelect}>
-                  { this.state.tariffs.map(t => <Option value={t.quoteNo} key={t.quoteNo}>{this.renderTmsTariffCondition(t)}</Option>) }
+                  { this.state.tariffs.map(t => <Option value={t.quoteNo} key={t.quoteNo}>{this.renderTmsTariff(t)}</Option>) }
                 </Select>)}
               </FormItem>
             </Col>

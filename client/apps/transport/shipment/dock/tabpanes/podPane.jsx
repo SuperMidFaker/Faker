@@ -23,6 +23,11 @@ export default class PodPanel extends React.Component {
   state = {
     pod: {},
   }
+  componentDidMount() {
+    this.props.loadPod(this.props.podId).then((result) => {
+      this.setState({ pod: result.data });
+    });
+  }
   componentWillReceiveProps(nextProps) {
     if (this.props.podId !== nextProps.podId && nextProps.podId) {
       this.props.loadPod(nextProps.podId).then((result) => {

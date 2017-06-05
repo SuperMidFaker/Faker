@@ -5,8 +5,9 @@ import moment from 'moment';
 import { Button, DatePicker, InputNumber, Form, Row, Col, Card, Input, Switch, Select, Icon } from 'antd';
 import RegionCascader from 'client/components/chinaRegionCascader';
 import { setClientForm, loadFlowNodeData } from 'common/reducers/crmOrders';
+import { loadTariffsByTransportInfo, loadRatesSources, loadRateEnds } from 'common/reducers/scofFlow';
 import { uuidWithoutDash } from 'client/common/uuid';
-import { GOODS_TYPES, PRESET_TRANSMODES, CONTAINER_PACKAGE_TYPE, COURIERS } from 'common/constants';
+import { GOODS_TYPES, PRESET_TRANSMODES, CONTAINER_PACKAGE_TYPE, COURIERS, TARIFF_METER_METHODS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import * as Location from 'client/util/location';
 import messages from '../message.i18n';
@@ -29,7 +30,7 @@ const formItemLayout = {
     customerPartnerId: state.crmOrders.formData.customer_partner_id,
     serviceTeam: state.crmCustomers.operators,
   }),
-  { setClientForm, loadFlowNodeData }
+  { setClientForm, loadFlowNodeData, loadTariffsByTransportInfo, loadRatesSources, loadRateEnds }
 )
 export default class TransportForm extends Component {
   static propTypes = {
@@ -48,9 +49,17 @@ export default class TransportForm extends Component {
       cust_shipmt_goods_type: PropTypes.string,
       cust_shipmt_wrap_type: PropTypes.string,
     }),
+    loadTariffsByTransportInfo: PropTypes.func.isRequired,
+    loadRatesSources: PropTypes.func.isRequired,
+    loadRateEnds: PropTypes.func.isRequired,
+  }
+  state = {
+    tariffs: [],
+    rateSources: [],
+    rateEnds: [],
   }
   componentDidMount() {
-    const { formData, formRequires } = this.props;
+    const { formData, formRequires, customerPartnerId } = this.props;
     const node = formData.node;
     if (!node.uuid && node.node_uuid) {
       this.props.loadFlowNodeData(node.node_uuid, node.kind).then((result) => {
@@ -89,9 +98,68 @@ export default class TransportForm extends Component {
             trs_mode_code: nodedata.transit_mode,
             trs_mode: transitMode && transitMode.mode_name,
             pod: nodedata.pod,
+            quote_no: nodedata.quote_no,
             remark: '',
             package: '',
             uuid: uuidWithoutDash() });
+          this.props.loadTariffsByTransportInfo(customerPartnerId, transitMode.id, nodedata.goods_type).then((result1) => {
+            this.setState({
+              tariffs: result1.data || [],
+            });
+            if (result1.data) {
+              const tariff = result1.data.find(item => item.quoteNo === nodedata.quote_no);
+              if (tariff) {
+                this.props.loadRatesSources({
+                  tariffId: tariff._id,
+                  pageSize: 999999,
+                  currentPage: 1,
+                }).then((result2) => {
+                  this.setState({ rateSources: result2.data.data || [] });
+                  if (result2.data.data && consigner) {
+                    const rss = result2.data.data.filter(item => item.source.province === consigner.province);
+                    const promises = rss.map(item => this.props.loadRateEnds({ rateId: item._id, pageSize: 99999999, current: 1 }));
+                    Promise.all(promises).then((results) => {
+                      let rateEnds = [];
+                      results.forEach((item) => {
+                        rateEnds = rateEnds.concat(item.data.data);
+                      });
+                      this.setState({ rateEnds });
+                    });
+                  }
+                });
+              }
+            }
+          });
+        }
+      });
+    } else {
+      this.props.loadTariffsByTransportInfo(customerPartnerId, node.trs_mode_id, node.goods_type).then((result1) => {
+        this.setState({
+          tariffs: result1.data || [],
+        });
+        if (result1.data) {
+          const tariff = result1.data.find(item => item.quoteNo === node.quote_no);
+          if (tariff) {
+            this.props.loadRatesSources({
+              tariffId: tariff._id,
+              pageSize: 999999,
+              currentPage: 1,
+            }).then((result2) => {
+              this.setState({ rateSources: result2.data.data || [] });
+              const consigner = formRequires.consignerLocations.find(cl => cl.node_id === node.consigner_id);
+              if (result2.data.data && consigner) {
+                const rss = result2.data.data.filter(item => item.source.province === consigner.province);
+                const promises = rss.map(item => this.props.loadRateEnds({ rateId: item._id, pageSize: 99999999, current: 1 }));
+                Promise.all(promises).then((results) => {
+                  let rateEnds = [];
+                  results.forEach((item) => {
+                    rateEnds = rateEnds.concat(item.data.data);
+                  });
+                  this.setState({ rateEnds });
+                });
+              }
+            });
+          }
         }
       });
     }
@@ -104,6 +172,31 @@ export default class TransportForm extends Component {
   }
   handleChange = (key, value) => {
     this.handleSetClientForm({ [key]: value });
+    if (key === 'quote_no' && value) {
+      const { formRequires: { consignerLocations } } = this.props;
+      const consigner = consignerLocations.find(item => item.node_id === this.props.formData.node.consigner_id);
+      const tariff = this.state.tariffs.find(item => item.quoteNo === value);
+      if (tariff) {
+        this.props.loadRatesSources({
+          tariffId: tariff._id,
+          pageSize: 999999,
+          currentPage: 1,
+        }).then((result1) => {
+          this.setState({ rateSources: result1.data.data || [] });
+          if (result1.data.data) {
+            const rss = result1.data.data.filter(item => item.source.province === consigner.province);
+            const promises = rss.map(item => this.props.loadRateEnds({ rateId: item._id, pageSize: 99999999, current: 1 }));
+            Promise.all(promises).then((results) => {
+              let rateEnds = [];
+              results.forEach((item) => {
+                rateEnds = rateEnds.concat(item.data.data);
+              });
+              this.setState({ rateEnds });
+            });
+          }
+        });
+      }
+    }
   }
   handleConsignChange = (key, value) => {
     if (typeof value !== 'string') {
@@ -189,6 +282,17 @@ export default class TransportForm extends Component {
         consignForm.consigner_email = consign.email;
         consignForm.consigner_contact = consign.contact;
         consignForm.consigner_mobile = consign.mobile;
+
+        const { rateSources } = this.state;
+        const rss = rateSources.filter(item => item.source.province === consign.province);
+        const promises = rss.map(item => this.props.loadRateEnds({ rateId: item._id, pageSize: 99999999, current: 1 }));
+        Promise.all(promises).then((results) => {
+          let rateEnds = [];
+          results.forEach((item) => {
+            rateEnds = rateEnds.concat(item.data.data);
+          });
+          this.setState({ rateEnds });
+        });
       }
     } else if (key === 'consignee_name') {
       const consign = formRequires.consigneeLocations.find(item => item.node_id === value);
@@ -224,6 +328,10 @@ export default class TransportForm extends Component {
       trs_mode_id: transportMode.id,
       trs_mode_code: transportMode.mode_code,
       trs_mode: transportMode.mode_name,
+    });
+    const { formData, customerPartnerId } = this.props;
+    this.props.loadTariffsByTransportInfo(customerPartnerId, transportMode.id, formData.node.goods_type).then((result) => {
+      this.setState({ tariffs: result.data });
     });
   }
   handlePickupChange = (pickupDt) => {
@@ -303,6 +411,12 @@ export default class TransportForm extends Component {
   }
   handleCommonFieldChange = (filed, value) => {
     this.handleSetClientForm({ [filed]: value });
+    if (filed === 'goods_type') {
+      const { formData, customerPartnerId } = this.props;
+      this.props.loadTariffsByTransportInfo(customerPartnerId, formData.node.trs_mode_id, value).then((result) => {
+        this.setState({ tariffs: result.data });
+      });
+    }
   }
   handleShipmentRelate = () => {
     const { shipment } = this.props;
@@ -315,9 +429,20 @@ export default class TransportForm extends Component {
     this.handleSetClientForm(related);
   }
   renderConsign = consign => `${consign.name} | ${Location.renderLoc(consign)} | ${consign.contact || ''}`
+  renderTmsTariff = (row) => {
+    let text = row.quoteNo;
+    const tms = this.props.formRequires.transitModes.find(tm => tm.id === Number(row.transModeCode));
+    const meter = TARIFF_METER_METHODS.find(m => m.value === row.meter);
+    const goodType = GOODS_TYPES.find(m => m.value === row.goodsType);
+    if (tms) text = `${text}-${tms.mode_name}`;
+    if (meter) text = `${text}/${meter.text}`;
+    if (goodType) text = `${text}/${goodType.text}`;
+    return text;
+  }
   render() {
     const { formData, serviceTeam, formRequires: { consignerLocations, consigneeLocations,
       transitModes, packagings, vehicleTypes, vehicleLengths }, customerPartnerId } = this.props;
+    const { rateSources, rateEnds } = this.state;
     // todo consigner consignee by customer partner id
     const node = formData.node;
     const consignerRegion = [
@@ -390,6 +515,66 @@ export default class TransportForm extends Component {
     return (
       <Card extra={<a role="presentation" onClick={this.handleShipmentRelate}><Icon type="sync" /> 提取货运信息</a>} bodyStyle={{ paddingTop: 40 }}>
         <Row>
+          <Col sm={24} md={8}>
+            <FormItem label="运输模式" {...formItemLayout} required="true">
+              <Select value={node.trs_mode_id} onChange={this.handleTransmodeChange}>
+                {transitModes.map(
+                  tm => <Option value={tm.id} key={`${tm.mode_code}${tm.id}`}>{tm.mode_name}</Option>
+                )}
+              </Select>
+            </FormItem>
+          </Col>
+          {transModeExtras}
+        </Row>
+        <Row>
+          <Col sm={24} md={8}>
+            <FormItem label="货物类型" {...formItemLayout}>
+              <Select value={node.goods_type} onChange={value => this.handleCommonFieldChange('goods_type', value)}>
+                {GOODS_TYPES.map(gt => <Option value={gt.value} key={gt.value}>{gt.text}</Option>)}
+              </Select>
+            </FormItem>
+          </Col>
+          <Col sm={24} md={8}>
+            <FormItem label={this.msg('quoteNo')} {...formItemLayout}>
+              <Select allowClear value={node.quote_no} onChange={value => this.handleChange('quote_no', value)}>
+                {
+                  this.state.tariffs.map(t => <Option value={t.quoteNo} key={t._id}>{this.renderTmsTariff(t)}</Option>)
+                }
+              </Select>
+            </FormItem>
+          </Col>
+          <Col sm={24} md={8}>
+            <FormItem label={this.msg('personResponsible')} {...formItemLayout}>
+              <Select size="large" value={node.person_id} onChange={this.handlePersonChange}>
+                {serviceTeam.map(st => <Option value={st.lid} key={st.lid}>{st.name}</Option>)}
+              </Select>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col sm={24} md={8}>
+            <FormItem label={this.msg('packageNum')} {...formItemLayout}>
+              <InputGroup compact>
+                <Input type="number" style={{ width: '50%' }} value={node.pack_count} onChange={e => this.handleChange('pack_count', e.target.value)} />
+                <Select size="large" style={{ width: '50%' }} placeholder="选择包装方式"
+                  value={node.package} onChange={value => this.handleCommonFieldChange('package', value)}
+                >
+                  {packagings.map(
+                    pk => <Option value={pk.package_code} key={pk.package_code}>{pk.package_name}</Option>
+                  )}
+                </Select>
+              </InputGroup>
+            </FormItem>
+          </Col>
+          <Col sm={24} md={8}>
+            <FormItem label={this.msg('delgGrossWt')} {...formItemLayout}>
+              <Input value={node.gross_wt} addonAfter="千克" type="number"
+                onChange={e => this.handleCommonFieldChange('gross_wt', e.target.value)}
+              />
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
           <Col sm={24}>
             <FormItem label="发货方">
               <Col span="6" style={{ paddingRight: 8 }}>
@@ -399,8 +584,9 @@ export default class TransportForm extends Component {
                   dropdownMatchSelectWidth={false}
                   dropdownStyle={{ width: 400 }}
                 >
-                  {consignerLocations.filter(cl => cl.ref_partner_id === customerPartnerId || cl.ref_partner_id === -1).map(dw =>
-                    <Option value={dw.node_id} key={dw.node_id}>{this.renderConsign(dw)}</Option>)
+                  {consignerLocations.filter(cl => cl.ref_partner_id === customerPartnerId || cl.ref_partner_id === -1)
+                    .filter(cl => rateSources.length === 0 || rateSources.find(rs => rs.source.province === cl.province))
+                    .map(dw => <Option value={dw.node_id} key={dw.node_id}>{this.renderConsign(dw)}</Option>)
                 }
                 </Select>
               </Col>
@@ -447,8 +633,10 @@ export default class TransportForm extends Component {
                   dropdownMatchSelectWidth={false}
                   dropdownStyle={{ width: 400 }}
                 >
-                  {consigneeLocations.filter(cl => cl.ref_partner_id === customerPartnerId || cl.ref_partner_id === -1).map(dw =>
-                    <Option value={dw.node_id} key={dw.node_id}>{this.renderConsign(dw)}</Option>)
+                  {consigneeLocations.filter(cl => cl.ref_partner_id === customerPartnerId || cl.ref_partner_id === -1)
+                    .filter(cl => rateEnds.length === 0 || rateEnds.find(rs => rs.end.province === cl.province && rs.end.city === cl.city &&
+                        rs.end.district === cl.district && rs.end.street === cl.street))
+                    .map(dw => <Option value={dw.node_id} key={dw.node_id}>{this.renderConsign(dw)}</Option>)
                 }
                 </Select>
               </Col>
@@ -510,56 +698,8 @@ export default class TransportForm extends Component {
             </FormItem>
           </Col>
         </Row>
+
         <Row>
-          <Col sm={24} md={8}>
-            <FormItem label="运输模式" {...formItemLayout} required="true">
-              <Select value={node.trs_mode_id} onChange={this.handleTransmodeChange}>
-                {transitModes.map(
-                  tm => <Option value={tm.id} key={`${tm.mode_code}${tm.id}`}>{tm.mode_name}</Option>
-                )}
-              </Select>
-            </FormItem>
-          </Col>
-          {transModeExtras}
-        </Row>
-        <Row>
-          <Col sm={24} md={8}>
-            <FormItem label="货物类型" {...formItemLayout}>
-              <Select value={node.goods_type} onChange={value => this.handleCommonFieldChange('goods_type', value)}>
-                {GOODS_TYPES.map(gt => <Option value={gt.value} key={gt.value}>{gt.text}</Option>)}
-              </Select>
-            </FormItem>
-          </Col>
-          <Col sm={24} md={8}>
-            <FormItem label={this.msg('packageNum')} {...formItemLayout}>
-              <InputGroup compact>
-                <Input type="number" style={{ width: '50%' }} value={node.pack_count} onChange={e => this.handleChange('pack_count', e.target.value)} />
-                <Select size="large" style={{ width: '50%' }} placeholder="选择包装方式"
-                  value={node.package} onChange={value => this.handleCommonFieldChange('package', value)}
-                >
-                  {packagings.map(
-                    pk => <Option value={pk.package_code} key={pk.package_code}>{pk.package_name}</Option>
-                  )}
-                </Select>
-              </InputGroup>
-            </FormItem>
-          </Col>
-          <Col sm={24} md={8}>
-            <FormItem label={this.msg('delgGrossWt')} {...formItemLayout}>
-              <Input value={node.gross_wt} addonAfter="千克" type="number"
-                onChange={e => this.handleCommonFieldChange('gross_wt', e.target.value)}
-              />
-            </FormItem>
-          </Col>
-        </Row>
-        <Row>
-          <Col sm={24} md={8}>
-            <FormItem label={this.msg('personResponsible')} {...formItemLayout}>
-              <Select size="large" value={node.person_id} onChange={this.handlePersonChange}>
-                {serviceTeam.map(st => <Option value={st.lid} key={st.lid}>{st.name}</Option>)}
-              </Select>
-            </FormItem>
-          </Col>
           <Col sm={24} md={8}>
             <FormItem label="备注" {...formItemLayout}>
               <Input value={node.remark} onChange={e => this.handleCommonFieldChange('remark', e.target.value)} />
