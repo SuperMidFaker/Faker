@@ -61,7 +61,7 @@ export default class InvoiceDetials extends React.Component {
   handleFill = (val, field) => {
     const change = {};
     change[field] = val;
-    this.props.saveTempChange(change, this.props.invData.id);
+    this.props.saveTempChange(change, this.props.invoice.id);
   }
   render() {
     const { invoice, trxModes, customs } = this.props;
