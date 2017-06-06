@@ -337,6 +337,8 @@ export default(store, cookie) => {
             <Route path="settings">
               <IndexRedirect to="/clearance/settings/quotetemplates" />
               <Route path="quotetemplates" component={CMSSettings.QuoteTemplates} />
+              <Route path="invoicetemplates" component={CMSSettings.InvoiceTemplates} />
+              <Route path="invoicetemplates/edit/:id" component={CMSSettings.InvoiceContent} />
             </Route>
             <Route path="classification">
               <Route path="tradeitem">
