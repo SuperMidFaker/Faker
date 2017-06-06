@@ -3,7 +3,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import connectNav from 'client/common/decorators/connect-nav';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Layout, Table, Tooltip, Button, Input, Breadcrumb, Tabs, Card, Popover, Menu, Form, message } from 'antd';
+import { Layout, Table, Tooltip, Button, Input, Breadcrumb, Tabs, Popover, Menu, Form, message } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import WarehouseModal from './modal/warehouseModal';
@@ -135,14 +135,14 @@ export default class WareHouse extends Component {
           {
             getFieldDecorator('zoneCode', {
               rules: [{ required: true, messages: 'please input zoneCode' }],
-            })(<Input placeholder="区域编号" />)
+            })(<Input placeholder="库区编号" />)
           }
         </FormItem>
         <FormItem>
           {
             getFieldDecorator('zoneName', {
               rules: [{ required: true, messages: 'please input zoneName' }],
-            })(<Input placeholder="区域名称" />)
+            })(<Input placeholder="库区描述" />)
           }
         </FormItem>
         <FormItem>
@@ -193,13 +193,13 @@ export default class WareHouse extends Component {
             </Breadcrumb>
           </Header>
           <Content className="main-content">
-            <Card>
+            <div className="page-body">
               <Tabs defaultActiveKey="1">
                 <TabPane tab="库区/库位" key="1">
                   <Layout className="main-wrapper">
                     <Sider className="nav-sider">
                       <Menu defaultOpenKeys={['deptMenu']} mode="inline">
-                        <SubMenu key="deptMenu" title={<span><MdIcon mode="fontello" type="sitemap" />库区</span>} />
+                        <SubMenu key="deptMenu" title={<span><MdIcon mode="fontello" type="th-list-4" />库区</span>} />
                         {
                           zoneList.map(item => <Menu.Item className={item.zone_code === zone.zone_code ? 'ant-menu-item-selected' : ''} key={item.zone_code}>{item.zone_name}</Menu.Item>)
                         }
@@ -214,7 +214,7 @@ export default class WareHouse extends Component {
                     </Sider>
                     <Content className="nav-content">
                       <div className="nav-content-head">
-                        <Button size="large" type="primary" icon="user-add" onClick={this.showLocationModal}>
+                        <Button size="large" type="primary" icon="plus-circle" onClick={this.showLocationModal}>
                           添加库位
                         </Button>
                       </div>
@@ -227,7 +227,7 @@ export default class WareHouse extends Component {
                 </TabPane>
                 <TabPane tab="监管系统" key="2" />
               </Tabs>
-            </Card>
+            </div>
           </Content>
         </Layout>
       </Layout>

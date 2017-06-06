@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Badge, Button, Breadcrumb, Layout, Radio, Menu, Select, Table, Tag } from 'antd';
+import { Badge, Breadcrumb, Layout, Radio, Menu, Select, Table, Tag } from 'antd';
 import NavLink from 'client/components/nav-link';
 import SearchBar from 'client/components/search-bar';
 import RowUpdater from 'client/components/rowUpdater';
@@ -14,7 +14,6 @@ const { Header, Content, Sider } = Layout;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
-const SubMenu = Menu.SubMenu;
 
 @injectIntl
 @connect(
@@ -45,63 +44,51 @@ export default class SupervisionSHFTZList extends React.Component {
     width: 120,
     fixed: 'left',
   }, {
-    title: '货主',
+    title: '报关单号',
+    width: 120,
+    dataIndex: 'customs_decl_no',
+  }, {
+    title: '经营单位',
     width: 200,
     dataIndex: 'owner_code',
   }, {
-    title: '采购订单号',
-    dataIndex: 'ref_order_no',
+    title: '收货单位',
+    width: 200,
+    dataIndex: 'whse_code',
   }, {
-    title: '供应商',
-    dataIndex: 'seller_name',
-  }, {
-    title: '通知日期',
+    title: '入库备案号',
     width: 120,
-    dataIndex: 'created_date',
+    dataIndex: 'ftz_ent_no',
   }, {
-    title: '预期到货时间',
+    title: '备案类型',
+    dataIndex: 'ftz_ent_type',
+    render: (o) => {
+      if (o === 1) {
+        return (<Tag color="blue">一二线进境</Tag>);
+      } else if (o === 0) {
+        return (<Tag>视同出口</Tag>);
+      }
+    },
+  }, {
+    title: '进口日期',
     width: 120,
-    dataIndex: 'expect_receive_date',
+    dataIndex: 'ie_date',
   }, {
-    title: '收货时间',
+    title: '进库日期',
+    width: 120,
+    dataIndex: 'ftz_ent_date',
+  }, {
+    title: '备案时间',
     width: 120,
     dataIndex: 'received_date',
   }, {
     title: '状态',
     dataIndex: 'status',
-    fixed: 'right',
-    width: 120,
-    render: (o) => {
-      if (o === 0) {
-        return (<Badge status="default" text="待收货" />);
-      } else if (o === 1) {
-        return (<Badge status="processing" text="入库中" />);
-      } else if (o === 2) {
-        return (<Badge status="warning" text="部分收货" />);
-      } else if (o === 3) {
-        return (<Badge status="success" text="收货完成" />);
-      }
-    },
-  }, {
-    title: '货物属性',
     width: 100,
-    dataIndex: 'bonded',
-    fixed: 'right',
-    render: (o) => {
-      if (o === 1) {
-        return (<Tag color="blue">保税</Tag>);
-      } else if (o === 0) {
-        return (<Tag>非保税</Tag>);
-      }
-    },
-  }, {
-    title: '监管备案',
-    dataIndex: 'reg_status',
-    width: 120,
     fixed: 'right',
     render: (o) => {
       if (o === 0) {
-        return (<Badge status="default" />);
+        return (<Badge status="default" text="未备案" />);
       } else if (o === 1) {
         return (<Badge status="processing" text="已发送" />);
       } else if (o === 2) {
@@ -110,17 +97,13 @@ export default class SupervisionSHFTZList extends React.Component {
     },
   }, {
     title: '操作',
-    width: 120,
+    width: 100,
     fixed: 'right',
     render: (o, record) => {
       if (record.status === 0) {
-        return (<span><RowUpdater label="释放" row={record} /><span className="ant-divider" /><RowUpdater label="修改" row={record} /></span>);
+        return (<span><RowUpdater label="发送" row={record} /></span>);
       } else if (record.status === 1) {
-        if (record.bonded === 1 && record.reg_status === 0) {
-          return (<span><RowUpdater onHit={this.handleReceive} label="入库" row={record} /><span className="ant-divider" /><RowUpdater label="备案" row={record} /></span>);
-        } else {
-          return (<span><RowUpdater onHit={this.handleReceive} label="入库" row={record} /></span>);
-        }
+        return (<span><RowUpdater label="获取状态" row={record} /></span>);
       }
     },
   }]
@@ -191,7 +174,7 @@ export default class SupervisionSHFTZList extends React.Component {
     };
     return (
       <Layout>
-        <Sider width={320} className="menu-sider" key="sider">
+        <Sider width={200} className="menu-sider" key="sider">
           <div className="left-sider-panel">
             <div className="top-bar">
               <Breadcrumb>
@@ -202,52 +185,27 @@ export default class SupervisionSHFTZList extends React.Component {
             </div>
             <div className="left-sider-panel">
               <Menu
-                defaultSelectedKeys={['inboundAfterDecl']}
-                defaultOpenKeys={['receive', 'release', 'cargo']}
+                defaultSelectedKeys={['entry']}
                 mode="inline"
               >
-                <SubMenu key="receive" title={<span>进库备案</span>}>
-                  <Menu.Item key="inboundAfterDecl">
-                    <NavLink to="/cwm/supervision/shftz/receive">
-                    一二线进境
+                <Menu.Item key="entry">
+                  <NavLink to="/cwm/supervision/shftz/entry">
+                    进库备案
                   </NavLink>
-                  </Menu.Item>
-                  <Menu.Item key="inboundBeforeDecl" disabled>
-                    <NavLink to="/cwm/supervision/shftz/receive">
-                    二线视同出口
+                </Menu.Item>
+                <Menu.Item key="release">
+                  <NavLink to="/cwm/supervision/shftz/release">
+                    出库备案
                   </NavLink>
-                  </Menu.Item>
-                  <Menu.Item key="inboundTransfer" disabled>
-                    <NavLink to="/cwm/supervision/shftz/receive">
-                    移库转入
-                  </NavLink>
-                  </Menu.Item>
-                </SubMenu>
-                <SubMenu key="release" title={<span>出库备案</span>}>
-                  <Menu.Item key="outboundAfterDecl">
-                    <NavLink to="/cwm/supervision/shftz/release">
-                    普通出库
-                  </NavLink>
-                  </Menu.Item>
-                  <Menu.Item key="outboundBeforeDecl">
-                    <NavLink to="/cwm/supervision/shftz/release">
-                    分拨出库
-                  </NavLink>
-                  </Menu.Item>
-                  <Menu.Item key="applyBatchDecl">
-                    <NavLink to="/cwm/supervision/shftz/release">
+                </Menu.Item>
+                <Menu.Item key="batch">
+                  <NavLink to="/cwm/supervision/shftz/batch">
                     集中报关申请
                   </NavLink>
-                  </Menu.Item>
-                  <Menu.Item key="outboundTransfer">
-                    <NavLink to="/cwm/supervision/shftz/release">
-                    移库转出
-                  </NavLink>
-                  </Menu.Item>
-                </SubMenu>
+                </Menu.Item>
                 <Menu.Item key="cargo">
                   <NavLink to="/cwm/supervision/shftz/cargo">
-                    <span>货物备案</span>
+                    货物备案
                   </NavLink>
                 </Menu.Item>
               </Menu>
@@ -271,7 +229,7 @@ export default class SupervisionSHFTZList extends React.Component {
                 </Select>
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                {this.msg('ftzReceiveReg')}
+                {this.msg('ftzEntry')}
               </Breadcrumb.Item>
             </Breadcrumb>
             <RadioGroup defaultValue="pending" onChange={this.handleBondedChange} size="large">
@@ -279,11 +237,7 @@ export default class SupervisionSHFTZList extends React.Component {
               <RadioButton value="sent">已发送</RadioButton>
               <RadioButton value="completed">已备案</RadioButton>
             </RadioGroup>
-            <div className="top-bar-tools">
-              <Button type="primary" size="large" icon="plus" onClick={this.handleCreateBtnClick}>
-                {this.msg('createASN')}
-              </Button>
-            </div>
+            <div className="top-bar-tools" />
           </Header>
           <Content className="main-content" key="main">
             <div className="page-body">
@@ -301,7 +255,7 @@ export default class SupervisionSHFTZList extends React.Component {
                 </div>
               </div>
               <div className="panel-body table-panel">
-                <Table columns={this.columns} rowSelection={rowSelection} dataSource={this.dataSource} rowKey="id" scroll={{ x: 1400 }} />
+                <Table columns={this.columns} rowSelection={rowSelection} dataSource={this.dataSource} rowKey="id" scroll={{ x: 1500 }} />
               </div>
             </div>
           </Content>

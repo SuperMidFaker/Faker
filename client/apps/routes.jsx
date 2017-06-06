@@ -449,8 +449,11 @@ export default(store, cookie) => {
             </Route>
             <Route path="supervision">
               <Route path="shftz">
-                <IndexRoute component={CWMSupervisionSHFTZ.List} />
-                <Route path="cargo" component={CWMSupervisionSHFTZ.CargoList} />
+                <IndexRedirect to="/cwm/supervision/shftz/entry" />
+                <Route path="cargo" component={CWMSupervisionSHFTZ.Cargo} />
+                <Route path="entry" component={CWMSupervisionSHFTZ.Entry} />
+                <Route path="release" component={CWMSupervisionSHFTZ.Release} />
+                <Route path="batch" component={CWMSupervisionSHFTZ.Batch} />
               </Route>
             </Route>
             <Route path="products">

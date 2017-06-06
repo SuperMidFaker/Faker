@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Input, Layout, Radio, message } from 'antd';
+import { Breadcrumb, Button, Icon, Input, Layout, Radio, message } from 'antd';
 import { loadSkusByWarehouse } from 'common/reducers/cwmSku';
 import Table from 'client/components/remoteAntTable';
 import SearchBar from 'client/components/search-bar';
@@ -10,7 +10,7 @@ import NavLink from 'client/components/nav-link';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
+import messages from './message.i18n';
 
 const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
@@ -152,7 +152,7 @@ export default class ProductMappingList extends React.Component {
               <Breadcrumb>
                 <Breadcrumb.Item>
                   <NavLink to="/cwm/supervision/shftz">
-                  上海自贸区监管
+                    <Icon type="left" /> 上海自贸区监管
                   </NavLink>
                 </Breadcrumb.Item>
                 <Breadcrumb.Item>
