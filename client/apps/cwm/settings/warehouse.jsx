@@ -3,7 +3,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import connectNav from 'client/common/decorators/connect-nav';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Layout, Table, Tooltip, Button, Input, Breadcrumb, Tabs, Popover, Menu, Form, message } from 'antd';
+import { Layout, Table, Tooltip, Button, Input, Breadcrumb, Tabs, Popover, Menu, Form, Tag, message } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import RowUpdater from 'client/components/rowUpdater';
 import messages from '../message.i18n';
@@ -198,7 +198,7 @@ export default class WareHouse extends Component {
       }
     );
   }
-  columns = [{
+  locationColumns = [{
     title: 'location',
     dataIndex: 'location',
     key: 'location',
@@ -224,9 +224,10 @@ export default class WareHouse extends Component {
   render() {
     const { form: { getFieldDecorator }, zoneList } = this.props;
     const { warehouse, warehouses, zone, selectKeys } = this.state;
-    const columns = [{
+    const whseColumns = [{
       dataIndex: 'wh_name',
       key: 'wh_name',
+      render: o => (<span className="menu-sider-item">{o}</span>),
     }];
     const zonePopoverContent = (
       <Form>
@@ -255,39 +256,34 @@ export default class WareHouse extends Component {
           collapsed={this.state.collapsed}
           collapsedWidth={0}
         >
-          <div className="left-sider-panel">
-            <div className="top-bar">
-              <Breadcrumb>
-                <Breadcrumb.Item>
+          <div className="top-bar">
+            <Breadcrumb>
+              <Breadcrumb.Item>
                   仓库
                 </Breadcrumb.Item>
-              </Breadcrumb>
-              <div className="pull-right">
-                <Tooltip placement="bottom" title="添加仓库">
-                  <Button type="primary" shape="circle" icon="plus" onClick={this.showWarehouseModal} />
-                </Tooltip>
-              </div>
+            </Breadcrumb>
+            <div className="pull-right">
+              <Tooltip placement="bottom" title="添加仓库">
+                <Button type="primary" shape="circle" icon="plus" onClick={this.showWarehouseModal} />
+              </Tooltip>
             </div>
-            <div className="left-sider-panel">
-              <div className="toolbar">
-                <Search
-                  placeholder={this.msg('searchPlaceholder')}
-                  size="large"
-                />
-              </div>
-              <Table size="middle" columns={columns} dataSource={warehouses} showHeader={false} onRowClick={this.handleRowClick}
-                pagination={{ current: this.state.currentPage, defaultPageSize: 15 }}
-                rowClassName={record => record.whse_code === warehouse.whse_code ? 'table-row-selected' : ''} rowKey="whse_code"
-              />
-              <WarehouseModal />
+          </div>
+          <div className="left-sider-panel">
+            <div className="toolbar">
+              <Search placeholder={this.msg('searchPlaceholder')} size="large" />
             </div>
+            <Table size="middle" columns={whseColumns} dataSource={warehouses} showHeader={false} onRowClick={this.handleRowClick}
+              pagination={{ current: this.state.currentPage, defaultPageSize: 15 }}
+              rowClassName={record => record.whse_code === warehouse.whse_code ? 'table-row-selected' : ''} rowKey="whse_code"
+            />
+            <WarehouseModal />
           </div>
         </Sider>
         <Layout>
           <Header className="top-bar">
             <Breadcrumb>
               <Breadcrumb.Item>
-                仓库
+                {warehouse.wh_name} {warehouse.bonded === 1 && <Tag color="green">保税仓</Tag>}
               </Breadcrumb.Item>
             </Breadcrumb>
           </Header>
@@ -322,7 +318,7 @@ export default class WareHouse extends Component {
                         </Button>
                       </div>
                       <div className="panel-body table-panel">
-                        <Table columns={this.columns} dataSource={this.props.locations} />
+                        <Table columns={this.locationColumns} dataSource={this.props.locations} />
                       </div>
                       <LocationModal whseCode={warehouse.whse_code} zoneCode={zone.zone_code} />
                     </Content>

@@ -45,41 +45,69 @@ export default class CWMDashboard extends React.Component {
               </Select>
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              {this.msg('dashboardTitle')}
+              {this.msg('dashboard')}
             </Breadcrumb.Item>
           </Breadcrumb>
         </Header>
         <Content className="main-content" key="main">
           <Row gutter={16}>
-            <Col sm={24} md={16}>
-              <Card loading title={this.msg('volumeToday')}>
+            <Col sm={24} md={10}>
+              <Card title={this.msg('statsReceiving')}>
                 <ul className="statistics-columns">
-                  <li className="col-6">
+                  <li className="col-8">
                     <div className="statistics-cell">
-                      <h6>{this.msg('stockInbound')}</h6>
-                      <p className="data-num">12</p>
+                      <h6>{this.msg('totalASN')}</h6>
+                      <p className="data-num">29</p>
                     </div>
                   </li>
-                  <li className="col-6">
+                  <li className="col-8">
                     <div className="statistics-cell">
-                      <h6>{this.msg('stockOutbound')}</h6>
+                      <h6>{this.msg('toBeReceived')}</h6>
                       <p className="data-num">6</p>
                     </div>
                   </li>
-                  <li className="col-6">
+                  <li className="col-8">
                     <div className="statistics-cell">
-                      <h6>{this.msg('stockReserved')}</h6>
-                      <p className="data-num">23</p>
-                    </div>
-                  </li>
-                  <li className="col-6">
-                    <div className="statistics-cell">
-                      <h6>{this.msg('stockTaken')}</h6>
+                      <h6>{this.msg('putawayCompleted')}</h6>
                       <p className="data-num">23</p>
                     </div>
                   </li>
                 </ul>
               </Card>
+            </Col>
+            <Col sm={24} md={14}>
+              <Card title={this.msg('statsShipping')}>
+                <ul className="statistics-columns">
+                  <li className="col-8">
+                    <div className="statistics-cell">
+                      <h6>{this.msg('totalSO')}</h6>
+                      <p className="data-num">48</p>
+                    </div>
+                  </li>
+                  <li className="col-8">
+                    <div className="statistics-cell">
+                      <h6>{this.msg('toBeAllocated')}</h6>
+                      <p className="data-num">6</p>
+                    </div>
+                  </li>
+                  <li className="col-8">
+                    <div className="statistics-cell">
+                      <h6>{this.msg('pickingCompleted')}</h6>
+                      <p className="data-num">12</p>
+                    </div>
+                  </li>
+                  <li className="col-8">
+                    <div className="statistics-cell">
+                      <h6>{this.msg('packingVerified')}</h6>
+                      <p className="data-num">23</p>
+                    </div>
+                  </li>
+                </ul>
+              </Card>
+            </Col>
+          </Row>
+          <Row gutter={16}>
+            <Col sm={24} md={16}>
               <Row gutter={16}>
                 <Col sm={24} md={12}>
                   <Card loading title={this.msg('inventoryByCategories')} />
