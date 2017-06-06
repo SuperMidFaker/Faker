@@ -2,27 +2,32 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Breadcrumb, Table, Button, Layout, Menu, Popconfirm, Icon } from 'antd';
+import { Breadcrumb, Table, Button, Layout, Menu, Popconfirm, Icon, message } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import NavLink from 'client/components/nav-link';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import InvTemplateModal from './modals/newTemplate';
-import { toggleInvTempModal } from 'common/reducers/cmsInvoice';
+import { toggleInvTempModal, loadInvTemplates, deleteInvTemplate } from 'common/reducers/cmsInvoice';
 
 const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
 const SubMenu = Menu.SubMenu;
 
+function fetchData({ dispatch, state }) {
+  return dispatch(loadInvTemplates({ tenantId: state.account.tenantId }));
+}
+@connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     loginName: state.account.username,
+    invTemplates: state.cmsInvoice.invTemplates,
   }),
-  { toggleInvTempModal }
+  { toggleInvTempModal, loadInvTemplates, deleteInvTemplate }
 )
 @connectNav({
   depth: 2,
@@ -33,6 +38,7 @@ export default class InvoiceTemplate extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
+    invTemplates: PropTypes.array.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -44,11 +50,17 @@ export default class InvoiceTemplate extends Component {
   handleCreateNew = () => {
     this.props.toggleInvTempModal(true);
   }
-  handleEdit = () => {
-
+  handleEdit = (record) => {
+    this.context.router.push(`/clearance/settings/invoicetemplates/edit/${record.id}`);
   }
-  handleDelete = () => {
-
+  handleDelete = (record) => {
+    this.props.deleteInvTemplate(record.id).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        this.props.loadInvTemplates({ tenantId: this.props.tenantId });
+      }
+    });
   }
   render() {
     const columns = [{
@@ -66,7 +78,7 @@ export default class InvoiceTemplate extends Component {
         <span>
           <a onClick={() => this.handleEdit(record)}>{this.msg('edit')}</a>
           <span className="ant-divider" />
-          <Popconfirm title="确定要删除吗？" onConfirm={() => this.handleDelete(record)}>删除</Popconfirm>
+          <Popconfirm title="确定要删除吗？" onConfirm={() => this.handleDelete(record)}><a>删除</a></Popconfirm>
         </span>),
     }];
     return (
@@ -108,7 +120,7 @@ export default class InvoiceTemplate extends Component {
               </Sider>
               <Content className="nav-content">
                 <div className="panel-body table-panel">
-                  <Table columns={columns} rowKey="id" />
+                  <Table columns={columns} dataSource={this.props.invTemplates} rowKey="id" />
                 </div>
               </Content>
             </Layout>
