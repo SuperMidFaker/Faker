@@ -1,13 +1,13 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Badge, Button, Breadcrumb, Layout, Radio, Menu, Select, Table, Tag } from 'antd';
+import { Badge, Breadcrumb, Layout, Radio, Menu, Select, Table, Tag } from 'antd';
 import NavLink from 'client/components/nav-link';
 import SearchBar from 'client/components/search-bar';
 import RowUpdater from 'client/components/rowUpdater';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
-import messages from './message.i18n';
+import messages from '../message.i18n';
 
 const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
@@ -25,7 +25,7 @@ const RadioButton = Radio.Button;
   depth: 2,
   moduleName: 'cwm',
 })
-export default class SupervisionSHFTZList extends React.Component {
+export default class SHFTZEntryList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -41,132 +41,122 @@ export default class SupervisionSHFTZList extends React.Component {
   columns = [{
     title: 'ANS编号',
     dataIndex: 'asn_no',
-    width: 120,
+    width: 180,
     fixed: 'left',
   }, {
-    title: '货主',
-    width: 200,
+    title: '报关单号',
+    width: 150,
+    dataIndex: 'customs_decl_no',
+  }, {
+    title: '经营单位',
+    width: 220,
     dataIndex: 'owner_code',
   }, {
-    title: '采购订单号',
-    dataIndex: 'ref_order_no',
+    title: '收货单位',
+    width: 220,
+    dataIndex: 'whse_code',
   }, {
-    title: '供应商',
-    dataIndex: 'seller_name',
+    title: '备案类型',
+    dataIndex: 'ftz_ent_type',
+    render: (o) => {
+      if (o === 1) {
+        return (<Tag color="blue">一二线进境</Tag>);
+      } else if (o === 0) {
+        return (<Tag>视同出口</Tag>);
+      }
+    },
   }, {
-    title: '通知日期',
+    title: '入库备案号',
     width: 120,
-    dataIndex: 'created_date',
+    dataIndex: 'ftz_ent_no',
   }, {
-    title: '预期到货时间',
+    title: '进口日期',
     width: 120,
-    dataIndex: 'expect_receive_date',
+    dataIndex: 'ie_date',
   }, {
-    title: '收货时间',
+    title: '进库日期',
+    width: 120,
+    dataIndex: 'ftz_ent_date',
+  }, {
+    title: '备案时间',
     width: 120,
     dataIndex: 'received_date',
   }, {
     title: '状态',
     dataIndex: 'status',
-    fixed: 'right',
-    width: 120,
-    render: (o) => {
-      if (o === 0) {
-        return (<Badge status="default" text="待收货" />);
-      } else if (o === 1) {
-        return (<Badge status="processing" text="入库中" />);
-      } else if (o === 2) {
-        return (<Badge status="warning" text="部分收货" />);
-      } else if (o === 3) {
-        return (<Badge status="success" text="收货完成" />);
-      }
-    },
-  }, {
-    title: '货物属性',
     width: 100,
-    dataIndex: 'bonded',
-    fixed: 'right',
-    render: (o) => {
-      if (o === 1) {
-        return (<Tag color="blue">保税</Tag>);
-      } else if (o === 0) {
-        return (<Tag>非保税</Tag>);
-      }
-    },
-  }, {
-    title: '监管备案',
-    dataIndex: 'reg_status',
-    width: 120,
     fixed: 'right',
     render: (o) => {
       if (o === 0) {
-        return (<Badge status="default" />);
+        return (<Badge status="default" text="待备案" />);
       } else if (o === 1) {
         return (<Badge status="processing" text="已发送" />);
       } else if (o === 2) {
-        return (<Badge status="success" text="已备案" />);
+        return (<Badge status="success" text="备案完成" />);
       }
     },
   }, {
     title: '操作',
-    width: 120,
+    width: 100,
     fixed: 'right',
     render: (o, record) => {
       if (record.status === 0) {
-        return (<span><RowUpdater label="释放" row={record} /><span className="ant-divider" /><RowUpdater label="修改" row={record} /></span>);
+        return (<span><RowUpdater onHit={this.handleDetail} label="发送" row={record} /></span>);
       } else if (record.status === 1) {
-        if (record.bonded === 1 && record.reg_status === 0) {
-          return (<span><RowUpdater onHit={this.handleReceive} label="入库" row={record} /><span className="ant-divider" /><RowUpdater label="备案" row={record} /></span>);
-        } else {
-          return (<span><RowUpdater onHit={this.handleReceive} label="入库" row={record} /></span>);
-        }
+        return (<span><RowUpdater label="获取状态" row={record} /></span>);
+      } else if (record.status === 2) {
+        return (<span><RowUpdater onHit={this.handleDetail} label="查看" row={record} /></span>);
       }
     },
   }]
 
   dataSource = [{
     id: '1',
-    asn_no: 'N04601170548',
+    asn_no: 'ASN04601170548',
     bonded: 1,
-    whse_code: '0961|希雅路仓库',
-    owner_code: '04601|米思米(中国)精密机械贸易',
-    ref_order_no: '7IR2730',
+    whse_code: '3122406170|上海恩诺物流有限公司',
+    owner_code: '3114941293|大陆泰密克汽车系统',
+    customs_decl_no: '221820171000538906',
     status: 0,
-  }, {
-    id: '2',
-    asn_no: 'N04601170547',
-    bonded: 0,
-    whse_code: '0086|物流大道仓库',
-    owner_code: '03701|西门子国际贸易',
-    ref_order_no: 'NUE0394488',
-    status: 1,
-  }, {
-    id: '3',
-    asn_no: 'N04601170546',
-    bonded: 1,
-    whse_code: '0962|富特路仓库',
-    owner_code: '04601|米思米(中国)精密机械贸易',
-    ref_order_no: '7FJ1787',
-    status: 1,
-    reg_status: 0,
+    ftz_ent_type: 1,
+    children: [{
+      id: '2',
+      asn_no: 'ASN04601170548',
+      bonded: 0,
+      whse_code: '3122406170|上海恩诺物流有限公司',
+      owner_code: '3114941293|大陆泰密克汽车系统',
+      customs_decl_no: '221820171000538907',
+      status: 0,
+      ftz_ent_type: 1,
+    }, {
+      id: '3',
+      asn_no: 'ASN04601170548',
+      bonded: 1,
+      whse_code: '3122406170|上海恩诺物流有限公司',
+      owner_code: '3114941293|大陆泰密克汽车系统',
+      customs_decl_no: '221820171000538908',
+      status: 0,
+      ftz_ent_type: 1,
+    },
+    ],
   }, {
     id: '4',
     asn_no: 'N04601170546',
     bonded: 1,
-    whse_code: '0962|富特路仓库',
-    owner_code: '04601|米思米(中国)精密机械贸易',
-    ref_order_no: '7FJ1787',
+    whse_code: '3122406170|上海恩诺物流有限公司',
+    owner_code: '3221304601|米思米(中国)精密机械',
+    customs_decl_no: '7FJ1787',
     status: 2,
-    reg_status: 1,
+    ftz_ent_type: 1,
   }, {
     id: '5',
     asn_no: 'N04601170546',
     bonded: 1,
-    whse_code: '0962|富特路仓库',
-    owner_code: '04601|米思米(中国)精密机械贸易',
-    ref_order_no: '7FJ1787',
-    status: 3,
-    reg_status: 2,
+    whse_code: '3122406170|上海恩诺物流有限公司',
+    owner_code: '3221304601|米思米(中国)精密机械',
+    customs_decl_no: '7FJ1787',
+    status: 1,
+    ftz_ent_type: 2,
   }];
 
   handleStatusChange = (ev) => {
@@ -177,8 +167,8 @@ export default class SupervisionSHFTZList extends React.Component {
   handleCreateBtnClick = () => {
     this.context.router.push('/cwm/ftz/receive/reg');
   }
-  handleFTZReg = (row) => {
-    const link = `/cwm/ftz/receive/reg/${row.asn_no}`;
+  handleDetail = (row) => {
+    const link = `/cwm/supervision/shftz/entry/${row.asn_no}`;
     this.context.router.push(link);
   }
   render() {
@@ -201,7 +191,7 @@ export default class SupervisionSHFTZList extends React.Component {
             </div>
             <div className="left-sider-panel">
               <Menu
-                defaultSelectedKeys={['release']}
+                defaultSelectedKeys={['entry']}
                 mode="inline"
               >
                 <Menu.Item key="entry">
@@ -245,19 +235,15 @@ export default class SupervisionSHFTZList extends React.Component {
                 </Select>
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                {this.msg('ftzReceiveReg')}
+                {this.msg('ftzEntryReg')}
               </Breadcrumb.Item>
             </Breadcrumb>
             <RadioGroup defaultValue="pending" onChange={this.handleBondedChange} size="large">
-              <RadioButton value="pending">未备案</RadioButton>
+              <RadioButton value="pending">待备案</RadioButton>
               <RadioButton value="sent">已发送</RadioButton>
-              <RadioButton value="completed">已备案</RadioButton>
+              <RadioButton value="completed">备案完成</RadioButton>
             </RadioGroup>
-            <div className="top-bar-tools">
-              <Button type="primary" size="large" icon="plus" onClick={this.handleCreateBtnClick}>
-                {this.msg('createASN')}
-              </Button>
-            </div>
+            <div className="top-bar-tools" />
           </Header>
           <Content className="main-content" key="main">
             <div className="page-body">
@@ -275,7 +261,7 @@ export default class SupervisionSHFTZList extends React.Component {
                 </div>
               </div>
               <div className="panel-body table-panel">
-                <Table columns={this.columns} rowSelection={rowSelection} dataSource={this.dataSource} rowKey="id" scroll={{ x: 1400 }} />
+                <Table columns={this.columns} rowSelection={rowSelection} dataSource={this.dataSource} indentSize={8} rowKey="id" defaultExpandedRowKeys={['1']} scroll={{ x: 1500 }} />
               </div>
             </div>
           </Content>

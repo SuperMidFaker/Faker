@@ -194,8 +194,8 @@ export default class WareHouse extends Component {
           </Header>
           <Content className="main-content">
             <div className="page-body">
-              <Tabs defaultActiveKey="1">
-                <TabPane tab="库区/库位" key="1">
+              <Tabs defaultActiveKey="location">
+                <TabPane tab="库区/库位" key="location">
                   <Layout className="main-wrapper">
                     <Sider className="nav-sider">
                       <Menu defaultOpenKeys={['deptMenu']} mode="inline">
@@ -225,7 +225,11 @@ export default class WareHouse extends Component {
                     </Content>
                   </Layout>
                 </TabPane>
-                <TabPane tab="监管系统" key="2" />
+                <TabPane tab="月台" key="dock" disabled />
+                <TabPane tab="上架规则" key="putaway" disabled />
+                <TabPane tab="分配规则" key="allocate" disabled />
+                <TabPane tab="补货规则" key="replenish" disabled />
+                <TabPane tab="保税监管" key="supervision" />
               </Tabs>
             </div>
           </Content>

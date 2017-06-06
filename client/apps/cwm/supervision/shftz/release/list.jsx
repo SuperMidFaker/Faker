@@ -1,13 +1,13 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Badge, Breadcrumb, Layout, Radio, Menu, Select, Table, Tag } from 'antd';
+import { Badge, Button, Breadcrumb, Layout, Radio, Menu, Select, Table, Tag } from 'antd';
 import NavLink from 'client/components/nav-link';
 import SearchBar from 'client/components/search-bar';
 import RowUpdater from 'client/components/rowUpdater';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
-import messages from './message.i18n';
+import messages from '../message.i18n';
 
 const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
@@ -44,66 +44,82 @@ export default class SupervisionSHFTZList extends React.Component {
     width: 120,
     fixed: 'left',
   }, {
-    title: '报关单号',
-    width: 120,
-    dataIndex: 'customs_decl_no',
-  }, {
-    title: '经营单位',
+    title: '货主',
     width: 200,
     dataIndex: 'owner_code',
   }, {
-    title: '收货单位',
-    width: 200,
-    dataIndex: 'whse_code',
+    title: '采购订单号',
+    dataIndex: 'ref_order_no',
   }, {
-    title: '入库备案号',
+    title: '供应商',
+    dataIndex: 'seller_name',
+  }, {
+    title: '通知日期',
     width: 120,
-    dataIndex: 'ftz_ent_no',
+    dataIndex: 'created_date',
   }, {
-    title: '备案类型',
-    dataIndex: 'ftz_ent_type',
-    render: (o) => {
-      if (o === 1) {
-        return (<Tag color="blue">一二线进境</Tag>);
-      } else if (o === 0) {
-        return (<Tag>视同出口</Tag>);
-      }
-    },
-  }, {
-    title: '进口日期',
+    title: '预期到货时间',
     width: 120,
-    dataIndex: 'ie_date',
+    dataIndex: 'expect_receive_date',
   }, {
-    title: '进库日期',
-    width: 120,
-    dataIndex: 'ftz_ent_date',
-  }, {
-    title: '备案时间',
+    title: '收货时间',
     width: 120,
     dataIndex: 'received_date',
   }, {
     title: '状态',
     dataIndex: 'status',
+    fixed: 'right',
+    width: 120,
+    render: (o) => {
+      if (o === 0) {
+        return (<Badge status="default" text="待收货" />);
+      } else if (o === 1) {
+        return (<Badge status="processing" text="入库中" />);
+      } else if (o === 2) {
+        return (<Badge status="warning" text="部分收货" />);
+      } else if (o === 3) {
+        return (<Badge status="success" text="收货完成" />);
+      }
+    },
+  }, {
+    title: '货物属性',
     width: 100,
+    dataIndex: 'bonded',
+    fixed: 'right',
+    render: (o) => {
+      if (o === 1) {
+        return (<Tag color="blue">保税</Tag>);
+      } else if (o === 0) {
+        return (<Tag>非保税</Tag>);
+      }
+    },
+  }, {
+    title: '监管备案',
+    dataIndex: 'reg_status',
+    width: 120,
     fixed: 'right',
     render: (o) => {
       if (o === 0) {
-        return (<Badge status="default" text="未备案" />);
+        return (<Badge status="default" />);
       } else if (o === 1) {
         return (<Badge status="processing" text="已发送" />);
       } else if (o === 2) {
-        return (<Badge status="success" text="已备案" />);
+        return (<Badge status="success" text="备案完成" />);
       }
     },
   }, {
     title: '操作',
-    width: 100,
+    width: 120,
     fixed: 'right',
     render: (o, record) => {
       if (record.status === 0) {
-        return (<span><RowUpdater label="发送" row={record} /></span>);
+        return (<span><RowUpdater label="释放" row={record} /><span className="ant-divider" /><RowUpdater label="修改" row={record} /></span>);
       } else if (record.status === 1) {
-        return (<span><RowUpdater label="获取状态" row={record} /></span>);
+        if (record.bonded === 1 && record.reg_status === 0) {
+          return (<span><RowUpdater onHit={this.handleReceive} label="入库" row={record} /><span className="ant-divider" /><RowUpdater label="备案" row={record} /></span>);
+        } else {
+          return (<span><RowUpdater onHit={this.handleReceive} label="入库" row={record} /></span>);
+        }
       }
     },
   }]
@@ -185,7 +201,7 @@ export default class SupervisionSHFTZList extends React.Component {
             </div>
             <div className="left-sider-panel">
               <Menu
-                defaultSelectedKeys={['entry']}
+                defaultSelectedKeys={['release']}
                 mode="inline"
               >
                 <Menu.Item key="entry">
@@ -229,15 +245,19 @@ export default class SupervisionSHFTZList extends React.Component {
                 </Select>
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                {this.msg('ftzEntry')}
+                {this.msg('ftzReceiveReg')}
               </Breadcrumb.Item>
             </Breadcrumb>
             <RadioGroup defaultValue="pending" onChange={this.handleBondedChange} size="large">
-              <RadioButton value="pending">未备案</RadioButton>
+              <RadioButton value="pending">待备案</RadioButton>
               <RadioButton value="sent">已发送</RadioButton>
-              <RadioButton value="completed">已备案</RadioButton>
+              <RadioButton value="completed">备案完成</RadioButton>
             </RadioGroup>
-            <div className="top-bar-tools" />
+            <div className="top-bar-tools">
+              <Button type="primary" size="large" icon="plus" onClick={this.handleCreateBtnClick}>
+                {this.msg('createASN')}
+              </Button>
+            </div>
           </Header>
           <Content className="main-content" key="main">
             <div className="page-body">
@@ -255,7 +275,7 @@ export default class SupervisionSHFTZList extends React.Component {
                 </div>
               </div>
               <div className="panel-body table-panel">
-                <Table columns={this.columns} rowSelection={rowSelection} dataSource={this.dataSource} rowKey="id" scroll={{ x: 1500 }} />
+                <Table columns={this.columns} rowSelection={rowSelection} dataSource={this.dataSource} rowKey="id" scroll={{ x: 1400 }} />
               </div>
             </div>
           </Content>

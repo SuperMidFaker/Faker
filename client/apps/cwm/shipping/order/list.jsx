@@ -102,7 +102,7 @@ export default class ShippingOrderList extends React.Component {
       } else if (o === 1) {
         return (<Badge status="processing" text="已发送" />);
       } else if (o === 2) {
-        return (<Badge status="success" text="已备案" />);
+        return (<Badge status="success" text="备案完成" />);
       }
     },
   }, {

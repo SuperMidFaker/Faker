@@ -7,7 +7,7 @@ import SearchBar from 'client/components/search-bar';
 import RowUpdater from 'client/components/rowUpdater';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
-import messages from './message.i18n';
+import messages from '../message.i18n';
 
 const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
@@ -104,7 +104,7 @@ export default class SupervisionSHFTZList extends React.Component {
       } else if (o === 1) {
         return (<Badge status="processing" text="已发送" />);
       } else if (o === 2) {
-        return (<Badge status="success" text="已备案" />);
+        return (<Badge status="success" text="备案完成" />);
       }
     },
   }, {
@@ -249,9 +249,9 @@ export default class SupervisionSHFTZList extends React.Component {
               </Breadcrumb.Item>
             </Breadcrumb>
             <RadioGroup defaultValue="pending" onChange={this.handleBondedChange} size="large">
-              <RadioButton value="pending">未备案</RadioButton>
+              <RadioButton value="pending">待备案</RadioButton>
               <RadioButton value="sent">已发送</RadioButton>
-              <RadioButton value="completed">已备案</RadioButton>
+              <RadioButton value="completed">备案完成</RadioButton>
             </RadioGroup>
             <div className="top-bar-tools">
               <Button type="primary" size="large" icon="plus" onClick={this.handleCreateBtnClick}>
