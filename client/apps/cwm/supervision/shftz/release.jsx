@@ -1,16 +1,16 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Badge, Button, Breadcrumb, Layout, Radio, Select, Table, Tag } from 'antd';
-import QueueAnim from 'rc-queue-anim';
+import { Badge, Button, Breadcrumb, Layout, Radio, Menu, Select, Table, Tag } from 'antd';
+import NavLink from 'client/components/nav-link';
 import SearchBar from 'client/components/search-bar';
 import RowUpdater from 'client/components/rowUpdater';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
+import messages from './message.i18n';
 
 const formatMsg = format(messages);
-const { Header, Content } = Layout;
+const { Header, Content, Sider } = Layout;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
@@ -25,7 +25,7 @@ const RadioButton = Radio.Button;
   depth: 2,
   moduleName: 'cwm',
 })
-export default class ReceivingNoticeList extends React.Component {
+export default class SupervisionSHFTZList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -189,57 +189,98 @@ export default class ReceivingNoticeList extends React.Component {
       },
     };
     return (
-      <QueueAnim type={['bottom', 'up']}>
-        <Header className="top-bar">
-          <Breadcrumb>
-            <Breadcrumb.Item>
-              <Select
-                size="large"
-                defaultValue="0960"
-                placeholder="选择仓库"
-                style={{ width: 160 }}
+      <Layout>
+        <Sider width={200} className="menu-sider" key="sider">
+          <div className="left-sider-panel">
+            <div className="top-bar">
+              <Breadcrumb>
+                <Breadcrumb.Item>
+                  上海自贸区监管
+                </Breadcrumb.Item>
+              </Breadcrumb>
+            </div>
+            <div className="left-sider-panel">
+              <Menu
+                defaultSelectedKeys={['release']}
+                mode="inline"
               >
-                <Option value="0960">物流大道仓库</Option>
-                <Option value="0961">希雅路仓库</Option>
-                <Option value="0962">富特路仓库</Option>
-              </Select>
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              {this.msg('ftzReceiveReg')}
-            </Breadcrumb.Item>
-          </Breadcrumb>
-          <RadioGroup defaultValue="pending" onChange={this.handleBondedChange} size="large">
-            <RadioButton value="pending">未备案</RadioButton>
-            <RadioButton value="sent">已发送</RadioButton>
-            <RadioButton value="completed">已备案</RadioButton>
-          </RadioGroup>
-          <div className="top-bar-tools">
-            <Button type="primary" size="large" icon="plus" onClick={this.handleCreateBtnClick}>
-              {this.msg('createASN')}
-            </Button>
+                <Menu.Item key="entry">
+                  <NavLink to="/cwm/supervision/shftz/entry">
+                    进库备案
+                  </NavLink>
+                </Menu.Item>
+                <Menu.Item key="release">
+                  <NavLink to="/cwm/supervision/shftz/release">
+                    出库备案
+                  </NavLink>
+                </Menu.Item>
+                <Menu.Item key="batch">
+                  <NavLink to="/cwm/supervision/shftz/batch">
+                    集中报关申请
+                  </NavLink>
+                </Menu.Item>
+                <Menu.Item key="cargo">
+                  <NavLink to="/cwm/supervision/shftz/cargo">
+                    货物备案
+                  </NavLink>
+                </Menu.Item>
+              </Menu>
+            </div>
           </div>
-        </Header>
-        <Content className="main-content" key="main">
-          <div className="page-body">
-            <div className="toolbar">
-              <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} />
-              <span />
-              <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
-                onChange={this.handleClientSelectChange} defaultValue="all"
-              >
-                <Option value="all">全部货主</Option>
-              </Select>
-              <div className="toolbar-right" />
-              <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-                <h3>已选中{this.state.selectedRowKeys.length}项</h3>
+        </Sider>
+        <Layout>
+          <Header className="top-bar">
+            <Breadcrumb>
+              <Breadcrumb.Item>
+                <Select
+                  size="large"
+                  defaultValue="0961"
+                  placeholder="选择仓库"
+                  style={{ width: 160 }}
+                  disabled
+                >
+                  <Option value="0960">物流大道仓库</Option>
+                  <Option value="0961">希雅路仓库</Option>
+                  <Option value="0962">富特路仓库</Option>
+                </Select>
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {this.msg('ftzReceiveReg')}
+              </Breadcrumb.Item>
+            </Breadcrumb>
+            <RadioGroup defaultValue="pending" onChange={this.handleBondedChange} size="large">
+              <RadioButton value="pending">未备案</RadioButton>
+              <RadioButton value="sent">已发送</RadioButton>
+              <RadioButton value="completed">已备案</RadioButton>
+            </RadioGroup>
+            <div className="top-bar-tools">
+              <Button type="primary" size="large" icon="plus" onClick={this.handleCreateBtnClick}>
+                {this.msg('createASN')}
+              </Button>
+            </div>
+          </Header>
+          <Content className="main-content" key="main">
+            <div className="page-body">
+              <div className="toolbar">
+                <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} />
+                <span />
+                <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
+                  onChange={this.handleClientSelectChange} defaultValue="all"
+                >
+                  <Option value="all">全部货主</Option>
+                </Select>
+                <div className="toolbar-right" />
+                <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
+                  <h3>已选中{this.state.selectedRowKeys.length}项</h3>
+                </div>
+              </div>
+              <div className="panel-body table-panel">
+                <Table columns={this.columns} rowSelection={rowSelection} dataSource={this.dataSource} rowKey="id" scroll={{ x: 1400 }} />
               </div>
             </div>
-            <div className="panel-body table-panel">
-              <Table columns={this.columns} rowSelection={rowSelection} dataSource={this.dataSource} rowKey="id" scroll={{ x: 1400 }} />
-            </div>
-          </div>
-        </Content>
-      </QueueAnim>
+          </Content>
+        </Layout>
+      </Layout>
     );
   }
 }

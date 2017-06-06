@@ -1,19 +1,19 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Input, Layout, message } from 'antd';
-import { loadSkusByWarehouse } from 'common/reducers/cwmSku';
+import { Breadcrumb, Button, Input, Layout, Select, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import SearchBar from 'client/components/search-bar';
 import ButtonToggle from 'client/components/ButtonToggle';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
+import { loadSkusByWarehouse } from 'common/reducers/cwmSku';
+import { switchDefaultWhse } from 'common/reducers/cwmContext';
+import { formatMsg } from '../message.i18n';
 
-const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
 const Search = Input.Search;
+const Option = Select.Option;
 
 function fetchData({ state, dispatch }) {
   return dispatch(loadSkusByWarehouse({
@@ -29,13 +29,15 @@ function fetchData({ state, dispatch }) {
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
+    whses: state.cwmContext.whses,
+    whse: state.cwmContext.defaultWhse,
+    owners: state.cwmContext.whseAttrs.owners,
     loading: state.cwmSku.loading,
     skulist: state.cwmSku.list,
     listFilter: state.cwmSku.listFilter,
     sortFilter: state.cwmSku.sortFilter,
   }),
-  { loadSkusByWarehouse }
+  { loadSkusByWarehouse, switchDefaultWhse }
 )
 @connectNav({
   depth: 2,
@@ -45,6 +47,11 @@ export default class CWMSkuList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
+    whses: PropTypes.arrayOf(PropTypes.shape({ code: PropTypes.string, name: PropTypes.string })),
+    owners: PropTypes.arrayOf(PropTypes.shape({
+      partner_code: PropTypes.string,
+      name: PropTypes.string,
+    })),
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -54,12 +61,13 @@ export default class CWMSkuList extends React.Component {
     rightSiderCollapsed: true,
     selectedRowKeys: [],
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
+  ownerColumns = [{
+    dataIndex: 'name',
+    key: 'owner_name',
+    render: (name, row) => row.partner_code ? `${row.partner_code} | ${row.name}` : row.name,
+  }]
   columns = [{
-    title: this.msg('shipperOwner'),
-    dataIndex: 'owner_name',
-    width: 160,
-  }, {
     title: 'SKU',
     dataIndex: 'sku_no',
     width: 100,
@@ -140,21 +148,22 @@ export default class CWMSkuList extends React.Component {
   handleCreateBtnClick = () => {
     this.context.router.push('/cwm/products/sku/create');
   }
+  handleWhseChange = (value) => {
+    this.props.switchDefaultWhse(value);
+  }
   render() {
-    const { skulist, loading } = this.props;
+    const { skulist, whse, whses, owners, loading } = this.props;
     this.dataSource.remotes = skulist;
-    const columns = [{
-      dataIndex: 'owner_code',
-      key: 'owner_name',
-    }];
     return (
       <Layout>
-        <Sider width={320} className="menu-sider" key="sider" >
+        <Sider width={320} className="menu-sider" key="sider">
           <div className="left-sider-panel">
             <div className="top-bar">
               <Breadcrumb>
                 <Breadcrumb.Item>
-                  {this.msg('products')}
+                  <Select size="large" value={whse.code} placeholder="选择仓库" style={{ width: 160 }} onChange={this.handleWhseChange}>
+                    {whses.map(wh => <Option value={wh.code}>{wh.name}</Option>)}
+                  </Select>
                 </Breadcrumb.Item>
                 <Breadcrumb.Item>
                   {this.msg('productsSku')}
@@ -168,7 +177,7 @@ export default class CWMSkuList extends React.Component {
                   size="large"
                 />
               </div>
-              <Table columns={columns} showHeader={false} />
+              <Table columns={this.ownerColumns} showHeader={false} dataSource={owners} rowKey="id" />
             </div>
           </div>
         </Sider>
@@ -181,11 +190,8 @@ export default class CWMSkuList extends React.Component {
               <Button type="primary" size="large" icon="plus" onClick={this.handleCreateBtnClick}>
                 {this.msg('createSKU')}
               </Button>
-              <ButtonToggle size="large"
-                iconOn="inbox" iconOff="inbox"
-                onClick={this.toggleRightSider}
-              >
-                包装
+              <ButtonToggle size="large" iconOn="setting" iconOff="setting" onClick={this.toggleRightSider}>
+                规则设置
               </ButtonToggle>
             </div>
           </Header>

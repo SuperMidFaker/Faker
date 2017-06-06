@@ -61,7 +61,6 @@ import * as CWMShippingOrder from './cwm/shipping/order';
 import * as CWMShippingOutbound from './cwm/shipping/outbound';
 import * as CWMStockInventory from './cwm/stock/inventory';
 import * as CWMProductsSku from './cwm/products/sku';
-import * as CWMProductsMapping from './cwm/products/mapping';
 import * as CWMWarehouse from './cwm/resources/warehouse';
 import * as CWMSettings from './cwm/settings';
 import * as CWMSupervisionSHFTZ from './cwm/supervision/shftz';
@@ -92,6 +91,7 @@ import * as SCOFCustomers from './scof/customers';
 import * as SCOFFlow from './scof/flow';
 import * as SCOFBilling from './scof/billing';
 import { loadAccount } from 'common/reducers/account';
+import { loadWhseContext } from 'common/reducers/cwmContext';
 import { isLoaded } from 'client/common/redux-actions';
 import { DEFAULT_MODULES } from 'common/constants/module';
 
@@ -123,6 +123,14 @@ export default(store, cookie) => {
       store.dispatch(loadAccount(cookie)).then(checkAuth);
     } else {
       checkAuth();
+    }
+  };
+  const ensureCwmContext = (nextState, replace, cb) => {
+    const storeState = store.getState();
+    if (!storeState.cwmContext.loaded) {
+      store.dispatch(loadWhseContext(storeState.account.tenantId)).then(() => cb());
+    } else {
+      cb();
     }
   };
   return (
@@ -412,7 +420,7 @@ export default(store, cookie) => {
               <Route path="openapi" component={SCVSettings.OpenApi} />
             </Route>
           </Route>
-          <Route path={DEFAULT_MODULES.cwm.id} component={CWM}>
+          <Route path={DEFAULT_MODULES.cwm.id} component={CWM} onEnter={ensureCwmContext}>
             <IndexRedirect to="/cwm/dashboard" />
             <Route path="dashboard" component={CWMDashboard.Index} />
             <Route path="receiving">
@@ -441,16 +449,19 @@ export default(store, cookie) => {
             </Route>
             <Route path="supervision">
               <Route path="shftz">
-                <IndexRoute component={CWMSupervisionSHFTZ.List} />
+                <IndexRedirect to="/cwm/supervision/shftz/entry" />
+                <Route path="cargo" component={CWMSupervisionSHFTZ.Cargo} />
+                <Route path="entry" component={CWMSupervisionSHFTZ.Entry} />
+                <Route path="release" component={CWMSupervisionSHFTZ.Release} />
+                <Route path="batch" component={CWMSupervisionSHFTZ.Batch} />
               </Route>
             </Route>
             <Route path="products">
               <Route path="sku">
                 <IndexRoute component={CWMProductsSku.List} />
                 <Route path="create" component={CWMProductsSku.Create} />
-                <Route path=":sku" component={CWMProductsSku.Edit} />
+                <Route path="edit/:sku" component={CWMProductsSku.Edit} />
               </Route>
-              <Route path="mapping" component={CWMProductsMapping.List} />
             </Route>
             <Route path="resources">
               <IndexRedirect to="/cwm/resources/warehouse" />

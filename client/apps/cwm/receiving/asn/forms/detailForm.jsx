@@ -33,6 +33,9 @@ export default class DetailForm extends Component {
   }, {
     title: '主单位',
     dataIndex: 'unit',
+  }, {
+    title: '单价',
+    dataIndex: 'unit_price',
   }]
   render() {
     return (

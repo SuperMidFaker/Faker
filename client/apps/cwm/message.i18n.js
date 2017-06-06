@@ -1,4 +1,5 @@
 import { defineMessages } from 'react-intl';
+import { formati18n } from 'client/common/i18n/helpers';
 
 const messages = defineMessages({
   dashboard: {
@@ -67,11 +68,7 @@ const messages = defineMessages({
   },
   productsLotting: {
     id: 'cwm.module.products.lotting',
-    defaultMessage: '批次管理',
-  },
-  productsMapping: {
-    id: 'cwm.module.products.mapping',
-    defaultMessage: '备案料号',
+    defaultMessage: '批次属性',
   },
   productsKitting: {
     id: 'cwm.module.products.kitting',
@@ -124,3 +121,4 @@ const messages = defineMessages({
 });
 
 export default messages;
+export const formatMsg = formati18n(messages);

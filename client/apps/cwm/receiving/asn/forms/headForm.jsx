@@ -63,8 +63,8 @@ export default class HeadForm extends Component {
             </FormItem>
           </Col>
           <Col sm={24} lg={8}>
-            <FormItem label="关联订单号">
-              {getFieldDecorator('ref_order_no', {
+            <FormItem label="采购订单号">
+              {getFieldDecorator('po_no', {
               })(
                 <Input />
                   )}
@@ -72,7 +72,7 @@ export default class HeadForm extends Component {
           </Col>
           <Col sm={24} lg={8}>
             <FormItem label="预期到货日期" >
-              {getFieldDecorator('est_receive_date', {
+              {getFieldDecorator('expect_receive_date', {
               })(<DatePicker defaultValue={moment('2015/01/01', dateFormat)} format={dateFormat} style={{ width: '100%' }} />)}
             </FormItem>
           </Col>
