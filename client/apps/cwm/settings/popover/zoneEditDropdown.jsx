@@ -39,7 +39,7 @@ export default class ZoneEditPopover extends Component {
         this.props.updateZone(whseCode, zoneCode, id, zoneName).then(
           (result) => {
             if (!result.error) {
-              message.info('编辑成功');
+              message.info('保存成功');
               this.props.loadZones(whseCode).then(
                 (data) => {
                   if (!data.error && data.data.length !== 0) {
@@ -64,20 +64,20 @@ export default class ZoneEditPopover extends Component {
   }
   render() {
     const { form: { getFieldDecorator } } = this.props;
-    const ReservoirPopover = (
+    const zonePopoverContent = (
       <Form>
         <FormItem>
           {
             getFieldDecorator('zoneCode', {
               rules: [{ required: true, messages: 'please input zoneCode' }],
-            })(<Input placeholder="区域编号" />)
+            })(<Input placeholder="库区编号" />)
           }
         </FormItem>
         <FormItem>
           {
             getFieldDecorator('zoneName', {
               rules: [{ required: true, messages: 'please input zoneName' }],
-            })(<Input placeholder="区域名称" />)
+            })(<Input placeholder="库区描述" />)
           }
         </FormItem>
         <FormItem>
@@ -88,7 +88,7 @@ export default class ZoneEditPopover extends Component {
       <Dropdown visible={this.state.dropdownVisible} overlay={
         <Menu>
           <Menu.Item key="edit">
-            <Popover content={ReservoirPopover}
+            <Popover content={zonePopoverContent}
               title="编辑库区" trigger="click" visible={this.state.popoverVisible}
               onVisibleChange={this.handleVisibleChange}
             >
@@ -100,7 +100,7 @@ export default class ZoneEditPopover extends Component {
           </Menu.Item>
         </Menu>}
       >
-        <span style={{ float: 'right' }} onClick={this.handleDropdownVisible}><Icon type="down" /></span>
+        <span style={{ float: 'right' }} onClick={this.handleDropdownVisible}><Icon type="ellipsis" /></span>
       </Dropdown>
     );
   }

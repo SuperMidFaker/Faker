@@ -75,7 +75,7 @@ export default class AddLocationModal extends Component {
       this.props.updateLocation(type, status, location, record.id).then(
         (result) => {
           if (!result.error) {
-            message.info('编辑成功');
+            message.info('保存成功');
             this.props.hideLocationModal();
             this.props.loadLocations(whseCode, zoneCode);
           }
@@ -85,7 +85,7 @@ export default class AddLocationModal extends Component {
       this.props.addLocation(whseCode, zoneCode, location, type, status).then(
         (result) => {
           if (!result.error) {
-            message.info('添加库位成功');
+            message.info('创建成功');
             this.props.hideLocationModal();
             this.props.loadLocations(whseCode, zoneCode);
           }
@@ -100,9 +100,9 @@ export default class AddLocationModal extends Component {
       wrapperCol: { span: 16 },
     };
     return (
-      <Modal title="添加库位" onCancel={this.handleCancel} visible={this.props.visible} onOk={this.handleSubmit}>
+      <Modal title="创建库位" onCancel={this.handleCancel} visible={this.props.visible} onOk={this.handleSubmit}>
         <Form>
-          <FormItem{...formItemLayout} label="location">
+          <FormItem {...formItemLayout} label="库位编号">
             <Input onChange={this.locationChange} value={location} />
           </FormItem>
           <FormItem {...formItemLayout} label="库位类型">
@@ -115,9 +115,9 @@ export default class AddLocationModal extends Component {
           </FormItem>
           <FormItem {...formItemLayout} label="库位状态">
             <RadioGroup value={status} onChange={this.statusChange}>
-              <RadioButton value={0}>正常</RadioButton>
-              <RadioButton value={1}>封存</RadioButton>
-              <RadioButton value={2}>禁用</RadioButton>
+              <RadioButton value={1}>正常</RadioButton>
+              <RadioButton value={0}>封存</RadioButton>
+              <RadioButton value={-1}>禁用</RadioButton>
             </RadioGroup>
           </FormItem>
         </Form>

@@ -228,7 +228,7 @@ export default class WareHouse extends Component {
       dataIndex: 'wh_name',
       key: 'wh_name',
     }];
-    const ReservoirPopover = (
+    const zonePopoverContent = (
       <Form>
         <FormItem>
           {
@@ -263,7 +263,7 @@ export default class WareHouse extends Component {
                 </Breadcrumb.Item>
               </Breadcrumb>
               <div className="pull-right">
-                <Tooltip placement="bottom" title="新增仓库">
+                <Tooltip placement="bottom" title="添加仓库">
                   <Button type="primary" shape="circle" icon="plus" onClick={this.showWarehouseModal} />
                 </Tooltip>
               </div>
@@ -292,7 +292,7 @@ export default class WareHouse extends Component {
             </Breadcrumb>
           </Header>
           <Content className="main-content">
-            <div className="page-body">
+            <div className="page-body tabbed">
               <Tabs defaultActiveKey="location">
                 <TabPane tab="库区/库位" key="location">
                   <Layout className="main-wrapper">
@@ -300,15 +300,15 @@ export default class WareHouse extends Component {
                       <Menu defaultOpenKeys={['zoneMenu']} mode="inline" selectedKeys={selectKeys} onClick={this.handleZoneClick}>
                         <SubMenu key="zoneMenu" title={<span><MdIcon mode="fontello" type="sitemap" />库区</span>} >
                           {
-                          zoneList.map(item => <Menu.Item key={item.zone_code}>
+                          zoneList.map(item => (<Menu.Item key={item.zone_code}>
                             <span>{item.zone_name}</span>
                             <ZoneEditDropDown id={item.id} zoneCode={item.zone_code} whseCode={warehouse.whse_code} stateChange={this.handleStateChange} deleteZone={this.handleDeleteZone} />
-                          </Menu.Item>)
+                          </Menu.Item>))
                         }
                         </SubMenu>
                       </Menu>
                       <div className="nav-sider-footer">
-                        <Popover content={ReservoirPopover} placement="bottom" title="创建库区" trigger="click" visible={this.state.visible}
+                        <Popover content={zonePopoverContent} placement="bottom" title="创建库区" trigger="click" visible={this.state.visible}
                           onVisibleChange={this.handleVisibleChange}
                         >
                           <Button type="dashed" size="large" icon="plus-circle" >创建库区</Button>
@@ -317,8 +317,8 @@ export default class WareHouse extends Component {
                     </Sider>
                     <Content className="nav-content">
                       <div className="nav-content-head">
-                        <Button size="large" type="primary" icon="plus-circle" onClick={this.showLocationModal}>
-                          添加库位
+                        <Button type="primary" ghost icon="plus-circle" onClick={this.showLocationModal}>
+                          创建库位
                         </Button>
                       </div>
                       <div className="panel-body table-panel">
@@ -332,9 +332,8 @@ export default class WareHouse extends Component {
                 <TabPane tab="上架规则" key="putaway" disabled />
                 <TabPane tab="分配规则" key="allocate" disabled />
                 <TabPane tab="补货规则" key="replenish" disabled />
-                <TabPane tab="保税监管" key="supervision" />
                 {
-                  warehouse.bonded === 1 && <TabPane tab="监管系统" key="2" />
+                  warehouse.bonded === 1 && <TabPane tab="保税监管" key="supervision" />
                 }
               </Tabs>
             </div>
