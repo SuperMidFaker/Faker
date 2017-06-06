@@ -2,30 +2,23 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Form, Layout, Row, Col, Button } from 'antd';
-import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import { loadSkuParams } from 'common/reducers/cwmSku';
+import { loadSkuParams, cleanSkuForm, createSku } from 'common/reducers/cwmSku';
 import MainForm from './forms/mainForm';
 import SiderForm from './forms/siderForm';
 import { formatMsg } from '../message.i18n';
 
 const { Header, Content } = Layout;
 
-function fetchData({ state, dispatch }) {
-  return dispatch(loadSkuParams({
-    tenantId: state.account.tenantId,
-  }));
-}
-
-@connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    loginId: state.account.loginId,
-    username: state.account.username,
-    tenantName: state.account.tenantName,
+    owner: state.cwmSku.owner,
+    skuForm: state.cwmSku.skuForm,
+    submitting: state.cwmSku.skuSubmitting,
   }),
+  { loadSkuParams, cleanSkuForm, createSku }
 )
 @connectNav({
   depth: 3,
@@ -36,33 +29,45 @@ export default class CreateProductSku extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     form: PropTypes.object.isRequired,
-    tenantName: PropTypes.string.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
 
+  componentWillMount() {
+    this.props.cleanSkuForm();
+    if (this.props.owner.id) {
+      this.props.loadSkuParams(this.props.owner.id);
+    }
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.owner.id !== this.props.owner.id) {
+      nextProps.loadSkuParams(nextProps.owner.id);
+    }
+  }
   msg = formatMsg(this.props.intl)
-  handleSave = () => {
-    this.props.form.validateFields((errors) => {
+  handleSaveBtnClick = () => {
+    this.props.form.validateFields((errors, values) => {
       if (!errors) {
-
+        const owner = this.props.owner;
+        const formData = {
+          ...values,
+          ...this.props.skuForm,
+          owner_partner_id: owner.id,
+          owner_name: owner.name,
+          owner_tenant_id: owner.partner_tenant_id,
+          whse_tenant_id: this.props.tenantId,
+        };
+        this.props.createSku(formData).then((result) => {
+          if (!result.error) {
+            this.context.router.push('/cwm/products/sku');
+          }
+        });
       }
     });
   }
-  handleSaveBtnClick = () => {
-    this.handleSave({ accepted: false });
-  }
   handleCancelBtnClick = () => {
     this.context.router.goBack();
-  }
-  handleSaveAccept = () => {
-    this.handleSave({ accepted: true });
-  }
-  handleUploadFiles = (fileList) => {
-    this.setState({
-      attachments: fileList,
-    });
   }
 
   render() {
@@ -94,7 +99,7 @@ export default class CreateProductSku extends Component {
           <Form layout="vertical">
             <Row gutter={16}>
               <Col sm={24} md={16}>
-                <MainForm form={form} />
+                <MainForm form={form} mode="create" />
               </Col>
               <Col sm={24} md={8}>
                 <SiderForm form={form} />

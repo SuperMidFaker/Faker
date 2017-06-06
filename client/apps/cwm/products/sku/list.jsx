@@ -1,13 +1,13 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Input, Layout, Select, message } from 'antd';
+import { Link } from 'react-router';
+import { Breadcrumb, Button, Icon, Popconfirm, Input, Layout, Select, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import SearchBar from 'client/components/search-bar';
 import ButtonToggle from 'client/components/ButtonToggle';
-import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import { loadSkusByWarehouse } from 'common/reducers/cwmSku';
+import { setCurrentOwner, loadOwnerSkus, delSku } from 'common/reducers/cwmSku';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import { formatMsg } from '../message.i18n';
 
@@ -15,29 +15,19 @@ const { Header, Content, Sider } = Layout;
 const Search = Input.Search;
 const Option = Select.Option;
 
-function fetchData({ state, dispatch }) {
-  return dispatch(loadSkusByWarehouse({
-    tenantId: state.account.tenantId,
-    filter: JSON.stringify(state.cwmSku.listFilter),
-    sorter: JSON.stringify(state.cwmSku.sortFilter),
-    pageSize: state.cwmSku.list.pageSize,
-    current: 1,
-  }));
-}
-
-@connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
     whses: state.cwmContext.whses,
     whse: state.cwmContext.defaultWhse,
     owners: state.cwmContext.whseAttrs.owners,
+    owner: state.cwmSku.owner,
     loading: state.cwmSku.loading,
     skulist: state.cwmSku.list,
     listFilter: state.cwmSku.listFilter,
     sortFilter: state.cwmSku.sortFilter,
   }),
-  { loadSkusByWarehouse, switchDefaultWhse }
+  { setCurrentOwner, loadOwnerSkus, switchDefaultWhse, delSku }
 )
 @connectNav({
   depth: 2,
@@ -49,6 +39,7 @@ export default class CWMSkuList extends React.Component {
     tenantId: PropTypes.number.isRequired,
     whses: PropTypes.arrayOf(PropTypes.shape({ code: PropTypes.string, name: PropTypes.string })),
     owners: PropTypes.arrayOf(PropTypes.shape({
+      id: PropTypes.number,
       partner_code: PropTypes.string,
       name: PropTypes.string,
     })),
@@ -60,6 +51,35 @@ export default class CWMSkuList extends React.Component {
     collapsed: false,
     rightSiderCollapsed: true,
     selectedRowKeys: [],
+    tableOwners: [],
+  }
+  componentWillMount() {
+    this.props.setCurrentOwner(this.props.owners[0] || {});
+    if (this.props.owner.id) {
+      this.props.loadOwnerSkus({
+        owner_partner_id: this.props.owner.id,
+        filter: JSON.stringify(this.props.listFilter),
+        sorter: JSON.stringify(this.props.sortFilter),
+        pageSize: this.props.skulist.pageSize,
+        current: this.props.skulist.current,
+      });
+    }
+    this.setState({ tableOwners: this.props.owners });
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.owners !== this.props.owners) {
+      this.props.setCurrentOwner(nextProps.owners[0] || {});
+      this.setState({ tableOwners: nextProps.owners });
+    }
+    if (nextProps.owner.id !== this.props.owner.id) {
+      this.props.loadOwnerSkus({
+        owner_partner_id: nextProps.owner.id || 0,
+        filter: JSON.stringify(nextProps.listFilter),
+        sorter: JSON.stringify(nextProps.sortFilter),
+        pageSize: nextProps.skulist.pageSize,
+        current: 1,
+      });
+    }
   }
   msg = formatMsg(this.props.intl)
   ownerColumns = [{
@@ -69,34 +89,50 @@ export default class CWMSkuList extends React.Component {
   }]
   columns = [{
     title: 'SKU',
-    dataIndex: 'sku_no',
+    dataIndex: 'sku',
     width: 100,
   }, {
     title: this.msg('productNo'),
     width: 120,
     dataIndex: 'product_no',
   }, {
-    title: this.msg('productName'),
-    width: 120,
-    dataIndex: 'product_name',
+    title: this.msg('productCnDesc'),
+    width: 150,
+    dataIndex: 'desc_cn',
+  }, {
+    title: this.msg('productEnDesc'),
+    width: 150,
+    dataIndex: 'desc_en',
   }, {
     title: this.msg('productCategory'),
     width: 120,
-    dataIndex: 'product_category',
+    dataIndex: 'category',
   }, {
-    title: this.msg('productDesc'),
-    width: 200,
-    dataIndex: 'product_desc',
-  }, {
-    title: this.msg('productType'),
+    title: '长',
     width: 100,
-    dataIndex: 'product_type',
+    dataIndex: 'length',
+  }, {
+    title: '宽',
+    width: 100,
+    dataIndex: 'width',
+  }, {
+    title: '高',
+    width: 100,
+    dataIndex: 'height',
   }, {
     title: this.msg('opColumn'),
     width: 160,
+    render: (_, row) => (
+      <div>
+        <Link to={`/cwm/products/sku/edit/${row.sku}`}><Icon type="edit" />修改</Link>
+        <span className="ant-divider" />
+        <Popconfirm title="确定删除?" onConfirm={() => this.handleRemove(row.sku)}>
+          <a><Icon type="delete" />删除</a>
+        </Popconfirm>
+      </div>),
   }]
   dataSource = new Table.DataSource({
-    fetcher: params => this.props.loadSkusByWarehouse(params),
+    fetcher: params => this.props.loadOwnerSkus(params),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
       total: result.totalCount,
@@ -108,7 +144,7 @@ export default class CWMSkuList extends React.Component {
     }),
     getParams: (pagination, filters, sorter) => {
       const params = {
-        tenantId: this.props.tenantId,
+        owner_partner_id: this.props.owner.id,
         pageSize: pagination.pageSize,
         current: pagination.current,
         sorter: JSON.stringify({
@@ -131,10 +167,37 @@ export default class CWMSkuList extends React.Component {
       rightSiderCollapsed: !this.state.rightSiderCollapsed,
     });
   }
+  handleRemove = (sku) => {
+    this.props.delSku(sku).then((result) => {
+      if (!result.errors) {
+        this.props.loadOwnerSkus({
+          owner_partner_id: this.props.owner.id,
+          filter: JSON.stringify(this.props.listFilter),
+          sorter: JSON.stringify(this.props.sortFilter),
+          pageSize: this.props.skulist.pageSize,
+          current: this.props.skulist.current,
+        });
+      }
+    });
+  }
+  handleOwnerSearch = (value) => {
+    if (value) {
+      const towners = this.state.tableOwners.filter(to => to.partner_code.indexOf(value) > 0 || to.name.indexOf(value) > 0);
+      this.setState({ tableOwners: towners });
+      if (towners.length === 0) {
+        this.props.setCurrentOwner({});
+      } else if (towners[0].id !== this.props.owner.id) {
+        this.props.setCurrentOwner(towners[0]);
+      }
+    } else {
+      this.setState({ tableOwners: this.props.owners });
+      this.props.setCurrentOwner(this.props.owners[0] || {});
+    }
+  }
   handleSearch = (value) => {
     const filter = { ...this.props.listFilter, sku: value };
-    this.props.loadSkusByWarehouse({
-      tenantId: this.props.tenantId,
+    this.props.loadOwnerSkus({
+      owner_partner_id: this.props.owner.id,
       filter: JSON.stringify(filter),
       sorter: JSON.stringify(this.props.sortFilter),
       pageSize: this.props.skulist.pageSize,
@@ -151,8 +214,11 @@ export default class CWMSkuList extends React.Component {
   handleWhseChange = (value) => {
     this.props.switchDefaultWhse(value);
   }
+  handleOwnerSelect = (row) => {
+    this.props.setCurrentOwner(row);
+  }
   render() {
-    const { skulist, whse, whses, owners, loading } = this.props;
+    const { skulist, whse, whses, loading } = this.props;
     this.dataSource.remotes = skulist;
     return (
       <Layout>
@@ -162,7 +228,7 @@ export default class CWMSkuList extends React.Component {
               <Breadcrumb>
                 <Breadcrumb.Item>
                   <Select size="large" value={whse.code} placeholder="选择仓库" style={{ width: 160 }} onChange={this.handleWhseChange}>
-                    {whses.map(wh => <Option value={wh.code}>{wh.name}</Option>)}
+                    {whses.map(wh => <Option value={wh.code} key={wh.code}>{wh.name}</Option>)}
                   </Select>
                 </Breadcrumb.Item>
                 <Breadcrumb.Item>
@@ -172,12 +238,11 @@ export default class CWMSkuList extends React.Component {
             </div>
             <div className="left-sider-panel">
               <div className="toolbar">
-                <Search
-                  placeholder={this.msg('searchPlaceholder')}
-                  size="large"
-                />
+                <Search placeholder={this.msg('ownerSearch')} size="large" onSearch={this.handleOwnerSearch} />
               </div>
-              <Table columns={this.ownerColumns} showHeader={false} dataSource={owners} rowKey="id" />
+              <Table columns={this.ownerColumns} showHeader={false} dataSource={this.state.tableOwners} rowKey="id"
+                rowClassName={row => row.id === this.props.owner.id ? 'table-row-selected' : ''} onRowClick={this.handleOwnerSelect}
+              />
             </div>
           </div>
         </Sider>
