@@ -225,8 +225,8 @@ export default class WareHouse extends Component {
     const { form: { getFieldDecorator }, zoneList } = this.props;
     const { warehouse, warehouses, zone, selectKeys } = this.state;
     const whseColumns = [{
-      dataIndex: 'wh_name',
-      key: 'wh_name',
+      dataIndex: 'whse_name',
+      key: 'whse_name',
       render: o => (<span className="menu-sider-item">{o}</span>),
     }];
     const zonePopoverContent = (
@@ -283,7 +283,7 @@ export default class WareHouse extends Component {
           <Header className="top-bar">
             <Breadcrumb>
               <Breadcrumb.Item>
-                {warehouse.wh_name} {warehouse.bonded === 1 && <Tag color="green">保税仓</Tag>}
+                {warehouse.whse_name} {warehouse.bonded === 1 && <Tag color="green">保税仓</Tag>}
               </Breadcrumb.Item>
             </Breadcrumb>
           </Header>

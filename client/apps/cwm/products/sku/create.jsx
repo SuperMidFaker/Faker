@@ -56,7 +56,7 @@ export default class CreateProductSku extends Component {
           owner_partner_id: owner.id,
           owner_name: owner.name,
           owner_tenant_id: owner.partner_tenant_id,
-          whse_tenant_id: this.props.tenantId,
+          wh_ent_tenant_id: this.props.tenantId,
         };
         this.props.createSku(formData).then((result) => {
           if (!result.error) {

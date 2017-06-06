@@ -39,7 +39,7 @@ export default class SkuTransactionList extends React.Component {
   msg = formatMsg(this.props.intl)
   columns = [{
     title: this.msg('warehouse'),
-    dataIndex: 'wh_name',
+    dataIndex: 'whse_name',
     width: 100,
   }, {
     title: this.msg('inboundTime'),

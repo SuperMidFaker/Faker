@@ -229,7 +229,7 @@ export default class InventoryTransactionList extends React.Component {
             <Select size="large" value={listFilter.wh_no} style={{ width: 200 }} onSelect={this.handleWarehouseSelect}>
               <Option value="_all_" key="_all_">{this.msg('allWarehouses')}</Option>
               {
-                warehouses.map(whse => <Option key={whse.id} value={whse.wh_no}>{whse.wh_name}</Option>)
+                warehouses.map(whse => <Option key={whse.id} value={whse.wh_no}>{whse.whse_name}</Option>)
               }
             </Select>
             <span />
