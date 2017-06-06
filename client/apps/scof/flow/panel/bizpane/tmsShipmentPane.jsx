@@ -142,7 +142,7 @@ export default class TMSShipmentPane extends Component {
   renderConsign = consign => `${consign.name} | ${Location.renderLoc(consign)} | ${consign.contact || ''} | ${consign.mobile || ''}`
   render() {
     const { form: { getFieldDecorator }, onNodeActionsChange, model, tmsParams: { consigners, consignees, transitModes }, partnerId } = this.props;
-    const { rateSources, rateEnds } = this.state;
+    // const { rateSources, rateEnds } = this.state;
     return (
       <Collapse bordered={false} defaultActiveKey={['properties', 'events']}>
         <Panel header={this.msg('bizProperties')} key="properties">
@@ -189,7 +189,6 @@ export default class TMSShipmentPane extends Component {
                   >
                     {
                       consigners.filter(cl => cl.ref_partner_id === partnerId || cl.ref_partner_id === -1)
-                      .filter(cl => rateSources.length === 0 || rateSources.find(rs => rs.source.province === cl.province))
                       .map(cg => <Option value={cg.node_id} key={cg.node_id}>{this.renderConsign(cg)}</Option>)
                     }
                   </Select>)}
@@ -208,8 +207,6 @@ export default class TMSShipmentPane extends Component {
                   >
                     {
                       consignees.filter(cl => cl.ref_partner_id === partnerId || cl.ref_partner_id === -1)
-                      .filter(cl => rateEnds.length === 0 || rateEnds.find(rs => rs.end.province === cl.province && rs.end.city === cl.city &&
-                        rs.end.district === cl.district && rs.end.street === cl.street))
                       .map(cg => <Option value={cg.node_id} key={cg.node_id}>{this.renderConsign(cg)}</Option>)
                     }
                   </Select>)}
