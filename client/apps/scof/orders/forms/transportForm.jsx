@@ -442,7 +442,7 @@ export default class TransportForm extends Component {
   render() {
     const { formData, serviceTeam, formRequires: { consignerLocations, consigneeLocations,
       transitModes, packagings, vehicleTypes, vehicleLengths }, customerPartnerId } = this.props;
-    const { rateSources, rateEnds } = this.state;
+    // const { rateSources, rateEnds } = this.state;
     // todo consigner consignee by customer partner id
     const node = formData.node;
     const consignerRegion = [
@@ -585,7 +585,6 @@ export default class TransportForm extends Component {
                   dropdownStyle={{ width: 400 }}
                 >
                   {consignerLocations.filter(cl => cl.ref_partner_id === customerPartnerId || cl.ref_partner_id === -1)
-                    .filter(cl => rateSources.length === 0 || rateSources.find(rs => rs.source.province === cl.province))
                     .map(dw => <Option value={dw.node_id} key={dw.node_id}>{this.renderConsign(dw)}</Option>)
                 }
                 </Select>
@@ -634,8 +633,6 @@ export default class TransportForm extends Component {
                   dropdownStyle={{ width: 400 }}
                 >
                   {consigneeLocations.filter(cl => cl.ref_partner_id === customerPartnerId || cl.ref_partner_id === -1)
-                    .filter(cl => rateEnds.length === 0 || rateEnds.find(rs => rs.end.province === cl.province && rs.end.city === cl.city &&
-                        rs.end.district === cl.district && rs.end.street === cl.street))
                     .map(dw => <Option value={dw.node_id} key={dw.node_id}>{this.renderConsign(dw)}</Option>)
                 }
                 </Select>
