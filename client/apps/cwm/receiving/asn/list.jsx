@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Badge, Button, Breadcrumb, Layout, Radio, Select, Table, Tag, notification } from 'antd';
+import { Badge, Button, Breadcrumb, Layout, Radio, Select, Table, Tag } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/search-bar';
 import RowUpdater from 'client/components/rowUpdater';
@@ -114,7 +114,7 @@ export default class ReceivingNoticeList extends React.Component {
         return (<span><RowUpdater label="释放" row={record} /><span className="ant-divider" /><RowUpdater label="修改" row={record} /><span className="ant-divider" /><RowUpdater label="取消" row={record} /></span>);
       } else if (record.status === 1) {
         if (record.bonded === 1 && record.reg_status === 0) {
-          return (<span><RowUpdater onHit={this.handleReceive} label="入库操作" row={record} /><span className="ant-divider" /><RowUpdater onHit={this.handleFTZReg} label="进库备案" row={record} /></span>);
+          return (<span><RowUpdater onHit={this.handleReceive} label="入库操作" row={record} /><span className="ant-divider" /><RowUpdater onHit={this.handleEntryReg} label="进库备案" row={record} /></span>);
         } else {
           return (<span><RowUpdater onHit={this.handleReceive} label="入库操作" row={record} /></span>);
         }
@@ -179,11 +179,7 @@ export default class ReceivingNoticeList extends React.Component {
     const link = `/cwm/receiving/inbound/receive/${row.asn_no}`;
     this.context.router.push(link);
   }
-  handleFTZReg = (row) => {
-    notification.success({
-      message: '操作成功',
-      description: `${row.asn_no} 已发送至 上海自贸区海关监管系统 一二线先报关后入库`,
-    });
+  handleEntryReg = (row) => {
     const link = `/cwm/supervision/shftz/entry/${row.asn_no}`;
     this.context.router.push(link);
   }

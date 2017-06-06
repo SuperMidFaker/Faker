@@ -48,23 +48,25 @@ export default class SHFTZEntryList extends React.Component {
     width: 150,
     dataIndex: 'customs_decl_no',
   }, {
-    title: '经营单位',
-    width: 220,
-    dataIndex: 'owner_code',
-  }, {
-    title: '收货单位',
-    width: 220,
-    dataIndex: 'whse_code',
-  }, {
     title: '备案类型',
     dataIndex: 'ftz_ent_type',
     render: (o) => {
       if (o === 1) {
         return (<Tag color="blue">一二线进境</Tag>);
-      } else if (o === 0) {
-        return (<Tag>视同出口</Tag>);
+      } else if (o === 2) {
+        return (<Tag color="green">视同出口</Tag>);
+      } else if (o === 3) {
+        return (<Tag color="yellow">区内转入</Tag>);
       }
     },
+  }, {
+    title: '货主',
+    width: 220,
+    dataIndex: 'owner_code',
+  }, {
+    title: '仓储企业',
+    width: 220,
+    dataIndex: 'whse_code',
   }, {
     title: '入库备案号',
     width: 120,
@@ -77,10 +79,6 @@ export default class SHFTZEntryList extends React.Component {
     title: '进库日期',
     width: 120,
     dataIndex: 'ftz_ent_date',
-  }, {
-    title: '备案时间',
-    width: 120,
-    dataIndex: 'received_date',
   }, {
     title: '状态',
     dataIndex: 'status',
@@ -141,22 +139,22 @@ export default class SHFTZEntryList extends React.Component {
     ],
   }, {
     id: '4',
-    asn_no: 'N04601170546',
+    asn_no: 'ASN04601170555',
     bonded: 1,
     whse_code: '3122406170|上海恩诺物流有限公司',
     owner_code: '3221304601|米思米(中国)精密机械',
-    customs_decl_no: '7FJ1787',
+    customs_decl_no: '',
     status: 2,
-    ftz_ent_type: 1,
+    ftz_ent_type: 2,
   }, {
     id: '5',
-    asn_no: 'N04601170546',
+    asn_no: 'ASN04601170537',
     bonded: 1,
     whse_code: '3122406170|上海恩诺物流有限公司',
     owner_code: '3221304601|米思米(中国)精密机械',
-    customs_decl_no: '7FJ1787',
+    customs_decl_no: '',
     status: 1,
-    ftz_ent_type: 2,
+    ftz_ent_type: 3,
   }];
 
   handleStatusChange = (ev) => {

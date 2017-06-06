@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Breadcrumb, Icon, Form, Layout, Tabs, Steps, Button, Select, Card, Col, Row, Tag, Table } from 'antd';
+import { Breadcrumb, Icon, Form, Layout, Tabs, Steps, Button, Select, Card, Col, Row, Tag, Table, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import InfoItem from 'client/components/InfoItem';
@@ -43,8 +43,7 @@ export default class SHFTZEntryDetail extends Component {
     router: PropTypes.object.isRequired,
   }
   state = {
-    selectedRowKeys: [],
-    receivingMode: 'scan',
+    asnNo: 'ASN04601170548',
   }
   msg = key => formatMsg(this.props.intl, key);
   handleSave = () => {
@@ -68,13 +67,16 @@ export default class SHFTZEntryDetail extends Component {
       receivingMode: ev.target.value,
     });
   }
-  handleReceive = () => {
-    this.props.loadReceiveModal();
+  handleSend = () => {
+    notification.success({
+      message: '操作成功',
+      description: `${this.state.asnNo} 已发送至 上海自贸区海关监管系统 一二线先报关后入库`,
+    });
   }
   columns = [{
     title: '备案料号',
     dataIndex: 'ftz_cargo_no',
-    width: 120,
+    width: 150,
   }, {
     title: '商品货号',
     dataIndex: 'product_no',
@@ -116,9 +118,11 @@ export default class SHFTZEntryDetail extends Component {
   }]
   mockData = [{
     seq_no: '1',
+    ftz_cargo_no: 'A2C00024819',
     product_no: 'N04601170548',
+    hscode: '8532221000',
     order_qty: 15,
-    g_name: '微纤维止血胶原粉',
+    g_name: 'PTA球囊扩张导管',
     sku: '默认',
     unit: '件',
     sku_pack: '单件',
@@ -126,33 +130,42 @@ export default class SHFTZEntryDetail extends Component {
     expect_qty: 15,
     received_pack_qty: 15,
     received_qty: 15,
-  }, {
-    seq_no: '2',
-    product_no: 'N04601170547',
-    order_qty: 1000,
-    g_name: 'PTA球囊扩张导管',
-    sku: '默认',
-    unit: '件',
-    sku_pack: '内包装',
-    expect_pack_qty: 10,
-    expect_qty: 1000,
-    received_pack_qty: 0,
-    received_qty: 0,
-  }, {
-    seq_no: '3',
-    product_no: 'N04601170546',
-    order_qty: 1000,
-    g_name: '临时起搏电极导管',
-    sku: '100/10/8',
-    unit: '个',
-    sku_pack: '内包装',
-    expect_pack_qty: 10,
-    expect_qty: 1000,
-    received_pack_qty: 0,
-    received_qty: 0,
+    children: [
+      {
+        seq_no: '2',
+        ftz_cargo_no: 'A2C00024819',
+        product_no: 'N04601170547',
+        hscode: '8532221000',
+        order_qty: 1000,
+        g_name: 'PTA球囊扩张导管',
+        sku: '默认',
+        unit: '件',
+        sku_pack: '内包装',
+        expect_pack_qty: 10,
+        expect_qty: 1000,
+        received_pack_qty: 0,
+        received_qty: 0,
+      }, {
+        seq_no: '3',
+        ftz_cargo_no: 'A2C00024819',
+        product_no: 'N04601170546',
+        hscode: '8532221000',
+        order_qty: 1000,
+        g_name: 'PTA球囊扩张导管',
+        sku: '100/10/8',
+        unit: '件',
+        sku_pack: '内包装',
+        expect_pack_qty: 10,
+        expect_qty: 1000,
+        received_pack_qty: 0,
+        received_qty: 0,
+      },
+    ],
   }, {
     seq_no: '4',
-    product_no: 'N04601170546',
+    ftz_cargo_no: 'A2C00024800',
+    product_no: 'N04601170',
+    hscode: '8932221020',
     order_qty: 12,
     g_name: '肾造瘘球囊扩张导管',
     sku: '1/6/8',
@@ -164,7 +177,9 @@ export default class SHFTZEntryDetail extends Component {
     received_qty: 6,
   }, {
     seq_no: '5',
-    product_no: 'N04601170546',
+    ftz_cargo_no: 'A2C00022100',
+    product_no: 'N046010546',
+    hscode: '8972223120',
     order_qty: 1,
     g_name: '输尿管镜球囊扩张导管',
     sku: '1/1/1',
@@ -177,16 +192,13 @@ export default class SHFTZEntryDetail extends Component {
   }];
 
   render() {
-    const rowSelection = {
-      selectedRowKeys: this.state.selectedRowKeys,
-      onChange: (selectedRowKeys) => {
-        this.setState({ selectedRowKeys });
-      },
-    };
     return (
       <div>
         <Header className="top-bar">
           <Breadcrumb>
+            <Breadcrumb.Item>
+              上海自贸区监管
+            </Breadcrumb.Item>
             <Breadcrumb.Item>
               <Select
                 size="large"
@@ -201,9 +213,6 @@ export default class SHFTZEntryDetail extends Component {
               </Select>
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              上海自贸区监管
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
               {this.msg('ftzEntryReg')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
@@ -212,27 +221,24 @@ export default class SHFTZEntryDetail extends Component {
           </Breadcrumb>
           <div className="top-bar-tools">
             <Button size="large" icon="sync" onClick={this.handlePrint} >获取状态</Button>
-            <Button type="primary" size="large" icon="export" onClick={this.handlePrint} >发送备案</Button>
+            <Button type="primary" size="large" icon="export" onClick={this.handleSend} >发送备案</Button>
           </div>
         </Header>
-        <Content className="main-content layout-fixed-width layout-fixed-width-lg">
+        <Content className="main-content">
           <Form layout="vertical">
             <Card bodyStyle={{ paddingBottom: 56 }}>
               <Row>
-                <Col sm={24} lg={3}>
-                  <InfoItem label="备案类型" field={<Tag>一二线进境</Tag>} />
+                <Col sm={24} lg={6}>
+                  <InfoItem label="备案类型" field={<Tag color="blue">一二线进境</Tag>} />
                 </Col>
                 <Col sm={24} lg={6}>
-                  <InfoItem label="经营单位" field="04601|米思米(中国)精密机械贸易" />
+                  <InfoItem label="经营单位" field="3114941293|大陆泰密克汽车系统" />
                 </Col>
                 <Col sm={24} lg={6}>
-                  <InfoItem label="收货单位" field="I096120170603223-01" />
+                  <InfoItem label="收货单位" field="3122406170|上海恩诺物流有限公司" />
                 </Col>
-                <Col sm={24} lg={3}>
-                  <InfoItem label="进口日期" addonBefore={<Icon type="calendar" />} field={10} editable />
-                </Col>
-                <Col sm={24} lg={3}>
-                  <InfoItem label="进库日期" addonBefore={<Icon type="calendar" />} field={2} editable />
+                <Col sm={24} lg={6}>
+                  <InfoItem label="备案时间" addonBefore={<span><Icon type="calendar" /></span>} field="2017/05/09 16:26" />
                 </Col>
               </Row>
               <div className="card-footer">
@@ -248,20 +254,50 @@ export default class SHFTZEntryDetail extends Component {
                 <TabPane tab="221820171000538906" key="221820171000538906">
                   <div className="panel-header">
                     <Row>
-                      <Col span="8">
-                        <InfoItem size="small" field="0963I201706023631169"
-                          addonBefore="入库备案号" editable
-                        />
+                      <Col sm={24} lg={8}>
+                        <InfoItem size="small" addonBefore="入库备案号"field="0963I201706023631169" editable />
+                      </Col>
+                      <Col sm={24} lg={6}>
+                        <InfoItem size="small" addonBefore={<span><Icon type="calendar" />进口日期</span>} field="2017/05/06" editable />
+                      </Col>
+                      <Col sm={24} lg={6}>
+                        <InfoItem size="small" addonBefore={<span><Icon type="calendar" />进库日期</span>} field="2017/05/09" editable />
                       </Col>
                     </Row>
                   </div>
-                  <Table columns={this.columns} rowSelection={rowSelection} dataSource={this.mockData} rowKey="seq_no" />
+                  <Table columns={this.columns} dataSource={this.mockData} indentSize={8} rowKey="seq_no" />
                 </TabPane>
                 <TabPane tab="221820171000538907" key="221820171000538907">
-                  <Table columns={this.columns} rowSelection={rowSelection} dataSource={this.mockData} rowKey="seq_no" />
+                  <div className="panel-header">
+                    <Row>
+                      <Col sm={24} lg={8}>
+                        <InfoItem size="small" addonBefore="入库备案号"field="0963I201706023631169" editable />
+                      </Col>
+                      <Col sm={24} lg={6}>
+                        <InfoItem size="small" addonBefore={<span><Icon type="calendar" />进口日期</span>} field="2017/05/06" editable />
+                      </Col>
+                      <Col sm={24} lg={6}>
+                        <InfoItem size="small" addonBefore={<span><Icon type="calendar" />进库日期</span>} field="2017/05/09" editable />
+                      </Col>
+                    </Row>
+                  </div>
+                  <Table columns={this.columns} dataSource={this.mockData} indentSize={8} rowKey="seq_no" />
                 </TabPane>
                 <TabPane tab="221820171000538908" key="221820171000538908">
-                  <Table columns={this.columns} dataSource={this.mockData} rowKey="seq_no" />
+                  <div className="panel-header">
+                    <Row>
+                      <Col sm={24} lg={8}>
+                        <InfoItem size="small" addonBefore="入库备案号"field="0963I201706023631169" editable />
+                      </Col>
+                      <Col sm={24} lg={6}>
+                        <InfoItem size="small" addonBefore={<span><Icon type="calendar" />进口日期</span>} field="2017/05/06" editable />
+                      </Col>
+                      <Col sm={24} lg={6}>
+                        <InfoItem size="small" addonBefore={<span><Icon type="calendar" />进库日期</span>} field="2017/05/09" editable />
+                      </Col>
+                    </Row>
+                  </div>
+                  <Table columns={this.columns} dataSource={this.mockData} indentSize={8} rowKey="seq_no" />
                 </TabPane>
               </Tabs>
             </Card>
