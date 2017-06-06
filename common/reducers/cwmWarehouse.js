@@ -10,6 +10,10 @@ const actionTypes = createActionTypes('@@welogix/cwm/warehouse/', [
   'SHOW_LOCATION_MODAL', 'HIDE_LOCATION_MODAL',
   'ADD_LOCATION', 'ADD_LOCATION_SUCCEED', 'ADD_LOCATION_FAIL',
   'LOAD_LOCATIONS', 'LOAD_LOCATIONS_SUCCEED', 'LOAD_LOCATIONS_FAIL',
+  'DELETE_LOCATIONS', 'DELETE_LOCATIONS_SUCCEED', 'DELETE_LOCATIONS_FAIL',
+  'UPDATE_LOCATIONS', 'UPDATE_LOCATIONS_SUCCEED', 'UPDATE_LOCATIONS_FAIL',
+  'DELETE_ZONE', 'DELETE_ZONE_SUCCEED', 'DELETE_ZONE_FAIL',
+  'UPDATE_ZONE', 'UPDATE_ZONE_SUCCEED', 'UPDATE_ZONE_FAIL',
 ]);
 
 const initialState = {
@@ -22,6 +26,7 @@ const initialState = {
     visible: false,
   },
   locations: [],
+  record: {},
 };
 
 export default function reducer(state = initialState, action) {
@@ -35,7 +40,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_ZONE_SUCCEED:
       return { ...state, zoneList: action.result.data };
     case actionTypes.SHOW_LOCATION_MODAL:
-      return { ...state, locationModal: { ...state.locationModal, visible: true } };
+      return { ...state, locationModal: { ...state.locationModal, visible: true }, record: action.data ? action.data : {} };
     case actionTypes.HIDE_LOCATION_MODAL:
       return { ...state, locationModal: { ...state.locationModal, visible: false } };
     case actionTypes.LOAD_LOCATIONS_SUCCEED:
@@ -117,9 +122,10 @@ export function loadZones(whseCode) {
   };
 }
 
-export function showLocationModal() {
+export function showLocationModal(row) {
   return {
     type: actionTypes.SHOW_LOCATION_MODAL,
+    data: row,
   };
 }
 
@@ -155,6 +161,66 @@ export function loadLocations(whseCode, zoneCode) {
       endpoint: 'v1/cwm/warehouse/location/load',
       method: 'get',
       params: { whseCode, zoneCode },
+    },
+  };
+}
+
+export function deleteLocation(id) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DELETE_LOCATIONS,
+        actionTypes.DELETE_LOCATIONS_SUCCEED,
+        actionTypes.DELETE_LOCATIONS_FAIL,
+      ],
+      endpoint: 'v1/cwm/warehouse/location/delete',
+      method: 'get',
+      params: { id },
+    },
+  };
+}
+
+export function updateLocation(type, status, location, id) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_LOCATIONS,
+        actionTypes.UPDATE_LOCATIONS_SUCCEED,
+        actionTypes.UPDATE_LOCATIONS_FAIL,
+      ],
+      endpoint: 'v1/cwm/warehouse/location/update',
+      method: 'get',
+      params: { type, status, location, id },
+    },
+  };
+}
+
+export function deleteZone(whseCode, zoneCode) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DELETE_ZONE,
+        actionTypes.DELETE_ZONE_SUCCEED,
+        actionTypes.DELETE_ZONE_FAIL,
+      ],
+      endpoint: 'v1/cwm/warehouse/zone/delete',
+      method: 'get',
+      params: { whseCode, zoneCode },
+    },
+  };
+}
+
+export function updateZone(whseCode, zoneCode, id, zoneName) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_ZONE,
+        actionTypes.UPDATE_ZONE_SUCCEED,
+        actionTypes.UPDATE_ZONE_FAIL,
+      ],
+      endpoint: 'v1/cwm/warehouse/zone/update',
+      method: 'get',
+      params: { whseCode, zoneCode, id, zoneName },
     },
   };
 }

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Modal, Form, Input, Radio, message } from 'antd';
 import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
-import { hideLocationModal, addLocation, loadLocations } from 'common/reducers/cwmWarehouse';
+import { hideLocationModal, addLocation, loadLocations, updateLocation } from 'common/reducers/cwmWarehouse';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
@@ -17,8 +17,9 @@ const RadioButton = Radio.Button;
   state => ({
     tenantId: state.account.tenantId,
     visible: state.cwmWarehouse.locationModal.visible,
+    record: state.cwmWarehouse.record,
   }),
-  { hideLocationModal, addLocation, loadLocations }
+  { hideLocationModal, addLocation, loadLocations, updateLocation }
 )
 @Form.create()
 export default class AddLocationModal extends Component {
@@ -31,6 +32,22 @@ export default class AddLocationModal extends Component {
     type: 0,
     status: 0,
     location: '',
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.record.id && nextProps.record.id !== this.props.record.id) {
+      const { location, type, status } = nextProps.record;
+      this.setState({
+        location,
+        type: Number(type),
+        status: Number(status),
+      });
+    } else {
+      this.setState({
+        location: '',
+        type: 0,
+        status: 0,
+      });
+    }
   }
   msg = key => formatMsg(this.props.intl, key);
   handleCancel = () => {
@@ -52,20 +69,32 @@ export default class AddLocationModal extends Component {
     });
   }
   handleSubmit = () => {
-    const { whseCode, zoneCode } = this.props;
+    const { whseCode, zoneCode, record } = this.props;
     const { type, status, location } = this.state;
-    this.props.addLocation(whseCode, zoneCode, location, type, status).then(
-      (result) => {
-        if (!result.error) {
-          message.info('添加库位成功');
-          this.props.hideLocationModal();
-          this.props.loadLocations(whseCode, zoneCode);
+    if (record.id) {
+      this.props.updateLocation(type, status, location, record.id).then(
+        (result) => {
+          if (!result.error) {
+            message.info('编辑成功');
+            this.props.hideLocationModal();
+            this.props.loadLocations(whseCode, zoneCode);
+          }
         }
-      }
-    );
+      );
+    } else {
+      this.props.addLocation(whseCode, zoneCode, location, type, status).then(
+        (result) => {
+          if (!result.error) {
+            message.info('添加库位成功');
+            this.props.hideLocationModal();
+            this.props.loadLocations(whseCode, zoneCode);
+          }
+        }
+      );
+    }
   }
   render() {
-    const { type, status } = this.state;
+    const { type, status, location } = this.state;
     const formItemLayout = {
       labelCol: { span: 6 },
       wrapperCol: { span: 16 },
@@ -74,7 +103,7 @@ export default class AddLocationModal extends Component {
       <Modal title="添加库位" onCancel={this.handleCancel} visible={this.props.visible} onOk={this.handleSubmit}>
         <Form>
           <FormItem{...formItemLayout} label="location">
-            <Input onChange={this.locationChange} />
+            <Input onChange={this.locationChange} value={location} />
           </FormItem>
           <FormItem {...formItemLayout} label="库位类型">
             <RadioGroup value={type} onChange={this.typeChange}>
