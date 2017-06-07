@@ -14,6 +14,7 @@ const { Header, Content } = Layout;
 @connect(
   state => ({
     tenantId: state.account.tenantId,
+    loginId: state.account.loginId,
     owner: state.cwmSku.owner,
     skuForm: state.cwmSku.skuForm,
     submitting: state.cwmSku.skuSubmitting,
@@ -57,6 +58,7 @@ export default class CreateProductSku extends Component {
           owner_name: owner.name,
           owner_tenant_id: owner.partner_tenant_id,
           wh_ent_tenant_id: this.props.tenantId,
+          created_by: this.props.loginId,
         };
         this.props.createSku(formData).then((result) => {
           if (!result.error) {

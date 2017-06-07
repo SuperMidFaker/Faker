@@ -218,7 +218,7 @@ export default class CWMSkuList extends React.Component {
     this.props.setCurrentOwner(row);
   }
   render() {
-    const { skulist, whse, whses, loading } = this.props;
+    const { skulist, owner, whse, whses, loading } = this.props;
     this.dataSource.remotes = skulist;
     return (
       <Layout>
@@ -248,6 +248,7 @@ export default class CWMSkuList extends React.Component {
         </Sider>
         <Layout>
           <Header className="top-bar">
+            {owner.id &&
             <div className="top-bar-tools">
               <Button size="large" icon="cloud-upload">
                 {this.msg('productImport')}
@@ -258,7 +259,7 @@ export default class CWMSkuList extends React.Component {
               <ButtonToggle size="large" iconOn="setting" iconOff="setting" onClick={this.toggleRightSider}>
                 规则设置
               </ButtonToggle>
-            </div>
+            </div>}
           </Header>
           <Content className="main-content" key="main">
             <div className="page-body">
