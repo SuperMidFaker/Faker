@@ -19,6 +19,9 @@ import SendModal from './modals/sendModal';
 import LegalInspectionPanel from './panel/legaInspectionPanel';
 import { loadInvTemplates } from 'common/reducers/cmsInvoice';
 import connectFetch from 'client/common/decorators/connect-fetch';
+import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
+import DelegationDockPanel from '../dockhub/delegationDockPanel';
+import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
 
 const formatMsg = format(messages);
 const { Sider, Header, Content } = Layout;
@@ -44,7 +47,7 @@ function fetchData({ dispatch, state }) {
     tenantId: state.account.tenantId,
     invTemplates: state.cmsInvoice.invTemplates,
   }),
-  { saveEntryHead, loadEntry, deleteDecl, setDeclReviewed, openDeclReleasedModal, showSendDeclModal, setNavTitle }
+  { saveEntryHead, loadEntry, deleteDecl, setDeclReviewed, openDeclReleasedModal, showSendDeclModal, setNavTitle, showPreviewer }
 )
 @connectNav(navObj)
 @Form.create()
@@ -135,6 +138,9 @@ export default class CustomsDeclEditor extends React.Component {
   handleInvoiceMake = () => {
 
   }
+  handlePreview = (delgNo) => {
+    this.props.showPreviewer(delgNo, 'customsDecl');
+  }
   render() {
     const { ietype, form, head, bodies, billMeta, invTemplates } = this.props;
     const declkey = Object.keys(CMS_DECL_STATUS).filter(stkey => CMS_DECL_STATUS[stkey].value === head.status)[0];
@@ -154,6 +160,9 @@ export default class CustomsDeclEditor extends React.Component {
               </Breadcrumb.Item>
               <Breadcrumb.Item>
                 <Icon type="file" /> <NavLink to={`/clearance/${ietype}/customs/`}>{this.msg('customsDeclaration')}</NavLink>
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                <a onClick={() => this.handlePreview(head.delg_no)}>{head.bill_seq_no}</a>
               </Breadcrumb.Item>
               <Breadcrumb.Item>
                 {head.entry_id || head.pre_entry_seq_no}
@@ -236,6 +245,8 @@ export default class CustomsDeclEditor extends React.Component {
             <SheetExtraPanel type="entry" />
           </div>
         </Sider>
+        <DelegationDockPanel ietype={ietype} />
+        <OrderDockPanel />
         <SendModal ietype={ietype} reload={this.reloadEntry} />
         <DeclReleasedModal reload={this.reloadEntry} />
       </Layout>
