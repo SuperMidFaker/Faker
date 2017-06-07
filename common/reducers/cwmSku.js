@@ -2,7 +2,7 @@ import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/cwm/sku/', [
-  'SET_OWNER', 'SET_FORM',
+  'SET_OWNER', 'SET_FORM', 'CLEAN_FORM',
   'LOAD_OWNERSKUS', 'LOAD_OWNERSKUS_SUCCEED', 'LOAD_OWNERSKUS_FAIL',
   'LOAD_SKUPARAMS', 'LOAD_SKUPARAMS_SUCCEED', 'LOAD_SKUPARAMS_FAIL',
   'NEW_SKU', 'NEW_SKU_SUCCEED', 'NEW_SKU_FAIL',

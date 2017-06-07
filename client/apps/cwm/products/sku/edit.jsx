@@ -13,6 +13,7 @@ const { Header, Content } = Layout;
 @injectIntl
 @connect(
   state => ({
+    loginId: state.account.loginId,
     owner: state.cwmSku.owner,
     skuForm: state.cwmSku.skuForm,
     submitting: state.cwmSku.skuSubmitting,
@@ -49,7 +50,7 @@ export default class EditProductSku extends Component {
     this.props.form.validateFields((errors, values) => {
       if (!errors) {
         const formData = {
-          ...values, ...this.props.skuForm,
+          ...values, ...this.props.skuForm, last_updated_by: this.props.loginId,
         };
         this.props.saveSku(formData).then((result) => {
           if (!result.error) {
