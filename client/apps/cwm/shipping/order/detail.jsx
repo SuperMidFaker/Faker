@@ -29,7 +29,7 @@ const Option = Select.Option;
   moduleName: 'cwm',
 })
 @Form.create()
-export default class CreateReceivingASN extends Component {
+export default class CreateShippingOrder extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     form: PropTypes.object.isRequired,
@@ -84,10 +84,10 @@ export default class CreateReceivingASN extends Component {
               </Select>
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              {this.msg('receivingASN')}
+              {this.msg('shippingOrder')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              {this.msg('createASN')}
+              {this.msg('createSO')}
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="top-bar-tools">

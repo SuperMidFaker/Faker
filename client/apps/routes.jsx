@@ -432,7 +432,7 @@ export default(store, cookie) => {
               <Route path="asn">
                 <IndexRoute component={CWMReceivingASN.List} />
                 <Route path="create" component={CWMReceivingASN.Create} />
-                <Route path=":asnNo" component={CWMReceivingASN.View} />
+                <Route path=":asnNo" component={CWMReceivingASN.Detail} />
               </Route>
               <Route path="inbound">
                 <IndexRoute component={CWMReceivingInbound.List} />
@@ -442,8 +442,8 @@ export default(store, cookie) => {
             <Route path="shipping">
               <Route path="order">
                 <IndexRoute component={CWMShippingOrder.List} />
-                <Route path="create" component={CWMReceivingASN.Create} />
-                <Route path=":shippingNo" component={CWMShippingOrder.View} />
+                <Route path="create" component={CWMShippingOrder.Create} />
+                <Route path=":soNo" component={CWMShippingOrder.Detail} />
               </Route>
               <Route path="outbound">
                 <IndexRoute component={CWMShippingOutbound.List} />

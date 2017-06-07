@@ -47,7 +47,7 @@ export default class ReceivingNoticeList extends React.Component {
     dataIndex: 'owner_code',
   }, {
     title: '采购订单号',
-    dataIndex: 'ref_order_no',
+    dataIndex: 'po_no',
   }, {
     title: '供应商',
     dataIndex: 'seller_name',
@@ -111,7 +111,7 @@ export default class ReceivingNoticeList extends React.Component {
     fixed: 'right',
     render: (o, record) => {
       if (record.status === 0) {
-        return (<span><RowUpdater label="释放" row={record} /><span className="ant-divider" /><RowUpdater label="修改" row={record} /><span className="ant-divider" /><RowUpdater label="取消" row={record} /></span>);
+        return (<span><RowUpdater label="释放" row={record} /><span className="ant-divider" /><RowUpdater onHit={this.handleEditASN} label="修改" row={record} /><span className="ant-divider" /><RowUpdater label="取消" row={record} /></span>);
       } else if (record.status === 1) {
         if (record.bonded === 1 && record.reg_status === 0) {
           return (<span><RowUpdater onHit={this.handleReceive} label="入库操作" row={record} /><span className="ant-divider" /><RowUpdater onHit={this.handleEntryReg} label="进库备案" row={record} /></span>);
@@ -172,8 +172,12 @@ export default class ReceivingNoticeList extends React.Component {
 
     }
   }
-  handleCreateBtnClick = () => {
+  handleCreateASN = () => {
     this.context.router.push('/cwm/receiving/asn/create');
+  }
+  handleEditASN = (row) => {
+    const link = `/cwm/receiving/asn/${row.asn_no}`;
+    this.context.router.push(link);
   }
   handleReceive = (row) => {
     const link = `/cwm/receiving/inbound/receive/${row.asn_no}`;
@@ -212,7 +216,7 @@ export default class ReceivingNoticeList extends React.Component {
             <RadioButton value="completed">收货完成</RadioButton>
           </RadioGroup>
           <div className="top-bar-tools">
-            <Button type="primary" size="large" icon="plus" onClick={this.handleCreateBtnClick}>
+            <Button type="primary" size="large" icon="plus" onClick={this.handleCreateASN}>
               {this.msg('createASN')}
             </Button>
           </div>

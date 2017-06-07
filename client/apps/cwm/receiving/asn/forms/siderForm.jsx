@@ -14,6 +14,7 @@ export default class SiderForm extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     form: PropTypes.object.isRequired,
+    editable: PropTypes.bool,
   }
   msg = key => formatMsg(this.props.intl, key);
   render() {

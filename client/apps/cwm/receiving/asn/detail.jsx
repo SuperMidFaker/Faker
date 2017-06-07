@@ -29,7 +29,7 @@ const Option = Select.Option;
   moduleName: 'cwm',
 })
 @Form.create()
-export default class CreateReceivingASN extends Component {
+export default class ReceivingASNDetail extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     form: PropTypes.object.isRequired,
@@ -40,7 +40,9 @@ export default class CreateReceivingASN extends Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
-
+  state = {
+    editable: false,
+  }
   msg = key => formatMsg(this.props.intl, key);
   handleSave = () => {
     this.props.form.validateFields((errors) => {
@@ -87,27 +89,27 @@ export default class CreateReceivingASN extends Component {
               {this.msg('receivingASN')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              {this.msg('createASN')}
+              asnNo
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="top-bar-tools">
-            <Button size="large" type="ghost" onClick={this.handleCancelBtnClick}>
+            {this.state.editable && <Button size="large" type="ghost" onClick={this.handleCancelBtnClick}>
               {this.msg('cancel')}
-            </Button>
-            <Button size="large" type="primary" icon="save" loading={submitting} onClick={this.handleSaveBtnClick}>
+            </Button>}
+            {this.state.editable && <Button size="large" type="primary" icon="save" loading={submitting} onClick={this.handleSaveBtnClick}>
               {this.msg('save')}
-            </Button>
+            </Button>}
           </div>
         </Header>
         <Content className="main-content layout-fixed-width layout-fixed-width-lg">
           <Form layout="vertical">
-            <HeadForm form={form} />
+            <HeadForm form={form} editable={this.state.editable} />
             <Row gutter={16}>
               <Col span={18}>
-                <DetailForm form={form} />
+                <DetailForm form={form} editable={this.state.editable} />
               </Col>
               <Col span={6}>
-                <SiderForm form={form} />
+                <SiderForm form={form} editable={this.state.editable} />
               </Col>
             </Row>
           </Form>

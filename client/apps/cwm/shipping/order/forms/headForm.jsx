@@ -18,7 +18,6 @@ export default class HeadForm extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     form: PropTypes.object.isRequired,
-    editable: PropTypes.bool,
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
@@ -64,30 +63,29 @@ export default class HeadForm extends Component {
             </FormItem>
           </Col>
           <Col sm={24} lg={8}>
-            <FormItem label="采购订单号">
-              {getFieldDecorator('po_no', {
+            <FormItem label="客户订单号">
+              {getFieldDecorator('cust_order_no', {
               })(
                 <Input />
                   )}
             </FormItem>
           </Col>
           <Col sm={24} lg={8}>
-            <FormItem label="预期到货日期" >
-              {getFieldDecorator('expect_receive_date', {
+            <FormItem label="要求交货时间" >
+              {getFieldDecorator('expect_ship_date', {
               })(<DatePicker defaultValue={moment('2015/01/01', dateFormat)} format={dateFormat} style={{ width: '100%' }} />)}
             </FormItem>
           </Col>
           <Col sm={24} lg={8}>
-            <FormItem label="ASN类型">
-              {getFieldDecorator('asn_type', {
+            <FormItem label="SO类型">
+              {getFieldDecorator('so_type', {
               })(
                 <Select
-                  placeholder="ASN类型"
+                  placeholder="SO类型"
                   defaultValue="0961"
                 >
-                  <Option value="0961">采购入库</Option>
-                  <Option value="0962">调拨入库</Option>
-                  <Option value="0963">退货入库</Option>
+                  <Option value="0961">销售出库</Option>
+                  <Option value="0962">调拨出库</Option>
                 </Select>
                   )}
             </FormItem>
@@ -104,12 +102,12 @@ export default class HeadForm extends Component {
             </FormItem>
           </Col>
           <Col sm={24} lg={8}>
-            <FormItem label="保税入库类型">
+            <FormItem label="保税出库类型">
               {getFieldDecorator('reg_type', {
               })(
                 <RadioGroup>
-                  <RadioButton value={0}>先报关后入库</RadioButton>
-                  <RadioButton value={1}>先入库后报关</RadioButton>
+                  <RadioButton value={0}>先报关后出库</RadioButton>
+                  <RadioButton value={1}>先出库后报关</RadioButton>
                   <RadioButton value={2}>不报关</RadioButton>
                 </RadioGroup>
                   )}

@@ -12,7 +12,6 @@ export default class DetailForm extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     form: PropTypes.object.isRequired,
-    editable: PropTypes.bool,
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
@@ -39,12 +38,11 @@ export default class DetailForm extends Component {
     dataIndex: 'unit_price',
   }]
   render() {
-    const { editable } = this.props;
     return (
       <Card bodyStyle={{ padding: 0 }}>
         <div className="toolbar">
-          {editable && <Button type="primary">添加明细</Button>}
-          {editable && <Button>导入</Button>}
+          <Button type="primary">添加明细</Button>
+          <Button>导入</Button>
         </div>
         <Table columns={this.columns} rowKey="id" />
       </Card>
