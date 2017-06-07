@@ -257,4 +257,12 @@ export default defineMessages({
     id: 'cms.customs.traf.mode',
     defaultMessage: '运输方式',
   },
+  packCount: {
+    id: 'cms.customs.pack.count',
+    defaultMessage: '件数：',
+  },
+  contractNo: {
+    id: 'cms.customs.contract.no',
+    defaultMessage: '合同协议号：',
+  },
 });

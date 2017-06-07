@@ -4,8 +4,8 @@ import { Card, Form, Row, Col, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import InfoItem from 'client/components/InfoItem';
 import {
-  RelationAutoCompSelect, IEPort, IEDate, DeclDate, Transport, ContractNo, LicenseNo, TermConfirm,
-  TradeRemission, CountryAttr, TradeMode, Fee, ContainerNo, PackWeight, Pieces,
+  RelationAutoCompSelect, IEPort, IEDate, DeclDate, Transport, LicenseNo, TermConfirm,
+  TradeRemission, CountryAttr, TradeMode, Fee, ContainerNo, PackWeight,
   RaDeclManulNo, StoreYard,
 } from '../../form/headFormItems';
 import { fillEntryId } from 'common/reducers/cmsManifest';
@@ -134,17 +134,21 @@ export default class CDFHeadPanel extends React.Component {
                 <Fee {...formProps} intl={intl} formRequire={formRequire} ietype={ietype} />
               </Row>
               <Row>
-                <Col span="5">
-                  <ContractNo {...formProps} intl={intl} formRequire={formRequire} />
-                </Col>
-                <Col span="3">
-                  <Pieces {...formProps} intl={intl} formRequire={formRequire} />
+                <Col span={8}>
+                  <ContainerNo {...formProps} intl={intl} formRequire={formRequire} />
                 </Col>
                 <PackWeight {...formProps} intl={intl} formRequire={formRequire} ietype={ietype} />
               </Row>
               <Row>
-                <Col span={8}>
-                  <ContainerNo {...formProps} intl={intl} formRequire={formRequire} />
+                <Col span="5">
+                  <InfoItem size="small" field={formData.contr_no} placeholder="点击输入" dataIndex="contr_no"
+                    addonBefore={this.msg('contractNo')} editable={editable} onEdit={this.handleMarkFill}
+                  />
+                </Col>
+                <Col span="3">
+                  <InfoItem size="small" field={formData.pack_count} placeholder="点击输入" dataIndex="pack_count"
+                    addonBefore={this.msg('packCount')} editable={editable} onEdit={this.handleMarkFill}
+                  />
                 </Col>
                 <Col span={15} offset={1}>
                   <InfoItem size="small" field={formData.cert_mark} placeholder="点击输入" dataIndex="cert_mark"
