@@ -42,6 +42,10 @@ const messages = defineMessages({
     id: 'cwm.dashboard.stats.shipping.packing.verified',
     defaultMessage: '复核装箱数',
   },
+  statsTasks: {
+    id: 'cwm.dashboard.stats.tasks',
+    defaultMessage: '作业量统计',
+  },
 });
 
 export default messages;

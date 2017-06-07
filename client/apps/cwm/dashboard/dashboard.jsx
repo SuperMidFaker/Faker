@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Alert, Breadcrumb, Card, Row, Select, Col, Layout } from 'antd';
+import { Alert, Breadcrumb, Card, Row, Select, Col, Layout, Progress } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
@@ -108,14 +108,42 @@ export default class CWMDashboard extends React.Component {
           </Row>
           <Row gutter={16}>
             <Col sm={24} md={16}>
-              <Row gutter={16}>
-                <Col sm={24} md={12}>
-                  <Card loading title={this.msg('inventoryByCategories')} />
-                </Col>
-                <Col sm={24} md={12}>
-                  <Card loading title={this.msg('inventoryByCustomers')} />
-                </Col>
-              </Row>
+              <Card title={this.msg('statsTasks')}>
+                <ul className="statistics-columns">
+                  <li className="col-8">
+                    <div className="statistics-cell">
+                      <h6>{this.msg('receipts')}</h6>
+                      <Progress type="dashboard" percent={75} width={80} />
+                      <p>Total: 561 Items</p>
+                      <p>Completed: 165 Items</p>
+                    </div>
+                  </li>
+                  <li className="col-8">
+                    <div className="statistics-cell">
+                      <h6>{this.msg('putaways')}</h6>
+                      <Progress type="dashboard" percent={75} width={80} />
+                      <p>Total: 561 Items</p>
+                      <p>Completed: 165 Items</p>
+                    </div>
+                  </li>
+                  <li className="col-8">
+                    <div className="statistics-cell">
+                      <h6>{this.msg('shipments')}</h6>
+                      <Progress type="dashboard" percent={75} width={80} />
+                      <p>Total: 561 Items</p>
+                      <p>Completed: 165 Items</p>
+                    </div>
+                  </li>
+                  <li className="col-8">
+                    <div className="statistics-cell">
+                      <h6>{this.msg('replenishments')}</h6>
+                      <Progress type="dashboard" percent={75} width={80} />
+                      <p>Total: 561 Items</p>
+                      <p>Completed: 165 Items</p>
+                    </div>
+                  </li>
+                </ul>
+              </Card>
             </Col>
             <Col sm={24} md={8}>
               <Card loading title={this.msg('inventoryAlerts')} >

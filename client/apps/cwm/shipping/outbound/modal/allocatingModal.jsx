@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { Table, Icon, Modal, Input, Tooltip, Row, Col, Select } from 'antd';
+import { Card, Table, Icon, Modal, Input, Tooltip, Row, Col, Select } from 'antd';
 import InfoItem from 'client/components/InfoItem';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
@@ -20,6 +20,14 @@ export default class AllocatingModal extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     receivingMode: PropTypes.string.isRequired,
+  }
+  getInitialState() {
+    return { modalWidth: 1000 };
+  }
+  componentWillMount() {
+    if (typeof document !== 'undefined' && typeof window !== 'undefined') {
+      this.setState({ modalWidth: window.innerWidth - 48 });
+    }
   }
   msg = key => formatMsg(this.props.intl, key);
   handleCancel = () => {
@@ -97,25 +105,32 @@ export default class AllocatingModal extends Component {
   render() {
     const { receivingMode } = this.props;
     return (
-      <Modal title="收货" width={900} maskClosable={false} onCancel={this.handleCancel} visible={this.props.visible}>
-        <Row gutter={16}>
-          <Col sm={24} lg={8}>
-            <InfoItem label="商品货号" field="I096120170603223-01" />
-          </Col>
-          <Col sm={24} lg={8}>
-            <InfoItem label="预期数量" field={<span>
-              <Tooltip title="包装单位数量"><Input value={3} className="readonly" style={{ width: 80 }} /></Tooltip>
-              <Tooltip title="主单位数量"><Input value={300} style={{ width: 80 }} disabled /></Tooltip></span>}
-            />
-          </Col>
-          <Col sm={24} lg={8}>
-            <InfoItem label="累计收货数量" field={<span className="mdc-text-red">
-              <Tooltip title="包装单位数量"><Input value={1} className="readonly" style={{ width: 80 }} /></Tooltip>
-              <Tooltip title="主单位数量"><Input value={100} style={{ width: 80 }} disabled /></Tooltip></span>}
-            />
-          </Col>
-        </Row>
-        <Table size="middle" columns={this.columns} dataSource={receivingMode === 'scan' ? this.dataSource : null} rowKey="trace_id" />
+      <Modal title="分配" width={this.state.modalWidth} maskClosable={false} style={{ top: 24 }} onCancel={this.handleCancel} visible={this.props.visible}>
+        <Card>
+          <Row gutter={16}>
+            <Col sm={12} md={8} lg={6}>
+              <InfoItem label="商品货号" field="I096120170603223-01" />
+            </Col>
+            <Col sm={12} md={8} lg={6}>
+              <InfoItem label="预期数量" field={<span>
+                <Tooltip title="包装单位数量"><Input value={3} className="readonly" style={{ width: 80 }} /></Tooltip>
+                <Tooltip title="主单位数量"><Input value={300} style={{ width: 80 }} disabled /></Tooltip></span>}
+              />
+            </Col>
+            <Col sm={12} md={8} lg={6}>
+              <InfoItem label="累计收货数量" field={<span className="mdc-text-red">
+                <Tooltip title="包装单位数量"><Input value={1} className="readonly" style={{ width: 80 }} /></Tooltip>
+                <Tooltip title="主单位数量"><Input value={100} style={{ width: 80 }} disabled /></Tooltip></span>}
+              />
+            </Col>
+            <Col sm={12} md={8} lg={6}>
+              <InfoItem label="商品货号" field="I096120170603223-01" />
+            </Col>
+          </Row>
+        </Card>
+        <Card bodyStyle={{ padding: 0 }}>
+          <Table size="middle" columns={this.columns} dataSource={receivingMode === 'scan' ? this.dataSource : null} rowKey="trace_id" />
+        </Card>
       </Modal>
     );
   }

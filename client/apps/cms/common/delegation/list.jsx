@@ -603,11 +603,10 @@ export default class DelegationList extends Component {
             <RadioButton value="ciqPending" disabled>{this.msg('ciq')}</RadioButton>
           </RadioGroup>
           <div className="top-bar-tools">
-            <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
-              <Button type="primary" size="large" onClick={this.handleCreateBtnClick} icon="plus">
-                {this.msg('createDelegation')}
-              </Button>
-            </PrivilegeCover>
+            <Button type="primary" size="large" onClick={this.handleCreateBtnClick} icon="plus" disabled>
+              {this.msg('createDelegation')}
+            </Button>
+            <span><Tooltip title="此功能已由客户订单流中的创建订单替代" placement="left"><Icon type="question-circle-o" /></Tooltip></span>
           </div>
         </Header>
         <Content className="main-content" key="main">
@@ -637,11 +636,6 @@ export default class DelegationList extends Component {
                   <Option value="my">我负责的委托</Option>
                 </OptGroup>
               </Select>
-              <div className="toolbar-right">
-                <Tooltip title="清关业务委托设置">
-                  <Button size="large" icon="setting" />
-                </Tooltip>
-              </div>
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3>
                 <a role="presentation" onClick={this.handleDeselectRows}>不选</a>
