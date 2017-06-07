@@ -62,7 +62,7 @@ export default class CWMDashboard extends React.Component {
                   </li>
                   <li className="col-8">
                     <div className="statistics-cell">
-                      <h6>{this.msg('toBeReceived')}</h6>
+                      <h6>{this.msg('toReceive')}</h6>
                       <p className="data-num">6</p>
                     </div>
                   </li>
@@ -86,7 +86,7 @@ export default class CWMDashboard extends React.Component {
                   </li>
                   <li className="col-8">
                     <div className="statistics-cell">
-                      <h6>{this.msg('toBeAllocated')}</h6>
+                      <h6>{this.msg('toAllocate')}</h6>
                       <p className="data-num">6</p>
                     </div>
                   </li>

@@ -41,7 +41,7 @@ export default class ReceivingASNDetail extends Component {
     router: PropTypes.object.isRequired,
   }
   state = {
-    editable: false,
+    editable: true,
   }
   msg = key => formatMsg(this.props.intl, key);
   handleSave = () => {

@@ -1,13 +1,12 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Breadcrumb, Icon, Dropdown, Form, Radio, Layout, Menu, Popconfirm, Steps, Button, Select, Card, Col, Row, Tag, Table, Input, Tooltip } from 'antd';
+import { Breadcrumb, Icon, Form, Layout, Menu, Popconfirm, Steps, Button, Select, Card, Col, Row, Tag, Table, Input, Tooltip } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import Avatar from 'react-avatar';
 import InfoItem from 'client/components/InfoItem';
 import RowUpdater from 'client/components/rowUpdater';
-import PackagePopover from './popover/packagePopover';
-import ReceivingModal from './modal/receivingModal';
+import AllocatingModal from './modal/allocatingModal';
 import { loadReceiveModal } from 'common/reducers/cwmReceive';
 import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
@@ -15,8 +14,6 @@ import { format } from 'client/common/i18n/helpers';
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
 const Option = Select.Option;
-const RadioGroup = Radio.Group;
-const RadioButton = Radio.Button;
 const Step = Steps.Step;
 
 @injectIntl
@@ -36,7 +33,7 @@ const Step = Steps.Step;
   moduleName: 'cwm',
 })
 @Form.create()
-export default class ReceiveInbound extends Component {
+export default class OutboundAllocate extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     form: PropTypes.object.isRequired,
@@ -91,105 +88,133 @@ export default class ReceiveInbound extends Component {
   }, {
     title: '订单数量',
     dataIndex: 'order_qty',
+    width: 120,
     render: o => (<b>{o}</b>),
   }, {
     title: '主单位',
     dataIndex: 'unit',
+    width: 100,
   }, {
     title: 'SKU',
     dataIndex: 'sku',
-    render: o => (
-      <PackagePopover data={o} />
-      ),
+    width: 200,
+    render: (o) => {
+      if (o) {
+        return <Button>{o}</Button>;
+      }
+    },
   }, {
-    title: 'SKU包装单位',
-    dataIndex: 'sku_pack',
-    render: o => (<Tooltip title="=10主单位" placement="right"><Tag>{o}</Tag></Tooltip>),
+    title: '分配规则',
+    dataIndex: 'allocate_rule',
+    width: 200,
+    render: (o) => {
+      if (o) {
+        return <Button>{o}</Button>;
+      }
+    },
   }, {
-    title: '预期数量',
+    title: '库位',
+    dataIndex: 'location',
+    width: 200,
+    render: (o) => {
+      if (o) {
+        return <Tag>{o}</Tag>;
+      }
+    },
+  }, {
+    title: '分配数量',
+    width: 200,
     render: (o, record) => (<span><Tooltip title="包装单位数量"><Input className="readonly" value={record.expect_pack_qty} style={{ width: 80 }} /></Tooltip>
       <Tooltip title="主单位数量"><Input value={record.expect_qty} style={{ width: 80 }} disabled /></Tooltip></span>),
   }, {
-    title: '收货数量',
-    render: (o, record) => {
-      if (record.expect_pack_qty === record.received_pack_qty) {
-        return (<span className="mdc-text-green"><Tooltip title="包装单位数量"><Input className="readonly" value={record.received_pack_qty} style={{ width: 80 }} /></Tooltip>
-          <Tooltip title="主单位数量"><Input value={record.received_qty} style={{ width: 80 }} disabled /></Tooltip></span>);
-      } else {
-        return (<span className="mdc-text-red"><Tooltip title="包装单位数量"><Input className="readonly" value={record.received_pack_qty} style={{ width: 80 }} /></Tooltip>
-          <Tooltip title="主单位数量"><Input value={record.received_qty} style={{ width: 80 }} disabled /></Tooltip></span>);
-      }
-    },
+    title: '分配异常',
+    dataIndex: 'allocate_exception',
   }, {
     title: '操作',
-    render: (o, record) => {
-      if (this.state.receivingMode === 'scan' || this.state.receivingMode === 'api') {
-        return (<RowUpdater onHit={this.handleReceive} label={<Icon type="eye-o" />} row={record} />);
-      } else if (this.state.receivingMode === 'manual') {
-        if (record.expect_qty === record.received_qty) {
-          return (<RowUpdater onHit={this.handleReceive} label={<Icon type="check-circle" />} row={record} />);
-        }
-        return (<RowUpdater onHit={this.handleReceive} label="收货" row={record} />);
-      }
-    },
+    render: (o, record) => (<RowUpdater onHit={this.handleReceive} label="指定分配" row={record} />),
   }]
   mockData = [{
+    id: 1,
     seq_no: '1',
     product_no: 'N04601170548',
     order_qty: 15,
     desc_cn: '微纤维止血胶原粉',
     sku: 'N04601170548',
+    allocate_rule: 'FIFO',
     unit: '件',
     sku_pack: '单件',
     expect_pack_qty: 15,
     expect_qty: 15,
     received_pack_qty: 15,
     received_qty: 15,
+    children: [{
+      id: 2,
+      location: 'P1CA0101',
+      expect_pack_qty: 10,
+      expect_qty: 10,
+      received_pack_qty: 10,
+      received_qty: 10,
+    }, {
+      id: 3,
+      location: 'P1CA0102',
+      expect_pack_qty: 5,
+      expect_qty: 5,
+      received_pack_qty: 5,
+      received_qty: 5,
+    }],
   }, {
+    id: 4,
     seq_no: '2',
     product_no: 'N04601170547',
     order_qty: 1000,
     desc_cn: 'PTA球囊扩张导管',
     sku: 'N04601170547',
+    allocate_rule: 'FIFO',
     unit: '件',
-    sku_pack: '内包装',
+    location: 'P1CA0101',
     expect_pack_qty: 10,
     expect_qty: 1000,
     received_pack_qty: 0,
     received_qty: 0,
   }, {
+    id: 5,
     seq_no: '3',
     product_no: 'SBMG-00859',
     order_qty: 1000,
     desc_cn: '临时起搏电极导管',
     sku: 'RS2A03A0AL0W00',
+    allocate_rule: 'FIFO',
     unit: '个',
-    sku_pack: '内包装',
+    location: 'P1CA0101',
     expect_pack_qty: 10,
     expect_qty: 1000,
     received_pack_qty: 0,
     received_qty: 0,
   }, {
+    id: 6,
     seq_no: '4',
     product_no: 'SBME-00787',
     order_qty: 12,
     desc_cn: '肾造瘘球囊扩张导管',
     sku: '109R0612D401',
+    allocate_rule: 'FIFO',
     unit: '个',
     expect_pack_qty: 2,
-    sku_pack: '箱',
+    location: 'P1CA0101',
     expect_qty: 12,
     received_pack_qty: 1,
     received_qty: 6,
   }, {
+    id: 7,
     seq_no: '5',
     product_no: 'SBMJ-00199',
     order_qty: 1,
     desc_cn: '输尿管镜球囊扩张导管',
     sku: '9GV0912P1G03',
+    allocate_rule: 'FIFO',
     unit: '个',
     expect_pack_qty: 1,
-    sku_pack: '托盘',
+    location: 'P1CA0101',
     expect_qty: 1,
     received_pack_qty: 0,
     received_qty: 0,
@@ -203,17 +228,6 @@ export default class ReceiveInbound extends Component {
         this.setState({ selectedRowKeys });
       },
     };
-    const tagMenu = (
-      <Menu>
-        <Menu.Item key="printTraceTag">打印追踪标签</Menu.Item>
-        <Menu.Item key="exportTraceTag">导出追踪标签</Menu.Item>
-        <Menu.Divider />
-        <Menu.Item key="printConveyTag">打印箱/托标签</Menu.Item>
-        <Menu.Item key="exportConveyTag">导出箱/托标签</Menu.Item>
-        <Menu.Divider />
-        <Menu.Item key="exportAllTag">导出全部标签</Menu.Item>
-      </Menu>
-    );
     return (
       <div>
         <Header className="top-bar">
@@ -232,30 +246,16 @@ export default class ReceiveInbound extends Component {
               </Select>
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              {this.msg('receivingInound')}
+              {this.msg('outboundAllocating')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              ASN096120170603223
+              SO096120170603223
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="top-bar-tools">
-            {(this.state.receivingMode === 'manual' || this.state.receivingMode === 'api') && <Dropdown overlay={tagMenu}>
-              <Button size="large" onClick={this.handlePrint}>
-                <Icon type="barcode" /> <Icon type="down" />
-              </Button>
-            </Dropdown>}
-            {this.state.receivingMode === 'manual' && <Button type="primary" size="large" icon="printer" onClick={this.handlePrint} >打印入库请单</Button>}
-            {(this.state.receivingMode === 'scan' || this.state.receivingMode === 'api') && <Button size="large" icon="printer" onClick={this.handlePrint} />}
-            {this.state.receivingMode === 'scan' && <Dropdown overlay={tagMenu}>
-              <Button type="primary" size="large" onClick={this.handlePrint}>
-                <Icon type="barcode" />标签 <Icon type="down" />
-              </Button>
-            </Dropdown>}
-            <RadioGroup defaultValue={this.state.receivingMode} onChange={this.handleReceivingModeChange} size="large">
-              <RadioButton value="scan"><Icon type="scan" /> 扫描收货</RadioButton>
-              <RadioButton value="manual"><Icon type="user" /> 人工收货</RadioButton>
-              <RadioButton value="api"><Icon type="api" /> 接口收货</RadioButton>
-            </RadioGroup>
+            <Button size="large" icon="rocket" onClick={this.handlePrint} >
+              自动分配
+            </Button>
           </div>
         </Header>
         <Content className="main-content">
@@ -285,10 +285,12 @@ export default class ReceiveInbound extends Component {
               </Row>
               <div className="card-footer">
                 <Steps progressDot current={1}>
-                  <Step description="创建入库" />
-                  <Step description="收货" />
-                  <Step description="上架" />
-                  <Step description="入库完成" />
+                  <Step description="创建出库" />
+                  <Step description="分配" />
+                  <Step description="拣货" />
+                  <Step description="装箱复核" />
+                  <Step description="发货" />
+                  <Step description="出库完成" />
                 </Steps>
               </div>
             </Card>
@@ -309,8 +311,8 @@ export default class ReceiveInbound extends Component {
                   {this.state.receivingMode === 'api' && <Button type="primary" ghost icon="sync">同步数据</Button>}
                 </div>
               </div>
-              <Table columns={this.columns} rowSelection={rowSelection} dataSource={this.mockData} rowKey="seq_no" />
-              <ReceivingModal receivingMode={this.state.receivingMode} />
+              <Table columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={this.mockData} rowKey="id" />
+              <AllocatingModal receivingMode={this.state.receivingMode} />
             </Card>
           </Form>
         </Content>

@@ -44,6 +44,7 @@ export default class SHFTZEntryDetail extends Component {
   }
   state = {
     asnNo: 'ASN04601170548',
+    sent: false,
   }
   msg = key => formatMsg(this.props.intl, key);
   handleSave = () => {
@@ -71,6 +72,9 @@ export default class SHFTZEntryDetail extends Component {
     notification.success({
       message: '操作成功',
       description: `${this.state.asnNo} 已发送至 上海自贸区海关监管系统 一二线先报关后入库`,
+    });
+    this.setState({
+      sent: true,
     });
   }
   columns = [{
@@ -220,8 +224,8 @@ export default class SHFTZEntryDetail extends Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="top-bar-tools">
-            <Button size="large" icon="sync" onClick={this.handlePrint} >获取状态</Button>
-            <Button type="primary" size="large" icon="export" onClick={this.handleSend} >发送备案</Button>
+            {this.state.sent ? <Button size="large" icon="sync" onClick={this.handlePrint} >获取状态</Button> :
+            <Button type="primary" size="large" icon="export" onClick={this.handleSend} >发送备案</Button>}
           </div>
         </Header>
         <Content className="main-content">

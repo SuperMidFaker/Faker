@@ -89,7 +89,10 @@ export default class OrderDockPanel extends React.Component {
   renderTabs() {
     const { order } = this.props;
     return (
-      <Tabs defaultActiveKey="order" onChange={this.handleTabChange}>
+      <Tabs defaultActiveKey="flow" onChange={this.handleTabChange}>
+        <TabPane tab={this.msg('tabFlow')} key="flow">
+          <FlowPane />
+        </TabPane>
         <TabPane tab={this.msg('tabOrder')} key="order">
           <OrderPane />
           {
@@ -103,9 +106,6 @@ export default class OrderDockPanel extends React.Component {
                 </Tooltip>
               </div>) : null
           }
-        </TabPane>
-        <TabPane tab={this.msg('tabFlow')} key="flow">
-          <FlowPane />
         </TabPane>
         <TabPane tab={this.msg('tabBilling')} key="billing">
           <BillingPane />

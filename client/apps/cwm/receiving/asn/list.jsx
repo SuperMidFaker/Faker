@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Badge, Button, Breadcrumb, Layout, Radio, Select, Table, Tag } from 'antd';
+import { Badge, Button, Breadcrumb, Layout, Radio, Select, Table, Tag, notification } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/search-bar';
 import RowUpdater from 'client/components/rowUpdater';
@@ -111,7 +111,7 @@ export default class ReceivingNoticeList extends React.Component {
     fixed: 'right',
     render: (o, record) => {
       if (record.status === 0) {
-        return (<span><RowUpdater label="释放" row={record} /><span className="ant-divider" /><RowUpdater onHit={this.handleEditASN} label="修改" row={record} /><span className="ant-divider" /><RowUpdater label="取消" row={record} /></span>);
+        return (<span><RowUpdater onHit={this.handleReleaseASN} label="释放" row={record} /><span className="ant-divider" /><RowUpdater onHit={this.handleEditASN} label="修改" row={record} /></span>);
       } else if (record.status === 1) {
         if (record.bonded === 1 && record.reg_status === 0) {
           return (<span><RowUpdater onHit={this.handleReceive} label="入库操作" row={record} /><span className="ant-divider" /><RowUpdater onHit={this.handleEntryReg} label="进库备案" row={record} /></span>);
@@ -178,6 +178,12 @@ export default class ReceivingNoticeList extends React.Component {
   handleEditASN = (row) => {
     const link = `/cwm/receiving/asn/${row.asn_no}`;
     this.context.router.push(link);
+  }
+  handleReleaseASN = (row) => {
+    notification.success({
+      message: '操作成功',
+      description: `${row.asn_no} 已释放`,
+    });
   }
   handleReceive = (row) => {
     const link = `/cwm/receiving/inbound/receive/${row.asn_no}`;

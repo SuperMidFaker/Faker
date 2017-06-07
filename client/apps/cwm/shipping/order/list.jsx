@@ -111,12 +111,12 @@ export default class ShippingOrderList extends React.Component {
     width: 120,
     render: (o, record) => {
       if (record.status === 0) {
-        return (<span><RowUpdater label="释放" row={record} /><span className="ant-divider" /><RowUpdater label="修改" row={record} /><span className="ant-divider" /><RowUpdater label="取消" row={record} /></span>);
+        return (<span><RowUpdater label="释放" row={record} /><span className="ant-divider" /><RowUpdater onHit={this.handleEditSO} label="修改" row={record} /><span className="ant-divider" /><RowUpdater label="取消" row={record} /></span>);
       } else if (record.status === 1) {
         if (record.bonded === 1 && record.reg_status === 0) {
-          return (<span><RowUpdater onHit={this.handleReceive} label="出库操作" row={record} /><span className="ant-divider" /><RowUpdater onHit={this.handleEntryReg} label="出库备案" row={record} /></span>);
+          return (<span><RowUpdater onHit={this.handleAllocate} label="出库操作" row={record} /><span className="ant-divider" /><RowUpdater onHit={this.handleEntryReg} label="出库备案" row={record} /></span>);
         } else {
-          return (<span><RowUpdater onHit={this.handleReceive} label="出库操作" row={record} /></span>);
+          return (<span><RowUpdater onHit={this.handleAllocate} label="出库操作" row={record} /></span>);
         }
       }
     },
@@ -171,10 +171,24 @@ export default class ShippingOrderList extends React.Component {
 
     }
   }
-  handleCreateBtnClick = () => {
+  handleCreateSO = () => {
     this.context.router.push('/cwm/shipping/order/create');
   }
+  handleEditSO = (row) => {
+    const link = `/cwm/shipping/order/${row.so_no}`;
+    this.context.router.push(link);
+  }
+  handleAllocate = (row) => {
+    const link = `/cwm/shipping/outbound/allocate/${row.so_no}`;
+    this.context.router.push(link);
+  }
   render() {
+    const rowSelection = {
+      selectedRowKeys: this.state.selectedRowKeys,
+      onChange: (selectedRowKeys) => {
+        this.setState({ selectedRowKeys });
+      },
+    };
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Header className="top-bar">
@@ -202,7 +216,7 @@ export default class ShippingOrderList extends React.Component {
             <RadioButton value="completed">出货完成</RadioButton>
           </RadioGroup>
           <div className="top-bar-tools">
-            <Button type="primary" size="large" icon="plus" onClick={this.handleCreateBtnClick}>
+            <Button type="primary" size="large" icon="plus" onClick={this.handleCreateSO}>
               {this.msg('createSO')}
             </Button>
           </div>
@@ -217,7 +231,7 @@ export default class ShippingOrderList extends React.Component {
               </div>
             </div>
             <div className="panel-body table-panel">
-              <Table columns={this.columns} dataSource={this.dataSource} rowKey="id" scroll={{ x: 1400 }} />
+              <Table columns={this.columns} rowSelection={rowSelection} dataSource={this.dataSource} rowKey="id" scroll={{ x: 1400 }} />
             </div>
           </div>
         </Content>

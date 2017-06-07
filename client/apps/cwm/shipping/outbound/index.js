@@ -1,2 +1,2 @@
 export List from './list';
-export Receive from './receive';
+export Allocate from './allocate';

@@ -447,6 +447,7 @@ export default(store, cookie) => {
               </Route>
               <Route path="outbound">
                 <IndexRoute component={CWMShippingOutbound.List} />
+                <Route path="allocate/:soNo" component={CWMShippingOutbound.Allocate} />
               </Route>
             </Route>
             <Route path="stock">
