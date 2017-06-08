@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-import { connect } from 'react-redux';
 import { Table } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from '../../form/message.i18n';
@@ -8,27 +7,15 @@ const formatMsg = format(messages);
 import { buildTipItems } from 'client/common/customs';
 
 @injectIntl
-@connect(
-  state => ({
-    bodies: state.cmsManifest.entryBodies,
-  }),
-  {}
-)
 
 export default class LegalInspectionPanel extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    ietype: PropTypes.string.isRequired,
+    filterProducts: PropTypes.array.isRequired,
   }
   msg = key => formatMsg(this.props.intl, key);
   render() {
-    const { bodies, ietype } = this.props;
-    let filterProducts = [];
-    if (ietype === 'import') {
-      filterProducts = bodies.filter(item => item.customs && item.customs.indexOf('A') !== -1);
-    } else {
-      filterProducts = bodies.filter(item => item.customs && item.customs.indexOf('B') !== -1);
-    }
+    const { filterProducts } = this.props;
     const columns = [{
       title: this.msg('seqNumber'),
       dataIndex: 'g_no',
