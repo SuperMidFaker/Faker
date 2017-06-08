@@ -366,7 +366,6 @@ export default class AddLineModal extends React.Component {
   }
   handleNodeChange = (index, data) => {
     const { startLocation } = this.props;
-    console.log(startLocation);
     const node = { ...this.state.nodes[index], ...data };
     const nodes = [...this.state.nodes];
     nodes.splice(index, 1, node);
