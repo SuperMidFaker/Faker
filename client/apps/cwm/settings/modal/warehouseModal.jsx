@@ -73,7 +73,7 @@ export default class WareHouseModal extends Component {
     return (
       <Modal title="添加仓库" visible={this.props.visible} onCancel={this.handleCancel} onOk={this.handleSubmit}>
         <Form>
-          <FormItem {...formItemLayout} label="仓库编号" >
+          <FormItem {...formItemLayout} label="仓库代码" >
             {
               getFieldDecorator('whseCode', {
                 rules: [{ required: true, messages: 'please input whseCode' }],
@@ -87,7 +87,7 @@ export default class WareHouseModal extends Component {
               })(<Input />)
             }
           </FormItem>
-          <FormItem {...formItemLayout} label="仓库位置" >
+          <FormItem {...formItemLayout} label="仓库地址" >
             {
               getFieldDecorator('whseAddress')(<Input />)
             }

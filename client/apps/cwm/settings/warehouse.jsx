@@ -260,8 +260,8 @@ export default class WareHouse extends Component {
           <div className="top-bar">
             <Breadcrumb>
               <Breadcrumb.Item>
-                  仓库
-                </Breadcrumb.Item>
+                仓库
+              </Breadcrumb.Item>
             </Breadcrumb>
             <div className="pull-right">
               <Tooltip placement="bottom" title="添加仓库">
