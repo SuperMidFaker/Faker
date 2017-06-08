@@ -20,8 +20,9 @@ import * as Network from './network';
 import PackOpenPlatform from './open/packOpenPlatform';
 import * as OpenAPI from './open/api';
 import * as OpenIntegration from './open/integration';
-import * as OpenArCTM from './open/integration/arctm';
-import * as OpenEasipassEDI from './open/integration/easipass';
+import * as IntegraionArCTM from './open/integration/arctm';
+import * as IntegraionEasipassEDI from './open/integration/easipass';
+import * as IntegraionSHFTZ from './open/integration/shftz';
 import Module from './module';
 import TMS from './transport/module-transport';
 import * as TMSDashboard from './transport/dashboard';
@@ -176,12 +177,16 @@ export default(store, cookie) => {
             <Route path="apps" component={OpenIntegration.AppsList} />
             <Route path="installed" component={OpenIntegration.InstalledList} />
             <Route path="arctm">
-              <Route path="install" component={OpenArCTM.Install} />
-              <Route path="config/:uuid" component={OpenArCTM.Config} />
+              <Route path="install" component={IntegraionArCTM.Install} />
+              <Route path="config/:uuid" component={IntegraionArCTM.Config} />
             </Route>
             <Route path="easipass">
-              <Route path="install" component={OpenEasipassEDI.Install} />
-              <Route path="config/:uuid" component={OpenEasipassEDI.Config} />
+              <Route path="install" component={IntegraionEasipassEDI.Install} />
+              <Route path="config/:uuid" component={IntegraionEasipassEDI.Config} />
+            </Route>
+            <Route path="shftz">
+              <Route path="install" component={IntegraionSHFTZ.Install} />
+              <Route path="config/:uuid" component={IntegraionSHFTZ.Config} />
             </Route>
           </Route>
         </Route>
@@ -483,9 +488,7 @@ export default(store, cookie) => {
               <Route path="warehouse" component={CWMWarehouse.List} />
             </Route>
             <Route path="settings">
-              <IndexRedirect to="/cwm/settings/openapi" />
-              <Route path="openapi" component={CWMSettings.OpenApi} />
-              <Route path="warehouse" component={CWMSettings.WareHouse} />
+              <Route path="warehouse" component={CWMSettings.Warehouse} />
             </Route>
           </Route>
           <Route path={DEFAULT_MODULES.scof.id} component={SCOF}>

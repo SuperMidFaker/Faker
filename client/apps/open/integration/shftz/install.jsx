@@ -19,7 +19,7 @@ const { Header, Content } = Layout;
   { installEasipassApp }
 )
 @Form.create()
-export default class InstallEasipassEDI extends React.Component {
+export default class InstallSHFTZ extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -70,7 +70,7 @@ export default class InstallEasipassEDI extends React.Component {
               {this.msg('appsStore')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              {this.msg('appEasipassEDI')}
+              {this.msg('appSHFTZ')}
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="top-bar-tools">
@@ -93,7 +93,7 @@ export default class InstallEasipassEDI extends React.Component {
                 })(<Input />)}
               </FormItem>
             </Card>
-            <Card title={this.msg('easipassConfig')}>
+            <Card title={this.msg('apiConfig')}>
               <MainForm form={form} easipass={this.defaultEasipassConfig} />
             </Card>
           </Form>

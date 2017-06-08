@@ -1,1 +1,1 @@
-export WareHouse from './warehouse';
+export Warehouse from './warehouse/list';

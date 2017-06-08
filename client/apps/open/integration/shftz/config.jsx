@@ -1,57 +1,54 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Button, Breadcrumb, Card, Form, Icon, Layout } from 'antd';
+import { message, Button, Card, Breadcrumb, Form, Icon, Layout, Row } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import InfoItem from 'client/components/InfoItem';
-import { loadArCtmApp, updateArCtmApp } from 'common/reducers/openIntegration';
+import { loadEasipassApp, updateEasipassApp } from 'common/reducers/openIntegration';
 import MainForm from './forms/mainForm';
 import { formatMsg } from '../message.i18n';
 
 const { Header, Content } = Layout;
 
 function fetchData({ dispatch, params }) {
-  return dispatch(loadArCtmApp(params.uuid));
+  return dispatch(loadEasipassApp(params.uuid));
 }
 
 @connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
-    profile: state.account.profile,
-    role: state.account.role_name,
     tenantId: state.account.tenantId,
-    parentTenantId: state.account.parentTenantId,
-    code: state.account.code,
-    arctm: state.openIntegration.arctm,
+    easipass: state.openIntegration.easipassApp,
   }),
-  { loadArCtmApp, updateArCtmApp }
+  { updateEasipassApp }
 )
 @Form.create()
-export default class ConfigAmberRoadCTM extends React.Component {
+export default class ConfigSHFTZ extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     form: PropTypes.object.isRequired,
-    submitting: PropTypes.bool.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
+  state = { submitting: false }
   msg = formatMsg(this.props.intl);
   handleSaveBtnClick = () => {
+    const { easipass } = this.props;
     this.props.form.validateFields((err, values) => {
-      const arctm = {
-        user: values.username,
-        password: values.password,
-        webservice_url: values.webservice_url,
-        uuid: values.uuid,
-      };
-      this.props.updateArCtmApp(arctm).then((result) => {
-        if (!result.erorr) {
-          this.context.router.goBack();
-        }
-      });
+      if (!err) {
+        this.setState({ submitting: true });
+        this.props.updateEasipassApp({ ...values, uuid: easipass.uuid }).then((result) => {
+          this.setState({ submitting: false });
+          if (result.error) {
+            message.error(result.error.message, 10);
+          } else {
+            this.context.router.goBack();
+          }
+        });
+      }
     });
   }
   handleCancelBtnClick = () => {
@@ -59,34 +56,26 @@ export default class ConfigAmberRoadCTM extends React.Component {
   }
 
   render() {
-    const { form, submitting, arctm } = this.props;
-    const formPartners = [{ id: arctm.customer_partner_id, name: arctm.customer_name }];
-    const formData = {
-      customer_partner_id: arctm.customer_partner_id,
-      user: arctm.user,
-      password: arctm.password,
-      uuid: arctm.uuid,
-      webservice_url: arctm.webservice_url,
-    };
+    const { form, easipass } = this.props;
     return (
       <div>
         <Header className="top-bar">
           <Breadcrumb>
             <Breadcrumb.Item>
-              <Icon type="appstore-o" />{this.msg('integration')}
+              <Icon type="appstore-o" /> {this.msg('integration')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              {this.msg('appAmberRoadCTM')}
+              {this.msg('appSHFTZ')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              {arctm.name}
+              {easipass.name}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <div className="top-bar-tools" >
+          <div className="top-bar-tools">
             <Button size="large" type="ghost" onClick={this.handleCancelBtnClick}>
               {this.msg('cancel')}
             </Button>
-            <Button size="large" type="primary" icon="save" loading={submitting} onClick={this.handleSaveBtnClick}>
+            <Button size="large" type="primary" icon="save" loading={this.state.submitting} onClick={this.handleSaveBtnClick}>
               {this.msg('saveApp')}
             </Button>
           </div>
@@ -94,10 +83,12 @@ export default class ConfigAmberRoadCTM extends React.Component {
         <Content className="main-content layout-fixed-width">
           <Form layout="vertical">
             <Card>
-              <InfoItem label={this.msg('integrationName')} field={arctm.name} />
+              <InfoItem label={this.msg('integrationName')} field={easipass.name} />
             </Card>
-            <Card title={this.msg('AmberRoadCTMParam')}>
-              <MainForm form={form} partners={formPartners} formData={formData} />
+            <Card title={this.msg('apiConfig')}>
+              <Row gutter={16}>
+                <MainForm form={form} easipass={easipass} />
+              </Row>
             </Card>
           </Form>
         </Content>

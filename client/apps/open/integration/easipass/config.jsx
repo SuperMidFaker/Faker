@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { message, Button, Card, Breadcrumb, Form, Icon, Layout, Row } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
+import InfoItem from 'client/components/InfoItem';
 import { loadEasipassApp, updateEasipassApp } from 'common/reducers/openIntegration';
 import MainForm from './forms/mainForm';
 import { formatMsg } from '../message.i18n';
@@ -81,6 +82,9 @@ export default class ConfigEasipassEDI extends React.Component {
         </Header>
         <Content className="main-content layout-fixed-width">
           <Form layout="vertical">
+            <Card>
+              <InfoItem label={this.msg('integrationName')} field={easipass.name} />
+            </Card>
             <Card title={this.msg('easipassConfig')}>
               <Row gutter={16}>
                 <MainForm form={form} easipass={easipass} />
