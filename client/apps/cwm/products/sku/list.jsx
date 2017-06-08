@@ -249,6 +249,15 @@ export default class CWMSkuList extends React.Component {
         <Layout>
           <Header className="top-bar">
             {owner.id &&
+            <Breadcrumb>
+              <Breadcrumb.Item>
+                货主
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {owner.name}
+              </Breadcrumb.Item>
+            </Breadcrumb>}
+            {owner.id &&
             <div className="top-bar-tools">
               <Button size="large" icon="cloud-upload">
                 {this.msg('productImport')}

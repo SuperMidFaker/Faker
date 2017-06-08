@@ -119,6 +119,7 @@ export default class ModuleCWM extends React.Component {
         text: formatMsg(intl, 'productsSku'),
       }, {
         key: 'cwm-5-3',
+        disabled: true,
         path: '/cwm/products/lotting',
         text: formatMsg(intl, 'productsLotting'),
       }, {
@@ -140,6 +141,7 @@ export default class ModuleCWM extends React.Component {
         text: formatMsg(intl, 'warehouse'),
       }, {
         key: 'cwm-6-2',
+        disabled: true,
         path: '/cwm/settings/tools',
         text: formatMsg(intl, 'tools'),
       }],
