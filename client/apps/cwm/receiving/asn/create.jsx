@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Breadcrumb, Form, Layout, Row, Col, Button, Select } from 'antd';
+import { Breadcrumb, Form, Layout, Row, Col, Button, Select, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import HeadForm from './forms/headForm';
@@ -8,6 +8,7 @@ import DetailForm from './forms/detailForm';
 import SiderForm from './forms/siderForm';
 import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
+import { addASN } from 'common/reducers/cwmReceive';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -22,7 +23,11 @@ const Option = Select.Option;
     tenantName: state.account.tenantName,
     formData: state.cmsDelegation.formData,
     submitting: state.cmsDelegation.submitting,
+    currentWarehouse: state.cwmWarehouse.currentWarehouse,
+    whseOwners: state.cwmWarehouse.whseOwners,
+    temporaryDetails: state.cwmReceive.temporaryDetails,
   }),
+  { addASN }
 )
 @connectNav({
   depth: 3,
@@ -40,12 +45,28 @@ export default class CreateReceivingASN extends Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
-
+  state = {
+    editable: true,
+  }
   msg = key => formatMsg(this.props.intl, key);
   handleSave = () => {
-    this.props.form.validateFields((errors) => {
+    const { temporaryDetails, currentWarehouse } = this.props;
+    if (temporaryDetails.length === 0) {
+      message.info('明细不能为空');
+      return;
+    }
+    this.props.form.validateFields((errors, values) => {
       if (!errors) {
-
+        const data = values;
+        data.temporaryDetails = temporaryDetails;
+        data.whseCode = currentWarehouse.whse_code;
+        this.props.addASN(data).then(
+          (result) => {
+            if (!result.error) {
+              this.context.router.push('/cwm/receiving/asn');
+            }
+          }
+        );
       }
     });
   }
@@ -63,9 +84,8 @@ export default class CreateReceivingASN extends Component {
       attachments: fileList,
     });
   }
-
   render() {
-    const { form, submitting } = this.props;
+    const { form, submitting, currentWarehouse } = this.props;
     return (
       <div>
         <Header className="top-bar">
@@ -73,14 +93,11 @@ export default class CreateReceivingASN extends Component {
             <Breadcrumb.Item>
               <Select
                 size="large"
-                defaultValue="0960"
-                placeholder="选择仓库"
+                value={currentWarehouse.whse_code}
                 style={{ width: 160 }}
                 disabled
               >
-                <Option value="0960">物流大道仓库</Option>
-                <Option value="0961">希雅路仓库</Option>
-                <Option value="0962">富特路仓库</Option>
+                <Option value={currentWarehouse.whse_code}>{currentWarehouse.whse_name}</Option>
               </Select>
             </Breadcrumb.Item>
             <Breadcrumb.Item>
@@ -104,7 +121,7 @@ export default class CreateReceivingASN extends Component {
             <HeadForm form={form} />
             <Row gutter={16}>
               <Col span={18}>
-                <DetailForm form={form} />
+                <DetailForm editable={this.state.editable} form={form} />
               </Col>
               <Col span={6}>
                 <SiderForm form={form} />
