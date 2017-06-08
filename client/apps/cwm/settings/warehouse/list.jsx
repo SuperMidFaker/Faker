@@ -10,8 +10,9 @@ import messages from '../message.i18n';
 import WarehouseModal from './modal/warehouseModal';
 import LocationModal from './modal/locationModal';
 import MdIcon from 'client/components/MdIcon';
-import ZoneEditDropDown from './popover/zoneEditDropdown';
-import WarehouseMembers from './warehouseMembers';
+import ZoneEditPopover from './popover/zoneEditPopover';
+import OwnersPane from './tabpane/ownersPane';
+import SupervisionPane from './tabpane/supervisionPane';
 import { showWarehouseModal, loadwhList, addZone, loadZones, showLocationModal, loadLocations, deleteLocation,
   editLocation, deleteZone } from 'common/reducers/cwmWarehouse';
 
@@ -288,7 +289,10 @@ export default class WareHouse extends Component {
           </Header>
           <Content className="main-content">
             <div className="page-body tabbed">
-              <Tabs defaultActiveKey="location">
+              <Tabs defaultActiveKey="owners">
+                <TabPane tab="货主" key="owners">
+                  <OwnersPane whseCode={warehouse.whse_code} whseTenantId={warehouse.wh_ent_tenant_id} />
+                </TabPane>
                 <TabPane tab="库区/库位" key="location">
                   <Layout className="main-wrapper">
                     <Sider className="nav-sider">
@@ -297,7 +301,7 @@ export default class WareHouse extends Component {
                           {
                           zoneList.map(item => (<Menu.Item key={item.zone_code}>
                             <span>{item.zone_name}</span>
-                            <ZoneEditDropDown id={item.id} zoneCode={item.zone_code} whseCode={warehouse.whse_code} stateChange={this.handleStateChange} deleteZone={this.handleDeleteZone} />
+                            <ZoneEditPopover id={item.id} zoneCode={item.zone_code} whseCode={warehouse.whse_code} stateChange={this.handleStateChange} deleteZone={this.handleDeleteZone} />
                           </Menu.Item>))
                         }
                         </SubMenu>
@@ -327,10 +331,9 @@ export default class WareHouse extends Component {
                 <TabPane tab="上架规则" key="putaway" disabled />
                 <TabPane tab="分配规则" key="allocate" disabled />
                 <TabPane tab="补货规则" key="replenish" disabled />
-                <TabPane tab="保税监管" key="supervision" />
-                <TabPane tab="仓库货主" key="auth">
-                  <WarehouseMembers whseCode={warehouse.whse_code} whseTenantId={warehouse.wh_ent_tenant_id} />
-                </TabPane>
+                {warehouse.bonded === 1 && <TabPane tab="保税监管" key="supervision">
+                  <SupervisionPane whseCode={warehouse.whse_code} whseTenantId={warehouse.wh_ent_tenant_id} />
+                </TabPane>}
               </Tabs>
             </div>
           </Content>

@@ -3,9 +3,9 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Button, Layout, Table } from 'antd';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
+import messages from '../../message.i18n';
 import { showWhseMembers, loadwhseOwners } from 'common/reducers/cwmWarehouse';
-import WhseMembersModal from './modal/whseMembersModal';
+import OwnersModal from '../modal/ownersModal';
 
 const formatMsg = format(messages);
 const { Content } = Layout;
@@ -17,7 +17,7 @@ const { Content } = Layout;
   }),
   { showWhseMembers, loadwhseOwners }
 )
-export default class WarehouseMembers extends Component {
+export default class OwnersPane extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     whseCode: PropTypes.string.isRequired,
@@ -50,7 +50,7 @@ export default class WarehouseMembers extends Component {
           <Button type="primary" ghost icon="plus-circle" onClick={() => this.props.showWhseMembers()}>添加货主</Button>
         </div>
         <Table columns={this.columns} dataSource={whseOwners} />
-        <WhseMembersModal whseCode={whseCode} whseTenantId={whseTenantId} whseOwners={whseOwners} />
+        <OwnersModal whseCode={whseCode} whseTenantId={whseTenantId} whseOwners={whseOwners} />
       </Content>
     );
   }

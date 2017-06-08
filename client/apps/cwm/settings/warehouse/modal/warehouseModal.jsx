@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Modal, Form, Input, Radio, message } from 'antd';
-import messages from '../message.i18n';
+import messages from '../../message.i18n';
 import { format } from 'client/common/i18n/helpers';
 import { hideWarehouseModal, addWarehouse, loadwhList } from 'common/reducers/cwmWarehouse';
 

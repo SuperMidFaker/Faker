@@ -30,6 +30,10 @@ const messages = defineMessages({
     id: 'open.platform.integration.app.easipass',
     defaultMessage: '亿通海关EDI申报',
   },
+  appSHFTZ: {
+    id: 'open.platform.integration.app.shftz',
+    defaultMessage: '上海自贸区监管',
+  },
   easipassConfig: {
     id: 'open.platform.integration.easipass.config',
     defaultMessage: '亿通配置',

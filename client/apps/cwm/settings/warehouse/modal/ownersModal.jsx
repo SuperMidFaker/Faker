@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Modal, Table, message } from 'antd';
-import messages from '../message.i18n';
+import messages from '../../message.i18n';
 import { format } from 'client/common/i18n/helpers';
 import { loadwhseOwners, addWhseOwners, hideWhseMembers } from 'common/reducers/cwmWarehouse';
 import { loadPartners } from 'common/reducers/partner';
@@ -17,7 +17,7 @@ const formatMsg = format(messages);
   }),
   { loadwhseOwners, loadPartners, addWhseOwners, hideWhseMembers }
 )
-export default class WhseMembersModal extends Component {
+export default class OwnersModal extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     whseCode: PropTypes.string.isRequired,
@@ -48,10 +48,10 @@ export default class WhseMembersModal extends Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
-    title: '客户代码',
+    title: '货主代码',
     dataIndex: 'partner_code',
   }, {
-    title: '客户',
+    title: '货主名称',
     dataIndex: 'name',
   }]
   handleCancel = () => {
@@ -89,7 +89,7 @@ export default class WhseMembersModal extends Component {
     };
     const filterPartners = partners.filter(partner => !whseOwners.find(owners => owners.owner_partner_id === partner.id));
     return (
-      <Modal title="添加成员" visible={visible} onCancel={this.handleCancel} onOk={this.handleAdd}>
+      <Modal title="添加货主" visible={visible} onCancel={this.handleCancel} onOk={this.handleAdd}>
         <Table columns={this.columns} dataSource={filterPartners} rowKey="id" rowSelection={rowSelection} pagination={false} />
       </Modal>
     );

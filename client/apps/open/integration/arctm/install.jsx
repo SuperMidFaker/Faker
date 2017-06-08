@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Button, Breadcrumb, Card, Form, Icon, Input, Col, Layout, Row } from 'antd';
+import { Button, Breadcrumb, Card, Form, Icon, Input, Layout } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { installArCtmApp } from 'common/reducers/openIntegration';
 import { loadPartners } from 'common/reducers/partner';
@@ -99,15 +99,11 @@ export default class InstallAmberRoadCTM extends React.Component {
         <Content className="main-content layout-fixed-width">
           <Form layout="vertical">
             <Card>
-              <Row gutter={16}>
-                <Col sm={24} lg={24}>
-                  <FormItem label={this.msg('integrationName')}>
-                    {form.getFieldDecorator('name', {
-                      rules: [{ required: true, message: this.msg('integrationNameRequired') }],
-                    })(<Input />)}
-                  </FormItem>
-                </Col>
-              </Row>
+              <FormItem label={this.msg('integrationName')}>
+                {form.getFieldDecorator('name', {
+                  rules: [{ required: true, message: this.msg('integrationNameRequired') }],
+                })(<Input />)}
+              </FormItem>
             </Card>
             <Card title={this.msg('AmberRoadCTMParam')}>
               <MainForm form={form} partners={formPartners} formData={formData} />
