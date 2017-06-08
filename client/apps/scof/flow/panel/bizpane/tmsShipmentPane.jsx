@@ -41,29 +41,41 @@ export default class TMSShipmentPane extends Component {
     rateSources: [],
     rateEnds: [],
     consignerId: -1,
+    quoteNo: '',
   }
   componentWillMount() {
-    this.handleLoadTariffs(this.props);
+    const { model, tmsParams: { transitModes } } = this.props;
+    if (model.consigner_id) {
+      const mode = transitModes.find(item => item.mode_code === model.transit_mode);
+      const transitMode = mode ? mode.id : -1;
+      this.setState({ consignerId: model.consigner_id, transitMode, goodsType: model.goods_type, quoteNo: model.quote_no }, () => {
+        this.handleLoadTariffs(this.props);
+      });
+    } else {
+      this.handleLoadTariffs(this.props);
+    }
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.needLoadTariff) {
       this.handleLoadTariffs(nextProps);
     }
+    const { model, tmsParams: { transitModes } } = nextProps;
+    if (model.consigner_id) {
+      const mode = transitModes.find(item => item.mode_code === model.transit_mode);
+      const transitMode = mode ? mode.id : -1;
+      this.setState({ consignerId: model.consigner_id, transitMode, goodsType: model.goods_type, quoteNo: model.quote_no });
+    }
   }
   handleLoadTariffs = (props) => {
-    const { partnerId, model, tmsParams: { transitModes, consigners } } = props;
-    const mode = transitModes.find(item => item.mode_code === model.transit_mode);
-    const transitMode = mode ? mode.id : -1;
-    const consigner = consigners.find(item => item.node_id === model.consigner_id);
-    this.setState({ consignerId: model.consigner_id });
-    props.loadTariffsByTransportInfo(partnerId, transitMode, model.goods_type).then((result) => {
+    const { partnerId, tmsParams: { consigners } } = props;
+    const { consignerId, transitMode, goodsType, quoteNo } = this.state;
+    const consigner = consigners.find(item => item.node_id === consignerId);
+    props.loadTariffsByTransportInfo(partnerId, transitMode, goodsType).then((result) => {
       this.setState({
         tariffs: result.data || [],
-        transitMode,
-        goodsType: model.goods_type,
       });
       if (result.data) {
-        const tariff = result.data.find(item => item.quoteNo === model.quote_no);
+        const tariff = result.data.find(item => item.quoteNo === quoteNo);
         if (tariff) {
           props.loadRatesSources({
             tariffId: tariff._id,
@@ -198,8 +210,8 @@ export default class TMSShipmentPane extends Component {
   }
   handleTariffSelect = (quoteNo) => {
     if (quoteNo) {
+      this.setState({ quoteNo });
       const { tmsParams: { consigners } } = this.props;
-      const consigner = consigners.find(item => item.node_id === this.props.form.getFieldValue('consigner_id'));
       const tariff = this.state.tariffs.find(item => item.quoteNo === quoteNo);
       if (tariff) {
         this.props.loadRatesSources({
@@ -208,7 +220,8 @@ export default class TMSShipmentPane extends Component {
           currentPage: 1,
         }).then((result1) => {
           this.setState({ rateSources: result1.data.data || [] });
-          if (result1.data.data) {
+          const consigner = consigners.find(item => item.node_id === this.props.form.getFieldValue('consigner_id'));
+          if (result1.data.data && consigner) {
             const rss = result1.data.data.filter(item => item.source.province === consigner.province);
             const promises = rss.map(item => this.props.loadRateEnds({ rateId: item._id, pageSize: 99999999, current: 1 }));
             Promise.all(promises).then((results) => {
