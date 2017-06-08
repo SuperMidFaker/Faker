@@ -46,7 +46,7 @@ export default class ScvWarehouseList extends React.Component {
   msg = formatMsg(this.props.intl);
   columns = [{
     title: this.msg('warehouseName'),
-    dataIndex: 'wh_name',
+    dataIndex: 'whse_name',
     width: 200,
   }, {
     title: this.msg('warehouseCode'),

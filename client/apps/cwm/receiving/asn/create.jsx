@@ -29,10 +29,9 @@ const Option = Select.Option;
   moduleName: 'cwm',
 })
 @Form.create()
-export default class CreateReceivingNotice extends Component {
+export default class CreateReceivingASN extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    type: PropTypes.oneOf(['import', 'export']),
     form: PropTypes.object.isRequired,
     tenantName: PropTypes.string.isRequired,
     formData: PropTypes.object.isRequired,

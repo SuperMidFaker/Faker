@@ -92,10 +92,10 @@ export default class WareHouseModal extends Component {
               getFieldDecorator('whseAddress')(<Input />)
             }
           </FormItem>
-          <FormItem {...formItemLayout} label="是否时保税仓" >
+          <FormItem {...formItemLayout} label="保税性质" >
             <Radio.Group value={isBonded} onChange={this.handleChange}>
-              <Radio.Button value={0}>否</Radio.Button>
-              <Radio.Button value={1}>是</Radio.Button>
+              <Radio.Button value={0}>非保税仓</Radio.Button>
+              <Radio.Button value={1}>保税仓</Radio.Button>
             </Radio.Group>
           </FormItem>
         </Form>

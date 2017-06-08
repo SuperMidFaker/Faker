@@ -63,7 +63,10 @@ import * as CWMStockInventory from './cwm/stock/inventory';
 import * as CWMProductsSku from './cwm/products/sku';
 import * as CWMWarehouse from './cwm/resources/warehouse';
 import * as CWMSettings from './cwm/settings';
-import * as CWMSupervisionSHFTZ from './cwm/supervision/shftz';
+import * as CWMSupervisionSHFTZEntry from './cwm/supervision/shftz/entry';
+import * as CWMSupervisionSHFTZRelease from './cwm/supervision/shftz/release';
+import * as CWMSupervisionSHFTZBatch from './cwm/supervision/shftz/batch';
+import * as CWMSupervisionSHFTZCargo from './cwm/supervision/shftz/cargo';
 import SCV from './scv/module-scv';
 import * as SCVDashboard from './scv/dashboard';
 import * as SCVOrders from './scv/orders';
@@ -334,6 +337,8 @@ export default(store, cookie) => {
             <Route path="settings">
               <IndexRedirect to="/clearance/settings/quotetemplates" />
               <Route path="quotetemplates" component={CMSSettings.QuoteTemplates} />
+              <Route path="invoicetemplates" component={CMSSettings.InvoiceTemplates} />
+              <Route path="invoicetemplates/edit/:id" component={CMSSettings.InvoiceContent} />
             </Route>
             <Route path="classification">
               <Route path="tradeitem">
@@ -427,7 +432,7 @@ export default(store, cookie) => {
               <Route path="asn">
                 <IndexRoute component={CWMReceivingASN.List} />
                 <Route path="create" component={CWMReceivingASN.Create} />
-                <Route path=":asnNo" component={CWMReceivingASN.View} />
+                <Route path=":asnNo" component={CWMReceivingASN.Detail} />
               </Route>
               <Route path="inbound">
                 <IndexRoute component={CWMReceivingInbound.List} />
@@ -437,11 +442,12 @@ export default(store, cookie) => {
             <Route path="shipping">
               <Route path="order">
                 <IndexRoute component={CWMShippingOrder.List} />
-                <Route path="create" component={CWMReceivingASN.Create} />
-                <Route path=":shippingNo" component={CWMShippingOrder.View} />
+                <Route path="create" component={CWMShippingOrder.Create} />
+                <Route path=":soNo" component={CWMShippingOrder.Detail} />
               </Route>
               <Route path="outbound">
                 <IndexRoute component={CWMShippingOutbound.List} />
+                <Route path="allocate/:soNo" component={CWMShippingOutbound.Allocate} />
               </Route>
             </Route>
             <Route path="stock">
@@ -450,10 +456,19 @@ export default(store, cookie) => {
             <Route path="supervision">
               <Route path="shftz">
                 <IndexRedirect to="/cwm/supervision/shftz/entry" />
-                <Route path="cargo" component={CWMSupervisionSHFTZ.Cargo} />
-                <Route path="entry" component={CWMSupervisionSHFTZ.Entry} />
-                <Route path="release" component={CWMSupervisionSHFTZ.Release} />
-                <Route path="batch" component={CWMSupervisionSHFTZ.Batch} />
+                <Route path="entry" >
+                  <IndexRoute component={CWMSupervisionSHFTZEntry.List} />
+                  <Route path=":asnNo" component={CWMSupervisionSHFTZEntry.Detail} />
+                </Route>
+                <Route path="release" >
+                  <IndexRoute component={CWMSupervisionSHFTZRelease.List} />
+                </Route>
+                <Route path="batch" >
+                  <IndexRoute component={CWMSupervisionSHFTZBatch.List} />
+                </Route>
+                <Route path="cargo" >
+                  <IndexRoute component={CWMSupervisionSHFTZCargo.List} />
+                </Route>
               </Route>
             </Route>
             <Route path="products">

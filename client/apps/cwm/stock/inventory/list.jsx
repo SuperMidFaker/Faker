@@ -247,10 +247,10 @@ export default class InventoryStockList extends React.Component {
       const data = [];
       const whnoMap = {};
       stocklist.data.forEach((row) => {
-        if (!whnoMap[row.wh_name]) {
-          whnoMap[row.wh_name] = [row];
+        if (!whnoMap[row.whse_name]) {
+          whnoMap[row.whse_name] = [row];
         } else {
-          whnoMap[row.wh_name].push(row);
+          whnoMap[row.whse_name].push(row);
         }
       });
       let total = stocklist.totalCount;
@@ -322,7 +322,7 @@ export default class InventoryStockList extends React.Component {
             <Select size="large" value={listFilter.wh_no} style={{ width: 200 }} onSelect={this.handleWarehouseSelect}>
               <Option value="_all_" key="_all_">{this.msg('allWarehouses')}</Option>
               {
-                warehouses.map(whse => <Option key={whse.id} value={whse.wh_no}>{whse.wh_name}</Option>)
+                warehouses.map(whse => <Option key={whse.id} value={whse.wh_no}>{whse.whse_name}</Option>)
               }
             </Select>
             <span />

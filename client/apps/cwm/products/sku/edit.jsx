@@ -1,24 +1,24 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Breadcrumb, Form, Layout, Row, Col, Button } from 'antd';
-import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
+import { Breadcrumb, Form, Layout, Row, Col, Button } from 'antd';
+import { loadSkuParams, loadSku, saveSku } from 'common/reducers/cwmSku';
+import connectNav from 'client/common/decorators/connect-nav';
 import MainForm from './forms/mainForm';
 import SiderForm from './forms/siderForm';
-import messages from '../message.i18n';
-import { format } from 'client/common/i18n/helpers';
+import { formatMsg } from '../message.i18n';
 
-const formatMsg = format(messages);
 const { Header, Content } = Layout;
 
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     loginId: state.account.loginId,
-    username: state.account.username,
-    tenantName: state.account.tenantName,
+    owner: state.cwmSku.owner,
+    skuForm: state.cwmSku.skuForm,
+    submitting: state.cwmSku.skuSubmitting,
   }),
+  { loadSkuParams, loadSku, saveSku }
 )
 @connectNav({
   depth: 3,
@@ -29,33 +29,39 @@ export default class EditProductSku extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     form: PropTypes.object.isRequired,
-    tenantName: PropTypes.string.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
+  componentWillMount() {
+    if (this.props.owner.id) {
+      this.props.loadSkuParams(this.props.owner.id);
+    }
+    this.props.loadSku(this.props.params.sku);
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.owner.id !== this.props.owner.id) {
+      nextProps.loadSkuParams(nextProps.owner.id);
+    }
+  }
 
-  msg = key => formatMsg(this.props.intl, key);
-  handleSave = () => {
-    this.props.form.validateFields((errors) => {
+  msg = formatMsg(this.props.intl)
+  handleSaveBtnClick = () => {
+    this.props.form.validateFields((errors, values) => {
       if (!errors) {
-
+        const formData = {
+          ...values, ...this.props.skuForm, last_updated_by: this.props.loginId,
+        };
+        this.props.saveSku(formData).then((result) => {
+          if (!result.error) {
+            this.context.router.push('/cwm/products/sku');
+          }
+        });
       }
     });
   }
-  handleSaveBtnClick = () => {
-    this.handleSave({ accepted: false });
-  }
   handleCancelBtnClick = () => {
     this.context.router.goBack();
-  }
-  handleSaveAccept = () => {
-    this.handleSave({ accepted: true });
-  }
-  handleUploadFiles = (fileList) => {
-    this.setState({
-      attachments: fileList,
-    });
   }
 
   render() {
@@ -87,7 +93,7 @@ export default class EditProductSku extends Component {
           <Form layout="vertical">
             <Row gutter={16}>
               <Col sm={24} md={16}>
-                <MainForm form={form} />
+                <MainForm form={form} mode="edit" />
               </Col>
               <Col sm={24} md={8}>
                 <SiderForm form={form} />

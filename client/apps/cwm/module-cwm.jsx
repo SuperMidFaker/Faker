@@ -86,8 +86,8 @@ export default class ModuleCWM extends React.Component {
       }, {
         key: 'cwm-3-2',
         disabled: true,
-        path: '/cwm/stock/replishment',
-        text: formatMsg(intl, 'replishment'),
+        path: '/cwm/stock/replenishment',
+        text: formatMsg(intl, 'replenishment'),
       }, {
         key: 'cwm-3-3',
         disabled: true,
@@ -138,10 +138,6 @@ export default class ModuleCWM extends React.Component {
         key: 'cwm-6-0',
         path: '/cwm/settings/warehouse',
         text: formatMsg(intl, 'warehouse'),
-      }, {
-        key: 'cwm-6-1',
-        path: '/cwm/settings/rules',
-        text: formatMsg(intl, 'rules'),
       }, {
         key: 'cwm-6-2',
         path: '/cwm/settings/tools',

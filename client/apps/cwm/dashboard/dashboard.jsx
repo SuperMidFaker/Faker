@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Alert, Breadcrumb, Card, Row, Select, Col, Layout } from 'antd';
+import { Alert, Breadcrumb, Card, Row, Select, Col, Layout, Progress } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
@@ -45,49 +45,105 @@ export default class CWMDashboard extends React.Component {
               </Select>
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              {this.msg('dashboardTitle')}
+              {this.msg('dashboard')}
             </Breadcrumb.Item>
           </Breadcrumb>
         </Header>
         <Content className="main-content" key="main">
           <Row gutter={16}>
-            <Col sm={24} md={16}>
-              <Card loading title={this.msg('volumeToday')}>
+            <Col sm={24} md={10}>
+              <Card title={this.msg('statsReceiving')}>
                 <ul className="statistics-columns">
-                  <li className="col-6">
+                  <li className="col-8">
                     <div className="statistics-cell">
-                      <h6>{this.msg('stockInbound')}</h6>
-                      <p className="data-num">12</p>
+                      <h6>{this.msg('totalASN')}</h6>
+                      <p className="data-num">29</p>
                     </div>
                   </li>
-                  <li className="col-6">
+                  <li className="col-8">
                     <div className="statistics-cell">
-                      <h6>{this.msg('stockOutbound')}</h6>
+                      <h6>{this.msg('toReceive')}</h6>
                       <p className="data-num">6</p>
                     </div>
                   </li>
-                  <li className="col-6">
+                  <li className="col-8">
                     <div className="statistics-cell">
-                      <h6>{this.msg('stockReserved')}</h6>
-                      <p className="data-num">23</p>
-                    </div>
-                  </li>
-                  <li className="col-6">
-                    <div className="statistics-cell">
-                      <h6>{this.msg('stockTaken')}</h6>
+                      <h6>{this.msg('putawayCompleted')}</h6>
                       <p className="data-num">23</p>
                     </div>
                   </li>
                 </ul>
               </Card>
-              <Row gutter={16}>
-                <Col sm={24} md={12}>
-                  <Card loading title={this.msg('inventoryByCategories')} />
-                </Col>
-                <Col sm={24} md={12}>
-                  <Card loading title={this.msg('inventoryByCustomers')} />
-                </Col>
-              </Row>
+            </Col>
+            <Col sm={24} md={14}>
+              <Card title={this.msg('statsShipping')}>
+                <ul className="statistics-columns">
+                  <li className="col-8">
+                    <div className="statistics-cell">
+                      <h6>{this.msg('totalSO')}</h6>
+                      <p className="data-num">48</p>
+                    </div>
+                  </li>
+                  <li className="col-8">
+                    <div className="statistics-cell">
+                      <h6>{this.msg('toAllocate')}</h6>
+                      <p className="data-num">6</p>
+                    </div>
+                  </li>
+                  <li className="col-8">
+                    <div className="statistics-cell">
+                      <h6>{this.msg('pickingCompleted')}</h6>
+                      <p className="data-num">12</p>
+                    </div>
+                  </li>
+                  <li className="col-8">
+                    <div className="statistics-cell">
+                      <h6>{this.msg('packingVerified')}</h6>
+                      <p className="data-num">23</p>
+                    </div>
+                  </li>
+                </ul>
+              </Card>
+            </Col>
+          </Row>
+          <Row gutter={16}>
+            <Col sm={24} md={16}>
+              <Card title={this.msg('statsTasks')}>
+                <ul className="statistics-columns">
+                  <li className="col-8">
+                    <div className="statistics-cell">
+                      <h6>{this.msg('receipts')}</h6>
+                      <Progress type="dashboard" percent={75} width={80} />
+                      <p>Total: 561 Items</p>
+                      <p>Completed: 165 Items</p>
+                    </div>
+                  </li>
+                  <li className="col-8">
+                    <div className="statistics-cell">
+                      <h6>{this.msg('putaways')}</h6>
+                      <Progress type="dashboard" percent={75} width={80} />
+                      <p>Total: 561 Items</p>
+                      <p>Completed: 165 Items</p>
+                    </div>
+                  </li>
+                  <li className="col-8">
+                    <div className="statistics-cell">
+                      <h6>{this.msg('shipments')}</h6>
+                      <Progress type="dashboard" percent={75} width={80} />
+                      <p>Total: 561 Items</p>
+                      <p>Completed: 165 Items</p>
+                    </div>
+                  </li>
+                  <li className="col-8">
+                    <div className="statistics-cell">
+                      <h6>{this.msg('replenishments')}</h6>
+                      <Progress type="dashboard" percent={75} width={80} />
+                      <p>Total: 561 Items</p>
+                      <p>Completed: 165 Items</p>
+                    </div>
+                  </li>
+                </ul>
+              </Card>
             </Col>
             <Col sm={24} md={8}>
               <Card loading title={this.msg('inventoryAlerts')} >

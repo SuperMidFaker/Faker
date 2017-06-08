@@ -2,12 +2,19 @@ import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/cwm/sku/', [
-  'LOAD_WHSKU', 'LOAD_WHSKU_SUCCEED', 'LOAD_WHSKU_FAIL',
-  'LOAD_OWNSKU', 'LOAD_OWNSKU_SUCCEED', 'LOAD_OWNSKU_FAIL',
+  'SET_OWNER', 'SET_FORM', 'CLEAN_FORM',
+  'LOAD_OWNERSKUS', 'LOAD_OWNERSKUS_SUCCEED', 'LOAD_OWNERSKUS_FAIL',
+  'LOAD_SKUPARAMS', 'LOAD_SKUPARAMS_SUCCEED', 'LOAD_SKUPARAMS_FAIL',
+  'NEW_SKU', 'NEW_SKU_SUCCEED', 'NEW_SKU_FAIL',
+  'DEL_SKU', 'DEL_SKU_SUCCEED', 'DEL_SKU_FAIL',
+  'LOAD_SKU', 'LOAD_SKU_SUCCEED', 'LOAD_SKU_FAIL',
+  'SAVE_SKU', 'SAVE_SKU_SUCCEED', 'SAVE_SKU_FAIL',
 ]);
 
 const initialState = {
   loading: false,
+  skuSubmitting: false,
+  owner: {},
   list: {
     totalCount: 0,
     current: 1,
@@ -23,29 +30,56 @@ const initialState = {
   },
   params: {
     units: [],
+    currencies: [],
+    packings: [],
   },
+  skuForm: {
+    product_default: true,
+    currency: '142', // RMB
+    variants: [],
+  },
+  skuHsForm: {},
 };
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
-    case actionTypes.LOAD_WHSKU:
-    case actionTypes.LOAD_OWNSKU:
+    case actionTypes.SET_OWNER:
+      return { ...state, owner: action.data };
+    case actionTypes.LOAD_OWNERSKUS:
       return { ...state,
         listFilter: JSON.parse(action.params.filter),
         sortFilter: JSON.parse(action.params.sorter),
         loading: true };
-    case actionTypes.LOAD_WHSKU_SUCCEED:
-    case actionTypes.LOAD_OWNSKU_SUCCEED:
+    case actionTypes.LOAD_OWNERSKUS_SUCCEED:
       return { ...state, loading: false, list: action.result.data };
-    case actionTypes.LOAD_WHSKU_FAIL:
-    case actionTypes.LOAD_OWNSKU_FAIL:
+    case actionTypes.LOAD_OWNERSKUS_FAIL:
       return { ...state, loading: false };
+    case actionTypes.LOAD_SKUPARAMS_SUCCEED:
+      return { ...state, params: action.result.data };
+    case actionTypes.SET_FORM:
+      return { ...state, skuForm: { ...state.skuForm, ...action.data } };
+    case actionTypes.CLEAN_FORM:
+      return { ...state, skuForm: initialState.skuForm };
+    case actionTypes.NEW_SKU:
+      return { ...state, skuSubmitting: true };
+    case actionTypes.NEW_SKU_SUCCEED:
+    case actionTypes.NEW_SKU_FAIL:
+      return { ...state, skuSubmitting: false };
+    case actionTypes.LOAD_SKU_SUCCEED:
+      return { ...state, skuForm: action.result.data };
     default:
       return state;
   }
 }
 
-export function loadSkuParams(tenantId, whse) {
+export function setCurrentOwner(owner) {
+  return {
+    type: actionTypes.SET_OWNER,
+    data: owner,
+  };
+}
+
+export function loadSkuParams(ownerPartnerId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -55,37 +89,95 @@ export function loadSkuParams(tenantId, whse) {
       ],
       endpoint: 'v1/cwm/sku/params',
       method: 'get',
-      params: { tenantId, whse },
+      params: { owner_partner_id: ownerPartnerId },
     },
   };
 }
 
-export function loadSkusByWarehouse(params) {
+export function loadOwnerSkus(params) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.LOAD_WHSKU,
-        actionTypes.LOAD_WHSKU_SUCCEED,
-        actionTypes.LOAD_WHSKU_FAIL,
+        actionTypes.LOAD_OWNERSKUS,
+        actionTypes.LOAD_OWNERSKUS_SUCCEED,
+        actionTypes.LOAD_OWNERSKUS_FAIL,
       ],
-      endpoint: 'v1/cwm/warehouse/skus',
+      endpoint: 'v1/cwm/whse/owner/skus',
       method: 'get',
       params,
     },
   };
 }
 
-export function loadSkusByOwner(params) {
+export function setSkuForm(newform) {
+  return {
+    type: actionTypes.SET_FORM,
+    data: newform,
+  };
+}
+
+export function cleanSkuForm() {
+  return {
+    type: actionTypes.CLEAN_FORM,
+  };
+}
+
+export function createSku(formData) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.LOAD_OWNSKU,
-        actionTypes.LOAD_OWNSKU_SUCCEED,
-        actionTypes.LOAD_OWNSKU_FAIL,
+        actionTypes.NEW_SKU,
+        actionTypes.NEW_SKU_SUCCEED,
+        actionTypes.NEW_SKU_FAIL,
       ],
-      endpoint: 'v1/cwm/owner/skus',
+      endpoint: 'v1/cwm/product/create/sku',
+      method: 'post',
+      data: formData,
+    },
+  };
+}
+
+export function delSku(sku) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DEL_SKU,
+        actionTypes.DEL_SKU_SUCCEED,
+        actionTypes.DEL_SKU_FAIL,
+      ],
+      endpoint: 'v1/cwm/product/del/sku',
+      method: 'post',
+      data: { sku },
+    },
+  };
+}
+
+export function loadSku(sku) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_SKU,
+        actionTypes.LOAD_SKU_SUCCEED,
+        actionTypes.LOAD_SKU_FAIL,
+      ],
+      endpoint: 'v1/cwm/product/sku',
       method: 'get',
-      params,
+      params: { sku },
+    },
+  };
+}
+
+export function saveSku(formData) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SAVE_SKU,
+        actionTypes.SAVE_SKU_SUCCEED,
+        actionTypes.SAVE_SKU_FAIL,
+      ],
+      endpoint: 'v1/cwm/product/save/sku',
+      method: 'post',
+      data: formData,
     },
   };
 }

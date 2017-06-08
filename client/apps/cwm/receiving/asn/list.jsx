@@ -47,7 +47,7 @@ export default class ReceivingNoticeList extends React.Component {
     dataIndex: 'owner_code',
   }, {
     title: '采购订单号',
-    dataIndex: 'ref_order_no',
+    dataIndex: 'po_no',
   }, {
     title: '供应商',
     dataIndex: 'seller_name',
@@ -98,11 +98,11 @@ export default class ReceivingNoticeList extends React.Component {
     fixed: 'right',
     render: (o) => {
       if (o === 0) {
-        return (<Badge status="default" text="未备案" />);
+        return (<Badge status="default" text="待备案" />);
       } else if (o === 1) {
         return (<Badge status="processing" text="已发送" />);
       } else if (o === 2) {
-        return (<Badge status="success" text="已备案" />);
+        return (<Badge status="success" text="备案完成" />);
       }
     },
   }, {
@@ -111,10 +111,10 @@ export default class ReceivingNoticeList extends React.Component {
     fixed: 'right',
     render: (o, record) => {
       if (record.status === 0) {
-        return (<span><RowUpdater label="释放" row={record} /><span className="ant-divider" /><RowUpdater label="修改" row={record} /><span className="ant-divider" /><RowUpdater label="取消" row={record} /></span>);
+        return (<span><RowUpdater onHit={this.handleReleaseASN} label="释放" row={record} /><span className="ant-divider" /><RowUpdater onHit={this.handleEditASN} label="修改" row={record} /></span>);
       } else if (record.status === 1) {
         if (record.bonded === 1 && record.reg_status === 0) {
-          return (<span><RowUpdater onHit={this.handleReceive} label="入库操作" row={record} /><span className="ant-divider" /><RowUpdater onHit={this.handleFTZReg} label="发送备案" row={record} /></span>);
+          return (<span><RowUpdater onHit={this.handleReceive} label="入库操作" row={record} /><span className="ant-divider" /><RowUpdater onHit={this.handleEntryReg} label="进库备案" row={record} /></span>);
         } else {
           return (<span><RowUpdater onHit={this.handleReceive} label="入库操作" row={record} /></span>);
         }
@@ -172,20 +172,26 @@ export default class ReceivingNoticeList extends React.Component {
 
     }
   }
-  handleCreateBtnClick = () => {
+  handleCreateASN = () => {
     this.context.router.push('/cwm/receiving/asn/create');
+  }
+  handleEditASN = (row) => {
+    const link = `/cwm/receiving/asn/${row.asn_no}`;
+    this.context.router.push(link);
+  }
+  handleReleaseASN = (row) => {
+    notification.success({
+      message: '操作成功',
+      description: `${row.asn_no} 已释放`,
+    });
   }
   handleReceive = (row) => {
     const link = `/cwm/receiving/inbound/receive/${row.asn_no}`;
     this.context.router.push(link);
   }
-  handleFTZReg = (row) => {
-    notification.success({
-      message: '操作成功',
-      description: `${row.asn_no} 已发送至 上海自贸区海关监管系统 一二线先报关后入库`,
-    });
-    // const link = `/cwm/ftz/receive/reg/${row.asn_no}`;
-    // this.context.router.push(link);
+  handleEntryReg = (row) => {
+    const link = `/cwm/supervision/shftz/entry/${row.asn_no}`;
+    this.context.router.push(link);
   }
   render() {
     const rowSelection = {
@@ -216,7 +222,7 @@ export default class ReceivingNoticeList extends React.Component {
             <RadioButton value="completed">收货完成</RadioButton>
           </RadioGroup>
           <div className="top-bar-tools">
-            <Button type="primary" size="large" icon="plus" onClick={this.handleCreateBtnClick}>
+            <Button type="primary" size="large" icon="plus" onClick={this.handleCreateASN}>
               {this.msg('createASN')}
             </Button>
           </div>

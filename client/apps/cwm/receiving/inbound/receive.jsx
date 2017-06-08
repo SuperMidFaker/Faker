@@ -138,7 +138,7 @@ export default class ReceiveInbound extends Component {
     product_no: 'N04601170548',
     order_qty: 15,
     desc_cn: '微纤维止血胶原粉',
-    sku: '默认',
+    sku: 'N04601170548',
     unit: '件',
     sku_pack: '单件',
     expect_pack_qty: 15,
@@ -150,7 +150,7 @@ export default class ReceiveInbound extends Component {
     product_no: 'N04601170547',
     order_qty: 1000,
     desc_cn: 'PTA球囊扩张导管',
-    sku: '默认',
+    sku: 'N04601170547',
     unit: '件',
     sku_pack: '内包装',
     expect_pack_qty: 10,
@@ -159,10 +159,10 @@ export default class ReceiveInbound extends Component {
     received_qty: 0,
   }, {
     seq_no: '3',
-    product_no: 'N04601170546',
+    product_no: 'SBMG-00859',
     order_qty: 1000,
     desc_cn: '临时起搏电极导管',
-    sku: '100/10/8',
+    sku: 'RS2A03A0AL0W00',
     unit: '个',
     sku_pack: '内包装',
     expect_pack_qty: 10,
@@ -171,10 +171,10 @@ export default class ReceiveInbound extends Component {
     received_qty: 0,
   }, {
     seq_no: '4',
-    product_no: 'N04601170546',
+    product_no: 'SBME-00787',
     order_qty: 12,
     desc_cn: '肾造瘘球囊扩张导管',
-    sku: '1/6/8',
+    sku: '109R0612D401',
     unit: '个',
     expect_pack_qty: 2,
     sku_pack: '箱',
@@ -183,10 +183,10 @@ export default class ReceiveInbound extends Component {
     received_qty: 6,
   }, {
     seq_no: '5',
-    product_no: 'N04601170546',
+    product_no: 'SBMJ-00199',
     order_qty: 1,
     desc_cn: '输尿管镜球囊扩张导管',
-    sku: '1/1/1',
+    sku: '9GV0912P1G03',
     unit: '个',
     expect_pack_qty: 1,
     sku_pack: '托盘',
@@ -258,7 +258,7 @@ export default class ReceiveInbound extends Component {
             </RadioGroup>
           </div>
         </Header>
-        <Content className="main-content layout-fixed-width layout-fixed-width-lg">
+        <Content className="main-content">
           <Form layout="vertical">
             <Card bodyStyle={{ paddingBottom: 56 }}>
               <Row>

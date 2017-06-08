@@ -1,15 +1,17 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Breadcrumb, Form, Layout, Row, Col, Button } from 'antd';
+import { Breadcrumb, Form, Layout, Row, Col, Button, Select } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
-import MainForm from './forms/mainForm';
+import HeadForm from './forms/headForm';
+import DetailForm from './forms/detailForm';
 import SiderForm from './forms/siderForm';
 import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
+const Option = Select.Option;
 
 @injectIntl
 @connect(
@@ -24,13 +26,12 @@ const { Header, Content } = Layout;
 )
 @connectNav({
   depth: 3,
-  moduleName: 'scv',
+  moduleName: 'cwm',
 })
 @Form.create()
-export default class ViewShippingOrder extends Component {
+export default class CreateShippingOrder extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    type: PropTypes.oneOf(['import', 'export']),
     form: PropTypes.object.isRequired,
     tenantName: PropTypes.string.isRequired,
     formData: PropTypes.object.isRequired,
@@ -70,13 +71,23 @@ export default class ViewShippingOrder extends Component {
         <Header className="top-bar">
           <Breadcrumb>
             <Breadcrumb.Item>
-              {this.msg('inventory')}
+              <Select
+                size="large"
+                defaultValue="0960"
+                placeholder="选择仓库"
+                style={{ width: 160 }}
+                disabled
+              >
+                <Option value="0960">物流大道仓库</Option>
+                <Option value="0961">希雅路仓库</Option>
+                <Option value="0962">富特路仓库</Option>
+              </Select>
             </Breadcrumb.Item>
             <Breadcrumb.Item>
               {this.msg('shippingOrder')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              {this.msg('createShippingOrder')}
+              {this.msg('createSO')}
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="top-bar-tools">
@@ -90,11 +101,12 @@ export default class ViewShippingOrder extends Component {
         </Header>
         <Content className="main-content layout-fixed-width layout-fixed-width-lg">
           <Form layout="vertical">
+            <HeadForm form={form} />
             <Row gutter={16}>
-              <Col sm={24} md={16}>
-                <MainForm form={form} />
+              <Col span={18}>
+                <DetailForm form={form} />
               </Col>
-              <Col sm={24} md={8}>
+              <Col span={6}>
                 <SiderForm form={form} />
               </Col>
             </Row>

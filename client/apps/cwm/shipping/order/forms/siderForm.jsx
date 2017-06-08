@@ -1,6 +1,7 @@
 /* eslint react/no-multi-comp: 0 */
-import React, { Component, PropTypes } from 'react';
-import { Form, Card, Col, Row, Input } from 'antd';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { Form, Card, Col, Row, Select } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
@@ -18,24 +19,22 @@ export default class SiderForm extends Component {
   render() {
     const { form: { getFieldDecorator } } = this.props;
     return (
-      <div>
-        <Card>
-          <Row gutter={16}>
-            <Col sm={24}>
-              <FormItem label={this.msg('soNo')}>
-                {getFieldDecorator('so_no', {
-                })(<Input />)}
-              </FormItem>
-            </Col>
-            <Col sm={24}>
-              <FormItem label={this.msg('salesOrderNo')} >
-                {getFieldDecorator('order_no', {
-                })(<Input />)}
-              </FormItem>
-            </Col>
-          </Row>
-        </Card>
-      </div>
+      <Card title="发货信息" className="secondary-card">
+        <Row gutter={16}>
+          <Col sm={24}>
+            <FormItem label="收货人" >
+              {getFieldDecorator('receiver_code', {
+              })(<Select />)}
+            </FormItem>
+          </Col>
+          <Col sm={24}>
+            <FormItem label="承运人" >
+              {getFieldDecorator('carrier_code', {
+              })(<Select />)}
+            </FormItem>
+          </Col>
+        </Row>
+      </Card>
     );
   }
 }

@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Badge, Form, Breadcrumb, Button, Icon, Layout, Tabs, Tooltip, message, Popconfirm, Spin, Dropdown, Menu } from 'antd';
+import { Badge, Form, Breadcrumb, Button, Icon, Layout, Tabs, Tooltip, message, Popconfirm, Spin, Dropdown, Menu, Select } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';
@@ -17,16 +17,27 @@ import messages from './message.i18n';
 import { CMS_DECL_STATUS } from 'common/constants';
 import SendModal from './modals/sendModal';
 import LegalInspectionPanel from './panel/legaInspectionPanel';
+import { loadInvTemplates } from 'common/reducers/cmsInvoice';
+import connectFetch from 'client/common/decorators/connect-fetch';
+import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
+import DelegationDockPanel from '../dockhub/delegationDockPanel';
+import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
 
 const formatMsg = format(messages);
 const { Sider, Header, Content } = Layout;
 const TabPane = Tabs.TabPane;
+const Option = Select.Option;
+const OptGroup = Select.OptGroup;
 const navObj = {
   depth: 3,
   moduleName: 'clearance',
   jumpOut: true,
 };
 
+function fetchData({ dispatch, state }) {
+  return dispatch(loadInvTemplates({ tenantId: state.account.tenantId }));
+}
+@connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
@@ -34,8 +45,9 @@ const navObj = {
     head: state.cmsManifest.entryHead,
     bodies: state.cmsManifest.entryBodies,
     tenantId: state.account.tenantId,
+    invTemplates: state.cmsInvoice.invTemplates,
   }),
-  { saveEntryHead, loadEntry, deleteDecl, setDeclReviewed, openDeclReleasedModal, showSendDeclModal, setNavTitle }
+  { saveEntryHead, loadEntry, deleteDecl, setDeclReviewed, openDeclReleasedModal, showSendDeclModal, setNavTitle, showPreviewer }
 )
 @connectNav(navObj)
 @Form.create()
@@ -48,6 +60,7 @@ export default class CustomsDeclEditor extends React.Component {
       entries: PropTypes.arrayOf(PropTypes.shape({ pre_entry_seq_no: PropTypes.string })),
     }),
     declSpinning: PropTypes.bool.isRequired,
+    invTemplates: PropTypes.array.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -122,8 +135,14 @@ export default class CustomsDeclEditor extends React.Component {
     const pathname = `/clearance/${ietype}/customs/${billMeta.bill_seq_no}/${ev.key}`;
     this.context.router.push({ pathname });
   }
+  handleInvoiceMake = () => {
+
+  }
+  handlePreview = (delgNo) => {
+    this.props.showPreviewer(delgNo, 'customsDecl');
+  }
   render() {
-    const { ietype, form, head, bodies, billMeta } = this.props;
+    const { ietype, form, head, bodies, billMeta, invTemplates } = this.props;
     const declkey = Object.keys(CMS_DECL_STATUS).filter(stkey => CMS_DECL_STATUS[stkey].value === head.status)[0];
     const declEntryMenu = (
       <Menu onClick={this.handleEntryVisit}>
@@ -143,11 +162,29 @@ export default class CustomsDeclEditor extends React.Component {
                 <Icon type="file" /> <NavLink to={`/clearance/${ietype}/customs/`}>{this.msg('customsDeclaration')}</NavLink>
               </Breadcrumb.Item>
               <Breadcrumb.Item>
+                <a onClick={() => this.handlePreview(head.delg_no)}>{head.bill_seq_no}</a>
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
                 {head.entry_id || head.pre_entry_seq_no}
               </Breadcrumb.Item>
             </Breadcrumb>
             {declkey && <Badge status={CMS_DECL_STATUS[declkey].badge} text={CMS_DECL_STATUS[declkey].text} />}
             <div className="top-bar-tools">
+              <Select
+                placeholder="选择发票模板"
+                optionFilterProp="search"
+                size="large"
+                onChange={this.handleSelectChange}
+                style={{ width: 150 }}
+                allowClear
+              >
+                <OptGroup label="发票模板">
+                  {invTemplates.map(data => (<Option key={data.id} value={data.id}
+                    search={`${data.id}${data.template_name}`}
+                  ><Icon type="file-text" /> {data.template_name}</Option>)
+                    )}
+                </OptGroup>
+              </Select>
               { head.status === CMS_DECL_STATUS.proposed.value && <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleDelete()}>
                 <Tooltip title={this.msg('delete')} placement="bottom">
                   <Button size="large" icon="delete" />
@@ -208,6 +245,8 @@ export default class CustomsDeclEditor extends React.Component {
             <SheetExtraPanel type="entry" />
           </div>
         </Sider>
+        <DelegationDockPanel ietype={ietype} />
+        <OrderDockPanel />
         <SendModal ietype={ietype} reload={this.reloadEntry} />
         <DeclReleasedModal reload={this.reloadEntry} />
       </Layout>

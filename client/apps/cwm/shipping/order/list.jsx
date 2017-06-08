@@ -40,32 +40,33 @@ export default class ShippingOrderList extends React.Component {
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
     title: 'SO编号',
-    width: 100,
+    width: 120,
     dataIndex: 'so_no',
   }, {
     title: '货主',
-    width: 150,
+    width: 200,
     dataIndex: 'owner_code',
   }, {
-    title: '关联订单号',
-    width: 150,
-    dataIndex: 'whse_code',
+    title: '客户订单号',
+    dataIndex: 'cust_order_no',
   }, {
     title: '收货人',
-    width: 200,
     dataIndex: 'receiver',
   }, {
-    title: '预期发货时间',
-    dataIndex: 'est_shipping_date',
-    width: 160,
+    title: '承运人',
+    dataIndex: 'carrier',
   }, {
     title: '订单创建时间',
     width: 120,
-    dataIndex: 'planned_qty',
+    dataIndex: 'created_date',
   }, {
-    title: '仓库代码',
-    width: 120,
-    dataIndex: 'packing',
+    title: '要求交货时间',
+    dataIndex: 'expect_shipping_date',
+    width: 160,
+  }, {
+    title: '发货时间',
+    dataIndex: 'shipped_date',
+    width: 160,
   }, {
     title: '状态',
     dataIndex: 'status',
@@ -93,7 +94,7 @@ export default class ShippingOrderList extends React.Component {
       }
     },
   }, {
-    title: '监管备案',
+    title: '备案状态',
     dataIndex: 'reg_status',
     width: 120,
     render: (o) => {
@@ -102,7 +103,7 @@ export default class ShippingOrderList extends React.Component {
       } else if (o === 1) {
         return (<Badge status="processing" text="已发送" />);
       } else if (o === 2) {
-        return (<Badge status="success" text="已备案" />);
+        return (<Badge status="success" text="备案完成" />);
       }
     },
   }, {
@@ -110,12 +111,12 @@ export default class ShippingOrderList extends React.Component {
     width: 120,
     render: (o, record) => {
       if (record.status === 0) {
-        return (<span><RowUpdater label="释放" row={record} /><span className="ant-divider" /><RowUpdater label="修改" row={record} /></span>);
+        return (<span><RowUpdater label="释放" row={record} /><span className="ant-divider" /><RowUpdater onHit={this.handleEditSO} label="修改" row={record} /><span className="ant-divider" /><RowUpdater label="取消" row={record} /></span>);
       } else if (record.status === 1) {
         if (record.bonded === 1 && record.reg_status === 0) {
-          return (<span><RowUpdater onHit={this.handleReceive} label="出货" row={record} /><span className="ant-divider" /><RowUpdater label="备案" row={record} /></span>);
+          return (<span><RowUpdater onHit={this.handleAllocate} label="出库操作" row={record} /><span className="ant-divider" /><RowUpdater onHit={this.handleEntryReg} label="出库备案" row={record} /></span>);
         } else {
-          return (<span><RowUpdater onHit={this.handleReceive} label="出货" row={record} /></span>);
+          return (<span><RowUpdater onHit={this.handleAllocate} label="出库操作" row={record} /></span>);
         }
       }
     },
@@ -170,10 +171,24 @@ export default class ShippingOrderList extends React.Component {
 
     }
   }
-  handleCreateBtnClick = () => {
+  handleCreateSO = () => {
     this.context.router.push('/cwm/shipping/order/create');
   }
+  handleEditSO = (row) => {
+    const link = `/cwm/shipping/order/${row.so_no}`;
+    this.context.router.push(link);
+  }
+  handleAllocate = (row) => {
+    const link = `/cwm/shipping/outbound/allocate/${row.so_no}`;
+    this.context.router.push(link);
+  }
   render() {
+    const rowSelection = {
+      selectedRowKeys: this.state.selectedRowKeys,
+      onChange: (selectedRowKeys) => {
+        this.setState({ selectedRowKeys });
+      },
+    };
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Header className="top-bar">
@@ -201,8 +216,8 @@ export default class ShippingOrderList extends React.Component {
             <RadioButton value="completed">出货完成</RadioButton>
           </RadioGroup>
           <div className="top-bar-tools">
-            <Button type="primary" size="large" icon="plus" onClick={this.handleCreateBtnClick}>
-              {this.msg('createOrder')}
+            <Button type="primary" size="large" icon="plus" onClick={this.handleCreateSO}>
+              {this.msg('createSO')}
             </Button>
           </div>
         </Header>
@@ -216,7 +231,7 @@ export default class ShippingOrderList extends React.Component {
               </div>
             </div>
             <div className="panel-body table-panel">
-              <Table columns={this.columns} dataSource={this.dataSource} rowKey="id" scroll={{ x: 1200 }} />
+              <Table columns={this.columns} rowSelection={rowSelection} dataSource={this.dataSource} rowKey="id" scroll={{ x: 1400 }} />
             </div>
           </div>
         </Content>

@@ -18,6 +18,9 @@ import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import SendDeclsModal from './modals/sendDeclsModal';
 import ManifestLegalInspectionPanel from './panel/manifestLegalInspectionPanel';
+import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
+import DelegationDockPanel from '../dockhub/delegationDockPanel';
+import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
 
 const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
@@ -54,7 +57,8 @@ const confirm = Modal.confirm;
     redoManifest,
     showSendDeclsModal,
     validateBillDatas,
-    loadBillMeta }
+    loadBillMeta,
+    showPreviewer }
 )
 @connectNav({
   depth: 3,
@@ -306,6 +310,9 @@ export default class ManifestEditor extends React.Component {
   handleMetaLoad = () => {
     this.props.loadBillMeta(this.props.billHead.bill_seq_no);
   }
+  handlePreview = (delgNo) => {
+    this.props.showPreviewer(delgNo, 'customsDecl');
+  }
   renderOverlayMenu(editable) {
     let lockMenuItem = null;
     if (editable) {
@@ -337,7 +344,7 @@ export default class ManifestEditor extends React.Component {
     let revertable = billMeta.entries.length > 0;
     billMeta.entries.forEach((entry) => {
       sendable = sendable && (entry.status === CMS_DECL_STATUS.reviewed.value);
-      revertable = revertable && (entry.status === CMS_DECL_STATUS.proposed.value);
+      revertable = revertable && (entry.status < CMS_DECL_STATUS.finalized.value);
     });
     const path = `/clearance/${ietype}/manifest/`;
     let editable = !this.props.readonly && billMeta.entries.length === 0;
@@ -360,7 +367,7 @@ export default class ManifestEditor extends React.Component {
                 <Icon type="file-text" /> <NavLink to={path}>{this.msg('declManifest')}</NavLink>
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                {billMeta.bill_seq_no}
+                <a onClick={() => this.handlePreview(billHead.delg_no)}>{billMeta.bill_seq_no}</a>
               </Breadcrumb.Item>
             </Breadcrumb>
             <div className="top-bar-tools">
@@ -448,6 +455,8 @@ export default class ManifestEditor extends React.Component {
             <SheetExtraPanel type="bill" />
           </div>
         </Sider>
+        <DelegationDockPanel ietype={ietype} />
+        <OrderDockPanel />
         <MergeSplitModal />
         <SaveTemplateModal ietype={ietype} />
         <SendDeclsModal ietype={ietype} entries={billMeta.entries} reload={this.handleMetaLoad} />

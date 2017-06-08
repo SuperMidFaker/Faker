@@ -1,6 +1,6 @@
 /* eslint react/no-multi-comp: 0 */
 import React, { Component, PropTypes } from 'react';
-import { Card, Table } from 'antd';
+import { Button, Card, Table } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
@@ -16,33 +16,34 @@ export default class DetailForm extends Component {
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
     title: '序号',
+    dataIndex: 'seq_no',
     width: 50,
-  }, {
-    title: this.msg('opColumn'),
-    width: 80,
   }, {
     title: '商品货号',
     dataIndex: 'product_no',
     width: 200,
   }, {
-    title: '品名',
-    dataIndex: 'product_no',
+    title: '中文品名',
+    dataIndex: 'desc_cn',
     width: 200,
   }, {
-    title: '计量单位',
-    width: 100,
-    dataIndex: 'unit',
-  }, {
-    title: '数量',
+    title: '订单数量',
     width: 100,
     dataIndex: 'qty',
   }, {
-    title: this.msg('remark'),
-    dataIndex: 'remark',
+    title: '主单位',
+    dataIndex: 'unit',
+  }, {
+    title: '单价',
+    dataIndex: 'unit_price',
   }]
   render() {
     return (
-      <Card>
+      <Card bodyStyle={{ padding: 0 }}>
+        <div className="toolbar">
+          <Button type="primary">添加明细</Button>
+          <Button>导入</Button>
+        </div>
         <Table columns={this.columns} rowKey="id" />
       </Card>
     );

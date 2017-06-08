@@ -53,7 +53,7 @@ export default class InboundTransactionsList extends React.Component {
   columns = [{
     title: this.msg('warehouse'),
     width: 140,
-    dataIndex: 'wh_name',
+    dataIndex: 'whse_name',
   }, {
     title: this.msg('inboundNo'),
     dataIndex: 'transaction_no',

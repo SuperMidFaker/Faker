@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Breadcrumb, Button, Dropdown, Menu, Icon, Layout, message, Popconfirm } from 'antd';
+import { Breadcrumb, Button, Dropdown, Menu, Icon, Layout, message, Popconfirm, Tooltip } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
@@ -476,11 +476,10 @@ export default class AcceptList extends React.Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="top-bar-tools">
-            <PrivilegeCover module="transport" feature="shipment" action="create">
-              <Button type="primary" size="large" icon="plus" onClick={this.handleCreateBtnClick}>
-                {this.msg('shipmtCreate')}
-              </Button>
-            </PrivilegeCover>
+            <Button type="primary" size="large" icon="plus" onClick={this.handleCreateBtnClick} disabled>
+              {this.msg('shipmtCreate')}
+            </Button>
+            <span><Tooltip title="此功能已由客户订单流中的创建订单替代" placement="left"><Icon type="question-circle-o" /></Tooltip></span>
           </div>
         </Header>
         <Content className="main-content" key="main">

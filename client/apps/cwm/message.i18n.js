@@ -42,8 +42,8 @@ const messages = defineMessages({
     id: 'cwm.module.stock.movement',
     defaultMessage: '移位管理',
   },
-  replishment: {
-    id: 'cwm.module.stock.replishment',
+  replenishment: {
+    id: 'cwm.module.stock.replenishment',
     defaultMessage: '补货管理',
   },
   counting: {
@@ -56,7 +56,7 @@ const messages = defineMessages({
   },
   supervisionSHFTZ: {
     id: 'cwm.module.supervision.shftz',
-    defaultMessage: '上海自贸区',
+    defaultMessage: '上海自贸区监管',
   },
   products: {
     id: 'cwm.module.products',

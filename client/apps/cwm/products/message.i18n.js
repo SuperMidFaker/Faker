@@ -22,25 +22,25 @@ const messages = defineMessages({
     id: 'cwm.products.search.placeholder',
     defaultMessage: 'SKU号或者货号',
   },
-  shipperOwner: {
-    id: 'cwm.products.shipper.owner',
-    defaultMessage: '货主',
+  ownerSearch: {
+    id: 'cwm.products.owner.search',
+    defaultMessage: '货主名称或编号',
   },
   productNo: {
     id: 'cwm.products.productno',
     defaultMessage: '货号',
   },
-  productName: {
-    id: 'cwm.products.productname',
-    defaultMessage: '品名',
+  productCnDesc: {
+    id: 'cwm.products.sku.cn.desc',
+    defaultMessage: '中文名',
+  },
+  productEnDesc: {
+    id: 'cwm.products.sku.en.desc',
+    defaultMessage: '英文名',
   },
   productCategory: {
     id: 'cwm.products.product.category',
     defaultMessage: '种类',
-  },
-  productDesc: {
-    id: 'cwm.products.product.desc',
-    defaultMessage: '商品描述',
   },
   productType: {
     id: 'cwm.products.product.type',
