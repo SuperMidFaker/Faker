@@ -19,6 +19,7 @@ const RadioButton = Radio.Button;
   state => ({
     tenantId: state.account.tenantId,
     warehouseList: state.cwmWarehouse.warehouseList,
+    currentWarehouse: state.cwmWarehouse.currentWarehouse,
   }),
   { loadwhList }
 )
@@ -41,15 +42,7 @@ export default class ReceivingNoticeList extends React.Component {
   }
   componentWillMount() {
     const { tenantId } = this.props;
-    this.props.loadwhList(tenantId).then(
-      (result) => {
-        if (!result.error) {
-          this.setState({
-            currentWarehouse: result.data[0],
-          });
-        }
-      }
-    );
+    this.props.loadwhList(tenantId);
   }
   msg = formatMsg(this.props.intl)
   columns = [{
@@ -210,8 +203,7 @@ export default class ReceivingNoticeList extends React.Component {
     this.context.router.push(link);
   }
   render() {
-    const { warehouseList } = this.props;
-    const { currentWarehouse } = this.state;
+    const { warehouseList, currentWarehouse } = this.props;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -223,7 +215,7 @@ export default class ReceivingNoticeList extends React.Component {
         <Header className="top-bar">
           <Breadcrumb>
             <Breadcrumb.Item>
-              <Select size="large" defaultValue={currentWarehouse.whse_code} placeholder="选择仓库" style={{ width: 160 }}>
+              <Select size="large" value={currentWarehouse.whse_code} placeholder="选择仓库" style={{ width: 160 }}>
                 {
                   warehouseList.map(warehouse => (<Option value={warehouse.whse_code}>{warehouse.whse_name}</Option>))
                 }
