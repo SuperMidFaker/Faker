@@ -108,8 +108,8 @@ export default class TMSShipmentPane extends Component {
     if (value === -1) {
       const { partnerId, partnerName, tmsParams: { consigners } } = this.props;
       let startLocation = {};
-      if (this.state.consignerId) {
-        const consigner = consigners.find(item => item.node_id === this.state.consignerId);
+      const consigner = consigners.find(item => item.node_id === this.state.consignerId);
+      if (this.state.consignerId && consigner) {
         startLocation = {
           code: consigner.region_code,
           province: consigner.province,
@@ -118,7 +118,6 @@ export default class TMSShipmentPane extends Component {
           street: consigner.street,
         };
       }
-
       this.props.toggleAddLineModal({
         visible: true,
         quoteNo: this.props.form.getFieldValue('quote_no'),
@@ -152,8 +151,8 @@ export default class TMSShipmentPane extends Component {
     if (value === -1) {
       const { partnerId, partnerName, tmsParams: { consigners } } = this.props;
       let startLocation = {};
-      if (this.state.consignerId) {
-        const consigner = consigners.find(item => item.node_id === this.state.consignerId);
+      const consigner = consigners.find(item => item.node_id === this.state.consignerId);
+      if (this.state.consignerId && consigner) {
         startLocation = {
           code: consigner.region_code,
           province: consigner.province,
@@ -179,8 +178,8 @@ export default class TMSShipmentPane extends Component {
   handleShowAddLineModal = () => {
     const { partnerId, partnerName, tmsParams: { consigners } } = this.props;
     let startLocation = {};
-    if (this.state.consignerId) {
-      const consigner = consigners.find(item => item.node_id === this.state.consignerId);
+    const consigner = consigners.find(item => item.node_id === this.state.consignerId);
+    if (this.state.consignerId && consigner) {
       startLocation = {
         code: consigner.region_code,
         province: consigner.province,
