@@ -1,0 +1,58 @@
+import React, { Component, PropTypes } from 'react';
+import { intlShape, injectIntl } from 'react-intl';
+import { connect } from 'react-redux';
+import { Card, Layout, Table } from 'antd';
+import { format } from 'client/common/i18n/helpers';
+import messages from '../message.i18n';
+import { showWhseMembers, loadwhseOwners } from 'common/reducers/cwmWarehouse';
+import WhseMembersModal from './modal/whseMembersModal';
+
+const formatMsg = format(messages);
+const { Content } = Layout;
+
+@injectIntl
+@connect(
+  state => ({
+    whseOwners: state.cwmWarehouse.whseOwners,
+  }),
+  { showWhseMembers, loadwhseOwners }
+)
+export default class WarehouseMembers extends Component {
+  static propTypes = {
+    intl: intlShape.isRequired,
+    whseCode: PropTypes.string.isRequired,
+    whseTenantId: PropTypes.number.isRequired,
+    whseOwners: PropTypes.array,
+  }
+  state = {
+    selectedRowKeys: [],
+  }
+  componentWillMount() {
+    this.props.loadwhseOwners(this.props.whseCode);
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.whseCode !== this.props.whseCode) {
+      this.props.loadwhseOwners(nextProps.whseCode);
+    }
+  }
+  columns = [{
+    title: '名称',
+    dataIndex: 'owner_name',
+  }, {
+    title: '操作',
+  }]
+  msg = key => formatMsg(this.props.intl, key);
+  render() {
+    const { whseCode, whseTenantId, whseOwners } = this.props;
+    return (
+      <Content>
+        <div>
+          <Card bodyStyle={{ padding: 0, backgroundColor: '#fff' }} title="货主列表" extra={<a href="#" onClick={() => this.props.showWhseMembers()}>添加货主</a>} >
+            <Table columns={this.columns} dataSource={whseOwners} />
+            <WhseMembersModal whseCode={whseCode} whseTenantId={whseTenantId} whseOwners={whseOwners} />
+          </Card>
+        </div>
+      </Content>
+    );
+  }
+}

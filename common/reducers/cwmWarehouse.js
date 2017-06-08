@@ -14,6 +14,9 @@ const actionTypes = createActionTypes('@@welogix/cwm/warehouse/', [
   'UPDATE_LOCATIONS', 'UPDATE_LOCATIONS_SUCCEED', 'UPDATE_LOCATIONS_FAIL',
   'DELETE_ZONE', 'DELETE_ZONE_SUCCEED', 'DELETE_ZONE_FAIL',
   'UPDATE_ZONE', 'UPDATE_ZONE_SUCCEED', 'UPDATE_ZONE_FAIL',
+  'HIDE_WHSEMEMBERS_MODAL', 'SHOW_WHSEMEMBERS_MODAL',
+  'LOAD_WHSE_OWNERS', 'LOAD_WHSE_OWNERS_SUCCEED', 'LOAD_WHSE_OWNERS_FAIL',
+  'ADD_WHSE_OWNERS', 'ADD_WHSE_OWNERS_SUCCEED', 'ADD_WHSE_OWNERS_FAIL',
 ]);
 
 const initialState = {
@@ -27,6 +30,10 @@ const initialState = {
   },
   locations: [],
   record: {},
+  whsehouseModal: {
+    visible: false,
+  },
+  whseOwners: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -45,6 +52,12 @@ export default function reducer(state = initialState, action) {
       return { ...state, locationModal: { ...state.locationModal, visible: false } };
     case actionTypes.LOAD_LOCATIONS_SUCCEED:
       return { ...state, locations: action.result.data };
+    case actionTypes.SHOW_WHSEMEMBERS_MODAL:
+      return { ...state, whsehouseModal: { ...state.whsehouseModal, visible: true } };
+    case actionTypes.HIDE_WHSEMEMBERS_MODAL:
+      return { ...state, whsehouseModal: { ...state.whsehouseModal, visible: false } };
+    case actionTypes.LOAD_WHSE_OWNERS_SUCCEED:
+      return { ...state, whseOwners: action.result.data };
     default:
       return state;
   }
@@ -221,6 +234,48 @@ export function updateZone(whseCode, zoneCode, id, zoneName) {
       endpoint: 'v1/cwm/warehouse/zone/update',
       method: 'get',
       params: { whseCode, zoneCode, id, zoneName },
+    },
+  };
+}
+
+export function showWhseMembers() {
+  return {
+    type: actionTypes.SHOW_WHSEMEMBERS_MODAL,
+  };
+}
+
+export function hideWhseMembers() {
+  return {
+    type: actionTypes.HIDE_WHSEMEMBERS_MODAL,
+  };
+}
+
+export function loadwhseOwners(whseCode, tenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_WHSE_OWNERS,
+        actionTypes.LOAD_WHSE_OWNERS_SUCCEED,
+        actionTypes.LOAD_WHSE_OWNERS_FAIL,
+      ],
+      endpoint: 'v1/cwm/warehouse/owners/load',
+      method: 'get',
+      params: { whseCode, tenantId },
+    },
+  };
+}
+
+export function addWhseOwners(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.ADD_WHSE_OWNERS,
+        actionTypes.ADD_WHSE_OWNERS_SUCCEED,
+        actionTypes.ADD_WHSE_OWNERS_FAIL,
+      ],
+      endpoint: 'v1/cwm/warehouse/owners/add',
+      method: 'post',
+      data,
     },
   };
 }

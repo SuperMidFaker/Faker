@@ -11,6 +11,7 @@ import WarehouseModal from './modal/warehouseModal';
 import LocationModal from './modal/locationModal';
 import MdIcon from 'client/components/MdIcon';
 import ZoneEditDropDown from './popover/zoneEditDropdown';
+import WarehouseMembers from './warehouseMembers';
 import { showWarehouseModal, loadwhList, addZone, loadZones, showLocationModal, loadLocations, deleteLocation,
   editLocation, deleteZone } from 'common/reducers/cwmWarehouse';
 
@@ -225,8 +226,8 @@ export default class WareHouse extends Component {
     const { form: { getFieldDecorator }, zoneList } = this.props;
     const { warehouse, warehouses, zone, selectKeys } = this.state;
     const whseColumns = [{
-      dataIndex: 'whse_name',
-      key: 'whse_name',
+      dataIndex: 'wh_name',
+      key: 'wh_name',
       render: o => (<span className="menu-sider-item">{o}</span>),
     }];
     const zonePopoverContent = (
@@ -328,9 +329,10 @@ export default class WareHouse extends Component {
                 <TabPane tab="上架规则" key="putaway" disabled />
                 <TabPane tab="分配规则" key="allocate" disabled />
                 <TabPane tab="补货规则" key="replenish" disabled />
-                {
-                  warehouse.bonded === 1 && <TabPane tab="保税监管" key="supervision" />
-                }
+                <TabPane tab="保税监管" key="supervision" />
+                <TabPane tab="仓库货主" key="auth">
+                  <WarehouseMembers whseCode={warehouse.whse_code} whseTenantId={warehouse.whse_tenant_id} />
+                </TabPane>
               </Tabs>
             </div>
           </Content>

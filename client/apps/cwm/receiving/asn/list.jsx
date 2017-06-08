@@ -17,6 +17,7 @@ const RadioButton = Radio.Button;
 @connect(
   state => ({
     tenantId: state.account.tenantId,
+    warehouseList: state.cwmWarehouse.warehouseList,
   }),
 )
 @connectNav({
@@ -35,6 +36,7 @@ export default class ReceivingNoticeList extends React.Component {
     selectedRowKeys: [],
     searchInput: '',
   }
+
   msg = formatMsg(this.props.intl)
   columns = [{
     title: 'ANS编号',
