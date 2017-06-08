@@ -115,7 +115,13 @@ export default class HsCodeList extends Component {
     }
   }
   handleUploaded = () => {
-
+    const params = {
+      tenantId: this.props.tenantId,
+      pageSize: this.props.hscodes.pageSize,
+      current: this.props.hscodes.current,
+      searchText: this.props.hscodes.searchText,
+    };
+    this.props.loadHscodes(params);
   }
 
   render() {
