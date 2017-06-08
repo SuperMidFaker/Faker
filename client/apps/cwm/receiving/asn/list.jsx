@@ -7,6 +7,7 @@ import SearchBar from 'client/components/search-bar';
 import RowUpdater from 'client/components/rowUpdater';
 import connectNav from 'client/common/decorators/connect-nav';
 import { formatMsg } from '../message.i18n';
+import { loadwhList } from 'common/reducers/cwmWarehouse';
 
 const { Header, Content } = Layout;
 const Option = Select.Option;
@@ -19,6 +20,7 @@ const RadioButton = Radio.Button;
     tenantId: state.account.tenantId,
     warehouseList: state.cwmWarehouse.warehouseList,
   }),
+  { loadwhList }
 )
 @connectNav({
   depth: 2,
@@ -35,8 +37,20 @@ export default class ReceivingNoticeList extends React.Component {
   state = {
     selectedRowKeys: [],
     searchInput: '',
+    currentWarehouse: {},
   }
-
+  componentWillMount() {
+    const { tenantId } = this.props;
+    this.props.loadwhList(tenantId).then(
+      (result) => {
+        if (!result.error) {
+          this.setState({
+            currentWarehouse: result.data[0],
+          });
+        }
+      }
+    );
+  }
   msg = formatMsg(this.props.intl)
   columns = [{
     title: 'ANS编号',
@@ -196,6 +210,8 @@ export default class ReceivingNoticeList extends React.Component {
     this.context.router.push(link);
   }
   render() {
+    const { warehouseList } = this.props;
+    const { currentWarehouse } = this.state;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -207,10 +223,10 @@ export default class ReceivingNoticeList extends React.Component {
         <Header className="top-bar">
           <Breadcrumb>
             <Breadcrumb.Item>
-              <Select size="large" defaultValue="0960" placeholder="选择仓库" style={{ width: 160 }}>
-                <Option value="0960">物流大道仓库</Option>
-                <Option value="0961">希雅路仓库</Option>
-                <Option value="0962">富特路仓库</Option>
+              <Select size="large" defaultValue={currentWarehouse.whse_code} placeholder="选择仓库" style={{ width: 160 }}>
+                {
+                  warehouseList.map(warehouse => (<Option value={warehouse.whse_code}>{warehouse.whse_name}</Option>))
+                }
               </Select>
             </Breadcrumb.Item>
             <Breadcrumb.Item>

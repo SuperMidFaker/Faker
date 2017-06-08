@@ -23,9 +23,7 @@ const SubMenu = Menu.SubMenu;
 const FormItem = Form.Item;
 
 function fetchData({ state, dispatch }) {
-  return dispatch(loadwhList({
-    tenantId: state.account.tenantId,
-  }));
+  return dispatch(loadwhList(state.account.tenantId));
 }
 @connectFetch()(fetchData)
 @injectIntl
@@ -226,8 +224,8 @@ export default class WareHouse extends Component {
     const { form: { getFieldDecorator }, zoneList } = this.props;
     const { warehouse, warehouses, zone, selectKeys } = this.state;
     const whseColumns = [{
-      dataIndex: 'wh_name',
-      key: 'wh_name',
+      dataIndex: 'whse_name',
+      key: 'whse_name',
       render: o => (<span className="menu-sider-item">{o}</span>),
     }];
     const zonePopoverContent = (
@@ -331,7 +329,7 @@ export default class WareHouse extends Component {
                 <TabPane tab="补货规则" key="replenish" disabled />
                 <TabPane tab="保税监管" key="supervision" />
                 <TabPane tab="仓库货主" key="auth">
-                  <WarehouseMembers whseCode={warehouse.whse_code} whseTenantId={warehouse.whse_tenant_id} />
+                  <WarehouseMembers whseCode={warehouse.whse_code} whseTenantId={warehouse.wh_ent_tenant_id} />
                 </TabPane>
               </Tabs>
             </div>

@@ -54,9 +54,7 @@ export default class WareHouseModal extends Component {
             if (!result.error) {
               message.info('添加仓库成功');
               this.props.hideWarehouseModal();
-              this.props.loadwhList({
-                tenantId,
-              });
+              this.props.loadwhList(tenantId);
             }
           }
         );
