@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Button, DatePicker, InputNumber, Form, Row, Col, Card, Input, Switch, Select, Icon } from 'antd';
+import { DatePicker, InputNumber, Form, Row, Col, Card, Input, Switch, Select, Icon } from 'antd';
 import RegionCascader from 'client/components/chinaRegionCascader';
 import { setClientForm, loadFlowNodeData } from 'common/reducers/crmOrders';
 import { loadTariffsByTransportInfo, loadRatesSources, loadRateEnds, toggleAddLineModal } from 'common/reducers/scofFlow';
@@ -682,15 +682,15 @@ export default class TransportForm extends Component {
               </Row>
               <Row style={{ marginTop: 10 }}>
                 <InputGroup size="large">
-                  <Col span="8">
+                  <Col span="12">
                     <RegionCascader defaultRegion={consignerRegion} region={consignerRegion}
                       onChange={region => this.handleRegionValueChange('consigner', region)}
                     />
                   </Col>
-                  <Col span="16">
+                  <Col span="12">
                     <Input prefix={<Icon type="environment-o" />} value={node.consigner_addr}
                       onChange={e => this.handleChange('consigner_addr', e.target.value)}
-                      addonAfter={<Button size="small" icon="contacts" />}
+                      placeholder="详细地址"
                     />
                   </Col>
                 </InputGroup>
@@ -699,12 +699,15 @@ export default class TransportForm extends Component {
                 <InputGroup size="large">
                   <Input style={{ width: '33.33%' }} prefix={<Icon type="user" />} value={node.consigner_contact}
                     onChange={e => this.handleChange('consigner_contact', e.target.value)}
+                    placeholder="联系人"
                   />
                   <Input style={{ width: '33.33%' }} prefix={<Icon type="mobile" />} value={node.consigner_mobile} type="tel"
                     onChange={e => this.handleChange('consigner_mobile', e.target.value)}
+                    placeholder="电话"
                   />
                   <Input style={{ width: '33.33%' }} prefix={<Icon type="mail" />} value={node.consigner_email} type="email"
                     onChange={e => this.handleChange('consigner_email', e.target.value)}
+                    placeholder="邮箱"
                   />
                 </InputGroup>
               </Row>
@@ -731,15 +734,15 @@ export default class TransportForm extends Component {
               </Row>
               <Row style={{ marginTop: 10 }}>
                 <InputGroup size="large">
-                  <Col span="8">
+                  <Col span="12">
                     <RegionCascader defaultRegion={consigneeRegion} region={consigneeRegion}
                       onChange={region => this.handleRegionValueChange('consignee', region)}
                     />
                   </Col>
-                  <Col span="16">
+                  <Col span="12">
                     <Input prefix={<Icon type="environment-o" />} value={node.consignee_addr}
                       onChange={e => this.handleChange('consignee_addr', e.target.value)}
-                      addonAfter={<Button size="small" icon="contacts" />}
+                      placeholder="详细地址"
                     />
                   </Col>
                 </InputGroup>
@@ -748,12 +751,15 @@ export default class TransportForm extends Component {
                 <InputGroup size="large">
                   <Input style={{ width: '33.33%' }} prefix={<Icon type="user" />} value={node.consignee_contact}
                     onChange={e => this.handleChange('consignee_contact', e.target.value)}
+                    placeholder="联系人"
                   />
                   <Input style={{ width: '33.33%' }} prefix={<Icon type="mobile" />} value={node.consignee_mobile} type="tel"
                     onChange={e => this.handleChange('consignee_mobile', e.target.value)}
+                    placeholder="电话"
                   />
                   <Input style={{ width: '33.33%' }} prefix={<Icon type="mail" />} value={node.consignee_email} type="email"
                     onChange={e => this.handleChange('consignee_email', e.target.value)}
+                    placeholder="邮箱"
                   />
                 </InputGroup>
               </Row>
