@@ -320,6 +320,13 @@ export default class TransportForm extends Component {
       quoteNo: formData.node.quote_no,
       partnerId: customerPartnerId,
       partnerName: formRequires.clients.find(item => item.partner_id === customerPartnerId).name,
+      startLocation: {
+        code: formData.node.consigner_region_code,
+        province: formData.node.consigner_province,
+        city: formData.node.consigner_city,
+        district: formData.node.consigner_district,
+        street: formData.node.consigner_street,
+      },
     });
   }
   handleConsignSelect = (key, value) => {
@@ -331,6 +338,13 @@ export default class TransportForm extends Component {
         quoteNo: formData.node.quote_no,
         partnerId: customerPartnerId,
         partnerName: formRequires.clients.find(item => item.partner_id === customerPartnerId).name,
+        startLocation: {
+          code: formData.node.consigner_region_code,
+          province: formData.node.consigner_province,
+          city: formData.node.consigner_city,
+          district: formData.node.consigner_district,
+          street: formData.node.consigner_street,
+        },
       });
       return;
     }
@@ -660,7 +674,7 @@ export default class TransportForm extends Component {
                   notFoundContent={<a onClick={this.handleShowAddLineModal}>+ 添加地址</a>}
                 >
                   {consignerLocations.filter(cl => cl.ref_partner_id === customerPartnerId || cl.ref_partner_id === -1)
-                    .filter(cl => rateSources.length === 0 || rateSources.find(rs => rs.source.province === cl.province))
+                    .filter(cl => rateSources.length === 0 || rateSources.find(rs => rs.source.code === cl.region_code))
                     .map(dw => <Option value={dw.node_id} key={dw.node_id}>{this.renderConsign(dw)}</Option>)
                 }
                   <Option value={-1} key={-1}>+ 添加地址</Option>

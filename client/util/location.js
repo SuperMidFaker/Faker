@@ -27,10 +27,10 @@ export function renderLoc(location, provinceFd = 'province', cityFd = 'city', co
 
 export function renderLocation(location, provinceFd = 'province', cityFd = 'city', countyFd = 'district', streetFd = 'street') {
   const names = [location[provinceFd]];
-  if (!(location[cityFd] === '市辖区' || location[cityFd] === '县' || location[cityFd] === '省直辖县市')) {
+  if (location[cityFd] && !(location[cityFd] === '市辖区' || location[cityFd] === '县' || location[cityFd] === '省直辖县市')) {
     names.push(location[cityFd]);
   }
-  if (!(location[countyFd] === '市辖区' || location[countyFd] === '县')) {
+  if (location[countyFd] && !(location[countyFd] === '市辖区' || location[countyFd] === '县')) {
     names.push(location[countyFd]);
   }
   if (location[streetFd]) {

@@ -172,6 +172,7 @@ class End extends React.Component {
     quoteNo: state.scofFlow.addLineModal.quoteNo,
     partnerId: state.scofFlow.addLineModal.partnerId,
     partnerName: state.scofFlow.addLineModal.partnerName,
+    startLocation: state.scofFlow.addLineModal.startLocation,
     tenantId: state.account.tenantId,
     loginName: state.account.username,
     customerPartners: state.partner.partners,
@@ -199,6 +200,7 @@ export default class AddLineModal extends React.Component {
     toggleAddLineModal: PropTypes.func.isRequired,
     partnerId: PropTypes.number.isRequired,
     partnerName: PropTypes.number.isRequired,
+    startLocation: PropTypes.object.isRequired,
     tmsParams: PropTypes.object.isRequired,
     loadRatesSources: PropTypes.func.isRequired,
     addNode: PropTypes.func.isRequired,
@@ -209,7 +211,7 @@ export default class AddLineModal extends React.Component {
   }
   state = {
     nodes: [{ type: 0 }],
-    lines: [{ }],
+    lines: [],
     tariffs: [],
     quoteNo: '',
     step: 0,
@@ -363,11 +365,14 @@ export default class AddLineModal extends React.Component {
     this.setState({ nodes });
   }
   handleNodeChange = (index, data) => {
+    const { startLocation } = this.props;
+    console.log(startLocation);
     const node = { ...this.state.nodes[index], ...data };
     const nodes = [...this.state.nodes];
     nodes.splice(index, 1, node);
     const lines = nodes.filter(item => item.type === 1)
-    .map(item => ({ code: item.region_code, province: item.province, city: item.city, district: item.district, street: item.street }));
+    .map(item => ({ code: item.region_code, province: item.province, city: item.city, district: item.district, street: item.street }))
+    .map(item => item.source ? item : { ...item, source: startLocation });
     this.setState({ nodes, lines });
   }
   handleRemoveEnd = (index) => {
@@ -409,11 +414,11 @@ export default class AddLineModal extends React.Component {
     const { visible } = this.props;
     const { step, tariffs, quoteNo, lines, rateSources } = this.state;
     const startLocations = this.state.nodes.filter(item => item.type === 0);
-    let startLocationsForSelect = this.state.nodes.filter(item => item.type === 0)
+    const startLocationsForSelect = this.state.nodes.filter(item => item.type === 0)
     .map(item => ({ code: item.region_code, province: item.province, city: item.city, district: item.district, street: item.street }));
     rateSources.forEach((item) => {
       if (!startLocationsForSelect.find(item1 => item1.code === item.source.code)) {
-        startLocationsForSelect = startLocationsForSelect.concat([item.source]);
+        startLocationsForSelect.push(item.source);
       }
     });
 

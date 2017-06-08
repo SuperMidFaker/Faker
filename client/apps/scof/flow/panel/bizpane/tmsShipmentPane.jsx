@@ -40,6 +40,7 @@ export default class TMSShipmentPane extends Component {
     tariffs: [],
     rateSources: [],
     rateEnds: [],
+    consignerId: -1,
   }
   componentWillMount() {
     this.handleLoadTariffs(this.props);
@@ -54,7 +55,7 @@ export default class TMSShipmentPane extends Component {
     const mode = transitModes.find(item => item.mode_code === model.transit_mode);
     const transitMode = mode ? mode.id : -1;
     const consigner = consigners.find(item => item.node_id === model.consigner_id);
-
+    this.setState({ consignerId: model.consigner_id });
     props.loadTariffsByTransportInfo(partnerId, transitMode, model.goods_type).then((result) => {
       this.setState({
         tariffs: result.data || [],
@@ -105,12 +106,20 @@ export default class TMSShipmentPane extends Component {
   }
   handleConsignerSelect = (value) => {
     if (value === -1) {
-      const { partnerId, partnerName } = this.props;
+      const { partnerId, partnerName, tmsParams: { consigners } } = this.props;
+      const consigner = consigners.find(item => item.node_id === this.state.consignerId);
       this.props.toggleAddLineModal({
         visible: true,
         quoteNo: this.props.form.getFieldValue('quote_no'),
         partnerId,
         partnerName,
+        startLocation: {
+          code: consigner.region_code,
+          province: consigner.province,
+          city: consigner.city,
+          district: consigner.district,
+          street: consigner.street,
+        },
       });
       setTimeout(() => {
         if (this.props.form.getFieldValue('consigner_id') === -1) {
@@ -131,16 +140,25 @@ export default class TMSShipmentPane extends Component {
         });
         this.setState({ rateEnds });
       });
+      this.setState({ consignerId: value });
     }
   }
   handleConsigneeSelect = (value) => {
     if (value === -1) {
-      const { partnerId, partnerName } = this.props;
+      const { partnerId, partnerName, tmsParams: { consigners } } = this.props;
+      const consigner = consigners.find(item => item.node_id === this.state.consignerId);
       this.props.toggleAddLineModal({
         visible: true,
         quoteNo: this.props.form.getFieldValue('quote_no'),
         partnerId,
         partnerName,
+        startLocation: {
+          code: consigner.region_code,
+          province: consigner.province,
+          city: consigner.city,
+          district: consigner.district,
+          street: consigner.street,
+        },
       });
       setTimeout(() => {
         if (this.props.form.getFieldValue('consignee_id') === -1) {
@@ -150,12 +168,20 @@ export default class TMSShipmentPane extends Component {
     }
   }
   handleShowAddLineModal = () => {
-    const { partnerId, partnerName } = this.props;
+    const { partnerId, partnerName, tmsParams: { consigners } } = this.props;
+    const consigner = consigners.find(item => item.node_id === this.state.consignerId);
     this.props.toggleAddLineModal({
       visible: true,
       quoteNo: this.props.form.getFieldValue('quote_no'),
       partnerId,
       partnerName,
+      startLocation: {
+        code: consigner.region_code,
+        province: consigner.province,
+        city: consigner.city,
+        district: consigner.district,
+        street: consigner.street,
+      },
     });
   }
   handleTariffSelect = (quoteNo) => {
@@ -251,7 +277,7 @@ export default class TMSShipmentPane extends Component {
                   >
                     {
                       consigners.filter(cl => cl.ref_partner_id === partnerId || cl.ref_partner_id === -1)
-                      .filter(cl => rateSources.length === 0 || rateSources.find(rs => rs.source.province === cl.province))
+                      .filter(cl => rateSources.length === 0 || rateSources.find(rs => rs.source.code === cl.region_code))
                       .map(cg => <Option value={cg.node_id} key={cg.node_id}>{this.renderConsign(cg)}</Option>)
                     }
                     <Option value={-1} key={-1}>+ 添加地址</Option>

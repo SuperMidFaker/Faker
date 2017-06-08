@@ -66,6 +66,7 @@ const initialState = {
     quoteNo: '',
     partnerId: -1,
     partnerName: '',
+    startLocation: {},
   },
 };
 
