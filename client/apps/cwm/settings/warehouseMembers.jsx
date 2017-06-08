@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { Card, Layout, Table } from 'antd';
+import { Button, Layout, Table } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { showWhseMembers, loadwhseOwners } from 'common/reducers/cwmWarehouse';
@@ -36,7 +36,7 @@ export default class WarehouseMembers extends Component {
     }
   }
   columns = [{
-    title: '名称',
+    title: '货主名称',
     dataIndex: 'owner_name',
   }, {
     title: '操作',
@@ -46,12 +46,11 @@ export default class WarehouseMembers extends Component {
     const { whseCode, whseTenantId, whseOwners } = this.props;
     return (
       <Content>
-        <div>
-          <Card bodyStyle={{ padding: 0, backgroundColor: '#fff' }} title="货主列表" extra={<a href="#" onClick={() => this.props.showWhseMembers()}>添加货主</a>} >
-            <Table columns={this.columns} dataSource={whseOwners} />
-            <WhseMembersModal whseCode={whseCode} whseTenantId={whseTenantId} whseOwners={whseOwners} />
-          </Card>
+        <div className="toolbar">
+          <Button type="primary" ghost icon="plus-circle" onClick={() => this.props.showWhseMembers()}>添加货主</Button>
         </div>
+        <Table columns={this.columns} dataSource={whseOwners} />
+        <WhseMembersModal whseCode={whseCode} whseTenantId={whseTenantId} whseOwners={whseOwners} />
       </Content>
     );
   }

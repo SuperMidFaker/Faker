@@ -85,7 +85,7 @@ export default class CWMSkuList extends React.Component {
   ownerColumns = [{
     dataIndex: 'name',
     key: 'owner_name',
-    render: (name, row) => row.partner_code ? `${row.partner_code} | ${row.name}` : row.name,
+    render: (name, row) => (<span className="menu-sider-item">{row.partner_code ? `${row.partner_code} | ${row.name}` : row.name}</span>),
   }]
   columns = [{
     title: 'SKU',

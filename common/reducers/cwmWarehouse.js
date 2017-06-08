@@ -75,7 +75,7 @@ export function hideWarehouseModal() {
   };
 }
 
-export function loadwhList(params) {
+export function loadwhList(tenantId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -85,7 +85,7 @@ export function loadwhList(params) {
       ],
       endpoint: 'v1/cwm/warehouses/load',
       method: 'get',
-      params,
+      params: { tenantId },
     },
   };
 }
