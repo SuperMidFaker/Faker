@@ -23,6 +23,9 @@ const actionTypes = createActionTypes('@@welogix/scof/flow/', [
   'LOAD_TRANSPORT_TRAIFFS_BY_TRANSPORTINFO', 'LOAD_TRANSPORT_TRAIFFS_BY_TRANSPORTINFO_SUCCEED', 'LOAD_TRANSPORT_TRAIFFS_BY_TRANSPORTINFO_FAIL',
   'LOAD_RATESRC', 'LOAD_RATESRC_SUCCEED', 'LOAD_RATESRC_FAIL',
   'LOAD_RATENDS', 'LOAD_RATENDS_SUCCEED', 'LOAD_RATENDS_FAIL',
+  'TOGGLE_ADD_LINE_MODAL',
+  'ADD_LINES_AND_PUBLISH', 'ADD_LINES_AND_PUBLISH_SUCCEED', 'ADD_LINES_AND_PUBLISH_FAIL',
+  'NEED_LOAD_TARIFF',
 ]);
 
 const initialState = {
@@ -30,6 +33,7 @@ const initialState = {
   graphLoading: false,
   visibleFlowModal: false,
   visibleTriggerModal: false,
+  needLoadTariff: false,
   triggerModal: {
     key: '',
     name: '',
@@ -57,6 +61,12 @@ const initialState = {
   },
   cmsQuotes: [],
   tmsParams: { consigners: [], consignees: [], transitModes: [], packagings: [] },
+  addLineModal: {
+    visible: false,
+    quoteNo: '',
+    partnerId: -1,
+    partnerName: '',
+  },
 };
 
 export default function reducer(state = initialState, action) {
@@ -125,6 +135,12 @@ export default function reducer(state = initialState, action) {
       return { ...state, currentFlow: state.currentFlow && { ...state.currentFlow, ...action.data.flow } };
     case actionTypes.LOAD_FLTRACK_SUCCEED:
       return { ...state, trackingFields: action.result.data };
+    case actionTypes.TOGGLE_ADD_LINE_MODAL:
+      return { ...state, addLineModal: { ...state.addLineModal, ...action.data } };
+    case actionTypes.LOAD_TRANSPORT_TRAIFFS_BY_TRANSPORTINFO_SUCCEED:
+      return { ...state, needLoadTariff: false };
+    case actionTypes.NEED_LOAD_TARIFF:
+      return { ...state, needLoadTariff: action.data };
     default:
       return state;
   }
@@ -434,5 +450,32 @@ export function loadRateEnds({ rateId, pageSize, current, searchValue }) {
       params: { rateId, pageSize, current, searchValue },
       origin: 'mongo',
     },
+  };
+}
+
+export function addLinesAndPublish(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.ADD_LINES_AND_PUBLISH,
+        actionTypes.ADD_LINES_AND_PUBLISH_SUCCEED,
+        actionTypes.ADD_LINES_AND_PUBLISH_FAIL,
+      ],
+      endpoint: 'v1/transport/tariff/addLinesAndPublish',
+      method: 'post',
+      data,
+      origin: 'mongo',
+    },
+  };
+}
+
+export function setNeedLoadTariff(data) {
+  return { type: actionTypes.NEED_LOAD_TARIFF, data };
+}
+
+export function toggleAddLineModal(data) {
+  return {
+    type: actionTypes.TOGGLE_ADD_LINE_MODAL,
+    data,
   };
 }

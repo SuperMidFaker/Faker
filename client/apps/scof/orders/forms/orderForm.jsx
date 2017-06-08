@@ -12,6 +12,7 @@ import { format } from 'client/common/i18n/helpers';
 import ClearanceForm from './clearanceForm';
 import TransportForm from './transportForm';
 import WarehouseForm from './warehouseForm';
+import AddLineModal from 'client/apps/scof/flow/modal/addLineModal';
 
 const formatMsg = format(messages);
 const Panel = Collapse.Panel;
@@ -438,6 +439,7 @@ export default class OrderForm extends Component {
           <Steps direction="vertical" current={current}>
             {this.renderSteps(formData.subOrders, orderShipment)}
           </Steps>
+          <AddLineModal />
         </Card>
       </Form>
     );

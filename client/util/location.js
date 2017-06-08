@@ -11,12 +11,16 @@ export function renderLoc(location, provinceFd = 'province', cityFd = 'city', co
   } else if (location[countyFd] && (location[countyFd] === '市辖区' || location[countyFd] === '县' || location[cityFd] === '省直辖县市')) {
     return location[cityFd] || '';
   } else {
+    if (location[provinceFd]) {
+      names.push(location[provinceFd]);
+    }
     if (location[cityFd]) {
       names.push(location[cityFd]);
     }
     if (location[countyFd]) {
       names.push(location[countyFd]);
     }
+    if (names.length > 2) names.shift();
     return names.join('-');
   }
 }

@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { Input, Icon, Select, DatePicker } from 'antd';
 import RegionCascade from 'client/components/region-cascade';
 import moment from 'moment';
-import * as location from 'client/common/location';
+import * as Location from 'client/util/location';
 
 const Option = Select.Option;
 export default class EditableCell extends React.Component {
@@ -129,7 +129,7 @@ export default class EditableCell extends React.Component {
       return (option ? <span>{addonBefore}{option.text}{addonAfter}</span> : <span className="editable-cell-placeholder">{placeholder}</span>);
     } else if (type === 'regionCascade') {
       return value ?
-        <span>{addonBefore}{location.renderLoc({
+        <span>{addonBefore}{Location.renderLoc({
           province: value[0],
           city: value[1],
           district: value[2],

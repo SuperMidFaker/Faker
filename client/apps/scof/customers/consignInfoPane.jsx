@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Table } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { loadNodeList } from 'common/reducers/transportResources';
-import * as location from 'client/common/location';
+import * as Location from 'client/util/location';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 
@@ -44,7 +44,7 @@ export default class ConsignInfoPane extends React.Component {
       dataIndex: 'region',
       key: 'region',
       render: (col, row) => {
-        let text = location.renderLoc(row, 'province', 'city', 'district');
+        let text = Location.renderLoc(row, 'province', 'city', 'district');
         if (row.street) text = `${text}-${row.street}`;
         return `${text} ${row.addr}`;
       },

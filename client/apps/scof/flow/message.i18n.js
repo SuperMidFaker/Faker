@@ -146,6 +146,30 @@ const messages = defineMessages({
     id: 'scof.flow.biz.tms.pod.type',
     defaultMessage: '回单',
   },
+  locationType: {
+    id: 'scof.flow.biz.tms.location.type',
+    defaultMessage: '地点类型',
+  },
+  locationName: {
+    id: 'scof.flow.biz.tms.location.name',
+    defaultMessage: '地点名称',
+  },
+  locationProvince: {
+    id: 'scof.flow.biz.tms.location.province',
+    defaultMessage: '省/市/区',
+  },
+  locationAddress: {
+    id: 'scof.flow.biz.tms.location.address',
+    defaultMessage: '具体地址',
+  },
+  locationContact: {
+    id: 'scof.flow.biz.tms.location.contact',
+    defaultMessage: '联系人/电话/邮箱',
+  },
+  newStartLocation: {
+    id: 'scof.flow.biz.tms.newStartLocation',
+    defaultMessage: '新起始地',
+  },
   nodeName: {
     id: 'scof.flow.biz.node.name',
     defaultMessage: '节点名称',
