@@ -134,12 +134,12 @@ class End extends React.Component {
           <Select value={line.source ? startLocations.findIndex(item => item.code === line.source.code) : null} onChange={value => this.handleChange('source', value)} style={{ width: '100%' }}>
             {startLocations.map((item, i) =>
               (<Option key={item.code} value={i}>
-                {Location.renderLoc(item)}
+                {Location.renderLocation(item)}
               </Option>))}
           </Select>
         </FormItem>
         <FormItem label="目的地" style={style}>
-          <Input disabled value={Location.renderLoc(line)} />
+          <Input disabled value={Location.renderLocation(line)} />
         </FormItem>
         <FormItem label="目的地别名" style={style}>
           <Input value={line.name} onChange={e => this.handleChange('name', e.target.value)} />
@@ -461,7 +461,7 @@ export default class AddLineModal extends React.Component {
             {startLocations.length > 0 && startLocations.map(item => (
               <Card bodyStyle={{ padding: 10 }}>
                 <FormItem label={this.msg('newStartLocation')}>
-                  <Input disabled value={Location.renderLoc(item)} />
+                  <Input disabled value={Location.renderLocation(item)} />
                 </FormItem>
               </Card>))}
             {lines.map((item, index) =>

@@ -24,3 +24,17 @@ export function renderLoc(location, provinceFd = 'province', cityFd = 'city', co
     return names.join('-');
   }
 }
+
+export function renderLocation(location, provinceFd = 'province', cityFd = 'city', countyFd = 'district', streetFd = 'street') {
+  const names = [location[provinceFd]];
+  if (!(location[cityFd] === '市辖区' || location[cityFd] === '县' || location[cityFd] === '省直辖县市')) {
+    names.push(location[cityFd]);
+  }
+  if (!(location[countyFd] === '市辖区' || location[countyFd] === '县')) {
+    names.push(location[countyFd]);
+  }
+  if (location[streetFd]) {
+    names.push(location[streetFd]);
+  }
+  return names.join('-');
+}

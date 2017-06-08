@@ -208,28 +208,35 @@ export default class TransportForm extends Component {
   }
   handleChange = (key, value) => {
     this.handleSetClientForm({ [key]: value });
-    if (key === 'quote_no' && value) {
-      const { formRequires: { consignerLocations } } = this.props;
-      const consigner = consignerLocations.find(item => item.node_id === this.props.formData.node.consigner_id);
-      const tariff = this.state.tariffs.find(item => item.quoteNo === value);
-      if (tariff) {
-        this.props.loadRatesSources({
-          tariffId: tariff._id,
-          pageSize: 999999,
-          currentPage: 1,
-        }).then((result1) => {
-          this.setState({ rateSources: result1.data.data || [] });
-          if (result1.data.data) {
-            const rss = result1.data.data.filter(item => item.source.province === consigner.province);
-            const promises = rss.map(item => this.props.loadRateEnds({ rateId: item._id, pageSize: 99999999, current: 1 }));
-            Promise.all(promises).then((results) => {
-              let rateEnds = [];
-              results.forEach((item) => {
-                rateEnds = rateEnds.concat(item.data.data);
+    if (key === 'quote_no') {
+      if (value) {
+        const { formRequires: { consignerLocations } } = this.props;
+        const consigner = consignerLocations.find(item => item.node_id === this.props.formData.node.consigner_id);
+        const tariff = this.state.tariffs.find(item => item.quoteNo === value);
+        if (tariff) {
+          this.props.loadRatesSources({
+            tariffId: tariff._id,
+            pageSize: 999999,
+            currentPage: 1,
+          }).then((result1) => {
+            this.setState({ rateSources: result1.data.data || [] });
+            if (result1.data.data) {
+              const rss = result1.data.data.filter(item => item.source.province === consigner.province);
+              const promises = rss.map(item => this.props.loadRateEnds({ rateId: item._id, pageSize: 99999999, current: 1 }));
+              Promise.all(promises).then((results) => {
+                let rateEnds = [];
+                results.forEach((item) => {
+                  rateEnds = rateEnds.concat(item.data.data);
+                });
+                this.setState({ rateEnds });
               });
-              this.setState({ rateEnds });
-            });
-          }
+            }
+          });
+        }
+      } else {
+        this.setState({
+          rateSources: [],
+          rateEnds: [],
         });
       }
     }
@@ -272,6 +279,10 @@ export default class TransportForm extends Component {
     } else if (key === 'consignee_name') {
       consignForm.consignee_name = value;
       const consign = formRequires.consigneeLocations.find(item => item.name === value);
+      const rateEnd = this.state.rateEnds.find(rs => rs.end.code === consign.region_code);
+      if (rateEnd) {
+        consignForm.transit_time = rateEnd.time;
+      }
       if (consign) {
         consignForm.consignee_id = consign.node_id;
         consignForm.consignee_province = consign.province;
@@ -301,6 +312,16 @@ export default class TransportForm extends Component {
     }
     this.handleSetClientForm(consignForm);
   }
+  handleShowAddLineModal = () => {
+    const { customerPartnerId, formRequires } = this.props;
+    const { formData } = this.props;
+    this.props.toggleAddLineModal({
+      visible: true,
+      quoteNo: formData.node.quote_no,
+      partnerId: customerPartnerId,
+      partnerName: formRequires.clients.find(item => item.partner_id === customerPartnerId).name,
+    });
+  }
   handleConsignSelect = (key, value) => {
     if (value === -1) {
       const { customerPartnerId, formRequires } = this.props;
@@ -311,6 +332,7 @@ export default class TransportForm extends Component {
         partnerId: customerPartnerId,
         partnerName: formRequires.clients.find(item => item.partner_id === customerPartnerId).name,
       });
+      return;
     }
     const consignForm = {};
     const formRequires = this.props.formRequires;
@@ -342,6 +364,10 @@ export default class TransportForm extends Component {
       }
     } else if (key === 'consignee_name') {
       const consign = formRequires.consigneeLocations.find(item => item.node_id === value);
+      const rateEnd = this.state.rateEnds.find(rs => rs.end.code === consign.region_code);
+      if (rateEnd) {
+        consignForm.transit_time = rateEnd.time;
+      }
       if (consign) {
         consignForm.consignee_id = consign.node_id;
         consignForm.consignee_name = consign.name;
@@ -621,9 +647,9 @@ export default class TransportForm extends Component {
           </Col>
         </Row>
         <Row gutter={20}>
-          <Col sm={24}>
+          <Col sm={12}>
             <FormItem label="发货方">
-              <Col span="6" style={{ paddingRight: 8 }}>
+              <Row style={{ paddingRight: 8 }}>
                 <Select allowClear size="large" showArrow value={node.consigner_id} optionLabelProp="children"
                   onChange={value => this.handleConsignChange('consigner_name', value)}
                   onSelect={value => this.handleConsignSelect('consigner_name', value)}
@@ -631,6 +657,7 @@ export default class TransportForm extends Component {
                   dropdownStyle={{ width: 400 }}
                   optionFilterProp="children"
                   showSearch
+                  notFoundContent={<a onClick={this.handleShowAddLineModal}>+ 添加地址</a>}
                 >
                   {consignerLocations.filter(cl => cl.ref_partner_id === customerPartnerId || cl.ref_partner_id === -1)
                     .filter(cl => rateSources.length === 0 || rateSources.find(rs => rs.source.province === cl.province))
@@ -638,8 +665,8 @@ export default class TransportForm extends Component {
                 }
                   <Option value={-1} key={-1}>+ 添加地址</Option>
                 </Select>
-              </Col>
-              <Col span="18">
+              </Row>
+              <Row style={{ marginTop: 10 }}>
                 <InputGroup size="large">
                   <Col span="8">
                     <RegionCascader defaultRegion={consignerRegion} region={consignerRegion}
@@ -653,29 +680,25 @@ export default class TransportForm extends Component {
                     />
                   </Col>
                 </InputGroup>
+              </Row>
+              <Row>
                 <InputGroup size="large">
-                  <Col span="8">
-                    <Input prefix={<Icon type="user" />} value={node.consigner_contact}
-                      onChange={e => this.handleChange('consigner_contact', e.target.value)}
-                    />
-                  </Col>
-                  <Col span="8">
-                    <Input prefix={<Icon type="mobile" />} value={node.consigner_mobile} type="tel"
-                      onChange={e => this.handleChange('consigner_mobile', e.target.value)}
-                    />
-                  </Col>
-                  <Col span="8">
-                    <Input prefix={<Icon type="mail" />} value={node.consigner_email} type="email"
-                      onChange={e => this.handleChange('consigner_email', e.target.value)}
-                    />
-                  </Col>
+                  <Input style={{ width: '33.33%' }} prefix={<Icon type="user" />} value={node.consigner_contact}
+                    onChange={e => this.handleChange('consigner_contact', e.target.value)}
+                  />
+                  <Input style={{ width: '33.33%' }} prefix={<Icon type="mobile" />} value={node.consigner_mobile} type="tel"
+                    onChange={e => this.handleChange('consigner_mobile', e.target.value)}
+                  />
+                  <Input style={{ width: '33.33%' }} prefix={<Icon type="mail" />} value={node.consigner_email} type="email"
+                    onChange={e => this.handleChange('consigner_email', e.target.value)}
+                  />
                 </InputGroup>
-              </Col>
+              </Row>
             </FormItem>
           </Col>
-          <Col sm={24}>
+          <Col sm={12}>
             <FormItem label="收货方">
-              <Col span="6" style={{ paddingRight: 8 }}>
+              <Row style={{ paddingRight: 8 }}>
                 <Select allowClear size="large" showArrow value={node.consignee_id} optionLabelProp="children"
                   onChange={value => this.handleConsignChange('consignee_name', value)}
                   onSelect={value => this.handleConsignSelect('consignee_name', value)}
@@ -683,6 +706,7 @@ export default class TransportForm extends Component {
                   dropdownStyle={{ width: 400 }}
                   optionFilterProp="children"
                   showSearch
+                  notFoundContent={<a onClick={this.handleShowAddLineModal}>+ 添加地址</a>}
                 >
                   {consigneeLocations.filter(cl => cl.ref_partner_id === customerPartnerId || cl.ref_partner_id === -1)
                     .filter(cl => rateEnds.length === 0 || rateEnds.find(rs => rs.end.code === cl.region_code))
@@ -690,8 +714,8 @@ export default class TransportForm extends Component {
                 }
                   <Option value={-1} key={-1}>+ 添加地址</Option>
                 </Select>
-              </Col>
-              <Col span="18">
+              </Row>
+              <Row style={{ marginTop: 10 }}>
                 <InputGroup size="large">
                   <Col span="8">
                     <RegionCascader defaultRegion={consigneeRegion} region={consigneeRegion}
@@ -705,24 +729,20 @@ export default class TransportForm extends Component {
                     />
                   </Col>
                 </InputGroup>
+              </Row>
+              <Row>
                 <InputGroup size="large">
-                  <Col span="8">
-                    <Input prefix={<Icon type="user" />} value={node.consignee_contact}
-                      onChange={e => this.handleChange('consignee_contact', e.target.value)}
-                    />
-                  </Col>
-                  <Col span="8">
-                    <Input prefix={<Icon type="mobile" />} value={node.consignee_mobile} type="tel"
-                      onChange={e => this.handleChange('consignee_mobile', e.target.value)}
-                    />
-                  </Col>
-                  <Col span="8">
-                    <Input prefix={<Icon type="mail" />} value={node.consignee_email} type="email"
-                      onChange={e => this.handleChange('consignee_email', e.target.value)}
-                    />
-                  </Col>
+                  <Input style={{ width: '33.33%' }} prefix={<Icon type="user" />} value={node.consignee_contact}
+                    onChange={e => this.handleChange('consignee_contact', e.target.value)}
+                  />
+                  <Input style={{ width: '33.33%' }} prefix={<Icon type="mobile" />} value={node.consignee_mobile} type="tel"
+                    onChange={e => this.handleChange('consignee_mobile', e.target.value)}
+                  />
+                  <Input style={{ width: '33.33%' }} prefix={<Icon type="mail" />} value={node.consignee_email} type="email"
+                    onChange={e => this.handleChange('consignee_email', e.target.value)}
+                  />
                 </InputGroup>
-              </Col>
+              </Row>
             </FormItem>
           </Col>
         </Row>
