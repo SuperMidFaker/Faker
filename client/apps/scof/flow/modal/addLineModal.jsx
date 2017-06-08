@@ -421,6 +421,11 @@ export default class AddLineModal extends React.Component {
         startLocationsForSelect.push(item.source);
       }
     });
+    lines.forEach((item) => {
+      if (!startLocationsForSelect.find(item1 => item1.code === item.source.code)) {
+        startLocationsForSelect.push(item.source);
+      }
+    });
 
     let footer = null;
     if (step === 0) {
