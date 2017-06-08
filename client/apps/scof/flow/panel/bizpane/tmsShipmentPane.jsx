@@ -60,7 +60,7 @@ export default class TMSShipmentPane extends Component {
       this.handleLoadTariffs(nextProps);
     }
     const { model, tmsParams: { transitModes } } = nextProps;
-    if (model.consigner_id) {
+    if (this.props.model.consigner_id !== model.consigner_id) {
       const mode = transitModes.find(item => item.mode_code === model.transit_mode);
       const transitMode = mode ? mode.id : -1;
       this.setState({ consignerId: model.consigner_id, transitMode, goodsType: model.goods_type, quoteNo: model.quote_no });
@@ -209,8 +209,8 @@ export default class TMSShipmentPane extends Component {
     });
   }
   handleTariffSelect = (quoteNo) => {
+    this.setState({ quoteNo });
     if (quoteNo) {
-      this.setState({ quoteNo });
       const { tmsParams: { consigners } } = this.props;
       const tariff = this.state.tariffs.find(item => item.quoteNo === quoteNo);
       if (tariff) {
@@ -254,7 +254,7 @@ export default class TMSShipmentPane extends Component {
   renderConsign = consign => `${consign.name} | ${Location.renderLoc(consign)} | ${consign.contact || ''} | ${consign.mobile || ''}`
   render() {
     const { form: { getFieldDecorator }, onNodeActionsChange, model, tmsParams: { consigners, consignees, transitModes }, partnerId } = this.props;
-    const { rateSources, rateEnds } = this.state;
+    const { rateSources, rateEnds, quoteNo } = this.state;
     return (
       <Collapse bordered={false} defaultActiveKey={['properties', 'events']}>
         <Panel header={this.msg('bizProperties')} key="properties">
@@ -302,7 +302,7 @@ export default class TMSShipmentPane extends Component {
                   >
                     {
                       consigners.filter(cl => cl.ref_partner_id === partnerId || cl.ref_partner_id === -1)
-                      .filter(cl => rateSources.length === 0 || rateSources.find(rs => rs.source.code === cl.region_code))
+                      .filter(cl => quoteNo ? rateSources.find(rs => rs.source.code === cl.region_code) : true)
                       .map(cg => <Option value={cg.node_id} key={cg.node_id}>{this.renderConsign(cg)}</Option>)
                     }
                     <Option value={-1} key={-1}>+ 添加地址</Option>
@@ -324,7 +324,7 @@ export default class TMSShipmentPane extends Component {
                   >
                     {
                       consignees.filter(cl => cl.ref_partner_id === partnerId || cl.ref_partner_id === -1)
-                      .filter(cl => rateEnds.length === 0 || rateEnds.find(rs => rs.end.code === cl.region_code))
+                      .filter(cl => quoteNo ? rateEnds.find(rs => rs.end.code === cl.region_code) : true)
                       .map(cg => <Option value={cg.node_id} key={cg.node_id}>{this.renderConsign(cg)}</Option>)
                     }
                     <Option value={-1} key={-1}>+ 添加地址</Option>
