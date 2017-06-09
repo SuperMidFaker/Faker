@@ -36,7 +36,7 @@ export default class FlowTriggerTable extends React.Component {
     this.props.openAddTriggerModal({ key, name, actions, node_biz_object: bizObj });
   }
   handleTriggerModalChange = (nodeBizObject, triggerName, newActions) => {
-    console.log(this.props);
+    // console.log(this.props);
     // todo this.props will be LAST table, Modal handler is last component handler
     const { nodeActions } = this.props;
     const actions = nodeActions.filter(na => !(nodeBizObject ?

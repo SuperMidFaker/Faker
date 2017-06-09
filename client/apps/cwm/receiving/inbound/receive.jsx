@@ -51,6 +51,9 @@ export default class ReceiveInbound extends Component {
   state = {
     selectedRowKeys: [],
     receivingMode: 'scan',
+    printed: false,
+    pushedTask: false,
+    inboundConfirmed: false,
   }
   msg = key => formatMsg(this.props.intl, key);
   handleSave = () => {
@@ -74,8 +77,28 @@ export default class ReceiveInbound extends Component {
       receivingMode: ev.target.value,
     });
   }
+  handlePrint = () => {
+    this.setState({
+      printed: true,
+    });
+  }
+  handlePushTask = () => {
+    this.setState({
+      pushedTask: true,
+    });
+  }
+  handleWithdrawTask = () => {
+    this.setState({
+      pushedTask: false,
+    });
+  }
   handleReceive = () => {
     this.props.loadReceiveModal();
+  }
+  handleInboundConfirmed = () => {
+    this.setState({
+      inboundConfirmed: true,
+    });
   }
   columns = [{
     title: '序号',
@@ -197,7 +220,6 @@ export default class ReceiveInbound extends Component {
   }];
 
   render() {
-    const { submitting } = this.props;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -240,22 +262,19 @@ export default class ReceiveInbound extends Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="top-bar-tools">
-            {(this.state.receivingMode === 'manual' || this.state.receivingMode === 'api') && <Dropdown overlay={tagMenu}>
-              <Button size="large" onClick={this.handlePrint}>
-                <Icon type="barcode" /> <Icon type="down" />
-              </Button>
-            </Dropdown>}
-            {this.state.receivingMode === 'manual' && <Button type="primary" size="large" icon="printer" onClick={this.handlePrint} >打印入库请单</Button>}
-            {(this.state.receivingMode === 'scan' || this.state.receivingMode === 'api') && <Button size="large" icon="printer" onClick={this.handlePrint} />}
-            {this.state.receivingMode === 'scan' && <Dropdown overlay={tagMenu}>
-              <Button type="primary" size="large" onClick={this.handlePrint}>
+            {this.state.receivingMode === 'manual' && !this.state.inboundConfirmed &&
+            <Button type={!this.state.printed && 'primary'} size="large"icon={this.state.printed ? 'check-circle-o' : 'printer'} onClick={this.handlePrint}>
+              打印入库清单
+            </Button>}
+            {this.state.receivingMode === 'scan' && !this.state.inboundConfirmed &&
+            <Dropdown overlay={tagMenu}>
+              <Button type="primary" size="large" onClick={this.handleTagging}>
                 <Icon type="barcode" />标签 <Icon type="down" />
               </Button>
             </Dropdown>}
-            <RadioGroup defaultValue={this.state.receivingMode} onChange={this.handleReceivingModeChange} size="large">
-              <RadioButton value="scan"><Icon type="scan" /> 扫码收货</RadioButton>
-              <RadioButton value="manual"><Icon type="solution" /> 人工收货</RadioButton>
-              <RadioButton value="api"><Icon type="api" /> 接口收货</RadioButton>
+            <RadioGroup defaultValue={this.state.receivingMode} onChange={this.handleReceivingModeChange} size="large" disabled={this.state.inboundConfirmed}>
+              <Tooltip title="扫码收货"><RadioButton value="scan"><Icon type="scan" /></RadioButton></Tooltip>
+              <Tooltip title="人工收货"><RadioButton value="manual"><Icon type="solution" /></RadioButton></Tooltip>
             </RadioGroup>
           </div>
         </Header>
@@ -296,13 +315,16 @@ export default class ReceiveInbound extends Component {
             <Card bodyStyle={{ padding: 0 }}>
               <div className="toolbar">
                 <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-                  <h3>已选中{this.state.selectedRowKeys.length}项</h3><Button>分批收货</Button>
+                  <h3>已选中{this.state.selectedRowKeys.length}项</h3>
                 </div>
                 <div className="toolbar-right">
-                  {this.state.receivingMode === 'scan' && <Button type="primary" ghost icon="tablet">推送任务</Button>}
+                  {this.state.receivingMode === 'scan' && !this.state.pushedTask &&
+                  <Button type="primary" size="large" onClick={this.handlePushTask} icon="tablet">推送收货任务</Button>}
+                  {this.state.receivingMode === 'scan' && this.state.pushedTask &&
+                  <Button size="large" onClick={this.handleWithdrawTask} icon="rollback">撤回收货任务</Button>}
                   {this.state.receivingMode === 'manual' &&
-                  <Popconfirm title="确定此次入库操作已完成?" okText="确认" cancelText="取消">
-                    <Button type="primary" ghost icon="check" loading={submitting} onClick={this.handleSaveBtnClick}>
+                  <Popconfirm title="确定此次入库操作已完成?" onConfirm={this.handleInboundConfirmed} okText="确认" cancelText="取消">
+                    <Button type={this.state.printed && 'primary'} size="large" icon="check" disabled={this.state.inboundConfirmed}>
                       入库完成
                     </Button>
                   </Popconfirm>

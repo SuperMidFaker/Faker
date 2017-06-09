@@ -49,8 +49,11 @@ export default class OutboundAllocate extends Component {
   }
   state = {
     selectedRowKeys: [],
-    allocated: false,
     shippingMode: 'scan',
+    allocated: false,
+    pushedTask: false,
+    printedPickingList: false,
+    picked: false,
   }
   msg = key => formatMsg(this.props.intl, key);
   handleSave = () => {
@@ -71,13 +74,44 @@ export default class OutboundAllocate extends Component {
       allocated: true,
     });
   }
+  handleUndoAllocate = () => {
+    this.setState({
+      allocated: false,
+      printedPickingList: false,
+    });
+  }
   handleShippingModeChange = (ev) => {
     this.setState({
       shippingMode: ev.target.value,
     });
   }
-  handleReceive = () => {
+  handlePushTask = () => {
+    this.setState({
+      pushedTask: true,
+    });
+  }
+  handleWithdrawTask = () => {
+    this.setState({
+      pushedTask: false,
+    });
+  }
+  handlePrint = () => {
+    this.setState({
+      printedPickingList: true,
+    });
+  }
+  handleManualAllocate = () => {
     this.props.loadReceiveModal();
+  }
+  handleConfirmPicked = () => {
+    this.setState({
+      picked: true,
+    });
+  }
+  handleUndoPicked = () => {
+    this.setState({
+      picked: false,
+    });
   }
   columns = [{
     title: '序号',
@@ -137,7 +171,7 @@ export default class OutboundAllocate extends Component {
     dataIndex: 'allocate_exception',
   }, {
     title: '操作',
-    render: (o, record) => (<RowUpdater onHit={this.handleReceive} label="指定分配" row={record} />),
+    render: (o, record) => (<RowUpdater onHit={this.handleManualAllocate} label="指定分配" row={record} />),
   }]
   mockData = [{
     id: 1,
@@ -227,7 +261,6 @@ export default class OutboundAllocate extends Component {
   }];
 
   render() {
-    const { submitting } = this.props;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -259,16 +292,16 @@ export default class OutboundAllocate extends Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="top-bar-tools">
-            {this.state.allocated && this.state.shippingMode === 'manual' && <Button size="large" icon="printer" onClick={this.handlePrint} >
+            {this.state.allocated && this.state.shippingMode === 'manual' && !this.state.picked &&
+            <Button type={!this.state.printedPickingList && 'primary'} size="large" onChange={this.handlePrint} icon={this.state.printedPickingList ? 'check-circle-o' : 'printer'} onClick={this.handlePrint} >
               打印拣货单
             </Button>}
-            {this.state.allocated && <RadioGroup defaultValue={this.state.shippingMode} onChange={this.handleShippingModeChange} size="large">
-              <RadioButton value="scan"><Icon type="scan" /> 扫码拣货</RadioButton>
-              <RadioButton value="manual"><Icon type="solution" /> 人工拣货</RadioButton>
+            {this.state.allocated && <RadioGroup defaultValue={this.state.shippingMode} onChange={this.handleShippingModeChange} size="large" disabled={this.state.picked}>
+              <Tooltip title="扫码拣货"><RadioButton value="scan"><Icon type="scan" /></RadioButton></Tooltip>
+              <Tooltip title="人工拣货"><RadioButton value="manual"><Icon type="solution" /></RadioButton></Tooltip>
             </RadioGroup>}
-            {this.state.allocated ? <Button size="large" icon="rocket" onClick={this.handleAutoAllocate} /> : <Button size="large" icon="rocket" onClick={this.handleAutoAllocate} >
-              自动分配
-            </Button>}
+            {!this.state.allocated && <Button type="primary" size="large" icon="rocket" onClick={this.handleAutoAllocate} >自动分配</Button>}
+            {this.state.allocated && !this.state.picked && <Button size="large" icon="rollback" onClick={this.handleUndoAllocate} >取消分配</Button>}
           </div>
         </Header>
         <Content className="main-content">
@@ -307,10 +340,13 @@ export default class OutboundAllocate extends Component {
                   <h3>已选中{this.state.selectedRowKeys.length}项</h3>
                 </div>
                 <div className="toolbar-right">
-                  {this.state.allocated && this.state.shippingMode === 'scan' && <Button type="primary" ghost icon="tablet">推送任务</Button>}
+                  {this.state.allocated && this.state.shippingMode === 'scan' && !this.state.pushedTask &&
+                  <Button type="primary" size="large" onClick={this.handlePushTask} icon="tablet">推送拣货任务</Button>}
+                  {this.state.allocated && this.state.shippingMode === 'scan' && this.state.pushedTask &&
+                  <Button size="large" onClick={this.handleWithdrawTask} icon="rollback">撤回拣货任务</Button>}
                   {this.state.allocated && this.state.shippingMode === 'manual' &&
-                  <Popconfirm title="确定此次拣货已完成?" okText="确认" cancelText="取消">
-                    <Button type="primary" ghost icon="check" loading={submitting} onClick={this.handleSaveBtnClick}>
+                  <Popconfirm title="确定此次拣货已完成?" onConfirm={this.handleConfirmPicked} okText="确认" cancelText="取消">
+                    <Button type={this.state.printedPickingList && 'primary'} size="large" icon="check" disabled={this.state.picked}>
                       拣货确认
                     </Button>
                   </Popconfirm>
