@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Form, message, Popover, Icon, Input, Button, Dropdown, Menu } from 'antd';
-import messages from '../../message.i18n';
-import { format } from 'client/common/i18n/helpers';
-const formatMsg = format(messages);
-const FormItem = Form.Item;
 import { updateZone, loadZones, loadLocations } from 'common/reducers/cwmWarehouse';
+import { formatMsg } from '../message.i18n';
+
+const FormItem = Form.Item;
+
 @injectIntl
 @connect(
   () => ({}),
@@ -21,7 +21,7 @@ export default class ZoneEditPopover extends Component {
     popoverVisible: false,
     dropdownVisible: false,
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   handleVisibleChange = (visible) => {
     this.setState({ popoverVisible: visible });
     if (this.state.popoverVisible) {

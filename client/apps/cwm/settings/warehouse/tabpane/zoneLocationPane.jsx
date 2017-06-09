@@ -2,16 +2,14 @@ import React, { Component, PropTypes } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Layout, Table, Button, Input, Popover, Menu, Form, message } from 'antd';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../../message.i18n';
 import LocationModal from '../modal/locationModal';
 import MdIcon from 'client/components/MdIcon';
 import RowUpdater from 'client/components/rowUpdater';
 import ZoneEditPopover from '../popover/zoneEditPopover';
 import { addZone, loadZones, showLocationModal, loadLocations, deleteLocation,
   editLocation, deleteZone } from 'common/reducers/cwmWarehouse';
+import { formatMsg } from '../message.i18n';
 
-const formatMsg = format(messages);
 const { Content, Sider } = Layout;
 const FormItem = Form.Item;
 const SubMenu = Menu.SubMenu;
@@ -173,7 +171,7 @@ export default class ZoneLocationPane extends Component {
       ),
   },
   ]
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   render() {
     const { form: { getFieldDecorator }, zoneList } = this.props;
     const { warehouse, zone, selectKeys } = this.state;

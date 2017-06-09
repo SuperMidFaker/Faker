@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { injectIntl, intlShape } from 'react-intl';
 import { Modal, Transfer } from 'antd';
 import { closeWhseAuthModal, saveWhseAuths } from 'common/reducers/scvWarehouse';
-import { formatMsg } from './message.i18n';
+import { formatMsg } from '../message.i18n';
 
 @injectIntl
 @connect(state => ({

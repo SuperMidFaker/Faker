@@ -62,7 +62,6 @@ import * as CWMShippingOrder from './cwm/shipping/order';
 import * as CWMShippingOutbound from './cwm/shipping/outbound';
 import * as CWMStockInventory from './cwm/stock/inventory';
 import * as CWMProductsSku from './cwm/products/sku';
-import * as CWMWarehouse from './cwm/resources/warehouse';
 import * as CWMSettings from './cwm/settings';
 import * as CWMSupervisionSHFTZEntry from './cwm/supervision/shftz/entry';
 import * as CWMSupervisionSHFTZRelease from './cwm/supervision/shftz/release';
@@ -482,10 +481,6 @@ export default(store, cookie) => {
                 <Route path="create" component={CWMProductsSku.Create} />
                 <Route path="edit/:sku" component={CWMProductsSku.Edit} />
               </Route>
-            </Route>
-            <Route path="resources">
-              <IndexRedirect to="/cwm/resources/warehouse" />
-              <Route path="warehouse" component={CWMWarehouse.List} />
             </Route>
             <Route path="settings">
               <Route path="warehouse" component={CWMSettings.Warehouse} />
