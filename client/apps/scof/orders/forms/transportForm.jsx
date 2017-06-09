@@ -2,10 +2,10 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { DatePicker, InputNumber, Form, Row, Col, Card, Input, Switch, Select, Icon } from 'antd';
+import { DatePicker, InputNumber, Form, Row, Col, Card, Input, Switch, Select, Icon, Alert } from 'antd';
 import RegionCascader from 'client/components/chinaRegionCascader';
 import { setClientForm, loadFlowNodeData } from 'common/reducers/crmOrders';
-import { loadTariffsByTransportInfo, loadRatesSources, loadRateEnds, toggleAddLineModal } from 'common/reducers/scofFlow';
+import { loadTariffsByTransportInfo, toggleAddLineModal, isLineIntariff } from 'common/reducers/scofFlow';
 import { uuidWithoutDash } from 'client/common/uuid';
 import { GOODS_TYPES, PRESET_TRANSMODES, CONTAINER_PACKAGE_TYPE, COURIERS, TARIFF_METER_METHODS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
@@ -26,7 +26,7 @@ const InputGroup = Input.Group;
     serviceTeam: state.crmCustomers.operators,
     needLoadTariff: state.scofFlow.needLoadTariff,
   }),
-  { setClientForm, loadFlowNodeData, loadTariffsByTransportInfo, loadRatesSources, loadRateEnds, toggleAddLineModal }
+  { setClientForm, loadFlowNodeData, loadTariffsByTransportInfo, toggleAddLineModal, isLineIntariff }
 )
 export default class TransportForm extends Component {
   static propTypes = {
@@ -46,15 +46,13 @@ export default class TransportForm extends Component {
       cust_shipmt_wrap_type: PropTypes.string,
     }),
     loadTariffsByTransportInfo: PropTypes.func.isRequired,
-    loadRatesSources: PropTypes.func.isRequired,
-    loadRateEnds: PropTypes.func.isRequired,
     needLoadTariff: PropTypes.bool.isRequired,
     toggleAddLineModal: PropTypes.func.isRequired,
+    isLineIntariff: PropTypes.func.isRequired,
   }
   state = {
     tariffs: [],
-    rateSources: [],
-    rateEnds: [],
+    isLineIntariff: true,
   }
   componentDidMount() {
     const { formData, formRequires, customerPartnerId } = this.props;
@@ -104,29 +102,6 @@ export default class TransportForm extends Component {
             this.setState({
               tariffs: result1.data || [],
             });
-            if (result1.data) {
-              const tariff = result1.data.find(item => item.quoteNo === nodedata.quote_no);
-              if (tariff) {
-                this.props.loadRatesSources({
-                  tariffId: tariff._id,
-                  pageSize: 999999,
-                  currentPage: 1,
-                }).then((result2) => {
-                  this.setState({ rateSources: result2.data.data || [] });
-                  if (result2.data.data && consigner) {
-                    const rss = result2.data.data.filter(item => item.source.province === consigner.province);
-                    const promises = rss.map(item => this.props.loadRateEnds({ rateId: item._id, pageSize: 99999999, current: 1 }));
-                    Promise.all(promises).then((results) => {
-                      let rateEnds = [];
-                      results.forEach((item) => {
-                        rateEnds = rateEnds.concat(item.data.data);
-                      });
-                      this.setState({ rateEnds });
-                    });
-                  }
-                });
-              }
-            }
           });
         }
       });
@@ -135,69 +110,22 @@ export default class TransportForm extends Component {
         this.setState({
           tariffs: result1.data || [],
         });
-        if (result1.data) {
-          const tariff = result1.data.find(item => item.quoteNo === node.quote_no);
-          if (tariff) {
-            this.props.loadRatesSources({
-              tariffId: tariff._id,
-              pageSize: 999999,
-              currentPage: 1,
-            }).then((result2) => {
-              this.setState({ rateSources: result2.data.data || [] });
-              const consigner = formRequires.consignerLocations.find(cl => cl.node_id === node.consigner_id);
-              if (result2.data.data && consigner) {
-                const rss = result2.data.data.filter(item => item.source.province === consigner.province);
-                const promises = rss.map(item => this.props.loadRateEnds({ rateId: item._id, pageSize: 99999999, current: 1 }));
-                Promise.all(promises).then((results) => {
-                  let rateEnds = [];
-                  results.forEach((item) => {
-                    rateEnds = rateEnds.concat(item.data.data);
-                  });
-                  this.setState({ rateEnds });
-                });
-              }
-            });
-          }
-        }
       });
     }
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.needLoadTariff) {
       this.handleLoadTariffs(nextProps);
+      this.setState({ isLineIntariff: true });
     }
   }
   handleLoadTariffs = (props) => {
-    const { formData, formRequires, customerPartnerId } = props;
+    const { formData, customerPartnerId } = props;
     const node = formData.node;
     props.loadTariffsByTransportInfo(customerPartnerId, node.trs_mode_id, node.goods_type).then((result1) => {
       this.setState({
         tariffs: result1.data || [],
       });
-      if (result1.data) {
-        const tariff = result1.data.find(item => item.quoteNo === node.quote_no);
-        if (tariff) {
-          props.loadRatesSources({
-            tariffId: tariff._id,
-            pageSize: 999999,
-            currentPage: 1,
-          }).then((result2) => {
-            this.setState({ rateSources: result2.data.data || [] });
-            const consigner = formRequires.consignerLocations.find(cl => cl.node_id === node.consigner_id);
-            if (result2.data.data && consigner) {
-              const rss = result2.data.data.filter(item => item.source.province === consigner.province);
-              const promises = rss.map(item => props.loadRateEnds({ rateId: item._id, pageSize: 99999999, current: 1 }));
-              Promise.all(promises).then((results) => {
-                let rateEnds = [];
-                results.forEach((item) => {
-                  rateEnds = rateEnds.concat(item.data.data);
-                });
-                this.setState({ rateEnds });
-              });
-            }
-          });
-        }
-      }
     });
   }
   msg = key => formatMsg(this.props.intl, key)
@@ -209,36 +137,42 @@ export default class TransportForm extends Component {
   handleChange = (key, value) => {
     this.handleSetClientForm({ [key]: value });
     if (key === 'quote_no') {
-      if (value) {
-        const { formRequires: { consignerLocations } } = this.props;
-        const consigner = consignerLocations.find(item => item.node_id === this.props.formData.node.consigner_id);
-        const tariff = this.state.tariffs.find(item => item.quoteNo === value);
-        if (tariff) {
-          this.props.loadRatesSources({
-            tariffId: tariff._id,
-            pageSize: 999999,
-            currentPage: 1,
-          }).then((result1) => {
-            this.setState({ rateSources: result1.data.data || [] });
-            if (result1.data.data) {
-              const rss = result1.data.data.filter(item => item.source.province === consigner.province);
-              const promises = rss.map(item => this.props.loadRateEnds({ rateId: item._id, pageSize: 99999999, current: 1 }));
-              Promise.all(promises).then((results) => {
-                let rateEnds = [];
-                results.forEach((item) => {
-                  rateEnds = rateEnds.concat(item.data.data);
-                });
-                this.setState({ rateEnds });
-              });
-            }
-          });
+      this.handleJudgeLine({ quoteNo: value });
+    }
+  }
+  handleJudgeLine = ({ consignerId, consigneeId, quoteNo }) => {
+    const { formData, formRequires } = this.props;
+    const consigner = formRequires.consignerLocations.find(item => item.node_id === (consignerId || formData.node.consigner_id));
+    const consignee = formRequires.consigneeLocations.find(item => item.node_id === (consigneeId || formData.node.consignee_id));
+    if ((quoteNo || formData.node.quote_no) && consigner && consignee) {
+      const tariff = this.state.tariffs.find(item => item.quoteNo === (quoteNo || formData.node.quote_no));
+      const line = {
+        source: {
+          code: consigner.region_code,
+          province: consigner.province,
+          city: consigner.city,
+          district: consigner.district,
+          street: consigner.street,
+        },
+        end: {
+          code: consignee.region_code,
+          province: consignee.province,
+          city: consignee.city,
+          district: consignee.district,
+          street: consignee.street,
+          name: consignee.byname,
+        },
+      };
+
+      this.props.isLineIntariff({
+        tariffId: tariff._id,
+        line,
+      }).then((result) => {
+        if (result.data.isLineIntariff) {
+          this.handleTransitChange(result.data.rateEnd.time);
         }
-      } else {
-        this.setState({
-          rateSources: [],
-          rateEnds: [],
-        });
-      }
+        this.setState({ isLineIntariff: result.data.isLineIntariff });
+      });
     }
   }
   handleConsignChange = (key, value) => {
@@ -261,6 +195,7 @@ export default class TransportForm extends Component {
         consignForm.consigner_email = consign.email;
         consignForm.consigner_contact = consign.contact;
         consignForm.consigner_mobile = consign.mobile;
+        this.handleJudgeLine({ consignerId: consign.node_id });
       } else if (!value) {
         consignForm.consigner_id = null;
         consignForm.consigner_name = null;
@@ -279,10 +214,6 @@ export default class TransportForm extends Component {
     } else if (key === 'consignee_name') {
       consignForm.consignee_name = value;
       const consign = formRequires.consigneeLocations.find(item => item.name === value);
-      const rateEnd = this.state.rateEnds.find(rs => rs.end.code === consign.region_code);
-      if (rateEnd) {
-        consignForm.transit_time = rateEnd.time;
-      }
       if (consign) {
         consignForm.consignee_id = consign.node_id;
         consignForm.consignee_province = consign.province;
@@ -294,6 +225,7 @@ export default class TransportForm extends Component {
         consignForm.consignee_email = consign.email;
         consignForm.consignee_contact = consign.contact;
         consignForm.consignee_mobile = consign.mobile;
+        this.handleJudgeLine({ consigneeId: consign.node_id });
       } else if (!value) {
         consignForm.consignee_id = null;
         consignForm.consignee_name = null;
@@ -313,41 +245,37 @@ export default class TransportForm extends Component {
     this.handleSetClientForm(consignForm);
   }
   handleShowAddLineModal = () => {
-    const { customerPartnerId, formRequires } = this.props;
-    const { formData } = this.props;
+    const { formData, formRequires } = this.props;
+    const consigner = formRequires.consignerLocations.find(item => item.node_id === formData.node.consigner_id);
+    const consignee = formRequires.consigneeLocations.find(item => item.node_id === formData.node.consignee_id);
+    const tariff = this.state.tariffs.find(item => item.quoteNo === formData.node.quote_no);
+    const line = {
+      source: {
+        code: consigner.region_code,
+        province: consigner.province,
+        city: consigner.city,
+        district: consigner.district,
+        street: consigner.street,
+      },
+      end: {
+        code: consignee.region_code,
+        province: consignee.province,
+        city: consignee.city,
+        district: consignee.district,
+        street: consignee.street,
+        name: consignee.byname,
+      },
+    };
     this.props.toggleAddLineModal({
       visible: true,
-      quoteNo: formData.node.quote_no,
-      partnerId: customerPartnerId,
-      partnerName: formRequires.clients.find(item => item.partner_id === customerPartnerId).name,
-      startLocation: {
-        code: formData.node.consigner_region_code,
-        province: formData.node.consigner_province,
-        city: formData.node.consigner_city,
-        district: formData.node.consigner_district,
-        street: formData.node.consigner_street,
-      },
+      tariff,
+      line,
     });
   }
   handleConsignSelect = (key, value) => {
-    if (value === -1) {
-      const { customerPartnerId, formRequires } = this.props;
-      const { formData } = this.props;
-      this.props.toggleAddLineModal({
-        visible: true,
-        quoteNo: formData.node.quote_no,
-        partnerId: customerPartnerId,
-        partnerName: formRequires.clients.find(item => item.partner_id === customerPartnerId).name,
-        startLocation: {
-          code: formData.node.consigner_region_code,
-          province: formData.node.consigner_province,
-          city: formData.node.consigner_city,
-          district: formData.node.consigner_district,
-          street: formData.node.consigner_street,
-        },
-      });
-      return;
-    }
+    // if (value === -1) {
+    //   return;
+    // }
     const consignForm = {};
     const formRequires = this.props.formRequires;
     if (key === 'consigner_name') {
@@ -364,24 +292,10 @@ export default class TransportForm extends Component {
         consignForm.consigner_email = consign.email;
         consignForm.consigner_contact = consign.contact;
         consignForm.consigner_mobile = consign.mobile;
-
-        const { rateSources } = this.state;
-        const rss = rateSources.filter(item => item.source.province === consign.province);
-        const promises = rss.map(item => this.props.loadRateEnds({ rateId: item._id, pageSize: 99999999, current: 1 }));
-        Promise.all(promises).then((results) => {
-          let rateEnds = [];
-          results.forEach((item) => {
-            rateEnds = rateEnds.concat(item.data.data);
-          });
-          this.setState({ rateEnds });
-        });
+        this.handleJudgeLine({ consignerId: consign.node_id });
       }
     } else if (key === 'consignee_name') {
       const consign = formRequires.consigneeLocations.find(item => item.node_id === value);
-      const rateEnd = this.state.rateEnds.find(rs => rs.end.code === consign.region_code);
-      if (rateEnd) {
-        consignForm.transit_time = rateEnd.time;
-      }
       if (consign) {
         consignForm.consignee_id = consign.node_id;
         consignForm.consignee_name = consign.name;
@@ -394,6 +308,7 @@ export default class TransportForm extends Component {
         consignForm.consignee_email = consign.email;
         consignForm.consignee_contact = consign.contact;
         consignForm.consignee_mobile = consign.mobile;
+        this.handleJudgeLine({ consigneeId: consign.node_id });
       }
     }
     this.handleSetClientForm(consignForm);
@@ -599,6 +514,11 @@ export default class TransportForm extends Component {
     }
     return (
       <Card extra={<a role="presentation" onClick={this.handleShipmentRelate}><Icon type="sync" /> 提取货运信息</a>} bodyStyle={{ paddingTop: 40 }}>
+        {
+          !this.state.isLineIntariff && <Row>
+            <Alert message={<div>发货/收货地址不在报价协议的线路里 <a onClick={this.handleShowAddLineModal}>添加到报价协议</a></div>} type="warning" showIcon />
+          </Row>
+        }
         <Row gutter={20}>
           <Col sm={24} md={8}>
             <FormItem label="运输模式" required="true">
@@ -670,7 +590,7 @@ export default class TransportForm extends Component {
                   dropdownStyle={{ width: 400 }}
                   optionFilterProp="children"
                   showSearch
-                  notFoundContent={<a onClick={this.handleShowAddLineModal}>+ 添加地址</a>}
+                  notFoundContent={<a onClick={() => {}}>+ 添加地址</a>}
                 >
                   {consignerLocations.filter(cl => cl.ref_partner_id === customerPartnerId || cl.ref_partner_id === -1)
                     .map(dw => <Option value={dw.node_id} key={dw.node_id}>{this.renderConsign(dw)}</Option>)
@@ -721,7 +641,7 @@ export default class TransportForm extends Component {
                   dropdownStyle={{ width: 400 }}
                   optionFilterProp="children"
                   showSearch
-                  notFoundContent={<a onClick={this.handleShowAddLineModal}>+ 添加地址</a>}
+                  notFoundContent={<a onClick={() => {}}>+ 添加地址</a>}
                 >
                   {consigneeLocations.filter(cl => cl.ref_partner_id === customerPartnerId || cl.ref_partner_id === -1)
                     .map(dw => <Option value={dw.node_id} key={dw.node_id}>{this.renderConsign(dw)}</Option>)
