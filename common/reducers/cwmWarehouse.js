@@ -34,7 +34,6 @@ const initialState = {
     visible: false,
   },
   whseOwners: [],
-  currentWarehouse: {},
 };
 
 export default function reducer(state = initialState, action) {
@@ -44,7 +43,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.HIDE_WAREHOUSE_MODAL:
       return { ...state, warehouseModal: { ...state.warehouseModal, visible: false } };
     case actionTypes.LOAD_WAREHOUSE_SUCCEED:
-      return { ...state, warehouseList: action.result.data, currentWarehouse: action.result.data[0] };
+      return { ...state, warehouseList: action.result.data };
     case actionTypes.LOAD_ZONE_SUCCEED:
       return { ...state, zoneList: action.result.data };
     case actionTypes.SHOW_LOCATION_MODAL:

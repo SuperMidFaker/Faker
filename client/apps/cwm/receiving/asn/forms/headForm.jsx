@@ -5,7 +5,6 @@ import { Form, Input, Select, DatePicker, Card, Col, Radio, Row } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
-import { loadwhseOwners } from 'common/reducers/cwmWarehouse';
 
 const dateFormat = 'YYYY/MM/DD';
 const formatMsg = format(messages);
@@ -17,10 +16,9 @@ const RadioGroup = Radio.Group;
 @injectIntl
 @connect(
   state => ({
-    currentWarehouse: state.cwmWarehouse.currentWarehouse,
-    whseOwners: state.cwmWarehouse.whseOwners,
+    owners: state.cwmContext.whseAttrs.owners,
   }),
-  { loadwhseOwners }
+  { }
 )
 export default class HeadForm extends Component {
   static propTypes = {
@@ -30,11 +28,6 @@ export default class HeadForm extends Component {
   }
   state = {
     bonded: 0,
-  }
-  componentWillMount() {
-    const { tenantId } = this.props;
-    const whseCode = this.props.currentWarehouse.whse_code;
-    this.props.loadwhseOwners(whseCode, tenantId);
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
@@ -65,21 +58,19 @@ export default class HeadForm extends Component {
     });
   }
   render() {
-    const { form: { getFieldDecorator }, whseOwners } = this.props;
+    const { form: { getFieldDecorator }, owners } = this.props;
     const { bonded } = this.state;
     return (
       <Card>
         <Row gutter={16}>
           <Col sm={24} lg={8}>
             <FormItem label="货主">
-              {getFieldDecorator('owner_code', {
+              {getFieldDecorator('owner_partner_id', {
                 rules: [{ required: true, message: 'Please select customer!' }],
               })(
-                <Select
-                  placeholder="选择货主"
-                >
+                <Select placeholder="选择货主">
                   {
-                    whseOwners.map(owner => <Option key={owner.owner_tenant_id} value={owner.owner_tenant_id}>{owner.owner_name}</Option>)
+                    owners.map(owner => <Option value={owner.id}>{owner.name}</Option>)
                   }
                 </Select>
                   )}
