@@ -1,4 +1,5 @@
-import React, { PropTypes, Component } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { Form, Input, Modal } from 'antd';
 import { connect } from 'react-redux';
 import { addDriver, editDriver, toggleDriverModal } from 'common/reducers/transportResources';

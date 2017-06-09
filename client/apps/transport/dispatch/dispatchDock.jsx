@@ -1,5 +1,6 @@
 /* eslint no-loop-func: 0 */
-import React, { PropTypes, Component } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import update from 'react/lib/update';
 import { intlShape, injectIntl } from 'react-intl';
 import { Badge, Tag, Button, Popover, message, Row, Col, Tabs } from 'antd';

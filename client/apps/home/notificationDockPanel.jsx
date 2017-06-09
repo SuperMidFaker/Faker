@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { Button, Popconfirm, Tooltip } from 'antd';
 import { connect } from 'react-redux';
 import Avatar from 'react-avatar';

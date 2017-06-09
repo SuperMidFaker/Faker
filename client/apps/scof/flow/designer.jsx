@@ -1,5 +1,6 @@
 /* eslint no-console: 0 */
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { intlShape, injectIntl } from 'react-intl';
@@ -14,7 +15,8 @@ import EditableCell from 'client/components/EditableCell';
 import FlowEdgePanel from './panel/flowEdgePanel';
 import BizObjCMSPanel from './panel/bizObjCMSPanel';
 import BizObjTMSPanel from './panel/bizObjTMSPanel';
-import BizObjCWMPanel from './panel/bizObjCWMPanel';
+import BizObjCWMReceivingPanel from './panel/bizObjCWMReceivingPanel';
+import BizObjCWMShippingPanel from './panel/bizObjCWMShippingPanel';
 import { loadFormRequires } from 'common/reducers/crmOrders';
 import { formatMsg } from './message.i18n';
 
@@ -29,7 +31,8 @@ const NodeKindPanelMap = {
   import: BizObjCMSPanel,
   export: BizObjCMSPanel,
   tms: BizObjTMSPanel,
-  cwm: BizObjCWMPanel,
+  cwmreceiving: BizObjCWMReceivingPanel,
+  cwmshipping: BizObjCWMShippingPanel,
 };
 
 function fetchData({ state, dispatch }) {
@@ -66,7 +69,7 @@ export default class FlowDesigner extends React.Component {
     reloadOnDel: PropTypes.func.isRequired,
     trackingFields: PropTypes.arrayOf(PropTypes.shape({ field: PropTypes.string,
       title: PropTypes.string,
-      module: PropTypes.oneOf(['cms', 'tms', 'cwm']) })),
+      module: PropTypes.oneOf(['cms', 'tms', 'cwmreceiving', 'cwmshipping']) })),
     currentFlow: PropTypes.shape({ id: PropTypes.number.isRequired,
       name: PropTypes.string.isRequired,
       partner_id: PropTypes.number.isRequired,
@@ -85,7 +88,8 @@ export default class FlowDesigner extends React.Component {
     this.trackingFieldTypeMapNodeKinds = {
       cms: ['import', 'export'],
       tms: ['tms'],
-      cwm: ['cwm'],
+      cwmreceiving: ['cwmreceiving'],
+      cwmshipping: ['cwmshipping'],
     };
     this.beginAdd = false;
     this.dragging = false;
@@ -138,7 +142,8 @@ export default class FlowDesigner extends React.Component {
       import: 'red',
       export: 'green',
       tms: 'blue',
-      cwm: 'purple',
+      cwmreceiving: 'purple',
+      cwmshipping: 'purple',
       terminal: 'black',
     };
     this.graph.node().label('name', name => name);
@@ -258,8 +263,11 @@ export default class FlowDesigner extends React.Component {
       case 'nodetms':
         kind = 'tms';
         break;
-      case 'nodecwm':
-        kind = 'cwm';
+      case 'nodecwmreceiving':
+        kind = 'cwmreceiving';
+        break;
+      case 'nodecwmshipping':
+        kind = 'cwmshipping';
         break;
       case 'nodeterminal':
         kind = 'terminal';
@@ -482,7 +490,8 @@ export default class FlowDesigner extends React.Component {
       <RadioButton value="nodeimport"><Tooltip title={`添加${this.msg('flowNodeImport')}节点`}><span><MdIcon mode="ikons" type="login" /></span></Tooltip></RadioButton>
       <RadioButton value="nodeexport"><Tooltip title={`添加${this.msg('flowNodeExport')}节点`}><span><MdIcon mode="ikons" type="logout" /></span></Tooltip></RadioButton>
       <RadioButton value="nodetms"><Tooltip title={`添加${this.msg('flowNodeTMS')}节点`}><span><MdIcon type="truck" /></span></Tooltip></RadioButton>
-      <RadioButton value="nodecwm"><Tooltip title={`添加${this.msg('flowNodeCWM')}节点`}><span><MdIcon type="layers" /></span></Tooltip></RadioButton>
+      <RadioButton value="nodereceiving"><Tooltip title={`添加${this.msg('flowNodeCWMReceiving')}节点`}><span><MdIcon type="download" /></span></Tooltip></RadioButton>
+      <RadioButton value="nodeshipping"><Tooltip title={`添加${this.msg('flowNodeCWMShipping')}节点`}><span><MdIcon type="upload" /></span></Tooltip></RadioButton>
       <RadioButton value="nodeterminal"><Tooltip title={`添加${this.msg('flowNodeTerminal')}节点`}><span><MdIcon type="dot-circle" /></span></Tooltip></RadioButton>
     </RadioGroup>
     );

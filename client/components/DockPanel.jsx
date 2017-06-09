@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { Alert, Badge, Breadcrumb, Button, Spin } from 'antd';
 import classNames from 'classnames';
 import './dock-panel.less';

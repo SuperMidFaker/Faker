@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Link } from 'react-router';
@@ -297,7 +298,7 @@ export default class CWMSkuList extends React.Component {
             </div>
             <Collapse accordion defaultActiveKey="packing">
               <Panel header="包装规则" key="packing" />
-              <Panel header="条码规则" key="barcode" />
+              <Panel header="条码规则" key="tag" />
             </Collapse>
           </div>
         </Sider>

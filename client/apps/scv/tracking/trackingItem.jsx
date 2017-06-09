@@ -1,6 +1,7 @@
 /* eslint no-param-reassign: 0 */
 /* eslint react/no-find-dom-node: 0 */
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { findDOMNode } from 'react-dom';
 import { Popconfirm, Icon } from 'antd';
 import { DragSource, DropTarget } from 'react-dnd';

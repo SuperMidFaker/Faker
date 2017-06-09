@@ -1,4 +1,5 @@
-import React, { PropTypes, Component } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { Badge, Icon, Table, Tooltip } from 'antd';
 import moment from 'moment';
 import { connect } from 'react-redux';

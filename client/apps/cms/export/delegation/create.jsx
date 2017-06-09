@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import Create from '../../common/delegation/create';
 

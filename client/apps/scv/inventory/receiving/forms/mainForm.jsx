@@ -1,5 +1,6 @@
 /* eslint react/no-multi-comp: 0 */
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { Form, Select, DatePicker, Card, Col, Row, Table } from 'antd';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';

@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Dropdown, Menu, Form, Select, Card, Col, Icon, Input, Row, Tooltip, Checkbox } from 'antd';

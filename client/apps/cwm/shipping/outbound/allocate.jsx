@@ -1,6 +1,7 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Breadcrumb, Icon, Form, Layout, Menu, Popconfirm, Steps, Button, Select, Card, Col, Row, Tag, Table, Input, Tooltip } from 'antd';
+import { Breadcrumb, Icon, Form, Layout, Menu, Popconfirm, Steps, Button, Select, Card, Col, Row, Tag, Table, Input, Tooltip, Radio } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import Avatar from 'react-avatar';
@@ -14,6 +15,8 @@ import { format } from 'client/common/i18n/helpers';
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
 const Option = Select.Option;
+const RadioGroup = Radio.Group;
+const RadioButton = Radio.Button;
 const Step = Steps.Step;
 
 @injectIntl
@@ -46,7 +49,8 @@ export default class OutboundAllocate extends Component {
   }
   state = {
     selectedRowKeys: [],
-    receivingMode: 'scan',
+    allocated: false,
+    shippingMode: 'scan',
   }
   msg = key => formatMsg(this.props.intl, key);
   handleSave = () => {
@@ -62,12 +66,14 @@ export default class OutboundAllocate extends Component {
   handleCancelBtnClick = () => {
     this.context.router.goBack();
   }
-  handleSaveAccept = () => {
-    this.handleSave({ accepted: true });
-  }
-  handleReceivingModeChange = (ev) => {
+  handleAutoAllocate = () => {
     this.setState({
-      receivingMode: ev.target.value,
+      allocated: true,
+    });
+  }
+  handleShippingModeChange = (ev) => {
+    this.setState({
+      shippingMode: ev.target.value,
     });
   }
   handleReceive = () => {
@@ -253,28 +259,29 @@ export default class OutboundAllocate extends Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="top-bar-tools">
-            <Button size="large" icon="rocket" onClick={this.handlePrint} >
+            {this.state.allocated && this.state.shippingMode === 'manual' && <Button size="large" icon="printer" onClick={this.handlePrint} >
+              打印拣货单
+            </Button>}
+            {this.state.allocated && <RadioGroup defaultValue={this.state.shippingMode} onChange={this.handleShippingModeChange} size="large">
+              <RadioButton value="scan"><Icon type="scan" /> 扫码拣货</RadioButton>
+              <RadioButton value="manual"><Icon type="solution" /> 人工拣货</RadioButton>
+            </RadioGroup>}
+            {this.state.allocated ? <Button size="large" icon="rocket" onClick={this.handleAutoAllocate} /> : <Button size="large" icon="rocket" onClick={this.handleAutoAllocate} >
               自动分配
-            </Button>
+            </Button>}
           </div>
         </Header>
         <Content className="main-content">
           <Form layout="vertical">
             <Card bodyStyle={{ paddingBottom: 56 }}>
               <Row>
-                <Col sm={24} lg={6}>
+                <Col sm={24} lg={8}>
                   <InfoItem label="货主" field="04601|米思米(中国)精密机械贸易" />
                 </Col>
-                <Col sm={24} lg={6}>
-                  <InfoItem label="入库单号" field="I096120170603223-01" />
+                <Col sm={24} lg={8}>
+                  <InfoItem label="出库单号" field="O096120170603223-01" />
                 </Col>
-                <Col sm={24} lg={3}>
-                  <InfoItem label="预计箱数" addonBefore={<Icon type="inbox" />} field={10} editable />
-                </Col>
-                <Col sm={24} lg={3}>
-                  <InfoItem label="预计托盘数" addonBefore={<Icon type="appstore-o" />} field={2} editable />
-                </Col>
-                <Col sm={24} lg={6}>
+                <Col sm={24} lg={8}>
                   <InfoItem type="dropdown" label="操作人员" addonBefore={<Avatar name="未分配" size={28} round />}
                     placeholder="分配操作人员" editable
                     overlay={<Menu onClick={this.handleMenuClick}>
@@ -297,22 +304,21 @@ export default class OutboundAllocate extends Component {
             <Card bodyStyle={{ padding: 0 }}>
               <div className="toolbar">
                 <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-                  <h3>已选中{this.state.selectedRowKeys.length}项</h3><Button>分批收货</Button>
+                  <h3>已选中{this.state.selectedRowKeys.length}项</h3>
                 </div>
                 <div className="toolbar-right">
-                  {this.state.receivingMode === 'scan' && <Button type="primary" ghost icon="tablet">推送任务</Button>}
-                  {this.state.receivingMode === 'manual' &&
-                  <Popconfirm title="确定此次入库操作已完成?" okText="确认" cancelText="取消">
+                  {this.state.allocated && this.state.shippingMode === 'scan' && <Button type="primary" ghost icon="tablet">推送任务</Button>}
+                  {this.state.allocated && this.state.shippingMode === 'manual' &&
+                  <Popconfirm title="确定此次拣货已完成?" okText="确认" cancelText="取消">
                     <Button type="primary" ghost icon="check" loading={submitting} onClick={this.handleSaveBtnClick}>
-                      入库完成
+                      拣货确认
                     </Button>
                   </Popconfirm>
                   }
-                  {this.state.receivingMode === 'api' && <Button type="primary" ghost icon="sync">同步数据</Button>}
                 </div>
               </div>
               <Table columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={this.mockData} rowKey="id" />
-              <AllocatingModal receivingMode={this.state.receivingMode} />
+              <AllocatingModal shippingMode={this.state.shippingMode} />
             </Card>
           </Form>
         </Content>

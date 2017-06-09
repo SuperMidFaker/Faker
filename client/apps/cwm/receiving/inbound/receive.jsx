@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Breadcrumb, Icon, Dropdown, Form, Radio, Layout, Menu, Popconfirm, Steps, Button, Select, Card, Col, Row, Tag, Table, Input, Tooltip } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -252,8 +253,8 @@ export default class ReceiveInbound extends Component {
               </Button>
             </Dropdown>}
             <RadioGroup defaultValue={this.state.receivingMode} onChange={this.handleReceivingModeChange} size="large">
-              <RadioButton value="scan"><Icon type="scan" /> 扫描收货</RadioButton>
-              <RadioButton value="manual"><Icon type="user" /> 人工收货</RadioButton>
+              <RadioButton value="scan"><Icon type="scan" /> 扫码收货</RadioButton>
+              <RadioButton value="manual"><Icon type="solution" /> 人工收货</RadioButton>
               <RadioButton value="api"><Icon type="api" /> 接口收货</RadioButton>
             </RadioGroup>
           </div>

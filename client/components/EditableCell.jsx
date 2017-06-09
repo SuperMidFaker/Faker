@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { Input, Icon, Select, DatePicker } from 'antd';
 import RegionCascade from 'client/components/region-cascade';
 import moment from 'moment';

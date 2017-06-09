@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { Tabs, Button, Form, Modal, message, Layout } from 'antd';
 import { connect } from 'react-redux';
 import connectNav from 'client/common/decorators/connect-nav';

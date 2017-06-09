@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Breadcrumb, Form, Layout, Button, Row, Col, message } from 'antd';
 import QueueAnim from 'rc-queue-anim';

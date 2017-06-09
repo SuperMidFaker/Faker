@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { Alert, Icon, Layout } from 'antd';
 import { detectBrowser } from 'detect-browser';
 import { intlShape, injectIntl } from 'react-intl';

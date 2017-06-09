@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { Modal, Form, message } from 'antd';
 import { connect } from 'react-redux';
 import withPrivilege from 'client/common/decorators/withPrivilege';

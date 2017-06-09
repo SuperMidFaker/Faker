@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { Button, Icon, Popover, Radio, Slider, Row, Col } from 'antd';
 
 const RadioButton = Radio.Button;

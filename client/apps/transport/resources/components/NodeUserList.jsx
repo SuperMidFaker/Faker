@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { Table, Modal, Card, Form, Input } from 'antd';
 import { validatePhone } from 'common/validater';
 const FormItem = Form.Item;
