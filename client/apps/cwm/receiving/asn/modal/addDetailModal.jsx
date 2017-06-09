@@ -24,6 +24,9 @@ export default class AddDetailModal extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
   }
+  state = {
+    product: {},
+  }
   msg = key => formatMsg(this.props.intl, key)
   handleCancel = () => {
     this.props.hideDetailModal();
@@ -32,9 +35,16 @@ export default class AddDetailModal extends Component {
     this.props.loadProducts(value);
   }
   submit = () => {
+    const product = this.state.product;
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        this.props.addDetial(values);
+        this.props.addDetial({
+          desc_cn: product.desc_cn,
+          unit_name: product.unit_name,
+          product_sku: product.product_sku,
+          currency: product.currency_name,
+          ...values,
+        });
         this.handleCancel();
       }
     });
@@ -42,20 +52,16 @@ export default class AddDetailModal extends Component {
   handleSelect = (value) => {
     const { productNos } = this.props;
     const product = productNos.find(item => item.product_no === value);
-    this.props.form.setFieldsValue({
-      desc_cn: product.desc_cn,
-      unit_name: product.unit_name,
-      unit_price: product.unit_price,
-      product_sku: product.product_sku,
-      currency: product.currency_name,
-    });
+    this.setState({ product });
   }
   render() {
     const { form: { getFieldDecorator }, visible, productNos } = this.props;
+    const product = this.state.product;
     const formItemLayout = {
       labelCol: { span: 6 },
       wrapperCol: { span: 16 },
     };
+    // initialValue not change todo
     return (
       <Modal onCancel={this.handleCancel} visible={visible} title="添加明细" onOk={this.submit}>
         <Form>
@@ -63,7 +69,7 @@ export default class AddDetailModal extends Component {
             {getFieldDecorator('product_no', {
               rules: [{ required: true, message: 'Please input product_no!' }],
             })(
-              <Select combobox optionFilterProp="search" onChange={this.handleSearch} style={{ width: '100%' }} onSelect={this.handleSelect}>
+              <Select mode="combo" onChange={this.handleSearch} style={{ width: '100%' }} onSelect={this.handleSelect}>
                 {
                   productNos.map(data => (<Option value={data.product_no} key={data.product_no}
                     search={data.product_no}
@@ -73,16 +79,10 @@ export default class AddDetailModal extends Component {
             )}
           </FormItem>
           <FormItem label="中文品名" {...formItemLayout}>
-            {getFieldDecorator('desc_cn', {
-            })(
-              <Input disabled />
-            )}
+            <Input disabled value={product.desc_cn} />
           </FormItem>
           <FormItem label="sku" {...formItemLayout}>
-            {getFieldDecorator('product_sku', {
-            })(
-              <Input disabled />
-            )}
+            <Input disabled value={product.product_sku} />
           </FormItem>
           <FormItem label="订单数量" {...formItemLayout}>
             {getFieldDecorator('qty', {
@@ -92,26 +92,20 @@ export default class AddDetailModal extends Component {
             )}
           </FormItem>
           <FormItem label="主单位" {...formItemLayout}>
-            {getFieldDecorator('unit_name', {
-            })(
-              <Input disabled />
-            )}
+            <Input disabled value={product.unit_name} />
           </FormItem>
           <FormItem label="单价" {...formItemLayout}>
             <Row gutter={8}>
               <Col span={12}>
                 {getFieldDecorator('unit_price', {
+                  initialValue: product.unit_price,
                   rules: [{ required: true, message: 'Please input unit_price!' }],
                 })(
                   <Input />
                 )}
               </Col>
               <Col span={12}>
-                {getFieldDecorator('currency', {
-                  rules: [{ required: true, message: 'Please input currency!' }],
-                })(
-                  <Input disabled />
-                )}
+                <Input disabled value={product.currency_name} />
               </Col>
             </Row>
           </FormItem>

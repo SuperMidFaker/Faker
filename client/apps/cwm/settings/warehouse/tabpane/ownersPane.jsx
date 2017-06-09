@@ -3,12 +3,10 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Button, Layout, Table } from 'antd';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../../message.i18n';
 import { showWhseMembers, loadwhseOwners } from 'common/reducers/cwmWarehouse';
 import OwnersModal from '../modal/ownersModal';
+import { formatMsg } from '../message.i18n';
 
-const formatMsg = format(messages);
 const { Content } = Layout;
 
 @injectIntl
@@ -42,7 +40,7 @@ export default class OwnersPane extends Component {
   }, {
     title: '操作',
   }]
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   render() {
     const { whseCode, whseTenantId, whseOwners } = this.props;
     return (

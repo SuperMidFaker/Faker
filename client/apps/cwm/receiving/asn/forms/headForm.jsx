@@ -2,13 +2,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Form, Input, Select, DatePicker, Card, Col, Radio, Row } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../../message.i18n';
+import { Form, Input, Select, DatePicker, Card, Col, Radio, Row } from 'antd';
+import { CWM_ASN_TYPES, CWM_ASN_BONDED_REGTYPES } from 'common/constants';
+import { formatMsg } from '../../message.i18n';
 
 const dateFormat = 'YYYY/MM/DD';
-const formatMsg = format(messages);
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioButton = Radio.Button;
@@ -18,8 +17,7 @@ const RadioGroup = Radio.Group;
 @connect(
   state => ({
     owners: state.cwmContext.whseAttrs.owners,
-  }),
-  { }
+  })
 )
 export default class HeadForm extends Component {
   static propTypes = {
@@ -30,7 +28,7 @@ export default class HeadForm extends Component {
   state = {
     bonded: 0,
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   columns = [{
     title: this.msg('seq'),
     width: 50,
@@ -81,9 +79,7 @@ export default class HeadForm extends Component {
             <FormItem label="采购订单号">
               {getFieldDecorator('po_no', {
                 rules: [{ required: true, message: 'Please input po_no!' }],
-              })(
-                <Input />
-                  )}
+              })(<Input />)}
             </FormItem>
           </Col>
           <Col sm={24} lg={8}>
@@ -96,12 +92,8 @@ export default class HeadForm extends Component {
             <FormItem label="ASN类型">
               {getFieldDecorator('asn_type', {
               })(
-                <Select
-                  placeholder="ASN类型"
-                >
-                  <Option value="0">采购入库</Option>
-                  <Option value="1">调拨入库</Option>
-                  <Option value="2">退货入库</Option>
+                <Select placeholder="ASN类型">
+                  {CWM_ASN_TYPES.map(cat => <Option value={cat.value} key={cat.value}>{cat.text}</Option>)}
                 </Select>
                   )}
             </FormItem>
@@ -125,9 +117,7 @@ export default class HeadForm extends Component {
                   rules: [{ required: true, message: 'Please select reg_type!' }],
                 })(
                   <RadioGroup>
-                    <RadioButton value={0}>先报关后入库</RadioButton>
-                    <RadioButton value={1}>先入库后报关</RadioButton>
-                    <RadioButton value={2}>不报关</RadioButton>
+                    {CWM_ASN_BONDED_REGTYPES.map(cabr => <RadioButton value={cabr.value} key={cabr.value}>{cabr.text}</RadioButton>)}
                   </RadioGroup>
                 )}
               </FormItem>

@@ -8,6 +8,7 @@ const actionTypes = createActionTypes('@@welogix/scof/flow/', [
   'LOAD_FLOWLIST', 'LOAD_FLOWLIST_SUCCEED', 'LOAD_FLOWLIST_FAIL',
   'LOAD_CMSBIZPARAMS', 'LOAD_CMSBIZPARAMS_SUCCEED', 'LOAD_CMSBIZPARAMS_FAIL',
   'LOAD_TMSBIZPARAMS', 'LOAD_TMSBIZPARAMS_SUCCEED', 'LOAD_TMSBIZPARAMS_FAIL',
+  'LOAD_CWMRECBIZPARAMS', 'LOAD_CWMRECBIZPARAMS_SUCCEED', 'LOAD_CWMRECBIZPARAMS_FAIL',
   'LOAD_CUSTOMERQUOTES', 'LOAD_CUSTOMERQUOTES_SUCCEED', 'LOAD_CUSTOMERQUOTES_FAIL',
   'SAVE_FLOW', 'SAVE_FLOW_SUCCEED', 'SAVE_FLOW_FAIL',
   'EDIT_FLOW', 'EDIT_FLOW_SUCCEED', 'EDIT_FLOW_FAIL',
@@ -60,6 +61,7 @@ const initialState = {
   },
   cmsQuotes: [],
   tmsParams: { consigners: [], consignees: [], transitModes: [], packagings: [] },
+  cwmRecParams: { whses: [] },
   addLineModal: {
     visible: false,
     line: {},
@@ -91,6 +93,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, cmsQuotes: action.result.data };
     case actionTypes.LOAD_TMSBIZPARAMS_SUCCEED:
       return { ...state, tmsParams: action.result.data };
+    case actionTypes.LOAD_CWMRECBIZPARAMS_SUCCEED:
+      return { ...state, cwmRecParams: action.result.data };
     case actionTypes.LOAD_FLOWLIST:
       return { ...state, flowListLoading: true, listFilter: JSON.parse(action.params.filter) };
     case actionTypes.LOAD_FLOWLIST_FAIL:
@@ -314,6 +318,21 @@ export function loadTmsBizParams(tenantId) {
       endpoint: 'v1/scof/flow/tms/params',
       method: 'get',
       params: { tenantId },
+    },
+  };
+}
+
+export function loadCwmRecBizParams(tenantId, ownerPid) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_CWMRECBIZPARAMS,
+        actionTypes.LOAD_CWMRECBIZPARAMS_SUCCEED,
+        actionTypes.LOAD_CWMRECBIZPARAMS_FAIL,
+      ],
+      endpoint: 'v1/cwm/receiving/flow/params',
+      method: 'get',
+      params: { tenantId, owner_partner_id: ownerPid },
     },
   };
 }

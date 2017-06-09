@@ -2,11 +2,9 @@ import React, { Component } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Modal, Form, Input, Radio, message } from 'antd';
-import messages from '../../message.i18n';
-import { format } from 'client/common/i18n/helpers';
 import { hideWarehouseModal, addWarehouse, loadwhList } from 'common/reducers/cwmWarehouse';
+import { formatMsg } from '../message.i18n';
 
-const formatMsg = format(messages);
 const FormItem = Form.Item;
 @injectIntl
 
@@ -26,7 +24,7 @@ export default class WareHouseModal extends Component {
   state = {
     isBonded: 0,
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   handleChange = (e) => {
     this.setState({
       isBonded: e.target.value,

@@ -3,11 +3,9 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Modal, Form, Input, Radio, message } from 'antd';
-import messages from '../../message.i18n';
-import { format } from 'client/common/i18n/helpers';
 import { hideLocationModal, addLocation, loadLocations, updateLocation } from 'common/reducers/cwmWarehouse';
+import { formatMsg } from '../message.i18n';
 
-const formatMsg = format(messages);
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
@@ -50,7 +48,7 @@ export default class AddLocationModal extends Component {
       });
     }
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   handleCancel = () => {
     this.props.hideLocationModal();
   }
