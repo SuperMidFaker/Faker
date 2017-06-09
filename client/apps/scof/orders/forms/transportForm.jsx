@@ -514,7 +514,7 @@ export default class TransportForm extends Component {
     };
     this.handleSetClientForm(related);
   }
-  renderConsign = consign => `${consign.name} | ${Location.renderLoc(consign)} | ${consign.byname || ''} | ${consign.contact || ''}`
+  renderConsign = consign => `${consign.name} | ${Location.renderLoc(consign)} | ${consign.contact || ''}`
   renderTmsTariff = (row) => {
     let text = row.quoteNo;
     const tms = this.props.formRequires.transitModes.find(tm => tm.id === Number(row.transModeCode));
@@ -528,7 +528,6 @@ export default class TransportForm extends Component {
   render() {
     const { formData, serviceTeam, formRequires: { consignerLocations, consigneeLocations,
       transitModes, packagings, vehicleTypes, vehicleLengths }, customerPartnerId } = this.props;
-    const { rateSources, rateEnds } = this.state;
     // todo consigner consignee by customer partner id
     const node = formData.node;
     const consignerRegion = [
@@ -674,7 +673,6 @@ export default class TransportForm extends Component {
                   notFoundContent={<a onClick={this.handleShowAddLineModal}>+ 添加地址</a>}
                 >
                   {consignerLocations.filter(cl => cl.ref_partner_id === customerPartnerId || cl.ref_partner_id === -1)
-                    .filter(cl => node.quote_no ? rateSources.find(rs => rs.source.code === cl.region_code) : true)
                     .map(dw => <Option value={dw.node_id} key={dw.node_id}>{this.renderConsign(dw)}</Option>)
                 }
                   <Option value={-1} key={-1}>+ 添加地址</Option>
@@ -726,15 +724,6 @@ export default class TransportForm extends Component {
                   notFoundContent={<a onClick={this.handleShowAddLineModal}>+ 添加地址</a>}
                 >
                   {consigneeLocations.filter(cl => cl.ref_partner_id === customerPartnerId || cl.ref_partner_id === -1)
-                    .filter(cl => node.quote_no ? rateEnds.find(rs => rs.end.code === cl.region_code) : true)
-                    .map((cl) => {
-                      const end = rateEnds.find(rs => rs.end.code === cl.region_code);
-                      if (end) {
-                        return { ...cl, byname: end.end.name };
-                      } else {
-                        return cl;
-                      }
-                    })
                     .map(dw => <Option value={dw.node_id} key={dw.node_id}>{this.renderConsign(dw)}</Option>)
                 }
                   <Option value={-1} key={-1}>+ 添加地址</Option>

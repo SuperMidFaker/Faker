@@ -146,14 +146,6 @@ const messages = defineMessages({
     id: 'scof.flow.biz.tms.pod.type',
     defaultMessage: '回单',
   },
-  locationType: {
-    id: 'scof.flow.biz.tms.location.type',
-    defaultMessage: '地点类型',
-  },
-  locationName: {
-    id: 'scof.flow.biz.tms.location.name',
-    defaultMessage: '地点名称',
-  },
   locationProvince: {
     id: 'scof.flow.biz.tms.location.province',
     defaultMessage: '省/市/区',

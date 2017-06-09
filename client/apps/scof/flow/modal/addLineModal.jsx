@@ -43,21 +43,29 @@ class Node extends React.Component {
   }
   render() {
     const { index, node } = this.props;
+    let namePlaceholder = '';
+    if (node.type === 0) {
+      namePlaceholder = '发货方名称';
+    } else if (node.type === 1) {
+      namePlaceholder = '收货方名称';
+    } else if (node.type === 2) {
+      namePlaceholder = '中转方名称';
+    }
     return (
       <Card>
         <Row gutter={10}>
           <Col span="12">
-            <FormItem label={this.msg('locationType')}>
+            <FormItem>
               <RadioGroup value={node.type} size="large" onChange={e => this.handleChange('type', e.target.value)}>
-                <RadioButton value={0}>发货地</RadioButton>
-                <RadioButton value={1}>收货地</RadioButton>
-                <RadioButton value={2}>中转地</RadioButton>
+                <RadioButton value={0}>发货方</RadioButton>
+                <RadioButton value={1}>收货方</RadioButton>
+                <RadioButton value={2}>中转方</RadioButton>
               </RadioGroup>
             </FormItem>
           </Col>
           <Col span="12">
-            <FormItem label={this.msg('locationName')}>
-              <Input value={node.name} onChange={e => this.handleChange('name', e.target.value)} />
+            <FormItem>
+              <Input value={node.name} onChange={e => this.handleChange('name', e.target.value)} placeholder={namePlaceholder} />
             </FormItem>
           </Col>
         </Row>
@@ -72,7 +80,7 @@ class Node extends React.Component {
           </Col>
           <Col span="12">
             <FormItem label={this.msg('locationAddress')}>
-              <Input value={node.addr} onChange={e => this.handleChange('addr', e.target.value)} />
+              <Input value={node.addr} onChange={e => this.handleChange('addr', e.target.value)} placeholder="请输入收货地址" />
             </FormItem>
           </Col>
         </Row>
