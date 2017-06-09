@@ -8,12 +8,13 @@ import connectNav from 'client/common/decorators/connect-nav';
 import ButtonToggle from 'client/components/ButtonToggle';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import ProfileForm from './forms/profileForm';
+import ProfileCard from './cards/profileCard';
 import CustomerModal from './modals/customerModal';
 import { loadCustomers, showCustomerModal, deleteCustomer } from 'common/reducers/crmCustomers';
 import { PARTNER_ROLES } from 'common/constants';
-import CustomerName from './cards/customerName';
-import CustomerMajor from './cards/customerMajor';
+import OverviewCard from './cards/overviewCard';
+import ResourcesCard from './cards/resourcesCard';
+import ServiceCard from './cards/serviceCard';
 
 const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
@@ -183,11 +184,22 @@ export default class CustomerList extends React.Component {
           <Content className="main-content layout-fixed-width layout-fixed-width-lg">
             <Row gutter={16}>
               <Col sm={24} md={16}>
-                <CustomerName customer={customer} />
-                <CustomerMajor customer={customer} />
+                <OverviewCard customer={customer} />
+                <Row gutter={16}>
+                  <Col sm={24} md={8}>
+                    <ServiceCard />
+                  </Col>
+                  <Col sm={24} md={8}>
+                    <ServiceCard />
+                  </Col>
+                  <Col sm={24} md={8}>
+                    <ServiceCard />
+                  </Col>
+                </Row>
+                <ResourcesCard customer={customer} />
               </Col>
               <Col sm={24} md={8}>
-                <ProfileForm customer={customer} />
+                <ProfileCard customer={customer} />
               </Col>
             </Row>
           </Content>

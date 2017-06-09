@@ -11,7 +11,6 @@ import { showSubCustomerModal } from 'common/reducers/crmCustomers';
 
 const formatMsg = format(messages);
 
-
 @injectIntl
 @connect(
   state => ({
@@ -46,13 +45,8 @@ export default class SubCustomerList extends React.Component {
       render: o => (<div style={{ paddingLeft: 15 }}>{o}</div>),
     }];
     return (
-      <Card
-        bodyStyle={{ padding: 0, backgroundColor: '#fff' }}
-        className="secondary-card"
-        title={this.msg('subCustomer')}
-        extra={<a href="#" onClick={() => this.props.showSubCustomerModal('add', customer)}>添加</a>}
-      >
-        <Table size="middle" dataSource={customer.subCustomers} columns={columns} showHeader={false}
+      <Card extra={<a href="#" onClick={() => this.props.showSubCustomerModal('add', customer)}>添加</a>} >
+        <Table size="small" dataSource={customer.subCustomers} columns={columns} showHeader={false}
           pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }} rowKey="id"
         />
         <SubCustomerModal onOk={() => {}} />

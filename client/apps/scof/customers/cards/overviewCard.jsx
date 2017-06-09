@@ -15,7 +15,7 @@ const formatMsg = format(messages);
   () => ({}),
   { updateCustomerNames },
 )
-export default class CustomerName extends React.Component {
+export default class OverviewCard extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     customer: PropTypes.object.isRequired,

@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Card, Tabs } from 'antd';
-import FlowRulesPane from '../flowRulesPane';
-import ConsignInfoPane from '../consignInfoPane';
-import TariffPane from '../tariffPane';
+import FlowRulesPane from '../pane/flowRulesPane';
+import ConsignInfoPane from '../pane/consignInfoPane';
+import TariffPane from '../pane/tariffPane';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 const formatMsg = format(messages);
@@ -17,7 +17,7 @@ const TabPane = Tabs.TabPane;
   {},
 )
 
-export default class CustomerMajor extends React.Component {
+export default class ResourcesCard extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     customer: PropTypes.object.isRequired,

@@ -5,7 +5,7 @@ import { Table } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { loadCustomerFlows } from 'common/reducers/crmCustomers';
 import { format } from 'client/common/i18n/helpers';
-import messages from './message.i18n';
+import messages from '../message.i18n';
 
 const formatMsg = format(messages);
 

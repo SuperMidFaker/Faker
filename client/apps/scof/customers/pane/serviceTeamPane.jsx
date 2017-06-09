@@ -8,7 +8,6 @@ import { showServiceTeamModal, loadServiceTeamMembers } from 'common/reducers/cr
 import { loadDepartments } from 'common/reducers/personnel';
 import messages from '../message.i18n';
 import ServiceTeamModal from '../modals/serviceTeamModal';
-import '../index.less';
 
 const formatMsg = format(messages);
 
@@ -71,8 +70,8 @@ export default class ServiceTeam extends React.Component {
       },
     }];
     return (
-      <Card bodyStyle={{ padding: 0, backgroundColor: '#fff' }} className="secondary-card" title={this.msg('serviceTeam')} extra={<a href="#" onClick={() => this.props.showServiceTeamModal()}>添加成员</a>} >
-        <Table columns={column} dataSource={serviceTeamMembers} pagination={false} rowKey="id" />
+      <Card extra={<a href="#" onClick={() => this.props.showServiceTeamModal()}>添加成员</a>} >
+        <Table size="small" columns={column} dataSource={serviceTeamMembers} pagination={false} rowKey="id" />
         <ServiceTeamModal customer={customer} filters={filters} selectedUserIds={this.state.selectedRowKeys} />
       </Card>
     );

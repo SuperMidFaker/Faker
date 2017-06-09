@@ -6,7 +6,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { loadNodeList } from 'common/reducers/transportResources';
 import * as Location from 'client/util/location';
 import { format } from 'client/common/i18n/helpers';
-import messages from './message.i18n';
+import messages from '../message.i18n';
 
 const formatMsg = format(messages);
 
