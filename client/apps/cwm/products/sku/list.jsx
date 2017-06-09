@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Link } from 'react-router';
-import { Breadcrumb, Button, Icon, Popconfirm, Input, Layout, Select, message } from 'antd';
+import { Breadcrumb, Button, Collapse, Icon, Popconfirm, Input, Layout, Select, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import SearchBar from 'client/components/search-bar';
 import ButtonToggle from 'client/components/ButtonToggle';
@@ -14,6 +14,7 @@ import { formatMsg } from '../message.i18n';
 const { Header, Content, Sider } = Layout;
 const Search = Input.Search;
 const Option = Select.Option;
+const Panel = Collapse.Panel;
 
 @injectIntl
 @connect(
@@ -259,15 +260,13 @@ export default class CWMSkuList extends React.Component {
             </Breadcrumb>}
             {owner.id &&
             <div className="top-bar-tools">
-              <Button size="large" icon="cloud-upload">
+              <Button size="large" icon="upload">
                 {this.msg('productImport')}
               </Button>
               <Button type="primary" size="large" icon="plus" onClick={this.handleCreateBtnClick}>
                 {this.msg('createSKU')}
               </Button>
-              <ButtonToggle size="large" iconOn="setting" iconOff="setting" onClick={this.toggleRightSider}>
-                规则设置
-              </ButtonToggle>
+              <ButtonToggle size="large" iconOn="setting" iconOff="setting" onClick={this.toggleRightSider} />
             </div>}
           </Header>
           <Content className="main-content" key="main">
@@ -294,8 +293,12 @@ export default class CWMSkuList extends React.Component {
         >
           <div className="right-sider-panel">
             <div className="panel-header">
-              <h3>包装代码</h3>
+              <h3>规则设置</h3>
             </div>
+            <Collapse accordion defaultActiveKey="packing">
+              <Panel header="包装规则" key="packing" />
+              <Panel header="条码规则" key="barcode" />
+            </Collapse>
           </div>
         </Sider>
       </Layout>
