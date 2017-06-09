@@ -355,6 +355,12 @@ export default class ManifestEditor extends React.Component {
     if (billHead.template_id) {
       modelProps.initialValue = billHead.template_id;
     }
+    let filterProducts = [];
+    if (ietype === 'import') {
+      filterProducts = billBodies.filter(item => item.customs && item.customs.indexOf('A') !== -1);
+    } else {
+      filterProducts = billBodies.filter(item => item.customs && item.customs.indexOf('B') !== -1);
+    }
     return (
       <Layout>
         <Layout>
@@ -431,9 +437,9 @@ export default class ManifestEditor extends React.Component {
                   <TabPane tab="清单表体" key="body">
                     <ManifestBodyPanel ietype={ietype} readonly={!editable} headForm={form} data={billBodies} billSeqNo={billHead.bill_seq_no} />
                   </TabPane>
-                  <TabPane tab="法检物料" key="legalInspection">
-                    <ManifestLegalInspectionPanel ietype={ietype} />
-                  </TabPane>
+                  {filterProducts.length > 0 && <TabPane tab="法检物料" key="legalInspection">
+                    <ManifestLegalInspectionPanel filterProducts={filterProducts} />
+                  </TabPane>}
                 </Tabs>
               </div>
             </Spin>

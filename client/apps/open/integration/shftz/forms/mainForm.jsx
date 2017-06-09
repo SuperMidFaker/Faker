@@ -21,7 +21,7 @@ export default class MainForm extends Component {
       <Row gutter={16}>
         <Col sm={24} lg={18}>
           <FormItem label={this.msg('server')}>
-            {getFieldDecorator('ftp_server', {
+            {getFieldDecorator('server', {
               initialValue: easipass.ftp_server,
               rules: [{ required: true, message: this.msg('parameterRequired') }],
             })(<Input />)}
@@ -29,7 +29,7 @@ export default class MainForm extends Component {
         </Col>
         <Col sm={24} lg={6}>
           <FormItem label={this.msg('port')}>
-            {getFieldDecorator('ftp_server', {
+            {getFieldDecorator('port', {
               initialValue: easipass.ftp_server,
               rules: [{ required: true, message: this.msg('parameterRequired') }],
             })(<Input />)}

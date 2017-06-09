@@ -8,11 +8,11 @@ const messages = defineMessages({
   },
   productsSku: {
     id: 'cwm.products.sku',
-    defaultMessage: 'SKU',
+    defaultMessage: 'SKU管理',
   },
   productImport: {
     id: 'cwm.products.import',
-    defaultMessage: '货品',
+    defaultMessage: '导入',
   },
   createSKU: {
     id: 'cwm.products.sku.create',

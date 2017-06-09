@@ -143,6 +143,12 @@ export default class CustomsDeclEditor extends React.Component {
   }
   render() {
     const { ietype, form, head, bodies, billMeta, invTemplates } = this.props;
+    let filterProducts = [];
+    if (ietype === 'import') {
+      filterProducts = bodies.filter(item => item.customs && item.customs.indexOf('A') !== -1);
+    } else {
+      filterProducts = bodies.filter(item => item.customs && item.customs.indexOf('B') !== -1);
+    }
     const declkey = Object.keys(CMS_DECL_STATUS).filter(stkey => CMS_DECL_STATUS[stkey].value === head.status)[0];
     const declEntryMenu = (
       <Menu onClick={this.handleEntryVisit}>
@@ -221,9 +227,9 @@ export default class CustomsDeclEditor extends React.Component {
                   <TabPane tab="报关单表体" key="body">
                     <SheetBodyPanel ietype={ietype} data={bodies} headNo={head.id} />
                   </TabPane>
-                  <TabPane tab="法检物料" key="legalInspection">
-                    <LegalInspectionPanel ietype={ietype} data={bodies} />
-                  </TabPane>
+                  {filterProducts.length > 0 && <TabPane tab="法检物料" key="legalInspection">
+                    <LegalInspectionPanel filterProducts={filterProducts} />
+                  </TabPane>}
                 </Tabs>
               </div>
             </Spin>
