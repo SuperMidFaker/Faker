@@ -15,3 +15,24 @@ exports.CWM_SKU_PACK_UNITS = [{
   text: '托盘',
 }];
 
+exports.CWM_ASN_TYPES = [{
+  value: '1',
+  text: '采购入库',
+}, {
+  value: '2',
+  text: '调拨入库',
+}, {
+  value: '3',
+  text: '退货入库',
+}];
+
+exports.CWM_ASN_BONDED_REGTYPES = [{
+  value: '1',
+  text: '先报关后入库',
+}, {
+  value: '2',
+  text: '先入库后报关',
+}, {
+  value: '3',
+  text: '不报关',
+}];

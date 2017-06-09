@@ -68,13 +68,15 @@ const tmsBizObjects = [{
   }],
 }];
 
-const cwmBizObjects = [{
+const cwmRecBizObjects = [{
   key: 'cwmReceiving',
-  text: 'cwmReceiving',
+  text: 'cwmRecAsn',
   triggers: CMS_DELEGATION_TRIGGERS,
-}, {
+}];
+
+const cwmShippingBizObjects = [{
   key: 'cwmShipping',
-  text: 'cwmShipping',
+  text: 'cwmShippingOrder',
   triggers: CMS_DELEGATION_TRIGGERS,
 }];
 
@@ -82,12 +84,14 @@ exports.NODE_BIZ_OBJECTS = {
   import: cmsBizObjects,
   export: cmsBizObjects,
   tms: tmsBizObjects,
-  cwm: cwmBizObjects,
+  cwmrec: cwmRecBizObjects,
+  cwmship: cwmShippingBizObjects,
 };
 
 exports.NODE_CREATABLE_BIZ_OBJECTS = {
   import: cmsBizObjects.slice(0, cmsBizObjects.length - 1),
   export: cmsBizObjects.slice(0, cmsBizObjects.length - 1),
   tms: tmsBizObjects,
-  cwm: cwmBizObjects,
+  cwmrec: cwmRecBizObjects,
+  cwmship: cwmShippingBizObjects,
 };

@@ -58,9 +58,13 @@ const messages = defineMessages({
     id: 'scof.flow.node.tms',
     defaultMessage: '运输',
   },
-  flowNodeCWM: {
-    id: 'scof.flow.node.cwm',
-    defaultMessage: '仓储',
+  flowNodeCWMRec: {
+    id: 'scof.flow.node.cwm.rec',
+    defaultMessage: '仓储入库',
+  },
+  flowNodeCWMShip: {
+    id: 'scof.flow.node.cwm.ship',
+    defaultMessage: '仓储出库',
   },
   flowNodeTerminal: {
     id: 'scof.flow.node.terminal',
@@ -90,13 +94,13 @@ const messages = defineMessages({
     id: 'scof.flow.biz.tms.shipment',
     defaultMessage: '运单',
   },
-  cwmReceiving: {
-    id: 'scof.flow.biz.cwm.receiving',
-    defaultMessage: '入库单',
+  cwmRecAsn: {
+    id: 'scof.flow.biz.cwm.rec.asn',
+    defaultMessage: '收货通知',
   },
-  cwmShipping: {
-    id: 'scof.flow.biz.cwm.shipping',
-    defaultMessage: '出库单',
+  cwmShippingOrder: {
+    id: 'scof.flow.biz.cwm.shipping.order',
+    defaultMessage: '发货订单',
   },
   declCustoms: {
     id: 'scof.flow.biz.cms.declcustoms',
@@ -161,6 +165,10 @@ const messages = defineMessages({
   newStartLocation: {
     id: 'scof.flow.biz.tms.newStartLocation',
     defaultMessage: '新起始地',
+  },
+  cwmWarehouse: {
+    id: 'scof.flow.biz.cwm.warehouse',
+    defaultMessage: '仓库',
   },
   nodeName: {
     id: 'scof.flow.biz.node.name',

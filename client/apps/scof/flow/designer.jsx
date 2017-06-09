@@ -14,7 +14,8 @@ import EditableCell from 'client/components/EditableCell';
 import FlowEdgePanel from './panel/flowEdgePanel';
 import BizObjCMSPanel from './panel/bizObjCMSPanel';
 import BizObjTMSPanel from './panel/bizObjTMSPanel';
-import BizObjCWMPanel from './panel/bizObjCWMPanel';
+import BizObjCWMRecPanel from './panel/bizObjCWMRecPanel';
+import BizObjCWMShipPanel from './panel/bizObjCWMShipPanel';
 import { loadFormRequires } from 'common/reducers/crmOrders';
 import { formatMsg } from './message.i18n';
 
@@ -29,7 +30,9 @@ const NodeKindPanelMap = {
   import: BizObjCMSPanel,
   export: BizObjCMSPanel,
   tms: BizObjTMSPanel,
-  cwm: BizObjCWMPanel,
+  cwmrec: BizObjCWMRecPanel,
+  cwmship: BizObjCWMShipPanel,
+  terminal: null,
 };
 
 function fetchData({ state, dispatch }) {
@@ -66,7 +69,7 @@ export default class FlowDesigner extends React.Component {
     reloadOnDel: PropTypes.func.isRequired,
     trackingFields: PropTypes.arrayOf(PropTypes.shape({ field: PropTypes.string,
       title: PropTypes.string,
-      module: PropTypes.oneOf(['cms', 'tms', 'cwm']) })),
+      module: PropTypes.oneOf(['cms', 'tms', 'cwmrec', 'cwmship']) })),
     currentFlow: PropTypes.shape({ id: PropTypes.number.isRequired,
       name: PropTypes.string.isRequired,
       partner_id: PropTypes.number.isRequired,
@@ -85,7 +88,8 @@ export default class FlowDesigner extends React.Component {
     this.trackingFieldTypeMapNodeKinds = {
       cms: ['import', 'export'],
       tms: ['tms'],
-      cwm: ['cwm'],
+      cwmrec: ['cwmrec'],
+      cwmship: ['cwmship'],
     };
     this.beginAdd = false;
     this.dragging = false;
@@ -138,7 +142,8 @@ export default class FlowDesigner extends React.Component {
       import: 'red',
       export: 'green',
       tms: 'blue',
-      cwm: 'purple',
+      cwmrec: 'purple',
+      cwmship: 'yellow',
       terminal: 'black',
     };
     this.graph.node().label('name', name => name);
@@ -258,8 +263,11 @@ export default class FlowDesigner extends React.Component {
       case 'nodetms':
         kind = 'tms';
         break;
-      case 'nodecwm':
-        kind = 'cwm';
+      case 'nodecwmrec':
+        kind = 'cwmrec';
+        break;
+      case 'nodecwmship':
+        kind = 'cwmship';
         break;
       case 'nodeterminal':
         kind = 'terminal';
@@ -482,7 +490,8 @@ export default class FlowDesigner extends React.Component {
       <RadioButton value="nodeimport"><Tooltip title={`添加${this.msg('flowNodeImport')}节点`}><span><MdIcon mode="ikons" type="login" /></span></Tooltip></RadioButton>
       <RadioButton value="nodeexport"><Tooltip title={`添加${this.msg('flowNodeExport')}节点`}><span><MdIcon mode="ikons" type="logout" /></span></Tooltip></RadioButton>
       <RadioButton value="nodetms"><Tooltip title={`添加${this.msg('flowNodeTMS')}节点`}><span><MdIcon type="truck" /></span></Tooltip></RadioButton>
-      <RadioButton value="nodecwm"><Tooltip title={`添加${this.msg('flowNodeCWM')}节点`}><span><MdIcon type="layers" /></span></Tooltip></RadioButton>
+      <RadioButton value="nodecwmrec"><Tooltip title={`添加${this.msg('flowNodeCWMRec')}节点`}><span><MdIcon type="trending-down" /></span></Tooltip></RadioButton>
+      <RadioButton value="nodecwmship"><Tooltip title={`添加${this.msg('flowNodeCWMShip')}节点`}><span><MdIcon type="trending-up" /></span></Tooltip></RadioButton>
       <RadioButton value="nodeterminal"><Tooltip title={`添加${this.msg('flowNodeTerminal')}节点`}><span><MdIcon type="dot-circle" /></span></Tooltip></RadioButton>
     </RadioGroup>
     );
@@ -537,7 +546,7 @@ export default class FlowDesigner extends React.Component {
                   { opacity: [1, 0], translateY: [0, -50] },
                 ]}
                 >
-                  {activeItem.get('type') === 'node' &&
+                  {NodePanel && activeItem.get('type') === 'node' &&
                   <NodePanel onFormInit={this.handlePanelForm} node={activeItem} graph={this.graph}
                     onNodeActionsChange={this.handleNodeActionsChange} key={activeItem.get('model').kind}
                   />
