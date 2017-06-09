@@ -62,7 +62,7 @@ export default class EditBodyForm extends Component {
         const unit1Val = unit1 ? unit1.value : '';
         const unit2 = this.props.units.filter(unit => unit.value === item.unit_2)[0];
         const unit2Val = unit2 ? unit2.value : '';
-        const unitg = this.props.units.filter(unit => unit.value === item.g_unit)[0];
+        const unitg = this.props.units.filter(unit => unit.value === item.g_unit || unit.text === item.g_unit)[0];
         const gunitVal = unitg ? unitg.value : '';
         this.props.form.setFieldsValue({
           codes: item.hscode,

@@ -1,28 +1,45 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import moment from 'moment';
+import connectFetch from 'client/common/decorators/connect-fetch';
 import { intlShape, injectIntl } from 'react-intl';
-import { Badge, Button, Breadcrumb, Layout, Radio, Select, Table, Tag, notification } from 'antd';
+import { Badge, Button, Breadcrumb, Layout, Radio, Select, Tag, notification } from 'antd';
+import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/search-bar';
 import RowUpdater from 'client/components/rowUpdater';
 import connectNav from 'client/common/decorators/connect-nav';
 import { formatMsg } from '../message.i18n';
-import { loadwhList } from 'common/reducers/cwmWarehouse';
+import { switchDefaultWhse } from 'common/reducers/cwmContext';
+import { loadAsnLists, releaseAsn } from 'common/reducers/cwmReceive';
 
 const { Header, Content } = Layout;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
+function fetchData({ state, dispatch }) {
+  dispatch(loadAsnLists({
+    whseCode: state.cwmContext.defaultWhse.code,
+    pageSize: state.cwmReceive.asn.pageSize,
+    current: state.cwmReceive.asn.current,
+    filters: state.cwmReceive.asnFilters,
+  }));
+}
 
+@connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    warehouseList: state.cwmWarehouse.warehouseList,
-    currentWarehouse: state.cwmWarehouse.currentWarehouse,
+    whses: state.cwmContext.whses,
+    defaultWhse: state.cwmContext.defaultWhse,
+    filters: state.cwmReceive.asnFilters,
+    asn: state.cwmReceive.asn,
+    owners: state.cwmContext.whseAttrs.owners,
+    loginId: state.account.loginId,
   }),
-  { loadwhList }
+  { switchDefaultWhse, loadAsnLists, releaseAsn }
 )
 @connectNav({
   depth: 2,
@@ -39,11 +56,6 @@ export default class ReceivingNoticeList extends React.Component {
   state = {
     selectedRowKeys: [],
     searchInput: '',
-    currentWarehouse: {},
-  }
-  componentWillMount() {
-    const { tenantId } = this.props;
-    this.props.loadwhList(tenantId);
   }
   msg = formatMsg(this.props.intl)
   columns = [{
@@ -54,7 +66,7 @@ export default class ReceivingNoticeList extends React.Component {
   }, {
     title: '货主',
     width: 200,
-    dataIndex: 'owner_code',
+    dataIndex: 'owner_name',
   }, {
     title: '采购订单号',
     dataIndex: 'po_no',
@@ -65,6 +77,7 @@ export default class ReceivingNoticeList extends React.Component {
     title: '通知日期',
     width: 120,
     dataIndex: 'created_date',
+    render: o => moment(o).format('YYYY.MM.DD'),
   }, {
     title: '预期到货时间',
     width: 120,
@@ -80,13 +93,13 @@ export default class ReceivingNoticeList extends React.Component {
     width: 120,
     render: (o) => {
       if (o === 0) {
-        return (<Badge status="default" text="待收货" />);
+        return (<Badge status="pending" text="待收货" />);
       } else if (o === 1) {
-        return (<Badge status="processing" text="入库中" />);
+        return (<Badge status="inbound" text="入库中" />);
       } else if (o === 2) {
-        return (<Badge status="warning" text="部分收货" />);
+        return (<Badge status="partial" text="部分收货" />);
       } else if (o === 3) {
-        return (<Badge status="success" text="收货完成" />);
+        return (<Badge status="completed" text="收货完成" />);
       }
     },
   }, {
@@ -132,51 +145,6 @@ export default class ReceivingNoticeList extends React.Component {
     },
   }]
 
-  dataSource = [{
-    id: '1',
-    asn_no: 'N04601170548',
-    bonded: 1,
-    whse_code: '0961|希雅路仓库',
-    owner_code: '04601|米思米(中国)精密机械贸易',
-    ref_order_no: '7IR2730',
-    status: 0,
-  }, {
-    id: '2',
-    asn_no: 'N04601170547',
-    bonded: 0,
-    whse_code: '0086|物流大道仓库',
-    owner_code: '03701|西门子国际贸易',
-    ref_order_no: 'NUE0394488',
-    status: 1,
-  }, {
-    id: '3',
-    asn_no: 'N04601170546',
-    bonded: 1,
-    whse_code: '0962|富特路仓库',
-    owner_code: '04601|米思米(中国)精密机械贸易',
-    ref_order_no: '7FJ1787',
-    status: 1,
-    reg_status: 0,
-  }, {
-    id: '4',
-    asn_no: 'N04601170546',
-    bonded: 1,
-    whse_code: '0962|富特路仓库',
-    owner_code: '04601|米思米(中国)精密机械贸易',
-    ref_order_no: '7FJ1787',
-    status: 2,
-    reg_status: 1,
-  }, {
-    id: '5',
-    asn_no: 'N04601170546',
-    bonded: 1,
-    whse_code: '0962|富特路仓库',
-    owner_code: '04601|米思米(中国)精密机械贸易',
-    ref_order_no: '7FJ1787',
-    status: 3,
-    reg_status: 2,
-  }];
-
   handleStatusChange = (ev) => {
     if (ev.target.value === this.props.listFilter.status) {
 
@@ -189,11 +157,29 @@ export default class ReceivingNoticeList extends React.Component {
     const link = `/cwm/receiving/asn/${row.asn_no}`;
     this.context.router.push(link);
   }
-  handleReleaseASN = (row) => {
-    notification.success({
-      message: '操作成功',
-      description: `${row.asn_no} 已释放`,
+  handleListReload = () => {
+    const filters = this.props.filters;
+    const whseCode = this.props.defaultWhse.code;
+    this.props.loadAsnLists({
+      whseCode,
+      pageSize: this.props.asn.pageSize,
+      current: this.props.asn.current,
+      filters,
     });
+  }
+  handleReleaseASN = (row) => {
+    const { loginId } = this.props;
+    this.props.releaseAsn(row.asn_no, loginId).then(
+      (result) => {
+        if (!result.error) {
+          notification.success({
+            message: '操作成功',
+            description: `${row.asn_no} 已释放`,
+          });
+          this.handleListReload();
+        }
+      }
+    );
   }
   handleReceive = (row) => {
     const link = `/cwm/receiving/inbound/receive/${row.asn_no}`;
@@ -203,22 +189,71 @@ export default class ReceivingNoticeList extends React.Component {
     const link = `/cwm/supervision/shftz/entry/${row.asn_no}`;
     this.context.router.push(link);
   }
+  handleSelect = (value) => {
+    this.props.switchDefaultWhse(value);
+    const filters = this.props.filters;
+    this.props.loadAsnLists({
+      whseCode: value,
+      pageSize: this.props.asn.pageSize,
+      current: this.props.asn.current,
+      filters,
+    });
+  }
+  handleBondedChange = (e) => {
+    const filters = { ...this.props.filters, status: e.target.value };
+    const whseCode = this.props.defaultWhse.code;
+    this.props.loadAsnLists({
+      whseCode,
+      pageSize: this.props.asn.pageSize,
+      current: this.props.asn.current,
+      filters,
+    });
+  }
+  handleOwnerChange = (value) => {
+    const filters = { ...this.props.filters, ownerCode: value };
+    const whseCode = this.props.defaultWhse.code;
+    this.props.loadAsnLists({
+      whseCode,
+      pageSize: this.props.asn.pageSize,
+      current: this.props.asn.current,
+      filters,
+    });
+  }
   render() {
-    const { warehouseList, currentWarehouse } = this.props;
+    const { whses, defaultWhse, owners } = this.props;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
         this.setState({ selectedRowKeys });
       },
     };
+    const dataSource = new Table.DataSource({
+      fetcher: params => this.props.loadAsnLists(params),
+      resolve: result => result.data,
+      getPagination: (result, resolve) => ({
+        current: resolve(result.totalCount, result.current, result.pageSize),
+        pageSize: result.pageSize,
+      }),
+      getParams: (pagination, tblfilters) => {
+        const newfilters = { ...this.props.filters, ...tblfilters[0] };
+        const params = {
+          whseCode: this.props.defaultWhse.code,
+          pageSize: pagination.pageSize,
+          current: pagination.current,
+          filters: newfilters,
+        };
+        return params;
+      },
+      remotes: this.props.asn,
+    });
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Header className="top-bar">
           <Breadcrumb>
             <Breadcrumb.Item>
-              <Select size="large" value={currentWarehouse.whse_code} placeholder="选择仓库" style={{ width: 160 }}>
+              <Select size="large" value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleSelect}>
                 {
-                  warehouseList.map(warehouse => (<Option value={warehouse.whse_code}>{warehouse.whse_name}</Option>))
+                  whses.map(warehouse => (<Option value={warehouse.code}>{warehouse.name}</Option>))
                 }
               </Select>
             </Breadcrumb.Item>
@@ -244,9 +279,12 @@ export default class ReceivingNoticeList extends React.Component {
               <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} />
               <span />
               <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
-                onChange={this.handleClientSelectChange} defaultValue="all"
+                onChange={this.handleOwnerChange} defaultValue="all"
               >
                 <Option value="all">全部货主</Option>
+                {
+                  owners.map(owner => (<Option value={owner.id}>{owner.name}</Option>))
+                }
               </Select>
               <div className="toolbar-right" />
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
@@ -254,7 +292,7 @@ export default class ReceivingNoticeList extends React.Component {
               </div>
             </div>
             <div className="panel-body table-panel">
-              <Table columns={this.columns} rowSelection={rowSelection} dataSource={this.dataSource} rowKey="id" scroll={{ x: 1400 }} />
+              <Table columns={this.columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="id" scroll={{ x: 1400 }} />
             </div>
           </div>
         </Content>
