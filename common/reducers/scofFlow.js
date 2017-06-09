@@ -21,11 +21,10 @@ const actionTypes = createActionTypes('@@welogix/scof/flow/', [
   'LOAD_FLTRACK', 'LOAD_FLTRACK_SUCCEED', 'LOAD_FLTRACK_FAIL',
   'LOAD_SCVTRACK', 'LOAD_SCVTRACK_SUCCEED', 'LOAD_SCVTRACK_FAIL',
   'LOAD_TRANSPORT_TRAIFFS_BY_TRANSPORTINFO', 'LOAD_TRANSPORT_TRAIFFS_BY_TRANSPORTINFO_SUCCEED', 'LOAD_TRANSPORT_TRAIFFS_BY_TRANSPORTINFO_FAIL',
-  'LOAD_RATESRC', 'LOAD_RATESRC_SUCCEED', 'LOAD_RATESRC_FAIL',
-  'LOAD_RATENDS', 'LOAD_RATENDS_SUCCEED', 'LOAD_RATENDS_FAIL',
   'TOGGLE_ADD_LINE_MODAL',
-  'ADD_LINES_AND_PUBLISH', 'ADD_LINES_AND_PUBLISH_SUCCEED', 'ADD_LINES_AND_PUBLISH_FAIL',
+  'ADD_LINE_AND_PUBLISH', 'ADD_LINE_AND_PUBLISH_SUCCEED', 'ADD_LINE_AND_PUBLISH_FAIL',
   'NEED_LOAD_TARIFF',
+  'IS_LINE_IN_TARIFF', 'IS_LINE_IN_TARIFF_SUCCEED', 'IS_LINE_IN_TARIFF_FAIL',
 ]);
 
 const initialState = {
@@ -63,10 +62,8 @@ const initialState = {
   tmsParams: { consigners: [], consignees: [], transitModes: [], packagings: [] },
   addLineModal: {
     visible: false,
-    quoteNo: '',
-    partnerId: -1,
-    partnerName: '',
-    startLocation: {},
+    line: {},
+    tariff: {},
   },
 };
 
@@ -422,47 +419,31 @@ export function loadTariffsByTransportInfo(partnerId, transitMode, goodsType) {
   };
 }
 
-export function loadRatesSources(params) {
+export function addLineAndPublish(data) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.LOAD_RATESRC,
-        actionTypes.LOAD_RATESRC_SUCCEED,
-        actionTypes.LOAD_RATESRC_FAIL,
+        actionTypes.ADD_LINE_AND_PUBLISH,
+        actionTypes.ADD_LINE_AND_PUBLISH_SUCCEED,
+        actionTypes.ADD_LINE_AND_PUBLISH_FAIL,
       ],
-      endpoint: 'v1/transport/tariff/ratesources',
-      method: 'get',
-      params,
+      endpoint: 'v1/transport/tariff/addLineAndPublish',
+      method: 'post',
+      data,
       origin: 'mongo',
     },
   };
 }
 
-export function loadRateEnds({ rateId, pageSize, current, searchValue }) {
+export function isLineIntariff(data) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.LOAD_RATENDS,
-        actionTypes.LOAD_RATENDS_SUCCEED,
-        actionTypes.LOAD_RATENDS_FAIL,
+        actionTypes.IS_LINE_IN_TARIFF,
+        actionTypes.IS_LINE_IN_TARIFF_SUCCEED,
+        actionTypes.IS_LINE_IN_TARIFF_FAIL,
       ],
-      endpoint: 'v1/transport/tariff/ratends',
-      method: 'get',
-      params: { rateId, pageSize, current, searchValue },
-      origin: 'mongo',
-    },
-  };
-}
-
-export function addLinesAndPublish(data) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.ADD_LINES_AND_PUBLISH,
-        actionTypes.ADD_LINES_AND_PUBLISH_SUCCEED,
-        actionTypes.ADD_LINES_AND_PUBLISH_FAIL,
-      ],
-      endpoint: 'v1/transport/tariff/addLinesAndPublish',
+      endpoint: 'v1/transport/tariff/isLineIntariff',
       method: 'post',
       data,
       origin: 'mongo',
