@@ -5,7 +5,8 @@ import { intlShape, injectIntl } from 'react-intl';
 import { TARIFF_METER_METHODS, GOODS_TYPES } from 'common/constants';
 import FlowTriggerTable from '../compose/flowTriggerTable';
 import AddLineModal from 'client/apps/scof/flow/modal/addLineModal';
-import { loadTariffsByTransportInfo, toggleAddLineModal, isLineIntariff } from 'common/reducers/scofFlow';
+import AddLocationModal from 'client/apps/scof/flow/modal/addLocationModal';
+import { loadTariffsByTransportInfo, toggleAddLineModal, isLineIntariff, toggleAddLocationModal } from 'common/reducers/scofFlow';
 import * as Location from 'client/util/location';
 import { formatMsg } from '../../message.i18n';
 
@@ -20,7 +21,7 @@ const Option = Select.Option;
     partnerId: state.scofFlow.currentFlow.partner_id,
     partnerName: state.scofFlow.currentFlow.customer_partner_name,
     needLoadTariff: state.scofFlow.needLoadTariff,
-  }), { loadTariffsByTransportInfo, toggleAddLineModal, isLineIntariff }
+  }), { loadTariffsByTransportInfo, toggleAddLineModal, isLineIntariff, toggleAddLocationModal }
 )
 export default class TMSShipmentPane extends Component {
   static propTypes = {
@@ -32,6 +33,7 @@ export default class TMSShipmentPane extends Component {
     toggleAddLineModal: PropTypes.func.isRequired,
     needLoadTariff: PropTypes.bool.isRequired,
     isLineIntariff: PropTypes.bool.isRequired,
+    toggleAddLocationModal: PropTypes.func.isRequired,
   }
   state = {
     transitMode: -1,
@@ -126,22 +128,24 @@ export default class TMSShipmentPane extends Component {
   }
   handleConsignerSelect = (value) => {
     if (value === -1) {
-      // setTimeout(() => {
-      //   if (this.props.form.getFieldValue('consigner_id') === -1) {
-      //     this.props.form.resetFields(['consigner_id']);
-      //   }
-      // }, 100);
+      this.handleShowAddLocationModal(0);
+      setTimeout(() => {
+        if (this.props.form.getFieldValue('consigner_id') === -1) {
+          this.props.form.resetFields(['consigner_id']);
+        }
+      }, 100);
     } else {
       this.handleJudgeLine({ consignerId: value });
     }
   }
   handleConsigneeSelect = (value) => {
     if (value === -1) {
-      // setTimeout(() => {
-      //   if (this.props.form.getFieldValue('consignee_id') === -1) {
-      //     this.props.form.resetFields(['consignee_id']);
-      //   }
-      // }, 100);
+      this.handleShowAddLocationModal(1);
+      setTimeout(() => {
+        if (this.props.form.getFieldValue('consignee_id') === -1) {
+          this.props.form.resetFields(['consignee_id']);
+        }
+      }, 100);
     } else {
       this.handleJudgeLine({ consigneeId: value });
     }
@@ -175,6 +179,14 @@ export default class TMSShipmentPane extends Component {
       visible: true,
       tariff,
       line,
+    });
+  }
+  handleShowAddLocationModal = (type) => {
+    this.props.toggleAddLocationModal({
+      visible: true,
+      partnerId: this.props.partnerId,
+      partnerName: this.props.partnerName,
+      type,
     });
   }
   handleTariffSelect = (quoteNo) => {
@@ -237,7 +249,7 @@ export default class TMSShipmentPane extends Component {
                     optionFilterProp="children"
                     showSearch
                     onSelect={this.handleConsignerSelect}
-                    notFoundContent={<a onClick={() => {}}>+ 添加地址</a>}
+                    notFoundContent={<a onClick={() => this.handleShowAddLocationModal(0)}>+ 添加地址</a>}
                   >
                     {
                       consigners.filter(cl => cl.ref_partner_id === partnerId || cl.ref_partner_id === -1)
@@ -258,7 +270,7 @@ export default class TMSShipmentPane extends Component {
                     optionFilterProp="children"
                     showSearch
                     onSelect={this.handleConsigneeSelect}
-                    notFoundContent={<a onClick={() => {}}>+ 添加地址</a>}
+                    notFoundContent={<a onClick={() => this.handleShowAddLocationModal(1)}>+ 添加地址</a>}
                   >
                     {
                       consignees.filter(cl => cl.ref_partner_id === partnerId || cl.ref_partner_id === -1)
@@ -284,6 +296,7 @@ export default class TMSShipmentPane extends Component {
             </Row>
           }
           <AddLineModal />
+          <AddLocationModal />
         </Panel>
         <Panel header={this.msg('bizEvents')} key="events">
           <FlowTriggerTable kind={model.kind} bizObj="tmsShipment" onNodeActionsChange={onNodeActionsChange} />

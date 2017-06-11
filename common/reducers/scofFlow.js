@@ -25,6 +25,7 @@ const actionTypes = createActionTypes('@@welogix/scof/flow/', [
   'ADD_LINE_AND_PUBLISH', 'ADD_LINE_AND_PUBLISH_SUCCEED', 'ADD_LINE_AND_PUBLISH_FAIL',
   'NEED_LOAD_TARIFF',
   'IS_LINE_IN_TARIFF', 'IS_LINE_IN_TARIFF_SUCCEED', 'IS_LINE_IN_TARIFF_FAIL',
+  'TOGGLE_ADD_LOCATION_MODAL',
 ]);
 
 const initialState = {
@@ -64,6 +65,12 @@ const initialState = {
     visible: false,
     line: {},
     tariff: {},
+  },
+  addLocationModal: {
+    visible: false,
+    partnerId: -1,
+    partnerName: '',
+    type: 0,
   },
 };
 
@@ -139,6 +146,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, needLoadTariff: false };
     case actionTypes.NEED_LOAD_TARIFF:
       return { ...state, needLoadTariff: action.data };
+    case actionTypes.TOGGLE_ADD_LOCATION_MODAL:
+      return { ...state, addLocationModal: { ...state.addLocationModal, ...action.data } };
     default:
       return state;
   }
@@ -458,6 +467,13 @@ export function setNeedLoadTariff(data) {
 export function toggleAddLineModal(data) {
   return {
     type: actionTypes.TOGGLE_ADD_LINE_MODAL,
+    data,
+  };
+}
+
+export function toggleAddLocationModal(data) {
+  return {
+    type: actionTypes.TOGGLE_ADD_LOCATION_MODAL,
     data,
   };
 }
