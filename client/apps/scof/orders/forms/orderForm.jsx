@@ -14,6 +14,7 @@ import ClearanceForm from './clearanceForm';
 import TransportForm from './transportForm';
 import WarehouseForm from './warehouseForm';
 import AddLineModal from 'client/apps/scof/flow/modal/addLineModal';
+import AddLocationModal from 'client/apps/scof/flow/modal/addLocationModal';
 
 const formatMsg = format(messages);
 const Panel = Collapse.Panel;
@@ -441,6 +442,7 @@ export default class OrderForm extends Component {
             {this.renderSteps(formData.subOrders, orderShipment)}
           </Steps>
           <AddLineModal />
+          <AddLocationModal />
         </Card>
       </Form>
     );

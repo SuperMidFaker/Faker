@@ -6,7 +6,7 @@ import moment from 'moment';
 import { DatePicker, InputNumber, Form, Row, Col, Card, Input, Switch, Select, Icon, Alert } from 'antd';
 import RegionCascader from 'client/components/chinaRegionCascader';
 import { setClientForm, loadFlowNodeData } from 'common/reducers/crmOrders';
-import { loadTariffsByTransportInfo, toggleAddLineModal, isLineIntariff } from 'common/reducers/scofFlow';
+import { loadTariffsByTransportInfo, toggleAddLineModal, isLineIntariff, toggleAddLocationModal } from 'common/reducers/scofFlow';
 import { uuidWithoutDash } from 'client/common/uuid';
 import { GOODS_TYPES, PRESET_TRANSMODES, CONTAINER_PACKAGE_TYPE, COURIERS, TARIFF_METER_METHODS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
@@ -24,10 +24,16 @@ const InputGroup = Input.Group;
   state => ({
     formRequires: state.crmOrders.formRequires,
     customerPartnerId: state.crmOrders.formData.customer_partner_id,
+    customerName: state.crmOrders.formData.customer_name,
     serviceTeam: state.crmCustomers.operators,
     needLoadTariff: state.scofFlow.needLoadTariff,
   }),
-  { setClientForm, loadFlowNodeData, loadTariffsByTransportInfo, toggleAddLineModal, isLineIntariff }
+  { setClientForm,
+    loadFlowNodeData,
+    loadTariffsByTransportInfo,
+    toggleAddLineModal,
+    isLineIntariff,
+    toggleAddLocationModal }
 )
 export default class TransportForm extends Component {
   static propTypes = {
@@ -37,6 +43,7 @@ export default class TransportForm extends Component {
     formData: PropTypes.object.isRequired,
     setClientForm: PropTypes.func.isRequired,
     customerPartnerId: PropTypes.number,
+    customerName: PropTypes.string,
     serviceTeam: PropTypes.arrayOf(PropTypes.shape({
       lid: PropTypes.number.isRequired, name: PropTypes.string.isRequired,
     })),
@@ -50,6 +57,7 @@ export default class TransportForm extends Component {
     needLoadTariff: PropTypes.bool.isRequired,
     toggleAddLineModal: PropTypes.func.isRequired,
     isLineIntariff: PropTypes.func.isRequired,
+    toggleAddLocationModal: PropTypes.func.isRequired,
   }
   state = {
     tariffs: [],
@@ -273,10 +281,23 @@ export default class TransportForm extends Component {
       line,
     });
   }
+  handleShowAddLocationModal = (type) => {
+    this.props.toggleAddLocationModal({
+      visible: true,
+      partnerId: this.props.customerPartnerId,
+      partnerName: this.props.customerName,
+      type,
+    });
+  }
   handleConsignSelect = (key, value) => {
-    // if (value === -1) {
-    //   return;
-    // }
+    if (value === -1) {
+      if (key === 'consigner_name') {
+        this.handleShowAddLocationModal(0);
+      } else if (key === 'consignee_name') {
+        this.handleShowAddLocationModal(1);
+      }
+      return;
+    }
     const consignForm = {};
     const formRequires = this.props.formRequires;
     if (key === 'consigner_name') {
@@ -591,7 +612,7 @@ export default class TransportForm extends Component {
                   dropdownStyle={{ width: 400 }}
                   optionFilterProp="children"
                   showSearch
-                  notFoundContent={<a onClick={() => {}}>+ 添加地址</a>}
+                  notFoundContent={<a onClick={() => this.handleShowAddLocationModal(0)}>+ 添加地址</a>}
                 >
                   {consignerLocations.filter(cl => cl.ref_partner_id === customerPartnerId || cl.ref_partner_id === -1)
                     .map(dw => <Option value={dw.node_id} key={dw.node_id}>{this.renderConsign(dw)}</Option>)
@@ -642,7 +663,7 @@ export default class TransportForm extends Component {
                   dropdownStyle={{ width: 400 }}
                   optionFilterProp="children"
                   showSearch
-                  notFoundContent={<a onClick={() => {}}>+ 添加地址</a>}
+                  notFoundContent={<a onClick={() => this.handleShowAddLocationModal(1)}>+ 添加地址</a>}
                 >
                   {consigneeLocations.filter(cl => cl.ref_partner_id === customerPartnerId || cl.ref_partner_id === -1)
                     .map(dw => <Option value={dw.node_id} key={dw.node_id}>{this.renderConsign(dw)}</Option>)
