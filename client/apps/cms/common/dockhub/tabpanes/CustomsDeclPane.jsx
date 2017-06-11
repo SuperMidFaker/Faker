@@ -2,8 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import Avatar from 'react-avatar';
-import { Spin, Button, Card, Col, Icon, Progress, Row, Table, message, Menu } from 'antd';
+import { Avatar, Spin, Button, Card, Col, Icon, Progress, Row, Table, message, Menu } from 'antd';
 import moment from 'moment';
 import { ensureManifestMeta } from 'common/reducers/cmsDelegation';
 import { loadCustPanel, setOpetaor } from 'common/reducers/cmsDelgInfoHub';
@@ -134,7 +133,7 @@ export default class CustomsDeclPane extends React.Component {
               <Card title={manifestProgress} extra={this.renderManifestAction()} bodyStyle={{ padding: 16 }}>
                 <Row gutter={8}>
                   <Col span="6">
-                    <InfoItem type="dropdown" label="制单人" addonBefore={<Avatar name={bill.preparer_name} size={28} round />}
+                    <InfoItem type="dropdown" label="执行者" addonBefore={<Avatar size="small">{bill.preparer_name}</Avatar>}
                       field={bill.preparer_name} placeholder="分配制单人" editable={assignable}
                       overlay={<Menu onClick={this.handleMenuClick}>
                         {filterOperators.map(dg => (<Menu.Item key={dg.lid}>{dg.name}</Menu.Item>))}

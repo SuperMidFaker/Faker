@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Breadcrumb, Icon, Dropdown, Form, Radio, Layout, Menu, Popconfirm, Steps, Button, Select, Card, Col, Row, Tag, Table, Input, Tooltip } from 'antd';
+import { Avatar, Breadcrumb, Icon, Dropdown, Form, Radio, Layout, Menu, Popconfirm, Steps, Button, Select, Card, Col, Row, Tag, Table, Input, Tooltip } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
-import Avatar from 'react-avatar';
 import InfoItem from 'client/components/InfoItem';
 import RowUpdater from 'client/components/rowUpdater';
 import PackagePopover from './popover/packagePopover';
@@ -295,8 +294,8 @@ export default class ReceiveInbound extends Component {
                   <InfoItem label="预计托盘数" addonBefore={<Icon type="appstore-o" />} field={2} editable />
                 </Col>
                 <Col sm={24} lg={6}>
-                  <InfoItem type="dropdown" label="操作人员" addonBefore={<Avatar name="未分配" size={28} round />}
-                    placeholder="分配操作人员" editable
+                  <InfoItem type="dropdown" label="执行者" addonBefore={<Avatar size="small" >未分配</Avatar>}
+                    placeholder="指派执行者" editable
                     overlay={<Menu onClick={this.handleMenuClick}>
                       <Menu.Item key={1}>仓管员</Menu.Item>
                     </Menu>}
@@ -321,7 +320,7 @@ export default class ReceiveInbound extends Component {
                   {this.state.receivingMode === 'scan' && !this.state.pushedTask &&
                   <Button type="primary" size="large" onClick={this.handlePushTask} icon="tablet">推送收货任务</Button>}
                   {this.state.receivingMode === 'scan' && this.state.pushedTask &&
-                  <Button size="large" onClick={this.handleWithdrawTask} icon="rollback">撤回收货任务</Button>}
+                  <Button size="large" onClick={this.handleWithdrawTask} icon="rollback" />}
                   {this.state.receivingMode === 'manual' &&
                   <Popconfirm title="确定此次入库操作已完成?" onConfirm={this.handleInboundConfirmed} okText="确认" cancelText="取消">
                     <Button type={this.state.printed && 'primary'} size="large" icon="check" disabled={this.state.inboundConfirmed}>

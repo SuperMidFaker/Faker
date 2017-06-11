@@ -63,7 +63,7 @@ const messages = defineMessages({
   },
   inventoryShipping: {
     id: 'scv.module.inventory.shipping',
-    defaultMessage: '出货订单',
+    defaultMessage: '发运订单',
   },
   inventoryWarehouse: {
     id: 'scv.module.inventory.warehouse',

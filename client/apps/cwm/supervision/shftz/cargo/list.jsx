@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Icon, Input, Layout, Radio, message } from 'antd';
+import { Breadcrumb, Button, Icon, Input, Layout, Radio, Select, message } from 'antd';
 import { loadSkusByWarehouse } from 'common/reducers/cwmSku';
 import Table from 'client/components/remoteAntTable';
 import SearchBar from 'client/components/search-bar';
@@ -16,6 +16,7 @@ import messages from '../message.i18n';
 const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
 const Search = Input.Search;
+const Option = Select.Option;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 
@@ -157,7 +158,7 @@ export default class ProductMappingList extends React.Component {
                   </NavLink>
                 </Breadcrumb.Item>
                 <Breadcrumb.Item>
-                  货物备案
+                  {this.msg('ftzCargoReg')}
                 </Breadcrumb.Item>
               </Breadcrumb>
             </div>
@@ -174,6 +175,27 @@ export default class ProductMappingList extends React.Component {
         </Sider>
         <Layout>
           <Header className="top-bar">
+            <Breadcrumb>
+              <Breadcrumb.Item>
+                <Select
+                  size="large"
+                  defaultValue="0961"
+                  placeholder="选择仓库"
+                  style={{ width: 160 }}
+                  disabled
+                >
+                  <Option value="0960">物流大道仓库</Option>
+                  <Option value="0961">希雅路仓库</Option>
+                  <Option value="0962">富特路仓库</Option>
+                </Select>
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                货主
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {'owner.name'}
+              </Breadcrumb.Item>
+            </Breadcrumb>
             <RadioGroup defaultValue="pending" onChange={this.handleBondedChange} size="large">
               <RadioButton value="pending">待备案</RadioButton>
               <RadioButton value="sent">已发送</RadioButton>

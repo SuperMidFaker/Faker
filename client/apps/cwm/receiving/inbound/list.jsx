@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { intlShape, injectIntl } from 'react-intl';
-import { Badge, Icon, Breadcrumb, Layout, Radio, Select, Tag, Tooltip } from 'antd';
+import { Badge, Icon, Breadcrumb, Layout, Radio, Select, Tooltip } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/search-bar';
@@ -58,7 +58,7 @@ export default class ReceivingInboundList extends React.Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
-    title: '收货通知单号',
+    title: 'ANS编号',
     dataIndex: 'asn_no',
     width: 120,
     fixed: 'left',
@@ -67,22 +67,16 @@ export default class ReceivingInboundList extends React.Component {
     width: 200,
     dataIndex: 'owner_name',
   }, {
-    title: '货物属性',
-    width: 90,
-    dataIndex: 'bonded',
-    render: (o) => {
-      if (o === 1) {
-        return (<Tag color="blue">保税</Tag>);
-      } else if (o === 0) {
-        return (<Tag>非保税</Tag>);
-      }
-    },
-  }, {
-    title: '入库单号',
-    width: 120,
+    title: '入库流水号',
+    width: 150,
     dataIndex: 'inbound_no',
   }, {
-    title: '入库状态',
+    title: <Tooltip title="明细记录数"><Icon type="bars" /></Tooltip>,
+    dataIndex: 'detail_count',
+    width: 50,
+    render: dc => !isNaN(dc) ? dc : null,
+  }, {
+    title: '状态',
     dataIndex: 'status',
     width: 100,
     render: (o) => {
@@ -97,29 +91,26 @@ export default class ReceivingInboundList extends React.Component {
       }
     },
   }, {
-    title: '操作人员',
-    dataIndex: 'operator',
+    title: '执行者',
+    dataIndex: 'executor',
   }, {
-    title: '开始时间',
-    dataIndex: 'inbound_start_date',
+    title: '操作模式',
+    dataIndex: 'receiving_mode',
+    render: (o) => {
+      if (o === 'scan') {
+        return (<Tooltip title="扫码收货"><Icon type="scan" /></Tooltip>);
+      } else if (o === 'manual') {
+        return (<Tooltip title="人工收货"><Icon type="solution" /></Tooltip>);
+      }
+    },
+  }, {
+    title: '创建时间',
+    dataIndex: 'created_date',
     width: 120,
   }, {
     title: '完成时间',
-    dataIndex: 'inbound_finish_date',
+    dataIndex: 'completed_date',
     width: 120,
-  }, {
-    title: '收货方式',
-    dataIndex: 'receiving_mode',
-    width: 80,
-    render: (o) => {
-      if (o === 'api') {
-        return (<Tooltip title="接口收货"><Icon type="api" /></Tooltip>);
-      } else if (o === 'scan') {
-        return (<Tooltip title="扫码收货"><Icon type="scan" /></Tooltip>);
-      } else if (o === 'manual') {
-        return (<Tooltip title="人工收货"><Icon type="user" /></Tooltip>);
-      }
-    },
   }, {
     title: '操作',
     width: 100,
@@ -198,10 +189,9 @@ export default class ReceivingInboundList extends React.Component {
               {this.msg('receivingInound')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <RadioGroup defaultValue="all" onChange={this.handleStatusChange} size="large" >
-            <RadioButton value="all">全部</RadioButton>
-            <RadioButton value="receive">收货</RadioButton>
-            <RadioButton value="putaway">上架</RadioButton>
+          <RadioGroup defaultValue="receiving" onChange={this.handleStatusChange} size="large" >
+            <RadioButton value="receiving">收货</RadioButton>
+            <RadioButton value="puttingaway">上架</RadioButton>
             <RadioButton value="completed">入库完成</RadioButton>
           </RadioGroup>
         </Header>

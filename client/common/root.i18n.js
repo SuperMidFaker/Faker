@@ -199,7 +199,7 @@ const messages = defineMessages({
   },
   allocateOriginator: {
     id: 'component.operators.cms.title',
-    defaultMessage: '指定制单人',
+    defaultMessage: '指定执行者',
   },
   allocateOperator: {
     id: 'component.operators.tms.title',

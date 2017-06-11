@@ -57,7 +57,7 @@ export default class ShippingOrderList extends React.Component {
     title: '承运人',
     dataIndex: 'carrier',
   }, {
-    title: '订单创建时间',
+    title: '创建时间',
     width: 120,
     dataIndex: 'created_date',
   }, {
@@ -211,10 +211,9 @@ export default class ShippingOrderList extends React.Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <RadioGroup defaultValue="pending" onChange={this.handleStatusChange} size="large">
-            <RadioButton value="pending">待出货</RadioButton>
-            <RadioButton value="outbound">出库中</RadioButton>
-            <RadioButton value="partial">部分出货</RadioButton>
-            <RadioButton value="completed">出货完成</RadioButton>
+            <RadioButton value="pending">订单接收</RadioButton>
+            <RadioButton value="outbound">出库操作</RadioButton>
+            <RadioButton value="completed">发货完成</RadioButton>
           </RadioGroup>
           <div className="top-bar-tools">
             <Button type="primary" size="large" icon="plus" onClick={this.handleCreateSO}>

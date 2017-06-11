@@ -2,8 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { routerShape } from 'react-router';
-import { Menu, Radio, Modal, Popover, Icon, Tooltip } from 'antd';
-import Avatar from 'react-avatar';
+import { Avatar, Menu, Radio, Modal, Popover, Icon, Tooltip } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import NavLink from './nav-link';
 import MdIcon from './MdIcon';
@@ -189,7 +188,7 @@ export default class HeaderNavBar extends React.Component {
                 visible={this.state.userPopoverVisible} onVisibleChange={this.handleVisibleChange}
               >
                 <div>
-                  {avatar ? <Avatar src={avatar} size={32} round /> : <Avatar name={name} size={32} round />}
+                  {avatar ? <Avatar src={avatar} /> : <Avatar >{name}</Avatar>}
                   <i className="angle-down s7-angle-down" />
                 </div>
               </Popover>

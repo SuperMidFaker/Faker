@@ -2,8 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Button, Card, Upload, Form, Input, Icon, message } from 'antd';
-import Avatar from 'react-avatar';
+import { Avatar, Button, Card, Upload, Form, Input, Icon, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { updateProfile } from 'common/reducers/account';
 import { validatePhone } from 'common/validater';
@@ -166,7 +165,7 @@ export default class MyProfile extends React.Component {
         <Form layout="horizontal" onSubmit={this.handleSubmit}>
           <FormItem {...tailFormItemLayout} style={{ marginBottom: 32 }}>
             <Upload {...uploadProps} className="avatar-uploader">
-              {this.state.avatar ? <Avatar src={this.state.avatar} size={120} round /> : <Icon type="plus" className="avatar-uploader-trigger" />}
+              {this.state.avatar ? <Avatar src={this.state.avatar} size="large" /> : <Icon type="plus" className="avatar-uploader-trigger" />}
             </Upload>
           </FormItem>
           <FormInput label={cmsg('fullName')} field="name" rules={

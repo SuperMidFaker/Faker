@@ -1,8 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button, Popconfirm, Tooltip } from 'antd';
+import { Avatar, Button, Popconfirm, Tooltip } from 'antd';
 import { connect } from 'react-redux';
-import Avatar from 'react-avatar';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import Table from 'client/components/remoteAntTable';
@@ -68,7 +67,7 @@ export default class NotificationDockPanel extends React.Component {
         title: this.msg('from_name'),
         dataIndex: 'from_name',
         width: 30,
-        render: o => <Avatar name={o} size={28} round />,
+        render: o => <Avatar size="small" >{o}</Avatar>,
       }, {
         title: this.msg('time'),
         dataIndex: 'time',

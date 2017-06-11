@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Icon, Breadcrumb, Layout, Radio, Select, Table, Tag, Tooltip } from 'antd';
+import { Button, Icon, Breadcrumb, Layout, Radio, Select, Table, Tag, Tooltip } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/search-bar';
 import RowUpdater from 'client/components/rowUpdater';
@@ -40,39 +40,22 @@ export default class ReceivingInboundList extends React.Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
-    title: '收货通知单号',
-    dataIndex: 'rn_no',
-    width: 160,
-  }, {
-    title: '货物属性',
-    width: 90,
-    dataIndex: 'bonded',
-    render: (o) => {
-      if (o === 1) {
-        return (<Tag color="blue">保税</Tag>);
-      } else if (o === 0) {
-        return (<Tag>非保税</Tag>);
-      }
-    },
-  }, {
-    title: '仓库',
-    width: 200,
-    dataIndex: 'whse_code',
+    title: 'SO编号',
+    dataIndex: 'so_no',
+    width: 120,
   }, {
     title: '货主',
     width: 200,
     dataIndex: 'owner_code',
   }, {
-    title: '关联订单号',
+    title: '波次号',
     width: 200,
     dataIndex: 'ref_order_no',
   }, {
-    title: '入库单号',
-    width: 200,
-    dataIndex: 'stock_in_no',
-  }, {
-    title: '入库日期',
-    dataIndex: 'stock_in_date',
+    title: <Tooltip title="明细记录数"><Icon type="bars" /></Tooltip>,
+    dataIndex: 'detail_count',
+    width: 50,
+    render: dc => !isNaN(dc) ? dc : null,
   }, {
     title: '状态',
     dataIndex: 'status',
@@ -85,26 +68,37 @@ export default class ReceivingInboundList extends React.Component {
       }
     },
   }, {
-    title: '收货锁定',
-    dataIndex: 'receiving_lock',
-    width: 80,
+    title: '执行者',
+    dataIndex: 'executor',
+  }, {
+    title: '操作模式',
+    dataIndex: 'receiving_mode',
     render: (o) => {
-      if (o === 1) {
-        return (<Tooltip title="由WMS上传实际收货记录"><Icon type="lock" /></Tooltip>);
-      } else if (o === 2) {
-        return (<Tooltip title="已指派APP收货"><Icon type="lock" /></Tooltip>);
+      if (o === 'scan') {
+        return (<Tooltip title="扫码收货"><Icon type="scan" /></Tooltip>);
+      } else if (o === 'manual') {
+        return (<Tooltip title="人工收货"><Icon type="solution" /></Tooltip>);
       }
     },
   }, {
+    title: '创建时间',
+    dataIndex: 'created_date',
+    width: 120,
+  }, {
+    title: '完成时间',
+    dataIndex: 'completed_date',
+    width: 120,
+  }, {
     title: '操作',
     width: 100,
+    fixed: 'right',
     render: (o, record) => {
-      if (record.status === 0 && record.receiving_lock === 0) {
-        return (<span><RowUpdater onHit={this.handleReceive} label="收货" row={record} /><span className="ant-divider" /><RowUpdater label="派单" row={record} /></span>);
+      if (record.status === 0) {
+        return (<span><RowUpdater onHit={this.handleReceive} label="入库操作" row={record} /> </span>);
       } else if (record.status === 0 && record.receiving_lock === 2) {
         return (<span><RowUpdater label="撤回" row={record} /></span>);
-      } else if (record.status === 1) {
-
+      } else {
+        return (<span><RowUpdater onHit={this.handleReceive} label="入库操作" row={record} /> </span>);
       }
     },
   }]
@@ -166,6 +160,12 @@ export default class ReceivingInboundList extends React.Component {
     this.context.router.push(link);
   }
   render() {
+    const rowSelection = {
+      selectedRowKeys: this.state.selectedRowKeys,
+      onChange: (selectedRowKeys) => {
+        this.setState({ selectedRowKeys });
+      },
+    };
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Header className="top-bar">
@@ -186,9 +186,12 @@ export default class ReceivingInboundList extends React.Component {
               {this.msg('shippingOutbound')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <RadioGroup defaultValue="all" onChange={this.handleBondedChange} size="large">
-            <RadioButton value="all">全部</RadioButton>
-            <RadioButton value="allocated">分配</RadioButton>
+          <RadioGroup onChange={this.handleWaveList} size="large">
+            <RadioButton value="waves">波次计划</RadioButton>
+          </RadioGroup>
+          <span />
+          <RadioGroup defaultValue="allocating" onChange={this.handleStatusChange} size="large">
+            <RadioButton value="allocating">分配</RadioButton>
             <RadioButton value="picking">拣货</RadioButton>
             <RadioButton value="shipping">发货</RadioButton>
             <RadioButton value="completed">出库完成</RadioButton>
@@ -216,10 +219,13 @@ export default class ReceivingInboundList extends React.Component {
               <div className="toolbar-right" />
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3>
+                <Button size="large">创建波次计划</Button>
+                <Button size="large">添加到波次计划</Button>
+                <Button size="large">触发补货任务</Button>
               </div>
             </div>
             <div className="panel-body table-panel">
-              <Table columns={this.columns} dataSource={this.dataSource} rowKey="id" scroll={{ x: 1200 }} />
+              <Table columns={this.columns} dataSource={this.dataSource} rowSelection={rowSelection} rowKey="id" scroll={{ x: 1200 }} />
             </div>
           </div>
         </Content>

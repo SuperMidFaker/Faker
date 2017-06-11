@@ -11,7 +11,7 @@ export default defineMessages({
   },
   spDispLoginName: {
     id: 'transport.tracking.shipmt.spDispLoginName',
-    defaultMessage: '调度员',
+    defaultMessage: '执行者',
   },
   refCustomerNo: {
     id: 'transport.tracking.ref.customer.no',

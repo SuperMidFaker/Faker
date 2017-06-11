@@ -467,6 +467,6 @@ export default defineMessages({
   },
   allocateOriginator: {
     id: 'cms.delegation.allocate.originator',
-    defaultMessage: '指定制单人',
+    defaultMessage: '指定执行者',
   },
 });

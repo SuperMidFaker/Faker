@@ -57,19 +57,19 @@ export default class CWMDashboard extends React.Component {
                 <ul className="statistics-columns">
                   <li className="col-8">
                     <div className="statistics-cell">
-                      <h6>{this.msg('totalASN')}</h6>
+                      <h4>{this.msg('totalASN')}</h4>
                       <p className="data-num">29</p>
                     </div>
                   </li>
                   <li className="col-8">
                     <div className="statistics-cell">
-                      <h6>{this.msg('toReceive')}</h6>
+                      <h4>{this.msg('toReceive')}</h4>
                       <p className="data-num">6</p>
                     </div>
                   </li>
                   <li className="col-8">
                     <div className="statistics-cell">
-                      <h6>{this.msg('putawayCompleted')}</h6>
+                      <h4>{this.msg('putawayCompleted')}</h4>
                       <p className="data-num">23</p>
                     </div>
                   </li>
@@ -81,25 +81,25 @@ export default class CWMDashboard extends React.Component {
                 <ul className="statistics-columns">
                   <li className="col-8">
                     <div className="statistics-cell">
-                      <h6>{this.msg('totalSO')}</h6>
+                      <h4>{this.msg('totalSO')}</h4>
                       <p className="data-num">48</p>
                     </div>
                   </li>
                   <li className="col-8">
                     <div className="statistics-cell">
-                      <h6>{this.msg('toAllocate')}</h6>
+                      <h4>{this.msg('toAllocate')}</h4>
                       <p className="data-num">6</p>
                     </div>
                   </li>
                   <li className="col-8">
                     <div className="statistics-cell">
-                      <h6>{this.msg('pickingCompleted')}</h6>
+                      <h4>{this.msg('pickingCompleted')}</h4>
                       <p className="data-num">12</p>
                     </div>
                   </li>
                   <li className="col-8">
                     <div className="statistics-cell">
-                      <h6>{this.msg('packingVerified')}</h6>
+                      <h4>{this.msg('packingVerified')}</h4>
                       <p className="data-num">23</p>
                     </div>
                   </li>
@@ -113,7 +113,7 @@ export default class CWMDashboard extends React.Component {
                 <ul className="statistics-columns">
                   <li className="col-8">
                     <div className="statistics-cell">
-                      <h6>{this.msg('receipts')}</h6>
+                      <h4>{this.msg('receipts')}</h4>
                       <Progress type="dashboard" percent={75} width={80} />
                       <p>Total: 561 Items</p>
                       <p>Completed: 165 Items</p>
@@ -121,7 +121,7 @@ export default class CWMDashboard extends React.Component {
                   </li>
                   <li className="col-8">
                     <div className="statistics-cell">
-                      <h6>{this.msg('putaways')}</h6>
+                      <h4>{this.msg('putaways')}</h4>
                       <Progress type="dashboard" percent={75} width={80} />
                       <p>Total: 561 Items</p>
                       <p>Completed: 165 Items</p>
@@ -129,7 +129,7 @@ export default class CWMDashboard extends React.Component {
                   </li>
                   <li className="col-8">
                     <div className="statistics-cell">
-                      <h6>{this.msg('shipments')}</h6>
+                      <h4>{this.msg('shipments')}</h4>
                       <Progress type="dashboard" percent={75} width={80} />
                       <p>Total: 561 Items</p>
                       <p>Completed: 165 Items</p>
@@ -137,7 +137,7 @@ export default class CWMDashboard extends React.Component {
                   </li>
                   <li className="col-8">
                     <div className="statistics-cell">
-                      <h6>{this.msg('replenishments')}</h6>
+                      <h4>{this.msg('replenishments')}</h4>
                       <Progress type="dashboard" percent={75} width={80} />
                       <p>Total: 561 Items</p>
                       <p>Completed: 165 Items</p>

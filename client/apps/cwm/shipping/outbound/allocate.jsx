@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Breadcrumb, Icon, Form, Layout, Menu, Popconfirm, Steps, Button, Select, Card, Col, Row, Tag, Table, Input, Tooltip, Radio } from 'antd';
+import { Avatar, Breadcrumb, Icon, Form, Layout, Menu, Popconfirm, Steps, Button, Select, Card, Col, Row, Tag, Table, Input, Tooltip, Radio } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
-import Avatar from 'react-avatar';
 import InfoItem from 'client/components/InfoItem';
 import RowUpdater from 'client/components/rowUpdater';
 import AllocatingModal from './modal/allocatingModal';
@@ -315,8 +314,8 @@ export default class OutboundAllocate extends Component {
                   <InfoItem label="出库单号" field="O096120170603223-01" />
                 </Col>
                 <Col sm={24} lg={8}>
-                  <InfoItem type="dropdown" label="操作人员" addonBefore={<Avatar name="未分配" size={28} round />}
-                    placeholder="分配操作人员" editable
+                  <InfoItem type="dropdown" label="执行者" addonBefore={<Avatar size="small" >未分配</Avatar>}
+                    placeholder="指派执行者" editable
                     overlay={<Menu onClick={this.handleMenuClick}>
                       <Menu.Item key={1}>仓管员</Menu.Item>
                     </Menu>}

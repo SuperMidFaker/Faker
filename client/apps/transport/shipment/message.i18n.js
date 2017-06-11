@@ -243,7 +243,7 @@ export default defineMessages({
   },
   accepterModalTitle: {
     id: 'transport.shipment.accepter.modal.title',
-    defaultMessage: '选择调度员',
+    defaultMessage: '选择执行者',
   },
   revokejectModalTitle: {
     id: 'transport.shipment.revokeject.modal.title',
