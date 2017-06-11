@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Alert, Button, Dropdown, Menu, Table, Icon, Tooltip, Tag, Input, Select, message, notification, Popconfirm } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
@@ -276,13 +277,13 @@ export default class ManifestBodyPanel extends React.Component {
           );
         }
       },
-    }, {
+/*    }, {
       title: this.msg('emGNo'),
       width: 100,
       render: (o, record, index) =>
         (<ColumnInput field="em_g_no" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} edit={editBody}
-        />),
+        />),*/
     }, {
       title: this.msg('codeT'),
       width: 110,

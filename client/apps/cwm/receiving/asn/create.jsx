@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Breadcrumb, Form, Layout, Row, Col, Button, Select, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -23,9 +24,9 @@ const Option = Select.Option;
     tenantName: state.account.tenantName,
     formData: state.cmsDelegation.formData,
     submitting: state.cmsDelegation.submitting,
-    currentWarehouse: state.cwmWarehouse.currentWarehouse,
-    whseOwners: state.cwmWarehouse.whseOwners,
+    defaultWhse: state.cwmContext.defaultWhse,
     temporaryDetails: state.cwmReceive.temporaryDetails,
+    owners: state.cwmContext.whseAttrs.owners,
   }),
   { addASN }
 )
@@ -50,7 +51,7 @@ export default class CreateReceivingASN extends Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   handleSave = () => {
-    const { temporaryDetails, currentWarehouse } = this.props;
+    const { temporaryDetails, defaultWhse, owners, tenantId, loginId, tenantName } = this.props;
     if (temporaryDetails.length === 0) {
       message.info('明细不能为空');
       return;
@@ -58,8 +59,14 @@ export default class CreateReceivingASN extends Component {
     this.props.form.validateFields((errors, values) => {
       if (!errors) {
         const data = values;
+        const owner = owners.find(item => item.id === values.owner_partner_id);
+        data.ownerName = owner.name;
+        data.ownerTenantId = owner.partner_tenant_id;
         data.temporaryDetails = temporaryDetails;
-        data.whseCode = currentWarehouse.whse_code;
+        data.whseCode = defaultWhse.code;
+        data.tenantId = tenantId;
+        data.loginId = loginId;
+        data.tenantName = tenantName;
         this.props.addASN(data).then(
           (result) => {
             if (!result.error) {
@@ -85,7 +92,7 @@ export default class CreateReceivingASN extends Component {
     });
   }
   render() {
-    const { form, submitting, currentWarehouse } = this.props;
+    const { form, submitting, defaultWhse } = this.props;
     return (
       <div>
         <Header className="top-bar">
@@ -93,11 +100,11 @@ export default class CreateReceivingASN extends Component {
             <Breadcrumb.Item>
               <Select
                 size="large"
-                value={currentWarehouse.whse_code}
+                value={defaultWhse.code}
                 style={{ width: 160 }}
                 disabled
               >
-                <Option value={currentWarehouse.whse_code}>{currentWarehouse.whse_name}</Option>
+                <Option value={defaultWhse.code}>{defaultWhse.name}</Option>
               </Select>
             </Breadcrumb.Item>
             <Breadcrumb.Item>

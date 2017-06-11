@@ -1,25 +1,44 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import connectFetch from 'client/common/decorators/connect-fetch';
 import { intlShape, injectIntl } from 'react-intl';
-import { Badge, Icon, Breadcrumb, Layout, Radio, Select, Table, Tag, Tooltip } from 'antd';
+import { Badge, Icon, Breadcrumb, Layout, Radio, Select, Tag, Tooltip } from 'antd';
+import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/search-bar';
 import RowUpdater from 'client/components/rowUpdater';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
+import { loadInbounds } from 'common/reducers/cwmReceive';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
-
+function fetchData({ state, dispatch }) {
+  dispatch(loadInbounds({
+    tenantId: state.account.tenantId,
+    pageSize: state.cwmReceive.inbound.pageSize,
+    current: state.cwmReceive.inbound.current,
+    filters: state.cwmReceive.inboundFilters,
+  }));
+}
+@connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
     tenantId: state.account.tenantId,
+    whses: state.cwmContext.whses,
+    defaultWhse: state.cwmContext.defaultWhse,
+    filters: state.cwmReceive.inboundFilters,
+    inbound: state.cwmReceive.inbound,
+    owners: state.cwmContext.whseAttrs.owners,
+    loginId: state.account.loginId,
   }),
+  { loadInbounds }
 )
 @connectNav({
   depth: 2,
@@ -40,13 +59,13 @@ export default class ReceivingInboundList extends React.Component {
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
     title: '收货通知单号',
-    dataIndex: 'rn_no',
+    dataIndex: 'asn_no',
     width: 120,
     fixed: 'left',
   }, {
     title: '货主',
     width: 200,
-    dataIndex: 'owner_code',
+    dataIndex: 'owner_name',
   }, {
     title: '货物属性',
     width: 90,
@@ -115,91 +134,71 @@ export default class ReceivingInboundList extends React.Component {
       }
     },
   }]
-
-  dataSource = [{
-    id: '1',
-    rn_no: 'N04601170548',
-    bonded: 1,
-    whse_code: '0961|希雅路仓库',
-    owner_code: '04601|米思米(中国)精密机械贸易',
-    ref_order_no: '7IR2730',
-    status: 0,
-    receiving_mode: 'scan',
-  }, {
-    id: '2',
-    rn_no: 'N04601170547',
-    bonded: 0,
-    whse_code: '0086|物流大道仓库',
-    owner_code: '03701|西门子国际贸易',
-    ref_order_no: 'NUE0394488',
-    status: 1,
-    receiving_mode: 'api',
-  }, {
-    id: '3',
-    rn_no: 'N04601170546',
-    bonded: 1,
-    whse_code: '0962|富特路仓库',
-    owner_code: '04601|米思米(中国)精密机械贸易',
-    ref_order_no: '7FJ1787',
-    status: 2,
-    receiving_mode: 'manual',
-  }, {
-    id: '4',
-    rn_no: 'N04601170546',
-    bonded: 1,
-    whse_code: '0962|富特路仓库',
-    owner_code: '04601|米思米(中国)精密机械贸易',
-    ref_order_no: '7FJ1787',
-    status: 2,
-    receiving_mode: 'scan',
-  }, {
-    id: '5',
-    rn_no: 'N04601170546',
-    bonded: 1,
-    whse_code: '0962|富特路仓库',
-    owner_code: '04601|米思米(中国)精密机械贸易',
-    ref_order_no: '7FJ1787',
-    status: 3,
-    receiving_mode: 'scan',
-  }];
-
-  handleStatusChange = (ev) => {
-    if (ev.target.value === this.props.listFilter.status) {
-
-    }
+  handleInboundsReload = () => {
+    const filters = this.props.filters;
+    this.props.loadInbounds({
+      tenantId: this.props.tenantId,
+      pageSize: this.props.inbound.pageSize,
+      current: this.props.inbound.current,
+      filters,
+    });
+  }
+  handleStatusChange = (e) => {
+    const filters = { ...this.props.filters, status: e.target.value };
+    this.props.loadInbounds({
+      tenantId: this.props.tenantId,
+      pageSize: this.props.inbound.pageSize,
+      current: this.props.inbound.current,
+      filters,
+    });
   }
   handleReceive = (row) => {
     const link = `/cwm/receiving/inbound/receive/${row.rn_no}`;
     this.context.router.push(link);
   }
   render() {
+    const { whses, defaultWhse, owners } = this.props;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
         this.setState({ selectedRowKeys });
       },
     };
+    const dataSource = new Table.DataSource({
+      fetcher: params => this.props.loadInbounds(params),
+      resolve: result => result.data,
+      getPagination: (result, resolve) => ({
+        current: resolve(result.totalCount, result.current, result.pageSize),
+        pageSize: result.pageSize,
+      }),
+      getParams: (pagination, tblfilters) => {
+        const newfilters = { ...this.props.filters, ...tblfilters[0] };
+        const params = {
+          tenantId: this.props.tenantId,
+          pageSize: pagination.pageSize,
+          current: pagination.current,
+          filters: newfilters,
+        };
+        return params;
+      },
+      remotes: this.props.inbound,
+    });
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Header className="top-bar">
           <Breadcrumb>
             <Breadcrumb.Item>
-              <Select
-                size="large"
-                defaultValue="0960"
-                placeholder="选择仓库"
-                style={{ width: 160 }}
-              >
-                <Option value="0960">物流大道仓库</Option>
-                <Option value="0961">希雅路仓库</Option>
-                <Option value="0962">富特路仓库</Option>
+              <Select size="large" value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleSelect}>
+                {
+                  whses.map(warehouse => (<Option value={warehouse.code}>{warehouse.name}</Option>))
+                }
               </Select>
             </Breadcrumb.Item>
             <Breadcrumb.Item>
               {this.msg('receivingInound')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <RadioGroup defaultValue="all" onChange={this.handleBondedChange} size="large">
+          <RadioGroup defaultValue="all" onChange={this.handleStatusChange} size="large" >
             <RadioButton value="all">全部</RadioButton>
             <RadioButton value="receive">收货</RadioButton>
             <RadioButton value="putaway">上架</RadioButton>
@@ -212,9 +211,12 @@ export default class ReceivingInboundList extends React.Component {
               <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} />
               <span />
               <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
-                onChange={this.handleClientSelectChange} defaultValue="all"
+                onChange={this.handleOwnerChange} defaultValue="all"
               >
                 <Option value="all">全部货主</Option>
+                {
+                  owners.map(owner => (<Option value={owner.id}>{owner.name}</Option>))
+                }
               </Select>
               <div className="toolbar-right" />
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
@@ -222,7 +224,7 @@ export default class ReceivingInboundList extends React.Component {
               </div>
             </div>
             <div className="panel-body table-panel">
-              <Table columns={this.columns} rowSelection={rowSelection} dataSource={this.dataSource} rowKey="id" scroll={{ x: 1200 }} />
+              <Table columns={this.columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="id" scroll={{ x: 1200 }} />
             </div>
           </div>
         </Content>

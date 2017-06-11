@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import ReactDataGrid from '@welogix/react-data-grid';
 import { format } from 'client/common/i18n/helpers';

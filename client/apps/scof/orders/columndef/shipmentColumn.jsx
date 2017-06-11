@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { Row, Col, Tag } from 'antd';
 import { WRAP_TYPE, GOODSTYPES, SCOF_ORDER_TRANSMODES } from 'common/constants';

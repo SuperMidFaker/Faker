@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { Modal, Button, Switch, Row, Col, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { DEFAULT_MODULES } from 'common/constants/module';

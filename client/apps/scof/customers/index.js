@@ -1,1 +1,1 @@
-export List from './listdetail';
+export List from './list';

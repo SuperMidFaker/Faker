@@ -4,7 +4,8 @@
  * @return {}
  *
  */
-import React, { PropTypes, Component } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Alert, Upload, Card, Icon, Button, message } from 'antd';
 

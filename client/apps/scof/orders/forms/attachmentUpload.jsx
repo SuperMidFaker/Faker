@@ -4,7 +4,8 @@
  * @return {}
  *
  */
-import React, { PropTypes, Component } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { Upload, Icon, Button, message } from 'antd';
 
 export default class AttchmentUpload extends Component {

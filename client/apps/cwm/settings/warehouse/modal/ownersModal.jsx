@@ -1,14 +1,13 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Modal, Table, message } from 'antd';
-import messages from '../../message.i18n';
-import { format } from 'client/common/i18n/helpers';
 import { loadwhseOwners, addWhseOwners, hideWhseMembers } from 'common/reducers/cwmWarehouse';
 import { loadPartners } from 'common/reducers/partner';
 import { PARTNER_BUSINESSE_TYPES, PARTNER_ROLES } from 'common/constants';
+import { formatMsg } from '../message.i18n';
 
-const formatMsg = format(messages);
 @injectIntl
 @connect(
   state => ({
@@ -46,7 +45,7 @@ export default class OwnersModal extends Component {
       });
     }
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   columns = [{
     title: '货主代码',
     dataIndex: 'partner_code',

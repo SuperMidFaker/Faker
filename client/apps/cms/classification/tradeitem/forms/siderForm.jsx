@@ -1,5 +1,6 @@
 /* eslint react/no-multi-comp: 0 */
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Form, Card, Col, DatePicker, Row, Input } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';

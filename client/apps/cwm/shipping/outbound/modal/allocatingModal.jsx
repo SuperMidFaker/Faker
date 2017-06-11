@@ -1,13 +1,15 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { Card, Table, Icon, Modal, Input, Tooltip, Row, Col, Select } from 'antd';
+import { Card, Table, Form, Modal, Input, Tooltip, Row, Col, Button } from 'antd';
 import InfoItem from 'client/components/InfoItem';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 import { hideReceiveModal } from 'common/reducers/cwmReceive';
 
 const formatMsg = format(messages);
+const FormItem = Form.Item;
 
 @injectIntl
 @connect(
@@ -33,37 +35,54 @@ export default class AllocatingModal extends Component {
   handleCancel = () => {
     this.props.hideReceiveModal();
   }
-  columns = [{
-    title: '追踪号',
-    dataIndex: 'trace_id',
-    width: 200,
-    render: o => (<Input className="readonly" prefix={<Icon type="qrcode" />} value={o} />),
-  }, {
-    title: '箱/托盘编号',
-    dataIndex: 'convey_no',
-    width: 180,
-    render: o => (<Input className="readonly" value={o} />),
-  }, {
+  inventoryColumns = [{
     title: '库位',
     dataIndex: 'location',
     width: 180,
-    render: o => (<Select defaultValue={o} showSearch style={{ width: 180 }} disabled />),
   }, {
-    title: '收货数量',
-    dataIndex: 'received_qty',
-    render: (o, record) => {
-      if (record.expect_pack_qty === record.received_pack_qty) {
-        return (<span className="mdc-text-green"><Tooltip title="包装单位数量"><Input className="readonly" style={{ width: 80 }} /></Tooltip>
-          <Tooltip title="主单位数量"><Input value={record.received_qty} style={{ width: 80 }} disabled /></Tooltip></span>);
-      } else {
-        return (<span className="mdc-text-red"><Tooltip title="包装单位数量"><Input className="readonly" style={{ width: 80 }} /></Tooltip>
-          <Tooltip title="主单位数量"><Input value={record.received_qty} style={{ width: 80 }} disabled /></Tooltip></span>);
-      }
-    },
+    title: '入库日期',
+    dataIndex: 'inbound_date',
+    width: 180,
   }, {
     title: '收货状态',
     dataIndex: 'packing_code',
-    render: o => (<Select defaultValue={o} style={{ width: 60 }} disabled />),
+  }, {
+    title: '可用数量',
+    dataIndex: 'avail_qty',
+    width: 200,
+    fixed: 'right',
+    render: o => (<span><Tooltip title="包装单位数量"><Input size="small" className="readonly" style={{ width: 80 }} /></Tooltip>
+      <Tooltip title="主单位数量"><Input size="small" value={o} style={{ width: 80 }} disabled /></Tooltip></span>),
+  }, {
+    title: '分配',
+    width: 80,
+    fixed: 'right',
+    render: () => (<span><Button type="primary" size="small" icon="plus" /></span>),
+  }]
+
+  allocatedColumns = [{
+    title: '库位',
+    dataIndex: 'location',
+    width: 180,
+  }, {
+    title: '入库日期',
+    dataIndex: 'inbound_date',
+    width: 180,
+  }, {
+    title: '收货状态',
+    dataIndex: 'packing_code',
+  }, {
+    title: '分配数量',
+    dataIndex: 'allocated_qty',
+    width: 200,
+    fixed: 'right',
+    render: () => (<span><Input size="small" style={{ width: 80 }} disabled />
+      <Input size="small" style={{ width: 80 }} disabled /></span>),
+  }, {
+    title: '取消',
+    width: 80,
+    fixed: 'right',
+    render: () => (<span><Button type="danger" size="small" ghost icon="minus" /></span>),
   }]
   dataSource = [{
     trace_id: 'T04601170548',
@@ -90,7 +109,7 @@ export default class AllocatingModal extends Component {
     received_pack_qty: 0,
     received_qty: 0,
   }, {
-    trace_id: 'T04601170546',
+    trace_id: 'T04601170521',
     convey_no: 'N0170546',
     order_qty: 1000,
     desc_cn: '临时起搏电极导管',
@@ -103,33 +122,53 @@ export default class AllocatingModal extends Component {
     received_qty: 0,
   }];
   render() {
-    const { receivingMode } = this.props;
     return (
       <Modal title="分配" width={this.state.modalWidth} maskClosable={false} style={{ top: 24 }} onCancel={this.handleCancel} visible={this.props.visible}>
-        <Card>
-          <Row gutter={16}>
-            <Col sm={12} md={8} lg={6}>
-              <InfoItem label="商品货号" field="I096120170603223-01" />
-            </Col>
-            <Col sm={12} md={8} lg={6}>
-              <InfoItem label="预期数量" field={<span>
-                <Tooltip title="包装单位数量"><Input value={3} className="readonly" style={{ width: 80 }} /></Tooltip>
-                <Tooltip title="主单位数量"><Input value={300} style={{ width: 80 }} disabled /></Tooltip></span>}
-              />
-            </Col>
-            <Col sm={12} md={8} lg={6}>
-              <InfoItem label="累计收货数量" field={<span className="mdc-text-red">
-                <Tooltip title="包装单位数量"><Input value={1} className="readonly" style={{ width: 80 }} /></Tooltip>
-                <Tooltip title="主单位数量"><Input value={100} style={{ width: 80 }} disabled /></Tooltip></span>}
-              />
-            </Col>
-            <Col sm={12} md={8} lg={6}>
-              <InfoItem label="商品货号" field="I096120170603223-01" />
-            </Col>
-          </Row>
+        <Card bodyStyle={{ padding: 0 }}>
+          <Form layout="inline" style={{ padding: 16 }}>
+            <FormItem label="商品货号" style={{ marginBottom: 0 }}>
+              <Input value="I096120170603223-01" disabled />
+            </FormItem>
+            <FormItem label="库位" style={{ marginBottom: 0 }}>
+              <Input />
+            </FormItem>
+            <FormItem label="批次号" style={{ marginBottom: 0 }}>
+              <Input />
+            </FormItem>
+            <FormItem label="序列号" style={{ marginBottom: 0 }}>
+              <Input />
+            </FormItem>
+            <FormItem label="" style={{ marginBottom: 0 }}>
+              <Input />
+            </FormItem>
+            <FormItem style={{ marginBottom: 0 }}>
+              <Button type="primary" ghost size="large">库存查询</Button>
+            </FormItem>
+          </Form>
+          <Table size="middle" columns={this.inventoryColumns} dataSource={this.dataSource} rowKey="trace_id" scroll={{ y: 220 }} />
         </Card>
         <Card bodyStyle={{ padding: 0 }}>
-          <Table size="middle" columns={this.columns} dataSource={receivingMode === 'scan' ? this.dataSource : null} rowKey="trace_id" />
+          <Row style={{ padding: 16 }}>
+            <Col sm={12} md={8} lg={6}>
+              <InfoItem addonBefore="商品货号" field="I096120170603223-01" style={{ marginBottom: 0 }} />
+            </Col>
+            <Col sm={12} md={8} lg={6}>
+              <InfoItem addonBefore="订单数量" field={<span>
+                <Tooltip title="包装单位数量"><Input value={3} className="readonly" style={{ width: 80 }} /></Tooltip>
+                <Tooltip title="主单位数量"><Input value={300} style={{ width: 80 }} disabled /></Tooltip></span>}
+                style={{ marginBottom: 0 }}
+              />
+            </Col>
+            <Col sm={12} md={8} lg={6}>
+              <InfoItem addonBefore="累计分配数量" field={<span className="mdc-text-red">
+                <Tooltip title="包装单位数量"><Input value={1} className="readonly" style={{ width: 80 }} /></Tooltip>
+                <Tooltip title="主单位数量"><Input value={100} style={{ width: 80 }} disabled /></Tooltip></span>}
+                style={{ marginBottom: 0 }}
+              />
+            </Col>
+            <Col sm={12} md={8} lg={6} />
+          </Row>
+          <Table size="middle" columns={this.allocatedColumns} dataSource={this.dataSource} rowKey="trace_id" scroll={{ y: 220 }} />
         </Card>
       </Modal>
     );

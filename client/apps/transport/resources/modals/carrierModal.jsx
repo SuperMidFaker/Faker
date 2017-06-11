@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { Modal, Form, Input, message } from 'antd';
 import { connect } from 'react-redux';
 import { addPartner, editPartner, checkPartner } from 'common/reducers/partner';

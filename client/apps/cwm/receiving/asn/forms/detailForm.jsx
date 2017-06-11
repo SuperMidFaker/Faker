@@ -1,5 +1,6 @@
 /* eslint react/no-multi-comp: 0 */
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Button, Card, Table } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
@@ -53,11 +54,11 @@ export default class DetailForm extends Component {
       render: (col, row, index) => col || pagination.pageSize * (pagination.current - 1) + index + 1,
     }, {
       title: '商品货号',
-      dataIndex: 'hscode',
+      dataIndex: 'product_no',
       width: 200,
     }, {
       title: '中文品名',
-      dataIndex: 'product_name',
+      dataIndex: 'desc_cn',
       width: 200,
     }, {
       title: '订单数量',
@@ -65,7 +66,7 @@ export default class DetailForm extends Component {
       dataIndex: 'qty',
     }, {
       title: '主单位',
-      dataIndex: 'first_unit',
+      dataIndex: 'unit_name',
     }, {
       title: '单价',
       dataIndex: 'unit_price',

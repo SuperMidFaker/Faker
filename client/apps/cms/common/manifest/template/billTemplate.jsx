@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Breadcrumb, Form, Layout, Row, Col, Button, Tooltip, Table, Popconfirm, Icon, message, Mention, Collapse } from 'antd';
 import { openAddModal, deleteRelatedCustomer, loadRelatedCustomers, saveTemplateData, countFieldsChange } from 'common/reducers/cmsManifest';

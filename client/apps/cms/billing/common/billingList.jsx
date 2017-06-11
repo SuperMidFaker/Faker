@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router';
 import { Breadcrumb, Button, Layout, message } from 'antd';
 import Table from 'client/components/remoteAntTable';

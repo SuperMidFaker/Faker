@@ -1,5 +1,6 @@
 /* eslint camelcase: 0 */
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Button, Card, Checkbox, message, Alert, Table, Collapse } from 'antd';
 import { format } from 'client/common/i18n/helpers';

@@ -1,5 +1,6 @@
 /* eslint no-undef: 0 */
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Input, Button, Alert, Table, message } from 'antd';
 import { searchShipment } from 'common/reducers/shipment';

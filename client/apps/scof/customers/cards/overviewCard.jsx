@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Card, Row, Col, message } from 'antd';
@@ -14,7 +15,7 @@ const formatMsg = format(messages);
   () => ({}),
   { updateCustomerNames },
 )
-export default class CustomerName extends React.Component {
+export default class OverviewCard extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     customer: PropTypes.object.isRequired,

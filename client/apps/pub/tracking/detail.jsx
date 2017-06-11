@@ -1,5 +1,6 @@
 /* eslint no-undef: 0 */
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Steps, Card, Collapse, Row, Col, Layout, Alert } from 'antd';
 import { loadPubShipmtDetail } from 'common/reducers/shipment';

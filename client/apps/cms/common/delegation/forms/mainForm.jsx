@@ -1,5 +1,6 @@
 /* eslint react/no-multi-comp: 0 */
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Form, Select, Icon, Input, InputNumber, Card, Col, Row, Radio, Tooltip } from 'antd';
 import { setClientForm } from 'common/reducers/cmsDelegation';

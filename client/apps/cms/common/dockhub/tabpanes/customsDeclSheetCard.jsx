@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import moment from 'moment';
 import { Badge, Card, Col, Row, Steps, Tag } from 'antd';
 import InfoItem from 'client/components/InfoItem';

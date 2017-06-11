@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { Dropdown, Icon, Col, Row, Input } from 'antd';
 import classNames from 'classnames';
 import EditableCell from './EditableCell';

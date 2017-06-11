@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { message, Button, Breadcrumb, Form, Input, Card, Icon, Layout } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';

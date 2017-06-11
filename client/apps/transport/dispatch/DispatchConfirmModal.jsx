@@ -1,4 +1,5 @@
-import React, { PropTypes, Component } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Radio, Icon, Modal, Button } from 'antd';
 import { showDispatchConfirmModal } from 'common/reducers/transportDispatch';

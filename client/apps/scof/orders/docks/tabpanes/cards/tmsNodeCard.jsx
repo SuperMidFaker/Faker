@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Button, Tooltip, Card, Icon, Col, Row, Steps, message } from 'antd';
 import InfoItem from 'client/components/InfoItem';

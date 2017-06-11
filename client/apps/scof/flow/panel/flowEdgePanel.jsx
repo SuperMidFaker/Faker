@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { Form, Card, Col, Select, Row, Input } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import ConditionTable from './compose/conditionTable';

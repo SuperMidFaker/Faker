@@ -4,9 +4,7 @@ import { connect } from 'react-redux';
 import connectNav from 'client/common/decorators/connect-nav';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { Layout, Table, Tooltip, Button, Input, Breadcrumb, Tabs, Popover, Menu, Form, Tag, message } from 'antd';
-import { format } from 'client/common/i18n/helpers';
 import RowUpdater from 'client/components/rowUpdater';
-import messages from '../message.i18n';
 import WarehouseModal from './modal/warehouseModal';
 import LocationModal from './modal/locationModal';
 import MdIcon from 'client/components/MdIcon';
@@ -15,8 +13,8 @@ import OwnersPane from './tabpane/ownersPane';
 import SupervisionPane from './tabpane/supervisionPane';
 import { showWarehouseModal, loadwhList, addZone, loadZones, showLocationModal, loadLocations, deleteLocation,
   editLocation, deleteZone } from 'common/reducers/cwmWarehouse';
+import { formatMsg } from './message.i18n';
 
-const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
 const Search = Input.Search;
 const TabPane = Tabs.TabPane;
@@ -86,7 +84,7 @@ export default class WareHouse extends Component {
     }
     this.setState({ warehouses: nextProps.warehouseList });
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   showWarehouseModal = () => {
     this.props.showWarehouseModal();
   }

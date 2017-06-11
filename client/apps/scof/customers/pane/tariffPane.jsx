@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { Table, Tag } from 'antd';
@@ -7,7 +8,7 @@ import { loadTransportTariffs, loadCmsQuotes } from 'common/reducers/crmCustomer
 import { TARIFF_METER_METHODS, GOODS_TYPES, DECL_I_TYPE, DECL_E_TYPE, TRANS_MODE } from 'common/constants';
 import { loadFormRequires } from 'common/reducers/crmOrders';
 import { format } from 'client/common/i18n/helpers';
-import messages from './message.i18n';
+import messages from '../message.i18n';
 
 const formatMsg = format(messages);
 function fetchData({ state, dispatch }) {

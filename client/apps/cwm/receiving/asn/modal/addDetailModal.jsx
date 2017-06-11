@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Modal, Form, Input, Select } from 'antd';
+import { Modal, Form, Input, Select, Row, Col } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
-import { hideDetailModal, addDetial } from 'common/reducers/cwmReceive';
+import { hideDetailModal, addDetial, loadProducts } from 'common/reducers/cwmReceive';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
@@ -15,57 +15,74 @@ const Option = Select.Option;
     tenantId: state.account.tenantId,
     visible: state.cwmReceive.detailModal.visible,
     temporaryDetails: state.cwmReceive.temporaryDetails,
-    productsNos: state.cwmReceive.productsNos,
+    productNos: state.cwmReceive.productNos,
   }),
-  { hideDetailModal, addDetial }
+  { hideDetailModal, addDetial, loadProducts }
 )
 @Form.create()
 export default class AddDetailModal extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
   }
+  state = {
+    product: {},
+  }
   msg = key => formatMsg(this.props.intl, key)
   handleCancel = () => {
     this.props.hideDetailModal();
   }
-  handleSearch = () => {
-
+  handleSearch = (value) => {
+    this.props.loadProducts(value);
   }
   submit = () => {
+    const product = this.state.product;
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        this.props.addDetial(values);
+        this.props.addDetial({
+          desc_cn: product.desc_cn,
+          unit_name: product.unit_name,
+          product_sku: product.product_sku,
+          currency: product.currency_name,
+          ...values,
+        });
         this.handleCancel();
       }
     });
   }
+  handleSelect = (value) => {
+    const { productNos } = this.props;
+    const product = productNos.find(item => item.product_no === value);
+    this.setState({ product });
+  }
   render() {
-    const { form: { getFieldDecorator }, visible, productsNos } = this.props;
+    const { form: { getFieldDecorator }, visible, productNos } = this.props;
+    const product = this.state.product;
     const formItemLayout = {
       labelCol: { span: 6 },
       wrapperCol: { span: 16 },
     };
+    // initialValue not change todo
     return (
       <Modal onCancel={this.handleCancel} visible={visible} title="添加明细" onOk={this.submit}>
         <Form>
           <FormItem label="商品货号" {...formItemLayout}>
-            {getFieldDecorator('hscode', {
+            {getFieldDecorator('product_no', {
               rules: [{ required: true, message: 'Please input product_no!' }],
             })(
-              <Select combobox optionFilterProp="search" onChange={this.handleSearch} style={{ width: '100%' }}>
+              <Select mode="combo" onChange={this.handleSearch} style={{ width: '100%' }} onSelect={this.handleSelect}>
                 {
-                  productsNos.map(data => (<Option value={data.hscode} key={data.hscode}
-                    search={data.hscode}
-                  >{data.hscode}</Option>)
+                  productNos.map(data => (<Option value={data.product_no} key={data.product_no}
+                    search={data.product_no}
+                  >{data.product_no}</Option>)
                   )}
               </Select>
             )}
           </FormItem>
           <FormItem label="中文品名" {...formItemLayout}>
-            {getFieldDecorator('product_name', {
-            })(
-              <Input />
-            )}
+            <Input disabled value={product.desc_cn} />
+          </FormItem>
+          <FormItem label="sku" {...formItemLayout}>
+            <Input disabled value={product.product_sku} />
           </FormItem>
           <FormItem label="订单数量" {...formItemLayout}>
             {getFieldDecorator('qty', {
@@ -75,17 +92,22 @@ export default class AddDetailModal extends Component {
             )}
           </FormItem>
           <FormItem label="主单位" {...formItemLayout}>
-            {getFieldDecorator('first_unit', {
-            })(
-              <Input disabled />
-            )}
+            <Input disabled value={product.unit_name} />
           </FormItem>
           <FormItem label="单价" {...formItemLayout}>
-            {getFieldDecorator('unit_price', {
-              rules: [{ required: true, message: 'Please input price!' }],
-            })(
-              <Input />
-            )}
+            <Row gutter={8}>
+              <Col span={12}>
+                {getFieldDecorator('unit_price', {
+                  initialValue: product.unit_price,
+                  rules: [{ required: true, message: 'Please input unit_price!' }],
+                })(
+                  <Input />
+                )}
+              </Col>
+              <Col span={12}>
+                <Input disabled value={product.currency_name} />
+              </Col>
+            </Row>
           </FormItem>
         </Form>
       </Modal>

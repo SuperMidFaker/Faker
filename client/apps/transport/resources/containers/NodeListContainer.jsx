@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import NodeList from '../components/NodeList';
 import connectFetch from 'client/common/decorators/connect-fetch';

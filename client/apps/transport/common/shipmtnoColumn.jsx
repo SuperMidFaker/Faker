@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import TrimSpan from 'client/components/trimSpan';
 
 export default class ShipmtNoColumnRender extends React.Component {

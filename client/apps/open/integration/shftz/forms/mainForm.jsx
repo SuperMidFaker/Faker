@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { Form, Input, Col, Row } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { formatMsg } from '../../message.i18n';

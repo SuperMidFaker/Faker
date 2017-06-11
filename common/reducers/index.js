@@ -53,6 +53,7 @@ import crmOrders from './crmOrders';
 import crmBilling from './crmBilling';
 import cwmReceive from './cwmReceive';
 import cwmWarehouse from './cwmWarehouse';
+import cwmShFtz from './cwmShFtz';
 
 export default combineReducers({
   activities,
@@ -109,4 +110,5 @@ export default combineReducers({
   cwmContext,
   cwmTransaction,
   cwmSku,
+  cwmShFtz,
 });
