@@ -5,14 +5,14 @@ import { Collapse, Form, Row, Col, Card, Input, Radio, Select, Steps, Popover, I
 import { intlShape, injectIntl } from 'react-intl';
 import { GOODSTYPES, WRAP_TYPE, SCOF_CONTAINER_TYPE, SCOF_ORDER_TRANSFER, SCOF_ORDER_TRANSMODES } from 'common/constants';
 import { setClientForm } from 'common/reducers/crmOrders';
-import { loadPartnerFlowList, loadFlowGraph, loadCustomerCmsQuotes } from 'common/reducers/scofFlow';
+import { loadPartnerFlowList, loadFlowGraph, loadCustomerCmsQuotes, loadCwmRecBizParams } from 'common/reducers/scofFlow';
 import { loadOperators } from 'common/reducers/crmCustomers';
 import Container from './container';
 import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
 import ClearanceForm from './clearanceForm';
 import TransportForm from './transportForm';
-import WarehouseForm from './warehouseForm';
+import CwmReceivingForm from './cwmReceivingForm';
 import AddLineModal from 'client/apps/scof/flow/modal/addLineModal';
 import AddLocationModal from 'client/apps/scof/flow/modal/addLocationModal';
 
@@ -43,7 +43,7 @@ SCOF_ORDER_TRANSMODES.forEach((ot) => { SeletableKeyNameMap[`transmode-${ot.valu
     flows: state.scofFlow.partnerFlows,
     graphLoading: state.scofFlow.graphLoading,
   }),
-  { setClientForm, loadPartnerFlowList, loadFlowGraph, loadCustomerCmsQuotes, loadOperators }
+  { setClientForm, loadPartnerFlowList, loadFlowGraph, loadCustomerCmsQuotes, loadOperators, loadCwmRecBizParams }
 )
 export default class OrderForm extends Component {
   static propTypes = {
@@ -62,6 +62,7 @@ export default class OrderForm extends Component {
         partnerId: nextProps.formData.customer_partner_id,
         tenantId: nextProps.tenantId,
       });
+      this.props.loadCwmRecBizParams(nextProps.tenantId, nextProps.formData.customer_partner_id);
       this.props.loadCustomerCmsQuotes(nextProps.tenantId, nextProps.formData.customer_partner_id);
       this.props.loadOperators(nextProps.formData.customer_partner_id, nextProps.tenantId);
     }
@@ -99,7 +100,7 @@ export default class OrderForm extends Component {
         const levelNodes = [nodes.filter(node => node.in_degree === 0)];
         let nlevel = 0;
         const visitedMap = {};
-        while (Object.keys(visitedMap).length < nodes.length) {
+        while (levelNodes.length > 0 && Object.keys(visitedMap).length < nodes.length) {
           const visitNodes = [];
           levelNodes[nlevel].forEach((node) => {
             visitNodes.push(node);
@@ -164,7 +165,7 @@ export default class OrderForm extends Component {
                 },
                 files: [],
               });
-            } else if (node.kind === 'cwm') {
+            } else if (node.kind === 'cwmrec' || node.kind === 'cwmship') {
               subOrders.push({
                 node: {
                   node_uuid: node.id,
@@ -214,8 +215,8 @@ export default class OrderForm extends Component {
         steps.push(<Step key={node.node_uuid} title={node.name} status="process" description={<ClearanceForm formData={order} shipment={shipment} index={i} operation={operation} />} />);
       } else if (node.kind === 'tms') {
         steps.push(<Step key={node.node_uuid} title={node.name} status="process" description={<TransportForm formData={order} shipment={shipment} index={i} operation={operation} />} />);
-      } else if (node.kind === 'cwm') {
-        steps.push(<Step key={node.node_uuid} title={node.name} status="process" description={<WarehouseForm formData={order} index={i} operation={operation} />} />);
+      } else if (node.kind === 'cwmrec') {
+        steps.push(<Step key={node.node_uuid} title={node.name} status="process" description={<CwmReceivingForm formData={order} index={i} operation={operation} />} />);
       }
     }
     return steps;
@@ -300,7 +301,7 @@ export default class OrderForm extends Component {
                   )} {...formItemLayout} required="true"
                   >
                     <RadioGroup value={formData.cust_shipmt_transfer} onChange={ev => this.handleKvChange('cust_shipmt_transfer', ev.target.value, 'transfer')}>
-                      {SCOF_ORDER_TRANSFER.map(sot => <RadioButton value={sot.value}>{sot.text}</RadioButton>)}
+                      {SCOF_ORDER_TRANSFER.map(sot => <RadioButton value={sot.value} key={sot.value}>{sot.text}</RadioButton>)}
                     </RadioGroup>
                   </FormItem>
                 </Col>

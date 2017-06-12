@@ -25,6 +25,14 @@ export default class CWMReceivingPane extends Component {
     form: PropTypes.object.isRequired,
   }
   msg = formatMsg(this.props.intl)
+  handleBondedChange = (ev) => {
+    if (!ev.target.value) {
+      this.props.form.setFieldsValue({
+        bonded_reg_type: null,
+        rec_after_decl_days: '',
+      });
+    }
+  }
   render() {
     const { form: { getFieldDecorator, getFieldValue }, onNodeActionsChange, model, recParams } = this.props;
     return (
@@ -34,7 +42,7 @@ export default class CWMReceivingPane extends Component {
             <Col sm={24} lg={8}>
               <FormItem label={this.msg('cwmWarehouse')}>
                 {getFieldDecorator('whse_code', {
-                  initialValue: model.warehouse,
+                  initialValue: model.whse_code,
                 })(<Select showSearch allowClear optionFilterProp="children">
                   {recParams.whses.map(wh => <Option key={wh.code} value={wh.code}>{wh.code}|{wh.name}</Option>)}
                 </Select>)}
@@ -43,6 +51,7 @@ export default class CWMReceivingPane extends Component {
             <Col sm={24} lg={8}>
               <FormItem label="ASN类型">
                 {getFieldDecorator('asn_type', {
+                  initialValue: model.asn_type,
                 })(
                   <Select placeholder="ASN类型">
                     {CWM_ASN_TYPES.map(cat => <Option value={cat.value} key={cat.value}>{cat.text}</Option>)}
@@ -54,8 +63,9 @@ export default class CWMReceivingPane extends Component {
               <FormItem label="货物属性">
                 {getFieldDecorator('bonded', {
                   initialValue: model.bonded,
+                  onChange: this.handleBondedChange,
                 })(
-                  <RadioGroup onChange={this.handleBondedChange}>
+                  <RadioGroup>
                     <RadioButton value={0}>非保税</RadioButton>
                     <RadioButton value={1}>保税</RadioButton>
                   </RadioGroup>

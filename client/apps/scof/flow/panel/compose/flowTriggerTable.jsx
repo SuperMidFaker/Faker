@@ -15,7 +15,7 @@ import { formatMsg } from '../../message.i18n';
 export default class FlowTriggerTable extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    kind: PropTypes.oneOf(['import', 'export', 'tms', 'cwm']),
+    kind: PropTypes.oneOf(['import', 'export', 'tms', 'cwmrec', 'cwmship']),
     bizObj: PropTypes.string,
     nodeActions: PropTypes.arrayOf(PropTypes.shape({
       biz_object: PropTypes.string,

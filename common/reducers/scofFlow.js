@@ -339,7 +339,7 @@ export function loadCwmRecBizParams(tenantId, ownerPid) {
         actionTypes.LOAD_CWMRECBIZPARAMS_SUCCEED,
         actionTypes.LOAD_CWMRECBIZPARAMS_FAIL,
       ],
-      endpoint: 'v1/cwm/receiving/flow/params',
+      endpoint: 'v1/cwm/flow/params',
       method: 'get',
       params: { tenantId, owner_partner_id: ownerPid },
     },

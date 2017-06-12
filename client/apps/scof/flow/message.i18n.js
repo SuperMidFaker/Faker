@@ -242,6 +242,14 @@ const messages = defineMessages({
     id: 'scof.flow.biz.event.tms.shipment.pod',
     defaultMessage: '已回单',
   },
+  onAsnInbound: {
+    id: 'scof.flow.biz.event.asn.inbound',
+    defaultMessage: '已收货',
+  },
+  onAsnFinished: {
+    id: 'scof.flow.biz.event.asn.finished',
+    defaultMessage: '已完成',
+  },
   triggerActions: {
     id: 'scof.flow.trigger',
     defaultMessage: '事件触发器',

@@ -71,7 +71,19 @@ const tmsBizObjects = [{
 const cwmRecBizObjects = [{
   key: 'cwmReceiving',
   text: 'cwmRecAsn',
-  triggers: CMS_DELEGATION_TRIGGERS,
+  triggers: [{
+    key: 'asnCreated',
+    text: 'onCreated',
+    actionText: 'asnCreate',
+  }, {
+    key: 'asnInbound',
+    text: 'onAsnInbound',
+    actionText: 'asnInbound',
+  }, {
+    key: 'asnFinished',
+    text: 'onAsnFinished',
+    actionText: 'asnFinish',
+  }],
 }];
 
 const cwmShippingBizObjects = [{
