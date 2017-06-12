@@ -22,7 +22,7 @@ export default class CreatorSelect extends React.Component {
   }
   initializeFieldsValue = () => {
     if (window.localStorage) {
-      const fieldsValue = JSON.parse(window.localStorage.tmsAdvancedSearchFieldsValue || '{"creator": "all"}');
+      const fieldsValue = JSON.parse(window.localStorage.tmsAcceptanceShipmentCreator || '{"creator": "all"}');
       if (this.props.onInitialize) {
         this.props.onInitialize(fieldsValue);
         this.saveFieldsValue(fieldsValue);
@@ -32,8 +32,8 @@ export default class CreatorSelect extends React.Component {
   }
   saveFieldsValue = (fieldsValue) => {
     if (window.localStorage) {
-      const fv = { ...JSON.parse(window.localStorage.tmsAdvancedSearchFieldsValue || '{"creator": "all"}'), ...fieldsValue };
-      window.localStorage.tmsAdvancedSearchFieldsValue = JSON.stringify(fv);
+      const fv = { ...JSON.parse(window.localStorage.tmsAcceptanceShipmentCreator || '{"creator": "all"}'), ...fieldsValue };
+      window.localStorage.tmsAcceptanceShipmentCreator = JSON.stringify(fv);
       this.setState({ fieldsValue: fv });
     }
   }
