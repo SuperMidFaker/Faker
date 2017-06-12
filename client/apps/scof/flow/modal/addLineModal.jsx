@@ -37,7 +37,7 @@ export default class AddLineModal extends React.Component {
     line: PropTypes.object.isRequired,
     tariff: PropTypes.object.isRequired,
     addLineAndPublish: PropTypes.func.isRequired,
-    setNeedLoadTariff: PropTypes.bool.isRequired,
+    setNeedLoadTariff: PropTypes.func.isRequired,
     formRequires: PropTypes.object.isRequired,
   }
   state = {

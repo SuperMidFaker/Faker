@@ -458,7 +458,7 @@ export default class TransportForm extends Component {
     };
     this.handleSetClientForm(related);
   }
-  renderConsign = consign => `${consign.name} | ${Location.renderLoc(consign)} | ${consign.contact || ''}`
+  renderConsign = consign => `${consign.name} | ${Location.renderLoc(consign)} | ${consign.byname || ''} | ${consign.contact || ''}`
   renderTmsTariff = (row) => {
     let text = row.quoteNo;
     const tms = this.props.formRequires.transitModes.find(tm => tm.id === Number(row.transModeCode));
@@ -472,6 +472,7 @@ export default class TransportForm extends Component {
   render() {
     const { formData, serviceTeam, formRequires: { consignerLocations, consigneeLocations,
       transitModes, packagings, vehicleTypes, vehicleLengths }, customerPartnerId } = this.props;
+    console.log(consigneeLocations);
     // todo consigner consignee by customer partner id
     const node = formData.node;
     const consignerRegion = [

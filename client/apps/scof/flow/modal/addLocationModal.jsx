@@ -35,7 +35,7 @@ export default class AddLocationModal extends React.Component {
     tenantId: PropTypes.number.isRequired,
     toggleAddLocationModal: PropTypes.func.isRequired,
     partnerId: PropTypes.number.isRequired,
-    partnerName: PropTypes.number.isRequired,
+    partnerName: PropTypes.string.isRequired,
     loadTmsBizParams: PropTypes.func.isRequired,
     loadFormRequires: PropTypes.func.isRequired,
     addNode: PropTypes.func.isRequired,

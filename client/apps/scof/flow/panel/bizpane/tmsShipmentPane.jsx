@@ -204,7 +204,7 @@ export default class TMSShipmentPane extends Component {
     if (goodType) text = `${text}/${goodType.text}`;
     return text;
   }
-  renderConsign = consign => `${consign.name} | ${Location.renderLoc(consign)} | ${consign.contact || ''} | ${consign.mobile || ''}`
+  renderConsign = consign => `${consign.name} | ${Location.renderLoc(consign)} | ${consign.byname || ''} | ${consign.contact || ''} | ${consign.mobile || ''}`
   render() {
     const { form: { getFieldDecorator }, onNodeActionsChange, model, tmsParams: { consigners, consignees, transitModes }, partnerId } = this.props;
     console.log(consignees);
