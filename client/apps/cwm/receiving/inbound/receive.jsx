@@ -50,27 +50,13 @@ export default class ReceiveInbound extends Component {
   state = {
     selectedRowKeys: [],
     receivingMode: 'scan',
+    currentStep: 0,
     printed: false,
     pushedTask: false,
     inboundConfirmed: false,
   }
   msg = key => formatMsg(this.props.intl, key);
-  handleSave = () => {
-    this.props.form.validateFields((errors) => {
-      if (!errors) {
 
-      }
-    });
-  }
-  handleSaveBtnClick = () => {
-    this.handleSave({ accepted: false });
-  }
-  handleCancelBtnClick = () => {
-    this.context.router.goBack();
-  }
-  handleSaveAccept = () => {
-    this.handleSave({ accepted: true });
-  }
   handleReceivingModeChange = (ev) => {
     this.setState({
       receivingMode: ev.target.value,
@@ -79,16 +65,19 @@ export default class ReceiveInbound extends Component {
   handlePrint = () => {
     this.setState({
       printed: true,
+      currentStep: 1,
     });
   }
   handlePushTask = () => {
     this.setState({
       pushedTask: true,
+      currentStep: 1,
     });
   }
   handleWithdrawTask = () => {
     this.setState({
       pushedTask: false,
+      currentStep: 0,
     });
   }
   handleReceive = () => {
@@ -97,6 +86,7 @@ export default class ReceiveInbound extends Component {
   handleInboundConfirmed = () => {
     this.setState({
       inboundConfirmed: true,
+      currentStep: 3,
     });
   }
   columns = [{
@@ -271,7 +261,7 @@ export default class ReceiveInbound extends Component {
                 <Icon type="barcode" />标签 <Icon type="down" />
               </Button>
             </Dropdown>}
-            <RadioGroup defaultValue={this.state.receivingMode} onChange={this.handleReceivingModeChange} size="large" disabled={this.state.inboundConfirmed}>
+            <RadioGroup defaultValue={this.state.receivingMode} onChange={this.handleReceivingModeChange} size="large" disabled={this.state.currentStep > 0}>
               <Tooltip title="扫码收货"><RadioButton value="scan"><Icon type="scan" /></RadioButton></Tooltip>
               <Tooltip title="人工收货"><RadioButton value="manual"><Icon type="solution" /></RadioButton></Tooltip>
             </RadioGroup>
@@ -303,7 +293,7 @@ export default class ReceiveInbound extends Component {
                 </Col>
               </Row>
               <div className="card-footer">
-                <Steps progressDot current={1}>
+                <Steps progressDot current={this.state.currentStep}>
                   <Step description="创建入库" />
                   <Step description="收货" />
                   <Step description="上架" />

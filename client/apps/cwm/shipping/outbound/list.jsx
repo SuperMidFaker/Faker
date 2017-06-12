@@ -44,12 +44,8 @@ export default class ReceivingInboundList extends React.Component {
     dataIndex: 'so_no',
     width: 120,
   }, {
-    title: '货主',
-    width: 200,
-    dataIndex: 'owner_code',
-  }, {
     title: '波次号',
-    width: 200,
+    width: 120,
     dataIndex: 'ref_order_no',
   }, {
     title: <Tooltip title="明细记录数"><Icon type="bars" /></Tooltip>,
@@ -57,14 +53,18 @@ export default class ReceivingInboundList extends React.Component {
     width: 50,
     render: dc => !isNaN(dc) ? dc : null,
   }, {
+    title: '货主',
+    width: 200,
+    dataIndex: 'owner_code',
+  }, {
     title: '状态',
     dataIndex: 'status',
     width: 100,
     render: (o) => {
       if (o === 0) {
-        return (<Tag>未入库</Tag>);
+        return (<Tag>分配</Tag>);
       } else if (o === 1) {
-        return (<Tag color="#87d068">已入库</Tag>);
+        return (<Tag color="#87d068">拣货</Tag>);
       }
     },
   }, {
@@ -75,14 +75,14 @@ export default class ReceivingInboundList extends React.Component {
     dataIndex: 'receiving_mode',
     render: (o) => {
       if (o === 'scan') {
-        return (<Tooltip title="扫码收货"><Icon type="scan" /></Tooltip>);
+        return (<Tooltip title="扫码发货"><Icon type="scan" /></Tooltip>);
       } else if (o === 'manual') {
-        return (<Tooltip title="人工收货"><Icon type="solution" /></Tooltip>);
+        return (<Tooltip title="人工发货"><Icon type="solution" /></Tooltip>);
       }
     },
   }, {
-    title: '创建时间',
-    dataIndex: 'created_date',
+    title: '分配',
+    dataIndex: 'allocated',
     width: 120,
   }, {
     title: '完成时间',

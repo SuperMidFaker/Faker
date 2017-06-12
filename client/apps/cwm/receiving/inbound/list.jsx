@@ -63,10 +63,6 @@ export default class ReceivingInboundList extends React.Component {
     width: 120,
     fixed: 'left',
   }, {
-    title: '货主',
-    width: 200,
-    dataIndex: 'owner_name',
-  }, {
     title: '入库流水号',
     width: 150,
     dataIndex: 'inbound_no',
@@ -75,6 +71,10 @@ export default class ReceivingInboundList extends React.Component {
     dataIndex: 'detail_count',
     width: 50,
     render: dc => !isNaN(dc) ? dc : null,
+  }, {
+    title: '货主',
+    width: 200,
+    dataIndex: 'owner_name',
   }, {
     title: '状态',
     dataIndex: 'status',
