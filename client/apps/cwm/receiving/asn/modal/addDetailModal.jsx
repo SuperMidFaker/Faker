@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Modal, Form, Input, Select, Row, Col } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
@@ -23,13 +23,15 @@ const Option = Select.Option;
 export default class AddDetailModal extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
+    selectedOwner: PropTypes.string,
   }
   msg = key => formatMsg(this.props.intl, key)
   handleCancel = () => {
     this.props.hideDetailModal();
   }
   handleSearch = (value) => {
-    this.props.loadProducts(value);
+    const { selectedOwner } = this.props;
+    this.props.loadProducts(value, selectedOwner);
   }
   submit = () => {
     this.props.form.validateFields((err, values) => {
@@ -42,9 +44,15 @@ export default class AddDetailModal extends Component {
   handleSelect = (value) => {
     const { productNos } = this.props;
     const product = productNos.find(item => item.product_no === value);
+    let unitName = '';
+    if (product.asn_tag_unit === 'primary') {
+      unitName = product.unit_name;
+    } else {
+      unitName = product.sku_pack_unit_name;
+    }
     this.props.form.setFieldsValue({
       desc_cn: product.desc_cn,
-      unit_name: product.unit_name,
+      unit_name: unitName,
       unit_price: product.unit_price,
       product_sku: product.product_sku,
       currency: product.currency_name,

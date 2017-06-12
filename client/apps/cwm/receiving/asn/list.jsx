@@ -12,7 +12,7 @@ import RowUpdater from 'client/components/rowUpdater';
 import connectNav from 'client/common/decorators/connect-nav';
 import { formatMsg } from '../message.i18n';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
-import { loadAsnLists, releaseAsn } from 'common/reducers/cwmReceive';
+import { loadAsnLists, releaseAsn, cancelAsn } from 'common/reducers/cwmReceive';
 
 const { Header, Content } = Layout;
 const Option = Select.Option;
@@ -39,7 +39,7 @@ function fetchData({ state, dispatch }) {
     owners: state.cwmContext.whseAttrs.owners,
     loginId: state.account.loginId,
   }),
-  { switchDefaultWhse, loadAsnLists, releaseAsn }
+  { switchDefaultWhse, loadAsnLists, releaseAsn, cancelAsn }
 )
 @connectNav({
   depth: 2,
@@ -134,7 +134,9 @@ export default class ReceivingASNList extends React.Component {
     fixed: 'right',
     render: (o, record) => {
       if (record.status === 0) {
-        return (<span><RowUpdater onHit={this.handleReleaseASN} label="释放" row={record} /><span className="ant-divider" /><RowUpdater onHit={this.handleEditASN} label="修改" row={record} /></span>);
+        return (<span><RowUpdater onHit={this.handleReleaseASN} label="释放" row={record} />
+          <span className="ant-divider" /><RowUpdater onHit={this.handleEditASN} label="修改" row={record} />
+          <span className="ant-divider" /><RowUpdater onHit={this.handleCancelASN} label="取消" row={record} /></span>);
       } else if (record.status === 1) {
         if (record.bonded === 1 && record.reg_status === 0) {
           return (<span><RowUpdater onHit={this.handleReceive} label="入库操作" row={record} /><span className="ant-divider" /><RowUpdater onHit={this.handleEntryReg} label="进库备案" row={record} /></span>);
@@ -156,6 +158,10 @@ export default class ReceivingASNList extends React.Component {
   handleEditASN = (row) => {
     const link = `/cwm/receiving/asn/${row.asn_no}`;
     this.context.router.push(link);
+  }
+  handleCancelASN = (row) => {
+    this.props.cancelAsn(row.asn_no);
+    this.handleListReload();
   }
   handleListReload = () => {
     const filters = this.props.filters;

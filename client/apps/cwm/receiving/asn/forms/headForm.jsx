@@ -24,6 +24,7 @@ export default class HeadForm extends Component {
     intl: intlShape.isRequired,
     form: PropTypes.object.isRequired,
     editable: PropTypes.bool,
+    handleOwnerChange: PropTypes.func.isRequired,
   }
   state = {
     bonded: 0,
@@ -56,6 +57,9 @@ export default class HeadForm extends Component {
       bonded: e.target.value,
     });
   }
+  handleSelect = (value) => {
+    this.props.handleOwnerChange(true, value);
+  }
   render() {
     const { form: { getFieldDecorator }, owners } = this.props;
     const { bonded } = this.state;
@@ -67,7 +71,7 @@ export default class HeadForm extends Component {
               {getFieldDecorator('owner_partner_id', {
                 rules: [{ required: true, message: 'Please select customer!' }],
               })(
-                <Select placeholder="选择货主">
+                <Select placeholder="选择货主" onSelect={this.handleSelect}>
                   {
                     owners.map(owner => <Option value={owner.id}>{owner.name}</Option>)
                   }
@@ -78,7 +82,6 @@ export default class HeadForm extends Component {
           <Col sm={24} lg={8}>
             <FormItem label="采购订单号">
               {getFieldDecorator('po_no', {
-                rules: [{ required: true, message: 'Please input po_no!' }],
               })(<Input />)}
             </FormItem>
           </Col>
@@ -91,6 +94,7 @@ export default class HeadForm extends Component {
           <Col sm={24} lg={8}>
             <FormItem label="ASN类型">
               {getFieldDecorator('asn_type', {
+
               })(
                 <Select placeholder="ASN类型">
                   {CWM_ASN_TYPES.map(cat => <Option value={cat.value} key={cat.value}>{cat.text}</Option>)}
