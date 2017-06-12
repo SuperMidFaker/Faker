@@ -158,6 +158,15 @@ export default class OrderList extends React.Component {
       filters,
     });
   }
+  handleCreatorSelectChange = (value) => {
+    const filters = { ...this.props.filters, creator: value, loginId: this.props.loginId };
+    this.props.loadOrders({
+      tenantId: this.props.tenantId,
+      pageSize: this.props.orders.pageSize,
+      current: this.props.orders.current,
+      filters,
+    });
+  }
   render() {
     const { loading, filters, partners } = this.props;
     const rowSelection = {
@@ -298,6 +307,13 @@ export default class OrderList extends React.Component {
                   {partners.map(data => (<Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>)
                   )}
                 </OptGroup>
+              </Select>
+              <span />
+              <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
+                onChange={this.handleCreatorSelectChange} value={filters.creator ? filters.creator : 'all'}
+              >
+                <Option value="all">全部</Option>
+                <Option value="me">我创建的</Option>
               </Select>
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3>

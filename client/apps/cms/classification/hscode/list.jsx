@@ -4,12 +4,11 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Breadcrumb, Layout, Button, Menu, Dropdown, Icon } from 'antd';
+import { Breadcrumb, Layout, Button, Menu, Dropdown, Icon, Input } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { loadHscodes } from 'common/reducers/cmsHsCode';
-import SearchBar from 'client/components/search-bar';
 import '../index.less';
 import ExcelUpload from 'client/components/excelUploader';
 import { createFilename } from 'client/util/dataTransform';
@@ -17,6 +16,7 @@ import { hscodeColumns } from './hscodeColumns';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
+const Search = Input.Search;
 
 function fetchData({ state, dispatch }) {
   const promises = [];
@@ -167,9 +167,7 @@ export default class HsCodeList extends Component {
           <Content className="main-content" key="main">
             <div className="page-body">
               <div className="toolbar">
-                <SearchBar placeholder="编码/名称/描述/申报要素" onInputSearch={this.handleSearch}
-                  value={this.props.hscodes.searchText} size="large"
-                />
+                <Search placeholder="编码/名称/描述/申报要素" onSearch={this.handleSearch} size="large" style={{ width: 400 }} />
               </div>
               <div className="panel-body table-panel">
                 <Table columns={this.columns} dataSource={this.dataSource} scroll={{ x: 2300 }} rowKey="id" />

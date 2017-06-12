@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Breadcrumb, Button, Dropdown, Menu, Icon, Layout, message, Popconfirm, Tooltip } from 'antd';
+import { Breadcrumb, Button, Dropdown, Menu, Icon, Layout, message, Popconfirm, Tooltip, Select } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
@@ -37,6 +37,7 @@ const formatMsg = format(messages);
 const formatContainerMsg = format(containerMessages);
 const formatGlobalMsg = format(globalMessages);
 const { Header, Content } = Layout;
+const Option = Select.Option;
 
 function TransitTimeLabel(props) {
   const { time, tformat } = props;
@@ -69,6 +70,7 @@ function fetchData({ state, dispatch, cookie }) {
 @connect(
   state => ({
     tenantId: state.account.tenantId,
+    loginId: state.account.loginId,
     acpterId: state.account.loginId,
     acpterName: state.account.username,
     shipmentlist: state.transportAcceptance.table.shipmentlist,
@@ -90,6 +92,7 @@ export default class AcceptList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
+    loginId: PropTypes.number.isRequired,
     filters: PropTypes.array.isRequired,
     sortField: PropTypes.string.isRequired,
     sortOrder: PropTypes.string.isRequired,
@@ -375,6 +378,11 @@ export default class AcceptList extends React.Component {
       }
     });
   }
+  handleCreatorSelect = (value) => {
+    let filters = this.mergeFilters(this.props.filters, 'creator', value);
+    filters = this.mergeFilters(filters, 'loginId', this.props.loginId);
+    this.handleTableLoad(filters, 1);
+  }
   mergeFilters(curFilters, name, value) {
     const merged = curFilters.filter(flt => flt.name !== name);
     if (value !== null && value !== undefined && value !== '') {
@@ -386,7 +394,8 @@ export default class AcceptList extends React.Component {
     return merged;
   }
   render() {
-    const { shipmentlist, loading, intl } = this.props;
+    const { shipmentlist, loading, intl, filters } = this.props;
+    const creatorFilter = filters.find(item => item.name === 'creator');
     this.dataSource.remotes = shipmentlist;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -493,6 +502,13 @@ export default class AcceptList extends React.Component {
               </div>
               <span />
               <div className="toolbar-right">
+                <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
+                  onChange={this.handleCreatorSelect} value={(creatorFilter && creatorFilter.name) ? creatorFilter.value : 'all'}
+                >
+                  <Option value="all">全部</Option>
+                  <Option value="me">我创建的</Option>
+                </Select>
+                <span />
                 <CustomerSelect onChange={this.handleCustomerChange} />
               </div>
             </div>
