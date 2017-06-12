@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import connectFetch from 'client/common/decorators/connect-fetch';
+// import connectFetch from 'client/common/decorators/connect-fetch';
 import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Button, Dropdown, Menu, Icon, Radio, Popconfirm, Progress, message, Layout, Tooltip, Select } from 'antd';
 import Table from 'client/components/remoteAntTable';
@@ -21,7 +21,8 @@ import ShipmentColumn from './columndef/shipmentColumn';
 import ProgressColumn from './columndef/progressColumn';
 import DelegationDockPanel from '../../cms/common/dockhub/delegationDockPanel';
 import ShipmentDockPanel from '../../transport/shipment/dock/shipmentDockPanel';
-import { SCOF_ORDER_TRANSFER, CRM_ORDER_STATUS, PARTNER_ROLES } from 'common/constants';
+import { SCOF_ORDER_TRANSFER, CRM_ORDER_STATUS } from 'common/constants';
+import CreatorSelect from './creatorSelect';
 
 const { Header, Content } = Layout;
 const formatMsg = format(messages);
@@ -30,21 +31,22 @@ const RadioButton = Radio.Button;
 const Option = Select.Option;
 const OptGroup = Select.OptGroup;
 
-function fetchData({ state, dispatch }) {
-  const promises = [
-    dispatch(loadOrders({
-      tenantId: state.account.tenantId,
-      pageSize: state.crmOrders.orders.pageSize,
-      current: state.crmOrders.orders.current,
-      filters: state.crmOrders.orderFilters,
-      partners: state.partner.partners,
-    })),
-    dispatch(loadPartners({ tenantId: state.account.tenantId, role: PARTNER_ROLES.CUS })),
-  ];
-  return Promise.all(promises);
-}
+// 暂时由 CreatorSelect 触发获取list
+// function fetchData({ state, dispatch }) {
+//   const promises = [
+//     dispatch(loadOrders({
+//       tenantId: state.account.tenantId,
+//       pageSize: state.crmOrders.orders.pageSize,
+//       current: state.crmOrders.orders.current,
+//       filters: state.crmOrders.orderFilters,
+//       partners: state.partner.partners,
+//     })),
+//     dispatch(loadPartners({ tenantId: state.account.tenantId, role: PARTNER_ROLES.CUS })),
+//   ];
+//   return Promise.all(promises);
+// }
 
-@connectFetch()(fetchData)
+// @connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
@@ -158,8 +160,8 @@ export default class OrderList extends React.Component {
       filters,
     });
   }
-  handleCreatorSelectChange = (value) => {
-    const filters = { ...this.props.filters, creator: value, loginId: this.props.loginId };
+  handleCreatorChange = (fieldsValue) => {
+    const filters = { ...this.props.filters, ...fieldsValue, loginId: this.props.loginId };
     this.props.loadOrders({
       tenantId: this.props.tenantId,
       pageSize: this.props.orders.pageSize,
@@ -309,12 +311,7 @@ export default class OrderList extends React.Component {
                 </OptGroup>
               </Select>
               <span />
-              <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
-                onChange={this.handleCreatorSelectChange} value={filters.creator ? filters.creator : 'all'}
-              >
-                <Option value="all">全部订单</Option>
-                <Option value="me">我创建的订单</Option>
-              </Select>
+              <CreatorSelect onChange={this.handleCreatorChange} onInitialize={this.handleCreatorChange} />
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3>
               </div>
