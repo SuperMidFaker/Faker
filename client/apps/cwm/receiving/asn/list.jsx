@@ -9,6 +9,7 @@ import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/search-bar';
 import RowUpdater from 'client/components/rowUpdater';
+import TrimSpan from 'client/components/trimSpan';
 import connectNav from 'client/common/decorators/connect-nav';
 import { formatMsg } from '../message.i18n';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
@@ -61,12 +62,13 @@ export default class ReceivingASNList extends React.Component {
   columns = [{
     title: 'ANS编号',
     dataIndex: 'asn_no',
-    width: 120,
+    width: 180,
     fixed: 'left',
   }, {
     title: '货主',
     width: 200,
     dataIndex: 'owner_name',
+    render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: '采购订单号',
     dataIndex: 'po_no',
@@ -75,6 +77,7 @@ export default class ReceivingASNList extends React.Component {
     title: '供应商',
     dataIndex: 'seller_name',
     width: 200,
+    render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: '通知日期',
     width: 120,
@@ -95,13 +98,13 @@ export default class ReceivingASNList extends React.Component {
     width: 120,
     render: (o) => {
       if (o === 0) {
-        return (<Badge status="pending" text="通知接收" />);
+        return (<Badge status="default" text="通知接收" />);
       } else if (o === 1) {
-        return (<Badge status="inbound" text="入库操作" />);
+        return (<Badge status="processing" text="入库操作" />);
       } else if (o === 2) {
-        return (<Badge status="partial" text="部分收货" />);
+        return (<Badge status="warning" text="部分收货" />);
       } else if (o === 3) {
-        return (<Badge status="completed" text="收货完成" />);
+        return (<Badge status="success" text="收货完成" />);
       }
     },
   }, {
@@ -207,7 +210,7 @@ export default class ReceivingASNList extends React.Component {
       filters,
     });
   }
-  handleBondedChange = (e) => {
+  handleStatusChange = (e) => {
     const filters = { ...this.props.filters, status: e.target.value };
     const whseCode = this.props.defaultWhse.code;
     this.props.loadAsnLists({
@@ -240,7 +243,10 @@ export default class ReceivingASNList extends React.Component {
       resolve: result => result.data,
       getPagination: (result, resolve) => ({
         current: resolve(result.totalCount, result.current, result.pageSize),
+        showSizeChanger: true,
+        showQuickJumper: false,
         pageSize: result.pageSize,
+        showTotal: total => `共 ${total} 条`,
       }),
       getParams: (pagination, tblfilters) => {
         const newfilters = { ...this.props.filters, ...tblfilters[0] };
@@ -269,7 +275,7 @@ export default class ReceivingASNList extends React.Component {
               {this.msg('receivingASN')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <RadioGroup defaultValue="pending" onChange={this.handleBondedChange} size="large">
+          <RadioGroup defaultValue="pending" onChange={this.handleStatusChange} size="large">
             <RadioButton value="pending">通知接收</RadioButton>
             <RadioButton value="inbound">入库操作</RadioButton>
             <RadioButton value="partial">部分收货</RadioButton>

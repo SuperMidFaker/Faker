@@ -8,6 +8,7 @@ import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/search-bar';
 import RowUpdater from 'client/components/rowUpdater';
+import TrimSpan from 'client/components/trimSpan';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
@@ -60,7 +61,7 @@ export default class ReceivingInboundList extends React.Component {
   columns = [{
     title: 'ANS编号',
     dataIndex: 'asn_no',
-    width: 120,
+    width: 180,
     fixed: 'left',
   }, {
     title: '入库流水号',
@@ -75,6 +76,7 @@ export default class ReceivingInboundList extends React.Component {
     title: '货主',
     width: 200,
     dataIndex: 'owner_name',
+    render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: '状态',
     dataIndex: 'status',
@@ -90,9 +92,6 @@ export default class ReceivingInboundList extends React.Component {
         return (<Badge status="success" text="入库完成" />);
       }
     },
-  }, {
-    title: '执行者',
-    dataIndex: 'executor',
   }, {
     title: '操作模式',
     dataIndex: 'receiving_mode',
@@ -160,7 +159,10 @@ export default class ReceivingInboundList extends React.Component {
       resolve: result => result.data,
       getPagination: (result, resolve) => ({
         current: resolve(result.totalCount, result.current, result.pageSize),
+        showSizeChanger: true,
+        showQuickJumper: false,
         pageSize: result.pageSize,
+        showTotal: total => `共 ${total} 条`,
       }),
       getParams: (pagination, tblfilters) => {
         const newfilters = { ...this.props.filters, ...tblfilters[0] };

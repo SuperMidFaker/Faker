@@ -125,10 +125,12 @@ export default class ReceiveInbound extends Component {
     title: '序号',
     dataIndex: 'asn_seq_no',
     width: 50,
+    fixed: 'left',
   }, {
     title: '商品货号',
     dataIndex: 'product_no',
     width: 120,
+    fixed: 'left',
   }, {
     title: '中文品名',
     dataIndex: 'name',
@@ -248,12 +250,12 @@ export default class ReceiveInbound extends Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="top-bar-tools">
-            {this.state.receivingMode === 'manual' && this.state.currentStatus < 3 &&
-            <Button type={!this.state.printed && 'primary'} size="large"icon={this.state.printed ? 'check-circle-o' : 'printer'} onClick={this.handlePrint}>
-              打印入库清单
-            </Button>
+            {this.state.currentStatus < 3 &&
+            <Tooltip title="打印入库单" placement="bottom">
+              <Button size="large" icon="printer" onClick={this.handlePrint} />
+            </Tooltip>
             }
-            {this.state.receivingMode === 'scan' && this.state.currentStatus < 3 &&
+            {this.state.currentStatus < 3 &&
             <Dropdown overlay={tagMenu}>
               <Button size="large" onClick={this.handleTagging}>
                 <Icon type="barcode" />标签 <Icon type="down" />
@@ -261,8 +263,8 @@ export default class ReceiveInbound extends Component {
             </Dropdown>
             }
             <RadioGroup defaultValue={this.state.receivingMode} onChange={this.handleReceivingModeChange} size="large" disabled={this.state.currentStatus > 0}>
-              <Tooltip title="扫码收货"><RadioButton value="scan"><Icon type="scan" /></RadioButton></Tooltip>
-              <Tooltip title="人工收货"><RadioButton value="manual"><Icon type="solution" /></RadioButton></Tooltip>
+              <Tooltip title="扫码收货" placement="bottom"><RadioButton value="scan"><Icon type="scan" /></RadioButton></Tooltip>
+              <Tooltip title="人工收货" placement="bottom"><RadioButton value="manual"><Icon type="solution" /></RadioButton></Tooltip>
             </RadioGroup>
           </div>
         </Header>
@@ -274,7 +276,7 @@ export default class ReceiveInbound extends Component {
                   <InfoItem label="货主" field={inboundHead.owner_name} />
                 </Col>
                 <Col sm={24} lg={6}>
-                  <InfoItem label="入库单号" field="I096120170603223-01" />
+                  <InfoItem label="入库单号" field={inboundHead.inbound_no} />
                 </Col>
                 <Col sm={24} lg={3}>
                   <InfoItem label="预计箱数" addonBefore={<Icon type="inbox" />} field={inboundHead.convey_box_qty} editable />
