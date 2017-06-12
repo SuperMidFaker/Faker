@@ -461,7 +461,7 @@ export default class LandStatusList extends React.Component {
               <h3>已选中{this.state.selectedRowKeys.length}项</h3> {this.renderBatchOperationButtons()}
             </div>
             <div className="toolbar-right">
-              <CustomerSelect onChange={this.handleCustomerChange} />
+              <CustomerSelect onChange={this.handleCustomerChange} size="large" />
               <span />
               <MyShipmentsSelect onChange={this.handleShipmentViewSelect} size="large" />
             </div>

@@ -311,7 +311,7 @@ export default class OrderList extends React.Component {
                 </OptGroup>
               </Select>
               <span />
-              <CreatorSelect onChange={this.handleCreatorChange} onInitialize={this.handleCreatorChange} />
+              <CreatorSelect onChange={this.handleCreatorChange} onInitialize={this.handleCreatorChange} size="large" />
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3>
               </div>

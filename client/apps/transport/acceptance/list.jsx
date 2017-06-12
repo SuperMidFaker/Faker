@@ -501,9 +501,9 @@ export default class AcceptList extends React.Component {
               </div>
               <span />
               <div className="toolbar-right">
-                <CreatorSelect onChange={this.handleCreatorChange} onInitialize={this.handleCreatorChange} />
+                <CreatorSelect onChange={this.handleCreatorChange} onInitialize={this.handleCreatorChange} size="large" />
                 <span />
-                <CustomerSelect onChange={this.handleCustomerChange} />
+                <CustomerSelect onChange={this.handleCustomerChange} size="large" />
               </div>
             </div>
             <div className="panel-body table-panel">

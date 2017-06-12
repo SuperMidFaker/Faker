@@ -1053,7 +1053,7 @@ export default class DispatchList extends React.Component {
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3> {bulkBtns}
               </div>
               <div className="toolbar-right">
-                <CustomerSelect onChange={this.handleCustomerChange} />
+                <CustomerSelect onChange={this.handleCustomerChange} size="large" />
                 <span />
                 <MyShipmentsSelect onChange={this.handleAdvancedSearch} size="large" />
               </div>

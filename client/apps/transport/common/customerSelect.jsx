@@ -17,6 +17,7 @@ export default class CustomerSelect extends React.Component {
     onChange: PropTypes.func.isRequired,
     clients: PropTypes.array.isRequired,
     style: PropTypes.object,
+    size: PropTypes.string,
   }
   handleChange = (value) => {
     const client = this.props.clients.find(item => item.partner_id === Number(value));
@@ -37,6 +38,7 @@ export default class CustomerSelect extends React.Component {
         optionFilterProp="children"
         notFoundContent=""
         dropdownMatchSelectWidth={false}
+        size={this.props.size}
       >
         {
           clients.map(pt => (
