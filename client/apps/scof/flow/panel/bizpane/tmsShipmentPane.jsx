@@ -207,7 +207,6 @@ export default class TMSShipmentPane extends Component {
   renderConsign = consign => `${consign.name} | ${Location.renderLoc(consign)} | ${consign.byname || ''} | ${consign.contact || ''} | ${consign.mobile || ''}`
   render() {
     const { form: { getFieldDecorator }, onNodeActionsChange, model, tmsParams: { consigners, consignees, transitModes }, partnerId } = this.props;
-    console.log(consignees);
     return (
       <Collapse bordered={false} defaultActiveKey={['properties', 'events']}>
         <Panel header={this.msg('bizProperties')} key="properties">
@@ -252,10 +251,11 @@ export default class TMSShipmentPane extends Component {
                     showSearch
                     onSelect={this.handleConsignerSelect}
                     notFoundContent={<a onClick={() => this.handleShowAddLocationModal(0)}>+ 添加地址</a>}
+                    optionLabelProp="name"
                   >
                     {
                       consigners.filter(cl => cl.ref_partner_id === partnerId || cl.ref_partner_id === -1)
-                      .map(cg => <Option value={cg.node_id} key={cg.node_id}>{this.renderConsign(cg)}</Option>)
+                      .map(cg => <Option value={cg.node_id} key={cg.node_id} name={cg.name}>{this.renderConsign(cg)}</Option>)
                     }
                     <Option value={-1} key={-1}>+ 添加地址</Option>
                   </Select>)}
@@ -273,10 +273,11 @@ export default class TMSShipmentPane extends Component {
                     showSearch
                     onSelect={this.handleConsigneeSelect}
                     notFoundContent={<a onClick={() => this.handleShowAddLocationModal(1)}>+ 添加地址</a>}
+                    optionLabelProp="name"
                   >
                     {
                       consignees.filter(cl => cl.ref_partner_id === partnerId || cl.ref_partner_id === -1)
-                      .map(cg => <Option value={cg.node_id} key={cg.node_id}>{this.renderConsign(cg)}</Option>)
+                      .map(cg => <Option value={cg.node_id} key={cg.node_id} name={cg.name}>{this.renderConsign(cg)}</Option>)
                     }
                     <Option value={-1} key={-1}>+ 添加地址</Option>
                   </Select>)}

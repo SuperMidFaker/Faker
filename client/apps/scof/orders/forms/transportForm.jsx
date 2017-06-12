@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { DatePicker, InputNumber, Form, Row, Col, Card, Input, Switch, Select, Icon, Alert } from 'antd';
-import RegionCascader from 'client/components/chinaRegionCascader';
 import { setClientForm, loadFlowNodeData } from 'common/reducers/crmOrders';
 import { loadTariffsByTransportInfo, toggleAddLineModal, isLineIntariff, toggleAddLocationModal } from 'common/reducers/scofFlow';
 import { uuidWithoutDash } from 'client/common/uuid';
@@ -342,16 +341,16 @@ export default class TransportForm extends Component {
     }
     this.handleSetClientForm(consignForm);
   }
-  handleRegionValueChange = (consignType, region) => {
-    const [code, province, city, district, street] = region;
-    const consign = {};
-    consign[`${consignType}_region_code`] = code;
-    consign[`${consignType}_province`] = province;
-    consign[`${consignType}_city`] = city;
-    consign[`${consignType}_district`] = district;
-    consign[`${consignType}_street`] = street;
-    this.handleSetClientForm(consign);
-  }
+  // handleRegionValueChange = (consignType, region) => {
+  //   const [code, province, city, district, street] = region;
+  //   const consign = {};
+  //   consign[`${consignType}_region_code`] = code;
+  //   consign[`${consignType}_province`] = province;
+  //   consign[`${consignType}_city`] = city;
+  //   consign[`${consignType}_district`] = district;
+  //   consign[`${consignType}_street`] = street;
+  //   this.handleSetClientForm(consign);
+  // }
   handleTransmodeChange = (value) => {
     const transportMode = this.props.formRequires.transitModes.find(item => item.id === value);
     this.handleSetClientForm({
@@ -472,19 +471,12 @@ export default class TransportForm extends Component {
   render() {
     const { formData, serviceTeam, formRequires: { consignerLocations, consigneeLocations,
       transitModes, packagings, vehicleTypes, vehicleLengths }, customerPartnerId } = this.props;
-    console.log(consigneeLocations);
     // todo consigner consignee by customer partner id
     const node = formData.node;
-    const consignerRegion = [
-      node.consigner_province, node.consigner_city,
-      node.consigner_district, node.consigner_street,
-    ];
-    const consigneeRegion = [
-      node.consignee_province, node.consignee_city,
-      node.consignee_district, node.consignee_street,
-    ];
     const transModeExtras = [];
     const modeCode = node.trs_mode_code;
+    const consigner = consignerLocations.find(item => item.node_id === node.consigner_id);
+    const consignee = consigneeLocations.find(item => item.node_id === node.consignee_id);
     if (modeCode === PRESET_TRANSMODES.ftl) {
       // 整车,修改车型,车长
       transModeExtras.push(
@@ -613,7 +605,7 @@ export default class TransportForm extends Component {
           <Col sm={12}>
             <FormItem label="发货方">
               <Row style={{ paddingRight: 8 }}>
-                <Select allowClear size="large" showArrow value={node.consigner_id} optionLabelProp="children"
+                <Select allowClear size="large" showArrow value={node.consigner_id} optionLabelProp="name"
                   onChange={value => this.handleConsignChange('consigner_name', value)}
                   onSelect={value => this.handleConsignSelect('consigner_name', value)}
                   dropdownMatchSelectWidth={false}
@@ -623,7 +615,7 @@ export default class TransportForm extends Component {
                   notFoundContent={<a onClick={() => this.handleShowAddLocationModal(0)}>+ 添加地址</a>}
                 >
                   {consignerLocations.filter(cl => cl.ref_partner_id === customerPartnerId || cl.ref_partner_id === -1)
-                    .map(dw => <Option value={dw.node_id} key={dw.node_id}>{this.renderConsign(dw)}</Option>)
+                    .map(dw => <Option value={dw.node_id} key={dw.node_id} name={dw.name}>{this.renderConsign(dw)}</Option>)
                 }
                   <Option value={-1} key={-1}>+ 添加地址</Option>
                 </Select>
@@ -631,9 +623,7 @@ export default class TransportForm extends Component {
               <Row style={{ marginTop: 10 }}>
                 <InputGroup size="large">
                   <Col span="12">
-                    <RegionCascader defaultRegion={consignerRegion} region={consignerRegion}
-                      onChange={region => this.handleRegionValueChange('consigner', region)}
-                    />
+                    <Input value={`${Location.renderLocation(node, 'consigner_province', 'consigner_city', 'consigner_district', 'consigner_street')} ${consigner.name}`} />
                   </Col>
                   <Col span="12">
                     <Input prefix={<Icon type="environment-o" />} value={node.consigner_addr}
@@ -643,7 +633,7 @@ export default class TransportForm extends Component {
                   </Col>
                 </InputGroup>
               </Row>
-              <Row>
+              <Row style={{ marginTop: 10 }}>
                 <InputGroup size="large">
                   <Input style={{ width: '33.33%' }} prefix={<Icon type="user" />} value={node.consigner_contact}
                     onChange={e => this.handleChange('consigner_contact', e.target.value)}
@@ -664,7 +654,7 @@ export default class TransportForm extends Component {
           <Col sm={12}>
             <FormItem label="收货方">
               <Row style={{ paddingRight: 8 }}>
-                <Select allowClear size="large" showArrow value={node.consignee_id} optionLabelProp="children"
+                <Select allowClear size="large" showArrow value={node.consignee_id} optionLabelProp="name"
                   onChange={value => this.handleConsignChange('consignee_name', value)}
                   onSelect={value => this.handleConsignSelect('consignee_name', value)}
                   dropdownMatchSelectWidth={false}
@@ -674,7 +664,7 @@ export default class TransportForm extends Component {
                   notFoundContent={<a onClick={() => this.handleShowAddLocationModal(1)}>+ 添加地址</a>}
                 >
                   {consigneeLocations.filter(cl => cl.ref_partner_id === customerPartnerId || cl.ref_partner_id === -1)
-                    .map(dw => <Option value={dw.node_id} key={dw.node_id}>{this.renderConsign(dw)}</Option>)
+                    .map(dw => <Option value={dw.node_id} key={dw.node_id} name={dw.name}>{this.renderConsign(dw)}</Option>)
                 }
                   <Option value={-1} key={-1}>+ 添加地址</Option>
                 </Select>
@@ -682,9 +672,7 @@ export default class TransportForm extends Component {
               <Row style={{ marginTop: 10 }}>
                 <InputGroup size="large">
                   <Col span="12">
-                    <RegionCascader defaultRegion={consigneeRegion} region={consigneeRegion}
-                      onChange={region => this.handleRegionValueChange('consignee', region)}
-                    />
+                    <Input value={`${Location.renderLocation(node, 'consignee_province', 'consignee_city', 'consignee_district', 'consignee_street')} ${consignee.name}`} />
                   </Col>
                   <Col span="12">
                     <Input prefix={<Icon type="environment-o" />} value={node.consignee_addr}
@@ -694,7 +682,7 @@ export default class TransportForm extends Component {
                   </Col>
                 </InputGroup>
               </Row>
-              <Row>
+              <Row style={{ marginTop: 10 }}>
                 <InputGroup size="large">
                   <Input style={{ width: '33.33%' }} prefix={<Icon type="user" />} value={node.consignee_contact}
                     onChange={e => this.handleChange('consignee_contact', e.target.value)}
