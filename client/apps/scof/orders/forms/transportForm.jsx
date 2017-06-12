@@ -623,7 +623,7 @@ export default class TransportForm extends Component {
               <Row style={{ marginTop: 10 }}>
                 <InputGroup size="large">
                   <Col span="12">
-                    <Input value={`${Location.renderLocation(node, 'consigner_province', 'consigner_city', 'consigner_district', 'consigner_street')} ${consigner.name}`} />
+                    <Input value={`${Location.renderLocation(node, 'consigner_province', 'consigner_city', 'consigner_district', 'consigner_street')} ${consigner.byname ? consigner.byname : ''}`} />
                   </Col>
                   <Col span="12">
                     <Input prefix={<Icon type="environment-o" />} value={node.consigner_addr}
@@ -672,7 +672,7 @@ export default class TransportForm extends Component {
               <Row style={{ marginTop: 10 }}>
                 <InputGroup size="large">
                   <Col span="12">
-                    <Input value={`${Location.renderLocation(node, 'consignee_province', 'consignee_city', 'consignee_district', 'consignee_street')} ${consignee.name}`} />
+                    <Input value={`${Location.renderLocation(node, 'consignee_province', 'consignee_city', 'consignee_district', 'consignee_street')} ${consignee.byname ? consignee.byname : ''}`} />
                   </Col>
                   <Col span="12">
                     <Input prefix={<Icon type="environment-o" />} value={node.consignee_addr}
