@@ -59,7 +59,19 @@ export default class AddLocationModal extends React.Component {
     const nodeInfoInForm = form.getFieldsValue();
     const nodeInfo = Object.assign({}, nodeInfoInForm, { ...region, type, tenant_id: tenantId, ref_partner_id: partnerId, ref_partner_name: partnerName });
     this.props.addNode(nodeInfo).then(() => {
+      this.setState({
+        region: {
+          province: '',
+          city: '',
+          district: '',
+          street: '',
+          region_code: '',
+        },
+      });
+      this.props.form.resetFields();
       this.props.toggleAddLocationModal({ visible: false });
+      this.props.loadFormRequires({ tenantId });
+      this.props.loadTmsBizParams(tenantId);
     });
   }
   handleRegionChange = (value) => {
@@ -70,6 +82,7 @@ export default class AddLocationModal extends React.Component {
   msg = formatMsg(this.props.intl)
   render() {
     const { visible, type, form: { getFieldDecorator } } = this.props;
+    const { region } = this.state;
     let typeDesc = '';
     if (type === 0) {
       typeDesc = '发货方';
@@ -91,6 +104,7 @@ export default class AddLocationModal extends React.Component {
           <Col span="14">
             <FormItem label={this.msg('locationProvince')}>
               <RegionCascade
+                region={[region.province, region.city, region.district, region.street]}
                 onChange={this.handleRegionChange}
               />
             </FormItem>

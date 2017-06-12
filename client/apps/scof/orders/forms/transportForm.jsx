@@ -124,8 +124,15 @@ export default class TransportForm extends Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.needLoadTariff) {
-      this.handleLoadTariffs(nextProps);
-      this.setState({ isLineIntariff: true });
+      const { formData, customerPartnerId } = nextProps;
+      const node = formData.node;
+      nextProps.loadTariffsByTransportInfo(customerPartnerId, node.trs_mode_id, node.goods_type).then((result1) => {
+        this.setState({
+          tariffs: result1.data || [],
+        }, () => {
+          this.handleJudgeLine({ });
+        });
+      });
     }
   }
   handleLoadTariffs = (props) => {
