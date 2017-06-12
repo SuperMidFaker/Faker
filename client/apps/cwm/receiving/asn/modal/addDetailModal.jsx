@@ -109,14 +109,12 @@ export default class AddDetailModal extends Component {
             <Row gutter={8}>
               <Col span={12}>
                 {getFieldDecorator('unit_price', {
-                  rules: [{ required: true, message: 'Please input unit_price!' }],
                 })(
                   <Input />
                 )}
               </Col>
               <Col span={12}>
                 {getFieldDecorator('currency', {
-                  rules: [{ required: true, message: 'Please input currency!' }],
                 })(
                   <Input disabled />
                 )}

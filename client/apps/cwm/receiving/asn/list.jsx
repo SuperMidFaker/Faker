@@ -70,9 +70,11 @@ export default class ReceivingASNList extends React.Component {
   }, {
     title: '采购订单号',
     dataIndex: 'po_no',
+    width: 120,
   }, {
     title: '供应商',
     dataIndex: 'seller_name',
+    width: 200,
   }, {
     title: '通知日期',
     width: 120,
@@ -298,7 +300,7 @@ export default class ReceivingASNList extends React.Component {
               </div>
             </div>
             <div className="panel-body table-panel">
-              <Table columns={this.columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="id" scroll={{ x: 1400 }} />
+              <Table columns={this.columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="id" scroll={{ x: 1500 }} />
             </div>
           </div>
         </Content>

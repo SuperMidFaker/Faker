@@ -185,7 +185,6 @@ export default class ReceiveInbound extends Component {
     title: '破损级别',
     dataIndex: 'damage_level',
     fixed: 'right',
-    dataIndex: 'status_code',
     render: o => (<Select defaultValue={o} style={{ width: 100 }} disabled={this.state.receivingMode === 'scan'}>
       <Option value="0">完好</Option>
       <Option value="1">轻微擦痕</Option>
