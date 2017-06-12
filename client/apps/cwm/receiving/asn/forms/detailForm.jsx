@@ -23,6 +23,7 @@ export default class DetailForm extends Component {
     intl: intlShape.isRequired,
     form: PropTypes.object.isRequired,
     editable: PropTypes.bool,
+    detailEnable: PropTypes.bool.isRequired,
   }
   state = {
     pagination: {
@@ -45,7 +46,7 @@ export default class DetailForm extends Component {
     this.props.showDetailModal();
   }
   render() {
-    const { editable, temporaryDetails } = this.props;
+    const { editable, temporaryDetails, detailEnable } = this.props;
     const { pagination } = this.state;
     const columns = [{
       title: '序号',
@@ -74,11 +75,11 @@ export default class DetailForm extends Component {
     return (
       <Card bodyStyle={{ padding: 0 }}>
         <div className="toolbar">
-          {editable && <Button type="primary" onClick={this.showDetailModal}>添加明细</Button>}
-          {editable && <Button>导入</Button>}
+          {editable && <Button type="primary" disabled={detailEnable ? '' : 'disabled'} onClick={this.showDetailModal}>添加明细</Button>}
+          {editable && <Button disabled={detailEnable ? '' : 'disabled'}>导入</Button>}
         </div>
         <Table columns={columns} dataSource={temporaryDetails} rowKey="id" pagination={pagination} />
-        <AddDetailModal />
+        <AddDetailModal selectedOwner={this.props.selectedOwner} />
       </Card>
     );
   }

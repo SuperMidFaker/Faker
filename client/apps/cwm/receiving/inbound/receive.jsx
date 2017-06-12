@@ -8,7 +8,8 @@ import InfoItem from 'client/components/InfoItem';
 import RowUpdater from 'client/components/rowUpdater';
 import PackagePopover from './popover/packagePopover';
 import ReceivingModal from './modal/receivingModal';
-import { loadReceiveModal } from 'common/reducers/cwmReceive';
+import { loadReceiveModal, getInboundDetail } from 'common/reducers/cwmReceive';
+import { loadZones } from 'common/reducers/cwmWarehouse';
 import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
 
@@ -28,8 +29,10 @@ const Step = Steps.Step;
     tenantName: state.account.tenantName,
     formData: state.cmsDelegation.formData,
     submitting: state.cmsDelegation.submitting,
+    defaultWhse: state.cwmContext.defaultWhse,
+    zoneList: state.cwmWarehouse.zoneList,
   }),
-  { loadReceiveModal }
+  { loadReceiveModal, getInboundDetail, loadZones }
 )
 @connectNav({
   depth: 3,
@@ -53,6 +56,22 @@ export default class ReceiveInbound extends Component {
     currentStatus: 0,
     printed: false,
     pushedTask: false,
+    inboundConfirmed: false,
+    inboundHead: {},
+    inboundBody: [],
+  }
+  componentWillMount() {
+    const asnNo = this.props.params.asnNo;
+    const { defaultWhse } = this.props;
+    this.props.getInboundDetail(asnNo).then(
+      (result) => {
+        this.setState({
+          inboundHead: result.data.inboundHead,
+          inboundBody: result.data.inboundBody,
+        });
+      }
+    );
+    this.props.loadZones(defaultWhse.code);
   }
   msg = key => formatMsg(this.props.intl, key);
 
@@ -82,8 +101,8 @@ export default class ReceiveInbound extends Component {
       selectedRowKeys: [],
     });
   }
-  handleProductReceive = (ev) => {
-    if (ev.target.value > 0) { // TODO:
+  handleProductReceive = (e) => {
+    if (e.target.value > 0) { // TODO:
       this.setState({
         currentStatus: 1,
       });
@@ -104,7 +123,7 @@ export default class ReceiveInbound extends Component {
   }
   columns = [{
     title: '序号',
-    dataIndex: 'seq_no',
+    dataIndex: 'asn_seq_no',
     width: 50,
   }, {
     title: '商品货号',
@@ -112,11 +131,11 @@ export default class ReceiveInbound extends Component {
     width: 120,
   }, {
     title: '中文品名',
-    dataIndex: 'desc_cn',
+    dataIndex: 'name',
     width: 200,
   }, {
     title: '订单数量',
-    dataIndex: 'order_qty',
+    dataIndex: 'expect_qty',
     width: 120,
     render: o => (<b>{o}</b>),
   }, {
@@ -125,15 +144,13 @@ export default class ReceiveInbound extends Component {
     width: 100,
   }, {
     title: 'SKU',
-    dataIndex: 'sku',
+    dataIndex: 'product_sku',
     width: 200,
-    render: o => (
-      <PackagePopover data={o} />
-      ),
+    render: o => (<PackagePopover data={o} />),
   }, {
     title: 'SKU包装单位',
-    dataIndex: 'sku_pack',
-    width: 150,
+    width: 100,
+    dataIndex: 'sku_pack_unit_name',
     render: o => (<Tooltip title="=10主单位" placement="right"><Tag>{o}</Tag></Tooltip>),
   }, {
     title: '预期数量',
@@ -150,20 +167,24 @@ export default class ReceiveInbound extends Component {
         return (<span className="mdc-text-green"><Tooltip title="包装单位数量"><Input className={this.state.receivingMode === 'scan' && 'readonly'} defaultValue={record.received_pack_qty} style={{ width: 80 }} onChange={this.handleProductReceive} /></Tooltip>
           <Tooltip title="主单位数量"><Input value={record.received_qty} style={{ width: 80 }} disabled /></Tooltip></span>);
       } else {
-        return (<span className="mdc-text-red"><Tooltip title="包装单位数量"><Input className={this.state.receivingMode === 'scan' && 'readonly'} defaultValue={record.received_pack_qty} style={{ width: 80 }} /></Tooltip>
+        return (<span className="mdc-text-red"><Tooltip title="包装单位数量"><Input className={this.state.receivingMode === 'scan' && 'readonly'} defaultValue={record.received_pack_qty} style={{ width: 80 }} onChange={this.handleProductReceive} /></Tooltip>
           <Tooltip title="主单位数量"><Input value={record.received_qty} style={{ width: 80 }} disabled /></Tooltip></span>);
       }
     },
   }, {
     title: '库位号',
+    dataIndex: 'location',
     fixed: 'right',
-    render: o => (<Select defaultValue={o} showSearch style={{ width: 100 }} onChange={this.handleProductPutAway} disabled={this.state.receivingMode === 'scan'}>
-      <Option value="A1312A1">A1312A1</Option>
-      <Option value="A1310A2">A1310A2</Option>
-    </Select>),
+    render: (o) => {
+      const Options = this.props.zoneList.map(zone => (<Option value={zone.zone_code}>{zone.zone_name}</Option>));
+      return (<Select defaultValue={o} showSearch style={{ width: 100 }} onChange={this.handleProductPutAway} disabled={this.state.receivingMode === 'scan'}>
+        {Options}
+      </Select>);
+    },
   }, {
     title: '收货状态',
     fixed: 'right',
+    dataIndex: 'status_code',
     render: o => (<Select defaultValue={o} style={{ width: 100 }} disabled={this.state.receivingMode === 'scan'}>
       <Option value="A1312A1">完好</Option>
       <Option value="A1310A2">破损</Option>
@@ -180,69 +201,11 @@ export default class ReceiveInbound extends Component {
       }
     },
   }]
-  mockData = [{
-    seq_no: '1',
-    product_no: 'N04601170548',
-    order_qty: 15,
-    desc_cn: '微纤维止血胶原粉',
-    sku: 'N04601170548',
-    unit: '件',
-    sku_pack: '单件',
-    expect_pack_qty: 15,
-    expect_qty: 15,
-    received_pack_qty: 0,
-    received_qty: 0,
-  }, {
-    seq_no: '2',
-    product_no: 'N04601170547',
-    order_qty: 1000,
-    desc_cn: 'PTA球囊扩张导管',
-    sku: 'N04601170547',
-    unit: '件',
-    sku_pack: '内包装',
-    expect_pack_qty: 10,
-    expect_qty: 1000,
-    received_pack_qty: 0,
-    received_qty: 0,
-  }, {
-    seq_no: '3',
-    product_no: 'SBMG-00859',
-    order_qty: 1000,
-    desc_cn: '临时起搏电极导管',
-    sku: 'RS2A03A0AL0W00',
-    unit: '个',
-    sku_pack: '内包装',
-    expect_pack_qty: 10,
-    expect_qty: 1000,
-    received_pack_qty: 0,
-    received_qty: 0,
-  }, {
-    seq_no: '4',
-    product_no: 'SBME-00787',
-    order_qty: 12,
-    desc_cn: '肾造瘘球囊扩张导管',
-    sku: '109R0612D401',
-    unit: '个',
-    expect_pack_qty: 2,
-    sku_pack: '箱',
-    expect_qty: 12,
-    received_pack_qty: 1,
-    received_qty: 6,
-  }, {
-    seq_no: '5',
-    product_no: 'SBMJ-00199',
-    order_qty: 1,
-    desc_cn: '输尿管镜球囊扩张导管',
-    sku: '9GV0912P1G03',
-    unit: '个',
-    expect_pack_qty: 1,
-    sku_pack: '托盘',
-    expect_qty: 1,
-    received_pack_qty: 0,
-    received_qty: 0,
-  }];
 
   render() {
+    const { defaultWhse } = this.props;
+    const { inboundHead, inboundBody } = this.state;
+    const asnNo = this.props.params.asnNo;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -267,21 +230,18 @@ export default class ReceiveInbound extends Component {
             <Breadcrumb.Item>
               <Select
                 size="large"
-                defaultValue="0960"
-                placeholder="选择仓库"
+                value={defaultWhse.code}
                 style={{ width: 160 }}
                 disabled
               >
-                <Option value="0960">物流大道仓库</Option>
-                <Option value="0961">希雅路仓库</Option>
-                <Option value="0962">富特路仓库</Option>
+                <Option value={defaultWhse.code}>{defaultWhse.name}</Option>
               </Select>
             </Breadcrumb.Item>
             <Breadcrumb.Item>
               {this.msg('receivingInound')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              ASN096120170603223
+              {asnNo}
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="top-bar-tools">
@@ -314,16 +274,16 @@ export default class ReceiveInbound extends Component {
             <Card bodyStyle={{ paddingBottom: 56 }}>
               <Row>
                 <Col sm={24} lg={6}>
-                  <InfoItem label="货主" field="04601|米思米(中国)精密机械贸易" />
+                  <InfoItem label="货主" field={inboundHead.owner_name} />
                 </Col>
                 <Col sm={24} lg={6}>
                   <InfoItem label="入库单号" field="I096120170603223-01" />
                 </Col>
                 <Col sm={24} lg={3}>
-                  <InfoItem label="预计箱数" addonBefore={<Icon type="inbox" />} field={10} editable />
+                  <InfoItem label="预计箱数" addonBefore={<Icon type="inbox" />} field={inboundHead.convey_box_qty} editable />
                 </Col>
                 <Col sm={24} lg={3}>
-                  <InfoItem label="预计托盘数" addonBefore={<Icon type="appstore-o" />} field={2} editable />
+                  <InfoItem label="预计托盘数" addonBefore={<Icon type="appstore-o" />} field={inboundHead.convey_pallet_qty} editable />
                 </Col>
                 <Col sm={24} lg={6}>
                   <InfoItem type="dropdown" label="执行者" addonBefore={<Avatar size="small" >未分配</Avatar>}
@@ -363,7 +323,7 @@ export default class ReceiveInbound extends Component {
                   }
                 </div>
               </div>
-              <Table columns={this.columns} rowSelection={rowSelection} dataSource={this.mockData} rowKey="seq_no" scroll={{ x: 1600 }} />
+              <Table columns={this.columns} rowSelection={rowSelection} dataSource={inboundBody} rowKey="asn_seq_no" scroll={{ x: 1600 }} />
               <ReceivingModal receivingMode={this.state.receivingMode} />
             </Card>
           </Form>
