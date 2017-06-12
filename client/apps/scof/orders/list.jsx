@@ -312,8 +312,8 @@ export default class OrderList extends React.Component {
               <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
                 onChange={this.handleCreatorSelectChange} value={filters.creator ? filters.creator : 'all'}
               >
-                <Option value="all">全部</Option>
-                <Option value="me">我创建的</Option>
+                <Option value="all">全部订单</Option>
+                <Option value="me">我创建的订单</Option>
               </Select>
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3>

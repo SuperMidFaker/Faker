@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Breadcrumb, Button, Dropdown, Menu, Icon, Layout, message, Popconfirm, Tooltip, Select } from 'antd';
+import { Breadcrumb, Button, Dropdown, Menu, Icon, Layout, message, Popconfirm, Tooltip } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
@@ -9,7 +9,7 @@ import moment from 'moment';
 import NavLink from 'client/components/nav-link';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/search-bar';
-import connectFetch from 'client/common/decorators/connect-fetch';
+// import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege, { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { loadTable, revokeOrReject, delDraft, acceptDispShipment, returnShipment } from
@@ -32,12 +32,12 @@ import OperatorsPopover from 'client/common/operatorsPopover';
 import DispatchDock from '../dispatch/dispatchDock';
 import SegmentDock from '../dispatch/segmentDock';
 import CustomerSelect from '../common/customerSelect';
+import CreatorSelect from '../common/creatorSelect';
 
 const formatMsg = format(messages);
 const formatContainerMsg = format(containerMessages);
 const formatGlobalMsg = format(globalMessages);
 const { Header, Content } = Layout;
-const Option = Select.Option;
 
 function TransitTimeLabel(props) {
   const { time, tformat } = props;
@@ -51,21 +51,21 @@ function TransitTimeLabel(props) {
   }
   return <span>{msg}</span>;
 }
+// 暂时由 CreatorSelect 触发获取list
+// function fetchData({ state, dispatch, cookie }) {
+//   if (!state.transportAcceptance.table.loaded) {
+//     return dispatch(loadTable(cookie, {
+//       tenantId: state.account.tenantId,
+//       filters: JSON.stringify(state.transportAcceptance.table.filters),
+//       pageSize: state.transportAcceptance.table.shipmentlist.pageSize,
+//       currentPage: state.transportAcceptance.table.shipmentlist.current,
+//       sortField: state.transportAcceptance.table.sortField,
+//       sortOrder: state.transportAcceptance.table.sortOrder,
+//     }));
+//   }
+// }
 
-function fetchData({ state, dispatch, cookie }) {
-  if (!state.transportAcceptance.table.loaded) {
-    return dispatch(loadTable(cookie, {
-      tenantId: state.account.tenantId,
-      filters: JSON.stringify(state.transportAcceptance.table.filters),
-      pageSize: state.transportAcceptance.table.shipmentlist.pageSize,
-      currentPage: state.transportAcceptance.table.shipmentlist.current,
-      sortField: state.transportAcceptance.table.sortField,
-      sortOrder: state.transportAcceptance.table.sortOrder,
-    }));
-  }
-}
-
-@connectFetch()(fetchData)
+// @connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
@@ -295,6 +295,11 @@ export default class AcceptList extends React.Component {
     filters = this.mergeFilters(filters, 'sr_tenant_id', srTenantId);
     this.handleTableLoad(filters, 1);
   }
+  handleCreatorChange = (fieldsValue) => {
+    let filters = this.mergeFilters(this.props.filters, 'creator', fieldsValue.creator);
+    filters = this.mergeFilters(filters, 'loginId', this.props.loginId);
+    this.handleTableLoad(filters, 1);
+  }
   handleCreateBtnClick = () => {
     this.context.router.push('/transport/shipment/create');
   }
@@ -378,11 +383,6 @@ export default class AcceptList extends React.Component {
       }
     });
   }
-  handleCreatorSelect = (value) => {
-    let filters = this.mergeFilters(this.props.filters, 'creator', value);
-    filters = this.mergeFilters(filters, 'loginId', this.props.loginId);
-    this.handleTableLoad(filters, 1);
-  }
   mergeFilters(curFilters, name, value) {
     const merged = curFilters.filter(flt => flt.name !== name);
     if (value !== null && value !== undefined && value !== '') {
@@ -394,8 +394,7 @@ export default class AcceptList extends React.Component {
     return merged;
   }
   render() {
-    const { shipmentlist, loading, intl, filters } = this.props;
-    const creatorFilter = filters.find(item => item.name === 'creator');
+    const { shipmentlist, loading, intl } = this.props;
     this.dataSource.remotes = shipmentlist;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -502,12 +501,7 @@ export default class AcceptList extends React.Component {
               </div>
               <span />
               <div className="toolbar-right">
-                <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
-                  onChange={this.handleCreatorSelect} value={(creatorFilter && creatorFilter.name) ? creatorFilter.value : 'all'}
-                >
-                  <Option value="all">全部</Option>
-                  <Option value="me">我创建的</Option>
-                </Select>
+                <CreatorSelect onChange={this.handleCreatorChange} onInitialize={this.handleCreatorChange} />
                 <span />
                 <CustomerSelect onChange={this.handleCustomerChange} />
               </div>

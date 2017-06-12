@@ -36,6 +36,7 @@ export default class CustomerSelect extends React.Component {
         placeholder=""
         optionFilterProp="children"
         notFoundContent=""
+        dropdownMatchSelectWidth={false}
       >
         {
           clients.map(pt => (
