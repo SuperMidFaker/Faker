@@ -74,11 +74,11 @@ export default class SHFTZEntryList extends React.Component {
   }, {
     title: '货主',
     width: 220,
-    dataIndex: 'owner_code',
+    dataIndex: 'owner_cus_code',
   }, {
     title: '仓储企业',
     width: 220,
-    dataIndex: 'whse_code',
+    dataIndex: 'wh_ent_cus_code',
   }, {
     title: '入库备案号',
     width: 120,
@@ -151,54 +151,6 @@ export default class SHFTZEntryList extends React.Component {
     },
     remotes: this.props.entryList,
   })
-  // dataSource = [{
-  //   id: '1',
-  //   asn_no: 'ASN04601170548',
-  //   bonded: 1,
-  //   whse_code: '3122406170|上海恩诺物流有限公司',
-  //   owner_code: '3114941293|大陆泰密克汽车系统',
-  //   customs_decl_no: '221820171000538906',
-  //   status: 0,
-  //   ftz_ent_type: 1,
-  //   children: [{
-  //     id: '2',
-  //     asn_no: 'ASN04601170548',
-  //     bonded: 0,
-  //     whse_code: '3122406170|上海恩诺物流有限公司',
-  //     owner_code: '3114941293|大陆泰密克汽车系统',
-  //     customs_decl_no: '221820171000538907',
-  //     status: 0,
-  //     ftz_ent_type: 1,
-  //   }, {
-  //     id: '3',
-  //     asn_no: 'ASN04601170548',
-  //     bonded: 1,
-  //     whse_code: '3122406170|上海恩诺物流有限公司',
-  //     owner_code: '3114941293|大陆泰密克汽车系统',
-  //     customs_decl_no: '221820171000538908',
-  //     status: 0,
-  //     ftz_ent_type: 1,
-  //   },
-  //   ],
-  // }, {
-  //   id: '4',
-  //   asn_no: 'ASN04601170555',
-  //   bonded: 1,
-  //   whse_code: '3122406170|上海恩诺物流有限公司',
-  //   owner_code: '3221304601|米思米(中国)精密机械',
-  //   customs_decl_no: '',
-  //   status: 2,
-  //   ftz_ent_type: 2,
-  // }, {
-  //   id: '5',
-  //   asn_no: 'ASN04601170537',
-  //   bonded: 1,
-  //   whse_code: '3122406170|上海恩诺物流有限公司',
-  //   owner_code: '3221304601|米思米(中国)精密机械',
-  //   customs_decl_no: '',
-  //   status: 1,
-  //   ftz_ent_type: 3,
-  // }];
   handleEntryListLoad = (currentPage, filter) => {
     const { tenantId, listFilter, entryList: { pageSize, current } } = this.props;
     this.props.loadEntryRegDatas({
@@ -214,8 +166,10 @@ export default class SHFTZEntryList extends React.Component {
   }
   handleStatusChange = (ev) => {
     if (ev.target.value === this.props.listFilter.status) {
-
+      return;
     }
+    const filter = { ...this.props.listFilter, status: ev.target.value };
+    this.handleEntryListLoad(1, filter);
   }
   handleCreateBtnClick = () => {
     this.context.router.push('/cwm/ftz/receive/reg');
@@ -225,7 +179,8 @@ export default class SHFTZEntryList extends React.Component {
     this.context.router.push(link);
   }
   render() {
-    this.dataSource.remotes = this.props.entryList;
+    const { entryList, listFilter } = this.props;
+    this.dataSource.remotes = entryList;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -292,7 +247,7 @@ export default class SHFTZEntryList extends React.Component {
                 {this.msg('ftzEntryReg')}
               </Breadcrumb.Item>
             </Breadcrumb>
-            <RadioGroup defaultValue="pending" onChange={this.handleBondedChange} size="large">
+            <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} size="large">
               <RadioButton value="pending">待备案</RadioButton>
               <RadioButton value="sent">已发送</RadioButton>
               <RadioButton value="completed">备案完成</RadioButton>
