@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Avatar, Breadcrumb, Icon, Dropdown, Form, Radio, Layout, Menu, Popconfirm, Steps, Button, Select, Card, Col, Row, Tag, Table, Input, Tooltip } from 'antd';
+import { Avatar, Breadcrumb, Icon, Dropdown, Form, Radio, Layout, Menu, Popconfirm, Steps, Select, Button, Card, Col, Row, Tag, Table, Input, Tooltip } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import InfoItem from 'client/components/InfoItem';
@@ -50,10 +50,9 @@ export default class ReceiveInbound extends Component {
   state = {
     selectedRowKeys: [],
     receivingMode: 'scan',
-    currentStep: 0,
+    currentStatus: 0,
     printed: false,
     pushedTask: false,
-    inboundConfirmed: false,
   }
   msg = key => formatMsg(this.props.intl, key);
 
@@ -65,19 +64,34 @@ export default class ReceiveInbound extends Component {
   handlePrint = () => {
     this.setState({
       printed: true,
-      currentStep: 1,
     });
   }
   handlePushTask = () => {
     this.setState({
       pushedTask: true,
-      currentStep: 1,
     });
   }
   handleWithdrawTask = () => {
     this.setState({
       pushedTask: false,
-      currentStep: 0,
+    });
+  }
+  handleReceivedQtyAsExpected = () => {
+    this.setState({
+      currentStatus: 1,
+      selectedRowKeys: [],
+    });
+  }
+  handleProductReceive = (ev) => {
+    if (ev.target.value > 0) { // TODO:
+      this.setState({
+        currentStatus: 1,
+      });
+    }
+  }
+  handleProductPutAway = () => {
+    this.setState({
+      currentStatus: 2,
     });
   }
   handleReceive = () => {
@@ -85,8 +99,7 @@ export default class ReceiveInbound extends Component {
   }
   handleInboundConfirmed = () => {
     this.setState({
-      inboundConfirmed: true,
-      currentStep: 3,
+      currentStatus: 3,
     });
   }
   columns = [{
@@ -104,45 +117,66 @@ export default class ReceiveInbound extends Component {
   }, {
     title: '订单数量',
     dataIndex: 'order_qty',
+    width: 120,
     render: o => (<b>{o}</b>),
   }, {
     title: '主单位',
     dataIndex: 'unit',
+    width: 100,
   }, {
     title: 'SKU',
     dataIndex: 'sku',
+    width: 200,
     render: o => (
       <PackagePopover data={o} />
       ),
   }, {
     title: 'SKU包装单位',
     dataIndex: 'sku_pack',
+    width: 150,
     render: o => (<Tooltip title="=10主单位" placement="right"><Tag>{o}</Tag></Tooltip>),
   }, {
     title: '预期数量',
+    width: 200,
+    fixed: 'right',
     render: (o, record) => (<span><Tooltip title="包装单位数量"><Input className="readonly" value={record.expect_pack_qty} style={{ width: 80 }} /></Tooltip>
       <Tooltip title="主单位数量"><Input value={record.expect_qty} style={{ width: 80 }} disabled /></Tooltip></span>),
   }, {
     title: '收货数量',
+    width: 200,
+    fixed: 'right',
     render: (o, record) => {
       if (record.expect_pack_qty === record.received_pack_qty) {
-        return (<span className="mdc-text-green"><Tooltip title="包装单位数量"><Input className="readonly" value={record.received_pack_qty} style={{ width: 80 }} /></Tooltip>
+        return (<span className="mdc-text-green"><Tooltip title="包装单位数量"><Input className={this.state.receivingMode === 'scan' && 'readonly'} defaultValue={record.received_pack_qty} style={{ width: 80 }} onChange={this.handleProductReceive} /></Tooltip>
           <Tooltip title="主单位数量"><Input value={record.received_qty} style={{ width: 80 }} disabled /></Tooltip></span>);
       } else {
-        return (<span className="mdc-text-red"><Tooltip title="包装单位数量"><Input className="readonly" value={record.received_pack_qty} style={{ width: 80 }} /></Tooltip>
+        return (<span className="mdc-text-red"><Tooltip title="包装单位数量"><Input className={this.state.receivingMode === 'scan' && 'readonly'} defaultValue={record.received_pack_qty} style={{ width: 80 }} /></Tooltip>
           <Tooltip title="主单位数量"><Input value={record.received_qty} style={{ width: 80 }} disabled /></Tooltip></span>);
       }
     },
   }, {
+    title: '库位号',
+    fixed: 'right',
+    render: o => (<Select defaultValue={o} showSearch style={{ width: 100 }} onChange={this.handleProductPutAway} disabled={this.state.receivingMode === 'scan'}>
+      <Option value="A1312A1">A1312A1</Option>
+      <Option value="A1310A2">A1310A2</Option>
+    </Select>),
+  }, {
+    title: '收货状态',
+    fixed: 'right',
+    render: o => (<Select defaultValue={o} style={{ width: 100 }} disabled={this.state.receivingMode === 'scan'}>
+      <Option value="A1312A1">完好</Option>
+      <Option value="A1310A2">破损</Option>
+    </Select>),
+  }, {
     title: '操作',
+    width: 50,
+    fixed: 'right',
     render: (o, record) => {
-      if (this.state.receivingMode === 'scan' || this.state.receivingMode === 'api') {
-        return (<RowUpdater onHit={this.handleReceive} label={<Icon type="eye-o" />} row={record} />);
+      if (this.state.receivingMode === 'scan') {
+        return (<RowUpdater onHit={this.handleReceive} label={<Icon type="scan" />} row={record} />);
       } else if (this.state.receivingMode === 'manual') {
-        if (record.expect_qty === record.received_qty) {
-          return (<RowUpdater onHit={this.handleReceive} label={<Icon type="check-circle" />} row={record} />);
-        }
-        return (<RowUpdater onHit={this.handleReceive} label="收货" row={record} />);
+        return (<RowUpdater onHit={this.handleReceive} label={<Icon type="edit" />} row={record} />);
       }
     },
   }]
@@ -156,8 +190,8 @@ export default class ReceiveInbound extends Component {
     sku_pack: '单件',
     expect_pack_qty: 15,
     expect_qty: 15,
-    received_pack_qty: 15,
-    received_qty: 15,
+    received_pack_qty: 0,
+    received_qty: 0,
   }, {
     seq_no: '2',
     product_no: 'N04601170547',
@@ -251,17 +285,25 @@ export default class ReceiveInbound extends Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="top-bar-tools">
-            {this.state.receivingMode === 'manual' && !this.state.inboundConfirmed &&
+            {this.state.receivingMode === 'manual' && this.state.currentStatus < 3 &&
             <Button type={!this.state.printed && 'primary'} size="large"icon={this.state.printed ? 'check-circle-o' : 'printer'} onClick={this.handlePrint}>
               打印入库清单
-            </Button>}
-            {this.state.receivingMode === 'scan' && !this.state.inboundConfirmed &&
+            </Button>
+            }
+            {this.state.receivingMode === 'scan' && this.state.currentStatus < 3 &&
             <Dropdown overlay={tagMenu}>
-              <Button type="primary" size="large" onClick={this.handleTagging}>
+              <Button size="large" onClick={this.handleTagging}>
                 <Icon type="barcode" />标签 <Icon type="down" />
               </Button>
-            </Dropdown>}
-            <RadioGroup defaultValue={this.state.receivingMode} onChange={this.handleReceivingModeChange} size="large" disabled={this.state.currentStep > 0}>
+            </Dropdown>
+            }
+            {this.state.receivingMode === 'scan' && !this.state.pushedTask &&
+            <Button type="primary" size="large" onClick={this.handlePushTask} icon="tablet">推送收货任务</Button>
+            }
+            {this.state.receivingMode === 'scan' && this.state.pushedTask &&
+            <Button size="large" onClick={this.handleWithdrawTask} icon="rollback" />
+            }
+            <RadioGroup defaultValue={this.state.receivingMode} onChange={this.handleReceivingModeChange} size="large" disabled={this.state.currentStatus > 0}>
               <Tooltip title="扫码收货"><RadioButton value="scan"><Icon type="scan" /></RadioButton></Tooltip>
               <Tooltip title="人工收货"><RadioButton value="manual"><Icon type="solution" /></RadioButton></Tooltip>
             </RadioGroup>
@@ -293,7 +335,7 @@ export default class ReceiveInbound extends Component {
                 </Col>
               </Row>
               <div className="card-footer">
-                <Steps progressDot current={this.state.currentStep}>
+                <Steps progressDot current={this.state.currentStatus}>
                   <Step description="创建入库" />
                   <Step description="收货" />
                   <Step description="上架" />
@@ -305,23 +347,23 @@ export default class ReceiveInbound extends Component {
               <div className="toolbar">
                 <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                   <h3>已选中{this.state.selectedRowKeys.length}项</h3>
+                  {this.state.receivingMode === 'manual' &&
+                  <Button size="large" onClick={this.handleReceivedQtyAsExpected}>
+                    收货数量与预期一致
+                  </Button>
+                  }
                 </div>
                 <div className="toolbar-right">
-                  {this.state.receivingMode === 'scan' && !this.state.pushedTask &&
-                  <Button type="primary" size="large" onClick={this.handlePushTask} icon="tablet">推送收货任务</Button>}
-                  {this.state.receivingMode === 'scan' && this.state.pushedTask &&
-                  <Button size="large" onClick={this.handleWithdrawTask} icon="rollback" />}
-                  {this.state.receivingMode === 'manual' &&
+                  {this.state.receivingMode === 'manual' && this.state.currentStatus < 3 &&
                   <Popconfirm title="确定此次入库操作已完成?" onConfirm={this.handleInboundConfirmed} okText="确认" cancelText="取消">
-                    <Button type={this.state.printed && 'primary'} size="large" icon="check" disabled={this.state.inboundConfirmed}>
-                      入库完成
+                    <Button type={this.state.printed && 'primary'} size="large" icon="check" disabled={this.state.currentStatus < 2}>
+                      入库确认
                     </Button>
                   </Popconfirm>
                   }
-                  {this.state.receivingMode === 'api' && <Button type="primary" ghost icon="sync">同步数据</Button>}
                 </div>
               </div>
-              <Table columns={this.columns} rowSelection={rowSelection} dataSource={this.mockData} rowKey="seq_no" />
+              <Table columns={this.columns} rowSelection={rowSelection} dataSource={this.mockData} rowKey="seq_no" scroll={{ x: 1600 }} />
               <ReceivingModal receivingMode={this.state.receivingMode} />
             </Card>
           </Form>
