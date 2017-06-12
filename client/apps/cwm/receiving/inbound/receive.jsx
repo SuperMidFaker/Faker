@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Avatar, Breadcrumb, Icon, Dropdown, Form, Radio, Layout, Menu, Popconfirm, Steps, Select, Button, Card, Col, Row, Tag, Table, Input, Tooltip } from 'antd';
+import { Breadcrumb, Icon, Dropdown, Form, Radio, Layout, Menu, Popconfirm, Steps, Select, Button, Card, Col, Row, Tag, Table, Input, Tooltip } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import InfoItem from 'client/components/InfoItem';
@@ -156,17 +156,22 @@ export default class ReceiveInbound extends Component {
     },
   }, {
     title: '库位号',
+    dataIndex: 'location',
     fixed: 'right',
     render: o => (<Select defaultValue={o} showSearch style={{ width: 100 }} onChange={this.handleProductPutAway} disabled={this.state.receivingMode === 'scan'}>
       <Option value="A1312A1">A1312A1</Option>
       <Option value="A1310A2">A1310A2</Option>
     </Select>),
   }, {
-    title: '收货状态',
+    title: '破损级别',
+    dataIndex: 'damage_level',
     fixed: 'right',
     render: o => (<Select defaultValue={o} style={{ width: 100 }} disabled={this.state.receivingMode === 'scan'}>
-      <Option value="A1312A1">完好</Option>
-      <Option value="A1310A2">破损</Option>
+      <Option value="0">完好</Option>
+      <Option value="1">轻微擦痕</Option>
+      <Option value="2">中度</Option>
+      <Option value="3">重度</Option>
+      <Option value="4">严重磨损</Option>
     </Select>),
   }, {
     title: '操作',
@@ -297,12 +302,6 @@ export default class ReceiveInbound extends Component {
               </Button>
             </Dropdown>
             }
-            {this.state.receivingMode === 'scan' && !this.state.pushedTask &&
-            <Button type="primary" size="large" onClick={this.handlePushTask} icon="tablet">推送收货任务</Button>
-            }
-            {this.state.receivingMode === 'scan' && this.state.pushedTask &&
-            <Button size="large" onClick={this.handleWithdrawTask} icon="rollback" />
-            }
             <RadioGroup defaultValue={this.state.receivingMode} onChange={this.handleReceivingModeChange} size="large" disabled={this.state.currentStatus > 0}>
               <Tooltip title="扫码收货"><RadioButton value="scan"><Icon type="scan" /></RadioButton></Tooltip>
               <Tooltip title="人工收货"><RadioButton value="manual"><Icon type="solution" /></RadioButton></Tooltip>
@@ -324,14 +323,6 @@ export default class ReceiveInbound extends Component {
                 </Col>
                 <Col sm={24} lg={3}>
                   <InfoItem label="预计托盘数" addonBefore={<Icon type="appstore-o" />} field={2} editable />
-                </Col>
-                <Col sm={24} lg={6}>
-                  <InfoItem type="dropdown" label="执行者" addonBefore={<Avatar size="small" >未分配</Avatar>}
-                    placeholder="指派执行者" editable
-                    overlay={<Menu onClick={this.handleMenuClick}>
-                      <Menu.Item key={1}>仓管员</Menu.Item>
-                    </Menu>}
-                  />
                 </Col>
               </Row>
               <div className="card-footer">
