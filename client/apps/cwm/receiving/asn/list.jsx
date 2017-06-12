@@ -45,7 +45,7 @@ function fetchData({ state, dispatch }) {
   depth: 2,
   moduleName: 'cwm',
 })
-export default class ReceivingNoticeList extends React.Component {
+export default class ReceivingASNList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -93,9 +93,9 @@ export default class ReceivingNoticeList extends React.Component {
     width: 120,
     render: (o) => {
       if (o === 0) {
-        return (<Badge status="pending" text="待收货" />);
+        return (<Badge status="pending" text="通知接收" />);
       } else if (o === 1) {
-        return (<Badge status="inbound" text="入库中" />);
+        return (<Badge status="inbound" text="入库操作" />);
       } else if (o === 2) {
         return (<Badge status="partial" text="部分收货" />);
       } else if (o === 3) {
@@ -262,8 +262,8 @@ export default class ReceivingNoticeList extends React.Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <RadioGroup defaultValue="pending" onChange={this.handleBondedChange} size="large">
-            <RadioButton value="pending">待收货</RadioButton>
-            <RadioButton value="inbound">入库中</RadioButton>
+            <RadioButton value="pending">通知接收</RadioButton>
+            <RadioButton value="inbound">入库操作</RadioButton>
             <RadioButton value="partial">部分收货</RadioButton>
             <RadioButton value="completed">收货完成</RadioButton>
           </RadioGroup>

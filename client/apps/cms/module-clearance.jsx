@@ -161,20 +161,6 @@ export default class Clearance extends React.Component {
         }],
       });
     }
-    if (hasPermission(privileges, { module: 'clearance', feature: 'import' })) {
-      linkMenus.push({
-        single: false,
-        key: 'cms-5',
-        disabled: true,
-        icon: 'icon-ikons-bar-chart-2',
-        text: formatMsg(intl, 'analytics'),
-        sublinks: [{
-          key: 'cms-5-0',
-          path: '/clearance/analytics/kpi',
-          text: formatMsg(intl, 'analyticsKPI'),
-        }],
-      });
-    }
     if (hasPermission(privileges, { module: 'clearance', feature: 'settings' })) {
       linkMenus.push({
         single: false,

@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Breadcrumb, Icon, Form, Layout, Menu, Popconfirm, Steps, Button, Select, Card, Col, Row, Tag, Table, Input, Tooltip, Radio } from 'antd';
+import { Avatar, Breadcrumb, Icon, Form, Layout, Menu, Popconfirm, Steps, Button, Select, Card, Col, Row, Tag, Table, Input, Tooltip, Radio } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
-import Avatar from 'react-avatar';
 import InfoItem from 'client/components/InfoItem';
 import RowUpdater from 'client/components/rowUpdater';
 import AllocatingModal from './modal/allocatingModal';
@@ -50,9 +49,11 @@ export default class OutboundAllocate extends Component {
   state = {
     selectedRowKeys: [],
     shippingMode: 'scan',
+    currentStep: 0,
     allocated: false,
     pushedTask: false,
     printedPickingList: false,
+    picking: false,
     picked: false,
   }
   msg = key => formatMsg(this.props.intl, key);
@@ -72,11 +73,13 @@ export default class OutboundAllocate extends Component {
   handleAutoAllocate = () => {
     this.setState({
       allocated: true,
+      currentStep: 1,
     });
   }
   handleUndoAllocate = () => {
     this.setState({
       allocated: false,
+      currentStep: 0,
       printedPickingList: false,
     });
   }
@@ -88,16 +91,22 @@ export default class OutboundAllocate extends Component {
   handlePushTask = () => {
     this.setState({
       pushedTask: true,
+      currentStep: 2,
+      picking: true,
     });
   }
   handleWithdrawTask = () => {
     this.setState({
       pushedTask: false,
+      currentStep: 1,
+      picking: false,
     });
   }
   handlePrint = () => {
     this.setState({
       printedPickingList: true,
+      currentStep: 2,
+      picking: true,
     });
   }
   handleManualAllocate = () => {
@@ -106,11 +115,7 @@ export default class OutboundAllocate extends Component {
   handleConfirmPicked = () => {
     this.setState({
       picked: true,
-    });
-  }
-  handleUndoPicked = () => {
-    this.setState({
-      picked: false,
+      currentStep: 2,
     });
   }
   columns = [{
@@ -296,12 +301,12 @@ export default class OutboundAllocate extends Component {
             <Button type={!this.state.printedPickingList && 'primary'} size="large" onChange={this.handlePrint} icon={this.state.printedPickingList ? 'check-circle-o' : 'printer'} onClick={this.handlePrint} >
               打印拣货单
             </Button>}
-            {this.state.allocated && <RadioGroup defaultValue={this.state.shippingMode} onChange={this.handleShippingModeChange} size="large" disabled={this.state.picked}>
+            {this.state.allocated && <RadioGroup defaultValue={this.state.shippingMode} onChange={this.handleShippingModeChange} size="large" disabled={this.state.currentStep > 1}>
               <Tooltip title="扫码拣货"><RadioButton value="scan"><Icon type="scan" /></RadioButton></Tooltip>
               <Tooltip title="人工拣货"><RadioButton value="manual"><Icon type="solution" /></RadioButton></Tooltip>
             </RadioGroup>}
             {!this.state.allocated && <Button type="primary" size="large" icon="rocket" onClick={this.handleAutoAllocate} >自动分配</Button>}
-            {this.state.allocated && !this.state.picked && <Button size="large" icon="rollback" onClick={this.handleUndoAllocate} >取消分配</Button>}
+            {this.state.allocated && this.state.currentStep < 2 && <Button size="large" icon="rollback" onClick={this.handleUndoAllocate} >取消分配</Button>}
           </div>
         </Header>
         <Content className="main-content">
@@ -315,8 +320,8 @@ export default class OutboundAllocate extends Component {
                   <InfoItem label="出库单号" field="O096120170603223-01" />
                 </Col>
                 <Col sm={24} lg={8}>
-                  <InfoItem type="dropdown" label="操作人员" addonBefore={<Avatar name="未分配" size={28} round />}
-                    placeholder="分配操作人员" editable
+                  <InfoItem type="dropdown" label="执行者" addonBefore={<Avatar size="small" >未分配</Avatar>}
+                    placeholder="指派执行者" editable
                     overlay={<Menu onClick={this.handleMenuClick}>
                       <Menu.Item key={1}>仓管员</Menu.Item>
                     </Menu>}
@@ -324,7 +329,7 @@ export default class OutboundAllocate extends Component {
                 </Col>
               </Row>
               <div className="card-footer">
-                <Steps progressDot current={1}>
+                <Steps progressDot current={this.state.currentStep}>
                   <Step description="创建出库" />
                   <Step description="分配" />
                   <Step description="拣货" />
@@ -343,7 +348,7 @@ export default class OutboundAllocate extends Component {
                   {this.state.allocated && this.state.shippingMode === 'scan' && !this.state.pushedTask &&
                   <Button type="primary" size="large" onClick={this.handlePushTask} icon="tablet">推送拣货任务</Button>}
                   {this.state.allocated && this.state.shippingMode === 'scan' && this.state.pushedTask &&
-                  <Button size="large" onClick={this.handleWithdrawTask} icon="rollback">撤回拣货任务</Button>}
+                  <Button size="large" onClick={this.handleWithdrawTask} icon="rollback" />}
                   {this.state.allocated && this.state.shippingMode === 'manual' &&
                   <Popconfirm title="确定此次拣货已完成?" onConfirm={this.handleConfirmPicked} okText="确认" cancelText="取消">
                     <Button type={this.state.printedPickingList && 'primary'} size="large" icon="check" disabled={this.state.picked}>

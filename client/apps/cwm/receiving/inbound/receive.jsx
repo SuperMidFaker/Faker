@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Breadcrumb, Icon, Dropdown, Form, Radio, Layout, Menu, Popconfirm, Steps, Button, Select, Card, Col, Row, Tag, Table, Input, Tooltip } from 'antd';
+import { Avatar, Breadcrumb, Icon, Dropdown, Form, Radio, Layout, Menu, Popconfirm, Steps, Button, Select, Card, Col, Row, Tag, Table, Input, Tooltip } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
-import Avatar from 'react-avatar';
 import InfoItem from 'client/components/InfoItem';
 import RowUpdater from 'client/components/rowUpdater';
 import PackagePopover from './popover/packagePopover';
@@ -51,27 +50,13 @@ export default class ReceiveInbound extends Component {
   state = {
     selectedRowKeys: [],
     receivingMode: 'scan',
+    currentStep: 0,
     printed: false,
     pushedTask: false,
     inboundConfirmed: false,
   }
   msg = key => formatMsg(this.props.intl, key);
-  handleSave = () => {
-    this.props.form.validateFields((errors) => {
-      if (!errors) {
 
-      }
-    });
-  }
-  handleSaveBtnClick = () => {
-    this.handleSave({ accepted: false });
-  }
-  handleCancelBtnClick = () => {
-    this.context.router.goBack();
-  }
-  handleSaveAccept = () => {
-    this.handleSave({ accepted: true });
-  }
   handleReceivingModeChange = (ev) => {
     this.setState({
       receivingMode: ev.target.value,
@@ -80,16 +65,19 @@ export default class ReceiveInbound extends Component {
   handlePrint = () => {
     this.setState({
       printed: true,
+      currentStep: 1,
     });
   }
   handlePushTask = () => {
     this.setState({
       pushedTask: true,
+      currentStep: 1,
     });
   }
   handleWithdrawTask = () => {
     this.setState({
       pushedTask: false,
+      currentStep: 0,
     });
   }
   handleReceive = () => {
@@ -98,6 +86,7 @@ export default class ReceiveInbound extends Component {
   handleInboundConfirmed = () => {
     this.setState({
       inboundConfirmed: true,
+      currentStep: 3,
     });
   }
   columns = [{
@@ -272,7 +261,7 @@ export default class ReceiveInbound extends Component {
                 <Icon type="barcode" />标签 <Icon type="down" />
               </Button>
             </Dropdown>}
-            <RadioGroup defaultValue={this.state.receivingMode} onChange={this.handleReceivingModeChange} size="large" disabled={this.state.inboundConfirmed}>
+            <RadioGroup defaultValue={this.state.receivingMode} onChange={this.handleReceivingModeChange} size="large" disabled={this.state.currentStep > 0}>
               <Tooltip title="扫码收货"><RadioButton value="scan"><Icon type="scan" /></RadioButton></Tooltip>
               <Tooltip title="人工收货"><RadioButton value="manual"><Icon type="solution" /></RadioButton></Tooltip>
             </RadioGroup>
@@ -295,8 +284,8 @@ export default class ReceiveInbound extends Component {
                   <InfoItem label="预计托盘数" addonBefore={<Icon type="appstore-o" />} field={2} editable />
                 </Col>
                 <Col sm={24} lg={6}>
-                  <InfoItem type="dropdown" label="操作人员" addonBefore={<Avatar name="未分配" size={28} round />}
-                    placeholder="分配操作人员" editable
+                  <InfoItem type="dropdown" label="执行者" addonBefore={<Avatar size="small" >未分配</Avatar>}
+                    placeholder="指派执行者" editable
                     overlay={<Menu onClick={this.handleMenuClick}>
                       <Menu.Item key={1}>仓管员</Menu.Item>
                     </Menu>}
@@ -304,7 +293,7 @@ export default class ReceiveInbound extends Component {
                 </Col>
               </Row>
               <div className="card-footer">
-                <Steps progressDot current={1}>
+                <Steps progressDot current={this.state.currentStep}>
                   <Step description="创建入库" />
                   <Step description="收货" />
                   <Step description="上架" />
@@ -321,7 +310,7 @@ export default class ReceiveInbound extends Component {
                   {this.state.receivingMode === 'scan' && !this.state.pushedTask &&
                   <Button type="primary" size="large" onClick={this.handlePushTask} icon="tablet">推送收货任务</Button>}
                   {this.state.receivingMode === 'scan' && this.state.pushedTask &&
-                  <Button size="large" onClick={this.handleWithdrawTask} icon="rollback">撤回收货任务</Button>}
+                  <Button size="large" onClick={this.handleWithdrawTask} icon="rollback" />}
                   {this.state.receivingMode === 'manual' &&
                   <Popconfirm title="确定此次入库操作已完成?" onConfirm={this.handleInboundConfirmed} okText="确认" cancelText="取消">
                     <Button type={this.state.printed && 'primary'} size="large" icon="check" disabled={this.state.inboundConfirmed}>

@@ -1,12 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import {
-  Breadcrumb, Card, Icon, Button, Form, Input, Row, Col, Layout, Select, Upload, message,
-} from 'antd';
+import { Avatar, Breadcrumb, Card, Icon, Button, Form, Input, Row, Col, Layout, Select, Upload, message } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import { intlShape, injectIntl } from 'react-intl';
-import Avatar from 'react-avatar';
 import ChinaRegionCascader from '../../components/chinaRegionCascader';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import withPrivilege, { PrivilegeCover } from 'client/common/decorators/withPrivilege';
@@ -214,7 +211,7 @@ export default class CorpInfo extends React.Component {
     return (
       <Card title={msg('moreActions')}>
         <InfoItem type="select" label="企业归属" placeholder="选择企业拥有者"
-          addonBefore={<Avatar name={contact} size={28} round />}
+          addonBefore={<Avatar size="small" >{contact}</Avatar>}
           field={contact}
           action={<Button type="primary" size="large" ghost disabled>移交</Button>}
         />

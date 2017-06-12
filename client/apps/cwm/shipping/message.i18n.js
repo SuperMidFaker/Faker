@@ -7,7 +7,7 @@ const messages = defineMessages({
   },
   shippingOrder: {
     id: 'cwm.shipping.order',
-    defaultMessage: '出货订单SO',
+    defaultMessage: '发运订单SO',
   },
   shippingOutbound: {
     id: 'cwm.shipping.outbound',

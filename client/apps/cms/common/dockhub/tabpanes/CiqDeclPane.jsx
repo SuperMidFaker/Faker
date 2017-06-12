@@ -118,7 +118,7 @@ export default class CiqDeclPane extends React.Component {
                     </Tooltip>}
                     {/*
                     {(ciqPanel.type === 1 || ciqPanel.ciq_tenant_id === -1) &&
-                    <Tooltip title="指派操作人员">
+                    <Tooltip title="指派执行者">
                       <Button type="ghost" shape="circle" onClick={this.handleOperatorAssign}><Icon type="user" /></Button>
                     </Tooltip>}
                   */}

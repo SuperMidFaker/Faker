@@ -50,7 +50,7 @@ export default class FlowNodePanel extends Component {
               rules: [{ required: true, message: '名称必填' }],
             })(<Input />)}
           </FormItem>
-          <FormItem label={this.msg('nodeResponsible')}>
+          <FormItem label={this.msg('nodeExecutor')}>
             {getFieldDecorator('person_id', {
               initialValue: model.person_id,
             })(
