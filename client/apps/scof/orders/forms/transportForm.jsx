@@ -477,6 +477,10 @@ export default class TransportForm extends Component {
     const modeCode = node.trs_mode_code;
     const consigner = consignerLocations.find(item => item.node_id === node.consigner_id);
     const consignee = consigneeLocations.find(item => item.node_id === node.consignee_id);
+    let consignerLocation = Location.renderLocation(node, 'consigner_province', 'consigner_city', 'consigner_district', 'consigner_street');
+    consignerLocation += (consigner && consigner.byname) ? ` (${consigner.byname})` : '';
+    let consigneeLocation = Location.renderLocation(node, 'consignee_province', 'consignee_city', 'consignee_district', 'consignee_street');
+    consigneeLocation += (consignee && consignee.byname) ? ` (${consignee.byname})` : '';
     if (modeCode === PRESET_TRANSMODES.ftl) {
       // 整车,修改车型,车长
       transModeExtras.push(
@@ -623,7 +627,7 @@ export default class TransportForm extends Component {
               <Row style={{ marginTop: 10 }}>
                 <InputGroup size="large">
                   <Col span="12">
-                    <Input value={`${Location.renderLocation(node, 'consigner_province', 'consigner_city', 'consigner_district', 'consigner_street')} ${consigner.byname ? consigner.byname : ''}`} />
+                    <Input value={consignerLocation} />
                   </Col>
                   <Col span="12">
                     <Input prefix={<Icon type="environment-o" />} value={node.consigner_addr}
@@ -672,7 +676,7 @@ export default class TransportForm extends Component {
               <Row style={{ marginTop: 10 }}>
                 <InputGroup size="large">
                   <Col span="12">
-                    <Input value={`${Location.renderLocation(node, 'consignee_province', 'consignee_city', 'consignee_district', 'consignee_street')} ${consignee.byname ? consignee.byname : ''}`} />
+                    <Input value={consigneeLocation} />
                   </Col>
                   <Col span="12">
                     <Input prefix={<Icon type="environment-o" />} value={node.consignee_addr}
