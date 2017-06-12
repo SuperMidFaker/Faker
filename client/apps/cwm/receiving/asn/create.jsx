@@ -48,6 +48,8 @@ export default class CreateReceivingASN extends Component {
   }
   state = {
     editable: true,
+    detailEnable: false,
+    selectedOwner: '',
   }
   msg = key => formatMsg(this.props.intl, key);
   handleSave = () => {
@@ -91,8 +93,15 @@ export default class CreateReceivingASN extends Component {
       attachments: fileList,
     });
   }
+  handleOwnerChange = (bool, partnerId) => {
+    this.setState({
+      detailEnable: bool,
+      selectedOwner: partnerId,
+    });
+  }
   render() {
-    const { form, submitting, defaultWhse } = this.props;
+    const { form, submitting, defaultWhse, temporaryDetails } = this.props;
+    const disable = !(this.state.detailEnable && temporaryDetails.length !== 0);
     return (
       <div>
         <Header className="top-bar">
@@ -118,17 +127,17 @@ export default class CreateReceivingASN extends Component {
             <Button size="large" type="ghost" onClick={this.handleCancelBtnClick}>
               {this.msg('cancel')}
             </Button>
-            <Button size="large" type="primary" icon="save" loading={submitting} onClick={this.handleSaveBtnClick}>
+            <Button size="large" type="primary" disabled={disable} icon="save" loading={submitting} onClick={this.handleSaveBtnClick}>
               {this.msg('save')}
             </Button>
           </div>
         </Header>
         <Content className="main-content layout-fixed-width layout-fixed-width-lg">
           <Form layout="vertical">
-            <HeadForm form={form} />
+            <HeadForm form={form} handleOwnerChange={this.handleOwnerChange} />
             <Row gutter={16}>
               <Col span={18}>
-                <DetailForm editable={this.state.editable} form={form} />
+                <DetailForm editable={this.state.editable} form={form} detailEnable={this.state.detailEnable} selectedOwner={this.state.selectedOwner} />
               </Col>
               <Col span={6}>
                 <SiderForm form={form} />

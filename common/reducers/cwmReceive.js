@@ -8,7 +8,9 @@ const actionTypes = createActionTypes('@@welogix/cwm/receive/', [
   'LOAD_PRODUCTS', 'LOAD_PRODUCTS_SUCCEED', 'LOAD_PRODUCTS_FAIL',
   'LOAD_ASN_LISTS', 'LOAD_ASN_LISTS_SUCCEED', 'LOAD_ASN_LISTS_FAIL',
   'RELEASE_ASN', 'RELEASE_ASN_SUCCEED', 'RELEASE_ASN_FAIL',
+  'CANCEL_ASN', 'CANCEL_ASN_SUCCEED', 'CANCEL_ASN_FAIL',
   'LOAD_INBOUNDS', 'LOAD_INBOUNDS_SUCCEED', 'LOAD_INBOUNDS_FAIL',
+  'GET_INBOUND_DETAIL', 'GET_INBOUND_DETAIL_SUCCEED', 'GET_INBOUND_DETAIL_FAIL',
 ]);
 
 const initialState = {
@@ -105,7 +107,7 @@ export function addASN(data) {
   };
 }
 
-export function loadProducts(productNo) {
+export function loadProducts(productNo, partnerId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -115,7 +117,7 @@ export function loadProducts(productNo) {
       ],
       endpoint: 'v1/cwm/receive/productNos/load',
       method: 'get',
-      params: { productNo },
+      params: { productNo, partnerId },
     },
   };
 }
@@ -150,6 +152,21 @@ export function releaseAsn(asnNo, loginId) {
   };
 }
 
+export function cancelAsn(asnNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.CANCEL_ASN,
+        actionTypes.CANCEL_ASN_SUCCEED,
+        actionTypes.CANCEL_ASN_FAIL,
+      ],
+      endpoint: 'v1/cwm/receive/asn/cancel',
+      method: 'get',
+      params: { asnNo },
+    },
+  };
+}
+
 export function loadInbounds({ tenantId, pageSize, current, filters }) {
   return {
     [CLIENT_API]: {
@@ -161,6 +178,21 @@ export function loadInbounds({ tenantId, pageSize, current, filters }) {
       endpoint: 'v1/cwm/receive/inbounds/load',
       method: 'get',
       params: { tenantId, pageSize, current, filters: JSON.stringify(filters) },
+    },
+  };
+}
+
+export function getInboundDetail(asnNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.GET_INBOUND_DETAIL,
+        actionTypes.GET_INBOUND_DETAIL_SUCCEED,
+        actionTypes.GET_INBOUND_DETAIL_FAIL,
+      ],
+      endpoint: 'v1/cwm/receive/inboundDetail/get',
+      method: 'get',
+      params: { asnNo },
     },
   };
 }
