@@ -190,6 +190,15 @@ export default class TMSShipmentPane extends Component {
       type,
     });
   }
+  handleAddedLocation = (location) => {
+    if (location.type === 0) {
+      this.handleConsignerSelect(location.id);
+      this.props.form.setFieldsValue({ consigner_id: location.id });
+    } else if (location.type === 1) {
+      this.handleConsigneeSelect(location.id);
+      this.props.form.setFieldsValue({ consignee_id: location.id });
+    }
+  }
   handleTariffSelect = (quoteNo) => {
     this.setState({ quoteNo });
     this.handleJudgeLine({ quoteNo });
@@ -297,7 +306,7 @@ export default class TMSShipmentPane extends Component {
             </Row>
           }
           <AddLineModal />
-          <AddLocationModal />
+          <AddLocationModal onOk={this.handleAddedLocation} />
         </Panel>
         <Panel header={this.msg('bizEvents')} key="events">
           <FlowTriggerTable kind={model.kind} bizObj="tmsShipment" onNodeActionsChange={onNodeActionsChange} />

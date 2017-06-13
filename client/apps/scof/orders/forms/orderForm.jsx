@@ -13,8 +13,6 @@ import { format } from 'client/common/i18n/helpers';
 import ClearanceForm from './clearanceForm';
 import TransportForm from './transportForm';
 import CwmReceivingForm from './cwmReceivingForm';
-import AddLineModal from 'client/apps/scof/flow/modal/addLineModal';
-import AddLocationModal from 'client/apps/scof/flow/modal/addLocationModal';
 
 const formatMsg = format(messages);
 const Panel = Collapse.Panel;
@@ -442,8 +440,6 @@ export default class OrderForm extends Component {
           <Steps direction="vertical" current={current}>
             {this.renderSteps(formData.subOrders, orderShipment)}
           </Steps>
-          <AddLineModal />
-          <AddLocationModal />
         </Card>
       </Form>
     );
