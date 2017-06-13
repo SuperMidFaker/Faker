@@ -169,6 +169,7 @@ function calculateTotal(bodies, currencies) {
     })),
     loginId: state.account.loginId,
     billHead: state.cmsManifest.billHead,
+    billMeta: state.cmsManifest.billMeta,
   }),
   { addNewBillBody,
     delBillBody,
@@ -199,6 +200,11 @@ export default class ManifestBodyPanel extends React.Component {
     billHead: PropTypes.object,
     headForm: PropTypes.object,
     hscodes: PropTypes.object,
+    billMeta: PropTypes.shape({
+      bill_seq_no: PropTypes.string.isRequired,
+      entries: PropTypes.arrayOf(PropTypes.shape({ pre_entry_seq_no: PropTypes.string })),
+      repoId: PropTypes.number.isRequired,
+    }),
   }
   constructor(props) {
     super(props);
@@ -719,6 +725,10 @@ export default class ManifestBodyPanel extends React.Component {
   handleManifestBodyExport = () => {
     window.open(`${API_ROOTS.default}v1/cms/manifest/billbody/export/${createFilename('billbodyExport')}.xlsx?billSeqNo=${this.props.billSeqNo}`);
   }
+  handleBodyExportToItem = () => {
+    window.open(`${API_ROOTS.default}v1/cms/manifest/billbody/unclassified/to/item/export/${createFilename('bodyExportToItem')}.xlsx?billSeqNo=${
+      this.props.billSeqNo}&repoId=${this.props.billMeta.repoId}`);
+  }
   handleUploaded = () => {
     this.props.loadBillBody(this.props.billSeqNo);
   }
@@ -743,13 +753,13 @@ export default class ManifestBodyPanel extends React.Component {
       }
     });
   }
-  handleMoreMenuClick = (e) => {
-    if (e.key === 'exportBody') {
-      this.handleManifestBodyExport();
+  handleExpMenuClick = (e) => {
+    if (e.key === 'expToItem') {
+      this.handleBodyExportToItem();
     }
   }
   renderToolbar() {
-    const { readonly } = this.props;
+    const { readonly, billMeta } = this.props;
     const handlemenu = (
       <Menu onClick={this.handleDataMenuClick}>
         <Menu.Item key="priceDivid"><Icon type="pie-chart" /> 金额平摊</Menu.Item>
@@ -765,17 +775,23 @@ export default class ManifestBodyPanel extends React.Component {
         <Menu.Item key="downloadRelated"><Icon type="file-excel" /> 下载模板</Menu.Item>
         <Menu.Item key="rule"><Icon type="tool" /> 关联导入规则</Menu.Item>
       </Menu>);
+    const exportmenu = (
+      <Menu onClick={this.handleExpMenuClick}>
+        <Menu.Item key="expToItem"><Icon type="export" /> 导出未归类数据</Menu.Item>
+      </Menu>);
     const moremenu = (
-      <Menu onClick={this.handleMoreMenuClick}>
-        <Menu.Item key="exportBody"><Icon type="export" /> 导出表体</Menu.Item>
+      <Menu>
         <Menu.Item key="delete">
           <Popconfirm title="确定删除表体数据?" onConfirm={this.handleBodyReset}>
-            <a> <Icon type="delete" /> 清空表体</a>
+            <a> <Icon type="delete" /> 清空表体数据</a>
           </Popconfirm>
         </Menu.Item>
       </Menu>);
     if (readonly) {
-      return <Button icon="export" onClick={this.handleManifestBodyExport}>导出</Button>;
+      return (billMeta.repoId === null ? <Button icon="export" onClick={this.handleManifestBodyExport}> 导出全部</Button> :
+      <Dropdown.Button onClick={this.handleManifestBodyExport} overlay={exportmenu}>
+        <Icon type="export" /> 导出全部
+        </Dropdown.Button>);
     } else {
       return (<span>
         <Dropdown.Button onClick={this.handleUnrelatedImport} overlay={unrelatedImportmenu}>
@@ -811,6 +827,10 @@ export default class ManifestBodyPanel extends React.Component {
             {this.msg('handle')} <Icon type="down" />
           </Button>
         </Dropdown>
+        {billMeta.repoId !== null && <Dropdown.Button onClick={this.handleManifestBodyExport} overlay={exportmenu} style={{ marginLeft: 8 }}>
+          <Icon type="export" /> 导出全部
+        </Dropdown.Button>}
+        {billMeta.repoId === null && <Button icon="export" onClick={this.handleManifestBodyExport} style={{ marginLeft: 8 }}> 导出全部</Button>}
         <Dropdown overlay={moremenu}>
           <Button onClick={this.handleButtonClick} style={{ marginLeft: 8 }}>
             {this.msg('more')} <Icon type="down" />

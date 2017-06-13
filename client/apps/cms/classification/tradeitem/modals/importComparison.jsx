@@ -173,6 +173,11 @@ export default class ImportComparisonModal extends React.Component {
           <Tooltip title="该条记录已存在，请勿重复添加">
             <Tag color="orange">{o}</Tag>
           </Tooltip>);
+      } else if (record.duplicate === 1) {
+        return (
+          <Tooltip title="导入数据有重复，请删除重复项">
+            <Tag color="red">{o}</Tag>
+          </Tooltip>);
       } else {
         return <span>{o}</span>;
       }
@@ -333,7 +338,7 @@ export default class ImportComparisonModal extends React.Component {
             <Button onClick={this.handleExportUnclassified}>{this.msg('exportUnclassified')}</Button>
           </div>
           <div className="panel-body table-panel">
-            <Table size="middle" rowKey={record => record.cop_product_no} columns={columns} dataSource={this.state.dataSource} pagination={this.state.pagination} scroll={{ x: 1500 }} />
+            <Table size="middle" rowKey={record => record.id} columns={columns} dataSource={this.state.dataSource} pagination={this.state.pagination} scroll={{ x: 1500 }} />
           </div>
         </div>
       </Modal>
