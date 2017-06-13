@@ -753,10 +753,8 @@ export default class ManifestBodyPanel extends React.Component {
       }
     });
   }
-  handleMoreMenuClick = (e) => {
-    if (e.key === 'exportBody') {
-      this.handleManifestBodyExport();
-    } else if (e.key === 'expToItem') {
+  handleExpMenuClick = (e) => {
+    if (e.key === 'expToItem') {
       this.handleBodyExportToItem();
     }
   }
@@ -777,10 +775,12 @@ export default class ManifestBodyPanel extends React.Component {
         <Menu.Item key="downloadRelated"><Icon type="file-excel" /> 下载模板</Menu.Item>
         <Menu.Item key="rule"><Icon type="tool" /> 关联导入规则</Menu.Item>
       </Menu>);
+    const exportmenu = (
+      <Menu onClick={this.handleExpMenuClick}>
+        <Menu.Item key="expToItem"><Icon type="export" /> 导出未归类数据</Menu.Item>
+      </Menu>);
     const moremenu = (
-      <Menu onClick={this.handleMoreMenuClick}>
-        <Menu.Item key="exportBody"><Icon type="export" /> 导出全部表体数据</Menu.Item>
-        {billMeta.repoId !== null && <Menu.Item key="expToItem"><Icon type="export" /> 导出未归类数据</Menu.Item>}
+      <Menu>
         <Menu.Item key="delete">
           <Popconfirm title="确定删除表体数据?" onConfirm={this.handleBodyReset}>
             <a> <Icon type="delete" /> 清空表体数据</a>
@@ -788,7 +788,10 @@ export default class ManifestBodyPanel extends React.Component {
         </Menu.Item>
       </Menu>);
     if (readonly) {
-      return <Button icon="export" onClick={this.handleManifestBodyExport}>导出</Button>;
+      return (billMeta.repoId === null ? <Button icon="export" onClick={this.handleManifestBodyExport}> 导出全部</Button> :
+      <Dropdown.Button onClick={this.handleManifestBodyExport} overlay={exportmenu}>
+        <Icon type="export" /> 导出全部
+        </Dropdown.Button>);
     } else {
       return (<span>
         <Dropdown.Button onClick={this.handleUnrelatedImport} overlay={unrelatedImportmenu}>
@@ -824,6 +827,10 @@ export default class ManifestBodyPanel extends React.Component {
             {this.msg('handle')} <Icon type="down" />
           </Button>
         </Dropdown>
+        {billMeta.repoId !== null && <Dropdown.Button onClick={this.handleManifestBodyExport} overlay={exportmenu} style={{ marginLeft: 8 }}>
+          <Icon type="export" /> 导出全部
+        </Dropdown.Button>}
+        {billMeta.repoId === null && <Button icon="export" onClick={this.handleManifestBodyExport} style={{ marginLeft: 8 }}> 导出全部</Button>}
         <Dropdown overlay={moremenu}>
           <Button onClick={this.handleButtonClick} style={{ marginLeft: 8 }}>
             {this.msg('more')} <Icon type="down" />
