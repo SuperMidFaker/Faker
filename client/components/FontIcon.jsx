@@ -38,6 +38,9 @@ export function FtIcon(props) {
     case 'green':
       colorString = '#00a854';
       break;
+    case 'orange':
+      colorString = '#f56a00';
+      break;
     case 'red':
       colorString = '#f04134';
       break;
@@ -50,6 +53,6 @@ export function FtIcon(props) {
 
 FtIcon.propTypes = {
   type: PropTypes.string.isRequired,
-  color: PropTypes.oneOf(['blue', 'green', 'red', 'gray']),
+  color: PropTypes.oneOf(['blue', 'green', 'orange', 'red', 'gray']),
   tagWrapped: PropTypes.bool,
 };

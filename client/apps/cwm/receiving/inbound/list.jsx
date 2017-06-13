@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { intlShape, injectIntl } from 'react-intl';
-import { Badge, Icon, Breadcrumb, Layout, Radio, Select, Tooltip } from 'antd';
+import { Badge, Icon, Breadcrumb, Layout, Radio, Progress, Select, Tooltip } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/search-bar';
@@ -92,6 +92,10 @@ export default class ReceivingInboundList extends React.Component {
         return (<Badge status="success" text="入库完成" />);
       }
     },
+  }, {
+    title: '收货完成度',
+    width: 250,
+    render: (o, record) => <Progress percent={record.total_received_qty / record.total_expect_qty * 100} strokeWidth={8} />,
   }, {
     title: '操作模式',
     dataIndex: 'receiving_mode',

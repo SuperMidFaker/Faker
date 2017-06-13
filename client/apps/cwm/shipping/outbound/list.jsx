@@ -63,12 +63,16 @@ export default class ReceivingInboundList extends React.Component {
     className: 'cell-align-center',
     render: (o) => {
       switch (o) {
+        case 0:
+          return <FtIcon type="circle" color="gray" />;
         case 1:
           return <FtIcon type="circle" color="blue" />;
         case 2:
+          return <FtIcon type="circle" color="orange" />;
+        case 3:
           return <FtIcon type="circle" color="green" />;
         default:
-          return <FtIcon type="circle" color="gray" />;
+          return <span />;
       }
     },
   }, {
@@ -77,12 +81,16 @@ export default class ReceivingInboundList extends React.Component {
     className: 'cell-align-center',
     render: (o) => {
       switch (o) {
+        case 0:
+          return <FtIcon type="circle" color="gray" />;
         case 1:
           return <FtIcon type="circle" color="blue" />;
         case 2:
+          return <FtIcon type="circle" color="orange" />;
+        case 3:
           return <FtIcon type="circle" color="green" />;
         default:
-          return <FtIcon type="circle" color="gray" />;
+          return <span />;
       }
     },
   }, {
@@ -91,12 +99,16 @@ export default class ReceivingInboundList extends React.Component {
     className: 'cell-align-center',
     render: (o) => {
       switch (o) {
+        case 0:
+          return <FtIcon type="circle" color="gray" />;
         case 1:
           return <FtIcon type="circle" color="blue" />;
         case 2:
+          return <FtIcon type="circle" color="orange" />;
+        case 3:
           return <FtIcon type="circle" color="green" />;
         default:
-          return <FtIcon type="circle" color="gray" />;
+          return <span />;
       }
     },
   }, {
@@ -105,12 +117,16 @@ export default class ReceivingInboundList extends React.Component {
     className: 'cell-align-center',
     render: (o) => {
       switch (o) {
+        case 0:
+          return <FtIcon type="circle" color="gray" />;
         case 1:
           return <FtIcon type="circle" color="blue" />;
         case 2:
+          return <FtIcon type="circle" color="orange" />;
+        case 3:
           return <FtIcon type="circle" color="green" />;
         default:
-          return <FtIcon type="circle" color="gray" />;
+          return <span />;
       }
     },
   }, {
