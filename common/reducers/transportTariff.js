@@ -52,6 +52,7 @@ const initialState = {
     revisions: [],
     taxrate: { mode: 0, value: 0 },
     priceChanged: false,
+    accurateMatch: false,
   },
   ratesRefAgreement: {},
   ratesSourceLoading: false,
@@ -131,6 +132,7 @@ export default function reducer(state = initialState, action) {
         partnerPermission: tariff.partnerPermission,
         revisions: action.result.data.revisions,
         taxrate: res.taxrate || initialState.agreement.taxrate,
+        accurateMatch: tariff.accurateMatch,
       };
       const partners = res.partnerId ? [{ partner_code: '',
         partner_id: res.partnerId,

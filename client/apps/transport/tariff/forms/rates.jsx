@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Card, Row, Col, Button, Upload, Modal, Progress } from 'antd';
+import { Card, Row, Col, Button, Upload, Modal, Progress, Switch } from 'antd';
 import RateSourceTable from './rateSourceTable';
 import RateEndTable from './rateEndTable';
 import { loadRateEnds } from 'common/reducers/transportTariff';
@@ -17,6 +17,7 @@ import { createFilename } from 'client/util/dataTransform';
     transModes: state.transportTariff.formParams.transModes,
     vehicleTypeParams: state.transportTariff.formParams.vehicleTypeParams,
     vehicleLengthParams: state.transportTariff.formParams.vehicleLengthParams,
+    formData: state.transportTariff.agreement,
   }),
   { loadRateEnds }
 )
@@ -26,6 +27,8 @@ export default class TariffRatesForm extends React.Component {
     rateId: PropTypes.string,
     loadRateEnds: PropTypes.func.isRequired,
     ratesEndList: PropTypes.object.isRequired,
+    formData: PropTypes.object.isRequired,
+    form: PropTypes.object.isRequired,
   }
   state = {
     sourceModal: false,
@@ -85,7 +88,7 @@ export default class TariffRatesForm extends React.Component {
     });
   }
   render() {
-    const { type } = this.props;
+    const { type, formData, form: { getFieldDecorator } } = this.props;
     const { sourceModal, endModal, inUpload, uploadPercent, uploadStatus } = this.state;
     return (
       <div style={{ padding: 10 }}>
@@ -99,6 +102,12 @@ export default class TariffRatesForm extends React.Component {
                   >
                     添加
                   </Button>
+                  <div className="toolbar-right">
+                    <span>精确匹配: </span>
+                    {getFieldDecorator('accurateMatch', {
+                      valuePropName: 'checked',
+                      initialValue: formData.accurateMatch })(<Switch />)}
+                  </div>
                 </div>)}
                 <RateSourceTable visibleModal={sourceModal} onChangeVisible={this.handleVisibleChange} type={type} />
               </Card>
