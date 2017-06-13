@@ -50,7 +50,17 @@ export default class FreightCharge extends React.Component {
       description: '',
     } });
     const {
-      customer_partner_id, consigner_region_code, consignee_region_code,
+      customer_partner_id,
+      consigner_region_code,
+      consigner_province,
+      consigner_city,
+      consigner_district,
+      consigner_street,
+      consignee_region_code,
+      consignee_province,
+      consignee_city,
+      consignee_district,
+      consignee_street,
       transport_mode_id, transport_mode_code,
     } = this.props.formData;
     const { goods_type, container: ctn, vehicle_type_id, vehicle_length_id, total_weight, total_volume, pickup_est_date, deliver_est_date } =
@@ -63,7 +73,15 @@ export default class FreightCharge extends React.Component {
     const data = {
       partner_id: customer_partner_id,
       consigner_region_code,
+      consigner_province,
+      consigner_city,
+      consigner_district,
+      consigner_street,
       consignee_region_code,
+      consignee_province,
+      consignee_city,
+      consignee_district,
+      consignee_street,
       goods_type,
       trans_mode: transport_mode_id,
       transport_mode_code,

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Form, Modal, message } from 'antd';
+import { Form, Modal, Input, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import RegionCascader from 'client/components/region-cascade';
 import { submitRateSource, loadRatesSources, updateRateSource,
@@ -44,6 +44,7 @@ export default class RateSourceTable extends React.Component {
     regionCode: null,
     rateId: null,
     modalRegion: [],
+    name: '',
   }
   componentWillMount() {
     if (this.props.rateId) {
@@ -82,6 +83,9 @@ export default class RateSourceTable extends React.Component {
     title: '起始地',
     dataIndex: 'source',
     render: (o, record) => renderRegion(record.source),
+  }, {
+    title: '别名',
+    dataIndex: 'source.name',
   }]
   loadSources = (pageSize, current) => this.props.loadRatesSources({
     tariffId: this.props.tariffId,
@@ -91,11 +95,12 @@ export default class RateSourceTable extends React.Component {
   })
   handleEdit = (row, ev) => {
     ev.stopPropagation();
-    const { code, province, city, district, street } = row.source;
+    const { code, province, city, district, street, name } = row.source;
     this.setState({
       rateId: row._id,
       regionCode: code,
       modalRegion: [province, city, district, street],
+      name,
     });
     this.props.onChangeVisible('source', true);
   }
@@ -122,12 +127,14 @@ export default class RateSourceTable extends React.Component {
         prom = this.props.updateRateSource(
             this.state.rateId,
             this.state.regionCode,
-            this.state.modalRegion);
+            this.state.modalRegion,
+            this.state.name);
       } else {
         prom = this.props.submitRateSource(
             this.props.tariffId,
             this.state.regionCode,
-            this.state.modalRegion);
+            this.state.modalRegion,
+            this.state.name);
       }
       prom.then((result) => {
         if (result.error) {
@@ -145,6 +152,7 @@ export default class RateSourceTable extends React.Component {
                 regionCode: null,
                 modalRegion: [],
                 rateId: null,
+                name: '',
               });
               this.props.onChangeVisible('source', false);
             });
@@ -166,6 +174,7 @@ export default class RateSourceTable extends React.Component {
     this.setState({
       regionCode: null,
       modalRegion: [],
+      name: '',
       rateId: null,
     });
   }
@@ -175,6 +184,9 @@ export default class RateSourceTable extends React.Component {
       regionCode: code,
       modalRegion: [province, city, district, street],
     });
+  }
+  handleNameChange = (e) => {
+    this.setState({ name: e.target.value });
   }
   handleRowClick = (row) => {
     this.props.loadRateEnds({
@@ -189,7 +201,7 @@ export default class RateSourceTable extends React.Component {
   }
   render() {
     const { ratesSourceList, loading, visibleModal, type } = this.props;
-    const { modalRegion } = this.state;
+    const { modalRegion, name } = this.state;
     this.dataSource.remotes = ratesSourceList;
     const rowSelection = {
       type: 'radio',
@@ -223,8 +235,11 @@ export default class RateSourceTable extends React.Component {
           closable={false}
         >
           <Form layout="horizontal">
-            <FormItem label="起始地" labelCol={{ span: 4 }} wrapperCol={{ span: 16 }} required>
+            <FormItem label="起始地" labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} required>
               <RegionCascader defaultRegion={modalRegion} onChange={this.handleRegionChange} />
+            </FormItem>
+            <FormItem label="起始地别名" labelCol={{ span: 5 }} wrapperCol={{ span: 15 }}>
+              <Input value={name} onChange={this.handleNameChange} />
             </FormItem>
           </Form>
         </Modal>

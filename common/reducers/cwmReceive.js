@@ -11,6 +11,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/receive/', [
   'CANCEL_ASN', 'CANCEL_ASN_SUCCEED', 'CANCEL_ASN_FAIL',
   'LOAD_INBOUNDS', 'LOAD_INBOUNDS_SUCCEED', 'LOAD_INBOUNDS_FAIL',
   'GET_INBOUND_DETAIL', 'GET_INBOUND_DETAIL_SUCCEED', 'GET_INBOUND_DETAIL_FAIL',
+  'UPDATE_INBOUND_DETAIL', 'UPDATE_INBOUND_DETAIL_SUCCEED', 'UPDATE_INBOUND_DETAIL_FAIL',
 ]);
 
 const initialState = {
@@ -193,6 +194,21 @@ export function getInboundDetail(asnNo) {
       endpoint: 'v1/cwm/receive/inboundDetail/get',
       method: 'get',
       params: { asnNo },
+    },
+  };
+}
+
+export function upDateInboundDetail(asnNo, asnSeqNo, type, value) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_INBOUND_DETAIL,
+        actionTypes.UPDATE_INBOUND_DETAIL_SUCCEED,
+        actionTypes.UPDATE_INBOUND_DETAIL_FAIL,
+      ],
+      endpoint: 'v1/cwm/receive/inboundDetail/update',
+      method: 'get',
+      params: { asnNo, asnSeqNo, type, value },
     },
   };
 }

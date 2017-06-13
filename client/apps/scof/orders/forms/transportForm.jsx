@@ -10,6 +10,8 @@ import { uuidWithoutDash } from 'client/common/uuid';
 import { GOODS_TYPES, PRESET_TRANSMODES, CONTAINER_PACKAGE_TYPE, COURIERS, TARIFF_METER_METHODS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import * as Location from 'client/util/location';
+import AddLineModal from 'client/apps/scof/flow/modal/addLineModal';
+import AddLocationModal from 'client/apps/scof/flow/modal/addLocationModal';
 import messages from '../message.i18n';
 
 const ONE_DAY_MS = 24 * 60 * 60 * 1000;
@@ -438,6 +440,13 @@ export default class TransportForm extends Component {
       this.handleSetClientForm({ person_id: value, person: person.name });
     }
   }
+  handleAddedLocation = (location) => {
+    if (location.type === 0) {
+      this.handleConsignSelect('consigner_name', location.id);
+    } else if (location.type === 1) {
+      this.handleConsignSelect('consignee_name', location.id);
+    }
+  }
   handleCommonFieldChange = (filed, value) => {
     this.handleSetClientForm({ [filed]: value });
     if (filed === 'goods_type') {
@@ -741,6 +750,8 @@ export default class TransportForm extends Component {
             </FormItem>
           </Col>
         </Row>
+        <AddLineModal />
+        <AddLocationModal onOk={this.handleAddedLocation} />
       </Card>
     );
   }

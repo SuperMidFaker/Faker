@@ -40,6 +40,7 @@ export default class AddLocationModal extends React.Component {
     loadFormRequires: PropTypes.func.isRequired,
     addNode: PropTypes.func.isRequired,
     type: PropTypes.number.isRequired,
+    onOk: PropTypes.func.isRequired,
   }
   state = {
     region: {
@@ -58,7 +59,7 @@ export default class AddLocationModal extends React.Component {
     const { region } = this.state;
     const nodeInfoInForm = form.getFieldsValue();
     const nodeInfo = Object.assign({}, nodeInfoInForm, { ...region, type, tenant_id: tenantId, ref_partner_id: partnerId, ref_partner_name: partnerName });
-    this.props.addNode(nodeInfo).then(() => {
+    this.props.addNode(nodeInfo).then((result) => {
       this.setState({
         region: {
           province: '',
@@ -70,8 +71,14 @@ export default class AddLocationModal extends React.Component {
       });
       this.props.form.resetFields();
       this.props.toggleAddLocationModal({ visible: false });
-      this.props.loadFormRequires({ tenantId });
-      this.props.loadTmsBizParams(tenantId);
+      Promise.all([
+        this.props.loadFormRequires({ tenantId }),
+        this.props.loadTmsBizParams(tenantId),
+      ]).then(() => {
+        if (this.props.onOk) {
+          this.props.onOk({ ...result.data, type });
+        }
+      });
     });
   }
   handleRegionChange = (value) => {

@@ -52,6 +52,7 @@ const initialState = {
     revisions: [],
     taxrate: { mode: 0, value: 0 },
     priceChanged: false,
+    accurateMatch: false,
   },
   ratesRefAgreement: {},
   ratesSourceLoading: false,
@@ -131,6 +132,7 @@ export default function reducer(state = initialState, action) {
         partnerPermission: tariff.partnerPermission,
         revisions: action.result.data.revisions,
         taxrate: res.taxrate || initialState.agreement.taxrate,
+        accurateMatch: tariff.accurateMatch,
       };
       const partners = res.partnerId ? [{ partner_code: '',
         partner_id: res.partnerId,
@@ -339,7 +341,7 @@ export function updateAgreement(forms) {
   };
 }
 
-export function submitRateSource(tariffId, code, region) {
+export function submitRateSource(tariffId, code, region, name) {
   return {
     [CLIENT_API]: {
       types: [
@@ -349,7 +351,7 @@ export function submitRateSource(tariffId, code, region) {
       ],
       endpoint: 'v1/transport/tariff/ratesource',
       method: 'post',
-      data: { tariffId, code, region },
+      data: { tariffId, code, region, name },
       origin: 'mongo',
     },
   };
@@ -371,7 +373,7 @@ export function loadRatesSources(params) {
   };
 }
 
-export function updateRateSource(rateId, code, region) {
+export function updateRateSource(rateId, code, region, name) {
   return {
     [CLIENT_API]: {
       types: [
@@ -381,7 +383,7 @@ export function updateRateSource(rateId, code, region) {
       ],
       endpoint: 'v1/transport/tariff/update/ratesource',
       method: 'post',
-      data: { rateId, code, region },
+      data: { rateId, code, region, name },
       origin: 'mongo',
     },
   };

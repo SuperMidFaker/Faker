@@ -87,18 +87,18 @@ export default class SHFTZEntryList extends React.Component {
     title: '进口日期',
     width: 120,
     dataIndex: 'ie_date',
-    render: (o, record) => {
+    render: (o) => {
       if (o) {
-        return `${moment(record.last_act_time).format('MM.DD HH:mm')}`;
+        return `${moment(o).format('MM.DD HH:mm')}`;
       }
     },
   }, {
     title: '进库日期',
     width: 120,
     dataIndex: 'ftz_ent_date',
-    render: (o, record) => {
+    render: (o) => {
       if (o) {
-        return `${moment(record.last_act_time).format('MM.DD HH:mm')}`;
+        return `${moment(o).format('MM.DD HH:mm')}`;
       }
     },
   }, {

@@ -94,7 +94,7 @@ export default class HeadForm extends Component {
           <Col sm={24} lg={8}>
             <FormItem label="ASN类型">
               {getFieldDecorator('asn_type', {
-
+                initialValue: CWM_ASN_TYPES[0].value,
               })(
                 <Select placeholder="ASN类型">
                   {CWM_ASN_TYPES.map(cat => <Option value={cat.value} key={cat.value}>{cat.text}</Option>)}
