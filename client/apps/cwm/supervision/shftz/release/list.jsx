@@ -1,14 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Badge, Breadcrumb, Layout, Radio, Menu, Select, Table, Tag } from 'antd';
+import { Badge, Breadcrumb, Layout, Radio, Menu, Select, Tag, message } from 'antd';
+import Table from 'client/components/remoteAntTable';
 import NavLink from 'client/components/nav-link';
 import SearchBar from 'client/components/search-bar';
 import RowUpdater from 'client/components/rowUpdater';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
+import { loadReleaseRegDatas } from 'common/reducers/cwmShFtz';
 
 const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
@@ -20,7 +23,10 @@ const RadioButton = Radio.Button;
 @connect(
   state => ({
     tenantId: state.account.tenantId,
+    releaseList: state.cwmShFtz.releaseList,
+    listFilter: state.cwmShFtz.listFilter,
   }),
+  { loadReleaseRegDatas }
 )
 @connectNav({
   depth: 2,
@@ -30,6 +36,8 @@ export default class SHFTZReleaseList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
+    releaseList: PropTypes.object.isRequired,
+    listFilter: PropTypes.object.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -37,6 +45,9 @@ export default class SHFTZReleaseList extends React.Component {
   state = {
     selectedRowKeys: [],
     searchInput: '',
+  }
+  componentDidMount() {
+    this.handleReleaseListLoad();
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
@@ -63,35 +74,50 @@ export default class SHFTZReleaseList extends React.Component {
   }, {
     title: '货主',
     width: 220,
-    dataIndex: 'owner_code',
+    dataIndex: 'owner_cus_code',
   }, {
     title: '仓储企业',
     width: 220,
-    dataIndex: 'whse_code',
+    dataIndex: 'wh_ent_cus_code',
   }, {
     title: '提货单位',
     width: 120,
-    dataIndex: 'rec_cus_code',
+    dataIndex: 'receiver_name',
   }, {
     title: '运输单位',
     width: 120,
-    dataIndex: 'carrier_cus_code',
+    dataIndex: 'carrier_name',
   }, {
     title: '出库备案号',
     width: 120,
-    dataIndex: 'ftz_ent_no',
+    dataIndex: 'ftz_rel_no',
   }, {
     title: '出口日期',
     width: 120,
     dataIndex: 'ie_date',
+    render: (o) => {
+      if (o) {
+        return `${moment(o).format('MM.DD HH:mm')}`;
+      }
+    },
   }, {
     title: '报关日期',
     width: 120,
-    dataIndex: 'decl_date',
+    dataIndex: 'cus_decl_date',
+    render: (o) => {
+      if (o) {
+        return `${moment(o).format('MM.DD HH:mm')}`;
+      }
+    },
   }, {
     title: '预计出区日期',
     width: 120,
     dataIndex: 'ftz_rel_date',
+    render: (o) => {
+      if (o) {
+        return `${moment(o).format('MM.DD HH:mm')}`;
+      }
+    },
   }, {
     title: '状态',
     dataIndex: 'status',
@@ -121,59 +147,47 @@ export default class SHFTZReleaseList extends React.Component {
     },
   }]
 
-  dataSource = [{
-    id: '1',
-    asn_no: 'SO04601170548',
-    bonded: 1,
-    whse_code: '3122406170|上海恩诺物流有限公司',
-    owner_code: '3114941293|大陆泰密克汽车系统',
-    customs_decl_no: '221820171000538906',
-    status: 0,
-    ftz_ent_type: 1,
-    children: [{
-      id: '2',
-      asn_no: 'SO04601170548',
-      bonded: 0,
-      whse_code: '3122406170|上海恩诺物流有限公司',
-      owner_code: '3114941293|大陆泰密克汽车系统',
-      customs_decl_no: '221820171000538907',
-      status: 0,
-      ftz_ent_type: 1,
-    }, {
-      id: '3',
-      asn_no: 'SO04601170548',
-      bonded: 1,
-      whse_code: '3122406170|上海恩诺物流有限公司',
-      owner_code: '3114941293|大陆泰密克汽车系统',
-      customs_decl_no: '221820171000538908',
-      status: 0,
-      ftz_ent_type: 1,
+  dataSource = new Table.DataSource({
+    fetcher: params => this.props.loadReleaseRegDatas(params),
+    resolve: result => result.data,
+    getPagination: (result, resolve) => ({
+      total: result.totalCount,
+      current: resolve(result.totalCount, result.current, result.pageSize),
+      showSizeChanger: true,
+      showQuickJumper: false,
+      pageSize: result.pageSize,
+    }),
+    getParams: (pagination) => {
+      const params = {
+        tenantId: this.props.tenantId,
+        pageSize: pagination.pageSize,
+        currentPage: pagination.current,
+      };
+      const filter = { ...this.props.listFilter };
+      params.filter = JSON.stringify(filter);
+      return params;
     },
-    ],
-  }, {
-    id: '4',
-    asn_no: 'SO04601170546',
-    bonded: 1,
-    whse_code: '3122406170|上海恩诺物流有限公司',
-    owner_code: '3221304601|米思米(中国)精密机械',
-    customs_decl_no: '',
-    status: 2,
-    ftz_ent_type: 2,
-  }, {
-    id: '5',
-    asn_no: 'SO04601170546',
-    bonded: 1,
-    whse_code: '3122406170|上海恩诺物流有限公司',
-    owner_code: '3221304601|米思米(中国)精密机械',
-    customs_decl_no: '',
-    status: 1,
-    ftz_ent_type: 3,
-  }];
-
+    remotes: this.props.releaseList,
+  })
+  handleReleaseListLoad = (currentPage, filter) => {
+    const { tenantId, listFilter, releaseList: { pageSize, current } } = this.props;
+    this.props.loadReleaseRegDatas({
+      tenantId,
+      filter: JSON.stringify(filter || listFilter),
+      pageSize,
+      currentPage: currentPage || current,
+    }).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      }
+    });
+  }
   handleStatusChange = (ev) => {
     if (ev.target.value === this.props.listFilter.status) {
-
+      return;
     }
+    const filter = { ...this.props.listFilter, status: ev.target.value };
+    this.handleReleaseListLoad(1, filter);
   }
   handleCreateBtnClick = () => {
     this.context.router.push('/cwm/ftz/receive/reg');
@@ -183,6 +197,8 @@ export default class SHFTZReleaseList extends React.Component {
     this.context.router.push(link);
   }
   render() {
+    const { releaseList, listFilter } = this.props;
+    this.dataSource.remotes = releaseList;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -249,7 +265,7 @@ export default class SHFTZReleaseList extends React.Component {
                 {this.msg('ftzReleaseReg')}
               </Breadcrumb.Item>
             </Breadcrumb>
-            <RadioGroup defaultValue="pending" onChange={this.handleBondedChange} size="large">
+            <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} size="large">
               <RadioButton value="pending">待备案</RadioButton>
               <RadioButton value="sent">已发送</RadioButton>
               <RadioButton value="completed">备案完成</RadioButton>
