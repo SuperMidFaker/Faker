@@ -133,7 +133,7 @@ export default class ReceiveInbound extends Component {
   }
   handleProductStatusChange = (value, record, index) => {
     const inboundBody = [...this.state.inboundBody];
-    inboundBody.splice(index, 1, { ...inboundBody[index], product_status: value });
+    inboundBody.splice(index, 1, { ...inboundBody[index], damage_level: value });
     this.setState({ inboundBody });
     this.props.upDateInboundDetail(record.asn_no, record.asn_seq_no, 'status', value);
   }
@@ -226,7 +226,6 @@ export default class ReceiveInbound extends Component {
     title: '破损级别',
     dataIndex: 'damage_level',
     fixed: 'right',
-    dataIndex: 'product_status',
     width: 120,
     render: (o, record, index) => (<Select value={o} style={{ width: 100 }} onChange={value => this.handleProductStatusChange(value, record, index)} disabled={this.state.receivingMode === 'scan'}>
       <Option value="0">完好</Option>
@@ -249,7 +248,7 @@ export default class ReceiveInbound extends Component {
   }]
 
   render() {
-    const { defaultWhse, operators } = this.props;
+    const { defaultWhse } = this.props;
     const { inboundHead, inboundBody } = this.state;
     const asnNo = this.props.params.asnNo;
     const rowSelection = {
