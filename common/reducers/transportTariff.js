@@ -339,7 +339,7 @@ export function updateAgreement(forms) {
   };
 }
 
-export function submitRateSource(tariffId, code, region) {
+export function submitRateSource(tariffId, code, region, name) {
   return {
     [CLIENT_API]: {
       types: [
@@ -349,7 +349,7 @@ export function submitRateSource(tariffId, code, region) {
       ],
       endpoint: 'v1/transport/tariff/ratesource',
       method: 'post',
-      data: { tariffId, code, region },
+      data: { tariffId, code, region, name },
       origin: 'mongo',
     },
   };
@@ -371,7 +371,7 @@ export function loadRatesSources(params) {
   };
 }
 
-export function updateRateSource(rateId, code, region) {
+export function updateRateSource(rateId, code, region, name) {
   return {
     [CLIENT_API]: {
       types: [
@@ -381,7 +381,7 @@ export function updateRateSource(rateId, code, region) {
       ],
       endpoint: 'v1/transport/tariff/update/ratesource',
       method: 'post',
-      data: { rateId, code, region },
+      data: { rateId, code, region, name },
       origin: 'mongo',
     },
   };
