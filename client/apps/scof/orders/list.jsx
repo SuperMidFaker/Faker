@@ -187,7 +187,7 @@ export default class OrderList extends React.Component {
       dataIndex: 'order_status',
       width: 160,
       render: (o, record) => {
-        const percent = record.flow_node_num ? record.finish_num / record.flow_node_num * 100 : 0;
+        const percent = record.flow_node_num ? Number((record.finish_num / record.flow_node_num * 100).toFixed(1)) : 0;
         return (<div style={{ textAlign: 'center' }}><Progress type="circle" percent={percent} width={50} />
           <div className="mdc-text-grey table-font-small">
             <Tooltip title={`创建于${moment(record.created_date).format('YYYY.MM.DD HH:mm')}`} placement="bottom">
