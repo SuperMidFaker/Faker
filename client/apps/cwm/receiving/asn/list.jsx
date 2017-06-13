@@ -79,18 +79,20 @@ export default class ReceivingASNList extends React.Component {
     width: 200,
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
-    title: '通知日期',
-    width: 120,
-    dataIndex: 'created_date',
-    render: o => moment(o).format('YYYY.MM.DD'),
-  }, {
     title: '预期到货时间',
     width: 120,
     dataIndex: 'expect_receive_date',
+    render: o => moment(o).format('YYYY.MM.DD'),
   }, {
-    title: '收货时间',
+    title: '实际收货时间',
     width: 120,
     dataIndex: 'received_date',
+    render: o => moment(o).format('YYYY.MM.DD'),
+  }, {
+    title: '创建时间',
+    width: 120,
+    dataIndex: 'created_date',
+
   }, {
     title: '状态',
     dataIndex: 'status',

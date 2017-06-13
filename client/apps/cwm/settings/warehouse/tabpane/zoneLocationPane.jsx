@@ -4,7 +4,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Layout, Table, Button, Input, Popover, Menu, Form, message } from 'antd';
 import LocationModal from '../modal/locationModal';
-import MdIcon from 'client/components/MdIcon';
+import { MdIcon } from 'client/components/FontIcon';
 import RowUpdater from 'client/components/rowUpdater';
 import ZoneEditPopover from '../popover/zoneEditPopover';
 import { addZone, loadZones, showLocationModal, loadLocations, deleteLocation,

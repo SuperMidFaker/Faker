@@ -62,14 +62,17 @@ export default class SiderForm extends Component {
   }
 
   handlePalleteChange = (ev) => {
-    const packQty = parseFloat(ev.target.value);
-    if (!isNaN(packQty)) {
+    const boxQty = parseFloat(ev.target.value);
+    if (!isNaN(boxQty)) {
+      const palletPackQty = this.props.skuForm.box_pack_qty && Number((boxQty * this.props.skuForm.box_pack_qty).toFixed(3));
       this.props.setSkuForm({
-        pallet_pack_qty: packQty,
-        convey_pallet_qty: this.props.skuForm.sku_pack_qty && Number((packQty * this.props.skuForm.sku_pack_qty).toFixed(3)),
+        pallet_box_qty: boxQty,
+        pallet_pack_qty: palletPackQty,
+        convey_pallet_qty: this.props.skuForm.sku_pack_qty && Number((palletPackQty * this.props.skuForm.sku_pack_qty).toFixed(3)),
       });
     } else {
       this.props.setSkuForm({
+        pallet_box_qty: null,
         pallet_pack_qty: null,
         convey_pallet_qty: null,
       });
@@ -113,10 +116,11 @@ export default class SiderForm extends Component {
             <Col sm={24}>
               <FormItem label={this.msg('码盘量')}>
                 <InputGroup compact>
-                  <Input style={{ width: '50%' }} placeholder="SKU包装单位数量" value={skuForm.pallet_pack_qty}
+                  <Input style={{ width: '34%' }} placeholder="箱量" value={skuForm.pallet_box_qty}
                     onChange={this.handlePalleteChange}
                   />
-                  <Input style={{ width: '50%' }} placeholder="主单位数量" value={skuForm.convey_pallet_qty} disabled />
+                  <Input style={{ width: '33%' }} placeholder="SKU包装单位数量" value={skuForm.pallet_pack_qty} disabled />
+                  <Input style={{ width: '33%' }} placeholder="主单位数量" value={skuForm.convey_pallet_qty} disabled />
                 </InputGroup>
               </FormItem>
             </Col>

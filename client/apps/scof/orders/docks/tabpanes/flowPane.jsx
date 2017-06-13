@@ -6,7 +6,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Timeline, Card } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import { loadOrderNodes } from 'common/reducers/crmOrders';
-import MdIcon from 'client/components/MdIcon';
+import { MdIcon } from 'client/components/FontIcon';
 import CMSNodeCard from './cards/cmsNodeCard';
 import TMSNodeCard from './cards/tmsNodeCard';
 import CWMNodeCard from './cards/cwmNodeCard';

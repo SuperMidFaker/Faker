@@ -2,11 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Icon, Breadcrumb, Layout, Radio, Select, Table, Tag, Tooltip } from 'antd';
+import { Button, Icon, Breadcrumb, Layout, Radio, Select, Table, Tooltip } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/search-bar';
 import RowUpdater from 'client/components/rowUpdater';
 import connectNav from 'client/common/decorators/connect-nav';
+import { FtIcon } from 'client/components/FontIcon';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 
@@ -57,19 +58,61 @@ export default class ReceivingInboundList extends React.Component {
     width: 200,
     dataIndex: 'owner_code',
   }, {
-    title: '状态',
-    dataIndex: 'status',
-    width: 100,
+    title: '分配',
+    dataIndex: 'allocating',
+    className: 'cell-align-center',
     render: (o) => {
-      if (o === 0) {
-        return (<Tag>分配</Tag>);
-      } else if (o === 1) {
-        return (<Tag color="#87d068">拣货</Tag>);
+      switch (o) {
+        case 1:
+          return <FtIcon type="circle" color="blue" />;
+        case 2:
+          return <FtIcon type="circle" color="green" />;
+        default:
+          return <FtIcon type="circle" color="gray" />;
       }
     },
   }, {
-    title: '执行者',
-    dataIndex: 'executor',
+    title: '拣货',
+    dataIndex: 'picking',
+    className: 'cell-align-center',
+    render: (o) => {
+      switch (o) {
+        case 1:
+          return <FtIcon type="circle" color="blue" />;
+        case 2:
+          return <FtIcon type="circle" color="green" />;
+        default:
+          return <FtIcon type="circle" color="gray" />;
+      }
+    },
+  }, {
+    title: '装箱复核',
+    dataIndex: 'packing',
+    className: 'cell-align-center',
+    render: (o) => {
+      switch (o) {
+        case 1:
+          return <FtIcon type="circle" color="blue" />;
+        case 2:
+          return <FtIcon type="circle" color="green" />;
+        default:
+          return <FtIcon type="circle" color="gray" />;
+      }
+    },
+  }, {
+    title: '发运',
+    dataIndex: 'shipping',
+    className: 'cell-align-center',
+    render: (o) => {
+      switch (o) {
+        case 1:
+          return <FtIcon type="circle" color="blue" />;
+        case 2:
+          return <FtIcon type="circle" color="green" />;
+        default:
+          return <FtIcon type="circle" color="gray" />;
+      }
+    },
   }, {
     title: '操作模式',
     dataIndex: 'receiving_mode',
@@ -81,8 +124,8 @@ export default class ReceivingInboundList extends React.Component {
       }
     },
   }, {
-    title: '分配',
-    dataIndex: 'allocated',
+    title: '创建时间',
+    dataIndex: 'created_date',
     width: 120,
   }, {
     title: '完成时间',
@@ -94,18 +137,18 @@ export default class ReceivingInboundList extends React.Component {
     fixed: 'right',
     render: (o, record) => {
       if (record.status === 0) {
-        return (<span><RowUpdater onHit={this.handleReceive} label="入库操作" row={record} /> </span>);
+        return (<span><RowUpdater onHit={this.handleReceive} label="出库操作" row={record} /> </span>);
       } else if (record.status === 0 && record.receiving_lock === 2) {
         return (<span><RowUpdater label="撤回" row={record} /></span>);
       } else {
-        return (<span><RowUpdater onHit={this.handleReceive} label="入库操作" row={record} /> </span>);
+        return (<span><RowUpdater onHit={this.handleReceive} label="出库操作" row={record} /> </span>);
       }
     },
   }]
 
   dataSource = [{
     id: '1',
-    rn_no: 'N04601170548',
+    so_no: 'N04601170548',
     bonded: 1,
     whse_code: '0961|希雅路仓库',
     owner_code: '04601|米思米(中国)精密机械贸易',
@@ -114,7 +157,7 @@ export default class ReceivingInboundList extends React.Component {
     receiving_lock: 0,
   }, {
     id: '2',
-    rn_no: 'N04601170547',
+    so_no: 'N04601170547',
     bonded: 0,
     whse_code: '0086|物流大道仓库',
     owner_code: '03701|西门子国际贸易',
@@ -123,7 +166,7 @@ export default class ReceivingInboundList extends React.Component {
     receiving_lock: 1,
   }, {
     id: '3',
-    rn_no: 'N04601170546',
+    so_no: 'N04601170546',
     bonded: 1,
     whse_code: '0962|富特路仓库',
     owner_code: '04601|米思米(中国)精密机械贸易',
@@ -132,7 +175,7 @@ export default class ReceivingInboundList extends React.Component {
     receiving_lock: 2,
   }, {
     id: '4',
-    rn_no: 'N04601170546',
+    so_no: 'N04601170546',
     bonded: 1,
     whse_code: '0962|富特路仓库',
     owner_code: '04601|米思米(中国)精密机械贸易',
@@ -141,7 +184,7 @@ export default class ReceivingInboundList extends React.Component {
     receiving_lock: 0,
   }, {
     id: '5',
-    rn_no: 'N04601170546',
+    so_no: 'N04601170546',
     bonded: 1,
     whse_code: '0962|富特路仓库',
     owner_code: '04601|米思米(中国)精密机械贸易',
@@ -156,7 +199,7 @@ export default class ReceivingInboundList extends React.Component {
     }
   }
   handleReceive = (row) => {
-    const link = `/cwm/shipping/outbound/receive/${row.rn_no}`;
+    const link = `/cwm/shipping/outbound/allocate/${row.so_no}`;
     this.context.router.push(link);
   }
   render() {

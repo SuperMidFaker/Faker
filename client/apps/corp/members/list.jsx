@@ -5,7 +5,7 @@ import { Breadcrumb, Button, Icon, Menu, Input, Popover, message, Layout } from 
 import QueueAnim from 'rc-queue-anim';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import Table from 'client/components/remoteAntTable';
-import MdIcon from 'client/components/MdIcon';
+import { MdIcon } from 'client/components/FontIcon';
 import AddMemberModal from './addMemberModal';
 import { intlShape, injectIntl } from 'react-intl';
 import { loadMembers, loadDepartments, delMember, createDepartment, switchStatus, openMemberModal } from 'common/reducers/personnel';

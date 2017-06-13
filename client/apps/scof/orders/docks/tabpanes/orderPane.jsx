@@ -5,7 +5,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Collapse, Row, Col, Card, Icon, Menu } from 'antd';
 import { GOODSTYPES, TRANS_MODE, WRAP_TYPE } from 'common/constants';
 import InfoItem from 'client/components/InfoItem';
-import MdIcon from 'client/components/MdIcon';
+import { MdIcon } from 'client/components/FontIcon';
 
 const Panel = Collapse.Panel;
 

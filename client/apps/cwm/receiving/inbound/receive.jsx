@@ -307,7 +307,7 @@ export default class ReceiveInbound extends Component {
                 <div className="toolbar-right">
                   {this.state.receivingMode === 'manual' && this.state.currentStatus < 3 &&
                   <Popconfirm title="确定此次入库操作已完成?" onConfirm={this.handleInboundConfirmed} okText="确认" cancelText="取消">
-                    <Button type={this.state.printed && 'primary'} size="large" icon="check" disabled={this.state.currentStatus < 2}>
+                    <Button type="primary" ghost size="large" icon="check" disabled={this.state.currentStatus < 2}>
                       入库确认
                     </Button>
                   </Popconfirm>

@@ -7,7 +7,7 @@ import { saveBaseInfo } from 'common/reducers/cmsDelgInfoHub';
 import downloadMultiple from 'client/util/multipleDownloader';
 import { GOODSTYPES, TRANS_MODE, CLAIM_DO_AWB } from 'common/constants';
 import InfoItem from 'client/components/InfoItem';
-import MdIcon from 'client/components/MdIcon';
+import { MdIcon } from 'client/components/FontIcon';
 import './pane.less';
 
 function getExtension(filename) {

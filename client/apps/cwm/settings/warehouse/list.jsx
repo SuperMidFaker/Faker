@@ -7,7 +7,7 @@ import { Layout, Table, Tooltip, Button, Input, Breadcrumb, Tabs, Popover, Menu,
 import RowUpdater from 'client/components/rowUpdater';
 import WarehouseModal from './modal/warehouseModal';
 import LocationModal from './modal/locationModal';
-import MdIcon from 'client/components/MdIcon';
+import { MdIcon } from 'client/components/FontIcon';
 import ZoneEditPopover from './popover/zoneEditPopover';
 import OwnersPane from './tabpane/ownersPane';
 import SupervisionPane from './tabpane/supervisionPane';

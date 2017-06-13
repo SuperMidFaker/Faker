@@ -15,7 +15,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import SearchBar from 'client/components/search-bar';
 import RowUpdater from 'client/components/rowUpdater';
-import MdIcon from 'client/components/MdIcon';
+import { MdIcon } from 'client/components/FontIcon';
 import { loadAcceptanceTable, acceptDelg, delDelg, setDispStatus, loadCiqTable, delgAssignRecall,
   ensureManifestMeta, showDispModal } from 'common/reducers/cmsDelegation';
 import { showPreviewer, loadBasicInfo, loadCustPanel, loadDeclCiqPanel } from 'common/reducers/cmsDelgInfoHub';

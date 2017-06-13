@@ -10,7 +10,7 @@ import { toggleFlowList, delFlow, loadFlowGraph, loadFlowGraphItem, saveFlowGrap
   loadScvTrackings, loadTmsBizParams } from 'common/reducers/scofFlow';
 import { uuidWithoutDash } from 'client/common/uuid';
 import ButtonToggle from 'client/components/ButtonToggle';
-import MdIcon from 'client/components/MdIcon';
+import { MdIcon } from 'client/components/FontIcon';
 import EditableCell from 'client/components/EditableCell';
 import FlowEdgePanel from './panel/flowEdgePanel';
 import BizObjCMSPanel from './panel/bizObjCMSPanel';

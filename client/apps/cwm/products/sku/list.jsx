@@ -92,7 +92,7 @@ export default class CWMSkuList extends React.Component {
   columns = [{
     title: 'SKU',
     dataIndex: 'sku',
-    width: 100,
+    width: 120,
   }, {
     title: this.msg('productNo'),
     width: 120,
@@ -107,29 +107,17 @@ export default class CWMSkuList extends React.Component {
     dataIndex: 'desc_en',
   }, {
     title: this.msg('productCategory'),
-    width: 120,
     dataIndex: 'category',
   }, {
-    title: '长',
-    width: 100,
-    dataIndex: 'length',
-  }, {
-    title: '宽',
-    width: 100,
-    dataIndex: 'width',
-  }, {
-    title: '高',
-    width: 100,
-    dataIndex: 'height',
-  }, {
     title: this.msg('opColumn'),
-    width: 160,
+    width: 100,
+    fixed: 'right',
     render: (_, row) => (
       <div>
-        <Link to={`/cwm/products/sku/edit/${row.sku}`}><Icon type="edit" />修改</Link>
+        <Link to={`/cwm/products/sku/edit/${row.sku}`}><Icon type="edit" /></Link>
         <span className="ant-divider" />
         <Popconfirm title="确定删除?" onConfirm={() => this.handleRemove(row.sku)}>
-          <a><Icon type="delete" />删除</a>
+          <a><Icon type="delete" /></a>
         </Popconfirm>
       </div>),
   }]

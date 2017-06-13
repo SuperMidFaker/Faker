@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Avatar, Breadcrumb, Icon, Form, Layout, Menu, Popconfirm, Steps, Button, Select, Card, Col, Row, Tag, Table, Input, Tooltip, Radio } from 'antd';
+import { Breadcrumb, Icon, Form, Layout, Tabs, Popconfirm, Steps, Button, Select, Card, Col, Row, Tag, Table, Input, Tooltip, Radio } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import InfoItem from 'client/components/InfoItem';
@@ -17,6 +17,7 @@ const Option = Select.Option;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const Step = Steps.Step;
+const TabPane = Tabs.TabPane;
 
 @injectIntl
 @connect(
@@ -319,14 +320,6 @@ export default class OutboundAllocate extends Component {
                 <Col sm={24} lg={8}>
                   <InfoItem label="出库单号" field="O096120170603223-01" />
                 </Col>
-                <Col sm={24} lg={8}>
-                  <InfoItem type="dropdown" label="执行者" addonBefore={<Avatar size="small" >未分配</Avatar>}
-                    placeholder="指派执行者" editable
-                    overlay={<Menu onClick={this.handleMenuClick}>
-                      <Menu.Item key={1}>仓管员</Menu.Item>
-                    </Menu>}
-                  />
-                </Col>
               </Row>
               <div className="card-footer">
                 <Steps progressDot current={this.state.currentStep}>
@@ -340,25 +333,50 @@ export default class OutboundAllocate extends Component {
               </div>
             </Card>
             <Card bodyStyle={{ padding: 0 }}>
-              <div className="toolbar">
-                <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-                  <h3>已选中{this.state.selectedRowKeys.length}项</h3>
-                </div>
-                <div className="toolbar-right">
-                  {this.state.allocated && this.state.shippingMode === 'scan' && !this.state.pushedTask &&
-                  <Button type="primary" size="large" onClick={this.handlePushTask} icon="tablet">推送拣货任务</Button>}
-                  {this.state.allocated && this.state.shippingMode === 'scan' && this.state.pushedTask &&
-                  <Button size="large" onClick={this.handleWithdrawTask} icon="rollback" />}
-                  {this.state.allocated && this.state.shippingMode === 'manual' &&
-                  <Popconfirm title="确定此次拣货已完成?" onConfirm={this.handleConfirmPicked} okText="确认" cancelText="取消">
-                    <Button type={this.state.printedPickingList && 'primary'} size="large" icon="check" disabled={this.state.picked}>
-                      拣货确认
-                    </Button>
-                  </Popconfirm>
-                  }
-                </div>
-              </div>
-              <Table columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={this.mockData} rowKey="id" />
+              <Tabs defaultActiveKey="orderDetails" onChange={this.handleTabChange}>
+                <TabPane tab="订单明细" key="orderDetails">
+                  <div className="toolbar">
+                    <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
+                      <h3>已选中{this.state.selectedRowKeys.length}项</h3>
+                    </div>
+                    <div className="toolbar-right">
+                      {this.state.allocated && this.state.shippingMode === 'scan' && !this.state.pushedTask &&
+                      <Button type="primary" size="large" onClick={this.handlePushTask} icon="tablet">推送拣货任务</Button>}
+                      {this.state.allocated && this.state.shippingMode === 'scan' && this.state.pushedTask &&
+                      <Button size="large" onClick={this.handleWithdrawTask} icon="rollback" />}
+                      {this.state.allocated && this.state.shippingMode === 'manual' &&
+                      <Popconfirm title="确定此次拣货已完成?" onConfirm={this.handleConfirmPicked} okText="确认" cancelText="取消">
+                        <Button type={this.state.printedPickingList && 'primary'} size="large" icon="check" disabled={this.state.picked}>
+                          拣货确认
+                        </Button>
+                      </Popconfirm>
+                      }
+                    </div>
+                  </div>
+                  <Table columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={this.mockData} rowKey="id" />
+                </TabPane>
+                <TabPane tab="分配明细" key="allocDetails">
+                  <div className="toolbar">
+                    <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
+                      <h3>已选中{this.state.selectedRowKeys.length}项</h3>
+                    </div>
+                    <div className="toolbar-right">
+                      {this.state.allocated && this.state.shippingMode === 'scan' && !this.state.pushedTask &&
+                      <Button type="primary" size="large" onClick={this.handlePushTask} icon="tablet">推送拣货任务</Button>}
+                      {this.state.allocated && this.state.shippingMode === 'scan' && this.state.pushedTask &&
+                      <Button size="large" onClick={this.handleWithdrawTask} icon="rollback" />}
+                      {this.state.allocated && this.state.shippingMode === 'manual' &&
+                      <Popconfirm title="确定此次拣货已完成?" onConfirm={this.handleConfirmPicked} okText="确认" cancelText="取消">
+                        <Button type={this.state.printedPickingList && 'primary'} size="large" icon="check" disabled={this.state.picked}>
+                          拣货确认
+                        </Button>
+                      </Popconfirm>
+                      }
+                    </div>
+                  </div>
+                  <Table columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={this.mockData} rowKey="id" />
+                </TabPane>
+              </Tabs>
               <AllocatingModal shippingMode={this.state.shippingMode} />
             </Card>
           </Form>

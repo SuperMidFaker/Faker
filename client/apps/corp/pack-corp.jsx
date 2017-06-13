@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Menu, Layout, Icon } from 'antd';
 import { locationShape } from 'react-router';
 import { intlShape, injectIntl } from 'react-intl';
-import MdIcon from 'client/components/MdIcon';
+import { MdIcon } from 'client/components/FontIcon';
 import CorpHeaderBar from 'client/components/corpHeaderBar';
 import connectNav from 'client/common/decorators/connect-nav';
 import NavLink from 'client/components/nav-link';

@@ -7,7 +7,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { CRM_ORDER_STATUS, SCOF_ORDER_TRANSFER, TRANS_MODE } from 'common/constants';
 import { hideDock, changeDockTab, cancelOrder, closeOrder } from 'common/reducers/crmOrders';
 import InfoItem from 'client/components/InfoItem';
-import MdIcon from 'client/components/MdIcon';
+import { MdIcon } from 'client/components/FontIcon';
 import DockPanel from 'client/components/DockPanel';
 import OrderPane from './tabpanes/orderPane';
 import FlowPane from './tabpanes/flowPane';

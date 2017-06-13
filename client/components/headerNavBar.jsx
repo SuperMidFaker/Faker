@@ -5,7 +5,7 @@ import { routerShape } from 'react-router';
 import { Avatar, Menu, Radio, Modal, Popover, Icon, Tooltip } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import NavLink from './nav-link';
-import MdIcon from './MdIcon';
+import { MdIcon } from './FontIcon';
 import { loadTranslation, changeUserLocale, showPreferenceDock } from '../../common/reducers/preference';
 import { showActivitiesDock } from '../../common/reducers/activities';
 import { logout } from 'common/reducers/account';
