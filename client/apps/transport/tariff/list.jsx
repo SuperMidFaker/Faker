@@ -425,11 +425,6 @@ export default class TariffList extends React.Component {
           return text;
         },
       }, {
-        title: this.msg('effectiveDate'),
-        dataIndex: 'effectiveDate',
-        width: 100,
-        render: (o, record) => moment(record.effectiveDate).format('YYYY.MM.DD'),
-      }, {
         title: this.msg('version'),
         dataIndex: 'version',
         width: 80,
