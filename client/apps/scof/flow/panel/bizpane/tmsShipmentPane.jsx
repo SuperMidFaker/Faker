@@ -108,6 +108,7 @@ export default class TMSShipmentPane extends Component {
           city: consigner.city,
           district: consigner.district,
           street: consigner.street,
+          name: consigner.byname,
         },
         end: {
           code: consignee.region_code,
@@ -166,6 +167,7 @@ export default class TMSShipmentPane extends Component {
         city: consigner.city,
         district: consigner.district,
         street: consigner.street,
+        name: consigner.byname,
       },
       end: {
         code: consignee.region_code,
