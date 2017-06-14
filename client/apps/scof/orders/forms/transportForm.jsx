@@ -298,11 +298,14 @@ export default class TransportForm extends Component {
     });
   }
   handleShowAddLocationModal = (type) => {
+    const { formData } = this.props;
+    const tariff = this.state.tariffs.find(item => item.quoteNo === formData.node.quote_no);
     this.props.toggleAddLocationModal({
       visible: true,
       partnerId: this.props.customerPartnerId,
       partnerName: this.props.customerName,
       type,
+      tariffId: tariff._id,
     });
   }
   handleConsignSelect = (key, value) => {
