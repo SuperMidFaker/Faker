@@ -14,7 +14,7 @@ const Option = Select.Option;
 function getFieldInits(formData, tenantId) {
   const init = {};
   if (formData) {
-    ['cop_product_no', 'hscode', 'g_name', 'g_model', 'element', 'g_unit_1', 'g_unit_2', 'g_unit_3',
+    ['cop_product_no', 'hscode', 'g_name', 'en_name', 'g_model', 'element', 'g_unit_1', 'g_unit_2', 'g_unit_3',
       'unit_1', 'unit_2', 'fixed_unit', 'origin_country', 'customs_control', 'inspection_quarantine',
       'currency', 'pre_classify_no', 'remark',
     ].forEach((fd) => {
@@ -155,10 +155,17 @@ export default class BasicForm extends Component {
             <Col sm={24} lg={24}>
               <Alert message="需要增加新的报关行，请到归类设置 -> 从库同步中添加" type="info" showIcon />
             </Col>
-            <Col sm={24} lg={24}>
+            <Col sm={24} lg={12}>
               <FormItem label={this.msg('gName')}>
                 {getFieldDecorator('g_name', {
                   initialValue: fieldInits.g_name,
+                })(<Input />)}
+              </FormItem>
+            </Col>
+            <Col sm={24} lg={12}>
+              <FormItem label={this.msg('enName')}>
+                {getFieldDecorator('en_name', {
+                  initialValue: fieldInits.en_name,
                 })(<Input />)}
               </FormItem>
             </Col>
