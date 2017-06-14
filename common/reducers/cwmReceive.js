@@ -234,6 +234,11 @@ export function updateInboundMultiple(data, loginId, tenantId, whseCode) {
       endpoint: 'v1/cwm/receive/inbound/multiple/update',
       method: 'post',
       data: { data, loginId, tenantId, whseCode },
+=======
+      endpoint: 'v1/cwm/receive/inboundDetail/update',
+      method: 'post',
+      data: { asnNo, asnSeqNo, type, value },
+>>>>>>> cwmReceive change
     },
   };
 }

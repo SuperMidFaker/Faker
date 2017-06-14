@@ -148,12 +148,6 @@ export default class ReceiveInbound extends Component {
       currentStatus: 3,
     });
   }
-  handleMenuClick = (item) => {
-    const operator = this.props.operators.find(op => op.id === Number(item.key));
-    this.setState({
-      operator,
-    });
-  }
   columns = [{
     title: '序号',
     dataIndex: 'asn_seq_no',
