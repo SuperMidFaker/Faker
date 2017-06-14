@@ -23,6 +23,8 @@ const Option = Select.Option;
     tenantName: state.account.tenantName,
     formData: state.cmsDelegation.formData,
     submitting: state.cmsDelegation.submitting,
+    temporaryDetails: state.cwmReceive.temporaryDetails,
+    owners: state.cwmContext.whseAttrs.owners,
   }),
 )
 @connectNav({
@@ -43,6 +45,11 @@ export default class ReceivingASNDetail extends Component {
   }
   state = {
     editable: true,
+  }
+  componentWillMount() {
+    if (this.props.params.asnNo) {
+
+    }
   }
   msg = key => formatMsg(this.props.intl, key);
   handleSave = () => {
@@ -76,14 +83,11 @@ export default class ReceivingASNDetail extends Component {
             <Breadcrumb.Item>
               <Select
                 size="large"
-                defaultValue="0960"
-                placeholder="选择仓库"
+                value={0}
                 style={{ width: 160 }}
                 disabled
               >
-                <Option value="0960">物流大道仓库</Option>
-                <Option value="0961">希雅路仓库</Option>
-                <Option value="0962">富特路仓库</Option>
+                <Option value={0}>仓库</Option>
               </Select>
             </Breadcrumb.Item>
             <Breadcrumb.Item>
