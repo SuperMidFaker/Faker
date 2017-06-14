@@ -77,6 +77,7 @@ export default class TransportForm extends Component {
           this.handleSetClientForm({
             consigner_id: nodedata.consigner_id,
             consigner_name: consigner && consigner.name,
+            consigner_byname: consigner && consigner.byname,
             consigner_province: consigner && consigner.province,
             consigner_city: consigner && consigner.city,
             consigner_district: consigner && consigner.district,
@@ -88,6 +89,7 @@ export default class TransportForm extends Component {
             consigner_mobile: consigner && consigner.mobile,
             consignee_id: nodedata.consignee_id,
             consignee_name: consignee && consignee.name,
+            consignee_byname: consignee && consignee.byname,
             consignee_province: consignee && consignee.province,
             consignee_city: consignee && consignee.city,
             consignee_district: consignee && consignee.district,
@@ -170,6 +172,7 @@ export default class TransportForm extends Component {
           city: consigner.city,
           district: consigner.district,
           street: consigner.street,
+          name: consigner.byname,
         },
         end: {
           code: consignee.region_code,
@@ -203,6 +206,7 @@ export default class TransportForm extends Component {
       const consign = formRequires.consignerLocations.find(item => item.name === value);
       if (consign) {
         consignForm.consigner_id = consign.node_id;
+        consignForm.consigner_byname = consign.byname;
         consignForm.consigner_province = consign.province;
         consignForm.consigner_city = consign.city;
         consignForm.consigner_district = consign.district;
@@ -216,6 +220,7 @@ export default class TransportForm extends Component {
       } else if (!value) {
         consignForm.consigner_id = null;
         consignForm.consigner_name = null;
+        consignForm.consigner_byname = null;
         consignForm.consigner_province = null;
         consignForm.consigner_city = null;
         consignForm.consigner_district = null;
@@ -233,6 +238,7 @@ export default class TransportForm extends Component {
       const consign = formRequires.consigneeLocations.find(item => item.name === value);
       if (consign) {
         consignForm.consignee_id = consign.node_id;
+        consignForm.consignee_byname = consign.byname;
         consignForm.consignee_province = consign.province;
         consignForm.consignee_city = consign.city;
         consignForm.consignee_district = consign.district;
@@ -246,6 +252,7 @@ export default class TransportForm extends Component {
       } else if (!value) {
         consignForm.consignee_id = null;
         consignForm.consignee_name = null;
+        consignForm.consignee_byname = null;
         consignForm.consignee_province = null;
         consignForm.consignee_city = null;
         consignForm.consignee_district = null;
@@ -273,6 +280,7 @@ export default class TransportForm extends Component {
         city: consigner.city,
         district: consigner.district,
         street: consigner.street,
+        name: consigner.byname,
       },
       end: {
         code: consignee.region_code,
@@ -290,11 +298,14 @@ export default class TransportForm extends Component {
     });
   }
   handleShowAddLocationModal = (type) => {
+    const { formData } = this.props;
+    const tariff = this.state.tariffs.find(item => item.quoteNo === formData.node.quote_no);
     this.props.toggleAddLocationModal({
       visible: true,
       partnerId: this.props.customerPartnerId,
       partnerName: this.props.customerName,
       type,
+      tariffId: tariff ? tariff._id : '',
     });
   }
   handleConsignSelect = (key, value) => {
@@ -313,6 +324,7 @@ export default class TransportForm extends Component {
       if (consign) {
         consignForm.consigner_id = consign.node_id;
         consignForm.consigner_name = consign.name;
+        consignForm.consigner_byname = consign.byname;
         consignForm.consigner_province = consign.province;
         consignForm.consigner_city = consign.city;
         consignForm.consigner_district = consign.district;
@@ -329,6 +341,7 @@ export default class TransportForm extends Component {
       if (consign) {
         consignForm.consignee_id = consign.node_id;
         consignForm.consignee_name = consign.name;
+        consignForm.consignee_byname = consign.byname;
         consignForm.consignee_province = consign.province;
         consignForm.consignee_city = consign.city;
         consignForm.consignee_district = consign.district;

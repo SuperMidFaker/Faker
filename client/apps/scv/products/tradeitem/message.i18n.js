@@ -50,6 +50,10 @@ const messages = defineMessages({
     id: 'scv.products.tradeitem.g.name',
     defaultMessage: '中文品名',
   },
+  enName: {
+    id: 'scv.products.tradeitem.en.name',
+    defaultMessage: '英文描述',
+  },
   gModel: {
     id: 'scv.products.tradeitem.table.gmodel',
     defaultMessage: '中文规格型号',

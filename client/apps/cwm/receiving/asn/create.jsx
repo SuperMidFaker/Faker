@@ -9,7 +9,7 @@ import DetailForm from './forms/detailForm';
 import SiderForm from './forms/siderForm';
 import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
-import { addASN } from 'common/reducers/cwmReceive';
+import { addASN, clearTemporary } from 'common/reducers/cwmReceive';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -28,7 +28,7 @@ const Option = Select.Option;
     temporaryDetails: state.cwmReceive.temporaryDetails,
     owners: state.cwmContext.whseAttrs.owners,
   }),
-  { addASN }
+  { addASN, clearTemporary }
 )
 @connectNav({
   depth: 3,
@@ -50,6 +50,9 @@ export default class CreateReceivingASN extends Component {
     editable: true,
     detailEnable: false,
     selectedOwner: '',
+  }
+  componentWillUnmount() {
+    this.props.clearTemporary();
   }
   msg = key => formatMsg(this.props.intl, key);
   handleSave = () => {

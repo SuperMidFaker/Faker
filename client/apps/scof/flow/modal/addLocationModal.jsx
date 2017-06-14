@@ -2,11 +2,12 @@
 import React, { PropTypes } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { Modal, Form, Input, Row, Col } from 'antd';
+import { Modal, Form, Input, Row, Col, AutoComplete } from 'antd';
 import RegionCascade from 'client/components/region-cascade';
-import { toggleAddLocationModal, loadTmsBizParams } from 'common/reducers/scofFlow';
+import { toggleAddLocationModal, loadTmsBizParams, searchRateEnds } from 'common/reducers/scofFlow';
 import { loadFormRequires } from 'common/reducers/crmOrders';
 import { addNode } from 'common/reducers/transportResources';
+import { loadRatesSources } from 'common/reducers/transportTariff';
 import { formatMsg } from '../message.i18n';
 
 const FormItem = Form.Item;
@@ -20,11 +21,14 @@ const FormItem = Form.Item;
     partnerName: state.scofFlow.addLocationModal.partnerName,
     tenantId: state.account.tenantId,
     type: state.scofFlow.addLocationModal.type,
+    tariffId: state.scofFlow.addLocationModal.tariffId,
   }),
   { toggleAddLocationModal,
     loadTmsBizParams,
     loadFormRequires,
     addNode,
+    loadRatesSources,
+    searchRateEnds,
   }
 )
 @Form.create()
@@ -41,6 +45,9 @@ export default class AddLocationModal extends React.Component {
     addNode: PropTypes.func.isRequired,
     type: PropTypes.number.isRequired,
     onOk: PropTypes.func.isRequired,
+    loadRatesSources: PropTypes.func.isRequired,
+    searchRateEnds: PropTypes.func.isRequired,
+    tariffId: PropTypes.string.isRequired,
   }
   state = {
     region: {
@@ -50,6 +57,7 @@ export default class AddLocationModal extends React.Component {
       street: '',
       region_code: '',
     },
+    locations: [],
   }
   handleCancel = () => {
     this.props.toggleAddLocationModal({ visible: false });
@@ -86,6 +94,37 @@ export default class AddLocationModal extends React.Component {
     const region = Object.assign({}, { region_code: code, province, city, district, street });
     this.setState({ region });
   }
+  handleNameSelect = (value) => {
+    const region = this.state.locations.find(item => item.name === value);
+    this.setState({ region: {
+      province: region.province,
+      city: region.city,
+      district: region.district,
+      street: region.street,
+      region_code: region.code,
+    } });
+  }
+  handleNameChange = (value) => {
+    if (this.props.tariffId) {
+      if (this.props.type === 0) {
+        this.props.loadRatesSources({
+          tariffId: this.props.tariffId,
+          pageSize: 99999999,
+          currentPage: 1,
+          searchValue: value,
+        }).then((result) => {
+          this.setState({ locations: result.data.data.filter(item => !!item.source.name).map(item => item.source) });
+        });
+      } else if (this.props.type === 1) {
+        this.props.searchRateEnds({
+          tariffId: this.props.tariffId,
+          searchValue: value,
+        }).then((result) => {
+          this.setState({ locations: result.data.filter(item => !!item.end.name).map(item => item.end) });
+        });
+      }
+    }
+  }
   msg = formatMsg(this.props.intl)
   render() {
     const { visible, type, form: { getFieldDecorator } } = this.props;
@@ -118,7 +157,12 @@ export default class AddLocationModal extends React.Component {
           </Col>
           <Col span="10">
             <FormItem label="地点别名">
-              {getFieldDecorator('byname')(<Input placeholder="地点别名" />)}
+              {getFieldDecorator('byname')(
+                <AutoComplete style={{ width: '100%' }} placeholder="地点别名"
+                  dataSource={this.state.locations.map(item => item.name)}
+                  onChange={this.handleNameChange}
+                  onSelect={this.handleNameSelect}
+                />)}
             </FormItem>
           </Col>
         </Row>

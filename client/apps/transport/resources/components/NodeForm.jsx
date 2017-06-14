@@ -54,6 +54,9 @@ export default class NodeForm extends Component {
         <FormItem label="名称:" required {...formItemLayout}>
           {getFieldDecorator('name')(<Input required />)}
         </FormItem>
+        <FormItem label="别名:" required {...formItemLayout}>
+          {getFieldDecorator('byname')(<Input />)}
+        </FormItem>
         <FormItem label="关联客户:" required {...formItemLayout}>
           {getFieldDecorator('ref_partner_id')(
             <Select id="select"

@@ -108,6 +108,7 @@ export default class TMSShipmentPane extends Component {
           city: consigner.city,
           district: consigner.district,
           street: consigner.street,
+          name: consigner.byname,
         },
         end: {
           code: consignee.region_code,
@@ -166,6 +167,7 @@ export default class TMSShipmentPane extends Component {
         city: consigner.city,
         district: consigner.district,
         street: consigner.street,
+        name: consigner.byname,
       },
       end: {
         code: consignee.region_code,
@@ -183,11 +185,13 @@ export default class TMSShipmentPane extends Component {
     });
   }
   handleShowAddLocationModal = (type) => {
+    const tariff = this.state.tariffs.find(item => item.quoteNo === this.state.quoteNo);
     this.props.toggleAddLocationModal({
       visible: true,
       partnerId: this.props.partnerId,
       partnerName: this.props.partnerName,
       type,
+      tariffId: tariff ? tariff._id : '',
     });
   }
   handleAddedLocation = (location) => {

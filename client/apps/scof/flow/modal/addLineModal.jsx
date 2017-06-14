@@ -3,7 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { Modal, Form, Card, Input, Row, message } from 'antd';
+import { Modal, Form, Card, Input, InputNumber, Row, message } from 'antd';
 import { TARIFF_METER_METHODS, GOODS_TYPES } from 'common/constants';
 import { toggleAddLineModal, addLineAndPublish, setNeedLoadTariff } from 'common/reducers/scofFlow';
 import { getEndTableVarColumns } from 'client/apps/transport/tariff/forms/commodity';
@@ -141,17 +141,17 @@ export default class AddLineModal extends React.Component {
             <Input disabled value={line.end.name} />
           </FormItem>
           <FormItem label="运输时间" style={style}>
-            <Input type="number" value={line.time} onChange={e => this.handleChange('time', Number(e.target.value))} />
+            <InputNumber value={line.time} style={{ width: '100%' }} onChange={value => this.handleChange('time', value)} />
           </FormItem>
           <FormItem label="公里数" style={style}>
-            <Input type="number" value={line.km} onChange={e => this.handleChange('km', Number(e.target.value))} />
+            <InputNumber value={line.km} style={{ width: '100%' }} onChange={value => this.handleChange('km', value)} />
           </FormItem>
           <FormItem label="起步价" style={style}>
-            <Input type="number" value={line.flare} onChange={e => this.handleChange('flare', Number(e.target.value))} />
+            <InputNumber value={line.flare} style={{ width: '100%' }} onChange={value => this.handleChange('flare', value)} />
           </FormItem>
           {varColumns.map(item =>
             (<FormItem label={item.title} style={style}>
-              <Input type="number" value={line[`gradients${item.index}`]} onChange={e => this.handleChange(`gradients${item.index}`, Number(e.target.value))} />
+              <InputNumber value={line[`gradients${item.index}`]} style={{ width: '100%' }} onChange={value => this.handleChange(`gradients${item.index}`, value)} />
             </FormItem>))}
         </Card>
       </Modal>

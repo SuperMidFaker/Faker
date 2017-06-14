@@ -96,19 +96,23 @@ export default class TariffRatesForm extends React.Component {
           <Row gutter={16}>
             <Col sm={6}>
               <Card bodyStyle={{ padding: 0 }}>
-                {(type === 'create' || type === 'edit') && (<div style={{ padding: '8px 8px' }}>
-                  <Button icon="plus-circle-o"
-                    onClick={this.handleSourceAdd}
-                  >
+                <div className="toolbar">
+                  {(type === 'create' || type === 'edit') && (
+                    <Button icon="plus-circle-o"
+                      onClick={this.handleSourceAdd}
+                    >
                     添加
-                  </Button>
+                  </Button>)}
                   <div className="toolbar-right">
                     <span>精确匹配: </span>
                     {getFieldDecorator('accurateMatch', {
                       valuePropName: 'checked',
-                      initialValue: formData.accurateMatch })(<Switch />)}
+                      initialValue: formData.accurateMatch })(
+                        <Switch disabled={!(type === 'create' || type === 'edit')}
+                          checkedChildren={'是'} unCheckedChildren={'否'}
+                        />)}
                   </div>
-                </div>)}
+                </div>
                 <RateSourceTable visibleModal={sourceModal} onChangeVisible={this.handleVisibleChange} type={type} />
               </Card>
             </Col>

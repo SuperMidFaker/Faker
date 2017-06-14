@@ -27,6 +27,7 @@ const actionTypes = createActionTypes('@@welogix/scof/flow/', [
   'NEED_LOAD_TARIFF',
   'IS_LINE_IN_TARIFF', 'IS_LINE_IN_TARIFF_SUCCEED', 'IS_LINE_IN_TARIFF_FAIL',
   'TOGGLE_ADD_LOCATION_MODAL',
+  'SEARCH_RATE_ENDS', 'SEARCH_RATE_ENDS_SUCCEED', 'SEARCH_RATE_ENDS_FAIL',
 ]);
 
 const initialState = {
@@ -73,6 +74,7 @@ const initialState = {
     partnerId: -1,
     partnerName: '',
     type: 0,
+    tariffId: '',
   },
 };
 
@@ -494,5 +496,21 @@ export function toggleAddLocationModal(data) {
   return {
     type: actionTypes.TOGGLE_ADD_LOCATION_MODAL,
     data,
+  };
+}
+
+export function searchRateEnds(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SEARCH_RATE_ENDS,
+        actionTypes.SEARCH_RATE_ENDS_SUCCEED,
+        actionTypes.SEARCH_RATE_ENDS_FAIL,
+      ],
+      endpoint: 'v1/transport/tariff/ratends/search',
+      method: 'get',
+      params,
+      origin: 'mongo',
+    },
   };
 }

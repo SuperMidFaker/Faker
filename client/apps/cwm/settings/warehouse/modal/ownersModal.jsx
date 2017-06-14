@@ -13,6 +13,7 @@ import { formatMsg } from '../message.i18n';
   state => ({
     partners: state.partner.partners,
     visible: state.cwmWarehouse.whsehouseModal.visible,
+    loginId: state.account.loginId,
   }),
   { loadwhseOwners, loadPartners, addWhseOwners, hideWhseMembers }
 )
@@ -58,17 +59,14 @@ export default class OwnersModal extends Component {
   }
   handleAdd = () => {
     const whseCode = this.props.whseCode;
-    const { selectedRows } = this.state;
-    const data = [];
-    for (let i = 0; i < selectedRows.length; i++) {
-      const obj = {};
-      obj.partnerId = selectedRows[i].id;
-      obj.name = selectedRows[i].name;
-      obj.whseCode = whseCode;
-      obj.tenantId = selectedRows[i].partner_tenant_id;
-      data.push(obj);
-    }
-    this.props.addWhseOwners(data).then(
+    const data = this.state.selectedRows.map(obj => ({
+      partnerId: obj.id,
+      name: obj.name,
+      whseCode,
+      tenantId: obj.partner_tenant_id,
+      whseTenantId: this.props.whseTenantId,
+    }));
+    this.props.addWhseOwners(data, this.props.loginId).then(
       (result) => {
         if (!result.error) {
           message.info('添加成功');

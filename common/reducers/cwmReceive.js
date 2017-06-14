@@ -3,7 +3,8 @@ import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/cwm/receive/', [
   'LOAD_RECEIVE_MODAL', 'HIDE_RECEIVE_MODAL',
-  'HIDE_DETAIL_MODAL', 'SHOW_DETAIL_MODAL', 'ADD_DETAIL',
+  'HIDE_DETAIL_MODAL', 'SHOW_DETAIL_MODAL',
+  'ADD_TEMPORARY', 'CLEAR_TEMPORARY',
   'ADD_ASN', 'ADD_ASN_SUCCEED', 'ADD_ASN_FAIL',
   'LOAD_PRODUCTS', 'LOAD_PRODUCTS_SUCCEED', 'LOAD_PRODUCTS_FAIL',
   'LOAD_ASN_LISTS', 'LOAD_ASN_LISTS_SUCCEED', 'LOAD_ASN_LISTS_FAIL',
@@ -11,7 +12,8 @@ const actionTypes = createActionTypes('@@welogix/cwm/receive/', [
   'CANCEL_ASN', 'CANCEL_ASN_SUCCEED', 'CANCEL_ASN_FAIL',
   'LOAD_INBOUNDS', 'LOAD_INBOUNDS_SUCCEED', 'LOAD_INBOUNDS_FAIL',
   'GET_INBOUND_DETAIL', 'GET_INBOUND_DETAIL_SUCCEED', 'GET_INBOUND_DETAIL_FAIL',
-  'UPDATE_INBOUND_DETAIL', 'UPDATE_INBOUND_DETAIL_SUCCEED', 'UPDATE_INBOUND_DETAIL_FAIL',
+  'UPDATE_RECEIVED_QTY', 'UPDATE_RECEIVED_QTY_SUCCEED', 'UPDATE_RECEIVED_QTY_FAIL',
+  'UPDATE_INBOUND_MULTIPLE', 'UPDATE_INBOUND_MULTIPLE_SUCCEED', 'UPDATE_INBOUND_MULTIPLE_FAIL',
 ]);
 
 const initialState = {
@@ -49,8 +51,10 @@ export default function reducer(state = initialState, action) {
       return { ...state, detailModal: { ...state.detailModal, visible: true } };
     case actionTypes.HIDE_DETAIL_MODAL:
       return { ...state, detailModal: { ...state.detailModal, visible: false } };
-    case actionTypes.ADD_DETAIL:
+    case actionTypes.ADD_TEMPORARY:
       return { ...state, temporaryDetails: [...state.temporaryDetails, action.data] };
+    case actionTypes.CLEAR_TEMPORARY:
+      return { ...state, temporaryDetails: [] };
     case actionTypes.LOAD_PRODUCTS_SUCCEED:
       return { ...state, productNos: action.result.data };
     case actionTypes.LOAD_ASN_LISTS_SUCCEED:
@@ -86,10 +90,16 @@ export function hideDetailModal() {
   };
 }
 
-export function addDetial(data) {
+export function addTemporary(data) {
   return {
-    type: actionTypes.ADD_DETAIL,
+    type: actionTypes.ADD_TEMPORARY,
     data,
+  };
+}
+
+export function clearTemporary() {
+  return {
+    type: actionTypes.CLEAR_TEMPORARY,
   };
 }
 
@@ -147,8 +157,8 @@ export function releaseAsn(asnNo, loginId) {
         actionTypes.RELEASE_ASN_FAIL,
       ],
       endpoint: 'v1/cwm/receive/asn/release',
-      method: 'get',
-      params: { asnNo, loginId },
+      method: 'post',
+      data: { asnNo, loginId },
     },
   };
 }
@@ -162,8 +172,8 @@ export function cancelAsn(asnNo) {
         actionTypes.CANCEL_ASN_FAIL,
       ],
       endpoint: 'v1/cwm/receive/asn/cancel',
-      method: 'get',
-      params: { asnNo },
+      method: 'post',
+      data: { asnNo },
     },
   };
 }
@@ -191,24 +201,39 @@ export function getInboundDetail(asnNo) {
         actionTypes.GET_INBOUND_DETAIL_SUCCEED,
         actionTypes.GET_INBOUND_DETAIL_FAIL,
       ],
-      endpoint: 'v1/cwm/receive/inboundDetail/get',
+      endpoint: 'v1/cwm/receive/inboundDetail',
       method: 'get',
       params: { asnNo },
     },
   };
 }
 
-export function upDateInboundDetail(asnNo, asnSeqNo, type, value) {
+export function updateReceivedQty(asnNo, asnSeqNo, receivedPackQty, receivedQty, tenantId, loginId, traceId) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.UPDATE_INBOUND_DETAIL,
-        actionTypes.UPDATE_INBOUND_DETAIL_SUCCEED,
-        actionTypes.UPDATE_INBOUND_DETAIL_FAIL,
+        actionTypes.UPDATE_RECEIVED_QTY,
+        actionTypes.UPDATE_RECEIVED_QTY_SUCCEED,
+        actionTypes.UPDATE_RECEIVED_QTY_FAIL,
       ],
-      endpoint: 'v1/cwm/receive/inboundDetail/update',
-      method: 'get',
-      params: { asnNo, asnSeqNo, type, value },
+      endpoint: 'v1/cwm/receive/receivedQty/update',
+      method: 'post',
+      data: { asnNo, asnSeqNo, receivedPackQty, receivedQty, tenantId, loginId, traceId },
+    },
+  };
+}
+
+export function updateInboundMultiple(data, loginId, tenantId, whseCode) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_INBOUND_MULTIPLE,
+        actionTypes.UPDATE_INBOUND_MULTIPLE_SUCCEED,
+        actionTypes.UPDATE_INBOUND_MULTIPLE_FAIL,
+      ],
+      endpoint: 'v1/cwm/receive/inbound/multiple/update',
+      method: 'post',
+      data: { data, loginId, tenantId, whseCode },
     },
   };
 }

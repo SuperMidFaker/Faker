@@ -12,6 +12,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { loadEntryRegDatas } from 'common/reducers/cwmShFtz';
+import { switchDefaultWhse } from 'common/reducers/cwmContext';
 
 const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
@@ -25,8 +26,10 @@ const RadioButton = Radio.Button;
     tenantId: state.account.tenantId,
     entryList: state.cwmShFtz.entryList,
     listFilter: state.cwmShFtz.listFilter,
+    whses: state.cwmContext.whses,
+    whse: state.cwmContext.defaultWhse,
   }),
-  { loadEntryRegDatas }
+  { loadEntryRegDatas, switchDefaultWhse }
 )
 @connectNav({
   depth: 2,
@@ -38,6 +41,7 @@ export default class SHFTZEntryList extends React.Component {
     tenantId: PropTypes.number.isRequired,
     entryList: PropTypes.object.isRequired,
     listFilter: PropTypes.object.isRequired,
+    whses: PropTypes.arrayOf(PropTypes.shape({ code: PropTypes.string, name: PropTypes.string })),
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -74,11 +78,11 @@ export default class SHFTZEntryList extends React.Component {
   }, {
     title: '货主',
     width: 220,
-    dataIndex: 'owner_cus_code',
+    dataIndex: 'owner_name',
   }, {
     title: '仓储企业',
     width: 220,
-    dataIndex: 'wh_ent_cus_code',
+    dataIndex: 'wh_ent_name',
   }, {
     title: '入库备案号',
     width: 120,
@@ -178,8 +182,11 @@ export default class SHFTZEntryList extends React.Component {
     const link = `/cwm/supervision/shftz/entry/${row.asn_no}`;
     this.context.router.push(link);
   }
+  handleWhseChange = (value) => {
+    this.props.switchDefaultWhse(value);
+  }
   render() {
-    const { entryList, listFilter } = this.props;
+    const { entryList, listFilter, whses, whse } = this.props;
     this.dataSource.remotes = entryList;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -231,16 +238,8 @@ export default class SHFTZEntryList extends React.Component {
           <Header className="top-bar">
             <Breadcrumb>
               <Breadcrumb.Item>
-                <Select
-                  size="large"
-                  defaultValue="0961"
-                  placeholder="选择仓库"
-                  style={{ width: 160 }}
-                  disabled
-                >
-                  <Option value="0960">物流大道仓库</Option>
-                  <Option value="0961">希雅路仓库</Option>
-                  <Option value="0962">富特路仓库</Option>
+                <Select size="large" value={whse.code} placeholder="选择仓库" style={{ width: 160 }} onChange={this.handleWhseChange}>
+                  {whses.map(wh => <Option value={wh.code} key={wh.code}>{wh.name}</Option>)}
                 </Select>
               </Breadcrumb.Item>
               <Breadcrumb.Item>
