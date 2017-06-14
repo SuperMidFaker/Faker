@@ -39,6 +39,7 @@ const Option = Select.Option;
     })),
     hscodes: state.cmsHsCode.hscodes,
     bodyItem: state.cmsTradeitem.bodyItem,
+    billRule: state.cmsManifest.billRule,
   }),
   { loadHscodes, getItemForBody }
 )
@@ -94,15 +95,19 @@ export default class EditBodyForm extends Component {
     if (this.props.hscodes !== nextProps.hscodes) {
       if (nextProps.hscodes.data.length === 1) {
         const hscode = nextProps.hscodes.data[0];
+        const ruleGunit = this.props.billRule.rule_gunit_num;
         const firstUnit = this.props.units.filter(unit => unit.text === hscode.first_unit)[0];
         const unit1 = firstUnit ? firstUnit.value : '';
         const secondUnit = this.props.units.filter(unit => unit.text === hscode.second_unit)[0];
         const unit2 = secondUnit ? secondUnit.value : '';
+        const hsGunit = this.props.units.filter(unit => unit.text === hscode[`${ruleGunit}`])[0];
+        const gunit = hsGunit ? hsGunit.value : '';
         this.props.form.setFieldsValue({
           g_name: hscode.product_name,
           element: hscode.declared_elements,
           unit_1: unit1,
           unit_2: unit2,
+          g_unit: gunit,
           customs_control: hscode.customs,
           inspection_quarantine: hscode.inspection,
         });
@@ -112,6 +117,7 @@ export default class EditBodyForm extends Component {
           element: '',
           unit_1: '',
           unit_2: '',
+          g_unit: '',
           customs_control: '',
           inspection_quarantine: '',
         });

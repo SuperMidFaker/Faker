@@ -109,6 +109,10 @@ export default class TradeItemList extends Component {
     dataIndex: 'g_name',
     width: 200,
   }, {
+    title: this.msg('enName'),
+    dataIndex: 'en_name',
+    width: 200,
+  }, {
     title: this.msg('gModel'),
     dataIndex: 'g_model',
     width: 300,
