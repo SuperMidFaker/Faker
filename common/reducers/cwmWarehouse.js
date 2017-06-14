@@ -265,7 +265,7 @@ export function loadwhseOwners(whseCode, tenantId) {
   };
 }
 
-export function addWhseOwners(data) {
+export function addWhseOwners(data, loginId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -275,7 +275,7 @@ export function addWhseOwners(data) {
       ],
       endpoint: 'v1/cwm/warehouse/owners/add',
       method: 'post',
-      data,
+      data: { owners: data, loginId },
     },
   };
 }

@@ -66,38 +66,38 @@ export default class ReceivingASNList extends React.Component {
     fixed: 'left',
   }, {
     title: '货主',
-    width: 200,
+    width: 240,
     dataIndex: 'owner_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: '采购订单号',
+    width: 150,
     dataIndex: 'po_no',
-    width: 120,
   }, {
     title: '供应商',
+    width: 240,
     dataIndex: 'seller_name',
-    width: 200,
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: '预期到货时间',
-    width: 120,
     dataIndex: 'expect_receive_date',
-    render: o => moment(o).format('YYYY.MM.DD'),
+    width: 150,
+    render: exprecdate => exprecdate && moment(exprecdate).format('YYYY.MM.DD'),
   }, {
     title: '实际收货时间',
-    width: 120,
     dataIndex: 'received_date',
-    render: o => moment(o).format('YYYY.MM.DD'),
+    width: 150,
+    render: recdate => recdate && moment(recdate).format('YYYY.MM.DD'),
   }, {
     title: '创建时间',
-    width: 120,
     dataIndex: 'created_date',
-
+    width: 150,
+    render: createdate => createdate && moment(createdate).format('YYYY.MM.DD'),
   }, {
     title: '状态',
     dataIndex: 'status',
-    fixed: 'right',
     width: 120,
+    fixed: 'right',
     render: (o) => {
       if (o === 0) {
         return (<Badge status="default" text="通知接收" />);
@@ -111,8 +111,8 @@ export default class ReceivingASNList extends React.Component {
     },
   }, {
     title: '货物属性',
-    width: 100,
     dataIndex: 'bonded',
+    width: 100,
     fixed: 'right',
     render: (o) => {
       if (o === 1) {
@@ -124,7 +124,7 @@ export default class ReceivingASNList extends React.Component {
   }, {
     title: '备案状态',
     dataIndex: 'reg_status',
-    width: 120,
+    width: 100,
     fixed: 'right',
     render: (o) => {
       if (o === 0) {
@@ -308,7 +308,7 @@ export default class ReceivingASNList extends React.Component {
               </div>
             </div>
             <div className="panel-body table-panel">
-              <Table columns={this.columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="id" scroll={{ x: 1500 }} />
+              <Table columns={this.columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="id" scroll={{ x: this.columns.reduce((acc, cur) => acc + cur.width, 0) }} />
             </div>
           </div>
         </Content>
