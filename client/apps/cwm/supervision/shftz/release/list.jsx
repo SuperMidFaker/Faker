@@ -25,6 +25,8 @@ const RadioButton = Radio.Button;
     tenantId: state.account.tenantId,
     releaseList: state.cwmShFtz.releaseList,
     listFilter: state.cwmShFtz.listFilter,
+    whses: state.cwmContext.whses,
+    whse: state.cwmContext.defaultWhse,
   }),
   { loadReleaseRegDatas }
 )
@@ -38,6 +40,7 @@ export default class SHFTZReleaseList extends React.Component {
     tenantId: PropTypes.number.isRequired,
     releaseList: PropTypes.object.isRequired,
     listFilter: PropTypes.object.isRequired,
+    whses: PropTypes.arrayOf(PropTypes.shape({ code: PropTypes.string, name: PropTypes.string })),
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -197,7 +200,7 @@ export default class SHFTZReleaseList extends React.Component {
     this.context.router.push(link);
   }
   render() {
-    const { releaseList, listFilter } = this.props;
+    const { releaseList, listFilter, whses, whse } = this.props;
     this.dataSource.remotes = releaseList;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -249,16 +252,8 @@ export default class SHFTZReleaseList extends React.Component {
           <Header className="top-bar">
             <Breadcrumb>
               <Breadcrumb.Item>
-                <Select
-                  size="large"
-                  defaultValue="0961"
-                  placeholder="选择仓库"
-                  style={{ width: 160 }}
-                  disabled
-                >
-                  <Option value="0960">物流大道仓库</Option>
-                  <Option value="0961">希雅路仓库</Option>
-                  <Option value="0962">富特路仓库</Option>
+                <Select size="large" value={whse.code} placeholder="选择仓库" style={{ width: 160 }} onChange={this.handleWhseChange}>
+                  {whses.map(wh => <Option value={wh.code} key={wh.code}>{wh.name}</Option>)}
                 </Select>
               </Breadcrumb.Item>
               <Breadcrumb.Item>
