@@ -94,6 +94,16 @@ export default class AddLocationModal extends React.Component {
     const region = Object.assign({}, { region_code: code, province, city, district, street });
     this.setState({ region });
   }
+  handleNameSelect = (value) => {
+    const region = this.state.locations.find(item => item.name === value);
+    this.setState({ region: {
+      province: region.province,
+      city: region.city,
+      district: region.district,
+      street: region.street,
+      region_code: region.code,
+    } });
+  }
   handleNameChange = (value) => {
     if (this.props.tariffId) {
       if (this.props.type === 0) {
@@ -103,14 +113,14 @@ export default class AddLocationModal extends React.Component {
           currentPage: 1,
           searchValue: value,
         }).then((result) => {
-          this.setState({ locations: result.data.data.filter(item => !!item.source.name).map(item => item.source.name) });
+          this.setState({ locations: result.data.data.filter(item => !!item.source.name).map(item => item.source) });
         });
       } else if (this.props.type === 1) {
         this.props.searchRateEnds({
           tariffId: this.props.tariffId,
           searchValue: value,
         }).then((result) => {
-          this.setState({ locations: result.data.filter(item => !!item.end.name).map(item => item.end.name) });
+          this.setState({ locations: result.data.filter(item => !!item.end.name).map(item => item.end) });
         });
       }
     }
@@ -148,7 +158,11 @@ export default class AddLocationModal extends React.Component {
           <Col span="10">
             <FormItem label="地点别名">
               {getFieldDecorator('byname')(
-                <AutoComplete style={{ width: '100%' }} placeholder="地点别名" dataSource={this.state.locations} onChange={this.handleNameChange} />)}
+                <AutoComplete style={{ width: '100%' }} placeholder="地点别名"
+                  dataSource={this.state.locations.map(item => item.name)}
+                  onChange={this.handleNameChange}
+                  onSelect={this.handleNameSelect}
+                />)}
             </FormItem>
           </Col>
         </Row>
