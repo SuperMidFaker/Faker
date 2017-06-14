@@ -30,6 +30,11 @@ export default function NodeList(props) {
       key: 'name',
     },
     {
+      title: '别名',
+      dataIndex: 'byname',
+      key: 'byname',
+    },
+    {
       title: '外部代码',
       dataIndex: 'node_code',
       key: 'node_code',

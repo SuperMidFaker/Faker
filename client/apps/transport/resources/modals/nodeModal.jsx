@@ -47,8 +47,8 @@ export default class NodeModal extends Component {
     } else if (nodeInfoInForm.ref_partner_id === undefined) {
       message.warn('关联方必填');
     } else {
-      const refPartnerName = this.props.partners.find(item => item.partner_id === nodeInfoInForm.ref_partner_id).name;
-      const nodeInfo = Object.assign({}, nodeInfoInForm, { ...region, type: nodeType, tenant_id: tenantId, ref_partner_name: refPartnerName });
+      const refPartner = this.props.partners.find(item => item.partner_id === nodeInfoInForm.ref_partner_id);
+      const nodeInfo = Object.assign({}, nodeInfoInForm, { ...region, type: nodeType, tenant_id: tenantId, ref_partner_name: refPartner ? refPartner.name : '' });
       this.props.addNode(nodeInfo).then((result) => {
         if (result.error) {
           message.error(result.error.message, 10);
