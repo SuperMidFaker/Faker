@@ -24,11 +24,11 @@ export default class AllocDetailsPane extends React.Component {
   columns = [{
     title: '订单行号',
     dataIndex: 'seq_no',
-    width: 50,
+    width: 80,
   }, {
     title: 'SKU',
     dataIndex: 'sku',
-    width: 200,
+    width: 120,
     render: (o) => {
       if (o) {
         return <Button>{o}</Button>;
@@ -48,18 +48,22 @@ export default class AllocDetailsPane extends React.Component {
       }
     },
   }, {
+    title: '分配数量',
+    width: 200,
+    render: (o, record) => (<span><Tooltip title="包装单位数量"><Input value={record.expect_pack_qty} style={{ width: 80 }} /></Tooltip>
+      <Tooltip title="主单位数量"><Input value={record.expect_qty} style={{ width: 80 }} disabled /></Tooltip></span>),
+  }, {
     title: '商品货号',
     dataIndex: 'product_no',
     width: 120,
   }, {
     title: '中文品名',
     dataIndex: 'desc_cn',
-    width: 120,
+    width: 150,
 
   }, {
     title: '库别',
     dataIndex: 'virtual_whse',
-    width: 100,
     render: (o) => {
       if (o) {
         return <Tag>{o}</Tag>;
@@ -68,30 +72,45 @@ export default class AllocDetailsPane extends React.Component {
   }, {
     title: '分配时间',
     dataIndex: 'allocated_date',
-    width: 120,
+    width: 100,
   }, {
     title: '拣货时间',
     dataIndex: 'picked_date',
-    width: 120,
+    width: 100,
   }, {
     title: '复核时间',
     dataIndex: 'verified_date',
-    width: 120,
+    width: 100,
   }, {
     title: '发运时间',
     dataIndex: 'shipped_date',
-    width: 120,
-  }, {
-    title: '分配数量',
-    width: 200,
-    render: (o, record) => (<span><Tooltip title="包装单位数量"><Input className="readonly" value={record.expect_pack_qty} style={{ width: 80 }} /></Tooltip>
-      <Tooltip title="主单位数量"><Input value={record.expect_qty} style={{ width: 80 }} disabled /></Tooltip></span>),
-  }, {
-    title: '分配异常',
-    dataIndex: 'allocate_exception',
+    width: 100,
   }, {
     title: '操作',
-    render: (o, record) => (<RowUpdater onHit={this.handleManualAllocate} label="指定分配" row={record} />),
+    width: 150,
+    fixed: 'right',
+    render: (o, record) => {
+      switch (record.status) {  // 分配明细的状态 0 预配 1 已分配 2 已拣货 3 已复核 4 已发运
+        case 1:   // 已分配
+          return (<span>
+            <RowUpdater onHit={this.handleSkuPicked} label="拣货确认" row={record} />
+            <span className="ant-divider" />
+            <RowUpdater onHit={this.handleManualAllocate} label="取消分配" row={record} />
+          </span>);
+        case 2:   // 已拣货
+          return (<span>
+            <RowUpdater onHit={this.handleSkuPicked} label="发运确认" row={record} />
+            <span className="ant-divider" />
+            <RowUpdater onHit={this.handleManualAllocate} label="取消拣货" row={record} />
+          </span>);
+        case 3:   // 已复核
+          return (<span>
+            <RowUpdater onHit={this.handleSkuPicked} label="发运确认" row={record} />
+          </span>);
+        default:
+          break;
+      }
+    },
   }]
   mockData = [{
     id: 1,
@@ -107,6 +126,7 @@ export default class AllocDetailsPane extends React.Component {
     expect_qty: 15,
     received_pack_qty: 15,
     received_qty: 15,
+    status: 0,
   }, {
     id: 4,
     seq_no: '2',
@@ -121,6 +141,7 @@ export default class AllocDetailsPane extends React.Component {
     expect_qty: 1000,
     received_pack_qty: 0,
     received_qty: 0,
+    status: 1,
   }, {
     id: 5,
     seq_no: '3',
@@ -135,6 +156,7 @@ export default class AllocDetailsPane extends React.Component {
     expect_qty: 1000,
     received_pack_qty: 0,
     received_qty: 0,
+    status: 2,
   }, {
     id: 6,
     seq_no: '4',
@@ -149,6 +171,7 @@ export default class AllocDetailsPane extends React.Component {
     expect_qty: 12,
     received_pack_qty: 1,
     received_qty: 6,
+    status: 3,
   }, {
     id: 7,
     seq_no: '5',
@@ -163,6 +186,7 @@ export default class AllocDetailsPane extends React.Component {
     expect_qty: 1,
     received_pack_qty: 0,
     received_qty: 0,
+    status: 4,
   }];
   render() {
     const rowSelection = {
@@ -176,6 +200,12 @@ export default class AllocDetailsPane extends React.Component {
         <div className="toolbar">
           <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
             <h3>已选中{this.state.selectedRowKeys.length}项</h3>
+            <Button size="large" onClick={this.handleWithdrawTask} icon="rollback">
+              批量拣货确认
+            </Button>
+            <Button size="large" onClick={this.handleWithdrawTask} icon="rollback">
+              批量发运确认
+            </Button>
           </div>
           <div className="toolbar-right">
             {this.state.allocated && this.state.shippingMode === 'scan' && !this.state.pushedTask &&
@@ -191,7 +221,7 @@ export default class AllocDetailsPane extends React.Component {
                       }
           </div>
         </div>
-        <Table columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={this.mockData} rowKey="id" />
+        <Table columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={this.mockData} rowKey="id" scroll={{ x: 1600 }} />
       </div>
     );
   }

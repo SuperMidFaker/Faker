@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Table, Popconfirm, Input, Tooltip, Button } from 'antd';
 import RowUpdater from 'client/components/rowUpdater';
+import AllocatingModal from '../modal/allocatingModal';
+import { loadReceiveModal } from 'common/reducers/cwmReceive';
 
 
 @injectIntl
@@ -11,7 +13,7 @@ import RowUpdater from 'client/components/rowUpdater';
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
   }),
-  { }
+  { loadReceiveModal }
 )
 export default class OrderDetailsPane extends React.Component {
   static propTypes = {
@@ -24,7 +26,7 @@ export default class OrderDetailsPane extends React.Component {
   columns = [{
     title: '序号',
     dataIndex: 'seq_no',
-    width: 50,
+    width: 40,
   }, {
     title: '商品货号',
     dataIndex: 'product_no',
@@ -32,33 +34,66 @@ export default class OrderDetailsPane extends React.Component {
   }, {
     title: '中文品名',
     dataIndex: 'desc_cn',
-    width: 200,
+    width: 150,
   }, {
-    title: '订单数量',
+    title: '订货数量',
     dataIndex: 'order_qty',
     width: 120,
     render: o => (<b>{o}</b>),
   }, {
     title: '主单位',
     dataIndex: 'unit',
-    width: 100,
+    width: 60,
   }, {
     title: 'SKU',
     dataIndex: 'sku',
-    width: 200,
+    width: 120,
     render: (o) => {
       if (o) {
         return <Button>{o}</Button>;
       }
     },
   }, {
+    title: '分配规则',
+    dataIndex: 'alloc_rule',
+  }, {
     title: '分配数量',
     width: 200,
     render: (o, record) => (<span><Tooltip title="包装单位数量"><Input className="readonly" value={record.expect_pack_qty} style={{ width: 80 }} /></Tooltip>
       <Tooltip title="主单位数量"><Input value={record.expect_qty} style={{ width: 80 }} disabled /></Tooltip></span>),
   }, {
+    title: '拣货数量',
+    width: 200,
+    render: (o, record) => (<span><Tooltip title="包装单位数量"><Input className="readonly" value={record.expect_pack_qty} style={{ width: 80 }} /></Tooltip>
+      <Tooltip title="主单位数量"><Input value={record.expect_qty} style={{ width: 80 }} disabled /></Tooltip></span>),
+  }, {
+    title: '发货数量',
+    width: 200,
+    render: (o, record) => (<span><Tooltip title="包装单位数量"><Input className="readonly" value={record.expect_pack_qty} style={{ width: 80 }} /></Tooltip>
+      <Tooltip title="主单位数量"><Input value={record.expect_qty} style={{ width: 80 }} disabled /></Tooltip></span>),
+  }, {
     title: '操作',
-    render: (o, record) => (<RowUpdater onHit={this.handleManualAllocate} label="指定分配" row={record} />),
+    width: 150,
+    fixed: 'right',
+    render: (o, record) => {
+      switch (record.status) {  // 订单明细的状态 -1 未分配 0 部分分配 1 完全分配 2 已拣货 3 已复核 4 已发运
+        case -1:
+          return (<span>
+            <RowUpdater onHit={this.handleSKUAutoAllocate} label="自动分配" row={record} />
+            <span className="ant-divider" />
+            <RowUpdater onHit={this.handleSKUAllocateDetails} label="手动分配" row={record} />
+          </span>);
+        case 0:
+        case 1:
+          return (<span>
+            <RowUpdater onHit={this.handleSKUAllocateDetails} label="分配明细" row={record} />
+            <span className="ant-divider" />
+            <RowUpdater onHit={this.handleSKUCancelAllocate} label="取消分配" row={record} />
+          </span>);
+        default:
+          break;
+      }
+    },
   }]
   mockData = [{
     id: 1,
@@ -74,6 +109,7 @@ export default class OrderDetailsPane extends React.Component {
     expect_qty: 15,
     received_pack_qty: 15,
     received_qty: 15,
+    status: -1,
   }, {
     id: 4,
     seq_no: '2',
@@ -88,6 +124,7 @@ export default class OrderDetailsPane extends React.Component {
     expect_qty: 1000,
     received_pack_qty: 0,
     received_qty: 0,
+    status: 0,
   }, {
     id: 5,
     seq_no: '3',
@@ -102,6 +139,7 @@ export default class OrderDetailsPane extends React.Component {
     expect_qty: 1000,
     received_pack_qty: 0,
     received_qty: 0,
+    status: 1,
   }, {
     id: 6,
     seq_no: '4',
@@ -116,6 +154,7 @@ export default class OrderDetailsPane extends React.Component {
     expect_qty: 12,
     received_pack_qty: 1,
     received_qty: 6,
+    status: 1,
   }, {
     id: 7,
     seq_no: '5',
@@ -130,7 +169,11 @@ export default class OrderDetailsPane extends React.Component {
     expect_qty: 1,
     received_pack_qty: 0,
     received_qty: 0,
+    status: 1,
   }];
+  handleSKUAllocateDetails = () => {
+    this.props.loadReceiveModal();
+  }
   render() {
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -143,6 +186,9 @@ export default class OrderDetailsPane extends React.Component {
         <div className="toolbar">
           <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
             <h3>已选中{this.state.selectedRowKeys.length}项</h3>
+            <Button size="large" onClick={this.handleWithdrawTask} icon="rollback">
+              批量分配
+            </Button>
           </div>
           <div className="toolbar-right">
             {this.state.allocated && this.state.shippingMode === 'scan' && !this.state.pushedTask &&
@@ -158,7 +204,8 @@ export default class OrderDetailsPane extends React.Component {
                       }
           </div>
         </div>
-        <Table columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={this.mockData} rowKey="id" />
+        <Table columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={this.mockData} rowKey="id" scroll={{ x: 1500 }} />
+        <AllocatingModal shippingMode={this.state.shippingMode} />
       </div>
     );
   }

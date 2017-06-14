@@ -96,8 +96,6 @@ export default class ReceivingASNList extends React.Component {
   }, {
     title: '状态',
     dataIndex: 'status',
-    fixed: 'right',
-    width: 120,
     render: (o) => {
       if (o === 0) {
         return (<Badge status="default" text="通知接收" />);
@@ -113,7 +111,6 @@ export default class ReceivingASNList extends React.Component {
     title: '货物属性',
     width: 100,
     dataIndex: 'bonded',
-    fixed: 'right',
     render: (o) => {
       if (o === 1) {
         return (<Tag color="blue">保税</Tag>);
@@ -125,7 +122,6 @@ export default class ReceivingASNList extends React.Component {
     title: '备案状态',
     dataIndex: 'reg_status',
     width: 120,
-    fixed: 'right',
     render: (o) => {
       if (o === 0) {
         return (<Badge status="default" text="待备案" />);

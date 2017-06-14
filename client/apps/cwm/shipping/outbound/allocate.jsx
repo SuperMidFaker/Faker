@@ -7,7 +7,6 @@ import { intlShape, injectIntl } from 'react-intl';
 import InfoItem from 'client/components/InfoItem';
 import OrderDetailsPane from './tabpane/orderDetailsPane';
 import AllocDetailsPane from './tabpane/allocDetailsPane';
-import AllocatingModal from './modal/allocatingModal';
 import { loadReceiveModal } from 'common/reducers/cwmReceive';
 import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
@@ -106,12 +105,7 @@ export default class OutboundAllocate extends Component {
   handlePrint = () => {
     this.setState({
       printedPickingList: true,
-      currentStep: 2,
-      picking: true,
     });
-  }
-  handleManualAllocate = () => {
-    this.props.loadReceiveModal();
   }
   handleConfirmPicked = () => {
     this.setState({
@@ -154,8 +148,8 @@ export default class OutboundAllocate extends Component {
               <Tooltip title="扫码拣货"><RadioButton value="scan"><Icon type="scan" /></RadioButton></Tooltip>
               <Tooltip title="人工拣货"><RadioButton value="manual"><Icon type="solution" /></RadioButton></Tooltip>
             </RadioGroup>}
-            {!this.state.allocated && <Button type="primary" size="large" icon="rocket" onClick={this.handleAutoAllocate} >自动分配</Button>}
-            {this.state.allocated && this.state.currentStep < 2 && <Button size="large" icon="rollback" onClick={this.handleUndoAllocate} >取消分配</Button>}
+            {!this.state.allocated && <Button type="primary" size="large" icon="rocket" onClick={this.handleAutoAllocate} >订单自动分配</Button>}
+            {this.state.allocated && this.state.currentStep < 2 && <Button size="large" icon="rollback" onClick={this.handleUndoAllocate} >取消订单分配</Button>}
           </div>
         </Header>
         <Content className="main-content">
@@ -189,7 +183,6 @@ export default class OutboundAllocate extends Component {
                   <AllocDetailsPane />
                 </TabPane>
               </Tabs>
-              <AllocatingModal shippingMode={this.state.shippingMode} />
             </Card>
           </Form>
         </Content>
