@@ -95,22 +95,24 @@ export default class AddLocationModal extends React.Component {
     this.setState({ region });
   }
   handleNameChange = (value) => {
-    if (this.props.type === 0) {
-      this.props.loadRatesSources({
-        tariffId: this.props.tariffId,
-        pageSize: 99999999,
-        currentPage: 1,
-        searchValue: value,
-      }).then((result) => {
-        this.setState({ locations: result.data.data.filter(item => !!item.source.name).map(item => item.source.name) });
-      });
-    } else if (this.props.type === 1) {
-      this.props.searchRateEnds({
-        tariffId: this.props.tariffId,
-        searchValue: value,
-      }).then((result) => {
-        this.setState({ locations: result.data.filter(item => !!item.end.name).map(item => item.end.name) });
-      });
+    if (this.props.tariffId) {
+      if (this.props.type === 0) {
+        this.props.loadRatesSources({
+          tariffId: this.props.tariffId,
+          pageSize: 99999999,
+          currentPage: 1,
+          searchValue: value,
+        }).then((result) => {
+          this.setState({ locations: result.data.data.filter(item => !!item.source.name).map(item => item.source.name) });
+        });
+      } else if (this.props.type === 1) {
+        this.props.searchRateEnds({
+          tariffId: this.props.tariffId,
+          searchValue: value,
+        }).then((result) => {
+          this.setState({ locations: result.data.filter(item => !!item.end.name).map(item => item.end.name) });
+        });
+      }
     }
   }
   msg = formatMsg(this.props.intl)

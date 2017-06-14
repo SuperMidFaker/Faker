@@ -191,7 +191,7 @@ export default class TMSShipmentPane extends Component {
       partnerId: this.props.partnerId,
       partnerName: this.props.partnerName,
       type,
-      tariffId: tariff._id,
+      tariffId: tariff ? tariff._id : '',
     });
   }
   handleAddedLocation = (location) => {

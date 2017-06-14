@@ -305,7 +305,7 @@ export default class TransportForm extends Component {
       partnerId: this.props.customerPartnerId,
       partnerName: this.props.customerName,
       type,
-      tariffId: tariff._id,
+      tariffId: tariff ? tariff._id : '',
     });
   }
   handleConsignSelect = (key, value) => {
