@@ -24,6 +24,7 @@ const initialState = {
   listFilter: {
     status: 'pending',
     filterNo: '',
+    ownerView: 'all',
   },
   entryData: {},
   entryDetails: {},
