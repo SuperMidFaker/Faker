@@ -14,6 +14,10 @@ import { formatMsg } from '../../message.i18n';
 const FormItem = Form.Item;
 const Panel = Collapse.Panel;
 const Option = Select.Option;
+const quoteNoFieldWarning = {
+  validateStatus: 'warning',
+  help: '请重新选择报价协议',
+};
 
 @injectIntl
 @connect(
@@ -42,6 +46,10 @@ export default class TMSShipmentPane extends Component {
     tariffs: [],
     quoteNo: '',
     isLineIntariff: true,
+    quoteNoField: {
+      validateStatus: '',
+      help: '',
+    },
   }
   componentWillMount() {
     const { model, tmsParams: { transitModes } } = this.props;
@@ -88,10 +96,12 @@ export default class TMSShipmentPane extends Component {
     const { tmsParams: { transitModes } } = this.props;
     const mode = transitModes.find(item => item.mode_code === value);
     const transitMode = mode ? mode.id : -1;
-    this.setState({ transitMode }, this.handleLoadTariff);
+    this.setState({ transitMode, isLineIntariff: true, quoteNoField: quoteNoFieldWarning }, this.handleLoadTariff);
+    this.props.form.setFieldsValue({ quote_no: '' });
   }
   handleCargoTypeSelect = (value) => {
-    this.setState({ goodsType: value }, this.handleLoadTariff);
+    this.setState({ goodsType: value, isLineIntariff: true, quoteNoField: quoteNoFieldWarning }, this.handleLoadTariff);
+    this.props.form.setFieldsValue({ quote_no: '' });
   }
   handleJudgeLine = ({ consignerId, consigneeId, quoteNo }) => {
     const { tmsParams: { consigners, consignees } } = this.props;
@@ -101,31 +111,33 @@ export default class TMSShipmentPane extends Component {
     const consignee = consignees.find(item => item.node_id === csneId);
     if ((quoteNo || this.state.quoteNo) && consigner && consignee) {
       const tariff = this.state.tariffs.find(item => item.quoteNo === (quoteNo || this.state.quoteNo));
-      const line = {
-        source: {
-          code: consigner.region_code,
-          province: consigner.province,
-          city: consigner.city,
-          district: consigner.district,
-          street: consigner.street,
-          name: consigner.byname,
-        },
-        end: {
-          code: consignee.region_code,
-          province: consignee.province,
-          city: consignee.city,
-          district: consignee.district,
-          street: consignee.street,
-          name: consignee.byname,
-        },
-      };
+      if (tariff) {
+        const line = {
+          source: {
+            code: consigner.region_code,
+            province: consigner.province,
+            city: consigner.city,
+            district: consigner.district,
+            street: consigner.street,
+            name: consigner.byname,
+          },
+          end: {
+            code: consignee.region_code,
+            province: consignee.province,
+            city: consignee.city,
+            district: consignee.district,
+            street: consignee.street,
+            name: consignee.byname,
+          },
+        };
 
-      this.props.isLineIntariff({
-        tariffId: tariff._id,
-        line,
-      }).then((result) => {
-        this.setState({ isLineIntariff: result.data.isLineIntariff });
-      });
+        this.props.isLineIntariff({
+          tariffId: tariff._id,
+          line,
+        }).then((result) => {
+          this.setState({ isLineIntariff: result.data.isLineIntariff });
+        });
+      }
     }
   }
   handleConsignerSelect = (value) => {
@@ -160,29 +172,33 @@ export default class TMSShipmentPane extends Component {
     const consignee = consignees.find(item => item.node_id === consigneeId);
 
     const tariff = this.state.tariffs.find(item => item.quoteNo === this.state.quoteNo);
-    const line = {
-      source: {
-        code: consigner.region_code,
-        province: consigner.province,
-        city: consigner.city,
-        district: consigner.district,
-        street: consigner.street,
-        name: consigner.byname,
-      },
-      end: {
-        code: consignee.region_code,
-        province: consignee.province,
-        city: consignee.city,
-        district: consignee.district,
-        street: consignee.street,
-        name: consignee.byname,
-      },
-    };
-    this.props.toggleAddLineModal({
-      visible: true,
-      tariff,
-      line,
-    });
+    if (tariff) {
+      const line = {
+        source: {
+          code: consigner.region_code,
+          province: consigner.province,
+          city: consigner.city,
+          district: consigner.district,
+          street: consigner.street,
+          name: consigner.byname,
+        },
+        end: {
+          code: consignee.region_code,
+          province: consignee.province,
+          city: consignee.city,
+          district: consignee.district,
+          street: consignee.street,
+          name: consignee.byname,
+        },
+      };
+      this.props.toggleAddLineModal({
+        visible: true,
+        tariff,
+        line,
+      });
+    } else {
+      this.setState({ isLineIntariff: true, quoteNoField: quoteNoFieldWarning });
+    }
   }
   handleShowAddLocationModal = (type) => {
     const tariff = this.state.tariffs.find(item => item.quoteNo === this.state.quoteNo);
@@ -204,7 +220,13 @@ export default class TMSShipmentPane extends Component {
     }
   }
   handleTariffSelect = (quoteNo) => {
-    this.setState({ quoteNo });
+    this.setState({
+      quoteNo,
+      quoteNoField: {
+        validateStatus: '',
+        help: '',
+      },
+    });
     this.handleJudgeLine({ quoteNo });
   }
   renderTmsTariff = (row) => {
@@ -220,6 +242,7 @@ export default class TMSShipmentPane extends Component {
   renderConsign = consign => `${consign.name} | ${Location.renderLoc(consign)} | ${consign.byname || ''} | ${consign.contact || ''} | ${consign.mobile || ''}`
   render() {
     const { form: { getFieldDecorator }, onNodeActionsChange, model, tmsParams: { consigners, consignees, transitModes }, partnerId } = this.props;
+    const { quoteNoField } = this.state;
     return (
       <Collapse bordered={false} defaultActiveKey={['properties', 'events']}>
         <Panel header={this.msg('bizProperties')} key="properties">
@@ -243,7 +266,7 @@ export default class TMSShipmentPane extends Component {
               </FormItem>
             </Col>
             <Col sm={24} lg={8}>
-              <FormItem label={this.msg('quoteNo')}>
+              <FormItem label={this.msg('quoteNo')} validateStatus={quoteNoField.validateStatus} help={quoteNoField.help}>
                 {getFieldDecorator('quote_no', {
                   initialValue: model.quote_no,
                 })(<Select allowClear onChange={this.handleTariffSelect}>

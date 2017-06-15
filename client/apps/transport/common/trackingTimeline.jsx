@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Timeline, Icon } from 'antd';
 import moment from 'moment';
-import { renderLoc } from './consignLocation';
+import * as Location from 'client/util/location';
 
 const TimelineItem = Timeline.Item;
 export default class TrackingTimeline extends React.Component {
@@ -17,7 +17,7 @@ export default class TrackingTimeline extends React.Component {
       points.push({
         date: `${moment(item.location_time || item.created_date).format('YYYY-MM-DD')}`,
         time: `${moment(item.location_time || item.created_date).format('HH:mm')}`,
-        title: `${renderLoc(item, 'province', 'city', 'district') || ''} ${item.address || ''}`,
+        title: `${Location.renderLocation(item, 'province', 'city', 'district') || ''} ${item.address || ''}`,
         description: `${moment(item.location_time || item.created_date).format('YYYY-MM-DD HH:mm')}`,
       });
     });

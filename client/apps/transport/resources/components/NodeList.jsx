@@ -8,7 +8,7 @@ import SearchBar from 'client/components/search-bar';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { addUniqueKeys } from 'client/util/dataTransform';
 import { nodeTypes } from '../utils/dataMapping';
-import { renderLoc } from '../../common/consignLocation';
+import * as Location from 'client/util/location';
 import NodeModal from '../modals/nodeModal';
 
 const RadioButton = Radio.Button;
@@ -52,11 +52,7 @@ export default function NodeList(props) {
       title: '省/城市/县区',
       dataIndex: 'region',
       key: 'region',
-      render: (col, row) => {
-        let text = renderLoc(row, 'province', 'city', 'district');
-        if (row.street) text = `${text}-${row.street}`;
-        return text;
-      },
+      render: (col, row) => Location.renderLocation(row),
     },
     {
       title: '地址/坐标',

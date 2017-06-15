@@ -38,3 +38,18 @@ export function renderLocation(location, provinceFd = 'province', cityFd = 'city
   }
   return names.join('-');
 }
+
+export function renderConsignLoc(shipmt, field) {
+  const province = `${field}_province`;
+  const city = `${field}_city`;
+  const county = `${field}_district`;
+  return renderLoc(shipmt, province, city, county);
+}
+
+export function renderConsignLocation(shipmt, field) {
+  const province = `${field}_province`;
+  const city = `${field}_city`;
+  const county = `${field}_district`;
+  const street = `${field}_street`;
+  return renderLocation(shipmt, province, city, county, street);
+}

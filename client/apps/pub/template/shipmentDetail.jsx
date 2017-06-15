@@ -6,7 +6,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Row, Col, Table } from 'antd';
 import { loadPubShipmtDetail } from 'common/reducers/shipment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { renderConsignLoc } from '../../transport/common/consignLocation';
+import * as Location from 'client/util/location';
 import moment from 'moment';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -55,8 +55,8 @@ export default class ShipmentDetail extends React.Component {
     const dateStr = moment(date).format('YYYY年M月D日 星期').concat(week);
     const titleColor = '#FFD700';
     const contentTab = 10;
-    const originPointAddr = `${renderConsignLoc(shipmt, 'consigner')}${shipmt.consigner_addr ? shipmt.consigner_addr : ''}`;
-    const destPointAddr = `${renderConsignLoc(shipmt, 'consignee')}${shipmt.consignee_addr ? shipmt.consignee_addr : ''}`;
+    const originPointAddr = `${Location.renderConsignLocation(shipmt, 'consigner')}${shipmt.consigner_addr ? shipmt.consigner_addr : ''}`;
+    const destPointAddr = `${Location.renderConsignLocation(shipmt, 'consignee')}${shipmt.consignee_addr ? shipmt.consignee_addr : ''}`;
     const transportTableColumns = [{
       title: '地点类型',
       dataIndex: 'addressType',

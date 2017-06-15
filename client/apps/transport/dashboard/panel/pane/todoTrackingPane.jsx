@@ -5,7 +5,7 @@ import moment from 'moment';
 import { Badge, Tooltip, Tag, Radio } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
-import { renderLoc } from '../../../common/consignLocation';
+import * as Location from 'client/util/location';
 import { SHIPMENT_TRACK_STATUS, PROMPT_TYPES, SHIPMENT_VEHICLE_CONNECT } from 'common/constants';
 import { formatMsg } from '../../message.i18n';
 import { loadTransitTable, loadShipmtDetail, hidePreviewer } from 'common/reducers/shipment';
@@ -127,7 +127,7 @@ export default class TodoAcceptPane extends Component {
             toLocate = <Badge status="warning" text={statusStr} />;
           }
         }
-        const area = renderLoc(record, 'province', 'city', 'district');
+        const area = Location.renderLocation(record, 'province', 'city', 'district');
         const lastLocation = area || record.address || '';
         return (
           <div className="table-cell-border-left">

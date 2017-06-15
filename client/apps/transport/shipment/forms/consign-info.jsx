@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape } from 'react-intl';
 import { Row, Col, Form, Input } from 'antd';
-import { renderConsignLoc } from '../../common/consignLocation';
+import * as Location from 'client/util/location';
 import AutoCompSelectItem from './autocomp-select-item';
 import InputItem from './input-item';
 import { setConsignFields } from 'common/reducers/shipment';
@@ -177,7 +177,7 @@ export default class ConsignInfo extends React.Component {
       key: `${cl.node_id}${cl.name}`,
     }));
     const { name, byname, addr, contact, mobile, email } = this.renderFields;
-    const consigLocation = (fieldDefaults && fieldDefaults[byname]) ? fieldDefaults[byname] : renderConsignLoc(fieldDefaults, type);
+    const consigLocation = (fieldDefaults && fieldDefaults[byname]) ? fieldDefaults[byname] : Location.renderConsignLocation(fieldDefaults, type);
     let content = '';
     if (vertical) {
       content = (

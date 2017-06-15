@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { Steps, Card, Collapse, Row, Col, Layout, Alert } from 'antd';
 import { loadPubShipmtDetail } from 'common/reducers/shipment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { renderConsignLoc, renderLoc } from '../../transport/common/consignLocation';
+import * as Location from 'client/util/location';
 import { loadExceptions } from 'common/reducers/trackingLandException';
 import TrackingTimeline from '../../transport/common/trackingTimeline';
 import moment from 'moment';
@@ -51,11 +51,11 @@ export default class TrackingDetail extends React.Component {
         ...item,
         lat: item.latitude,
         lng: item.longitude,
-        label: `${moment(item.location_time).format('YYYY-MM-DD HH:mm')} ${renderLoc(item, 'province', 'city', 'district')} ${item.address || ''}`,
+        label: `${moment(item.location_time).format('YYYY-MM-DD HH:mm')} ${Location.renderLoc(item, 'province', 'city', 'district')} ${item.address || ''}`,
       });
     });
-    const originPointAddr = `${renderConsignLoc(shipmt, 'consigner')}${shipmt.consigner_addr ? shipmt.consigner_addr : ''}`;
-    const destPointAddr = `${renderConsignLoc(shipmt, 'consignee')}${shipmt.consignee_addr ? shipmt.consignee_addr : ''}`;
+    const originPointAddr = `${Location.renderConsignLocation(shipmt, 'consigner')}${shipmt.consigner_addr ? shipmt.consigner_addr : ''}`;
+    const destPointAddr = `${Location.renderConsignLocation(shipmt, 'consignee')}${shipmt.consignee_addr ? shipmt.consignee_addr : ''}`;
     const bdPoints = [];
     const viewPoints = [];
     // 百度地图API功能
@@ -217,14 +217,14 @@ export default class TrackingDetail extends React.Component {
       return (<Steps direction={this.state.stepsDirection} current={statusPos}>
         <Step key="1" status="wait" title="未起运"
           description={<span>
-            <p>{renderConsignLoc(shipmt, 'consigner')}</p>
+            <p>{Location.renderConsignLocation(shipmt, 'consigner')}</p>
             <p>计划:{shipmt.pickup_est_date ? moment(shipmt.pickup_est_date).format('YYYY-MM-DD') : ''}</p>
           </span>}
         />
         <Step key="2" status="wait" title="待运输" description="" />
         <Step key="3" status="wait" title="未到达"
           description={<span>
-            <p>{renderConsignLoc(shipmt, 'consignee')}</p>
+            <p>{Location.renderConsignLocation(shipmt, 'consignee')}</p>
             <p>预计:{shipmt.deliver_prm_date ? moment(shipmt.deliver_prm_date).format('YYYY-MM-DD') : ''}</p>
           </span>}
         />
@@ -234,7 +234,7 @@ export default class TrackingDetail extends React.Component {
       return (<Steps direction={this.state.stepsDirection} current={statusPos}>
         <Step key="1" status="finish" title="已起运"
           description={<span>
-            <p>{renderConsignLoc(shipmt, 'consigner')}</p>
+            <p>{Location.renderConsignLocation(shipmt, 'consigner')}</p>
             <p>计划:{shipmt.pickup_est_date ? moment(shipmt.pickup_est_date).format('YYYY-MM-DD') : ''}</p>
             <p>实际:{shipmt.pickup_act_date ? moment(shipmt.pickup_act_date).format('YYYY-MM-DD') : ''}</p>
           </span>}
@@ -247,7 +247,7 @@ export default class TrackingDetail extends React.Component {
         />
         <Step key="3" status="wait" title="未到达"
           description={<span>
-            <p>{renderConsignLoc(shipmt, 'consignee')}</p>
+            <p>{Location.renderConsignLocation(shipmt, 'consignee')}</p>
             <p>预计:{shipmt.deliver_prm_date ? moment(shipmt.deliver_prm_date).format('YYYY-MM-DD') : ''}</p>
           </span>}
         />
@@ -257,7 +257,7 @@ export default class TrackingDetail extends React.Component {
       return (<Steps direction={this.state.stepsDirection} current={statusPos}>
         <Step key="1" status="finish" title="已起运"
           description={<span>
-            <p>{renderConsignLoc(shipmt, 'consigner')}</p>
+            <p>{Location.renderConsignLocation(shipmt, 'consigner')}</p>
             <p>计划:{shipmt.pickup_est_date ? moment(shipmt.pickup_est_date).format('YYYY-MM-DD') : ''}</p>
             <p>实际:{shipmt.pickup_act_date ? moment(shipmt.pickup_act_date).format('YYYY-MM-DD') : ''}</p>
           </span>}
@@ -265,7 +265,7 @@ export default class TrackingDetail extends React.Component {
         <Step key="2" status="finish" title="运输完成" description="" />
         <Step key="3" status="finish" title="已到达"
           description={<span>
-            <p>{renderConsignLoc(shipmt, 'consignee')}</p>
+            <p>{Location.renderConsignLocation(shipmt, 'consignee')}</p>
             <p>预计:{shipmt.deliver_prm_date ? moment(shipmt.deliver_prm_date).format('YYYY-MM-DD') : ''}</p>
             <p>实际:{shipmt.deliver_act_date ? moment(shipmt.deliver_act_date).format('YYYY-MM-DD') : ''}</p>
           </span>}
@@ -302,12 +302,12 @@ export default class TrackingDetail extends React.Component {
                     <Collapse defaultActiveKey={['1', '2', '3']}>
                       <Panel header="发货方" key="1">
                         <p><strong>{shipmt.consigner_name || ''}</strong></p>
-                        <p>{`${renderConsignLoc(shipmt, 'consigner')} ${shipmt.consigner_addr || ''}`}</p>
+                        <p>{`${Location.renderConsignLocation(shipmt, 'consigner')} ${shipmt.consigner_addr || ''}`}</p>
                         <p>{`${shipmt.consigner_contact || ''} ${shipmt.consigner_mobile || ''}`}</p>
                       </Panel>
                       <Panel header="收货方" key="2">
                         <p><strong>{shipmt.consignee_name}</strong></p>
-                        <p>{`${renderConsignLoc(shipmt, 'consignee')} ${shipmt.consignee_addr || ''}`}</p>
+                        <p>{`${Location.renderConsignLocation(shipmt, 'consignee')} ${shipmt.consignee_addr || ''}`}</p>
                         <p>{`${shipmt.consignee_contact || ''} ${shipmt.consignee_mobile || ''}`}</p>
                       </Panel>
                       <Panel header="运输货物" key="3">

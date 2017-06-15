@@ -19,7 +19,10 @@ const formatMsg = format(messages);
 const FormItem = Form.Item;
 const Option = Select.Option;
 const InputGroup = Input.Group;
-
+const quoteNoFieldWarning = {
+  validateStatus: 'warning',
+  help: '请重新选择报价协议',
+};
 @injectIntl
 @connect(
   state => ({
@@ -63,6 +66,10 @@ export default class TransportForm extends Component {
   state = {
     tariffs: [],
     isLineIntariff: true,
+    quoteNoField: {
+      validateStatus: '',
+      help: '',
+    },
   }
   componentDidMount() {
     const { formData, formRequires, customerPartnerId } = this.props;
@@ -157,6 +164,12 @@ export default class TransportForm extends Component {
     this.handleSetClientForm({ [key]: value });
     if (key === 'quote_no') {
       this.handleJudgeLine({ quoteNo: value });
+      this.setState({
+        quoteNoField: {
+          validateStatus: '',
+          help: '',
+        },
+      });
     }
   }
   handleJudgeLine = ({ consignerId, consigneeId, quoteNo }) => {
@@ -183,16 +196,17 @@ export default class TransportForm extends Component {
           name: consignee.byname,
         },
       };
-
-      this.props.isLineIntariff({
-        tariffId: tariff._id,
-        line,
-      }).then((result) => {
-        if (result.data.isLineIntariff) {
-          this.handleTransitChange(result.data.rateEnd.time);
-        }
-        this.setState({ isLineIntariff: result.data.isLineIntariff });
-      });
+      if (tariff) {
+        this.props.isLineIntariff({
+          tariffId: tariff._id,
+          line,
+        }).then((result) => {
+          if (result.data.isLineIntariff) {
+            this.handleTransitChange(result.data.rateEnd.time);
+          }
+          this.setState({ isLineIntariff: result.data.isLineIntariff });
+        });
+      }
     }
   }
   handleConsignChange = (key, value) => {
@@ -273,29 +287,33 @@ export default class TransportForm extends Component {
     const consigner = formRequires.consignerLocations.find(item => item.node_id === formData.node.consigner_id);
     const consignee = formRequires.consigneeLocations.find(item => item.node_id === formData.node.consignee_id);
     const tariff = this.state.tariffs.find(item => item.quoteNo === formData.node.quote_no);
-    const line = {
-      source: {
-        code: consigner.region_code,
-        province: consigner.province,
-        city: consigner.city,
-        district: consigner.district,
-        street: consigner.street,
-        name: consigner.byname,
-      },
-      end: {
-        code: consignee.region_code,
-        province: consignee.province,
-        city: consignee.city,
-        district: consignee.district,
-        street: consignee.street,
-        name: consignee.byname,
-      },
-    };
-    this.props.toggleAddLineModal({
-      visible: true,
-      tariff,
-      line,
-    });
+    if (tariff) {
+      const line = {
+        source: {
+          code: consigner.region_code,
+          province: consigner.province,
+          city: consigner.city,
+          district: consigner.district,
+          street: consigner.street,
+          name: consigner.byname,
+        },
+        end: {
+          code: consignee.region_code,
+          province: consignee.province,
+          city: consignee.city,
+          district: consignee.district,
+          street: consignee.street,
+          name: consignee.byname,
+        },
+      };
+      this.props.toggleAddLineModal({
+        visible: true,
+        tariff,
+        line,
+      });
+    } else {
+      this.setState({ isLineIntariff: true, quoteNoField: quoteNoFieldWarning });
+    }
   }
   handleShowAddLocationModal = (type) => {
     const { formData } = this.props;
@@ -372,11 +390,13 @@ export default class TransportForm extends Component {
       trs_mode_id: transportMode.id,
       trs_mode_code: transportMode.mode_code,
       trs_mode: transportMode.mode_name,
+      quote_no: '',
     });
     const { formData, customerPartnerId } = this.props;
     this.props.loadTariffsByTransportInfo(customerPartnerId, transportMode.id, formData.node.goods_type).then((result) => {
       this.setState({ tariffs: result.data });
     });
+    this.setState({ isLineIntariff: true, quoteNoField: quoteNoFieldWarning });
   }
   handlePickupChange = (pickupDt) => {
     if (pickupDt) {
@@ -467,6 +487,8 @@ export default class TransportForm extends Component {
       this.props.loadTariffsByTransportInfo(customerPartnerId, formData.node.trs_mode_id, value).then((result) => {
         this.setState({ tariffs: result.data });
       });
+      this.handleSetClientForm({ quote_no: '' });
+      this.setState({ isLineIntariff: true, quoteNoField: quoteNoFieldWarning });
     }
   }
   handleShipmentRelate = () => {
@@ -493,6 +515,7 @@ export default class TransportForm extends Component {
   render() {
     const { formData, serviceTeam, formRequires: { consignerLocations, consigneeLocations,
       transitModes, packagings, vehicleTypes, vehicleLengths }, customerPartnerId } = this.props;
+    const { quoteNoField } = this.state;
     // todo consigner consignee by customer partner id
     const node = formData.node;
     const transModeExtras = [];
@@ -586,7 +609,7 @@ export default class TransportForm extends Component {
             </FormItem>
           </Col>
           <Col sm={24} md={8}>
-            <FormItem label={this.msg('quoteNo')}>
+            <FormItem label={this.msg('quoteNo')} validateStatus={quoteNoField.validateStatus} help={quoteNoField.help}>
               <Select allowClear value={node.quote_no} onChange={value => this.handleChange('quote_no', value)}>
                 {
                   this.state.tariffs.map(t => <Option value={t.quoteNo} key={t._id}>{this.renderTmsTariff(t)}</Option>)

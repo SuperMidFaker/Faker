@@ -6,7 +6,7 @@ import { Card, Timeline, Icon, Popconfirm } from 'antd';
 import moment from 'moment';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
-import { renderLoc } from '../../../common/consignLocation';
+import * as Location from 'client/util/location';
 import { removeShipmtPoint, loadShipmtPoints } from 'common/reducers/shipment';
 import './pane.less';
 const formatMsg = format(messages);
@@ -54,7 +54,7 @@ export default class TrackingPane extends React.Component {
         ...item,
         date: `${moment(item.location_time || item.created_date).format('YYYY-MM-DD')}`,
         time: `${moment(item.location_time || item.created_date).format('HH:mm')}`,
-        title: `${renderLoc(item, 'province', 'city', 'district') || ''} ${item.address || ''}`,
+        title: `${Location.renderLocation(item) || ''} ${item.address || ''}`,
         description: '',
       });
     });
