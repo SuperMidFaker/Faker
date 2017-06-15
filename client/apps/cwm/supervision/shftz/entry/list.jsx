@@ -19,6 +19,7 @@ const { Header, Content, Sider } = Layout;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
+const OptGroup = Select.OptGroup;
 
 @injectIntl
 @connect(
@@ -28,6 +29,7 @@ const RadioButton = Radio.Button;
     listFilter: state.cwmShFtz.listFilter,
     whses: state.cwmContext.whses,
     whse: state.cwmContext.defaultWhse,
+    owners: state.cwmContext.whseAttrs.owners,
   }),
   { loadEntryRegDatas, switchDefaultWhse }
 )
@@ -57,12 +59,12 @@ export default class SHFTZEntryList extends React.Component {
   columns = [{
     title: 'ANS编号',
     dataIndex: 'asn_no',
-    width: 180,
+    width: 220,
     fixed: 'left',
   }, {
     title: '报关单号',
     width: 150,
-    dataIndex: 'cus_decl_no',
+    dataIndex: 'pre_entry_seq_no',
   }, {
     title: '备案类型',
     dataIndex: 'ftz_ent_type',
@@ -148,6 +150,7 @@ export default class SHFTZEntryList extends React.Component {
         tenantId: this.props.tenantId,
         pageSize: pagination.pageSize,
         currentPage: pagination.current,
+        whseCode: this.props.whse.code,
       };
       const filter = { ...this.props.listFilter };
       params.filter = JSON.stringify(filter);
@@ -155,13 +158,14 @@ export default class SHFTZEntryList extends React.Component {
     },
     remotes: this.props.entryList,
   })
-  handleEntryListLoad = (currentPage, filter) => {
-    const { tenantId, listFilter, entryList: { pageSize, current } } = this.props;
+  handleEntryListLoad = (currentPage, whsecode, filter) => {
+    const { tenantId, whse, listFilter, entryList: { pageSize, current } } = this.props;
     this.props.loadEntryRegDatas({
       tenantId,
       filter: JSON.stringify(filter || listFilter),
       pageSize,
       currentPage: currentPage || current,
+      whseCode: whsecode || whse.code,
     }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
@@ -173,7 +177,7 @@ export default class SHFTZEntryList extends React.Component {
       return;
     }
     const filter = { ...this.props.listFilter, status: ev.target.value };
-    this.handleEntryListLoad(1, filter);
+    this.handleEntryListLoad(1, this.props.whse.code, filter);
   }
   handleCreateBtnClick = () => {
     this.context.router.push('/cwm/ftz/receive/reg');
@@ -184,9 +188,18 @@ export default class SHFTZEntryList extends React.Component {
   }
   handleWhseChange = (value) => {
     this.props.switchDefaultWhse(value);
+    this.handleEntryListLoad(1, value);
+  }
+  handleSearch = (searchVal) => {
+    const filters = { ...this.props.listFilter, filterNo: searchVal };
+    this.handleEntryListLoad(1, this.props.whse.code, filters);
+  }
+  handleOwnerSelectChange = (value) => {
+    const filters = { ...this.props.listFilter, ownerView: value };
+    this.handleEntryListLoad(1, this.props.whse.code, filters);
   }
   render() {
-    const { entryList, listFilter, whses, whse } = this.props;
+    const { entryList, listFilter, whses, whse, owners } = this.props;
     this.dataSource.remotes = entryList;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -259,9 +272,16 @@ export default class SHFTZEntryList extends React.Component {
                 <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} />
                 <span />
                 <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
-                  onChange={this.handleClientSelectChange} defaultValue="all"
+                  onChange={this.handleOwnerSelectChange} defaultValue="all"
                 >
-                  <Option value="all">全部货主</Option>
+                  <OptGroup>
+                    <Option value="all">全部货主</Option>
+                    {owners.map(data => (<Option key={data.customs_code} value={data.customs_code}
+                      search={`${data.partner_code}${data.name}`}
+                    >{data.name}
+                    </Option>)
+                    )}
+                  </OptGroup>
                 </Select>
                 <div className="toolbar-right" />
                 <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
