@@ -1,9 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Table, Tag, Popconfirm, Input, Tooltip, Button } from 'antd';
+import { Table, Tag, Icon, Input, Tooltip, Button } from 'antd';
 import RowUpdater from 'client/components/rowUpdater';
-
+import PickingModal from '../modal/pickingModal';
+import ShippingModal from '../modal/shippingModal';
+import { openPickingModal, openShippingModal } from 'common/reducers/cwmOutbound';
 
 @injectIntl
 @connect(
@@ -11,7 +13,7 @@ import RowUpdater from 'client/components/rowUpdater';
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
   }),
-  { }
+  { openPickingModal, openShippingModal }
 )
 export default class AllocDetailsPane extends React.Component {
   static propTypes = {
@@ -70,42 +72,43 @@ export default class AllocDetailsPane extends React.Component {
       }
     },
   }, {
-    title: '分配时间',
+    title: '分配',
+    width: 100,
     dataIndex: 'allocated_date',
+    render: (o, record) => {
+      if (o) {
+        return (<div>
+          <div><Icon type="user" />{record.allocated_by}</div>
+          <div><Icon type="clock-circle-o" />{record.allocated_date}</div>
+        </div>);
+      }
+    },
+  }, {
+    title: '拣货',
     width: 100,
   }, {
-    title: '拣货时间',
-    dataIndex: 'picked_date',
+    title: '装箱',
     width: 100,
   }, {
-    title: '复核时间',
-    dataIndex: 'verified_date',
-    width: 100,
-  }, {
-    title: '发运时间',
-    dataIndex: 'shipped_date',
+    title: '发货',
     width: 100,
   }, {
     title: '操作',
     width: 150,
     fixed: 'right',
     render: (o, record) => {
-      switch (record.status) {  // 分配明细的状态 0 预配 1 已分配 2 已拣货 3 已复核 4 已发运
-        case 1:   // 已分配
+      switch (record.status) {  // 分配明细的状态 2 已分配 4 已拣货 6 已发运
+        case 2:   // 已分配
           return (<span>
-            <RowUpdater onHit={this.handleSkuPicked} label="拣货确认" row={record} />
+            <RowUpdater onHit={this.handleConfirmPicked} label="拣货确认" row={record} />
             <span className="ant-divider" />
-            <RowUpdater onHit={this.handleManualAllocate} label="取消分配" row={record} />
+            <RowUpdater onHit={this.handleCancelAllocated} label="取消分配" row={record} />
           </span>);
-        case 2:   // 已拣货
+        case 4:   // 已拣货
           return (<span>
-            <RowUpdater onHit={this.handleSkuPicked} label="发运确认" row={record} />
+            <RowUpdater onHit={this.handleConfirmShipped} label="发货确认" row={record} />
             <span className="ant-divider" />
-            <RowUpdater onHit={this.handleManualAllocate} label="取消拣货" row={record} />
-          </span>);
-        case 3:   // 已复核
-          return (<span>
-            <RowUpdater onHit={this.handleSkuPicked} label="发运确认" row={record} />
+            <RowUpdater onHit={this.handleCancelPicked} label="取消拣货" row={record} />
           </span>);
         default:
           break;
@@ -127,6 +130,8 @@ export default class AllocDetailsPane extends React.Component {
     received_pack_qty: 15,
     received_qty: 15,
     status: 0,
+    allocated_by: '张申',
+    allocated_date: '2017-06-12',
   }, {
     id: 4,
     seq_no: '2',
@@ -188,6 +193,18 @@ export default class AllocDetailsPane extends React.Component {
     received_qty: 0,
     status: 4,
   }];
+  handleConfirmPicked = () => {
+    this.props.openPickingModal();
+  }
+  handleConfirmShipped = () => {
+    this.props.openShippingModal();
+  }
+  handleBatchConfirmPicked = () => {
+    this.props.openPickingModal();
+  }
+  handleBatchConfirmShipped = () => {
+    this.props.openShippingModal();
+  }
   render() {
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -200,11 +217,11 @@ export default class AllocDetailsPane extends React.Component {
         <div className="toolbar">
           <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
             <h3>已选中{this.state.selectedRowKeys.length}项</h3>
-            <Button size="large" onClick={this.handleWithdrawTask} icon="rollback">
+            <Button size="large" onClick={this.handleBatchConfirmPicked} icon="rollback">
               批量拣货确认
             </Button>
-            <Button size="large" onClick={this.handleWithdrawTask} icon="rollback">
-              批量发运确认
+            <Button size="large" onClick={this.handleBatchConfirmShipped} icon="rollback">
+              批量发货确认
             </Button>
           </div>
           <div className="toolbar-right">
@@ -212,16 +229,12 @@ export default class AllocDetailsPane extends React.Component {
             <Button type="primary" size="large" onClick={this.handlePushTask} icon="tablet">推送拣货任务</Button>}
             {this.state.allocated && this.state.shippingMode === 'scan' && this.state.pushedTask &&
             <Button size="large" onClick={this.handleWithdrawTask} icon="rollback" />}
-            {this.state.allocated && this.state.shippingMode === 'manual' &&
-            <Popconfirm title="确定此次拣货已完成?" onConfirm={this.handleConfirmPicked} okText="确认" cancelText="取消">
-              <Button type={this.state.printedPickingList && 'primary'} size="large" icon="check" disabled={this.state.picked}>
-                          拣货确认
-                        </Button>
-            </Popconfirm>
-                      }
+
           </div>
         </div>
         <Table columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={this.mockData} rowKey="id" scroll={{ x: 1600 }} />
+        <PickingModal shippingMode={this.state.shippingMode} />
+        <ShippingModal shippingMode={this.state.shippingMode} />
       </div>
     );
   }

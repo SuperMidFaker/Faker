@@ -180,7 +180,7 @@ export default class ShippingOrderList extends React.Component {
     this.context.router.push(link);
   }
   handleAllocate = (row) => {
-    const link = `/cwm/shipping/outbound/allocate/${row.so_no}`;
+    const link = `/cwm/shipping/outbound/${row.so_no}`;
     this.context.router.push(link);
   }
   render() {

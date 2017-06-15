@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Breadcrumb, Icon, Form, Layout, Tabs, Steps, Button, Select, Card, Col, Row, Tooltip, Radio } from 'antd';
+import { Alert, Breadcrumb, Icon, Form, Layout, Tabs, Steps, Button, Select, Card, Col, Row, Tooltip, Radio } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import InfoItem from 'client/components/InfoItem';
@@ -36,7 +36,7 @@ const TabPane = Tabs.TabPane;
   moduleName: 'cwm',
 })
 @Form.create()
-export default class OutboundAllocate extends Component {
+export default class OutboundDetail extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     form: PropTypes.object.isRequired,
@@ -139,6 +139,7 @@ export default class OutboundAllocate extends Component {
               SO096120170603223
             </Breadcrumb.Item>
           </Breadcrumb>
+          <Alert message="已加入波次计划: W09755345" type="info" />
           <div className="top-bar-tools">
             {this.state.allocated && this.state.shippingMode === 'manual' && !this.state.picked &&
             <Button type={!this.state.printedPickingList && 'primary'} size="large" onChange={this.handlePrint} icon={this.state.printedPickingList ? 'check-circle-o' : 'printer'} onClick={this.handlePrint} >
@@ -156,11 +157,26 @@ export default class OutboundAllocate extends Component {
           <Form layout="vertical">
             <Card bodyStyle={{ paddingBottom: 56 }}>
               <Row>
-                <Col sm={24} lg={8}>
+                <Col sm={24} lg={6}>
                   <InfoItem label="货主" field="04601|米思米(中国)精密机械贸易" />
                 </Col>
-                <Col sm={24} lg={8}>
-                  <InfoItem label="出库单号" field="O096120170603223-01" />
+                <Col sm={24} lg={6}>
+                  <InfoItem label="收货人" field="米思米华东DC" />
+                </Col>
+                <Col sm={12} lg={2}>
+                  <InfoItem label="订货总数" field="50" />
+                </Col>
+                <Col sm={12} lg={2}>
+                  <InfoItem label="分配总数" field="50" />
+                </Col>
+                <Col sm={12} lg={2}>
+                  <InfoItem label="拣货总数" field="50" />
+                </Col>
+                <Col sm={12} lg={2}>
+                  <InfoItem label="装箱总数" field="50" />
+                </Col>
+                <Col sm={12} lg={2}>
+                  <InfoItem label="发货总数" field="50" />
                 </Col>
               </Row>
               <div className="card-footer">
@@ -168,7 +184,7 @@ export default class OutboundAllocate extends Component {
                   <Step description="创建出库" />
                   <Step description="分配" />
                   <Step description="拣货" />
-                  <Step description="装箱复核" />
+                  <Step description="装箱" />
                   <Step description="发货" />
                   <Step description="出库完成" />
                 </Steps>

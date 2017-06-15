@@ -1,10 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Table, Popconfirm, Input, Tooltip, Button } from 'antd';
+import { Table, Input, Tooltip, Button } from 'antd';
 import RowUpdater from 'client/components/rowUpdater';
 import AllocatingModal from '../modal/allocatingModal';
-import { loadReceiveModal } from 'common/reducers/cwmReceive';
+import { openAllocatingModal } from 'common/reducers/cwmOutbound';
 
 
 @injectIntl
@@ -13,7 +13,7 @@ import { loadReceiveModal } from 'common/reducers/cwmReceive';
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
   }),
-  { loadReceiveModal }
+  { openAllocatingModal }
 )
 export default class OrderDetailsPane extends React.Component {
   static propTypes = {
@@ -54,15 +54,17 @@ export default class OrderDetailsPane extends React.Component {
       }
     },
   }, {
-    title: '分配规则',
-    dataIndex: 'alloc_rule',
-  }, {
     title: '分配数量',
     width: 200,
     render: (o, record) => (<span><Tooltip title="包装单位数量"><Input className="readonly" value={record.expect_pack_qty} style={{ width: 80 }} /></Tooltip>
       <Tooltip title="主单位数量"><Input value={record.expect_qty} style={{ width: 80 }} disabled /></Tooltip></span>),
   }, {
     title: '拣货数量',
+    width: 200,
+    render: (o, record) => (<span><Tooltip title="包装单位数量"><Input className="readonly" value={record.expect_pack_qty} style={{ width: 80 }} /></Tooltip>
+      <Tooltip title="主单位数量"><Input value={record.expect_qty} style={{ width: 80 }} disabled /></Tooltip></span>),
+  }, {
+    title: '装箱数量',
     width: 200,
     render: (o, record) => (<span><Tooltip title="包装单位数量"><Input className="readonly" value={record.expect_pack_qty} style={{ width: 80 }} /></Tooltip>
       <Tooltip title="主单位数量"><Input value={record.expect_qty} style={{ width: 80 }} disabled /></Tooltip></span>),
@@ -76,15 +78,15 @@ export default class OrderDetailsPane extends React.Component {
     width: 150,
     fixed: 'right',
     render: (o, record) => {
-      switch (record.status) {  // 订单明细的状态 -1 未分配 0 部分分配 1 完全分配 2 已拣货 3 已复核 4 已发运
-        case -1:
+      switch (record.status) {  // 订单明细的状态 0 未分配 1 部分分配 2 完全分配
+        case 0:
           return (<span>
             <RowUpdater onHit={this.handleSKUAutoAllocate} label="自动分配" row={record} />
             <span className="ant-divider" />
             <RowUpdater onHit={this.handleSKUAllocateDetails} label="手动分配" row={record} />
           </span>);
-        case 0:
         case 1:
+        case 2:
           return (<span>
             <RowUpdater onHit={this.handleSKUAllocateDetails} label="分配明细" row={record} />
             <span className="ant-divider" />
@@ -172,7 +174,7 @@ export default class OrderDetailsPane extends React.Component {
     status: 1,
   }];
   handleSKUAllocateDetails = () => {
-    this.props.loadReceiveModal();
+    this.props.openAllocatingModal();
   }
   render() {
     const rowSelection = {
@@ -195,16 +197,9 @@ export default class OrderDetailsPane extends React.Component {
             <Button type="primary" size="large" onClick={this.handlePushTask} icon="tablet">推送拣货任务</Button>}
             {this.state.allocated && this.state.shippingMode === 'scan' && this.state.pushedTask &&
             <Button size="large" onClick={this.handleWithdrawTask} icon="rollback" />}
-            {this.state.allocated && this.state.shippingMode === 'manual' &&
-            <Popconfirm title="确定此次拣货已完成?" onConfirm={this.handleConfirmPicked} okText="确认" cancelText="取消">
-              <Button type={this.state.printedPickingList && 'primary'} size="large" icon="check" disabled={this.state.picked}>
-                          拣货确认
-                        </Button>
-            </Popconfirm>
-                      }
           </div>
         </div>
-        <Table columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={this.mockData} rowKey="id" scroll={{ x: 1500 }} />
+        <Table columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={this.mockData} rowKey="id" scroll={{ x: 1700 }} />
         <AllocatingModal shippingMode={this.state.shippingMode} />
       </div>
     );

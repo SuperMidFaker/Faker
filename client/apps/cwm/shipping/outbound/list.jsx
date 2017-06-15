@@ -27,7 +27,7 @@ const RadioButton = Radio.Button;
   depth: 2,
   moduleName: 'cwm',
 })
-export default class ReceivingInboundList extends React.Component {
+export default class OutboundList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -59,42 +59,30 @@ export default class ReceivingInboundList extends React.Component {
     dataIndex: 'owner_code',
   }, {
     title: '分配',
-    dataIndex: 'allocating',
     className: 'cell-align-center',
-    render: (o) => {
-      switch (o) {
-        case 0:
-          return <FtIcon type="circle" color="gray" />;
-        case 1:
-          return <FtIcon type="circle" color="blue" />;
-        case 2:
-          return <FtIcon type="circle" color="orange" />;
-        case 3:
-          return <FtIcon type="circle" color="green" />;
-        default:
-          return <span />;
+    render: (o, record) => {
+      if (record.status === 1) {
+        return <FtIcon type="circle" color="blue" />;
+      } else if (record.status >= 2 && record.status <= 6) {
+        return <FtIcon type="circle" color="green" />;
+      } else {
+        return <FtIcon type="circle" color="gray" />;
       }
     },
   }, {
     title: '拣货',
-    dataIndex: 'picking',
     className: 'cell-align-center',
-    render: (o) => {
-      switch (o) {
-        case 0:
-          return <FtIcon type="circle" color="gray" />;
-        case 1:
-          return <FtIcon type="circle" color="blue" />;
-        case 2:
-          return <FtIcon type="circle" color="orange" />;
-        case 3:
-          return <FtIcon type="circle" color="green" />;
-        default:
-          return <span />;
+    render: (o, record) => {
+      if (record.status === 3) {
+        return <FtIcon type="circle" color="blue" />;
+      } else if (record.status >= 4 && record.status <= 6) {
+        return <FtIcon type="circle" color="green" />;
+      } else {
+        return <FtIcon type="circle" color="gray" />;
       }
     },
   }, {
-    title: '装箱复核',
+    title: '装箱',
     dataIndex: 'packing',
     className: 'cell-align-center',
     render: (o) => {
@@ -104,8 +92,6 @@ export default class ReceivingInboundList extends React.Component {
         case 1:
           return <FtIcon type="circle" color="blue" />;
         case 2:
-          return <FtIcon type="circle" color="orange" />;
-        case 3:
           return <FtIcon type="circle" color="green" />;
         default:
           return <span />;
@@ -113,20 +99,14 @@ export default class ReceivingInboundList extends React.Component {
     },
   }, {
     title: '发运',
-    dataIndex: 'shipping',
     className: 'cell-align-center',
-    render: (o) => {
-      switch (o) {
-        case 0:
-          return <FtIcon type="circle" color="gray" />;
-        case 1:
-          return <FtIcon type="circle" color="blue" />;
-        case 2:
-          return <FtIcon type="circle" color="orange" />;
-        case 3:
-          return <FtIcon type="circle" color="green" />;
-        default:
-          return <span />;
+    render: (o, record) => {
+      if (record.status === 5) {
+        return <FtIcon type="circle" color="blue" />;
+      } else if (record.status === 6) {
+        return <FtIcon type="circle" color="green" />;
+      } else {
+        return <FtIcon type="circle" color="gray" />;
       }
     },
   }, {
@@ -154,7 +134,7 @@ export default class ReceivingInboundList extends React.Component {
     render: (o, record) => {
       if (record.status === 0) {
         return (<span><RowUpdater onHit={this.handleReceive} label="出库操作" row={record} /> </span>);
-      } else if (record.status === 0 && record.receiving_lock === 2) {
+      } else if (record.status === 0 && record.receiving_mode === 2) {
         return (<span><RowUpdater label="撤回" row={record} /></span>);
       } else {
         return (<span><RowUpdater onHit={this.handleReceive} label="出库操作" row={record} /> </span>);
@@ -170,7 +150,11 @@ export default class ReceivingInboundList extends React.Component {
     owner_code: '04601|米思米(中国)精密机械贸易',
     ref_order_no: '7IR2730',
     status: 0,
-    receiving_lock: 0,
+    receiving_mode: 'scan',
+    allocating: 3,
+    picking: 0,
+    packing: 0,
+    shipping: 0,
   }, {
     id: '2',
     so_no: 'N04601170547',
@@ -178,8 +162,12 @@ export default class ReceivingInboundList extends React.Component {
     whse_code: '0086|物流大道仓库',
     owner_code: '03701|西门子国际贸易',
     ref_order_no: 'NUE0394488',
-    status: 0,
-    receiving_lock: 1,
+    status: 1,
+    receiving_mode: 'scan',
+    allocating: 3,
+    picking: 2,
+    packing: -1,
+    shipping: 0,
   }, {
     id: '3',
     so_no: 'N04601170546',
@@ -187,8 +175,12 @@ export default class ReceivingInboundList extends React.Component {
     whse_code: '0962|富特路仓库',
     owner_code: '04601|米思米(中国)精密机械贸易',
     ref_order_no: '7FJ1787',
-    status: 0,
-    receiving_lock: 2,
+    status: 2,
+    receiving_mode: 'manual',
+    allocating: 3,
+    picking: 2,
+    packing: 0,
+    shipping: 0,
   }, {
     id: '4',
     so_no: 'N04601170546',
@@ -196,8 +188,12 @@ export default class ReceivingInboundList extends React.Component {
     whse_code: '0962|富特路仓库',
     owner_code: '04601|米思米(中国)精密机械贸易',
     ref_order_no: '7FJ1787',
-    status: 1,
-    receiving_lock: 0,
+    status: 3,
+    receiving_mode: 'manual',
+    allocating: 3,
+    picking: 2,
+    packing: 0,
+    shipping: 0,
   }, {
     id: '5',
     so_no: 'N04601170546',
@@ -205,8 +201,51 @@ export default class ReceivingInboundList extends React.Component {
     whse_code: '0962|富特路仓库',
     owner_code: '04601|米思米(中国)精密机械贸易',
     ref_order_no: '7FJ1787',
-    status: 1,
-    receiving_lock: 0,
+    status: 4,
+    receiving_mode: 'scan',
+    allocating: 3,
+    picking: 2,
+    packing: 1,
+    shipping: 0,
+  }, {
+    id: '6',
+    so_no: 'N04601170546',
+    bonded: 1,
+    whse_code: '0962|富特路仓库',
+    owner_code: '04601|米思米(中国)精密机械贸易',
+    ref_order_no: '7FJ1787',
+    status: 5,
+    receiving_mode: 'manual',
+    allocating: 3,
+    picking: 2,
+    packing: -1,
+    shipping: 0,
+  }, {
+    id: '7',
+    so_no: 'N04601170546',
+    bonded: 1,
+    whse_code: '0962|富特路仓库',
+    owner_code: '04601|米思米(中国)精密机械贸易',
+    ref_order_no: '7FJ1787',
+    status: 6,
+    receiving_mode: 'scan',
+    allocating: 3,
+    picking: 2,
+    packing: 2,
+    shipping: 0,
+  }, {
+    id: '8',
+    so_no: 'N04601170546',
+    bonded: 1,
+    whse_code: '0962|富特路仓库',
+    owner_code: '04601|米思米(中国)精密机械贸易',
+    ref_order_no: '7FJ1787',
+    status: 6,
+    receiving_mode: 'scan',
+    allocating: 3,
+    picking: 2,
+    packing: -1,
+    shipping: 0,
   }];
 
   handleStatusChange = (ev) => {
@@ -215,7 +254,7 @@ export default class ReceivingInboundList extends React.Component {
     }
   }
   handleReceive = (row) => {
-    const link = `/cwm/shipping/outbound/allocate/${row.so_no}`;
+    const link = `/cwm/shipping/outbound/${row.so_no}`;
     this.context.router.push(link);
   }
   render() {

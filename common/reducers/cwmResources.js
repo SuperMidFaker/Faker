@@ -1,7 +1,7 @@
 import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
 
-const actionTypes = createActionTypes('@@welogix/cwm/inbound/', [
+const actionTypes = createActionTypes('@@welogix/cwm/resources/', [
   'OPEN_ADD_WAREHOUSE_MODAL', 'CLOSE_ADD_WAREHOUSE_MODAL',
   'ADD_WAREHOUSE', 'ADD_WAREHOUSE_SUCCEED', 'ADD_WAREHOUSE_FAIL',
 ]);
