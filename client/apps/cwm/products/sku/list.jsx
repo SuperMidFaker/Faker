@@ -98,16 +98,20 @@ export default class CWMSkuList extends React.Component {
     width: 120,
     dataIndex: 'product_no',
   }, {
+    title: this.msg('hscode'),
+    width: 120,
+    dataIndex: 'hscode',
+  }, {
     title: this.msg('productCnDesc'),
-    width: 150,
+    width: 200,
     dataIndex: 'desc_cn',
   }, {
     title: this.msg('productEnDesc'),
-    width: 150,
+    width: 200,
     dataIndex: 'desc_en',
   }, {
-    title: this.msg('productCategory'),
-    dataIndex: 'category',
+    title: this.msg('productType'),
+    dataIndex: 'type',
   }, {
     title: this.msg('opColumn'),
     width: 100,
@@ -209,6 +213,12 @@ export default class CWMSkuList extends React.Component {
   }
   render() {
     const { skulist, owner, whse, whses, loading } = this.props;
+    const rowSelection = {
+      selectedRowKeys: this.state.selectedRowKeys,
+      onChange: (selectedRowKeys) => {
+        this.setState({ selectedRowKeys });
+      },
+    };
     this.dataSource.remotes = skulist;
     return (
       <Layout>
@@ -249,6 +259,9 @@ export default class CWMSkuList extends React.Component {
             </Breadcrumb>}
             {owner.id &&
             <div className="top-bar-tools">
+              <Button size="large" icon="sync">
+                {this.msg('syncTradeItems')}
+              </Button>
               <Button size="large" icon="upload">
                 {this.msg('productImport')}
               </Button>
@@ -264,7 +277,7 @@ export default class CWMSkuList extends React.Component {
                 <SearchBar size="large" placeholder={this.msg('productSearchPlaceholder')} onInputSearch={this.handleSearch} />
               </div>
               <div className="panel-body table-panel">
-                <Table columns={this.columns} dataSource={this.dataSource} rowKey="id"
+                <Table columns={this.columns} dataSource={this.dataSource} rowSelection={rowSelection} rowKey="id"
                   scroll={{ x: 1400 }} loading={loading}
                 />
               </div>

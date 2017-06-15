@@ -30,13 +30,17 @@ const messages = defineMessages({
     id: 'cwm.products.productno',
     defaultMessage: '货号',
   },
+  hscode: {
+    id: 'cwm.products.hscode',
+    defaultMessage: '商品编码',
+  },
   productCnDesc: {
     id: 'cwm.products.sku.cn.desc',
-    defaultMessage: '中文名',
+    defaultMessage: '中文品名',
   },
   productEnDesc: {
     id: 'cwm.products.sku.en.desc',
-    defaultMessage: '英文名',
+    defaultMessage: '英文品名',
   },
   productCategory: {
     id: 'cwm.products.product.category',

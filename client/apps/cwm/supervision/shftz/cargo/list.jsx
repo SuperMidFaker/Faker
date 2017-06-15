@@ -47,7 +47,7 @@ function fetchData({ state, dispatch }) {
   depth: 2,
   moduleName: 'cwm',
 })
-export default class ProductMappingList extends React.Component {
+export default class SHFTZCargoList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -74,7 +74,7 @@ export default class ProductMappingList extends React.Component {
     dataIndex: 'ftz_cargo_no',
     width: 160,
   }, {
-    title: this.msg('hsCode'),
+    title: this.msg('hscode'),
     width: 120,
     dataIndex: 'hscode',
   }, {
@@ -146,10 +146,16 @@ export default class ProductMappingList extends React.Component {
       }
     });
   }
-  handleSyncProducts = () => {
+  handleSyncProductSKUs = () => {
   }
   render() {
     const { skulist, loading } = this.props;
+    const rowSelection = {
+      selectedRowKeys: this.state.selectedRowKeys,
+      onChange: (selectedRowKeys) => {
+        this.setState({ selectedRowKeys });
+      },
+    };
     this.dataSource.remotes = skulist;
     const columns = [{
       dataIndex: 'owner_code',
@@ -216,8 +222,8 @@ export default class ProductMappingList extends React.Component {
               <RadioButton value="completed">备案完成</RadioButton>
             </RadioGroup>
             <div className="top-bar-tools">
-              <Button type="primary" ghost size="large" icon="sync" onClick={this.handleSyncProducts}>
-                同步货品信息
+              <Button type="primary" ghost size="large" icon="sync" onClick={this.handleSyncProductSKUs}>
+                同步货品SKU
               </Button>
               <ButtonToggle size="large"
                 iconOn="fork" iconOff="fork"
@@ -233,7 +239,7 @@ export default class ProductMappingList extends React.Component {
                 <SearchBar size="large" placeholder={this.msg('productSearchPlaceholder')} onInputSearch={this.handleSearch} />
               </div>
               <div className="panel-body table-panel">
-                <Table columns={this.columns} dataSource={this.dataSource} rowKey="id"
+                <Table columns={this.columns} dataSource={this.dataSource} rowSelection={rowSelection} rowKey="id"
                   scroll={{ x: 1400 }} loading={loading}
                 />
               </div>
@@ -245,7 +251,7 @@ export default class ProductMappingList extends React.Component {
           defaultCollapsed
           collapsible
           collapsed={this.state.rightSiderCollapsed}
-          width={480}
+          width={320}
           collapsedWidth={0}
           className="right-sider"
         >

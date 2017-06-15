@@ -135,11 +135,11 @@ export default class ReceivingASNList extends React.Component {
     width: 150,
     fixed: 'right',
     render: (o, record) => {
-      if (record.status === CWM_ASN_STATUS.pending.value) {
+      if (record.status === CWM_ASN_STATUS.PENDING.value) {
         return (<span><RowUpdater onHit={this.handleReleaseASN} label="释放" row={record} />
           <span className="ant-divider" /><RowUpdater onHit={this.handleEditASN} label="修改" row={record} />
           <span className="ant-divider" /><RowUpdater onHit={this.handleCancelASN} label="取消" row={record} /></span>);
-      } else if (record.status === CWM_ASN_STATUS.inbound.value) {
+      } else if (record.status === CWM_ASN_STATUS.INBOUND.value) {
         if (record.bonded && record.reg_status === CWM_SHFTZ_APIREG_STATUS.pending) {
           return (<span><RowUpdater onHit={this.handleReceive} label="入库操作" row={record} /><span className="ant-divider" /><RowUpdater onHit={this.handleEntryReg} label="进库备案" row={record} /></span>);
         } else {
@@ -266,7 +266,7 @@ export default class ReceivingASNList extends React.Component {
             <Breadcrumb.Item>
               <Select size="large" value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleSelect}>
                 {
-                  whses.map(warehouse => (<Option value={warehouse.code}>{warehouse.name}</Option>))
+                  whses.map(warehouse => (<Option key={warehouse.code} value={warehouse.code}>{warehouse.name}</Option>))
                 }
               </Select>
             </Breadcrumb.Item>
@@ -296,7 +296,7 @@ export default class ReceivingASNList extends React.Component {
               >
                 <Option value="all">全部货主</Option>
                 {
-                  owners.map(owner => (<Option value={owner.id}>{owner.name}</Option>))
+                  owners.map(owner => (<Option key={owner.id} value={owner.id}>{owner.name}</Option>))
                 }
               </Select>
               <div className="toolbar-right" />
