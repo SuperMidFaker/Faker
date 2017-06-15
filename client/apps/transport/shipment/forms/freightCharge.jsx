@@ -2,19 +2,23 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Button, Card, Checkbox, message, Alert, Table, Collapse } from 'antd';
+import { Button, Card, Checkbox, message, Alert, Table, Collapse, Form, Input } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import { computeSaleCharge, setConsignFields } from 'common/reducers/shipment';
 import { getChargeAmountExpression } from '../../common/charge';
 import InputItem from './input-item';
+import { TARIFF_METER_METHODS, GOODS_TYPES } from 'common/constants';
 import messages from '../message.i18n';
 
 const formatMsg = format(messages);
 const Panel = Collapse.Panel;
+const FormItem = Form.Item;
+
 @connect(
   state => ({
     tenantId: state.account.tenantId,
     formData: state.shipment.formData,
+    formRequire: state.shipment.formRequire,
   }),
   { computeSaleCharge, setConsignFields }
 )
@@ -26,6 +30,7 @@ export default class FreightCharge extends React.Component {
     intl: PropTypes.object.isRequired,
     computeSaleCharge: PropTypes.func.isRequired,
     setConsignFields: PropTypes.func.isRequired,
+    formRequire: PropTypes.object.isRequired,
   }
   state = {
     computed: false,
@@ -369,6 +374,16 @@ export default class FreightCharge extends React.Component {
       freight_charge: ev.target.value,
     });
   }
+  renderTmsTariff = (tariff) => {
+    let text = tariff.quoteNo;
+    const tms = this.props.formRequire.transitModes.find(tm => tm.id === Number(tariff.agreement.transModeCode));
+    const meter = TARIFF_METER_METHODS.find(m => m.value === tariff.agreement.meter);
+    const goodType = GOODS_TYPES.find(m => m.value === tariff.agreement.goodsType);
+    if (tms) text = `${text}-${tms.mode_name}`;
+    if (meter) text = `${text}/${meter.text}`;
+    if (goodType) text = `${text}/${goodType.text}`;
+    return text;
+  }
   render() {
     const { formhoc, formData } = this.props;
     const { computed, alert, baseTariffAvailable, tariffType, tariff, result, params } = this.state;
@@ -391,12 +406,7 @@ export default class FreightCharge extends React.Component {
       key: '调价系数',
       value: tariff.agreement ? tariff.agreement.adjustCoefficient : '',
     }];
-    const title = (<span>{this.msg('freightCharge')} - 销售{tariffType === 'base' ? '基准' : ''}价 <a
-      title="单机查看报价协议"
-      href={`/transport/billing/tariff/view/${tariff.quoteNo}/${tariff.version}`}
-      target="_blank"
-      rel="noopener noreferrer"
-    >{tariff.quoteNo ? tariff.quoteNo : ''}</a></span>);
+    const title = (<span>{this.msg('freightCharge')} - 销售{tariffType === 'base' ? '基准' : ''}价</span>);
     return (
       <Card title={title} bodyStyle={{ padding: 16 }}
         extra={computed ? <a role="presentation" onClick={this.handleReset}>重置</a> : <Button type="primary" icon="calculator"
@@ -422,6 +432,9 @@ export default class FreightCharge extends React.Component {
             showIcon
           />
         }
+        <FormItem label="价格协议">
+          <Input readOnly value={tariff && tariff.agreement ? this.renderTmsTariff(tariff) : ''} />
+        </FormItem>
         {
           computed &&
           <InputItem formhoc={formhoc} labelName={this.msg('basicCharge')} addonAfter={this.msg('CNY')}

@@ -509,11 +509,11 @@ export default class TransportForm extends Component {
     this.handleSetClientForm(related);
   }
   renderConsign = consign => `${consign.name} | ${Location.renderLoc(consign)} | ${consign.byname || ''} | ${consign.contact || ''}`
-  renderTmsTariff = (row) => {
-    let text = row.quoteNo;
-    const tms = this.props.formRequires.transitModes.find(tm => tm.id === Number(row.transModeCode));
-    const meter = TARIFF_METER_METHODS.find(m => m.value === row.meter);
-    const goodType = GOODS_TYPES.find(m => m.value === row.goodsType);
+  renderTmsTariff = (tariff) => {
+    let text = tariff.quoteNo;
+    const tms = this.props.formRequires.transitModes.find(tm => tm.id === Number(tariff.transModeCode));
+    const meter = TARIFF_METER_METHODS.find(m => m.value === tariff.meter);
+    const goodType = GOODS_TYPES.find(m => m.value === tariff.goodsType);
     if (tms) text = `${text}-${tms.mode_name}`;
     if (meter) text = `${text}/${meter.text}`;
     if (goodType) text = `${text}/${goodType.text}`;
