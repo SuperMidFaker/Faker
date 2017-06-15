@@ -62,9 +62,11 @@ exports.CWM_ASN_STATUS = {
 };
 
 exports.CWM_INBOUND_STATUS = {
-  CREATE: 0,
-  RECEIVE: 1,
-  PUTAWAY: 3,
+  CREATED: 0,
+  PARTIAL_RECEIVED: 1,
+  ALL_RECEIVED: 2,
+  PARTIAL_PUTAWAY: 3,
+  ALL_PUTAWAY: 4,
   COMPLETED: 5,
 };
 
@@ -72,4 +74,46 @@ exports.CWM_SHFTZ_APIREG_STATUS = {
   pending: 0,
   sent: 1,
   completed: 2,
+};
+
+exports.CWM_SO_STATUS = {
+  PENDING: {
+    value: 0,
+    text: '订单接收',
+    badge: 'default',
+  },
+  OUTBOUND: {
+    value: 1,
+    text: '出库操作',
+    badge: 'processing',
+  },
+  COMPLETED: {
+    value: 3,
+    text: '发货完成',
+    badge: 'success',
+  },
+};
+
+exports.CWM_OUTBOUND_STATUS = {
+  CREATED: 0,
+  PARTIAL_ALLOCATED: 1,
+  ALL_ALLOCATED: 2,
+  PARTIAL_PICKED: 3,
+  ALL_PICKED: 4,
+  PARTIAL_SHIPPED: 5,
+  ALL_SHIPPED: 6,
+};
+
+exports.CWM_OUTBOUND_ALLOC_STATUS = {
+  CREATED: 0,
+  ALLOCATED: 2,
+  PICKED: 4,
+  SHIPPED: 6,
+};
+
+exports.CWM_OUTBOUND_PACK_STATUS = {
+  NOT_APPLICATED: -1,
+  PENDING: 0,
+  PARTIAL_PACKED: 1,
+  ALL_PACKED: 2,
 };

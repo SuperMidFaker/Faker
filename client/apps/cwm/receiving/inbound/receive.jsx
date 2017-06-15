@@ -108,7 +108,7 @@ export default class ReceiveInbound extends Component {
   }
   handleReceivedQtyAsExpected = () => {
     this.setState({
-      currentStatus: CWM_INBOUND_STATUS.RECEIVE,
+      currentStatus: CWM_INBOUND_STATUS.PARTIAL_RECEIVED,
       selectedRowKeys: [],
     });
   }
@@ -125,7 +125,7 @@ export default class ReceiveInbound extends Component {
     }
     if (receivedPackQty > 0) { // TODO:
       this.setState({
-        currentStatus: CWM_INBOUND_STATUS.RECEIVE,
+        currentStatus: CWM_INBOUND_STATUS.PARTIAL_RECEIVED,
       });
     }
     inboundProducts.splice(index, 1, { ...inboundProducts[index], received_pack_qty: receivedPackQty, received_qty: receiveQty });
@@ -135,7 +135,7 @@ export default class ReceiveInbound extends Component {
   }
   handleProductPutAway = (value, record, index) => {
     this.setState({
-      currentStatus: CWM_INBOUND_STATUS.PUTAWAY,
+      currentStatus: CWM_INBOUND_STATUS.PARTIAL_PUTAWAY,
     });
     const inboundProducts = [...this.state.inboundProducts];
     inboundProducts.splice(index, 1, { ...inboundProducts[index], location: [value] });
