@@ -13,12 +13,24 @@ const actionTypes = createActionTypes('@@welogix/cwm/receive/', [
   'LOAD_INBOUNDS', 'LOAD_INBOUNDS_SUCCEED', 'LOAD_INBOUNDS_FAIL',
   'GET_INBOUND_DETAIL', 'GET_INBOUND_DETAIL_SUCCEED', 'GET_INBOUND_DETAIL_FAIL',
   'UPDATE_RECEIVED_QTY', 'UPDATE_RECEIVED_QTY_SUCCEED', 'UPDATE_RECEIVED_QTY_FAIL',
-  'UPDATE_INBOUND_MULTIPLE', 'UPDATE_INBOUND_MULTIPLE_SUCCEED', 'UPDATE_INBOUND_MULTIPLE_FAIL',
+  'UPDATE_PRODUCT_DETAIL', 'UPDATE_PRODUCT_DETAIL_SUCCEED', 'UPDATE_PRODUCT_DETAIL_FAIL',
+  'LOAD_PRODUCT_DETAILS', 'LOAD_PRODUCT_DETAILS_SUCCEED', 'LOAD_PRODUCT_DETAILS_FAIL',
+  'UPDATE_PRODUCT_DETAILS', 'UPDATE_PRODUCT_DETAILS_SUCCEED', 'UPDATE_PRODUCT_DETAILS_FAIL',
+  'CONFIRM_PRODUCT_DETAILS', 'CONFIRM_PRODUCT_DETAILS_SUCCEED', 'CONFIRM_PRODUCT_DETAILS_FAIL',
 ]);
 
 const initialState = {
   receiveModal: {
     visible: false,
+    inboundNo: '',
+    seqNo: '',
+    expectQty: '',
+    expectPackQty: '',
+    receivedQty: '',
+    receivedPackQty: '',
+    skuPackQty: '',
+    asnNo: '',
+    productNo: '',
   },
   detailModal: {
     visible: false,
@@ -44,7 +56,18 @@ const initialState = {
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.LOAD_RECEIVE_MODAL:
-      return { ...state, receiveModal: { ...state.receiveModal, visible: true } };
+      return { ...state,
+        receiveModal: { ...state.receiveModal,
+          visible: true,
+          inboundNo: action.inboundNo,
+          seqNo: action.seqNo,
+          expectQty: action.expectQty,
+          expectPackQty: action.expectPackQty,
+          receivedQty: action.receivedQty,
+          receivedPackQty: action.receivedPackQty,
+          skuPackQty: action.skuPackQty,
+          asnNo: action.asnNo,
+          productNo: action.productNo } };
     case actionTypes.HIDE_RECEIVE_MODAL:
       return { ...state, receiveModal: { ...state.receiveModal, visible: false } };
     case actionTypes.SHOW_DETAIL_MODAL:
@@ -66,9 +89,18 @@ export default function reducer(state = initialState, action) {
   }
 }
 
-export function loadReceiveModal() {
+export function loadReceiveModal(inboundNo, seqNo, expectQty, expectPackQty, receivedQty, receivedPackQty, skuPackQty, asnNo, productNo) {
   return {
     type: actionTypes.LOAD_RECEIVE_MODAL,
+    inboundNo,
+    seqNo,
+    expectQty,
+    expectPackQty,
+    receivedQty,
+    receivedPackQty,
+    skuPackQty,
+    asnNo,
+    productNo,
   };
 }
 
@@ -208,7 +240,7 @@ export function getInboundDetail(asnNo) {
   };
 }
 
-export function updateReceivedQty(asnNo, asnSeqNo, receivedPackQty, receivedQty, tenantId, loginId, traceId) {
+export function updateReceivedQty(asnNo, inboundProductId, inboundNo, receivedPackQty, receivedQty, tenantId, loginId, traceId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -218,22 +250,67 @@ export function updateReceivedQty(asnNo, asnSeqNo, receivedPackQty, receivedQty,
       ],
       endpoint: 'v1/cwm/receive/receivedQty/update',
       method: 'post',
-      data: { asnNo, asnSeqNo, receivedPackQty, receivedQty, tenantId, loginId, traceId },
+      data: { asnNo, inboundProductId, inboundNo, receivedPackQty, receivedQty, tenantId, loginId, traceId },
     },
   };
 }
 
-export function updateInboundMultiple(data, loginId, tenantId, whseCode) {
+export function updateProductDetail(data, traceId, inboundNo) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.UPDATE_INBOUND_MULTIPLE,
-        actionTypes.UPDATE_INBOUND_MULTIPLE_SUCCEED,
-        actionTypes.UPDATE_INBOUND_MULTIPLE_FAIL,
+        actionTypes.UPDATE_PRODUCT_DETAIL,
+        actionTypes.UPDATE_PRODUCT_DETAIL_SUCCEED,
+        actionTypes.UPDATE_PRODUCT_DETAIL_FAIL,
       ],
-      endpoint: 'v1/cwm/receive/inbound/multiple/update',
+      endpoint: 'v1/cwm/receive/productDetail/update',
       method: 'post',
-      data: { data, loginId, tenantId, whseCode },
+      data: { data, traceId, inboundNo },
+    },
+  };
+}
+
+export function loadProductDetails(inboundNo, seqNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_PRODUCT_DETAILS,
+        actionTypes.LOAD_PRODUCT_DETAILS_SUCCEED,
+        actionTypes.LOAD_PRODUCT_DETAILS_FAIL,
+      ],
+      endpoint: 'v1/cwm/receive/productDetails/load',
+      method: 'get',
+      params: { inboundNo, seqNo },
+    },
+  };
+}
+
+export function updateProductDetails(loginId, tenantId, whseCode, inboundNo, dataSource, seqNo, asnNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_PRODUCT_DETAILS,
+        actionTypes.UPDATE_PRODUCT_DETAILS_SUCCEED,
+        actionTypes.UPDATE_PRODUCT_DETAILS_FAIL,
+      ],
+      endpoint: 'v1/cwm/receive/productDetails/update',
+      method: 'post',
+      data: { loginId, tenantId, whseCode, inboundNo, dataSource, seqNo, asnNo },
+    },
+  };
+}
+
+export function confirm(inboundNo, asnNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.CONFIRM_PRODUCT_DETAILS,
+        actionTypes.CONFIRM_PRODUCT_DETAILS_SUCCEED,
+        actionTypes.CONFIRM_PRODUCT_DETAILS_FAIL,
+      ],
+      endpoint: 'v1/cwm/receive/productDetails/confirm',
+      method: 'post',
+      data: { inboundNo, asnNo },
     },
   };
 }

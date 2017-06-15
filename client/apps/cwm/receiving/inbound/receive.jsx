@@ -8,7 +8,7 @@ import InfoItem from 'client/components/InfoItem';
 import RowUpdater from 'client/components/rowUpdater';
 import PackagePopover from './popover/packagePopover';
 import ReceivingModal from './modal/receivingModal';
-import { loadReceiveModal, getInboundDetail, updateReceivedQty } from 'common/reducers/cwmReceive';
+import { loadReceiveModal, getInboundDetail, updateReceivedQty, updateProductDetail, confirm } from 'common/reducers/cwmReceive';
 import { loadLocations } from 'common/reducers/cwmWarehouse';
 import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
@@ -32,7 +32,7 @@ const Step = Steps.Step;
     defaultWhse: state.cwmContext.defaultWhse,
     locations: state.cwmWarehouse.locations,
   }),
-  { loadReceiveModal, getInboundDetail, loadLocations, updateReceivedQty }
+  { loadReceiveModal, getInboundDetail, loadLocations, updateReceivedQty, updateProductDetail, confirm }
 )
 @connectNav({
   depth: 3,
@@ -58,22 +58,29 @@ export default class ReceiveInbound extends Component {
     pushedTask: false,
     inboundConfirmed: false,
     inboundHead: {},
-    inboundBody: [],
+    inboundProducts: [],
     operator: {},
-    record: {},
+    confirm: true,
   }
   componentWillMount() {
     const asnNo = this.props.params.asnNo;
     const { defaultWhse } = this.props;
     this.props.getInboundDetail(asnNo).then(
       (result) => {
+        let status = 0;
+        if (result.data.inboundHead.status === 3) {
+          status = 2;
+        }
+        if (result.data.inboundHead.status === 5) {
+          status = 3;
+        }
         this.setState({
           inboundHead: result.data.inboundHead,
-          inboundBody: result.data.inboundBody,
-          currentStatus: result.data.inboundHead.status,
+          inboundProducts: result.data.inboundProducts,
+          currentStatus: status,
         });
       }
-    );
+    ).then(this.checkConfirm(this.state.inboundProducts));
     this.props.loadLocations(defaultWhse.code);
   }
   msg = key => formatMsg(this.props.intl, key);
@@ -109,9 +116,9 @@ export default class ReceiveInbound extends Component {
     const packQty = record.sku_pack_qty;
     let receiveQty = receivedPackQty * packQty;
     if (receiveQty > expectQty) receiveQty = expectQty;
-    const inboundBody = [...this.state.inboundBody];
+    const inboundProducts = [...this.state.inboundProducts];
     const { tenantId, loginId } = this.props;
-    if (receivedPackQty > inboundBody[index].expect_pack_qty) {
+    if (receivedPackQty > inboundProducts[index].expect_pack_qty) {
       message.info('收货数量不可大于预期数量');
       return;
     }
@@ -120,33 +127,52 @@ export default class ReceiveInbound extends Component {
         currentStatus: 1,
       });
     }
-    inboundBody.splice(index, 1, { ...inboundBody[index], received_pack_qty: receivedPackQty, received_qty: receiveQty });
-    this.setState({ inboundBody });
-    this.props.updateReceivedQty(record.asn_no, record.asn_seq_no, receivedPackQty, receiveQty, tenantId, loginId, record.trace_id);
+    inboundProducts.splice(index, 1, { ...inboundProducts[index], received_pack_qty: receivedPackQty, received_qty: receiveQty });
+    this.setState({ inboundProducts });
+    this.checkConfirm(inboundProducts);
+    this.props.updateReceivedQty(record.asn_no, record.id, record.inbound_no, receivedPackQty, receiveQty, tenantId, loginId, record.trace_id[0]);
   }
   handleProductPutAway = (value, record, index) => {
     this.setState({
       currentStatus: 2,
     });
-    const inboundBody = [...this.state.inboundBody];
-    inboundBody.splice(index, 1, { ...inboundBody[index], location: value });
-    this.setState({ inboundBody });
+    const inboundProducts = [...this.state.inboundProducts];
+    inboundProducts.splice(index, 1, { ...inboundProducts[index], location: [value] });
+    this.setState({ inboundProducts });
+    this.checkConfirm(inboundProducts);
+    this.props.updateProductDetail({ location: value }, record.trace_id[0], record.inbound_no);
   }
   handleProductStatusChange = (value, record, index) => {
-    const inboundBody = [...this.state.inboundBody];
-    inboundBody.splice(index, 1, { ...inboundBody[index], damage_level: value });
-    this.setState({ inboundBody });
+    const inboundProducts = [...this.state.inboundProducts];
+    inboundProducts.splice(index, 1, { ...inboundProducts[index], damage_level: [value] });
+    this.setState({ inboundProducts });
+    this.props.updateProductDetail({ damage_level: value }, record.trace_id[0], record.inbound_no);
   }
   handleReceive = (record) => {
-    this.props.loadReceiveModal();
-    this.setState({
-      record,
-    });
+    this.props.loadReceiveModal(record.inbound_no, record.asn_seq_no, record.expect_qty, record.expect_pack_qty,
+      record.received_qty, record.received_pack_qty, record.sku_pack_qty, record.asn_no, record.product_no);
   }
   handleInboundConfirmed = () => {
+    this.props.confirm(this.state.inboundHead.inbound_no, this.props.params.asnNo);
     this.setState({
       currentStatus: 3,
     });
+  }
+  checkConfirm = (inboundProducts) => {
+    console.log(inboundProducts);
+    if (inboundProducts.length === 0) this.setState({ confirm: true });
+    for (let i = 0; i < inboundProducts.length; i++) {
+      if ((inboundProducts[i].received_pack_qty && inboundProducts[i].location.length !== 0) || (inboundProducts[i].received_pack_qty !== null && !inboundProducts[i].received_pack_qty)) {
+        this.setState({
+          confirm: false,
+        });
+      } else {
+        this.setState({
+          confirm: true,
+        });
+        break;
+      }
+    }
   }
   columns = [{
     title: '序号',
@@ -206,23 +232,33 @@ export default class ReceiveInbound extends Component {
     fixed: 'right',
     width: 120,
     render: (o, record, index) => {
-      const Options = this.props.locations.map(location => (<Option value={location.location}>{location.location}</Option>));
-      return (<Select value={o} showSearch style={{ width: 100 }} onChange={value => this.handleProductPutAway(value, record, index)} disabled={this.state.receivingMode === 'scan' || !record.received_pack_qty}>
-        {Options}
-      </Select>);
+      if (record.location.length <= 1) {
+        const Options = this.props.locations.map(location => (<Option value={location.location}>{location.location}</Option>));
+        return (<Select value={o[0]} showSearch style={{ width: 100 }} onChange={value => this.handleProductPutAway(value, record, index)} disabled={this.state.receivingMode === 'scan' || !record.received_pack_qty}>
+          {Options}
+        </Select>);
+      } else {
+        return (<Select mode="tags" defaultValue={o} style={{ width: 100 }} disabled />);
+      }
     },
   }, {
     title: '破损级别',
     dataIndex: 'damage_level',
     fixed: 'right',
     width: 120,
-    render: (o, record, index) => (<Select value={o} style={{ width: 100 }} onChange={value => this.handleProductStatusChange(value, record, index)} disabled={this.state.receivingMode === 'scan'}>
-      <Option value="0">完好</Option>
-      <Option value="1">轻微擦痕</Option>
-      <Option value="2">中度</Option>
-      <Option value="3">重度</Option>
-      <Option value="4">严重磨损</Option>
-    </Select>),
+    render: (o, record, index) => {
+      if (o.length <= 1) {
+        return (<Select value={o[0]} style={{ width: 100 }} onChange={value => this.handleProductStatusChange(value, record, index)} disabled={this.state.receivingMode === 'scan'}>
+          <Option value="0">完好</Option>
+          <Option value="1">轻微擦痕</Option>
+          <Option value="2">中度</Option>
+          <Option value="3">重度</Option>
+          <Option value="4">严重磨损</Option>
+        </Select>);
+      } else {
+        return (<Select mode="tags" defaultValue={o} style={{ width: 100 }} disabled />);
+      }
+    },
   }, {
     title: '操作',
     width: 50,
@@ -238,7 +274,7 @@ export default class ReceiveInbound extends Component {
 
   render() {
     const { defaultWhse } = this.props;
-    const { inboundHead, inboundBody } = this.state;
+    const { inboundHead, inboundProducts } = this.state;
     const asnNo = this.props.params.asnNo;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -336,17 +372,17 @@ export default class ReceiveInbound extends Component {
                 <div className="toolbar-right">
                   {this.state.receivingMode === 'manual' && this.state.currentStatus < 3 &&
                   <Popconfirm title="确定此次入库操作已完成?" onConfirm={this.handleInboundConfirmed} okText="确认" cancelText="取消">
-                    <Button type="primary" ghost size="large" icon="check" disabled={this.state.currentStatus < 2}>
+                    <Button type="primary" ghost size="large" icon="check" disabled={this.state.confirm}>
                       入库确认
                     </Button>
                   </Popconfirm>
                   }
                 </div>
               </div>
-              <Table columns={this.columns} rowSelection={rowSelection} dataSource={inboundBody} rowKey="asn_seq_no"
+              <Table columns={this.columns} rowSelection={rowSelection} dataSource={inboundProducts} rowKey="asn_seq_no"
                 scroll={{ x: true }}
               />
-              <ReceivingModal data={this.state.record} receivingMode={this.state.receivingMode} />
+              <ReceivingModal receivingMode={this.state.receivingMode} />
             </Card>
           </Form>
         </Content>
