@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Icon, Input, Layout, Radio, Select, message } from 'antd';
+import { Breadcrumb, Button, Form, Icon, Input, Layout, Radio, Select, message } from 'antd';
 import { loadSkusByWarehouse } from 'common/reducers/cwmSku';
 import Table from 'client/components/remoteAntTable';
 import SearchBar from 'client/components/search-bar';
@@ -19,6 +19,7 @@ const Search = Input.Search;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
+const FormItem = Form.Item;
 
 function fetchData({ state, dispatch }) {
   return dispatch(loadSkusByWarehouse({
@@ -61,33 +62,41 @@ export default class ProductMappingList extends React.Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
-    title: this.msg('shipperOwner'),
-    dataIndex: 'owner_name',
-    width: 160,
-  }, {
-    title: 'SKU',
-    dataIndex: 'sku_no',
-    width: 100,
-  }, {
     title: this.msg('productNo'),
     width: 120,
     dataIndex: 'product_no',
   }, {
-    title: this.msg('productName'),
-    width: 120,
-    dataIndex: 'product_name',
-  }, {
-    title: this.msg('productCategory'),
-    width: 120,
-    dataIndex: 'product_category',
-  }, {
-    title: this.msg('productDesc'),
-    width: 200,
-    dataIndex: 'product_desc',
-  }, {
-    title: this.msg('productType'),
+    title: 'SKU',
+    dataIndex: 'product_sku',
     width: 100,
-    dataIndex: 'product_type',
+  }, {
+    title: this.msg('ftzCargoNo'),
+    dataIndex: 'ftz_cargo_no',
+    width: 160,
+  }, {
+    title: this.msg('hsCode'),
+    width: 120,
+    dataIndex: 'hscode',
+  }, {
+    title: this.msg('gname'),
+    width: 120,
+    dataIndex: 'gname',
+  }, {
+    title: this.msg('unit'),
+    width: 200,
+    dataIndex: 'unit',
+  }, {
+    title: this.msg('country'),
+    width: 100,
+    dataIndex: 'country',
+  }, {
+    title: this.msg('currency'),
+    width: 100,
+    dataIndex: 'currency',
+  }, {
+    title: this.msg('cargoType'),
+    width: 100,
+    dataIndex: 'cargo_type',
   }, {
     title: this.msg('opColumn'),
     width: 160,
@@ -146,6 +155,11 @@ export default class ProductMappingList extends React.Component {
       dataIndex: 'owner_code',
       key: 'owner_name',
     }];
+    const radioStyle = {
+      display: 'block',
+      height: '30px',
+      lineHeight: '30px',
+    };
     return (
       <Layout>
         <Sider width={320} className="menu-sider" key="sider" >
@@ -239,6 +253,17 @@ export default class ProductMappingList extends React.Component {
             <div className="panel-header">
               <h3>映射规则</h3>
             </div>
+            <Form layout="vertical" style={{ padding: 16 }}>
+              <FormItem>
+                <RadioGroup onChange={this.onChange}>
+                  <Radio style={radioStyle} value={1}>按商品货号一一对应</Radio>
+                  <Radio style={radioStyle} value={2}>按商品编码+中文品名匹配</Radio>
+                </RadioGroup>
+              </FormItem>
+              <FormItem>
+                <Button type="primary" icon="save">保存</Button>
+              </FormItem>
+            </Form>
           </div>
         </Sider>
       </Layout>
