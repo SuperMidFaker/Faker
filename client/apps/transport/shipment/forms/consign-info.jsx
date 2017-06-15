@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape } from 'react-intl';
-import { Row, Col, Form } from 'antd';
-import RegionCascade from 'client/components/region-cascade';
+import { Row, Col, Form, Input } from 'antd';
+import { renderConsignLoc } from '../../common/consignLocation';
 import AutoCompSelectItem from './autocomp-select-item';
 import InputItem from './input-item';
 import { setConsignFields } from 'common/reducers/shipment';
@@ -75,9 +75,6 @@ export default class ConsignInfo extends React.Component {
     super(...args);
     this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
   }
-  state = {
-    consignRegion: [],
-  }
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   handleItemSelect = (name) => {
     let selectConsignLoc;
@@ -97,19 +94,12 @@ export default class ConsignInfo extends React.Component {
         [this.renderFields.street]: selectConsignLoc.street,
         [this.renderFields.regionCode]: selectConsignLoc.region_code,
       });
-      this.setState({
-        consignRegion: [
-          selectConsignLoc.province, selectConsignLoc.city,
-          selectConsignLoc.district, selectConsignLoc.street,
-        ] });
       this.props.formhoc.setFieldsValue({
         [this.renderFields.addr]: selectConsignLoc.addr,
         [this.renderFields.contact]: selectConsignLoc.contact,
         [this.renderFields.mobile]: selectConsignLoc.mobile,
         [this.renderFields.email]: selectConsignLoc.email,
       });
-    } else {
-      this.setState({ consignRegion: [] });
     }
   }
   handleAutoInputChange = (val) => {
@@ -129,19 +119,18 @@ export default class ConsignInfo extends React.Component {
         [this.renderFields.mobile]: '',
         [this.renderFields.email]: '',
       });
-      this.setState({ consignRegion: [] });
     }
   }
-  handleRegionValue = (region) => {
-    const [code, province, city, district, street] = region;
-    this.props.setConsignFields({
-      [this.renderFields.province]: province || '',
-      [this.renderFields.city]: city || '',
-      [this.renderFields.district]: district || '',
-      [this.renderFields.street]: street || '',
-      [this.renderFields.regionCode]: code,
-    });
-  }
+  // handleRegionValue = (region) => {
+  //   const [code, province, city, district, street] = region;
+  //   this.props.setConsignFields({
+  //     [this.renderFields.province]: province || '',
+  //     [this.renderFields.city]: city || '',
+  //     [this.renderFields.district]: district || '',
+  //     [this.renderFields.street]: street || '',
+  //     [this.renderFields.regionCode]: code,
+  //   });
+  // }
   renderMsgKeys = this.props.type === 'consignee' ? {
     title: 'consigneeInfo',
     name: 'consignee',
@@ -181,16 +170,14 @@ export default class ConsignInfo extends React.Component {
   render() {
     const {
       formhoc, consignLocations,
-      fieldDefaults, vertical,
+      fieldDefaults, vertical, type,
     } = this.props;
     const locOptions = consignLocations.map(cl => ({
       name: cl.name,
       key: `${cl.node_id}${cl.name}`,
     }));
-    const { province, city, district, street, name, addr, contact, mobile, email } = this.renderFields;
-    const region = [
-      fieldDefaults[province], fieldDefaults[city], fieldDefaults[district], fieldDefaults[street],
-    ];
+    const { name, byname, addr, contact, mobile, email } = this.renderFields;
+    const consigLocation = (fieldDefaults && fieldDefaults[byname]) ? fieldDefaults[byname] : renderConsignLoc(fieldDefaults, type);
     let content = '';
     if (vertical) {
       content = (
@@ -203,9 +190,7 @@ export default class ConsignInfo extends React.Component {
             initialValue={fieldDefaults[name]}
           />
           <FormItem label={this.msg(this.renderMsgKeys.portal)} {...this.renderRules.portal}>
-            <RegionCascade defaultRegion={region} region={this.state.consignRegion}
-              onChange={this.handleRegionValue}
-            />
+            <Input value={consigLocation} />
           </FormItem>
           <InputItem formhoc={formhoc} labelName={this.msg(this.renderMsgKeys.addr)}
             field={this.renderFields.addr} {...this.renderRules.addr}
@@ -239,9 +224,7 @@ export default class ConsignInfo extends React.Component {
             <FormItem label={this.msg(this.renderMsgKeys.portal)}
               {...this.renderRules.portal}
             >
-              <RegionCascade defaultRegion={region} region={this.state.consignRegion}
-                onChange={this.handleRegionValue}
-              />
+              <Input value={consigLocation} />
             </FormItem>
             <InputItem formhoc={formhoc} labelName={this.msg(this.renderMsgKeys.addr)}
               field={this.renderFields.addr}

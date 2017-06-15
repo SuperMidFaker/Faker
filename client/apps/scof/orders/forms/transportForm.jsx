@@ -499,10 +499,8 @@ export default class TransportForm extends Component {
     const modeCode = node.trs_mode_code;
     const consigner = consignerLocations.find(item => item.node_id === node.consigner_id);
     const consignee = consigneeLocations.find(item => item.node_id === node.consignee_id);
-    let consignerLocation = Location.renderLocation(node, 'consigner_province', 'consigner_city', 'consigner_district', 'consigner_street');
-    consignerLocation += (consigner && consigner.byname) ? ` (${consigner.byname})` : '';
-    let consigneeLocation = Location.renderLocation(node, 'consignee_province', 'consignee_city', 'consignee_district', 'consignee_street');
-    consigneeLocation += (consignee && consignee.byname) ? ` (${consignee.byname})` : '';
+    const consignerLocation = (consigner && consigner.byname) ? consigner.byname : Location.renderLocation(node, 'consigner_province', 'consigner_city', 'consigner_district', 'consigner_street');
+    const consigneeLocation = (consignee && consignee.byname) ? consignee.byname : Location.renderLocation(node, 'consignee_province', 'consignee_city', 'consignee_district', 'consignee_street');
     if (modeCode === PRESET_TRANSMODES.ftl) {
       // 整车,修改车型,车长
       transModeExtras.push(
