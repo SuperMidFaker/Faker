@@ -17,6 +17,10 @@ const messages = defineMessages({
     id: 'cwm.supervision.shftz.cargo.reg',
     defaultMessage: '货物备案',
   },
+  searchPlaceholder: {
+    id: 'cms.supervision.shftz.search.placeholder',
+    defaultMessage: 'ANS编号/海关编号/入库备案号',
+  },
 });
 
 export default messages;
