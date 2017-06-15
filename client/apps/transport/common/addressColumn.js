@@ -11,7 +11,7 @@ export default class AddressColumn extends React.Component {
   }
   render() {
     const { shipment, consignType } = this.props;
-    const maxLen = 8;
+    const maxLen = 16;
     const text = shipment[`${consignType}_byname`] || Location.renderConsignLocation(shipment, consignType);
     if (text.length > maxLen) {
       return (<TrimSpan text={`${text} ${shipment[`${consignType}_addr`] || ''}`} maxLen={maxLen} />);
