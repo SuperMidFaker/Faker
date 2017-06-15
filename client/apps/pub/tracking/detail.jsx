@@ -51,7 +51,7 @@ export default class TrackingDetail extends React.Component {
         ...item,
         lat: item.latitude,
         lng: item.longitude,
-        label: `${moment(item.location_time).format('YYYY-MM-DD HH:mm')} ${Location.renderLoc(item, 'province', 'city', 'district')} ${item.address || ''}`,
+        label: `${moment(item.location_time).format('YYYY-MM-DD HH:mm')} ${Location.renderLoc(item)} ${item.address || ''}`,
       });
     });
     const originPointAddr = `${Location.renderConsignLocation(shipmt, 'consigner')}${shipmt.consigner_addr ? shipmt.consigner_addr : ''}`;
@@ -75,7 +75,7 @@ export default class TrackingDetail extends React.Component {
     // map.addEventListener("zoomend", draw);
     function checkPoint(item) {
       return new Promise((resolve) => {
-        addressToPoint(`${item.province}${renderLoc(item, 'province', 'city', 'district')}${item.address}`, (point) => {
+        addressToPoint(`${item.province}${Location.renderLoc(item)}${item.address}`, (point) => {
           let result = { ...item };
           if (point) {
             result = {
@@ -241,7 +241,7 @@ export default class TrackingDetail extends React.Component {
         />
         <Step key="2" status="process" title="运输中"
           description={<span>
-            <p>最新位置: {renderLoc(latestPoint, 'province', 'city', 'district') || ''} {latestPoint.address || ''}</p>
+            <p>最新位置: {Location.renderLoc(latestPoint) || ''} {latestPoint.address || ''}</p>
             <p>{ latestPoint.location_time || latestPoint.created_date ? moment(latestPoint.location_time || latestPoint.created_date).format('YYYY-MM-DD HH:mm') : ''}</p>
           </span>}
         />
