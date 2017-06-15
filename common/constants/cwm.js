@@ -36,3 +36,40 @@ exports.CWM_ASN_BONDED_REGTYPES = [{
   value: '3',
   text: '不报关',
 }];
+
+exports.CWM_ASN_STATUS = {
+  PENDING: {
+    value: 0,
+    text: '通知接收',
+    badge: 'default',
+  },
+  INBOUND: {
+    value: 1,
+    text: '入库操作',
+    badge: 'processing',
+  },
+  PARTIAL: {
+    value: 2,
+    text: '部分收货',
+    badge: 'warning',
+  },
+
+  COMPLETED: {
+    value: 3,
+    text: '收货完成',
+    badge: 'success',
+  },
+};
+
+exports.CWM_INBOUND_STATUS = {
+  CREATE: 0,
+  RECEIVE: 1,
+  PUTAWAY: 3,
+  COMPLETED: 5,
+};
+
+exports.CWM_SHFTZ_APIREG_STATUS = {
+  pending: 0,
+  sent: 1,
+  completed: 2,
+};

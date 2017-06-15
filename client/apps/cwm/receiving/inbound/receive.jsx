@@ -10,6 +10,7 @@ import PackagePopover from './popover/packagePopover';
 import ReceivingModal from './modal/receivingModal';
 import { loadReceiveModal, getInboundDetail, updateReceivedQty, updateProductDetail, confirm } from 'common/reducers/cwmReceive';
 import { loadLocations } from 'common/reducers/cwmWarehouse';
+import { CWM_INBOUND_STATUS } from 'common/constants';
 import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
 
@@ -107,7 +108,7 @@ export default class ReceiveInbound extends Component {
   }
   handleReceivedQtyAsExpected = () => {
     this.setState({
-      currentStatus: 1,
+      currentStatus: CWM_INBOUND_STATUS.RECEIVE,
       selectedRowKeys: [],
     });
   }
@@ -124,7 +125,7 @@ export default class ReceiveInbound extends Component {
     }
     if (receivedPackQty > 0) { // TODO:
       this.setState({
-        currentStatus: 1,
+        currentStatus: CWM_INBOUND_STATUS.RECEIVE,
       });
     }
     inboundProducts.splice(index, 1, { ...inboundProducts[index], received_pack_qty: receivedPackQty, received_qty: receiveQty });
@@ -134,7 +135,7 @@ export default class ReceiveInbound extends Component {
   }
   handleProductPutAway = (value, record, index) => {
     this.setState({
-      currentStatus: 2,
+      currentStatus: CWM_INBOUND_STATUS.PUTAWAY,
     });
     const inboundProducts = [...this.state.inboundProducts];
     inboundProducts.splice(index, 1, { ...inboundProducts[index], location: [value] });
@@ -155,7 +156,7 @@ export default class ReceiveInbound extends Component {
   handleInboundConfirmed = () => {
     this.props.confirm(this.state.inboundHead.inbound_no, this.props.params.asnNo);
     this.setState({
-      currentStatus: 3,
+      currentStatus: CWM_INBOUND_STATUS.COMPLETED,
     });
   }
   checkConfirm = (inboundProducts) => {
@@ -206,25 +207,30 @@ export default class ReceiveInbound extends Component {
     title: 'SKU包装单位',
     width: 200,
     dataIndex: 'sku_pack_unit_name',
-    render: o => (<Tooltip title="=10主单位" placement="right"><Tag>{o}</Tag></Tooltip>),
+    render: (puname, row) => (<Tooltip title={`=${row.sku_pack_qty}主单位`} placement="right"><Tag>{puname}</Tag></Tooltip>),
   }, {
     title: '预期数量',
     width: 200,
     fixed: 'right',
-    render: (o, record) => (<span><Tooltip title="包装单位数量"><Input className="readonly" value={record.expect_pack_qty} style={{ width: 80 }} /></Tooltip>
-      <Tooltip title="主单位数量"><Input value={record.expect_qty} style={{ width: 80 }} disabled /></Tooltip></span>),
+    render: (o, record) => (
+      <span>
+        <Tooltip title="包装单位数量"><Input className="readonly" value={record.expect_pack_qty} style={{ width: 80 }} /></Tooltip>
+        <Tooltip title="主单位数量"><Input value={record.expect_qty} style={{ width: 80 }} disabled /></Tooltip>
+      </span>),
   }, {
     title: '收货数量',
     width: 200,
     fixed: 'right',
     render: (o, record, index) => {
-      if (record.expect_pack_qty === record.receive_pack_qty) {
-        return (<span className="mdc-text-green"><Tooltip title="包装单位数量"><Input className={this.state.receivingMode === 'scan' && 'readonly'} value={record.received_pack_qty} style={{ width: 80 }} onChange={e => this.handleProductReceive(index, e.target.value, record)} /></Tooltip>
-          <Tooltip title="主单位数量"><Input value={record.received_qty} style={{ width: 80 }} disabled /></Tooltip></span>);
-      } else {
-        return (<span className="mdc-text-red"><Tooltip title="包装单位数量"><Input className={this.state.receivingMode === 'scan' && 'readonly'} value={record.received_pack_qty} style={{ width: 80 }} onChange={e => this.handleProductReceive(index, e.target.value, record)} /></Tooltip>
-          <Tooltip title="主单位数量"><Input value={record.received_qty} style={{ width: 80 }} disabled /></Tooltip></span>);
-      }
+      const receiveAlert = record.expect_pack_qty !== record.receive_pack_qty;
+      return (<span className={receiveAlert ? 'mdc-text-red' : 'mdc-text-green'}>
+        <Tooltip title="包装单位数量">
+          <Input className={this.state.receivingMode === 'scan' && 'readonly'} value={record.received_pack_qty}
+            style={{ width: 80 }} onChange={e => this.handleProductReceive(index, e.target.value, record)}
+          />
+        </Tooltip>
+        <Tooltip title="主单位数量"><Input value={record.received_qty} style={{ width: 80 }} disabled /></Tooltip>
+      </span>);
     },
   }, {
     title: '库位号',
@@ -315,12 +321,12 @@ export default class ReceiveInbound extends Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="top-bar-tools">
-            {this.state.currentStatus < 3 &&
+            {this.state.currentStatus < CWM_INBOUND_STATUS.COMPLETED &&
             <Tooltip title="打印入库单" placement="bottom">
               <Button size="large" icon="printer" onClick={this.handlePrint} />
             </Tooltip>
             }
-            {this.state.currentStatus < 3 &&
+            {this.state.currentStatus < CWM_INBOUND_STATUS.COMPLETED &&
             <Dropdown overlay={tagMenu}>
               <Button size="large" onClick={this.handleTagging}>
                 <Icon type="barcode" />标签 <Icon type="down" />
@@ -370,7 +376,7 @@ export default class ReceiveInbound extends Component {
                   }
                 </div>
                 <div className="toolbar-right">
-                  {this.state.receivingMode === 'manual' && this.state.currentStatus < 3 &&
+                  {this.state.receivingMode === 'manual' && this.state.currentStatus < CWM_INBOUND_STATUS.COMPLETED &&
                   <Popconfirm title="确定此次入库操作已完成?" onConfirm={this.handleInboundConfirmed} okText="确认" cancelText="取消">
                     <Button type="primary" ghost size="large" icon="check" disabled={this.state.confirm}>
                       入库确认

@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { intlShape, injectIntl } from 'react-intl';
 import { Badge, Button, Breadcrumb, Layout, Radio, Select, Tag, notification } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
@@ -11,9 +11,10 @@ import SearchBar from 'client/components/search-bar';
 import RowUpdater from 'client/components/rowUpdater';
 import TrimSpan from 'client/components/trimSpan';
 import connectNav from 'client/common/decorators/connect-nav';
-import { formatMsg } from '../message.i18n';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import { loadAsnLists, releaseAsn, cancelAsn } from 'common/reducers/cwmReceive';
+import { CWM_SHFTZ_APIREG_STATUS, CWM_ASN_STATUS } from 'common/constants';
+import { formatMsg } from '../message.i18n';
 
 const { Header, Content } = Layout;
 const Option = Select.Option;
@@ -98,24 +99,21 @@ export default class ReceivingASNList extends React.Component {
     dataIndex: 'status',
     width: 150,
     render: (o) => {
-      if (o === 0) {
-        return (<Badge status="default" text="通知接收" />);
-      } else if (o === 1) {
-        return (<Badge status="processing" text="入库操作" />);
-      } else if (o === 2) {
-        return (<Badge status="warning" text="部分收货" />);
-      } else if (o === 3) {
-        return (<Badge status="success" text="收货完成" />);
+      const asnStatusKey = Object.keys(CWM_ASN_STATUS).filter(as => CWM_ASN_STATUS[as].value === o)[0];
+      if (asnStatusKey) {
+        return (<Badge status={CWM_ASN_STATUS[asnStatusKey].badge} text={CWM_ASN_STATUS[asnStatusKey].text} />);
+      } else {
+        return '';
       }
     },
   }, {
     title: '货物属性',
     dataIndex: 'bonded',
     width: 120,
-    render: (o) => {
-      if (o === 1) {
+    render: (bonded) => {
+      if (bonded) {
         return (<Tag color="blue">保税</Tag>);
-      } else if (o === 0) {
+      } else {
         return (<Tag>非保税</Tag>);
       }
     },
@@ -124,11 +122,11 @@ export default class ReceivingASNList extends React.Component {
     dataIndex: 'reg_status',
     width: 120,
     render: (o) => {
-      if (o === 0) {
+      if (o === CWM_SHFTZ_APIREG_STATUS.pending) {
         return (<Badge status="default" text="待备案" />);
-      } else if (o === 1) {
+      } else if (o === CWM_SHFTZ_APIREG_STATUS.sent) {
         return (<Badge status="processing" text="已发送" />);
-      } else if (o === 2) {
+      } else if (o === CWM_SHFTZ_APIREG_STATUS.completed) {
         return (<Badge status="success" text="备案完成" />);
       }
     },
@@ -137,12 +135,12 @@ export default class ReceivingASNList extends React.Component {
     width: 150,
     fixed: 'right',
     render: (o, record) => {
-      if (record.status === 0) {
+      if (record.status === CWM_ASN_STATUS.pending.value) {
         return (<span><RowUpdater onHit={this.handleReleaseASN} label="释放" row={record} />
           <span className="ant-divider" /><RowUpdater onHit={this.handleEditASN} label="修改" row={record} />
           <span className="ant-divider" /><RowUpdater onHit={this.handleCancelASN} label="取消" row={record} /></span>);
-      } else if (record.status === 1) {
-        if (record.bonded === 1 && record.reg_status === 0) {
+      } else if (record.status === CWM_ASN_STATUS.inbound.value) {
+        if (record.bonded && record.reg_status === CWM_SHFTZ_APIREG_STATUS.pending) {
           return (<span><RowUpdater onHit={this.handleReceive} label="入库操作" row={record} /><span className="ant-divider" /><RowUpdater onHit={this.handleEntryReg} label="进库备案" row={record} /></span>);
         } else {
           return (<span><RowUpdater onHit={this.handleReceive} label="入库操作" row={record} /></span>);
