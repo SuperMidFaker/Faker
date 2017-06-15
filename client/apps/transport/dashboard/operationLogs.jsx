@@ -97,7 +97,7 @@ export default class Dashboard extends React.Component {
       render: (o, record) => (<a onClick={() => this.props.loadShipmtDetail(record.shipmt_no, this.props.tenantId, 'sr', 'detail')}>{record.shipmt_no}</a>),
     }, {
       title: this.msg('departurePlace'),
-      width: 140,
+      width: 250,
       render: (o, record) => <AddressColumn shipment={record} consignType="consigner" />,
     }, {
       title: this.msg('shipmtEstPickupDate'),
@@ -111,7 +111,7 @@ export default class Dashboard extends React.Component {
       render: (o, record) => o ? (<ActDate actDate={record.pickup_act_date} estDate={record.pickup_est_date} />) : '',
     }, {
       title: this.msg('arrivalPlace'),
-      width: 140,
+      width: 250,
       render: (o, record) => <AddressColumn shipment={record} consignType="consignee" />,
     }, {
       title: this.msg('shipmtEstDeliveryDate'),
@@ -234,7 +234,7 @@ export default class Dashboard extends React.Component {
         <Content className="main-content">
           <div className="page-body">
             <div className="panel-body table-panel">
-              <Table columns={columns} dataSource={dataSource} rowKey="id" scroll={{ x: 1480 }} />
+              <Table columns={columns} dataSource={dataSource} rowKey="id" scroll={{ x: 1700 }} />
             </div>
           </div>
         </Content>

@@ -481,14 +481,15 @@ export default class TransportForm extends Component {
     }
   }
   handleCommonFieldChange = (filed, value) => {
-    this.handleSetClientForm({ [filed]: value });
     if (filed === 'goods_type') {
       const { formData, customerPartnerId } = this.props;
       this.props.loadTariffsByTransportInfo(customerPartnerId, formData.node.trs_mode_id, value).then((result) => {
         this.setState({ tariffs: result.data });
       });
-      this.handleSetClientForm({ quote_no: '' });
+      this.handleSetClientForm({ [filed]: value, quote_no: '' });
       this.setState({ isLineIntariff: true, quoteNoField: quoteNoFieldWarning });
+    } else {
+      this.handleSetClientForm({ [filed]: value });
     }
   }
   handleShipmentRelate = () => {

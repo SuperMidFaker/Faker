@@ -56,7 +56,7 @@ export default function makeColumns(type, handlers, msg) {
     render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
     title: msg('departurePlace'),
-    width: 140,
+    width: 250,
     render: (o, record) => (<AddressColumn shipment={record} consignType="consigner" />),
   }, {
     title: msg('shipmtEstPickupDate'),
@@ -118,7 +118,7 @@ export default function makeColumns(type, handlers, msg) {
     },
   }, {
     title: msg('arrivalPlace'),
-    width: 140,
+    width: 250,
     render: (o, record) => (<AddressColumn shipment={record} consignType="consignee" />),
   }, {
     title: msg('shipmtEstDeliveryDate'),

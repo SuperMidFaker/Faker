@@ -177,7 +177,7 @@ export default class DispatchList extends React.Component {
     render: o => <TrimSpan text={o} maxLen={8} />,
   }, {
     title: this.msg('consignerPlace'),
-    width: 120,
+    width: 250,
     render: (o, record) => <AddressColumn shipment={record} consignType="consigner" />,
   }, {
     title: this.msg('consignerAddr'),
@@ -196,7 +196,7 @@ export default class DispatchList extends React.Component {
     render: o => <TrimSpan text={o} maxLen={8} />,
   }, {
     title: this.msg('consigneePlace'),
-    width: 120,
+    width: 250,
     render: (o, record) => <AddressColumn shipment={record} consignType="consignee" />,
   }, {
     title: this.msg('consigneeAddr'),
@@ -425,7 +425,7 @@ export default class DispatchList extends React.Component {
       width: 180,
     }, {
       title: this.msg('consignerPlace'),
-      width: 120,
+      width: 250,
       render: (o, record) => <AddressColumn shipment={record} consignType="consigner" />,
     }, {
       title: this.msg('consignerAddr'),
@@ -437,7 +437,7 @@ export default class DispatchList extends React.Component {
       width: 180,
     }, {
       title: this.msg('consigneePlace'),
-      width: 120,
+      width: 250,
       render: (o, record) => <AddressColumn shipment={record} consignType="consignee" />,
     }, {
       title: this.msg('consigneeAddr'),
@@ -996,17 +996,17 @@ export default class DispatchList extends React.Component {
     let cols = this.buildCols();
 
     let tb = (<Table rowSelection={rowSelection} columns={cols} loading={loading}
-      dataSource={this.dataSource} scroll={{ x: 2000 }}
+      dataSource={this.dataSource} scroll={{ x: 2260 }}
     />);
     if (origin) {
       tb = (<Table expandedRowRender={this.handleExpandList} columns={cols} loading={loading}
-        dataSource={this.dataSource} scroll={{ x: 2000 }}
+        dataSource={this.dataSource} scroll={{ x: 2260 }}
       />);
     }
     if (type !== 'none') {
       cols = this.buildConditionCols();
       tb = (<Table expandedRowRender={this.handleConditionExpandList} columns={cols} loading={loading}
-        dataSource={this.dataSource} scroll={{ x: 2000 }}
+        dataSource={this.dataSource} scroll={{ x: 2260 }}
       />);
     }
     let bulkBtns = '';

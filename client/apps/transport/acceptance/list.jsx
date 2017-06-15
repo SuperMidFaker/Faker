@@ -202,7 +202,7 @@ export default class AcceptList extends React.Component {
     render: o => <TrimSpan text={o} maxLen={8} />,
   }, {
     title: this.msg('consignorPlace'),
-    width: 120,
+    width: 250,
     render: (o, record) => <AddressColumn shipment={record} consignType="consigner" />,
   }, {
     title: this.msg('consignorAddr'),
@@ -216,7 +216,7 @@ export default class AcceptList extends React.Component {
     render: o => <TrimSpan text={o} maxLen={8} />,
   }, {
     title: this.msg('consigneePlace'),
-    width: 120,
+    width: 250,
     render: (o, record) => <AddressColumn shipment={record} consignType="consignee" />,
   }, {
     title: this.msg('consigneeAddr'),
@@ -508,7 +508,7 @@ export default class AcceptList extends React.Component {
             </div>
             <div className="panel-body table-panel">
               <Table rowSelection={rowSelection} columns={columns} loading={loading}
-                dataSource={this.dataSource} scroll={{ x: 2300 }}
+                dataSource={this.dataSource} scroll={{ x: 2560 }}
               />
             </div>
           </div>

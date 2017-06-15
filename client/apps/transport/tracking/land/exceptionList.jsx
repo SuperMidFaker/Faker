@@ -307,11 +307,11 @@ export default class LandStatusList extends React.Component {
     render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
     title: this.msg('departurePlace'),
-    width: 140,
+    width: 250,
     render: (o, record) => <AddressColumn shipment={record} consignType="consigner" />,
   }, {
     title: this.msg('arrivalPlace'),
-    width: 140,
+    width: 250,
     render: (o, record) => <AddressColumn shipment={record} consignType="consignee" />,
   }, {
     title: this.msg('shipmtMode'),
@@ -478,7 +478,7 @@ export default class LandStatusList extends React.Component {
           <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch} toggle={this.toggleAdvancedSearch} />
           <div className="panel-body table-panel">
             <Table rowSelection={rowSelection} columns={columns} loading={loading}
-              dataSource={this.dataSource} scroll={{ x: 2560 }}
+              dataSource={this.dataSource} scroll={{ x: 2780 }}
             />
           </div>
         </div>

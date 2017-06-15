@@ -144,7 +144,7 @@ export default class FeesList extends React.Component {
   render() {
     const { customers, carriers, billingType } = this.state;
     const { loading } = this.props;
-    let tableWidth = 1040;
+    let tableWidth = 1260;
     const columns = [{
       title: '运单号',
       dataIndex: 'shipmt_no',
@@ -392,14 +392,14 @@ export default class FeesList extends React.Component {
     columns.push({
       title: '始发地',
       dataIndex: 'consigner_province',
-      width: 140,
+      width: 250,
       render(o, record) {
         return (<AddressColumn shipment={record} consignType="consigner" />);
       },
     }, {
       title: '目的地',
       dataIndex: 'consignee_province',
-      width: 140,
+      width: 250,
       render(o, record) {
         return (<AddressColumn shipment={record} consignType="consignee" />);
       },
