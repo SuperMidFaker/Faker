@@ -385,18 +385,21 @@ export default class TransportForm extends Component {
   //   this.handleSetClientForm(consign);
   // }
   handleTransmodeChange = (value) => {
+    const { formData, customerPartnerId } = this.props;
     const transportMode = this.props.formRequires.transitModes.find(item => item.id === value);
+    this.props.loadTariffsByTransportInfo(customerPartnerId, transportMode.id, formData.node.goods_type).then((result) => {
+      this.setState({ tariffs: result.data });
+    });
+    if (formData.node.quote_no) {
+      this.setState({ quoteNoField: quoteNoFieldWarning });
+    }
+    this.setState({ isLineIntariff: true });
     this.handleSetClientForm({
       trs_mode_id: transportMode.id,
       trs_mode_code: transportMode.mode_code,
       trs_mode: transportMode.mode_name,
       quote_no: '',
     });
-    const { formData, customerPartnerId } = this.props;
-    this.props.loadTariffsByTransportInfo(customerPartnerId, transportMode.id, formData.node.goods_type).then((result) => {
-      this.setState({ tariffs: result.data });
-    });
-    this.setState({ isLineIntariff: true, quoteNoField: quoteNoFieldWarning });
   }
   handlePickupChange = (pickupDt) => {
     if (pickupDt) {
@@ -486,8 +489,11 @@ export default class TransportForm extends Component {
       this.props.loadTariffsByTransportInfo(customerPartnerId, formData.node.trs_mode_id, value).then((result) => {
         this.setState({ tariffs: result.data });
       });
+      if (formData.node.quote_no) {
+        this.setState({ quoteNoField: quoteNoFieldWarning });
+      }
+      this.setState({ isLineIntariff: true });
       this.handleSetClientForm({ [filed]: value, quote_no: '' });
-      this.setState({ isLineIntariff: true, quoteNoField: quoteNoFieldWarning });
     } else {
       this.handleSetClientForm({ [filed]: value });
     }

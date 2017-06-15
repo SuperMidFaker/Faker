@@ -96,11 +96,19 @@ export default class TMSShipmentPane extends Component {
     const { tmsParams: { transitModes } } = this.props;
     const mode = transitModes.find(item => item.mode_code === value);
     const transitMode = mode ? mode.id : -1;
-    this.setState({ transitMode, isLineIntariff: true, quoteNoField: quoteNoFieldWarning }, this.handleLoadTariff);
+    if (this.state.quoteNo) {
+      this.setState({ transitMode, isLineIntariff: true, quoteNoField: quoteNoFieldWarning }, this.handleLoadTariff);
+    } else {
+      this.setState({ transitMode, isLineIntariff: true }, this.handleLoadTariff);
+    }
     this.props.form.setFieldsValue({ quote_no: '' });
   }
   handleCargoTypeSelect = (value) => {
-    this.setState({ goodsType: value, isLineIntariff: true, quoteNoField: quoteNoFieldWarning }, this.handleLoadTariff);
+    if (this.state.quoteNo) {
+      this.setState({ goodsType: value, isLineIntariff: true, quoteNoField: quoteNoFieldWarning }, this.handleLoadTariff);
+    } else {
+      this.setState({ goodsType: value, isLineIntariff: true }, this.handleLoadTariff);
+    }
     this.props.form.setFieldsValue({ quote_no: '' });
   }
   handleJudgeLine = ({ consignerId, consigneeId, quoteNo }) => {
