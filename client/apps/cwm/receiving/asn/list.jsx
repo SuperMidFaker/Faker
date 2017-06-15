@@ -147,6 +147,8 @@ export default class ReceivingASNList extends React.Component {
         } else {
           return (<span><RowUpdater onHit={this.handleReceive} label="入库操作" row={record} /></span>);
         }
+      } else if (record.status === 2) {
+        return (<span><RowUpdater onHit={this.handleReceive} label="入库操作" row={record} /><span className="ant-divider" /><RowUpdater onHit={this.handleComplete} label="完成收货" row={record} /></span>);
       }
     },
   }]
