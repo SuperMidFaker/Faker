@@ -13,6 +13,7 @@ import { saveEdit, revokeOrReject } from 'common/reducers/transport-acceptance';
 import { showChangeActDateModal } from 'common/reducers/trackingLandStatus';
 import InfoItem from 'client/components/InfoItem';
 import { getChargeAmountExpression } from '../../../common/charge';
+import * as Location from 'client/util/location';
 import messages from '../../message.i18n';
 import './pane.less';
 
@@ -337,35 +338,35 @@ export default class DetailPane extends React.Component {
     };
     this.handleSave(form, type);
   }
-  handleSaveConsign = (value, consignType, type = '') => {
-    const { formData } = this.props;
-    const [code, province, city, district, street] = value;
-    if (typeof code === 'number') {
-      const changedData = {
-        [`${consignType}_region_code`]: code,
-        [`${consignType}_province`]: province || '',
-        [`${consignType}_city`]: city || '',
-        [`${consignType}_district`]: district || '',
-        [`${consignType}_street`]: street || '',
-      };
-      const form = {
-        ...formData,
-        ...changedData,
-      };
-      const oldAddr = [];
-      if (formData[`${consignType}_province`]) oldAddr.push(formData[`${consignType}_province`]);
-      if (formData[`${consignType}_city`]) oldAddr.push(formData[`${consignType}_city`]);
-      if (formData[`${consignType}_district`]) oldAddr.push(formData[`${consignType}_district`]);
-      if (formData[`${consignType}_street`]) oldAddr.push(formData[`${consignType}_street`]);
-      const newAddr = [];
-      if (province) newAddr.push(province);
-      if (city) newAddr.push(city);
-      if (district) newAddr.push(district);
-      if (street) newAddr.push(street);
-      const msg = `${consignType === 'consigner' ? '发货' : '收货'}地址：${oldAddr.join('-')} 变更为 ${newAddr.join('-')}`;
-      this.computeSaleCharge({ [`${consignType}_region_code`]: code }, form, type, msg);
-    }
-  }
+  // handleSaveConsign = (value, consignType, type = '') => {
+  //   const { formData } = this.props;
+  //   const [code, province, city, district, street] = value;
+  //   if (typeof code === 'number') {
+  //     const changedData = {
+  //       [`${consignType}_region_code`]: code,
+  //       [`${consignType}_province`]: province || '',
+  //       [`${consignType}_city`]: city || '',
+  //       [`${consignType}_district`]: district || '',
+  //       [`${consignType}_street`]: street || '',
+  //     };
+  //     const form = {
+  //       ...formData,
+  //       ...changedData,
+  //     };
+  //     const oldAddr = [];
+  //     if (formData[`${consignType}_province`]) oldAddr.push(formData[`${consignType}_province`]);
+  //     if (formData[`${consignType}_city`]) oldAddr.push(formData[`${consignType}_city`]);
+  //     if (formData[`${consignType}_district`]) oldAddr.push(formData[`${consignType}_district`]);
+  //     if (formData[`${consignType}_street`]) oldAddr.push(formData[`${consignType}_street`]);
+  //     const newAddr = [];
+  //     if (province) newAddr.push(province);
+  //     if (city) newAddr.push(city);
+  //     if (district) newAddr.push(district);
+  //     if (street) newAddr.push(street);
+  //     const msg = `${consignType === 'consigner' ? '发货' : '收货'}地址：${oldAddr.join('-')} 变更为 ${newAddr.join('-')}`;
+  //     this.computeSaleCharge({ [`${consignType}_region_code`]: code }, form, type, msg);
+  //   }
+  // }
   handleShowChangeActDateModal = (type) => {
     this.props.showChangeActDateModal(true, type);
   }
@@ -419,7 +420,7 @@ export default class DetailPane extends React.Component {
                       <Row>
                         <InfoItem label={this.msg('pickupEstDate')}
                           type="date"
-                          field={moment(shipmt.pickup_est_date).format('YYYY-MM-DD')}
+                          field={shipmt.pickup_est_date ? moment(shipmt.pickup_est_date).format('YYYY-MM-DD') : null}
                           editable={editable}
                           onEdit={value => this.handleSaveShipment('pickup_est_date', new Date(value), 'timeInfoChanged')}
                         />
@@ -427,15 +428,7 @@ export default class DetailPane extends React.Component {
                       <Row gutter={10}>
                         <Col span={10}>
                           <InfoItem label="发货地"
-                            type="regionCascade"
-                            editable={editable}
-                            field={[
-                              shipmt.consigner_province,
-                              shipmt.consigner_city,
-                              shipmt.consigner_district,
-                              shipmt.consigner_street,
-                            ]}
-                            onEdit={value => this.handleSaveConsign(value, 'consigner', 'consignerInfoChanged')}
+                            field={shipmt.consigner_byname || Location.renderLoc(shipmt, 'consigner_province', 'consigner_city', 'consigner_district', 'consigner_street')}
                           />
                         </Col>
                         <Col span={14}>
@@ -476,7 +469,7 @@ export default class DetailPane extends React.Component {
                       <Row>
                         <InfoItem label={this.msg('deliveryEstDate')}
                           type="date"
-                          field={moment(shipmt.deliver_est_date).format('YYYY-MM-DD')}
+                          field={shipmt.deliver_est_date ? moment(shipmt.deliver_est_date).format('YYYY-MM-DD') : null}
                           editable={editable}
                           onEdit={value => this.handleSaveShipment('deliver_est_date', new Date(value), 'timeInfoChanged')}
                         />
@@ -484,15 +477,7 @@ export default class DetailPane extends React.Component {
                       <Row gutter={10}>
                         <Col span={10}>
                           <InfoItem label="收货地"
-                            type="regionCascade"
-                            editable={editable}
-                            field={[
-                              shipmt.consignee_province,
-                              shipmt.consignee_city,
-                              shipmt.consignee_district,
-                              shipmt.consigneestreet,
-                            ]}
-                            onEdit={value => this.handleSaveConsign(value, 'consignee', 'consigneeInfoChanged')}
+                            field={shipmt.consignee_byname || Location.renderLoc(shipmt, 'consignee_province', 'consignee_city', 'consignee_district', 'consignee_street')}
                           />
                         </Col>
                         <Col span={14}>

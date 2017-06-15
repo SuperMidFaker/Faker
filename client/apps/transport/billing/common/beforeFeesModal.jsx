@@ -7,7 +7,7 @@ import moment from 'moment';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { loadFeesBeforeTime, alterBillingFees } from 'common/reducers/transportBilling';
-import { renderConsignLoc } from '../../common/consignLocation';
+import AddressColumn from '../../common/addressColumn';
 import TrimSpan from 'client/components/trimSpan';
 import ExceptionListPopover from '../../tracking/land/modals/exception-list-popover';
 import ShipmentDockPanel from '../../shipment/dock/shipmentDockPanel';
@@ -146,13 +146,13 @@ export default class BeforeFeesModal extends React.Component {
       title: '始发地',
       dataIndex: 'consigner_province',
       render(o, record) {
-        return (<TrimSpan text={renderConsignLoc(record, 'consigner')} maxLen={8} />);
+        return (<AddressColumn shipment={record} consignType="consigner" />);
       },
     }, {
       title: '目的地',
       dataIndex: 'consignee_province',
       render(o, record) {
-        return (<TrimSpan text={renderConsignLoc(record, 'consignee')} maxLen={8} />);
+        return (<AddressColumn shipment={record} consignType="consignee" />);
       },
     }, {
       title: '运输模式',

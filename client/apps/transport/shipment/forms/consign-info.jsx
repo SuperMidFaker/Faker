@@ -16,6 +16,7 @@ const FormItem = Form.Item;
 function getRenderFields(type) {
   return type === 'consignee' ? {
     name: 'consignee_name',
+    byname: 'consignee_byname',
     province: 'consignee_province',
     city: 'consignee_city',
     district: 'consignee_district',
@@ -27,6 +28,7 @@ function getRenderFields(type) {
     email: 'consignee_email',
   } : {
     name: 'consigner_name',
+    byname: 'consigner_byname',
     province: 'consigner_province',
     city: 'consigner_city',
     district: 'consigner_district',
@@ -88,6 +90,7 @@ export default class ConsignInfo extends React.Component {
       const consignKey = `${this.props.type}_id`;
       this.props.setConsignFields({
         [consignKey]: selectConsignLoc.node_id,
+        [this.renderFields.byname]: selectConsignLoc.byname,
         [this.renderFields.province]: selectConsignLoc.province,
         [this.renderFields.city]: selectConsignLoc.city,
         [this.renderFields.district]: selectConsignLoc.district,

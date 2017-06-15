@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Card, Row, Col, Button, Upload, Modal, Progress, Switch } from 'antd';
+import { Card, Row, Col, Button, Upload, Modal, Progress, Switch, Tooltip, Icon } from 'antd';
 import RateSourceTable from './rateSourceTable';
 import RateEndTable from './rateEndTable';
 import { loadRateEnds } from 'common/reducers/transportTariff';
@@ -104,6 +104,15 @@ export default class TariffRatesForm extends React.Component {
                     添加
                   </Button>)}
                   <div className="toolbar-right">
+                    <Tooltip title={
+                      <div>
+                        <div>模糊匹配： 计费时优先完全匹配四级地址和别名，其次模糊匹配四级地址，例如：始发地【上海市嘉定区】 会匹配到 始发地【上海市】 线路中</div>
+                        <div>精确匹配： 计费时完全匹配四级地址和别名</div>
+                      </div>
+                    }
+                    >
+                      <Icon type="question-circle-o" />
+                    </Tooltip>
                     <span>精确匹配: </span>
                     {getFieldDecorator('accurateMatch', {
                       valuePropName: 'checked',

@@ -12,12 +12,12 @@ export default class AddressColumn extends React.Component {
   render() {
     const { shipment, consignType } = this.props;
     const maxLen = 8;
-    const text = renderConsignLoc(shipment, consignType);
+    const text = shipment[`${consignType}_byname`] || renderConsignLoc(shipment, consignType);
     if (text.length > maxLen) {
-      return (<TrimSpan text={`${renderConsignLoc(shipment, consignType)} ${shipment[`${consignType}_addr`] || ''}`} maxLen={maxLen} />);
+      return (<TrimSpan text={`${text} ${shipment[`${consignType}_addr`] || ''}`} maxLen={maxLen} />);
     } else {
       return (
-        <Tooltip title={`${renderConsignLoc(shipment, consignType)} ${shipment[`${consignType}_addr`] || ''}`} >{text}</Tooltip>
+        <Tooltip title={`${text} ${shipment[`${consignType}_addr`] || ''}`} >{text}</Tooltip>
       );
     }
   }

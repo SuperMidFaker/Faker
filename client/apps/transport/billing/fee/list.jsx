@@ -11,7 +11,7 @@ import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { loadFees, changeFeesFilter, loadPartners, showAdvanceModal, showSpecialChargeModal } from 'common/reducers/transportBilling';
 import TrimSpan from 'client/components/trimSpan';
-import { renderConsignLoc } from '../../common/consignLocation';
+import AddressColumn from '../../common/addressColumn';
 import { createFilename } from 'client/util/dataTransform';
 import ExceptionListPopover from '../../tracking/land/modals/exception-list-popover';
 import ShipmentDockPanel from '../../shipment/dock/shipmentDockPanel';
@@ -394,14 +394,14 @@ export default class FeesList extends React.Component {
       dataIndex: 'consigner_province',
       width: 140,
       render(o, record) {
-        return (<TrimSpan text={renderConsignLoc(record, 'consigner')} maxLen={8} />);
+        return (<AddressColumn shipment={record} consignType="consigner" />);
       },
     }, {
       title: '目的地',
       dataIndex: 'consignee_province',
       width: 140,
       render(o, record) {
-        return (<TrimSpan text={renderConsignLoc(record, 'consignee')} maxLen={8} />);
+        return (<AddressColumn shipment={record} consignType="consignee" />);
       },
     }, {
       title: '实际提货时间',
