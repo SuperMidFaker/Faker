@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Form, Icon, Input, Layout, Radio, Select, message } from 'antd';
+import { Breadcrumb, Button, Form, Icon, Input, Layout, Radio, Select, Tooltip, message } from 'antd';
 import { loadSkusByWarehouse } from 'common/reducers/cwmSku';
 import Table from 'client/components/remoteAntTable';
 import SearchBar from 'client/components/search-bar';
@@ -157,9 +157,21 @@ export default class SHFTZCargoList extends React.Component {
       },
     };
     this.dataSource.remotes = skulist;
-    const columns = [{
+    const ownerColumns = [{
       dataIndex: 'owner_code',
       key: 'owner_name',
+    }, {
+      width: 40,
+      fixed: 'right',
+      render: (o, record) => {
+        if (record.mode !== 'slave') {
+          return (
+            <Tooltip placement="bottom" title="启用分拨模式">
+              <Button disabled={!record.upgrade} shape="circle" icon="to-top" onClick={() => this.handleUpgrade(record)} />
+            </Tooltip>
+          );
+        }
+      },
     }];
     const radioStyle = {
       display: 'block',
@@ -189,7 +201,7 @@ export default class SHFTZCargoList extends React.Component {
                   size="large"
                 />
               </div>
-              <Table columns={columns} showHeader={false} />
+              <Table columns={ownerColumns} showHeader={false} />
             </div>
           </div>
         </Sider>
