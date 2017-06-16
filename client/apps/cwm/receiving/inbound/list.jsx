@@ -147,7 +147,7 @@ export default class ReceivingInboundList extends React.Component {
     });
   }
   handleReceive = (row) => {
-    const link = `/cwm/receiving/inbound/receive/${row.rn_no}`;
+    const link = `/cwm/receiving/inbound/receive/${row.asn_no}`;
     this.context.router.push(link);
   }
   render() {
@@ -195,9 +195,9 @@ export default class ReceivingInboundList extends React.Component {
               {this.msg('receivingInound')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <RadioGroup defaultValue="receiving" onChange={this.handleStatusChange} size="large" >
-            <RadioButton value="receiving">收货</RadioButton>
-            <RadioButton value="puttingaway">上架</RadioButton>
+          <RadioGroup defaultValue="receive" onChange={this.handleStatusChange} size="large" >
+            <RadioButton value="receive">收货</RadioButton>
+            <RadioButton value="putaway">上架</RadioButton>
             <RadioButton value="completed">入库完成</RadioButton>
           </RadioGroup>
         </Header>

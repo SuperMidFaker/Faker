@@ -12,9 +12,9 @@ import RowUpdater from 'client/components/rowUpdater';
 import TrimSpan from 'client/components/trimSpan';
 import connectNav from 'client/common/decorators/connect-nav';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
-import { loadAsnLists, releaseAsn, cancelAsn } from 'common/reducers/cwmReceive';
 import { CWM_SHFTZ_APIREG_STATUS, CWM_ASN_STATUS } from 'common/constants';
 import { formatMsg } from '../message.i18n';
+import { loadAsnLists, releaseAsn, cancelAsn, receiveCompleted, asnFilterChange } from 'common/reducers/cwmReceive';
 
 const { Header, Content } = Layout;
 const Option = Select.Option;
@@ -41,7 +41,7 @@ function fetchData({ state, dispatch }) {
     owners: state.cwmContext.whseAttrs.owners,
     loginId: state.account.loginId,
   }),
-  { switchDefaultWhse, loadAsnLists, releaseAsn, cancelAsn }
+  { switchDefaultWhse, loadAsnLists, releaseAsn, cancelAsn, receiveCompleted, asnFilterChange }
 )
 @connectNav({
   depth: 2,
@@ -58,6 +58,9 @@ export default class ReceivingASNList extends React.Component {
   state = {
     selectedRowKeys: [],
     searchInput: '',
+  }
+  componentWillUnmount() {
+    this.props.asnFilterChange('pending');
   }
   msg = formatMsg(this.props.intl)
   columns = [{
@@ -150,11 +153,9 @@ export default class ReceivingASNList extends React.Component {
       }
     },
   }]
-
-  handleStatusChange = (ev) => {
-    if (ev.target.value === this.props.listFilter.status) {
-
-    }
+  handleComplete = (row) => {
+    this.props.receiveCompleted(row.asn_no);
+    this.handleListReload();
   }
   handleCreateASN = () => {
     this.context.router.push('/cwm/receiving/asn/create');
@@ -210,6 +211,7 @@ export default class ReceivingASNList extends React.Component {
     });
   }
   handleStatusChange = (e) => {
+    this.props.asnFilterChange(e.target.value);
     const filters = { ...this.props.filters, status: e.target.value };
     const whseCode = this.props.defaultWhse.code;
     this.props.loadAsnLists({
@@ -220,6 +222,7 @@ export default class ReceivingASNList extends React.Component {
     });
   }
   handleOwnerChange = (value) => {
+    this.props.asnFilterChange(value);
     const filters = { ...this.props.filters, ownerCode: value };
     const whseCode = this.props.defaultWhse.code;
     this.props.loadAsnLists({
