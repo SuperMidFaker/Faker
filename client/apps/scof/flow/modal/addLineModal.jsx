@@ -147,12 +147,14 @@ export default class AddLineModal extends React.Component {
           <FormItem label="运输时间" style={style}>
             <InputNumber value={line.time} style={{ width: '100%' }} onChange={value => this.handleChange('time', value)} />
           </FormItem>
+          {tariff.meter === 't*km' &&
           <FormItem label="公里数" style={style}>
             <InputNumber value={line.km} style={{ width: '100%' }} onChange={value => this.handleChange('km', value)} />
-          </FormItem>
+          </FormItem>}
+          {tariff.meter === 't*km' &&
           <FormItem label="起步价" style={style}>
             <InputNumber value={line.flare} style={{ width: '100%' }} onChange={value => this.handleChange('flare', value)} />
-          </FormItem>
+          </FormItem>}
           {varColumns.map(item =>
             (<FormItem label={item.title} style={style}>
               <InputNumber value={line[`gradients${item.index}`]} style={{ width: '100%' }} onChange={value => this.handleChange(`gradients${item.index}`, value)} />
