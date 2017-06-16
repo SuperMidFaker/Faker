@@ -18,7 +18,6 @@ const Option = Select.Option;
     units: state.cwmSku.params.units,
     currencies: state.cwmSku.params.currencies,
     skuForm: state.cwmSku.skuForm,
-    skuHsForm: state.cwmSku.skuHsForm,
   }),
   { setSkuForm }
 )
@@ -102,7 +101,7 @@ export default class MainForm extends Component {
     }
   }
   render() {
-    const { form: { getFieldDecorator }, owner, units, currencies, skuForm, skuHsForm, mode } = this.props;
+    const { form: { getFieldDecorator }, owner, units, currencies, skuForm, mode } = this.props;
     return (
       <div>
         <Card title="产品属性">
@@ -287,17 +286,17 @@ export default class MainForm extends Component {
           <Row gutter={16}>
             <Col sm={24} lg={8}>
               <FormItem label={this.msg('HSCode')}>
-                <Input value={skuHsForm.hscode} disabled />
+                <Input value={skuForm.hscode} disabled />
               </FormItem>
             </Col>
             <Col sm={24} lg={8}>
-              <FormItem label="品名">
-                <Input value={skuHsForm.g_name} disabled />
+              <FormItem label="规格型号">
+                <Input value={skuForm.model} disabled />
               </FormItem>
             </Col>
             <Col sm={24} lg={8}>
               <FormItem label="原产国">
-                <Input value={skuHsForm.country} disabled />
+                <Input value={skuForm.country} disabled />
               </FormItem>
             </Col>
           </Row>

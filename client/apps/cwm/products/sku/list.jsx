@@ -8,7 +8,7 @@ import Table from 'client/components/remoteAntTable';
 import SearchBar from 'client/components/search-bar';
 import ButtonToggle from 'client/components/ButtonToggle';
 import connectNav from 'client/common/decorators/connect-nav';
-import { setCurrentOwner, loadOwnerSkus, delSku, openApplyPackingRuleModal } from 'common/reducers/cwmSku';
+import { setCurrentOwner, syncTradeItemSkus, loadOwnerSkus, delSku, openApplyPackingRuleModal } from 'common/reducers/cwmSku';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import PackingRulePane from './panes/packingRulePane';
 import ApplyPackingRuleModal from './modal/applyPackingRuleModal';
@@ -27,11 +27,14 @@ const Panel = Collapse.Panel;
     owners: state.cwmContext.whseAttrs.owners,
     owner: state.cwmSku.owner,
     loading: state.cwmSku.loading,
+    syncing: state.cwmSku.skuSyncing,
     skulist: state.cwmSku.list,
     listFilter: state.cwmSku.listFilter,
     sortFilter: state.cwmSku.sortFilter,
+    loginId: state.account.loginId,
+    tenantId: state.account.tenantId,
   }),
-  { setCurrentOwner, loadOwnerSkus, switchDefaultWhse, delSku, openApplyPackingRuleModal }
+  { setCurrentOwner, syncTradeItemSkus, loadOwnerSkus, switchDefaultWhse, delSku, openApplyPackingRuleModal }
 )
 @connectNav({
   depth: 2,
@@ -58,7 +61,9 @@ export default class CWMSkuList extends React.Component {
     tableOwners: [],
   }
   componentWillMount() {
-    this.props.setCurrentOwner(this.props.owners[0] || {});
+    if (!this.props.owner.id) {
+      this.props.setCurrentOwner(this.props.owners[0] || {});
+    }
     if (this.props.owner.id) {
       this.props.loadOwnerSkus({
         owner_partner_id: this.props.owner.id,
@@ -94,29 +99,28 @@ export default class CWMSkuList extends React.Component {
   columns = [{
     title: 'SKU',
     dataIndex: 'sku',
-    width: 120,
+    width: 200,
   }, {
     title: this.msg('productNo'),
-    width: 120,
+    width: 180,
     dataIndex: 'product_no',
   }, {
     title: this.msg('hscode'),
-    width: 120,
+    width: 200,
     dataIndex: 'hscode',
   }, {
     title: this.msg('productCnDesc'),
-    width: 200,
     dataIndex: 'desc_cn',
   }, {
     title: this.msg('productEnDesc'),
-    width: 200,
     dataIndex: 'desc_en',
   }, {
     title: this.msg('productType'),
     dataIndex: 'type',
+    width: 200,
   }, {
     title: this.msg('opColumn'),
-    width: 100,
+    width: 200,
     fixed: 'right',
     render: (_, row) => (
       <div>
@@ -204,6 +208,24 @@ export default class CWMSkuList extends React.Component {
       }
     });
   }
+  handleTradeItemsSync = () => {
+    this.props.syncTradeItemSkus(this.props.tenantId, this.props.owner.id, this.props.loginId)
+      .then((result) => {
+        if (result.error) {
+          if (result.error.message === 'NO_OWNER_REPO') {
+            message.error('当前货主企业物料库未创建');
+          }
+        } else {
+          this.props.loadOwnerSkus({
+            owner_partner_id: this.props.owner.id,
+            filter: JSON.stringify(this.props.listFilter),
+            sorter: JSON.stringify(this.props.sortFilter),
+            pageSize: this.props.skulist.pageSize,
+            current: 1,
+          });
+        }
+      });
+  }
   handleCreateBtnClick = () => {
     this.context.router.push('/cwm/products/sku/create');
   }
@@ -217,7 +239,7 @@ export default class CWMSkuList extends React.Component {
     this.props.openApplyPackingRuleModal();
   }
   render() {
-    const { skulist, owner, whse, whses, loading } = this.props;
+    const { skulist, owner, whse, whses, loading, syncing } = this.props;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -264,13 +286,13 @@ export default class CWMSkuList extends React.Component {
             </Breadcrumb>}
             {owner.id &&
             <div className="top-bar-tools">
-              <Button size="large" icon="sync">
+              <Button size="large" icon="sync" onClick={this.handleTradeItemsSync} loading={syncing}>
                 {this.msg('syncTradeItems')}
               </Button>
-              <Button size="large" icon="upload">
+              <Button size="large" icon="upload" disabled={syncing}>
                 {this.msg('productImport')}
               </Button>
-              <Button type="primary" size="large" icon="plus" onClick={this.handleCreateBtnClick}>
+              <Button type="primary" size="large" icon="plus" onClick={this.handleCreateBtnClick} disabled={syncing}>
                 {this.msg('createSKU')}
               </Button>
               <ButtonToggle size="large" iconOn="setting" iconOff="setting" onClick={this.toggleRightSider} />
