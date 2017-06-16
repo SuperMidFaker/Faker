@@ -81,11 +81,28 @@ export default class ReceiveInbound extends Component {
           currentStatus: status,
         });
       }
-    ).then(this.checkConfirm(this.state.inboundProducts));
+    );
     this.props.loadLocations(defaultWhse.code);
   }
   msg = key => formatMsg(this.props.intl, key);
-
+  handleReload = () => {
+    this.props.getInboundDetail(this.props.params.asnNo).then(
+      (result) => {
+        let status = 0;
+        if (result.data.inboundHead.status === 3) {
+          status = 2;
+        }
+        if (result.data.inboundHead.status === 5) {
+          status = 3;
+        }
+        this.setState({
+          inboundHead: result.data.inboundHead,
+          inboundProducts: result.data.inboundProducts,
+          currentStatus: status,
+        });
+      }
+    );
+  }
   handleReceivingModeChange = (ev) => {
     this.setState({
       receivingMode: ev.target.value,
@@ -160,7 +177,6 @@ export default class ReceiveInbound extends Component {
     });
   }
   checkConfirm = (inboundProducts) => {
-    console.log(inboundProducts);
     if (inboundProducts.length === 0) this.setState({ confirm: true });
     for (let i = 0; i < inboundProducts.length; i++) {
       if ((inboundProducts[i].received_pack_qty && inboundProducts[i].location.length !== 0) || (inboundProducts[i].received_pack_qty !== null && !inboundProducts[i].received_pack_qty)) {
@@ -388,7 +404,7 @@ export default class ReceiveInbound extends Component {
               <Table columns={this.columns} rowSelection={rowSelection} dataSource={inboundProducts} rowKey="asn_seq_no"
                 scroll={{ x: true }}
               />
-              <ReceivingModal receivingMode={this.state.receivingMode} />
+              <ReceivingModal reload={this.handleReload} receivingMode={this.state.receivingMode} />
             </Card>
           </Form>
         </Content>

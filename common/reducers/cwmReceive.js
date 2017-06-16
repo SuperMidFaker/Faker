@@ -6,7 +6,9 @@ const actionTypes = createActionTypes('@@welogix/cwm/receive/', [
   'HIDE_DETAIL_MODAL', 'SHOW_DETAIL_MODAL',
   'ADD_TEMPORARY', 'CLEAR_TEMPORARY',
   'ADD_ASN', 'ADD_ASN_SUCCEED', 'ADD_ASN_FAIL',
+  'UPDATE_ASN', 'UPDATE_ASN_SUCCEED', 'UPDATE_ASN_FAIL',
   'LOAD_PRODUCTS', 'LOAD_PRODUCTS_SUCCEED', 'LOAD_PRODUCTS_FAIL',
+  'LOAD_ASN', 'LOAD_ASN_SUCCEED', 'LOAD_ASN_FAIL',
   'LOAD_ASN_LISTS', 'LOAD_ASN_LISTS_SUCCEED', 'LOAD_ASN_LISTS_FAIL',
   'RELEASE_ASN', 'RELEASE_ASN_SUCCEED', 'RELEASE_ASN_FAIL',
   'CANCEL_ASN', 'CANCEL_ASN_SUCCEED', 'CANCEL_ASN_FAIL',
@@ -17,6 +19,8 @@ const actionTypes = createActionTypes('@@welogix/cwm/receive/', [
   'LOAD_PRODUCT_DETAILS', 'LOAD_PRODUCT_DETAILS_SUCCEED', 'LOAD_PRODUCT_DETAILS_FAIL',
   'UPDATE_PRODUCT_DETAILS', 'UPDATE_PRODUCT_DETAILS_SUCCEED', 'UPDATE_PRODUCT_DETAILS_FAIL',
   'CONFIRM_PRODUCT_DETAILS', 'CONFIRM_PRODUCT_DETAILS_SUCCEED', 'CONFIRM_PRODUCT_DETAILS_FAIL',
+  'RECEIVE_COMPLETED', 'RECEIVE_COMPLETED_SUCCEED', 'RECEIVE_COMPLETED_FAIL',
+  'ASN_STATUS_CHANGE',
 ]);
 
 const initialState = {
@@ -50,7 +54,7 @@ const initialState = {
     current: 1,
     data: [],
   },
-  inboundFilters: { status: 'all', ownerCode: 'all' },
+  inboundFilters: { status: 'receive', ownerCode: 'all' },
 };
 
 export default function reducer(state = initialState, action) {
@@ -75,7 +79,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.HIDE_DETAIL_MODAL:
       return { ...state, detailModal: { ...state.detailModal, visible: false } };
     case actionTypes.ADD_TEMPORARY:
-      return { ...state, temporaryDetails: [...state.temporaryDetails, action.data] };
+      return { ...state, temporaryDetails: Array.isArray(action.data) ? action.data : [...state.temporaryDetails, action.data] };
     case actionTypes.CLEAR_TEMPORARY:
       return { ...state, temporaryDetails: [] };
     case actionTypes.LOAD_PRODUCTS_SUCCEED:
@@ -84,6 +88,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, asn: action.result.data };
     case actionTypes.LOAD_INBOUNDS_SUCCEED:
       return { ...state, inbound: action.result.data };
+    case actionTypes.ASN_STATUS_CHANGE:
+      return { ...state, asnFilters: { ...state.asnFilters, status: action.status } };
     default:
       return state;
   }
@@ -150,6 +156,21 @@ export function addASN(data) {
   };
 }
 
+export function updateASN(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_ASN,
+        actionTypes.UPDATE_ASN_SUCCEED,
+        actionTypes.UPDATE_ASN_FAIL,
+      ],
+      endpoint: 'v1/cwm/receive/asn/update',
+      method: 'post',
+      data,
+    },
+  };
+}
+
 export function loadProducts(productNo, partnerId) {
   return {
     [CLIENT_API]: {
@@ -161,6 +182,21 @@ export function loadProducts(productNo, partnerId) {
       endpoint: 'v1/cwm/receive/productNos/load',
       method: 'get',
       params: { productNo, partnerId },
+    },
+  };
+}
+
+export function loadAsn(asnNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_ASN,
+        actionTypes.LOAD_ASN_SUCCEED,
+        actionTypes.LOAD_ASN_FAIL,
+      ],
+      endpoint: 'v1/cwm/receive/asn/load',
+      method: 'get',
+      params: { asnNo },
     },
   };
 }
@@ -312,5 +348,27 @@ export function confirm(inboundNo, asnNo) {
       method: 'post',
       data: { inboundNo, asnNo },
     },
+  };
+}
+
+export function receiveCompleted(asnNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.RECEIVE_COMPLETED,
+        actionTypes.RECEIVE_COMPLETED_SUCCEED,
+        actionTypes.RECEIVE_COMPLETED_FAIL,
+      ],
+      endpoint: 'v1/cwm/receive/receive/completed',
+      method: 'post',
+      data: { asnNo },
+    },
+  };
+}
+
+export function asnFilterChange(status) {
+  return {
+    type: actionTypes.ASN_STATUS_CHANGE,
+    status,
   };
 }

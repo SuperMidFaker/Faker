@@ -87,7 +87,6 @@ export default class ReceivingModal extends Component {
       damage_level: '',
     };
     dataSource.push(newDate);
-    console.log(dataSource);
     this.setState({ dataSource });
   }
   handleSubmit = () => {
@@ -95,6 +94,7 @@ export default class ReceivingModal extends Component {
     const { loginId, tenantId, defaultWhse, inboundNo, seqNo, asnNo } = this.props;
     this.props.updateProductDetails(loginId, tenantId, defaultWhse.code, inboundNo, dataSource, seqNo, asnNo);
     this.props.hideReceiveModal();
+    this.props.reload();
   }
   columns = [{
     title: '商品货号',
