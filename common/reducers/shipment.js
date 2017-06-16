@@ -44,6 +44,7 @@ const actionTypes = createActionTypes('@@welogix/transport/shipment/', [
   'GET_SHIPMT_ORDER_NO', 'GET_SHIPMT_ORDER_NO_SUCCEED', 'GET_SHIPMT_ORDER_NO_FAIL',
   'UPDATE_FEE', 'UPDATE_FEE_SUCCEED', 'UPDATE_FEE_FAIL',
   'TOGGLE_RECALCULATE_CHARGE',
+  'LOAD_TARIFF_BY_QUOTENO', 'LOAD_TARIFF_BY_QUOTENO_SUCCEED', 'LOAD_TARIFF_BY_QUOTENO_FAIL',
 ]);
 appendFormAcitonTypes('@@welogix/transport/shipment/', actionTypes);
 
@@ -180,9 +181,9 @@ export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.LOAD_FORMREQUIRE:
       // force formData change to rerender after formrequire load
-      return { ...state, formData: { goodslist: [] } };
+      return { ...state };
     case actionTypes.LOAD_FORMREQUIRE_SUCCEED:
-      return { ...state, formRequire: action.result.data, formData: { ...initialState.formData, ...state.formData } };
+      return { ...state, formRequire: action.result.data };
     case actionTypes.SET_CONSIGN_FIELDS:
       return { ...state, formData: { ...state.formData, ...action.data } };
     case actionTypes.SAVE_LOCAL_GOODS:
@@ -704,6 +705,22 @@ export function computeCostCharge(data) {
       endpoint: 'v1/transport/tariff/cost/compute',
       method: 'post',
       data,
+      origin: 'mongo',
+    },
+  };
+}
+
+export function loadTariffByQuoteNo(quoteNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_TARIFF_BY_QUOTENO,
+        actionTypes.LOAD_TARIFF_BY_QUOTENO_SUCCEED,
+        actionTypes.LOAD_TARIFF_BY_QUOTENO_FAIL,
+      ],
+      endpoint: 'v1/transport/tariff/byQuoteNo',
+      method: 'get',
+      params: { quoteNo },
       origin: 'mongo',
     },
   };

@@ -2,16 +2,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape } from 'react-intl';
-import { Row, Col, Form, Input } from 'antd';
+import { Row, Col, Form, Input, Select } from 'antd';
 import * as Location from 'client/util/location';
-import AutoCompSelectItem from './autocomp-select-item';
 import InputItem from './input-item';
-import { setConsignFields } from 'common/reducers/shipment';
+import { setConsignFields, loadTariffByQuoteNo } from 'common/reducers/shipment';
 import PureRenderMixin from 'react/lib/ReactComponentWithPureRenderMixin';
+import { toggleAddLocationModal } from 'common/reducers/scofFlow';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 const formatMsg = format(messages);
 const FormItem = Form.Item;
+const Option = Select.Option;
 
 function getRenderFields(type) {
   return type === 'consignee' ? {
@@ -56,8 +57,11 @@ function getFieldDefaults(state, type) {
     consignLocations: props.type === 'consignee' ?
       state.shipment.formRequire.consigneeLocations.filter(cl => cl.ref_partner_id === state.shipment.formData.customer_partner_id || cl.ref_partner_id === -1) :
       state.shipment.formRequire.consignerLocations.filter(cl => cl.ref_partner_id === state.shipment.formData.customer_partner_id || cl.ref_partner_id === -1),
+    customerPartnerId: state.shipment.formData.customer_partner_id,
+    customerName: state.shipment.formData.customer_name,
+    quoteNo: state.shipment.formData.quote_no,
   }),
-  { setConsignFields }
+  { setConsignFields, loadTariffByQuoteNo, toggleAddLocationModal }
 )
 export default class ConsignInfo extends React.Component {
   static propTypes = {
@@ -70,43 +74,24 @@ export default class ConsignInfo extends React.Component {
     formhoc: PropTypes.object.isRequired,
     fieldDefaults: PropTypes.object.isRequired,
     vertical: PropTypes.bool,
+    customerPartnerId: PropTypes.number.isRequired,
+    customerName: PropTypes.string.isRequired,
+    loadTariffByQuoteNo: PropTypes.func.isRequired,
+    quoteNo: PropTypes.string.isRequired,
+    toggleAddLocationModal: PropTypes.func.isRequired,
   }
   constructor(...args) {
     super(...args);
     this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
   }
   msg = (key, values) => formatMsg(this.props.intl, key, values)
-  handleItemSelect = (name) => {
-    let selectConsignLoc;
-    this.props.consignLocations.forEach((cl) => {
-      if (cl.name === name) {
-        selectConsignLoc = cl;
-      }
-    });
-    if (selectConsignLoc) {
-      const consignKey = `${this.props.type}_id`;
-      this.props.setConsignFields({
-        [consignKey]: selectConsignLoc.node_id,
-        [this.renderFields.byname]: selectConsignLoc.byname,
-        [this.renderFields.province]: selectConsignLoc.province,
-        [this.renderFields.city]: selectConsignLoc.city,
-        [this.renderFields.district]: selectConsignLoc.district,
-        [this.renderFields.street]: selectConsignLoc.street,
-        [this.renderFields.regionCode]: selectConsignLoc.region_code,
-      });
-      this.props.formhoc.setFieldsValue({
-        [this.renderFields.addr]: selectConsignLoc.addr,
-        [this.renderFields.contact]: selectConsignLoc.contact,
-        [this.renderFields.mobile]: selectConsignLoc.mobile,
-        [this.renderFields.email]: selectConsignLoc.email,
-      });
-    }
-  }
   handleAutoInputChange = (val) => {
     if (val === undefined || val === '') {
       const consignKey = `${this.props.type}_id`;
       this.props.setConsignFields({
         [consignKey]: undefined,
+        [this.renderFields.name]: '',
+        [this.renderFields.byname]: '',
         [this.renderFields.province]: '',
         [this.renderFields.city]: '',
         [this.renderFields.district]: '',
@@ -121,16 +106,62 @@ export default class ConsignInfo extends React.Component {
       });
     }
   }
-  // handleRegionValue = (region) => {
-  //   const [code, province, city, district, street] = region;
-  //   this.props.setConsignFields({
-  //     [this.renderFields.province]: province || '',
-  //     [this.renderFields.city]: city || '',
-  //     [this.renderFields.district]: district || '',
-  //     [this.renderFields.street]: street || '',
-  //     [this.renderFields.regionCode]: code,
-  //   });
-  // }
+  handleConsignChange = (value) => {
+    if (value === -1) {
+      if (this.props.type === 'consigner') {
+        this.handleShowAddLocationModal(0);
+      } else if (this.props.type === 'consignee') {
+        this.handleShowAddLocationModal(1);
+      }
+    } else if (value === undefined) {
+      this.handleAutoInputChange(value);
+    } else {
+      const selectConsignLoc = this.props.consignLocations.find(cl => cl.node_id === value);
+      if (selectConsignLoc) {
+        const consignKey = `${this.props.type}_id`;
+        this.props.setConsignFields({
+          [consignKey]: selectConsignLoc.node_id,
+          [this.renderFields.name]: selectConsignLoc.name,
+          [this.renderFields.byname]: selectConsignLoc.byname,
+          [this.renderFields.province]: selectConsignLoc.province,
+          [this.renderFields.city]: selectConsignLoc.city,
+          [this.renderFields.district]: selectConsignLoc.district,
+          [this.renderFields.street]: selectConsignLoc.street,
+          [this.renderFields.regionCode]: selectConsignLoc.region_code,
+        });
+        this.props.formhoc.setFieldsValue({
+          [this.renderFields.addr]: selectConsignLoc.addr,
+          [this.renderFields.contact]: selectConsignLoc.contact,
+          [this.renderFields.mobile]: selectConsignLoc.mobile,
+          [this.renderFields.email]: selectConsignLoc.email,
+        });
+      }
+    }
+  }
+  handleShowAddLocationModal = (type) => {
+    const { quoteNo } = this.props;
+    if (quoteNo) {
+      this.props.loadTariffByQuoteNo(quoteNo).then((result) => {
+        if (result.data) {
+          this.props.toggleAddLocationModal({
+            visible: true,
+            partnerId: this.props.customerPartnerId,
+            partnerName: this.props.customerName,
+            type,
+            tariffId: result.data ? result.data._id : '',
+          });
+        }
+      });
+    } else {
+      this.props.toggleAddLocationModal({
+        visible: true,
+        partnerId: this.props.customerPartnerId,
+        partnerName: this.props.customerName,
+        type,
+        tariffId: '',
+      });
+    }
+  }
   renderMsgKeys = this.props.type === 'consignee' ? {
     title: 'consigneeInfo',
     name: 'consignee',
@@ -167,28 +198,35 @@ export default class ConsignInfo extends React.Component {
       }],
     },
   }
+  renderConsign = consign => `${consign.name} | ${Location.renderLoc(consign)} | ${consign.byname || ''} | ${consign.contact || ''}`
   render() {
     const {
-      formhoc, consignLocations,
+      formhoc, consignLocations, customerPartnerId,
       fieldDefaults, vertical, type,
     } = this.props;
-    const locOptions = consignLocations.map(cl => ({
-      name: cl.name,
-      key: `${cl.node_id}${cl.name}`,
-    }));
     const { name, byname, addr, contact, mobile, email } = this.renderFields;
     const consigLocation = (fieldDefaults && fieldDefaults[byname]) ? fieldDefaults[byname] : Location.renderConsignLocation(fieldDefaults, type);
     let content = '';
     if (vertical) {
       content = (
         <div>
-          <AutoCompSelectItem labelName={this.msg(this.renderMsgKeys.name)}
-            field={this.renderFields.name} {...this.renderRules.name}
-            optionField="name" optionKey="key" optionValue="name"
-            formhoc={formhoc} optionData={locOptions} onSelect={this.handleItemSelect}
-            allowClear onChange={this.handleAutoInputChange}
-            initialValue={fieldDefaults[name]}
-          />
+          <FormItem label={this.msg(this.renderMsgKeys.name)}>
+            <Select allowClear size="large" showArrow value={fieldDefaults[name]} optionLabelProp="name"
+              onChange={this.handleConsignChange}
+              onSearch={this.handleAutoInputChange}
+              dropdownMatchSelectWidth={false}
+              dropdownStyle={{ width: 400 }}
+              optionFilterProp="children"
+              showSearch
+              notFoundContent={<a onClick={() => this.handleShowAddLocationModal(this.props.type === 'consigner' ? 0 : 1)}>+ 添加地址</a>}
+            >
+              {consignLocations.filter(cl => cl.ref_partner_id === customerPartnerId || cl.ref_partner_id === -1)
+                .map(dw => <Option value={dw.node_id} key={dw.node_id} name={dw.name}>{this.renderConsign(dw)}</Option>)
+            }
+              <Option value={-1} key={-1}>+ 添加地址</Option>
+            </Select>
+          </FormItem>
+
           <FormItem label={this.msg(this.renderMsgKeys.portal)} {...this.renderRules.portal}>
             <Input value={consigLocation} />
           </FormItem>
@@ -214,13 +252,22 @@ export default class ConsignInfo extends React.Component {
       content = (
         <Row gutter={16}>
           <Col sm={24} md={16}>
-            <AutoCompSelectItem labelName={this.msg(this.renderMsgKeys.name)}
-              field={this.renderFields.name} {...this.renderRules.name}
-              optionField="name" optionKey="key" optionValue="name"
-              formhoc={formhoc} optionData={locOptions} onSelect={this.handleItemSelect}
-              allowClear onChange={this.handleAutoInputChange}
-              initialValue={fieldDefaults[name]}
-            />
+            <FormItem label={this.msg(this.renderMsgKeys.name)}>
+              <Select allowClear size="large" showArrow value={fieldDefaults[name]} optionLabelProp="name"
+                onChange={this.handleConsignChange}
+                onSearch={this.handleAutoInputChange}
+                dropdownMatchSelectWidth={false}
+                dropdownStyle={{ width: 400 }}
+                optionFilterProp="children"
+                showSearch
+                notFoundContent={<a onClick={() => this.handleShowAddLocationModal(this.props.type === 'consigner' ? 0 : 1)}>+ 添加地址</a>}
+              >
+                {consignLocations.filter(cl => cl.ref_partner_id === customerPartnerId || cl.ref_partner_id === -1)
+                  .map(dw => <Option value={dw.node_id} key={dw.node_id} name={dw.name}>{this.renderConsign(dw)}</Option>)
+              }
+                <Option value={-1} key={-1}>+ 添加地址</Option>
+              </Select>
+            </FormItem>
             <FormItem label={this.msg(this.renderMsgKeys.portal)}
               {...this.renderRules.portal}
             >

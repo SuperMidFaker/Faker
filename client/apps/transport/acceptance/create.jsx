@@ -6,7 +6,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege from 'client/common/decorators/withPrivilege';
-import { loadFormRequire, onFormFieldsChange } from 'common/reducers/shipment';
+import { loadFormRequire, onFormFieldsChange, setConsignFields } from 'common/reducers/shipment';
 import { savePending, saveAndAccept, loadTable, saveDraft }
   from 'common/reducers/transport-acceptance';
 import ClientInfo from '../shipment/forms/clientInfo';
@@ -15,6 +15,7 @@ import GoodsInfo from '../shipment/forms/goods-info';
 import ModeInfo from '../shipment/forms/mode-info';
 import CorrelInfo from '../shipment/forms/correlInfo';
 import FreightCharge from '../shipment/forms/freightCharge';
+import AddLocationModal from 'client/apps/scof/flow/modal/addLocationModal';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import globalMessages from 'client/common/root.i18n';
@@ -43,8 +44,9 @@ function fetchData({ state, dispatch, cookie }) {
     pageSize: state.transportAcceptance.table.shipmentlist.pageSize,
     current: state.transportAcceptance.table.shipmentlist.current,
     formRequireJudgeParams: state.shipment.formRequireJudgeParams, // @Form.create... 这一层使用
+    formRequire: state.shipment.formRequire,
   }),
-  { loadTable, savePending, saveAndAccept, saveDraft, onFormFieldsChange })
+  { loadTable, savePending, saveAndAccept, saveDraft, onFormFieldsChange, setConsignFields })
 @connectNav({
   depth: 3,
   moduleName: 'transport',
@@ -69,6 +71,8 @@ export default class ShipmentCreate extends React.Component {
     savePending: PropTypes.func.isRequired,
     saveAndAccept: PropTypes.func.isRequired,
     saveDraft: PropTypes.func.isRequired,
+    formRequire: PropTypes.object.isRequired,
+    setConsignFields: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -172,6 +176,43 @@ export default class ShipmentCreate extends React.Component {
       }
     });
   }
+  handleAddedLocation = (location) => {
+    if (location.type === 0) {
+      const consigner = this.props.formRequire.consignerLocations.find(item => item.node_id === location.id);
+      this.props.setConsignFields({
+        consigner_name: consigner.name,
+        consigner_byname: consigner.byname,
+        consigner_province: consigner.province,
+        consigner_city: consigner.city,
+        consigner_district: consigner.district,
+        consigner_street: consigner.street,
+        consigner_region_code: consigner.region_code,
+      });
+      this.props.form.setFieldsValue({
+        consigner_addr: consigner.addr,
+        consigner_email: consigner.contact,
+        consigner_contact: consigner.mobile,
+        consigner_mobile: consigner.email,
+      });
+    } else if (location.type === 1) {
+      const consignee = this.props.formRequire.consigneeLocations.find(item => item.node_id === location.id);
+      this.props.setConsignFields({
+        consignee_name: consignee.name,
+        consignee_byname: consignee.byname,
+        consignee_province: consignee.province,
+        consignee_city: consignee.city,
+        consignee_district: consignee.district,
+        consignee_street: consignee.street,
+        consignee_region_code: consignee.region_code,
+      });
+      this.props.form.setFieldsValue({
+        consignee_addr: consignee.addr,
+        consignee_email: consignee.contact,
+        consignee_contact: consignee.mobile,
+        consignee_mobile: consignee.email,
+      });
+    }
+  }
   render() {
     const { intl, submitting, form } = this.props;
     return (
@@ -232,6 +273,7 @@ export default class ShipmentCreate extends React.Component {
               </Col>
             </Row>
           </Form>
+          <AddLocationModal onOk={this.handleAddedLocation} />
         </Content>
       </div>
     );

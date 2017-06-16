@@ -2,17 +2,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import moment from 'moment';
 import { Button, Card, Checkbox, message, Alert, Table, Collapse, Form, Input } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import { computeSaleCharge, setConsignFields } from 'common/reducers/shipment';
+import { toggleAddLineModal } from 'common/reducers/scofFlow';
 import { getChargeAmountExpression } from '../../common/charge';
 import InputItem from './input-item';
 import { TARIFF_METER_METHODS, GOODS_TYPES } from 'common/constants';
+import AddLineModal from 'client/apps/scof/flow/modal/addLineModal';
 import messages from '../message.i18n';
 
 const formatMsg = format(messages);
 const Panel = Collapse.Panel;
 const FormItem = Form.Item;
+const ONE_DAY_MS = 24 * 60 * 60 * 1000;
 
 @connect(
   state => ({
@@ -20,7 +24,7 @@ const FormItem = Form.Item;
     formData: state.shipment.formData,
     formRequire: state.shipment.formRequire,
   }),
-  { computeSaleCharge, setConsignFields }
+  { computeSaleCharge, setConsignFields, toggleAddLineModal }
 )
 export default class FreightCharge extends React.Component {
   static propTypes = {
@@ -31,6 +35,7 @@ export default class FreightCharge extends React.Component {
     computeSaleCharge: PropTypes.func.isRequired,
     setConsignFields: PropTypes.func.isRequired,
     formRequire: PropTypes.object.isRequired,
+    toggleAddLineModal: PropTypes.func.isRequired,
   }
   state = {
     computed: false,
@@ -184,7 +189,7 @@ export default class FreightCharge extends React.Component {
         });
         // todo 起步价运费公式? pickup mode=1 x数量?
         const { quoteNo, freight, pickup, deliver, meter, quantity,
-          unitRatio, gradient, miles, coefficient } = result.data;
+          unitRatio, gradient, miles, coefficient, transitTime } = result.data;
         this.props.formhoc.setFieldsValue({
           freight_charge: freight,
           pickup_charge: pickup,
@@ -193,6 +198,7 @@ export default class FreightCharge extends React.Component {
             this.props.formhoc.getFieldValue('surcharge') || this.props.formData.surcharge || 0
           ),
           distance: miles,
+          transit_time: transitTime,
         });
         this.props.setConsignFields({
           quote_no: quoteNo,
@@ -206,7 +212,9 @@ export default class FreightCharge extends React.Component {
               unitRatio, coefficient),
           pickup_checked: true,
           deliver_checked: true,
+          transit_time: transitTime,
         });
+        this.handleTransitChange(transitTime);
       }
     });
   }
@@ -287,13 +295,60 @@ export default class FreightCharge extends React.Component {
         visible: true,
         type: 'error',
         message: '路线不存在',
-        description: '价格协议中未找到对应的路线',
+        description: <div>发货/收货地址不在报价协议的线路里 <a onClick={this.handleShowAddLineModal}>添加到报价协议</a></div>,
       };
     }
     return data;
   }
   handleResult = (data) => {
     this.setState({ alert: data });
+  }
+  handleTransitChange = (value) => {
+    const pickupDt = this.props.formhoc.getFieldValue('pickup_est_date');
+    if (pickupDt && typeof value === 'number') {
+      const deliverDate = new Date(
+        pickupDt.valueOf() + value * ONE_DAY_MS
+      );
+      this.props.formhoc.setFieldsValue({
+        deliver_est_date: moment(deliverDate),
+      });
+    }
+  }
+  handleShowAddLineModal = () => {
+    const { formData } = this.props;
+    if (this.state.tariff && this.state.tariff.agreement) {
+      const line = {
+        source: {
+          code: formData.consigner_region_code,
+          province: formData.consigner_province,
+          city: formData.consigner_city,
+          district: formData.consigner_district,
+          street: formData.consigner_street,
+          name: formData.consigner_byname,
+        },
+        end: {
+          code: formData.consignee_region_code,
+          province: formData.consignee_province,
+          city: formData.consignee_city,
+          district: formData.consignee_district,
+          street: formData.consignee_street,
+          name: formData.consignee_byname,
+        },
+      };
+      const tariff = {
+        ...this.state.tariff,
+        transModeCode: this.state.tariff.agreement.transModeCode,
+        goodsType: this.state.tariff.agreement.goodsType,
+        meter: this.state.tariff.agreement.meter,
+        intervals: this.state.tariff.agreement.intervals,
+        vehicleTypes: this.state.tariff.agreement.vehicleTypes,
+      };
+      this.props.toggleAddLineModal({
+        visible: true,
+        tariff,
+        line,
+      });
+    }
   }
   handlePickupCheck = (ev) => {
     const { formhoc } = this.props;
@@ -493,7 +548,7 @@ export default class FreightCharge extends React.Component {
             </Table>
           </Panel>
         </Collapse>
-
+        <AddLineModal />
       </Card>
     );
   }

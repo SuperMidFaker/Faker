@@ -6,6 +6,7 @@ import { Modal, Form, Input, Row, Col, AutoComplete } from 'antd';
 import RegionCascade from 'client/components/region-cascade';
 import { toggleAddLocationModal, loadTmsBizParams, searchRateEnds } from 'common/reducers/scofFlow';
 import { loadFormRequires } from 'common/reducers/crmOrders';
+import { loadFormRequire } from 'common/reducers/shipment';
 import { addNode } from 'common/reducers/transportResources';
 import { loadRatesSources } from 'common/reducers/transportTariff';
 import { formatMsg } from '../message.i18n';
@@ -29,6 +30,7 @@ const FormItem = Form.Item;
     addNode,
     loadRatesSources,
     searchRateEnds,
+    loadFormRequire,
   }
 )
 @Form.create()
@@ -48,6 +50,7 @@ export default class AddLocationModal extends React.Component {
     loadRatesSources: PropTypes.func.isRequired,
     searchRateEnds: PropTypes.func.isRequired,
     tariffId: PropTypes.string.isRequired,
+    loadFormRequire: PropTypes.func.isRequired,
   }
   state = {
     region: {
@@ -82,6 +85,7 @@ export default class AddLocationModal extends React.Component {
       Promise.all([
         this.props.loadFormRequires({ tenantId }),
         this.props.loadTmsBizParams(tenantId),
+        this.props.loadFormRequire(null, tenantId),
       ]).then(() => {
         if (this.props.onOk) {
           this.props.onOk({ ...result.data, type });

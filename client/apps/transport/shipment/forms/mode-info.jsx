@@ -50,7 +50,6 @@ export default class ModeInfo extends React.Component {
     containerPackagings: PropTypes.array.isRequired,
     type: PropTypes.string,
   }
-
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   handlePickupChange = (pickupDt) => {
     if (pickupDt) {
