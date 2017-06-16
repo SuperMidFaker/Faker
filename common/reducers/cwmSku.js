@@ -5,6 +5,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/sku/', [
   'SET_OWNER', 'SET_FORM', 'CLEAN_FORM',
   'LOAD_OWNERSKUS', 'LOAD_OWNERSKUS_SUCCEED', 'LOAD_OWNERSKUS_FAIL',
   'LOAD_SKUPARAMS', 'LOAD_SKUPARAMS_SUCCEED', 'LOAD_SKUPARAMS_FAIL',
+  'SYNC_TRADESKU', 'SYNC_TRADESKU_SUCCEED', 'SYNC_TRADESKU_FAIL',
   'NEW_SKU', 'NEW_SKU_SUCCEED', 'NEW_SKU_FAIL',
   'DEL_SKU', 'DEL_SKU_SUCCEED', 'DEL_SKU_FAIL',
   'LOAD_SKU', 'LOAD_SKU_SUCCEED', 'LOAD_SKU_FAIL',
@@ -15,6 +16,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/sku/', [
 
 const initialState = {
   loading: false,
+  skuSyncing: false,
   skuSubmitting: false,
   owner: {},
   list: {
@@ -38,9 +40,10 @@ const initialState = {
   skuForm: {
     product_default: true,
     currency: '142', // RMB
+    asn_tag_unit: 'primary',
+    so_tag_unit: 'primary',
     variants: [],
   },
-  skuHsForm: {},
   packingRuleModal: {
     visible: false,
   },
@@ -73,6 +76,11 @@ export default function reducer(state = initialState, action) {
     case actionTypes.NEW_SKU_SUCCEED:
     case actionTypes.NEW_SKU_FAIL:
       return { ...state, skuSubmitting: false };
+    case actionTypes.SYNC_TRADESKU:
+      return { ...state, skuSyncing: true, loading: true };
+    case actionTypes.SYNC_TRADESKU_SUCCEED:
+    case actionTypes.SYNC_TRADESKU_FAIL:
+      return { ...state, skuSyncing: false };
     case actionTypes.LOAD_SKU_SUCCEED:
       return { ...state, skuForm: action.result.data };
     case actionTypes.OPEN_PACKING_RULE_MODAL:
@@ -159,6 +167,21 @@ export function openApplyPackingRuleModal() {
 export function closeApplyPackingRuleModal() {
   return {
     type: actionTypes.CLOSE_APPLY_PACKING_RULE_MODAL,
+  };
+}
+
+export function syncTradeItemSkus(tenantId, ownerPartnerId, loginId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SYNC_TRADESKU,
+        actionTypes.SYNC_TRADESKU_SUCCEED,
+        actionTypes.SYNC_TRADESKU_FAIL,
+      ],
+      endpoint: 'v1/cwm/product/sync/tradeitem/skus',
+      method: 'post',
+      data: { tenantId, ownerPartnerId, loginId },
+    },
   };
 }
 

@@ -51,7 +51,7 @@ export default class EditProductSku extends Component {
     this.props.form.validateFields((errors, values) => {
       if (!errors) {
         const formData = {
-          ...values, ...this.props.skuForm, last_updated_by: this.props.loginId,
+          ...this.props.skuForm, ...values, last_updated_by: this.props.loginId,
         };
         this.props.saveSku(formData).then((result) => {
           if (!result.error) {
