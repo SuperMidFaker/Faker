@@ -8,6 +8,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/shftz/', [
   'PARAMS_LOAD', 'PARAMS_LOAD_SUCCEED', 'PARAMS_LOAD_FAIL',
   'PRODUCT_CARGO_LOAD', 'PRODUCT_CARGO_LOAD_SUCCEED', 'PRODUCT_CARGO_LOAD_FAIL',
   'UPDATE_CARGO_RULE', 'UPDATE_CARGO_RULE_SUCCEED', 'UPDATE_CARGO_RULE_FAIL',
+  'SYNC_SKU', 'SYNC_SKU_SUCCEED', 'SYNC_SKU_FAIL',
 ]);
 
 const initialState = {
@@ -152,3 +153,19 @@ export function updateCargoRule(data) {
     },
   };
 }
+
+export function syncProdSKUS(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SYNC_SKU,
+        actionTypes.SYNC_SKU_SUCCEED,
+        actionTypes.SYNC_SKU_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/product/cargo/skus/sync',
+      method: 'post',
+      data,
+    },
+  };
+}
+

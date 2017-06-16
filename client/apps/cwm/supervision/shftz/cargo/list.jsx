@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Form, Icon, Layout, Radio, Select, message, Table } from 'antd';
-import { loadProductCargo, loadParams, updateCargoRule } from 'common/reducers/cwmShFtz';
+import { Breadcrumb, Button, Form, Icon, Layout, Radio, Select, message, Table, Tag } from 'antd';
+import { loadProductCargo, loadParams, updateCargoRule, syncProdSKUS } from 'common/reducers/cwmShFtz';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import RemoteTable from 'client/components/remoteAntTable';
 import SearchBar from 'client/components/search-bar';
@@ -37,8 +37,20 @@ function fetchData({ dispatch }) {
     whses: state.cwmContext.whses,
     whse: state.cwmContext.defaultWhse,
     owners: state.cwmContext.whseAttrs.owners,
+    units: state.cwmShFtz.params.units.map(un => ({
+      value: un.unit_code,
+      text: un.unit_name,
+    })),
+    currencies: state.cwmShFtz.params.currencies.map(cr => ({
+      value: cr.curr_code,
+      text: cr.curr_name,
+    })),
+    tradeCountries: state.cwmShFtz.params.tradeCountries.map(tc => ({
+      value: tc.cntry_co,
+      text: tc.cntry_name_cn,
+    })),
   }),
-  { loadProductCargo, switchDefaultWhse, updateCargoRule }
+  { loadProductCargo, switchDefaultWhse, updateCargoRule, syncProdSKUS }
 )
 @connectNav({
   depth: 2,
@@ -99,18 +111,40 @@ export default class SHFTZCargoList extends React.Component {
     title: this.msg('unit'),
     width: 200,
     dataIndex: 'unit',
+    render: (o) => {
+      const unit = this.props.units.filter(cur => cur.value === o)[0];
+      const text = unit ? `${unit.value}| ${unit.text}` : o;
+      return text;
+    },
   }, {
     title: this.msg('country'),
     width: 100,
     dataIndex: 'country',
+    render: (o) => {
+      const country = this.props.tradeCountries.filter(cur => cur.value === o)[0];
+      const text = country ? `${country.value}| ${country.text}` : o;
+      return text;
+    },
   }, {
     title: this.msg('currency'),
     width: 100,
     dataIndex: 'currency',
+    render: (o) => {
+      const currency = this.props.currencies.filter(cur => cur.value === o)[0];
+      const text = currency ? `${currency.value}| ${currency.text}` : o;
+      return text;
+    },
   }, {
     title: this.msg('cargoType'),
     width: 100,
     dataIndex: 'cargo_type',
+    render: (o) => {
+      if (o === '13') {
+        return (<Tag color="yellow">非分拨货物</Tag>);
+      } else if (o === '14') {
+        return (<Tag color="green">分拨货物</Tag>);
+      }
+    },
   }, {
     title: this.msg('opColumn'),
     width: 160,
@@ -178,7 +212,14 @@ export default class SHFTZCargoList extends React.Component {
     this.handleCargoLoad(1, this.props.listFilter, record);
   }
   handleSyncProductSKUs = () => {
-
+    const { tenantId, whse } = this.props;
+    this.props.syncProdSKUS({ tenantId, owner: this.state.owner, whseCode: whse.code }).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        this.handleCargoLoad();
+      }
+    });
   }
   handleOwnerSearch = (value) => {
     let owners = this.props.owners;
