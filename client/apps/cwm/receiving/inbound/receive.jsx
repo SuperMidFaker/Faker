@@ -148,7 +148,7 @@ export default class ReceiveInbound extends Component {
     inboundProducts.splice(index, 1, { ...inboundProducts[index], received_pack_qty: receivedPackQty, received_qty: receiveQty });
     this.setState({ inboundProducts });
     this.checkConfirm(inboundProducts);
-    this.props.updateReceivedQty(record.asn_no, record.id, record.inbound_no, receivedPackQty, receiveQty, tenantId, loginId, record.trace_id[0]);
+    this.props.updateReceivedQty(record.asn_no, record.id, record.inbound_no, receivedPackQty, receiveQty, tenantId, loginId, record.trace_id[0], record.asn_seq_no);
   }
   handleProductPutAway = (value, record, index) => {
     this.setState({
@@ -271,11 +271,11 @@ export default class ReceiveInbound extends Component {
     render: (o, record, index) => {
       if (o.length <= 1) {
         return (<Select value={o[0]} style={{ width: 100 }} onChange={value => this.handleProductStatusChange(value, record, index)} disabled={this.state.receivingMode === 'scan'}>
-          <Option value="0">完好</Option>
-          <Option value="1">轻微擦痕</Option>
-          <Option value="2">中度</Option>
-          <Option value="3">重度</Option>
-          <Option value="4">严重磨损</Option>
+          <Option value={0}>完好</Option>
+          <Option value={1}>轻微擦痕</Option>
+          <Option value={2}>中度</Option>
+          <Option value={3}>重度</Option>
+          <Option value={4}>严重磨损</Option>
         </Select>);
       } else {
         return (<Select mode="tags" defaultValue={o} style={{ width: 100 }} disabled />);

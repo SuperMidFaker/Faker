@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Form, Input, Select, DatePicker, Card, Col, Radio, Row } from 'antd';
 import { CWM_ASN_TYPES, CWM_ASN_BONDED_REGTYPES } from 'common/constants';
+import moment from 'moment';
 import { formatMsg } from '../../message.i18n';
 
 const dateFormat = 'YYYY/MM/DD';
@@ -24,7 +25,7 @@ export default class HeadForm extends Component {
     intl: intlShape.isRequired,
     form: PropTypes.object.isRequired,
     editable: PropTypes.bool,
-    handleOwnerChange: PropTypes.func.isRequired,
+    handleOwnerChange: PropTypes.func,
   }
   state = {
     bonded: 0,
@@ -82,7 +83,7 @@ export default class HeadForm extends Component {
               })(
                 <Select placeholder="选择货主" onSelect={this.handleSelect}>
                   {
-                    owners.map(owner => <Option value={owner.id}>{owner.name}</Option>)
+                    owners.map(owner => <Option value={owner.id} key={owner.id}>{owner.name}</Option>)
                   }
                 </Select>
                   )}
@@ -98,6 +99,7 @@ export default class HeadForm extends Component {
           <Col sm={24} lg={8}>
             <FormItem label="预期到货日期" >
               {getFieldDecorator('expect_receive_date', { rules: [{ type: 'object', required: true, message: 'Please select time!' }],
+                initialValue: asnHead && moment(new Date(asnHead.expect_receive_date)),
               })(<DatePicker format={dateFormat} style={{ width: '100%' }} />)}
             </FormItem>
           </Col>
