@@ -9,6 +9,8 @@ const actionTypes = createActionTypes('@@welogix/cwm/sku/', [
   'DEL_SKU', 'DEL_SKU_SUCCEED', 'DEL_SKU_FAIL',
   'LOAD_SKU', 'LOAD_SKU_SUCCEED', 'LOAD_SKU_FAIL',
   'SAVE_SKU', 'SAVE_SKU_SUCCEED', 'SAVE_SKU_FAIL',
+  'OPEN_PACKING_RULE_MODAL', 'CLOSE_PACKING_RULE_MODAL',
+  'OPEN_APPLY_PACKING_RULE_MODAL', 'CLOSE_APPLY_PACKING_RULE_MODAL',
 ]);
 
 const initialState = {
@@ -39,6 +41,12 @@ const initialState = {
     variants: [],
   },
   skuHsForm: {},
+  packingRuleModal: {
+    visible: false,
+  },
+  applyPackingRuleModal: {
+    visible: false,
+  },
 };
 
 export default function reducer(state = initialState, action) {
@@ -67,6 +75,14 @@ export default function reducer(state = initialState, action) {
       return { ...state, skuSubmitting: false };
     case actionTypes.LOAD_SKU_SUCCEED:
       return { ...state, skuForm: action.result.data };
+    case actionTypes.OPEN_PACKING_RULE_MODAL:
+      return { ...state, packingRuleModal: { visible: true } };
+    case actionTypes.CLOSE_PACKING_RULE_MODAL:
+      return { ...state, packingRuleModal: { visible: false } };
+    case actionTypes.OPEN_APPLY_PACKING_RULE_MODAL:
+      return { ...state, applyPackingRuleModal: { visible: true } };
+    case actionTypes.CLOSE_APPLY_PACKING_RULE_MODAL:
+      return { ...state, applyPackingRuleModal: { visible: false } };
     default:
       return state;
   }
@@ -119,6 +135,30 @@ export function setSkuForm(newform) {
 export function cleanSkuForm() {
   return {
     type: actionTypes.CLEAN_FORM,
+  };
+}
+
+export function openPackingRuleModal() {
+  return {
+    type: actionTypes.OPEN_PACKING_RULE_MODAL,
+  };
+}
+
+export function closePackingRuleModal() {
+  return {
+    type: actionTypes.CLOSE_PACKING_RULE_MODAL,
+  };
+}
+
+export function openApplyPackingRuleModal() {
+  return {
+    type: actionTypes.OPEN_APPLY_PACKING_RULE_MODAL,
+  };
+}
+
+export function closeApplyPackingRuleModal() {
+  return {
+    type: actionTypes.CLOSE_APPLY_PACKING_RULE_MODAL,
   };
 }
 

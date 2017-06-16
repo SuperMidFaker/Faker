@@ -41,7 +41,7 @@ export default class AddDetailModal extends Component {
     this.props.form.validateFields((err, values) => {
       if (!err) {
         this.props.addTemporary({
-          desc_cn: product.desc_cn,
+          name: product.desc_cn,
           unit: product.unit,
           unit_name: product.unit_name,
           product_sku: product.product_sku,
@@ -87,7 +87,7 @@ export default class AddDetailModal extends Component {
             <Input disabled value={product.product_sku} />
           </FormItem>
           <FormItem label="订单数量" {...formItemLayout}>
-            {getFieldDecorator('qty', {
+            {getFieldDecorator('order_qty', {
               rules: [{ required: true, message: 'Please input order_number!' }],
             })(
               <Input />

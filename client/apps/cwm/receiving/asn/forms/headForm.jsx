@@ -29,6 +29,14 @@ export default class HeadForm extends Component {
   state = {
     bonded: 0,
   }
+  componentWillMount() {
+    const { asnHead } = this.props;
+    if (asnHead) {
+      this.setState({
+        bonded: asnHead.bonded,
+      });
+    }
+  }
   msg = formatMsg(this.props.intl)
   columns = [{
     title: this.msg('seq'),
@@ -61,7 +69,7 @@ export default class HeadForm extends Component {
     this.props.handleOwnerChange(true, value);
   }
   render() {
-    const { form: { getFieldDecorator }, owners } = this.props;
+    const { form: { getFieldDecorator }, owners, asnHead } = this.props;
     const { bonded } = this.state;
     return (
       <Card>
@@ -70,6 +78,7 @@ export default class HeadForm extends Component {
             <FormItem label="货主">
               {getFieldDecorator('owner_partner_id', {
                 rules: [{ required: true, message: 'Please select customer!' }],
+                initialValue: asnHead && asnHead.owner_partner_id,
               })(
                 <Select placeholder="选择货主" onSelect={this.handleSelect}>
                   {
@@ -82,6 +91,7 @@ export default class HeadForm extends Component {
           <Col sm={24} lg={8}>
             <FormItem label="采购订单号">
               {getFieldDecorator('po_no', {
+                initialValue: asnHead && asnHead.po_no,
               })(<Input />)}
             </FormItem>
           </Col>
@@ -94,7 +104,7 @@ export default class HeadForm extends Component {
           <Col sm={24} lg={8}>
             <FormItem label="ASN类型">
               {getFieldDecorator('asn_type', {
-                initialValue: CWM_ASN_TYPES[0].value,
+                initialValue: asnHead ? asnHead.asn_type : CWM_ASN_TYPES[0].value,
               })(
                 <Select placeholder="ASN类型">
                   {CWM_ASN_TYPES.map(cat => <Option value={cat.value} key={cat.value}>{cat.text}</Option>)}
@@ -105,7 +115,7 @@ export default class HeadForm extends Component {
           <Col sm={24} lg={8}>
             <FormItem label="货物属性">
               {getFieldDecorator('bonded', {
-                initialValue: bonded,
+                initialValue: asnHead ? asnHead.bonded : bonded,
               })(
                 <RadioGroup onChange={this.handleBondedChange}>
                   <RadioButton value={0}>非保税</RadioButton>
@@ -119,6 +129,7 @@ export default class HeadForm extends Component {
               <FormItem label="保税入库类型">
                 {getFieldDecorator('reg_type', {
                   rules: [{ required: true, message: 'Please select reg_type!' }],
+                  initialValue: asnHead && asnHead.bonded_intype,
                 })(
                   <RadioGroup>
                     {CWM_ASN_BONDED_REGTYPES.map(cabr => <RadioButton value={cabr.value} key={cabr.value}>{cabr.text}</RadioButton>)}
