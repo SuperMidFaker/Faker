@@ -60,10 +60,10 @@ export default class AddLineModal extends React.Component {
   validateEnds = () => {
     const { tariff } = this.props;
     const { line } = this.state;
-    if (!line.km) {
+    if (tariff.meter === 't*km' && !line.km) {
       message.error('公里数未填写');
     }
-    if (!line.flare) {
+    if (tariff.meter && !line.flare) {
       message.error('起步价未填写');
     }
     if (tariff && tariff.intervals) {
