@@ -2,9 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Form, Icon, Input, Layout, Radio, Select, Tooltip, message } from 'antd';
-import { loadSkusByWarehouse } from 'common/reducers/cwmSku';
-import Table from 'client/components/remoteAntTable';
+import { Breadcrumb, Button, Form, Icon, Layout, Radio, Select, message, Table } from 'antd';
+import { loadProductCargo, loadParams, updateCargoRule } from 'common/reducers/cwmShFtz';
+import { switchDefaultWhse } from 'common/reducers/cwmContext';
+import RemoteTable from 'client/components/remoteAntTable';
 import SearchBar from 'client/components/search-bar';
 import ButtonToggle from 'client/components/ButtonToggle';
 import NavLink from 'client/components/nav-link';
@@ -15,20 +16,13 @@ import messages from '../message.i18n';
 
 const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
-const Search = Input.Search;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const FormItem = Form.Item;
 
-function fetchData({ state, dispatch }) {
-  return dispatch(loadSkusByWarehouse({
-    tenantId: state.account.tenantId,
-    filter: JSON.stringify(state.cwmSku.listFilter),
-    sorter: JSON.stringify(state.cwmSku.sortFilter),
-    pageSize: state.cwmSku.list.pageSize,
-    current: 1,
-  }));
+function fetchData({ dispatch }) {
+  return dispatch(loadParams());
 }
 
 @connectFetch()(fetchData)
@@ -36,12 +30,15 @@ function fetchData({ state, dispatch }) {
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    loading: state.cwmSku.loading,
-    skulist: state.cwmSku.list,
-    listFilter: state.cwmSku.listFilter,
-    sortFilter: state.cwmSku.sortFilter,
+    loading: state.cwmShFtz.loading,
+    cargolist: state.cwmShFtz.cargolist,
+    cargoRule: state.cwmShFtz.cargoRule,
+    listFilter: state.cwmShFtz.listFilter,
+    whses: state.cwmContext.whses,
+    whse: state.cwmContext.defaultWhse,
+    owners: state.cwmContext.whseAttrs.owners,
   }),
-  { loadSkusByWarehouse }
+  { loadProductCargo, switchDefaultWhse, updateCargoRule }
 )
 @connectNav({
   depth: 2,
@@ -51,6 +48,7 @@ export default class SHFTZCargoList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
+    whses: PropTypes.arrayOf(PropTypes.shape({ code: PropTypes.string, name: PropTypes.string })),
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -59,6 +57,22 @@ export default class SHFTZCargoList extends React.Component {
     collapsed: false,
     rightSiderCollapsed: true,
     selectedRowKeys: [],
+    currentPage: 1,
+    owners: this.props.owners,
+    owner: this.props.owners.length === 0 ? {} : this.props.owners[0],
+    rule: null,
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.owners !== this.props.owners) {
+      this.setState({
+        owners: nextProps.owners,
+        owner: nextProps.owners.length === 0 ? {} : nextProps.owners[0],
+      });
+      this.handleCargoLoad(1, this.props.listFilter, nextProps.owners[0]);
+    }
+    if (nextProps.cargoRule !== this.props.cargoRule) {
+      this.setState({ rule: nextProps.cargoRule.type });
+    }
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
@@ -66,7 +80,7 @@ export default class SHFTZCargoList extends React.Component {
     width: 120,
     dataIndex: 'product_no',
   }, {
-    title: 'SKU',
+    title: this.msg('productSku'),
     dataIndex: 'product_sku',
     width: 100,
   }, {
@@ -101,8 +115,8 @@ export default class SHFTZCargoList extends React.Component {
     title: this.msg('opColumn'),
     width: 160,
   }]
-  dataSource = new Table.DataSource({
-    fetcher: params => this.props.loadSkusByWarehouse(params),
+  dataSource = new RemoteTable.DataSource({
+    fetcher: params => this.props.loadProductCargo(params),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
       total: result.totalCount,
@@ -112,66 +126,90 @@ export default class SHFTZCargoList extends React.Component {
       pageSize: result.pageSize,
       showTotal: total => `共 ${total} 条`,
     }),
-    getParams: (pagination, filters, sorter) => {
+    getParams: (pagination) => {
       const params = {
         tenantId: this.props.tenantId,
+        whseCode: this.props.whse.code,
+        owner: JSON.stringify(this.state.owner),
         pageSize: pagination.pageSize,
-        current: pagination.current,
-        sorter: JSON.stringify({
-          field: sorter.field,
-          order: sorter.order === 'descend' ? 'DESC' : 'ASC',
-        }),
+        currentPage: pagination.current,
         filter: JSON.stringify(this.props.listFilter),
       };
       return params;
     },
-    remotes: this.props.skulist,
+    remotes: this.props.cargolist,
   })
   toggleRightSider = () => {
     this.setState({
       rightSiderCollapsed: !this.state.rightSiderCollapsed,
     });
   }
-  handleSearch = (value) => {
-    const filter = { ...this.props.listFilter, sku: value };
-    this.props.loadSkusByWarehouse({
-      tenantId: this.props.tenantId,
-      filter: JSON.stringify(filter),
-      sorter: JSON.stringify(this.props.sortFilter),
-      pageSize: this.props.skulist.pageSize,
-      current: 1,
+  handleCargoLoad = (currentPage, filter, owner) => {
+    const { tenantId, whse, listFilter, cargolist: { pageSize, current } } = this.props;
+    this.props.loadProductCargo({
+      tenantId,
+      whseCode: whse.code,
+      owner: JSON.stringify(owner || this.state.owner),
+      filter: JSON.stringify(filter || listFilter),
+      pageSize,
+      currentPage: currentPage || current,
     }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       }
     });
   }
+  handleSearch = (value) => {
+    const filter = { ...this.props.listFilter, filterNo: value };
+    this.handleCargoLoad(1, filter);
+  }
+  handleStatusChange = (ev) => {
+    if (ev.target.value === this.props.listFilter.status) {
+      return;
+    }
+    const filter = { ...this.props.listFilter, status: ev.target.value };
+    this.handleCargoLoad(1, filter);
+  }
+  handleWhseChange = (value) => {
+    this.props.switchDefaultWhse(value);
+  }
+  handleRowClick = (record) => {
+    this.setState({ owner: record });
+    this.handleCargoLoad(1, this.props.listFilter, record);
+  }
   handleSyncProductSKUs = () => {
+
+  }
+  handleOwnerSearch = (value) => {
+    let owners = this.props.owners;
+    if (value) {
+      owners = this.props.owners.filter((item) => {
+        const reg = new RegExp(value);
+        return reg.test(item.name + item.customs_code);
+      });
+    }
+    this.setState({ owners, currentPage: 1 });
+  }
+  handleRuleChange = (e) => {
+    this.setState({ rule: e.target.value });
+  }
+  handleRuleSave = () => {
+    this.props.updateCargoRule({ type: this.state.rule, id: this.props.cargoRule.id });
   }
   render() {
-    const { skulist, loading } = this.props;
+    const { cargolist, listFilter, loading, whses, whse } = this.props;
+    const { owners, owner, rule } = this.state;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
         this.setState({ selectedRowKeys });
       },
     };
-    this.dataSource.remotes = skulist;
+    this.dataSource.remotes = cargolist;
     const ownerColumns = [{
-      dataIndex: 'owner_code',
-      key: 'owner_name',
-    }, {
-      width: 40,
-      fixed: 'right',
-      render: (o, record) => {
-        if (record.mode !== 'slave') {
-          return (
-            <Tooltip placement="bottom" title="启用分拨模式">
-              <Button disabled={!record.upgrade} shape="circle" icon="to-top" onClick={() => this.handleUpgrade(record)} />
-            </Tooltip>
-          );
-        }
-      },
+      dataIndex: 'name',
+      key: 'code',
+      render: (o, record) => <span className="menu-sider-item">{record.customs_code ? `${record.customs_code} | ${record.name}` : record.name}</span>,
     }];
     const radioStyle = {
       display: 'block',
@@ -196,12 +234,12 @@ export default class SHFTZCargoList extends React.Component {
             </div>
             <div className="left-sider-panel">
               <div className="toolbar">
-                <Search
-                  placeholder={this.msg('searchPlaceholder')}
-                  size="large"
-                />
+                <SearchBar size="large" placeholder={this.msg('ownerSearchPlaceholder')} onInputSearch={this.handleOwnerSearch} />
               </div>
-              <Table columns={ownerColumns} showHeader={false} />
+              <Table columns={ownerColumns} dataSource={owners} showHeader={false} onRowClick={this.handleRowClick}
+                pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }}
+                rowClassName={record => record.id === owner.id ? 'table-row-selected' : ''} rowKey="id"
+              />
             </div>
           </div>
         </Sider>
@@ -209,26 +247,18 @@ export default class SHFTZCargoList extends React.Component {
           <Header className="top-bar">
             <Breadcrumb>
               <Breadcrumb.Item>
-                <Select
-                  size="large"
-                  defaultValue="0961"
-                  placeholder="选择仓库"
-                  style={{ width: 160 }}
-                  disabled
-                >
-                  <Option value="0960">物流大道仓库</Option>
-                  <Option value="0961">希雅路仓库</Option>
-                  <Option value="0962">富特路仓库</Option>
+                <Select size="large" value={whse.code} placeholder="选择仓库" style={{ width: 160 }} onChange={this.handleWhseChange}>
+                  {whses.map(wh => <Option value={wh.code} key={wh.code}>{wh.name}</Option>)}
                 </Select>
               </Breadcrumb.Item>
               <Breadcrumb.Item>
                 货主
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                {'owner.name'}
+                {owner.name}
               </Breadcrumb.Item>
             </Breadcrumb>
-            <RadioGroup defaultValue="pending" onChange={this.handleBondedChange} size="large">
+            <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} size="large">
               <RadioButton value="pending">待备案</RadioButton>
               <RadioButton value="sent">已发送</RadioButton>
               <RadioButton value="completed">备案完成</RadioButton>
@@ -251,7 +281,7 @@ export default class SHFTZCargoList extends React.Component {
                 <SearchBar size="large" placeholder={this.msg('productSearchPlaceholder')} onInputSearch={this.handleSearch} />
               </div>
               <div className="panel-body table-panel">
-                <Table columns={this.columns} dataSource={this.dataSource} rowSelection={rowSelection} rowKey="id"
+                <RemoteTable columns={this.columns} dataSource={this.dataSource} rowSelection={rowSelection} rowKey="id"
                   scroll={{ x: 1400 }} loading={loading}
                 />
               </div>
@@ -273,13 +303,13 @@ export default class SHFTZCargoList extends React.Component {
             </div>
             <Form layout="vertical" style={{ padding: 16 }}>
               <FormItem>
-                <RadioGroup onChange={this.onChange}>
-                  <Radio style={radioStyle} value={1}>按商品货号一一对应</Radio>
-                  <Radio style={radioStyle} value={2}>按商品编码+中文品名匹配</Radio>
+                <RadioGroup value={rule} onChange={this.handleRuleChange}>
+                  <Radio style={radioStyle} value={0}>按商品货号一一对应</Radio>
+                  <Radio style={radioStyle} value={1}>按商品编码+中文品名匹配</Radio>
                 </RadioGroup>
               </FormItem>
               <FormItem>
-                <Button type="primary" icon="save">保存</Button>
+                <Button type="primary" icon="save" onClick={this.handleRuleSave}>保存</Button>
               </FormItem>
             </Form>
           </div>
