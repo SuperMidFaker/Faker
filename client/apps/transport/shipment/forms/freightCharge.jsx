@@ -110,29 +110,28 @@ export default class FreightCharge extends React.Component {
       deliver_est_date,
       tariffType,
     };
-
-    if (customer_partner_id === undefined) {
+    if (!customer_partner_id) {
       this.handleResult({
         visible: true,
         type: 'error',
         message: '表单填写有误',
         description: '客户未选择',
       });
-    } else if (consigner_region_code === undefined) {
+    } else if (!consigner_region_code) {
       this.handleResult({
         visible: true,
         type: 'error',
         message: '表单填写有误',
         description: '始运地未选择',
       });
-    } else if (consignee_region_code === undefined) {
+    } else if (!consignee_region_code) {
       this.handleResult({
         visible: true,
         type: 'error',
         message: '表单填写有误',
         description: '目的地未选择',
       });
-    } else if (transport_mode_code === undefined) {
+    } else if (!transport_mode_code) {
       this.handleResult({
         visible: true,
         type: 'error',
@@ -146,14 +145,14 @@ export default class FreightCharge extends React.Component {
         message: '表单填写有误',
         description: '货物类型未选择',
       });
-    } else if (pickup_est_date === undefined) {
+    } else if (!pickup_est_date) {
       this.handleResult({
         visible: true,
         type: 'error',
         message: '表单填写有误',
         description: '提货日期未选择',
       });
-    } else if (deliver_est_date === undefined) {
+    } else if (!deliver_est_date) {
       this.handleResult({
         visible: true,
         type: 'error',

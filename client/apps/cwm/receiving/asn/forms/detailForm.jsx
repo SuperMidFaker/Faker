@@ -3,10 +3,11 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Button, Card, Table } from 'antd';
+import RowUpdater from 'client/components/rowUpdater';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
-import { showDetailModal, addTemporary } from 'common/reducers/cwmReceive';
+import { showDetailModal, addTemporary, deleteTemporary } from 'common/reducers/cwmReceive';
 import AddDetailModal from '../modal/addDetailModal';
 
 const formatMsg = format(messages);
@@ -16,7 +17,7 @@ const formatMsg = format(messages);
   state => ({
     temporaryDetails: state.cwmReceive.temporaryDetails,
   }),
-  { showDetailModal, addTemporary }
+  { showDetailModal, addTemporary, deleteTemporary }
 )
 export default class DetailForm extends Component {
   static propTypes = {
@@ -32,6 +33,8 @@ export default class DetailForm extends Component {
       pageSize: 10,
       onChange: this.handlePageChange,
     },
+    editRecord: {},
+    edit: false,
   };
   componentWillReceiveProps(nextProps) {
     const { asnBody } = nextProps;
@@ -49,6 +52,19 @@ export default class DetailForm extends Component {
     });
   }
   showDetailModal = () => {
+    this.setState({
+      edit: false,
+    });
+    this.props.showDetailModal();
+  }
+  handleDelete = (index) => {
+    this.props.deleteTemporary(index);
+  }
+  handleEdit = (row) => {
+    this.setState({
+      editRecord: row,
+      edit: true,
+    });
     this.props.showDetailModal();
   }
   render() {
@@ -77,6 +93,11 @@ export default class DetailForm extends Component {
     }, {
       title: '单价',
       dataIndex: 'unit_price',
+    }, {
+      title: '操作',
+      render: (o, record, index) => (
+        <span><RowUpdater onHit={this.handleEdit} label="修改" row={record} /><span className="ant-divider" /><RowUpdater onHit={() => this.handleDelete(index)} label="删除" row={record} /></span>
+      ),
     }];
     return (
       <Card bodyStyle={{ padding: 0 }}>
@@ -84,8 +105,8 @@ export default class DetailForm extends Component {
           {editable && <Button type="primary" disabled={detailEnable ? '' : 'disabled'} onClick={this.showDetailModal}>添加明细</Button>}
           {editable && <Button disabled={detailEnable ? '' : 'disabled'}>导入</Button>}
         </div>
-        <Table columns={columns} dataSource={temporaryDetails} rowKey="id" pagination={pagination} />
-        <AddDetailModal selectedOwner={this.props.selectedOwner} />
+        <Table columns={columns} dataSource={temporaryDetails.map((item, index) => ({ ...item, index }))} rowKey="index" pagination={pagination} />
+        <AddDetailModal product={this.state.editRecord} edit={this.state.edit} selectedOwner={this.props.selectedOwner} />
       </Card>
     );
   }

@@ -60,10 +60,10 @@ export default class AddLineModal extends React.Component {
   validateEnds = () => {
     const { tariff } = this.props;
     const { line } = this.state;
-    if (!line.km) {
+    if (tariff.meter === 't*km' && !line.km) {
       message.error('公里数未填写');
     }
-    if (!line.flare) {
+    if (tariff.meter && !line.flare) {
       message.error('起步价未填写');
     }
     if (tariff && tariff.intervals) {
@@ -151,7 +151,7 @@ export default class AddLineModal extends React.Component {
           <FormItem label="公里数" style={style}>
             <InputNumber value={line.km} style={{ width: '100%' }} onChange={value => this.handleChange('km', value)} />
           </FormItem>}
-          {tariff.meter === 't*km' &&
+          {tariff.meter &&
           <FormItem label="起步价" style={style}>
             <InputNumber value={line.flare} style={{ width: '100%' }} onChange={value => this.handleChange('flare', value)} />
           </FormItem>}

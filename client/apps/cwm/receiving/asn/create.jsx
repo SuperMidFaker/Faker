@@ -49,7 +49,7 @@ export default class CreateReceivingASN extends Component {
   state = {
     editable: true,
     detailEnable: false,
-    selectedOwner: '',
+    selectedOwner: null,
   }
   componentWillUnmount() {
     this.props.clearTemporary();

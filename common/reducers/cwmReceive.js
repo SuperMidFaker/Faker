@@ -4,7 +4,7 @@ import { createActionTypes } from 'client/common/redux-actions';
 const actionTypes = createActionTypes('@@welogix/cwm/receive/', [
   'LOAD_RECEIVE_MODAL', 'HIDE_RECEIVE_MODAL',
   'HIDE_DETAIL_MODAL', 'SHOW_DETAIL_MODAL',
-  'ADD_TEMPORARY', 'CLEAR_TEMPORARY',
+  'ADD_TEMPORARY', 'CLEAR_TEMPORARY', 'DELETE_TEMPORARY', 'EDIT_TEMPORARY',
   'ADD_ASN', 'ADD_ASN_SUCCEED', 'ADD_ASN_FAIL',
   'UPDATE_ASN', 'UPDATE_ASN_SUCCEED', 'UPDATE_ASN_FAIL',
   'LOAD_PRODUCTS', 'LOAD_PRODUCTS_SUCCEED', 'LOAD_PRODUCTS_FAIL',
@@ -54,7 +54,7 @@ const initialState = {
     current: 1,
     data: [],
   },
-  inboundFilters: { status: 'receive', ownerCode: 'all' },
+  inboundFilters: { status: 'create', ownerCode: 'all' },
 };
 
 export default function reducer(state = initialState, action) {
@@ -82,6 +82,17 @@ export default function reducer(state = initialState, action) {
       return { ...state, temporaryDetails: Array.isArray(action.data) ? action.data : [...state.temporaryDetails, action.data] };
     case actionTypes.CLEAR_TEMPORARY:
       return { ...state, temporaryDetails: [] };
+    case actionTypes.DELETE_TEMPORARY: {
+      const temporaryDetails = [...state.temporaryDetails];
+      temporaryDetails.splice(action.index, 1);
+      return { ...state, temporaryDetails };
+    }
+    case actionTypes.EDIT_TEMPORARY: {
+      console.log(action);
+      const temporaryDetails = [...state.temporaryDetails];
+      temporaryDetails[action.index] = action.data;
+      return { ...state, temporaryDetails };
+    }
     case actionTypes.LOAD_PRODUCTS_SUCCEED:
       return { ...state, productNos: action.result.data };
     case actionTypes.LOAD_ASN_LISTS_SUCCEED:
@@ -138,6 +149,21 @@ export function addTemporary(data) {
 export function clearTemporary() {
   return {
     type: actionTypes.CLEAR_TEMPORARY,
+  };
+}
+
+export function deleteTemporary(index) {
+  return {
+    type: actionTypes.DELETE_TEMPORARY,
+    index,
+  };
+}
+
+export function editTemporary(index, data) {
+  return {
+    type: actionTypes.EDIT_TEMPORARY,
+    index,
+    data,
   };
 }
 
@@ -276,7 +302,7 @@ export function getInboundDetail(asnNo) {
   };
 }
 
-export function updateReceivedQty(asnNo, inboundProductId, inboundNo, receivedPackQty, receivedQty, tenantId, loginId, traceId) {
+export function updateReceivedQty(asnNo, inboundProductId, inboundNo, receivedPackQty, receivedQty, tenantId, loginId, asnSeqNo) {
   return {
     [CLIENT_API]: {
       types: [
@@ -286,7 +312,7 @@ export function updateReceivedQty(asnNo, inboundProductId, inboundNo, receivedPa
       ],
       endpoint: 'v1/cwm/receive/receivedQty/update',
       method: 'post',
-      data: { asnNo, inboundProductId, inboundNo, receivedPackQty, receivedQty, tenantId, loginId, traceId },
+      data: { asnNo, inboundProductId, inboundNo, receivedPackQty, receivedQty, tenantId, loginId, asnSeqNo },
     },
   };
 }
