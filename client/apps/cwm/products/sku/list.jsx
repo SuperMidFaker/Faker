@@ -8,8 +8,10 @@ import Table from 'client/components/remoteAntTable';
 import SearchBar from 'client/components/search-bar';
 import ButtonToggle from 'client/components/ButtonToggle';
 import connectNav from 'client/common/decorators/connect-nav';
-import { setCurrentOwner, loadOwnerSkus, delSku } from 'common/reducers/cwmSku';
+import { setCurrentOwner, loadOwnerSkus, delSku, openApplyPackingRuleModal } from 'common/reducers/cwmSku';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
+import PackingRulePane from './panes/packingRulePane';
+import ApplyPackingRuleModal from './modal/applyPackingRuleModal';
 import { formatMsg } from '../message.i18n';
 
 const { Header, Content, Sider } = Layout;
@@ -29,7 +31,7 @@ const Panel = Collapse.Panel;
     listFilter: state.cwmSku.listFilter,
     sortFilter: state.cwmSku.sortFilter,
   }),
-  { setCurrentOwner, loadOwnerSkus, switchDefaultWhse, delSku }
+  { setCurrentOwner, loadOwnerSkus, switchDefaultWhse, delSku, openApplyPackingRuleModal }
 )
 @connectNav({
   depth: 2,
@@ -211,6 +213,9 @@ export default class CWMSkuList extends React.Component {
   handleOwnerSelect = (row) => {
     this.props.setCurrentOwner(row);
   }
+  handleApplyPackingRule = () => {
+    this.props.openApplyPackingRuleModal();
+  }
   render() {
     const { skulist, owner, whse, whses, loading } = this.props;
     const rowSelection = {
@@ -275,6 +280,10 @@ export default class CWMSkuList extends React.Component {
             <div className="page-body">
               <div className="toolbar">
                 <SearchBar size="large" placeholder={this.msg('productSearchPlaceholder')} onInputSearch={this.handleSearch} />
+                <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
+                  <h3>已选中{this.state.selectedRowKeys.length}项</h3>
+                  <Button onClick={this.handleApplyPackingRule}>采用包装规则</Button>
+                </div>
               </div>
               <div className="panel-body table-panel">
                 <Table columns={this.columns} dataSource={this.dataSource} rowSelection={rowSelection} rowKey="id"
@@ -298,11 +307,14 @@ export default class CWMSkuList extends React.Component {
               <h3>规则设置</h3>
             </div>
             <Collapse accordion defaultActiveKey="packing">
-              <Panel header="包装规则" key="packing" />
+              <Panel header="包装规则" key="packing">
+                <PackingRulePane />
+              </Panel>
               <Panel header="条码规则" key="tag" />
             </Collapse>
           </div>
         </Sider>
+        <ApplyPackingRuleModal />
       </Layout>
     );
   }
