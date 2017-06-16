@@ -6,7 +6,7 @@ import { Button, Card, Table } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
-import { showDetailModal } from 'common/reducers/cwmReceive';
+import { showDetailModal, addTemporary } from 'common/reducers/cwmReceive';
 import AddDetailModal from '../modal/addDetailModal';
 
 const formatMsg = format(messages);
@@ -16,7 +16,7 @@ const formatMsg = format(messages);
   state => ({
     temporaryDetails: state.cwmReceive.temporaryDetails,
   }),
-  { showDetailModal }
+  { showDetailModal, addTemporary }
 )
 export default class DetailForm extends Component {
   static propTypes = {
@@ -33,6 +33,12 @@ export default class DetailForm extends Component {
       onChange: this.handlePageChange,
     },
   };
+  componentWillReceiveProps(nextProps) {
+    const { asnBody } = nextProps;
+    if (asnBody && (nextProps.asnBody !== this.props.asnBody)) {
+      this.props.addTemporary(asnBody);
+    }
+  }
   msg = key => formatMsg(this.props.intl, key);
   handlePageChange = (current) => {
     this.setState({
@@ -59,12 +65,12 @@ export default class DetailForm extends Component {
       width: 200,
     }, {
       title: '中文品名',
-      dataIndex: 'desc_cn',
+      dataIndex: 'name',
       width: 200,
     }, {
       title: '订单数量',
       width: 100,
-      dataIndex: 'qty',
+      dataIndex: 'order_qty',
     }, {
       title: '主单位',
       dataIndex: 'unit_name',
