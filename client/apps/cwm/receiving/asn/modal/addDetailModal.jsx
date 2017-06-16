@@ -4,7 +4,7 @@ import { Modal, Form, Input, Select, Row, Col } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
-import { hideDetailModal, addTemporary, loadProducts } from 'common/reducers/cwmReceive';
+import { hideDetailModal, addTemporary, loadProducts, editTemporary } from 'common/reducers/cwmReceive';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
@@ -17,7 +17,7 @@ const Option = Select.Option;
     temporaryDetails: state.cwmReceive.temporaryDetails,
     productNos: state.cwmReceive.productNos,
   }),
-  { hideDetailModal, addTemporary, loadProducts }
+  { hideDetailModal, addTemporary, loadProducts, editTemporary }
 )
 @Form.create()
 export default class AddDetailModal extends Component {
@@ -27,6 +27,20 @@ export default class AddDetailModal extends Component {
   }
   state = {
     product: {},
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.product !== this.props.product) {
+      const product = nextProps.product;
+      product.desc_cn = product.name;
+      this.setState({
+        product,
+      });
+      this.props.form.setFieldsValue({
+        product_no: product.product_no,
+        order_qty: product.order_qty,
+        unit_price: product.unit_price,
+      });
+    }
   }
   msg = key => formatMsg(this.props.intl, key)
   handleCancel = () => {
@@ -38,17 +52,32 @@ export default class AddDetailModal extends Component {
   }
   submit = () => {
     const product = this.state.product;
+    const edit = this.props.edit;
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        this.props.addTemporary({
-          name: product.desc_cn,
-          unit: product.unit,
-          unit_name: product.unit_name,
-          product_sku: product.product_sku,
-          currency: product.currency_name,
-          ...values,
-        });
+        if (!edit) {
+          this.props.addTemporary({
+            name: product.desc_cn,
+            unit: product.unit,
+            unit_price: product.unit_price,
+            unit_name: product.unit_name,
+            product_sku: product.product_sku,
+            currency: product.currency,
+            currency_name: product.currency_name,
+            ...values,
+          });
+        } else {
+          this.props.editTemporary(product.index, { ...product, ...values });
+        }
         this.handleCancel();
+        this.setState({
+          product: {},
+        });
+        this.props.form.setFieldsValue({
+          product_no: '',
+          order_qty: '',
+          unit_price: '',
+        });
       }
     });
   }
@@ -101,13 +130,12 @@ export default class AddDetailModal extends Component {
               <Col span={12}>
                 {getFieldDecorator('unit_price', {
                   initialValue: product.unit_price,
-                  rules: [{ required: true, message: 'Please input unit_price!' }],
                 })(
                   <Input />
                 )}
               </Col>
               <Col span={12}>
-                <Input disabled value={product.currency_name} />
+                <Input disabled value={product.currency && `${product.currency}|${product.currency_name}`} />
               </Col>
             </Row>
           </FormItem>

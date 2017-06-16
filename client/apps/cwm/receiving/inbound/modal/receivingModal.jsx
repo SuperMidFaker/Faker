@@ -176,14 +176,14 @@ export default class ReceivingModal extends Component {
     },
   }, {
     title: '收货状态',
-    dataIndex: 'packing_code',
+    dataIndex: 'damage_level',
     width: 180,
-    render: (o, record, index) => (<Select defaultValue={o} onChange={value => this.handleDamageLevelChange(value, record, index)} style={{ width: 160 }} >
-      <Option value="0">完好</Option>
-      <Option value="1">轻微擦痕</Option>
-      <Option value="2">中度</Option>
-      <Option value="3">重度</Option>
-      <Option value="4">严重磨损</Option>
+    render: (o, record, index) => (<Select value={o} onChange={value => this.handleDamageLevelChange(value, record, index)} style={{ width: 160 }} >
+      <Option value={0}>完好</Option>
+      <Option value={1}>轻微擦痕</Option>
+      <Option value={2}>中度</Option>
+      <Option value={3}>重度</Option>
+      <Option value={4}>严重磨损</Option>
     </Select>),
   }]
   dataSource = [{
