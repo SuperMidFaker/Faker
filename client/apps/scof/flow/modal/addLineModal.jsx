@@ -81,9 +81,13 @@ export default class AddLineModal extends React.Component {
     const { line } = this.state;
     const { loginName, tariff } = this.props;
     if (this.validateEnds()) {
+      const gradients = [];
+      for (let i = 0; i < tariff.intervals.length + 1; i++) {
+        gradients.push(line[`gradients${i}`]);
+      }
       this.props.addLineAndPublish({
         quoteNo: tariff.quoteNo,
-        line,
+        line: { ...line, gradients },
         loginName,
       }).then(() => {
         this.handleCancel();
