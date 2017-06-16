@@ -28,8 +28,8 @@ export default class AddLocationModal extends Component {
     zoneCode: PropTypes.string.isRequired,
   }
   state = {
-    type: 0,
-    status: 0,
+    type: 1,
+    status: 1,
     location: '',
   }
   componentWillReceiveProps(nextProps) {
@@ -43,8 +43,8 @@ export default class AddLocationModal extends Component {
     } else {
       this.setState({
         location: '',
-        type: 0,
-        status: 0,
+        type: 1,
+        status: 1,
       });
     }
   }
@@ -106,10 +106,10 @@ export default class AddLocationModal extends Component {
           </FormItem>
           <FormItem {...formItemLayout} label="库位类型">
             <RadioGroup value={type} onChange={this.typeChange}>
-              <RadioButton value={0}>地面平仓</RadioButton>
-              <RadioButton value={1}>重力式货架</RadioButton>
-              <RadioButton value={2}>货架</RadioButton>
-              <RadioButton value={3}>窄巷道货架</RadioButton>
+              <RadioButton value={1}>货架</RadioButton>
+              <RadioButton value={2}>窄巷道货架</RadioButton>
+              <RadioButton value={3}>重力式货架</RadioButton>
+              <RadioButton value={4}>地面平仓</RadioButton>
             </RadioGroup>
           </FormItem>
           <FormItem {...formItemLayout} label="库位状态">
