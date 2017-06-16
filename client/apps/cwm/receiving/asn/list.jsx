@@ -193,7 +193,7 @@ export default class ReceivingASNList extends React.Component {
     );
   }
   handleReceive = (row) => {
-    const link = `/cwm/receiving/inbound/receive/${row.asn_no}`;
+    const link = `/cwm/receiving/inbound/${row.asn_no}`;
     this.context.router.push(link);
   }
   handleEntryReg = (row) => {

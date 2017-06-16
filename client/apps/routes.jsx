@@ -440,7 +440,7 @@ export default(store, cookie) => {
               </Route>
               <Route path="inbound">
                 <IndexRoute component={CWMReceivingInbound.List} />
-                <Route path="receive/:asnNo" component={CWMReceivingInbound.Receive} />
+                <Route path=":asnNo" component={CWMReceivingInbound.Detail} />
               </Route>
             </Route>
             <Route path="shipping">

@@ -66,7 +66,7 @@ export default class ReceivingInboundList extends React.Component {
     fixed: 'left',
   }, {
     title: '入库流水号',
-    width: 150,
+    width: 180,
     dataIndex: 'inbound_no',
   }, {
     title: <Tooltip title="明细记录数"><Icon type="bars" /></Tooltip>,
@@ -94,12 +94,13 @@ export default class ReceivingInboundList extends React.Component {
       }
     },
   }, {
-    title: '收货完成度',
+    title: '入库进度',
     width: 250,
     render: (o, record) => <Progress percent={record.total_received_qty / record.total_expect_qty * 100} strokeWidth={8} />,
   }, {
     title: '操作模式',
     dataIndex: 'receiving_mode',
+    width: 100,
     render: (o) => {
       if (o === 'scan') {
         return (<Tooltip title="扫码收货"><Icon type="scan" /></Tooltip>);
@@ -150,7 +151,7 @@ export default class ReceivingInboundList extends React.Component {
     });
   }
   handleReceive = (row) => {
-    const link = `/cwm/receiving/inbound/receive/${row.asn_no}`;
+    const link = `/cwm/receiving/inbound/${row.asn_no}`;
     this.context.router.push(link);
   }
   render() {
@@ -199,7 +200,7 @@ export default class ReceivingInboundList extends React.Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <RadioGroup defaultValue="create" onChange={this.handleStatusChange} size="large" >
-            <RadioButton value="create">待收货</RadioButton>
+            <RadioButton value="create">待入库</RadioButton>
             <RadioButton value="receive">收货</RadioButton>
             <RadioButton value="putaway">上架</RadioButton>
             <RadioButton value="completed">入库完成</RadioButton>
@@ -224,7 +225,7 @@ export default class ReceivingInboundList extends React.Component {
               </div>
             </div>
             <div className="panel-body table-panel">
-              <Table columns={this.columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="id" scroll={{ x: 1400 }} />
+              <Table columns={this.columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="id" scroll={{ x: this.columns.reduce((acc, cur) => acc + cur.width, 0) }} />
             </div>
           </div>
         </Content>

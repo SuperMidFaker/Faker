@@ -204,16 +204,16 @@ export default class ReceiveInbound extends Component {
   }, {
     title: '中文品名',
     dataIndex: 'name',
-    width: 200,
+    width: 150,
   }, {
     title: '订单数量',
     dataIndex: 'expect_qty',
-    width: 120,
+    width: 100,
     render: o => (<b>{o}</b>),
   }, {
     title: '主单位',
     dataIndex: 'asn_unit_name',
-    width: 150,
+    width: 80,
   }, {
     title: 'SKU',
     dataIndex: 'product_sku',
@@ -402,7 +402,7 @@ export default class ReceiveInbound extends Component {
                 </div>
               </div>
               <Table columns={this.columns} rowSelection={rowSelection} dataSource={inboundProducts} rowKey="asn_seq_no"
-                scroll={{ x: true }}
+                scroll={{ x: this.columns.reduce((acc, cur) => acc + cur.width, 0) }}
               />
               <ReceivingModal reload={this.handleReload} receivingMode={this.state.receivingMode} />
             </Card>
