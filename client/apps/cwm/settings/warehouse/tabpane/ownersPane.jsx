@@ -35,6 +35,9 @@ export default class OwnersPane extends Component {
     }
   }
   columns = [{
+    title: '货主代码',
+    dataIndex: 'owner_code',
+  }, {
     title: '货主名称',
     dataIndex: 'owner_name',
   }, {

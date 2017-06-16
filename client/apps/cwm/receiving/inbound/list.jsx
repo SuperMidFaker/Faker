@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { intlShape, injectIntl } from 'react-intl';
+import moment from 'moment';
 import { Badge, Icon, Breadcrumb, Layout, Radio, Progress, Select, Tooltip } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
@@ -110,10 +111,12 @@ export default class ReceivingInboundList extends React.Component {
     title: '创建时间',
     dataIndex: 'created_date',
     width: 120,
+    render: createdate => createdate && moment(createdate).format('MM.DD HH:MM'),
   }, {
     title: '完成时间',
     dataIndex: 'completed_date',
     width: 120,
+    render: completedDate => completedDate && moment(completedDate).format('MM.DD HH:MM'),
   }, {
     title: '操作',
     width: 100,

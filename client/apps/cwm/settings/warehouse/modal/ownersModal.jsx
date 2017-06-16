@@ -62,6 +62,7 @@ export default class OwnersModal extends Component {
     const data = this.state.selectedRows.map(obj => ({
       partnerId: obj.id,
       name: obj.name,
+      code: obj.partner_code,
       whseCode,
       tenantId: obj.partner_tenant_id,
       whseTenantId: this.props.whseTenantId,
