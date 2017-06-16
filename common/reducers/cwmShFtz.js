@@ -6,6 +6,9 @@ const actionTypes = createActionTypes('@@welogix/cwm/shftz/', [
   'ENTRY_DETAILS_LOAD', 'ENTRY_DETAILS_LOAD_SUCCEED', 'ENTRY_DETAILS_LOAD_FAIL',
   'RELEASE_REG_LOAD', 'RELEASE_REG_LOAD_SUCCEED', 'RELEASE_REG_LOAD_FAIL',
   'PARAMS_LOAD', 'PARAMS_LOAD_SUCCEED', 'PARAMS_LOAD_FAIL',
+  'PRODUCT_CARGO_LOAD', 'PRODUCT_CARGO_LOAD_SUCCEED', 'PRODUCT_CARGO_LOAD_FAIL',
+  'UPDATE_CARGO_RULE', 'UPDATE_CARGO_RULE_SUCCEED', 'UPDATE_CARGO_RULE_FAIL',
+  'SYNC_SKU', 'SYNC_SKU_SUCCEED', 'SYNC_SKU_FAIL',
 ]);
 
 const initialState = {
@@ -21,6 +24,14 @@ const initialState = {
     pageSize: 20,
     data: [],
   },
+  cargolist: {
+    totalCount: 0,
+    current: 1,
+    pageSize: 20,
+    data: [],
+  },
+  cargoRule: {},
+  loading: false,
   listFilter: {
     status: 'pending',
     filterNo: '',
@@ -45,6 +56,10 @@ export default function reducer(state = initialState, action) {
       return { ...state, params: action.result.data };
     case actionTypes.RELEASE_REG_LOAD_SUCCEED:
       return { ...state, releaseList: action.result.data, listFilter: JSON.parse(action.params.filter) };
+    case actionTypes.PRODUCT_CARGO_LOAD:
+      return { ...state, listFilter: JSON.parse(action.params.filter), loading: true };
+    case actionTypes.PRODUCT_CARGO_LOAD_SUCCEED:
+      return { ...state, cargolist: action.result.data.list, cargoRule: action.result.data.rule, loading: false };
     default:
       return state;
   }
@@ -108,3 +123,49 @@ export function loadParams() {
     },
   };
 }
+
+export function loadProductCargo(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.PRODUCT_CARGO_LOAD,
+        actionTypes.PRODUCT_CARGO_LOAD_SUCCEED,
+        actionTypes.PRODUCT_CARGO_LOAD_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/product/cargo/load',
+      method: 'get',
+      params,
+    },
+  };
+}
+
+export function updateCargoRule(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_CARGO_RULE,
+        actionTypes.UPDATE_CARGO_RULE_SUCCEED,
+        actionTypes.UPDATE_CARGO_RULE_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/product/cargo/rule/update',
+      method: 'post',
+      data,
+    },
+  };
+}
+
+export function syncProdSKUS(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SYNC_SKU,
+        actionTypes.SYNC_SKU_SUCCEED,
+        actionTypes.SYNC_SKU_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/product/cargo/skus/sync',
+      method: 'post',
+      data,
+    },
+  };
+}
+
