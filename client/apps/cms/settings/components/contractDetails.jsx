@@ -30,7 +30,7 @@ import { saveTempChange } from 'common/reducers/cmsInvoice';
   moduleName: 'clearance',
 })
 @Form.create()
-export default class InvoiceDetials extends React.Component {
+export default class ContractDetials extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     invoice: PropTypes.object.isRequired,
@@ -117,23 +117,24 @@ export default class InvoiceDetials extends React.Component {
       <div style={{ width: '100%' }}>
         <Card style={{ margin: 16 }}>
           <div className="page-header">
-            <h3>发票 INVOICE</h3>
+            <h3>合同 CONTRACT</h3>
             <span />
             <Row gutter={16}>
               <Col sm={12}>
-                <InfoItem label="发票编号  Invoice No." field={invoice.invoice_no} editable placeholder="输入发票编号" dataIndex="invoice_no" onEdit={this.handleFill} />
+                <InfoItem label="合同号 Contract No." field={invoice.invoice_no} editable placeholder="输入合同号" dataIndex="invoice_no" onEdit={this.handleFill} />
               </Col>
               <Col sm={12}>
                 <InfoItem label="卖方  Seller" field={invoice.seller} editable placeholder="输入卖方" dataIndex="seller" onEdit={this.handleFill} />
               </Col>
               <Col sm={12}>
-                <InfoItem label="发票日期  Invoice Date" type="date" field={invoice.invoice_date} editable placeholder="输入发票日期" dataIndex="invoice_date" onEdit={this.handleFill} />
+                <InfoItem label="日期  Date" type="date" field={invoice.invoice_date} editable placeholder="输入日期" dataIndex="invoice_date" onEdit={this.handleFill} />
               </Col>
               <Col sm={12}>
                 <InfoItem label="买方  Buyer" field={invoice.buyer} editable placeholder="输入买方" dataIndex="buyer" onEdit={this.handleFill} />
               </Col>
             </Row>
             <span />
+            <span>兹经买卖双方同意，由买方购进，卖方出售下列货物，并按下列条款签订本合同：</span>
             <Table columns={columns} />
             {!!invoice.sub_total_en && <Table showHeader={false} pagination={false} columns={totCols} dataSource={this.state.sumval} />}
             <span />
@@ -158,6 +159,19 @@ export default class InvoiceDetials extends React.Component {
                 {!!invoice.remark_en && <InfoItem label="备注 Remark" field={invoice.remark} editable placeholder="输入备注" dataIndex="remark" onEdit={this.handleFill} />}
               </Col>
             </Row>
+            <span />
+            <p>本合同一式二份，买卖双方各执一份为证。</p>
+            <p>This contract is mad outin two original copies, one copy to be held by each party in witness thereof.</p>
+            {!!invoice.sign_en && <div style={{ margin: 28 }}>
+              <Row gutter={16}>
+                <Col sm={12}>
+                  <h3>买方  THE BUYERS</h3>
+                </Col>
+                <Col sm={12}>
+                  <h3>卖方  THE SELLERS </h3>
+                </Col>
+              </Row>
+            </div>}
           </div>
         </Card>
       </div>

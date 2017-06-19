@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Layout, Collapse, Checkbox } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
-import InvoiceDetials from './invoiceDetials';
+import ContractDetials from './contractDetails';
 import { formatMsg } from './message.i18n';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadInvTemplateData, loadTempParams, saveTempChange } from 'common/reducers/cmsInvoice';
@@ -56,7 +56,7 @@ function fetchData({ dispatch, state, params }) {
   depth: 2,
   moduleName: 'clearance',
 })
-export default class InvoiceContent extends React.Component {
+export default class ContractContent extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -74,7 +74,7 @@ export default class InvoiceContent extends React.Component {
           <div className="top-bar">
             <Breadcrumb>
               <Breadcrumb.Item>
-                {this.msg('invoice')}
+                {this.msg('contract')}
               </Breadcrumb.Item>
               <Breadcrumb.Item>
                 {`${this.props.template.template_name}`}
@@ -112,11 +112,15 @@ export default class InvoiceContent extends React.Component {
                   text={this.msg('remark')}
                   onChange={this.handleCheckChange} checked={invData.remark_en}
                 />
+                <MSCheckbox field="sign_en"
+                  text={this.msg('sign')}
+                  onChange={this.handleCheckChange} checked={invData.sign_en}
+                />
               </Panel>
             </Collapse>
           </div>
         </Sider>
-        <InvoiceDetials />
+        <ContractDetials />
       </Layout>
     );
   }

@@ -8,7 +8,6 @@ import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import NavLink from 'client/components/nav-link';
 import withPrivilege from 'client/common/decorators/withPrivilege';
-import connectFetch from 'client/common/decorators/connect-fetch';
 import InvTemplateModal from './modals/newTemplate';
 import { toggleInvTempModal, loadInvTemplates, deleteInvTemplate } from 'common/reducers/cmsInvoice';
 import { CMS_DOCU_TYPE } from 'common/constants';
@@ -19,10 +18,6 @@ const SubMenu = Menu.SubMenu;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 
-function fetchData({ dispatch, state }) {
-  return dispatch(loadInvTemplates({ tenantId: state.account.tenantId, docuType: CMS_DOCU_TYPE.invoice }));
-}
-@connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
@@ -30,6 +25,7 @@ function fetchData({ dispatch, state }) {
     loginId: state.account.loginId,
     loginName: state.account.username,
     invTemplates: state.cmsInvoice.invTemplates,
+    docuType: state.cmsInvoice.docuType,
   }),
   { toggleInvTempModal, loadInvTemplates, deleteInvTemplate }
 )
@@ -43,12 +39,13 @@ export default class InvoiceTemplate extends Component {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     invTemplates: PropTypes.array.isRequired,
+    docuType: PropTypes.number.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
-  state = {
-    viewStatus: 'invoice',
+  componentDidMount() {
+    this.handleListLoad(this.props.docuType);
   }
   msg = key => formatMsg(this.props.intl, key);
   handleNavigationTo(to, query) {
@@ -76,15 +73,14 @@ export default class InvoiceTemplate extends Component {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
-        this.handleListLoad(this.state.viewStatus);
+        this.handleListLoad(this.props.docuType);
       }
     });
   }
   handleListChange = (ev) => {
-    if (ev.target.value === this.state.viewStatus) {
+    if (ev.target.value === this.props.docuType) {
       return;
     }
-    this.setState({ viewStatus: ev.target.value });
     this.handleListLoad(ev.target.value);
   }
   render() {
@@ -145,7 +141,7 @@ export default class InvoiceTemplate extends Component {
               </Sider>
               <Content className="nav-content">
                 <div className="toolbar">
-                  <RadioGroup value={this.state.viewStatus} onChange={this.handleListChange} size="large">
+                  <RadioGroup value={this.props.docuType} onChange={this.handleListChange} size="large">
                     <RadioButton value={CMS_DOCU_TYPE.invoice}>发票</RadioButton>
                     <RadioButton value={CMS_DOCU_TYPE.contract}>合同</RadioButton>
                     <RadioButton value={CMS_DOCU_TYPE.packingList}>箱单</RadioButton>

@@ -341,3 +341,9 @@ export const CMS_SPLIT_COUNT = [
   { value: '20', text: '按20品拆分' },
   { value: '50', text: '按50品拆分' },
 ];
+
+export const CMS_DOCU_TYPE = {
+  invoice: 0,
+  contract: 1,
+  packingList: 2,
+};
