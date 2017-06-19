@@ -1,9 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Table, Input, Tooltip, Button } from 'antd';
+import { Table, Button } from 'antd';
 import RowUpdater from 'client/components/rowUpdater';
 import AllocatingModal from '../modal/allocatingModal';
+import QuantityInput from '../../../common/quantityInput';
 import { openAllocatingModal } from 'common/reducers/cwmOutbound';
 
 
@@ -34,7 +35,6 @@ export default class OrderDetailsPane extends React.Component {
   }, {
     title: '中文品名',
     dataIndex: 'desc_cn',
-    width: 150,
   }, {
     title: '订货数量',
     dataIndex: 'order_qty',
@@ -56,23 +56,19 @@ export default class OrderDetailsPane extends React.Component {
   }, {
     title: '分配数量',
     width: 200,
-    render: (o, record) => (<span><Tooltip title="包装单位数量"><Input className="readonly" value={record.expect_pack_qty} style={{ width: 80 }} /></Tooltip>
-      <Tooltip title="主单位数量"><Input value={record.expect_qty} style={{ width: 80 }} disabled /></Tooltip></span>),
+    render: (o, record) => (<QuantityInput packQty={record.allocated_pack_qty} pcsQty={record.allocated_qty} />),
   }, {
     title: '拣货数量',
     width: 200,
-    render: (o, record) => (<span><Tooltip title="包装单位数量"><Input className="readonly" value={record.expect_pack_qty} style={{ width: 80 }} /></Tooltip>
-      <Tooltip title="主单位数量"><Input value={record.expect_qty} style={{ width: 80 }} disabled /></Tooltip></span>),
+    render: (o, record) => (<QuantityInput packQty={record.picked_pack_qty} pcsQty={record.picked_qty} />),
   }, {
     title: '装箱数量',
     width: 200,
-    render: (o, record) => (<span><Tooltip title="包装单位数量"><Input className="readonly" value={record.expect_pack_qty} style={{ width: 80 }} /></Tooltip>
-      <Tooltip title="主单位数量"><Input value={record.expect_qty} style={{ width: 80 }} disabled /></Tooltip></span>),
+    render: (o, record) => (<QuantityInput packQty={record.packed_pack_qty} pcsQty={record.packed_qty} />),
   }, {
     title: '发货数量',
     width: 200,
-    render: (o, record) => (<span><Tooltip title="包装单位数量"><Input className="readonly" value={record.expect_pack_qty} style={{ width: 80 }} /></Tooltip>
-      <Tooltip title="主单位数量"><Input value={record.expect_qty} style={{ width: 80 }} disabled /></Tooltip></span>),
+    render: (o, record) => (<QuantityInput packQty={record.shipped_pack_qty} pcsQty={record.shipped_qty} />),
   }, {
     title: '操作',
     width: 150,
@@ -199,7 +195,9 @@ export default class OrderDetailsPane extends React.Component {
             <Button size="large" onClick={this.handleWithdrawTask} icon="rollback" />}
           </div>
         </div>
-        <Table columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={this.mockData} rowKey="id" scroll={{ x: 1700 }} />
+        <Table columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={this.mockData} rowKey="id"
+          scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
+        />
         <AllocatingModal shippingMode={this.state.shippingMode} />
       </div>
     );

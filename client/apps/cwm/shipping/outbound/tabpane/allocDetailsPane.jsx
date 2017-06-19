@@ -1,10 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Table, Tag, Icon, Input, Tooltip, Button } from 'antd';
+import { Table, Tag, Icon, Button } from 'antd';
 import RowUpdater from 'client/components/rowUpdater';
 import PickingModal from '../modal/pickingModal';
 import ShippingModal from '../modal/shippingModal';
+import QuantityInput from '../../../common/quantityInput';
 import { openPickingModal, openShippingModal } from 'common/reducers/cwmOutbound';
 
 @injectIntl
@@ -52,8 +53,7 @@ export default class AllocDetailsPane extends React.Component {
   }, {
     title: '分配数量',
     width: 200,
-    render: (o, record) => (<span><Tooltip title="包装单位数量"><Input value={record.expect_pack_qty} style={{ width: 80 }} /></Tooltip>
-      <Tooltip title="主单位数量"><Input value={record.expect_qty} style={{ width: 80 }} disabled /></Tooltip></span>),
+    render: (o, record) => (<QuantityInput packQty={record.allocated_pack_qty} pcsQty={record.allocated_qty} />),
   }, {
     title: '商品货号',
     dataIndex: 'product_no',
@@ -232,7 +232,9 @@ export default class AllocDetailsPane extends React.Component {
 
           </div>
         </div>
-        <Table columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={this.mockData} rowKey="id" scroll={{ x: 1600 }} />
+        <Table columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={this.mockData} rowKey="id"
+          scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
+        />
         <PickingModal shippingMode={this.state.shippingMode} />
         <ShippingModal shippingMode={this.state.shippingMode} />
       </div>

@@ -3,9 +3,10 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Card, Collapse, DatePicker, Table, Form, Modal, Input, Tag, Tooltip, Row, Col, Button } from 'antd';
+import { Card, Collapse, DatePicker, Table, Form, Modal, Input, Tag, Row, Col, Button } from 'antd';
 import InfoItem from 'client/components/InfoItem';
 import { format } from 'client/common/i18n/helpers';
+import QuantityInput from '../../../common/quantityInput';
 import messages from '../../message.i18n';
 import { closeAllocatingModal } from 'common/reducers/cwmOutbound';
 
@@ -94,14 +95,12 @@ export default class AllocatingModal extends Component {
     dataIndex: 'avail_qty',
     width: 200,
     fixed: 'right',
-    render: o => (<span><Tooltip title="包装单位数量"><Input size="small" className="readonly" style={{ width: 80 }} /></Tooltip>
-      <Tooltip title="主单位数量"><Input size="small" value={o} style={{ width: 80 }} disabled /></Tooltip></span>),
+    render: (o, record) => (<QuantityInput packQty={record.allocated_pack_qty} pcsQty={record.allocated_qty} />),
   }, {
     title: '出库数量',
     width: 200,
     fixed: 'right',
-    render: () => (<span><Tooltip title="包装单位数量"><Input size="small" style={{ width: 80 }} /></Tooltip>
-      <Tooltip title="主单位数量"><Input size="small" style={{ width: 80 }} disabled /></Tooltip></span>),
+    render: (o, record) => (<QuantityInput packQty={record.allocated_pack_qty} pcsQty={record.allocated_qty} />),
   }, {
     title: '添加',
     width: 80,
@@ -154,8 +153,7 @@ export default class AllocatingModal extends Component {
   }, {
     title: '分配数量',
     width: 200,
-    render: (o, record) => (<span><Tooltip title="包装单位数量"><Input value={record.expect_pack_qty} style={{ width: 80 }} /></Tooltip>
-      <Tooltip title="主单位数量"><Input value={record.expect_qty} style={{ width: 80 }} disabled /></Tooltip></span>),
+    render: (o, record) => (<QuantityInput packQty={record.allocated_pack_qty} pcsQty={record.allocated_qty} />),
   }, {
     title: '删除',
     width: 80,
@@ -231,16 +229,12 @@ export default class AllocatingModal extends Component {
             <InfoItem addonBefore="中文品名" field="微纤维止血胶原粉" style={{ marginBottom: 0 }} />
           </Col>
           <Col sm={12} md={8} lg={6}>
-            <InfoItem addonBefore="订货总数" field={<span>
-              <Tooltip title="包装单位数量"><Input value={3} className="readonly" style={{ width: 80 }} /></Tooltip>
-              <Tooltip title="主单位数量"><Input value={300} style={{ width: 80 }} disabled /></Tooltip></span>}
+            <InfoItem addonBefore="订货总数" field={<QuantityInput packQty={3} pcsQty={300} />}
               style={{ marginBottom: 0 }}
             />
           </Col>
           <Col sm={12} md={8} lg={6}>
-            <InfoItem addonBefore="分配总数" field={<span className="mdc-text-red">
-              <Tooltip title="包装单位数量"><Input value={1} className="readonly" style={{ width: 80 }} /></Tooltip>
-              <Tooltip title="主单位数量"><Input value={100} style={{ width: 80 }} disabled /></Tooltip></span>}
+            <InfoItem addonBefore="分配总数" field={<QuantityInput packQty={1} pcsQty={100} />}
               style={{ marginBottom: 0 }}
             />
           </Col>

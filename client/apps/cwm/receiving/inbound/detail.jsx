@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Breadcrumb, Icon, Dropdown, Form, Radio, Layout, Menu, Popconfirm, Steps, Select, Button, Card, Col, Row, Tag, Table, Input, Tooltip, message } from 'antd';
+import { Breadcrumb, Icon, Dropdown, Form, Radio, Layout, Menu, Popconfirm, Steps, Select, Button, Card, Col, Row, Tag, Table, Tooltip, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import InfoItem from 'client/components/InfoItem';
 import RowUpdater from 'client/components/rowUpdater';
 import PackagePopover from './popover/packagePopover';
 import ReceivingModal from './modal/receivingModal';
+import QuantityInput from '../../common/quantityInput';
 import { loadReceiveModal, getInboundDetail, updateReceivedQty, updateProductDetail, confirm } from 'common/reducers/cwmReceive';
 import { loadLocations } from 'common/reducers/cwmWarehouse';
 import { CWM_INBOUND_STATUS } from 'common/constants';
@@ -222,33 +223,21 @@ export default class ReceiveInbound extends Component {
     render: o => (<PackagePopover data={o} />),
   }, {
     title: 'SKU包装单位',
-    width: 200,
     dataIndex: 'sku_pack_unit_name',
     render: (puname, row) => (<Tooltip title={`=${row.sku_pack_qty}主单位`} placement="right"><Tag>{puname}</Tag></Tooltip>),
   }, {
     title: '预期数量',
     width: 200,
     fixed: 'right',
-    render: (o, record) => (
-      <span>
-        <Tooltip title="包装单位数量"><Input className="readonly" value={record.expect_pack_qty} style={{ width: 80 }} /></Tooltip>
-        <Tooltip title="主单位数量"><Input value={record.expect_qty} style={{ width: 80 }} disabled /></Tooltip>
-      </span>),
+    render: (o, record) => (<QuantityInput packQty={record.expect_pack_qty} pcsQty={record.expect_qty} disabled />),
   }, {
     title: '收货数量',
     width: 200,
     fixed: 'right',
-    render: (o, record, index) => {
-      const receiveAlert = record.expect_pack_qty !== record.receive_pack_qty;
-      return (<span className={receiveAlert ? 'mdc-text-red' : 'mdc-text-green'}>
-        <Tooltip title="包装单位数量">
-          <Input className={this.state.receivingMode === 'scan' && 'readonly'} value={record.received_pack_qty}
-            style={{ width: 80 }} onChange={e => this.handleProductReceive(index, e.target.value, record)}
-          />
-        </Tooltip>
-        <Tooltip title="主单位数量"><Input value={record.received_qty} style={{ width: 80 }} disabled /></Tooltip>
-      </span>);
-    },
+    render: (o, record, index) => (<QuantityInput packQty={record.received_pack_qty} pcsQty={record.received_qty}
+      alert={record.expect_pack_qty !== record.receive_pack_qty} disabled
+      onChange={e => this.handleProductReceive(index, e.target.value, record)}
+    />),
   }, {
     title: '库位号',
     dataIndex: 'location',
@@ -257,11 +246,11 @@ export default class ReceiveInbound extends Component {
     render: (o, record, index) => {
       if (record.location.length <= 1) {
         const Options = this.props.locations.map(location => (<Option value={location.location}>{location.location}</Option>));
-        return (<Select value={o[0]} showSearch style={{ width: 100 }} onChange={value => this.handleProductPutAway(value, record, index)} disabled={this.state.receivingMode === 'scan' || !record.received_pack_qty}>
+        return (<Select className="readonly" value={o[0]} showSearch style={{ width: 100 }} onChange={value => this.handleProductPutAway(value, record, index)} disabled>
           {Options}
         </Select>);
       } else {
-        return (<Select mode="tags" defaultValue={o} style={{ width: 100 }} disabled />);
+        return (<Select className="readonly" mode="tags" defaultValue={o} style={{ width: 100 }} disabled />);
       }
     },
   }, {
@@ -271,7 +260,7 @@ export default class ReceiveInbound extends Component {
     width: 120,
     render: (o, record, index) => {
       if (o.length <= 1) {
-        return (<Select value={o[0]} style={{ width: 100 }} onChange={value => this.handleProductStatusChange(value, record, index)} disabled={this.state.receivingMode === 'scan'}>
+        return (<Select className="readonly" value={o[0]} style={{ width: 100 }} onChange={value => this.handleProductStatusChange(value, record, index)} disabled>
           <Option value={0}>完好</Option>
           <Option value={1}>轻微擦痕</Option>
           <Option value={2}>中度</Option>
@@ -284,13 +273,13 @@ export default class ReceiveInbound extends Component {
     },
   }, {
     title: '操作',
-    width: 50,
+    width: 100,
     fixed: 'right',
     render: (o, record) => {
       if (this.state.receivingMode === 'scan') {
-        return (<RowUpdater onHit={this.handleReceive} label={<Icon type="scan" />} row={record} />);
+        return (<RowUpdater onHit={this.handleReceive} label="收货明细" row={record} />);
       } else if (this.state.receivingMode === 'manual') {
-        return (<RowUpdater onHit={() => this.handleReceive(record)} label={<Icon type="edit" />} row={record} />);
+        return (<RowUpdater onHit={() => this.handleReceive(record)} label="手动收货" row={record} />);
       }
     },
   }]
@@ -375,7 +364,7 @@ export default class ReceiveInbound extends Component {
               </Row>
               <div className="card-footer">
                 <Steps progressDot current={this.state.currentStatus}>
-                  <Step description="创建入库" />
+                  <Step description="待入库" />
                   <Step description="收货" />
                   <Step description="上架" />
                   <Step description="入库完成" />
@@ -403,7 +392,7 @@ export default class ReceiveInbound extends Component {
                 </div>
               </div>
               <Table columns={this.columns} rowSelection={rowSelection} dataSource={inboundProducts} rowKey="asn_seq_no"
-                scroll={{ x: this.columns.reduce((acc, cur) => acc + cur.width, 0) }}
+                scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
               />
               <ReceivingModal reload={this.handleReload} receivingMode={this.state.receivingMode} />
             </Card>

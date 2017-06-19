@@ -289,6 +289,7 @@ export default class OutboundList extends React.Component {
           </RadioGroup>
           <span />
           <RadioGroup defaultValue="allocating" onChange={this.handleStatusChange} size="large">
+            <RadioButton value="created">待出库</RadioButton>
             <RadioButton value="allocating">分配</RadioButton>
             <RadioButton value="picking">拣货</RadioButton>
             <RadioButton value="shipping">发货</RadioButton>

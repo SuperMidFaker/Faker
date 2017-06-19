@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { Table, Icon, Modal, Input, Tooltip, Row, Col, Select, Button } from 'antd';
+import { Table, Icon, Modal, Input, Row, Col, Select, Button } from 'antd';
 import InfoItem from 'client/components/InfoItem';
 import { format } from 'client/common/i18n/helpers';
+import QuantityInput from '../../../common/quantityInput';
 import messages from '../../message.i18n';
 import { hideReceiveModal, loadProductDetails, updateProductDetails } from 'common/reducers/cwmReceive';
 
@@ -139,15 +140,7 @@ export default class ReceivingModal extends Component {
   }, {
     title: '收货数量',
     dataIndex: 'received_qty',
-    render: (o, record) => {
-      if (record.expect_pack_qty === record.received_pack_qty) {
-        return (<span className="mdc-text-green"><Tooltip title="包装单位数量"><Input className="readonly" style={{ width: 80 }} /></Tooltip>
-          <Tooltip title="主单位数量"><Input value={record.received_qty} style={{ width: 80 }} disabled /></Tooltip></span>);
-      } else {
-        return (<span className="mdc-text-red"><Tooltip title="包装单位数量"><Input className="readonly" style={{ width: 80 }} /></Tooltip>
-          <Tooltip title="主单位数量"><Input value={record.received_qty} style={{ width: 80 }} disabled /></Tooltip></span>);
-      }
-    },
+    render: (o, record) => (<QuantityInput packQty={record.received_pack_qty} pcsQty={record.received_qty} />),
   }, {
     title: '库位',
     dataIndex: 'location',
@@ -182,8 +175,7 @@ export default class ReceivingModal extends Component {
     title: '收货数量',
     dataIndex: 'inbound_qty',
     width: 180,
-    render: (o, record, index) => (<span className="mdc-text-red"><Tooltip title="包装单位数量"><Input value={record.inbound_pack_qty} style={{ width: 80 }} onChange={e => this.handleProductReceive(index, e.target.value, record)} /></Tooltip>
-      <Tooltip title="主单位数量"><Input value={o} style={{ width: 80 }} disabled /></Tooltip></span>),
+    render: (o, record, index) => (<QuantityInput packQty={record.inbound_pack_qty} pcsQty={o} onChange={e => this.handleProductReceive(index, e.target.value, record)} />),
   }, {
     title: '库位',
     dataIndex: 'location',
@@ -247,22 +239,24 @@ export default class ReceivingModal extends Component {
     const { receivingMode, expectQty, expectPackQty, receivedQty, receivedPackQty } = this.props;
     return (
       <Modal title="收货" width={1200} maskClosable={false} onCancel={this.handleCancel} visible={this.props.visible} onOk={this.handleSubmit}>
-        <Row gutter={16}>
-          <Col sm={24} lg={6}>
-            <InfoItem label="预期数量" field={<span>
-              <Tooltip title="包装单位数量"><Input value={expectPackQty} className="readonly" style={{ width: 80 }} /></Tooltip>
-              <Tooltip title="主单位数量"><Input value={expectQty} style={{ width: 80 }} disabled /></Tooltip></span>}
-            />
+        <Row>
+          <Col sm={12} md={8} lg={6}>
+            <InfoItem addonBefore="商品货号" field="I096120170603223-01" style={{ marginBottom: 0 }} />
           </Col>
-          <Col sm={24} lg={6}>
-            <InfoItem label="现收数量" field={<span className="mdc-text-red">
-              <Tooltip title="包装单位数量"><Input value={receivedPackQty} className="readonly" style={{ width: 80 }} /></Tooltip>
-              <Tooltip title="主单位数量"><Input value={receivedQty} style={{ width: 80 }} disabled /></Tooltip></span>}
-            />
+          <Col sm={12} md={8} lg={6}>
+            <InfoItem addonBefore="中文品名" field="微纤维止血胶原粉" style={{ marginBottom: 0 }} />
+          </Col>
+          <Col sm={12} md={8} lg={6}>
+            <InfoItem addonBefore="预期数量" field={<QuantityInput packQty={expectPackQty} pcsQty={expectQty} disabled />} />
+          </Col>
+          <Col sm={12} md={8} lg={6}>
+            <InfoItem addonBefore="现收数量" field={<QuantityInput packQty={receivedPackQty} pcsQty={receivedQty} disabled />} />
           </Col>
         </Row>
-        <Button className="editable-add-btn" onClick={this.handleAdd}>Add</Button>
-        <Table size="middle" columns={receivingMode === 'scan' ? this.columns : this.solutionColumns} dataSource={(receivingMode === 'scan' ? this.dataSource : this.state.dataSource).map((item, index) => ({ ...item, index }))} rowKey="index" />
+        <Table size="middle" columns={receivingMode === 'scan' ? this.columns : this.solutionColumns}
+          dataSource={(receivingMode === 'scan' ? this.dataSource : this.state.dataSource).map((item, index) => ({ ...item, index }))} rowKey="index"
+          footer={() => receivingMode === 'manual' && <Button type="dashed" icon="plus" style={{ width: '100%' }} onClick={this.handleAdd} />}
+        />
       </Modal>
     );
   }

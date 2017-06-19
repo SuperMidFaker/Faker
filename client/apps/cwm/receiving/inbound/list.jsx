@@ -77,7 +77,6 @@ export default class ReceivingInboundList extends React.Component {
     render: dc => !isNaN(dc) ? dc : null,
   }, {
     title: '货主',
-    width: 200,
     dataIndex: 'owner_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
@@ -252,7 +251,9 @@ export default class ReceivingInboundList extends React.Component {
               </div>
             </div>
             <div className="panel-body table-panel">
-              <Table columns={this.columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="id" scroll={{ x: this.columns.reduce((acc, cur) => acc + cur.width, 0) }} />
+              <Table columns={this.columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="id"
+                scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
+              />
             </div>
           </div>
         </Content>
