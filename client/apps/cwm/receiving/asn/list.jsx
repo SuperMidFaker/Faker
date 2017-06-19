@@ -180,7 +180,8 @@ export default class ReceivingASNList extends React.Component {
   }
   handleReleaseASN = (row) => {
     const { loginId } = this.props;
-    this.props.releaseAsn(row.asn_no, loginId).then(
+    const whseCode = this.props.defaultWhse.code;
+    this.props.releaseAsn(row.asn_no, loginId, whseCode).then(
       (result) => {
         if (!result.error) {
           notification.success({
@@ -222,7 +223,6 @@ export default class ReceivingASNList extends React.Component {
     });
   }
   handleOwnerChange = (value) => {
-    this.props.asnFilterChange(value);
     const filters = { ...this.props.filters, ownerCode: value };
     const whseCode = this.props.defaultWhse.code;
     this.props.loadAsnLists({
