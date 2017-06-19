@@ -99,11 +99,11 @@ export default class OrderDockPanel extends React.Component {
           {
             order.order_status === CRM_ORDER_STATUS.processing ? (
               <div className="pane-content order-action-btn">
-                <Tooltip title="取消订单">
-                  <Button size="large" onClick={this.handleCancelOrder}>取消</Button>
+                <Tooltip title="取消订单后，该订单将会被删除">
+                  <Button size="large" onClick={this.handleCancelOrder}>取消订单</Button>
                 </Tooltip>
-                <Tooltip title="关闭订单">
-                  <Button size="large" onClick={this.handleCloseOrder}>关闭</Button>
+                <Tooltip title="关闭订单后订单会被提前结束，但是订单不会被删除">
+                  <Button size="large" onClick={this.handleCloseOrder}>关闭订单</Button>
                 </Tooltip>
               </div>) : null
           }
