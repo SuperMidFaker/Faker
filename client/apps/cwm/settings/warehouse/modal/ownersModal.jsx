@@ -28,17 +28,9 @@ export default class OwnersModal extends Component {
     selectedRowKeys: [],
     selectedRows: [],
   }
-  componentWillMount() {
-    const { whseTenantId } = this.props;
-    this.props.loadPartners({
-      tenantId: whseTenantId,
-      role: PARTNER_ROLES.CUS,
-      businessType: PARTNER_BUSINESSE_TYPES.warehousing,
-    });
-  }
   componentWillReceiveProps(nextProps) {
-    const tenantId = this.props.whseTenantId;
     if (nextProps.whseCode !== this.props.whseCode) {
+      const tenantId = nextProps.whseTenantId;
       this.props.loadPartners({
         tenantId,
         role: PARTNER_ROLES.CUS,
