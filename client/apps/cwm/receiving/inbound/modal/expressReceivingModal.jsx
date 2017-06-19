@@ -2,69 +2,99 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { Checkbox, DatePicker, Form, Modal, Input } from 'antd';
+import { Checkbox, Modal, Select, Form } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
-import { closePickingModal } from 'common/reducers/cwmOutbound';
+import { hideExpressReceivingModal, updateInboundDetails } from 'common/reducers/cwmReceive';
+import { loadLocations } from 'common/reducers/cwmWarehouse';
 
 const formatMsg = format(messages);
+const Option = Select.Option;
 const FormItem = Form.Item;
 
 @injectIntl
 @connect(
   state => ({
-    visible: state.cwmOutbound.pickingModal.visible,
+    tenantId: state.account.tenantId,
+    loginId: state.account.loginId,
+    locations: state.cwmWarehouse.locations,
+    defaultWhse: state.cwmContext.defaultWhse,
+    visible: state.cwmReceive.receiveQtyModal.visible,
   }),
-  { closePickingModal }
+  { hideExpressReceivingModal, loadLocations, updateInboundDetails }
 )
-@Form.create()
 export default class ExpressReceivingModal extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    shippingMode: PropTypes.string,
+    data: PropTypes.array.isRequired,
+    reload: PropTypes.func.isRequired,
+    inboundNo: PropTypes.string.isRequired,
+    asnNo: PropTypes.string.isRequired,
+  }
+  state = {
+    location: '',
+    damageLevel: '',
+  }
+  componentWillMount() {
+    const whseCode = this.props.defaultWhse.code;
+    this.props.loadLocations(whseCode);
   }
   msg = key => formatMsg(this.props.intl, key);
   handleCancel = () => {
-    this.props.closePickingModal();
+    this.props.hideExpressReceivingModal();
   }
-
+  handleLocationChange = (value) => {
+    this.setState({
+      location: value,
+    });
+  }
+  handleDamageLevelChange = (value) => {
+    this.setState({
+      damageLevel: value,
+    });
+  }
+  handleSubmit = () => {
+    const { location, damageLevel } = this.state;
+    const { data, loginId, inboundNo, asnNo } = this.props;
+    const seqNos = [];
+    for (let i = 0; i < data.length; i++) {
+      seqNos.push(data[i].asn_seq_no);
+    }
+    this.props.updateInboundDetails(seqNos, location, damageLevel, loginId, asnNo, inboundNo).then((result) => {
+      if (!result.error) {
+        this.props.reload();
+        this.props.hideExpressReceivingModal();
+        this.setState({
+          location: '',
+          damageLevel: '',
+        });
+      }
+    });
+  }
   render() {
-    const { form: { getFieldDecorator } } = this.props;
     const formItemLayout = {
-      labelCol: { span: 6 },
-      wrapperCol: { span: 14 },
+      labelCol: { span: 8 },
+      wrapperCol: { span: 12 },
     };
     return (
-      <Modal title="快捷收货" maskClosable={false} onCancel={this.handleCancel} visible={this.props.visible}>
-        <Form>
-          <FormItem {...formItemLayout} label="收货数量" >
-            <Checkbox checked>实际收货数量与预期一致</Checkbox>
-          </FormItem>
-          <FormItem {...formItemLayout} label="库位" >
-            {
-              getFieldDecorator('location', {
-                rules: [{ required: true, messages: 'please input whseCode' }],
-              })(<Input />)
-            }
-          </FormItem>
-          <FormItem {...formItemLayout} label="破损级别" >
-            {
-              getFieldDecorator('damageLevel', {
-                rules: [{ required: true, messages: 'please input whseName' }],
-              })(<Input />)
-            }
-          </FormItem>
-          <FormItem {...formItemLayout} label="收货人员" >
-            {
-              getFieldDecorator('receivedBy')(<Input />)
-            }
-          </FormItem>
-          <FormItem {...formItemLayout} label="收货时间" >
-            {
-              getFieldDecorator('receivedDate')(<DatePicker />)
-            }
-          </FormItem>
-        </Form>
+      <Modal title="快捷收货" onCancel={this.handleCancel} visible={this.props.visible} onOk={this.handleSubmit}>
+        <FormItem {...formItemLayout} label="收货数量">
+          <Checkbox checked disabled>实际收货数量与预期一致</Checkbox>
+        </FormItem>
+        <FormItem {...formItemLayout} label="库位">
+          <Select style={{ width: 160 }} onSelect={this.handleLocationChange}>
+            {this.props.locations.map(location => (<Option value={location.location}>{location.location}</Option>))}
+          </Select>
+        </FormItem>
+        <FormItem {...formItemLayout} label="破损级别" >
+          <Select style={{ width: 160 }} onSelect={this.handleDamageLevelChange}>
+            <Option value={0}>完好</Option>
+            <Option value={1}>轻微擦痕</Option>
+            <Option value={2}>中度</Option>
+            <Option value={3}>重度</Option>
+            <Option value={4}>严重磨损</Option>
+          </Select>
+        </FormItem>
       </Modal>
     );
   }
