@@ -4,6 +4,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Table, Icon, Modal, Input, Row, Col, Select, Button } from 'antd';
 import InfoItem from 'client/components/InfoItem';
+import RowUpdater from 'client/components/rowUpdater';
 import { format } from 'client/common/i18n/helpers';
 import QuantityInput from '../../../common/quantityInput';
 import messages from '../../message.i18n';
@@ -117,12 +118,7 @@ export default class ReceivingModal extends Component {
     this.props.hideReceiveModal();
     this.props.reload();
   }
-  columns = [{
-    title: '商品货号',
-    dataIndex: 'product_no',
-    width: 200,
-    render: o => (<Input className="readonly" prefix={<Icon type="tag" />} value={o} />),
-  }, {
+  scanColumns = [{
     title: '商品条码',
     dataIndex: 'product_tag',
     width: 200,
@@ -157,16 +153,8 @@ export default class ReceivingModal extends Component {
       <Option value="4">严重磨损</Option>
     </Select>),
   }]
-  solutionColumns = [{
-    title: '商品货号',
-    dataIndex: 'product_no',
-    width: 200,
-  }, {
-    title: '追踪号',
-    dataIndex: 'trace_id',
-    width: 200,
-    render: o => (<Input prefix={<Icon type="qrcode" />} value={o} />),
-  }, {
+
+  manualColumns = [{
     title: '容器编号',
     dataIndex: 'convey_no',
     width: 180,
@@ -187,7 +175,7 @@ export default class ReceivingModal extends Component {
       </Select>);
     },
   }, {
-    title: '收货状态',
+    title: '破损级别',
     dataIndex: 'damage_level',
     width: 180,
     render: (o, record, index) => (<Select value={o} onChange={value => this.handleDamageLevelChange(value, record, index)} style={{ width: 160 }} >
@@ -197,48 +185,15 @@ export default class ReceivingModal extends Component {
       <Option value={3}>重度</Option>
       <Option value={4}>严重磨损</Option>
     </Select>),
+  }, {
+    title: '操作',
+    width: 50,
+    render: (o, record) => (<RowUpdater onHit={this.handleDeleteDetail} label={<Icon type="delete" />} row={record} />),
   }]
-  dataSource = [{
-    trace_id: 'T04601170548',
-    convey_no: 'N0170548',
-    order_qty: 15,
-    desc_cn: '微纤维止血胶原粉',
-    packing_code: '良品',
-    unit: '件',
-    receive_pack: '单件',
-    expect_pack_qty: 15,
-    expect_qty: 15,
-    received_pack_qty: 15,
-    received_qty: 15,
-  }, {
-    trace_id: 'T04601170547',
-    convey_no: 'N0170547',
-    order_qty: 1000,
-    desc_cn: 'PTA球囊扩张导管',
-    packing_code: '良品',
-    unit: '件',
-    receive_pack: '内包装',
-    expect_pack_qty: 10,
-    expect_qty: 1000,
-    received_pack_qty: 0,
-    received_qty: 0,
-  }, {
-    trace_id: 'T04601170546',
-    convey_no: 'N0170546',
-    order_qty: 1000,
-    desc_cn: '临时起搏电极导管',
-    packing_code: '残次',
-    unit: '个',
-    receive_pack: '内包装',
-    expect_pack_qty: 10,
-    expect_qty: 1000,
-    received_pack_qty: 0,
-    received_qty: 0,
-  }];
   render() {
     const { receivingMode, expectQty, expectPackQty, receivedQty, receivedPackQty } = this.props;
     return (
-      <Modal title="收货" width={1200} maskClosable={false} onCancel={this.handleCancel} visible={this.props.visible} onOk={this.handleSubmit}>
+      <Modal title="收货" width={960} maskClosable={false} onCancel={this.handleCancel} visible={this.props.visible} onOk={this.handleSubmit}>
         <Row>
           <Col sm={12} md={8} lg={6}>
             <InfoItem addonBefore="商品货号" field="I096120170603223-01" style={{ marginBottom: 0 }} />
@@ -253,8 +208,8 @@ export default class ReceivingModal extends Component {
             <InfoItem addonBefore="现收数量" field={<QuantityInput packQty={receivedPackQty} pcsQty={receivedQty} disabled />} />
           </Col>
         </Row>
-        <Table size="middle" columns={receivingMode === 'scan' ? this.columns : this.solutionColumns}
-          dataSource={(receivingMode === 'scan' ? this.dataSource : this.state.dataSource).map((item, index) => ({ ...item, index }))} rowKey="index"
+        <Table size="middle" columns={receivingMode === 'scan' ? this.scanColumns : this.manualColumns}
+          dataSource={this.state.dataSource.map((item, index) => ({ ...item, index }))} rowKey="index"
           footer={() => receivingMode === 'manual' && <Button type="dashed" icon="plus" style={{ width: '100%' }} onClick={this.handleAdd} />}
         />
       </Modal>

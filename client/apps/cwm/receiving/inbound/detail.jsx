@@ -175,7 +175,8 @@ export default class ReceiveInbound extends Component {
   }, {
     title: '订单数量',
     dataIndex: 'expect_qty',
-    width: 100,
+    width: 80,
+    className: 'cell-align-right',
     render: o => (<b>{o}</b>),
   }, {
     title: '主单位',
@@ -192,12 +193,12 @@ export default class ReceiveInbound extends Component {
     render: (puname, row) => (<Tooltip title={`=${row.sku_pack_qty}主单位`} placement="right"><Tag>{puname}</Tag></Tooltip>),
   }, {
     title: '预期数量',
-    width: 200,
+    width: 180,
     fixed: 'right',
     render: (o, record) => (<QuantityInput packQty={record.expect_pack_qty} pcsQty={record.expect_qty} disabled />),
   }, {
     title: '收货数量',
-    width: 200,
+    width: 180,
     fixed: 'right',
     render: (o, record) => (<QuantityInput packQty={record.received_pack_qty} pcsQty={record.received_qty}
       alert={record.expect_pack_qty !== record.receive_pack_qty} disabled
@@ -206,15 +207,15 @@ export default class ReceiveInbound extends Component {
     title: '库位号',
     dataIndex: 'location',
     fixed: 'right',
-    width: 120,
+    width: 180,
     render: (o, record) => {
       if (record.location.length <= 1) {
         const Options = this.props.locations.map(location => (<Option value={location.location}>{location.location}</Option>));
-        return (<Select value={o[0]} showSearch style={{ width: 100 }} disabled>
+        return (<Select value={o[0]} showSearch style={{ width: 160 }} disabled>
           {Options}
         </Select>);
       } else {
-        return (<Select className="readonly" mode="tags" defaultValue={o} style={{ width: 100 }} disabled />);
+        return (<Select className="readonly" mode="tags" defaultValue={o} style={{ width: 160 }} disabled />);
       }
     },
   }, {
