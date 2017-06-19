@@ -171,7 +171,8 @@ export default class ReceiveInbound extends Component {
       record.received_qty, record.received_pack_qty, record.sku_pack_qty, record.asn_no, record.product_no);
   }
   handleInboundConfirmed = () => {
-    this.props.confirm(this.state.inboundHead.inbound_no, this.props.params.asnNo);
+    const { loginId, tenantId } = this.props;
+    this.props.confirm(this.state.inboundHead.inbound_no, this.props.params.asnNo, loginId, tenantId);
     this.setState({
       currentStatus: CWM_INBOUND_STATUS.COMPLETED,
     });
