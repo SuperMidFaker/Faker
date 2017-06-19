@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Layout, Collapse, Checkbox } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
-import InvoiceDetials from './invoiceDetials';
+import PackingListDetials from './packlistDetails';
 import { formatMsg } from './message.i18n';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadInvTemplateData, loadTempParams, saveTempChange } from 'common/reducers/cmsInvoice';
@@ -56,7 +56,7 @@ function fetchData({ dispatch, state, params }) {
   depth: 2,
   moduleName: 'clearance',
 })
-export default class InvoiceContent extends React.Component {
+export default class PackingListContent extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -84,9 +84,9 @@ export default class InvoiceContent extends React.Component {
           <div className="left-sider-panel">
             <Collapse accordion defaultActiveKey="item">
               <Panel header={'Item Table'} key="item">
-                <MSCheckbox field="unit_price_en"
-                  text={this.msg('unitPrice')}
-                  onChange={this.handleCheckChange} checked={invData.unit_price_en}
+                <MSCheckbox field="containerno_en"
+                  text={this.msg('containerNo')}
+                  onChange={this.handleCheckChange} checked={invData.containerno_en}
                 />
                 <MSCheckbox field="eng_name_en"
                   text={this.msg('enGName')}
@@ -116,7 +116,7 @@ export default class InvoiceContent extends React.Component {
             </Collapse>
           </div>
         </Sider>
-        <InvoiceDetials />
+        <PackingListDetials />
       </Layout>
     );
   }

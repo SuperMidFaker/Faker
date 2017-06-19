@@ -23,6 +23,7 @@ const initialState = {
     trxModes: [],
     customs: [],
   },
+  docuType: 0,
 };
 
 export default function reducer(state = initialState, action) {
@@ -30,7 +31,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.TOGGLE_INV_TEMPLATE:
       return { ...state, invTemplateModal: { ...state.invTemplateModal, ...action.data } };
     case actionTypes.LOAD_INV_TEMPLATES_SUCCEED:
-      return { ...state, invTemplates: action.result.data };
+      return { ...state, invTemplates: action.result.data, docuType: action.params.docuType };
     case actionTypes.LOAD_INV_DATA_SUCCEED:
       return { ...state, template: action.result.data.template, invData: action.result.data.invData };
     case actionTypes.LOAD_PARAMS_SUCCEED:

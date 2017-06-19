@@ -30,7 +30,7 @@ import { saveTempChange } from 'common/reducers/cmsInvoice';
   moduleName: 'clearance',
 })
 @Form.create()
-export default class InvoiceDetials extends React.Component {
+export default class PackingListDetials extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     invoice: PropTypes.object.isRequired,
@@ -87,11 +87,8 @@ export default class InvoiceDetials extends React.Component {
       title: '数量',
       dataIndex: 'qty',
     }, {
-      title: '金额',
-      dataIndex: 'amount',
-    }, {
-      title: '币制',
-      dataIndex: 'currency',
+      title: '净重',
+      dataIndex: 'net_wet',
     });
     totCols.push({
       dataIndex: 'g_model',
@@ -100,24 +97,22 @@ export default class InvoiceDetials extends React.Component {
     }, {
       dataIndex: 'qty',
     }, {
-      dataIndex: 'amount',
-    }, {
-      dataIndex: 'currency',
+      dataIndex: 'net_wet',
     });
-    if (invoice.unit_price_en) {
+    if (invoice.containerno_en) {
       columns.push({
-        title: '单价',
-        dataIndex: 'unit_price',
+        title: '箱号',
+        dataIndex: 'container_no',
       });
       totCols.push({
-        dataIndex: 'unit_price',
+        dataIndex: 'container_no',
       });
     }
     return (
       <div style={{ width: '100%' }}>
         <Card style={{ margin: 16 }}>
           <div className="page-header">
-            <h3>发票 INVOICE</h3>
+            <h3>箱单  PACKING LIST</h3>
             <span />
             <Row gutter={16}>
               <Col sm={12}>
@@ -156,6 +151,12 @@ export default class InvoiceDetials extends React.Component {
               </Col>
               <Col sm={24}>
                 {!!invoice.remark_en && <InfoItem label="备注 Remark" field={invoice.remark} editable placeholder="输入备注" dataIndex="remark" onEdit={this.handleFill} />}
+              </Col>
+              <Col sm={12}>
+                <InfoItem type="number" label="大件数  Packages" addonAfter="Package" field={invoice.packages} editable placeholder="输入件数" dataIndex="packages" onEdit={this.handleFill} />
+              </Col>
+              <Col sm={12}>
+                <InfoItem type="number" label="毛重  Gross Weight" addonAfter="Kgs" field={invoice.gross_wet} editable placeholder="输入毛重" dataIndex="gross_wet" onEdit={this.handleFill} />
               </Col>
             </Row>
           </div>

@@ -76,7 +76,7 @@ export default class Settings extends Component {
                 >
                   <SubMenu key="bizdata" title={<span><Icon type="setting" /><span>业务数据</span></span>}>
                     <Menu.Item key="quotemodel"><NavLink to="/clearance/settings/quotetemplates">费用模板</NavLink></Menu.Item>
-                    <Menu.Item key="invoiceTemplate"><NavLink to="/clearance/settings/invoicetemplates">发票模板</NavLink></Menu.Item>
+                    <Menu.Item key="invoiceTemplate"><NavLink to="/clearance/settings/documenttemplates">单证模板</NavLink></Menu.Item>
                   </SubMenu>
                   <Menu.Item key="notification"><span><Icon type="notification" /><span>通知提醒</span></span></Menu.Item>
                 </Menu>
