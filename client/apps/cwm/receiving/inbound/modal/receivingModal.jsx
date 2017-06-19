@@ -48,7 +48,16 @@ export default class ReceivingModal extends Component {
         (result) => {
           if (!result.error) {
             this.setState({
-              dataSource: result.data,
+              dataSource: result.data.map(data => ({
+                id: data.trace_id,
+                trace_id: data.trace_id,
+                location: data.location,
+                damage_level: data.damage_level,
+                product_no: data.product_no,
+                inbound_qty: data.inbound_qty,
+                inbound_pack_qty: data.inbound_pack_qty,
+                convey_no: data.convey_no,
+              })),
             });
           }
         }
@@ -59,9 +68,14 @@ export default class ReceivingModal extends Component {
   handleCancel = () => {
     this.props.hideReceiveModal();
   }
-  handleProductPutAway = (value, index) => {
+  handleProductPutAway = (index, value) => {
     const dataSource = [...this.state.dataSource];
-    dataSource.splice(index, 1, { ...dataSource[index], location: value });
+    dataSource[index].location = value;
+    this.setState({ dataSource });
+  }
+  handleConveyChange = (index, value) => {
+    const dataSource = [...this.state.dataSource];
+    dataSource[index].convey_no = value;
     this.setState({ dataSource });
   }
   handleProductReceive = (index, value) => {
@@ -92,31 +106,41 @@ export default class ReceivingModal extends Component {
     }
     this.setState({ dataSource });
   }
-  handleDamageLevelChange = (value, record, index) => {
+  handleDamageLevelChange = (index, value) => {
     const dataSource = [...this.state.dataSource];
-    dataSource.splice(index, 1, { ...dataSource[index], damage_level: value });
+    dataSource[index].damage_level = value;
     this.setState({ dataSource });
   }
   handleAdd = () => {
     const { dataSource } = this.state;
-    const { productNo } = this.props;
-    const newDate = {
-      product_no: productNo,
+    const newDetail = {
+      id: `${this.props.productNo}${dataSource.length + 1}`,
+      product_no: this.props.productNo,
       trace_id: '',
       inbound_qty: '',
       inbound_pack_qty: '',
       location: '',
       damage_level: '',
     };
-    dataSource.push(newDate);
+    dataSource.push(newDetail);
     this.setState({ dataSource });
   }
   handleSubmit = () => {
     const { dataSource } = this.state;
-    const { loginId, tenantId, defaultWhse, inboundNo, seqNo, asnNo } = this.props;
-    this.props.updateProductDetails(loginId, tenantId, defaultWhse.code, inboundNo, dataSource, seqNo, asnNo);
-    this.props.hideReceiveModal();
-    this.props.reload();
+    const { loginId, inboundNo, seqNo, asnNo } = this.props;
+    this.props.updateProductDetails(dataSource.map(data => ({
+      trace_id: data.trace_id,
+      location: data.location,
+      damage_level: data.damage_level,
+      inbound_qty: data.inbound_qty,
+      inbound_pack_qty: data.inbound_pack_qty,
+      convey_no: data.convey_no,
+    })), inboundNo, seqNo, asnNo, loginId).then((result) => {
+      if (!result.error) {
+        this.props.hideReceiveModal();
+        this.props.reload();
+      }
+    });
   }
   scanColumns = [{
     title: '商品条码',
@@ -144,7 +168,7 @@ export default class ReceivingModal extends Component {
     render: o => (<Select defaultValue={o} showSearch style={{ width: 100 }} disabled />),
   }, {
     title: '收货状态',
-    dataIndex: 'packing_code',
+    dataIndex: 'damage_level',
     render: o => (<Select defaultValue={o} style={{ width: 60 }} disabled >
       <Option value="0">完好</Option>
       <Option value="1">轻微擦痕</Option>
@@ -158,19 +182,19 @@ export default class ReceivingModal extends Component {
     title: '容器编号',
     dataIndex: 'convey_no',
     width: 180,
-    render: o => (<Input value={o} />),
+    render: (convey, row, index) => (<Input value={convey} onChange={ev => this.handleConveyChange(index, ev.target.value)} />),
   }, {
     title: '收货数量',
     dataIndex: 'inbound_qty',
     width: 180,
-    render: (o, record, index) => (<QuantityInput packQty={record.inbound_pack_qty} pcsQty={o} onChange={e => this.handleProductReceive(index, e.target.value, record)} />),
+    render: (o, record, index) => (<QuantityInput packQty={record.inbound_pack_qty} pcsQty={o} onChange={e => this.handleProductReceive(index, e.target.value)} />),
   }, {
     title: '库位',
     dataIndex: 'location',
     width: 180,
     render: (o, record, index) => {
       const Options = this.props.locations.map(location => (<Option value={location.location}>{location.location}</Option>));
-      return (<Select value={o} showSearch style={{ width: 160 }} onChange={value => this.handleProductPutAway(value, index)}>
+      return (<Select value={o} showSearch style={{ width: 160 }} onChange={value => this.handleProductPutAway(index, value)}>
         {Options}
       </Select>);
     },
@@ -178,7 +202,7 @@ export default class ReceivingModal extends Component {
     title: '破损级别',
     dataIndex: 'damage_level',
     width: 180,
-    render: (o, record, index) => (<Select value={o} onChange={value => this.handleDamageLevelChange(value, record, index)} style={{ width: 160 }} >
+    render: (o, record, index) => (<Select value={o} onChange={value => this.handleDamageLevelChange(index, value)} style={{ width: 160 }} >
       <Option value={0}>完好</Option>
       <Option value={1}>轻微擦痕</Option>
       <Option value={2}>中度</Option>

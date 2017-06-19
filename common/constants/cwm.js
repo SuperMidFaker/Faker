@@ -62,12 +62,30 @@ exports.CWM_ASN_STATUS = {
 };
 
 exports.CWM_INBOUND_STATUS = {
-  CREATED: 0,
-  PARTIAL_RECEIVED: 1,
-  ALL_RECEIVED: 2,
-  PARTIAL_PUTAWAY: 3,
-  ALL_PUTAWAY: 4,
-  COMPLETED: 5,
+  CREATED: {
+    value: 0,
+    step: 0,
+  },
+  PARTIAL_RECEIVED: {
+    value: 1,
+    step: 1,
+  },
+  ALL_RECEIVED: {
+    value: 2,
+    step: 1,
+  },
+  PARTIAL_PUTAWAY: {
+    value: 3,
+    step: 2,
+  },
+  ALL_PUTAWAY: {
+    value: 4,
+    step: 2,
+  },
+  COMPLETED: {
+    value: 5,
+    step: 3,
+  },
 };
 
 exports.CWM_SHFTZ_APIREG_STATUS = {
