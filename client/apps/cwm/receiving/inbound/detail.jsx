@@ -387,8 +387,8 @@ export default class ReceiveInbound extends Component {
                 <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                   <h3>已选中{this.state.selectedRowKeys.length}项</h3>
                   {this.state.receivingMode === 'manual' &&
-                  <Button size="large" onClick={this.handleReceivedQtyAsExpected}>
-                    收货数量与预期一致
+                  <Button size="large" onClick={this.handleExpressReceiving}>
+                    快捷收货
                   </Button>
                   }
                 </div>
