@@ -242,7 +242,7 @@ export function loadAsnLists({ whseCode, pageSize, current, filters }) {
   };
 }
 
-export function releaseAsn(asnNo, loginId) {
+export function releaseAsn(asnNo, loginId, whseCode) {
   return {
     [CLIENT_API]: {
       types: [
@@ -252,7 +252,7 @@ export function releaseAsn(asnNo, loginId) {
       ],
       endpoint: 'v1/cwm/receive/asn/release',
       method: 'post',
-      data: { asnNo, loginId },
+      data: { asnNo, loginId, whseCode },
     },
   };
 }
@@ -272,7 +272,7 @@ export function cancelAsn(asnNo) {
   };
 }
 
-export function loadInbounds({ tenantId, pageSize, current, filters }) {
+export function loadInbounds({ whseCode, tenantId, pageSize, current, filters }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -282,7 +282,7 @@ export function loadInbounds({ tenantId, pageSize, current, filters }) {
       ],
       endpoint: 'v1/cwm/receive/inbounds/load',
       method: 'get',
-      params: { tenantId, pageSize, current, filters: JSON.stringify(filters) },
+      params: { whseCode, tenantId, pageSize, current, filters: JSON.stringify(filters) },
     },
   };
 }
@@ -362,7 +362,7 @@ export function updateProductDetails(loginId, tenantId, whseCode, inboundNo, dat
   };
 }
 
-export function confirm(inboundNo, asnNo) {
+export function confirm(inboundNo, asnNo, loginId, tenantId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -372,7 +372,7 @@ export function confirm(inboundNo, asnNo) {
       ],
       endpoint: 'v1/cwm/receive/productDetails/confirm',
       method: 'post',
-      data: { inboundNo, asnNo },
+      data: { inboundNo, asnNo, loginId, tenantId },
     },
   };
 }

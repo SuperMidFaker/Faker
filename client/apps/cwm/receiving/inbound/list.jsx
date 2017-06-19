@@ -14,6 +14,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { loadInbounds } from 'common/reducers/cwmReceive';
+import { switchDefaultWhse } from 'common/reducers/cwmContext';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -22,6 +23,7 @@ const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 function fetchData({ state, dispatch }) {
   dispatch(loadInbounds({
+    whseCode: state.cwmContext.defaultWhse.code,
     tenantId: state.account.tenantId,
     pageSize: state.cwmReceive.inbound.pageSize,
     current: state.cwmReceive.inbound.current,
@@ -40,7 +42,7 @@ function fetchData({ state, dispatch }) {
     owners: state.cwmContext.whseAttrs.owners,
     loginId: state.account.loginId,
   }),
-  { loadInbounds }
+  { loadInbounds, switchDefaultWhse }
 )
 @connectNav({
   depth: 2,
@@ -135,6 +137,7 @@ export default class ReceivingInboundList extends React.Component {
   handleInboundsReload = () => {
     const filters = this.props.filters;
     this.props.loadInbounds({
+      whseCode: this.props.defaultWhse.code,
       tenantId: this.props.tenantId,
       pageSize: this.props.inbound.pageSize,
       current: this.props.inbound.current,
@@ -144,6 +147,7 @@ export default class ReceivingInboundList extends React.Component {
   handleStatusChange = (e) => {
     const filters = { ...this.props.filters, status: e.target.value };
     this.props.loadInbounds({
+      whseCode: this.props.defaultWhse.code,
       tenantId: this.props.tenantId,
       pageSize: this.props.inbound.pageSize,
       current: this.props.inbound.current,
@@ -153,6 +157,28 @@ export default class ReceivingInboundList extends React.Component {
   handleReceive = (row) => {
     const link = `/cwm/receiving/inbound/${row.asn_no}`;
     this.context.router.push(link);
+  }
+  handleSelect = (value) => {
+    this.props.switchDefaultWhse(value);
+    const filters = this.props.filters;
+    this.props.loadInbounds({
+      whseCode: value,
+      tenantId: this.props.tenantId,
+      pageSize: this.props.inbound.pageSize,
+      current: this.props.inbound.current,
+      filters,
+    });
+  }
+  handleOwnerChange = (value) => {
+    const filters = { ...this.props.filters, ownerCode: value };
+    const whseCode = this.props.defaultWhse.code;
+    this.props.loadInbounds({
+      whseCode,
+      tenantId: this.props.tenantId,
+      pageSize: this.props.inbound.pageSize,
+      current: this.props.inbound.current,
+      filters,
+    });
   }
   render() {
     const { whses, defaultWhse, owners } = this.props;
@@ -175,6 +201,7 @@ export default class ReceivingInboundList extends React.Component {
       getParams: (pagination, tblfilters) => {
         const newfilters = { ...this.props.filters, ...tblfilters[0] };
         const params = {
+          whseCode: this.props.defaultWhse.code,
           tenantId: this.props.tenantId,
           pageSize: pagination.pageSize,
           current: pagination.current,
