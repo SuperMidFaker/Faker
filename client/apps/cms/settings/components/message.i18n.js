@@ -42,6 +42,10 @@ const messages = defineMessages({
     id: 'cms.document.component.sign',
     defaultMessage: '签名栏',
   },
+  containerNo: {
+    id: 'cms.document.component.container.no',
+    defaultMessage: '箱号',
+  },
   save: {
     id: 'cms.document.component.save',
     defaultMessage: '保存',
