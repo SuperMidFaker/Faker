@@ -14,13 +14,12 @@ const actionTypes = createActionTypes('@@welogix/cwm/receive/', [
   'CANCEL_ASN', 'CANCEL_ASN_SUCCEED', 'CANCEL_ASN_FAIL',
   'LOAD_INBOUNDS', 'LOAD_INBOUNDS_SUCCEED', 'LOAD_INBOUNDS_FAIL',
   'GET_INBOUND_DETAIL', 'GET_INBOUND_DETAIL_SUCCEED', 'GET_INBOUND_DETAIL_FAIL',
-  'UPDATE_RECEIVED_QTY', 'UPDATE_RECEIVED_QTY_SUCCEED', 'UPDATE_RECEIVED_QTY_FAIL',
-  'UPDATE_PRODUCT_DETAIL', 'UPDATE_PRODUCT_DETAIL_SUCCEED', 'UPDATE_PRODUCT_DETAIL_FAIL',
   'LOAD_PRODUCT_DETAILS', 'LOAD_PRODUCT_DETAILS_SUCCEED', 'LOAD_PRODUCT_DETAILS_FAIL',
   'UPDATE_PRODUCT_DETAILS', 'UPDATE_PRODUCT_DETAILS_SUCCEED', 'UPDATE_PRODUCT_DETAILS_FAIL',
   'CONFIRM_PRODUCT_DETAILS', 'CONFIRM_PRODUCT_DETAILS_SUCCEED', 'CONFIRM_PRODUCT_DETAILS_FAIL',
   'RECEIVE_COMPLETED', 'RECEIVE_COMPLETED_SUCCEED', 'RECEIVE_COMPLETED_FAIL',
-  'ASN_STATUS_CHANGE',
+  'ASN_STATUS_CHANGE', 'SHOW_RECEIVEQTY_MODAL', 'HIDE_RECEIVEQTY_MODAL',
+  'UPDATE_INBOUND_DETAILS', 'UPDATE_INBOUND_DETAILS_SUCCEED', 'UPDATE_INBOUND_DETAILS_FAIL',
 ]);
 
 const initialState = {
@@ -55,6 +54,9 @@ const initialState = {
     data: [],
   },
   inboundFilters: { status: 'create', ownerCode: 'all' },
+  receiveQtyModal: {
+    visible: false,
+  },
 };
 
 export default function reducer(state = initialState, action) {
@@ -88,7 +90,6 @@ export default function reducer(state = initialState, action) {
       return { ...state, temporaryDetails };
     }
     case actionTypes.EDIT_TEMPORARY: {
-      console.log(action);
       const temporaryDetails = [...state.temporaryDetails];
       temporaryDetails[action.index] = action.data;
       return { ...state, temporaryDetails };
@@ -101,6 +102,10 @@ export default function reducer(state = initialState, action) {
       return { ...state, inbound: action.result.data };
     case actionTypes.ASN_STATUS_CHANGE:
       return { ...state, asnFilters: { ...state.asnFilters, status: action.status } };
+    case actionTypes.SHOW_RECEIVEQTY_MODAL:
+      return { ...state, receiveQtyModal: { ...state.receiveQtyModal, visible: true } };
+    case actionTypes.HIDE_RECEIVEQTY_MODAL:
+      return { ...state, receiveQtyModal: { ...state.receiveQtyModal, visible: false } };
     default:
       return state;
   }
@@ -302,36 +307,6 @@ export function getInboundDetail(asnNo) {
   };
 }
 
-export function updateReceivedQty(asnNo, inboundProductId, inboundNo, receivedPackQty, receivedQty, tenantId, loginId, asnSeqNo) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.UPDATE_RECEIVED_QTY,
-        actionTypes.UPDATE_RECEIVED_QTY_SUCCEED,
-        actionTypes.UPDATE_RECEIVED_QTY_FAIL,
-      ],
-      endpoint: 'v1/cwm/receive/receivedQty/update',
-      method: 'post',
-      data: { asnNo, inboundProductId, inboundNo, receivedPackQty, receivedQty, tenantId, loginId, asnSeqNo },
-    },
-  };
-}
-
-export function updateProductDetail(data, traceId, inboundNo) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.UPDATE_PRODUCT_DETAIL,
-        actionTypes.UPDATE_PRODUCT_DETAIL_SUCCEED,
-        actionTypes.UPDATE_PRODUCT_DETAIL_FAIL,
-      ],
-      endpoint: 'v1/cwm/receive/productDetail/update',
-      method: 'post',
-      data: { data, traceId, inboundNo },
-    },
-  };
-}
-
 export function loadProductDetails(inboundNo, seqNo) {
   return {
     [CLIENT_API]: {
@@ -396,5 +371,32 @@ export function asnFilterChange(status) {
   return {
     type: actionTypes.ASN_STATUS_CHANGE,
     status,
+  };
+}
+
+export function showReceiveQtyModal() {
+  return {
+    type: actionTypes.SHOW_RECEIVEQTY_MODAL,
+  };
+}
+
+export function hideReceiveQtyModal() {
+  return {
+    type: actionTypes.HIDE_RECEIVEQTY_MODAL,
+  };
+}
+
+export function updateInboundDetails(seqNos, location, damageLevel, loginId, asnNo, inboundNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_INBOUND_DETAILS,
+        actionTypes.UPDATE_INBOUND_DETAILS_SUCCEED,
+        actionTypes.UPDATE_INBOUND_DETAILS_FAIL,
+      ],
+      endpoint: 'v1/cwm/receive/quick',
+      method: 'post',
+      data: { seqNos, location, damageLevel, loginId, asnNo, inboundNo },
+    },
   };
 }

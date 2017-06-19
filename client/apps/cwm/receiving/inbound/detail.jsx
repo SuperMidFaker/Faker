@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Breadcrumb, Icon, Dropdown, Form, Radio, Layout, Menu, Popconfirm, Steps, Select, Button, Card, Col, Row, Tag, Table, Input, Tooltip, message } from 'antd';
+import { Breadcrumb, Icon, Dropdown, Form, Radio, Layout, Menu, Popconfirm, Steps, Select, Button, Card, Col, Row, Tag, Table, Input, Tooltip } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import InfoItem from 'client/components/InfoItem';
 import RowUpdater from 'client/components/rowUpdater';
 import PackagePopover from './popover/packagePopover';
 import ReceivingModal from './modal/receivingModal';
-import { loadReceiveModal, getInboundDetail, updateReceivedQty, updateProductDetail, confirm } from 'common/reducers/cwmReceive';
+import ReceiveQty from './modal/receiveQtyModal';
+import { loadReceiveModal, getInboundDetail, confirm, showReceiveQtyModal } from 'common/reducers/cwmReceive';
 import { loadLocations } from 'common/reducers/cwmWarehouse';
 import { CWM_INBOUND_STATUS } from 'common/constants';
 import messages from '../message.i18n';
@@ -33,7 +34,7 @@ const Step = Steps.Step;
     defaultWhse: state.cwmContext.defaultWhse,
     locations: state.cwmWarehouse.locations,
   }),
-  { loadReceiveModal, getInboundDetail, loadLocations, updateReceivedQty, updateProductDetail, confirm }
+  { loadReceiveModal, getInboundDetail, loadLocations, confirm, showReceiveQtyModal }
 )
 @connectNav({
   depth: 3,
@@ -53,6 +54,7 @@ export default class ReceiveInbound extends Component {
   }
   state = {
     selectedRowKeys: [],
+    selectedRows: [],
     receivingMode: 'scan',
     currentStatus: 0,
     printed: false,
@@ -80,6 +82,7 @@ export default class ReceiveInbound extends Component {
           inboundProducts: result.data.inboundProducts,
           currentStatus: status,
         });
+        this.checkConfirm(result.data.inboundProducts);
       }
     );
     this.props.loadLocations(defaultWhse.code);
@@ -99,7 +102,9 @@ export default class ReceiveInbound extends Component {
           inboundHead: result.data.inboundHead,
           inboundProducts: result.data.inboundProducts,
           currentStatus: status,
+          selectedRowKeys: [],
         });
+        this.checkConfirm(result.data.inboundProducts);
       }
     );
   }
@@ -123,48 +128,11 @@ export default class ReceiveInbound extends Component {
       pushedTask: false,
     });
   }
-  handleReceivedQtyAsExpected = () => {
+  handleExpressReceiving = () => {
+    this.props.showReceiveQtyModal();
     this.setState({
       currentStatus: CWM_INBOUND_STATUS.PARTIAL_RECEIVED,
-      selectedRowKeys: [],
     });
-  }
-  handleProductReceive = (index, receivedPackQty, record) => {
-    const expectQty = record.expect_qty;
-    const packQty = record.sku_pack_qty;
-    let receiveQty = receivedPackQty * packQty;
-    if (receiveQty > expectQty) receiveQty = expectQty;
-    const inboundProducts = [...this.state.inboundProducts];
-    const { tenantId, loginId } = this.props;
-    if (receivedPackQty > inboundProducts[index].expect_pack_qty) {
-      message.info('收货数量不可大于预期数量');
-      return;
-    }
-    if (receivedPackQty > 0) { // TODO:
-      this.setState({
-        currentStatus: CWM_INBOUND_STATUS.PARTIAL_RECEIVED,
-      });
-    }
-    inboundProducts.splice(index, 1, { ...inboundProducts[index], received_pack_qty: receivedPackQty, received_qty: receiveQty });
-    this.setState({ inboundProducts });
-    this.checkConfirm(inboundProducts);
-    this.props.updateReceivedQty(record.asn_no, record.id, record.inbound_no, receivedPackQty, receiveQty, tenantId, loginId, record.trace_id[0], record.asn_seq_no);
-  }
-  handleProductPutAway = (value, record, index) => {
-    this.setState({
-      currentStatus: CWM_INBOUND_STATUS.PARTIAL_PUTAWAY,
-    });
-    const inboundProducts = [...this.state.inboundProducts];
-    inboundProducts.splice(index, 1, { ...inboundProducts[index], location: [value] });
-    this.setState({ inboundProducts });
-    this.checkConfirm(inboundProducts);
-    this.props.updateProductDetail({ location: value }, record.trace_id[0], record.inbound_no);
-  }
-  handleProductStatusChange = (value, record, index) => {
-    const inboundProducts = [...this.state.inboundProducts];
-    inboundProducts.splice(index, 1, { ...inboundProducts[index], damage_level: [value] });
-    this.setState({ inboundProducts });
-    this.props.updateProductDetail({ damage_level: value }, record.trace_id[0], record.inbound_no);
   }
   handleReceive = (record) => {
     this.props.loadReceiveModal(record.inbound_no, record.asn_seq_no, record.expect_qty, record.expect_pack_qty,
@@ -238,12 +206,12 @@ export default class ReceiveInbound extends Component {
     title: '收货数量',
     width: 200,
     fixed: 'right',
-    render: (o, record, index) => {
+    render: (o, record) => {
       const receiveAlert = record.expect_pack_qty !== record.receive_pack_qty;
       return (<span className={receiveAlert ? 'mdc-text-red' : 'mdc-text-green'}>
         <Tooltip title="包装单位数量">
           <Input className={this.state.receivingMode === 'scan' && 'readonly'} value={record.received_pack_qty}
-            style={{ width: 80 }} onChange={e => this.handleProductReceive(index, e.target.value, record)}
+            style={{ width: 80 }} disabled
           />
         </Tooltip>
         <Tooltip title="主单位数量"><Input value={record.received_qty} style={{ width: 80 }} disabled /></Tooltip>
@@ -254,10 +222,10 @@ export default class ReceiveInbound extends Component {
     dataIndex: 'location',
     fixed: 'right',
     width: 120,
-    render: (o, record, index) => {
+    render: (o, record) => {
       if (record.location.length <= 1) {
         const Options = this.props.locations.map(location => (<Option value={location.location}>{location.location}</Option>));
-        return (<Select value={o[0]} showSearch style={{ width: 100 }} onChange={value => this.handleProductPutAway(value, record, index)} disabled={this.state.receivingMode === 'scan' || !record.received_pack_qty}>
+        return (<Select value={o[0]} showSearch style={{ width: 100 }} disabled>
           {Options}
         </Select>);
       } else {
@@ -269,9 +237,9 @@ export default class ReceiveInbound extends Component {
     dataIndex: 'damage_level',
     fixed: 'right',
     width: 120,
-    render: (o, record, index) => {
+    render: (o) => {
       if (o.length <= 1) {
-        return (<Select value={o[0]} style={{ width: 100 }} onChange={value => this.handleProductStatusChange(value, record, index)} disabled={this.state.receivingMode === 'scan'}>
+        return (<Select value={o[0]} style={{ width: 100 }} disabled>
           <Option value={0}>完好</Option>
           <Option value={1}>轻微擦痕</Option>
           <Option value={2}>中度</Option>
@@ -301,9 +269,12 @@ export default class ReceiveInbound extends Component {
     const asnNo = this.props.params.asnNo;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
-      onChange: (selectedRowKeys) => {
-        this.setState({ selectedRowKeys });
+      onChange: (selectedRowKeys, selectedRows) => {
+        this.setState({ selectedRowKeys, selectedRows });
       },
+      getCheckboxProps: record => ({
+        disabled: record.trace_id.length > 1,
+      }),
     };
     const tagMenu = (
       <Menu>
@@ -406,6 +377,7 @@ export default class ReceiveInbound extends Component {
                 scroll={{ x: this.columns.reduce((acc, cur) => acc + cur.width, 0) }}
               />
               <ReceivingModal reload={this.handleReload} receivingMode={this.state.receivingMode} />
+              <ReceiveQty reload={this.handleReload} asnNo={this.props.params.asnNo} inboundNo={this.state.inboundHead.inbound_no} data={this.state.selectedRows} />
             </Card>
           </Form>
         </Content>
