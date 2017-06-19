@@ -63,11 +63,31 @@ export default class ReceivingModal extends Component {
     this.setState({ dataSource });
   }
   handleProductReceive = (index, value) => {
-    const { expectQty, skuPackQty } = this.props;
+    const { expectQty, expectPackQty, skuPackQty } = this.props;
     const { dataSource } = this.state;
-    let receiveQty = value * skuPackQty;
-    if (receiveQty > expectQty) receiveQty = expectQty;
-    dataSource.splice(index, 1, { ...dataSource[index], inbound_pack_qty: value, inbound_qty: receiveQty });
+    if (dataSource.length === 1) {
+      let receiveQty = value * skuPackQty;
+      if (receiveQty > expectQty) receiveQty = expectQty;
+      dataSource.splice(index, 1, { ...dataSource[index], inbound_pack_qty: value, inbound_qty: receiveQty });
+    } else {
+      let receivedQty = 0;
+      let receivedPackQty = 0;
+      for (let i = 0; i < dataSource.length; i++) {
+        if (i !== index) {
+          receivedQty += dataSource[i].inbound_qty;
+          receivedPackQty += dataSource[i].inbound_pack_qty;
+        }
+      }
+      const remainQty = expectQty - receivedQty;
+      const remainPackQty = expectPackQty - receivedPackQty;
+      let receiveQty = value * skuPackQty;
+      if (receiveQty > remainQty) {
+        receiveQty = remainQty;
+        dataSource.splice(index, 1, { ...dataSource[index], inbound_pack_qty: remainPackQty, inbound_qty: receiveQty });
+      } else {
+        dataSource.splice(index, 1, { ...dataSource[index], inbound_pack_qty: value, inbound_qty: receiveQty });
+      }
+    }
     this.setState({ dataSource });
   }
   handleDamageLevelChange = (value, record, index) => {
