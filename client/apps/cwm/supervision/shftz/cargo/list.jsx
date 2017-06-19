@@ -106,7 +106,7 @@ export default class SHFTZCargoList extends React.Component {
   }, {
     title: this.msg('gname'),
     width: 120,
-    dataIndex: 'gname',
+    dataIndex: 'name',
   }, {
     title: this.msg('unit'),
     width: 200,
