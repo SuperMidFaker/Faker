@@ -121,13 +121,17 @@ export default class TrackingDetail extends React.Component {
           map.setViewport(viewPoints);
         });
       }
-      let current = 0;
-      if (shipmt.status < 4) {
-        current = 0;
-      } else if (shipmt.status === 4) {
-        current = points.length - 2;
-      } else if (shipmt.status > 4) {
-        current = points.length - 1;
+      const current = points.length - 1;
+
+      if (shipmt.status <= 4) {
+        const destPointAddr = `${Location.renderConsignLocation(shipmt, 'consignee')}${shipmt.consignee_addr ? shipmt.consignee_addr : ''}`;
+        points.push({
+          province: shipmt.consignee_province,
+          city: shipmt.consignee_city,
+          district: shipmt.consignee_district,
+          address: shipmt.consignee_addr,
+          label: `${moment(shipmt.deliver_est_date).format('YYYY-MM-DD HH:mm')} ${destPointAddr}`,
+        });
       }
       draw(points, current);
     });
