@@ -158,25 +158,25 @@ export default class OutboundDetail extends Component {
             <Card bodyStyle={{ paddingBottom: 56 }}>
               <Row>
                 <Col sm={24} lg={6}>
-                  <InfoItem label="货主" field="04601|米思米(中国)精密机械贸易" />
+                  <InfoItem addonBefore="货主" field="04601|米思米(中国)精密机械贸易" />
                 </Col>
                 <Col sm={24} lg={6}>
-                  <InfoItem label="收货人" field="米思米华东DC" />
+                  <InfoItem addonBefore="收货人" field="米思米华东DC" />
                 </Col>
                 <Col sm={12} lg={2}>
-                  <InfoItem label="订货总数" field="50" />
+                  <InfoItem addonBefore="订货总数" field="50" />
                 </Col>
                 <Col sm={12} lg={2}>
-                  <InfoItem label="分配总数" field="50" />
+                  <InfoItem addonBefore="分配总数" field="50" />
                 </Col>
                 <Col sm={12} lg={2}>
-                  <InfoItem label="拣货总数" field="50" />
+                  <InfoItem addonBefore="拣货总数" field="50" />
                 </Col>
                 <Col sm={12} lg={2}>
-                  <InfoItem label="装箱总数" field="50" />
+                  <InfoItem addonBefore="装箱总数" field="50" />
                 </Col>
                 <Col sm={12} lg={2}>
-                  <InfoItem label="发货总数" field="50" />
+                  <InfoItem addonBefore="发货总数" field="50" />
                 </Col>
               </Row>
               <div className="card-footer">

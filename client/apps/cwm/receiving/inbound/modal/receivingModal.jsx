@@ -145,12 +145,12 @@ export default class ReceivingModal extends Component {
   scanColumns = [{
     title: '商品条码',
     dataIndex: 'product_tag',
-    width: 200,
+    width: 180,
     render: o => (<Input className="readonly" prefix={<Icon type="barcode" />} value={o} />),
   }, {
     title: '追踪号',
     dataIndex: 'trace_id',
-    width: 200,
+    width: 180,
     render: o => (<Input className="readonly" prefix={<Icon type="qrcode" />} value={o} />),
   }, {
     title: '容器编号',
@@ -159,6 +159,7 @@ export default class ReceivingModal extends Component {
     render: o => (<Input className="readonly" value={o} />),
   }, {
     title: '收货数量',
+    width: 180,
     dataIndex: 'received_qty',
     render: (o, record) => (<QuantityInput packQty={record.received_pack_qty} pcsQty={record.received_qty} />),
   }, {
@@ -216,8 +217,9 @@ export default class ReceivingModal extends Component {
   }]
   render() {
     const { receivingMode, expectQty, expectPackQty, receivedQty, receivedPackQty } = this.props;
+    const title = this.props.receivingMode === 'scan' ? '扫码收货' : '手动收货';
     return (
-      <Modal title="收货" width={960} maskClosable={false} onCancel={this.handleCancel} visible={this.props.visible} onOk={this.handleSubmit}>
+      <Modal title={title} width={960} maskClosable={false} onCancel={this.handleCancel} visible={this.props.visible} onOk={this.handleSubmit}>
         <Row>
           <Col sm={12} md={8} lg={6}>
             <InfoItem addonBefore="商品货号" field="I096120170603223-01" style={{ marginBottom: 0 }} />

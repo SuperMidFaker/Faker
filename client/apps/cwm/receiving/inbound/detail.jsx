@@ -218,7 +218,7 @@ export default class ReceiveInbound extends Component {
     fixed: 'right',
     render: (o, record) => {
       if (this.state.receivingMode === 'scan') {
-        return (<RowUpdater onHit={this.handleReceive} label="收货明细" row={record} />);
+        return (<RowUpdater onHit={this.handleReceive} label="扫码收货" row={record} />);
       } else if (this.state.receivingMode === 'manual') {
         return (<RowUpdater onHit={() => this.handleReceive(record)} label="手动收货" row={record} />);
       }
@@ -294,16 +294,16 @@ export default class ReceiveInbound extends Component {
             <Card bodyStyle={{ paddingBottom: 56 }}>
               <Row>
                 <Col sm={24} lg={6}>
-                  <InfoItem label="货主" field={inboundHead.owner_name} />
+                  <InfoItem addonBefore="货主" field={inboundHead.owner_name} />
                 </Col>
                 <Col sm={24} lg={6}>
-                  <InfoItem label="入库单号" field={inboundHead.inbound_no} />
+                  <InfoItem addonBefore="入库单号" field={inboundHead.inbound_no} />
                 </Col>
                 <Col sm={24} lg={3}>
-                  <InfoItem label="预计箱数" addonBefore={<Icon type="inbox" />} field={inboundHead.convey_box_qty} editable />
+                  <InfoItem addonBefore="预计箱数" field={inboundHead.convey_box_qty} editable />
                 </Col>
                 <Col sm={24} lg={3}>
-                  <InfoItem label="预计托盘数" addonBefore={<Icon type="appstore-o" />} field={inboundHead.convey_pallet_qty} editable />
+                  <InfoItem addonBefore="预计托盘数" field={inboundHead.convey_pallet_qty} editable />
                 </Col>
               </Row>
               <div className="card-footer">
