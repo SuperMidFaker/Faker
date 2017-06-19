@@ -188,6 +188,7 @@ export default class SHFTZEntryList extends React.Component {
   }
   handleWhseChange = (value) => {
     this.props.switchDefaultWhse(value);
+    message.info('当前仓库已切换');
     this.handleEntryListLoad(1, value);
   }
   handleSearch = (searchVal) => {

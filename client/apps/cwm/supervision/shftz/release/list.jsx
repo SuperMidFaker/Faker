@@ -203,6 +203,7 @@ export default class SHFTZReleaseList extends React.Component {
   }
   handleWhseChange = (value) => {
     this.props.switchDefaultWhse(value);
+    message.info('当前仓库已切换');
     this.handleReleaseListLoad(1, value);
   }
   handleSearch = (searchVal) => {

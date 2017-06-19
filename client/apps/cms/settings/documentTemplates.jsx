@@ -3,10 +3,9 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Breadcrumb, Table, Button, Layout, Menu, Popconfirm, Icon, message, Radio } from 'antd';
+import { Breadcrumb, Table, Button, Layout, Menu, Popconfirm, message } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import NavLink from 'client/components/nav-link';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import InvTemplateModal from './modals/newTemplate';
 import { toggleInvTempModal, loadInvTemplates, deleteInvTemplate } from 'common/reducers/cmsInvoice';
@@ -14,9 +13,6 @@ import { CMS_DOCU_TYPE } from 'common/constants';
 
 const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
-const SubMenu = Menu.SubMenu;
-const RadioGroup = Radio.Group;
-const RadioButton = Radio.Button;
 
 @injectIntl
 @connect(
@@ -44,6 +40,9 @@ export default class InvoiceTemplate extends Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
+  state = {
+    current: CMS_DOCU_TYPE.invoice,
+  }
   componentDidMount() {
     this.handleListLoad(this.props.docuType);
   }
@@ -66,7 +65,7 @@ export default class InvoiceTemplate extends Component {
     } else if (record.docu_type === CMS_DOCU_TYPE.packingList) {
       type = 'packingList';
     }
-    this.context.router.push(`/clearance/settings/documenttemplates/${type}/edit/${record.id}`);
+    this.context.router.push(`/clearance/settings/doctemplates/${type}/edit/${record.id}`);
   }
   handleDelete = (record) => {
     this.props.deleteInvTemplate(record.id).then((result) => {
@@ -78,10 +77,13 @@ export default class InvoiceTemplate extends Component {
     });
   }
   handleListChange = (ev) => {
-    if (ev.target.value === this.props.docuType) {
+    if (ev.key === this.props.docuType) {
       return;
     }
-    this.handleListLoad(ev.target.value);
+    this.setState({
+      current: ev.key,
+    });
+    this.handleListLoad(ev.key);
   }
   render() {
     const columns = [{
@@ -110,13 +112,7 @@ export default class InvoiceTemplate extends Component {
               {this.msg('appSettings')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              业务数据
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              费用模板
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              单证模板
+              单据模板
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="top-bar-tools">
@@ -128,25 +124,16 @@ export default class InvoiceTemplate extends Component {
             <Layout className="main-wrapper">
               <Sider className="nav-sider">
                 <Menu
-                  defaultOpenKeys={['bizdata']}
-                  defaultSelectedKeys={['invoiceTemplate']}
+                  defaultSelectedKeys={[this.state.current]}
                   mode="inline"
+                  onClick={this.handleListChange}
                 >
-                  <SubMenu key="bizdata" title={<span><Icon type="setting" /><span>业务数据</span></span>}>
-                    <Menu.Item key="quotemodel"><NavLink to="/clearance/settings/quotetemplates">费用模板</NavLink></Menu.Item>
-                    <Menu.Item key="invoiceTemplate"><NavLink to="/clearance/settings/documenttemplates">单证模板</NavLink></Menu.Item>
-                  </SubMenu>
-                  <Menu.Item key="notification"><span><Icon type="notification" /><span>通知提醒</span></span></Menu.Item>
+                  <Menu.Item key={CMS_DOCU_TYPE.invoice}>发票模板</Menu.Item>
+                  <Menu.Item key={CMS_DOCU_TYPE.contract}>合同模板</Menu.Item>
+                  <Menu.Item key={CMS_DOCU_TYPE.packingList}>箱单模板</Menu.Item>
                 </Menu>
               </Sider>
               <Content className="nav-content">
-                <div className="toolbar">
-                  <RadioGroup value={this.props.docuType} onChange={this.handleListChange} size="large">
-                    <RadioButton value={CMS_DOCU_TYPE.invoice}>发票</RadioButton>
-                    <RadioButton value={CMS_DOCU_TYPE.contract}>合同</RadioButton>
-                    <RadioButton value={CMS_DOCU_TYPE.packingList}>箱单</RadioButton>
-                  </RadioGroup>
-                </div>
                 <div className="panel-body table-panel">
                   <Table columns={columns} dataSource={this.props.invTemplates} rowKey="id" />
                 </div>

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Breadcrumb, Layout, Menu, Icon } from 'antd';
+import { Breadcrumb, Layout, Menu } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import FeesTable from '../quote/feesTable';
@@ -14,7 +14,6 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 
 const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
-const SubMenu = Menu.SubMenu;
 
 function fetchData({ dispatch, state }) {
   return dispatch(loadQuoteModel(state.account.tenantId));
@@ -58,9 +57,6 @@ export default class Settings extends Component {
               {this.msg('appSettings')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              业务数据
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
               费用模板
             </Breadcrumb.Item>
           </Breadcrumb>
@@ -70,15 +66,10 @@ export default class Settings extends Component {
             <Layout className="main-wrapper">
               <Sider className="nav-sider">
                 <Menu
-                  defaultOpenKeys={['bizdata']}
                   defaultSelectedKeys={['quotemodel']}
                   mode="inline"
                 >
-                  <SubMenu key="bizdata" title={<span><Icon type="setting" /><span>业务数据</span></span>}>
-                    <Menu.Item key="quotemodel"><NavLink to="/clearance/settings/quotetemplates">费用模板</NavLink></Menu.Item>
-                    <Menu.Item key="invoiceTemplate"><NavLink to="/clearance/settings/documenttemplates">单证模板</NavLink></Menu.Item>
-                  </SubMenu>
-                  <Menu.Item key="notification"><span><Icon type="notification" /><span>通知提醒</span></span></Menu.Item>
+                  <Menu.Item key="quotemodel"><NavLink to="/clearance/settings/quotetemplates">费用模板</NavLink></Menu.Item>
                 </Menu>
               </Sider>
               <Content style={{ padding: '0 24px', minHeight: 280 }}>

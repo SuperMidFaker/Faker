@@ -206,6 +206,7 @@ export default class SHFTZCargoList extends React.Component {
   }
   handleWhseChange = (value) => {
     this.props.switchDefaultWhse(value);
+    message.info('当前仓库已切换');
   }
   handleRowClick = (record) => {
     this.setState({ owner: record });

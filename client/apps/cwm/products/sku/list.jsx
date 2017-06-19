@@ -231,6 +231,7 @@ export default class CWMSkuList extends React.Component {
   }
   handleWhseChange = (value) => {
     this.props.switchDefaultWhse(value);
+    message.info('当前仓库已切换');
   }
   handleOwnerSelect = (row) => {
     this.props.setCurrentOwner(row);

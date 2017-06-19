@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Badge, Icon, Breadcrumb, Layout, Radio, Progress, Select, Tooltip } from 'antd';
+import { Badge, Icon, Breadcrumb, Layout, Radio, Progress, Select, Tooltip, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/search-bar';
@@ -157,8 +157,9 @@ export default class ReceivingInboundList extends React.Component {
     const link = `/cwm/receiving/inbound/${row.asn_no}`;
     this.context.router.push(link);
   }
-  handleSelect = (value) => {
+  handleWhseChange = (value) => {
     this.props.switchDefaultWhse(value);
+    message.info('当前仓库已切换');
     const filters = this.props.filters;
     this.props.loadInbounds({
       whseCode: value,
@@ -215,7 +216,7 @@ export default class ReceivingInboundList extends React.Component {
         <Header className="top-bar">
           <Breadcrumb>
             <Breadcrumb.Item>
-              <Select size="large" value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleSelect}>
+              <Select size="large" value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
                 {
                   whses.map(warehouse => (<Option value={warehouse.code}>{warehouse.name}</Option>))
                 }

@@ -118,8 +118,12 @@ const messages = defineMessages({
     defaultMessage: '应用设置',
   },
   quoteTemplates: {
-    id: 'cms.module.settings.app.quote.templates',
-    defaultMessage: '报价模板',
+    id: 'cms.module.settings.quote.templates',
+    defaultMessage: '费用模板',
+  },
+  docTemplates: {
+    id: 'cms.module.settings.doc.templates',
+    defaultMessage: '单据模板',
   },
 });
 export default messages;

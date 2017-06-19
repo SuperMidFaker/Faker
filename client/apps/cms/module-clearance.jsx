@@ -173,8 +173,12 @@ export default class Clearance extends React.Component {
           text: formatMsg(intl, 'settingsResources'),
         }, {
           key: 'cms-6-1',
-          path: '/clearance/settings',
-          text: formatMsg(intl, 'settingsApp'),
+          path: '/clearance/settings/quotetemplates',
+          text: formatMsg(intl, 'quoteTemplates'),
+        }, {
+          key: 'cms-6-2',
+          path: '/clearance/settings/doctemplates',
+          text: formatMsg(intl, 'docTemplates'),
         }],
       });
     }

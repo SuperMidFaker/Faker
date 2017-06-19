@@ -52,7 +52,7 @@ export default class InvTemplateModal extends React.Component {
         } else if (formData.docu_type === CMS_DOCU_TYPE.packingList) {
           type = 'packingList';
         }
-        this.context.router.push(`/clearance/settings/documenttemplates/${type}/edit/${result.data.id}`);
+        this.context.router.push(`/clearance/settings/doctemplates/${type}/edit/${result.data.id}`);
       }
     });
   }
