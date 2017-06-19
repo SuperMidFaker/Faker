@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Steps, Card, Collapse, Row, Col, Layout, Alert } from 'antd';
 import { loadPubShipmtDetail } from 'common/reducers/shipment';
-import connectFetch from 'client/common/decorators/connect-fetch';
 import * as Location from 'client/util/location';
 import { loadExceptions } from 'common/reducers/trackingLandException';
 import TrackingTimeline from '../../transport/common/trackingTimeline';
@@ -14,21 +13,17 @@ const Panel = Collapse.Panel;
 const { Content } = Layout;
 import './index.less';
 
-function fetchData({ dispatch, params }) {
-  return dispatch(loadPubShipmtDetail(params.shipmtNo, params.key));
-}
-
-@connectFetch()(fetchData)
 @connect(
   state => ({
     shipmtDetail: state.shipment.shipmtDetail,
   }),
-  { loadExceptions }
+  { loadExceptions, loadPubShipmtDetail }
 )
 export default class TrackingDetail extends React.Component {
   static propTypes = {
     shipmtDetail: PropTypes.object.isRequired,
     loadExceptions: PropTypes.func.isRequired,
+    loadPubShipmtDetail: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -38,135 +33,109 @@ export default class TrackingDetail extends React.Component {
     exceptions: [],
   }
   componentDidMount() {
+    const { params } = this.props;
+    this.props.loadPubShipmtDetail(params.shipmtNo, params.key).then((result) => {
+      const { shipmt, tracking } = result.data;
+      const points = [];
+      tracking.points = tracking.points.reverse();
+      tracking.points.forEach((item) => {
+        points.push({
+          ...item,
+          lat: item.latitude,
+          lng: item.longitude,
+          label: `${moment(item.location_time).format('YYYY-MM-DD HH:mm')} ${Location.renderLoc(item)} ${item.address || ''}`,
+        });
+      });
+      const bdPoints = [];
+      const viewPoints = [];
+      // 百度地图API功能
+      const map = new BMap.Map('map');          // 创建地图实例
+      const myGeo = new BMap.Geocoder(); // 创建地址解析器实例
+      // const point = new BMap.Point(120.073694,30.269552);  // 创建点坐标
+      // map.centerAndZoom(point, 16);                 // 初始化地图，设置中心点坐标和地图级别
+      map.enableScrollWheelZoom();
+      map.addControl(new BMap.NavigationControl());  // 添加默认缩放平移控件
+      const topLeftControl = new BMap.ScaleControl({ anchor: BMAP_ANCHOR_TOP_LEFT });// 左上角，添加比例
+      map.addControl(topLeftControl);
+      function addressToPoint(addr, cb, city) {
+        // 将地址解析结果显示在地图上,并调整地图视野
+        myGeo.getPoint(addr, cb, city);
+      }
+      // map.addEventListener("dragend", draw);
+      // map.addEventListener("zoomend", draw);
+      function checkPoint(item) {
+        return new Promise((resolve) => {
+          addressToPoint(`${Location.renderLocation(item)}${item.address}`, (point) => {
+            let res = { ...item };
+            if (point) {
+              res = {
+                ...item,
+                ...point,
+              };
+            }
+            resolve(res);
+          }, `${item.city}`);
+        });
+      }
+      // 创建标注
+      function addMarker(pt, label, index, cur, pts) {
+        if (pt && pt.lat !== 0 && pt.lng !== 0) {
+          const iconSize = [25, 82];
+          let iconurl = 'https://welogix-web-cdn.b0.upaiyun.com/assets/img/marker_way.png';
+          if (index === 0) {
+            iconurl = 'https://welogix-web-cdn.b0.upaiyun.com/assets/img/marker_origin.png';
+          } else if (index === pts.length - 1) {
+            iconurl = 'https://welogix-web-cdn.b0.upaiyun.com/assets/img/marker_dest.png';
+          }
+          const icon = new BMap.Icon(iconurl, new BMap.Size(...iconSize));
+          const marker = new BMap.Marker(pt, { icon });
+          map.addOverlay(marker);
+          if (index === cur) {
+            marker.setAnimation(BMAP_ANIMATION_BOUNCE);
+          }
+          const lab = new BMap.Label(label, { offset: new BMap.Size(30, -10) });
+          marker.setLabel(lab);
+        }
+      }
+      function draw(pts, cur) {
+        const promises = [];
+        for (let i = 0; i < pts.length; i++) {
+          const p = checkPoint(pts[i]);
+          promises.push(p);
+        }
+        Promise.all(promises).then((arr) => {
+          map.clearOverlays();
+          for (let i = 0; i < arr.length; i++) {
+            addMarker(arr[i], arr[i].label, i, cur, pts);
+            const BDPoint = new BMap.Point(arr[i].lng, arr[i].lat);
+            if (BDPoint.lng !== 0 && BDPoint.lat !== 0) {
+              bdPoints.push(BDPoint);
+              viewPoints.push(BDPoint);
+            }
+          }
+          if (cur !== pts.length - 1) {
+            bdPoints.pop();
+          }
+          const curve = new BMapLib.CurveLine(bdPoints, { strokeColor: '#0096da', strokeWeight: 3, strokeOpacity: 0.5 }); // 创建弧线对象
+          map.addOverlay(curve); // 添加到地图中
+          map.setViewport(viewPoints);
+        });
+      }
+      let current = 0;
+      if (shipmt.status < 4) {
+        current = 0;
+      } else if (shipmt.status === 4) {
+        current = points.length - 2;
+      } else if (shipmt.status > 4) {
+        current = points.length - 1;
+      }
+      draw(points, current);
+    });
     this.loadExceptions();
     this.resize();
     $(window).resize(() => {
       this.resize();
     });
-    const { shipmt, tracking } = this.props.shipmtDetail;
-    const points = [];
-    tracking.points = tracking.points.reverse();
-    tracking.points.forEach((item) => {
-      points.push({
-        ...item,
-        lat: item.latitude,
-        lng: item.longitude,
-        label: `${moment(item.location_time).format('YYYY-MM-DD HH:mm')} ${Location.renderLoc(item)} ${item.address || ''}`,
-      });
-    });
-    const originPointAddr = `${Location.renderConsignLocation(shipmt, 'consigner')}${shipmt.consigner_addr ? shipmt.consigner_addr : ''}`;
-    const destPointAddr = `${Location.renderConsignLocation(shipmt, 'consignee')}${shipmt.consignee_addr ? shipmt.consignee_addr : ''}`;
-    const bdPoints = [];
-    const viewPoints = [];
-    // 百度地图API功能
-    const map = new BMap.Map('map');          // 创建地图实例
-    const myGeo = new BMap.Geocoder(); // 创建地址解析器实例
-    // const point = new BMap.Point(120.073694,30.269552);  // 创建点坐标
-    // map.centerAndZoom(point, 16);                 // 初始化地图，设置中心点坐标和地图级别
-    map.enableScrollWheelZoom();
-    map.addControl(new BMap.NavigationControl());  // 添加默认缩放平移控件
-    const topLeftControl = new BMap.ScaleControl({ anchor: BMAP_ANCHOR_TOP_LEFT });// 左上角，添加比例
-    map.addControl(topLeftControl);
-    function addressToPoint(addr, cb, city) {
-      // 将地址解析结果显示在地图上,并调整地图视野
-      myGeo.getPoint(addr, cb, city);
-    }
-    // map.addEventListener("dragend", draw);
-    // map.addEventListener("zoomend", draw);
-    function checkPoint(item) {
-      return new Promise((resolve) => {
-        addressToPoint(`${item.province}${Location.renderLoc(item)}${item.address}`, (point) => {
-          let result = { ...item };
-          if (point) {
-            result = {
-              ...item,
-              ...point,
-            };
-          }
-          resolve(result);
-        }, `${item.city}`);
-      });
-    }
-    // 创建标注
-    function addMarker(pt, label, index, cur, pts) {
-      if (pt && pt.lat !== 0 && pt.lng !== 0) {
-        const iconSize = [25, 82];
-        let iconurl = 'https://welogix-web-cdn.b0.upaiyun.com/assets/img/marker_way.png';
-        if (index === 0) {
-          iconurl = 'https://welogix-web-cdn.b0.upaiyun.com/assets/img/marker_origin.png';
-        } else if (index === pts.length - 1) {
-          iconurl = 'https://welogix-web-cdn.b0.upaiyun.com/assets/img/marker_dest.png';
-        }
-        const icon = new BMap.Icon(iconurl, new BMap.Size(...iconSize));
-        const marker = new BMap.Marker(pt, { icon });
-        map.addOverlay(marker);
-        if (index === cur) {
-          marker.setAnimation(BMAP_ANIMATION_BOUNCE);
-        }
-        const lab = new BMap.Label(label, { offset: new BMap.Size(30, -10) });
-        marker.setLabel(lab);
-      }
-    }
-    function draw(pts, cur) {
-      const promises = [];
-      for (let i = 0; i < pts.length; i++) {
-        const p = checkPoint(pts[i]);
-        promises.push(p);
-      }
-      const result = Promise.all(promises);
-      result.then((arr) => {
-        map.clearOverlays();
-        for (let i = 0; i < arr.length; i++) {
-          addMarker(arr[i], arr[i].label, i, cur, pts);
-          const BDPoint = new BMap.Point(arr[i].lng, arr[i].lat);
-          if (BDPoint.lng !== 0 && BDPoint.lat !== 0) {
-            bdPoints.push(BDPoint);
-            viewPoints.push(BDPoint);
-          }
-        }
-        if (cur !== pts.length - 1) {
-          bdPoints.pop();
-        }
-        const curve = new BMapLib.CurveLine(bdPoints, { strokeColor: '#0096da', strokeWeight: 3, strokeOpacity: 0.5 }); // 创建弧线对象
-        map.addOverlay(curve); // 添加到地图中
-        map.setViewport(viewPoints);
-      });
-    }
-    addressToPoint(originPointAddr, (point) => {
-      let result = {
-        lat: 0,
-        lng: 0,
-      };
-      if (point !== null) {
-        result = point;
-      }
-      const originPoint = {
-        ...result,
-        label: `${shipmt.pickup_act_date || shipmt.pickup_est_date ?
-          moment(shipmt.pickup_act_date || shipmt.pickup_est_date).format('YYYY-MM-DD HH:mm') : ''} ${originPointAddr}`,
-      };
-      addressToPoint(destPointAddr, (point2) => {
-        if (point2 !== null) {
-          result = point2;
-        }
-        const destPoint = {
-          ...result,
-          label: `${shipmt.deliver_act_date || shipmt.deliver_est_date ?
-            moment(shipmt.deliver_act_date || shipmt.deliver_est_date).format('YYYY-MM-DD HH:mm') : ''} ${destPointAddr}`,
-        };
-        points.unshift(originPoint);
-        points.push(destPoint);
-        let current = 0;
-        if (shipmt.status < 4) {
-          current = 0;
-        } else if (shipmt.status === 4) {
-          current = points.length - 2;
-        } else if (shipmt.status > 4) {
-          current = points.length - 1;
-        }
-        draw(points, current);
-      }, shipmt.consignee_city);
-    }, shipmt.consigner_city);
   }
   resize() {
     if ($(window).width() <= 950) {
@@ -330,7 +299,7 @@ export default class TrackingDetail extends React.Component {
             <div id="map" />
           </Col>
         </Row>
-        <script type="text/javascript" src="https://sapi.map.baidu.com/getscript?v=2.0&ak=h9mZgQCfWCsEf9axutFUlgPhgbVGmng5&services=&t=20170608143204&s=1" />
+        <script type="text/javascript" src="https://sapi.map.baidu.com/api?v=2.0&ak=A4749739227af1618f7b0d1b588c0e85&s=1" />
         <script type="text/javascript" src="https://sapi.map.baidu.com/library/TextIconOverlay/1.2/src/TextIconOverlay_min.js" />
         <script type="text/javascript" src="https://sapi.map.baidu.com/library/MarkerClusterer/1.2/src/MarkerClusterer_min.js" />
         <script type="text/javascript" src="https://sapi.map.baidu.com/library/CurveLine/1.5/src/CurveLine.min.js" />

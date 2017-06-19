@@ -45,6 +45,7 @@ const actionTypes = createActionTypes('@@welogix/transport/shipment/', [
   'UPDATE_FEE', 'UPDATE_FEE_SUCCEED', 'UPDATE_FEE_FAIL',
   'TOGGLE_RECALCULATE_CHARGE',
   'LOAD_TARIFF_BY_QUOTENO', 'LOAD_TARIFF_BY_QUOTENO_SUCCEED', 'LOAD_TARIFF_BY_QUOTENO_FAIL',
+  'LOAD_PUB_POD', 'LOAD_PUB_POD_SUCCEED', 'LOAD_PUB_POD_FAIL',
 ]);
 appendFormAcitonTypes('@@welogix/transport/shipment/', actionTypes);
 
@@ -573,9 +574,9 @@ export function loadPubShipmtPod(shipmtNo, podId, key) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.LOAD_PUB_DETAIL,
-        actionTypes.LOAD_PUB_DETAIL_SUCCEED,
-        actionTypes.LOAD_PUB_DETAIL_FAIL,
+        actionTypes.LOAD_PUB_POD,
+        actionTypes.LOAD_PUB_POD_SUCCEED,
+        actionTypes.LOAD_PUB_POD_FAIL,
       ],
       endpoint: 'public/v1/transport/shipment/pod',
       method: 'get',
