@@ -322,7 +322,7 @@ export function loadProductDetails(inboundNo, seqNo) {
   };
 }
 
-export function updateProductDetails(loginId, tenantId, whseCode, inboundNo, dataSource, seqNo, asnNo) {
+export function updateProductDetails(dataSource, inboundNo, seqNo, asnNo, loginId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -332,7 +332,7 @@ export function updateProductDetails(loginId, tenantId, whseCode, inboundNo, dat
       ],
       endpoint: 'v1/cwm/receive/productDetails/update',
       method: 'post',
-      data: { loginId, tenantId, whseCode, inboundNo, dataSource, seqNo, asnNo },
+      data: { loginId, inboundNo, dataSource, seqNo, asnNo },
     },
   };
 }

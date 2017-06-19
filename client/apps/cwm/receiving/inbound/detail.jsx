@@ -67,46 +67,22 @@ export default class ReceiveInbound extends Component {
     confirm: true,
   }
   componentWillMount() {
-    const asnNo = this.props.params.asnNo;
-    const { defaultWhse } = this.props;
-    this.props.getInboundDetail(asnNo).then(
-      (result) => {
-        let status = 0;
-        if (result.data.inboundHead.status === 3) {
-          status = 2;
-        }
-        if (result.data.inboundHead.status === 5) {
-          status = 3;
-        }
-        this.setState({
-          inboundHead: result.data.inboundHead,
-          inboundProducts: result.data.inboundProducts,
-          currentStatus: status,
-        });
-        this.checkConfirm(result.data.inboundProducts);
-      }
-    );
-    this.props.loadLocations(defaultWhse.code);
+    this.handleReload();
+    this.props.loadLocations(this.props.defaultWhse.code);
   }
   msg = key => formatMsg(this.props.intl, key);
   handleReload = () => {
-    this.props.getInboundDetail(this.props.params.asnNo).then(
-      (result) => {
-        let status = 0;
-        if (result.data.inboundHead.status === 3) {
-          status = 2;
-        }
-        if (result.data.inboundHead.status === 5) {
-          status = 3;
-        }
-        this.setState({
-          inboundHead: result.data.inboundHead,
-          inboundProducts: result.data.inboundProducts,
-          currentStatus: status,
-          selectedRowKeys: [],
-        });
-        this.checkConfirm(result.data.inboundProducts);
-      }
+    this.props.getInboundDetail(this.props.params.asnNo).then((result) => {
+      const inbStatus = Object.keys(CWM_INBOUND_STATUS).filter(
+        cis => CWM_INBOUND_STATUS[cis].value === result.data.inboundHead.status
+      )[0];
+      this.setState({
+        inboundHead: result.data.inboundHead,
+        inboundProducts: result.data.inboundProducts,
+        currentStatus: inbStatus ? CWM_INBOUND_STATUS[inbStatus].step : 0,
+      });
+      this.checkConfirm(result.data.inboundProducts);
+    }
     );
   }
   handleReceivingModeChange = (ev) => {
@@ -140,7 +116,7 @@ export default class ReceiveInbound extends Component {
     const { loginId, tenantId } = this.props;
     this.props.confirm(this.state.inboundHead.inbound_no, this.props.params.asnNo, loginId, tenantId);
     this.setState({
-      currentStatus: CWM_INBOUND_STATUS.COMPLETED,
+      currentStatus: CWM_INBOUND_STATUS.COMPLETED.step,
     });
   }
   checkConfirm = (inboundProducts) => {
@@ -294,12 +270,12 @@ export default class ReceiveInbound extends Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="top-bar-tools">
-            {this.state.currentStatus < CWM_INBOUND_STATUS.COMPLETED &&
+            {this.state.currentStatus < CWM_INBOUND_STATUS.COMPLETED.step &&
             <Tooltip title="打印入库单" placement="bottom">
               <Button size="large" icon="printer" onClick={this.handlePrint} />
             </Tooltip>
             }
-            {this.state.currentStatus < CWM_INBOUND_STATUS.COMPLETED &&
+            {this.state.currentStatus < CWM_INBOUND_STATUS.COMPLETED.step &&
             <Dropdown overlay={tagMenu}>
               <Button size="large" onClick={this.handleTagging}>
                 <Icon type="barcode" />标签 <Icon type="down" />
@@ -349,7 +325,7 @@ export default class ReceiveInbound extends Component {
                   }
                 </div>
                 <div className="toolbar-right">
-                  {this.state.receivingMode === 'manual' && this.state.currentStatus < CWM_INBOUND_STATUS.COMPLETED &&
+                  {this.state.receivingMode === 'manual' && this.state.currentStatus < CWM_INBOUND_STATUS.COMPLETED.step &&
                   <Popconfirm title="确定此次入库操作已完成?" onConfirm={this.handleInboundConfirmed} okText="确认" cancelText="取消">
                     <Button type="primary" ghost size="large" icon="check" disabled={this.state.confirm}>
                       入库确认
