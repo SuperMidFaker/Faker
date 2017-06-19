@@ -1,3 +1,4 @@
 export QuoteTemplates from './quoteTemplates';
-export InvoiceTemplates from './invoiceTemplates';
+export DocumentTemplates from './documentTemplates';
 export InvoiceContent from './components/invoiceContent';
+export ContractContent from './components/contractContent';
