@@ -30,8 +30,6 @@ const Step = Steps.Step;
     loginId: state.account.loginId,
     username: state.account.username,
     tenantName: state.account.tenantName,
-    formData: state.cmsDelegation.formData,
-    submitting: state.cmsDelegation.submitting,
     defaultWhse: state.cwmContext.defaultWhse,
     locations: state.cwmWarehouse.locations,
   }),
@@ -47,8 +45,6 @@ export default class ReceiveInbound extends Component {
     intl: intlShape.isRequired,
     form: PropTypes.object.isRequired,
     tenantName: PropTypes.string.isRequired,
-    formData: PropTypes.object.isRequired,
-    submitting: PropTypes.bool.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -72,7 +68,7 @@ export default class ReceiveInbound extends Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   handleReload = () => {
-    this.props.getInboundDetail(this.props.params.asnNo).then((result) => {
+    this.props.getInboundDetail(this.props.params.inboundNo).then((result) => {
       const inbStatus = Object.keys(CWM_INBOUND_STATUS).filter(
         cis => CWM_INBOUND_STATUS[cis].value === result.data.inboundHead.status
       )[0];
@@ -82,8 +78,7 @@ export default class ReceiveInbound extends Component {
         currentStatus: inbStatus ? CWM_INBOUND_STATUS[inbStatus].step : 0,
       });
       this.checkConfirm(result.data.inboundProducts);
-    }
-    );
+    });
   }
   handleReceivingModeChange = (ev) => {
     this.setState({
@@ -114,7 +109,7 @@ export default class ReceiveInbound extends Component {
   }
   handleInboundConfirmed = () => {
     const { loginId, tenantId } = this.props;
-    this.props.confirm(this.state.inboundHead.inbound_no, this.props.params.asnNo, loginId, tenantId);
+    this.props.confirm(this.state.inboundHead.inbound_no, this.state.inboundHead.asn_no, loginId, tenantId);
     this.setState({
       currentStatus: CWM_INBOUND_STATUS.COMPLETED.step,
     });
@@ -185,13 +180,17 @@ export default class ReceiveInbound extends Component {
     fixed: 'right',
     width: 180,
     render: (o, record) => {
+      const Options = this.props.locations.map(location => (<Option value={location.location}>{location.location}</Option>));
       if (record.location.length <= 1) {
-        const Options = this.props.locations.map(location => (<Option value={location.location}>{location.location}</Option>));
-        return (<Select value={o[0]} showSearch style={{ width: 160 }} disabled>
-          {Options}
-        </Select>);
+        return (
+          <Select value={o[0]} showSearch style={{ width: 160 }} disabled>
+            {Options}
+          </Select>);
       } else {
-        return (<Select className="readonly" mode="tags" defaultValue={o} style={{ width: 160 }} disabled />);
+        return (
+          <Select className="readonly" mode="tags" defaultValue={o} style={{ width: 160 }} disabled>
+            {Options}
+          </Select>);
       }
     },
   }, {
@@ -199,19 +198,14 @@ export default class ReceiveInbound extends Component {
     dataIndex: 'damage_level',
     fixed: 'right',
     width: 120,
-    render: (o) => {
-      if (o.length <= 1) {
-        return (<Select value={o[0]} style={{ width: 100 }} disabled>
-          <Option value={0}>完好</Option>
-          <Option value={1}>轻微擦痕</Option>
-          <Option value={2}>中度</Option>
-          <Option value={3}>重度</Option>
-          <Option value={4}>严重磨损</Option>
-        </Select>);
-      } else {
-        return (<Select mode="tags" defaultValue={o} style={{ width: 100 }} disabled />);
-      }
-    },
+    render: damage => (
+      <Select defaultValue={damage} style={{ width: 100 }} disabled>
+        <Option value={0}>完好</Option>
+        <Option value={1}>轻微擦痕</Option>
+        <Option value={2}>中度</Option>
+        <Option value={3}>重度</Option>
+        <Option value={4}>严重磨损</Option>
+      </Select>),
   }, {
     title: '操作',
     width: 100,
@@ -228,7 +222,6 @@ export default class ReceiveInbound extends Component {
   render() {
     const { defaultWhse } = this.props;
     const { inboundHead, inboundProducts } = this.state;
-    const asnNo = this.props.params.asnNo;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys, selectedRows) => {
@@ -267,7 +260,7 @@ export default class ReceiveInbound extends Component {
               {this.msg('receivingInound')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              {asnNo}
+              {this.props.params.inboundNo}
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="top-bar-tools">
@@ -297,7 +290,7 @@ export default class ReceiveInbound extends Component {
                   <InfoItem addonBefore="货主" field={inboundHead.owner_name} />
                 </Col>
                 <Col sm={24} lg={6}>
-                  <InfoItem addonBefore="入库单号" field={inboundHead.inbound_no} />
+                  <InfoItem addonBefore="收货通知单号" field={inboundHead.asn_no} />
                 </Col>
                 <Col sm={24} lg={3}>
                   <InfoItem addonBefore="预计箱数" field={inboundHead.convey_box_qty} editable />
@@ -339,7 +332,7 @@ export default class ReceiveInbound extends Component {
                 scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
               />
               <ReceivingModal reload={this.handleReload} receivingMode={this.state.receivingMode} />
-              <ExpressReceivingModal reload={this.handleReload} asnNo={this.props.params.asnNo} inboundNo={this.state.inboundHead.inbound_no} data={this.state.selectedRows} />
+              <ExpressReceivingModal reload={this.handleReload} asnNo={this.state.inboundHead.asn_no} inboundNo={this.state.inboundHead.inbound_no} data={this.state.selectedRows} />
             </Card>
           </Form>
         </Content>

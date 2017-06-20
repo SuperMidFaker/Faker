@@ -23,8 +23,8 @@ const RadioButton = Radio.Button;
 function fetchData({ state, dispatch }) {
   dispatch(loadAsnLists({
     whseCode: state.cwmContext.defaultWhse.code,
-    pageSize: state.cwmReceive.asn.pageSize,
-    current: state.cwmReceive.asn.current,
+    pageSize: state.cwmReceive.asnlist.pageSize,
+    current: state.cwmReceive.asnlist.current,
     filters: state.cwmReceive.asnFilters,
   }));
 }
@@ -37,7 +37,7 @@ function fetchData({ state, dispatch }) {
     whses: state.cwmContext.whses,
     defaultWhse: state.cwmContext.defaultWhse,
     filters: state.cwmReceive.asnFilters,
-    asn: state.cwmReceive.asn,
+    asnlist: state.cwmReceive.asnlist,
     owners: state.cwmContext.whseAttrs.owners,
     loginId: state.account.loginId,
   }),
@@ -66,13 +66,17 @@ export default class ReceivingASNList extends React.Component {
   columns = [{
     title: 'ANS编号',
     dataIndex: 'asn_no',
-    width: 180,
+    width: 240,
     fixed: 'left',
   }, {
+    title: '入库流水号',
+    width: 200,
+    dataIndex: 'inbound_no',
+  }, {
     title: '货主',
-    width: 240,
+    width: 260,
     dataIndex: 'owner_name',
-    render: o => <TrimSpan text={o} maxLen={14} />,
+    render: o => <TrimSpan text={o} maxLen={16} />,
   }, {
     title: '采购订单号',
     width: 150,
@@ -144,12 +148,20 @@ export default class ReceivingASNList extends React.Component {
           <span className="ant-divider" /><RowUpdater onHit={this.handleCancelASN} label="取消" row={record} /></span>);
       } else if (record.status === CWM_ASN_STATUS.INBOUND.value) {
         if (record.bonded && record.reg_status === CWM_SHFTZ_APIREG_STATUS.pending) {
-          return (<span><RowUpdater onHit={this.handleReceive} label="入库操作" row={record} /><span className="ant-divider" /><RowUpdater onHit={this.handleEntryReg} label="进库备案" row={record} /></span>);
+          return (<span>
+            <RowUpdater onHit={this.handleReceive} label="入库操作" row={record} />
+            <span className="ant-divider" />
+            <RowUpdater onHit={this.handleEntryReg} label="进库备案" row={record} />
+          </span>);
         } else {
           return (<span><RowUpdater onHit={this.handleReceive} label="入库操作" row={record} /></span>);
         }
-      } else if (record.status === 2) {
-        return (<span><RowUpdater onHit={this.handleReceive} label="入库操作" row={record} /><span className="ant-divider" /><RowUpdater onHit={this.handleComplete} label="完成收货" row={record} /></span>);
+      } else if (record.status === CWM_ASN_STATUS.PARTIAL.value) {
+        return (<span>
+          <RowUpdater onHit={this.handleReceive} label="入库操作" row={record} />
+          <span className="ant-divider" />
+          <RowUpdater onHit={this.handleComplete} label="完成收货" row={record} />
+        </span>);
       }
     },
   }]
@@ -173,8 +185,8 @@ export default class ReceivingASNList extends React.Component {
     const whseCode = this.props.defaultWhse.code;
     this.props.loadAsnLists({
       whseCode,
-      pageSize: this.props.asn.pageSize,
-      current: this.props.asn.current,
+      pageSize: this.props.asnlist.pageSize,
+      current: this.props.asnlist.current,
       filters,
     });
   }
@@ -194,7 +206,7 @@ export default class ReceivingASNList extends React.Component {
     );
   }
   handleReceive = (row) => {
-    const link = `/cwm/receiving/inbound/${row.asn_no}`;
+    const link = `/cwm/receiving/inbound/${row.inbound_no}`;
     this.context.router.push(link);
   }
   handleEntryReg = (row) => {
@@ -207,19 +219,19 @@ export default class ReceivingASNList extends React.Component {
     const filters = this.props.filters;
     this.props.loadAsnLists({
       whseCode: value,
-      pageSize: this.props.asn.pageSize,
-      current: this.props.asn.current,
+      pageSize: this.props.asnlist.pageSize,
+      current: this.props.asnlist.current,
       filters,
     });
   }
-  handleStatusChange = (e) => {
-    this.props.asnFilterChange(e.target.value);
-    const filters = { ...this.props.filters, status: e.target.value };
+  handleStatusChange = (ev) => {
+    this.props.asnFilterChange(ev.target.value);
+    const filters = { ...this.props.filters, status: ev.target.value };
     const whseCode = this.props.defaultWhse.code;
     this.props.loadAsnLists({
       whseCode,
-      pageSize: this.props.asn.pageSize,
-      current: this.props.asn.current,
+      pageSize: this.props.asnlist.pageSize,
+      current: this.props.asnlist.current,
       filters,
     });
   }
@@ -228,13 +240,13 @@ export default class ReceivingASNList extends React.Component {
     const whseCode = this.props.defaultWhse.code;
     this.props.loadAsnLists({
       whseCode,
-      pageSize: this.props.asn.pageSize,
-      current: this.props.asn.current,
+      pageSize: this.props.asnlist.pageSize,
+      current: this.props.asnlist.current,
       filters,
     });
   }
   render() {
-    const { whses, defaultWhse, owners } = this.props;
+    const { whses, defaultWhse, owners, filters } = this.props;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -261,8 +273,13 @@ export default class ReceivingASNList extends React.Component {
         };
         return params;
       },
-      remotes: this.props.asn,
+      remotes: this.props.asnlist,
     });
+    let columns = this.columns;
+    if (filters.status === 'pending') {
+      columns = [...columns];
+      columns.splice(1, 1);
+    }
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Header className="top-bar">
@@ -278,7 +295,7 @@ export default class ReceivingASNList extends React.Component {
               {this.msg('receivingASN')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <RadioGroup defaultValue="pending" onChange={this.handleStatusChange} size="large">
+          <RadioGroup value={filters.status} onChange={this.handleStatusChange} size="large">
             <RadioButton value="pending">通知接收</RadioButton>
             <RadioButton value="inbound">入库操作</RadioButton>
             <RadioButton value="partial">部分收货</RadioButton>
@@ -309,7 +326,7 @@ export default class ReceivingASNList extends React.Component {
               </div>
             </div>
             <div className="panel-body table-panel">
-              <Table columns={this.columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="id" scroll={{ x: this.columns.reduce((acc, cur) => acc + cur.width, 0) }} />
+              <Table columns={columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="id" scroll={{ x: columns.reduce((acc, cur) => acc + cur.width, 0) }} />
             </div>
           </div>
         </Content>
