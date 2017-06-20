@@ -58,7 +58,7 @@ export default class CMSNodeCard extends React.Component {
     [NODE_BIZ_OBJECTS[this.props.kind][0].triggers[3].key]: 3,
   }
   handlePreview = (No) => {
-    this.props.showPreviewer(No, 'basic');
+    this.props.showPreviewer(No, 'customsDecl');
     this.props.hideDock();
   }
   render() {

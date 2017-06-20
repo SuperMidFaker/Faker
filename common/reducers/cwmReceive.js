@@ -19,7 +19,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/receive/', [
   'UPDATE_PRODUCT_DETAILS', 'UPDATE_PRODUCT_DETAILS_SUCCEED', 'UPDATE_PRODUCT_DETAILS_FAIL',
   'CONFIRM_PRODUCT_DETAILS', 'CONFIRM_PRODUCT_DETAILS_SUCCEED', 'CONFIRM_PRODUCT_DETAILS_FAIL',
   'RECEIVE_COMPLETED', 'RECEIVE_COMPLETED_SUCCEED', 'RECEIVE_COMPLETED_FAIL',
-  'ASN_STATUS_CHANGE', 'SHOW_RECEIVEQTY_MODAL', 'HIDE_RECEIVEQTY_MODAL',
+  'SHOW_RECEIVEQTY_MODAL', 'HIDE_RECEIVEQTY_MODAL',
   'UPDATE_INBOUND_DETAILS', 'UPDATE_INBOUND_DETAILS_SUCCEED', 'UPDATE_INBOUND_DETAILS_FAIL',
 ]);
 
@@ -95,8 +95,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, inboundFilters: JSON.parse(action.params.filters) };
     case actionTypes.LOAD_INBOUNDS_SUCCEED:
       return { ...state, inbound: action.result.data };
-    case actionTypes.ASN_STATUS_CHANGE:
-      return { ...state, asnFilters: { ...state.asnFilters, status: action.status } };
+    case actionTypes.INBOUND_STATUS_CHANGE:
+      return { ...state, inboundFilters: { ...state.inboundFilters, status: action.status } };
     case actionTypes.SHOW_RECEIVEQTY_MODAL:
       return { ...state, receiveQtyModal: { ...state.receiveQtyModal, visible: true } };
     case actionTypes.HIDE_RECEIVEQTY_MODAL:
@@ -366,13 +366,6 @@ export function receiveCompleted(asnNo) {
       method: 'post',
       data: { asnNo },
     },
-  };
-}
-
-export function asnFilterChange(status) {
-  return {
-    type: actionTypes.ASN_STATUS_CHANGE,
-    status,
   };
 }
 

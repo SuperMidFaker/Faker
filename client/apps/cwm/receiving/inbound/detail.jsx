@@ -127,6 +127,7 @@ export default class ReceiveInbound extends Component {
     this.setState({
       currentStatus: CWM_INBOUND_STATUS.COMPLETED.step,
     });
+    this.handleReload();
   }
   checkConfirm = (inboundProducts) => {
     if (inboundProducts.length === 0) this.setState({ confirm: true });
@@ -225,8 +226,10 @@ export default class ReceiveInbound extends Component {
     width: 100,
     fixed: 'right',
     render: (o, record) => {
-      const label = this.state.inboundHead.rec_mode === 'scan' ? '扫码收货' : '手动收货';
-      return (<RowUpdater onHit={this.handleReceive} label={label} row={record} />);
+      if (this.state.inboundHead.status < CWM_INBOUND_STATUS.COMPLETED.value) {
+        const label = this.state.inboundHead.rec_mode === 'scan' ? '扫码收货' : '手动收货';
+        return (<RowUpdater onHit={this.handleReceive} label={label} row={record} />);
+      }
     },
   }]
 
