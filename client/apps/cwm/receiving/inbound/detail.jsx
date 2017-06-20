@@ -32,6 +32,8 @@ const Step = Steps.Step;
     tenantName: state.account.tenantName,
     defaultWhse: state.cwmContext.defaultWhse,
     locations: state.cwmWarehouse.locations,
+    asnNo: state.cwmReceive.inboundDetail.asnNo,
+    inboundNo: state.cwmReceive.inboundDetail.inboundNo,
   }),
   { loadReceiveModal, getInboundDetail, loadLocations, confirm, showExpressReceivingModal }
 )
@@ -76,6 +78,7 @@ export default class ReceiveInbound extends Component {
         inboundHead: result.data.inboundHead,
         inboundProducts: result.data.inboundProducts,
         currentStatus: inbStatus ? CWM_INBOUND_STATUS[inbStatus].step : 0,
+        selectedRowKeys: [],
       });
       this.checkConfirm(result.data.inboundProducts);
     });
@@ -105,7 +108,7 @@ export default class ReceiveInbound extends Component {
   }
   handleReceive = (record) => {
     this.props.loadReceiveModal(record.inbound_no, record.asn_seq_no, record.expect_qty, record.expect_pack_qty,
-      record.received_qty, record.received_pack_qty, record.sku_pack_qty, record.asn_no, record.product_no);
+      record.received_qty, record.received_pack_qty, record.sku_pack_qty, record.asn_no, record.product_no, record.name);
   }
   handleInboundConfirmed = () => {
     const { loginId, tenantId } = this.props;
@@ -228,7 +231,7 @@ export default class ReceiveInbound extends Component {
         this.setState({ selectedRowKeys, selectedRows });
       },
       getCheckboxProps: record => ({
-        disabled: record.trace_id.length > 1,
+        disabled: record.trace_id.length >= 1,
       }),
     };
     const tagMenu = (

@@ -20,6 +20,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/receive/', [
   'RECEIVE_COMPLETED', 'RECEIVE_COMPLETED_SUCCEED', 'RECEIVE_COMPLETED_FAIL',
   'ASN_STATUS_CHANGE', 'SHOW_RECEIVEQTY_MODAL', 'HIDE_RECEIVEQTY_MODAL',
   'UPDATE_INBOUND_DETAILS', 'UPDATE_INBOUND_DETAILS_SUCCEED', 'UPDATE_INBOUND_DETAILS_FAIL',
+  'SET_INBOUNDNO',
 ]);
 
 const initialState = {
@@ -57,6 +58,10 @@ const initialState = {
   receiveQtyModal: {
     visible: false,
   },
+  inboundDetail: {
+    asnNo: '',
+    inboundNo: '',
+  },
 };
 
 export default function reducer(state = initialState, action) {
@@ -73,7 +78,9 @@ export default function reducer(state = initialState, action) {
           receivedPackQty: action.receivedPackQty,
           skuPackQty: action.skuPackQty,
           asnNo: action.asnNo,
-          productNo: action.productNo } };
+          productNo: action.productNo,
+          name: action.name,
+        } };
     case actionTypes.HIDE_RECEIVE_MODAL:
       return { ...state, receiveModal: { ...state.receiveModal, visible: false } };
     case actionTypes.SHOW_DETAIL_MODAL:
@@ -108,12 +115,14 @@ export default function reducer(state = initialState, action) {
       return { ...state, receiveQtyModal: { ...state.receiveQtyModal, visible: true } };
     case actionTypes.HIDE_RECEIVEQTY_MODAL:
       return { ...state, receiveQtyModal: { ...state.receiveQtyModal, visible: false } };
+    case actionTypes.SET_INBOUNDNO:
+      return { ...state, inboundDetail: { asnNo: action.asnNo, inboundNo: action.inboundNo } };
     default:
       return state;
   }
 }
 
-export function loadReceiveModal(inboundNo, seqNo, expectQty, expectPackQty, receivedQty, receivedPackQty, skuPackQty, asnNo, productNo) {
+export function loadReceiveModal(inboundNo, seqNo, expectQty, expectPackQty, receivedQty, receivedPackQty, skuPackQty, asnNo, productNo, name) {
   return {
     type: actionTypes.LOAD_RECEIVE_MODAL,
     inboundNo,
@@ -125,6 +134,7 @@ export function loadReceiveModal(inboundNo, seqNo, expectQty, expectPackQty, rec
     skuPackQty,
     asnNo,
     productNo,
+    name,
   };
 }
 
@@ -400,5 +410,13 @@ export function updateInboundDetails(seqNos, location, damageLevel, loginId, asn
       method: 'post',
       data: { seqNos, location, damageLevel, loginId, asnNo, inboundNo },
     },
+  };
+}
+
+export function setInboundNo(asnNo, inboundNo) {
+  return {
+    type: actionTypes.SET_INBOUNDNO,
+    asnNo,
+    inboundNo,
   };
 }
