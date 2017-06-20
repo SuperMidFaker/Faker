@@ -21,7 +21,6 @@ const actionTypes = createActionTypes('@@welogix/cwm/receive/', [
   'RECEIVE_COMPLETED', 'RECEIVE_COMPLETED_SUCCEED', 'RECEIVE_COMPLETED_FAIL',
   'ASN_STATUS_CHANGE', 'SHOW_RECEIVEQTY_MODAL', 'HIDE_RECEIVEQTY_MODAL',
   'UPDATE_INBOUND_DETAILS', 'UPDATE_INBOUND_DETAILS_SUCCEED', 'UPDATE_INBOUND_DETAILS_FAIL',
-  'SET_INBOUNDNO',
 ]);
 
 const initialState = {
@@ -58,10 +57,6 @@ const initialState = {
   inboundFilters: { status: 'create', ownerCode: 'all' },
   receiveQtyModal: {
     visible: false,
-  },
-  inboundDetail: {
-    asnNo: '',
-    inboundNo: '',
   },
 };
 
@@ -116,8 +111,6 @@ export default function reducer(state = initialState, action) {
       return { ...state, receiveQtyModal: { ...state.receiveQtyModal, visible: true } };
     case actionTypes.HIDE_RECEIVEQTY_MODAL:
       return { ...state, receiveQtyModal: { ...state.receiveQtyModal, visible: false } };
-    case actionTypes.SET_INBOUNDNO:
-      return { ...state, inboundDetail: { asnNo: action.asnNo, inboundNo: action.inboundNo } };
     default:
       return state;
   }
@@ -313,7 +306,7 @@ export function getInboundDetail(inboundNo) {
         actionTypes.GET_INBOUND_DETAIL_SUCCEED,
         actionTypes.GET_INBOUND_DETAIL_FAIL,
       ],
-      endpoint: 'v1/cwm/receive/inboundDetail',
+      endpoint: 'v1/cwm/receive/inbound/detail',
       method: 'get',
       params: { inboundNo },
     },
@@ -328,7 +321,7 @@ export function loadProductDetails(inboundNo, seqNo) {
         actionTypes.LOAD_PRODUCT_DETAILS_SUCCEED,
         actionTypes.LOAD_PRODUCT_DETAILS_FAIL,
       ],
-      endpoint: 'v1/cwm/receive/productDetails/load',
+      endpoint: 'v1/cwm/receive/product/details/load',
       method: 'get',
       params: { inboundNo, seqNo },
     },
@@ -358,7 +351,7 @@ export function updateProductDetails(dataSource, inboundNo, seqNo, asnNo, loginI
         actionTypes.UPDATE_PRODUCT_DETAILS_SUCCEED,
         actionTypes.UPDATE_PRODUCT_DETAILS_FAIL,
       ],
-      endpoint: 'v1/cwm/receive/productDetails/update',
+      endpoint: 'v1/cwm/receive/product/details/update',
       method: 'post',
       data: { loginId, inboundNo, dataSource, seqNo, asnNo },
     },
@@ -373,7 +366,7 @@ export function confirm(inboundNo, asnNo, loginId, tenantId) {
         actionTypes.CONFIRM_PRODUCT_DETAILS_SUCCEED,
         actionTypes.CONFIRM_PRODUCT_DETAILS_FAIL,
       ],
-      endpoint: 'v1/cwm/receive/productDetails/confirm',
+      endpoint: 'v1/cwm/receive/product/details/confirm',
       method: 'post',
       data: { inboundNo, asnNo, loginId, tenantId },
     },
@@ -426,13 +419,5 @@ export function updateInboundDetails(seqNos, location, damageLevel, loginId, asn
       method: 'post',
       data: { seqNos, location, damageLevel, loginId, asnNo, inboundNo },
     },
-  };
-}
-
-export function setInboundNo(asnNo, inboundNo) {
-  return {
-    type: actionTypes.SET_INBOUNDNO,
-    asnNo,
-    inboundNo,
   };
 }

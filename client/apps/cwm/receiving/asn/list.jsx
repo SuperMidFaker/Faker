@@ -14,7 +14,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import { CWM_SHFTZ_APIREG_STATUS, CWM_ASN_STATUS } from 'common/constants';
 import { formatMsg } from '../message.i18n';
-import { loadAsnLists, releaseAsn, cancelAsn, receiveCompleted, asnFilterChange, setInboundNo } from 'common/reducers/cwmReceive';
+import { loadAsnLists, releaseAsn, cancelAsn, receiveCompleted, asnFilterChange } from 'common/reducers/cwmReceive';
 
 const { Header, Content } = Layout;
 const Option = Select.Option;
@@ -41,7 +41,7 @@ function fetchData({ state, dispatch }) {
     owners: state.cwmContext.whseAttrs.owners,
     loginId: state.account.loginId,
   }),
-  { switchDefaultWhse, loadAsnLists, releaseAsn, cancelAsn, receiveCompleted, asnFilterChange, setInboundNo }
+  { switchDefaultWhse, loadAsnLists, releaseAsn, cancelAsn, receiveCompleted, asnFilterChange }
 )
 @connectNav({
   depth: 2,
@@ -205,7 +205,6 @@ export default class ReceivingASNList extends React.Component {
   handleReceive = (row) => {
     const link = `/cwm/receiving/inbound/${row.inbound_no}`;
     this.context.router.push(link);
-    this.props.setInboundNo(row.asn_no);
   }
   handleEntryReg = (row) => {
     const link = `/cwm/supervision/shftz/entry/${row.asn_no}`;

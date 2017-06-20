@@ -13,7 +13,7 @@ import TrimSpan from 'client/components/trimSpan';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
-import { loadInbounds, setInboundNo } from 'common/reducers/cwmReceive';
+import { loadInbounds } from 'common/reducers/cwmReceive';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 
 const formatMsg = format(messages);
@@ -42,7 +42,7 @@ function fetchData({ state, dispatch }) {
     owners: state.cwmContext.whseAttrs.owners,
     loginId: state.account.loginId,
   }),
-  { loadInbounds, switchDefaultWhse, setInboundNo }
+  { loadInbounds, switchDefaultWhse }
 )
 @connectNav({
   depth: 2,
@@ -157,7 +157,6 @@ export default class ReceivingInboundList extends React.Component {
   handleReceive = (row) => {
     const link = `/cwm/receiving/inbound/${row.inbound_no}`;
     this.context.router.push(link);
-    this.props.setInboundNo(row.asn_no, row.inbound_no);
   }
   handleWhseChange = (value) => {
     this.props.switchDefaultWhse(value);
