@@ -82,7 +82,7 @@ export default class ReceivingInboundList extends React.Component {
   }, {
     title: '状态',
     dataIndex: 'status',
-    width: 100,
+    width: 150,
     render: (o) => {
       if (o === 0) {
         return (<Badge status="default" text="待入库" />);
@@ -95,7 +95,7 @@ export default class ReceivingInboundList extends React.Component {
       }
     },
   }, {
-    title: '入库进度',
+    title: '收货数量',
     width: 250,
     className: 'progress-bar',
     render: (o, record) => <Progress percent={record.total_received_qty / record.total_expect_qty * 100} format={() => `${record.total_received_qty} / ${record.total_expect_qty}`} strokeWidth={8} />,
@@ -103,6 +103,7 @@ export default class ReceivingInboundList extends React.Component {
     title: '操作模式',
     dataIndex: 'rec_mode',
     width: 100,
+    className: 'cell-align-center',
     render: (o) => {
       if (o === 'scan') {
         return (<Tooltip title="扫码收货"><Icon type="scan" /></Tooltip>);

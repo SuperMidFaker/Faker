@@ -272,7 +272,9 @@ export default class ReceiveInbound extends Component {
               </Button>
             </Dropdown>
             }
-            <RadioGroup value={inboundHead.rec_mode} onChange={this.handleReceivingModeChange} size="large">
+            <RadioGroup value={inboundHead.rec_mode} onChange={this.handleReceivingModeChange} size="large"
+              disabled={this.state.currentStatus === CWM_INBOUND_STATUS.COMPLETED.step}
+            >
               <Tooltip title="扫码收货" placement="bottom"><RadioButton value="scan"><Icon type="scan" /></RadioButton></Tooltip>
               <Tooltip title="人工收货" placement="bottom"><RadioButton value="manual"><Icon type="solution" /></RadioButton></Tooltip>
             </RadioGroup>
@@ -286,13 +288,19 @@ export default class ReceiveInbound extends Component {
                   <InfoItem addonBefore="货主" field={inboundHead.owner_name} />
                 </Col>
                 <Col sm={24} lg={6}>
-                  <InfoItem addonBefore="收货通知单号" field={inboundHead.asn_no} />
+                  <InfoItem addonBefore="ASN编号" field={inboundHead.asn_no} />
                 </Col>
                 <Col sm={24} lg={3}>
-                  <InfoItem addonBefore="预计箱数" field={inboundHead.convey_box_qty} editable />
+                  <InfoItem addonBefore="总预期数量" field={inboundHead.total_expect_qty} />
                 </Col>
                 <Col sm={24} lg={3}>
-                  <InfoItem addonBefore="预计托盘数" field={inboundHead.convey_pallet_qty} editable />
+                  <InfoItem addonBefore="总实收数量" field={inboundHead.total_received_qty} />
+                </Col>
+                <Col sm={24} lg={3}>
+                  <InfoItem addonBefore="装箱数量" field={inboundHead.convey_box_qty} editable />
+                </Col>
+                <Col sm={24} lg={3}>
+                  <InfoItem addonBefore="码盘数量" field={inboundHead.convey_pallet_qty} editable />
                 </Col>
               </Row>
               <div className="card-footer">
