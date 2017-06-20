@@ -85,7 +85,7 @@ export default class ReceivingInboundList extends React.Component {
     width: 100,
     render: (o) => {
       if (o === 0) {
-        return (<Badge status="default" text="创建" />);
+        return (<Badge status="default" text="待入库" />);
       } else if (o === 1) {
         return (<Badge status="processing" text="收货" />);
       } else if (o === 2) {
@@ -240,7 +240,7 @@ export default class ReceivingInboundList extends React.Component {
               <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} />
               <span />
               <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
-                onChange={this.handleOwnerChange} defaultValue="all"
+                onChange={this.handleOwnerChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
               >
                 <Option value="all">全部货主</Option>
                 {
