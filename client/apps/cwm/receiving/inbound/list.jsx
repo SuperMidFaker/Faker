@@ -58,7 +58,17 @@ export default class ReceivingInboundList extends React.Component {
   }
   state = {
     selectedRowKeys: [],
-    searchInput: '',
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.defaultWhse.code !== this.props.defaultWhse.code) {
+      nextProps.loadInbounds({
+        whseCode: nextProps.defaultWhse.code,
+        tenantId: nextProps.tenantId,
+        pageSize: nextProps.inbound.pageSize,
+        current: nextProps.inbound.current,
+        filters: nextProps.filters,
+      });
+    }
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
@@ -162,14 +172,6 @@ export default class ReceivingInboundList extends React.Component {
   handleWhseChange = (value) => {
     this.props.switchDefaultWhse(value);
     message.info('当前仓库已切换');
-    const filters = this.props.filters;
-    this.props.loadInbounds({
-      whseCode: value,
-      tenantId: this.props.tenantId,
-      pageSize: this.props.inbound.pageSize,
-      current: this.props.inbound.current,
-      filters,
-    });
   }
   handleOwnerChange = (value) => {
     const filters = { ...this.props.filters, ownerCode: value };
@@ -182,8 +184,18 @@ export default class ReceivingInboundList extends React.Component {
       filters,
     });
   }
+  handleSearch = (value) => {
+    const filters = { ...this.props.filters, name: value };
+    this.props.loadInbounds({
+      whseCode: this.props.defaultWhse.code,
+      tenantId: this.props.tenantId,
+      pageSize: this.props.inbound.pageSize,
+      current: this.props.inbound.current,
+      filters,
+    });
+  }
   render() {
-    const { whses, defaultWhse, owners } = this.props;
+    const { whses, defaultWhse, owners, filters } = this.props;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -220,7 +232,7 @@ export default class ReceivingInboundList extends React.Component {
             <Breadcrumb.Item>
               <Select size="large" value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
                 {
-                  whses.map(warehouse => (<Option value={warehouse.code}>{warehouse.name}</Option>))
+                  whses.map(warehouse => (<Option value={warehouse.code} key={warehouse.code}>{warehouse.name}</Option>))
                 }
               </Select>
             </Breadcrumb.Item>
@@ -228,7 +240,7 @@ export default class ReceivingInboundList extends React.Component {
               {this.msg('receivingInound')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <RadioGroup defaultValue="create" onChange={this.handleStatusChange} size="large" >
+          <RadioGroup value={filters.status} onChange={this.handleStatusChange} size="large" >
             <RadioButton value="create">待入库</RadioButton>
             <RadioButton value="receive">收货</RadioButton>
             <RadioButton value="putaway">上架</RadioButton>
@@ -238,14 +250,14 @@ export default class ReceivingInboundList extends React.Component {
         <Content className="main-content" key="main">
           <div className="page-body">
             <div className="toolbar">
-              <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} />
+              <SearchBar placeholder={this.msg('inboundPlaceholder')} size="large" onInputSearch={this.handleSearch} value={filters.name} />
               <span />
               <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
                 onChange={this.handleOwnerChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
               >
-                <Option value="all">全部货主</Option>
+                <Option value="all" key="all">全部货主</Option>
                 {
-                  owners.map(owner => (<Option value={owner.id}>{owner.name}</Option>))
+                  owners.map(owner => (<Option value={owner.id} key={owner.name}>{owner.name}</Option>))
                 }
               </Select>
               <div className="toolbar-right" />

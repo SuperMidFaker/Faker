@@ -244,6 +244,16 @@ export default class ReceivingASNList extends React.Component {
       filters,
     });
   }
+  handleSearch = (value) => {
+    const filters = { ...this.props.filters, name: value };
+    const whseCode = this.props.defaultWhse.code;
+    this.props.loadAsnLists({
+      whseCode,
+      pageSize: this.props.asnlist.pageSize,
+      current: this.props.asnlist.current,
+      filters,
+    });
+  }
   render() {
     const { whses, defaultWhse, owners, filters } = this.props;
     const rowSelection = {
@@ -312,12 +322,12 @@ export default class ReceivingASNList extends React.Component {
         <Content className="main-content" key="main">
           <div className="page-body">
             <div className="toolbar">
-              <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} />
+              <SearchBar placeholder={this.msg('asnPlaceholder')} size="large" onInputSearch={this.handleSearch} value={filters.name} />
               <span />
               <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
                 onChange={this.handleOwnerChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
               >
-                <Option value="all">全部货主</Option>
+                <Option value="all" key="all">全部货主</Option>
                 {
                   owners.map(owner => (<Option key={owner.id} value={owner.id}>{owner.name}</Option>))
                 }

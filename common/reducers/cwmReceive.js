@@ -2,7 +2,7 @@ import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/cwm/receive/', [
-  'LOAD_RECEIVE_MODAL', 'HIDE_RECEIVE_MODAL',
+  'OPEN_RECEIVE_MODAL', 'HIDE_RECEIVE_MODAL',
   'HIDE_DETAIL_MODAL', 'SHOW_DETAIL_MODAL',
   'ADD_TEMPORARY', 'CLEAR_TEMPORARY', 'DELETE_TEMPORARY', 'EDIT_TEMPORARY',
   'ADD_ASN', 'ADD_ASN_SUCCEED', 'ADD_ASN_FAIL',
@@ -28,13 +28,14 @@ const initialState = {
     visible: false,
     inboundNo: '',
     seqNo: '',
-    expectQty: '',
-    expectPackQty: '',
-    receivedQty: '',
-    receivedPackQty: '',
-    skuPackQty: '',
+    expectQty: null,
+    expectPackQty: null,
+    receivedQty: null,
+    receivedPackQty: null,
+    skuPackQty: null,
     asnNo: '',
     productNo: '',
+    name: '',
   },
   detailModal: {
     visible: false,
@@ -62,21 +63,8 @@ const initialState = {
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
-    case actionTypes.LOAD_RECEIVE_MODAL:
-      return { ...state,
-        receiveModal: { ...state.receiveModal,
-          visible: true,
-          inboundNo: action.inboundNo,
-          seqNo: action.seqNo,
-          expectQty: action.expectQty,
-          expectPackQty: action.expectPackQty,
-          receivedQty: action.receivedQty,
-          receivedPackQty: action.receivedPackQty,
-          skuPackQty: action.skuPackQty,
-          asnNo: action.asnNo,
-          productNo: action.productNo,
-          name: action.name,
-        } };
+    case actionTypes.OPEN_RECEIVE_MODAL:
+      return { ...state, receiveModal: { ...state.receiveModal, visible: true, ...action.data } };
     case actionTypes.HIDE_RECEIVE_MODAL:
       return { ...state, receiveModal: { ...state.receiveModal, visible: false } };
     case actionTypes.SHOW_DETAIL_MODAL:
@@ -103,6 +91,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, asnFilters: JSON.parse(action.params.filters) };
     case actionTypes.LOAD_ASN_LISTS_SUCCEED:
       return { ...state, asnlist: action.result.data };
+    case actionTypes.LOAD_INBOUNDS:
+      return { ...state, inboundFilters: JSON.parse(action.params.filters) };
     case actionTypes.LOAD_INBOUNDS_SUCCEED:
       return { ...state, inbound: action.result.data };
     case actionTypes.ASN_STATUS_CHANGE:
@@ -116,19 +106,10 @@ export default function reducer(state = initialState, action) {
   }
 }
 
-export function loadReceiveModal(inboundNo, seqNo, expectQty, expectPackQty, receivedQty, receivedPackQty, skuPackQty, asnNo, productNo, name) {
+export function openReceiveModal(modalInfo) {
   return {
-    type: actionTypes.LOAD_RECEIVE_MODAL,
-    inboundNo,
-    seqNo,
-    expectQty,
-    expectPackQty,
-    receivedQty,
-    receivedPackQty,
-    skuPackQty,
-    asnNo,
-    productNo,
-    name,
+    type: actionTypes.OPEN_RECEIVE_MODAL,
+    data: modalInfo,
   };
 }
 

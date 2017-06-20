@@ -10,7 +10,7 @@ import PackagePopover from './popover/packagePopover';
 import ReceivingModal from './modal/receivingModal';
 import QuantityInput from '../../common/quantityInput';
 import ExpressReceivingModal from './modal/expressReceivingModal';
-import { loadReceiveModal, getInboundDetail, confirm, showExpressReceivingModal, updateInboundMode } from 'common/reducers/cwmReceive';
+import { openReceiveModal, getInboundDetail, confirm, showExpressReceivingModal, updateInboundMode } from 'common/reducers/cwmReceive';
 import { loadLocations } from 'common/reducers/cwmWarehouse';
 import { CWM_INBOUND_STATUS } from 'common/constants';
 import messages from '../message.i18n';
@@ -33,7 +33,7 @@ const Step = Steps.Step;
     defaultWhse: state.cwmContext.defaultWhse,
     locations: state.cwmWarehouse.locations,
   }),
-  { loadReceiveModal, getInboundDetail, loadLocations, confirm, showExpressReceivingModal, updateInboundMode }
+  { openReceiveModal, getInboundDetail, loadLocations, confirm, showExpressReceivingModal, updateInboundMode }
 )
 @connectNav({
   depth: 3,
@@ -108,8 +108,18 @@ export default class ReceiveInbound extends Component {
     this.props.showExpressReceivingModal();
   }
   handleReceive = (record) => {
-    this.props.loadReceiveModal(record.inbound_no, record.asn_seq_no, record.expect_qty, record.expect_pack_qty,
-      record.received_qty, record.received_pack_qty, record.sku_pack_qty, this.state.inboundHead.asn_no, record.product_no, record.name);
+    this.props.openReceiveModal({
+      inboundNo: record.inbound_no,
+      seqNo: record.asn_seq_no,
+      expectQty: record.expect_qty,
+      expectPackQty: record.expect_pack_qty,
+      receivedQty: record.received_qty,
+      receivedPackQty: record.received_pack_qty,
+      skuPackQty: record.sku_pack_qty,
+      asnNo: this.state.inboundHead.asn_no,
+      productNo: record.product_no,
+      name: record.name,
+    });
   }
   handleInboundConfirmed = () => {
     const { loginId, tenantId } = this.props;
@@ -248,9 +258,7 @@ export default class ReceiveInbound extends Component {
         <Header className="top-bar">
           <Breadcrumb>
             <Breadcrumb.Item>
-              <Select size="large" value={defaultWhse.code} style={{ width: 160 }} disabled>
-                <Option value={defaultWhse.code}>{defaultWhse.name}</Option>
-              </Select>
+              {defaultWhse.name}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
               {this.msg('receivingInound')}
