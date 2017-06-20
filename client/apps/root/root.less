@@ -1083,6 +1083,7 @@ form .ant-cascader-picker:only-child, form .ant-select:only-child {
   }
   &-addon-before {
     color: @text-color-secondary;
+    font-size: 12px;
     margin-right: 4px;
   }
   &-addon-after {
@@ -1115,6 +1116,18 @@ form .ant-cascader-picker:only-child, form .ant-select:only-child {
       margin-bottom: 0;
     }
   }
+}
+.progress-bar {
+  .ant-progress-show-info .ant-progress-outer {
+    padding-right: 0;
+    margin-right: 0;
+  }
+  .ant-progress-text {
+    width: 100%;
+    text-align: right;
+    margin-left: 0;
+    display: block;
+}
 }
 .status-indicator {
   text-align: center;
@@ -1177,6 +1190,7 @@ form .ant-cascader-picker:only-child, form .ant-select:only-child {
 
 .editable-cell {
   position: relative;
+  padding: 0 8px;
   .ant-input,
   .ant-select {
     font-size: 14px;

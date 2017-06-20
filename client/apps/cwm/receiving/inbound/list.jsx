@@ -97,7 +97,8 @@ export default class ReceivingInboundList extends React.Component {
   }, {
     title: '入库进度',
     width: 250,
-    render: (o, record) => <Progress percent={record.total_received_qty / record.total_expect_qty * 100} strokeWidth={8} />,
+    className: 'progress-bar',
+    render: (o, record) => <Progress percent={record.total_received_qty / record.total_expect_qty * 100} format={() => `${record.total_received_qty} / ${record.total_expect_qty}`} strokeWidth={8} />,
   }, {
     title: '操作模式',
     dataIndex: 'receiving_mode',
