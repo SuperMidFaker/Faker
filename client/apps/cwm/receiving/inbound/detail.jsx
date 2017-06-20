@@ -32,8 +32,6 @@ const Step = Steps.Step;
     tenantName: state.account.tenantName,
     defaultWhse: state.cwmContext.defaultWhse,
     locations: state.cwmWarehouse.locations,
-    asnNo: state.cwmReceive.inboundDetail.asnNo,
-    inboundNo: state.cwmReceive.inboundDetail.inboundNo,
   }),
   { loadReceiveModal, getInboundDetail, loadLocations, confirm, showExpressReceivingModal, updateInboundMode }
 )

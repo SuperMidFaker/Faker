@@ -48,7 +48,7 @@ export default class ReceivingModal extends Component {
       this.props.loadProductDetails(nextProps.inboundNo, nextProps.seqNo).then(
         (result) => {
           if (!result.error) {
-            if (result.data.length === 0 && this.state.dataSource.length === 0) {
+            if (result.data.length === 0 && this.state.dataSource.length === 0 && nextProps.receivingMode === 'manual' && nextProps.visible) {
               this.handleAdd();
             } else {
               this.setState({
@@ -98,7 +98,6 @@ export default class ReceivingModal extends Component {
           receivedPackQty += Number(dataSource[i].inbound_pack_qty);
         }
       }
-      console.log(expectQty, receivedQty, expectPackQty, receivedPackQty);
       const remainQty = expectQty - receivedQty;
       const remainPackQty = expectPackQty - receivedPackQty;
       let receiveQty = value * skuPackQty;
