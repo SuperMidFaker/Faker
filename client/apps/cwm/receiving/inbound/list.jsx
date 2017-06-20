@@ -101,7 +101,7 @@ export default class ReceivingInboundList extends React.Component {
     render: (o, record) => <Progress percent={record.total_received_qty / record.total_expect_qty * 100} format={() => `${record.total_received_qty} / ${record.total_expect_qty}`} strokeWidth={8} />,
   }, {
     title: '操作模式',
-    dataIndex: 'receiving_mode',
+    dataIndex: 'rec_mode',
     width: 100,
     render: (o) => {
       if (o === 'scan') {

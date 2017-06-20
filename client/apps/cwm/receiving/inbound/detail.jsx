@@ -10,7 +10,7 @@ import PackagePopover from './popover/packagePopover';
 import ReceivingModal from './modal/receivingModal';
 import QuantityInput from '../../common/quantityInput';
 import ExpressReceivingModal from './modal/expressReceivingModal';
-import { loadReceiveModal, getInboundDetail, confirm, showExpressReceivingModal } from 'common/reducers/cwmReceive';
+import { loadReceiveModal, getInboundDetail, confirm, showExpressReceivingModal, updateInboundMode } from 'common/reducers/cwmReceive';
 import { loadLocations } from 'common/reducers/cwmWarehouse';
 import { CWM_INBOUND_STATUS } from 'common/constants';
 import messages from '../message.i18n';
@@ -35,7 +35,7 @@ const Step = Steps.Step;
     asnNo: state.cwmReceive.inboundDetail.asnNo,
     inboundNo: state.cwmReceive.inboundDetail.inboundNo,
   }),
-  { loadReceiveModal, getInboundDetail, loadLocations, confirm, showExpressReceivingModal }
+  { loadReceiveModal, getInboundDetail, loadLocations, confirm, showExpressReceivingModal, updateInboundMode }
 )
 @connectNav({
   depth: 3,
@@ -54,7 +54,6 @@ export default class ReceiveInbound extends Component {
   state = {
     selectedRowKeys: [],
     selectedRows: [],
-    receivingMode: 'scan',
     currentStatus: 0,
     printed: false,
     pushedTask: false,
@@ -84,8 +83,12 @@ export default class ReceiveInbound extends Component {
     });
   }
   handleReceivingModeChange = (ev) => {
-    this.setState({
-      receivingMode: ev.target.value,
+    this.props.updateInboundMode(this.state.inboundHead.inbound_no, ev.target.value).then((result) => {
+      if (!result.error) {
+        const head = { ...this.state.inboundHead };
+        head.rec_mode = ev.target.value;
+        this.setState({ inboundHead: head });
+      }
     });
   }
   handlePrint = () => {
@@ -214,11 +217,8 @@ export default class ReceiveInbound extends Component {
     width: 100,
     fixed: 'right',
     render: (o, record) => {
-      if (this.state.receivingMode === 'scan') {
-        return (<RowUpdater onHit={this.handleReceive} label="扫码收货" row={record} />);
-      } else if (this.state.receivingMode === 'manual') {
-        return (<RowUpdater onHit={() => this.handleReceive(record)} label="手动收货" row={record} />);
-      }
+      const label = this.state.inboundHead.rec_mode === 'scan' ? '扫码收货' : '手动收货';
+      return (<RowUpdater onHit={this.handleReceive} label={label} row={record} />);
     },
   }]
 
@@ -250,12 +250,7 @@ export default class ReceiveInbound extends Component {
         <Header className="top-bar">
           <Breadcrumb>
             <Breadcrumb.Item>
-              <Select
-                size="large"
-                value={defaultWhse.code}
-                style={{ width: 160 }}
-                disabled
-              >
+              <Select size="large" value={defaultWhse.code} style={{ width: 160 }} disabled>
                 <Option value={defaultWhse.code}>{defaultWhse.name}</Option>
               </Select>
             </Breadcrumb.Item>
@@ -279,7 +274,7 @@ export default class ReceiveInbound extends Component {
               </Button>
             </Dropdown>
             }
-            <RadioGroup defaultValue={this.state.receivingMode} onChange={this.handleReceivingModeChange} size="large">
+            <RadioGroup value={inboundHead.rec_mode} onChange={this.handleReceivingModeChange} size="large">
               <Tooltip title="扫码收货" placement="bottom"><RadioButton value="scan"><Icon type="scan" /></RadioButton></Tooltip>
               <Tooltip title="人工收货" placement="bottom"><RadioButton value="manual"><Icon type="solution" /></RadioButton></Tooltip>
             </RadioGroup>
@@ -315,14 +310,14 @@ export default class ReceiveInbound extends Component {
               <div className="toolbar">
                 <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                   <h3>已选中{this.state.selectedRowKeys.length}项</h3>
-                  {this.state.receivingMode === 'manual' &&
+                  {inboundHead.rec_mode === 'manual' &&
                   <Button size="large" onClick={this.handleExpressReceiving}>
                     快捷收货
                   </Button>
                   }
                 </div>
                 <div className="toolbar-right">
-                  {this.state.receivingMode === 'manual' && this.state.currentStatus < CWM_INBOUND_STATUS.COMPLETED.step &&
+                  {inboundHead.rec_mode === 'manual' && this.state.currentStatus < CWM_INBOUND_STATUS.COMPLETED.step &&
                   <Popconfirm title="确定此次入库操作已完成?" onConfirm={this.handleInboundConfirmed} okText="确认" cancelText="取消">
                     <Button type="primary" ghost size="large" icon="check" disabled={this.state.confirm}>
                       入库确认
@@ -334,8 +329,8 @@ export default class ReceiveInbound extends Component {
               <Table columns={this.columns} rowSelection={rowSelection} dataSource={inboundProducts} rowKey="asn_seq_no"
                 scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
               />
-              <ReceivingModal reload={this.handleReload} receivingMode={this.state.receivingMode} />
-              <ExpressReceivingModal reload={this.handleReload} asnNo={this.state.inboundHead.asn_no} inboundNo={this.state.inboundHead.inbound_no} data={this.state.selectedRows} />
+              <ReceivingModal reload={this.handleReload} receivingMode={inboundHead.rec_mode} />
+              <ExpressReceivingModal reload={this.handleReload} asnNo={inboundHead.asn_no} inboundNo={inboundHead.inbound_no} data={this.state.selectedRows} />
             </Card>
           </Form>
         </Content>

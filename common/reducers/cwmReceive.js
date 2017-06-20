@@ -14,6 +14,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/receive/', [
   'CANCEL_ASN', 'CANCEL_ASN_SUCCEED', 'CANCEL_ASN_FAIL',
   'LOAD_INBOUNDS', 'LOAD_INBOUNDS_SUCCEED', 'LOAD_INBOUNDS_FAIL',
   'GET_INBOUND_DETAIL', 'GET_INBOUND_DETAIL_SUCCEED', 'GET_INBOUND_DETAIL_FAIL',
+  'UPDATE_INBMODE', 'UPDATE_INBMODE_SUCCEED', 'UPDATE_INBMODE_FAIL',
   'LOAD_PRODUCT_DETAILS', 'LOAD_PRODUCT_DETAILS_SUCCEED', 'LOAD_PRODUCT_DETAILS_FAIL',
   'UPDATE_PRODUCT_DETAILS', 'UPDATE_PRODUCT_DETAILS_SUCCEED', 'UPDATE_PRODUCT_DETAILS_FAIL',
   'CONFIRM_PRODUCT_DETAILS', 'CONFIRM_PRODUCT_DETAILS_SUCCEED', 'CONFIRM_PRODUCT_DETAILS_FAIL',
@@ -330,6 +331,21 @@ export function loadProductDetails(inboundNo, seqNo) {
       endpoint: 'v1/cwm/receive/productDetails/load',
       method: 'get',
       params: { inboundNo, seqNo },
+    },
+  };
+}
+
+export function updateInboundMode(inboundNo, recMode) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_INBMODE,
+        actionTypes.UPDATE_INBMODE_SUCCEED,
+        actionTypes.UPDATE_INBMODE_FAIL,
+      ],
+      endpoint: 'v1/cwm/receive/inbound/update/recmode',
+      method: 'post',
+      data: { inboundNo, recMode },
     },
   };
 }

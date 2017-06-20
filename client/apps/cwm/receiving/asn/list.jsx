@@ -59,9 +59,6 @@ export default class ReceivingASNList extends React.Component {
     selectedRowKeys: [],
     searchInput: '',
   }
-  componentWillUnmount() {
-    this.props.asnFilterChange('pending');
-  }
   msg = formatMsg(this.props.intl)
   columns = [{
     title: 'ANS编号',
