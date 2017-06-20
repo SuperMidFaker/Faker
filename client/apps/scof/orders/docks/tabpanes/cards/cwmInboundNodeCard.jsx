@@ -25,27 +25,17 @@ export default class CWMNodeCard extends React.Component {
         <Row>
           <Col span="8">
             <InfoItem label="ASN编号" addonBefore={<Icon type="tag-o" />}
-              field={''} placeholder="添加订单号"
+              field={''}
             />
           </Col>
           <Col span="8">
             <InfoItem label="仓库" addonBefore={<Icon type="tag-o" />}
-              field={''} placeholder="添加发票号"
-            />
-          </Col>
-          <Col span="8">
-            <InfoItem label="入库类型" addonBefore={<Icon type="tag-o" />}
-              field={''} placeholder="添加合同号"
+              field={''}
             />
           </Col>
           <Col span="8">
             <InfoItem label="货物属性" addonBefore={<Icon type="tag-o" />}
-              field={''} placeholder="添加合同号"
-            />
-          </Col>
-          <Col span="8">
-            <InfoItem label="保税监管方式" addonBefore={<Icon type="tag-o" />}
-              field={''} placeholder="添加合同号"
+              field={''}
             />
           </Col>
         </Row>

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Layout, Collapse, Checkbox } from 'antd';
+import { Breadcrumb, Icon, Layout, Collapse, Checkbox } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import ContractDetials from './contractDetails';
 import { formatMsg } from './message.i18n';
@@ -74,7 +74,7 @@ export default class ContractContent extends React.Component {
           <div className="top-bar">
             <Breadcrumb>
               <Breadcrumb.Item>
-                {this.msg('contract')}
+                <Icon type="left" /> {this.msg('contract')}
               </Breadcrumb.Item>
               <Breadcrumb.Item>
                 {`${this.props.template.template_name}`}

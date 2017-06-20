@@ -95,8 +95,13 @@ export default class InvoiceTemplate extends Component {
       dataIndex: 'modify_name',
       key: 'modify_name',
     }, {
+      title: '最后更新时间',
+      dataIndex: 'last_updated_date',
+      key: 'last_updated_date',
+    }, {
       title: '操作',
       key: 'opt',
+      width: 100,
       render: (_, record) => (
         <span>
           <a onClick={() => this.handleEdit(record)}>{this.msg('edit')}</a>
@@ -106,42 +111,47 @@ export default class InvoiceTemplate extends Component {
     }];
     return (
       <Layout>
-        <Header className="top-bar">
-          <Breadcrumb>
-            <Breadcrumb.Item>
-              {this.msg('appSettings')}
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              单据模板
-            </Breadcrumb.Item>
-          </Breadcrumb>
-          <div className="top-bar-tools">
-            <Button type="primary" size="large" onClick={this.handleCreateNew} icon="plus">新增</Button>
+        <Sider width={280} className="menu-sider" key="sider">
+          <div className="top-bar">
+            <Breadcrumb>
+              <Breadcrumb.Item>
+                {this.msg('appSettings')}
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                单据模板
+              </Breadcrumb.Item>
+            </Breadcrumb>
           </div>
-        </Header>
-        <Content className="main-content" key="main">
-          <div className="page-body">
-            <Layout className="main-wrapper">
-              <Sider className="nav-sider">
-                <Menu
-                  defaultSelectedKeys={[this.state.current]}
-                  mode="inline"
-                  onClick={this.handleListChange}
-                >
-                  <Menu.Item key={CMS_DOCU_TYPE.invoice}>发票模板</Menu.Item>
-                  <Menu.Item key={CMS_DOCU_TYPE.contract}>合同模板</Menu.Item>
-                  <Menu.Item key={CMS_DOCU_TYPE.packingList}>箱单模板</Menu.Item>
-                </Menu>
-              </Sider>
-              <Content className="nav-content">
-                <div className="panel-body table-panel">
-                  <Table columns={columns} dataSource={this.props.invTemplates} rowKey="id" />
-                </div>
-              </Content>
-            </Layout>
-            <InvTemplateModal />
+          <div className="left-sider-panel">
+            <Menu
+              defaultSelectedKeys={[this.state.current]}
+              mode="inline"
+              onClick={this.handleListChange}
+            >
+              <Menu.Item key={CMS_DOCU_TYPE.invoice}>发票模板</Menu.Item>
+              <Menu.Item key={CMS_DOCU_TYPE.contract}>合同模板</Menu.Item>
+              <Menu.Item key={CMS_DOCU_TYPE.packingList}>箱单模板</Menu.Item>
+            </Menu>
           </div>
-        </Content>
+        </Sider>
+        <Layout>
+          <Header className="top-bar">
+            <Breadcrumb>
+              <Breadcrumb.Item>
+                单据模板
+              </Breadcrumb.Item>
+            </Breadcrumb>
+            <div className="top-bar-tools">
+              <Button type="primary" size="large" onClick={this.handleCreateNew} icon="plus">新增</Button>
+            </div>
+          </Header>
+          <Content className="main-content layout-fixed-width">
+            <div className="page-body">
+              <Table columns={columns} dataSource={this.props.invTemplates} rowKey="id" />
+              <InvTemplateModal />
+            </div>
+          </Content>
+        </Layout>
       </Layout>
     );
   }

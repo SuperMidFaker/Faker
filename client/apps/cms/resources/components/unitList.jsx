@@ -113,7 +113,7 @@ export default class UnitList extends Component {
         </Header>
         <Content className="main-content" key="main">
           <div className="page-body">
-            <Layout className="main-wrapper">
+            <Layout>
               <Sider className="nav-sider">
                 <Menu
                   defaultSelectedKeys={['unit']}

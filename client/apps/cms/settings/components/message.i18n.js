@@ -4,11 +4,15 @@ import { formati18n } from 'client/common/i18n/helpers';
 const messages = defineMessages({
   invoice: {
     id: 'cms.document.component.invoice',
-    defaultMessage: '发票',
+    defaultMessage: '发票模板',
   },
   contract: {
     id: 'cms.document.component.contract',
-    defaultMessage: '合同',
+    defaultMessage: '合同模板',
+  },
+  packingList: {
+    id: 'cms.document.component.packinglist',
+    defaultMessage: '箱单模板',
   },
   industryCategory: {
     id: 'cms.document.component.industry.category',

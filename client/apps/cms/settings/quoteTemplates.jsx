@@ -72,7 +72,7 @@ export default class Settings extends Component {
                   <Menu.Item key="quotemodel"><NavLink to="/clearance/settings/quotetemplates">费用模板</NavLink></Menu.Item>
                 </Menu>
               </Sider>
-              <Content style={{ padding: '0 24px', minHeight: 280 }}>
+              <Content className="nav-content">
                 <FeesTable action="model" editable />
               </Content>
             </Layout>

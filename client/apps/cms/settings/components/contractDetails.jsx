@@ -2,12 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Card, Form, Row, Col, Table } from 'antd';
+import { Card, Form, Layout, Row, Col, Table } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { formatMsg } from './message.i18n';
 import InfoItem from 'client/components/InfoItem';
 import { saveTempChange } from 'common/reducers/cmsInvoice';
 
+const { Content } = Layout;
 
 @injectIntl
 @connect(
@@ -114,7 +115,7 @@ export default class ContractDetials extends React.Component {
       });
     }
     return (
-      <div style={{ width: '100%' }}>
+      <Content className="main-content layout-fixed-width layout-fixed-width-lg">
         <Card style={{ margin: 16 }}>
           <div className="page-header">
             <h3>合同 CONTRACT</h3>
@@ -174,7 +175,7 @@ export default class ContractDetials extends React.Component {
             </div>}
           </div>
         </Card>
-      </div>
+      </Content>
     );
   }
 }

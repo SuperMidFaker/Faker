@@ -383,24 +383,7 @@ export default class FeesTable extends Component {
   handlebatchModify = () => {
     this.setState({ editable: true, batchSaved: 1 });
   }
-  handleTitleButton = () => {
-    const { action } = this.props;
-    const msg = key => formatMsg(this.props.intl, key);
-    if (action === 'edit') {
-      return (
-        <div>
-          <Button type="default" icon="plus-circle-o" style={{ marginRight: 8 }} onClick={this.handleAddFees}>{msg('addCosts')}</Button>
-          {this.state.batchSaved === 0 && <Button icon="edit" onClick={this.handlebatchModify}>{msg('batchModify')}</Button>}
-          {this.state.batchSaved === 1 && <Button type="primary" style={{ marginRight: 8 }} onClick={this.handlebatchSave}>{msg('confirm')}</Button>}
-          {this.state.batchSaved === 1 && <Button type="ghost" onClick={this.handlebatchCancel}>{msg('cancel')}</Button>}
-        </div>
-      );
-    } else if (action === 'model') {
-      return (
-        <Button type="primary" size="default" onClick={this.handleModelSave}>{msg('save')}</Button>
-      );
-    }
-  }
+
   handleBatchEnChange = (key, value) => {
     if (key === 'invoiceEn') {
       this.props.quoteData.fees.forEach((fs) => {
@@ -427,6 +410,26 @@ export default class FeesTable extends Component {
   }
   handleonChange = (record, editorState) => {
     record.formula_factor = Mention.toString(editorState); // eslint-disable-line no-param-reassign
+  }
+  renderToolbar = () => {
+    const { action } = this.props;
+    const msg = key => formatMsg(this.props.intl, key);
+    if (action === 'edit') {
+      return (
+        <div className="toolbar">
+          <Button type="default" icon="plus-circle-o" style={{ marginRight: 8 }} onClick={this.handleAddFees}>{msg('addCosts')}</Button>
+          {this.state.batchSaved === 0 && <Button icon="edit" onClick={this.handlebatchModify}>{msg('batchModify')}</Button>}
+          {this.state.batchSaved === 1 && <Button type="primary" style={{ marginRight: 8 }} onClick={this.handlebatchSave}>{msg('confirm')}</Button>}
+          {this.state.batchSaved === 1 && <Button type="ghost" onClick={this.handlebatchCancel}>{msg('cancel')}</Button>}
+        </div>
+      );
+    } else if (action === 'model') {
+      return (
+        <div className="toolbar">
+          <Button type="primary" onClick={this.handleModelSave}>{msg('save')}</Button>
+        </div>
+      );
+    }
   }
   render() {
     const { quoteData, action } = this.props;
@@ -575,11 +578,13 @@ export default class FeesTable extends Component {
       });
     }
     return (
-      <Table pagination={false} rowKey={getRowKey} columns={columns} dataSource={dataSource}
-        loading={quoteData.loading} onChange={this.handleTableChange} scroll={{ y: 450 }}
-        title={this.handleTitleButton}
-        footer={() => (action === 'model') && <Button type="primary" onClick={this.handleAddFees}>{msg('addCosts')}</Button>}
-      />
+      <div>
+        {this.renderToolbar()}
+        <Table pagination={false} rowKey={getRowKey} columns={columns} dataSource={dataSource}
+          loading={quoteData.loading} onChange={this.handleTableChange} scroll={{ y: 450 }}
+          footer={() => (action === 'model') && <Button type="primary" onClick={this.handleAddFees}>{msg('addCosts')}</Button>}
+        />
+      </div>
     );
   }
 }

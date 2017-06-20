@@ -228,7 +228,7 @@ export default class WareHouse extends Component {
       render: o => (<span className="menu-sider-item">{o}</span>),
     }];
     const zonePopoverContent = (
-      <Form>
+      <Form layout="vertical">
         <FormItem>
           {
             getFieldDecorator('zoneCode', {
@@ -244,7 +244,8 @@ export default class WareHouse extends Component {
           }
         </FormItem>
         <FormItem>
-          <Button size="large" type="primary" style={{ width: '100%', marginTop: 10 }} onClick={this.createZone}>创建</Button>
+          <Button size="large" type="primary" style={{ width: '100%' }} onClick={this.createZone}>创建</Button>
+          <Button size="large" type="primary" ghost style={{ width: '100%', marginTop: 24 }} onClick={this.importZones}>导入</Button>
         </FormItem>
       </Form>);
     return (
@@ -256,6 +257,9 @@ export default class WareHouse extends Component {
         >
           <div className="top-bar">
             <Breadcrumb>
+              <Breadcrumb.Item>
+                设置
+              </Breadcrumb.Item>
               <Breadcrumb.Item>
                 仓库
               </Breadcrumb.Item>
@@ -292,7 +296,7 @@ export default class WareHouse extends Component {
                   <OwnersPane whseCode={warehouse.whse_code} whseTenantId={warehouse.wh_ent_tenant_id} />
                 </TabPane>
                 <TabPane tab="库区/库位" key="location">
-                  <Layout className="main-wrapper">
+                  <Layout>
                     <Sider className="nav-sider">
                       <Menu defaultOpenKeys={['zoneMenu']} mode="inline" selectedKeys={selectKeys} onClick={this.handleZoneClick}>
                         <SubMenu key="zoneMenu" title={<span><MdIcon mode="fontello" type="sitemap" />库区</span>} >
@@ -313,9 +317,12 @@ export default class WareHouse extends Component {
                       </div>
                     </Sider>
                     <Content className="nav-content">
-                      <div className="nav-content-head">
+                      <div className="toolbar">
                         <Button type="primary" ghost icon="plus-circle" onClick={this.showLocationModal}>
                           创建库位
+                        </Button>
+                        <Button type="primary" ghost icon="upload" onClick={this.importLocations}>
+                          批量导入库位
                         </Button>
                       </div>
                       <div className="panel-body table-panel">
