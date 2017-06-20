@@ -290,16 +290,16 @@ export default class ReceiveInbound extends Component {
                 <Col sm={24} lg={6}>
                   <InfoItem addonBefore="ASN编号" field={inboundHead.asn_no} />
                 </Col>
-                <Col sm={24} lg={3}>
+                <Col sm={12} lg={3}>
                   <InfoItem addonBefore="总预期数量" field={inboundHead.total_expect_qty} />
                 </Col>
-                <Col sm={24} lg={3}>
+                <Col sm={12} lg={3}>
                   <InfoItem addonBefore="总实收数量" field={inboundHead.total_received_qty} />
                 </Col>
-                <Col sm={24} lg={3}>
+                <Col sm={12} lg={3}>
                   <InfoItem addonBefore="装箱数量" field={inboundHead.convey_box_qty} editable />
                 </Col>
-                <Col sm={24} lg={3}>
+                <Col sm={12} lg={3}>
                   <InfoItem addonBefore="码盘数量" field={inboundHead.convey_pallet_qty} editable />
                 </Col>
               </Row>

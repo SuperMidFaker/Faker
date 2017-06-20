@@ -278,6 +278,9 @@ export default class ReceivingASNList extends React.Component {
     if (filters.status === 'pending') {
       columns = [...columns];
       columns.splice(1, 1);
+    } else if (filters.status === 'completed') {
+      columns = [...columns];
+      columns.splice(10, 10);
     }
     return (
       <QueueAnim type={['bottom', 'up']}>
