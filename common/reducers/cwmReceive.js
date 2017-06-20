@@ -40,7 +40,7 @@ const initialState = {
   },
   temporaryDetails: [],
   productNos: [],
-  asn: {
+  asnlist: {
     totalCount: 0,
     pageSize: 20,
     current: 1,
@@ -96,8 +96,10 @@ export default function reducer(state = initialState, action) {
     }
     case actionTypes.LOAD_PRODUCTS_SUCCEED:
       return { ...state, productNos: action.result.data };
+    case actionTypes.LOAD_ASN_LISTS:
+      return { ...state, asnFilters: JSON.parse(action.params.filters) };
     case actionTypes.LOAD_ASN_LISTS_SUCCEED:
-      return { ...state, asn: action.result.data };
+      return { ...state, asnlist: action.result.data };
     case actionTypes.LOAD_INBOUNDS_SUCCEED:
       return { ...state, inbound: action.result.data };
     case actionTypes.ASN_STATUS_CHANGE:
@@ -292,7 +294,7 @@ export function loadInbounds({ whseCode, tenantId, pageSize, current, filters })
   };
 }
 
-export function getInboundDetail(asnNo) {
+export function getInboundDetail(inboundNo) {
   return {
     [CLIENT_API]: {
       types: [
@@ -302,7 +304,7 @@ export function getInboundDetail(asnNo) {
       ],
       endpoint: 'v1/cwm/receive/inboundDetail',
       method: 'get',
-      params: { asnNo },
+      params: { inboundNo },
     },
   };
 }
