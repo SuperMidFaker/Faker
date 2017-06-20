@@ -42,14 +42,24 @@ export default class ReceivingModal extends Component {
   }
   state = {
     dataSource: [],
+    receivedQty: 0,
+    receivedPackQty: 0,
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.inboundNo && nextProps.seqNo) {
+    if (nextProps.visible) {
       this.props.loadProductDetails(nextProps.inboundNo, nextProps.seqNo).then(
         (result) => {
           if (!result.error) {
-            if (result.data.length === 0 && this.state.dataSource.length === 0 && nextProps.receivingMode === 'manual' && nextProps.visible) {
-              this.handleAdd();
+            if (result.data.length === 0 && nextProps.receivingMode === 'manual') {
+              const dataSource = [{
+                id: `${this.props.productNo}1`,
+                trace_id: '',
+                inbound_qty: '',
+                inbound_pack_qty: '',
+                location: '',
+                damage_level: '',
+              }];
+              this.setState({ dataSource });
             } else {
               this.setState({
                 dataSource: result.data.map(data => ({
@@ -63,6 +73,10 @@ export default class ReceivingModal extends Component {
                 })),
               });
             }
+            this.setState({
+              receivedQty: nextProps.receivedQty,
+              receivedPackQty: nextProps.receivedPackQty,
+            });
           }
         }
       );
@@ -84,29 +98,26 @@ export default class ReceivingModal extends Component {
   }
   handleProductReceive = (index, value) => {
     const { expectQty, expectPackQty, skuPackQty } = this.props;
-    const { dataSource } = this.state;
-    if (dataSource.length === 1) {
-      let receiveQty = value * skuPackQty;
-      if (receiveQty > expectQty) receiveQty = expectQty;
-      dataSource.splice(index, 1, { ...dataSource[index], inbound_pack_qty: value, inbound_qty: receiveQty });
+    const { receivedQty = 0, receivedPackQty = 0 } = this.state;
+    const dataSource = [...this.state.dataSource];
+    const remainQty = expectQty - receivedQty;
+    const remainPackQty = expectPackQty - receivedPackQty;
+    const changeQty = value * skuPackQty - dataSource[index].inbound_qty;
+    const changePackQty = value - dataSource[index].inbound_pack_qty;
+    if (changeQty > remainQty) {
+      dataSource[index].inbound_pack_qty = remainPackQty + Number(dataSource[index].inbound_pack_qty);
+      dataSource[index].inbound_qty = remainQty + dataSource[index].inbound_qty;
+      this.setState({
+        receivedQty: expectQty,
+        receivedPackQty: expectPackQty,
+      });
     } else {
-      let receivedQty = 0;
-      let receivedPackQty = 0;
-      for (let i = 0; i < dataSource.length; i++) {
-        if (i !== index) {
-          receivedQty += Number(dataSource[i].inbound_qty);
-          receivedPackQty += Number(dataSource[i].inbound_pack_qty);
-        }
-      }
-      const remainQty = expectQty - receivedQty;
-      const remainPackQty = expectPackQty - receivedPackQty;
-      let receiveQty = value * skuPackQty;
-      if (receiveQty > remainQty) {
-        receiveQty = remainQty;
-        dataSource.splice(index, 1, { ...dataSource[index], inbound_pack_qty: remainPackQty, inbound_qty: receiveQty });
-      } else {
-        dataSource.splice(index, 1, { ...dataSource[index], inbound_pack_qty: value, inbound_qty: receiveQty });
-      }
+      dataSource[index].inbound_pack_qty = value;
+      dataSource[index].inbound_qty = value * skuPackQty;
+      this.setState({
+        receivedQty: receivedQty + changeQty,
+        receivedPackQty: receivedPackQty + changePackQty,
+      });
     }
     this.setState({ dataSource });
   }
@@ -116,7 +127,7 @@ export default class ReceivingModal extends Component {
     this.setState({ dataSource });
   }
   handleAdd = () => {
-    const { dataSource } = this.state;
+    const dataSource = [...this.state.dataSource];
     const newDetail = {
       id: `${this.props.productNo}${dataSource.length + 1}`,
       trace_id: '',
@@ -134,7 +145,7 @@ export default class ReceivingModal extends Component {
     this.setState({ dataSource });
   }
   handleSubmit = () => {
-    const { dataSource } = this.state;
+    const dataSource = [...this.state.dataSource];
     const { loginId, inboundNo, seqNo, asnNo } = this.props;
     this.props.updateProductDetails(dataSource.map(data => ({
       trace_id: data.trace_id,
@@ -224,7 +235,8 @@ export default class ReceivingModal extends Component {
     render: (o, record, index) => (<RowUpdater onHit={() => this.handleDeleteDetail(index)} label={<Icon type="delete" />} row={record} />),
   }]
   render() {
-    const { receivingMode, expectQty, expectPackQty, receivedQty, receivedPackQty, productNo, name } = this.props;
+    const { receivingMode, expectQty, expectPackQty, productNo, name } = this.props;
+    const { receivedQty, receivedPackQty } = this.state;
     const title = this.props.receivingMode === 'scan' ? '扫码收货' : '手动收货';
     return (
       <Modal title={title} width={960} maskClosable={false} onCancel={this.handleCancel} visible={this.props.visible} onOk={this.handleSubmit}>
