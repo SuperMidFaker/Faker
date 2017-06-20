@@ -88,11 +88,13 @@ export default class ReceivingASNList extends React.Component {
     dataIndex: 'expect_receive_date',
     width: 150,
     render: exprecdate => exprecdate && moment(exprecdate).format('YYYY.MM.DD'),
+    /*
   }, {
     title: '实际收货时间',
     dataIndex: 'received_date',
     width: 150,
     render: recdate => recdate && moment(recdate).format('MM.DD HH:MM'),
+    */
   }, {
     title: '创建时间',
     dataIndex: 'created_date',

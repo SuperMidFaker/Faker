@@ -109,7 +109,7 @@ export default class ReceiveInbound extends Component {
   }
   handleReceive = (record) => {
     this.props.loadReceiveModal(record.inbound_no, record.asn_seq_no, record.expect_qty, record.expect_pack_qty,
-      record.received_qty, record.received_pack_qty, record.sku_pack_qty, record.asn_no, record.product_no, record.name);
+      record.received_qty, record.received_pack_qty, record.sku_pack_qty, this.state.inboundHead.asn_no, record.product_no, record.name);
   }
   handleInboundConfirmed = () => {
     const { loginId, tenantId } = this.props;
@@ -187,12 +187,12 @@ export default class ReceiveInbound extends Component {
       const Options = this.props.locations.map(location => (<Option value={location.location}>{location.location}</Option>));
       if (record.location.length <= 1) {
         return (
-          <Select value={o[0]} showSearch style={{ width: 160 }} disabled>
+          <Select value={o[0]} style={{ width: 160 }} disabled>
             {Options}
           </Select>);
       } else {
         return (
-          <Select className="readonly" mode="tags" defaultValue={o} style={{ width: 160 }} disabled>
+          <Select mode="tags" value={o} style={{ width: 160 }} disabled>
             {Options}
           </Select>);
       }
@@ -203,7 +203,7 @@ export default class ReceiveInbound extends Component {
     fixed: 'right',
     width: 120,
     render: damage => (
-      <Select defaultValue={damage} style={{ width: 100 }} disabled>
+      <Select value={damage} style={{ width: 100 }} disabled>
         <Option value={0}>完好</Option>
         <Option value={1}>轻微擦痕</Option>
         <Option value={2}>中度</Option>

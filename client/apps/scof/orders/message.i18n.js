@@ -625,6 +625,14 @@ const messages = defineMessages({
     id: 'scof.orders.progress.action.shipmt.pod',
     defaultMessage: '回单',
   },
+  asnInbound: {
+    id: 'scof.orders.progress.action.asn.inbound',
+    defaultMessage: '收货',
+  },
+  asnFinish: {
+    id: 'scof.orders.progress.action.asn.finished',
+    defaultMessage: '入库',
+  },
   tabOrder: {
     id: 'scof.orders.dock.tab.order',
     defaultMessage: '订单',
