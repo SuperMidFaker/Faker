@@ -24,17 +24,27 @@ export default class CWMNodeCard extends React.Component {
       >
         <Row>
           <Col span="8">
-            <InfoItem label="订单号" addonBefore={<Icon type="tag-o" />}
+            <InfoItem label="ASN编号" addonBefore={<Icon type="tag-o" />}
               field={''} placeholder="添加订单号"
             />
           </Col>
           <Col span="8">
-            <InfoItem label="发票号" addonBefore={<Icon type="tag-o" />}
+            <InfoItem label="仓库" addonBefore={<Icon type="tag-o" />}
               field={''} placeholder="添加发票号"
             />
           </Col>
           <Col span="8">
-            <InfoItem label="合同号" addonBefore={<Icon type="tag-o" />}
+            <InfoItem label="入库类型" addonBefore={<Icon type="tag-o" />}
+              field={''} placeholder="添加合同号"
+            />
+          </Col>
+          <Col span="8">
+            <InfoItem label="货物属性" addonBefore={<Icon type="tag-o" />}
+              field={''} placeholder="添加合同号"
+            />
+          </Col>
+          <Col span="8">
+            <InfoItem label="保税监管方式" addonBefore={<Icon type="tag-o" />}
               field={''} placeholder="添加合同号"
             />
           </Col>
@@ -42,9 +52,10 @@ export default class CWMNodeCard extends React.Component {
         {children}
         <div className="card-footer">
           <Steps current={-1} progressDot>
-            <Step description="接收" />
-            <Step description="执行" />
-            <Step description="完成" />
+            <Step description="通知接收" />
+            <Step description="入库操作" />
+            <Step description="部分收货" />
+            <Step description="收货完成" />
           </Steps>
         </div>
       </Card>

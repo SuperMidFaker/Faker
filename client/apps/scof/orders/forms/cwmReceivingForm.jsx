@@ -99,7 +99,7 @@ export default class CwmReceivingForm extends Component {
         <Row gutter={20}>
           {node.bonded &&
             <Col sm={24} lg={8}>
-              <FormItem label="保税入库类型">
+              <FormItem label="保税监管方式">
                 <RadioGroup value={node.bonded_reg_type}
                   onChange={ev => this.handleCommonFieldChange('bonded_reg_type', ev.target.value)}
                 >

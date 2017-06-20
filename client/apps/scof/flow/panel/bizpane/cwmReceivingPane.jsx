@@ -75,7 +75,7 @@ export default class CWMReceivingPane extends Component {
             {
               getFieldValue('bonded') &&
               <Col sm={24} lg={8} >
-                <FormItem label="保税入库类型">
+                <FormItem label="保税监管方式">
                   {getFieldDecorator('bonded_reg_type', {
                     initialValue: model.bonded_reg_type,
                   })(

@@ -128,7 +128,7 @@ export default class HeadForm extends Component {
           </Col>
           {
             bonded && <Col sm={24} lg={8} >
-              <FormItem label="保税入库类型">
+              <FormItem label="保税监管方式">
                 {getFieldDecorator('reg_type', {
                   rules: [{ required: true, message: 'Please select reg_type!' }],
                   initialValue: asnHead && asnHead.bonded_intype,

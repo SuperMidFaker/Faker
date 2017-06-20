@@ -103,7 +103,7 @@ export default class HeadForm extends Component {
             </FormItem>
           </Col>
           <Col sm={24} lg={8}>
-            <FormItem label="保税出库类型">
+            <FormItem label="保税监管方式">
               {getFieldDecorator('reg_type', {
               })(
                 <RadioGroup>

@@ -9,7 +9,8 @@ import { loadOrderNodes } from 'common/reducers/crmOrders';
 import { MdIcon } from 'client/components/FontIcon';
 import CMSNodeCard from './cards/cmsNodeCard';
 import TMSNodeCard from './cards/tmsNodeCard';
-import CWMNodeCard from './cards/cwmNodeCard';
+import CWMInboundNodeCard from './cards/cwmInboundNodeCard';
+import CWMOutboundNodeCard from './cards/cwmOutboundNodeCard';
 import messages from '../../message.i18n';
 const formatMsg = format(messages);
 
@@ -64,10 +65,16 @@ export default class FlowPane extends React.Component {
                       />
                     </Timeline.Item>
                   );
+                } else if (item.kind === 'cwmrec') {
+                  return (
+                    <Timeline.Item dot={<MdIcon type="layers" />} key={item.name}>
+                      <CWMInboundNodeCard uuid={item.uuid} title={item.name} in_degree={item.in_degree} />
+                    </Timeline.Item>
+                  );
                 } else {
                   return (
                     <Timeline.Item dot={<MdIcon type="layers" />} key={item.name}>
-                      <CWMNodeCard uuid={item.uuid} title={item.name} in_degree={item.in_degree} />
+                      <CWMOutboundNodeCard uuid={item.uuid} title={item.name} in_degree={item.in_degree} />
                     </Timeline.Item>
                   );
                 }
