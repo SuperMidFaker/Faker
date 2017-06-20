@@ -155,7 +155,7 @@ export default class ReceivingInboundList extends React.Component {
     });
   }
   handleReceive = (row) => {
-    const link = `/cwm/receiving/inbound/${row.asn_no}`;
+    const link = `/cwm/receiving/inbound/${row.inbound_no}`;
     this.context.router.push(link);
   }
   handleWhseChange = (value) => {
