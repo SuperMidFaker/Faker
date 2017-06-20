@@ -28,6 +28,7 @@ const Option = Select.Option;
     skuPackQty: state.cwmReceive.receiveModal.skuPackQty,
     asnNo: state.cwmReceive.receiveModal.asnNo,
     productNo: state.cwmReceive.receiveModal.productNo,
+    name: state.cwmReceive.receiveModal.name,
     locations: state.cwmWarehouse.locations,
     defaultWhse: state.cwmContext.defaultWhse,
   }),
@@ -47,18 +48,21 @@ export default class ReceivingModal extends Component {
       this.props.loadProductDetails(nextProps.inboundNo, nextProps.seqNo).then(
         (result) => {
           if (!result.error) {
-            this.setState({
-              dataSource: result.data.map(data => ({
-                id: data.trace_id,
-                trace_id: data.trace_id,
-                location: data.location,
-                damage_level: data.damage_level,
-                product_no: data.product_no,
-                inbound_qty: data.inbound_qty,
-                inbound_pack_qty: data.inbound_pack_qty,
-                convey_no: data.convey_no,
-              })),
-            });
+            if (result.data.length === 0 && this.state.dataSource.length === 0) {
+              this.handleAdd();
+            } else {
+              this.setState({
+                dataSource: result.data.map(data => ({
+                  id: data.trace_id,
+                  trace_id: data.trace_id,
+                  location: data.location,
+                  damage_level: data.damage_level,
+                  inbound_qty: data.inbound_qty,
+                  inbound_pack_qty: data.inbound_pack_qty,
+                  convey_no: data.convey_no,
+                })),
+              });
+            }
           }
         }
       );
@@ -90,10 +94,11 @@ export default class ReceivingModal extends Component {
       let receivedPackQty = 0;
       for (let i = 0; i < dataSource.length; i++) {
         if (i !== index) {
-          receivedQty += dataSource[i].inbound_qty;
-          receivedPackQty += dataSource[i].inbound_pack_qty;
+          receivedQty += Number(dataSource[i].inbound_qty);
+          receivedPackQty += Number(dataSource[i].inbound_pack_qty);
         }
       }
+      console.log(expectQty, receivedQty, expectPackQty, receivedPackQty);
       const remainQty = expectQty - receivedQty;
       const remainPackQty = expectPackQty - receivedPackQty;
       let receiveQty = value * skuPackQty;
@@ -115,7 +120,6 @@ export default class ReceivingModal extends Component {
     const { dataSource } = this.state;
     const newDetail = {
       id: `${this.props.productNo}${dataSource.length + 1}`,
-      product_no: this.props.productNo,
       trace_id: '',
       inbound_qty: '',
       inbound_pack_qty: '',
@@ -123,6 +127,11 @@ export default class ReceivingModal extends Component {
       damage_level: '',
     };
     dataSource.push(newDetail);
+    this.setState({ dataSource });
+  }
+  handleDeleteDetail = (index) => {
+    const dataSource = [...this.state.dataSource];
+    dataSource.splice(index, 1);
     this.setState({ dataSource });
   }
   handleSubmit = () => {
@@ -213,19 +222,19 @@ export default class ReceivingModal extends Component {
   }, {
     title: '操作',
     width: 50,
-    render: (o, record) => (<RowUpdater onHit={this.handleDeleteDetail} label={<Icon type="delete" />} row={record} />),
+    render: (o, record, index) => (<RowUpdater onHit={() => this.handleDeleteDetail(index)} label={<Icon type="delete" />} row={record} />),
   }]
   render() {
-    const { receivingMode, expectQty, expectPackQty, receivedQty, receivedPackQty } = this.props;
+    const { receivingMode, expectQty, expectPackQty, receivedQty, receivedPackQty, productNo, name } = this.props;
     const title = this.props.receivingMode === 'scan' ? '扫码收货' : '手动收货';
     return (
       <Modal title={title} width={960} maskClosable={false} onCancel={this.handleCancel} visible={this.props.visible} onOk={this.handleSubmit}>
         <Row>
           <Col sm={12} md={8} lg={6}>
-            <InfoItem addonBefore="商品货号" field="I096120170603223-01" style={{ marginBottom: 0 }} />
+            <InfoItem addonBefore="商品货号" field={productNo} style={{ marginBottom: 0 }} />
           </Col>
           <Col sm={12} md={8} lg={6}>
-            <InfoItem addonBefore="中文品名" field="微纤维止血胶原粉" style={{ marginBottom: 0 }} />
+            <InfoItem addonBefore="中文品名" field={name} style={{ marginBottom: 0 }} />
           </Col>
           <Col sm={12} md={8} lg={6}>
             <InfoItem addonBefore="预期数量" field={<QuantityInput packQty={expectPackQty} pcsQty={expectQty} disabled />} />
