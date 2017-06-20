@@ -63,15 +63,14 @@ export default class ReceivingASNList extends React.Component {
   columns = [{
     title: 'ANS编号',
     dataIndex: 'asn_no',
-    width: 240,
+    width: 220,
     fixed: 'left',
   }, {
     title: '入库流水号',
-    width: 200,
     dataIndex: 'inbound_no',
   }, {
     title: '货主',
-    width: 260,
+    width: 200,
     dataIndex: 'owner_name',
     render: o => <TrimSpan text={o} maxLen={16} />,
   }, {
@@ -80,7 +79,7 @@ export default class ReceivingASNList extends React.Component {
     dataIndex: 'po_no',
   }, {
     title: '供应商',
-    width: 240,
+    width: 200,
     dataIndex: 'seller_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
@@ -103,7 +102,7 @@ export default class ReceivingASNList extends React.Component {
   }, {
     title: '状态',
     dataIndex: 'status',
-    width: 150,
+    width: 120,
     render: (o) => {
       const asnStatusKey = Object.keys(CWM_ASN_STATUS).filter(as => CWM_ASN_STATUS[as].value === o)[0];
       if (asnStatusKey) {
@@ -115,7 +114,7 @@ export default class ReceivingASNList extends React.Component {
   }, {
     title: '货物属性',
     dataIndex: 'bonded',
-    width: 120,
+    width: 100,
     render: (bonded) => {
       if (bonded) {
         return (<Tag color="blue">保税</Tag>);
@@ -126,7 +125,7 @@ export default class ReceivingASNList extends React.Component {
   }, {
     title: '备案状态',
     dataIndex: 'reg_status',
-    width: 120,
+    width: 100,
     render: (o) => {
       if (o === CWM_SHFTZ_APIREG_STATUS.pending) {
         return (<Badge status="default" text="待备案" />);
@@ -338,7 +337,9 @@ export default class ReceivingASNList extends React.Component {
               </div>
             </div>
             <div className="panel-body table-panel">
-              <Table columns={columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="id" scroll={{ x: columns.reduce((acc, cur) => acc + cur.width, 0) }} />
+              <Table columns={columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="id"
+                scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 260), 0) }}
+              />
             </div>
           </div>
         </Content>
