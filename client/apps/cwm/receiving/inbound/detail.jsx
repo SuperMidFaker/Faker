@@ -54,8 +54,6 @@ export default class ReceiveInbound extends Component {
     selectedRows: [],
     currentStatus: 0,
     printed: false,
-    pushedTask: false,
-    inboundConfirmed: false,
     inboundHead: {},
     inboundProducts: [],
     operator: {},
@@ -92,16 +90,6 @@ export default class ReceiveInbound extends Component {
   handlePrint = () => {
     this.setState({
       printed: true,
-    });
-  }
-  handlePushTask = () => {
-    this.setState({
-      pushedTask: true,
-    });
-  }
-  handleWithdrawTask = () => {
-    this.setState({
-      pushedTask: false,
     });
   }
   handleExpressReceiving = () => {

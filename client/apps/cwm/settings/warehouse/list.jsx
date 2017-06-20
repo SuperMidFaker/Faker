@@ -3,7 +3,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import connectNav from 'client/common/decorators/connect-nav';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Layout, Table, Tooltip, Button, Input, Breadcrumb, Tabs, Popover, Menu, Form, Tag, message } from 'antd';
+import { Icon, Layout, Table, Tooltip, Button, Input, Breadcrumb, Tabs, Popover, Menu, Form, Tag, message } from 'antd';
 import RowUpdater from 'client/components/rowUpdater';
 import WarehouseModal from './modal/warehouseModal';
 import LocationModal from './modal/locationModal';
@@ -167,7 +167,7 @@ export default class WareHouse extends Component {
       }
     );
   }
-  editDeleteLocation = (row) => {
+  handleEditLocation = (row) => {
     this.props.showLocationModal(row);
   }
   handleStateChange = (key, data) => {
@@ -210,11 +210,12 @@ export default class WareHouse extends Component {
     key: 'status',
   }, {
     title: '操作',
+    width: 100,
     render: record => (
       <span>
-        <RowUpdater onHit={this.handleDeleteLocation} label="delete" row={record} />
+        <RowUpdater onHit={this.handleEditLocation} label={<Icon type="edit" />} row={record} />
         <span className="ant-divider" />
-        <RowUpdater onHit={this.editDeleteLocation} label="edit" row={record} />
+        <RowUpdater onHit={this.handleDeleteLocation} label={<Icon type="delete" />} row={record} />
       </span>
       ),
   },

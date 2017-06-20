@@ -4,6 +4,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Button, Layout, Table } from 'antd';
 import { showWhseMembers, loadwhseOwners } from 'common/reducers/cwmWarehouse';
+import RowUpdater from 'client/components/rowUpdater';
 import OwnersModal from '../modal/ownersModal';
 import { formatMsg } from '../message.i18n';
 
@@ -37,11 +38,24 @@ export default class OwnersPane extends Component {
   columns = [{
     title: '货主代码',
     dataIndex: 'owner_code',
+    width: 150,
   }, {
     title: '货主名称',
     dataIndex: 'owner_name',
+    width: 250,
+  }, {
+    title: '结算方',
+    dataIndex: 'billing_party',
   }, {
     title: '操作',
+    width: 150,
+    render: record => (
+      <span>
+        <RowUpdater onHit={this.handleDeleteLocation} label="控制属性" row={record} />
+        <span className="ant-divider" />
+        <RowUpdater onHit={this.editDeleteLocation} label="停用" row={record} />
+      </span>
+      ),
   }]
   msg = formatMsg(this.props.intl)
   render() {

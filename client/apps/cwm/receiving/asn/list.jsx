@@ -68,6 +68,7 @@ export default class ReceivingASNList extends React.Component {
   }, {
     title: '入库流水号',
     dataIndex: 'inbound_no',
+    width: 220,
   }, {
     title: '货主',
     width: 200,
@@ -79,7 +80,6 @@ export default class ReceivingASNList extends React.Component {
     dataIndex: 'po_no',
   }, {
     title: '供应商',
-    width: 200,
     dataIndex: 'seller_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
@@ -158,7 +158,7 @@ export default class ReceivingASNList extends React.Component {
         return (<span>
           <RowUpdater onHit={this.handleReceive} label="入库操作" row={record} />
           <span className="ant-divider" />
-          <RowUpdater onHit={this.handleComplete} label="完成收货" row={record} />
+          <RowUpdater onHit={this.handleComplete} label="关闭收货" row={record} />
         </span>);
       }
     },
