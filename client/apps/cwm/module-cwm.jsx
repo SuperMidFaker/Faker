@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { locationShape } from 'react-router';
 import CollapsibleSiderLayout from 'client/components/CollapsibleSiderLayout';
-import { loadWhse } from 'common/reducers/cwmContext';
+import { loadWhse, switchDefaultWhse } from 'common/reducers/cwmContext';
 import messages from './message.i18n';
 import { format } from 'client/common/i18n/helpers';
 
@@ -15,7 +15,7 @@ const formatMsg = format(messages);
   state => ({
     whse: state.cwmContext.defaultWhse,
   }),
-  { loadWhse }
+  { loadWhse, switchDefaultWhse }
 )
 export default class ModuleCWM extends React.Component {
   static propTypes = {
@@ -149,8 +149,24 @@ export default class ModuleCWM extends React.Component {
     });
     this.setState({ linkMenus });
   }
+  componentDidMount() {
+    if (window.localStorage) {
+      const contextWhse = window.localStorage.getItem('whse-code');
+      if (contextWhse === null) {
+        window.localStorage.setItem('whse-code', this.props.whse.code);
+      } else if (contextWhse !== this.props.whse.code) {
+        this.props.switchDefaultWhse(contextWhse);
+      }
+    }
+  }
   componentWillReceiveProps(nextProps) {
     if (nextProps.whse.code !== this.props.whse.code) {
+      if (window.localStorage) {
+        const contextWhse = window.localStorage.getItem('whse-code');
+        if (contextWhse !== nextProps.whse.code) {
+          window.localStorage.setItem('whse-code', nextProps.whse.code);
+        }
+      }
       nextProps.loadWhse(nextProps.whse.code);
     }
   }

@@ -248,9 +248,7 @@ export default class ReceiveInbound extends Component {
         <Header className="top-bar">
           <Breadcrumb>
             <Breadcrumb.Item>
-              <Select size="large" value={defaultWhse.code} style={{ width: 160 }} disabled>
-                <Option value={defaultWhse.code}>{defaultWhse.name}</Option>
-              </Select>
+              {defaultWhse.name}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
               {this.msg('receivingInound')}
