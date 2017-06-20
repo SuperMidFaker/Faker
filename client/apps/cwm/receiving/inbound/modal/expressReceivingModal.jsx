@@ -28,8 +28,6 @@ export default class ExpressReceivingModal extends Component {
     intl: intlShape.isRequired,
     data: PropTypes.array.isRequired,
     reload: PropTypes.func.isRequired,
-    inboundNo: PropTypes.string.isRequired,
-    asnNo: PropTypes.string.isRequired,
   }
   state = {
     location: '',
@@ -83,7 +81,7 @@ export default class ExpressReceivingModal extends Component {
         </FormItem>
         <FormItem {...formItemLayout} label="库位">
           <Select style={{ width: 160 }} onSelect={this.handleLocationChange}>
-            {this.props.locations.map(location => (<Option value={location.location}>{location.location}</Option>))}
+            {this.props.locations.map(loc => (<Option value={loc.location} key={loc.location}>{loc.location}</Option>))}
           </Select>
         </FormItem>
         <FormItem {...formItemLayout} label="破损级别" >

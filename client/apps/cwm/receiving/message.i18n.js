@@ -62,6 +62,14 @@ const messages = defineMessages({
     id: 'cwm.receiving.transactions.manuf.expiry.date',
     defaultMessage: '生产/失效日期',
   },
+  asnPlaceholder: {
+    id: 'cwm.receiving.asn.search.place.holder',
+    defaultMessage: '搜索ASN单号/订单号',
+  },
+  inboundPlaceholder: {
+    id: 'cwm.receiving.asn.inbound.search.place.holder',
+    defaultMessage: '搜索入库流水号',
+  },
 });
 
 export default messages;
