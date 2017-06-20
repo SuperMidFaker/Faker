@@ -13,7 +13,7 @@ import TrimSpan from 'client/components/trimSpan';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
-import { loadInbounds } from 'common/reducers/cwmReceive';
+import { loadInbounds, setInboundNo } from 'common/reducers/cwmReceive';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 
 const formatMsg = format(messages);
@@ -42,7 +42,7 @@ function fetchData({ state, dispatch }) {
     owners: state.cwmContext.whseAttrs.owners,
     loginId: state.account.loginId,
   }),
-  { loadInbounds, switchDefaultWhse }
+  { loadInbounds, switchDefaultWhse, setInboundNo }
 )
 @connectNav({
   depth: 2,
@@ -62,14 +62,14 @@ export default class ReceivingInboundList extends React.Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
-    title: 'ANS编号',
-    dataIndex: 'asn_no',
+    title: '入库流水号',
+    dataIndex: 'inbound_no',
     width: 180,
     fixed: 'left',
   }, {
-    title: '入库流水号',
+    title: 'ANS编号',
     width: 180,
-    dataIndex: 'inbound_no',
+    dataIndex: 'asn_no',
   }, {
     title: <Tooltip title="明细记录数"><Icon type="bars" /></Tooltip>,
     dataIndex: 'detail_count',
@@ -157,6 +157,7 @@ export default class ReceivingInboundList extends React.Component {
   handleReceive = (row) => {
     const link = `/cwm/receiving/inbound/${row.asn_no}`;
     this.context.router.push(link);
+    this.props.setInboundNo(row.asn_no, row.inbound_no);
   }
   handleWhseChange = (value) => {
     this.props.switchDefaultWhse(value);
