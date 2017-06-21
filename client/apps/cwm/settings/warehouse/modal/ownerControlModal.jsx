@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { Modal, Form, Switch, Radio, message } from 'antd';
-import { hideOwnerControlMoal } from 'common/reducers/cwmWarehouse';
+import { Modal, Form, Switch, Radio } from 'antd';
+import { hideOwnerControlModal } from 'common/reducers/cwmWarehouse';
 import { formatMsg } from '../message.i18n';
 
 const FormItem = Form.Item;
@@ -15,83 +15,26 @@ const RadioButton = Radio.Button;
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    visible: state.cwmWarehouse.ownerControlMoal.visible,
+    visible: state.cwmWarehouse.ownerControlModal.visible,
     record: state.cwmWarehouse.record,
   }),
-  { hideOwnerControlMoal }
+  { hideOwnerControlModal }
 )
 @Form.create()
 export default class OwnerControlModal extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     whseCode: PropTypes.string.isRequired,
-    zoneCode: PropTypes.string.isRequired,
   }
   state = {
-    type: 1,
-    status: 1,
-    location: '',
   }
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.record.id && nextProps.record.id !== this.props.record.id) {
-      const { location, type, status } = nextProps.record;
-      this.setState({
-        location,
-        type: Number(type),
-        status: Number(status),
-      });
-    } else {
-      this.setState({
-        location: '',
-        type: 1,
-        status: 1,
-      });
-    }
-  }
+
   msg = formatMsg(this.props.intl)
   handleCancel = () => {
-    this.props.hideOwnerControlMoal();
+    this.props.hideOwnerControlModal();
   }
-  statusChange = (e) => {
-    this.setState({
-      status: e.target.value,
-    });
-  }
-  typeChange = (e) => {
-    this.setState({
-      type: e.target.value,
-    });
-  }
-  locationChange = (e) => {
-    this.setState({
-      location: e.target.value,
-    });
-  }
-  handleSubmit = () => {
-    const { whseCode, zoneCode, record } = this.props;
-    const { type, status, location } = this.state;
-    if (record.id) {
-      this.props.updateLocation(type, status, location, record.id).then(
-        (result) => {
-          if (!result.error) {
-            message.info('保存成功');
-            this.props.hideOwnerControlMoal();
-            this.props.loadLocations(whseCode, zoneCode);
-          }
-        }
-      );
-    } else {
-      this.props.addLocation(whseCode, zoneCode, location, type, status).then(
-        (result) => {
-          if (!result.error) {
-            message.info('创建成功');
-            this.props.hideOwnerControlMoal();
-            this.props.loadLocations(whseCode, zoneCode);
-          }
-        }
-      );
-    }
-  }
+
+
   render() {
     const { defaultReceivingMode, defaultShippingMode } = this.state;
     const formItemLayout = {

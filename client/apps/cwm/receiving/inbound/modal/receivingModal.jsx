@@ -182,12 +182,7 @@ export default class ReceivingModal extends Component {
     dataIndex: 'received_qty',
     render: (o, record) => (<QuantityInput packQty={record.received_pack_qty} pcsQty={record.received_qty} />),
   }, {
-    title: '库位',
-    dataIndex: 'location',
-    width: 100,
-    render: o => (<Select defaultValue={o} showSearch style={{ width: 100 }} disabled />),
-  }, {
-    title: '收货状态',
+    title: '破损级别',
     dataIndex: 'damage_level',
     render: o => (<Select defaultValue={o} style={{ width: 60 }} disabled >
       <Option value="0">完好</Option>
@@ -196,6 +191,11 @@ export default class ReceivingModal extends Component {
       <Option value="3">重度</Option>
       <Option value="4">严重磨损</Option>
     </Select>),
+  }, {
+    title: '收货库位',
+    dataIndex: 'location',
+    width: 100,
+    render: o => (<Select defaultValue={o} showSearch style={{ width: 100 }} disabled />),
   }]
 
   manualColumns = [{
@@ -209,7 +209,18 @@ export default class ReceivingModal extends Component {
     width: 180,
     render: (o, record, index) => (<QuantityInput packQty={record.inbound_pack_qty} pcsQty={o} onChange={e => this.handleProductReceive(index, e.target.value)} />),
   }, {
-    title: '库位',
+    title: '破损级别',
+    dataIndex: 'damage_level',
+    width: 180,
+    render: (o, record, index) => (<Select defaultValue="0" value={o} onChange={value => this.handleDamageLevelChange(index, value)} style={{ width: 160 }} >
+      <Option value={0}>完好</Option>
+      <Option value={1}>轻微擦痕</Option>
+      <Option value={2}>中度</Option>
+      <Option value={3}>重度</Option>
+      <Option value={4}>严重磨损</Option>
+    </Select>),
+  }, {
+    title: '收货库位',
     dataIndex: 'location',
     width: 180,
     render: (o, record, index) => {
@@ -218,17 +229,6 @@ export default class ReceivingModal extends Component {
         {Options}
       </Select>);
     },
-  }, {
-    title: '破损级别',
-    dataIndex: 'damage_level',
-    width: 180,
-    render: (o, record, index) => (<Select value={o} onChange={value => this.handleDamageLevelChange(index, value)} style={{ width: 160 }} >
-      <Option value={0}>完好</Option>
-      <Option value={1}>轻微擦痕</Option>
-      <Option value={2}>中度</Option>
-      <Option value={3}>重度</Option>
-      <Option value={4}>严重磨损</Option>
-    </Select>),
   }, {
     title: '操作',
     width: 50,

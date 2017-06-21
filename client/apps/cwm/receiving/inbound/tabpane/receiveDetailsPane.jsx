@@ -161,7 +161,7 @@ export default class ReceiveDetailsPane extends React.Component {
     fixed: 'right',
     width: 180,
     render: (o, record) => {
-      const Options = this.props.locations.map(location => (<Option value={location.location}>{location.location}</Option>));
+      const Options = this.props.locations.map(location => (<Option key={location.id} value={location.location}>{location.location}</Option>));
       if (record.location.length <= 1) {
         return (
           <Select value={o[0]} style={{ width: 160 }} disabled>

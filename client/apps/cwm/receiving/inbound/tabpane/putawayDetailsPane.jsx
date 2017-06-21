@@ -1,18 +1,23 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Table, Tag, Icon, Button, Input } from 'antd';
+import { Table, Select, Icon, Button, Input } from 'antd';
 import RowUpdater from 'client/components/rowUpdater';
 import QuantityInput from '../../../common/quantityInput';
-import { openPickingModal, openShippingModal } from 'common/reducers/cwmOutbound';
+import { loadLocations } from 'common/reducers/cwmWarehouse';
+
+const Option = Select.Option;
 
 @injectIntl
 @connect(
   state => ({
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
+    username: state.account.username,
+    defaultWhse: state.cwmContext.defaultWhse,
+    locations: state.cwmWarehouse.locations,
   }),
-  { openPickingModal, openShippingModal }
+  { loadLocations }
 )
 export default class PutawayDetailsPane extends React.Component {
   static propTypes = {
@@ -20,6 +25,9 @@ export default class PutawayDetailsPane extends React.Component {
   }
   state = {
     selectedRowKeys: [],
+  }
+  componentWillMount() {
+    this.props.loadLocations(this.props.defaultWhse.code);
   }
 
   columns = [{
@@ -47,10 +55,19 @@ export default class PutawayDetailsPane extends React.Component {
   }, {
     title: '目标库位',
     dataIndex: 'putaway_location',
-    width: 100,
-    render: (o) => {
-      if (o) {
-        return <Tag>{o}</Tag>;
+    width: 180,
+    render: (o, record) => {
+      const Options = this.props.locations.map(location => (<Option key={location.id} value={location.location}>{location.location}</Option>));
+      if (record.location && record.location.length <= 1) {
+        return (
+          <Select value={o[0]} style={{ width: 160 }} disabled>
+            {Options}
+          </Select>);
+      } else {
+        return (
+          <Select mode="tags" value={o} style={{ width: 160 }} disabled>
+            {Options}
+          </Select>);
       }
     },
   }, {

@@ -6,6 +6,7 @@ import { Button, Layout, Table } from 'antd';
 import { showWhseOwnersModal, loadwhseOwners, showOwnerControlModal } from 'common/reducers/cwmWarehouse';
 import RowUpdater from 'client/components/rowUpdater';
 import WhseOwnersModal from '../modal/whseOwnersModal';
+import OwnerControlModal from '../modal/ownerControlModal';
 import { formatMsg } from '../message.i18n';
 
 const { Content } = Layout;
@@ -51,14 +52,14 @@ export default class OwnersPane extends Component {
     width: 150,
     render: record => (
       <span>
-        <RowUpdater onHit={this.showOwnerControlModal} label="控制属性" row={record} />
+        <RowUpdater onHit={this.handleOwnerControl} label="控制属性" row={record} />
         <span className="ant-divider" />
         <RowUpdater onHit={this.editDeleteLocation} label="停用" row={record} />
       </span>
       ),
   }]
   msg = formatMsg(this.props.intl)
-  showOwnerControlModal = () => {
+  handleOwnerControl = () => {
     this.props.showOwnerControlModal();
   }
   render() {
@@ -70,6 +71,7 @@ export default class OwnersPane extends Component {
         </div>
         <Table columns={this.columns} dataSource={whseOwners} />
         <WhseOwnersModal whseCode={whseCode} whseTenantId={whseTenantId} whseOwners={whseOwners} />
+        <OwnerControlModal whseCode={whseCode} />
       </Content>
     );
   }
