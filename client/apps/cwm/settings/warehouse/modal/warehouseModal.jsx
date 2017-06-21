@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Modal, Form, Input, Radio, message } from 'antd';
-import { hideWarehouseModal, addWarehouse, loadwhList } from 'common/reducers/cwmWarehouse';
+import { hideWarehouseModal, addWarehouse } from 'common/reducers/cwmWarehouse';
+import { loadWhseContext } from 'common/reducers/cwmContext';
 import { formatMsg } from '../message.i18n';
 
 const FormItem = Form.Item;
@@ -14,7 +15,7 @@ const FormItem = Form.Item;
     tenantName: state.account.tenantName,
     visible: state.cwmWarehouse.warehouseModal.visible,
   }),
-  { hideWarehouseModal, addWarehouse, loadwhList }
+  { hideWarehouseModal, addWarehouse, loadWhseContext }
 )
 @Form.create()
 export default class WareHouseModal extends Component {
@@ -52,7 +53,7 @@ export default class WareHouseModal extends Component {
             if (!result.error) {
               message.info('添加仓库成功');
               this.props.hideWarehouseModal();
-              this.props.loadwhList(tenantId);
+              this.props.loadWhseContext(tenantId);
             }
           }
         );

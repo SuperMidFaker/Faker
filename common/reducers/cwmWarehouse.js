@@ -3,7 +3,6 @@ import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/cwm/warehouse/', [
   'SHOW_WAREHOUSE_MODAL', 'HIDE_WAREHOUSE_MODAL',
-  'LOAD_WAREHOUSE', 'LOAD_WAREHOUSE_SUCCEED', 'LOAD_WAREHOUSE_FAIL',
   'ADD_WAREHOUSE', 'ADD_WAREHOUSE_SUCCEED', 'ADD_WAREHOUSE_FAIL',
   'ADD_ZONE', 'ADD_ZONE_SUCCEED', 'ADD_ZONE_FAIL',
   'LOAD_ZONE', 'LOAD_ZONE_SUCCEED', 'LOAD_ZONE_FAIL',
@@ -24,6 +23,7 @@ const initialState = {
   warehouseModal: {
     visible: false,
   },
+  zoneList: [],
   locationModal: {
     visible: false,
   },
@@ -46,8 +46,6 @@ export default function reducer(state = initialState, action) {
       return { ...state, warehouseModal: { ...state.warehouseModal, visible: true } };
     case actionTypes.HIDE_WAREHOUSE_MODAL:
       return { ...state, warehouseModal: { ...state.warehouseModal, visible: false } };
-    case actionTypes.LOAD_WAREHOUSE_SUCCEED:
-      return { ...state, warehouseList: action.result.data };
     case actionTypes.LOAD_ZONE_SUCCEED:
       return { ...state, zoneList: action.result.data };
     case actionTypes.SHOW_LOCATION_MODAL:
@@ -80,21 +78,6 @@ export function showWarehouseModal() {
 export function hideWarehouseModal() {
   return {
     type: actionTypes.HIDE_WAREHOUSE_MODAL,
-  };
-}
-
-export function loadwhList(tenantId) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.LOAD_WAREHOUSE,
-        actionTypes.LOAD_WAREHOUSE_SUCCEED,
-        actionTypes.LOAD_WAREHOUSE_FAIL,
-      ],
-      endpoint: 'v1/cwm/warehouses/load',
-      method: 'get',
-      params: { tenantId },
-    },
   };
 }
 
@@ -156,7 +139,7 @@ export function hideLocationModal() {
   };
 }
 
-export function addLocation(whseCode, zoneCode, location, type, status) {
+export function addLocation(whseCode, zoneCode, location, type, status, tenantId, loginId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -166,7 +149,7 @@ export function addLocation(whseCode, zoneCode, location, type, status) {
       ],
       endpoint: 'v1/cwm/warehouse/location/add',
       method: 'get',
-      params: { whseCode, zoneCode, location, type, status },
+      params: { whseCode, zoneCode, location, type, status, tenantId, loginId },
     },
   };
 }
@@ -201,7 +184,7 @@ export function deleteLocation(id) {
   };
 }
 
-export function updateLocation(type, status, location, id) {
+export function updateLocation(type, status, location, id, loginId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -211,7 +194,7 @@ export function updateLocation(type, status, location, id) {
       ],
       endpoint: 'v1/cwm/warehouse/location/update',
       method: 'get',
-      params: { type, status, location, id },
+      params: { type, status, location, id, loginId },
     },
   };
 }
