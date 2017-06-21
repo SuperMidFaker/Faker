@@ -118,13 +118,12 @@ export default class ReceiveInbound extends Component {
     this.handleReload();
   }
   checkConfirm = (inboundProducts) => {
-    if (inboundProducts.length === 0) this.setState({ confirm: true });
     for (let i = 0; i < inboundProducts.length; i++) {
-      if ((inboundProducts[i].received_pack_qty && inboundProducts[i].location.length !== 0) || (inboundProducts[i].received_pack_qty !== null && !inboundProducts[i].received_pack_qty)) {
+      if ((inboundProducts[i].location.length !== 0 && inboundProducts[i].received_pack_qty !== 0)) {
         this.setState({
           confirm: false,
         });
-      } else {
+      } else if ((inboundProducts[i].location.length === 0 && inboundProducts[i].received_pack_qty !== 0)) {
         this.setState({
           confirm: true,
         });
