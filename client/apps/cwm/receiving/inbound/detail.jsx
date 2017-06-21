@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Breadcrumb, Icon, Dropdown, Form, Radio, Layout, Menu, Popconfirm, Steps, Select, Button, Card, Col, Row, Tag, Table, Tooltip } from 'antd';
+import { Breadcrumb, Icon, Dropdown, Form, Radio, Layout, Menu, Popconfirm, Steps, Select, Button, Card, Col, Row, Tabs, Tag, Table, Tooltip } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import InfoItem from 'client/components/InfoItem';
@@ -13,6 +13,7 @@ import ExpressReceivingModal from './modal/expressReceivingModal';
 import { openReceiveModal, getInboundDetail, confirm, showExpressReceivingModal, updateInboundMode } from 'common/reducers/cwmReceive';
 import { loadLocations } from 'common/reducers/cwmWarehouse';
 import { CWM_INBOUND_STATUS } from 'common/constants';
+import PutawayDetailsPane from './tabpane/putawayDetailsPane';
 import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
 
@@ -22,6 +23,7 @@ const Option = Select.Option;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const Step = Steps.Step;
+const TabPane = Tabs.TabPane;
 
 @injectIntl
 @connect(
@@ -178,7 +180,7 @@ export default class ReceiveInbound extends Component {
       alert={record.expect_pack_qty !== record.receive_pack_qty} disabled
     />),
   }, {
-    title: '库位号',
+    title: '收货库位',
     dataIndex: 'location',
     fixed: 'right',
     width: 180,
@@ -312,30 +314,37 @@ export default class ReceiveInbound extends Component {
               </div>
             </Card>
             <Card bodyStyle={{ padding: 0 }}>
-              <div className="toolbar">
-                <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-                  <h3>已选中{this.state.selectedRowKeys.length}项</h3>
-                  {inboundHead.rec_mode === 'manual' &&
-                  <Button size="large" onClick={this.handleExpressReceiving}>
-                    快捷收货
-                  </Button>
-                  }
-                </div>
-                <div className="toolbar-right">
-                  {inboundHead.rec_mode === 'manual' && this.state.currentStatus < CWM_INBOUND_STATUS.COMPLETED.step &&
-                  <Popconfirm title="确定此次入库操作已完成?" onConfirm={this.handleInboundConfirmed} okText="确认" cancelText="取消">
-                    <Button type="primary" ghost size="large" icon="check" disabled={this.state.confirm}>
-                      入库确认
-                    </Button>
-                  </Popconfirm>
-                  }
-                </div>
-              </div>
-              <Table columns={this.columns} rowSelection={rowSelection} dataSource={inboundProducts} rowKey="asn_seq_no"
-                scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
-              />
-              <ReceivingModal reload={this.handleReload} receivingMode={inboundHead.rec_mode} />
-              <ExpressReceivingModal reload={this.handleReload} asnNo={inboundHead.asn_no} inboundNo={inboundHead.inbound_no} data={this.state.selectedRows} />
+              <Tabs defaultActiveKey="receiveDetails" onChange={this.handleTabChange}>
+                <TabPane tab="收货明细" key="receiveDetails">
+                  <div className="toolbar">
+                    <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
+                      <h3>已选中{this.state.selectedRowKeys.length}项</h3>
+                      {inboundHead.rec_mode === 'manual' &&
+                      <Button size="large" onClick={this.handleExpressReceiving}>
+                        快捷收货
+                      </Button>
+                      }
+                    </div>
+                    <div className="toolbar-right">
+                      {inboundHead.rec_mode === 'manual' && this.state.currentStatus < CWM_INBOUND_STATUS.COMPLETED.step &&
+                      <Popconfirm title="确定此次入库操作已完成?" onConfirm={this.handleInboundConfirmed} okText="确认" cancelText="取消">
+                        <Button type="primary" ghost size="large" icon="check" disabled={this.state.confirm}>
+                          入库确认
+                        </Button>
+                      </Popconfirm>
+                      }
+                    </div>
+                  </div>
+                  <Table columns={this.columns} rowSelection={rowSelection} dataSource={inboundProducts} rowKey="asn_seq_no"
+                    scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
+                  />
+                  <ReceivingModal reload={this.handleReload} receivingMode={inboundHead.rec_mode} />
+                  <ExpressReceivingModal reload={this.handleReload} asnNo={inboundHead.asn_no} inboundNo={inboundHead.inbound_no} data={this.state.selectedRows} />
+                </TabPane>
+                <TabPane tab="上架明细" key="putawayDetails">
+                  <PutawayDetailsPane />
+                </TabPane>
+              </Tabs>
             </Card>
           </Form>
         </Content>

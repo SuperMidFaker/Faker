@@ -14,25 +14,29 @@ const actionTypes = createActionTypes('@@welogix/cwm/warehouse/', [
   'UPDATE_LOCATIONS', 'UPDATE_LOCATIONS_SUCCEED', 'UPDATE_LOCATIONS_FAIL',
   'DELETE_ZONE', 'DELETE_ZONE_SUCCEED', 'DELETE_ZONE_FAIL',
   'UPDATE_ZONE', 'UPDATE_ZONE_SUCCEED', 'UPDATE_ZONE_FAIL',
-  'HIDE_WHSEMEMBERS_MODAL', 'SHOW_WHSEMEMBERS_MODAL',
+  'HIDE_WHSE_OWNERS_MODAL', 'SHOW_WHSE_OWNERS_MODAL',
   'LOAD_WHSE_OWNERS', 'LOAD_WHSE_OWNERS_SUCCEED', 'LOAD_WHSE_OWNERS_FAIL',
   'ADD_WHSE_OWNERS', 'ADD_WHSE_OWNERS_SUCCEED', 'ADD_WHSE_OWNERS_FAIL',
+  'SHOW_OWNER_CONTROL_MODAL', 'HIDE_OWNER_CONTROL_MODAL',
 ]);
 
 const initialState = {
   warehouseModal: {
     visible: false,
   },
-  warehouseList: [],
-  zoneList: [],
   locationModal: {
     visible: false,
   },
-  locations: [],
-  record: {},
-  whsehouseModal: {
+  whseOwnersModal: {
     visible: false,
   },
+  ownerControlModal: {
+    visible: false,
+  },
+  warehouseList: [],
+  zoneList: [],
+  locations: [],
+  record: {},
   whseOwners: [],
 };
 
@@ -52,10 +56,14 @@ export default function reducer(state = initialState, action) {
       return { ...state, locationModal: { ...state.locationModal, visible: false } };
     case actionTypes.LOAD_LOCATIONS_SUCCEED:
       return { ...state, locations: action.result.data };
-    case actionTypes.SHOW_WHSEMEMBERS_MODAL:
-      return { ...state, whsehouseModal: { ...state.whsehouseModal, visible: true } };
-    case actionTypes.HIDE_WHSEMEMBERS_MODAL:
-      return { ...state, whsehouseModal: { ...state.whsehouseModal, visible: false } };
+    case actionTypes.SHOW_WHSE_OWNERS_MODAL:
+      return { ...state, whseOwnersModal: { ...state.whseOwnersModal, visible: true } };
+    case actionTypes.HIDE_WHSE_OWNERS_MODAL:
+      return { ...state, whseOwnersModal: { ...state.whseOwnersModal, visible: false } };
+    case actionTypes.SHOW_OWNER_CONTROL_MODAL:
+      return { ...state, ownerControlModal: { ...state.ownerControlModal, visible: true } };
+    case actionTypes.HIDE_OWNER_CONTROL_MODAL:
+      return { ...state, ownerControlModal: { ...state.ownerControlModal, visible: false } };
     case actionTypes.LOAD_WHSE_OWNERS_SUCCEED:
       return { ...state, whseOwners: action.result.data };
     default:
@@ -238,15 +246,27 @@ export function updateZone(whseCode, zoneCode, id, zoneName) {
   };
 }
 
-export function showWhseMembers() {
+export function showWhseOwnersModal() {
   return {
-    type: actionTypes.SHOW_WHSEMEMBERS_MODAL,
+    type: actionTypes.SHOW_WHSE_OWNERS_MODAL,
   };
 }
 
-export function hideWhseMembers() {
+export function hideWhseOwnersModal() {
   return {
-    type: actionTypes.HIDE_WHSEMEMBERS_MODAL,
+    type: actionTypes.HIDE_WHSE_OWNERS_MODAL,
+  };
+}
+
+export function showOwnerControlModal() {
+  return {
+    type: actionTypes.SHOW_OWNER_CONTROL_MODAL,
+  };
+}
+
+export function hideOwnerControlModal() {
+  return {
+    type: actionTypes.HIDE_OWNER_CONTROL_MODAL,
   };
 }
 

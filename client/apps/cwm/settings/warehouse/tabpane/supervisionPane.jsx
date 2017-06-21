@@ -4,7 +4,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Button, Layout, Form, Select } from 'antd';
 import { formatMsg } from '../message.i18n';
-import { showWhseMembers, loadwhseOwners } from 'common/reducers/cwmWarehouse';
+import { showWhseOwnersModal, loadwhseOwners } from 'common/reducers/cwmWarehouse';
 
 const { Content } = Layout;
 const FormItem = Form.Item;
@@ -15,7 +15,7 @@ const Option = Select.Option;
   state => ({
     whseOwners: state.cwmWarehouse.whseOwners,
   }),
-  { showWhseMembers, loadwhseOwners }
+  { showWhseOwnersModal, loadwhseOwners }
 )
 export default class SupervisionPane extends Component {
   static propTypes = {

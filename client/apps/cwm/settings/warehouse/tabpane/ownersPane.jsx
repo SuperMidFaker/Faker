@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Button, Layout, Table } from 'antd';
-import { showWhseMembers, loadwhseOwners } from 'common/reducers/cwmWarehouse';
+import { showWhseOwnersModal, loadwhseOwners, showOwnerControlModal } from 'common/reducers/cwmWarehouse';
 import RowUpdater from 'client/components/rowUpdater';
-import OwnersModal from '../modal/ownersModal';
+import WhseOwnersModal from '../modal/whseOwnersModal';
 import { formatMsg } from '../message.i18n';
 
 const { Content } = Layout;
@@ -15,7 +15,7 @@ const { Content } = Layout;
   state => ({
     whseOwners: state.cwmWarehouse.whseOwners,
   }),
-  { showWhseMembers, loadwhseOwners }
+  { showWhseOwnersModal, loadwhseOwners, showOwnerControlModal }
 )
 export default class OwnersPane extends Component {
   static propTypes = {
@@ -51,22 +51,25 @@ export default class OwnersPane extends Component {
     width: 150,
     render: record => (
       <span>
-        <RowUpdater onHit={this.handleDeleteLocation} label="控制属性" row={record} />
+        <RowUpdater onHit={this.showOwnerControlModal} label="控制属性" row={record} />
         <span className="ant-divider" />
         <RowUpdater onHit={this.editDeleteLocation} label="停用" row={record} />
       </span>
       ),
   }]
   msg = formatMsg(this.props.intl)
+  showOwnerControlModal = () => {
+    this.props.showOwnerControlModal();
+  }
   render() {
     const { whseCode, whseTenantId, whseOwners } = this.props;
     return (
       <Content>
         <div className="toolbar">
-          <Button type="primary" ghost icon="plus-circle" onClick={() => this.props.showWhseMembers()}>添加货主</Button>
+          <Button type="primary" ghost icon="plus-circle" onClick={() => this.props.showWhseOwnersModal()}>添加货主</Button>
         </div>
         <Table columns={this.columns} dataSource={whseOwners} />
-        <OwnersModal whseCode={whseCode} whseTenantId={whseTenantId} whseOwners={whseOwners} />
+        <WhseOwnersModal whseCode={whseCode} whseTenantId={whseTenantId} whseOwners={whseOwners} />
       </Content>
     );
   }

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Modal, Table, message } from 'antd';
-import { loadwhseOwners, addWhseOwners, hideWhseMembers } from 'common/reducers/cwmWarehouse';
+import { loadwhseOwners, addWhseOwners, hideWhseOwnersModal } from 'common/reducers/cwmWarehouse';
 import { loadPartners } from 'common/reducers/partner';
 import { PARTNER_BUSINESSE_TYPES, PARTNER_ROLES } from 'common/constants';
 import { formatMsg } from '../message.i18n';
@@ -12,12 +12,12 @@ import { formatMsg } from '../message.i18n';
 @connect(
   state => ({
     partners: state.partner.partners,
-    visible: state.cwmWarehouse.whsehouseModal.visible,
+    visible: state.cwmWarehouse.whseOwnersModal.visible,
     loginId: state.account.loginId,
   }),
-  { loadwhseOwners, loadPartners, addWhseOwners, hideWhseMembers }
+  { loadwhseOwners, loadPartners, addWhseOwners, hideWhseOwnersModal }
 )
-export default class OwnersModal extends Component {
+export default class WhseOwnersModal extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     whseCode: PropTypes.string.isRequired,
@@ -47,7 +47,7 @@ export default class OwnersModal extends Component {
     dataIndex: 'name',
   }]
   handleCancel = () => {
-    this.props.hideWhseMembers();
+    this.props.hideWhseOwnersModal();
   }
   handleAdd = () => {
     const whseCode = this.props.whseCode;
@@ -63,7 +63,7 @@ export default class OwnersModal extends Component {
       (result) => {
         if (!result.error) {
           message.info('添加成功');
-          this.props.hideWhseMembers();
+          this.props.hideWhseOwnersModal();
           this.props.loadwhseOwners(whseCode);
         }
       }
