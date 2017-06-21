@@ -63,21 +63,21 @@ export default class PutawayDetailsPane extends React.Component {
   }, {
     title: '上架',
     width: 100,
+    dataIndex: 'allocated_by',
+  }, {
+    title: '上架时间',
+    width: 100,
     dataIndex: 'allocated_date',
-    render: (o, record) => {
-      if (o) {
-        return (<div>
-          <div><Icon type="user" />{record.allocated_by}</div>
-          <div><Icon type="clock-circle-o" />{record.allocated_date}</div>
-        </div>);
-      }
-    },
+
   }, {
     title: '操作',
     width: 150,
-    fixed: 'right',
     render: (o, record) => {
       switch (record.status) {  // 分配明细的状态 2 已分配 4 已拣货 6 已发运
+        case 1:   // 已分配
+          return (<span>
+            <RowUpdater onHit={this.handleCancelAllocated} label="取消收货" row={record} />
+          </span>);
         case 2:   // 已分配
           return (<span>
             <RowUpdater onHit={this.handleConfirmPicked} label="上架确认" row={record} />
@@ -91,7 +91,7 @@ export default class PutawayDetailsPane extends React.Component {
   }]
   mockData = [{
     id: 1,
-    seq_no: '1',
+    convey_no: 'CV66883444',
     product_no: 'N04601170548',
     order_qty: 15,
     desc_cn: '微纤维止血胶原粉',
@@ -103,12 +103,44 @@ export default class PutawayDetailsPane extends React.Component {
     expect_qty: 15,
     received_pack_qty: 15,
     received_qty: 15,
-    status: 0,
+    status: 2,
     allocated_by: '张申',
     allocated_date: '2017-06-12',
+    children: [{
+      id: 2,
+      convey_no: 'CV66883444',
+      product_no: 'N04601170547',
+      order_qty: 1000,
+      desc_cn: 'PTA球囊扩张导管',
+      sku: 'N04601170547',
+      allocate_rule: 'FIFO',
+      unit: '件',
+      location: 'P1CA0101',
+      expect_pack_qty: 10,
+      expect_qty: 1000,
+      received_pack_qty: 0,
+      received_qty: 0,
+      status: 1,
+    }, {
+      id: 3,
+      convey_no: 'CV66883444',
+      product_no: 'N04601170547',
+      order_qty: 1000,
+      desc_cn: 'PTA球囊扩张导管',
+      sku: 'N04601170547',
+      allocate_rule: 'FIFO',
+      unit: '件',
+      location: 'P1CA0101',
+      expect_pack_qty: 10,
+      expect_qty: 1000,
+      received_pack_qty: 0,
+      received_qty: 0,
+      status: 1,
+    },
+    ],
   }, {
     id: 4,
-    seq_no: '2',
+    convey_no: 'CV66883445',
     product_no: 'N04601170547',
     order_qty: 1000,
     desc_cn: 'PTA球囊扩张导管',
@@ -120,10 +152,10 @@ export default class PutawayDetailsPane extends React.Component {
     expect_qty: 1000,
     received_pack_qty: 0,
     received_qty: 0,
-    status: 1,
+    status: 2,
   }, {
     id: 5,
-    seq_no: '3',
+    convey_no: 'CV66883446',
     product_no: 'SBMG-00859',
     order_qty: 1000,
     desc_cn: '临时起搏电极导管',
@@ -136,36 +168,6 @@ export default class PutawayDetailsPane extends React.Component {
     received_pack_qty: 0,
     received_qty: 0,
     status: 2,
-  }, {
-    id: 6,
-    seq_no: '4',
-    product_no: 'SBME-00787',
-    order_qty: 12,
-    desc_cn: '肾造瘘球囊扩张导管',
-    sku: '109R0612D401',
-    allocate_rule: 'FIFO',
-    unit: '个',
-    expect_pack_qty: 2,
-    location: 'P1CA0101',
-    expect_qty: 12,
-    received_pack_qty: 1,
-    received_qty: 6,
-    status: 3,
-  }, {
-    id: 7,
-    seq_no: '5',
-    product_no: 'SBMJ-00199',
-    order_qty: 1,
-    desc_cn: '输尿管镜球囊扩张导管',
-    sku: '9GV0912P1G03',
-    allocate_rule: 'FIFO',
-    unit: '个',
-    expect_pack_qty: 1,
-    location: 'P1CA0101',
-    expect_qty: 1,
-    received_pack_qty: 0,
-    received_qty: 0,
-    status: 4,
   }];
   handleConfirmPicked = () => {
     this.props.openPickingModal();
