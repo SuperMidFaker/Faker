@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Breadcrumb, Form, Layout, Row, Col, Button, Tooltip, Table, Popconfirm, Icon, message, Mention, Collapse } from 'antd';
-import { openAddModal, deleteRelatedCustomer, loadRelatedCustomers, saveTemplateData, countFieldsChange } from 'common/reducers/cmsManifest';
+import { openAddModal, deleteRelatedCustomer, loadRelatedCustomers, saveTemplateData, countFieldsChange, loadCmsParams } from 'common/reducers/cmsManifest';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
@@ -32,7 +32,7 @@ const Panel = Collapse.Panel;
     formData: state.cmsManifest.formData,
     changeTimes: state.cmsManifest.changeTimes,
   }),
-  { loadCustomers, openAddModal, deleteRelatedCustomer, loadRelatedCustomers, saveTemplateData, countFieldsChange }
+  { loadCustomers, openAddModal, deleteRelatedCustomer, loadRelatedCustomers, saveTemplateData, countFieldsChange, loadCmsParams }
 )
 @Form.create({ onFieldsChange: (props, values) => props.countFieldsChange(values) })
 export default class BillTemplate extends Component {
@@ -57,6 +57,12 @@ export default class BillTemplate extends Component {
   componentWillReceiveProps(nextProps) {
     if (this.props.changeTimes !== nextProps.changeTimes) {
       this.setState({ changed: true });
+    }
+    if (this.props.ietype !== nextProps.ietype) {
+      this.props.loadCmsParams({
+        ieType: nextProps.ietype,
+        tenantId: this.props.tenantId,
+      });
     }
   }
   msg = key => formatMsg(this.props.intl, key);

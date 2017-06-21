@@ -70,25 +70,19 @@ export default class UnitList extends Component {
       dataIndex: 'id',
       width: 100,
       key: 'id',
-      render: (_, record) => {
-        if (record.comp_partner_id === null) {
-          return (
-            <span>
-              <PrivilegeCover module="corp" feature="partners" action="edit">
-                <a onClick={() => this.props.onEditBtnClick(record)}>修改</a>
-              </PrivilegeCover>
-              <span className="ant-divider" />
-              <PrivilegeCover module="corp" feature="partners" action="delete">
-                <Popconfirm title="确定要删除吗？" onConfirm={() => this.props.onDeleteBtnClick(record.id)}>
-                  <a>删除</a>
-                </Popconfirm>
-              </PrivilegeCover>
-            </span>
-          );
-        } else {
-          return '';
-        }
-      },
+      render: (_, record) => (
+        <span>
+          <PrivilegeCover module="corp" feature="partners" action="edit">
+            <a onClick={() => this.props.onEditBtnClick(record)}>修改</a>
+          </PrivilegeCover>
+          <span className="ant-divider" />
+          <PrivilegeCover module="corp" feature="partners" action="delete">
+            <Popconfirm title="确定要删除吗？" onConfirm={() => this.props.onDeleteBtnClick(record.id)}>
+              <a>删除</a>
+            </Popconfirm>
+          </PrivilegeCover>
+        </span>
+        ),
     }];
     return (
       <QueueAnim type={['bottom', 'up']}>
