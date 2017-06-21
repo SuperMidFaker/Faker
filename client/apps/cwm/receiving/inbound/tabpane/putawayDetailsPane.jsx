@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Table, Select, Icon, Button, Input } from 'antd';
+import { Table, Select, Button } from 'antd';
 import RowUpdater from 'client/components/rowUpdater';
 import QuantityInput from '../../../common/quantityInput';
 import { loadLocations } from 'common/reducers/cwmWarehouse';
@@ -34,11 +34,38 @@ export default class PutawayDetailsPane extends React.Component {
     title: '容器编号',
     dataIndex: 'convey_no',
     width: 150,
+    fixed: 'left',
   }, {
-    title: '追踪号',
-    dataIndex: 'trace_id',
+    title: '商品货号',
+    dataIndex: 'product_no',
+    width: 120,
+    fixed: 'left',
+  }, {
+    title: '当前库位',
+    dataIndex: 'location',
+    width: 120,
+    render: () => {
+      const Options = this.props.locations.map(location => (<Option key={location.id} value={location.location}>{location.location}</Option>));
+      return (
+        <Select style={{ width: 100 }} disabled>
+          {Options}
+        </Select>);
+    },
+  }, {
+    title: '目标库位',
+    dataIndex: 'putaway_location',
+    width: 120,
+    render: () => {
+      const Options = this.props.locations.map(location => (<Option key={location.id} value={location.location}>{location.location}</Option>));
+      return (
+        <Select style={{ width: 100 }} disabled>
+          {Options}
+        </Select>);
+    },
+  }, {
+    title: '收货数量',
     width: 180,
-    render: o => (<Input className="readonly" prefix={<Icon type="qrcode" />} value={o} />),
+    render: (o, record) => (<QuantityInput packQty={record.allocated_pack_qty} pcsQty={record.allocated_qty} />),
   }, {
     title: 'SKU',
     dataIndex: 'sku',
@@ -49,37 +76,11 @@ export default class PutawayDetailsPane extends React.Component {
       }
     },
   }, {
-    title: '收货数量',
-    width: 200,
-    render: (o, record) => (<QuantityInput packQty={record.allocated_pack_qty} pcsQty={record.allocated_qty} />),
-  }, {
-    title: '目标库位',
-    dataIndex: 'putaway_location',
-    width: 180,
-    render: (o, record) => {
-      const Options = this.props.locations.map(location => (<Option key={location.id} value={location.location}>{location.location}</Option>));
-      if (record.location && record.location.length <= 1) {
-        return (
-          <Select value={o[0]} style={{ width: 160 }} disabled>
-            {Options}
-          </Select>);
-      } else {
-        return (
-          <Select mode="tags" value={o} style={{ width: 160 }} disabled>
-            {Options}
-          </Select>);
-      }
-    },
-  }, {
-    title: '商品货号',
-    dataIndex: 'product_no',
-    width: 120,
-  }, {
     title: '中文品名',
     dataIndex: 'desc_cn',
   }, {
     title: '上架',
-    width: 100,
+    width: 60,
     dataIndex: 'allocated_by',
   }, {
     title: '上架时间',
@@ -89,17 +90,18 @@ export default class PutawayDetailsPane extends React.Component {
   }, {
     title: '操作',
     width: 150,
+    fixed: 'right',
     render: (o, record) => {
       switch (record.status) {  // 分配明细的状态 2 已分配 4 已拣货 6 已发运
         case 1:   // 已分配
           return (<span>
-            <RowUpdater onHit={this.handleCancelAllocated} label="取消收货" row={record} />
+            <RowUpdater onHit={this.handleCancelReceived} label="取消收货" row={record} />
           </span>);
         case 2:   // 已分配
           return (<span>
-            <RowUpdater onHit={this.handleConfirmPicked} label="上架确认" row={record} />
+            <RowUpdater onHit={this.handleConfirmPutAway} label="上架确认" row={record} />
             <span className="ant-divider" />
-            <RowUpdater onHit={this.handleCancelAllocated} label="取消收货" row={record} />
+            <RowUpdater onHit={this.handleCancelReceived} label="取消收货" row={record} />
           </span>);
         default:
           break;
@@ -186,17 +188,14 @@ export default class PutawayDetailsPane extends React.Component {
     received_qty: 0,
     status: 2,
   }];
-  handleConfirmPicked = () => {
-    this.props.openPickingModal();
+  handleConfirmPutAway = () => {
+    // this.props.openPickingModal();
   }
-  handleConfirmShipped = () => {
-    this.props.openShippingModal();
+  handleBatchConfirmPutAway = () => {
+    // this.props.openPickingModal();
   }
-  handleBatchConfirmPicked = () => {
-    this.props.openPickingModal();
-  }
-  handleBatchConfirmShipped = () => {
-    this.props.openShippingModal();
+  handleCancelReceived = () => {
+    // this.props.openShippingModal();
   }
   render() {
     const rowSelection = {
@@ -210,11 +209,8 @@ export default class PutawayDetailsPane extends React.Component {
         <div className="toolbar">
           <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
             <h3>已选中{this.state.selectedRowKeys.length}项</h3>
-            <Button size="large" onClick={this.handleBatchConfirmPicked} icon="rollback">
-              批量拣货确认
-            </Button>
-            <Button size="large" onClick={this.handleBatchConfirmShipped} icon="rollback">
-              批量发货确认
+            <Button size="large" onClick={this.handleBatchConfirmPutAway} icon="rollback">
+              批量上架确认
             </Button>
           </div>
           <div className="toolbar-right">
@@ -226,7 +222,8 @@ export default class PutawayDetailsPane extends React.Component {
           </div>
         </div>
         <Table columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={this.mockData} rowKey="id"
-          scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
+          scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0) }}
+          defaultExpandedRowKeys={[1, 2, 3]}
         />
       </div>
     );

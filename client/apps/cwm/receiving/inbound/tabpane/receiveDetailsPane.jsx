@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Form, Popconfirm, Select, Button, Tag, Table, Tooltip } from 'antd';
+import { Form, Popconfirm, Select, Button, Table } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import RowUpdater from 'client/components/rowUpdater';
@@ -121,9 +121,23 @@ export default class ReceiveDetailsPane extends React.Component {
     width: 120,
     fixed: 'left',
   }, {
+    title: 'SKU',
+    dataIndex: 'product_sku',
+    width: 200,
+    render: o => (<PackagePopover data={o} />),
+  }, {
+    title: '预期数量',
+    width: 180,
+    render: (o, record) => (<QuantityInput packQty={record.expect_pack_qty} pcsQty={record.expect_qty} disabled />),
+  }, {
+    title: '收货数量',
+    width: 180,
+    render: (o, record) => (<QuantityInput packQty={record.received_pack_qty} pcsQty={record.received_qty}
+      alert={record.expect_pack_qty !== record.receive_pack_qty} disabled
+    />),
+  }, {
     title: '中文品名',
     dataIndex: 'name',
-    width: 150,
   }, {
     title: '订单数量',
     dataIndex: 'expect_qty',
@@ -135,30 +149,8 @@ export default class ReceiveDetailsPane extends React.Component {
     dataIndex: 'asn_unit_name',
     width: 80,
   }, {
-    title: 'SKU',
-    dataIndex: 'product_sku',
-    width: 200,
-    render: o => (<PackagePopover data={o} />),
-  }, {
-    title: 'SKU包装单位',
-    dataIndex: 'sku_pack_unit_name',
-    render: (puname, row) => (<Tooltip title={`=${row.sku_pack_qty}主单位`} placement="right"><Tag>{puname}</Tag></Tooltip>),
-  }, {
-    title: '预期数量',
-    width: 180,
-    fixed: 'right',
-    render: (o, record) => (<QuantityInput packQty={record.expect_pack_qty} pcsQty={record.expect_qty} disabled />),
-  }, {
-    title: '收货数量',
-    width: 180,
-    fixed: 'right',
-    render: (o, record) => (<QuantityInput packQty={record.received_pack_qty} pcsQty={record.received_qty}
-      alert={record.expect_pack_qty !== record.receive_pack_qty} disabled
-    />),
-  }, {
     title: '收货库位',
     dataIndex: 'location',
-    fixed: 'right',
     width: 180,
     render: (o, record) => {
       const Options = this.props.locations.map(location => (<Option key={location.id} value={location.location}>{location.location}</Option>));
@@ -177,7 +169,6 @@ export default class ReceiveDetailsPane extends React.Component {
   }, {
     title: '破损级别',
     dataIndex: 'damage_level',
-    fixed: 'right',
     width: 120,
     render: damage => (
       <Select value={damage} style={{ width: 100 }} disabled>
@@ -193,7 +184,7 @@ export default class ReceiveDetailsPane extends React.Component {
     fixed: 'right',
     render: (o, record) => {
       if (this.props.inboundHead.status < CWM_INBOUND_STATUS.COMPLETED.value) {
-        const label = this.props.inboundHead.rec_mode === 'scan' ? '扫码收货' : '手动收货';
+        const label = this.props.inboundHead.rec_mode === 'scan' ? '扫码收货' : '收货确认';
         return (<RowUpdater onHit={this.handleReceive} label={label} row={record} />);
       }
     },
