@@ -57,7 +57,7 @@ export default class ReceiveInbound extends Component {
     inboundHead: {},
     inboundProducts: [],
     operator: {},
-    confirm: true,
+    confirmDisabled: true,
   }
   componentWillMount() {
     this.handleReload();
@@ -118,18 +118,20 @@ export default class ReceiveInbound extends Component {
     this.handleReload();
   }
   checkConfirm = (inboundProducts) => {
+    let confirmDisabled = true;
     for (let i = 0; i < inboundProducts.length; i++) {
-      if ((inboundProducts[i].location.length !== 0 && inboundProducts[i].received_pack_qty !== 0)) {
-        this.setState({
-          confirm: false,
-        });
-      } else if ((inboundProducts[i].location.length === 0 && inboundProducts[i].received_pack_qty !== 0)) {
-        this.setState({
-          confirm: true,
-        });
-        break;
+      if (inboundProducts[i].received_pack_qty !== 0) {
+        if (inboundProducts[i].location.length !== 0) {
+          confirmDisabled = false;
+        } else {
+          confirmDisabled = true;
+          break;
+        }
       }
     }
+    this.setState({
+      confirmDisabled,
+    });
   }
   columns = [{
     title: '序号',
@@ -323,7 +325,7 @@ export default class ReceiveInbound extends Component {
                 <div className="toolbar-right">
                   {inboundHead.rec_mode === 'manual' && this.state.currentStatus < CWM_INBOUND_STATUS.COMPLETED.step &&
                   <Popconfirm title="确定此次入库操作已完成?" onConfirm={this.handleInboundConfirmed} okText="确认" cancelText="取消">
-                    <Button type="primary" ghost size="large" icon="check" disabled={this.state.confirm}>
+                    <Button type="primary" ghost size="large" icon="check" disabled={this.state.confirmDisabled}>
                       入库确认
                     </Button>
                   </Popconfirm>
