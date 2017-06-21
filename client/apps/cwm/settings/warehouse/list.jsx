@@ -14,6 +14,8 @@ import SupervisionPane from './tabpane/supervisionPane';
 import { showWarehouseModal, loadwhList, addZone, loadZones, showLocationModal, loadLocations, deleteLocation,
   editLocation, deleteZone } from 'common/reducers/cwmWarehouse';
 import { formatMsg } from './message.i18n';
+import ExcelUpload from 'client/components/excelUploader';
+import './warehouse.less';
 
 const { Header, Content, Sider } = Layout;
 const Search = Input.Search;
@@ -32,7 +34,8 @@ function fetchData({ state, dispatch }) {
 })
 @connect(
   state => ({
-    tenantId: state.account.tenanId,
+    tenantId: state.account.tenantId,
+    loginId: state.account.loginId,
     warehouseList: state.cwmWarehouse.warehouseList,
     zoneList: state.cwmWarehouse.zoneList,
     locations: state.cwmWarehouse.locations,
@@ -196,6 +199,15 @@ export default class WareHouse extends Component {
       }
     );
   }
+  zonesUploaded = () => {
+    this.props.loadZones(this.state.warehouse.whse_code);
+    this.setState({ visible: false });
+  }
+  locationsUploaded = () => {
+    const whseCode = this.state.warehouse.whse_code;
+    const { zoneCode } = this.state;
+    this.props.loadLocations(whseCode, zoneCode);
+  }
   locationColumns = [{
     title: 'location',
     dataIndex: 'location',
@@ -245,8 +257,17 @@ export default class WareHouse extends Component {
           }
         </FormItem>
         <FormItem>
-          <Button size="large" type="primary" style={{ width: '100%' }} onClick={this.createZone}>创建</Button>
-          <Button size="large" type="primary" ghost style={{ width: '100%', marginTop: 24 }} onClick={this.importZones}>导入</Button>
+          <Button className="createZone" size="large" type="primary" style={{ width: '100%' }} onClick={this.createZone}>创建</Button>
+          <ExcelUpload endpoint={`${API_ROOTS.default}v1/cwm/warehouse/zones/import`}
+            formData={{
+              data: JSON.stringify({
+                tenantId: this.props.tenantId,
+                loginId: this.props.loginId,
+              }),
+            }} onUploaded={this.zonesUploaded}
+          >
+            <Button size="large" type="primary" ghost style={{ width: '100%', marginTop: 24 }}>导入</Button>
+          </ExcelUpload>
         </FormItem>
       </Form>);
     return (
@@ -322,9 +343,18 @@ export default class WareHouse extends Component {
                         <Button type="primary" ghost icon="plus-circle" onClick={this.showLocationModal}>
                           创建库位
                         </Button>
-                        <Button type="primary" ghost icon="upload" onClick={this.importLocations}>
-                          批量导入库位
-                        </Button>
+                        <ExcelUpload endpoint={`${API_ROOTS.default}v1/cwm/warehouse/locations/import`}
+                          formData={{
+                            data: JSON.stringify({
+                              tenantId: this.props.tenantId,
+                              loginId: this.props.loginId,
+                            }),
+                          }} onUploaded={this.locationsUploaded}
+                        >
+                          <Button type="primary" ghost icon="upload">
+                            批量导入库位
+                          </Button>
+                        </ExcelUpload>
                       </div>
                       <div className="panel-body table-panel">
                         <Table columns={this.locationColumns} dataSource={this.props.locations} />
