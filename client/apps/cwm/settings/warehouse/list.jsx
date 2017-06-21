@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import connectNav from 'client/common/decorators/connect-nav';
-import connectFetch from 'client/common/decorators/connect-fetch';
 import { Icon, Layout, Table, Tooltip, Button, Input, Breadcrumb, Tabs, Popover, Menu, Form, Tag, message } from 'antd';
 import RowUpdater from 'client/components/rowUpdater';
 import WarehouseModal from './modal/warehouseModal';
@@ -11,7 +10,7 @@ import { MdIcon } from 'client/components/FontIcon';
 import ZoneEditPopover from './popover/zoneEditPopover';
 import OwnersPane from './tabpane/ownersPane';
 import SupervisionPane from './tabpane/supervisionPane';
-import { showWarehouseModal, loadwhList, addZone, loadZones, showLocationModal, loadLocations, deleteLocation,
+import { showWarehouseModal, addZone, loadZones, showLocationModal, loadLocations, deleteLocation,
   editLocation, deleteZone } from 'common/reducers/cwmWarehouse';
 import { formatMsg } from './message.i18n';
 import ExcelUpload from 'client/components/excelUploader';
@@ -23,10 +22,6 @@ const TabPane = Tabs.TabPane;
 const SubMenu = Menu.SubMenu;
 const FormItem = Form.Item;
 
-function fetchData({ state, dispatch }) {
-  return dispatch(loadwhList(state.account.tenantId));
-}
-@connectFetch()(fetchData)
 @injectIntl
 @connectNav({
   depth: 2,
@@ -36,12 +31,11 @@ function fetchData({ state, dispatch }) {
   state => ({
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
-    warehouseList: state.cwmWarehouse.warehouseList,
+    whses: state.cwmContext.whses,
     zoneList: state.cwmWarehouse.zoneList,
     locations: state.cwmWarehouse.locations,
   }),
   { showWarehouseModal,
-    loadwhList,
     addZone,
     loadZones,
     showLocationModal,
@@ -67,15 +61,15 @@ export default class WareHouse extends Component {
     zone: {},
     selectKeys: [],
   }
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.warehouseList !== this.props.warehouseList && !this.state.warehouse.whse_code) {
-      this.setState({
-        warehouse: nextProps.warehouseList.length === 0 ? {} : nextProps.warehouseList[0],
-      });
-      this.props.loadZones(nextProps.warehouseList[0].whse_code).then(
+  componentWillMount() {
+    this.setState({
+      warehouse: this.props.whses.length === 0 ? {} : this.props.whses[0],
+    });
+    if (this.props.whses.length !== 0) {
+      this.props.loadZones(this.props.whses[0].code).then(
         (result) => {
           if (!result.error && result.data.length !== 0) {
-            this.props.loadLocations(nextProps.warehouseList[0].whse_code, result.data[0].zone_code);
+            this.props.loadLocations(this.props.whses[0].code, result.data[0].zone_code);
             this.setState({
               zone: result.data[0],
               zones: result.data,
@@ -84,8 +78,13 @@ export default class WareHouse extends Component {
           }
         }
       );
+      this.setState({ warehouses: this.props.whses });
     }
-    this.setState({ warehouses: nextProps.warehouseList });
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.whses.length !== this.props.whses.length) {
+      this.setState({ warehouses: nextProps.whses });
+    }
   }
   msg = formatMsg(this.props.intl)
   showWarehouseModal = () => {
@@ -98,31 +97,34 @@ export default class WareHouse extends Component {
     this.setState({
       warehouse: record,
     });
-    this.props.loadZones(record.whse_code).then(
+    this.props.loadZones(record.code).then(
       (result) => {
         if (!result.error && result.data.length !== 0) {
-          this.props.loadLocations(this.state.warehouse.whse_code, result.data[0].zone_code);
+          this.props.loadLocations(this.state.warehouse.code, result.data[0].zone_code);
           this.setState({
             zone: result.data[0],
             zones: result.data,
             selectKeys: [result.data[0].zone_code],
           });
         } else {
-          this.props.loadLocations(this.state.warehouse.whse_code);
+          this.props.loadLocations(this.state.warehouse.code);
         }
       }
     );
   }
   createZone = (e) => {
     e.preventDefault();
+    const { tenantId, loginId } = this.props;
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         const { zoneCode, zoneName } = values;
-        const whseCode = this.state.warehouse.whse_code;
+        const whseCode = this.state.warehouse.code;
         this.props.addZone({
           zoneCode,
           zoneName,
           whseCode,
+          tenantId,
+          loginId,
         }).then(
           (result) => {
             if (!result.error) {
@@ -150,7 +152,7 @@ export default class WareHouse extends Component {
   }
   handleZoneClick = (item) => {
     const key = item.key;
-    const whseCode = this.state.warehouse.whse_code;
+    const whseCode = this.state.warehouse.code;
     const zones = this.state.zones;
     this.setState({
       selectKeys: [key],
@@ -159,7 +161,7 @@ export default class WareHouse extends Component {
     this.props.loadLocations(whseCode, key);
   }
   handleDeleteLocation = (row) => {
-    const whseCode = this.state.warehouse.whse_code;
+    const whseCode = this.state.warehouse.code;
     const zoneCode = this.state.zone.zone_code;
     this.props.deleteLocation(row.id).then(
       (result) => {
@@ -180,7 +182,7 @@ export default class WareHouse extends Component {
     });
   }
   handleDeleteZone = (zoneCode) => {
-    const whseCode = this.state.warehouse.whse_code;
+    const whseCode = this.state.warehouse.code;
     this.props.deleteZone(whseCode, zoneCode).then(
       (result) => {
         if (!result.error) {
@@ -200,11 +202,11 @@ export default class WareHouse extends Component {
     );
   }
   zonesUploaded = () => {
-    this.props.loadZones(this.state.warehouse.whse_code);
+    this.props.loadZones(this.state.warehouse.code);
     this.setState({ visible: false });
   }
   locationsUploaded = () => {
-    const whseCode = this.state.warehouse.whse_code;
+    const whseCode = this.state.warehouse.code;
     const { zoneCode } = this.state;
     this.props.loadLocations(whseCode, zoneCode);
   }
@@ -236,8 +238,8 @@ export default class WareHouse extends Component {
     const { form: { getFieldDecorator }, zoneList } = this.props;
     const { warehouse, warehouses, zone, selectKeys } = this.state;
     const whseColumns = [{
-      dataIndex: 'whse_name',
-      key: 'whse_name',
+      dataIndex: 'name',
+      key: 'name',
       render: o => (<span className="menu-sider-item">{o}</span>),
     }];
     const zonePopoverContent = (
@@ -298,7 +300,7 @@ export default class WareHouse extends Component {
             </div>
             <Table size="middle" columns={whseColumns} dataSource={warehouses} showHeader={false} onRowClick={this.handleRowClick}
               pagination={{ current: this.state.currentPage, defaultPageSize: 15 }}
-              rowClassName={record => record.whse_code === warehouse.whse_code ? 'table-row-selected' : ''} rowKey="whse_code"
+              rowClassName={record => record.code === warehouse.code ? 'table-row-selected' : ''} rowKey="code"
             />
             <WarehouseModal />
           </div>
@@ -307,7 +309,7 @@ export default class WareHouse extends Component {
           <Header className="top-bar">
             <Breadcrumb>
               <Breadcrumb.Item>
-                {warehouse.whse_name} {warehouse.bonded === 1 && <Tag color="green">保税仓</Tag>}
+                {warehouse.name} {warehouse.bonded === 1 && <Tag color="green">保税仓</Tag>}
               </Breadcrumb.Item>
             </Breadcrumb>
           </Header>
@@ -315,7 +317,7 @@ export default class WareHouse extends Component {
             <div className="page-body tabbed">
               <Tabs defaultActiveKey="owners">
                 <TabPane tab="货主" key="owners">
-                  <OwnersPane whseCode={warehouse.whse_code} whseTenantId={warehouse.wh_ent_tenant_id} />
+                  <OwnersPane whseCode={warehouse.code} whseTenantId={warehouse.wh_ent_tenant_id} />
                 </TabPane>
                 <TabPane tab="库区/库位" key="location">
                   <Layout>
@@ -325,7 +327,7 @@ export default class WareHouse extends Component {
                           {
                           zoneList.map(item => (<Menu.Item key={item.zone_code}>
                             <span>{item.zone_name}</span>
-                            <ZoneEditPopover id={item.id} zoneCode={item.zone_code} whseCode={warehouse.whse_code} stateChange={this.handleStateChange} deleteZone={this.handleDeleteZone} />
+                            <ZoneEditPopover id={item.id} zoneCode={item.zone_code} whseCode={warehouse.code} stateChange={this.handleStateChange} deleteZone={this.handleDeleteZone} />
                           </Menu.Item>))
                         }
                         </SubMenu>
@@ -359,7 +361,7 @@ export default class WareHouse extends Component {
                       <div className="panel-body table-panel">
                         <Table columns={this.locationColumns} dataSource={this.props.locations} />
                       </div>
-                      <LocationModal whseCode={warehouse.whse_code} zoneCode={zone.zone_code} />
+                      <LocationModal whseCode={warehouse.code} zoneCode={zone.zone_code} />
                     </Content>
                   </Layout>
                 </TabPane>
@@ -367,11 +369,9 @@ export default class WareHouse extends Component {
                 <TabPane tab="上架规则" key="putaway" disabled />
                 <TabPane tab="分配规则" key="allocate" disabled />
                 <TabPane tab="补货规则" key="replenish" disabled />
-                {warehouse.bonded === 1 &&
-                <TabPane tab="保税监管" key="supervision">
-                  <SupervisionPane whseCode={warehouse.whse_code} whseTenantId={warehouse.wh_ent_tenant_id} />
-                </TabPane>
-                }
+                {warehouse.bonded === 1 && <TabPane tab="保税监管" key="supervision">
+                  <SupervisionPane whseCode={warehouse.code} whseTenantId={warehouse.wh_ent_tenant_id} />
+                </TabPane>}
               </Tabs>
             </div>
           </Content>

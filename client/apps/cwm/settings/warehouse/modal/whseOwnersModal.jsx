@@ -28,6 +28,13 @@ export default class WhseOwnersModal extends Component {
     selectedRowKeys: [],
     selectedRows: [],
   }
+  componentWillMount() {
+    this.props.loadPartners({
+      tenantId: this.props.whseTenantId,
+      role: PARTNER_ROLES.CUS,
+      businessType: PARTNER_BUSINESSE_TYPES.warehousing,
+    });
+  }
   componentWillReceiveProps(nextProps) {
     if (nextProps.whseCode !== this.props.whseCode) {
       const tenantId = nextProps.whseTenantId;
