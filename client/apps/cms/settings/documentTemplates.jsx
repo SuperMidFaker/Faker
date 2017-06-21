@@ -41,7 +41,7 @@ export default class InvoiceTemplate extends Component {
     router: PropTypes.object.isRequired,
   }
   state = {
-    current: CMS_DOCU_TYPE.invoice,
+    current: JSON.stringify(this.props.docuType),
   }
   componentDidMount() {
     this.handleListLoad(this.props.docuType);
@@ -83,7 +83,7 @@ export default class InvoiceTemplate extends Component {
     this.setState({
       current: ev.key,
     });
-    this.handleListLoad(ev.key);
+    this.handleListLoad(parseInt(ev.key, 10));
   }
   render() {
     const columns = [{
@@ -124,13 +124,13 @@ export default class InvoiceTemplate extends Component {
           </div>
           <div className="left-sider-panel">
             <Menu
-              defaultSelectedKeys={[this.state.current]}
+              selectedKeys={[this.state.current]}
               mode="inline"
               onClick={this.handleListChange}
             >
-              <Menu.Item key={CMS_DOCU_TYPE.invoice}>发票模板</Menu.Item>
-              <Menu.Item key={CMS_DOCU_TYPE.contract}>合同模板</Menu.Item>
-              <Menu.Item key={CMS_DOCU_TYPE.packingList}>箱单模板</Menu.Item>
+              <Menu.Item key={JSON.stringify(CMS_DOCU_TYPE.invoice)}>发票模板</Menu.Item>
+              <Menu.Item key={JSON.stringify(CMS_DOCU_TYPE.contract)}>合同模板</Menu.Item>
+              <Menu.Item key={JSON.stringify(CMS_DOCU_TYPE.packingList)}>箱单模板</Menu.Item>
             </Menu>
           </div>
         </Sider>
