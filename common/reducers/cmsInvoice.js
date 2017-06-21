@@ -9,6 +9,9 @@ const actionTypes = createActionTypes('@@welogix/cms/invoice/', [
   'LOAD_INV_DATA', 'LOAD_INV_DATA_SUCCEED', 'LOAD_INV_DATA_FAIL',
   'LOAD_PARAMS', 'LOAD_PARAMS_SUCCEED', 'LOAD_PARAMS_FAIL',
   'SAVE_TEMP_CHANGE', 'SAVE_TEMP_CHANGE_SUCCEED', 'SAVE_TEMP_CHANGE_FAIL',
+  'LOAD_DOCU_DATAS', 'LOAD_DOCU_DATAS_SUCCEED', 'LOAD_DOCU_DATAS_FAIL',
+  'LOAD_DOCU_BODY', 'LOAD_DOCU_BODY_SUCCEED', 'LOAD_DOCU_BODY_FAIL',
+  'SAVE_DOCU_CHANGE', 'SAVE_DOCU_CHANGE_SUCCEED', 'SAVE_DOCU_CHANGE_FAIL',
 ]);
 
 const initialState = {
@@ -24,6 +27,8 @@ const initialState = {
     customs: [],
   },
   docuType: 0,
+  docuDatas: [],
+  docuBody: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -38,6 +43,10 @@ export default function reducer(state = initialState, action) {
       return { ...state, params: { ...state.params, ...action.result.data } };
     case actionTypes.SAVE_TEMP_CHANGE_SUCCEED:
       return { ...state, invData: { ...state.invData, ...action.payload.change } };
+    case actionTypes.LOAD_DOCU_DATAS_SUCCEED:
+      return { ...state, docuDatas: action.result.data };
+    case actionTypes.LOAD_DOCU_BODY_SUCCEED:
+      return { ...state, docuBody: action.result.data };
     default:
       return state;
   }
@@ -134,6 +143,52 @@ export function saveTempChange(change, id) {
         actionTypes.SAVE_TEMP_CHANGE_FAIL,
       ],
       endpoint: 'v1/cms/invoice/template/change/save',
+      method: 'post',
+      data: { change, id },
+      payload: { change },
+    },
+  };
+}
+
+export function loadDocuDatas(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_DOCU_DATAS,
+        actionTypes.LOAD_DOCU_DATAS_SUCCEED,
+        actionTypes.LOAD_DOCU_DATAS_FAIL,
+      ],
+      endpoint: 'v1/cms/mainfest/docu/datas/load',
+      method: 'get',
+      params,
+    },
+  };
+}
+
+export function loadDocuBody(headId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_DOCU_BODY,
+        actionTypes.LOAD_DOCU_BODY_SUCCEED,
+        actionTypes.LOAD_DOCU_BODY_FAIL,
+      ],
+      endpoint: 'v1/cms/mainfest/docu/body/load',
+      method: 'get',
+      params: { headId },
+    },
+  };
+}
+
+export function saveDocuChange(change, id) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SAVE_DOCU_CHANGE,
+        actionTypes.SAVE_DOCU_CHANGE_SUCCEED,
+        actionTypes.SAVE_DOCU_CHANGE_FAIL,
+      ],
+      endpoint: 'v1/cms/mainfest/docu/change/save',
       method: 'post',
       data: { change, id },
       payload: { change },
