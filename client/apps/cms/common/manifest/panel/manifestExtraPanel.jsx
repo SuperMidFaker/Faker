@@ -32,12 +32,16 @@ export default class ManifestExtraPanel extends React.Component {
   handleTabChange = (tabKey) => {
     this.props.setPaneTabkey(tabKey);
   }
+  handleDocusView = () => {
+    this.context.router.push(`/clearance/${this.props.ietype}/manifest/documents/view`);
+  }
   render() {
     return (
       <Collapse accordion defaultActiveKey="container">
         <Panel header={'集装箱'} key="container">
           <ContainersPane />
         </Panel>
+        <Panel header={<a onClick={this.handleDocusView}>随附单据</a>} key="document" disabled />
       </Collapse>
 
     );

@@ -2,15 +2,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Icon, Layout, Collapse, Checkbox } from 'antd';
+import { Breadcrumb, Icon, Layout, Collapse, Checkbox, Form, Input } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import InvoiceDetials from './invoiceDetials';
 import { formatMsg } from './message.i18n';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadInvTemplateData, loadTempParams, saveTempChange } from 'common/reducers/cmsInvoice';
+import NavLink from 'client/components/nav-link';
 
 const Sider = Layout.Sider;
 const Panel = Collapse.Panel;
+const FormItem = Form.Item;
 
 function MSCheckbox(props) {
   const { checked, field, text, onChange } = props;
@@ -64,7 +66,9 @@ export default class InvoiceContent extends React.Component {
   }
   msg = formatMsg(this.props.intl)
   handleCheckChange = (field, value) => {
-    this.props.saveTempChange({ [field]: value }, this.props.invData.id);
+    if (value !== '') {
+      this.props.saveTempChange({ [field]: value }, this.props.invData.id);
+    }
   }
   render() {
     const { invData } = this.props;
@@ -74,7 +78,7 @@ export default class InvoiceContent extends React.Component {
           <div className="top-bar">
             <Breadcrumb>
               <Breadcrumb.Item>
-                <Icon type="left" /> {this.msg('invoice')}
+                <Icon type="left" /> <NavLink to="/clearance/settings/doctemplates">{this.msg('invoice')}</NavLink>
               </Breadcrumb.Item>
               <Breadcrumb.Item>
                 {`${this.props.template.template_name}`}
@@ -82,7 +86,12 @@ export default class InvoiceContent extends React.Component {
             </Breadcrumb>
           </div>
           <div className="left-sider-panel">
-            <Collapse accordion defaultActiveKey="item">
+            <Collapse accordion defaultActiveKey="header">
+              <Panel header={'Header'} key="header">
+                <FormItem label="发票日期：" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
+                  <Input addonBefore="生成发票前" addonAfter="天" onChange={ev => this.handleCheckChange('days_ago', ev.target.value)} />
+                </FormItem>
+              </Panel>
               <Panel header={'Item Table'} key="item">
                 <MSCheckbox field="unit_price_en"
                   text={this.msg('unitPrice')}
