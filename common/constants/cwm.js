@@ -135,3 +135,22 @@ exports.CWM_OUTBOUND_PACK_STATUS = {
   PARTIAL_PACKED: 1,
   ALL_PACKED: 2,
 };
+
+exports.CWM_SO_TYPES = [{
+  value: '1',
+  text: '销售出库',
+}, {
+  value: '2',
+  text: '调拨出库',
+}];
+
+exports.CWM_SO_BONDED_REGTYPES = [{
+  value: '1',
+  text: '先报关后出库',
+}, {
+  value: '2',
+  text: '先出库后报关',
+}, {
+  value: '3',
+  text: '不报关',
+}];

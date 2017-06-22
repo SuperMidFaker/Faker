@@ -101,6 +101,7 @@ export default class Instance extends Component {
       key: item.field,
       dataIndex: item.field,
       title,
+      custom_title: item.custom_title,
       width: item.width,
       sorter: item.source !== 3,
       sortOrder: this.state.sorter.columnKey === item.field && this.state.sorter.order,
@@ -178,10 +179,11 @@ export default class Instance extends Component {
         field: this.state.sorter.field,
         order: this.state.sorter.order === 'descend' ? 'DESC' : 'ASC',
       }),
+      filters: JSON.stringify(this.state.filters),
     }).then((result) => {
       const table = [];
       const columns = this.makeColumns();
-      const head = columns.map(item => item.title);
+      const head = columns.map(item => item.custom_title);
       head.push('追踪单号');
       table.push(head);
       result.data.data.forEach((items) => {
