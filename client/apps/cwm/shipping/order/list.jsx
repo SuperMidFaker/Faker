@@ -2,25 +2,44 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Layout, Radio, Select, Table, Button, Badge, Tag } from 'antd';
+import connectFetch from 'client/common/decorators/connect-fetch';
+import { Breadcrumb, Layout, Radio, Select, Button, Badge, Tag } from 'antd';
+import Table from 'client/components/remoteAntTable';
 import RowUpdater from 'client/components/rowUpdater';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/search-bar';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
+import { switchDefaultWhse } from 'common/reducers/cwmContext';
+import { loadSos } from 'common/reducers/cwmShippingOrder';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const Option = Select.Option;
-
+function fetchData({ state, dispatch }) {
+  dispatch(loadSos({
+    whseCode: state.cwmContext.defaultWhse.code,
+    pageSize: state.cwmShippingOrder.solist.pageSize,
+    current: state.cwmShippingOrder.solist.current,
+    filters: state.cwmShippingOrder.soFilters,
+  }));
+}
+@connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
     tenantId: state.account.tenantId,
+    whses: state.cwmContext.whses,
+    defaultWhse: state.cwmContext.defaultWhse,
+    owners: state.cwmContext.whseAttrs.owners,
+    loginId: state.account.loginId,
+    filters: state.cwmShippingOrder.soFilters,
+    solist: state.cwmShippingOrder.solist,
   }),
+  { loadSos, switchDefaultWhse }
 )
 @connectNav({
   depth: 2,
@@ -46,7 +65,7 @@ export default class ShippingOrderList extends React.Component {
   }, {
     title: '货主',
     width: 200,
-    dataIndex: 'owner_code',
+    dataIndex: 'owner_name',
   }, {
     title: '客户订单号',
     dataIndex: 'cust_order_no',
@@ -122,56 +141,6 @@ export default class ShippingOrderList extends React.Component {
       }
     },
   }]
-
-  dataSource = [{
-    id: '1',
-    so_no: 'N04601170548',
-    bonded: 1,
-    whse_code: '0961|希雅路仓库',
-    owner_code: '04601|米思米(中国)精密机械贸易',
-    status: 0,
-    receiver: 'kaka',
-    packing: '1',
-    est_shipping_date: '2017-09-04',
-  }, {
-    id: '2',
-    so_no: 'N04601170547',
-    bonded: 0,
-    whse_code: '0086|物流大道仓库',
-    owner_code: '03701|西门子国际贸易',
-    ref_order_no: 'NUE0394488',
-    status: 1,
-    receiver: 'james',
-    packing: '1',
-    est_shipping_date: '2017-09-04',
-  }, {
-    id: '3',
-    so_no: 'N04601170547',
-    bonded: 0,
-    whse_code: '0086|物流大道仓库',
-    owner_code: '03701|西门子国际贸易',
-    ref_order_no: 'NUE0394488',
-    status: 2,
-    receiver: 'james',
-    packing: '1',
-    est_shipping_date: '2017-09-04',
-  }, {
-    id: '4',
-    so_no: 'N04601170547',
-    bonded: 0,
-    whse_code: '0086|物流大道仓库',
-    owner_code: '03701|西门子国际贸易',
-    ref_order_no: 'NUE0394488',
-    status: 3,
-    receiver: 'james',
-    packing: '1',
-    est_shipping_date: '2017-09-04',
-  }];
-  handleStatusChange = (ev) => {
-    if (ev.target.value === this.props.listFilter.status) {
-
-    }
-  }
   handleCreateSO = () => {
     this.context.router.push('/cwm/shipping/order/create');
   }
@@ -183,7 +152,60 @@ export default class ShippingOrderList extends React.Component {
     const link = `/cwm/shipping/outbound/${row.so_no}`;
     this.context.router.push(link);
   }
+  handleStatusChange = (ev) => {
+    const filters = { ...this.props.filters, status: ev.target.value };
+    const whseCode = this.props.defaultWhse.code;
+    this.props.loadSos({
+      whseCode,
+      pageSize: this.props.solist.pageSize,
+      current: this.props.solist.current,
+      filters,
+    });
+  }
+  handleOwnerChange = (value) => {
+    const filters = { ...this.props.filters, ownerCode: value };
+    const whseCode = this.props.defaultWhse.code;
+    this.props.loadSos({
+      whseCode,
+      pageSize: this.props.solist.pageSize,
+      current: this.props.solist.current,
+      filters,
+    });
+  }
+  handleSearch = (value) => {
+    const filters = { ...this.props.filters, name: value };
+    const whseCode = this.props.defaultWhse.code;
+    this.props.loadSos({
+      whseCode,
+      pageSize: this.props.solist.pageSize,
+      current: this.props.solist.current,
+      filters,
+    });
+  }
   render() {
+    const { whses, defaultWhse, owners, filters } = this.props;
+    const dataSource = new Table.DataSource({
+      fetcher: params => this.props.loadSos(params),
+      resolve: result => result.data,
+      getPagination: (result, resolve) => ({
+        current: resolve(result.totalCount, result.current, result.pageSize),
+        showSizeChanger: true,
+        showQuickJumper: false,
+        pageSize: result.pageSize,
+        showTotal: total => `共 ${total} 条`,
+      }),
+      getParams: (pagination, tblfilters) => {
+        const newfilters = { ...this.props.filters, ...tblfilters[0] };
+        const params = {
+          whseCode: this.props.defaultWhse.code,
+          pageSize: pagination.pageSize,
+          current: pagination.current,
+          filters: newfilters,
+        };
+        return params;
+      },
+      remotes: this.props.solist,
+    });
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -195,24 +217,20 @@ export default class ShippingOrderList extends React.Component {
         <Header className="top-bar">
           <Breadcrumb>
             <Breadcrumb.Item>
-              <Select
-                size="large"
-                defaultValue="0960"
-                placeholder="选择仓库"
-                style={{ width: 160 }}
-              >
-                <Option value="0960">物流大道仓库</Option>
-                <Option value="0961">希雅路仓库</Option>
-                <Option value="0962">富特路仓库</Option>
+              <Select size="large" value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
+                {
+                  whses.map(warehouse => (<Option value={warehouse.code} key={warehouse.code}>{warehouse.name}</Option>))
+                }
               </Select>
             </Breadcrumb.Item>
             <Breadcrumb.Item>
               {this.msg('shippingOrder')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <RadioGroup defaultValue="pending" onChange={this.handleStatusChange} size="large">
+          <RadioGroup value={filters.status} onChange={this.handleStatusChange} size="large">
             <RadioButton value="pending">订单接收</RadioButton>
-            <RadioButton value="outbound">出库操作</RadioButton>
+            <RadioButton value="outbound">出库中</RadioButton>
+            <RadioButton value="partial">部分出库</RadioButton>
             <RadioButton value="completed">发货完成</RadioButton>
           </RadioGroup>
           <div className="top-bar-tools">
@@ -225,13 +243,22 @@ export default class ShippingOrderList extends React.Component {
           <div className="page-body">
             <div className="toolbar">
               <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} />
+              <span />
+              <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
+                onChange={this.handleOwnerChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
+              >
+                <Option value="all" key="all">全部货主</Option>
+                {
+                  owners.map(owner => (<Option key={owner.id} value={owner.id}>{owner.name}</Option>))
+                }
+              </Select>
               <div className="toolbar-right" />
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3>
               </div>
             </div>
             <div className="panel-body table-panel">
-              <Table columns={this.columns} rowSelection={rowSelection} dataSource={this.dataSource} rowKey="id" scroll={{ x: 1400 }} />
+              <Table columns={this.columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="id" scroll={{ x: 1400 }} />
             </div>
           </div>
         </Content>
