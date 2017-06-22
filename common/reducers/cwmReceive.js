@@ -19,7 +19,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/receive/', [
   'UPDATE_PRODUCT_DETAILS', 'UPDATE_PRODUCT_DETAILS_SUCCEED', 'UPDATE_PRODUCT_DETAILS_FAIL',
   'CONFIRM_PRODUCT_DETAILS', 'CONFIRM_PRODUCT_DETAILS_SUCCEED', 'CONFIRM_PRODUCT_DETAILS_FAIL',
   'RECEIVE_COMPLETED', 'RECEIVE_COMPLETED_SUCCEED', 'RECEIVE_COMPLETED_FAIL',
-  'SHOW_RECEIVEQTY_MODAL', 'HIDE_RECEIVEQTY_MODAL',
+  'SHOW_BATCH_RECEIVING_MODAL', 'HIDE_BATCH_RECEIVING_MODAL',
   'UPDATE_INBOUND_DETAILS', 'UPDATE_INBOUND_DETAILS_SUCCEED', 'UPDATE_INBOUND_DETAILS_FAIL',
   'SHOW_PUTTING_AWAY_MODAL', 'HIDE_PUTTING_AWAY_MODAL',
 ]);
@@ -57,7 +57,7 @@ const initialState = {
     data: [],
   },
   inboundFilters: { status: 'create', ownerCode: 'all' },
-  receiveQtyModal: {
+  batchReceivingModal: {
     visible: false,
   },
   puttingAwayModal: {
@@ -101,10 +101,10 @@ export default function reducer(state = initialState, action) {
       return { ...state, inbound: action.result.data };
     case actionTypes.INBOUND_STATUS_CHANGE:
       return { ...state, inboundFilters: { ...state.inboundFilters, status: action.status } };
-    case actionTypes.SHOW_RECEIVEQTY_MODAL:
-      return { ...state, receiveQtyModal: { ...state.receiveQtyModal, visible: true } };
-    case actionTypes.HIDE_RECEIVEQTY_MODAL:
-      return { ...state, receiveQtyModal: { ...state.receiveQtyModal, visible: false } };
+    case actionTypes.SHOW_BATCH_RECEIVING_MODAL:
+      return { ...state, batchReceivingModal: { ...state.batchReceivingModal, visible: true } };
+    case actionTypes.HIDE_BATCH_RECEIVING_MODAL:
+      return { ...state, batchReceivingModal: { ...state.batchReceivingModal, visible: false } };
     case actionTypes.SHOW_PUTTING_AWAY_MODAL:
       return { ...state, puttingAwayModal: { ...state.puttingAwayModal, visible: true } };
     case actionTypes.HIDE_PUTTING_AWAY_MODAL:
@@ -377,15 +377,15 @@ export function receiveCompleted(asnNo) {
   };
 }
 
-export function showExpressReceivingModal() {
+export function showBatchReceivingModal() {
   return {
-    type: actionTypes.SHOW_RECEIVEQTY_MODAL,
+    type: actionTypes.SHOW_BATCH_RECEIVING_MODAL,
   };
 }
 
-export function hideExpressReceivingModal() {
+export function hideBatchReceivingModal() {
   return {
-    type: actionTypes.HIDE_RECEIVEQTY_MODAL,
+    type: actionTypes.HIDE_BATCH_RECEIVING_MODAL,
   };
 }
 

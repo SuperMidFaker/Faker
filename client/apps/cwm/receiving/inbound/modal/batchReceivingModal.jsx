@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { Checkbox, Modal, Select, Form } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
-import { hideExpressReceivingModal, updateInboundDetails } from 'common/reducers/cwmReceive';
+import { hideBatchReceivingModal, updateInboundDetails } from 'common/reducers/cwmReceive';
 import { loadLocations } from 'common/reducers/cwmWarehouse';
 
 const formatMsg = format(messages);
@@ -19,11 +19,11 @@ const FormItem = Form.Item;
     loginId: state.account.loginId,
     locations: state.cwmWarehouse.locations,
     defaultWhse: state.cwmContext.defaultWhse,
-    visible: state.cwmReceive.receiveQtyModal.visible,
+    visible: state.cwmReceive.batchReceivingModal.visible,
   }),
-  { hideExpressReceivingModal, loadLocations, updateInboundDetails }
+  { hideBatchReceivingModal, loadLocations, updateInboundDetails }
 )
-export default class ExpressReceivingModal extends Component {
+export default class BatchReceivingModal extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     data: PropTypes.array.isRequired,
@@ -39,7 +39,7 @@ export default class ExpressReceivingModal extends Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   handleCancel = () => {
-    this.props.hideExpressReceivingModal();
+    this.props.hideBatchReceivingModal();
   }
   handleLocationChange = (value) => {
     this.setState({
@@ -61,7 +61,7 @@ export default class ExpressReceivingModal extends Component {
     this.props.updateInboundDetails(seqNos, location, damageLevel, loginId, asnNo, inboundNo).then((result) => {
       if (!result.error) {
         this.props.reload();
-        this.props.hideExpressReceivingModal();
+        this.props.hideBatchReceivingModal();
         this.setState({
           location: '',
           damageLevel: '',
@@ -75,7 +75,7 @@ export default class ExpressReceivingModal extends Component {
       wrapperCol: { span: 12 },
     };
     return (
-      <Modal title="快捷收货" onCancel={this.handleCancel} visible={this.props.visible} onOk={this.handleSubmit}>
+      <Modal title="批量收货" onCancel={this.handleCancel} visible={this.props.visible} onOk={this.handleSubmit} okText="确认收货">
         <FormItem {...formItemLayout} label="收货数量">
           <Checkbox checked disabled>实际收货数量与预期一致</Checkbox>
         </FormItem>

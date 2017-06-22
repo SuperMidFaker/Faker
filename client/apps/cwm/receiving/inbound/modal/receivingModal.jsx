@@ -239,7 +239,7 @@ export default class ReceivingModal extends Component {
     const { receivedQty, receivedPackQty } = this.state;
     const title = this.props.receivingMode === 'scan' ? '扫码收货' : '手动收货';
     return (
-      <Modal title={title} width={960} maskClosable={false} onCancel={this.handleCancel} visible={this.props.visible} onOk={this.handleSubmit}>
+      <Modal title={title} width={960} maskClosable={false} onCancel={this.handleCancel} visible={this.props.visible} onOk={this.handleSubmit} okText="确认收货">
         <Row>
           <Col sm={12} md={8} lg={6}>
             <InfoItem addonBefore="商品货号" field={productNo} style={{ marginBottom: 0 }} />
