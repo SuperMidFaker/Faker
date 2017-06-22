@@ -170,7 +170,7 @@ export default class ReceiveInbound extends Component {
                   <ReceiveDetailsPane inboundNo={this.props.params.inboundNo} inboundHead={inboundHead} />
                 </TabPane>
                 <TabPane tab="上架明细" key="putawayDetails">
-                  <PutawayDetailsPane inboundNo={this.props.params.inboundNo} />
+                  <PutawayDetailsPane inboundNo={this.props.params.inboundNo} inboundHead={inboundHead} />
                 </TabPane>
               </Tabs>
             </Card>

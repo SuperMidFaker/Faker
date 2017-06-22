@@ -26,12 +26,11 @@ const FormItem = Form.Item;
 export default class PuttingAwayModal extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    data: PropTypes.array.isRequired,
-    reload: PropTypes.func.isRequired,
+    receivingMode: PropTypes.string.isRequired,
+    inboundNo: PropTypes.string.isRequired,
   }
   state = {
     location: '',
-    damageLevel: '',
   }
   componentWillMount() {
     const whseCode = this.props.defaultWhse.code;
@@ -44,11 +43,6 @@ export default class PuttingAwayModal extends Component {
   handleLocationChange = (value) => {
     this.setState({
       location: value,
-    });
-  }
-  handleDamageLevelChange = (value) => {
-    this.setState({
-      damageLevel: value,
     });
   }
   handleSubmit = () => {
@@ -74,8 +68,9 @@ export default class PuttingAwayModal extends Component {
       labelCol: { span: 8 },
       wrapperCol: { span: 12 },
     };
+    const title = this.props.receivingMode === 'scan' ? '上架记录' : '上架确认';
     return (
-      <Modal title="上架确认" onCancel={this.handleCancel} visible={this.props.visible} onOk={this.handleSubmit}>
+      <Modal title={title} onCancel={this.handleCancel} visible={this.props.visible} onOk={this.handleSubmit}>
         <FormItem {...formItemLayout} label="实际库位">
           <Select showSearch style={{ width: 160 }} onSelect={this.handleLocationChange}>
             <Option value={'A123456'} key="current">收货库位: A123456</Option>

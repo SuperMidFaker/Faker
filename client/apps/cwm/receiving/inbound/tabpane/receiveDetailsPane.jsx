@@ -69,13 +69,13 @@ export default class ReceiveDetailsPane extends React.Component {
     });
   }
 
-  handleBatchReceived = () => {
+  handleBatchConfirmReceived = () => {
     this.props.showBatchReceivingModal();
   }
   handleExpressReceived = () => {
     Modal.confirm({
-      title: '是否确定已按预期数量收货?',
-      content: 'When clicked the OK button, this dialog will be closed after 1 second',
+      title: '是否确认收货完成?',
+      content: '默认按预期数量收货，确认收货后可以取消收货退回',
       onOk() {
         return new Promise((resolve, reject) => {
           setTimeout(Math.random() > 0.5 ? resolve : reject, 1000);
@@ -197,7 +197,7 @@ export default class ReceiveDetailsPane extends React.Component {
     fixed: 'right',
     render: (o, record) => {
       if (this.props.inboundHead.status < CWM_INBOUND_STATUS.COMPLETED.value) {
-        const label = this.props.inboundHead.rec_mode === 'scan' ? '扫码收货' : '手动收货';
+        const label = this.props.inboundHead.rec_mode === 'scan' ? '收货记录' : '收货确认';
         return (<RowUpdater onHit={this.handleReceive} label={label} row={record} />);
       }
     },
@@ -230,13 +230,13 @@ export default class ReceiveDetailsPane extends React.Component {
           <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
             <h3>已选中{this.state.selectedRowKeys.length}项</h3>
             {inboundHead.rec_mode === 'manual' &&
-            <Button size="large" onClick={this.handleBatchReceived}>
+            <Button size="large" onClick={this.handleBatchConfirmReceived}>
               批量收货确认
             </Button>
             }
           </div>
           <div className="toolbar-right">
-            {inboundHead.rec_mode === 'manual' &&
+            {inboundHead.rec_mode === 'manual' && inboundHead.status < CWM_INBOUND_STATUS.PARTIAL_RECEIVED.step &&
             <Button size="large" icon="check" onClick={this.handleExpressReceived}>
               快捷收货
             </Button>
