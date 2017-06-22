@@ -98,9 +98,9 @@ export default class ReceivingInboundList extends React.Component {
         return (<Badge status="default" text="待入库" />);
       } else if (o === 1) {
         return (<Badge status="processing" text="收货" />);
-      } else if (o === 2) {
-        return (<Badge status="processing" text="上架" />);
       } else if (o === 3) {
+        return (<Badge status="processing" text="上架" />);
+      } else if (o === 5) {
         return (<Badge status="success" text="入库完成" />);
       }
     },
