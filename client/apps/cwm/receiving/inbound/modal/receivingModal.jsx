@@ -179,8 +179,8 @@ export default class ReceivingModal extends Component {
   }, {
     title: '收货数量',
     width: 180,
-    dataIndex: 'received_qty',
-    render: (o, record) => (<QuantityInput packQty={record.received_pack_qty} pcsQty={record.received_qty} />),
+    dataIndex: 'inbound_qty',
+    render: (o, record) => (<QuantityInput packQty={record.inbound_pack_qty} pcsQty={record.inbound_qty} />),
   }, {
     title: '破损级别',
     dataIndex: 'damage_level',
