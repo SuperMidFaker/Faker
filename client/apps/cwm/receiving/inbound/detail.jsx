@@ -5,7 +5,7 @@ import { Breadcrumb, Icon, Dropdown, Form, Radio, Layout, Menu, Steps, Button, C
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import InfoItem from 'client/components/InfoItem';
-import { openReceiveModal, getInboundDetail, confirm, showExpressReceivingModal, updateInboundMode } from 'common/reducers/cwmReceive';
+import { openReceiveModal, getInboundDetail, confirm, showBatchReceivingModal, updateInboundMode } from 'common/reducers/cwmReceive';
 import { loadLocations } from 'common/reducers/cwmWarehouse';
 import { CWM_INBOUND_STATUS } from 'common/constants';
 import PutawayDetailsPane from './tabpane/putawayDetailsPane';
@@ -30,7 +30,7 @@ const TabPane = Tabs.TabPane;
     defaultWhse: state.cwmContext.defaultWhse,
     locations: state.cwmWarehouse.locations,
   }),
-  { openReceiveModal, getInboundDetail, loadLocations, confirm, showExpressReceivingModal, updateInboundMode }
+  { openReceiveModal, getInboundDetail, loadLocations, confirm, showBatchReceivingModal, updateInboundMode }
 )
 @connectNav({
   depth: 3,
@@ -170,7 +170,7 @@ export default class ReceiveInbound extends Component {
                   <ReceiveDetailsPane inboundNo={this.props.params.inboundNo} inboundHead={inboundHead} />
                 </TabPane>
                 <TabPane tab="上架明细" key="putawayDetails">
-                  <PutawayDetailsPane inboundNo={this.props.params.inboundNo} />
+                  <PutawayDetailsPane inboundNo={this.props.params.inboundNo} inboundHead={inboundHead} />
                 </TabPane>
               </Tabs>
             </Card>

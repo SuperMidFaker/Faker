@@ -1,15 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Form, Popconfirm, Select, Button, Table } from 'antd';
+import { Form, Modal, Select, Button, Table } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import RowUpdater from 'client/components/rowUpdater';
 import PackagePopover from '../popover/packagePopover';
 import ReceivingModal from '../modal/receivingModal';
 import QuantityInput from '../../../common/quantityInput';
-import ExpressReceivingModal from '../modal/expressReceivingModal';
-import { openReceiveModal, getInboundDetail, confirm, showExpressReceivingModal, updateInboundMode } from 'common/reducers/cwmReceive';
+import BatchReceivingModal from '../modal/batchReceivingModal';
+import { openReceiveModal, getInboundDetail, confirm, showBatchReceivingModal, updateInboundMode } from 'common/reducers/cwmReceive';
 import { loadLocations } from 'common/reducers/cwmWarehouse';
 import { CWM_INBOUND_STATUS } from 'common/constants';
 
@@ -25,7 +25,7 @@ const Option = Select.Option;
     defaultWhse: state.cwmContext.defaultWhse,
     locations: state.cwmWarehouse.locations,
   }),
-  { openReceiveModal, getInboundDetail, loadLocations, confirm, showExpressReceivingModal, updateInboundMode }
+  { openReceiveModal, getInboundDetail, loadLocations, confirm, showBatchReceivingModal, updateInboundMode }
 )
 @connectNav({
   depth: 3,
@@ -69,8 +69,21 @@ export default class ReceiveDetailsPane extends React.Component {
     });
   }
 
-  handleExpressReceiving = () => {
-    this.props.showExpressReceivingModal();
+  handleBatchConfirmReceived = () => {
+    this.props.showBatchReceivingModal();
+  }
+  handleExpressReceived = () => {
+    Modal.confirm({
+      title: '是否确认收货完成?',
+      content: '默认按预期数量收货，确认收货后可以取消收货退回',
+      onOk() {
+        return new Promise((resolve, reject) => {
+          setTimeout(Math.random() > 0.5 ? resolve : reject, 1000);
+        }).catch(() => console.log('Oops errors!'));
+      },
+      onCancel() {},
+      okText: '确认收货',
+    });
   }
   handleReceive = (record) => {
     this.props.openReceiveModal({
@@ -124,7 +137,7 @@ export default class ReceiveDetailsPane extends React.Component {
     title: 'SKU',
     dataIndex: 'product_sku',
     width: 200,
-    render: o => (<PackagePopover data={o} />),
+    render: o => (<PackagePopover sku={o} />),
   }, {
     title: '预期数量',
     width: 180,
@@ -184,7 +197,7 @@ export default class ReceiveDetailsPane extends React.Component {
     fixed: 'right',
     render: (o, record) => {
       if (this.props.inboundHead.status < CWM_INBOUND_STATUS.COMPLETED.value) {
-        const label = this.props.inboundHead.rec_mode === 'scan' ? '扫码收货' : '收货确认';
+        const label = this.props.inboundHead.rec_mode === 'scan' ? '收货记录' : '收货确认';
         return (<RowUpdater onHit={this.handleReceive} label={label} row={record} />);
       }
     },
@@ -198,6 +211,15 @@ export default class ReceiveDetailsPane extends React.Component {
       onChange: (selectedRowKeys, selectedRows) => {
         this.setState({ selectedRowKeys, selectedRows });
       },
+      selections: [{
+        key: 'all-data',
+        text: '选择全部项',
+        onSelect: () => {
+          this.setState({
+            selectedRowKeys: [...Array(6).keys()],  // TODO
+          });
+        },
+      }],
       getCheckboxProps: record => ({
         disabled: record.trace_id.length >= 1,
       }),
@@ -208,18 +230,16 @@ export default class ReceiveDetailsPane extends React.Component {
           <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
             <h3>已选中{this.state.selectedRowKeys.length}项</h3>
             {inboundHead.rec_mode === 'manual' &&
-            <Button size="large" onClick={this.handleExpressReceiving}>
-              快捷收货
+            <Button size="large" onClick={this.handleBatchConfirmReceived}>
+              批量收货确认
             </Button>
             }
           </div>
           <div className="toolbar-right">
-            {inboundHead.rec_mode === 'manual' && this.state.currentStatus < CWM_INBOUND_STATUS.COMPLETED.step &&
-            <Popconfirm title="确定此次入库操作已完成?" onConfirm={this.handleInboundConfirmed} okText="确认" cancelText="取消">
-              <Button type="primary" ghost size="large" icon="check" disabled={this.state.confirmDisabled}>
-                入库确认
-              </Button>
-            </Popconfirm>
+            {inboundHead.rec_mode === 'manual' && inboundHead.status < CWM_INBOUND_STATUS.PARTIAL_RECEIVED.step &&
+            <Button size="large" icon="check" onClick={this.handleExpressReceived}>
+              快捷收货
+            </Button>
             }
           </div>
         </div>
@@ -227,7 +247,7 @@ export default class ReceiveDetailsPane extends React.Component {
           scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
         />
         <ReceivingModal reload={this.handleReload} receivingMode={inboundHead.rec_mode} />
-        <ExpressReceivingModal reload={this.handleReload} asnNo={inboundHead.asn_no} inboundNo={inboundHead.inbound_no} data={this.state.selectedRows} />
+        <BatchReceivingModal reload={this.handleReload} asnNo={inboundHead.asn_no} inboundNo={inboundHead.inbound_no} data={this.state.selectedRows} />
       </div>
     );
   }

@@ -1,44 +1,36 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Button, Popover, Form, Input, Col, Row } from 'antd';
+import { Button, Popover, Form, Input } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
+import { connect } from 'react-redux';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../../message.i18n';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
+const InputGroup = Input.Group;
 
 @injectIntl
+@connect(
+  state => ({
+    packings: state.cwmSku.params.packings,
+    skuForm: state.cwmSku.skuForm,
+  }),
+  { }
+)
 export default class PackagePopover extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    data: PropTypes.string.isRequired,
+    sku: PropTypes.string.isRequired,
   }
   state = {
     visible: false,
-    innerPacking: '',
-    box: '',
-    tray: '',
   }
   msg = key => formatMsg(this.props.intl, key);
   handleVisibleChange = (visible) => {
     this.setState({ visible });
   }
-  handlePackingChange = (e) => {
-    this.setState({
-      innerPacking: e.target.value,
-    });
-  }
-  handleBoxChange = (e) => {
-    this.setState({
-      box: this.state.innerPacking * e.target.value,
-    });
-  }
-  handleTrayChange = (e) => {
-    this.setState({
-      tray: this.state.innerPacking * this.state.box * e.target.value,
-    });
-  }
+
   handleCancel = () => {
     this.setState({ visible: false });
   }
@@ -46,46 +38,32 @@ export default class PackagePopover extends Component {
     this.setState({ visible: false });
   }
   render() {
-    const data = this.props.data;
+    const sku = this.props.sku;
+    const { skuForm } = this.props;
     const content = (
-      <div>
-        <Form>
-          <FormItem label="主单位" labelCol={{ span: 6 }}>
-            <Row gutter={8}>
-              <Col span="8">
-                <Input defaultValue="1" disabled />
-              </Col>
-            </Row>
+      <div style={{ width: 280 }}>
+        <Form layout="vertical" className="form-layout-compact">
+          <FormItem label="主单位数量">
+            <Input className="readonly" defaultValue="1" disabled />
           </FormItem>
-          <FormItem label="内包装" labelCol={{ span: 6 }}>
-            <Row gutter={8}>
-              <Col span="8">
-                <Input onChange={this.handlePackingChange} />
-              </Col>
-              <Col span="8">
-                <Input disabled value={this.state.innerPacking} />
-              </Col>
-            </Row>
+          <FormItem label="内包装量">
+            <InputGroup compact>
+              <Input className="readonly" style={{ width: '50%' }} placeholder="SKU包装单位数量" value={skuForm.inner_pack_qty} disabled />
+              <Input className="readonly" style={{ width: '50%' }} placeholder="主单位数量" value={skuForm.convey_inner_qty} disabled />
+            </InputGroup>
           </FormItem>
-          <FormItem label="箱" labelCol={{ span: 6 }}>
-            <Row gutter={8}>
-              <Col span="8">
-                <Input onChange={this.handleBoxChange} />
-              </Col>
-              <Col span="8">
-                <Input disabled value={this.state.box} />
-              </Col>
-            </Row>
+          <FormItem label="装箱量">
+            <InputGroup compact>
+              <Input className="readonly" style={{ width: '50%' }} placeholder="SKU包装单位数量" value={skuForm.box_pack_qty} disabled />
+              <Input className="readonly" style={{ width: '50%' }} placeholder="主单位数量" value={skuForm.convey_box_qty} disabled />
+            </InputGroup>
           </FormItem>
-          <FormItem label="托盘" labelCol={{ span: 6 }}>
-            <Row gutter={8}>
-              <Col span="8">
-                <Input onChange={this.handleTrayChange} />
-              </Col>
-              <Col span="8">
-                <Input disabled value={this.state.tray} />
-              </Col>
-            </Row>
+          <FormItem label="码盘量">
+            <InputGroup compact>
+              <Input className="readonly" style={{ width: '34%' }} placeholder="箱量" value={skuForm.pallet_box_qty} disabled />
+              <Input className="readonly" style={{ width: '33%' }} placeholder="SKU包装单位数量" value={skuForm.pallet_pack_qty} disabled />
+              <Input className="readonly" style={{ width: '33%' }} placeholder="主单位数量" value={skuForm.convey_pallet_qty} disabled />
+            </InputGroup>
           </FormItem>
           <FormItem>
             <div className="toolbar-right">
@@ -97,8 +75,8 @@ export default class PackagePopover extends Component {
       </div>
     );
     return (
-      <Popover content={content} title="包装代码" trigger="click" visible={this.state.visible} onVisibleChange={this.handleVisibleChange}>
-        <Button>{data}</Button>
+      <Popover content={content} title="SKU包装规则" trigger="click" visible={this.state.visible} onVisibleChange={this.handleVisibleChange}>
+        <Button>{sku}</Button>
       </Popover>
     );
   }

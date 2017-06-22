@@ -237,7 +237,7 @@ export default class ReceivingModal extends Component {
   render() {
     const { receivingMode, expectQty, expectPackQty, productNo, name } = this.props;
     const { receivedQty, receivedPackQty } = this.state;
-    const title = this.props.receivingMode === 'scan' ? '扫码收货' : '手动收货';
+    const title = this.props.receivingMode === 'scan' ? '收货记录' : '收货确认';
     return (
       <Modal title={title} width={960} maskClosable={false} onCancel={this.handleCancel} visible={this.props.visible} onOk={this.handleSubmit}>
         <Row>

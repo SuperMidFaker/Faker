@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { Checkbox, Modal, Select, Form } from 'antd';
+import { DatePicker, Input, Modal, Select, Form } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
-import { hideExpressReceivingModal, updateInboundDetails } from 'common/reducers/cwmReceive';
+import { hidePuttingAwayModal, updateInboundDetails } from 'common/reducers/cwmReceive';
 import { loadLocations } from 'common/reducers/cwmWarehouse';
 
 const formatMsg = format(messages);
@@ -19,19 +19,18 @@ const FormItem = Form.Item;
     loginId: state.account.loginId,
     locations: state.cwmWarehouse.locations,
     defaultWhse: state.cwmContext.defaultWhse,
-    visible: state.cwmReceive.receiveQtyModal.visible,
+    visible: state.cwmReceive.puttingAwayModal.visible,
   }),
-  { hideExpressReceivingModal, loadLocations, updateInboundDetails }
+  { hidePuttingAwayModal, loadLocations, updateInboundDetails }
 )
-export default class ExpressReceivingModal extends Component {
+export default class PuttingAwayModal extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    data: PropTypes.array.isRequired,
-    reload: PropTypes.func.isRequired,
+    receivingMode: PropTypes.string.isRequired,
+    inboundNo: PropTypes.string.isRequired,
   }
   state = {
     location: '',
-    damageLevel: '',
   }
   componentWillMount() {
     const whseCode = this.props.defaultWhse.code;
@@ -39,16 +38,11 @@ export default class ExpressReceivingModal extends Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   handleCancel = () => {
-    this.props.hideExpressReceivingModal();
+    this.props.hidePuttingAwayModal();
   }
   handleLocationChange = (value) => {
     this.setState({
       location: value,
-    });
-  }
-  handleDamageLevelChange = (value) => {
-    this.setState({
-      damageLevel: value,
     });
   }
   handleSubmit = () => {
@@ -61,7 +55,7 @@ export default class ExpressReceivingModal extends Component {
     this.props.updateInboundDetails(seqNos, location, damageLevel, loginId, asnNo, inboundNo).then((result) => {
       if (!result.error) {
         this.props.reload();
-        this.props.hideExpressReceivingModal();
+        this.props.hidePuttingAwayModal();
         this.setState({
           location: '',
           damageLevel: '',
@@ -74,24 +68,21 @@ export default class ExpressReceivingModal extends Component {
       labelCol: { span: 8 },
       wrapperCol: { span: 12 },
     };
+    const title = this.props.receivingMode === 'scan' ? '上架记录' : '上架确认';
     return (
-      <Modal title="快捷收货" onCancel={this.handleCancel} visible={this.props.visible} onOk={this.handleSubmit}>
-        <FormItem {...formItemLayout} label="收货数量">
-          <Checkbox checked disabled>实际收货数量与预期一致</Checkbox>
-        </FormItem>
-        <FormItem {...formItemLayout} label="库位">
-          <Select style={{ width: 160 }} onSelect={this.handleLocationChange}>
+      <Modal title={title} onCancel={this.handleCancel} visible={this.props.visible} onOk={this.handleSubmit}>
+        <FormItem {...formItemLayout} label="实际库位">
+          <Select showSearch style={{ width: 160 }} onSelect={this.handleLocationChange}>
+            <Option value={'A123456'} key="current">收货库位: A123456</Option>
+            <Option value={'B123456'} key="target">目标库位: B123456</Option>
             {this.props.locations.map(loc => (<Option value={loc.location} key={loc.location}>{loc.location}</Option>))}
           </Select>
         </FormItem>
-        <FormItem {...formItemLayout} label="破损级别" >
-          <Select style={{ width: 160 }} onSelect={this.handleDamageLevelChange}>
-            <Option value={0}>完好</Option>
-            <Option value={1}>轻微擦痕</Option>
-            <Option value={2}>中度</Option>
-            <Option value={3}>重度</Option>
-            <Option value={4}>严重磨损</Option>
-          </Select>
+        <FormItem {...formItemLayout} label="上架人员" >
+          <Input />
+        </FormItem>
+        <FormItem {...formItemLayout} label="上架时间" >
+          <DatePicker />
         </FormItem>
       </Modal>
     );

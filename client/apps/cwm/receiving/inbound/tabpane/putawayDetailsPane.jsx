@@ -1,10 +1,14 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Table, Select, Button } from 'antd';
+import { Table, Select, Button, Modal } from 'antd';
 import RowUpdater from 'client/components/rowUpdater';
 import QuantityInput from '../../../common/quantityInput';
+import { showPuttingAwayModal } from 'common/reducers/cwmReceive';
 import { loadLocations } from 'common/reducers/cwmWarehouse';
+import PuttingAwayModal from '../modal/puttingAwayModal';
+import { CWM_INBOUND_STATUS } from 'common/constants';
 
 const Option = Select.Option;
 
@@ -17,11 +21,13 @@ const Option = Select.Option;
     defaultWhse: state.cwmContext.defaultWhse,
     locations: state.cwmWarehouse.locations,
   }),
-  { loadLocations }
+  { loadLocations, showPuttingAwayModal }
 )
 export default class PutawayDetailsPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
+    inboundNo: PropTypes.string.isRequired,
+    inboundHead: PropTypes.object.isRequired,
   }
   state = {
     selectedRowKeys: [],
@@ -41,7 +47,7 @@ export default class PutawayDetailsPane extends React.Component {
     width: 120,
     fixed: 'left',
   }, {
-    title: '当前库位',
+    title: '实际库位',
     dataIndex: 'location',
     width: 120,
     render: () => {
@@ -92,17 +98,15 @@ export default class PutawayDetailsPane extends React.Component {
     width: 150,
     fixed: 'right',
     render: (o, record) => {
-      switch (record.status) {  // 分配明细的状态 2 已分配 4 已拣货 6 已发运
-        case 1:   // 已分配
+      switch (record.status) {  // 上架明细的状态 0 未上架 1 已上架
+        case 0:   // 未上架
           return (<span>
-            <RowUpdater onHit={this.handleCancelReceived} label="取消收货" row={record} />
-          </span>);
-        case 2:   // 已分配
-          return (<span>
-            <RowUpdater onHit={this.handleConfirmPutAway} label="上架确认" row={record} />
+            <RowUpdater onHit={this.handlePutAway} label="上架确认" row={record} />
             <span className="ant-divider" />
             <RowUpdater onHit={this.handleCancelReceived} label="取消收货" row={record} />
           </span>);
+        case 1:   // 已上架
+          break;
         default:
           break;
       }
@@ -122,7 +126,7 @@ export default class PutawayDetailsPane extends React.Component {
     expect_qty: 15,
     received_pack_qty: 15,
     received_qty: 15,
-    status: 2,
+    status: 0,
     allocated_by: '张申',
     allocated_date: '2017-06-12',
     children: [{
@@ -139,7 +143,7 @@ export default class PutawayDetailsPane extends React.Component {
       expect_qty: 1000,
       received_pack_qty: 0,
       received_qty: 0,
-      status: 1,
+      status: 0,
     }, {
       id: 3,
       convey_no: 'CV66883444',
@@ -171,7 +175,7 @@ export default class PutawayDetailsPane extends React.Component {
     expect_qty: 1000,
     received_pack_qty: 0,
     received_qty: 0,
-    status: 2,
+    status: 0,
   }, {
     id: 5,
     convey_no: 'CV66883446',
@@ -186,10 +190,23 @@ export default class PutawayDetailsPane extends React.Component {
     expect_qty: 1000,
     received_pack_qty: 0,
     received_qty: 0,
-    status: 2,
+    status: 1,
   }];
-  handleConfirmPutAway = () => {
-    // this.props.openPickingModal();
+  handleExpressPutAway = () => {
+    Modal.confirm({
+      title: '是否确认上架完成?',
+      content: '默认将收货库位设为最终储存库位，确认上架后不能操作取消收货',
+      onOk() {
+        return new Promise((resolve, reject) => {
+          setTimeout(Math.random() > 0.5 ? resolve : reject, 1000);
+        }).catch(() => console.log('Oops errors!'));
+      },
+      onCancel() {},
+      okText: '确认上架',
+    });
+  }
+  handlePutAway = () => {
+    this.props.showPuttingAwayModal();
   }
   handleBatchConfirmPutAway = () => {
     // this.props.openPickingModal();
@@ -198,12 +215,18 @@ export default class PutawayDetailsPane extends React.Component {
     // this.props.openShippingModal();
   }
   render() {
+    const { inboundHead } = this.props;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
         this.setState({ selectedRowKeys });
       },
     };
+    let columns = this.columns;
+    if (inboundHead.rec_mode === 'scan') {
+      columns = [...columns];
+      columns.splice(9, 10);
+    }
     return (
       <div>
         <div className="toolbar">
@@ -214,17 +237,18 @@ export default class PutawayDetailsPane extends React.Component {
             </Button>
           </div>
           <div className="toolbar-right">
-            {this.state.allocated && this.state.shippingMode === 'scan' && !this.state.pushedTask &&
-            <Button type="primary" size="large" onClick={this.handlePushTask} icon="tablet">推送拣货任务</Button>}
-            {this.state.allocated && this.state.shippingMode === 'scan' && this.state.pushedTask &&
-            <Button size="large" onClick={this.handleWithdrawTask} icon="rollback" />}
-
+            {inboundHead.rec_mode === 'manual' && inboundHead.status < CWM_INBOUND_STATUS.PARTIAL_PUTAWAY.step &&
+            <Button type="primary" ghost size="large" icon="check" onClick={this.handleExpressPutAway}>
+              快捷上架
+            </Button>
+            }
           </div>
         </div>
-        <Table columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={this.mockData} rowKey="id"
-          scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0) }}
+        <Table columns={columns} rowSelection={rowSelection} indentSize={0} dataSource={this.mockData} rowKey="id"
+          scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0) }}
           defaultExpandedRowKeys={[1, 2, 3]}
         />
+        <PuttingAwayModal receivingMode={inboundHead.rec_mode} />
       </div>
     );
   }
