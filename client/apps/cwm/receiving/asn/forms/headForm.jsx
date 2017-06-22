@@ -24,7 +24,6 @@ export default class HeadForm extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     form: PropTypes.object.isRequired,
-    editable: PropTypes.bool,
     handleOwnerChange: PropTypes.func,
   }
   state = {
