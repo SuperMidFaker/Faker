@@ -31,7 +31,6 @@ export default class ContractDetails extends React.Component {
     intl: intlShape.isRequired,
     invoice: PropTypes.object.isRequired,
     trxModes: PropTypes.array.isRequired,
-    form: PropTypes.object.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
