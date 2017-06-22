@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Table, Button } from 'antd';
 import RowUpdater from 'client/components/rowUpdater';
+import { MdIcon } from 'client/components/FontIcon';
 import AllocatingModal from '../modal/allocatingModal';
 import QuantityInput from '../../../common/quantityInput';
 import { openAllocatingModal } from 'common/reducers/cwmOutbound';
@@ -184,15 +185,15 @@ export default class OrderDetailsPane extends React.Component {
         <div className="toolbar">
           <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
             <h3>已选中{this.state.selectedRowKeys.length}项</h3>
-            <Button size="large" onClick={this.handleWithdrawTask} icon="rollback">
-              批量分配
+            <Button size="large" onClick={this.handleWithdrawTask}>
+              <MdIcon type="check-all" />批量自动分配
+            </Button>
+            <Button size="large" onClick={this.handleWithdrawTask} icon="close">
+              批量取消分配
             </Button>
           </div>
           <div className="toolbar-right">
-            {this.state.allocated && this.state.shippingMode === 'scan' && !this.state.pushedTask &&
-            <Button type="primary" size="large" onClick={this.handlePushTask} icon="tablet">推送拣货任务</Button>}
-            {this.state.allocated && this.state.shippingMode === 'scan' && this.state.pushedTask &&
-            <Button size="large" onClick={this.handleWithdrawTask} icon="rollback" />}
+            {!this.state.allocated && <Button type="primary" size="large" onClick={this.handleAutoAllocate} >订单自动分配</Button>}
           </div>
         </div>
         <Table columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={this.mockData} rowKey="id"

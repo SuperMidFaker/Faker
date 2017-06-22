@@ -7,7 +7,7 @@ import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/search-bar';
 import RowUpdater from 'client/components/rowUpdater';
 import connectNav from 'client/common/decorators/connect-nav';
-import { FtIcon } from 'client/components/FontIcon';
+import { Fontello } from 'client/components/FontIcon';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 
@@ -62,11 +62,11 @@ export default class OutboundList extends React.Component {
     className: 'cell-align-center',
     render: (o, record) => {
       if (record.status === 1) {
-        return <FtIcon type="circle" color="blue" />;
+        return <Fontello type="circle" color="blue" />;
       } else if (record.status >= 2 && record.status <= 6) {
-        return <FtIcon type="circle" color="green" />;
+        return <Fontello type="circle" color="green" />;
       } else {
-        return <FtIcon type="circle" color="gray" />;
+        return <Fontello type="circle" color="gray" />;
       }
     },
   }, {
@@ -74,11 +74,11 @@ export default class OutboundList extends React.Component {
     className: 'cell-align-center',
     render: (o, record) => {
       if (record.status === 3) {
-        return <FtIcon type="circle" color="blue" />;
+        return <Fontello type="circle" color="blue" />;
       } else if (record.status >= 4 && record.status <= 6) {
-        return <FtIcon type="circle" color="green" />;
+        return <Fontello type="circle" color="green" />;
       } else {
-        return <FtIcon type="circle" color="gray" />;
+        return <Fontello type="circle" color="gray" />;
       }
     },
   }, {
@@ -88,11 +88,11 @@ export default class OutboundList extends React.Component {
     render: (o) => {
       switch (o) {
         case 0:
-          return <FtIcon type="circle" color="gray" />;
+          return <Fontello type="circle" color="gray" />;
         case 1:
-          return <FtIcon type="circle" color="blue" />;
+          return <Fontello type="circle" color="blue" />;
         case 2:
-          return <FtIcon type="circle" color="green" />;
+          return <Fontello type="circle" color="green" />;
         default:
           return <span />;
       }
@@ -102,11 +102,11 @@ export default class OutboundList extends React.Component {
     className: 'cell-align-center',
     render: (o, record) => {
       if (record.status === 5) {
-        return <FtIcon type="circle" color="blue" />;
+        return <Fontello type="circle" color="blue" />;
       } else if (record.status === 6) {
-        return <FtIcon type="circle" color="green" />;
+        return <Fontello type="circle" color="green" />;
       } else {
-        return <FtIcon type="circle" color="gray" />;
+        return <Fontello type="circle" color="gray" />;
       }
     },
   }, {
@@ -288,7 +288,7 @@ export default class OutboundList extends React.Component {
             <RadioButton value="waves">波次计划</RadioButton>
           </RadioGroup>
           <span />
-          <RadioGroup defaultValue="allocating" onChange={this.handleStatusChange} size="large">
+          <RadioGroup defaultValue="created" onChange={this.handleStatusChange} size="large">
             <RadioButton value="created">待出库</RadioButton>
             <RadioButton value="allocating">分配</RadioButton>
             <RadioButton value="picking">拣货</RadioButton>
@@ -305,15 +305,6 @@ export default class OutboundList extends React.Component {
                 onChange={this.handleClientSelectChange} defaultValue="all"
               >
                 <Option value="all">全部货主</Option>
-              </Select>
-              <span />
-              <Select showSearch optionFilterProp="children" size="large" style={{ width: 100 }}
-                onChange={this.handleClientSelectChange} defaultValue="all"
-              >
-                <Option value="all">所有状态</Option>
-                <Option value="pending">未确认</Option>
-                <Option value="confirmed">已确认</Option>
-                <Option value="completed">已入库</Option>
               </Select>
               <div className="toolbar-right" />
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>

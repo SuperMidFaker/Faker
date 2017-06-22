@@ -78,7 +78,7 @@ export default class PackingRuleModal extends Component {
                 </InputGroup>
               </FormItem>
             </Col>
-            <Col sm={8}>
+            <Col sm={12}>
               <FormItem label={this.msg('默认入库包装')}>
                 {getFieldDecorator('inbound_convey', {
                 })(<RadioGroup size="large">
@@ -90,22 +90,34 @@ export default class PackingRuleModal extends Component {
                   )}
               </FormItem>
             </Col>
-            <Col sm={8}>
-              <FormItem label={this.msg('默认补货包装')}>
-                {getFieldDecorator('replenish_convey', {
+            <Col sm={12}>
+              <FormItem label={this.msg('默认出库包装')}>
+                {getFieldDecorator('outbound_convey', {
                 })(<RadioGroup size="large">
+                  <RadioButton value="PCS">单件</RadioButton>
+                  <RadioButton value="INP">内包装</RadioButton>
                   <RadioButton value="BOX">箱</RadioButton>
                   <RadioButton value="PLT">托盘</RadioButton>
                 </RadioGroup>
                   )}
               </FormItem>
             </Col>
-            <Col sm={8}>
-              <FormItem label={this.msg('默认出库包装')}>
-                {getFieldDecorator('outbound_convey', {
+            <Col sm={12}>
+              <FormItem label={this.msg('默认追踪包装')}>
+                {getFieldDecorator('tracing_convey', {
                 })(<RadioGroup size="large">
                   <RadioButton value="PCS">单件</RadioButton>
                   <RadioButton value="INP">内包装</RadioButton>
+                  <RadioButton value="BOX">箱</RadioButton>
+                  <RadioButton value="PLT">托盘</RadioButton>
+                </RadioGroup>
+                  )}
+              </FormItem>
+            </Col>
+            <Col sm={12}>
+              <FormItem label={this.msg('默认补货包装')}>
+                {getFieldDecorator('replenish_convey', {
+                })(<RadioGroup size="large">
                   <RadioButton value="BOX">箱</RadioButton>
                   <RadioButton value="PLT">托盘</RadioButton>
                 </RadioGroup>

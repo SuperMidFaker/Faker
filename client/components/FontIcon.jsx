@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Icon, Tag } from 'antd';
+import { Tag } from 'antd';
 
 export function MdIcon(props) {
   const { mode, type, tagWrapped } = props;
@@ -11,9 +11,6 @@ export function MdIcon(props) {
       break;
     case 'fontello':
       icon = (<i className={`icon icon-fontello-${type}`} />);
-      break;
-    case 'antd':
-      icon = (<Icon type={type} />);
       break;
     default:
       icon = (<i className={`zmdi zmdi-${type}`} />);
@@ -28,7 +25,7 @@ MdIcon.propTypes = {
   tagWrapped: PropTypes.bool,
 };
 
-export function FtIcon(props) {
+export function Fontello(props) {
   const { type, color, tagWrapped } = props;
   let colorString = '#000';
   switch (color) {
@@ -51,8 +48,19 @@ export function FtIcon(props) {
   return tagWrapped ? <Tag>{icon}</Tag> : icon;
 }
 
-FtIcon.propTypes = {
+Fontello.propTypes = {
   type: PropTypes.string.isRequired,
   color: PropTypes.oneOf(['blue', 'green', 'orange', 'red', 'gray']),
+  tagWrapped: PropTypes.bool,
+};
+
+export function Ikons(props) {
+  const { type, tagWrapped } = props;
+  const icon = (<i className={`icon icon-ikons-${type}`} />);
+  return tagWrapped ? <Tag>{icon}</Tag> : icon;
+}
+
+Ikons.propTypes = {
+  type: PropTypes.string.isRequired,
   tagWrapped: PropTypes.bool,
 };

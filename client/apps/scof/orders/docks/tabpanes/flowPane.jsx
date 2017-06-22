@@ -6,7 +6,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Timeline, Card } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import { loadOrderNodes } from 'common/reducers/crmOrders';
-import { MdIcon } from 'client/components/FontIcon';
+import { MdIcon, Ikons } from 'client/components/FontIcon';
 import CMSNodeCard from './cards/cmsNodeCard';
 import TMSNodeCard from './cards/tmsNodeCard';
 import CWMInboundNodeCard from './cards/cwmInboundNodeCard';
@@ -50,7 +50,7 @@ export default class FlowPane extends React.Component {
               this.props.kinds.map((item) => {
                 if (item.kind === 'import' || item.kind === 'export') {
                   return (
-                    <Timeline.Item dot={<MdIcon mode="ikons" type="login" />} key={item.name}>
+                    <Timeline.Item dot={<Ikons type="login" />} key={item.name}>
                       <CMSNodeCard uuid={item.uuid} name={item.name} declWayCode={item.decl_way_code}
                         kind={item.kind} transMode={item.trans_mode} blWbNo={item.bl_wb_no} in_degree={item.in_degree}
                       />

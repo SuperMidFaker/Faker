@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Menu, Layout, Icon } from 'antd';
 import { locationShape } from 'react-router';
 import { intlShape, injectIntl } from 'react-intl';
-import { MdIcon } from 'client/components/FontIcon';
+import { MdIcon, Ikons } from 'client/components/FontIcon';
 import CorpHeaderBar from 'client/components/corpHeaderBar';
 import connectNav from 'client/common/decorators/connect-nav';
 import NavLink from 'client/components/nav-link';
@@ -59,7 +59,7 @@ export default class CorpPack extends React.Component {
       corpMenu.push(
         <MenuItem key="corpsetting-2">
           <NavLink to="/corp/members">
-            <MdIcon mode="ikons" type="users" />{formatMsg(intl, 'personnelUser')}
+            <Ikons type="users" />{formatMsg(intl, 'personnelUser')}
           </NavLink>
         </MenuItem>
       );
