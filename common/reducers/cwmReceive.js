@@ -21,6 +21,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/receive/', [
   'RECEIVE_COMPLETED', 'RECEIVE_COMPLETED_SUCCEED', 'RECEIVE_COMPLETED_FAIL',
   'SHOW_RECEIVEQTY_MODAL', 'HIDE_RECEIVEQTY_MODAL',
   'UPDATE_INBOUND_DETAILS', 'UPDATE_INBOUND_DETAILS_SUCCEED', 'UPDATE_INBOUND_DETAILS_FAIL',
+  'SHOW_PUTTING_AWAY_MODAL', 'HIDE_PUTTING_AWAY_MODAL',
 ]);
 
 const initialState = {
@@ -57,6 +58,9 @@ const initialState = {
   },
   inboundFilters: { status: 'create', ownerCode: 'all' },
   receiveQtyModal: {
+    visible: false,
+  },
+  puttingAwayModal: {
     visible: false,
   },
 };
@@ -101,6 +105,10 @@ export default function reducer(state = initialState, action) {
       return { ...state, receiveQtyModal: { ...state.receiveQtyModal, visible: true } };
     case actionTypes.HIDE_RECEIVEQTY_MODAL:
       return { ...state, receiveQtyModal: { ...state.receiveQtyModal, visible: false } };
+    case actionTypes.SHOW_PUTTING_AWAY_MODAL:
+      return { ...state, puttingAwayModal: { ...state.puttingAwayModal, visible: true } };
+    case actionTypes.HIDE_PUTTING_AWAY_MODAL:
+      return { ...state, puttingAwayModal: { ...state.puttingAwayModal, visible: false } };
     default:
       return state;
   }
@@ -378,6 +386,18 @@ export function showExpressReceivingModal() {
 export function hideExpressReceivingModal() {
   return {
     type: actionTypes.HIDE_RECEIVEQTY_MODAL,
+  };
+}
+
+export function showPuttingAwayModal() {
+  return {
+    type: actionTypes.SHOW_PUTTING_AWAY_MODAL,
+  };
+}
+
+export function hidePuttingAwayModal() {
+  return {
+    type: actionTypes.HIDE_PUTTING_AWAY_MODAL,
   };
 }
 

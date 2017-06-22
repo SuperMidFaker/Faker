@@ -198,6 +198,15 @@ export default class ReceiveDetailsPane extends React.Component {
       onChange: (selectedRowKeys, selectedRows) => {
         this.setState({ selectedRowKeys, selectedRows });
       },
+      selections: [{
+        key: 'all-data',
+        text: '选择全部项',
+        onSelect: () => {
+          this.setState({
+            selectedRowKeys: [...Array(6).keys()],  // TODO
+          });
+        },
+      }],
       getCheckboxProps: record => ({
         disabled: record.trace_id.length >= 1,
       }),
@@ -215,9 +224,9 @@ export default class ReceiveDetailsPane extends React.Component {
           </div>
           <div className="toolbar-right">
             {inboundHead.rec_mode === 'manual' && this.state.currentStatus < CWM_INBOUND_STATUS.COMPLETED.step &&
-            <Popconfirm title="确定此次入库操作已完成?" onConfirm={this.handleInboundConfirmed} okText="确认" cancelText="取消">
+            <Popconfirm title="确定此次收货操作已完成?" onConfirm={this.handleInboundConfirmed} okText="确认" cancelText="取消">
               <Button type="primary" ghost size="large" icon="check" disabled={this.state.confirmDisabled}>
-                入库确认
+                收货确认
               </Button>
             </Popconfirm>
             }

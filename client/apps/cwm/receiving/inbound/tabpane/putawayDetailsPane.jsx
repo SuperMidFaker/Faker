@@ -1,10 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Table, Select, Button } from 'antd';
+import { Table, Select, Button, Popconfirm } from 'antd';
 import RowUpdater from 'client/components/rowUpdater';
 import QuantityInput from '../../../common/quantityInput';
+import { showPuttingAwayModal } from 'common/reducers/cwmReceive';
 import { loadLocations } from 'common/reducers/cwmWarehouse';
+import PuttingAwayModal from '../modal/puttingAwayModal';
 
 const Option = Select.Option;
 
@@ -17,7 +19,7 @@ const Option = Select.Option;
     defaultWhse: state.cwmContext.defaultWhse,
     locations: state.cwmWarehouse.locations,
   }),
-  { loadLocations }
+  { loadLocations, showPuttingAwayModal }
 )
 export default class PutawayDetailsPane extends React.Component {
   static propTypes = {
@@ -41,7 +43,7 @@ export default class PutawayDetailsPane extends React.Component {
     width: 120,
     fixed: 'left',
   }, {
-    title: '当前库位',
+    title: '实际库位',
     dataIndex: 'location',
     width: 120,
     render: () => {
@@ -189,7 +191,7 @@ export default class PutawayDetailsPane extends React.Component {
     status: 2,
   }];
   handleConfirmPutAway = () => {
-    // this.props.openPickingModal();
+    this.props.showPuttingAwayModal();
   }
   handleBatchConfirmPutAway = () => {
     // this.props.openPickingModal();
@@ -218,13 +220,18 @@ export default class PutawayDetailsPane extends React.Component {
             <Button type="primary" size="large" onClick={this.handlePushTask} icon="tablet">推送拣货任务</Button>}
             {this.state.allocated && this.state.shippingMode === 'scan' && this.state.pushedTask &&
             <Button size="large" onClick={this.handleWithdrawTask} icon="rollback" />}
-
+            <Popconfirm title="确定此次上架操作已完成?" onConfirm={this.handleInboundConfirmed} okText="确认" cancelText="取消">
+              <Button type="primary" ghost size="large" icon="check" disabled={this.state.confirmDisabled}>
+                上架确认
+              </Button>
+            </Popconfirm>
           </div>
         </div>
         <Table columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={this.mockData} rowKey="id"
           scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0) }}
           defaultExpandedRowKeys={[1, 2, 3]}
         />
+        <PuttingAwayModal />
       </div>
     );
   }
