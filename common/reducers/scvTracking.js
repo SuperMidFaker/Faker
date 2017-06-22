@@ -59,7 +59,12 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_TRORDER_FAIL:
       return { ...state, orderLoading: false };
     case actionTypes.LOAD_TRORDER_SUCCEED:
-      return { ...state, orderList: action.result.data, orderLoading: false };
+      return { ...state,
+        orderList: {
+          ...action.result.data,
+          pageSize: action.result.data.pageSize > 40 ? state.orderList.pageSize : action.result.data.pageSize,
+        },
+        orderLoading: false };
     default:
       return state;
   }
