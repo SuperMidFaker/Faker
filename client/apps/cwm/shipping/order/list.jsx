@@ -9,10 +9,11 @@ import RowUpdater from 'client/components/rowUpdater';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/search-bar';
 import connectNav from 'client/common/decorators/connect-nav';
+import ShippingDockPanel from '../dock/shippingDockPanel';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
-import { loadSos } from 'common/reducers/cwmShippingOrder';
+import { loadSos, showDock } from 'common/reducers/cwmShippingOrder';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -39,7 +40,7 @@ function fetchData({ state, dispatch }) {
     filters: state.cwmShippingOrder.soFilters,
     solist: state.cwmShippingOrder.solist,
   }),
-  { loadSos, switchDefaultWhse }
+  { loadSos, switchDefaultWhse, showDock }
 )
 @connectNav({
   depth: 2,
@@ -62,6 +63,10 @@ export default class ShippingOrderList extends React.Component {
     title: 'SO编号',
     width: 120,
     dataIndex: 'so_no',
+    render: o => (
+      <a onClick={() => this.handlePreview()}>
+        {o}
+      </a>),
   }, {
     title: '货主',
     width: 200,
@@ -141,6 +146,9 @@ export default class ShippingOrderList extends React.Component {
       }
     },
   }]
+  handlePreview = () => {
+    this.props.showDock();
+  }
   handleCreateSO = () => {
     this.context.router.push('/cwm/shipping/order/create');
   }
@@ -262,6 +270,7 @@ export default class ShippingOrderList extends React.Component {
             </div>
           </div>
         </Content>
+        <ShippingDockPanel />
       </QueueAnim>
     );
   }

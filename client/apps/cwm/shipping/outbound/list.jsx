@@ -9,7 +9,10 @@ import RowUpdater from 'client/components/rowUpdater';
 import connectNav from 'client/common/decorators/connect-nav';
 import { Fontello } from 'client/components/FontIcon';
 import { format } from 'client/common/i18n/helpers';
+import ShippingDockPanel from '../dock/shippingDockPanel';
 import messages from '../message.i18n';
+import { switchDefaultWhse } from 'common/reducers/cwmContext';
+import { showDock } from 'common/reducers/cwmShippingOrder';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -22,6 +25,7 @@ const RadioButton = Radio.Button;
   state => ({
     tenantId: state.account.tenantId,
   }),
+  { switchDefaultWhse, showDock }
 )
 @connectNav({
   depth: 2,
@@ -44,6 +48,10 @@ export default class OutboundList extends React.Component {
     title: 'SO编号',
     dataIndex: 'so_no',
     width: 120,
+    render: o => (
+      <a onClick={() => this.handlePreview()}>
+        {o}
+      </a>),
   }, {
     title: '波次号',
     width: 120,
@@ -247,7 +255,9 @@ export default class OutboundList extends React.Component {
     packing: -1,
     shipping: 0,
   }];
-
+  handlePreview = () => {
+    this.props.showDock();
+  }
   handleStatusChange = (ev) => {
     if (ev.target.value === this.props.listFilter.status) {
 
@@ -319,6 +329,7 @@ export default class OutboundList extends React.Component {
             </div>
           </div>
         </Content>
+        <ShippingDockPanel />
       </QueueAnim>
     );
   }

@@ -136,7 +136,7 @@ export default class ReceiveDetailsPane extends React.Component {
   }, {
     title: 'SKU',
     dataIndex: 'product_sku',
-    width: 200,
+    width: 120,
     render: o => (<PackagePopover sku={o} />),
   }, {
     title: '预期数量',
@@ -149,19 +149,6 @@ export default class ReceiveDetailsPane extends React.Component {
       alert={record.expect_pack_qty !== record.receive_pack_qty} disabled
     />),
   }, {
-    title: '中文品名',
-    dataIndex: 'name',
-  }, {
-    title: '订单数量',
-    dataIndex: 'expect_qty',
-    width: 80,
-    className: 'cell-align-right',
-    render: o => (<b>{o}</b>),
-  }, {
-    title: '主单位',
-    dataIndex: 'asn_unit_name',
-    width: 80,
-  }, {
     title: '收货库位',
     dataIndex: 'location',
     width: 180,
@@ -169,12 +156,12 @@ export default class ReceiveDetailsPane extends React.Component {
       const Options = this.props.locations.map(location => (<Option key={location.id} value={location.location}>{location.location}</Option>));
       if (record.location.length <= 1) {
         return (
-          <Select value={o[0]} style={{ width: 160 }} disabled>
+          <Select className="readonly" value={o[0]} style={{ width: 160 }} disabled>
             {Options}
           </Select>);
       } else {
         return (
-          <Select mode="tags" value={o} style={{ width: 160 }} disabled>
+          <Select className="readonly" mode="tags" value={o} style={{ width: 160 }} disabled>
             {Options}
           </Select>);
       }
@@ -184,13 +171,24 @@ export default class ReceiveDetailsPane extends React.Component {
     dataIndex: 'damage_level',
     width: 120,
     render: damage => (
-      <Select value={damage} style={{ width: 100 }} disabled>
+      <Select className="readonly" value={damage} style={{ width: 100 }} disabled>
         <Option value={0}>完好</Option>
         <Option value={1}>轻微擦痕</Option>
         <Option value={2}>中度</Option>
         <Option value={3}>重度</Option>
         <Option value={4}>严重磨损</Option>
       </Select>),
+  }, {
+    title: '中文品名',
+    dataIndex: 'name',
+  }, {
+    title: '收货人',
+    width: 60,
+    dataIndex: 'received_by',
+  }, {
+    title: '收货时间',
+    width: 100,
+    dataIndex: 'received_date',
   }, {
     title: '操作',
     width: 100,

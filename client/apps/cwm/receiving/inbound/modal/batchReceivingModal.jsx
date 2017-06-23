@@ -77,12 +77,7 @@ export default class BatchReceivingModal extends Component {
     return (
       <Modal title="批量收货" onCancel={this.handleCancel} visible={this.props.visible} onOk={this.handleSubmit} okText="确认收货">
         <FormItem {...formItemLayout} label="收货数量">
-          <Checkbox checked disabled>实际收货数量与预期一致</Checkbox>
-        </FormItem>
-        <FormItem {...formItemLayout} label="库位">
-          <Select style={{ width: 160 }} onSelect={this.handleLocationChange}>
-            {this.props.locations.map(loc => (<Option value={loc.location} key={loc.location}>{loc.location}</Option>))}
-          </Select>
+          <Checkbox checked>实际收货数量与预期一致</Checkbox>
         </FormItem>
         <FormItem {...formItemLayout} label="破损级别" >
           <Select style={{ width: 160 }} onSelect={this.handleDamageLevelChange}>
@@ -91,6 +86,11 @@ export default class BatchReceivingModal extends Component {
             <Option value={2}>中度</Option>
             <Option value={3}>重度</Option>
             <Option value={4}>严重磨损</Option>
+          </Select>
+        </FormItem>
+        <FormItem {...formItemLayout} label="收货库位">
+          <Select style={{ width: 160 }} onSelect={this.handleLocationChange}>
+            {this.props.locations.map(loc => (<Option value={loc.location} key={loc.location}>{loc.location}</Option>))}
           </Select>
         </FormItem>
       </Modal>

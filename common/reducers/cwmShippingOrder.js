@@ -2,6 +2,7 @@ import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/cwm/shipping/', [
+  'HIDE_DOCK', 'SHOW_DOCK', 'CHANGE_DOCK_TAB',
   'ADD_SO', 'ADD_SO_SUCCEED', 'ADD_SO_FAIL',
   'LOAD_SOS', 'LOAD_SOS_SUCCEED', 'LOAD_SOS_FAIL',
   'GET_SO', 'GET_SO_SUCCEED', 'GET_SO_FAIL',
@@ -9,6 +10,14 @@ const actionTypes = createActionTypes('@@welogix/cwm/shipping/', [
 ]);
 
 const initialState = {
+  dock: {
+    visible: false,
+    tabKey: null,
+    order: {
+      so_no: '',
+      status: 0,
+    },
+  },
   solist: {
     totalCount: 0,
     pageSize: 20,
@@ -20,6 +29,12 @@ const initialState = {
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
+    case actionTypes.HIDE_DOCK:
+      return { ...state, dock: { ...state.dock, visible: false } };
+    case actionTypes.SHOW_DOCK:
+      return { ...state, dock: { ...state.dock, visible: true } };
+    case actionTypes.CHANGE_DOCK_TAB:
+      return { ...state, dock: { ...state.dock, tabKey: action.data.tabKey } };
     case actionTypes.LOAD_SOS:
       return { ...state, soFilters: JSON.parse(action.params.filters) };
     case actionTypes.LOAD_SOS_SUCCEED:
@@ -27,6 +42,25 @@ export default function reducer(state = initialState, action) {
     default:
       return state;
   }
+}
+
+export function changeDockTab(tabKey) {
+  return {
+    type: actionTypes.CHANGE_DOCK_TAB,
+    data: { tabKey },
+  };
+}
+
+export function hideDock() {
+  return {
+    type: actionTypes.HIDE_DOCK,
+  };
+}
+
+export function showDock() {
+  return {
+    type: actionTypes.SHOW_DOCK,
+  };
 }
 
 export function addSo(data) {
