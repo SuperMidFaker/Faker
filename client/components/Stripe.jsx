@@ -19,7 +19,7 @@ export default class Stripe extends Component {
     return (
       keys.map((item, index) => (
         <Tooltip title={hints[index]}>
-          <div className={'stripe-part success-part'} style={{ width: `${parts[item] / total * 100}%` }} />
+          <div className={`stripe-part ${item}-part`} style={{ width: `${parts[item] / total * 100}%` }} />
         </Tooltip>))
     );
   }
