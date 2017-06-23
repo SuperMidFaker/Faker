@@ -78,10 +78,6 @@ exports.CWM_INBOUND_STATUS = {
     value: 3,
     step: 2,
   },
-  ALL_PUTAWAY: {
-    value: 4,
-    step: 2,
-  },
   COMPLETED: {
     value: 5,
     step: 3,

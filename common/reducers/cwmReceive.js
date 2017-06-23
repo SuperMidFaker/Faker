@@ -14,6 +14,9 @@ const actionTypes = createActionTypes('@@welogix/cwm/receive/', [
   'RELEASE_ASN', 'RELEASE_ASN_SUCCEED', 'RELEASE_ASN_FAIL',
   'CANCEL_ASN', 'CANCEL_ASN_SUCCEED', 'CANCEL_ASN_FAIL',
   'LOAD_INBOUNDS', 'LOAD_INBOUNDS_SUCCEED', 'LOAD_INBOUNDS_FAIL',
+  'LOAD_INBOUNDHEAD', 'LOAD_INBOUNDHEAD_SUCCEED', 'LOAD_INBOUNDHEAD_FAIL',
+  'LOAD_INBPRDDETAILS', 'LOAD_INBPRDDETAILS_SUCCEED', 'LOAD_INBPRDDETAILS_FAIL',
+  'LOAD_INBPUTAWAYS', 'LOAD_INBPUTAWAYS_SUCCEED', 'LOAD_INBPUTAWAYS_FAIL',
   'GET_INBOUND_DETAIL', 'GET_INBOUND_DETAIL_SUCCEED', 'GET_INBOUND_DETAIL_FAIL',
   'UPDATE_INBMODE', 'UPDATE_INBMODE_SUCCEED', 'UPDATE_INBMODE_FAIL',
   'LOAD_PRODUCT_DETAILS', 'LOAD_PRODUCT_DETAILS_SUCCEED', 'LOAD_PRODUCT_DETAILS_FAIL',
@@ -22,6 +25,12 @@ const actionTypes = createActionTypes('@@welogix/cwm/receive/', [
   'RECEIVE_COMPLETED', 'RECEIVE_COMPLETED_SUCCEED', 'RECEIVE_COMPLETED_FAIL',
   'SHOW_BATCH_RECEIVING_MODAL', 'HIDE_BATCH_RECEIVING_MODAL',
   'UPDATE_INBOUND_DETAILS', 'UPDATE_INBOUND_DETAILS_SUCCEED', 'UPDATE_INBOUND_DETAILS_FAIL',
+  'RECEIVE_PRODUCT', 'RECEIVE_PRODUCT_SUCCEED', 'RECEIVE_PRODUCT_FAIL',
+  'RECEIVE_EXPRESS', 'RECEIVE_EXPRESS_SUCCEED', 'RECEIVE_EXPRESS_FAIL',
+  'RECEIVE_BATCH', 'RECEIVE_BATCH_SUCCEED', 'RECEIVE_BATCH_FAIL',
+  'RECEIVES_UNDO', 'RECEIVES_UNDO_SUCCEED', 'RECEIVES_UNDO_FAIL',
+  'PUTAWAY_BATCH', 'PUTAWAY_BATCH_SUCCEED', 'PUTAWAY_BATCH_FAIL',
+  'PUTAWAY_EXPRESS', 'PUTAWAY_EXPRESS_SUCCEED', 'PUTAWAY_EXPRESS_FAIL',
   'SHOW_PUTTING_AWAY_MODAL', 'HIDE_PUTTING_AWAY_MODAL',
 ]);
 
@@ -37,15 +46,7 @@ const initialState = {
   receiveModal: {
     visible: false,
     inboundNo: '',
-    seqNo: '',
-    expectQty: null,
-    expectPackQty: null,
-    receivedQty: null,
-    receivedPackQty: null,
-    skuPackQty: null,
-    asnNo: '',
-    productNo: '',
-    name: '',
+    inboundProduct: {},
   },
   detailModal: {
     visible: false,
@@ -66,11 +67,16 @@ const initialState = {
     data: [],
   },
   inboundFilters: { status: 'create', ownerCode: 'all' },
+  inboundFormHead: {},
+  inboundProducts: [],
+  inboundPutaways: [],
+  inboundReload: false,
   batchReceivingModal: {
     visible: false,
   },
   puttingAwayModal: {
     visible: false,
+    details: [],
   },
 };
 
@@ -114,16 +120,29 @@ export default function reducer(state = initialState, action) {
       return { ...state, inboundFilters: JSON.parse(action.params.filters) };
     case actionTypes.LOAD_INBOUNDS_SUCCEED:
       return { ...state, inbound: action.result.data };
-    case actionTypes.INBOUND_STATUS_CHANGE:
-      return { ...state, inboundFilters: { ...state.inboundFilters, status: action.status } };
+    case actionTypes.LOAD_INBOUNDHEAD_SUCCEED:
+      return { ...state, inboundFormHead: action.result.data, inboundReload: false };
+    case actionTypes.LOAD_INBPRDDETAILS_SUCCEED:
+      return { ...state, inboundProducts: action.result.data, inboundReload: false };
+    case actionTypes.LOAD_INBPUTAWAYS_SUCCEED:
+      return { ...state, inboundPutaways: action.result.data, inboundReload: false };
+    case actionTypes.UPDATE_INBMODE_SUCCEED:
+      return { ...state, inboundFormHead: { ...state.inboundFormHead, rec_mode: action.data.recMode } };
     case actionTypes.SHOW_BATCH_RECEIVING_MODAL:
       return { ...state, batchReceivingModal: { ...state.batchReceivingModal, visible: true } };
     case actionTypes.HIDE_BATCH_RECEIVING_MODAL:
       return { ...state, batchReceivingModal: { ...state.batchReceivingModal, visible: false } };
     case actionTypes.SHOW_PUTTING_AWAY_MODAL:
-      return { ...state, puttingAwayModal: { ...state.puttingAwayModal, visible: true } };
+      return { ...state, puttingAwayModal: { ...state.puttingAwayModal, visible: true, details: action.data } };
     case actionTypes.HIDE_PUTTING_AWAY_MODAL:
       return { ...state, puttingAwayModal: { ...state.puttingAwayModal, visible: false } };
+    case actionTypes.RECEIVE_PRODUCT_SUCCEED:
+    case actionTypes.RECEIVE_EXPRESS_SUCCEED:
+    case actionTypes.RECEIVE_BATCH_SUCCEED:
+    case actionTypes.RECEIVES_UNDO_SUCCEED:
+    case actionTypes.PUTAWAY_BATCH_SUCCEED:
+    case actionTypes.PUTAWAY_EXPRESS_SUCCEED:
+      return { ...state, inboundReload: true };
     default:
       return state;
   }
@@ -321,6 +340,51 @@ export function loadInbounds({ whseCode, tenantId, pageSize, current, filters })
   };
 }
 
+export function loadInboundHead(inboundNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_INBOUNDHEAD,
+        actionTypes.LOAD_INBOUNDHEAD_SUCCEED,
+        actionTypes.LOAD_INBOUNDHEAD_FAIL,
+      ],
+      endpoint: 'v1/cwm/inbound/head',
+      method: 'get',
+      params: { inboundNo },
+    },
+  };
+}
+
+export function loadInboundProductDetails(inboundNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_INBPRDDETAILS,
+        actionTypes.LOAD_INBPRDDETAILS_SUCCEED,
+        actionTypes.LOAD_INBPRDDETAILS_FAIL,
+      ],
+      endpoint: 'v1/cwm/inbound/product/details',
+      method: 'get',
+      params: { inboundNo },
+    },
+  };
+}
+
+export function loadInboundPutaways(inboundNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_INBPUTAWAYS,
+        actionTypes.LOAD_INBPUTAWAYS_SUCCEED,
+        actionTypes.LOAD_INBPUTAWAYS_FAIL,
+      ],
+      endpoint: 'v1/cwm/inbound/putaway/details',
+      method: 'get',
+      params: { inboundNo },
+    },
+  };
+}
+
 export function getInboundDetail(inboundNo) {
   return {
     [CLIENT_API]: {
@@ -347,21 +411,6 @@ export function loadProductDetails(inboundNo, seqNo) {
       endpoint: 'v1/cwm/receive/product/details/load',
       method: 'get',
       params: { inboundNo, seqNo },
-    },
-  };
-}
-
-export function updateInboundMode(inboundNo, recMode) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.UPDATE_INBMODE,
-        actionTypes.UPDATE_INBMODE_SUCCEED,
-        actionTypes.UPDATE_INBMODE_FAIL,
-      ],
-      endpoint: 'v1/cwm/receive/inbound/update/recmode',
-      method: 'post',
-      data: { inboundNo, recMode },
     },
   };
 }
@@ -423,9 +472,10 @@ export function hideBatchReceivingModal() {
   };
 }
 
-export function showPuttingAwayModal() {
+export function showPuttingAwayModal(details) {
   return {
     type: actionTypes.SHOW_PUTTING_AWAY_MODAL,
+    data: details,
   };
 }
 
@@ -449,3 +499,109 @@ export function updateInboundDetails(seqNos, location, damageLevel, loginId, asn
     },
   };
 }
+
+export function updateInboundMode(inboundNo, recMode) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_INBMODE,
+        actionTypes.UPDATE_INBMODE_SUCCEED,
+        actionTypes.UPDATE_INBMODE_FAIL,
+      ],
+      endpoint: 'v1/cwm/inbound/update/recmode',
+      method: 'post',
+      data: { inboundNo, recMode },
+    },
+  };
+}
+
+export function receiveProduct(dataSource, inboundNo, seqNo, asnNo, loginId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.RECEIVE_PRODUCT,
+        actionTypes.RECEIVE_PRODUCT_SUCCEED,
+        actionTypes.RECEIVE_PRODUCT_FAIL,
+      ],
+      endpoint: 'v1/cwm/inbound/product/receipt',
+      method: 'post',
+      data: { dataSource, seqNo, asnNo, loginId, inboundNo },
+    },
+  };
+}
+
+export function expressReceive(inboundNo, loginId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.RECEIVE_EXPRESS,
+        actionTypes.RECEIVE_EXPRESS_SUCCEED,
+        actionTypes.RECEIVE_EXPRESS_FAIL,
+      ],
+      endpoint: 'v1/cwm/inbound/receipt/express',
+      method: 'post',
+      data: { loginId, inboundNo },
+    },
+  };
+}
+
+export function batchReceive(seqNos, location, damageLevel, loginId, asnNo, inboundNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.RECEIVE_BATCH,
+        actionTypes.RECEIVE_BATCH_SUCCEED,
+        actionTypes.RECEIVE_BATCH_FAIL,
+      ],
+      endpoint: 'v1/cwm/inbound/product/receipt/batch',
+      method: 'post',
+      data: { seqNos, location, damageLevel, loginId, asnNo, inboundNo },
+    },
+  };
+}
+
+export function undoReceives(inboundNo, loginId, traceIds) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.RECEIVES_UNDO,
+        actionTypes.RECEIVES_UNDO_SUCCEED,
+        actionTypes.RECEIVES_UNDO_FAIL,
+      ],
+      endpoint: 'v1/cwm/inbound/product/receipt/undo',
+      method: 'post',
+      data: { loginId, trace_ids: traceIds, inbound_no: inboundNo },
+    },
+  };
+}
+
+export function batchPutaways(traceIds, location, allocater, allocateDt, loginId, inboundNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.PUTAWAY_BATCH,
+        actionTypes.PUTAWAY_BATCH_SUCCEED,
+        actionTypes.PUTAWAY_BATCH_FAIL,
+      ],
+      endpoint: 'v1/cwm/inbound/product/putaway/batch',
+      method: 'post',
+      data: { traceIds, location, allocater, allocateDt, loginId, inboundNo },
+    },
+  };
+}
+
+export function expressPutaways(loginId, loginName, inboundNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.PUTAWAY_EXPRESS,
+        actionTypes.PUTAWAY_EXPRESS_SUCCEED,
+        actionTypes.PUTAWAY_EXPRESS_FAIL,
+      ],
+      endpoint: 'v1/cwm/inbound/product/putaway/express',
+      method: 'post',
+      data: { loginName, loginId, inboundNo },
+    },
+  };
+}
+
