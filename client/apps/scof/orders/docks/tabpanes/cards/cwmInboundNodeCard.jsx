@@ -1,10 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { Button, Tooltip, Card, Icon, Col, Row, Steps } from 'antd';
 import InfoItem from 'client/components/InfoItem';
-
+import { hideDock } from 'common/reducers/crmOrders';
+import { showDock } from 'common/reducers/cwmReceive';
 const Step = Steps.Step;
-
+@connect(
+  () => ({}),
+  { hideDock, showDock }
+)
 export default class CWMNodeCard extends React.Component {
   static propTypes = {
     title: PropTypes.string.isRequired,
@@ -13,13 +18,16 @@ export default class CWMNodeCard extends React.Component {
   state = {
     is_editing: false,
   }
-
+  handlePreview = () => {
+    this.props.hideDock();
+    this.props.showDock();
+  }
   render() {
     const { title, children } = this.props;
     return (
       <Card title={<span>{title}</span>} extra={
         <Tooltip title="进入详情">
-          <Button size="small" shape="circle" icon="right" />
+          <Button size="small" shape="circle" icon="right" onClick={this.handlePreview} />
         </Tooltip>} bodyStyle={{ padding: 8, paddingBottom: 56 }}
       >
         <Row>

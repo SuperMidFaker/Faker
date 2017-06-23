@@ -125,12 +125,12 @@ export default class ReceivingInboundList extends React.Component {
     title: '创建时间',
     dataIndex: 'created_date',
     width: 120,
-    render: createdate => createdate && moment(createdate).format('MM.DD HH:MM'),
+    render: createdate => createdate && moment(createdate).format('MM.DD HH:mm'),
   }, {
     title: '完成时间',
     dataIndex: 'completed_date',
     width: 120,
-    render: completedDate => completedDate && moment(completedDate).format('MM.DD HH:MM'),
+    render: completedDate => completedDate && moment(completedDate).format('MM.DD HH:mm'),
   }, {
     title: '操作',
     width: 100,

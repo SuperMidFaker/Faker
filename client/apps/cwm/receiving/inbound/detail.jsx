@@ -5,7 +5,7 @@ import { Breadcrumb, Icon, Dropdown, Form, Radio, Layout, Menu, Steps, Button, C
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import InfoItem from 'client/components/InfoItem';
-import { openReceiveModal, getInboundDetail, confirm, showBatchReceivingModal, updateInboundMode } from 'common/reducers/cwmReceive';
+import { loadInboundHead, updateInboundMode } from 'common/reducers/cwmReceive';
 import { loadLocations } from 'common/reducers/cwmWarehouse';
 import { CWM_INBOUND_STATUS } from 'common/constants';
 import PutawayDetailsPane from './tabpane/putawayDetailsPane';
@@ -28,54 +28,38 @@ const TabPane = Tabs.TabPane;
     username: state.account.username,
     tenantName: state.account.tenantName,
     defaultWhse: state.cwmContext.defaultWhse,
-    locations: state.cwmWarehouse.locations,
+    inboundHead: state.cwmReceive.inboundFormHead,
+    reload: state.cwmReceive.inboundReload,
   }),
-  { openReceiveModal, getInboundDetail, loadLocations, confirm, showBatchReceivingModal, updateInboundMode }
+  { loadInboundHead, loadLocations, updateInboundMode }
 )
 @connectNav({
   depth: 3,
   moduleName: 'cwm',
 })
-@Form.create()
 export default class ReceiveInbound extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    form: PropTypes.object.isRequired,
     tenantName: PropTypes.string.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
   state = {
-    currentStatus: 0,
     printed: false,
-    inboundHead: {},
-    confirmDisabled: true,
   }
   componentWillMount() {
-    this.loadInbound();
+    this.props.loadInboundHead(this.props.params.inboundNo);
     this.props.loadLocations(this.props.defaultWhse.code);
   }
-  msg = key => formatMsg(this.props.intl, key);
-  loadInbound = () => {
-    this.props.getInboundDetail(this.props.params.inboundNo).then((result) => {
-      const inbStatus = Object.keys(CWM_INBOUND_STATUS).filter(
-        cis => CWM_INBOUND_STATUS[cis].value === result.data.inboundHead.status
-      )[0];
-      this.setState({
-        inboundHead: result.data.inboundHead,
-        currentStatus: inbStatus ? CWM_INBOUND_STATUS[inbStatus].step : 0,
-      });
-    });
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.reload) {
+      this.props.loadInboundHead(nextProps.params.inboundNo);
+    }
   }
+  msg = key => formatMsg(this.props.intl, key);
   handleReceivingModeChange = (ev) => {
-    this.props.updateInboundMode(this.state.inboundHead.inbound_no, ev.target.value).then((result) => {
-      if (!result.error) {
-        const head = { ...this.state.inboundHead };
-        head.rec_mode = ev.target.value;
-        this.setState({ inboundHead: head });
-      }
-    });
+    this.props.updateInboundMode(this.props.params.inboundNo, ev.target.value);
   }
   handlePrint = () => {
     this.setState({
@@ -84,8 +68,7 @@ export default class ReceiveInbound extends Component {
   }
 
   render() {
-    const { defaultWhse } = this.props;
-    const { inboundHead } = this.state;
+    const { defaultWhse, inboundHead } = this.props;
     const tagMenu = (
       <Menu>
         <Menu.Item key="printTraceTag">打印追踪标签</Menu.Item>
@@ -97,6 +80,10 @@ export default class ReceiveInbound extends Component {
         <Menu.Item key="exportAllTag">导出全部标签</Menu.Item>
       </Menu>
     );
+    const inbStatus = Object.keys(CWM_INBOUND_STATUS).filter(
+      cis => CWM_INBOUND_STATUS[cis].value === inboundHead.status
+    )[0];
+    const currentStatus = inbStatus ? CWM_INBOUND_STATUS[inbStatus].step : 0;
     return (
       <div>
         <Header className="top-bar">
@@ -112,12 +99,12 @@ export default class ReceiveInbound extends Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="top-bar-tools">
-            {this.state.currentStatus < CWM_INBOUND_STATUS.COMPLETED.step &&
+            {currentStatus < CWM_INBOUND_STATUS.COMPLETED.step &&
             <Tooltip title="打印入库单" placement="bottom">
               <Button size="large" icon="printer" onClick={this.handlePrint} />
             </Tooltip>
             }
-            {this.state.currentStatus < CWM_INBOUND_STATUS.COMPLETED.step &&
+            {currentStatus < CWM_INBOUND_STATUS.COMPLETED.step &&
             <Dropdown overlay={tagMenu}>
               <Button size="large" onClick={this.handleTagging}>
                 <Icon type="barcode" />标签 <Icon type="down" />
@@ -125,7 +112,7 @@ export default class ReceiveInbound extends Component {
             </Dropdown>
             }
             <RadioGroup value={inboundHead.rec_mode} onChange={this.handleReceivingModeChange} size="large"
-              disabled={this.state.currentStatus === CWM_INBOUND_STATUS.COMPLETED.step}
+              disabled={currentStatus === CWM_INBOUND_STATUS.COMPLETED.step}
             >
               <Tooltip title="扫码模式" placement="bottom"><RadioButton value="scan"><Icon type="scan" /></RadioButton></Tooltip>
               <Tooltip title="手动模式" placement="bottom"><RadioButton value="manual"><Icon type="solution" /></RadioButton></Tooltip>
@@ -156,7 +143,7 @@ export default class ReceiveInbound extends Component {
                 </Col>
               </Row>
               <div className="card-footer">
-                <Steps progressDot current={this.state.currentStatus}>
+                <Steps progressDot current={currentStatus}>
                   <Step description="待入库" />
                   <Step description="收货" />
                   <Step description="上架" />
@@ -167,10 +154,10 @@ export default class ReceiveInbound extends Component {
             <Card bodyStyle={{ padding: 0 }}>
               <Tabs defaultActiveKey="receiveDetails" onChange={this.handleTabChange}>
                 <TabPane tab="收货明细" key="receiveDetails">
-                  <ReceiveDetailsPane inboundNo={this.props.params.inboundNo} inboundHead={inboundHead} />
+                  <ReceiveDetailsPane inboundNo={this.props.params.inboundNo} />
                 </TabPane>
-                <TabPane tab="上架明细" key="putawayDetails" disabled={inboundHead.status < CWM_INBOUND_STATUS.PARTIAL_RECEIVED.value}>
-                  <PutawayDetailsPane inboundNo={this.props.params.inboundNo} inboundHead={inboundHead} />
+                <TabPane tab="上架明细" key="putawayDetails" disabled={inboundHead.status === CWM_INBOUND_STATUS.CREATED.value}>
+                  <PutawayDetailsPane inboundNo={this.props.params.inboundNo} />
                 </TabPane>
               </Tabs>
             </Card>

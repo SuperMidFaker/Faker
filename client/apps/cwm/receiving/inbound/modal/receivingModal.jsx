@@ -8,7 +8,7 @@ import RowUpdater from 'client/components/rowUpdater';
 import { format } from 'client/common/i18n/helpers';
 import QuantityInput from '../../../common/quantityInput';
 import messages from '../../message.i18n';
-import { hideReceiveModal, loadProductDetails, updateProductDetails } from 'common/reducers/cwmReceive';
+import { hideReceiveModal, loadProductDetails, receiveProduct } from 'common/reducers/cwmReceive';
 
 const formatMsg = format(messages);
 const Option = Select.Option;
@@ -19,25 +19,26 @@ const Option = Select.Option;
     loginId: state.account.loginId,
     tenantId: state.account.tenantId,
     visible: state.cwmReceive.receiveModal.visible,
+    inboundHead: state.cwmReceive.inboundFormHead,
     inboundNo: state.cwmReceive.receiveModal.inboundNo,
+    inboundProduct: state.cwmReceive.receiveModal.inboundProduct,
+    /*
     seqNo: state.cwmReceive.receiveModal.seqNo,
     expectQty: state.cwmReceive.receiveModal.expectQty,
     expectPackQty: state.cwmReceive.receiveModal.expectPackQty,
     receivedQty: state.cwmReceive.receiveModal.receivedQty,
     receivedPackQty: state.cwmReceive.receiveModal.receivedPackQty,
-    skuPackQty: state.cwmReceive.receiveModal.skuPackQty,
     asnNo: state.cwmReceive.receiveModal.asnNo,
     productNo: state.cwmReceive.receiveModal.productNo,
     name: state.cwmReceive.receiveModal.name,
+    */
     locations: state.cwmWarehouse.locations,
-    defaultWhse: state.cwmContext.defaultWhse,
   }),
-  { hideReceiveModal, loadProductDetails, updateProductDetails }
+  { hideReceiveModal, loadProductDetails, receiveProduct }
 )
 export default class ReceivingModal extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    receivingMode: PropTypes.string.isRequired,
     inboundNo: PropTypes.string.isRequired,
   }
   state = {
@@ -46,40 +47,37 @@ export default class ReceivingModal extends Component {
     receivedPackQty: 0,
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.visible) {
-      this.props.loadProductDetails(nextProps.inboundNo, nextProps.seqNo).then(
+    if (nextProps.visible && nextProps.inboundProduct.asn_seq_no) {
+      this.props.loadProductDetails(nextProps.inboundNo, nextProps.inboundProduct.asn_seq_no).then(
         (result) => {
           if (!result.error) {
-            if (result.data.length === 0 && nextProps.receivingMode === 'manual') {
-              const dataSource = [{
+            let dataSource = [];
+            if (result.data.length === 0 && nextProps.inboundHead.rec_mode === 'manual') {
+              dataSource = [{
                 id: `${this.props.productNo}1`,
-                trace_id: '',
-                inbound_qty: '',
-                inbound_pack_qty: '',
+                inbound_qty: 0,
+                inbound_pack_qty: 0,
                 location: '',
                 damage_level: '',
               }];
-              this.setState({ dataSource });
             } else {
-              this.setState({
-                dataSource: result.data.map(data => ({
-                  id: data.trace_id,
-                  trace_id: data.trace_id,
-                  location: data.location,
-                  damage_level: data.damage_level,
-                  inbound_qty: data.inbound_qty,
-                  inbound_pack_qty: data.inbound_pack_qty,
-                  convey_no: data.convey_no,
-                })),
-              });
+              dataSource = result.data.map(data => ({
+                id: data.trace_id,
+                trace_id: data.trace_id,
+                location: data.location,
+                damage_level: data.damage_level,
+                inbound_qty: data.inbound_qty,
+                inbound_pack_qty: data.inbound_pack_qty,
+                convey_no: data.convey_no,
+              }));
             }
             this.setState({
-              receivedQty: nextProps.receivedQty,
-              receivedPackQty: nextProps.receivedPackQty,
+              dataSource,
+              receivedQty: nextProps.inboundProduct.received_qty,
+              receivedPackQty: nextProps.inboundProduct.received_pack_qty,
             });
           }
-        }
-      );
+        });
     }
   }
   msg = key => formatMsg(this.props.intl, key);
@@ -97,29 +95,34 @@ export default class ReceivingModal extends Component {
     this.setState({ dataSource });
   }
   handleProductReceive = (index, value) => {
-    const { expectQty, expectPackQty, skuPackQty } = this.props;
-    const { receivedQty = 0, receivedPackQty = 0 } = this.state;
-    const dataSource = [...this.state.dataSource];
-    const remainQty = expectQty - receivedQty;
-    const remainPackQty = expectPackQty - receivedPackQty;
-    const changeQty = value * skuPackQty - dataSource[index].inbound_qty;
-    const changePackQty = value - dataSource[index].inbound_pack_qty;
-    if (changeQty > remainQty) {
-      dataSource[index].inbound_pack_qty = remainPackQty + Number(dataSource[index].inbound_pack_qty);
-      dataSource[index].inbound_qty = remainQty + dataSource[index].inbound_qty;
+    const receivePack = Number(parseFloat(value));
+    if (!isNaN(receivePack)) {
+      const inboundProduct = this.props.inboundProduct;
+      const { receivedQty, receivedPackQty } = this.state;
+      const dataSource = [...this.state.dataSource];
+      const remainQty = inboundProduct.expect_qty - receivedQty;
+      const remainPackQty = inboundProduct.expect_pack_qty - receivedPackQty;
+      const changeQty = receivePack * inboundProduct.sku_pack_qty - dataSource[index].inbound_qty;
+      const changePackQty = receivePack - dataSource[index].inbound_pack_qty;
+      let newRecQty;
+      let newRecPackQty;
+      if (changeQty > remainQty) {
+        dataSource[index].inbound_pack_qty = remainPackQty + Number(dataSource[index].inbound_pack_qty);
+        dataSource[index].inbound_qty = remainQty + dataSource[index].inbound_qty;
+        newRecQty = inboundProduct.expect_qty;
+        newRecPackQty = inboundProduct.expect_pack_qty;
+      } else {
+        dataSource[index].inbound_pack_qty = receivePack;
+        dataSource[index].inbound_qty = receivePack * inboundProduct.sku_pack_qty;
+        newRecQty = receivedQty + changeQty;
+        newRecPackQty = receivedPackQty + changePackQty;
+      }
       this.setState({
-        receivedQty: expectQty,
-        receivedPackQty: expectPackQty,
-      });
-    } else {
-      dataSource[index].inbound_pack_qty = value;
-      dataSource[index].inbound_qty = value * skuPackQty;
-      this.setState({
-        receivedQty: receivedQty + changeQty,
-        receivedPackQty: receivedPackQty + changePackQty,
+        dataSource,
+        receivedQty: newRecQty,
+        receivedPackQty: newRecPackQty,
       });
     }
-    this.setState({ dataSource });
   }
   handleDamageLevelChange = (index, value) => {
     const dataSource = [...this.state.dataSource];
@@ -130,9 +133,8 @@ export default class ReceivingModal extends Component {
     const dataSource = [...this.state.dataSource];
     const newDetail = {
       id: `${this.props.productNo}${dataSource.length + 1}`,
-      trace_id: '',
-      inbound_qty: '',
-      inbound_pack_qty: '',
+      inbound_qty: 0,
+      inbound_pack_qty: 0,
       location: '',
       damage_level: '',
     };
@@ -146,18 +148,16 @@ export default class ReceivingModal extends Component {
   }
   handleSubmit = () => {
     const dataSource = [...this.state.dataSource];
-    const { loginId, inboundNo, seqNo, asnNo } = this.props;
-    this.props.updateProductDetails(dataSource.map(data => ({
-      trace_id: data.trace_id,
+    const { loginId, inboundNo, inboundProduct, inboundHead } = this.props;
+    this.props.receiveProduct(dataSource.filter(data => !data.trace_id).map(data => ({
       location: data.location,
       damage_level: data.damage_level,
       inbound_qty: data.inbound_qty,
       inbound_pack_qty: data.inbound_pack_qty,
       convey_no: data.convey_no,
-    })), inboundNo, seqNo, asnNo, loginId).then((result) => {
+    })), inboundNo, inboundProduct.asn_seq_no, inboundHead.asn_no, loginId).then((result) => {
       if (!result.error) {
         this.props.hideReceiveModal();
-        this.props.reload();
       }
     });
   }
@@ -184,35 +184,38 @@ export default class ReceivingModal extends Component {
   }, {
     title: '破损级别',
     dataIndex: 'damage_level',
-    render: o => (<Select defaultValue={o} style={{ width: 60 }} disabled >
-      <Option value="0">完好</Option>
-      <Option value="1">轻微擦痕</Option>
-      <Option value="2">中度</Option>
-      <Option value="3">重度</Option>
-      <Option value="4">严重磨损</Option>
+    render: o => (<Select value={o} style={{ width: 60 }} disabled >
+      <Option value={0}>完好</Option>
+      <Option value={1}>轻微擦痕</Option>
+      <Option value={2}>中度</Option>
+      <Option value={3}>重度</Option>
+      <Option value={4}>严重磨损</Option>
     </Select>),
   }, {
     title: '收货库位',
     dataIndex: 'location',
     width: 100,
-    render: o => (<Select defaultValue={o} showSearch style={{ width: 100 }} disabled />),
+    render: o => (<Select value={o} showSearch style={{ width: 100 }} disabled />),
   }]
 
   manualColumns = [{
     title: '容器编号',
     dataIndex: 'convey_no',
     width: 180,
-    render: (convey, row, index) => (<Input value={convey} onChange={ev => this.handleConveyChange(index, ev.target.value)} />),
+    render: (convey, row, index) => (<Input value={convey} onChange={ev => this.handleConveyChange(index, ev.target.value)} disabled={row.trace_id} />),
   }, {
     title: '收货数量',
     dataIndex: 'inbound_qty',
     width: 180,
-    render: (o, record, index) => (<QuantityInput packQty={record.inbound_pack_qty} pcsQty={o} onChange={e => this.handleProductReceive(index, e.target.value)} />),
+    render: (o, record, index) => (
+      <QuantityInput packQty={record.inbound_pack_qty} pcsQty={o}
+        onChange={e => this.handleProductReceive(index, e.target.value)} disabled={record.trace_id}
+      />),
   }, {
     title: '破损级别',
     dataIndex: 'damage_level',
     width: 180,
-    render: (o, record, index) => (<Select defaultValue="0" value={o} onChange={value => this.handleDamageLevelChange(index, value)} style={{ width: 160 }} >
+    render: (o, record, index) => (<Select value={o} onChange={value => this.handleDamageLevelChange(index, value)} style={{ width: 160 }} disabled={record.trace_id}>
       <Option value={0}>完好</Option>
       <Option value={1}>轻微擦痕</Option>
       <Option value={2}>中度</Option>
@@ -225,38 +228,41 @@ export default class ReceivingModal extends Component {
     width: 180,
     render: (o, record, index) => {
       const Options = this.props.locations.map(location => (<Option value={location.location}>{location.location}</Option>));
-      return (<Select value={o} showSearch style={{ width: 160 }} onChange={value => this.handleProductPutAway(index, value)}>
+      return (<Select value={o} showSearch style={{ width: 160 }} onChange={value => this.handleProductPutAway(index, value)} disabled={record.trace_id}>
         {Options}
       </Select>);
     },
   }, {
     title: '操作',
     width: 50,
-    render: (o, record, index) => (<RowUpdater onHit={() => this.handleDeleteDetail(index)} label={<Icon type="delete" />} row={record} />),
+    render: (o, record, index) => !record.trace_id && (<RowUpdater onHit={() => this.handleDeleteDetail(index)} label={<Icon type="delete" />} row={record} />),
   }]
   render() {
-    const { receivingMode, expectQty, expectPackQty, productNo, name } = this.props;
+    const { inboundProduct, inboundHead } = this.props;
     const { receivedQty, receivedPackQty } = this.state;
-    const title = this.props.receivingMode === 'scan' ? '收货记录' : '收货确认';
+    const title = inboundHead.rec_mode === 'scan' ? '收货记录' : '收货确认';
+    let footer;
+    if (inboundHead.rec_mode === 'manual' && receivedQty < inboundProduct.expect_qty) {
+      footer = () => <Button type="dashed" icon="plus" style={{ width: '100%' }} onClick={this.handleAdd} />;
+    }
     return (
       <Modal title={title} width={960} maskClosable={false} onCancel={this.handleCancel} visible={this.props.visible} onOk={this.handleSubmit}>
         <Row>
           <Col sm={12} md={8} lg={6}>
-            <InfoItem addonBefore="商品货号" field={productNo} style={{ marginBottom: 0 }} />
+            <InfoItem addonBefore="商品货号" field={inboundProduct.product_no} style={{ marginBottom: 0 }} />
           </Col>
           <Col sm={12} md={8} lg={6}>
-            <InfoItem addonBefore="中文品名" field={name} style={{ marginBottom: 0 }} />
+            <InfoItem addonBefore="中文品名" field={inboundProduct.name} style={{ marginBottom: 0 }} />
           </Col>
           <Col sm={12} md={8} lg={6}>
-            <InfoItem addonBefore="预期数量" field={<QuantityInput packQty={expectPackQty} pcsQty={expectQty} disabled />} />
+            <InfoItem addonBefore="预期数量" field={<QuantityInput packQty={inboundProduct.expect_pack_qty} pcsQty={inboundProduct.expect_qty} disabled />} />
           </Col>
           <Col sm={12} md={8} lg={6}>
             <InfoItem addonBefore="现收数量" field={<QuantityInput packQty={receivedPackQty} pcsQty={receivedQty} disabled />} />
           </Col>
         </Row>
-        <Table size="middle" columns={receivingMode === 'scan' ? this.scanColumns : this.manualColumns}
-          dataSource={this.state.dataSource.map((item, index) => ({ ...item, index }))} rowKey="index"
-          footer={() => receivingMode === 'manual' && <Button type="dashed" icon="plus" style={{ width: '100%' }} onClick={this.handleAdd} />}
+        <Table size="middle" columns={inboundHead.rec_mode === 'scan' ? this.scanColumns : this.manualColumns}
+          dataSource={this.state.dataSource} rowKey="id" footer={footer}
         />
       </Modal>
     );

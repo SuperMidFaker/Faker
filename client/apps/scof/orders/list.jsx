@@ -21,6 +21,7 @@ import ShipmentColumn from './columndef/shipmentColumn';
 import ProgressColumn from './columndef/progressColumn';
 import DelegationDockPanel from '../../cms/common/dockhub/delegationDockPanel';
 import ShipmentDockPanel from '../../transport/shipment/dock/shipmentDockPanel';
+import ReceiveDockPanel from '../../cwm/receiving/dock/receivingDockPanel';
 import { SCOF_ORDER_TRANSFER, CRM_ORDER_STATUS } from 'common/constants';
 import CreatorSelect from './creatorSelect';
 
@@ -324,6 +325,7 @@ export default class OrderList extends React.Component {
         <OrderDockPanel reload={this.handleTableLoad} />
         <DelegationDockPanel />
         <ShipmentDockPanel />
+        <ReceiveDockPanel />
       </QueueAnim>
     );
   }

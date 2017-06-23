@@ -66,7 +66,7 @@ export default class InvoiceDetails extends React.Component {
         g_qty: null,
         trade_total: null,
         trade_curr: '',
-        dec_price: '',
+        dec_price: null,
       });
       this.setState({ sumval: [sumval] });
     }

@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { Radio, Form, Modal, Input, Row, Col } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
-import { closePackingRuleModal, saveSkuTemplate } from 'common/reducers/cwmSku';
+import { closePackingRuleModal, saveSkuTemplate, loadSkuParams } from 'common/reducers/cwmSku';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
@@ -21,7 +21,7 @@ const RadioGroup = Radio.Group;
     loginId: state.account.loginId,
     owner: state.cwmSku.owner,
   }),
-  { closePackingRuleModal, saveSkuTemplate }
+  { closePackingRuleModal, saveSkuTemplate, loadSkuParams }
 )
 @Form.create()
 export default class PackingRuleModal extends Component {
@@ -46,6 +46,7 @@ export default class PackingRuleModal extends Component {
         data.convey_pallet_qty = data.convey_box_qty * data.pallet_pack_qty;
         this.props.saveSkuTemplate(data, tenantId, loginId, owner.id).then((result) => {
           if (!result.error) {
+            this.props.loadSkuParams(this.props.owner.id);
             this.props.closePackingRuleModal();
             this.props.form.setFieldsValue({
               code: '',

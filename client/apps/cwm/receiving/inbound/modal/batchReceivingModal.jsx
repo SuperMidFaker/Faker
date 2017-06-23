@@ -5,8 +5,7 @@ import { connect } from 'react-redux';
 import { Checkbox, Modal, Select, Form } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
-import { hideBatchReceivingModal, updateInboundDetails } from 'common/reducers/cwmReceive';
-import { loadLocations } from 'common/reducers/cwmWarehouse';
+import { hideBatchReceivingModal, batchReceive } from 'common/reducers/cwmReceive';
 
 const formatMsg = format(messages);
 const Option = Select.Option;
@@ -18,28 +17,27 @@ const FormItem = Form.Item;
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     locations: state.cwmWarehouse.locations,
-    defaultWhse: state.cwmContext.defaultWhse,
     visible: state.cwmReceive.batchReceivingModal.visible,
+    inboundHead: state.cwmReceive.inboundFormHead,
   }),
-  { hideBatchReceivingModal, loadLocations, updateInboundDetails }
+  { hideBatchReceivingModal, batchReceive }
 )
 export default class BatchReceivingModal extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     data: PropTypes.array.isRequired,
-    reload: PropTypes.func.isRequired,
   }
   state = {
     location: '',
     damageLevel: '',
   }
-  componentWillMount() {
-    const whseCode = this.props.defaultWhse.code;
-    this.props.loadLocations(whseCode);
-  }
   msg = key => formatMsg(this.props.intl, key);
   handleCancel = () => {
     this.props.hideBatchReceivingModal();
+    this.setState({
+      location: '',
+      damageLevel: '',
+    });
   }
   handleLocationChange = (value) => {
     this.setState({
@@ -53,19 +51,11 @@ export default class BatchReceivingModal extends Component {
   }
   handleSubmit = () => {
     const { location, damageLevel } = this.state;
-    const { data, loginId, inboundNo, asnNo } = this.props;
-    const seqNos = [];
-    for (let i = 0; i < data.length; i++) {
-      seqNos.push(data[i].asn_seq_no);
-    }
-    this.props.updateInboundDetails(seqNos, location, damageLevel, loginId, asnNo, inboundNo).then((result) => {
+    const { data, loginId, inboundNo, inboundHead } = this.props;
+    const seqNos = data.map(dt => dt.asn_seq_no);
+    this.props.batchReceive(seqNos, location, damageLevel, loginId, inboundHead.asn_no, inboundNo).then((result) => {
       if (!result.error) {
-        this.props.reload();
-        this.props.hideBatchReceivingModal();
-        this.setState({
-          location: '',
-          damageLevel: '',
-        });
+        this.handleCancel();
       }
     });
   }
