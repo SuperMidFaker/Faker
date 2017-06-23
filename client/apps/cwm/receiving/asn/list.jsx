@@ -98,7 +98,7 @@ export default class ReceivingASNList extends React.Component {
     title: '创建时间',
     dataIndex: 'created_date',
     width: 150,
-    render: createdate => createdate && moment(createdate).format('MM.DD HH:MM'),
+    render: createdate => createdate && moment(createdate).format('MM.DD HH:mm'),
   }, {
     title: '状态',
     dataIndex: 'status',
