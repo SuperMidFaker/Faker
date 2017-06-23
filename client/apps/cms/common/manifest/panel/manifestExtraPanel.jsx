@@ -24,6 +24,7 @@ export default class ManifestExtraPanel extends React.Component {
     intl: intlShape.isRequired,
     ietype: PropTypes.string,
     tabKey: PropTypes.string,
+    billSeqNo: PropTypes.string.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -33,7 +34,7 @@ export default class ManifestExtraPanel extends React.Component {
     this.props.setPaneTabkey(tabKey);
   }
   handleDocusView = () => {
-    this.context.router.push(`/clearance/${this.props.ietype}/manifest/documents/view`);
+    this.context.router.push(`/clearance/${this.props.ietype}/manifest/documents/view/${this.props.billSeqNo}`);
   }
   render() {
     return (

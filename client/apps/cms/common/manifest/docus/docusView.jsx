@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 import moment from 'moment';
+import connectFetch from 'client/common/decorators/connect-fetch';
 import { intlShape, injectIntl } from 'react-intl';
 import { Layout, Collapse, Button, Breadcrumb, Table, Select, Icon, Form, message } from 'antd';
 import ButtonToggle from 'client/components/ButtonToggle';
@@ -21,6 +22,15 @@ const Option = Select.Option;
 const OptGroup = Select.OptGroup;
 const FormItem = Form.Item;
 
+function fetchData({ state, dispatch, params }) {
+  const proms = [
+    dispatch(loadTempParams()),
+    dispatch(loadDocuDatas({ billSeqNo: params.billseqno })),
+    dispatch(loadInvTemplates({ tenantId: state.account.tenantId, docuType: [0, 1, 2] }))];
+  return Promise.all(proms);
+}
+
+@connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
@@ -53,11 +63,6 @@ export default class DocuView extends React.Component {
     invtemps: [],
     contemps: [],
     paktemps: [],
-  }
-  componentDidMount() {
-    this.props.loadDocuDatas({ billSeqNo: this.props.billMeta.bill_seq_no });
-    this.props.loadInvTemplates({ tenantId: this.props.tenantId, docuType: [0, 1, 2] });
-    this.props.loadTempParams();
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.docuDatas !== this.props.docuDatas) {

@@ -290,7 +290,7 @@ export default(store, cookie) => {
                 <Route path="view/:billno" component={CMSImportManifest.View} />
                 <Route path="billtemplates/edit/:id" component={CMSImportManifest.TemplateEdit} />
                 <Route path="billtemplates/view/:id" component={CMSImportManifest.TemplateView} />
-                <Route path="documents/view" component={CMSImportManifest.DocusView} />
+                <Route path="documents/view/:billseqno" component={CMSImportManifest.DocusView} />
               </Route>
               <Route path="customs">
                 <IndexRoute component={CMSImportCustoms.DeclList} />
