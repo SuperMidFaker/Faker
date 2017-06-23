@@ -30,13 +30,6 @@ export default class PackagePopover extends Component {
   handleVisibleChange = (visible) => {
     this.setState({ visible });
   }
-
-  handleCancel = () => {
-    this.setState({ visible: false });
-  }
-  handleOk = () => {
-    this.setState({ visible: false });
-  }
   render() {
     const sku = this.props.sku;
     const { skuForm } = this.props;
@@ -64,12 +57,6 @@ export default class PackagePopover extends Component {
               <Input className="readonly" style={{ width: '33%' }} placeholder="SKU包装单位数量" value={skuForm.pallet_pack_qty} disabled />
               <Input className="readonly" style={{ width: '33%' }} placeholder="主单位数量" value={skuForm.convey_pallet_qty} disabled />
             </InputGroup>
-          </FormItem>
-          <FormItem>
-            <div className="toolbar-right">
-              <Button onClick={this.handleCancel}>取消</Button>
-              <Button onClick={this.handleOk}>确定</Button>
-            </div>
           </FormItem>
         </Form>
       </div>

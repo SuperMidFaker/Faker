@@ -15,8 +15,10 @@ const RadioGroup = Radio.Group;
 @injectIntl
 @connect(
   state => ({
+    tenantId: state.account.tenantId,
     packings: state.cwmSku.params.packings,
     skuForm: state.cwmSku.skuForm,
+    owner: state.cwmSku.owner,
   }),
   { setSkuForm }
 )
@@ -78,6 +80,11 @@ export default class SiderForm extends Component {
       });
     }
   }
+  handlePackingSelect = (value) => {
+    const { packings } = this.props;
+    const packing = packings.find(item => item.code === value);
+    this.props.setSkuForm(packing);
+  }
   render() {
     const { form: { getFieldDecorator }, packings, skuForm } = this.props;
     return (
@@ -86,7 +93,7 @@ export default class SiderForm extends Component {
           <Row gutter={16}>
             <Col sm={24}>
               <FormItem label={this.msg('packingCode')}>
-                <Select showSearch placeholder="选择包装代码" value={skuForm.packing_code}
+                <Select showSearch placeholder="选择包装代码" value={skuForm.code}
                   onSelect={this.handlePackingSelect}
                 >
                   {packings.map(pack => <Option value={pack.code}>{pack.code} | {pack.desc}</Option>)}

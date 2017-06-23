@@ -144,7 +144,6 @@ export default class OrderPane extends React.Component {
               </Row>
             </Panel>
           </Collapse>
-
         </Card>
       </div>
     );

@@ -2,6 +2,7 @@ import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/cwm/receive/', [
+  'HIDE_DOCK', 'SHOW_DOCK', 'CHANGE_DOCK_TAB',
   'OPEN_RECEIVE_MODAL', 'HIDE_RECEIVE_MODAL',
   'HIDE_DETAIL_MODAL', 'SHOW_DETAIL_MODAL',
   'ADD_TEMPORARY', 'CLEAR_TEMPORARY', 'DELETE_TEMPORARY', 'EDIT_TEMPORARY',
@@ -25,6 +26,14 @@ const actionTypes = createActionTypes('@@welogix/cwm/receive/', [
 ]);
 
 const initialState = {
+  dock: {
+    visible: false,
+    tabKey: null,
+    asn: {
+      asn_no: '',
+      status: 0,
+    },
+  },
   receiveModal: {
     visible: false,
     inboundNo: '',
@@ -67,6 +76,12 @@ const initialState = {
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
+    case actionTypes.HIDE_DOCK:
+      return { ...state, dock: { ...state.dock, visible: false } };
+    case actionTypes.SHOW_DOCK:
+      return { ...state, dock: { ...state.dock, visible: true } };
+    case actionTypes.CHANGE_DOCK_TAB:
+      return { ...state, dock: { ...state.dock, tabKey: action.data.tabKey } };
     case actionTypes.OPEN_RECEIVE_MODAL:
       return { ...state, receiveModal: { ...state.receiveModal, visible: true, ...action.data } };
     case actionTypes.HIDE_RECEIVE_MODAL:
@@ -112,6 +127,25 @@ export default function reducer(state = initialState, action) {
     default:
       return state;
   }
+}
+
+export function changeDockTab(tabKey) {
+  return {
+    type: actionTypes.CHANGE_DOCK_TAB,
+    data: { tabKey },
+  };
+}
+
+export function hideDock() {
+  return {
+    type: actionTypes.HIDE_DOCK,
+  };
+}
+
+export function showDock() {
+  return {
+    type: actionTypes.SHOW_DOCK,
+  };
 }
 
 export function openReceiveModal(modalInfo) {

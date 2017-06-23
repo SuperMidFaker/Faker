@@ -12,6 +12,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/sku/', [
   'SAVE_SKU', 'SAVE_SKU_SUCCEED', 'SAVE_SKU_FAIL',
   'OPEN_PACKING_RULE_MODAL', 'CLOSE_PACKING_RULE_MODAL',
   'OPEN_APPLY_PACKING_RULE_MODAL', 'CLOSE_APPLY_PACKING_RULE_MODAL',
+  'SAVE_SKU_TEMPLATE', 'SAVE_SKU_TEMPLATE_SUCCEED', 'SAVE_SKU_TEMPLATE_FAIL',
 ]);
 
 const initialState = {
@@ -241,6 +242,21 @@ export function saveSku(formData) {
       endpoint: 'v1/cwm/product/save/sku',
       method: 'post',
       data: formData,
+    },
+  };
+}
+
+export function saveSkuTemplate(data, tenantId, loginId, partnerId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SAVE_SKU_TEMPLATE,
+        actionTypes.SAVE_SKU_TEMPLATE_SUCCEED,
+        actionTypes.SAVE_SKU_TEMPLATE_FAIL,
+      ],
+      endpoint: 'v1/cwm/product/save/sku/template',
+      method: 'post',
+      data: { data, tenantId, loginId, partnerId },
     },
   };
 }

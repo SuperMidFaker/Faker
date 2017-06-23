@@ -70,6 +70,18 @@ const messages = defineMessages({
     id: 'cwm.receiving.asn.inbound.search.place.holder',
     defaultMessage: '搜索入库流水号',
   },
+  tabASN: {
+    id: 'cwm.receiving.dock.tab.asn',
+    defaultMessage: '收货通知',
+  },
+  tabFTZ: {
+    id: 'cwm.receiving.dock.tab.ftz',
+    defaultMessage: '海关备案',
+  },
+  tabInbound: {
+    id: 'cwm.receiving.dock.tab.inbound',
+    defaultMessage: '入库信息',
+  },
 });
 
 export default messages;

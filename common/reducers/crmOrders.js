@@ -131,7 +131,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.SHOW_DOCK: {
       return { ...state, dock: { ...state.dock, visible: true } };
     }
-    case actionTypes.CHANGE_dock_TAB: {
+    case actionTypes.CHANGE_DOCK_TAB: {
       return { ...state, dock: { ...state.dock, tabKey: action.data.tabKey } };
     }
     case actionTypes.LOAD_ORDER_NODES_SUCCEED:
