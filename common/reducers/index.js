@@ -55,6 +55,7 @@ import cwmReceive from './cwmReceive';
 import cwmOutbound from './cwmOutbound';
 import cwmWarehouse from './cwmWarehouse';
 import cwmShFtz from './cwmShFtz';
+import cwmShippingOrder from './cwmShippingOrder';
 
 export default combineReducers({
   activities,
@@ -113,4 +114,5 @@ export default combineReducers({
   cwmTransaction,
   cwmSku,
   cwmShFtz,
+  cwmShippingOrder,
 });

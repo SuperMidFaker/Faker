@@ -127,8 +127,8 @@ export default class ReceiveInbound extends Component {
             <RadioGroup value={inboundHead.rec_mode} onChange={this.handleReceivingModeChange} size="large"
               disabled={this.state.currentStatus === CWM_INBOUND_STATUS.COMPLETED.step}
             >
-              <Tooltip title="扫码收货" placement="bottom"><RadioButton value="scan"><Icon type="scan" /></RadioButton></Tooltip>
-              <Tooltip title="人工收货" placement="bottom"><RadioButton value="manual"><Icon type="solution" /></RadioButton></Tooltip>
+              <Tooltip title="扫码模式" placement="bottom"><RadioButton value="scan"><Icon type="scan" /></RadioButton></Tooltip>
+              <Tooltip title="手动模式" placement="bottom"><RadioButton value="manual"><Icon type="solution" /></RadioButton></Tooltip>
             </RadioGroup>
           </div>
         </Header>
@@ -169,7 +169,7 @@ export default class ReceiveInbound extends Component {
                 <TabPane tab="收货明细" key="receiveDetails">
                   <ReceiveDetailsPane inboundNo={this.props.params.inboundNo} inboundHead={inboundHead} />
                 </TabPane>
-                <TabPane tab="上架明细" key="putawayDetails">
+                <TabPane tab="上架明细" key="putawayDetails" disabled={inboundHead.status < CWM_INBOUND_STATUS.PARTIAL_RECEIVED.value}>
                   <PutawayDetailsPane inboundNo={this.props.params.inboundNo} inboundHead={inboundHead} />
                 </TabPane>
               </Tabs>

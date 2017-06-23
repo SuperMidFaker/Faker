@@ -12,6 +12,8 @@ const actionTypes = createActionTypes('@@welogix/cms/invoice/', [
   'LOAD_DOCU_DATAS', 'LOAD_DOCU_DATAS_SUCCEED', 'LOAD_DOCU_DATAS_FAIL',
   'LOAD_DOCU_BODY', 'LOAD_DOCU_BODY_SUCCEED', 'LOAD_DOCU_BODY_FAIL',
   'SAVE_DOCU_CHANGE', 'SAVE_DOCU_CHANGE_SUCCEED', 'SAVE_DOCU_CHANGE_FAIL',
+  'UPDATE_DOCU_TEMPLATE', 'UPDATE_DOCU_TEMPLATE_SUCCEED', 'UPDATE_DOCU_TEMPLATE_FAIL',
+  'SET_DOCU',
 ]);
 
 const initialState = {
@@ -47,6 +49,10 @@ export default function reducer(state = initialState, action) {
       return { ...state, docuDatas: action.result.data };
     case actionTypes.LOAD_DOCU_BODY_SUCCEED:
       return { ...state, docuBody: action.result.data };
+    case actionTypes.SET_DOCU:
+      return { ...state, docu: action.data };
+    case actionTypes.UPDATE_DOCU_TEMPLATE_SUCCEED:
+      return { ...state, docu: { ...state.docu, ...action.result.data } };
     default:
       return state;
   }
@@ -180,6 +186,13 @@ export function loadDocuBody(headId) {
   };
 }
 
+export function setDocu(docu) {
+  return {
+    type: actionTypes.SET_DOCU,
+    data: docu,
+  };
+}
+
 export function saveDocuChange(change, id) {
   return {
     [CLIENT_API]: {
@@ -192,6 +205,21 @@ export function saveDocuChange(change, id) {
       method: 'post',
       data: { change, id },
       payload: { change },
+    },
+  };
+}
+
+export function updateDocuTemplate(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_DOCU_TEMPLATE,
+        actionTypes.UPDATE_DOCU_TEMPLATE_SUCCEED,
+        actionTypes.UPDATE_DOCU_TEMPLATE_FAIL,
+      ],
+      endpoint: 'v1/cms/mainfest/document/template/update',
+      method: 'post',
+      data,
     },
   };
 }

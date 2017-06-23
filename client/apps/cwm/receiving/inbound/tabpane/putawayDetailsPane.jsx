@@ -232,8 +232,11 @@ export default class PutawayDetailsPane extends React.Component {
         <div className="toolbar">
           <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
             <h3>已选中{this.state.selectedRowKeys.length}项</h3>
-            <Button size="large" onClick={this.handleBatchConfirmPutAway} icon="rollback">
+            <Button size="large" onClick={this.handleBatchConfirmPutAway} icon="check">
               批量上架确认
+            </Button>
+            <Button size="large" onClick={this.handleBatchConfirmPutAway} icon="rollback">
+              批量取消收货
             </Button>
           </div>
           <div className="toolbar-right">

@@ -117,10 +117,17 @@ export default class CWMSkuList extends React.Component {
   }, {
     title: this.msg('productType'),
     dataIndex: 'type',
-    width: 200,
+  }, {
+    title: this.msg('lastModifiedDate'),
+    dataIndex: 'last_modified_date',
+    width: 120,
+  }, {
+    title: this.msg('createdDate'),
+    dataIndex: 'created_date',
+    width: 120,
   }, {
     title: this.msg('opColumn'),
-    width: 200,
+    width: 100,
     fixed: 'right',
     render: (_, row) => (
       <div>

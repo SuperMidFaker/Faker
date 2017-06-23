@@ -141,16 +141,13 @@ export default class OutboundDetail extends Component {
           </Breadcrumb>
           <Alert message="已加入波次计划: W09755345" type="info" />
           <div className="top-bar-tools">
-            {this.state.allocated && this.state.shippingMode === 'manual' && !this.state.picked &&
-            <Button type={!this.state.printedPickingList && 'primary'} size="large" onChange={this.handlePrint} icon={this.state.printedPickingList ? 'check-circle-o' : 'printer'} onClick={this.handlePrint} >
-              打印拣货单
-            </Button>}
-            {this.state.allocated && <RadioGroup defaultValue={this.state.shippingMode} onChange={this.handleShippingModeChange} size="large" disabled={this.state.currentStep > 1}>
-              <Tooltip title="扫码拣货"><RadioButton value="scan"><Icon type="scan" /></RadioButton></Tooltip>
-              <Tooltip title="人工拣货"><RadioButton value="manual"><Icon type="solution" /></RadioButton></Tooltip>
-            </RadioGroup>}
-            {!this.state.allocated && <Button type="primary" size="large" icon="rocket" onClick={this.handleAutoAllocate} >订单自动分配</Button>}
-            {this.state.allocated && this.state.currentStep < 2 && <Button size="large" icon="rollback" onClick={this.handleUndoAllocate} >取消订单分配</Button>}
+            {this.state.allocated && !this.state.picked &&
+            <Button type={!this.state.printedPickingList && 'primary'} size="large" icon="printer" onClick={this.handlePrint} />
+            }
+            <RadioGroup defaultValue={this.state.shippingMode} onChange={this.handleShippingModeChange} size="large" disabled={this.state.currentStep > 1}>
+              <Tooltip title="扫码模式"><RadioButton value="scan"><Icon type="scan" /></RadioButton></Tooltip>
+              <Tooltip title="手动模式"><RadioButton value="manual"><Icon type="solution" /></RadioButton></Tooltip>
+            </RadioGroup>
           </div>
         </Header>
         <Content className="main-content">

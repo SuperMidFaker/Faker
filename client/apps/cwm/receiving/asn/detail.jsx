@@ -67,13 +67,6 @@ export default class ReceivingASNDetail extends Component {
     this.props.clearTemporary();
   }
   msg = key => formatMsg(this.props.intl, key);
-  handleSave = () => {
-    this.props.form.validateFields((errors) => {
-      if (!errors) {
-
-      }
-    });
-  }
   handleSaveBtnClick = () => {
     const { temporaryDetails, defaultWhse, owners, tenantId, loginId, tenantName } = this.props;
     if (temporaryDetails.length === 0) {
@@ -104,9 +97,6 @@ export default class ReceivingASNDetail extends Component {
   }
   handleCancelBtnClick = () => {
     this.context.router.goBack();
-  }
-  handleSaveAccept = () => {
-    this.handleSave({ accepted: true });
   }
   handleUploadFiles = (fileList) => {
     this.setState({
