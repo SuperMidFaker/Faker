@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Icon, Col, Row, Tabs } from 'antd';
+import { Icon, Col, Row, Tabs, Button } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { CWM_ASN_STATUS } from 'common/constants';
 import { hideDock, changeDockTab } from 'common/reducers/cwmReceive';
@@ -59,6 +59,12 @@ export default class ReceivingDockPanel extends React.Component {
       case CWM_ASN_STATUS.finished: return this.msg('finished');
       default: return '';
     }
+  }
+  renderTitle = () => {
+    const button = <Button shape="circle" icon="home" onClick={this.goHomeDock} />;
+    return (
+      <span>{button}</span>
+    );
   }
   renderTabs() {
     // const { asn } = this.props;
