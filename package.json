@@ -62,6 +62,7 @@
     "koa-router": "^5.4.0",
     "koa-static": "^2.0.0",
     "moment": "^2.18.1",
+    "pdfmake": "^0.1.31",
     "prop-types": "^15.5.10",
     "rc-queue-anim": "^1.0.3",
     "react": "^15.5.4",

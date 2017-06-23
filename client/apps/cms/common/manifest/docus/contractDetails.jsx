@@ -66,7 +66,7 @@ export default class ContractDetails extends React.Component {
         g_qty: null,
         trade_total: null,
         trade_curr: '',
-        dec_price: '',
+        dec_price: null,
       });
       this.setState({ sumval: [sumval] });
     }
@@ -161,7 +161,7 @@ export default class ContractDetails extends React.Component {
               <InfoItem label="卖方  Seller" field={invoice.seller} editable placeholder="输入卖方" dataIndex="seller" onEdit={this.handleFill} />
             </Col>
             <Col sm={12}>
-              <InfoItem label="日期  Invoice Date" type="date" field={invoice.date} editable placeholder="输入发票日期" dataIndex="date" onEdit={this.handleFill} />
+              <InfoItem label="日期  Date" type="date" field={invoice.date} editable placeholder="输入发票日期" dataIndex="date" onEdit={this.handleFill} />
             </Col>
             <Col sm={12}>
               <InfoItem label="买方  Buyer" field={invoice.buyer} editable placeholder="输入买方" dataIndex="buyer" onEdit={this.handleFill} />
