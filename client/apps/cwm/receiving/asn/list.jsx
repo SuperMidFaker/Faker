@@ -13,8 +13,9 @@ import TrimSpan from 'client/components/trimSpan';
 import connectNav from 'client/common/decorators/connect-nav';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import { CWM_SHFTZ_APIREG_STATUS, CWM_ASN_STATUS } from 'common/constants';
+import ReceivingDockPanel from '../dock/receivingDockPanel';
 import { formatMsg } from '../message.i18n';
-import { loadAsnLists, releaseAsn, cancelAsn, receiveCompleted } from 'common/reducers/cwmReceive';
+import { showDock, loadAsnLists, releaseAsn, cancelAsn, receiveCompleted } from 'common/reducers/cwmReceive';
 
 const { Header, Content } = Layout;
 const Option = Select.Option;
@@ -41,7 +42,7 @@ function fetchData({ state, dispatch }) {
     owners: state.cwmContext.whseAttrs.owners,
     loginId: state.account.loginId,
   }),
-  { switchDefaultWhse, loadAsnLists, releaseAsn, cancelAsn, receiveCompleted }
+  { showDock, switchDefaultWhse, loadAsnLists, releaseAsn, cancelAsn, receiveCompleted }
 )
 @connectNav({
   depth: 2,
@@ -65,10 +66,10 @@ export default class ReceivingASNList extends React.Component {
     dataIndex: 'asn_no',
     width: 220,
     fixed: 'left',
-  }, {
-    title: '入库流水号',
-    dataIndex: 'inbound_no',
-    width: 220,
+    render: o => (
+      <a onClick={() => this.handlePreview()}>
+        {o}
+      </a>),
   }, {
     title: '货主',
     width: 200,
@@ -83,21 +84,20 @@ export default class ReceivingASNList extends React.Component {
     dataIndex: 'seller_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
-    title: '预期到货时间',
+    title: '预期到货日期',
     dataIndex: 'expect_receive_date',
-    width: 150,
+    width: 120,
     render: exprecdate => exprecdate && moment(exprecdate).format('YYYY.MM.DD'),
-    /*
+
   }, {
-    title: '实际收货时间',
+    title: '收货时间',
     dataIndex: 'received_date',
-    width: 150,
+    width: 120,
     render: recdate => recdate && moment(recdate).format('MM.DD HH:MM'),
-    */
   }, {
     title: '创建时间',
     dataIndex: 'created_date',
-    width: 150,
+    width: 120,
     render: createdate => createdate && moment(createdate).format('MM.DD HH:MM'),
   }, {
     title: '状态',
@@ -163,6 +163,9 @@ export default class ReceivingASNList extends React.Component {
       }
     },
   }]
+  handlePreview = () => {
+    this.props.showDock();
+  }
   handleComplete = (row) => {
     this.props.receiveCompleted(row.asn_no);
     this.handleListReload();
@@ -283,10 +286,7 @@ export default class ReceivingASNList extends React.Component {
       remotes: this.props.asnlist,
     });
     let columns = this.columns;
-    if (filters.status === 'pending') {
-      columns = [...columns];
-      columns.splice(1, 1);
-    } else if (filters.status === 'completed') {
+    if (filters.status === 'completed') {
       columns = [...columns];
       columns.splice(10, 10);
     }
@@ -342,6 +342,7 @@ export default class ReceivingASNList extends React.Component {
             </div>
           </div>
         </Content>
+        <ReceivingDockPanel />
       </QueueAnim>
     );
   }
