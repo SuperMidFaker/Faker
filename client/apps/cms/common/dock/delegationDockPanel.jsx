@@ -8,12 +8,11 @@ import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { CMS_DELEGATION_STATUS, CMS_DELEGATION_MANIFEST } from 'common/constants';
 import InfoItem from 'client/components/InfoItem';
 import DockPanel from 'client/components/DockPanel';
-import BasicPane from './tabpanes/BasicPane';
-import CustomsDeclPane from './tabpanes/CustomsDeclPane';
-import CiqDeclPane from './tabpanes/CiqDeclPane';
-import DutyTaxPane from './tabpanes/DutyTaxPane';
-import ExpensesPane from './tabpanes/ExpensesPane';
-import ActivityLoggerPane from './tabpanes/ActivityLoggerPane';
+import CustomsDeclPane from './tabpanes/customsDeclPane';
+import CiqDeclPane from './tabpanes/ciqDeclPane';
+import DutyTaxPane from './tabpanes/dutyTaxPane';
+import ExpensePane from './tabpanes/expensePane';
+import DelegationPane from './tabpanes/delegationPane';
 import DelgDispModal from './delgDispModal';
 import { showDispModal, acceptDelg, reloadDelegationList } from 'common/reducers/cmsDelegation';
 import { setPreviewStatus, hidePreviewer, setPreviewTabkey, loadBasicInfo, getShipmtOrderNo } from 'common/reducers/cmsDelgInfoHub';
@@ -146,7 +145,7 @@ export default class DelegationDockPanel extends React.Component {
     const { previewer, tabKey } = this.props;
     const { delgDispatch, delegation } = previewer;
     const tabs = [];
-    tabs.push(<TabPane tab="操作" key="activity"><ActivityLoggerPane /></TabPane>);
+    tabs.push(<TabPane tab="委托" key="activity"><DelegationPane /></TabPane>);
     if (delgDispatch.status >= CMS_DELEGATION_STATUS.accepted) {
       tabs.push(<TabPane tab="报关" key="customsDecl"><CustomsDeclPane /></TabPane>);
       if (delgDispatch.recv_services.indexOf('ciq') !== -1) {
@@ -159,9 +158,8 @@ export default class DelegationDockPanel extends React.Component {
       tabs.push(<TabPane tab="缴税" key="taxes"><DutyTaxPane /></TabPane>);
     }
     if (delgDispatch.status >= CMS_DELEGATION_STATUS.accepted) {
-      tabs.push(<TabPane tab="费用" key="expenses"><ExpensesPane /></TabPane>);
+      tabs.push(<TabPane tab="费用" key="expenses"><ExpensePane /></TabPane>);
     }
-    tabs.push(<TabPane tab="详情" key="basic"><BasicPane /></TabPane>);
     return (
       <Tabs activeKey={tabKey} onChange={this.handleTabChange}>
         {tabs}

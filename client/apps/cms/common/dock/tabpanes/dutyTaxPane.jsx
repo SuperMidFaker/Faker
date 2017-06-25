@@ -239,18 +239,18 @@ export default class DutyTaxPane extends React.Component {
             <span style={{ color: '#FF9933' }}>单位：元</span>
           </div>
         </div>
-        <Card bodyStyle={{ padding: 8 }}>
-          <Table columns={this.columns} pagination={false} dataSource={this.props.taxTots}
+        <Card bodyStyle={{ padding: 0 }}>
+          <Table size="middle" columns={this.columns} pagination={false} dataSource={this.props.taxTots}
             rowKey="pre_entry_seq_no" expandedRowRender={this.handleExpandDetail}
           />
-          <Table showHeader={false} pagination={false} dataSource={this.state.sumval}>
-            <Column dataIndex="total" width={230} />
-            <Column dataIndex="duty_paid" width={110} render={this.renderValFixed} />
+          <Table size="middle" showHeader={false} pagination={false} dataSource={this.state.sumval}>
+            <Column dataIndex="total" width={230} className="sub-total" />
+            <Column dataIndex="duty_paid" width={110} render={this.renderValFixed} className="sub-total" />
             <Column dataIndex="trxn_mode" width={110} />
-            <Column dataIndex="duty_tax" width={110} render={this.renderValFixed} />
-            <Column dataIndex="vat_tax" width={110} render={this.renderValFixed} />
-            <Column dataIndex="excise_tax" width={110} render={this.renderValFixed} />
-            <Column dataIndex="total_tax" width={110} render={this.renderValFixed} />
+            <Column dataIndex="duty_tax" width={110} render={this.renderValFixed} className="sub-total" />
+            <Column dataIndex="vat_tax" width={110} render={this.renderValFixed} className="sub-total" />
+            <Column dataIndex="excise_tax" width={110} render={this.renderValFixed} className="sub-total" />
+            <Column dataIndex="total_tax" width={110} render={this.renderValFixed} className="sub-total" />
           </Table>
         </Card>
       </div>

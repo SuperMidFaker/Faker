@@ -20,7 +20,7 @@ import messages from './message.i18n';
 import SendDeclsModal from './modals/sendDeclsModal';
 import ManifestLegalInspectionPanel from './panel/manifestLegalInspectionPanel';
 import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
-import DelegationDockPanel from '../dockhub/delegationDockPanel';
+import DelegationDockPanel from '../dock/delegationDockPanel';
 import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
 
 const formatMsg = format(messages);

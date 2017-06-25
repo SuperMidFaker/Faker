@@ -147,7 +147,7 @@ export default class ReceiveInbound extends Component {
                   <Step description="待入库" />
                   <Step description="收货" />
                   <Step description="上架" />
-                  <Step description="入库完成" />
+                  <Step description="已入库" />
                 </Steps>
               </div>
             </Card>

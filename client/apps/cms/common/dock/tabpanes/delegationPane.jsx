@@ -10,7 +10,8 @@ import { loadBasicInfo, loadCustPanel, loadDeclCiqPanel, updateCertParam, exchan
 import { loadDeclHead, setInspect } from 'common/reducers/cmsDeclare';
 import { loadPaneExp } from 'common/reducers/cmsExpense';
 import { CERTS, INSPECT_STATUS } from 'common/constants';
-import ActivityEditCard from './activityEditCard';
+import MainInfoCard from '../card/mainInfoCard';
+import ActivityEditCard from '../card/activityEditCard';
 
 const Option = Select.Option;
 const FormItem = Form.Item;
@@ -57,7 +58,7 @@ const ACTIVITY_DESC_MAP = {
   }
 )
 @Form.create()
-export default class ActivityLoggerPane extends React.Component {
+export default class DelegationPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -230,6 +231,7 @@ export default class ActivityLoggerPane extends React.Component {
     );
     return (
       <div className="pane-content tab-pane">
+        <MainInfoCard />
         <Card bodyStyle={{ padding: 8, paddingBottom: 40 }} >
           <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
             <TabPane tab={<span><Icon type="message" />备注</span>} key="message">

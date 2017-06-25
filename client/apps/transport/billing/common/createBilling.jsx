@@ -15,7 +15,7 @@ import ShipmentDockPanel from '../../shipment/dock/shipmentDockPanel';
 import { loadShipmtDetail } from 'common/reducers/shipment';
 import ActDate from '../../common/actDate';
 import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
-import DelegationDockPanel from '../../../cms/common/dockhub/delegationDockPanel';
+import DelegationDockPanel from '../../../cms/common/dock/delegationDockPanel';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;

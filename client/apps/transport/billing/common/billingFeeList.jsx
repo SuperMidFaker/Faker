@@ -13,7 +13,7 @@ import { loadShipmtDetail } from 'common/reducers/shipment';
 import ExceptionListPopover from '../../tracking/land/modals/exception-list-popover';
 import ActDate from '../../common/actDate';
 import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
-import DelegationDockPanel from '../../../cms/common/dockhub/delegationDockPanel';
+import DelegationDockPanel from '../../../cms/common/dock/delegationDockPanel';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;

@@ -23,7 +23,7 @@ import SpecialChargePopover from './specialChargePopover';
 import ShipmentAdvanceModal from '../../tracking/land/modals/shipment-advance-modal';
 import CreateSpecialCharge from '../../tracking/land/modals/create-specialCharge';
 import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
-import DelegationDockPanel from '../../../cms/common/dockhub/delegationDockPanel';
+import DelegationDockPanel from '../../../cms/common/dock/delegationDockPanel';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;

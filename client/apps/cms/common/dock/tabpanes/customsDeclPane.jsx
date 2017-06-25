@@ -7,7 +7,7 @@ import moment from 'moment';
 import { ensureManifestMeta } from 'common/reducers/cmsDelegation';
 import { loadCustPanel, setOpetaor } from 'common/reducers/cmsDelgInfoHub';
 import { loadOperators } from 'common/reducers/crmCustomers';
-import CustomsDeclSheetCard from './customsDeclSheetCard';
+import CustomsDeclSheetCard from '../card/customsDeclSheetCard';
 import InfoItem from 'client/components/InfoItem';
 
 @injectIntl

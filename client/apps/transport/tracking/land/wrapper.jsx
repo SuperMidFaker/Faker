@@ -7,7 +7,7 @@ import { Breadcrumb, Layout, Radio } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import ShipmentDockPanel from '../../shipment/dock/shipmentDockPanel';
 import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
-import DelegationDockPanel from '../../../cms/common/dockhub/delegationDockPanel';
+import DelegationDockPanel from '../../../cms/common/dock/delegationDockPanel';
 import ShipmentAdvanceModal from './modals/shipment-advance-modal';
 import CreateSpecialCharge from './modals/create-specialCharge';
 import { format } from 'client/common/i18n/helpers';

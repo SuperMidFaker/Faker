@@ -16,7 +16,7 @@ import DispatchDock from '../dispatch/dispatchDock';
 import SegmentDock from '../dispatch/segmentDock';
 import { formatMsg } from './message.i18n';
 import OrderDockPanel from '../../scof/orders/docks/orderDockPanel';
-import DelegationDockPanel from '../../cms/common/dockhub/delegationDockPanel';
+import DelegationDockPanel from '../../cms/common/dock/delegationDockPanel';
 import ShipmentAdvanceModal from 'client/apps/transport/tracking/land/modals/shipment-advance-modal';
 import CreateSpecialCharge from 'client/apps/transport/tracking/land/modals/create-specialCharge';
 

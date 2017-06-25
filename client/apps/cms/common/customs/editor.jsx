@@ -19,7 +19,7 @@ import { CMS_DECL_STATUS } from 'common/constants';
 import SendModal from './modals/sendModal';
 import LegalInspectionPanel from './panel/legaInspectionPanel';
 import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
-import DelegationDockPanel from '../dockhub/delegationDockPanel';
+import DelegationDockPanel from '../dock/delegationDockPanel';
 import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
 
 const formatMsg = format(messages);

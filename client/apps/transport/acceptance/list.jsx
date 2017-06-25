@@ -25,7 +25,7 @@ import messages from './message.i18n';
 import containerMessages from 'client/apps/message.i18n';
 import globalMessages from 'client/common/root.i18n';
 import OrderDockPanel from '../../scof/orders/docks/orderDockPanel';
-import DelegationDockPanel from '../../cms/common/dockhub/delegationDockPanel';
+import DelegationDockPanel from '../../cms/common/dock/delegationDockPanel';
 import ShipmentAdvanceModal from 'client/apps/transport/tracking/land/modals/shipment-advance-modal';
 import CreateSpecialCharge from 'client/apps/transport/tracking/land/modals/create-specialCharge';
 import OperatorsPopover from 'client/common/operatorsPopover';

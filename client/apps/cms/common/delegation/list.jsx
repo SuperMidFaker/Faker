@@ -20,7 +20,7 @@ import { loadAcceptanceTable, acceptDelg, delDelg, setDispStatus, loadCiqTable, 
   ensureManifestMeta, showDispModal } from 'common/reducers/cmsDelegation';
 import { showPreviewer, loadBasicInfo, loadCustPanel, loadDeclCiqPanel } from 'common/reducers/cmsDelgInfoHub';
 import { loadPartnersByTypes } from 'common/reducers/partner';
-import DelegationDockPanel from '../dockhub/delegationDockPanel';
+import DelegationDockPanel from '../dock/delegationDockPanel';
 import CiqList from './ciqList';
 import messages from './message.i18n';
 import { format } from 'client/common/i18n/helpers';

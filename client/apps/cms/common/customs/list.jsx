@@ -22,7 +22,7 @@ import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import { CMS_DECL_STATUS } from 'common/constants';
 import SendModal from './modals/sendModal';
-import DelegationDockPanel from '../dockhub/delegationDockPanel';
+import DelegationDockPanel from '../dock/delegationDockPanel';
 import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
 import ShipmentDockPanel from '../../../transport/shipment/dock/shipmentDockPanel';
 import BatchSendModal from './modals/batchSendModal';

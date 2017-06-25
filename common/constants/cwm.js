@@ -45,15 +45,14 @@ exports.CWM_ASN_STATUS = {
   },
   INBOUND: {
     value: 1,
-    text: '入库操作',
+    text: '入库中',
     badge: 'processing',
   },
   PARTIAL: {
     value: 2,
-    text: '部分收货',
+    text: '部分入库',
     badge: 'warning',
   },
-
   COMPLETED: {
     value: 3,
     text: '收货完成',
@@ -98,8 +97,13 @@ exports.CWM_SO_STATUS = {
   },
   OUTBOUND: {
     value: 1,
-    text: '出库操作',
+    text: '出库中',
     badge: 'processing',
+  },
+  PARTIAL: {
+    value: 2,
+    text: '部分出库',
+    badge: 'warning',
   },
   COMPLETED: {
     value: 3,

@@ -244,7 +244,7 @@ export default class ReceivingInboundList extends React.Component {
             <RadioButton value="create">待入库</RadioButton>
             <RadioButton value="receive">收货</RadioButton>
             <RadioButton value="putaway">上架</RadioButton>
-            <RadioButton value="completed">入库完成</RadioButton>
+            <RadioButton value="completed">已入库</RadioButton>
           </RadioGroup>
         </Header>
         <Content className="main-content" key="main">

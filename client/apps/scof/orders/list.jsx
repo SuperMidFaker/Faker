@@ -19,7 +19,7 @@ import OrderDockPanel from './docks/orderDockPanel';
 import OrderNoColumn from './columndef/orderNoColumn';
 import ShipmentColumn from './columndef/shipmentColumn';
 import ProgressColumn from './columndef/progressColumn';
-import DelegationDockPanel from '../../cms/common/dockhub/delegationDockPanel';
+import DelegationDockPanel from '../../cms/common/dock/delegationDockPanel';
 import ShipmentDockPanel from '../../transport/shipment/dock/shipmentDockPanel';
 import ReceiveDockPanel from '../../cwm/receiving/dock/receivingDockPanel';
 import { SCOF_ORDER_TRANSFER, CRM_ORDER_STATUS } from 'common/constants';

@@ -19,7 +19,7 @@ import ShipmentDockPanel from '../shipment/dock/shipmentDockPanel';
 import ActDate from '../common/actDate';
 import ExceptionListPopover from '../tracking/land/modals/exception-list-popover';
 import OrderDockPanel from '../../scof/orders/docks/orderDockPanel';
-import DelegationDockPanel from '../../cms/common/dockhub/delegationDockPanel';
+import DelegationDockPanel from '../../cms/common/dock/delegationDockPanel';
 import { createFilename } from 'client/util/dataTransform';
 import ShipmentAdvanceModal from 'client/apps/transport/tracking/land/modals/shipment-advance-modal';
 import CreateSpecialCharge from 'client/apps/transport/tracking/land/modals/create-specialCharge';
