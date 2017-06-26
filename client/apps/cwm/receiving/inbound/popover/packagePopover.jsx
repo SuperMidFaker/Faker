@@ -63,7 +63,7 @@ export default class PackagePopover extends Component {
     );
     return (
       <Popover content={content} title="SKU包装规则" trigger="click" visible={this.state.visible} onVisibleChange={this.handleVisibleChange}>
-        <Button>{sku}</Button>
+        <Button size="small">{sku}</Button>
       </Popover>
     );
   }

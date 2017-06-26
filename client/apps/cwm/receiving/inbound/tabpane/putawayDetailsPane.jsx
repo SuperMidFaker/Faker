@@ -67,7 +67,7 @@ export default class PutawayDetailsPane extends React.Component {
   }, {
     title: '收货数量',
     width: 180,
-    render: (o, record) => (<QuantityInput packQty={record.inbound_pack_qty} pcsQty={record.inbound_qty} disabled />),
+    render: (o, record) => (<QuantityInput size="small" packQty={record.inbound_pack_qty} pcsQty={record.inbound_qty} disabled />),
   }, {
     title: 'SKU',
     dataIndex: 'product_sku',

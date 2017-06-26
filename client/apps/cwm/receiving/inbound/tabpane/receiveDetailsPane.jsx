@@ -111,11 +111,11 @@ export default class ReceiveDetailsPane extends React.Component {
   }, {
     title: '预期数量',
     width: 180,
-    render: (o, record) => (<QuantityInput packQty={record.expect_pack_qty} pcsQty={record.expect_qty} disabled />),
+    render: (o, record) => (<QuantityInput size="small" packQty={record.expect_pack_qty} pcsQty={record.expect_qty} disabled />),
   }, {
     title: '收货数量',
     width: 180,
-    render: (o, record) => (<QuantityInput packQty={record.received_pack_qty} pcsQty={record.received_qty}
+    render: (o, record) => (<QuantityInput size="small" packQty={record.received_pack_qty} pcsQty={record.received_qty}
       alert={record.expect_pack_qty !== record.receive_pack_qty} disabled
     />),
   }, {
@@ -126,12 +126,12 @@ export default class ReceiveDetailsPane extends React.Component {
       const Options = this.props.locations.map(location => (<Option key={location.id} value={location.location}>{location.location}</Option>));
       if (record.location.length <= 1) {
         return (
-          <Select className="readonly" value={o[0]} style={{ width: 160 }} disabled>
+          <Select size="small" className="readonly" value={o[0]} style={{ width: 160 }} disabled>
             {Options}
           </Select>);
       } else {
         return (
-          <Select className="readonly" mode="tags" value={o} style={{ width: 160 }} disabled>
+          <Select size="small" className="readonly" mode="tags" value={o} style={{ width: 160 }} disabled>
             {Options}
           </Select>);
       }
@@ -141,7 +141,7 @@ export default class ReceiveDetailsPane extends React.Component {
     dataIndex: 'damage_level',
     width: 120,
     render: damage => (
-      <Select className="readonly" value={damage} style={{ width: 100 }} disabled>
+      <Select size="small" className="readonly" value={damage} style={{ width: 100 }} disabled>
         <Option value={0}>完好</Option>
         <Option value={1}>轻微擦痕</Option>
         <Option value={2}>中度</Option>
