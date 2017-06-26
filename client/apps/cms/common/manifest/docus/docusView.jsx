@@ -240,7 +240,9 @@ export default class DocuView extends React.Component {
           margin: [12, 12, 12, 12],
         },
       },
-      defaultStyle: { },
+      defaultStyle: {
+        font: 'yahei',
+      },
     };
     if (docu.docu_type === CMS_DOCU_TYPE.invoice) {
       docDefinition.content = [
@@ -325,6 +327,14 @@ export default class DocuView extends React.Component {
   handlePDF = () => {
     pdfMake.vfs = pdfFonts.pdfMake.vfs;
     const docDefinition = this.handleDocDef();
+    pdfMake.fonts = {
+      yahei: {
+        normal: 'Microsoft Yahei.ttf',
+        bold: 'Microsoft Yahei.ttf',
+        italics: 'Microsoft Yahei.ttf',
+        bolditalics: 'Microsoft Yahei.ttf',
+      },
+    };
     pdfMake.createPdf(docDefinition).open();
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
