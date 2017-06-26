@@ -9,13 +9,14 @@ import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/search-bar';
 import RowUpdater from 'client/components/rowUpdater';
+import NavLink from 'client/components/nav-link';
 import TrimSpan from 'client/components/trimSpan';
 import connectNav from 'client/common/decorators/connect-nav';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import { CWM_SHFTZ_APIREG_STATUS, CWM_ASN_STATUS } from 'common/constants';
 import ReceivingDockPanel from '../dock/receivingDockPanel';
 import { formatMsg } from '../message.i18n';
-import { showDock, loadAsnLists, releaseAsn, cancelAsn, receiveCompleted } from 'common/reducers/cwmReceive';
+import { showDock, loadAsnLists, releaseAsn, cancelAsn, closeAsn } from 'common/reducers/cwmReceive';
 
 const { Header, Content } = Layout;
 const Option = Select.Option;
@@ -42,7 +43,7 @@ function fetchData({ state, dispatch }) {
     owners: state.cwmContext.whseAttrs.owners,
     loginId: state.account.loginId,
   }),
-  { showDock, switchDefaultWhse, loadAsnLists, releaseAsn, cancelAsn, receiveCompleted }
+  { showDock, switchDefaultWhse, loadAsnLists, releaseAsn, cancelAsn, closeAsn }
 )
 @connectNav({
   depth: 2,
@@ -157,9 +158,11 @@ export default class ReceivingASNList extends React.Component {
       } else if (record.status === CWM_ASN_STATUS.PARTIAL.value) {
         return (<span>
           <RowUpdater onHit={this.handleReceive} label="入库操作" row={record} />
-          <span className="ant-divider" />
-          <RowUpdater onHit={this.handleComplete} label="关闭收货" row={record} />
+          { record.asn_no && <span className="ant-divider" />}
+          { record.asn_no && <RowUpdater onHit={this.handleComplete} label="关闭收货" row={record} />}
         </span>);
+      } else if (record.status === CWM_ASN_STATUS.COMPLETED.value) {
+        return <NavLink to={`/cwm/receiving/inbound/${record.inbound_no}`}>入库查看</NavLink>;
       }
     },
   }]
@@ -167,8 +170,11 @@ export default class ReceivingASNList extends React.Component {
     this.props.showDock();
   }
   handleComplete = (row) => {
-    this.props.receiveCompleted(row.asn_no);
-    this.handleListReload();
+    this.props.closeAsn(row.asn_no).then((result) => {
+      if (!result.error) {
+        this.handleListReload();
+      }
+    });
   }
   handleCreateASN = () => {
     this.context.router.push('/cwm/receiving/asn/create');

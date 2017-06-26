@@ -247,8 +247,7 @@ export default class ReceivingInboundList extends React.Component {
           </Breadcrumb>
           <RadioGroup value={filters.status} onChange={this.handleStatusChange} size="large" >
             <RadioButton value="create">待入库</RadioButton>
-            <RadioButton value="partialReceive">部分收货</RadioButton>
-            <RadioButton value="receive">全部收货</RadioButton>
+            <RadioButton value="receive">收货</RadioButton>
             <RadioButton value="putaway">上架</RadioButton>
             <RadioButton value="completed">已入库</RadioButton>
           </RadioGroup>
