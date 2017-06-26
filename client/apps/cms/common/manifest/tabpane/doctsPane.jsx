@@ -5,7 +5,6 @@ import pdfFonts from 'pdfmake/build/vfs_fonts';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { Layout, Collapse, Button, Breadcrumb, Table, Select, Icon, Form, message } from 'antd';
-import ButtonToggle from 'client/components/ButtonToggle';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../docus/message.i18n';
 import { loadTempParams, loadDocuDatas, loadDocuBody, loadInvTemplates, updateDocuTemplate, setDocu } from 'common/reducers/cmsInvoice';
@@ -16,7 +15,7 @@ import { CMS_DOCU_TYPE } from 'common/constants';
 
 const formatMsg = format(messages);
 const Panel = Collapse.Panel;
-const { Header, Content, Sider } = Layout;
+const { Content, Sider } = Layout;
 const Option = Select.Option;
 const OptGroup = Select.OptGroup;
 const FormItem = Form.Item;
@@ -349,21 +348,17 @@ export default class DocuPane extends React.Component {
     }];
     return (
       <Layout className="ant-layout-wrapper">
-        <Sider width={280} className="menu-sider" key="sider" trigger={null}
-          collapsible
-          collapsed={this.state.collapsed}
-          collapsedWidth={0}
-        >
+        <Sider width={280} className="menu-sider">
           <div className="left-sider-panel" >
             <Collapse accordion defaultActiveKey="invoice" onChange={this.handlePanelChange}>
               <Panel header={this.msg('invoice')} key="invoice">
-                <FormItem label="模板：" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
+                <FormItem>
                   <Select
                     placeholder="选择发票模板"
                     optionFilterProp="search"
                     size="large"
                     onChange={this.handleTempSelectChange}
-                    style={{ width: 150 }}
+                    style={{ width: '100%' }}
                     allowClear
                     value={invTempId}
                   >
@@ -380,13 +375,13 @@ export default class DocuPane extends React.Component {
                 />
               </Panel>
               <Panel header={this.msg('contract')} key="contract">
-                <FormItem label="模板：" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
+                <FormItem>
                   <Select
                     placeholder="选择合同模板"
                     optionFilterProp="search"
                     size="large"
                     onChange={this.handleTempSelectChange}
-                    style={{ width: 150 }}
+                    style={{ width: '100%' }}
                     allowClear
                     value={conTempId}
                   >
@@ -403,13 +398,13 @@ export default class DocuPane extends React.Component {
                 />
               </Panel>
               <Panel header={this.msg('packingList')} key="packlist">
-                <FormItem label="模板：" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
+                <FormItem>
                   <Select
                     placeholder="选择箱单模板"
                     optionFilterProp="search"
                     size="large"
                     onChange={this.handleTempSelectChange}
-                    style={{ width: 150 }}
+                    style={{ width: '100%' }}
                     allowClear
                     value={pakTempId}
                   >
@@ -429,27 +424,22 @@ export default class DocuPane extends React.Component {
           </div>
         </Sider>
         <Layout>
-          <Header className="top-bar" style={{ position: 'relative' }}>
-            { this.state.collapsed && <Breadcrumb>
+          <div className="panel-header">
+            <Breadcrumb>
               <Breadcrumb.Item>
-                随附单据
+                {docu.docu_type === CMS_DOCU_TYPE.invoice && '发票'}
+                {docu.docu_type === CMS_DOCU_TYPE.contract && '合同'}
+                {docu.docu_type === CMS_DOCU_TYPE.packingList && '箱单'}
               </Breadcrumb.Item>
               <Breadcrumb.Item>
                 {`${docu.docu_code}`}
               </Breadcrumb.Item>
             </Breadcrumb>
-          }
-            <ButtonToggle size="large"
-              iconOn="menu-fold" iconOff="menu-unfold"
-              onClick={this.toggle}
-              toggle
-            />
-            <span />
             <div className="toolbar-right">
-              <Button icon="file-pdf" onClick={this.handlePDF}>PDF</Button>
+              <Button size="large" icon="file-pdf" onClick={this.handlePDF}>PDF</Button>
             </div>
-          </Header>
-          <Content className="main-content layout-min-width layout-min-width-large">
+          </div>
+          <Content className="layout-fixed-width layout-fixed-width-large">
             {docu.docu_type === CMS_DOCU_TYPE.invoice && <InvoiceDetails invoice={docu} />}
             {docu.docu_type === CMS_DOCU_TYPE.contract && <ContractDetails invoice={docu} />}
             {docu.docu_type === CMS_DOCU_TYPE.packingList && <PacklistDetails invoice={docu} />}
