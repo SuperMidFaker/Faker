@@ -20,11 +20,9 @@ const actionTypes = createActionTypes('@@welogix/cwm/receive/', [
   'GET_INBOUND_DETAIL', 'GET_INBOUND_DETAIL_SUCCEED', 'GET_INBOUND_DETAIL_FAIL',
   'UPDATE_INBMODE', 'UPDATE_INBMODE_SUCCEED', 'UPDATE_INBMODE_FAIL',
   'LOAD_PRODUCT_DETAILS', 'LOAD_PRODUCT_DETAILS_SUCCEED', 'LOAD_PRODUCT_DETAILS_FAIL',
-  'UPDATE_PRODUCT_DETAILS', 'UPDATE_PRODUCT_DETAILS_SUCCEED', 'UPDATE_PRODUCT_DETAILS_FAIL',
   'CONFIRM_PRODUCT_DETAILS', 'CONFIRM_PRODUCT_DETAILS_SUCCEED', 'CONFIRM_PRODUCT_DETAILS_FAIL',
-  'RECEIVE_COMPLETED', 'RECEIVE_COMPLETED_SUCCEED', 'RECEIVE_COMPLETED_FAIL',
+  'CLOSE_ASN', 'CLOSE_ASN_SUCCEED', 'CLOSE_ASN_FAIL',
   'SHOW_BATCH_RECEIVING_MODAL', 'HIDE_BATCH_RECEIVING_MODAL',
-  'UPDATE_INBOUND_DETAILS', 'UPDATE_INBOUND_DETAILS_SUCCEED', 'UPDATE_INBOUND_DETAILS_FAIL',
   'RECEIVE_PRODUCT', 'RECEIVE_PRODUCT_SUCCEED', 'RECEIVE_PRODUCT_FAIL',
   'RECEIVE_EXPRESS', 'RECEIVE_EXPRESS_SUCCEED', 'RECEIVE_EXPRESS_FAIL',
   'RECEIVE_BATCH', 'RECEIVE_BATCH_SUCCEED', 'RECEIVE_BATCH_FAIL',
@@ -415,21 +413,6 @@ export function loadProductDetails(inboundNo, seqNo) {
   };
 }
 
-export function updateProductDetails(dataSource, inboundNo, seqNo, asnNo, loginId) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.UPDATE_PRODUCT_DETAILS,
-        actionTypes.UPDATE_PRODUCT_DETAILS_SUCCEED,
-        actionTypes.UPDATE_PRODUCT_DETAILS_FAIL,
-      ],
-      endpoint: 'v1/cwm/receive/product/details/update',
-      method: 'post',
-      data: { loginId, inboundNo, dataSource, seqNo, asnNo },
-    },
-  };
-}
-
 export function confirm(inboundNo, asnNo, loginId, tenantId) {
   return {
     [CLIENT_API]: {
@@ -445,15 +428,15 @@ export function confirm(inboundNo, asnNo, loginId, tenantId) {
   };
 }
 
-export function receiveCompleted(asnNo) {
+export function closeAsn(asnNo) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.RECEIVE_COMPLETED,
-        actionTypes.RECEIVE_COMPLETED_SUCCEED,
-        actionTypes.RECEIVE_COMPLETED_FAIL,
+        actionTypes.CLOSE_ASN,
+        actionTypes.CLOSE_ASN_SUCCEED,
+        actionTypes.CLOSE_ASN_FAIL,
       ],
-      endpoint: 'v1/cwm/receive/receive/completed',
+      endpoint: 'v1/cwm/receive/asn/close',
       method: 'post',
       data: { asnNo },
     },
@@ -482,21 +465,6 @@ export function showPuttingAwayModal(details) {
 export function hidePuttingAwayModal() {
   return {
     type: actionTypes.HIDE_PUTTING_AWAY_MODAL,
-  };
-}
-
-export function updateInboundDetails(seqNos, location, damageLevel, loginId, asnNo, inboundNo) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.UPDATE_INBOUND_DETAILS,
-        actionTypes.UPDATE_INBOUND_DETAILS_SUCCEED,
-        actionTypes.UPDATE_INBOUND_DETAILS_FAIL,
-      ],
-      endpoint: 'v1/cwm/receive/express',
-      method: 'post',
-      data: { seqNos, location, damageLevel, loginId, asnNo, inboundNo },
-    },
   };
 }
 

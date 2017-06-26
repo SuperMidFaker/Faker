@@ -174,7 +174,7 @@ export default class ReceivingModal extends Component {
   }, {
     title: '破损级别',
     dataIndex: 'damage_level',
-    render: o => (<Select value={o} style={{ width: 60 }} disabled >
+    render: o => (<Select value={o} style={{ width: 60 }} disabled>
       <Option value={0}>完好</Option>
       <Option value={1}>轻微擦痕</Option>
       <Option value={2}>中度</Option>
@@ -192,35 +192,44 @@ export default class ReceivingModal extends Component {
     title: '容器编号',
     dataIndex: 'convey_no',
     width: 180,
-    render: (convey, row, index) => (<Input value={convey} onChange={ev => this.handleConveyChange(index, ev.target.value)} disabled={row.trace_id} />),
+    render: (convey, row, index) => (
+      <Input value={convey} onChange={ev => this.handleConveyChange(index, ev.target.value)}
+        disabled={!!row.trace_id}
+      />),
   }, {
     title: '收货数量',
     dataIndex: 'inbound_qty',
     width: 180,
     render: (o, record, index) => (
       <QuantityInput packQty={record.inbound_pack_qty} pcsQty={o}
-        onChange={e => this.handleProductReceive(index, e.target.value)} disabled={record.trace_id}
+        onChange={e => this.handleProductReceive(index, e.target.value)} disabled={!!record.trace_id}
       />),
   }, {
     title: '破损级别',
     dataIndex: 'damage_level',
     width: 180,
-    render: (o, record, index) => (<Select value={o} onChange={value => this.handleDamageLevelChange(index, value)} style={{ width: 160 }} disabled={record.trace_id}>
-      <Option value={0}>完好</Option>
-      <Option value={1}>轻微擦痕</Option>
-      <Option value={2}>中度</Option>
-      <Option value={3}>重度</Option>
-      <Option value={4}>严重磨损</Option>
-    </Select>),
+    render: (o, record, index) => (
+      <Select value={o} onChange={value => this.handleDamageLevelChange(index, value)} style={{ width: 160 }}
+        disabled={!!record.trace_id}
+      >
+        <Option value={0}>完好</Option>
+        <Option value={1}>轻微擦痕</Option>
+        <Option value={2}>中度</Option>
+        <Option value={3}>重度</Option>
+        <Option value={4}>严重磨损</Option>
+      </Select>),
   }, {
     title: '收货库位',
     dataIndex: 'location',
     width: 180,
     render: (o, record, index) => {
-      const Options = this.props.locations.map(location => (<Option value={location.location}>{location.location}</Option>));
-      return (<Select value={o} showSearch style={{ width: 160 }} onChange={value => this.handleProductPutAway(index, value)} disabled={record.trace_id}>
-        {Options}
-      </Select>);
+      const Options = this.props.locations.map(loc => (<Option value={loc.location} key={loc.location}>{loc.location}</Option>));
+      return (
+        <Select value={o} showSearch style={{ width: 160 }} onChange={value => this.handleProductPutAway(index, value)}
+          disabled={!!record.trace_id}
+        >
+          {Options}
+        </Select>);
     },
   }, {
     title: '操作',
