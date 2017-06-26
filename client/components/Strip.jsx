@@ -12,13 +12,13 @@ export default class Strip extends Component {
     let total = overall;
     if (!overall) {
       total = Object.values(parts).reduce((pre, curr) =>
-        pre + curr
+        pre + curr, 0
       );
     }
     const keys = Object.keys(parts);
     return (
       keys.map((item, index) => (
-        <Tooltip title={hints[index]}>
+        <Tooltip title={`${hints[index]} ${parts[item]}`}>
           <div className={`strip-part ${item}-part`} style={{ width: `${parts[item] / total * 100}%` }} />
         </Tooltip>))
     );

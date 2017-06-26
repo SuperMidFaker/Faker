@@ -252,7 +252,7 @@ export default class ReceivingModal extends Component {
           </Col>
         </Row>
         <Table size="middle" columns={inboundHead.rec_mode === 'scan' ? this.scanColumns : this.manualColumns}
-          dataSource={this.state.dataSource} rowKey="id" footer={footer}
+          dataSource={this.state.dataSource.map((item, index) => ({ ...item, index }))} rowKey="index" footer={footer}
         />
       </Modal>
     );
