@@ -3,16 +3,15 @@ import { connect } from 'react-redux';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 import moment from 'moment';
-import connectFetch from 'client/common/decorators/connect-fetch';
 import { intlShape, injectIntl } from 'react-intl';
 import { Layout, Collapse, Button, Breadcrumb, Table, Select, Icon, Form, message } from 'antd';
 import ButtonToggle from 'client/components/ButtonToggle';
 import { format } from 'client/common/i18n/helpers';
-import messages from './message.i18n';
+import messages from '../docus/message.i18n';
 import { loadTempParams, loadDocuDatas, loadDocuBody, loadInvTemplates, updateDocuTemplate, setDocu } from 'common/reducers/cmsInvoice';
-import InvoiceDetails from './invoiceDetails';
-import ContractDetails from './contractDetails';
-import PacklistDetails from './packlistDetails';
+import InvoiceDetails from '../docus/invoiceDetails';
+import ContractDetails from '../docus/contractDetails';
+import PacklistDetails from '../docus/packlistDetails';
 import { CMS_DOCU_TYPE } from 'common/constants';
 
 const formatMsg = format(messages);
@@ -22,20 +21,10 @@ const Option = Select.Option;
 const OptGroup = Select.OptGroup;
 const FormItem = Form.Item;
 
-function fetchData({ state, dispatch, params }) {
-  const proms = [
-    dispatch(loadTempParams()),
-    dispatch(loadDocuDatas({ billSeqNo: params.billseqno })),
-    dispatch(loadInvTemplates({ tenantId: state.account.tenantId, docuType: [0, 1, 2] }))];
-  return Promise.all(proms);
-}
-
-@connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    billMeta: state.cmsManifest.billMeta,
     docuDatas: state.cmsInvoice.docuDatas,
     invTemplates: state.cmsInvoice.invTemplates,
     docu: state.cmsInvoice.docu,
@@ -44,10 +33,11 @@ function fetchData({ state, dispatch, params }) {
   { loadTempParams, loadDocuDatas, loadDocuBody, loadInvTemplates, updateDocuTemplate, setDocu }
 )
 
-export default class DocuView extends React.Component {
+export default class DocuPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
+    billSeqNo: PropTypes.string.isRequired,
     docuDatas: PropTypes.array.isRequired,
     invTemplates: PropTypes.array.isRequired,
     docu: PropTypes.object.isRequired,
@@ -64,17 +54,28 @@ export default class DocuView extends React.Component {
     contemps: [],
     paktemps: [],
   }
+  componentDidMount() {
+    this.props.loadTempParams();
+    this.props.loadInvTemplates({ tenantId: this.props.tenantId, docuType: [0, 1, 2] });
+  }
   componentWillReceiveProps(nextProps) {
     if (nextProps.docuDatas !== this.props.docuDatas) {
-      const invoices = nextProps.docuDatas.filter(dt => dt.docu_type === 0);
-      const contracts = nextProps.docuDatas.filter(dt => dt.docu_type === 1);
-      const packlists = nextProps.docuDatas.filter(dt => dt.docu_type === 2);
-      if (this.props.docu) {
-        this.props.loadDocuBody(nextProps.docu.id);
+      let invoices = [];
+      let contracts = [];
+      let packlists = [];
+      if (nextProps.docuDatas.length > 0) {
+        invoices = nextProps.docuDatas.filter(dt => dt.docu_type === 0);
+        contracts = nextProps.docuDatas.filter(dt => dt.docu_type === 1);
+        packlists = nextProps.docuDatas.filter(dt => dt.docu_type === 2);
+        if (this.props.docu && this.props.docu.id) {
+          this.handleRowClick(nextProps.docu);
+        } else {
+          const docu = invoices.length > 0 ? invoices[0] : {};
+          this.props.setDocu(docu);
+          this.props.loadDocuBody(docu.id);
+        }
       } else {
-        const docu = invoices.length > 0 ? invoices[0] : {};
-        this.props.setDocu(docu);
-        this.props.loadDocuBody(docu.id);
+        this.props.setDocu({});
       }
       this.setState({ invoices, contracts, packlists });
     }
@@ -94,15 +95,12 @@ export default class DocuView extends React.Component {
     this.props.loadDocuBody(record.id);
     this.props.setDocu(record);
   }
-  handleBack = () => {
-    this.context.router.goBack();
-  }
   handleTempSelectChange = (value) => {
     this.props.updateDocuTemplate({ tempId: value, docu: this.props.docu }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 5);
       } else {
-        this.props.loadDocuDatas({ billSeqNo: this.props.billMeta.bill_seq_no });
+        this.props.loadDocuDatas({ billSeqNo: this.props.billSeqNo });
       }
     });
   }
@@ -339,7 +337,6 @@ export default class DocuView extends React.Component {
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   render() {
-    const { billMeta } = this.props;
     const { invoices, contracts, packlists, invtemps, contemps, paktemps } = this.state;
     const docu = this.props.docu ? this.props.docu : {};
     const invTempId = (docu.docu_type === 0 && docu.template_id) ? docu.template_id : null;
@@ -357,16 +354,6 @@ export default class DocuView extends React.Component {
           collapsed={this.state.collapsed}
           collapsedWidth={0}
         >
-          <div className="top-bar">
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                <a onClick={this.handleBack}>{billMeta.bill_seq_no}</a>
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                随附单据
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </div>
           <div className="left-sider-panel" >
             <Collapse accordion defaultActiveKey="invoice" onChange={this.handlePanelChange}>
               <Panel header={this.msg('invoice')} key="invoice">
@@ -442,11 +429,8 @@ export default class DocuView extends React.Component {
           </div>
         </Sider>
         <Layout>
-          <Header className="top-bar">
+          <Header className="top-bar" style={{ position: 'relative' }}>
             { this.state.collapsed && <Breadcrumb>
-              <Breadcrumb.Item>
-                {billMeta.bill_seq_no}
-              </Breadcrumb.Item>
               <Breadcrumb.Item>
                 随附单据
               </Breadcrumb.Item>
@@ -461,7 +445,7 @@ export default class DocuView extends React.Component {
               toggle
             />
             <span />
-            <div className="top-bar-tools">
+            <div className="toolbar-right">
               <Button icon="file-pdf" onClick={this.handlePDF}>PDF</Button>
             </div>
           </Header>
