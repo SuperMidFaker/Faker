@@ -34,6 +34,7 @@ import * as TMSSettings from './transport/settings';
 import * as TMSBilling from './transport/billing';
 import * as TMSAnalytics from './transport/analytics';
 import * as TMSTariff from './transport/tariff';
+import PackPub from './pub/packPub';
 import * as PublicTMS from './pub/tracking';
 import * as Template from './pub/template';
 import CMS from './cms/module-clearance';
@@ -138,7 +139,7 @@ export default(store, cookie) => {
   };
   return (
     <Route path="/" component={Root}>
-      <Route path="pub">
+      <Route path="pub" component={PackPub}>
         <Route path="tracking" component={PublicTMS.TrackingSearch} />
         <Route path="tms/tracking/detail/:shipmtNo/:key" component={PublicTMS.TrackingDetail} />
         <Route path="template">

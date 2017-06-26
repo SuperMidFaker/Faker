@@ -31,29 +31,38 @@ export default class ASNPane extends React.Component {
       <div className="pane-content tab-pane">
         <Card bodyStyle={{ padding: 0 }}>
           <Collapse bordered={false} defaultActiveKey={['trading', 'shipment']}>
-            <Panel header="主信息" key="trading">
+            <Panel header="参考信息" key="trading">
               <Row>
                 <Col span="8">
-                  <InfoItem label="运输方式" field={''} />
+                  <InfoItem label="参考信息1" field={''} />
                 </Col>
                 <Col span="8">
-                  <InfoItem label="运输方式" field={''} />
+                  <InfoItem label="参考信息1" field={''} />
                 </Col>
                 <Col span="8">
-                  <InfoItem label="运输方式" field={''} />
+                  <InfoItem label="参考信息1" field={''} />
+                </Col>
+                <Col span="8">
+                  <InfoItem label="供应商" field={''} />
+                </Col>
+                <Col span="8">
+                  <InfoItem label="参考信息1" field={''} />
+                </Col>
+                <Col span="8">
+                  <InfoItem label="参考信息1" field={''} />
+                </Col>
+                <Col span="8">
+                  <InfoItem label="承运人" field={''} />
+                </Col>
+                <Col span="8">
+                  <InfoItem label="车牌号" field={''} />
+                </Col>
+                <Col span="8">
+                  <InfoItem label="司机" field={''} />
                 </Col>
               </Row>
             </Panel>
-            <Panel header="运输" key="shipment">
-              <Row>
-                <Col span="8">
-                  <InfoItem label="运输方式" field={''} />
-                </Col>
-                <Col span="8">
-                  <InfoItem label="运输方式" field={''} />
-                </Col>
-              </Row>
-            </Panel>
+            <Panel header="订单明细" key="orderDetails" />
           </Collapse>
         </Card>
       </div>

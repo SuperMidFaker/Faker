@@ -2,16 +2,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Steps, Card, Collapse, Row, Col, Layout, Alert } from 'antd';
+import connectNav from 'client/common/decorators/connect-nav';
+import { Breadcrumb, Layout, Steps, Card, Collapse, Row, Col, Alert } from 'antd';
 import { loadPubShipmtDetail } from 'common/reducers/shipment';
 import * as Location from 'client/util/location';
 import { loadExceptions } from 'common/reducers/trackingLandException';
 import TrackingTimeline from '../../transport/common/trackingTimeline';
 import moment from 'moment';
+import './index.less';
+
 const Step = Steps.Step;
 const Panel = Collapse.Panel;
-const { Content } = Layout;
-import './index.less';
+const { Header, Content } = Layout;
 
 @connect(
   state => ({
@@ -19,6 +21,10 @@ import './index.less';
   }),
   { loadExceptions, loadPubShipmtDetail }
 )
+@connectNav({
+  depth: 3,
+  moduleName: 'transport',
+})
 export default class TrackingDetail extends React.Component {
   static propTypes = {
     shipmtDetail: PropTypes.object.isRequired,
@@ -255,7 +261,16 @@ export default class TrackingDetail extends React.Component {
     const deliverDelayException = this.state.exceptions.find(item => item.type === 11013);
     return (
       <div className="panel-body">
-        <nav className="detail-nav"><strong>运单号: {shipmt.shipmt_no} {refExternalNo}</strong></nav>
+        <Header className="top-bar">
+          <Breadcrumb>
+            <Breadcrumb.Item>
+              运单追踪
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              {shipmt.shipmt_no} {refExternalNo}
+            </Breadcrumb.Item>
+          </Breadcrumb>
+        </Header>
         <Row>
           <Col lg={15} sm={24}>
             <Content className="main-content">

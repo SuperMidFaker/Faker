@@ -2,9 +2,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Input, Button, Alert, Table, message } from 'antd';
+import connectNav from 'client/common/decorators/connect-nav';
+import { Input, Button, Card, Layout, message } from 'antd';
 import { searchShipment } from 'common/reducers/shipment';
 import './index.less';
+
+const { Content } = Layout;
 
 @connect(
   state => ({
@@ -14,6 +17,10 @@ import './index.less';
   }),
   { searchShipment }
 )
+@connectNav({
+  depth: 1,
+  moduleName: 'transport',
+})
 export default class TrackingSearch extends React.Component {
   static propTypes = {
     location: PropTypes.object.isRequired,
@@ -59,7 +66,8 @@ export default class TrackingSearch extends React.Component {
           this.setState({ dataSource: result.data, searchText });
           if (result.data.length === 1) {
             const shipment = result.data[0];
-            window.open(`/pub/tms/tracking/detail/${shipment.shipmt_no}/${shipment.public_key}`);
+            this.context.router.push(`/pub/tms/tracking/detail/${shipment.shipmt_no}/${shipment.public_key}`);
+            // window.open(`/pub/tms/tracking/detail/${shipment.shipmt_no}/${shipment.public_key}`);
           }
         }
       });
@@ -67,22 +75,12 @@ export default class TrackingSearch extends React.Component {
   }
   renderColumn = (o, shipment) => (<a href={`/pub/tms/tracking/detail/${shipment.shipmt_no}/${shipment.public_key}`} target="_blank" rel="noopener noreferrer">{o}</a>)
   render() {
-    const { logo, name } = this.props;
-    const columns = [{
-      title: '运单号',
-      dataIndex: 'shipmt_no',
-      render: this.renderColumn,
-    }, {
-      title: '客户单号',
-      dataIndex: 'ref_external_no',
-      render: this.renderColumn,
-    }];
+    const { name } = this.props;
     return (
-      <div className="main-content">
-        <div className="page-body" style={{ padding: 64, marginBottom: 16 }}>
+      <Content className="main-content layout-fixed-width">
+        <Card>
           <div className="tracking-form">
             <div className="tenant-info">
-              <div className="tenant-logo " style={{ backgroundImage: `url("${logo || '/assets/img/home/tenant-logo.png'}")` }} />
               <h2 className="tenant-name">运单追踪</h2>
             </div>
             <center>
@@ -92,17 +90,11 @@ export default class TrackingSearch extends React.Component {
               <Button type="primary" size="large" icon="search" style={{ height: '38px', width: '120px', marginTop: 24 }} onClick={this.handleSearch} >
               查询
               </Button>
-              <div style={{ width: 400, marginTop: 96 }}>
-                <Alert message="为了能够浏览追踪页面，请您设置允许浏览器弹出窗口" type="info" showIcon />
-              </div>
-              <div style={{ display: this.state.dataSource.length === 0 ? 'none' : '' }}>
-                <Table columns={columns} dataSource={this.state.dataSource} pagination={false} size="small" />
-              </div>
             </center>
           </div>
-        </div>
+        </Card>
         <div className="tenant-footer"><center>{name}</center></div>
-      </div>
+      </Content>
     );
   }
 }
