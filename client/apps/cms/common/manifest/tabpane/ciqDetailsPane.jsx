@@ -9,7 +9,7 @@ import { buildTipItems } from 'client/common/customs';
 
 @injectIntl
 
-export default class LegalInspectionPanel extends React.Component {
+export default class ManifestLegalInspection extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     filterProducts: PropTypes.array.isRequired,
@@ -27,6 +27,12 @@ export default class LegalInspectionPanel extends React.Component {
       fixed: 'left',
       width: 150,
       dataIndex: 'cop_g_no',
+    /*
+    }, {
+      title: this.msg('emGNo'),
+      width: 100,
+      dataIndex: 'em_g_no',
+    */
     }, {
       title: this.msg('codeT'),
       width: 110,
@@ -36,14 +42,14 @@ export default class LegalInspectionPanel extends React.Component {
       width: 200,
       dataIndex: 'g_name',
     }, {
-      title: this.msg('customs'),
-      width: 100,
+      title: '海关监管条件',
       dataIndex: 'customs',
+      width: 250,
       render: col => buildTipItems(col),
     }, {
-      title: this.msg('inspection'),
-      width: 100,
+      title: '检验检疫类别',
       dataIndex: 'inspection',
+      width: 250,
       render: col => buildTipItems(col, true),
     }, {
       title: this.msg('gModel'),
@@ -113,7 +119,9 @@ export default class LegalInspectionPanel extends React.Component {
       title: this.msg('icountry'),
       width: 120,
       dataIndex: 'orig_country',
-    }, {
+    }];
+    /*
+    {
       title: this.msg('qtyPcs'),
       width: 100,
       dataIndex: 'qty_pcs',
@@ -134,10 +142,13 @@ export default class LegalInspectionPanel extends React.Component {
       width: 80,
       className: 'cell-align-right',
       dataIndex: 'processing_fees',
-    }];
+    }
+    ];*/
     return (
       <div className="panel-body table-panel">
-        <Table columns={columns} dataSource={filterProducts} scroll={{ x: 3000 }} />
+        <Table columns={columns} dataSource={filterProducts}
+          scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
+        />
       </div>
     );
   }

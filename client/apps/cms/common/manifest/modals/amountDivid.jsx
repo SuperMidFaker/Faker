@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Alert, Form, Modal, InputNumber, notification, Select, Row, Col, message } from 'antd';
 import { closeAmountModel, editBillBody, loadBillBody } from 'common/reducers/cmsManifest';
-import { dividAmount } from '../panel/helper';
+import { dividAmount } from '../tabpane/helper';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 

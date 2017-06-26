@@ -8,22 +8,25 @@ import { setNavTitle } from 'common/reducers/navbar';
 import { loadEntry, saveEntryHead } from 'common/reducers/cmsManifest';
 import { deleteDecl, setDeclReviewed, openDeclReleasedModal, showSendDeclModal } from 'common/reducers/cmsDeclare';
 import NavLink from 'client/components/nav-link';
-import ButtonToggle from 'client/components/ButtonToggle';
-import SheetHeadPanel from './panel/cdfHeadPanel';
-import SheetBodyPanel from './panel/cdfBodyPanel';
-import SheetExtraPanel from './panel/cdfExtraPanel';
+import CustomsDeclHeadPane from './tabpane/customsDeclHeadPane';
+import CustomsDeclBodyPane from './tabpane/customsDeclBodyPane';
+import ContainersPane from './tabpane/containersPane';
+import AttachedDocsPane from './tabpane/attachedDocsPane';
+import AttachedCertsPane from './tabpane/attachedCertsPane';
+import CiqDetailsPane from './tabpane/ciqDetailsPane';
+import ManifestDetailsPane from './tabpane/manifestDetailsPane';
 import DeclReleasedModal from './modals/declReleasedModal';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import { CMS_DECL_STATUS } from 'common/constants';
 import SendModal from './modals/sendModal';
-import LegalInspectionPanel from './panel/legaInspectionPanel';
+
 import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
 import DelegationDockPanel from '../dock/delegationDockPanel';
 import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
 
 const formatMsg = format(messages);
-const { Sider, Header, Content } = Layout;
+const { Header, Content } = Layout;
 const TabPane = Tabs.TabPane;
 
 const navObj = {
@@ -188,10 +191,6 @@ export default class CustomsDeclEditor extends React.Component {
               <Dropdown.Button size="large" onClick={this.handleManifestVisit} overlay={declEntryMenu}>
                 <Icon type="file-text" /> 查看报关清单
               </Dropdown.Button>
-              <ButtonToggle size="large"
-                iconOff="folder" iconOn="folder-open"
-                onClick={this.toggle}
-              />
             </div>
           </Header>
           <Content className="main-content layout-min-width layout-min-width-large readonly">
@@ -199,35 +198,31 @@ export default class CustomsDeclEditor extends React.Component {
               <div className="page-body tabbed">
                 <Tabs defaultActiveKey="header">
                   <TabPane tab="报关单表头" key="header">
-                    <SheetHeadPanel ietype={ietype} form={form} formData={head} />
+                    <CustomsDeclHeadPane ietype={ietype} form={form} formData={head} />
                   </TabPane>
                   <TabPane tab="报关单表体" key="body">
-                    <SheetBodyPanel ietype={ietype} data={bodies} headNo={head.id} />
+                    <CustomsDeclBodyPane ietype={ietype} data={bodies} headNo={head.id} />
                   </TabPane>
-                  {filterProducts.length > 0 && <TabPane tab="法检物料" key="legalInspection">
-                    <LegalInspectionPanel filterProducts={filterProducts} />
+                  <TabPane tab="集装箱" key="containers">
+                    <ContainersPane />
+                  </TabPane>
+                  <TabPane tab="随附单据" key="attachedDocs">
+                    <AttachedDocsPane />
+                  </TabPane>
+                  <TabPane tab="随附单证" key="attachedCerts">
+                    <AttachedCertsPane />
+                  </TabPane>
+                  <TabPane tab="清单明细" key="manifestDetails">
+                    <ManifestDetailsPane />
+                  </TabPane>
+                  {filterProducts.length > 0 && <TabPane tab="法检物料" key="ciqDetails">
+                    <CiqDetailsPane filterProducts={filterProducts} />
                   </TabPane>}
                 </Tabs>
               </div>
             </Spin>
           </Content>
         </Layout>
-        <Sider
-          trigger={null}
-          defaultCollapsed
-          collapsible
-          collapsed={this.state.collapsed}
-          width={480}
-          collapsedWidth={0}
-          className="right-sider"
-        >
-          <div className="right-sider-panel">
-            <div className="panel-header">
-              <h3>附加资料</h3>
-            </div>
-            <SheetExtraPanel type="entry" />
-          </div>
-        </Sider>
         <DelegationDockPanel ietype={ietype} />
         <OrderDockPanel />
         <SendModal ietype={ietype} reload={this.reloadEntry} />

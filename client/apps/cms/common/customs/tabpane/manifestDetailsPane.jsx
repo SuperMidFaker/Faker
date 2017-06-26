@@ -9,7 +9,7 @@ import { buildTipItems } from 'client/common/customs';
 
 @injectIntl
 
-export default class ManifestLegalInspection extends React.Component {
+export default class ManifestDetailsPanel extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     filterProducts: PropTypes.array.isRequired,
@@ -28,10 +28,6 @@ export default class ManifestLegalInspection extends React.Component {
       width: 150,
       dataIndex: 'cop_g_no',
     }, {
-      title: this.msg('emGNo'),
-      width: 100,
-      dataIndex: 'em_g_no',
-    }, {
       title: this.msg('codeT'),
       width: 110,
       dataIndex: 'code_t',
@@ -40,14 +36,14 @@ export default class ManifestLegalInspection extends React.Component {
       width: 200,
       dataIndex: 'g_name',
     }, {
-      title: '海关监管条件',
+      title: this.msg('customs'),
+      width: 250,
       dataIndex: 'customs',
-      width: 180,
       render: col => buildTipItems(col),
     }, {
-      title: '检验检疫类别',
+      title: this.msg('inspection'),
+      width: 250,
       dataIndex: 'inspection',
-      width: 180,
       render: col => buildTipItems(col, true),
     }, {
       title: this.msg('gModel'),
@@ -115,9 +111,10 @@ export default class ManifestLegalInspection extends React.Component {
       dataIndex: 'dest_country',
     }, {
       title: this.msg('icountry'),
-      width: 120,
       dataIndex: 'orig_country',
-    }, {
+    }];
+    /*
+    , {
       title: this.msg('qtyPcs'),
       width: 100,
       dataIndex: 'qty_pcs',
@@ -138,10 +135,13 @@ export default class ManifestLegalInspection extends React.Component {
       width: 80,
       className: 'cell-align-right',
       dataIndex: 'processing_fees',
-    }];
+    }
+    ];*/
     return (
       <div className="panel-body table-panel">
-        <Table columns={columns} dataSource={filterProducts} scroll={{ x: 3200 }} />
+        <Table columns={columns} dataSource={filterProducts}
+          scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
+        />
       </div>
     );
   }

@@ -2,12 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Table, Input, message } from 'antd';
-import { loadContainers, saveContainer, delContainer } from 'common/reducers/cmsManifest';
+import { Button, Table, Select, Input, message } from 'antd';
+import { loadCertMarks, saveCertMark, delbillCertmark } from 'common/reducers/cmsManifest';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../../message.i18n';
+import messages from '../message.i18n';
 
 const formatMsg = format(messages);
+const Option = Select.Option;
 
 function ColumnInput(props) {
   const { inEdit, record, field, onChange } = props;
@@ -26,60 +27,94 @@ ColumnInput.propTypes = {
   onChange: PropTypes.func,
 };
 
+function ColumnSelect(props) {
+  const { inEdit, record, field, options, onChange } = props;
+  function handleChange(value) {
+    if (onChange) {
+      onChange(record, field, value);
+    }
+  }
+  if (inEdit) {
+    return (
+      <Select value={record[field] || ''} onChange={handleChange} style={{ width: '100%' }}>
+        {
+          options.map(opt => <Option value={opt.key} key={opt.key}>{opt.text}</Option>)
+        }
+      </Select>
+    );
+  } else {
+    return <span>{`${record.cert_code} | ${record[field]}` || ''}</span>;
+  }
+}
+
+ColumnSelect.proptypes = {
+  inEdit: PropTypes.bool,
+  record: PropTypes.object.isRequired,
+  field: PropTypes.string.isRequired,
+  onChange: PropTypes.func,
+  options: PropTypes.array.isRequired,
+};
+
 @injectIntl
 @connect(
   state => ({
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     tabKey: state.cmsManifest.tabKey,
-    billHead: state.cmsManifest.billHead,
-    containers: state.cmsManifest.containers,
+    head: state.cmsManifest.entryHead,
+    certMarks: state.cmsManifest.certMarks,
+    certParams: state.cmsManifest.certParams,
   }),
-  { loadContainers, saveContainer, delContainer }
+  { loadCertMarks, saveCertMark, delbillCertmark }
 )
-export default class ContainersPane extends React.Component {
+export default class CertMarkPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
-    containers: PropTypes.array,
-    billHead: PropTypes.object,
+    certMarks: PropTypes.array,
+    certParams: PropTypes.array,
   }
   state = {
     datas: [],
   };
   componentDidMount() {
-    this.props.loadContainers(this.props.billHead.delg_no);
+    this.props.loadCertMarks(this.props.head.pre_entry_seq_no);
   }
   componentWillReceiveProps(nextProps) {
-    if (this.props.billHead !== nextProps.billHead ||
-      (this.props.tabKey !== nextProps.tabKey && nextProps.tabKey === 'container')) {
-      this.props.loadContainers(nextProps.billHead.delg_no);
+    if (this.props.head !== nextProps.head ||
+      (this.props.tabKey !== nextProps.tabKey && nextProps.tabKey === 'document')) {
+      this.props.loadCertMarks(nextProps.head.pre_entry_seq_no);
     }
-    if (this.props.containers !== nextProps.containers) {
-      this.setState({ datas: nextProps.containers });
+    if (this.props.certMarks !== nextProps.certMarks) {
+      this.setState({ datas: nextProps.certMarks });
     }
   }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
   handleEditChange = (record, field, value) => {
+    if (field === 'cert_spec') {
+      const cert = this.props.certParams.filter(param => param.cert_spec === value)[0];
+      record.cert_code = cert.cert_code; // eslint-disable-line no-param-reassign
+    }
     record[field] = value; // eslint-disable-line no-param-reassign
     this.forceUpdate();
   }
   handleAdd = () => {
-    const { billHead } = this.props;
+    const { head } = this.props;
     const addOne = {
-      delg_no: billHead.delg_no,
-      bill_seq_no: billHead.bill_seq_no,
+      delg_no: head.delg_no,
+      entry_id: head.entry_id,
+      pre_entry_seq_no: head.pre_entry_seq_no,
       creater_login_id: this.props.loginId,
-      container_id: '',
-      container_wt: 2.2,
-      container_spec: '1',
+      cert_code: '',
+      cert_spec: '',
+      cert_num: '',
     };
     const data = this.state.datas;
     data.push(addOne);
     this.setState({ datas: data });
   }
   handleSave = (record) => {
-    this.props.saveContainer(record).then(
+    this.props.saveCertMark(record).then(
       (result) => {
         if (result.error) {
           message.error(result.error.message, 10);
@@ -90,7 +125,7 @@ export default class ContainersPane extends React.Component {
     );
   }
   handleDelete = (record, index) => {
-    this.props.delContainer(record.id).then((result) => {
+    this.props.delbillCertmark(record.id).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -102,32 +137,30 @@ export default class ContainersPane extends React.Component {
   }
 
   render() {
+    const { certParams } = this.props;
+    const option = certParams.map(cert => ({
+      value: cert.cert_code,
+      text: `${cert.cert_code}|${cert.cert_spec}`,
+      key: cert.cert_spec,
+    }));
     const columns = [{
-      title: this.msg('containerId'),
-      dataIndex: 'container_id',
-      width: 100,
+      title: this.msg('certSpec'),
+      dataIndex: 'cert_spec',
+      width: 200,
       render: (o, record) =>
-        (<ColumnInput field="container_id" inEdit={!record.id} record={record}
+        (<ColumnSelect field="cert_spec" inEdit={!record.id} record={record}
+          onChange={this.handleEditChange} options={option}
+        />),
+    }, {
+      title: this.msg('certNum'),
+      dataIndex: 'cert_num',
+      width: 200,
+      render: (o, record) =>
+        (<ColumnInput field="cert_num" inEdit={!record.id} record={record}
           onChange={this.handleEditChange}
         />),
     }, {
-      title: this.msg('containerWt'),
-      dataIndex: 'container_wt',
-      width: 100,
-      render: (o, record) =>
-        (<ColumnInput field="container_wt" inEdit={!record.id} record={record}
-          onChange={this.handleEditChange}
-        />),
-    }, {
-      title: this.msg('containerSpec'),
-      dataIndex: 'container_spec',
-      width: 100,
-      render: (o, record) =>
-        (<ColumnInput field="container_spec" inEdit={!record.id} record={record}
-          onChange={this.handleEditChange}
-        />),
-    }, {
-      width: 40,
+      width: 80,
       render: (o, record, index) => {
         if (record.id) {
           return <Button type="ghost" shape="circle" onClick={() => this.handleDelete(record, index)} icon="delete" />;

@@ -5,7 +5,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Button, Table, Input, message } from 'antd';
 import { loadContainers, saveContainer, delContainer } from 'common/reducers/cmsManifest';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../../message.i18n';
+import messages from './message.i18n';
 
 const formatMsg = format(messages);
 

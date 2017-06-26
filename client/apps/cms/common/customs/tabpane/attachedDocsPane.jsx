@@ -2,12 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Table, Input, message } from 'antd';
-import { loadContainers, saveContainer, delContainer } from 'common/reducers/cmsManifest';
+import { Button, Table, Select, Input, message } from 'antd';
+import { loadDocuMarks, saveDocuMark, delDocumark } from 'common/reducers/cmsManifest';
+import { CMS_DECL_DOCU } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../../message.i18n';
+import messages from '../message.i18n';
 
 const formatMsg = format(messages);
+const Option = Select.Option;
 
 function ColumnInput(props) {
   const { inEdit, record, field, onChange } = props;
@@ -26,37 +28,65 @@ ColumnInput.propTypes = {
   onChange: PropTypes.func,
 };
 
+function ColumnSelect(props) {
+  const { inEdit, record, field, options, onChange } = props;
+  function handleChange(value) {
+    if (onChange) {
+      onChange(record, field, value);
+    }
+  }
+  if (inEdit) {
+    return (
+      <Select value={record[field] || ''} onChange={handleChange} style={{ width: '100%' }}>
+        {
+          options.map(opt => <Option value={opt.text} key={opt.value}>{opt.text}</Option>)
+        }
+      </Select>
+    );
+  } else {
+    const option = options.find(item => item.value === record[field]);
+    return <span>{option ? option.text : ''}</span>;
+  }
+}
+
+ColumnSelect.proptypes = {
+  inEdit: PropTypes.bool,
+  record: PropTypes.object.isRequired,
+  field: PropTypes.string.isRequired,
+  onChange: PropTypes.func,
+  options: PropTypes.array.isRequired,
+};
+
 @injectIntl
 @connect(
   state => ({
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     tabKey: state.cmsManifest.tabKey,
-    billHead: state.cmsManifest.billHead,
-    containers: state.cmsManifest.containers,
+    head: state.cmsManifest.entryHead,
+    docuMarks: state.cmsManifest.docuMarks,
   }),
-  { loadContainers, saveContainer, delContainer }
+  { loadDocuMarks, saveDocuMark, delDocumark }
 )
-export default class ContainersPane extends React.Component {
+export default class AttachedDocsPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
-    containers: PropTypes.array,
-    billHead: PropTypes.object,
+    docuMarks: PropTypes.array,
   }
   state = {
     datas: [],
   };
   componentDidMount() {
-    this.props.loadContainers(this.props.billHead.delg_no);
+    this.props.loadDocuMarks(this.props.head.entry_id);
   }
   componentWillReceiveProps(nextProps) {
-    if (this.props.billHead !== nextProps.billHead ||
-      (this.props.tabKey !== nextProps.tabKey && nextProps.tabKey === 'container')) {
-      this.props.loadContainers(nextProps.billHead.delg_no);
+    if (this.props.head !== nextProps.head ||
+      (this.props.tabKey !== nextProps.tabKey && nextProps.tabKey === 'document')) {
+      this.props.loadDocuMarks(nextProps.head.entry_id);
     }
-    if (this.props.containers !== nextProps.containers) {
-      this.setState({ datas: nextProps.containers });
+    if (this.props.docuMarks !== nextProps.docuMarks) {
+      this.setState({ datas: nextProps.docuMarks });
     }
   }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
@@ -65,21 +95,20 @@ export default class ContainersPane extends React.Component {
     this.forceUpdate();
   }
   handleAdd = () => {
-    const { billHead } = this.props;
+    const { head } = this.props;
     const addOne = {
-      delg_no: billHead.delg_no,
-      bill_seq_no: billHead.bill_seq_no,
+      delg_no: head.delg_no,
+      entry_id: head.entry_id,
       creater_login_id: this.props.loginId,
-      container_id: '',
-      container_wt: 2.2,
-      container_spec: '1',
+      docu_code: '',
+      docu_spec: '',
     };
     const data = this.state.datas;
     data.push(addOne);
     this.setState({ datas: data });
   }
   handleSave = (record) => {
-    this.props.saveContainer(record).then(
+    this.props.saveDocuMark(record).then(
       (result) => {
         if (result.error) {
           message.error(result.error.message, 10);
@@ -90,7 +119,7 @@ export default class ContainersPane extends React.Component {
     );
   }
   handleDelete = (record, index) => {
-    this.props.delContainer(record.id).then((result) => {
+    this.props.delDocumark(record.id).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -103,31 +132,21 @@ export default class ContainersPane extends React.Component {
 
   render() {
     const columns = [{
-      title: this.msg('containerId'),
-      dataIndex: 'container_id',
-      width: 100,
+      title: this.msg('docuSpec'),
+      dataIndex: 'docu_spec',
       render: (o, record) =>
-        (<ColumnInput field="container_id" inEdit={!record.id} record={record}
+        (<ColumnSelect field="docu_spec" inEdit={!record.id} record={record}
+          onChange={this.handleEditChange} options={CMS_DECL_DOCU}
+        />),
+    }, {
+      title: this.msg('docuCode'),
+      dataIndex: 'docu_code',
+      render: (o, record) =>
+        (<ColumnInput field="docu_code" inEdit={!record.id} record={record}
           onChange={this.handleEditChange}
         />),
     }, {
-      title: this.msg('containerWt'),
-      dataIndex: 'container_wt',
-      width: 100,
-      render: (o, record) =>
-        (<ColumnInput field="container_wt" inEdit={!record.id} record={record}
-          onChange={this.handleEditChange}
-        />),
-    }, {
-      title: this.msg('containerSpec'),
-      dataIndex: 'container_spec',
-      width: 100,
-      render: (o, record) =>
-        (<ColumnInput field="container_spec" inEdit={!record.id} record={record}
-          onChange={this.handleEditChange}
-        />),
-    }, {
-      width: 40,
+      width: 60,
       render: (o, record, index) => {
         if (record.id) {
           return <Button type="ghost" shape="circle" onClick={() => this.handleDelete(record, index)} icon="delete" />;

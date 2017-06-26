@@ -125,7 +125,7 @@ function calculateTotal(bodies, currencies) {
     entryHead: state.cmsManifest.entryHead,
   })
 )
-export default class CDFBodyPanel extends React.Component {
+export default class CustomsDeclBodyPanel extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -391,6 +391,7 @@ export default class CDFBodyPanel extends React.Component {
         (<ColumnSelect field="orig_country" inEdit={index === editIndex} record={record}
           options={countries} edit={editBody}
         />),
+    /*
     }, {
       title: this.msg('qtyPcs'),
       width: 100,
@@ -405,6 +406,7 @@ export default class CDFBodyPanel extends React.Component {
         (<ColumnSelect field="unit_pcs" inEdit={index === editIndex} record={record}
           options={units} edit={editBody}
         />),
+    */
     }, {
       title: this.msg('customs'),
       width: 100,

@@ -9,8 +9,10 @@ import { saveBillHead, lockManifest, openMergeSplitModal, resetBill, updateHeadN
   showSendDeclsModal, validateBillDatas, loadBillMeta } from 'common/reducers/cmsManifest';
 import NavLink from 'client/components/nav-link';
 import ButtonToggle from 'client/components/ButtonToggle';
-import ManifestHeadPanel from './panel/manifestHeadPanel';
-import ManifestBodyPanel from './panel/manifestBodyPanel';
+import ManifestHeadPane from './tabpane/manifestHeadPane';
+import ManifestBodyPane from './tabpane/manifestBodyPane';
+import CiqDetailsPane from './tabpane/ciqDetailsPane';
+import ContainersPane from './tabpane/containersPane';
 import MergeSplitModal from './modals/mergeSplit';
 import SaveTemplateModal from './modals/saveTemplateSteps';
 import SheetExtraPanel from './panel/manifestExtraPanel';
@@ -18,7 +20,7 @@ import { CMS_DECL_STATUS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import SendDeclsModal from './modals/sendDeclsModal';
-import ManifestLegalInspectionPanel from './panel/manifestLegalInspectionPanel';
+
 import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
 import DelegationDockPanel from '../dock/delegationDockPanel';
 import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
@@ -432,15 +434,19 @@ export default class ManifestEditor extends React.Component {
                 <Tabs defaultActiveKey="header">
                   <TabPane tab="清单表头" key="header">
                     <Spin spinning={this.props.templateValLoading}>
-                      <ManifestHeadPanel ietype={ietype} readonly={!editable} form={form} formData={this.state.headData} onSave={this.handleBillSave} />
+                      <ManifestHeadPane ietype={ietype} readonly={!editable} form={form} formData={this.state.headData} onSave={this.handleBillSave} />
                     </Spin>
                   </TabPane>
                   <TabPane tab="清单表体" key="body">
-                    <ManifestBodyPanel ietype={ietype} readonly={!editable} headForm={form} data={billBodies} billSeqNo={billHead.bill_seq_no} />
+                    <ManifestBodyPane ietype={ietype} readonly={!editable} headForm={form} data={billBodies} billSeqNo={billHead.bill_seq_no} />
                   </TabPane>
                   {filterProducts.length > 0 && <TabPane tab="法检物料" key="legalInspection">
-                    <ManifestLegalInspectionPanel filterProducts={filterProducts} />
+                    <CiqDetailsPane filterProducts={filterProducts} />
                   </TabPane>}
+                  <TabPane tab="集装箱" key="containers">
+                    <ContainersPane />
+                  </TabPane>
+                  <TabPane tab="随附单据" key="attachedDocs" />
                 </Tabs>
               </div>
             </Spin>
