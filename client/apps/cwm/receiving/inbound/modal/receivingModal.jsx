@@ -22,16 +22,6 @@ const Option = Select.Option;
     inboundHead: state.cwmReceive.inboundFormHead,
     inboundNo: state.cwmReceive.receiveModal.inboundNo,
     inboundProduct: state.cwmReceive.receiveModal.inboundProduct,
-    /*
-    seqNo: state.cwmReceive.receiveModal.seqNo,
-    expectQty: state.cwmReceive.receiveModal.expectQty,
-    expectPackQty: state.cwmReceive.receiveModal.expectPackQty,
-    receivedQty: state.cwmReceive.receiveModal.receivedQty,
-    receivedPackQty: state.cwmReceive.receiveModal.receivedPackQty,
-    asnNo: state.cwmReceive.receiveModal.asnNo,
-    productNo: state.cwmReceive.receiveModal.productNo,
-    name: state.cwmReceive.receiveModal.name,
-    */
     locations: state.cwmWarehouse.locations,
   }),
   { hideReceiveModal, loadProductDetails, receiveProduct }
