@@ -24,7 +24,7 @@ export default class ManifestExtraPanel extends React.Component {
     intl: intlShape.isRequired,
     ietype: PropTypes.string,
     tabKey: PropTypes.string,
-    billSeqNo: PropTypes.string.isRequired,
+    billSeqNo: PropTypes.string,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,

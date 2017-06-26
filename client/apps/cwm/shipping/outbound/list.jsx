@@ -2,12 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Icon, Breadcrumb, Layout, Radio, Select, Table, Tooltip } from 'antd';
+import { Button, Icon, Breadcrumb, Layout, Radio, Select, Table, Tooltip, message } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/search-bar';
 import RowUpdater from 'client/components/rowUpdater';
 import connectNav from 'client/common/decorators/connect-nav';
 import { Fontello } from 'client/components/FontIcon';
+import { loadOutbounds } from 'common/reducers/cwmOutbound';
 import { format } from 'client/common/i18n/helpers';
 import ShippingDockPanel from '../dock/shippingDockPanel';
 import messages from '../message.i18n';
@@ -24,8 +25,14 @@ const RadioButton = Radio.Button;
 @connect(
   state => ({
     tenantId: state.account.tenantId,
+    whses: state.cwmContext.whses,
+    defaultWhse: state.cwmContext.defaultWhse,
+    filters: state.cwmOutbound.outboundFilters,
+    outbound: state.cwmOutbound.outbound,
+    owners: state.cwmContext.whseAttrs.owners,
+    loginId: state.account.loginId,
   }),
-  { switchDefaultWhse, showDock }
+  { switchDefaultWhse, showDock, loadOutbounds }
 )
 @connectNav({
   depth: 2,
@@ -42,6 +49,26 @@ export default class OutboundList extends React.Component {
   state = {
     selectedRowKeys: [],
     searchInput: '',
+  }
+  componentWillMount() {
+    this.props.loadOutbounds({
+      whseCode: this.props.defaultWhse.code,
+      tenantId: this.props.tenantId,
+      pageSize: this.props.outbound.pageSize,
+      current: this.props.outbound.current,
+      filters: this.props.filters,
+    });
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.defaultWhse.code !== this.props.defaultWhse.code) {
+      nextProps.loadOutbounds({
+        whseCode: nextProps.defaultWhse.code,
+        tenantId: nextProps.tenantId,
+        pageSize: nextProps.outbound.pageSize,
+        current: nextProps.outbound.current,
+        filters: nextProps.filters,
+      });
+    }
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
@@ -264,10 +291,15 @@ export default class OutboundList extends React.Component {
     }
   }
   handleReceive = (row) => {
-    const link = `/cwm/shipping/outbound/${row.so_no}`;
+    const link = `/cwm/shipping/outbound/${row.outbound_no}`;
     this.context.router.push(link);
   }
+  handleWhseChange = (value) => {
+    this.props.switchDefaultWhse(value);
+    message.info('当前仓库已切换');
+  }
   render() {
+    const { defaultWhse, whses } = this.props;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -279,15 +311,10 @@ export default class OutboundList extends React.Component {
         <Header className="top-bar">
           <Breadcrumb>
             <Breadcrumb.Item>
-              <Select
-                size="large"
-                defaultValue="0960"
-                placeholder="选择仓库"
-                style={{ width: 160 }}
-              >
-                <Option value="0960">物流大道仓库</Option>
-                <Option value="0961">希雅路仓库</Option>
-                <Option value="0962">富特路仓库</Option>
+              <Select size="large" value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
+                {
+                  whses.map(warehouse => (<Option value={warehouse.code} key={warehouse.code}>{warehouse.name}</Option>))
+                }
               </Select>
             </Breadcrumb.Item>
             <Breadcrumb.Item>

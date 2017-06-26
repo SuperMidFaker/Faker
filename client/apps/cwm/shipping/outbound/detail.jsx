@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Alert, Breadcrumb, Icon, Form, Layout, Tabs, Steps, Button, Select, Card, Col, Row, Tooltip, Radio } from 'antd';
+import { Alert, Breadcrumb, Icon, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Tooltip, Radio } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import InfoItem from 'client/components/InfoItem';
@@ -13,7 +13,6 @@ import { format } from 'client/common/i18n/helpers';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
-const Option = Select.Option;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const Step = Steps.Step;
@@ -28,6 +27,7 @@ const TabPane = Tabs.TabPane;
     tenantName: state.account.tenantName,
     formData: state.cmsDelegation.formData,
     submitting: state.cmsDelegation.submitting,
+    defaultWhse: state.cwmContext.defaultWhse,
   }),
   { loadReceiveModal }
 )
@@ -55,6 +55,8 @@ export default class OutboundDetail extends Component {
     printedPickingList: false,
     picking: false,
     picked: false,
+  }
+  componentWillMount() {
   }
   msg = key => formatMsg(this.props.intl, key);
   handleSave = () => {
@@ -115,28 +117,19 @@ export default class OutboundDetail extends Component {
   }
 
   render() {
+    const { defaultWhse } = this.props;
     return (
       <div>
         <Header className="top-bar">
           <Breadcrumb>
             <Breadcrumb.Item>
-              <Select
-                size="large"
-                defaultValue="0960"
-                placeholder="选择仓库"
-                style={{ width: 160 }}
-                disabled
-              >
-                <Option value="0960">物流大道仓库</Option>
-                <Option value="0961">希雅路仓库</Option>
-                <Option value="0962">富特路仓库</Option>
-              </Select>
+              {defaultWhse.name}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
               {this.msg('outboundAllocating')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              SO096120170603223
+              {this.props.params.outboundNo}
             </Breadcrumb.Item>
           </Breadcrumb>
           <Alert message="已加入波次计划: W09755345" type="info" />
