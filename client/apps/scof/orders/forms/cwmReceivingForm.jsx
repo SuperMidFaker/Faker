@@ -121,7 +121,7 @@ export default class CwmReceivingForm extends Component {
             <FormItem label="预期收货日期">
               <DatePicker format="YYYY/MM/DD" style={{ width: '100%' }}
                 value={node.expected_receive_date && moment(node.expected_receive_date)}
-                onChange={expectDate => this.handleCommonFieldChange('expected_receive_date', expectDate && expectDate.valueOf())}
+                onChange={expectDate => this.handleCommonFieldChange('expect_receive_date', expectDate && expectDate.valueOf())}
               />
             </FormItem>
           </Col>
