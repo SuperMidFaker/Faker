@@ -6,6 +6,7 @@ import moment from 'moment';
 import { Table, Button, Modal } from 'antd';
 import RowUpdater from 'client/components/rowUpdater';
 import QuantityInput from '../../../common/quantityInput';
+import PackagePopover from '../popover/packagePopover';
 import { loadInboundPutaways, showPuttingAwayModal, undoReceives, expressPutaways } from 'common/reducers/cwmReceive';
 import PuttingAwayModal from '../modal/puttingAwayModal';
 import { CWM_INBOUND_STATUS } from 'common/constants';
@@ -72,11 +73,7 @@ export default class PutawayDetailsPane extends React.Component {
     title: 'SKU',
     dataIndex: 'product_sku',
     width: 120,
-    render: (o) => {
-      if (o) {
-        return <Button>{o}</Button>;
-      }
-    },
+    render: o => (<PackagePopover sku={o} />),
   }, {
     title: '中文品名',
     dataIndex: 'name',
