@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Badge, Icon, Breadcrumb, Layout, Radio, Progress, Select, Tooltip, message } from 'antd';
+import { Badge, Icon, Breadcrumb, Layout, Radio, Select, Tooltip, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/search-bar';
@@ -15,6 +15,7 @@ import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { loadInbounds } from 'common/reducers/cwmReceive';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
+import Strip from 'client/components/Strip';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -108,7 +109,11 @@ export default class ReceivingInboundList extends React.Component {
     title: '收货数量',
     width: 250,
     className: 'progress-bar',
-    render: (o, record) => <Progress percent={record.total_received_qty / record.total_expect_qty * 100} format={() => `${record.total_received_qty} / ${record.total_expect_qty}`} strokeWidth={5} />,
+    render: (o, record) => {
+      const processing = record.total_received_qty - record.total_putaway_qty;
+      const warning = record.total_expect_qty - record.total_received_qty;
+      return (<Strip overall={record.total_expect_qty} parts={{ success: record.total_putaway_qty, processing, warning }} hints={['已上架', '未上架', '未收货']} />);
+    },
   }, {
     title: '操作模式',
     dataIndex: 'rec_mode',
@@ -242,7 +247,8 @@ export default class ReceivingInboundList extends React.Component {
           </Breadcrumb>
           <RadioGroup value={filters.status} onChange={this.handleStatusChange} size="large" >
             <RadioButton value="create">待入库</RadioButton>
-            <RadioButton value="receive">收货</RadioButton>
+            <RadioButton value="partialReceive">部分收货</RadioButton>
+            <RadioButton value="receive">全部收货</RadioButton>
             <RadioButton value="putaway">上架</RadioButton>
             <RadioButton value="completed">已入库</RadioButton>
           </RadioGroup>

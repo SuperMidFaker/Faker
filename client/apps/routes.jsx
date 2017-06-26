@@ -450,11 +450,11 @@ export default(store, cookie) => {
               <Route path="order">
                 <IndexRoute component={CWMShippingOrder.List} />
                 <Route path="create" component={CWMShippingOrder.Create} />
-                <Route path=":soNo" component={CWMShippingOrder.Detail} />
+                <Route path=":outboundNo" component={CWMShippingOrder.Detail} />
               </Route>
               <Route path="outbound">
                 <IndexRoute component={CWMShippingOutbound.List} />
-                <Route path=":soNo" component={CWMShippingOutbound.Detail} />
+                <Route path=":outboundNo" component={CWMShippingOutbound.Detail} />
               </Route>
             </Route>
             <Route path="stock">

@@ -13,7 +13,7 @@ import ShippingDockPanel from '../dock/shippingDockPanel';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
-import { loadSos, showDock } from 'common/reducers/cwmShippingOrder';
+import { loadSos, showDock, releaseSo } from 'common/reducers/cwmShippingOrder';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -40,7 +40,7 @@ function fetchData({ state, dispatch }) {
     filters: state.cwmShippingOrder.soFilters,
     solist: state.cwmShippingOrder.solist,
   }),
-  { loadSos, switchDefaultWhse, showDock }
+  { loadSos, switchDefaultWhse, showDock, releaseSo }
 )
 @connectNav({
   depth: 2,
@@ -136,7 +136,7 @@ export default class ShippingOrderList extends React.Component {
     width: 120,
     render: (o, record) => {
       if (record.status === 0) {
-        return (<span><RowUpdater label="释放" row={record} /><span className="ant-divider" /><RowUpdater onHit={this.handleEditSO} label="修改" row={record} /><span className="ant-divider" /><RowUpdater label="取消" row={record} /></span>);
+        return (<span><RowUpdater label="释放" row={record} onHit={this.handleReleaseSO} /><span className="ant-divider" /><RowUpdater onHit={this.handleEditSO} label="修改" row={record} /><span className="ant-divider" /><RowUpdater label="取消" row={record} /></span>);
       } else if (record.status === 1) {
         if (record.bonded === 1 && record.reg_status === 0) {
           return (<span><RowUpdater onHit={this.handleAllocate} label="出库操作" row={record} /><span className="ant-divider" /><RowUpdater onHit={this.handleEntryReg} label="出库备案" row={record} /></span>);
@@ -149,6 +149,22 @@ export default class ShippingOrderList extends React.Component {
   handlePreview = () => {
     this.props.showDock();
   }
+  handleReleaseSO = (record) => {
+    const { loginId } = this.props;
+    this.props.releaseSo(record.so_no, loginId).then((result) => {
+      if (!result.error) {
+        this.handleReload();
+      }
+    });
+  }
+  handleReload = () => {
+    this.props.loadSos({
+      whseCode: this.props.defaultWhse.code,
+      pageSize: this.props.solist.pageSize,
+      current: this.props.solist.current,
+      filters: this.props.filters,
+    });
+  }
   handleCreateSO = () => {
     this.context.router.push('/cwm/shipping/order/create');
   }
@@ -157,7 +173,7 @@ export default class ShippingOrderList extends React.Component {
     this.context.router.push(link);
   }
   handleAllocate = (row) => {
-    const link = `/cwm/shipping/outbound/${row.so_no}`;
+    const link = `/cwm/shipping/outbound/${row.outbound_no}`;
     this.context.router.push(link);
   }
   handleStatusChange = (ev) => {

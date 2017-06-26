@@ -7,6 +7,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/shipping/', [
   'LOAD_SOS', 'LOAD_SOS_SUCCEED', 'LOAD_SOS_FAIL',
   'GET_SO', 'GET_SO_SUCCEED', 'GET_SO_FAIL',
   'UPDATE_SO', 'UPDATE_SO_SUCCEED', 'UPDATE_SO_FAIL',
+  'RELEASE_SO', 'RELEASE_SO_SUCCEED', 'RELEASE_SO_FAIL',
 ]);
 
 const initialState = {
@@ -119,6 +120,21 @@ export function updateSo(data) {
       endpoint: 'v1/cwm/shipping/so/update',
       method: 'post',
       data,
+    },
+  };
+}
+
+export function releaseSo(soNo, loginId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.RELEASE_SO,
+        actionTypes.RELEASE_SO_SUCCEED,
+        actionTypes.RELEASE_SO_FAIL,
+      ],
+      endpoint: 'v1/cwm/release/so',
+      method: 'post',
+      data: { soNo, loginId },
     },
   };
 }
