@@ -7,15 +7,15 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { saveBillHead, lockManifest, openMergeSplitModal, resetBill, updateHeadNetWt, editBillBody,
   loadBillBody, saveBillRules, setStepVisible, billHeadChange, redoManifest, loadTemplateFormVals,
   showSendDeclsModal, validateBillDatas, loadBillMeta } from 'common/reducers/cmsManifest';
+import { loadDocuDatas } from 'common/reducers/cmsInvoice';
 import NavLink from 'client/components/nav-link';
-import ButtonToggle from 'client/components/ButtonToggle';
 import ManifestHeadPane from './tabpane/manifestHeadPane';
 import ManifestBodyPane from './tabpane/manifestBodyPane';
 import CiqDetailsPane from './tabpane/ciqDetailsPane';
 import ContainersPane from './tabpane/containersPane';
+import DocuPane from './tabpane/doctsPane';
 import MergeSplitModal from './modals/mergeSplit';
 import SaveTemplateModal from './modals/saveTemplateSteps';
-import SheetExtraPanel from './panel/manifestExtraPanel';
 import { CMS_DECL_STATUS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -26,7 +26,7 @@ import DelegationDockPanel from '../dock/delegationDockPanel';
 import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
 
 const formatMsg = format(messages);
-const { Header, Content, Sider } = Layout;
+const { Header, Content } = Layout;
 const TabPane = Tabs.TabPane;
 const Option = Select.Option;
 const OptGroup = Select.OptGroup;
@@ -61,7 +61,8 @@ const confirm = Modal.confirm;
     showSendDeclsModal,
     validateBillDatas,
     loadBillMeta,
-    showPreviewer }
+    showPreviewer,
+    loadDocuDatas }
 )
 @connectNav({
   depth: 3,
@@ -316,6 +317,11 @@ export default class ManifestEditor extends React.Component {
   handlePreview = (delgNo) => {
     this.props.showPreviewer(delgNo, 'customsDecl');
   }
+  handleTabChange = (tabKey) => {
+    if (tabKey === 'attachedDocs') {
+      this.props.loadDocuDatas({ billSeqNo: this.props.billHead.bill_seq_no });
+    }
+  }
   renderOverlayMenu(editable) {
     let lockMenuItem = null;
     if (editable) {
@@ -425,13 +431,12 @@ export default class ManifestEditor extends React.Component {
                   </Tooltip>
                 </Popconfirm>
               }
-              <ButtonToggle size="large" iconOff="folder" iconOn="folder-open" onClick={this.toggle} />
             </div>
           </Header>
           <Content className={`main-content layout-min-width layout-min-width-large ${!editable ? 'readonly' : ''}`}>
             <Spin spinning={this.props.manifestSpinning}>
               <div className="page-body tabbed">
-                <Tabs defaultActiveKey="header">
+                <Tabs defaultActiveKey="header" onChange={this.handleTabChange}>
                   <TabPane tab="清单表头" key="header">
                     <Spin spinning={this.props.templateValLoading}>
                       <ManifestHeadPane ietype={ietype} readonly={!editable} form={form} formData={this.state.headData} onSave={this.handleBillSave} />
@@ -446,28 +451,14 @@ export default class ManifestEditor extends React.Component {
                   <TabPane tab="集装箱" key="containers">
                     <ContainersPane />
                   </TabPane>
-                  <TabPane tab="随附单据" key="attachedDocs" />
+                  <TabPane tab="随附单据" key="attachedDocs" >
+                    <DocuPane billSeqNo={billHead.bill_seq_no} />
+                  </TabPane>
                 </Tabs>
               </div>
             </Spin>
           </Content>
         </Layout>
-        <Sider
-          trigger={null}
-          defaultCollapsed
-          collapsible
-          collapsed={this.state.collapsed}
-          width={480}
-          collapsedWidth={0}
-          className="right-sider"
-        >
-          <div className="right-sider-panel">
-            <div className="panel-header">
-              <h3>附加资料</h3>
-            </div>
-            <SheetExtraPanel type="bill" ietype={ietype} billSeqNo={billHead.bill_seq_no} />
-          </div>
-        </Sider>
         <DelegationDockPanel ietype={ietype} />
         <OrderDockPanel />
         <MergeSplitModal />

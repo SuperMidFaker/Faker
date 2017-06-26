@@ -240,6 +240,7 @@ export default class SHFTZCargoList extends React.Component {
   }
   render() {
     const { cargolist, listFilter, loading, whses, whse } = this.props;
+    const bondedWhses = whses.filter(wh => wh.bonded === 1);
     const { owners, owner, rule } = this.state;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -290,7 +291,7 @@ export default class SHFTZCargoList extends React.Component {
             <Breadcrumb>
               <Breadcrumb.Item>
                 <Select size="large" value={whse.code} placeholder="选择仓库" style={{ width: 160 }} onChange={this.handleWhseChange}>
-                  {whses.map(wh => <Option value={wh.code} key={wh.code}>{wh.name}</Option>)}
+                  {bondedWhses.map(wh => <Option value={wh.code} key={wh.code}>{wh.name}</Option>)}
                 </Select>
               </Breadcrumb.Item>
               <Breadcrumb.Item>
