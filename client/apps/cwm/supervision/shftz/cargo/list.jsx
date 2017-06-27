@@ -2,9 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Form, Icon, Layout, Radio, Select, message, Table, Tag } from 'antd';
-import { loadProductCargo, loadParams, updateCargoRule, syncProdSKUS } from 'common/reducers/cwmShFtz';
-import { switchDefaultWhse } from 'common/reducers/cwmContext';
+import { Breadcrumb, Button, Form, Icon, Layout, Radio, Select, message, Table, Tag, Tooltip } from 'antd';
+import { loadProductCargo, loadParams, updateCargoRule, syncProdSKUS, updatePortionEn } from 'common/reducers/cwmShFtz';
+import { switchDefaultWhse, loadWhse } from 'common/reducers/cwmContext';
 import RemoteTable from 'client/components/remoteAntTable';
 import SearchBar from 'client/components/search-bar';
 import ButtonToggle from 'client/components/ButtonToggle';
@@ -13,6 +13,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
+import TrimSpan from 'client/components/trimSpan';
 
 const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
@@ -50,7 +51,7 @@ function fetchData({ dispatch }) {
       text: tc.cntry_name_cn,
     })),
   }),
-  { loadProductCargo, switchDefaultWhse, updateCargoRule, syncProdSKUS }
+  { loadProductCargo, switchDefaultWhse, updateCargoRule, syncProdSKUS, updatePortionEn, loadWhse }
 )
 @connectNav({
   depth: 2,
@@ -238,6 +239,15 @@ export default class SHFTZCargoList extends React.Component {
   handleRuleSave = () => {
     this.props.updateCargoRule({ type: this.state.rule, id: this.props.cargoRule.id });
   }
+  handlePorted = (owner) => {
+    this.props.updatePortionEn(owner.whseid).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 5);
+      } else {
+        this.props.loadWhse(this.props.whse.code);
+      }
+    });
+  }
   render() {
     const { cargolist, listFilter, loading, whses, whse } = this.props;
     const bondedWhses = whses.filter(wh => wh.bonded === 1);
@@ -252,7 +262,19 @@ export default class SHFTZCargoList extends React.Component {
     const ownerColumns = [{
       dataIndex: 'name',
       key: 'code',
-      render: (o, record) => <span className="menu-sider-item">{record.customs_code ? `${record.customs_code} | ${record.name}` : record.name}</span>,
+      render: (o, record) => <span className="menu-sider-item"><TrimSpan text={record.customs_code ? `${record.customs_code} | ${record.name}` : record.name} maxLen={24} /></span>,
+    }, {
+      width: 40,
+      fixed: 'right',
+      render: (o, record) => {
+        if (!record.owner_portion_en) {
+          return (
+            <Tooltip placement="bottom" title="启用分拨">
+              <Button shape="circle" icon="arrows-alt" onClick={() => this.handlePorted(record)} />
+            </Tooltip>
+          );
+        }
+      },
     }];
     const radioStyle = {
       display: 'block',
@@ -301,18 +323,19 @@ export default class SHFTZCargoList extends React.Component {
                 {owner.name}
               </Breadcrumb.Item>
             </Breadcrumb>
-            <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} size="large">
+            <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} size="large" disabled={!owner.owner_portion_en}>
               <RadioButton value="pending">待备案</RadioButton>
               <RadioButton value="sent">已发送</RadioButton>
               <RadioButton value="completed">备案完成</RadioButton>
             </RadioGroup>
             <div className="top-bar-tools">
-              <Button type="primary" ghost size="large" icon="sync" onClick={this.handleSyncProductSKUs}>
+              <Button type="primary" ghost size="large" icon="sync" onClick={this.handleSyncProductSKUs} disabled={!owner.owner_portion_en}>
                 同步货品SKU
               </Button>
               <ButtonToggle size="large"
                 iconOn="fork" iconOff="fork"
                 onClick={this.toggleRightSider}
+                disabled={!owner.owner_portion_en}
               >
                 映射规则
               </ButtonToggle>

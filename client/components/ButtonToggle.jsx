@@ -15,6 +15,7 @@ export default class ButtonToggle extends React.Component {
     iconOn: PropTypes.string,
     iconOff: PropTypes.string,
     toggle: PropTypes.bool,
+    disabled: PropTypes.bool,
   };
 
   constructor(props) {
@@ -33,12 +34,12 @@ export default class ButtonToggle extends React.Component {
 
   render() {
     const {
-      type, shape, size = '', children, iconOn, iconOff,
+      type, shape, size = '', children, iconOn, iconOff, disabled,
     } = this.props;
     const toggleCls = this.state.toggle ? 'btn-toggle-on' : 'btn-toggle-off';
     const toggleIcon = this.state.toggle ? iconOn : iconOff;
     return (
-      <Button type={type} shape={shape} size={size} icon={toggleIcon} className={toggleCls} onClick={this.handleClick}>
+      <Button type={type} shape={shape} size={size} icon={toggleIcon} className={toggleCls} onClick={this.handleClick} disabled={disabled}>
         {children}
       </Button>
     );
