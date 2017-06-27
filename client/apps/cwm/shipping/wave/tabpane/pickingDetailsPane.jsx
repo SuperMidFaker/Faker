@@ -4,8 +4,6 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Table, Tag, Icon, Button } from 'antd';
 import RowUpdater from 'client/components/rowUpdater';
 import { MdIcon } from 'client/components/FontIcon';
-import PickingModal from '../modal/pickingModal';
-import ShippingModal from '../modal/shippingModal';
 import QuantityInput from '../../../common/quantityInput';
 import { openPickingModal, openShippingModal } from 'common/reducers/cwmOutbound';
 
@@ -17,7 +15,7 @@ import { openPickingModal, openShippingModal } from 'common/reducers/cwmOutbound
   }),
   { openPickingModal, openShippingModal }
 )
-export default class AllocDetailsPane extends React.Component {
+export default class PickingDetailsPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
   }
@@ -236,8 +234,6 @@ export default class AllocDetailsPane extends React.Component {
         <Table columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={this.mockData} rowKey="id"
           scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
         />
-        <PickingModal shippingMode={this.state.shippingMode} />
-        <ShippingModal shippingMode={this.state.shippingMode} />
       </div>
     );
   }

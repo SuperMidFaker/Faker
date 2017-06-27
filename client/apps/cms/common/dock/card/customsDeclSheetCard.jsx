@@ -50,7 +50,7 @@ export default class CustomsDeclSheetCard extends React.Component {
           <Steps progressDot current={decl ? decl.step : 0}>
             {Object.keys(CMS_DECL_STATUS).map((dekey) => {
               const declST = CMS_DECL_STATUS[dekey];
-              const stepDate = customsDecl[declST.date] ? moment(customsDecl[declST.date]).format('MM.DD HH.MM') : '';
+              const stepDate = customsDecl[declST.date] ? moment(customsDecl[declST.date]).format('MM.DD HH:MM') : '';
               return (<Step description={`${declST.stepDesc} ${stepDate}`} key={dekey} />);
             })}
           </Steps>

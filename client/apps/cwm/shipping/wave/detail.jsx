@@ -1,21 +1,18 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Alert, Breadcrumb, Icon, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Tooltip, Radio } from 'antd';
+import { Breadcrumb, Form, Layout, Tabs, Button, Card, Col, Row } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import InfoItem from 'client/components/InfoItem';
+import OrderListPane from './tabpane/orderListPane';
 import OrderDetailsPane from './tabpane/orderDetailsPane';
-import PickingDetailsPane from './tabpane/pickingDetailsPane';
 import { loadReceiveModal } from 'common/reducers/cwmReceive';
 import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
-const RadioGroup = Radio.Group;
-const RadioButton = Radio.Button;
-const Step = Steps.Step;
 const TabPane = Tabs.TabPane;
 
 @injectIntl
@@ -36,7 +33,7 @@ const TabPane = Tabs.TabPane;
   moduleName: 'cwm',
 })
 @Form.create()
-export default class OutboundDetail extends Component {
+export default class WaveDetail extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     form: PropTypes.object.isRequired,
@@ -126,38 +123,34 @@ export default class OutboundDetail extends Component {
               {defaultWhse.name}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              {this.msg('outboundAllocating')}
+              {this.msg('shippingWave')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              {this.props.params.outboundNo}
+              {this.props.params.waveNo}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <Alert message="已加入波次计划: W09755345" type="info" />
           <div className="top-bar-tools">
             {this.state.allocated && !this.state.picked &&
             <Button type={!this.state.printedPickingList && 'primary'} size="large" icon="printer" onClick={this.handlePrint} />
             }
-            <RadioGroup defaultValue={this.state.shippingMode} onChange={this.handleShippingModeChange} size="large" disabled={this.state.currentStep > 1}>
-              <Tooltip title="扫码模式"><RadioButton value="scan"><Icon type="scan" /></RadioButton></Tooltip>
-              <Tooltip title="手动模式"><RadioButton value="manual"><Icon type="solution" /></RadioButton></Tooltip>
-            </RadioGroup>
+            <Button size="large">释放</Button>
           </div>
         </Header>
         <Content className="main-content">
           <Form layout="vertical">
-            <Card bodyStyle={{ paddingBottom: 56 }}>
+            <Card>
               <Row>
                 <Col sm={24} lg={6}>
-                  <InfoItem addonBefore="货主" field="04601|米思米(中国)精密机械贸易" />
+                  <InfoItem addonBefore="波次号" field="04601|米思米(中国)精密机械贸易" />
                 </Col>
                 <Col sm={24} lg={6}>
-                  <InfoItem addonBefore="收货人" field="米思米华东DC" />
+                  <InfoItem addonBefore="说明" field="米思米华东DC" />
                 </Col>
                 <Col sm={12} lg={2}>
-                  <InfoItem addonBefore="订货总数" field="50" />
+                  <InfoItem addonBefore="总订单数" field="50" />
                 </Col>
                 <Col sm={12} lg={2}>
-                  <InfoItem addonBefore="分配总数" field="50" />
+                  <InfoItem addonBefore="总订单明细数" field="50" />
                 </Col>
                 <Col sm={12} lg={2}>
                   <InfoItem addonBefore="拣货总数" field="50" />
@@ -169,24 +162,14 @@ export default class OutboundDetail extends Component {
                   <InfoItem addonBefore="发货总数" field="50" />
                 </Col>
               </Row>
-              <div className="card-footer">
-                <Steps progressDot current={this.state.currentStep}>
-                  <Step description="待出库" />
-                  <Step description="分配" />
-                  <Step description="拣货" />
-                  <Step description="装箱" />
-                  <Step description="发货" />
-                  <Step description="已出库" />
-                </Steps>
-              </div>
             </Card>
             <Card bodyStyle={{ padding: 0 }}>
-              <Tabs defaultActiveKey="orderDetails" onChange={this.handleTabChange}>
+              <Tabs defaultActiveKey="orderList" onChange={this.handleTabChange}>
+                <TabPane tab="订单列表" key="orderList">
+                  <OrderListPane />
+                </TabPane>
                 <TabPane tab="订单明细" key="orderDetails">
                   <OrderDetailsPane />
-                </TabPane>
-                <TabPane tab="拣货明细" key="pickingDetails">
-                  <PickingDetailsPane />
                 </TabPane>
               </Tabs>
             </Card>

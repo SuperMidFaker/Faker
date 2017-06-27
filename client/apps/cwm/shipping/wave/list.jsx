@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Breadcrumb, Layout, Radio, Select, Button, Badge, Tag } from 'antd';
+import { Breadcrumb, Layout, Radio, Select, Badge } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import RowUpdater from 'client/components/rowUpdater';
 import QueueAnim from 'rc-queue-anim';
@@ -46,7 +46,7 @@ function fetchData({ state, dispatch }) {
   depth: 2,
   moduleName: 'cwm',
 })
-export default class ShippingOrderList extends React.Component {
+export default class WaveList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -60,20 +60,33 @@ export default class ShippingOrderList extends React.Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
-    title: 'SO编号',
+    title: '波次编号',
     width: 120,
-    dataIndex: 'so_no',
+    dataIndex: 'wave_no',
     render: o => (
       <a onClick={() => this.handlePreview()}>
         {o}
       </a>),
   }, {
-    title: '货主',
-    width: 200,
-    dataIndex: 'owner_name',
+    title: '波次状态',
+    dataIndex: 'status',
+    width: 120,
+    render: (o) => {
+      if (o === 0) {
+        return (<Badge status="default" text="计划" />);
+      } else if (o === 1) {
+        return (<Badge status="processing" text="出库中" />);
+      } else if (o === 3) {
+        return (<Badge status="success" text="完成" />);
+      }
+    },
   }, {
-    title: '客户订单号',
-    dataIndex: 'cust_order_no',
+    title: '描述',
+    width: 200,
+    dataIndex: 'wave_desc',
+  }, {
+    title: '订单数量',
+    dataIndex: 'order_count',
   }, {
     title: '收货人',
     dataIndex: 'receiver',
@@ -81,62 +94,18 @@ export default class ShippingOrderList extends React.Component {
     title: '承运人',
     dataIndex: 'carrier',
   }, {
+    title: '波次规则',
+    dataIndex: 'wave_rule',
+  }, {
     title: '创建时间',
     width: 120,
     dataIndex: 'created_date',
-  }, {
-    title: '要求交货时间',
-    dataIndex: 'expect_shipping_date',
-    width: 160,
-  }, {
-    title: '发货时间',
-    dataIndex: 'shipped_date',
-    width: 160,
-  }, {
-    title: '状态',
-    dataIndex: 'status',
-    width: 120,
-    render: (o) => {
-      if (o === 0) {
-        return (<Badge status="default" text="待出货" />);
-      } else if (o === 1) {
-        return (<Badge status="processing" text="出库中" />);
-      } else if (o === 2) {
-        return (<Badge status="warning" text="部分出货" />);
-      } else if (o === 3) {
-        return (<Badge status="success" text="出货完成" />);
-      }
-    },
-  }, {
-    title: '货物属性',
-    width: 100,
-    dataIndex: 'bonded',
-    render: (o) => {
-      if (o === 1) {
-        return (<Tag color="blue">保税</Tag>);
-      } else if (o === 0) {
-        return (<Tag>非保税</Tag>);
-      }
-    },
-  }, {
-    title: '备案状态',
-    dataIndex: 'reg_status',
-    width: 120,
-    render: (o) => {
-      if (o === 0) {
-        return (<Badge status="default" />);
-      } else if (o === 1) {
-        return (<Badge status="processing" text="已发送" />);
-      } else if (o === 2) {
-        return (<Badge status="success" text="备案完成" />);
-      }
-    },
   }, {
     title: '操作',
     width: 120,
     render: (o, record) => {
       if (record.status === 0) {
-        return (<span><RowUpdater label="释放" row={record} onHit={this.handleReleaseSO} /><span className="ant-divider" /><RowUpdater onHit={this.handleEditSO} label="修改" row={record} /><span className="ant-divider" /><RowUpdater label="取消" row={record} /></span>);
+        return (<span><RowUpdater label="释放" row={record} onHit={this.handleReleaseWave} /><span className="ant-divider" /><RowUpdater onHit={this.handleEditWave} label="修改" row={record} /><span className="ant-divider" /><RowUpdater label="取消" row={record} /></span>);
       } else if (record.status === 1) {
         if (record.bonded === 1 && record.reg_status === 0) {
           return (<span><RowUpdater onHit={this.handleAllocate} label="出库操作" row={record} /><span className="ant-divider" /><RowUpdater onHit={this.handleEntryReg} label="出库备案" row={record} /></span>);
@@ -149,7 +118,7 @@ export default class ShippingOrderList extends React.Component {
   handlePreview = () => {
     this.props.showDock();
   }
-  handleReleaseSO = (record) => {
+  handleReleaseWave = (record) => {
     const { loginId } = this.props;
     this.props.releaseSo(record.so_no, loginId).then((result) => {
       if (!result.error) {
@@ -165,11 +134,8 @@ export default class ShippingOrderList extends React.Component {
       filters: this.props.filters,
     });
   }
-  handleCreateSO = () => {
-    this.context.router.push('/cwm/shipping/order/create');
-  }
-  handleEditSO = (row) => {
-    const link = `/cwm/shipping/order/${row.so_no}`;
+  handleEditWave = (row) => {
+    const link = `/cwm/shipping/wave/${row.so_no}`;
     this.context.router.push(link);
   }
   handleAllocate = (row) => {
@@ -207,7 +173,7 @@ export default class ShippingOrderList extends React.Component {
     });
   }
   render() {
-    const { whses, defaultWhse, owners, filters } = this.props;
+    const { whses, defaultWhse, filters } = this.props;
     const dataSource = new Table.DataSource({
       fetcher: params => this.props.loadSos(params),
       resolve: result => result.data,
@@ -248,58 +214,24 @@ export default class ShippingOrderList extends React.Component {
               </Select>
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              {this.msg('shippingOrder')}
+              {this.msg('shippingWave')}
             </Breadcrumb.Item>
           </Breadcrumb>
           <RadioGroup value={filters.status} onChange={this.handleStatusChange} size="large">
-            <RadioButton value="pending">订单接收</RadioButton>
+            <RadioButton value="pending">波次计划</RadioButton>
             <RadioButton value="outbound">出库中</RadioButton>
-            <RadioButton value="partial">部分出库</RadioButton>
-            <RadioButton value="completed">订单完成</RadioButton>
+            <RadioButton value="completed">波次完成</RadioButton>
           </RadioGroup>
-          <div className="top-bar-tools">
-            <Button type="primary" size="large" icon="plus" onClick={this.handleCreateSO}>
-              {this.msg('createSO')}
-            </Button>
-          </div>
+          <div className="top-bar-tools" />
         </Header>
         <Content className="main-content" key="main">
           <div className="page-body">
             <div className="toolbar">
               <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} />
               <span />
-              <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
-                onChange={this.handleOwnerChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
-              >
-                <Option value="all" key="all">全部货主</Option>
-                {
-                  owners.map(owner => (<Option key={owner.id} value={owner.id}>{owner.name}</Option>))
-                }
-              </Select>
-              <span />
-              <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
-                onChange={this.handleOwnerChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
-              >
-                <Option value="all" key="all">全部收货人</Option>
-                {
-                  owners.map(owner => (<Option key={owner.id} value={owner.id}>{owner.name}</Option>))
-                }
-              </Select>
-              <span />
-              <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
-                onChange={this.handleOwnerChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
-              >
-                <Option value="all" key="all">全部承运人</Option>
-                {
-                  owners.map(owner => (<Option key={owner.id} value={owner.id}>{owner.name}</Option>))
-                }
-              </Select>
               <div className="toolbar-right" />
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3>
-                <Button size="large">创建波次计划</Button>
-                <Button size="large">添加到波次计划</Button>
-                <Button size="large">触发补货任务</Button>
               </div>
             </div>
             <div className="panel-body table-panel">

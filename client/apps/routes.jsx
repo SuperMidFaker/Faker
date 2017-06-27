@@ -60,6 +60,7 @@ import * as CWMDashboard from './cwm/dashboard';
 import * as CWMReceivingASN from './cwm/receiving/asn';
 import * as CWMReceivingInbound from './cwm/receiving/inbound';
 import * as CWMShippingOrder from './cwm/shipping/order';
+import * as CWMShippingWave from './cwm/shipping/wave';
 import * as CWMShippingOutbound from './cwm/shipping/outbound';
 import * as CWMStockInventory from './cwm/stock/inventory';
 import * as CWMProductsSku from './cwm/products/sku';
@@ -451,6 +452,10 @@ export default(store, cookie) => {
                 <IndexRoute component={CWMShippingOrder.List} />
                 <Route path="create" component={CWMShippingOrder.Create} />
                 <Route path=":outboundNo" component={CWMShippingOrder.Detail} />
+              </Route>
+              <Route path="wave">
+                <IndexRoute component={CWMShippingWave.List} />
+                <Route path=":waveNo" component={CWMShippingWave.Detail} />
               </Route>
               <Route path="outbound">
                 <IndexRoute component={CWMShippingOutbound.List} />

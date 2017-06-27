@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Icon, Breadcrumb, Layout, Radio, Select, Table, Tooltip, message } from 'antd';
+import { Icon, Breadcrumb, Layout, Radio, Select, Table, Tooltip, message } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/search-bar';
 import RowUpdater from 'client/components/rowUpdater';
@@ -326,7 +326,7 @@ export default class OutboundList extends React.Component {
             <RadioButton value="allocating">分配</RadioButton>
             <RadioButton value="picking">拣货</RadioButton>
             <RadioButton value="shipping">发货</RadioButton>
-            <RadioButton value="completed">出库完成</RadioButton>
+            <RadioButton value="completed">已出库</RadioButton>
           </RadioGroup>
         </Header>
         <Content className="main-content" key="main">
@@ -342,9 +342,6 @@ export default class OutboundList extends React.Component {
               <div className="toolbar-right" />
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3>
-                <Button size="large">创建波次计划</Button>
-                <Button size="large">添加到波次计划</Button>
-                <Button size="large">触发补货任务</Button>
               </div>
             </div>
             <div className="panel-body table-panel">

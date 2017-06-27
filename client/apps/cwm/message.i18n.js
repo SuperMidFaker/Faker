@@ -28,7 +28,7 @@ const messages = defineMessages({
   },
   shippingWave: {
     id: 'cwm.module.shipping.wave',
-    defaultMessage: '波次计划',
+    defaultMessage: '波次',
   },
   shippingOutbound: {
     id: 'cwm.module.shipping.outbound',
