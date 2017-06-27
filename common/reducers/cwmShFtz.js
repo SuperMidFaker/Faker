@@ -9,6 +9,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/shftz/', [
   'PRODUCT_CARGO_LOAD', 'PRODUCT_CARGO_LOAD_SUCCEED', 'PRODUCT_CARGO_LOAD_FAIL',
   'UPDATE_CARGO_RULE', 'UPDATE_CARGO_RULE_SUCCEED', 'UPDATE_CARGO_RULE_FAIL',
   'SYNC_SKU', 'SYNC_SKU_SUCCEED', 'SYNC_SKU_FAIL',
+  'ENABLE_PORTION', 'ENABLE_PORTION_SUCCEED', 'ENABLE_PORTION_FAIL',
 ]);
 
 const initialState = {
@@ -165,6 +166,21 @@ export function syncProdSKUS(data) {
       endpoint: 'v1/cwm/shftz/product/cargo/skus/sync',
       method: 'post',
       data,
+    },
+  };
+}
+
+export function updatePortionEn(whseId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.ENABLE_PORTION,
+        actionTypes.ENABLE_PORTION_SUCCEED,
+        actionTypes.ENABLE_PORTION_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/product/cargo/portion/enable',
+      method: 'post',
+      data: { whseId },
     },
   };
 }
