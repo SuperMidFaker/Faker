@@ -321,10 +321,6 @@ export default class OutboundList extends React.Component {
               {this.msg('shippingOutbound')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <RadioGroup onChange={this.handleWaveList} size="large">
-            <RadioButton value="waves">波次计划</RadioButton>
-          </RadioGroup>
-          <span />
           <RadioGroup defaultValue="created" onChange={this.handleStatusChange} size="large">
             <RadioButton value="created">待出库</RadioButton>
             <RadioButton value="allocating">分配</RadioButton>

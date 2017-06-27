@@ -30,39 +30,51 @@ export default class ASNPane extends React.Component {
     return (
       <div className="pane-content tab-pane">
         <Card bodyStyle={{ padding: 0 }}>
-          <Collapse bordered={false} defaultActiveKey={['trading', 'shipment']}>
-            <Panel header="参考信息" key="trading">
+          <Collapse bordered={false} defaultActiveKey={['main', 'asnDetails']}>
+            <Panel header="主信息" key="main">
               <Row>
                 <Col span="8">
-                  <InfoItem label="参考信息1" field={''} />
+                  <InfoItem label="ASN编号" field={''} />
                 </Col>
                 <Col span="8">
-                  <InfoItem label="参考信息1" field={''} />
+                  <InfoItem label="ASN类型" field={''} />
                 </Col>
                 <Col span="8">
-                  <InfoItem label="参考信息1" field={''} />
+                  <InfoItem label="货主" field={''} />
                 </Col>
                 <Col span="8">
-                  <InfoItem label="供应商" field={''} />
+                  <InfoItem label="状态" field={''} />
                 </Col>
                 <Col span="8">
-                  <InfoItem label="参考信息1" field={''} />
+                  <InfoItem label="货物属性" field={''} />
                 </Col>
                 <Col span="8">
-                  <InfoItem label="参考信息1" field={''} />
+                  <InfoItem label="保税监管方式" field={''} />
+                </Col>
+                <Col span="6">
+                  <InfoItem label="总预期数量" field={''} />
+                </Col>
+                <Col span="6">
+                  <InfoItem label="总收货数量" field={''} />
+                </Col>
+                <Col span="6">
+                  <InfoItem label="预期重量" field={''} />
+                </Col>
+                <Col span="6">
+                  <InfoItem label="预期体积" field={''} />
                 </Col>
                 <Col span="8">
-                  <InfoItem label="承运人" field={''} />
+                  <InfoItem label="预期到货日期" field={''} />
                 </Col>
                 <Col span="8">
-                  <InfoItem label="车牌号" field={''} />
+                  <InfoItem label="上次收货日期" field={''} />
                 </Col>
                 <Col span="8">
-                  <InfoItem label="司机" field={''} />
+                  <InfoItem label="创建日期" field={''} />
                 </Col>
               </Row>
             </Panel>
-            <Panel header="订单明细" key="orderDetails" />
+            <Panel header="ASN明细" key="asnDetails" />
           </Collapse>
         </Card>
       </div>

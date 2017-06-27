@@ -13,7 +13,8 @@ import TrimSpan from 'client/components/trimSpan';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
-import { loadInbounds } from 'common/reducers/cwmReceive';
+import ReceivingDockPanel from '../dock/receivingDockPanel';
+import { showDock, loadInbounds } from 'common/reducers/cwmReceive';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import Strip from 'client/components/Strip';
 
@@ -43,7 +44,7 @@ function fetchData({ state, dispatch }) {
     owners: state.cwmContext.whseAttrs.owners,
     loginId: state.account.loginId,
   }),
-  { loadInbounds, switchDefaultWhse }
+  { showDock, loadInbounds, switchDefaultWhse }
 )
 @connectNav({
   depth: 2,
@@ -81,6 +82,7 @@ export default class ReceivingInboundList extends React.Component {
     title: 'ANS编号',
     width: 180,
     dataIndex: 'asn_no',
+    render: o => (<a onClick={() => this.handlePreview()}>{o}</a>),
   }, {
     title: <Tooltip title="明细记录数"><Icon type="bars" /></Tooltip>,
     dataIndex: 'detail_count',
@@ -169,6 +171,9 @@ export default class ReceivingInboundList extends React.Component {
       current: this.props.inbound.current,
       filters,
     });
+  }
+  handlePreview = () => {
+    this.props.showDock();
   }
   handleReceive = (row) => {
     const link = `/cwm/receiving/inbound/${row.inbound_no}`;
@@ -277,6 +282,7 @@ export default class ReceivingInboundList extends React.Component {
             </div>
           </div>
         </Content>
+        <ReceivingDockPanel />
       </QueueAnim>
     );
   }

@@ -67,10 +67,7 @@ export default class ReceivingASNList extends React.Component {
     dataIndex: 'asn_no',
     width: 220,
     fixed: 'left',
-    render: o => (
-      <a onClick={() => this.handlePreview()}>
-        {o}
-      </a>),
+    render: o => (<a onClick={() => this.handlePreview()}>{o}</a>),
   }, {
     title: '货主',
     width: 200,

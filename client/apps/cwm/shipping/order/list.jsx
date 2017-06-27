@@ -255,7 +255,7 @@ export default class ShippingOrderList extends React.Component {
             <RadioButton value="pending">订单接收</RadioButton>
             <RadioButton value="outbound">出库中</RadioButton>
             <RadioButton value="partial">部分出库</RadioButton>
-            <RadioButton value="completed">发货完成</RadioButton>
+            <RadioButton value="completed">订单完成</RadioButton>
           </RadioGroup>
           <div className="top-bar-tools">
             <Button type="primary" size="large" icon="plus" onClick={this.handleCreateSO}>
