@@ -698,8 +698,8 @@ FeeFormItem.propTypes = {
 
 export function Fee(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
-  const { getFieldValue } = props;
-  const fobRequire = getFieldValue('trxn_mode') === '3';
+  const { getFieldValue, ietype } = props;
+  const fobRequire = (getFieldValue('trxn_mode') === '3' && ietype === 'import');
   const ciRequire = getFieldValue('trxn_mode') === '4';
   const feeCurrReq = getFieldValue('fee_mark') !== '1';
   const insurCurrReq = getFieldValue('insur_mark') !== '1';
@@ -731,6 +731,7 @@ Fee.propTypes = {
   getFieldValue: PropTypes.func.isRequired,
   formData: PropTypes.object.isRequired,
   formRequire: PropTypes.object.isRequired,
+  ietype: PropTypes.oneOf(['import', 'export']),
 };
 
 // 集装箱号
