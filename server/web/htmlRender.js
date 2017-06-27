@@ -52,6 +52,8 @@ function renderAsHtml(pageCss, pageJs, content) {
   <script src="${__CDN__}/assets/lib/easemob/websdk-1.1.2.js" type="text/javascript"></script>
   <script src="https://as.alipayobjects.com/g/datavis/g2/2.2.2/index.js"></script>
   <script src="https://a.alipayobjects.com/g/datavis/g6/0.2.2/index.js"></script>
+  <script type="text/javascript" src='${__CDN__}/assets/pdfmake/pdfmake.min.js'></script>
+  <script type="text/javascript" src='${__CDN__}/assets/pdfmake/vfs_fonts.js'></script>
   ${pageJs}
 </body>
 </html>`;

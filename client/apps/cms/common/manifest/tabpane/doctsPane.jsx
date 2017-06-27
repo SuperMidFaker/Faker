@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import pdfMake from 'pdfmake/build/pdfmake';
-import pdfFonts from 'pdfmake/build/vfs_fonts';
+// import pdfMake from 'pdfmake/build/pdfmake';
+// import pdfFonts from 'pdfmake/build/vfs_fonts';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { Layout, Collapse, Button, Breadcrumb, Table, Select, Icon, Form, message } from 'antd';
@@ -322,14 +322,14 @@ export default class DocuPane extends React.Component {
     return docDefinition;
   }
   handlePDF = () => {
-    pdfMake.vfs = pdfFonts.pdfMake.vfs;
+    // pdfMake.vfs = pdfFonts.pdfMake.vfs;
     const docDefinition = this.handleDocDef();
     pdfMake.fonts = {
       yahei: {
-        normal: 'Microsoft Yahei.ttf',
-        bold: 'Microsoft Yahei.ttf',
-        italics: 'Microsoft Yahei.ttf',
-        bolditalics: 'Microsoft Yahei.ttf',
+        normal: 'msyh.ttf',
+        bold: 'msyh.ttf',
+        italics: 'msyh.ttf',
+        bolditalics: 'msyh.ttf',
       },
     };
     pdfMake.createPdf(docDefinition).open();

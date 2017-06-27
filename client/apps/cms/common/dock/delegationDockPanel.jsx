@@ -152,7 +152,7 @@ export default class DelegationDockPanel extends React.Component {
         tabs.push(<TabPane tab="报检" key="ciqDecl"><CiqDeclPane /></TabPane>);
       }
     }
-    if (delegation.decl_way_code !== 'IBND' && delegation.decl_way_code !== 'EBND' &&
+    if (delegation.decl_way_code !== 'IBND' && delegation.decl_way_code !== 'EBND' && this.props.ietype === 'import' &&
       ((delgDispatch.status === CMS_DELEGATION_STATUS.processing && delegation.manifested === CMS_DELEGATION_MANIFEST.manifested) ||
       delgDispatch.status > CMS_DELEGATION_STATUS.processing)) {
       tabs.push(<TabPane tab="缴税" key="taxes"><DutyTaxPane /></TabPane>);
