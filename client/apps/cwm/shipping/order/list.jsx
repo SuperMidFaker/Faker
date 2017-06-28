@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import moment from 'moment';
 import { Breadcrumb, DatePicker, Layout, Radio, Select, Button, Badge, Tag } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import RowUpdater from 'client/components/rowUpdater';
