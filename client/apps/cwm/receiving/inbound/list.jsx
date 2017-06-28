@@ -82,7 +82,7 @@ export default class ReceivingInboundList extends React.Component {
     title: 'ANS编号',
     width: 180,
     dataIndex: 'asn_no',
-    render: o => (<a onClick={() => this.handlePreview()}>{o}</a>),
+    render: o => (<a onClick={() => this.handlePreview(o)}>{o}</a>),
   }, {
     title: <Tooltip title="明细记录数"><Icon type="bars" /></Tooltip>,
     dataIndex: 'detail_count',
@@ -172,8 +172,8 @@ export default class ReceivingInboundList extends React.Component {
       filters,
     });
   }
-  handlePreview = () => {
-    this.props.showDock();
+  handlePreview = (asnNo) => {
+    this.props.showDock(asnNo);
   }
   handleReceive = (row) => {
     const link = `/cwm/receiving/inbound/${row.inbound_no}`;

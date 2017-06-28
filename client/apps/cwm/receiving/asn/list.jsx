@@ -67,7 +67,7 @@ export default class ReceivingASNList extends React.Component {
     dataIndex: 'asn_no',
     width: 220,
     fixed: 'left',
-    render: o => (<a onClick={() => this.handlePreview()}>{o}</a>),
+    render: o => (<a onClick={() => this.handlePreview(o)}>{o}</a>),
   }, {
     title: '货主',
     width: 200,
@@ -163,8 +163,8 @@ export default class ReceivingASNList extends React.Component {
       }
     },
   }]
-  handlePreview = () => {
-    this.props.showDock();
+  handlePreview = (asnNo) => {
+    this.props.showDock(asnNo);
   }
   handleComplete = (row) => {
     this.props.closeAsn(row.asn_no).then((result) => {
