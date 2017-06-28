@@ -106,7 +106,7 @@ export default class HsCodeList extends Component {
     this.props.loadHscodes({
       tenantId: this.props.tenantId,
       pageSize: hscodes.pageSize,
-      current: hscodes.current,
+      current: 1,
       searchText: value,
     });
   }

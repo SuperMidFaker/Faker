@@ -8,6 +8,7 @@ import InfoItem from 'client/components/InfoItem';
 import OrderDetailsPane from './tabpane/orderDetailsPane';
 import PickingDetailsPane from './tabpane/pickingDetailsPane';
 import { loadReceiveModal } from 'common/reducers/cwmReceive';
+import { loadOutboundHead } from 'common/reducers/cwmOutbound';
 import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
 
@@ -29,7 +30,7 @@ const TabPane = Tabs.TabPane;
     submitting: state.cmsDelegation.submitting,
     defaultWhse: state.cwmContext.defaultWhse,
   }),
-  { loadReceiveModal }
+  { loadReceiveModal, loadOutboundHead }
 )
 @connectNav({
   depth: 3,
@@ -57,6 +58,7 @@ export default class OutboundDetail extends Component {
     picked: false,
   }
   componentWillMount() {
+    this.props.loadOutboundHead(this.props.params.outboundNo);
   }
   msg = key => formatMsg(this.props.intl, key);
   handleSave = () => {

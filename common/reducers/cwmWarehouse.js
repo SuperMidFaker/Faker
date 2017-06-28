@@ -23,7 +23,6 @@ const initialState = {
   warehouseModal: {
     visible: false,
   },
-  zoneList: [],
   locationModal: {
     visible: false,
   },

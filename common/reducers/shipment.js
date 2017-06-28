@@ -237,7 +237,7 @@ export default function reducer(state = initialState, action) {
       return { ...state, previewer: { ...state.previewer, visible: false } };
     }
     case actionTypes.LOAD_PUB_DETAIL_SUCCEED: {
-      return { ...state, shipmtDetail: action.result.data };
+      return { ...state, shipmtDetail: { ...action.result.data } };
     }
     case actionTypes.SEND_SMS_MESSAGE_SUCCEED: {
       return { ...state };

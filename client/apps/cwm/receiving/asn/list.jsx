@@ -9,7 +9,6 @@ import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/search-bar';
 import RowUpdater from 'client/components/rowUpdater';
-import NavLink from 'client/components/nav-link';
 import TrimSpan from 'client/components/trimSpan';
 import connectNav from 'client/common/decorators/connect-nav';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
@@ -86,7 +85,6 @@ export default class ReceivingASNList extends React.Component {
     dataIndex: 'expect_receive_date',
     width: 120,
     render: exprecdate => exprecdate && moment(exprecdate).format('YYYY.MM.DD'),
-
   }, {
     title: '收货时间',
     dataIndex: 'received_date',
@@ -158,8 +156,6 @@ export default class ReceivingASNList extends React.Component {
           { record.asn_no && <span className="ant-divider" />}
           { record.asn_no && <RowUpdater onHit={this.handleComplete} label="关闭收货" row={record} />}
         </span>);
-      } else if (record.status === CWM_ASN_STATUS.COMPLETED.value) {
-        return <NavLink to={`/cwm/receiving/inbound/${record.inbound_no}`}>入库查看</NavLink>;
       }
     },
   }]
@@ -181,8 +177,11 @@ export default class ReceivingASNList extends React.Component {
     this.context.router.push(link);
   }
   handleCancelASN = (row) => {
-    this.props.cancelAsn(row.asn_no);
-    this.handleListReload();
+    this.props.cancelAsn(row.asn_no).then((result) => {
+      if (!result.error) {
+        this.handleListReload();
+      }
+    });
   }
   handleListReload = () => {
     const filters = this.props.filters;

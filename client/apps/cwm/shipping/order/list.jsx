@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import moment from 'moment';
@@ -91,6 +92,7 @@ export default class ShippingOrderList extends React.Component {
     title: '要求交货时间',
     dataIndex: 'expect_shipping_date',
     width: 160,
+    render: o => moment(o).format('YYYY.MM.DD'),
   }, {
     title: '发货时间',
     dataIndex: 'shipped_date',
