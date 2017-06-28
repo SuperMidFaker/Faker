@@ -44,7 +44,7 @@ export default class TrackingDetail extends React.Component {
     if (!document.getElementById('baidumap-1')) {
       script = document.createElement('script');
       script.id = 'baidumap-1';
-      script.src = 'https://api.map.baidu.com/getscript?v=2.0&ak=A4749739227af1618f7b0d1b588c0e85&services=&t=20170626141539';
+      script.src = 'https://api.map.baidu.com/getscript?v=2.0&ak=A4749739227af1618f7b0d1b588c0e85&services=&t=20170626141539&s=1';
       script.async = true;
       document.body.appendChild(script);
       script.onload = () => {
