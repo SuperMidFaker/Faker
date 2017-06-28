@@ -157,7 +157,7 @@ export default class PacklistDetails extends React.Component {
             </Col>
           </Row>
           <span />
-          <Table columns={columns} dataSource={docuBody} />
+          <Table columns={columns} dataSource={docuBody} pagination={false} scroll={{ y: 450 }} />
           {!!invoice.sub_total_en && <Table showHeader={false} pagination={false} columns={totCols} dataSource={this.state.sumval} />}
           <span />
           <Row gutter={16}>

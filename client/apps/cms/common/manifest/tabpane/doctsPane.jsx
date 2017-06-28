@@ -135,16 +135,16 @@ export default class DocuPane extends React.Component {
     const { docu, docuBody } = this.props;
     const pdf = [];
     const header = [];
-    header.push({ text: '中文品名 g_name', style: 'tableHeader' });
+    header.push({ text: '中文品名', style: 'tableHeader' });
     if (docu.eng_name_en) {
-      header.push({ text: '英文品名 en_name', style: 'tableHeader' });
+      header.push({ text: '英文品名', style: 'tableHeader' });
     }
     if (docu.docu_type === CMS_DOCU_TYPE.packingList) {
       header.push(
-        { text: '型号 g_model', style: 'tableHeader' },
-        { text: '原产国 country', style: 'tableHeader' },
-        { text: '数量 qty', style: 'tableHeader' },
-        { text: '净重 net', style: 'tableHeader' },
+        { text: '型号', style: 'tableHeader' },
+        { text: '原产国', style: 'tableHeader' },
+        { text: '数量', style: 'tableHeader' },
+        { text: '净重', style: 'tableHeader' },
       );
       if (docu.containerno_en) {
         header.push({ text: '箱号 container_no', style: 'tableHeader' });
@@ -165,14 +165,14 @@ export default class DocuPane extends React.Component {
       }
     } else {
       header.push(
-        { text: '型号 g_model', style: 'tableHeader' },
-        { text: '原产国 country', style: 'tableHeader' },
-        { text: '数量 qty', style: 'tableHeader' },
-        { text: '金额 amount', style: 'tableHeader' },
-        { text: '币制 currency', style: 'tableHeader' },
+        { text: '型号', style: 'tableHeader' },
+        { text: '原产国', style: 'tableHeader' },
+        { text: '数量', style: 'tableHeader' },
+        { text: '金额', style: 'tableHeader' },
+        { text: '币制', style: 'tableHeader' },
       );
       if (docu.unit_price_en) {
-        header.push({ text: '单价 unit_price', style: 'tableHeader' });
+        header.push({ text: '单价', style: 'tableHeader' });
       }
       pdf.push(header);
       for (let i = 0; i < docuBody.length; i++) {
@@ -226,8 +226,12 @@ export default class DocuPane extends React.Component {
     const docDefinition = {
       content: [],
       styles: {
+        eachheader: {
+          fontSize: 10,
+          margin: [20, 20, 20, 20],
+        },
         header: {
-          fontSize: 16,
+          fontSize: 14,
           bold: true,
           margin: [0, 0, 0, 10],
         },
@@ -257,6 +261,12 @@ export default class DocuPane extends React.Component {
       },
     };
     if (docu.docu_type === CMS_DOCU_TYPE.invoice) {
+      docDefinition.header = {
+        columns: [
+          { text: `发票编号 Invoice No :  ${docu.docu_no}`, style: 'eachheader' },
+          { text: `日期 Invoice Date :  ${moment(docu.date).format('YYYY.MM.DD')}`, style: 'eachheader' },
+        ],
+      };
       docDefinition.content = [
         { text: '发票 Invoice', style: 'header' },
         { text: `发票编号 Invoice No :  ${docu.docu_no}` },
@@ -264,7 +274,7 @@ export default class DocuPane extends React.Component {
         { text: `买方 Buyer :  ${docu.buyer || ''}` },
         { text: `卖方 Seller :  ${docu.seller || ''}` },
         { style: 'table',
-          table: { body: this.pdfBody() },
+          table: { headerRows: 1, body: this.pdfBody() },
         },
         { text: `付款条件 Terms Of Payment :  ${docu.payment_terms || ''}` },
         { text: `成交方式 Terms Of Delivery :  ${docu.trxn_mode || ''}` },
