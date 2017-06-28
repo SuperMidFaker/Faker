@@ -133,6 +133,9 @@ export default class InvoiceDetails extends React.Component {
     }, {
       dataIndex: 'trade_total',
       width: 100,
+      render(o) {
+        return o ? o.toFixed(3) : '';
+      },
     }, {
       dataIndex: 'trade_curr',
       width: 100,
@@ -146,6 +149,9 @@ export default class InvoiceDetails extends React.Component {
       totCols.push({
         dataIndex: 'dec_price',
         width: 100,
+        render(o) {
+          return o ? o.toFixed(3) : '';
+        },
       });
     }
     return (
@@ -168,7 +174,7 @@ export default class InvoiceDetails extends React.Component {
             </Col>
           </Row>
           <span />
-          <Table columns={columns} dataSource={docuBody} />
+          <Table columns={columns} dataSource={docuBody} pagination={false} scroll={{ y: 450 }} />
           {!!invoice.sub_total_en && <Table showHeader={false} pagination={false} columns={totCols} dataSource={this.state.sumval} />}
           <span />
           <Row gutter={16}>
