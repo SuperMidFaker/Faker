@@ -26,6 +26,10 @@ const messages = defineMessages({
     id: 'cwm.module.shipping.so',
     defaultMessage: '发货订单SO',
   },
+  shippingWave: {
+    id: 'cwm.module.shipping.wave',
+    defaultMessage: '波次',
+  },
   shippingOutbound: {
     id: 'cwm.module.shipping.outbound',
     defaultMessage: '出库操作',

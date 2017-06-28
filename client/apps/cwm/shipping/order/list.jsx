@@ -255,7 +255,7 @@ export default class ShippingOrderList extends React.Component {
             <RadioButton value="pending">订单接收</RadioButton>
             <RadioButton value="outbound">出库中</RadioButton>
             <RadioButton value="partial">部分出库</RadioButton>
-            <RadioButton value="completed">发货完成</RadioButton>
+            <RadioButton value="completed">订单完成</RadioButton>
           </RadioGroup>
           <div className="top-bar-tools">
             <Button type="primary" size="large" icon="plus" onClick={this.handleCreateSO}>
@@ -276,9 +276,30 @@ export default class ShippingOrderList extends React.Component {
                   owners.map(owner => (<Option key={owner.id} value={owner.id}>{owner.name}</Option>))
                 }
               </Select>
+              <span />
+              <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
+                onChange={this.handleOwnerChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
+              >
+                <Option value="all" key="all">全部收货人</Option>
+                {
+                  owners.map(owner => (<Option key={owner.id} value={owner.id}>{owner.name}</Option>))
+                }
+              </Select>
+              <span />
+              <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
+                onChange={this.handleOwnerChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
+              >
+                <Option value="all" key="all">全部承运人</Option>
+                {
+                  owners.map(owner => (<Option key={owner.id} value={owner.id}>{owner.name}</Option>))
+                }
+              </Select>
               <div className="toolbar-right" />
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3>
+                <Button size="large">创建波次计划</Button>
+                <Button size="large">添加到波次计划</Button>
+                <Button size="large">触发补货任务</Button>
               </div>
             </div>
             <div className="panel-body table-panel">

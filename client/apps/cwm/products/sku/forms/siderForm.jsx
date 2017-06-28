@@ -157,8 +157,8 @@ export default class SiderForm extends Component {
             </Col>
             <Col sm={24}>
               <FormItem label={this.msg('默认追踪包装')}>
-                {getFieldDecorator('tracing_convey', {
-                  initialValue: skuForm.tracing_convey,
+                {getFieldDecorator('trace_convey', {
+                  initialValue: skuForm.trace_convey,
                 })(<RadioGroup size="large">
                   <RadioButton value="PCS">单件</RadioButton>
                   <RadioButton value="INP">内包装</RadioButton>

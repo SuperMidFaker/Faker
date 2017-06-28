@@ -6,7 +6,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import InfoItem from 'client/components/InfoItem';
 import OrderDetailsPane from './tabpane/orderDetailsPane';
-import AllocDetailsPane from './tabpane/allocDetailsPane';
+import PickingDetailsPane from './tabpane/pickingDetailsPane';
 import { loadReceiveModal } from 'common/reducers/cwmReceive';
 import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
@@ -171,12 +171,12 @@ export default class OutboundDetail extends Component {
               </Row>
               <div className="card-footer">
                 <Steps progressDot current={this.state.currentStep}>
-                  <Step description="创建出库" />
+                  <Step description="待出库" />
                   <Step description="分配" />
                   <Step description="拣货" />
                   <Step description="装箱" />
                   <Step description="发货" />
-                  <Step description="出库完成" />
+                  <Step description="已出库" />
                 </Steps>
               </div>
             </Card>
@@ -185,8 +185,8 @@ export default class OutboundDetail extends Component {
                 <TabPane tab="订单明细" key="orderDetails">
                   <OrderDetailsPane />
                 </TabPane>
-                <TabPane tab="分配明细" key="allocDetails">
-                  <AllocDetailsPane />
+                <TabPane tab="拣货明细" key="pickingDetails">
+                  <PickingDetailsPane />
                 </TabPane>
               </Tabs>
             </Card>
