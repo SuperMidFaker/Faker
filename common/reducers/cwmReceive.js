@@ -20,7 +20,6 @@ const actionTypes = createActionTypes('@@welogix/cwm/receive/', [
   'GET_INBOUND_DETAIL', 'GET_INBOUND_DETAIL_SUCCEED', 'GET_INBOUND_DETAIL_FAIL',
   'UPDATE_INBMODE', 'UPDATE_INBMODE_SUCCEED', 'UPDATE_INBMODE_FAIL',
   'LOAD_PRODUCT_DETAILS', 'LOAD_PRODUCT_DETAILS_SUCCEED', 'LOAD_PRODUCT_DETAILS_FAIL',
-  'CONFIRM_PRODUCT_DETAILS', 'CONFIRM_PRODUCT_DETAILS_SUCCEED', 'CONFIRM_PRODUCT_DETAILS_FAIL',
   'CLOSE_ASN', 'CLOSE_ASN_SUCCEED', 'CLOSE_ASN_FAIL',
   'SHOW_BATCH_RECEIVING_MODAL', 'HIDE_BATCH_RECEIVING_MODAL',
   'RECEIVE_PRODUCT', 'RECEIVE_PRODUCT_SUCCEED', 'RECEIVE_PRODUCT_FAIL',
@@ -409,21 +408,6 @@ export function loadProductDetails(inboundNo, seqNo) {
       endpoint: 'v1/cwm/receive/product/details/load',
       method: 'get',
       params: { inboundNo, seqNo },
-    },
-  };
-}
-
-export function confirm(inboundNo, asnNo, loginId, tenantId) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.CONFIRM_PRODUCT_DETAILS,
-        actionTypes.CONFIRM_PRODUCT_DETAILS_SUCCEED,
-        actionTypes.CONFIRM_PRODUCT_DETAILS_FAIL,
-      ],
-      endpoint: 'v1/cwm/receive/product/details/confirm',
-      method: 'post',
-      data: { inboundNo, asnNo, loginId, tenantId },
     },
   };
 }
