@@ -63,10 +63,6 @@ export default class OrderDetailsPane extends React.Component {
     width: 200,
     render: (o, record) => (<QuantityInput packQty={record.picked_pack_qty} pcsQty={record.picked_qty} />),
   }, {
-    title: '装箱数量',
-    width: 200,
-    render: (o, record) => (<QuantityInput packQty={record.packed_pack_qty} pcsQty={record.packed_qty} />),
-  }, {
     title: '发货数量',
     width: 200,
     render: (o, record) => (<QuantityInput packQty={record.shipped_pack_qty} pcsQty={record.shipped_qty} />),

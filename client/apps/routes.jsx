@@ -492,6 +492,7 @@ export default(store, cookie) => {
             </Route>
             <Route path="settings">
               <Route path="warehouse" component={CWMSettings.Warehouse} />
+              <Route path="templates" component={CWMSettings.Templates} />
             </Route>
           </Route>
           <Route path={DEFAULT_MODULES.scof.id} component={SCOF}>

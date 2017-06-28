@@ -152,15 +152,6 @@ export default class WaveDetail extends Component {
                 <Col sm={12} lg={2}>
                   <InfoItem addonBefore="总订单明细数" field="50" />
                 </Col>
-                <Col sm={12} lg={2}>
-                  <InfoItem addonBefore="拣货总数" field="50" />
-                </Col>
-                <Col sm={12} lg={2}>
-                  <InfoItem addonBefore="装箱总数" field="50" />
-                </Col>
-                <Col sm={12} lg={2}>
-                  <InfoItem addonBefore="发货总数" field="50" />
-                </Col>
               </Row>
             </Card>
             <Card bodyStyle={{ padding: 0 }}>

@@ -114,9 +114,9 @@ const messages = defineMessages({
     id: 'cwm.module.settings.warehouse',
     defaultMessage: '仓库',
   },
-  rules: {
-    id: 'cwm.module.settings.rules',
-    defaultMessage: '业务规则',
+  templates: {
+    id: 'cwm.module.settings.templates',
+    defaultMessage: '单据模板',
   },
   tools: {
     id: 'cwm.module.settings.tools',

@@ -30,7 +30,6 @@ const formatMsg = format(messages);
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const Option = Select.Option;
-const OptGroup = Select.OptGroup;
 
 // 暂时由 CreatorSelect 触发获取list
 // function fetchData({ state, dispatch }) {
@@ -304,12 +303,11 @@ export default class OrderList extends React.Component {
               <span />
               <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
                 onChange={this.handleClientSelectChange} value={filters.partnerId ? filters.partnerId : 'all'}
+                dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
               >
-                <OptGroup>
-                  <Option value="all">全部客户</Option>
-                  {partners.map(data => (<Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>)
-                  )}
-                </OptGroup>
+                <Option value="all">全部客户</Option>
+                {partners.map(data => (<Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>)
+                )}
               </Select>
               <span />
               <CreatorSelect onChange={this.handleCreatorChange} onInitialize={this.handleCreatorChange} size="large" />

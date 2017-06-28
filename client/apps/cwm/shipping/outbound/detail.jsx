@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Alert, Breadcrumb, Icon, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Tooltip, Radio } from 'antd';
+import { Breadcrumb, Icon, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Tooltip, Radio } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import InfoItem from 'client/components/InfoItem';
@@ -132,7 +132,6 @@ export default class OutboundDetail extends Component {
               {this.props.params.outboundNo}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <Alert message="已加入波次计划: W09755345" type="info" />
           <div className="top-bar-tools">
             {this.state.allocated && !this.state.picked &&
             <Button type={!this.state.printedPickingList && 'primary'} size="large" icon="printer" onClick={this.handlePrint} />
@@ -161,9 +160,6 @@ export default class OutboundDetail extends Component {
                 </Col>
                 <Col sm={12} lg={2}>
                   <InfoItem addonBefore="拣货总数" field="50" />
-                </Col>
-                <Col sm={12} lg={2}>
-                  <InfoItem addonBefore="装箱总数" field="50" />
                 </Col>
                 <Col sm={12} lg={2}>
                   <InfoItem addonBefore="发货总数" field="50" />

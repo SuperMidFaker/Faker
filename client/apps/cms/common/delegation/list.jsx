@@ -619,14 +619,13 @@ export default class DelegationList extends Component {
               <span />
               <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
                 onChange={this.handleClientSelectChange} defaultValue="all"
+                dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
               >
-                <OptGroup>
-                  <Option value="all">全部客户</Option>
-                  {clients.map(data => (<Option key={data.partner_id} value={data.partner_id}
-                    search={`${data.partner_code}${data.name}`}
-                  >{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>)
-                  )}
-                </OptGroup>
+                <Option value="all">全部客户</Option>
+                {clients.map(data => (<Option key={data.partner_id} value={data.partner_id}
+                  search={`${data.partner_code}${data.name}`}
+                >{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>)
+                )}
               </Select>
               <span />
               <Select size="large" value={listFilter.viewStatus} style={{ width: 160 }} showSearch={false}

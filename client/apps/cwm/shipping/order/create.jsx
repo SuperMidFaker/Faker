@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Breadcrumb, Form, Layout, Row, Col, Button, Select, message } from 'antd';
+import { Breadcrumb, Card, Form, Layout, Tabs, Button, Select, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import HeadForm from './forms/headForm';
 import DetailForm from './forms/detailForm';
-import SiderForm from './forms/siderForm';
+import ReceiverForm from './forms/receiverForm';
+import CarrierForm from './forms/carrierForm';
 import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
 import { clearTemporary } from 'common/reducers/cwmReceive';
@@ -15,6 +16,7 @@ import { addSo } from 'common/reducers/cwmShippingOrder';
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
 const Option = Select.Option;
+const TabPane = Tabs.TabPane;
 
 @injectIntl
 @connect(
@@ -132,15 +134,22 @@ export default class CreateShippingOrder extends Component {
         </Header>
         <Content className="main-content layout-fixed-width layout-fixed-width-lg">
           <Form layout="vertical">
-            <HeadForm form={form} handleOwnerChange={this.handleOwnerChange} />
-            <Row gutter={16}>
-              <Col span={18}>
-                <DetailForm editable={this.state.editable} form={form} detailEnable={this.state.detailEnable} selectedOwner={this.state.selectedOwner} />
-              </Col>
-              <Col span={6}>
-                <SiderForm form={form} />
-              </Col>
-            </Row>
+            <Card>
+              <HeadForm form={form} handleOwnerChange={this.handleOwnerChange} />
+            </Card>
+            <Card bodyStyle={{ padding: 0 }}>
+              <Tabs defaultActiveKey="orderDetails" onChange={this.handleTabChange}>
+                <TabPane tab="订单明细" key="orderDetails">
+                  <DetailForm editable={this.state.editable} form={form} detailEnable={this.state.detailEnable} selectedOwner={this.state.selectedOwner} />
+                </TabPane>
+                <TabPane tab="收货人" key="receiver">
+                  <ReceiverForm form={form} />
+                </TabPane>
+                <TabPane tab="承运人" key="carrier">
+                  <CarrierForm form={form} />
+                </TabPane>
+              </Tabs>
+            </Card>
           </Form>
         </Content>
       </div>

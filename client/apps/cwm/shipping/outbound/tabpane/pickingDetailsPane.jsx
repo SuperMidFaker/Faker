@@ -88,7 +88,7 @@ export default class PickingDetailsPane extends React.Component {
     title: '拣货',
     width: 100,
   }, {
-    title: '装箱',
+    title: '复核装箱',
     width: 100,
   }, {
     title: '发货',

@@ -146,9 +146,8 @@ export default class ModuleCWM extends React.Component {
         text: formatMsg(intl, 'warehouse'),
       }, {
         key: 'cwm-6-2',
-        disabled: true,
-        path: '/cwm/settings/tools',
-        text: formatMsg(intl, 'tools'),
+        path: '/cwm/settings/templates',
+        text: formatMsg(intl, 'templates'),
       }],
     });
     this.setState({ linkMenus });

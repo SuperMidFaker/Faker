@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Button, Card, Table } from 'antd';
+import { Button, Table } from 'antd';
 import RowUpdater from 'client/components/rowUpdater';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
@@ -99,14 +99,14 @@ export default class DetailForm extends Component {
       ),
     }];
     return (
-      <Card bodyStyle={{ padding: 0 }}>
+      <div>
         <div className="toolbar">
           {editable && <Button type="primary" disabled={detailEnable ? '' : 'disabled'} onClick={this.showDetailModal}>添加明细</Button>}
           {editable && <Button disabled={detailEnable ? '' : 'disabled'}>导入</Button>}
         </div>
         <Table columns={columns} dataSource={temporaryDetails.map((item, index) => ({ ...item, index }))} rowKey="index" pagination={pagination} />
         <AddDetailModal product={this.state.editRecord} edit={this.state.edit} selectedOwner={this.props.selectedOwner} />
-      </Card>
+      </div>
     );
   }
 }

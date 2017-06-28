@@ -218,9 +218,9 @@ export default class WaveList extends React.Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <RadioGroup value={filters.status} onChange={this.handleStatusChange} size="large">
-            <RadioButton value="pending">波次计划</RadioButton>
-            <RadioButton value="outbound">出库中</RadioButton>
-            <RadioButton value="completed">波次完成</RadioButton>
+            <RadioButton value="pending">计划</RadioButton>
+            <RadioButton value="outbound">出库</RadioButton>
+            <RadioButton value="completed">完成</RadioButton>
           </RadioGroup>
           <div className="top-bar-tools" />
         </Header>

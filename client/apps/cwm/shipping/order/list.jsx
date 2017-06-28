@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Breadcrumb, Layout, Radio, Select, Button, Badge, Tag } from 'antd';
+import moment from 'moment';
+import { Breadcrumb, DatePicker, Layout, Radio, Select, Button, Badge, Tag } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import RowUpdater from 'client/components/rowUpdater';
 import QueueAnim from 'rc-queue-anim';
@@ -20,6 +21,8 @@ const { Header, Content } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const Option = Select.Option;
+const { RangePicker } = DatePicker;
+
 function fetchData({ state, dispatch }) {
   dispatch(loadSos({
     whseCode: state.cwmContext.defaultWhse.code,
@@ -278,7 +281,7 @@ export default class ShippingOrderList extends React.Component {
               </Select>
               <span />
               <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
-                onChange={this.handleOwnerChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
+                onChange={this.handleReceiverChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
               >
                 <Option value="all" key="all">全部收货人</Option>
                 {
@@ -287,13 +290,15 @@ export default class ShippingOrderList extends React.Component {
               </Select>
               <span />
               <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
-                onChange={this.handleOwnerChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
+                onChange={this.handleCarrierChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
               >
                 <Option value="all" key="all">全部承运人</Option>
                 {
                   owners.map(owner => (<Option key={owner.id} value={owner.id}>{owner.name}</Option>))
                 }
               </Select>
+              <span />
+              <RangePicker allowClear size="large" ranges={{ Today: [moment(), moment()], 'This Month': [moment(), moment().endOf('month')] }} onChange={this.handleDateRangeChange} />
               <div className="toolbar-right" />
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3>
