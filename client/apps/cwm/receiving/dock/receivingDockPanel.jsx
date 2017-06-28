@@ -1,10 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import moment from 'moment';
 import { Icon, Col, Row, Tabs, Button } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { CWM_ASN_STATUS } from 'common/constants';
-import { hideDock, changeDockTab } from 'common/reducers/cwmReceive';
+import { hideDock, changeDockTab, loadAsn } from 'common/reducers/cwmReceive';
 import InfoItem from 'client/components/InfoItem';
 import DockPanel from 'client/components/DockPanel';
 import ASNPane from './tabpane/asnPane';
@@ -23,9 +24,10 @@ const TabPane = Tabs.TabPane;
     dock: state.cwmReceive.dock,
     visible: state.cwmReceive.dock.visible,
     tabKey: state.cwmReceive.dock.tabKey,
-
+    asn: state.cwmReceive.dock.asn,
+    whses: state.cwmContext.whses,
   }),
-  { hideDock, changeDockTab }
+  { hideDock, changeDockTab, loadAsn }
 )
 export default class ReceivingDockPanel extends React.Component {
   static propTypes = {
@@ -36,6 +38,27 @@ export default class ReceivingDockPanel extends React.Component {
     dock: PropTypes.object.isRequired,
     hideDock: PropTypes.func.isRequired,
     changeDockTab: PropTypes.func.isRequired,
+  }
+  state = {
+    asnHead: {},
+    asnBody: [],
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.asn.asn_no !== this.props.asn.asn_no || this.state.asnBody.length === 0) {
+      this.props.loadAsn(nextProps.asn.asn_no).then(
+        (result) => {
+          if (!result.error) {
+            this.setState({
+              asnHead: result.data.asnHead,
+              asnBody: result.data.asnBody,
+            });
+          }
+        }
+      );
+    }
+  }
+  componentWillUnmount() {
+    this.props.hideDock();
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   handleTabChange = (tabKey) => {
@@ -67,49 +90,51 @@ export default class ReceivingDockPanel extends React.Component {
     );
   }
   renderTabs() {
-    // const { asn } = this.props;
+    const { asn } = this.props;
+    const { asnHead, asnBody } = this.state;
     return (
       <Tabs defaultActiveKey="asn" onChange={this.handleTabChange}>
         <TabPane tab={this.msg('tabASN')} key="asn">
-          <ASNPane />
+          <ASNPane asnHead={asnHead} asnBody={asnBody} />
         </TabPane>
         <TabPane tab={this.msg('tabFTZ')} key="ftz">
-          <FTZPane />
+          <FTZPane asnNo={asn.asn_no} />
         </TabPane>
         <TabPane tab={this.msg('tabInbound')} key="inbound">
-          <InboundPane />
+          <InboundPane asnNo={asn.asn_no} />
         </TabPane>
       </Tabs>
     );
   }
 
   renderExtra() {
-    // const { asn } = this.props;
+    const { asnHead } = this.state;
+    const { whses } = this.props;
     return (
       <Row>
         <Col span="6">
-          <InfoItem label="仓库" addonBefore={<Icon type="tag-o" />} field={''} />
+          <InfoItem label="仓库" addonBefore={<Icon type="tag-o" />} field={asnHead.whse_code && whses.find(item => item.code === asnHead.whse_code).name} />
         </Col>
         <Col span="6">
-          <InfoItem label="货主" field={'asn.owner_name'} />
+          <InfoItem label="货主" field={asnHead.owner_name} />
         </Col>
         <Col span="6">
-          <InfoItem label="采购订单号/海关备案号" addonBefore={<Icon type="tag-o" />} field={''} />
+          <InfoItem label="采购订单号/海关备案号" addonBefore={<Icon type="tag-o" />} field={asnHead.po_no} />
         </Col>
         <Col span="4">
-          <InfoItem label="预计到货日期" addonBefore={<Icon type="calendar" />} field={''} />
+          <InfoItem label="预计到货日期" addonBefore={<Icon type="calendar" />} field={moment(asnHead.expect_receive_date).format('YYYY.MM.DD')} />
         </Col>
         <Col span="2">
-          <InfoItem label="货物属性" field={''} />
+          <InfoItem label="货物属性" field={asnHead.bonded ? '保税' : '非保税'} />
         </Col>
       </Row>);
   }
 
   render() {
-    const { visible } = this.props;
+    const { visible, asn } = this.props;
     return (
       <DockPanel size="large" visible={visible} onClose={this.props.hideDock}
-        title={'asn.asn_no'}
+        title={asn.asn_no}
         status={this.renderStatus(0)} statusText={this.renderStatusMsg(0)}
         extra={this.renderExtra()}
         // alert={this.renderAlert()}

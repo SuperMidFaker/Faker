@@ -1,10 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Collapse, Row, Col, Card } from 'antd';
-import { } from 'common/constants';
+import { Collapse, Row, Col, Card, Table } from 'antd';
 import InfoItem from 'client/components/InfoItem';
+import { CWM_ASN_TYPES, CWM_ASN_BONDED_REGTYPES, CWM_ASN_STATUS } from 'common/constants';
 // import Strip from 'client/components/Strip';
 // import { MdIcon } from 'client/components/FontIcon';
 
@@ -21,12 +22,38 @@ export default class ASNPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
+    asnHead: PropTypes.object.isRequired,
+    asnBody: PropTypes.array.isRequired,
   }
   state = {
     tabKey: '',
   }
-
+  columns = [{
+    title: '序号',
+    dataIndex: 'asn_seq_no',
+    width: 50,
+  }, {
+    title: '商品货号',
+    dataIndex: 'product_no',
+    width: 200,
+  }, {
+    title: '中文品名',
+    dataIndex: 'name',
+    width: 200,
+  }, {
+    title: '订单数量',
+    width: 100,
+    dataIndex: 'order_qty',
+  }, {
+    title: '主单位',
+    dataIndex: 'unit_name',
+  }, {
+    title: '单价',
+    dataIndex: 'unit_price',
+  }];
   render() {
+    const { asnHead } = this.props;
+    const keys = Object.keys(CWM_ASN_STATUS);
     return (
       <div className="pane-content tab-pane">
         <Card bodyStyle={{ padding: 0 }}>
@@ -34,22 +61,22 @@ export default class ASNPane extends React.Component {
             <Panel header="主信息" key="main">
               <Row>
                 <Col span="8">
-                  <InfoItem label="ASN编号" field={''} />
+                  <InfoItem label="ASN编号" field={asnHead.asn_no} />
                 </Col>
                 <Col span="8">
-                  <InfoItem label="ASN类型" field={''} />
+                  <InfoItem label="ASN类型" field={asnHead.asn_type && CWM_ASN_TYPES.find(item => item.value === asnHead.asn_type).text} />
                 </Col>
                 <Col span="8">
-                  <InfoItem label="货主" field={''} />
+                  <InfoItem label="货主" field={asnHead.owner_name} />
                 </Col>
                 <Col span="8">
-                  <InfoItem label="状态" field={''} />
+                  <InfoItem label="状态" field={(asnHead.status || asnHead.status === 0) && CWM_ASN_STATUS[keys[asnHead.status]].text} />
                 </Col>
                 <Col span="8">
-                  <InfoItem label="货物属性" field={''} />
+                  <InfoItem label="货物属性" field={asnHead.bonded ? '保税' : '非保税'} />
                 </Col>
                 <Col span="8">
-                  <InfoItem label="保税监管方式" field={''} />
+                  <InfoItem label="保税监管方式" field={(asnHead.bonded_intype || asnHead.bonded_intype === 0) && CWM_ASN_BONDED_REGTYPES.find(item => item.value === asnHead.bonded_intype).text} />
                 </Col>
                 <Col span="6">
                   <InfoItem label="总预期数量" field={''} />
@@ -64,17 +91,19 @@ export default class ASNPane extends React.Component {
                   <InfoItem label="预期体积" field={''} />
                 </Col>
                 <Col span="8">
-                  <InfoItem label="预期到货日期" field={''} />
+                  <InfoItem label="预期到货日期" field={moment(asnHead.expect_receive_date).format('YYYY.MM.DD')} />
                 </Col>
                 <Col span="8">
-                  <InfoItem label="上次收货日期" field={''} />
+                  <InfoItem label="上次收货日期" field={moment(asnHead.last_updated_date).format('YYYY.MM.DD')} />
                 </Col>
                 <Col span="8">
-                  <InfoItem label="创建日期" field={''} />
+                  <InfoItem label="创建日期" field={moment(asnHead.created_date).format('YYYY.MM.DD')} />
                 </Col>
               </Row>
             </Panel>
-            <Panel header="ASN明细" key="asnDetails" />
+            <Panel header="ASN明细" key="asnDetails" >
+              <Table columns={this.columns} dataSource={this.props.asnBody} />
+            </Panel>
           </Collapse>
         </Card>
       </div>

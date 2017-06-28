@@ -29,6 +29,9 @@ const actionTypes = createActionTypes('@@welogix/cwm/receive/', [
   'PUTAWAY_BATCH', 'PUTAWAY_BATCH_SUCCEED', 'PUTAWAY_BATCH_FAIL',
   'PUTAWAY_EXPRESS', 'PUTAWAY_EXPRESS_SUCCEED', 'PUTAWAY_EXPRESS_FAIL',
   'SHOW_PUTTING_AWAY_MODAL', 'HIDE_PUTTING_AWAY_MODAL',
+  'LOAD_ASN_HEAD', 'LOAD_ASN_HEAD_SUCCEED', 'LOAD_ASN_HEAD_FAIL',
+  'LOAD_DOCK_INBOUNDS', 'LOAD_DOCK_INBOUNDS_SUCCEED', 'LOAD_DOCK_INBOUNDS_FAIL',
+  'LOAD_FTZ_INFO', 'LOAD_FTZ_INFO_SUCCEED', 'LOAD_FTZ_INFO_FAIL',
 ]);
 
 const initialState = {
@@ -82,7 +85,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.HIDE_DOCK:
       return { ...state, dock: { ...state.dock, visible: false } };
     case actionTypes.SHOW_DOCK:
-      return { ...state, dock: { ...state.dock, visible: true } };
+      return { ...state, dock: { ...state.dock, visible: true, asn: { asn_no: action.asnNo, status: 0 } } };
     case actionTypes.CHANGE_DOCK_TAB:
       return { ...state, dock: { ...state.dock, tabKey: action.data.tabKey } };
     case actionTypes.OPEN_RECEIVE_MODAL:
@@ -158,9 +161,10 @@ export function hideDock() {
   };
 }
 
-export function showDock() {
+export function showDock(asnNo) {
   return {
     type: actionTypes.SHOW_DOCK,
+    asnNo,
   };
 }
 
@@ -557,3 +561,32 @@ export function expressPutaways(loginId, loginName, inboundNo) {
   };
 }
 
+export function loadDockInbounds(asnNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_DOCK_INBOUNDS,
+        actionTypes.LOAD_DOCK_INBOUNDS_SUCCEED,
+        actionTypes.LOAD_DOCK_INBOUNDS_FAIL,
+      ],
+      endpoint: 'v1/cwm/dock/inbounds/load',
+      method: 'get',
+      params: { asnNo },
+    },
+  };
+}
+
+export function loadFtzInfo(asnNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_FTZ_INFO,
+        actionTypes.LOAD_FTZ_INFO_SUCCEED,
+        actionTypes.LOAD_FTZ_INFO_FAIL,
+      ],
+      endpoint: 'v1/cwm/ftz/info/load',
+      method: 'get',
+      params: { asnNo },
+    },
+  };
+}

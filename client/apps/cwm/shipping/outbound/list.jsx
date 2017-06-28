@@ -1,8 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 import { connect } from 'react-redux';
+import connectFetch from 'client/common/decorators/connect-fetch';
 import { intlShape, injectIntl } from 'react-intl';
-import { Icon, Breadcrumb, Layout, Radio, Select, Table, Tooltip, message } from 'antd';
+import { Icon, Breadcrumb, Layout, Radio, Select, Tooltip, message } from 'antd';
+import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/search-bar';
 import RowUpdater from 'client/components/rowUpdater';
@@ -20,7 +23,16 @@ const { Header, Content } = Layout;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
-
+function fetchData({ state, dispatch }) {
+  dispatch(loadOutbounds({
+    whseCode: state.cwmContext.defaultWhse.code,
+    tenantId: state.account.tenantId,
+    pageSize: state.cwmOutbound.outbound.pageSize,
+    current: state.cwmOutbound.outbound.current,
+    filters: state.cwmOutbound.outboundFilters,
+  }));
+}
+@connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
@@ -49,15 +61,6 @@ export default class OutboundList extends React.Component {
   state = {
     selectedRowKeys: [],
     searchInput: '',
-  }
-  componentWillMount() {
-    this.props.loadOutbounds({
-      whseCode: this.props.defaultWhse.code,
-      tenantId: this.props.tenantId,
-      pageSize: this.props.outbound.pageSize,
-      current: this.props.outbound.current,
-      filters: this.props.filters,
-    });
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.defaultWhse.code !== this.props.defaultWhse.code) {
@@ -91,7 +94,7 @@ export default class OutboundList extends React.Component {
   }, {
     title: '货主',
     width: 200,
-    dataIndex: 'owner_code',
+    dataIndex: 'owner_name',
   }, {
     title: '分配',
     className: 'cell-align-center',
@@ -118,7 +121,7 @@ export default class OutboundList extends React.Component {
     },
   }, {
     title: '装箱',
-    dataIndex: 'packing',
+    dataIndex: 'chk_pck_status',
     className: 'cell-align-center',
     render: (o) => {
       switch (o) {
@@ -147,21 +150,26 @@ export default class OutboundList extends React.Component {
   }, {
     title: '操作模式',
     dataIndex: 'receiving_mode',
+    width: 150,
     render: (o) => {
       if (o === 'scan') {
         return (<Tooltip title="扫码发货"><Icon type="scan" /></Tooltip>);
       } else if (o === 'manual') {
         return (<Tooltip title="人工发货"><Icon type="solution" /></Tooltip>);
+      } else {
+        return <span />;
       }
     },
   }, {
     title: '创建时间',
     dataIndex: 'created_date',
     width: 120,
+    render: createdate => createdate && moment(createdate).format('MM.DD HH:mm'),
   }, {
     title: '完成时间',
     dataIndex: 'completed_date',
     width: 120,
+    render: completeddate => completeddate && moment(completeddate).format('MM.DD HH:mm'),
   }, {
     title: '操作',
     width: 100,
@@ -176,119 +184,18 @@ export default class OutboundList extends React.Component {
       }
     },
   }]
-
-  dataSource = [{
-    id: '1',
-    so_no: 'N04601170548',
-    bonded: 1,
-    whse_code: '0961|希雅路仓库',
-    owner_code: '04601|米思米(中国)精密机械贸易',
-    ref_order_no: '7IR2730',
-    status: 0,
-    receiving_mode: 'scan',
-    allocating: 3,
-    picking: 0,
-    packing: 0,
-    shipping: 0,
-  }, {
-    id: '2',
-    so_no: 'N04601170547',
-    bonded: 0,
-    whse_code: '0086|物流大道仓库',
-    owner_code: '03701|西门子国际贸易',
-    ref_order_no: 'NUE0394488',
-    status: 1,
-    receiving_mode: 'scan',
-    allocating: 3,
-    picking: 2,
-    packing: -1,
-    shipping: 0,
-  }, {
-    id: '3',
-    so_no: 'N04601170546',
-    bonded: 1,
-    whse_code: '0962|富特路仓库',
-    owner_code: '04601|米思米(中国)精密机械贸易',
-    ref_order_no: '7FJ1787',
-    status: 2,
-    receiving_mode: 'manual',
-    allocating: 3,
-    picking: 2,
-    packing: 0,
-    shipping: 0,
-  }, {
-    id: '4',
-    so_no: 'N04601170546',
-    bonded: 1,
-    whse_code: '0962|富特路仓库',
-    owner_code: '04601|米思米(中国)精密机械贸易',
-    ref_order_no: '7FJ1787',
-    status: 3,
-    receiving_mode: 'manual',
-    allocating: 3,
-    picking: 2,
-    packing: 0,
-    shipping: 0,
-  }, {
-    id: '5',
-    so_no: 'N04601170546',
-    bonded: 1,
-    whse_code: '0962|富特路仓库',
-    owner_code: '04601|米思米(中国)精密机械贸易',
-    ref_order_no: '7FJ1787',
-    status: 4,
-    receiving_mode: 'scan',
-    allocating: 3,
-    picking: 2,
-    packing: 1,
-    shipping: 0,
-  }, {
-    id: '6',
-    so_no: 'N04601170546',
-    bonded: 1,
-    whse_code: '0962|富特路仓库',
-    owner_code: '04601|米思米(中国)精密机械贸易',
-    ref_order_no: '7FJ1787',
-    status: 5,
-    receiving_mode: 'manual',
-    allocating: 3,
-    picking: 2,
-    packing: -1,
-    shipping: 0,
-  }, {
-    id: '7',
-    so_no: 'N04601170546',
-    bonded: 1,
-    whse_code: '0962|富特路仓库',
-    owner_code: '04601|米思米(中国)精密机械贸易',
-    ref_order_no: '7FJ1787',
-    status: 6,
-    receiving_mode: 'scan',
-    allocating: 3,
-    picking: 2,
-    packing: 2,
-    shipping: 0,
-  }, {
-    id: '8',
-    so_no: 'N04601170546',
-    bonded: 1,
-    whse_code: '0962|富特路仓库',
-    owner_code: '04601|米思米(中国)精密机械贸易',
-    ref_order_no: '7FJ1787',
-    status: 6,
-    receiving_mode: 'scan',
-    allocating: 3,
-    picking: 2,
-    packing: -1,
-    shipping: 0,
-  }];
   handlePreview = () => {
     this.props.showDock();
   }
   handleStatusChange = (ev) => {
-    if (ev.target.value === this.props.listFilter.status) {
-
-    }
+    const filters = { ...this.props.filters, status: ev.target.value };
+    this.props.loadOutbounds({
+      whseCode: this.props.defaultWhse.code,
+      tenantId: this.props.tenantId,
+      pageSize: this.props.outbound.pageSize,
+      current: this.props.outbound.current,
+      filters,
+    });
   }
   handleReceive = (row) => {
     const link = `/cwm/shipping/outbound/${row.outbound_no}`;
@@ -299,6 +206,29 @@ export default class OutboundList extends React.Component {
     message.info('当前仓库已切换');
   }
   render() {
+    const dataSource = new Table.DataSource({
+      fetcher: params => this.props.loadOutbounds(params),
+      resolve: result => result.data,
+      getPagination: (result, resolve) => ({
+        current: resolve(result.totalCount, result.current, result.pageSize),
+        showSizeChanger: true,
+        showQuickJumper: false,
+        pageSize: result.pageSize,
+        showTotal: total => `共 ${total} 条`,
+      }),
+      getParams: (pagination, tblfilters) => {
+        const newfilters = { ...this.props.filters, ...tblfilters[0] };
+        const params = {
+          whseCode: this.props.defaultWhse.code,
+          tenantId: this.props.tenantId,
+          pageSize: pagination.pageSize,
+          current: pagination.current,
+          filters: newfilters,
+        };
+        return params;
+      },
+      remotes: this.props.outbound,
+    });
     const { defaultWhse, whses } = this.props;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -345,7 +275,7 @@ export default class OutboundList extends React.Component {
               </div>
             </div>
             <div className="panel-body table-panel">
-              <Table columns={this.columns} dataSource={this.dataSource} rowSelection={rowSelection} rowKey="id" scroll={{ x: 1200 }} />
+              <Table columns={this.columns} dataSource={dataSource} rowSelection={rowSelection} rowKey="id" scroll={{ x: 1200 }} />
             </div>
           </div>
         </Content>
