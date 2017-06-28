@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Collapse, Card, Table } from 'antd';
-import { loadFtzInfo } from 'common/reducers/cwmReceive';
+import { loadShftzEntry } from 'common/reducers/cwmReceive';
 import { loadParams } from 'common/reducers/cwmShFtz';
 // import InfoItem from 'client/components/InfoItem';
 // import { MdIcon } from 'client/components/FontIcon';
@@ -28,7 +28,7 @@ const Panel = Collapse.Panel;
       text: tc.cntry_name_cn,
     })),
   }),
-  { loadFtzInfo, loadParams }
+  { loadShftzEntry, loadParams }
 )
 export default class FTZPane extends React.Component {
   static propTypes = {
@@ -42,7 +42,7 @@ export default class FTZPane extends React.Component {
   }
   componentWillMount() {
     this.props.loadParams();
-    this.props.loadFtzInfo(this.props.asnNo).then((result) => {
+    this.props.loadShftzEntry(this.props.asnNo).then((result) => {
       if (!result.error) {
         this.setState({
           data: result.data,
@@ -52,7 +52,7 @@ export default class FTZPane extends React.Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.asnNo !== this.props.asnNo) {
-      this.props.loadFtzInfo(nextProps.asnNo).then((result) => {
+      this.props.loadShftzEntry(nextProps.asnNo).then((result) => {
         if (!result.error) {
           this.setState({
             data: result.data,

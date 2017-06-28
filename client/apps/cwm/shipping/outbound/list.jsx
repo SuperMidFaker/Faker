@@ -77,7 +77,7 @@ export default class OutboundList extends React.Component {
   columns = [{
     title: 'SO编号',
     dataIndex: 'so_no',
-    width: 120,
+    width: 200,
     render: o => (
       <a onClick={() => this.handlePreview()}>
         {o}

@@ -30,8 +30,8 @@ const actionTypes = createActionTypes('@@welogix/cwm/receive/', [
   'PUTAWAY_EXPRESS', 'PUTAWAY_EXPRESS_SUCCEED', 'PUTAWAY_EXPRESS_FAIL',
   'SHOW_PUTTING_AWAY_MODAL', 'HIDE_PUTTING_AWAY_MODAL',
   'LOAD_ASN_HEAD', 'LOAD_ASN_HEAD_SUCCEED', 'LOAD_ASN_HEAD_FAIL',
-  'LOAD_DOCK_INBOUNDS', 'LOAD_DOCK_INBOUNDS_SUCCEED', 'LOAD_DOCK_INBOUNDS_FAIL',
-  'LOAD_FTZ_INFO', 'LOAD_FTZ_INFO_SUCCEED', 'LOAD_FTZ_INFO_FAIL',
+  'LOAD_ASN_INBOUNDS', 'LOAD_ASN_INBOUNDS_SUCCEED', 'LOAD_ASN_INBOUNDS_FAIL',
+  'LOAD_SHFTZ_ENTRY', 'LOAD_SHFTZ_ENTRY_SUCCEED', 'LOAD_SHFTZ_ENTRY_FAIL',
 ]);
 
 const initialState = {
@@ -561,30 +561,30 @@ export function expressPutaways(loginId, loginName, inboundNo) {
   };
 }
 
-export function loadDockInbounds(asnNo) {
+export function loadAsnInbounds(asnNo) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.LOAD_DOCK_INBOUNDS,
-        actionTypes.LOAD_DOCK_INBOUNDS_SUCCEED,
-        actionTypes.LOAD_DOCK_INBOUNDS_FAIL,
+        actionTypes.LOAD_ASN_INBOUNDS,
+        actionTypes.LOAD_ASN_INBOUNDS_SUCCEED,
+        actionTypes.LOAD_ASN_INBOUNDS_FAIL,
       ],
-      endpoint: 'v1/cwm/dock/inbounds/load',
+      endpoint: 'v1/cwm/asn/inbounds/load',
       method: 'get',
       params: { asnNo },
     },
   };
 }
 
-export function loadFtzInfo(asnNo) {
+export function loadShftzEntry(asnNo) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.LOAD_FTZ_INFO,
-        actionTypes.LOAD_FTZ_INFO_SUCCEED,
-        actionTypes.LOAD_FTZ_INFO_FAIL,
+        actionTypes.LOAD_SHFTZ_ENTRY,
+        actionTypes.LOAD_SHFTZ_ENTRY_SUCCEED,
+        actionTypes.LOAD_SHFTZ_ENTRY_FAIL,
       ],
-      endpoint: 'v1/cwm/ftz/info/load',
+      endpoint: 'v1/cwm/shftz/entry/load',
       method: 'get',
       params: { asnNo },
     },

@@ -18,6 +18,7 @@ const actionTypes = createActionTypes('@@welogix/crm/orders/', [
   'LOAD_ORDER_NODES_TRIGGERS', 'LOAD_ORDER_NODES_TRIGGERS_SUCCEED', 'LOAD_ORDER_NODES_TRIGGERS_FAIL',
   'CANCEL_ORDER', 'CANCEL_ORDER_SUCCEED', 'CANCEL_ORDER_FAIL',
   'CLOSE_ORDER', 'CLOSE_ORDER_SUCCEED', 'CLOSE_ORDER_FAIL',
+  'GET_ASNNO', 'GET_ASNNO_SUCCEED', 'GET_ASNNO_FAIL',
 ]);
 
 const initialState = {
@@ -405,6 +406,21 @@ export function closeOrder(orderNo) {
       endpoint: 'v1/crm/close/order',
       method: 'post',
       data: { order_no: orderNo },
+    },
+  };
+}
+
+export function getAsnNo(uuid) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.GET_ASNNO,
+        actionTypes.GET_ASNNO_SUCCEED,
+        actionTypes.GET_ASNNO_FAIL,
+      ],
+      endpoint: 'v1/cwm/get/asnno',
+      method: 'get',
+      params: { uuid },
     },
   };
 }
