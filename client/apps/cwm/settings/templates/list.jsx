@@ -6,7 +6,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { Breadcrumb, Table, Button, Layout, Menu, Popconfirm, message } from 'antd';
 import { toggleInvTempModal, loadInvTemplates, deleteInvTemplate } from 'common/reducers/cmsInvoice';
 import { CWM_DOCU_TYPE } from 'common/constants';
-import { formatMsg } from './message.i18n';
+import { formatMsg } from '../message.i18n';
 
 const { Header, Content, Sider } = Layout;
 
@@ -114,7 +114,7 @@ export default class TemplatesList extends Component {
           <div className="top-bar">
             <Breadcrumb>
               <Breadcrumb.Item>
-                {this.msg('appSettings')}
+                {this.msg('settings')}
               </Breadcrumb.Item>
               <Breadcrumb.Item>
                 单据模板

@@ -122,7 +122,7 @@ export default class AddDetailModal extends Component {
               <Input />
             )}
           </FormItem>
-          <FormItem label="主单位" {...formItemLayout}>
+          <FormItem label="计量单位" {...formItemLayout}>
             <Input disabled value={product.unit_name} />
           </FormItem>
           <FormItem label="单价" {...formItemLayout}>

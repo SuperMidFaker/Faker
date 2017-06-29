@@ -29,7 +29,7 @@ export default class ASNPane extends React.Component {
     tabKey: '',
   }
   columns = [{
-    title: '序号',
+    title: '行号',
     dataIndex: 'asn_seq_no',
     width: 50,
   }, {
@@ -45,7 +45,7 @@ export default class ASNPane extends React.Component {
     width: 100,
     dataIndex: 'order_qty',
   }, {
-    title: '主单位',
+    title: '计量单位',
     dataIndex: 'unit_name',
   }, {
     title: '单价',
@@ -102,7 +102,7 @@ export default class ASNPane extends React.Component {
               </Row>
             </Panel>
             <Panel header="ASN明细" key="asnDetails" >
-              <Table columns={this.columns} dataSource={this.props.asnBody} />
+              <Table size="middle" columns={this.columns} dataSource={this.props.asnBody} />
             </Panel>
           </Collapse>
         </Card>

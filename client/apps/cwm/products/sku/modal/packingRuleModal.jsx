@@ -179,7 +179,7 @@ export default class PackingRuleModal extends Component {
                 {getFieldDecorator('asn_tag_unit', {
                   initialValue: 'primary',
                 })(<RadioGroup size="large">
-                  <RadioButton value="primary">计量主单位</RadioButton>
+                  <RadioButton value="primary">计量单位</RadioButton>
                   <RadioButton value="sku">SKU包装单位</RadioButton>
                 </RadioGroup>
                   )}
@@ -190,7 +190,7 @@ export default class PackingRuleModal extends Component {
                 {getFieldDecorator('so_tag_unit', {
                   initialValue: 'primary',
                 })(<RadioGroup size="large">
-                  <RadioButton value="primary">计量主单位</RadioButton>
+                  <RadioButton value="primary">计量单位</RadioButton>
                   <RadioButton value="sku">SKU包装单位</RadioButton>
                 </RadioGroup>
                   )}

@@ -108,7 +108,7 @@ export default class OrderDockPanel extends React.Component {
               </div>) : null
           }
         </TabPane>
-        <TabPane tab={this.msg('tabBilling')} key="billing">
+        <TabPane tab={this.msg('tabBilling')} key="billing" disabled>
           <BillingPane />
         </TabPane>
       </Tabs>

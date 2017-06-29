@@ -25,7 +25,7 @@ export default class OrderDetailsPane extends React.Component {
   }
 
   columns = [{
-    title: '序号',
+    title: '行号',
     dataIndex: 'seq_no',
     width: 40,
   }, {
@@ -41,7 +41,7 @@ export default class OrderDetailsPane extends React.Component {
     width: 120,
     render: o => (<b>{o}</b>),
   }, {
-    title: '主单位',
+    title: '计量单位',
     dataIndex: 'unit',
     width: 60,
   }, {

@@ -36,26 +36,26 @@ export default class PackagePopover extends Component {
     const content = (
       <div style={{ width: 280 }}>
         <Form layout="vertical" className="form-layout-compact">
-          <FormItem label="主单位数量">
+          <FormItem label="计量单位数量">
             <Input className="readonly" defaultValue="1" disabled />
           </FormItem>
           <FormItem label="内包装量">
             <InputGroup compact>
               <Input className="readonly" style={{ width: '50%' }} placeholder="SKU包装单位数量" value={skuForm.inner_pack_qty} disabled />
-              <Input className="readonly" style={{ width: '50%' }} placeholder="主单位数量" value={skuForm.convey_inner_qty} disabled />
+              <Input className="readonly" style={{ width: '50%' }} placeholder="计量单位数量" value={skuForm.convey_inner_qty} disabled />
             </InputGroup>
           </FormItem>
           <FormItem label="装箱量">
             <InputGroup compact>
               <Input className="readonly" style={{ width: '50%' }} placeholder="SKU包装单位数量" value={skuForm.box_pack_qty} disabled />
-              <Input className="readonly" style={{ width: '50%' }} placeholder="主单位数量" value={skuForm.convey_box_qty} disabled />
+              <Input className="readonly" style={{ width: '50%' }} placeholder="计量单位数量" value={skuForm.convey_box_qty} disabled />
             </InputGroup>
           </FormItem>
           <FormItem label="码盘量">
             <InputGroup compact>
               <Input className="readonly" style={{ width: '34%' }} placeholder="箱量" value={skuForm.pallet_box_qty} disabled />
               <Input className="readonly" style={{ width: '33%' }} placeholder="SKU包装单位数量" value={skuForm.pallet_pack_qty} disabled />
-              <Input className="readonly" style={{ width: '33%' }} placeholder="主单位数量" value={skuForm.convey_pallet_qty} disabled />
+              <Input className="readonly" style={{ width: '33%' }} placeholder="计量单位数量" value={skuForm.convey_pallet_qty} disabled />
             </InputGroup>
           </FormItem>
         </Form>

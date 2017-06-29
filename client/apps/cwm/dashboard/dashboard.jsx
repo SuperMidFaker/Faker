@@ -2,10 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Alert, Breadcrumb, Card, Row, Select, Col, Layout, Progress } from 'antd';
+import { Alert, Breadcrumb, Card, Row, Select, Col, Layout, Progress, message } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
+import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import messages from './message.i18n';
 
 const formatMsg = format(messages);
@@ -16,7 +17,10 @@ const Option = Select.Option;
 @connect(
   state => ({
     tenantId: state.account.tenantId,
+    whses: state.cwmContext.whses,
+    defaultWhse: state.cwmContext.defaultWhse,
   }),
+  { switchDefaultWhse }
 )
 @connectNav({
   depth: 2,
@@ -28,21 +32,21 @@ export default class CWMDashboard extends React.Component {
     tenantId: PropTypes.number.isRequired,
   }
   msg = key => formatMsg(this.props.intl, key);
+  handleWhseChange = (value) => {
+    this.props.switchDefaultWhse(value);
+    message.info('当前仓库已切换');
+  }
   render() {
+    const { whses, defaultWhse } = this.props;
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Header className="top-bar">
           <Breadcrumb>
             <Breadcrumb.Item>
-              <Select
-                size="large"
-                defaultValue="0960"
-                placeholder="选择仓库"
-                style={{ width: 160 }}
-              >
-                <Option value="0960">物流大道仓库</Option>
-                <Option value="0961">希雅路仓库</Option>
-                <Option value="0962">富特路仓库</Option>
+              <Select size="large" value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
+                {
+                  whses.map(warehouse => (<Option key={warehouse.code} value={warehouse.code}>{warehouse.name}</Option>))
+                }
               </Select>
             </Breadcrumb.Item>
             <Breadcrumb.Item>

@@ -71,7 +71,7 @@ export default class DetailForm extends Component {
     const { editable, temporaryDetails, detailEnable } = this.props;
     const { pagination } = this.state;
     const columns = [{
-      title: '序号',
+      title: '行号',
       dataIndex: 'seq_no',
       width: 50,
       render: (col, row, index) => col || pagination.pageSize * (pagination.current - 1) + index + 1,
@@ -88,7 +88,7 @@ export default class DetailForm extends Component {
       width: 100,
       dataIndex: 'order_qty',
     }, {
-      title: '主单位',
+      title: '计量单位',
       dataIndex: 'unit_name',
     }, {
       title: '单价',

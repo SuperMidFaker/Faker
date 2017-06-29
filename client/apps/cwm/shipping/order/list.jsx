@@ -84,11 +84,7 @@ export default class ShippingOrderList extends React.Component {
     title: '承运人',
     dataIndex: 'carrier',
   }, {
-    title: '创建时间',
-    width: 120,
-    dataIndex: 'created_date',
-  }, {
-    title: '要求交货时间',
+    title: '要求交货日期',
     dataIndex: 'expect_shipping_date',
     width: 160,
     render: o => moment(o).format('YYYY.MM.DD'),
@@ -96,6 +92,12 @@ export default class ShippingOrderList extends React.Component {
     title: '发货时间',
     dataIndex: 'shipped_date',
     width: 160,
+    render: o => moment(o).format('MM.DD HH:MM'),
+  }, {
+    title: '创建时间',
+    width: 120,
+    dataIndex: 'created_date',
+    render: o => moment(o).format('MM.DD HH:MM'),
   }, {
     title: '状态',
     dataIndex: 'status',

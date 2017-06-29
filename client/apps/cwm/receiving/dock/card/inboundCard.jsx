@@ -64,7 +64,7 @@ export default class InboundCard extends Component {
     }
   }
   inboundColumns = [{
-    title: '序号',
+    title: '行号',
     dataIndex: 'asn_seq_no',
     width: 50,
     fixed: 'left',
@@ -76,7 +76,7 @@ export default class InboundCard extends Component {
   }, {
     title: 'SKU',
     dataIndex: 'product_sku',
-    width: 60,
+    width: 120,
   }, {
     title: '预期数量',
     width: 180,
@@ -182,13 +182,13 @@ export default class InboundCard extends Component {
       <Card bodyStyle={{ padding: 0 }}>
         <Collapse bordered={false} defaultActiveKey={['receiveDetails', 'putAwayDetails']}>
           <Panel header={inboundNo} key="receiveDetails" >
-            <Card>
+            <Card bodyStyle={{ padding: 0 }}>
               <Tabs defaultActiveKey="inbound">
                 <TabPane tab="收货明细" key="inbound">
-                  <Table columns={this.inboundColumns} dataSource={inbound} scroll={{ x: 1150 }} />
+                  <Table size="middle" columns={this.inboundColumns} dataSource={inbound} scroll={{ x: 1210 }} />
                 </TabPane>
                 <TabPane tab="上架明细" key="putaway" >
-                  <Table columns={this.putawayColumns} dataSource={putaway} scroll={{ x: 1230 }} />
+                  <Table size="middle" columns={this.putawayColumns} dataSource={putaway} scroll={{ x: 1230 }} />
                 </TabPane>
               </Tabs>
             </Card>

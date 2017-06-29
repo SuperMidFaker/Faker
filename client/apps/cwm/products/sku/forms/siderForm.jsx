@@ -106,7 +106,7 @@ export default class SiderForm extends Component {
                   <Input style={{ width: '50%' }} placeholder="SKU包装单位数量" value={skuForm.inner_pack_qty}
                     onChange={this.handleInnerChange}
                   />
-                  <Input style={{ width: '50%' }} placeholder="主单位数量" value={skuForm.convey_inner_qty} disabled />
+                  <Input style={{ width: '50%' }} placeholder="计量单位数量" value={skuForm.convey_inner_qty} disabled />
                 </InputGroup>
               </FormItem>
             </Col>
@@ -116,7 +116,7 @@ export default class SiderForm extends Component {
                   <Input style={{ width: '50%' }} placeholder="SKU包装单位数量" value={skuForm.box_pack_qty}
                     onChange={this.handleBoxChange}
                   />
-                  <Input style={{ width: '50%' }} placeholder="主单位数量" value={skuForm.convey_box_qty} disabled />
+                  <Input style={{ width: '50%' }} placeholder="计量单位数量" value={skuForm.convey_box_qty} disabled />
                 </InputGroup>
               </FormItem>
             </Col>
@@ -127,7 +127,7 @@ export default class SiderForm extends Component {
                     onChange={this.handlePalleteChange}
                   />
                   <Input style={{ width: '33%' }} placeholder="SKU包装单位数量" value={skuForm.pallet_pack_qty} disabled />
-                  <Input style={{ width: '33%' }} placeholder="主单位数量" value={skuForm.convey_pallet_qty} disabled />
+                  <Input style={{ width: '33%' }} placeholder="计量单位数量" value={skuForm.convey_pallet_qty} disabled />
                 </InputGroup>
               </FormItem>
             </Col>
@@ -186,7 +186,7 @@ export default class SiderForm extends Component {
                 {getFieldDecorator('asn_tag_unit', {
                   initialValue: skuForm.asn_tag_unit,
                 })(<RadioGroup size="large">
-                  <RadioButton value="primary">计量主单位</RadioButton>
+                  <RadioButton value="primary">计量单位</RadioButton>
                   <RadioButton value="sku">SKU包装单位</RadioButton>
                 </RadioGroup>
                   )}
@@ -197,7 +197,7 @@ export default class SiderForm extends Component {
                 {getFieldDecorator('so_tag_unit', {
                   initialValue: skuForm.so_tag_unit,
                 })(<RadioGroup size="large">
-                  <RadioButton value="primary">计量主单位</RadioButton>
+                  <RadioButton value="primary">计量单位</RadioButton>
                   <RadioButton value="sku">SKU包装单位</RadioButton>
                 </RadioGroup>
                   )}

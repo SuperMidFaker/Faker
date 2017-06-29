@@ -94,7 +94,7 @@ export default class ReceiveDetailsPane extends React.Component {
     });
   }
   columns = [{
-    title: '序号',
+    title: '行号',
     dataIndex: 'asn_seq_no',
     width: 50,
     fixed: 'left',

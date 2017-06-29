@@ -132,7 +132,7 @@ export default class FTZPane extends React.Component {
         <Card bodyStyle={{ padding: 0 }} >
           <Collapse bordered={false} defaultActiveKey={['entryDetails']}>
             <Panel header="备案明细" key="entryDetails" >
-              <Table columns={this.columns} dataSource={this.state.data} scroll={{ x: 1470 }} />
+              <Table size="middle" columns={this.columns} dataSource={this.state.data} scroll={{ x: 1470 }} />
             </Panel>
           </Collapse>
         </Card>

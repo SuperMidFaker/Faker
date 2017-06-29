@@ -142,7 +142,7 @@ export default class MainForm extends Component {
             </Col>
             <Col sm={24} lg={12}>
               <FormItem label={this.msg('measureUnit')}>
-                <Select showSearch allowClear optionFilterProp="children" placeholder="选择计量主单位"
+                <Select showSearch allowClear optionFilterProp="children" placeholder="选择计量单位"
                   value={skuForm.unit} onChange={this.handleUnitChange}
                 >
                   {units.map(unit => <Option value={unit.code} key={unit.code}>{unit.code} | {unit.name}</Option>)}
