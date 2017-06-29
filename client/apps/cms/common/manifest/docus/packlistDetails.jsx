@@ -52,8 +52,8 @@ export default class PacklistDetails extends React.Component {
         en_name: '',
         g_model: '',
         orig_country: '',
-        g_qty: a.g_qty + b.g_qty,
-        wet_wt: Number(a.wet_wt + b.wet_wt),
+        g_qty: (a.g_qty || 0) + (b.g_qty || 0),
+        wet_wt: Number((a.wet_wt || 0) + (b.wet_wt || 0)),
         container_no: '',
       }), {
         total: '合计',
@@ -68,12 +68,18 @@ export default class PacklistDetails extends React.Component {
     }
   }
   columns = [{
+    title: '序号',
+    dataIndex: 'g_no',
+    width: 80,
+  }, {
     title: '中文品名',
     dataIndex: 'g_name',
     width: 150,
   }]
   totCols = [{
     dataIndex: 'total',
+    width: 80,
+  }, {
     width: 150,
   }]
   handleFill = (val, field) => {
@@ -122,9 +128,15 @@ export default class PacklistDetails extends React.Component {
     }, {
       dataIndex: 'g_qty',
       width: 100,
+      render(o) {
+        return o ? o.toFixed(3) : '';
+      },
     }, {
       dataIndex: 'wet_wt',
       width: 100,
+      render(o) {
+        return o ? o.toFixed(3) : '';
+      },
     });
     if (invoice.containerno_en) {
       columns.push({

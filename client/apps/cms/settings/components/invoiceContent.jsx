@@ -89,7 +89,7 @@ export default class InvoiceContent extends React.Component {
             <Collapse accordion defaultActiveKey="header">
               <Panel header={'Header'} key="header">
                 <FormItem label="发票日期：" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
-                  <Input defaultValue={invData.days_ago} addonBefore="生成发票前" addonAfter="天" onChange={ev => this.handleCheckChange('days_ago', ev.target.value)} />
+                  <Input value={invData.days_ago} addonBefore="生成发票前" addonAfter="天" onChange={ev => this.handleCheckChange('days_ago', ev.target.value)} />
                 </FormItem>
               </Panel>
               <Panel header={'Item Table'} key="item">
