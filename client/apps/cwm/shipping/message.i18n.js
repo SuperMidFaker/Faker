@@ -23,7 +23,7 @@ const messages = defineMessages({
   },
   outboundNo: {
     id: 'cwm.shipping.transactions.outboundNo',
-    defaultMessage: '出库流水号',
+    defaultMessage: '出库单号',
   },
   outboundDate: {
     id: 'cwm.shipping.transactions.outboundDate',

@@ -68,7 +68,7 @@ const messages = defineMessages({
   },
   inboundPlaceholder: {
     id: 'cwm.receiving.asn.inbound.search.place.holder',
-    defaultMessage: '搜索入库流水号',
+    defaultMessage: '搜索入库单号',
   },
   tabASN: {
     id: 'cwm.receiving.dock.tab.asn',

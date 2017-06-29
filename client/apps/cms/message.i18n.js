@@ -111,7 +111,7 @@ const messages = defineMessages({
   },
   brokers: {
     id: 'cms.module.settings.resources.brokers',
-    defaultMessage: '报关行',
+    defaultMessage: '报关代理',
   },
   settingsApp: {
     id: 'cms.module.settings.app',

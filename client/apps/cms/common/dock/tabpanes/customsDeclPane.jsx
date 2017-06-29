@@ -159,7 +159,7 @@ export default class CustomsDeclPane extends React.Component {
               <Card bodyStyle={{ padding: 16 }} className="secondary-card">
                 <Row gutter={8}>
                   <Col span="24">
-                    <InfoItem label="报关服务商" field={customsPanel.customs_name} />
+                    <InfoItem label="报关代理" field={customsPanel.customs_name} />
                   </Col>
                   <Col span="24">
                     <InfoItem label="接单日期" field={customsPanel.acpt_time && moment(customsPanel.acpt_time).format('YYYY.MM.DD')} />

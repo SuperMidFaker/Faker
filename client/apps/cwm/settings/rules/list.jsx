@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Breadcrumb, Table, Button, Layout, Menu, Popconfirm, message } from 'antd';
+import { Breadcrumb, Table, Button, Layout, Row, Col, Menu, message } from 'antd';
 import { toggleInvTempModal, loadInvTemplates, deleteInvTemplate } from 'common/reducers/cmsInvoice';
 import { CWM_DOCU_TYPE } from 'common/constants';
 import { formatMsg } from '../message.i18n';
@@ -25,7 +25,7 @@ const { Header, Content, Sider } = Layout;
   depth: 2,
   moduleName: 'cwm',
 })
-export default class TemplatesList extends Component {
+export default class RulesList extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -89,24 +89,15 @@ export default class TemplatesList extends Component {
       title: '模板名称',
       dataIndex: 'template_name',
       key: 'template_name',
-    }, {
-      title: '修改人',
-      dataIndex: 'modify_name',
-      key: 'modify_name',
-    }, {
-      title: '最后更新时间',
-      dataIndex: 'last_updated_date',
-      key: 'last_updated_date',
-    }, {
-      title: '操作',
-      key: 'opt',
-      width: 100,
       render: (_, record) => (
-        <span>
-          <a onClick={() => this.handleEdit(record)}>{this.msg('edit')}</a>
-          <span className="ant-divider" />
-          <Popconfirm title="确定要删除吗？" onConfirm={() => this.handleDelete(record)}><a>删除</a></Popconfirm>
-        </span>),
+        <Row type="flex">
+          <Col className="col-flex-primary">
+            <a>{record.template_name}</a>
+            <div>{record.modify_name}</div>
+            <div className="mdc-text-grey">{record.last_updated_date}</div>
+          </Col>
+        </Row>
+      ),
     }];
     return (
       <Layout>
@@ -117,7 +108,7 @@ export default class TemplatesList extends Component {
                 {this.msg('settings')}
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                单据模板
+                {this.msg('rules')}
               </Breadcrumb.Item>
             </Breadcrumb>
           </div>
@@ -127,11 +118,11 @@ export default class TemplatesList extends Component {
               mode="inline"
               onClick={this.handleListChange}
             >
-              <Menu.Item key={JSON.stringify(CWM_DOCU_TYPE.receiveTaskList)}>入库任务清单</Menu.Item>
-              <Menu.Item key={JSON.stringify(CWM_DOCU_TYPE.putawayTaskList)}>上架任务清单</Menu.Item>
-              <Menu.Item key={JSON.stringify(CWM_DOCU_TYPE.pickingTaskList)}>拣货任务清单</Menu.Item>
-              <Menu.Item key={JSON.stringify(CWM_DOCU_TYPE.packingList)}>装箱单</Menu.Item>
-              <Menu.Item key={JSON.stringify(CWM_DOCU_TYPE.loadingList)}>装车单</Menu.Item>
+              <Menu.Item key={JSON.stringify(CWM_DOCU_TYPE.receiveTaskList)}>上架规则</Menu.Item>
+              <Menu.Item key={JSON.stringify(CWM_DOCU_TYPE.putawayTaskList)}>分配规则</Menu.Item>
+              <Menu.Item key={JSON.stringify(CWM_DOCU_TYPE.pickingTaskList)}>补货规则</Menu.Item>
+              <Menu.Item key={JSON.stringify(CWM_DOCU_TYPE.packingList)}>波次计划规则</Menu.Item>
+              <Menu.Item key={JSON.stringify(CWM_DOCU_TYPE.loadingList)}>流水号规则</Menu.Item>
             </Menu>
           </div>
         </Sider>
@@ -139,16 +130,24 @@ export default class TemplatesList extends Component {
           <Header className="top-bar">
             <Breadcrumb>
               <Breadcrumb.Item>
-                {this.msg('templates')}
+                {this.state.current}
               </Breadcrumb.Item>
             </Breadcrumb>
             <div className="top-bar-tools">
               <Button type="primary" size="large" onClick={this.handleCreateNew} icon="plus">新增</Button>
             </div>
           </Header>
-          <Content className="main-content layout-fixed-width">
+          <Content className="main-content">
             <div className="page-body">
-              <Table columns={columns} dataSource={this.props.invTemplates} rowKey="id" />
+              <Layout className="main-wrapper">
+                <Sider className="nav-sider" width={280}>
+                  <Table size="middle" showHeader={false} columns={columns} dataSource={this.props.invTemplates} rowKey="id" />
+                </Sider>
+                <Content className="nav-content">
+                  <div className="nav-content-head" />
+                  <div className="panel-body table-panel" />
+                </Content>
+              </Layout>
             </div>
           </Content>
         </Layout>

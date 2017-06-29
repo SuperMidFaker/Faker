@@ -74,7 +74,7 @@ export default class ReceivingInboundList extends React.Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
-    title: '入库流水号',
+    title: '入库单号',
     dataIndex: 'inbound_no',
     width: 180,
     fixed: 'left',

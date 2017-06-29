@@ -16,15 +16,15 @@ const messages = defineMessages({
   },
   receivingInbound: {
     id: 'cwm.module.receiving.inbound',
-    defaultMessage: '入库操作',
+    defaultMessage: '入库单',
   },
   shipping: {
     id: 'cwm.module.shipping',
     defaultMessage: '发货',
   },
   shippingOrder: {
-    id: 'cwm.module.shipping.so',
-    defaultMessage: '发货订单SO',
+    id: 'cwm.module.shipping.order',
+    defaultMessage: '发货订单',
   },
   shippingWave: {
     id: 'cwm.module.shipping.wave',
@@ -32,7 +32,7 @@ const messages = defineMessages({
   },
   shippingOutbound: {
     id: 'cwm.module.shipping.outbound',
-    defaultMessage: '出库操作',
+    defaultMessage: '出库单',
   },
   stock: {
     id: 'cwm.module.stock',
@@ -114,13 +114,13 @@ const messages = defineMessages({
     id: 'cwm.module.settings.warehouse',
     defaultMessage: '仓库',
   },
+  rules: {
+    id: 'cwm.module.settings.rules',
+    defaultMessage: '业务规则',
+  },
   templates: {
     id: 'cwm.module.settings.templates',
     defaultMessage: '单据模板',
-  },
-  tools: {
-    id: 'cwm.module.settings.tools',
-    defaultMessage: '管理工具',
   },
 });
 
