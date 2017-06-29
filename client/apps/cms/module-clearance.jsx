@@ -36,7 +36,6 @@ export default class Clearance extends React.Component {
       linkMenus.push({
         single: true,
         key: 'cms-0',
-        disabled: true,
         path: '/clearance/dashboard',
         icon: 'icon-fontello-desktop',
         text: formatMsg(intl, 'dashboard'),

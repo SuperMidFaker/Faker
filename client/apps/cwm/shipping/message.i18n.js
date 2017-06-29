@@ -9,9 +9,13 @@ const messages = defineMessages({
     id: 'cwm.shipping.order',
     defaultMessage: '发货订单SO',
   },
+  shippingWave: {
+    id: 'cwm.shipping.wave',
+    defaultMessage: '波次',
+  },
   shippingOutbound: {
     id: 'cwm.shipping.outbound',
-    defaultMessage: '出库操作',
+    defaultMessage: '出库单',
   },
   outboundListSearchPlaceholder: {
     id: 'cwm.shipping.list.placeholder',

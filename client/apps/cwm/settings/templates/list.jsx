@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Breadcrumb, Table, Button, Layout, Menu, Popconfirm, message } from 'antd';
+import { Breadcrumb, Button, Layout, Menu, message } from 'antd';
 import { toggleInvTempModal, loadInvTemplates, deleteInvTemplate } from 'common/reducers/cmsInvoice';
 import { CWM_DOCU_TYPE } from 'common/constants';
 import { formatMsg } from '../message.i18n';
@@ -85,29 +85,6 @@ export default class TemplatesList extends Component {
     this.handleListLoad(parseInt(ev.key, 10));
   }
   render() {
-    const columns = [{
-      title: '模板名称',
-      dataIndex: 'template_name',
-      key: 'template_name',
-    }, {
-      title: '修改人',
-      dataIndex: 'modify_name',
-      key: 'modify_name',
-    }, {
-      title: '最后更新时间',
-      dataIndex: 'last_updated_date',
-      key: 'last_updated_date',
-    }, {
-      title: '操作',
-      key: 'opt',
-      width: 100,
-      render: (_, record) => (
-        <span>
-          <a onClick={() => this.handleEdit(record)}>{this.msg('edit')}</a>
-          <span className="ant-divider" />
-          <Popconfirm title="确定要删除吗？" onConfirm={() => this.handleDelete(record)}><a>删除</a></Popconfirm>
-        </span>),
-    }];
     return (
       <Layout>
         <Sider width={280} className="menu-sider" key="sider">
@@ -146,10 +123,8 @@ export default class TemplatesList extends Component {
               <Button type="primary" size="large" onClick={this.handleCreateNew} icon="plus">新增</Button>
             </div>
           </Header>
-          <Content className="main-content layout-fixed-width">
-            <div className="page-body">
-              <Table columns={columns} dataSource={this.props.invTemplates} rowKey="id" />
-            </div>
+          <Content className="main-content">
+            <div className="page-body" />
           </Content>
         </Layout>
       </Layout>

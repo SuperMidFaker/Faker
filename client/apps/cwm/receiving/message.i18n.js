@@ -16,7 +16,7 @@ const messages = defineMessages({
   },
   receivingInound: {
     id: 'cwm.receiving.inbound',
-    defaultMessage: '入库操作',
+    defaultMessage: '入库单',
   },
   inboundListSearchPlaceholder: {
     id: 'cwm.receiving.list.placeholder',

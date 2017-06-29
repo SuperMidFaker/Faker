@@ -366,9 +366,6 @@ export default class WareHouse extends Component {
                   </Layout>
                 </TabPane>
                 <TabPane tab="月台" key="dock" disabled />
-                <TabPane tab="上架规则" key="putaway" disabled />
-                <TabPane tab="分配规则" key="allocate" disabled />
-                <TabPane tab="补货规则" key="replenish" disabled />
                 {warehouse.bonded === 1 && <TabPane tab="保税监管" key="supervision">
                   <SupervisionPane whseCode={warehouse.code} whseTenantId={warehouse.wh_ent_tenant_id} />
                 </TabPane>}

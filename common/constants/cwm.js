@@ -162,3 +162,26 @@ exports.CWM_DOCU_TYPE = {
   packingList: 3,     // 装箱单
   loadingList: 4,     // 装车单
 };
+
+exports.CWM_RULES = {
+  PUTAWAY_RULE: {
+    key: 'putway',
+    text: '上架规则',
+  },
+  ALLOC_RULE: {
+    key: 'alloc',
+    text: '分配规则',
+  },
+  REPLENISH_RULE: {
+    key: 'replenish',
+    text: '补货规则',
+  },
+  WAVE_RULE: {
+    key: 'wave',
+    text: '波次计划规则',
+  },
+  SEQUENCE_RULE: {
+    key: 'sequence',
+    text: '流水号规则',
+  },
+};

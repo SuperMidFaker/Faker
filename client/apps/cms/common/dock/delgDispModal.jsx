@@ -127,7 +127,7 @@ export default class DelgDispModal extends Component {
     return (
       <Modal visible={delgDispShow} title="分配" onOk={this.handleSave} onCancel={this.handleCancel} >
         <Form layout="vertical">
-          <FormItem label="报关单位">
+          <FormItem label="报关代理">
             {getFieldDecorator('customs_name', { initialValue: fieldInits.customs_name }
               )(<Select
                 showSearch

@@ -252,6 +252,7 @@ export default class OutboundList extends React.Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <RadioGroup defaultValue="created" onChange={this.handleStatusChange} size="large">
+            <RadioButton value="all">全部</RadioButton>
             <RadioButton value="created">待出库</RadioButton>
             <RadioButton value="allocating">分配</RadioButton>
             <RadioButton value="picking">拣货</RadioButton>

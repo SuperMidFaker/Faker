@@ -117,7 +117,7 @@ export default class ScvCustomsDeclList extends Component {
       }
     },
   }, {
-    title: '报关单位',
+    title: '报关代理',
     dataIndex: 'ccb_name',
     width: 160,
     render: o => <TrimSpan text={o} maxLen={10} />,

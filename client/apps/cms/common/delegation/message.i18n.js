@@ -151,11 +151,11 @@ export default defineMessages({
   },
   broker: {
     id: 'cms.delegation.delg.broker',
-    defaultMessage: '报关单位',
+    defaultMessage: '报关代理',
   },
   inspbroker: {
     id: 'cms.delegation.delg.inspbroker',
-    defaultMessage: '报检单位',
+    defaultMessage: '报检代理',
   },
   certbroker: {
     id: 'cms.delegation.delg.certbroker',
@@ -235,7 +235,7 @@ export default defineMessages({
   },
   delgDispatch: {
     id: 'cms.delegation.delg.dispatch',
-    defaultMessage: '分配报关单位',
+    defaultMessage: '分配报关代理',
   },
   downloadCert: {
     id: 'cms.delegation.delg.downloadCert',
@@ -363,11 +363,11 @@ export default defineMessages({
   },
   dispDecl: {
     id: 'cms.delegation.delg.dispDecl',
-    defaultMessage: '选择报关单位',
+    defaultMessage: '选择报关代理',
   },
   dispciq: {
     id: 'cms.delegation.delg.dispciq',
-    defaultMessage: '选择报检单位',
+    defaultMessage: '选择报检代理',
   },
   dispall: {
     id: 'cms.delegation.delg.dispall',

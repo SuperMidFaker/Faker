@@ -5,7 +5,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { Breadcrumb, Table, Button, Layout, Row, Col, Menu, message } from 'antd';
 import { toggleInvTempModal, loadInvTemplates, deleteInvTemplate } from 'common/reducers/cmsInvoice';
-import { CWM_DOCU_TYPE } from 'common/constants';
+import { CWM_RULES } from 'common/constants';
 import { formatMsg } from '../message.i18n';
 
 const { Header, Content, Sider } = Layout;
@@ -16,8 +16,6 @@ const { Header, Content, Sider } = Layout;
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     loginName: state.account.username,
-    invTemplates: state.cmsInvoice.invTemplates,
-    docuType: state.cmsInvoice.docuType,
   }),
   { toggleInvTempModal, loadInvTemplates, deleteInvTemplate }
 )
@@ -29,19 +27,28 @@ export default class RulesList extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
-    invTemplates: PropTypes.array.isRequired,
-    docuType: PropTypes.number.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
   state = {
-    current: JSON.stringify(this.props.docuType),
+    currentKey: JSON.stringify(this.props.docuType),
   }
   componentDidMount() {
     this.handleListLoad(this.props.docuType);
   }
   msg = formatMsg(this.props.intl)
+  defaultRules = [{
+    id: 1,
+    rule_name: '默认上架规则',
+    last_updated_by: 'Admin',
+    last_updated_date: '2017.06.22',
+  }, {
+    id: 4,
+    rule_name: '默认上架规则',
+    last_updated_by: 'Eric',
+    last_updated_date: '2017.06.22',
+  }];
   handleNavigationTo(to, query) {
     this.context.router.push({ pathname: to, query });
   }
@@ -52,19 +59,7 @@ export default class RulesList extends Component {
     this.props.toggleInvTempModal(true);
   }
   handleEdit = (record) => {
-    let type = '';
-    if (record.docu_type === CWM_DOCU_TYPE.receiveTaskList) {
-      type = 'receiveTaskList';
-    } else if (record.docu_type === CWM_DOCU_TYPE.putawayTaskList) {
-      type = 'putawayTaskList';
-    } else if (record.docu_type === CWM_DOCU_TYPE.pickingTaskList) {
-      type = 'pickingTaskList';
-    } else if (record.docu_type === CWM_DOCU_TYPE.packingList) {
-      type = 'packingList';
-    } else if (record.docu_type === CWM_DOCU_TYPE.loadingList) {
-      type = 'loadingList';
-    }
-    this.context.router.push(`/cwm/settings/templates/${type}/edit/${record.id}`);
+    this.context.router.push(`/cwm/settings/templates/${record.type}/edit/${record.id}`);
   }
   handleDelete = (record) => {
     this.props.deleteInvTemplate(record.id).then((result) => {
@@ -80,20 +75,17 @@ export default class RulesList extends Component {
       return;
     }
     this.setState({
-      current: ev.key,
+      currentKey: ev.key,
     });
     this.handleListLoad(parseInt(ev.key, 10));
   }
   render() {
     const columns = [{
-      title: '模板名称',
-      dataIndex: 'template_name',
-      key: 'template_name',
       render: (_, record) => (
         <Row type="flex">
           <Col className="col-flex-primary">
-            <a>{record.template_name}</a>
-            <div>{record.modify_name}</div>
+            <a>{record.rule_name}</a>
+            <div>{record.last_updated_by}</div>
             <div className="mdc-text-grey">{record.last_updated_date}</div>
           </Col>
         </Row>
@@ -114,15 +106,15 @@ export default class RulesList extends Component {
           </div>
           <div className="left-sider-panel">
             <Menu
-              selectedKeys={[this.state.current]}
+              selectedKeys={[this.state.currentKey]}
               mode="inline"
               onClick={this.handleListChange}
             >
-              <Menu.Item key={JSON.stringify(CWM_DOCU_TYPE.receiveTaskList)}>上架规则</Menu.Item>
-              <Menu.Item key={JSON.stringify(CWM_DOCU_TYPE.putawayTaskList)}>分配规则</Menu.Item>
-              <Menu.Item key={JSON.stringify(CWM_DOCU_TYPE.pickingTaskList)}>补货规则</Menu.Item>
-              <Menu.Item key={JSON.stringify(CWM_DOCU_TYPE.packingList)}>波次计划规则</Menu.Item>
-              <Menu.Item key={JSON.stringify(CWM_DOCU_TYPE.loadingList)}>流水号规则</Menu.Item>
+              <Menu.Item key={CWM_RULES.PUTAWAY_RULE.key}>{CWM_RULES.PUTAWAY_RULE.text}</Menu.Item>
+              <Menu.Item key={CWM_RULES.ALLOC_RULE.key}>{CWM_RULES.ALLOC_RULE.text}</Menu.Item>
+              <Menu.Item key={CWM_RULES.REPLENISH_RULE.key}>{CWM_RULES.REPLENISH_RULE.text}</Menu.Item>
+              <Menu.Item key={CWM_RULES.WAVE_RULE.key}>{CWM_RULES.WAVE_RULE.text}</Menu.Item>
+              <Menu.Item key={CWM_RULES.SEQUENCE_RULE.key}>{CWM_RULES.SEQUENCE_RULE.text}</Menu.Item>
             </Menu>
           </div>
         </Sider>
@@ -130,7 +122,7 @@ export default class RulesList extends Component {
           <Header className="top-bar">
             <Breadcrumb>
               <Breadcrumb.Item>
-                {this.state.current}
+                {this.state.currentKey}
               </Breadcrumb.Item>
             </Breadcrumb>
             <div className="top-bar-tools">
@@ -141,11 +133,11 @@ export default class RulesList extends Component {
             <div className="page-body">
               <Layout className="main-wrapper">
                 <Sider className="nav-sider" width={280}>
-                  <Table size="middle" showHeader={false} columns={columns} dataSource={this.props.invTemplates} rowKey="id" />
+                  <Table size="middle" showHeader={false} columns={columns} dataSource={this.defaultRules} rowKey="id" />
                 </Sider>
                 <Content className="nav-content">
                   <div className="nav-content-head" />
-                  <div className="panel-body table-panel" />
+
                 </Content>
               </Layout>
             </div>

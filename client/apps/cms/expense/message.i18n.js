@@ -64,7 +64,7 @@ const messages = defineMessages({
   },
   agentName: {
     id: 'cms.expense.agent.name',
-    defaultMessage: '报关单位',
+    defaultMessage: '报关代理',
   },
   invoiceNo: {
     id: 'cms.expense.invoice.no',
