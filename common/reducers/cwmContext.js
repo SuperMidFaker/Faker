@@ -19,7 +19,7 @@ const initialState = {
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.LOAD_WHCONTEXT_SUCCEED:
-      return { ...state, whses: action.result.data, defaultWhse: action.result.data[0] || {}, loaded: true };
+      return { ...state, whses: action.result.data, loaded: true };
     case actionTypes.SWITCH_DEFWHSE:
       return { ...state, defaultWhse: state.whses.filter(wh => wh.code === action.data)[0] || {} };
     case actionTypes.LOAD_WHSE_SUCCEED:
