@@ -185,3 +185,38 @@ exports.CWM_RULES = {
     text: '流水号规则',
   },
 };
+
+  exports.CWM_OUTBOUND_STATUS = {
+    CREATED: {
+      value: 0,
+      step: 0,
+    },
+    PARTIAL_RECEIVED: {
+      value: 1,
+      step: 1,
+    },
+    ALL_RECEIVED: {
+      value: 2,
+      step: 1,
+    },
+    PARTIAL_PICKED: {
+      value: 3,
+      step: 2,
+    },
+    ALL_PICKED: {
+      value: 4,
+      step: 2,
+    },
+    PACKED: {
+      value: 5,
+      step: 3,
+    },
+    SHIPPING: {
+      value: 6,
+      setp: 4,
+    },
+    COMPLETED: {
+      value: 7,
+      step: 5,
+    },
+  }

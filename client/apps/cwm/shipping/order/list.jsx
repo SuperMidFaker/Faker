@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Breadcrumb, DatePicker, Layout, Radio, Select, Button, Badge, Tag } from 'antd';
+import { Breadcrumb, DatePicker, Layout, Radio, Select, Button, Badge, Tag, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import RowUpdater from 'client/components/rowUpdater';
 import QueueAnim from 'rc-queue-anim';
@@ -84,7 +84,12 @@ export default class ShippingOrderList extends React.Component {
     title: '承运人',
     dataIndex: 'carrier',
   }, {
-    title: '要求交货日期',
+    title: '创建时间',
+    width: 120,
+    dataIndex: 'created_date',
+    render: o => moment(o).format('YYYY.MM.DD'),
+  }, {
+    title: '要求交货时间',
     dataIndex: 'expect_shipping_date',
     width: 160,
     render: o => moment(o).format('YYYY.MM.DD'),
@@ -207,6 +212,17 @@ export default class ShippingOrderList extends React.Component {
     const whseCode = this.props.defaultWhse.code;
     this.props.loadSos({
       whseCode,
+      pageSize: this.props.solist.pageSize,
+      current: this.props.solist.current,
+      filters,
+    });
+  }
+  handleWhseChange = (value) => {
+    this.props.switchDefaultWhse(value);
+    message.info('当前仓库已切换');
+    const filters = this.props.filters;
+    this.props.loadSos({
+      whseCode: value,
       pageSize: this.props.solist.pageSize,
       current: this.props.solist.current,
       filters,

@@ -69,6 +69,7 @@ export default class CreateReceivingASN extends Component {
         data.ownerTenantId = owner.partner_tenant_id;
         data.temporaryDetails = temporaryDetails;
         data.whseCode = defaultWhse.code;
+        data.whseName = defaultWhse.name;
         data.tenantId = tenantId;
         data.loginId = loginId;
         data.tenantName = tenantName;

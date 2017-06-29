@@ -8,7 +8,7 @@ import InfoItem from 'client/components/InfoItem';
 import { format } from 'client/common/i18n/helpers';
 import QuantityInput from '../../../common/quantityInput';
 import messages from '../../message.i18n';
-import { closeAllocatingModal } from 'common/reducers/cwmOutbound';
+import { closeAllocatingModal, loadProductInboundDetail } from 'common/reducers/cwmOutbound';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
@@ -21,20 +21,30 @@ const dateFormat = 'YYYY/MM/DD';
 @connect(
   state => ({
     visible: state.cwmOutbound.allocatingModal.visible,
+    outboundNo: state.cwmOutbound.allocatingModal.outboundNo,
+    ownerCode: state.cwmOutbound.allocatingModal.ownerCode,
+    outboundProduct: state.cwmOutbound.allocatingModal.outboundProduct,
+    defaultWhse: state.cwmContext.defaultWhse,
   }),
-  { closeAllocatingModal }
+  { closeAllocatingModal, loadProductInboundDetail }
 )
 export default class AllocatingModal extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    receivingMode: PropTypes.string.isRequired,
+    outboundNo: PropTypes.string.isRequired,
+    seqNo: PropTypes.string.isRequired,
   }
-  getInitialState() {
-    return { modalWidth: 1000 };
+  state = {
+    modalWidth: 1000,
   }
   componentWillMount() {
     if (typeof document !== 'undefined' && typeof window !== 'undefined') {
       this.setState({ modalWidth: window.innerWidth - 48 });
+    }
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.outBoundNo !== this.props.outboundNo || nextProps.seqNo !== this.props.seqNo) {
+      this.props.loadProductInboundDetail(nextProps.productNo, this.props.defaultWhse.code, this.props.ownerCode);
     }
   }
   msg = key => formatMsg(this.props.intl, key);
@@ -198,6 +208,7 @@ export default class AllocatingModal extends Component {
     received_qty: 0,
   }];
   render() {
+    const { outboundNo, outboundProduct } = this.props;
     const inventoryQueryForm = (<Form layout="inline" style={{ display: 'inline-block' }}>
       <FormItem label="库位">
         <Input />
@@ -223,18 +234,18 @@ export default class AllocatingModal extends Component {
       <Modal title="分配" width={this.state.modalWidth} maskClosable={false} style={{ top: 24 }} onCancel={this.handleCancel} visible={this.props.visible}>
         <Row>
           <Col sm={12} md={8} lg={6}>
-            <InfoItem addonBefore="商品货号" field="I096120170603223-01" style={{ marginBottom: 0 }} />
+            <InfoItem addonBefore="outboundNo" field={outboundNo} style={{ marginBottom: 0 }} />
           </Col>
           <Col sm={12} md={8} lg={6}>
-            <InfoItem addonBefore="中文品名" field="微纤维止血胶原粉" style={{ marginBottom: 0 }} />
+            <InfoItem addonBefore="中文品名" field={outboundProduct.name} style={{ marginBottom: 0 }} />
           </Col>
           <Col sm={12} md={8} lg={6}>
-            <InfoItem addonBefore="订货总数" field={<QuantityInput packQty={3} pcsQty={300} />}
+            <InfoItem addonBefore="订货总数" field={<QuantityInput packQty={outboundProduct.order_pack_qty} pcsQty={outboundProduct.order_qty} />}
               style={{ marginBottom: 0 }}
             />
           </Col>
           <Col sm={12} md={8} lg={6}>
-            <InfoItem addonBefore="分配总数" field={<QuantityInput packQty={1} pcsQty={100} />}
+            <InfoItem addonBefore="分配总数" field={<QuantityInput packQty={outboundProduct.alloc_pack_qty} pcsQty={outboundProduct.alloc_qty} />}
               style={{ marginBottom: 0 }}
             />
           </Col>

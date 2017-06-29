@@ -205,6 +205,28 @@ export default class OutboundList extends React.Component {
     this.props.switchDefaultWhse(value);
     message.info('当前仓库已切换');
   }
+  handleSearch = (value) => {
+    const filters = { ...this.props.filters, name: value };
+    const whseCode = this.props.defaultWhse.code;
+    this.props.loadOutbounds({
+      whseCode,
+      tenantId: this.props.tenantId,
+      pageSize: this.props.outbound.pageSize,
+      current: this.props.outbound.current,
+      filters,
+    });
+  }
+  handleOwnerChange = (value) => {
+    const filters = { ...this.props.filters, ownerCode: value };
+    const whseCode = this.props.defaultWhse.code;
+    this.props.loadOutbounds({
+      whseCode,
+      tenantId: this.props.tenantId,
+      pageSize: this.props.outbound.pageSize,
+      current: this.props.outbound.current,
+      filters,
+    });
+  }
   render() {
     const dataSource = new Table.DataSource({
       fetcher: params => this.props.loadOutbounds(params),
@@ -229,7 +251,7 @@ export default class OutboundList extends React.Component {
       },
       remotes: this.props.outbound,
     });
-    const { defaultWhse, whses } = this.props;
+    const { defaultWhse, whses, owners } = this.props;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -266,9 +288,12 @@ export default class OutboundList extends React.Component {
               <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} />
               <span />
               <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
-                onChange={this.handleClientSelectChange} defaultValue="all"
+                onChange={this.handleOwnerChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
               >
-                <Option value="all">全部货主</Option>
+                <Option value="all" key="all">全部货主</Option>
+                {
+                  owners.map(owner => (<Option value={owner.id} key={owner.name}>{owner.name}</Option>))
+                }
               </Select>
               <div className="toolbar-right" />
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
