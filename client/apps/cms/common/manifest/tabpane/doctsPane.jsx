@@ -28,6 +28,10 @@ const FormItem = Form.Item;
     invTemplates: state.cmsInvoice.invTemplates,
     docu: state.cmsInvoice.docu,
     docuBody: state.cmsInvoice.docuBody,
+    trxModes: state.cmsInvoice.params.trxModes.map(tm => ({
+      key: tm.trx_mode,
+      text: `${tm.trx_mode} | ${tm.trx_spec}`,
+    })),
   }),
   { loadTempParams, loadDocuDatas, loadDocuBody, loadInvTemplates, updateDocuTemplate, setDocu }
 )
@@ -40,6 +44,7 @@ export default class DocuPane extends React.Component {
     docuDatas: PropTypes.array.isRequired,
     invTemplates: PropTypes.array.isRequired,
     docu: PropTypes.object.isRequired,
+    trxModes: PropTypes.array.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -120,22 +125,21 @@ export default class DocuPane extends React.Component {
   }
   handlePanelChange = (key) => {
     const { invoices, contracts, packlists } = this.state;
+    let docu = {};
     if (key === 'invoice') {
-      const docu = invoices.length > 0 ? invoices[0] : {};
-      this.props.setDocu(docu);
+      docu = invoices.length > 0 ? invoices[0] : {};
     } else if (key === 'contract') {
-      const docu = contracts.length > 0 ? contracts[0] : {};
-      this.props.setDocu(docu);
+      docu = contracts.length > 0 ? contracts[0] : {};
     } else if (key === 'packlist') {
-      const docu = packlists.length > 0 ? packlists[0] : {};
-      this.props.setDocu(docu);
+      docu = packlists.length > 0 ? packlists[0] : {};
     }
+    this.handleRowClick(docu);
   }
   pdfBody = () => {
     const { docu, docuBody } = this.props;
     const pdf = [];
     const header = [];
-    header.push({ text: '中文品名', style: 'tableHeader' });
+    header.push({ text: '序号', style: 'tableHeader' }, { text: '中文品名', style: 'tableHeader' });
     if (docu.eng_name_en) {
       header.push({ text: '英文品名', style: 'tableHeader' });
     }
@@ -153,13 +157,15 @@ export default class DocuPane extends React.Component {
       for (let i = 0; i < docuBody.length; i++) {
         const dbody = docuBody[i];
         const body = [];
-        body.push(`${dbody.g_name}`);
+        body.push(`${dbody.g_no}`, `${dbody.g_name}`);
         if (docu.eng_name_en) {
           body.push(`${dbody.en_name || ''}`);
         }
-        body.push(`${dbody.g_model}`, `${dbody.orig_country}`, `${dbody.g_qty}`, `${dbody.wet_wt}`);
+        body.push(`${dbody.g_model}`, `${dbody.orig_country}`);
+        body.push({ text: `${dbody.g_qty || 0}`, alignment: 'right' });
+        body.push({ text: `${dbody.wet_wt || 0}`, alignment: 'right' });
         if (docu.containerno_en) {
-          body.push(`${dbody.container_no}`);
+          body.push(`${dbody.container_no || ''}`);
         }
         pdf.push(body);
       }
@@ -178,13 +184,16 @@ export default class DocuPane extends React.Component {
       for (let i = 0; i < docuBody.length; i++) {
         const dbody = docuBody[i];
         const body = [];
-        body.push(`${dbody.g_name}`);
+        body.push(`${dbody.g_no}`, `${dbody.g_name}`);
         if (docu.eng_name_en) {
           body.push(`${dbody.en_name || ''}`);
         }
-        body.push(`${dbody.g_model}`, `${dbody.orig_country}`, `${dbody.g_qty}`, `${dbody.trade_total}`, `${dbody.trade_curr}`);
+        body.push(`${dbody.g_model}`, `${dbody.orig_country}`);
+        body.push({ text: `${dbody.g_qty || 0}`, alignment: 'right' });
+        body.push({ text: `${dbody.trade_total || 0}`, alignment: 'right' });
+        body.push(`${dbody.trade_curr}`);
         if (docu.unit_price_en) {
-          body.push(`${dbody.dec_price}`);
+          body.push({ text: `${dbody.dec_price || 0}`, alignment: 'right' });
         }
         pdf.push(body);
       }
@@ -192,29 +201,34 @@ export default class DocuPane extends React.Component {
     if (docu.sub_total_en) {
       const footer = [];
       const sumval = docuBody.reduce((a, b) => ({
-        g_qty: a.g_qty + b.g_qty,
-        trade_total: Number(a.trade_total + b.trade_total),
-        dec_price: Number(a.dec_price + b.dec_price),
-        wet_wt: Number(a.wet_wt + b.wet_wt),
+        g_qty: (a.g_qty || 0) + (b.g_qty || 0),
+        trade_total: Number((a.trade_total || 0) + (b.trade_total || 0)),
+        dec_price: Number((a.dec_price || 0) + (b.dec_price || 0)),
+        wet_wt: Number((a.wet_wt || 0) + (b.wet_wt || 0)),
       }), {
         g_qty: 0,
         trade_total: 0,
         dec_price: 0,
         wet_wt: 0,
       });
-      footer.push('小计');
+      footer.push('小计', '');
       if (docu.eng_name_en) {
         footer.push('');
       }
       if (docu.docu_type === CMS_DOCU_TYPE.packingList) {
-        footer.push('', '', sumval.g_qty, sumval.wet_wt);
+        footer.push('', '');
+        footer.push({ text: `${(sumval.g_qty).toFixed(3)}`, alignment: 'right' });
+        footer.push({ text: `${(sumval.wet_wt).toFixed(3)}`, alignment: 'right' });
         if (docu.containerno_en) {
           footer.push('');
         }
       } else {
-        footer.push('', '', sumval.g_qty, sumval.trade_total, '');
+        footer.push('', '');
+        footer.push({ text: `${(sumval.g_qty).toFixed(3)}`, alignment: 'right' });
+        footer.push({ text: `${(sumval.trade_total).toFixed(3)}`, alignment: 'right' });
+        footer.push('');
         if (docu.unit_price_en) {
-          footer.push(sumval.dec_price);
+          footer.push({ text: `${(sumval.dec_price).toFixed(3)}`, alignment: 'right' });
         }
       }
       pdf.push(footer);
@@ -222,13 +236,15 @@ export default class DocuPane extends React.Component {
     return pdf;
   }
   handleDocDef = () => {
-    const { docu } = this.props;
+    const { docu, trxModes } = this.props;
+    const trxmode = trxModes.find(trx => trx.key === docu.trxn_mode);
+    const trxText = trxmode ? trxmode.text : '';
     const docDefinition = {
       content: [],
       styles: {
         eachheader: {
-          fontSize: 10,
-          margin: [20, 20, 20, 20],
+          fontSize: 9,
+          margin: [40, 20, 30, 30],
         },
         header: {
           fontSize: 14,
@@ -277,7 +293,7 @@ export default class DocuPane extends React.Component {
           table: { headerRows: 1, body: this.pdfBody() },
         },
         { text: `付款条件 Terms Of Payment :  ${docu.payment_terms || ''}` },
-        { text: `成交方式 Terms Of Delivery :  ${docu.trxn_mode || ''}` },
+        { text: `成交方式 Terms Of Delivery :  ${trxText}` },
       ];
       if (docu.insurance_en) {
         docDefinition.content.push({ text: `保险  Insurance :  ${docu.insurance || ''}` });
@@ -289,6 +305,12 @@ export default class DocuPane extends React.Component {
         docDefinition.content.push({ text: `备注 Remark :  ${docu.remark || ''}` });
       }
     } else if (docu.docu_type === CMS_DOCU_TYPE.contract) {
+      docDefinition.header = {
+        columns: [
+          { text: `合同号 Contract No :  ${docu.docu_no}`, style: 'eachheader' },
+          { text: `日期 Date :  ${moment(docu.date).format('YYYY.MM.DD')}`, style: 'eachheader' },
+        ],
+      };
       docDefinition.content = [
         { text: '合同 Contract', style: 'header' },
         { text: `合同号 Contract No :  ${docu.docu_no}` },
@@ -297,10 +319,10 @@ export default class DocuPane extends React.Component {
         { text: `卖方 Seller :  ${docu.seller || ''}` },
         { text: '兹经买卖双方同意，由买方购进，卖方出售下列货物，并按下列条款签订本合同：' },
         { style: 'table',
-          table: { body: this.pdfBody() },
+          table: { headerRows: 1, body: this.pdfBody() },
         },
         { text: `付款条件 Terms Of Payment :  ${docu.payment_terms || ''}` },
-        { text: `成交方式 Terms Of Delivery :  ${docu.trxn_mode || ''}` },
+        { text: `成交方式 Terms Of Delivery :  ${trxText}` },
       ];
       if (docu.insurance_en) {
         docDefinition.content.push({ text: `保险  Insurance :  ${docu.insurance || ''}` });
@@ -320,6 +342,12 @@ export default class DocuPane extends React.Component {
         ] });
       }
     } else if (docu.docu_type === CMS_DOCU_TYPE.packingList) {
+      docDefinition.header = {
+        columns: [
+          { text: `发票编号 Invoice No :  ${docu.docu_no}`, style: 'eachheader' },
+          { text: `日期 Date :  ${moment(docu.date).format('YYYY.MM.DD')}`, style: 'eachheader' },
+        ],
+      };
       docDefinition.content = [
         { text: '箱单 PackingList', style: 'header' },
         { text: `发票号 Invoice No :  ${docu.docu_no}` },
@@ -327,10 +355,10 @@ export default class DocuPane extends React.Component {
         { text: `买方 Buyer :  ${docu.buyer || ''}` },
         { text: `卖方 Seller :  ${docu.seller || ''}` },
         { style: 'table',
-          table: { body: this.pdfBody() },
+          table: { headerRows: 1, body: this.pdfBody() },
         },
         { text: `付款条件 Terms Of Payment :  ${docu.payment_terms || ''}` },
-        { text: `成交方式 Terms Of Delivery :  ${docu.trxn_mode || ''}` },
+        { text: `成交方式 Terms Of Delivery :  ${trxText}` },
       ];
       if (docu.insurance_en) {
         docDefinition.content.push({ text: `保险  Insurance :  ${docu.insurance || ''}` });
@@ -384,7 +412,6 @@ export default class DocuPane extends React.Component {
                     size="large"
                     onChange={this.handleTempSelectChange}
                     style={{ width: '100%' }}
-                    allowClear
                     value={invTempId}
                   >
                     <OptGroup>
@@ -407,7 +434,6 @@ export default class DocuPane extends React.Component {
                     size="large"
                     onChange={this.handleTempSelectChange}
                     style={{ width: '100%' }}
-                    allowClear
                     value={conTempId}
                   >
                     <OptGroup>
@@ -430,7 +456,6 @@ export default class DocuPane extends React.Component {
                     size="large"
                     onChange={this.handleTempSelectChange}
                     style={{ width: '100%' }}
-                    allowClear
                     value={pakTempId}
                   >
                     <OptGroup>

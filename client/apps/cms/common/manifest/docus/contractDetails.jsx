@@ -54,10 +54,10 @@ export default class ContractDetails extends React.Component {
         en_name: '',
         g_model: '',
         orig_country: '',
-        g_qty: a.g_qty + b.g_qty,
-        trade_total: Number(a.trade_total + b.trade_total),
+        g_qty: (a.g_qty || 0) + (b.g_qty || 0),
+        trade_total: Number((a.trade_total || 0) + (b.trade_total || 0)),
         trade_curr: '',
-        dec_price: Number(a.dec_price + b.dec_price),
+        dec_price: Number((a.dec_price || 0) + (b.dec_price || 0)),
       }), {
         total: '合计',
         en_name: '',
@@ -72,12 +72,18 @@ export default class ContractDetails extends React.Component {
     }
   }
   columns = [{
+    title: '序号',
+    dataIndex: 'g_no',
+    width: 80,
+  }, {
     title: '中文品名',
     dataIndex: 'g_name',
     width: 150,
   }]
   totCols = [{
     dataIndex: 'total',
+    width: 80,
+  }, {
     width: 150,
   }]
   handleFill = (val, field) => {
