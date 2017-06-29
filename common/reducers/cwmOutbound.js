@@ -113,7 +113,7 @@ export function loadOutbounds({ whseCode, tenantId, pageSize, current, filters }
         actionTypes.LOAD_OUTBOUNDS_SUCCEED,
         actionTypes.LOAD_OUTBOUNDS_FAIL,
       ],
-      endpoint: 'v1/cwm/shipping/outbounds/load',
+      endpoint: 'v1/cwm/outbounds',
       method: 'get',
       params: { whseCode, tenantId, pageSize, current, filters: JSON.stringify(filters) },
     },
