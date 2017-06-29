@@ -40,51 +40,57 @@ export default class TrackingDetail extends React.Component {
     scriptLoadedNum: 0,
   }
   componentDidMount() {
+    console.log('componentDidMount');
     let script;
     if (!document.getElementById('baidumap-1')) {
+      window.HOST_TYPE = '2'; window.BMap_loadScriptTime = (new Date()).getTime();
       script = document.createElement('script');
       script.id = 'baidumap-1';
-      script.src = 'https://sapi.map.baidu.com/api?v=2.0&ak=A4749739227af1618f7b0d1b588c0e85&s=1';
-      script.async = true;
+      script.src = 'https://api.map.baidu.com/getscript?v=2.0&ak=A4749739227af1618f7b0d1b588c0e85&services=&t=20170628183224';
+      // script.async = true;
       document.body.appendChild(script);
       script.onload = () => {
         this.setState({ scriptLoadedNum: this.state.scriptLoadedNum + 1 }, this.drawBaiduMap);
+        if (!document.getElementById('baidumap-2')) {
+          script = document.createElement('script');
+          script.id = 'baidumap-2';
+          script.src = 'https://sapi.map.baidu.com/library/TextIconOverlay/1.2/src/TextIconOverlay_min.js';
+          script.async = true;
+          document.body.appendChild(script);
+          script.onload = () => {
+            this.setState({ scriptLoadedNum: this.state.scriptLoadedNum + 1 }, this.drawBaiduMap);
+          };
+          script.onreadystatechange = script.onload;
+        }
+        if (!document.getElementById('baidumap-3')) {
+          script = document.createElement('script');
+          script.id = 'baidumap-3';
+          script.src = 'https://sapi.map.baidu.com/library/MarkerClusterer/1.2/src/MarkerClusterer_min.js';
+          script.async = true;
+          document.body.appendChild(script);
+          script.onload = () => {
+            this.setState({ scriptLoadedNum: this.state.scriptLoadedNum + 1 }, this.drawBaiduMap);
+          };
+          script.onreadystatechange = script.onload;
+        }
+        if (!document.getElementById('baidumap-4')) {
+          script = document.createElement('script');
+          script.id = 'baidumap-4';
+          script.src = 'https://sapi.map.baidu.com/library/CurveLine/1.5/src/CurveLine.min.js';
+          script.async = true;
+          document.body.appendChild(script);
+          script.onload = () => {
+            this.setState({ scriptLoadedNum: this.state.scriptLoadedNum + 1 }, this.drawBaiduMap);
+          };
+          script.onreadystatechange = script.onload;
+        }
       };
       script.onreadystatechange = script.onload;
+    } else {
+      console.log('else');
+      this.drawBaiduMap();
     }
-    if (!document.getElementById('baidumap-2')) {
-      script = document.createElement('script');
-      script.id = 'baidumap-2';
-      script.src = 'https://sapi.map.baidu.com/library/TextIconOverlay/1.2/src/TextIconOverlay_min.js';
-      script.async = true;
-      document.body.appendChild(script);
-      script.onload = () => {
-        this.setState({ scriptLoadedNum: this.state.scriptLoadedNum + 1 }, this.drawBaiduMap);
-      };
-      script.onreadystatechange = script.onload;
-    }
-    if (!document.getElementById('baidumap-3')) {
-      script = document.createElement('script');
-      script.id = 'baidumap-3';
-      script.src = 'https://sapi.map.baidu.com/library/MarkerClusterer/1.2/src/MarkerClusterer_min.js';
-      script.async = true;
-      document.body.appendChild(script);
-      script.onload = () => {
-        this.setState({ scriptLoadedNum: this.state.scriptLoadedNum + 1 }, this.drawBaiduMap);
-      };
-      script.onreadystatechange = script.onload;
-    }
-    if (!document.getElementById('baidumap-4')) {
-      script = document.createElement('script');
-      script.id = 'baidumap-4';
-      script.src = 'https://sapi.map.baidu.com/library/CurveLine/1.5/src/CurveLine.min.js';
-      script.async = true;
-      document.body.appendChild(script);
-      script.onload = () => {
-        this.setState({ scriptLoadedNum: this.state.scriptLoadedNum + 1 }, this.drawBaiduMap);
-      };
-      script.onreadystatechange = script.onload;
-    }
+
     this.loadExceptions();
     this.resize();
     $(window).resize(() => {
@@ -92,6 +98,7 @@ export default class TrackingDetail extends React.Component {
     });
   }
   drawBaiduMap = () => {
+    console.log('drawBaiduMap');
     if (this.state.scriptLoadedNum < 4) return;
     const { params } = this.props;
     this.props.loadPubShipmtDetail(params.shipmtNo, params.key).then((result) => {
@@ -368,11 +375,11 @@ export default class TrackingDetail extends React.Component {
             <div id="map" />
           </Col>
         </Row>
-        <script type="text/javascript" src="https://sapi.map.baidu.com/api?v=2.0&ak=A4749739227af1618f7b0d1b588c0e85&s=1" />
+        {/* <script type="text/javascript" src="https://sapi.map.baidu.com/api?v=2.0&ak=A4749739227af1618f7b0d1b588c0e85&s=1" />
         <script type="text/javascript" src="https://sapi.map.baidu.com/library/TextIconOverlay/1.2/src/TextIconOverlay_min.js" />
         <script type="text/javascript" src="https://sapi.map.baidu.com/library/MarkerClusterer/1.2/src/MarkerClusterer_min.js" />
         <script type="text/javascript" src="https://sapi.map.baidu.com/library/CurveLine/1.5/src/CurveLine.min.js" />
-      </div>
+      */}</div>
     );
   }
 }
