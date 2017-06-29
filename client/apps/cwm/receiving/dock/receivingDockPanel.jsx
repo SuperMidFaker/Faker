@@ -111,7 +111,7 @@ export default class ReceivingDockPanel extends React.Component {
     return (
       <Row>
         <Col span="6">
-          <InfoItem label="仓库" addonBefore={<Icon type="tag-o" />} field={asnHead.whse_name && asnHead.whse_name} />
+          <InfoItem label="仓库" addonBefore={<Icon type="tag-o" />} field={asnHead.whse_name} />
         </Col>
         <Col span="6">
           <InfoItem label="货主" field={asnHead.owner_name} />
