@@ -6,7 +6,6 @@ import { Icon, Col, Row, Tabs, Button } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { CWM_ASN_STATUS } from 'common/constants';
 import { hideDock, changeDockTab, loadAsn } from 'common/reducers/cwmReceive';
-import { loadWhseContext } from 'common/reducers/cwmContext';
 import InfoItem from 'client/components/InfoItem';
 import DockPanel from 'client/components/DockPanel';
 import ASNPane from './tabpane/asnPane';
@@ -28,7 +27,7 @@ const TabPane = Tabs.TabPane;
     asn: state.cwmReceive.dock.asn,
     whses: state.cwmContext.whses,
   }),
-  { hideDock, changeDockTab, loadAsn, loadWhseContext }
+  { hideDock, changeDockTab, loadAsn }
 )
 export default class ReceivingDockPanel extends React.Component {
   static propTypes = {
@@ -43,9 +42,6 @@ export default class ReceivingDockPanel extends React.Component {
   state = {
     asnHead: {},
     asnBody: [],
-  }
-  componentWillMount() {
-    this.props.loadWhseContext(this.props.tenantId);
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.asn.asn_no !== this.props.asn.asn_no || this.state.asnBody.length === 0) {
