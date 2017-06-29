@@ -66,7 +66,7 @@ export default class StatsPanel extends Component {
             <div className="statistics-cell">
               <div className="label">{this.msg('total')}</div>
               <div className="data">
-                <div className="data-num lg">
+                <div className="data-num lg text-emphasis">
                   <Link to={this.logsLocation('total')}>{total}</Link>
                 </div>
               </div>
@@ -77,7 +77,7 @@ export default class StatsPanel extends Component {
             <div className="statistics-cell">
               <div className="label">{this.msg('atOrigin')}</div>
               <div className="data">
-                <div className="data-num lg">
+                <div className="data-num lg text-warning">
                   <Link to={this.logsLocation('atOrigin')} >{atOrigin}</Link>
                 </div>
               </div>
@@ -87,7 +87,7 @@ export default class StatsPanel extends Component {
             <div className="statistics-cell">
               <div className="label">{this.msg('intransit')}</div>
               <div className="data">
-                <div className="data-num lg">
+                <div className="data-num lg text-info">
                   <Link to={this.logsLocation('intransit')}>{intransit}</Link>
                 </div>
               </div>
@@ -97,7 +97,7 @@ export default class StatsPanel extends Component {
             <div className="statistics-cell">
               <div className="label">{this.msg('arrival')}</div>
               <div className="data">
-                <div className="data-num lg">
+                <div className="data-num lg text-success">
                   <Link to={this.logsLocation('arrival')}>{arrival}</Link>
                 </div>
               </div>
@@ -112,7 +112,7 @@ export default class StatsPanel extends Component {
                 </Tooltip>
               </div>
               <div className="data">
-                <div className="data-num lg"><Link to={this.logsLocation('overtime')}>{overtime}</Link></div>
+                <div className="data-num lg text-error"><Link to={this.logsLocation('overtime')}>{overtime}</Link></div>
                 <div className="data-percent">
                   {total > 0 ? (overtime / total * 100).toFixed(2) : 0}%
                   <div>超时率</div>
@@ -128,7 +128,7 @@ export default class StatsPanel extends Component {
                 </Tooltip>
               </div>
               <div className="data">
-                <div className="data-num lg"><Link to={this.logsLocation('exception')}>{exception}</Link></div>
+                <div className="data-num lg text-error"><Link to={this.logsLocation('exception')}>{exception}</Link></div>
                 <div className="data-percent">
                   {total > 0 ? (exception / total * 100).toFixed(2) : 0}%
                   <div>异常率</div>

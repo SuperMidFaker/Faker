@@ -152,14 +152,14 @@ export default class TradeItemList extends Component {
           if (record.master_rejected) {
             return (
               <Tooltip title={record.reason}>
-                <span style={{ color: 'orange' }}>{o} <Icon type="pause-circle-o" className="mdc-text-warning" /></span>
+                <span style={{ color: 'orange' }}>{o} <Icon type="pause-circle-o" className="text-warning" /></span>
               </Tooltip>
             );
           } else {
-            return <span>{o} <Icon type="pause-circle-o" className="mdc-text-warning" /></span>;
+            return <span>{o} <Icon type="pause-circle-o" className="text-warning" /></span>;
           }
         case TRADE_ITEM_STATUS.classified:
-          return <span>{o} <Icon type="check-circle-o" className="mdc-text-success" /></span>;
+          return <span>{o} <Icon type="check-circle-o" className="text-success" /></span>;
         default:
           return o;
       }
@@ -659,7 +659,7 @@ export default class TradeItemList extends Component {
       key: 'owner_name',
       render: (o, record) => {
         if (record.mode === 'slave') {
-          return <div style={{ paddingLeft: 15 }}><Icon type="link" className="mdc-text-success" /> {o}</div>;
+          return <div style={{ paddingLeft: 15 }}><Icon type="link" className="text-success" /> {o}</div>;
         } else {
           return <div style={{ paddingLeft: 15 }}>{o}</div>;
         }

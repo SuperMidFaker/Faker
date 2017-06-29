@@ -145,7 +145,6 @@ export default class ModuleSCV extends React.Component {
     linkMenus.push({
       single: false,
       key: 'scv-7',
-      disabled: true,
       icon: 'icon-ikons-bar-chart-2',
       text: formatMsg(intl, 'analytics'),
       sublinks: [{

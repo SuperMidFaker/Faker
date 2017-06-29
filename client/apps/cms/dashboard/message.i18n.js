@@ -36,7 +36,7 @@ const messages = defineMessages({
   },
   inspected: {
     id: 'cms.dashboard.stats.status.inspected',
-    defaultMessage: '查验',
+    defaultMessage: '海关查验',
   },
   inspectedRate: {
     id: 'cms.dashboard.stats.status.inspected.rate',
