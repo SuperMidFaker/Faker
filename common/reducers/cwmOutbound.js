@@ -46,7 +46,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.OPEN_ALLOCATING_MODAL:
       return { ...state, allocatingModal: { ...state.allocatingModal, visible: true, ...action.data } };
     case actionTypes.CLOSE_ALLOCATING_MODAL:
-      return { ...state, allocatingModal: { visible: false } };
+      return { ...state, allocatingModal: { ...state.allocatingModal, visible: false } };
     case actionTypes.OPEN_PICKING_MODAL:
       return { ...state, pickingModal: { visible: true } };
     case actionTypes.CLOSE_PICKING_MODAL:
