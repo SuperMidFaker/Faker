@@ -9,6 +9,8 @@ const initialState = {
   statistics: {
     startDate: null,
     endDate: null,
+    cusPartnerId: '',
+    cusTenantId: '',
     total: 0,
     sumImport: 0,
     sumExport: 0,
@@ -22,7 +24,7 @@ const initialState = {
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.CMS_STATISTICS_SUCCEED:
-      return { ...state, statistics: { ...state.statistics, ...action.result.data } };
+      return { ...state, statistics: { ...state.statistics, ...action.result.data, ...action.params } };
     default:
       return state;
   }
