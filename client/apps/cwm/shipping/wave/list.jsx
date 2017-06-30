@@ -13,7 +13,7 @@ import ShippingDockPanel from '../dock/shippingDockPanel';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
-import { loadSos, showDock, releaseSo } from 'common/reducers/cwmShippingOrder';
+import { loadWaves, showDock, releaseSo } from 'common/reducers/cwmShippingOrder';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -21,11 +21,11 @@ const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const Option = Select.Option;
 function fetchData({ state, dispatch }) {
-  dispatch(loadSos({
+  dispatch(loadWaves({
     whseCode: state.cwmContext.defaultWhse.code,
-    pageSize: state.cwmShippingOrder.solist.pageSize,
-    current: state.cwmShippingOrder.solist.current,
-    filters: state.cwmShippingOrder.soFilters,
+    pageSize: state.cwmShippingOrder.wave.pageSize,
+    current: state.cwmShippingOrder.wave.current,
+    filters: state.cwmShippingOrder.waveFilters,
   }));
 }
 @connectFetch()(fetchData)
@@ -37,10 +37,10 @@ function fetchData({ state, dispatch }) {
     defaultWhse: state.cwmContext.defaultWhse,
     owners: state.cwmContext.whseAttrs.owners,
     loginId: state.account.loginId,
-    filters: state.cwmShippingOrder.soFilters,
-    solist: state.cwmShippingOrder.solist,
+    filters: state.cwmShippingOrder.waveFilters,
+    solist: state.cwmShippingOrder.wave,
   }),
-  { loadSos, switchDefaultWhse, showDock, releaseSo }
+  { loadWaves, switchDefaultWhse, showDock, releaseSo }
 )
 @connectNav({
   depth: 2,
@@ -127,10 +127,10 @@ export default class WaveList extends React.Component {
     });
   }
   handleReload = () => {
-    this.props.loadSos({
+    this.props.loadWaves({
       whseCode: this.props.defaultWhse.code,
-      pageSize: this.props.solist.pageSize,
-      current: this.props.solist.current,
+      pageSize: this.props.wave.pageSize,
+      current: this.props.wave.current,
       filters: this.props.filters,
     });
   }
@@ -145,37 +145,37 @@ export default class WaveList extends React.Component {
   handleStatusChange = (ev) => {
     const filters = { ...this.props.filters, status: ev.target.value };
     const whseCode = this.props.defaultWhse.code;
-    this.props.loadSos({
+    this.props.loadWaves({
       whseCode,
-      pageSize: this.props.solist.pageSize,
-      current: this.props.solist.current,
+      pageSize: this.props.wave.pageSize,
+      current: this.props.wave.current,
       filters,
     });
   }
   handleOwnerChange = (value) => {
     const filters = { ...this.props.filters, ownerCode: value };
     const whseCode = this.props.defaultWhse.code;
-    this.props.loadSos({
+    this.props.loadWaves({
       whseCode,
-      pageSize: this.props.solist.pageSize,
-      current: this.props.solist.current,
+      pageSize: this.props.wave.pageSize,
+      current: this.props.wave.current,
       filters,
     });
   }
   handleSearch = (value) => {
     const filters = { ...this.props.filters, name: value };
     const whseCode = this.props.defaultWhse.code;
-    this.props.loadSos({
+    this.props.loadWaves({
       whseCode,
-      pageSize: this.props.solist.pageSize,
-      current: this.props.solist.current,
+      pageSize: this.props.wave.pageSize,
+      current: this.props.wave.current,
       filters,
     });
   }
   render() {
     const { whses, defaultWhse, filters } = this.props;
     const dataSource = new Table.DataSource({
-      fetcher: params => this.props.loadSos(params),
+      fetcher: params => this.props.loadWaves(params),
       resolve: result => result.data,
       getPagination: (result, resolve) => ({
         current: resolve(result.totalCount, result.current, result.pageSize),
@@ -194,7 +194,7 @@ export default class WaveList extends React.Component {
         };
         return params;
       },
-      remotes: this.props.solist,
+      remotes: this.props.wave,
     });
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,

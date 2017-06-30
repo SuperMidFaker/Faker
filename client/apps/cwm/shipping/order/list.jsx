@@ -97,12 +97,7 @@ export default class ShippingOrderList extends React.Component {
     title: '发货时间',
     dataIndex: 'shipped_date',
     width: 160,
-    render: o => moment(o).format('MM.DD HH:MM'),
-  }, {
-    title: '创建时间',
-    width: 120,
-    dataIndex: 'created_date',
-    render: o => moment(o).format('MM.DD HH:MM'),
+    render: o => o && moment(o).format('MM.DD HH:MM'),
   }, {
     title: '状态',
     dataIndex: 'status',
@@ -327,7 +322,7 @@ export default class ShippingOrderList extends React.Component {
               </div>
             </div>
             <div className="panel-body table-panel">
-              <Table columns={this.columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="id" scroll={{ x: 1400 }} />
+              <Table columns={this.columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="so_no" scroll={{ x: 1400 }} />
             </div>
           </div>
         </Content>

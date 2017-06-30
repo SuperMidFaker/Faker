@@ -15,15 +15,14 @@ const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
 const Panel = Collapse.Panel;
 
-const dateFormat = 'YYYY/MM/DD';
-
 @injectIntl
 @connect(
   state => ({
     visible: state.cwmOutbound.allocatingModal.visible,
     outboundNo: state.cwmOutbound.allocatingModal.outboundNo,
-    ownerCode: state.cwmOutbound.allocatingModal.ownerCode,
     outboundProduct: state.cwmOutbound.allocatingModal.outboundProduct,
+    filters: state.cwmOutbound.inventoryFilter,
+    inventoryData: state.cwmOutbound.inventoryData,
     defaultWhse: state.cwmContext.defaultWhse,
   }),
   { closeAllocatingModal, loadProductInboundDetail }
@@ -36,6 +35,8 @@ export default class AllocatingModal extends Component {
   }
   state = {
     modalWidth: 1000,
+    inventoryData: [],
+    allocatedData: [],
   }
   componentWillMount() {
     if (typeof document !== 'undefined' && typeof window !== 'undefined') {
@@ -43,8 +44,13 @@ export default class AllocatingModal extends Component {
     }
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.outBoundNo !== this.props.outboundNo || nextProps.seqNo !== this.props.seqNo) {
-      this.props.loadProductInboundDetail(nextProps.productNo, this.props.defaultWhse.code, this.props.ownerCode);
+    if (nextProps.outboundNo !== this.props.outboundNo || nextProps.outboundProduct.seq_no !== this.props.outboundProduct.seq_no) {
+      this.props.loadProductInboundDetail(nextProps.outboundProduct.product_sku, nextProps.defaultWhse.code, nextProps.filters);
+    }
+    if (nextProps.inventoryData !== this.props.inventoryData) {
+      this.setState({
+        inventoryData: nextProps.inventoryData,
+      });
     }
   }
   msg = key => formatMsg(this.props.intl, key);
@@ -53,7 +59,7 @@ export default class AllocatingModal extends Component {
   }
   inventoryColumns = [{
     title: 'SKU',
-    dataIndex: 'sku',
+    dataIndex: 'product_sku',
     width: 120,
     render: (o) => {
       if (o) {
@@ -66,15 +72,15 @@ export default class AllocatingModal extends Component {
     width: 120,
   }, {
     title: '中文品名',
-    dataIndex: 'desc_cn',
+    dataIndex: 'name',
     width: 150,
   }, {
     title: '批次号',
-    dataIndex: 'lot_no',
+    dataIndex: 'external_lot_no',
     width: 100,
   }, {
     title: '序列号',
-    dataIndex: 'sn_no',
+    dataIndex: 'serial_no',
     width: 100,
   }, {
     title: '库位',
@@ -95,17 +101,18 @@ export default class AllocatingModal extends Component {
     },
   }, {
     title: '入库日期',
-    dataIndex: 'inbound_date',
+    dataIndex: 'created_date',
     width: 180,
+    render: o => moment(o).format('YYYY.MM.DD'),
   }, {
     title: '破损级别',
     dataIndex: 'damage_level',
   }, {
     title: '可用数量',
-    dataIndex: 'avail_qty',
+    dataIndex: 'inbound_qty',
     width: 200,
     fixed: 'right',
-    render: (o, record) => (<QuantityInput packQty={record.allocated_pack_qty} pcsQty={record.allocated_qty} />),
+    render: (o, record) => (<QuantityInput packQty={record.inbound_pack_qty} pcsQty={record.inbound_qty} />),
   }, {
     title: '出库数量',
     width: 200,
@@ -115,12 +122,12 @@ export default class AllocatingModal extends Component {
     title: '添加',
     width: 80,
     fixed: 'right',
-    render: () => (<span><Button type="primary" size="small" icon="plus" /></span>),
+    render: (o, record, index) => (<span><Button type="primary" size="small" icon="plus" onClick={() => this.handleAddAllocate(index)} /></span>),
   }]
 
   allocatedColumns = [{
     title: 'SKU',
-    dataIndex: 'sku',
+    dataIndex: 'product_sku',
     width: 120,
     render: (o) => {
       if (o) {
@@ -133,15 +140,15 @@ export default class AllocatingModal extends Component {
     width: 120,
   }, {
     title: '中文品名',
-    dataIndex: 'desc_cn',
+    dataIndex: 'name',
     width: 150,
   }, {
     title: '批次号',
-    dataIndex: 'lot_no',
+    dataIndex: 'external_lot_no',
     width: 100,
   }, {
     title: '序列号',
-    dataIndex: 'sn_no',
+    dataIndex: 'serial_no',
     width: 100,
   }, {
     title: '库位',
@@ -168,65 +175,60 @@ export default class AllocatingModal extends Component {
     title: '删除',
     width: 80,
     fixed: 'right',
-    render: () => (<span><Button type="danger" size="small" ghost icon="minus" /></span>),
+    render: (o, record, index) => (<span><Button type="danger" size="small" ghost icon="minus" onClick={() => this.handleDeleteAllocated(index)} /></span>),
   }]
-  dataSource = [{
-    trace_id: 'T04601170548',
-    convey_no: 'N0170548',
-    order_qty: 15,
-    desc_cn: '微纤维止血胶原粉',
-    packing_code: '良品',
-    unit: '件',
-    receive_pack: '单件',
-    expect_pack_qty: 15,
-    expect_qty: 15,
-    received_pack_qty: 15,
-    received_qty: 15,
-  }, {
-    trace_id: 'T04601170547',
-    convey_no: 'N0170547',
-    order_qty: 1000,
-    desc_cn: '微纤维止血胶原粉',
-    packing_code: '良品',
-    unit: '件',
-    receive_pack: '内包装',
-    expect_pack_qty: 10,
-    expect_qty: 1000,
-    received_pack_qty: 0,
-    received_qty: 0,
-  }, {
-    trace_id: 'T04601170521',
-    convey_no: 'N0170546',
-    order_qty: 1000,
-    desc_cn: '微纤维止血胶原粉',
-    packing_code: '残次',
-    unit: '个',
-    receive_pack: '内包装',
-    expect_pack_qty: 10,
-    expect_qty: 1000,
-    received_pack_qty: 0,
-    received_qty: 0,
-  }];
+  handleLocationChange = (e) => {
+    const filters = { ...this.props.filters, location: e.target.value };
+    this.props.loadProductInboundDetail(this.props.outboundProduct.product_sku, this.props.defaultWhse.code, filters);
+  }
+  handleLotnoChange = (e) => {
+    const filters = { ...this.props.filters, external_lot_no: e.target.value };
+    this.props.loadProductInboundDetail(this.props.outboundProduct.product_sku, this.props.defaultWhse.code, filters);
+  }
+  handleSonoChange = (e) => {
+    const filters = { ...this.props.filters, serial_no: e.target.value };
+    this.props.loadProductInboundDetail(this.props.outboundProduct.product_sku, this.props.defaultWhse.code, filters);
+  }
+  handleDateChange = (dates, dateString) => {
+    const filters = { ...this.props.filters, date: dateString };
+    this.props.loadProductInboundDetail(this.props.outboundProduct.product_sku, this.props.defaultWhse.code, filters);
+  }
+  handleAddAllocate = (index) => {
+    const inventoryData = [...this.state.inventoryData];
+    const allocatedData = [...this.state.allocatedData];
+    const allocatedOne = inventoryData[index];
+    inventoryData.splice(index, 1);
+    allocatedData.push(allocatedOne);
+    this.setState({
+      inventoryData,
+      allocatedData,
+    });
+  }
+  handleDeleteAllocated = (index) => {
+    const inventoryData = [...this.state.inventoryData];
+    const allocatedData = [...this.state.allocatedData];
+    const deleteOne = allocatedData[index];
+    allocatedData.splice(index, 1);
+    inventoryData.push(deleteOne);
+    this.setState({
+      inventoryData,
+      allocatedData,
+    });
+  }
   render() {
-    const { outboundNo, outboundProduct } = this.props;
+    const { outboundNo, outboundProduct, filters } = this.props;
     const inventoryQueryForm = (<Form layout="inline" style={{ display: 'inline-block' }}>
       <FormItem label="库位">
-        <Input />
+        <Input onChange={this.handleLocationChange} value={filters.location} />
       </FormItem>
       <FormItem label="批次号">
-        <Input />
+        <Input onChange={this.handleLotnoChange} value={filters.external_lot_no} />
       </FormItem>
       <FormItem label="序列号">
-        <Input />
+        <Input onChange={this.handleSonoChange} value={filters.serial_no} />
       </FormItem>
       <FormItem label="入库日期">
-        <RangePicker
-          defaultValue={[moment('2015/01/01', dateFormat), moment('2015/01/01', dateFormat)]}
-          format={dateFormat}
-        />
-      </FormItem>
-      <FormItem>
-        <Button type="primary" ghost size="large">查询</Button>
+        <RangePicker onChange={this.handleDateChange} />
       </FormItem>
     </Form>);
 
@@ -254,12 +256,12 @@ export default class AllocatingModal extends Component {
         <Collapse bordered={false} defaultActiveKey={['2']}>
           <Panel header="库存查询" key="1">
             <Card title={inventoryQueryForm} bodyStyle={{ padding: 0 }} style={{ marginBottom: 0 }}>
-              <Table size="middle" columns={this.inventoryColumns} dataSource={this.dataSource} rowKey="trace_id" scroll={{ y: 220 }} />
+              <Table size="middle" columns={this.inventoryColumns} dataSource={this.state.inventoryData} rowKey="trace_id" scroll={{ y: 220 }} />
             </Card>
           </Panel>
           <Panel header="分配明细" key="2">
             <Card bodyStyle={{ padding: 0 }} style={{ marginBottom: 0 }}>
-              <Table size="middle" columns={this.allocatedColumns} dataSource={this.dataSource} rowKey="trace_id" scroll={{ y: 220 }} />
+              <Table size="middle" columns={this.allocatedColumns} dataSource={this.state.allocatedData} rowKey="trace_id" scroll={{ y: 220 }} />
             </Card>
           </Panel>
         </Collapse>

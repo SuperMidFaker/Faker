@@ -21,9 +21,10 @@ const initialState = {
   allocatingModal: {
     visible: false,
     outboundNo: '',
-    ownerCode: '',
     outboundProduct: {},
   },
+  inventoryData: [],
+  inventoryFilter: { location: '', external_lot_no: '', serial_no: '' },
   pickingModal: {
     visible: false,
   },
@@ -63,6 +64,10 @@ export default function reducer(state = initialState, action) {
       return { ...state, outboundFormHead: action.result.data };
     case actionTypes.LOAD_OUTBOUND_PRODUCTS_SUCCEED:
       return { ...state, outboundProducts: action.result.data };
+    case actionTypes.LOAD_PRODUCT_INBOUND_DETAILS:
+      return { ...state, inventoryFilter: JSON.parse(action.params.filters) };
+    case actionTypes.LOAD_PRODUCT_INBOUND_DETAILS_SUCCEED:
+      return { ...state, inventoryData: action.result.data };
     default:
       return state;
   }
@@ -150,7 +155,7 @@ export function loadOutboundProductDetails(outboundNo) {
   };
 }
 
-export function loadProductInboundDetail(productNo, whseCode, ownerId) {
+export function loadProductInboundDetail(productSku, whseCode, filters) {
   return {
     [CLIENT_API]: {
       types: [
@@ -160,7 +165,7 @@ export function loadProductInboundDetail(productNo, whseCode, ownerId) {
       ],
       endpoint: 'v1/cwm/shipping/product/inbound/details',
       method: 'get',
-      params: { productNo, whseCode, ownerId },
+      params: { productSku, whseCode, filters: JSON.stringify(filters) },
     },
   };
 }
