@@ -218,9 +218,9 @@ export default class TrackingDetail extends React.Component {
     $('#map').height($(window).height() - 50);
   }
   loadExceptions = () => {
-    const { shipmt } = this.props.shipmtDetail;
+    const { params } = this.props;
     this.props.loadExceptions({
-      shipmtNo: shipmt.shipmt_no,
+      shipmtNo: params.shipmtNo,
       pageSize: 999999,
       currentPage: 1,
     }).then((result) => {
