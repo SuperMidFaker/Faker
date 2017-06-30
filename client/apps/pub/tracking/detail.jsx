@@ -86,17 +86,16 @@ export default class TrackingDetail extends React.Component {
       };
       script.onreadystatechange = script.onload;
     } else {
-      this.drawBaiduMap();
+      this.drawBaiduMap(4);
     }
-
     this.loadExceptions();
     this.resize();
     $(window).resize(() => {
       this.resize();
     });
   }
-  drawBaiduMap = () => {
-    if (this.state.scriptLoadedNum < 4) return;
+  drawBaiduMap = (scriptLoadedNum = 4) => {
+    if (scriptLoadedNum < 4 && this.state.scriptLoadedNum < 4) return;
     const { params } = this.props;
     this.props.loadPubShipmtDetail(params.shipmtNo, params.key).then((result) => {
       const { shipmt, tracking } = result.data;
