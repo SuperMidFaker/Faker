@@ -186,7 +186,7 @@ export default class TrackingDetail extends React.Component {
           map.setViewport(viewPoints);
         });
       }
-      if (shipmt.status < 3) {
+      if (shipmt.status <= 3) {
         const departPointAddr = `${Location.renderConsignLocation(shipmt, 'consigner')}${shipmt.consigner_addr ? shipmt.consigner_addr : ''}`;
         points.push({
           province: shipmt.consigner_province,
