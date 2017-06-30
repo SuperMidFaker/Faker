@@ -3,34 +3,48 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Card, DatePicker } from 'antd';
+import moment from 'moment';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
+import connectFetch from 'client/common/decorators/connect-fetch';
+import { loadCmsStatistics } from 'common/reducers/cmsDashboard';
 
 const formatMsg = format(messages);
 const RangePicker = DatePicker.RangePicker;
 
+function fetchData({ state, dispatch }) {
+  const firstDay = new Date();
+  firstDay.setDate(1);
+  const startDate = `${moment(state.cmsDashboard.statistics.startDate || firstDay).format('YYYY-MM-DD')} 00:00:00`;
+  const endDate = `${moment(state.cmsDashboard.statistics.endDate || new Date()).format('YYYY-MM-DD')} 23:59:59`;
+  return dispatch(loadCmsStatistics({ tenantId: state.account.tenantId, startDate, endDate }));
+}
+@connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-
+    statistics: state.cmsDashboard.statistics,
   }),
-  { }
+  { loadCmsStatistics }
 )
 
 export default class StatsCard extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    inboundNo: PropTypes.string.isRequired,
+    statistics: PropTypes.object.isRequired,
   }
-  state = {
+  onDateChange = (value, dateString) => {
+    this.props.loadCmsStatistics({ tenantId: this.props.tenantId, startDate: `${dateString[0]} 00:00:00`, endDate: `${dateString[1]} 23:59:59` });
   }
   msg = key => formatMsg(this.props.intl, key);
-
   render() {
+    const { startDate, endDate, total, sumImport, sumExport, processing, declared, released, inspected } = this.props.statistics;
     const datePicker = (
       <div>
-        <RangePicker onChange={this.onDateChange} allowClear={false} />
+        <RangePicker style={{ width: 200, marginLeft: 20 }} value={[moment(startDate), moment(endDate)]}
+          onChange={this.onDateChange} allowClear={false}
+        />
       </div>);
     return (
       <Card title={this.msg('stats')}
@@ -41,7 +55,7 @@ export default class StatsCard extends Component {
             <div className="statistics-cell">
               <h4>{this.msg('total')}</h4>
               <div className="data">
-                <div className="data-num lg text-emphasis">29</div>
+                <div className="data-num lg text-emphasis">{total}</div>
               </div>
             </div>
           </li>
@@ -50,7 +64,7 @@ export default class StatsCard extends Component {
             <div className="statistics-cell">
               <h4>{this.msg('sumImport')}</h4>
               <div className="data">
-                <div className="data-num lg text-normal">6</div>
+                <div className="data-num lg text-normal">{sumImport}</div>
               </div>
             </div>
           </li>
@@ -58,7 +72,7 @@ export default class StatsCard extends Component {
             <div className="statistics-cell">
               <h4>{this.msg('sumExport')}</h4>
               <div className="data">
-                <div className="data-num lg text-normal">23</div>
+                <div className="data-num lg text-normal">{sumExport}</div>
               </div>
             </div>
           </li>
@@ -67,7 +81,7 @@ export default class StatsCard extends Component {
             <div className="statistics-cell">
               <h4>{this.msg('processing')}</h4>
               <div className="data">
-                <div className="data-num lg text-warning">6</div>
+                <div className="data-num lg text-warning">{processing}</div>
               </div>
             </div>
           </li>
@@ -75,7 +89,7 @@ export default class StatsCard extends Component {
             <div className="statistics-cell">
               <h4>{this.msg('declared')}</h4>
               <div className="data">
-                <div className="data-num lg text-info">3</div>
+                <div className="data-num lg text-info">{declared}</div>
               </div>
             </div>
           </li>
@@ -83,7 +97,7 @@ export default class StatsCard extends Component {
             <div className="statistics-cell">
               <h4>{this.msg('released')}</h4>
               <div className="data">
-                <div className="data-num lg text-success">20</div>
+                <div className="data-num lg text-success">{released}</div>
               </div>
             </div>
           </li>
@@ -92,9 +106,9 @@ export default class StatsCard extends Component {
             <div className="statistics-cell" style={{ width: 160 }}>
               <h4>{this.msg('inspected')}</h4>
               <div className="data">
-                <div className="data-num lg text-error">3</div>
+                <div className="data-num lg text-error">{inspected}</div>
                 <div className="data-percent">
-                  {1.6}%
+                  {total > 0 ? (inspected / total * 100).toFixed(2) : 0}%
                   <div>{this.msg('inspectedRate')}</div>
                 </div>
               </div>

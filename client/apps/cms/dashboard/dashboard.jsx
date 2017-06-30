@@ -28,12 +28,6 @@ export default class CMSDashboard extends React.Component {
     tenantId: PropTypes.number.isRequired,
   }
   msg = key => formatMsg(this.props.intl, key);
-
-  handleRadioChange = (ev) => {
-    if (ev.target.value === this.props.listFilter.status) {
-
-    }
-  }
   render() {
     return (
       <QueueAnim type={['bottom', 'up']}>
