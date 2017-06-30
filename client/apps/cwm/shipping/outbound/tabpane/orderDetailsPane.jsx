@@ -108,6 +108,9 @@ export default class OrderDetailsPane extends React.Component {
   handleSKUAllocateDetails = (outboundNo, seqNo) => {
     this.props.openAllocatingModal(outboundNo, seqNo);
   }
+  handleWithdrawTask = () => {
+
+  }
   render() {
     const { outboundProducts } = this.props;
     const rowSelection = {

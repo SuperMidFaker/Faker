@@ -8,6 +8,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/shipping/', [
   'GET_SO', 'GET_SO_SUCCEED', 'GET_SO_FAIL',
   'UPDATE_SO', 'UPDATE_SO_SUCCEED', 'UPDATE_SO_FAIL',
   'RELEASE_SO', 'RELEASE_SO_SUCCEED', 'RELEASE_SO_FAIL',
+  'LOAD_WAVES', 'LOAD_WAVES_SUCCEED', 'LOAD_WAVES_FAIL',
 ]);
 
 const initialState = {
@@ -26,6 +27,13 @@ const initialState = {
     data: [],
   },
   soFilters: { status: 'pending', ownerCode: 'all' },
+  wave: {
+    totalCount: 0,
+    pageSize: 20,
+    current: 1,
+    data: [],
+  },
+  waveFilters: { status: 'pending' },
 };
 
 export default function reducer(state = initialState, action) {
@@ -40,6 +48,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, soFilters: JSON.parse(action.params.filters) };
     case actionTypes.LOAD_SOS_SUCCEED:
       return { ...state, solist: action.result.data };
+    case actionTypes.LOAD_WAVES_SUCCEED:
+      return { ...state, wave: action.result.data };
     default:
       return state;
   }
@@ -135,6 +145,21 @@ export function releaseSo(soNo, loginId) {
       endpoint: 'v1/cwm/release/so',
       method: 'post',
       data: { soNo, loginId },
+    },
+  };
+}
+
+export function loadWaves({ whseCode, pageSize, current, filters }) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_WAVES,
+        actionTypes.LOAD_WAVES_SUCCEED,
+        actionTypes.LOAD_WAVES_FAIL,
+      ],
+      endpoint: 'v1/cwm/waves',
+      method: 'get',
+      params: { whseCode, pageSize, current, filters: JSON.stringify(filters) },
     },
   };
 }

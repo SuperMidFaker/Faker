@@ -140,7 +140,6 @@ export default class OutboundDetail extends Component {
               {this.props.params.outboundNo}
             </Breadcrumb.Item>
           </Breadcrumb>
-          {outboundHead.wave_no && <Alert message={`已加入波次计划: ${outboundHead.wave_no}`} type="info" />}
           <div className="top-bar-tools">
             {this.state.allocated && !this.state.picked &&
             <Button type={!this.state.printedPickingList && 'primary'} size="large" icon="printer" onClick={this.handlePrint} />
