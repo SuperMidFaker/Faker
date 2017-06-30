@@ -7,22 +7,22 @@ import RowUpdater from 'client/components/rowUpdater';
 import { MdIcon } from 'client/components/FontIcon';
 import AllocatingModal from '../modal/allocatingModal';
 import QuantityInput from '../../../common/quantityInput';
-import { openAllocatingModal, loadOutboundProductDetails } from 'common/reducers/cwmOutbound';
-
+import { openAllocatingModal, loadOutboundProductDetails, autoAllocProduct } from 'common/reducers/cwmOutbound';
 
 @injectIntl
 @connect(
   state => ({
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
+    loginName: state.account.username,
     outboundProducts: state.cwmOutbound.outboundProducts,
   }),
-  { openAllocatingModal, loadOutboundProductDetails }
+  { openAllocatingModal, loadOutboundProductDetails, autoAllocProduct }
 )
 export default class OrderDetailsPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    ownerCode: PropType.string.isRequired,
+    outboundProducts: PropType.arrayOf(PropType.shape({ seq_no: PropType.string.isRequired })),
   }
   state = {
     selectedRowKeys: [],
@@ -88,14 +88,13 @@ export default class OrderDetailsPane extends React.Component {
     width: 150,
     fixed: 'right',
     render: (o, record) => {
-      if (record.alloc_qty === 0) {  // 订单明细的状态 0 未分配 1 部分分配 2 完全分配
+      if (record.alloc_qty < record.order_qty) {
+        // 订单明细的状态 0 未分配 1 部分分配 2 完全分配
         return (<span>
           <RowUpdater onHit={this.handleSKUAutoAllocate} label="自动分配" row={record} />
           <span className="ant-divider" />
-          <RowUpdater onHit={() => this.handleSKUAllocateDetails({ ownerCode: this.props.ownerCode, outboundNo: this.props.outboundNo, outboundProduct: record })} label="手动分配" row={record} />
+          <RowUpdater onHit={this.handleSKUAllocateDetails} label="手动分配" row={record} />
         </span>);
-      } else if (record.alloc_qty !== 0 && record.alloc_qty < record.order_qty) {
-
       } else {
         return (<span>
           <RowUpdater onHit={this.handleSKUAllocateDetails} label="分配明细" row={record} />
@@ -105,8 +104,11 @@ export default class OrderDetailsPane extends React.Component {
       }
     },
   }]
-  handleSKUAllocateDetails = (outboundNo, seqNo) => {
-    this.props.openAllocatingModal(outboundNo, seqNo);
+  handleSKUAutoAllocate = (row) => {
+    this.props.autoAllocProduct(row.outbound_no, row.seq_no, this.props.loginId, this.props.loginName);
+  }
+  handleSKUAllocateDetails = (row) => {
+    this.props.openAllocatingModal(row.outbound_no, row.seq_no);
   }
   handleWithdrawTask = () => {
 
@@ -135,7 +137,7 @@ export default class OrderDetailsPane extends React.Component {
             {!this.state.allocated && <Button type="primary" size="large" onClick={this.handleAutoAllocate} >订单自动分配</Button>}
           </div>
         </div>
-        <Table columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={outboundProducts} rowKey="id"
+        <Table columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={outboundProducts} rowKey="seq_no"
           scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
         />
         <AllocatingModal shippingMode={this.state.shippingMode} />

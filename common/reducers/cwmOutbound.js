@@ -9,6 +9,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/outbound/', [
   'LOAD_OUTBOUND_HEAD', 'LOAD_OUTBOUND_HEAD_SUCCEED', 'LOAD_OUTBOUND_HEAD_FAIL',
   'LOAD_OUTBOUND_PRODUCTS', 'LOAD_OUTBOUND_PRODUCTS_SUCCEED', 'LOAD_OUTBOUND_PRODUCTS_FAIL',
   'LOAD_PRODUCT_INBOUND_DETAILS', 'LOAD_PRODUCT_INBOUND_DETAILS_SUCCEED', 'LOAD_PRODUCT_INBOUND_DETAILS_FAIL',
+  'AUTO_ALLOC', 'AUTO_ALLOC_SUCCEED', 'AUTO_ALLOC_FAIL',
 ]);
 
 const initialState = {
@@ -166,6 +167,24 @@ export function loadProductInboundDetail(productSku, whseCode, filters) {
       endpoint: 'v1/cwm/shipping/product/inbound/details',
       method: 'get',
       params: { productSku, whseCode, filters: JSON.stringify(filters) },
+    },
+  };
+}
+
+export function autoAllocProduct(outboundNo, seqNo, loginId, loginName) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.AUTO_ALLOC,
+        actionTypes.AUTO_ALLOC_SUCCEED,
+        actionTypes.AUTO_ALLOC_FAIL,
+      ],
+      endpoint: 'v1/cwm/outbound/autoalloc/product',
+      method: 'post',
+      data: { outbound_no: outboundNo,
+        seq_no: seqNo,
+        login_id: loginId,
+        login_name: loginName },
     },
   };
 }

@@ -87,7 +87,7 @@ export default class ShippingOrderList extends React.Component {
     title: '创建时间',
     width: 120,
     dataIndex: 'created_date',
-    render: o => moment(o).format('YYYY.MM.DD'),
+    render: o => moment(o).format('MM.DD HH:MM'),
   }, {
     title: '要求交货时间',
     dataIndex: 'expect_shipping_date',
