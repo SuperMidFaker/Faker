@@ -186,8 +186,17 @@ export default class TrackingDetail extends React.Component {
           map.setViewport(viewPoints);
         });
       }
+      if (shipmt.status < 3) {
+        const departPointAddr = `${Location.renderConsignLocation(shipmt, 'consigner')}${shipmt.consigner_addr ? shipmt.consigner_addr : ''}`;
+        points.push({
+          province: shipmt.consigner_province,
+          city: shipmt.consigner_city,
+          district: shipmt.consigner_district,
+          address: shipmt.consigner_addr,
+          label: `${moment(shipmt.pickup_est_date).format('YYYY-MM-DD HH:mm')} ${departPointAddr}`,
+        });
+      }
       const current = points.length - 1;
-
       if (shipmt.status <= 4) {
         const destPointAddr = `${Location.renderConsignLocation(shipmt, 'consignee')}${shipmt.consignee_addr ? shipmt.consignee_addr : ''}`;
         points.push({
