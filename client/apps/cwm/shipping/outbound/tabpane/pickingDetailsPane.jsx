@@ -14,6 +14,7 @@ import { openPickingModal, openShippingModal } from 'common/reducers/cwmOutbound
   state => ({
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
+    reload: state.cwmOutbound.outboundReload,
   }),
   { openPickingModal, openShippingModal }
 )

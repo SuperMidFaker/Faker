@@ -16,6 +16,7 @@ import { openAllocatingModal, loadOutboundProductDetails, autoAllocProduct } fro
     loginId: state.account.loginId,
     loginName: state.account.username,
     outboundProducts: state.cwmOutbound.outboundProducts,
+    reload: state.cwmOutbound.outboundReload,
   }),
   { openAllocatingModal, loadOutboundProductDetails, autoAllocProduct }
 )

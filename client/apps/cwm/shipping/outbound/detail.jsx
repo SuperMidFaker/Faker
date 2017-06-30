@@ -31,6 +31,7 @@ const TabPane = Tabs.TabPane;
     submitting: state.cmsDelegation.submitting,
     defaultWhse: state.cwmContext.defaultWhse,
     outboundHead: state.cwmOutbound.outboundFormHead,
+    reload: state.cwmOutbound.outboundReload,
   }),
   { loadReceiveModal, loadOutboundHead }
 )
@@ -60,6 +61,11 @@ export default class OutboundDetail extends Component {
   }
   componentWillMount() {
     this.props.loadOutboundHead(this.props.params.outboundNo);
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.reload) {
+      this.props.loadOutboundHead(this.props.params.outboundNo);
+    }
   }
   msg = key => formatMsg(this.props.intl, key);
   handleSave = () => {
