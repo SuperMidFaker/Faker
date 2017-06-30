@@ -40,7 +40,6 @@ export default class TrackingDetail extends React.Component {
     scriptLoadedNum: 0,
   }
   componentDidMount() {
-    console.log('componentDidMount');
     let script;
     if (!document.getElementById('baidumap-1')) {
       window.HOST_TYPE = '2'; window.BMap_loadScriptTime = (new Date()).getTime();
@@ -87,7 +86,6 @@ export default class TrackingDetail extends React.Component {
       };
       script.onreadystatechange = script.onload;
     } else {
-      console.log('else');
       this.drawBaiduMap();
     }
 
@@ -98,7 +96,6 @@ export default class TrackingDetail extends React.Component {
     });
   }
   drawBaiduMap = () => {
-    console.log('drawBaiduMap');
     if (this.state.scriptLoadedNum < 4) return;
     const { params } = this.props;
     this.props.loadPubShipmtDetail(params.shipmtNo, params.key).then((result) => {
