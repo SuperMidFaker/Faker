@@ -76,7 +76,6 @@ const OptGroup = Select.OptGroup;
 export default class DelegationList extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    ietype: PropTypes.oneOf(['import', 'export']),
     listView: PropTypes.oneOf(['delegation', 'ciq']),
     tenantId: PropTypes.number.isRequired,
     loginId: PropTypes.number.isRequired,
@@ -172,8 +171,8 @@ export default class DelegationList extends Component {
     title: this.msg('declareWay'),
     width: 100,
     dataIndex: 'decl_way_code',
-    render: (o) => {
-      const DECL_TYPE = this.props.ietype === 'import' ? DECL_I_TYPE : DECL_E_TYPE;
+    render: (o, record) => {
+      const DECL_TYPE = record.i_e_type === 0 ? DECL_I_TYPE : DECL_E_TYPE;
       const type = DECL_TYPE.filter(dl => dl.key === o)[0];
       if (type) {
         // 0000口岸进口 0001口岸出口 0100保税区进口 0101保税区出口
@@ -279,7 +278,6 @@ export default class DelegationList extends Component {
     }),
     getParams: (pagination, filters, sorter) => {
       const params = {
-        ietype: this.props.ietype,
         tenantId: this.props.tenantId,
         loginId: this.props.loginId,
         pageSize: pagination.pageSize,
@@ -299,15 +297,11 @@ export default class DelegationList extends Component {
     }
     this.props.showPreviewer(delgNo, tabKey);
   }
-  handleCreateBtnClick = () => {
-    this.context.router.push(`/clearance/${this.props.ietype}/create`);
-  }
   handleDelgListLoad = (currentPage, filter) => {
-    const { tenantId, listFilter, ietype, loginId,
+    const { tenantId, listFilter, loginId,
       delegationlist: { pageSize, current } } = this.props;
     this.setState({ expandedKeys: [] });
     this.props.loadAcceptanceTable({
-      ietype,
       tenantId,
       loginId,
       filter: JSON.stringify(filter || listFilter),
@@ -343,6 +337,13 @@ export default class DelegationList extends Component {
     this.setState({ selectedRowKeys: [] });
     this.handleDelgListLoad(1, filter);
   }
+  handleIEFilter = (ev) => {
+    if (ev.target.value === this.props.listFilter.ietype) {
+      return;
+    }
+    const filter = { ...this.props.listFilter, ietype: ev.target.value };
+    this.handleDelgListLoad(1, filter);
+  }
   handleCiqFilter = (ev) => {
     if (ev.target.value === this.props.listFilter.status) {
       return;
@@ -365,13 +366,13 @@ export default class DelegationList extends Component {
     });
   }
   handleManifestMake = (row) => {
-    const { ietype } = this.props;
-    const link = `/clearance/${ietype}/manifest/${row.delg_no}`;
+    const clearType = row.i_e_type === 0 ? 'import' : 'export';
+    const link = `/clearance/${clearType}/manifest/${row.delg_no}`;
     this.context.router.push(link);
   }
   handleManifestView = (row) => {
-    const { ietype } = this.props;
-    const link = `/clearance/${ietype}/manifest/view/${row.delg_no}`;
+    const clearType = row.i_e_type === 0 ? 'import' : 'export';
+    const link = `/clearance/${clearType}/manifest/view/${row.delg_no}`;
     this.context.router.push(link);
   }
   handleDelegationAccept = (row, lid) => {
@@ -478,6 +479,7 @@ export default class DelegationList extends Component {
         width: 150,
         fixed: 'right',
         render: (o, record) => {
+          const clearType = record.i_e_type === 0 ? 'import' : 'export';
           if (record.status === CMS_DELEGATION_STATUS.unaccepted) {         // 1.当前租户未接单
             let editOverlay = null;
             if (record.source === DELG_SOURCE.consigned) {
@@ -485,7 +487,7 @@ export default class DelegationList extends Component {
               editOverlay = (
                 <Menu>
                   <Menu.Item key="edit">
-                    <NavLink to={`/clearance/${this.props.ietype}/edit/${record.delg_no}`}>
+                    <NavLink to={`/clearance/${clearType}/edit/${record.delg_no}`}>
                       <Icon type="edit" /> {this.msg('modify')}
                     </NavLink>
                   </Menu.Item>
@@ -498,11 +500,11 @@ export default class DelegationList extends Component {
             }
             return (
               <span>
-                <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
+                <PrivilegeCover module="clearance" feature={clearType} action="edit">
                   <OperatorPopover partenrId={record.partnerId} record={record} handleAccept={this.handleDelegationAccept} module="clearance" />
                 </PrivilegeCover>
                 {editOverlay && <span className="ant-divider" />}
-                {editOverlay && <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
+                {editOverlay && <PrivilegeCover module="clearance" feature={clearType} action="edit">
                   <Dropdown overlay={editOverlay}>
                     <a role="presentation"><Icon type="down" /></a>
                   </Dropdown>
@@ -562,7 +564,7 @@ export default class DelegationList extends Component {
             }
             return (
               <span>
-                <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
+                <PrivilegeCover module="clearance" feature={clearType} action="create">
                   {manifestOp}
                 </PrivilegeCover>
                 {dispatchOverlay && <span className="ant-divider" />}
@@ -573,7 +575,7 @@ export default class DelegationList extends Component {
           } else if (record.status === CMS_DELEGATION_STATUS.declaring ||   // 4. 申报
                       record.status === CMS_DELEGATION_STATUS.released) {   // 5. 放行
             return (
-              <PrivilegeCover module="clearance" feature={this.props.ietype} action="create">
+              <PrivilegeCover module="clearance" feature={clearType} action="create">
                 <RowUpdater onHit={this.handleManifestView} label={<span><Icon type="eye-o" /> {this.msg('viewManifest')}</span>} row={record} />
               </PrivilegeCover>);
           }
@@ -588,7 +590,7 @@ export default class DelegationList extends Component {
               {this.msg('delegationManagement')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <RadioGroup value={listFilter.status} onChange={this.handleIEFilter} size="large">
+          <RadioGroup value={listFilter.ietype} onChange={this.handleIEFilter} size="large">
             <RadioButton value="all">{this.msg('all')}</RadioButton>
             <RadioButton value="import">{this.msg('import')}</RadioButton>
             <RadioButton value="export">{this.msg('export')}</RadioButton>
@@ -644,7 +646,7 @@ export default class DelegationList extends Component {
             </div>
           </div>
         </Content>
-        <DelegationDockPanel ietype={this.props.ietype} />
+        <DelegationDockPanel />
         <OrderDockPanel />
         <ShipmentDockPanel />
       </QueueAnim>

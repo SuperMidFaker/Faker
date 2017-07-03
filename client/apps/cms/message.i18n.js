@@ -9,8 +9,8 @@ const messages = defineMessages({
     id: 'cms.module.import',
     defaultMessage: '进口申报',
   },
-  importDelegation: {
-    id: 'cms.module.import.delegation',
+  delegation: {
+    id: 'cms.module.delegation',
     defaultMessage: '委托管理',
   },
   importManifest: {
@@ -28,10 +28,6 @@ const messages = defineMessages({
   export: {
     id: 'cms.module.export',
     defaultMessage: '出口申报',
-  },
-  exportDelegation: {
-    id: 'cms.module.export.delegation',
-    defaultMessage: '委托管理',
   },
   exportManifest: {
     id: 'cms.module.export.manifest',

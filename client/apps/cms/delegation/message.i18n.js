@@ -1,6 +1,14 @@
 import { defineMessages } from 'react-intl';
 
 export default defineMessages({
+  import: {
+    id: 'cms.delegation.import',
+    defaultMessage: '进口',
+  },
+  export: {
+    id: 'cms.delegation.export',
+    defaultMessage: '出口',
+  },
   importClearance: {
     id: 'cms.delegation.import.clearance',
     defaultMessage: '进口申报',
