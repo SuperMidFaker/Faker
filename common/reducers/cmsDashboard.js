@@ -18,6 +18,7 @@ const initialState = {
     declared: 0,
     released: 0,
     inspected: 0,
+    declcount: 0,
   },
 };
 

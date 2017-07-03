@@ -10,6 +10,8 @@ const actionTypes = createActionTypes('@@welogix/cwm/outbound/', [
   'LOAD_OUTBOUND_PRODUCTS', 'LOAD_OUTBOUND_PRODUCTS_SUCCEED', 'LOAD_OUTBOUND_PRODUCTS_FAIL',
   'LOAD_PRODUCT_INBOUND_DETAILS', 'LOAD_PRODUCT_INBOUND_DETAILS_SUCCEED', 'LOAD_PRODUCT_INBOUND_DETAILS_FAIL',
   'AUTO_ALLOC', 'AUTO_ALLOC_SUCCEED', 'AUTO_ALLOC_FAIL',
+  'CANCEL_PRDALLOC', 'CANCEL_PRDALLOC_SUCCEED', 'CANCEL_PRDALLOC_FAIL',
+  'LOAD_PICK_DETAILS', 'LOAD_PICK_DETAILS_SUCCEED', 'LOAD_PICK_DETAILS_FAIL',
 ]);
 
 const initialState = {
@@ -26,6 +28,7 @@ const initialState = {
   },
   inventoryData: [],
   inventoryFilter: { location: '', external_lot_no: '', serial_no: '' },
+  allocatedData: [],
   pickingModal: {
     visible: false,
   },
@@ -42,6 +45,7 @@ const initialState = {
   outboundFormHead: {},
   outboundProducts: [],
   outboundReload: false,
+  pickDetails: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -69,9 +73,12 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_PRODUCT_INBOUND_DETAILS:
       return { ...state, inventoryFilter: JSON.parse(action.params.filters) };
     case actionTypes.LOAD_PRODUCT_INBOUND_DETAILS_SUCCEED:
-      return { ...state, inventoryData: action.result.data };
+      return { ...state, inventoryData: action.result.data.details, allocatedData: action.result.allocated };
     case actionTypes.AUTO_ALLOC_SUCCEED:
+    case actionTypes.CANCEL_PRDALLOC_SUCCEED:
       return { ...state, outboundReload: true };
+    case actionTypes.LOAD_PICK_DETAILS_SUCCEED:
+      return { ...state, pickDetails: action.result.data };
     default:
       return state;
   }
@@ -159,7 +166,7 @@ export function loadOutboundProductDetails(outboundNo) {
   };
 }
 
-export function loadProductInboundDetail(productSku, whseCode, filters) {
+export function loadProductInboundDetail(productSku, whseCode, filters, outboundNo, seqNo) {
   return {
     [CLIENT_API]: {
       types: [
@@ -169,12 +176,12 @@ export function loadProductInboundDetail(productSku, whseCode, filters) {
       ],
       endpoint: 'v1/cwm/shipping/product/inbound/details',
       method: 'get',
-      params: { productSku, whseCode, filters: JSON.stringify(filters) },
+      params: { productSku, whseCode, filters: JSON.stringify(filters), outboundNo, seqNo },
     },
   };
 }
 
-export function autoAllocProduct(outboundNo, seqNo, loginId, loginName) {
+export function batchAutoAlloc(outboundNo, seqNos, loginId, loginName) {
   return {
     [CLIENT_API]: {
       types: [
@@ -182,12 +189,45 @@ export function autoAllocProduct(outboundNo, seqNo, loginId, loginName) {
         actionTypes.AUTO_ALLOC_SUCCEED,
         actionTypes.AUTO_ALLOC_FAIL,
       ],
-      endpoint: 'v1/cwm/outbound/autoalloc/product',
+      endpoint: 'v1/cwm/outbound/autoalloc/batch',
       method: 'post',
       data: { outbound_no: outboundNo,
-        seq_no: seqNo,
+        seq_nos: seqNos,
         login_id: loginId,
         login_name: loginName },
+    },
+  };
+}
+
+export function cancelProductsAlloc(outboundNo, seqNos, loginId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.CANCEL_PRDALLOC,
+        actionTypes.CANCEL_PRDALLOC_SUCCEED,
+        actionTypes.CANCEL_PRDALLOC_FAIL,
+      ],
+      endpoint: 'v1/cwm/outbound/undo/products/alloc',
+      method: 'post',
+      data: { outbound_no: outboundNo,
+        seq_nos: seqNos,
+        login_id: loginId,
+      },
+    },
+  };
+}
+
+export function loadPickDetails(outboundNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_PICK_DETAILS,
+        actionTypes.LOAD_PICK_DETAILS_SUCCEED,
+        actionTypes.LOAD_PICK_DETAILS_FAIL,
+      ],
+      endpoint: 'v1/cwm/pick/details/load',
+      method: 'get',
+      params: { outboundNo },
     },
   };
 }
