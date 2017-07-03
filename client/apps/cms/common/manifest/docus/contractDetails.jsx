@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import connectNav from 'client/common/decorators/connect-nav';
 import { Card, Row, Col, Table } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import InfoItem from 'client/components/InfoItem';
@@ -22,10 +21,6 @@ import { saveDocuChange } from 'common/reducers/cmsInvoice';
   }),
   { saveDocuChange }
 )
-@connectNav({
-  depth: 2,
-  moduleName: 'clearance',
-})
 export default class ContractDetails extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,

@@ -35,7 +35,7 @@ const Panel = Collapse.Panel;
   { loadCustomers, openAddModal, deleteRelatedCustomer, loadRelatedCustomers, saveTemplateData, countFieldsChange, loadCmsParams }
 )
 @Form.create({ onFieldsChange: (props, values) => props.countFieldsChange(values) })
-export default class BillTemplate extends Component {
+export default class ManifestTemplate extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     ietype: PropTypes.oneOf(['import', 'export']),

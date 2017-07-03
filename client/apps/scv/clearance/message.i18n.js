@@ -28,7 +28,7 @@ const messages = defineMessages({
   },
   customsDecl: {
     id: 'scv.clearance.customs.decl',
-    defaultMessage: '报关单管理',
+    defaultMessage: '报关单证',
   },
   filterAll: {
     id: 'cms.clearance.filter.all',

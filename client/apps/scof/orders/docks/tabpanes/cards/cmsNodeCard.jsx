@@ -24,6 +24,9 @@ export default class CMSNodeCard extends React.Component {
     kind: PropTypes.oneOf(['import', 'export']),
     in_degree: PropTypes.number.isRequired,
   }
+  static contextTypes = {
+    router: PropTypes.object.isRequired,
+  }
   state = {
     trigger: -1,
   }
@@ -61,17 +64,23 @@ export default class CMSNodeCard extends React.Component {
     this.props.showPreviewer(No, 'customsDecl');
     this.props.hideDock();
   }
+  handleManifest = () => {
+    const link = `/clearance/${this.props.kind}/manifest/`;
+    this.context.router.push(`${link}${this.props.uuid}`); // TODO
+  }
   render() {
     const { name, children, declWayCode, transMode, blWbNo, in_degree: indegree } = this.props;
     let declWay = '';
     const declWayMap = this.props.kind === 'import' ? DECL_I_TYPE : DECL_E_TYPE;
     declWay = declWayMap.find(item => item.key === declWayCode).value;
-    const preview = indegree === 0 ?
-        (<Tooltip title="进入详情">
-          <Button size="small" shape="circle" icon="right" onClick={() => this.handlePreview(this.props.uuid)} />
-        </Tooltip>) : null;
+    const extra = indegree === 0 ?
+    (<div>
+      <Tooltip title="进入详情">
+        <Button type="primary" size="small" shape="circle" icon="right" onClick={() => this.handleManifest()} />
+      </Tooltip>
+    </div>) : null;
     return (
-      <Card title={<span>{name}</span>} extra={preview} bodyStyle={{ padding: 8, paddingBottom: 56 }}>
+      <Card title={<span>{name}</span>} extra={extra} bodyStyle={{ padding: 8, paddingBottom: 56 }} onClick={() => this.handlePreview(this.props.uuid)}>
         <Row>
           <Col span="8">
             <InfoItem label="运输方式" addonBefore={<Icon type="tag-o" />}

@@ -61,13 +61,17 @@ export default class CWMNodeCard extends React.Component {
       });
     }
   }
+  handleInbound = () => {
+    this.context.router.push(`/cwm/receiving/inbound/${this.props.uuid}`); // TODO
+  }
   render() {
     const { title, children } = this.props;
     return (
       <Card title={<span>{title}</span>} extra={
         <Tooltip title="进入详情">
-          <Button size="small" shape="circle" icon="right" onClick={() => this.handlePreview(this.props.uuid)} />
+          <Button size="small" shape="circle" icon="right" onClick={() => this.handleInbound()} />
         </Tooltip>} bodyStyle={{ padding: 8, paddingBottom: 56 }}
+        onClick={() => this.handlePreview(this.props.uuid)}
       >
         <Row>
           <Col span="8">

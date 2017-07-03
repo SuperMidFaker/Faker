@@ -121,7 +121,7 @@ export default class CustomsDeclPane extends React.Component {
     const columns = [{
       title: '报关单',
       dataIndex: 'customs_inspect',
-      render: (o, record) => <CustomsDeclSheetCard customsDecl={record} />,
+      render: (o, record) => <CustomsDeclSheetCard customsDecl={record} manifest={bill} />,
     }];
     const assignable = (customsPanel.customs_tenant_id === tenantId || customsPanel.customs_tenant_id === -1);
     const filterOperators = operators.filter(op => op.name !== bill.preparer_name);

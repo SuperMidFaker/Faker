@@ -5,13 +5,13 @@ const messages = defineMessages({
     id: 'cms.module.dashboard',
     defaultMessage: '工作台',
   },
+  delegation: {
+    id: 'cms.module.delegation',
+    defaultMessage: '委托管理',
+  },
   import: {
     id: 'cms.module.import',
     defaultMessage: '进口申报',
-  },
-  importDelegation: {
-    id: 'cms.module.import.delegation',
-    defaultMessage: '委托管理',
   },
   importManifest: {
     id: 'cms.module.import.manifest',
@@ -19,19 +19,15 @@ const messages = defineMessages({
   },
   importCustomsDecl: {
     id: 'cms.module.import.decl.customs',
-    defaultMessage: '报关单管理',
+    defaultMessage: '报关单证',
   },
   importCiqDecl: {
     id: 'cms.module.import.decl.ciq',
-    defaultMessage: '入境报检',
+    defaultMessage: '报检单证',
   },
   export: {
     id: 'cms.module.export',
     defaultMessage: '出口申报',
-  },
-  exportDelegation: {
-    id: 'cms.module.export.delegation',
-    defaultMessage: '委托管理',
   },
   exportManifest: {
     id: 'cms.module.export.manifest',
@@ -39,11 +35,11 @@ const messages = defineMessages({
   },
   exportCustomsDecl: {
     id: 'cms.module.export.decl.customs',
-    defaultMessage: '报关单管理',
+    defaultMessage: '报关单证',
   },
   exportCiqDecl: {
     id: 'cms.module.export.decl.ciq',
-    defaultMessage: '出境报检',
+    defaultMessage: '报检单证',
   },
   billing: {
     id: 'cms.module.billing',
@@ -79,11 +75,11 @@ const messages = defineMessages({
   },
   classification: {
     id: 'cms.module.classification',
-    defaultMessage: '物料归类',
+    defaultMessage: '商品归类',
   },
   tradeItem: {
     id: 'cms.module.classification.trade.item',
-    defaultMessage: '企业物料库',
+    defaultMessage: '客户归类库',
   },
   hscode: {
     id: 'cms.module.classification.hscode',

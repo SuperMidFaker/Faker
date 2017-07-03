@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadTemplateFormVals } from 'common/reducers/cmsManifest';
-import BillTemplate from './billTemplate';
+import ManifestTemplate from './manifestTemplate';
 
 function fetchData({ dispatch, params }) {
   return dispatch(loadTemplateFormVals(params.id));
@@ -13,8 +13,8 @@ function fetchData({ dispatch, params }) {
   depth: 3,
   moduleName: 'clearance',
 })
-export default class EditBillTemplate extends Component {
+export default class EditManifestTemplate extends Component {
   render() {
-    return (<BillTemplate operation="edit" />);
+    return (<ManifestTemplate operation="edit" />);
   }
 }

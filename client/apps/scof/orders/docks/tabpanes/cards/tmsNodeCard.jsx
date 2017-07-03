@@ -76,9 +76,9 @@ export default class TMSNodeCard extends React.Component {
   }
   render() {
     const { name, children, consignerName, consigneeName, trsMode, in_degree: indegree, pod } = this.props;
-    const previewer = indegree === 0 ?
+    const extra = indegree === 0 ?
         (<Tooltip title="进入详情">
-          <Button size="small" shape="circle" icon="right" onClick={() => this.handleShipmtPreview(this.props.uuid)} />
+          <Button size="small" shape="circle" icon="right" />
         </Tooltip>) : null;
     const steps = [
       <Step description="接单" key="accept" />,
@@ -90,7 +90,7 @@ export default class TMSNodeCard extends React.Component {
       steps.push(<Step description="回单" key="pod" />);
     }
     return (
-      <Card title={<span>{name}</span>} extra={previewer} bodyStyle={{ padding: 8, paddingBottom: 56 }}>
+      <Card title={<span>{name}</span>} extra={extra} bodyStyle={{ padding: 8, paddingBottom: 56 }} onClick={() => this.handleShipmtPreview(this.props.uuid)}>
         <Row>
           <Col span="8">
             <InfoItem label="发货方" addonBefore={<Icon type="tag-o" />}

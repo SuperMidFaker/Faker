@@ -28,6 +28,7 @@ import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
 const TabPane = Tabs.TabPane;
+const ButtonGroup = Button.Group;
 
 const navObj = {
   depth: 3,
@@ -176,6 +177,11 @@ export default class CustomsDeclEditor extends React.Component {
                   <Button size="large" icon="delete" />
                 </Tooltip>
               </Popconfirm> }
+              <ButtonGroup>
+                <Button size="large" icon="file-pdf" />
+                <Button size="large" icon="printer" />
+                <Button size="large" icon="mail" />
+              </ButtonGroup>
               { head.status === CMS_DECL_STATUS.proposed.value &&
                 <Button type="primary" size="large" icon="check-circle-o" onClick={this.handleReview}>{this.msg('review')}</Button>
               }
@@ -189,7 +195,7 @@ export default class CustomsDeclEditor extends React.Component {
                 <Button type="primary" ghost size="large" icon="flag" onClick={this.handleMarkReleasedModal}>{this.msg('markReleased')}</Button>
               }
               <Dropdown.Button size="large" onClick={this.handleManifestVisit} overlay={declEntryMenu}>
-                <Icon type="file-text" /> 查看报关清单
+                <Icon type="file-text" /> 关联报关清单
               </Dropdown.Button>
             </div>
           </Header>

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 // import moment from 'moment';
-import { Timeline, Card } from 'antd';
+import { Timeline } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import { loadOrderNodes } from 'common/reducers/crmOrders';
 import { MdIcon, Ikons } from 'client/components/FontIcon';
@@ -44,9 +44,8 @@ export default class FlowPane extends React.Component {
   render() {
     return (
       <div className="pane-content tab-pane">
-        <Card>
-          <Timeline>
-            {
+        <Timeline>
+          {
               this.props.kinds.map((item) => {
                 if (item.kind === 'import' || item.kind === 'export') {
                   return (
@@ -80,8 +79,7 @@ export default class FlowPane extends React.Component {
                 }
               })
             }
-          </Timeline>
-        </Card>
+        </Timeline>
       </div>);
   }
 }

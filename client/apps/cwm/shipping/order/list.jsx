@@ -270,7 +270,7 @@ export default class ShippingOrderList extends React.Component {
           </Breadcrumb>
           <RadioGroup value={filters.status} onChange={this.handleStatusChange} size="large">
             <RadioButton value="pending">订单接收</RadioButton>
-            <RadioButton value="outbound">出库中</RadioButton>
+            <RadioButton value="outbound">已释放</RadioButton>
             <RadioButton value="partial">部分出库</RadioButton>
             <RadioButton value="completed">订单完成</RadioButton>
           </RadioGroup>

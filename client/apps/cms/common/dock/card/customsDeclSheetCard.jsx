@@ -10,6 +10,15 @@ const Step = Steps.Step;
 export default class CustomsDeclSheetCard extends React.Component {
   static propTypes = {
     customsDecl: PropTypes.object.isRequired,
+    manifest: PropTypes.object.isRequired,
+  }
+  static contextTypes = {
+    router: PropTypes.object.isRequired,
+  }
+  handleView = () => {
+    const clearType = this.props.manifest.i_e_type === 0 ? 'import' : 'export';
+    const link = `/clearance/${clearType}/customs/${this.props.manifest.bill_seq_no}/${this.props.customsDecl.pre_entry_seq_no}`;
+    this.context.router.push(`${link}`);
   }
 
   render() {
@@ -28,7 +37,7 @@ export default class CustomsDeclSheetCard extends React.Component {
       inspectFlag = <Tag color="rgba(39, 187, 71, 0.65)">通过</Tag>;
     }
     return (
-      <Card title={<span>{declNo}</span>} extra={declStatus} bodyStyle={{ paddingBottom: 56 }}>
+      <Card title={<a onClick={() => this.handleView()}>{declNo}</a>} extra={declStatus} bodyStyle={{ paddingBottom: 56 }} >
         <Row gutter={8}>
           <Col span="12">
             <InfoItem label="收发货人" field={customsDecl.trade_name} />
