@@ -52,7 +52,7 @@ export default class StatsCard extends Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   render() {
-    const { startDate, endDate, total, sumImport, sumExport, processing, declared, released, inspected } = this.props.statistics;
+    const { startDate, endDate, total, sumImport, sumExport, processing, declared, released, inspected, declcount } = this.props.statistics;
     const clients = [{
       name: '全部客户',
       partner_id: -1,
@@ -134,7 +134,7 @@ export default class StatsCard extends Component {
               <div className="data">
                 <div className="data-num lg text-error">{inspected}</div>
                 <div className="data-percent">
-                  {total > 0 ? (inspected / total * 100).toFixed(2) : 0}%
+                  {declcount > 0 ? (inspected / declcount * 100).toFixed(2) : 0}%
                   <div>{this.msg('inspectedRate')}</div>
                 </div>
               </div>
