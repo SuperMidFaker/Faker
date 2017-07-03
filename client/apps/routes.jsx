@@ -39,6 +39,7 @@ import * as PublicTMS from './pub/tracking';
 import * as Template from './pub/template';
 import CMS from './cms/module-clearance';
 import * as CMSDashboard from './cms/dashboard';
+import * as CMSDelegation from './cms/delegation';
 import * as CMSImportDelegation from './cms/import/delegation';
 import * as CMSImportManifest from './cms/import/manifest';
 import * as CMSImportCustoms from './cms/import/customs';
@@ -282,6 +283,7 @@ export default(store, cookie) => {
           <Route path={DEFAULT_MODULES.clearance.id} component={CMS}>
             <IndexRedirect to="/clearance/dashboard" />
             <Route path="dashboard" component={CMSDashboard.Index} />
+            <Route path="delegation" component={CMSDelegation.List} />
             <Route path="import">
               <IndexRedirect to="/clearance/import/delegation" />
               <Route path="delegation" component={CMSImportDelegation.List} />

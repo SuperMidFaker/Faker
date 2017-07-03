@@ -35,39 +35,48 @@ export default class Clearance extends React.Component {
     if (hasPermission(privileges, { module: 'clearance', feature: 'dashboard' })) {
       linkMenus.push({
         single: true,
-        key: 'cms-0',
+        key: 'cms-dashboard',
         path: '/clearance/dashboard',
         icon: 'icon-fontello-desktop',
         text: formatMsg(intl, 'dashboard'),
       });
     }
+    linkMenus.push(
+      {
+        single: true,
+        key: 'cms-delegation',
+        path: '/clearance/delegation',
+        icon: 'anticon anticon-inbox',
+        text: formatMsg(intl, 'delegation'),
+      }
+    );
     if (hasPermission(privileges, { module: 'clearance', feature: 'import' })) {
       linkMenus.push({
         single: false,
-        key: 'cms-1',
+        key: 'cms-import',
         path: '/clearance/import',
         icon: 'icon-ikons-login',
         text: formatMsg(intl, 'import'),
         sublinks: [{
-          key: 'cms-1-0',
+          key: 'cms-import-0',
           group: formatMsg(intl, 'import'),
           icon: 'anticon anticon-inbox',
           path: '/clearance/import/delegation',
           text: formatMsg(intl, 'importDelegation'),
         }, {
-          key: 'cms-1-1',
+          key: 'cms-import-1',
           group: formatMsg(intl, 'import'),
           icon: 'anticon anticon-file-text',
           path: '/clearance/import/manifest',
           text: formatMsg(intl, 'importManifest'),
         }, {
-          key: 'cms-1-2',
+          key: 'cms-import-2',
           group: formatMsg(intl, 'import'),
           icon: 'anticon anticon-file',
           path: '/clearance/import/customs',
           text: formatMsg(intl, 'importCustomsDecl'),
         }, {
-          key: 'cms-1-3',
+          key: 'cms-import-3',
           disabled: true,
           group: formatMsg(intl, 'import'),
           path: '/clearance/import/ciq',
@@ -78,30 +87,30 @@ export default class Clearance extends React.Component {
     if (hasPermission(privileges, { module: 'clearance', feature: 'export' })) {
       linkMenus.push({
         single: false,
-        key: 'cms-2',
+        key: 'cms-export',
         path: '/clearance/export',
         icon: 'icon-ikons-logout',
         text: formatMsg(intl, 'export'),
         sublinks: [{
-          key: 'cms-2-0',
+          key: 'cms-export-0',
           group: formatMsg(intl, 'export'),
           icon: 'anticon anticon-inbox',
           path: '/clearance/export/delegation',
           text: formatMsg(intl, 'exportDelegation'),
         }, {
-          key: 'cms-2-1',
+          key: 'cms-export-1',
           group: formatMsg(intl, 'export'),
           icon: 'anticon anticon-file-text',
           path: '/clearance/export/manifest',
           text: formatMsg(intl, 'exportManifest'),
         }, {
-          key: 'cms-2-2',
+          key: 'cms-export-2',
           group: formatMsg(intl, 'export'),
           icon: 'anticon anticon-file',
           path: '/clearance/export/customs',
           text: formatMsg(intl, 'exportCustomsDecl'),
         }, {
-          key: 'cms-2-3',
+          key: 'cms-export-3',
           disabled: true,
           group: formatMsg(intl, 'export'),
           path: '/clearance/export/ciq',
@@ -112,19 +121,19 @@ export default class Clearance extends React.Component {
     if (hasPermission(privileges, { module: 'clearance', feature: 'import' })) {
       linkMenus.push({
         single: false,
-        key: 'cms-4',
+        key: 'cms-classification',
         icon: 'icon-fontello-database',
         text: formatMsg(intl, 'classification'),
         sublinks: [{
-          key: 'cms-4-0',
+          key: 'cms-classification-0',
           path: '/clearance/classification/tradeitem',
           text: formatMsg(intl, 'tradeItem'),
         }, {
-          key: 'cms-4-1',
+          key: 'cms-classification-1',
           path: '/clearance/classification/hscode',
           text: formatMsg(intl, 'hscode'),
         }, {
-          key: 'cms-4-2',
+          key: 'cms-classification-2',
           path: '/clearance/classification/special',
           text: formatMsg(intl, 'specialCategory'),
         }],
@@ -133,27 +142,27 @@ export default class Clearance extends React.Component {
     if (hasPermission(privileges, { module: 'clearance', feature: 'billing' })) {
       linkMenus.push({
         single: false,
-        key: 'cms-3',
+        key: 'cms-billing',
         path: '/clearance/billing',
         icon: 'icon-fontello-money-1',
         text: formatMsg(intl, 'billing'),
         sublinks: [{
-          key: 'cms-3-0',
+          key: 'cms-billing-0',
           group: formatMsg(intl, 'groupBilling'),
           path: '/clearance/billing/expense',
           text: formatMsg(intl, 'expense'),
         }, {
-          key: 'cms-3-1',
+          key: 'cms-billing-1',
           group: formatMsg(intl, 'groupInvoice'),
           path: '/clearance/billing/receivable',
           text: formatMsg(intl, 'billingReceivable'),
         }, {
-          key: 'cms-3-2',
+          key: 'cms-billing-2',
           group: formatMsg(intl, 'groupInvoice'),
           path: '/clearance/billing/payable',
           text: formatMsg(intl, 'billingPayable'),
         }, {
-          key: 'cms-3-3',
+          key: 'cms-billing-3',
           group: formatMsg(intl, 'groupQuote'),
           path: '/clearance/billing/quote',
           text: formatMsg(intl, 'quote'),
@@ -163,19 +172,19 @@ export default class Clearance extends React.Component {
     if (hasPermission(privileges, { module: 'clearance', feature: 'settings' })) {
       linkMenus.push({
         single: false,
-        key: 'cms-6',
+        key: 'ccms-settings',
         icon: 'zmdi zmdi-settings',
         text: formatMsg(intl, 'settings'),
         sublinks: [{
-          key: 'cms-6-0',
+          key: 'ccms-settings-0',
           path: '/clearance/resources',
           text: formatMsg(intl, 'settingsResources'),
         }, {
-          key: 'cms-6-1',
+          key: 'ccms-settings-1',
           path: '/clearance/settings/quotetemplates',
           text: formatMsg(intl, 'quoteTemplates'),
         }, {
-          key: 'cms-6-2',
+          key: 'ccms-settings-2',
           path: '/clearance/settings/doctemplates',
           text: formatMsg(intl, 'docTemplates'),
         }],
