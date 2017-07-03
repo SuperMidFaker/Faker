@@ -17,12 +17,12 @@ import * as CorpMembers from './corp/members';
 import * as Role from './corp/role';
 import PackNetwork from './network/packNetwork';
 import * as Network from './network';
-import PackOpenPlatform from './open/packOpenPlatform';
-import * as OpenAPI from './open/api';
-import * as OpenIntegration from './open/integration';
-import * as IntegraionArCTM from './open/integration/arctm';
-import * as IntegraionEasipassEDI from './open/integration/easipass';
-import * as IntegraionSHFTZ from './open/integration/shftz';
+import PackDataHub from './hub/packDataHub';
+import * as OpenAPI from './hub/api';
+import * as OpenIntegration from './hub/integration';
+import * as IntegraionArCTM from './hub/integration/arctm';
+import * as IntegraionEasipassEDI from './hub/integration/easipass';
+import * as IntegraionSHFTZ from './hub/integration/shftz';
 import Module from './module';
 import TMS from './transport/module-transport';
 import * as TMSDashboard from './transport/dashboard';
@@ -168,8 +168,8 @@ export default(store, cookie) => {
             <Route path="invitations/out" component={Network.Sent} />
           </Route>
         </Route>
-        <Route path="open" component={PackOpenPlatform}>
-          <IndexRedirect to="/open/integration/installed" />
+        <Route path="hub" component={PackDataHub}>
+          <IndexRedirect to="/hub/integration/installed" />
           <Route path="api">
             <Route path="auth" component={OpenAPI.Auth} />
             <Route path="webhook" component={OpenAPI.Webhook} />
@@ -280,6 +280,7 @@ export default(store, cookie) => {
             </Route>
           </Route>
           <Route path={DEFAULT_MODULES.clearance.id} component={CMS}>
+            <IndexRedirect to="/clearance/dashboard" />
             <Route path="dashboard" component={CMSDashboard.Index} />
             <Route path="import">
               <IndexRedirect to="/clearance/import/delegation" />

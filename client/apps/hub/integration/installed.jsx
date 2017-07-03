@@ -77,9 +77,9 @@ export default class InstalledAppsList extends React.Component {
       } else {
         let configLink = null;
         if (row.app_type === 'EASIPASS') {
-          configLink = <NavLink to={`/open/integration/easipass/config/${row.uuid}`}>配置</NavLink>;
+          configLink = <NavLink to={`/hub/integration/easipass/config/${row.uuid}`}>配置</NavLink>;
         } else if (row.app_type === 'ARCTM') {
-          configLink = <NavLink to={`/open/integration/arctm/config/${row.uuid}`}>配置</NavLink>;
+          configLink = <NavLink to={`/hub/integration/arctm/config/${row.uuid}`}>配置</NavLink>;
         }
         return (<span>
           {configLink}

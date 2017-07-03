@@ -10,7 +10,7 @@ const { Sider, Header, Content } = Layout;
 const SubMenu = Menu.SubMenu;
 
 @connect()
-export default class OpenPlatformPack extends React.Component {
+export default class DataHubPack extends React.Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     children: PropTypes.object.isRequired,
@@ -35,24 +35,24 @@ export default class OpenPlatformPack extends React.Component {
             >
               <SubMenu key="integration" title={<span><Icon type="appstore-o" /><span>应用整合</span></span>}>
                 <Menu.Item key="installed">
-                  <NavLink to="/open/integration/installed">
+                  <NavLink to="/hub/integration/installed">
                     已安装应用
                   </NavLink>
                 </Menu.Item>
                 <Menu.Item key="apps">
-                  <NavLink to="/open/integration/apps">
+                  <NavLink to="/hub/integration/apps">
                     应用中心
                   </NavLink>
                 </Menu.Item>
               </SubMenu>
               <SubMenu key="api" title={<span><Icon type="api" /><span>开放API接口</span></span>}>
                 <Menu.Item key="auth">
-                  <NavLink to="/open/api/auth">
+                  <NavLink to="/hub/api/auth">
                     API接口授权
                   </NavLink>
                 </Menu.Item>
                 <Menu.Item key="webhook">
-                  <NavLink to="/open/api/webhook">
+                  <NavLink to="/hub/api/webhook">
                     提醒目标Webhook
                   </NavLink>
                 </Menu.Item>

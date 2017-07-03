@@ -513,7 +513,7 @@
   "container.applications": "Apps",
   "container.activities": "Activities",
   "container.network": "CollabNetwork",
-  "container.open.platform": "Open Platform",
+  "container.hub": "Open Platform",
   "container.corp": "Admin",
   "container.not.found": "Sorry, Not Found",
   "container.not.found.desc": "Under development",

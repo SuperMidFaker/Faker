@@ -10,7 +10,7 @@ const messages = defineMessages({
     defaultMessage: '协作网络',
   },
   openPlatform: {
-    id: 'home.open.platform',
+    id: 'home.hub',
     defaultMessage: '开放平台',
   },
   corp: {

@@ -59,7 +59,7 @@ export default class StatsCard extends Component {
     }].concat(this.props.clients);
     const datePicker = (
       <div>
-        <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
+        <Select showSearch optionFilterProp="children" style={{ width: 160 }}
           onChange={this.handleClientSelectChange} defaultValue={-1}
           dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
         >
@@ -68,7 +68,7 @@ export default class StatsCard extends Component {
           >{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>)
           )}
         </Select>
-        <RangePicker style={{ width: 200, marginLeft: 20 }} value={[moment(startDate), moment(endDate)]}
+        <RangePicker style={{ width: 200, marginLeft: 8 }} value={[moment(startDate), moment(endDate)]}
           onChange={this.onDateChange} allowClear={false}
         />
       </div>);

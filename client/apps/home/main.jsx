@@ -80,7 +80,7 @@ export default class Home extends React.Component {
       );
       tenantMenus.push(
         <MenuItem key="openPlatform">
-          <NavLink to="/open">
+          <NavLink to="/hub">
             <i className="icon-fontello-puzzle" /> {formatMsg(intl, 'openPlatform')}
           </NavLink>
         </MenuItem>

@@ -182,15 +182,19 @@ export default class Clearance extends React.Component {
       });
     }
     this.setState({ linkMenus });
+    /*
     if (this.props.children === null) {
       this.redirectInitialRoute(this.props.privileges);
     }
+    */
   }
+  /*
   componentWillReceiveProps(nextProps) {
     if (nextProps.children === null && this.props.children !== nextProps.children) {
       this.redirectInitialRoute(nextProps.privileges);
     }
   }
+  */
   redirectInitialRoute(privileges) {
     // 首页跳转第一个有权限页面
     const route = findForemostRoute(privileges, 'clearance', [{
