@@ -73,7 +73,7 @@ export default class addSlaveModal extends React.Component {
     return (
       <Modal title={this.msg('addSlave')} visible={visible} onCancel={this.handleCancel} onOk={this.handleOk}>
         <Form>
-          <FormItem label="清关服务商" labelCol={{ xs: { span: 24 }, sm: { span: 6 } }} wrapperCol={{ xs: { span: 24 }, sm: { span: 14 } }}>
+          <FormItem label="报关报检代理" labelCol={{ xs: { span: 24 }, sm: { span: 6 } }} wrapperCol={{ xs: { span: 24 }, sm: { span: 14 } }}>
             {
               getFieldDecorator('partner_tenant_id', {
                 rules: [
@@ -87,7 +87,7 @@ export default class addSlaveModal extends React.Component {
         </Form>
         <Row>
           <Col span={20} offset={2}>
-            <Alert message="如需添加新的服务商，请前往资源设置添加清关服务商" type="info" showIcon />
+            <Alert message="如需添加新的服务商，请前往资源设置添加报关报检代理" type="info" showIcon />
           </Col>
         </Row>
       </Modal>

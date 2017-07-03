@@ -95,7 +95,7 @@ export default class ManifestList extends Component {
     width: 180,
     render: (o, record) => <Progress percent={record.bill_status} strokeWidth={5} showInfo={false} />,
   }, {
-    title: '委托方',
+    title: '客户',
     dataIndex: 'send_name',
     width: 220,
     render: o => <TrimSpan text={o} maxLen={14} />,

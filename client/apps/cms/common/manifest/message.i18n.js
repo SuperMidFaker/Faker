@@ -35,7 +35,7 @@ export default defineMessages({
   },
   delgClient: {
     id: 'cms.manifest.delg.client',
-    defaultMessage: '委托客户',
+    defaultMessage: '客户',
   },
   delgTime: {
     id: 'cms.manifest.delg.time',

@@ -60,7 +60,7 @@ const messages = defineMessages({
   },
   custName: {
     id: 'cms.expense.customer.name',
-    defaultMessage: '委托方',
+    defaultMessage: '客户',
   },
   agentName: {
     id: 'cms.expense.agent.name',

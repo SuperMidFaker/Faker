@@ -130,7 +130,7 @@ export default class BrokerModal extends React.Component {
     const { partnerName, customsCode, partnerUniqueCode, business } = this.state;
     const businessArray = business !== '' ? business.split(',') : [];
     return (
-      <Modal title={operation === 'add' ? '新增清关服务商' : '修改清关服务商'} visible={visible} onOk={this.handleOk} onCancel={this.handleCancel}>
+      <Modal title={operation === 'add' ? '新增报关报检代理' : '修改报关报检代理'} visible={visible} onOk={this.handleOk} onCancel={this.handleCancel}>
         <Form layout="vertical">
           <FormItem label="服务商名称:" required>
             <Input required value={partnerName} onChange={e => this.setState({ partnerName: e.target.value })} />

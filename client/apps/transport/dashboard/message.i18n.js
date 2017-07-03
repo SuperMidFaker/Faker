@@ -84,7 +84,7 @@ const messages = defineMessages({
   },
   srName: {
     id: 'transport.dashboard.log.shipmt.srName',
-    defaultMessage: '委托客户',
+    defaultMessage: '客户',
   },
   shipmtMode: {
     id: 'transport.dashboard.log.shipment.mode',

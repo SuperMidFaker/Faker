@@ -87,7 +87,7 @@ export default class addSlaveModal extends React.Component {
         </Form>
         <Row>
           <Col span={20} offset={2}>
-            <Alert message="如需添加新的服务商，请前往资源设置添加清关服务商" type="info" showIcon />
+            <Alert message="如需添加新的服务商，请前往资源设置添加报关报检代理" type="info" showIcon />
           </Col>
         </Row>
       </Modal>

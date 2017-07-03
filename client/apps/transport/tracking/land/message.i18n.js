@@ -155,7 +155,7 @@ export default defineMessages({
   },
   srName: {
     id: 'transport.tracking.shipmt.srName',
-    defaultMessage: '委托客户',
+    defaultMessage: '客户',
   },
   departurePlace: {
     id: 'transport.tracking.departure.place',

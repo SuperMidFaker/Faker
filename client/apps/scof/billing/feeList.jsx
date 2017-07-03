@@ -155,7 +155,7 @@ export default class FeesList extends React.Component {
       width: 150,
       render: (o, record) => (<a onClick={() => this.props.loadOrderDetail(record.shipmt_order_no, this.props.tenantId, 'charge')}>{record.shipmt_order_no}</a>),
     }, {
-      title: '委托客户',
+      title: '客户',
       dataIndex: 'customer_name',
       width: 180,
       render: o => <TrimSpan text={o} />,

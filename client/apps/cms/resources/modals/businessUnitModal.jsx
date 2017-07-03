@@ -86,7 +86,7 @@ export default class BusinessUnitModal extends React.Component {
     const { visible } = this.props;
     const { name, code, customsCode, ieType } = this.state;
     return (
-      <Modal title={this.props.operation === 'add' ? '新增经营单位代码' : '修改经营单位代码'} visible={visible} onOk={this.handleOk} onCancel={this.handleCancel}>
+      <Modal title={this.props.operation === 'add' ? '新增进出口收发货人' : '修改进出口收发货人'} visible={visible} onOk={this.handleOk} onCancel={this.handleCancel}>
         <Form layout="vertical">
           <FormItem label="公司名称" required>
             <Input required value={name} onChange={e => this.setState({ name: e.target.value })} />

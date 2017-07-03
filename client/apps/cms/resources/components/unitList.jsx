@@ -92,7 +92,7 @@ export default class UnitList extends Component {
               资源设置
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              经营单位代码
+              进出口收发货人
             </Breadcrumb.Item>
           </Breadcrumb>
           <RadioGroup value={type} onChange={e => this.setState({ type: e.target.value })} size="large">
@@ -113,8 +113,8 @@ export default class UnitList extends Component {
                   defaultSelectedKeys={['unit']}
                   mode="inline"
                 >
-                  <Menu.Item key="broker"><NavLink to="/clearance/resources/broker">清关服务商</NavLink></Menu.Item>
-                  <Menu.Item key="unit"><NavLink to="/clearance/resources/unit">经营单位代码</NavLink></Menu.Item>
+                  <Menu.Item key="broker"><NavLink to="/clearance/resources/broker">报关报检代理</NavLink></Menu.Item>
+                  <Menu.Item key="unit"><NavLink to="/clearance/resources/unit">进出口收发货人</NavLink></Menu.Item>
                 </Menu>
               </Sider>
               <Content className="nav-content">
