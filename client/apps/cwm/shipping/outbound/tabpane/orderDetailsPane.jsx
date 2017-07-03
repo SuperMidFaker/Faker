@@ -109,7 +109,7 @@ export default class OrderDetailsPane extends React.Component {
     this.props.autoAllocProduct(row.outbound_no, row.seq_no, this.props.loginId, this.props.loginName);
   }
   handleSKUAllocateDetails = (row) => {
-    this.props.openAllocatingModal(row.outbound_no, row.seq_no);
+    this.props.openAllocatingModal({ outboundNo: row.outbound_no, outboundProduct: row });
   }
   handleWithdrawTask = () => {
 
@@ -122,20 +122,31 @@ export default class OrderDetailsPane extends React.Component {
         this.setState({ selectedRowKeys });
       },
     };
+    let ButtonStatus = null;
+    let num = 0;
+    for (let i = 0; i < outboundProducts.length; i++) {
+      const o = outboundProducts[i];
+      if (o.trace_id.length !== 0) num++;
+    }
+    if (num === 0) {
+      ButtonStatus = 'alloc';
+    } else if (num === outboundProducts.length) {
+      ButtonStatus = 'unalloc';
+    }
     return (
       <div>
         <div className="toolbar">
           <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
             <h3>已选中{this.state.selectedRowKeys.length}项</h3>
-            <Button size="large" onClick={this.handleWithdrawTask}>
+            {ButtonStatus === 'alloc' && (<Button size="large" onClick={this.handleWithdrawTask}>
               <MdIcon type="check-all" />批量自动分配
-            </Button>
-            <Button size="large" onClick={this.handleWithdrawTask} icon="close">
+            </Button>)}
+            {ButtonStatus === 'unalloc' && (<Button size="large" onClick={this.handleWithdrawTask} icon="close">
               批量取消分配
-            </Button>
+            </Button>)}
           </div>
           <div className="toolbar-right">
-            {!this.state.allocated && <Button type="primary" size="large" onClick={this.handleAutoAllocate} >订单自动分配</Button>}
+            {num === 0 && this.state.selectedRowKeys.length === 0 && <Button type="primary" size="large" onClick={this.handleAutoAllocate} >订单自动分配</Button>}
           </div>
         </div>
         <Table columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={outboundProducts} rowKey="seq_no"

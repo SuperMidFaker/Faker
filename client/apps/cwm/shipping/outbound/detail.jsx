@@ -196,7 +196,7 @@ export default class OutboundDetail extends Component {
                   <OrderDetailsPane ownerCode={outboundHead.owner_code} outboundNo={this.props.params.outboundNo} />
                 </TabPane>
                 <TabPane tab="拣货明细" key="pickingDetails">
-                  <PickingDetailsPane />
+                  <PickingDetailsPane outboundNo={this.props.params.outboundNo} />
                 </TabPane>
               </Tabs>
             </Card>

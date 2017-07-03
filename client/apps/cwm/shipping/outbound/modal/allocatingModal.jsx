@@ -45,11 +45,12 @@ export default class AllocatingModal extends Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.outboundNo !== this.props.outboundNo || nextProps.outboundProduct.seq_no !== this.props.outboundProduct.seq_no) {
-      this.props.loadProductInboundDetail(nextProps.outboundProduct.product_sku, nextProps.defaultWhse.code, nextProps.filters);
+      this.props.loadProductInboundDetail(nextProps.outboundProduct.product_sku, nextProps.defaultWhse.code, nextProps.filters, nextProps.outboundNo, nextProps.outboundProduct.seq_no);
     }
     if (nextProps.inventoryData !== this.props.inventoryData) {
       this.setState({
         inventoryData: nextProps.inventoryData,
+        allocatedData: nextProps.allocatedData,
       });
     }
   }

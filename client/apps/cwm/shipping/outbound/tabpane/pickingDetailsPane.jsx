@@ -7,7 +7,7 @@ import { MdIcon } from 'client/components/FontIcon';
 import PickingModal from '../modal/pickingModal';
 import ShippingModal from '../modal/shippingModal';
 import QuantityInput from '../../../common/quantityInput';
-import { openPickingModal, openShippingModal } from 'common/reducers/cwmOutbound';
+import { openPickingModal, openShippingModal, loadPickDetails } from 'common/reducers/cwmOutbound';
 
 @injectIntl
 @connect(
@@ -15,8 +15,9 @@ import { openPickingModal, openShippingModal } from 'common/reducers/cwmOutbound
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     reload: state.cwmOutbound.outboundReload,
+    pickDetails: state.cwmOutbound.pickDetails,
   }),
-  { openPickingModal, openShippingModal }
+  { openPickingModal, openShippingModal, loadPickDetails }
 )
 export default class PickingDetailsPane extends React.Component {
   static propTypes = {
@@ -25,7 +26,14 @@ export default class PickingDetailsPane extends React.Component {
   state = {
     selectedRowKeys: [],
   }
-
+  componentWillMount() {
+    this.props.loadPickDetails(this.props.outboundNo);
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.reload) {
+      this.props.loadPickDetails(this.props.outboundNo);
+    }
+  }
   columns = [{
     title: '订单行号',
     dataIndex: 'seq_no',
@@ -55,7 +63,7 @@ export default class PickingDetailsPane extends React.Component {
   }, {
     title: '分配数量',
     width: 200,
-    render: (o, record) => (<QuantityInput packQty={record.allocated_pack_qty} pcsQty={record.allocated_qty} />),
+    render: (o, record) => (<QuantityInput packQty={record.allocated_pack_qty} pcsQty={record.allocated_qty} disabled />),
   }, {
     title: '商品货号',
     dataIndex: 'product_no',
@@ -117,84 +125,6 @@ export default class PickingDetailsPane extends React.Component {
       }
     },
   }]
-  mockData = [{
-    id: 1,
-    seq_no: '1',
-    product_no: 'N04601170548',
-    order_qty: 15,
-    desc_cn: '微纤维止血胶原粉',
-    sku: 'N04601170548',
-    allocate_rule: 'FIFO',
-    unit: '件',
-    sku_pack: '单件',
-    expect_pack_qty: 15,
-    expect_qty: 15,
-    received_pack_qty: 15,
-    received_qty: 15,
-    status: 0,
-    allocated_by: '张申',
-    allocated_date: '2017-06-12',
-  }, {
-    id: 4,
-    seq_no: '2',
-    product_no: 'N04601170547',
-    order_qty: 1000,
-    desc_cn: 'PTA球囊扩张导管',
-    sku: 'N04601170547',
-    allocate_rule: 'FIFO',
-    unit: '件',
-    location: 'P1CA0101',
-    expect_pack_qty: 10,
-    expect_qty: 1000,
-    received_pack_qty: 0,
-    received_qty: 0,
-    status: 1,
-  }, {
-    id: 5,
-    seq_no: '3',
-    product_no: 'SBMG-00859',
-    order_qty: 1000,
-    desc_cn: '临时起搏电极导管',
-    sku: 'RS2A03A0AL0W00',
-    allocate_rule: 'FIFO',
-    unit: '个',
-    location: 'P1CA0101',
-    expect_pack_qty: 10,
-    expect_qty: 1000,
-    received_pack_qty: 0,
-    received_qty: 0,
-    status: 2,
-  }, {
-    id: 6,
-    seq_no: '4',
-    product_no: 'SBME-00787',
-    order_qty: 12,
-    desc_cn: '肾造瘘球囊扩张导管',
-    sku: '109R0612D401',
-    allocate_rule: 'FIFO',
-    unit: '个',
-    expect_pack_qty: 2,
-    location: 'P1CA0101',
-    expect_qty: 12,
-    received_pack_qty: 1,
-    received_qty: 6,
-    status: 3,
-  }, {
-    id: 7,
-    seq_no: '5',
-    product_no: 'SBMJ-00199',
-    order_qty: 1,
-    desc_cn: '输尿管镜球囊扩张导管',
-    sku: '9GV0912P1G03',
-    allocate_rule: 'FIFO',
-    unit: '个',
-    expect_pack_qty: 1,
-    location: 'P1CA0101',
-    expect_qty: 1,
-    received_pack_qty: 0,
-    received_qty: 0,
-    status: 4,
-  }];
   handleConfirmPicked = () => {
     this.props.openPickingModal();
   }
@@ -208,6 +138,7 @@ export default class PickingDetailsPane extends React.Component {
     this.props.openShippingModal();
   }
   render() {
+    const { pickDetails } = this.props;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -234,7 +165,7 @@ export default class PickingDetailsPane extends React.Component {
           </div>
           <div className="toolbar-right" />
         </div>
-        <Table columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={this.mockData} rowKey="id"
+        <Table columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={pickDetails} rowKey="id"
           scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
         />
         <PickingModal shippingMode={this.state.shippingMode} />
