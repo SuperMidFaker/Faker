@@ -112,16 +112,6 @@ exports.CWM_SO_STATUS = {
   },
 };
 
-exports.CWM_OUTBOUND_STATUS = {
-  CREATED: 0,
-  PARTIAL_ALLOCATED: 1,
-  ALL_ALLOCATED: 2,
-  PARTIAL_PICKED: 3,
-  ALL_PICKED: 4,
-  PARTIAL_SHIPPED: 5,
-  ALL_SHIPPED: 6,
-};
-
 exports.CWM_OUTBOUND_ALLOC_STATUS = {
   CREATED: 0,
   ALLOCATED: 2,
@@ -186,37 +176,37 @@ exports.CWM_RULES = {
   },
 };
 
-  exports.CWM_OUTBOUND_STATUS = {
-    CREATED: {
-      value: 0,
-      step: 0,
-    },
-    PARTIAL_RECEIVED: {
-      value: 1,
-      step: 1,
-    },
-    ALL_RECEIVED: {
-      value: 2,
-      step: 1,
-    },
-    PARTIAL_PICKED: {
-      value: 3,
-      step: 2,
-    },
-    ALL_PICKED: {
-      value: 4,
-      step: 2,
-    },
-    PACKED: {
-      value: 5,
-      step: 3,
-    },
-    SHIPPING: {
-      value: 6,
-      setp: 4,
-    },
-    COMPLETED: {
-      value: 7,
-      step: 5,
-    },
-  }
+exports.CWM_OUTBOUND_STATUS = {
+  CREATED: {
+    value: 0,
+    step: 0,
+  },
+  PARTIAL_ALLOC: {
+    value: 1,
+    step: 1,
+  },
+  ALL_ALLOC: {
+    value: 2,
+    step: 1,
+  },
+  PARTIAL_PICKED: {
+    value: 3,
+    step: 2,
+  },
+  ALL_PICKED: {
+    value: 4,
+    step: 2,
+  },
+  PACKED: {
+    value: 5,
+    step: 3,
+  },
+  SHIPPING: {
+    value: 6,
+    setp: 4,
+  },
+  COMPLETED: {
+    value: 7,
+    step: 5,
+  },
+};

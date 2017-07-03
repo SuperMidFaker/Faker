@@ -7,7 +7,8 @@ import RowUpdater from 'client/components/rowUpdater';
 import { MdIcon } from 'client/components/FontIcon';
 import AllocatingModal from '../modal/allocatingModal';
 import QuantityInput from '../../../common/quantityInput';
-import { openAllocatingModal, loadOutboundProductDetails, autoAllocProduct } from 'common/reducers/cwmOutbound';
+import { openAllocatingModal, loadOutboundProductDetails, batchAutoAlloc, cancelProductsAlloc } from 'common/reducers/cwmOutbound';
+import { CWM_OUTBOUND_STATUS } from 'common/constants';
 
 @injectIntl
 @connect(
@@ -15,10 +16,11 @@ import { openAllocatingModal, loadOutboundProductDetails, autoAllocProduct } fro
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     loginName: state.account.username,
+    outboundHead: state.cwmOutbound.outboundFormHead,
     outboundProducts: state.cwmOutbound.outboundProducts,
     reload: state.cwmOutbound.outboundReload,
   }),
-  { openAllocatingModal, loadOutboundProductDetails, autoAllocProduct }
+  { openAllocatingModal, loadOutboundProductDetails, batchAutoAlloc, cancelProductsAlloc }
 )
 export default class OrderDetailsPane extends React.Component {
   static propTypes = {
@@ -50,7 +52,7 @@ export default class OrderDetailsPane extends React.Component {
   }, {
     title: '商品货号',
     dataIndex: 'product_no',
-    width: 120,
+    width: 160,
   }, {
     title: '中文品名',
     dataIndex: 'name',
@@ -61,8 +63,8 @@ export default class OrderDetailsPane extends React.Component {
     render: o => (<b>{o}</b>),
   }, {
     title: '计量单位',
-    dataIndex: 'unit',
-    width: 60,
+    dataIndex: 'unit_name',
+    width: 100,
   }, {
     title: 'SKU',
     dataIndex: 'product_sku',
@@ -75,15 +77,7 @@ export default class OrderDetailsPane extends React.Component {
   }, {
     title: '分配数量',
     width: 200,
-    render: (o, record) => (<QuantityInput packQty={record.allocated_pack_qty} pcsQty={record.allocated_qty} />),
-  }, {
-    title: '拣货数量',
-    width: 200,
-    render: (o, record) => (<QuantityInput packQty={record.picked_pack_qty} pcsQty={record.picked_qty} />),
-  }, {
-    title: '发货数量',
-    width: 200,
-    render: (o, record) => (<QuantityInput packQty={record.shipped_pack_qty} pcsQty={record.shipped_qty} />),
+    render: (o, record) => (<QuantityInput packQty={record.alloc_pack_qty} pcsQty={record.alloc_qty} />),
   }, {
     title: '操作',
     width: 150,
@@ -94,11 +88,11 @@ export default class OrderDetailsPane extends React.Component {
         return (<span>
           <RowUpdater onHit={this.handleSKUAutoAllocate} label="自动分配" row={record} />
           <span className="ant-divider" />
-          <RowUpdater onHit={this.handleSKUAllocateDetails} label="手动分配" row={record} />
+          <RowUpdater onHit={this.handleManualAlloc} label="手动分配" row={record} />
         </span>);
       } else {
         return (<span>
-          <RowUpdater onHit={this.handleSKUAllocateDetails} label="分配明细" row={record} />
+          <RowUpdater onHit={this.handleManualAlloc} label="分配明细" row={record} />
           <span className="ant-divider" />
           <RowUpdater onHit={this.handleSKUCancelAllocate} label="取消分配" row={record} />
         </span>);
@@ -106,16 +100,26 @@ export default class OrderDetailsPane extends React.Component {
     },
   }]
   handleSKUAutoAllocate = (row) => {
-    this.props.autoAllocProduct(row.outbound_no, row.seq_no, this.props.loginId, this.props.loginName);
+    this.props.batchAutoAlloc(row.outbound_no, [row.seq_no], this.props.loginId, this.props.loginName);
   }
-  handleSKUAllocateDetails = (row) => {
+  handleBatchAutoAlloc = () => {
+    this.props.batchAutoAlloc(this.props.outboundNo, this.state.selectedRowKeys,
+      this.props.loginId, this.props.loginName);
+  }
+  handleOutboundAutoAlloc = () => {
+    this.props.batchAutoAlloc(this.props.outboundNo, null, this.props.loginId, this.props.loginName);
+  }
+  handleManualAlloc = (row) => {
     this.props.openAllocatingModal({ outboundNo: row.outbound_no, outboundProduct: row });
   }
-  handleWithdrawTask = () => {
-
+  handleSKUCancelAllocate = (row) => {
+    this.props.cancelProductsAlloc(row.outbound_no, [row.seq_no], this.props.loginId);
+  }
+  handleAllocBatchCancel = () => {
+    this.props.cancelProductsAlloc(this.props.outboundNo, this.state.selectedRowKeys, this.props.loginId);
   }
   render() {
-    const { outboundProducts } = this.props;
+    const { outboundHead, outboundProducts } = this.props;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -138,15 +142,16 @@ export default class OrderDetailsPane extends React.Component {
         <div className="toolbar">
           <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
             <h3>已选中{this.state.selectedRowKeys.length}项</h3>
-            {ButtonStatus === 'alloc' && (<Button size="large" onClick={this.handleWithdrawTask}>
+            {ButtonStatus === 'alloc' && (<Button size="large" onClick={this.handleBatchAutoAlloc}>
               <MdIcon type="check-all" />批量自动分配
             </Button>)}
-            {ButtonStatus === 'unalloc' && (<Button size="large" onClick={this.handleWithdrawTask} icon="close">
+            {ButtonStatus === 'unalloc' && (<Button size="large" onClick={this.handleAllocBatchCancel} icon="close">
               批量取消分配
             </Button>)}
           </div>
           <div className="toolbar-right">
-            {num === 0 && this.state.selectedRowKeys.length === 0 && <Button type="primary" size="large" onClick={this.handleAutoAllocate} >订单自动分配</Button>}
+            { outboundHead.status === CWM_OUTBOUND_STATUS.CREATED.value &&
+              <Button type="primary" size="large" onClick={this.handleOutboundAutoAlloc}>订单自动分配</Button>}
           </div>
         </div>
         <Table columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={outboundProducts} rowKey="seq_no"

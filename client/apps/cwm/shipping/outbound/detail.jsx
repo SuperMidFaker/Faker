@@ -130,8 +130,7 @@ export default class OutboundDetail extends Component {
     const outbStatus = Object.keys(CWM_OUTBOUND_STATUS).filter(
       cis => CWM_OUTBOUND_STATUS[cis].value === outboundHead.status
     )[0];
-    let currentStatus = outbStatus ? CWM_OUTBOUND_STATUS[outbStatus].step : 0;
-    currentStatus = (outboundHead.chk_pck_status && currentStatus < 4) ? 3 : currentStatus;
+    const outboundStep = outbStatus ? CWM_OUTBOUND_STATUS[outbStatus].step : 0;
     return (
       <div>
         <Header className="top-bar">
@@ -163,9 +162,16 @@ export default class OutboundDetail extends Component {
                 <Col sm={24} lg={6}>
                   <InfoItem addonBefore="货主" field={outboundHead.owner_name} />
                 </Col>
-                <Col sm={24} lg={6}>
-                  {outboundHead.wave_no ? <InfoItem addonBefore="wave_no" field={outboundHead.wave_no} /> : <InfoItem addonBefore="so_no" field={outboundHead.so_no} />}
-                </Col>
+                { outboundHead.wave_no &&
+                  <Col sm={24} lg={6}>
+                    <InfoItem addonBefore="波次号" field={outboundHead.wave_no} />
+                  </Col>
+                }
+                { outboundHead.so_no &&
+                  <Col sm={24} lg={6}>
+                    <InfoItem addonBefore="订单号" field={outboundHead.so_no} />
+                  </Col>
+                }
                 <Col sm={12} lg={2}>
                   <InfoItem addonBefore="订货总数" field={outboundHead.total_qty} />
                 </Col>
@@ -176,11 +182,11 @@ export default class OutboundDetail extends Component {
                   <InfoItem addonBefore="拣货总数" field={outboundHead.total_picked_qty} />
                 </Col>
                 <Col sm={12} lg={2}>
-                  <InfoItem addonBefore="发货总数" field="50" />
+                  <InfoItem addonBefore="发货总数" field={outboundHead.total_shipped_qty} />
                 </Col>
               </Row>
               <div className="card-footer">
-                <Steps progressDot current={currentStatus}>
+                <Steps progressDot current={outboundStep}>
                   <Step description="待出库" />
                   <Step description="分配" />
                   <Step description="拣货" />
@@ -193,7 +199,7 @@ export default class OutboundDetail extends Component {
             <Card bodyStyle={{ padding: 0 }}>
               <Tabs defaultActiveKey="orderDetails" onChange={this.handleTabChange}>
                 <TabPane tab="订单明细" key="orderDetails">
-                  <OrderDetailsPane ownerCode={outboundHead.owner_code} outboundNo={this.props.params.outboundNo} />
+                  <OrderDetailsPane outboundNo={this.props.params.outboundNo} />
                 </TabPane>
                 <TabPane tab="拣货明细" key="pickingDetails">
                   <PickingDetailsPane outboundNo={this.props.params.outboundNo} />
