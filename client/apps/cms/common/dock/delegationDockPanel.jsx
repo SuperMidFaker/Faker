@@ -39,7 +39,6 @@ const TabPane = Tabs.TabPane;
 export default class DelegationDockPanel extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    ietype: PropTypes.oneOf(['import', 'export']),
     tenantId: PropTypes.number.isRequired,
     tabKey: PropTypes.string,
     previewKey: PropTypes.string,
@@ -144,6 +143,7 @@ export default class DelegationDockPanel extends React.Component {
   renderTabs() {
     const { previewer, tabKey } = this.props;
     const { delgDispatch, delegation } = previewer;
+    const clearType = delegation.i_e_type === 0 ? 'import' : 'export';
     const tabs = [];
     tabs.push(<TabPane tab="委托" key="activity"><DelegationPane /></TabPane>);
     if (delgDispatch.status >= CMS_DELEGATION_STATUS.accepted) {
@@ -152,7 +152,7 @@ export default class DelegationDockPanel extends React.Component {
         tabs.push(<TabPane tab="报检" key="ciqDecl"><CiqDeclPane /></TabPane>);
       }
     }
-    if (delegation.decl_way_code !== 'IBND' && delegation.decl_way_code !== 'EBND' && this.props.ietype === 'import' &&
+    if (delegation.decl_way_code !== 'IBND' && delegation.decl_way_code !== 'EBND' && clearType === 'import' &&
       ((delgDispatch.status === CMS_DELEGATION_STATUS.processing && delegation.manifested === CMS_DELEGATION_MANIFEST.manifested) ||
       delgDispatch.status > CMS_DELEGATION_STATUS.processing)) {
       tabs.push(<TabPane tab="缴税" key="taxes"><DutyTaxPane /></TabPane>);
@@ -176,17 +176,18 @@ export default class DelegationDockPanel extends React.Component {
   }
   renderBtns() {
     const { previewer, partnerId } = this.props;
-    const { delgDispatch } = previewer;
+    const { delgDispatch, delegation } = previewer;
+    const clearType = delegation.i_e_type === 0 ? 'import' : 'export';
     if (delgDispatch.recv_tenant_id === delgDispatch.customs_tenant_id) {
       if (delgDispatch.status === CMS_DELEGATION_STATUS.unaccepted) {
         return (
-          <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
+          <PrivilegeCover module="clearance" feature={clearType} action="edit">
             <OperatorsPopover module="delegation" partnerId={partnerId} handleAccept={this.handleDelegationAccept} />
           </PrivilegeCover>
         );
       } else if (delgDispatch.status === CMS_DELEGATION_STATUS.accepted) {
         return (
-          <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
+          <PrivilegeCover module="clearance" feature={clearType} action="edit">
             <Button type="default" onClick={this.handleAssign}>
               分配
             </Button>
@@ -194,7 +195,7 @@ export default class DelegationDockPanel extends React.Component {
         );
       } else if (delgDispatch.status === CMS_DELEGATION_STATUS.released) {
         return (
-          <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
+          <PrivilegeCover module="clearance" feature={clearType} action="edit">
             <Button type="default" onClick={this.handleCompleteDelg}>
               结单
             </Button>
@@ -205,7 +206,7 @@ export default class DelegationDockPanel extends React.Component {
       if (delgDispatch.sub_status === CMS_DELEGATION_STATUS.accepted &&
         delgDispatch.status === CMS_DELEGATION_STATUS.accepted) {
         return (
-          <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
+          <PrivilegeCover module="clearance" feature={clearType} action="edit">
             <Popconfirm title="你确定撤回分配吗?" onConfirm={this.handleDispCancel} >
               <Button type="ghost">撤回</Button>
             </Popconfirm>
@@ -215,7 +216,7 @@ export default class DelegationDockPanel extends React.Component {
     } else if (delgDispatch.sub_status === CMS_DELEGATION_STATUS.unaccepted &&
         delgDispatch.status === CMS_DELEGATION_STATUS.accepted) {
       return (
-        <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
+        <PrivilegeCover module="clearance" feature={clearType} action="edit">
           <Popconfirm title="你确定撤回分配吗?" onConfirm={this.handleDispCancel} >
             <Button type="ghost">撤回</Button>
           </Popconfirm>
