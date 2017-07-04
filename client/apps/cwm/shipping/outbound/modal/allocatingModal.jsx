@@ -8,7 +8,7 @@ import InfoItem from 'client/components/InfoItem';
 import { format } from 'client/common/i18n/helpers';
 import QuantityInput from '../../../common/quantityInput';
 import messages from '../../message.i18n';
-import { closeAllocatingModal, loadProductInboundDetail, loadAllocatedDetails } from 'common/reducers/cwmOutbound';
+import { closeAllocatingModal, loadProductInboundDetail, loadAllocatedDetails, manualAlloc } from 'common/reducers/cwmOutbound';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
@@ -23,9 +23,12 @@ const Panel = Collapse.Panel;
     outboundProduct: state.cwmOutbound.allocatingModal.outboundProduct,
     filters: state.cwmOutbound.inventoryFilter,
     inventoryData: state.cwmOutbound.inventoryData,
+    allocatedData: state.cwmOutbound.allocatedData,
     defaultWhse: state.cwmContext.defaultWhse,
+    loginId: state.account.loginId,
+    loginName: state.account.username,
   }),
-  { closeAllocatingModal, loadProductInboundDetail, loadAllocatedDetails }
+  { closeAllocatingModal, loadProductInboundDetail, loadAllocatedDetails, manualAlloc }
 )
 export default class AllocatingModal extends Component {
   static propTypes = {
@@ -56,9 +59,6 @@ export default class AllocatingModal extends Component {
     }
   }
   msg = key => formatMsg(this.props.intl, key);
-  handleCancel = () => {
-    this.props.closeAllocatingModal();
-  }
   inventoryColumns = [{
     title: 'SKU',
     dataIndex: 'product_sku',
@@ -111,10 +111,10 @@ export default class AllocatingModal extends Component {
     dataIndex: 'damage_level',
   }, {
     title: '可用数量',
-    dataIndex: 'inbound_qty',
+    dataIndex: 'avail_qty',
     width: 200,
     fixed: 'right',
-    render: (o, record) => (<QuantityInput packQty={record.inbound_pack_qty} pcsQty={record.inbound_qty} />),
+    render: (o, record) => (<QuantityInput packQty={record.avail_pack_qty} pcsQty={record.avail_qty} />),
   }, {
     title: '出库数量',
     width: 200,
@@ -124,7 +124,7 @@ export default class AllocatingModal extends Component {
     title: '添加',
     width: 80,
     fixed: 'right',
-    render: (o, record, index) => (<span><Button type="primary" size="small" icon="plus" onClick={() => this.handleAddAllocate(index)} /></span>),
+    render: (o, record, index) => <Button type="primary" size="small" icon="plus" onClick={() => this.handleAddAllocate(index)} />,
   }]
 
   allocatedColumns = [{
@@ -200,7 +200,9 @@ export default class AllocatingModal extends Component {
     const allocatedData = [...this.state.allocatedData];
     const allocatedOne = inventoryData[index];
     inventoryData.splice(index, 1);
-    allocatedData.push(allocatedOne);
+    allocatedData.push({
+      ...allocatedOne, allocated_qty: allocatedOne.avail_qty, allocated_pack_qty: allocatedOne.avail_pack_qty,
+    });
     this.setState({
       inventoryData,
       allocatedData,
@@ -215,6 +217,24 @@ export default class AllocatingModal extends Component {
     this.setState({
       inventoryData,
       allocatedData,
+    });
+  }
+  handleCancel = () => {
+    this.props.closeAllocatingModal();
+    this.setState({
+      inventoryData: [],
+      allocatedData: [],
+    });
+  }
+  handleManualAllocSave = () => {
+    this.props.manualAlloc(this.props.outboundNo, this.props.outboundProduct.seq_no, this.state.allocatedData.map(ad => ({
+      trace_id: ad.trace_id,
+      allocated_qty: ad.allocated_qty,
+      allocated_pack_qty: ad.allocated_pack_qty,
+    }), this.props.loginId, this.props.loginName)).then((result) => {
+      if (!result.error) {
+        this.handleCancel();
+      }
     });
   }
   render() {
@@ -235,7 +255,9 @@ export default class AllocatingModal extends Component {
     </Form>);
 
     return (
-      <Modal title="分配" width={this.state.modalWidth} maskClosable={false} style={{ top: 24 }} onCancel={this.handleCancel} visible={this.props.visible}>
+      <Modal title="分配" width={this.state.modalWidth} maskClosable={false} style={{ top: 24 }}
+        onOk={this.handleManualAllocSave} onCancel={this.handleCancel} visible={this.props.visible}
+      >
         <Row>
           <Col sm={12} md={8} lg={6}>
             <InfoItem addonBefore="outboundNo" field={outboundNo} style={{ marginBottom: 0 }} />

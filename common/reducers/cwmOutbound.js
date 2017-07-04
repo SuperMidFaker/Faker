@@ -10,6 +10,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/outbound/', [
   'LOAD_OUTBOUND_PRODUCTS', 'LOAD_OUTBOUND_PRODUCTS_SUCCEED', 'LOAD_OUTBOUND_PRODUCTS_FAIL',
   'LOAD_PRODUCT_INBOUND_DETAILS', 'LOAD_PRODUCT_INBOUND_DETAILS_SUCCEED', 'LOAD_PRODUCT_INBOUND_DETAILS_FAIL',
   'AUTO_ALLOC', 'AUTO_ALLOC_SUCCEED', 'AUTO_ALLOC_FAIL',
+  'MANUAL_ALLOC', 'MANUAL_ALLOC_SUCCEED', 'MANUAL_ALLOC_FAIL',
   'CANCEL_PRDALLOC', 'CANCEL_PRDALLOC_SUCCEED', 'CANCEL_PRDALLOC_FAIL',
   'LOAD_PICK_DETAILS', 'LOAD_PICK_DETAILS_SUCCEED', 'LOAD_PICK_DETAILS_FAIL',
   'LOAD_ALLOCATED_DETAILS', 'LOAD_ALLOCATED_DETAILS_SUCCEED', 'LOAD_ALLOCATED_DETAILS_FAIL',
@@ -76,6 +77,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_PRODUCT_INBOUND_DETAILS_SUCCEED:
       return { ...state, inventoryData: action.result.data };
     case actionTypes.AUTO_ALLOC_SUCCEED:
+    case actionTypes.MANUAL_ALLOC_SUCCEED:
     case actionTypes.CANCEL_PRDALLOC_SUCCEED:
       return { ...state, outboundReload: true };
     case actionTypes.LOAD_PICK_DETAILS_SUCCEED:
@@ -211,6 +213,25 @@ export function batchAutoAlloc(outboundNo, seqNos, loginId, loginName) {
       method: 'post',
       data: { outbound_no: outboundNo,
         seq_nos: seqNos,
+        login_id: loginId,
+        login_name: loginName },
+    },
+  };
+}
+
+export function manualAlloc(outboundNo, seqNo, allocs, loginId, loginName) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.MANUAL_ALLOC,
+        actionTypes.MANUAL_ALLOC_SUCCEED,
+        actionTypes.MANUAL_ALLOC_FAIL,
+      ],
+      endpoint: 'v1/cwm/outbound/alloc/manual',
+      method: 'post',
+      data: { outbound_no: outboundNo,
+        seq_no: seqNo,
+        allocs,
         login_id: loginId,
         login_name: loginName },
     },

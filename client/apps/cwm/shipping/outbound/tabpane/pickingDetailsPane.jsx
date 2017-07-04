@@ -38,7 +38,7 @@ export default class PickingDetailsPane extends React.Component {
   }
   columns = [{
     title: 'SKU',
-    dataIndex: 'sku',
+    dataIndex: 'product_sku',
     width: 120,
     render: (o) => {
       if (o) {
