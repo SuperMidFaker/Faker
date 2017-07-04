@@ -41,9 +41,12 @@ export default class OrderDetailsPane extends React.Component {
     }
   }
   handleReload = () => {
-    this.props.loadOutboundProductDetails(this.props.outboundNo);
-    this.setState({
-      selectedRowKeys: [],
+    this.props.loadOutboundProductDetails(this.props.outboundNo).then((result) => {
+      if (!result.error) {
+        this.setState({
+          selectedRowKeys: [],
+        });
+      }
     });
   }
   columns = [{
