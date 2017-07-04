@@ -10,7 +10,7 @@ import { REPORT_LOC_SUCCEED, LOAD_TRANSHIPMT, CHANGE_ACT_DATE_SUCCEED } from './
 import { CREATE_EXCEPTION_SUCCEED, LOAD_EXCPSHIPMT, DEAL_EXCEPTION_SUCCEED } from './trackingLandException';
 import { LOAD_PODSHIPMT, SAVE_POD_SUCCEED } from './trackingLandPod';
 import { LOAD_DISPSHIPMENT } from './transportDispatch';
-import { LOAD_APTSHIPMENT, SAVE_EDIT_SUCCEED } from './transport-acceptance';
+import { LOAD_APTSHIPMENT, SAVE_EDIT_SUCCEED, REVOKE_SHIPMT_SUCCEED } from './transport-acceptance';
 import { LOAD_FEES, CREATE_ADVANCE_SUCCEED, CREATE_SPECIALCHARGE_SUCCEED } from './transportBilling';
 const actionTypes = createActionTypes('@@welogix/transport/shipment/', [
   'SET_CONSIGN_FIELDS', 'SAVE_LOCAL_GOODS', 'EDIT_LOCAL_GOODS',
@@ -304,6 +304,9 @@ export default function reducer(state = initialState, action) {
     }
     case SAVE_EDIT_SUCCEED: {
       return { ...state, previewer: { ...state.previewer, loaded: false } };
+    }
+    case REVOKE_SHIPMT_SUCCEED: {
+      return { ...state, previewer: { ...state.previewer, visible: false } };
     }
     case CREATE_ADVANCE_SUCCEED: {
       return { ...state, previewer: { ...state.previewer, loaded: false } };

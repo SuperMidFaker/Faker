@@ -41,7 +41,7 @@ const initialState = {
   },
 };
 
-export const { LOAD_APTSHIPMENT, SAVE_EDIT_SUCCEED } = actionTypes;
+export const { LOAD_APTSHIPMENT, SAVE_EDIT_SUCCEED, REVOKE_SHIPMT_SUCCEED } = actionTypes;
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.LOAD_APTSHIPMENT:
