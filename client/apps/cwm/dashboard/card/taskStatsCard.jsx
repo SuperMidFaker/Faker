@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Card, DatePicker } from 'antd';
+import { Card, DatePicker, Progress } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 
@@ -19,7 +19,7 @@ const RangePicker = DatePicker.RangePicker;
   { }
 )
 
-export default class ReceivingStatsCard extends Component {
+export default class TaskStatsCard extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     inboundNo: PropTypes.string.isRequired,
@@ -35,32 +35,48 @@ export default class ReceivingStatsCard extends Component {
         />
       </div>);
     return (
-      <Card title={this.msg('statsReceiving')}
+      <Card title={this.msg('statsTask')}
         extra={datePicker}
       >
         <ul className="statistics-columns">
           <li className="col-8">
             <div className="statistics-cell">
-              <h4>{this.msg('totalASN')}</h4>
-              <div className="data">
-                <div className="data-num lg text-emphasis">29</div>
-              </div>
+              <h4>{this.msg('receipts')}</h4>
+              <Progress type="dashboard" percent={75} width={80} />
+              <p>Total: 561 Items</p>
+              <p>Completed: 165 Items</p>
             </div>
           </li>
           <li className="col-8">
             <div className="statistics-cell">
-              <h4>{this.msg('toReceive')}</h4>
-              <div className="data">
-                <div className="data-num lg text-info">29</div>
-              </div>
+              <h4>{this.msg('putaways')}</h4>
+              <Progress type="dashboard" percent={75} width={80} />
+              <p>Total: 561 Items</p>
+              <p>Completed: 165 Items</p>
             </div>
           </li>
           <li className="col-8">
             <div className="statistics-cell">
-              <h4>{this.msg('putawayCompleted')}</h4>
-              <div className="data">
-                <div className="data-num lg text-success">29</div>
-              </div>
+              <h4>{this.msg('pickings')}</h4>
+              <Progress type="dashboard" percent={75} width={80} />
+              <p>Total: 561 Items</p>
+              <p>Completed: 165 Items</p>
+            </div>
+          </li>
+          <li className="col-8">
+            <div className="statistics-cell">
+              <h4>{this.msg('shipments')}</h4>
+              <Progress type="dashboard" percent={75} width={80} />
+              <p>Total: 561 Items</p>
+              <p>Completed: 165 Items</p>
+            </div>
+          </li>
+          <li className="col-8">
+            <div className="statistics-cell">
+              <h4>{this.msg('replenishments')}</h4>
+              <Progress type="dashboard" percent={75} width={80} />
+              <p>Total: 561 Items</p>
+              <p>Completed: 165 Items</p>
             </div>
           </li>
         </ul>

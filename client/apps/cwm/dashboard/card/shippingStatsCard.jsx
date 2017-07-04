@@ -19,7 +19,7 @@ const RangePicker = DatePicker.RangePicker;
   { }
 )
 
-export default class ReceivingStatsCard extends Component {
+export default class ShippingStatsCard extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     inboundNo: PropTypes.string.isRequired,
@@ -35,13 +35,13 @@ export default class ReceivingStatsCard extends Component {
         />
       </div>);
     return (
-      <Card title={this.msg('statsReceiving')}
+      <Card title={this.msg('statsShipping')}
         extra={datePicker}
       >
         <ul className="statistics-columns">
           <li className="col-8">
             <div className="statistics-cell">
-              <h4>{this.msg('totalASN')}</h4>
+              <h4>{this.msg('totalSO')}</h4>
               <div className="data">
                 <div className="data-num lg text-emphasis">29</div>
               </div>
@@ -49,7 +49,15 @@ export default class ReceivingStatsCard extends Component {
           </li>
           <li className="col-8">
             <div className="statistics-cell">
-              <h4>{this.msg('toReceive')}</h4>
+              <h4>{this.msg('toAllocate')}</h4>
+              <div className="data">
+                <div className="data-num lg text-warning">29</div>
+              </div>
+            </div>
+          </li>
+          <li className="col-8">
+            <div className="statistics-cell">
+              <h4>{this.msg('pickingCompleted')}</h4>
               <div className="data">
                 <div className="data-num lg text-info">29</div>
               </div>
@@ -57,7 +65,7 @@ export default class ReceivingStatsCard extends Component {
           </li>
           <li className="col-8">
             <div className="statistics-cell">
-              <h4>{this.msg('putawayCompleted')}</h4>
+              <h4>{this.msg('packingVerified')}</h4>
               <div className="data">
                 <div className="data-num lg text-success">29</div>
               </div>
