@@ -37,7 +37,7 @@ function renderAsHtml(pageCss, pageJs, content) {
   <link rel="stylesheet" type="text/css" href="${__CDN__}/assets/lib/stroke-7/style.css" />
   <link rel="stylesheet" type="text/css" href="${__CDN__}/assets/lib/ikons/style.css" />
   <link rel="stylesheet" type="text/css" href="${__CDN__}/assets/lib/fontello/style.css" />
-  <link rel="stylesheet" type="text/css" href="${__CDN__}/assets/lib/iconfont/iconfont.css" />
+  <link rel="stylesheet" type="text/css" href="${__CDN__}/assets/lib/logixon/iconfont.css" />
   <link rel="stylesheet" type="text/css" href="${__CDN__}/assets/lib/md-iconic-font/css/material-design-iconic-font.min.css">
   ${pageCss}
   <!--[if lt IE 10]>

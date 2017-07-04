@@ -65,13 +65,13 @@ Ikons.propTypes = {
   tagWrapped: PropTypes.bool,
 };
 
-export function Iconfont(props) {
+export function Logixon(props) {
   const { type, tagWrapped } = props;
-  const icon = (<i className={`iconfont icon-${type}`} />);
+  const icon = (<i className={`logixon icon-${type}`} />);
   return tagWrapped ? <Tag>{icon}</Tag> : icon;
 }
 
-Iconfont.propTypes = {
+Logixon.propTypes = {
   type: PropTypes.string.isRequired,
   tagWrapped: PropTypes.bool,
 };

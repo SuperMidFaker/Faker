@@ -40,7 +40,7 @@ export default class ModuleCWM extends React.Component {
     linkMenus.push({
       single: false,
       key: 'cwm-1',
-      icon: 'icon-fontello-download',
+      icon: 'logixon icon-chaibaoguoqujian',
       text: formatMsg(intl, 'receiving'),
       sublinks: [{
         key: 'cwm-1-0',
@@ -56,7 +56,7 @@ export default class ModuleCWM extends React.Component {
     linkMenus.push({
       single: false,
       key: 'cwm-2',
-      icon: 'icon-fontello-upload',
+      icon: 'logixon icon-peizaizhuangche',
       text: formatMsg(intl, 'shipping'),
       sublinks: [{
         key: 'cwm-2-0',
@@ -77,7 +77,7 @@ export default class ModuleCWM extends React.Component {
       single: false,
       key: 'cwm-3',
       path: '/cwm/stock',
-      icon: 'icon-fontello-warehouse',
+      icon: 'logixon icon-kucun',
       text: formatMsg(intl, 'stock'),
       sublinks: [{
         key: 'cwm-3-0',
@@ -104,7 +104,7 @@ export default class ModuleCWM extends React.Component {
     linkMenus.push({
       single: false,
       key: 'cwm-4',
-      icon: 'icon-fontello-feather',
+      icon: 'logixon icon-haiguan',
       text: formatMsg(intl, 'supervision'),
       sublinks: [{
         key: 'cwm-4-0',
@@ -116,7 +116,7 @@ export default class ModuleCWM extends React.Component {
     linkMenus.push({
       single: false,
       key: 'cwm-5',
-      icon: 'icon-fontello-box',
+      icon: 'logixon icon-tijikongjian',
       text: formatMsg(intl, 'products'),
       sublinks: [{
         key: 'cwm-5-0',
