@@ -33,14 +33,14 @@ export default class ModuleSCOF extends React.Component {
       single: true,
       key: 'scof-1',
       path: '/scof/orders',
-      icon: 'logixon icon-jiesuan-xianxing',
+      icon: 'logixon icon-renwu',
       text: formatMsg(intl, 'orders'),
     });
     linkMenus.push({
       single: false,
       key: 'scof-2',
       path: '/scof/billing',
-      icon: 'logixon icon-caiwu-xianxing',
+      icon: 'logixon icon-zhangdan',
       text: formatMsg(intl, 'billing'),
       sublinks: [{
         key: 'scof-2-0',

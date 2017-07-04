@@ -73,7 +73,7 @@ export default class Transport extends React.Component {
         single: false,
         key: 'tms-4',
         path: '/transport/billing',
-        icon: 'logixon icon-caiwu-xianxing',
+        icon: 'logixon icon-caiwu',
         text: formatMsg(intl, 'billing'),
         sublinks: [{
           key: 'tms-4-0',

@@ -124,7 +124,7 @@ export default class Clearance extends React.Component {
         single: false,
         key: 'cms-billing',
         path: '/clearance/billing',
-        icon: 'logixon icon-caiwu-xianxing',
+        icon: 'logixon icon-caiwu',
         text: formatMsg(intl, 'billing'),
         sublinks: [{
           key: 'cms-billing-0',

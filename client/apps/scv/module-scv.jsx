@@ -126,7 +126,7 @@ export default class ModuleSCV extends React.Component {
       single: false,
       key: 'scv-6',
       disabled: true,
-      icon: 'logixon icon-caiwu-xianxing',
+      icon: 'logixon icon-zhangdan-xianxing',
       text: formatMsg(intl, 'billing'),
       sublinks: [{
         key: 'scv-6-0',
