@@ -6,7 +6,7 @@ import { Card, Form, Switch } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { loadHsCodeCategories } from 'common/reducers/cmsHsCode';
 import { format } from 'client/common/i18n/helpers';
-import messages from './message.i18n';
+import messages from '../message.i18n';
 import MergeSplitForm from '../../form/mergeSplitRuleForm';
 
 const formatMsg = format(messages);
@@ -58,7 +58,7 @@ function getFieldInits(formData) {
   })
 )
 
-export default class MergeSplitModal extends React.Component {
+export default class MergeSplitRulesPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     isCustomRegisted: PropTypes.bool.isRequired,

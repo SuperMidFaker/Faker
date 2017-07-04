@@ -7,7 +7,7 @@ import NavLink from 'client/components/nav-link';
 import { loadPartners } from 'common/reducers/partner';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
-import BillTemplateModal from '../modals/billTemplateModal';
+import AddTemplateModal from './modal/addTemplateModal';
 import { loadBillemplates, deleteTemplate, toggleBillTempModal } from 'common/reducers/cmsManifest';
 import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES, CMS_BILL_TEMPLATE_PERMISSION } from 'common/constants';
 
@@ -91,12 +91,12 @@ export default class Templates extends React.Component {
     return (
       <div>
         <div className="toolbar">
-          <Button type="primary" size="large" onClick={this.handleAddBtnClicked} icon="plus-circle-o">新建模板</Button>
+          <Button type="primary" size="large" onClick={this.handleAddBtnClicked} icon="plus-circle-o">新增模板</Button>
         </div>
         <div className="panel-body table-panel">
           <Table size="middle" columns={columns} dataSource={this.props.billtemplates} rowKey="id" />
         </div>
-        <BillTemplateModal ietype={this.props.ietype} />
+        <AddTemplateModal ietype={this.props.ietype} />
       </div>
     );
   }

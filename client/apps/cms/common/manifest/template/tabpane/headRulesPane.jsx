@@ -9,7 +9,7 @@ import {
   TradeRemission, CountryAttr, TradeMode, Fee, ContainerNo, PackWeight, RaDeclManulNo, StoreYard } from './headFormItems';
 import { loadSearchedParam } from 'common/reducers/cmsManifest';
 import { format } from 'client/common/i18n/helpers';
-import messages from './message.i18n';
+import messages from '../message.i18n';
 
 const formatMsg = format(messages);
 
@@ -30,7 +30,7 @@ const CODE_AS_STATE = {
   }),
   { loadSearchedParam }
 )
-export default class HeadForm extends React.Component {
+export default class HeadRulesPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     ietype: PropTypes.string.isRequired,

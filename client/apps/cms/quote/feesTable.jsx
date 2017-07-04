@@ -494,7 +494,7 @@ export default class FeesTable extends Component {
         render: (o, record, index) => {
           const inEdit = editable || (index === editIndex);
           if (record.charge_param === '$formula' && inEdit) {
-            return (<Mention suggestions={this.state.suggestions} prefix="$" onSearchChange={this.handleSearch} defaultValue={Mention.toEditorState(o)}
+            return (<Mention suggestions={this.state.suggestions} prefix="$" onSearchChange={this.handleSearch} defaultValue={Mention.toContentState(o)}
               placeholder="$公式" onChange={editorState => this.handleonChange(record, editorState)} multiLines style={{ width: '100%', height: '100%' }}
             />);
           } else {

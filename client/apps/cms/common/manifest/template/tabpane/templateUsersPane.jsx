@@ -8,9 +8,9 @@ import { loadPartners } from 'common/reducers/partner';
 import { format } from 'client/common/i18n/helpers';
 import messages from 'client/apps/cms/message.i18n';
 import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
+
 const role = PARTNER_ROLES.SUP;
 const businessType = PARTNER_BUSINESSE_TYPES.clearance;
-
 const formatMsg = format(messages);
 const Option = Select.Option;
 
@@ -20,17 +20,17 @@ const Option = Select.Option;
     tenantId: state.account.tenantId,
     tenantName: state.account.tenantName,
     loginId: state.account.loginId,
-    billTemplateUsers: state.cmsManifest.billTemplateUsers,
+    templateUsers: state.cmsManifest.templateUsers,
   }),
   { loadPartners, loadBillTemplateUsers, addBillTemplateUser, deleteBillTemplateUser }
 )
-export default class BillTemplateUsersPane extends React.Component {
+export default class TemplateUsersPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantName: PropTypes.string.isRequired,
     tenantId: PropTypes.number.isRequired,
     template: PropTypes.object.isRequired,
-    billTemplateUsers: PropTypes.array.isRequired,
+    templateUsers: PropTypes.array.isRequired,
     operation: PropTypes.string.isRequired,
   }
   state = {
@@ -48,7 +48,7 @@ export default class BillTemplateUsersPane extends React.Component {
   }
   componentWillReceiveProps(nextProps) {
     this.setState({
-      datas: nextProps.billTemplateUsers,
+      datas: nextProps.templateUsers,
     });
   }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)

@@ -15,7 +15,7 @@ import CiqDetailsPane from './tabpane/ciqDetailsPane';
 import ContainersPane from './tabpane/containersPane';
 import DocuPane from './tabpane/doctsPane';
 import MergeSplitModal from './modals/mergeSplit';
-import SaveTemplateModal from './modals/saveTemplateSteps';
+import saveAsTemplateModal from './template/modal/saveAsTemplateModal';
 import { CMS_DECL_STATUS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -462,7 +462,7 @@ export default class ManifestEditor extends React.Component {
         <DelegationDockPanel ietype={ietype} />
         <OrderDockPanel />
         <MergeSplitModal />
-        <SaveTemplateModal ietype={ietype} />
+        <saveAsTemplateModal ietype={ietype} />
         <SendDeclsModal ietype={ietype} entries={billMeta.entries} reload={this.handleMetaLoad} />
       </Layout>
     );

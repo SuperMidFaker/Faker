@@ -41,7 +41,7 @@ export default class ImportRuleForm extends React.Component {
   componentWillReceiveProps(nextProps) {
     const { formData } = nextProps;
     if (nextProps.formData !== this.props.formData) {
-      this.props.form.setFieldsValue({ rule_element: Mention.toEditorState(formData.rule_element) });
+      this.props.form.setFieldsValue({ rule_element: Mention.toContentState(formData.rule_element) });
     }
   }
   formulaParams = [
@@ -122,7 +122,7 @@ export default class ImportRuleForm extends React.Component {
           <Col>
             <FormItem label={'规格型号'} labelCol={{ span: 3 }} wrapperCol={{ span: 21 }} >
               {getFieldDecorator('rule_element', {
-                initialValue: Mention.toEditorState(formData.rule_element),
+                initialValue: Mention.toContentState(formData.rule_element),
               })(<Mention suggestions={this.state.suggestions} prefix="$" onSearchChange={this.handleSearch}
                 placeholder="示例(固定值+备注)：String + $remark" multiLines style={{ width: '100%', height: '100%' }}
               />)}

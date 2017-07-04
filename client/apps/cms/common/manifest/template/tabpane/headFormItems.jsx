@@ -7,7 +7,7 @@ import FormInput from '../../../form/formInput';
 import { FormLocalSearchSelect, FormRemoteSearchSelect } from '../../../form/formSelect';
 import FormDatePicker from '../../../form/formDatePicker';
 import { format } from 'client/common/i18n/helpers';
-import messages from './message.i18n';
+import messages from '../message.i18n';
 import { CMS_FEE_UNIT, CMS_CONFIRM } from 'common/constants';
 
 const formatMsg = format(messages);

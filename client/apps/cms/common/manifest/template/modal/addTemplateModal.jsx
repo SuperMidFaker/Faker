@@ -16,12 +16,12 @@ const formItemLayout = {
   loginId: state.account.loginId,
   loginName: state.account.username,
   tenantName: state.account.tenantName,
-  visible: state.cmsManifest.billTemplateModal.visible,
-  operation: state.cmsManifest.billTemplateModal.operation,
+  visible: state.cmsManifest.addTemplateModal.visible,
+  operation: state.cmsManifest.addTemplateModal.operation,
   partners: state.partner.partners,
 }), { toggleBillTempModal, createBillTemplate })
 @Form.create()
-export default class BillTemplateModal extends React.Component {
+export default class AddTemplateModal extends React.Component {
   static propTypes = {
     tenantId: PropTypes.number.isRequired,
     loginId: PropTypes.number.isRequired,
@@ -61,9 +61,10 @@ export default class BillTemplateModal extends React.Component {
     this.props.toggleBillTempModal(false);
   }
   render() {
-    const { form: { getFieldDecorator }, visible, operation } = this.props;
+    const { form: { getFieldDecorator }, visible } = this.props;
     return (
-      <Modal title={operation === 'add' ? '新增模板' : '修改模板'} visible={visible} onOk={this.handleOk} onCancel={this.handleCancel}>
+      <Modal title="新增模板" visible={visible} onOk={this.handleOk} onCancel={this.handleCancel}>
+        <FormItem label="关联客户:" {...formItemLayout} />
         <FormItem label="模板名称:" {...formItemLayout} >
           {getFieldDecorator('template_name', {
             rules: [{ required: true, message: '模板名称必填' }],

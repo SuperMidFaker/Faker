@@ -1,18 +1,18 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Breadcrumb, Form, Layout, Button, Tooltip, Table, message, Mention, Collapse, Tabs } from 'antd';
+import { Breadcrumb, Form, Layout, Button, Table, message, Mention, Collapse, Tabs } from 'antd';
 import { openAddModal, deleteRelatedCustomer, loadRelatedCustomers, saveTemplateData, countFieldsChange, loadCmsParams } from 'common/reducers/cmsManifest';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
-import HeadForm from './forms/headForm';
+
 import { loadCustomers } from 'common/reducers/crmCustomers';
 import ButtonToggle from 'client/components/ButtonToggle';
-import SetImportRules from './cards/setImportRules';
-import MergeSplitRules from './cards/mergeSplitRules';
-import CustomerModal from '../modals/customerModal';
-import BillTemplateUsersPane from './cards/billTemplateUsersPane';
+import HeadRulesPane from './tabpane/headRulesPane';
+import ImportRulesPane from './tabpane/importRulesPane';
+import MergeSplitRulesPane from './tabpane/mergeSplitRulesPane';
+import TemplateUsersPane from './tabpane/templateUsersPane';
 
 const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
@@ -181,19 +181,18 @@ export default class ManifestTemplate extends Component {
             <div className="page-body tabbed">
               <Form layout="horizontal">
                 <Tabs>
-                  <TabPane tab="清单表头" key="head">
-                    <HeadForm ietype={ietype} form={form} formData={formData} />
+                  <TabPane tab="清单表头规则" key="head">
+                    <HeadRulesPane ietype={ietype} form={form} formData={formData} />
                   </TabPane>
                   <TabPane tab="特殊字段规则" key="importRules">
-                    <SetImportRules form={form} formData={formData} />
+                    <ImportRulesPane form={form} formData={formData} />
                   </TabPane>
                   <TabPane tab="归并拆分规则" key="mergeSplitRules">
-                    <MergeSplitRules form={form} formData={formData} />
+                    <MergeSplitRulesPane form={form} formData={formData} />
                   </TabPane>
                 </Tabs>
               </Form>
             </div>
-            <CustomerModal />
           </Content>
         </Layout>
         <Sider
@@ -209,21 +208,15 @@ export default class ManifestTemplate extends Component {
             <div className="panel-header">
               <h3>模板设置</h3>
             </div>
-            <Collapse accordion defaultActiveKey="customer">
-              <Panel header={'关联客户'} key="customer">
-                <div className="pull-right" style={{ display: 'none' }}>
-                  {operation === 'edit' &&
-                  <Tooltip placement="bottom" title="添加关联客户">
-                    <Button type="primary" shape="circle" icon="plus" onClick={this.handleAddRelatedCustomers} />
-                  </Tooltip>
-                  }
-                </div>
+            <Collapse accordion defaultActiveKey="properties">
+              <Panel header={'模板属性'} key="properties">
+
                 <Table size="middle" columns={columns} dataSource={relatedCustomers} showHeader={false} onRowClick={this.handleRowClick}
                   rowKey="id" pagination={false}
                 />
               </Panel>
               <Panel header={'授权使用单位'} key="user">
-                <BillTemplateUsersPane template={template} operation={operation} />
+                <TemplateUsersPane template={template} operation={operation} />
               </Panel>
             </Collapse>
           </div>

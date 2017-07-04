@@ -4,8 +4,8 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Modal, Form, Mention, message, Steps, Button, Row, Col, Input } from 'antd';
 import { setStepVisible, createGeneratedTemplate, validateTempName } from 'common/reducers/cmsManifest';
-import ImportRuleForm from '../form/bodyImportRuleForm';
-import MergeSplitForm from '../form/mergeSplitRuleForm';
+import ImportRuleForm from '../../form/bodyImportRuleForm';
+import MergeSplitForm from '../../form/mergeSplitRuleForm';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 const formatMsg = format(messages);
@@ -75,7 +75,7 @@ function getFieldInits(formData) {
   }),
   { setStepVisible, createGeneratedTemplate, validateTempName }
 )
-export default class SaveTemplateModal extends React.Component {
+export default class SaveAsTemplateModal extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     visibleStepModal: PropTypes.bool.isRequired,

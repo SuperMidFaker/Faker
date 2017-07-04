@@ -119,13 +119,13 @@ const initialState = {
   templates: [],
   billRule: {},
   billHeadFieldsChangeTimes: 0,
-  billTemplateModal: {
+  addTemplateModal: {
     visible: false,
     templateName: '',
   },
   visibleAddModal: false,
   relatedCustomers: [],
-  billTemplateUsers: [],
+  templateUsers: [],
   formData: {},
   changeTimes: 0,
   templateValLoading: false,
@@ -274,7 +274,7 @@ export default function reducer(state = initialState, action) {
       return { ...state, template: { ...state.template, ...retData } };
     }
     case actionTypes.TOGGLE_BILL_TEMPLATE: {
-      return { ...state, billTemplateModal: { ...state.billTemplateModal, ...action.data } };
+      return { ...state, addTemplateModal: { ...state.addTemplateModal, ...action.data } };
     }
     case actionTypes.OPEN_ADD_MODEL:
       return { ...state, visibleAddModal: true };
@@ -283,7 +283,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_RELATED_CUSTOMERS_SUCCEED:
       return { ...state, relatedCustomers: action.result.data };
     case actionTypes.LOAD_BILL_TEMPLATE_USERS_SUCCEED:
-      return { ...state, billTemplateUsers: action.result.data };
+      return { ...state, templateUsers: action.result.data };
     case actionTypes.COUNT_FIELDS_CHANGE:
       return { ...state, changeTimes: state.changeTimes + 1 };
     case actionTypes.LOAD_FORM_VALS:
@@ -299,7 +299,7 @@ export default function reducer(state = initialState, action) {
         template: { ...state.template, ...retData },
         relatedCustomers: action.result.data.customers,
         formData: action.result.data.formData,
-        billTemplateUsers: action.result.data.users,
+        templateUsers: action.result.data.users,
         templateValLoading: false };
     }
     case actionTypes.LOAD_FORM_VALS_FAIL:
