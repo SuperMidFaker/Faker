@@ -35,7 +35,7 @@ const messages = defineMessages({
   },
   clearanceManifest: {
     id: 'scv.module.clearance.manifest',
-    defaultMessage: '报关清单',
+    defaultMessage: '申报清单',
   },
   clearanceDecl: {
     id: 'scv.module.clearance.decl',

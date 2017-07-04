@@ -11,7 +11,7 @@ export default defineMessages({
   },
   declManifest: {
     id: 'cms.manifest.decl.manifest',
-    defaultMessage: '报关清单',
+    defaultMessage: '申报清单',
   },
   searchPlaceholder: {
     id: 'cms.manifest.search.placeholder',
@@ -119,7 +119,7 @@ export default defineMessages({
   },
   declareBill: {
     id: 'cms.manifest.bill',
-    defaultMessage: '报关清单',
+    defaultMessage: '申报清单',
   },
   newDeclaration: {
     id: 'cms.manifest.new.declaration',

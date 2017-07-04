@@ -465,7 +465,7 @@ export default class CustomsList extends Component {
               {this.props.ietype === 'import' ? this.msg('importOperation') : this.msg('exportOperation')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              <Icon type="file" /> {this.msg('customsDeclaration')}
+              {this.msg('customsDeclaration')}
             </Breadcrumb.Item>
           </Breadcrumb>
           <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">

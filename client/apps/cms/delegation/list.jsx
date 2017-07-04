@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Badge, Breadcrumb, Layout, Icon, Popconfirm, Radio, Select, Tag, message, Menu, Dropdown } from 'antd';
+import { Badge, Breadcrumb, DatePicker, Layout, Icon, Popconfirm, Radio, Select, Tag, message, Menu, Dropdown } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import TrimSpan from 'client/components/trimSpan';
@@ -33,6 +33,7 @@ const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const Option = Select.Option;
 const OptGroup = Select.OptGroup;
+const RangePicker = DatePicker.RangePicker;
 
 @injectIntl
 @connect(
@@ -631,6 +632,11 @@ export default class DelegationList extends Component {
                   <Option value="my">我负责的委托</Option>
                 </OptGroup>
               </Select>
+              <span />
+              <RangePicker size="large"
+                ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
+                onChange={this.handleDateRangeChange}
+              />
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3>
                 <a role="presentation" onClick={this.handleDeselectRows}>不选</a>

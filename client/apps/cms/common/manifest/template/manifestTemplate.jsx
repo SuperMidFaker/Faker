@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Breadcrumb, Form, Layout, Row, Col, Button, Tooltip, Table, Popconfirm, Icon, message, Mention, Collapse } from 'antd';
+import { Breadcrumb, Form, Layout, Button, Tooltip, Table, message, Mention, Collapse, Tabs } from 'antd';
 import { openAddModal, deleteRelatedCustomer, loadRelatedCustomers, saveTemplateData, countFieldsChange, loadCmsParams } from 'common/reducers/cmsManifest';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from '../message.i18n';
@@ -17,6 +17,7 @@ import BillTemplateUsersPane from './cards/billTemplateUsersPane';
 const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
 const Panel = Collapse.Panel;
+const TabPane = Tabs.TabPane;
 
 @injectIntl
 @connect(
@@ -137,6 +138,7 @@ export default class ManifestTemplate extends Component {
       key: 'name',
       render: o => (<div style={{ paddingLeft: 15 }}>{o}</div>),
     }];
+    /*
     if (operation === 'edit') {
       columns.push({
         width: 20,
@@ -147,37 +149,9 @@ export default class ManifestTemplate extends Component {
           </Popconfirm>
         ),
       });
-    }
+    }*/
     return (
       <Layout className="ant-layout-wrapper">
-        <Sider width={280} className="menu-sider" key="sider" trigger={null}
-          collapsible
-          collapsed={this.state.collapsed}
-          collapsedWidth={0}
-        >
-          <div className="top-bar">
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {this.msg('billTemplates')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.msg('relatedCustomers')}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-            <div className="pull-right">
-              {operation === 'edit' &&
-                <Tooltip placement="bottom" title="添加关联客户">
-                  <Button type="primary" shape="circle" icon="plus" onClick={this.handleAddRelatedCustomers} />
-                </Tooltip>
-              }
-            </div>
-          </div>
-          <div className="left-sider-panel" >
-            <Table size="middle" columns={columns} dataSource={relatedCustomers} showHeader={false} onRowClick={this.handleRowClick}
-              rowKey="id" pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }}
-            />
-          </div>
-        </Sider>
         <Layout>
           <Header className="top-bar">
             <Breadcrumb>
@@ -204,17 +178,21 @@ export default class ManifestTemplate extends Component {
             </div>
           </Header>
           <Content className={'main-content layout-min-width layout-min-width-large'}>
-            <HeadForm ietype={ietype} form={form} formData={formData} />
-            <Form layout="vertical">
-              <Row gutter={24}>
-                <Col sm={24} md={12}>
-                  <SetImportRules form={form} formData={formData} />
-                </Col>
-                <Col sm={24} md={12}>
-                  <MergeSplitRules form={form} formData={formData} />
-                </Col>
-              </Row>
-            </Form>
+            <div className="page-body tabbed">
+              <Form layout="horizontal">
+                <Tabs>
+                  <TabPane tab="清单表头" key="head">
+                    <HeadForm ietype={ietype} form={form} formData={formData} />
+                  </TabPane>
+                  <TabPane tab="特殊字段规则" key="importRules">
+                    <SetImportRules form={form} formData={formData} />
+                  </TabPane>
+                  <TabPane tab="归并拆分规则" key="mergeSplitRules">
+                    <MergeSplitRules form={form} formData={formData} />
+                  </TabPane>
+                </Tabs>
+              </Form>
+            </div>
             <CustomerModal />
           </Content>
         </Layout>
@@ -231,7 +209,19 @@ export default class ManifestTemplate extends Component {
             <div className="panel-header">
               <h3>模板设置</h3>
             </div>
-            <Collapse accordion defaultActiveKey="user">
+            <Collapse accordion defaultActiveKey="customer">
+              <Panel header={'关联客户'} key="customer">
+                <div className="pull-right" style={{ display: 'none' }}>
+                  {operation === 'edit' &&
+                  <Tooltip placement="bottom" title="添加关联客户">
+                    <Button type="primary" shape="circle" icon="plus" onClick={this.handleAddRelatedCustomers} />
+                  </Tooltip>
+                  }
+                </div>
+                <Table size="middle" columns={columns} dataSource={relatedCustomers} showHeader={false} onRowClick={this.handleRowClick}
+                  rowKey="id" pagination={false}
+                />
+              </Panel>
               <Panel header={'授权使用单位'} key="user">
                 <BillTemplateUsersPane template={template} operation={operation} />
               </Panel>

@@ -15,7 +15,7 @@ const messages = defineMessages({
   },
   importManifest: {
     id: 'cms.module.import.manifest',
-    defaultMessage: '报关清单',
+    defaultMessage: '申报清单',
   },
   importCustomsDecl: {
     id: 'cms.module.import.decl.customs',
@@ -31,7 +31,7 @@ const messages = defineMessages({
   },
   exportManifest: {
     id: 'cms.module.export.manifest',
-    defaultMessage: '报关清单',
+    defaultMessage: '申报清单',
   },
   exportCustomsDecl: {
     id: 'cms.module.export.decl.customs',

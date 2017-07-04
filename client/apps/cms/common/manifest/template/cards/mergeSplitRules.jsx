@@ -77,13 +77,18 @@ export default class MergeSplitModal extends React.Component {
     const { mergeSplit } = this.state;
     const { form, form: { getFieldDecorator }, fieldInits } = this.props;
     return (
-      <Card title="归并拆分规则设置" extra={
-        <FormItem>{getFieldDecorator('set_merge_split')(
-          <Switch checked={mergeSplit} onChange={this.handleOnChange} />)}
-        </FormItem>}
-      >
-        <MergeSplitForm form={form} formData={fieldInits} />
-      </Card>
+      <div className="pane">
+        <div className="panel-header">
+          <FormItem>{getFieldDecorator('set_merge_split')(
+            <Switch checked={mergeSplit} onChange={this.handleOnChange} checkedChildren={'启用'} unCheckedChildren={'关闭'} />)}
+          </FormItem>
+        </div>
+        <div className="pane-content">
+          <Card bodyStyle={{ padding: 0 }}>
+            <MergeSplitForm form={form} formData={fieldInits} />
+          </Card>
+        </div>
+      </div>
     );
   }
 }

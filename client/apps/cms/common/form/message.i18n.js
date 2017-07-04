@@ -107,7 +107,7 @@ export default defineMessages({
   },
   declareBill: {
     id: 'cms.forms.bill',
-    defaultMessage: '报关清单',
+    defaultMessage: '申报清单',
   },
   newDeclaration: {
     id: 'cms.forms.new.declaration',

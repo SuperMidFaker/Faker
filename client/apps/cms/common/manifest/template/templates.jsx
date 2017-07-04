@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Table, Button, Popconfirm, message } from 'antd';
+import { Icon, Table, Button, Popconfirm, message } from 'antd';
 import NavLink from 'client/components/nav-link';
 import { loadPartners } from 'common/reducers/partner';
 import { format } from 'client/common/i18n/helpers';
@@ -57,7 +57,7 @@ export default class Templates extends React.Component {
     this.props.toggleBillTempModal(true, 'add');
   }
   render() {
-    const Columns = [
+    const columns = [
       {
         title: '模板名称',
         dataIndex: 'template_name',
@@ -70,14 +70,15 @@ export default class Templates extends React.Component {
         title: '操作',
         dataIndex: 'status',
         key: 'status',
+        width: 80,
         render: (_, record) => {
           if (record.permission === CMS_BILL_TEMPLATE_PERMISSION.edit) {
             return (
               <span>
-                <a onClick={() => this.handleEdit(record)}>{this.msg('edit')}</a>
+                <a onClick={() => this.handleEdit(record)}><Icon type="edit" /></a>
                 <span className="ant-divider" />
                 <Popconfirm title="确定要删除吗？" onConfirm={() => this.handleDelete(record)}>
-                  <a>删除</a>
+                  <a><Icon type="delete" /></a>
                 </Popconfirm>
               </span>);
           } else if (record.permission === CMS_BILL_TEMPLATE_PERMISSION.view) {
@@ -93,7 +94,7 @@ export default class Templates extends React.Component {
           <Button type="primary" size="large" onClick={this.handleAddBtnClicked} icon="plus-circle-o">新建模板</Button>
         </div>
         <div className="panel-body table-panel">
-          <Table columns={Columns} dataSource={this.props.billtemplates} rowKey="id" />
+          <Table size="middle" columns={columns} dataSource={this.props.billtemplates} rowKey="id" />
         </div>
         <BillTemplateModal ietype={this.props.ietype} />
       </div>
