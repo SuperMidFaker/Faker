@@ -20,6 +20,8 @@ import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import { CMS_DECL_STATUS } from 'common/constants';
 import SendModal from './modals/sendModal';
+import { DocDef } from './docDef';
+
 
 import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
 import DelegationDockPanel from '../dock/delegationDockPanel';
@@ -64,6 +66,23 @@ export default class CustomsDeclEditor extends React.Component {
   state = {
     visible: false,
     collapsed: true,
+  }
+  componentDidMount() {
+    let script;
+    if (!document.getElementById('pdfmake-min')) {
+      script = document.createElement('script');
+      script.id = 'pdfmake-min';
+      script.src = `${__CDN__}/assets/pdfmake/pdfmake.min.js`;
+      script.async = true;
+      document.body.appendChild(script);
+    }
+    if (!document.getElementById('pdfmake-vfsfont')) {
+      script = document.createElement('script');
+      script.id = 'pdfmake-vfsfont';
+      script.src = `${__CDN__}/assets/pdfmake/vfs_fonts.js`;
+      script.async = true;
+      document.body.appendChild(script);
+    }
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.params.preEntrySeqNo !== this.props.params.preEntrySeqNo) {
@@ -131,11 +150,30 @@ export default class CustomsDeclEditor extends React.Component {
     const pathname = `/clearance/${ietype}/customs/${billMeta.bill_seq_no}/${ev.key}`;
     this.context.router.push({ pathname });
   }
-  handleInvoiceMake = () => {
-
-  }
   handlePreview = (delgNo) => {
     this.props.showPreviewer(delgNo, 'customsDecl');
+  }
+  handlePDF = () => {
+    const { head, bodies, billMeta } = this.props;
+    const docDefinition = DocDef(head, bodies, billMeta.declWayCode);
+    window.pdfMake.fonts = {
+      yahei: {
+        normal: 'msyh.ttf',
+        bold: 'msyh.ttf',
+      },
+    };
+    window.pdfMake.createPdf(docDefinition).open();
+  }
+  handlePrinter = () => {
+    const { head, bodies, billMeta } = this.props;
+    const docDefinition = DocDef(head, bodies, billMeta.declWayCode);
+    window.pdfMake.fonts = {
+      yahei: {
+        normal: 'msyh.ttf',
+        bold: 'msyh.ttf',
+      },
+    };
+    window.pdfMake.createPdf(docDefinition).print();
   }
   render() {
     const { ietype, form, head, bodies, billMeta } = this.props;
@@ -178,8 +216,8 @@ export default class CustomsDeclEditor extends React.Component {
                 </Tooltip>
               </Popconfirm> }
               <ButtonGroup>
-                <Button size="large" icon="file-pdf" />
-                <Button size="large" icon="printer" />
+                <Button size="large" icon="file-pdf" onClick={this.handlePDF} />
+                <Button size="large" icon="printer" onClick={this.handlePrinter} />
                 <Button size="large" icon="mail" />
               </ButtonGroup>
               { head.status === CMS_DECL_STATUS.proposed.value &&
