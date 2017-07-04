@@ -8,7 +8,7 @@ import InfoItem from 'client/components/InfoItem';
 import { format } from 'client/common/i18n/helpers';
 import QuantityInput from '../../../common/quantityInput';
 import messages from '../../message.i18n';
-import { closeAllocatingModal, loadProductInboundDetail } from 'common/reducers/cwmOutbound';
+import { closeAllocatingModal, loadProductInboundDetail, loadAllocatedDetails } from 'common/reducers/cwmOutbound';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
@@ -25,7 +25,7 @@ const Panel = Collapse.Panel;
     inventoryData: state.cwmOutbound.inventoryData,
     defaultWhse: state.cwmContext.defaultWhse,
   }),
-  { closeAllocatingModal, loadProductInboundDetail }
+  { closeAllocatingModal, loadProductInboundDetail, loadAllocatedDetails }
 )
 export default class AllocatingModal extends Component {
   static propTypes = {
@@ -45,7 +45,8 @@ export default class AllocatingModal extends Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.outboundNo !== this.props.outboundNo || nextProps.outboundProduct.seq_no !== this.props.outboundProduct.seq_no) {
-      this.props.loadProductInboundDetail(nextProps.outboundProduct.product_sku, nextProps.defaultWhse.code, nextProps.filters, nextProps.outboundNo, nextProps.outboundProduct.seq_no);
+      this.props.loadProductInboundDetail(nextProps.outboundProduct.product_sku, nextProps.defaultWhse.code, nextProps.filters);
+      this.props.loadAllocatedDetails(nextProps.outboundProduct.outbound_no, nextProps.outboundProduct.seq_no);
     }
     if (nextProps.inventoryData !== this.props.inventoryData) {
       this.setState({
