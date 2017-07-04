@@ -26,21 +26,21 @@ export default class ModuleSCOF extends React.Component {
       key: 'scof-0',
       disabled: true,
       path: '/scof/dashboard',
-      icon: 'icon-fontello-gauge',
+      icon: 'logixon icon-yingyongchengxu',
       text: formatMsg(intl, 'dashboard'),
     });
     linkMenus.push({
       single: true,
       key: 'scof-1',
       path: '/scof/orders',
-      icon: 'icon-fontello-doc-text',
+      icon: 'logixon icon-jiesuan-xianxing',
       text: formatMsg(intl, 'orders'),
     });
     linkMenus.push({
       single: false,
       key: 'scof-2',
       path: '/scof/billing',
-      icon: 'icon-fontello-money-1',
+      icon: 'logixon icon-caiwu-xianxing',
       text: formatMsg(intl, 'billing'),
       sublinks: [{
         key: 'scof-2-0',
@@ -56,14 +56,14 @@ export default class ModuleSCOF extends React.Component {
       single: true,
       key: 'scof-3',
       path: '/scof/flow',
-      icon: 'icon-fontello-flow-tree',
+      icon: 'logixon icon-zuzhijiagoujiekou',
       text: formatMsg(intl, 'flow'),
     });
     linkMenus.push({
       single: true,
       key: 'scof-4',
       path: '/scof/customers',
-      icon: 'zmdi zmdi-accounts-list',
+      icon: 'logixon icon-hezuoguanxi',
       text: formatMsg(intl, 'customers'),
     });
     this.setState({ linkMenus });

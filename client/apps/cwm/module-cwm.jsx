@@ -34,7 +34,7 @@ export default class ModuleCWM extends React.Component {
       single: true,
       key: 'cwm-0',
       path: '/cwm/dashboard',
-      icon: 'icon-fontello-gauge',
+      icon: 'logixon icon-yingyongchengxu',
       text: formatMsg(intl, 'dashboard'),
     });
     linkMenus.push({
@@ -138,7 +138,7 @@ export default class ModuleCWM extends React.Component {
     linkMenus.push({
       single: false,
       key: 'cwm-6',
-      icon: 'zmdi zmdi-settings',
+      icon: 'logixon icon-shezhi-xianxing',
       text: formatMsg(intl, 'settings'),
       sublinks: [{
         key: 'cwm-6-0',

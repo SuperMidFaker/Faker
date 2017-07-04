@@ -37,7 +37,7 @@ export default class Transport extends React.Component {
         single: true,
         key: 'tms-0',
         path: '/transport/dashboard',
-        icon: 'icon-fontello-desktop',
+        icon: 'logixon icon-yingyongchengxu',
         text: formatMsg(intl, 'dashboard'),
       });
     }
@@ -46,7 +46,7 @@ export default class Transport extends React.Component {
         single: true,
         key: 'tms-1',
         path: '/transport/shipment',
-        icon: 'icon-fontello-doc-text-2',
+        icon: 'logixon icon-danju-xianxing',
         text: formatMsg(intl, 'shipment'),
       });
     }
@@ -55,7 +55,7 @@ export default class Transport extends React.Component {
         single: true,
         key: 'tms-2',
         path: '/transport/dispatch',
-        icon: 'icon-fontello-truck',
+        icon: 'logixon icon-yunshuzhongwuliu',
         text: formatMsg(intl, 'dispatch'),
       });
     }
@@ -64,7 +64,7 @@ export default class Transport extends React.Component {
         single: true,
         key: 'tms-3',
         path: '/transport/tracking',
-        icon: 'icon-fontello-tasks-1',
+        icon: 'logixon icon-tuodiantu',
         text: formatMsg(intl, 'tracking'),
       });
     }
@@ -73,7 +73,7 @@ export default class Transport extends React.Component {
         single: false,
         key: 'tms-4',
         path: '/transport/billing',
-        icon: 'icon-fontello-money-1',
+        icon: 'logixon icon-caiwu-xianxing',
         text: formatMsg(intl, 'billing'),
         sublinks: [{
           key: 'tms-4-0',
@@ -97,7 +97,7 @@ export default class Transport extends React.Component {
     linkMenus.push({
       single: false,
       key: 'tms-5',
-      icon: 'icon-ikons-bar-chart-2',
+      icon: 'logixon icon-baobiao',
       text: formatMsg(intl, 'analytics'),
       sublinks: [{
         key: 'tms-5-0',
@@ -109,7 +109,7 @@ export default class Transport extends React.Component {
       linkMenus.push({
         single: false,
         key: 'tms-6',
-        icon: 'zmdi zmdi-settings',
+        icon: 'logixon icon-shezhi-xianxing',
         text: formatMsg(intl, 'settings'),
         sublinks: [{
           key: 'tms-6-0',
