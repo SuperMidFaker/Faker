@@ -201,10 +201,10 @@ export default class CustomsList extends Component {
     dataIndex: 'epsend_login_name',
     width: 100,
   }, {
-    title: '回执日期',
+    title: '回执时间',
     dataIndex: 'backfill_date',
     width: 100,
-    render: backdt => (backdt ? moment(backdt).format('YYYY.MM.DD') : '-'),
+    render: backdt => (backdt ? moment(backdt).format('MM.DD HH:mm') : '-'),
   }, {
     title: this.msg('opColumn'),
     width: 140,
