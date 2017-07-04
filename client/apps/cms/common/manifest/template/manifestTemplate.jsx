@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Breadcrumb, Form, Layout, Button, Table, message, Mention, Collapse, Tabs } from 'antd';
+import { Breadcrumb, Form, Layout, Button, message, Mention, Collapse, Tabs } from 'antd';
 import { openAddModal, deleteRelatedCustomer, loadRelatedCustomers, saveTemplateData, countFieldsChange, loadCmsParams } from 'common/reducers/cmsManifest';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
-
+import InfoItem from 'client/components/InfoItem';
 import { loadCustomers } from 'common/reducers/crmCustomers';
 import ButtonToggle from 'client/components/ButtonToggle';
 import HeadRulesPane from './tabpane/headRulesPane';
@@ -132,24 +132,7 @@ export default class ManifestTemplate extends Component {
     });
   }
   render() {
-    const { form, ietype, templateName, formData, relatedCustomers, template, operation } = this.props;
-    const columns = [{
-      dataIndex: 'customer_name',
-      key: 'name',
-      render: o => (<div style={{ paddingLeft: 15 }}>{o}</div>),
-    }];
-    /*
-    if (operation === 'edit') {
-      columns.push({
-        width: 20,
-        fixed: 'right',
-        render: (o, record) => (
-          <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleCustDel(record.id)}>
-            <a role="presentation"><Icon type="delete" /></a>
-          </Popconfirm>
-        ),
-      });
-    }*/
+    const { form, ietype, templateName, formData, template, operation } = this.props;
     return (
       <Layout className="ant-layout-wrapper">
         <Layout>
@@ -210,10 +193,8 @@ export default class ManifestTemplate extends Component {
             </div>
             <Collapse accordion defaultActiveKey="properties">
               <Panel header={'模板属性'} key="properties">
-
-                <Table size="middle" columns={columns} dataSource={relatedCustomers} showHeader={false} onRowClick={this.handleRowClick}
-                  rowKey="id" pagination={false}
-                />
+                <InfoItem label="关联客户" type="select" field={''} dataIndex="bl_wb_no" placeholder="关联客户" options={''} editable onEdit={this.handleFill} />
+                <InfoItem label="模板名称" field={templateName} dataIndex="bl_wb_no" placeholder="模板名称" editable onEdit={this.handleFill} />
               </Panel>
               <Panel header={'授权使用单位'} key="user">
                 <TemplateUsersPane template={template} operation={operation} />

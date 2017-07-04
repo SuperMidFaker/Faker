@@ -102,9 +102,7 @@ export default class TemplateUsersPane extends React.Component {
     const { brokers } = this.state;
     const { operation } = this.props;
     const columns = [{
-      title: this.msg('tenantName'),
       dataIndex: 'tenant_name',
-      width: 160,
       render: (o, record) => {
         if (!record.id) {
           return (
@@ -145,8 +143,8 @@ export default class TemplateUsersPane extends React.Component {
       });
     }
     return (
-      <Table size="middle" pagination={false} columns={columns} dataSource={this.state.datas}
-        footer={operation === 'edit' ? () => <Button type="dashed" onClick={this.handleAdd} icon="plus" style={{ width: '100%' }}>{this.msg('add')}</Button> : null}
+      <Table size="middle" showHeader={false} pagination={false} columns={columns} dataSource={this.state.datas}
+        footer={operation === 'edit' ? () => <Button type="dashed" onClick={this.handleAdd} icon="plus" style={{ width: '100%' }} /> : null}
       />
     );
   }

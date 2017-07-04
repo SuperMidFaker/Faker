@@ -70,7 +70,7 @@ export default class Templates extends React.Component {
         title: '操作',
         dataIndex: 'status',
         key: 'status',
-        width: 80,
+        width: 60,
         render: (_, record) => {
           if (record.permission === CMS_BILL_TEMPLATE_PERMISSION.edit) {
             return (
