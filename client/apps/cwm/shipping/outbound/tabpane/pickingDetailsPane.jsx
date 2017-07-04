@@ -8,6 +8,7 @@ import PickingModal from '../modal/pickingModal';
 import ShippingModal from '../modal/shippingModal';
 import QuantityInput from '../../../common/quantityInput';
 import { openPickingModal, openShippingModal, loadPickDetails } from 'common/reducers/cwmOutbound';
+import { CWM_OUTBOUND_STATUS } from 'common/constants';
 
 @injectIntl
 @connect(
@@ -25,6 +26,7 @@ export default class PickingDetailsPane extends React.Component {
   }
   state = {
     selectedRowKeys: [],
+    ButtonStatus: null,
   }
   componentWillMount() {
     this.props.loadPickDetails(this.props.outboundNo);
@@ -35,10 +37,6 @@ export default class PickingDetailsPane extends React.Component {
     }
   }
   columns = [{
-    title: '订单行号',
-    dataIndex: 'seq_no',
-    width: 80,
-  }, {
     title: 'SKU',
     dataIndex: 'sku',
     width: 120,
@@ -84,24 +82,40 @@ export default class PickingDetailsPane extends React.Component {
   }, {
     title: '分配',
     width: 100,
-    dataIndex: 'allocated_date',
+    dataIndex: 'alloc_date',
     render: (o, record) => {
       if (o) {
         return (<div>
-          <div><Icon type="user" />{record.allocated_by}</div>
-          <div><Icon type="clock-circle-o" />{record.allocated_date}</div>
+          <div><Icon type="user" />{record.alloc_by}</div>
+          <div><Icon type="clock-circle-o" />{record.alloc_date}</div>
         </div>);
       }
     },
   }, {
     title: '拣货',
     width: 100,
+    render: (o, record) => {
+      if (o) {
+        return (<div>
+          <div><Icon type="user" />{record.picked_by}</div>
+          <div><Icon type="clock-circle-o" />{record.picked_date}</div>
+        </div>);
+      }
+    },
   }, {
     title: '复核装箱',
     width: 100,
   }, {
     title: '发货',
     width: 100,
+    render: (o, record) => {
+      if (o) {
+        return (<div>
+          <div><Icon type="user" />{record.shipped_by}</div>
+          <div><Icon type="clock-circle-o" />{record.shipped_date}</div>
+        </div>);
+      }
+    },
   }, {
     title: '操作',
     width: 150,
@@ -139,10 +153,19 @@ export default class PickingDetailsPane extends React.Component {
   }
   render() {
     const { pickDetails } = this.props;
+    const { ButtonStatus } = this.state;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
-      onChange: (selectedRowKeys) => {
-        this.setState({ selectedRowKeys });
+      onChange: (selectedRowKeys, selectedRows) => {
+        let status = null;
+        const allocated = selectedRows.filter(item => item.status === CWM_OUTBOUND_STATUS.ALL_ALLOCATED.value);
+        const picked = selectedRows.filter(item => item.status === CWM_OUTBOUND_STATUS.ALL_PICKED.value);
+        if (allocated && allocated.length === selectedRows.length) {
+          status = 'allAllocated';
+        } else if (picked && picked.length === selectedRows.length) {
+          status = 'allPicked';
+        }
+        this.setState({ selectedRowKeys, ButtonStatus: status });
       },
     };
     return (
@@ -150,18 +173,18 @@ export default class PickingDetailsPane extends React.Component {
         <div className="toolbar">
           <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
             <h3>已选中{this.state.selectedRowKeys.length}项</h3>
-            <Button size="large" onClick={this.handleBatchConfirmPicked}>
+            {ButtonStatus === 'allAllocated' && <span><Button size="large" onClick={this.handleBatchConfirmPicked}>
               <MdIcon type="check-all" />批量拣货确认
             </Button>
-            <Button size="large" onClick={this.handleWithdrawTask} icon="close">
+              <Button size="large" onClick={this.handleWithdrawTask} icon="close">
               批量取消分配
-            </Button>
-            <Button size="large" onClick={this.handleBatchConfirmShipped}>
+            </Button></span>}
+            {ButtonStatus === 'allPicked' && <span><Button size="large" onClick={this.handleBatchConfirmShipped}>
               <MdIcon type="check-all" />批量发货确认
             </Button>
-            <Button size="large" onClick={this.handleWithdrawTask} icon="close">
+              <Button size="large" onClick={this.handleWithdrawTask} icon="close">
               批量取消拣货
-            </Button>
+            </Button></span>}
           </div>
           <div className="toolbar-right" />
         </div>

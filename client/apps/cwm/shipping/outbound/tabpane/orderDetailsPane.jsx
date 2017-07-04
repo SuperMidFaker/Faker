@@ -29,6 +29,7 @@ export default class OrderDetailsPane extends React.Component {
   }
   state = {
     selectedRowKeys: [],
+    ButtonStatus: null,
   }
   componentWillMount() {
     this.handleReload();
@@ -120,23 +121,24 @@ export default class OrderDetailsPane extends React.Component {
   }
   render() {
     const { outboundHead, outboundProducts } = this.props;
+    const { ButtonStatus } = this.state;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
-      onChange: (selectedRowKeys) => {
-        this.setState({ selectedRowKeys });
+      onChange: (selectedRowKeys, selectedRows) => {
+        let status = null;
+        const unallocated = selectedRows.find(item => item.alloc_qty < item.order_qty);
+        const allocated = selectedRows.find(item => item.alloc_qty === item.order_qty);
+        if (unallocated && !allocated) {
+          status = 'alloc';
+        } else if (!unallocated && allocated) {
+          status = 'unalloc';
+        }
+        this.setState({
+          selectedRowKeys,
+          ButtonStatus: status,
+        });
       },
     };
-    let ButtonStatus = null;
-    let num = 0;
-    for (let i = 0; i < outboundProducts.length; i++) {
-      const o = outboundProducts[i];
-      if (o.trace_id.length !== 0) num++;
-    }
-    if (num === 0) {
-      ButtonStatus = 'alloc';
-    } else if (num === outboundProducts.length) {
-      ButtonStatus = 'unalloc';
-    }
     return (
       <div>
         <div className="toolbar">
