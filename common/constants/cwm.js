@@ -203,7 +203,7 @@ exports.CWM_OUTBOUND_STATUS = {
   },
   SHIPPING: {
     value: 6,
-    setp: 4,
+    step: 4,
   },
   COMPLETED: {
     value: 7,
