@@ -14,6 +14,9 @@ const actionTypes = createActionTypes('@@welogix/cwm/outbound/', [
   'CANCEL_PRDALLOC', 'CANCEL_PRDALLOC_SUCCEED', 'CANCEL_PRDALLOC_FAIL',
   'LOAD_PICK_DETAILS', 'LOAD_PICK_DETAILS_SUCCEED', 'LOAD_PICK_DETAILS_FAIL',
   'LOAD_ALLOCATED_DETAILS', 'LOAD_ALLOCATED_DETAILS_SUCCEED', 'LOAD_ALLOCATED_DETAILS_FAIL',
+  'OUTBOUNDS_PICK', 'OUTBOUNDS_PICK_SUCCEED', 'OUTBOUNDS_PICK_FAIL',
+  'UNDO_PICKED', 'UNDO_PICKED_SUCCEED', 'UNDO_PICKED_FAIL',
+  'OUTBOUNDS_SHIP', 'OUTBOUNDS_SHIP_SUCCEED', 'OUTBOUNDS_SHIP_FAIL',
 ]);
 
 const initialState = {
@@ -33,9 +36,16 @@ const initialState = {
   allocatedData: [],
   pickingModal: {
     visible: false,
+    traceId: '',
+    location: '',
+    skuPackQty: '',
+    allocQty: '',
   },
   shippingModal: {
     visible: false,
+    traceId: '',
+    pickedQty: '',
+    skuPackQty: '',
   },
   outbound: {
     totalCount: 0,
@@ -57,11 +67,11 @@ export default function reducer(state = initialState, action) {
     case actionTypes.CLOSE_ALLOCATING_MODAL:
       return { ...state, allocatingModal: { ...state.allocatingModal, visible: false } };
     case actionTypes.OPEN_PICKING_MODAL:
-      return { ...state, pickingModal: { visible: true } };
+      return { ...state, pickingModal: { visible: true, traceId: action.traceId, location: action.location, allocQty: action.allcoQty, skuPackQty: action.skuPackQty } };
     case actionTypes.CLOSE_PICKING_MODAL:
       return { ...state, pickingModal: { visible: false } };
     case actionTypes.OPEN_SHIPPING_MODAL:
-      return { ...state, shippingModal: { visible: true } };
+      return { ...state, shippingModal: { visible: true, traceId: action.traceId, pickedQty: action.pickedQty, skuPackQty: action.skuPackQty } };
     case actionTypes.CLOSE_SHIPPING_MODAL:
       return { ...state, shippingModal: { visible: false } };
     case actionTypes.LOAD_OUTBOUNDS:
@@ -102,9 +112,13 @@ export function closeAllocatingModal() {
   };
 }
 
-export function openPickingModal() {
+export function openPickingModal(traceId, location, allcoQty, skuPackQty) {
   return {
     type: actionTypes.OPEN_PICKING_MODAL,
+    traceId,
+    location,
+    allcoQty,
+    skuPackQty,
   };
 }
 
@@ -114,9 +128,12 @@ export function closePickingModal() {
   };
 }
 
-export function openShippingModal() {
+export function openShippingModal(traceId, pickedQty, skuPackQty) {
   return {
     type: actionTypes.OPEN_SHIPPING_MODAL,
+    traceId,
+    pickedQty,
+    skuPackQty,
   };
 }
 
@@ -267,6 +284,51 @@ export function loadPickDetails(outboundNo) {
       endpoint: 'v1/cwm/pick/details/load',
       method: 'get',
       params: { outboundNo },
+    },
+  };
+}
+
+export function pickConfirm(outboundNo, skulist, loginId, tenantId, pickedBy, pickedDate) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.OUTBOUNDS_PICK,
+        actionTypes.OUTBOUNDS_PICK_SUCCEED,
+        actionTypes.OUTBOUNDS_PICK_FAIL,
+      ],
+      endpoint: 'v1/cwm/outbounds/pick',
+      method: 'post',
+      data: { outboundNo, skulist, loginId, tenantId, pickedBy, pickedDate },
+    },
+  };
+}
+
+export function cancelPicked(outboundNo, skulist) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UNDO_PICKED,
+        actionTypes.UNDO_PICKED_SUCCEED,
+        actionTypes.UNDO_PICKED_FAIL,
+      ],
+      endpoint: 'v1/cwm/outbounds/undo/pick',
+      method: 'post',
+      data: { outboundNo, skulist },
+    },
+  };
+}
+
+export function shipConfirm(outboundNo, skulist, loginId, tenantId, shippedBy, shippedDate) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.OUTBOUNDS_SHIP,
+        actionTypes.OUTBOUNDS_SHIP_SUCCEED,
+        actionTypes.OUTBOUNDS_SHIP_FAIL,
+      ],
+      endpoint: 'v1/cwm/outbounds/ship',
+      method: 'post',
+      data: { outboundNo, skulist, loginId, tenantId, shippedBy, shippedDate },
     },
   };
 }

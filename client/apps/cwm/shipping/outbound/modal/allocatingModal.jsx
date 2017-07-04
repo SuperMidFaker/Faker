@@ -54,6 +54,10 @@ export default class AllocatingModal extends Component {
     if (nextProps.inventoryData !== this.props.inventoryData) {
       this.setState({
         inventoryData: nextProps.inventoryData,
+      });
+    }
+    if (nextProps.allocatedData !== this.props.allocatedData) {
+      this.setState({
         allocatedData: nextProps.allocatedData,
       });
     }
