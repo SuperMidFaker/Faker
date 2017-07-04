@@ -12,6 +12,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/outbound/', [
   'AUTO_ALLOC', 'AUTO_ALLOC_SUCCEED', 'AUTO_ALLOC_FAIL',
   'CANCEL_PRDALLOC', 'CANCEL_PRDALLOC_SUCCEED', 'CANCEL_PRDALLOC_FAIL',
   'LOAD_PICK_DETAILS', 'LOAD_PICK_DETAILS_SUCCEED', 'LOAD_PICK_DETAILS_FAIL',
+  'LOAD_ALLOCATED_DETAILS', 'LOAD_ALLOCATED_DETAILS_SUCCEED', 'LOAD_ALLOCATED_DETAILS_FAIL',
 ]);
 
 const initialState = {
@@ -73,12 +74,14 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_PRODUCT_INBOUND_DETAILS:
       return { ...state, inventoryFilter: JSON.parse(action.params.filters) };
     case actionTypes.LOAD_PRODUCT_INBOUND_DETAILS_SUCCEED:
-      return { ...state, inventoryData: action.result.data.details, allocatedData: action.result.allocated };
+      return { ...state, inventoryData: action.result.data };
     case actionTypes.AUTO_ALLOC_SUCCEED:
     case actionTypes.CANCEL_PRDALLOC_SUCCEED:
       return { ...state, outboundReload: true };
     case actionTypes.LOAD_PICK_DETAILS_SUCCEED:
       return { ...state, pickDetails: action.result.data };
+    case actionTypes.LOAD_ALLOCATED_DETAILS_SUCCEED:
+      return { ...state, allocatedData: action.result.data };
     default:
       return state;
   }
@@ -166,7 +169,7 @@ export function loadOutboundProductDetails(outboundNo) {
   };
 }
 
-export function loadProductInboundDetail(productSku, whseCode, filters, outboundNo, seqNo) {
+export function loadProductInboundDetail(productSku, whseCode, filters) {
   return {
     [CLIENT_API]: {
       types: [
@@ -174,9 +177,24 @@ export function loadProductInboundDetail(productSku, whseCode, filters, outbound
         actionTypes.LOAD_PRODUCT_INBOUND_DETAILS_SUCCEED,
         actionTypes.LOAD_PRODUCT_INBOUND_DETAILS_FAIL,
       ],
-      endpoint: 'v1/cwm/shipping/product/inbound/details',
+      endpoint: 'v1/cwm/product/inbound/details',
       method: 'get',
-      params: { productSku, whseCode, filters: JSON.stringify(filters), outboundNo, seqNo },
+      params: { productSku, whseCode, filters: JSON.stringify(filters) },
+    },
+  };
+}
+
+export function loadAllocatedDetails(outboundNo, seqNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_ALLOCATED_DETAILS,
+        actionTypes.LOAD_ALLOCATED_DETAILS_SUCCEED,
+        actionTypes.LOAD_ALLOCATED_DETAILS_FAIL,
+      ],
+      endpoint: 'v1/cwm/allocated/details',
+      method: 'get',
+      params: { outboundNo, seqNo },
     },
   };
 }
