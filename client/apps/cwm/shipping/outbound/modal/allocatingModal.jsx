@@ -54,6 +54,10 @@ export default class AllocatingModal extends Component {
     if (nextProps.inventoryData !== this.props.inventoryData) {
       this.setState({
         inventoryData: nextProps.inventoryData,
+      });
+    }
+    if (nextProps.allocatedData !== this.props.allocatedData) {
+      this.setState({
         allocatedData: nextProps.allocatedData,
       });
     }
@@ -280,12 +284,12 @@ export default class AllocatingModal extends Component {
         <Collapse bordered={false} defaultActiveKey={['2']}>
           <Panel header="库存查询" key="1">
             <Card title={inventoryQueryForm} bodyStyle={{ padding: 0 }} style={{ marginBottom: 0 }}>
-              <Table size="middle" columns={this.inventoryColumns} dataSource={this.state.inventoryData} rowKey="trace_id" scroll={{ y: 220 }} />
+              <Table size="middle" columns={this.inventoryColumns} dataSource={this.state.inventoryData.length > 0 ? this.state.inventoryData : this.props.inventoryData} rowKey="trace_id" scroll={{ y: 220 }} />
             </Card>
           </Panel>
           <Panel header="分配明细" key="2">
             <Card bodyStyle={{ padding: 0 }} style={{ marginBottom: 0 }}>
-              <Table size="middle" columns={this.allocatedColumns} dataSource={this.state.allocatedData} rowKey="trace_id" scroll={{ y: 220 }} />
+              <Table size="middle" columns={this.allocatedColumns} dataSource={this.state.allocatedData.length > 0 ? this.state.allocatedData : this.props.allocatedData} rowKey="trace_id" scroll={{ y: 220 }} />
             </Card>
           </Panel>
         </Collapse>

@@ -1,5 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { Table, Tag, Icon, Button } from 'antd';
 import RowUpdater from 'client/components/rowUpdater';
@@ -7,7 +9,7 @@ import { MdIcon } from 'client/components/FontIcon';
 import PickingModal from '../modal/pickingModal';
 import ShippingModal from '../modal/shippingModal';
 import QuantityInput from '../../../common/quantityInput';
-import { openPickingModal, openShippingModal, loadPickDetails } from 'common/reducers/cwmOutbound';
+import { openPickingModal, openShippingModal, loadPickDetails, cancelPicked, loadOutboundHead } from 'common/reducers/cwmOutbound';
 import { CWM_OUTBOUND_STATUS } from 'common/constants';
 
 @injectIntl
@@ -18,11 +20,12 @@ import { CWM_OUTBOUND_STATUS } from 'common/constants';
     reload: state.cwmOutbound.outboundReload,
     pickDetails: state.cwmOutbound.pickDetails,
   }),
-  { openPickingModal, openShippingModal, loadPickDetails }
+  { openPickingModal, openShippingModal, loadPickDetails, cancelPicked, loadOutboundHead }
 )
 export default class PickingDetailsPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
+    outboundNo: PropTypes.string.isRequired,
   }
   state = {
     selectedRowKeys: [],
@@ -47,7 +50,7 @@ export default class PickingDetailsPane extends React.Component {
     },
   }, {
     title: '批次号',
-    dataIndex: 'lot_no',
+    dataIndex: 'external_lot_no',
     width: 100,
   }, {
     title: '库位',
@@ -61,14 +64,14 @@ export default class PickingDetailsPane extends React.Component {
   }, {
     title: '分配数量',
     width: 200,
-    render: (o, record) => (<QuantityInput packQty={record.allocated_pack_qty} pcsQty={record.allocated_qty} disabled />),
+    render: (o, record) => (<QuantityInput packQty={record.alloc_qty / record.sku_pack_qty} pcsQty={record.alloc_qty} disabled />),
   }, {
     title: '商品货号',
     dataIndex: 'product_no',
     width: 120,
   }, {
     title: '中文品名',
-    dataIndex: 'desc_cn',
+    dataIndex: 'name',
     width: 150,
 
   }, {
@@ -87,18 +90,19 @@ export default class PickingDetailsPane extends React.Component {
       if (o) {
         return (<div>
           <div><Icon type="user" />{record.alloc_by}</div>
-          <div><Icon type="clock-circle-o" />{record.alloc_date}</div>
+          <div><Icon type="clock-circle-o" />{moment(record.alloc_date).format('YYYY.MM.DD')}</div>
         </div>);
       }
     },
   }, {
     title: '拣货',
     width: 100,
+    dataIndex: 'picked_date',
     render: (o, record) => {
       if (o) {
         return (<div>
           <div><Icon type="user" />{record.picked_by}</div>
-          <div><Icon type="clock-circle-o" />{record.picked_date}</div>
+          <div><Icon type="clock-circle-o" />{moment(record.picked_date).format('YYYY.MM.DD')}</div>
         </div>);
       }
     },
@@ -108,11 +112,12 @@ export default class PickingDetailsPane extends React.Component {
   }, {
     title: '发货',
     width: 100,
+    dataIndex: 'shipped_date',
     render: (o, record) => {
       if (o) {
         return (<div>
           <div><Icon type="user" />{record.shipped_by}</div>
-          <div><Icon type="clock-circle-o" />{record.shipped_date}</div>
+          <div><Icon type="clock-circle-o" />{moment(record.shipped_date).format('YYYY.MM.DD')}</div>
         </div>);
       }
     },
@@ -124,26 +129,47 @@ export default class PickingDetailsPane extends React.Component {
       switch (record.status) {  // 分配明细的状态 2 已分配 4 已拣货 6 已发运
         case 2:   // 已分配
           return (<span>
-            <RowUpdater onHit={this.handleConfirmPicked} label="拣货确认" row={record} />
+            <RowUpdater onHit={() => this.handleConfirmPicked(record.trace_id, record.location, record.alloc_qty, record.sku_pack_qty)} label="拣货确认" row={record} />
             <span className="ant-divider" />
             <RowUpdater onHit={this.handleCancelAllocated} label="取消分配" row={record} />
           </span>);
+        case 3:   // 部分拣货
+          return (
+            <span>
+              <RowUpdater onHit={() => this.handleConfirmPicked(record.trace_id, record.location, record.alloc_qty, record.sku_pack_qty)} label="拣货确认" row={record} />
+              <span className="ant-divider" />
+              <RowUpdater onHit={() => this.handleCancelPicked(record.trace_id, record.picked_qty, record.picked_qty / record.sku_pack_qty)} label="取消拣货" row={record} />
+            </span>
+          );
         case 4:   // 已拣货
           return (<span>
-            <RowUpdater onHit={this.handleConfirmShipped} label="发货确认" row={record} />
+            <RowUpdater onHit={() => this.handleConfirmShipped(record.trace_id, record.picked_qty, record.sku_pack_qty)} label="发货确认" row={record} />
             <span className="ant-divider" />
-            <RowUpdater onHit={this.handleCancelPicked} label="取消拣货" row={record} />
+            <RowUpdater onHit={() => this.handleCancelPicked(record.trace_id, record.picked_qty, record.picked_qty / record.sku_pack_qty)} label="取消拣货" row={record} />
           </span>);
         default:
           break;
       }
     },
   }]
-  handleConfirmPicked = () => {
-    this.props.openPickingModal();
+  handleCancelPicked = (traceId, pickedQty, pickedPackQty) => {
+    const data = {
+      trace_id: traceId,
+      picked_qty: pickedQty,
+      picked_pack_qty: pickedPackQty,
+    };
+    this.props.cancelPicked(this.props.outboundNo, [data]).then((result) => {
+      if (!result.error) {
+        this.props.loadPickDetails(this.props.outboundNo);
+        this.props.loadOutboundHead(this.props.outboundNo);
+      }
+    });
   }
-  handleConfirmShipped = () => {
-    this.props.openShippingModal();
+  handleConfirmPicked = (traceId, location, allocQty, skuPackQty) => {
+    this.props.openPickingModal(traceId, location, allocQty, skuPackQty);
+  }
+  handleConfirmShipped = (traceId, pickedQty, pickedPackQty) => {
+    this.props.openShippingModal(traceId, pickedQty, pickedPackQty);
   }
   handleBatchConfirmPicked = () => {
     this.props.openPickingModal();
@@ -158,7 +184,7 @@ export default class PickingDetailsPane extends React.Component {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys, selectedRows) => {
         let status = null;
-        const allocated = selectedRows.filter(item => item.status === CWM_OUTBOUND_STATUS.ALL_ALLOCATED.value);
+        const allocated = selectedRows.filter(item => item.status === CWM_OUTBOUND_STATUS.ALL_ALLOC.value);
         const picked = selectedRows.filter(item => item.status === CWM_OUTBOUND_STATUS.ALL_PICKED.value);
         if (allocated && allocated.length === selectedRows.length) {
           status = 'allAllocated';
@@ -191,8 +217,8 @@ export default class PickingDetailsPane extends React.Component {
         <Table columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={pickDetails} rowKey="id"
           scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
         />
-        <PickingModal shippingMode={this.state.shippingMode} />
-        <ShippingModal shippingMode={this.state.shippingMode} />
+        <PickingModal outboundNo={this.props.outboundNo} shippingMode={this.state.shippingMode} />
+        <ShippingModal outboundNo={this.props.outboundNo} shippingMode={this.state.shippingMode} />
       </div>
     );
   }
