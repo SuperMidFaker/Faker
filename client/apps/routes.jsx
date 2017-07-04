@@ -40,11 +40,9 @@ import * as Template from './pub/template';
 import CMS from './cms/module-clearance';
 import * as CMSDashboard from './cms/dashboard';
 import * as CMSDelegation from './cms/delegation';
-import * as CMSImportDelegation from './cms/import/delegation';
 import * as CMSImportManifest from './cms/import/manifest';
 import * as CMSImportCustoms from './cms/import/customs';
 import * as CMSImportCiq from './cms/import/ciq';
-import * as CMSExportDelegation from './cms/export/delegation';
 import * as CMSExportManifest from './cms/export/manifest';
 import * as CMSExportCustoms from './cms/export/customs';
 import * as CMSExportCiq from './cms/export/ciq';
@@ -285,10 +283,7 @@ export default(store, cookie) => {
             <Route path="dashboard" component={CMSDashboard.Index} />
             <Route path="delegation" component={CMSDelegation.List} />
             <Route path="import">
-              <IndexRedirect to="/clearance/import/delegation" />
-              <Route path="delegation" component={CMSImportDelegation.List} />
-              <Route path="create" component={CMSImportDelegation.Create} />
-              <Route path="edit/:delgNo" component={CMSImportDelegation.Edit} />
+              <IndexRedirect to="/clearance/import/manifest" />
               <Route path="manifest">
                 <IndexRoute component={CMSImportManifest.List} />
                 <Route path=":billno" component={CMSImportManifest.Make} />
@@ -303,10 +298,7 @@ export default(store, cookie) => {
               <Route path="ciq" component={CMSImportCiq.CiqList} />
             </Route>
             <Route path="export">
-              <IndexRedirect to="/clearance/export/delegation" />
-              <Route path="delegation" component={CMSExportDelegation.List} />
-              <Route path="create" component={CMSExportDelegation.Create} />
-              <Route path="edit/:delgNo" component={CMSExportDelegation.Edit} />
+              <IndexRedirect to="/clearance/export/manifest" />
               <Route path="manifest">
                 <IndexRoute component={CMSExportManifest.List} />
                 <Route path=":billno" component={CMSExportManifest.Make} />

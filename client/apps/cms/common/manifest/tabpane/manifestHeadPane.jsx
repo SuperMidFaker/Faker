@@ -104,16 +104,14 @@ export default class ManifestHeadPanel extends React.Component {
     return (
       <div className="pane">
         <div className="panel-header">
-          <div>
-            {!readonly &&
-              <Button type="primary" onClick={this.handleSheetSave} icon="save" disabled={billHeadFieldsChangeTimes === 0}>
-                {formatGlobalMsg(this.props.intl, 'save')}
-              </Button>}
-            {!readonly &&
-              <Popconfirm title={'是否确认重置表头数据?'} onConfirm={this.handleBillHeadReset}>
-                <Button icon="reload" style={{ marginLeft: 8 }}>重置</Button>
-              </Popconfirm>}
-          </div>
+          {!readonly &&
+          <Button type="primary" onClick={this.handleSheetSave} icon="save" disabled={billHeadFieldsChangeTimes === 0}>
+            {formatGlobalMsg(this.props.intl, 'save')}
+          </Button>}
+          {!readonly &&
+          <Popconfirm title={'是否确认重置表头数据?'} onConfirm={this.handleBillHeadReset}>
+            <Button icon="reload" style={{ marginLeft: 8 }}>重置</Button>
+          </Popconfirm>}
         </div>
         <div className="pane-content">
           <Form layout="horizontal">

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Table, Input, message } from 'antd';
+import { Button, Table, Icon, Input, message } from 'antd';
 import { loadContainers, saveContainer, delContainer } from 'common/reducers/cmsManifest';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -105,7 +105,7 @@ export default class ContainersPane extends React.Component {
     const columns = [{
       title: this.msg('containerId'),
       dataIndex: 'container_id',
-      width: 100,
+      width: 200,
       render: (o, record) =>
         (<ColumnInput field="container_id" inEdit={!record.id} record={record}
           onChange={this.handleEditChange}
@@ -121,25 +121,35 @@ export default class ContainersPane extends React.Component {
     }, {
       title: this.msg('containerSpec'),
       dataIndex: 'container_spec',
-      width: 100,
       render: (o, record) =>
         (<ColumnInput field="container_spec" inEdit={!record.id} record={record}
           onChange={this.handleEditChange}
         />),
     }, {
-      width: 40,
+      width: 60,
       render: (o, record, index) => {
         if (record.id) {
-          return <Button type="ghost" shape="circle" onClick={() => this.handleDelete(record, index)} icon="delete" />;
+          return (<span>
+            <a onClick={() => this.handleDelete(record, index)}><Icon type="delete" /></a>
+          </span>);
         } else {
-          return <Button type="primary" shape="circle" onClick={() => this.handleSave(record)} icon="save" />;
+          return (<span>
+            <a onClick={() => this.handleSave(record)}><Icon type="save" /></a>
+            <span className="ant-divider" />
+            <a onClick={() => this.editDone(index)}><Icon type="close" /></a>
+          </span>);
         }
       },
     }];
     return (
-      <Table pagination={false} columns={columns} dataSource={this.state.datas}
-        footer={() => <Button type="dashed" onClick={this.handleAdd} icon="plus" style={{ width: '100%' }}>{this.msg('add')}</Button>}
-      />
+      <div className="pane">
+        <div className="panel-header">
+          <Button type="primary" onClick={this.handleAdd} icon="plus">{this.msg('add')}</Button>
+        </div>
+        <div className="panel-body table-panel">
+          <Table pagination={false} columns={columns} dataSource={this.state.datas} />
+        </div>
+      </div>
     );
   }
 }

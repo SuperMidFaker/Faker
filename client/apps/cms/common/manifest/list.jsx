@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Layout, Radio, Icon, Progress, message, Popconfirm, Tooltip, notification, Select } from 'antd';
+import { Breadcrumb, DatePicker, Layout, Radio, Icon, Progress, message, Popconfirm, Tooltip, notification, Select } from 'antd';
 import moment from 'moment';
 import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
@@ -25,6 +25,8 @@ const { Header, Content, Sider } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const Option = Select.Option;
+const OptGroup = Select.OptGroup;
+const RangePicker = DatePicker.RangePicker;
 
 @injectIntl
 @connect(
@@ -82,7 +84,7 @@ export default class ManifestList extends Component {
     width: 160,
     render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
-    title: '执行者',
+    title: '制单人',
     dataIndex: 'preparer_name',
     width: 80,
   }, {
@@ -319,6 +321,20 @@ export default class ManifestList extends Component {
                     >{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>)
                     )}
                   </Select>
+                  <span />
+                  <Select size="large" value={listFilter.viewStatus} style={{ width: 160 }} showSearch={false}
+                    onChange={this.handleViewChange}
+                  >
+                    <OptGroup label="常用视图">
+                      <Option value="all">全部清单</Option>
+                      <Option value="my">我负责的清单</Option>
+                    </OptGroup>
+                  </Select>
+                  <span />
+                  <RangePicker size="large"
+                    ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
+                    onChange={this.handleDateRangeChange}
+                  />
                   <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                     <h3>已选中{this.state.selectedRowKeys.length}项</h3>
                   </div>
