@@ -184,7 +184,7 @@ export default class PickingDetailsPane extends React.Component {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys, selectedRows) => {
         let status = null;
-        const allocated = selectedRows.filter(item => item.status === CWM_OUTBOUND_STATUS.ALL_ALLOCATED.value);
+        const allocated = selectedRows.filter(item => item.status === CWM_OUTBOUND_STATUS.ALL_ALLOC.value);
         const picked = selectedRows.filter(item => item.status === CWM_OUTBOUND_STATUS.ALL_PICKED.value);
         if (allocated && allocated.length === selectedRows.length) {
           status = 'allAllocated';
